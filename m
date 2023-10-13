@@ -2,175 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C02B7C8617
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3C647C8613
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231680AbjJMMtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 08:49:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56622 "EHLO
+        id S231705AbjJMMsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 08:48:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230006AbjJMMs7 (ORCPT
+        with ESMTP id S229726AbjJMMsd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 08:48:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED108BE
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 05:48:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697201291;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=h78T/7NPGQz52SHwxHI3clyF7jiR025tvOcU1xIze+A=;
-        b=FRPdpewyp5EOGrYQwJt5n8PRMABbAo3+E2zVJgqT236jBdRCSwtqaZOqtK2RMzKI0Aqab6
-        Sce2WJbzorrFBAb3sHB12dEQxEtNAw05cN8oxQMtlTzOflfWy2l9lwdfAIOLAaXAUMg5x8
-        DQwwEHUN8g8mCdmdcH0ZBMAynkMuLyk=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-589-0i1UD0zaOym2JiTld1dkKQ-1; Fri, 13 Oct 2023 08:48:08 -0400
-X-MC-Unique: 0i1UD0zaOym2JiTld1dkKQ-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 921211C00D21;
-        Fri, 13 Oct 2023 12:48:07 +0000 (UTC)
-Received: from localhost (unknown [10.72.120.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9FA2D492BFA;
-        Fri, 13 Oct 2023 12:48:06 +0000 (UTC)
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Andrew Theurer <atheurer@redhat.com>,
-        Joe Mario <jmario@redhat.com>,
-        Sebastian Jug <sejug@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH V2] blk-mq: don't schedule block kworker on isolated CPUs
-Date:   Fri, 13 Oct 2023 20:47:58 +0800
-Message-ID: <20231013124758.1492796-1-ming.lei@redhat.com>
+        Fri, 13 Oct 2023 08:48:33 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4403EBD;
+        Fri, 13 Oct 2023 05:48:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697201312; x=1728737312;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=6iMpv2UTySZaEAYqtKN2xhPIH1oWxAEbKNCY7/VQAbU=;
+  b=WNQi1vR6MPq/QtYAWVbC4+8731puk+NTl5hPI30g6DfjuvPCAu6Ypn6+
+   363rKuN2iHMAOjcYFvm/aL6h3Z3UEWqmgjXLZVY55H1eF5ejf6KabQitr
+   36J+tMIYdmwjVo+lEPksZINurU9LDHRUcJWmhf2MeX7KT4XsxIXeIRhNe
+   mDY0WOV+5jLM8MvXL+5KPDPUY+Cf0EtVcoYavbhcdZRsK8/jzAyuBFTsM
+   RH0EMSz8W1IX/tei86EQ4igzwv/JPC0lcp6gc3EYHpNh1Agn+dfZiLX9c
+   lUB0z/B/I21pwUgRiteTigcmKP0Ms4lYnEPHow6915ZIYE68W1qSQtIsn
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="385012422"
+X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
+   d="scan'208";a="385012422"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 05:48:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="820620478"
+X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
+   d="scan'208";a="820620478"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.249.170.232]) ([10.249.170.232])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 05:48:22 -0700
+Message-ID: <a4c2402f-fc81-ff54-7c5b-606fa14405e2@linux.intel.com>
+Date:   Fri, 13 Oct 2023 20:48:19 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Cc:     baolu.lu@linux.intel.com, "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
+        "Martins, Joao" <joao.m.martins@oracle.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+Subject: Re: [PATCH v5 04/11] iommu/vt-d: Add helper to setup pasid nested
+ translation
+To:     Yi Liu <yi.l.liu@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>
+References: <20230921075431.125239-1-yi.l.liu@intel.com>
+ <20230921075431.125239-5-yi.l.liu@intel.com>
+ <BN9PR11MB5276DD2D6E5690F8FC7B18378CC2A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <8974035d-9f9c-e209-79d6-8e3c6402e516@intel.com>
+Content-Language: en-US
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <8974035d-9f9c-e209-79d6-8e3c6402e516@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel parameter of `isolcpus=` or 'nohz_full=' are used for isolating CPUs
-for specific task, and user often won't want block IO to disturb these CPUs,
-also long IO latency may be caused if blk-mq kworker is scheduled on these
-isolated CPUs.
+On 2023/10/13 20:40, Yi Liu wrote:
+>>
+>>> +        return -EINVAL;
+>>> +    }
+>>> +
+>>> +    if ((s1_cfg->flags & IOMMU_VTD_S1_SRE) && !ecap_srs(iommu-
+>>>> ecap)) {
+>>> +        pr_err_ratelimited("No supervisor request support on %s\n",
+>>> +                   iommu->name);
+>>> +        return -EINVAL;
+>>> +    }
+>>> +
+>>> +    if ((s1_cfg->flags & IOMMU_VTD_S1_EAFE) && !ecap_eafs(iommu-
+>>>> ecap)) {
+>>> +        pr_err_ratelimited("No extended access flag support
+>>> on %s\n",
+>>> +                   iommu->name);
+>>> +        return -EINVAL;
+>>> +    }
+>>> +
+>>> +    spin_lock(&iommu->lock);
+>>> +    pte = intel_pasid_get_entry(dev, pasid);
+>>> +    if (!pte) {
+>>> +        spin_unlock(&iommu->lock);
+>>> +        return -ENODEV;
+>>> +    }
+>>> +    if (pasid_pte_is_present(pte)) {
+>>> +        spin_unlock(&iommu->lock);
+>>> +        return -EBUSY;
+>>> +    }
+>>> +
+>>> +    pasid_clear_entry(pte);
+>>> +
+>>> +    if (s1_cfg->addr_width == ADDR_WIDTH_5LEVEL)
+>>> +        pasid_set_flpm(pte, 1);
+>>> +
+>>> +    pasid_set_flptr(pte, (uintptr_t)s1_gpgd);
+>>> +
+>>> +    if (s1_cfg->flags & IOMMU_VTD_S1_SRE) {
+>>> +        pasid_set_sre(pte);
+>>> +        if (s1_cfg->flags & IOMMU_VTD_S1_WPE)
+>>> +            pasid_set_wpe(pte);
+>>> +    }
+>>> +
+>>> +    if (s1_cfg->flags & IOMMU_VTD_S1_EAFE)
+>>> +        pasid_set_eafe(pte);
+>>> +
+>>> +    if (s2_domain->force_snooping)
+>>> +        pasid_set_pgsnp(pte);
+>>> +
+>>> +    pasid_set_slptr(pte, virt_to_phys(pgd));
+>>> +    pasid_set_fault_enable(pte);
+>>> +    pasid_set_domain_id(pte, did);
+>>> +    pasid_set_address_width(pte, s2_domain->agaw);
+>>> +    pasid_set_page_snoop(pte, !!ecap_smpwc(iommu->ecap));
+>>> +    pasid_set_translation_type(pte, PASID_ENTRY_PGTT_NESTED);
+>>> +    pasid_set_present(pte);
+>>> +    spin_unlock(&iommu->lock);
+>>
+>> All changes within iommu->lock are specific to the device specific
+>> PASID entry. Probably this is one potential cleanup TODO to
+>> use a per-device lock instead.
+> 
+> yeah, a separate cleanup. is it, @Baolu?
 
-Kernel workqueue only respects this limit for WQ_UNBOUND, for bound wq,
-the responsibility should be on wq user.
+Sure. I'd like to take some time to consider this further. Please keep
+it as-is for the time being.
 
-So don't not run block kworker on isolated CPUs by ruling out isolated CPUs
-from hctx->cpumask. Meantime in cpuhp handler, use queue map to check if
-all CPUs in this hw queue are offline, this way can avoid any cost in fast
-IO code path.
-
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Andrew Theurer <atheurer@redhat.com>
-Cc: Joe Mario <jmario@redhat.com>
-Cc: Sebastian Jug <sejug@redhat.com>
-Cc: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
----
-V2:
-	- remove module parameter, meantime use queue map to check if
-	all cpus in one hctx are offline
-
- block/blk-mq.c | 42 +++++++++++++++++++++++++++++++++---------
- 1 file changed, 33 insertions(+), 9 deletions(-)
-
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index ec922c6bccbe..91055bdc4426 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -29,6 +29,7 @@
- #include <linux/prefetch.h>
- #include <linux/blk-crypto.h>
- #include <linux/part_stat.h>
-+#include <linux/sched/isolation.h>
- 
- #include <trace/events/block.h>
- 
-@@ -3476,14 +3477,27 @@ static bool blk_mq_hctx_has_requests(struct blk_mq_hw_ctx *hctx)
- 	return data.has_rq;
- }
- 
--static inline bool blk_mq_last_cpu_in_hctx(unsigned int cpu,
--		struct blk_mq_hw_ctx *hctx)
-+static bool blk_mq_hctx_has_online_cpu(struct blk_mq_hw_ctx *hctx)
- {
--	if (cpumask_first_and(hctx->cpumask, cpu_online_mask) != cpu)
--		return false;
--	if (cpumask_next_and(cpu, hctx->cpumask, cpu_online_mask) < nr_cpu_ids)
--		return false;
--	return true;
-+	struct blk_mq_tag_set *tag_set = hctx->queue->tag_set;
-+	int cpu;
-+
-+	/*
-+	 * hctx->cpumask has rule out isolated CPUs, but userspace still
-+	 * might submit IOs on these isolated CPUs, so use queue map to
-+	 * check if all CPUs mapped to this hctx are offline
-+	 */
-+	for_each_possible_cpu(cpu) {
-+		unsigned idx = tag_set->map[hctx->type].mq_map[cpu];
-+
-+		if (idx != hctx->queue_num)
-+			continue;
-+
-+		if (cpu_online(cpu))
-+			return true;
-+	}
-+
-+	return false;
- }
- 
- static int blk_mq_hctx_notify_offline(unsigned int cpu, struct hlist_node *node)
-@@ -3491,8 +3505,7 @@ static int blk_mq_hctx_notify_offline(unsigned int cpu, struct hlist_node *node)
- 	struct blk_mq_hw_ctx *hctx = hlist_entry_safe(node,
- 			struct blk_mq_hw_ctx, cpuhp_online);
- 
--	if (!cpumask_test_cpu(cpu, hctx->cpumask) ||
--	    !blk_mq_last_cpu_in_hctx(cpu, hctx))
-+	if (blk_mq_hctx_has_online_cpu(hctx))
- 		return 0;
- 
- 	/*
-@@ -3900,6 +3913,8 @@ static void blk_mq_map_swqueue(struct request_queue *q)
- 	}
- 
- 	queue_for_each_hw_ctx(q, hctx, i) {
-+		int cpu;
-+
- 		/*
- 		 * If no software queues are mapped to this hardware queue,
- 		 * disable it and free the request entries.
-@@ -3926,6 +3941,15 @@ static void blk_mq_map_swqueue(struct request_queue *q)
- 		 */
- 		sbitmap_resize(&hctx->ctx_map, hctx->nr_ctx);
- 
-+		/*
-+		 * rule out isolated CPUs from hctx->cpumask for avoiding to
-+		 * run wq worker on isolated CPU
-+		 */
-+		for_each_cpu(cpu, hctx->cpumask) {
-+			if (cpu_is_isolated(cpu))
-+				cpumask_clear_cpu(cpu, hctx->cpumask);
-+		}
-+
- 		/*
- 		 * Initialize batch roundrobin counts
- 		 */
--- 
-2.41.0
-
+Best regards,
+baolu
