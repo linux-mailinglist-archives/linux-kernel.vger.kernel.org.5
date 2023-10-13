@@ -2,117 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6746A7C7E78
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 149DD7C7E7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229903AbjJMHRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 03:17:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55078 "EHLO
+        id S229843AbjJMHSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 03:18:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229843AbjJMHR2 (ORCPT
+        with ESMTP id S229688AbjJMHSU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 03:17:28 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF9DDBC;
-        Fri, 13 Oct 2023 00:17:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0115FC433CB;
-        Fri, 13 Oct 2023 07:17:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697181446;
-        bh=mZzYynmfJ2/pdsSnnLB7cuavYnApPnZfzHGYj9nCAeA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IVoeRbExMYaVYqOlZ0E8lBzZCXXY1JbAget/P8s277Z4fb0gx7WIb1qebIwGCY1IJ
-         h9+RlBxTjpMHU+QGDK+xK0cIE4HpVPEjn3DX8RpRLBXFLTD9DmNZ8Y2xHQAVYmMjxV
-         zytHQGwaKWn4P5a2325k49h7ZiBI2s+N2XYzMt6wM/rVgKre84QrYF0DViIU1ytMd7
-         VfArELQIqtToaHjPtoTAvY8n3GcR/eoFQMbjTHu1l699yX99pLwFNg9UhFxkHIysst
-         0uOq71xzAiyIVBIG853S3Os9ftzvPGv/woCU5U6WfkrFesxc9ATonOrZGcWYEdd4GO
-         aK2T7umF31aTQ==
-Date:   Fri, 13 Oct 2023 09:17:23 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Stefan Lengfeld <stefan@lengfeld.xyz>
-Cc:     Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>,
-        linux-media <linux-media@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>, linux-i2c@vger.kernel.org
-Subject: Re: Sony IMX290/462 image sensors I2C xfer peculiarity
-Message-ID: <ZSjvA3QpY1T9McjN@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Stefan Lengfeld <stefan@lengfeld.xyz>,
-        Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>,
-        linux-media <linux-media@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>, linux-i2c@vger.kernel.org
-References: <m3y1gpw8ri.fsf@t19.piap.pl>
- <CAPY8ntASwh3AcRqE+2zF4Df=u+=wJ5K9icAeOrXTMJGDd1+caw@mail.gmail.com>
- <m3o7hfx3ob.fsf@t19.piap.pl>
- <m37cnuvmhn.fsf@t19.piap.pl>
- <m3o7h5tthf.fsf@t19.piap.pl>
- <m3jzrttrmz.fsf@t19.piap.pl>
- <20231011101553.we3r73xejvqdql5j@porty>
- <m3fs2htn7g.fsf@t19.piap.pl>
- <20231012220127.GB27838@stcim.de>
+        Fri, 13 Oct 2023 03:18:20 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B9AFB8
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:18:17 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-32d9b507b00so363718f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:18:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697181496; x=1697786296; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tbVF/4xx0+0vu2fMTNsv16S5m/ukxWZpS5bYJMmX8qM=;
+        b=fQHUhy3vDUanMdrmzzXVux/ic01wJ2iX9b/aUS3feozz+Q62J5P3f78MZYWrPV4e93
+         h4VM4iAZmmMqZomxPyD71xCjsghzDsANXlwyFgaX0V2JiN8FhMqgWMnYuB9ROf7uKEz2
+         9HNGVpZ9XxVDpTmWbJWc5CAOHWUeUGT3/p/WwpjZf3UIgww3spTtLpg7k0Pimswrfuxb
+         YHGMYxQ7z3wM1Py/nCj0Hy6J+9Caq5JN43KL9QNzYWaLgwCs6PtcoZmy3NS/7xG/wWn8
+         C+o4KWGz7Xvc9/a5hRlJwiD5vZ3hPVuZwRBBLr1Pr4B/+GtRKZsCLmJS6P1Lxuhpfp0J
+         5MiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697181496; x=1697786296;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tbVF/4xx0+0vu2fMTNsv16S5m/ukxWZpS5bYJMmX8qM=;
+        b=nFeGcqSvMg0dbNjPVN42GlPvytznvn4LZ/O0szcRoIl1xXGPwgtQB9hn6nrQgv8l4J
+         HmLNNGkJpldj9zSqtdCzLyaaFnRXOQYVpm8OEWRCGoOf1XNmF/jewvn76V7dYyi54/58
+         hP407FQSbX3PUdn+lpN74QT8Vy8kKL1js9UMoMwbKVlIgbR7De4Tk9/WXO7zU+qNuUoA
+         6a++SnQJuDsGuI+KTNKTPsA/gJVMjt/sD7yDxol0ycxosHCyr+aTsYTpBLyxD3Rxkual
+         KYXlhiJOg2wb4YpQm1Tf6xO2OvepKfj61UQnzXnyp7V/8uM8B20nYSC84TpP8uabXr48
+         1LMQ==
+X-Gm-Message-State: AOJu0Yz6TI8BjEMEDhqnVU+NIx2rlq5xC97beJ2y179EfzbTiZ5LhXM4
+        wQYuEpVlbubBBaFqEroFdrUaIBCX1ZvirliQ5oo=
+X-Google-Smtp-Source: AGHT+IHPY0n8rs7CXdxLey7IC8iyznm9iVum45QuAoDN95dpOABZsLi4neDzIKvm+jTtIApmyuc7Og==
+X-Received: by 2002:adf:e542:0:b0:31a:d4e1:ea30 with SMTP id z2-20020adfe542000000b0031ad4e1ea30mr22635389wrm.17.1697181495839;
+        Fri, 13 Oct 2023 00:18:15 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id h12-20020adff18c000000b003232380ffd7sm20203133wro.102.2023.10.13.00.18.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 00:18:15 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 10:18:12 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Sandipan Das <sandipan.das@amd.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] perf/x86/amd/uncore: fix error codes in amd_uncore_init()
+Message-ID: <cec62eba-c4b8-4cb7-9671-58894dd4b974@moroto.mountain>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="u/l8M5o0YMZg682I"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231012220127.GB27838@stcim.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Mailer: git-send-email haha only kidding
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Some of the error paths in this function return don't initialize the
+error code.  Return -ENODEV.
 
---u/l8M5o0YMZg682I
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Fixes: d6389d3ccc13 ("perf/x86/amd/uncore: Refactor uncore management")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+ arch/x86/events/amd/uncore.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/arch/x86/events/amd/uncore.c b/arch/x86/events/amd/uncore.c
+index 9b444ce24108..a389828f378c 100644
+--- a/arch/x86/events/amd/uncore.c
++++ b/arch/x86/events/amd/uncore.c
+@@ -1009,7 +1009,8 @@ static struct amd_uncore uncores[UNCORE_TYPE_MAX] = {
+ static int __init amd_uncore_init(void)
+ {
+ 	struct amd_uncore *uncore;
+-	int ret, i;
++	int ret = -ENODEV;
++	int i;
+ 
+ 	if (boot_cpu_data.x86_vendor != X86_VENDOR_AMD &&
+ 	    boot_cpu_data.x86_vendor != X86_VENDOR_HYGON)
+-- 
+2.39.2
 
-> Do you know the I2C repeated start feature [1]? This allows to batch together
-> multiple I2C read/writes in a single transfer. And in the best case, this
-> transfer is executed in one go without a delay in between. At least in the
-> kernel it's guaranteed that no other driver can go in between with another
-> transfer.
-
-If the HW does rep_start properly, it is even guaranteed on the bus
-because the bus is never seen as free by other participants. Check
-"START and STOP" conditions in the I2C specs.
-
-
---u/l8M5o0YMZg682I
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUo7wMACgkQFA3kzBSg
-KbZs4xAAiGla3VYW4LK+tWuDufXr/zrNHbwb0pU1zty0q+93Yp9riCln24vQ8VdN
-QbtOpwcHb+aZOh5wfz8IqL8DTgAtC1Z5h2qxUXv2vYA/V6t5jirybkOg/iR+moG4
-61V8ov437G4iAaL4xcObmtW6F6Gse/dlm8Q2JGg2eVIZqNr7mgcgJeyPTR38pWjS
-1FjP9NYoY1Xu/JhFEwar2LbLLYQqNtrT1AuPXAll2GlfDrBtfxSWZAG6ywDIXU34
-oEaMuAZDVIzhltMLgXzBQhMgef9l0naVuo/myB+htVwA7oAn45ImyDc1fGyAUMlC
-x2E7zL54CYGpon4FclA74Sgp0AjlWa3RWCkPZ+oQzL7HyjKYwM62cb3aPWkMCaV7
-57KkLtKwUb5SmTRGryNYivEXta7adBo7HvIrYeuO0paGDw65NpzeKP4rMSQHo+XX
-LWTirx18kOKA4T+r9xKvIdKiDly+R26dBln6nK5cbM2bkmIn6TIo7i2fITPbTInA
-Y94MFb/0Ifa97tNRD0VQbv89dnzogx0HP8BkVqwdpshIoIifmYSm9X33n5Nb0cT1
-YifunACQYgdt3vxnJjFPiUB3KE8Px/Wp/vvkWEacvbgnxfrID8zVMAhhsvinCrhQ
-hHh/id1kvsXrsrs8POeU0KrsQDarFZUAf42lJtPcXoY2rd9FoBU=
-=pVqj
------END PGP SIGNATURE-----
-
---u/l8M5o0YMZg682I--
