@@ -2,117 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD1077C7EC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C857C7EC0
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229939AbjJMHl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 03:41:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52736 "EHLO
+        id S229903AbjJMHlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 03:41:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbjJMHlX (ORCPT
+        with ESMTP id S229688AbjJMHlS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 03:41:23 -0400
-Received: from jari.cn (unknown [218.92.28.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 12EB783
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:41:19 -0700 (PDT)
-Received: from wangkailong$jari.cn ( [182.148.14.172] ) by
- ajax-webmail-localhost.localdomain (Coremail) ; Fri, 13 Oct 2023 15:39:32
- +0800 (GMT+08:00)
-X-Originating-IP: [182.148.14.172]
-Date:   Fri, 13 Oct 2023 15:39:32 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   "KaiLong Wang" <wangkailong@jari.cn>
-To:     mark@fasheh.com, jlbec@evilplan.org, akpm@linux-foundation.org
-Cc:     ocfs2-devel@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH] ocfs2/dlm: Clean up errors in dlmdomain.c
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
- 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Fri, 13 Oct 2023 03:41:18 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD2083
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:41:16 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA431C433C7;
+        Fri, 13 Oct 2023 07:41:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697182876;
+        bh=HCwC6BY1bb24e17Bl+yq4xWJAW4Po3ldTzp38IgTEq4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jCfzTnfSPNpr8oHgUrMAWWnGod72/w0SFUhRryo5wbDOeG76rzR9TMuDoQ2Sad0hP
+         /j71x4Nhiuaz6uiC8BwRiTh5/TE6HuK+cT6suCUjlZ3JHWFA0Ma7vnSANFyuFDANaw
+         feIEzFicz9B/+sM24DE+X12K8tAMgUpenuZINmyQkg46K2qmdUAft2WB84uHs/3hfE
+         mLAITV3d5wU9XT33C2qGpePlAaR81pj4iInfmIBp+VHm4UYM1wdGKmpVaYeAqbtwk5
+         LUPUm9uYj2HD/MlLl9A4Dr8alOYiy8u/HbxvCWmFnn+saMX4Vz4APGkZt1ZnMA+t6f
+         kWz7+6MPDP24A==
+Date:   Fri, 13 Oct 2023 08:41:10 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v10 07/15] dt-bindings: interrupt-controller: Add RISC-V
+ incoming MSI controller
+Message-ID: <20231013-pluck-skies-1b4ee57e770c@spud>
+References: <20231003044403.1974628-1-apatel@ventanamicro.com>
+ <20231003044403.1974628-8-apatel@ventanamicro.com>
+ <20231012-countable-darkish-7e449edc763d@spud>
+ <CAK9=C2ViQj5iNBvQcMpYii2p+CrOiQ3hY8t5_U8mrJTcMVZCYw@mail.gmail.com>
 MIME-Version: 1.0
-Message-ID: <62e91e34.969.18b27f9ec40.Coremail.wangkailong@jari.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: AQAAfwD3lD809ChlLd_BAA--.756W
-X-CM-SenderInfo: 5zdqwypdlo00nj6mt2flof0/1tbiAQADB2UnvzMAKwACsi
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=3.4 required=5.0 tests=BAYES_00,RCVD_IN_PBL,RDNS_NONE,
-        T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO autolearn=no
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="SpvMUTlv7MvkLw0D"
+Content-Disposition: inline
+In-Reply-To: <CAK9=C2ViQj5iNBvQcMpYii2p+CrOiQ3hY8t5_U8mrJTcMVZCYw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
-ImZvbyAqIGJhciIgc2hvdWxkIGJlICJmb28gKmJhciIKRVJST1I6IHNwYWNlcyByZXF1aXJlZCBh
-cm91bmQgdGhhdCAnPScgKGN0eDpWeFYpCkVSUk9SOiBzcGFjZXMgcmVxdWlyZWQgYXJvdW5kIHRo
-YXQgJz09JyAoY3R4OlZ4VikKRVJST1I6IGRvIG5vdCB1c2UgYXNzaWdubWVudCBpbiBpZiBjb25k
-aXRpb24KClNpZ25lZC1vZmYtYnk6IEthaUxvbmcgV2FuZyA8d2FuZ2thaWxvbmdAamFyaS5jbj4K
-LS0tCiBmcy9vY2ZzMi9kbG0vZGxtZG9tYWluLmMgfCAxOSArKysrKysrKysrLS0tLS0tLS0tCiAx
-IGZpbGUgY2hhbmdlZCwgMTAgaW5zZXJ0aW9ucygrKSwgOSBkZWxldGlvbnMoLSkKCmRpZmYgLS1n
-aXQgYS9mcy9vY2ZzMi9kbG0vZGxtZG9tYWluLmMgYi9mcy9vY2ZzMi9kbG0vZGxtZG9tYWluLmMK
-aW5kZXggNWMwNGRkZTk5OTgxLi5hOTk1NWViOTc2MjUgMTAwNjQ0Ci0tLSBhL2ZzL29jZnMyL2Rs
-bS9kbG1kb21haW4uYworKysgYi9mcy9vY2ZzMi9kbG0vZGxtZG9tYWluLmMKQEAgLTc2LDcgKzc2
-LDggQEAgc3RhdGljIHZvaWQgKipkbG1fYWxsb2NfcGFnZXZlYyhpbnQgcGFnZXMpCiAJCXJldHVy
-biBOVUxMOwogCiAJZm9yIChpID0gMDsgaSA8IHBhZ2VzOyBpKyspCi0JCWlmICghKHZlY1tpXSA9
-ICh2b2lkICopX19nZXRfZnJlZV9wYWdlKEdGUF9LRVJORUwpKSkKKwkJdmVjW2ldID0gKHZvaWQg
-KilfX2dldF9mcmVlX3BhZ2UoR0ZQX0tFUk5FTCk7CisJCWlmICghKHZlY1tpXSkpCiAJCQlnb3Rv
-IG91dF9mcmVlOwogCiAJbWxvZygwLCAiQWxsb2NhdGVkIERMTSBoYXNoIHBhZ2V2ZWM7ICVkIHBh
-Z2VzICglbHUgZXhwZWN0ZWQpLCAlbHUgYnVja2V0cyBwZXIgcGFnZVxuIiwKQEAgLTE3MCw3ICsx
-NzEsNyBAQCB2b2lkIF9fZGxtX2luc2VydF9sb2NrcmVzKHN0cnVjdCBkbG1fY3R4dCAqZGxtLCBz
-dHJ1Y3QgZGxtX2xvY2tfcmVzb3VyY2UgKnJlcykKIAkgICAgIHJlcy0+bG9ja25hbWUubmFtZSk7
-CiB9CiAKLXN0cnVjdCBkbG1fbG9ja19yZXNvdXJjZSAqIF9fZGxtX2xvb2t1cF9sb2NrcmVzX2Z1
-bGwoc3RydWN0IGRsbV9jdHh0ICpkbG0sCitzdHJ1Y3QgZGxtX2xvY2tfcmVzb3VyY2UgKl9fZGxt
-X2xvb2t1cF9sb2NrcmVzX2Z1bGwoc3RydWN0IGRsbV9jdHh0ICpkbG0sCiAJCQkJCQkgICAgIGNv
-bnN0IGNoYXIgKm5hbWUsCiAJCQkJCQkgICAgIHVuc2lnbmVkIGludCBsZW4sCiAJCQkJCQkgICAg
-IHVuc2lnbmVkIGludCBoYXNoKQpAQCAtMjAzLDcgKzIwNCw3IEBAIHN0cnVjdCBkbG1fbG9ja19y
-ZXNvdXJjZSAqIF9fZGxtX2xvb2t1cF9sb2NrcmVzX2Z1bGwoc3RydWN0IGRsbV9jdHh0ICpkbG0s
-CiAgKiBjdXJyZW50bHkgaW4gdGhlIHByb2Nlc3Mgb2YgZHJvcHBpbmcgaXRzIG1hc3RlcnkgcmVm
-ZXJlbmNlLgogICogdXNlIF9fZGxtX2xvb2t1cF9sb2NrcmVzX2Z1bGwgd2hlbiB5b3UgbmVlZCB0
-aGUgbG9jayByZXNvdXJjZQogICogcmVnYXJkbGVzcyAoZS5nLiBkbG1fZ2V0X2xvY2tfcmVzb3Vy
-Y2UpICovCi1zdHJ1Y3QgZGxtX2xvY2tfcmVzb3VyY2UgKiBfX2RsbV9sb29rdXBfbG9ja3Jlcyhz
-dHJ1Y3QgZGxtX2N0eHQgKmRsbSwKK3N0cnVjdCBkbG1fbG9ja19yZXNvdXJjZSAqX19kbG1fbG9v
-a3VwX2xvY2tyZXMoc3RydWN0IGRsbV9jdHh0ICpkbG0sCiAJCQkJCQljb25zdCBjaGFyICpuYW1l
-LAogCQkJCQkJdW5zaWduZWQgaW50IGxlbiwKIAkJCQkJCXVuc2lnbmVkIGludCBoYXNoKQpAQCAt
-MjI4LDcgKzIyOSw3IEBAIHN0cnVjdCBkbG1fbG9ja19yZXNvdXJjZSAqIF9fZGxtX2xvb2t1cF9s
-b2NrcmVzKHN0cnVjdCBkbG1fY3R4dCAqZGxtLAogCXJldHVybiByZXM7CiB9CiAKLXN0cnVjdCBk
-bG1fbG9ja19yZXNvdXJjZSAqIGRsbV9sb29rdXBfbG9ja3JlcyhzdHJ1Y3QgZGxtX2N0eHQgKmRs
-bSwKK3N0cnVjdCBkbG1fbG9ja19yZXNvdXJjZSAqZGxtX2xvb2t1cF9sb2NrcmVzKHN0cnVjdCBk
-bG1fY3R4dCAqZGxtLAogCQkJCSAgICBjb25zdCBjaGFyICpuYW1lLAogCQkJCSAgICB1bnNpZ25l
-ZCBpbnQgbGVuKQogewpAQCAtMjQxLDcgKzI0Miw3IEBAIHN0cnVjdCBkbG1fbG9ja19yZXNvdXJj
-ZSAqIGRsbV9sb29rdXBfbG9ja3JlcyhzdHJ1Y3QgZGxtX2N0eHQgKmRsbSwKIAlyZXR1cm4gcmVz
-OwogfQogCi1zdGF0aWMgc3RydWN0IGRsbV9jdHh0ICogX19kbG1fbG9va3VwX2RvbWFpbl9mdWxs
-KGNvbnN0IGNoYXIgKmRvbWFpbiwgaW50IGxlbikKK3N0YXRpYyBzdHJ1Y3QgZGxtX2N0eHQgKl9f
-ZGxtX2xvb2t1cF9kb21haW5fZnVsbChjb25zdCBjaGFyICpkb21haW4sIGludCBsZW4pCiB7CiAJ
-c3RydWN0IGRsbV9jdHh0ICp0bXA7CiAKQEAgLTI1MSw3ICsyNTIsNyBAQCBzdGF0aWMgc3RydWN0
-IGRsbV9jdHh0ICogX19kbG1fbG9va3VwX2RvbWFpbl9mdWxsKGNvbnN0IGNoYXIgKmRvbWFpbiwg
-aW50IGxlbikKIAkgKiBidXQgZG9tYWluIG1heSBub3QgYmUhICovCiAJbGlzdF9mb3JfZWFjaF9l
-bnRyeSh0bXAsICZkbG1fZG9tYWlucywgbGlzdCkgewogCQlpZiAoc3RybGVuKHRtcC0+bmFtZSkg
-PT0gbGVuICYmCi0JCSAgICBtZW1jbXAodG1wLT5uYW1lLCBkb21haW4sIGxlbik9PTApCisJCSAg
-ICBtZW1jbXAodG1wLT5uYW1lLCBkb21haW4sIGxlbikgPT0gMCkKIAkJCXJldHVybiB0bXA7CiAJ
-fQogCkBAIC0yNTksNyArMjYwLDcgQEAgc3RhdGljIHN0cnVjdCBkbG1fY3R4dCAqIF9fZGxtX2xv
-b2t1cF9kb21haW5fZnVsbChjb25zdCBjaGFyICpkb21haW4sIGludCBsZW4pCiB9CiAKIC8qIEZv
-ciBudWxsIHRlcm1pbmF0ZWQgZG9tYWluIHN0cmluZ3MgT05MWSAqLwotc3RhdGljIHN0cnVjdCBk
-bG1fY3R4dCAqIF9fZGxtX2xvb2t1cF9kb21haW4oY29uc3QgY2hhciAqZG9tYWluKQorc3RhdGlj
-IHN0cnVjdCBkbG1fY3R4dCAqX19kbG1fbG9va3VwX2RvbWFpbihjb25zdCBjaGFyICpkb21haW4p
-CiB7CiAJYXNzZXJ0X3NwaW5fbG9ja2VkKCZkbG1fZG9tYWluX2xvY2spOwogCkBAIC04MjcsNyAr
-ODI4LDcgQEAgc3RhdGljIGludCBkbG1fcXVlcnlfam9pbl9oYW5kbGVyKHN0cnVjdCBvMm5ldF9t
-c2cgKm1zZywgdTMyIGxlbiwgdm9pZCAqZGF0YSwKIAkgKiBub2RlKHMpIHRoYXQganVzdCBsZWZ0
-IGJ1dCBzdGlsbCBwYXJ0IG9mIHRoZSBjbHVzdGVyLiBESVNBTExPVwogCSAqIGpvaW4gcmVxdWVz
-dCBpZiBqb2luaW5nIG5vZGUgaGFzIGRpZmZlcmVudCBub2RlIG1hcC4KIAkgKi8KLQlub2RlbnVt
-PTA7CisJbm9kZW51bSA9IDA7CiAJd2hpbGUgKG5vZGVudW0gPCBPMk5NX01BWF9OT0RFUykgewog
-CQlpZiAodGVzdF9iaXQobm9kZW51bSwgZGxtLT5kb21haW5fbWFwKSkgewogCQkJaWYgKCFieXRl
-X3Rlc3RfYml0KG5vZGVudW0sIHF1ZXJ5LT5ub2RlX21hcCkpIHsKQEAgLTIwOTUsNyArMjA5Niw3
-IEBAIHN0YXRpYyBpbnQgZGxtX3Byb3RvY29sX2NvbXBhcmUoc3RydWN0IGRsbV9wcm90b2NvbF92
-ZXJzaW9uICpleGlzdGluZywKICAqIElmIHJlZ2lzdHJhdGlvbiB3YXMgc3VjY2Vzc2Z1bCwgcHJv
-dG8gd2lsbCBjb250YWluIHRoZSBuZWdvdGlhdGVkCiAgKiBsb2NraW5nIHByb3RvY29sLgogICov
-Ci1zdHJ1Y3QgZGxtX2N0eHQgKiBkbG1fcmVnaXN0ZXJfZG9tYWluKGNvbnN0IGNoYXIgKmRvbWFp
-biwKK3N0cnVjdCBkbG1fY3R4dCAqZGxtX3JlZ2lzdGVyX2RvbWFpbihjb25zdCBjaGFyICpkb21h
-aW4sCiAJCQkgICAgICAgdTMyIGtleSwKIAkJCSAgICAgICBzdHJ1Y3QgZGxtX3Byb3RvY29sX3Zl
-cnNpb24gKmZzX3Byb3RvKQogewotLSAKMi4xNy4xCg==
+
+--SpvMUTlv7MvkLw0D
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hey Anup,
+
+On Fri, Oct 13, 2023 at 12:16:45PM +0530, Anup Patel wrote:
+> On Thu, Oct 12, 2023 at 10:05=E2=80=AFPM Conor Dooley <conor@kernel.org> =
+wrote:
+> > On Tue, Oct 03, 2023 at 10:13:55AM +0530, Anup Patel wrote:
+> > > We add DT bindings document for the RISC-V incoming MSI controller
+> > > (IMSIC) defined by the RISC-V advanced interrupt architecture (AIA)
+> > > specification.
+> > >
+> > > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> > > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> >
+> > Just FYI, since they'll reply to this themselves, but some of the
+> > Microchip folks have run into problems with sparse hart indexes while
+> > trying to use the imsic binding to describe some configurations they
+> > have. I think there were also so problems with how to describe to a
+> > linux guest which file to use, when the first hart available to the
+> > guest does not use the first file. They'll do a better job of describing
+> > their problems than I will, so I shall leave it to them!
+>=20
+> Quoting AIA spec:
+> "For the purpose of locating the memory pages of interrupt files in the
+> address space, assume each hart (or each hart within a group) has a
+> unique hart number that may or may not be related to the unique hart
+> identifiers (=E2=80=9Chart IDs=E2=80=9D) that the RISC-V Privileged Archi=
+tecture assigns
+> to harts."
+>=20
+> It is very easy to get confused between the AIA "hart index" and
+> "hart IDs" defined by the RISC-V Privileged specification but these
+> are two very different things. The AIA "hart index" over here is the
+> bits in the address of an IMSIC file.
+>=20
+> This DT binding follows the IMSIC file arrangement in the address
+> space as defined by the section "3.6 Arrangement of the memory
+> regions of multiple interrupt files" of the AIA specification. This
+> arrangement is MANDATORY for platforms having both APLIC
+> and IMSIC because in MSI-mode the APLIC generates target
+> MSI address based the IMSIC file arrangement described in the
+> section "3.6 Arrangement of the memory regions of multiple
+> interrupt files". In fact, this also applies to virtual platforms
+> created by hypervisors (KVM, Xen, ...)
+
+Thanks for pointing this out - I'll pass it on and hopefully it is
+helpful to them. If not, I expect that you'll hear :)
+
+Cheers,
+Conor.
+
+--SpvMUTlv7MvkLw0D
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSj0lgAKCRB4tDGHoIJi
+0npGAQC6rGsNEsyvptpG1+5wrE9ET1h1yjmigGMA1ot+EgTHewD/eQHPUyx/z1tG
+Jx0CDrTp0SXbanOo3/If7opBTzOB5Qc=
+=owzU
+-----END PGP SIGNATURE-----
+
+--SpvMUTlv7MvkLw0D--
