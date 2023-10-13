@@ -2,581 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C63B87C8471
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB367C8474
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230481AbjJMLeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 07:34:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47034 "EHLO
+        id S230469AbjJMLfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 07:35:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229721AbjJMLeU (ORCPT
+        with ESMTP id S230150AbjJMLfB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 07:34:20 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04DAEB7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:34:17 -0700 (PDT)
-Received: from mail-vk1-f198.google.com (mail-vk1-f198.google.com [209.85.221.198])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id DEFEE4033F
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 11:34:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1697196855;
-        bh=SF26bU06z58RNVvBz3oe2tJg0/WJgk5E8Toie3X5OJI=;
-        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=kTy0ze8PJMyziva6sp2sWIy7TLskdvO15E1QDyc9RarKuFSh/ui2MepC/5F5r338d
-         KByXMb9dynBulW32qzswQylhA37sm00ecvAAaGoE1xUuTjpCSONybA0yWfcazrxeY4
-         9rwKxN0r9ZKw1/qaGgpO63/cM7zFrgOFgXSdysre5TqSpATzTFqrLQCTzn4l+52ejr
-         NTwDnilImGNsTd0uTNEVOdr/0NC7OoMYJ8vXrk2ltVkLz9kefZO0EtKbFSF8Nr4p8g
-         yrBzzRvYy2f11hzj5zN5oT80MphtSQuza+gApUqQK/7jCNuFRIMmgumtmCEitg/6V/
-         XlDg+vK/T8CAw==
-Received: by mail-vk1-f198.google.com with SMTP id 71dfb90a1353d-48fdc9282ffso656712e0c.3
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:34:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697196853; x=1697801653;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SF26bU06z58RNVvBz3oe2tJg0/WJgk5E8Toie3X5OJI=;
-        b=mAzHj6XB/Bm7KPyp+/8brbCzBzum3Pu00ByogW74p0oqlrvCQcCrGuwBHDKjq3fBKv
-         PhpPVa+cnQ/54X0Mqb2zOpbf3uLni4vdHhg7uTpLNINoch50LK0VPo3V1Wnze0XuiVkW
-         //+Lj8zE9yVCMroXTYOGMlOitzlfhSCHOoeuACbeZjGw6/R+JH27LPY3yqhhv8mOb8ia
-         BZUYXLRsiOyPGPLbjirY5Sd7pJ/FQA+XZ5xXM0pbHGlMULGT8AMaRQ7dJoSxFevOltWZ
-         XwOLuD7Y7qN03/jr9ypzqHE3M+uewLC1OJHrcJRZmlIANuNr5uKuJwQcJYZT7RR30hmn
-         nFkg==
-X-Gm-Message-State: AOJu0Yz8mcfRuU6xSS6g8MxMdissnN58hn0vqLgq8RFEh/tzB9pQ11BF
-        GOAQvX3Oj7ZN6YRmfLVkZhL5474oi2Tec/Xya7pSmlCua13vJ3OSZHwh9soxFzEvlkQzsYwNOs7
-        4dden/xdIw7EwZPPJK/yON+PFEAgGFkU99FL+0NRGcvlKir4sYebvEG+l1w==
-X-Received: by 2002:a1f:ec43:0:b0:49a:b9ed:8c1f with SMTP id k64-20020a1fec43000000b0049ab9ed8c1fmr20028533vkh.0.1697196853507;
-        Fri, 13 Oct 2023 04:34:13 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFrnPfi9N/gc4lcSwQGWqrxSIyWoQFVs/hNL5GgO5NV4mLQKpWb3O9HsumZU81OlD5I3XS5koXeV52omxaguzQ=
-X-Received: by 2002:a1f:ec43:0:b0:49a:b9ed:8c1f with SMTP id
- k64-20020a1fec43000000b0049ab9ed8c1fmr20028502vkh.0.1697196853092; Fri, 13
- Oct 2023 04:34:13 -0700 (PDT)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 13 Oct 2023 04:34:12 -0700
-From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <20231012081015.33121-3-xingyu.wu@starfivetech.com>
-References: <20231012081015.33121-1-xingyu.wu@starfivetech.com> <20231012081015.33121-3-xingyu.wu@starfivetech.com>
-Mime-Version: 1.0
-Date:   Fri, 13 Oct 2023 04:34:12 -0700
-Message-ID: <CAJM55Z8_AwYdgBLcAs=C9W2UtZ0CVecGMS_D198A8j4DYFFxBw@mail.gmail.com>
-Subject: Re: [PATCH v6 2/3] clocksource: Add JH7110 timer driver
-To:     Xingyu Wu <xingyu.wu@starfivetech.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Fri, 13 Oct 2023 07:35:01 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A2D59B7
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:34:59 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C3BFE11FB;
+        Fri, 13 Oct 2023 04:35:39 -0700 (PDT)
+Received: from [10.57.80.116] (unknown [10.57.80.116])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9AADC3F7A6;
+        Fri, 13 Oct 2023 04:34:56 -0700 (PDT)
+Message-ID: <1891aa6c-037f-46a1-9584-17aaa63e4e74@arm.com>
+Date:   Fri, 13 Oct 2023 12:35:42 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 00/25] timer: Move from a push remote at enqueue to a
+ pull at expiry model
+Content-Language: en-US
+To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, John Stultz <jstultz@google.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Walker Chen <walker.chen@starfivetech.com>
-Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Samin Guo <samin.guo@starfivetech.com>,
-        linux-kernel@vger.kernel.org, Conor Dooley <conor@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Eric Dumazet <edumazet@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Arjan van de Ven <arjan@infradead.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Siewior <bigeasy@linutronix.de>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>
+References: <20231004123454.15691-1-anna-maria@linutronix.de>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <20231004123454.15691-1-anna-maria@linutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Xingyu Wu wrote:
-> Add timer driver for the StarFive JH7110 SoC.
->
-> Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
-> ---
->  MAINTAINERS                        |   7 +
->  drivers/clocksource/Kconfig        |  11 +
->  drivers/clocksource/Makefile       |   1 +
->  drivers/clocksource/timer-jh7110.c | 387 +++++++++++++++++++++++++++++
->  4 files changed, 406 insertions(+)
->  create mode 100644 drivers/clocksource/timer-jh7110.c
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 6c4cce45a09d..1525f031d4a2 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -20472,6 +20472,13 @@ S:	Maintained
->  F:	Documentation/devicetree/bindings/sound/starfive,jh7110-tdm.yaml
->  F:	sound/soc/starfive/jh7110_tdm.c
->
-> +STARFIVE JH7110 TIMER DRIVER
-> +M:	Samin Guo <samin.guo@starfivetech.com>
-> +M:	Xingyu Wu <xingyu.wu@starfivetech.com>
-> +S:	Supported
-> +F:	Documentation/devicetree/bindings/timer/starfive,jh7110-timer.yaml
-> +F:	drivers/clocksource/timer-jh7110.c
-> +
->  STARFIVE JH71X0 CLOCK DRIVERS
->  M:	Emil Renner Berthing <kernel@esmil.dk>
->  M:	Hal Feng <hal.feng@starfivetech.com>
-> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-> index 0ba0dc4ecf06..821abcc1e517 100644
-> --- a/drivers/clocksource/Kconfig
-> +++ b/drivers/clocksource/Kconfig
-> @@ -641,6 +641,17 @@ config RISCV_TIMER
->  	  is accessed via both the SBI and the rdcycle instruction.  This is
->  	  required for all RISC-V systems.
->
-> +config STARFIVE_JH7110_TIMER
-> +	bool "Timer for the STARFIVE JH7110 SoC"
-> +	depends on ARCH_STARFIVE || COMPILE_TEST
-> +	select TIMER_OF
-> +	select CLKSRC_MMIO
-> +	default ARCH_STARFIVE
-> +	help
-> +	  This enables the timer for StarFive JH7110 SoC. On RISC-V platform,
-> +	  the system has started RISCV_TIMER, but you can also use this timer
-> +	  which can provide four channels to do a lot more things on JH7110 SoC.
-> +
->  config CLINT_TIMER
->  	bool "CLINT Timer for the RISC-V platform" if COMPILE_TEST
->  	depends on GENERIC_SCHED_CLOCK && RISCV
-> diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
-> index 368c3461dab8..b66ac05ec086 100644
-> --- a/drivers/clocksource/Makefile
-> +++ b/drivers/clocksource/Makefile
-> @@ -80,6 +80,7 @@ obj-$(CONFIG_INGENIC_TIMER)		+= ingenic-timer.o
->  obj-$(CONFIG_CLKSRC_ST_LPC)		+= clksrc_st_lpc.o
->  obj-$(CONFIG_X86_NUMACHIP)		+= numachip.o
->  obj-$(CONFIG_RISCV_TIMER)		+= timer-riscv.o
-> +obj-$(CONFIG_STARFIVE_JH7110_TIMER)	+= timer-jh7110.o
->  obj-$(CONFIG_CLINT_TIMER)		+= timer-clint.o
->  obj-$(CONFIG_CSKY_MP_TIMER)		+= timer-mp-csky.o
->  obj-$(CONFIG_GX6605S_TIMER)		+= timer-gx6605s.o
-> diff --git a/drivers/clocksource/timer-jh7110.c b/drivers/clocksource/timer-jh7110.c
-> new file mode 100644
-> index 000000000000..914424368290
-> --- /dev/null
-> +++ b/drivers/clocksource/timer-jh7110.c
-> @@ -0,0 +1,387 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Starfive JH7110 Timer driver
-> + *
-> + * Copyright (C) 2022-2023 StarFive Technology Co., Ltd.
-> + *
-> + * Author:
-> + * Xingyu Wu <xingyu.wu@starfivetech.com>
-> + * Samin Guo <samin.guo@starfivetech.com>
-> + */
-> +
-> +#include <linux/clk.h>
-> +#include <linux/clockchips.h>
-> +#include <linux/clocksource.h>
-> +#include <linux/err.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/io.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/irq.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/of_device.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/reset.h>
-> +#include <linux/sched_clock.h>
-> +
-> +/* Bias: Ch0-0x0, Ch1-0x40, Ch2-0x80, and so on. */
-> +#define JH7110_TIMER_CH_LEN		0x40
-> +#define JH7110_TIMER_CH_BASE(x)		((x) * JH7110_TIMER_CH_LEN)
-> +#define JH7110_TIMER_CH_MAX		4
-> +
-> +#define JH7110_CLOCK_SOURCE_RATING	200
-> +#define JH7110_VALID_BITS		32
-> +#define JH7110_DELAY_US			0
-> +#define JH7110_TIMEOUT_US		10000
-> +#define JH7110_CLOCKEVENT_RATING	300
-> +#define JH7110_TIMER_MAX_TICKS		0xffffffff
-> +#define JH7110_TIMER_MIN_TICKS		0xf
-> +#define JH7110_TIMER_NAME_NUM		19
-> +
-> +#define JH7110_TIMER_INT_STATUS		0x00 /* RO[0:4]: Interrupt Status for channel0~4 */
-> +#define JH7110_TIMER_CTL		0x04 /* RW[0]: 0-continuous run, 1-single run */
-> +#define JH7110_TIMER_LOAD		0x08 /* RW: load value to counter */
-> +#define JH7110_TIMER_ENABLE		0x10 /* RW[0]: timer enable register */
-> +#define JH7110_TIMER_RELOAD		0x14 /* RW: write 1 or 0 both reload counter */
-> +#define JH7110_TIMER_VALUE		0x18 /* RO: timer value register */
-> +#define JH7110_TIMER_INT_CLR		0x20 /* RW: timer interrupt clear register */
-> +#define JH7110_TIMER_INT_MASK		0x24 /* RW[0]: timer interrupt mask register */
-> +#define JH7110_TIMER_INT_CLR_AVA_MASK	BIT(1)
-> +
-> +struct jh7110_clkevt {
-> +	struct clock_event_device evt;
-> +	struct clocksource cs;
-> +	struct clk *clk;
-> +	char name[JH7110_TIMER_NAME_NUM];
+Hi Anna-Maria
 
-Instead of this define maybe just use something like
+On 10/4/23 13:34, Anna-Maria Behnsen wrote:
+> Hi,
+> 
 
-	char name[sizeof("jh7110-timer.chX")];
+[snip]
 
-> +	int irq;
+> 
+> 
+> Testing
+> ~~~~~~~
+> 
+> Enqueue
+> ^^^^^^^
+> 
+> The impact of wasting cycles during enqueue by using the heuristic in
+> contrast to always queuing the timer on the local CPU was measured with a
+> micro benchmark. Therefore a timer is enqueued and dequeued in a loop with
+> 1000 repetitions on a isolated CPU. The time the loop takes is measured. A
+> quarter of the remaining CPUs was kept busy. This measurement was repeated
+> several times. With the patch queue the average duration was reduced by
+> approximately 25%.
+> 
+> 	145ns	plain v6
+> 	109ns	v6 with patch queue
+> 
+> 
+> Furthermore the impact of residence in deep idle states of an idle system
+> was investigated. The patch queue doesn't downgrade this behavior.
+> 
+> dbench test
+> ^^^^^^^^^^^
+> 
+> A dbench test starting X pairs of client servers are used to create load on
+> the system. The measurable value is the throughput. The tests were executed
+> on a zen3 machine. The base is the tip tree branch timers/core which is
+> based on a v6.6-rc1.
+> 
+> governor menu
+> 
+> X pairs	timers/core	pull-model	impact
+> ----------------------------------------------
+> 1	353.19 (0.19)	353.45 (0.30)	0.07%
+> 2	700.10 (0.96)	687.00 (0.20)	-1.87%
+> 4	1329.37 (0.63)	1282.91 (0.64)	-3.49%
+> 8	2561.16 (1.28)	2493.56	(1.76)	-2.64%
+> 16	4959.96 (0.80)	4914.59 (0.64)	-0.91%
+> 32	9741.92 (3.44)	8979.83 (1.13)	-7.82%
+> 64	16535.40 (2.84)	16388.47 (4.02)	-0.89%
+> 128	22136.83 (2.42)	23174.50 (1.43)	4.69%
+> 256	39256.77 (4.48)	38994.00 (0.39)	-0.67%
+> 512	36799.03 (1.83)	38091.10 (0.63)	3.51%
+> 1024	32903.03 (0.86)	35370.70 (0.89)	7.50%
+> 
+> 
+> governor teo
+> 
+> X pairs	timers/core	pull-model	impact
+> ----------------------------------------------
+> 1	350.83 (1.27)	352.45 (0.96)	0.46%
+> 2	699.52 (0.85)	690.10 (0.54)	-1.35%
+> 4	1339.53 (1.99)	1294.71 (2.71)	-3.35%
+> 8	2574.10 (0.76)	2495.46 (1.97)	-3.06%
+> 16	4898.50 (1.74)	4783.06 (1.64)	-2.36%
+> 32	9115.50 (4.63)	9037.83 (1.58)	-0.85%
+> 64	16663.90 (3.80)	16042.00 (1.72)	-3.73%
+> 128	25044.93 (1.11)	23250.03 (1.08)	-7.17%
+> 256	38059.53 (1.70)	39658.57 (2.98)	4.20%
+> 512	36369.30 (0.39)	38890.13 (0.36)	6.93%
+> 1024	33956.83 (1.14)	35514.83 (0.29)	4.59%
+> 
+> 
+> 
+> Ping Pong Oberservation
+> ^^^^^^^^^^^^^^^^^^^^^^^
+> 
+> During testing on a mostly idle machine a ping pong game could be observed:
+> a process_timeout timer is expired remotely on a non idle CPU. Then the CPU
+> where the schedule_timeout() was executed to enqueue the timer comes out of
+> idle and restarts the timer using schedule_timeout() and goes back to idle
+> again. This is due to the fair scheduler which tries to keep the task on
+> the CPU which it previously executed on.
+> 
+> 
 
-You wrote that you "dropped the extra copy of irq", but here you didn't.
+I have tested this on my 2 Arm boards with mainline kernel
+and almost-mainline. On both platforms it looks stable.
+The results w/ your patchset looks better.
 
-> +	u32 rate;
-> +	u32 reload_val;
-> +	void __iomem *base;
-> +};
-> +
-> +static inline struct jh7110_clkevt *to_jh7110_clkevt(struct clock_event_device *evt)
-> +{
-> +	return container_of(evt, struct jh7110_clkevt, evt);
-> +}
-> +
-> +/* 0:continuous-run mode, 1:single-run mode */
-> +static inline void jh7110_timer_set_continuous_mod(struct jh7110_clkevt *clkevt)
-> +{
-> +	writel(0, clkevt->base + JH7110_TIMER_CTL);
-> +}
-> +
-> +static inline void jh7110_timer_set_single_mod(struct jh7110_clkevt *clkevt)
-> +{
-> +	writel(1, clkevt->base + JH7110_TIMER_CTL);
-> +}
-> +
-> +/* Interrupt Mask Register, 0:Unmask, 1:Mask */
-> +static inline void jh7110_timer_int_enable(struct jh7110_clkevt *clkevt)
-> +{
-> +	writel(0, clkevt->base + JH7110_TIMER_INT_MASK);
-> +}
-> +
-> +static inline void jh7110_timer_int_disable(struct jh7110_clkevt *clkevt)
-> +{
-> +	writel(1, clkevt->base + JH7110_TIMER_INT_MASK);
-> +}
+1. rockpi4b - mainline kernel (but no UI)
 
-I really don't think all these wrappers make the code any clearer. Please just
-inline the writel() calls. What you can do to make it a bit clearer is
-something like
+Limiting the cpumask for only 4 Little CPUs and setting
+performance governor for cpufreq and menu for idle.
 
-enum {
-	JH7110_TIMER_MODE_CONTINUOUS,
-	JH7110_TIMER_MODE_SINGLE,
-};
+1.1. perf bench sched pipe
 
-so you can write
+w/o patchset vs. w/ patchset
+avg [ops/sec]:
+(more is better)
+23012.33 vs. 23154.33 (+0.6%)
 
-	writel(JH7110_TIMER_MODE_CONTINUOUS, clkevt->base + JH7110_TIMER_CTL);
+avg [usecs/op]:
+(less is better)
+43.453 vs. 43.187 (-0.6%)
 
-> +
-> +/*
-> + * BIT(0): Read value represent channel intr status.
-> + * Write 1 to this bit to clear interrupt. Write 0 has no effects.
-> + * BIT(1): "1" means that it is clearing interrupt. BIT(0) can not be written.
-> + */
-> +static inline int jh7110_timer_int_clear(struct jh7110_clkevt *clkevt)
-> +{
-> +	u32 value;
-> +	int ret;
-> +
-> +	/* waiting interrupt can be to clearing */
-> +	ret = readl_poll_timeout_atomic(clkevt->base + JH7110_TIMER_INT_CLR, value,
-> +					!(value & JH7110_TIMER_INT_CLR_AVA_MASK),
-> +					JH7110_DELAY_US, JH7110_TIMEOUT_US);
-> +	if (!ret)
-> +		writel(0x1, clkevt->base + JH7110_TIMER_INT_CLR);
-> +
-> +	return ret;
-> +}
-> +
-> +/*
-> + * The initial value to be loaded into the
-> + * counter and is also used as the reload value.
-> + * val = clock rate --> 1s
-> + */
-> +static inline void jh7110_timer_set_load(struct jh7110_clkevt *clkevt, u32 val)
-> +{
-> +	writel(val, clkevt->base + JH7110_TIMER_LOAD);
-> +}
-> +
-> +static inline u32 jh7110_timer_get_val(struct jh7110_clkevt *clkevt)
-> +{
-> +	return readl(clkevt->base + JH7110_TIMER_VALUE);
-> +}
-> +
-> +/*
-> + * Write RELOAD register to reload preset value to counter.
-> + * Write 0 and write 1 are both ok.
-> + */
-> +static inline void jh7110_timer_set_reload(struct jh7110_clkevt *clkevt)
-> +{
-> +	writel(0, clkevt->base + JH7110_TIMER_RELOAD);
-> +}
-> +
-> +static inline void jh7110_timer_enable(struct jh7110_clkevt *clkevt)
-> +{
-> +	writel(1, clkevt->base + JH7110_TIMER_ENABLE);
-> +}
-> +
-> +static inline void jh7110_timer_disable(struct jh7110_clkevt *clkevt)
-> +{
-> +	writel(0, clkevt->base + JH7110_TIMER_ENABLE);
-> +}
+1.2. perf bench sched messaging
+(less is better)
 
-The same thing goes for all these wrappers. If you do insist on having these
-wrappers then at least group them all together so you can quickly scroll past
-them to get to the "real" code.
+w/o patchset vs. w/ patchset
+avg total time [s]:
+2.7855 vs. 2.7005 (-3.1%)
 
-> +
-> +static int jh7110_timer_int_init_enable(struct jh7110_clkevt *clkevt)
-> +{
-> +	int ret;
-> +
-> +	jh7110_timer_int_disable(clkevt);
-> +	ret = jh7110_timer_int_clear(clkevt);
-> +	if (ret)
-> +		return ret;
-> +
-> +	jh7110_timer_int_enable(clkevt);
-> +	jh7110_timer_enable(clkevt);
-> +
-> +	return 0;
-> +}
-> +
-> +static int jh7110_timer_shutdown(struct clock_event_device *evt)
-> +{
-> +	struct jh7110_clkevt *clkevt = to_jh7110_clkevt(evt);
-> +
-> +	jh7110_timer_disable(clkevt);
-> +	return jh7110_timer_int_clear(clkevt);
-> +}
-> +
-> +static void jh7110_timer_suspend(struct clock_event_device *evt)
-> +{
-> +	struct jh7110_clkevt *clkevt = to_jh7110_clkevt(evt);
-> +
-> +	clkevt->reload_val = jh7110_timer_get_val(clkevt);
-> +	jh7110_timer_shutdown(evt);
-> +}
-> +
-> +static void jh7110_timer_resume(struct clock_event_device *evt)
-> +{
-> +	struct jh7110_clkevt *clkevt = to_jh7110_clkevt(evt);
-> +
-> +	jh7110_timer_set_load(clkevt, clkevt->reload_val);
-> +	jh7110_timer_set_reload(clkevt);
-> +	jh7110_timer_int_enable(clkevt);
-> +	jh7110_timer_enable(clkevt);
-> +}
-> +
-> +static int jh7110_timer_tick_resume(struct clock_event_device *evt)
-> +{
-> +	jh7110_timer_resume(evt);
-> +
-> +	return 0;
-> +}
-> +
-> +/* IRQ handler for the timer */
-> +static irqreturn_t jh7110_timer_interrupt(int irq, void *priv)
-> +{
-> +	struct clock_event_device *evt = (struct clock_event_device *)priv;
-> +	struct jh7110_clkevt *clkevt = to_jh7110_clkevt(evt);
-> +
-> +	if (jh7110_timer_int_clear(clkevt))
-> +		return IRQ_NONE;
-> +
-> +	if (evt->event_handler)
-> +		evt->event_handler(evt);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static int jh7110_timer_set_periodic(struct clock_event_device *evt)
-> +{
-> +	struct jh7110_clkevt *clkevt = to_jh7110_clkevt(evt);
-> +	u32 periodic = DIV_ROUND_CLOSEST(clkevt->rate, HZ);
-> +
-> +	jh7110_timer_disable(clkevt);
-> +	jh7110_timer_set_continuous_mod(clkevt);
-> +	jh7110_timer_set_load(clkevt, periodic);
-> +
-> +	return jh7110_timer_int_init_enable(clkevt);
-> +}
-> +
-> +static int jh7110_timer_set_oneshot(struct clock_event_device *evt)
-> +{
-> +	struct jh7110_clkevt *clkevt = to_jh7110_clkevt(evt);
-> +
-> +	jh7110_timer_disable(clkevt);
-> +	jh7110_timer_set_single_mod(clkevt);
-> +	jh7110_timer_set_load(clkevt, JH7110_TIMER_MAX_TICKS);
-> +
-> +	return jh7110_timer_int_init_enable(clkevt);
-> +}
-> +
-> +static int jh7110_timer_set_next_event(unsigned long next,
-> +				       struct clock_event_device *evt)
-> +{
-> +	struct jh7110_clkevt *clkevt = to_jh7110_clkevt(evt);
-> +
-> +	jh7110_timer_disable(clkevt);
-> +	jh7110_timer_set_single_mod(clkevt);
-> +	jh7110_timer_set_load(clkevt, next);
-> +	jh7110_timer_enable(clkevt);
-> +
-> +	return 0;
-> +}
-> +
-> +static void jh7110_set_clockevent(struct clock_event_device *evt)
-> +{
-> +	evt->features = CLOCK_EVT_FEAT_PERIODIC |
-> +			CLOCK_EVT_FEAT_ONESHOT |
-> +			CLOCK_EVT_FEAT_DYNIRQ;
-> +	evt->set_state_shutdown = jh7110_timer_shutdown;
-> +	evt->set_state_periodic = jh7110_timer_set_periodic;
-> +	evt->set_state_oneshot = jh7110_timer_set_oneshot;
-> +	evt->set_state_oneshot_stopped = jh7110_timer_shutdown;
-> +	evt->tick_resume = jh7110_timer_tick_resume;
-> +	evt->set_next_event = jh7110_timer_set_next_event;
-> +	evt->suspend = jh7110_timer_suspend;
-> +	evt->resume = jh7110_timer_resume;
-> +	evt->rating = JH7110_CLOCKEVENT_RATING;
-> +}
-> +
-> +static u64 jh7110_timer_clocksource_read(struct clocksource *cs)
-> +{
-> +	struct jh7110_clkevt *clkevt = container_of(cs, struct jh7110_clkevt, cs);
-> +
-> +	return (u64)jh7110_timer_get_val(clkevt);
-> +}
-> +
-> +static int jh7110_clocksource_init(struct jh7110_clkevt *clkevt)
-> +{
-> +	int ret;
-> +
-> +	jh7110_timer_set_continuous_mod(clkevt);
-> +	jh7110_timer_set_load(clkevt, JH7110_TIMER_MAX_TICKS);
-> +
-> +	ret = jh7110_timer_int_init_enable(clkevt);
-> +	if (ret)
-> +		return ret;
-> +
-> +	clkevt->cs.name = clkevt->name;
-> +	clkevt->cs.rating = JH7110_CLOCK_SOURCE_RATING;
-> +	clkevt->cs.read = jh7110_timer_clocksource_read;
-> +	clkevt->cs.mask = CLOCKSOURCE_MASK(JH7110_VALID_BITS);
-> +	clkevt->cs.flags = CLOCK_SOURCE_IS_CONTINUOUS;
-> +
-> +	return clocksource_register_hz(&clkevt->cs, clkevt->rate);
-> +}
-> +
-> +static void jh7110_clockevents_register(struct jh7110_clkevt *clkevt)
-> +{
-> +	clkevt->rate = clk_get_rate(clkevt->clk);
-> +
-> +	jh7110_set_clockevent(&clkevt->evt);
-> +	clkevt->evt.name = clkevt->name;
-> +	clkevt->evt.cpumask = cpu_possible_mask;
-> +
-> +	clockevents_config_and_register(&clkevt->evt, clkevt->rate,
-> +					JH7110_TIMER_MIN_TICKS, JH7110_TIMER_MAX_TICKS);
-> +}
-> +
-> +static int jh7110_timer_probe(struct platform_device *pdev)
-> +{
-> +	struct jh7110_clkevt *clkevt[JH7110_TIMER_CH_MAX];
-> +	char name[4];
-> +	struct clk *pclk;
-> +	struct reset_control *rst;
-> +	int ch;
-> +	int ret;
-> +	void __iomem *base;
-> +
-> +	base = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(base))
-> +		return dev_err_probe(&pdev->dev, PTR_ERR(base),
-> +				     "failed to map registers\n");
-> +
-> +	rst = devm_reset_control_get_exclusive(&pdev->dev, "apb");
-> +	if (IS_ERR(rst))
-> +		return dev_err_probe(&pdev->dev, PTR_ERR(rst), "failed to get apb reset\n");
-> +
-> +	pclk = devm_clk_get_enabled(&pdev->dev, "apb");
-> +	if (IS_ERR(pclk))
-> +		return dev_err_probe(&pdev->dev, PTR_ERR(pclk),
-> +				     "failed to get & enable apb clock\n");
-> +
-> +	ret = reset_control_deassert(rst);
-> +	if (ret)
-> +		return dev_err_probe(&pdev->dev, ret, "failed to deassert apb reset\n");
-> +
-> +	for (ch = 0; ch < JH7110_TIMER_CH_MAX; ch++) {
-> +		clkevt[ch] = devm_kzalloc(&pdev->dev, sizeof(*clkevt[ch]), GFP_KERNEL);
-> +		if (!clkevt[ch])
-> +			return -ENOMEM;
-> +
-> +		snprintf(name, sizeof(name), "ch%d", ch);
-> +
-> +		clkevt[ch]->base = base + JH7110_TIMER_CH_BASE(ch);
-> +		/* Ensure timer is disabled */
-> +		jh7110_timer_disable(clkevt[ch]);
-> +
-> +		rst = devm_reset_control_get_exclusive(&pdev->dev, name);
-> +		if (IS_ERR(rst))
-> +			return PTR_ERR(rst);
-> +
-> +		clkevt[ch]->clk = devm_clk_get_enabled(&pdev->dev, name);
-> +		if (IS_ERR(clkevt[ch]->clk))
-> +			return PTR_ERR(clkevt[ch]->clk);
-> +
-> +		ret = reset_control_deassert(rst);
-> +		if (ret)
-> +			return ret;
-> +
-> +		clkevt[ch]->evt.irq = platform_get_irq(pdev, ch);
-> +		if (clkevt[ch]->evt.irq < 0)
-> +			return clkevt[ch]->evt.irq;
-> +
-> +		snprintf(clkevt[ch]->name, sizeof(clkevt[ch]->name), "%s.ch%d", pdev->name, ch);
-> +		jh7110_clockevents_register(clkevt[ch]);
-> +
-> +		ret = devm_request_irq(&pdev->dev, clkevt[ch]->evt.irq, jh7110_timer_interrupt,
-> +				       IRQF_TIMER | IRQF_IRQPOLL,
-> +				       clkevt[ch]->name, &clkevt[ch]->evt);
-> +		if (ret)
-> +			return ret;
-> +
-> +		ret = jh7110_clocksource_init(clkevt[ch]);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id jh7110_timer_match[] = {
-> +	{ .compatible = "starfive,jh7110-timer", },
-> +	{ /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, jh7110_timer_match);
-> +
-> +static struct platform_driver jh7110_timer_driver = {
-> +	.probe = jh7110_timer_probe,
-> +	.driver = {
-> +		.name = "jh7110-timer",
-> +		.of_match_table = jh7110_timer_match,
-> +	},
-> +};
-> +module_platform_driver(jh7110_timer_driver);
-> +
-> +MODULE_AUTHOR("Xingyu Wu <xingyu.wu@starfivetech.com>");
-> +MODULE_DESCRIPTION("StarFive JH7110 timer driver");
-> +MODULE_LICENSE("GPL");
-> --
-> 2.25.1
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+2. pixel6 (kernel v5.18 with backported patchset)
+
+2.1 Speedometer 2.0 (JS test running in Chrome browser)
+
+w/o patchset vs. w/ patchset
+149 vs. 146 (-2%)
+
+2.2 Geekbench 5
+(more is better)
+
+Single core
+w/o patchset vs. w/ patchset
+1025 vs. 1017 (-0.7%)
+
+Multi core
+w/o patchset vs. w/ patchset
+2756 vs. 2813 (+2%)
+
+
+The performance looks good. Only one test 'Speedometer'
+has some interesting lower score.
+
+Fill free to add:
+
+Tested-by: Lukasz Luba <lukasz.luba@arm.com>
+
+Regards,
+Lukasz
