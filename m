@@ -2,234 +2,355 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 654AC7C904F
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 00:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C48587C9053
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 00:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232270AbjJMWf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 18:35:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39794 "EHLO
+        id S231553AbjJMWg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 18:36:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231553AbjJMWfz (ORCPT
+        with ESMTP id S229679AbjJMWgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 18:35:55 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 775CDC0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 15:35:51 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-534694a9f26so1646a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 15:35:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697236550; x=1697841350; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FSeOd+rYnOzhF1ReZbddCmvmJexTwHpOy+fpUODbkOA=;
-        b=CNJhhVock8IDFK3Wu6SntkES8kAfPX+KDiRD7Au6H+P9EdgUEHMn0G7nUwLl6f3zyQ
-         pAQYQrF5bkso1ka3P72+mmsoQ6P2P1TBTA5SdSTAH8pysOKZZ0Rm2klnu07TRE0Nd28T
-         wIpXbXoGfrug6vz07MEw3KLd9my6geFIiyaeCooyhBotPhBwIpM3RtN3lEYnzGtMTNKn
-         sWtfxCBbeR0/1zdRReII4jHH7lfBPWvCSUDnjDt3B+6z0cCmQCJjMArvtKB7cfhZ8gPh
-         32MKP6MAAt6pSYiphT8J2Dc6I/39v5uz+7uBORtNiDcSBkUcJUy7DkMbLPayi6urlcOW
-         xsSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697236550; x=1697841350;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FSeOd+rYnOzhF1ReZbddCmvmJexTwHpOy+fpUODbkOA=;
-        b=sc9nhKV6QouqbbACs4aY398xwHT9B+BkfGPMAZ9VNgBxugMLHZ2tZ0t5tGpAAHRuYy
-         QQyHTQIS34kabbcTPk1NUCVuqqJrb7N58V7fTlgmwPr/1YzuqT1OLomg0QUcLmEWMhz7
-         z9oNaZO4OdOuFwtW6HK/TVlPTYxazLhgJrPCRowS895rChb3c5vFcqSpTtnIDsNI7bXV
-         R4qdemVSC/xoL80k9Gw2F3+rnZjUKFl8oXQdY1EZrmknJ9nDI9fGPNw62HGlx/mPweg7
-         PlnWAZiHwjtq7dvTysW7SQ3OJOTSYgTcorfcXxcXM+5+88xgmwwS7TLXgJERoH3niOED
-         Y4XA==
-X-Gm-Message-State: AOJu0YzL6K2pkiA4/xL6NMeJIJeNbUM4FwUvmUDV2PqFKWG/bWrjVSw4
-        Qx5VQdcbpjQnMbCGdIVmP0AEW9HUyFEiBkZqtftURg==
-X-Google-Smtp-Source: AGHT+IGab/hjqlvQOWvzU8uiN4cTgE2c1UwEFpeNxmfQ9loSAkD0F0d/KgLPzEzVpZJ5dRiRT82FMJcpybdv+jzM5Xg=
-X-Received: by 2002:a50:cdde:0:b0:53d:b53c:946b with SMTP id
- h30-20020a50cdde000000b0053db53c946bmr42816edj.2.1697236549785; Fri, 13 Oct
- 2023 15:35:49 -0700 (PDT)
+        Fri, 13 Oct 2023 18:36:24 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10olkn2055.outbound.protection.outlook.com [40.92.40.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A030ABB;
+        Fri, 13 Oct 2023 15:36:22 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d+++bzcpLf2klKCZ7Q1t1AQ5+7KNe1ag665hp6eTaMx6OIZfdWXn8FHhzbRHXB4UzP9vby2QWO6MqAUdSeT31y1/HCsAqCJGFOjQca+B8enivQnWfNX/tibzwS//LcdAUsr6jI5IVb3xxLuBaKF/asgdRE4f1wYVymMJiLQsSsO/Q16rnTPiZLcR67GCIfFHpXb73vnI8XUErfZRT/A1GWuojhXDi22pI8a/ceaTlVbr/62k8l3+pemzbOYW9hZxVRopo2bs3Mf0yefdBdC/xo28PKcvmbupWfohDeo9ScK9cCjeCuXyPL+s74cXliKC4VmR8SrhJ4xv3poirOsIjg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Yn3zHTruDS1wJ5dqLfyn7yU1ZBrR8yaLg0RKs/PHMm8=;
+ b=WhWeXVhOYvTUAeSvyj1FoZN6zF1cIWxJ+mB4vNQsXtaOlCFCFNSUO5V7ytEHvZeM7nXPal3hKieB1CRcHL/Pudri2iE0gOVhDBIqZ+b1m+PvGGU2nsnexzUOP4qn79G/NXN8cIu7AHRnmeQKlI9876TxHiH23uGb4kP6+uvB/LH8dt9cLwFAQLQ4qNBF+0A+j5s6q2d2YpRcJIlYCdyGTOz+1K/BXmhYgwKQInR9kxLffooAj0865QZwwa6GYZdEBjvu/m6BHC7qjcrLKsA7pWIaARRmYrQtFU8ktcd9oV84Caj1JbloFzOAsFZ5AoWh2iKGJwLOsq0fb53l1I5LTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Yn3zHTruDS1wJ5dqLfyn7yU1ZBrR8yaLg0RKs/PHMm8=;
+ b=fBUJa7C3pEZjaJjUKbYqB/EV6ahvT1GXm7mTPyuw/LG9Bs/8f7ivwxH7OMW6AToCswk1DSuYtkzSakzyh/DA50e7PrNWlchIITIlWAEro1XkE0VgEDxhEul2vgqP/c0A6wnAwDbnTmrxxholgEyGuclRqQb/WlPTAcgzhssqHZbpApoGThhEvi7G5WX2LjHdephk9hLyXWrP44BEHLbAbmZ1aNDVr0C2GXoNJsmR68Hy0Lwd05PZeRo5noN5AkmiOfpAldG8s6oGeDbbs+C+OOuUG+bqFrp7/uor2FCchf15A2MqTQtiY1jeDgNFy0oHL1NS0FPlka48NcKoA/lbSg==
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
+ by MW5PR20MB4498.namprd20.prod.outlook.com (2603:10b6:303:1a3::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.45; Fri, 13 Oct
+ 2023 22:36:19 +0000
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::d050:882f:a8a7:8263]) by IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::d050:882f:a8a7:8263%5]) with mapi id 15.20.6863.046; Fri, 13 Oct 2023
+ 22:36:19 +0000
+From:   Inochi Amaoto <inochiama@outlook.com>
+To:     Conor Dooley <conor+dt@kernel.org>
+Cc:     Inochi Amaoto <inochiama@outlook.com>,
+        Chao Wei <chao.wei@sophgo.com>,
+        Chen Wang <unicorn_wang@outlook.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v2 4/7] riscv: dts: sophgo: Separate common devices from cv1800b soc
+Date:   Sat, 14 Oct 2023 06:36:12 +0800
+Message-ID: <IA1PR20MB49532A5D8726768C3121FDC1BBD2A@IA1PR20MB4953.namprd20.prod.outlook.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231013-tibia-anteater-d96425e1d912@spud>
+References: <20231013-tibia-anteater-d96425e1d912@spud>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [+87nfDHvTvVlggiG+52srXhQnSldV7Pfdu/nhrx9V1Q=]
+X-ClientProxiedBy: TYCPR01CA0190.jpnprd01.prod.outlook.com
+ (2603:1096:400:2b0::7) To IA1PR20MB4953.namprd20.prod.outlook.com
+ (2603:10b6:208:3af::19)
+X-Microsoft-Original-Message-ID: <20231013223613.6204-1-inochiama@outlook.com>
 MIME-Version: 1.0
-References: <20231009142005.21338-1-quic_kriskura@quicinc.com>
- <20231009142005.21338-2-quic_kriskura@quicinc.com> <CANP3RGfEk2DqZ3biyN78ycQYbDxCEG+H1me2vnEYuwXkNdXnTA@mail.gmail.com>
- <CANP3RGcCpNOuVpdV9n0AFxZo-wsfwi8OfYgBk1WHNHaEd-4V-Q@mail.gmail.com>
- <CANP3RGdY4LsOA6U5kuccApHCzL0_jBnY=pLOYrUuYtMZFTvnbw@mail.gmail.com>
- <d19d9d08-c119-4991-b460-49925f601d15@quicinc.com> <fad5a7fb-cce1-46bc-a0af-72405c76d107@quicinc.com>
- <CANP3RGcqWBYd9FqAX47rE9pFgBTB8=0CGdwkScm-OH1epHcVWQ@mail.gmail.com>
- <8ff92053-52ff-4950-95c8-0e986f6a028a@quicinc.com> <CANP3RGd4G4dkMOyg6wSX29NYP2mp=LhMhmZpoG=rgoCz=bh1=w@mail.gmail.com>
- <b12eb7b1-54e7-406f-8c19-0046555b82d3@quicinc.com>
-In-Reply-To: <b12eb7b1-54e7-406f-8c19-0046555b82d3@quicinc.com>
-From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-Date:   Fri, 13 Oct 2023 15:35:32 -0700
-Message-ID: <CANP3RGcUrFTaFL8V3tpuh+qQoEi84O0Dy9ie+XD=-H01c2btAw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] usb: gadget: ncm: Add support to update
- wMaxSegmentSize via configfs
-To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        onathan Corbet <corbet@lwn.net>,
-        Linyu Yuan <quic_linyyuan@quicinc.com>,
-        linux-usb@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_ppratap@quicinc.com,
-        quic_wcheng@quicinc.com, quic_jackp@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|MW5PR20MB4498:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0228edb0-4ac0-4d38-d9bc-08dbcc3cd190
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1WkUiF17asj78Y+2yS2Jo4hdnyozXK832OGQap4ZK2bc440HeJ6crlrDMu9/SsClE1FcCMJkI33SQvtvwwxENP2YJuk/jS3FkGk5BeMXvviRlFVzLTY+5RIJnoubjlnKrM+9EXKxZoo89/41vBOVS0dg7e1St3fcYt+6MxV/pIhyE4ojQgZplQ2IoUWdEPdVxBHb3O6iIosWO5b41106P27zzIuDKnQzo5DtIB66OF0Kol2KKkjKSnPl6B+Wb3nIUWfgX7NomgjcQGVa/FRDRrOcQgUHmWxW9y6FiYRf7K0AoqG84y8YUl2EnWw4njISf7H6ohvNtq0XAYXF7s7ppNyCQlNyV2TcSCFmG/p9QiM+51VtAvMV2wYqmd4wBlAP7BKgHIZYpFEDDLfUAiDPwHpQzeSxRTHg0ZzLrjae5TE5GDgFJ5+Zj+ktL8VUqPEa7klirQqAP4r150BJnce+ngCiarCbJ7Bo/Ekn0AdJeKm2G/IlNcy0k58pbp8S5LBWMTbwcShbFmkSMZgXke8ct2KkMvWgFtYvgyrQymfSK042vvA3DbYH15P7rBI5xMjZABytDU6GDrPXUHJYbfi37KJsiQWSxGrTAAHHtCbA8GHMj8youmQS9XAG53F1gJ2w
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?aKeQEV9dff9qa6wwK5h/OEQOekeH0T0vbL8TshToM4yfl7cbXu4P6wIfAOCf?=
+ =?us-ascii?Q?bD2+LoaDFQ7bZE2NBVi7DjRjxjiFe3dImqpaNW+5/RRzeIEfi3naQvsTKdKB?=
+ =?us-ascii?Q?RVJ79S70A7Ni4kRYS/CP9jfUcMrMZOACTFAXTSieLvKJRoOyNUt7xzvvHHOE?=
+ =?us-ascii?Q?qco9XIB3651vtZCPP72eTRcTN3l74+fLL62V1olY6VwjgCYd8CJTZ9PD54ps?=
+ =?us-ascii?Q?eGVdxHBPB6fXhqtg4Ao7brd16fRT+3qILdvvouA7H/bRPVQAisopIQsAEM4O?=
+ =?us-ascii?Q?BSf6nxfsf8OlQlZtkDHFFwQBH1ZRK/rUDoHGpewUdC7x6ByEMfKUe/hHkoOX?=
+ =?us-ascii?Q?GeCtoi0RbVPQTAzIb+PeQiIdoa0bcfTLL/1JTONZ9KUYirpeZ8Ea6e+Xi3V+?=
+ =?us-ascii?Q?fmHmwuxgsdofaicAqv5CDJg8hkmgSts3Gh+gkBAMfveHwbjcIN6ejROtaPfW?=
+ =?us-ascii?Q?7zAazkb7ux5Y0QJlnS1k+8FsL6IYeP46E7LaR9LRxhz38zwr0qfj3kI0Y0tq?=
+ =?us-ascii?Q?pouO1/yY7+syEgMRPdeXKMc33fIIpRqcsg6v+TzsQ0S/kv8Wgx7+0i/eUWdj?=
+ =?us-ascii?Q?xHjVKkE2hGqM+a/nuAbtU1A2Q++HBYPhfnoKh15lhkeZBUgYmxExsxaXL7YG?=
+ =?us-ascii?Q?PqXYlPwYtW7ytX/c3gRO2/BiHikCPpVLMZt/HCAbyu++PtOlxXzlH0Ip1CBy?=
+ =?us-ascii?Q?n6lBgimJ740TvV0kczY746YaN5vNE701GNymwwSl2Raezg6F7DbscczUucsZ?=
+ =?us-ascii?Q?zFjd8tdhJRpPO0VvEIzbJx3NLfUMfsWsutZeE8V+fCAgDoVOIiYmWF1imWgx?=
+ =?us-ascii?Q?T9CyJioMJh5siY4j90j6DmuX7D2GFkNPw6qb3l6yyWcV93jzpvsAjADTnopb?=
+ =?us-ascii?Q?biC99noVMHu88eTQh1mIRsP3s8xXVExvXRAbKzY3187zLrSnlQmjxYn5qOR1?=
+ =?us-ascii?Q?z7rksACd3pTST4tK2uv7epl3eeAeVmdGBYiCm+RhIDrcA2L7AG5Vfe+Zb6j2?=
+ =?us-ascii?Q?JlFlDXQD3m/6TnmGz/+AFIGjHZZaWxjrb2kQMSxQw7B6wWURi4cJTX9dDMqy?=
+ =?us-ascii?Q?5/YSIGLq0v4Cux2y1/2Dyt28E2yZeaVQhTasxTLiAgEmZEECDT9rOr473G27?=
+ =?us-ascii?Q?mhHhPAFAxlIBEHaEpu6xtHKW98qtk3qSt5BOmRpNwSVGXnuc+0Anafs9Bz00?=
+ =?us-ascii?Q?qJ80Elibloo6JEwXEDeBb2oP8UeEovVG8o3zZDZFRBqhIWgCEoYRlMxplws?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0228edb0-4ac0-4d38-d9bc-08dbcc3cd190
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2023 22:36:19.4497
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR20MB4498
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 12:58=E2=80=AFPM Krishna Kurapati PSSNV
-<quic_kriskura@quicinc.com> wrote:
 >
+>On Fri, Oct 13, 2023 at 05:52:03PM +0800, Inochi Amaoto wrote:
+>> Sorry for the wrong title.
+>>
+>>> Yo,
+>>>
+>>> On Mon, Oct 09, 2023 at 07:26:35PM +0800, Inochi Amaoto wrote:
+>>>> Move the cpu and the common peripherals of CV181x and CV180x to new file.
+>>>>
+>>>> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
+>>>> ---
+>>>>  arch/riscv/boot/dts/sophgo/cv1800b.dtsi       | 95 +------------------
+>>>>  .../dts/sophgo/{cv1800b.dtsi => cv180x.dtsi}  | 19 +---
+>>>>  2 files changed, 2 insertions(+), 112 deletions(-)
+>>>>  copy arch/riscv/boot/dts/sophgo/{cv1800b.dtsi => cv180x.dtsi} (80%)
+>>>>
+>>>> diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+>>>> index df40e87ee063..0904154f9829 100644
+>>>> --- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+>>>> +++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+>>>> @@ -3,106 +3,13 @@
+>>>>   * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
+>>>>   */
+>>>>
+>>>> -#include <dt-bindings/interrupt-controller/irq.h>
+>>>> +#include "cv180x.dtsi"
+>>>>
+>>>>  / {
+>>>>  	compatible = "sophgo,cv1800b";
+>>>> -	#address-cells = <1>;
+>>>> -	#size-cells = <1>;
+>>>> -
+>>>> -	cpus: cpus {
+>>>> -		#address-cells = <1>;
+>>>> -		#size-cells = <0>;
+>>>> -		timebase-frequency = <25000000>;
+>>>> -
+>>>> -		cpu0: cpu@0 {
+>>>> -			compatible = "thead,c906", "riscv";
+>>>> -			device_type = "cpu";
+>>>> -			reg = <0>;
+>>>> -			d-cache-block-size = <64>;
+>>>> -			d-cache-sets = <512>;
+>>>> -			d-cache-size = <65536>;
+>>>> -			i-cache-block-size = <64>;
+>>>> -			i-cache-sets = <128>;
+>>>> -			i-cache-size = <32768>;
+>>>> -			mmu-type = "riscv,sv39";
+>>>> -			riscv,isa = "rv64imafdc";
+>>>> -			riscv,isa-base = "rv64i";
+>>>> -			riscv,isa-extensions = "i", "m", "a", "f", "d", "c", "zicntr", "zicsr",
+>>>> -					       "zifencei", "zihpm";
+>>>> -
+>>>> -			cpu0_intc: interrupt-controller {
+>>>> -				compatible = "riscv,cpu-intc";
+>>>> -				interrupt-controller;
+>>>> -				#address-cells = <0>;
+>>>> -				#interrupt-cells = <1>;
+>>>> -			};
+>>>> -		};
+>>>> -	};
+>>>> -
+>>>> -	osc: oscillator {
+>>>> -		compatible = "fixed-clock";
+>>>> -		clock-output-names = "osc_25m";
+>>>> -		#clock-cells = <0>;
+>>>> -	};
+>>>>
+>>>>  	soc {
+>>>> -		compatible = "simple-bus";
+>>>>  		interrupt-parent = <&plic>;
+>>>> -		#address-cells = <1>;
+>>>> -		#size-cells = <1>;
+>>>> -		dma-noncoherent;
+>>>> -		ranges;
+>>>> -
+>>>> -		uart0: serial@4140000 {
+>>>> -			compatible = "snps,dw-apb-uart";
+>>>> -			reg = <0x04140000 0x100>;
+>>>> -			interrupts = <44 IRQ_TYPE_LEVEL_HIGH>;
+>>>> -			clocks = <&osc>;
+>>>> -			reg-shift = <2>;
+>>>> -			reg-io-width = <4>;
+>>>> -			status = "disabled";
+>>>> -		};
+>>>> -
+>>>> -		uart1: serial@4150000 {
+>>>> -			compatible = "snps,dw-apb-uart";
+>>>> -			reg = <0x04150000 0x100>;
+>>>> -			interrupts = <45 IRQ_TYPE_LEVEL_HIGH>;
+>>>> -			clocks = <&osc>;
+>>>> -			reg-shift = <2>;
+>>>> -			reg-io-width = <4>;
+>>>> -			status = "disabled";
+>>>> -		};
+>>>> -
+>>>> -		uart2: serial@4160000 {
+>>>> -			compatible = "snps,dw-apb-uart";
+>>>> -			reg = <0x04160000 0x100>;
+>>>> -			interrupts = <46 IRQ_TYPE_LEVEL_HIGH>;
+>>>> -			clocks = <&osc>;
+>>>> -			reg-shift = <2>;
+>>>> -			reg-io-width = <4>;
+>>>> -			status = "disabled";
+>>>> -		};
+>>>> -
+>>>> -		uart3: serial@4170000 {
+>>>> -			compatible = "snps,dw-apb-uart";
+>>>> -			reg = <0x04170000 0x100>;
+>>>> -			interrupts = <47 IRQ_TYPE_LEVEL_HIGH>;
+>>>> -			clocks = <&osc>;
+>>>> -			reg-shift = <2>;
+>>>> -			reg-io-width = <4>;
+>>>> -			status = "disabled";
+>>>> -		};
+>>>> -
+>>>> -		uart4: serial@41c0000 {
+>>>> -			compatible = "snps,dw-apb-uart";
+>>>> -			reg = <0x041c0000 0x100>;
+>>>> -			interrupts = <48 IRQ_TYPE_LEVEL_HIGH>;
+>>>> -			clocks = <&osc>;
+>>>> -			reg-shift = <2>;
+>>>> -			reg-io-width = <4>;
+>>>> -			status = "disabled";
+>>>> -		};
+>>>>
+>>>>  		plic: interrupt-controller@70000000 {
+>>>>  			compatible = "sophgo,cv1800b-plic", "thead,c900-plic";
+>>>> diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dts/sophgo/cv180x.dtsi
+>>>> similarity index 80%
+>>>> copy from arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+>>>> copy to arch/riscv/boot/dts/sophgo/cv180x.dtsi
+>>>> index df40e87ee063..ffaf51724c98 100644
+>>>
+>>> Firstly, this form of diff really threw me, I was quite confused for a
+>>> few minutes. A copy plus a pair of diffs doesn't really make much sense,
+>>> when the operation being carried is an extraction of some nodes to a
+>>> different file.
+>>>
+>>
+>> I was told to use -C/-M/-B to generate patch, and the git format-patch
+>> give me this wired output if I use -C, using -M seems no change from v1.
+>> The -B output is also disappointing. Maybe I need to generate agaion?
 >
+>I don't think generating it again is going to change the outcome & I
+>don't really think the -C version of this patch makes much sense, it is
+>hard to tell what has actually been moved.
 >
-> On 10/14/2023 12:09 AM, Maciej =C5=BBenczykowski wrote:
-> > On Thu, Oct 12, 2023 at 8:40=E2=80=AFAM Krishna Kurapati PSSNV
-> > <quic_kriskura@quicinc.com> wrote:
-> >>
-> >>
-> >>
-> >> On 10/12/2023 6:02 PM, Maciej =C5=BBenczykowski wrote:
-> >>> On Thu, Oct 12, 2023 at 1:48=E2=80=AFAM Krishna Kurapati PSSNV
-> >>>
-> >>> Could you paste the full patch?
-> >>> This is hard to review without looking at much more context then emai=
-l
-> >>> is providing
-> >>> (or, even better, send me a link to a CL in gerrit somewhere - for
-> >>> example aosp ACK mainline tree)
-> >>
-> >> Sure. Will provide a gerrit on ACK for review before posting v2.
-> >>
-> >> The intent of posting the diff was two fold:
-> >>
-> >> 1. The question Greg asked regarding why the max segment size was
-> >> limited to 15014 was valid. When I thought about it, I actually wanted
-> >> to limit the max MTU to 15000, so the max segment size automatically
-> >> needs to be limited to 15014.
-> >
-> > Note that this is a *very* abstract value.
-> > I get you want L3 MTU of 10 * 1500, but this value is not actually mean=
-ingful.
-> >
-> > IPv4/IPv6 fragmentation and IPv4/IPv6 TCP segmentation
-> > do not result in a trivial multiplication of the standard 1500 byte
-> > ethernet L3 MTU.
-> > Indeed aggregating 2 1500 L3 mtu frames results in *different* sized
-> > frames depending on which type of aggregation you do.
-> > (and for tcp it even depends on the number and size of tcp options,
-> > though it is often assumed that those take up 12 bytes, since that's th=
-e
-> > normal for Linux-to-Linux tcp connections)
-> >
-> > For example if you aggregate N standard Linux ipv6/tcp L3 1500 mtu fram=
-es,
-> > this means you have
-> > N frames: ethernet (14) + ipv6 (40) + tcp (20) + tcp options (12) +
-> > payload (1500-12-20-40=3D1500-72=3D1428)
-> > post aggregation:
-> > 1 frame: ethernet (14) + ipv6 (40) + tcp (20) + tcp options (12) +
-> > payload (N*1428)
-> >
-> > so N * 1500 =3D=3D N * (72 + 1428) --> 1 * (72 + N * 1428)
-> >
-> > That value of 72 is instead 52 for 'standard Linux ipv4/tcp),
-> > it's 40/60 if there's no tcp options (which I think happens when
-> > talking to windows)
-> > it's different still with ipv4 fragmentation... and again different
-> > with ipv6 fragmentation...
-> > etc.
-> >
-> > ie. 15000 L3 mtu is exactly as meaningless as 14000 L3 mtu.
-> > Either way you don't get full frames.
-> >
-> > As such I'd recommend going with whatever is the largest mtu that can
-> > be meaningfully made to fit in 16K with all the NCM header overhead.
-> > That's likely closer to 15500-16000 (though I have *not* checked).
-> >
-> >> But my commit text didn't mention this
-> >> properly which was a mistake on my behalf. But when I looked at the
-> >> code, limiting the max segment size 15014 would force the practical
-> >> max_mtu to not cross 15000 although theoretical max_mtu was set to:
-> >> (GETHER_MAX_MTU_SIZE - 15412) during registration of net device.
-> >>
-> >> So my assumption of limiting it to 15000 was wrong. It must be limited
-> >> to 15412 as mentioned in u_ether.c  This inturn means we must limit
-> >> max_segment_size to:
-> >> GETHER_MAX_ETH_FRAME_LEN (GETHER_MAX_MTU_SIZE + ETH_HLEN)
-> >> as mentioned in u_ether.c.
-> >>
-> >> I wanted to confirm that setting MAX_DATAGRAM_SIZE to
-> >> GETHER_MAX_ETH_FRAME_LEN was correct.
-> >>
-> >> 2. I am not actually able to test with MTU beyond 15000. When my host
-> >> device is a linux machine, the cdc_ncm.c limits max_segment_size to:
-> >> CDC_NCM_MAX_DATAGRAM_SIZE               8192    /* bytes */
-> >
-> > In practice you get 50% of the benefits of infinitely large mtu by
-> > going from 1500 to ~2980.
-> > you get 75% of the benefits by going to ~6K
-> > you get 87.5% of the benefits by going to ~12K
-> > the benefits of going even higher are smaller and smaller...
-> >  > If the host side is limited to 8192, maybe we should match that here=
- too?
->
-> Hi Maciej,
->
->   Thanks for the detailed explanation. I agree with you on setting
-> device side also to 8192 instead of what max_mtu is present in u_ether
-> or practical max segment size possible.
->
-> >
-> > But the host side limitation of 8192 doesn't seem particularly sane eit=
-her...
-> > Maybe we should relax that instead?
-> >
-> I really didn't understand why it was set to 8192 in first place.
->
-> > (especially since for things like tcp zero copy you want an mtu which
-> > is slighly more then N * 4096,
-> > ie. around 4.5KB, 8.5KB, 12.5KB or something like that)
-> >
->
-> I am not sure about host mode completely. If we want to increase though,
-> just increasing the MAX_DATAGRAM_SIZE to some bigger value help ? (I
-> don't know the entire code of cdc_ncm, so I might be wrong).
->
-> Regards,
-> Krishna,
 
-Hmm, I'm not sure.  I know I've experimented with high mtu ncm in the past
-(around 2.5 years ago).  I got it working between my Linux desktop (host)
-and a Pixel 6 (device/gadget) with absolutely no problems.
+I mean regenerating without -C, This shows the the code move, but it gives
+a huge output, since the git can not detect this move and output all the
+moved line in the diff as changed.
 
-I'm pretty sure I didn't change my desktop kernel, so I was probably
-limited to 8192 there
-(and I do more or less remember that).
-From what I vaguely remember, it wasn't difficult (at all) to hit
-upwards of 7gbps for iperf tests.
-I don't remember how close to the theoretical USB 10gbps maximum of
-9.7gbps I could get...
-[this was never the real bottleneck / issue, so I didn't ever dig
-particularly deep]
+>> The v1 version:
+>> https://lore.kernel.org/linux-riscv/IA1PR20MB495360B632D106BBB833D82ABBCFA@IA1PR20MB4953.namprd20.prod.outlook.com/
+>>
+>>>> --- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+>>>> +++ b/arch/riscv/boot/dts/sophgo/cv180x.dtsi
+>>>> @@ -1,12 +1,12 @@
+>>>>  // SPDX-License-Identifier: (GPL-2.0 OR MIT)
+>>>>  /*
+>>>>   * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
+>>>> + * Copyright (C) 2023 Inochi Amaoto <inochiama@outlook.com>
+>>>
+>>> Also, is moving around some bits of hw description really a
+>>> copyrightable change?
+>>>
+>>
+>> It seems to be a mistake when I splitting the patch from v1.
+>> This copyright should in the next patch.
+>>
+>>>>   */
+>>>>
+>>>>  #include <dt-bindings/interrupt-controller/irq.h>
+>>>>
+>>>>  / {
+>>>> -	compatible = "sophgo,cv1800b";
+>>>>  	#address-cells = <1>;
+>>>>  	#size-cells = <1>;
+>>>>
+>>>> @@ -48,7 +48,6 @@ osc: oscillator {
+>>>>
+>>>>  	soc {
+>>>>  		compatible = "simple-bus";
+>>>> -		interrupt-parent = <&plic>;
+>>>>  		#address-cells = <1>;
+>>>>  		#size-cells = <1>;
+>>>>  		dma-noncoherent;
+>>>> @@ -103,21 +102,5 @@ uart4: serial@41c0000 {
+>>>>  			reg-io-width = <4>;
+>>>>  			status = "disabled";
+>>>>  		};
+>>>> -
+>>>> -		plic: interrupt-controller@70000000 {
+>>>> -			compatible = "sophgo,cv1800b-plic", "thead,c900-plic";
+>>>> -			reg = <0x70000000 0x4000000>;
+>>>> -			interrupts-extended = <&cpu0_intc 11>, <&cpu0_intc 9>;
+>>>> -			interrupt-controller;
+>>>> -			#address-cells = <0>;
+>>>> -			#interrupt-cells = <2>;
+>>>> -			riscv,ndev = <101>;
+>>>> -		};
+>>>> -
+>>>> -		clint: timer@74000000 {
+>>>> -			compatible = "sophgo,cv1800b-clint", "thead,c900-clint";
+>>>> -			reg = <0x74000000 0x10000>;
+>>>> -			interrupts-extended = <&cpu0_intc 3>, <&cpu0_intc 7>;
+>>>> -		};
+>>>>  	};
+>>>>  };
+>>>
+>>> What I wanted to comment on was this though - it seems that both the
+>>> cv1800b and the cv1812h have identical plic and clint nodes, other than
+>>> their compatibles? If that is the case, why create a cv1800b and a
+>>> cv1812h specific file containing entirely new nodes, when overriding the
+>>> compatible would be sufficient? Doubly so if the other SoCs in the
+>>> cv18xx series are going to have identical layouts.
+>>>
+>>> I gave it a quick test locally with the below diff applied on top of
+>>> this series - although I didn't make sure that I didn't re-order the
+>>> plic & clint nodes, I just wanted to demonstrate what I had done.
+>>>
+>>
+>> Thanks for demonstration. AFAIK, what you said is true. the most devices
+>> of CV180x and CV181x are the same, including plic and clint. The reason I
+>> used a new one is to identify these two devices without making the
+>> compatible string confusing.
+>> Should I change the binding name of plic and clint to "sophgo,cv1800-xxx"
+>> to mark there are the same series? I think this can avoid this confusing
+>> dt nodes.
+>
+>I personally don't find the compatibles (or the dt nodes) confusing, so
+>I dunno. Having reusing the compatible is not something that I am a fan of
+>either, since this seems to be a different soc (given the sram &
+>coprocessor etc) even if the addresses of the peripherals are identical.
 
-I'm pretty sure my gadget side changes were non-configurable...
-Probably just bumped one or two constants...
+Thanks. It is more like I have misunderstood something.
 
-I do *very* *vaguely* recall there being some funkiness though, where 8192 =
-was
-*less* efficient than some slightly smaller value.
-
-If I recall correctly the issue is that 8192 + ethernet overhead + NCM
-overhead only fits *once* into 16384, which leaves a lot of space
-wasted.
-While ~7.5 kb + overhead fits twice and is thus a fair bit better.
-
-I don't remember if I found a way to boost the 16384 to double or triple th=
-at.
-That should have been a win, I can't remember if we were usb3 spec
-limitted there.
+>
+>
