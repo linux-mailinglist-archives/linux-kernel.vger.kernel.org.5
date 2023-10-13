@@ -2,95 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3010E7C8416
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FECE7C8418
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 13:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230349AbjJMLJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 07:09:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59146 "EHLO
+        id S230384AbjJMLJf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 13 Oct 2023 07:09:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbjJMLJL (ORCPT
+        with ESMTP id S230150AbjJMLJd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 07:09:11 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 828AD91
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 04:09:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E240C433C8;
-        Fri, 13 Oct 2023 11:09:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697195350;
-        bh=le+2qGTCU1t+l8JNaHTYW0wqbcQZU/JZA582Ub2H9/k=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=MACYzMfx8sEglf6T2OY6eGNLR1drRbk8bdeU/kbbWrplHpJ9NJMOH6ttGFxieOfvv
-         SHW1iFesy7aWFZoUMynFWQEXzBVmDToN8Ed3nb8e+CazabhuG1aobve+21TepOZGzL
-         uUu0wxEsufiaEGoh6P2LTajcrkQstcK2GhG5Jc4uaqGNy0NDQJf9OX+segg61sdzkf
-         61yhkNV0oBEx4ORnuPAstcJplM+vgPLq4zwYSxtVpM4uv/UnN6pRcy8mFzws5ZGLxx
-         D6X7KS1UGsEi4nS+faaHIfKcTq3TK2BuEkaEVffH+SjOqgdi+7pOCYNl6ldcI1yFX6
-         suIETj7z8anQg==
-Received: (nullmailer pid 3388714 invoked by uid 1000);
-        Fri, 13 Oct 2023 11:09:08 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Fri, 13 Oct 2023 07:09:33 -0400
+Received: from postfix2.imaqliq.com (postfix2.imaqliq.com [93.189.151.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC98BF;
+        Fri, 13 Oct 2023 04:09:30 -0700 (PDT)
+Received: from verse.imaqliq.com (verse.imaqliq.com [93.189.151.95])
+        by postfix2.imaqliq.com (Postfix) with ESMTP id B8A001C2928;
+        Fri, 13 Oct 2023 14:09:27 +0300 (MSK)
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Praveen Teja Kundanala <praveen.teja.kundanala@amd.com>
-Cc:     devicetree@vger.kernel.org, conor+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, michal.simek@amd.com,
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+In-Reply-To: <0120de74-0b86-469a-b19a-b4b98a60a080@kernel.org>
+References: <0120de74-0b86-469a-b19a-b4b98a60a080@kernel.org>,
+        <OF950BEF72.7F425944-ON00258A46.00488A76-00258A46.00497D44@gdc.ru>
+Subject: Re: [PATCH v2] tty: serial: meson: hard LOCKUP on crtscts mode
+From:   Pavel Krasavin <pkrasavin@imaqliq.com>
+To:     "Jiri Slaby" <jirislaby@kernel.org>
+Cc:     Pavel Krasavin <pkrasavin@imaqliq.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Neil Armstrong" <neil.armstrong@linaro.org>,
+        "Kevin Hilman" <khilman@baylibre.com>,
+        "Jerome Brunet" <jbrunet@baylibre.com>,
+        "Martin Blumenstingl" <martin.blumenstingl@googlemail.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
-        srinivas.kandagatla@linaro.org
-In-Reply-To: <20231013101450.573-3-praveen.teja.kundanala@amd.com>
-References: <20231013101450.573-1-praveen.teja.kundanala@amd.com>
- <20231013101450.573-3-praveen.teja.kundanala@amd.com>
-Message-Id: <169719534802.3388697.15453927606673268163.robh@kernel.org>
-Subject: Re: [PATCH 2/5] dt-bindings: nvmem: Convert xlnx,zynqmp-nvmem.txt
- to yaml
-Date:   Fri, 13 Oct 2023 06:09:08 -0500
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        linux-amlogic@lists.infradead.org
+Date:   Fri, 13 Oct 2023 11:09:22 +0000
+Message-ID: <OF9F10A7E1.E13FABB2-ON00258A47.003D2ECF-00258A47.003D485B@gdc.ru>
+X-Mailer: Lotus Domino Web Server Release 12.0.2 November 03, 2022
+X-MIMETrack: Serialize by http on verse/com(Release 12.0.2|November 03, 2022) at 10/13/2023
+ 11:09:22,
+        Serialize complete at 10/13/2023 11:09:22,
+        Serialize by Router on verse/com(Release 12.0.2|November 03, 2022) at 10/13/2023
+ 11:09:27
+X-KeepSent: 9F10A7E1:E13FABB2-00258A47:003D2ECF;
+ type=4; name=$KeepSent
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-KLMS-Rule-ID: 1
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Lua-Profiles: 180603 [Oct 13 2023]
+X-KLMS-AntiSpam-Version: 6.0.0.2
+X-KLMS-AntiSpam-Envelope-From: pkrasavin@imaqliq.com
+X-KLMS-AntiSpam-Rate: 10
+X-KLMS-AntiSpam-Status: not_detected
+X-KLMS-AntiSpam-Method: none
+X-KLMS-AntiSpam-Auth: dmarc=fail header.from=imaqliq.com policy=none;spf=softfail smtp.mailfrom=imaqliq.com;dkim=none
+X-KLMS-AntiSpam-Info: LuaCore: 539 539 807534d9021bfe9ca369c363d15ac993cd93d4d9, {rep_avail}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;gdc.ru:7.1.1;93.189.151.95:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;verse.imaqliq.com:7.1.1;imaqliq.com:7.1.1, FromAlignment: s, {Tracking_dmark_f}, ApMailHostAddress: 93.189.151.95
+X-MS-Exchange-Organization-SCL: -1
+X-KLMS-AntiSpam-Interceptor-Info: scan successful
+X-KLMS-AntiPhishing: Clean, bases: 2023/10/13 09:19:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2023/10/13 08:46:00 #22180318
+X-KLMS-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Jiri,
 
-On Fri, 13 Oct 2023 15:44:47 +0530, Praveen Teja Kundanala wrote:
-> Convert the xlnx,zynqmp-nvmem.txt to yaml.
-> 
-> Signed-off-by: Praveen Teja Kundanala <praveen.teja.kundanala@amd.com>
-> ---
->  .../bindings/nvmem/xlnx,zynqmp-nvmem.txt      | 46 ---------------
->  .../bindings/nvmem/xlnx,zynqmp-nvmem.yaml     | 59 +++++++++++++++++++
->  2 files changed, 59 insertions(+), 46 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/nvmem/xlnx,zynqmp-nvmem.txt
->  create mode 100644 Documentation/devicetree/bindings/nvmem/xlnx,zynqmp-nvmem.yaml
-> 
+----- "Jiri Slaby" <jirislaby@kernel.org> писал(а): -----
+> Subject: tty: serial: meson: hard LOCKUP on crtscts mode
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> Ah, you are fixing one? So how does this sound:
+> tty: serial: meson: fix hard LOCKUP on crtscts mode
+> ?
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/nvmem/xlnx,zynqmp-nvmem.yaml:18:11: [error] string value is redundantly quoted with any quotes (quoted-strings)
+you are right, idea was to fix it, not to add :)
+I agree, your subject looks better!
 
-dtschema/dtc warnings/errors:
+So, do I need to prepare v4 of this patch, right?
 
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231013101450.573-3-praveen.teja.kundanala@amd.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+--
+Regards,
+Pavel.
