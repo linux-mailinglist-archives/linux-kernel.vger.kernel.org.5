@@ -2,74 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4332F7C8BF1
+	by mail.lfdr.de (Postfix) with ESMTP id 97D5E7C8BF2
 	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 19:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbjJMRFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 13:05:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38530 "EHLO
+        id S230133AbjJMRFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 13:05:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229891AbjJMRFs (ORCPT
+        with ESMTP id S229697AbjJMRFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 13:05:48 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C95A7A9
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 10:05:45 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40662119cd0so2135e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 10:05:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697216744; x=1697821544; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZLTeYfvHIZsFgYvDpFN8FRDYDSigvoHHk+XCSGMyIpE=;
-        b=gSRSQ3GZr8uCUuUq4nsACILU3wVQcSTssA8ZI/5isVyen/zr5O81YFa1WHI59ywN2z
-         6NWgFdWR2vrhcaCpl5ADCKvOnz8E8Xj7gs9F+BSVrWTtyAYoMP0PC9iDQCqgKkAip8S6
-         cn/b9P8rbpshssoqapiQU/LVN7z5yELRkHi0kpgtrW2fIPqLF/AmQvwZhyco3jNTAfbY
-         4EVfBXz27fxOX6f4sTmEASvZydI7wzOMGKYnFmLxYzQgz2FRVJ/QXD7pEBgpyQBf8N78
-         EjH4U6fXpI9vo557MnOVLQ8OJtiH/YY3R9Nd2EHrqweV9NtASC7qohycKiPygHwnADg4
-         2iMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697216744; x=1697821544;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZLTeYfvHIZsFgYvDpFN8FRDYDSigvoHHk+XCSGMyIpE=;
-        b=IgeNipLqGH0kFLYRrir8A9snjOPbEqPz1PtFcXJuLPgY43aL/4CzcC6sY6MBTiGahS
-         /CL+ja5oVIy+5Keye5xhj6BYjDYmRsnkP5zJFHCEt95sApUG+h+khRWZs9XqkMGFSnCv
-         aNssJomwy6DFiLcHme7enk9/8jeywxvdi56AAf1DBov2sKhL/cxna2LitGl69IgPLFhL
-         tzcezLjMeFcfQYHvn+s7auyQn8h36xgclgo9pYV4b42ewl6HZYMzkslmMPFMg3ogYis0
-         J6so/+oJ5a8nHWP9kl5Zd16vKLWHry4KRMrj0vN/a3w3/GCipHvec5j1xDdQTO03SpWn
-         HqHg==
-X-Gm-Message-State: AOJu0YztQ+LptWpp0PWc6asxv5HSS+Xsw5x7XiM353/ptaxD0CtVGxj1
-        f+Ds0XjSVWtE13pVB97x5k1SHXGR3PT2ZI9e7L38zg==
-X-Google-Smtp-Source: AGHT+IE3xqiYKg1JuezqI9ENft5U9ZYxAhPiMMAiZnHB4jypHpaoUmpHYk/8BpvcZlxtKWlHRSF8Bms476/kWK77Xbo=
-X-Received: by 2002:a05:600c:3b06:b0:3fe:e9ea:9653 with SMTP id
- m6-20020a05600c3b0600b003fee9ea9653mr153181wms.4.1697216743940; Fri, 13 Oct
- 2023 10:05:43 -0700 (PDT)
+        Fri, 13 Oct 2023 13:05:46 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9FD5BB;
+        Fri, 13 Oct 2023 10:05:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697216743; x=1728752743;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=qt1X/yegfKhvMKjYtgBl6bS5dOEvk9c2w/vbH9Hp/Kk=;
+  b=GAIXjF0jO3xoW26P98aRKvYntMJO6MyjRtd0d7CS1CJ1RoxbiKYiSwPL
+   Sp/Kr3+vGBlSoALYn9HxFDdIKY7jFhIsTtLxc57pFrhV4/2Z5d9j1vLgp
+   Ttf2V/9pkL3722g+BkgqUcBBwXByvpgMZyxoFCUjybPeImwPHjpcfn5+E
+   ThaLITSkcdUFs2I97eMdSnXlTNBJti9V9sgE1Il+gusWe8UaWZpJNSz9N
+   xqJshekG8PUxWcM6aZLlKQD6+Aa2jnhFESDHOH4b/XTJox9Z4GfgW8+UA
+   Dts1QT160qVZx5HSBkjeVy9G92qM1YOuJLy7/pt+z4jwz11ExGX21w9q9
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="3826472"
+X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
+   d="scan'208";a="3826472"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 10:05:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="731423482"
+X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
+   d="scan'208";a="731423482"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Oct 2023 10:05:42 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Fri, 13 Oct 2023 10:05:41 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Fri, 13 Oct 2023 10:05:41 -0700
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.41) by
+ edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Fri, 13 Oct 2023 10:05:41 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i5BOSdsnrwWfQLTxPzbDP17sUYYBqL0/kL3HpGc5oEfYbUdqSYhKBpYJE+U1qLMpCstXUPXkEKByu7LKplehr35Z02cOZmVP7sA8Uo9cQOgMXtYHAGkVWsBuhFUDtRxns2VkpRPq+yvfT5HqxAHcnMKUpjGXd971dt/WY1hdhmG2KcwMlbw+hANfbBsn8dIWXfqVg2NuYw0bB0E5nb07S97xqOG22kOBylYRBIB5LnyrPqhnKWY/EPpbnFE3HBGkyxE3IU8zgnFYf/sUYM0IVmRpfGs5B+bgtKdo8StkoEZuv6gRFXxBAhqXY5S6meCHNVj2XOhdwcx0SJwQ1+wkFw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OwKa+18i6VPd81L9A4n+iCkrp4n3ksBESaHJEJN0tJg=;
+ b=hixXDJtObO9EPrTGQ0eDiE9RZYMyq6CJRn6rKfvgKXQgNW7OuCzYJAaiaiNEsqT6l72NOBWFwr+CrIWl01GWp8a9pU9TpsYMmdPBo1zoFGFJK/Mzqmyg1ikWHwRpXkfvUmRpMz28lQfbLx7HxBioy/SkKkaVHsvSjah8TlWb47nSgKh8hzXqJuo1R4sBzoijIYQLp5Q6vk7bKXCj9/vHxoS8yuj2MXchEz/b/ERIeRWOyK+UkjStOtzOeajyZ9uLMZ9pY/Zr5imajRNQlG715Mx3KLCHH3Gr5lO7WI2pZ0xJBsFXZTDN2nU/f/S52/KxqFrHrqWN+261oFxhR2w9wQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by SN7PR11MB6851.namprd11.prod.outlook.com (2603:10b6:806:2a3::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.45; Fri, 13 Oct
+ 2023 17:05:37 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::ec95:c199:551f:2d11]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::ec95:c199:551f:2d11%4]) with mapi id 15.20.6863.046; Fri, 13 Oct 2023
+ 17:05:37 +0000
+Date:   Fri, 13 Oct 2023 10:05:34 -0700
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     "Wilczynski, Michal" <michal.wilczynski@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        <nvdimm@lists.linux.dev>, <linux-acpi@vger.kernel.org>
+CC:     <rafael@kernel.org>, <vishal.l.verma@intel.com>, <lenb@kernel.org>,
+        <dave.jiang@intel.com>, <ira.weiny@intel.com>,
+        <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v2] ACPI: NFIT: Fix local use of devm_*()
+Message-ID: <652978deafdf8_f8792944c@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+References: <20231013085722.3031537-1-michal.wilczynski@intel.com>
+ <6529727e18964_f879294ea@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+ <f7441bb4-c2c9-4eee-9fed-ad8b28de4788@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <f7441bb4-c2c9-4eee-9fed-ad8b28de4788@intel.com>
+X-ClientProxiedBy: MW4PR03CA0076.namprd03.prod.outlook.com
+ (2603:10b6:303:b6::21) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 MIME-Version: 1.0
-References: <20231012121004.2127918-1-yangcong5@huaqin.corp-partner.google.com>
- <20231012121004.2127918-3-yangcong5@huaqin.corp-partner.google.com>
- <CAD=FV=VwUHctAQXGr_6FZfTS3r0-MZaSiB8+YkfJJzrJsnZDLw@mail.gmail.com>
- <CAHwB_NKSL8vHdN8TnQY2Z04E4rDRLK5BHoryZCi2kNAwQEjisQ@mail.gmail.com>
- <CAD=FV=VmiS6G25JyAj4UGjU5Q9f80GcjLq1xwU4gdVyzDdk8LQ@mail.gmail.com> <CAHwB_NL_RfLBmAOWqj-9iaUZEg-C2JUUveP1cn4dnR98az0BXQ@mail.gmail.com>
-In-Reply-To: <CAHwB_NL_RfLBmAOWqj-9iaUZEg-C2JUUveP1cn4dnR98az0BXQ@mail.gmail.com>
-From:   Doug Anderson <dianders@google.com>
-Date:   Fri, 13 Oct 2023 10:05:27 -0700
-Message-ID: <CAD=FV=W_LT9mPYKjaKP3OvUDeNpsZxkhVN9NP_hQ+Es6Fe3dVw@mail.gmail.com>
-Subject: Re: [v3 2/3] drm/panel: ili9882t: Avoid blurred screen from fast sleep
-To:     cong yang <yangcong5@huaqin.corp-partner.google.com>
-Cc:     sam@ravnborg.org, neil.armstrong@linaro.org, daniel@ffwll.ch,
-        hsinyi@google.com, linus.walleij@linaro.org, swboyd@chromium.org,
-        airlied@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|SN7PR11MB6851:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4d48b6b8-0ff8-4ca7-ed05-08dbcc0e9ee0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JlKDn7TCjn7QpmYstKyMNHCsqnFlKoQCRMpCytxYpFUwm9UrQy0vIBXdtnsQGty+C814knnZTsABoHFLIvzykgeXpODIJ24OSfk8lORpNIevLFJtfC8HCSiBs3q7fU7xuxrYO4i0qUUAD8ayNZ1TkaOYFdzSuueDz1/TSlnLRLCE1ZanasxiC1dxbTeZeQetJwLKd7TXiuD/q9Hby0wrpr4tLJBdHycD7uiwSEqZxphHIBw84qRJaonyjmmmhF5HfHBc1NRCu+5fgRtnxa+2O/ZGlCZNn7cR7Au95lxc3ABXwO3s1LI8KlBOazOzMhoKIhddJMgIxvLRIISr+dOMF9VeYKZDJZsu3JuYFKnAmQOQEOw6KCFTTJigEdz8Zat6iabVl2mQqFQcALqbFkOVw/NLtebyn6AdCM0TbA3ZneqHH26QY1i7BSZHLq1AJLqGuiJKuLq2AsOdp4MRZZfefoUkU0sAak7w0ifpGI+C1gkPL3DFjEprVxzXXrpLsrmGoK/JeZSA2Y+UVlcTPLO1X2S1C8wKSOSkfnddh0Clwr0ji9XEBZj17y94WYjoSb8Q
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(39860400002)(346002)(376002)(366004)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(6506007)(38100700002)(316002)(82960400001)(5660300002)(26005)(8676002)(8936002)(66946007)(66556008)(41300700001)(4326008)(478600001)(53546011)(66476007)(6512007)(9686003)(110136005)(6486002)(83380400001)(2906002)(6666004)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?bBBB+gdvpEV+HVxFcdseb3YpfWn3PBee8u+lmgzKGd6Ghnj4hA1c3IgydGjn?=
+ =?us-ascii?Q?iW0CidEBuudADqns8fBVPpkUuP2v1gwuezAJvAZnImDYZKDMlmIiE9gNftP7?=
+ =?us-ascii?Q?hypHYzRHH/REOwmyTjxXmJeHfZPhI8abCK3dLTQjU7bQB6YInNBf0MxUcHZe?=
+ =?us-ascii?Q?Ce/vNTLRWuMuF1wDVQ8hZ9M4f1FAK1lG4SRQpvduay5B6u3+fUZayoM0TlIB?=
+ =?us-ascii?Q?MhyJ6cRgLH4xbf0ksstFg3XsO4VmD6rXUyTe1VPvPbMoxn5J5xnQAqZhAge3?=
+ =?us-ascii?Q?pAwByZWt4gJa96eKg+Zh4MikOGMiwr8zuNPSQYIx4NQG89OIlIYxfwm67Xrz?=
+ =?us-ascii?Q?1Wk2SCSad8szWBVlfd4FzI5ycbQpupSg8fheUQrKLcpiuYmZ+6ea7sTCGKHY?=
+ =?us-ascii?Q?ywXSMH2ONUzX/MltxxdedaCXfz27u5AJwQamuoHZU6ldSitRKDKfBEB1Fsdy?=
+ =?us-ascii?Q?2vFu5yzg1XN1jcUDogrS6i9fEwtnC4Xzcg/fEp1dYcmDGptO+ptnN4tp7nn5?=
+ =?us-ascii?Q?ts748nY2Z4ReMKN8MFvFrih8CrnkT4vloNjllzy8i+A94tpm9eapd5woCAfO?=
+ =?us-ascii?Q?U0y/EBk88BAUoQdfvKdZlmh/Wzi1/q2traAmdH4qQd0XYI6111Ripz+KroS+?=
+ =?us-ascii?Q?oVg+qJqFysjyfdCOleVmX/yFgnlvhNyuBjtwj/QiJTQsoEbkt1pmCSn+5PwP?=
+ =?us-ascii?Q?3/xi8XcIUK/B/Kb3LIL+pHRjAMbJZ6cOBLy/bQZEJSscCJyNUS1HUdNFGtMH?=
+ =?us-ascii?Q?v90QcTCOyCLI/MUG/J7wroeZvaik99KV7e7O04g07n5jJL4d4Gn2eFXK7C8o?=
+ =?us-ascii?Q?ukNvhz1YoTF8Vf7ey2wIvtJx79ksq/PCWPEGdgRTxmMS8eygco9we8zEbMp8?=
+ =?us-ascii?Q?vNWqJt97ONLanKsY9bY1Kh9paundXgkNvXhb1Eit9Bj9GweMJMdb6NFRFQCS?=
+ =?us-ascii?Q?D7E0+YExx3fO53C4OKYC5LQ+SejkYd9SMRTeG0mHSRuhQhLpNTNCUAXu0MA2?=
+ =?us-ascii?Q?dBdkR8fF630v+ErR2dsbRKw5p1mMBGr4vbx4IIs3ZRWrWIK2NKZymLd0/AwO?=
+ =?us-ascii?Q?zmkDMgKqc4KLa7Ou6iOSNhYDSn0qFJcQVB5fzjnWalF/injakeSfH5aQ770k?=
+ =?us-ascii?Q?zOdyArOiXKJS/DrYYA4vgrO/2GSudlhoxfTxFfl4s/j+vHt6yfCDeHOp2zzn?=
+ =?us-ascii?Q?WhGrY97WPYx5ZcU7xDOimBZQ4IqoqZtCvhKZV3AKSl7vZ4Vu26JtLDQFZe7S?=
+ =?us-ascii?Q?RRijtDMZKWf4zUqv0J8KcRV83PeQz9/K096ECUTDAkrDqibm+QYs11qGErDL?=
+ =?us-ascii?Q?uz2lJNbpQVNXkkfvwPX/dAua9kUyWxYmd7gDWfUnQrd5Wol1kQ10Gt/r7vEC?=
+ =?us-ascii?Q?iCdljXfSrNpRolwrDUOjf8YUl5Szq3I8xA3CbmV42MYjGNdFab+uxM5J4Vcy?=
+ =?us-ascii?Q?qmZqO/Rzs616tPzM6SwGObmu+GG4bqAC42vJEQrs0n5jIMXV3Ptij0il+toD?=
+ =?us-ascii?Q?8kbPFLGrNQmyQSwhlw47KfxWSYZaVAVwx1CqH9jwI0xKtCfMWSI1BG/mae87?=
+ =?us-ascii?Q?5GKYrxAM2TsTMojoCwwE7uR2ZxBjtJKdevu4zDq9NULh/pnv37H7w7cjfwJq?=
+ =?us-ascii?Q?UA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4d48b6b8-0ff8-4ca7-ed05-08dbcc0e9ee0
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2023 17:05:37.1938
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: UoFOwTDjvxHm18pfjGJUKOaL++zyxk4n1MQbCqydvq0Fkrzr86l64ba+4ILtqckEyzPzPSHdxrUIuiC4ZEye4OmG1kHY30/P/oMI3KJSUcE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB6851
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,117 +151,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Wilczynski, Michal wrote:
+> On 10/13/2023 6:38 PM, Dan Williams wrote:
+> > Michal Wilczynski wrote:
+> >> devm_*() family of functions purpose is managing memory attached to a
+> >> device. So in general it should only be used for allocations that should
+> >> last for the whole lifecycle of the device. 
+> > No, this assertion is not accurate, if it were strictly true then
+> > devm_kfree() should be deleted. This patch is only a cleanup to switch
+> > the automatic cleanup pattern from devm to the new cleanup.h helpers.
+> 
+> The memory in question is only used locally in a function, so there is no reason
+> to use devm_*() family of functions. I think devm_kfree() is more for special
+> cases where the memory is meant to be used for the whole lifecycle of device,
+> but some special case occurs and it's not and it needs to be freed.
+> 
+> This is an incorrect API usage. Would you propose to change all memory
+> allocations currently being done to devm_*() family simply because devm_kfree()
+> exists ?
 
-On Thu, Oct 12, 2023 at 8:56=E2=80=AFPM cong yang
-<yangcong5@huaqin.corp-partner.google.com> wrote:
->
-> Hi,
->
-> On Fri, Oct 13, 2023 at 10:28=E2=80=AFAM Doug Anderson <dianders@google.c=
-om> wrote:
-> >
-> > Hi,
-> >
-> > On Thu, Oct 12, 2023 at 6:12=E2=80=AFPM cong yang
-> > <yangcong5@huaqin.corp-partner.google.com> wrote:
-> > >
-> > > Hi,
-> > >
-> > > On Thu, Oct 12, 2023 at 11:15=E2=80=AFPM Doug Anderson <dianders@goog=
-le.com> wrote:
-> > > >
-> > > > Hi,
-> > > >
-> > > > On Thu, Oct 12, 2023 at 5:10=E2=80=AFAM Cong Yang
-> > > > <yangcong5@huaqin.corp-partner.google.com> wrote:
-> > > > >
-> > > > > At present, we have found that there may be a problem of blurred
-> > > > > screen during fast sleep/resume. The direct cause of the blurred
-> > > > > screen is that the IC does not receive 0x28/0x10. Because of the
-> > > > > particularity of the IC, before the panel enters sleep hid must
-> > > > > stop scanning, as i2c_hid_core_suspend before ili9882t_disable.
-> > > > > If move the ili9882t_enter_sleep_mode function to ili9882t_unprep=
-are,
-> > > > > touch reset will pull low before panel entersleep, which does not=
- meet
-> > > > > the timing requirements..
-> > > >
-> > > > The above makes me believe that the reset GPIO should be moved out =
-of
-> > > > the input driver and into the panel driver. I could just imagine th=
-at
-> > > > the kernel might have some reason it wants to suspend the i2c hid
-> > > > device. If that causes the panel to suddenly start failing then tha=
-t
-> > > > would be bad... I think we should fix this.
-> > >
-> > > Thanks, I will confirm with ilitek in further analysis and use "move
-> > > the ili9882t_enter_sleep_mode
-> > > function to ili9882t_unprepare".  Is the test failure really because
-> > > the touch reset timing
-> > > does not match? There is also a separate reset GPIO on the panel.
-> > > Shouldn't touch reset not
-> > > affect the panel?
-> > >
-> > > If we find a better solution I will continue upstream,=E3=80=82 So is=
- it
-> > > possible to apply this plan now?
-> >
-> > I wouldn't be too upset at applying the current code as long as you're
-> > going to continue to investigate. We can always continue to iterate on
-> > it and having something working reasonably well is better than nothing
-> > at all. However, I probably would wait at least 1 week before applying
-> > any patch from you just simply out of courtesy to give others on the
-> > mailing list time to express their comments. ...presumably we could
-> > get to the bottom of the problem in that 1 week time anyway...
-> >
-> > I'm not trying to be an obstinate pain here--I'm merely trying to make
-> > sure that whatever we land will continue to work across kernel uprevs,
-> > even if driver probe order / timing changes in the kernel. If the
-> > panel is really so tied to the touchscreen device's reset GPIO timing
-> > then it worries me. What happens, for instance, if you disable the
-> > touchscreen CONFIG in the kernel? Does the panel still work, or is
-> > that extra reset GPIO totally critical to the functioning of the
-> > panel. If it's totally critical then it probably makes sense to move
-> > to the panel driver given that the touchscreen is a panel follower
-> > anyway...
->
-> Thanks. It looks like the panel works fine after I disable the touch scre=
-en
-> device. So the panel may not depend on touch screen reset.
-> Need to continue investigating the root cause for current status.
-
-Ah, OK. So I guess the issue is that the ideal case involves more
-interleaving of things? Right now, I think this is what happens is at
-power off:
-
-1. We call the "disable" of the panel code which enters sleep mode.
-
-2. As panel follower, the touchscreen gets called to power off
-_before_ the panel's unprepare stage. This is when we assert the
-touchscreen reset GPIO.
-
-3. We call the "unprepare" of the panel code which deasserts the
-"enable" pin of the panel and then disables regulators.
-
-
-The proper sequence is:
-
-1. Stop i2c hid scanning
-
-2. Panel enter sleep
-
-3. Assert touchscreen reset
-
-4. Deassert the "enable" pin of the panel and disable regulators.
-
-
-Ick. I guess the only way we'd be able to really make this work would
-be to extend panel follower to notify followers before _both_ the
-disable and the unprepare. I guess I can put that on my todo list and
-we can see what folks think. Looking closely at it, I agree that I
-don't think we want to move the "touchscreen reset" functionality into
-the panel even if it would probably work. That feels ugly.
-
--Doug
+Michal, please work with someone else to get these cleanups upstream, I
+am done with this thread.
