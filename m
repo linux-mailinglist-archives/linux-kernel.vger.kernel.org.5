@@ -2,138 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C857C7EC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A447C7EC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:43:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229903AbjJMHlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 03:41:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52730 "EHLO
+        id S229908AbjJMHnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 03:43:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbjJMHlS (ORCPT
+        with ESMTP id S229740AbjJMHnN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 03:41:18 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD2083
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:41:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA431C433C7;
-        Fri, 13 Oct 2023 07:41:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697182876;
-        bh=HCwC6BY1bb24e17Bl+yq4xWJAW4Po3ldTzp38IgTEq4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jCfzTnfSPNpr8oHgUrMAWWnGod72/w0SFUhRryo5wbDOeG76rzR9TMuDoQ2Sad0hP
-         /j71x4Nhiuaz6uiC8BwRiTh5/TE6HuK+cT6suCUjlZ3JHWFA0Ma7vnSANFyuFDANaw
-         feIEzFicz9B/+sM24DE+X12K8tAMgUpenuZINmyQkg46K2qmdUAft2WB84uHs/3hfE
-         mLAITV3d5wU9XT33C2qGpePlAaR81pj4iInfmIBp+VHm4UYM1wdGKmpVaYeAqbtwk5
-         LUPUm9uYj2HD/MlLl9A4Dr8alOYiy8u/HbxvCWmFnn+saMX4Vz4APGkZt1ZnMA+t6f
-         kWz7+6MPDP24A==
-Date:   Fri, 13 Oct 2023 08:41:10 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v10 07/15] dt-bindings: interrupt-controller: Add RISC-V
- incoming MSI controller
-Message-ID: <20231013-pluck-skies-1b4ee57e770c@spud>
-References: <20231003044403.1974628-1-apatel@ventanamicro.com>
- <20231003044403.1974628-8-apatel@ventanamicro.com>
- <20231012-countable-darkish-7e449edc763d@spud>
- <CAK9=C2ViQj5iNBvQcMpYii2p+CrOiQ3hY8t5_U8mrJTcMVZCYw@mail.gmail.com>
+        Fri, 13 Oct 2023 03:43:13 -0400
+Received: from galois.linutronix.de (unknown [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 021D6B8;
+        Fri, 13 Oct 2023 00:43:10 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 07:42:53 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1697182974;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iXCw9IkWlk0gd+BE15eTwbCAJMYeblimrkybqcODQ5A=;
+        b=vOWQZ2HVJve7Q7G4FKO1RF4VhTJw5c2C2c4o+mA5cSrJ4HsAU6GKQL52NIHC4XAahlT7g2
+        yD3xWSymfAPFXqMWMrwJk5S2ia1FDBnMslyJ5m3kw/GAdQFONsjU51DYTbckxYGkAyZlz9
+        EHJxBfnpVMI5zcoGfs+NAiF46KSzYQIqHAi4jII3owqvtki+c4pU6S0oiJuS5F+kYzRGqX
+        G9vyMDgtB+Hh7Xx8TwMT2dzQli/kxZthtJFHdRx5692MkI98ojB3uo2AcZ+icKrCpnt/oG
+        t+sDHrTyvrPGoHteshZRL43IfGtvyy4qKunXrcBQ3I08ar9wJTloV/x0ZFvWKw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1697182974;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iXCw9IkWlk0gd+BE15eTwbCAJMYeblimrkybqcODQ5A=;
+        b=R9PsJqevuuCjd/Jh1qHhsJfbFTxS+V00pb8yqFn+XNEgFAMwwImUU3re+L2vlyetAM6xA3
+        SKFEzJ+WCQN03SDQ==
+From:   "tip-bot2 for Dan Carpenter" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] perf/x86/amd/uncore: Fix uninitialized return value
+ in amd_uncore_init()
+Cc:     Dan Carpenter <dan.carpenter@linaro.org>,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <cec62eba-c4b8-4cb7-9671-58894dd4b974@moroto.mountain>
+References: <cec62eba-c4b8-4cb7-9671-58894dd4b974@moroto.mountain>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="SpvMUTlv7MvkLw0D"
-Content-Disposition: inline
-In-Reply-To: <CAK9=C2ViQj5iNBvQcMpYii2p+CrOiQ3hY8t5_U8mrJTcMVZCYw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-ID: <169718297336.3135.15401455533118971114.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the perf/core branch of tip:
 
---SpvMUTlv7MvkLw0D
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Commit-ID:     7543365739a4ff61d40ad53ab68c17d2e7dfb0c9
+Gitweb:        https://git.kernel.org/tip/7543365739a4ff61d40ad53ab68c17d2e7dfb0c9
+Author:        Dan Carpenter <dan.carpenter@linaro.org>
+AuthorDate:    Fri, 13 Oct 2023 10:18:12 +03:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Fri, 13 Oct 2023 09:32:50 +02:00
 
-Hey Anup,
+perf/x86/amd/uncore: Fix uninitialized return value in amd_uncore_init()
 
-On Fri, Oct 13, 2023 at 12:16:45PM +0530, Anup Patel wrote:
-> On Thu, Oct 12, 2023 at 10:05=E2=80=AFPM Conor Dooley <conor@kernel.org> =
-wrote:
-> > On Tue, Oct 03, 2023 at 10:13:55AM +0530, Anup Patel wrote:
-> > > We add DT bindings document for the RISC-V incoming MSI controller
-> > > (IMSIC) defined by the RISC-V advanced interrupt architecture (AIA)
-> > > specification.
-> > >
-> > > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> > > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> >
-> > Just FYI, since they'll reply to this themselves, but some of the
-> > Microchip folks have run into problems with sparse hart indexes while
-> > trying to use the imsic binding to describe some configurations they
-> > have. I think there were also so problems with how to describe to a
-> > linux guest which file to use, when the first hart available to the
-> > guest does not use the first file. They'll do a better job of describing
-> > their problems than I will, so I shall leave it to them!
->=20
-> Quoting AIA spec:
-> "For the purpose of locating the memory pages of interrupt files in the
-> address space, assume each hart (or each hart within a group) has a
-> unique hart number that may or may not be related to the unique hart
-> identifiers (=E2=80=9Chart IDs=E2=80=9D) that the RISC-V Privileged Archi=
-tecture assigns
-> to harts."
->=20
-> It is very easy to get confused between the AIA "hart index" and
-> "hart IDs" defined by the RISC-V Privileged specification but these
-> are two very different things. The AIA "hart index" over here is the
-> bits in the address of an IMSIC file.
->=20
-> This DT binding follows the IMSIC file arrangement in the address
-> space as defined by the section "3.6 Arrangement of the memory
-> regions of multiple interrupt files" of the AIA specification. This
-> arrangement is MANDATORY for platforms having both APLIC
-> and IMSIC because in MSI-mode the APLIC generates target
-> MSI address based the IMSIC file arrangement described in the
-> section "3.6 Arrangement of the memory regions of multiple
-> interrupt files". In fact, this also applies to virtual platforms
-> created by hypervisors (KVM, Xen, ...)
+Some of the error paths in this function return don't initialize the
+error code.  Return -ENODEV by default.
 
-Thanks for pointing this out - I'll pass it on and hopefully it is
-helpful to them. If not, I expect that you'll hear :)
+Fixes: d6389d3ccc13 ("perf/x86/amd/uncore: Refactor uncore management")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/cec62eba-c4b8-4cb7-9671-58894dd4b974@moroto.mountain
+---
+ arch/x86/events/amd/uncore.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Cheers,
-Conor.
-
---SpvMUTlv7MvkLw0D
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSj0lgAKCRB4tDGHoIJi
-0npGAQC6rGsNEsyvptpG1+5wrE9ET1h1yjmigGMA1ot+EgTHewD/eQHPUyx/z1tG
-Jx0CDrTp0SXbanOo3/If7opBTzOB5Qc=
-=owzU
------END PGP SIGNATURE-----
-
---SpvMUTlv7MvkLw0D--
+diff --git a/arch/x86/events/amd/uncore.c b/arch/x86/events/amd/uncore.c
+index 9b444ce..a389828 100644
+--- a/arch/x86/events/amd/uncore.c
++++ b/arch/x86/events/amd/uncore.c
+@@ -1009,7 +1009,8 @@ static struct amd_uncore uncores[UNCORE_TYPE_MAX] = {
+ static int __init amd_uncore_init(void)
+ {
+ 	struct amd_uncore *uncore;
+-	int ret, i;
++	int ret = -ENODEV;
++	int i;
+ 
+ 	if (boot_cpu_data.x86_vendor != X86_VENDOR_AMD &&
+ 	    boot_cpu_data.x86_vendor != X86_VENDOR_HYGON)
