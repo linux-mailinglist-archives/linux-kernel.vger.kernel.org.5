@@ -2,93 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE5A7C7CF4
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 07:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 741D67C7CF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 07:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbjJMFTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 01:19:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57204 "EHLO
+        id S229436AbjJMFU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 01:20:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjJMFTU (ORCPT
+        with ESMTP id S229640AbjJMFUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 01:19:20 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 950C1B7;
-        Thu, 12 Oct 2023 22:19:19 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c88b46710bso13293875ad.1;
-        Thu, 12 Oct 2023 22:19:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697174359; x=1697779159; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xe2Dz2P78d+03+9Y6Hz+MAFwkRytvvJIOEVnsfDGmhw=;
-        b=ahDHVGpot4YucJIDdWFpIv68TN0o2QdbsYA59X5MM5hk4X7rBMaXvmUaEMfxvUTyAz
-         fPLt65TZwTBOwqDK6rlfVgQ3d6bkbs/exbvkOylEvPNp4uCycMi/xJ7Dajj1Xna8GNtG
-         kEyNZOKzAQL/m8yT1YEAWQFyyxL6Ur+oUjUjqyW9BYhtF35bkiFMGPl70UrX4EdGDJmm
-         OhBscwo4kimYb7DgcKhuxpsA1anFo0aw9Jffg3aiOG8ivOlNYff9aW1VAXEHeTbXnx+h
-         fLj3BgJ1BUhN4HgEz7Mgmib1DM/V5WKBAl7VEo2fmG38FuNHO0PkVBLnusB1ocIZ37Ag
-         ocZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697174359; x=1697779159;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xe2Dz2P78d+03+9Y6Hz+MAFwkRytvvJIOEVnsfDGmhw=;
-        b=Qw9j/kXeoFGvXVKb1Mj3U+k8VHbJDh9mrkPCbpkR9hk9n84/s8gCJTxYv67W/4uTFk
-         CgLoAKEzrEkvApjyqkkC7I0FLmZErnpeVg+dXBLviaBs8p1icrPxfIw9M5/xCcjfhpio
-         S6WAuIwBuViWTyyMTfWam18NjPIIqgMz/t0xx6d+gTjYKRcfJhzi02siEA+kTAvlto0g
-         rZ9LNJh6neeF9ZcV7gFiBMhkjLrubFHq1F0PM5G0+MBeO1o/nAw7HYVTHcGalg1hWBLM
-         WkkB8I6HJegANs2sPcQcMlgBl6yIqLl4Kv8HtgKNhYdVmciAjxDKUShHNEonRw+Y40po
-         0Hpg==
-X-Gm-Message-State: AOJu0YzB9s9FvUzpQGPeIjC38m6RazSGYwAyW3K3muJz/tW/CTbjlGAx
-        Mz5RtoadymnNi4g0oJHKnaQ=
-X-Google-Smtp-Source: AGHT+IGk50/yLKw/L0MPtGOrcn4tZAvdPwctTAGFWCiAmyx5ksVdBSo8vN08bUoCl72vLQ2U3P+B3Q==
-X-Received: by 2002:a17:903:110f:b0:1bb:f1d9:432e with SMTP id n15-20020a170903110f00b001bbf1d9432emr27930062plh.37.1697174358895;
-        Thu, 12 Oct 2023 22:19:18 -0700 (PDT)
-Received: from dreambig.dreambig.corp ([58.27.187.115])
-        by smtp.gmail.com with ESMTPSA id ju1-20020a170903428100b001b9d335223csm2909517plb.26.2023.10.12.22.19.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 22:19:18 -0700 (PDT)
-From:   Muhammad Muzammil <m.muzzammilashraf@gmail.com>
-To:     kent.overstreet@linux.dev, bfoster@redhat.com
-Cc:     linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Muhammad Muzammil <m.muzzammilashraf@gmail.com>
-Subject: [PATCH] fs: bcachefs: printbuf.h: Fix 'correctly' typo
-Date:   Fri, 13 Oct 2023 10:18:55 +0500
-Message-Id: <20231013051855.10324-1-m.muzzammilashraf@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 13 Oct 2023 01:20:25 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CFA6B8
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 22:20:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Transfer-Encoding
+        :Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=IM1xqhQiNvzRJZGajZrRp+LdnwXH066EKRxfyQrcNi8=; b=ZvyTrqkrAN7Qc7crzmwXDnKrHa
+        waG3CZZS3FecTquZSP1nPPg7fQ9RryHLefYK6MQRdKgX+V4OSBJZB/fwlA8y5y4FLxkgPzfBn3wCA
+        HAn8SMW4bhBIqo74p36tlscFvOhFauHnQznGcB6kvjEMnXff5hNcUIRdMAGfFaey8LfUQOhUcU8K6
+        cYPCtARqnK/d8376LDNJJyx1nziN7Hj0DYuE7Vgm14aXSI/f9wEfYDuThMn/v+XCLvi4kTjRiFa4S
+        ND+itvx2zadRaF8SlF16h9qX/L3GA/I9j10NWddxZBB0e04tFm+ba+J8/K9M3Dr1Sp+4H+5Uvnqmo
+        Jqb2zzEQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qrAaH-002VYo-2L;
+        Fri, 13 Oct 2023 05:19:37 +0000
+Date:   Thu, 12 Oct 2023 22:19:37 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     Dave Airlie <airlied@gmail.com>,
+        Thomas =?iso-8859-1?Q?Hellstr=F6m_=28Intel=29?= 
+        <thomas_os@shipmail.org>, Danilo Krummrich <dakr@redhat.com>,
+        daniel@ffwll.ch, matthew.brost@intel.com,
+        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        faith.ekstrand@collabora.com, bskeggs@redhat.com,
+        Liam.Howlett@oracle.com, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH drm-misc-next 2/3] drm/gpuva_mgr: generalize
+ dma_resv/extobj handling and GEM validation
+Message-ID: <ZSjTaYSbegbhon2v@infradead.org>
+References: <ZO9Zq2RhbX8EeHrn@pollux>
+ <736b6b6d-9e04-a27d-7d60-0c45d696b304@shipmail.org>
+ <ZPB26A0/oLHTmyqk@cassiopeiae>
+ <a8f28d62-daec-927a-a33d-5be3eec6a1ed@shipmail.org>
+ <ZPDk/lao1JlBNGoJ@cassiopeiae>
+ <8a8253ae-0b85-df90-b480-64eeebfafc6d@shipmail.org>
+ <CAPM=9tz3o-m+8VJJ6hxWhykat0kpp1UE7dBJE3X91aHHo1Y2VA@mail.gmail.com>
+ <76963abd-77a1-4bbd-9537-7b230e648a90@amd.com>
+ <CAPM=9twSHGRoSoXxG+hz1T8iBX2VgPFvFsNCDnK_nHW9WJYBtw@mail.gmail.com>
+ <1333e15b-f229-460a-8965-01ff3e778a4d@amd.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1333e15b-f229-460a-8965-01ff3e778a4d@amd.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix 'correctly' typo
+On Thu, Oct 12, 2023 at 02:35:15PM +0200, Christian König wrote:
+> Additional to that from the software side Felix summarized it in the HMM
+> peer2peer discussion thread recently quite well.
 
-Signed-off-by: Muhammad Muzammil <m.muzzammilashraf@gmail.com>
----
- fs/bcachefs/printbuf.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/bcachefs/printbuf.h b/fs/bcachefs/printbuf.h
-index 2191423d9f22..dff23d3f3403 100644
---- a/fs/bcachefs/printbuf.h
-+++ b/fs/bcachefs/printbuf.h
-@@ -56,7 +56,7 @@
-  * next tabstop - right justifying it.
-  *
-  * Make sure you use prt_newline() instead of \n in the format string for indent
-- * level and tabstops to work corretly.
-+ * level and tabstops to work correctly.
-  *
-  * Output units: printbuf->units exists to tell pretty-printers how to output
-  * numbers: a raw value (e.g. directly from a superblock field), as bytes, or as
--- 
-2.27.0
+Do you have a pointer to that discussion?
 
