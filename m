@@ -2,165 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D309F7C854D
+	by mail.lfdr.de (Postfix) with ESMTP id 7DE337C854C
 	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 14:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231459AbjJMMGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 08:06:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54582 "EHLO
+        id S231409AbjJMMFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 08:05:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231443AbjJMMGE (ORCPT
+        with ESMTP id S231381AbjJMMFi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 08:06:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F641A9
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 05:05:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697198715;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+dcXEP+GxfBYG20ABDjpqfoHUMaa+MeG9Y3QKfP39fY=;
-        b=gB4QGzwL7Ks3Q32L7IefYfiX/FcxLqa3zZKKRKVixMwoalCHR8WW/1VA9/QNtcloiRYgh8
-        2ule8vtdVxUdh6z+b9rjF6Q8LjDlasn4YUwyhy30+RboLZ/a2pHLFLsxvIzjZUShnV932D
-        cIc6/i2GmPKQESmttO/53Nza3ujbGXo=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-639-Ewg-rkO2MiqkWiUaKQx7kw-1; Fri, 13 Oct 2023 08:05:14 -0400
-X-MC-Unique: Ewg-rkO2MiqkWiUaKQx7kw-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9ae686dafedso152126066b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 05:05:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697198712; x=1697803512;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+dcXEP+GxfBYG20ABDjpqfoHUMaa+MeG9Y3QKfP39fY=;
-        b=dS/JKbczhPDHK9SzBseqjygXESHckZFYhZldry7PcBcpXVCEM7epDD+Y1tZkASbjTn
-         V+BTta47kqw8AZZBVh1Tn2P9ayqzVYWnos6YqVzOuxaN7mG2mz8CJHkh/bbnzdSZjQT+
-         DSc3F80mGKVmumZF9unLW+TlobLrVBiOXJyMMFOYq46XG5x9ltS302paRy8cIMAeOuOK
-         djwbGHkpfUacqXPvzjeamw8e5VoufQrvVQrvD/kJWP4p2Pnq+GWKLAAGVty0YOKPAlSn
-         1cxOf+jZD7gejcO4ZMSI7HTrdEYX/MDpTXUAnqADouMSX4lOBoPw/JEOAUUufeK05IBE
-         2K7A==
-X-Gm-Message-State: AOJu0YyrOGDmmZkFEiFJRajhZn5Jzz6jHQfykECsMv3hA8pCp5gLuA3W
-        t17W9ZQ9xl9mQNdzdMU5JTbg7rCDyNExB12SCHqvMp8HP06MsmkuSCFscBJz24U7ConsAf4vdeD
-        NzriBrkHneRbPH5z37K6KOPgL
-X-Received: by 2002:a17:907:2723:b0:9a5:d657:47ee with SMTP id d3-20020a170907272300b009a5d65747eemr22847162ejl.58.1697198712760;
-        Fri, 13 Oct 2023 05:05:12 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEVP4CGBK7VTrUzYEqzjKP5V5a2WbPdWtJr2jlo1Cabz8+0BX6tXBDev67FhhRKBk7WuWHZ/A==
-X-Received: by 2002:a17:907:2723:b0:9a5:d657:47ee with SMTP id d3-20020a170907272300b009a5d65747eemr22847132ejl.58.1697198712443;
-        Fri, 13 Oct 2023 05:05:12 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:4b3f:de9c:642:1aff:fe31:a15c? ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
-        by smtp.gmail.com with ESMTPSA id l12-20020a170906078c00b009b94fe3fc47sm12267409ejc.159.2023.10.13.05.05.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Oct 2023 05:05:12 -0700 (PDT)
-Message-ID: <d586d845-fcb1-4ebc-b75d-3f147837c917@redhat.com>
-Date:   Fri, 13 Oct 2023 14:05:11 +0200
+        Fri, 13 Oct 2023 08:05:38 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82EDCBD
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 05:05:35 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qrGv4-0004ip-VD; Fri, 13 Oct 2023 14:05:31 +0200
+Message-ID: <9787bd09-91b3-4a79-9ca9-e7199c925f36@leemhuis.info>
+Date:   Fri, 13 Oct 2023 14:05:29 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH drm-misc-next v6 4/6] drm/gpuvm: track/lock/validate
- external/evicted objects
-Content-Language: en-US
-To:     =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= 
-        <thomas.hellstrom@linux.intel.com>, airlied@gmail.com,
-        daniel@ffwll.ch, matthew.brost@intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, boris.brezillon@collabora.com,
-        christian.koenig@amd.com, faith@gfxstrand.net
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20231008233212.13815-1-dakr@redhat.com>
- <20231008233212.13815-5-dakr@redhat.com>
- <c6ce663d-dd69-46a2-7b55-359169b6c03c@linux.intel.com>
-From:   Danilo Krummrich <dakr@redhat.com>
-Organization: RedHat
-In-Reply-To: <c6ce663d-dd69-46a2-7b55-359169b6c03c@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Subject: [regression] some Dell systems hang at shutdown due to "x86/smp: Put
+ CPUs into INIT on shutdown if possible" (was Fwd: Kernel 6.5 hangs on
+ shutdown)
+Content-Language: en-US, de-DE
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Yanjun Yang <yangyj.ee@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        the arch/x86 maintainers <x86@kernel.org>
+References: <e6d1dae8-e28a-455a-a851-661c825fbdcf@gmail.com>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <e6d1dae8-e28a-455a-a851-661c825fbdcf@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1697198735;8913fc85;
+X-HE-SMSGID: 1qrGv4-0004ip-VD
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/23 08:40, Thomas Hellström wrote:
-> 
-> On 10/9/23 01:32, Danilo Krummrich wrote:
->> Currently the DRM GPUVM offers common infrastructure to track GPU VA
->> allocations and mappings, generically connect GPU VA mappings to their
->> backing buffers and perform more complex mapping operations on the GPU VA
->> space.
->>
->> However, there are more design patterns commonly used by drivers, which
->> can potentially be generalized in order to make the DRM GPUVM represent
->> a basis for GPU-VM implementations. In this context, this patch aims
->> at generalizing the following elements.
->>
->> 1) Provide a common dma-resv for GEM objects not being used outside of
->>     this GPU-VM.
->>
->> 2) Provide tracking of external GEM objects (GEM objects which are
->>     shared with other GPU-VMs).
->>
->> 3) Provide functions to efficiently lock all GEM objects dma-resv the
->>     GPU-VM contains mappings of.
->>
->> 4) Provide tracking of evicted GEM objects the GPU-VM contains mappings
->>     of, such that validation of evicted GEM objects is accelerated.
->>
->> 5) Provide some convinience functions for common patterns.
->>
->> Big thanks to Boris Brezillon for his help to figure out locking for
->> drivers updating the GPU VA space within the fence signalling path.
->>
->> Suggested-by: Matthew Brost <matthew.brost@intel.com>
->> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
->>
->> +/**
->> + * drm_gpuvm_resv_add_fence - add fence to private and all extobj
->> + * dma-resv
->> + * @gpuvm: the &drm_gpuvm to add a fence to
->> + * @exec: the &drm_exec locking context
->> + * @fence: fence to add
->> + * @private_usage: private dma-resv usage
->> + * @extobj_usage: extobj dma-resv usage
->> + */
->> +void
->> +drm_gpuvm_resv_add_fence(struct drm_gpuvm *gpuvm,
->> +             struct drm_exec *exec,
->> +             struct dma_fence *fence,
->> +             enum dma_resv_usage private_usage,
->> +             enum dma_resv_usage extobj_usage)
->> +{
->> +    struct drm_gem_object *obj;
->> +    unsigned long index;
->> +
->> +    drm_exec_for_each_locked_object(exec, index, obj) {
->> +        dma_resv_assert_held(obj->resv);
->> +        dma_resv_add_fence(obj->resv, fence,
->> +                   drm_gpuvm_is_extobj(gpuvm, obj) ?
->> +                   private_usage : extobj_usage);
-> 
-> It looks like private_usage and extobj_usage are mixed up above?
+[CCing x86 maintainers]
 
-Good catch, will fix.
+Hi Thomas!
 
+On 12.10.23 11:37, Bagas Sanjaya wrote:
 > 
-> 
->> +    }
->> +}
->> +EXPORT_SYMBOL_GPL(drm_gpuvm_resv_add_fence);
->> +
-> 
-> Thanks,
-> 
-> Thomas
-> 
-> 
+> I notice a regression report on Bugzilla [1]. Quoting from it:
+>>> I use Dell OptiPlex 7050, and kernel hangs when shutting down the
+computer.
+>> Similar symptom has been reported on some forums, and all of them are using
+>> Dell computers:
+>> https://bbs.archlinux.org/viewtopic.php?pid=2124429
+>> https://www.reddit.com/r/openSUSE/comments/16qq99b/tumbleweed_shutdown_did_not_finish_completely/
+>> https://forum.artixlinux.org/index.php/topic,5997.0.html
 
+Another report: https://bugzilla.redhat.com/show_bug.cgi?id=2241279
+
+From all those links it seems quite a lot of users with Dell machines
+are affected by this problem.
+
+>> Tested with various kernel and this bug seems to be caused by commit: 88afbb21d4b36fee6acaa167641f9f0fc122f01b.
+
+Thomas, turns out that bisection result was slightly wrong: a recheck
+confirmed that the regression is actually caused by 45e34c8af58f23
+("x86/smp: Put CPUs into INIT on shutdown if possible") [v6.5-rc1] of
+yours. See https://bugzilla.kernel.org/show_bug.cgi?id=217995 for details.
+
+Ciao, Thorsten
+
+> Anyway, I'm adding this regression to be tracked by regzbot:
+> [...]
+
+#regzbot introduced: 45e34c8af58f
+#regzbot link: https://bugzilla.redhat.com/show_bug.cgi?id=2241279
