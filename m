@@ -2,106 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD507C7CEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 07:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE5A7C7CF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 07:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbjJMFPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 01:15:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43948 "EHLO
+        id S229632AbjJMFTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 01:19:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjJMFPT (ORCPT
+        with ESMTP id S229436AbjJMFTU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 01:15:19 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B579B7
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 22:15:17 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-58e119bb28eso2256481a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 22:15:17 -0700 (PDT)
+        Fri, 13 Oct 2023 01:19:20 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 950C1B7;
+        Thu, 12 Oct 2023 22:19:19 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c88b46710bso13293875ad.1;
+        Thu, 12 Oct 2023 22:19:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697174116; x=1697778916; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697174359; x=1697779159; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iKjEcIigmoEinaPG1JriR5J2v44jnRnKiYDnkmhOFmI=;
-        b=jNS0bi9S1eNC72CmlTDoXqTkdO7uWjm12T9cY5V6ZYp1KO4I+9cli8pY3BFYVXtnxW
-         k8/TZd8vFNgkGFkbMBcC5YveMgp+pksuHnXM71w8/UhO5QTGyt1mLk1BHBuZFKfHQXxv
-         NXLbA5zaSoRXierygKoLUPB+Y2khugn/KmukTAs8qUq0jD5InyOmWwWYJJuK379a5BHi
-         +8cX+INRGvF5KvKwbZpgmZ6nVNcbr37DNKbYtP9E50CNIKZHP4CqC6T2184eQ9mTw5AN
-         knoJkwXLSQo54bGtaM/J6NztTJIgGo1WJAOrj7vYEJ2/eUJZL7nwQXnEES2EuGK19xXO
-         m7dA==
+        bh=xe2Dz2P78d+03+9Y6Hz+MAFwkRytvvJIOEVnsfDGmhw=;
+        b=ahDHVGpot4YucJIDdWFpIv68TN0o2QdbsYA59X5MM5hk4X7rBMaXvmUaEMfxvUTyAz
+         fPLt65TZwTBOwqDK6rlfVgQ3d6bkbs/exbvkOylEvPNp4uCycMi/xJ7Dajj1Xna8GNtG
+         kEyNZOKzAQL/m8yT1YEAWQFyyxL6Ur+oUjUjqyW9BYhtF35bkiFMGPl70UrX4EdGDJmm
+         OhBscwo4kimYb7DgcKhuxpsA1anFo0aw9Jffg3aiOG8ivOlNYff9aW1VAXEHeTbXnx+h
+         fLj3BgJ1BUhN4HgEz7Mgmib1DM/V5WKBAl7VEo2fmG38FuNHO0PkVBLnusB1ocIZ37Ag
+         ocZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697174116; x=1697778916;
+        d=1e100.net; s=20230601; t=1697174359; x=1697779159;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=iKjEcIigmoEinaPG1JriR5J2v44jnRnKiYDnkmhOFmI=;
-        b=L8wInUXS2E/Tg0rVmPP8t4ywUQqsovbsju1NEg1ysyv2iNFwrPGIWPDHDZfA+aDkUo
-         941Vg0wzjdk418KlfeC6cfamOVBI292ssRhUredcOOMpRdBUVJCDrZkZVznn4hVe5GU3
-         67hmfZEN6n1skVDghCj7vtUCNkLnhHZ3NiWVzNCT0EpEI5m3Ig+xk7L4eXI5+nkv82l/
-         7ovcekzG457y9jz+PS4TSPN8tKQd5Genx4aZdQlvBlqwYh/BOaPsCfzpFDgJxZWPTZLP
-         eigKCkBIDHJ8KiQ3ZfrwKySGygXfgBr5uZSiJm0N6pC+/mcAqXyz30DrQNYP+lrtkgFf
-         lVow==
-X-Gm-Message-State: AOJu0Ywe4QUMcpFNxwHI0uMQOvqp5uZ6sm2T8WUq+PXRqCAsXdRtHCJt
-        UHRh9JZz5Gy1fHdzKzCQrVSdF9Hr2QS7hw==
-X-Google-Smtp-Source: AGHT+IFIHVjDl5w8kCEUBtP2Sx7CTrSrJc97kJKWwdh4nhqH433WOlxPmQnOji0VmPUs6XFnCFSY9w==
-X-Received: by 2002:a17:90b:3758:b0:27d:306d:71cb with SMTP id ne24-20020a17090b375800b0027d306d71cbmr2752325pjb.10.1697174116459;
-        Thu, 12 Oct 2023 22:15:16 -0700 (PDT)
-Received: from Negi ([68.181.16.134])
-        by smtp.gmail.com with ESMTPSA id gp14-20020a17090adf0e00b00276cb03a0e9sm2697459pjb.46.2023.10.12.22.15.15
+        bh=xe2Dz2P78d+03+9Y6Hz+MAFwkRytvvJIOEVnsfDGmhw=;
+        b=Qw9j/kXeoFGvXVKb1Mj3U+k8VHbJDh9mrkPCbpkR9hk9n84/s8gCJTxYv67W/4uTFk
+         CgLoAKEzrEkvApjyqkkC7I0FLmZErnpeVg+dXBLviaBs8p1icrPxfIw9M5/xCcjfhpio
+         S6WAuIwBuViWTyyMTfWam18NjPIIqgMz/t0xx6d+gTjYKRcfJhzi02siEA+kTAvlto0g
+         rZ9LNJh6neeF9ZcV7gFiBMhkjLrubFHq1F0PM5G0+MBeO1o/nAw7HYVTHcGalg1hWBLM
+         WkkB8I6HJegANs2sPcQcMlgBl6yIqLl4Kv8HtgKNhYdVmciAjxDKUShHNEonRw+Y40po
+         0Hpg==
+X-Gm-Message-State: AOJu0YzB9s9FvUzpQGPeIjC38m6RazSGYwAyW3K3muJz/tW/CTbjlGAx
+        Mz5RtoadymnNi4g0oJHKnaQ=
+X-Google-Smtp-Source: AGHT+IGk50/yLKw/L0MPtGOrcn4tZAvdPwctTAGFWCiAmyx5ksVdBSo8vN08bUoCl72vLQ2U3P+B3Q==
+X-Received: by 2002:a17:903:110f:b0:1bb:f1d9:432e with SMTP id n15-20020a170903110f00b001bbf1d9432emr27930062plh.37.1697174358895;
+        Thu, 12 Oct 2023 22:19:18 -0700 (PDT)
+Received: from dreambig.dreambig.corp ([58.27.187.115])
+        by smtp.gmail.com with ESMTPSA id ju1-20020a170903428100b001b9d335223csm2909517plb.26.2023.10.12.22.19.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 22:15:15 -0700 (PDT)
-From:   Soumya Negi <soumya.negi97@gmail.com>
-To:     Jonathan Kim <jonathankim@gctsemi.com>,
-        Dean ahn <deanahn@gctsemi.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Soumya Negi <soumya.negi97@gmail.com>, outreachy@lists.linux.dev,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH] tty: gdm724x: Fix coding style checkpatch warnings
-Date:   Thu, 12 Oct 2023 22:14:58 -0700
-Message-ID: <20231013051502.9578-1-soumya.negi97@gmail.com>
-X-Mailer: git-send-email 2.42.0
+        Thu, 12 Oct 2023 22:19:18 -0700 (PDT)
+From:   Muhammad Muzammil <m.muzzammilashraf@gmail.com>
+To:     kent.overstreet@linux.dev, bfoster@redhat.com
+Cc:     linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Muhammad Muzammil <m.muzzammilashraf@gmail.com>
+Subject: [PATCH] fs: bcachefs: printbuf.h: Fix 'correctly' typo
+Date:   Fri, 13 Oct 2023 10:18:55 +0500
+Message-Id: <20231013051855.10324-1-m.muzzammilashraf@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add blank line after declaration & match alignment with open parenthesis.
-Issue found by checkpatch.pl
+Fix 'correctly' typo
 
-Signed-off-by: Soumya Negi <soumya.negi97@gmail.com>
+Signed-off-by: Muhammad Muzammil <m.muzzammilashraf@gmail.com>
 ---
- drivers/staging/gdm724x/gdm_tty.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ fs/bcachefs/printbuf.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/gdm724x/gdm_tty.c b/drivers/staging/gdm724x/gdm_tty.c
-index 32b2e817ff04..0c61eaff6122 100644
---- a/drivers/staging/gdm724x/gdm_tty.c
-+++ b/drivers/staging/gdm724x/gdm_tty.c
-@@ -160,6 +160,7 @@ static ssize_t gdm_tty_write(struct tty_struct *tty, const u8 *buf, size_t len)
- 
- 	while (remain) {
- 		size_t sending_len = min_t(size_t, MUX_TX_MAX_SIZE, remain);
-+
- 		gdm->tty_dev->send_func(gdm->tty_dev->priv_dev,
- 					(void *)(buf + sent_len),
- 					sending_len,
-@@ -271,8 +272,8 @@ int register_lte_tty_driver(void)
- 	int ret;
- 
- 	for (i = 0; i < TTY_MAX_COUNT; i++) {
--		tty_driver = tty_alloc_driver(GDM_TTY_MINOR,
--				TTY_DRIVER_REAL_RAW | TTY_DRIVER_DYNAMIC_DEV);
-+		tty_driver = tty_alloc_driver(GDM_TTY_MINOR, TTY_DRIVER_REAL_RAW |
-+					      TTY_DRIVER_DYNAMIC_DEV);
- 		if (IS_ERR(tty_driver))
- 			return PTR_ERR(tty_driver);
- 
+diff --git a/fs/bcachefs/printbuf.h b/fs/bcachefs/printbuf.h
+index 2191423d9f22..dff23d3f3403 100644
+--- a/fs/bcachefs/printbuf.h
++++ b/fs/bcachefs/printbuf.h
+@@ -56,7 +56,7 @@
+  * next tabstop - right justifying it.
+  *
+  * Make sure you use prt_newline() instead of \n in the format string for indent
+- * level and tabstops to work corretly.
++ * level and tabstops to work correctly.
+  *
+  * Output units: printbuf->units exists to tell pretty-printers how to output
+  * numbers: a raw value (e.g. directly from a superblock field), as bytes, or as
 -- 
-2.42.0
+2.27.0
 
