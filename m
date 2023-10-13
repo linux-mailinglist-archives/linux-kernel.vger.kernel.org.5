@@ -2,320 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B27D87C8EDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 23:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CC397C8EE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 23:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231858AbjJMVQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 17:16:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35252 "EHLO
+        id S232105AbjJMVTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 17:19:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbjJMVQm (ORCPT
+        with ESMTP id S229649AbjJMVTE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 17:16:42 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73E50B7
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 14:16:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697231800; x=1728767800;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=gKHV+M/k+ZIH5GutFzplK5nxPf27amH0RIKvaYjWEUQ=;
-  b=hoqt/Q5mhseE51RZBDqvPe+brrcbmu7CXFLCTVww+oGiCE2/HaLVzKEa
-   fsOFenuX/dcJplxMeXD26Bxl+Q1IpM96hu5nfYxdCzjNHaxbHUYfzrxOG
-   oWNS9mvaT8RcGapsxmmUqFaOPsj6g/3I4WeVu1EZ9SwGXCcvpMXERs0z9
-   c9RMTEsEY38sOdoYD8f9QkCiUREDYq4VbBjwwJWLb0ITw3gsfpsQV4hMf
-   Im5GdbT1ycvORO3xbp5WBWIFxOQY4Cqmg07NkziO8Ui0g2N2D6HKC2pkR
-   gWAOLRIrjtI7UKh9fo4mu392nbKCezxbf9xxauYaDJpIrO6wwJrY/bNUL
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="384138018"
-X-IronPort-AV: E=Sophos;i="6.03,223,1694761200"; 
-   d="scan'208";a="384138018"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 14:16:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="754850671"
-X-IronPort-AV: E=Sophos;i="6.03,223,1694761200"; 
-   d="scan'208";a="754850671"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 13 Oct 2023 14:16:36 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qrPWM-0005Oi-1E;
-        Fri, 13 Oct 2023 21:16:34 +0000
-Date:   Sat, 14 Oct 2023 05:15:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Peter Collingbourne <pcc@google.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] arm64/mm: Hoist synchronization out of set_ptes() loop
-Message-ID: <202310140531.BQQwt3NQ-lkp@intel.com>
-References: <20231005140730.2191134-1-ryan.roberts@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231005140730.2191134-1-ryan.roberts@arm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Fri, 13 Oct 2023 17:19:04 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3E195
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 14:19:03 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9a538026d1so3583032276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 14:19:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697231942; x=1697836742; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=N4+CtI556J9JFEvOEeYrRcVrS1TVGZF3yEU9Xn9OFZQ=;
+        b=NjvuZHHp3Q2oe5XUefCBd9GTF09bhdNGJvhVrebFTQuck8UWquJp/r0TOx+nGR9ImN
+         DVZIfmrsONZ3Za8rSoamW3RZ1TsPAZjKe7kRzmQHJpMelJwQBrE1oIO+XjVrRQ3bWRN9
+         4kf6m8Bwo75xMGMRCNMIrEGqWu/7H6u46TbBO/UjGhwY0qhqnu6muxmCYMTV0Pq8QSRE
+         v6xRivdZxugkAcFHPe3UwFHS2cynuCW9H0UTXrnKGozgs66IdGKes4WMQ47Or2P3aPLQ
+         ttFSSNcA5oJATjcJe1BNdRzjopz4QXDRlG2RAiJNbFDEkd39543JBOqAlgp5OM4Qt29A
+         3mGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697231942; x=1697836742;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=N4+CtI556J9JFEvOEeYrRcVrS1TVGZF3yEU9Xn9OFZQ=;
+        b=gTLtqhV6VRIT6wjRsfqhQLkXkzIR8d6Pa1TTuU+6xcEziDKcTqkcj6M6+Y3sI7nfw7
+         oSYPC+mJy6wHSFYMcGJxe8hLAIc7rxRwoRxAjuuLKgGNCHMajyNrCmHYKZXp1NGPdymp
+         oizLtMvUDLrxGg9LIAZ3pP+R4dPpPHIOsQJzUWu8JCcyIT4/YuNjY6gXRQxOmaYXHx0y
+         DHH26Kytm7ers+MogLIZ613YGH5qp7XqhaqpQNJHOJz0lX+5dNQZFZZoKNMquXAeo0/C
+         ddmY/Sz5a24ZuXldeDqh8Jb1J9s25qIxniHuBg2OFTNiNLOLBCK7jT9cbJItRfBxjOI6
+         +VNA==
+X-Gm-Message-State: AOJu0YxqnZBgYkqi0RGqnu9fZIIDHauVc8Fa4cbHDKI3Aqz4BorSydns
+        Tpz8r8bgo/yhNZzKb4Zm9TMUPTvNxm1xF36gvg==
+X-Google-Smtp-Source: AGHT+IEFb+Qs6BTE+zyGOCrDNzNGdtyo01KqMmcNmLj5isa5JH6R18iurGgDqKsZiv3/Xb0t9jJcuSPS0a+wC2ky9w==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:3287:0:b0:d9a:57da:f947 with SMTP
+ id y129-20020a253287000000b00d9a57daf947mr240255yby.10.1697231942564; Fri, 13
+ Oct 2023 14:19:02 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 21:19:02 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAEW0KWUC/x2NwQ6CMBAFf4Xs2U0oKCb+ivFQ21fZSCrZbUBD+
+ HerhznMZWYjgwqMLs1GikVMXrmKOzQURp8fYInVqWu73rWuZyuaw/zhqLJAjTMKr6KYYMa+jD+ G58SSpXDglOL9eIrnAT5Rjc6KJO//8Hrb9y8Km03XgAAAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1697231941; l=1572;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=OSQ5/H1d2DSJHA3zq39nDy1jyEwcj6KdEZ8Bf85001Y=; b=rK8wm0iB2qBgcr7yAjY8LjP8bH4QTKD95phQLYodnopUNZNaD494aasGTBmnNvqeAdPqZ7GPn
+ ANHCGppFYCEDI4mQKlnrCmk0WDBjgv6VrZFvqJH39tvoq2tMaXQyncq
+X-Mailer: b4 0.12.3
+Message-ID: <20231013-strncpy-drivers-net-wireless-ath-ath6kl-init-c-v1-1-d69c599b49a9@google.com>
+Subject: [PATCH] ath6kl: replace deprecated strncpy with memcpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Kalle Valo <kvalo@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ryan,
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous
+interfaces.
 
-kernel test robot noticed the following build warnings:
+The affected code's purpose is to truncate strings that are too long
+with "..." like:
+foobar -> fo...
 
-[auto build test WARNING on arm64/for-next/core]
-[also build test WARNING on arm-perf/for-next/perf arm/for-next kvmarm/next soc/for-next linus/master v6.6-rc5 next-20231013]
-[cannot apply to arm/fixes]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+The lengths have been carefully calculated and as such this has decayed
+to a simple byte copy from one buffer to another -- let's use memcpy().
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ryan-Roberts/arm64-mm-Hoist-synchronization-out-of-set_ptes-loop/20231005-231636
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
-patch link:    https://lore.kernel.org/r/20231005140730.2191134-1-ryan.roberts%40arm.com
-patch subject: [PATCH v2] arm64/mm: Hoist synchronization out of set_ptes() loop
-config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20231014/202310140531.BQQwt3NQ-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231014/202310140531.BQQwt3NQ-lkp@intel.com/reproduce)
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310140531.BQQwt3NQ-lkp@intel.com/
+Found with: $ rg "strncpy\("
+---
+ drivers/net/wireless/ath/ath6kl/init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-All warnings (new ones prefixed by >>):
+diff --git a/drivers/net/wireless/ath/ath6kl/init.c b/drivers/net/wireless/ath/ath6kl/init.c
+index 201e45554070..15f455adb860 100644
+--- a/drivers/net/wireless/ath/ath6kl/init.c
++++ b/drivers/net/wireless/ath/ath6kl/init.c
+@@ -1677,7 +1677,7 @@ static void ath6kl_init_get_fwcaps(struct ath6kl *ar, char *buf, size_t buf_len)
+ 
+ 			/* add "..." to the end of string */
+ 			trunc_len = strlen(trunc) + 1;
+-			strncpy(buf + buf_len - trunc_len, trunc, trunc_len);
++			memcpy(buf + buf_len - trunc_len, trunc, trunc_len);
+ 
+ 			return;
+ 		}
 
-   In file included from net/ipv4/route.c:66:
-   In file included from include/linux/mm.h:29:
-   In file included from include/linux/pgtable.h:6:
->> arch/arm64/include/asm/pgtable.h:344:65: warning: parameter 'addr' set but not used [-Wunused-but-set-parameter]
-     344 | static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
-         |                                                                 ^
-   1 warning generated.
---
-   In file included from sound/soc/qcom/qdsp6/q6apm-dai.c:9:
-   In file included from include/sound/soc.h:18:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from arch/arm64/include/asm/hardirq.h:17:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/arm64/include/asm/io.h:12:
-   In file included from include/linux/pgtable.h:6:
->> arch/arm64/include/asm/pgtable.h:344:65: warning: parameter 'addr' set but not used [-Wunused-but-set-parameter]
-     344 | static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
-         |                                                                 ^
-   sound/soc/qcom/qdsp6/q6apm-dai.c:355:38: warning: cast from 'void (*)(uint32_t, uint32_t, uint32_t *, void *)' (aka 'void (*)(unsigned int, unsigned int, unsigned int *, void *)') to 'q6apm_cb' (aka 'void (*)(unsigned int, unsigned int, void *, void *)') converts to incompatible function type [-Wcast-function-type-strict]
-     355 |         prtd->graph = q6apm_graph_open(dev, (q6apm_cb)event_handler, prtd, graph_id);
-         |                                             ^~~~~~~~~~~~~~~~~~~~~~~
-   sound/soc/qcom/qdsp6/q6apm-dai.c:499:38: warning: cast from 'void (*)(uint32_t, uint32_t, uint32_t *, void *)' (aka 'void (*)(unsigned int, unsigned int, unsigned int *, void *)') to 'q6apm_cb' (aka 'void (*)(unsigned int, unsigned int, void *, void *)') converts to incompatible function type [-Wcast-function-type-strict]
-     499 |         prtd->graph = q6apm_graph_open(dev, (q6apm_cb)event_handler_compr, prtd, graph_id);
-         |                                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   3 warnings generated.
---
-   In file included from arch/arm64/kernel/mte.c:9:
-   In file included from include/linux/mm.h:29:
-   In file included from include/linux/pgtable.h:6:
->> arch/arm64/include/asm/pgtable.h:344:65: warning: parameter 'addr' set but not used [-Wunused-but-set-parameter]
-     344 | static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
-         |                                                                 ^
-   arch/arm64/kernel/mte.c:79:20: warning: unused function '__mte_enable_kernel' [-Wunused-function]
-      79 | static inline void __mte_enable_kernel(const char *mode, unsigned long tcf)
-         |                    ^
-   2 warnings generated.
---
-   In file included from drivers/gpu/drm/radeon/radeon_ttm.c:33:
-   In file included from include/linux/dma-mapping.h:11:
-   In file included from include/linux/scatterlist.h:8:
-   In file included from include/linux/mm.h:29:
-   In file included from include/linux/pgtable.h:6:
->> arch/arm64/include/asm/pgtable.h:344:65: warning: parameter 'addr' set but not used [-Wunused-but-set-parameter]
-     344 | static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
-         |                                                                 ^
-   drivers/gpu/drm/radeon/radeon_ttm.c:200:20: warning: variable 'rbo' set but not used [-Wunused-but-set-variable]
-     200 |         struct radeon_bo *rbo;
-         |                           ^
-   2 warnings generated.
---
-   In file included from drivers/gpu/drm/kmb/kmb_dsi.c:12:
-   In file included from include/linux/regmap.h:20:
-   In file included from include/linux/iopoll.h:14:
-   In file included from include/linux/io.h:13:
-   In file included from arch/arm64/include/asm/io.h:12:
-   In file included from include/linux/pgtable.h:6:
->> arch/arm64/include/asm/pgtable.h:344:65: warning: parameter 'addr' set but not used [-Wunused-but-set-parameter]
-     344 | static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
-         |                                                                 ^
-   drivers/gpu/drm/kmb/kmb_dsi.c:822:2: warning: unused function 'set_test_mode_src_osc_freq_target_low_bits' [-Wunused-function]
-     822 |         set_test_mode_src_osc_freq_target_low_bits(struct kmb_dsi *kmb_dsi,
-         |         ^
-   drivers/gpu/drm/kmb/kmb_dsi.c:834:2: warning: unused function 'set_test_mode_src_osc_freq_target_hi_bits' [-Wunused-function]
-     834 |         set_test_mode_src_osc_freq_target_hi_bits(struct kmb_dsi *kmb_dsi,
-         |         ^
-   3 warnings generated.
---
-   In file included from drivers/gpu/drm/nouveau/nouveau_svm.c:22:
-   In file included from drivers/gpu/drm/nouveau/nouveau_svm.h:3:
-   In file included from drivers/gpu/drm/nouveau/include/nvif/os.h:8:
-   In file included from include/linux/pci.h:38:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from arch/arm64/include/asm/hardirq.h:17:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/arm64/include/asm/io.h:12:
-   In file included from include/linux/pgtable.h:6:
->> arch/arm64/include/asm/pgtable.h:344:65: warning: parameter 'addr' set but not used [-Wunused-but-set-parameter]
-     344 | static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
-         |                                                                 ^
-   drivers/gpu/drm/nouveau/nouveau_svm.c:115:24: warning: variable 'priority' set but not used [-Wunused-but-set-variable]
-     115 |         unsigned target, cmd, priority;
-         |                               ^
-   drivers/gpu/drm/nouveau/nouveau_svm.c:929:6: warning: variable 'ret' set but not used [-Wunused-but-set-variable]
-     929 |         int ret;
-         |             ^
-   3 warnings generated.
---
-   In file included from drivers/gpu/drm/nouveau/nouveau_connector.c:30:
-   In file included from include/linux/vga_switcheroo.h:34:
-   In file included from include/linux/fb.h:6:
-   In file included from include/linux/kgdb.h:19:
-   In file included from include/linux/kprobes.h:28:
-   In file included from include/linux/ftrace.h:10:
-   In file included from include/linux/trace_recursion.h:5:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from arch/arm64/include/asm/hardirq.h:17:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/arm64/include/asm/io.h:12:
-   In file included from include/linux/pgtable.h:6:
->> arch/arm64/include/asm/pgtable.h:344:65: warning: parameter 'addr' set but not used [-Wunused-but-set-parameter]
-     344 | static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
-         |                                                                 ^
-   drivers/gpu/drm/nouveau/nouveau_connector.c:1301:7: warning: variable 'entry' set but not used [-Wunused-but-set-variable]
-    1301 |                 u32 entry = ROM16(nv_connector->dcb[0]);
-         |                     ^
-   2 warnings generated.
---
-   In file included from drivers/gpu/drm/nouveau/nvkm/subdev/acr/lsfw.c:22:
-   In file included from drivers/gpu/drm/nouveau/nvkm/subdev/acr/priv.h:3:
-   In file included from drivers/gpu/drm/nouveau/include/nvkm/subdev/acr.h:5:
-   In file included from drivers/gpu/drm/nouveau/include/nvkm/core/subdev.h:4:
-   In file included from drivers/gpu/drm/nouveau/include/nvkm/core/device.h:4:
-   In file included from drivers/gpu/drm/nouveau/include/nvkm/core/oclass.h:3:
-   In file included from drivers/gpu/drm/nouveau/include/nvkm/core/os.h:4:
-   In file included from drivers/gpu/drm/nouveau/include/nvif/os.h:8:
-   In file included from include/linux/pci.h:38:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from arch/arm64/include/asm/hardirq.h:17:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/arm64/include/asm/io.h:12:
-   In file included from include/linux/pgtable.h:6:
->> arch/arm64/include/asm/pgtable.h:344:65: warning: parameter 'addr' set but not used [-Wunused-but-set-parameter]
-     344 | static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
-         |                                                                 ^
-   drivers/gpu/drm/nouveau/nvkm/subdev/acr/lsfw.c:221:7: warning: variable 'loc' set but not used [-Wunused-but-set-variable]
-     221 |                 u32 loc, sig, cnt, *meta;
-         |                     ^
-   2 warnings generated.
---
-   In file included from drivers/gpu/drm/nouveau/nvkm/subdev/bios/shadow.c:24:
-   In file included from drivers/gpu/drm/nouveau/nvkm/subdev/bios/priv.h:5:
-   In file included from drivers/gpu/drm/nouveau/include/nvkm/subdev/bios.h:4:
-   In file included from drivers/gpu/drm/nouveau/include/nvkm/core/subdev.h:4:
-   In file included from drivers/gpu/drm/nouveau/include/nvkm/core/device.h:4:
-   In file included from drivers/gpu/drm/nouveau/include/nvkm/core/oclass.h:3:
-   In file included from drivers/gpu/drm/nouveau/include/nvkm/core/os.h:4:
-   In file included from drivers/gpu/drm/nouveau/include/nvif/os.h:8:
-   In file included from include/linux/pci.h:38:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from arch/arm64/include/asm/hardirq.h:17:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/arm64/include/asm/io.h:12:
-   In file included from include/linux/pgtable.h:6:
->> arch/arm64/include/asm/pgtable.h:344:65: warning: parameter 'addr' set but not used [-Wunused-but-set-parameter]
-     344 | static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
-         |                                                                 ^
-   drivers/gpu/drm/nouveau/nvkm/subdev/bios/shadow.c:161:10: warning: cast from 'void (*)(const struct firmware *)' to 'void (*)(void *)' converts to incompatible function type [-Wcast-function-type-strict]
-     161 |         .fini = (void(*)(void *))release_firmware,
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   2 warnings generated.
---
-   In file included from drivers/gpu/drm/renesas/rcar-du/rcar_cmm.c:8:
-   In file included from include/linux/io.h:13:
-   In file included from arch/arm64/include/asm/io.h:12:
-   In file included from include/linux/pgtable.h:6:
->> arch/arm64/include/asm/pgtable.h:344:65: warning: parameter 'addr' set but not used [-Wunused-but-set-parameter]
-     344 | static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
-         |                                                                 ^
-   drivers/gpu/drm/renesas/rcar-du/rcar_cmm.c:35:19: warning: unused function 'rcar_cmm_read' [-Wunused-function]
-      35 | static inline int rcar_cmm_read(struct rcar_cmm *rcmm, u32 reg)
-         |                   ^
-   2 warnings generated.
---
-   In file included from drivers/gpu/drm/qxl/qxl_cmd.c:30:
-   In file included from include/drm/drm_util.h:35:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from arch/arm64/include/asm/hardirq.h:17:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/arm64/include/asm/io.h:12:
-   In file included from include/linux/pgtable.h:6:
->> arch/arm64/include/asm/pgtable.h:344:65: warning: parameter 'addr' set but not used [-Wunused-but-set-parameter]
-     344 | static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
-         |                                                                 ^
-   drivers/gpu/drm/qxl/qxl_cmd.c:424:6: warning: variable 'count' set but not used [-Wunused-but-set-variable]
-     424 |         int count = 0;
-         |             ^
-   2 warnings generated.
-..
+---
+base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
+change-id: 20231013-strncpy-drivers-net-wireless-ath-ath6kl-init-c-ffdb45d76eaf
 
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
-vim +/addr +344 arch/arm64/include/asm/pgtable.h
-
-4f04d8f0054511 Catalin Marinas         2012-03-05  343  
-4a169d61c2ede9 Matthew Wilcox (Oracle  2023-08-02 @344) static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
-4a169d61c2ede9 Matthew Wilcox (Oracle  2023-08-02  345) 			      pte_t *ptep, pte_t pte, unsigned int nr)
-42b2547137f5c9 Kefeng Wang             2022-05-12  346  {
-4a169d61c2ede9 Matthew Wilcox (Oracle  2023-08-02  347) 	page_table_check_ptes_set(mm, ptep, pte, nr);
-3ba82bb647345d Ryan Roberts            2023-10-05  348  	__sync_cache_and_tags(pte, nr);
-4a169d61c2ede9 Matthew Wilcox (Oracle  2023-08-02  349) 
-4a169d61c2ede9 Matthew Wilcox (Oracle  2023-08-02  350) 	for (;;) {
-3ba82bb647345d Ryan Roberts            2023-10-05  351  		__check_safe_pte_update(mm, ptep, pte);
-3ba82bb647345d Ryan Roberts            2023-10-05  352  		set_pte(ptep, pte);
-4a169d61c2ede9 Matthew Wilcox (Oracle  2023-08-02  353) 		if (--nr == 0)
-4a169d61c2ede9 Matthew Wilcox (Oracle  2023-08-02  354) 			break;
-4a169d61c2ede9 Matthew Wilcox (Oracle  2023-08-02  355) 		ptep++;
-4a169d61c2ede9 Matthew Wilcox (Oracle  2023-08-02  356) 		addr += PAGE_SIZE;
-4a169d61c2ede9 Matthew Wilcox (Oracle  2023-08-02  357) 		pte_val(pte) += PAGE_SIZE;
-4a169d61c2ede9 Matthew Wilcox (Oracle  2023-08-02  358) 	}
-42b2547137f5c9 Kefeng Wang             2022-05-12  359  }
-4a169d61c2ede9 Matthew Wilcox (Oracle  2023-08-02  360) #define set_ptes set_ptes
-42b2547137f5c9 Kefeng Wang             2022-05-12  361  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
