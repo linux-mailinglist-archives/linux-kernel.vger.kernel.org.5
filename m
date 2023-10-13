@@ -2,272 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 863B27C7DA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 08:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2017C7DA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 08:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbjJMGVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 02:21:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60068 "EHLO
+        id S229744AbjJMGX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 02:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjJMGVN (ORCPT
+        with ESMTP id S229713AbjJMGX5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 02:21:13 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C6295
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 23:21:11 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-5892832f8daso2303939a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 23:21:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697178071; x=1697782871; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=tA3T6ffqTUSrZosuHoYVpl+wZSfwIDwgFkKekOAsK9o=;
-        b=COglcYPLDdhfr4eHt0WIfUyxg1OGHCOfoBk87Zpsm5aIohfos9elnPDW546dF0kh7D
-         bRyv1P9OpJOyMMasplXA6ID2ZgbfRKj+T8CNWAXROd9bDN2PfTRoLjz3cpDPYxgbBYlP
-         8oEXoE3rcPqOnWWpiZ4RhgpbDVVrwMnZxetSKf0eYzV31Jog9SwYGXTTRyIwtU9TAugV
-         76E08vrcdVpqZjQRXm9e6unQ8x0EsEy7Br1SsbHTeme/X1XvVU46R3ZD9IcR7HhB5RM9
-         Zo4nbcABIr6PC1uM6E25v4XJ30sZpe838S+uSgcg0hZLdwsd1Y7XO0UYTMoouZ9O2PMc
-         nlGw==
+        Fri, 13 Oct 2023 02:23:57 -0400
+Received: from mail-oi1-f206.google.com (mail-oi1-f206.google.com [209.85.167.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA1ABD
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 23:23:49 -0700 (PDT)
+Received: by mail-oi1-f206.google.com with SMTP id 5614622812f47-3ae214a02a6so2895643b6e.3
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 23:23:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697178071; x=1697782871;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tA3T6ffqTUSrZosuHoYVpl+wZSfwIDwgFkKekOAsK9o=;
-        b=I97TiXEzhe45mxQaEo9b8akUsNmmw05lDniRFE1cVYN1dmEbGyIPF53jAmDodkxGmE
-         w/RXpVHwnz3NmRv2EOAChLQ2sm9j34HbjmA5ojRnm/y6uVnY7q3Oo/MP9HKazZAWVJrD
-         uW/vjj6U6DoPeYdD0hjoiB+tRFp4RLPia53afhJ2b5BCWtfyRB3Tqa5Puu9jHv/sCKt6
-         nKAA9cWImMfTzUa7nyL+fTYDR21ip2CXtHQV/kS26mC1IyqrOwYZ6TE7EguTUJvZ5fhL
-         gvWsoebxZrM58J5kz27ZR8ewdzGGzwP6fshCACM4/wPxJaJFP7ToRz0uE3p3Jbu3+pdn
-         dujQ==
-X-Gm-Message-State: AOJu0YysNDfUspo8v5TDBwRsp5ulnTNTOKQf+Z5rErtztKl+rz1zsyzQ
-        EfoysuYCMODqFL+MxCdNHP37PMlUCOysoIIR5pnZVg==
-X-Google-Smtp-Source: AGHT+IFZ+pL82MyXM/X/IJxaBH0c49aPIMZEdAZOf4x7shD8y97QLvZK+zaruKcveSJlE9LWNLPzXuvon4X4ePIdbpE=
-X-Received: by 2002:a17:90b:3942:b0:27d:1a75:5b98 with SMTP id
- oe2-20020a17090b394200b0027d1a755b98mr7607797pjb.12.1697178070755; Thu, 12
- Oct 2023 23:21:10 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697178229; x=1697783029;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ehp3s3wmDK8jWuZJe23c3aGn8VEvCoZ9nLJEqHmk/rs=;
+        b=SL+Lmqan5rlzZa+ETQvjN3FUoJMS5kXCIuGfrv2Yn38HcxfSW3nbCaIp1kTtkOJEO4
+         K23G+zrzv/a7CLsMtelu2WVC4nQ2Fw7IdIHQcTLP86HD6pz7Hi5zVNM9xa4rKDu3Qo6Y
+         Ap6w9OWuAH2lr+nXaR0wUB/B8xDXhtJD9CwZWMcqg+Fy3YnwIL2gB6cP3PQ1+DKYgA5z
+         MzJpzu/hhq7uX1wWSaa62z362JuYH5fvlUU6smCRtZ9fvMLQL6WQvjGOeCawIVYjgmnQ
+         ZFU3ZIvH50DAtaAwjgDiDA9VOFNz7qzNvtjybXdrC6/JoUTiWDlns3FqKSw/R4Yko4Yo
+         dMIQ==
+X-Gm-Message-State: AOJu0Yx+02WK5bygulZWpunWk0a39nCI7duGBwlpaSxEGfnH5rapBHMJ
+        DbUsOqCw6xl6ej+CiQ/wSrNg36ktjg88m9ghqdAa9/J5VQyd
+X-Google-Smtp-Source: AGHT+IHg2nZgrO+niXj572zpjY4FsLb35hqbQeEWxyv1D+nHtPrnDMpcmyFEQtM51ivs/JlvEtZqxFXj2aZ4UCKFt26l9WwUTfl2
 MIME-Version: 1.0
-References: <20230807025343.1939-1-masahisa.kojima@linaro.org>
- <20230807025343.1939-5-masahisa.kojima@linaro.org> <CAC_iWjL3YpZb4ryko1DR9CM1x+VTV8mfnN=AwBR4F09Agc0vRQ@mail.gmail.com>
-In-Reply-To: <CAC_iWjL3YpZb4ryko1DR9CM1x+VTV8mfnN=AwBR4F09Agc0vRQ@mail.gmail.com>
-From:   Masahisa Kojima <masahisa.kojima@linaro.org>
-Date:   Fri, 13 Oct 2023 15:20:59 +0900
-Message-ID: <CADQ0-X8nRyVngMzQbF=Wq5cXiooTNSwk=cWydoSRPFVa3uOwAQ@mail.gmail.com>
-Subject: Re: [PATCH v8 4/5] efivarfs: automatically update super block flag
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jeremy Kerr <jk@ozlabs.org>, linux-efi@vger.kernel.org
+X-Received: by 2002:a05:6808:1916:b0:3ae:2024:837d with SMTP id
+ bf22-20020a056808191600b003ae2024837dmr13896975oib.8.1697178229025; Thu, 12
+ Oct 2023 23:23:49 -0700 (PDT)
+Date:   Thu, 12 Oct 2023 23:23:48 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007634c1060793197c@google.com>
+Subject: [syzbot] [usb?] linux-next boot error: KASAN: slab-out-of-bounds
+ Write in vhci_setup
+From:   syzbot <syzbot+6867a9777f4b8dc4e256@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, i@zenithal.me,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        linux-usb@vger.kernel.org, sfr@canb.auug.org.au, shuah@kernel.org,
+        syzkaller-bugs@googlegroups.com, valentina.manea.m@gmail.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ilias,
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    f9a6bea13184 Add linux-next specific files for 20231012
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1534d829680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9e549f76cbaa1b13
+dashboard link: https://syzkaller.appspot.com/bug?extid=6867a9777f4b8dc4e256
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/db1637d9c577/disk-f9a6bea1.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/16c1010b94c4/vmlinux-f9a6bea1.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/f804f5e468c9/bzImage-f9a6bea1.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6867a9777f4b8dc4e256@syzkaller.appspotmail.com
+
+usb usb4: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+usb usb4: Product: Dummy host controller
+usb usb4: Manufacturer: Linux 6.6.0-rc5-next-20231012-syzkaller dummy_hcd
+usb usb4: SerialNumber: dummy_hcd.3
+hub 4-0:1.0: USB hub found
+hub 4-0:1.0: 1 port detected
+dummy_hcd dummy_hcd.4: USB Host+Gadget Emulator, driver 02 May 2005
+dummy_hcd dummy_hcd.4: Dummy host controller
+dummy_hcd dummy_hcd.4: new USB bus registered, assigned bus number 5
+usb usb5: New USB device found, idVendor=1d6b, idProduct=0002, bcdDevice= 6.06
+usb usb5: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+usb usb5: Product: Dummy host controller
+usb usb5: Manufacturer: Linux 6.6.0-rc5-next-20231012-syzkaller dummy_hcd
+usb usb5: SerialNumber: dummy_hcd.4
+hub 5-0:1.0: USB hub found
+hub 5-0:1.0: 1 port detected
+dummy_hcd dummy_hcd.5: USB Host+Gadget Emulator, driver 02 May 2005
+dummy_hcd dummy_hcd.5: Dummy host controller
+dummy_hcd dummy_hcd.5: new USB bus registered, assigned bus number 6
+usb usb6: New USB device found, idVendor=1d6b, idProduct=0002, bcdDevice= 6.06
+usb usb6: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+usb usb6: Product: Dummy host controller
+usb usb6: Manufacturer: Linux 6.6.0-rc5-next-20231012-syzkaller dummy_hcd
+usb usb6: SerialNumber: dummy_hcd.5
+hub 6-0:1.0: USB hub found
+hub 6-0:1.0: 1 port detected
+dummy_hcd dummy_hcd.6: USB Host+Gadget Emulator, driver 02 May 2005
+dummy_hcd dummy_hcd.6: Dummy host controller
+dummy_hcd dummy_hcd.6: new USB bus registered, assigned bus number 7
+usb usb7: New USB device found, idVendor=1d6b, idProduct=0002, bcdDevice= 6.06
+usb usb7: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+usb usb7: Product: Dummy host controller
+usb usb7: Manufacturer: Linux 6.6.0-rc5-next-20231012-syzkaller dummy_hcd
+usb usb7: SerialNumber: dummy_hcd.6
+hub 7-0:1.0: USB hub found
+hub 7-0:1.0: 1 port detected
+dummy_hcd dummy_hcd.7: USB Host+Gadget Emulator, driver 02 May 2005
+dummy_hcd dummy_hcd.7: Dummy host controller
+dummy_hcd dummy_hcd.7: new USB bus registered, assigned bus number 8
+usb usb8: New USB device found, idVendor=1d6b, idProduct=0002, bcdDevice= 6.06
+usb usb8: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+usb usb8: Product: Dummy host controller
+usb usb8: Manufacturer: Linux 6.6.0-rc5-next-20231012-syzkaller dummy_hcd
+usb usb8: SerialNumber: dummy_hcd.7
+hub 8-0:1.0: USB hub found
+hub 8-0:1.0: 1 port detected
+gadgetfs: USB Gadget filesystem, version 24 Aug 2004
+vhci_hcd vhci_hcd.0: USB/IP Virtual Host Controller
+vhci_hcd vhci_hcd.0: new USB bus registered, assigned bus number 9
+==================================================================
+BUG: KASAN: slab-out-of-bounds in vhci_setup+0x2d3/0x340 drivers/usb/usbip/vhci_hcd.c:1145
+Write of size 8 at addr ffff8881417e15c0 by task swapper/0/1
+
+CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.6.0-rc5-next-20231012-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:475
+ kasan_report+0xda/0x110 mm/kasan/report.c:588
+ vhci_setup+0x2d3/0x340 drivers/usb/usbip/vhci_hcd.c:1145
+ usb_add_hcd+0x5bc/0x1770 drivers/usb/core/hcd.c:2911
+ vhci_hcd_probe+0x12c/0x460 drivers/usb/usbip/vhci_hcd.c:1363
+ platform_probe+0xff/0x1e0 drivers/base/platform.c:1404
+ call_driver_probe drivers/base/dd.c:579 [inline]
+ really_probe+0x234/0xc90 drivers/base/dd.c:658
+ __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
+ __device_attach_driver+0x1d4/0x300 drivers/base/dd.c:958
+ bus_for_each_drv+0x157/0x1d0 drivers/base/bus.c:457
+ __device_attach+0x1e8/0x4b0 drivers/base/dd.c:1030
+ bus_probe_device+0x17c/0x1c0 drivers/base/bus.c:532
+ device_add+0x117e/0x1aa0 drivers/base/core.c:3625
+ platform_device_add+0x316/0x810 drivers/base/platform.c:716
+ platform_device_register_full+0x3ec/0x550 drivers/base/platform.c:844
+ vhci_hcd_init+0x1ad/0x360 drivers/usb/usbip/vhci_hcd.c:1532
+ do_one_initcall+0x128/0x670 init/main.c:1232
+ do_initcall_level init/main.c:1294 [inline]
+ do_initcalls init/main.c:1310 [inline]
+ do_basic_setup init/main.c:1329 [inline]
+ kernel_init_freeable+0x5c2/0x900 init/main.c:1547
+ kernel_init+0x1c/0x2a0 init/main.c:1437
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:291
+ </TASK>
+
+Allocated by task 1:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
+ kasan_kmalloc include/linux/kasan.h:198 [inline]
+ __do_kmalloc_node mm/slab_common.c:1007 [inline]
+ __kmalloc_node_track_caller+0x65/0x130 mm/slab_common.c:1027
+ kvasprintf+0xbd/0x150 lib/kasprintf.c:25
+ kvasprintf_const+0x66/0x190 lib/kasprintf.c:49
+ kobject_set_name_vargs+0x5a/0x130 lib/kobject.c:272
+ dev_set_name+0xc8/0x100 drivers/base/core.c:3428
+ usb_alloc_dev+0xb45/0xdb0 drivers/usb/core/usb.c:696
+ usb_add_hcd+0x3a9/0x1770 drivers/usb/core/hcd.c:2856
+ vhci_hcd_probe+0x12c/0x460 drivers/usb/usbip/vhci_hcd.c:1363
+ platform_probe+0xff/0x1e0 drivers/base/platform.c:1404
+ call_driver_probe drivers/base/dd.c:579 [inline]
+ really_probe+0x234/0xc90 drivers/base/dd.c:658
+ __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
+ __device_attach_driver+0x1d4/0x300 drivers/base/dd.c:958
+ bus_for_each_drv+0x157/0x1d0 drivers/base/bus.c:457
+ __device_attach+0x1e8/0x4b0 drivers/base/dd.c:1030
+ bus_probe_device+0x17c/0x1c0 drivers/base/bus.c:532
+ device_add+0x117e/0x1aa0 drivers/base/core.c:3625
+ platform_device_add+0x316/0x810 drivers/base/platform.c:716
+ platform_device_register_full+0x3ec/0x550 drivers/base/platform.c:844
+ vhci_hcd_init+0x1ad/0x360 drivers/usb/usbip/vhci_hcd.c:1532
+ do_one_initcall+0x128/0x670 init/main.c:1232
+ do_initcall_level init/main.c:1294 [inline]
+ do_initcalls init/main.c:1310 [inline]
+ do_basic_setup init/main.c:1329 [inline]
+ kernel_init_freeable+0x5c2/0x900 init/main.c:1547
+ kernel_init+0x1c/0x2a0 init/main.c:1437
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:291
+
+The buggy address belongs to the object at ffff8881417e15a0
+ which belongs to the cache kmalloc-8 of size 8
+The buggy address is located 27 bytes to the right of
+ allocated 5-byte region [ffff8881417e15a0, ffff8881417e15a5)
+
+The buggy address belongs to the physical page:
+page:ffffea000505f840 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1417e1
+flags: 0x57ff00000000800(slab|node=1|zone=2|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 057ff00000000800 ffff888012c41280 dead000000000122 0000000000000000
+raw: 0000000000000000 0000000080660066 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 1, tgid 1 (swapper/0), ts 10541560946, free_ts 0
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x2cf/0x340 mm/page_alloc.c:1540
+ prep_new_page mm/page_alloc.c:1547 [inline]
+ get_page_from_freelist+0x98f/0x32a0 mm/page_alloc.c:3339
+ __alloc_pages+0x1d0/0x4c0 mm/page_alloc.c:4595
+ alloc_pages_mpol+0x258/0x5f0 mm/mempolicy.c:2133
+ alloc_slab_page mm/slub.c:1870 [inline]
+ allocate_slab+0x251/0x380 mm/slub.c:2017
+ new_slab mm/slub.c:2070 [inline]
+ ___slab_alloc+0x8c7/0x1580 mm/slub.c:3223
+ __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3322
+ __slab_alloc_node mm/slub.c:3375 [inline]
+ slab_alloc_node mm/slub.c:3468 [inline]
+ __kmem_cache_alloc_node+0x131/0x310 mm/slub.c:3517
+ __do_kmalloc_node mm/slab_common.c:1006 [inline]
+ __kmalloc_node_track_caller+0x54/0x130 mm/slab_common.c:1027
+ kstrdup+0x3c/0x70 mm/util.c:62
+ kstrdup_const+0x5f/0x70 mm/util.c:85
+ kvasprintf_const+0x10b/0x190 lib/kasprintf.c:48
+ kobject_set_name_vargs+0x5a/0x130 lib/kobject.c:272
+ dev_set_name+0xc8/0x100 drivers/base/core.c:3428
+ netdev_register_kobject+0xc1/0x3f0 net/core/net-sysfs.c:2031
+ register_netdevice+0xbcb/0x1490 net/core/dev.c:10162
+page_owner free stack trace missing
+
+Memory state around the buggy address:
+ ffff8881417e1480: fc 00 fc fc fc fc 00 fc fc fc fc 00 fc fc fc fc
+ ffff8881417e1500: 06 fc fc fc fc 05 fc fc fc fc 05 fc fc fc fc 00
+>ffff8881417e1580: fc fc fc fc 05 fc fc fc fc fc fc fc fc fc fc fc
+                                           ^
+ ffff8881417e1600: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff8881417e1680: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
 
 
-On Thu, 12 Oct 2023 at 02:00, Ilias Apalodimas
-<ilias.apalodimas@linaro.org> wrote:
->
-> Kojima-san
-> Apologies for the late reply, I just found some to test this.
->
-> On Sun, 6 Aug 2023 at 19:55, Masahisa Kojima <masahisa.kojima@linaro.org> wrote:
-> >
-> > efivar operation is updated when the tee_stmm_efi module is probed.
-> > tee_stmm_efi module supports SetVariable runtime service,
-> > but user needs to manually remount the efivarfs as RW to enable
-> > the write access if the previous efivar operation does not support
-> > SerVariable and efivarfs is mounted as read-only.
-> >
-> > This commit notifies the update of efivar operation to
-> > efivarfs subsystem, then drops SB_RDONLY flag if the efivar
-> > operation supports SetVariable.
->
-> The RO->RW transition works fine and I did manage to test basic stuff
-> like setting up efibootmgr options.  IIUC the RW->RO should be covered
-> by this patchset [0] ?
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Yes.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-> Wouldn't it be better to detect that the tee device of the supplicant
-> closes and use that to switch the permissions?  I get why we need that
-> for the TPM, the entire subsystem needs to send TPM commands *before*
-> the supplicant dies.   But this is not needed for the EFI variables
-> case, we could just remount the FS as RO the moment the supplicant
-> dies.
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-OK, I will add the patch to restore the efivars generic ops when
-tee-supplicant stops.
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-Thanks,
-Masahisa Kojima
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
 
->
-> [0] https://lore.kernel.org/all/20230728134832.326467-1-sumit.garg@linaro.org/
->
-> Regards
-> /Ilias
-> >
-> > Signed-off-by: Masahisa Kojima <masahisa.kojima@linaro.org>
-> > ---
-> >  drivers/firmware/efi/efi.c  |  6 ++++++
-> >  drivers/firmware/efi/vars.c |  8 ++++++++
-> >  fs/efivarfs/super.c         | 33 +++++++++++++++++++++++++++++++++
-> >  include/linux/efi.h         |  8 ++++++++
-> >  4 files changed, 55 insertions(+)
-> >
-> > diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-> > index 53ae25bbb6ac..d2eec5ed8e5e 100644
-> > --- a/drivers/firmware/efi/efi.c
-> > +++ b/drivers/firmware/efi/efi.c
-> > @@ -32,6 +32,7 @@
-> >  #include <linux/ucs2_string.h>
-> >  #include <linux/memblock.h>
-> >  #include <linux/security.h>
-> > +#include <linux/notifier.h>
-> >
-> >  #include <asm/early_ioremap.h>
-> >
-> > @@ -187,6 +188,9 @@ static const struct attribute_group efi_subsys_attr_group = {
-> >         .is_visible = efi_attr_is_visible,
-> >  };
-> >
-> > +struct blocking_notifier_head efivar_ops_nh;
-> > +EXPORT_SYMBOL_GPL(efivar_ops_nh);
-> > +
-> >  static struct efivars generic_efivars;
-> >  static struct efivar_operations generic_ops;
-> >
-> > @@ -427,6 +431,8 @@ static int __init efisubsys_init(void)
-> >                 platform_device_register_simple("efivars", 0, NULL, 0);
-> >         }
-> >
-> > +       BLOCKING_INIT_NOTIFIER_HEAD(&efivar_ops_nh);
-> > +
-> >         error = sysfs_create_group(efi_kobj, &efi_subsys_attr_group);
-> >         if (error) {
-> >                 pr_err("efi: Sysfs attribute export failed with error %d.\n",
-> > diff --git a/drivers/firmware/efi/vars.c b/drivers/firmware/efi/vars.c
-> > index e9dc7116daf1..f654e6f6af87 100644
-> > --- a/drivers/firmware/efi/vars.c
-> > +++ b/drivers/firmware/efi/vars.c
-> > @@ -63,6 +63,7 @@ int efivars_register(struct efivars *efivars,
-> >                      const struct efivar_operations *ops)
-> >  {
-> >         int rv;
-> > +       int event;
-> >
-> >         if (down_interruptible(&efivars_lock))
-> >                 return -EINTR;
-> > @@ -77,6 +78,13 @@ int efivars_register(struct efivars *efivars,
-> >
-> >         __efivars = efivars;
-> >
-> > +       if (efivar_supports_writes())
-> > +               event = EFIVAR_OPS_RDWR;
-> > +       else
-> > +               event = EFIVAR_OPS_RDONLY;
-> > +
-> > +       blocking_notifier_call_chain(&efivar_ops_nh, event, NULL);
-> > +
-> >         pr_info("Registered efivars operations\n");
-> >         rv = 0;
-> >  out:
-> > diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
-> > index e028fafa04f3..0f6e4d223aea 100644
-> > --- a/fs/efivarfs/super.c
-> > +++ b/fs/efivarfs/super.c
-> > @@ -14,11 +14,36 @@
-> >  #include <linux/slab.h>
-> >  #include <linux/magic.h>
-> >  #include <linux/statfs.h>
-> > +#include <linux/notifier.h>
-> >
-> >  #include "internal.h"
-> >
-> >  LIST_HEAD(efivarfs_list);
-> >
-> > +struct efivarfs_info {
-> > +       struct super_block *sb;
-> > +       struct notifier_block nb;
-> > +};
-> > +
-> > +static struct efivarfs_info info;
-> > +
-> > +static int efivarfs_ops_notifier(struct notifier_block *nb, unsigned long event,
-> > +                                void *data)
-> > +{
-> > +       switch (event) {
-> > +       case EFIVAR_OPS_RDONLY:
-> > +               info.sb->s_flags |= SB_RDONLY;
-> > +               break;
-> > +       case EFIVAR_OPS_RDWR:
-> > +               info.sb->s_flags &= ~SB_RDONLY;
-> > +               break;
-> > +       default:
-> > +               return NOTIFY_DONE;
-> > +       }
-> > +
-> > +       return NOTIFY_OK;
-> > +}
-> > +
-> >  static void efivarfs_evict_inode(struct inode *inode)
-> >  {
-> >         clear_inode(inode);
-> > @@ -255,6 +280,12 @@ static int efivarfs_fill_super(struct super_block *sb, struct fs_context *fc)
-> >         if (!root)
-> >                 return -ENOMEM;
-> >
-> > +       info.sb = sb;
-> > +       info.nb.notifier_call = efivarfs_ops_notifier;
-> > +       err = blocking_notifier_chain_register(&efivar_ops_nh, &info.nb);
-> > +       if (err)
-> > +               return err;
-> > +
-> >         INIT_LIST_HEAD(&efivarfs_list);
-> >
-> >         err = efivar_init(efivarfs_callback, (void *)sb, true, &efivarfs_list);
-> > @@ -281,6 +312,8 @@ static int efivarfs_init_fs_context(struct fs_context *fc)
-> >
-> >  static void efivarfs_kill_sb(struct super_block *sb)
-> >  {
-> > +       blocking_notifier_chain_unregister(&efivar_ops_nh, &info.nb);
-> > +       info.sb = NULL;
-> >         kill_litter_super(sb);
-> >
-> >         if (!efivar_is_available())
-> > diff --git a/include/linux/efi.h b/include/linux/efi.h
-> > index 603bba2d6437..17cd628b5c42 100644
-> > --- a/include/linux/efi.h
-> > +++ b/include/linux/efi.h
-> > @@ -1365,6 +1365,14 @@ bool efi_config_table_is_usable(const efi_guid_t *guid, unsigned long table)
-> >
-> >  umode_t efi_attr_is_visible(struct kobject *kobj, struct attribute *attr, int n);
-> >
-> > +/*
-> > + * efivar ops event type
-> > + */
-> > +#define EFIVAR_OPS_RDONLY 0
-> > +#define EFIVAR_OPS_RDWR 1
-> > +
-> > +extern struct blocking_notifier_head efivar_ops_nh;
-> > +
-> >  void efivars_generic_ops_register(void);
-> >  void efivars_generic_ops_unregister(void);
-> >
-> > --
-> > 2.30.2
-> >
+If you want to undo deduplication, reply with:
+#syz undup
