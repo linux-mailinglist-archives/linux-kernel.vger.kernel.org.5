@@ -2,95 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E53D7C8B1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB857C8B06
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232433AbjJMQWK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 13 Oct 2023 12:22:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46994 "EHLO
+        id S232699AbjJMQWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 12:22:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230041AbjJMQVv (ORCPT
+        with ESMTP id S231713AbjJMQWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 12:21:51 -0400
-Received: from postfix2.imaqliq.com (postfix2.imaqliq.com [93.189.151.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 452992691;
-        Fri, 13 Oct 2023 09:20:59 -0700 (PDT)
-Received: from verse.imaqliq.com (verse.imaqliq.com [93.189.151.95])
-        by postfix2.imaqliq.com (Postfix) with ESMTP id 783C61C2B9C;
-        Fri, 13 Oct 2023 19:20:56 +0300 (MSK)
+        Fri, 13 Oct 2023 12:22:30 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 750511FF6;
+        Fri, 13 Oct 2023 09:22:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697214141; x=1728750141;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=8HZ1k3AcAih4bSHLM8xODeQ0GJIR0iLWB3qxJlRJllM=;
+  b=VukHdDA8gkSHlUyex6ih6FP81pLC+Q/OP7XxkUf/C4+En7DwLVLrlTVR
+   Th+UYUocpzFT8EJFQhxG7m7ldCDIYN+6x2qgQjyTdXx3rUjiZmBeb+2XP
+   s5TAiZBmlbJTgZ2XeqhMo9GObLz9XZxdyymEbIcUskmwYqPGDRUwiDFxD
+   CeXpA03jE8DxUvRnjuV8W9s7q1mwN70bDDr/0fZtBWzA2C/AanndBMUap
+   TAcGZUg+al1wapvsjtCpZI5RrBdwwpHLu5IvKDfuqru164/uCuinCsF/3
+   z88VeXIqns2Wh9iVLyTB1IAEgaReJ5T9WqbBbSB/lthNHGBdJr8Tzb+EF
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="382440262"
+X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
+   d="scan'208";a="382440262"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 09:22:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="1002002017"
+X-IronPort-AV: E=Sophos;i="6.03,222,1694761200"; 
+   d="scan'208";a="1002002017"
+Received: from bgras-mobl1.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.59.145])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 09:22:12 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 2F9D3104A05; Fri, 13 Oct 2023 19:22:10 +0300 (+03)
+Date:   Fri, 13 Oct 2023 19:22:10 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dario Faggioli <dfaggioli@suse.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        marcelo.cerri@canonical.com, tim.gardner@canonical.com,
+        khalid.elmously@canonical.com, philip.cox@canonical.com,
+        aarcange@redhat.com, peterx@redhat.com, x86@kernel.org,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv14 5/9] efi: Add unaccepted memory support
+Message-ID: <20231013162210.bqepgz6wnh7uohqq@box>
+References: <20230606142637.5171-1-kirill.shutemov@linux.intel.com>
+ <20230606142637.5171-6-kirill.shutemov@linux.intel.com>
+ <20231010210518.jguawj7bscwgvszv@amd.com>
+ <20231013123358.y4pcdp5fgtt4ax6g@box.shutemov.name>
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-In-Reply-To: <5765a10c-8f75-4bf4-830b-b5fba501d164@linaro.org>
-References: <5765a10c-8f75-4bf4-830b-b5fba501d164@linaro.org>,
-        <OF55521400.7512350F-ON00258A47.003F7254-00258A47.0040E15C@gdc.ru> <20231013141818.adq6eujrx2wueobp@CAB-WSD-L081021>
-Subject: Re: [PATCH v4] tty: serial: meson: fix hard LOCKUP on crtscts mode
-From:   Pavel Krasavin <pkrasavin@imaqliq.com>
-To:     neil.armstrong@linaro.org
-Cc:     "Dmitry Rokosov" <ddrokosov@salutedevices.com>,
-        Pavel Krasavin <pkrasavin@imaqliq.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Jiri Slaby" <jirislaby@kernel.org>,
-        "Kevin Hilman" <khilman@baylibre.com>,
-        "Jerome Brunet" <jbrunet@baylibre.com>,
-        "Martin Blumenstingl" <martin.blumenstingl@googlemail.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org
-Date:   Fri, 13 Oct 2023 16:20:50 +0000
-Message-ID: <OFCBF5B209.BF3CBB33-ON00258A47.0059CADD-00258A47.0059CC5B@gdc.ru>
-X-Mailer: Lotus Domino Web Server Release 12.0.2 November 03, 2022
-X-MIMETrack: Serialize by http on verse/com(Release 12.0.2|November 03, 2022) at 10/13/2023
- 16:20:50,
-        Serialize complete at 10/13/2023 16:20:50,
-        Serialize by Router on verse/com(Release 12.0.2|November 03, 2022) at 10/13/2023
- 16:20:55
-X-KeepSent: CBF5B209:BF3CBB33-00258A47:0059CADD;
- type=4; name=$KeepSent
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-KLMS-Rule-ID: 1
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Lua-Profiles: 180614 [Oct 13 2023]
-X-KLMS-AntiSpam-Version: 6.0.0.2
-X-KLMS-AntiSpam-Envelope-From: pkrasavin@imaqliq.com
-X-KLMS-AntiSpam-Rate: 10
-X-KLMS-AntiSpam-Status: not_detected
-X-KLMS-AntiSpam-Method: none
-X-KLMS-AntiSpam-Auth: dmarc=fail header.from=imaqliq.com policy=none;spf=softfail smtp.mailfrom=imaqliq.com;dkim=none
-X-KLMS-AntiSpam-Info: LuaCore: 539 539 807534d9021bfe9ca369c363d15ac993cd93d4d9, {rep_avail}, {Tracking_arrow_text}, {Tracking_from_domain_doesnt_match_to}, verse.imaqliq.com:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;gdc.ru:7.1.1;93.189.151.95:7.1.2;imaqliq.com:7.1.1, FromAlignment: s, {Tracking_dmark_f}, ApMailHostAddress: 93.189.151.95
-X-MS-Exchange-Organization-SCL: -1
-X-KLMS-AntiSpam-Interceptor-Info: scan successful
-X-KLMS-AntiPhishing: Clean, bases: 2023/10/13 15:28:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2023/10/13 14:32:00 #22183459
-X-KLMS-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231013123358.y4pcdp5fgtt4ax6g@box.shutemov.name>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dmitry, Neil,
+On Fri, Oct 13, 2023 at 03:33:58PM +0300, Kirill A. Shutemov wrote:
+> > While testing SNP guests running today's tip/master (ef19bc9dddc3) I ran
+> > into what seems to be fairly significant lock contention due to the
+> > unaccepted_memory_lock spinlock above, which results in a constant stream
+> > of soft-lockups until the workload gets all its memory accepted/faulted
+> > in if the guest has around 16+ vCPUs.
+> > 
+> > I've included the guest dmesg traces I was seeing below.
+> > 
+> > In this case I was running a 32 vCPU guest with 200GB of memory running on
+> > a 256 thread EPYC (Milan) system, and can trigger the above situation fairly
+> > reliably by running the following workload in a freshly-booted guests:
+> > 
+> >   stress --vm 32 --vm-bytes 5G --vm-keep
+> > 
+> > Scaling up the number of stress threads and vCPUs should make it easier
+> > to reproduce.
+> > 
+> > Other than unresponsiveness/lockup messages until the memory is accepted,
+> > the guest seems to continue running fine, but for large guests where
+> > unaccepted memory is more likely to be useful, it seems like it could be
+> > an issue, especially when consider 100+ vCPU guests.
+> 
+> Okay, sorry for delay. It took time to reproduce it with TDX.
+> 
+> I will look what can be done.
 
------ "Neil Armstrong" <neil.armstrong@linaro.org> писал(а): -----
->> On 13/10/2023 16:18, Dmitry Rokosov wrote:
->> I believe it would be necessary to include a 'Fixes' tag for that. Neil,
->> what do you think?
->> Since a HARDLOCKUP is an undesirable situation, I don't think we want to
->> have it in the LTS kernels either.
+Could you check if the patch below helps?
 
-> Yes, and please keep the previous Reviewed-by Dmitry and I added on v3 and send a v5 with the Fixes added.
-Sorry for this.
-
-> It should be:
-> Fixes: ff7693d079e5 ("ARM: meson: serial: add MesonX SoC on-chip uart driver")
-Got it.
-
-> Hopefully it will be the last iteration.
-I'll do my best. Thank you for your work on this patch.
-
-Regards,
-Pavel.
+diff --git a/drivers/firmware/efi/unaccepted_memory.c b/drivers/firmware/efi/unaccepted_memory.c
+index 853f7dc3c21d..591da3f368fa 100644
+--- a/drivers/firmware/efi/unaccepted_memory.c
++++ b/drivers/firmware/efi/unaccepted_memory.c
+@@ -8,6 +8,14 @@
+ /* Protects unaccepted memory bitmap */
+ static DEFINE_SPINLOCK(unaccepted_memory_lock);
+ 
++struct accept_range {
++	struct list_head list;
++	unsigned long start;
++	unsigned long end;
++};
++
++static LIST_HEAD(accepting_list);
++
+ /*
+  * accept_memory() -- Consult bitmap and accept the memory if needed.
+  *
+@@ -24,6 +32,7 @@ void accept_memory(phys_addr_t start, phys_addr_t end)
+ {
+ 	struct efi_unaccepted_memory *unaccepted;
+ 	unsigned long range_start, range_end;
++	struct accept_range range, *entry;
+ 	unsigned long flags;
+ 	u64 unit_size;
+ 
+@@ -80,7 +89,25 @@ void accept_memory(phys_addr_t start, phys_addr_t end)
+ 
+ 	range_start = start / unit_size;
+ 
++	range.start = start;
++	range.end = end;
++retry:
+ 	spin_lock_irqsave(&unaccepted_memory_lock, flags);
++
++	list_for_each_entry(entry, &accepting_list, list) {
++		if (entry->end < start)
++			continue;
++		if (entry->start > end)
++			continue;
++		spin_unlock_irqrestore(&unaccepted_memory_lock, flags);
++
++		/* Somebody else accepting the range */
++		cpu_relax();
++		goto retry;
++	}
++
++	list_add(&range.list, &accepting_list);
++
+ 	for_each_set_bitrange_from(range_start, range_end, unaccepted->bitmap,
+ 				   DIV_ROUND_UP(end, unit_size)) {
+ 		unsigned long phys_start, phys_end;
+@@ -89,9 +116,15 @@ void accept_memory(phys_addr_t start, phys_addr_t end)
+ 		phys_start = range_start * unit_size + unaccepted->phys_base;
+ 		phys_end = range_end * unit_size + unaccepted->phys_base;
+ 
++		spin_unlock_irqrestore(&unaccepted_memory_lock, flags);
++
+ 		arch_accept_memory(phys_start, phys_end);
++
++		spin_lock_irqsave(&unaccepted_memory_lock, flags);
+ 		bitmap_clear(unaccepted->bitmap, range_start, len);
+ 	}
++
++	list_del(&range.list);
+ 	spin_unlock_irqrestore(&unaccepted_memory_lock, flags);
+ }
+ 
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
