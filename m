@@ -2,147 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D867C8B9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A0CE7C8B9D
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231459AbjJMQim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 12:38:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54210 "EHLO
+        id S231453AbjJMQjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 12:39:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbjJMQih (ORCPT
+        with ESMTP id S230387AbjJMQjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 12:38:37 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F747BE
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:38:35 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d9a7a3e17d1so2533190276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:38:35 -0700 (PDT)
+        Fri, 13 Oct 2023 12:39:04 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C58EDC
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:39:01 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-53db3811d8fso4682065a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:39:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1697215114; x=1697819914; darn=vger.kernel.org;
+        d=linux-foundation.org; s=google; t=1697215139; x=1697819939; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=85tz8MZnQIy0CUyHXD4OwO6hFEU+0OOkrrzLhDAPynw=;
-        b=Q90R7Tdrw7oRx2g7QAuiOQfZ0moqLRi0ko1qyZhnLu68DdroxUEZIZKnYfrcTlEKHZ
-         F2o9IHgWzk8aHLHfIF14T7v2rkjG2OaTJntJhFE020tmKlxjtdvweSw81h/GmEDVdT9A
-         obdHXgUydPNnob+3r8KdEv1ojDVBnCdthXzgdmq56O3rNndoRI6ecYVSF13Q5/GpIJAG
-         1PGe5u0iFbpoIMhdrS5/6EYJOBP4xVIj6gT6rMzbL535Bqnu3JiRuURSrChrMOZkF1HY
-         J7lJIBRJCJsY8ji8W3H64++Bt/h22HUxEe9ijrUNRiqs5KdQxqiKKlyVD4AUGDpkk5T7
-         c1Jg==
+        bh=DusE41HCZYYOq6cvLQapgn6LNZ8b2XM66rg5HL3Un08=;
+        b=XD9i1GsA+QBYeT85JXXUGdhCfhLPaWJqYfHiQ43m5dpO6dsoUqHAxVcrKzgOVV9JND
+         BIr+UVws5TVINE+xKF05PvmYmQl9IZWYDVOt6y0jbUcaHqrb6XpDUyX0fb1F3AEnDlYC
+         5Ibw+SZAHM5/5g4SAdUeAckQYo0WbOTPbaOBc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697215114; x=1697819914;
+        d=1e100.net; s=20230601; t=1697215139; x=1697819939;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=85tz8MZnQIy0CUyHXD4OwO6hFEU+0OOkrrzLhDAPynw=;
-        b=mC8ZieJbPzGJay+ZWc2+PpokpMvFcVfBYPtJQvwIk0l/GZqN1o+WB5kk5njkpx2dR6
-         jwmTipGZMQs8NWvChOQRzVY9cERma8rz1BtkPVwfNbP4PkZlCuIw8E1INp8XfYcdsZDG
-         4uFVNlm//0F4HHrSR2qFGOx/lCl8uVGz3R10zdsGrCQRhhwNl5McL2hnsrfVywcxH2Bj
-         AOMWwDjyRr3sGdDzC6Xz1/t/SIdSGy6myXITA4FLSa+blyUmvZqs5pRvpIX/pimW5AjX
-         I4fXkC/rpFMO81PSoZGWenIG9skuRBIA9lpzLNPaDL/09cp38bMo/KUoGLfATfYWLbmD
-         nZmg==
-X-Gm-Message-State: AOJu0YxEo5p7OqQLz00lIphXrcdeMTdB9gYWPJ9bpes6NV+cBRTf6kCT
-        tB/W6HhpuhQu9THlq/5GdxO0DXTQRffHaKkGOQOd
-X-Google-Smtp-Source: AGHT+IEIaSBfASZ5Mn1dNgyH878ixt7Ja/xhQg8a+sIaxL+NLRUpQv75KfQ3z3OfydJhIWt+cgU+2xUOjDRn5uIOySM=
-X-Received: by 2002:a25:8f8c:0:b0:d89:f292:6e80 with SMTP id
- u12-20020a258f8c000000b00d89f2926e80mr26964031ybl.35.1697215114724; Fri, 13
- Oct 2023 09:38:34 -0700 (PDT)
+        bh=DusE41HCZYYOq6cvLQapgn6LNZ8b2XM66rg5HL3Un08=;
+        b=ITkTC081GQZcyto1GCkX0Eqv7rA3obRIkP1WHGB/o0a8RGQP0yaGW9ePa5OfK3eraX
+         4ASpv2+cTYLgFNDl0o7KTdZFif7d/GWCnFfdf49FUT1c/d4S6R4Mk1invTvkfH5dRBWm
+         7SkjFyl9ke5GDoMgQjT5f1BAg5H1Ek/BK56Mws2ECdDRlyc2N99LkeiyYg79Jntx+0aX
+         CAL6TA/y8oLf1bwAeFXQExTaJefRu1ZuOcsr/LmDMXtGrHgTltPU4iv85z83daWScetB
+         ZWOCSj7tL4ddLei58QWK6PfDvxeOMpzIyFskp+wIAVlwdMR8HkX+PSDKYW3dR7oBlqOS
+         qdNA==
+X-Gm-Message-State: AOJu0YyU7PizvRjZK6EJhumzr4uIYyso6HX8+EL38fhqq+XWSFdTHQFC
+        VT5n+p6lLA5j9P2Y1UdS5QgggM3vdRcCAstyfNGYdg==
+X-Google-Smtp-Source: AGHT+IFiXIldoLnYnc735weMfGEdmBPsiJo0vdrw7HsuK7Kk3i6+rHpB6vDiHUbDeR2RjG8aCIMxTQ==
+X-Received: by 2002:a50:ccdb:0:b0:53d:a18d:73b4 with SMTP id b27-20020a50ccdb000000b0053da18d73b4mr609466edj.12.1697215139429;
+        Fri, 13 Oct 2023 09:38:59 -0700 (PDT)
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com. [209.85.218.51])
+        by smtp.gmail.com with ESMTPSA id w22-20020aa7dcd6000000b00536e03f62bcsm11730560edu.59.2023.10.13.09.38.57
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Oct 2023 09:38:57 -0700 (PDT)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-9ae7383b7ecso726363066b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:38:57 -0700 (PDT)
+X-Received: by 2002:a17:906:7949:b0:9a5:c38d:6b75 with SMTP id
+ l9-20020a170906794900b009a5c38d6b75mr607299ejo.15.1697215136941; Fri, 13 Oct
+ 2023 09:38:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231012215518.GA4048@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20231013-karierte-mehrzahl-6a938035609e@brauner> <CAHC9VhTQFyyE59A3WG3Z0xkP6m31h1M0bvS=yihE7ukpUiDMug@mail.gmail.com>
- <20231013-hakte-sitzt-853957a5d8da@brauner>
-In-Reply-To: <20231013-hakte-sitzt-853957a5d8da@brauner>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Fri, 13 Oct 2023 12:38:24 -0400
-Message-ID: <CAHC9VhQ2hX8QvQagt+J7V2OBtiSXctufVcVj0fi1bQEsduWD4Q@mail.gmail.com>
-Subject: Re: [PATCH] audit,io_uring: io_uring openat triggers audit reference
- count underflow
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Dan Clash <daclash@linux.microsoft.com>,
-        linux-kernel@vger.kernel.org, axboe@kernel.dk,
-        linux-fsdevel@vger.kernel.org, dan.clash@microsoft.com,
-        audit@vger.kernel.org, io-uring@vger.kernel.org
+References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
+ <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
+ <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
+ <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
+ <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
+ <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
+ <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAFULd4Zp-eDsxpStBznMHUE3OcHZ97NAZrZEjJW63oEFWtM3OQ@mail.gmail.com>
+ <CAFULd4bBeMCBf5_VKWA8Ui=rhQtXf03zFUioq1DeQaYCfP8v=A@mail.gmail.com>
+ <CAHk-=wgUwPruc3MP6=vode2SawVpNgb8-szV1HYoc6E1wAaw=w@mail.gmail.com>
+ <CAHk-=whzhXdRz1UNaQWTSY2ue8biGqfS18VXcEQasQNCyg_AwQ@mail.gmail.com>
+ <CAFULd4ZdfUQszrp6hKzKXosj0-yzizx+-4BZG7SzEpZPCdUFuA@mail.gmail.com>
+ <CAFULd4Y5JocT9yRwS0Zkro-pAHihmOHP2D8fMLR29j8_Gy_nNA@mail.gmail.com> <CAFULd4ZfdWchq9nAQ-YGoaS9OjM-=4Lnd5YbDmrUipbtRgDdTg@mail.gmail.com>
+In-Reply-To: <CAFULd4ZfdWchq9nAQ-YGoaS9OjM-=4Lnd5YbDmrUipbtRgDdTg@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 13 Oct 2023 09:38:38 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whTfDNK9bt24Ton_=Tw6pYYhr5FSei5Wx3MjDJKDcxGcA@mail.gmail.com>
+Message-ID: <CAHk-=whTfDNK9bt24Ton_=Tw6pYYhr5FSei5Wx3MjDJKDcxGcA@mail.gmail.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     Nadav Amit <namit@vmware.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 12:22=E2=80=AFPM Christian Brauner <brauner@kernel.=
-org> wrote:
+On Fri, 13 Oct 2023 at 04:53, Uros Bizjak <ubizjak@gmail.com> wrote:
 >
-> On Fri, Oct 13, 2023 at 11:56:08AM -0400, Paul Moore wrote:
-> > On Fri, Oct 13, 2023 at 11:44=E2=80=AFAM Christian Brauner <brauner@ker=
-nel.org> wrote:
-> > >
-> > > On Thu, 12 Oct 2023 14:55:18 -0700, Dan Clash wrote:
-> > > > An io_uring openat operation can update an audit reference count
-> > > > from multiple threads resulting in the call trace below.
-> > > >
-> > > > A call to io_uring_submit() with a single openat op with a flag of
-> > > > IOSQE_ASYNC results in the following reference count updates.
-> > > >
-> > > > These first part of the system call performs two increments that do=
- not race.
-> > > >
-> > > > [...]
-> > >
-> > > Picking this up as is. Let me know if this needs another tree.
-> >
-> > Whoa.  A couple of things:
-> >
-> > * Please don't merge patches into an upstream tree if all of the
-> > affected subsystems haven't ACK'd the patch.  I know you've got your
-> > boilerplate below about ACKs *after* the merge, which is fine, but I
-> > find it breaks decorum a bit to merge patches without an explicit ACK
-> > or even just a "looks good to me" from all of the relevant subsystems.
+> Maybe we should go with what Clang expects. %a with "i" constraint is
+> also what GCC handles, because
 >
-> I simply read your mail:
->
-> X-Date: Fri, 13 Oct 2023 17:43:54 +0200
-> X-URI: https://lore.kernel.org/lkml/CAHC9VhQcSY9q=3DwVT7hOz9y=3Do3a67BVUn=
-VGNotgAvE6vK7WAkBw@mail.gmail.com
->
-> "I'm not too concerned, either approach works for me, the important bit
->  is moving to an atomic_t/refcount_t so we can protect ourselves
->  against the race.  The patch looks good to me and I'd like to get this
->  fix merged."
->
-> including that "The patch looks good to me [...]" part before I sent out
-> the application message:
+> =E2=80=98i=E2=80=99: An immediate integer operand (one with constant valu=
+e) is
+> allowed. This includes symbolic constants whose values will be known
+> only at assembly time or later.
 
-Some of this is likely due to email races, or far faster than normal
-responses.  When I was writing the email you reference above ("This
-patch looks good to me...") the last email I had from you was asking
-for changes to the patch; since you were suggesting a change I made
-the assumption (which arguably one shouldn't assume things) that you
-were not planning to merge the patch.
+This looks fine to me, and would seem to be the simplest way to have
+both gcc and clang be happy with things.
 
-> X-Date: Fri, 13 Oct 2023 17:44:36 +0200
-> X-URI: https://lore.kernel.org/lkml/20231013-karierte-mehrzahl-6a93803560=
-9e@brauner
->
-> > Regardless, as I mentioned in my last email (I think our last emails
-> > raced a bit), I'm okay with this change, please add my ACK.
->
-> It's before the weekend and we're about to release -rc6. This thing
-> needs to be in -next, you said it looks good to you in a prior mail. I'm
-> not sure why I'm receiving this mail apart from the justified
-> clarification about -stable although that was made explicit in your
-> prior mail as well.
+All these uses seem to be immediate addresses, as any actual dynamic
+ones will use a proper "m" constraint (and no operand modifiers)
 
-I hope I explained the intent in my last email a bit more clearly with
-the explanation above.  Regardless, I think the lessons to be learned
-is that I won't assume that your suggestion of changes and merging a
-patch are mutually exclusive, and just to be on the safe side I would
-ask that you not merge audit, LSM, or SELinux related patches without
-an explicit ACK from those subsystems.  Hopefully that should prevent
-things like this from happening again.
-
---=20
-paul-moore.com
+               Linus
