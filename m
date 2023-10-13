@@ -2,109 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9C47C8ECB
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 23:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4927F7C8ECD
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 23:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232157AbjJMVMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 17:12:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60548 "EHLO
+        id S232197AbjJMVMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 17:12:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231553AbjJMVME (ORCPT
+        with ESMTP id S231553AbjJMVMu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 17:12:04 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56646BF
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 14:12:03 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9b64b98656bso399375066b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 14:12:03 -0700 (PDT)
+        Fri, 13 Oct 2023 17:12:50 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC292C0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 14:12:48 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-538e8eca9c1so4365103a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 14:12:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697231522; x=1697836322; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=UHVs5ZMbCMnK4OZxIw3w4X3jAnHxQSIJjis2sL1D3HI=;
-        b=dO1GIqemepXjKGmg3lbpqPOar2nZH1kZ3q1HZ8PumN652eubsrxfpovlesXbIiWea0
-         TzSK2tE9GRnVgJeuN20VbS+sZHfKhw3w+DFLwOQnJunWnKtmFzcEQYy4h7I6unhWhjTC
-         DXnucm7AwN6816jyQ1rZ9l7EM9k0vKpfyUaio=
+        d=google.com; s=20230601; t=1697231567; x=1697836367; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=65Li0CJUc3AAYY2ID9vtBx9Y6C6M7aGLDvXjXcw/aCw=;
+        b=mBaaSXK1I5ptvwYwXEbZNty4oAekgLoL8fTQMnd8WgD9uIHa6pKiDxNvTYefxPsm6W
+         V1ooqH5HWVIJ1yvOxIpv3FMwCnk/a70obO163LpHKrEe75h2HEF/oLE90E5rgJxphSSD
+         v1XQiS4wNcFYg1Dr0kPfjLpKo/RG7qOwBSsyjuxchyaXf/Yln5tWyiVUIpEUoOm9VvN6
+         7GLeIMEYEynxwDyR4QG220lf+5SmS2W3nblWhHGtMJ5+3NVx1TX47ZlJxb4sIORfh3MP
+         rmdNb7tufK6h/8pOz3FCP7oUkpmrnqhGsNYVjKZMIB8p7NKqdVkRW0MeL8EHcH1Ud65Z
+         QAMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697231522; x=1697836322;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UHVs5ZMbCMnK4OZxIw3w4X3jAnHxQSIJjis2sL1D3HI=;
-        b=qAUAJA2aJwGTt2JoTjq9FsXtc+JCuxLXr4Fa6i9K27xztkVMS9EGrYMe3IXUjjl00S
-         dEvaWEIEXE5qc+Pd8scmcQyjNwNwD0uHGvxdqxXc7i4AxGD5DEnnkve27gRz2rnPY1S0
-         w2x/OMolkIkSNgHr8S0ne+L0IN4m4tHgeaGYOxH4Wqo1TAfRfCzX5I6k6UgDTa+qZ/2T
-         mbmzAgH6AeC5VhsME7y/8MvzpEA8nIxXgU+/WIRbPCF6aIPWPX2AM5ArNQ6SYHJESBKB
-         uauVOqS4y7DkK+pMvSCNHssGYSr1sHUKF9qQcq5pyBnPg8+Qh0TnDXxdk+8vd7mKAa5B
-         UTQA==
-X-Gm-Message-State: AOJu0Yychjp6/FEyOcaqIyKiFYnj7j5b3FZkIZlkgcEpLwQNwh7f38S+
-        L0pAxMNRIAZXHvYUv5QpE7beRqCCx7SrpMdIlvT0MQ==
-X-Google-Smtp-Source: AGHT+IEuNA+Q2Yxxws7amOJuXWe3ey6jbnUkGbWIJda+AVzB6s8jOrXT89FhBxT8kIo26PoR154bP2xzv0Ano/B3pdA=
-X-Received: by 2002:a17:907:60cb:b0:9be:7b67:1673 with SMTP id
- hv11-20020a17090760cb00b009be7b671673mr337821ejc.1.1697231521525; Fri, 13 Oct
- 2023 14:12:01 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697231567; x=1697836367;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=65Li0CJUc3AAYY2ID9vtBx9Y6C6M7aGLDvXjXcw/aCw=;
+        b=H+LE/JZDV4KAUvEeSWhT0Nf0W0LLB+KDNbAzOfORC0saX0DQB8PmzV/8E1dIb8kPVC
+         loL+y0I3uJmp38wXy0wUq9HypLvxVvi+3ziu3kwQtooO/o/sUXTmn3b7VK5Pi14jGJzd
+         b/dyFKSdqZ8iroK0F2qavH3WXgG8t9Hu4Ub6JLxLsFEmArEtRdJ240Ym0WlUZz8SB9iQ
+         CZhMXPhGUYq+QOpZ1WJugzoXhSb+wj8JXGOS+x6bJKFppJy5LgPx8CvMh7SO96fVSkkg
+         JQ/rSrbY54XWeOml0djZxqradHWsJdlSC+1iZFT4a1t7E/4wwWdPu9o6yY5jvw+fMV7T
+         bi4w==
+X-Gm-Message-State: AOJu0YyYiFGasvY+9hidcdrmQEiZtxT9ZtRUc/Rk4I5ccga4ErDbKzje
+        g6gZVR/vo/liLaEVM0J5Lyw4sEFcDo7IZVoW9TzLlWEx/ELr7if2J9XRoQ==
+X-Google-Smtp-Source: AGHT+IECae+iT+rBLZo5NuHqthDxyRPk1+BH5q2rVfgRV9e5y2Dk1JwjKBHx5Cq7DDrLHjTGu8UXwVnF8HWTbbm75no=
+X-Received: by 2002:a05:6402:2707:b0:53e:1434:25db with SMTP id
+ y7-20020a056402270700b0053e143425dbmr5372450edd.23.1697231567170; Fri, 13 Oct
+ 2023 14:12:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231013200851.347042-1-robh@kernel.org>
-In-Reply-To: <20231013200851.347042-1-robh@kernel.org>
-From:   Simon Glass <sjg@chromium.org>
-Date:   Fri, 13 Oct 2023 14:11:50 -0700
-Message-ID: <CAPnjgZ0Uh7RTvYfLjEL7g1NjC1pO8-xJuj9RBSVVnwviAwzF0Q@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: Drop kernel copy of common reserved-memory bindings
-To:     Rob Herring <robh@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Julien Massot <julien.massot@iot.bzh>,
-        Trevor Wu <trevor.wu@mediatek.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org
+References: <20231012-strncpy-drivers-net-phy-nxp-tja11xx-c-v1-1-5ad6c9dff5c4@google.com>
+ <15af4bc4-2066-44bc-8d2e-839ff3945663@lunn.ch> <CAFhGd8pmq3UKBE_6ZbLyvRRhXJzaWMQ2GfosvcEEeAS-n7M4aQ@mail.gmail.com>
+ <0c401bcb-70a8-47a5-bca0-0b9e8e0439a8@lunn.ch>
+In-Reply-To: <0c401bcb-70a8-47a5-bca0-0b9e8e0439a8@lunn.ch>
+From:   Justin Stitt <justinstitt@google.com>
+Date:   Fri, 13 Oct 2023 14:12:34 -0700
+Message-ID: <CAFhGd8p3WzqQu7kT0Pt8Axuv5sKdHJQOLZVEg5x8S_QNwT6bjQ@mail.gmail.com>
+Subject: Re: [PATCH] net: phy: tja11xx: replace deprecated strncpy with ethtool_sprintf
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_SPF_WL
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Oct 2023 at 13:45, Rob Herring <robh@kernel.org> wrote:
+On Fri, Oct 13, 2023 at 1:13=E2=80=AFPM Andrew Lunn <andrew@lunn.ch> wrote:
 >
-> The common reserved-memory bindings have recently been copied from the
-> kernel tree into dtschema. The preference is to host common, stable
-> bindings in dtschema. As reserved-memory is documented in the DT Spec,
-> it meets the criteria.
+> On Fri, Oct 13, 2023 at 12:53:53PM -0700, Justin Stitt wrote:
+> > On Fri, Oct 13, 2023 at 5:22=E2=80=AFAM Andrew Lunn <andrew@lunn.ch> wr=
+ote:
+> > >
+> > > > -     for (i =3D 0; i < ARRAY_SIZE(tja11xx_hw_stats); i++) {
+> > > > -             strncpy(data + i * ETH_GSTRING_LEN,
+> > > > -                     tja11xx_hw_stats[i].string, ETH_GSTRING_LEN);
+> > > > -     }
+> > > > +     for (i =3D 0; i < ARRAY_SIZE(tja11xx_hw_stats); i++)
+> > > > +             ethtool_sprintf(&data, "%s", tja11xx_hw_stats[i].stri=
+ng);
+> > > >  }
+> > >
+> > > I assume you are using "%s" because tja11xx_hw_stats[i].string cannot
+> > > be trusted as a format string? Is this indicating we need an
+> > > ethtool_puts() ?
+> >
+> > Indeed, it would trigger a -Wformat-security warning.
+> >
+> > An ethtool_puts() would be useful for this situation.
 >
-> The v2023.09 version of dtschema is what contains the reserved-memory
-> schemas we depend on, so bump the minimum version to that. Otherwise,
-> references to these schemas will generate errors.
+> Hi Justin
 >
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  Documentation/devicetree/bindings/Makefile    |   2 +-
->  .../remoteproc/renesas,rcar-rproc.yaml        |   2 +-
->  .../bindings/reserved-memory/framebuffer.yaml |  52 -----
->  .../reserved-memory/memory-region.yaml        |  40 ----
->  .../reserved-memory/reserved-memory.txt       |   2 +-
->  .../reserved-memory/reserved-memory.yaml      | 181 ------------------
->  .../reserved-memory/shared-dma-pool.yaml      |  97 ----------
->  .../bindings/sound/mediatek,mt8188-afe.yaml   |   2 +-
->  8 files changed, 4 insertions(+), 374 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/reserved-memory/framebuffer.yaml
->  delete mode 100644 Documentation/devicetree/bindings/reserved-memory/memory-region.yaml
->  delete mode 100644 Documentation/devicetree/bindings/reserved-memory/reserved-memory.yaml
->  delete mode 100644 Documentation/devicetree/bindings/reserved-memory/shared-dma-pool.yaml
+> hyperv/netvsc_drv.c:                    ethtool_sprintf(&p, netvsc_stats[=
+i].name);
+> hyperv/netvsc_drv.c:                    ethtool_sprintf(&p, vf_stats[i].n=
+ame);
+> ethernet/intel/i40e/i40e_ethtool.c:             ethtool_sprintf(&p, i40e_=
+gstrings_priv_flags[i].flag_string);
+> ethernet/intel/i40e/i40e_ethtool.c:             ethtool_sprintf(&p, i40e_=
+gl_gstrings_priv_flags[i].flag_string);
+> ethernet/intel/ice/ice_ethtool.c:                       ethtool_sprintf(&=
+p, ice_gstrings_priv_flags[i].name);
+> ethernet/intel/igc/igc_ethtool.c:                       ethtool_sprintf(&=
+p, igc_gstrings_stats[i].stat_string);
+> ethernet/intel/ixgbe/ixgbe_ethtool.c:                   ethtool_sprintf(&=
+p, ixgbe_gstrings_test[i]);
+> ethernet/netronome/nfp/nfp_net_ethtool.c:                       ethtool_s=
+printf(&data, nfp_self_test[i].name);
+> ethernet/netronome/nfp/nfp_net_ethtool.c:               ethtool_sprintf(&=
+data, nfp_net_et_stats[i + swap_off].name);
+> ethernet/netronome/nfp/nfp_net_ethtool.c:               ethtool_sprintf(&=
+data, nfp_net_et_stats[i - swap_off].name);
+> ethernet/netronome/nfp/nfp_net_ethtool.c:               ethtool_sprintf(&=
+data, nfp_net_et_stats[i].name);
+> ethernet/fungible/funeth/funeth_ethtool.c:                      ethtool_s=
+printf(&p, txq_stat_names[j]);
+> ethernet/fungible/funeth/funeth_ethtool.c:                      ethtool_s=
+printf(&p, xdpq_stat_names[j]);
+> ethernet/fungible/funeth/funeth_ethtool.c:                      ethtool_s=
+printf(&p, rxq_stat_names[j]);
+> ethernet/fungible/funeth/funeth_ethtool.c:                      ethtool_s=
+printf(&p, tls_stat_names[j]);
+> ethernet/amazon/ena/ena_ethtool.c:              ethtool_sprintf(&data, en=
+a_stats->name);
+> ethernet/amazon/ena/ena_ethtool.c:                      ethtool_sprintf(&=
+data, ena_stats->name);
+> ethernet/brocade/bna/bnad_ethtool.c:            ethtool_sprintf(&string, =
+bnad_net_stats_strings[i]);
+> ethernet/pensando/ionic/ionic_stats.c:          ethtool_sprintf(buf, ioni=
+c_lif_stats_desc[i].name);
+> ethernet/pensando/ionic/ionic_stats.c:          ethtool_sprintf(buf, ioni=
+c_port_stats_desc[i].name);
+> ethernet/hisilicon/hns/hns_dsaf_gmac.c:         ethtool_sprintf(&buff, g_=
+gmac_stats_string[i].desc);
+> ethernet/hisilicon/hns/hns_dsaf_xgmac.c:                ethtool_sprintf(&=
+buff, g_xgmac_stats_string[i].desc);
+> vmxnet3/vmxnet3_ethtool.c:                      ethtool_sprintf(&buf, vmx=
+net3_tq_dev_stats[i].desc);
+> vmxnet3/vmxnet3_ethtool.c:                      ethtool_sprintf(&buf, vmx=
+net3_tq_driver_stats[i].desc);
+> vmxnet3/vmxnet3_ethtool.c:                      ethtool_sprintf(&buf, vmx=
+net3_rq_dev_stats[i].desc);
+> vmxnet3/vmxnet3_ethtool.c:                      ethtool_sprintf(&buf, vmx=
+net3_rq_driver_stats[i].desc);
+> vmxnet3/vmxnet3_ethtool.c:              ethtool_sprintf(&buf, vmxnet3_glo=
+bal_stats[i].desc);
 >
 
-Reviewed-by: Simon Glass <sjg@chromium.org>
+Woah, are these all triggering -Wformat-security warnings?
+
+> It looks like there are enough potential users to justify adding
+> it. Do you have the time and patience?
+
+I do :)
+
+Should I create ethtool_puts() and then submit adoption patches
+for it in the same series? Or wait to hear back about how ethtool_puts()
+is received.
+
+>
+>     Andrew
+
+Thanks
+Justin
