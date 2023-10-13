@@ -2,151 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D7F7C8B6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 268817C8B63
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232099AbjJMQbP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 13 Oct 2023 12:31:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54718 "EHLO
+        id S231435AbjJMQbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 12:31:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232280AbjJMQa7 (ORCPT
+        with ESMTP id S232312AbjJMQbh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 12:30:59 -0400
-Received: from postfix2.imaqliq.com (postfix2.imaqliq.com [93.189.151.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D7C12105;
-        Fri, 13 Oct 2023 09:29:31 -0700 (PDT)
-Received: from verse.imaqliq.com (verse.imaqliq.com [93.189.151.95])
-        by postfix2.imaqliq.com (Postfix) with ESMTP id 3867D1C2914;
-        Fri, 13 Oct 2023 19:29:29 +0300 (MSK)
+        Fri, 13 Oct 2023 12:31:37 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE588126;
+        Fri, 13 Oct 2023 09:30:27 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 109A7C433C8;
+        Fri, 13 Oct 2023 16:30:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697214627;
+        bh=vh4TnsBJPXKkBZ4qGrkc49O31rDOcZhRMhVj+HGI4BY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=gviA7DdGJ83WDBASoN7ICKgep7rh2loHKxb5ZbwFtgn7zllg0pzEIh6pMoj1tyMr3
+         4UUeA1TeUgH4Af1srPOkIn6Gnnxy8hxGKJE7T8wQ4XtvxgWp42Lc+dFdrSeFP71b2/
+         CUCF3yQJSy6yXXzelSQcbbM4sLtJrLiZWin8Hfjg7mngS8XRN4vXy8CxagAG27gAHH
+         0MDMHdtHU8YCb6qpeeLvrs/6OQkr8dt4a4Xkucdzh1wZiPqFEb/t2gIC+1OOYTvrlT
+         N/ZrRnhtMCsXpDS+KBAr4VSBqlt1QOchk8svklSkIJmUoiTwR3TKGJT0SQZLSp95u4
+         WUtS6hzwCy+4Q==
+Date:   Fri, 13 Oct 2023 11:30:25 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Shuai Xue <xueshuai@linux.alibaba.com>
+Cc:     chengyou@linux.alibaba.com, kaishen@linux.alibaba.com,
+        yangyicong@huawei.com, will@kernel.org,
+        Jonathan.Cameron@huawei.com, baolin.wang@linux.alibaba.com,
+        robin.murphy@arm.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        rdunlap@infradead.org, mark.rutland@arm.com,
+        zhuo.song@linux.alibaba.com, renyu.zj@linux.alibaba.com
+Subject: Re: [PATCH v7 3/4] drivers/perf: add DesignWare PCIe PMU driver
+Message-ID: <20231013163025.GA1116248@bhelgaas>
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-In-Reply-To: 
-References: 
-Subject: [PATCH v5] tty: serial: meson: fix hard LOCKUP on crtscts mode
-From:   Pavel Krasavin <pkrasavin@imaqliq.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org
-Date:   Fri, 13 Oct 2023 16:29:24 +0000
-Message-ID: <OF43DA36FF.2BD3BB21-ON00258A47.005A8125-00258A47.005A9513@gdc.ru>
-X-Mailer: Lotus Domino Web Server Release 12.0.2 November 03, 2022
-X-MIMETrack: Serialize by http on verse/com(Release 12.0.2|November 03, 2022) at 10/13/2023
- 16:29:24,
-        Serialize complete at 10/13/2023 16:29:24,
-        Serialize by Router on verse/com(Release 12.0.2|November 03, 2022) at 10/13/2023
- 16:29:29
-X-KeepSent: 43DA36FF:2BD3BB21-00258A47:005A8125;
- type=4; name=$KeepSent
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-KLMS-Rule-ID: 1
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Lua-Profiles: 180614 [Oct 13 2023]
-X-KLMS-AntiSpam-Version: 6.0.0.2
-X-KLMS-AntiSpam-Envelope-From: pkrasavin@imaqliq.com
-X-KLMS-AntiSpam-Rate: 10
-X-KLMS-AntiSpam-Status: not_detected
-X-KLMS-AntiSpam-Method: none
-X-KLMS-AntiSpam-Auth: dmarc=fail header.from=imaqliq.com policy=none;spf=softfail smtp.mailfrom=imaqliq.com;dkim=none
-X-KLMS-AntiSpam-Info: LuaCore: 539 539 807534d9021bfe9ca369c363d15ac993cd93d4d9, {rep_avail}, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, verse.imaqliq.com:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;gdc.ru:7.1.1;lore.kernel.org:7.1.1;93.189.151.95:7.1.2;imaqliq.com:7.1.1, FromAlignment: s, {Tracking_dmark_f}, ApMailHostAddress: 93.189.151.95
-X-MS-Exchange-Organization-SCL: -1
-X-KLMS-AntiSpam-Interceptor-Info: scan successful
-X-KLMS-AntiPhishing: Clean, bases: 2023/10/13 15:28:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2023/10/13 14:32:00 #22183459
-X-KLMS-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a2265967-5088-7f17-35e5-29bf1c85c15f@linux.alibaba.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Krasavin <pkrasavin@imaqliq.com>
+On Fri, Oct 13, 2023 at 11:46:44AM +0800, Shuai Xue wrote:
+> 
+> 
+> On 2023/10/13 00:25, Bjorn Helgaas wrote:
+> > On Thu, Oct 12, 2023 at 11:28:55AM +0800, Shuai Xue wrote:
+> >> This commit adds the PCIe Performance Monitoring Unit (PMU) driver support
+> >> for T-Head Yitian SoC chip. Yitian is based on the Synopsys PCI Express
+> >> Core controller IP which provides statistics feature. The PMU is not a PCIe
+> >> Root Complex integrated End Point(RCiEP) device but only register counters
+> >> provided by each PCIe Root Port.
 
-There might be hard lockup if we set crtscts mode on port without RTS/CTS configured:
+IIUC, the PMU is directly integrated into the Root Port: it's
+discovered and operated via the Root Port config space.  If so, I
+wouldn't bother mentioning RCiEP because there's no need to list all
+the things it's *not*.
 
-# stty -F /dev/ttyAML6 crtscts; echo 1 > /dev/ttyAML6; echo 2 > /dev/ttyAML6
-[   95.890386] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-[   95.890857] rcu:     3-...0: (201 ticks this GP) idle=e33c/1/0x4000000000000000 softirq=5844/5846 fqs=4984
-[   95.900212] rcu:     (detected by 2, t=21016 jiffies, g=7753, q=296 ncpus=4)
-[   95.906972] Task dump for CPU 3:
-[   95.910178] task:bash            state:R  running task     stack:0     pid:205   ppid:1      flags:0x00000202
-[   95.920059] Call trace:
-[   95.922485]  __switch_to+0xe4/0x168
-[   95.925951]  0xffffff8003477508
-[   95.974379] watchdog: Watchdog detected hard LOCKUP on cpu 3
-[   95.974424] Modules linked in: 88x2cs(O) rtc_meson_vrtc
+> >> To facilitate collection of statistics the controller provides the
+> >> following two features for each Root Port:
+> >>
+> >> - Time Based Analysis (RX/TX data throughput and time spent in each
+> >>   low-power LTSSM state)
+> >> - Event counters (Error and Non-Error for lanes)
+> >>
+> >> Note, only one counter for each type and does not overflow interrupt.
+> > 
+> > Not sure what "does not overflow interrupt" means.  Does it mean
+> > there's no interrupt generated when the counter overflows?
+> 
+> Yes, exactly. The rootport does NOT generate interrupt when the
+> couter overflows.  I think the assumption hidden in this design is
+> 64-bit counter will not overflow within observable time.
+> 
+> PCIe 5.0 slots can now reach anywhere between ~4GB/sec for a x1 slot
+> up to ~64GB/sec for a x16 slot. The unit of counter is 16 byte.
+> 
+> 	2^64/(64/16*10^9)/60/60/24/365=146 years
+> 
+> so, the counter will not overflow within 146 years.
 
-Possible solution would be to not allow to setup crtscts on such port.
+Certainly a reasonable assumption :)
 
-Tested on S905X3 based board.
+But I'm confused about how many counters there are.  Clearly there are
+two features ((1) time-based analysis and (2) event counters).
 
-Fixes: ff7693d079e5 ("ARM: meson: serial: add MesonX SoC on-chip uart driver")
-Signed-off-by: Pavel Krasavin <pkrasavin@imaqliq.com>
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
-Reviewed-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
----
-v5: added missed Reviewed-by tags, Fixes tag added according to Dmitry and Neil notes
-v4: https://lore.kernel.org/lkml/OF55521400.7512350F-ON00258A47.003F7254-00258A47.0040E15C@gdc.ru/
-More correct patch subject according to Jiri's note
-v3: https://lore.kernel.org/lkml/OF6CF5FFA0.CCFD0E8E-ON00258A46.00549EDF-00258A46.0054BB62@gdc.ru/
-"From:" line added to the mail
-v2: https://lore.kernel.org/lkml/OF950BEF72.7F425944-ON00258A46.00488A76-00258A46.00497D44@gdc.ru/
-braces for single statement removed according to Dmitry's note
-v1: https://lore.kernel.org/lkml/OF28B2B8C9.5BC0CD28-ON00258A46.0037688F-00258A46.0039155B@gdc.ru/
----
+"One counter for each type" suggests there's one counter for
+time-based analysis and a second counter for event counting, but from
+dwc_pcie_pmu_event_add(), it looks like each Root Port might have a
+single counter, and you can decide whether that counter is used for
+time-based analysis or event counting, but you can't do both at the
+same time?  And the event counting is for a single lane, not for the
+link as a whole?
 
---- a/drivers/tty/serial/meson_uart.c	2023-10-12 15:44:02.410538523 +0300
-+++ b/drivers/tty/serial/meson_uart.c	2023-10-12 15:58:06.242395253 +0300
-@@ -380,10 +380,14 @@ static void meson_uart_set_termios(struc
- 	else
- 		val |= AML_UART_STOP_BIT_1SB;
- 
--	if (cflags & CRTSCTS)
--		val &= ~AML_UART_TWO_WIRE_EN;
--	else
-+	if (cflags & CRTSCTS) {
-+		if (port->flags & UPF_HARD_FLOW)
-+			val &= ~AML_UART_TWO_WIRE_EN;
-+		else
-+			termios->c_cflag &= ~CRTSCTS;
-+	} else {
- 		val |= AML_UART_TWO_WIRE_EN;
-+	}
- 
- 	writel(val, port->membase + AML_UART_CONTROL);
- 
-@@ -705,6 +709,7 @@ static int meson_uart_probe(struct platf
- 	u32 fifosize = 64; /* Default is 64, 128 for EE UART_0 */
- 	int ret = 0;
- 	int irq;
-+	bool has_rtscts;
- 
- 	if (pdev->dev.of_node)
- 		pdev->id = of_alias_get_id(pdev->dev.of_node, "serial");
-@@ -732,6 +737,7 @@ static int meson_uart_probe(struct platf
- 		return irq;
- 
- 	of_property_read_u32(pdev->dev.of_node, "fifo-size", &fifosize);
-+	has_rtscts = of_property_read_bool(pdev->dev.of_node, "uart-has-rtscts");
- 
- 	if (meson_ports[pdev->id]) {
- 		return dev_err_probe(&pdev->dev, -EBUSY,
-@@ -762,6 +768,8 @@ static int meson_uart_probe(struct platf
- 	port->mapsize = resource_size(res_mem);
- 	port->irq = irq;
- 	port->flags = UPF_BOOT_AUTOCONF | UPF_LOW_LATENCY;
-+	if (has_rtscts)
-+		port->flags |= UPF_HARD_FLOW;
- 	port->has_sysrq = IS_ENABLED(CONFIG_SERIAL_MESON_CONSOLE);
- 	port->dev = &pdev->dev;
- 	port->line = pdev->id;
+If so, I might word this as:
+
+  Each Root Port contains one counter that can be used for either:
+
+    - Time-Based Analysis (RX/TX data throughput and time spent in
+      each low-power LTSSM state) or
+
+    - Event counting (error and non-error events for a specified lane)
+
+  There is no interrupt for counter overflow.
+
+> >> +	  Enable perf support for Synopsys DesignWare PCIe PMU Performance
+> >> +	  monitoring event on platform including the Yitian 710.
+> > 
+> > Should this mention Alibaba or T-Head?  I don't know how
+> > Alibaba/T-Head/Yitian are all related.
+> 
+> The server chips, named Yitian 710, are custom-built by Alibaba Group's chip
+> development business, T-Head.
+> 
+> 	  Enable perf support for Synopsys DesignWare PCIe PMU Performance
+> 	  monitoring event on platform including the Alibaba Yitian 710.
+> 
+> Is this okay?
+
+Perfect :)
+
+Bjorn
