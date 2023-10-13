@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE107C880C
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 16:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 481D57C880F
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 16:45:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232128AbjJMOo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 10:44:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53876 "EHLO
+        id S232223AbjJMOod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 10:44:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232221AbjJMOoZ (ORCPT
+        with ESMTP id S232242AbjJMOo3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 10:44:25 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37353C9
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 07:44:21 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40651b22977so5492125e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 07:44:21 -0700 (PDT)
+        Fri, 13 Oct 2023 10:44:29 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F2EDD8
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 07:44:26 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-405e48d8e72so5562465e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 07:44:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697208259; x=1697813059; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697208265; x=1697813065; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=R65tSR19h2ERSFEN/PYuOVhJkp4kEom7jNZNDOgm2Dw=;
-        b=bPyns9HJZ8LzVjZbVF6AV0LSRiY1aIiSuNxqsoqUYzJOtxJot51Y+OJJEyUAhNwFTp
-         8TLvxRumhNGo0kdjUzboyrErwFrzHx7pb3oSHh00G2u6O6xSdZQvWJ8b5BhnUlaUNb0u
-         cU3Op11Xiq21mvnnyxT9hOXPuUI/7Uc5+bkqG0jmBVMx8tmgsgknVEaeFQ5e5bCbtY6H
-         8tpWMBvSps6Vr3tx50EUcLE+19wLeJv2UZXDqa85V6qZL7I3u7bBKWXogLrn5XXrFhva
-         FxxdEs82gy6/isN93j/oe9G8vXunxAy4GGbDrgqbMtfi6f88r498JWYoEosNEjkmZfgh
-         9tpg==
+        bh=dUwXwdN/92xgfkRGk4NgyBr2C8cERjjyDL8rj/W6Q4A=;
+        b=OTwi3wI+M8jjUTqc5p0F5r7ZT5RCM8oKQLHjDuMDUaemswXom+zXtKv4O3HOCU39MJ
+         5tDI3YkBLTD5rRMbuoYUmxGqC/mme4ad68tabG1o8RkEYoUhczCY1u+4ETQgrnsWnWjT
+         cwPezC+ihNrTYL+kjViU/cIq2LnOZNsUk903LDjUDfcK8uKCxDrG1wzXEkpSl0kQ2Jjq
+         P6NoIPnE+e8eRMo6aP6JQJAcgIgjkkALYaOT7K1j3i+q8a0nPMa5vFmnUZE6WBdv6Sve
+         CdTwtHJHVjhZog5Sib4ekARMBgjhynLL2CD1jqqGCubqCMW9tMMR/TZ/CrcIkS3o10Ll
+         5zgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697208259; x=1697813059;
+        d=1e100.net; s=20230601; t=1697208265; x=1697813065;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=R65tSR19h2ERSFEN/PYuOVhJkp4kEom7jNZNDOgm2Dw=;
-        b=C1E8YJ7v3TIN8ro6zf6u0/iN+q3DY+WjUJsMnl8lvLeSbQeaB4vhOADVR4jUK4/bWK
-         JVxXtX2EWLtHDP4fDmEtuJzgn6rIEmxSQjR6CnJI0Se/EzHih4VvzVBLrTJOQ4/jpyle
-         955Nu6y44bWTEJoDf8jI7Ss7c5JqYTRjjmwNl+o+/Hkd7jBslr/4K9dCwZSlBaQ/QGMr
-         MYFSeouGWtA8h+tQYXY4xkuw+NqzhmpUzcT2vQoAVz4z69ZTx0R91bpWgL9wZkG0Lc8X
-         yB3zv4HakRhN3JWl57ASEC7cgpFyEGPlH4Z87yQUCepWZvMs2ZBbpOUQSjTpgCnQXObp
-         S71Q==
-X-Gm-Message-State: AOJu0YyKY3SP2X0TybXhp7NS7cLPVd8MzmU0owAzuDztSbjbyCRQlRc1
-        Onc6gC5fmWq3wx4kLsFAPDk=
-X-Google-Smtp-Source: AGHT+IHYPPr6sH0xTh0JgXu27oRZb4vGWPHKDgwKcIcRqvksiJGAB2sO6wYI4wLMOxfcZ4Mm+JGSGQ==
-X-Received: by 2002:adf:8b54:0:b0:32d:9a32:6261 with SMTP id v20-20020adf8b54000000b0032d9a326261mr1801911wra.7.1697208259367;
-        Fri, 13 Oct 2023 07:44:19 -0700 (PDT)
+        bh=dUwXwdN/92xgfkRGk4NgyBr2C8cERjjyDL8rj/W6Q4A=;
+        b=UZCzFFWzEbfhZGBe73mgLm9CjlHhUlgAUyhVJS1p9r1/alubSBaR7PNTyby2qy0Ij4
+         ZfsU8+rSzLXu5TBl8aqtXBcM3H6Ns3pfvb5r6tBqFJxFVzuhhLCfOs60JJsxhtL4ZC68
+         y7l8bvfmQlOAV9KI8PTsmPM4pXHT8TYpTp2PKIREbMIX8N015BXwD+yI29bwG08quF+X
+         /FS2ia0BhQqUiUNFCltuS2Ykwrdvuk0omoj+LfXpQ6ayS6BmNq3xVUTGIwOIT5GleKLF
+         qjPnL01vgm4ezQ3kpJBsXzB1l5fITAo63JcNl1cJ9rbXd27f8s+1B0wiHasAg7JnniIM
+         7DcQ==
+X-Gm-Message-State: AOJu0YwsKl8qHmnpEzfJlfOf1GQLAfNuG3BZaVDn0kaI2AO/TDNunbrd
+        2HoLuS8RnOcLhsWTwsLO5vjHMTkr9ZM=
+X-Google-Smtp-Source: AGHT+IHLyuSifzxEbeDJO3HER84faNj1Duelt7Do8Cm4/ovC64G4DtsR8Hxp0/615lXKfG//X3d1hg==
+X-Received: by 2002:a05:600c:3b9a:b0:3fe:21a6:a18 with SMTP id n26-20020a05600c3b9a00b003fe21a60a18mr24335407wms.3.1697208265187;
+        Fri, 13 Oct 2023 07:44:25 -0700 (PDT)
 Received: from matrix-ESPRIMO-P710 (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
-        by smtp.gmail.com with ESMTPSA id dh13-20020a0560000a8d00b00327cd5e5ac1sm6402480wrb.1.2023.10.13.07.44.18
+        by smtp.gmail.com with ESMTPSA id l40-20020a05600c1d2800b0040596352951sm331816wms.5.2023.10.13.07.44.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 07:44:19 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 16:44:17 +0200
+        Fri, 13 Oct 2023 07:44:24 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 16:44:23 +0200
 From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/6] staging: rtl8192e: Remove unused variable dig_state
-Message-ID: <7bacd7e152a2d044527924d57efdbbaae0f4c9e8.1697127817.git.philipp.g.hortmann@gmail.com>
+Subject: [PATCH 6/6] staging: rtl8192e: Remove unused enums dm_dig_sta and
+ dm_dig_alg
+Message-ID: <0aab74bcda5f582a5fe44a4c1405940d0c8261ad.1697127817.git.philipp.g.hortmann@gmail.com>
 References: <cover.1697127817.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -70,49 +71,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove variable dig_state as it is unused. Remove unused variable
-dig_highpwr_state as well.
+Remove unused enums dm_dig_sta and dm_dig_alg. Remove unused entries of
+enum dm_dig_connect.
 
 Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 ---
- drivers/staging/rtl8192e/rtl8192e/rtl_dm.c | 3 ---
- drivers/staging/rtl8192e/rtl8192e/rtl_dm.h | 2 --
- 2 files changed, 5 deletions(-)
+ drivers/staging/rtl8192e/rtl8192e/rtl_dm.h | 19 -------------------
+ 1 file changed, 19 deletions(-)
 
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
-index 0bd9211500ac..97de404840df 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
-@@ -911,8 +911,6 @@ static void _rtl92e_dm_dig_init(struct net_device *dev)
- {
- 	struct r8192_priv *priv = rtllib_priv(dev);
- 
--	dm_digtable.dig_state		= DM_STA_DIG_MAX;
--	dm_digtable.dig_highpwr_state	= DM_STA_DIG_MAX;
- 	dm_digtable.cur_sta_connect_state = DIG_STA_DISCONNECT;
- 	dm_digtable.pre_sta_connect_state = DIG_STA_DISCONNECT;
- 
-@@ -964,7 +962,6 @@ static void _rtl92e_dm_ctrl_initgain_byrssi_driver(struct net_device *dev)
- 		for (i = 0; i < 3; i++)
- 			rtl92e_set_bb_reg(dev, UFWP, bMaskByte1, 0x8);
- 		fw_dig++;
--		dm_digtable.dig_state = DM_STA_DIG_OFF;
- 	}
- 
- 	if (priv->rtllib->link_state == MAC80211_LINKED)
 diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.h b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.h
-index 12b7d426b6b9..80ac77e269fd 100644
+index 80ac77e269fd..84e673452be4 100644
 --- a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.h
 +++ b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.h
-@@ -56,8 +56,6 @@ struct dig_t {
- 	long		rssi_high_power_lowthresh;
- 	long		rssi_high_power_highthresh;
+@@ -74,12 +74,6 @@ struct dig_t {
+ 	long		rssi_val;
+ };
  
--	u8		dig_state;
--	u8		dig_highpwr_state;
- 	u8		cur_sta_connect_state;
- 	u8		pre_sta_connect_state;
+-enum dm_dig_sta {
+-	DM_STA_DIG_OFF = 0,
+-	DM_STA_DIG_ON,
+-	DM_STA_DIG_MAX
+-};
+-
+ enum dm_ratr_sta {
+ 	DM_RATR_STA_HIGH = 0,
+ 	DM_RATR_STA_MIDDLE = 1,
+@@ -87,22 +81,9 @@ enum dm_ratr_sta {
+ 	DM_RATR_STA_MAX
+ };
  
+-enum dm_dig_alg {
+-	DIG_ALGO_BY_FALSE_ALARM = 0,
+-	DIG_ALGO_BY_RSSI	= 1,
+-	DIG_ALGO_BEFORE_CONNECT_BY_RSSI_AND_ALARM = 2,
+-	DIG_ALGO_BY_TOW_PORT = 3,
+-	DIG_ALGO_MAX
+-};
+-
+ enum dm_dig_connect {
+ 	DIG_STA_DISCONNECT = 0,
+ 	DIG_STA_CONNECT = 1,
+-	DIG_STA_BEFORE_CONNECT = 2,
+-	DIG_AP_DISCONNECT = 3,
+-	DIG_AP_CONNECT = 4,
+-	DIG_AP_ADD_STATION = 5,
+-	DIG_CONNECT_MAX
+ };
+ 
+ enum dm_dig_pd_th {
 -- 
 2.42.0
 
