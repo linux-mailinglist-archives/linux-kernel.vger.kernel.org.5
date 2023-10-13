@@ -2,68 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D1D7C8E59
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 22:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E8B57C8E5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 22:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232041AbjJMU2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 16:28:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36474 "EHLO
+        id S232267AbjJMU2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 16:28:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232021AbjJMU2C (ORCPT
+        with ESMTP id S232091AbjJMU2T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 16:28:02 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C655BDA
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 13:27:37 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-323168869daso2344277f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 13:27:37 -0700 (PDT)
+        Fri, 13 Oct 2023 16:28:19 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62C16DC
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 13:28:11 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c9d4f08d7cso13155ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 13:28:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697228856; x=1697833656; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1697228891; x=1697833691; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iaZqQEuB1EDABln979ILtGuG4qYa8Us/Meb6pDFY+K0=;
-        b=1d9nFnwspgu2gyqkAw0fEABg69M5MW8BldPoifAEiWLhdqiO5iQhblciAacrXH2WAP
-         4Tncte0GkC6v5OdxD2YsLAVC8SiJjbDQxOT8ZgbEGTb6/57cNDobdHIIX5sRrlW0Ke6+
-         QuhWnvEuAElx6TcA0mlQdoLaA2zdTPJ6UoKScCWO6QH9L/yDOfafcZEQTERAzT7RHkDV
-         ISuld2FhzPMFmuPlvw7BhuWAu0twW7otehwMDzGfFFOCGi6fY4MSJsv1dfQQC9uwEM9T
-         t7xl/2O8ywk0XDISzRrOULNGIpCOfH+6hE7e48xLv/EtT85TfP7WBFs1DWcBidnVQkxo
-         JJfA==
+        bh=hQUYjiIQQuKU5hgKTdO4y33bIv6BP+oihrBBQRGii7o=;
+        b=UYA8RGf51Wm2aL9KLEoBcMOSHOhgyks35se5vv9WlreKNxE3WgsMtlPVMUcq+IxrZU
+         F2CqkLOyuyzm1XTZ/zMScp7bY9uAyYB7ZViTjBDlyGgvby1D/naFJrFTrcW5sf/ysRRZ
+         IKexW0WeDXtOiKJE0RSYvyLXvwNEQ2t9GRWQS7kYUCnAQHCVsp0Nl4MMvUT5mwiJHO1E
+         bX0Ka8j8xIznky4MbbX5FFjE48eST84GA8Hjoqb3wUTDyA+vgXa4KNR+ejkuuU68Dd7C
+         jNWoZtN8YV4P3Cn9sEZ0mQbZt/iySIABLjl2w/r3yyuLcbyPJ3IlDottr7dviW9ITdyJ
+         viXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697228856; x=1697833656;
+        d=1e100.net; s=20230601; t=1697228891; x=1697833691;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iaZqQEuB1EDABln979ILtGuG4qYa8Us/Meb6pDFY+K0=;
-        b=dUqPz7MlL95muXqrDpDu0UHJSPQLwMRAelgb/N3NEmpfRXWSn+XbPOkwoMdUrLWvfI
-         J7chq/ew/V9ZcEHXijAl7yNP2wcif0fcsAoDA4IoCG+hk/RQ+mK3Abx/CuPVCi5GliBq
-         10GZvFiqjG5UeQOfmvAKjOaTTbVUa0HHzsx6zGKXAqgZ4w7HCrRiKuU2lRLTVof/YGkP
-         9fjpnc5JvE2M+jFRe2b00YFgaW2a6z/0/NdeWDOPmh28rhsC3tSt0rV3Dg4YLmYrfHke
-         zsNokT9+0e5KZs5JMOB79YhtwRzKk/W1h/x6GQLtKwz81Ntj55Gd3pcbyQHVO51+3iD5
-         5VoA==
-X-Gm-Message-State: AOJu0YzBHlRHQfzj1O89TeebA1lXb5olgLr01tWkdronL8LGpklHAgxf
-        YQndMvVXLwUbSsty9tWDiVHaxjkyJYDiYyyyG4zTiw==
-X-Google-Smtp-Source: AGHT+IHyQ9WTKrqS9x4alRXVbV12ByhlwpjEm1bFgi8CEeRhxufkl/22GsI4pbDr13iCTKmG38QO7rUDUdW8/CNuoj8=
-X-Received: by 2002:a5d:5303:0:b0:32d:a29c:7321 with SMTP id
- e3-20020a5d5303000000b0032da29c7321mr1018120wrv.67.1697228855931; Fri, 13 Oct
- 2023 13:27:35 -0700 (PDT)
+        bh=hQUYjiIQQuKU5hgKTdO4y33bIv6BP+oihrBBQRGii7o=;
+        b=o/P3wocTqkmCKd8efAXZ+ACN7EDLfTh0PtXMYI237LFAxmcl0U7Nx96rEzSteNAAKF
+         dZLG77KZ4nyTi4cie7jdLDY2KCva0rPjYk35/k02kCBygiR+tviCYKSzMeHwZemZjXCy
+         tGJ67RVPbxWp34kdq4ZdNPtNvthDSRiyr15azQh7dcsqYfx5e+xuZNMhGBCchW98YgcO
+         D7MsdMgsGtvZOLXsCgqJb1r3feuqQoTm9c49YfpNuPJ3u8ZM5E7dhkB7IRKmSO8Mxlut
+         xJPPSaG9S1xtCIZa7XzFz/uoqH6IvnXj/LMQCsn+obQbKzfGRSbi8M593g8rNbLx7cd7
+         Ggbg==
+X-Gm-Message-State: AOJu0YwjcSgQhpTVbu/oLxiKUv8YZ7wuBagOEf/qZz6VqIZhX/BTpVvG
+        e8ZVM1KRP7353k9Z+G7e+eeHAejbSuUijJyJS01c+Q==
+X-Google-Smtp-Source: AGHT+IF+wbBQUzCClYbIsavRQnVYMQpZNLI2ELD+7IF1suaSE/kY6/BRJ0kMNOpbN7SpoHfHj5jpKNFUpadFhMTbM8Q=
+X-Received: by 2002:a17:903:40c1:b0:1ca:42a:1773 with SMTP id
+ t1-20020a17090340c100b001ca042a1773mr33105pld.12.1697228890595; Fri, 13 Oct
+ 2023 13:28:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231013132832.165768-1-2023002089@link.tyut.edu.cn>
-In-Reply-To: <20231013132832.165768-1-2023002089@link.tyut.edu.cn>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 13 Oct 2023 13:27:24 -0700
-Message-ID: <CAKwvOdneBDDCeg-GzKMpWmvqQCC53KcaV_GAF1JioCJdCtBkxw@mail.gmail.com>
-Subject: Re: [PATCH] scripts/show_delta: add __main__ judgement before main code
-To:     Hu Haowen <2023002089@link.tyut.edu.cn>
-Cc:     gregkh@linuxfoundation.org, masahiroy@kernel.org,
-        akpm@linux-foundation.org, n.schier@avm.de, ojeda@kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20231009230858.3444834-1-rananta@google.com> <20231009230858.3444834-3-rananta@google.com>
+ <ZSXPbKH519uWXytf@linux.dev>
+In-Reply-To: <ZSXPbKH519uWXytf@linux.dev>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Fri, 13 Oct 2023 13:27:58 -0700
+Message-ID: <CAJHc60yBnA00Vv=vVeDuS=ccN-Ak4ZEgYvCfGWcfP3g3Zq+Uzg@mail.gmail.com>
+Subject: Re: [PATCH v7 02/12] KVM: arm64: PMU: Set the default PMU for the
+ guest before vCPU reset
+To:     Oliver Upton <oliver.upton@linux.dev>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,40 +82,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 6:29=E2=80=AFAM Hu Haowen <2023002089@link.tyut.edu=
-.cn> wrote:
+On Tue, Oct 10, 2023 at 3:25=E2=80=AFPM Oliver Upton <oliver.upton@linux.de=
+v> wrote:
 >
-> When doing Python programming it is a nice convention to insert the if
-> statement `if __name__ =3D=3D "__main__":` before any main code that does
-> actual functionalities to ensure the code will be executed only as a
-> script rather than as an imported module. Hence attach the missing
-> judgement to show_delta.
+> Hi Raghu,
 >
-> Signed-off-by: Hu Haowen <2023002089@link.tyut.edu.cn>
+> On Mon, Oct 09, 2023 at 11:08:48PM +0000, Raghavendra Rao Ananta wrote:
+> > From: Reiji Watanabe <reijiw@google.com>
+> >
+> > The following patches will use the number of counters information
+> > from the arm_pmu and use this to set the PMCR.N for the guest
+> > during vCPU reset. However, since the guest is not associated
+> > with any arm_pmu until userspace configures the vPMU device
+> > attributes, and a reset can happen before this event, assign a
+> > default PMU to the guest just before doing the reset.
+> >
+> > Signed-off-by: Reiji Watanabe <reijiw@google.com>
+> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > ---
+> >  arch/arm64/kvm/arm.c      | 20 ++++++++++++++++++++
+> >  arch/arm64/kvm/pmu-emul.c | 12 ++----------
+> >  include/kvm/arm_pmu.h     |  6 ++++++
+> >  3 files changed, 28 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> > index 78b0970eb8e6..708a53b70a7b 100644
+> > --- a/arch/arm64/kvm/arm.c
+> > +++ b/arch/arm64/kvm/arm.c
+> > @@ -1313,6 +1313,23 @@ static bool kvm_vcpu_init_changed(struct kvm_vcp=
+u *vcpu,
+> >                            KVM_VCPU_MAX_FEATURES);
+> >  }
+> >
+> > +static int kvm_vcpu_set_pmu(struct kvm_vcpu *vcpu)
+> > +{
+> > +     struct kvm *kvm =3D vcpu->kvm;
+> > +
+> > +     if (!kvm_arm_support_pmu_v3())
+> > +             return -EINVAL;
+>
+> This check is pointless; the vCPU feature flags have been sanitised at
+> this point, and a requirement of having PMUv3 is that this predicate is
+> true.
+>
+Oh yes. I'll avoid this in v8.
 
-Thanks for the patch!
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> > +     /*
+> > +      * When the vCPU has a PMU, but no PMU is set for the guest
+> > +      * yet, set the default one.
+> > +      */
+> > +     if (unlikely(!kvm->arch.arm_pmu))
+> > +             return kvm_arm_set_default_pmu(kvm);
+> > +
+> > +     return 0;
+> > +}
+> > +
+>
+> Apologies, I believe I was unclear last time around as to what I was
+> wanting here. Let's call this thing kvm_setup_vcpu() such that we can
+> add other one-time setup activities to it in the future.
+>
+> Something like:
+>
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index 96641e442039..4896a44108e0 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -1265,19 +1265,17 @@ static bool kvm_vcpu_init_changed(struct kvm_vcpu=
+ *vcpu,
+>                              KVM_VCPU_MAX_FEATURES);
+>  }
+>
+> -static int kvm_vcpu_set_pmu(struct kvm_vcpu *vcpu)
+> +static int kvm_setup_vcpu(struct kvm_vcpu *vcpu)
+>  {
+>         struct kvm *kvm =3D vcpu->kvm;
+>
+> -       if (!kvm_arm_support_pmu_v3())
+> -               return -EINVAL;
+> -
+>         /*
+>          * When the vCPU has a PMU, but no PMU is set for the guest
+>          * yet, set the default one.
+>          */
+> -       if (unlikely(!kvm->arch.arm_pmu))
+> -               return kvm_arm_set_default_pmu(kvm);
+> +       if (kvm_vcpu_has_pmu(vcpu) && !kvm->arch.arm_pmu &&
+> +           kvm_arm_set_default_pmu(kvm))
+> +               return -EINVAL;
+>
+>         return 0;
+>  }
+> @@ -1297,7 +1295,8 @@ static int __kvm_vcpu_set_target(struct kvm_vcpu *v=
+cpu,
+>
+>         bitmap_copy(kvm->arch.vcpu_features, &features, KVM_VCPU_MAX_FEAT=
+URES);
+>
+> -       if (kvm_vcpu_has_pmu(vcpu) && kvm_vcpu_set_pmu(vcpu))
+> +       ret =3D kvm_setup_vcpu(vcpu);
+> +       if (ret)
+>                 goto out_unlock;
+>
+>         /* Now we know what it is, we can reset it. */
+>
+Introducing kvm_setup_vcpu() seems better than directly calling
+kvm_vcpu_set_pmu(), which feels like it's crashing a party.
 
-> ---
->  scripts/show_delta | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/scripts/show_delta b/scripts/show_delta
-> index 28e67e178194..291ad65e3089 100755
-> --- a/scripts/show_delta
-> +++ b/scripts/show_delta
-> @@ -125,4 +125,5 @@ def main():
->         for line in lines:
->                 print (convert_line(line, base_time),)
->
-> -main()
-> +if __name__ =3D=3D "__main__":
-> +       main()
+Thank you.
+Raghavendra
 > --
-> 2.34.1
->
-
-
---=20
-Thanks,
-~Nick Desaulniers
+> Thanks,
+> Oliver
