@@ -2,107 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BBD17C8742
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 15:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1B97C8748
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 16:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232011AbjJMN4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 09:56:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37916 "EHLO
+        id S231963AbjJMOAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 10:00:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231194AbjJMN4p (ORCPT
+        with ESMTP id S229923AbjJMOA2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 09:56:45 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDD85BD
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 06:56:42 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99c3c8adb27so338420566b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 06:56:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1697205401; x=1697810201; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=kFlDh2veCoYGtweA/suIrNJN5h1cgFkvvCUfEXmQbkY=;
-        b=g9h3R8o7mLledtHrOdZekoiuEsrRPCH8TKNZ2CeG1kJZglolMXQNS+bNaERVslNkSk
-         5+oWsBa9PeldBYZPkrsPRH+wXwUYj6RXygb+oi8PLZGpF1XXAdPSGZg7qr0jSCnw/fTi
-         mlERjGSdXvhuqhCmShzbEfJcjd2Pkyjc5M9GOfcww/PD2q9h48X/gUDP0kBnRNYSFCJY
-         qGTw4N9BddiJO5DIXkGay1HRM+R4B8B9leXdi+MWFjiRjSy18GYBMGWA5ptS1Yn//S24
-         ygua53JTwx+Ou1rGRXW6ojirLB/e5D1w+98YbYbjHHwjFvk1814c65yMHzIebLVSF9L9
-         A9Mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697205401; x=1697810201;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kFlDh2veCoYGtweA/suIrNJN5h1cgFkvvCUfEXmQbkY=;
-        b=maMnauRAKL4G0ZIcitAGETe9hrmse69WSnmq3Re2hxO/A2OdJqOjUcYOj2qSL0gKvJ
-         /t8xmaDewvoc1p+OCFO9+sFS0Mb8vV+b/dhmxPgXng4OT66/mczs7SUVOA8nIbD+94VK
-         B7yFz+g4iFq7f7li4OuHXws5t+vKxdFTUwDCojJ3hPcsREsOWRZtDJ68PN1OOVqa2AuS
-         QR2hUGRA8s8+vGzeq+GeOSFy6xQGwh7Zwr3ufittCFPvt2vc4lTQ3AKLBg9rUFLMze0S
-         C5frJxJWdaAJg3EK5bU8/zliL/3l9MwYXvpMffh7/qDnsIAZ8kSNns8TCQglRyl4SXoF
-         9iag==
-X-Gm-Message-State: AOJu0YySmqA3v8wU+0IxaMFvC+pnU+V3YQAmUJll2Q0O2TSw/IbAsRV+
-        S9BS7q5ZnUaI5s7x1n2ELeoXBQ==
-X-Google-Smtp-Source: AGHT+IGCfaLV0dvw2Wye2KJWcfr3tAYEYcKYP8aDY0KLyDMq9dvsech9YulGhUztvUdwKOco42zbvw==
-X-Received: by 2002:a17:907:a08a:b0:9bd:cab6:a34d with SMTP id hu10-20020a170907a08a00b009bdcab6a34dmr1171556ejc.31.1697205401106;
-        Fri, 13 Oct 2023 06:56:41 -0700 (PDT)
-Received: from otso.luca.vpn.lucaweiss.eu (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id j16-20020a170906051000b0099bcf1c07c6sm12462745eja.138.2023.10.13.06.56.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 06:56:40 -0700 (PDT)
-From:   Luca Weiss <luca.weiss@fairphone.com>
-Date:   Fri, 13 Oct 2023 15:56:40 +0200
-Subject: [PATCH] soc: qcom: pmic_glink_altmode: Print error when retimer
- setup fails
+        Fri, 13 Oct 2023 10:00:28 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 867AA95
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 07:00:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3004EC433C7;
+        Fri, 13 Oct 2023 14:00:25 +0000 (UTC)
+Date:   Fri, 13 Oct 2023 10:00:23 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Artem Savkov <asavkov@redhat.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rt-users@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [RFC PATCH bpf-next] bpf: change syscall_nr type to int in
+ struct syscall_tp_t
+Message-ID: <20231013100023.5b0943ec@rorschach.local.home>
+In-Reply-To: <ZSjdPqQiPdqa-UTs@wtfbox.lan>
+References: <20231005123413.GA488417@alecto.usersys.redhat.com>
+        <20231012114550.152846-1-asavkov@redhat.com>
+        <20231012094444.0967fa79@gandalf.local.home>
+        <CAEf4BzZKWkJjOjw8x_eL_hsU-QzFuSzd5bkBH2EHtirN2hnEgA@mail.gmail.com>
+        <ZSjdPqQiPdqa-UTs@wtfbox.lan>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231013-glink-altmode-ret-v1-1-77941537a35b@fairphone.com>
-X-B4-Tracking: v=1; b=H4sIAJdMKWUC/x3MwQpAQBRG4VfRXbvlmiheRRaDHzcMzUhK3t1k+
- S3OeSjAKwLVyUMelwbdXYSkCfWzdRNYh2jKs9xIJoanVd3Cdj23fQB7nGwqEZS9wHYFxe7wGPX
- +n037vh+1bt8fYwAAAA==
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luca Weiss <luca.weiss@fairphone.com>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It can be useful to know with which return value the retimer_set call
-failed, so include this info in the dev_err print.
+On Fri, 13 Oct 2023 08:01:34 +0200
+Artem Savkov <asavkov@redhat.com> wrote:
 
-Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
----
- drivers/soc/qcom/pmic_glink_altmode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > But looking at [0] and briefly reading some of the discussions you,
+> > Steven, had. I'm just wondering if it would be best to avoid
+> > increasing struct trace_entry altogether? It seems like preempt_count
+> > is actually a 4-bit field in trace context, so it doesn't seem like we
+> > really need to allocate an entire byte for both preempt_count and
+> > preempt_lazy_count. Why can't we just combine them and not waste 8
+> > extra bytes for each trace event in a ring buffer?
+> > 
+> >   [0] https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/commit/?id=b1773eac3f29cbdcdfd16e0339f1a164066e9f71  
+> 
+> I agree that avoiding increase in struct trace_entry size would be very
+> desirable, but I have no knowledge whether rt developers had reasons to
+> do it like this.
+> 
+> Nevertheless I think the issue with verifier running against a wrong
+> struct still needs to be addressed.
 
-diff --git a/drivers/soc/qcom/pmic_glink_altmode.c b/drivers/soc/qcom/pmic_glink_altmode.c
-index 9569d999391d..136713e1155e 100644
---- a/drivers/soc/qcom/pmic_glink_altmode.c
-+++ b/drivers/soc/qcom/pmic_glink_altmode.c
-@@ -168,7 +168,7 @@ static void pmic_glink_altmode_enable_dp(struct pmic_glink_altmode *altmode,
- 
- 	ret = typec_retimer_set(port->typec_retimer, &port->retimer_state);
- 	if (ret)
--		dev_err(altmode->dev, "failed to setup retimer to DP\n");
-+		dev_err(altmode->dev, "failed to setup retimer to DP: %d\n", ret);
- }
- 
- static void pmic_glink_altmode_enable_usb(struct pmic_glink_altmode *altmode,
+Correct. My Ack is based on the current way things are done upstream.
+It was just that linux-rt showed the issue, where the code was not as
+robust as it should have been. To me this was a correctness issue, not
+an issue that had to do with how things are done in linux-rt.
 
----
-base-commit: e3b18f7200f45d66f7141136c25554ac1e82009b
-change-id: 20231013-glink-altmode-ret-3911e6c1eab5
+As for the changes in linux-rt, they are not upstream yet. I'll have my
+comments on that code when that happens.
 
-Best regards,
--- 
-Luca Weiss <luca.weiss@fairphone.com>
-
+-- Steve
