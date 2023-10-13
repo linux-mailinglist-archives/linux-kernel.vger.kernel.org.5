@@ -2,75 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A477C7B16
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 03:13:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5689C7C7B22
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 03:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229473AbjJMBNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 21:13:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54092 "EHLO
+        id S229445AbjJMBUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 21:20:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjJMBNX (ORCPT
+        with ESMTP id S229436AbjJMBUs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 21:13:23 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD63CA
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 18:13:21 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-690f8e63777so389272b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 18:13:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1697159601; x=1697764401; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AMJnEzubrAnZX3cVNcFw4aHCDFoa3PCcaOxjV6VRS+0=;
-        b=HS+h4Wa+IMVdFNCYi7/E0nXCEJ1TZmq/beUe+MUTtTEz9k+LNI72O23j3yAqrIGCAk
-         eGlTxrVhgYNU6P3aiD++90HTaT+0JCZp4hiF4npfLZBUZ13gtjjbqS2a5gKqJ9/x/Kk4
-         eRfTTZNZQfB70JGf+/YVk4v8k3kj/Vc07za/DukVP3HDPBaw39Fyb/F4EYpxJIGpgVWw
-         F0E4vzTHXTUqISzY8Fk8WrmEn7Z2PCml5eqxiWBzZg2zx5M69ZIbGTnL/rDTHLbU4x0H
-         vio3fLQYqttWGLtq0m9AvOgact3R7wNBIuxc7PYawZ3k0W88kCq3c7dybu118RTTBMkQ
-         OFlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697159601; x=1697764401;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AMJnEzubrAnZX3cVNcFw4aHCDFoa3PCcaOxjV6VRS+0=;
-        b=QpG6Kv1PXPCR3VMltg/IbD+iS0sb4z+BNT+zbRWy7t5zeiWo2MEpsx8s0G75x/RiAf
-         UbxQdCkqHOJOfHD65JMg1JZn2fXtBNuJCxBIelZXv7cNPoY1UXHtIzJgDhaXskrJDuhO
-         VwNizyc2lDSqnDbuXB5w9x9ZiBkj3ohP0lfpB7qYjyaefsGEqDv1gIx1YwqUCEACqvba
-         AMi7OUwJpM5e8WhkmY8Siof/7aQKmi/IJq2iTAjHgs1nQzbSVjAozjBS0AQ/Rk6JxMmm
-         P1Iuek7ypYyyZHocjATBPlmpEPNs5Y+/DXBjNF4MCGjz/Zs47dl8NshKXIYdLmPo32HG
-         z+dQ==
-X-Gm-Message-State: AOJu0YwPEoHsY15d62bhjZvaaiPYtmzBFsNKC/DHLkcmdDrgrzV4V8rc
-        F5J+n28F0G0ZRLrngGtzw9J69Q==
-X-Google-Smtp-Source: AGHT+IGc+d2JugU+MHcVUHJCaPcCzHDdV/urgEHeZ1XguR5+TY2m8N4g6nJqszpdq75fyut+u173Ew==
-X-Received: by 2002:a05:6a20:7d85:b0:163:57ba:2ad4 with SMTP id v5-20020a056a207d8500b0016357ba2ad4mr30560645pzj.2.1697159600617;
-        Thu, 12 Oct 2023 18:13:20 -0700 (PDT)
-Received: from [192.168.1.136] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id jj3-20020a170903048300b001c9cc44eb60sm2610748plb.201.2023.10.12.18.13.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Oct 2023 18:13:19 -0700 (PDT)
-Message-ID: <8b200d4c-6c28-47f6-b43d-98ed10a9b4f5@kernel.dk>
-Date:   Thu, 12 Oct 2023 19:13:18 -0600
+        Thu, 12 Oct 2023 21:20:48 -0400
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9EB9BA9
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 18:20:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=aLj4B
+        qY2YBYcmIcxL988YnyhrGGYNyKmp6Yo5wsu3R0=; b=k02fwX3vSjsWETELM6crX
+        ZMmYLuGEkbZoN087Yix4cq1B3lVzOf6oKzAwgmnFEMRyMDfYZGkXf4Lkhac1HCg6
+        sx9Yu7j6d1TbC1MGVYpwIGXgHA0Iq3CUKQuVEt79MjG4fdj6AZkwCy7oO5rg7Wpo
+        tpOWdUA70P26mGaC5Od4ZM=
+Received: from icess-ProLiant-DL380-Gen10.. (unknown [183.174.60.14])
+        by zwqz-smtp-mta-g2-0 (Coremail) with SMTP id _____wD3_1P7mihlaruYAQ--.37582S4;
+        Fri, 13 Oct 2023 09:18:59 +0800 (CST)
+From:   Ma Ke <make_ruc2021@163.com>
+To:     kherbst@redhat.com, lyude@redhat.com, dakr@redhat.com,
+        airlied@gmail.com, daniel@ffwll.ch, tzimmermann@suse.de,
+        noralf@tronnes.org, mripard@kernel.org, jani.nikula@intel.com,
+        make_ruc2021@163.com
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/nouveau/dispnv04: fix a possible null pointer dereference
+Date:   Fri, 13 Oct 2023 09:18:50 +0800
+Message-Id: <20231013011850.103967-1-make_ruc2021@163.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Problem with io_uring splice and KTLS
-Content-Language: en-US
-To:     Sascha Hauer <sha@pengutronix.de>
-Cc:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        Boris Pismenny <borisp@nvidia.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-References: <20231010141932.GD3114228@pengutronix.de>
- <d729781a-3d12-423b-973e-c16fdbcbb60b@kernel.dk>
- <20231012133407.GA3359458@pengutronix.de>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20231012133407.GA3359458@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wD3_1P7mihlaruYAQ--.37582S4
+X-Coremail-Antispam: 1Uf129KBjvJXoW7JrykAryftw43ur1ruF17Jrb_yoW8JF1fpF
+        4xGFyYvr1DJFykKa40y3WDWFWY9a1kKFWvkw1ak39I93Z0yr1qqryDAr98Wry7JFW5GFy3
+        trn3Ja4qgr18Zr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0ziTGQkUUUUU=
+X-Originating-IP: [183.174.60.14]
+X-CM-SenderInfo: 5pdnvshuxfjiisr6il2tof0z/xtbBFQIHC2B9oe1JLgAGsr
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,132 +55,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/23 7:34 AM, Sascha Hauer wrote:
-> On Tue, Oct 10, 2023 at 08:28:13AM -0600, Jens Axboe wrote:
->> On 10/10/23 8:19 AM, Sascha Hauer wrote:
->>> Hi,
->>>
->>> I am working with a webserver using io_uring in conjunction with KTLS. The
->>> webserver basically splices static file data from a pipe to a socket which uses
->>> KTLS for encryption. When splice is done the socket is closed. This works fine
->>> when using software encryption in KTLS. Things go awry though when the software
->>> encryption is replaced with the CAAM driver which replaces the synchronous
->>> encryption with a asynchronous queue/interrupt/completion flow.
->>>
->>> So far I have traced it down to tls_push_sg() calling tcp_sendmsg_locked() to
->>> send the completed encrypted messages. tcp_sendmsg_locked() sometimes waits for
->>> more memory on the socket by calling sk_stream_wait_memory(). This in turn
->>> returns -ERESTARTSYS due to:
->>>
->>>         if (signal_pending(current))
->>>                 goto do_interrupted;
->>>
->>> The current task has the TIF_NOTIFY_SIGNAL set due to:
->>>
->>> io_req_normal_work_add()
->>> {
->>>         ...
->>>         /* This interrupts sk_stream_wait_memory() (notify_method == TWA_SIGNAL) */
->>>         task_work_add(req->task, &tctx->task_work, ctx->notify_method)))
->>> }
->>>
->>> The call stack when sk_stream_wait_memory() fails is as follows:
->>>
->>> [ 1385.428816]  dump_backtrace+0xa0/0x128
->>> [ 1385.432568]  show_stack+0x20/0x38
->>> [ 1385.435878]  dump_stack_lvl+0x48/0x60
->>> [ 1385.439539]  dump_stack+0x18/0x28
->>> [ 1385.442850]  tls_push_sg+0x100/0x238
->>> [ 1385.446424]  tls_tx_records+0x118/0x1d8
->>> [ 1385.450257]  tls_sw_release_resources_tx+0x74/0x1a0
->>> [ 1385.455135]  tls_sk_proto_close+0x2f8/0x3f0
->>> [ 1385.459315]  inet_release+0x58/0xb8
->>> [ 1385.462802]  inet6_release+0x3c/0x60
->>> [ 1385.466374]  __sock_release+0x48/0xc8
->>> [ 1385.470035]  sock_close+0x20/0x38
->>> [ 1385.473347]  __fput+0xbc/0x280
->>> [ 1385.476399]  ____fput+0x18/0x30
->>> [ 1385.479537]  task_work_run+0x80/0xe0
->>> [ 1385.483108]  io_run_task_work+0x40/0x108
->>> [ 1385.487029]  __arm64_sys_io_uring_enter+0x164/0xad8
->>> [ 1385.491907]  invoke_syscall+0x50/0x128
->>> [ 1385.495655]  el0_svc_common.constprop.0+0x48/0xf0
->>> [ 1385.500359]  do_el0_svc_compat+0x24/0x40
->>> [ 1385.504279]  el0_svc_compat+0x38/0x108
->>> [ 1385.508026]  el0t_32_sync_handler+0x98/0x140
->>> [ 1385.512294]  el0t_32_sync+0x194/0x198
->>>
->>> So the socket is being closed and KTLS tries to send out the remaining
->>> completed messages.  From a splice point of view everything has been sent
->>> successfully, but not everything made it through KTLS to the socket and the
->>> remaining data is sent while closing the socket.
->>>
->>> I vaguely understand what's going on here, but I haven't got the
->>> slightest idea what to do about this. Any ideas?
->>
->> Two things to try:
->>
->> 1) Depending on how you use the ring, set it up with
->> IORING_SETUP_SINGLE_ISSUER | IORING_SETUP_DEFER_TASKRUN. The latter will
->> avoid using signal based task_work notifications, which may be messing
->> you up here.
->>
->> 2) io_uring will hold a reference to the file/socket. I'm unsure if this
->> is a problem in the above case, but sometimes it'll prevent the final
->> flush.
->>
->> Do you have a reproducer that could be run to test? Sometimes easier to
->> see what's going on when you can experiment, it'll save some time.
-> 
-> Okay, here is a reproducer:
-> 
-> https://github.com/saschahauer/webserver-uring-test.git
-> 
-> Execute ./prepare.sh in that repository, it will compile the webserver,
-> generate cert.pem/key.pem and generate some testfile to download. If the
-> meson build doesn't work for you then you can compile the program by
-> hand with something like:
-> 
-> gcc -O3 -Wall -o webserver webserver_liburing.c -lcrypto -lssl -luring
-> 
-> When the webserver is started you can get a file from it with:
-> 
-> curl -k https://<ipaddr>:8443/foo -o foo
-> 
-> or:
-> 
-> while true; do curl -k https://<ipaddr>:8443/foo -o foo; if [ $? != 0 ]; then break; fi; done
-> 
-> This should run without problems as by default likely the encryption
-> requests are running synchronously.
-> 
-> In case you don't have encryption hardware you can create an
-> asynchronous encryption module using cryptd. Compile a kernel with
-> CONFIG_CRYPTO_USER_API_AEAD and CONFIG_CRYPTO_CRYPTD and start the
-> webserver with the '-c' option. /proc/crypto should then contain an
-> entry with:
-> 
->  name         : gcm(aes)
->  driver       : cryptd(gcm_base(ctr(aes-generic),ghash-generic))
->  module       : kernel
->  priority     : 150
-> 
-> Make sure there is no other module providing gcm(aes) with a priority higher
-> than 150 so that this one is actually used.
-> 
-> With that the while true loop above should break out with a short read
-> fairly fast. Passing IORING_SETUP_SINGLE_ISSUER | IORING_SETUP_DEFER_TASKRUN
-> to io_uring_queue_init() makes it harder to reproduce for me. With that
-> I need multiple shells in parallel running the above loop.
-> 
-> The repository also contains a kernel patch which will provide you a
-> stack dump when KTLS gets an error from tcp_sendmsg_locked().
-> 
-> Now I hope I haven't done anything silly in the webserver ;)
+In nv17_tv_get_hd_modes(), the return value of drm_mode_duplicate()
+is assigned to mode, which will lead to a NULL pointer dereference on
+failure of drm_mode_duplicate(). The same applies to drm_cvt_mode().
+Add a check to avoid null pointer dereference.
 
-Perfect! Thanks a lot for preparing all of that. Not sure I'll get to it
-tomorrow, but if not, then definitely on Monday.
+Signed-off-by: Ma Ke <make_ruc2021@163.com>
+---
+ drivers/gpu/drm/nouveau/dispnv04/tvnv17.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
+diff --git a/drivers/gpu/drm/nouveau/dispnv04/tvnv17.c b/drivers/gpu/drm/nouveau/dispnv04/tvnv17.c
+index 670c9739e5e1..9c3dc9a5bb46 100644
+--- a/drivers/gpu/drm/nouveau/dispnv04/tvnv17.c
++++ b/drivers/gpu/drm/nouveau/dispnv04/tvnv17.c
+@@ -258,6 +258,8 @@ static int nv17_tv_get_hd_modes(struct drm_encoder *encoder,
+ 		if (modes[i].hdisplay == output_mode->hdisplay &&
+ 		    modes[i].vdisplay == output_mode->vdisplay) {
+ 			mode = drm_mode_duplicate(encoder->dev, output_mode);
++			if (!mode)
++				continue;
+ 			mode->type |= DRM_MODE_TYPE_PREFERRED;
+ 
+ 		} else {
+@@ -265,6 +267,8 @@ static int nv17_tv_get_hd_modes(struct drm_encoder *encoder,
+ 					    modes[i].vdisplay, 60, false,
+ 					    (output_mode->flags &
+ 					     DRM_MODE_FLAG_INTERLACE), false);
++			if (!mode)
++				continue;
+ 		}
+ 
+ 		/* CVT modes are sometimes unsuitable... */
 -- 
-Jens Axboe
+2.37.2
 
