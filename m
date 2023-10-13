@@ -2,113 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A4A17C7C2F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 05:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 029D97C7B79
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 04:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229676AbjJMDdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 23:33:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42584 "EHLO
+        id S229525AbjJMCDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 22:03:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229777AbjJMDdI (ORCPT
+        with ESMTP id S229469AbjJMCDW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 23:33:08 -0400
-Received: from correo1.cdmx.gob.mx (mtax.cdmx.gob.mx [189.240.235.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D57CB185;
-        Thu, 12 Oct 2023 20:32:51 -0700 (PDT)
-Received: from cdmx.gob.mx ([10.250.108.150])
-        by correo1.cdmx.gob.mx  with ESMTP id 39D3VrKf019561-39D3VrKh019561
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Thu, 12 Oct 2023 21:31:53 -0600
-Received: from cdmx.gob.mx (localhost [127.0.0.1])
-        by cdmx.gob.mx (Postfix) with ESMTPS id 7E5F5247106;
-        Thu, 12 Oct 2023 17:55:21 -0500 (CDT)
-Received: from localhost (localhost [127.0.0.1])
-        by cdmx.gob.mx (Postfix) with ESMTP id 5CBA4247104;
-        Thu, 12 Oct 2023 17:55:21 -0500 (CDT)
-DKIM-Filter: OpenDKIM Filter v2.9.2 cdmx.gob.mx 5CBA4247104
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; d=cdmx.gob.mx; s=DKIM1; c=relaxed/relaxed;
- h=content-type:mime-version:subject:to:from:date:reply-to:message-id;
- bh=8BjWGpd2gMZW01m5ZJfRcA0zuAbJKdXncuFoiLvcpMk=;
- b=WzFEEoWruy6AK2RjYKrXYTPhYZdXCydOo751ksxaNZLOnq1yZpO9bFCRbu0kc0GSIqVfu+Wz7IsV
-        fTgJWejk9rVowRqjGnyFDePU47eivmCRc0Uc2iSjXb9xI37PHWcOX3/jDMcCqaZCtiDDTnA2Od16
-        7BtbcSH3QpAzBZKmLqihcYz6+YToYHAGTNZg5p6S96DGYlXSy8Gdc881+DGmoE5TR31sfWgApcV7
-        /4ci5wZR+/YOrbadj+nSayhBO0/oQR1sI7pVoVEy+422KWaAD3Bb1fusBqyAPNFh3VDABHKe+ltB
-        Yz24qAqccCJQqv0dQupUQMhZb3l228GkhcH5nQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cdmx.gob.mx;
-        s=2020J4N146MXCTY; t=1697151321;
-        bh=zjuytpHvT+A0RPCeVFL53H0fO/7zRptnzzMRCdpRnrY=;
-        h=Content-Type:MIME-Version:Subject:To:From:Date:Reply-To:
-         Message-Id;
-        b=H5GFKIaoex4VzVcB9stAYlfPVeb38fzFTcYRY+/Ohu8wHvrjJaPS+rDB7wZ6AI3vL
-         xSLW2ZZbK8CdGT2CvQzEh5yCndCNMCfT6U5t7g4KYQ2IeVvpuFbeUhpyRmNV1AItFp
-         tBUTx3lc2K+N310qCH1V3o9mxC93LD7+//d2Tn54=
-X-Virus-Scanned: amavisd-new at cdmx.gob.mx
-Received: from cdmx.gob.mx ([127.0.0.1])
-        by localhost (cdmx.gob.mx [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id eouNAeLrInH5; Thu, 12 Oct 2023 17:55:21 -0500 (CDT)
-Received: from [192.168.8.123] (unknown [179.61.245.12])
-        by cdmx.gob.mx (Postfix) with ESMTPSA id 894342470C4;
-        Thu, 12 Oct 2023 17:54:20 -0500 (CDT)
-Content-Type: multipart/alternative; boundary="===============0896497393=="
+        Thu, 12 Oct 2023 22:03:22 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6563C0;
+        Thu, 12 Oct 2023 19:03:20 -0700 (PDT)
+Received: from mercury (dyndsl-091-248-212-229.ewe-ip-backbone.de [91.248.212.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sre)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id ED4C4660735A;
+        Fri, 13 Oct 2023 03:03:18 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1697162599;
+        bh=sKttk4Nu1SkDWKSUsvrHZFpKP7vj4n6hxYQeDBYZvwE=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=VC8r0ZqRFJ1DHgyi+V+LGXZMS2b4TcWQvS1VcjhTVdgYMWpqm523dPU8uXpSJpMLH
+         jrwx0MGshwhqlIyxe0xwSbAPX1KIUPBbkhmnf9HJlXZ6OysBmhLZfX1v2Fxlrg6AZH
+         dVzqzLx0EoK96WHsUFlU3blT5j1ns3ET0aJcNdRHTP74pphoXf5mTOogGZWxCk39B6
+         xm72K+2GtrGeqXG4Y6HNbgGomVMbNcJ9fxealSUwhz6i3apg4rV88Z2fJpLf4U0tsw
+         XncyE0UCeGB9fUEhgAJCbC1F1jLFbDmW5WncfYmW5v0dXNtOb8+yj1w5bvKxf9n2L7
+         3irbUQMWdJ/1A==
+Received: by mercury (Postfix, from userid 1000)
+        id 75CAF1062B50; Fri, 13 Oct 2023 04:03:16 +0200 (CEST)
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Francesco Dolcini <francesco@dolcini.it>
+Cc:     Francesco Dolcini <francesco.dolcini@toradex.com>,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20231006130428.11259-1-francesco@dolcini.it>
+References: <20231006130428.11259-1-francesco@dolcini.it>
+Subject: Re: [PATCH v2 0/4] power: reset: gpio-poweroff: use sys-off
+ handler API
+Message-Id: <169716259646.1002132.13986378548211553065.b4-ty@collabora.com>
+Date:   Fri, 13 Oct 2023 04:03:16 +0200
 MIME-Version: 1.0
-Subject: $4,800,000.00 dollars for you.
-To:     Recipients <ctrinidad@cdmx.gob.mx>
-From:   "Mrs. Mavis Wanczyk" <ctrinidad@cdmx.gob.mx>
-Date:   Thu, 12 Oct 2023 16:54:21 -0700
-Reply-To: maviswanczykdonation34@gmail.com
-Message-Id: <20231012225432.894342470C4@cdmx.gob.mx>
-X-Spam-Status: Yes, score=6.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,HK_NAME_MR_MRS,LOTS_OF_MONEY,
-        MONEY_FREEMAIL_REPTO,SPF_HELO_NONE,SPF_PASS,SUBJ_DOLLARS autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5498]
-        *  0.1 SUBJ_DOLLARS Subject starts with dollar amount
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [maviswanczykdonation34[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  1.0 HK_NAME_MR_MRS No description available.
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  2.5 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
-X-Spam-Level: ******
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-You will not see this in a MIME-aware mail reader.
---===============0896497393==
-Content-Type: text/plain; charset="iso-8859-1"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
 
-Hello, I have a donation worth $4,800,000.00 dollars for you, I won the Ame=
-rica lottery worth $758 million Powerball jackpot and I donated a part of i=
-t to charities. you can contact me for further information via (maviswanczy=
-kdonation34@gmail.com) for your claim.
---===============0896497393==
-Content-Type: text/plain; charset=utf-8
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
+On Fri, 06 Oct 2023 10:04:24 -0300, Francesco Dolcini wrote:
+> Use the new sys-off handler API for gpio-poweroff. This allows us to have more
+> than one power-off handler and to have a priority for the handler. Also, add a
+> priority property so we can use gpio-poweroff even when registering another
+> poweroff handler or using the legacy pm_power_off method.
+> 
+> v1->v2:
+>  - Add $ref to restart-handler.yaml in gpio-poweroff.yaml
+> 
+> [...]
 
-Hello, I have a donation worth $4,800,000.00 dollars for you, I won the A=
-merica lottery worth $758 million Powerball jackpot and I donated a part =
-of it to charities. you can contact me for further information via (mavis=
-wanczykdonation34@gmail.com)) for your claim.
+Applied, thanks!
 
---===============0896497393==--
+[1/4] power: reset: gpio-poweroff: use a struct to store the module variables
+      commit: 13b4c6964665cadb9b06c085029710c43a0c662e
+[2/4] power: reset: gpio-poweroff: use sys-off handler API
+      commit: b16d9f49735f3d26e23f0ba4a2cf21668fc6b66b
+[3/4] dt-bindings: power: reset: gpio-poweroff: Add priority property
+      commit: 4ee17bd30788496a279ceaabc7ecaaf39f61cfc4
+[4/4] power: reset: gpio-poweroff: make sys handler priority configurable
+      commit: d03d2a8cdefe86f04cfb53934a708620e7dfbfcb
+
+Best regards,
+-- 
+Sebastian Reichel <sebastian.reichel@collabora.com>
+
