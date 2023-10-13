@@ -2,167 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5B07C87A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 16:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A47837C87AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 16:17:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232051AbjJMORI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 10:17:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47766 "EHLO
+        id S232118AbjJMORQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 10:17:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232024AbjJMORG (ORCPT
+        with ESMTP id S232103AbjJMORP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 10:17:06 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3521295
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 07:17:04 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-7a24c86aae3so29631139f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 07:17:04 -0700 (PDT)
+        Fri, 13 Oct 2023 10:17:15 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44AF8BD
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 07:17:13 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-79fb8f60374so25207839f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 07:17:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1697206623; x=1697811423; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TAkJl/NimI1IXG4Vjt+jprIyWorUGASB1mFX1Wsw9IA=;
-        b=cOu2R24eSkB+U9U/MNg2fAtEOk90iDFD+WYcnthSIESb6KQ23mxZxEGrygytlMNNbK
-         sHzRoC5L5mL/JlQ3E/ZaNo9EEaBgAugVpJW/T+0CfgAkbtHt3nglu0ulXXwAyIhS2ndB
-         9HhlOf2KUOqXRLIsjwbIacEZF/yXcc3GBACy46Rt8DccR9W+J2AvkxQzGfA+I0E65j+E
-         nmZ4S+iZsBo8ki6aRrFZv+YBpF/OlRXvRq0ij2InhtDiv6VEkWo8GynoFBvT/JJY1j5J
-         ifF/ZEifwVHU9JSo/tCfVGAXad0NUt3rUDVtEyAd3OdEgIF1IOHFoFle6VTua64s68pr
-         PBBw==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1697206632; x=1697811432; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1lb0SFgyj6zGJaRNFKO8Je487qWXLpWh8PHdGLC7mEg=;
+        b=rU54gqVEzYsQZ7f6VJPxHh7iNpzjdOpdnTAa21/nEuGR1zJtX4M54Vglev3lFy5vDf
+         ztz090y0fkMw6xq2hqfo1fVIocvrAe3ki7TNWk69hbFr/z070KePQqPuqSwdTpqIhArk
+         3PL0FLtDrWufqMa1Yf7HKmdWaHZpHmvp0aQXi0INB+sNQrBnLvU98l88Swd9m3brAldk
+         +VqgY/L7DjiLiwGpkAlg9XltcTFw6xU671ZXmTZHfR38wqQUOsY+A9x8ZBYEtKIFkMhc
+         ZPrmwOFy3tHz9tUiUrCHdIggH9TtlsXj4MPD+mXznBGkAXtEGD974jjoYE0v6VW4tLrM
+         lNcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697206623; x=1697811423;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TAkJl/NimI1IXG4Vjt+jprIyWorUGASB1mFX1Wsw9IA=;
-        b=MTOVqJD5quN4dhmHY20z/vPP9+i14bq4Za7NAZIkcNGFpy1f9dJdZI+UFBOPOC/LO4
-         HDDIlT4L6S4y8m9i4Mhlm9Xkh+EmbHspwVT0+UPoUM2ves+Nekbx+5pLBloeu8UZMG5K
-         CqC1yK9S1J/bf3Ii8ZNSydghHRlisePFj7EWHKRP4FQOCXbEkJ4xitAckWuc2ZSymhdb
-         pJL6EufI7kuxCZTcX2n4iO7a2DViPcNKF4Pgu6C33XHglV+9IMYbYdsR1CbZBvO82NTc
-         uacl9RvpjGkgU0Zp0zDkMqdCe8U0JVk3aZSy25LmnljiY4WjnBSHEYmv19cYzwdj1Fa/
-         wpag==
-X-Gm-Message-State: AOJu0YxJdwn64Vrhr0/i3FrX9GP4C3YMgcQlubfrbvDCasHLewjcW8hU
-        3UxnjzUrLxCS0WzDJgAeWm4+SVN7aLsWWkqgvZQA2g==
-X-Google-Smtp-Source: AGHT+IExduVJXS5oXPHa5V2p1APicswlROuu98vGbtIWQofhNpEVl17Rxj/MuXP1QE1gD4chsCrL/w==
-X-Received: by 2002:a05:6602:3a11:b0:79f:922b:3809 with SMTP id by17-20020a0566023a1100b0079f922b3809mr28827419iob.1.1697206623481;
-        Fri, 13 Oct 2023 07:17:03 -0700 (PDT)
-Received: from [192.168.1.94] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id q25-20020a6bf219000000b007836a9ca101sm4754686ioh.22.2023.10.13.07.17.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Oct 2023 07:17:02 -0700 (PDT)
-Message-ID: <10b46003-2a75-49a7-8c74-cd8e3d4915c3@kernel.dk>
-Date:   Fri, 13 Oct 2023 08:17:01 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] block: Fix regression in sed-opal for a saved key.
-Content-Language: en-US
-To:     Milan Broz <gmazyland@gmail.com>
-Cc:     jonathan.derrick@linux.dev, linux-kernel@vger.kernel.org,
-        Ondrej Kozina <okozina@redhat.com>,
-        regressions@lists.linux.dev, gjoyce@linux.vnet.ibm.com,
-        linux-block@vger.kernel.org
-References: <20231003100209.380037-1-gmazyland@gmail.com>
- <5c4fbafb1daa45f2faf60c7d587cd23c53d9393c.camel@linux.vnet.ibm.com>
- <59535b4b-9f07-44c5-a7da-e6b2fc1c67bb@gmail.com>
- <53755a0fbd6318d4783078259f2d2f8ab5f2f0b7.camel@linux.vnet.ibm.com>
- <acf5d5b5-b3d9-403d-ad57-a865774b260f@gmail.com>
+        d=1e100.net; s=20230601; t=1697206632; x=1697811432;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1lb0SFgyj6zGJaRNFKO8Je487qWXLpWh8PHdGLC7mEg=;
+        b=GNQHYrN0FV1kMpZYRKDf6l5GGshhEkyGOC9K/80Awbz0MVTLXNX5c/ROhPX9bPaVhL
+         a/cT01MbCTiuMj13OI/1LSlD7QKBk0U/RPEs6doKgGE36EpTWxX74692mUjCSnXQTwAr
+         sJ1ntyqFY4EV7O99gew9fLz//O6XpTA3ODA/SomPA0GXxXk4X3GFkWlx3ByNvZOFMiBO
+         0CkveWFVsnka6FOky24Eg9492FH3I9meh9v8JQCAPVFRPpMAh/r5HMWcnn9uYY4vvRIP
+         ysu32EsuFDbKm2YD0zmDMgCAU+64TAJyl06IKPDRbo0BktsJtTOnJlNvDBwk36+b7XFj
+         jyiA==
+X-Gm-Message-State: AOJu0YzBuaPC0UZMTWmyD5IshIDLZ5z+9sjH/I6P2G6mF/NVfrRbdwmv
+        JIsC+bbUfJTQFnfKMThjTFd9sw==
+X-Google-Smtp-Source: AGHT+IEydHkg/2e8895o6lSJMDIQXRgt9993c9M2+hVQE0mcpprgcN8ai280jQg9eHXky6Ub5tyYkw==
+X-Received: by 2002:a05:6602:2a44:b0:792:9b50:3c3d with SMTP id k4-20020a0566022a4400b007929b503c3dmr33052533iov.1.1697206632640;
+        Fri, 13 Oct 2023 07:17:12 -0700 (PDT)
+Received: from [127.0.0.1] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id r29-20020a056638045d00b0043a1b134b10sm4479225jap.114.2023.10.13.07.17.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 07:17:12 -0700 (PDT)
 From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <acf5d5b5-b3d9-403d-ad57-a865774b260f@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+To:     linux-block@vger.kernel.org, Milan Broz <gmazyland@gmail.com>
+Cc:     gjoyce@linux.vnet.ibm.com, jonathan.derrick@linux.dev,
+        linux-kernel@vger.kernel.org, Ondrej Kozina <okozina@redhat.com>
+In-Reply-To: <20231003100209.380037-1-gmazyland@gmail.com>
+References: <20231003100209.380037-1-gmazyland@gmail.com>
+Subject: Re: [PATCH] block: Fix regression in sed-opal for a saved key.
+Message-Id: <169720663183.1920390.9547818439734957498.b4-ty@kernel.dk>
+Date:   Fri, 13 Oct 2023 08:17:11 -0600
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-034f2
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/23 2:30 AM, Milan Broz wrote:
-> On 10/5/23 19:58, Greg Joyce wrote:
->> On Thu, 2023-10-05 at 08:58 +0200, Milan Broz wrote:
->>> On 10/4/23 22:54, Greg Joyce wrote:
->>>> On Tue, 2023-10-03 at 12:02 +0200, Milan Broz wrote:
->>>>> The commit 3bfeb61256643281ac4be5b8a57e9d9da3db4335
->>>>> introduced the use of keyring for sed-opal.
->>>>>
->>>>> Unfortunately, there is also a possibility to save
->>>>> the Opal key used in opal_lock_unlock().
->>>>>
->>>>> This patch switches the order of operation, so the cached
->>>>> key is used instead of failure for opal_get_key.
->>>>>
->>>>> The problem was found by the cryptsetup Opal test recently
->>>>> added to the cryptsetup tree.
->>>>>
->>>>> Fixes: 3bfeb6125664 ("block: sed-opal: keyring support for SED
->>>>> keys")
->>>>> Tested-by: Ondrej Kozina <okozina@redhat.com>
->>>>> Signed-off-by: Milan Broz <gmazyland@gmail.com>
->>>>> ---
->>>>>    block/sed-opal.c | 7 +++----
->>>>>    1 file changed, 3 insertions(+), 4 deletions(-)
->>>>>
->>>>> diff --git a/block/sed-opal.c b/block/sed-opal.c
->>>>> index 6d7f25d1711b..04f38a3f5d95 100644
->>>>> --- a/block/sed-opal.c
->>>>> +++ b/block/sed-opal.c
->>>>> @@ -2888,12 +2888,11 @@ static int opal_lock_unlock(struct
->>>>> opal_dev
->>>>> *dev,
->>>>>        if (lk_unlk->session.who > OPAL_USER9)
->>>>>            return -EINVAL;
->>>>>
->>>>> -    ret = opal_get_key(dev, &lk_unlk->session.opal_key);
->>>>> -    if (ret)
->>>>> -        return ret;
->>>>>        mutex_lock(&dev->dev_lock);
->>>>>        opal_lock_check_for_saved_key(dev, lk_unlk);
->>>>> -    ret = __opal_lock_unlock(dev, lk_unlk);
->>>>> +    ret = opal_get_key(dev, &lk_unlk->session.opal_key);
->>>>> +    if (!ret)
->>>>> +        ret = __opal_lock_unlock(dev, lk_unlk);
->>>>
->>>> This is relying on opal_get_key() returning 0 to decide if
->>>> __opal_lock_unlock() is called. Is this really what you want? It
->>>> seems
->>>> that you would want to unlock if the key is a LUKS key, even if
->>>> opal_get_key() returns non-zero.
->>>
->>> I think it is ok. That was logic introduced in your keyring patch
->>> anyway.
->>>
->>> I just fixed that if key is cached (stored in OPAL struct), that key
->>> is used
->>> and subsequent opal_get_key() does nothing, returning 0.
->>>
->>> The story is here that both OPAL lock and unlock need key, while LUKS
->>> logic never required key for lock (deactivation), so we rely on the
->>> cached
->>> OPAL key here. We do not need any key stored for unlocking (that is
->>> always
->>> decrypted from a keyslot)
->>> (I think requiring key for locking range is a design mistake in OPAL
->>> but
->>> that's not relevant for now :-)
->>
->> Okay, if the key is such that opal_get_key() always returns 0, then I
->> agree there isn't an issue.
-> 
-> 
-> Jens, what's the status of this patch?
-> 
-> It is clear regression in 6.6 (I forgot to add regression list, fixed now.)
-> 
-> For reference, the original report and patch is here
-> #regzbot link: https://lore.kernel.org/linux-block/20231003100209.380037-1-gmazyland@gmail.com/
-> #regzbot ^introduced 3bfeb6125664
 
-Was waiting on Greg to ack/review it, which it looks like he kind of
-has. But would've been nice with a formal ack on it. I've queued it up
-now.
+On Tue, 03 Oct 2023 12:02:09 +0200, Milan Broz wrote:
+> The commit 3bfeb61256643281ac4be5b8a57e9d9da3db4335
+> introduced the use of keyring for sed-opal.
+> 
+> Unfortunately, there is also a possibility to save
+> the Opal key used in opal_lock_unlock().
+> 
+> This patch switches the order of operation, so the cached
+> key is used instead of failure for opal_get_key.
+> 
+> [...]
 
+Applied, thanks!
+
+[1/1] block: Fix regression in sed-opal for a saved key.
+      commit: 4eaf0932c69bdc56d2c2af30404f9c918b1f6295
+
+Best regards,
 -- 
 Jens Axboe
+
+
 
