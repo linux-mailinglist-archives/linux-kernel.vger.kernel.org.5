@@ -2,86 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15CFE7C83B4
+	by mail.lfdr.de (Postfix) with ESMTP id 6D2F57C83B5
 	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 12:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbjJMKuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 06:50:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41070 "EHLO
+        id S230356AbjJMKub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 06:50:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229903AbjJMKuV (ORCPT
+        with ESMTP id S230250AbjJMKua (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 06:50:21 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 808F983;
-        Fri, 13 Oct 2023 03:50:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27083C433C7;
-        Fri, 13 Oct 2023 10:50:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697194219;
-        bh=DzSNKGUIOplO8sJNh8KxYOTCM0wZruRzV+sDINeuiuw=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=WIYBIrWqt+1m2hEQ5p/ex1u9HHp76dZN75gyHctuMJR7bTbhuf8TE1VZ2NNjFfI+1
-         Zh5eSQTkzmuyrjYpqM/M+qk4pxyMfqcq/VyjFQNH7VYBV6b37wHHx7yzqZBqf30v5C
-         H2I9Ce0dt6YYxOl4xxQgsg5DRpewUn+WW309WOB3fZUeYaeTWYh0M8WO2FrQ7fjoqT
-         7vxps82CdzE4DmbAX+jsYUQwL4j20dXnD2YLHBj/d5QXDZcfWkVf6us/i8XW4Hm02N
-         /5m+YEW6b92BiF8WkYl7mUPPznNw+md4+VO7lEh1broEBkSJehnKGCawgFqp4pu2h6
-         SyevNkm15J2JQ==
-Message-ID: <5258379d69957db51c5db6f3175898f41be67fc5.camel@kernel.org>
-Subject: Re: [PATCH] NFS: Clean up errors in nfs_page.h
-From:   Jeff Layton <jlayton@kernel.org>
-To:     chenguohua@jari.cn, trond.myklebust@hammerspace.com,
-        anna@kernel.org
-Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 13 Oct 2023 06:50:16 -0400
-In-Reply-To: <2f52e71b.943.18b2705b8cb.Coremail.chenguohua@jari.cn>
-References: <2f52e71b.943.18b2705b8cb.Coremail.chenguohua@jari.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.module_f38+17164+63eeee4a) 
+        Fri, 13 Oct 2023 06:50:30 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21DC883
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 03:50:28 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-325e9cd483eso1881652f8f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 03:50:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697194226; x=1697799026; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IzdTvuk9Hpz7O7qnXQ4bc4hZomimkE/Cg90sCGqX5lA=;
+        b=SS6qgNAS3+mRnOA3HzwBO2KL0ttcxYXPFqbglvYLiQWEP1MMoFaaUN6Af+FRITAELz
+         CxA6hezY5JZsB9Z2ocCLm/UINZlyvv7VyAvk1c5pnlQh76V5hdaTRFlDCO+wNhtcTET2
+         5LCERvHUu82c8kzPLCIdU5+b8dG+vxa95j0nVOsWrfbsmArxh0ooW9ENBqMfe6fRNrag
+         JOqjbkn3YmA2r+Tcte88BkpUv5dCGJn0ajRzrU0gL+tjfw5qqPSyni/yOSirns+TorrC
+         dbYNfKUOPo5uwf1VzFOabdlg6WWNwQvknlbj2COMHUvL3e7uAxMJDGoGAswctxo7Pfzc
+         vAMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697194226; x=1697799026;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IzdTvuk9Hpz7O7qnXQ4bc4hZomimkE/Cg90sCGqX5lA=;
+        b=lvrksE8/1bIfdIM3rsD2TlegBAauRiRZ63R7oViQGGZUUC0aEU2eXcq8YQqDVlReZ4
+         60pvdz0aUvPMYZ7LMU9Qbsjb8BwKRPK39ACiObCDCL/y/k0ywGM0ozh/pSJ382QfLs4v
+         vf0P3E3kQxYT1NZjNT88UyK1MrxBfXRY2QKEeWlnAsLm2o547R8zLjJagnPtGY9pwkel
+         TM+5g0inym9BhNapxTQORapeuzWurjw69sZ2Ab1WBWMP0H4JLrnialH0vSJ1e0NypwSe
+         MBuhNlncc0zWqPQTEGFmjS/BbtoWDSW1HEhlBqFKJ0Jm8rSZ107HylD51wN5eNfQiT+n
+         NFCw==
+X-Gm-Message-State: AOJu0YyNCad7p0VeaxGWe4EZjsCxXMXFJr8yD6M0DijKlDw3qW3+ve/N
+        O951Ex4yQW9NMVbe+myeJN8qthKc7E85kg+f
+X-Google-Smtp-Source: AGHT+IF4yurNdEXNXLR59vun98D5vmMYOMZtup4CqnaDK2jPYQ3tIYnAM9ZbpJT3VejdIEBvS9x29A==
+X-Received: by 2002:a05:6000:109:b0:320:9e2:b3a2 with SMTP id o9-20020a056000010900b0032009e2b3a2mr23669871wrx.33.1697194226107;
+        Fri, 13 Oct 2023 03:50:26 -0700 (PDT)
+Received: from lab-ubuntu ([41.90.69.21])
+        by smtp.gmail.com with ESMTPSA id p4-20020a5d68c4000000b003232f167df5sm20520851wrw.108.2023.10.13.03.50.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 03:50:25 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 13:50:23 +0300
+From:   Calvince Otieno <calvncce@gmail.com>
+To:     outreachy@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Luke Koch <lu.ale.koch@gmail.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Simon Horman <horms@kernel.org>,
+        Calvince Otieno <calvncce@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] staging: wlan-ng: remove helper function
+ prism2sta_inf_handover()
+Message-ID: <ZSkg7y2Y2T3midXB@lab-ubuntu>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-10-13 at 11:12 +0800, chenguohua@jari.cn wrote:
-> Fix the following errors reported by checkpatch:
->=20
-> ERROR: space required after that ',' (ctx:VxO)
->=20
-> Signed-off-by: JiangHui Xu <xujianghui@cdjrlc.com>
-> ---
->  include/linux/nfs_page.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/include/linux/nfs_page.h b/include/linux/nfs_page.h
-> index 1c315f854ea8..6a3c54bd2c40 100644
-> --- a/include/linux/nfs_page.h
-> +++ b/include/linux/nfs_page.h
-> @@ -122,7 +122,7 @@ struct nfs_pageio_descriptor {
->  /* arbitrarily selected limit to number of mirrors */
->  #define NFS_PAGEIO_DESCRIPTOR_MIRROR_MAX 16
-> =20
-> -#define NFS_WBACK_BUSY(req)	(test_bit(PG_BUSY,&(req)->wb_flags))
-> +#define NFS_WBACK_BUSY(req)	(test_bit(PG_BUSY, &(req)->wb_flags))
-> =20
->  extern struct nfs_page *nfs_page_create_from_page(struct nfs_open_contex=
-t *ctx,
->  						  struct page *page,
+prism2sta_inf_handover() function basically calls pr_debug() to print
+a literal string. This can be done by the parent function directly.
 
-In general, we don't usually take patches that just clean up whitespace
-damage or stylistic problems. Doing so makes backporting harder as you
-end up having to pull in extra patches to fix up minor differences
-before bringing in substantive patches.
+Signed-off-by: Calvince Otieno <calvncce@gmail.com>
+---
+Patch version v2:
+	- Replace pr_debug() utility function with the module specific netdev_dbg()
 
-If you're fixing a real bug in the same area, then sure, go ahead and
-fix up the style in the surrounding code, but if these patches don't
-fix real bugs then I'd suggest not taking them.
---=20
-Jeff Layton <jlayton@kernel.org>
+ drivers/staging/wlan-ng/prism2sta.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/staging/wlan-ng/prism2sta.c b/drivers/staging/wlan-ng/prism2sta.c
+index caeceb89c9fa..cf07cf04e20c 100644
+--- a/drivers/staging/wlan-ng/prism2sta.c
++++ b/drivers/staging/wlan-ng/prism2sta.c
+@@ -1697,7 +1697,8 @@ void prism2sta_ev_info(struct wlandevice *wlandev,
+ 	/* Dispatch */
+ 	switch (inf->infotype) {
+ 	case HFA384x_IT_HANDOVERADDR:
+-		pr_debug("received infoframe:HANDOVER (unhandled)\n");
++		netdev_dbg(wlandev->netdev,
++				"received infoframe:HANDOVER (unhandled)\n");
+ 		break;
+ 	case HFA384x_IT_COMMTALLIES:
+ 		prism2sta_inf_tallies(wlandev, inf);
+-- 
+Calvince Otieno
