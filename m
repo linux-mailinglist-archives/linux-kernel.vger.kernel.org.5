@@ -2,67 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C478B7C8F03
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 23:27:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7CB57C8F06
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 23:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230469AbjJMV1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 17:27:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40458 "EHLO
+        id S232222AbjJMV3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 17:29:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232267AbjJMV1r (ORCPT
+        with ESMTP id S229891AbjJMV3S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 17:27:47 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C816B7;
-        Fri, 13 Oct 2023 14:27:43 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-53406799540so4444844a12.1;
-        Fri, 13 Oct 2023 14:27:42 -0700 (PDT)
+        Fri, 13 Oct 2023 17:29:18 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C12095
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 14:29:17 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-4195fe5cf73so31781cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 14:29:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697232461; x=1697837261; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1697232556; x=1697837356; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=p64ey+Hmhn7w3szjg3EYf/Ayo/C6KBIGFFRqgW96fX8=;
-        b=bd7hjyYEsBrda63hdg63s5Vh4xWK3rTNekLm+RQ2DLUJDo3BfyxnHHIouyj7mHQpV9
-         HHLEBUolvJnRr6lN+pBCyFBmSXFct0/AiIvvJEkKcv5dj+oHG9he9wkAWC+/yUZiFMCl
-         rUTRIPtlmY5884tGRgLsZxWSUvGq7xtrUYuOYdhb8G9nelEr1yWlZqvzwSv6z4m96616
-         SpSeSMlCJV0++W3dz+ErzLSqGZRlwzcQRuaL1emvAXbv3u1fYRcr3yI03DVzlbyG2ocC
-         UYHMBFwaiYnLMl/Ax0uMy+wUR/Bsn/SM9g/9WLGrFrUQgPLCRGGVycBPawDQUvigcKhz
-         DA8A==
+        bh=cbnszuC6zZy9ZUsF74yWxSFhfV0I+Nmxa40zOQ2lSHM=;
+        b=IgK+mnsKu8Ft4bT9XiWU9pObZSzyJRLvAieYMC3f08hehTP9jVLMkTpG10L1paiBlK
+         JkSv10u18Ix5Kq/P4422fRm9wWDW+pDCrPRZ9XsHRaTlVNHrRcSb8QhVxi/y/nJGMD5U
+         UNdxHsKsCkH5Sf7EA7pd0mO2a/UACdhOjE7wJfaXI5cyMIdpBt1E9cvInLGU38j+0hxr
+         jW7Z0FQre9XxK2ru6nRlUMZ+PpElyLsbOob09vzxk4ivzXtq4PECLZt6O6fxhC1aFBrn
+         QpSZ/KyLCt8dKeQDAFY6yzkUStE9cEU9N1C6ry5HLETWcFATZekPscERJmpGHj76FgUM
+         gwhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697232461; x=1697837261;
+        d=1e100.net; s=20230601; t=1697232556; x=1697837356;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=p64ey+Hmhn7w3szjg3EYf/Ayo/C6KBIGFFRqgW96fX8=;
-        b=GQuqEGJ3yKDoGrMUmEeojykGi9LqcYDz+H69T1oWa2147QLyj/BZf7ZFs1bTbUaczI
-         hay7Y4Lws/D40ybvtIVVeAa1CJu8lvYqL3XHvFj8yoaJGyFYJIFLHjtogobmGfFiwcbL
-         kiOQBiAxZkgAAOSFV4nUXeZyO45vCOEt9HqsHU4BQcehpui/eMTm4XQ1AH3JnOlbyVXr
-         MqhDBZuNHGnXOIVocE/UN2JC3M7b9m2XNY0Xc+2YjBPHqJlwDZosX3yi+ibG3Audq7Ch
-         LxBB9Sa2BdDT1Yl0uAA2+JmRt/dp/nWrOEEJT+E1+27hqHLt4+3xlmC+YzJzXhz8LXzG
-         lu0A==
-X-Gm-Message-State: AOJu0YyVGQHVJQ9lTcIi2EGHOumJr3arrlyy/mcfQOzVklkLoLsoKY83
-        I6LX+cLnHXRk7Kxl0rqPEsj0gXs7mlb3eYdtUq8=
-X-Google-Smtp-Source: AGHT+IHPGcu2EB1bm/0u9gz5uCaZqXdXtC5UVnZ8P9PhwBQnx5m+sVbWM0P8miuQ+kj6z3Jd6yenMsPAQcC1LNKDFwA=
-X-Received: by 2002:aa7:d1d8:0:b0:523:4a4e:3b57 with SMTP id
- g24-20020aa7d1d8000000b005234a4e3b57mr24337173edp.13.1697232461447; Fri, 13
- Oct 2023 14:27:41 -0700 (PDT)
+        bh=cbnszuC6zZy9ZUsF74yWxSFhfV0I+Nmxa40zOQ2lSHM=;
+        b=tVA/3vLNKbSElXmtZj98WgouLPLGZRb2Zxgnn6OxkUI1/gtxQlymykv9H84QngVZsw
+         OWtBjPhp4wtFni54F7gt+SGUHV5NGz+UHGhCFnyKMMFoypkjoYXUPOV7QbQ9DsC4BZpG
+         taXil2utPpiGSu/AA65PbYmbdo+OZl1ZnnEgjCDjN3IeEdePovGQorVWTAuTHnizwoa9
+         yf1/xRU4QON+DSWYQ6kiS+iu7ae3IrE3zEpf7qU8zHRIZOuxzhiP5fWjba6KWxvlQfgL
+         EfVbcPUD1gpzxXHrvzlfLaConXL9AIKJiXwNTldIp7A4Wfg3r4W/r2l6RJcDpOJ9ZIjU
+         +tXA==
+X-Gm-Message-State: AOJu0Ywkx2Czxi2UUzEHHW0t0HKT3LrcpN4Hii3jUXuYAuRB6BJ+mFyn
+        oGaoKq2s28bAm3tSYRg/efefXT8dnsGQh3umA3VmVQ==
+X-Google-Smtp-Source: AGHT+IHpRGFmriEzL/KQ9RKsS2oHgCTUAzVCmj/q0lNV14br53Tcpyvzbb4wsjq5Hz1EXcDQc6RCLu7ojVHBJSnpDQs=
+X-Received: by 2002:a05:622a:2c02:b0:417:9238:5a30 with SMTP id
+ kk2-20020a05622a2c0200b0041792385a30mr283qtb.29.1697232556224; Fri, 13 Oct
+ 2023 14:29:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231011120857.251943-1-zhouchuyi@bytedance.com> <20231011120857.251943-8-zhouchuyi@bytedance.com>
-In-Reply-To: <20231011120857.251943-8-zhouchuyi@bytedance.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 13 Oct 2023 14:27:30 -0700
-Message-ID: <CAEf4BzYytbg+ZqR9vWm8f0XSi9ZvAqFhoE_-bD6A7ZBXVkic7g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 7/8] selftests/bpf: rename bpf_iter_task.c to bpf_iter_tasks.c
-To:     Chuyi Zhou <zhouchuyi@bytedance.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20231013154742.76836-1-emkan@prevas.dk>
+In-Reply-To: <20231013154742.76836-1-emkan@prevas.dk>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 13 Oct 2023 14:28:40 -0700
+Message-ID: <CAGETcx-MP7XNUa0uObFpEDBiwjaGgTGvKu6Q-RXkrh0+hvXZvQ@mail.gmail.com>
+Subject: Re: [PATCH] serial: amba-pl011: set fwnode from parent device
+To:     Emil Kronborg Andersen <emkan@prevas.dk>
+Cc:     linux@armlinux.org.uk, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,95 +71,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 5:09=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance.com=
-> wrote:
+On Fri, Oct 13, 2023 at 8:48=E2=80=AFAM Emil Kronborg Andersen <emkan@preva=
+s.dk> wrote:
 >
-> The newly-added struct bpf_iter_task has a name collision with a selftest
-> for the seq_file task iter's bpf skel, so the selftests/bpf/progs file is
-> renamed in order to avoid the collision.
+> After commit 3fb16866b51d ("driver core: fw_devlink: Make cycle
+> detection more robust"), consumer devices without their fwnode set
+> printed errors like the one below:
 >
-> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
+> [    0.261887] uart-pl011 3f201000.serial: Failed to create device link (=
+0x180) with soc:firmware:gpio
+>
+> To fix this, set the fwnode so fw_devlink can find and handle it
+> properly.
+>
+> Fixes: 3fb16866b51d ("driver core: fw_devlink: Make cycle detection more =
+robust")
+> Signed-off-by: Emil Kronborg Andersen <emkan@prevas.dk>
 > ---
+>  drivers/tty/serial/amba-pl011.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl=
+011.c
+> index 3dc9b0fcab1c..29cef84b71c0 100644
+> --- a/drivers/tty/serial/amba-pl011.c
+> +++ b/drivers/tty/serial/amba-pl011.c
+> @@ -2798,6 +2798,8 @@ static int pl011_probe(struct amba_device *dev, con=
+st struct amba_id *id)
+>         int portnr, ret;
+>         u32 val;
+>
+> +       device_set_node(&dev->dev, dev_fwnode(dev->dev.parent));
+> +
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Can we do this at a tty/serial framework level instead of just this
+driver? Also, this is the latest kernel? I feel like I fixed exactly
+this (but at a framework level) several months ago.
 
+-Saravana
 
->  .../selftests/bpf/prog_tests/bpf_iter.c        | 18 +++++++++---------
->  .../{bpf_iter_task.c =3D> bpf_iter_tasks.c}      |  0
->  2 files changed, 9 insertions(+), 9 deletions(-)
->  rename tools/testing/selftests/bpf/progs/{bpf_iter_task.c =3D> bpf_iter_=
-tasks.c} (100%)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/te=
-sting/selftests/bpf/prog_tests/bpf_iter.c
-> index 1f02168103dd..dc60e8e125cd 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> @@ -7,7 +7,7 @@
->  #include "bpf_iter_ipv6_route.skel.h"
->  #include "bpf_iter_netlink.skel.h"
->  #include "bpf_iter_bpf_map.skel.h"
-> -#include "bpf_iter_task.skel.h"
-> +#include "bpf_iter_tasks.skel.h"
->  #include "bpf_iter_task_stack.skel.h"
->  #include "bpf_iter_task_file.skel.h"
->  #include "bpf_iter_task_vma.skel.h"
-> @@ -215,12 +215,12 @@ static void *do_nothing_wait(void *arg)
->  static void test_task_common_nocheck(struct bpf_iter_attach_opts *opts,
->                                      int *num_unknown, int *num_known)
->  {
-> -       struct bpf_iter_task *skel;
-> +       struct bpf_iter_tasks *skel;
->         pthread_t thread_id;
->         void *ret;
->
-> -       skel =3D bpf_iter_task__open_and_load();
-> -       if (!ASSERT_OK_PTR(skel, "bpf_iter_task__open_and_load"))
-> +       skel =3D bpf_iter_tasks__open_and_load();
-> +       if (!ASSERT_OK_PTR(skel, "bpf_iter_tasks__open_and_load"))
->                 return;
->
->         ASSERT_OK(pthread_mutex_lock(&do_nothing_mutex), "pthread_mutex_l=
-ock");
-> @@ -239,7 +239,7 @@ static void test_task_common_nocheck(struct bpf_iter_=
-attach_opts *opts,
->         ASSERT_FALSE(pthread_join(thread_id, &ret) || ret !=3D NULL,
->                      "pthread_join");
->
-> -       bpf_iter_task__destroy(skel);
-> +       bpf_iter_tasks__destroy(skel);
->  }
->
->  static void test_task_common(struct bpf_iter_attach_opts *opts, int num_=
-unknown, int num_known)
-> @@ -307,10 +307,10 @@ static void test_task_pidfd(void)
->
->  static void test_task_sleepable(void)
->  {
-> -       struct bpf_iter_task *skel;
-> +       struct bpf_iter_tasks *skel;
->
-> -       skel =3D bpf_iter_task__open_and_load();
-> -       if (!ASSERT_OK_PTR(skel, "bpf_iter_task__open_and_load"))
-> +       skel =3D bpf_iter_tasks__open_and_load();
-> +       if (!ASSERT_OK_PTR(skel, "bpf_iter_tasks__open_and_load"))
->                 return;
->
->         do_dummy_read(skel->progs.dump_task_sleepable);
-> @@ -320,7 +320,7 @@ static void test_task_sleepable(void)
->         ASSERT_GT(skel->bss->num_success_copy_from_user_task, 0,
->                   "num_success_copy_from_user_task");
->
-> -       bpf_iter_task__destroy(skel);
-> +       bpf_iter_tasks__destroy(skel);
->  }
->
->  static void test_task_stack(void)
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task.c b/tools/te=
-sting/selftests/bpf/progs/bpf_iter_tasks.c
-> similarity index 100%
-> rename from tools/testing/selftests/bpf/progs/bpf_iter_task.c
-> rename to tools/testing/selftests/bpf/progs/bpf_iter_tasks.c
+>         portnr =3D pl011_find_free_port();
+>         if (portnr < 0)
+>                 return portnr;
 > --
-> 2.20.1
+> 2.41.0
 >
