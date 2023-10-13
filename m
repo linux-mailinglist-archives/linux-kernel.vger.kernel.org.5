@@ -2,63 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 653137C7B14
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 03:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFA7E7C7B12
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 03:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229464AbjJMBM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 21:12:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40412 "EHLO
+        id S229457AbjJMBL4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 12 Oct 2023 21:11:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjJMBM4 (ORCPT
+        with ESMTP id S229437AbjJMBLx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 21:12:56 -0400
-Received: from jari.cn (unknown [218.92.28.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0E70083
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 18:12:51 -0700 (PDT)
-Received: from chenguohua$jari.cn ( [182.148.14.172] ) by
- ajax-webmail-localhost.localdomain (Coremail) ; Fri, 13 Oct 2023 09:10:59
- +0800 (GMT+08:00)
-X-Originating-IP: [182.148.14.172]
-Date:   Fri, 13 Oct 2023 09:10:59 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   chenguohua@jari.cn
-To:     rafael.j.wysocki@intel.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] sonet: Clean up errors in sonet.h
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
- 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Thu, 12 Oct 2023 21:11:53 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3448283;
+        Thu, 12 Oct 2023 18:11:49 -0700 (PDT)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 39D1BWtI42007851, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.92/5.92) with ESMTPS id 39D1BWtI42007851
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 13 Oct 2023 09:11:32 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Fri, 13 Oct 2023 09:11:33 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Fri, 13 Oct 2023 09:11:33 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
+ RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
+ 15.01.2375.007; Fri, 13 Oct 2023 09:11:33 +0800
+From:   Ping-Ke Shih <pkshih@realtek.com>
+To:     Chukun Pan <amadeus@jmu.edu.cn>
+CC:     Kalle Valo <kvalo@kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 1/1] wifi: rtw88: 8822b: disable call trace when write RF mode table fail
+Thread-Topic: [PATCH 1/1] wifi: rtw88: 8822b: disable call trace when write RF
+ mode table fail
+Thread-Index: AQHZ/RSdr1GpsNeu4EyztedoWtdjVLBG6SOQ
+Date:   Fri, 13 Oct 2023 01:11:32 +0000
+Message-ID: <6991a517301a46159085a0b06d43f319@realtek.com>
+References: <20231012140120.891411-1-amadeus@jmu.edu.cn>
+In-Reply-To: <20231012140120.891411-1-amadeus@jmu.edu.cn>
+Accept-Language: en-US, zh-TW
+Content-Language: zh-TW
+x-originating-ip: [172.21.69.25]
+x-kse-serverinfo: RTEXMBS01.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Message-ID: <ad4d09c.939.18b2696341d.Coremail.chenguohua@jari.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: AQAAfwD3lD8jmShlWdXBAA--.738W
-X-CM-SenderInfo: xfkh0w5xrk3tw6md2xgofq/1tbiAQAAEWUjyrIAGQALs8
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
-c3BhY2UgcmVxdWlyZWQgYWZ0ZXIgdGhhdCAnLCcgKGN0eDpWeFYpCgpTaWduZWQtb2ZmLWJ5OiBH
-dW9IdWEgQ2hlbmcgPGNoZW5ndW9odWFAamFyaS5jbj4KLS0tCiBpbmNsdWRlL2xpbnV4L3NvbmV0
-LmggfCAyICstCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkK
-CmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L3NvbmV0LmggYi9pbmNsdWRlL2xpbnV4L3NvbmV0
-LmgKaW5kZXggMmI4MDJiNmQxMmFkLi5kYjAxYTEzNjFjYjMgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUv
-bGludXgvc29uZXQuaAorKysgYi9pbmNsdWRlL2xpbnV4L3NvbmV0LmgKQEAgLTEzLDcgKzEzLDcg
-QEAgc3RydWN0IGtfc29uZXRfc3RhdHMgewogI3VuZGVmIF9fSEFORExFX0lURU0KIH07CiAKLWV4
-dGVybiB2b2lkIHNvbmV0X2NvcHlfc3RhdHMoc3RydWN0IGtfc29uZXRfc3RhdHMgKmZyb20sc3Ry
-dWN0IHNvbmV0X3N0YXRzICp0byk7CitleHRlcm4gdm9pZCBzb25ldF9jb3B5X3N0YXRzKHN0cnVj
-dCBrX3NvbmV0X3N0YXRzICpmcm9tLCBzdHJ1Y3Qgc29uZXRfc3RhdHMgKnRvKTsKIGV4dGVybiB2
-b2lkIHNvbmV0X3N1YnRyYWN0X3N0YXRzKHN0cnVjdCBrX3NvbmV0X3N0YXRzICpmcm9tLAogICAg
-IHN0cnVjdCBzb25ldF9zdGF0cyAqdG8pOwogCi0tIAoyLjE3LjEK
+
+
+> -----Original Message-----
+> From: Chukun Pan <amadeus@jmu.edu.cn>
+> Sent: Thursday, October 12, 2023 10:01 PM
+> To: Ping-Ke Shih <pkshih@realtek.com>
+> Cc: Kalle Valo <kvalo@kernel.org>; linux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org; Chukun
+> Pan <amadeus@jmu.edu.cn>
+> Subject: [PATCH 1/1] wifi: rtw88: 8822b: disable call trace when write RF mode table fail
+> 
+> The rtw88 driver throws a useless Call Trace when the rtl8812bu
+> or rtl8822be wifi modules fail to write the RF mode table.
+
+Why do you think this trace is useless? As I see, there is more than one callers.
+Did you meet a real case it throws this trace? If yes, how about the frequency?
+
+Ping-Ke
+
