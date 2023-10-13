@@ -2,112 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13E097C8FAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 23:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50DB27C8FFA
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 00:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231500AbjJMV7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 17:59:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42428 "EHLO
+        id S232021AbjJMWBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 18:01:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjJMV7q (ORCPT
+        with ESMTP id S229632AbjJMWBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 17:59:46 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2AB4B7;
-        Fri, 13 Oct 2023 14:59:44 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c735473d1aso19990255ad.1;
-        Fri, 13 Oct 2023 14:59:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697234384; x=1697839184; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2E01oW9FArDha6b2WRAcTTSaAEu+o4wpih5oGTOjVp8=;
-        b=FZzxN8EKy7ME8WncsBbp5KDNPiV6tNArijuyaWzLMiMnjIoJFoGSKKjtcOaOgzxuV4
-         91En0BfFtmV88ISMh04EajSHhCkmMOPb8J59gTN5L0TL+SUoO6M681aEji22HhW61XtX
-         uN2DxhTEfjOUYT5H4wZhaBFFCNK90ip1Z3AOLXeSY7Z2zgLzguEzo5ss0hRbTMgLyLal
-         /DoIuyFSBEUl+FswNEq1SfpdhJSwzoWb0u2A3OlffBABPs2EC/63mfdMovp0NYIaD/ih
-         yPq23xpMTTSRJ0gp+r0OCMSOXAWyfFh9VFkQ494PDmAXuEYeWfHVydaV502TmSYuTv/H
-         xPNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697234384; x=1697839184;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2E01oW9FArDha6b2WRAcTTSaAEu+o4wpih5oGTOjVp8=;
-        b=lQNCJ/lYMfpC5I4dk/6ZQWZP489+shD0qjUaZiAxUFBLYh9tKjJkqf11CA0EyH3ljF
-         apUHUxJipRPwHNa1w5czf6baPXsS1zkewi3l4hzx1knVn6fmQ5IQClmucNkk6xY9BXYO
-         wu+hnifwkhBHyu8E8huny6BJfsM6xgx3Yfb3u6WyP1tIiLqMr7OHYWwvx2y68rg+ay8M
-         7nbSqN7TtFakqjtd7yZc7wcnuE1vU05JNCqAn0hYzoKSHVaIw3KGpqPi6B2SEAJyHH37
-         3HePtGX+tDle6NCXxTh2jgnCkYd26nDmZvkXReLG/xILVlTMnHPNkz7RV3TUzyb65EU7
-         rc1Q==
-X-Gm-Message-State: AOJu0YyTtwBmtIhy/MOXcF52N31FHr2miB+hmekh+deKZwf19LbEvm66
-        tPLhRRxzNyAsngAr+ie/GJbUwi0NLuc=
-X-Google-Smtp-Source: AGHT+IHdd1fwx8ZoF6+US/sd1Hx80a8l9d6ZplVxf2Cs50Y1gb7N8WW19H5nI7NYiWJdjOx9Hnbv1A==
-X-Received: by 2002:a17:902:e5cc:b0:1ca:2a58:7ef9 with SMTP id u12-20020a170902e5cc00b001ca2a587ef9mr251184plf.67.1697234383942;
-        Fri, 13 Oct 2023 14:59:43 -0700 (PDT)
-Received: from google.com ([2620:15c:9d:2:469c:3411:2771:1b7f])
-        by smtp.gmail.com with ESMTPSA id iw7-20020a170903044700b001b895336435sm4379605plb.21.2023.10.13.14.59.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 14:59:43 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 14:59:41 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     John Salamon <salamonj9@gmail.com>
-Cc:     rydberg@bitmath.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: uinput: waiting for UI_FF_UPLOAD events will not inform user
- when allocation is required
-Message-ID: <ZSm9zeepuZ94A-ZI@google.com>
-References: <CA+fyA4RABYNPZZSk9+9U51u53kbSzqgwdi1KDDGRxXi8q5TtxQ@mail.gmail.com>
+        Fri, 13 Oct 2023 18:01:19 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A5FCB7;
+        Fri, 13 Oct 2023 15:01:17 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC245C433C7;
+        Fri, 13 Oct 2023 22:01:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697234476;
+        bh=eN7+8Uo6JxL07H1+Tga+pr6b8+j6RjcgOEu8xBzIYig=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=KYvvVIrF5//SG+aOAPpO3yWmmp1TqkuMIlU8WxVNmZDEhYWdtuFm+6kba3N9CE9Cq
+         jLFWe4Rhl7nhpLf/wx/PxCClh+kbhGuuIIT+ModtT7r1iAZoqO5OVh1m8GkUoTdreA
+         uyfODD467MPyXEHr97OmwdZC3cO3m0xV2bbhUlLXeSVp9CN9o4/Gd2eGIsegyw0m7U
+         uvDmAhJSP7k9uEf45oWh5agWBwdIm6/5Ju0ponf+KoPFpNAzKCoONa+U27g+KAyJgd
+         MwpfyNG1UXXA1tCMSRQ/t+spLCiEfrKM/5meejxctbynQvm2IphlygNupZ6VHp6VbJ
+         Dihkm/p62bC4w==
+Message-ID: <2fb931d1aa2190b918d0ddba87579eeb.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+fyA4RABYNPZZSk9+9U51u53kbSzqgwdi1KDDGRxXi8q5TtxQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1jmswnvub2.fsf@starbuckisacylon.baylibre.com>
+References: <20231010062917.3624223-1-xianwei.zhao@amlogic.com> <20231010062917.3624223-5-xianwei.zhao@amlogic.com> <5e0bd4bba88701dd1a7a3e89d18412f0.sboyd@kernel.org> <1jmswnvub2.fsf@starbuckisacylon.baylibre.com>
+Subject: Re: [PATCH V2 4/4] clk: meson: c3: add c3 clock peripherals controller driver
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Chuan Liu <chuan.liu@amlogic.com>
+To:     Jerome Brunet <jbrunet@baylibre.com>,
+        Xianwei Zhao <xianwei.zhao@amlogic.com>,
+        devicetree@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 13 Oct 2023 15:01:14 -0700
+User-Agent: alot/0.10
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
+Quoting Jerome Brunet (2023-10-13 00:38:14)
+>=20
+> On Thu 12 Oct 2023 at 16:51, Stephen Boyd <sboyd@kernel.org> wrote:
+>=20
+> > Quoting Xianwei Zhao (2023-10-09 23:29:17)
+> >> diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
+> >> index 76be4bbd2afb..c8d59d28c8ff 100644
+> >> --- a/drivers/clk/meson/Kconfig
+> >> +++ b/drivers/clk/meson/Kconfig
+> >> @@ -140,6 +140,19 @@ config COMMON_CLK_C3_PLL
+> >>           Say Y if you want the board to work, because PLLs are the pa=
+rent of most
+> >>           peripherals.
+> >> =20
+> >> +config COMMON_CLK_C3_PERIPHERALS
+> >> +       tristate "Amlogic C3 peripherals clock controller"
+> >> +       default y
+> >
+> > Why are these default y? They should depend on something like ARM64 and
+> > even then I don't see why we want to enable them by default if we're
+> > building the ARM64 kernel.
+>=20
+> Should indeed depend on ARM64.
 
-On Tue, Oct 10, 2023 at 05:38:27PM +1030, John Salamon wrote:
-> Currently the "fake" input events generated by uinput in response to
-> effect uploads will return an effect with an id that has already been
-> handled by input_ff_upload in ff-core.c, which can modify the effect
-> id. This causes a problem specifically when the effect originally
-> uploaded via the EVIOCSFF ioctl contained an effect with -1, as the
-> userspace code handling UI_FF_UPLOAD receives an effect with an id
-> other than -1, and therefore will not know an allocation was
-> requested.
+Cool.
 
-The kernel never changes ID of an existing effect, the only time ID is
-changed is when userspace indicates that a new effect should be created
-by setting effect ID to -1.
+>=20
+> Those are the main clock controllers. Like for other AML SoC families,
+> they are necessary to boot the device which is why they use 'default y'
+>=20
+> Is it a problem ?
+>=20
+> The whole meson directory depends on ARCH_MESON, so the drivers will go
+> away if Amlogic support is removed on ARM64.
 
-The handler of force feedback effects should know what effects (with
-what IDs) have been uploaded to the device so far, so whenever it sees a
-request for an effect with previously unseen effect_id it should
-recognize this as a signal that a new effect/id has been allocated by
-the kernel.
-
-> 
-> I notice that the "old" field on the ff_effect struct is set to NULL
-> when the -1 id is changed (in input_ff_upload), which can serve as a
-> flag that an allocation was requested. If it is the intention is that
-> uinput users check if old == NULL to know when allocations are needed
-> I think uinput documentation should describe this.
-
-No, not really, as explained above.
-
-> 
-> I first noticed this using python-evdev, see my issue report here:
-> https://github.com/gvalkov/python-evdev/issues/199
-
-Thanks.
-
--- 
-Dmitry
+No it isn't a problem if the entire section is implicitly depending on
+ARCH_MESON.
