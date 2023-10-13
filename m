@@ -2,138 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B947C7B28
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 03:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAE1B7C7B36
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 03:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229469AbjJMBam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 21:30:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45874 "EHLO
+        id S229464AbjJMBfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 21:35:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjJMBal (ORCPT
+        with ESMTP id S229436AbjJMBfu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 21:30:41 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A548EBB
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 18:30:39 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5C28113D5;
-        Thu, 12 Oct 2023 18:31:19 -0700 (PDT)
-Received: from u200865.usa.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8FD653F7A6;
-        Thu, 12 Oct 2023 18:30:38 -0700 (PDT)
-From:   Jeremy Linton <jeremy.linton@arm.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
-        maz@kernel.org, anshuman.khandual@arm.com, krisman@suse.de,
-        broonie@kernel.org, james.morse@arm.com, ionela.voinescu@arm.com,
-        linux-kernel@vger.kernel.org, Jeremy Linton <jeremy.linton@arm.com>
-Subject: [PATCH] arm64: cpufeature: Display the set of cores with a feature
-Date:   Thu, 12 Oct 2023 20:30:16 -0500
-Message-ID: <20231013013016.197102-1-jeremy.linton@arm.com>
-X-Mailer: git-send-email 2.41.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 12 Oct 2023 21:35:50 -0400
+Received: from cmccmta1.chinamobile.com (cmccmta2.chinamobile.com [111.22.67.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1C9FDC0;
+        Thu, 12 Oct 2023 18:35:44 -0700 (PDT)
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from spf.mail.chinamobile.com (unknown[10.188.0.87])
+        by rmmx-syy-dmz-app03-12003 (RichMail) with SMTP id 2ee365289eec415-eec04;
+        Fri, 13 Oct 2023 09:35:40 +0800 (CST)
+X-RM-TRANSID: 2ee365289eec415-eec04
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from ubuntu.localdomain (unknown[10.54.5.252])
+        by rmsmtp-syy-appsvr09-12009 (RichMail) with SMTP id 2ee965289eeb0e4-051a9;
+        Fri, 13 Oct 2023 09:35:40 +0800 (CST)
+X-RM-TRANSID: 2ee965289eeb0e4-051a9
+From:   zhujun2 <zhujun2@cmss.chinamobile.com>
+To:     shuah@kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, andrii@kernel.org,
+        linux-kernel@vger.kernel.org, zhujun2@cmss.chinamobile.com
+Subject: [PATCH] selftests: bpf: remove unused variables
+Date:   Thu, 12 Oct 2023 18:35:36 -0700
+Message-Id: <20231013013536.2047-1-zhujun2@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The AMU feature can be enabled on a subset of the cores in a system.
-Because of that, it prints a message for each core as it is detected.
-This becomes tedious when there are hundreds of cores. Instead, for
-CPU features which can be enabled on a subset of the present cores,
-lets wait until update_cpu_capabilities() and print the subset of cores
-the feature was enabled on.
+These variables are never referenced in the code, just remove them.
 
-Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+Signed-off-by: zhujun2 <zhujun2@cmss.chinamobile.com>
 ---
- arch/arm64/include/asm/cpufeature.h |  2 ++
- arch/arm64/kernel/cpufeature.c      | 16 +++++++++++++---
- 2 files changed, 15 insertions(+), 3 deletions(-)
+ tools/testing/selftests/bpf/prog_tests/atomic_bounds.c      | 1 -
+ tools/testing/selftests/bpf/prog_tests/kfree_skb.c          | 2 --
+ tools/testing/selftests/bpf/prog_tests/perf_branches.c      | 6 +-----
+ .../testing/selftests/bpf/prog_tests/probe_read_user_str.c  | 4 ++--
+ tools/testing/selftests/bpf/prog_tests/test_overhead.c      | 4 ++--
+ tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c       | 1 -
+ 6 files changed, 5 insertions(+), 13 deletions(-)
 
-diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-index 5bba39376055..19b4d001d845 100644
---- a/arch/arm64/include/asm/cpufeature.h
-+++ b/arch/arm64/include/asm/cpufeature.h
-@@ -23,6 +23,7 @@
- #include <linux/bug.h>
- #include <linux/jump_label.h>
- #include <linux/kernel.h>
-+#include <linux/cpumask.h>
- 
- /*
-  * CPU feature register tracking
-@@ -380,6 +381,7 @@ struct arm64_cpu_capabilities {
- 	 * method is robust against being called multiple times.
- 	 */
- 	const struct arm64_cpu_capabilities *match_list;
-+	const struct cpumask *cpus;
- };
- 
- static inline int cpucap_default_scope(const struct arm64_cpu_capabilities *cap)
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index 444a73c2e638..18711e35924c 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -1944,8 +1944,6 @@ int get_cpu_with_amu_feat(void)
- static void cpu_amu_enable(struct arm64_cpu_capabilities const *cap)
+diff --git a/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c b/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
+index 69bd7853e..4715cde38 100644
+--- a/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
++++ b/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
+@@ -7,7 +7,6 @@
+ void test_atomic_bounds(void)
  {
- 	if (has_cpuid_feature(cap, SCOPE_LOCAL_CPU)) {
--		pr_info("detected CPU%d: Activity Monitors Unit (AMU)\n",
--			smp_processor_id());
- 		cpumask_set_cpu(smp_processor_id(), &amu_cpus);
+ 	struct atomic_bounds *skel;
+-	__u32 duration = 0;
  
- 		/* 0 reference values signal broken/disabled counters */
-@@ -2411,10 +2409,12 @@ static const struct arm64_cpu_capabilities arm64_features[] = {
- 		 * message to be shown until at least one CPU is detected to
- 		 * support the feature.
- 		 */
-+		.desc = "Activity Monitors Unit (AMU)",
- 		.capability = ARM64_HAS_AMU_EXTN,
- 		.type = ARM64_CPUCAP_WEAK_LOCAL_CPU_FEATURE,
- 		.matches = has_amu,
- 		.cpu_enable = cpu_amu_enable,
-+		.cpus = &amu_cpus,
- 		ARM64_CPUID_FIELDS(ID_AA64PFR0_EL1, AMU, IMP)
- 	},
- #endif /* CONFIG_ARM64_AMU_EXTN */
-@@ -2981,7 +2981,7 @@ static void update_cpu_capabilities(u16 scope_mask)
- 		    !caps->matches(caps, cpucap_default_scope(caps)))
- 			continue;
- 
--		if (caps->desc)
-+		if (caps->desc && !caps->cpus)
- 			pr_info("detected: %s\n", caps->desc);
- 
- 		__set_bit(caps->capability, system_cpucaps);
-@@ -3330,6 +3330,7 @@ unsigned long cpu_get_elf_hwcap2(void)
- 
- static void __init setup_system_capabilities(void)
+ 	skel = atomic_bounds__open_and_load();
+ 	if (CHECK(!skel, "skel_load", "couldn't load program\n"))
+diff --git a/tools/testing/selftests/bpf/prog_tests/kfree_skb.c b/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
+index c07991544..b0992a9ed 100644
+--- a/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
++++ b/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
+@@ -20,7 +20,6 @@ static void on_sample(void *ctx, int cpu, void *data, __u32 size)
  {
-+	int i;
- 	/*
- 	 * We have finalised the system-wide safe feature
- 	 * registers, finalise the capabilities that depend
-@@ -3338,6 +3339,15 @@ static void __init setup_system_capabilities(void)
- 	 */
- 	update_cpu_capabilities(SCOPE_SYSTEM);
- 	enable_cpu_capabilities(SCOPE_ALL & ~SCOPE_BOOT_CPU);
-+
-+	for (i = 0; i < ARM64_NCAPS; i++) {
-+		const struct arm64_cpu_capabilities *caps = cpucap_ptrs[i];
-+
-+		if (caps && caps->cpus && caps->desc &&
-+			cpumask_any(caps->cpus) < nr_cpu_ids)
-+			pr_info("detected: %s on CPU%*pbl\n",
-+				caps->desc, cpumask_pr_args(caps->cpus));
-+	}
- }
+ 	struct meta *meta = (struct meta *)data;
+ 	struct ipv6_packet *pkt_v6 = data + sizeof(*meta);
+-	int duration = 0;
  
- void __init setup_cpu_features(void)
+ 	if (CHECK(size != 72 + sizeof(*meta), "check_size", "size %u != %zu\n",
+ 		  size, 72 + sizeof(*meta)))
+@@ -65,7 +64,6 @@ void serial_test_kfree_skb(void)
+ 	struct perf_buffer *pb = NULL;
+ 	int err, prog_fd;
+ 	bool passed = false;
+-	__u32 duration = 0;
+ 	const int zero = 0;
+ 	bool test_ok[2];
+ 
+diff --git a/tools/testing/selftests/bpf/prog_tests/perf_branches.c b/tools/testing/selftests/bpf/prog_tests/perf_branches.c
+index bc24f8333..0942b9891 100644
+--- a/tools/testing/selftests/bpf/prog_tests/perf_branches.c
++++ b/tools/testing/selftests/bpf/prog_tests/perf_branches.c
+@@ -13,7 +13,6 @@ static void check_good_sample(struct test_perf_branches *skel)
+ 	int required_size = skel->bss->required_size_out;
+ 	int written_stack = skel->bss->written_stack_out;
+ 	int pbe_size = sizeof(struct perf_branch_entry);
+-	int duration = 0;
+ 
+ 	if (CHECK(!skel->bss->valid, "output not valid",
+ 		 "no valid sample from prog"))
+@@ -43,7 +42,6 @@ static void check_bad_sample(struct test_perf_branches *skel)
+ 	int written_global = skel->bss->written_global_out;
+ 	int required_size = skel->bss->required_size_out;
+ 	int written_stack = skel->bss->written_stack_out;
+-	int duration = 0;
+ 
+ 	if (CHECK(!skel->bss->valid, "output not valid",
+ 		 "no valid sample from prog"))
+@@ -61,7 +59,7 @@ static void test_perf_branches_common(int perf_fd,
+ 				      void (*cb)(struct test_perf_branches *))
+ {
+ 	struct test_perf_branches *skel;
+-	int err, i, duration = 0;
++	int err, i;
+ 	bool detached = false;
+ 	struct bpf_link *link;
+ 	volatile int j = 0;
+@@ -102,7 +100,6 @@ static void test_perf_branches_common(int perf_fd,
+ static void test_perf_branches_hw(void)
+ {
+ 	struct perf_event_attr attr = {0};
+-	int duration = 0;
+ 	int pfd;
+ 
+ 	/* create perf event */
+@@ -143,7 +140,6 @@ static void test_perf_branches_hw(void)
+ static void test_perf_branches_no_hw(void)
+ {
+ 	struct perf_event_attr attr = {0};
+-	int duration = 0;
+ 	int pfd;
+ 
+ 	/* create perf event */
+diff --git a/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
+index e41929813..a7c6ad8d6 100644
+--- a/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
++++ b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
+@@ -9,7 +9,7 @@ static const char str3[] = "mestringblubblubblubblubblub";
+ static int test_one_str(struct test_probe_read_user_str *skel, const char *str,
+ 			size_t len)
+ {
+-	int err, duration = 0;
++	int err;
+ 	char buf[256];
+ 
+ 	/* Ensure bytes after string are ones */
+@@ -44,7 +44,7 @@ static int test_one_str(struct test_probe_read_user_str *skel, const char *str,
+ void test_probe_read_user_str(void)
+ {
+ 	struct test_probe_read_user_str *skel;
+-	int err, duration = 0;
++	int err;
+ 
+ 	skel = test_probe_read_user_str__open_and_load();
+ 	if (CHECK(!skel, "test_probe_read_user_str__open_and_load",
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_overhead.c b/tools/testing/selftests/bpf/prog_tests/test_overhead.c
+index f27013e38..6161009df 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_overhead.c
++++ b/tools/testing/selftests/bpf/prog_tests/test_overhead.c
+@@ -17,7 +17,7 @@ static __u64 time_get_ns(void)
+ 
+ static int test_task_rename(const char *prog)
+ {
+-	int i, fd, duration = 0, err;
++	int i, fd, err;
+ 	char buf[] = "test_overhead";
+ 	__u64 start_time;
+ 
+@@ -66,7 +66,7 @@ void test_test_overhead(void)
+ 	struct bpf_program *fentry_prog, *fexit_prog;
+ 	struct bpf_object *obj;
+ 	struct bpf_link *link;
+-	int err, duration = 0;
++	int err;
+ 	char comm[16] = {};
+ 
+ 	if (CHECK_FAIL(prctl(PR_GET_NAME, comm, 0L, 0L, 0L)))
+diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c b/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c
+index 8b50a992d..5af434353 100644
+--- a/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c
++++ b/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c
+@@ -40,7 +40,6 @@ static bool expect_str(char *buf, size_t size, const char *str, const char *name
+ {
+ 	static char escbuf_expected[CMD_OUT_BUF_SIZE * 4];
+ 	static char escbuf_actual[CMD_OUT_BUF_SIZE * 4];
+-	static int duration = 0;
+ 	bool ok;
+ 
+ 	ok = size == strlen(str) && !memcmp(buf, str, size);
 -- 
-2.41.0
+2.17.1
+
+
 
