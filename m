@@ -2,273 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE9D7C8D8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 21:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3746B7C8D91
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 21:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231651AbjJMTLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 15:11:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39790 "EHLO
+        id S231704AbjJMTMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 15:12:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231336AbjJMTLM (ORCPT
+        with ESMTP id S231336AbjJMTMW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 15:11:12 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A20195
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 12:11:09 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c9c145bb5bso23865ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 12:11:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697224269; x=1697829069; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OIApqMtAf+eEfCsXpXLPAMDeUbkWbPlPHXxQvDgA8ZU=;
-        b=bNtl/9EBTlrnmRKO6KYrBKa3ODSTOYlD4lA1mZP0yNG99hyljV23AX9f6uqB7tylb1
-         YYWY5pExEmkBCv/GhX03l2ztot23iUldjWlYAZMFL7ocirgBV4R0Zp74uofXUuaqz2SG
-         RsDMUb8kQqUt/pr1dRCR5noL/AHEhks0R6YQ6ymW7x9HGSJkqrsiXiFgb9S98ghs2DVs
-         OszM5MbkTWzRz830j6Fort5evh/9xTArO1v6ibviQA3ALgKrF/G67tKG9yWRoRG3izo5
-         E2XCzSQhBgVEtGe+QNOrTQP8Ku4AoOfsxnztOuT5p0GZVMJrMX1flL6I+EIg/gUADgm8
-         pd9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697224269; x=1697829069;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OIApqMtAf+eEfCsXpXLPAMDeUbkWbPlPHXxQvDgA8ZU=;
-        b=gqGqV/7ESgXELZJLQWNi4my/ZZBAfDzJgO0+Q/zRvp+pWf52GyTUDVU5wd2tv8YdlZ
-         kTssX14sNVMlur7fcbSdtVoo1xd161yK+yMQtZfcQpCF/GfO9BkkmkseC7nyQX8IYT3g
-         4Ji7U2VVtsS15gZkftAM2TK+z9WJxXhQHFnnvxIEaPOxwRzExeFU/9p5aPBGGJlThluO
-         wwyGAzHY3MoGefEaBTWrqYpjZPkWq4HwcvjLI5vmJRXiFnaHpYqz69rwzKE6cfGMnpWs
-         l0iip0RPcEXKg9bdhQvr7x5BZ+daWdwT8XtKSLBmriDYcvdyg8zJ7rwL292ufxLaJxxD
-         HEUw==
-X-Gm-Message-State: AOJu0Yy51YGTJBWPbwvULI4p9c8qoHf0CxtWoCFcGYv8iTR+Lfs8FjIP
-        rhjSoJuCOE/dXQ5rl/L4e9i8dMMd70KRuvT+kAvnLVVuR5MpYBtTkMDS
-X-Google-Smtp-Source: AGHT+IEbp+zs59rwJa1MDe1tv5wsWi8dFryOgKdUJ954CEvyw0oPHsE6G9aZGZSlQ2dzDzA0ijsFPKGAHWeYvLgdlco=
-X-Received: by 2002:a17:902:d544:b0:1c5:ca8d:136b with SMTP id
- z4-20020a170902d54400b001c5ca8d136bmr14874plf.14.1697224268678; Fri, 13 Oct
- 2023 12:11:08 -0700 (PDT)
+        Fri, 13 Oct 2023 15:12:22 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E553C83;
+        Fri, 13 Oct 2023 12:12:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jLpKX1xSTJ47EbRGXI4JvaH4YzxAbRrx5wxyVF0WIhc=; b=aMCC5+DDYWuLYHHdYZfzKLbIgR
+        WAjS6w2A0RxgH1ylZnXdvGGB6RCsOeAtKwJNixSGOZhMuhsauTF5vbhK6+f8G6rSvpwE+5ZZiFoEL
+        2kFBKmTZ8SCK64qrazBnNuzJ7xGOTu7B1oqQ9Y3MP760R5BK8GKZDd1kcVGZsIsTrdjru/r7nbhgp
+        iRf0B2KV1iTEq2gWb/vw02sR1mtKIqwzq8ZgnxtJhPIQQ2gE7Xh/XZU7Qjjnbfcqt4ZB+c/8N3R8V
+        JkDQNlVQpW6tHUshylxV/8mctAOWlBzD1kS/O4dMoPc+xVeszYwdN8xZZ28wd+3SLBDqnc2utdj8d
+        aBZSZSkg==;
+Received: from [2001:8b0:10b:5:909a:d73:1319:a28a] (helo=u3832b3a9db3152.ant.amazon.com)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qrNZy-0075pV-Ro; Fri, 13 Oct 2023 19:12:11 +0000
+Message-ID: <3228f3dd7652146780b60419296033a79051ea75.camel@infradead.org>
+Subject: Re: [PATCH RFC 1/1] KVM: x86: add param to update master clock
+ periodically
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Dongli Zhang <dongli.zhang@oracle.com>,
+        Joe Jin <joe.jin@oracle.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com
+Date:   Fri, 13 Oct 2023 20:12:10 +0100
+In-Reply-To: <ZSmUV3AoFWBTMx-o@google.com>
+References: <ZRtl94_rIif3GRpu@google.com>
+         <9975969725a64c2ba2b398244dba3437bff5154e.camel@infradead.org>
+         <ZRysGAgk6W1bpXdl@google.com>
+         <d6dc1242ff731cf0f2826760816081674ade9ff9.camel@infradead.org>
+         <ZR2pwdZtO3WLCwjj@google.com>
+         <34057852-f6c0-d6d5-261f-bbb5fa056425@oracle.com>
+         <ZSXqZOgLYkwLRWLO@google.com>
+         <8f3493ca4c0e726d5c3876bb7dd2cfc432d9deaa.camel@infradead.org>
+         <ZSmHcECyt5PdZyIZ@google.com>
+         <5ea168df6dfbe910524a381b88347636e1a6a3bc.camel@infradead.org>
+         <ZSmUV3AoFWBTMx-o@google.com>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-ujyg4yIk6O2SXmBnL399"
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-References: <20230911023038.30649-1-yong.wu@mediatek.com> <20230911023038.30649-6-yong.wu@mediatek.com>
- <d0373c02-9b22-661f-9930-ca720053c2a0@collabora.com> <a115a2a5d3ac218e6db65ccdb0a1876f9cfca02b.camel@mediatek.com>
- <d798b15b-6f35-96db-e3f7-5c0bcc5d46a2@collabora.com> <a4ecc2792f3a4d3159e34415be984ff7d5f5e263.camel@mediatek.com>
- <20230927134614.kp27moxdw72jiu4y@pop-os.localdomain> <3aaafe47-3733-a4d5-038d-a7e439309282@collabora.com>
- <CA+ddPcP4=p37cV5Tbn5zTUbiL4ou+Yqb=5rS+O_ff8ZUw64D3Q@mail.gmail.com>
- <80695726-1a98-12d4-ad7d-d731f2f3caeb@collabora.com> <CA+ddPcPES=4FcQRkvVnW=C9mL6hCxVfCcoLDJSjb58UiDmS_Mg@mail.gmail.com>
- <32e515e1-b7a2-de3c-723b-ade3ec760b4d@collabora.com>
-In-Reply-To: <32e515e1-b7a2-de3c-723b-ade3ec760b4d@collabora.com>
-From:   Jeffrey Kardatzke <jkardatzke@google.com>
-Date:   Fri, 13 Oct 2023 12:10:56 -0700
-Message-ID: <CA+ddPcNMBhXPNie3XUzbnCME_KccOxsNsWREmO80nwhSskN7JQ@mail.gmail.com>
-Subject: Re: [PATCH 5/9] dma-buf: heaps: mtk_sec_heap: Initialise tee session
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Cc:     Joakim Bech <joakim.bech@linaro.org>,
-        =?UTF-8?B?WW9uZyBXdSAo5ZC05YuHKQ==?= <Yong.Wu@mediatek.com>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "christian.koenig@amd.com" <christian.koenig@amd.com>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "jstultz@google.com" <jstultz@google.com>,
-        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        =?UTF-8?B?SmlhbmppYW8gWmVuZyAo5pu+5YGl5aejKQ==?= 
-        <Jianjiao.Zeng@mediatek.com>,
-        =?UTF-8?B?S3VvaG9uZyBXYW5nICjnjovlnIvptLsp?= 
-        <kuohong.wang@mediatek.com>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "Brian.Starkey@arm.com" <Brian.Starkey@arm.com>,
-        "tjmercier@google.com" <tjmercier@google.com>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry for the delayed reply, needed to get some more info. This really
-wouldn't be possible due to the limitation on the number of
-regions...for example only 32 regions can be defined on some SoCs, and
-you'd run out of regions really fast trying to do this. That's why
-this is creating heaps for those regions and then allocations are
-performed within the defined region is the preferred strategy.
+
+--=-ujyg4yIk6O2SXmBnL399
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, 2023-10-13 at 12:02 -0700, Sean Christopherson wrote:
+> On Fri, Oct 13, 2023, David Woodhouse wrote:
+> > On Fri, 2023-10-13 at 11:07 -0700, Sean Christopherson wrote:
+> > > I generally support the idea, but I think it needs to an opt-in from =
+userspace.
+> > > Essentially a "I pinky swear to give all vCPUs the same TSC frequency=
+, to not
+> > > suspend the host, and to not run software/firmware that writes IA32_T=
+SC_ADJUST".
+> > > AFAICT, there are too many edge cases and assumptions about userspace=
+ for KVM to
+> > > safely couple kvmclock to guest TSC by default.
+> >=20
+> > I think IA32_TSC_ADJUST is OK, isn't it? There is a "real" TSC value
+> > and if vCPUs adjust themselves forward and backwards from that, it's
+> > just handled as a delta.
+>=20
+> I meant the host writing IA32_TSC_ADJUST.=C2=A0 E.g. if a host SMM handle=
+r mucks with
+> TSC offsets to try and hide the time spent in the SMM handler, then the p=
+latform
+> owner gets to keep the pieces.
+
+Oh $DEITY yes, absolutely.
+
+> > And we solved 'give all vCPUS the same TSC frequency' by making that
+> > KVM-wide.
+> >=20
+> > Maybe suspending and resuming the host can be treated like live
+> > migration, where you know the host TSC is different so you have to make
+> > do with a delta based on CLOCK_TAI.
+> >=20
+> > But while I'm picking on the edge cases and suggesting that we *can*
+> > cope with some of them, I do agree with your suggestion that "let
+> > kvmclock run by itself without being clamped back to
+> > CLOCK_MONOTONIC_RAW" should be an opt *in* feature.
+>=20
+> Yeah, I'm of the mind that just because we can cope with some edge cases,=
+ doesn't
+> mean we should.=C2=A0 At this point, kvmclock really should be considered=
+ deprecated
+> on modern hardware.=C2=A0 I.e. needs to be supported for older VMs, but s=
+houldn't be
+> advertised/used when creating entirely new VMs.
+>=20
+> Hence my desire to go with a low effort solution for getting kvmclock to =
+play nice
+> with modern hardware.
+
+Yeah... although the kvmclock is also the *Xen* clock (and the clock on
+which Xen timers are based). So while I'm perfectly prepared to call
+those Xen guests "older VMs", I do still have to launch quite a lot of
+new ones the same... :)
 
 
-On Thu, Sep 28, 2023 at 11:54=E2=80=AFPM Benjamin Gaignard
-<benjamin.gaignard@collabora.com> wrote:
->
->
-> Le 28/09/2023 =C3=A0 19:48, Jeffrey Kardatzke a =C3=A9crit :
-> > On Thu, Sep 28, 2023 at 1:30=E2=80=AFAM Benjamin Gaignard
-> > <benjamin.gaignard@collabora.com> wrote:
-> >>
-> >> Le 27/09/2023 =C3=A0 20:56, Jeffrey Kardatzke a =C3=A9crit :
-> >>> On Wed, Sep 27, 2023 at 8:18=E2=80=AFAM Benjamin Gaignard
-> >>> <benjamin.gaignard@collabora.com> wrote:
-> >>>> Le 27/09/2023 =C3=A0 15:46, Joakim Bech a =C3=A9crit :
-> >>>>> On Mon, Sep 25, 2023 at 12:49:50PM +0000, Yong Wu (=E5=90=B4=E5=8B=
-=87) wrote:
-> >>>>>> On Tue, 2023-09-12 at 11:32 +0200, AngeloGioacchino Del Regno wrot=
-e:
-> >>>>>>> Il 12/09/23 08:17, Yong Wu (=E5=90=B4=E5=8B=87) ha scritto:
-> >>>>>>>> On Mon, 2023-09-11 at 11:29 +0200, AngeloGioacchino Del Regno
-> >>>>>>>> wrote:
-> >>>>>>>>> Il 11/09/23 04:30, Yong Wu ha scritto:
-> >>>>>>>>>> The TEE probe later than dma-buf heap, and PROBE_DEDER doesn't
-> >>>>>>>>>> work
-> >>>>>>>>>> here since this is not a platform driver, therefore initialise
-> >>>>>>>>>> the
-> >>>>>>>>>> TEE
-> >>>>>>>>>> context/session while we allocate the first secure buffer.
-> >>>>>>>>>>
-> >>>>>>>>>> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> >>>>>>>>>> ---
-> >>>>>>>>>>       drivers/dma-buf/heaps/mtk_secure_heap.c | 61
-> >>>>>>>>>> +++++++++++++++++++++++++
-> >>>>>>>>>>       1 file changed, 61 insertions(+)
-> >>>>>>>>>>
-> >>>>>>>>>> diff --git a/drivers/dma-buf/heaps/mtk_secure_heap.c
-> >>>>>>>>>> b/drivers/dma-
-> >>>>>>>>>> buf/heaps/mtk_secure_heap.c
-> >>>>>>>>>> index bbf1c8dce23e..e3da33a3d083 100644
-> >>>>>>>>>> --- a/drivers/dma-buf/heaps/mtk_secure_heap.c
-> >>>>>>>>>> +++ b/drivers/dma-buf/heaps/mtk_secure_heap.c
-> >>>>>>>>>> @@ -10,6 +10,12 @@
-> >>>>>>>>>>       #include <linux/err.h>
-> >>>>>>>>>>       #include <linux/module.h>
-> >>>>>>>>>>       #include <linux/slab.h>
-> >>>>>>>>>> +#include <linux/tee_drv.h>
-> >>>>>>>>>> +#include <linux/uuid.h>
-> >>>>>>>>>> +
-> >>>>>>>>>> +#define TZ_TA_MEM_UUID          "4477588a-8476-11e2-ad15-
-> >>>>>>>>>> e41f1390d676"
-> >>>>>>>>>> +
-> >>>>>>>>> Is this UUID the same for all SoCs and all TZ versions?
-> >>>>>>>> Yes. It is the same for all SoCs and all TZ versions currently.
-> >>>>>>>>
-> >>>>>>> That's good news!
-> >>>>>>>
-> >>>>>>> Is this UUID used in any userspace component? (example: Android
-> >>>>>>> HALs?)
-> >>>>>> No. Userspace never use it. If userspace would like to allocate th=
-is
-> >>>>>> secure buffer, it can achieve through the existing dmabuf IOCTL vi=
-a
-> >>>>>> /dev/dma_heap/mtk_svp node.
-> >>>>>>
-> >>>>> In general I think as mentioned elsewhere in comments, that there i=
+> > > > [1] Yes, I believe "back" does happen. I have test failures in my q=
+ueue
+> > > > to look at, where guests see the "Xen" clock going backwards.
+> > >=20
+> > > Yeah, I assume "back" can happen based purely on the wierdness of the=
+ pvclock math.o
+> > >=20
+> > > What if we add a module param to disable KVM's TSC synchronization cr=
+aziness
+> > > entirely?=C2=A0 If we first clean up the peroidic sync mess, then it =
+seems like it'd
+> > > be relatively straightforward to let kill off all of the synchronizat=
+ion, including
+> > > the synchronization of kvmclock to the host's TSC-based CLOCK_MONOTON=
+IC_RAW.
+> > >=20
+> > > Not intended to be a functional patch...
+> >=20
+> > Will stare harder at the actual patch when it isn't Friday night.
+> >=20
+> > In the meantime, I do think a KVM cap that the VMM opts into is better
+> > than a module param?
+>=20
+> Hmm, yeah, I think a capability would be cleaner overall.=C2=A0 Then KVM =
+could return
+> -EINVAL instead of silently forcing synchronization if the platform condi=
+tions
+> aren't meant, e.g. if the TSC isn't constant or if the host timekeeping i=
 sn't
-> >>>>> that much here that seems to be unique for MediaTek in this patch
-> >>>>> series, so I think it worth to see whether this whole patch set can=
- be
-> >>>>> made more generic. Having said that, the UUID is always unique for =
-a
-> >>>>> certain Trusted Application. So, it's not entirely true saying that=
- the
-> >>>>> UUID is the same for all SoCs and all TrustZone versions. It might =
-be
-> >>>>> true for a family of MediaTek devices and the TEE in use, but not
-> >>>>> generically.
-> >>>>>
-> >>>>> So, if we need to differentiate between different TA implementation=
-s,
-> >>>>> then we need different UUIDs. If it would be possible to make this =
-patch
-> >>>>> set generic, then it sounds like a single UUID would be sufficient,=
- but
-> >>>>> that would imply that all TA's supporting such a generic UUID would=
- be
-> >>>>> implemented the same from an API point of view. Which also means th=
-at
-> >>>>> for example Trusted Application function ID's needs to be the same =
-etc.
-> >>>>> Not impossible to achieve, but still not easy (different TEE follow=
-s
-> >>>>> different specifications) and it's not typically something we've do=
-ne in
-> >>>>> the past.
-> >>>>>
-> >>>>> Unfortunately there is no standardized database of TA's describing =
-what
-> >>>>> they implement and support.
-> >>>>>
-> >>>>> As an alternative, we could implement a query call in the TEE answe=
-ring,
-> >>>>> "What UUID does your TA have that implements secure unmapped heap?"=
-.
-> >>>>> I.e., something that reminds of a lookup table. Then we wouldn't ha=
-ve to
-> >>>>> carry this in UAPI, DT or anywhere else.
-> >>>> Joakim does a TA could offer a generic API and hide the hardware spe=
-cific
-> >>>> details (like kernel uAPI does for drivers) ?
-> >>> It would have to go through another layer (like the tee driver) to be
-> >>> a generic API. The main issue with TAs is that they have UUIDs you
-> >>> need to connect to and specific codes for each function; so we should
-> >>> abstract at a layer above where those exist in the dma-heap code.
-> >>>> Aside that question I wonder what are the needs to perform a 'secure=
-' playback.
-> >>>> I have in mind 2 requirements:
-> >>>> - secure memory regions, which means configure the hardware to ensur=
-e that only
-> >>>> dedicated hardware blocks and read or write into it.
-> >>>> - set hardware blocks in secure modes so they access to secure memor=
-y.
-> >>>> Do you see something else ?
-> >>> This is more or less what is required, but this is out of scope for
-> >>> the Linux kernel since it can't be trusted to do these things...this
-> >>> is all done in firmware or the TEE itself.
-> >> Yes kernel can't be trusted to do these things but know what we need c=
-ould help
-> >> to define a API for a generic TA.
-> >>
-> >> Just to brainstorm on mailing list:
-> >> What about a TA API like
-> >> TA_secure_memory_region() and TA_unsecure_memory_region() with paramet=
-ers like:
-> >> - device identifier (an ID or compatible string maybe)
-> >> - memory region (physical address, size, offset)
-> >> - requested access rights (read, write)
-> >>
-> >> and on kernel side a IOMMU driver because it basically have all this i=
-nformation already
-> >> (device attachment, kernel map/unmap).
-> >>
-> >> In my mind it sound like a solution to limit the impact (new controls,=
- new memory type)
-> >> inside v4l2. Probably we won't need new heap either.
-> >> All hardware dedicated implementations could live inside the TA which =
-can offer a generic
-> >> API.
-> > The main problem with that type of design is the limitations of
-> > TrustZone memory protection. Usually there is a limit to the number of
-> > regions you can define for memory protection (and there is on
-> > Mediatek). So you can't pass an arbitrary memory region and mark it
-> > protected/unprotected at a given time. You need to establish these
-> > regions in the firmware instead and then configure those regions for
-> > protection in the firmware or the TEE.
->
-> The TEE iommu could be aware of these limitations and merge the regions w=
-hen possible
-> plus we can define a CMA region for each device to limit the secured memo=
-ry fragmentation.
->
-> >
-> >>>> Regards,
-> >>>> Benjamin
-> >>>>
+> using TSC.
+
+Right.
+
+> The interaction with kvmclock_periodic_sync might be a bit awkward, but t=
+hat's
+> easy enough to solve with a wrapper.
+
+At least that's all per-KVM already. We do also still need to deal with
+the mess of having a single system-wide kvm_guest_has_master_clock and
+different KVMs explicitly setting that to 1 or 0, don't we?
+
+--=-ujyg4yIk6O2SXmBnL399
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMxMDEzMTkxMjEwWjAvBgkqhkiG9w0BCQQxIgQgkBt1LLis
+VlZmR4zMKBydgQ+HJVQe84NPQ/bGIvbWs9Mwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgARWDAXFhw1nMgwZrgDhNIgOGH9gfOL4Dvg
+6SAW5UIWtmGxN8UX7iyZmJNjA5RiU7qd1K3orGas+QJT/09gw2QQ6Z0DH/0ihLJf0y3/wt/5ccmr
+/llIeXve1umCcsm2bsY+RvNMg0KOhRLS+ZnEViJ1MtVZD6q+sNpMPRoZQ5K8WMwk1DWnFDOnMF3J
+KAuW54lfIlCnfIM4K8rbvoB4K9gaiEYuu4JndRV8GR50Wc4yF+LoVC/dJEyEnahq+R0vWk1oy0r4
+6yh/ERzo8iYaFzm8f2KClSL7CZfSDj9E6gcq1L0hy1vHS5mtCiGDOPfHUXJ6WNWAIKHwMZBaeB5W
+uqZ9P+57w+gwZMqlPfXJa5Uxjs/GjflAc81x57baiXptogvqYz/hRWbFp5IsVmvCQ+/6bAzxFR78
+WS7hXrbhoK2Vt4U4DB9Y0OYZ6hg/bJo80XhGS6R5DH8kMUrIJ/AcpyHBSDDVN+Xokwl5rGtMCxwg
+ilsl/NcMVgTt94xAYjhYP+vpaHNF8sTHd2BBciAH4D2GdxjKpXryyCLXwiqujRLflpNws/P5VrrY
+9+ftYOr93YHDCXl/v37InnhIgtuFh+aciwwgvWWxwoOWhJHqTxUUyQodfEvF7aIrdW4L8JMrWC+t
+3aK88z8IBpRTy+BiMMOXVv8qKWpn7iMEiqz48WPCRAAAAAAAAA==
+
+
+--=-ujyg4yIk6O2SXmBnL399--
