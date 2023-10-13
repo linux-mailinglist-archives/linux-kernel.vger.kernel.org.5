@@ -2,80 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B197C83BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 12:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D88027C83B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 12:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230380AbjJMKvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 06:51:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42360 "EHLO
+        id S230384AbjJMKvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 06:51:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230323AbjJMKv1 (ORCPT
+        with ESMTP id S230323AbjJMKvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 06:51:27 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43EFBBE;
-        Fri, 13 Oct 2023 03:51:26 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39DABwJJ032430;
-        Fri, 13 Oct 2023 10:51:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=XRv42xHAis5Fhtay5EJ5egtLIimhKpgjtjPqQOtZ6xM=;
- b=YxLE+hSoD2NiLJO9/ar/jt11EKRwEnGlJw9GJh7YveraBISOw5q98lPWH68BEWnFRKwf
- ddpAkp8/9yY3lqnGUHJVO07A78GuWkY7Drt16SOxQke5MYIyb+aipNfnJTl/w73K1mR+
- tdpA6S2B7HgMjGZQSLp9wrYNQeSWtL6FvWb0WCsPenMu4hVt4EH8uHS1VIxHAK6HRQ0n
- rPmrk4nexCLaDVM9KGeRv1Zrepr8JrHB9B6WDIqS8CBtQFM8wZBXEjrd4BvP9/50z6Zy
- yzp5ytO4anntSD54qwwHZ5+6QenSIEXWWCBrDj4OaDwv8QZA+sbNQuiNmQXi8HSLwTjV cA== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tpt1u9fxh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Oct 2023 10:51:10 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39DAp0eT014032
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Oct 2023 10:51:00 GMT
-Received: from [10.214.66.58] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 13 Oct
- 2023 03:50:55 -0700
-Message-ID: <eabe2aea-7d21-4dfa-a1cc-1267ec31c5d9@quicinc.com>
-Date:   Fri, 13 Oct 2023 16:20:52 +0530
+        Fri, 13 Oct 2023 06:51:05 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F478CF
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 03:51:03 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3231df054c4so1621211f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 03:51:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697194262; x=1697799062; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6kip9DJFTL9bMNWFq3/LHE2ELIE/tSjyhKv8w3kgG/c=;
+        b=J6qkJJf4V/KMSQSOgW14oB3AWsJldtN+hCDJwxVH6/nO2O2YhXpIcqaBukFYWNKoj0
+         MQK/Z7N/TnnSkJZ5EW+O8Jf07ghJi5in6vDfHXYQmY96waMMJvivwMNJLRbFqN0GUwiw
+         hg/g2PYzny+kD0iIOMIbTmdV8VvK/RWtEmD4mMctJSEnLLcw/nPRM1wzaKyQYGw4ztsA
+         WV8gJ58LMAFgbr4iI+JNQWtvMUzPOmWA0NlDYOSROGXurluN9fFnUpo0j8iG8QCIU9n3
+         JAZj3UcAhgC7snnivCOsi7qFZ+DgsYDCqIktNVd9NRn+U1ZhX1qZ7LgAMYQHfvUeFC/b
+         7p6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697194262; x=1697799062;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6kip9DJFTL9bMNWFq3/LHE2ELIE/tSjyhKv8w3kgG/c=;
+        b=rMimJdGiBVsjSWvV2drH+lUMZ1lJSt/kSgXXggqOBTyD1uMN5/gEDcgKaUT3bf5x5Y
+         35JqSFiFybNgFKc/Vs+3Q1tjFvdYWthDkB51NAcb9z0Dw85LAhUXpAgYckxjFI0aG+wU
+         inkrR+Vfbuotos828L5z6VG0x+E7Jf7fcQ63LjGdx5fE59uH0Ac/MgsIcfkUPakx5cSc
+         tMjRaDB34FbndMJaWp1DVhLoMmvCP6ysFwdxP2q3bEuT+rPnEbYcaCSe8mJaUrAOZQkv
+         n+iExVSnWrQOgXHR+JOXzZ8seDYM1VP+iEf1pPerboKXOO6bVWgmr7B+cTu3RHYOgrSa
+         CGZQ==
+X-Gm-Message-State: AOJu0YxxwA9Q2WbnHvDPctO1xDca7wDv4/vxkLEOjR/FcrfRBp6QKRXY
+        JlxwpP+b0dRA+uHeqkeKzQuZYgUXHXg=
+X-Google-Smtp-Source: AGHT+IGwmsRc/kDf+3BN9NYhw05llJFc0XiGxKJpQwxg47nl/l58DOVPH822iLYK28kHm5qvj0rNFw==
+X-Received: by 2002:adf:fb0b:0:b0:31f:c1b5:d4c1 with SMTP id c11-20020adffb0b000000b0031fc1b5d4c1mr21424542wrr.35.1697194261742;
+        Fri, 13 Oct 2023 03:51:01 -0700 (PDT)
+Received: from gmail.com (1F2EF405.nat.pool.telekom.hu. [31.46.244.5])
+        by smtp.gmail.com with ESMTPSA id v9-20020a5d6109000000b0031f3ad17b2csm1522231wrt.52.2023.10.13.03.51.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 03:51:01 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Fri, 13 Oct 2023 12:50:59 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Josh Poimboeuf <jpoimboe@kernel.org>
+Cc:     Breno Leitao <leitao@debian.org>, tglx@linutronix.de, bp@alien8.de,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, leit@meta.com,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4] x86/bugs: Add a separate config for each mitigation
+Message-ID: <ZSkhE2GWfGRW+9Hh@gmail.com>
+References: <20231010103028.4192223-1-leitao@debian.org>
+ <ZSca08rnmZfkONEH@gmail.com>
+ <ZSfucR6docdnLznb@gmail.com>
+ <20231012170548.o5vi4kgpvpjyld7s@treble>
+ <ZShALJDaxJ9VJvek@gmail.com>
+ <20231012204347.4aei5jr64fsv2iv5@treble>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 0/5] Add devicetree support for SDX75 Modem and IDP
-Content-Language: en-US
-To:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <rafael@kernel.org>, <viresh.kumar@linaro.org>,
-        <tglx@linutronix.de>, <maz@kernel.org>, <mani@kernel.org>,
-        <robimarko@gmail.com>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
-References: <1686311438-24177-1-git-send-email-quic_rohiagar@quicinc.com>
-From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
-In-Reply-To: <1686311438-24177-1-git-send-email-quic_rohiagar@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: an_5d6ILC_lZxz9Z4aroIVhfcpcVYArK
-X-Proofpoint-ORIG-GUID: an_5d6ILC_lZxz9Z4aroIVhfcpcVYArK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-13_03,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 phishscore=0 mlxlogscore=688 clxscore=1011 adultscore=0
- malwarescore=0 bulkscore=0 impostorscore=0 mlxscore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310130089
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231012204347.4aei5jr64fsv2iv5@treble>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -83,33 +85,28 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 6/9/2023 5:20 PM, Rohit Agarwal wrote:
-> Hi,
->
-> Changes in v4:
->   - Addressed some of the dt bindings check mentioned by Krzysztof.
->
-> Changes in v3:
->   - Clubbed all the dt node into a single patch as suggested by Krzysztof.
->   - Removed the applied patch.
->   - Addressed some comments from Konrad and Dmitry.
->
-> Changes in v2:
->   - Added the CPUFreq support patch.
->   - Collected the Acked by tags.
->   - Addressed some minor comments from Konrad.
->
-> This series adds devicetree support for Qualcomm SDX75 platform and IDP
-> board. This series functionally depends on GCC and RPMh Clock support
-> series [1], and pinctrl support for SDX75 [2] which are under review.
->
-> With this current devicetree support, the IDP can boot into initramfsshell.
->
-Can the patch 3/5 and 4/5 be picked of this series? All changes apart 
-from these are picked.
-Somehow these patches got missed.
+* Josh Poimboeuf <jpoimboe@kernel.org> wrote:
+
+> On Thu, Oct 12, 2023 at 08:51:24PM +0200, Ingo Molnar wrote:
+> > > Another way to avoid ifdeffery:
+> > > 
+> > > static enum retbleed_mitigation_cmd retbleed_cmd __ro_after_init =
+> > > 	IS_ENABLED(CONFIG_MITIGATION_RETBLEED) ? RETBLEED_CMD_AUTO : RETBLEED_CMD_OFF;
+> > 
+> > I think we could make it a simple:
+> > 
+> > 	static enum retbleed_mitigation_cmd retbleed_cmd __ro_after_init = IS_ENABLED(CONFIG_MITIGATION_RETBLEED);
+> > 
+> > Because RETBLEED_CMD_AUTO && RETBLEED_CMD_OFF maps naturally to 1 and 0. 
+> > Maybe add a comment to the enum to maintain this property in the future 
+> > too.
+> 
+> Hm, that both obfuscates the default and makes it fragile.  The fact
+> that it would need a comment to try to prevent breaking it in the future
+> is a clue that maybe we shouldn't do it ;-)
+
+Can be enforced with BUILD_BUG_ON().
 
 Thanks,
-Rohit.
->
->
+
+	Ingo
