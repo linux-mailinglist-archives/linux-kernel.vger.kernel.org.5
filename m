@@ -2,96 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7737C8ACE
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C7C87C8B5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 18:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232552AbjJMQPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 12:15:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54010 "EHLO
+        id S232159AbjJMQZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 12:25:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230500AbjJMQO5 (ORCPT
+        with ESMTP id S230119AbjJMQZb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 12:14:57 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F3B465AC;
-        Fri, 13 Oct 2023 09:13:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=GrwS+vcMsoSAhYMGFWj4mmzPUzSI7XQUIUxm/ba9Oes=; b=437tGYUjy0dzd+LEBxcKMzHlB8
-        C993jtkni0Txa+O1ssK3iB7hyVKWDlKTQXuJrcxVDyRVbeYzEjTlX2xZm2DLk1lfvMmRjQ1HEzYpG
-        8+aG9vIy5F5Eusv+Ec9uvwyG51TsJEyYfEyO7jnpxgVHo65qjjT5hKdie/CRdvQ2g5Cg=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qrKkx-0026yZ-8G; Fri, 13 Oct 2023 18:11:19 +0200
-Date:   Fri, 13 Oct 2023 18:11:19 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     =?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Michael Walle <michael@walle.cc>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH net-next v5 08/16] net: ethtool: Add a command to expose
- current time stamping layer
-Message-ID: <6ef6418d-6e63-49bd-bcc1-cdc6eb0da2d5@lunn.ch>
-References: <20231009155138.86458-1-kory.maincent@bootlin.com>
- <20231009155138.86458-9-kory.maincent@bootlin.com>
- <2fbde275-e60b-473d-8488-8f0aa637c294@broadcom.com>
- <20231010102343.3529e4a7@kmaincent-XPS-13-7390>
- <20231013090020.34e9f125@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231013090020.34e9f125@kernel.org>
+        Fri, 13 Oct 2023 12:25:31 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68ED24EF1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:13:38 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a81cd8d267so13106667b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 09:13:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697213605; x=1697818405; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/Xx0BMu30zSxzvDEomgzg9E7JT9rYro1tljom2/GGKE=;
+        b=rWmCD4NQ8jNkQakOaTPmXWmr1an3sT6PvgjoRNlGOKSlDaFVpE3WtlV92kXTlLY5Ep
+         gy4+BOqGjCu1k7TzuX5Y316BzsVOpBmAGQKLEqm56BWsH4juZkohVp6ZQ8qeUonRyfgG
+         +RffzadLU+0kKF+52HDrSaeTs3Gf7qBsiO8nuLUcVCDs/89md313fiGqMTdDrdzrPmug
+         cbzLPfcqweGMtpVo4F8vXxawYxSGRzxvs6vlzGZUo7FpPYvwfqLKNtFwhKbPD1acibQK
+         VE8N43M0kQ6CF2NYLQg4EkyJSPQhQkXqhjynQ+i6qKK0BdVEszz44GWafU0IBNKgiu9a
+         yatg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697213605; x=1697818405;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/Xx0BMu30zSxzvDEomgzg9E7JT9rYro1tljom2/GGKE=;
+        b=PU6M3BGJjSj+vBcDcYcbh74kueG1KgI+2MwJMZDaaiyHhc+E48wDUUnXgkK9gSAtEg
+         5uSeKL3l1r0aFuCoO4yB/VkmvaHogzknNlWOSgllHWkm0cOOk5NMF6HpIKIdv/RcjFSz
+         odi1WgXeFph4IIThcUit8kwOh5PhgQoxWhVrbnDZsLkh+M2nlbvfTQJQ0RVXDQInEiQS
+         bH50KMGwtk+Qg6Qmj7qI6kcFo5H+1OSpDm/oAiccxCfXRAFoxLjgp8+JLthBwug1nZvq
+         c/azDEyRA1N3sgeQSiwRfHH6oz1noBPTRlEJFjt4cRFGp+Y3JZjI78K8JdZWbMZzx7dy
+         ioGg==
+X-Gm-Message-State: AOJu0Yw4b3UxfVm33WHetzuaOUe8nFJ0Q2YlzBnCnZlNxt1s9AK+QUG8
+        RujfzvlifkQDjztf4icQfPMMAUo3Mnw=
+X-Google-Smtp-Source: AGHT+IE10ZBYKMQNsvc4otdqbSm0jYPRU/RLCtR3agfzWnBXi4zl5QG1flqcubxcBd+LqSyFJIHYTvcnNks=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a5b:5c9:0:b0:d8b:737f:8240 with SMTP id
+ w9-20020a5b05c9000000b00d8b737f8240mr566788ybp.0.1697213605131; Fri, 13 Oct
+ 2023 09:13:25 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 09:13:23 -0700
+In-Reply-To: <ZSfJ6c5fo5enjvv+@fedora.fritz.box>
+Mime-Version: 1.0
+References: <ZSGpl_hT23B6ix0M@mainframe> <20231007203411.GA8085@noisy.programming.kicks-ass.net>
+ <ZSQqfr96SfZM_OEk@google.com> <ZSfJ6c5fo5enjvv+@fedora.fritz.box>
+Message-ID: <ZSlsowuVqQA3ecUb@google.com>
+Subject: Re: [PATCH] perf/x86/p4: Fix "Wunused-but-set-variable" warning
+From:   Sean Christopherson <seanjc@google.com>
+To:     Lucy Mielke <lucymielke@icloud.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com,
+        acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
+        tglx@linutronix.de, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > All these possibles timestamps go through exclusively the netdev API or the
-> > phylib API. Even the software timestamping is done in the netdev driver,
-> > therefore it goes through the netdev API and then should have the
-> > NETDEV_TIMESTAMPING bit set.
+On Thu, Oct 12, 2023, Lucy Mielke wrote:
+> Am Mon, Oct 09, 2023 at 09:29:50AM -0700 schrieb Sean Christopherson:
+> > 
+> > rdmsr() writes to "high", but nothing ever reads from high.  FWIW, I would _love_
+> > for rdmsrl() to have return semantics, e.g. to be able to do:
+> > 
+> > 	low  = (u32)rdmsrl(MSR_IA32_MISC_ENABLE);
+> > 
+> > or even
+> > 
+> > 	if (!(rdmsrl(MSR_IA32_MISC_ENABLE) & BIT(7)))
 > 
-> Netdev vs phylib is an implementation detail of Linux.
-> I'm also surprised that you changed this.
-> 
-> > > > + */
-> > > > +enum {
-> > > > +	NO_TIMESTAMPING = 0,
-> > > > +	NETDEV_TIMESTAMPING = (1 << 0),
-> > > > +	PHYLIB_TIMESTAMPING = (1 << 1),
-> > > > +	SOFTWARE_TIMESTAMPING = (1 << 2) | (1 << 0),    
+> I have taken a look and it seems to me like this macro is called quite a lot
+> for different things thoughout the kernel tree, including drivers. If
+> one were to change it to have return semantics instead of the way it
+> currently works, you'd have to change around 300 occurences, right?
 
-Just emphasising Jakubs point here. phylib is an implementation
-detail, in that the MAC driver might be using firmware to drive its
-PHY, and that firmware can do a timestamp in the PHY. The API being
-defined here should be independent of the implementation details. So
-it probably should be MAC_TIMESTAMPING and PHY_TIMESTAMPING, and leave
-it to the driver to decide if its PHYLIB doing the actual work, or
-firmware.
-
-	Andrew
+Yep, which is the only reason I haven't force the issue.
