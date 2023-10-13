@@ -2,104 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 817FA7C8CB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 20:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A21197C8CC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 20:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231316AbjJMSDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 14:03:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58496 "EHLO
+        id S231161AbjJMSE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 14:04:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230260AbjJMSDH (ORCPT
+        with ESMTP id S229632AbjJMSE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 14:03:07 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7EAFD6;
-        Fri, 13 Oct 2023 11:03:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=+YCPIF7bIuvSFdfYLoHL+t68NvW/EnMItKeS5kyuoaw=;
-        t=1697220186; x=1698429786; b=xjUWAVCIMPx6GnpMdib8tUsdaaVSUjHjavnGPJ5x3v/8cPj
-        MHM+Jy3RvA8xJp33+XD4WbWPX4w0xUE5AQkAKn6KfxwOGJ7P0yprCscqaLH5DFmMtfIdXBzkSy3Sg
-        DLc18rG/WsuHxZmPO+PAjJNSK6FpH7OSjKQSLBv6Sf1np4xfir+7KJXpxhk3C4NAi9gPE1WvCEpMZ
-        fGHZPebuhq9j9NI998GiyrYDjf1gEzv50E2HJqjRUdgw6yp4cfdRGFNTy53T98a5cNgW3uDdm4QmK
-        4SADaia4+cMxjQuArGCpsLDwhfBhYKQjpXNyIJQXOHHprFy3dIDb3C8EouXg2D2w==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.97-RC1)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1qrMUs-00000004lf0-44Ty;
-        Fri, 13 Oct 2023 20:02:51 +0200
-Message-ID: <789449f63ff6175ff46951507c03753f4430aa85.camel@sipsolutions.net>
-Subject: Re: [PATCH] [RFC] wireless: move obsolete drivers to staging
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Arnd Bergmann <arnd@arndb.de>, Geoff Levand <geoff@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Kalle Valo <kvalo@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Pavel Machek <pavel@ucw.cz>,
-        "David S . Miller" <davem@davemloft.net>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-staging@lists.linux.dev,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Date:   Fri, 13 Oct 2023 20:02:49 +0200
-In-Reply-To: <2fb4f151-9146-4cce-a3e6-ca80a95cf590@app.fastmail.com>
-References: <20231010155444.858483-1-arnd@kernel.org>
-         <2023101051-unmasked-cleaver-79b3@gregkh> <87y1g94szz.fsf@kernel.org>
-         <2023101139-pyromania-game-2237@gregkh> <87r0m1fwg9.fsf@kernel.org>
-         <20231011080955.1beeb010@kernel.org> <87sf6g2hc8.fsf@kernel.org>
-         <63e57ef8-c9f2-489a-8df8-51dcffd437c6@app.fastmail.com>
-         <b1c87f71abef5aba6b39893a417466bf9f65c2d5.camel@sipsolutions.net>
-         <CAMuHMdX3F9rvD3Fzbc1dwm7Vm73VW1x5ETbxkk-jJm3Bpr5i+A@mail.gmail.com>
-         <d336126d58e12e8e67078c8142a524c667cc5639.camel@sipsolutions.net>
-         <39719eae-f166-4059-a70d-c6b74ecd46e2@infradead.org>
-         <2fb4f151-9146-4cce-a3e6-ca80a95cf590@app.fastmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Fri, 13 Oct 2023 14:04:56 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D01A983
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 11:04:54 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qrMWo-00083i-4x; Fri, 13 Oct 2023 20:04:50 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qrMWn-001Rlc-Hm; Fri, 13 Oct 2023 20:04:49 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qrMWn-00FjD1-8T; Fri, 13 Oct 2023 20:04:49 +0200
+Date:   Fri, 13 Oct 2023 20:04:49 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Sean Young <sean@mess.org>, linux-media@vger.kernel.org,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] pwm: make it possible to apply pwm changes in
+ atomic context
+Message-ID: <20231013180449.mcdmklbsz2rlymzz@pengutronix.de>
+References: <cover.1697193646.git.sean@mess.org>
+ <9c0f1616fca5b218336b9321bfefe7abb7e1749f.1697193646.git.sean@mess.org>
+ <ZSkvTKr42sUZImiM@orome.fritz.box>
+ <ZSlbFukZKGNpR5PM@gofer.mess.org>
+ <ZSljioc2OfPfxVeB@orome.fritz.box>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vcxtukqygxnpby24"
+Content-Disposition: inline
+In-Reply-To: <ZSljioc2OfPfxVeB@orome.fritz.box>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-10-13 at 17:44 +0200, Arnd Bergmann wrote:
-> On Thu, Oct 12, 2023, at 18:36, Geoff Levand wrote:
-> > On 10/12/23 17:41, Johannes Berg wrote:
-> > > But seriously - is it worth to try to keep a wireless driver for it i=
-f
-> > > we don't even know anyone using a PS3 at all?
+
+--vcxtukqygxnpby24
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello,
+
+On Fri, Oct 13, 2023 at 05:34:34PM +0200, Thierry Reding wrote:
+> On Fri, Oct 13, 2023 at 03:58:30PM +0100, Sean Young wrote:
+> > On Fri, Oct 13, 2023 at 01:51:40PM +0200, Thierry Reding wrote:
+> > > On Fri, Oct 13, 2023 at 11:46:14AM +0100, Sean Young wrote:
+> > > [...]
+> > > > diff --git a/include/linux/pwm.h b/include/linux/pwm.h
+> > > > index d2f9f690a9c1..93f166ab03c1 100644
+> > > > --- a/include/linux/pwm.h
+> > > > +++ b/include/linux/pwm.h
+> > > > @@ -267,6 +267,7 @@ struct pwm_capture {
+> > > >   * @get_state: get the current PWM state. This function is only
+> > > >   *	       called once per PWM device when the PWM chip is
+> > > >   *	       registered.
+> > > > + * @atomic: can the driver execute pwm_apply_state in atomic conte=
+xt
+> > > >   * @owner: helps prevent removal of modules exporting active PWMs
+> > > >   */
+> > > >  struct pwm_ops {
+> > > > @@ -278,6 +279,7 @@ struct pwm_ops {
+> > > >  		     const struct pwm_state *state);
+> > > >  	int (*get_state)(struct pwm_chip *chip, struct pwm_device *pwm,
+> > > >  			 struct pwm_state *state);
+> > > > +	bool atomic;
+> > > >  	struct module *owner;
+> > > >  };
+> > >=20
+> > > As I mentioned earlier, this really belongs in struct pwm_chip rather
+> > > than struct pwm_ops. I know that Uwe said this is unlikely to happen,
+> > > and that may be true, but at the same time it's not like I'm asking
+> > > much. Whether you put this in struct pwm_ops or struct pwm_chip is
+> > > about the same amount of code, and putting it into pwm_chip is much
+> > > more flexible, so it's really a no-brainer.
 > >=20
-> > There is still a considerable user base for the PS3, so we
-> > must keep the ps3-gelic-wireless driver.
+> > Happy to change this of course. I changed it and then changed it back a=
+fter
+> > Uwe's comment, I'll fix this in the next version.
+> >=20
+> > One tiny advantage is that pwm_ops is static const while pwm_chip is
+> > allocated per-pwm, so will need instructions for setting the value. Hav=
+ing
+> > said that, the difference is tiny, it's a single bool.
 >=20
-> Do you know if anyone has tried changing this driver over to the
-> cfg80211 interface from the wireless extensions?
+> Yeah, it's typically a single assignment, so from a code point of view
+> it should be pretty much the same. I suppose from an instruction level
+> point of view, yes, this might add a teeny-tiny bit of overhead.
+>=20
+> On the other hand it lets us do interesting things like initialize
+> chip->atomic =3D !regmap_might_sleep() for those drivers that use regmap
+> and then not worry about it any longer.
+>=20
+> Given that, I'm also wondering if we should try to keep the terminology
+> a bit more consistent. "Atomic" is somewhat overloaded because ->apply()
+> and ->get_state() are part of the "atomic" PWM API (in the sense that
+> applying changes are done as a single, atomic operation, rather than in
+> the sense of "non-sleeping" operation).
+>=20
+> So pwm_apply_state_atomic() is then doubly atomic, which is a bit weird.
+> On the other hand it's a bit tedious to convert all existing users to
+> pwm_apply_state_might_sleep().
+>=20
+> Perhaps as a compromise we can add pwm_apply_state_might_sleep() and
+> make pwm_apply_state() a (deprecated) alias for that, so that existing
+> drivers can be converted one by one.
 
-I looked at that yesterday, and sadly I _think_ it's not even possible,
-there are some corner cases in it like "no WPA2" that don't seem to be
-fully covered in cfg80211/nl80211, at least not with the APIs today and
-with current versions of wpa_supplicant.
+To throw in my green for our bike shed: I'd pick
 
-It might still be doable because things like
-WPA_DRIVER_CAPA_KEY_MGMT_WPA2_PSK don't really seem to be used much in
-wpa_supplicant, but we'd have to carefully test that I guess.
+	pwm_apply_state_cansleep()
 
-Also, it depends on the PS3 firmware version whether or not that's
-supported.
+to match what gpio does (with gpiod_set_value_cansleep()). (Though I
+have to admit that semantically Thierry's might_sleep is nicer as it
+matches might_sleep().)
 
-Then again, arguably wifi without WPA2 is pretty much useless these
-days?
+If we don't want to have an explicit indicator for the atomic/fast
+variant (again similar to the gpio framework), maybe we can drop
+"_state" which I think is somehow redundant and go for:
 
-johannes
+	pwm_apply (fast)
+	pwm_apply_cansleep (sleeping)
+	pwm_apply_state (compat alias for pwm_apply_cansleep())
+
+(maybe replace cansleep with might_sleep). Similar for pwm_get_state()
+we could use the opportunity and make
+
+	pwm_get()
+
+actually call ->get_state() and introduce
+
+	pwm_get_lastapplied()
+
+with the semantic of todays pwm_get_state(). Do we need a
+pwm_get_cansleep/might_sleep()?
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--vcxtukqygxnpby24
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUphsAACgkQj4D7WH0S
+/k6Exgf/SslgJkq9wxqIrotIrMj9NqpF1D4hMBxPW0FePgl21tJ23I4t2YyHT2MW
+x5S8hPckkkhVD+rKMbdTLO2J5ixU/ems11N+Cz5ScrA6JM9lX1UvXcm8VEppCbuf
+upnqeEPb+lzyBgtD1/dBz72xJOQXkpCtfOTHjQatE4Uo05tf8ntYLmByvHmMnoIb
+MkfKcDXQwmLJheS3pqG0RpBTtdWXhm+6BqCHR+fwHeHhpsUoFYzQCxVmWh+FX7LC
+P1Yup1ajVGxDIJtM/+Q1HBAUw+OYq1YgQQnPy7zAljwh0mRA+r7t/6heFdZP1+9f
+EdMtfXZAsOjYFAYqHoHd5FUBTynyfA==
+=t7Yp
+-----END PGP SIGNATURE-----
+
+--vcxtukqygxnpby24--
