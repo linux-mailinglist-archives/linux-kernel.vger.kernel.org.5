@@ -2,65 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 463CC7C7D05
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 07:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F9F7C7D08
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 07:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229625AbjJMFbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 01:31:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49478 "EHLO
+        id S229644AbjJMFcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 01:32:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjJMFbb (ORCPT
+        with ESMTP id S229487AbjJMFcJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 01:31:31 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 322F4B7;
-        Thu, 12 Oct 2023 22:31:30 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-690bccb0d8aso1450925b3a.0;
-        Thu, 12 Oct 2023 22:31:30 -0700 (PDT)
+        Fri, 13 Oct 2023 01:32:09 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 116F4B8;
+        Thu, 12 Oct 2023 22:32:08 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6b20577ef7bso330567b3a.3;
+        Thu, 12 Oct 2023 22:32:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697175089; x=1697779889; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jy7TboT1tjJJztCz7Esa81WmhMy+A2tzF01Kh4RO/iQ=;
-        b=hMOTfQyfrjZM6y50wztdhjY8ELj0TV1uwXYQEf8iYKWd9DWxVjO2oyB6FPL/o/Weaq
-         UgHM0ecovmA2tkUY8dbtnFq5W2F+M4E3Ct+A0rKcO8simZjEKGPhaUmT2nrC5INsFFw3
-         T0kuHRJToZaetPUYVDbk9OFGuQfYqdO9yrYC31g+b2zMY0JkBA+08a2EuwKjhtIZDvZH
-         WJQlmaVZPQ2OEBvuGe5e2QKriNqOS3Q92+KORmfKGj8+yyZpsT3iif1OC6Y9RyvA6Pyn
-         BvF3VIdCsCgMKTa8sIWHd8l89ovvnszeB081Ja28rcael9GtR+h3oAvQE+GsJler4GB2
-         gnuQ==
+        d=gmail.com; s=20230601; t=1697175127; x=1697779927; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nIvaPS82lenFE9njzHfPB1IlZ8+QONjjy7qyu3wWos4=;
+        b=c4TV5Ip973ixvH3HjkaH6FrPe/5YhZX8ou4+wHdrfGzGwnyu/ljLVEEaDkJvcpXevK
+         H0nknVXeQiyhZCV8o1mF0czjRYHMbbNjSeDFBY/pOwnGGl/SqvkHC02YQvdR59i1RKOh
+         koOtd2+eDFEcDCNkteM0u3VrMKmjKBS8E3b43IbpVjqQTD5v3fLuauK5+vrv7Ww9WAy4
+         grAnM6M9hynKbjCBXUUxljRjMEAom7Bnr7ZO9YqnKRoNL8stYIA2x7Hnrc/bCS8hfQqy
+         f14MX1FsmpkrTzqo9U7RiQyogDTFZoUisLEW817/Fg0c5iQquhOcVfFWDilkN8//DhCB
+         rgZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697175089; x=1697779889;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Jy7TboT1tjJJztCz7Esa81WmhMy+A2tzF01Kh4RO/iQ=;
-        b=kc2jMP8xwQaz0GkfoMJ399qNWCAxrVKkPTY8KbM25ptj/6oqxGXiYsyZNcLIc9flJs
-         xtz9dGPcBp2/uuEXPLbD7MqHQM0VBTftd5cwxft/XaIUE3Rxkrx2qFgoxwVEaTh28kPr
-         0El0WLSumtl1Co5XP9H4kxBFP6a0lMF8M2zfHLwVVsDD20/Lh9o5wn6htcx58/7N3glj
-         Ev+vB6Q7/lM2qm9VD7Wi3HyxZju7xkJupOMnXsGqBUQOWEj77prRuOho+/L0cakIlDSV
-         tW5IwHj1ayySa920DcXU5zhnXwtfIT7jznvIf5hYjFMpLwwHyw3AZkmIAgi6kSyw2MmV
-         YUkA==
-X-Gm-Message-State: AOJu0Yx0Fat0ExQyhwB0M18LG5EiQUBfVvcPvYZAH/KXAxgXW6BGermC
-        tAmdaSH2P3KNd5aCRPLyqec=
-X-Google-Smtp-Source: AGHT+IHySDr3oEw1qDXbIuzEx4XcRygIfCFWDj/u4f5YrKZqXJ1e1m2fIFG1DX9JEnpa3d6n1wKU4w==
-X-Received: by 2002:a05:6a20:729c:b0:15e:bcd:57f5 with SMTP id o28-20020a056a20729c00b0015e0bcd57f5mr26569539pzk.3.1697175089434;
-        Thu, 12 Oct 2023 22:31:29 -0700 (PDT)
-Received: from dreambig.dreambig.corp ([58.27.187.115])
-        by smtp.gmail.com with ESMTPSA id d16-20020a17090ad99000b00274bbfc34c8sm2764917pjv.16.2023.10.12.22.31.25
+        d=1e100.net; s=20230601; t=1697175127; x=1697779927;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nIvaPS82lenFE9njzHfPB1IlZ8+QONjjy7qyu3wWos4=;
+        b=hSDFRb75sZsXQpwWSsQT36+AyDBWEKqKOdEPp1iYK5ZgXVIBCrB/dQmsW1whlXsEoc
+         YoagCq3bYLFJ436xKFBoQRx3DM+va4E+JAszKFpPIT3+B9/jJmBNWPFw88/zk54asq5p
+         viaU33TyaL8W3mLGby/lgEAxNsMwSRKAqdKXLwI5UfyMh1uPRAfKFWgbF4Y0P2Bi7Qak
+         aSS7zW00LPsiJBsZINS1Wyvz/gc03hMEeZqR0puhSkTR18OTWY1NL7c9lFS+ovBQ0DG3
+         UznjPkRoP2kS8JDKzjdnmX1oTm1l4XQMyR16PuVR9EdwUfnkjv/1mkkl3rul2g1voByh
+         aZkg==
+X-Gm-Message-State: AOJu0YxrBdgOnN8/sRWr/poRG/6FTEchBfP24Qzz+pNNOiB4zM4klAa7
+        xBB93RmJx18nxIFuj7mHSLU=
+X-Google-Smtp-Source: AGHT+IHF4II3VixwJFDR98pc7JU2m3Z7Qk8+kTLeK1ZUPjdx43t6VBQzk24AdOEBlcQKpZG63FOqsQ==
+X-Received: by 2002:a05:6a20:d417:b0:15d:4a4d:ecf7 with SMTP id il23-20020a056a20d41700b0015d4a4decf7mr20773277pzb.36.1697175127387;
+        Thu, 12 Oct 2023 22:32:07 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id s4-20020a170902ea0400b001bbab888ba0sm2903283plg.138.2023.10.12.22.32.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 22:31:29 -0700 (PDT)
-From:   Muhammad Muzammil <m.muzzammilashraf@gmail.com>
-To:     martin.lau@linux.dev, yonghong.song@linux.dev,
-        john.fastabend@gmail.com
-Cc:     bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org,
-        Muhammad Muzammil <m.muzzammilashraf@gmail.com>
-Subject: [PATCH] arch: powerpc: net: bpf_jit_comp32.c: Fixed 'instead' typo
-Date:   Fri, 13 Oct 2023 10:31:18 +0500
-Message-Id: <20231013053118.11221-1-m.muzzammilashraf@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 12 Oct 2023 22:32:06 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 35C2C83B4ED5; Fri, 13 Oct 2023 12:32:00 +0700 (WIB)
+Date:   Fri, 13 Oct 2023 12:31:59 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 6.1 0/6] 6.1.58-rc1 review
+Message-ID: <ZSjWT2w3uzRkRca_@debian.me>
+References: <20231012180030.112560642@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="DtwhJ4fBDgUKVjIt"
+Content-Disposition: inline
+In-Reply-To: <20231012180030.112560642@linuxfoundation.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -71,26 +79,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed 'instead' typo
 
-Signed-off-by: Muhammad Muzammil <m.muzzammilashraf@gmail.com>
----
- arch/powerpc/net/bpf_jit_comp32.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--DtwhJ4fBDgUKVjIt
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
-index 7f91ea064c08..bc7f92ec7f2d 100644
---- a/arch/powerpc/net/bpf_jit_comp32.c
-+++ b/arch/powerpc/net/bpf_jit_comp32.c
-@@ -940,7 +940,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 				 * !fp->aux->verifier_zext. Emit NOP otherwise.
- 				 *
- 				 * Note that "li reg_h,0" is emitted for BPF_B/H/W case,
--				 * if necessary. So, jump there insted of emitting an
-+				 * if necessary. So, jump there instead of emitting an
- 				 * additional "li reg_h,0" instruction.
- 				 */
- 				if (size == BPF_DW && !fp->aux->verifier_zext)
--- 
-2.27.0
+On Thu, Oct 12, 2023 at 08:00:42PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.58 release.
+> There are 6 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
 
+Successfully compiled and installed bindeb-pkgs on my computer (Acer
+Aspire E15, Intel Core i3 Haswell). No noticeable regressions.
+
+Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--DtwhJ4fBDgUKVjIt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZSjWSQAKCRD2uYlJVVFO
+owi7AP44/kvOHOX2rSJOHx3Y9NngBuPUkm+nr1XUfNc1uF+2AAD/Ybe4YrYRc0Ox
+2KFxSLfx8e8LFkJB0//IMkRdyjvqlw0=
+=VyG7
+-----END PGP SIGNATURE-----
+
+--DtwhJ4fBDgUKVjIt--
