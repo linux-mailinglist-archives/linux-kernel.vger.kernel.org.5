@@ -2,80 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1B97C8748
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 16:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 688EC7C874A
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 16:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231963AbjJMOAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 10:00:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44426 "EHLO
+        id S232008AbjJMOBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 10:01:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229923AbjJMOA2 (ORCPT
+        with ESMTP id S229688AbjJMOB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 10:00:28 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 867AA95
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 07:00:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3004EC433C7;
-        Fri, 13 Oct 2023 14:00:25 +0000 (UTC)
-Date:   Fri, 13 Oct 2023 10:00:23 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Artem Savkov <asavkov@redhat.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-rt-users@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [RFC PATCH bpf-next] bpf: change syscall_nr type to int in
- struct syscall_tp_t
-Message-ID: <20231013100023.5b0943ec@rorschach.local.home>
-In-Reply-To: <ZSjdPqQiPdqa-UTs@wtfbox.lan>
-References: <20231005123413.GA488417@alecto.usersys.redhat.com>
-        <20231012114550.152846-1-asavkov@redhat.com>
-        <20231012094444.0967fa79@gandalf.local.home>
-        <CAEf4BzZKWkJjOjw8x_eL_hsU-QzFuSzd5bkBH2EHtirN2hnEgA@mail.gmail.com>
-        <ZSjdPqQiPdqa-UTs@wtfbox.lan>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Fri, 13 Oct 2023 10:01:29 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6310F95;
+        Fri, 13 Oct 2023 07:01:27 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8872E11FB;
+        Fri, 13 Oct 2023 07:02:07 -0700 (PDT)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.34.145])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C2A553F762;
+        Fri, 13 Oct 2023 07:01:24 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 15:01:22 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Tianyi Liu <i.pear@outlook.com>
+Cc:     maz@kernel.org, acme@kernel.org, adrian.hunter@intel.com,
+        alexander.shishkin@linux.intel.com, irogers@google.com,
+        jolsa@kernel.org, kvm@vger.kernel.org, kvmarm@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, mingo@redhat.com,
+        namhyung@kernel.org, pbonzini@redhat.com, peterz@infradead.org,
+        seanjc@google.com, x86@kernel.org
+Subject: Re: [PATCH v2 0/5] perf: KVM: Enable callchains for guests
+Message-ID: <ZSlNsn-f1j2bB8pW@FVFF77S0Q05N.cambridge.arm.com>
+References: <8734yhm7km.wl-maz@kernel.org>
+ <SY4P282MB108434CA47F2C55E490A1C6B9DD3A@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SY4P282MB108434CA47F2C55E490A1C6B9DD3A@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Oct 2023 08:01:34 +0200
-Artem Savkov <asavkov@redhat.com> wrote:
-
-> > But looking at [0] and briefly reading some of the discussions you,
-> > Steven, had. I'm just wondering if it would be best to avoid
-> > increasing struct trace_entry altogether? It seems like preempt_count
-> > is actually a 4-bit field in trace context, so it doesn't seem like we
-> > really need to allocate an entire byte for both preempt_count and
-> > preempt_lazy_count. Why can't we just combine them and not waste 8
-> > extra bytes for each trace event in a ring buffer?
+On Thu, Oct 12, 2023 at 02:35:42PM +0800, Tianyi Liu wrote:
+> Hi Marc,
+> 
+> On Sun, 11 Oct 2023 16:45:17 +0000, Marc Zyngier wrote:
+> > > The event processing flow is as follows (shown as backtrace):
+> > >   #0 kvm_arch_vcpu_get_frame_pointer / kvm_arch_vcpu_read_virt (per arch)
+> > >   #1 kvm_guest_get_frame_pointer / kvm_guest_read_virt
+> > >      <callback function pointers in `struct perf_guest_info_callbacks`>
+> > >   #2 perf_guest_get_frame_pointer / perf_guest_read_virt
+> > >   #3 perf_callchain_guest
+> > >   #4 get_perf_callchain
+> > >   #5 perf_callchain
+> > >
+> > > Between #0 and #1 is the interface between KVM and the arch-specific
+> > > impl, while between #1 and #2 is the interface between Perf and KVM.
+> > > The 1st patch implements #0. The 2nd patch extends interfaces between #1
+> > > and #2, while the 3rd patch implements #1. The 4th patch implements #3
+> > > and modifies #4 #5. The last patch is for userspace utils.
+> > >
+> > > Since arm64 hasn't provided some foundational infrastructure (interface
+> > > for reading from a virtual address of guest), the arm64 implementation
+> > > is stubbed for now because it's a bit complex, and will be implemented
+> > > later.
 > > 
-> >   [0] https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/commit/?id=b1773eac3f29cbdcdfd16e0339f1a164066e9f71  
+> > I hope you realise that such an "interface" would be, by definition,
+> > fragile and very likely to break in a subtle way. The only existing
+> > case where we walk the guest's page tables is for NV, and even that is
+> > extremely fragile.
 > 
-> I agree that avoiding increase in struct trace_entry size would be very
-> desirable, but I have no knowledge whether rt developers had reasons to
-> do it like this.
+> For walking the guest's page tables, yes, there're only very few
+> use cases. Most of them are used in nested virtualization and XEN.
+
+The key point isn't the lack of use cases; the key point is that *this is
+fragile*.
+
+Consider that walking guest page tables is only safe because:
+
+(a) The walks happen in the guest-physical / intermiediate-physical address
+    space of the guest, and so are not themselves subject to translation via
+    the guest's page tables.
+
+(b) Special traps were added to the architecture (e.g. for TLB invalidation)
+    which allow the host to avoid race conditions when the guest modifies page
+    tables.
+
+For unwind we'd have to walk structures in the guest's virtual address space,
+which can change under our feet at any time the guest is running, and handling
+that requires much more care.
+
+I think this needs a stronger justification, and an explanation of how you
+handle such races.
+
+Mark.
+
+> > Given that, I really wonder why this needs to happen in the kernel.
+> > Userspace has all the required information to interrupt a vcpu and
+> > walk its current context, without any additional kernel support. What
+> > are the bits here that cannot be implemented anywhere else?
 > 
-> Nevertheless I think the issue with verifier running against a wrong
-> struct still needs to be addressed.
-
-Correct. My Ack is based on the current way things are done upstream.
-It was just that linux-rt showed the issue, where the code was not as
-robust as it should have been. To me this was a correctness issue, not
-an issue that had to do with how things are done in linux-rt.
-
-As for the changes in linux-rt, they are not upstream yet. I'll have my
-comments on that code when that happens.
-
--- Steve
+> Thanks for pointing this out, I agree with your opinion.
+> Whether it's walking guest's contexts or performing an unwind,
+> user space can indeed accomplish these tasks.
+> The only reasons I see for implementing them in the kernel are performance
+> and the access to a broader range of PMU events.
+> 
+> Consider if I were to implement these functionalities in userspace:
+> I could have `perf kvm` periodically access the guest through the KVM API
+> to retrieve the necessary information. However, interrupting a VCPU
+> through the KVM API from user space might introduce higher latency
+> (not tested specifically), and the overhead of syscalls could also
+> limit the sampling frequency.
+> 
+> Additionally, it seems that user space can only interrupt the VCPU
+> at a certain frequency, without harnessing the richness of the PMU's
+> performance events. And if we incorporate the logic into the kernel,
+> `perf kvm` can bind to various PMU events and sample with a faster
+> performance in PMU interrupts.
+> 
+> So, it appears to be a tradeoff -- whether it's necessary to introduce
+> more complexity in the kernel to gain access to a broader range and more
+> precise performance data with less overhead. In my current use case,
+> I just require simple periodic sampling, which is sufficient for me,
+> so I'm open to both approaches.
+> 
+> > > Tianyi Liu (5):
+> > >   KVM: Add arch specific interfaces for sampling guest callchains
+> > >   perf kvm: Introduce guest interfaces for sampling callchains
+> > >   KVM: implement new perf interfaces
+> > >   perf kvm: Support sampling guest callchains
+> > >   perf tools: Support PERF_CONTEXT_GUEST_* flags
+> > >
+> > >  arch/arm64/kvm/arm.c                | 17 +++++++++
+> > 
+> > Given that there is more to KVM than just arm64 and x86, I suggest
+> > that you move the lack of support for this feature into the main KVM
+> > code.
+> 
+> Currently, sampling for KVM guests is only available for the guest's
+> instruction pointer, and even the support is limited, it is available
+> on only two architectures (x86 and arm64). This functionality relies on
+> a kernel configuration option called `CONFIG_GUEST_PERF_EVENTS`,
+> which will only be enabled on x86 and arm64.
+> Within the main KVM code, these interfaces are enclosed within
+> `#ifdef CONFIG_GUEST_PERF_EVENTS`. Do you think these are enough?
+> 
+> Best regards,
+> Tianyi Liu
