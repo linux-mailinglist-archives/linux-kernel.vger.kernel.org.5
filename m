@@ -2,80 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E31A7C7B7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 04:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D92A07C7B88
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 04:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229469AbjJMCJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 12 Oct 2023 22:09:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43520 "EHLO
+        id S229505AbjJMCP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 12 Oct 2023 22:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjJMCJ0 (ORCPT
+        with ESMTP id S229461AbjJMCP2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 12 Oct 2023 22:09:26 -0400
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.215])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7BEECB7
-        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 19:09:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=l7hzr
-        lfLhpSLoZQc2BwbgrP4SPxkiJtn7f4bO6Xpa44=; b=h4ip7ZIxibWNomTfIzriV
-        DYVi2p5AoTrOvtWCQlRgORTK1YcGAbVofGE375knqtTq6GbJQRHwZfs43psyC391
-        Q6o/uTXAEcihCeIetA+32WNoPkHnKilUIz0nJevdSFXOvurSNV7lyaxi4Clj7Yxk
-        O/AXKbTL4VwJGofdru296Q=
-Received: from icess-ProLiant-DL380-Gen10.. (unknown [183.174.60.14])
-        by zwqz-smtp-mta-g3-0 (Coremail) with SMTP id _____wD337u6pihlYTiWAQ--.28260S4;
-        Fri, 13 Oct 2023 10:09:07 +0800 (CST)
-From:   Ma Ke <make_ruc2021@163.com>
-To:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Ma Ke <make_ruc2021@163.com>
-Subject: [PATCH] drm/radeon: fix a possible null pointer dereference
-Date:   Fri, 13 Oct 2023 10:08:57 +0800
-Message-Id: <20231013020857.372163-1-make_ruc2021@163.com>
-X-Mailer: git-send-email 2.37.2
+        Thu, 12 Oct 2023 22:15:28 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DFF3BB
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 19:15:25 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-405361bb9f7so17339035e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 12 Oct 2023 19:15:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697163324; x=1697768124; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=479sT2wXZ3lF8ZnjGHtr1v6duycKwjupuTdioRmVjBQ=;
+        b=gJAtSS4rsORc76dR2jDaa4rHv4A8CgHZRqOVwnrCkuyVR60kwpSVnAgpibIQZ/X3Wc
+         yEUUHLs9RcWzIvqQSJw9EbYEb3ZT6oQNV2CB2t2RjGWLBwT2hE2JkjUpeUS8e7QYLTKc
+         TeevjP/OIBeeq5tr7+BWlAoaptjbu48lJtsILKUW74UIi3aOb+tgVTatZM9epxtdgiVx
+         CoZ5fDq67eCP3V8+AoPz5f2x9VVnZlH/aaHJv2mb0P+RULbzozHSN0AooSzukmWJA3Cp
+         0aXlCSzPZ83Teu9EcdNnkERYoB2PKKp45WS1TpIlOmvkmFmqfP6mlskl5G1IOcXzzNzu
+         h2ZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697163324; x=1697768124;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=479sT2wXZ3lF8ZnjGHtr1v6duycKwjupuTdioRmVjBQ=;
+        b=WcAPpGWalV/ge/bZhcLHwg5ODKG5QPpVuzUk6Zn9Gsy2yi/hJKRbzr/ikHJa+NfRWx
+         lD4UqYnNk1phvUYUKCqcrDIFs0aimX7BCDmxGNoICDCkghjTi52EuIzh8b63p2os3DzR
+         Ao31kUtmwZwaMEtDXw6icgmTvmUfTaQxyGsfTgbHShEV3CR8qLvLWRDUbYNHtk3zDEia
+         BekSsWwqvCht1FVueND71h2ieU2RIIXTFLXG8CE3vR+kQc67zvlCCjuWxHHXlTO1j/25
+         YMolDTm2foEh1TDaKW8imdDD8kXAVOS5eIinl8+ghriznX/eCBz+T9oZ5aEfCWc18Cv+
+         eOLQ==
+X-Gm-Message-State: AOJu0YwvmazrIhlrgO1CGzAh7rkjcXU6o7/Yox8R/nFA2qpmjK5c6u2W
+        OBqW163MqYDJsl2VMfv3PsFeItg60YerNKI07Xga1Q==
+X-Google-Smtp-Source: AGHT+IFhpyBP7U/5sPsuSV3WRb3/V3m+DTQDPdPSdTYu6ljAIoR+ANHbmo+h3/cwZ/iAOsdX96X0bgvSpXAcCKHMEck=
+X-Received: by 2002:adf:f4c5:0:b0:32d:9585:8680 with SMTP id
+ h5-20020adff4c5000000b0032d95858680mr2180378wrp.4.1697163323265; Thu, 12 Oct
+ 2023 19:15:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wD337u6pihlYTiWAQ--.28260S4
-X-Coremail-Antispam: 1Uf129KBjvdXoWruryxAF1xKr43KFW5WF4fGrg_yoWfZFX_uF
-        yvqa9rXa909asYvF17u3Z3Zr9I93y0yw4ktF1xta4S93s2qF1fGFy3tF1rZw47Xay5AFn8
-        J34rK3W3Ar4xGjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRKfOzJUUUUU==
-X-Originating-IP: [183.174.60.14]
-X-CM-SenderInfo: 5pdnvshuxfjiisr6il2tof0z/1tbiyBAIC1p7MIObKgABs5
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,
-        RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230925-cod-vacancy-08dc8d88f90e@wendy> <CAGD2q_a1nLtFj7H42f+u+J5Bih59MGS0aJLHCFJy5gM2ydys4w@mail.gmail.com>
+ <20230926-action-sludge-ec8e51fdd6d4@spud> <CAGD2q_YBfDT950tyxEF87ZeiANgea_x8S16Ud5K2bcQ+eL9T=w@mail.gmail.com>
+ <20230926-reverence-unlit-d0027225cc43@spud> <CAGD2q_ZzNPOL+Mhg7aWFTQd+UJJYVLz1ZE9hbNb0roS2M6y34g@mail.gmail.com>
+ <20230928-spectacle-civic-339c0d71d8d7@spud> <CAGD2q_b1gn8XAfgfzuNn3Jo6gEguBEacxERyRM5ms-V=+hWS+g@mail.gmail.com>
+ <20231009-pentagram-clamshell-b14ff00743fd@spud> <CAGD2q_aqr+mu4K1SkTVC+65ctL6BsqRP4Ld0HD_H0_rgzFT9MQ@mail.gmail.com>
+ <20231012-pope-denatured-c1898bc1e44b@spud>
+In-Reply-To: <20231012-pope-denatured-c1898bc1e44b@spud>
+From:   yang tylor <tylor_yang@himax.corp-partner.google.com>
+Date:   Fri, 13 Oct 2023 10:15:13 +0800
+Message-ID: <CAGD2q_YKJyLn8q1F661kRRpZtCtN4w46+mdh2Fq9rkfQ78ssOA@mail.gmail.com>
+Subject: Re: [PATCH V2 1/2] dt-bindings: input: Introduce Himax HID-over-SPI device
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Conor Dooley <conor.dooley@microchip.com>,
+        dmitry.torokhov@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        jikos@kernel.org, benjamin.tissoires@redhat.com,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        poyuan_chang@himax.corp-partner.google.com, hbarnor@chromium.org,
+        "jingyliang@chromium.org" <jingyliang@chromium.org>,
+        wuxy23@lenovo.com, luolm1@lenovo.com,
+        hung poyu <poyu_hung@himax.corp-partner.google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In radeon_add_common_modes(), the return value of drm_cvt_mode()
-is assigned to mode, which will lead to a NULL pointer dereference
-on failure of drm_cvt_mode(). Add a check to avoid null pointer
-dereference.
+On Thu, Oct 12, 2023 at 11:24=E2=80=AFPM Conor Dooley <conor@kernel.org> wr=
+ote:
+>
+> On Thu, Oct 12, 2023 at 10:30:03AM +0800, yang tylor wrote:
+> > On Tue, Oct 10, 2023 at 1:52=E2=80=AFAM Conor Dooley <conor@kernel.org>=
+ wrote:
+> > >
+> > > On Mon, Oct 02, 2023 at 06:44:41PM +0800, yang tylor wrote:
+> > > > On Fri, Sep 29, 2023 at 12:56=E2=80=AFAM Conor Dooley <conor@kernel=
+.org> wrote:
+> > > > >
+> > > > > On Thu, Sep 28, 2023 at 10:12:41AM +0800, yang tylor wrote:
+> > > > > > On Tue, Sep 26, 2023 at 8:53=E2=80=AFPM Conor Dooley <conor@ker=
+nel.org> wrote:
+> > > > > > > On Tue, Sep 26, 2023 at 05:52:39PM +0800, yang tylor wrote:
+> > > > > > > > On Tue, Sep 26, 2023 at 5:02=E2=80=AFPM Conor Dooley <conor=
+@kernel.org> wrote:
+> > > > > > > > > On Mon, Sep 25, 2023 at 06:16:29PM +0800, yang tylor wrot=
+e:
+> > > > > > > > > > On Mon, Sep 25, 2023 at 4:41=E2=80=AFPM Conor Dooley <c=
+onor.dooley@microchip.com> wrote:
+> > > > > > > > > > We have a default prefix firmware name(like himax_xxxx.=
+bin) in the driver code.
+> > > > > > > > >
+> > > > > > > > > How do you intend generating the name of the firmware fil=
+e? I assume the
+> > > > > > > > > same firmware doesn't work on every IC, so you'll need to=
+ pick a
+> > > > > > > > > different one depending on the compatible?
+> > > > > > > > >
+> > > > > > > > If considering a firmware library line-up for all the incom=
+ing panels
+> > > > > > > > of this driver.
+> > > > > > > > We would use PID as part of the file name. Because all the =
+support panels would
+> > > > > > > > have a unique PID associated. Which will make the firmware =
+name like
+> > > > > > > > himax_xxx_{$PID}.bin. The problem is, we need to know PID b=
+efore firmware load
+> > > > > > > > at no flash condition. Thus PID information is required in =
+dts when
+> > > > > > > > no-flash-flag
+> > > > > > > > is specified.
+> > > > > > >
+> > > > > > > Firstly, where does the "xxx" come from?
+> > > > > > > And you're making it sound more like having firmware-name is =
+suitable
+> > > > > > > for this use case, given you need to determine the name of th=
+e file to
+> > > > > > > use based on something that is hardware specific but is not
+> > > > > > > dynamically detectable.
+> > > > > > Current driver patch uses a prefix name "himax_i2chid" which co=
+mes
+> > > > > > from the previous project
+> > > > > >  and seems not suitable for this condition, so I use "xxx" and =
+plan to
+> > > > > > replace it in the next version.
+> > > > > > For finding firmware, I think both solutions are reasonable.
+> > > > > > - provide firmware name directly: implies no-flash and use user
+> > > > > > specified firmware, no PID info.
+> > > > > > - provide no-flash-flag and PID info: loading firmware from org=
+anized
+> > > > > > names with PID info.
+> > > > > > I prefer the 2nd solution, but it needs more properties in dts.=
+ 1st
+> > > > > > has less properties and more
+> > > > > > intuitive.
+> > > > > >
+> > > > > > I don't know which one is more acceptable by the community, as =
+you
+> > > > > > know I'm a newbie here.
+> > > > >
+> > > > > To be honest, I am not all that sure either! Does the panel id ha=
+ve
+> > > > > value in its own right, or is that only used to determine the fir=
+mware
+> > > > > filename?
+> > > > Currently, PID stands for Panel/Project ID and is used for determin=
+ing
+> > > > the firmware filename only. We haven't come up with any new attribu=
+te that
+> > > > may attach to it. The differences between panels are handled in fir=
+mware
+> > > > dedicated to its PID.
+> > > >
+> > > > > Also, if it does have value in its own right, rather than a "pid"=
+,
+> > > > > should the panel be a child node of this hid device with its own
+> > > > > compatible?
+> > > > It may need a child node if we find it necessary to add attributes =
+to each PID.
+> > > > But currently we have no idea about it.
+> > >
+> > > To be honest, it seems to me like you are using "PID" in place of a
+> > > compatible for the panel, since it needs to be provided via DT anyway=
+.
+> >
+> > Hmm... So the more formal way is?
+> > If I add a sub-note inside this spi-device block, such as "panel" and
+> > add PID inside.
+> > Will it be more appropriate?
+> > ...
+> > spi {
+> > ...
+> >     hx_spi@0 {
+> > ...
+> >         panel {
+> >             himax,pid =3D ...
+>
+> And this now looks exactly like compatible =3D "vendor,part" now, no?
 
-Signed-off-by: Ma Ke <make_ruc2021@163.com>
----
- drivers/gpu/drm/radeon/radeon_connectors.c | 2 ++
- 1 file changed, 2 insertions(+)
+I think it's not the same, I thought "compatible" is used to target
+from the driver side.
+For finding other information inside the block. But I just store PID
+information in this
+one, not used for targeting but getting infos from it.
 
-diff --git a/drivers/gpu/drm/radeon/radeon_connectors.c b/drivers/gpu/drm/radeon/radeon_connectors.c
-index d2f02c3dfce2..9f7d8ab980e6 100644
---- a/drivers/gpu/drm/radeon/radeon_connectors.c
-+++ b/drivers/gpu/drm/radeon/radeon_connectors.c
-@@ -520,6 +520,8 @@ static void radeon_add_common_modes(struct drm_encoder *encoder, struct drm_conn
- 			continue;
- 
- 		mode = drm_cvt_mode(dev, common_modes[i].w, common_modes[i].h, 60, false, false, false);
-+		if (!mode)
-+			continue;
- 		drm_mode_probed_add(connector, mode);
- 	}
- }
--- 
-2.37.2
-
+Thanks,
+Tylor
