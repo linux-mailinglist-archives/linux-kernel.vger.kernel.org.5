@@ -2,103 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9677C8895
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E9F7C8899
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 17:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232363AbjJMPZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 11:25:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34944 "EHLO
+        id S232367AbjJMP0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 11:26:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232346AbjJMPZm (ORCPT
+        with ESMTP id S232331AbjJMP02 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 11:25:42 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB82ECA
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:25:39 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-32003aae100so2252645f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:25:39 -0700 (PDT)
+        Fri, 13 Oct 2023 11:26:28 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF3EB7
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:26:26 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c17de836fbso28215461fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 08:26:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697210738; x=1697815538; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OqiyO5h666WNcMBFY0zx+uO/TZpSzYvmxb3OC1OULWs=;
-        b=NVcjHByJCWtE737XCAW5NyLyfdqhnldEsZQOu9/YQl/p6qrg/NGvoviIzidw2yrAhZ
-         G87giDn0LNzm4Vi9wzkyG/KwiUU/l/mamKP+k8XF0Lp5X2jew+sySe72twBDeeQS296+
-         OvhUpWlLwALfDNZph8sgTGykDtQ1XbyFS4A5eI/7HhpJhoOQdvICXU3XKDNSrrAPmD3f
-         UokZPY5m0iS//GraRTR8FpNsnEWZkhbE9do092dMpUL5aYPkfGOCydu8DM/NAgUws2BS
-         CpylEqzgCC4DCLpbdBh8jiF+e1s8kpBkYKMjzoRHUQZ90X+YBKLkFFXOH+t6+k+EHnsM
-         Us/w==
+        d=linaro.org; s=google; t=1697210784; x=1697815584; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=idyP6TZLt0+e2JiohgFKby+oBhBYuginDh4AcfSAIM0=;
+        b=jqdbj+ruwiavMHDvvbEnuN9EXQIUjD8l3diLN/d4s/0hmKqt8NhUfHJVbGDyGDlQ08
+         eKE8vAF4DGWiJpI3gd6KTqXR/IAhcQKDUTMlXos6DhqPERknbEixAJwMjhc4MM0ElipR
+         YQc2wpzB1tJyfDwaXsVbAloyMTuYTJa+/nJlPqp1scJdUDprQKqQ7rob7TJWj86Rdz6B
+         C33RdWQa8GWm0MAeTv+U6f3sPK3tCIixwlgNQlhz66SrqRcvrJpYx7KjRj6N8+m4I5ts
+         2nlekRcZTDWXlA2O7YNAWF2LyK7MyaLcDV7Qc/MQsfYcuJfpkBR1kCGcHIDHKN+T9x6s
+         L0qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697210738; x=1697815538;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OqiyO5h666WNcMBFY0zx+uO/TZpSzYvmxb3OC1OULWs=;
-        b=R5RIvvICQem9h+NxrMYJvIlvhM/wcuDvtfJ5sjMmH4/F7g0cIVHdN52qPC5QogeoQ4
-         U57vg0WmgCm8wksTKDekg2P+br7zpLg+hL3JJwoB9a7j99hAhs17ck9ls0SkaaYpRD/V
-         nLh3W9mO9XfR0dU6aHRa3TJzPsYvQdqsjqRsPglgBl+JfKzN3FPgBSh+vUz7Huz+rJ/d
-         MuxEar5NJjikFLZH/dP4cu7OUUqfLBcZiocclmuqRpcOijWSAFQxS3MZax1tT7aAuJDf
-         Bk+SWnw55YUt3BXK7psKvmCgElix/o5ydZHWLLevHtq11PtZ3EDSKJiQY4CVVEYOd+Q3
-         j8mA==
-X-Gm-Message-State: AOJu0YzCqcrb4tuXd8BXC+yWpdEFCsPVtoOeYYl23WWTzakvd4gzZlH3
-        gFPo3Xb03S6oUcSbbhTK21K0aOB7053hlvCLgkY=
-X-Google-Smtp-Source: AGHT+IG3Q2dwNrMf0dpK3UfqA9ZkhmleZbTUt/8zaNtFpNTgsYvyfK+j2Ev8RbzmQ/zhSYaCKQzf6A==
-X-Received: by 2002:adf:8b98:0:b0:31f:f95c:dd7f with SMTP id o24-20020adf8b98000000b0031ff95cdd7fmr353980wra.12.1697210738255;
-        Fri, 13 Oct 2023 08:25:38 -0700 (PDT)
-Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.googlemail.com with ESMTPSA id bh6-20020a05600c3d0600b00406408dc788sm391301wmb.44.2023.10.13.08.25.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Oct 2023 08:25:37 -0700 (PDT)
-Message-ID: <1ef28d5e-ae16-4668-8fe0-13b5521ae572@linaro.org>
-Date:   Fri, 13 Oct 2023 17:25:37 +0200
+        d=1e100.net; s=20230601; t=1697210784; x=1697815584;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=idyP6TZLt0+e2JiohgFKby+oBhBYuginDh4AcfSAIM0=;
+        b=VxVmxzrHr1kXU24GNK2PlbejfqBXjM/aMboFb1DetdUImciPcnpr0RjptvV7/Owo1/
+         +z1PGloCVMHVF9pJH1Z3c+NN+9Yt4F79n+tL4sFjUgLlgUQDHegxn3tWJ/TAX7SI3B6K
+         kEapz4VXLEY8+SgtFuqMc3z3dVC7W18+HlA3pEEvKc3REx6BWgc5SmivL9pSDWAlKFEc
+         4qL2Mgtgp07ogHgG0hFQYIZ9EjjnTRKBZP2ITUy9B9h793kbagbeZ1Om/PLBNeY9yAPD
+         +cDjUItChbGKXaQ4Fn4lABc86lI1635gkUG0yDWgx/SikDOqUZryc0zaZIbcSXr14A+t
+         pfRQ==
+X-Gm-Message-State: AOJu0YwK/KZmxx7hn/zcHXVfVqdh3EtZpaBmytlPI9Fl0pfO1Yj3X7Lo
+        5f5XnmA+sqkI7Yu76gKo5uD7p5m4OHquTihhlMAjJw==
+X-Google-Smtp-Source: AGHT+IEkj0xvE7pRWlx0hN5jxXkWiivm6HR/PwwHhFypENo7OeXGj3F42BjmRorHeeajvySa/NnlyGCagHU3vsaGE5w=
+X-Received: by 2002:a05:6512:3d87:b0:504:7bb0:9d7e with SMTP id
+ k7-20020a0565123d8700b005047bb09d7emr28771686lfv.27.1697210784499; Fri, 13
+ Oct 2023 08:26:24 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] thermal: ACPI: Include the right header file
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>
-References: <2721589.mvXUDI8C0e@kreacher>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <2721589.mvXUDI8C0e@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20230807025343.1939-1-masahisa.kojima@linaro.org>
+ <20230807025343.1939-5-masahisa.kojima@linaro.org> <CAC_iWjL3YpZb4ryko1DR9CM1x+VTV8mfnN=AwBR4F09Agc0vRQ@mail.gmail.com>
+ <CAFA6WYN_E=4nN1-j2-nQ_pi+b083UmKPNO9Saub7aZLAx4PCww@mail.gmail.com>
+In-Reply-To: <CAFA6WYN_E=4nN1-j2-nQ_pi+b083UmKPNO9Saub7aZLAx4PCww@mail.gmail.com>
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date:   Fri, 13 Oct 2023 17:25:48 +0200
+Message-ID: <CAC_iWj+P110h2cK=4tbCTq2c9aktox-EATOQgH_1wshRMKg4PQ@mail.gmail.com>
+Subject: Re: [PATCH v8 4/5] efivarfs: automatically update super block flag
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Masahisa Kojima <masahisa.kojima@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jeremy Kerr <jk@ozlabs.org>, linux-efi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/2023 17:14, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> It is not necessary to include thermal_core.h into thermal_acpi.c,
-> because none of the code in there depends on anything in the former,
-> except for the linux/thermal.h, but it is better to include that one
-> directly instead of including the entire thermal_core.h, so make that
-> change.
-> 
-> No functional impact.
-> 
-> Fixes: 7a0e39748861 ("thermal: ACPI: Add ACPI trip point routines")
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
+Hi Sumit
 
-Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+On Fri, 13 Oct 2023 at 09:53, Sumit Garg <sumit.garg@linaro.org> wrote:
+>
+> Hi Ilias,
+>
+> On Wed, 11 Oct 2023 at 22:30, Ilias Apalodimas
+> <ilias.apalodimas@linaro.org> wrote:
+> >
+> > Kojima-san
+> > Apologies for the late reply, I just found some to test this.
+> >
+> > On Sun, 6 Aug 2023 at 19:55, Masahisa Kojima <masahisa.kojima@linaro.org> wrote:
+> > >
+> > > efivar operation is updated when the tee_stmm_efi module is probed.
+> > > tee_stmm_efi module supports SetVariable runtime service,
+> > > but user needs to manually remount the efivarfs as RW to enable
+> > > the write access if the previous efivar operation does not support
+> > > SerVariable and efivarfs is mounted as read-only.
+> > >
+> > > This commit notifies the update of efivar operation to
+> > > efivarfs subsystem, then drops SB_RDONLY flag if the efivar
+> > > operation supports SetVariable.
+> >
+> > The RO->RW transition works fine and I did manage to test basic stuff
+> > like setting up efibootmgr options.  IIUC the RW->RO should be covered
+> > by this patchset [0] ?
+>
+> Yeah.
+>
+> > Wouldn't it be better to detect that the tee device of the supplicant
+> > closes and use that to switch the permissions?  I get why we need that
+> > for the TPM, the entire subsystem needs to send TPM commands *before*
+> > the supplicant dies.   But this is not needed for the EFI variables
+> > case, we could just remount the FS as RO the moment the supplicant
+> > dies.
+>
+> As we discussed offline, we should have a unified approach to notify
+> kernel TEE client drivers. So the approach implemented as part of [0]
+> should address the needs for fTPM as well as EFI.
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+Ideally yes, we should have a unified approach.  But this is a bit
+different IMHO. In the majority of the cases, the supplicant goes
+away,  we lose access to storage and that's the only thing we care
+about.  Only the TPM subsystem is 'special' because it has to perform
+a shutdown of the device as well.  On top of that, I think we should
+try to avoid the kernel depending on userspace apps as much as
+possible.  I think it's best if we support both of these and add
+documentation on why this is happening. Would it be hard to have a
+combination of both of your patches?
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Thanks
+/Ilias
 
+>
+> -Sumit
+>
+> >
+> > [0] https://lore.kernel.org/all/20230728134832.326467-1-sumit.garg@linaro.org/
+> >
+> > Regards
+> > /Ilias
+> > >
+> > > Signed-off-by: Masahisa Kojima <masahisa.kojima@linaro.org>
+> > > ---
+> > >  drivers/firmware/efi/efi.c  |  6 ++++++
+> > >  drivers/firmware/efi/vars.c |  8 ++++++++
+> > >  fs/efivarfs/super.c         | 33 +++++++++++++++++++++++++++++++++
+> > >  include/linux/efi.h         |  8 ++++++++
+> > >  4 files changed, 55 insertions(+)
+> > >
+> > > diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
+> > > index 53ae25bbb6ac..d2eec5ed8e5e 100644
+> > > --- a/drivers/firmware/efi/efi.c
+> > > +++ b/drivers/firmware/efi/efi.c
+> > > @@ -32,6 +32,7 @@
+> > >  #include <linux/ucs2_string.h>
+> > >  #include <linux/memblock.h>
+> > >  #include <linux/security.h>
+> > > +#include <linux/notifier.h>
+> > >
+> > >  #include <asm/early_ioremap.h>
+> > >
+> > > @@ -187,6 +188,9 @@ static const struct attribute_group efi_subsys_attr_group = {
+> > >         .is_visible = efi_attr_is_visible,
+> > >  };
+> > >
+> > > +struct blocking_notifier_head efivar_ops_nh;
+> > > +EXPORT_SYMBOL_GPL(efivar_ops_nh);
+> > > +
+> > >  static struct efivars generic_efivars;
+> > >  static struct efivar_operations generic_ops;
+> > >
+> > > @@ -427,6 +431,8 @@ static int __init efisubsys_init(void)
+> > >                 platform_device_register_simple("efivars", 0, NULL, 0);
+> > >         }
+> > >
+> > > +       BLOCKING_INIT_NOTIFIER_HEAD(&efivar_ops_nh);
+> > > +
+> > >         error = sysfs_create_group(efi_kobj, &efi_subsys_attr_group);
+> > >         if (error) {
+> > >                 pr_err("efi: Sysfs attribute export failed with error %d.\n",
+> > > diff --git a/drivers/firmware/efi/vars.c b/drivers/firmware/efi/vars.c
+> > > index e9dc7116daf1..f654e6f6af87 100644
+> > > --- a/drivers/firmware/efi/vars.c
+> > > +++ b/drivers/firmware/efi/vars.c
+> > > @@ -63,6 +63,7 @@ int efivars_register(struct efivars *efivars,
+> > >                      const struct efivar_operations *ops)
+> > >  {
+> > >         int rv;
+> > > +       int event;
+> > >
+> > >         if (down_interruptible(&efivars_lock))
+> > >                 return -EINTR;
+> > > @@ -77,6 +78,13 @@ int efivars_register(struct efivars *efivars,
+> > >
+> > >         __efivars = efivars;
+> > >
+> > > +       if (efivar_supports_writes())
+> > > +               event = EFIVAR_OPS_RDWR;
+> > > +       else
+> > > +               event = EFIVAR_OPS_RDONLY;
+> > > +
+> > > +       blocking_notifier_call_chain(&efivar_ops_nh, event, NULL);
+> > > +
+> > >         pr_info("Registered efivars operations\n");
+> > >         rv = 0;
+> > >  out:
+> > > diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
+> > > index e028fafa04f3..0f6e4d223aea 100644
+> > > --- a/fs/efivarfs/super.c
+> > > +++ b/fs/efivarfs/super.c
+> > > @@ -14,11 +14,36 @@
+> > >  #include <linux/slab.h>
+> > >  #include <linux/magic.h>
+> > >  #include <linux/statfs.h>
+> > > +#include <linux/notifier.h>
+> > >
+> > >  #include "internal.h"
+> > >
+> > >  LIST_HEAD(efivarfs_list);
+> > >
+> > > +struct efivarfs_info {
+> > > +       struct super_block *sb;
+> > > +       struct notifier_block nb;
+> > > +};
+> > > +
+> > > +static struct efivarfs_info info;
+> > > +
+> > > +static int efivarfs_ops_notifier(struct notifier_block *nb, unsigned long event,
+> > > +                                void *data)
+> > > +{
+> > > +       switch (event) {
+> > > +       case EFIVAR_OPS_RDONLY:
+> > > +               info.sb->s_flags |= SB_RDONLY;
+> > > +               break;
+> > > +       case EFIVAR_OPS_RDWR:
+> > > +               info.sb->s_flags &= ~SB_RDONLY;
+> > > +               break;
+> > > +       default:
+> > > +               return NOTIFY_DONE;
+> > > +       }
+> > > +
+> > > +       return NOTIFY_OK;
+> > > +}
+> > > +
+> > >  static void efivarfs_evict_inode(struct inode *inode)
+> > >  {
+> > >         clear_inode(inode);
+> > > @@ -255,6 +280,12 @@ static int efivarfs_fill_super(struct super_block *sb, struct fs_context *fc)
+> > >         if (!root)
+> > >                 return -ENOMEM;
+> > >
+> > > +       info.sb = sb;
+> > > +       info.nb.notifier_call = efivarfs_ops_notifier;
+> > > +       err = blocking_notifier_chain_register(&efivar_ops_nh, &info.nb);
+> > > +       if (err)
+> > > +               return err;
+> > > +
+> > >         INIT_LIST_HEAD(&efivarfs_list);
+> > >
+> > >         err = efivar_init(efivarfs_callback, (void *)sb, true, &efivarfs_list);
+> > > @@ -281,6 +312,8 @@ static int efivarfs_init_fs_context(struct fs_context *fc)
+> > >
+> > >  static void efivarfs_kill_sb(struct super_block *sb)
+> > >  {
+> > > +       blocking_notifier_chain_unregister(&efivar_ops_nh, &info.nb);
+> > > +       info.sb = NULL;
+> > >         kill_litter_super(sb);
+> > >
+> > >         if (!efivar_is_available())
+> > > diff --git a/include/linux/efi.h b/include/linux/efi.h
+> > > index 603bba2d6437..17cd628b5c42 100644
+> > > --- a/include/linux/efi.h
+> > > +++ b/include/linux/efi.h
+> > > @@ -1365,6 +1365,14 @@ bool efi_config_table_is_usable(const efi_guid_t *guid, unsigned long table)
+> > >
+> > >  umode_t efi_attr_is_visible(struct kobject *kobj, struct attribute *attr, int n);
+> > >
+> > > +/*
+> > > + * efivar ops event type
+> > > + */
+> > > +#define EFIVAR_OPS_RDONLY 0
+> > > +#define EFIVAR_OPS_RDWR 1
+> > > +
+> > > +extern struct blocking_notifier_head efivar_ops_nh;
+> > > +
+> > >  void efivars_generic_ops_register(void);
+> > >  void efivars_generic_ops_unregister(void);
+> > >
+> > > --
+> > > 2.30.2
+> > >
