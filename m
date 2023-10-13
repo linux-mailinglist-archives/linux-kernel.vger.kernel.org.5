@@ -2,138 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7807C8D42
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 20:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 722507C8D40
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 20:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231523AbjJMSpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 14:45:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49172 "EHLO
+        id S231447AbjJMSpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 14:45:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJMSps (ORCPT
+        with ESMTP id S229518AbjJMSpq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 14:45:48 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5939DBE;
-        Fri, 13 Oct 2023 11:45:43 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-4064876e8b8so27816015e9.0;
-        Fri, 13 Oct 2023 11:45:43 -0700 (PDT)
+        Fri, 13 Oct 2023 14:45:46 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6612495
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 11:45:41 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5a31f85e361so1479126a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 11:45:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697222742; x=1697827542; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nS/B/9nUlLmw6S4KsFUi4nqKiJBJFKciQh4FDxh+L/s=;
-        b=VWCNBmGeZethL9drvaz2BFBuuHeshfVwQWIyDsom5kSEDWjXymqfdEHMBwuZfpEZPv
-         PzRTAlF0tGzixcs8G4qVDkafWDPQrQT/rTF60rqR6FFGAOzdvwtJg5cCD8ERtlmgjKDK
-         HlQnjHEYmFlX0WNmfQLVLqaaN6J84SqF6qgDq4OPt/wj0rlKIUEoH1STdfBzDBJxkXup
-         UAz/FmHq2hJw1WqS2GOk9MwSZpRNhs6Dx3NnQbAs4KW7R6Z2/Z1zEb6xYI9AyWSko1KU
-         OIVQbn1lRxI/aChFNk8BbAE8ioCrnV0NVyfPVPzZrrO4iYZEgaTHDvlI4ghV2M4mezcZ
-         3GPQ==
+        d=google.com; s=20230601; t=1697222741; x=1697827541; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ws3TNljM7U6dR7W0bGuw6beKuVMmLn0pBMtIeO28SXE=;
+        b=o/bmnhgAKzOwSltr+28ZopWmB0QBT+J5gtJUMwEDsyOHk0X6Xwyxr2cqlPjfvKsoyq
+         zyvtbTb0tFoJBlhwtvAc3FJB0JsSvBBXai2OULXINY3+hVJC7ZcgnKOd61LrCh+/PS0A
+         eJhM2QgiHM6MV/9+4qVjKOe3FfLF/XwAY+3tXnSamXG/rq9mVxiUT9CpxO9tNCcbefrY
+         HipJKAq8wwIEOTb412oezeMePzpxEnSOEzM4gDfBZwoXl6LlXLanGLgWlBE2e97x4T7p
+         eTmosgEcVnUXTYI9Itnn+oeAEGuYC/AR0TKUqof4uH7mz+UJ5CBaJ5wWsjtyH70LAZCx
+         a4yQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697222742; x=1697827542;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nS/B/9nUlLmw6S4KsFUi4nqKiJBJFKciQh4FDxh+L/s=;
-        b=ZLJd+9pQvY6RmB1kIzsATuTOlhXvz7ipXRkcCGQaBHOq8RMhCEkhNDuilTkn2PvgI/
-         kiYhLXD9QACXA9cwG1ZPCpRq4vHNaMydRH43bKn4GYUsiFgtocKYJiE/FrcG80A6/H0b
-         efh0tgfQodFp0LIi4rC7DdmJrqIbOnW5lea4VZnJIwdQVH5pNT6r2IoNxNH53CG6x1No
-         s035GjOn3uG8+amOWwH3LMCUK5ZoBXcBd73ndA1bJgHgQnXyfMrFMovmnGC1b97B84eN
-         DLShrZiU++nw9p/L6XaUao0Lt2tov2HaFp+H002VzbS8jSaDG9Tzae3fH94lgwNWvYRU
-         oiyQ==
-X-Gm-Message-State: AOJu0YzAeJNieQY3F4lVi1qbQtqY89OxJf2QcXlXR794XgwvNknyjXOH
-        2ttDH8VrPNyOvwjTy3l36SH8KWu/c3Vn9g==
-X-Google-Smtp-Source: AGHT+IHcbqPBjzX48zCFbc2YsOP+a2i9HmTRCmgyTQhV4W9XaKQNyEHu+7HzI1xt2rz8SXlqw5MDaQ==
-X-Received: by 2002:a7b:cb8c:0:b0:406:517f:ac71 with SMTP id m12-20020a7bcb8c000000b00406517fac71mr24094789wmi.29.1697222741548;
-        Fri, 13 Oct 2023 11:45:41 -0700 (PDT)
-Received: from jernej-laptop.localnet ([188.159.248.16])
-        by smtp.gmail.com with ESMTPSA id e16-20020a05600c4e5000b004068495910csm840969wmq.23.2023.10.13.11.45.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 11:45:40 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     Andre Przywara <andre.przywara@arm.com>,
-        Chukun Pan <amadeus@jmu.edu.cn>
-Cc:     Samuel Holland <samuel@sholland.org>, Chen-Yu Tsai <wens@csie.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Chukun Pan <amadeus@jmu.edu.cn>
-Subject: Re: [PATCH 2/2] arm64: dts: allwinner: h616: update emac properties for
- Orange Pi Zero 3
-Date:   Fri, 13 Oct 2023 20:45:38 +0200
-Message-ID: <3254946.aeNJFYEL58@jernej-laptop>
-In-Reply-To: <20231010153812.2869633-2-amadeus@jmu.edu.cn>
-References: <20231010153812.2869633-1-amadeus@jmu.edu.cn>
- <20231010153812.2869633-2-amadeus@jmu.edu.cn>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1697222741; x=1697827541;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Ws3TNljM7U6dR7W0bGuw6beKuVMmLn0pBMtIeO28SXE=;
+        b=r9Ggo72VDhYAejuA0oZesF7wQK8YsIh8YOepZApOCcfIh0hupmepv+2h5Vj/W2Yw2V
+         MUAxd6WCwe2HDU+nnXqCtue92aZewImTmBxr+qjDja8TKdYQaQ+70mxECjYtmtf9tjmr
+         LzAirTeee98eNIC6uAFuvXm4QXfuWPT0R2USNjq3FsV7Fpf3fpj8rl2cjRolw3tK46qb
+         dftphPBLyhmBRJ15VzNfIi/IX1AbNVAN2VYTUJ5+WJPpkkTvZWopCPfKxnmPg1H6lKs+
+         utrXeSXvas728NKBIz55pQloAlbdPcePBKt1zcUY1kq4w6Xaw64d9kFmPKm6j9gqkr5+
+         0LyA==
+X-Gm-Message-State: AOJu0YyjmqQeUQfOxBY2i77z6AyFAqu9AnGNjDjqOIv6H06txH+1/Mph
+        5i8B2Q/awmavxRVf1yvn7iQWokzZou8=
+X-Google-Smtp-Source: AGHT+IEhWzwxolK4HR2lnXpvlQbepCLBD9azTuRK2bP2lLobqQAr8ceBilk59vUTCOnRGf8PBQ2ioDqI7+4=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:ab1d:b0:1ca:2620:78ad with SMTP id
+ ik29-20020a170902ab1d00b001ca262078admr3280plb.8.1697222740713; Fri, 13 Oct
+ 2023 11:45:40 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 11:45:39 -0700
+In-Reply-To: <CALzav=csPcd3f5CYc=6Fa4JnsYP8UTVeSex0-7LvUBnTDpHxLQ@mail.gmail.com>
+Mime-Version: 1.0
+References: <20230914015531.1419405-8-seanjc@google.com> <117db856-9aec-e91c-b1d4-db2b90ae563d@intel.com>
+ <ZQ3AmLO2SYv3DszH@google.com> <CAF7b7mrf-y9DNdsreOAedGJueOThnYE=ascFd4=rvW0Z4rhTQg@mail.gmail.com>
+ <ZRtxoaJdVF1C2Mvy@google.com> <CAF7b7mqyU059YpBBVYjTMNXf9VHSc6tbKrQ8avFXYtP6LWMh8Q@mail.gmail.com>
+ <ZRyn0nPQpbVpz8ah@google.com> <CAF7b7mqYr0J-J2oaU=c-dzLys-m6Ttp7ZOb3Em7n1wUj3rhh+A@mail.gmail.com>
+ <ZR88w9W62qsZDro-@google.com> <CALzav=csPcd3f5CYc=6Fa4JnsYP8UTVeSex0-7LvUBnTDpHxLQ@mail.gmail.com>
+Message-ID: <ZSmQUyfldIMMpx7X@google.com>
+Subject: Re: [RFC PATCH v12 07/33] KVM: Add KVM_EXIT_MEMORY_FAULT exit to
+ report faults to userspace
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Matlack <dmatlack@google.com>
+Cc:     Anish Moorthy <amoorthy@google.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>, kvm@vger.kernel.org,
+        kvmarm@lists.linux.dev, kvm-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On Tue, Oct 10, 2023, David Matlack wrote:
+> On Thu, Oct 5, 2023 at 3:46=E2=80=AFPM Sean Christopherson <seanjc@google=
+.com> wrote:
+> >
+> > On Thu, Oct 05, 2023, Anish Moorthy wrote:
+> > > On Tue, Oct 3, 2023 at 4:46=E2=80=AFPM Sean Christopherson <seanjc@go=
+ogle.com> wrote:
+> > > >
+> > > > The only way a KVM_EXIT_MEMORY_FAULT that actually reaches userspac=
+e could be
+> > > > "unreliable" is if something other than a memory_fault exit clobber=
+ed the union,
+> > > > but didn't signal its KVM_EXIT_* reason.  And that would be an egre=
+gious bug that
+> > > > isn't unique to KVM_EXIT_MEMORY_FAULT, i.e. the same data corruptio=
+n would affect
+> > > > each and every other KVM_EXIT_* reason.
+> > >
+> > > Keep in mind the case where an "unreliable" annotation sets up a
+> > > KVM_EXIT_MEMORY_FAULT, KVM_RUN ends up continuing, then something
+> > > unrelated comes up and causes KVM_RUN to EFAULT. Although this at
+> > > least is a case of "outdated" information rather than blatant
+> > > corruption.
+> >
+> > Drat, I managed to forget about that.
+> >
+> > > IIRC the last time this came up we said that there's minimal harm in
+> > > userspace acting on the outdated info, but it seems like another good
+> > > argument for just restricting the annotations to paths we know are
+> > > reliable. What if the second EFAULT above is fatal (as I understand
+> > > all are today) and sets up subsequent KVM_RUNs to crash and burn
+> > > somehow? Seems like that'd be a safety issue.
+> >
+> > For your series, let's omit
+> >
+> >   KVM: Annotate -EFAULTs from kvm_vcpu_read/write_guest_page
+> >
+> > and just fill memory_fault for the page fault paths.  That will be easi=
+er to
+> > document too since we can simply say that if the exit reason is KVM_EXI=
+T_MEMORY_FAULT,
+> > then run->memory_fault is valid and fresh.
+>=20
+> +1
+>=20
+> And from a performance perspective, I don't think we care about
+> kvm_vcpu_read/write_guest_page(). Our (Google) KVM Demand Paging
+> implementation just sends any kvm_vcpu_read/write_guest_page()
+> requests through the netlink socket, which is just a poor man's
+> userfaultfd. So I think we'll be fine sending these callsites through
+> uffd instead of exiting out to userspace.
+>=20
+> And with that out of the way, is there any reason to keep tying
+> KVM_EXIT_MEMORY_FAULT to -EFAULT? As mentioned in the patch at the top
+> of this thread, -EFAULT is just a hack to allow the emulator paths to
+> return out to userspace. But that's no longer necessary.
 
-Dne torek, 10. oktober 2023 ob 17:38:12 CEST je Chukun Pan napisal(a):
-> Add the correct delay value to emac. Also add missing mdio
-> properties for the YT8531 PHY (clock output required).
-> With these changes, Ethernet now looks stable.
+Not forcing '0' makes handling other error codes simpler, e.g. if the memor=
+y is
+poisoned, KVM can simply return -EHWPOISON instead of having to add a flag =
+to
+run->memory_fault[*].
 
-This is also a fix, so it would also deserve Fixes tag. In fact, please merge
-previous and this patch into one. After all, you are fixing only one thing -
-ethernet on OrangePi Zero 3 board.
+KVM would also have to make returning '0' instead of -EFAULT conditional ba=
+sed on
+a capability being enabled.
 
-Can you also explain how did you figure out that additional PHY properties
-are needed? At first glance, based on description of motorcomm,keep-pll-enabled,
-it's not immediately clear why it should be needed. Same goes for second
-property.
+And again, committing to returning '0' will make it all but impossible to e=
+xtend
+KVM_EXIT_MEMORY_FAULT beyond the page fault handlers.  Well, I suppose we c=
+ould
+have the top level kvm_arch_vcpu_ioctl_run() do
 
-1800 ps delay basically means that rgmii is not correct type and rgmii-rxid
-should be used instead. Indeed, schematic confirms that's the case. With that,
-allwinner,rx-delay-ps can be 0 and thus ommited from DT file.
+	if (r =3D=3D -EFAULT && vcpu->kvm->enable_memory_fault_exits &&
+	    kvm_run->exit_reason =3D=3D KVM_EXIT_MEMORY_FAULT)
+		r =3D 0;
 
-Since there is many differences, I suggest that you remove whole emac0
-node from common DTSI file and put specific ones to each board. It will
-be less confusing that way.
+but that's quite gross IMO.
 
-Best regards,
-Jernej
+> I just find it odd that some KVM_EXIT_* correspond with KVM_RUN returning=
+ an
+> error and others don't.
 
-> 
-> Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
-> ---
->  arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dts | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dts b/arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dts
-> index 00fe28caac93..02c7836b624a 100644
-> --- a/arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dts
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dts
-> @@ -13,10 +13,14 @@ / {
->  };
->  
->  &emac0 {
-> +	allwinner,rx-delay-ps = <1800>;
-> +	allwinner,tx-delay-ps = <700>;
->  	phy-supply = <&reg_dldo1>;
->  };
->  
->  &ext_rgmii_phy {
-> +	motorcomm,keep-pll-enabled;
-> +	motorcomm,auto-sleep-disabled;
->  	motorcomm,clk-out-frequency-hz = <125000000>;
->  };
->  
-> 
+FWIW, there is already precedent for run->exit_reason being valid with a no=
+n-zero
+error code.  E.g. KVM selftests relies on run->exit_reason being preserved =
+when
+forcing an immediate exit, which returns -EINTR, not '0'.
 
+	if (kvm_run->immediate_exit) {
+		r =3D -EINTR;
+		goto out;
+	}
 
+And pre-immediate_exit code that relies on signalling vCPUs is even more ex=
+plicit
+in setting exit_reason with a non-zero errno:
 
+		if (signal_pending(current)) {
+			r =3D -EINTR;
+			kvm_run->exit_reason =3D KVM_EXIT_INTR;
+			++vcpu->stat.signal_exits;
+		}
 
+I agree that -EFAULT with KVM_EXIT_MEMORY_FAULT *looks* a little odd, but I=
+MO the
+existing KVM behavior of returning '0' is actually what's truly odd.  E.g. =
+returning
+'0' + KVM_EXIT_MMIO if the guest accesses non-existent memory is downright =
+weird.
+KVM_RUN should arguably never return '0', because it can never actual compl=
+etely
+succeed.
+
+> The exit_reason is sufficient to tell userspace what's going on and has a
+> firm contract, unlike -EFAULT which anything KVM calls into can return.
+
+Eh, I don't think it lessens the contract in a meaningful way.  KVM is stil=
+l
+contractually obligated to fill run->exit_reason when KVM returns '0', and
+userspace will still likely terminate the VM on an undocumented EFAULT/EHWP=
+OISON.
+
+E.g. if KVM has a bug and doesn't return KVM_EXIT_MEMORY_FAULT when handlin=
+g a
+page fault, then odds are very good that the bug would result in KVM return=
+ing a
+"bare" -EFAULT regardless of whether KVM_EXIT_MEMORY_FAULT is paried with '=
+0' or
+-EFAULT.
+
+[*] https://lore.kernel.org/all/ZQHzVOIsesTTysgf@google.com
