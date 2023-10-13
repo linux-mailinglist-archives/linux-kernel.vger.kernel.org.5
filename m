@@ -2,66 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 969997C8D80
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 21:09:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AAD87C8D82
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 21:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231470AbjJMTJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 15:09:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47508 "EHLO
+        id S231596AbjJMTKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 15:10:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbjJMTJv (ORCPT
+        with ESMTP id S229958AbjJMTKp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 15:09:51 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7455083
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 12:09:50 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-278f0f565e2so1871106a91.2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 12:09:50 -0700 (PDT)
+        Fri, 13 Oct 2023 15:10:45 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1CD2BF
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 12:10:43 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c5bf7871dcso19782825ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 12:10:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697224190; x=1697828990; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697224243; x=1697829043; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=lH/Hy4rJiGCIiWFGI1a/4z8j85DxIfwAOnT8uAXZzdc=;
-        b=EPF3CvWf42pVgm7Z0pHkKkz8jaiiC4aPiy43nKK3lgRrRhYqghLXY9t6JXbEN/fJ0B
-         eWCJELwQeEyD4JJ72FiBvTknOESasCDotkcgdj4rDCKQ30SyT3ilWXk5LwK45ZbJPw7j
-         AT4LfMqRZ9esr//BGYF16RjGfrma8GmItjUO//JlTKLvVc8Q5KB7xr2M34GGKxdW63Mg
-         XdY6qAHeijUfzET+Cg0cBA1dHLi6+0Ss9+rRyQYR4UAMY+sJsd7Zom5GrtxkKuH5Q3L5
-         Cq1tXH25rdLgyp7Hxatn/gsdV3e0YIzMXaTsFccz71/j2dqn6J82oscoCPYTuEtdG2D+
-         YqQA==
+        bh=2lMbyNAYDyItK0nqbzPA6HNTwdTNDqzEz2uTLeRsQrI=;
+        b=gTUDnusrc4bRSJTCWGB7k78On/9D9Ycu3mcdNBixbk0qkAn8evKEr8UI7YOARhKNUT
+         CYhGHI6sIM3PwB9MkxVCLb4tELaQOqAZeY9uByzxZWEer+ByAuS61PGhOTEtqX9mNBIt
+         2tV1JUvjbqIVYrM2eje73ZX42TwzhW8lmF+WbLEobdmt3BWfZL4i4XwMTGyAd80ZhsVm
+         X2kW1inm2N2WoibhaZfG+c3nUDtPPWvCgV4KJ1hivZ9M0ry0fNW4sNNxDoNq3qO396z6
+         BIaG/Mc/TNSnxUmimRJx7wqpdV/FWeyT/e7mqghFLGel6zjDqGMu9PTfufD+gu7yJlhu
+         Iiyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697224190; x=1697828990;
+        d=1e100.net; s=20230601; t=1697224243; x=1697829043;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=lH/Hy4rJiGCIiWFGI1a/4z8j85DxIfwAOnT8uAXZzdc=;
-        b=MJapRk/NmJUNkaGioIuBwjaJwr08dNLfOlRd0eqtRYDqjAo9ybQH/4r1mdTbdpIpNx
-         cwp+oGXJVx9kK7S6sQePdB2E9yE/ClyRnRlvKPG37/qzr/zVLvgxdkFEJh827rpQCPIH
-         nRsByIuB5XDV+yiC84hJxBrH2zXJuK11rWQQ28xLPES/CzRpdFmpvf8LwKWppdqnbAe6
-         dEaZnQ2m4UFlA+264FbYkC+YyKsK+7B8nZSKtU3pOtq65jKtMPKR4QxIR8u8FiyZiRyO
-         Bz2AGntABHfL0jIMMFnMpEb2ikfFwAKOtv7DDjARHTCvYeZKaJHO0lRwgdk4evZatW+k
-         9qBw==
-X-Gm-Message-State: AOJu0Yx2yn1E1b0ekhEs4GxISayYwUfUNs/2xMRveZrrtT8YH8O1kPIW
-        t5yVZeuMtZN/MMowDtdaOKE=
-X-Google-Smtp-Source: AGHT+IEEI26nBkMkXPMgbG61rWJgb9AFJNiyI/9Dr7jtkl/qtVvZq20jmy702hapHj+/2+We819P/Q==
-X-Received: by 2002:a17:90b:51c9:b0:27d:3f43:d9c0 with SMTP id sf9-20020a17090b51c900b0027d3f43d9c0mr1997360pjb.24.1697224189429;
-        Fri, 13 Oct 2023 12:09:49 -0700 (PDT)
+        bh=2lMbyNAYDyItK0nqbzPA6HNTwdTNDqzEz2uTLeRsQrI=;
+        b=vltvIVGkdyK7VdY43BlRN1vIxROFTgFOvqDNgub1qus6ef9mLUmqSe4fr1FTutODaX
+         BBhYnzmvgU6nF+GGsPr7DdeyrsZF1sushlECNmnLjzmwWZvLNnug3bAM7wBHTOrM3eyb
+         gYEDaIDpzBdJlcgB/MOJG7a7Fkm/xLaN0Sxs0XQKnYakQIy8F2XTidvieelVrtunR6vi
+         vGNEHBgl4z+lTvwHGWxeC4/vWTkXiymcKZkEl/sPd1T49AjHEAbSobAAaWCvEmzLUCHu
+         RCFRIaRmIOTjckOhITrz6etaKQbf9VaUG+c1jXhq26o8zOrdH0QHvwqVm9lrDlx8lHLh
+         5G2Q==
+X-Gm-Message-State: AOJu0Yxw94Ot+KW4DNMw+tMxsbLdjLUZTK5LK8n0jGtt7TKLtOcN0uPc
+        TPP6T0HsVqsICDRkTTgK57M=
+X-Google-Smtp-Source: AGHT+IGR5R3Mo7tCTO13z/WFyagYGpxOx00S+5AcFWEHcqXQ8qUvXx8ZVSyfRWSdPerKX274Ep4ROA==
+X-Received: by 2002:a17:903:25c3:b0:1c9:bca1:d70b with SMTP id jc3-20020a17090325c300b001c9bca1d70bmr10578679plb.39.1697224242709;
+        Fri, 13 Oct 2023 12:10:42 -0700 (PDT)
 Received: from Osmten.. ([103.84.150.77])
-        by smtp.gmail.com with ESMTPSA id 28-20020a17090a1a1c00b00267b38f5e13sm503089pjk.2.2023.10.13.12.09.44
+        by smtp.gmail.com with ESMTPSA id b11-20020a170902d50b00b001c60a2b5c61sm4232901plg.134.2023.10.13.12.10.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 12:09:47 -0700 (PDT)
+        Fri, 13 Oct 2023 12:10:42 -0700 (PDT)
 From:   Osama Muhammad <osmtendev@gmail.com>
-To:     jack@suse.com
-Cc:     linux-kernel@vger.kernel.org, Osama Muhammad <osmtendev@gmail.com>,
-        syzbot+abb7222a58e4ebc930ad@syzkaller.appspotmail.com
-Subject: [PATCH] UBSAN: array-index-out-of-bounds in udf_process_sequence
-Date:   Sat, 14 Oct 2023 00:09:29 +0500
-Message-Id: <20231013190929.17246-1-osmtendev@gmail.com>
+To:     shaggy@kernel.org
+Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Osama Muhammad <osmtendev@gmail.com>,
+        syzbot+d4b1df2e9d4ded6488ec@syzkaller.appspotmail.com
+Subject: [PATCH] UBSAN: array-index-out-of-bounds in dtSplitRoot
+Date:   Sat, 14 Oct 2023 00:10:28 +0500
+Message-Id: <20231013191028.17382-1-osmtendev@gmail.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,70 +72,67 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Syzkaller reported the following issue:
 
-UBSAN: array-index-out-of-bounds in fs/udf/super.c:1365:9
-index 4 is out of range for type '__le32[4]' (aka 'unsigned int[4]')
-CPU: 0 PID: 6060 Comm: syz-executor319 Not tainted 6.5.0-rc6-syzkaller-00253-g9e6c269de404 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+oop0: detected capacity change from 0 to 32768
+
+UBSAN: array-index-out-of-bounds in fs/jfs/jfs_dtree.c:1971:9
+index -2 is out of range for type 'struct dtslot [128]'
+CPU: 0 PID: 3613 Comm: syz-executor270 Not tainted 6.0.0-syzkaller-09423-g493ffd6605b2 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/22/2022
 Call Trace:
  <TASK>
  __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- ubsan_epilogue lib/ubsan.c:217 [inline]
- __ubsan_handle_out_of_bounds+0x11c/0x150 lib/ubsan.c:348
- udf_load_sparable_map fs/udf/super.c:1365 [inline]
- udf_load_logicalvol fs/udf/super.c:1457 [inline]
- udf_process_sequence+0x300d/0x4e70 fs/udf/super.c:1773
- udf_load_sequence fs/udf/super.c:1820 [inline]
- udf_check_anchor_block+0x2a6/0x550 fs/udf/super.c:1855
- udf_scan_anchors fs/udf/super.c:1888 [inline]
- udf_load_vrs+0x5ca/0x1100 fs/udf/super.c:1969
- udf_fill_super+0x95d/0x23a0 fs/udf/super.c:2147
- mount_bdev+0x276/0x3b0 fs/super.c:1391
- legacy_get_tree+0xef/0x190 fs/fs_context.c:611
- vfs_get_tree+0x8c/0x270 fs/super.c:1519
- do_new_mount+0x28f/0xae0 fs/namespace.c:3335
- do_mount fs/namespace.c:3675 [inline]
- __do_sys_mount fs/namespace.c:3884 [inline]
- __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3861
+ dump_stack_lvl+0x1b1/0x28e lib/dump_stack.c:106
+ ubsan_epilogue lib/ubsan.c:151 [inline]
+ __ubsan_handle_out_of_bounds+0xdb/0x130 lib/ubsan.c:283
+ dtSplitRoot+0x8d8/0x1900 fs/jfs/jfs_dtree.c:1971
+ dtSplitUp fs/jfs/jfs_dtree.c:985 [inline]
+ dtInsert+0x1189/0x6b80 fs/jfs/jfs_dtree.c:863
+ jfs_mkdir+0x757/0xb00 fs/jfs/namei.c:270
+ vfs_mkdir+0x3b3/0x590 fs/namei.c:4013
+ do_mkdirat+0x279/0x550 fs/namei.c:4038
+ __do_sys_mkdirat fs/namei.c:4053 [inline]
+ __se_sys_mkdirat fs/namei.c:4051 [inline]
+ __x64_sys_mkdirat+0x85/0x90 fs/namei.c:4051
  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f363cae1c8a
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 3e 07 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe6eac67a8 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007f363cae1c8a
-RDX: 0000000020000100 RSI: 0000000020000340 RDI: 00007ffe6eac6800
-RBP: 00007ffe6eac6840 R08: 00007ffe6eac6840 R09: 0000000000000c35
-R10: 0000000000000000 R11: 0000000000000282 R12: 0000000020000340
-R13: 0000000020000100 R14: 0000000000000c3b R15: 0000000020020500
+RIP: 0033:0x7fcdc0113fd9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffeb8bc67d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000102
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fcdc0113fd9
+RDX: 0000000000000000 RSI: 0000000020000340 RDI: 0000000000000003
+RBP: 00007fcdc00d37a0 R08: 0000000000000000 R09: 00007fcdc00d37a0
+R10: 00005555559a72c0 R11: 0000000000000246 R12: 00000000f8008000
+R13: 0000000000000000 R14: 00083878000000f8 R15: 0000000000000000
  </TASK>
 
-The issue is caused when the value of i becomes equal or more than 4 which is
-the size of array. In the code the condition checks the value of
-spm->numSparingTables. syzbot was able to make spm->numSparingTables
-value 4 which is cauing this error. The patch adds one more condition
-to check the value of i should be less than 4.
+The issue is caused when the value of fsi becomes less than -1.
+The check to break the loop when fsi value becomes -1 is present
+but syzbot was able to produce value less than -1 which cause the error.
+This patch simply add the change for the values less than 0.
 
-Reported-and-tested-by: syzbot+abb7222a58e4ebc930ad@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=abb7222a58e4ebc930ad
+The patch is tested via syzbot.
+
+Reported-and-tested-by: syzbot+d4b1df2e9d4ded6488ec@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?extid=d4b1df2e9d4ded6488ec
 Signed-off-by: Osama Muhammad <osmtendev@gmail.com>
 ---
- fs/udf/super.c | 2 +-
+ fs/jfs/jfs_dtree.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/udf/super.c b/fs/udf/super.c
-index 928a04d9d9e0..8c8731c3f8d9 100644
---- a/fs/udf/super.c
-+++ b/fs/udf/super.c
-@@ -1361,7 +1361,7 @@ static int udf_load_sparable_map(struct super_block *sb,
- 		return -EIO;
- 	}
+diff --git a/fs/jfs/jfs_dtree.c b/fs/jfs/jfs_dtree.c
+index 92b7c533407c..f3d3e8b3f50c 100644
+--- a/fs/jfs/jfs_dtree.c
++++ b/fs/jfs/jfs_dtree.c
+@@ -1970,7 +1970,7 @@ static int dtSplitRoot(tid_t tid,
+ 		do {
+ 			f = &rp->slot[fsi];
+ 			fsi = f->next;
+-		} while (fsi != -1);
++		} while (fsi >= 0);
  
--	for (i = 0; i < spm->numSparingTables; i++) {
-+	for (i = 0; i < spm->numSparingTables && i < 4; i++) {
- 		loc = le32_to_cpu(spm->locSparingTable[i]);
- 		bh = udf_read_tagged(sb, loc, loc, &ident);
- 		if (!bh)
+ 		f->next = n;
+ 	}
 -- 
 2.34.1
 
