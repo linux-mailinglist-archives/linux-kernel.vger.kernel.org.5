@@ -2,102 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB7187C7EBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B55657C7ED3
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 09:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbjJMHkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 03:40:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38196 "EHLO
+        id S229965AbjJMHqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 03:46:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229879AbjJMHkM (ORCPT
+        with ESMTP id S229968AbjJMHqb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 03:40:12 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84507B8
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:40:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2vT+ALa9vT2XjnLy1fOpBXo2FqIj5nje9O6fe8H/Kqg=; b=M9eQvmkIFkji2LL6JDHG9ESyyc
-        CyrEBltzSZxUyfw/AO6+yeueTKlHY3pHnEGoWfyF3zAssCEk/SvHMoFhTl1PPAyigqJTBBQM8RDsP
-        T0U6zHI+buRDudL9eYIJCvdgdIdazC2bksPmDObjplpW3M8DX8lhM/fFGdU4tr42BC5X1oH48lM+i
-        VIe9BEnyHjArhnprXyVESsE1+eYaZzyYkptaYM8oDXnhpNs6GvsDhsFho5/OHaPKokSzvgZzxBUz5
-        5H6jOlRyrfW9NUWUWY6YTr76VAb7Sz3AHzKPAoItbN40w5TMbr3vTN+fRySMkPENurgubtEsGSX6Q
-        JHpnfpgw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qrCjs-0048KY-Ei; Fri, 13 Oct 2023 07:37:40 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D5CE1300365; Fri, 13 Oct 2023 09:37:39 +0200 (CEST)
-Date:   Fri, 13 Oct 2023 09:37:39 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Abel Wu <wuyun.abel@bytedance.com>
-Cc:     mingo@kernel.org, vincent.guittot@linaro.org,
-        linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, corbet@lwn.net,
-        qyousef@layalina.io, chris.hyser@oracle.com,
-        patrick.bellasi@matbug.net, pjt@google.com, pavel@ucw.cz,
-        qperret@google.com, tim.c.chen@linux.intel.com, joshdon@google.com,
-        timj@gnu.org, kprateek.nayak@amd.com, yu.c.chen@intel.com,
-        youssefesmat@chromium.org, joel@joelfernandes.org, efault@gmx.de,
-        tglx@linutronix.de
-Subject: Re: Re: [PATCH 03/15] sched/fair: Add lag based placement
-Message-ID: <20231013073739.GA12118@noisy.programming.kicks-ass.net>
-References: <20230531115839.089944915@infradead.org>
- <20230531124603.794929315@infradead.org>
- <87f1feec-1be5-4d24-a206-e30238072ae1@bytedance.com>
- <20231011132456.GO14330@noisy.programming.kicks-ass.net>
- <57c6d8c8-380e-45d9-b9d0-690662fcd6f4@bytedance.com>
+        Fri, 13 Oct 2023 03:46:31 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C72FD8
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:46:28 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-505a62d24b9so2290998e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 00:46:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1697183187; x=1697787987; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=wP8hZWh4qXyybXYLkSLcCZu/0fSSL+752WobzxTNboE=;
+        b=2PvP0qX1Kb/XjDabWI/PzKNPTRta7BnboXvRCqD9rHVAAgruwu4lsxR7lOFyvR2ez1
+         JE4wfU3K8lotvUF2dG88RTSTt6B7rivBrW39Fq49PqL9xUSD4ycIZKR8Qf13bmkVqWQR
+         kxFGMGMnxH0ug9B+JLi/JXqcDYTJyhTvZ0Tzd0kneivrFCUjc+t7gKj6NP+CcWgLWBWA
+         ZVrqX+cIQC49b3zgjKB8VfsDgr9YHsju9ODo5bCy0QP68GJ4eGCtaJWsHHSjoCjr46XV
+         egfobmFMV1y3ngEnwQY+75aYdvBxPA3JHsLca8PHCBOcJe9R+VraEaOErKLPzdBWwF3/
+         anYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697183187; x=1697787987;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wP8hZWh4qXyybXYLkSLcCZu/0fSSL+752WobzxTNboE=;
+        b=uvWAy+lTlXyiE+1M9gmpiWEPFctqHCoMQTTnA4S+BfDjOSe2IffPvLUg5PL3gHBvpC
+         XcRU9S1S3wMgaFlW98RWN/DfOrpnkm9dwEkp2jNeG/ukur0meEjkEPyWRX45qvvo5WZC
+         ovzyhc5DtjRXrKj+B3vKWoQj0fvieIgb1F+E+JRYjgSt04htwEsMiVD/46/oI5AYBSdO
+         yBfCLKGlT0ugdvSFvE7XIr86eGCNYCH4xcgB2ZE9EJuJgfBlMMIelX1rbuegofQ/YLoE
+         BnD1WOlYMqfBdZTi0+gcjJSOqMgfRnP7HRajnLSLh8XPeEqyrj1feR7ZzW0krGJ5k27C
+         xnYQ==
+X-Gm-Message-State: AOJu0Ywdh4C7pKD++a+oMfNxPwj3WVvQJGXVQq/AR6vIQEPdHnhTtA4W
+        BxypP9bb+L293iEfGvxyKj8YmA==
+X-Google-Smtp-Source: AGHT+IEkyEN8zAQ5/dhZe4B9ajTP0EDEK/rSt7LjwGLHX2RHEZPT+iFlTiLC7YassaX2zhaMHUp92A==
+X-Received: by 2002:a19:5f04:0:b0:4fb:94c6:fd63 with SMTP id t4-20020a195f04000000b004fb94c6fd63mr16394959lfb.17.1697183186650;
+        Fri, 13 Oct 2023 00:46:26 -0700 (PDT)
+Received: from localhost ([2a01:e0a:3c5:5fb1:b50c:c5d5:8b1b:e06d])
+        by smtp.gmail.com with ESMTPSA id r6-20020a5d4946000000b0032da022855fsm252248wrs.111.2023.10.13.00.46.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 00:46:26 -0700 (PDT)
+References: <20231010062917.3624223-1-xianwei.zhao@amlogic.com>
+ <20231010062917.3624223-5-xianwei.zhao@amlogic.com>
+ <5e0bd4bba88701dd1a7a3e89d18412f0.sboyd@kernel.org>
+User-agent: mu4e 1.8.13; emacs 29.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Xianwei Zhao <xianwei.zhao@amlogic.com>,
+        devicetree@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Chuan Liu <chuan.liu@amlogic.com>
+Subject: Re: [PATCH V2 4/4] clk: meson: c3: add c3 clock peripherals
+ controller driver
+Date:   Fri, 13 Oct 2023 09:38:14 +0200
+In-reply-to: <5e0bd4bba88701dd1a7a3e89d18412f0.sboyd@kernel.org>
+Message-ID: <1jmswnvub2.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <57c6d8c8-380e-45d9-b9d0-690662fcd6f4@bytedance.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 03:04:47PM +0800, Abel Wu wrote:
-> On 10/11/23 9:24 PM, Peter Zijlstra Wrote:
 
-> > > > +		 * we should inflate the lag before placement such that the
-> > > > +		 * effective lag after placement comes out right.
-> > > > +		 *
-> > > > +		 * As such, invert the above relation for vl'_i to get the vl_i
-> > > > +		 * we need to use such that the lag after placement is the lag
-> > > > +		 * we computed before dequeue.
-> > > > +		 *
-> > > > +		 *   vl'_i = vl_i - w_i*vl_i / (W + w_i)
-> > > > +		 *         = ((W + w_i)*vl_i - w_i*vl_i) / (W + w_i)
-> > > > +		 *
-> > > > +		 *   (W + w_i)*vl'_i = (W + w_i)*vl_i - w_i*vl_i
-> > > > +		 *                   = W*vl_i
-> > > > +		 *
-> > > > +		 *   vl_i = (W + w_i)*vl'_i / W
-> > 
-> > And then we obtain the scale factor: (W + w_i)/W, which is >1, right?
-> 
-> Yeah, I see. But the scale factor is only for the to-be-placed entity.
-> Say there is an entity k on the tree:
-> 
-> 	vl_k	= V - v_k
-> 
-> adding the to-be-placed entity i affects this by:
-> 
-> 	define delta := w_i*vl_i / (W + w_i)
-> 
-> 	vl'_k	= V' - v_k
-> 		= V - delta - (V - vl_k)
-> 		= vl_k - delta
-> 
-> hence for any entity on the tree, its lag is offsetted by @delta. So
-> I wonder if we should simply do offsetting rather than scaling.
+On Thu 12 Oct 2023 at 16:51, Stephen Boyd <sboyd@kernel.org> wrote:
 
-I don't see the point, the result is the same and computing delta seems
-numerically less stable.
+> Quoting Xianwei Zhao (2023-10-09 23:29:17)
+>> diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
+>> index 76be4bbd2afb..c8d59d28c8ff 100644
+>> --- a/drivers/clk/meson/Kconfig
+>> +++ b/drivers/clk/meson/Kconfig
+>> @@ -140,6 +140,19 @@ config COMMON_CLK_C3_PLL
+>>           Say Y if you want the board to work, because PLLs are the parent of most
+>>           peripherals.
+>>  
+>> +config COMMON_CLK_C3_PERIPHERALS
+>> +       tristate "Amlogic C3 peripherals clock controller"
+>> +       default y
+>
+> Why are these default y? They should depend on something like ARM64 and
+> even then I don't see why we want to enable them by default if we're
+> building the ARM64 kernel.
+
+Should indeed depend on ARM64.
+
+Those are the main clock controllers. Like for other AML SoC families,
+they are necessary to boot the device which is why they use 'default y'
+
+Is it a problem ?
+
+The whole meson directory depends on ARCH_MESON, so the drivers will go
+away if Amlogic support is removed on ARM64.
