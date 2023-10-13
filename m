@@ -2,68 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 423817C7E3B
-	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 08:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9BD7C7E32
+	for <lists+linux-kernel@lfdr.de>; Fri, 13 Oct 2023 08:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbjJMGzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 02:55:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35704 "EHLO
+        id S229805AbjJMGyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 02:54:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229869AbjJMGzi (ORCPT
+        with ESMTP id S229704AbjJMGyJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 02:55:38 -0400
-Received: from jari.cn (unknown [218.92.28.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 61A13F1;
-        Thu, 12 Oct 2023 23:55:35 -0700 (PDT)
-Received: from wangkailong$jari.cn ( [182.148.14.172] ) by
- ajax-webmail-localhost.localdomain (Coremail) ; Fri, 13 Oct 2023 14:53:53
- +0800 (GMT+08:00)
-X-Originating-IP: [182.148.14.172]
-Date:   Fri, 13 Oct 2023 14:53:53 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   "KaiLong Wang" <wangkailong@jari.cn>
-To:     xiubli@redhat.com, idryomov@gmail.com, jlayton@kernel.org
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ceph: Clean up errors in mdsmap.c
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
- 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Fri, 13 Oct 2023 02:54:09 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F2091;
+        Thu, 12 Oct 2023 23:54:08 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A115AC433C8;
+        Fri, 13 Oct 2023 06:54:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697180047;
+        bh=nr8fpppCCpes0TPI97zPmzyYSXvU36WGGZWf3aHc5C8=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=h74FvzZAiV0rKj0VS6ofjX1kaIgCrHLEPDscvnkCRQLy/8S5T+JD5Utb1lGnCiEg5
+         NEM+fPkuszfkUv4PGVOgA3c2tSqM85DcKMJJPF7Z9OF/mAGr1hoE7sjkh40rf9qSfJ
+         AawIutr4yDaieO26Wn/jByJwjTKSct+DSWIoaO/SwxhbeQfCaxwvJtpnZbVDIT91Bb
+         49tf2HuEYc0umHl87k4aqyYa3V4iWrrZaEtD/KDBMbJkQswxR7PZn2oyTrcXRsvjp4
+         kNzAhG6CYcgB/+AvJEuUTKJ4y8Ol7wiuL2axQkOdWTrCrt58qJ8oMII+rKYbHNvxmK
+         lU990PNR8E67A==
+Date:   Fri, 13 Oct 2023 08:54:03 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Willy Tarreau <w@1wt.eu>
+cc:     Solar Designer <solar@openwall.com>,
+        Vegard Nossum <vegard.nossum@oracle.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        security@kernel.org, corbet@lwn.net, workflows@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [RFC PATCH] Documentation: security-bugs.rst: linux-distros
+ relaxed their rules
+In-Reply-To: <20231013034712.GC15920@1wt.eu>
+Message-ID: <nycvar.YFH.7.76.2310130853320.3534@cbobk.fhfr.pm>
+References: <20231007140454.25419-1-w@1wt.eu> <5ae47535-b6e0-8b48-4d59-a167e37c7fcc@oracle.com> <20231007163936.GA26837@1wt.eu> <20231012215122.GA8245@openwall.com> <20231013034712.GC15920@1wt.eu>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Message-ID: <5722ebe7.95d.18b27d0200e.Coremail.wangkailong@jari.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: AQAAfwDXaD6B6ShlYt7BAA--.631W
-X-CM-SenderInfo: 5zdqwypdlo00nj6mt2flof0/1tbiAQABB2UlHDMAlgARsv
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=3.4 required=5.0 tests=BAYES_00,RCVD_IN_PBL,RDNS_NONE,
-        T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO autolearn=no
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
-ImZvbyogYmFyIiBzaG91bGQgYmUgImZvbyAqYmFyIgpFUlJPUjogc3BhY2VzIHJlcXVpcmVkIGFy
-b3VuZCB0aGF0ICc9JyAoY3R4OlZ4VykKClNpZ25lZC1vZmYtYnk6IEthaUxvbmcgV2FuZyA8d2Fu
-Z2thaWxvbmdAamFyaS5jbj4KLS0tCiBmcy9jZXBoL21kc21hcC5jIHwgNCArKy0tCiAxIGZpbGUg
-Y2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2Zz
-L2NlcGgvbWRzbWFwLmMgYi9mcy9jZXBoL21kc21hcC5jCmluZGV4IDdkYWMyMWVlNmNlNy4uYmI1
-OTZlMDBmZDljIDEwMDY0NAotLS0gYS9mcy9jZXBoL21kc21hcC5jCisrKyBiL2ZzL2NlcGgvbWRz
-bWFwLmMKQEAgLTgyLDcgKzgyLDcgQEAgaW50IGNlcGhfbWRzbWFwX2dldF9yYW5kb21fbWRzKHN0
-cnVjdCBjZXBoX21kc21hcCAqbSkKIAl9IHdoaWxlICgwKQogCiAKLXN0YXRpYyBpbnQgX19kZWNv
-ZGVfYW5kX2Ryb3BfY29tcGF0X3NldCh2b2lkICoqcCwgdm9pZCogZW5kKQorc3RhdGljIGludCBf
-X2RlY29kZV9hbmRfZHJvcF9jb21wYXRfc2V0KHZvaWQgKipwLCB2b2lkICplbmQpCiB7CiAJaW50
-IGk7CiAJLyogY29tcGF0LCByb19jb21wYXQsIGluY29tcGF0Ki8KQEAgLTE4Niw3ICsxODYsNyBA
-QCBzdHJ1Y3QgY2VwaF9tZHNtYXAgKmNlcGhfbWRzbWFwX2RlY29kZSh2b2lkICoqcCwgdm9pZCAq
-ZW5kLCBib29sIG1zZ3IyKQogCiAJCWNlcGhfZGVjb2RlX25lZWQocCwgZW5kLCBzaXplb2YodTY0
-KSArIDEsIGJhZCk7CiAJCWdsb2JhbF9pZCA9IGNlcGhfZGVjb2RlXzY0KHApOwotCQlpbmZvX3Y9
-IGNlcGhfZGVjb2RlXzgocCk7CisJCWluZm9fdiA9IGNlcGhfZGVjb2RlXzgocCk7CiAJCWlmIChp
-bmZvX3YgPj0gNCkgewogCQkJdTMyIGluZm9fbGVuOwogCQkJY2VwaF9kZWNvZGVfbmVlZChwLCBl
-bmQsIDEgKyBzaXplb2YodTMyKSwgYmFkKTsKLS0gCjIuMTcuMQo=
+On Fri, 13 Oct 2023, Willy Tarreau wrote:
+
+> Jiri, does your Acked-by still stand with these adjustment ? If so, I'll
+> resend the updated version today or this week-end, as time permits.
+
+As it doesn't change the spirit but pretty much just improves the wording, 
+my Ack still holds.
+
+Thanks again,
+
+-- 
+Jiri Kosina
+SUSE Labs
+
