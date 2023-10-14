@@ -2,75 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7611A7C9388
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 10:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 618D67C938C
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 10:47:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232999AbjJNIoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 04:44:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53728 "EHLO
+        id S233002AbjJNIrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 04:47:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232750AbjJNIoP (ORCPT
+        with ESMTP id S231377AbjJNIrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 04:44:15 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF5F2BB;
-        Sat, 14 Oct 2023 01:44:13 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-53df747cfe5so5165675a12.2;
-        Sat, 14 Oct 2023 01:44:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697273052; x=1697877852; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xfAieePA5vpkTsm3Lg9DT3eg6wz3q+Z/kvUk23qNav0=;
-        b=U3Hn33vxApfL4089fjDVQZAr/zME6ZioR7bTXpE/vVYj3pRhUL5cDGXIi7VVKib9bI
-         uuIgKL94wPUut8PfYp7FR8n9Da7EmAtADg7pBoWCHu/T+uno5bF90/QB/19oQmLgDyJa
-         VagGTLXUlUJSSa3UGaSMGrbJkwn1+Svdcd9Owt+5sEm6aRrtJD68PSjFrmz1Oo0jtxU7
-         csAycMFk0xmDyW1wrmEzCb1ySa9b7qPOGqdI2ZKgLy3NfX7HqEC5Hey5jrcJph0kVHQe
-         yyLDxh4+AdGWAM9LCZQgSg2iCdzP3pAeVA7aZiep2nD8irUR1oyMVdZ8Me9WZBTX2Z/Q
-         3GCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697273052; x=1697877852;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xfAieePA5vpkTsm3Lg9DT3eg6wz3q+Z/kvUk23qNav0=;
-        b=Xk/JoljJAHYSfmXPIPOLkjLZWzLV5XGGT5lDuLhAjan/QsI5xT6GQbcbueEEiWpIYi
-         YwtVFcPyJmHFGbXtBLFfm0xIVednb65oBVJ3pzbFFK9DohgQMYnQ0ouFk1E2Y3IE5gjX
-         E7J+IzMWk0fQ5EUh4VeXGF+/nYdyCnWJ4XcZOMPhnT6ms9cs7DyXUnnTxQbopKQe3tUj
-         7sHqSqyCN38h9/NprPZ41cHHDULQlAsgSjVhPdGHbyP1ubySHGNzoM37J2iVVoLSDdCJ
-         mp0WgTaL6dIHdW0WpRHqXB9BHlCKjUIwhOO1lOITuql2YGkJK2Jpr+kQXm7SYBpHCmSB
-         /zvQ==
-X-Gm-Message-State: AOJu0YwkD7VVFClPwCm2a4drtmyMuZEGUwEbuVNz3AG4I5NT0FpLaroe
-        ZdDBLu5D0Q8xjhFS98Mjhus=
-X-Google-Smtp-Source: AGHT+IH8YDbJYQgUkAJbgWUajcrExCf6li6de+ubUIq9v+AxEjK8XIgv1EvmMvJHWOgL69PSHU3+8A==
-X-Received: by 2002:a17:906:1d:b0:9b2:9a0e:9972 with SMTP id 29-20020a170906001d00b009b29a0e9972mr26994917eja.13.1697273051953;
-        Sat, 14 Oct 2023 01:44:11 -0700 (PDT)
-Received: from gmail.com (1F2EF7B2.nat.pool.telekom.hu. [31.46.247.178])
-        by smtp.gmail.com with ESMTPSA id o19-20020a17090637d300b009b65a698c16sm639989ejc.220.2023.10.14.01.44.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Oct 2023 01:44:11 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sat, 14 Oct 2023 10:44:09 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v2] perf bench sched pipe: Add -G/--cgroups option
-Message-ID: <ZSpU2Q7A9ViZe7DB@gmail.com>
-References: <20231013232435.1012585-1-namhyung@kernel.org>
+        Sat, 14 Oct 2023 04:47:20 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A692BB
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 01:47:19 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qraIZ-0000cq-7e; Sat, 14 Oct 2023 10:47:03 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qraIX-001aEA-Vi; Sat, 14 Oct 2023 10:47:01 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qraIX-00G784-Ls; Sat, 14 Oct 2023 10:47:01 +0200
+Date:   Sat, 14 Oct 2023 10:47:01 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
+Cc:     Alexander Stein <alexander.stein@ew.tq-group.com>,
+        Sean Young <sean@mess.org>, linux-media@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Stefan Wahren <wahrenst@gmx.net>, linux-pwm@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] pwm: bcm2835: allow pwm driver to be used in
+ atomic context
+Message-ID: <20231014084701.6fuuwcu4pknm7jju@pengutronix.de>
+References: <cover.1697193646.git.sean@mess.org>
+ <6ce73b2688f059e7169935699044104cf37b2425.1697193646.git.sean@mess.org>
+ <84429d39-aa54-462d-85cd-c5d06a614a0e@gmx.net>
+ <5203415.ElGaqSPkdT@steina-w>
+ <20231013175140.dzlz4grrgngoyxbc@pengutronix.de>
+ <e3e1bca1-bffa-d97a-d4af-27a10c43c064@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="giqnk66nh3wiw3cc"
 Content-Disposition: inline
-In-Reply-To: <20231013232435.1012585-1-namhyung@kernel.org>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <e3e1bca1-bffa-d97a-d4af-27a10c43c064@gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -78,62 +70,68 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-* Namhyung Kim <namhyung@kernel.org> wrote:
+--giqnk66nh3wiw3cc
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +	cgrp_send = cgroup__new(p, /*do_open=*/true);
-> +	if (cgrp_send == NULL) {
-> +		fprintf(stderr, "cannot open sender cgroup: %s", p);
-> +		goto out;
-> +	}
+Hello Ivaylo,
 
-Maybe in this case print out a small suggestion of how to create this 
-particular cgroup?
+On Sat, Oct 14, 2023 at 09:51:12AM +0300, Ivaylo Dimitrov wrote:
+> On 13.10.23 =D0=B3. 20:51 =D1=87., Uwe Kleine-K=C3=B6nig wrote:
+> > Hello,
+> >=20
+> > On Fri, Oct 13, 2023 at 01:13:50PM +0200, Alexander Stein wrote:
+> > > Am Freitag, 13. Oktober 2023, 13:04:48 CEST schrieb Stefan Wahren:
+> > > > Am 13.10.23 um 12:46 schrieb Sean Young:
+> > > > > clk_get_rate() may do a mutex lock. Since the clock rate cannot c=
+hange on
+> > > > > an rpi, simply fetch it once.
+> > > >=20
+> > > > does it mean you checked all possible SoCs (BCM2835, BCM2836, BCM28=
+37,
+> > > > BCM2711, BCM2712) for this change?
+> > > >=20
+> > > > Is it impossible that the real clock can never be influenced by tur=
+bo
+> > > > mode like SPI?
+> > >=20
+> > > Assuming the clock can change, which I would, then a clock notifier s=
+eems
+> > > appropriate. See [1] for an example.
+> >=20
+> > I'm not a fan. If the clock changes, the output also changes. With a
+> > clock notifier you can soften the issue and reconfigure to something
+> > similar as the original wave form, but a glitch happens for sure.
+> >=20
+>=20
+> Right, but without notifier, everything rate related after the change will
+> be wrong
 
-Most distro users and even kernel developers don't ever have to create
-new cgroups.
+So we agree clk_rate_exclusive_get() is the way to go?! It's simple, no
+need for a notifier and no glitches.
 
-Maybe even allow the creation of new cgroups for this testing, if they 
-don't already exist? As long as we don't delete any cgroups I don't think 
-much harm can be done - and the increase in usability is substantial.
+Best regards
+Uwe
 
-> +static void enter_cgroup(struct cgroup *cgrp)
-> +{
-> +	char buf[32];
-> +	int fd, len;
-> +	pid_t pid;
-> +
-> +	if (cgrp == NULL)
-> +		return;
-> +
-> +	if (threaded)
-> +		pid = syscall(__NR_gettid);
-> +	else
-> +		pid = getpid();
-> +
-> +	snprintf(buf, sizeof(buf), "%d\n", pid);
-> +	len = strlen(buf);
-> +
-> +	/* try cgroup v2 interface first */
-> +	if (threaded)
-> +		fd = openat(cgrp->fd, "cgroup.threads", O_WRONLY);
-> +	else
-> +		fd = openat(cgrp->fd, "cgroup.procs", O_WRONLY);
-> +
-> +	/* try cgroup v1 if failed */
-> +	if (fd < 0)
-> +		fd = openat(cgrp->fd, "tasks", O_WRONLY);
-> +
-> +	if (fd < 0) {
-> +		printf("failed to open cgroup file in %s\n", cgrp->name);
-> +		return;
-> +	}
-> +
-> +	if (write(fd, buf, len) != len)
-> +		printf("cannot enter to cgroup: %s\n", cgrp->name);
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
+   |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-The failures here should probably result in termination of the run with an 
-error code, not just messages which are easy to skip in automated tests?
+--giqnk66nh3wiw3cc
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
+-----BEGIN PGP SIGNATURE-----
 
-	Ingo
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUqVYUACgkQj4D7WH0S
+/k4wigf9HHL4tqjTV1EyBXB1X+oKJKBONPLDUgJ+rE5Gw+/6EoqDq+HBK1UMKuaT
+PojCSO0QM0v7tHpApWQ51j9mZxkFWF9UJZCURBEP5mPSr4zVBrpa4oMh7E8Ga/2P
+SL7R9xAZxpl2TJbF5FnMQUlsRNP0LJf/KKjW0nknisJeqbziyeXcVVaLEBh+B84v
+OzpgTugHJhfb+T4T0842KaI4sVm2yLGlY4L75EssrwWWEBIYWLknh5VPb1G1my1f
+sP7n71Z6FbqLR1Jk5o3TTWdsJiD0whcTkbUgfFsVUO18Pat9LzYksSOK8zP6+TSn
+LPcN7mgljq64D0MtjOPK7lYfGkoZcA==
+=YY+P
+-----END PGP SIGNATURE-----
+
+--giqnk66nh3wiw3cc--
