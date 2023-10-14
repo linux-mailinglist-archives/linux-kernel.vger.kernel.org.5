@@ -2,165 +2,30290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C3EC7C966D
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 23:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91CBB7C9671
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 23:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233305AbjJNVBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 17:01:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35694 "EHLO
+        id S233300AbjJNVLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 17:11:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233033AbjJNVBb (ORCPT
+        with ESMTP id S229683AbjJNVLG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 17:01:31 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82BCDCE
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 14:01:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697317290; x=1728853290;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=4ax2zHy8ndn5Yyhlz3vOC4Kc4pFvoQmXFAPWyJvKxs4=;
-  b=ACFtOrHP3hsiylHwPLf1Tu9vX3cXe3w/HjEwS8CBQpiJJ5Ea51v7fPXo
-   EjcYwwsM5TaOpwfL3DfwJp+KUrXueUxyKQokBE5s7lm8AJw0WHEq7J19U
-   X+l/Zof6EQEZrXYv292yfQY1PhMXMIvDhClZwINXgRM+cjh6SDoVexA4c
-   CGhNMXWDHkI21QfZoIqWsMJ5t/4L7qMPeQsEUAn22MQq84IqPuEjevhRG
-   ejXMnPa+AqJDZslx86+nUtX67CP0uDN9Hyr+fi6hFf9YmQBmZj6+egI8l
-   Kkn0b0Z+V962otY5jtk3E6oszMK1sCkCfXZyBF1c3njIaAwzQHb6x7nh0
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="388205407"
-X-IronPort-AV: E=Sophos;i="6.03,224,1694761200"; 
-   d="scan'208";a="388205407"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2023 14:01:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="755122801"
-X-IronPort-AV: E=Sophos;i="6.03,224,1694761200"; 
-   d="scan'208";a="755122801"
-Received: from asamachi-mobl.amr.corp.intel.com (HELO box.shutemov.name) ([10.251.223.207])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2023 14:01:27 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 5508F10A1C3; Sun, 15 Oct 2023 00:01:25 +0300 (+03)
-Date:   Sun, 15 Oct 2023 00:01:25 +0300
-From:   kirill.shutemov@linux.intel.com
-To:     "Compostella, Jeremy" <jeremy.compostella@intel.com>
-Cc:     "Huang, Kai" <kai.huang@intel.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "Li, Xin3" <xin3.li@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>
-Subject: Re: [PATCH v3 1/2] x86/cpu/intel: Fix MTRR verification for TME
- enabled platforms
-Message-ID: <20231014210125.iexeacn6p4naw5qz@box.shutemov.name>
-References: <87a5t6ylpc.fsf@jcompost-mobl.amr.corp.intel.com>
- <00392c722e65c8d0da40384eecf8955be4875969.camel@intel.com>
- <20231002224752.33qa2lq7q2w4nqws@box>
- <65d26d679843e26fd5e6252a08391f87243a49c9.camel@intel.com>
- <20231003070659.hsjvnoc53agvms6c@box.shutemov.name>
- <87edhyyvkp.fsf@jcompost-mobl.amr.corp.intel.com>
+        Sat, 14 Oct 2023 17:11:06 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A53EACC
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 14:10:58 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2bfe9447645so7390791fa.0
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 14:10:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697317857; x=1697922657; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QIAUL3zk1j5NPii9iUehpGqjxr9xM2g+sltObSq1Sz0=;
+        b=T/4g6Zq/D3aOlKPLxLXydIuMa5Mnt8jDvglFmF6j+yL70Qa3KccIo1KKKqMfK1ld5b
+         2JqKYtRUakvg8+l/UTFo1FPbJDH1D3fb0J3eikod5GZe8AADElOJ4FNp0pGaNA4a0wRV
+         FYyhH05FhVEULVhGTaV41q732nGSQSTy3l4hzwMsiODkjBc5HtczbtXqKcaIi8HSUAfz
+         p91QE0GmuBymP5fP13qHsbhFRykENg1OhhEbYSo1UhGanmR+bIvFW64F5qmCg29UEaqC
+         p9A4GEINU8ucVDpYVMXSeaGhrBkL9ivr5kCT7ChSso9Dhxc7MNj0J5xwEBD0gDbTVFBG
+         Vj9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697317857; x=1697922657;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QIAUL3zk1j5NPii9iUehpGqjxr9xM2g+sltObSq1Sz0=;
+        b=jsTIjnExvWCBRPlvYSIVp8NYk7QL9vnDHhKhlUp9If4IT6X+uegntQlIq7d2FxP/x3
+         3AHqatWvqDECpkVxHsvvCVM3vdc1NVfs1PivsfvPSf6nHAp8k7Kosd71jEj807hHNtIB
+         rdJYrMo0Nxgr4xI4dgIfP9zjvLlqOL9gszfg6DkwxKyU9/g3rVWJ/yZtrF43rtuahBa8
+         7f2DV2RjLskxACwFxzBmVKZtAOd6bfx2HPUSsEq/iq0zfHS4TulP1/KgcCJ544rof59x
+         9XjrluGvIE01PXHlFlFA9SZJxf+c/a4r9f1Fb6C9DpTY5Jiq8bUxBxKQgLfd78yL6yHB
+         JTOw==
+X-Gm-Message-State: AOJu0YxEhA6jl/Vumt6kWDvQlQxnEiL0sOeu0RvpIDbmOw5U+KWAubmU
+        JoaJ6T4wq/8o5jaU/4UbDq4=
+X-Google-Smtp-Source: AGHT+IEbIEWBOLKWr/SAKxmv3H6UBdTufdJHTFb/hBCWXxN9IbFZW4BPxTK3xpBi0viOHOACy3dypA==
+X-Received: by 2002:a05:6512:3a89:b0:507:99f6:89d0 with SMTP id q9-20020a0565123a8900b0050799f689d0mr4155827lfu.4.1697317855061;
+        Sat, 14 Oct 2023 14:10:55 -0700 (PDT)
+Received: from matrix-ESPRIMO-P710 (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
+        by smtp.gmail.com with ESMTPSA id e9-20020a05651236c900b005079a00a456sm919872lfs.107.2023.10.14.14.10.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Oct 2023 14:10:53 -0700 (PDT)
+Date:   Sat, 14 Oct 2023 23:10:51 +0200
+From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Kalle Valo <kvalo@kernel.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>
+Subject: [PATCH v2] staging: rtl8192u: Remove broken driver
+Message-ID: <20231014211051.GA29518@matrix-ESPRIMO-P710>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87edhyyvkp.fsf@jcompost-mobl.amr.corp.intel.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 04:03:02PM -0700, Compostella, Jeremy wrote:
-> "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com> writes:
-> > On Tue, Oct 03, 2023 at 02:06:52AM +0000, Huang, Kai wrote:
-> >> On Tue, 2023-10-03 at 01:47 +0300, kirill.shutemov@linux.intel.com wrote:
-> >> > On Fri, Sep 29, 2023 at 09:14:00AM +0000, Huang, Kai wrote:
-> >> > > On Thu, 2023-09-28 at 15:30 -0700, Compostella, Jeremy wrote:
-> >> > > > On TME enabled platform, BIOS publishes MTRR taking into account Total
-> >> > > > Memory Encryption (TME) reserved bits.
-> >> > > > 
-> >> > > > generic_get_mtrr() performs a sanity check of the MTRRs relying on the
-> >> > > > `phys_hi_rsvd' variable which is set using the cpuinfo_x86 structure
-> >> > > > `x86_phys_bits' field.  But at the time the generic_get_mtrr()
-> >> > > > function is ran the `x86_phys_bits' has not been updated by
-> >> > > > detect_tme() when TME is enabled.
-> >> > > > 
-> >> > > > Since the x86_phys_bits does not reflect yet the real maximal physical
-> >> > > > address size yet generic_get_mtrr() complains by logging the following
-> >> > > > messages.
-> >> > > > 
-> >> > > >     mtrr: your BIOS has configured an incorrect mask, fixing it.
-> >> > > >     mtrr: your BIOS has configured an incorrect mask, fixing it.
-> >> > > >     [...]
-> >> > > > 
-> >> > > > In such a situation, generic_get_mtrr() returns an incorrect size but
-> >> > > > no side effect were observed during our testing.
-> >> > > > 
-> >> > > > For `x86_phys_bits' to be updated before generic_get_mtrr() runs,
-> >> > > > move the detect_tme() call from init_intel() to early_init_intel().
-> >> > > 
-> >> > > Hi,
-> >> > > 
-> >> > > This move looks good to me, but +Kirill who is the author of detect_tme() for
-> >> > > further comments.
-> >> > > 
-> >> > > Also I am not sure whether it's worth to consider to move this to
-> >> > > get_cpu_address_sizes(), which calculates the virtual/physical address sizes. 
-> >> > > Thus it seems anything that can impact physical address size could be put there.
-> >> > 
-> >> > Actually, I am not sure how this patch works. AFAICS after the patch we
-> >> > have the following callchain:
-> >> > 
-> >> > early_identify_cpu()
-> >> >   this_cpu->c_early_init() (which is early_init_init())
-> >> >     detect_tme()
-> >> >       c->x86_phys_bits -= keyid_bits;
-> >> >   get_cpu_address_sizes(c);
-> >> >     c->x86_phys_bits = eax & 0xff;
-> >> > 
-> >> > Looks like get_cpu_address_sizes() would override what detect_tme() does.
-> >> 
-> >> After this patch, early_identify_cpu() calls get_cpu_address_sizes() first and
-> >> then calls c_early_init(), which calls detect_tme().
-> >> 
-> >> So looks no override.  No?
-> 
-> No override indeed as get_cpu_address_sizes() is always called before
-> early_init_intel or init_intel().
-> 
-> - init/main.c::start_kernel()
->   - arch/x86/kernel/setup.c::setup_arch()
->     - arch/x86/kernel/cpu/common.c::early_cpu_init()
->       - early_identify_cpu()
->         - get_cpu_address_sizes(c)
->           c->x86_phys_bits = eax & 0xff;
->         - arch/x86/kernel/cpu/intel.c::early_init_intel()
->           - detect_tme()
->             c->x86_phys_bits -= keyid_bits;
+Tests on rtl8192u hardware have shown that this driver is broken since
+2016. Remove broken driver. Find fix for two bugs in second link.
 
-Hmm.. Do I read it wrong:
+Link: https://lore.kernel.org/lkml/db98d9ac-7650-4a72-8eb9-4def1f17ea0d@app.fastmail.com/
+Link: https://lore.kernel.org/lkml/cover.1697089416.git.philipp.g.hortmann@gmail.com/
+Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+---
+V2: Added 2x links and adapted description.
 
-	static void __init early_identify_cpu(struct cpuinfo_x86 *c)
-	{
-	...
-		/* cyrix could have cpuid enabled via c_identify()*/
-		if (have_cpuid_p()) {
-		...
-		        // Here we call early_intel_init()
-			if (this_cpu->c_early_init)
-				this_cpu->c_early_init(c);
-			...
-		}
+Did not find any artifacts of rtl8192u in MAINTAINERS.
+---
+ drivers/staging/Kconfig                       |    2 -
+ drivers/staging/rtl8192u/Kconfig              |   12 -
+ drivers/staging/rtl8192u/Makefile             |   27 -
+ drivers/staging/rtl8192u/TODO                 |   16 -
+ drivers/staging/rtl8192u/authors              |    1 -
+ drivers/staging/rtl8192u/changes              |    4 -
+ drivers/staging/rtl8192u/ieee80211/dot11d.c   |  174 -
+ drivers/staging/rtl8192u/ieee80211/dot11d.h   |   57 -
+ .../staging/rtl8192u/ieee80211/ieee80211.h    | 2385 --------
+ .../rtl8192u/ieee80211/ieee80211_crypt.c      |  235 -
+ .../rtl8192u/ieee80211/ieee80211_crypt.h      |   86 -
+ .../rtl8192u/ieee80211/ieee80211_crypt_ccmp.c |  421 --
+ .../rtl8192u/ieee80211/ieee80211_crypt_tkip.c |  718 ---
+ .../rtl8192u/ieee80211/ieee80211_crypt_wep.c  |  247 -
+ .../rtl8192u/ieee80211/ieee80211_module.c     |  287 -
+ .../staging/rtl8192u/ieee80211/ieee80211_rx.c | 2430 ---------
+ .../rtl8192u/ieee80211/ieee80211_softmac.c    | 3056 -----------
+ .../rtl8192u/ieee80211/ieee80211_softmac_wx.c |  598 --
+ .../staging/rtl8192u/ieee80211/ieee80211_tx.c |  839 ---
+ .../staging/rtl8192u/ieee80211/ieee80211_wx.c |  810 ---
+ .../staging/rtl8192u/ieee80211/rtl819x_BA.h   |   54 -
+ .../rtl8192u/ieee80211/rtl819x_BAProc.c       |  700 ---
+ .../staging/rtl8192u/ieee80211/rtl819x_HT.h   |  302 --
+ .../rtl8192u/ieee80211/rtl819x_HTProc.c       | 1295 -----
+ .../staging/rtl8192u/ieee80211/rtl819x_Qos.h  |   82 -
+ .../staging/rtl8192u/ieee80211/rtl819x_TS.h   |  102 -
+ .../rtl8192u/ieee80211/rtl819x_TSProc.c       |  534 --
+ drivers/staging/rtl8192u/r8180_93cx6.c        |  170 -
+ drivers/staging/rtl8192u/r8180_93cx6.h        |   25 -
+ drivers/staging/rtl8192u/r8190_rtl8256.c      |  294 -
+ drivers/staging/rtl8192u/r8190_rtl8256.h      |   24 -
+ drivers/staging/rtl8192u/r8192U.h             | 1129 ----
+ drivers/staging/rtl8192u/r8192U_core.c        | 4800 -----------------
+ drivers/staging/rtl8192u/r8192U_debugfs.c     |  188 -
+ drivers/staging/rtl8192u/r8192U_dm.c          | 2821 ----------
+ drivers/staging/rtl8192u/r8192U_dm.h          |  176 -
+ drivers/staging/rtl8192u/r8192U_hw.h          |  246 -
+ drivers/staging/rtl8192u/r8192U_wx.c          |  943 ----
+ drivers/staging/rtl8192u/r8192U_wx.h          |   24 -
+ drivers/staging/rtl8192u/r819xU_cmdpkt.c      |  508 --
+ drivers/staging/rtl8192u/r819xU_cmdpkt.h      |  190 -
+ drivers/staging/rtl8192u/r819xU_firmware.c    |  340 --
+ drivers/staging/rtl8192u/r819xU_firmware.h    |   19 -
+ .../staging/rtl8192u/r819xU_firmware_img.c    |  549 --
+ .../staging/rtl8192u/r819xU_firmware_img.h    |   26 -
+ drivers/staging/rtl8192u/r819xU_phy.c         | 1646 ------
+ drivers/staging/rtl8192u/r819xU_phy.h         |   81 -
+ drivers/staging/rtl8192u/r819xU_phyreg.h      |  143 -
+ 48 files changed, 29816 deletions(-)
+ delete mode 100644 drivers/staging/rtl8192u/Kconfig
+ delete mode 100644 drivers/staging/rtl8192u/Makefile
+ delete mode 100644 drivers/staging/rtl8192u/TODO
+ delete mode 100644 drivers/staging/rtl8192u/authors
+ delete mode 100644 drivers/staging/rtl8192u/changes
+ delete mode 100644 drivers/staging/rtl8192u/ieee80211/dot11d.c
+ delete mode 100644 drivers/staging/rtl8192u/ieee80211/dot11d.h
+ delete mode 100644 drivers/staging/rtl8192u/ieee80211/ieee80211.h
+ delete mode 100644 drivers/staging/rtl8192u/ieee80211/ieee80211_crypt.c
+ delete mode 100644 drivers/staging/rtl8192u/ieee80211/ieee80211_crypt.h
+ delete mode 100644 drivers/staging/rtl8192u/ieee80211/ieee80211_crypt_ccmp.c
+ delete mode 100644 drivers/staging/rtl8192u/ieee80211/ieee80211_crypt_tkip.c
+ delete mode 100644 drivers/staging/rtl8192u/ieee80211/ieee80211_crypt_wep.c
+ delete mode 100644 drivers/staging/rtl8192u/ieee80211/ieee80211_module.c
+ delete mode 100644 drivers/staging/rtl8192u/ieee80211/ieee80211_rx.c
+ delete mode 100644 drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
+ delete mode 100644 drivers/staging/rtl8192u/ieee80211/ieee80211_softmac_wx.c
+ delete mode 100644 drivers/staging/rtl8192u/ieee80211/ieee80211_tx.c
+ delete mode 100644 drivers/staging/rtl8192u/ieee80211/ieee80211_wx.c
+ delete mode 100644 drivers/staging/rtl8192u/ieee80211/rtl819x_BA.h
+ delete mode 100644 drivers/staging/rtl8192u/ieee80211/rtl819x_BAProc.c
+ delete mode 100644 drivers/staging/rtl8192u/ieee80211/rtl819x_HT.h
+ delete mode 100644 drivers/staging/rtl8192u/ieee80211/rtl819x_HTProc.c
+ delete mode 100644 drivers/staging/rtl8192u/ieee80211/rtl819x_Qos.h
+ delete mode 100644 drivers/staging/rtl8192u/ieee80211/rtl819x_TS.h
+ delete mode 100644 drivers/staging/rtl8192u/ieee80211/rtl819x_TSProc.c
+ delete mode 100644 drivers/staging/rtl8192u/r8180_93cx6.c
+ delete mode 100644 drivers/staging/rtl8192u/r8180_93cx6.h
+ delete mode 100644 drivers/staging/rtl8192u/r8190_rtl8256.c
+ delete mode 100644 drivers/staging/rtl8192u/r8190_rtl8256.h
+ delete mode 100644 drivers/staging/rtl8192u/r8192U.h
+ delete mode 100644 drivers/staging/rtl8192u/r8192U_core.c
+ delete mode 100644 drivers/staging/rtl8192u/r8192U_debugfs.c
+ delete mode 100644 drivers/staging/rtl8192u/r8192U_dm.c
+ delete mode 100644 drivers/staging/rtl8192u/r8192U_dm.h
+ delete mode 100644 drivers/staging/rtl8192u/r8192U_hw.h
+ delete mode 100644 drivers/staging/rtl8192u/r8192U_wx.c
+ delete mode 100644 drivers/staging/rtl8192u/r8192U_wx.h
+ delete mode 100644 drivers/staging/rtl8192u/r819xU_cmdpkt.c
+ delete mode 100644 drivers/staging/rtl8192u/r819xU_cmdpkt.h
+ delete mode 100644 drivers/staging/rtl8192u/r819xU_firmware.c
+ delete mode 100644 drivers/staging/rtl8192u/r819xU_firmware.h
+ delete mode 100644 drivers/staging/rtl8192u/r819xU_firmware_img.c
+ delete mode 100644 drivers/staging/rtl8192u/r819xU_firmware_img.h
+ delete mode 100644 drivers/staging/rtl8192u/r819xU_phy.c
+ delete mode 100644 drivers/staging/rtl8192u/r819xU_phy.h
+ delete mode 100644 drivers/staging/rtl8192u/r819xU_phyreg.h
 
-		get_cpu_address_sizes(c);
-	...
-	}
-
-?
-
-As far as I see get_cpu_address_sizes() called after early_intel_init().
-
+diff --git a/drivers/staging/Kconfig b/drivers/staging/Kconfig
+index f9aef39cac2e..21a158dabe6c 100644
+--- a/drivers/staging/Kconfig
++++ b/drivers/staging/Kconfig
+@@ -28,8 +28,6 @@ source "drivers/staging/wlan-ng/Kconfig"
+ 
+ source "drivers/staging/olpc_dcon/Kconfig"
+ 
+-source "drivers/staging/rtl8192u/Kconfig"
+-
+ source "drivers/staging/rtl8192e/Kconfig"
+ 
+ source "drivers/staging/rtl8723bs/Kconfig"
+diff --git a/drivers/staging/rtl8192u/Kconfig b/drivers/staging/rtl8192u/Kconfig
+deleted file mode 100644
+index f3b112a058ca..000000000000
+--- a/drivers/staging/rtl8192u/Kconfig
++++ /dev/null
+@@ -1,12 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-config RTL8192U
+-	tristate "RealTek RTL8192U Wireless LAN NIC driver"
+-	depends on PCI && WLAN && USB
+-	depends on m
+-	select WIRELESS_EXT
+-	select WEXT_PRIV
+-	select CRC32
+-	select CRYPTO
+-	select CRYPTO_AES
+-	select CRYPTO_CCM
+-	select CRYPTO_LIB_ARC4
+diff --git a/drivers/staging/rtl8192u/Makefile b/drivers/staging/rtl8192u/Makefile
+deleted file mode 100644
+index d32dfd89a606..000000000000
+--- a/drivers/staging/rtl8192u/Makefile
++++ /dev/null
+@@ -1,27 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-NIC_SELECT = RTL8192U
+-
+-ccflags-y += -DCONFIG_FORCE_HARD_FLOAT=y
+-ccflags-y += -DJACKSON_NEW_8187 -DJACKSON_NEW_RX
+-ccflags-y += -DTHOMAS_BEACON -DTHOMAS_TASKLET -DTHOMAS_SKB -DTHOMAS_TURBO
+-
+-r8192u_usb-y := r8192U_core.o r8180_93cx6.o r8192U_wx.o		\
+-		  r8190_rtl8256.o r819xU_phy.o r819xU_firmware.o	\
+-		  r819xU_cmdpkt.o r8192U_dm.o r819xU_firmware_img.o	\
+-		  r8192U_debugfs.o					\
+-		  ieee80211/ieee80211_crypt.o				\
+-		  ieee80211/ieee80211_crypt_tkip.o			\
+-		  ieee80211/ieee80211_crypt_ccmp.o			\
+-		  ieee80211/ieee80211_crypt_wep.o			\
+-		  ieee80211/ieee80211_rx.o				\
+-		  ieee80211/ieee80211_softmac.o				\
+-		  ieee80211/ieee80211_tx.o				\
+-		  ieee80211/ieee80211_wx.o				\
+-		  ieee80211/ieee80211_module.o				\
+-		  ieee80211/ieee80211_softmac_wx.o			\
+-		  ieee80211/rtl819x_HTProc.o				\
+-		  ieee80211/rtl819x_TSProc.o				\
+-		  ieee80211/rtl819x_BAProc.o				\
+-		  ieee80211/dot11d.o
+-
+-obj-$(CONFIG_RTL8192U) += r8192u_usb.o
+diff --git a/drivers/staging/rtl8192u/TODO b/drivers/staging/rtl8192u/TODO
+deleted file mode 100644
+index ab9d5d145b3b..000000000000
+--- a/drivers/staging/rtl8192u/TODO
++++ /dev/null
+@@ -1,16 +0,0 @@
+-To-do list:
+-
+-* Correct the coding style according to Linux guidelines; please read the document
+-  at https://www.kernel.org/doc/html/latest/process/coding-style.html.
+-* Remove unnecessary debugging/printing macros; for those that are still needed
+-  use the proper kernel API (pr_debug(), dev_dbg(), netdev_dbg()).
+-* Remove dead code such as unusued functions, variables, fields, etc..
+-* Use in-kernel API and remove unnecessary wrappers where possible.
+-* Fix bugs due to code that sleeps in atomic context.
+-* Remove the HAL layer and migrate its functionality into the relevant parts of
+-  the driver.
+-* Switch to use LIB80211.
+-* Switch to use MAC80211.
+-* Switch to use CFG80211.
+-* Improve the error handling of various functions, particularly those that use
+-  existing kernel APIs.
+diff --git a/drivers/staging/rtl8192u/authors b/drivers/staging/rtl8192u/authors
+deleted file mode 100644
+index 0fab11228b48..000000000000
+--- a/drivers/staging/rtl8192u/authors
++++ /dev/null
+@@ -1 +0,0 @@
+-Andrea Merello <andrea.merello@gmail.com>
+diff --git a/drivers/staging/rtl8192u/changes b/drivers/staging/rtl8192u/changes
+deleted file mode 100644
+index 0485d6eec7b5..000000000000
+--- a/drivers/staging/rtl8192u/changes
++++ /dev/null
+@@ -1,4 +0,0 @@
+-v 0.1
+-
+-First version.
+-This is based on the rtl8180-sa2400 pre-0.22-CVS code..
+diff --git a/drivers/staging/rtl8192u/ieee80211/dot11d.c b/drivers/staging/rtl8192u/ieee80211/dot11d.c
+deleted file mode 100644
+index ddaf66fa0f93..000000000000
+--- a/drivers/staging/rtl8192u/ieee80211/dot11d.c
++++ /dev/null
+@@ -1,174 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/* Implement 802.11d. */
+-
+-#include "dot11d.h"
+-
+-void rtl8192u_dot11d_init(struct ieee80211_device *ieee)
+-{
+-	struct rt_dot11d_info *dot11d_info = GET_DOT11D_INFO(ieee);
+-
+-	dot11d_info->dot11d_enabled = false;
+-
+-	dot11d_info->state = DOT11D_STATE_NONE;
+-	dot11d_info->country_ie_len = 0;
+-	memset(dot11d_info->channel_map, 0, MAX_CHANNEL_NUMBER + 1);
+-	memset(dot11d_info->max_tx_pwr_dbm_list, 0xFF, MAX_CHANNEL_NUMBER + 1);
+-	RESET_CIE_WATCHDOG(ieee);
+-}
+-EXPORT_SYMBOL(rtl8192u_dot11d_init);
+-
+-/* Reset to the state as we are just entering a regulatory domain. */
+-void dot11d_reset(struct ieee80211_device *ieee)
+-{
+-	u32 i;
+-	struct rt_dot11d_info *dot11d_info = GET_DOT11D_INFO(ieee);
+-	/* Clear old channel map */
+-	memset(dot11d_info->channel_map, 0, MAX_CHANNEL_NUMBER + 1);
+-	memset(dot11d_info->max_tx_pwr_dbm_list, 0xFF, MAX_CHANNEL_NUMBER + 1);
+-	/* Set new channel map */
+-	for (i = 1; i <= 11; i++)
+-		(dot11d_info->channel_map)[i] = 1;
+-
+-	for (i = 12; i <= 14; i++)
+-		(dot11d_info->channel_map)[i] = 2;
+-
+-	dot11d_info->state = DOT11D_STATE_NONE;
+-	dot11d_info->country_ie_len = 0;
+-	RESET_CIE_WATCHDOG(ieee);
+-}
+-EXPORT_SYMBOL(dot11d_reset);
+-
+-/*
+- * Update country IE from Beacon or Probe Resopnse and configure PHY for
+- * operation in the regulatory domain.
+- *
+- * TODO: Configure Tx power.
+- * Assumption:
+- * 1. IS_DOT11D_ENABLE() is TRUE.
+- * 2. Input IE is an valid one.
+- */
+-void dot11d_update_country_ie(struct ieee80211_device *dev, u8 *pTaddr,
+-			    u16 CoutryIeLen, u8 *pCoutryIe)
+-{
+-	struct rt_dot11d_info *dot11d_info = GET_DOT11D_INFO(dev);
+-	u8 i, j, NumTriples, MaxChnlNum;
+-	struct chnl_txpower_triple *pTriple;
+-
+-	memset(dot11d_info->channel_map, 0, MAX_CHANNEL_NUMBER + 1);
+-	memset(dot11d_info->max_tx_pwr_dbm_list, 0xFF, MAX_CHANNEL_NUMBER + 1);
+-	MaxChnlNum = 0;
+-	NumTriples = (CoutryIeLen - 3) / 3; /* skip 3-byte country string. */
+-	pTriple = (struct chnl_txpower_triple *)(pCoutryIe + 3);
+-	for (i = 0; i < NumTriples; i++) {
+-		if (MaxChnlNum >= pTriple->first_channel) {
+-			/* It is not in a monotonically increasing order, so
+-			 * stop processing.
+-			 */
+-			netdev_err(dev->dev, "%s: Invalid country IE, skip it 1\n", __func__);
+-			return;
+-		}
+-		if (MAX_CHANNEL_NUMBER < (pTriple->first_channel + pTriple->num_channels)) {
+-			/* It is not a valid set of channel id, so stop
+-			 * processing.
+-			 */
+-			netdev_err(dev->dev, "%s: Invalid country IE, skip it 2\n", __func__);
+-			return;
+-		}
+-
+-		for (j = 0; j < pTriple->num_channels; j++) {
+-			dot11d_info->channel_map[pTriple->first_channel + j] = 1;
+-			dot11d_info->max_tx_pwr_dbm_list[pTriple->first_channel + j] = pTriple->max_tx_pwr_dbm;
+-			MaxChnlNum = pTriple->first_channel + j;
+-		}
+-
+-		pTriple = (struct chnl_txpower_triple *)((u8 *)pTriple + 3);
+-	}
+-	netdev_info(dev->dev, "Channel List:");
+-	for (i = 1; i <= MAX_CHANNEL_NUMBER; i++)
+-		if (dot11d_info->channel_map[i] > 0)
+-			netdev_info(dev->dev, " %d", i);
+-	netdev_info(dev->dev, "\n");
+-
+-	UPDATE_CIE_SRC(dev, pTaddr);
+-
+-	dot11d_info->country_ie_len = CoutryIeLen;
+-	memcpy(dot11d_info->country_ie_buf, pCoutryIe, CoutryIeLen);
+-	dot11d_info->state = DOT11D_STATE_LEARNED;
+-}
+-EXPORT_SYMBOL(dot11d_update_country_ie);
+-
+-u8 dot11d_get_max_tx_pwr_in_dbm(struct ieee80211_device *dev, u8 Channel)
+-{
+-	struct rt_dot11d_info *dot11d_info = GET_DOT11D_INFO(dev);
+-	u8 MaxTxPwrInDbm = 255;
+-
+-	if (Channel > MAX_CHANNEL_NUMBER) {
+-		netdev_err(dev->dev, "%s: Invalid Channel\n", __func__);
+-		return MaxTxPwrInDbm;
+-	}
+-	if (dot11d_info->channel_map[Channel])
+-		MaxTxPwrInDbm = dot11d_info->max_tx_pwr_dbm_list[Channel];
+-
+-	return MaxTxPwrInDbm;
+-}
+-EXPORT_SYMBOL(dot11d_get_max_tx_pwr_in_dbm);
+-
+-void dot11d_scan_complete(struct ieee80211_device *dev)
+-{
+-	struct rt_dot11d_info *dot11d_info = GET_DOT11D_INFO(dev);
+-
+-	switch (dot11d_info->state) {
+-	case DOT11D_STATE_LEARNED:
+-		dot11d_info->state = DOT11D_STATE_DONE;
+-		break;
+-
+-	case DOT11D_STATE_DONE:
+-		if (GET_CIE_WATCHDOG(dev) == 0) {
+-			/* Reset country IE if previous one is gone. */
+-			dot11d_reset(dev);
+-		}
+-		break;
+-	case DOT11D_STATE_NONE:
+-		break;
+-	}
+-}
+-EXPORT_SYMBOL(dot11d_scan_complete);
+-
+-int is_legal_channel(struct ieee80211_device *dev, u8 channel)
+-{
+-	struct rt_dot11d_info *dot11d_info = GET_DOT11D_INFO(dev);
+-
+-	if (channel > MAX_CHANNEL_NUMBER) {
+-		netdev_err(dev->dev, "%s: Invalid Channel\n", __func__);
+-		return 0;
+-	}
+-	if (dot11d_info->channel_map[channel] > 0)
+-		return 1;
+-	return 0;
+-}
+-EXPORT_SYMBOL(is_legal_channel);
+-
+-int to_legal_channel(struct ieee80211_device *dev, u8 channel)
+-{
+-	struct rt_dot11d_info *dot11d_info = GET_DOT11D_INFO(dev);
+-	u8 default_chn = 0;
+-	u32 i = 0;
+-
+-	for (i = 1; i <= MAX_CHANNEL_NUMBER; i++) {
+-		if (dot11d_info->channel_map[i] > 0) {
+-			default_chn = i;
+-			break;
+-		}
+-	}
+-
+-	if (channel > MAX_CHANNEL_NUMBER) {
+-		netdev_err(dev->dev, "%s: Invalid Channel\n", __func__);
+-		return default_chn;
+-	}
+-
+-	if (dot11d_info->channel_map[channel] > 0)
+-		return channel;
+-
+-	return default_chn;
+-}
+-EXPORT_SYMBOL(to_legal_channel);
+diff --git a/drivers/staging/rtl8192u/ieee80211/dot11d.h b/drivers/staging/rtl8192u/ieee80211/dot11d.h
+deleted file mode 100644
+index 8b485fa18089..000000000000
+--- a/drivers/staging/rtl8192u/ieee80211/dot11d.h
++++ /dev/null
+@@ -1,57 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef __INC_DOT11D_H
+-#define __INC_DOT11D_H
+-
+-#include "ieee80211.h"
+-
+-struct chnl_txpower_triple {
+-	u8  first_channel;
+-	u8  num_channels;
+-	u8  max_tx_pwr_dbm;
+-};
+-
+-enum dot11d_state {
+-	DOT11D_STATE_NONE = 0,
+-	DOT11D_STATE_LEARNED,
+-	DOT11D_STATE_DONE,
+-};
+-
+-struct rt_dot11d_info {
+-	u16 country_ie_len; /* > 0 if country_ie_buf[] contains valid country information element. */
+-
+-	/*  country_ie_src_addr u16 aligned for comparison and copy */
+-	u8  country_ie_src_addr[ETH_ALEN]; /* Source AP of the country IE. */
+-	u8  country_ie_buf[MAX_IE_LEN];
+-	u8  country_ie_watchdog;
+-
+-	u8  channel_map[MAX_CHANNEL_NUMBER + 1];  /* !Value 0: Invalid, 1: Valid (active scan), 2: Valid (passive scan) */
+-	u8  max_tx_pwr_dbm_list[MAX_CHANNEL_NUMBER + 1];
+-
+-	enum dot11d_state state;
+-	u8  dot11d_enabled; /* dot11MultiDomainCapabilityEnabled */
+-};
+-
+-#define GET_DOT11D_INFO(ieee_dev) ((struct rt_dot11d_info *)((ieee_dev)->dot11d_info))
+-
+-#define IS_DOT11D_ENABLE(ieee_dev) (GET_DOT11D_INFO(ieee_dev)->dot11d_enabled)
+-#define IS_COUNTRY_IE_VALID(ieee_dev) (GET_DOT11D_INFO(ieee_dev)->country_ie_len > 0)
+-
+-#define IS_EQUAL_CIE_SRC(ieee_dev, addr) ether_addr_equal(GET_DOT11D_INFO(ieee_dev)->country_ie_src_addr, addr)
+-#define UPDATE_CIE_SRC(ieee_dev, addr) ether_addr_copy(GET_DOT11D_INFO(ieee_dev)->country_ie_src_addr, addr)
+-
+-#define GET_CIE_WATCHDOG(ieee_dev) (GET_DOT11D_INFO(ieee_dev)->country_ie_watchdog)
+-#define RESET_CIE_WATCHDOG(ieee_dev) (GET_CIE_WATCHDOG(ieee_dev) = 0)
+-#define UPDATE_CIE_WATCHDOG(ieee_dev) (++GET_CIE_WATCHDOG(ieee_dev))
+-
+-void rtl8192u_dot11d_init(struct ieee80211_device *dev);
+-void dot11d_reset(struct ieee80211_device *dev);
+-void dot11d_update_country_ie(struct ieee80211_device *dev,
+-			      u8 *addr,
+-			      u16 coutry_ie_len,
+-			      u8 *coutry_ie);
+-u8 dot11d_get_max_tx_pwr_in_dbm(struct ieee80211_device *dev, u8 channel);
+-void dot11d_scan_complete(struct ieee80211_device *dev);
+-int is_legal_channel(struct ieee80211_device *dev, u8 channel);
+-int to_legal_channel(struct ieee80211_device *dev, u8 channel);
+-
+-#endif /* #ifndef __INC_DOT11D_H */
+diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211.h b/drivers/staging/rtl8192u/ieee80211/ieee80211.h
+deleted file mode 100644
+index 694d1b18f81c..000000000000
+--- a/drivers/staging/rtl8192u/ieee80211/ieee80211.h
++++ /dev/null
+@@ -1,2385 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- * Merged with mainline ieee80211.h in Aug 2004.  Original ieee802_11
+- * remains copyright by the original authors
+- *
+- * Portions of the merged code are based on Host AP (software wireless
+- * LAN access point) driver for Intersil Prism2/2.5/3.
+- *
+- * Copyright (c) 2001-2002, SSH Communications Security Corp and Jouni Malinen
+- * <jkmaline@cc.hut.fi>
+- * Copyright (c) 2002-2003, Jouni Malinen <jkmaline@cc.hut.fi>
+- *
+- * Adaption to a generic IEEE 802.11 stack by James Ketrenos
+- * <jketreno@linux.intel.com>
+- * Copyright (c) 2004, Intel Corporation
+- *
+- * Modified for Realtek's wi-fi cards by Andrea Merello
+- * <andrea.merello@gmail.com>
+- */
+-#ifndef IEEE80211_H
+-#define IEEE80211_H
+-#include <linux/if_ether.h> /* ETH_ALEN */
+-#include <linux/kernel.h>
+-#include <linux/module.h>
+-#include <linux/jiffies.h>
+-#include <linux/timer.h>
+-#include <linux/sched.h>
+-#include <linux/semaphore.h>
+-#include <linux/interrupt.h>
+-
+-#include <linux/delay.h>
+-#include <linux/wireless.h>
+-#include <linux/ieee80211.h>
+-
+-#include "rtl819x_HT.h"
+-#include "rtl819x_BA.h"
+-#include "rtl819x_TS.h"
+-
+-
+-#ifndef IW_MODE_MONITOR
+-#define IW_MODE_MONITOR 6
+-#endif
+-
+-#ifndef IWEVCUSTOM
+-#define IWEVCUSTOM 0x8c02
+-#endif
+-
+-#define KEY_TYPE_NA		0x0
+-#define KEY_TYPE_WEP40		0x1
+-#define KEY_TYPE_TKIP		0x2
+-#define KEY_TYPE_CCMP		0x4
+-#define KEY_TYPE_WEP104		0x5
+-
+-/* added for rtl819x tx procedure */
+-#define MAX_QUEUE_SIZE		0x10
+-
+-//
+-// 8190 queue mapping
+-//
+-#define BK_QUEUE                               0
+-#define BE_QUEUE                               1
+-#define VI_QUEUE                               2
+-#define VO_QUEUE                               3
+-#define HCCA_QUEUE                             4
+-#define TXCMD_QUEUE                            5
+-#define MGNT_QUEUE                             6
+-#define HIGH_QUEUE                             7
+-#define BEACON_QUEUE                           8
+-
+-#define LOW_QUEUE                              BE_QUEUE
+-#define NORMAL_QUEUE                           MGNT_QUEUE
+-
+-//added by amy for ps
+-#define SWRF_TIMEOUT				50
+-
+-//added by amy for LEAP related
+-#define IE_CISCO_FLAG_POSITION		0x08	// Flag byte: byte 8, numbered from 0.
+-#define SUPPORT_CKIP_MIC			0x08	// bit3
+-#define SUPPORT_CKIP_PK			0x10	// bit4
+-/* defined for skb cb field */
+-/* At most 28 byte */
+-struct cb_desc {
+-	/* Tx Desc Related flags (8-9) */
+-	u8 bLastIniPkt:1;
+-	u8 bCmdOrInit:1;
+-	u8 bFirstSeg:1;
+-	u8 bLastSeg:1;
+-	u8 bEncrypt:1;
+-	u8 bTxDisableRateFallBack:1;
+-	u8 bTxUseDriverAssingedRate:1;
+-	u8 bHwSec:1; //indicate whether use Hw security. WB
+-
+-	u8 reserved1;
+-
+-	/* Tx Firmware Relaged flags (10-11)*/
+-	u8 bCTSEnable:1;
+-	u8 bRTSEnable:1;
+-	u8 bUseShortGI:1;
+-	u8 bUseShortPreamble:1;
+-	u8 bTxEnableFwCalcDur:1;
+-	u8 bAMPDUEnable:1;
+-	u8 bRTSSTBC:1;
+-	u8 RTSSC:1;
+-
+-	u8 bRTSBW:1;
+-	u8 bPacketBW:1;
+-	u8 bRTSUseShortPreamble:1;
+-	u8 bRTSUseShortGI:1;
+-	u8 bMulticast:1;
+-	u8 bBroadcast:1;
+-	//u8 reserved2:2;
+-	u8 drv_agg_enable:1;
+-	u8 reserved2:1;
+-
+-	/* Tx Desc related element(12-19) */
+-	u8 rata_index;
+-	u8 queue_index;
+-	//u8 reserved3;
+-	//u8 reserved4;
+-	u16 txbuf_size;
+-	//u8 reserved5;
+-	u8 RATRIndex;
+-	u8 reserved6;
+-	u8 reserved7;
+-	u8 reserved8;
+-
+-	/* Tx firmware related element(20-27) */
+-	u8 data_rate;
+-	u8 rts_rate;
+-	u8 ampdu_factor;
+-	u8 ampdu_density;
+-	//u8 reserved9;
+-	//u8 reserved10;
+-	//u8 reserved11;
+-	u8 DrvAggrNum;
+-	u16 pkt_size;
+-	u8 reserved12;
+-};
+-
+-/*--------------------------Define -------------------------------------------*/
+-#define MGN_1M                  0x02
+-#define MGN_2M                  0x04
+-#define MGN_5_5M                0x0b
+-#define MGN_11M                 0x16
+-
+-#define MGN_6M                  0x0c
+-#define MGN_9M                  0x12
+-#define MGN_12M                 0x18
+-#define MGN_18M                 0x24
+-#define MGN_24M                 0x30
+-#define MGN_36M                 0x48
+-#define MGN_48M                 0x60
+-#define MGN_54M                 0x6c
+-
+-#define MGN_MCS0                0x80
+-#define MGN_MCS1                0x81
+-#define MGN_MCS2                0x82
+-#define MGN_MCS3                0x83
+-#define MGN_MCS4                0x84
+-#define MGN_MCS5                0x85
+-#define MGN_MCS6                0x86
+-#define MGN_MCS7                0x87
+-#define MGN_MCS8                0x88
+-#define MGN_MCS9                0x89
+-#define MGN_MCS10               0x8a
+-#define MGN_MCS11               0x8b
+-#define MGN_MCS12               0x8c
+-#define MGN_MCS13               0x8d
+-#define MGN_MCS14               0x8e
+-#define MGN_MCS15               0x8f
+-
+-#define aSifsTime ((priv->ieee80211->current_network.mode == IEEE_A ||     \
+-		    priv->ieee80211->current_network.mode == IEEE_N_24G || \
+-		    priv->ieee80211->current_network.mode == IEEE_N_5G) ?  \
+-		   16 : 10)
+-
+-#define MGMT_QUEUE_NUM 5
+-
+-#define IEEE_CMD_SET_WPA_PARAM			1
+-#define	IEEE_CMD_SET_WPA_IE			2
+-#define IEEE_CMD_SET_ENCRYPTION			3
+-#define IEEE_CMD_MLME				4
+-
+-#define IEEE_PARAM_WPA_ENABLED			1
+-#define IEEE_PARAM_TKIP_COUNTERMEASURES		2
+-#define IEEE_PARAM_DROP_UNENCRYPTED		3
+-#define IEEE_PARAM_PRIVACY_INVOKED		4
+-#define IEEE_PARAM_AUTH_ALGS			5
+-#define IEEE_PARAM_IEEE_802_1X			6
+-//It should consistent with the driver_XXX.c
+-//   David, 2006.9.26
+-#define IEEE_PARAM_WPAX_SELECT			7
+-//Added for notify the encryption type selection
+-//   David, 2006.9.26
+-#define IEEE_PROTO_WPA				1
+-#define IEEE_PROTO_RSN				2
+-//Added for notify the encryption type selection
+-//   David, 2006.9.26
+-#define IEEE_WPAX_USEGROUP			0
+-#define IEEE_WPAX_WEP40				1
+-#define IEEE_WPAX_TKIP				2
+-#define IEEE_WPAX_WRAP				3
+-#define IEEE_WPAX_CCMP				4
+-#define IEEE_WPAX_WEP104			5
+-
+-#define IEEE_KEY_MGMT_IEEE8021X			1
+-#define IEEE_KEY_MGMT_PSK			2
+-
+-#define IEEE_MLME_STA_DEAUTH			1
+-#define IEEE_MLME_STA_DISASSOC			2
+-
+-
+-#define IEEE_CRYPT_ERR_UNKNOWN_ALG		2
+-#define IEEE_CRYPT_ERR_UNKNOWN_ADDR		3
+-#define IEEE_CRYPT_ERR_CRYPT_INIT_FAILED	4
+-#define IEEE_CRYPT_ERR_KEY_SET_FAILED		5
+-#define IEEE_CRYPT_ERR_TX_KEY_SET_FAILED	6
+-#define IEEE_CRYPT_ERR_CARD_CONF_FAILED		7
+-
+-
+-#define	IEEE_CRYPT_ALG_NAME_LEN			16
+-
+-#define MAX_IE_LEN  0xff
+-
+-// added for kernel conflict
+-#define ieee80211_wake_queue		ieee80211_wake_queue_rsl
+-#define ieee80211_stop_queue		ieee80211_stop_queue_rsl
+-#define notify_wx_assoc_event		notify_wx_assoc_event_rsl
+-#define SendDisassociation		SendDisassociation_rsl
+-
+-
+-struct ieee_param {
+-	u32 cmd;
+-	u8 sta_addr[ETH_ALEN];
+-	union {
+-		struct {
+-			u8 name;
+-			u32 value;
+-		} wpa_param;
+-		struct {
+-			u32 len;
+-			u8 reserved[32];
+-			u8 data[];
+-		} wpa_ie;
+-		struct{
+-			int command;
+-			int reason_code;
+-		} mlme;
+-		struct {
+-			u8 alg[IEEE_CRYPT_ALG_NAME_LEN];
+-			u8 set_tx;
+-			u32 err;
+-			u8 idx;
+-			u8 seq[8]; /* sequence counter (set: RX, get: TX) */
+-			u16 key_len;
+-			u8 key[];
+-		} crypt;
+-	} u;
+-};
+-
+-
+-// linux under 2.6.9 release may not support it, so modify it for common use
+-#define IEEE80211_DATA_LEN		2304
+-/* Maximum size for the MA-UNITDATA primitive, 802.11 standard section
+- *   6.2.1.1.2.
+- *
+- *   The figure in section 7.1.2 suggests a body size of up to 2312
+- *   bytes is allowed, which is a bit confusing, I suspect this
+- *   represents the 2304 bytes of real data, plus a possible 8 bytes of
+- *   WEP IV and ICV. (this interpretation suggested by Ramiro Barreiro)
+- */
+-#define IEEE80211_1ADDR_LEN 10
+-#define IEEE80211_2ADDR_LEN 16
+-#define IEEE80211_3ADDR_LEN 24
+-#define IEEE80211_4ADDR_LEN 30
+-#define IEEE80211_FCS_LEN    4
+-#define IEEE80211_HLEN                  (IEEE80211_4ADDR_LEN)
+-#define IEEE80211_FRAME_LEN             (IEEE80211_DATA_LEN + IEEE80211_HLEN)
+-#define IEEE80211_MGMT_HDR_LEN 24
+-#define IEEE80211_DATA_HDR3_LEN 24
+-#define IEEE80211_DATA_HDR4_LEN 30
+-
+-#define MIN_FRAG_THRESHOLD     256U
+-#define MAX_FRAG_THRESHOLD     2346U
+-
+-
+-/* Frame control field constants */
+-#define IEEE80211_FCTL_VERS		0x0003
+-#define IEEE80211_FCTL_FTYPE		0x000c
+-#define IEEE80211_FCTL_STYPE		0x00f0
+-#define IEEE80211_FCTL_FRAMETYPE	0x00fc
+-#define IEEE80211_FCTL_TODS		0x0100
+-#define IEEE80211_FCTL_FROMDS		0x0200
+-#define IEEE80211_FCTL_DSTODS		0x0300 //added by david
+-#define IEEE80211_FCTL_MOREFRAGS	0x0400
+-#define IEEE80211_FCTL_RETRY		0x0800
+-#define IEEE80211_FCTL_PM		0x1000
+-#define IEEE80211_FCTL_MOREDATA		0x2000
+-#define IEEE80211_FCTL_WEP		0x4000
+-#define IEEE80211_FCTL_ORDER		0x8000
+-
+-#define IEEE80211_FTYPE_MGMT		0x0000
+-#define IEEE80211_FTYPE_CTL		0x0004
+-#define IEEE80211_FTYPE_DATA		0x0008
+-
+-/* management */
+-#define IEEE80211_STYPE_ASSOC_REQ	0x0000
+-#define IEEE80211_STYPE_ASSOC_RESP	0x0010
+-#define IEEE80211_STYPE_REASSOC_REQ	0x0020
+-#define IEEE80211_STYPE_REASSOC_RESP	0x0030
+-#define IEEE80211_STYPE_PROBE_REQ	0x0040
+-#define IEEE80211_STYPE_PROBE_RESP	0x0050
+-#define IEEE80211_STYPE_BEACON		0x0080
+-#define IEEE80211_STYPE_ATIM		0x0090
+-#define IEEE80211_STYPE_DISASSOC	0x00A0
+-#define IEEE80211_STYPE_AUTH		0x00B0
+-#define IEEE80211_STYPE_DEAUTH		0x00C0
+-#define IEEE80211_STYPE_MANAGE_ACT	0x00D0
+-
+-/* control */
+-#define IEEE80211_STYPE_PSPOLL		0x00A0
+-#define IEEE80211_STYPE_RTS		0x00B0
+-#define IEEE80211_STYPE_CTS		0x00C0
+-#define IEEE80211_STYPE_ACK		0x00D0
+-#define IEEE80211_STYPE_CFEND		0x00E0
+-#define IEEE80211_STYPE_CFENDACK	0x00F0
+-#define IEEE80211_STYPE_BLOCKACK	0x0094
+-
+-/* data */
+-#define IEEE80211_STYPE_DATA		0x0000
+-#define IEEE80211_STYPE_DATA_CFACK	0x0010
+-#define IEEE80211_STYPE_DATA_CFPOLL	0x0020
+-#define IEEE80211_STYPE_DATA_CFACKPOLL	0x0030
+-#define IEEE80211_STYPE_NULLFUNC	0x0040
+-#define IEEE80211_STYPE_CFACK		0x0050
+-#define IEEE80211_STYPE_CFPOLL		0x0060
+-#define IEEE80211_STYPE_CFACKPOLL	0x0070
+-#define IEEE80211_STYPE_QOS_DATA	0x0080 //added for WMM 2006/8/2
+-#define IEEE80211_STYPE_QOS_NULL	0x00C0
+-
+-#define IEEE80211_SCTL_FRAG		0x000F
+-#define IEEE80211_SCTL_SEQ		0xFFF0
+-
+-/* QOS control */
+-#define IEEE80211_QCTL_TID              0x000F
+-
+-#define	FC_QOS_BIT					BIT(7)
+-#define IsDataFrame(pdu)			(((pdu[0] & 0x0C) == 0x08) ? true : false)
+-#define	IsLegacyDataFrame(pdu)	(IsDataFrame(pdu) && (!(pdu[0] & FC_QOS_BIT)))
+-//added by wb. Is this right?
+-#define IsQoSDataFrame(pframe)  ((*(u16 *)pframe & (IEEE80211_STYPE_QOS_DATA | IEEE80211_FTYPE_DATA)) == (IEEE80211_STYPE_QOS_DATA | IEEE80211_FTYPE_DATA))
+-#define Frame_Order(pframe)     (*(u16 *)pframe & IEEE80211_FCTL_ORDER)
+-#define SN_LESS(a, b)		(((a - b) & 0x800) != 0)
+-#define SN_EQUAL(a, b)	(a == b)
+-#define MAX_DEV_ADDR_SIZE 8
+-typedef enum _ACT_CATEGORY {
+-	ACT_CAT_QOS = 1,
+-	ACT_CAT_DLS = 2,
+-	ACT_CAT_BA  = 3,
+-	ACT_CAT_HT  = 7,
+-	ACT_CAT_WMM = 17,
+-} ACT_CATEGORY, *PACT_CATEGORY;
+-
+-typedef enum _TS_ACTION {
+-	ACT_ADDTSREQ = 0,
+-	ACT_ADDTSRSP = 1,
+-	ACT_DELTS    = 2,
+-	ACT_SCHEDULE = 3,
+-} TS_ACTION, *PTS_ACTION;
+-
+-typedef enum _BA_ACTION {
+-	ACT_ADDBAREQ = 0,
+-	ACT_ADDBARSP = 1,
+-	ACT_DELBA    = 2,
+-} BA_ACTION, *PBA_ACTION;
+-
+-typedef enum _InitialGainOpType {
+-	IG_Backup = 0,
+-	IG_Restore,
+-	IG_Max
+-} InitialGainOpType;
+-
+-/* debug macros */
+-#define CONFIG_IEEE80211_DEBUG
+-#ifdef CONFIG_IEEE80211_DEBUG
+-extern u32 ieee80211_debug_level;
+-#define IEEE80211_DEBUG(level, fmt, args...) \
+-do { if (ieee80211_debug_level & (level)) \
+-  printk(KERN_DEBUG "ieee80211: " fmt, ## args); } while (0)
+-//wb added to debug out data buf
+-//if you want print DATA buffer related BA, please set ieee80211_debug_level to DATA|BA
+-#define IEEE80211_DEBUG_DATA(level, data, datalen)                             \
+-	do { if ((ieee80211_debug_level & (level)) == (level))                 \
+-		{                                                              \
+-			int i;                                                 \
+-			u8 *pdata = (u8 *)data;                                \
+-			printk(KERN_DEBUG "ieee80211: %s()\n", __func__);      \
+-			for (i = 0; i < (int)(datalen); i++) {                 \
+-				printk("%2x ", pdata[i]);                      \
+-				if ((i + 1) % 16 == 0)                         \
+-					printk("\n");                          \
+-			}                                                      \
+-			printk("\n");                                          \
+-		}                                                              \
+-	} while (0)
+-#else
+-#define IEEE80211_DEBUG(level, fmt, args...)
+-#define IEEE80211_DEBUG_DATA(level, data, datalen)
+-#endif	/* CONFIG_IEEE80211_DEBUG */
+-
+-/* debug macros not dependent on CONFIG_IEEE80211_DEBUG */
+-
+-/*
+- * To use the debug system;
+- *
+- * If you are defining a new debug classification, simply add it to the #define
+- * list here in the form of:
+- *
+- * #define IEEE80211_DL_xxxx VALUE
+- *
+- * shifting value to the left one bit from the previous entry.  xxxx should be
+- * the name of the classification (for example, WEP)
+- *
+- * You then need to either add a IEEE80211_xxxx_DEBUG() macro definition for your
+- * classification, or use IEEE80211_DEBUG(IEEE80211_DL_xxxx, ...) whenever you want
+- * to send output to that classification.
+- *
+- * To add your debug level to the list of levels seen when you perform
+- *
+- * % cat /proc/net/ipw/debug_level
+- *
+- * you simply need to add your entry to the ipw_debug_levels array.
+- *
+- * If you do not see debug_level in /proc/net/ipw then you do not have
+- * CONFIG_IEEE80211_DEBUG defined in your kernel configuration
+- *
+- */
+-
+-#define IEEE80211_DL_INFO          (1<<0)
+-#define IEEE80211_DL_WX            (1<<1)
+-#define IEEE80211_DL_SCAN          (1<<2)
+-#define IEEE80211_DL_STATE         (1<<3)
+-#define IEEE80211_DL_MGMT          (1<<4)
+-#define IEEE80211_DL_FRAG          (1<<5)
+-#define IEEE80211_DL_EAP           (1<<6)
+-#define IEEE80211_DL_DROP          (1<<7)
+-
+-#define IEEE80211_DL_TX            (1<<8)
+-#define IEEE80211_DL_RX            (1<<9)
+-
+-#define IEEE80211_DL_HT		   (1<<10)  //HT
+-#define IEEE80211_DL_BA		   (1<<11)  //ba
+-#define IEEE80211_DL_TS		   (1<<12)  //TS
+-#define IEEE80211_DL_QOS           (1<<13)
+-#define IEEE80211_DL_REORDER	   (1<<14)
+-#define IEEE80211_DL_IOT	   (1<<15)
+-#define IEEE80211_DL_IPS	   (1<<16)
+-#define IEEE80211_DL_TRACE	   (1<<29)  //trace function, need to user net_ratelimit() together in order not to print too much to the screen
+-#define IEEE80211_DL_DATA	   (1<<30)   //use this flag to control whether print data buf out.
+-#define IEEE80211_DL_ERR	   (1<<31)   //always open
+-#define IEEE80211_ERROR(f, a...) printk(KERN_ERR "ieee80211: " f, ## a)
+-#define IEEE80211_WARNING(f, a...) printk(KERN_WARNING "ieee80211: " f, ## a)
+-#define IEEE80211_DEBUG_INFO(f, a...)   IEEE80211_DEBUG(IEEE80211_DL_INFO, f, ## a)
+-
+-#define IEEE80211_DEBUG_WX(f, a...)     IEEE80211_DEBUG(IEEE80211_DL_WX, f, ## a)
+-#define IEEE80211_DEBUG_SCAN(f, a...)   IEEE80211_DEBUG(IEEE80211_DL_SCAN, f, ## a)
+-#define IEEE80211_DEBUG_STATE(f, a...)  IEEE80211_DEBUG(IEEE80211_DL_STATE, f, ## a)
+-#define IEEE80211_DEBUG_MGMT(f, a...)  IEEE80211_DEBUG(IEEE80211_DL_MGMT, f, ## a)
+-#define IEEE80211_DEBUG_FRAG(f, a...)  IEEE80211_DEBUG(IEEE80211_DL_FRAG, f, ## a)
+-#define IEEE80211_DEBUG_EAP(f, a...)  IEEE80211_DEBUG(IEEE80211_DL_EAP, f, ## a)
+-#define IEEE80211_DEBUG_DROP(f, a...)  IEEE80211_DEBUG(IEEE80211_DL_DROP, f, ## a)
+-#define IEEE80211_DEBUG_TX(f, a...)  IEEE80211_DEBUG(IEEE80211_DL_TX, f, ## a)
+-#define IEEE80211_DEBUG_RX(f, a...)  IEEE80211_DEBUG(IEEE80211_DL_RX, f, ## a)
+-#define IEEE80211_DEBUG_QOS(f, a...)  IEEE80211_DEBUG(IEEE80211_DL_QOS, f, ## a)
+-
+-#include <linux/if_arp.h> /* ARPHRD_ETHER */
+-
+-#ifndef WIRELESS_SPY
+-#define WIRELESS_SPY		// enable iwspy support
+-#endif
+-#include <net/iw_handler.h>	// new driver API
+-
+-#ifndef ETH_P_PAE
+-#define ETH_P_PAE 0x888E /* Port Access Entity (IEEE 802.1X) */
+-#endif /* ETH_P_PAE */
+-
+-#define ETH_P_PREAUTH 0x88C7 /* IEEE 802.11i pre-authentication */
+-
+-#ifndef ETH_P_80211_RAW
+-#define ETH_P_80211_RAW (ETH_P_ECONET + 1)
+-#endif
+-
+-/* IEEE 802.11 defines */
+-
+-#define P80211_OUI_LEN 3
+-
+-struct ieee80211_snap_hdr {
+-
+-	u8    dsap;   /* always 0xAA */
+-	u8    ssap;   /* always 0xAA */
+-	u8    ctrl;   /* always 0x03 */
+-	u8    oui[P80211_OUI_LEN];    /* organizational universal id */
+-
+-} __packed;
+-
+-#define SNAP_SIZE sizeof(struct ieee80211_snap_hdr)
+-
+-#define WLAN_FC_GET_VERS(fc) ((fc) & IEEE80211_FCTL_VERS)
+-#define WLAN_FC_GET_TYPE(fc) ((fc) & IEEE80211_FCTL_FTYPE)
+-#define WLAN_FC_GET_STYPE(fc) ((fc) & IEEE80211_FCTL_STYPE)
+-
+-#define WLAN_FC_GET_FRAMETYPE(fc) ((fc) & IEEE80211_FCTL_FRAMETYPE)
+-#define WLAN_GET_SEQ_FRAG(seq) ((seq) & IEEE80211_SCTL_FRAG)
+-#define WLAN_GET_SEQ_SEQ(seq)  (((seq) & IEEE80211_SCTL_SEQ) >> 4)
+-
+-#define WLAN_CAPABILITY_BSS (1<<0)
+-#define WLAN_CAPABILITY_IBSS (1<<1)
+-#define WLAN_CAPABILITY_CF_POLLABLE (1<<2)
+-#define WLAN_CAPABILITY_CF_POLL_REQUEST (1<<3)
+-#define WLAN_CAPABILITY_PRIVACY (1<<4)
+-#define WLAN_CAPABILITY_SHORT_PREAMBLE (1<<5)
+-#define WLAN_CAPABILITY_PBCC (1<<6)
+-#define WLAN_CAPABILITY_CHANNEL_AGILITY (1<<7)
+-#define WLAN_CAPABILITY_SPECTRUM_MGMT (1<<8)
+-#define WLAN_CAPABILITY_QOS (1<<9)
+-#define WLAN_CAPABILITY_SHORT_SLOT (1<<10)
+-#define WLAN_CAPABILITY_DSSS_OFDM (1<<13)
+-
+-/* 802.11g ERP information element */
+-#define WLAN_ERP_NON_ERP_PRESENT (1<<0)
+-#define WLAN_ERP_USE_PROTECTION (1<<1)
+-#define WLAN_ERP_BARKER_PREAMBLE (1<<2)
+-
+-#define IEEE80211_STATMASK_SIGNAL (1<<0)
+-#define IEEE80211_STATMASK_RSSI (1<<1)
+-#define IEEE80211_STATMASK_NOISE (1<<2)
+-#define IEEE80211_STATMASK_RATE (1<<3)
+-#define IEEE80211_STATMASK_WEMASK 0x7
+-
+-#define IEEE80211_CCK_MODULATION    (1<<0)
+-#define IEEE80211_OFDM_MODULATION   (1<<1)
+-
+-#define IEEE80211_24GHZ_BAND     (1<<0)
+-#define IEEE80211_52GHZ_BAND     (1<<1)
+-
+-#define IEEE80211_CCK_RATE_LEN			4
+-#define IEEE80211_CCK_RATE_1MB			0x02
+-#define IEEE80211_CCK_RATE_2MB			0x04
+-#define IEEE80211_CCK_RATE_5MB			0x0B
+-#define IEEE80211_CCK_RATE_11MB			0x16
+-#define IEEE80211_OFDM_RATE_LEN			8
+-#define IEEE80211_OFDM_RATE_6MB			0x0C
+-#define IEEE80211_OFDM_RATE_9MB			0x12
+-#define IEEE80211_OFDM_RATE_12MB		0x18
+-#define IEEE80211_OFDM_RATE_18MB		0x24
+-#define IEEE80211_OFDM_RATE_24MB		0x30
+-#define IEEE80211_OFDM_RATE_36MB		0x48
+-#define IEEE80211_OFDM_RATE_48MB		0x60
+-#define IEEE80211_OFDM_RATE_54MB		0x6C
+-#define IEEE80211_BASIC_RATE_MASK		0x80
+-
+-#define IEEE80211_CCK_RATE_1MB_MASK		(1<<0)
+-#define IEEE80211_CCK_RATE_2MB_MASK		(1<<1)
+-#define IEEE80211_CCK_RATE_5MB_MASK		(1<<2)
+-#define IEEE80211_CCK_RATE_11MB_MASK		(1<<3)
+-#define IEEE80211_OFDM_RATE_6MB_MASK		(1<<4)
+-#define IEEE80211_OFDM_RATE_9MB_MASK		(1<<5)
+-#define IEEE80211_OFDM_RATE_12MB_MASK		(1<<6)
+-#define IEEE80211_OFDM_RATE_18MB_MASK		(1<<7)
+-#define IEEE80211_OFDM_RATE_24MB_MASK		(1<<8)
+-#define IEEE80211_OFDM_RATE_36MB_MASK		(1<<9)
+-#define IEEE80211_OFDM_RATE_48MB_MASK		(1<<10)
+-#define IEEE80211_OFDM_RATE_54MB_MASK		(1<<11)
+-
+-#define IEEE80211_CCK_RATES_MASK		0x0000000F
+-#define IEEE80211_CCK_BASIC_RATES_MASK	(IEEE80211_CCK_RATE_1MB_MASK | \
+-	IEEE80211_CCK_RATE_2MB_MASK)
+-#define IEEE80211_CCK_DEFAULT_RATES_MASK	(IEEE80211_CCK_BASIC_RATES_MASK | \
+-	IEEE80211_CCK_RATE_5MB_MASK | \
+-	IEEE80211_CCK_RATE_11MB_MASK)
+-
+-#define IEEE80211_OFDM_RATES_MASK		0x00000FF0
+-#define IEEE80211_OFDM_BASIC_RATES_MASK	(IEEE80211_OFDM_RATE_6MB_MASK | \
+-	IEEE80211_OFDM_RATE_12MB_MASK | \
+-	IEEE80211_OFDM_RATE_24MB_MASK)
+-#define IEEE80211_OFDM_DEFAULT_RATES_MASK	(IEEE80211_OFDM_BASIC_RATES_MASK | \
+-	IEEE80211_OFDM_RATE_9MB_MASK  | \
+-	IEEE80211_OFDM_RATE_18MB_MASK | \
+-	IEEE80211_OFDM_RATE_36MB_MASK | \
+-	IEEE80211_OFDM_RATE_48MB_MASK | \
+-	IEEE80211_OFDM_RATE_54MB_MASK)
+-#define IEEE80211_DEFAULT_RATES_MASK (IEEE80211_OFDM_DEFAULT_RATES_MASK | \
+-				IEEE80211_CCK_DEFAULT_RATES_MASK)
+-
+-#define IEEE80211_NUM_OFDM_RATES	    8
+-#define IEEE80211_NUM_CCK_RATES		    4
+-#define IEEE80211_OFDM_SHIFT_MASK_A         4
+-
+-
+-/* this is stolen and modified from the madwifi driver*/
+-#define IEEE80211_FC0_TYPE_MASK		0x0c
+-#define IEEE80211_FC0_TYPE_DATA		0x08
+-#define IEEE80211_FC0_SUBTYPE_MASK	0xB0
+-#define IEEE80211_FC0_SUBTYPE_QOS	0x80
+-
+-#define IEEE80211_QOS_HAS_SEQ(fc) \
+-	(((fc) & (IEEE80211_FC0_TYPE_MASK | IEEE80211_FC0_SUBTYPE_MASK)) == \
+-	 (IEEE80211_FC0_TYPE_DATA | IEEE80211_FC0_SUBTYPE_QOS))
+-
+-/* this is stolen from ipw2200 driver */
+-#define IEEE_IBSS_MAC_HASH_SIZE 31
+-struct ieee_ibss_seq {
+-	u8 mac[ETH_ALEN];
+-	u16 seq_num[17];
+-	u16 frag_num[17];
+-	unsigned long packet_time[17];
+-	struct list_head list;
+-};
+-
+-/* NOTE: This data is for statistical purposes; not all hardware provides this
+- *       information for frames received.  Not setting these will not cause
+- *       any adverse affects.
+- */
+-struct ieee80211_rx_stats {
+-	u32 mac_time[2];
+-	s8 rssi;
+-	u8 signal;
+-	u8 noise;
+-	u16 rate; /* in 100 kbps */
+-	u8 received_channel;
+-	u8 control;
+-	u8 mask;
+-	u8 freq;
+-	u16 len;
+-	u64 tsf;
+-	u32 beacon_time;
+-	u8 nic_type;
+-	u16       Length;
+-	//      u8        DataRate;      // In 0.5 Mbps
+-	u8        SignalQuality; // in 0-100 index.
+-	s32       RecvSignalPower; // Real power in dBm for this packet, no beautification and aggregation.
+-	s8        RxPower; // in dBm Translate from PWdB
+-	u8        SignalStrength; // in 0-100 index.
+-	u16       bHwError:1;
+-	u16       bCRC:1;
+-	u16       bICV:1;
+-	u16       bShortPreamble:1;
+-	u16       Antenna:1;      //for rtl8185
+-	u16       Decrypted:1;    //for rtl8185, rtl8187
+-	u16       Wakeup:1;       //for rtl8185
+-	u16       Reserved0:1;    //for rtl8185
+-	u8        AGC;
+-	u32       TimeStampLow;
+-	u32       TimeStampHigh;
+-	bool      bShift;
+-	bool      bIsQosData;             // Added by Annie, 2005-12-22.
+-	u8        UserPriority;
+-
+-	//1!!!!!!!!!!!!!!!!!!!!!!!!!!!
+-	//1Attention Please!!!<11n or 8190 specific code should be put below this line>
+-	//1!!!!!!!!!!!!!!!!!!!!!!!!!!!
+-
+-	u8        RxDrvInfoSize;
+-	u8        RxBufShift;
+-	bool      bIsAMPDU;
+-	bool      bFirstMPDU;
+-	bool      bContainHTC;
+-	bool      RxIs40MHzPacket;
+-	u32       RxPWDBAll;
+-	u8        RxMIMOSignalStrength[4];        // in 0~100 index
+-	s8        RxMIMOSignalQuality[2];
+-	bool      bPacketMatchBSSID;
+-	bool      bIsCCK;
+-	bool      bPacketToSelf;
+-	//added by amy
+-	u8        *virtual_address;
+-	u16          packetlength;              // Total packet length: Must equal to sum of all FragLength
+-	u16          fraglength;                        // FragLength should equal to PacketLength in non-fragment case
+-	u16          fragoffset;                        // Data offset for this fragment
+-	u16          ntotalfrag;
+-	bool		  bisrxaggrsubframe;
+-	bool		  bPacketBeacon;	//cosa add for rssi
+-	bool		  bToSelfBA;		//cosa add for rssi
+-	s8		  cck_adc_pwdb[4];	//cosa add for rx path selection
+-	u16		  Seq_Num;
+-
+-};
+-
+-/* IEEE 802.11 requires that STA supports concurrent reception of at least
+- * three fragmented frames. This define can be increased to support more
+- * concurrent frames, but it should be noted that each entry can consume about
+- * 2 kB of RAM and increasing cache size will slow down frame reassembly.
+- */
+-#define IEEE80211_FRAG_CACHE_LEN 4
+-
+-struct ieee80211_frag_entry {
+-	unsigned long first_frag_time;
+-	unsigned int seq;
+-	unsigned int last_frag;
+-	struct sk_buff *skb;
+-	u8 src_addr[ETH_ALEN];
+-	u8 dst_addr[ETH_ALEN];
+-};
+-
+-struct ieee80211_stats {
+-	unsigned int tx_unicast_frames;
+-	unsigned int tx_multicast_frames;
+-	unsigned int tx_fragments;
+-	unsigned int tx_unicast_octets;
+-	unsigned int tx_multicast_octets;
+-	unsigned int tx_deferred_transmissions;
+-	unsigned int tx_single_retry_frames;
+-	unsigned int tx_multiple_retry_frames;
+-	unsigned int tx_retry_limit_exceeded;
+-	unsigned int tx_discards;
+-	unsigned int rx_unicast_frames;
+-	unsigned int rx_multicast_frames;
+-	unsigned int rx_fragments;
+-	unsigned int rx_unicast_octets;
+-	unsigned int rx_multicast_octets;
+-	unsigned int rx_fcs_errors;
+-	unsigned int rx_discards_no_buffer;
+-	unsigned int tx_discards_wrong_sa;
+-	unsigned int rx_discards_undecryptable;
+-	unsigned int rx_message_in_msg_fragments;
+-	unsigned int rx_message_in_bad_msg_fragments;
+-};
+-
+-struct ieee80211_device;
+-
+-#include "ieee80211_crypt.h"
+-
+-#define SEC_KEY_1         (1<<0)
+-#define SEC_KEY_2         (1<<1)
+-#define SEC_KEY_3         (1<<2)
+-#define SEC_KEY_4         (1<<3)
+-#define SEC_ACTIVE_KEY    (1<<4)
+-#define SEC_AUTH_MODE     (1<<5)
+-#define SEC_UNICAST_GROUP (1<<6)
+-#define SEC_LEVEL         (1<<7)
+-#define SEC_ENABLED       (1<<8)
+-#define SEC_ENCRYPT       (1<<9)
+-
+-#define SEC_LEVEL_0      0 /* None */
+-#define SEC_LEVEL_1      1 /* WEP 40 and 104 bit */
+-#define SEC_LEVEL_2      2 /* Level 1 + TKIP */
+-#define SEC_LEVEL_2_CKIP 3 /* Level 1 + CKIP */
+-#define SEC_LEVEL_3      4 /* Level 2 + CCMP */
+-
+-#define SEC_ALG_NONE            0
+-#define SEC_ALG_WEP             1
+-#define SEC_ALG_TKIP            2
+-#define SEC_ALG_CCMP            3
+-
+-#define WEP_KEYS		4
+-#define WEP_KEY_LEN		13
+-#define SCM_KEY_LEN             32
+-#define SCM_TEMPORAL_KEY_LENGTH 16
+-
+-struct ieee80211_security {
+-	u16 active_key:2,
+-	    enabled:1,
+-	    auth_algo:4,
+-	    unicast_uses_group:1,
+-	    encrypt:1;
+-	u8 auth_mode;
+-	u8 key_sizes[WEP_KEYS];
+-	u8 keys[WEP_KEYS][SCM_KEY_LEN];
+-	u8 level;
+-	u16 flags;
+-} __packed;
+-
+-
+-/*
+- *  802.11 data frame from AP
+- *       ,-------------------------------------------------------------------.
+- * Bytes |  2   |  2   |    6    |    6    |    6    |  2   | 0..2312 |   4  |
+- *       |------|------|---------|---------|---------|------|---------|------|
+- * Desc. | ctrl | dura |  DA/RA  |   TA    |    SA   | Sequ |  frame  |  fcs |
+- *       |      | tion | (BSSID) |         |         | ence |  data   |      |
+- *       `-------------------------------------------------------------------'
+- *  Total: 28-2340 bytes
+- */
+-
+-/* Management Frame Information Element Types */
+-enum ieee80211_mfie {
+-	MFIE_TYPE_SSID = 0,
+-	MFIE_TYPE_RATES = 1,
+-	MFIE_TYPE_FH_SET = 2,
+-	MFIE_TYPE_DS_SET = 3,
+-	MFIE_TYPE_CF_SET = 4,
+-	MFIE_TYPE_TIM = 5,
+-	MFIE_TYPE_IBSS_SET = 6,
+-	MFIE_TYPE_COUNTRY = 7,
+-	MFIE_TYPE_HOP_PARAMS = 8,
+-	MFIE_TYPE_HOP_TABLE = 9,
+-	MFIE_TYPE_REQUEST = 10,
+-	MFIE_TYPE_CHALLENGE = 16,
+-	MFIE_TYPE_POWER_CONSTRAINT = 32,
+-	MFIE_TYPE_POWER_CAPABILITY = 33,
+-	MFIE_TYPE_TPC_REQUEST = 34,
+-	MFIE_TYPE_TPC_REPORT = 35,
+-	MFIE_TYPE_SUPP_CHANNELS = 36,
+-	MFIE_TYPE_CSA = 37,
+-	MFIE_TYPE_MEASURE_REQUEST = 38,
+-	MFIE_TYPE_MEASURE_REPORT = 39,
+-	MFIE_TYPE_QUIET = 40,
+-	MFIE_TYPE_IBSS_DFS = 41,
+-	MFIE_TYPE_ERP = 42,
+-	MFIE_TYPE_RSN = 48,
+-	MFIE_TYPE_RATES_EX = 50,
+-	MFIE_TYPE_HT_CAP = 45,
+-	 MFIE_TYPE_HT_INFO = 61,
+-	 MFIE_TYPE_AIRONET = 133,
+-	MFIE_TYPE_GENERIC = 221,
+-	MFIE_TYPE_QOS_PARAMETER = 222,
+-};
+-
+-/* Minimal header; can be used for passing 802.11 frames with sufficient
+- * information to determine what type of underlying data type is actually
+- * stored in the data.
+- */
+-struct rtl_80211_hdr {
+-	__le16 frame_ctl;
+-	__le16 duration_id;
+-	u8 payload[];
+-} __packed;
+-
+-struct rtl_80211_hdr_1addr {
+-	__le16 frame_ctl;
+-	__le16 duration_id;
+-	u8 addr1[ETH_ALEN];
+-	u8 payload[];
+-} __packed;
+-
+-struct rtl_80211_hdr_2addr {
+-	__le16 frame_ctl;
+-	__le16 duration_id;
+-	u8 addr1[ETH_ALEN];
+-	u8 addr2[ETH_ALEN];
+-	u8 payload[];
+-} __packed;
+-
+-struct rtl_80211_hdr_3addr {
+-	__le16 frame_ctl;
+-	__le16 duration_id;
+-	u8 addr1[ETH_ALEN];
+-	u8 addr2[ETH_ALEN];
+-	u8 addr3[ETH_ALEN];
+-	__le16 seq_ctl;
+-	u8 payload[];
+-} __packed;
+-
+-struct rtl_80211_hdr_4addr {
+-	__le16 frame_ctl;
+-	__le16 duration_id;
+-	u8 addr1[ETH_ALEN];
+-	u8 addr2[ETH_ALEN];
+-	u8 addr3[ETH_ALEN];
+-	__le16 seq_ctl;
+-	u8 addr4[ETH_ALEN];
+-	u8 payload[];
+-} __packed;
+-
+-struct rtl_80211_hdr_3addrqos {
+-	__le16 frame_ctl;
+-	__le16 duration_id;
+-	u8 addr1[ETH_ALEN];
+-	u8 addr2[ETH_ALEN];
+-	u8 addr3[ETH_ALEN];
+-	__le16 seq_ctl;
+-	u8 payload[0];
+-	__le16 qos_ctl;
+-} __packed;
+-
+-struct rtl_80211_hdr_4addrqos {
+-	__le16 frame_ctl;
+-	__le16 duration_id;
+-	u8 addr1[ETH_ALEN];
+-	u8 addr2[ETH_ALEN];
+-	u8 addr3[ETH_ALEN];
+-	__le16 seq_ctl;
+-	u8 addr4[ETH_ALEN];
+-	u8 payload[0];
+-	__le16 qos_ctl;
+-} __packed;
+-
+-struct ieee80211_info_element {
+-	u8 id;
+-	u8 len;
+-	u8 data[];
+-} __packed;
+-
+-struct ieee80211_authentication {
+-	struct rtl_80211_hdr_3addr header;
+-	__le16 algorithm;
+-	__le16 transaction;
+-	__le16 status;
+-	/*challenge*/
+-	struct ieee80211_info_element info_element[];
+-} __packed;
+-
+-struct ieee80211_disassoc {
+-	struct rtl_80211_hdr_3addr header;
+-	__le16 reason;
+-} __packed;
+-
+-struct ieee80211_probe_request {
+-	struct rtl_80211_hdr_3addr header;
+-	/* SSID, supported rates */
+-	struct ieee80211_info_element info_element[];
+-} __packed;
+-
+-struct ieee80211_probe_response {
+-	struct rtl_80211_hdr_3addr header;
+-	__le32 time_stamp[2];
+-	__le16 beacon_interval;
+-	__le16 capability;
+-	/* SSID, supported rates, FH params, DS params,
+-	 * CF params, IBSS params, TIM (if beacon), RSN
+-	 */
+-	struct ieee80211_info_element info_element[];
+-} __packed;
+-
+-/* Alias beacon for probe_response */
+-#define ieee80211_beacon ieee80211_probe_response
+-
+-struct ieee80211_assoc_request_frame {
+-	struct rtl_80211_hdr_3addr header;
+-	__le16 capability;
+-	__le16 listen_interval;
+-	/* SSID, supported rates, RSN */
+-	struct ieee80211_info_element info_element[];
+-} __packed;
+-
+-struct ieee80211_reassoc_request_frame {
+-	struct rtl_80211_hdr_3addr header;
+-	__le16 capability;
+-	__le16 listen_interval;
+-	u8 current_ap[ETH_ALEN];
+-	/* SSID, supported rates, RSN */
+-	struct ieee80211_info_element info_element[];
+-} __packed;
+-
+-struct ieee80211_assoc_response_frame {
+-	struct rtl_80211_hdr_3addr header;
+-	__le16 capability;
+-	__le16 status;
+-	__le16 aid;
+-	struct ieee80211_info_element info_element[]; /* supported rates */
+-} __packed;
+-
+-struct ieee80211_txb {
+-	u8 nr_frags;
+-	u8 encrypted;
+-	u8 queue_index;
+-	u8 rts_included;
+-	u16 reserved;
+-	__le16 frag_size;
+-	__le16 payload_size;
+-	struct sk_buff *fragments[];
+-};
+-
+-#define MAX_TX_AGG_COUNT		  16
+-struct ieee80211_drv_agg_txb {
+-	u8 nr_drv_agg_frames;
+-	struct sk_buff *tx_agg_frames[MAX_TX_AGG_COUNT];
+-} __packed;
+-
+-#define MAX_SUBFRAME_COUNT		  64
+-struct ieee80211_rxb {
+-	u8 nr_subframes;
+-	struct sk_buff *subframes[MAX_SUBFRAME_COUNT];
+-	u8 dst[ETH_ALEN];
+-	u8 src[ETH_ALEN];
+-} __packed;
+-
+-typedef union _frameqos {
+-	u16 shortdata;
+-	u8  chardata[2];
+-	struct {
+-		u16 tid:4;
+-		u16 eosp:1;
+-		u16 ack_policy:2;
+-		u16 reserved:1;
+-		u16 txop:8;
+-	} field;
+-} frameqos, *pframeqos;
+-
+-/* SWEEP TABLE ENTRIES NUMBER*/
+-#define MAX_SWEEP_TAB_ENTRIES		  42
+-#define MAX_SWEEP_TAB_ENTRIES_PER_PACKET  7
+-/* MAX_RATES_LENGTH needs to be 12.  The spec says 8, and many APs
+- * only use 8, and then use extended rates for the remaining supported
+- * rates.  Other APs, however, stick all of their supported rates on the
+- * main rates information element...
+- */
+-#define MAX_RATES_LENGTH                  ((u8)12)
+-#define MAX_RATES_EX_LENGTH               ((u8)16)
+-#define MAX_NETWORK_COUNT                  128
+-
+-#define MAX_CHANNEL_NUMBER                 161
+-#define IEEE80211_SOFTMAC_SCAN_TIME	   100
+-//(HZ / 2)
+-#define IEEE80211_SOFTMAC_ASSOC_RETRY_TIME (HZ * 2)
+-
+-#define CRC_LENGTH                 4U
+-
+-#define MAX_WPA_IE_LEN 64
+-
+-#define NETWORK_EMPTY_ESSID (1<<0)
+-#define NETWORK_HAS_OFDM    (1<<1)
+-#define NETWORK_HAS_CCK     (1<<2)
+-
+-/* QoS structure */
+-#define NETWORK_HAS_QOS_PARAMETERS      (1<<3)
+-#define NETWORK_HAS_QOS_INFORMATION     (1<<4)
+-#define NETWORK_HAS_QOS_MASK            (NETWORK_HAS_QOS_PARAMETERS | \
+-					 NETWORK_HAS_QOS_INFORMATION)
+-/* 802.11h */
+-#define NETWORK_HAS_POWER_CONSTRAINT    (1<<5)
+-#define NETWORK_HAS_CSA                 (1<<6)
+-#define NETWORK_HAS_QUIET               (1<<7)
+-#define NETWORK_HAS_IBSS_DFS            (1<<8)
+-#define NETWORK_HAS_TPC_REPORT          (1<<9)
+-
+-#define NETWORK_HAS_ERP_VALUE           (1<<10)
+-
+-#define QOS_QUEUE_NUM                   4
+-#define QOS_OUI_LEN                     3
+-#define QOS_OUI_TYPE                    2
+-#define QOS_ELEMENT_ID                  221
+-#define QOS_OUI_INFO_SUB_TYPE           0
+-#define QOS_OUI_PARAM_SUB_TYPE          1
+-#define QOS_VERSION_1                   1
+-#define QOS_AIFSN_MIN_VALUE             2
+-struct ieee80211_qos_information_element {
+-	u8 elementID;
+-	u8 length;
+-	u8 qui[QOS_OUI_LEN];
+-	u8 qui_type;
+-	u8 qui_subtype;
+-	u8 version;
+-	u8 ac_info;
+-} __packed;
+-
+-struct ieee80211_qos_ac_parameter {
+-	u8 aci_aifsn;
+-	u8 ecw_min_max;
+-	__le16 tx_op_limit;
+-} __packed;
+-
+-struct ieee80211_qos_parameter_info {
+-	struct ieee80211_qos_information_element info_element;
+-	u8 reserved;
+-	struct ieee80211_qos_ac_parameter ac_params_record[QOS_QUEUE_NUM];
+-} __packed;
+-
+-struct ieee80211_qos_parameters {
+-	__le16 cw_min[QOS_QUEUE_NUM];
+-	__le16 cw_max[QOS_QUEUE_NUM];
+-	u8 aifs[QOS_QUEUE_NUM];
+-	u8 flag[QOS_QUEUE_NUM];
+-	__le16 tx_op_limit[QOS_QUEUE_NUM];
+-} __packed;
+-
+-struct ieee80211_qos_data {
+-	struct ieee80211_qos_parameters parameters;
+-	int active;
+-	int supported;
+-	u8 param_count;
+-	u8 old_param_count;
+-};
+-
+-struct ieee80211_tim_parameters {
+-	u8 tim_count;
+-	u8 tim_period;
+-} __packed;
+-
+-//#else
+-struct ieee80211_wmm_ts_info {
+-	u8 ac_dir_tid;
+-	u8 ac_up_psb;
+-	u8 reserved;
+-} __packed;
+-
+-struct ieee80211_wmm_tspec_elem {
+-	struct ieee80211_wmm_ts_info ts_info;
+-	u16 norm_msdu_size;
+-	u16 max_msdu_size;
+-	u32 min_serv_inter;
+-	u32 max_serv_inter;
+-	u32 inact_inter;
+-	u32 suspen_inter;
+-	u32 serv_start_time;
+-	u32 min_data_rate;
+-	u32 mean_data_rate;
+-	u32 peak_data_rate;
+-	u32 max_burst_size;
+-	u32 delay_bound;
+-	u32 min_phy_rate;
+-	u16 surp_band_allow;
+-	u16 medium_time;
+-} __packed;
+-enum eap_type {
+-	EAP_PACKET = 0,
+-	EAPOL_START,
+-	EAPOL_LOGOFF,
+-	EAPOL_KEY,
+-	EAPOL_ENCAP_ASF_ALERT
+-};
+-
+-static const char *eap_types[] = {
+-	[EAP_PACKET]		= "EAP-Packet",
+-	[EAPOL_START]		= "EAPOL-Start",
+-	[EAPOL_LOGOFF]		= "EAPOL-Logoff",
+-	[EAPOL_KEY]		= "EAPOL-Key",
+-	[EAPOL_ENCAP_ASF_ALERT]	= "EAPOL-Encap-ASF-Alert"
+-};
+-
+-static inline const char *eap_get_type(int type)
+-{
+-	return ((u32)type >= ARRAY_SIZE(eap_types)) ? "Unknown" : eap_types[type];
+-}
+-//added by amy for reorder
+-static inline u8 Frame_QoSTID(u8 *buf)
+-{
+-	struct rtl_80211_hdr_3addr *hdr;
+-	u16 fc;
+-	hdr = (struct rtl_80211_hdr_3addr *)buf;
+-	fc = le16_to_cpu(hdr->frame_ctl);
+-	return (u8)((frameqos *)(buf + (((fc & IEEE80211_FCTL_TODS) && (fc & IEEE80211_FCTL_FROMDS)) ? 30 : 24)))->field.tid;
+-}
+-
+-//added by amy for reorder
+-
+-struct eapol {
+-	u8 snap[6];
+-	u16 ethertype;
+-	u8 version;
+-	u8 type;
+-	u16 length;
+-} __packed;
+-
+-struct ieee80211_softmac_stats {
+-	unsigned int rx_ass_ok;
+-	unsigned int rx_ass_err;
+-	unsigned int rx_probe_rq;
+-	unsigned int tx_probe_rs;
+-	unsigned int tx_beacons;
+-	unsigned int rx_auth_rq;
+-	unsigned int rx_auth_rs_ok;
+-	unsigned int rx_auth_rs_err;
+-	unsigned int tx_auth_rq;
+-	unsigned int no_auth_rs;
+-	unsigned int no_ass_rs;
+-	unsigned int tx_ass_rq;
+-	unsigned int rx_ass_rq;
+-	unsigned int tx_probe_rq;
+-	unsigned int reassoc;
+-	unsigned int swtxstop;
+-	unsigned int swtxawake;
+-	unsigned char CurrentShowTxate;
+-	unsigned char last_packet_rate;
+-	unsigned int txretrycount;
+-};
+-
+-#define BEACON_PROBE_SSID_ID_POSITION 12
+-
+-struct ieee80211_info_element_hdr {
+-	u8 id;
+-	u8 len;
+-} __packed;
+-
+-/*
+- * These are the data types that can make up management packets
+- *
+-	u16 auth_algorithm;
+-	u16 auth_sequence;
+-	u16 beacon_interval;
+-	u16 capability;
+-	u8 current_ap[ETH_ALEN];
+-	u16 listen_interval;
+-	struct {
+-		u16 association_id:14, reserved:2;
+-	} __packed;
+-	u32 time_stamp[2];
+-	u16 reason;
+-	u16 status;
+-*/
+-
+-#define IEEE80211_DEFAULT_TX_ESSID "Penguin"
+-#define IEEE80211_DEFAULT_BASIC_RATE 2 //1Mbps
+-
+-enum {WMM_all_frame, WMM_two_frame, WMM_four_frame, WMM_six_frame};
+-#define MAX_SP_Len  (WMM_all_frame << 4)
+-#define IEEE80211_QOS_TID 0x0f
+-#define QOS_CTL_NOTCONTAIN_ACK (0x01 << 5)
+-
+-#define IEEE80211_DTIM_MBCAST 4
+-#define IEEE80211_DTIM_UCAST 2
+-#define IEEE80211_DTIM_VALID 1
+-#define IEEE80211_DTIM_INVALID 0
+-
+-#define IEEE80211_PS_DISABLED 0
+-#define IEEE80211_PS_UNICAST IEEE80211_DTIM_UCAST
+-#define IEEE80211_PS_MBCAST IEEE80211_DTIM_MBCAST
+-
+-//added by David for QoS 2006/6/30
+-//#define WMM_Hang_8187
+-#ifdef WMM_Hang_8187
+-#undef WMM_Hang_8187
+-#endif
+-
+-#define WME_AC_BK   0x00
+-#define WME_AC_BE   0x01
+-#define WME_AC_VI   0x02
+-#define WME_AC_VO   0x03
+-#define WME_ACI_MASK 0x03
+-#define WME_AIFSN_MASK 0x03
+-#define WME_AC_PRAM_LEN 16
+-
+-#define MAX_RECEIVE_BUFFER_SIZE 9100
+-
+-//UP Mapping to AC, using in MgntQuery_SequenceNumber() and maybe for DSCP
+-//#define UP2AC(up)	((up<3) ? ((up==0)?1:0) : (up>>1))
+-#define UP2AC(up) (		   \
+-	((up) < 1) ? WME_AC_BE : \
+-	((up) < 3) ? WME_AC_BK : \
+-	((up) < 4) ? WME_AC_BE : \
+-	((up) < 6) ? WME_AC_VI : \
+-	WME_AC_VO)
+-//AC Mapping to UP, using in Tx part for selecting the corresponding TX queue
+-#define AC2UP(_ac)	(       \
+-	((_ac) == WME_AC_VO) ? 6 : \
+-	((_ac) == WME_AC_VI) ? 5 : \
+-	((_ac) == WME_AC_BK) ? 1 : \
+-	0)
+-
+-#define	ETHER_ADDR_LEN		6	/* length of an Ethernet address */
+-#define ETHERNET_HEADER_SIZE    14      /* length of two Ethernet address plus ether type*/
+-
+-struct	ether_header {
+-	u8 ether_dhost[ETHER_ADDR_LEN];
+-	u8 ether_shost[ETHER_ADDR_LEN];
+-	u16 ether_type;
+-} __packed;
+-
+-#ifndef ETHERTYPE_PAE
+-#define	ETHERTYPE_PAE	0x888e		/* EAPOL PAE/802.1x */
+-#endif
+-#ifndef ETHERTYPE_IP
+-#define	ETHERTYPE_IP	0x0800		/* IP protocol */
+-#endif
+-
+-typedef enum _erp_t {
+-	ERP_NonERPpresent	= 0x01,
+-	ERP_UseProtection	= 0x02,
+-	ERP_BarkerPreambleMode = 0x04,
+-} erp_t;
+-
+-
+-struct ieee80211_network {
+-	/* These entries are used to identify a unique network */
+-	u8 bssid[ETH_ALEN];   /* u16 aligned! */
+-	u8 channel;
+-
+-	// CCXv4 S59, MBSSID.
+-	bool	bMBssidValid;
+-	u8	MBssid[ETH_ALEN];    /* u16 aligned! */
+-	u8	MBssidMask;
+-	/* Ensure null-terminated for any debug msgs */
+-	u8 ssid[IW_ESSID_MAX_SIZE + 1];
+-	u8 ssid_len;
+-	struct ieee80211_qos_data qos_data;
+-
+-	//added by amy for LEAP
+-	bool	bWithAironetIE;
+-	bool	bCkipSupported;
+-	bool	bCcxRmEnable;
+-	u16	CcxRmState[2];
+-	// CCX 2 S38, WLAN Device Version Number element. Annie, 2006-08-20.
+-	bool	bWithCcxVerNum;
+-	u8	BssCcxVerNumber;
+-	/* These are network statistics */
+-	struct ieee80211_rx_stats stats;
+-	u16 capability;
+-	u8  rates[MAX_RATES_LENGTH];
+-	u8  rates_len;
+-	u8  rates_ex[MAX_RATES_EX_LENGTH];
+-	u8  rates_ex_len;
+-	unsigned long last_scanned;
+-	u8  mode;
+-	u32 flags;
+-	u32 last_associate;
+-	u32 time_stamp[2];
+-	u16 beacon_interval;
+-	u16 listen_interval;
+-	u16 atim_window;
+-	u8  erp_value;
+-	u8  wpa_ie[MAX_WPA_IE_LEN];
+-	size_t wpa_ie_len;
+-	u8  rsn_ie[MAX_WPA_IE_LEN];
+-	size_t rsn_ie_len;
+-
+-	struct ieee80211_tim_parameters tim;
+-	u8  dtim_period;
+-	u8  dtim_data;
+-	u32 last_dtim_sta_time[2];
+-
+-	//appeded for QoS
+-	u8 wmm_info;
+-	struct ieee80211_wmm_ac_param wmm_param[4];
+-	u8 QoS_Enable;
+-#ifdef THOMAS_TURBO
+-	u8 Turbo_Enable;//enable turbo mode, added by thomas
+-#endif
+-	u16 CountryIeLen;
+-	u8 CountryIeBuf[MAX_IE_LEN];
+-	// HT Related, by amy, 2008.04.29
+-	BSS_HT	bssht;
+-	// Add to handle broadcom AP management frame CCK rate.
+-	bool broadcom_cap_exist;
+-	bool ralink_cap_exist;
+-	bool atheros_cap_exist;
+-	bool cisco_cap_exist;
+-	bool unknown_cap_exist;
+-//	u8	berp_info;
+-	bool	berp_info_valid;
+-	bool buseprotection;
+-	//put at the end of the structure.
+-	struct list_head list;
+-};
+-
+-enum ieee80211_state {
+-
+-	/* the card is not linked at all */
+-	IEEE80211_NOLINK = 0,
+-
+-	/* IEEE80211_ASSOCIATING* are for BSS client mode
+-	 * the driver shall not perform RX filtering unless
+-	 * the state is LINKED.
+-	 * The driver shall just check for the state LINKED and
+-	 * defaults to NOLINK for ALL the other states (including
+-	 * LINKED_SCANNING)
+-	 */
+-
+-	/* the association procedure will start (wq scheduling)*/
+-	IEEE80211_ASSOCIATING,
+-	IEEE80211_ASSOCIATING_RETRY,
+-
+-	/* the association procedure is sending AUTH request*/
+-	IEEE80211_ASSOCIATING_AUTHENTICATING,
+-
+-	/* the association procedure has successfully authentcated
+-	 * and is sending association request
+-	 */
+-	IEEE80211_ASSOCIATING_AUTHENTICATED,
+-
+-	/* the link is ok. the card associated to a BSS or linked
+-	 * to a ibss cell or acting as an AP and creating the bss
+-	 */
+-	IEEE80211_LINKED,
+-
+-	/* same as LINKED, but the driver shall apply RX filter
+-	 * rules as we are in NO_LINK mode. As the card is still
+-	 * logically linked, but it is doing a syncro site survey
+-	 * then it will be back to LINKED state.
+-	 */
+-	IEEE80211_LINKED_SCANNING,
+-
+-};
+-
+-#define DEFAULT_MAX_SCAN_AGE (15 * HZ)
+-#define DEFAULT_FTS 2346
+-
+-#define CFG_IEEE80211_RESERVE_FCS (1<<0)
+-#define CFG_IEEE80211_COMPUTE_FCS (1<<1)
+-#define CFG_IEEE80211_RTS (1<<2)
+-
+-#define IEEE80211_24GHZ_MIN_CHANNEL 1
+-#define IEEE80211_24GHZ_MAX_CHANNEL 14
+-#define IEEE80211_24GHZ_CHANNELS (IEEE80211_24GHZ_MAX_CHANNEL - \
+-				  IEEE80211_24GHZ_MIN_CHANNEL + 1)
+-
+-#define IEEE80211_52GHZ_MIN_CHANNEL 34
+-#define IEEE80211_52GHZ_MAX_CHANNEL 165
+-#define IEEE80211_52GHZ_CHANNELS (IEEE80211_52GHZ_MAX_CHANNEL - \
+-				  IEEE80211_52GHZ_MIN_CHANNEL + 1)
+-
+-
+-
+-struct tx_pending {
+-	int frag;
+-	struct ieee80211_txb *txb;
+-};
+-
+-struct bandwidth_autoswitch {
+-	long threshold_20Mhzto40Mhz;
+-	long	threshold_40Mhzto20Mhz;
+-	bool bforced_tx20Mhz;
+-	bool bautoswitch_enable;
+-};
+-
+-
+-//added by amy for order
+-
+-#define REORDER_WIN_SIZE	128
+-#define REORDER_ENTRY_NUM	128
+-struct rx_reorder_entry {
+-	struct list_head	List;
+-	u16			SeqNum;
+-	struct ieee80211_rxb *prxb;
+-};
+-//added by amy for order
+-typedef enum _Fsync_State {
+-	Default_Fsync,
+-	HW_Fsync,
+-	SW_Fsync
+-} Fsync_State;
+-
+-// Power save mode configured.
+-typedef	enum _RT_PS_MODE {
+-	eActive,	// Active/Continuous access.
+-	eMaxPs,		// Max power save mode.
+-	eFastPs		// Fast power save mode.
+-} RT_PS_MODE;
+-
+-typedef enum _IPS_CALLBACK_FUNCION {
+-	IPS_CALLBACK_NONE = 0,
+-	IPS_CALLBACK_MGNT_LINK_REQUEST = 1,
+-	IPS_CALLBACK_JOIN_REQUEST = 2,
+-} IPS_CALLBACK_FUNCION;
+-
+-typedef enum _RT_JOIN_ACTION {
+-	RT_JOIN_INFRA   = 1,
+-	RT_JOIN_IBSS  = 2,
+-	RT_START_IBSS = 3,
+-	RT_NO_ACTION  = 4,
+-} RT_JOIN_ACTION;
+-
+-struct ibss_parms {
+-	u16   atimWin;
+-};
+-#define MAX_NUM_RATES	264 // Max num of support rates element: 8,  Max num of ext. support rate: 255. 061122, by rcnjko.
+-
+-// RF state.
+-typedef	enum _RT_RF_POWER_STATE {
+-	eRfOn,
+-	eRfSleep,
+-	eRfOff
+-} RT_RF_POWER_STATE;
+-
+-struct rt_power_save_control {
+-
+-	//
+-	// Inactive Power Save(IPS) : Disable RF when disconnected
+-	//
+-	bool				bInactivePs;
+-	bool				bIPSModeBackup;
+-	bool				bSwRfProcessing;
+-	RT_RF_POWER_STATE	eInactivePowerState;
+-	struct work_struct	InactivePsWorkItem;
+-	struct timer_list	InactivePsTimer;
+-
+-	// Return point for join action
+-	IPS_CALLBACK_FUNCION	ReturnPoint;
+-
+-	// Recored Parameters for rescheduled JoinRequest
+-	bool				bTmpBssDesc;
+-	RT_JOIN_ACTION		tmpJoinAction;
+-	struct ieee80211_network tmpBssDesc;
+-
+-	// Recored Parameters for rescheduled MgntLinkRequest
+-	bool				bTmpScanOnly;
+-	bool				bTmpActiveScan;
+-	bool				bTmpFilterHiddenAP;
+-	bool				bTmpUpdateParms;
+-	u8					tmpSsidBuf[33];
+-	struct octet_string			tmpSsid2Scan;
+-	bool				bTmpSsid2Scan;
+-	u8					tmpNetworkType;
+-	u8					tmpChannelNumber;
+-	u16					tmpBcnPeriod;
+-	u8					tmpDtimPeriod;
+-	u16					tmpmCap;
+-	struct octet_string			tmpSuppRateSet;
+-	u8					tmpSuppRateBuf[MAX_NUM_RATES];
+-	bool				bTmpSuppRate;
+-	struct ibss_parms			tmpIbpm;
+-	bool				bTmpIbpm;
+-
+-	//
+-	// Leisre Poswer Save : Disable RF if connected but traffic is not busy
+-	//
+-	bool				bLeisurePs;
+-
+-};
+-
+-typedef u32 RT_RF_CHANGE_SOURCE;
+-#define RF_CHANGE_BY_SW		BIT(31)
+-#define RF_CHANGE_BY_HW		BIT(30)
+-#define RF_CHANGE_BY_PS		BIT(29)
+-#define RF_CHANGE_BY_IPS	BIT(28)
+-#define RF_CHANGE_BY_INIT	0	// Do not change the RFOff reason. Defined by Bruce, 2008-01-17.
+-
+-typedef enum {
+-	COUNTRY_CODE_FCC = 0,
+-	COUNTRY_CODE_IC = 1,
+-	COUNTRY_CODE_ETSI = 2,
+-	COUNTRY_CODE_SPAIN = 3,
+-	COUNTRY_CODE_FRANCE = 4,
+-	COUNTRY_CODE_MKK = 5,
+-	COUNTRY_CODE_MKK1 = 6,
+-	COUNTRY_CODE_ISRAEL = 7,
+-	COUNTRY_CODE_TELEC,
+-	COUNTRY_CODE_MIC,
+-	COUNTRY_CODE_GLOBAL_DOMAIN
+-} country_code_type_t;
+-
+-#define RT_MAX_LD_SLOT_NUM	10
+-struct rt_link_detect {
+-
+-	u32				NumRecvBcnInPeriod;
+-	u32				NumRecvDataInPeriod;
+-
+-	u32				RxBcnNum[RT_MAX_LD_SLOT_NUM];	// number of Rx beacon / CheckForHang_period  to determine link status
+-	u32				RxDataNum[RT_MAX_LD_SLOT_NUM];	// number of Rx data / CheckForHang_period  to determine link status
+-	u16				SlotNum;	// number of CheckForHang period to determine link status
+-	u16				SlotIndex;
+-
+-	u32				NumTxOkInPeriod;
+-	u32				NumRxOkInPeriod;
+-	bool				bBusyTraffic;
+-};
+-
+-
+-struct ieee80211_device {
+-	struct net_device *dev;
+-	struct ieee80211_security sec;
+-
+-	//hw security related
+-//	u8 hwsec_support; //support?
+-	u8 hwsec_active;  //hw security active.
+-	bool is_silent_reset;
+-	bool ieee_up;
+-	//added by amy
+-	bool bSupportRemoteWakeUp;
+-	RT_PS_MODE	dot11PowerSaveMode; // Power save mode configured.
+-	bool actscanning;
+-	bool beinretry;
+-	RT_RF_POWER_STATE		eRFPowerState;
+-	RT_RF_CHANGE_SOURCE	RfOffReason;
+-	bool is_set_key;
+-	//11n spec related I wonder if These info structure need to be moved out of ieee80211_device
+-
+-	//11n HT below
+-	PRT_HIGH_THROUGHPUT	pHTInfo;
+-	//struct timer_list		SwBwTimer;
+-//	spinlock_t chnlop_spinlock;
+-	spinlock_t bw_spinlock;
+-
+-	spinlock_t reorder_spinlock;
+-	// for HT operation rate set.  we use this one for HT data rate to separate different descriptors
+-	//the way fill this is the same as in the IE
+-	u8	Regdot11HTOperationalRateSet[16];		//use RATR format
+-	u8	dot11HTOperationalRateSet[16];		//use RATR format
+-	u8	RegHTSuppRateSet[16];
+-	u8				HTCurrentOperaRate;
+-	u8				HTHighestOperaRate;
+-	//wb added for rate operation mode to firmware
+-	u8	bTxDisableRateFallBack;
+-	u8	bTxUseDriverAssingedRate;
+-	atomic_t	atm_chnlop;
+-	atomic_t	atm_swbw;
+-//	u8	HTHighestOperaRate;
+-//	u8	HTCurrentOperaRate;
+-
+-	// 802.11e and WMM Traffic Stream Info (TX)
+-	struct list_head		Tx_TS_Admit_List;
+-	struct list_head		Tx_TS_Pending_List;
+-	struct list_head		Tx_TS_Unused_List;
+-	struct tx_ts_record		TxTsRecord[TOTAL_TS_NUM];
+-	// 802.11e and WMM Traffic Stream Info (RX)
+-	struct list_head		Rx_TS_Admit_List;
+-	struct list_head		Rx_TS_Pending_List;
+-	struct list_head		Rx_TS_Unused_List;
+-	struct rx_ts_record		RxTsRecord[TOTAL_TS_NUM];
+-	struct rx_reorder_entry	RxReorderEntry[128];
+-	struct list_head		RxReorder_Unused_List;
+-	// Qos related. Added by Annie, 2005-11-01.
+-//	PSTA_QOS			pStaQos;
+-	u8				ForcedPriority;		// Force per-packet priority 1~7. (default: 0, not to force it.)
+-
+-
+-	/* Bookkeeping structures */
+-	struct net_device_stats stats;
+-	struct ieee80211_stats ieee_stats;
+-	struct ieee80211_softmac_stats softmac_stats;
+-
+-	/* Probe / Beacon management */
+-	struct list_head network_free_list;
+-	struct list_head network_list;
+-	struct ieee80211_network *networks;
+-	int scans;
+-	int scan_age;
+-
+-	int iw_mode; /* operating mode (IW_MODE_*) */
+-	struct iw_spy_data spy_data;
+-
+-	spinlock_t lock;
+-	spinlock_t wpax_suitlist_lock;
+-
+-	int tx_headroom; /* Set to size of any additional room needed at front
+-			  * of allocated Tx SKBs
+-			  */
+-	u32 config;
+-
+-	/* WEP and other encryption related settings at the device level */
+-	int open_wep; /* Set to 1 to allow unencrypted frames */
+-	int auth_mode;
+-	int reset_on_keychange; /* Set to 1 if the HW needs to be reset on
+-				 * WEP key changes
+-				 */
+-
+-	/* If the host performs {en,de}cryption, then set to 1 */
+-	int host_encrypt;
+-	int host_encrypt_msdu;
+-	int host_decrypt;
+-	/* host performs multicast decryption */
+-	int host_mc_decrypt;
+-
+-	/* host should strip IV and ICV from protected frames */
+-	/* meaningful only when hardware decryption is being used */
+-	int host_strip_iv_icv;
+-
+-	int host_open_frag;
+-	int host_build_iv;
+-	int ieee802_1x; /* is IEEE 802.1X used */
+-
+-	/* WPA data */
+-	bool bHalfWirelessN24GMode;
+-	int wpa_enabled;
+-	int drop_unencrypted;
+-	int tkip_countermeasures;
+-	int privacy_invoked;
+-	size_t wpa_ie_len;
+-	u8 *wpa_ie;
+-	u8 ap_mac_addr[6];
+-	u16 pairwise_key_type;
+-	u16 group_key_type;
+-	struct list_head crypt_deinit_list;
+-	struct ieee80211_crypt_data *crypt[WEP_KEYS];
+-	int tx_keyidx; /* default TX key index (crypt[tx_keyidx]) */
+-	struct timer_list crypt_deinit_timer;
+-	int crypt_quiesced;
+-
+-	int bcrx_sta_key; /* use individual keys to override default keys even
+-			   * with RX of broad/multicast frames
+-			   */
+-
+-	/* Fragmentation structures */
+-	// each streaming contain a entry
+-	struct ieee80211_frag_entry frag_cache[17][IEEE80211_FRAG_CACHE_LEN];
+-	unsigned int frag_next_idx[17];
+-	u16 fts; /* Fragmentation Threshold */
+-#define DEFAULT_RTS_THRESHOLD 2346U
+-#define MIN_RTS_THRESHOLD 1
+-#define MAX_RTS_THRESHOLD 2346U
+-	u16 rts; /* RTS threshold */
+-
+-	/* Association info */
+-	u8 bssid[ETH_ALEN];
+-
+-	/* This stores infos for the current network.
+-	 * Either the network we are associated in INFRASTRUCTURE
+-	 * or the network that we are creating in MASTER mode.
+-	 * ad-hoc is a mixture ;-).
+-	 * Note that in infrastructure mode, even when not associated,
+-	 * fields bssid and essid may be valid (if wpa_set and essid_set
+-	 * are true) as thy carry the value set by the user via iwconfig
+-	 */
+-	struct ieee80211_network current_network;
+-
+-	enum ieee80211_state state;
+-
+-	int short_slot;
+-	int reg_mode;
+-	int mode;       /* A, B, G */
+-	int modulation; /* CCK, OFDM */
+-	int freq_band;  /* 2.4Ghz, 5.2Ghz, Mixed */
+-	int abg_true;   /* ABG flag              */
+-
+-	/* used for forcing the ibss workqueue to terminate
+-	 * without wait for the syncro scan to terminate
+-	 */
+-	short sync_scan_hurryup;
+-
+-	int perfect_rssi;
+-	int worst_rssi;
+-
+-	u16 prev_seq_ctl;       /* used to drop duplicate frames */
+-
+-	/* map of allowed channels. 0 is dummy */
+-	// FIXME: remember to default to a basic channel plan depending of the PHY type
+-	void *dot11d_info;
+-	bool bGlobalDomain;
+-	int rate;       /* current rate */
+-	int basic_rate;
+-	//FIXME: pleace callback, see if redundant with softmac_features
+-	short active_scan;
+-
+-	/* this contains flags for selectively enable softmac support */
+-	u16 softmac_features;
+-
+-	/* if the sequence control field is not filled by HW */
+-	u16 seq_ctrl[5];
+-
+-	/* association procedure transaction sequence number */
+-	u16 associate_seq;
+-
+-	/* AID for RTXed association responses */
+-	u16 assoc_id;
+-
+-	/* power save mode related*/
+-	short ps;
+-	short sta_sleep;
+-	int ps_timeout;
+-	int ps_period;
+-	struct work_struct ps_task;
+-	u32 ps_th;
+-	u32 ps_tl;
+-
+-	short raw_tx;
+-	/* used if IEEE_SOFTMAC_TX_QUEUE is set */
+-	short queue_stop;
+-	short scanning;
+-	short proto_started;
+-
+-	struct mutex wx_mutex;
+-	struct mutex scan_mutex;
+-
+-	spinlock_t mgmt_tx_lock;
+-	spinlock_t beacon_lock;
+-
+-	short beacon_txing;
+-
+-	short wap_set;
+-	short ssid_set;
+-
+-	u8  wpax_type_set;    //{added by David, 2006.9.28}
+-	u32 wpax_type_notify; //{added by David, 2006.9.26}
+-
+-	/* QoS related flag */
+-	s8  init_wmmparam_flag;
+-	/* set on initialization */
+-	u8  qos_support;
+-
+-	/* for discarding duplicated packets in IBSS */
+-	struct list_head ibss_mac_hash[IEEE_IBSS_MAC_HASH_SIZE];
+-
+-	/* for discarding duplicated packets in BSS */
+-	u16 last_rxseq_num[17]; /* rx seq previous per-tid */
+-	u16 last_rxfrag_num[17];/* tx frag previous per-tid */
+-	unsigned long last_packet_time[17];
+-
+-	/* for PS mode */
+-	unsigned long last_rx_ps_time;
+-
+-	/* used if IEEE_SOFTMAC_SINGLE_QUEUE is set */
+-	struct sk_buff *mgmt_queue_ring[MGMT_QUEUE_NUM];
+-	int mgmt_queue_head;
+-	int mgmt_queue_tail;
+-//{ added for rtl819x
+-#define IEEE80211_QUEUE_LIMIT 128
+-	u8 AsocRetryCount;
+-	unsigned int hw_header;
+-	struct sk_buff_head skb_waitQ[MAX_QUEUE_SIZE];
+-	struct sk_buff_head  skb_aggQ[MAX_QUEUE_SIZE];
+-	struct sk_buff_head  skb_drv_aggQ[MAX_QUEUE_SIZE];
+-	u32	sta_edca_param[4];
+-	bool aggregation;
+-	// Enable/Disable Rx immediate BA capability.
+-	bool enable_rx_imm_BA;
+-	bool bibsscoordinator;
+-
+-	//+by amy for DM ,080515
+-	//Dynamic Tx power for near/far range enable/Disable  , by amy , 2008-05-15
+-	bool	bdynamic_txpower_enable;
+-
+-	bool bCTSToSelfEnable;
+-	u8	CTSToSelfTH;
+-
+-	u32	fsync_time_interval;
+-	u32	fsync_rate_bitmap;
+-	u8	fsync_rssi_threshold;
+-	bool	bfsync_enable;
+-
+-	u8	fsync_multiple_timeinterval;		// FsyncMultipleTimeInterval * FsyncTimeInterval
+-	u32	fsync_firstdiff_ratethreshold;		// low threshold
+-	u32	fsync_seconddiff_ratethreshold;	 // decrease threshold
+-	Fsync_State			fsync_state;
+-	bool		bis_any_nonbepkts;
+-	//20Mhz 40Mhz AutoSwitch Threshold
+-	struct bandwidth_autoswitch bandwidth_auto_switch;
+-	//for txpower tracking
+-	bool FwRWRF;
+-
+-	//added by amy for AP roaming
+-	struct rt_link_detect LinkDetectInfo;
+-	//added by amy for ps
+-	struct rt_power_save_control PowerSaveControl;
+-//}
+-	/* used if IEEE_SOFTMAC_TX_QUEUE is set */
+-	struct  tx_pending tx_pending;
+-
+-	/* used if IEEE_SOFTMAC_ASSOCIATE is set */
+-	struct timer_list associate_timer;
+-
+-	/* used if IEEE_SOFTMAC_BEACONS is set */
+-	struct timer_list beacon_timer;
+-	struct work_struct associate_complete_wq;
+-	struct work_struct associate_procedure_wq;
+-	struct delayed_work softmac_scan_wq;
+-	struct delayed_work associate_retry_wq;
+-	struct delayed_work start_ibss_wq;
+-	struct work_struct wx_sync_scan_wq;
+-	struct workqueue_struct *wq;
+-	// Qos related. Added by Annie, 2005-11-01.
+-	//STA_QOS  StaQos;
+-
+-	//u32 STA_EDCA_PARAM[4];
+-	//CHANNEL_ACCESS_SETTING ChannelAccessSetting;
+-
+-	struct ieee80211_rxb *stats_IndicateArray[REORDER_WIN_SIZE];
+-
+-	/* Callback functions */
+-	void (*set_security)(struct net_device *dev,
+-			     struct ieee80211_security *sec);
+-
+-	/* Used to TX data frame by using txb structs.
+-	 * this is not used if in the softmac_features
+-	 * is set the flag IEEE_SOFTMAC_TX_QUEUE
+-	 */
+-	int (*hard_start_xmit)(struct ieee80211_txb *txb,
+-			       struct net_device *dev);
+-
+-	int (*reset_port)(struct net_device *dev);
+-	int (*is_queue_full)(struct net_device *dev, int pri);
+-
+-	int (*handle_management)(struct net_device *dev,
+-				  struct ieee80211_network *network, u16 type);
+-	int (*is_qos_active)(struct net_device *dev, struct sk_buff *skb);
+-
+-	/* Softmac-generated frames (management) are TXed via this
+-	 * callback if the flag IEEE_SOFTMAC_SINGLE_QUEUE is
+-	 * not set. As some cards may have different HW queues that
+-	 * one might want to use for data and management frames
+-	 * the option to have two callbacks might be useful.
+-	 * This function can't sleep.
+-	 */
+-	int (*softmac_hard_start_xmit)(struct sk_buff *skb,
+-			       struct net_device *dev);
+-
+-	/* used instead of hard_start_xmit (not softmac_hard_start_xmit)
+-	 * if the IEEE_SOFTMAC_TX_QUEUE feature is used to TX data
+-	 * frames. I the option IEEE_SOFTMAC_SINGLE_QUEUE is also set
+-	 * then also management frames are sent via this callback.
+-	 * This function can't sleep.
+-	 */
+-	void (*softmac_data_hard_start_xmit)(struct sk_buff *skb,
+-			       struct net_device *dev, int rate);
+-
+-	/* stops the HW queue for DATA frames. Useful to avoid
+-	 * waste time to TX data frame when we are reassociating
+-	 * This function can sleep.
+-	 */
+-	void (*data_hard_stop)(struct net_device *dev);
+-
+-	/* OK this is complementar to data_poll_hard_stop */
+-	void (*data_hard_resume)(struct net_device *dev);
+-
+-	/* ask to the driver to retune the radio .
+-	 * This function can sleep. the driver should ensure
+-	 * the radio has been switched before return.
+-	 */
+-	void (*set_chan)(struct net_device *dev, short ch);
+-
+-	/* These are not used if the ieee stack takes care of
+-	 * scanning (IEEE_SOFTMAC_SCAN feature set).
+-	 * In this case only the set_chan is used.
+-	 *
+-	 * The syncro version is similar to the start_scan but
+-	 * does not return until all channels has been scanned.
+-	 * this is called in user context and should sleep,
+-	 * it is called in a work_queue when switching to ad-hoc mode
+-	 * or in behalf of iwlist scan when the card is associated
+-	 * and root user ask for a scan.
+-	 * the function stop_scan should stop both the syncro and
+-	 * background scanning and can sleep.
+-	 * The function start_scan should initiate the background
+-	 * scanning and can't sleep.
+-	 */
+-	void (*scan_syncro)(struct net_device *dev);
+-	void (*start_scan)(struct net_device *dev);
+-	void (*stop_scan)(struct net_device *dev);
+-
+-	/* indicate the driver that the link state is changed
+-	 * for example it may indicate the card is associated now.
+-	 * Driver might be interested in this to apply RX filter
+-	 * rules or simply light the LINK led
+-	 */
+-	void (*link_change)(struct net_device *dev);
+-
+-	/* these two function indicates to the HW when to start
+-	 * and stop to send beacons. This is used when the
+-	 * IEEE_SOFTMAC_BEACONS is not set. For now the
+-	 * stop_send_bacons is NOT guaranteed to be called only
+-	 * after start_send_beacons.
+-	 */
+-	void (*start_send_beacons)(struct net_device *dev, u16 tx_rate);
+-	void (*stop_send_beacons)(struct net_device *dev);
+-
+-	/* power save mode related */
+-	void (*sta_wake_up)(struct net_device *dev);
+-	void (*ps_request_tx_ack)(struct net_device *dev);
+-	void (*enter_sleep_state)(struct net_device *dev, u32 th, u32 tl);
+-	short (*ps_is_queue_empty)(struct net_device *dev);
+-	int (*handle_beacon)(struct net_device *dev, struct ieee80211_beacon *beacon, struct ieee80211_network *network);
+-	int (*handle_assoc_response)(struct net_device *dev, struct ieee80211_assoc_response_frame *resp, struct ieee80211_network *network);
+-
+-
+-	/* check whether Tx hw resource available */
+-	short (*check_nic_enough_desc)(struct net_device *dev, int queue_index);
+-	//added by wb for HT related
+-//	void (*SwChnlByTimerHandler)(struct net_device *dev, int channel);
+-	void (*SetBWModeHandler)(struct net_device *dev, enum ht_channel_width Bandwidth, enum ht_extension_chan_offset Offset);
+-//	void (*UpdateHalRATRTableHandler)(struct net_device* dev, u8* pMcsRate);
+-	bool (*GetNmodeSupportBySecCfg)(struct net_device *dev);
+-	void (*SetWirelessMode)(struct net_device *dev, u8 wireless_mode);
+-	bool (*GetHalfNmodeSupportByAPsHandler)(struct net_device *dev);
+-	void (*InitialGainHandler)(struct net_device *dev, u8 Operation);
+-
+-	/* This must be the last item so that it points to the data
+-	 * allocated beyond this structure by alloc_ieee80211
+-	 */
+-	u8 priv[];
+-};
+-
+-#define IEEE_A            (1<<0)
+-#define IEEE_B            (1<<1)
+-#define IEEE_G            (1<<2)
+-#define IEEE_N_24G        (1<<4)
+-#define IEEE_N_5G         (1<<5)
+-#define IEEE_MODE_MASK    (IEEE_A | IEEE_B | IEEE_G)
+-
+-/* Generate a 802.11 header */
+-
+-/* Uses the channel change callback directly
+- * instead of [start/stop] scan callbacks
+- */
+-#define IEEE_SOFTMAC_SCAN (1<<2)
+-
+-/* Perform authentication and association handshake */
+-#define IEEE_SOFTMAC_ASSOCIATE (1<<3)
+-
+-/* Generate probe requests */
+-#define IEEE_SOFTMAC_PROBERQ (1<<4)
+-
+-/* Generate respones to probe requests */
+-#define IEEE_SOFTMAC_PROBERS (1<<5)
+-
+-/* The ieee802.11 stack will manages the netif queue
+- * wake/stop for the driver, taking care of 802.11
+- * fragmentation. See softmac.c for details.
+- */
+-#define IEEE_SOFTMAC_TX_QUEUE (1<<7)
+-
+-/* Uses only the softmac_data_hard_start_xmit
+- * even for TX management frames.
+- */
+-#define IEEE_SOFTMAC_SINGLE_QUEUE (1<<8)
+-
+-/* Generate beacons.  The stack will enqueue beacons
+- * to the card
+- */
+-#define IEEE_SOFTMAC_BEACONS (1<<6)
+-
+-static inline void *ieee80211_priv(struct net_device *dev)
+-{
+-	return ((struct ieee80211_device *)netdev_priv(dev))->priv;
+-}
+-
+-static inline int ieee80211_is_empty_essid(const char *essid, int essid_len)
+-{
+-	/* Single white space is for Linksys APs */
+-	if (essid_len == 1 && essid[0] == ' ')
+-		return 1;
+-
+-	/* Otherwise, if the entire essid is 0, we assume it is hidden */
+-	while (essid_len) {
+-		essid_len--;
+-		if (essid[essid_len] != '\0')
+-			return 0;
+-	}
+-
+-	return 1;
+-}
+-
+-static inline int ieee80211_is_valid_mode(struct ieee80211_device *ieee, int mode)
+-{
+-	/*
+-	 * It is possible for both access points and our device to support
+-	 * combinations of modes, so as long as there is one valid combination
+-	 * of ap/device supported modes, then return success
+-	 *
+-	 */
+-	if ((mode & IEEE_A) &&
+-	    (ieee->modulation & IEEE80211_OFDM_MODULATION) &&
+-	    (ieee->freq_band & IEEE80211_52GHZ_BAND))
+-		return 1;
+-
+-	if ((mode & IEEE_G) &&
+-	    (ieee->modulation & IEEE80211_OFDM_MODULATION) &&
+-	    (ieee->freq_band & IEEE80211_24GHZ_BAND))
+-		return 1;
+-
+-	if ((mode & IEEE_B) &&
+-	    (ieee->modulation & IEEE80211_CCK_MODULATION) &&
+-	    (ieee->freq_band & IEEE80211_24GHZ_BAND))
+-		return 1;
+-
+-	return 0;
+-}
+-
+-static inline int ieee80211_get_hdrlen(u16 fc)
+-{
+-	int hdrlen = IEEE80211_3ADDR_LEN;
+-
+-	switch (WLAN_FC_GET_TYPE(fc)) {
+-	case IEEE80211_FTYPE_DATA:
+-		if ((fc & IEEE80211_FCTL_FROMDS) && (fc & IEEE80211_FCTL_TODS))
+-			hdrlen = IEEE80211_4ADDR_LEN; /* Addr4 */
+-		if (IEEE80211_QOS_HAS_SEQ(fc))
+-			hdrlen += 2; /* QOS ctrl*/
+-		break;
+-	case IEEE80211_FTYPE_CTL:
+-		switch (WLAN_FC_GET_STYPE(fc)) {
+-		case IEEE80211_STYPE_CTS:
+-		case IEEE80211_STYPE_ACK:
+-			hdrlen = IEEE80211_1ADDR_LEN;
+-			break;
+-		default:
+-			hdrlen = IEEE80211_2ADDR_LEN;
+-			break;
+-		}
+-		break;
+-	}
+-
+-	return hdrlen;
+-}
+-
+-static inline u8 *ieee80211_get_payload(struct rtl_80211_hdr *hdr)
+-{
+-	switch (ieee80211_get_hdrlen(le16_to_cpu(hdr->frame_ctl))) {
+-	case IEEE80211_1ADDR_LEN:
+-		return ((struct rtl_80211_hdr_1addr *)hdr)->payload;
+-	case IEEE80211_2ADDR_LEN:
+-		return ((struct rtl_80211_hdr_2addr *)hdr)->payload;
+-	case IEEE80211_3ADDR_LEN:
+-		return ((struct rtl_80211_hdr_3addr *)hdr)->payload;
+-	case IEEE80211_4ADDR_LEN:
+-		return ((struct rtl_80211_hdr_4addr *)hdr)->payload;
+-	}
+-	return NULL;
+-}
+-
+-static inline int ieee80211_is_ofdm_rate(u8 rate)
+-{
+-	switch (rate & ~IEEE80211_BASIC_RATE_MASK) {
+-	case IEEE80211_OFDM_RATE_6MB:
+-	case IEEE80211_OFDM_RATE_9MB:
+-	case IEEE80211_OFDM_RATE_12MB:
+-	case IEEE80211_OFDM_RATE_18MB:
+-	case IEEE80211_OFDM_RATE_24MB:
+-	case IEEE80211_OFDM_RATE_36MB:
+-	case IEEE80211_OFDM_RATE_48MB:
+-	case IEEE80211_OFDM_RATE_54MB:
+-		return 1;
+-	}
+-	return 0;
+-}
+-
+-static inline int ieee80211_is_cck_rate(u8 rate)
+-{
+-	switch (rate & ~IEEE80211_BASIC_RATE_MASK) {
+-	case IEEE80211_CCK_RATE_1MB:
+-	case IEEE80211_CCK_RATE_2MB:
+-	case IEEE80211_CCK_RATE_5MB:
+-	case IEEE80211_CCK_RATE_11MB:
+-		return 1;
+-	}
+-	return 0;
+-}
+-
+-
+-/* ieee80211.c */
+-void free_ieee80211(struct net_device *dev);
+-struct net_device *alloc_ieee80211(int sizeof_priv);
+-
+-int ieee80211_set_encryption(struct ieee80211_device *ieee);
+-
+-/* ieee80211_tx.c */
+-
+-int ieee80211_encrypt_fragment(struct ieee80211_device *ieee,
+-			       struct sk_buff *frag, int hdr_len);
+-
+-netdev_tx_t ieee80211_xmit(struct sk_buff *skb, struct net_device *dev);
+-void ieee80211_txb_free(struct ieee80211_txb *txb);
+-
+-
+-/* ieee80211_rx.c */
+-int ieee80211_rx(struct ieee80211_device *ieee, struct sk_buff *skb,
+-		 struct ieee80211_rx_stats *rx_stats);
+-void ieee80211_rx_mgt(struct ieee80211_device *ieee,
+-		      struct rtl_80211_hdr_4addr *header,
+-		      struct ieee80211_rx_stats *stats);
+-
+-/* ieee80211_wx.c */
+-int ieee80211_wx_get_scan(struct ieee80211_device *ieee,
+-			  struct iw_request_info *info,
+-			  union iwreq_data *wrqu, char *key);
+-int ieee80211_wx_set_encode(struct ieee80211_device *ieee,
+-			    struct iw_request_info *info,
+-			    union iwreq_data *wrqu, char *key);
+-int ieee80211_wx_get_encode(struct ieee80211_device *ieee,
+-			    struct iw_request_info *info,
+-			    union iwreq_data *wrqu, char *key);
+-int ieee80211_wx_get_encode_ext(struct ieee80211_device *ieee,
+-				struct iw_request_info *info,
+-				union iwreq_data *wrqu, char *extra);
+-int ieee80211_wx_set_encode_ext(struct ieee80211_device *ieee,
+-				struct iw_request_info *info,
+-				union iwreq_data *wrqu, char *extra);
+-int ieee80211_wx_set_auth(struct ieee80211_device *ieee,
+-			  struct iw_request_info *info,
+-			  struct iw_param *data, char *extra);
+-int ieee80211_wx_set_mlme(struct ieee80211_device *ieee,
+-			  struct iw_request_info *info,
+-			  union iwreq_data *wrqu, char *extra);
+-int ieee80211_wx_set_gen_ie(struct ieee80211_device *ieee, u8 *ie, size_t len);
+-
+-/* ieee80211_softmac.c */
+-short ieee80211_is_54g(const struct ieee80211_network *net);
+-short ieee80211_is_shortslot(const struct ieee80211_network *net);
+-int ieee80211_rx_frame_softmac(struct ieee80211_device *ieee,
+-			       struct sk_buff *skb,
+-			       struct ieee80211_rx_stats *rx_stats,
+-			       u16 type, u16 stype);
+-void ieee80211_softmac_new_net(struct ieee80211_device *ieee,
+-			       struct ieee80211_network *net);
+-
+-void SendDisassociation(struct ieee80211_device *ieee, u8 *asSta, u8 asRsn);
+-void ieee80211_softmac_xmit(struct ieee80211_txb *txb,
+-			    struct ieee80211_device *ieee);
+-
+-void ieee80211_stop_send_beacons(struct ieee80211_device *ieee);
+-void notify_wx_assoc_event(struct ieee80211_device *ieee);
+-void ieee80211_softmac_check_all_nets(struct ieee80211_device *ieee);
+-void ieee80211_start_bss(struct ieee80211_device *ieee);
+-void ieee80211_start_master_bss(struct ieee80211_device *ieee);
+-void ieee80211_start_ibss(struct ieee80211_device *ieee);
+-void ieee80211_softmac_init(struct ieee80211_device *ieee);
+-void ieee80211_softmac_free(struct ieee80211_device *ieee);
+-void ieee80211_associate_abort(struct ieee80211_device *ieee);
+-void ieee80211_disassociate(struct ieee80211_device *ieee);
+-void ieee80211_stop_scan(struct ieee80211_device *ieee);
+-void ieee80211_start_scan_syncro(struct ieee80211_device *ieee);
+-void ieee80211_check_all_nets(struct ieee80211_device *ieee);
+-void ieee80211_start_protocol(struct ieee80211_device *ieee);
+-void ieee80211_stop_protocol(struct ieee80211_device *ieee);
+-void ieee80211_softmac_start_protocol(struct ieee80211_device *ieee);
+-void ieee80211_softmac_stop_protocol(struct ieee80211_device *ieee);
+-void ieee80211_reset_queue(struct ieee80211_device *ieee);
+-void ieee80211_wake_queue(struct ieee80211_device *ieee);
+-void ieee80211_stop_queue(struct ieee80211_device *ieee);
+-struct sk_buff *ieee80211_get_beacon(struct ieee80211_device *ieee);
+-void ieee80211_start_send_beacons(struct ieee80211_device *ieee);
+-int ieee80211_wpa_supplicant_ioctl(struct ieee80211_device *ieee,
+-				   struct iw_point *p);
+-void ieee80211_ps_tx_ack(struct ieee80211_device *ieee, short success);
+-
+-void softmac_mgmt_xmit(struct sk_buff *skb, struct ieee80211_device *ieee);
+-
+-/* ieee80211_crypt_ccmp&tkip&wep.c */
+-
+-int ieee80211_crypto_init(void);
+-void ieee80211_crypto_deinit(void);
+-int ieee80211_crypto_tkip_init(void);
+-void ieee80211_crypto_tkip_exit(void);
+-int ieee80211_crypto_ccmp_init(void);
+-void ieee80211_crypto_ccmp_exit(void);
+-int ieee80211_crypto_wep_init(void);
+-void ieee80211_crypto_wep_exit(void);
+-
+-/* ieee80211_softmac_wx.c */
+-
+-int ieee80211_wx_get_wap(struct ieee80211_device *ieee,
+-			 struct iw_request_info *info,
+-			 union iwreq_data *wrqu, char *ext);
+-
+-int ieee80211_wx_set_wap(struct ieee80211_device *ieee,
+-			 struct iw_request_info *info,
+-			 union iwreq_data *awrq,
+-			 char *extra);
+-
+-int ieee80211_wx_get_essid(struct ieee80211_device *ieee,
+-			   struct iw_request_info *a,
+-			   union iwreq_data *wrqu, char *b);
+-
+-int ieee80211_wx_set_rate(struct ieee80211_device *ieee,
+-			  struct iw_request_info *info,
+-			  union iwreq_data *wrqu, char *extra);
+-
+-int ieee80211_wx_get_rate(struct ieee80211_device *ieee,
+-			  struct iw_request_info *info,
+-			  union iwreq_data *wrqu, char *extra);
+-
+-int ieee80211_wx_set_mode(struct ieee80211_device *ieee,
+-			  struct iw_request_info *a,
+-			  union iwreq_data *wrqu, char *b);
+-
+-int ieee80211_wx_set_scan(struct ieee80211_device *ieee,
+-			  struct iw_request_info *a,
+-			  union iwreq_data *wrqu, char *b);
+-
+-int ieee80211_wx_set_essid(struct ieee80211_device *ieee,
+-			   struct iw_request_info *a,
+-			   union iwreq_data *wrqu, char *extra);
+-
+-int ieee80211_wx_get_mode(struct ieee80211_device *ieee,
+-			  struct iw_request_info *a,
+-			  union iwreq_data *wrqu, char *b);
+-
+-int ieee80211_wx_set_freq(struct ieee80211_device *ieee,
+-			  struct iw_request_info *a,
+-			  union iwreq_data *wrqu, char *b);
+-
+-int ieee80211_wx_get_freq(struct ieee80211_device *ieee,
+-			  struct iw_request_info *a,
+-			  union iwreq_data *wrqu, char *b);
+-
+-/* ieee80211_module.c */
+-#ifdef CONFIG_IEEE80211_DEBUG
+-int ieee80211_debug_init(void);
+-void ieee80211_debug_exit(void);
+-#else
+-static inline int ieee80211_debug_init(void) { return 0; }
+-static inline void ieee80211_debug_exit(void) { }
+-#endif
+-
+-//extern void ieee80211_wx_sync_scan_wq(struct ieee80211_device *ieee);
+-void ieee80211_wx_sync_scan_wq(struct work_struct *work);
+-
+-
+-int ieee80211_wx_set_rawtx(struct ieee80211_device *ieee,
+-			   struct iw_request_info *info,
+-			       union iwreq_data *wrqu, char *extra);
+-
+-int ieee80211_wx_get_name(struct ieee80211_device *ieee,
+-			  struct iw_request_info *info,
+-			  union iwreq_data *wrqu, char *extra);
+-
+-int ieee80211_wx_set_power(struct ieee80211_device *ieee,
+-			   struct iw_request_info *info,
+-			   union iwreq_data *wrqu, char *extra);
+-
+-int ieee80211_wx_get_power(struct ieee80211_device *ieee,
+-			   struct iw_request_info *info,
+-			   union iwreq_data *wrqu, char *extra);
+-
+-int ieee80211_wx_set_rts(struct ieee80211_device *ieee,
+-			 struct iw_request_info *info,
+-			 union iwreq_data *wrqu, char *extra);
+-
+-int ieee80211_wx_get_rts(struct ieee80211_device *ieee,
+-			 struct iw_request_info *info,
+-			 union iwreq_data *wrqu, char *extra);
+-//HT
+-#define MAX_RECEIVE_BUFFER_SIZE 9100  //
+-void HTDebugHTCapability(u8 *CapIE, u8 *TitleString);
+-void HTDebugHTInfo(u8 *InfoIE, u8 *TitleString);
+-
+-void HTSetConnectBwMode(struct ieee80211_device *ieee,
+-			enum ht_channel_width Bandwidth, enum ht_extension_chan_offset Offset);
+-void HTUpdateDefaultSetting(struct ieee80211_device *ieee);
+-void HTConstructCapabilityElement(struct ieee80211_device *ieee, u8 *posHTCap,
+-				  u8 *len, u8 isEncrypt);
+-void HTConstructInfoElement(struct ieee80211_device *ieee, u8 *posHTInfo,
+-			    u8 *len, u8 isEncrypt);
+-void HTConstructRT2RTAggElement(struct ieee80211_device *ieee, u8 *posRT2RTAgg,
+-				u8 *len);
+-void HTOnAssocRsp(struct ieee80211_device *ieee);
+-void HTInitializeHTInfo(struct ieee80211_device *ieee);
+-void HTInitializeBssDesc(PBSS_HT pBssHT);
+-void HTResetSelfAndSavePeerSetting(struct ieee80211_device *ieee,
+-				   struct ieee80211_network *pNetwork);
+-void HTUpdateSelfAndPeerSetting(struct ieee80211_device *ieee,
+-				struct ieee80211_network *pNetwork);
+-u8 HTGetHighestMCSRate(struct ieee80211_device *ieee,
+-		       u8 *pMCSRateSet, u8 *pMCSFilter);
+-extern u8 MCS_FILTER_ALL[];
+-extern u16 MCS_DATA_RATE[2][2][77];
+-u8 HTCCheck(struct ieee80211_device *ieee, u8 *pFrame);
+-void HTResetIOTSetting(PRT_HIGH_THROUGHPUT pHTInfo);
+-bool IsHTHalfNmodeAPs(struct ieee80211_device *ieee);
+-u16 TxCountToDataRate(struct ieee80211_device *ieee, u8 nDataRate);
+-//function in BAPROC.c
+-int ieee80211_rx_ADDBAReq(struct ieee80211_device *ieee, struct sk_buff *skb);
+-int ieee80211_rx_ADDBARsp(struct ieee80211_device *ieee, struct sk_buff *skb);
+-int ieee80211_rx_DELBA(struct ieee80211_device *ieee, struct sk_buff *skb);
+-void TsInitAddBA(struct ieee80211_device *ieee, struct tx_ts_record *pTS,
+-		 u8 Policy, u8 bOverwritePending);
+-void TsInitDelBA(struct ieee80211_device *ieee,
+-		 struct ts_common_info *pTsCommonInfo, enum tr_select TxRxSelect);
+-void BaSetupTimeOut(struct timer_list *t);
+-void TxBaInactTimeout(struct timer_list *t);
+-void RxBaInactTimeout(struct timer_list *t);
+-void ResetBaEntry(struct ba_record *pBA);
+-//function in TS.c
+-bool GetTs(
+-	struct ieee80211_device		*ieee,
+-	struct ts_common_info           **ppTS,
+-	u8                              *Addr,
+-	u8                              TID,
+-	enum tr_select                  TxRxSelect,  //Rx:1, Tx:0
+-	bool                            bAddNewTs
+-	);
+-void TSInitialize(struct ieee80211_device *ieee);
+-void TsStartAddBaProcess(struct ieee80211_device *ieee, struct tx_ts_record   *pTxTS);
+-void RemovePeerTS(struct ieee80211_device *ieee, u8 *Addr);
+-void RemoveAllTS(struct ieee80211_device *ieee);
+-void ieee80211_softmac_scan_syncro(struct ieee80211_device *ieee);
+-
+-extern const long ieee80211_wlan_frequencies[];
+-
+-static inline void ieee80211_increment_scans(struct ieee80211_device *ieee)
+-{
+-	ieee->scans++;
+-}
+-
+-static inline int ieee80211_get_scans(struct ieee80211_device *ieee)
+-{
+-	return ieee->scans;
+-}
+-
+-static inline const char *escape_essid(const char *essid, u8 essid_len)
+-{
+-	static char escaped[IW_ESSID_MAX_SIZE * 2 + 1];
+-
+-	if (ieee80211_is_empty_essid(essid, essid_len)) {
+-		memcpy(escaped, "<hidden>", sizeof("<hidden>"));
+-		return escaped;
+-	}
+-
+-	snprintf(escaped, sizeof(escaped), "%*pE", essid_len, essid);
+-	return escaped;
+-}
+-
+-/* For the function is more related to hardware setting, it's better to use the
+- * ieee handler to refer to it.
+- */
+-short check_nic_enough_desc(struct net_device *dev, int queue_index);
+-int ieee80211_data_xmit(struct sk_buff *skb, struct net_device *dev);
+-int ieee80211_parse_info_param(struct ieee80211_device *ieee,
+-			       struct ieee80211_info_element *info_element,
+-			       u16 length,
+-			       struct ieee80211_network *network,
+-			       struct ieee80211_rx_stats *stats);
+-
+-void ieee80211_indicate_packets(struct ieee80211_device *ieee,
+-				struct ieee80211_rxb **prxbIndicateArray,
+-				u8 index);
+-#define RT_ASOC_RETRY_LIMIT	5
+-#endif /* IEEE80211_H */
+diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_crypt.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_crypt.c
+deleted file mode 100644
+index 840db6250b87..000000000000
+--- a/drivers/staging/rtl8192u/ieee80211/ieee80211_crypt.c
++++ /dev/null
+@@ -1,235 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- * Host AP crypto routines
+- *
+- * Copyright (c) 2002-2003, Jouni Malinen <jkmaline@cc.hut.fi>
+- * Portions Copyright (C) 2004, Intel Corporation <jketreno@linux.intel.com>
+- */
+-
+-#include <linux/module.h>
+-#include <linux/init.h>
+-#include <linux/slab.h>
+-#include <linux/string.h>
+-#include <linux/errno.h>
+-
+-#include "ieee80211.h"
+-
+-MODULE_AUTHOR("Jouni Malinen");
+-MODULE_DESCRIPTION("HostAP crypto");
+-MODULE_LICENSE("GPL");
+-
+-struct ieee80211_crypto_alg {
+-	struct list_head list;
+-	struct ieee80211_crypto_ops *ops;
+-};
+-
+-
+-struct ieee80211_crypto {
+-	struct list_head algs;
+-	spinlock_t lock;
+-};
+-
+-static struct ieee80211_crypto *hcrypt;
+-
+-void ieee80211_crypt_deinit_entries(struct ieee80211_device *ieee,
+-					   int force)
+-{
+-	struct list_head *ptr, *n;
+-	struct ieee80211_crypt_data *entry;
+-
+-	for (ptr = ieee->crypt_deinit_list.next, n = ptr->next;
+-	     ptr != &ieee->crypt_deinit_list; ptr = n, n = ptr->next) {
+-		entry = list_entry(ptr, struct ieee80211_crypt_data, list);
+-
+-		if (atomic_read(&entry->refcnt) != 0 && !force)
+-			continue;
+-
+-		list_del(ptr);
+-
+-		if (entry->ops)
+-			entry->ops->deinit(entry->priv);
+-		kfree(entry);
+-	}
+-}
+-
+-void ieee80211_crypt_deinit_handler(struct timer_list *t)
+-{
+-	struct ieee80211_device *ieee = from_timer(ieee, t, crypt_deinit_timer);
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&ieee->lock, flags);
+-	ieee80211_crypt_deinit_entries(ieee, 0);
+-	if (!list_empty(&ieee->crypt_deinit_list)) {
+-		netdev_dbg(ieee->dev, "%s: entries remaining in delayed crypt deletion list\n",
+-				ieee->dev->name);
+-		ieee->crypt_deinit_timer.expires = jiffies + HZ;
+-		add_timer(&ieee->crypt_deinit_timer);
+-	}
+-	spin_unlock_irqrestore(&ieee->lock, flags);
+-
+-}
+-
+-void ieee80211_crypt_delayed_deinit(struct ieee80211_device *ieee,
+-				    struct ieee80211_crypt_data **crypt)
+-{
+-	struct ieee80211_crypt_data *tmp;
+-	unsigned long flags;
+-
+-	if (!(*crypt))
+-		return;
+-
+-	tmp = *crypt;
+-	*crypt = NULL;
+-
+-	/* must not run ops->deinit() while there may be pending encrypt or
+-	 * decrypt operations. Use a list of delayed deinits to avoid needing
+-	 * locking.
+-	 */
+-
+-	spin_lock_irqsave(&ieee->lock, flags);
+-	list_add(&tmp->list, &ieee->crypt_deinit_list);
+-	if (!timer_pending(&ieee->crypt_deinit_timer)) {
+-		ieee->crypt_deinit_timer.expires = jiffies + HZ;
+-		add_timer(&ieee->crypt_deinit_timer);
+-	}
+-	spin_unlock_irqrestore(&ieee->lock, flags);
+-}
+-
+-int ieee80211_register_crypto_ops(struct ieee80211_crypto_ops *ops)
+-{
+-	unsigned long flags;
+-	struct ieee80211_crypto_alg *alg;
+-
+-	if (!hcrypt)
+-		return -1;
+-
+-	alg = kzalloc(sizeof(*alg), GFP_KERNEL);
+-	if (!alg)
+-		return -ENOMEM;
+-
+-	alg->ops = ops;
+-
+-	spin_lock_irqsave(&hcrypt->lock, flags);
+-	list_add(&alg->list, &hcrypt->algs);
+-	spin_unlock_irqrestore(&hcrypt->lock, flags);
+-
+-	pr_debug("ieee80211_crypt: registered algorithm '%s'\n",
+-	       ops->name);
+-
+-	return 0;
+-}
+-
+-int ieee80211_unregister_crypto_ops(struct ieee80211_crypto_ops *ops)
+-{
+-	unsigned long flags;
+-	struct list_head *ptr;
+-	struct ieee80211_crypto_alg *del_alg = NULL;
+-
+-	if (!hcrypt)
+-		return -1;
+-
+-	spin_lock_irqsave(&hcrypt->lock, flags);
+-	for (ptr = hcrypt->algs.next; ptr != &hcrypt->algs; ptr = ptr->next) {
+-		struct ieee80211_crypto_alg *alg =
+-			(struct ieee80211_crypto_alg *)ptr;
+-		if (alg->ops == ops) {
+-			list_del(&alg->list);
+-			del_alg = alg;
+-			break;
+-		}
+-	}
+-	spin_unlock_irqrestore(&hcrypt->lock, flags);
+-
+-	if (del_alg) {
+-		pr_debug("ieee80211_crypt: unregistered algorithm '%s'\n",
+-				ops->name);
+-		kfree(del_alg);
+-	}
+-
+-	return del_alg ? 0 : -1;
+-}
+-
+-
+-struct ieee80211_crypto_ops *ieee80211_get_crypto_ops(const char *name)
+-{
+-	unsigned long flags;
+-	struct list_head *ptr;
+-	struct ieee80211_crypto_alg *found_alg = NULL;
+-
+-	if (!hcrypt)
+-		return NULL;
+-
+-	spin_lock_irqsave(&hcrypt->lock, flags);
+-	for (ptr = hcrypt->algs.next; ptr != &hcrypt->algs; ptr = ptr->next) {
+-		struct ieee80211_crypto_alg *alg =
+-			(struct ieee80211_crypto_alg *)ptr;
+-		if (strcmp(alg->ops->name, name) == 0) {
+-			found_alg = alg;
+-			break;
+-		}
+-	}
+-	spin_unlock_irqrestore(&hcrypt->lock, flags);
+-
+-	if (found_alg)
+-		return found_alg->ops;
+-	return NULL;
+-}
+-
+-
+-static void *ieee80211_crypt_null_init(int keyidx) { return (void *)1; }
+-static void ieee80211_crypt_null_deinit(void *priv) {}
+-
+-static struct ieee80211_crypto_ops ieee80211_crypt_null = {
+-	.name			= "NULL",
+-	.init			= ieee80211_crypt_null_init,
+-	.deinit			= ieee80211_crypt_null_deinit,
+-	.encrypt_mpdu		= NULL,
+-	.decrypt_mpdu		= NULL,
+-	.encrypt_msdu		= NULL,
+-	.decrypt_msdu		= NULL,
+-	.set_key		= NULL,
+-	.get_key		= NULL,
+-	.extra_prefix_len	= 0,
+-	.extra_postfix_len	= 0,
+-	.owner			= THIS_MODULE,
+-};
+-
+-int __init ieee80211_crypto_init(void)
+-{
+-	int ret = -ENOMEM;
+-
+-	hcrypt = kzalloc(sizeof(*hcrypt), GFP_KERNEL);
+-	if (!hcrypt)
+-		goto out;
+-
+-	INIT_LIST_HEAD(&hcrypt->algs);
+-	spin_lock_init(&hcrypt->lock);
+-
+-	ret = ieee80211_register_crypto_ops(&ieee80211_crypt_null);
+-	if (ret < 0) {
+-		kfree(hcrypt);
+-		hcrypt = NULL;
+-	}
+-out:
+-	return ret;
+-}
+-
+-void ieee80211_crypto_deinit(void)
+-{
+-	struct list_head *ptr, *n;
+-
+-	if (!hcrypt)
+-		return;
+-
+-	for (ptr = hcrypt->algs.next, n = ptr->next; ptr != &hcrypt->algs;
+-	     ptr = n, n = ptr->next) {
+-		struct ieee80211_crypto_alg *alg =
+-			(struct ieee80211_crypto_alg *)ptr;
+-		list_del(ptr);
+-		pr_debug("ieee80211_crypt: unregistered algorithm '%s' (deinit)\n",
+-				alg->ops->name);
+-		kfree(alg);
+-	}
+-
+-	kfree(hcrypt);
+-}
+diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_crypt.h b/drivers/staging/rtl8192u/ieee80211/ieee80211_crypt.h
+deleted file mode 100644
+index d3bd5598b25b..000000000000
+--- a/drivers/staging/rtl8192u/ieee80211/ieee80211_crypt.h
++++ /dev/null
+@@ -1,86 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- * Original code based on Host AP (software wireless LAN access point) driver
+- * for Intersil Prism2/2.5/3.
+- *
+- * Copyright (c) 2001-2002, SSH Communications Security Corp and Jouni Malinen
+- * <jkmaline@cc.hut.fi>
+- * Copyright (c) 2002-2003, Jouni Malinen <jkmaline@cc.hut.fi>
+- *
+- * Adaption to a generic IEEE 802.11 stack by James Ketrenos
+- * <jketreno@linux.intel.com>
+- *
+- * Copyright (c) 2004, Intel Corporation
+- */
+-
+-/*
+- * This file defines the interface to the ieee80211 crypto module.
+- */
+-#ifndef IEEE80211_CRYPT_H
+-#define IEEE80211_CRYPT_H
+-
+-#include <linux/skbuff.h>
+-
+-struct ieee80211_crypto_ops {
+-	const char *name;
+-
+-	/* init new crypto context (e.g., allocate private data space,
+-	 * select IV, etc.); returns NULL on failure or pointer to allocated
+-	 * private data on success
+-	 */
+-	void * (*init)(int keyidx);
+-
+-	/* deinitialize crypto context and free allocated private data */
+-	void (*deinit)(void *priv);
+-
+-	/* encrypt/decrypt return < 0 on error or >= 0 on success. The return
+-	 * value from decrypt_mpdu is passed as the keyidx value for
+-	 * decrypt_msdu. skb must have enough head and tail room for the
+-	 * encryption; if not, error will be returned; these functions are
+-	 * called for all MPDUs (i.e., fragments).
+-	 */
+-	int (*encrypt_mpdu)(struct sk_buff *skb, int hdr_len, void *priv);
+-	int (*decrypt_mpdu)(struct sk_buff *skb, int hdr_len, void *priv);
+-
+-	/* These functions are called for full MSDUs, i.e. full frames.
+-	 * These can be NULL if full MSDU operations are not needed.
+-	 */
+-	int (*encrypt_msdu)(struct sk_buff *skb, int hdr_len, void *priv);
+-	int (*decrypt_msdu)(struct sk_buff *skb, int keyidx, int hdr_len,
+-			    void *priv);
+-
+-	int (*set_key)(void *key, int len, u8 *seq, void *priv);
+-	int (*get_key)(void *key, int len, u8 *seq, void *priv);
+-
+-	/* procfs handler for printing out key information and possible
+-	 * statistics
+-	 */
+-	char * (*print_stats)(char *p, void *priv);
+-
+-	/* maximum number of bytes added by encryption; encrypt buf is
+-	 * allocated with extra_prefix_len bytes, copy of in_buf, and
+-	 * extra_postfix_len; encrypt need not use all this space, but
+-	 * the result must start at the beginning of the buffer and correct
+-	 * length must be returned
+-	 */
+-	int extra_prefix_len, extra_postfix_len;
+-
+-	struct module *owner;
+-};
+-
+-struct ieee80211_crypt_data {
+-	struct list_head list; /* delayed deletion list */
+-	struct ieee80211_crypto_ops *ops;
+-	void *priv;
+-	atomic_t refcnt;
+-};
+-
+-int ieee80211_register_crypto_ops(struct ieee80211_crypto_ops *ops);
+-int ieee80211_unregister_crypto_ops(struct ieee80211_crypto_ops *ops);
+-struct ieee80211_crypto_ops *ieee80211_get_crypto_ops(const char *name);
+-void ieee80211_crypt_deinit_entries(struct ieee80211_device *ieee, int force);
+-void ieee80211_crypt_deinit_handler(struct timer_list *t);
+-void ieee80211_crypt_delayed_deinit(struct ieee80211_device *ieee,
+-				    struct ieee80211_crypt_data **crypt);
+-
+-#endif
+diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_crypt_ccmp.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_crypt_ccmp.c
+deleted file mode 100644
+index f17d07dad56d..000000000000
+--- a/drivers/staging/rtl8192u/ieee80211/ieee80211_crypt_ccmp.c
++++ /dev/null
+@@ -1,421 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- * Host AP crypt: host-based CCMP encryption implementation for Host AP driver
+- *
+- * Copyright (c) 2003-2004, Jouni Malinen <jkmaline@cc.hut.fi>
+- */
+-
+-#include <linux/module.h>
+-#include <linux/init.h>
+-#include <linux/slab.h>
+-#include <linux/random.h>
+-#include <linux/skbuff.h>
+-#include <linux/netdevice.h>
+-#include <linux/if_ether.h>
+-#include <linux/if_arp.h>
+-#include <linux/string.h>
+-#include <linux/wireless.h>
+-
+-#include "ieee80211.h"
+-
+-#include <linux/crypto.h>
+-#include <crypto/aead.h>
+-    #include <linux/scatterlist.h>
+-
+-MODULE_AUTHOR("Jouni Malinen");
+-MODULE_DESCRIPTION("Host AP crypt: CCMP");
+-MODULE_LICENSE("GPL");
+-
+-#define AES_BLOCK_LEN 16
+-#define CCMP_HDR_LEN 8
+-#define CCMP_MIC_LEN 8
+-#define CCMP_TK_LEN 16
+-#define CCMP_PN_LEN 6
+-
+-struct ieee80211_ccmp_data {
+-	u8 key[CCMP_TK_LEN];
+-	int key_set;
+-
+-	u8 tx_pn[CCMP_PN_LEN];
+-	u8 rx_pn[CCMP_PN_LEN];
+-
+-	u32 dot11RSNAStatsCCMPFormatErrors;
+-	u32 dot11RSNAStatsCCMPReplays;
+-	u32 dot11RSNAStatsCCMPDecryptErrors;
+-
+-	int key_idx;
+-
+-	struct crypto_aead *tfm;
+-
+-	/* scratch buffers for virt_to_page() (crypto API) */
+-	u8 tx_aad[2 * AES_BLOCK_LEN];
+-	u8 rx_aad[2 * AES_BLOCK_LEN];
+-};
+-
+-static void *ieee80211_ccmp_init(int key_idx)
+-{
+-	struct ieee80211_ccmp_data *priv;
+-
+-	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+-	if (!priv)
+-		goto fail;
+-	priv->key_idx = key_idx;
+-
+-	priv->tfm = crypto_alloc_aead("ccm(aes)", 0, CRYPTO_ALG_ASYNC);
+-	if (IS_ERR(priv->tfm)) {
+-		pr_debug("ieee80211_crypt_ccmp: could not allocate crypto API aes\n");
+-		priv->tfm = NULL;
+-		goto fail;
+-	}
+-
+-	return priv;
+-
+-fail:
+-	if (priv) {
+-		if (priv->tfm)
+-			crypto_free_aead(priv->tfm);
+-		kfree(priv);
+-	}
+-
+-	return NULL;
+-}
+-
+-static void ieee80211_ccmp_deinit(void *priv)
+-{
+-	struct ieee80211_ccmp_data *_priv = priv;
+-
+-	if (_priv && _priv->tfm)
+-		crypto_free_aead(_priv->tfm);
+-	kfree(priv);
+-}
+-
+-static int ccmp_init_iv_and_aad(struct rtl_80211_hdr_4addr *hdr,
+-			     u8 *pn, u8 *iv, u8 *aad)
+-{
+-	u8 *pos, qc = 0;
+-	size_t aad_len;
+-	u16 fc;
+-	int a4_included, qc_included;
+-
+-	fc = le16_to_cpu(hdr->frame_ctl);
+-	a4_included = ((fc & (IEEE80211_FCTL_TODS | IEEE80211_FCTL_FROMDS)) ==
+-		       (IEEE80211_FCTL_TODS | IEEE80211_FCTL_FROMDS));
+-	/* qc_included = ((WLAN_FC_GET_TYPE(fc) == IEEE80211_FTYPE_DATA) &&
+-	 *	       (WLAN_FC_GET_STYPE(fc) & 0x08));
+-	 */
+-	/* fixed by David :2006.9.6 */
+-	qc_included = (WLAN_FC_GET_TYPE(fc) == IEEE80211_FTYPE_DATA) &&
+-		       (WLAN_FC_GET_STYPE(fc) & 0x80);
+-	aad_len = 22;
+-	if (a4_included)
+-		aad_len += 6;
+-	if (qc_included) {
+-		pos = (u8 *)&hdr->addr4;
+-		if (a4_included)
+-			pos += 6;
+-		qc = *pos & 0x0f;
+-		aad_len += 2;
+-	}
+-
+-	/* In CCM, the initial vectors (IV) used for CTR mode encryption and CBC
+-	 * mode authentication are not allowed to collide, yet both are derived
+-	 * from the same vector. We only set L := 1 here to indicate that the
+-	 * data size can be represented in (L+1) bytes. The CCM layer will take
+-	 * care of storing the data length in the top (L+1) bytes and setting
+-	 * and clearing the other bits as is required to derive the two IVs.
+-	 */
+-	iv[0] = 0x1;
+-
+-	/* Nonce: QC | A2 | PN */
+-	iv[1] = qc;
+-	memcpy(iv + 2, hdr->addr2, ETH_ALEN);
+-	memcpy(iv + 8, pn, CCMP_PN_LEN);
+-
+-	/* AAD:
+-	 * FC with bits 4..6 and 11..13 masked to zero; 14 is always one
+-	 * A1 | A2 | A3
+-	 * SC with bits 4..15 (seq#) masked to zero
+-	 * A4 (if present)
+-	 * QC (if present)
+-	 */
+-	pos = (u8 *)hdr;
+-	aad[0] = pos[0] & 0x8f;
+-	aad[1] = pos[1] & 0xc7;
+-	memcpy(&aad[2], &hdr->addr1, ETH_ALEN);
+-	memcpy(&aad[8], &hdr->addr2, ETH_ALEN);
+-	memcpy(&aad[14], &hdr->addr3, ETH_ALEN);
+-	pos = (u8 *)&hdr->seq_ctl;
+-	aad[20] = pos[0] & 0x0f;
+-	aad[21] = 0; /* all bits masked */
+-	memset(aad + 22, 0, 8);
+-	if (a4_included)
+-		memcpy(aad + 22, hdr->addr4, ETH_ALEN);
+-	if (qc_included) {
+-		aad[a4_included ? 28 : 22] = qc;
+-		/* rest of QC masked */
+-	}
+-
+-	return aad_len;
+-}
+-
+-static int ieee80211_ccmp_encrypt(struct sk_buff *skb, int hdr_len, void *priv)
+-{
+-	struct ieee80211_ccmp_data *key = priv;
+-	int i;
+-	u8 *pos;
+-	struct rtl_80211_hdr_4addr *hdr;
+-	struct cb_desc *tcb_desc = (struct cb_desc *)(skb->cb + MAX_DEV_ADDR_SIZE);
+-
+-	if (skb_headroom(skb) < CCMP_HDR_LEN ||
+-	    skb_tailroom(skb) < CCMP_MIC_LEN ||
+-	    skb->len < hdr_len)
+-		return -1;
+-
+-	pos = skb_push(skb, CCMP_HDR_LEN);
+-	memmove(pos, pos + CCMP_HDR_LEN, hdr_len);
+-	pos += hdr_len;
+-	/* mic = skb_put(skb, CCMP_MIC_LEN); */
+-
+-	i = CCMP_PN_LEN - 1;
+-	while (i >= 0) {
+-		key->tx_pn[i]++;
+-		if (key->tx_pn[i] != 0)
+-			break;
+-		i--;
+-	}
+-
+-	*pos++ = key->tx_pn[5];
+-	*pos++ = key->tx_pn[4];
+-	*pos++ = 0;
+-	*pos++ = (key->key_idx << 6) | BIT(5) /* Ext IV included */;
+-	*pos++ = key->tx_pn[3];
+-	*pos++ = key->tx_pn[2];
+-	*pos++ = key->tx_pn[1];
+-	*pos++ = key->tx_pn[0];
+-
+-	hdr = (struct rtl_80211_hdr_4addr *)skb->data;
+-	if (!tcb_desc->bHwSec) {
+-		struct aead_request *req;
+-		struct scatterlist sg[2];
+-		u8 *aad = key->tx_aad;
+-		u8 iv[AES_BLOCK_LEN];
+-		int aad_len, ret;
+-		size_t data_len = skb->len - hdr_len - CCMP_HDR_LEN;
+-
+-		req = aead_request_alloc(key->tfm, GFP_ATOMIC);
+-		if (!req)
+-			return -ENOMEM;
+-
+-		aad_len = ccmp_init_iv_and_aad(hdr, key->tx_pn, iv, aad);
+-
+-		skb_put(skb, CCMP_MIC_LEN);
+-
+-		sg_init_table(sg, 2);
+-		sg_set_buf(&sg[0], aad, aad_len);
+-		sg_set_buf(&sg[1], skb->data + hdr_len + CCMP_HDR_LEN,
+-			   data_len + CCMP_MIC_LEN);
+-
+-		aead_request_set_callback(req, 0, NULL, NULL);
+-		aead_request_set_ad(req, aad_len);
+-		aead_request_set_crypt(req, sg, sg, data_len, iv);
+-
+-		ret = crypto_aead_encrypt(req);
+-		aead_request_free(req);
+-
+-		return ret;
+-	}
+-	return 0;
+-}
+-
+-static int ieee80211_ccmp_decrypt(struct sk_buff *skb, int hdr_len, void *priv)
+-{
+-	struct ieee80211_ccmp_data *key = priv;
+-	u8 keyidx, *pos;
+-	struct rtl_80211_hdr_4addr *hdr;
+-	struct cb_desc *tcb_desc = (struct cb_desc *)(skb->cb + MAX_DEV_ADDR_SIZE);
+-	u8 pn[6];
+-
+-	if (skb->len < hdr_len + CCMP_HDR_LEN + CCMP_MIC_LEN) {
+-		key->dot11RSNAStatsCCMPFormatErrors++;
+-		return -1;
+-	}
+-
+-	hdr = (struct rtl_80211_hdr_4addr *)skb->data;
+-	pos = skb->data + hdr_len;
+-	keyidx = pos[3];
+-	if (!(keyidx & BIT(5))) {
+-		if (net_ratelimit()) {
+-			netdev_dbg(skb->dev, "CCMP: received packet without ExtIV flag from %pM\n",
+-				   hdr->addr2);
+-		}
+-		key->dot11RSNAStatsCCMPFormatErrors++;
+-		return -2;
+-	}
+-	keyidx >>= 6;
+-	if (key->key_idx != keyidx) {
+-		netdev_dbg(skb->dev, "CCMP: RX tkey->key_idx=%d frame keyidx=%d priv=%p\n",
+-			   key->key_idx, keyidx, priv);
+-		return -6;
+-	}
+-	if (!key->key_set) {
+-		if (net_ratelimit()) {
+-			netdev_dbg(skb->dev, "CCMP: received packet from %pM with keyid=%d that does not have a configured key\n",
+-				   hdr->addr2, keyidx);
+-		}
+-		return -3;
+-	}
+-
+-	pn[0] = pos[7];
+-	pn[1] = pos[6];
+-	pn[2] = pos[5];
+-	pn[3] = pos[4];
+-	pn[4] = pos[1];
+-	pn[5] = pos[0];
+-	pos += 8;
+-
+-	if (memcmp(pn, key->rx_pn, CCMP_PN_LEN) <= 0) {
+-		if (net_ratelimit()) {
+-			netdev_dbg(skb->dev, "CCMP: replay detected: STA=%pM previous PN %pm received PN %pm\n",
+-				   hdr->addr2, key->rx_pn, pn);
+-		}
+-		key->dot11RSNAStatsCCMPReplays++;
+-		return -4;
+-	}
+-	if (!tcb_desc->bHwSec) {
+-		struct aead_request *req;
+-		struct scatterlist sg[2];
+-		u8 *aad = key->rx_aad;
+-		u8 iv[AES_BLOCK_LEN];
+-		int aad_len, ret;
+-		size_t data_len = skb->len - hdr_len - CCMP_HDR_LEN;
+-
+-		req = aead_request_alloc(key->tfm, GFP_ATOMIC);
+-		if (!req)
+-			return -ENOMEM;
+-
+-		aad_len = ccmp_init_iv_and_aad(hdr, pn, iv, aad);
+-
+-		sg_init_table(sg, 2);
+-		sg_set_buf(&sg[0], aad, aad_len);
+-		sg_set_buf(&sg[1], pos, data_len);
+-
+-		aead_request_set_callback(req, 0, NULL, NULL);
+-		aead_request_set_ad(req, aad_len);
+-		aead_request_set_crypt(req, sg, sg, data_len, iv);
+-
+-		ret = crypto_aead_decrypt(req);
+-		aead_request_free(req);
+-
+-		if (ret) {
+-			if (net_ratelimit()) {
+-				netdev_dbg(skb->dev, "CCMP: decrypt failed: STA=%pM\n",
+-					   hdr->addr2);
+-			}
+-			key->dot11RSNAStatsCCMPDecryptErrors++;
+-			return -5;
+-		}
+-
+-		memcpy(key->rx_pn, pn, CCMP_PN_LEN);
+-	}
+-	/* Remove hdr and MIC */
+-	memmove(skb->data + CCMP_HDR_LEN, skb->data, hdr_len);
+-	skb_pull(skb, CCMP_HDR_LEN);
+-	skb_trim(skb, skb->len - CCMP_MIC_LEN);
+-
+-	return keyidx;
+-}
+-
+-static int ieee80211_ccmp_set_key(void *key, int len, u8 *seq, void *priv)
+-{
+-	struct ieee80211_ccmp_data *data = priv;
+-	int keyidx;
+-	struct crypto_aead *tfm = data->tfm;
+-
+-	keyidx = data->key_idx;
+-	memset(data, 0, sizeof(*data));
+-	data->key_idx = keyidx;
+-	if (len == CCMP_TK_LEN) {
+-		memcpy(data->key, key, CCMP_TK_LEN);
+-		data->key_set = 1;
+-		if (seq) {
+-			data->rx_pn[0] = seq[5];
+-			data->rx_pn[1] = seq[4];
+-			data->rx_pn[2] = seq[3];
+-			data->rx_pn[3] = seq[2];
+-			data->rx_pn[4] = seq[1];
+-			data->rx_pn[5] = seq[0];
+-		}
+-		if (crypto_aead_setauthsize(tfm, CCMP_MIC_LEN) ||
+-		    crypto_aead_setkey(tfm, data->key, CCMP_TK_LEN))
+-			return -1;
+-	} else if (len == 0) {
+-		data->key_set = 0;
+-	} else {
+-		return -1;
+-	}
+-
+-	return 0;
+-}
+-
+-static int ieee80211_ccmp_get_key(void *key, int len, u8 *seq, void *priv)
+-{
+-	struct ieee80211_ccmp_data *data = priv;
+-
+-	if (len < CCMP_TK_LEN)
+-		return 0;
+-
+-	if (!data->key_set)
+-		return 0;
+-	memcpy(key, data->key, CCMP_TK_LEN);
+-
+-	if (seq) {
+-		seq[0] = data->tx_pn[5];
+-		seq[1] = data->tx_pn[4];
+-		seq[2] = data->tx_pn[3];
+-		seq[3] = data->tx_pn[2];
+-		seq[4] = data->tx_pn[1];
+-		seq[5] = data->tx_pn[0];
+-	}
+-
+-	return CCMP_TK_LEN;
+-}
+-
+-static char *ieee80211_ccmp_print_stats(char *p, void *priv)
+-{
+-	struct ieee80211_ccmp_data *ccmp = priv;
+-
+-	p += sprintf(p, "key[%d] alg=CCMP key_set=%d tx_pn=%pm rx_pn=%pm format_errors=%d replays=%d decrypt_errors=%d\n",
+-		     ccmp->key_idx, ccmp->key_set,
+-		     ccmp->tx_pn, ccmp->rx_pn,
+-		     ccmp->dot11RSNAStatsCCMPFormatErrors,
+-		     ccmp->dot11RSNAStatsCCMPReplays,
+-		     ccmp->dot11RSNAStatsCCMPDecryptErrors);
+-
+-	return p;
+-}
+-
+-static struct ieee80211_crypto_ops ieee80211_crypt_ccmp = {
+-	.name			= "CCMP",
+-	.init			= ieee80211_ccmp_init,
+-	.deinit			= ieee80211_ccmp_deinit,
+-	.encrypt_mpdu		= ieee80211_ccmp_encrypt,
+-	.decrypt_mpdu		= ieee80211_ccmp_decrypt,
+-	.encrypt_msdu		= NULL,
+-	.decrypt_msdu		= NULL,
+-	.set_key		= ieee80211_ccmp_set_key,
+-	.get_key		= ieee80211_ccmp_get_key,
+-	.print_stats		= ieee80211_ccmp_print_stats,
+-	.extra_prefix_len	= CCMP_HDR_LEN,
+-	.extra_postfix_len	= CCMP_MIC_LEN,
+-	.owner			= THIS_MODULE,
+-};
+-
+-int __init ieee80211_crypto_ccmp_init(void)
+-{
+-	return ieee80211_register_crypto_ops(&ieee80211_crypt_ccmp);
+-}
+-
+-void ieee80211_crypto_ccmp_exit(void)
+-{
+-	ieee80211_unregister_crypto_ops(&ieee80211_crypt_ccmp);
+-}
+diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_crypt_tkip.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_crypt_tkip.c
+deleted file mode 100644
+index 9bfd24ad46b6..000000000000
+--- a/drivers/staging/rtl8192u/ieee80211/ieee80211_crypt_tkip.c
++++ /dev/null
+@@ -1,718 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- * Host AP crypt: host-based TKIP encryption implementation for Host AP driver
+- *
+- * Copyright (c) 2003-2004, Jouni Malinen <jkmaline@cc.hut.fi>
+- */
+-
+-#include <linux/fips.h>
+-#include <linux/module.h>
+-#include <linux/init.h>
+-#include <linux/slab.h>
+-#include <linux/random.h>
+-#include <linux/skbuff.h>
+-#include <linux/netdevice.h>
+-#include <linux/if_ether.h>
+-#include <linux/if_arp.h>
+-#include <linux/string.h>
+-
+-#include "ieee80211.h"
+-
+-#include <crypto/arc4.h>
+-#include <crypto/hash.h>
+-#include <linux/crc32.h>
+-
+-MODULE_AUTHOR("Jouni Malinen");
+-MODULE_DESCRIPTION("Host AP crypt: TKIP");
+-MODULE_LICENSE("GPL");
+-
+-struct ieee80211_tkip_data {
+-#define TKIP_KEY_LEN 32
+-	u8 key[TKIP_KEY_LEN];
+-	int key_set;
+-
+-	u32 tx_iv32;
+-	u16 tx_iv16;
+-	u16 tx_ttak[5];
+-	int tx_phase1_done;
+-
+-	u32 rx_iv32;
+-	u16 rx_iv16;
+-	u16 rx_ttak[5];
+-	int rx_phase1_done;
+-	u32 rx_iv32_new;
+-	u16 rx_iv16_new;
+-
+-	u32 dot11RSNAStatsTKIPReplays;
+-	u32 dot11RSNAStatsTKIPICVErrors;
+-	u32 dot11RSNAStatsTKIPLocalMICFailures;
+-
+-	int key_idx;
+-
+-	struct arc4_ctx rx_ctx_arc4;
+-	struct arc4_ctx tx_ctx_arc4;
+-	struct crypto_shash *rx_tfm_michael;
+-	struct crypto_shash *tx_tfm_michael;
+-
+-	/* scratch buffers for virt_to_page() (crypto API) */
+-	u8 rx_hdr[16], tx_hdr[16];
+-};
+-
+-static void *ieee80211_tkip_init(int key_idx)
+-{
+-	struct ieee80211_tkip_data *priv;
+-
+-	if (fips_enabled)
+-		return NULL;
+-
+-	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+-	if (!priv)
+-		goto fail;
+-	priv->key_idx = key_idx;
+-
+-	priv->tx_tfm_michael = crypto_alloc_shash("michael_mic", 0, 0);
+-	if (IS_ERR(priv->tx_tfm_michael)) {
+-		printk(KERN_DEBUG "ieee80211_crypt_tkip: could not allocate "
+-				"crypto API michael_mic\n");
+-		priv->tx_tfm_michael = NULL;
+-		goto fail;
+-	}
+-
+-	priv->rx_tfm_michael = crypto_alloc_shash("michael_mic", 0, 0);
+-	if (IS_ERR(priv->rx_tfm_michael)) {
+-		printk(KERN_DEBUG "ieee80211_crypt_tkip: could not allocate "
+-				"crypto API michael_mic\n");
+-		priv->rx_tfm_michael = NULL;
+-		goto fail;
+-	}
+-
+-	return priv;
+-
+-fail:
+-	if (priv) {
+-		crypto_free_shash(priv->tx_tfm_michael);
+-		crypto_free_shash(priv->rx_tfm_michael);
+-		kfree(priv);
+-	}
+-
+-	return NULL;
+-}
+-
+-
+-static void ieee80211_tkip_deinit(void *priv)
+-{
+-	struct ieee80211_tkip_data *_priv = priv;
+-
+-	if (_priv) {
+-		crypto_free_shash(_priv->tx_tfm_michael);
+-		crypto_free_shash(_priv->rx_tfm_michael);
+-	}
+-	kfree_sensitive(priv);
+-}
+-
+-
+-static inline u16 RotR1(u16 val)
+-{
+-	return (val >> 1) | (val << 15);
+-}
+-
+-
+-static inline u8 Lo8(u16 val)
+-{
+-	return val & 0xff;
+-}
+-
+-
+-static inline u8 Hi8(u16 val)
+-{
+-	return val >> 8;
+-}
+-
+-
+-static inline u16 Lo16(u32 val)
+-{
+-	return val & 0xffff;
+-}
+-
+-
+-static inline u16 Hi16(u32 val)
+-{
+-	return val >> 16;
+-}
+-
+-
+-static inline u16 Mk16(u8 hi, u8 lo)
+-{
+-	return lo | (((u16)hi) << 8);
+-}
+-
+-static const u16 Sbox[256] = {
+-	0xC6A5, 0xF884, 0xEE99, 0xF68D, 0xFF0D, 0xD6BD, 0xDEB1, 0x9154,
+-	0x6050, 0x0203, 0xCEA9, 0x567D, 0xE719, 0xB562, 0x4DE6, 0xEC9A,
+-	0x8F45, 0x1F9D, 0x8940, 0xFA87, 0xEF15, 0xB2EB, 0x8EC9, 0xFB0B,
+-	0x41EC, 0xB367, 0x5FFD, 0x45EA, 0x23BF, 0x53F7, 0xE496, 0x9B5B,
+-	0x75C2, 0xE11C, 0x3DAE, 0x4C6A, 0x6C5A, 0x7E41, 0xF502, 0x834F,
+-	0x685C, 0x51F4, 0xD134, 0xF908, 0xE293, 0xAB73, 0x6253, 0x2A3F,
+-	0x080C, 0x9552, 0x4665, 0x9D5E, 0x3028, 0x37A1, 0x0A0F, 0x2FB5,
+-	0x0E09, 0x2436, 0x1B9B, 0xDF3D, 0xCD26, 0x4E69, 0x7FCD, 0xEA9F,
+-	0x121B, 0x1D9E, 0x5874, 0x342E, 0x362D, 0xDCB2, 0xB4EE, 0x5BFB,
+-	0xA4F6, 0x764D, 0xB761, 0x7DCE, 0x527B, 0xDD3E, 0x5E71, 0x1397,
+-	0xA6F5, 0xB968, 0x0000, 0xC12C, 0x4060, 0xE31F, 0x79C8, 0xB6ED,
+-	0xD4BE, 0x8D46, 0x67D9, 0x724B, 0x94DE, 0x98D4, 0xB0E8, 0x854A,
+-	0xBB6B, 0xC52A, 0x4FE5, 0xED16, 0x86C5, 0x9AD7, 0x6655, 0x1194,
+-	0x8ACF, 0xE910, 0x0406, 0xFE81, 0xA0F0, 0x7844, 0x25BA, 0x4BE3,
+-	0xA2F3, 0x5DFE, 0x80C0, 0x058A, 0x3FAD, 0x21BC, 0x7048, 0xF104,
+-	0x63DF, 0x77C1, 0xAF75, 0x4263, 0x2030, 0xE51A, 0xFD0E, 0xBF6D,
+-	0x814C, 0x1814, 0x2635, 0xC32F, 0xBEE1, 0x35A2, 0x88CC, 0x2E39,
+-	0x9357, 0x55F2, 0xFC82, 0x7A47, 0xC8AC, 0xBAE7, 0x322B, 0xE695,
+-	0xC0A0, 0x1998, 0x9ED1, 0xA37F, 0x4466, 0x547E, 0x3BAB, 0x0B83,
+-	0x8CCA, 0xC729, 0x6BD3, 0x283C, 0xA779, 0xBCE2, 0x161D, 0xAD76,
+-	0xDB3B, 0x6456, 0x744E, 0x141E, 0x92DB, 0x0C0A, 0x486C, 0xB8E4,
+-	0x9F5D, 0xBD6E, 0x43EF, 0xC4A6, 0x39A8, 0x31A4, 0xD337, 0xF28B,
+-	0xD532, 0x8B43, 0x6E59, 0xDAB7, 0x018C, 0xB164, 0x9CD2, 0x49E0,
+-	0xD8B4, 0xACFA, 0xF307, 0xCF25, 0xCAAF, 0xF48E, 0x47E9, 0x1018,
+-	0x6FD5, 0xF088, 0x4A6F, 0x5C72, 0x3824, 0x57F1, 0x73C7, 0x9751,
+-	0xCB23, 0xA17C, 0xE89C, 0x3E21, 0x96DD, 0x61DC, 0x0D86, 0x0F85,
+-	0xE090, 0x7C42, 0x71C4, 0xCCAA, 0x90D8, 0x0605, 0xF701, 0x1C12,
+-	0xC2A3, 0x6A5F, 0xAEF9, 0x69D0, 0x1791, 0x9958, 0x3A27, 0x27B9,
+-	0xD938, 0xEB13, 0x2BB3, 0x2233, 0xD2BB, 0xA970, 0x0789, 0x33A7,
+-	0x2DB6, 0x3C22, 0x1592, 0xC920, 0x8749, 0xAAFF, 0x5078, 0xA57A,
+-	0x038F, 0x59F8, 0x0980, 0x1A17, 0x65DA, 0xD731, 0x84C6, 0xD0B8,
+-	0x82C3, 0x29B0, 0x5A77, 0x1E11, 0x7BCB, 0xA8FC, 0x6DD6, 0x2C3A,
+-};
+-
+-
+-static inline u16 _S_(u16 v)
+-{
+-	u16 t = Sbox[Hi8(v)];
+-	return Sbox[Lo8(v)] ^ ((t << 8) | (t >> 8));
+-}
+-
+-
+-#define PHASE1_LOOP_COUNT 8
+-
+-
+-static void tkip_mixing_phase1(u16 *TTAK, const u8 *TK, const u8 *TA, u32 IV32)
+-{
+-	int i, j;
+-
+-	/* Initialize the 80-bit TTAK from TSC (IV32) and TA[0..5] */
+-	TTAK[0] = Lo16(IV32);
+-	TTAK[1] = Hi16(IV32);
+-	TTAK[2] = Mk16(TA[1], TA[0]);
+-	TTAK[3] = Mk16(TA[3], TA[2]);
+-	TTAK[4] = Mk16(TA[5], TA[4]);
+-
+-	for (i = 0; i < PHASE1_LOOP_COUNT; i++) {
+-		j = 2 * (i & 1);
+-		TTAK[0] += _S_(TTAK[4] ^ Mk16(TK[1 + j], TK[0 + j]));
+-		TTAK[1] += _S_(TTAK[0] ^ Mk16(TK[5 + j], TK[4 + j]));
+-		TTAK[2] += _S_(TTAK[1] ^ Mk16(TK[9 + j], TK[8 + j]));
+-		TTAK[3] += _S_(TTAK[2] ^ Mk16(TK[13 + j], TK[12 + j]));
+-		TTAK[4] += _S_(TTAK[3] ^ Mk16(TK[1 + j], TK[0 + j])) + i;
+-	}
+-}
+-
+-
+-static void tkip_mixing_phase2(u8 *WEPSeed, const u8 *TK, const u16 *TTAK,
+-			       u16 IV16)
+-{
+-	/*
+-	 * Make temporary area overlap WEP seed so that the final copy can be
+-	 * avoided on little endian hosts.
+-	 */
+-	u16 *PPK = (u16 *)&WEPSeed[4];
+-
+-	/* Step 1 - make copy of TTAK and bring in TSC */
+-	PPK[0] = TTAK[0];
+-	PPK[1] = TTAK[1];
+-	PPK[2] = TTAK[2];
+-	PPK[3] = TTAK[3];
+-	PPK[4] = TTAK[4];
+-	PPK[5] = TTAK[4] + IV16;
+-
+-	/* Step 2 - 96-bit bijective mixing using S-box */
+-	PPK[0] += _S_(PPK[5] ^ le16_to_cpu(*(__le16 *)(&TK[0])));
+-	PPK[1] += _S_(PPK[0] ^ le16_to_cpu(*(__le16 *)(&TK[2])));
+-	PPK[2] += _S_(PPK[1] ^ le16_to_cpu(*(__le16 *)(&TK[4])));
+-	PPK[3] += _S_(PPK[2] ^ le16_to_cpu(*(__le16 *)(&TK[6])));
+-	PPK[4] += _S_(PPK[3] ^ le16_to_cpu(*(__le16 *)(&TK[8])));
+-	PPK[5] += _S_(PPK[4] ^ le16_to_cpu(*(__le16 *)(&TK[10])));
+-
+-	PPK[0] += RotR1(PPK[5] ^ le16_to_cpu(*(__le16 *)(&TK[12])));
+-	PPK[1] += RotR1(PPK[0] ^ le16_to_cpu(*(__le16 *)(&TK[14])));
+-	PPK[2] += RotR1(PPK[1]);
+-	PPK[3] += RotR1(PPK[2]);
+-	PPK[4] += RotR1(PPK[3]);
+-	PPK[5] += RotR1(PPK[4]);
+-
+-	/*
+-	 * Step 3 - bring in last of TK bits, assign 24-bit WEP IV value
+-	 * WEPSeed[0..2] is transmitted as WEP IV
+-	 */
+-	WEPSeed[0] = Hi8(IV16);
+-	WEPSeed[1] = (Hi8(IV16) | 0x20) & 0x7F;
+-	WEPSeed[2] = Lo8(IV16);
+-	WEPSeed[3] = Lo8((PPK[5] ^ le16_to_cpu(*(__le16 *)(&TK[0]))) >> 1);
+-
+-#ifdef __BIG_ENDIAN
+-	{
+-		int i;
+-
+-		for (i = 0; i < 6; i++)
+-			PPK[i] = (PPK[i] << 8) | (PPK[i] >> 8);
+-	}
+-#endif
+-}
+-
+-
+-static int ieee80211_tkip_encrypt(struct sk_buff *skb, int hdr_len, void *priv)
+-{
+-	struct ieee80211_tkip_data *tkey = priv;
+-	int len;
+-	u8 *pos;
+-	struct rtl_80211_hdr_4addr *hdr;
+-	struct cb_desc *tcb_desc = (struct cb_desc *)(skb->cb + MAX_DEV_ADDR_SIZE);
+-	u8 rc4key[16],  *icv;
+-	u32 crc;
+-
+-	if (skb_headroom(skb) < 8 || skb_tailroom(skb) < 4 ||
+-	    skb->len < hdr_len)
+-		return -1;
+-
+-	hdr = (struct rtl_80211_hdr_4addr *)skb->data;
+-
+-	if (!tcb_desc->bHwSec) {
+-		if (!tkey->tx_phase1_done) {
+-			tkip_mixing_phase1(tkey->tx_ttak, tkey->key, hdr->addr2,
+-					   tkey->tx_iv32);
+-			tkey->tx_phase1_done = 1;
+-		}
+-		tkip_mixing_phase2(rc4key, tkey->key, tkey->tx_ttak, tkey->tx_iv16);
+-	} else
+-		tkey->tx_phase1_done = 1;
+-
+-
+-	len = skb->len - hdr_len;
+-	pos = skb_push(skb, 8);
+-	memmove(pos, pos + 8, hdr_len);
+-	pos += hdr_len;
+-
+-	if (tcb_desc->bHwSec) {
+-		*pos++ = Hi8(tkey->tx_iv16);
+-		*pos++ = (Hi8(tkey->tx_iv16) | 0x20) & 0x7F;
+-		*pos++ = Lo8(tkey->tx_iv16);
+-	} else {
+-		*pos++ = rc4key[0];
+-		*pos++ = rc4key[1];
+-		*pos++ = rc4key[2];
+-	}
+-
+-	*pos++ = (tkey->key_idx << 6) | BIT(5) /* Ext IV included */;
+-	*pos++ = tkey->tx_iv32 & 0xff;
+-	*pos++ = (tkey->tx_iv32 >> 8) & 0xff;
+-	*pos++ = (tkey->tx_iv32 >> 16) & 0xff;
+-	*pos++ = (tkey->tx_iv32 >> 24) & 0xff;
+-
+-	if (!tcb_desc->bHwSec) {
+-		icv = skb_put(skb, 4);
+-		crc = ~crc32_le(~0, pos, len);
+-		icv[0] = crc;
+-		icv[1] = crc >> 8;
+-		icv[2] = crc >> 16;
+-		icv[3] = crc >> 24;
+-
+-		arc4_setkey(&tkey->tx_ctx_arc4, rc4key, 16);
+-		arc4_crypt(&tkey->tx_ctx_arc4, pos, pos, len + 4);
+-	}
+-
+-	tkey->tx_iv16++;
+-	if (tkey->tx_iv16 == 0) {
+-		tkey->tx_phase1_done = 0;
+-		tkey->tx_iv32++;
+-	}
+-
+-	return 0;
+-}
+-
+-static int ieee80211_tkip_decrypt(struct sk_buff *skb, int hdr_len, void *priv)
+-{
+-	struct ieee80211_tkip_data *tkey = priv;
+-	u8 keyidx, *pos;
+-	u32 iv32;
+-	u16 iv16;
+-	struct rtl_80211_hdr_4addr *hdr;
+-	struct cb_desc *tcb_desc = (struct cb_desc *)(skb->cb + MAX_DEV_ADDR_SIZE);
+-	u8 rc4key[16];
+-	u8 icv[4];
+-	u32 crc;
+-	int plen;
+-
+-	if (skb->len < hdr_len + 8 + 4)
+-		return -1;
+-
+-	hdr = (struct rtl_80211_hdr_4addr *)skb->data;
+-	pos = skb->data + hdr_len;
+-	keyidx = pos[3];
+-	if (!(keyidx & BIT(5))) {
+-		if (net_ratelimit()) {
+-			netdev_dbg(skb->dev, "TKIP: received packet without ExtIV"
+-			       " flag from %pM\n", hdr->addr2);
+-		}
+-		return -2;
+-	}
+-	keyidx >>= 6;
+-	if (tkey->key_idx != keyidx) {
+-		netdev_dbg(skb->dev, "TKIP: RX tkey->key_idx=%d frame "
+-		       "keyidx=%d priv=%p\n", tkey->key_idx, keyidx, priv);
+-		return -6;
+-	}
+-	if (!tkey->key_set) {
+-		if (net_ratelimit()) {
+-			netdev_dbg(skb->dev, "TKIP: received packet from %pM"
+-			       " with keyid=%d that does not have a configured"
+-			       " key\n", hdr->addr2, keyidx);
+-		}
+-		return -3;
+-	}
+-	iv16 = (pos[0] << 8) | pos[2];
+-	iv32 = pos[4] | (pos[5] << 8) | (pos[6] << 16) | (pos[7] << 24);
+-	pos += 8;
+-
+-	if (!tcb_desc->bHwSec) {
+-		if (iv32 < tkey->rx_iv32 ||
+-		(iv32 == tkey->rx_iv32 && iv16 <= tkey->rx_iv16)) {
+-			if (net_ratelimit()) {
+-				netdev_dbg(skb->dev, "TKIP: replay detected: STA=%pM"
+-				" previous TSC %08x%04x received TSC "
+-				"%08x%04x\n", hdr->addr2,
+-				tkey->rx_iv32, tkey->rx_iv16, iv32, iv16);
+-			}
+-			tkey->dot11RSNAStatsTKIPReplays++;
+-			return -4;
+-		}
+-
+-		if (iv32 != tkey->rx_iv32 || !tkey->rx_phase1_done) {
+-			tkip_mixing_phase1(tkey->rx_ttak, tkey->key, hdr->addr2, iv32);
+-			tkey->rx_phase1_done = 1;
+-		}
+-		tkip_mixing_phase2(rc4key, tkey->key, tkey->rx_ttak, iv16);
+-
+-		plen = skb->len - hdr_len - 12;
+-
+-		arc4_setkey(&tkey->rx_ctx_arc4, rc4key, 16);
+-		arc4_crypt(&tkey->rx_ctx_arc4, pos, pos, plen + 4);
+-
+-		crc = ~crc32_le(~0, pos, plen);
+-		icv[0] = crc;
+-		icv[1] = crc >> 8;
+-		icv[2] = crc >> 16;
+-		icv[3] = crc >> 24;
+-
+-		if (memcmp(icv, pos + plen, 4) != 0) {
+-			if (iv32 != tkey->rx_iv32) {
+-				/*
+-				 * Previously cached Phase1 result was already
+-				 * lost, so it needs to be recalculated for the
+-				 * next packet.
+-				 */
+-				tkey->rx_phase1_done = 0;
+-			}
+-			if (net_ratelimit()) {
+-				netdev_dbg(skb->dev, "TKIP: ICV error detected: STA="
+-				"%pM\n", hdr->addr2);
+-			}
+-			tkey->dot11RSNAStatsTKIPICVErrors++;
+-			return -5;
+-		}
+-
+-	}
+-
+-	/*
+-	 * Update real counters only after Michael MIC verification has
+-	 * completed.
+-	 */
+-	tkey->rx_iv32_new = iv32;
+-	tkey->rx_iv16_new = iv16;
+-
+-	/* Remove IV and ICV */
+-	memmove(skb->data + 8, skb->data, hdr_len);
+-	skb_pull(skb, 8);
+-	skb_trim(skb, skb->len - 4);
+-
+-	return keyidx;
+-}
+-
+-static int michael_mic(struct crypto_shash *tfm_michael, u8 *key, u8 *hdr,
+-		       u8 *data, size_t data_len, u8 *mic)
+-{
+-	SHASH_DESC_ON_STACK(desc, tfm_michael);
+-	int err;
+-
+-	desc->tfm = tfm_michael;
+-
+-	if (crypto_shash_setkey(tfm_michael, key, 8))
+-		return -1;
+-
+-	err = crypto_shash_init(desc);
+-	if (err)
+-		goto out;
+-	err = crypto_shash_update(desc, hdr, 16);
+-	if (err)
+-		goto out;
+-	err = crypto_shash_update(desc, data, data_len);
+-	if (err)
+-		goto out;
+-	err = crypto_shash_final(desc, mic);
+-
+-out:
+-	shash_desc_zero(desc);
+-	return err;
+-}
+-
+-static void michael_mic_hdr(struct sk_buff *skb, u8 *hdr)
+-{
+-	struct rtl_80211_hdr_4addr *hdr11;
+-
+-	hdr11 = (struct rtl_80211_hdr_4addr *)skb->data;
+-	switch (le16_to_cpu(hdr11->frame_ctl) &
+-		(IEEE80211_FCTL_FROMDS | IEEE80211_FCTL_TODS)) {
+-	case IEEE80211_FCTL_TODS:
+-		memcpy(hdr, hdr11->addr3, ETH_ALEN); /* DA */
+-		memcpy(hdr + ETH_ALEN, hdr11->addr2, ETH_ALEN); /* SA */
+-		break;
+-	case IEEE80211_FCTL_FROMDS:
+-		memcpy(hdr, hdr11->addr1, ETH_ALEN); /* DA */
+-		memcpy(hdr + ETH_ALEN, hdr11->addr3, ETH_ALEN); /* SA */
+-		break;
+-	case IEEE80211_FCTL_FROMDS | IEEE80211_FCTL_TODS:
+-		memcpy(hdr, hdr11->addr3, ETH_ALEN); /* DA */
+-		memcpy(hdr + ETH_ALEN, hdr11->addr4, ETH_ALEN); /* SA */
+-		break;
+-	default:
+-		memcpy(hdr, hdr11->addr1, ETH_ALEN); /* DA */
+-		memcpy(hdr + ETH_ALEN, hdr11->addr2, ETH_ALEN); /* SA */
+-		break;
+-	}
+-
+-	hdr[12] = 0; /* priority */
+-
+-	hdr[13] = hdr[14] = hdr[15] = 0; /* reserved */
+-}
+-
+-
+-static int ieee80211_michael_mic_add(struct sk_buff *skb, int hdr_len, void *priv)
+-{
+-	struct ieee80211_tkip_data *tkey = priv;
+-	u8 *pos;
+-	struct rtl_80211_hdr_4addr *hdr;
+-
+-	hdr = (struct rtl_80211_hdr_4addr *)skb->data;
+-
+-	if (skb_tailroom(skb) < 8 || skb->len < hdr_len) {
+-		netdev_dbg(skb->dev, "Invalid packet for Michael MIC add "
+-		       "(tailroom=%d hdr_len=%d skb->len=%d)\n",
+-		       skb_tailroom(skb), hdr_len, skb->len);
+-		return -1;
+-	}
+-
+-	michael_mic_hdr(skb, tkey->tx_hdr);
+-
+-	// { david, 2006.9.1
+-	// fix the wpa process with wmm enabled.
+-	if (IEEE80211_QOS_HAS_SEQ(le16_to_cpu(hdr->frame_ctl)))
+-		tkey->tx_hdr[12] = *(skb->data + hdr_len - 2) & 0x07;
+-	// }
+-	pos = skb_put(skb, 8);
+-
+-	if (michael_mic(tkey->tx_tfm_michael, &tkey->key[16], tkey->tx_hdr,
+-				skb->data + hdr_len, skb->len - 8 - hdr_len, pos))
+-		return -1;
+-
+-	return 0;
+-}
+-
+-static void ieee80211_michael_mic_failure(struct net_device *dev,
+-				       struct rtl_80211_hdr_4addr *hdr,
+-				       int keyidx)
+-{
+-	union iwreq_data wrqu;
+-	struct iw_michaelmicfailure ev;
+-
+-	/* TODO: needed parameters: count, keyid, key type, TSC */
+-	memset(&ev, 0, sizeof(ev));
+-	ev.flags = keyidx & IW_MICFAILURE_KEY_ID;
+-	if (hdr->addr1[0] & 0x01)
+-		ev.flags |= IW_MICFAILURE_GROUP;
+-	else
+-		ev.flags |= IW_MICFAILURE_PAIRWISE;
+-	ev.src_addr.sa_family = ARPHRD_ETHER;
+-	memcpy(ev.src_addr.sa_data, hdr->addr2, ETH_ALEN);
+-	memset(&wrqu, 0, sizeof(wrqu));
+-	wrqu.data.length = sizeof(ev);
+-	wireless_send_event(dev, IWEVMICHAELMICFAILURE, &wrqu, (char *)&ev);
+-}
+-
+-static int ieee80211_michael_mic_verify(struct sk_buff *skb, int keyidx,
+-					int hdr_len, void *priv)
+-{
+-	struct ieee80211_tkip_data *tkey = priv;
+-	u8 mic[8];
+-	struct rtl_80211_hdr_4addr *hdr;
+-
+-	hdr = (struct rtl_80211_hdr_4addr *)skb->data;
+-
+-	if (!tkey->key_set)
+-		return -1;
+-
+-	michael_mic_hdr(skb, tkey->rx_hdr);
+-	// { david, 2006.9.1
+-	// fix the wpa process with wmm enabled.
+-	if (IEEE80211_QOS_HAS_SEQ(le16_to_cpu(hdr->frame_ctl)))
+-		tkey->rx_hdr[12] = *(skb->data + hdr_len - 2) & 0x07;
+-	// }
+-
+-	if (michael_mic(tkey->rx_tfm_michael, &tkey->key[24], tkey->rx_hdr,
+-			skb->data + hdr_len, skb->len - 8 - hdr_len, mic))
+-		return -1;
+-	if (memcmp(mic, skb->data + skb->len - 8, 8) != 0) {
+-		struct rtl_80211_hdr_4addr *hdr;
+-		hdr = (struct rtl_80211_hdr_4addr *)skb->data;
+-
+-		netdev_dbg(skb->dev, "Michael MIC verification failed for "
+-		       "MSDU from %pM keyidx=%d\n",
+-		       hdr->addr2, keyidx);
+-		if (skb->dev)
+-			ieee80211_michael_mic_failure(skb->dev, hdr, keyidx);
+-		tkey->dot11RSNAStatsTKIPLocalMICFailures++;
+-		return -1;
+-	}
+-
+-	/*
+-	 * Update TSC counters for RX now that the packet verification has
+-	 * completed.
+-	 */
+-	tkey->rx_iv32 = tkey->rx_iv32_new;
+-	tkey->rx_iv16 = tkey->rx_iv16_new;
+-
+-	skb_trim(skb, skb->len - 8);
+-
+-	return 0;
+-}
+-
+-
+-static int ieee80211_tkip_set_key(void *key, int len, u8 *seq, void *priv)
+-{
+-	struct ieee80211_tkip_data *tkey = priv;
+-	int keyidx;
+-	struct crypto_shash *tfm = tkey->tx_tfm_michael;
+-	struct crypto_shash *tfm3 = tkey->rx_tfm_michael;
+-
+-	keyidx = tkey->key_idx;
+-	memset(tkey, 0, sizeof(*tkey));
+-	tkey->key_idx = keyidx;
+-	tkey->tx_tfm_michael = tfm;
+-	tkey->rx_tfm_michael = tfm3;
+-
+-	if (len == TKIP_KEY_LEN) {
+-		memcpy(tkey->key, key, TKIP_KEY_LEN);
+-		tkey->key_set = 1;
+-		tkey->tx_iv16 = 1; /* TSC is initialized to 1 */
+-		if (seq) {
+-			tkey->rx_iv32 = (seq[5] << 24) | (seq[4] << 16) |
+-				(seq[3] << 8) | seq[2];
+-			tkey->rx_iv16 = (seq[1] << 8) | seq[0];
+-		}
+-	} else if (len == 0)
+-		tkey->key_set = 0;
+-	else
+-		return -1;
+-
+-	return 0;
+-}
+-
+-
+-static int ieee80211_tkip_get_key(void *key, int len, u8 *seq, void *priv)
+-{
+-	struct ieee80211_tkip_data *tkey = priv;
+-
+-	if (len < TKIP_KEY_LEN)
+-		return 0;
+-
+-	if (!tkey->key_set)
+-		return 0;
+-	memcpy(key, tkey->key, TKIP_KEY_LEN);
+-
+-	if (seq) {
+-		/* Return the sequence number of the last transmitted frame. */
+-		u16 iv16 = tkey->tx_iv16;
+-		u32 iv32 = tkey->tx_iv32;
+-
+-		if (iv16 == 0)
+-			iv32--;
+-		iv16--;
+-		seq[0] = tkey->tx_iv16;
+-		seq[1] = tkey->tx_iv16 >> 8;
+-		seq[2] = tkey->tx_iv32;
+-		seq[3] = tkey->tx_iv32 >> 8;
+-		seq[4] = tkey->tx_iv32 >> 16;
+-		seq[5] = tkey->tx_iv32 >> 24;
+-	}
+-
+-	return TKIP_KEY_LEN;
+-}
+-
+-
+-static char *ieee80211_tkip_print_stats(char *p, void *priv)
+-{
+-	struct ieee80211_tkip_data *tkip = priv;
+-
+-	p += sprintf(p, "key[%d] alg=TKIP key_set=%d "
+-		     "tx_pn=%02x%02x%02x%02x%02x%02x "
+-		     "rx_pn=%02x%02x%02x%02x%02x%02x "
+-		     "replays=%d icv_errors=%d local_mic_failures=%d\n",
+-		     tkip->key_idx, tkip->key_set,
+-		     (tkip->tx_iv32 >> 24) & 0xff,
+-		     (tkip->tx_iv32 >> 16) & 0xff,
+-		     (tkip->tx_iv32 >> 8) & 0xff,
+-		     tkip->tx_iv32 & 0xff,
+-		     (tkip->tx_iv16 >> 8) & 0xff,
+-		     tkip->tx_iv16 & 0xff,
+-		     (tkip->rx_iv32 >> 24) & 0xff,
+-		     (tkip->rx_iv32 >> 16) & 0xff,
+-		     (tkip->rx_iv32 >> 8) & 0xff,
+-		     tkip->rx_iv32 & 0xff,
+-		     (tkip->rx_iv16 >> 8) & 0xff,
+-		     tkip->rx_iv16 & 0xff,
+-		     tkip->dot11RSNAStatsTKIPReplays,
+-		     tkip->dot11RSNAStatsTKIPICVErrors,
+-		     tkip->dot11RSNAStatsTKIPLocalMICFailures);
+-	return p;
+-}
+-
+-
+-static struct ieee80211_crypto_ops ieee80211_crypt_tkip = {
+-	.name			= "TKIP",
+-	.init			= ieee80211_tkip_init,
+-	.deinit			= ieee80211_tkip_deinit,
+-	.encrypt_mpdu		= ieee80211_tkip_encrypt,
+-	.decrypt_mpdu		= ieee80211_tkip_decrypt,
+-	.encrypt_msdu		= ieee80211_michael_mic_add,
+-	.decrypt_msdu		= ieee80211_michael_mic_verify,
+-	.set_key		= ieee80211_tkip_set_key,
+-	.get_key		= ieee80211_tkip_get_key,
+-	.print_stats		= ieee80211_tkip_print_stats,
+-	.extra_prefix_len	= 4 + 4, /* IV + ExtIV */
+-	.extra_postfix_len	= 8 + 4, /* MIC + ICV */
+-	.owner			= THIS_MODULE,
+-};
+-
+-int __init ieee80211_crypto_tkip_init(void)
+-{
+-	return ieee80211_register_crypto_ops(&ieee80211_crypt_tkip);
+-}
+-
+-void ieee80211_crypto_tkip_exit(void)
+-{
+-	ieee80211_unregister_crypto_ops(&ieee80211_crypt_tkip);
+-}
+diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_crypt_wep.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_crypt_wep.c
+deleted file mode 100644
+index a2cdf3bfd1a4..000000000000
+--- a/drivers/staging/rtl8192u/ieee80211/ieee80211_crypt_wep.c
++++ /dev/null
+@@ -1,247 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- * Host AP crypt: host-based WEP encryption implementation for Host AP driver
+- *
+- * Copyright (c) 2002-2004, Jouni Malinen <jkmaline@cc.hut.fi>
+- */
+-
+-#include <linux/fips.h>
+-#include <linux/module.h>
+-#include <linux/init.h>
+-#include <linux/slab.h>
+-#include <linux/random.h>
+-#include <linux/skbuff.h>
+-#include <linux/string.h>
+-
+-#include "ieee80211.h"
+-
+-#include <crypto/arc4.h>
+-#include <linux/crc32.h>
+-
+-MODULE_AUTHOR("Jouni Malinen");
+-MODULE_DESCRIPTION("Host AP crypt: WEP");
+-MODULE_LICENSE("GPL");
+-
+-struct prism2_wep_data {
+-	u32 iv;
+-#define WEP_KEY_LEN 13
+-	u8 key[WEP_KEY_LEN + 1];
+-	u8 key_len;
+-	u8 key_idx;
+-	struct arc4_ctx rx_ctx_arc4;
+-	struct arc4_ctx tx_ctx_arc4;
+-};
+-
+-
+-static void *prism2_wep_init(int keyidx)
+-{
+-	struct prism2_wep_data *priv;
+-
+-	if (fips_enabled)
+-		return NULL;
+-
+-	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+-	if (!priv)
+-		return NULL;
+-	priv->key_idx = keyidx;
+-
+-	/* start WEP IV from a random value */
+-	get_random_bytes(&priv->iv, 4);
+-
+-	return priv;
+-}
+-
+-
+-static void prism2_wep_deinit(void *priv)
+-{
+-	kfree_sensitive(priv);
+-}
+-
+-/* Perform WEP encryption on given skb that has at least 4 bytes of headroom
+- * for IV and 4 bytes of tailroom for ICV. Both IV and ICV will be transmitted,
+- * so the payload length increases with 8 bytes.
+- *
+- * WEP frame payload: IV + TX key idx, RC4(data), ICV = RC4(CRC32(data))
+- */
+-static int prism2_wep_encrypt(struct sk_buff *skb, int hdr_len, void *priv)
+-{
+-	struct prism2_wep_data *wep = priv;
+-	u32 klen, len;
+-	u8 key[WEP_KEY_LEN + 3];
+-	u8 *pos;
+-	struct cb_desc *tcb_desc = (struct cb_desc *)(skb->cb + MAX_DEV_ADDR_SIZE);
+-	u32 crc;
+-	u8 *icv;
+-
+-	if (skb_headroom(skb) < 4 || skb_tailroom(skb) < 4 ||
+-	    skb->len < hdr_len)
+-		return -1;
+-
+-	len = skb->len - hdr_len;
+-	pos = skb_push(skb, 4);
+-	memmove(pos, pos + 4, hdr_len);
+-	pos += hdr_len;
+-
+-	klen = 3 + wep->key_len;
+-
+-	wep->iv++;
+-
+-	/* Fluhrer, Mantin, and Shamir have reported weaknesses in the key
+-	 * scheduling algorithm of RC4. At least IVs (KeyByte + 3, 0xff, N)
+-	 * can be used to speedup attacks, so avoid using them.
+-	 */
+-	if ((wep->iv & 0xff00) == 0xff00) {
+-		u8 B = (wep->iv >> 16) & 0xff;
+-
+-		if (B >= 3 && B < klen)
+-			wep->iv += 0x0100;
+-	}
+-
+-	/* Prepend 24-bit IV to RC4 key and TX frame */
+-	*pos++ = key[0] = (wep->iv >> 16) & 0xff;
+-	*pos++ = key[1] = (wep->iv >> 8) & 0xff;
+-	*pos++ = key[2] = wep->iv & 0xff;
+-	*pos++ = wep->key_idx << 6;
+-
+-	/* Copy rest of the WEP key (the secret part) */
+-	memcpy(key + 3, wep->key, wep->key_len);
+-
+-	if (!tcb_desc->bHwSec) {
+-		/* Append little-endian CRC32 and encrypt it to produce ICV */
+-		crc = ~crc32_le(~0, pos, len);
+-		icv = skb_put(skb, 4);
+-		icv[0] = crc;
+-		icv[1] = crc >> 8;
+-		icv[2] = crc >> 16;
+-		icv[3] = crc >> 24;
+-
+-		arc4_setkey(&wep->tx_ctx_arc4, key, klen);
+-		arc4_crypt(&wep->tx_ctx_arc4, pos, pos, len + 4);
+-	}
+-
+-	return 0;
+-}
+-
+-
+-/* Perform WEP decryption on given buffer. Buffer includes whole WEP part of
+- * the frame: IV (4 bytes), encrypted payload (including SNAP header),
+- * ICV (4 bytes). len includes both IV and ICV.
+- *
+- * Returns 0 if frame was decrypted successfully and ICV was correct and -1 on
+- * failure. If frame is OK, IV and ICV will be removed.
+- */
+-static int prism2_wep_decrypt(struct sk_buff *skb, int hdr_len, void *priv)
+-{
+-	struct prism2_wep_data *wep = priv;
+-	u32  klen, plen;
+-	u8 key[WEP_KEY_LEN + 3];
+-	u8 keyidx, *pos;
+-	struct cb_desc *tcb_desc = (struct cb_desc *)(skb->cb + MAX_DEV_ADDR_SIZE);
+-	u32 crc;
+-	u8 icv[4];
+-
+-	if (skb->len < hdr_len + 8)
+-		return -1;
+-
+-	pos = skb->data + hdr_len;
+-	key[0] = *pos++;
+-	key[1] = *pos++;
+-	key[2] = *pos++;
+-	keyidx = *pos++ >> 6;
+-	if (keyidx != wep->key_idx)
+-		return -1;
+-
+-	klen = 3 + wep->key_len;
+-
+-	/* Copy rest of the WEP key (the secret part) */
+-	memcpy(key + 3, wep->key, wep->key_len);
+-
+-	/* Apply RC4 to data and compute CRC32 over decrypted data */
+-	plen = skb->len - hdr_len - 8;
+-
+-	if (!tcb_desc->bHwSec) {
+-		arc4_setkey(&wep->rx_ctx_arc4, key, klen);
+-		arc4_crypt(&wep->rx_ctx_arc4, pos, pos, plen + 4);
+-
+-		crc = ~crc32_le(~0, pos, plen);
+-		icv[0] = crc;
+-		icv[1] = crc >> 8;
+-		icv[2] = crc >> 16;
+-		icv[3] = crc >> 24;
+-		if (memcmp(icv, pos + plen, 4) != 0) {
+-			/* ICV mismatch - drop frame */
+-			return -2;
+-		}
+-	}
+-	/* Remove IV and ICV */
+-	memmove(skb->data + 4, skb->data, hdr_len);
+-	skb_pull(skb, 4);
+-	skb_trim(skb, skb->len - 4);
+-
+-	return 0;
+-}
+-
+-
+-static int prism2_wep_set_key(void *key, int len, u8 *seq, void *priv)
+-{
+-	struct prism2_wep_data *wep = priv;
+-
+-	if (len < 0 || len > WEP_KEY_LEN)
+-		return -1;
+-
+-	memcpy(wep->key, key, len);
+-	wep->key_len = len;
+-
+-	return 0;
+-}
+-
+-
+-static int prism2_wep_get_key(void *key, int len, u8 *seq, void *priv)
+-{
+-	struct prism2_wep_data *wep = priv;
+-
+-	if (len < wep->key_len)
+-		return 0;
+-
+-	memcpy(key, wep->key, wep->key_len);
+-
+-	return wep->key_len;
+-}
+-
+-
+-static char *prism2_wep_print_stats(char *p, void *priv)
+-{
+-	struct prism2_wep_data *wep = priv;
+-
+-	p += sprintf(p, "key[%d] alg=WEP len=%d\n",
+-		     wep->key_idx, wep->key_len);
+-	return p;
+-}
+-
+-
+-static struct ieee80211_crypto_ops ieee80211_crypt_wep = {
+-	.name			= "WEP",
+-	.init			= prism2_wep_init,
+-	.deinit			= prism2_wep_deinit,
+-	.encrypt_mpdu		= prism2_wep_encrypt,
+-	.decrypt_mpdu		= prism2_wep_decrypt,
+-	.encrypt_msdu		= NULL,
+-	.decrypt_msdu		= NULL,
+-	.set_key		= prism2_wep_set_key,
+-	.get_key		= prism2_wep_get_key,
+-	.print_stats		= prism2_wep_print_stats,
+-	.extra_prefix_len	= 4, /* IV */
+-	.extra_postfix_len	= 4, /* ICV */
+-	.owner			= THIS_MODULE,
+-};
+-
+-int __init ieee80211_crypto_wep_init(void)
+-{
+-	return ieee80211_register_crypto_ops(&ieee80211_crypt_wep);
+-}
+-
+-void ieee80211_crypto_wep_exit(void)
+-{
+-	ieee80211_unregister_crypto_ops(&ieee80211_crypt_wep);
+-}
+-
+diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_module.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_module.c
+deleted file mode 100644
+index 3f93939bc4ee..000000000000
+--- a/drivers/staging/rtl8192u/ieee80211/ieee80211_module.c
++++ /dev/null
+@@ -1,287 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*******************************************************************************
+- *
+- *  Copyright(c) 2004 Intel Corporation. All rights reserved.
+- *
+- *  Portions of this file are based on the WEP enablement code provided by the
+- *  Host AP project hostap-drivers v0.1.3
+- *  Copyright (c) 2001-2002, SSH Communications Security Corp and Jouni Malinen
+- *  <jkmaline@cc.hut.fi>
+- *  Copyright (c) 2002-2003, Jouni Malinen <jkmaline@cc.hut.fi>
+- *
+- *  Contact Information:
+- *  James P. Ketrenos <ipw2100-admin@linux.intel.com>
+- *  Intel Corporation, 5200 N.E. Elam Young Parkway, Hillsboro, OR 97124-6497
+- *
+- ******************************************************************************/
+-
+-#include <linux/compiler.h>
+-#include <linux/errno.h>
+-#include <linux/if_arp.h>
+-#include <linux/in6.h>
+-#include <linux/in.h>
+-#include <linux/ip.h>
+-#include <linux/kernel.h>
+-#include <linux/module.h>
+-#include <linux/netdevice.h>
+-#include <linux/pci.h>
+-#include <linux/proc_fs.h>
+-#include <linux/skbuff.h>
+-#include <linux/slab.h>
+-#include <linux/tcp.h>
+-#include <linux/types.h>
+-#include <linux/wireless.h>
+-#include <linux/etherdevice.h>
+-#include <linux/uaccess.h>
+-#include <net/arp.h>
+-
+-#include "ieee80211.h"
+-
+-MODULE_DESCRIPTION("802.11 data/management/control stack");
+-MODULE_AUTHOR("Copyright (C) 2004 Intel Corporation <jketreno@linux.intel.com>");
+-MODULE_LICENSE("GPL");
+-
+-#define DRV_NAME "ieee80211"
+-
+-static inline int ieee80211_networks_allocate(struct ieee80211_device *ieee)
+-{
+-	if (ieee->networks)
+-		return 0;
+-
+-	ieee->networks = kcalloc(MAX_NETWORK_COUNT,
+-				 sizeof(struct ieee80211_network),
+-				 GFP_KERNEL);
+-	if (!ieee->networks) {
+-		netdev_warn(ieee->dev, "Out of memory allocating beacons\n");
+-		return -ENOMEM;
+-	}
+-
+-	return 0;
+-}
+-
+-static inline void ieee80211_networks_free(struct ieee80211_device *ieee)
+-{
+-	if (!ieee->networks)
+-		return;
+-	kfree(ieee->networks);
+-	ieee->networks = NULL;
+-}
+-
+-static inline void ieee80211_networks_initialize(struct ieee80211_device *ieee)
+-{
+-	int i;
+-
+-	INIT_LIST_HEAD(&ieee->network_free_list);
+-	INIT_LIST_HEAD(&ieee->network_list);
+-	for (i = 0; i < MAX_NETWORK_COUNT; i++)
+-		list_add_tail(&ieee->networks[i].list, &ieee->network_free_list);
+-}
+-
+-struct net_device *alloc_ieee80211(int sizeof_priv)
+-{
+-	struct ieee80211_device *ieee;
+-	struct net_device *dev;
+-	int i, err;
+-
+-	IEEE80211_DEBUG_INFO("Initializing...\n");
+-
+-	dev = alloc_etherdev(sizeof(struct ieee80211_device) + sizeof_priv);
+-	if (!dev) {
+-		IEEE80211_ERROR("Unable to network device.\n");
+-		goto failed;
+-	}
+-
+-	ieee = netdev_priv(dev);
+-	ieee->dev = dev;
+-
+-	err = ieee80211_networks_allocate(ieee);
+-	if (err) {
+-		IEEE80211_ERROR("Unable to allocate beacon storage: %d\n",
+-				err);
+-		goto failed;
+-	}
+-	ieee80211_networks_initialize(ieee);
+-
+-	/* Default fragmentation threshold is maximum payload size */
+-	ieee->fts = DEFAULT_FTS;
+-	ieee->scan_age = DEFAULT_MAX_SCAN_AGE;
+-	ieee->open_wep = 1;
+-
+-	/* Default to enabling full open WEP with host based encrypt/decrypt */
+-	ieee->host_encrypt = 1;
+-	ieee->host_decrypt = 1;
+-	ieee->ieee802_1x = 1; /* Default to supporting 802.1x */
+-
+-	INIT_LIST_HEAD(&ieee->crypt_deinit_list);
+-	timer_setup(&ieee->crypt_deinit_timer, ieee80211_crypt_deinit_handler,
+-		    0);
+-
+-	spin_lock_init(&ieee->lock);
+-	spin_lock_init(&ieee->wpax_suitlist_lock);
+-	spin_lock_init(&ieee->bw_spinlock);
+-	spin_lock_init(&ieee->reorder_spinlock);
+-	/* added by WB */
+-	atomic_set(&ieee->atm_chnlop, 0);
+-	atomic_set(&ieee->atm_swbw, 0);
+-
+-	ieee->wpax_type_set = 0;
+-	ieee->wpa_enabled = 0;
+-	ieee->tkip_countermeasures = 0;
+-	ieee->drop_unencrypted = 0;
+-	ieee->privacy_invoked = 0;
+-	ieee->ieee802_1x = 1;
+-	ieee->raw_tx = 0;
+-	//ieee->hwsec_support = 1; //defalt support hw security. //use module_param instead.
+-	ieee->hwsec_active = 0; /* disable hwsec, switch it on when necessary. */
+-
+-	ieee80211_softmac_init(ieee);
+-
+-	ieee->pHTInfo = kzalloc(sizeof(RT_HIGH_THROUGHPUT), GFP_KERNEL);
+-	if (!ieee->pHTInfo) {
+-		IEEE80211_DEBUG(IEEE80211_DL_ERR, "can't alloc memory for HTInfo\n");
+-
+-		/* By this point in code ieee80211_networks_allocate() has been
+-		 * successfully called so the memory allocated should be freed
+-		 */
+-		ieee80211_networks_free(ieee);
+-		goto failed;
+-	}
+-	HTUpdateDefaultSetting(ieee);
+-	HTInitializeHTInfo(ieee); /* may move to other place. */
+-	TSInitialize(ieee);
+-
+-	for (i = 0; i < IEEE_IBSS_MAC_HASH_SIZE; i++)
+-		INIT_LIST_HEAD(&ieee->ibss_mac_hash[i]);
+-
+-	for (i = 0; i < 17; i++) {
+-		ieee->last_rxseq_num[i] = -1;
+-		ieee->last_rxfrag_num[i] = -1;
+-		ieee->last_packet_time[i] = 0;
+-	}
+-
+-	return dev;
+-
+- failed:
+-	if (dev)
+-		free_netdev(dev);
+-
+-	return NULL;
+-}
+-
+-void free_ieee80211(struct net_device *dev)
+-{
+-	struct ieee80211_device *ieee = netdev_priv(dev);
+-	int i;
+-	/* struct list_head *p, *q; */
+-//	del_timer_sync(&ieee->SwBwTimer);
+-	kfree(ieee->pHTInfo);
+-	ieee->pHTInfo = NULL;
+-	RemoveAllTS(ieee);
+-	ieee80211_softmac_free(ieee);
+-	del_timer_sync(&ieee->crypt_deinit_timer);
+-	ieee80211_crypt_deinit_entries(ieee, 1);
+-
+-	for (i = 0; i < WEP_KEYS; i++) {
+-		struct ieee80211_crypt_data *crypt = ieee->crypt[i];
+-
+-		if (crypt) {
+-			if (crypt->ops)
+-				crypt->ops->deinit(crypt->priv);
+-			kfree(crypt);
+-			ieee->crypt[i] = NULL;
+-		}
+-	}
+-
+-	ieee80211_networks_free(ieee);
+-	free_netdev(dev);
+-}
+-
+-#ifdef CONFIG_IEEE80211_DEBUG
+-
+-u32 ieee80211_debug_level;
+-static int debug = //	    IEEE80211_DL_INFO	|
+-	//		    IEEE80211_DL_WX	|
+-	//		    IEEE80211_DL_SCAN	|
+-	//		    IEEE80211_DL_STATE	|
+-	//		    IEEE80211_DL_MGMT	|
+-	//		    IEEE80211_DL_FRAG	|
+-	//		    IEEE80211_DL_EAP	|
+-	//		    IEEE80211_DL_DROP	|
+-	//		    IEEE80211_DL_TX	|
+-	//		    IEEE80211_DL_RX	|
+-			    //IEEE80211_DL_QOS    |
+-	//		    IEEE80211_DL_HT	|
+-	//		    IEEE80211_DL_TS	|
+-//			    IEEE80211_DL_BA	|
+-	//		    IEEE80211_DL_REORDER|
+-//			    IEEE80211_DL_TRACE  |
+-			    //IEEE80211_DL_DATA	|
+-			    IEEE80211_DL_ERR	  /* awayls open this flags to show error out */
+-			    ;
+-static struct proc_dir_entry *ieee80211_proc;
+-
+-static int show_debug_level(struct seq_file *m, void *v)
+-{
+-	seq_printf(m, "0x%08X\n", ieee80211_debug_level);
+-
+-	return 0;
+-}
+-
+-static ssize_t write_debug_level(struct file *file, const char __user *buffer,
+-				 size_t count, loff_t *ppos)
+-{
+-	unsigned long val;
+-	int err = kstrtoul_from_user(buffer, count, 0, &val);
+-
+-	if (err)
+-		return err;
+-	ieee80211_debug_level = val;
+-	return count;
+-}
+-
+-static int open_debug_level(struct inode *inode, struct file *file)
+-{
+-	return single_open(file, show_debug_level, NULL);
+-}
+-
+-static const struct proc_ops debug_level_proc_ops = {
+-	.proc_open	= open_debug_level,
+-	.proc_read	= seq_read,
+-	.proc_lseek	= seq_lseek,
+-	.proc_write	= write_debug_level,
+-	.proc_release	= single_release,
+-};
+-
+-int __init ieee80211_debug_init(void)
+-{
+-	struct proc_dir_entry *e;
+-
+-	ieee80211_debug_level = debug;
+-
+-	ieee80211_proc = proc_mkdir(DRV_NAME, init_net.proc_net);
+-	if (!ieee80211_proc) {
+-		IEEE80211_ERROR("Unable to create " DRV_NAME
+-				" proc directory\n");
+-		return -EIO;
+-	}
+-	e = proc_create("debug_level", 0644, ieee80211_proc, &debug_level_proc_ops);
+-	if (!e) {
+-		remove_proc_entry(DRV_NAME, init_net.proc_net);
+-		ieee80211_proc = NULL;
+-		return -EIO;
+-	}
+-	return 0;
+-}
+-
+-void ieee80211_debug_exit(void)
+-{
+-	if (ieee80211_proc) {
+-		remove_proc_entry("debug_level", ieee80211_proc);
+-		remove_proc_entry(DRV_NAME, init_net.proc_net);
+-		ieee80211_proc = NULL;
+-	}
+-}
+-
+-module_param(debug, int, 0444);
+-MODULE_PARM_DESC(debug, "debug output mask");
+-#endif
+diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_rx.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_rx.c
+deleted file mode 100644
+index 5da8ac401df0..000000000000
+--- a/drivers/staging/rtl8192u/ieee80211/ieee80211_rx.c
++++ /dev/null
+@@ -1,2430 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- * Original code based Host AP (software wireless LAN access point) driver
+- * for Intersil Prism2/2.5/3 - hostap.o module, common routines
+- *
+- * Copyright (c) 2001-2002, SSH Communications Security Corp and Jouni Malinen
+- * <jkmaline@cc.hut.fi>
+- * Copyright (c) 2002-2003, Jouni Malinen <jkmaline@cc.hut.fi>
+- * Copyright (c) 2004, Intel Corporation
+- ******************************************************************************
+-
+-  Few modifications for Realtek's Wi-Fi drivers by
+-  Andrea Merello <andrea.merello@gmail.com>
+-
+-  A special thanks goes to Realtek for their support !
+-
+-******************************************************************************/
+-
+-
+-#include <linux/compiler.h>
+-#include <linux/errno.h>
+-#include <linux/if_arp.h>
+-#include <linux/in6.h>
+-#include <linux/in.h>
+-#include <linux/ip.h>
+-#include <linux/kernel.h>
+-#include <linux/module.h>
+-#include <linux/netdevice.h>
+-#include <linux/pci.h>
+-#include <linux/proc_fs.h>
+-#include <linux/skbuff.h>
+-#include <linux/slab.h>
+-#include <linux/tcp.h>
+-#include <linux/types.h>
+-#include <linux/wireless.h>
+-#include <linux/etherdevice.h>
+-#include <linux/uaccess.h>
+-#include <linux/ctype.h>
+-
+-#include "ieee80211.h"
+-#include "dot11d.h"
+-static inline void ieee80211_monitor_rx(struct ieee80211_device *ieee,
+-					struct sk_buff *skb,
+-					struct ieee80211_rx_stats *rx_stats)
+-{
+-	struct rtl_80211_hdr_4addr *hdr = (struct rtl_80211_hdr_4addr *)skb->data;
+-	u16 fc = le16_to_cpu(hdr->frame_ctl);
+-
+-	skb->dev = ieee->dev;
+-	skb_reset_mac_header(skb);
+-
+-	skb_pull(skb, ieee80211_get_hdrlen(fc));
+-	skb->pkt_type = PACKET_OTHERHOST;
+-	skb->protocol = htons(ETH_P_80211_RAW);
+-	memset(skb->cb, 0, sizeof(skb->cb));
+-	netif_rx(skb);
+-}
+-
+-
+-/* Called only as a tasklet (software IRQ) */
+-static struct ieee80211_frag_entry *
+-ieee80211_frag_cache_find(struct ieee80211_device *ieee, unsigned int seq,
+-			  unsigned int frag, u8 tid, u8 *src, u8 *dst)
+-{
+-	struct ieee80211_frag_entry *entry;
+-	int i;
+-
+-	for (i = 0; i < IEEE80211_FRAG_CACHE_LEN; i++) {
+-		entry = &ieee->frag_cache[tid][i];
+-		if (entry->skb &&
+-		    time_after(jiffies, entry->first_frag_time + 2 * HZ)) {
+-			IEEE80211_DEBUG_FRAG(
+-				"expiring fragment cache entry "
+-				"seq=%u last_frag=%u\n",
+-				entry->seq, entry->last_frag);
+-			dev_kfree_skb_any(entry->skb);
+-			entry->skb = NULL;
+-		}
+-
+-		if (entry->skb && entry->seq == seq &&
+-		    (entry->last_frag + 1 == frag || frag == -1) &&
+-		    memcmp(entry->src_addr, src, ETH_ALEN) == 0 &&
+-		    memcmp(entry->dst_addr, dst, ETH_ALEN) == 0)
+-			return entry;
+-	}
+-
+-	return NULL;
+-}
+-
+-/* Called only as a tasklet (software IRQ) */
+-static struct sk_buff *
+-ieee80211_frag_cache_get(struct ieee80211_device *ieee,
+-			 struct rtl_80211_hdr_4addr *hdr)
+-{
+-	struct sk_buff *skb = NULL;
+-	u16 fc = le16_to_cpu(hdr->frame_ctl);
+-	u16 sc = le16_to_cpu(hdr->seq_ctl);
+-	unsigned int frag = WLAN_GET_SEQ_FRAG(sc);
+-	unsigned int seq = WLAN_GET_SEQ_SEQ(sc);
+-	struct ieee80211_frag_entry *entry;
+-	struct rtl_80211_hdr_3addrqos *hdr_3addrqos;
+-	struct rtl_80211_hdr_4addrqos *hdr_4addrqos;
+-	u8 tid;
+-
+-	if (((fc & IEEE80211_FCTL_DSTODS) == IEEE80211_FCTL_DSTODS) && IEEE80211_QOS_HAS_SEQ(fc)) {
+-		hdr_4addrqos = (struct rtl_80211_hdr_4addrqos *)hdr;
+-		tid = le16_to_cpu(hdr_4addrqos->qos_ctl) & IEEE80211_QCTL_TID;
+-		tid = UP2AC(tid);
+-		tid++;
+-	} else if (IEEE80211_QOS_HAS_SEQ(fc)) {
+-		hdr_3addrqos = (struct rtl_80211_hdr_3addrqos *)hdr;
+-		tid = le16_to_cpu(hdr_3addrqos->qos_ctl) & IEEE80211_QCTL_TID;
+-		tid = UP2AC(tid);
+-		tid++;
+-	} else {
+-		tid = 0;
+-	}
+-
+-	if (frag == 0) {
+-		/* Reserve enough space to fit maximum frame length */
+-		skb = dev_alloc_skb(ieee->dev->mtu +
+-				    sizeof(struct rtl_80211_hdr_4addr) +
+-				    8 /* LLC */ +
+-				    2 /* alignment */ +
+-				    8 /* WEP */ +
+-				    ETH_ALEN /* WDS */ +
+-				    (IEEE80211_QOS_HAS_SEQ(fc) ? 2 : 0) /* QOS Control */);
+-		if (!skb)
+-			return NULL;
+-
+-		entry = &ieee->frag_cache[tid][ieee->frag_next_idx[tid]];
+-		ieee->frag_next_idx[tid]++;
+-		if (ieee->frag_next_idx[tid] >= IEEE80211_FRAG_CACHE_LEN)
+-			ieee->frag_next_idx[tid] = 0;
+-
+-		if (entry->skb)
+-			dev_kfree_skb_any(entry->skb);
+-
+-		entry->first_frag_time = jiffies;
+-		entry->seq = seq;
+-		entry->last_frag = frag;
+-		entry->skb = skb;
+-		memcpy(entry->src_addr, hdr->addr2, ETH_ALEN);
+-		memcpy(entry->dst_addr, hdr->addr1, ETH_ALEN);
+-	} else {
+-		/* received a fragment of a frame for which the head fragment
+-		 * should have already been received */
+-		entry = ieee80211_frag_cache_find(ieee, seq, frag, tid, hdr->addr2,
+-						  hdr->addr1);
+-		if (entry) {
+-			entry->last_frag = frag;
+-			skb = entry->skb;
+-		}
+-	}
+-
+-	return skb;
+-}
+-
+-
+-/* Called only as a tasklet (software IRQ) */
+-static int ieee80211_frag_cache_invalidate(struct ieee80211_device *ieee,
+-					   struct rtl_80211_hdr_4addr *hdr)
+-{
+-	u16 fc = le16_to_cpu(hdr->frame_ctl);
+-	u16 sc = le16_to_cpu(hdr->seq_ctl);
+-	unsigned int seq = WLAN_GET_SEQ_SEQ(sc);
+-	struct ieee80211_frag_entry *entry;
+-	struct rtl_80211_hdr_3addrqos *hdr_3addrqos;
+-	struct rtl_80211_hdr_4addrqos *hdr_4addrqos;
+-	u8 tid;
+-
+-	if (((fc & IEEE80211_FCTL_DSTODS) == IEEE80211_FCTL_DSTODS) && IEEE80211_QOS_HAS_SEQ(fc)) {
+-		hdr_4addrqos = (struct rtl_80211_hdr_4addrqos *)hdr;
+-		tid = le16_to_cpu(hdr_4addrqos->qos_ctl) & IEEE80211_QCTL_TID;
+-		tid = UP2AC(tid);
+-		tid++;
+-	} else if (IEEE80211_QOS_HAS_SEQ(fc)) {
+-		hdr_3addrqos = (struct rtl_80211_hdr_3addrqos *)hdr;
+-		tid = le16_to_cpu(hdr_3addrqos->qos_ctl) & IEEE80211_QCTL_TID;
+-		tid = UP2AC(tid);
+-		tid++;
+-	} else {
+-		tid = 0;
+-	}
+-
+-	entry = ieee80211_frag_cache_find(ieee, seq, -1, tid, hdr->addr2,
+-					  hdr->addr1);
+-
+-	if (!entry) {
+-		IEEE80211_DEBUG_FRAG(
+-			"could not invalidate fragment cache "
+-			"entry (seq=%u)\n", seq);
+-		return -1;
+-	}
+-
+-	entry->skb = NULL;
+-	return 0;
+-}
+-
+-
+-
+-/* ieee80211_rx_frame_mgtmt
+- *
+- * Responsible for handling management control frames
+- *
+- * Called by ieee80211_rx */
+-static inline int
+-ieee80211_rx_frame_mgmt(struct ieee80211_device *ieee, struct sk_buff *skb,
+-			struct ieee80211_rx_stats *rx_stats, u16 type,
+-			u16 stype)
+-{
+-	/* On the struct stats definition there is written that
+-	 * this is not mandatory.... but seems that the probe
+-	 * response parser uses it
+-	 */
+-	struct rtl_80211_hdr_3addr *hdr = (struct rtl_80211_hdr_3addr *)skb->data;
+-
+-	rx_stats->len = skb->len;
+-	ieee80211_rx_mgt(ieee, (struct rtl_80211_hdr_4addr *)skb->data, rx_stats);
+-	/* if ((ieee->state == IEEE80211_LINKED) && (memcmp(hdr->addr3, ieee->current_network.bssid, ETH_ALEN))) */
+-	if ((memcmp(hdr->addr1, ieee->dev->dev_addr, ETH_ALEN))) {
+-		/* use ADDR1 to perform address matching for Management frames */
+-		dev_kfree_skb_any(skb);
+-		return 0;
+-	}
+-
+-	ieee80211_rx_frame_softmac(ieee, skb, rx_stats, type, stype);
+-
+-	dev_kfree_skb_any(skb);
+-
+-	return 0;
+-
+-	#ifdef NOT_YET
+-	if (ieee->iw_mode == IW_MODE_MASTER) {
+-		netdev_dbg(ieee->dev, "Master mode not yet supported.\n");
+-		return 0;
+-/*
+-  hostap_update_sta_ps(ieee, (struct hostap_ieee80211_hdr_4addr *)
+-  skb->data);*/
+-	}
+-
+-	if (ieee->hostapd && type == IEEE80211_TYPE_MGMT) {
+-		if (stype == WLAN_FC_STYPE_BEACON &&
+-		    ieee->iw_mode == IW_MODE_MASTER) {
+-			struct sk_buff *skb2;
+-			/* Process beacon frames also in kernel driver to
+-			 * update STA(AP) table statistics */
+-			skb2 = skb_clone(skb, GFP_ATOMIC);
+-			if (skb2)
+-				hostap_rx(skb2->dev, skb2, rx_stats);
+-		}
+-
+-		/* send management frames to the user space daemon for
+-		 * processing */
+-		ieee->apdevstats.rx_packets++;
+-		ieee->apdevstats.rx_bytes += skb->len;
+-		prism2_rx_80211(ieee->apdev, skb, rx_stats, PRISM2_RX_MGMT);
+-		return 0;
+-	}
+-
+-	    if (ieee->iw_mode == IW_MODE_MASTER) {
+-		if (type != WLAN_FC_TYPE_MGMT && type != WLAN_FC_TYPE_CTRL) {
+-			netdev_dbg(skb->dev, "unknown management frame "
+-			       "(type=0x%02x, stype=0x%02x) dropped\n",
+-			       type, stype);
+-			return -1;
+-		}
+-
+-		hostap_rx(skb->dev, skb, rx_stats);
+-		return 0;
+-	}
+-
+-	netdev_dbg(skb->dev, "hostap_rx_frame_mgmt: management frame "
+-	       "received in non-Host AP mode\n");
+-	return -1;
+-	#endif
+-}
+-
+-
+-
+-/* See IEEE 802.1H for LLC/SNAP encapsulation/decapsulation */
+-/* Ethernet-II snap header (RFC1042 for most EtherTypes) */
+-static unsigned char rfc1042_header[] = {
+-	0xaa, 0xaa, 0x03, 0x00, 0x00, 0x00 };
+-/* Bridge-Tunnel header (for EtherTypes ETH_P_AARP and ETH_P_IPX) */
+-static unsigned char bridge_tunnel_header[] = {
+-	0xaa, 0xaa, 0x03, 0x00, 0x00, 0xf8 };
+-/* No encapsulation header if EtherType < 0x600 (=length) */
+-
+-/* Called by ieee80211_rx_frame_decrypt */
+-static int ieee80211_is_eapol_frame(struct ieee80211_device *ieee,
+-				    struct sk_buff *skb, size_t hdrlen)
+-{
+-	struct net_device *dev = ieee->dev;
+-	u16 fc, ethertype;
+-	struct rtl_80211_hdr_4addr *hdr;
+-	u8 *pos;
+-
+-	if (skb->len < 24)
+-		return 0;
+-
+-	hdr = (struct rtl_80211_hdr_4addr *)skb->data;
+-	fc = le16_to_cpu(hdr->frame_ctl);
+-
+-	/* check that the frame is unicast frame to us */
+-	if ((fc & (IEEE80211_FCTL_TODS | IEEE80211_FCTL_FROMDS)) ==
+-	    IEEE80211_FCTL_TODS &&
+-	    memcmp(hdr->addr1, dev->dev_addr, ETH_ALEN) == 0 &&
+-	    memcmp(hdr->addr3, dev->dev_addr, ETH_ALEN) == 0) {
+-		/* ToDS frame with own addr BSSID and DA */
+-	} else if ((fc & (IEEE80211_FCTL_TODS | IEEE80211_FCTL_FROMDS)) ==
+-		   IEEE80211_FCTL_FROMDS &&
+-		   memcmp(hdr->addr1, dev->dev_addr, ETH_ALEN) == 0) {
+-		/* FromDS frame with own addr as DA */
+-	} else
+-		return 0;
+-
+-	if (skb->len < 24 + 8)
+-		return 0;
+-
+-	/* check for port access entity Ethernet type */
+-//	pos = skb->data + 24;
+-	pos = skb->data + hdrlen;
+-	ethertype = (pos[6] << 8) | pos[7];
+-	if (ethertype == ETH_P_PAE)
+-		return 1;
+-
+-	return 0;
+-}
+-
+-/* Called only as a tasklet (software IRQ), by ieee80211_rx */
+-static inline int
+-ieee80211_rx_frame_decrypt(struct ieee80211_device *ieee, struct sk_buff *skb,
+-			   struct ieee80211_crypt_data *crypt)
+-{
+-	struct rtl_80211_hdr_4addr *hdr;
+-	int res, hdrlen;
+-
+-	if (!crypt || !crypt->ops->decrypt_mpdu)
+-		return 0;
+-	if (ieee->hwsec_active) {
+-		struct cb_desc *tcb_desc = (struct cb_desc *)(skb->cb + MAX_DEV_ADDR_SIZE);
+-		tcb_desc->bHwSec = 1;
+-	}
+-	hdr = (struct rtl_80211_hdr_4addr *)skb->data;
+-	hdrlen = ieee80211_get_hdrlen(le16_to_cpu(hdr->frame_ctl));
+-
+-	if (ieee->tkip_countermeasures &&
+-	    strcmp(crypt->ops->name, "TKIP") == 0) {
+-		if (net_ratelimit()) {
+-			netdev_dbg(ieee->dev, "TKIP countermeasures: dropped "
+-			       "received packet from %pM\n",
+-			       hdr->addr2);
+-		}
+-		return -1;
+-	}
+-
+-	atomic_inc(&crypt->refcnt);
+-	res = crypt->ops->decrypt_mpdu(skb, hdrlen, crypt->priv);
+-	atomic_dec(&crypt->refcnt);
+-	if (res < 0) {
+-		IEEE80211_DEBUG_DROP(
+-			"decryption failed (SA=%pM"
+-			") res=%d\n", hdr->addr2, res);
+-		if (res == -2)
+-			IEEE80211_DEBUG_DROP("Decryption failed ICV "
+-					     "mismatch (key %d)\n",
+-					     skb->data[hdrlen + 3] >> 6);
+-		ieee->ieee_stats.rx_discards_undecryptable++;
+-		return -1;
+-	}
+-
+-	return res;
+-}
+-
+-
+-/* Called only as a tasklet (software IRQ), by ieee80211_rx */
+-static inline int
+-ieee80211_rx_frame_decrypt_msdu(struct ieee80211_device *ieee, struct sk_buff *skb,
+-			     int keyidx, struct ieee80211_crypt_data *crypt)
+-{
+-	struct rtl_80211_hdr_4addr *hdr;
+-	int res, hdrlen;
+-
+-	if (!crypt || !crypt->ops->decrypt_msdu)
+-		return 0;
+-	if (ieee->hwsec_active) {
+-		struct cb_desc *tcb_desc = (struct cb_desc *)(skb->cb + MAX_DEV_ADDR_SIZE);
+-		tcb_desc->bHwSec = 1;
+-	}
+-
+-	hdr = (struct rtl_80211_hdr_4addr *)skb->data;
+-	hdrlen = ieee80211_get_hdrlen(le16_to_cpu(hdr->frame_ctl));
+-
+-	atomic_inc(&crypt->refcnt);
+-	res = crypt->ops->decrypt_msdu(skb, keyidx, hdrlen, crypt->priv);
+-	atomic_dec(&crypt->refcnt);
+-	if (res < 0) {
+-		netdev_dbg(ieee->dev, "MSDU decryption/MIC verification failed"
+-		       " (SA=%pM keyidx=%d)\n",
+-		       hdr->addr2, keyidx);
+-		return -1;
+-	}
+-
+-	return 0;
+-}
+-
+-
+-/* this function is stolen from ipw2200 driver*/
+-#define IEEE_PACKET_RETRY_TIME (5 * HZ)
+-static int is_duplicate_packet(struct ieee80211_device *ieee,
+-				      struct rtl_80211_hdr_4addr *header)
+-{
+-	u16 fc = le16_to_cpu(header->frame_ctl);
+-	u16 sc = le16_to_cpu(header->seq_ctl);
+-	u16 seq = WLAN_GET_SEQ_SEQ(sc);
+-	u16 frag = WLAN_GET_SEQ_FRAG(sc);
+-	u16 *last_seq, *last_frag;
+-	unsigned long *last_time;
+-	struct rtl_80211_hdr_3addrqos *hdr_3addrqos;
+-	struct rtl_80211_hdr_4addrqos *hdr_4addrqos;
+-	u8 tid;
+-
+-
+-	//TO2DS and QoS
+-	if (((fc & IEEE80211_FCTL_DSTODS) == IEEE80211_FCTL_DSTODS) && IEEE80211_QOS_HAS_SEQ(fc)) {
+-		hdr_4addrqos = (struct rtl_80211_hdr_4addrqos *)header;
+-		tid = le16_to_cpu(hdr_4addrqos->qos_ctl) & IEEE80211_QCTL_TID;
+-		tid = UP2AC(tid);
+-		tid++;
+-	} else if (IEEE80211_QOS_HAS_SEQ(fc)) { //QoS
+-		hdr_3addrqos = (struct rtl_80211_hdr_3addrqos *)header;
+-		tid = le16_to_cpu(hdr_3addrqos->qos_ctl) & IEEE80211_QCTL_TID;
+-		tid = UP2AC(tid);
+-		tid++;
+-	} else { // no QoS
+-		tid = 0;
+-	}
+-
+-	switch (ieee->iw_mode) {
+-	case IW_MODE_ADHOC:
+-	{
+-		struct list_head *p;
+-		struct ieee_ibss_seq *entry = NULL;
+-		u8 *mac = header->addr2;
+-		int index = mac[5] % IEEE_IBSS_MAC_HASH_SIZE;
+-
+-		list_for_each(p, &ieee->ibss_mac_hash[index]) {
+-			entry = list_entry(p, struct ieee_ibss_seq, list);
+-			if (!memcmp(entry->mac, mac, ETH_ALEN))
+-				break;
+-		}
+-	//	if (memcmp(entry->mac, mac, ETH_ALEN)){
+-		if (p == &ieee->ibss_mac_hash[index]) {
+-			entry = kmalloc(sizeof(struct ieee_ibss_seq), GFP_ATOMIC);
+-			if (!entry)
+-				return 0;
+-			memcpy(entry->mac, mac, ETH_ALEN);
+-			entry->seq_num[tid] = seq;
+-			entry->frag_num[tid] = frag;
+-			entry->packet_time[tid] = jiffies;
+-			list_add(&entry->list, &ieee->ibss_mac_hash[index]);
+-			return 0;
+-		}
+-		last_seq = &entry->seq_num[tid];
+-		last_frag = &entry->frag_num[tid];
+-		last_time = &entry->packet_time[tid];
+-		break;
+-	}
+-
+-	case IW_MODE_INFRA:
+-		last_seq = &ieee->last_rxseq_num[tid];
+-		last_frag = &ieee->last_rxfrag_num[tid];
+-		last_time = &ieee->last_packet_time[tid];
+-
+-		break;
+-	default:
+-		return 0;
+-	}
+-
+-//	if(tid != 0) {
+-//		printk(KERN_WARNING ":)))))))))))%x %x %x, fc(%x)\n", tid, *last_seq, seq, header->frame_ctl);
+-//	}
+-	if ((*last_seq == seq) &&
+-	    time_after(*last_time + IEEE_PACKET_RETRY_TIME, jiffies)) {
+-		if (*last_frag == frag)
+-			goto drop;
+-		if (*last_frag + 1 != frag)
+-			/* out-of-order fragment */
+-			goto drop;
+-	} else
+-		*last_seq = seq;
+-
+-	*last_frag = frag;
+-	*last_time = jiffies;
+-	return 0;
+-
+-drop:
+-//	BUG_ON(!(fc & IEEE80211_FCTL_RETRY));
+-
+-	return 1;
+-}
+-
+-static bool AddReorderEntry(struct rx_ts_record *pTS, struct rx_reorder_entry *pReorderEntry)
+-{
+-	struct list_head *pList = &pTS->rx_pending_pkt_list;
+-	while (pList->next != &pTS->rx_pending_pkt_list) {
+-		if (SN_LESS(pReorderEntry->SeqNum, list_entry(pList->next, struct rx_reorder_entry, List)->SeqNum))
+-			pList = pList->next;
+-		else if (SN_EQUAL(pReorderEntry->SeqNum, list_entry(pList->next, struct rx_reorder_entry, List)->SeqNum))
+-			return false;
+-		else
+-			break;
+-	}
+-	pReorderEntry->List.next = pList->next;
+-	pReorderEntry->List.next->prev = &pReorderEntry->List;
+-	pReorderEntry->List.prev = pList;
+-	pList->next = &pReorderEntry->List;
+-
+-	return true;
+-}
+-
+-static void indicate_packets(struct ieee80211_device *ieee,
+-			     struct ieee80211_rxb *rxb)
+-{
+-	struct net_device_stats *stats = &ieee->stats;
+-	struct net_device *dev = ieee->dev;
+-	u16 ethertype;
+-	u8 i;
+-
+-	for (i = 0; i < rxb->nr_subframes; i++) {
+-		struct sk_buff *sub_skb = rxb->subframes[i];
+-
+-		if (!sub_skb)
+-			continue;
+-
+-		/* convert hdr + possible LLC headers into Ethernet header */
+-		ethertype = (sub_skb->data[6] << 8) | sub_skb->data[7];
+-		if (sub_skb->len >= 8 &&
+-		    ((!memcmp(sub_skb->data, rfc1042_header, SNAP_SIZE) &&
+-			ethertype != ETH_P_AARP &&
+-			ethertype != ETH_P_IPX) ||
+-		     !memcmp(sub_skb->data, bridge_tunnel_header, SNAP_SIZE))) {
+-			/* remove RFC1042 or Bridge-Tunnel encapsulation and
+-			 * replace EtherType */
+-			skb_pull(sub_skb, SNAP_SIZE);
+-		} else {
+-			/* Leave Ethernet header part of hdr and full payload */
+-			put_unaligned_be16(sub_skb->len, skb_push(sub_skb, 2));
+-		}
+-		memcpy(skb_push(sub_skb, ETH_ALEN), rxb->src, ETH_ALEN);
+-		memcpy(skb_push(sub_skb, ETH_ALEN), rxb->dst, ETH_ALEN);
+-
+-		stats->rx_packets++;
+-		stats->rx_bytes += sub_skb->len;
+-		if (is_multicast_ether_addr(rxb->dst))
+-			stats->multicast++;
+-
+-		/* Indicate the packets to upper layer */
+-		sub_skb->protocol = eth_type_trans(sub_skb, dev);
+-		memset(sub_skb->cb, 0, sizeof(sub_skb->cb));
+-		sub_skb->dev = dev;
+-		/* 802.11 crc not sufficient */
+-		sub_skb->ip_summed = CHECKSUM_NONE;
+-		ieee->last_rx_ps_time = jiffies;
+-		netif_rx(sub_skb);
+-	}
+-}
+-
+-void ieee80211_indicate_packets(struct ieee80211_device *ieee,
+-				struct ieee80211_rxb **prxbIndicateArray,
+-				u8 index)
+-{
+-	u8 i;
+-
+-	for (i = 0; i < index; i++) {
+-		struct ieee80211_rxb *prxb = prxbIndicateArray[i];
+-
+-		indicate_packets(ieee, prxb);
+-		kfree(prxb);
+-		prxb = NULL;
+-	}
+-}
+-
+-static void RxReorderIndicatePacket(struct ieee80211_device *ieee,
+-				    struct ieee80211_rxb *prxb,
+-				    struct rx_ts_record *pTS, u16 SeqNum)
+-{
+-	PRT_HIGH_THROUGHPUT	pHTInfo = ieee->pHTInfo;
+-	struct rx_reorder_entry *pReorderEntry = NULL;
+-	struct ieee80211_rxb **prxbIndicateArray;
+-	u8			WinSize = pHTInfo->RxReorderWinSize;
+-	u16			WinEnd = (pTS->rx_indicate_seq + WinSize - 1) % 4096;
+-	u8			index = 0;
+-	bool			bMatchWinStart = false, bPktInBuf = false;
+-	IEEE80211_DEBUG(IEEE80211_DL_REORDER, "%s(): Seq is %d,pTS->rx_indicate_seq is %d, WinSize is %d\n", __func__, SeqNum, pTS->rx_indicate_seq, WinSize);
+-
+-	prxbIndicateArray = kmalloc_array(REORDER_WIN_SIZE,
+-					  sizeof(struct ieee80211_rxb *),
+-					  GFP_ATOMIC);
+-	if (!prxbIndicateArray)
+-		return;
+-
+-	/* Rx Reorder initialize condition.*/
+-	if (pTS->rx_indicate_seq == 0xffff)
+-		pTS->rx_indicate_seq = SeqNum;
+-
+-	/* Drop out the packet which SeqNum is smaller than WinStart */
+-	if (SN_LESS(SeqNum, pTS->rx_indicate_seq)) {
+-		IEEE80211_DEBUG(IEEE80211_DL_REORDER, "Packet Drop! IndicateSeq: %d, NewSeq: %d\n",
+-				 pTS->rx_indicate_seq, SeqNum);
+-		pHTInfo->RxReorderDropCounter++;
+-		{
+-			int i;
+-			for (i = 0; i < prxb->nr_subframes; i++)
+-				dev_kfree_skb(prxb->subframes[i]);
+-
+-			kfree(prxb);
+-			prxb = NULL;
+-		}
+-
+-		kfree(prxbIndicateArray);
+-		return;
+-	}
+-
+-	/*
+-	 * Sliding window manipulation. Conditions includes:
+-	 * 1. Incoming SeqNum is equal to WinStart =>Window shift 1
+-	 * 2. Incoming SeqNum is larger than the WinEnd => Window shift N
+-	 */
+-	if (SN_EQUAL(SeqNum, pTS->rx_indicate_seq)) {
+-		pTS->rx_indicate_seq = (pTS->rx_indicate_seq + 1) % 4096;
+-		bMatchWinStart = true;
+-	} else if (SN_LESS(WinEnd, SeqNum)) {
+-		if (SeqNum >= (WinSize - 1))
+-			pTS->rx_indicate_seq = SeqNum + 1 - WinSize;
+-		else
+-			pTS->rx_indicate_seq = 4095 - (WinSize - (SeqNum + 1)) + 1;
+-
+-		IEEE80211_DEBUG(IEEE80211_DL_REORDER, "Window Shift! IndicateSeq: %d, NewSeq: %d\n", pTS->rx_indicate_seq, SeqNum);
+-	}
+-
+-	/*
+-	 * Indication process.
+-	 * After Packet dropping and Sliding Window shifting as above, we can now just indicate the packets
+-	 * with the SeqNum smaller than latest WinStart and buffer other packets.
+-	 */
+-	/* For Rx Reorder condition:
+-	 * 1. All packets with SeqNum smaller than WinStart => Indicate
+-	 * 2. All packets with SeqNum larger than or equal to WinStart => Buffer it.
+-	 */
+-	if (bMatchWinStart) {
+-		/* Current packet is going to be indicated.*/
+-		IEEE80211_DEBUG(IEEE80211_DL_REORDER, "Packets indication!! IndicateSeq: %d, NewSeq: %d\n",\
+-				pTS->rx_indicate_seq, SeqNum);
+-		prxbIndicateArray[0] = prxb;
+-//		printk("========================>%s(): SeqNum is %d\n",__func__,SeqNum);
+-		index = 1;
+-	} else {
+-		/* Current packet is going to be inserted into pending list.*/
+-		//IEEE80211_DEBUG(IEEE80211_DL_REORDER,"%s(): We RX no ordered packed, insert to ordered list\n",__func__);
+-		if (!list_empty(&ieee->RxReorder_Unused_List)) {
+-			pReorderEntry = list_entry(ieee->RxReorder_Unused_List.next, struct rx_reorder_entry, List);
+-			list_del_init(&pReorderEntry->List);
+-
+-			/* Make a reorder entry and insert into a the packet list.*/
+-			pReorderEntry->SeqNum = SeqNum;
+-			pReorderEntry->prxb = prxb;
+-	//		IEEE80211_DEBUG(IEEE80211_DL_REORDER,"%s(): pREorderEntry->SeqNum is %d\n",__func__,pReorderEntry->SeqNum);
+-
+-			if (!AddReorderEntry(pTS, pReorderEntry)) {
+-				IEEE80211_DEBUG(IEEE80211_DL_REORDER, "%s(): Duplicate packet is dropped!! IndicateSeq: %d, NewSeq: %d\n",
+-					__func__, pTS->rx_indicate_seq, SeqNum);
+-				list_add_tail(&pReorderEntry->List, &ieee->RxReorder_Unused_List);
+-				{
+-					int i;
+-					for (i = 0; i < prxb->nr_subframes; i++)
+-						dev_kfree_skb(prxb->subframes[i]);
+-
+-					kfree(prxb);
+-					prxb = NULL;
+-				}
+-			} else {
+-				IEEE80211_DEBUG(IEEE80211_DL_REORDER,
+-					 "Pkt insert into buffer!! IndicateSeq: %d, NewSeq: %d\n", pTS->rx_indicate_seq, SeqNum);
+-			}
+-		} else {
+-			/*
+-			 * Packets are dropped if there is not enough reorder entries.
+-			 * This part shall be modified!! We can just indicate all the
+-			 * packets in buffer and get reorder entries.
+-			 */
+-			IEEE80211_DEBUG(IEEE80211_DL_ERR, "RxReorderIndicatePacket(): There is no reorder entry!! Packet is dropped!!\n");
+-			{
+-				int i;
+-				for (i = 0; i < prxb->nr_subframes; i++)
+-					dev_kfree_skb(prxb->subframes[i]);
+-
+-				kfree(prxb);
+-				prxb = NULL;
+-			}
+-		}
+-	}
+-
+-	/* Check if there is any packet need indicate.*/
+-	while (!list_empty(&pTS->rx_pending_pkt_list)) {
+-		IEEE80211_DEBUG(IEEE80211_DL_REORDER, "%s(): start RREORDER indicate\n", __func__);
+-		pReorderEntry = list_entry(pTS->rx_pending_pkt_list.prev, struct rx_reorder_entry, List);
+-		if (SN_LESS(pReorderEntry->SeqNum, pTS->rx_indicate_seq) ||
+-		    SN_EQUAL(pReorderEntry->SeqNum, pTS->rx_indicate_seq)) {
+-			/* This protect buffer from overflow. */
+-			if (index >= REORDER_WIN_SIZE) {
+-				IEEE80211_DEBUG(IEEE80211_DL_ERR, "RxReorderIndicatePacket(): Buffer overflow!! \n");
+-				bPktInBuf = true;
+-				break;
+-			}
+-
+-			list_del_init(&pReorderEntry->List);
+-
+-			if (SN_EQUAL(pReorderEntry->SeqNum, pTS->rx_indicate_seq))
+-				pTS->rx_indicate_seq = (pTS->rx_indicate_seq + 1) % 4096;
+-
+-			IEEE80211_DEBUG(IEEE80211_DL_REORDER, "Packets indication!! IndicateSeq: %d, NewSeq: %d\n", pTS->rx_indicate_seq, SeqNum);
+-			prxbIndicateArray[index] = pReorderEntry->prxb;
+-		//	printk("========================>%s(): pReorderEntry->SeqNum is %d\n",__func__,pReorderEntry->SeqNum);
+-			index++;
+-
+-			list_add_tail(&pReorderEntry->List, &ieee->RxReorder_Unused_List);
+-		} else {
+-			bPktInBuf = true;
+-			break;
+-		}
+-	}
+-
+-	/* Handling pending timer. Set this timer to prevent from long time Rx buffering.*/
+-	if (index > 0) {
+-		// Cancel previous pending timer.
+-	//	del_timer_sync(&pTS->rx_pkt_pending_timer);
+-		pTS->rx_timeout_indicate_seq = 0xffff;
+-
+-		// Indicate packets
+-		if (index > REORDER_WIN_SIZE) {
+-			IEEE80211_DEBUG(IEEE80211_DL_ERR, "RxReorderIndicatePacket(): Rx Reorder buffer full!! \n");
+-			kfree(prxbIndicateArray);
+-			return;
+-		}
+-		ieee80211_indicate_packets(ieee, prxbIndicateArray, index);
+-	}
+-
+-	if (bPktInBuf && pTS->rx_timeout_indicate_seq == 0xffff) {
+-		// Set new pending timer.
+-		IEEE80211_DEBUG(IEEE80211_DL_REORDER, "%s(): SET rx timeout timer\n", __func__);
+-		pTS->rx_timeout_indicate_seq = pTS->rx_indicate_seq;
+-		if (timer_pending(&pTS->rx_pkt_pending_timer))
+-			del_timer_sync(&pTS->rx_pkt_pending_timer);
+-		pTS->rx_pkt_pending_timer.expires = jiffies +
+-				msecs_to_jiffies(pHTInfo->RxReorderPendingTime);
+-		add_timer(&pTS->rx_pkt_pending_timer);
+-	}
+-
+-	kfree(prxbIndicateArray);
+-}
+-
+-static u8 parse_subframe(struct ieee80211_device *ieee,
+-			 struct sk_buff *skb,
+-			 struct ieee80211_rx_stats *rx_stats,
+-			 struct ieee80211_rxb *rxb, u8 *src, u8 *dst)
+-{
+-	struct rtl_80211_hdr_3addr  *hdr = (struct rtl_80211_hdr_3addr *)skb->data;
+-	u16		fc = le16_to_cpu(hdr->frame_ctl);
+-
+-	u16		LLCOffset = sizeof(struct rtl_80211_hdr_3addr);
+-	u16		ChkLength;
+-	bool		bIsAggregateFrame = false;
+-	u16		nSubframe_Length;
+-	u8		nPadding_Length = 0;
+-	u16		SeqNum = 0;
+-
+-	struct sk_buff *sub_skb;
+-	/* just for debug purpose */
+-	SeqNum = WLAN_GET_SEQ_SEQ(le16_to_cpu(hdr->seq_ctl));
+-
+-	if ((IEEE80211_QOS_HAS_SEQ(fc)) && \
+-			(((frameqos *)(skb->data + IEEE80211_3ADDR_LEN))->field.reserved)) {
+-		bIsAggregateFrame = true;
+-	}
+-
+-	if (IEEE80211_QOS_HAS_SEQ(fc))
+-		LLCOffset += 2;
+-
+-	if (rx_stats->bContainHTC)
+-		LLCOffset += HTCLNG;
+-
+-	// Null packet, don't indicate it to upper layer
+-	ChkLength = LLCOffset;/* + (Frame_WEP(frame)!=0 ?Adapter->MgntInfo.SecurityInfo.EncryptionHeadOverhead:0);*/
+-
+-	if (skb->len <= ChkLength)
+-		return 0;
+-
+-	skb_pull(skb, LLCOffset);
+-
+-	if (!bIsAggregateFrame) {
+-		rxb->nr_subframes = 1;
+-#ifdef JOHN_NOCPY
+-		rxb->subframes[0] = skb;
+-#else
+-		rxb->subframes[0] = skb_copy(skb, GFP_ATOMIC);
+-#endif
+-
+-		memcpy(rxb->src, src, ETH_ALEN);
+-		memcpy(rxb->dst, dst, ETH_ALEN);
+-		//IEEE80211_DEBUG_DATA(IEEE80211_DL_RX,skb->data,skb->len);
+-		return 1;
+-	} else {
+-		rxb->nr_subframes = 0;
+-		memcpy(rxb->src, src, ETH_ALEN);
+-		memcpy(rxb->dst, dst, ETH_ALEN);
+-		while (skb->len > ETHERNET_HEADER_SIZE) {
+-			/* Offset 12 denote 2 mac address */
+-			nSubframe_Length = *((u16 *)(skb->data + 12));
+-			//==m==>change the length order
+-			nSubframe_Length = (nSubframe_Length >> 8) + (nSubframe_Length << 8);
+-
+-			if (skb->len < (ETHERNET_HEADER_SIZE + nSubframe_Length)) {
+-				netdev_dbg(ieee->dev, "A-MSDU parse error!! pRfd->nTotalSubframe : %d\n",
+-					   rxb->nr_subframes);
+-				netdev_dbg(ieee->dev, "A-MSDU parse error!! Subframe Length: %d\n", nSubframe_Length);
+-				netdev_dbg(ieee->dev, "nRemain_Length is %d and nSubframe_Length is : %d\n", skb->len, nSubframe_Length);
+-				netdev_dbg(ieee->dev, "The Packet SeqNum is %d\n", SeqNum);
+-				return 0;
+-			}
+-
+-			/* move the data point to data content */
+-			skb_pull(skb, ETHERNET_HEADER_SIZE);
+-
+-#ifdef JOHN_NOCPY
+-			sub_skb = skb_clone(skb, GFP_ATOMIC);
+-			sub_skb->len = nSubframe_Length;
+-			sub_skb->tail = sub_skb->data + nSubframe_Length;
+-#else
+-			/* Allocate new skb for releasing to upper layer */
+-			sub_skb = dev_alloc_skb(nSubframe_Length + 12);
+-			if (!sub_skb)
+-				return 0;
+-			skb_reserve(sub_skb, 12);
+-			skb_put_data(sub_skb, skb->data, nSubframe_Length);
+-#endif
+-			rxb->subframes[rxb->nr_subframes++] = sub_skb;
+-			if (rxb->nr_subframes >= MAX_SUBFRAME_COUNT) {
+-				IEEE80211_DEBUG_RX("ParseSubframe(): Too many Subframes! Packets dropped!\n");
+-				break;
+-			}
+-			skb_pull(skb, nSubframe_Length);
+-
+-			if (skb->len != 0) {
+-				nPadding_Length = 4 - ((nSubframe_Length + ETHERNET_HEADER_SIZE) % 4);
+-				if (nPadding_Length == 4)
+-					nPadding_Length = 0;
+-
+-				if (skb->len < nPadding_Length)
+-					return 0;
+-
+-				skb_pull(skb, nPadding_Length);
+-			}
+-		}
+-#ifdef JOHN_NOCPY
+-		dev_kfree_skb(skb);
+-#endif
+-		//{just for debug added by david
+-		//printk("AMSDU::rxb->nr_subframes = %d\n",rxb->nr_subframes);
+-		//}
+-		return rxb->nr_subframes;
+-	}
+-}
+-
+-/* All received frames are sent to this function. @skb contains the frame in
+- * IEEE 802.11 format, i.e., in the format it was sent over air.
+- * This function is called only as a tasklet (software IRQ). */
+-int ieee80211_rx(struct ieee80211_device *ieee, struct sk_buff *skb,
+-		 struct ieee80211_rx_stats *rx_stats)
+-{
+-	struct net_device *dev = ieee->dev;
+-	struct rtl_80211_hdr_4addr *hdr;
+-	//struct rtl_80211_hdr_3addrqos *hdr;
+-
+-	size_t hdrlen;
+-	u16 fc, type, stype, sc;
+-	struct net_device_stats *stats;
+-	unsigned int frag;
+-	//added by amy for reorder
+-	u8	TID = 0;
+-	u16	SeqNum = 0;
+-	struct rx_ts_record *pTS = NULL;
+-	//bool bIsAggregateFrame = false;
+-	//added by amy for reorder
+-#ifdef NOT_YET
+-	struct net_device *wds = NULL;
+-	struct net_device *wds = NULL;
+-	int from_assoc_ap = 0;
+-	void *sta = NULL;
+-#endif
+-//	u16 qos_ctl = 0;
+-	u8 dst[ETH_ALEN];
+-	u8 src[ETH_ALEN];
+-	u8 bssid[ETH_ALEN];
+-	struct ieee80211_crypt_data *crypt = NULL;
+-	int keyidx = 0;
+-
+-	int i;
+-	struct ieee80211_rxb *rxb = NULL;
+-	// cheat the hdr type
+-	hdr = (struct rtl_80211_hdr_4addr *)skb->data;
+-	stats = &ieee->stats;
+-
+-	if (skb->len < 10) {
+-		netdev_info(dev, "SKB length < 10\n");
+-		goto rx_dropped;
+-	}
+-
+-	fc = le16_to_cpu(hdr->frame_ctl);
+-	type = WLAN_FC_GET_TYPE(fc);
+-	stype = WLAN_FC_GET_STYPE(fc);
+-	sc = le16_to_cpu(hdr->seq_ctl);
+-
+-	frag = WLAN_GET_SEQ_FRAG(sc);
+-	hdrlen = ieee80211_get_hdrlen(fc);
+-
+-	if (HTCCheck(ieee, skb->data)) {
+-		if (net_ratelimit())
+-			netdev_warn(dev, "find HTCControl\n");
+-		hdrlen += 4;
+-		rx_stats->bContainHTC = true;
+-	}
+-
+-	//IEEE80211_DEBUG_DATA(IEEE80211_DL_DATA, skb->data, skb->len);
+-#ifdef NOT_YET
+-	/* Put this code here so that we avoid duplicating it in all
+-	 * Rx paths. - Jean II */
+-#ifdef IW_WIRELESS_SPY		/* defined in iw_handler.h */
+-	/* If spy monitoring on */
+-	if (iface->spy_data.spy_number > 0) {
+-		struct iw_quality wstats;
+-		wstats.level = rx_stats->rssi;
+-		wstats.noise = rx_stats->noise;
+-		wstats.updated = 6;	/* No qual value */
+-		/* Update spy records */
+-		wireless_spy_update(dev, hdr->addr2, &wstats);
+-	}
+-#endif /* IW_WIRELESS_SPY */
+-	hostap_update_rx_stats(local->ap, hdr, rx_stats);
+-#endif
+-
+-	if (ieee->iw_mode == IW_MODE_MONITOR) {
+-		unsigned int len = skb->len;
+-
+-		ieee80211_monitor_rx(ieee, skb, rx_stats);
+-		stats->rx_packets++;
+-		stats->rx_bytes += len;
+-		return 1;
+-	}
+-
+-	if (ieee->host_decrypt) {
+-		int idx = 0;
+-		if (skb->len >= hdrlen + 3)
+-			idx = skb->data[hdrlen + 3] >> 6;
+-		crypt = ieee->crypt[idx];
+-#ifdef NOT_YET
+-		sta = NULL;
+-
+-		/* Use station specific key to override default keys if the
+-		 * receiver address is a unicast address ("individual RA"). If
+-		 * bcrx_sta_key parameter is set, station specific key is used
+-		 * even with broad/multicast targets (this is against IEEE
+-		 * 802.11, but makes it easier to use different keys with
+-		 * stations that do not support WEP key mapping). */
+-
+-		if (!(hdr->addr1[0] & 0x01) || local->bcrx_sta_key)
+-			(void)hostap_handle_sta_crypto(local, hdr, &crypt,
+-							&sta);
+-#endif
+-
+-		/* allow NULL decrypt to indicate an station specific override
+-		 * for default encryption */
+-		if (crypt && (!crypt->ops || !crypt->ops->decrypt_mpdu))
+-			crypt = NULL;
+-
+-		if (!crypt && (fc & IEEE80211_FCTL_WEP)) {
+-			/* This seems to be triggered by some (multicast?)
+-			 * frames from other than current BSS, so just drop the
+-			 * frames silently instead of filling system log with
+-			 * these reports. */
+-			IEEE80211_DEBUG_DROP("Decryption failed (not set)"
+-					     " (SA=%pM)\n",
+-					     hdr->addr2);
+-			ieee->ieee_stats.rx_discards_undecryptable++;
+-			goto rx_dropped;
+-		}
+-	}
+-
+-	if (skb->len < IEEE80211_DATA_HDR3_LEN)
+-		goto rx_dropped;
+-
+-	// if QoS enabled, should check the sequence for each of the AC
+-	if ((!ieee->pHTInfo->bCurRxReorderEnable) || !ieee->current_network.qos_data.active || !IsDataFrame(skb->data) || IsLegacyDataFrame(skb->data)) {
+-		if (is_duplicate_packet(ieee, hdr))
+-			goto rx_dropped;
+-
+-	} else {
+-		struct rx_ts_record *pRxTS = NULL;
+-			//IEEE80211_DEBUG(IEEE80211_DL_REORDER,"%s(): QOS ENABLE AND RECEIVE QOS DATA , we will get Ts, tid:%d\n",__func__, tid);
+-		if (GetTs(
+-				ieee,
+-				(struct ts_common_info **)&pRxTS,
+-				hdr->addr2,
+-				Frame_QoSTID((u8 *)(skb->data)),
+-				RX_DIR,
+-				true)) {
+-
+-		//	IEEE80211_DEBUG(IEEE80211_DL_REORDER,"%s(): pRxTS->rx_last_frag_num is %d,frag is %d,pRxTS->rx_last_seq_num is %d,seq is %d\n",__func__,pRxTS->rx_last_frag_num,frag,pRxTS->rx_last_seq_num,WLAN_GET_SEQ_SEQ(sc));
+-			if ((fc & (1 << 11)) &&
+-			    (frag == pRxTS->rx_last_frag_num) &&
+-			    (WLAN_GET_SEQ_SEQ(sc) == pRxTS->rx_last_seq_num)) {
+-				goto rx_dropped;
+-			} else {
+-				pRxTS->rx_last_frag_num = frag;
+-				pRxTS->rx_last_seq_num = WLAN_GET_SEQ_SEQ(sc);
+-			}
+-		} else {
+-			IEEE80211_DEBUG(IEEE80211_DL_ERR, "%s(): No TS!! Skip the check!!\n", __func__);
+-			goto rx_dropped;
+-		}
+-	}
+-	if (type == IEEE80211_FTYPE_MGMT) {
+-
+-
+-	//IEEE80211_DEBUG_DATA(IEEE80211_DL_DATA, skb->data, skb->len);
+-		if (ieee80211_rx_frame_mgmt(ieee, skb, rx_stats, type, stype))
+-			goto rx_dropped;
+-		else
+-			goto rx_exit;
+-	}
+-
+-	/* Data frame - extract src/dst addresses */
+-	switch (fc & (IEEE80211_FCTL_FROMDS | IEEE80211_FCTL_TODS)) {
+-	case IEEE80211_FCTL_FROMDS:
+-		memcpy(dst, hdr->addr1, ETH_ALEN);
+-		memcpy(src, hdr->addr3, ETH_ALEN);
+-		memcpy(bssid, hdr->addr2, ETH_ALEN);
+-		break;
+-	case IEEE80211_FCTL_TODS:
+-		memcpy(dst, hdr->addr3, ETH_ALEN);
+-		memcpy(src, hdr->addr2, ETH_ALEN);
+-		memcpy(bssid, hdr->addr1, ETH_ALEN);
+-		break;
+-	case IEEE80211_FCTL_FROMDS | IEEE80211_FCTL_TODS:
+-		if (skb->len < IEEE80211_DATA_HDR4_LEN)
+-			goto rx_dropped;
+-		memcpy(dst, hdr->addr3, ETH_ALEN);
+-		memcpy(src, hdr->addr4, ETH_ALEN);
+-		memcpy(bssid, ieee->current_network.bssid, ETH_ALEN);
+-		break;
+-	default:
+-		memcpy(dst, hdr->addr1, ETH_ALEN);
+-		memcpy(src, hdr->addr2, ETH_ALEN);
+-		memcpy(bssid, hdr->addr3, ETH_ALEN);
+-		break;
+-	}
+-
+-#ifdef NOT_YET
+-	if (hostap_rx_frame_wds(ieee, hdr, fc, &wds))
+-		goto rx_dropped;
+-	if (wds) {
+-		skb->dev = dev = wds;
+-		stats = hostap_get_stats(dev);
+-	}
+-
+-	if (ieee->iw_mode == IW_MODE_MASTER && !wds &&
+-	    (fc & (IEEE80211_FCTL_TODS | IEEE80211_FCTL_FROMDS)) == IEEE80211_FCTL_FROMDS &&
+-	    ieee->stadev &&
+-	    memcmp(hdr->addr2, ieee->assoc_ap_addr, ETH_ALEN) == 0) {
+-		/* Frame from BSSID of the AP for which we are a client */
+-		skb->dev = dev = ieee->stadev;
+-		stats = hostap_get_stats(dev);
+-		from_assoc_ap = 1;
+-	}
+-
+-	if ((ieee->iw_mode == IW_MODE_MASTER ||
+-	     ieee->iw_mode == IW_MODE_REPEAT) &&
+-	    !from_assoc_ap) {
+-		switch (hostap_handle_sta_rx(ieee, dev, skb, rx_stats,
+-					     wds)) {
+-		case AP_RX_CONTINUE_NOT_AUTHORIZED:
+-		case AP_RX_CONTINUE:
+-			break;
+-		case AP_RX_DROP:
+-			goto rx_dropped;
+-		case AP_RX_EXIT:
+-			goto rx_exit;
+-		}
+-	}
+-#endif
+-	//IEEE80211_DEBUG_DATA(IEEE80211_DL_DATA, skb->data, skb->len);
+-	/* Nullfunc frames may have PS-bit set, so they must be passed to
+-	 * hostap_handle_sta_rx() before being dropped here. */
+-	if (stype != IEEE80211_STYPE_DATA &&
+-	    stype != IEEE80211_STYPE_DATA_CFACK &&
+-	    stype != IEEE80211_STYPE_DATA_CFPOLL &&
+-	    stype != IEEE80211_STYPE_DATA_CFACKPOLL &&
+-	    stype != IEEE80211_STYPE_QOS_DATA//add by David,2006.8.4
+-	    ) {
+-		if (stype != IEEE80211_STYPE_NULLFUNC)
+-			IEEE80211_DEBUG_DROP(
+-				"RX: dropped data frame "
+-				"with no data (type=0x%02x, "
+-				"subtype=0x%02x, len=%d)\n",
+-				type, stype, skb->len);
+-		goto rx_dropped;
+-	}
+-	if (memcmp(bssid, ieee->current_network.bssid, ETH_ALEN))
+-		goto rx_dropped;
+-
+-	/* skb: hdr + (possibly fragmented, possibly encrypted) payload */
+-
+-	if (ieee->host_decrypt && (fc & IEEE80211_FCTL_WEP)) {
+-		keyidx = ieee80211_rx_frame_decrypt(ieee, skb, crypt);
+-		if (keyidx < 0) {
+-			netdev_dbg(ieee->dev, "decrypt frame error\n");
+-			goto rx_dropped;
+-		}
+-	}
+-
+-
+-	hdr = (struct rtl_80211_hdr_4addr *)skb->data;
+-
+-	/* skb: hdr + (possibly fragmented) plaintext payload */
+-	// PR: FIXME: hostap has additional conditions in the "if" below:
+-	// ieee->host_decrypt && (fc & IEEE80211_FCTL_WEP) &&
+-	if ((frag != 0 || (fc & IEEE80211_FCTL_MOREFRAGS))) {
+-		int flen;
+-		struct sk_buff *frag_skb = ieee80211_frag_cache_get(ieee, hdr);
+-		IEEE80211_DEBUG_FRAG("Rx Fragment received (%u)\n", frag);
+-
+-		if (!frag_skb) {
+-			IEEE80211_DEBUG(IEEE80211_DL_RX | IEEE80211_DL_FRAG,
+-					"Rx cannot get skb from fragment "
+-					"cache (morefrag=%d seq=%u frag=%u)\n",
+-					(fc & IEEE80211_FCTL_MOREFRAGS) != 0,
+-					WLAN_GET_SEQ_SEQ(sc), frag);
+-			goto rx_dropped;
+-		}
+-		flen = skb->len;
+-		if (frag != 0)
+-			flen -= hdrlen;
+-
+-		if (frag_skb->tail + flen > frag_skb->end) {
+-			netdev_warn(dev, "host decrypted and "
+-			       "reassembled frame did not fit skb\n");
+-			ieee80211_frag_cache_invalidate(ieee, hdr);
+-			goto rx_dropped;
+-		}
+-
+-		if (frag == 0) {
+-			/* copy first fragment (including full headers) into
+-			 * beginning of the fragment cache skb */
+-			skb_put_data(frag_skb, skb->data, flen);
+-		} else {
+-			/* append frame payload to the end of the fragment
+-			 * cache skb */
+-			skb_put_data(frag_skb, skb->data + hdrlen, flen);
+-		}
+-		dev_kfree_skb_any(skb);
+-		skb = NULL;
+-
+-		if (fc & IEEE80211_FCTL_MOREFRAGS) {
+-			/* more fragments expected - leave the skb in fragment
+-			 * cache for now; it will be delivered to upper layers
+-			 * after all fragments have been received */
+-			goto rx_exit;
+-		}
+-
+-		/* this was the last fragment and the frame will be
+-		 * delivered, so remove skb from fragment cache */
+-		skb = frag_skb;
+-		hdr = (struct rtl_80211_hdr_4addr *)skb->data;
+-		ieee80211_frag_cache_invalidate(ieee, hdr);
+-	}
+-
+-	/* skb: hdr + (possible reassembled) full MSDU payload; possibly still
+-	 * encrypted/authenticated */
+-	if (ieee->host_decrypt && (fc & IEEE80211_FCTL_WEP) &&
+-	    ieee80211_rx_frame_decrypt_msdu(ieee, skb, keyidx, crypt)) {
+-		netdev_dbg(ieee->dev, "==>decrypt msdu error\n");
+-		goto rx_dropped;
+-	}
+-
+-	//added by amy for AP roaming
+-	ieee->LinkDetectInfo.NumRecvDataInPeriod++;
+-	ieee->LinkDetectInfo.NumRxOkInPeriod++;
+-
+-	hdr = (struct rtl_80211_hdr_4addr *)skb->data;
+-	if (crypt && !(fc & IEEE80211_FCTL_WEP) && !ieee->open_wep) {
+-		if (/*ieee->ieee802_1x &&*/
+-		    ieee80211_is_eapol_frame(ieee, skb, hdrlen)) {
+-
+-#ifdef CONFIG_IEEE80211_DEBUG
+-			/* pass unencrypted EAPOL frames even if encryption is
+-			 * configured */
+-			struct eapol *eap = (struct eapol *)(skb->data +
+-				24);
+-			IEEE80211_DEBUG_EAP("RX: IEEE 802.1X EAPOL frame: %s\n",
+-						eap_get_type(eap->type));
+-#endif
+-		} else {
+-			IEEE80211_DEBUG_DROP(
+-				"encryption configured, but RX "
+-				"frame not encrypted (SA=%pM)\n",
+-				hdr->addr2);
+-			goto rx_dropped;
+-		}
+-	}
+-
+-#ifdef CONFIG_IEEE80211_DEBUG
+-	if (crypt && !(fc & IEEE80211_FCTL_WEP) &&
+-	    ieee80211_is_eapol_frame(ieee, skb, hdrlen)) {
+-		struct eapol *eap = (struct eapol *)(skb->data +
+-			24);
+-		IEEE80211_DEBUG_EAP("RX: IEEE 802.1X EAPOL frame: %s\n",
+-					eap_get_type(eap->type));
+-	}
+-#endif
+-
+-	if (crypt && !(fc & IEEE80211_FCTL_WEP) && !ieee->open_wep &&
+-	    !ieee80211_is_eapol_frame(ieee, skb, hdrlen)) {
+-		IEEE80211_DEBUG_DROP(
+-			"dropped unencrypted RX data "
+-			"frame from %pM"
+-			" (drop_unencrypted=1)\n",
+-			hdr->addr2);
+-		goto rx_dropped;
+-	}
+-/*
+-	if(ieee80211_is_eapol_frame(ieee, skb, hdrlen)) {
+-		printk(KERN_WARNING "RX: IEEE802.1X EPAOL frame!\n");
+-	}
+-*/
+-//added by amy for reorder
+-	if (ieee->current_network.qos_data.active && IsQoSDataFrame(skb->data)
+-		&& !is_multicast_ether_addr(hdr->addr1)) {
+-		TID = Frame_QoSTID(skb->data);
+-		SeqNum = WLAN_GET_SEQ_SEQ(sc);
+-		GetTs(ieee, (struct ts_common_info **)&pTS, hdr->addr2, TID, RX_DIR, true);
+-		if (TID != 0 && TID != 3)
+-			ieee->bis_any_nonbepkts = true;
+-	}
+-//added by amy for reorder
+-	/* skb: hdr + (possible reassembled) full plaintext payload */
+-	//ethertype = (payload[6] << 8) | payload[7];
+-	rxb = kmalloc(sizeof(struct ieee80211_rxb), GFP_ATOMIC);
+-	if (!rxb)
+-		goto rx_dropped;
+-	/* to parse amsdu packets */
+-	/* qos data packets & reserved bit is 1 */
+-	if (parse_subframe(ieee, skb, rx_stats, rxb, src, dst) == 0) {
+-		/* only to free rxb, and not submit the packets to upper layer */
+-		for (i = 0; i < rxb->nr_subframes; i++)
+-			dev_kfree_skb(rxb->subframes[i]);
+-
+-		kfree(rxb);
+-		rxb = NULL;
+-		goto rx_dropped;
+-	}
+-
+-//added by amy for reorder
+-	if (!ieee->pHTInfo->bCurRxReorderEnable || !pTS) {
+-		indicate_packets(ieee, rxb);
+-		kfree(rxb);
+-		rxb = NULL;
+-
+-	} else {
+-		IEEE80211_DEBUG(IEEE80211_DL_REORDER, "%s(): REORDER ENABLE AND PTS not NULL, and we will enter RxReorderIndicatePacket()\n", __func__);
+-		RxReorderIndicatePacket(ieee, rxb, pTS, SeqNum);
+-	}
+-#ifndef JOHN_NOCPY
+-	dev_kfree_skb(skb);
+-#endif
+-
+- rx_exit:
+-#ifdef NOT_YET
+-	if (sta)
+-		hostap_handle_sta_release(sta);
+-#endif
+-	return 1;
+-
+- rx_dropped:
+-	kfree(rxb);
+-	rxb = NULL;
+-	stats->rx_dropped++;
+-
+-	/* Returning 0 indicates to caller that we have not handled the SKB--
+-	 * so it is still allocated and can be used again by underlying
+-	 * hardware as a DMA target */
+-	return 0;
+-}
+-EXPORT_SYMBOL(ieee80211_rx);
+-
+-#define MGMT_FRAME_FIXED_PART_LENGTH            0x24
+-
+-static u8 qos_oui[QOS_OUI_LEN] = { 0x00, 0x50, 0xF2 };
+-
+-/*
+-* Make the structure we read from the beacon packet to have
+-* the right values
+-*/
+-static int ieee80211_verify_qos_info(struct ieee80211_qos_information_element
+-				     *info_element, int sub_type)
+-{
+-	if (info_element->elementID != QOS_ELEMENT_ID)
+-		return -1;
+-	if (info_element->qui_subtype != sub_type)
+-		return -1;
+-	if (memcmp(info_element->qui, qos_oui, QOS_OUI_LEN))
+-		return -1;
+-	if (info_element->qui_type != QOS_OUI_TYPE)
+-		return -1;
+-	if (info_element->version != QOS_VERSION_1)
+-		return -1;
+-
+-	return 0;
+-}
+-
+-
+-/*
+- * Parse a QoS parameter element
+- */
+-static int ieee80211_read_qos_param_element(
+-		struct ieee80211_qos_parameter_info *element_param,
+-		struct ieee80211_info_element *info_element)
+-{
+-	size_t size = sizeof(*element_param);
+-
+-	if (!element_param || !info_element || info_element->len != size - 2)
+-		return -1;
+-
+-	memcpy(element_param, info_element, size);
+-	return ieee80211_verify_qos_info(&element_param->info_element,
+-					 QOS_OUI_PARAM_SUB_TYPE);
+-}
+-
+-/*
+- * Parse a QoS information element
+- */
+-static int ieee80211_read_qos_info_element(
+-		struct ieee80211_qos_information_element *element_info,
+-		struct ieee80211_info_element *info_element)
+-{
+-	size_t size = sizeof(*element_info);
+-
+-	if (!element_info || !info_element || info_element->len != size - 2)
+-		return -1;
+-
+-	memcpy(element_info, info_element, size);
+-	return ieee80211_verify_qos_info(element_info, QOS_OUI_INFO_SUB_TYPE);
+-}
+-
+-
+-/*
+- * Write QoS parameters from the ac parameters.
+- */
+-static int ieee80211_qos_convert_ac_to_parameters(
+-		struct ieee80211_qos_parameter_info *param_elm,
+-		struct ieee80211_qos_parameters *qos_param)
+-{
+-	int i;
+-	struct ieee80211_qos_ac_parameter *ac_params;
+-	u8 aci;
+-	//u8 cw_min;
+-	//u8 cw_max;
+-
+-	for (i = 0; i < QOS_QUEUE_NUM; i++) {
+-		ac_params = &(param_elm->ac_params_record[i]);
+-
+-		aci = (ac_params->aci_aifsn & 0x60) >> 5;
+-
+-		if (aci >= QOS_QUEUE_NUM)
+-			continue;
+-		qos_param->aifs[aci] = (ac_params->aci_aifsn) & 0x0f;
+-
+-		/* WMM spec P.11: The minimum value for AIFSN shall be 2 */
+-		qos_param->aifs[aci] = (qos_param->aifs[aci] < 2) ? 2 : qos_param->aifs[aci];
+-
+-		qos_param->cw_min[aci] =
+-		    cpu_to_le16(ac_params->ecw_min_max & 0x0F);
+-
+-		qos_param->cw_max[aci] =
+-		    cpu_to_le16((ac_params->ecw_min_max & 0xF0) >> 4);
+-
+-		qos_param->flag[aci] =
+-		    (ac_params->aci_aifsn & 0x10) ? 0x01 : 0x00;
+-		qos_param->tx_op_limit[aci] = ac_params->tx_op_limit;
+-	}
+-	return 0;
+-}
+-
+-/*
+- * we have a generic data element which it may contain QoS information or
+- * parameters element. check the information element length to decide
+- * which type to read
+- */
+-static int ieee80211_parse_qos_info_param_IE(struct ieee80211_info_element
+-					     *info_element,
+-					     struct ieee80211_network *network)
+-{
+-	int rc = 0;
+-	struct ieee80211_qos_parameters *qos_param = NULL;
+-	struct ieee80211_qos_information_element qos_info_element;
+-
+-	rc = ieee80211_read_qos_info_element(&qos_info_element, info_element);
+-
+-	if (rc == 0) {
+-		network->qos_data.param_count = qos_info_element.ac_info & 0x0F;
+-		network->flags |= NETWORK_HAS_QOS_INFORMATION;
+-	} else {
+-		struct ieee80211_qos_parameter_info param_element;
+-
+-		rc = ieee80211_read_qos_param_element(&param_element,
+-						      info_element);
+-		if (rc == 0) {
+-			qos_param = &(network->qos_data.parameters);
+-			ieee80211_qos_convert_ac_to_parameters(&param_element,
+-							       qos_param);
+-			network->flags |= NETWORK_HAS_QOS_PARAMETERS;
+-			network->qos_data.param_count =
+-			    param_element.info_element.ac_info & 0x0F;
+-		}
+-	}
+-
+-	if (rc == 0) {
+-		IEEE80211_DEBUG_QOS("QoS is supported\n");
+-		network->qos_data.supported = 1;
+-	}
+-	return rc;
+-}
+-
+-#ifdef CONFIG_IEEE80211_DEBUG
+-#define MFIE_STRING(x) case MFIE_TYPE_ ##x: return #x
+-
+-static const char *get_info_element_string(u16 id)
+-{
+-	switch (id) {
+-		MFIE_STRING(SSID);
+-		MFIE_STRING(RATES);
+-		MFIE_STRING(FH_SET);
+-		MFIE_STRING(DS_SET);
+-		MFIE_STRING(CF_SET);
+-		MFIE_STRING(TIM);
+-		MFIE_STRING(IBSS_SET);
+-		MFIE_STRING(COUNTRY);
+-		MFIE_STRING(HOP_PARAMS);
+-		MFIE_STRING(HOP_TABLE);
+-		MFIE_STRING(REQUEST);
+-		MFIE_STRING(CHALLENGE);
+-		MFIE_STRING(POWER_CONSTRAINT);
+-		MFIE_STRING(POWER_CAPABILITY);
+-		MFIE_STRING(TPC_REQUEST);
+-		MFIE_STRING(TPC_REPORT);
+-		MFIE_STRING(SUPP_CHANNELS);
+-		MFIE_STRING(CSA);
+-		MFIE_STRING(MEASURE_REQUEST);
+-		MFIE_STRING(MEASURE_REPORT);
+-		MFIE_STRING(QUIET);
+-		MFIE_STRING(IBSS_DFS);
+-	       // MFIE_STRING(ERP_INFO);
+-		MFIE_STRING(RSN);
+-		MFIE_STRING(RATES_EX);
+-		MFIE_STRING(GENERIC);
+-		MFIE_STRING(QOS_PARAMETER);
+-	default:
+-		return "UNKNOWN";
+-	}
+-}
+-#endif
+-
+-static inline void ieee80211_extract_country_ie(
+-	struct ieee80211_device *ieee,
+-	struct ieee80211_info_element *info_element,
+-	struct ieee80211_network *network,
+-	u8 *addr2
+-)
+-{
+-	if (IS_DOT11D_ENABLE(ieee)) {
+-		if (info_element->len != 0) {
+-			memcpy(network->CountryIeBuf, info_element->data, info_element->len);
+-			network->CountryIeLen = info_element->len;
+-
+-			if (!IS_COUNTRY_IE_VALID(ieee)) {
+-				dot11d_update_country_ie(ieee, addr2, info_element->len, info_element->data);
+-			}
+-		}
+-
+-		//
+-		// 070305, rcnjko: I update country IE watch dog here because
+-		// some AP (e.g. Cisco 1242) don't include country IE in their
+-		// probe response frame.
+-		//
+-		if (IS_EQUAL_CIE_SRC(ieee, addr2))
+-			UPDATE_CIE_WATCHDOG(ieee);
+-	}
+-}
+-
+-int ieee80211_parse_info_param(struct ieee80211_device *ieee,
+-		struct ieee80211_info_element *info_element,
+-		u16 length,
+-		struct ieee80211_network *network,
+-		struct ieee80211_rx_stats *stats)
+-{
+-	u8 i;
+-	short offset;
+-	u16	tmp_htcap_len = 0;
+-	u16	tmp_htinfo_len = 0;
+-	u16 ht_realtek_agg_len = 0;
+-	u8  ht_realtek_agg_buf[MAX_IE_LEN];
+-//	u16 broadcom_len = 0;
+-#ifdef CONFIG_IEEE80211_DEBUG
+-	char rates_str[64];
+-	char *p;
+-#endif
+-
+-	while (length >= sizeof(*info_element)) {
+-		if (sizeof(*info_element) + info_element->len > length) {
+-			IEEE80211_DEBUG_MGMT("Info elem: parse failed: "
+-					     "info_element->len + 2 > left : "
+-					     "info_element->len+2=%zd left=%d, id=%d.\n",
+-					     info_element->len +
+-					     sizeof(*info_element),
+-					     length, info_element->id);
+-			/* We stop processing but don't return an error here
+-			 * because some misbehaviour APs break this rule. ie.
+-			 * Orinoco AP1000. */
+-			break;
+-		}
+-
+-		switch (info_element->id) {
+-		case MFIE_TYPE_SSID:
+-			if (ieee80211_is_empty_essid(info_element->data,
+-						     info_element->len)) {
+-				network->flags |= NETWORK_EMPTY_ESSID;
+-				break;
+-			}
+-
+-			network->ssid_len = min(info_element->len,
+-						(u8)IW_ESSID_MAX_SIZE);
+-			memcpy(network->ssid, info_element->data, network->ssid_len);
+-			if (network->ssid_len < IW_ESSID_MAX_SIZE)
+-				memset(network->ssid + network->ssid_len, 0,
+-				       IW_ESSID_MAX_SIZE - network->ssid_len);
+-
+-			IEEE80211_DEBUG_MGMT("MFIE_TYPE_SSID: '%s' len=%d.\n",
+-					     network->ssid, network->ssid_len);
+-			break;
+-
+-		case MFIE_TYPE_RATES:
+-#ifdef CONFIG_IEEE80211_DEBUG
+-			p = rates_str;
+-#endif
+-			network->rates_len = min(info_element->len,
+-						 MAX_RATES_LENGTH);
+-			for (i = 0; i < network->rates_len; i++) {
+-				network->rates[i] = info_element->data[i];
+-#ifdef CONFIG_IEEE80211_DEBUG
+-				p += scnprintf(p, sizeof(rates_str) -
+-					      (p - rates_str), "%02X ",
+-					      network->rates[i]);
+-#endif
+-				if (ieee80211_is_ofdm_rate
+-				    (info_element->data[i])) {
+-					network->flags |= NETWORK_HAS_OFDM;
+-					if (info_element->data[i] &
+-					    IEEE80211_BASIC_RATE_MASK)
+-						network->flags &=
+-						    ~NETWORK_HAS_CCK;
+-				}
+-			}
+-
+-			IEEE80211_DEBUG_MGMT("MFIE_TYPE_RATES: '%s' (%d)\n",
+-					     rates_str, network->rates_len);
+-			break;
+-
+-		case MFIE_TYPE_RATES_EX:
+-#ifdef CONFIG_IEEE80211_DEBUG
+-			p = rates_str;
+-#endif
+-			network->rates_ex_len = min(info_element->len,
+-						    MAX_RATES_EX_LENGTH);
+-			for (i = 0; i < network->rates_ex_len; i++) {
+-				network->rates_ex[i] = info_element->data[i];
+-#ifdef CONFIG_IEEE80211_DEBUG
+-				p += scnprintf(p, sizeof(rates_str) -
+-					      (p - rates_str), "%02X ",
+-					      network->rates_ex[i]);
+-#endif
+-				if (ieee80211_is_ofdm_rate
+-				    (info_element->data[i])) {
+-					network->flags |= NETWORK_HAS_OFDM;
+-					if (info_element->data[i] &
+-					    IEEE80211_BASIC_RATE_MASK)
+-						network->flags &=
+-						    ~NETWORK_HAS_CCK;
+-				}
+-			}
+-
+-			IEEE80211_DEBUG_MGMT("MFIE_TYPE_RATES_EX: '%s' (%d)\n",
+-					     rates_str, network->rates_ex_len);
+-			break;
+-
+-		case MFIE_TYPE_DS_SET:
+-			IEEE80211_DEBUG_MGMT("MFIE_TYPE_DS_SET: %d\n",
+-					     info_element->data[0]);
+-			network->channel = info_element->data[0];
+-			break;
+-
+-		case MFIE_TYPE_FH_SET:
+-			IEEE80211_DEBUG_MGMT("MFIE_TYPE_FH_SET: ignored\n");
+-			break;
+-
+-		case MFIE_TYPE_CF_SET:
+-			IEEE80211_DEBUG_MGMT("MFIE_TYPE_CF_SET: ignored\n");
+-			break;
+-
+-		case MFIE_TYPE_TIM:
+-			if (info_element->len < 4)
+-				break;
+-
+-			network->tim.tim_count = info_element->data[0];
+-			network->tim.tim_period = info_element->data[1];
+-
+-			network->dtim_period = info_element->data[1];
+-			if (ieee->state != IEEE80211_LINKED)
+-				break;
+-
+-			network->last_dtim_sta_time[0] = stats->mac_time[0];
+-			network->last_dtim_sta_time[1] = stats->mac_time[1];
+-
+-			network->dtim_data = IEEE80211_DTIM_VALID;
+-
+-			if (info_element->data[0] != 0)
+-				break;
+-
+-			if (info_element->data[2] & 1)
+-				network->dtim_data |= IEEE80211_DTIM_MBCAST;
+-
+-			offset = (info_element->data[2] >> 1) * 2;
+-
+-			if (ieee->assoc_id < 8 * offset ||
+-				ieee->assoc_id > 8 * (offset + info_element->len - 3))
+-
+-				break;
+-
+-			offset = (ieee->assoc_id / 8) - offset;// + ((aid % 8)? 0 : 1) ;
+-
+-			if (info_element->data[3 + offset] & (1 << (ieee->assoc_id % 8)))
+-				network->dtim_data |= IEEE80211_DTIM_UCAST;
+-
+-			//IEEE80211_DEBUG_MGMT("MFIE_TYPE_TIM: partially ignored\n");
+-			break;
+-
+-		case MFIE_TYPE_ERP:
+-			network->erp_value = info_element->data[0];
+-			network->flags |= NETWORK_HAS_ERP_VALUE;
+-			IEEE80211_DEBUG_MGMT("MFIE_TYPE_ERP_SET: %d\n",
+-					     network->erp_value);
+-			break;
+-		case MFIE_TYPE_IBSS_SET:
+-			network->atim_window = info_element->data[0];
+-			IEEE80211_DEBUG_MGMT("MFIE_TYPE_IBSS_SET: %d\n",
+-					     network->atim_window);
+-			break;
+-
+-		case MFIE_TYPE_CHALLENGE:
+-			IEEE80211_DEBUG_MGMT("MFIE_TYPE_CHALLENGE: ignored\n");
+-			break;
+-
+-		case MFIE_TYPE_GENERIC:
+-			IEEE80211_DEBUG_MGMT("MFIE_TYPE_GENERIC: %d bytes\n",
+-					     info_element->len);
+-			if (!ieee80211_parse_qos_info_param_IE(info_element,
+-							       network))
+-				break;
+-
+-			if (info_element->len >= 4 &&
+-			    info_element->data[0] == 0x00 &&
+-			    info_element->data[1] == 0x50 &&
+-			    info_element->data[2] == 0xf2 &&
+-			    info_element->data[3] == 0x01) {
+-				network->wpa_ie_len = min(info_element->len + 2,
+-							  MAX_WPA_IE_LEN);
+-				memcpy(network->wpa_ie, info_element,
+-				       network->wpa_ie_len);
+-				break;
+-			}
+-
+-#ifdef THOMAS_TURBO
+-			if (info_element->len == 7 &&
+-			    info_element->data[0] == 0x00 &&
+-			    info_element->data[1] == 0xe0 &&
+-			    info_element->data[2] == 0x4c &&
+-			    info_element->data[3] == 0x01 &&
+-			    info_element->data[4] == 0x02) {
+-				network->Turbo_Enable = 1;
+-			}
+-#endif
+-
+-			//for HTcap and HTinfo parameters
+-			if (tmp_htcap_len == 0) {
+-				if (info_element->len >= 4 &&
+-				   info_element->data[0] == 0x00 &&
+-				   info_element->data[1] == 0x90 &&
+-				   info_element->data[2] == 0x4c &&
+-				   info_element->data[3] == 0x033){
+-
+-					tmp_htcap_len = min(info_element->len, (u8)MAX_IE_LEN);
+-					if (tmp_htcap_len != 0) {
+-						network->bssht.bdHTSpecVer = HT_SPEC_VER_EWC;
+-						network->bssht.bdHTCapLen = tmp_htcap_len > sizeof(network->bssht.bdHTCapBuf) ? \
+-							sizeof(network->bssht.bdHTCapBuf) : tmp_htcap_len;
+-						memcpy(network->bssht.bdHTCapBuf, info_element->data, network->bssht.bdHTCapLen);
+-					}
+-				}
+-				if (tmp_htcap_len != 0)
+-					network->bssht.bdSupportHT = true;
+-				else
+-					network->bssht.bdSupportHT = false;
+-			}
+-
+-
+-			if (tmp_htinfo_len == 0) {
+-				if (info_element->len >= 4 &&
+-					info_element->data[0] == 0x00 &&
+-					info_element->data[1] == 0x90 &&
+-					info_element->data[2] == 0x4c &&
+-					info_element->data[3] == 0x034){
+-
+-					tmp_htinfo_len = min(info_element->len, (u8)MAX_IE_LEN);
+-					if (tmp_htinfo_len != 0) {
+-						network->bssht.bdHTSpecVer = HT_SPEC_VER_EWC;
+-						if (tmp_htinfo_len) {
+-							network->bssht.bdHTInfoLen = tmp_htinfo_len > sizeof(network->bssht.bdHTInfoBuf) ? \
+-								sizeof(network->bssht.bdHTInfoBuf) : tmp_htinfo_len;
+-							memcpy(network->bssht.bdHTInfoBuf, info_element->data, network->bssht.bdHTInfoLen);
+-						}
+-
+-					}
+-
+-				}
+-			}
+-
+-			if (ieee->aggregation) {
+-				if (network->bssht.bdSupportHT) {
+-					if (info_element->len >= 4 &&
+-						info_element->data[0] == 0x00 &&
+-						info_element->data[1] == 0xe0 &&
+-						info_element->data[2] == 0x4c &&
+-						info_element->data[3] == 0x02){
+-
+-						ht_realtek_agg_len = min(info_element->len, (u8)MAX_IE_LEN);
+-						memcpy(ht_realtek_agg_buf, info_element->data, info_element->len);
+-
+-					}
+-					if (ht_realtek_agg_len >= 5) {
+-						network->bssht.bdRT2RTAggregation = true;
+-
+-						if ((ht_realtek_agg_buf[4] == 1) && (ht_realtek_agg_buf[5] & 0x02))
+-							network->bssht.bdRT2RTLongSlotTime = true;
+-					}
+-				}
+-
+-			}
+-
+-			//if(tmp_htcap_len !=0  ||  tmp_htinfo_len != 0)
+-			{
+-				if ((info_element->len >= 3 &&
+-					 info_element->data[0] == 0x00 &&
+-					 info_element->data[1] == 0x05 &&
+-					 info_element->data[2] == 0xb5) ||
+-					 (info_element->len >= 3 &&
+-					 info_element->data[0] == 0x00 &&
+-					 info_element->data[1] == 0x0a &&
+-					 info_element->data[2] == 0xf7) ||
+-					 (info_element->len >= 3 &&
+-					 info_element->data[0] == 0x00 &&
+-					 info_element->data[1] == 0x10 &&
+-					 info_element->data[2] == 0x18)){
+-
+-					network->broadcom_cap_exist = true;
+-
+-				}
+-			}
+-			if (info_element->len >= 3 &&
+-				info_element->data[0] == 0x00 &&
+-				info_element->data[1] == 0x0c &&
+-				info_element->data[2] == 0x43) {
+-				network->ralink_cap_exist = true;
+-			} else
+-				network->ralink_cap_exist = false;
+-			//added by amy for atheros AP
+-			if ((info_element->len >= 3 &&
+-				info_element->data[0] == 0x00 &&
+-				info_element->data[1] == 0x03 &&
+-				info_element->data[2] == 0x7f) ||
+-				(info_element->len >= 3 &&
+-				info_element->data[0] == 0x00 &&
+-				info_element->data[1] == 0x13 &&
+-				info_element->data[2] == 0x74)) {
+-				netdev_dbg(ieee->dev, "========> Atheros AP exists\n");
+-				network->atheros_cap_exist = true;
+-			} else
+-				network->atheros_cap_exist = false;
+-
+-			if (info_element->len >= 3 &&
+-				info_element->data[0] == 0x00 &&
+-				info_element->data[1] == 0x40 &&
+-				info_element->data[2] == 0x96) {
+-				network->cisco_cap_exist = true;
+-			} else
+-				network->cisco_cap_exist = false;
+-			//added by amy for LEAP of cisco
+-			if (info_element->len > 4 &&
+-				info_element->data[0] == 0x00 &&
+-				info_element->data[1] == 0x40 &&
+-				info_element->data[2] == 0x96 &&
+-				info_element->data[3] == 0x01) {
+-				if (info_element->len == 6) {
+-					memcpy(network->CcxRmState, &info_element[4], 2);
+-					if (network->CcxRmState[0] != 0)
+-						network->bCcxRmEnable = true;
+-					else
+-						network->bCcxRmEnable = false;
+-					//
+-					// CCXv4 Table 59-1 MBSSID Masks.
+-					//
+-					network->MBssidMask = network->CcxRmState[1] & 0x07;
+-					if (network->MBssidMask != 0) {
+-						network->bMBssidValid = true;
+-						network->MBssidMask = 0xff << (network->MBssidMask);
+-						ether_addr_copy(network->MBssid, network->bssid);
+-						network->MBssid[5] &= network->MBssidMask;
+-					} else {
+-						network->bMBssidValid = false;
+-					}
+-				} else {
+-					network->bCcxRmEnable = false;
+-				}
+-			}
+-			if (info_element->len > 4  &&
+-				info_element->data[0] == 0x00 &&
+-				info_element->data[1] == 0x40 &&
+-				info_element->data[2] == 0x96 &&
+-				info_element->data[3] == 0x03) {
+-				if (info_element->len == 5) {
+-					network->bWithCcxVerNum = true;
+-					network->BssCcxVerNumber = info_element->data[4];
+-				} else {
+-					network->bWithCcxVerNum = false;
+-					network->BssCcxVerNumber = 0;
+-				}
+-			}
+-			break;
+-
+-		case MFIE_TYPE_RSN:
+-			IEEE80211_DEBUG_MGMT("MFIE_TYPE_RSN: %d bytes\n",
+-					     info_element->len);
+-			network->rsn_ie_len = min(info_element->len + 2,
+-						  MAX_WPA_IE_LEN);
+-			memcpy(network->rsn_ie, info_element,
+-			       network->rsn_ie_len);
+-			break;
+-
+-			//HT related element.
+-		case MFIE_TYPE_HT_CAP:
+-			IEEE80211_DEBUG_SCAN("MFIE_TYPE_HT_CAP: %d bytes\n",
+-					     info_element->len);
+-			tmp_htcap_len = min(info_element->len, (u8)MAX_IE_LEN);
+-			if (tmp_htcap_len != 0) {
+-				network->bssht.bdHTSpecVer = HT_SPEC_VER_EWC;
+-				network->bssht.bdHTCapLen = tmp_htcap_len > sizeof(network->bssht.bdHTCapBuf) ? \
+-					sizeof(network->bssht.bdHTCapBuf) : tmp_htcap_len;
+-				memcpy(network->bssht.bdHTCapBuf, info_element->data, network->bssht.bdHTCapLen);
+-
+-				//If peer is HT, but not WMM, call QosSetLegacyWMMParamWithHT()
+-				// windows driver will update WMM parameters each beacon received once connected
+-				// Linux driver is a bit different.
+-				network->bssht.bdSupportHT = true;
+-			} else
+-				network->bssht.bdSupportHT = false;
+-			break;
+-
+-
+-		case MFIE_TYPE_HT_INFO:
+-			IEEE80211_DEBUG_SCAN("MFIE_TYPE_HT_INFO: %d bytes\n",
+-					     info_element->len);
+-			tmp_htinfo_len = min(info_element->len, (u8)MAX_IE_LEN);
+-			if (tmp_htinfo_len) {
+-				network->bssht.bdHTSpecVer = HT_SPEC_VER_IEEE;
+-				network->bssht.bdHTInfoLen = tmp_htinfo_len > sizeof(network->bssht.bdHTInfoBuf) ? \
+-					sizeof(network->bssht.bdHTInfoBuf) : tmp_htinfo_len;
+-				memcpy(network->bssht.bdHTInfoBuf, info_element->data, network->bssht.bdHTInfoLen);
+-			}
+-			break;
+-
+-		case MFIE_TYPE_AIRONET:
+-			IEEE80211_DEBUG_SCAN("MFIE_TYPE_AIRONET: %d bytes\n",
+-					     info_element->len);
+-			if (info_element->len > IE_CISCO_FLAG_POSITION) {
+-				network->bWithAironetIE = true;
+-
+-				// CCX 1 spec v1.13, A01.1 CKIP Negotiation (page23):
+-				// "A Cisco access point advertises support for CKIP in beacon and probe response packets,
+-				//  by adding an Aironet element and setting one or both of the CKIP negotiation bits."
+-				if ((info_element->data[IE_CISCO_FLAG_POSITION] & SUPPORT_CKIP_MIC)	||
+-					(info_element->data[IE_CISCO_FLAG_POSITION] & SUPPORT_CKIP_PK)) {
+-					network->bCkipSupported = true;
+-				} else {
+-					network->bCkipSupported = false;
+-				}
+-			} else {
+-				network->bWithAironetIE = false;
+-				network->bCkipSupported = false;
+-			}
+-			break;
+-		case MFIE_TYPE_QOS_PARAMETER:
+-			netdev_err(ieee->dev,
+-				   "QoS Error need to parse QOS_PARAMETER IE\n");
+-			break;
+-
+-		case MFIE_TYPE_COUNTRY:
+-			IEEE80211_DEBUG_SCAN("MFIE_TYPE_COUNTRY: %d bytes\n",
+-					     info_element->len);
+-			ieee80211_extract_country_ie(ieee, info_element, network, network->bssid);//addr2 is same as addr3 when from an AP
+-			break;
+-/* TODO */
+-		default:
+-			IEEE80211_DEBUG_MGMT
+-			    ("Unsupported info element: %s (%d)\n",
+-			     get_info_element_string(info_element->id),
+-			     info_element->id);
+-			break;
+-		}
+-
+-		length -= sizeof(*info_element) + info_element->len;
+-		info_element =
+-		    (struct ieee80211_info_element *)&info_element->
+-		    data[info_element->len];
+-	}
+-
+-	if (!network->atheros_cap_exist && !network->broadcom_cap_exist &&
+-		!network->cisco_cap_exist && !network->ralink_cap_exist && !network->bssht.bdRT2RTAggregation) {
+-		network->unknown_cap_exist = true;
+-	} else {
+-		network->unknown_cap_exist = false;
+-	}
+-	return 0;
+-}
+-
+-/* 0-100 index */
+-static long ieee80211_translate_todbm(u8 signal_strength_index)
+-{
+-	long	signal_power; // in dBm.
+-
+-	// Translate to dBm (x=0.5y-95).
+-	signal_power = (long)((signal_strength_index + 1) >> 1);
+-	signal_power -= 95;
+-
+-	return signal_power;
+-}
+-
+-static inline int ieee80211_network_init(
+-	struct ieee80211_device *ieee,
+-	struct ieee80211_probe_response *beacon,
+-	struct ieee80211_network *network,
+-	struct ieee80211_rx_stats *stats)
+-{
+-#ifdef CONFIG_IEEE80211_DEBUG
+-	//char rates_str[64];
+-	//char *p;
+-#endif
+-
+-	network->qos_data.active = 0;
+-	network->qos_data.supported = 0;
+-	network->qos_data.param_count = 0;
+-	network->qos_data.old_param_count = 0;
+-
+-	/* Pull out fixed field data */
+-	memcpy(network->bssid, beacon->header.addr3, ETH_ALEN);
+-	network->capability = le16_to_cpu(beacon->capability);
+-	network->last_scanned = jiffies;
+-	network->time_stamp[0] = le32_to_cpu(beacon->time_stamp[0]);
+-	network->time_stamp[1] = le32_to_cpu(beacon->time_stamp[1]);
+-	network->beacon_interval = le16_to_cpu(beacon->beacon_interval);
+-	/* Where to pull this? beacon->listen_interval;*/
+-	network->listen_interval = 0x0A;
+-	network->rates_len = network->rates_ex_len = 0;
+-	network->last_associate = 0;
+-	network->ssid_len = 0;
+-	network->flags = 0;
+-	network->atim_window = 0;
+-	network->erp_value = (network->capability & WLAN_CAPABILITY_IBSS) ?
+-	    0x3 : 0x0;
+-	network->berp_info_valid = false;
+-	network->broadcom_cap_exist = false;
+-	network->ralink_cap_exist = false;
+-	network->atheros_cap_exist = false;
+-	network->cisco_cap_exist = false;
+-	network->unknown_cap_exist = false;
+-#ifdef THOMAS_TURBO
+-	network->Turbo_Enable = 0;
+-#endif
+-	network->CountryIeLen = 0;
+-	memset(network->CountryIeBuf, 0, MAX_IE_LEN);
+-//Initialize HT parameters
+-	//ieee80211_ht_initialize(&network->bssht);
+-	HTInitializeBssDesc(&network->bssht);
+-	if (stats->freq == IEEE80211_52GHZ_BAND) {
+-		/* for A band (No DS info) */
+-		network->channel = stats->received_channel;
+-	} else
+-		network->flags |= NETWORK_HAS_CCK;
+-
+-	network->wpa_ie_len = 0;
+-	network->rsn_ie_len = 0;
+-
+-	if (ieee80211_parse_info_param
+-	    (ieee, beacon->info_element, stats->len - sizeof(*beacon), network, stats))
+-		return 1;
+-
+-	network->mode = 0;
+-	if (stats->freq == IEEE80211_52GHZ_BAND)
+-		network->mode = IEEE_A;
+-	else {
+-		if (network->flags & NETWORK_HAS_OFDM)
+-			network->mode |= IEEE_G;
+-		if (network->flags & NETWORK_HAS_CCK)
+-			network->mode |= IEEE_B;
+-	}
+-
+-	if (network->mode == 0) {
+-		IEEE80211_DEBUG_SCAN("Filtered out '%s (%pM)' "
+-				     "network.\n",
+-				     escape_essid(network->ssid,
+-						  network->ssid_len),
+-				     network->bssid);
+-		return 1;
+-	}
+-
+-	if (network->bssht.bdSupportHT) {
+-		if (network->mode == IEEE_A)
+-			network->mode = IEEE_N_5G;
+-		else if (network->mode & (IEEE_G | IEEE_B))
+-			network->mode = IEEE_N_24G;
+-	}
+-	if (ieee80211_is_empty_essid(network->ssid, network->ssid_len))
+-		network->flags |= NETWORK_EMPTY_ESSID;
+-
+-	stats->signal = 30 + (stats->SignalStrength * 70) / 100;
+-	stats->noise = ieee80211_translate_todbm((u8)(100 - stats->signal)) - 25;
+-
+-	memcpy(&network->stats, stats, sizeof(network->stats));
+-
+-	return 0;
+-}
+-
+-static inline int is_same_network(struct ieee80211_network *src,
+-				  struct ieee80211_network *dst, struct ieee80211_device *ieee)
+-{
+-	/* A network is only a duplicate if the channel, BSSID, ESSID
+-	 * and the capability field (in particular IBSS and BSS) all match.
+-	 * We treat all <hidden> with the same BSSID and channel
+-	 * as one network */
+-	return //((src->ssid_len == dst->ssid_len) &&
+-		(((src->ssid_len == dst->ssid_len) || (ieee->iw_mode == IW_MODE_INFRA)) &&
+-		(src->channel == dst->channel) &&
+-		!memcmp(src->bssid, dst->bssid, ETH_ALEN) &&
+-		//!memcmp(src->ssid, dst->ssid, src->ssid_len) &&
+-		(!memcmp(src->ssid, dst->ssid, src->ssid_len) || (ieee->iw_mode == IW_MODE_INFRA)) &&
+-		((src->capability & WLAN_CAPABILITY_IBSS) ==
+-		(dst->capability & WLAN_CAPABILITY_IBSS)) &&
+-		((src->capability & WLAN_CAPABILITY_BSS) ==
+-		(dst->capability & WLAN_CAPABILITY_BSS)));
+-}
+-
+-static inline void update_network(struct ieee80211_network *dst,
+-				  struct ieee80211_network *src)
+-{
+-	int qos_active;
+-	u8 old_param;
+-
+-	memcpy(&dst->stats, &src->stats, sizeof(struct ieee80211_rx_stats));
+-	dst->capability = src->capability;
+-	memcpy(dst->rates, src->rates, src->rates_len);
+-	dst->rates_len = src->rates_len;
+-	memcpy(dst->rates_ex, src->rates_ex, src->rates_ex_len);
+-	dst->rates_ex_len = src->rates_ex_len;
+-	if (src->ssid_len > 0) {
+-		memset(dst->ssid, 0, dst->ssid_len);
+-		dst->ssid_len = src->ssid_len;
+-		memcpy(dst->ssid, src->ssid, src->ssid_len);
+-	}
+-	dst->mode = src->mode;
+-	dst->flags = src->flags;
+-	dst->time_stamp[0] = src->time_stamp[0];
+-	dst->time_stamp[1] = src->time_stamp[1];
+-	if (src->flags & NETWORK_HAS_ERP_VALUE) {
+-		dst->erp_value = src->erp_value;
+-		dst->berp_info_valid = src->berp_info_valid = true;
+-	}
+-	dst->beacon_interval = src->beacon_interval;
+-	dst->listen_interval = src->listen_interval;
+-	dst->atim_window = src->atim_window;
+-	dst->dtim_period = src->dtim_period;
+-	dst->dtim_data = src->dtim_data;
+-	dst->last_dtim_sta_time[0] = src->last_dtim_sta_time[0];
+-	dst->last_dtim_sta_time[1] = src->last_dtim_sta_time[1];
+-	memcpy(&dst->tim, &src->tim, sizeof(struct ieee80211_tim_parameters));
+-
+-	dst->bssht.bdSupportHT = src->bssht.bdSupportHT;
+-	dst->bssht.bdRT2RTAggregation = src->bssht.bdRT2RTAggregation;
+-	dst->bssht.bdHTCapLen = src->bssht.bdHTCapLen;
+-	memcpy(dst->bssht.bdHTCapBuf, src->bssht.bdHTCapBuf, src->bssht.bdHTCapLen);
+-	dst->bssht.bdHTInfoLen = src->bssht.bdHTInfoLen;
+-	memcpy(dst->bssht.bdHTInfoBuf, src->bssht.bdHTInfoBuf, src->bssht.bdHTInfoLen);
+-	dst->bssht.bdHTSpecVer = src->bssht.bdHTSpecVer;
+-	dst->bssht.bdRT2RTLongSlotTime = src->bssht.bdRT2RTLongSlotTime;
+-	dst->broadcom_cap_exist = src->broadcom_cap_exist;
+-	dst->ralink_cap_exist = src->ralink_cap_exist;
+-	dst->atheros_cap_exist = src->atheros_cap_exist;
+-	dst->cisco_cap_exist = src->cisco_cap_exist;
+-	dst->unknown_cap_exist = src->unknown_cap_exist;
+-	memcpy(dst->wpa_ie, src->wpa_ie, src->wpa_ie_len);
+-	dst->wpa_ie_len = src->wpa_ie_len;
+-	memcpy(dst->rsn_ie, src->rsn_ie, src->rsn_ie_len);
+-	dst->rsn_ie_len = src->rsn_ie_len;
+-
+-	dst->last_scanned = jiffies;
+-	/* qos related parameters */
+-	//qos_active = src->qos_data.active;
+-	qos_active = dst->qos_data.active;
+-	//old_param = dst->qos_data.old_param_count;
+-	old_param = dst->qos_data.param_count;
+-	if (dst->flags & NETWORK_HAS_QOS_MASK)
+-		memcpy(&dst->qos_data, &src->qos_data,
+-			sizeof(struct ieee80211_qos_data));
+-	else {
+-		dst->qos_data.supported = src->qos_data.supported;
+-		dst->qos_data.param_count = src->qos_data.param_count;
+-	}
+-
+-	if (dst->qos_data.supported == 1) {
+-		dst->QoS_Enable = 1;
+-		if (dst->ssid_len)
+-			IEEE80211_DEBUG_QOS
+-				("QoS the network %s is QoS supported\n",
+-				dst->ssid);
+-		else
+-			IEEE80211_DEBUG_QOS
+-				("QoS the network is QoS supported\n");
+-	}
+-	dst->qos_data.active = qos_active;
+-	dst->qos_data.old_param_count = old_param;
+-
+-	/* dst->last_associate is not overwritten */
+-	dst->wmm_info = src->wmm_info; //sure to exist in beacon or probe response frame.
+-	if (src->wmm_param[0].aci_aifsn || \
+-	   src->wmm_param[1].aci_aifsn || \
+-	   src->wmm_param[2].aci_aifsn || \
+-	   src->wmm_param[3].aci_aifsn) {
+-		memcpy(dst->wmm_param, src->wmm_param, WME_AC_PRAM_LEN);
+-	}
+-	//dst->QoS_Enable = src->QoS_Enable;
+-#ifdef THOMAS_TURBO
+-	dst->Turbo_Enable = src->Turbo_Enable;
+-#endif
+-
+-	dst->CountryIeLen = src->CountryIeLen;
+-	memcpy(dst->CountryIeBuf, src->CountryIeBuf, src->CountryIeLen);
+-
+-	//added by amy for LEAP
+-	dst->bWithAironetIE = src->bWithAironetIE;
+-	dst->bCkipSupported = src->bCkipSupported;
+-	memcpy(dst->CcxRmState, src->CcxRmState, 2);
+-	dst->bCcxRmEnable = src->bCcxRmEnable;
+-	dst->MBssidMask = src->MBssidMask;
+-	dst->bMBssidValid = src->bMBssidValid;
+-	memcpy(dst->MBssid, src->MBssid, 6);
+-	dst->bWithCcxVerNum = src->bWithCcxVerNum;
+-	dst->BssCcxVerNumber = src->BssCcxVerNumber;
+-
+-}
+-
+-static inline int is_beacon(__le16 fc)
+-{
+-	return (WLAN_FC_GET_STYPE(le16_to_cpu(fc)) == IEEE80211_STYPE_BEACON);
+-}
+-
+-static inline void ieee80211_process_probe_response(
+-	struct ieee80211_device *ieee,
+-	struct ieee80211_probe_response *beacon,
+-	struct ieee80211_rx_stats *stats)
+-{
+-	struct ieee80211_network *network;
+-	struct ieee80211_network *target;
+-	struct ieee80211_network *oldest = NULL;
+-#ifdef CONFIG_IEEE80211_DEBUG
+-	struct ieee80211_info_element *info_element = &beacon->info_element[0];
+-#endif
+-	int fc = WLAN_FC_GET_STYPE(le16_to_cpu(beacon->header.frame_ctl));
+-	unsigned long flags;
+-	short renew;
+-	u16 capability;
+-	//u8 wmm_info;
+-
+-	network = kzalloc(sizeof(*network), GFP_ATOMIC);
+-	if (!network)
+-		goto out;
+-
+-	capability = le16_to_cpu(beacon->capability);
+-	IEEE80211_DEBUG_SCAN(
+-		"'%s' (%pM): %c%c%c%c %c%c%c%c-%c%c%c%c %c%c%c%c\n",
+-		escape_essid(info_element->data, info_element->len),
+-		beacon->header.addr3,
+-		(capability & BIT(0xf)) ? '1' : '0',
+-		(capability & BIT(0xe)) ? '1' : '0',
+-		(capability & BIT(0xd)) ? '1' : '0',
+-		(capability & BIT(0xc)) ? '1' : '0',
+-		(capability & BIT(0xb)) ? '1' : '0',
+-		(capability & BIT(0xa)) ? '1' : '0',
+-		(capability & BIT(0x9)) ? '1' : '0',
+-		(capability & BIT(0x8)) ? '1' : '0',
+-		(capability & BIT(0x7)) ? '1' : '0',
+-		(capability & BIT(0x6)) ? '1' : '0',
+-		(capability & BIT(0x5)) ? '1' : '0',
+-		(capability & BIT(0x4)) ? '1' : '0',
+-		(capability & BIT(0x3)) ? '1' : '0',
+-		(capability & BIT(0x2)) ? '1' : '0',
+-		(capability & BIT(0x1)) ? '1' : '0',
+-		(capability & BIT(0x0)) ? '1' : '0');
+-
+-	if (ieee80211_network_init(ieee, beacon, network, stats)) {
+-		IEEE80211_DEBUG_SCAN("Dropped '%s' (%pM) via %s.\n",
+-				     escape_essid(info_element->data,
+-						  info_element->len),
+-				     beacon->header.addr3,
+-				     fc == IEEE80211_STYPE_PROBE_RESP ?
+-				     "PROBE RESPONSE" : "BEACON");
+-		goto out;
+-	}
+-
+-	// For Asus EeePc request,
+-	// (1) if wireless adapter receive get any 802.11d country code in AP beacon,
+-	//	   wireless adapter should follow the country code.
+-	// (2)  If there is no any country code in beacon,
+-	//       then wireless adapter should do active scan from ch1~11 and
+-	//       passive scan from ch12~14
+-
+-	if (!is_legal_channel(ieee, network->channel))
+-		goto out;
+-	if (ieee->bGlobalDomain) {
+-		if (fc == IEEE80211_STYPE_PROBE_RESP) {
+-			if (IS_COUNTRY_IE_VALID(ieee)) {
+-				// Case 1: Country code
+-				if (!is_legal_channel(ieee, network->channel)) {
+-					netdev_warn(ieee->dev, "GetScanInfo(): For Country code, filter probe response at channel(%d).\n", network->channel);
+-					goto out;
+-				}
+-			} else {
+-				// Case 2: No any country code.
+-				// Filter over channel ch12~14
+-				if (network->channel > 11) {
+-					netdev_warn(ieee->dev, "GetScanInfo(): For Global Domain, filter probe response at channel(%d).\n", network->channel);
+-					goto out;
+-				}
+-			}
+-		} else {
+-			if (IS_COUNTRY_IE_VALID(ieee)) {
+-				// Case 1: Country code
+-				if (!is_legal_channel(ieee, network->channel)) {
+-					netdev_warn(ieee->dev, "GetScanInfo(): For Country code, filter beacon at channel(%d).\n", network->channel);
+-					goto out;
+-				}
+-			} else {
+-				// Case 2: No any country code.
+-				// Filter over channel ch12~14
+-				if (network->channel > 14) {
+-					netdev_warn(ieee->dev, "GetScanInfo(): For Global Domain, filter beacon at channel(%d).\n", network->channel);
+-					goto out;
+-				}
+-			}
+-		}
+-	}
+-
+-	/* The network parsed correctly -- so now we scan our known networks
+-	 * to see if we can find it in our list.
+-	 *
+-	 * NOTE:  This search is definitely not optimized.  Once its doing
+-	 *        the "right thing" we'll optimize it for efficiency if
+-	 *        necessary */
+-
+-	/* Search for this entry in the list and update it if it is
+-	 * already there. */
+-
+-	spin_lock_irqsave(&ieee->lock, flags);
+-
+-	if (is_same_network(&ieee->current_network, network, ieee)) {
+-		update_network(&ieee->current_network, network);
+-		if ((ieee->current_network.mode == IEEE_N_24G || ieee->current_network.mode == IEEE_G)
+-		    && ieee->current_network.berp_info_valid){
+-			if (ieee->current_network.erp_value & ERP_UseProtection)
+-				ieee->current_network.buseprotection = true;
+-			else
+-				ieee->current_network.buseprotection = false;
+-		}
+-		if (is_beacon(beacon->header.frame_ctl)) {
+-			if (ieee->state == IEEE80211_LINKED)
+-				ieee->LinkDetectInfo.NumRecvBcnInPeriod++;
+-		} else //hidden AP
+-			network->flags = (~NETWORK_EMPTY_ESSID & network->flags) | (NETWORK_EMPTY_ESSID & ieee->current_network.flags);
+-	}
+-
+-	list_for_each_entry(target, &ieee->network_list, list) {
+-		if (is_same_network(target, network, ieee))
+-			break;
+-		if (!oldest ||
+-		    (target->last_scanned < oldest->last_scanned))
+-			oldest = target;
+-	}
+-
+-	/* If we didn't find a match, then get a new network slot to initialize
+-	 * with this beacon's information */
+-	if (&target->list == &ieee->network_list) {
+-		if (list_empty(&ieee->network_free_list)) {
+-			/* If there are no more slots, expire the oldest */
+-			list_del(&oldest->list);
+-			target = oldest;
+-			IEEE80211_DEBUG_SCAN("Expired '%s' (%pM) from "
+-					     "network list.\n",
+-					     escape_essid(target->ssid,
+-							  target->ssid_len),
+-					     target->bssid);
+-		} else {
+-			/* Otherwise just pull from the free list */
+-			target = list_entry(ieee->network_free_list.next,
+-					    struct ieee80211_network, list);
+-			list_del(ieee->network_free_list.next);
+-		}
+-
+-
+-#ifdef CONFIG_IEEE80211_DEBUG
+-		IEEE80211_DEBUG_SCAN("Adding '%s' (%pM) via %s.\n",
+-				     escape_essid(network->ssid,
+-						  network->ssid_len),
+-				     network->bssid,
+-				     fc == IEEE80211_STYPE_PROBE_RESP ?
+-				     "PROBE RESPONSE" : "BEACON");
+-#endif
+-		memcpy(target, network, sizeof(*target));
+-		list_add_tail(&target->list, &ieee->network_list);
+-		if (ieee->softmac_features & IEEE_SOFTMAC_ASSOCIATE)
+-			ieee80211_softmac_new_net(ieee, network);
+-	} else {
+-		IEEE80211_DEBUG_SCAN("Updating '%s' (%pM) via %s.\n",
+-				     escape_essid(target->ssid,
+-						  target->ssid_len),
+-				     target->bssid,
+-				     fc == IEEE80211_STYPE_PROBE_RESP ?
+-				     "PROBE RESPONSE" : "BEACON");
+-
+-		/* we have an entry and we are going to update it. But this entry may
+-		 * be already expired. In this case we do the same as we found a new
+-		 * net and call the new_net handler
+-		 */
+-		renew = !time_after(target->last_scanned + ieee->scan_age, jiffies);
+-		//YJ,add,080819,for hidden ap
+-		if (is_beacon(beacon->header.frame_ctl) == 0)
+-			network->flags = (~NETWORK_EMPTY_ESSID & network->flags) | (NETWORK_EMPTY_ESSID & target->flags);
+-		//if(strncmp(network->ssid, "linksys-c",9) == 0)
+-		//	printk("====>2 network->ssid=%s FLAG=%d target.ssid=%s FLAG=%d\n", network->ssid, network->flags, target->ssid, target->flags);
+-		if (((network->flags & NETWORK_EMPTY_ESSID) == NETWORK_EMPTY_ESSID) \
+-		    && (((network->ssid_len > 0) && (strncmp(target->ssid, network->ssid, network->ssid_len)))\
+- || ((ieee->current_network.ssid_len == network->ssid_len) && (strncmp(ieee->current_network.ssid, network->ssid, network->ssid_len) == 0) && (ieee->state == IEEE80211_NOLINK))))
+-			renew = 1;
+-		//YJ,add,080819,for hidden ap,end
+-
+-		update_network(target, network);
+-		if (renew && (ieee->softmac_features & IEEE_SOFTMAC_ASSOCIATE))
+-			ieee80211_softmac_new_net(ieee, network);
+-	}
+-
+-	spin_unlock_irqrestore(&ieee->lock, flags);
+-	if (is_beacon(beacon->header.frame_ctl) && is_same_network(&ieee->current_network, network, ieee) && \
+-		(ieee->state == IEEE80211_LINKED)) {
+-		if (ieee->handle_beacon)
+-			ieee->handle_beacon(ieee->dev, beacon, &ieee->current_network);
+-	}
+-
+-out:
+-	kfree(network);
+-}
+-
+-void ieee80211_rx_mgt(struct ieee80211_device *ieee,
+-		      struct rtl_80211_hdr_4addr *header,
+-		      struct ieee80211_rx_stats *stats)
+-{
+-	switch (WLAN_FC_GET_STYPE(le16_to_cpu(header->frame_ctl))) {
+-
+-	case IEEE80211_STYPE_BEACON:
+-		IEEE80211_DEBUG_MGMT("received BEACON (%d)\n",
+-			WLAN_FC_GET_STYPE(le16_to_cpu(header->frame_ctl)));
+-		IEEE80211_DEBUG_SCAN("Beacon\n");
+-		ieee80211_process_probe_response(
+-			ieee, (struct ieee80211_probe_response *)header, stats);
+-		break;
+-
+-	case IEEE80211_STYPE_PROBE_RESP:
+-		IEEE80211_DEBUG_MGMT("received PROBE RESPONSE (%d)\n",
+-			WLAN_FC_GET_STYPE(le16_to_cpu(header->frame_ctl)));
+-		IEEE80211_DEBUG_SCAN("Probe response\n");
+-		ieee80211_process_probe_response(
+-			ieee, (struct ieee80211_probe_response *)header, stats);
+-		break;
+-
+-	}
+-}
+-EXPORT_SYMBOL(ieee80211_rx_mgt);
+diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
+deleted file mode 100644
+index 92001cb36730..000000000000
+--- a/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
++++ /dev/null
+@@ -1,3056 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/* IEEE 802.11 SoftMAC layer
+- * Copyright (c) 2005 Andrea Merello <andrea.merello@gmail.com>
+- *
+- * Mostly extracted from the rtl8180-sa2400 driver for the
+- * in-kernel generic ieee802.11 stack.
+- *
+- * Few lines might be stolen from other part of the ieee80211
+- * stack. Copyright who own it's copyright
+- *
+- * WPA code stolen from the ipw2200 driver.
+- * Copyright who own it's copyright.
+- */
+-#include "ieee80211.h"
+-
+-#include <linux/random.h>
+-#include <linux/delay.h>
+-#include <linux/slab.h>
+-#include <linux/uaccess.h>
+-#include <linux/etherdevice.h>
+-
+-#include "dot11d.h"
+-
+-short ieee80211_is_54g(const struct ieee80211_network *net)
+-{
+-	return (net->rates_ex_len > 0) || (net->rates_len > 4);
+-}
+-EXPORT_SYMBOL(ieee80211_is_54g);
+-
+-short ieee80211_is_shortslot(const struct ieee80211_network *net)
+-{
+-	return net->capability & WLAN_CAPABILITY_SHORT_SLOT;
+-}
+-EXPORT_SYMBOL(ieee80211_is_shortslot);
+-
+-/* returns the total length needed for placing the RATE MFIE
+- * tag and the EXTENDED RATE MFIE tag if needed.
+- * It includes two bytes per tag for the tag itself and its len
+- */
+-static unsigned int ieee80211_MFIE_rate_len(struct ieee80211_device *ieee)
+-{
+-	unsigned int rate_len = 0;
+-
+-	if (ieee->modulation & IEEE80211_CCK_MODULATION)
+-		rate_len = IEEE80211_CCK_RATE_LEN + 2;
+-
+-	if (ieee->modulation & IEEE80211_OFDM_MODULATION)
+-		rate_len += IEEE80211_OFDM_RATE_LEN + 2;
+-
+-	return rate_len;
+-}
+-
+-/* place the MFIE rate, tag to the memory (double) pointer.
+- * Then it updates the pointer so that
+- * it points after the new MFIE tag added.
+- */
+-static void ieee80211_MFIE_Brate(struct ieee80211_device *ieee, u8 **tag_p)
+-{
+-	u8 *tag = *tag_p;
+-
+-	if (ieee->modulation & IEEE80211_CCK_MODULATION) {
+-		*tag++ = MFIE_TYPE_RATES;
+-		*tag++ = 4;
+-		*tag++ = IEEE80211_BASIC_RATE_MASK | IEEE80211_CCK_RATE_1MB;
+-		*tag++ = IEEE80211_BASIC_RATE_MASK | IEEE80211_CCK_RATE_2MB;
+-		*tag++ = IEEE80211_BASIC_RATE_MASK | IEEE80211_CCK_RATE_5MB;
+-		*tag++ = IEEE80211_BASIC_RATE_MASK | IEEE80211_CCK_RATE_11MB;
+-	}
+-
+-	/* We may add an option for custom rates that specific HW might support */
+-	*tag_p = tag;
+-}
+-
+-static void ieee80211_MFIE_Grate(struct ieee80211_device *ieee, u8 **tag_p)
+-{
+-	u8 *tag = *tag_p;
+-
+-	if (ieee->modulation & IEEE80211_OFDM_MODULATION) {
+-		*tag++ = MFIE_TYPE_RATES_EX;
+-		*tag++ = 8;
+-		*tag++ = IEEE80211_BASIC_RATE_MASK | IEEE80211_OFDM_RATE_6MB;
+-		*tag++ = IEEE80211_BASIC_RATE_MASK | IEEE80211_OFDM_RATE_9MB;
+-		*tag++ = IEEE80211_BASIC_RATE_MASK | IEEE80211_OFDM_RATE_12MB;
+-		*tag++ = IEEE80211_BASIC_RATE_MASK | IEEE80211_OFDM_RATE_18MB;
+-		*tag++ = IEEE80211_BASIC_RATE_MASK | IEEE80211_OFDM_RATE_24MB;
+-		*tag++ = IEEE80211_BASIC_RATE_MASK | IEEE80211_OFDM_RATE_36MB;
+-		*tag++ = IEEE80211_BASIC_RATE_MASK | IEEE80211_OFDM_RATE_48MB;
+-		*tag++ = IEEE80211_BASIC_RATE_MASK | IEEE80211_OFDM_RATE_54MB;
+-	}
+-
+-	/* We may add an option for custom rates that specific HW might support */
+-	*tag_p = tag;
+-}
+-
+-static void ieee80211_WMM_Info(struct ieee80211_device *ieee, u8 **tag_p)
+-{
+-	u8 *tag = *tag_p;
+-
+-	*tag++ = MFIE_TYPE_GENERIC; /* 0 */
+-	*tag++ = 7;
+-	*tag++ = 0x00;
+-	*tag++ = 0x50;
+-	*tag++ = 0xf2;
+-	*tag++ = 0x02;	/* 5 */
+-	*tag++ = 0x00;
+-	*tag++ = 0x01;
+-#ifdef SUPPORT_USPD
+-	if (ieee->current_network.wmm_info & 0x80)
+-		*tag++ = 0x0f | MAX_SP_Len;
+-	else
+-		*tag++ = MAX_SP_Len;
+-#else
+-	*tag++ = MAX_SP_Len;
+-#endif
+-	*tag_p = tag;
+-}
+-
+-#ifdef THOMAS_TURBO
+-static void ieee80211_TURBO_Info(struct ieee80211_device *ieee, u8 **tag_p)
+-{
+-	u8 *tag = *tag_p;
+-
+-	*tag++ = MFIE_TYPE_GENERIC; /* 0 */
+-	*tag++ = 7;
+-	*tag++ = 0x00;
+-	*tag++ = 0xe0;
+-	*tag++ = 0x4c;
+-	*tag++ = 0x01;	/* 5 */
+-	*tag++ = 0x02;
+-	*tag++ = 0x11;
+-	*tag++ = 0x00;
+-
+-	*tag_p = tag;
+-	netdev_alert(ieee->dev, "This is enable turbo mode IE process\n");
+-}
+-#endif
+-
+-static void enqueue_mgmt(struct ieee80211_device *ieee, struct sk_buff *skb)
+-{
+-	int nh;
+-
+-	nh = (ieee->mgmt_queue_head + 1) % MGMT_QUEUE_NUM;
+-
+-/*
+- * if the queue is full but we have newer frames then
+- * just overwrites the oldest.
+- *
+- * if (nh == ieee->mgmt_queue_tail)
+- *		return -1;
+- */
+-	ieee->mgmt_queue_head = nh;
+-	ieee->mgmt_queue_ring[nh] = skb;
+-
+-	//return 0;
+-}
+-
+-static struct sk_buff *dequeue_mgmt(struct ieee80211_device *ieee)
+-{
+-	struct sk_buff *ret;
+-
+-	if (ieee->mgmt_queue_tail == ieee->mgmt_queue_head)
+-		return NULL;
+-
+-	ret = ieee->mgmt_queue_ring[ieee->mgmt_queue_tail];
+-
+-	ieee->mgmt_queue_tail =
+-		(ieee->mgmt_queue_tail + 1) % MGMT_QUEUE_NUM;
+-
+-	return ret;
+-}
+-
+-static void init_mgmt_queue(struct ieee80211_device *ieee)
+-{
+-	ieee->mgmt_queue_tail = ieee->mgmt_queue_head = 0;
+-}
+-
+-static u8 MgntQuery_MgntFrameTxRate(struct ieee80211_device *ieee)
+-{
+-	PRT_HIGH_THROUGHPUT      pHTInfo = ieee->pHTInfo;
+-	u8 rate;
+-
+-	/* 2008/01/25 MH For broadcom, MGNT frame set as OFDM 6M. */
+-	if (pHTInfo->IOTAction & HT_IOT_ACT_MGNT_USE_CCK_6M)
+-		rate = 0x0c;
+-	else
+-		rate = ieee->basic_rate & 0x7f;
+-
+-	if (rate == 0) {
+-		/* 2005.01.26, by rcnjko. */
+-		if (ieee->mode == IEEE_A ||
+-		    ieee->mode == IEEE_N_5G ||
+-		    (ieee->mode == IEEE_N_24G && !pHTInfo->bCurSuppCCK))
+-			rate = 0x0c;
+-		else
+-			rate = 0x02;
+-	}
+-
+-	/*
+-	// Data rate of ProbeReq is already decided. Annie, 2005-03-31
+-	if( pMgntInfo->bScanInProgress || (pMgntInfo->bDualModeScanStep!=0) ) {
+-	if(pMgntInfo->dot11CurrentWirelessMode==WIRELESS_MODE_A)
+-	rate = 0x0c;
+-	else
+-	rate = 0x02;
+-	}
+-	 */
+-	return rate;
+-}
+-
+-void ieee80211_sta_wakeup(struct ieee80211_device *ieee, short nl);
+-
+-inline void softmac_mgmt_xmit(struct sk_buff *skb, struct ieee80211_device *ieee)
+-{
+-	unsigned long flags;
+-	short single = ieee->softmac_features & IEEE_SOFTMAC_SINGLE_QUEUE;
+-	struct rtl_80211_hdr_3addr  *header =
+-		(struct rtl_80211_hdr_3addr  *)skb->data;
+-
+-	struct cb_desc *tcb_desc = (struct cb_desc *)(skb->cb + MAX_DEV_ADDR_SIZE);
+-
+-	spin_lock_irqsave(&ieee->lock, flags);
+-
+-	/* called with 2nd param 0, no mgmt lock required */
+-	ieee80211_sta_wakeup(ieee, 0);
+-
+-	tcb_desc->queue_index = MGNT_QUEUE;
+-	tcb_desc->data_rate = MgntQuery_MgntFrameTxRate(ieee);
+-	tcb_desc->RATRIndex = 7;
+-	tcb_desc->bTxDisableRateFallBack = 1;
+-	tcb_desc->bTxUseDriverAssingedRate = 1;
+-
+-	if (single) {
+-		if (ieee->queue_stop) {
+-			enqueue_mgmt(ieee, skb);
+-		} else {
+-			header->seq_ctl = cpu_to_le16(ieee->seq_ctrl[0] << 4);
+-
+-			if (ieee->seq_ctrl[0] == 0xFFF)
+-				ieee->seq_ctrl[0] = 0;
+-			else
+-				ieee->seq_ctrl[0]++;
+-
+-			/* avoid watchdog triggers */
+-			netif_trans_update(ieee->dev);
+-			ieee->softmac_data_hard_start_xmit(skb, ieee->dev, ieee->basic_rate);
+-			//dev_kfree_skb_any(skb);//edit by thomas
+-		}
+-
+-		spin_unlock_irqrestore(&ieee->lock, flags);
+-	} else {
+-		spin_unlock_irqrestore(&ieee->lock, flags);
+-		spin_lock_irqsave(&ieee->mgmt_tx_lock, flags);
+-
+-		header->seq_ctl = cpu_to_le16(ieee->seq_ctrl[0] << 4);
+-
+-		if (ieee->seq_ctrl[0] == 0xFFF)
+-			ieee->seq_ctrl[0] = 0;
+-		else
+-			ieee->seq_ctrl[0]++;
+-
+-		/* check whether the managed packet queued greater than 5 */
+-		if (!ieee->check_nic_enough_desc(ieee->dev, tcb_desc->queue_index) || \
+-		    (skb_queue_len(&ieee->skb_waitQ[tcb_desc->queue_index]) != 0) || \
+-		    (ieee->queue_stop)) {
+-			/* insert the skb packet to the management queue */
+-			/* as for the completion function, it does not need
+-			 * to check it any more.
+-			 * */
+-			printk("%s():insert to waitqueue!\n", __func__);
+-			skb_queue_tail(&ieee->skb_waitQ[tcb_desc->queue_index], skb);
+-		} else {
+-			ieee->softmac_hard_start_xmit(skb, ieee->dev);
+-			//dev_kfree_skb_any(skb);//edit by thomas
+-		}
+-		spin_unlock_irqrestore(&ieee->mgmt_tx_lock, flags);
+-	}
+-}
+-
+-static inline void
+-softmac_ps_mgmt_xmit(struct sk_buff *skb, struct ieee80211_device *ieee)
+-{
+-	short single = ieee->softmac_features & IEEE_SOFTMAC_SINGLE_QUEUE;
+-	struct rtl_80211_hdr_3addr  *header =
+-		(struct rtl_80211_hdr_3addr  *)skb->data;
+-
+-	if (single) {
+-		header->seq_ctl = cpu_to_le16(ieee->seq_ctrl[0] << 4);
+-
+-		if (ieee->seq_ctrl[0] == 0xFFF)
+-			ieee->seq_ctrl[0] = 0;
+-		else
+-			ieee->seq_ctrl[0]++;
+-
+-		/* avoid watchdog triggers */
+-		netif_trans_update(ieee->dev);
+-		ieee->softmac_data_hard_start_xmit(skb, ieee->dev, ieee->basic_rate);
+-	} else {
+-		header->seq_ctl = cpu_to_le16(ieee->seq_ctrl[0] << 4);
+-
+-		if (ieee->seq_ctrl[0] == 0xFFF)
+-			ieee->seq_ctrl[0] = 0;
+-		else
+-			ieee->seq_ctrl[0]++;
+-
+-		ieee->softmac_hard_start_xmit(skb, ieee->dev);
+-	}
+-	//dev_kfree_skb_any(skb);//edit by thomas
+-}
+-
+-static inline struct sk_buff *ieee80211_probe_req(struct ieee80211_device *ieee)
+-{
+-	unsigned int len, rate_len;
+-	u8 *tag;
+-	struct sk_buff *skb;
+-	struct ieee80211_probe_request *req;
+-
+-	len = ieee->current_network.ssid_len;
+-
+-	rate_len = ieee80211_MFIE_rate_len(ieee);
+-
+-	skb = dev_alloc_skb(sizeof(struct ieee80211_probe_request) +
+-			    2 + len + rate_len + ieee->tx_headroom);
+-	if (!skb)
+-		return NULL;
+-
+-	skb_reserve(skb, ieee->tx_headroom);
+-
+-	req = skb_put(skb, sizeof(struct ieee80211_probe_request));
+-	req->header.frame_ctl = cpu_to_le16(IEEE80211_STYPE_PROBE_REQ);
+-	req->header.duration_id = 0; /* FIXME: is this OK? */
+-
+-	eth_broadcast_addr(req->header.addr1);
+-	memcpy(req->header.addr2, ieee->dev->dev_addr, ETH_ALEN);
+-	eth_broadcast_addr(req->header.addr3);
+-
+-	tag = skb_put(skb, len + 2 + rate_len);
+-
+-	*tag++ = MFIE_TYPE_SSID;
+-	*tag++ = len;
+-	memcpy(tag, ieee->current_network.ssid, len);
+-	tag += len;
+-
+-	ieee80211_MFIE_Brate(ieee, &tag);
+-	ieee80211_MFIE_Grate(ieee, &tag);
+-	return skb;
+-}
+-
+-struct sk_buff *ieee80211_get_beacon_(struct ieee80211_device *ieee);
+-
+-static void ieee80211_send_beacon(struct ieee80211_device *ieee)
+-{
+-	struct sk_buff *skb;
+-
+-	if (!ieee->ieee_up)
+-		return;
+-	//unsigned long flags;
+-	skb = ieee80211_get_beacon_(ieee);
+-
+-	if (skb) {
+-		softmac_mgmt_xmit(skb, ieee);
+-		ieee->softmac_stats.tx_beacons++;
+-		//dev_kfree_skb_any(skb);//edit by thomas
+-	}
+-//	ieee->beacon_timer.expires = jiffies +
+-//		(MSECS( ieee->current_network.beacon_interval -5));
+-
+-	//spin_lock_irqsave(&ieee->beacon_lock,flags);
+-	if (ieee->beacon_txing && ieee->ieee_up) {
+-//		if(!timer_pending(&ieee->beacon_timer))
+-//			add_timer(&ieee->beacon_timer);
+-		mod_timer(&ieee->beacon_timer,
+-			  jiffies + msecs_to_jiffies(ieee->current_network.beacon_interval - 5));
+-	}
+-	//spin_unlock_irqrestore(&ieee->beacon_lock,flags);
+-}
+-
+-static void ieee80211_send_beacon_cb(struct timer_list *t)
+-{
+-	struct ieee80211_device *ieee =
+-		from_timer(ieee, t, beacon_timer);
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&ieee->beacon_lock, flags);
+-	ieee80211_send_beacon(ieee);
+-	spin_unlock_irqrestore(&ieee->beacon_lock, flags);
+-}
+-
+-static void ieee80211_send_probe(struct ieee80211_device *ieee)
+-{
+-	struct sk_buff *skb;
+-
+-	skb = ieee80211_probe_req(ieee);
+-	if (skb) {
+-		softmac_mgmt_xmit(skb, ieee);
+-		ieee->softmac_stats.tx_probe_rq++;
+-		//dev_kfree_skb_any(skb);//edit by thomas
+-	}
+-}
+-
+-static void ieee80211_send_probe_requests(struct ieee80211_device *ieee)
+-{
+-	if (ieee->active_scan && (ieee->softmac_features & IEEE_SOFTMAC_PROBERQ)) {
+-		ieee80211_send_probe(ieee);
+-		ieee80211_send_probe(ieee);
+-	}
+-}
+-
+-/* this performs syncro scan blocking the caller until all channels
+- * in the allowed channel map has been checked.
+- */
+-void ieee80211_softmac_scan_syncro(struct ieee80211_device *ieee)
+-{
+-	short ch = 0;
+-	u8 channel_map[MAX_CHANNEL_NUMBER + 1];
+-
+-	memcpy(channel_map, GET_DOT11D_INFO(ieee)->channel_map, MAX_CHANNEL_NUMBER + 1);
+-	mutex_lock(&ieee->scan_mutex);
+-
+-	while (1) {
+-		do {
+-			ch++;
+-			if (ch > MAX_CHANNEL_NUMBER)
+-				goto out; /* scan completed */
+-		} while (!channel_map[ch]);
+-
+-		/* this function can be called in two situations
+-		 * 1- We have switched to ad-hoc mode and we are
+-		 *    performing a complete syncro scan before conclude
+-		 *    there are no interesting cell and to create a
+-		 *    new one. In this case the link state is
+-		 *    IEEE80211_NOLINK until we found an interesting cell.
+-		 *    If so the ieee8021_new_net, called by the RX path
+-		 *    will set the state to IEEE80211_LINKED, so we stop
+-		 *    scanning
+-		 * 2- We are linked and the root uses run iwlist scan.
+-		 *    So we switch to IEEE80211_LINKED_SCANNING to remember
+-		 *    that we are still logically linked (not interested in
+-		 *    new network events, despite for updating the net list,
+-		 *    but we are temporarily 'unlinked' as the driver shall
+-		 *    not filter RX frames and the channel is changing.
+-		 * So the only situation in witch are interested is to check
+-		 * if the state become LINKED because of the #1 situation
+-		 */
+-
+-		if (ieee->state == IEEE80211_LINKED)
+-			goto out;
+-		ieee->set_chan(ieee->dev, ch);
+-		if (channel_map[ch] == 1)
+-			ieee80211_send_probe_requests(ieee);
+-
+-		/* this prevent excessive time wait when we
+-		 * need to wait for a syncro scan to end..
+-		 */
+-		if (ieee->state >= IEEE80211_LINKED && ieee->sync_scan_hurryup)
+-			goto out;
+-
+-		msleep_interruptible(IEEE80211_SOFTMAC_SCAN_TIME);
+-	}
+-out:
+-	if (ieee->state < IEEE80211_LINKED) {
+-		ieee->actscanning = false;
+-		mutex_unlock(&ieee->scan_mutex);
+-	} else {
+-		ieee->sync_scan_hurryup = 0;
+-		if (IS_DOT11D_ENABLE(ieee))
+-			dot11d_scan_complete(ieee);
+-		mutex_unlock(&ieee->scan_mutex);
+-	}
+-}
+-EXPORT_SYMBOL(ieee80211_softmac_scan_syncro);
+-
+-static void ieee80211_softmac_scan_wq(struct work_struct *work)
+-{
+-	struct delayed_work *dwork = to_delayed_work(work);
+-	struct ieee80211_device *ieee = container_of(dwork, struct ieee80211_device, softmac_scan_wq);
+-	static short watchdog;
+-	u8 channel_map[MAX_CHANNEL_NUMBER + 1];
+-
+-	memcpy(channel_map, GET_DOT11D_INFO(ieee)->channel_map, MAX_CHANNEL_NUMBER + 1);
+-	if (!ieee->ieee_up)
+-		return;
+-	mutex_lock(&ieee->scan_mutex);
+-	do {
+-		ieee->current_network.channel =
+-			(ieee->current_network.channel + 1) % MAX_CHANNEL_NUMBER;
+-		if (watchdog++ > MAX_CHANNEL_NUMBER) {
+-		//if current channel is not in channel map, set to default channel.
+-			if (!channel_map[ieee->current_network.channel]) {
+-				ieee->current_network.channel = 6;
+-				goto out; /* no good chans */
+-			}
+-		}
+-	} while (!channel_map[ieee->current_network.channel]);
+-	if (ieee->scanning == 0)
+-		goto out;
+-	ieee->set_chan(ieee->dev, ieee->current_network.channel);
+-	if (channel_map[ieee->current_network.channel] == 1)
+-		ieee80211_send_probe_requests(ieee);
+-
+-	schedule_delayed_work(&ieee->softmac_scan_wq, IEEE80211_SOFTMAC_SCAN_TIME);
+-
+-	mutex_unlock(&ieee->scan_mutex);
+-	return;
+-out:
+-	if (IS_DOT11D_ENABLE(ieee))
+-		dot11d_scan_complete(ieee);
+-	ieee->actscanning = false;
+-	watchdog = 0;
+-	ieee->scanning = 0;
+-	mutex_unlock(&ieee->scan_mutex);
+-}
+-
+-static void ieee80211_beacons_start(struct ieee80211_device *ieee)
+-{
+-	unsigned long flags;
+-	spin_lock_irqsave(&ieee->beacon_lock, flags);
+-
+-	ieee->beacon_txing = 1;
+-	ieee80211_send_beacon(ieee);
+-
+-	spin_unlock_irqrestore(&ieee->beacon_lock, flags);
+-}
+-
+-static void ieee80211_beacons_stop(struct ieee80211_device *ieee)
+-{
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&ieee->beacon_lock, flags);
+-
+-	ieee->beacon_txing = 0;
+-
+-	spin_unlock_irqrestore(&ieee->beacon_lock, flags);
+-	del_timer_sync(&ieee->beacon_timer);
+-}
+-
+-void ieee80211_stop_send_beacons(struct ieee80211_device *ieee)
+-{
+-	if (ieee->stop_send_beacons)
+-		ieee->stop_send_beacons(ieee->dev);
+-	if (ieee->softmac_features & IEEE_SOFTMAC_BEACONS)
+-		ieee80211_beacons_stop(ieee);
+-}
+-EXPORT_SYMBOL(ieee80211_stop_send_beacons);
+-
+-void ieee80211_start_send_beacons(struct ieee80211_device *ieee)
+-{
+-	if (ieee->start_send_beacons)
+-		ieee->start_send_beacons(ieee->dev, ieee->basic_rate);
+-	if (ieee->softmac_features & IEEE_SOFTMAC_BEACONS)
+-		ieee80211_beacons_start(ieee);
+-}
+-EXPORT_SYMBOL(ieee80211_start_send_beacons);
+-
+-static void ieee80211_softmac_stop_scan(struct ieee80211_device *ieee)
+-{
+-//	unsigned long flags;
+-
+-	//ieee->sync_scan_hurryup = 1;
+-
+-	mutex_lock(&ieee->scan_mutex);
+-//	spin_lock_irqsave(&ieee->lock, flags);
+-
+-	if (ieee->scanning == 1) {
+-		ieee->scanning = 0;
+-
+-		cancel_delayed_work(&ieee->softmac_scan_wq);
+-	}
+-
+-//	spin_unlock_irqrestore(&ieee->lock, flags);
+-	mutex_unlock(&ieee->scan_mutex);
+-}
+-
+-void ieee80211_stop_scan(struct ieee80211_device *ieee)
+-{
+-	if (ieee->softmac_features & IEEE_SOFTMAC_SCAN)
+-		ieee80211_softmac_stop_scan(ieee);
+-	else
+-		ieee->stop_scan(ieee->dev);
+-}
+-EXPORT_SYMBOL(ieee80211_stop_scan);
+-
+-/* called with ieee->lock held */
+-static void ieee80211_start_scan(struct ieee80211_device *ieee)
+-{
+-	if (IS_DOT11D_ENABLE(ieee)) {
+-		if (IS_COUNTRY_IE_VALID(ieee))
+-			RESET_CIE_WATCHDOG(ieee);
+-	}
+-	if (ieee->softmac_features & IEEE_SOFTMAC_SCAN) {
+-		if (ieee->scanning == 0) {
+-			ieee->scanning = 1;
+-			schedule_delayed_work(&ieee->softmac_scan_wq, 0);
+-		}
+-	} else {
+-		ieee->start_scan(ieee->dev);
+-	}
+-}
+-
+-/* called with wx_mutex held */
+-void ieee80211_start_scan_syncro(struct ieee80211_device *ieee)
+-{
+-	if (IS_DOT11D_ENABLE(ieee)) {
+-		if (IS_COUNTRY_IE_VALID(ieee))
+-			RESET_CIE_WATCHDOG(ieee);
+-	}
+-	ieee->sync_scan_hurryup = 0;
+-	if (ieee->softmac_features & IEEE_SOFTMAC_SCAN)
+-		ieee80211_softmac_scan_syncro(ieee);
+-	else
+-		ieee->scan_syncro(ieee->dev);
+-}
+-EXPORT_SYMBOL(ieee80211_start_scan_syncro);
+-
+-static inline struct sk_buff *
+-ieee80211_authentication_req(struct ieee80211_network *beacon,
+-			     struct ieee80211_device *ieee, int challengelen)
+-{
+-	struct sk_buff *skb;
+-	struct ieee80211_authentication *auth;
+-	int len = sizeof(struct ieee80211_authentication) + challengelen + ieee->tx_headroom;
+-
+-	skb = dev_alloc_skb(len);
+-	if (!skb)
+-		return NULL;
+-
+-	skb_reserve(skb, ieee->tx_headroom);
+-	auth = skb_put(skb, sizeof(struct ieee80211_authentication));
+-
+-	if (challengelen)
+-		auth->header.frame_ctl = cpu_to_le16(IEEE80211_STYPE_AUTH
+-						     | IEEE80211_FCTL_WEP);
+-	else
+-		auth->header.frame_ctl = cpu_to_le16(IEEE80211_STYPE_AUTH);
+-
+-	auth->header.duration_id = cpu_to_le16(0x013a);
+-
+-	memcpy(auth->header.addr1, beacon->bssid, ETH_ALEN);
+-	memcpy(auth->header.addr2, ieee->dev->dev_addr, ETH_ALEN);
+-	memcpy(auth->header.addr3, beacon->bssid, ETH_ALEN);
+-
+-	//auth->algorithm = ieee->open_wep ? WLAN_AUTH_OPEN : WLAN_AUTH_SHARED_KEY;
+-	if (ieee->auth_mode == 0)
+-		auth->algorithm = WLAN_AUTH_OPEN;
+-	else if (ieee->auth_mode == 1)
+-		auth->algorithm = cpu_to_le16(WLAN_AUTH_SHARED_KEY);
+-	else if (ieee->auth_mode == 2)
+-		auth->algorithm = WLAN_AUTH_OPEN; /* 0x80; */
+-	printk("=================>%s():auth->algorithm is %d\n", __func__, auth->algorithm);
+-	auth->transaction = cpu_to_le16(ieee->associate_seq);
+-	ieee->associate_seq++;
+-
+-	auth->status = cpu_to_le16(WLAN_STATUS_SUCCESS);
+-
+-	return skb;
+-}
+-
+-static struct sk_buff *ieee80211_probe_resp(struct ieee80211_device *ieee, u8 *dest)
+-{
+-	u8 *tag;
+-	int beacon_size;
+-	struct ieee80211_probe_response *beacon_buf;
+-	struct sk_buff *skb = NULL;
+-	int encrypt;
+-	int atim_len, erp_len;
+-	struct ieee80211_crypt_data *crypt;
+-
+-	char *ssid = ieee->current_network.ssid;
+-	int ssid_len = ieee->current_network.ssid_len;
+-	int rate_len = ieee->current_network.rates_len + 2;
+-	int rate_ex_len = ieee->current_network.rates_ex_len;
+-	int wpa_ie_len = ieee->wpa_ie_len;
+-	u8 erpinfo_content = 0;
+-
+-	u8 *tmp_ht_cap_buf;
+-	u8 tmp_ht_cap_len = 0;
+-	u8 *tmp_ht_info_buf;
+-	u8 tmp_ht_info_len = 0;
+-	PRT_HIGH_THROUGHPUT	pHTInfo = ieee->pHTInfo;
+-	u8 *tmp_generic_ie_buf = NULL;
+-	u8 tmp_generic_ie_len = 0;
+-
+-	if (rate_ex_len > 0)
+-		rate_ex_len += 2;
+-
+-	if (ieee->current_network.capability & WLAN_CAPABILITY_IBSS)
+-		atim_len = 4;
+-	else
+-		atim_len = 0;
+-
+-	if (ieee80211_is_54g(&ieee->current_network))
+-		erp_len = 3;
+-	else
+-		erp_len = 0;
+-
+-	crypt = ieee->crypt[ieee->tx_keyidx];
+-
+-	encrypt = ieee->host_encrypt && crypt && crypt->ops &&
+-		((0 == strcmp(crypt->ops->name, "WEP") || wpa_ie_len));
+-	/* HT ralated element */
+-	tmp_ht_cap_buf = (u8 *)&ieee->pHTInfo->SelfHTCap;
+-	tmp_ht_cap_len = sizeof(ieee->pHTInfo->SelfHTCap);
+-	tmp_ht_info_buf = (u8 *)&ieee->pHTInfo->SelfHTInfo;
+-	tmp_ht_info_len = sizeof(ieee->pHTInfo->SelfHTInfo);
+-	HTConstructCapabilityElement(ieee, tmp_ht_cap_buf, &tmp_ht_cap_len, encrypt);
+-	HTConstructInfoElement(ieee, tmp_ht_info_buf, &tmp_ht_info_len, encrypt);
+-
+-	if (pHTInfo->bRegRT2RTAggregation) {
+-		tmp_generic_ie_buf = ieee->pHTInfo->szRT2RTAggBuffer;
+-		tmp_generic_ie_len = sizeof(ieee->pHTInfo->szRT2RTAggBuffer);
+-		HTConstructRT2RTAggElement(ieee, tmp_generic_ie_buf, &tmp_generic_ie_len);
+-	}
+-//	printk("===============>tmp_ht_cap_len is %d,tmp_ht_info_len is %d, tmp_generic_ie_len is %d\n",tmp_ht_cap_len,tmp_ht_info_len,tmp_generic_ie_len);
+-	beacon_size = sizeof(struct ieee80211_probe_response) + 2
+-		+ ssid_len
+-		+ 3 //channel
+-		+ rate_len
+-		+ rate_ex_len
+-		+ atim_len
+-		+ erp_len
+-		+ wpa_ie_len
+-	//	+ tmp_ht_cap_len
+-	//	+ tmp_ht_info_len
+-	//	+ tmp_generic_ie_len
+-//		+ wmm_len+2
+-		+ ieee->tx_headroom;
+-	skb = dev_alloc_skb(beacon_size);
+-	if (!skb)
+-		return NULL;
+-	skb_reserve(skb, ieee->tx_headroom);
+-	beacon_buf = skb_put(skb, (beacon_size - ieee->tx_headroom));
+-	memcpy(beacon_buf->header.addr1, dest, ETH_ALEN);
+-	memcpy(beacon_buf->header.addr2, ieee->dev->dev_addr, ETH_ALEN);
+-	memcpy(beacon_buf->header.addr3, ieee->current_network.bssid, ETH_ALEN);
+-
+-	beacon_buf->header.duration_id = 0; /* FIXME */
+-	beacon_buf->beacon_interval =
+-		cpu_to_le16(ieee->current_network.beacon_interval);
+-	beacon_buf->capability =
+-		cpu_to_le16(ieee->current_network.capability & WLAN_CAPABILITY_IBSS);
+-	beacon_buf->capability |=
+-		cpu_to_le16(ieee->current_network.capability & WLAN_CAPABILITY_SHORT_PREAMBLE); /* add short preamble here */
+-
+-	if (ieee->short_slot && (ieee->current_network.capability & WLAN_CAPABILITY_SHORT_SLOT))
+-		beacon_buf->capability |= cpu_to_le16(WLAN_CAPABILITY_SHORT_SLOT);
+-
+-	if (encrypt)
+-		beacon_buf->capability |= cpu_to_le16(WLAN_CAPABILITY_PRIVACY);
+-
+-	beacon_buf->header.frame_ctl = cpu_to_le16(IEEE80211_STYPE_PROBE_RESP);
+-	beacon_buf->info_element[0].id = MFIE_TYPE_SSID;
+-	beacon_buf->info_element[0].len = ssid_len;
+-
+-	tag = (u8 *)beacon_buf->info_element[0].data;
+-
+-	memcpy(tag, ssid, ssid_len);
+-
+-	tag += ssid_len;
+-
+-	*(tag++) = MFIE_TYPE_RATES;
+-	*(tag++) = rate_len - 2;
+-	memcpy(tag, ieee->current_network.rates, rate_len - 2);
+-	tag += rate_len - 2;
+-
+-	*(tag++) = MFIE_TYPE_DS_SET;
+-	*(tag++) = 1;
+-	*(tag++) = ieee->current_network.channel;
+-
+-	if (atim_len) {
+-		*(tag++) = MFIE_TYPE_IBSS_SET;
+-		*(tag++) = 2;
+-
+-		put_unaligned_le16(ieee->current_network.atim_window,
+-				   tag);
+-		tag += 2;
+-	}
+-
+-	if (erp_len) {
+-		*(tag++) = MFIE_TYPE_ERP;
+-		*(tag++) = 1;
+-		*(tag++) = erpinfo_content;
+-	}
+-	if (rate_ex_len) {
+-		*(tag++) = MFIE_TYPE_RATES_EX;
+-		*(tag++) = rate_ex_len - 2;
+-		memcpy(tag, ieee->current_network.rates_ex, rate_ex_len - 2);
+-		tag += rate_ex_len - 2;
+-	}
+-
+-	if (wpa_ie_len) {
+-		if (ieee->iw_mode == IW_MODE_ADHOC) {
+-			//as Windows will set pairwise key same as the group key which is not allowed in Linux, so set this for IOT issue. WB 2008.07.07
+-			memcpy(&ieee->wpa_ie[14], &ieee->wpa_ie[8], 4);
+-		}
+-		memcpy(tag, ieee->wpa_ie, ieee->wpa_ie_len);
+-		tag += wpa_ie_len;
+-	}
+-
+-	//skb->dev = ieee->dev;
+-	return skb;
+-}
+-
+-static struct sk_buff *ieee80211_assoc_resp(struct ieee80211_device *ieee,
+-					    u8 *dest)
+-{
+-	struct sk_buff *skb;
+-	u8 *tag;
+-
+-	struct ieee80211_crypt_data *crypt;
+-	struct ieee80211_assoc_response_frame *assoc;
+-	short encrypt;
+-
+-	unsigned int rate_len = ieee80211_MFIE_rate_len(ieee);
+-	int len = sizeof(struct ieee80211_assoc_response_frame) + rate_len + ieee->tx_headroom;
+-
+-	skb = dev_alloc_skb(len);
+-
+-	if (!skb)
+-		return NULL;
+-
+-	skb_reserve(skb, ieee->tx_headroom);
+-
+-	assoc = skb_put(skb, sizeof(struct ieee80211_assoc_response_frame));
+-
+-	assoc->header.frame_ctl = cpu_to_le16(IEEE80211_STYPE_ASSOC_RESP);
+-	memcpy(assoc->header.addr1, dest, ETH_ALEN);
+-	memcpy(assoc->header.addr3, ieee->dev->dev_addr, ETH_ALEN);
+-	memcpy(assoc->header.addr2, ieee->dev->dev_addr, ETH_ALEN);
+-	assoc->capability = cpu_to_le16(ieee->iw_mode == IW_MODE_MASTER ?
+-		WLAN_CAPABILITY_BSS : WLAN_CAPABILITY_IBSS);
+-
+-	if (ieee->short_slot)
+-		assoc->capability |= cpu_to_le16(WLAN_CAPABILITY_SHORT_SLOT);
+-
+-	if (ieee->host_encrypt)
+-		crypt = ieee->crypt[ieee->tx_keyidx];
+-	else
+-		crypt = NULL;
+-
+-	encrypt = crypt && crypt->ops;
+-
+-	if (encrypt)
+-		assoc->capability |= cpu_to_le16(WLAN_CAPABILITY_PRIVACY);
+-
+-	assoc->status = 0;
+-	assoc->aid = cpu_to_le16(ieee->assoc_id);
+-	if (ieee->assoc_id == 0x2007)
+-		ieee->assoc_id = 0;
+-	else
+-		ieee->assoc_id++;
+-
+-	tag = skb_put(skb, rate_len);
+-
+-	ieee80211_MFIE_Brate(ieee, &tag);
+-	ieee80211_MFIE_Grate(ieee, &tag);
+-
+-	return skb;
+-}
+-
+-static struct sk_buff *ieee80211_auth_resp(struct ieee80211_device *ieee,
+-					   int status, u8 *dest)
+-{
+-	struct sk_buff *skb;
+-	struct ieee80211_authentication *auth;
+-	int len = ieee->tx_headroom + sizeof(struct ieee80211_authentication) + 1;
+-
+-	skb = dev_alloc_skb(len);
+-
+-	if (!skb)
+-		return NULL;
+-
+-	skb->len = sizeof(struct ieee80211_authentication);
+-
+-	auth = (struct ieee80211_authentication *)skb->data;
+-
+-	auth->status = cpu_to_le16(status);
+-	auth->transaction = cpu_to_le16(2);
+-	auth->algorithm = cpu_to_le16(WLAN_AUTH_OPEN);
+-
+-	memcpy(auth->header.addr3, ieee->dev->dev_addr, ETH_ALEN);
+-	memcpy(auth->header.addr2, ieee->dev->dev_addr, ETH_ALEN);
+-	memcpy(auth->header.addr1, dest, ETH_ALEN);
+-	auth->header.frame_ctl = cpu_to_le16(IEEE80211_STYPE_AUTH);
+-	return skb;
+-}
+-
+-static struct sk_buff *ieee80211_null_func(struct ieee80211_device *ieee,
+-					   short pwr)
+-{
+-	struct sk_buff *skb;
+-	struct rtl_80211_hdr_3addr *hdr;
+-
+-	skb = dev_alloc_skb(sizeof(struct rtl_80211_hdr_3addr));
+-
+-	if (!skb)
+-		return NULL;
+-
+-	hdr = skb_put(skb, sizeof(struct rtl_80211_hdr_3addr));
+-
+-	memcpy(hdr->addr1, ieee->current_network.bssid, ETH_ALEN);
+-	memcpy(hdr->addr2, ieee->dev->dev_addr, ETH_ALEN);
+-	memcpy(hdr->addr3, ieee->current_network.bssid, ETH_ALEN);
+-
+-	hdr->frame_ctl = cpu_to_le16(IEEE80211_FTYPE_DATA |
+-				     IEEE80211_STYPE_NULLFUNC | IEEE80211_FCTL_TODS |
+-				     (pwr ? IEEE80211_FCTL_PM : 0));
+-
+-	return skb;
+-}
+-
+-static void ieee80211_resp_to_assoc_rq(struct ieee80211_device *ieee, u8 *dest)
+-{
+-	struct sk_buff *buf = ieee80211_assoc_resp(ieee, dest);
+-
+-	if (buf)
+-		softmac_mgmt_xmit(buf, ieee);
+-}
+-
+-static void ieee80211_resp_to_auth(struct ieee80211_device *ieee, int s,
+-				   u8 *dest)
+-{
+-	struct sk_buff *buf = ieee80211_auth_resp(ieee, s, dest);
+-
+-	if (buf)
+-		softmac_mgmt_xmit(buf, ieee);
+-}
+-
+-static void ieee80211_resp_to_probe(struct ieee80211_device *ieee, u8 *dest)
+-{
+-	struct sk_buff *buf = ieee80211_probe_resp(ieee, dest);
+-	if (buf)
+-		softmac_mgmt_xmit(buf, ieee);
+-}
+-
+-static inline struct sk_buff *
+-ieee80211_association_req(struct ieee80211_network *beacon,
+-			  struct ieee80211_device *ieee)
+-{
+-	struct sk_buff *skb;
+-	//unsigned long flags;
+-
+-	struct ieee80211_assoc_request_frame *hdr;
+-	u8 *tag;//,*rsn_ie;
+-	//short info_addr = 0;
+-	//int i;
+-	//u16 suite_count = 0;
+-	//u8 suit_select = 0;
+-	//unsigned int wpa_len = beacon->wpa_ie_len;
+-	//for HT
+-	u8 *ht_cap_buf = NULL;
+-	u8 ht_cap_len = 0;
+-	u8 *realtek_ie_buf = NULL;
+-	u8 realtek_ie_len = 0;
+-	int wpa_ie_len = ieee->wpa_ie_len;
+-	unsigned int ckip_ie_len = 0;
+-	unsigned int ccxrm_ie_len = 0;
+-	unsigned int cxvernum_ie_len = 0;
+-	struct ieee80211_crypt_data *crypt;
+-	int encrypt;
+-
+-	unsigned int rate_len = ieee80211_MFIE_rate_len(ieee);
+-	unsigned int wmm_info_len = beacon->qos_data.supported ? 9 : 0;
+-#ifdef THOMAS_TURBO
+-	unsigned int turbo_info_len = beacon->Turbo_Enable ? 9 : 0;
+-#endif
+-
+-	int len = 0;
+-
+-	crypt = ieee->crypt[ieee->tx_keyidx];
+-	encrypt = ieee->host_encrypt && crypt && crypt->ops && ((0 == strcmp(crypt->ops->name, "WEP") || wpa_ie_len));
+-
+-	/* Include High Throuput capability && Realtek proprietary */
+-	if (ieee->pHTInfo->bCurrentHTSupport && ieee->pHTInfo->bEnableHT) {
+-		ht_cap_buf = (u8 *)&ieee->pHTInfo->SelfHTCap;
+-		ht_cap_len = sizeof(ieee->pHTInfo->SelfHTCap);
+-		HTConstructCapabilityElement(ieee, ht_cap_buf, &ht_cap_len, encrypt);
+-		if (ieee->pHTInfo->bCurrentRT2RTAggregation) {
+-			realtek_ie_buf = ieee->pHTInfo->szRT2RTAggBuffer;
+-			realtek_ie_len = sizeof(ieee->pHTInfo->szRT2RTAggBuffer);
+-			HTConstructRT2RTAggElement(ieee, realtek_ie_buf, &realtek_ie_len);
+-		}
+-	}
+-	if (ieee->qos_support)
+-		wmm_info_len = beacon->qos_data.supported ? 9 : 0;
+-
+-	if (beacon->bCkipSupported)
+-		ckip_ie_len = 30 + 2;
+-
+-	if (beacon->bCcxRmEnable)
+-		ccxrm_ie_len = 6 + 2;
+-
+-	if (beacon->BssCcxVerNumber >= 2)
+-		cxvernum_ie_len = 5 + 2;
+-
+-#ifdef THOMAS_TURBO
+-	len = sizeof(struct ieee80211_assoc_request_frame) + 2
+-		+ beacon->ssid_len	/* essid tagged val */
+-		+ rate_len	/* rates tagged val */
+-		+ wpa_ie_len
+-		+ wmm_info_len
+-		+ turbo_info_len
+-		+ ht_cap_len
+-		+ realtek_ie_len
+-		+ ckip_ie_len
+-		+ ccxrm_ie_len
+-		+ cxvernum_ie_len
+-		+ ieee->tx_headroom;
+-#else
+-	len = sizeof(struct ieee80211_assoc_request_frame) + 2
+-		+ beacon->ssid_len	/* essid tagged val */
+-		+ rate_len	/* rates tagged val */
+-		+ wpa_ie_len
+-		+ wmm_info_len
+-		+ ht_cap_len
+-		+ realtek_ie_len
+-		+ ckip_ie_len
+-		+ ccxrm_ie_len
+-		+ cxvernum_ie_len
+-		+ ieee->tx_headroom;
+-#endif
+-	skb = dev_alloc_skb(len);
+-
+-	if (!skb)
+-		return NULL;
+-
+-	skb_reserve(skb, ieee->tx_headroom);
+-
+-	hdr = skb_put(skb, sizeof(struct ieee80211_assoc_request_frame) + 2);
+-
+-	hdr->header.frame_ctl = IEEE80211_STYPE_ASSOC_REQ;
+-	hdr->header.duration_id = cpu_to_le16(37);
+-	memcpy(hdr->header.addr1, beacon->bssid, ETH_ALEN);
+-	memcpy(hdr->header.addr2, ieee->dev->dev_addr, ETH_ALEN);
+-	memcpy(hdr->header.addr3, beacon->bssid, ETH_ALEN);
+-
+-	memcpy(ieee->ap_mac_addr, beacon->bssid, ETH_ALEN);//for HW security, John
+-
+-	hdr->capability = cpu_to_le16(WLAN_CAPABILITY_BSS);
+-	if (beacon->capability & WLAN_CAPABILITY_PRIVACY)
+-		hdr->capability |= cpu_to_le16(WLAN_CAPABILITY_PRIVACY);
+-
+-	if (beacon->capability & WLAN_CAPABILITY_SHORT_PREAMBLE)
+-		hdr->capability |= cpu_to_le16(WLAN_CAPABILITY_SHORT_PREAMBLE); //add short_preamble here
+-
+-	if (ieee->short_slot)
+-		hdr->capability |= cpu_to_le16(WLAN_CAPABILITY_SHORT_SLOT);
+-	if (wmm_info_len) //QOS
+-		hdr->capability |= cpu_to_le16(WLAN_CAPABILITY_QOS);
+-
+-	hdr->listen_interval = cpu_to_le16(0xa);
+-
+-	hdr->info_element[0].id = MFIE_TYPE_SSID;
+-
+-	hdr->info_element[0].len = beacon->ssid_len;
+-	skb_put_data(skb, beacon->ssid, beacon->ssid_len);
+-
+-	tag = skb_put(skb, rate_len);
+-
+-	ieee80211_MFIE_Brate(ieee, &tag);
+-	ieee80211_MFIE_Grate(ieee, &tag);
+-	// For CCX 1 S13, CKIP. Added by Annie, 2006-08-14.
+-	if (beacon->bCkipSupported) {
+-		static u8	AironetIeOui[] = {0x00, 0x01, 0x66}; // "4500-client"
+-		u8	CcxAironetBuf[30];
+-		struct octet_string	osCcxAironetIE;
+-
+-		memset(CcxAironetBuf, 0, 30);
+-		osCcxAironetIE.octet = CcxAironetBuf;
+-		osCcxAironetIE.length = sizeof(CcxAironetBuf);
+-		//
+-		// Ref. CCX test plan v3.61, 3.2.3.1 step 13.
+-		// We want to make the device type as "4500-client". 060926, by CCW.
+-		//
+-		memcpy(osCcxAironetIE.octet, AironetIeOui, sizeof(AironetIeOui));
+-
+-		// CCX1 spec V1.13, A01.1 CKIP Negotiation (page23):
+-		// "The CKIP negotiation is started with the associate request from the client to the access point,
+-		//  containing an Aironet element with both the MIC and KP bits set."
+-		osCcxAironetIE.octet[IE_CISCO_FLAG_POSITION] |= (SUPPORT_CKIP_PK | SUPPORT_CKIP_MIC);
+-		tag = skb_put(skb, ckip_ie_len);
+-		*tag++ = MFIE_TYPE_AIRONET;
+-		*tag++ = osCcxAironetIE.length;
+-		memcpy(tag, osCcxAironetIE.octet, osCcxAironetIE.length);
+-		tag += osCcxAironetIE.length;
+-	}
+-
+-	if (beacon->bCcxRmEnable) {
+-		static u8 CcxRmCapBuf[] = {0x00, 0x40, 0x96, 0x01, 0x01, 0x00};
+-		struct octet_string osCcxRmCap;
+-
+-		osCcxRmCap.octet = CcxRmCapBuf;
+-		osCcxRmCap.length = sizeof(CcxRmCapBuf);
+-		tag = skb_put(skb, ccxrm_ie_len);
+-		*tag++ = MFIE_TYPE_GENERIC;
+-		*tag++ = osCcxRmCap.length;
+-		memcpy(tag, osCcxRmCap.octet, osCcxRmCap.length);
+-		tag += osCcxRmCap.length;
+-	}
+-
+-	if (beacon->BssCcxVerNumber >= 2) {
+-		u8			CcxVerNumBuf[] = {0x00, 0x40, 0x96, 0x03, 0x00};
+-		struct octet_string	osCcxVerNum;
+-		CcxVerNumBuf[4] = beacon->BssCcxVerNumber;
+-		osCcxVerNum.octet = CcxVerNumBuf;
+-		osCcxVerNum.length = sizeof(CcxVerNumBuf);
+-		tag = skb_put(skb, cxvernum_ie_len);
+-		*tag++ = MFIE_TYPE_GENERIC;
+-		*tag++ = osCcxVerNum.length;
+-		memcpy(tag, osCcxVerNum.octet, osCcxVerNum.length);
+-		tag += osCcxVerNum.length;
+-	}
+-	//HT cap element
+-	if (ieee->pHTInfo->bCurrentHTSupport && ieee->pHTInfo->bEnableHT) {
+-		if (ieee->pHTInfo->ePeerHTSpecVer != HT_SPEC_VER_EWC) {
+-			tag = skb_put(skb, ht_cap_len);
+-			*tag++ = MFIE_TYPE_HT_CAP;
+-			*tag++ = ht_cap_len - 2;
+-			memcpy(tag, ht_cap_buf, ht_cap_len - 2);
+-			tag += ht_cap_len - 2;
+-		}
+-	}
+-
+-	//choose what wpa_supplicant gives to associate.
+-	if (wpa_ie_len)
+-		skb_put_data(skb, ieee->wpa_ie, wpa_ie_len);
+-
+-	if (wmm_info_len) {
+-		tag = skb_put(skb, wmm_info_len);
+-		ieee80211_WMM_Info(ieee, &tag);
+-	}
+-#ifdef THOMAS_TURBO
+-	if (turbo_info_len) {
+-		tag = skb_put(skb, turbo_info_len);
+-		ieee80211_TURBO_Info(ieee, &tag);
+-	}
+-#endif
+-
+-	if (ieee->pHTInfo->bCurrentHTSupport && ieee->pHTInfo->bEnableHT) {
+-		if (ieee->pHTInfo->ePeerHTSpecVer == HT_SPEC_VER_EWC) {
+-			tag = skb_put(skb, ht_cap_len);
+-			*tag++ = MFIE_TYPE_GENERIC;
+-			*tag++ = ht_cap_len - 2;
+-			memcpy(tag, ht_cap_buf, ht_cap_len - 2);
+-			tag += ht_cap_len - 2;
+-		}
+-
+-		if (ieee->pHTInfo->bCurrentRT2RTAggregation) {
+-			tag = skb_put(skb, realtek_ie_len);
+-			*tag++ = MFIE_TYPE_GENERIC;
+-			*tag++ = realtek_ie_len - 2;
+-			memcpy(tag, realtek_ie_buf, realtek_ie_len - 2);
+-		}
+-	}
+-//	printk("<=====%s(), %p, %p\n", __func__, ieee->dev, ieee->dev->dev_addr);
+-//	IEEE80211_DEBUG_DATA(IEEE80211_DL_DATA, skb->data, skb->len);
+-	return skb;
+-}
+-
+-void ieee80211_associate_abort(struct ieee80211_device *ieee)
+-{
+-	unsigned long flags;
+-	spin_lock_irqsave(&ieee->lock, flags);
+-
+-	ieee->associate_seq++;
+-
+-	/* don't scan, and avoid having the RX path possibly
+-	 * try again to associate. Even do not react to AUTH or
+-	 * ASSOC response. Just wait for the retry wq to be scheduled.
+-	 * Here we will check if there are good nets to associate
+-	 * with, so we retry or just get back to NO_LINK and scanning
+-	 */
+-	if (ieee->state == IEEE80211_ASSOCIATING_AUTHENTICATING) {
+-		IEEE80211_DEBUG_MGMT("Authentication failed\n");
+-		ieee->softmac_stats.no_auth_rs++;
+-	} else {
+-		IEEE80211_DEBUG_MGMT("Association failed\n");
+-		ieee->softmac_stats.no_ass_rs++;
+-	}
+-
+-	ieee->state = IEEE80211_ASSOCIATING_RETRY;
+-
+-	schedule_delayed_work(&ieee->associate_retry_wq, \
+-			      IEEE80211_SOFTMAC_ASSOC_RETRY_TIME);
+-
+-	spin_unlock_irqrestore(&ieee->lock, flags);
+-}
+-
+-static void ieee80211_associate_abort_cb(struct timer_list *t)
+-{
+-	struct ieee80211_device *dev = from_timer(dev, t, associate_timer);
+-
+-	ieee80211_associate_abort(dev);
+-}
+-
+-static void ieee80211_associate_step1(struct ieee80211_device *ieee)
+-{
+-	struct ieee80211_network *beacon = &ieee->current_network;
+-	struct sk_buff *skb;
+-
+-	IEEE80211_DEBUG_MGMT("Stopping scan\n");
+-
+-	ieee->softmac_stats.tx_auth_rq++;
+-	skb = ieee80211_authentication_req(beacon, ieee, 0);
+-
+-	if (!skb) {
+-		ieee80211_associate_abort(ieee);
+-	} else {
+-		ieee->state = IEEE80211_ASSOCIATING_AUTHENTICATING;
+-		IEEE80211_DEBUG_MGMT("Sending authentication request\n");
+-		softmac_mgmt_xmit(skb, ieee);
+-		//BUGON when you try to add_timer twice, using mod_timer may be better, john0709
+-		if (!timer_pending(&ieee->associate_timer)) {
+-			ieee->associate_timer.expires = jiffies + (HZ / 2);
+-			add_timer(&ieee->associate_timer);
+-		}
+-		//dev_kfree_skb_any(skb);//edit by thomas
+-	}
+-}
+-
+-static void ieee80211_auth_challenge(struct ieee80211_device *ieee,
+-				     u8 *challenge,
+-				     int chlen)
+-{
+-	u8 *c;
+-	struct sk_buff *skb;
+-	struct ieee80211_network *beacon = &ieee->current_network;
+-//	int hlen = sizeof(struct ieee80211_authentication);
+-
+-	ieee->associate_seq++;
+-	ieee->softmac_stats.tx_auth_rq++;
+-
+-	skb = ieee80211_authentication_req(beacon, ieee, chlen + 2);
+-	if (!skb) {
+-		ieee80211_associate_abort(ieee);
+-	} else {
+-		c = skb_put(skb, chlen + 2);
+-		*(c++) = MFIE_TYPE_CHALLENGE;
+-		*(c++) = chlen;
+-		memcpy(c, challenge, chlen);
+-
+-		IEEE80211_DEBUG_MGMT("Sending authentication challenge response\n");
+-
+-		ieee80211_encrypt_fragment(ieee, skb, sizeof(struct rtl_80211_hdr_3addr));
+-
+-		softmac_mgmt_xmit(skb, ieee);
+-		mod_timer(&ieee->associate_timer, jiffies + (HZ / 2));
+-		//dev_kfree_skb_any(skb);//edit by thomas
+-	}
+-	kfree(challenge);
+-}
+-
+-static void ieee80211_associate_step2(struct ieee80211_device *ieee)
+-{
+-	struct sk_buff *skb;
+-	struct ieee80211_network *beacon = &ieee->current_network;
+-
+-	del_timer_sync(&ieee->associate_timer);
+-
+-	IEEE80211_DEBUG_MGMT("Sending association request\n");
+-
+-	ieee->softmac_stats.tx_ass_rq++;
+-	skb = ieee80211_association_req(beacon, ieee);
+-	if (!skb) {
+-		ieee80211_associate_abort(ieee);
+-	} else {
+-		softmac_mgmt_xmit(skb, ieee);
+-		mod_timer(&ieee->associate_timer, jiffies + (HZ / 2));
+-		//dev_kfree_skb_any(skb);//edit by thomas
+-	}
+-}
+-static void ieee80211_associate_complete_wq(struct work_struct *work)
+-{
+-	struct ieee80211_device *ieee = container_of(work, struct ieee80211_device, associate_complete_wq);
+-
+-	netdev_info(ieee->dev, "Associated successfully\n");
+-	if (ieee80211_is_54g(&ieee->current_network) &&
+-	    (ieee->modulation & IEEE80211_OFDM_MODULATION)) {
+-		ieee->rate = 108;
+-		netdev_info(ieee->dev, "Using G rates:%d\n", ieee->rate);
+-	} else {
+-		ieee->rate = 22;
+-		netdev_info(ieee->dev, "Using B rates:%d\n", ieee->rate);
+-	}
+-	if (ieee->pHTInfo->bCurrentHTSupport && ieee->pHTInfo->bEnableHT) {
+-		printk("Successfully associated, ht enabled\n");
+-		HTOnAssocRsp(ieee);
+-	} else {
+-		printk("Successfully associated, ht not enabled(%d, %d)\n", ieee->pHTInfo->bCurrentHTSupport, ieee->pHTInfo->bEnableHT);
+-		memset(ieee->dot11HTOperationalRateSet, 0, 16);
+-		//HTSetConnectBwMode(ieee, HT_CHANNEL_WIDTH_20, HT_EXTCHNL_OFFSET_NO_EXT);
+-	}
+-	ieee->LinkDetectInfo.SlotNum = 2 * (1 + ieee->current_network.beacon_interval / 500);
+-	// To prevent the immediately calling watch_dog after association.
+-	if (ieee->LinkDetectInfo.NumRecvBcnInPeriod == 0 || ieee->LinkDetectInfo.NumRecvDataInPeriod == 0) {
+-		ieee->LinkDetectInfo.NumRecvBcnInPeriod = 1;
+-		ieee->LinkDetectInfo.NumRecvDataInPeriod = 1;
+-	}
+-	ieee->link_change(ieee->dev);
+-	if (!ieee->is_silent_reset) {
+-		printk("============>normal associate\n");
+-		notify_wx_assoc_event(ieee);
+-	} else {
+-		printk("==================>silent reset associate\n");
+-		ieee->is_silent_reset = false;
+-	}
+-
+-	if (ieee->data_hard_resume)
+-		ieee->data_hard_resume(ieee->dev);
+-	netif_carrier_on(ieee->dev);
+-}
+-
+-static void ieee80211_associate_complete(struct ieee80211_device *ieee)
+-{
+-//	int i;
+-//	struct net_device* dev = ieee->dev;
+-	del_timer_sync(&ieee->associate_timer);
+-
+-	ieee->state = IEEE80211_LINKED;
+-	//ieee->UpdateHalRATRTableHandler(dev, ieee->dot11HTOperationalRateSet);
+-	schedule_work(&ieee->associate_complete_wq);
+-}
+-
+-static void ieee80211_associate_procedure_wq(struct work_struct *work)
+-{
+-	struct ieee80211_device *ieee = container_of(work, struct ieee80211_device, associate_procedure_wq);
+-	ieee->sync_scan_hurryup = 1;
+-	mutex_lock(&ieee->wx_mutex);
+-
+-	if (ieee->data_hard_stop)
+-		ieee->data_hard_stop(ieee->dev);
+-
+-	ieee80211_stop_scan(ieee);
+-	printk("===>%s(), chan:%d\n", __func__, ieee->current_network.channel);
+-	//ieee->set_chan(ieee->dev, ieee->current_network.channel);
+-	HTSetConnectBwMode(ieee, HT_CHANNEL_WIDTH_20, HT_EXTCHNL_OFFSET_NO_EXT);
+-
+-	ieee->associate_seq = 1;
+-	ieee80211_associate_step1(ieee);
+-
+-	mutex_unlock(&ieee->wx_mutex);
+-}
+-
+-inline void ieee80211_softmac_new_net(struct ieee80211_device *ieee, struct ieee80211_network *net)
+-{
+-	u8 tmp_ssid[IW_ESSID_MAX_SIZE + 1];
+-	int tmp_ssid_len = 0;
+-
+-	short apset, ssidset, ssidbroad, apmatch, ssidmatch;
+-
+-	/* we are interested in new only if we are not associated
+-	 * and we are not associating / authenticating
+-	 */
+-	if (ieee->state != IEEE80211_NOLINK)
+-		return;
+-
+-	if ((ieee->iw_mode == IW_MODE_INFRA) && !(net->capability & WLAN_CAPABILITY_BSS))
+-		return;
+-
+-	if ((ieee->iw_mode == IW_MODE_ADHOC) && !(net->capability & WLAN_CAPABILITY_IBSS))
+-		return;
+-
+-	if (ieee->iw_mode == IW_MODE_INFRA || ieee->iw_mode == IW_MODE_ADHOC) {
+-		/* if the user specified the AP MAC, we need also the essid
+-		 * This could be obtained by beacons or, if the network does not
+-		 * broadcast it, it can be put manually.
+-		 */
+-		apset = ieee->wap_set;//(memcmp(ieee->current_network.bssid, zero,ETH_ALEN)!=0 );
+-		ssidset = ieee->ssid_set;//ieee->current_network.ssid[0] != '\0';
+-		ssidbroad =  !(net->ssid_len == 0 || net->ssid[0] == '\0');
+-		apmatch = (memcmp(ieee->current_network.bssid, net->bssid, ETH_ALEN) == 0);
+-		ssidmatch = (ieee->current_network.ssid_len == net->ssid_len) &&
+-			(!strncmp(ieee->current_network.ssid, net->ssid, net->ssid_len));
+-
+-		/* if the user set the AP check if match.
+-		 * if the network does not broadcast essid we check the user supplyed ANY essid
+-		 * if the network does broadcast and the user does not set essid it is OK
+-		 * if the network does broadcast and the user did set essid check if essid match
+-		 */
+-		if ((apset && apmatch &&
+-		     ((ssidset && ssidbroad && ssidmatch) || (ssidbroad && !ssidset) || (!ssidbroad && ssidset))) ||
+-		    /* if the ap is not set, check that the user set the bssid
+-		     * and the network does broadcast and that those two bssid matches
+-		     */
+-		    (!apset && ssidset && ssidbroad && ssidmatch)) {
+-			/* if the essid is hidden replace it with the
+-			 * essid provided by the user.
+-			 */
+-			if (!ssidbroad) {
+-				strncpy(tmp_ssid, ieee->current_network.ssid, IW_ESSID_MAX_SIZE);
+-				tmp_ssid_len = ieee->current_network.ssid_len;
+-			}
+-			memcpy(&ieee->current_network, net, sizeof(struct ieee80211_network));
+-
+-			strncpy(ieee->current_network.ssid, tmp_ssid, IW_ESSID_MAX_SIZE);
+-			ieee->current_network.ssid_len = tmp_ssid_len;
+-			netdev_info(ieee->dev,
+-				    "Linking with %s,channel:%d, qos:%d, myHT:%d, networkHT:%d\n",
+-				    ieee->current_network.ssid,
+-				    ieee->current_network.channel,
+-				    ieee->current_network.qos_data.supported,
+-				    ieee->pHTInfo->bEnableHT,
+-				    ieee->current_network.bssht.bdSupportHT);
+-
+-			//ieee->pHTInfo->IOTAction = 0;
+-			HTResetIOTSetting(ieee->pHTInfo);
+-			if (ieee->iw_mode == IW_MODE_INFRA) {
+-				/* Join the network for the first time */
+-				ieee->AsocRetryCount = 0;
+-				//for HT by amy 080514
+-				if ((ieee->current_network.qos_data.supported == 1) &&
+-				    // (ieee->pHTInfo->bEnableHT && ieee->current_network.bssht.bdSupportHT))
+-				    ieee->current_network.bssht.bdSupportHT) {
+-/*WB, 2008.09.09:bCurrentHTSupport and bEnableHT two flags are going to put together to check whether we are in HT now, so needn't to check bEnableHT flags here. That's is to say we will set to HT support whenever joined AP has the ability to support HT. And whether we are in HT or not, please check bCurrentHTSupport&&bEnableHT now please.*/
+-					//	ieee->pHTInfo->bCurrentHTSupport = true;
+-					HTResetSelfAndSavePeerSetting(ieee, &ieee->current_network);
+-				} else {
+-					ieee->pHTInfo->bCurrentHTSupport = false;
+-				}
+-
+-				ieee->state = IEEE80211_ASSOCIATING;
+-				schedule_work(&ieee->associate_procedure_wq);
+-			} else {
+-				if (ieee80211_is_54g(&ieee->current_network) &&
+-				    (ieee->modulation & IEEE80211_OFDM_MODULATION)) {
+-					ieee->rate = 108;
+-					ieee->SetWirelessMode(ieee->dev, IEEE_G);
+-					netdev_info(ieee->dev,
+-						    "Using G rates\n");
+-				} else {
+-					ieee->rate = 22;
+-					ieee->SetWirelessMode(ieee->dev, IEEE_B);
+-					netdev_info(ieee->dev,
+-						    "Using B rates\n");
+-				}
+-				memset(ieee->dot11HTOperationalRateSet, 0, 16);
+-				//HTSetConnectBwMode(ieee, HT_CHANNEL_WIDTH_20, HT_EXTCHNL_OFFSET_NO_EXT);
+-				ieee->state = IEEE80211_LINKED;
+-			}
+-		}
+-	}
+-}
+-
+-void ieee80211_softmac_check_all_nets(struct ieee80211_device *ieee)
+-{
+-	unsigned long flags;
+-	struct ieee80211_network *target;
+-
+-	spin_lock_irqsave(&ieee->lock, flags);
+-
+-	list_for_each_entry(target, &ieee->network_list, list) {
+-		/* if the state become different that NOLINK means
+-		 * we had found what we are searching for
+-		 */
+-
+-		if (ieee->state != IEEE80211_NOLINK)
+-			break;
+-
+-		if (ieee->scan_age == 0 || time_after(target->last_scanned + ieee->scan_age, jiffies))
+-			ieee80211_softmac_new_net(ieee, target);
+-	}
+-
+-	spin_unlock_irqrestore(&ieee->lock, flags);
+-}
+-
+-static inline int auth_parse(struct sk_buff *skb, u8 **challenge, int *chlen)
+-{
+-	struct ieee80211_authentication *a;
+-	u8 *t;
+-	if (skb->len < (sizeof(struct ieee80211_authentication) - sizeof(struct ieee80211_info_element))) {
+-		IEEE80211_DEBUG_MGMT("invalid len in auth resp: %d\n", skb->len);
+-		return -EINVAL;
+-	}
+-	*challenge = NULL;
+-	a = (struct ieee80211_authentication *)skb->data;
+-	if (skb->len > (sizeof(struct ieee80211_authentication) + 3)) {
+-		t = skb->data + sizeof(struct ieee80211_authentication);
+-
+-		if (*(t++) == MFIE_TYPE_CHALLENGE) {
+-			*chlen = *(t++);
+-			*challenge = kmemdup(t, *chlen, GFP_ATOMIC);
+-			if (!*challenge)
+-				return -ENOMEM;
+-		}
+-	}
+-
+-	if (a->status) {
+-		IEEE80211_DEBUG_MGMT("auth_parse() failed\n");
+-		return -EINVAL;
+-	}
+-
+-	return 0;
+-}
+-
+-static int auth_rq_parse(struct sk_buff *skb, u8 *dest)
+-{
+-	struct ieee80211_authentication *a;
+-
+-	if (skb->len < (sizeof(struct ieee80211_authentication) - sizeof(struct ieee80211_info_element))) {
+-		IEEE80211_DEBUG_MGMT("invalid len in auth request: %d\n", skb->len);
+-		return -1;
+-	}
+-	a = (struct ieee80211_authentication *)skb->data;
+-
+-	memcpy(dest, a->header.addr2, ETH_ALEN);
+-
+-	if (le16_to_cpu(a->algorithm) != WLAN_AUTH_OPEN)
+-		return  WLAN_STATUS_NOT_SUPPORTED_AUTH_ALG;
+-
+-	return WLAN_STATUS_SUCCESS;
+-}
+-
+-static short probe_rq_parse(struct ieee80211_device *ieee, struct sk_buff *skb, u8 *src)
+-{
+-	u8 *tag;
+-	u8 *skbend;
+-	u8 *ssid = NULL;
+-	u8 ssidlen = 0;
+-
+-	struct rtl_80211_hdr_3addr   *header =
+-		(struct rtl_80211_hdr_3addr   *)skb->data;
+-
+-	if (skb->len < sizeof(struct rtl_80211_hdr_3addr))
+-		return -1; /* corrupted */
+-
+-	memcpy(src, header->addr2, ETH_ALEN);
+-
+-	skbend = (u8 *)skb->data + skb->len;
+-
+-	tag = skb->data + sizeof(struct rtl_80211_hdr_3addr);
+-
+-	while (tag + 1 < skbend) {
+-		if (*tag == 0) {
+-			ssid = tag + 2;
+-			ssidlen = *(tag + 1);
+-			break;
+-		}
+-		tag++; /* point to the len field */
+-		tag = tag + *(tag); /* point to the last data byte of the tag */
+-		tag++; /* point to the next tag */
+-	}
+-
+-	//IEEE80211DMESG("Card MAC address is "MACSTR, MAC2STR(src));
+-	if (ssidlen == 0)
+-		return 1;
+-
+-	if (!ssid)
+-		return 1; /* ssid not found in tagged param */
+-
+-	return (!strncmp(ssid, ieee->current_network.ssid, ssidlen));
+-}
+-
+-static int assoc_rq_parse(struct sk_buff *skb, u8 *dest)
+-{
+-	struct ieee80211_assoc_request_frame *a;
+-
+-	if (skb->len < (sizeof(struct ieee80211_assoc_request_frame) -
+-		sizeof(struct ieee80211_info_element))) {
+-		IEEE80211_DEBUG_MGMT("invalid len in auth request:%d \n", skb->len);
+-		return -1;
+-	}
+-
+-	a = (struct ieee80211_assoc_request_frame *)skb->data;
+-
+-	memcpy(dest, a->header.addr2, ETH_ALEN);
+-
+-	return 0;
+-}
+-
+-static inline u16 assoc_parse(struct ieee80211_device *ieee, struct sk_buff *skb, int *aid)
+-{
+-	struct ieee80211_assoc_response_frame *response_head;
+-	u16 status_code;
+-
+-	if (skb->len < sizeof(struct ieee80211_assoc_response_frame)) {
+-		IEEE80211_DEBUG_MGMT("invalid len in auth resp: %d\n", skb->len);
+-		return 0xcafe;
+-	}
+-
+-	response_head = (struct ieee80211_assoc_response_frame *)skb->data;
+-	*aid = le16_to_cpu(response_head->aid) & 0x3fff;
+-
+-	status_code = le16_to_cpu(response_head->status);
+-	if ((status_code == WLAN_STATUS_ASSOC_DENIED_RATES ||
+-	     status_code == WLAN_STATUS_CAPS_UNSUPPORTED) &&
+-	    ((ieee->mode == IEEE_G) &&
+-	     (ieee->current_network.mode == IEEE_N_24G) &&
+-	     (ieee->AsocRetryCount++ < (RT_ASOC_RETRY_LIMIT - 1)))) {
+-		ieee->pHTInfo->IOTAction |= HT_IOT_ACT_PURE_N_MODE;
+-	} else {
+-		ieee->AsocRetryCount = 0;
+-	}
+-
+-	return le16_to_cpu(response_head->status);
+-}
+-
+-static inline void
+-ieee80211_rx_probe_rq(struct ieee80211_device *ieee, struct sk_buff *skb)
+-{
+-	u8 dest[ETH_ALEN];
+-
+-	//IEEE80211DMESG("Rx probe");
+-	ieee->softmac_stats.rx_probe_rq++;
+-	//DMESG("Dest is "MACSTR, MAC2STR(dest));
+-	if (probe_rq_parse(ieee, skb, dest)) {
+-		//IEEE80211DMESG("Was for me!");
+-		ieee->softmac_stats.tx_probe_rs++;
+-		ieee80211_resp_to_probe(ieee, dest);
+-	}
+-}
+-
+-static inline void
+-ieee80211_rx_auth_rq(struct ieee80211_device *ieee, struct sk_buff *skb)
+-{
+-	u8 dest[ETH_ALEN];
+-	int status;
+-	//IEEE80211DMESG("Rx probe");
+-	ieee->softmac_stats.rx_auth_rq++;
+-
+-	status = auth_rq_parse(skb, dest);
+-	if (status != -1)
+-		ieee80211_resp_to_auth(ieee, status, dest);
+-	//DMESG("Dest is "MACSTR, MAC2STR(dest));
+-}
+-
+-static inline void
+-ieee80211_rx_assoc_rq(struct ieee80211_device *ieee, struct sk_buff *skb)
+-{
+-	u8 dest[ETH_ALEN];
+-	//unsigned long flags;
+-
+-	ieee->softmac_stats.rx_ass_rq++;
+-	if (assoc_rq_parse(skb, dest) != -1)
+-		ieee80211_resp_to_assoc_rq(ieee, dest);
+-
+-	netdev_info(ieee->dev, "New client associated: %pM\n", dest);
+-	//FIXME
+-}
+-
+-static void ieee80211_sta_ps_send_null_frame(struct ieee80211_device *ieee,
+-					     short pwr)
+-{
+-	struct sk_buff *buf = ieee80211_null_func(ieee, pwr);
+-
+-	if (buf)
+-		softmac_ps_mgmt_xmit(buf, ieee);
+-}
+-/* EXPORT_SYMBOL(ieee80211_sta_ps_send_null_frame); */
+-
+-static short ieee80211_sta_ps_sleep(struct ieee80211_device *ieee, u32 *time_h,
+-				    u32 *time_l)
+-{
+-	int timeout;
+-	u8 dtim;
+-	/*if(ieee->ps == IEEE80211_PS_DISABLED ||
+-		ieee->iw_mode != IW_MODE_INFRA ||
+-		ieee->state != IEEE80211_LINKED)
+-
+-		return 0;
+-	*/
+-	dtim = ieee->current_network.dtim_data;
+-	if (!(dtim & IEEE80211_DTIM_VALID))
+-		return 0;
+-	timeout = ieee->current_network.beacon_interval; //should we use ps_timeout value or beacon_interval
+-	ieee->current_network.dtim_data = IEEE80211_DTIM_INVALID;
+-
+-	if (dtim & ((IEEE80211_DTIM_UCAST | IEEE80211_DTIM_MBCAST) & ieee->ps))
+-		return 2;
+-
+-	if (!time_after(jiffies,
+-			dev_trans_start(ieee->dev) + msecs_to_jiffies(timeout)))
+-		return 0;
+-
+-	if (!time_after(jiffies,
+-			ieee->last_rx_ps_time + msecs_to_jiffies(timeout)))
+-		return 0;
+-
+-	if ((ieee->softmac_features & IEEE_SOFTMAC_SINGLE_QUEUE) &&
+-	    (ieee->mgmt_queue_tail != ieee->mgmt_queue_head))
+-		return 0;
+-
+-	if (time_l) {
+-		*time_l = ieee->current_network.last_dtim_sta_time[0]
+-			+ (ieee->current_network.beacon_interval
+-			   * ieee->current_network.dtim_period) * 1000;
+-	}
+-
+-	if (time_h) {
+-		*time_h = ieee->current_network.last_dtim_sta_time[1];
+-		if (time_l && *time_l < ieee->current_network.last_dtim_sta_time[0])
+-			*time_h += 1;
+-	}
+-
+-	return 1;
+-}
+-
+-static inline void ieee80211_sta_ps(struct work_struct *work)
+-{
+-	struct ieee80211_device *ieee;
+-	u32 th, tl;
+-	short sleep;
+-	unsigned long flags, flags2;
+-
+-	ieee = container_of(work, struct ieee80211_device, ps_task);
+-
+-	spin_lock_irqsave(&ieee->lock, flags);
+-
+-	if ((ieee->ps == IEEE80211_PS_DISABLED ||
+-	     ieee->iw_mode != IW_MODE_INFRA ||
+-	     ieee->state != IEEE80211_LINKED)) {
+-		//	#warning CHECK_LOCK_HERE
+-		spin_lock_irqsave(&ieee->mgmt_tx_lock, flags2);
+-
+-		ieee80211_sta_wakeup(ieee, 1);
+-
+-		spin_unlock_irqrestore(&ieee->mgmt_tx_lock, flags2);
+-	}
+-
+-	sleep = ieee80211_sta_ps_sleep(ieee, &th, &tl);
+-	/* 2 wake, 1 sleep, 0 do nothing */
+-	if (sleep == 0)
+-		goto out;
+-
+-	if (sleep == 1) {
+-		if (ieee->sta_sleep == 1) {
+-			ieee->enter_sleep_state(ieee->dev, th, tl);
+-		} else if (ieee->sta_sleep == 0) {
+-		//	printk("send null 1\n");
+-			spin_lock_irqsave(&ieee->mgmt_tx_lock, flags2);
+-
+-			if (ieee->ps_is_queue_empty(ieee->dev)) {
+-				ieee->sta_sleep = 2;
+-
+-				ieee->ps_request_tx_ack(ieee->dev);
+-
+-				ieee80211_sta_ps_send_null_frame(ieee, 1);
+-
+-				ieee->ps_th = th;
+-				ieee->ps_tl = tl;
+-			}
+-			spin_unlock_irqrestore(&ieee->mgmt_tx_lock, flags2);
+-		}
+-	} else if (sleep == 2) {
+-//#warning CHECK_LOCK_HERE
+-		spin_lock_irqsave(&ieee->mgmt_tx_lock, flags2);
+-
+-		ieee80211_sta_wakeup(ieee, 1);
+-
+-		spin_unlock_irqrestore(&ieee->mgmt_tx_lock, flags2);
+-	}
+-out:
+-	spin_unlock_irqrestore(&ieee->lock, flags);
+-}
+-
+-void ieee80211_sta_wakeup(struct ieee80211_device *ieee, short nl)
+-{
+-	if (ieee->sta_sleep == 0) {
+-		if (nl) {
+-			printk("Warning: driver is probably failing to report TX ps error\n");
+-			ieee->ps_request_tx_ack(ieee->dev);
+-			ieee80211_sta_ps_send_null_frame(ieee, 0);
+-		}
+-		return;
+-	}
+-
+-	if (ieee->sta_sleep == 1)
+-		ieee->sta_wake_up(ieee->dev);
+-
+-	ieee->sta_sleep = 0;
+-
+-	if (nl) {
+-		ieee->ps_request_tx_ack(ieee->dev);
+-		ieee80211_sta_ps_send_null_frame(ieee, 0);
+-	}
+-}
+-
+-void ieee80211_ps_tx_ack(struct ieee80211_device *ieee, short success)
+-{
+-	unsigned long flags, flags2;
+-
+-	spin_lock_irqsave(&ieee->lock, flags);
+-
+-	if (ieee->sta_sleep == 2) {
+-		/* Null frame with PS bit set */
+-		if (success) {
+-			ieee->sta_sleep = 1;
+-			ieee->enter_sleep_state(ieee->dev, ieee->ps_th, ieee->ps_tl);
+-		}
+-		/* if the card report not success we can't be sure the AP
+-		 * has not RXed so we can't assume the AP believe us awake
+-		 */
+-	} else {
+-		/* 21112005 - tx again null without PS bit if lost */
+-		if ((ieee->sta_sleep == 0) && !success) {
+-			spin_lock_irqsave(&ieee->mgmt_tx_lock, flags2);
+-			ieee80211_sta_ps_send_null_frame(ieee, 0);
+-			spin_unlock_irqrestore(&ieee->mgmt_tx_lock, flags2);
+-		}
+-	}
+-	spin_unlock_irqrestore(&ieee->lock, flags);
+-}
+-EXPORT_SYMBOL(ieee80211_ps_tx_ack);
+-
+-static void ieee80211_process_action(struct ieee80211_device *ieee,
+-				     struct sk_buff *skb)
+-{
+-	struct rtl_80211_hdr *header = (struct rtl_80211_hdr *)skb->data;
+-	u8 *act = ieee80211_get_payload(header);
+-	u8 tmp = 0;
+-//	IEEE80211_DEBUG_DATA(IEEE80211_DL_DATA|IEEE80211_DL_BA, skb->data, skb->len);
+-	if (!act) {
+-		IEEE80211_DEBUG(IEEE80211_DL_ERR, "error to get payload of action frame\n");
+-		return;
+-	}
+-	tmp = *act;
+-	act++;
+-	switch (tmp) {
+-	case ACT_CAT_BA:
+-		if (*act == ACT_ADDBAREQ)
+-			ieee80211_rx_ADDBAReq(ieee, skb);
+-		else if (*act == ACT_ADDBARSP)
+-			ieee80211_rx_ADDBARsp(ieee, skb);
+-		else if (*act == ACT_DELBA)
+-			ieee80211_rx_DELBA(ieee, skb);
+-		break;
+-	default:
+-		break;
+-	}
+-	return;
+-}
+-
+-static void ieee80211_check_auth_response(struct ieee80211_device *ieee,
+-					  struct sk_buff *skb)
+-{
+-	/* default support N mode, disable halfNmode */
+-	bool bSupportNmode = true, bHalfSupportNmode = false;
+-	int errcode;
+-	u8 *challenge;
+-	int chlen = 0;
+-	u32 iotAction;
+-
+-	errcode = auth_parse(skb, &challenge, &chlen);
+-	if (!errcode) {
+-		if (ieee->open_wep || !challenge) {
+-			ieee->state = IEEE80211_ASSOCIATING_AUTHENTICATED;
+-			ieee->softmac_stats.rx_auth_rs_ok++;
+-			iotAction = ieee->pHTInfo->IOTAction;
+-			if (!(iotAction & HT_IOT_ACT_PURE_N_MODE)) {
+-				if (!ieee->GetNmodeSupportBySecCfg(ieee->dev)) {
+-					/* WEP or TKIP encryption */
+-					if (IsHTHalfNmodeAPs(ieee)) {
+-						bSupportNmode = true;
+-						bHalfSupportNmode = true;
+-					} else {
+-						bSupportNmode = false;
+-						bHalfSupportNmode = false;
+-					}
+-					netdev_dbg(ieee->dev, "SEC(%d, %d)\n",
+-							bSupportNmode,
+-							bHalfSupportNmode);
+-				}
+-			}
+-			/* Dummy wirless mode setting- avoid encryption issue */
+-			if (bSupportNmode) {
+-				/* N mode setting */
+-				ieee->SetWirelessMode(ieee->dev,
+-						ieee->current_network.mode);
+-			} else {
+-				/* b/g mode setting - TODO */
+-				ieee->SetWirelessMode(ieee->dev, IEEE_G);
+-			}
+-
+-			if (ieee->current_network.mode == IEEE_N_24G &&
+-					bHalfSupportNmode) {
+-				netdev_dbg(ieee->dev, "enter half N mode\n");
+-				ieee->bHalfWirelessN24GMode = true;
+-			} else {
+-				ieee->bHalfWirelessN24GMode = false;
+-			}
+-			ieee80211_associate_step2(ieee);
+-		} else {
+-			ieee80211_auth_challenge(ieee, challenge, chlen);
+-		}
+-	} else {
+-		ieee->softmac_stats.rx_auth_rs_err++;
+-		IEEE80211_DEBUG_MGMT("Auth response status code %d\n", errcode);
+-		ieee80211_associate_abort(ieee);
+-	}
+-}
+-
+-inline int
+-ieee80211_rx_frame_softmac(struct ieee80211_device *ieee, struct sk_buff *skb,
+-			   struct ieee80211_rx_stats *rx_stats, u16 type,
+-			   u16 stype)
+-{
+-	struct rtl_80211_hdr_3addr *header = (struct rtl_80211_hdr_3addr *)skb->data;
+-	u16 errcode;
+-	int aid;
+-	struct ieee80211_assoc_response_frame *assoc_resp;
+-//	struct ieee80211_info_element *info_element;
+-
+-	if (!ieee->proto_started)
+-		return 0;
+-
+-	if (ieee->sta_sleep || (ieee->ps != IEEE80211_PS_DISABLED &&
+-				ieee->iw_mode == IW_MODE_INFRA &&
+-				ieee->state == IEEE80211_LINKED))
+-		schedule_work(&ieee->ps_task);
+-
+-	if (WLAN_FC_GET_STYPE(header->frame_ctl) != IEEE80211_STYPE_PROBE_RESP &&
+-	    WLAN_FC_GET_STYPE(header->frame_ctl) != IEEE80211_STYPE_BEACON)
+-		ieee->last_rx_ps_time = jiffies;
+-
+-	switch (WLAN_FC_GET_STYPE(header->frame_ctl)) {
+-	case IEEE80211_STYPE_ASSOC_RESP:
+-	case IEEE80211_STYPE_REASSOC_RESP:
+-		IEEE80211_DEBUG_MGMT("received [RE]ASSOCIATION RESPONSE (%d)\n",
+-				WLAN_FC_GET_STYPE(header->frame_ctl));
+-		if ((ieee->softmac_features & IEEE_SOFTMAC_ASSOCIATE) &&
+-		    ieee->state == IEEE80211_ASSOCIATING_AUTHENTICATED &&
+-		    ieee->iw_mode == IW_MODE_INFRA) {
+-			struct ieee80211_network *network;
+-
+-			network = kzalloc(sizeof(*network), GFP_KERNEL);
+-			if (!network)
+-				return -ENOMEM;
+-
+-			errcode = assoc_parse(ieee, skb, &aid);
+-			if (!errcode) {
+-				ieee->state = IEEE80211_LINKED;
+-				ieee->assoc_id = aid;
+-				ieee->softmac_stats.rx_ass_ok++;
+-				/* station support qos */
+-				/* Let the register setting defaultly with Legacy station */
+-				if (ieee->qos_support) {
+-					assoc_resp = (struct ieee80211_assoc_response_frame *)skb->data;
+-					if (ieee80211_parse_info_param(ieee, assoc_resp->info_element,\
+-								       rx_stats->len - sizeof(*assoc_resp), \
+-								       network, rx_stats)) {
+-						return 1;
+-					} else {
+-						//filling the PeerHTCap. //maybe not necessary as we can get its info from current_network.
+-						memcpy(ieee->pHTInfo->PeerHTCapBuf, network->bssht.bdHTCapBuf, network->bssht.bdHTCapLen);
+-						memcpy(ieee->pHTInfo->PeerHTInfoBuf, network->bssht.bdHTInfoBuf, network->bssht.bdHTInfoLen);
+-					}
+-					if (ieee->handle_assoc_response)
+-						ieee->handle_assoc_response(ieee->dev, (struct ieee80211_assoc_response_frame *)header, network);
+-				}
+-				ieee80211_associate_complete(ieee);
+-			} else {
+-				/* aid could not been allocated */
+-				ieee->softmac_stats.rx_ass_err++;
+-				printk("Association response status code 0x%x\n",
+-				       errcode);
+-				IEEE80211_DEBUG_MGMT("Association response status code 0x%x\n",
+-						     errcode);
+-				if (ieee->AsocRetryCount < RT_ASOC_RETRY_LIMIT)
+-					schedule_work(&ieee->associate_procedure_wq);
+-				else
+-					ieee80211_associate_abort(ieee);
+-			}
+-			kfree(network);
+-		}
+-		break;
+-
+-	case IEEE80211_STYPE_ASSOC_REQ:
+-	case IEEE80211_STYPE_REASSOC_REQ:
+-		if ((ieee->softmac_features & IEEE_SOFTMAC_ASSOCIATE) &&
+-		    ieee->iw_mode == IW_MODE_MASTER)
+-			ieee80211_rx_assoc_rq(ieee, skb);
+-		break;
+-
+-	case IEEE80211_STYPE_AUTH:
+-		if (ieee->softmac_features & IEEE_SOFTMAC_ASSOCIATE) {
+-			if (ieee->state == IEEE80211_ASSOCIATING_AUTHENTICATING
+-			    && ieee->iw_mode == IW_MODE_INFRA) {
+-				IEEE80211_DEBUG_MGMT("Received auth response");
+-				ieee80211_check_auth_response(ieee, skb);
+-			} else if (ieee->iw_mode == IW_MODE_MASTER) {
+-				ieee80211_rx_auth_rq(ieee, skb);
+-			}
+-		}
+-		break;
+-
+-	case IEEE80211_STYPE_PROBE_REQ:
+-		if ((ieee->softmac_features & IEEE_SOFTMAC_PROBERS) &&
+-		    ((ieee->iw_mode == IW_MODE_ADHOC ||
+-		      ieee->iw_mode == IW_MODE_MASTER) &&
+-		     ieee->state == IEEE80211_LINKED)) {
+-			ieee80211_rx_probe_rq(ieee, skb);
+-		}
+-		break;
+-
+-	case IEEE80211_STYPE_DISASSOC:
+-	case IEEE80211_STYPE_DEAUTH:
+-		/* FIXME for now repeat all the association procedure
+-		* both for disassociation and deauthentication
+-		*/
+-		if ((ieee->softmac_features & IEEE_SOFTMAC_ASSOCIATE) &&
+-		    ieee->state == IEEE80211_LINKED &&
+-		    ieee->iw_mode == IW_MODE_INFRA) {
+-			ieee->state = IEEE80211_ASSOCIATING;
+-			ieee->softmac_stats.reassoc++;
+-
+-			notify_wx_assoc_event(ieee);
+-			//HTSetConnectBwMode(ieee, HT_CHANNEL_WIDTH_20, HT_EXTCHNL_OFFSET_NO_EXT);
+-			RemovePeerTS(ieee, header->addr2);
+-			schedule_work(&ieee->associate_procedure_wq);
+-		}
+-		break;
+-	case IEEE80211_STYPE_MANAGE_ACT:
+-		ieee80211_process_action(ieee, skb);
+-		break;
+-	default:
+-		return -1;
+-	}
+-
+-	//dev_kfree_skb_any(skb);
+-	return 0;
+-}
+-
+-/* The following are for a simpler TX queue management.
+- * Instead of using netif_[stop/wake]_queue, the driver
+- * will use these two functions (plus a reset one) that
+- * will internally call the kernel netif_* and take care
+- * of the ieee802.11 fragmentation.
+- * So, the driver receives a fragment at a time and might
+- * call the stop function when it wants, without taking
+- * care to have enough room to TX an entire packet.
+- * This might be useful if each fragment needs its own
+- * descriptor. Thus, just keeping a total free memory > than
+- * the max fragmentation threshold is not enough. If the
+- * ieee802.11 stack passed a TXB struct, then you would need
+- * to keep N free descriptors where
+- * N = MAX_PACKET_SIZE / MIN_FRAG_THRESHOLD.
+- * In this way you need just one and the 802.11 stack
+- * will take care of buffering fragments and pass them to
+- * the driver later, when it wakes the queue.
+- */
+-void ieee80211_softmac_xmit(struct ieee80211_txb *txb, struct ieee80211_device *ieee)
+-{
+-	unsigned int queue_index = txb->queue_index;
+-	unsigned long flags;
+-	int  i;
+-	struct cb_desc *tcb_desc = NULL;
+-
+-	spin_lock_irqsave(&ieee->lock, flags);
+-
+-	/* called with 2nd parm 0, no tx mgmt lock required */
+-	ieee80211_sta_wakeup(ieee, 0);
+-
+-	/* update the tx status */
+-	ieee->stats.tx_bytes += le16_to_cpu(txb->payload_size);
+-	ieee->stats.tx_packets++;
+-	tcb_desc = (struct cb_desc *)(txb->fragments[0]->cb + MAX_DEV_ADDR_SIZE);
+-	if (tcb_desc->bMulticast)
+-		ieee->stats.multicast++;
+-
+-	/* if xmit available, just xmit it immediately, else just insert it to the wait queue */
+-	for (i = 0; i < txb->nr_frags; i++) {
+-#ifdef USB_TX_DRIVER_AGGREGATION_ENABLE
+-		if ((skb_queue_len(&ieee->skb_drv_aggQ[queue_index]) != 0) ||
+-#else
+-		if ((skb_queue_len(&ieee->skb_waitQ[queue_index]) != 0) ||
+-#endif
+-		    (!ieee->check_nic_enough_desc(ieee->dev, queue_index)) ||
+-		    (ieee->queue_stop)) {
+-			/* insert the skb packet to the wait queue */
+-			/* as for the completion function, it does not need
+-			 * to check it any more.
+-			 * */
+-			//printk("error:no descriptor left@queue_index %d\n", queue_index);
+-			//ieee80211_stop_queue(ieee);
+-#ifdef USB_TX_DRIVER_AGGREGATION_ENABLE
+-			skb_queue_tail(&ieee->skb_drv_aggQ[queue_index], txb->fragments[i]);
+-#else
+-			skb_queue_tail(&ieee->skb_waitQ[queue_index], txb->fragments[i]);
+-#endif
+-		} else {
+-			ieee->softmac_data_hard_start_xmit(txb->fragments[i],
+-							   ieee->dev, ieee->rate);
+-			//ieee->stats.tx_packets++;
+-			//ieee->stats.tx_bytes += txb->fragments[i]->len;
+-			//ieee->dev->trans_start = jiffies;
+-		}
+-	}
+-	ieee80211_txb_free(txb);
+-
+-//exit:
+-	spin_unlock_irqrestore(&ieee->lock, flags);
+-}
+-EXPORT_SYMBOL(ieee80211_softmac_xmit);
+-
+-/* called with ieee->lock acquired */
+-static void ieee80211_resume_tx(struct ieee80211_device *ieee)
+-{
+-	int i;
+-	for (i = ieee->tx_pending.frag; i < ieee->tx_pending.txb->nr_frags; i++) {
+-		if (ieee->queue_stop) {
+-			ieee->tx_pending.frag = i;
+-			return;
+-		} else {
+-			ieee->softmac_data_hard_start_xmit(ieee->tx_pending.txb->fragments[i],
+-							   ieee->dev, ieee->rate);
+-			//(i+1)<ieee->tx_pending.txb->nr_frags);
+-			ieee->stats.tx_packets++;
+-			netif_trans_update(ieee->dev);
+-		}
+-	}
+-
+-	ieee80211_txb_free(ieee->tx_pending.txb);
+-	ieee->tx_pending.txb = NULL;
+-}
+-
+-void ieee80211_reset_queue(struct ieee80211_device *ieee)
+-{
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&ieee->lock, flags);
+-	init_mgmt_queue(ieee);
+-	if (ieee->tx_pending.txb) {
+-		ieee80211_txb_free(ieee->tx_pending.txb);
+-		ieee->tx_pending.txb = NULL;
+-	}
+-	ieee->queue_stop = 0;
+-	spin_unlock_irqrestore(&ieee->lock, flags);
+-}
+-EXPORT_SYMBOL(ieee80211_reset_queue);
+-
+-void ieee80211_wake_queue(struct ieee80211_device *ieee)
+-{
+-	unsigned long flags;
+-	struct sk_buff *skb;
+-	struct rtl_80211_hdr_3addr  *header;
+-
+-	spin_lock_irqsave(&ieee->lock, flags);
+-	if (!ieee->queue_stop)
+-		goto exit;
+-
+-	ieee->queue_stop = 0;
+-
+-	if (ieee->softmac_features & IEEE_SOFTMAC_SINGLE_QUEUE) {
+-		while (!ieee->queue_stop && (skb = dequeue_mgmt(ieee))) {
+-			header = (struct rtl_80211_hdr_3addr  *)skb->data;
+-
+-			header->seq_ctl = cpu_to_le16(ieee->seq_ctrl[0] << 4);
+-
+-			if (ieee->seq_ctrl[0] == 0xFFF)
+-				ieee->seq_ctrl[0] = 0;
+-			else
+-				ieee->seq_ctrl[0]++;
+-
+-			ieee->softmac_data_hard_start_xmit(skb, ieee->dev, ieee->basic_rate);
+-			//dev_kfree_skb_any(skb);//edit by thomas
+-		}
+-	}
+-	if (!ieee->queue_stop && ieee->tx_pending.txb)
+-		ieee80211_resume_tx(ieee);
+-
+-	if (!ieee->queue_stop && netif_queue_stopped(ieee->dev)) {
+-		ieee->softmac_stats.swtxawake++;
+-		netif_wake_queue(ieee->dev);
+-	}
+-exit:
+-	spin_unlock_irqrestore(&ieee->lock, flags);
+-}
+-EXPORT_SYMBOL(ieee80211_wake_queue);
+-
+-void ieee80211_stop_queue(struct ieee80211_device *ieee)
+-{
+-	//unsigned long flags;
+-	//spin_lock_irqsave(&ieee->lock,flags);
+-
+-	if (!netif_queue_stopped(ieee->dev)) {
+-		netif_stop_queue(ieee->dev);
+-		ieee->softmac_stats.swtxstop++;
+-	}
+-	ieee->queue_stop = 1;
+-	//spin_unlock_irqrestore(&ieee->lock,flags);
+-}
+-EXPORT_SYMBOL(ieee80211_stop_queue);
+-
+-/* called in user context only */
+-void ieee80211_start_master_bss(struct ieee80211_device *ieee)
+-{
+-	ieee->assoc_id = 1;
+-
+-	if (ieee->current_network.ssid_len == 0) {
+-		strncpy(ieee->current_network.ssid,
+-			IEEE80211_DEFAULT_TX_ESSID,
+-			IW_ESSID_MAX_SIZE);
+-
+-		ieee->current_network.ssid_len = strlen(IEEE80211_DEFAULT_TX_ESSID);
+-		ieee->ssid_set = 1;
+-	}
+-
+-	memcpy(ieee->current_network.bssid, ieee->dev->dev_addr, ETH_ALEN);
+-
+-	ieee->set_chan(ieee->dev, ieee->current_network.channel);
+-	ieee->state = IEEE80211_LINKED;
+-	ieee->link_change(ieee->dev);
+-	notify_wx_assoc_event(ieee);
+-
+-	if (ieee->data_hard_resume)
+-		ieee->data_hard_resume(ieee->dev);
+-
+-	netif_carrier_on(ieee->dev);
+-}
+-
+-static void ieee80211_start_monitor_mode(struct ieee80211_device *ieee)
+-{
+-	if (ieee->raw_tx) {
+-		if (ieee->data_hard_resume)
+-			ieee->data_hard_resume(ieee->dev);
+-
+-		netif_carrier_on(ieee->dev);
+-	}
+-}
+-static void ieee80211_start_ibss_wq(struct work_struct *work)
+-{
+-	struct delayed_work *dwork = to_delayed_work(work);
+-	struct ieee80211_device *ieee = container_of(dwork, struct ieee80211_device, start_ibss_wq);
+-	/* iwconfig mode ad-hoc will schedule this and return
+-	 * on the other hand this will block further iwconfig SET
+-	 * operations because of the wx_mutex hold.
+-	 * Anyway some most set operations set a flag to speed-up
+-	 * (abort) this wq (when syncro scanning) before sleeping
+-	 * on the semaphore
+-	 */
+-	if (!ieee->proto_started) {
+-		printk("==========oh driver down return\n");
+-		return;
+-	}
+-	mutex_lock(&ieee->wx_mutex);
+-
+-	if (ieee->current_network.ssid_len == 0) {
+-		strscpy(ieee->current_network.ssid, IEEE80211_DEFAULT_TX_ESSID,
+-			sizeof(ieee->current_network.ssid));
+-		ieee->current_network.ssid_len = strlen(IEEE80211_DEFAULT_TX_ESSID);
+-		ieee->ssid_set = 1;
+-	}
+-
+-	/* check if we have this cell in our network list */
+-	ieee80211_softmac_check_all_nets(ieee);
+-
+-//	if((IS_DOT11D_ENABLE(ieee)) && (ieee->state == IEEE80211_NOLINK))
+-	if (ieee->state == IEEE80211_NOLINK)
+-		ieee->current_network.channel = 6;
+-	/* if not then the state is not linked. Maybe the user switched to
+-	 * ad-hoc mode just after being in monitor mode, or just after
+-	 * being very few time in managed mode (so the card have had no
+-	 * time to scan all the chans..) or we have just run up the iface
+-	 * after setting ad-hoc mode. So we have to give another try..
+-	 * Here, in ibss mode, should be safe to do this without extra care
+-	 * (in bss mode we had to make sure no-one tried to associate when
+-	 * we had just checked the ieee->state and we was going to start the
+-	 * scan) because in ibss mode the ieee80211_new_net function, when
+-	 * finds a good net, just set the ieee->state to IEEE80211_LINKED,
+-	 * so, at worst, we waste a bit of time to initiate an unneeded syncro
+-	 * scan, that will stop at the first round because it sees the state
+-	 * associated.
+-	 */
+-	if (ieee->state == IEEE80211_NOLINK)
+-		ieee80211_start_scan_syncro(ieee);
+-
+-	/* the network definitively is not here.. create a new cell */
+-	if (ieee->state == IEEE80211_NOLINK) {
+-		printk("creating new IBSS cell\n");
+-		if (!ieee->wap_set)
+-			eth_random_addr(ieee->current_network.bssid);
+-
+-		if (ieee->modulation & IEEE80211_CCK_MODULATION) {
+-			ieee->current_network.rates_len = 4;
+-
+-			ieee->current_network.rates[0] = IEEE80211_BASIC_RATE_MASK | IEEE80211_CCK_RATE_1MB;
+-			ieee->current_network.rates[1] = IEEE80211_BASIC_RATE_MASK | IEEE80211_CCK_RATE_2MB;
+-			ieee->current_network.rates[2] = IEEE80211_BASIC_RATE_MASK | IEEE80211_CCK_RATE_5MB;
+-			ieee->current_network.rates[3] = IEEE80211_BASIC_RATE_MASK | IEEE80211_CCK_RATE_11MB;
+-		} else {
+-			ieee->current_network.rates_len = 0;
+-		}
+-		if (ieee->modulation & IEEE80211_OFDM_MODULATION) {
+-			ieee->current_network.rates_ex_len = 8;
+-
+-			ieee->current_network.rates_ex[0] = IEEE80211_BASIC_RATE_MASK | IEEE80211_OFDM_RATE_6MB;
+-			ieee->current_network.rates_ex[1] = IEEE80211_BASIC_RATE_MASK | IEEE80211_OFDM_RATE_9MB;
+-			ieee->current_network.rates_ex[2] = IEEE80211_BASIC_RATE_MASK | IEEE80211_OFDM_RATE_12MB;
+-			ieee->current_network.rates_ex[3] = IEEE80211_BASIC_RATE_MASK | IEEE80211_OFDM_RATE_18MB;
+-			ieee->current_network.rates_ex[4] = IEEE80211_BASIC_RATE_MASK | IEEE80211_OFDM_RATE_24MB;
+-			ieee->current_network.rates_ex[5] = IEEE80211_BASIC_RATE_MASK | IEEE80211_OFDM_RATE_36MB;
+-			ieee->current_network.rates_ex[6] = IEEE80211_BASIC_RATE_MASK | IEEE80211_OFDM_RATE_48MB;
+-			ieee->current_network.rates_ex[7] = IEEE80211_BASIC_RATE_MASK | IEEE80211_OFDM_RATE_54MB;
+-
+-			ieee->rate = 108;
+-		} else {
+-			ieee->current_network.rates_ex_len = 0;
+-			ieee->rate = 22;
+-		}
+-
+-		// By default, WMM function will be disabled in IBSS mode
+-		ieee->current_network.QoS_Enable = 0;
+-		ieee->SetWirelessMode(ieee->dev, IEEE_G);
+-		ieee->current_network.atim_window = 0;
+-		ieee->current_network.capability = WLAN_CAPABILITY_IBSS;
+-		if (ieee->short_slot)
+-			ieee->current_network.capability |= WLAN_CAPABILITY_SHORT_SLOT;
+-	}
+-
+-	ieee->state = IEEE80211_LINKED;
+-
+-	ieee->set_chan(ieee->dev, ieee->current_network.channel);
+-	ieee->link_change(ieee->dev);
+-
+-	notify_wx_assoc_event(ieee);
+-
+-	ieee80211_start_send_beacons(ieee);
+-
+-	if (ieee->data_hard_resume)
+-		ieee->data_hard_resume(ieee->dev);
+-	netif_carrier_on(ieee->dev);
+-
+-	mutex_unlock(&ieee->wx_mutex);
+-}
+-
+-inline void ieee80211_start_ibss(struct ieee80211_device *ieee)
+-{
+-	schedule_delayed_work(&ieee->start_ibss_wq, 150);
+-}
+-
+-/* this is called only in user context, with wx_mutex held */
+-void ieee80211_start_bss(struct ieee80211_device *ieee)
+-{
+-	unsigned long flags;
+-	//
+-	// Ref: 802.11d 11.1.3.3
+-	// STA shall not start a BSS unless properly formed Beacon frame including a Country IE.
+-	//
+-	if (IS_DOT11D_ENABLE(ieee) && !IS_COUNTRY_IE_VALID(ieee)) {
+-		if (!ieee->bGlobalDomain)
+-			return;
+-	}
+-	/* check if we have already found the net we
+-	 * are interested in (if any).
+-	 * if not (we are disassociated and we are not
+-	 * in associating / authenticating phase) start the background scanning.
+-	 */
+-	ieee80211_softmac_check_all_nets(ieee);
+-
+-	/* ensure no-one start an associating process (thus setting
+-	 * the ieee->state to ieee80211_ASSOCIATING) while we
+-	 * have just checked it and we are going to enable scan.
+-	 * The ieee80211_new_net function is always called with
+-	 * lock held (from both ieee80211_softmac_check_all_nets and
+-	 * the rx path), so we cannot be in the middle of such function
+-	 */
+-	spin_lock_irqsave(&ieee->lock, flags);
+-
+-	if (ieee->state == IEEE80211_NOLINK) {
+-		ieee->actscanning = true;
+-		ieee80211_start_scan(ieee);
+-	}
+-	spin_unlock_irqrestore(&ieee->lock, flags);
+-}
+-
+-/* called only in userspace context */
+-void ieee80211_disassociate(struct ieee80211_device *ieee)
+-{
+-	netif_carrier_off(ieee->dev);
+-	if (ieee->softmac_features & IEEE_SOFTMAC_TX_QUEUE)
+-		ieee80211_reset_queue(ieee);
+-
+-	if (ieee->data_hard_stop)
+-		ieee->data_hard_stop(ieee->dev);
+-	if (IS_DOT11D_ENABLE(ieee))
+-		dot11d_reset(ieee);
+-	ieee->state = IEEE80211_NOLINK;
+-	ieee->is_set_key = false;
+-	ieee->link_change(ieee->dev);
+-	//HTSetConnectBwMode(ieee, HT_CHANNEL_WIDTH_20, HT_EXTCHNL_OFFSET_NO_EXT);
+-	notify_wx_assoc_event(ieee);
+-}
+-EXPORT_SYMBOL(ieee80211_disassociate);
+-
+-static void ieee80211_associate_retry_wq(struct work_struct *work)
+-{
+-	struct delayed_work *dwork = to_delayed_work(work);
+-	struct ieee80211_device *ieee = container_of(dwork, struct ieee80211_device, associate_retry_wq);
+-	unsigned long flags;
+-
+-	mutex_lock(&ieee->wx_mutex);
+-	if (!ieee->proto_started)
+-		goto exit;
+-
+-	if (ieee->state != IEEE80211_ASSOCIATING_RETRY)
+-		goto exit;
+-
+-	/* until we do not set the state to IEEE80211_NOLINK
+-	* there are no possibility to have someone else trying
+-	* to start an association procedure (we get here with
+-	* ieee->state = IEEE80211_ASSOCIATING).
+-	* When we set the state to IEEE80211_NOLINK it is possible
+-	* that the RX path run an attempt to associate, but
+-	* both ieee80211_softmac_check_all_nets and the
+-	* RX path works with ieee->lock held so there are no
+-	* problems. If we are still disassociated then start a scan.
+-	* the lock here is necessary to ensure no one try to start
+-	* an association procedure when we have just checked the
+-	* state and we are going to start the scan.
+-	*/
+-	ieee->state = IEEE80211_NOLINK;
+-
+-	ieee80211_softmac_check_all_nets(ieee);
+-
+-	spin_lock_irqsave(&ieee->lock, flags);
+-
+-	if (ieee->state == IEEE80211_NOLINK)
+-		ieee80211_start_scan(ieee);
+-
+-	spin_unlock_irqrestore(&ieee->lock, flags);
+-
+-exit:
+-	mutex_unlock(&ieee->wx_mutex);
+-}
+-
+-struct sk_buff *ieee80211_get_beacon_(struct ieee80211_device *ieee)
+-{
+-	u8 broadcast_addr[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+-
+-	struct sk_buff *skb;
+-	struct ieee80211_probe_response *b;
+-
+-	skb = ieee80211_probe_resp(ieee, broadcast_addr);
+-
+-	if (!skb)
+-		return NULL;
+-
+-	b = (struct ieee80211_probe_response *)skb->data;
+-	b->header.frame_ctl = cpu_to_le16(IEEE80211_STYPE_BEACON);
+-
+-	return skb;
+-}
+-
+-struct sk_buff *ieee80211_get_beacon(struct ieee80211_device *ieee)
+-{
+-	struct sk_buff *skb;
+-	struct ieee80211_probe_response *b;
+-
+-	skb = ieee80211_get_beacon_(ieee);
+-	if (!skb)
+-		return NULL;
+-
+-	b = (struct ieee80211_probe_response *)skb->data;
+-	b->header.seq_ctl = cpu_to_le16(ieee->seq_ctrl[0] << 4);
+-
+-	if (ieee->seq_ctrl[0] == 0xFFF)
+-		ieee->seq_ctrl[0] = 0;
+-	else
+-		ieee->seq_ctrl[0]++;
+-
+-	return skb;
+-}
+-EXPORT_SYMBOL(ieee80211_get_beacon);
+-
+-void ieee80211_softmac_stop_protocol(struct ieee80211_device *ieee)
+-{
+-	ieee->sync_scan_hurryup = 1;
+-	mutex_lock(&ieee->wx_mutex);
+-	ieee80211_stop_protocol(ieee);
+-	mutex_unlock(&ieee->wx_mutex);
+-}
+-EXPORT_SYMBOL(ieee80211_softmac_stop_protocol);
+-
+-void ieee80211_stop_protocol(struct ieee80211_device *ieee)
+-{
+-	if (!ieee->proto_started)
+-		return;
+-
+-	ieee->proto_started = 0;
+-
+-	ieee80211_stop_send_beacons(ieee);
+-	del_timer_sync(&ieee->associate_timer);
+-	cancel_delayed_work(&ieee->associate_retry_wq);
+-	cancel_delayed_work(&ieee->start_ibss_wq);
+-	ieee80211_stop_scan(ieee);
+-
+-	ieee80211_disassociate(ieee);
+-	RemoveAllTS(ieee); //added as we disconnect from the previous BSS, Remove all TS
+-}
+-
+-void ieee80211_softmac_start_protocol(struct ieee80211_device *ieee)
+-{
+-	ieee->sync_scan_hurryup = 0;
+-	mutex_lock(&ieee->wx_mutex);
+-	ieee80211_start_protocol(ieee);
+-	mutex_unlock(&ieee->wx_mutex);
+-}
+-EXPORT_SYMBOL(ieee80211_softmac_start_protocol);
+-
+-void ieee80211_start_protocol(struct ieee80211_device *ieee)
+-{
+-	short ch = 0;
+-	int i = 0;
+-
+-	if (ieee->proto_started)
+-		return;
+-
+-	ieee->proto_started = 1;
+-
+-	if (ieee->current_network.channel == 0) {
+-		do {
+-			ch++;
+-			if (ch > MAX_CHANNEL_NUMBER)
+-				return; /* no channel found */
+-		} while (!GET_DOT11D_INFO(ieee)->channel_map[ch]);
+-		ieee->current_network.channel = ch;
+-	}
+-
+-	if (ieee->current_network.beacon_interval == 0)
+-		ieee->current_network.beacon_interval = 100;
+-//	printk("===>%s(), chan:%d\n", __func__, ieee->current_network.channel);
+-//	ieee->set_chan(ieee->dev,ieee->current_network.channel);
+-
+-	for (i = 0; i < 17; i++) {
+-		ieee->last_rxseq_num[i] = -1;
+-		ieee->last_rxfrag_num[i] = -1;
+-		ieee->last_packet_time[i] = 0;
+-	}
+-
+-	ieee->init_wmmparam_flag = 0;//reinitialize AC_xx_PARAM registers.
+-
+-	/* if the user set the MAC of the ad-hoc cell and then
+-	 * switch to managed mode, shall we  make sure that association
+-	 * attempts does not fail just because the user provide the essid
+-	 * and the nic is still checking for the AP MAC ??
+-	 */
+-	if (ieee->iw_mode == IW_MODE_INFRA)
+-		ieee80211_start_bss(ieee);
+-
+-	else if (ieee->iw_mode == IW_MODE_ADHOC)
+-		ieee80211_start_ibss(ieee);
+-
+-	else if (ieee->iw_mode == IW_MODE_MASTER)
+-		ieee80211_start_master_bss(ieee);
+-
+-	else if (ieee->iw_mode == IW_MODE_MONITOR)
+-		ieee80211_start_monitor_mode(ieee);
+-}
+-
+-#define DRV_NAME  "Ieee80211"
+-void ieee80211_softmac_init(struct ieee80211_device *ieee)
+-{
+-	int i;
+-	memset(&ieee->current_network, 0, sizeof(struct ieee80211_network));
+-
+-	ieee->state = IEEE80211_NOLINK;
+-	ieee->sync_scan_hurryup = 0;
+-	for (i = 0; i < 5; i++)
+-		ieee->seq_ctrl[i] = 0;
+-
+-	ieee->dot11d_info = kzalloc(sizeof(struct rt_dot11d_info), GFP_KERNEL);
+-	if (!ieee->dot11d_info)
+-		IEEE80211_DEBUG(IEEE80211_DL_ERR, "can't alloc memory for DOT11D\n");
+-	//added for  AP roaming
+-	ieee->LinkDetectInfo.SlotNum = 2;
+-	ieee->LinkDetectInfo.NumRecvBcnInPeriod = 0;
+-	ieee->LinkDetectInfo.NumRecvDataInPeriod = 0;
+-
+-	ieee->assoc_id = 0;
+-	ieee->queue_stop = 0;
+-	ieee->scanning = 0;
+-	ieee->softmac_features = 0; //so IEEE2100-like driver are happy
+-	ieee->wap_set = 0;
+-	ieee->ssid_set = 0;
+-	ieee->proto_started = 0;
+-	ieee->basic_rate = IEEE80211_DEFAULT_BASIC_RATE;
+-	ieee->rate = 22;
+-	ieee->ps = IEEE80211_PS_DISABLED;
+-	ieee->sta_sleep = 0;
+-	ieee->Regdot11HTOperationalRateSet[0] = 0xff;//support MCS 0~7
+-	ieee->Regdot11HTOperationalRateSet[1] = 0xff;//support MCS 8~15
+-	ieee->Regdot11HTOperationalRateSet[4] = 0x01;
+-	//added by amy
+-	ieee->actscanning = false;
+-	ieee->beinretry = false;
+-	ieee->is_set_key = false;
+-	init_mgmt_queue(ieee);
+-
+-	ieee->sta_edca_param[0] = 0x0000A403;
+-	ieee->sta_edca_param[1] = 0x0000A427;
+-	ieee->sta_edca_param[2] = 0x005E4342;
+-	ieee->sta_edca_param[3] = 0x002F3262;
+-	ieee->aggregation = true;
+-	ieee->enable_rx_imm_BA = true;
+-	ieee->tx_pending.txb = NULL;
+-
+-	timer_setup(&ieee->associate_timer, ieee80211_associate_abort_cb, 0);
+-
+-	timer_setup(&ieee->beacon_timer, ieee80211_send_beacon_cb, 0);
+-
+-	INIT_DELAYED_WORK(&ieee->start_ibss_wq, ieee80211_start_ibss_wq);
+-	INIT_WORK(&ieee->associate_complete_wq, ieee80211_associate_complete_wq);
+-	INIT_WORK(&ieee->associate_procedure_wq, ieee80211_associate_procedure_wq);
+-	INIT_DELAYED_WORK(&ieee->softmac_scan_wq, ieee80211_softmac_scan_wq);
+-	INIT_DELAYED_WORK(&ieee->associate_retry_wq, ieee80211_associate_retry_wq);
+-	INIT_WORK(&ieee->wx_sync_scan_wq, ieee80211_wx_sync_scan_wq);
+-
+-	mutex_init(&ieee->wx_mutex);
+-	mutex_init(&ieee->scan_mutex);
+-
+-	spin_lock_init(&ieee->mgmt_tx_lock);
+-	spin_lock_init(&ieee->beacon_lock);
+-
+-	INIT_WORK(&ieee->ps_task, ieee80211_sta_ps);
+-}
+-
+-void ieee80211_softmac_free(struct ieee80211_device *ieee)
+-{
+-	mutex_lock(&ieee->wx_mutex);
+-	kfree(ieee->dot11d_info);
+-	ieee->dot11d_info = NULL;
+-	del_timer_sync(&ieee->associate_timer);
+-
+-	cancel_delayed_work(&ieee->associate_retry_wq);
+-	cancel_work_sync(&ieee->ps_task);
+-	mutex_unlock(&ieee->wx_mutex);
+-}
+-
+-/********************************************************
+- * Start of WPA code.                                   *
+- * this is stolen from the ipw2200 driver               *
+- ********************************************************/
+-static int ieee80211_wpa_enable(struct ieee80211_device *ieee, int value)
+-{
+-	/* This is called when wpa_supplicant loads and closes the driver
+-	 * interface. */
+-	printk("%s WPA\n", value ? "enabling" : "disabling");
+-	ieee->wpa_enabled = value;
+-	return 0;
+-}
+-
+-static void ieee80211_wpa_assoc_frame(struct ieee80211_device *ieee,
+-				      char *wpa_ie, int wpa_ie_len)
+-{
+-	/* make sure WPA is enabled */
+-	ieee80211_wpa_enable(ieee, 1);
+-
+-	ieee80211_disassociate(ieee);
+-}
+-
+-static int ieee80211_wpa_mlme(struct ieee80211_device *ieee, int command, int reason)
+-{
+-	int ret = 0;
+-
+-	switch (command) {
+-	case IEEE_MLME_STA_DEAUTH:
+-		// silently ignore
+-		break;
+-
+-	case IEEE_MLME_STA_DISASSOC:
+-		ieee80211_disassociate(ieee);
+-		break;
+-
+-	default:
+-		printk("Unknown MLME request: %d\n", command);
+-		ret = -EOPNOTSUPP;
+-	}
+-
+-	return ret;
+-}
+-
+-static int ieee80211_wpa_set_wpa_ie(struct ieee80211_device *ieee,
+-			      struct ieee_param *param, int plen)
+-{
+-	u8 *buf;
+-
+-	if (param->u.wpa_ie.len > MAX_WPA_IE_LEN)
+-		return -EINVAL;
+-
+-	if (param->u.wpa_ie.len) {
+-		buf = kmemdup(param->u.wpa_ie.data, param->u.wpa_ie.len,
+-			      GFP_KERNEL);
+-		if (!buf)
+-			return -ENOMEM;
+-
+-		kfree(ieee->wpa_ie);
+-		ieee->wpa_ie = buf;
+-		ieee->wpa_ie_len = param->u.wpa_ie.len;
+-	} else {
+-		kfree(ieee->wpa_ie);
+-		ieee->wpa_ie = NULL;
+-		ieee->wpa_ie_len = 0;
+-	}
+-
+-	ieee80211_wpa_assoc_frame(ieee, ieee->wpa_ie, ieee->wpa_ie_len);
+-	return 0;
+-}
+-
+-#define AUTH_ALG_OPEN_SYSTEM			0x1
+-#define AUTH_ALG_SHARED_KEY			0x2
+-
+-static int ieee80211_wpa_set_auth_algs(struct ieee80211_device *ieee, int value)
+-{
+-	struct ieee80211_security sec = {
+-		.flags = SEC_AUTH_MODE,
+-	};
+-
+-	if (value & AUTH_ALG_SHARED_KEY) {
+-		sec.auth_mode = WLAN_AUTH_SHARED_KEY;
+-		ieee->open_wep = 0;
+-		ieee->auth_mode = 1;
+-	} else if (value & AUTH_ALG_OPEN_SYSTEM) {
+-		sec.auth_mode = WLAN_AUTH_OPEN;
+-		ieee->open_wep = 1;
+-		ieee->auth_mode = 0;
+-	} else if (value & IW_AUTH_ALG_LEAP) {
+-		sec.auth_mode = WLAN_AUTH_LEAP;
+-		ieee->open_wep = 1;
+-		ieee->auth_mode = 2;
+-	}
+-
+-	if (ieee->set_security)
+-		ieee->set_security(ieee->dev, &sec);
+-	//else
+-	//	ret = -EOPNOTSUPP;
+-
+-	return 0;
+-}
+-
+-static int ieee80211_wpa_set_param(struct ieee80211_device *ieee, u8 name, u32 value)
+-{
+-	int ret = 0;
+-	unsigned long flags;
+-
+-	switch (name) {
+-	case IEEE_PARAM_WPA_ENABLED:
+-		ret = ieee80211_wpa_enable(ieee, value);
+-		break;
+-
+-	case IEEE_PARAM_TKIP_COUNTERMEASURES:
+-		ieee->tkip_countermeasures = value;
+-		break;
+-
+-	case IEEE_PARAM_DROP_UNENCRYPTED: {
+-		/* HACK:
+-		 *
+-		 * wpa_supplicant calls set_wpa_enabled when the driver
+-		 * is loaded and unloaded, regardless of if WPA is being
+-		 * used.  No other calls are made which can be used to
+-		 * determine if encryption will be used or not prior to
+-		 * association being expected.  If encryption is not being
+-		 * used, drop_unencrypted is set to false, else true -- we
+-		 * can use this to determine if the CAP_PRIVACY_ON bit should
+-		 * be set.
+-		 */
+-		struct ieee80211_security sec = {
+-			.flags = SEC_ENABLED,
+-			.enabled = value,
+-		};
+-		ieee->drop_unencrypted = value;
+-		/* We only change SEC_LEVEL for open mode. Others
+-		 * are set by ipw_wpa_set_encryption.
+-		 */
+-		if (!value) {
+-			sec.flags |= SEC_LEVEL;
+-			sec.level = SEC_LEVEL_0;
+-		} else {
+-			sec.flags |= SEC_LEVEL;
+-			sec.level = SEC_LEVEL_1;
+-		}
+-		if (ieee->set_security)
+-			ieee->set_security(ieee->dev, &sec);
+-		break;
+-	}
+-
+-	case IEEE_PARAM_PRIVACY_INVOKED:
+-		ieee->privacy_invoked = value;
+-		break;
+-
+-	case IEEE_PARAM_AUTH_ALGS:
+-		ret = ieee80211_wpa_set_auth_algs(ieee, value);
+-		break;
+-
+-	case IEEE_PARAM_IEEE_802_1X:
+-		ieee->ieee802_1x = value;
+-		break;
+-	case IEEE_PARAM_WPAX_SELECT:
+-		// added for WPA2 mixed mode
+-		spin_lock_irqsave(&ieee->wpax_suitlist_lock, flags);
+-		ieee->wpax_type_set = 1;
+-		ieee->wpax_type_notify = value;
+-		spin_unlock_irqrestore(&ieee->wpax_suitlist_lock, flags);
+-		break;
+-
+-	default:
+-		printk("Unknown WPA param: %d\n", name);
+-		ret = -EOPNOTSUPP;
+-	}
+-
+-	return ret;
+-}
+-
+-/* implementation borrowed from hostap driver */
+-static int ieee80211_wpa_set_encryption(struct ieee80211_device *ieee,
+-				  struct ieee_param *param, int param_len)
+-{
+-	int ret = 0;
+-	const char *module = NULL;
+-
+-	struct ieee80211_crypto_ops *ops = NULL;
+-	struct ieee80211_crypt_data **crypt;
+-
+-	struct ieee80211_security sec = {
+-		.flags = 0,
+-	};
+-
+-	param->u.crypt.err = 0;
+-	param->u.crypt.alg[IEEE_CRYPT_ALG_NAME_LEN - 1] = '\0';
+-
+-	if (param_len !=
+-	    (int)((char *)param->u.crypt.key - (char *)param) +
+-	    param->u.crypt.key_len) {
+-		printk("Len mismatch %d, %d\n", param_len,
+-			       param->u.crypt.key_len);
+-		return -EINVAL;
+-	}
+-	if (is_broadcast_ether_addr(param->sta_addr)) {
+-		if (param->u.crypt.idx >= WEP_KEYS)
+-			return -EINVAL;
+-		crypt = &ieee->crypt[param->u.crypt.idx];
+-	} else {
+-		return -EINVAL;
+-	}
+-
+-	if (strcmp(param->u.crypt.alg, "none") == 0) {
+-		if (crypt) {
+-			sec.enabled = 0;
+-			// FIXME FIXME
+-			//sec.encrypt = 0;
+-			sec.level = SEC_LEVEL_0;
+-			sec.flags |= SEC_ENABLED | SEC_LEVEL;
+-			ieee80211_crypt_delayed_deinit(ieee, crypt);
+-		}
+-		goto done;
+-	}
+-	sec.enabled = 1;
+-// FIXME FIXME
+-//	sec.encrypt = 1;
+-	sec.flags |= SEC_ENABLED;
+-
+-	/* IPW HW cannot build TKIP MIC, host decryption still needed. */
+-	if (!(ieee->host_encrypt || ieee->host_decrypt) &&
+-	    strcmp(param->u.crypt.alg, "TKIP"))
+-		goto skip_host_crypt;
+-
+-	//set WEP40 first, it will be modified according to WEP104 or WEP40 at other place
+-	if (!strcmp(param->u.crypt.alg, "WEP"))
+-		module = "ieee80211_crypt_wep";
+-	else if (!strcmp(param->u.crypt.alg, "TKIP"))
+-		module = "ieee80211_crypt_tkip";
+-	else if (!strcmp(param->u.crypt.alg, "CCMP"))
+-		module = "ieee80211_crypt_ccmp";
+-	if (module)
+-		ops = try_then_request_module(ieee80211_get_crypto_ops(param->u.crypt.alg),
+-					      module);
+-	if (!ops) {
+-		printk("unknown crypto alg '%s'\n", param->u.crypt.alg);
+-		param->u.crypt.err = IEEE_CRYPT_ERR_UNKNOWN_ALG;
+-		ret = -EINVAL;
+-		goto done;
+-	}
+-
+-	if (!*crypt || (*crypt)->ops != ops) {
+-		struct ieee80211_crypt_data *new_crypt;
+-
+-		ieee80211_crypt_delayed_deinit(ieee, crypt);
+-
+-		new_crypt = kzalloc(sizeof(*new_crypt), GFP_KERNEL);
+-		if (!new_crypt) {
+-			ret = -ENOMEM;
+-			goto done;
+-		}
+-		new_crypt->ops = ops;
+-		if (new_crypt->ops && try_module_get(new_crypt->ops->owner))
+-			new_crypt->priv =
+-				new_crypt->ops->init(param->u.crypt.idx);
+-
+-		if (!new_crypt->priv) {
+-			kfree(new_crypt);
+-			param->u.crypt.err = IEEE_CRYPT_ERR_CRYPT_INIT_FAILED;
+-			ret = -EINVAL;
+-			goto done;
+-		}
+-
+-		*crypt = new_crypt;
+-	}
+-
+-	if (param->u.crypt.key_len > 0 && (*crypt)->ops->set_key &&
+-	    (*crypt)->ops->set_key(param->u.crypt.key,
+-				   param->u.crypt.key_len, param->u.crypt.seq,
+-				   (*crypt)->priv) < 0) {
+-		printk("key setting failed\n");
+-		param->u.crypt.err = IEEE_CRYPT_ERR_KEY_SET_FAILED;
+-		ret = -EINVAL;
+-		goto done;
+-	}
+-
+- skip_host_crypt:
+-	if (param->u.crypt.set_tx) {
+-		ieee->tx_keyidx = param->u.crypt.idx;
+-		sec.active_key = param->u.crypt.idx;
+-		sec.flags |= SEC_ACTIVE_KEY;
+-	} else {
+-		sec.flags &= ~SEC_ACTIVE_KEY;
+-	}
+-	memcpy(sec.keys[param->u.crypt.idx],
+-	       param->u.crypt.key,
+-	       param->u.crypt.key_len);
+-	sec.key_sizes[param->u.crypt.idx] = param->u.crypt.key_len;
+-	sec.flags |= (1 << param->u.crypt.idx);
+-
+-	if (strcmp(param->u.crypt.alg, "WEP") == 0) {
+-		sec.flags |= SEC_LEVEL;
+-		sec.level = SEC_LEVEL_1;
+-	} else if (strcmp(param->u.crypt.alg, "TKIP") == 0) {
+-		sec.flags |= SEC_LEVEL;
+-		sec.level = SEC_LEVEL_2;
+-	} else if (strcmp(param->u.crypt.alg, "CCMP") == 0) {
+-		sec.flags |= SEC_LEVEL;
+-		sec.level = SEC_LEVEL_3;
+-	}
+- done:
+-	if (ieee->set_security)
+-		ieee->set_security(ieee->dev, &sec);
+-
+-	/* Do not reset port if card is in Managed mode since resetting will
+-	 * generate new IEEE 802.11 authentication which may end up in looping
+-	 * with IEEE 802.1X.  If your hardware requires a reset after WEP
+-	 * configuration (for example... Prism2), implement the reset_port in
+-	 * the callbacks structures used to initialize the 802.11 stack. */
+-	if (ieee->reset_on_keychange &&
+-	    ieee->iw_mode != IW_MODE_INFRA &&
+-	    ieee->reset_port &&
+-	    ieee->reset_port(ieee->dev)) {
+-		printk("reset_port failed\n");
+-		param->u.crypt.err = IEEE_CRYPT_ERR_CARD_CONF_FAILED;
+-		return -EINVAL;
+-	}
+-
+-	return ret;
+-}
+-
+-static inline struct sk_buff *ieee80211_disassociate_skb(struct ieee80211_network *beacon,
+-							 struct ieee80211_device *ieee,
+-							 u8	asRsn)
+-{
+-	struct sk_buff *skb;
+-	struct ieee80211_disassoc *disass;
+-
+-	skb = dev_alloc_skb(sizeof(struct ieee80211_disassoc));
+-	if (!skb)
+-		return NULL;
+-
+-	disass = skb_put(skb, sizeof(struct ieee80211_disassoc));
+-	disass->header.frame_ctl = cpu_to_le16(IEEE80211_STYPE_DISASSOC);
+-	disass->header.duration_id = 0;
+-
+-	memcpy(disass->header.addr1, beacon->bssid, ETH_ALEN);
+-	memcpy(disass->header.addr2, ieee->dev->dev_addr, ETH_ALEN);
+-	memcpy(disass->header.addr3, beacon->bssid, ETH_ALEN);
+-
+-	disass->reason = cpu_to_le16(asRsn);
+-	return skb;
+-}
+-
+-void
+-SendDisassociation(struct ieee80211_device *ieee,
+-		   u8			   *asSta,
+-		   u8			    asRsn
+-)
+-{
+-	struct ieee80211_network *beacon = &ieee->current_network;
+-	struct sk_buff *skb;
+-
+-	skb = ieee80211_disassociate_skb(beacon, ieee, asRsn);
+-	if (skb) {
+-		softmac_mgmt_xmit(skb, ieee);
+-		//dev_kfree_skb_any(skb);//edit by thomas
+-	}
+-}
+-EXPORT_SYMBOL(SendDisassociation);
+-
+-int ieee80211_wpa_supplicant_ioctl(struct ieee80211_device *ieee, struct iw_point *p)
+-{
+-	struct ieee_param *param;
+-	int ret = 0;
+-
+-	mutex_lock(&ieee->wx_mutex);
+-	//IEEE_DEBUG_INFO("wpa_supplicant: len=%d\n", p->length);
+-
+-	if (p->length < sizeof(struct ieee_param) || !p->pointer) {
+-		ret = -EINVAL;
+-		goto out;
+-	}
+-
+-	param = memdup_user(p->pointer, p->length);
+-	if (IS_ERR(param)) {
+-		ret = PTR_ERR(param);
+-		goto out;
+-	}
+-
+-	switch (param->cmd) {
+-	case IEEE_CMD_SET_WPA_PARAM:
+-		ret = ieee80211_wpa_set_param(ieee, param->u.wpa_param.name,
+-					param->u.wpa_param.value);
+-		break;
+-
+-	case IEEE_CMD_SET_WPA_IE:
+-		ret = ieee80211_wpa_set_wpa_ie(ieee, param, p->length);
+-		break;
+-
+-	case IEEE_CMD_SET_ENCRYPTION:
+-		ret = ieee80211_wpa_set_encryption(ieee, param, p->length);
+-		break;
+-
+-	case IEEE_CMD_MLME:
+-		ret = ieee80211_wpa_mlme(ieee, param->u.mlme.command,
+-				   param->u.mlme.reason_code);
+-		break;
+-
+-	default:
+-		printk("Unknown WPA supplicant request: %d\n", param->cmd);
+-		ret = -EOPNOTSUPP;
+-		break;
+-	}
+-
+-	if (ret == 0 && copy_to_user(p->pointer, param, p->length))
+-		ret = -EFAULT;
+-
+-	kfree(param);
+-out:
+-	mutex_unlock(&ieee->wx_mutex);
+-
+-	return ret;
+-}
+-EXPORT_SYMBOL(ieee80211_wpa_supplicant_ioctl);
+-
+-void notify_wx_assoc_event(struct ieee80211_device *ieee)
+-{
+-	union iwreq_data wrqu;
+-
+-	wrqu.ap_addr.sa_family = ARPHRD_ETHER;
+-	if (ieee->state == IEEE80211_LINKED)
+-		memcpy(wrqu.ap_addr.sa_data, ieee->current_network.bssid, ETH_ALEN);
+-	else
+-		eth_zero_addr(wrqu.ap_addr.sa_data);
+-	wireless_send_event(ieee->dev, SIOCGIWAP, &wrqu, NULL);
+-}
+-EXPORT_SYMBOL(notify_wx_assoc_event);
+diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac_wx.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac_wx.c
+deleted file mode 100644
+index afa92ddfa005..000000000000
+--- a/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac_wx.c
++++ /dev/null
+@@ -1,598 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/* IEEE 802.11 SoftMAC layer
+- * Copyright (c) 2005 Andrea Merello <andrea.merello@gmail.com>
+- *
+- * Mostly extracted from the rtl8180-sa2400 driver for the
+- * in-kernel generic ieee802.11 stack.
+- *
+- * Some pieces of code might be stolen from ipw2100 driver
+- * copyright of who own it's copyright ;-)
+- *
+- * PS wx handler mostly stolen from hostap, copyright who
+- * own it's copyright ;-)
+- */
+-
+-
+-#include <linux/etherdevice.h>
+-
+-#include "ieee80211.h"
+-#include "dot11d.h"
+-/* FIXME: add A freqs */
+-
+-const long ieee80211_wlan_frequencies[] = {
+-	2412, 2417, 2422, 2427,
+-	2432, 2437, 2442, 2447,
+-	2452, 2457, 2462, 2467,
+-	2472, 2484
+-};
+-EXPORT_SYMBOL(ieee80211_wlan_frequencies);
+-
+-int ieee80211_wx_set_freq(struct ieee80211_device *ieee, struct iw_request_info *a,
+-			     union iwreq_data *wrqu, char *b)
+-{
+-	int ret;
+-	struct iw_freq *fwrq = &wrqu->freq;
+-
+-	mutex_lock(&ieee->wx_mutex);
+-
+-	if (ieee->iw_mode == IW_MODE_INFRA) {
+-		ret = -EOPNOTSUPP;
+-		goto out;
+-	}
+-
+-	/* if setting by freq convert to channel */
+-	if (fwrq->e == 1) {
+-		if ((fwrq->m >= (int)2.412e8 &&
+-		     fwrq->m <= (int)2.487e8)) {
+-			int f = fwrq->m / 100000;
+-			int c = 0;
+-
+-			while ((c < 14) && (f != ieee80211_wlan_frequencies[c]))
+-				c++;
+-
+-			/* hack to fall through */
+-			fwrq->e = 0;
+-			fwrq->m = c + 1;
+-		}
+-	}
+-
+-	if (fwrq->e > 0 || fwrq->m > 14 || fwrq->m < 1) {
+-		ret = -EOPNOTSUPP;
+-		goto out;
+-
+-	} else { /* Set the channel */
+-
+-		if (!(GET_DOT11D_INFO(ieee)->channel_map)[fwrq->m]) {
+-			ret = -EINVAL;
+-			goto out;
+-		}
+-		ieee->current_network.channel = fwrq->m;
+-		ieee->set_chan(ieee->dev, ieee->current_network.channel);
+-
+-		if (ieee->iw_mode == IW_MODE_ADHOC || ieee->iw_mode == IW_MODE_MASTER)
+-			if (ieee->state == IEEE80211_LINKED) {
+-				ieee80211_stop_send_beacons(ieee);
+-				ieee80211_start_send_beacons(ieee);
+-			}
+-	}
+-
+-	ret = 0;
+-out:
+-	mutex_unlock(&ieee->wx_mutex);
+-	return ret;
+-}
+-EXPORT_SYMBOL(ieee80211_wx_set_freq);
+-
+-int ieee80211_wx_get_freq(struct ieee80211_device *ieee,
+-			     struct iw_request_info *a,
+-			     union iwreq_data *wrqu, char *b)
+-{
+-	struct iw_freq *fwrq = &wrqu->freq;
+-
+-	if (ieee->current_network.channel == 0)
+-		return -1;
+-	/* NM 0.7.0 will not accept channel any more. */
+-	fwrq->m = ieee80211_wlan_frequencies[ieee->current_network.channel - 1] * 100000;
+-	fwrq->e = 1;
+-	/* fwrq->m = ieee->current_network.channel; */
+-	/* fwrq->e = 0; */
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL(ieee80211_wx_get_freq);
+-
+-int ieee80211_wx_get_wap(struct ieee80211_device *ieee,
+-			    struct iw_request_info *info,
+-			    union iwreq_data *wrqu, char *extra)
+-{
+-	unsigned long flags;
+-
+-	wrqu->ap_addr.sa_family = ARPHRD_ETHER;
+-
+-	if (ieee->iw_mode == IW_MODE_MONITOR)
+-		return -1;
+-
+-	/* We want avoid to give to the user inconsistent infos*/
+-	spin_lock_irqsave(&ieee->lock, flags);
+-
+-	if (ieee->state != IEEE80211_LINKED &&
+-		ieee->state != IEEE80211_LINKED_SCANNING &&
+-		ieee->wap_set == 0)
+-
+-		eth_zero_addr(wrqu->ap_addr.sa_data);
+-	else
+-		memcpy(wrqu->ap_addr.sa_data,
+-		       ieee->current_network.bssid, ETH_ALEN);
+-
+-	spin_unlock_irqrestore(&ieee->lock, flags);
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL(ieee80211_wx_get_wap);
+-
+-int ieee80211_wx_set_wap(struct ieee80211_device *ieee,
+-			 struct iw_request_info *info,
+-			 union iwreq_data *awrq,
+-			 char *extra)
+-{
+-
+-	int ret = 0;
+-	unsigned long flags;
+-
+-	short ifup = ieee->proto_started; /* dev->flags & IFF_UP; */
+-	struct sockaddr *temp = (struct sockaddr *)awrq;
+-
+-	ieee->sync_scan_hurryup = 1;
+-
+-	mutex_lock(&ieee->wx_mutex);
+-	/* use ifconfig hw ether */
+-	if (ieee->iw_mode == IW_MODE_MASTER) {
+-		ret = -1;
+-		goto out;
+-	}
+-
+-	if (temp->sa_family != ARPHRD_ETHER) {
+-		ret = -EINVAL;
+-		goto out;
+-	}
+-
+-	if (ifup)
+-		ieee80211_stop_protocol(ieee);
+-
+-	/* just to avoid to give inconsistent infos in the
+-	 * get wx method. not really needed otherwise
+-	 */
+-	spin_lock_irqsave(&ieee->lock, flags);
+-
+-	memcpy(ieee->current_network.bssid, temp->sa_data, ETH_ALEN);
+-	ieee->wap_set = !is_zero_ether_addr(temp->sa_data);
+-
+-	spin_unlock_irqrestore(&ieee->lock, flags);
+-
+-	if (ifup)
+-		ieee80211_start_protocol(ieee);
+-out:
+-	mutex_unlock(&ieee->wx_mutex);
+-	return ret;
+-}
+-EXPORT_SYMBOL(ieee80211_wx_set_wap);
+-
+-int ieee80211_wx_get_essid(struct ieee80211_device *ieee, struct iw_request_info *a, union iwreq_data *wrqu, char *b)
+-{
+-	int len, ret = 0;
+-	unsigned long flags;
+-
+-	if (ieee->iw_mode == IW_MODE_MONITOR)
+-		return -1;
+-
+-	/* We want avoid to give to the user inconsistent infos*/
+-	spin_lock_irqsave(&ieee->lock, flags);
+-
+-	if (ieee->current_network.ssid[0] == '\0' ||
+-		ieee->current_network.ssid_len == 0) {
+-		ret = -1;
+-		goto out;
+-	}
+-
+-	if (ieee->state != IEEE80211_LINKED &&
+-		ieee->state != IEEE80211_LINKED_SCANNING &&
+-		ieee->ssid_set == 0) {
+-		ret = -1;
+-		goto out;
+-	}
+-	len = ieee->current_network.ssid_len;
+-	wrqu->essid.length = len;
+-	strncpy(b, ieee->current_network.ssid, len);
+-	wrqu->essid.flags = 1;
+-
+-out:
+-	spin_unlock_irqrestore(&ieee->lock, flags);
+-
+-	return ret;
+-
+-}
+-EXPORT_SYMBOL(ieee80211_wx_get_essid);
+-
+-int ieee80211_wx_set_rate(struct ieee80211_device *ieee,
+-			     struct iw_request_info *info,
+-			     union iwreq_data *wrqu, char *extra)
+-{
+-
+-	u32 target_rate = wrqu->bitrate.value;
+-
+-	ieee->rate = target_rate / 100000;
+-	/* FIXME: we might want to limit rate also in management protocols. */
+-	return 0;
+-}
+-EXPORT_SYMBOL(ieee80211_wx_set_rate);
+-
+-int ieee80211_wx_get_rate(struct ieee80211_device *ieee,
+-			     struct iw_request_info *info,
+-			     union iwreq_data *wrqu, char *extra)
+-{
+-	u32 tmp_rate;
+-
+-	tmp_rate = TxCountToDataRate(ieee, ieee->softmac_stats.CurrentShowTxate);
+-
+-	wrqu->bitrate.value = tmp_rate * 500000;
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL(ieee80211_wx_get_rate);
+-
+-int ieee80211_wx_set_rts(struct ieee80211_device *ieee,
+-			     struct iw_request_info *info,
+-			     union iwreq_data *wrqu, char *extra)
+-{
+-	if (wrqu->rts.disabled || !wrqu->rts.fixed) {
+-		ieee->rts = DEFAULT_RTS_THRESHOLD;
+-	} else {
+-		if (wrqu->rts.value < MIN_RTS_THRESHOLD ||
+-				wrqu->rts.value > MAX_RTS_THRESHOLD)
+-			return -EINVAL;
+-		ieee->rts = wrqu->rts.value;
+-	}
+-	return 0;
+-}
+-EXPORT_SYMBOL(ieee80211_wx_set_rts);
+-
+-int ieee80211_wx_get_rts(struct ieee80211_device *ieee,
+-			     struct iw_request_info *info,
+-			     union iwreq_data *wrqu, char *extra)
+-{
+-	wrqu->rts.value = ieee->rts;
+-	wrqu->rts.fixed = 0;	/* no auto select */
+-	wrqu->rts.disabled = (wrqu->rts.value == DEFAULT_RTS_THRESHOLD);
+-	return 0;
+-}
+-EXPORT_SYMBOL(ieee80211_wx_get_rts);
+-
+-int ieee80211_wx_set_mode(struct ieee80211_device *ieee, struct iw_request_info *a,
+-			     union iwreq_data *wrqu, char *b)
+-{
+-
+-	ieee->sync_scan_hurryup = 1;
+-
+-	mutex_lock(&ieee->wx_mutex);
+-
+-	if (wrqu->mode == ieee->iw_mode)
+-		goto out;
+-
+-	if (wrqu->mode == IW_MODE_MONITOR)
+-		ieee->dev->type = ARPHRD_IEEE80211;
+-	else
+-		ieee->dev->type = ARPHRD_ETHER;
+-
+-	if (!ieee->proto_started) {
+-		ieee->iw_mode = wrqu->mode;
+-	} else {
+-		ieee80211_stop_protocol(ieee);
+-		ieee->iw_mode = wrqu->mode;
+-		ieee80211_start_protocol(ieee);
+-	}
+-
+-out:
+-	mutex_unlock(&ieee->wx_mutex);
+-	return 0;
+-}
+-EXPORT_SYMBOL(ieee80211_wx_set_mode);
+-
+-void ieee80211_wx_sync_scan_wq(struct work_struct *work)
+-{
+-	struct ieee80211_device *ieee = container_of(work, struct ieee80211_device, wx_sync_scan_wq);
+-	short chan;
+-	enum ht_extension_chan_offset chan_offset = 0;
+-	enum ht_channel_width bandwidth = 0;
+-	int b40M = 0;
+-
+-	chan = ieee->current_network.channel;
+-	netif_carrier_off(ieee->dev);
+-
+-	if (ieee->data_hard_stop)
+-		ieee->data_hard_stop(ieee->dev);
+-
+-	ieee80211_stop_send_beacons(ieee);
+-
+-	ieee->state = IEEE80211_LINKED_SCANNING;
+-	ieee->link_change(ieee->dev);
+-	ieee->InitialGainHandler(ieee->dev, IG_Backup);
+-	if (ieee->pHTInfo->bCurrentHTSupport && ieee->pHTInfo->bEnableHT && ieee->pHTInfo->bCurBW40MHz) {
+-		b40M = 1;
+-		chan_offset = ieee->pHTInfo->CurSTAExtChnlOffset;
+-		bandwidth = (enum ht_channel_width)ieee->pHTInfo->bCurBW40MHz;
+-		printk("Scan in 40M, force to 20M first:%d, %d\n", chan_offset, bandwidth);
+-		ieee->SetBWModeHandler(ieee->dev, HT_CHANNEL_WIDTH_20, HT_EXTCHNL_OFFSET_NO_EXT);
+-		}
+-	ieee80211_start_scan_syncro(ieee);
+-	if (b40M) {
+-		printk("Scan in 20M, back to 40M\n");
+-		if (chan_offset == HT_EXTCHNL_OFFSET_UPPER)
+-			ieee->set_chan(ieee->dev, chan + 2);
+-		else if (chan_offset == HT_EXTCHNL_OFFSET_LOWER)
+-			ieee->set_chan(ieee->dev, chan - 2);
+-		else
+-			ieee->set_chan(ieee->dev, chan);
+-		ieee->SetBWModeHandler(ieee->dev, bandwidth, chan_offset);
+-	} else {
+-		ieee->set_chan(ieee->dev, chan);
+-	}
+-
+-	ieee->InitialGainHandler(ieee->dev, IG_Restore);
+-	ieee->state = IEEE80211_LINKED;
+-	ieee->link_change(ieee->dev);
+-	/* To prevent the immediately calling watch_dog after scan. */
+-	if (ieee->LinkDetectInfo.NumRecvBcnInPeriod == 0 || ieee->LinkDetectInfo.NumRecvDataInPeriod == 0) {
+-		ieee->LinkDetectInfo.NumRecvBcnInPeriod = 1;
+-		ieee->LinkDetectInfo.NumRecvDataInPeriod = 1;
+-	}
+-	if (ieee->data_hard_resume)
+-		ieee->data_hard_resume(ieee->dev);
+-
+-	if (ieee->iw_mode == IW_MODE_ADHOC || ieee->iw_mode == IW_MODE_MASTER)
+-		ieee80211_start_send_beacons(ieee);
+-
+-	netif_carrier_on(ieee->dev);
+-	mutex_unlock(&ieee->wx_mutex);
+-
+-}
+-
+-int ieee80211_wx_set_scan(struct ieee80211_device *ieee, struct iw_request_info *a,
+-			     union iwreq_data *wrqu, char *b)
+-{
+-	int ret = 0;
+-
+-	mutex_lock(&ieee->wx_mutex);
+-
+-	if (ieee->iw_mode == IW_MODE_MONITOR || !(ieee->proto_started)) {
+-		ret = -1;
+-		goto out;
+-	}
+-
+-	if (ieee->state == IEEE80211_LINKED) {
+-		queue_work(ieee->wq, &ieee->wx_sync_scan_wq);
+-		/* intentionally forget to up sem */
+-		return 0;
+-	}
+-
+-out:
+-	mutex_unlock(&ieee->wx_mutex);
+-	return ret;
+-}
+-EXPORT_SYMBOL(ieee80211_wx_set_scan);
+-
+-int ieee80211_wx_set_essid(struct ieee80211_device *ieee,
+-			      struct iw_request_info *a,
+-			      union iwreq_data *wrqu, char *extra)
+-{
+-
+-	int ret = 0, len;
+-	short proto_started;
+-	unsigned long flags;
+-
+-	ieee->sync_scan_hurryup = 1;
+-	mutex_lock(&ieee->wx_mutex);
+-
+-	proto_started = ieee->proto_started;
+-
+-	if (wrqu->essid.length > IW_ESSID_MAX_SIZE) {
+-		ret = -E2BIG;
+-		goto out;
+-	}
+-
+-	if (ieee->iw_mode == IW_MODE_MONITOR) {
+-		ret = -1;
+-		goto out;
+-	}
+-
+-	if (proto_started)
+-		ieee80211_stop_protocol(ieee);
+-
+-
+-	/* this is just to be sure that the GET wx callback
+-	 * has consisten infos. not needed otherwise
+-	 */
+-	spin_lock_irqsave(&ieee->lock, flags);
+-
+-	if (wrqu->essid.flags && wrqu->essid.length) {
+-		/* first flush current network.ssid */
+-		len = ((wrqu->essid.length - 1) < IW_ESSID_MAX_SIZE) ? (wrqu->essid.length - 1) : IW_ESSID_MAX_SIZE;
+-		strncpy(ieee->current_network.ssid, extra, len + 1);
+-		ieee->current_network.ssid_len = len + 1;
+-		ieee->ssid_set = 1;
+-	} else {
+-		ieee->ssid_set = 0;
+-		ieee->current_network.ssid[0] = '\0';
+-		ieee->current_network.ssid_len = 0;
+-	}
+-	spin_unlock_irqrestore(&ieee->lock, flags);
+-
+-	if (proto_started)
+-		ieee80211_start_protocol(ieee);
+-out:
+-	mutex_unlock(&ieee->wx_mutex);
+-	return ret;
+-}
+-EXPORT_SYMBOL(ieee80211_wx_set_essid);
+-
+-int ieee80211_wx_get_mode(struct ieee80211_device *ieee, struct iw_request_info *a,
+-			     union iwreq_data *wrqu, char *b)
+-{
+-
+-	wrqu->mode = ieee->iw_mode;
+-	return 0;
+-}
+-EXPORT_SYMBOL(ieee80211_wx_get_mode);
+-
+-int ieee80211_wx_set_rawtx(struct ieee80211_device *ieee,
+-			       struct iw_request_info *info,
+-			       union iwreq_data *wrqu, char *extra)
+-{
+-
+-	int *parms = (int *)extra;
+-	int enable = (parms[0] > 0);
+-	short prev = ieee->raw_tx;
+-
+-	mutex_lock(&ieee->wx_mutex);
+-
+-	if (enable)
+-		ieee->raw_tx = 1;
+-	else
+-		ieee->raw_tx = 0;
+-
+-	netdev_info(ieee->dev, "raw TX is %s\n",
+-		    ieee->raw_tx ? "enabled" : "disabled");
+-
+-	if (ieee->iw_mode == IW_MODE_MONITOR) {
+-		if (prev == 0 && ieee->raw_tx) {
+-			if (ieee->data_hard_resume)
+-				ieee->data_hard_resume(ieee->dev);
+-
+-			netif_carrier_on(ieee->dev);
+-		}
+-
+-		if (prev && ieee->raw_tx == 1)
+-			netif_carrier_off(ieee->dev);
+-	}
+-
+-	mutex_unlock(&ieee->wx_mutex);
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL(ieee80211_wx_set_rawtx);
+-
+-int ieee80211_wx_get_name(struct ieee80211_device *ieee,
+-			     struct iw_request_info *info,
+-			     union iwreq_data *wrqu, char *extra)
+-{
+-	strscpy(wrqu->name, "802.11", IFNAMSIZ);
+-	if (ieee->modulation & IEEE80211_CCK_MODULATION) {
+-		strlcat(wrqu->name, "b", IFNAMSIZ);
+-		if (ieee->modulation & IEEE80211_OFDM_MODULATION)
+-			strlcat(wrqu->name, "/g", IFNAMSIZ);
+-	} else if (ieee->modulation & IEEE80211_OFDM_MODULATION) {
+-		strlcat(wrqu->name, "g", IFNAMSIZ);
+-	}
+-
+-	if (ieee->mode & (IEEE_N_24G | IEEE_N_5G))
+-		strlcat(wrqu->name, "/n", IFNAMSIZ);
+-
+-	if ((ieee->state == IEEE80211_LINKED) ||
+-	    (ieee->state == IEEE80211_LINKED_SCANNING))
+-		strlcat(wrqu->name, " linked", IFNAMSIZ);
+-	else if (ieee->state != IEEE80211_NOLINK)
+-		strlcat(wrqu->name, " link..", IFNAMSIZ);
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL(ieee80211_wx_get_name);
+-
+-/* this is mostly stolen from hostap */
+-int ieee80211_wx_set_power(struct ieee80211_device *ieee,
+-				 struct iw_request_info *info,
+-				 union iwreq_data *wrqu, char *extra)
+-{
+-	int ret = 0;
+-
+-	mutex_lock(&ieee->wx_mutex);
+-
+-	if (wrqu->power.disabled) {
+-		ieee->ps = IEEE80211_PS_DISABLED;
+-		goto exit;
+-	}
+-	if (wrqu->power.flags & IW_POWER_TIMEOUT) {
+-		/* ieee->ps_period = wrqu->power.value / 1000; */
+-		ieee->ps_timeout = wrqu->power.value / 1000;
+-	}
+-
+-	if (wrqu->power.flags & IW_POWER_PERIOD) {
+-
+-		/* ieee->ps_timeout = wrqu->power.value / 1000; */
+-		ieee->ps_period = wrqu->power.value / 1000;
+-		/* wrq->value / 1024; */
+-
+-	}
+-	switch (wrqu->power.flags & IW_POWER_MODE) {
+-	case IW_POWER_UNICAST_R:
+-		ieee->ps = IEEE80211_PS_UNICAST;
+-		break;
+-	case IW_POWER_MULTICAST_R:
+-		ieee->ps = IEEE80211_PS_MBCAST;
+-		break;
+-	case IW_POWER_ALL_R:
+-		ieee->ps = IEEE80211_PS_UNICAST | IEEE80211_PS_MBCAST;
+-		break;
+-
+-	case IW_POWER_ON:
+-		/* ieee->ps = IEEE80211_PS_DISABLED; */
+-		break;
+-
+-	default:
+-		ret = -EINVAL;
+-		goto exit;
+-
+-	}
+-exit:
+-	mutex_unlock(&ieee->wx_mutex);
+-	return ret;
+-
+-}
+-EXPORT_SYMBOL(ieee80211_wx_set_power);
+-
+-/* this is stolen from hostap */
+-int ieee80211_wx_get_power(struct ieee80211_device *ieee,
+-				 struct iw_request_info *info,
+-				 union iwreq_data *wrqu, char *extra)
+-{
+-	mutex_lock(&ieee->wx_mutex);
+-
+-	if (ieee->ps == IEEE80211_PS_DISABLED) {
+-		wrqu->power.disabled = 1;
+-		goto exit;
+-	}
+-
+-	wrqu->power.disabled = 0;
+-
+-	if ((wrqu->power.flags & IW_POWER_TYPE) == IW_POWER_TIMEOUT) {
+-		wrqu->power.flags = IW_POWER_TIMEOUT;
+-		wrqu->power.value = ieee->ps_timeout * 1000;
+-	} else {
+-		/* ret = -EOPNOTSUPP; */
+-		/* goto exit; */
+-		wrqu->power.flags = IW_POWER_PERIOD;
+-		wrqu->power.value = ieee->ps_period * 1000;
+-		/* ieee->current_network.dtim_period * ieee->current_network.beacon_interval * 1024; */
+-	}
+-
+-	if ((ieee->ps & (IEEE80211_PS_MBCAST | IEEE80211_PS_UNICAST)) == (IEEE80211_PS_MBCAST | IEEE80211_PS_UNICAST))
+-		wrqu->power.flags |= IW_POWER_ALL_R;
+-	else if (ieee->ps & IEEE80211_PS_MBCAST)
+-		wrqu->power.flags |= IW_POWER_MULTICAST_R;
+-	else
+-		wrqu->power.flags |= IW_POWER_UNICAST_R;
+-
+-exit:
+-	mutex_unlock(&ieee->wx_mutex);
+-	return 0;
+-
+-}
+-EXPORT_SYMBOL(ieee80211_wx_get_power);
+diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_tx.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_tx.c
+deleted file mode 100644
+index e4b6454809a0..000000000000
+--- a/drivers/staging/rtl8192u/ieee80211/ieee80211_tx.c
++++ /dev/null
+@@ -1,839 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/******************************************************************************
+- *
+- *  Copyright(c) 2003 - 2004 Intel Corporation. All rights reserved.
+- *
+- *  Contact Information:
+- *  James P. Ketrenos <ipw2100-admin@linux.intel.com>
+- *  Intel Corporation, 5200 N.E. Elam Young Parkway, Hillsboro, OR 97124-6497
+- *
+- *
+- *  Few modifications for Realtek's Wi-Fi drivers by
+- *  Andrea Merello <andrea.merello@gmail.com>
+- *
+- *  A special thanks goes to Realtek for their support !
+- *
+- ******************************************************************************/
+-
+-#include <linux/compiler.h>
+-#include <linux/errno.h>
+-#include <linux/if_arp.h>
+-#include <linux/in6.h>
+-#include <linux/in.h>
+-#include <linux/ip.h>
+-#include <linux/kernel.h>
+-#include <linux/module.h>
+-#include <linux/netdevice.h>
+-#include <linux/pci.h>
+-#include <linux/proc_fs.h>
+-#include <linux/skbuff.h>
+-#include <linux/slab.h>
+-#include <linux/tcp.h>
+-#include <linux/types.h>
+-#include <linux/wireless.h>
+-#include <linux/etherdevice.h>
+-#include <linux/uaccess.h>
+-#include <linux/if_vlan.h>
+-
+-#include "ieee80211.h"
+-
+-
+-/*
+- *
+- *
+- * 802.11 Data Frame
+- *
+- *
+- * 802.11 frame_contorl for data frames - 2 bytes
+- *      ,-----------------------------------------------------------------------------------------.
+- * bits | 0  |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  a  |  b  |  c  |  d  |  e   |
+- *      |----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|------|
+- * val  | 0  |  0  |  0  |  1  |  x  |  0  |  0  |  0  |  1  |  0  |  x  |  x  |  x  |  x  |  x   |
+- *      |----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|------|
+- * desc | ^-ver-^  |  ^type-^  |  ^-----subtype-----^  | to  |from |more |retry| pwr |more |wep   |
+- *      |          |           | x=0 data,x=1 data+ack | DS  | DS  |frag |     | mgm |data |      |
+- *      '-----------------------------------------------------------------------------------------'
+- *                                                    /\
+- *                                                    |
+- * 802.11 Data Frame                                  |
+- *           ,--------- 'ctrl' expands to >-----------'
+- *           |
+- *        ,--'---,-------------------------------------------------------------.
+- *  Bytes |  2   |  2   |    6    |    6    |    6    |  2   | 0..2312 |   4  |
+- *        |------|------|---------|---------|---------|------|---------|------|
+- *  Desc. | ctrl | dura |  DA/RA  |   TA    |    SA   | Sequ |  Frame  |  fcs |
+- *        |      | tion | (BSSID) |         |         | ence |  data   |      |
+- *        `--------------------------------------------------|         |------'
+- *  Total: 28 non-data bytes                                 `----.----'
+- *                                                                |
+- *         .- 'Frame data' expands to <---------------------------'
+- *         |
+- *         V
+- *        ,---------------------------------------------------.
+- *  Bytes |  1   |  1   |    1    |    3     |  2   |  0-2304 |
+- *        |------|------|---------|----------|------|---------|
+- *  Desc. | SNAP | SNAP | Control |Eth Tunnel| Type | IP      |
+- *        | DSAP | SSAP |         |          |      | Packet  |
+- *        | 0xAA | 0xAA |0x03 (UI)|0x00-00-F8|      |         |
+- *        `-----------------------------------------|         |
+- *  Total: 8 non-data bytes                         `----.----'
+- *                                                       |
+- *         .- 'IP Packet' expands, if WEP enabled, to <--'
+- *         |
+- *         V
+- *        ,-----------------------.
+- *  Bytes |  4  |   0-2296  |  4  |
+- *        |-----|-----------|-----|
+- *  Desc. | IV  | Encrypted | ICV |
+- *        |     | IP Packet |     |
+- *        `-----------------------'
+- *  Total: 8 non-data bytes
+- *
+- *
+- *  802.3 Ethernet Data Frame
+- *
+- *        ,-----------------------------------------.
+- *  Bytes |   6   |   6   |  2   |  Variable |   4  |
+- *        |-------|-------|------|-----------|------|
+- *  Desc. | Dest. | Source| Type | IP Packet |  fcs |
+- *        |  MAC  |  MAC  |      |           |      |
+- *        `-----------------------------------------'
+- *  Total: 18 non-data bytes
+- *
+- *  In the event that fragmentation is required, the incoming payload is split into
+- *  N parts of size ieee->fts.  The first fragment contains the SNAP header and the
+- *  remaining packets are just data.
+- *
+- *  If encryption is enabled, each fragment payload size is reduced by enough space
+- *  to add the prefix and postfix (IV and ICV totalling 8 bytes in the case of WEP)
+- *  So if you have 1500 bytes of payload with ieee->fts set to 500 without
+- *  encryption it will take 3 frames.  With WEP it will take 4 frames as the
+- *  payload of each frame is reduced to 492 bytes.
+- *
+- * SKB visualization
+- *
+- *  ,- skb->data
+- * |
+- * |    ETHERNET HEADER        ,-<-- PAYLOAD
+- * |                           |     14 bytes from skb->data
+- * |  2 bytes for Type --> ,T. |     (sizeof ethhdr)
+- * |                       | | |
+- * |,-Dest.--. ,--Src.---. | | |
+- * |  6 bytes| | 6 bytes | | | |
+- * v         | |         | | | |
+- * 0         | v       1 | v | v           2
+- * 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
+- *     ^     | ^         | ^ |
+- *     |     | |         | | |
+- *     |     | |         | `T' <---- 2 bytes for Type
+- *     |     | |         |
+- *     |     | '---SNAP--' <-------- 6 bytes for SNAP
+- *     |     |
+- *     `-IV--' <-------------------- 4 bytes for IV (WEP)
+- *
+- *      SNAP HEADER
+- *
+- */
+-
+-static u8 P802_1H_OUI[P80211_OUI_LEN] = { 0x00, 0x00, 0xf8 };
+-static u8 RFC1042_OUI[P80211_OUI_LEN] = { 0x00, 0x00, 0x00 };
+-
+-static inline int ieee80211_put_snap(u8 *data, u16 h_proto)
+-{
+-	struct ieee80211_snap_hdr *snap;
+-	u8 *oui;
+-
+-	snap = (struct ieee80211_snap_hdr *)data;
+-	snap->dsap = 0xaa;
+-	snap->ssap = 0xaa;
+-	snap->ctrl = 0x03;
+-
+-	if (h_proto == 0x8137 || h_proto == 0x80f3)
+-		oui = P802_1H_OUI;
+-	else
+-		oui = RFC1042_OUI;
+-	snap->oui[0] = oui[0];
+-	snap->oui[1] = oui[1];
+-	snap->oui[2] = oui[2];
+-
+-	*(__be16 *)(data + SNAP_SIZE) = htons(h_proto);
+-
+-	return SNAP_SIZE + sizeof(u16);
+-}
+-
+-int ieee80211_encrypt_fragment(
+-	struct ieee80211_device *ieee,
+-	struct sk_buff *frag,
+-	int hdr_len)
+-{
+-	struct ieee80211_crypt_data *crypt = ieee->crypt[ieee->tx_keyidx];
+-	int res;
+-
+-	if (!(crypt && crypt->ops)) {
+-		printk("=========>%s(), crypt is null\n", __func__);
+-		return -1;
+-	}
+-
+-	if (ieee->tkip_countermeasures &&
+-	    crypt && crypt->ops && strcmp(crypt->ops->name, "TKIP") == 0) {
+-		if (net_ratelimit()) {
+-			struct rtl_80211_hdr_3addrqos *header;
+-
+-			header = (struct rtl_80211_hdr_3addrqos *)frag->data;
+-			netdev_dbg(ieee->dev, "TKIP countermeasures: dropped "
+-			       "TX packet to %pM\n", header->addr1);
+-		}
+-		return -1;
+-	}
+-
+-	/* To encrypt, frame format is:
+-	 * IV (4 bytes), clear payload (including SNAP), ICV (4 bytes)
+-	 */
+-
+-	// PR: FIXME: Copied from hostap. Check fragmentation/MSDU/MPDU encryption.
+-	/* Host-based IEEE 802.11 fragmentation for TX is not yet supported, so
+-	 * call both MSDU and MPDU encryption functions from here.
+-	 */
+-	atomic_inc(&crypt->refcnt);
+-	res = 0;
+-	if (crypt->ops->encrypt_msdu)
+-		res = crypt->ops->encrypt_msdu(frag, hdr_len, crypt->priv);
+-	if (res == 0 && crypt->ops->encrypt_mpdu)
+-		res = crypt->ops->encrypt_mpdu(frag, hdr_len, crypt->priv);
+-
+-	atomic_dec(&crypt->refcnt);
+-	if (res < 0) {
+-		netdev_info(ieee->dev, "Encryption failed: len=%d.\n",
+-			    frag->len);
+-		ieee->ieee_stats.tx_discards++;
+-		return -1;
+-	}
+-
+-	return 0;
+-}
+-
+-
+-void ieee80211_txb_free(struct ieee80211_txb *txb)
+-{
+-	//int i;
+-	if (unlikely(!txb))
+-		return;
+-	kfree(txb);
+-}
+-EXPORT_SYMBOL(ieee80211_txb_free);
+-
+-static struct ieee80211_txb *ieee80211_alloc_txb(int nr_frags, int txb_size,
+-						 gfp_t gfp_mask)
+-{
+-	struct ieee80211_txb *txb;
+-	int i;
+-	txb = kmalloc(
+-		sizeof(struct ieee80211_txb) + (sizeof(u8 *) * nr_frags),
+-		gfp_mask);
+-	if (!txb)
+-		return NULL;
+-
+-	memset(txb, 0, sizeof(struct ieee80211_txb));
+-	txb->nr_frags = nr_frags;
+-	txb->frag_size = __cpu_to_le16(txb_size);
+-
+-	for (i = 0; i < nr_frags; i++) {
+-		txb->fragments[i] = dev_alloc_skb(txb_size);
+-		if (unlikely(!txb->fragments[i])) {
+-			i--;
+-			break;
+-		}
+-		memset(txb->fragments[i]->cb, 0, sizeof(txb->fragments[i]->cb));
+-	}
+-	if (unlikely(i != nr_frags)) {
+-		while (i >= 0)
+-			dev_kfree_skb_any(txb->fragments[i--]);
+-		kfree(txb);
+-		return NULL;
+-	}
+-	return txb;
+-}
+-
+-// Classify the to-be send data packet
+-// Need to acquire the sent queue index.
+-static int
+-ieee80211_classify(struct sk_buff *skb, struct ieee80211_network *network)
+-{
+-	struct ethhdr *eth;
+-	struct iphdr *ip;
+-	eth = (struct ethhdr *)skb->data;
+-	if (eth->h_proto != htons(ETH_P_IP))
+-		return 0;
+-
+-	ip = ip_hdr(skb);
+-	switch (ip->tos & 0xfc) {
+-	case 0x20:
+-		return 2;
+-	case 0x40:
+-		return 1;
+-	case 0x60:
+-		return 3;
+-	case 0x80:
+-		return 4;
+-	case 0xa0:
+-		return 5;
+-	case 0xc0:
+-		return 6;
+-	case 0xe0:
+-		return 7;
+-	default:
+-		return 0;
+-	}
+-}
+-
+-static void ieee80211_tx_query_agg_cap(struct ieee80211_device *ieee,
+-				       struct sk_buff *skb, struct cb_desc *tcb_desc)
+-{
+-	PRT_HIGH_THROUGHPUT	pHTInfo = ieee->pHTInfo;
+-	struct tx_ts_record        *pTxTs = NULL;
+-	struct rtl_80211_hdr_1addr *hdr = (struct rtl_80211_hdr_1addr *)skb->data;
+-
+-	if (!pHTInfo->bCurrentHTSupport || !pHTInfo->bEnableHT)
+-		return;
+-	if (!IsQoSDataFrame(skb->data))
+-		return;
+-
+-	if (is_multicast_ether_addr(hdr->addr1))
+-		return;
+-	//check packet and mode later
+-	if (!ieee->GetNmodeSupportBySecCfg(ieee->dev))
+-		return;
+-
+-	if (pHTInfo->bCurrentAMPDUEnable) {
+-		if (!GetTs(ieee, (struct ts_common_info **)(&pTxTs), hdr->addr1, skb->priority, TX_DIR, true)) {
+-			printk("===>can't get TS\n");
+-			return;
+-		}
+-		if (!pTxTs->tx_admitted_ba_record.valid) {
+-			TsStartAddBaProcess(ieee, pTxTs);
+-			goto FORCED_AGG_SETTING;
+-		} else if (!pTxTs->using_ba) {
+-			if (SN_LESS(pTxTs->tx_admitted_ba_record.start_seq_ctrl.field.seq_num, (pTxTs->tx_cur_seq + 1) % 4096))
+-				pTxTs->using_ba = true;
+-			else
+-				goto FORCED_AGG_SETTING;
+-		}
+-
+-		if (ieee->iw_mode == IW_MODE_INFRA) {
+-			tcb_desc->bAMPDUEnable = true;
+-			tcb_desc->ampdu_factor = pHTInfo->CurrentAMPDUFactor;
+-			tcb_desc->ampdu_density = pHTInfo->CurrentMPDUDensity;
+-		}
+-	}
+-FORCED_AGG_SETTING:
+-	switch (pHTInfo->ForcedAMPDUMode) {
+-	case HT_AGG_AUTO:
+-		break;
+-
+-	case HT_AGG_FORCE_ENABLE:
+-		tcb_desc->bAMPDUEnable = true;
+-		tcb_desc->ampdu_density = pHTInfo->ForcedMPDUDensity;
+-		tcb_desc->ampdu_factor = pHTInfo->ForcedAMPDUFactor;
+-		break;
+-
+-	case HT_AGG_FORCE_DISABLE:
+-		tcb_desc->bAMPDUEnable = false;
+-		tcb_desc->ampdu_density = 0;
+-		tcb_desc->ampdu_factor = 0;
+-		break;
+-
+-	}
+-		return;
+-}
+-
+-static void ieee80211_qurey_ShortPreambleMode(struct ieee80211_device *ieee,
+-					      struct cb_desc *tcb_desc)
+-{
+-	tcb_desc->bUseShortPreamble = false;
+-	if (tcb_desc->data_rate == 2) {//// 1M can only use Long Preamble. 11B spec
+-		return;
+-	} else if (ieee->current_network.capability & WLAN_CAPABILITY_SHORT_PREAMBLE) {
+-		tcb_desc->bUseShortPreamble = true;
+-	}
+-	return;
+-}
+-static void
+-ieee80211_query_HTCapShortGI(struct ieee80211_device *ieee, struct cb_desc *tcb_desc)
+-{
+-	PRT_HIGH_THROUGHPUT		pHTInfo = ieee->pHTInfo;
+-
+-	tcb_desc->bUseShortGI		= false;
+-
+-	if (!pHTInfo->bCurrentHTSupport || !pHTInfo->bEnableHT)
+-		return;
+-
+-	if (pHTInfo->bForcedShortGI) {
+-		tcb_desc->bUseShortGI = true;
+-		return;
+-	}
+-
+-	if (pHTInfo->bCurBW40MHz && pHTInfo->bCurShortGI40MHz)
+-		tcb_desc->bUseShortGI = true;
+-	else if (!pHTInfo->bCurBW40MHz && pHTInfo->bCurShortGI20MHz)
+-		tcb_desc->bUseShortGI = true;
+-}
+-
+-static void ieee80211_query_BandwidthMode(struct ieee80211_device *ieee,
+-					  struct cb_desc *tcb_desc)
+-{
+-	PRT_HIGH_THROUGHPUT	pHTInfo = ieee->pHTInfo;
+-
+-	tcb_desc->bPacketBW = false;
+-
+-	if (!pHTInfo->bCurrentHTSupport || !pHTInfo->bEnableHT)
+-		return;
+-
+-	if (tcb_desc->bMulticast || tcb_desc->bBroadcast)
+-		return;
+-
+-	if ((tcb_desc->data_rate & 0x80) == 0) // If using legacy rate, it shall use 20MHz channel.
+-		return;
+-	//BandWidthAutoSwitch is for auto switch to 20 or 40 in long distance
+-	if (pHTInfo->bCurBW40MHz && pHTInfo->bCurTxBW40MHz && !ieee->bandwidth_auto_switch.bforced_tx20Mhz)
+-		tcb_desc->bPacketBW = true;
+-	return;
+-}
+-
+-static void ieee80211_query_protectionmode(struct ieee80211_device *ieee,
+-					   struct cb_desc *tcb_desc,
+-					   struct sk_buff *skb)
+-{
+-	// Common Settings
+-	tcb_desc->bRTSSTBC			= false;
+-	tcb_desc->bRTSUseShortGI		= false; // Since protection frames are always sent by legacy rate, ShortGI will never be used.
+-	tcb_desc->bCTSEnable			= false; // Most of protection using RTS/CTS
+-	tcb_desc->RTSSC				= 0;		// 20MHz: Don't care;  40MHz: Duplicate.
+-	tcb_desc->bRTSBW			= false; // RTS frame bandwidth is always 20MHz
+-
+-	if (tcb_desc->bBroadcast || tcb_desc->bMulticast) //only unicast frame will use rts/cts
+-		return;
+-
+-	if (is_broadcast_ether_addr(skb->data + 16))  //check addr3 as infrastructure add3 is DA.
+-		return;
+-
+-	if (ieee->mode < IEEE_N_24G) /* b, g mode */ {
+-			// (1) RTS_Threshold is compared to the MPDU, not MSDU.
+-			// (2) If there are more than one frag in  this MSDU, only the first frag uses protection frame.
+-			//		Other fragments are protected by previous fragment.
+-			//		So we only need to check the length of first fragment.
+-		if (skb->len > ieee->rts) {
+-			tcb_desc->bRTSEnable = true;
+-			tcb_desc->rts_rate = MGN_24M;
+-		} else if (ieee->current_network.buseprotection) {
+-			// Use CTS-to-SELF in protection mode.
+-			tcb_desc->bRTSEnable = true;
+-			tcb_desc->bCTSEnable = true;
+-			tcb_desc->rts_rate = MGN_24M;
+-		}
+-		//otherwise return;
+-		return;
+-	} else { // 11n High throughput case.
+-		PRT_HIGH_THROUGHPUT pHTInfo = ieee->pHTInfo;
+-		while (true) {
+-			//check ERP protection
+-			if (ieee->current_network.buseprotection) {// CTS-to-SELF
+-				tcb_desc->bRTSEnable = true;
+-				tcb_desc->bCTSEnable = true;
+-				tcb_desc->rts_rate = MGN_24M;
+-				break;
+-			}
+-			//check HT op mode
+-			if (pHTInfo->bCurrentHTSupport && pHTInfo->bEnableHT) {
+-				u8 HTOpMode = pHTInfo->CurrentOpMode;
+-				if ((pHTInfo->bCurBW40MHz && (HTOpMode == 2 || HTOpMode == 3)) ||
+-							(!pHTInfo->bCurBW40MHz && HTOpMode == 3)) {
+-					tcb_desc->rts_rate = MGN_24M; // Rate is 24Mbps.
+-					tcb_desc->bRTSEnable = true;
+-					break;
+-				}
+-			}
+-			//check rts
+-			if (skb->len > ieee->rts) {
+-				tcb_desc->rts_rate = MGN_24M; // Rate is 24Mbps.
+-				tcb_desc->bRTSEnable = true;
+-				break;
+-			}
+-			//to do list: check MIMO power save condition.
+-			//check AMPDU aggregation for TXOP
+-			if (tcb_desc->bAMPDUEnable) {
+-				tcb_desc->rts_rate = MGN_24M; // Rate is 24Mbps.
+-				// According to 8190 design, firmware sends CF-End only if RTS/CTS is enabled. However, it degrads
+-				// throughput around 10M, so we disable of this mechanism. 2007.08.03 by Emily
+-				tcb_desc->bRTSEnable = false;
+-				break;
+-			}
+-			//check IOT action
+-			if (pHTInfo->IOTAction & HT_IOT_ACT_FORCED_CTS2SELF) {
+-				tcb_desc->bCTSEnable	= true;
+-				tcb_desc->rts_rate  =	MGN_24M;
+-				tcb_desc->bRTSEnable = true;
+-				break;
+-			}
+-			// Totally no protection case!!
+-			goto NO_PROTECTION;
+-		}
+-		}
+-	// For test , CTS replace with RTS
+-	if (0) {
+-		tcb_desc->bCTSEnable	= true;
+-		tcb_desc->rts_rate = MGN_24M;
+-		tcb_desc->bRTSEnable	= true;
+-	}
+-	if (ieee->current_network.capability & WLAN_CAPABILITY_SHORT_PREAMBLE)
+-		tcb_desc->bUseShortPreamble = true;
+-	if (ieee->mode == IW_MODE_MASTER)
+-		goto NO_PROTECTION;
+-	return;
+-NO_PROTECTION:
+-	tcb_desc->bRTSEnable	= false;
+-	tcb_desc->bCTSEnable	= false;
+-	tcb_desc->rts_rate		= 0;
+-	tcb_desc->RTSSC		= 0;
+-	tcb_desc->bRTSBW		= false;
+-}
+-
+-
+-static void ieee80211_txrate_selectmode(struct ieee80211_device *ieee,
+-					struct cb_desc *tcb_desc)
+-{
+-	if (ieee->bTxDisableRateFallBack)
+-		tcb_desc->bTxDisableRateFallBack = true;
+-
+-	if (ieee->bTxUseDriverAssingedRate)
+-		tcb_desc->bTxUseDriverAssingedRate = true;
+-	if (!tcb_desc->bTxDisableRateFallBack || !tcb_desc->bTxUseDriverAssingedRate) {
+-		if (ieee->iw_mode == IW_MODE_INFRA || ieee->iw_mode == IW_MODE_ADHOC)
+-			tcb_desc->RATRIndex = 0;
+-	}
+-}
+-
+-static void ieee80211_query_seqnum(struct ieee80211_device *ieee,
+-				   struct sk_buff *skb, u8 *dst)
+-{
+-	if (is_multicast_ether_addr(dst))
+-		return;
+-	if (IsQoSDataFrame(skb->data)) /* we deal qos data only */ {
+-		struct tx_ts_record *pTS = NULL;
+-		if (!GetTs(ieee, (struct ts_common_info **)(&pTS), dst, skb->priority, TX_DIR, true)) {
+-			return;
+-		}
+-		pTS->tx_cur_seq = (pTS->tx_cur_seq + 1) % 4096;
+-	}
+-}
+-
+-netdev_tx_t ieee80211_xmit(struct sk_buff *skb, struct net_device *dev)
+-{
+-	struct ieee80211_device *ieee = netdev_priv(dev);
+-	struct ieee80211_txb *txb = NULL;
+-	struct rtl_80211_hdr_3addrqos *frag_hdr;
+-	int i, bytes_per_frag, nr_frags, bytes_last_frag, frag_size;
+-	unsigned long flags;
+-	struct net_device_stats *stats = &ieee->stats;
+-	int ether_type = 0, encrypt;
+-	int bytes, fc, qos_ctl = 0, hdr_len;
+-	struct sk_buff *skb_frag;
+-	struct rtl_80211_hdr_3addrqos header = { /* Ensure zero initialized */
+-		.duration_id = 0,
+-		.seq_ctl = 0,
+-		.qos_ctl = 0
+-	};
+-	u8 dest[ETH_ALEN], src[ETH_ALEN];
+-	int qos_actived = ieee->current_network.qos_data.active;
+-
+-	struct ieee80211_crypt_data *crypt;
+-
+-	struct cb_desc *tcb_desc;
+-
+-	spin_lock_irqsave(&ieee->lock, flags);
+-
+-	/* If there is no driver handler to take the TXB, dont' bother
+-	 * creating it...
+-	 */
+-	if ((!ieee->hard_start_xmit && !(ieee->softmac_features & IEEE_SOFTMAC_TX_QUEUE)) ||
+-	   ((!ieee->softmac_data_hard_start_xmit && (ieee->softmac_features & IEEE_SOFTMAC_TX_QUEUE)))) {
+-		netdev_warn(ieee->dev, "No xmit handler.\n");
+-		goto success;
+-	}
+-
+-
+-	if (likely(ieee->raw_tx == 0)) {
+-		if (unlikely(skb->len < SNAP_SIZE + sizeof(u16))) {
+-			netdev_warn(ieee->dev, "skb too small (%d).\n",
+-				    skb->len);
+-			goto success;
+-		}
+-
+-		memset(skb->cb, 0, sizeof(skb->cb));
+-		ether_type = ntohs(((struct ethhdr *)skb->data)->h_proto);
+-
+-		crypt = ieee->crypt[ieee->tx_keyidx];
+-
+-		encrypt = !(ether_type == ETH_P_PAE && ieee->ieee802_1x) &&
+-			ieee->host_encrypt && crypt && crypt->ops;
+-
+-		if (!encrypt && ieee->ieee802_1x &&
+-		ieee->drop_unencrypted && ether_type != ETH_P_PAE) {
+-			stats->tx_dropped++;
+-			goto success;
+-		}
+-	#ifdef CONFIG_IEEE80211_DEBUG
+-		if (crypt && !encrypt && ether_type == ETH_P_PAE) {
+-			struct eapol *eap = (struct eapol *)(skb->data +
+-				sizeof(struct ethhdr) - SNAP_SIZE - sizeof(u16));
+-			IEEE80211_DEBUG_EAP("TX: IEEE 802.11 EAPOL frame: %s\n",
+-				eap_get_type(eap->type));
+-		}
+-	#endif
+-
+-		/* Save source and destination addresses */
+-		memcpy(&dest, skb->data, ETH_ALEN);
+-		memcpy(&src, skb->data + ETH_ALEN, ETH_ALEN);
+-
+-		/* Advance the SKB to the start of the payload */
+-		skb_pull(skb, sizeof(struct ethhdr));
+-
+-		/* Determine total amount of storage required for TXB packets */
+-		bytes = skb->len + SNAP_SIZE + sizeof(u16);
+-
+-		if (encrypt)
+-			fc = IEEE80211_FTYPE_DATA | IEEE80211_FCTL_WEP;
+-		else
+-
+-			fc = IEEE80211_FTYPE_DATA;
+-
+-		//if(ieee->current_network.QoS_Enable)
+-		if (qos_actived)
+-			fc |= IEEE80211_STYPE_QOS_DATA;
+-		else
+-			fc |= IEEE80211_STYPE_DATA;
+-
+-		if (ieee->iw_mode == IW_MODE_INFRA) {
+-			fc |= IEEE80211_FCTL_TODS;
+-			/* To DS: Addr1 = BSSID, Addr2 = SA,
+-			 * Addr3 = DA
+-			 */
+-			memcpy(&header.addr1, ieee->current_network.bssid, ETH_ALEN);
+-			memcpy(&header.addr2, &src, ETH_ALEN);
+-			memcpy(&header.addr3, &dest, ETH_ALEN);
+-		} else if (ieee->iw_mode == IW_MODE_ADHOC) {
+-			/* not From/To DS: Addr1 = DA, Addr2 = SA,
+-			 * Addr3 = BSSID
+-			 */
+-			memcpy(&header.addr1, dest, ETH_ALEN);
+-			memcpy(&header.addr2, src, ETH_ALEN);
+-			memcpy(&header.addr3, ieee->current_network.bssid, ETH_ALEN);
+-		}
+-
+-		header.frame_ctl = cpu_to_le16(fc);
+-
+-		/* Determine fragmentation size based on destination (multicast
+-		 * and broadcast are not fragmented)
+-		 */
+-		if (is_multicast_ether_addr(header.addr1)) {
+-			frag_size = MAX_FRAG_THRESHOLD;
+-			qos_ctl |= QOS_CTL_NOTCONTAIN_ACK;
+-		} else {
+-			frag_size = ieee->fts;//default:392
+-			qos_ctl = 0;
+-		}
+-
+-		//if (ieee->current_network.QoS_Enable)
+-		if (qos_actived) {
+-			hdr_len = IEEE80211_3ADDR_LEN + 2;
+-
+-			skb->priority = ieee80211_classify(skb, &ieee->current_network);
+-			qos_ctl |= skb->priority; //set in the ieee80211_classify
+-			header.qos_ctl = cpu_to_le16(qos_ctl & IEEE80211_QOS_TID);
+-		} else {
+-			hdr_len = IEEE80211_3ADDR_LEN;
+-		}
+-		/* Determine amount of payload per fragment.  Regardless of if
+-		 * this stack is providing the full 802.11 header, one will
+-		 * eventually be affixed to this fragment -- so we must account for
+-		 * it when determining the amount of payload space.
+-		 */
+-		bytes_per_frag = frag_size - hdr_len;
+-		if (ieee->config &
+-		(CFG_IEEE80211_COMPUTE_FCS | CFG_IEEE80211_RESERVE_FCS))
+-			bytes_per_frag -= IEEE80211_FCS_LEN;
+-
+-		/* Each fragment may need to have room for encryption pre/postfix */
+-		if (encrypt)
+-			bytes_per_frag -= crypt->ops->extra_prefix_len +
+-				crypt->ops->extra_postfix_len;
+-
+-		/* Number of fragments is the total bytes_per_frag /
+-		 * payload_per_fragment
+-		 */
+-		nr_frags = bytes / bytes_per_frag;
+-		bytes_last_frag = bytes % bytes_per_frag;
+-		if (bytes_last_frag)
+-			nr_frags++;
+-		else
+-			bytes_last_frag = bytes_per_frag;
+-
+-		/* When we allocate the TXB we allocate enough space for the reserve
+-		 * and full fragment bytes (bytes_per_frag doesn't include prefix,
+-		 * postfix, header, FCS, etc.)
+-		 */
+-		txb = ieee80211_alloc_txb(nr_frags, frag_size + ieee->tx_headroom, GFP_ATOMIC);
+-		if (unlikely(!txb)) {
+-			netdev_warn(ieee->dev, "Could not allocate TXB\n");
+-			goto failed;
+-		}
+-		txb->encrypted = encrypt;
+-		txb->payload_size = __cpu_to_le16(bytes);
+-
+-		//if (ieee->current_network.QoS_Enable)
+-		if (qos_actived)
+-			txb->queue_index = UP2AC(skb->priority);
+-		else
+-			txb->queue_index = WME_AC_BK;
+-
+-
+-
+-		for (i = 0; i < nr_frags; i++) {
+-			skb_frag = txb->fragments[i];
+-			tcb_desc = (struct cb_desc *)(skb_frag->cb + MAX_DEV_ADDR_SIZE);
+-			if (qos_actived) {
+-				skb_frag->priority = skb->priority;//UP2AC(skb->priority);
+-				tcb_desc->queue_index =  UP2AC(skb->priority);
+-			} else {
+-				skb_frag->priority = WME_AC_BK;
+-				tcb_desc->queue_index = WME_AC_BK;
+-			}
+-			skb_reserve(skb_frag, ieee->tx_headroom);
+-
+-			if (encrypt) {
+-				if (ieee->hwsec_active)
+-					tcb_desc->bHwSec = 1;
+-				else
+-					tcb_desc->bHwSec = 0;
+-				skb_reserve(skb_frag, crypt->ops->extra_prefix_len);
+-			} else {
+-				tcb_desc->bHwSec = 0;
+-			}
+-			frag_hdr = skb_put_data(skb_frag, &header, hdr_len);
+-
+-			/* If this is not the last fragment, then add the MOREFRAGS
+-			 * bit to the frame control
+-			 */
+-			if (i != nr_frags - 1) {
+-				frag_hdr->frame_ctl = cpu_to_le16(
+-					fc | IEEE80211_FCTL_MOREFRAGS);
+-				bytes = bytes_per_frag;
+-
+-			} else {
+-				/* The last fragment takes the remaining length */
+-				bytes = bytes_last_frag;
+-			}
+-			//if(ieee->current_network.QoS_Enable)
+-			if (qos_actived) {
+-				// add 1 only indicate to corresponding seq number control 2006/7/12
+-				frag_hdr->seq_ctl = cpu_to_le16(ieee->seq_ctrl[UP2AC(skb->priority) + 1] << 4 | i);
+-			} else {
+-				frag_hdr->seq_ctl = cpu_to_le16(ieee->seq_ctrl[0] << 4 | i);
+-			}
+-
+-			/* Put a SNAP header on the first fragment */
+-			if (i == 0) {
+-				ieee80211_put_snap(
+-					skb_put(skb_frag, SNAP_SIZE + sizeof(u16)),
+-					ether_type);
+-				bytes -= SNAP_SIZE + sizeof(u16);
+-			}
+-
+-			skb_put_data(skb_frag, skb->data, bytes);
+-
+-			/* Advance the SKB... */
+-			skb_pull(skb, bytes);
+-
+-			/* Encryption routine will move the header forward in order
+-			 * to insert the IV between the header and the payload
+-			 */
+-			if (encrypt)
+-				ieee80211_encrypt_fragment(ieee, skb_frag, hdr_len);
+-			if (ieee->config &
+-			(CFG_IEEE80211_COMPUTE_FCS | CFG_IEEE80211_RESERVE_FCS))
+-				skb_put(skb_frag, 4);
+-		}
+-
+-		if (qos_actived) {
+-			if (ieee->seq_ctrl[UP2AC(skb->priority) + 1] == 0xFFF)
+-				ieee->seq_ctrl[UP2AC(skb->priority) + 1] = 0;
+-			else
+-				ieee->seq_ctrl[UP2AC(skb->priority) + 1]++;
+-		} else {
+-			if (ieee->seq_ctrl[0] == 0xFFF)
+-				ieee->seq_ctrl[0] = 0;
+-			else
+-				ieee->seq_ctrl[0]++;
+-		}
+-	} else {
+-		if (unlikely(skb->len < sizeof(struct rtl_80211_hdr_3addr))) {
+-			netdev_warn(ieee->dev, "skb too small (%d).\n",
+-				    skb->len);
+-			goto success;
+-		}
+-
+-		txb = ieee80211_alloc_txb(1, skb->len, GFP_ATOMIC);
+-		if (!txb) {
+-			netdev_warn(ieee->dev, "Could not allocate TXB\n");
+-			goto failed;
+-		}
+-
+-		txb->encrypted = 0;
+-		txb->payload_size = __cpu_to_le16(skb->len);
+-		skb_put_data(txb->fragments[0], skb->data, skb->len);
+-	}
+-
+- success:
+-//WB add to fill data tcb_desc here. only first fragment is considered, need to change, and you may remove to other place.
+-	if (txb) {
+-		tcb_desc = (struct cb_desc *)(txb->fragments[0]->cb + MAX_DEV_ADDR_SIZE);
+-		tcb_desc->bTxEnableFwCalcDur = 1;
+-		if (is_multicast_ether_addr(header.addr1))
+-			tcb_desc->bMulticast = 1;
+-		if (is_broadcast_ether_addr(header.addr1))
+-			tcb_desc->bBroadcast = 1;
+-		ieee80211_txrate_selectmode(ieee, tcb_desc);
+-		if (tcb_desc->bMulticast ||  tcb_desc->bBroadcast)
+-			tcb_desc->data_rate = ieee->basic_rate;
+-		else
+-			tcb_desc->data_rate = CURRENT_RATE(ieee->mode, ieee->rate, ieee->HTCurrentOperaRate);
+-		ieee80211_qurey_ShortPreambleMode(ieee, tcb_desc);
+-		ieee80211_tx_query_agg_cap(ieee, txb->fragments[0], tcb_desc);
+-		ieee80211_query_HTCapShortGI(ieee, tcb_desc);
+-		ieee80211_query_BandwidthMode(ieee, tcb_desc);
+-		ieee80211_query_protectionmode(ieee, tcb_desc, txb->fragments[0]);
+-		ieee80211_query_seqnum(ieee, txb->fragments[0], header.addr1);
+-	}
+-	spin_unlock_irqrestore(&ieee->lock, flags);
+-	dev_kfree_skb_any(skb);
+-	if (txb) {
+-		if (ieee->softmac_features & IEEE_SOFTMAC_TX_QUEUE) {
+-			ieee80211_softmac_xmit(txb, ieee);
+-		} else {
+-			if ((*ieee->hard_start_xmit)(txb, dev) == 0) {
+-				stats->tx_packets++;
+-				stats->tx_bytes += __le16_to_cpu(txb->payload_size);
+-				return NETDEV_TX_OK;
+-			}
+-			ieee80211_txb_free(txb);
+-		}
+-	}
+-
+-	return NETDEV_TX_OK;
+-
+- failed:
+-	spin_unlock_irqrestore(&ieee->lock, flags);
+-	netif_stop_queue(dev);
+-	stats->tx_errors++;
+-	return 1;
+-
+-}
+diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_wx.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_wx.c
+deleted file mode 100644
+index d6829cf6f7e3..000000000000
+--- a/drivers/staging/rtl8192u/ieee80211/ieee80211_wx.c
++++ /dev/null
+@@ -1,810 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/******************************************************************************
+-
+-  Copyright(c) 2004 Intel Corporation. All rights reserved.
+-
+-  Portions of this file are based on the WEP enablement code provided by the
+-  Host AP project hostap-drivers v0.1.3
+-  Copyright (c) 2001-2002, SSH Communications Security Corp and Jouni Malinen
+-  <jkmaline@cc.hut.fi>
+-  Copyright (c) 2002-2003, Jouni Malinen <jkmaline@cc.hut.fi>
+-
+-  Contact Information:
+-  James P. Ketrenos <ipw2100-admin@linux.intel.com>
+-  Intel Corporation, 5200 N.E. Elam Young Parkway, Hillsboro, OR 97124-6497
+-
+-******************************************************************************/
+-#include <linux/wireless.h>
+-#include <linux/kmod.h>
+-#include <linux/slab.h>
+-#include <linux/module.h>
+-
+-#include "ieee80211.h"
+-struct modes_unit {
+-	char *mode_string;
+-	int mode_size;
+-};
+-static struct modes_unit ieee80211_modes[] = {
+-	{"a", 1},
+-	{"b", 1},
+-	{"g", 1},
+-	{"?", 1},
+-	{"N-24G", 5},
+-	{"N-5G", 4},
+-};
+-
+-#define iwe_stream_add_event_rsl iwe_stream_add_event
+-
+-#define MAX_CUSTOM_LEN 64
+-static inline char *rtl819x_translate_scan(struct ieee80211_device *ieee,
+-					   char *start, char *stop,
+-					   struct ieee80211_network *network,
+-					   struct iw_request_info *info)
+-{
+-	char custom[MAX_CUSTOM_LEN];
+-	char proto_name[IFNAMSIZ];
+-	char *pname = proto_name;
+-	char *p;
+-	struct iw_event iwe;
+-	int i, j;
+-	u16 max_rate, rate;
+-	static u8	EWC11NHTCap[] = {0x00, 0x90, 0x4c, 0x33};
+-
+-	/* First entry *MUST* be the AP MAC address */
+-	iwe.cmd = SIOCGIWAP;
+-	iwe.u.ap_addr.sa_family = ARPHRD_ETHER;
+-	memcpy(iwe.u.ap_addr.sa_data, network->bssid, ETH_ALEN);
+-	start = iwe_stream_add_event_rsl(info, start, stop, &iwe, IW_EV_ADDR_LEN);
+-	/* Remaining entries will be displayed in the order we provide them */
+-
+-	/* Add the ESSID */
+-	iwe.cmd = SIOCGIWESSID;
+-	iwe.u.data.flags = 1;
+-//	if (network->flags & NETWORK_EMPTY_ESSID) {
+-	if (network->ssid_len == 0) {
+-		iwe.u.data.length = sizeof("<hidden>");
+-		start = iwe_stream_add_point(info, start, stop, &iwe, "<hidden>");
+-	} else {
+-		iwe.u.data.length = min(network->ssid_len, (u8)32);
+-		start = iwe_stream_add_point(info, start, stop, &iwe, network->ssid);
+-	}
+-	/* Add the protocol name */
+-	iwe.cmd = SIOCGIWNAME;
+-	for (i = 0; i < ARRAY_SIZE(ieee80211_modes); i++) {
+-		if (network->mode & BIT(i)) {
+-			sprintf(pname, ieee80211_modes[i].mode_string, ieee80211_modes[i].mode_size);
+-			pname += ieee80211_modes[i].mode_size;
+-		}
+-	}
+-	*pname = '\0';
+-	snprintf(iwe.u.name, IFNAMSIZ, "IEEE802.11%s", proto_name);
+-	start = iwe_stream_add_event_rsl(info, start, stop, &iwe, IW_EV_CHAR_LEN);
+-	/* Add mode */
+-	iwe.cmd = SIOCGIWMODE;
+-	if (network->capability &
+-	    (WLAN_CAPABILITY_BSS | WLAN_CAPABILITY_IBSS)) {
+-		if (network->capability & WLAN_CAPABILITY_BSS)
+-			iwe.u.mode = IW_MODE_MASTER;
+-		else
+-			iwe.u.mode = IW_MODE_ADHOC;
+-		start = iwe_stream_add_event_rsl(info, start, stop, &iwe, IW_EV_UINT_LEN);
+-	}
+-
+-	/* Add frequency/channel */
+-	iwe.cmd = SIOCGIWFREQ;
+-/*	iwe.u.freq.m = ieee80211_frequency(network->channel, network->mode);
+-	iwe.u.freq.e = 3; */
+-	iwe.u.freq.m = network->channel;
+-	iwe.u.freq.e = 0;
+-	iwe.u.freq.i = 0;
+-	start = iwe_stream_add_event_rsl(info, start, stop, &iwe, IW_EV_FREQ_LEN);
+-	/* Add encryption capability */
+-	iwe.cmd = SIOCGIWENCODE;
+-	if (network->capability & WLAN_CAPABILITY_PRIVACY)
+-		iwe.u.data.flags = IW_ENCODE_ENABLED | IW_ENCODE_NOKEY;
+-	else
+-		iwe.u.data.flags = IW_ENCODE_DISABLED;
+-	iwe.u.data.length = 0;
+-	start = iwe_stream_add_point(info, start, stop, &iwe, network->ssid);
+-	/* Add basic and extended rates */
+-	max_rate = 0;
+-	p = custom;
+-	p += scnprintf(p, MAX_CUSTOM_LEN - (p - custom), " Rates (Mb/s): ");
+-	for (i = 0, j = 0; i < network->rates_len; ) {
+-		if (j < network->rates_ex_len &&
+-		    ((network->rates_ex[j] & 0x7F) <
+-		     (network->rates[i] & 0x7F)))
+-			rate = network->rates_ex[j++] & 0x7F;
+-		else
+-			rate = network->rates[i++] & 0x7F;
+-		if (rate > max_rate)
+-			max_rate = rate;
+-		p += scnprintf(p, MAX_CUSTOM_LEN - (p - custom),
+-			      "%d%s ", rate >> 1, (rate & 1) ? ".5" : "");
+-	}
+-	for (; j < network->rates_ex_len; j++) {
+-		rate = network->rates_ex[j] & 0x7F;
+-		p += scnprintf(p, MAX_CUSTOM_LEN - (p - custom),
+-			      "%d%s ", rate >> 1, (rate & 1) ? ".5" : "");
+-		if (rate > max_rate)
+-			max_rate = rate;
+-	}
+-
+-	if (network->mode >= IEEE_N_24G) /* add N rate here */ {
+-		struct ht_capability_ele *ht_cap = NULL;
+-		bool is40M = false, isShortGI = false;
+-		u8 max_mcs = 0;
+-		if (!memcmp(network->bssht.bdHTCapBuf, EWC11NHTCap, 4))
+-			ht_cap = (struct ht_capability_ele *)&network->bssht.bdHTCapBuf[4];
+-		else
+-			ht_cap = (struct ht_capability_ele *)&network->bssht.bdHTCapBuf[0];
+-		is40M = (ht_cap->ChlWidth) ? 1 : 0;
+-		isShortGI = (ht_cap->ChlWidth) ?
+-					((ht_cap->ShortGI40Mhz) ? 1 : 0) :
+-					((ht_cap->ShortGI20Mhz) ? 1 : 0);
+-
+-		max_mcs = HTGetHighestMCSRate(ieee, ht_cap->MCS, MCS_FILTER_ALL);
+-		rate = MCS_DATA_RATE[is40M][isShortGI][max_mcs & 0x7f];
+-		if (rate > max_rate)
+-			max_rate = rate;
+-	}
+-	iwe.cmd = SIOCGIWRATE;
+-	iwe.u.bitrate.fixed = iwe.u.bitrate.disabled = 0;
+-	iwe.u.bitrate.value = max_rate * 500000;
+-	start = iwe_stream_add_event_rsl(info, start, stop, &iwe,
+-				     IW_EV_PARAM_LEN);
+-	iwe.cmd = IWEVCUSTOM;
+-	iwe.u.data.length = p - custom;
+-	if (iwe.u.data.length)
+-		start = iwe_stream_add_point(info, start, stop, &iwe, custom);
+-	/* Add quality statistics */
+-	/* TODO: Fix these values... */
+-	iwe.cmd = IWEVQUAL;
+-	iwe.u.qual.qual = network->stats.signal;
+-	iwe.u.qual.level = network->stats.rssi;
+-	iwe.u.qual.noise = network->stats.noise;
+-	iwe.u.qual.updated = network->stats.mask & IEEE80211_STATMASK_WEMASK;
+-	if (!(network->stats.mask & IEEE80211_STATMASK_RSSI))
+-		iwe.u.qual.updated |= IW_QUAL_LEVEL_INVALID;
+-	if (!(network->stats.mask & IEEE80211_STATMASK_NOISE))
+-		iwe.u.qual.updated |= IW_QUAL_NOISE_INVALID;
+-	if (!(network->stats.mask & IEEE80211_STATMASK_SIGNAL))
+-		iwe.u.qual.updated |= IW_QUAL_QUAL_INVALID;
+-	iwe.u.qual.updated = 7;
+-	start = iwe_stream_add_event_rsl(info, start, stop, &iwe, IW_EV_QUAL_LEN);
+-	iwe.cmd = IWEVCUSTOM;
+-	p = custom;
+-
+-	iwe.u.data.length = p - custom;
+-	if (iwe.u.data.length)
+-		start = iwe_stream_add_point(info, start, stop, &iwe, custom);
+-
+-	if (ieee->wpa_enabled && network->wpa_ie_len) {
+-		char buf[MAX_WPA_IE_LEN * 2 + 30];
+-	//	printk("WPA IE\n");
+-		u8 *p = buf;
+-		p += sprintf(p, "wpa_ie=");
+-		for (i = 0; i < network->wpa_ie_len; i++)
+-			p += sprintf(p, "%02x", network->wpa_ie[i]);
+-
+-		memset(&iwe, 0, sizeof(iwe));
+-		iwe.cmd = IWEVCUSTOM;
+-		iwe.u.data.length = strlen(buf);
+-		start = iwe_stream_add_point(info, start, stop, &iwe, buf);
+-	}
+-
+-	if (ieee->wpa_enabled && network->rsn_ie_len) {
+-		char buf[MAX_WPA_IE_LEN * 2 + 30];
+-
+-		u8 *p = buf;
+-		p += sprintf(p, "rsn_ie=");
+-		for (i = 0; i < network->rsn_ie_len; i++)
+-			p += sprintf(p, "%02x", network->rsn_ie[i]);
+-
+-		memset(&iwe, 0, sizeof(iwe));
+-		iwe.cmd = IWEVCUSTOM;
+-		iwe.u.data.length = strlen(buf);
+-		start = iwe_stream_add_point(info, start, stop, &iwe, buf);
+-	}
+-
+-
+-	/* Add EXTRA: Age to display seconds since last beacon/probe response
+-	 * for given network. */
+-	iwe.cmd = IWEVCUSTOM;
+-	p = custom;
+-	p += scnprintf(p, MAX_CUSTOM_LEN - (p - custom),
+-		      " Last beacon: %lums ago", (jiffies - network->last_scanned) / (HZ / 100));
+-	iwe.u.data.length = p - custom;
+-	if (iwe.u.data.length)
+-		start = iwe_stream_add_point(info, start, stop, &iwe, custom);
+-
+-	return start;
+-}
+-
+-int ieee80211_wx_get_scan(struct ieee80211_device *ieee,
+-			  struct iw_request_info *info,
+-			  union iwreq_data *wrqu, char *extra)
+-{
+-	struct ieee80211_network *network;
+-	unsigned long flags;
+-
+-	char *ev = extra;
+-//	char *stop = ev + IW_SCAN_MAX_DATA;
+-	char *stop = ev + wrqu->data.length;//IW_SCAN_MAX_DATA;
+-	//char *stop = ev + IW_SCAN_MAX_DATA;
+-	int i = 0;
+-	int err = 0;
+-	IEEE80211_DEBUG_WX("Getting scan\n");
+-	mutex_lock(&ieee->wx_mutex);
+-	spin_lock_irqsave(&ieee->lock, flags);
+-
+-	list_for_each_entry(network, &ieee->network_list, list) {
+-		i++;
+-		if ((stop - ev) < 200) {
+-			err = -E2BIG;
+-			break;
+-		}
+-		if (ieee->scan_age == 0 ||
+-		    time_after(network->last_scanned + ieee->scan_age, jiffies))
+-			ev = rtl819x_translate_scan(ieee, ev, stop, network, info);
+-		else
+-			IEEE80211_DEBUG_SCAN(
+-				"Not showing network '%s ("
+-				"%pM)' due to age (%lums).\n",
+-				escape_essid(network->ssid,
+-					     network->ssid_len),
+-				network->bssid,
+-				(jiffies - network->last_scanned) / (HZ / 100));
+-	}
+-
+-	spin_unlock_irqrestore(&ieee->lock, flags);
+-	mutex_unlock(&ieee->wx_mutex);
+-	wrqu->data.length = ev -  extra;
+-	wrqu->data.flags = 0;
+-
+-	IEEE80211_DEBUG_WX("exit: %d networks returned.\n", i);
+-
+-	return err;
+-}
+-EXPORT_SYMBOL(ieee80211_wx_get_scan);
+-
+-int ieee80211_wx_set_encode(struct ieee80211_device *ieee,
+-			    struct iw_request_info *info,
+-			    union iwreq_data *wrqu, char *keybuf)
+-{
+-	struct iw_point *erq = &(wrqu->encoding);
+-	struct net_device *dev = ieee->dev;
+-	struct ieee80211_security sec = {
+-		.flags = 0
+-	};
+-	int i, key, key_provided, len;
+-	struct ieee80211_crypt_data **crypt;
+-
+-	IEEE80211_DEBUG_WX("SET_ENCODE\n");
+-
+-	key = erq->flags & IW_ENCODE_INDEX;
+-	if (key) {
+-		if (key > WEP_KEYS)
+-			return -EINVAL;
+-		key--;
+-		key_provided = 1;
+-	} else {
+-		key_provided = 0;
+-		key = ieee->tx_keyidx;
+-	}
+-
+-	IEEE80211_DEBUG_WX("Key: %d [%s]\n", key, key_provided ?
+-			   "provided" : "default");
+-	crypt = &ieee->crypt[key];
+-
+-	if (erq->flags & IW_ENCODE_DISABLED) {
+-		if (key_provided && *crypt) {
+-			IEEE80211_DEBUG_WX("Disabling encryption on key %d.\n",
+-					   key);
+-			ieee80211_crypt_delayed_deinit(ieee, crypt);
+-		} else
+-			IEEE80211_DEBUG_WX("Disabling encryption.\n");
+-
+-		/* Check all the keys to see if any are still configured,
+-		 * and if no key index was provided, de-init them all */
+-		for (i = 0; i < WEP_KEYS; i++) {
+-			if (ieee->crypt[i]) {
+-				if (key_provided)
+-					break;
+-				ieee80211_crypt_delayed_deinit(
+-					ieee, &ieee->crypt[i]);
+-			}
+-		}
+-
+-		if (i == WEP_KEYS) {
+-			sec.enabled = 0;
+-			sec.level = SEC_LEVEL_0;
+-			sec.flags |= SEC_ENABLED | SEC_LEVEL;
+-		}
+-
+-		goto done;
+-	}
+-
+-
+-
+-	sec.enabled = 1;
+-	sec.flags |= SEC_ENABLED;
+-
+-	if (*crypt && (*crypt)->ops &&
+-	    strcmp((*crypt)->ops->name, "WEP") != 0) {
+-		/* changing to use WEP; deinit previously used algorithm
+-		 * on this key */
+-		ieee80211_crypt_delayed_deinit(ieee, crypt);
+-	}
+-
+-	if (!*crypt) {
+-		struct ieee80211_crypt_data *new_crypt;
+-
+-		/* take WEP into use */
+-		new_crypt = kzalloc(sizeof(struct ieee80211_crypt_data),
+-				    GFP_KERNEL);
+-		if (!new_crypt)
+-			return -ENOMEM;
+-		new_crypt->ops = try_then_request_module(ieee80211_get_crypto_ops("WEP"),
+-							 "ieee80211_crypt_wep");
+-		if (new_crypt->ops && try_module_get(new_crypt->ops->owner))
+-			new_crypt->priv = new_crypt->ops->init(key);
+-
+-		if (!new_crypt->ops || !new_crypt->priv) {
+-			kfree(new_crypt);
+-			new_crypt = NULL;
+-
+-			netdev_warn(dev, "could not initialize WEP: "
+-				    "load module ieee80211_crypt_wep\n");
+-			return -EOPNOTSUPP;
+-		}
+-		*crypt = new_crypt;
+-	}
+-
+-	/* If a new key was provided, set it up */
+-	if (erq->length > 0) {
+-		len = erq->length <= 5 ? 5 : 13;
+-		memcpy(sec.keys[key], keybuf, erq->length);
+-		if (len > erq->length)
+-			memset(sec.keys[key] + erq->length, 0,
+-			       len - erq->length);
+-		IEEE80211_DEBUG_WX("Setting key %d to '%s' (%d:%d bytes)\n",
+-				   key, escape_essid(sec.keys[key], len),
+-				   erq->length, len);
+-		sec.key_sizes[key] = len;
+-		(*crypt)->ops->set_key(sec.keys[key], len, NULL,
+-				       (*crypt)->priv);
+-		sec.flags |= BIT(key);
+-		/* This ensures a key will be activated if no key is
+-		 * explicitly set
+-		 */
+-		if (key == sec.active_key)
+-			sec.flags |= SEC_ACTIVE_KEY;
+-		ieee->tx_keyidx = key;
+-
+-	} else {
+-		len = (*crypt)->ops->get_key(sec.keys[key], WEP_KEY_LEN,
+-					     NULL, (*crypt)->priv);
+-		if (len == 0) {
+-			/* Set a default key of all 0 */
+-			printk("Setting key %d to all zero.\n",
+-					   key);
+-
+-			IEEE80211_DEBUG_WX("Setting key %d to all zero.\n",
+-					   key);
+-			memset(sec.keys[key], 0, 13);
+-			(*crypt)->ops->set_key(sec.keys[key], 13, NULL,
+-					       (*crypt)->priv);
+-			sec.key_sizes[key] = 13;
+-			sec.flags |= BIT(key);
+-		}
+-
+-		/* No key data - just set the default TX key index */
+-		if (key_provided) {
+-			IEEE80211_DEBUG_WX(
+-				"Setting key %d to default Tx key.\n", key);
+-			ieee->tx_keyidx = key;
+-			sec.active_key = key;
+-			sec.flags |= SEC_ACTIVE_KEY;
+-		}
+-	}
+-
+- done:
+-	ieee->open_wep = !(erq->flags & IW_ENCODE_RESTRICTED);
+-	ieee->auth_mode = ieee->open_wep ? WLAN_AUTH_OPEN : WLAN_AUTH_SHARED_KEY;
+-	sec.auth_mode = ieee->open_wep ? WLAN_AUTH_OPEN : WLAN_AUTH_SHARED_KEY;
+-	sec.flags |= SEC_AUTH_MODE;
+-	IEEE80211_DEBUG_WX("Auth: %s\n", sec.auth_mode == WLAN_AUTH_OPEN ?
+-			   "OPEN" : "SHARED KEY");
+-
+-	/* For now we just support WEP, so only set that security level...
+-	 * TODO: When WPA is added this is one place that needs to change */
+-	sec.flags |= SEC_LEVEL;
+-	sec.level = SEC_LEVEL_1; /* 40 and 104 bit WEP */
+-
+-	if (ieee->set_security)
+-		ieee->set_security(dev, &sec);
+-
+-	/* Do not reset port if card is in Managed mode since resetting will
+-	 * generate new IEEE 802.11 authentication which may end up in looping
+-	 * with IEEE 802.1X.  If your hardware requires a reset after WEP
+-	 * configuration (for example... Prism2), implement the reset_port in
+-	 * the callbacks structures used to initialize the 802.11 stack. */
+-	if (ieee->reset_on_keychange &&
+-	    ieee->iw_mode != IW_MODE_INFRA &&
+-	    ieee->reset_port && ieee->reset_port(dev)) {
+-		netdev_dbg(ieee->dev, "reset_port failed\n");
+-		return -EINVAL;
+-	}
+-	return 0;
+-}
+-EXPORT_SYMBOL(ieee80211_wx_set_encode);
+-
+-int ieee80211_wx_get_encode(struct ieee80211_device *ieee,
+-			    struct iw_request_info *info,
+-			    union iwreq_data *wrqu, char *keybuf)
+-{
+-	struct iw_point *erq = &(wrqu->encoding);
+-	int len, key;
+-	struct ieee80211_crypt_data *crypt;
+-
+-	IEEE80211_DEBUG_WX("GET_ENCODE\n");
+-
+-	if (ieee->iw_mode == IW_MODE_MONITOR)
+-		return -1;
+-
+-	key = erq->flags & IW_ENCODE_INDEX;
+-	if (key) {
+-		if (key > WEP_KEYS)
+-			return -EINVAL;
+-		key--;
+-	} else
+-		key = ieee->tx_keyidx;
+-
+-	crypt = ieee->crypt[key];
+-	erq->flags = key + 1;
+-
+-	if (!crypt || !crypt->ops) {
+-		erq->length = 0;
+-		erq->flags |= IW_ENCODE_DISABLED;
+-		return 0;
+-	}
+-	len = crypt->ops->get_key(keybuf, SCM_KEY_LEN, NULL, crypt->priv);
+-	if (len < 0)
+-		len = 0;
+-	erq->length = len;
+-
+-	erq->flags |= IW_ENCODE_ENABLED;
+-
+-	if (ieee->open_wep)
+-		erq->flags |= IW_ENCODE_OPEN;
+-	else
+-		erq->flags |= IW_ENCODE_RESTRICTED;
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL(ieee80211_wx_get_encode);
+-
+-int ieee80211_wx_set_encode_ext(struct ieee80211_device *ieee,
+-			       struct iw_request_info *info,
+-			       union iwreq_data *wrqu, char *extra)
+-{
+-	int ret = 0;
+-	struct net_device *dev = ieee->dev;
+-	struct iw_point *encoding = &wrqu->encoding;
+-	struct iw_encode_ext *ext = (struct iw_encode_ext *)extra;
+-	int i, idx;
+-	int group_key = 0;
+-	const char *alg, *module;
+-	struct ieee80211_crypto_ops *ops;
+-	struct ieee80211_crypt_data **crypt;
+-
+-	struct ieee80211_security sec = {
+-		.flags = 0,
+-	};
+-	idx = encoding->flags & IW_ENCODE_INDEX;
+-	if (idx) {
+-		if (idx < 1 || idx > WEP_KEYS)
+-			return -EINVAL;
+-		idx--;
+-	} else
+-		idx = ieee->tx_keyidx;
+-
+-	if (ext->ext_flags & IW_ENCODE_EXT_GROUP_KEY) {
+-
+-		crypt = &ieee->crypt[idx];
+-
+-		group_key = 1;
+-	} else {
+-		/* some Cisco APs use idx>0 for unicast in dynamic WEP */
+-		if (idx != 0 && ext->alg != IW_ENCODE_ALG_WEP)
+-			return -EINVAL;
+-		if (ieee->iw_mode == IW_MODE_INFRA)
+-
+-			crypt = &ieee->crypt[idx];
+-
+-		else
+-			return -EINVAL;
+-	}
+-
+-	sec.flags |= SEC_ENABLED;// | SEC_ENCRYPT;
+-	if ((encoding->flags & IW_ENCODE_DISABLED) ||
+-	    ext->alg == IW_ENCODE_ALG_NONE) {
+-		if (*crypt)
+-			ieee80211_crypt_delayed_deinit(ieee, crypt);
+-
+-		for (i = 0; i < WEP_KEYS; i++)
+-
+-			if (ieee->crypt[i])
+-
+-				break;
+-
+-		if (i == WEP_KEYS) {
+-			sec.enabled = 0;
+-		      //  sec.encrypt = 0;
+-			sec.level = SEC_LEVEL_0;
+-			sec.flags |= SEC_LEVEL;
+-		}
+-		goto done;
+-	}
+-
+-	sec.enabled = 1;
+-    //    sec.encrypt = 1;
+-	switch (ext->alg) {
+-	case IW_ENCODE_ALG_WEP:
+-		alg = "WEP";
+-		module = "ieee80211_crypt_wep";
+-		break;
+-	case IW_ENCODE_ALG_TKIP:
+-		alg = "TKIP";
+-		module = "ieee80211_crypt_tkip";
+-		break;
+-	case IW_ENCODE_ALG_CCMP:
+-		alg = "CCMP";
+-		module = "ieee80211_crypt_ccmp";
+-		break;
+-	default:
+-		IEEE80211_DEBUG_WX("%s: unknown crypto alg %d\n",
+-				   dev->name, ext->alg);
+-		ret = -EINVAL;
+-		goto done;
+-	}
+-	printk("alg name:%s\n", alg);
+-
+-	ops = try_then_request_module(ieee80211_get_crypto_ops(alg), module);
+-	if (!ops) {
+-		IEEE80211_DEBUG_WX("%s: unknown crypto alg %d\n",
+-				   dev->name, ext->alg);
+-		printk("========>unknown crypto alg %d\n", ext->alg);
+-		ret = -EINVAL;
+-		goto done;
+-	}
+-
+-	if (!*crypt || (*crypt)->ops != ops) {
+-		struct ieee80211_crypt_data *new_crypt;
+-
+-		ieee80211_crypt_delayed_deinit(ieee, crypt);
+-
+-		new_crypt = kzalloc(sizeof(*new_crypt), GFP_KERNEL);
+-		if (!new_crypt) {
+-			ret = -ENOMEM;
+-			goto done;
+-		}
+-		new_crypt->ops = ops;
+-		if (new_crypt->ops && try_module_get(new_crypt->ops->owner))
+-			new_crypt->priv = new_crypt->ops->init(idx);
+-		if (!new_crypt->priv) {
+-			kfree(new_crypt);
+-			ret = -EINVAL;
+-			goto done;
+-		}
+-		*crypt = new_crypt;
+-	}
+-
+-	if (ext->key_len > 0 && (*crypt)->ops->set_key &&
+-	    (*crypt)->ops->set_key(ext->key, ext->key_len, ext->rx_seq,
+-				   (*crypt)->priv) < 0) {
+-		IEEE80211_DEBUG_WX("%s: key setting failed\n", dev->name);
+-		printk("key setting failed\n");
+-		ret = -EINVAL;
+-		goto done;
+-	}
+- //skip_host_crypt:
+-	if (ext->ext_flags & IW_ENCODE_EXT_SET_TX_KEY) {
+-		ieee->tx_keyidx = idx;
+-		sec.active_key = idx;
+-		sec.flags |= SEC_ACTIVE_KEY;
+-	}
+-
+-	if (ext->alg != IW_ENCODE_ALG_NONE) {
+-		//memcpy(sec.keys[idx], ext->key, ext->key_len);
+-		sec.key_sizes[idx] = ext->key_len;
+-		sec.flags |= BIT(idx);
+-		if (ext->alg == IW_ENCODE_ALG_WEP) {
+-		      //  sec.encode_alg[idx] = SEC_ALG_WEP;
+-			sec.flags |= SEC_LEVEL;
+-			sec.level = SEC_LEVEL_1;
+-		} else if (ext->alg == IW_ENCODE_ALG_TKIP) {
+-		      //  sec.encode_alg[idx] = SEC_ALG_TKIP;
+-			sec.flags |= SEC_LEVEL;
+-			sec.level = SEC_LEVEL_2;
+-		} else if (ext->alg == IW_ENCODE_ALG_CCMP) {
+-		       // sec.encode_alg[idx] = SEC_ALG_CCMP;
+-			sec.flags |= SEC_LEVEL;
+-			sec.level = SEC_LEVEL_3;
+-		}
+-		/* Don't set sec level for group keys. */
+-		if (group_key)
+-			sec.flags &= ~SEC_LEVEL;
+-	}
+-done:
+-	if (ieee->set_security)
+-		ieee->set_security(ieee->dev, &sec);
+-
+-	if (ieee->reset_on_keychange &&
+-	    ieee->iw_mode != IW_MODE_INFRA &&
+-	    ieee->reset_port && ieee->reset_port(dev)) {
+-		IEEE80211_DEBUG_WX("%s: reset_port failed\n", dev->name);
+-		return -EINVAL;
+-	}
+-	return ret;
+-}
+-EXPORT_SYMBOL(ieee80211_wx_set_encode_ext);
+-
+-int ieee80211_wx_get_encode_ext(struct ieee80211_device *ieee,
+-			       struct iw_request_info *info,
+-			       union iwreq_data *wrqu, char *extra)
+-{
+-	struct iw_point *encoding = &wrqu->encoding;
+-	struct iw_encode_ext *ext = (struct iw_encode_ext *)extra;
+-	struct ieee80211_crypt_data *crypt;
+-	int idx, max_key_len;
+-
+-	max_key_len = encoding->length - sizeof(*ext);
+-	if (max_key_len < 0)
+-		return -EINVAL;
+-
+-	idx = encoding->flags & IW_ENCODE_INDEX;
+-	if (idx) {
+-		if (idx < 1 || idx > WEP_KEYS)
+-			return -EINVAL;
+-		idx--;
+-	} else
+-		idx = ieee->tx_keyidx;
+-
+-	if (!(ext->ext_flags & IW_ENCODE_EXT_GROUP_KEY) &&
+-	    ext->alg != IW_ENCODE_ALG_WEP)
+-		if (idx != 0 || ieee->iw_mode != IW_MODE_INFRA)
+-			return -EINVAL;
+-
+-	crypt = ieee->crypt[idx];
+-	encoding->flags = idx + 1;
+-	memset(ext, 0, sizeof(*ext));
+-
+-	if (!crypt || !crypt->ops) {
+-		ext->alg = IW_ENCODE_ALG_NONE;
+-		ext->key_len = 0;
+-		encoding->flags |= IW_ENCODE_DISABLED;
+-	} else {
+-		if (strcmp(crypt->ops->name, "WEP") == 0)
+-			ext->alg = IW_ENCODE_ALG_WEP;
+-		else if (strcmp(crypt->ops->name, "TKIP") == 0)
+-			ext->alg = IW_ENCODE_ALG_TKIP;
+-		else if (strcmp(crypt->ops->name, "CCMP") == 0)
+-			ext->alg = IW_ENCODE_ALG_CCMP;
+-		else
+-			return -EINVAL;
+-		ext->key_len = crypt->ops->get_key(ext->key, SCM_KEY_LEN, NULL, crypt->priv);
+-		encoding->flags |= IW_ENCODE_ENABLED;
+-		if (ext->key_len &&
+-		    (ext->alg == IW_ENCODE_ALG_TKIP ||
+-		     ext->alg == IW_ENCODE_ALG_CCMP))
+-			ext->ext_flags |= IW_ENCODE_EXT_TX_SEQ_VALID;
+-	}
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL(ieee80211_wx_get_encode_ext);
+-
+-int ieee80211_wx_set_mlme(struct ieee80211_device *ieee,
+-			       struct iw_request_info *info,
+-			       union iwreq_data *wrqu, char *extra)
+-{
+-	struct iw_mlme *mlme = (struct iw_mlme *)extra;
+-	switch (mlme->cmd) {
+-	case IW_MLME_DEAUTH:
+-	case IW_MLME_DISASSOC:
+-		ieee80211_disassociate(ieee);
+-		break;
+-	default:
+-		return -EOPNOTSUPP;
+-	}
+-	return 0;
+-}
+-EXPORT_SYMBOL(ieee80211_wx_set_mlme);
+-
+-int ieee80211_wx_set_auth(struct ieee80211_device *ieee,
+-			       struct iw_request_info *info,
+-			       struct iw_param *data, char *extra)
+-{
+-	switch (data->flags & IW_AUTH_INDEX) {
+-	case IW_AUTH_WPA_VERSION:
+-	     /*need to support wpa2 here*/
+-		break;
+-	case IW_AUTH_CIPHER_PAIRWISE:
+-	case IW_AUTH_CIPHER_GROUP:
+-	case IW_AUTH_KEY_MGMT:
+-		/*
+- *                  * Host AP driver does not use these parameters and allows
+- *                                   * wpa_supplicant to control them internally.
+- *                                                    */
+-		break;
+-	case IW_AUTH_TKIP_COUNTERMEASURES:
+-		ieee->tkip_countermeasures = data->value;
+-		break;
+-	case IW_AUTH_DROP_UNENCRYPTED:
+-		ieee->drop_unencrypted = data->value;
+-		break;
+-
+-	case IW_AUTH_80211_AUTH_ALG:
+-		//printk("======>%s():data->value is %d\n",__func__,data->value);
+-	//	ieee->open_wep = (data->value&IW_AUTH_ALG_OPEN_SYSTEM)?1:0;
+-		if (data->value & IW_AUTH_ALG_SHARED_KEY) {
+-			ieee->open_wep = 0;
+-			ieee->auth_mode = 1;
+-		} else if (data->value & IW_AUTH_ALG_OPEN_SYSTEM) {
+-			ieee->open_wep = 1;
+-			ieee->auth_mode = 0;
+-		} else if (data->value & IW_AUTH_ALG_LEAP) {
+-			ieee->open_wep = 1;
+-			ieee->auth_mode = 2;
+-		} else
+-			return -EINVAL;
+-		break;
+-
+-	case IW_AUTH_WPA_ENABLED:
+-		ieee->wpa_enabled = (data->value) ? 1 : 0;
+-		break;
+-
+-	case IW_AUTH_RX_UNENCRYPTED_EAPOL:
+-		ieee->ieee802_1x = data->value;
+-		break;
+-	case IW_AUTH_PRIVACY_INVOKED:
+-		ieee->privacy_invoked = data->value;
+-		break;
+-	default:
+-		return -EOPNOTSUPP;
+-	}
+-	return 0;
+-}
+-EXPORT_SYMBOL(ieee80211_wx_set_auth);
+-
+-int ieee80211_wx_set_gen_ie(struct ieee80211_device *ieee, u8 *ie, size_t len)
+-{
+-	u8 *buf;
+-
+-	if (len > MAX_WPA_IE_LEN || (len && !ie)) {
+-		//printk("return error out, len:%d\n", len);
+-		return -EINVAL;
+-	}
+-
+-
+-	if (len) {
+-		if (len != ie[1] + 2) {
+-			printk("len:%zu, ie:%d\n", len, ie[1]);
+-			return -EINVAL;
+-		}
+-		buf = kmemdup(ie, len, GFP_KERNEL);
+-		if (!buf)
+-			return -ENOMEM;
+-		kfree(ieee->wpa_ie);
+-		ieee->wpa_ie = buf;
+-		ieee->wpa_ie_len = len;
+-	} else {
+-		kfree(ieee->wpa_ie);
+-		ieee->wpa_ie = NULL;
+-		ieee->wpa_ie_len = 0;
+-	}
+-	return 0;
+-}
+-EXPORT_SYMBOL(ieee80211_wx_set_gen_ie);
+diff --git a/drivers/staging/rtl8192u/ieee80211/rtl819x_BA.h b/drivers/staging/rtl8192u/ieee80211/rtl819x_BA.h
+deleted file mode 100644
+index 1a727856ba53..000000000000
+--- a/drivers/staging/rtl8192u/ieee80211/rtl819x_BA.h
++++ /dev/null
+@@ -1,54 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _BATYPE_H_
+-#define _BATYPE_H_
+-
+-#define	BA_SETUP_TIMEOUT	       200
+-
+-#define	BA_POLICY_DELAYED		 0
+-#define	BA_POLICY_IMMEDIATE	         1
+-
+-#define	ADDBA_STATUS_SUCCESS		 0
+-#define	ADDBA_STATUS_REFUSED		37
+-#define	ADDBA_STATUS_INVALID_PARAM	38
+-
+-#define	DELBA_REASON_END_BA		37
+-#define	DELBA_REASON_UNKNOWN_BA	        38
+-#define	DELBA_REASON_TIMEOUT		39
+-
+-union sequence_control {
+-	u16 short_data;
+-	struct {
+-		u16	frag_num:4;
+-		u16	seq_num:12;
+-	} field;
+-};
+-
+-union ba_param_set {
+-	u16 short_data;
+-	struct {
+-		u16	amsdu_support:1;
+-		u16	ba_policy:1;
+-		u16	tid:4;
+-		u16	buffer_size:10;
+-	} field;
+-};
+-
+-union delba_param_set {
+-	u16 short_data;
+-	struct {
+-		u16	reserved:11;
+-		u16	initiator:1;
+-		u16	tid:4;
+-	} field;
+-};
+-
+-struct ba_record {
+-	struct timer_list	timer;
+-	u8			valid;
+-	u8			dialog_token;
+-	union ba_param_set	param_set;
+-	u16			timeout_value;
+-	union sequence_control	start_seq_ctrl;
+-};
+-
+-#endif //end _BATYPE_H_
+diff --git a/drivers/staging/rtl8192u/ieee80211/rtl819x_BAProc.c b/drivers/staging/rtl8192u/ieee80211/rtl819x_BAProc.c
+deleted file mode 100644
+index 6823e405eeb8..000000000000
+--- a/drivers/staging/rtl8192u/ieee80211/rtl819x_BAProc.c
++++ /dev/null
+@@ -1,700 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/********************************************************************************************************************************
+- * This file is created to process BA Action Frame. According to 802.11 spec, there are 3 BA action types at all. And as BA is
+- * related to TS, this part need some structure defined in QOS side code. Also TX RX is going to be resturctured, so how to send
+- * ADDBAREQ ADDBARSP and DELBA packet is still on consideration. Temporarily use MANAGE QUEUE instead of Normal Queue.
+- * WB 2008-05-27
+- * *****************************************************************************************************************************/
+-#include <asm/byteorder.h>
+-#include <asm/unaligned.h>
+-#include "ieee80211.h"
+-#include "rtl819x_BA.h"
+-
+-/********************************************************************************************************************
+- *function:  Activate BA entry. And if Time is nozero, start timer.
+- *   input:  struct ba_record          *pBA  //BA entry to be enabled
+- *	     u16			Time //indicate time delay.
+- *  output:  none
+- ********************************************************************************************************************/
+-static void ActivateBAEntry(struct ieee80211_device *ieee, struct ba_record *pBA, u16 Time)
+-{
+-	pBA->valid = true;
+-	if (Time != 0)
+-		mod_timer(&pBA->timer, jiffies + msecs_to_jiffies(Time));
+-}
+-
+-/********************************************************************************************************************
+- *function:  deactivate BA entry, including its timer.
+- *   input:  struct ba_record       *pBA  //BA entry to be disabled
+- *  output:  none
+- ********************************************************************************************************************/
+-static void DeActivateBAEntry(struct ieee80211_device *ieee, struct ba_record *pBA)
+-{
+-	pBA->valid = false;
+-	del_timer_sync(&pBA->timer);
+-}
+-/********************************************************************************************************************
+- *function: deactivete BA entry in Tx Ts, and send DELBA.
+- *   input:
+- *	     struct tx_ts_record *pTxTs //Tx Ts which is to deactivate BA entry.
+- *  output:  none
+- *  notice:  As struct tx_ts_record * structure will be defined in QOS, so wait to be merged. //FIXME
+- ********************************************************************************************************************/
+-static u8 TxTsDeleteBA(struct ieee80211_device *ieee, struct tx_ts_record *pTxTs)
+-{
+-	struct ba_record *pAdmittedBa = &pTxTs->tx_admitted_ba_record;  //These two BA entries must exist in TS structure
+-	struct ba_record *pPendingBa = &pTxTs->tx_pending_ba_record;
+-	u8			bSendDELBA = false;
+-
+-	// Delete pending BA
+-	if (pPendingBa->valid) {
+-		DeActivateBAEntry(ieee, pPendingBa);
+-		bSendDELBA = true;
+-	}
+-
+-	// Delete admitted BA
+-	if (pAdmittedBa->valid) {
+-		DeActivateBAEntry(ieee, pAdmittedBa);
+-		bSendDELBA = true;
+-	}
+-
+-	return bSendDELBA;
+-}
+-
+-/********************************************************************************************************************
+- *function: deactivete BA entry in Tx Ts, and send DELBA.
+- *   input:
+- *	     struct rx_ts_record  *pRxTs //Rx Ts which is to deactivate BA entry.
+- *  output:  none
+- *  notice:  As struct rx_ts_record * structure will be defined in QOS, so wait to be merged. //FIXME, same with above
+- ********************************************************************************************************************/
+-static u8 RxTsDeleteBA(struct ieee80211_device *ieee, struct rx_ts_record *pRxTs)
+-{
+-	struct ba_record       *pBa = &pRxTs->rx_admitted_ba_record;
+-	u8			bSendDELBA = false;
+-
+-	if (pBa->valid) {
+-		DeActivateBAEntry(ieee, pBa);
+-		bSendDELBA = true;
+-	}
+-
+-	return bSendDELBA;
+-}
+-
+-/********************************************************************************************************************
+- *function: reset BA entry
+- *   input:
+- *	     struct ba_record *pBA //entry to be reset
+- *  output:  none
+- ********************************************************************************************************************/
+-void ResetBaEntry(struct ba_record *pBA)
+-{
+-	pBA->valid			= false;
+-	pBA->param_set.short_data	= 0;
+-	pBA->timeout_value		= 0;
+-	pBA->dialog_token		= 0;
+-	pBA->start_seq_ctrl.short_data	= 0;
+-}
+-//These functions need porting here or not?
+-/*******************************************************************************************************************************
+- *function:  construct ADDBAREQ and ADDBARSP frame here together.
+- *   input:  u8*		Dst	//ADDBA frame's destination
+- *	     struct ba_record  *pBA	//BA_RECORD entry which stores the necessary information for BA.
+- *	     u16		StatusCode  //status code in RSP and I will use it to indicate whether it's RSP or REQ(will I?)
+- *	     u8			type	//indicate whether it's RSP(ACT_ADDBARSP) ow REQ(ACT_ADDBAREQ)
+- *  output:  none
+- *  return:  sk_buff*		skb     //return constructed skb to xmit
+- *******************************************************************************************************************************/
+-static struct sk_buff *ieee80211_ADDBA(struct ieee80211_device *ieee, u8 *Dst, struct ba_record *pBA, u16 StatusCode, u8 type)
+-{
+-	struct sk_buff *skb = NULL;
+-	struct rtl_80211_hdr_3addr *BAReq = NULL;
+-	u8 *tag = NULL;
+-	u16 len = ieee->tx_headroom + 9;
+-	//category(1) + action field(1) + Dialog Token(1) + BA Parameter Set(2) +  BA Timeout Value(2) +  BA Start SeqCtrl(2)(or StatusCode(2))
+-	IEEE80211_DEBUG(IEEE80211_DL_TRACE | IEEE80211_DL_BA, "========>%s(), frame(%d) sentd to:%pM, ieee->dev:%p\n", __func__, type, Dst, ieee->dev);
+-	if (pBA == NULL) {
+-		IEEE80211_DEBUG(IEEE80211_DL_ERR, "pBA is NULL\n");
+-		return NULL;
+-	}
+-	skb = dev_alloc_skb(len + sizeof(struct rtl_80211_hdr_3addr)); //need to add something others? FIXME
+-	if (!skb)
+-		return NULL;
+-
+-	memset(skb->data, 0, sizeof(struct rtl_80211_hdr_3addr));	//I wonder whether it's necessary. Apparently kernel will not do it when alloc a skb.
+-	skb_reserve(skb, ieee->tx_headroom);
+-
+-	BAReq = skb_put(skb, sizeof(struct rtl_80211_hdr_3addr));
+-
+-	memcpy(BAReq->addr1, Dst, ETH_ALEN);
+-	memcpy(BAReq->addr2, ieee->dev->dev_addr, ETH_ALEN);
+-
+-	memcpy(BAReq->addr3, ieee->current_network.bssid, ETH_ALEN);
+-
+-	BAReq->frame_ctl = cpu_to_le16(IEEE80211_STYPE_MANAGE_ACT); //action frame
+-
+-	//tag += sizeof( struct rtl_80211_hdr_3addr); //move to action field
+-	tag = skb_put(skb, 9);
+-	*tag++ = ACT_CAT_BA;
+-	*tag++ = type;
+-	// Dialog Token
+-	*tag++ = pBA->dialog_token;
+-
+-	if (type == ACT_ADDBARSP) {
+-		// Status Code
+-		netdev_info(ieee->dev, "=====>to send ADDBARSP\n");
+-
+-		put_unaligned_le16(StatusCode, tag);
+-		tag += 2;
+-	}
+-	// BA Parameter Set
+-
+-	put_unaligned_le16(pBA->param_set.short_data, tag);
+-	tag += 2;
+-	// BA Timeout Value
+-
+-	put_unaligned_le16(pBA->timeout_value, tag);
+-	tag += 2;
+-
+-	if (type == ACT_ADDBAREQ) {
+-	// BA Start SeqCtrl
+-		memcpy(tag, (u8 *)&(pBA->start_seq_ctrl), 2);
+-		tag += 2;
+-	}
+-
+-	IEEE80211_DEBUG_DATA(IEEE80211_DL_DATA | IEEE80211_DL_BA, skb->data, skb->len);
+-	return skb;
+-	//return NULL;
+-}
+-
+-
+-/********************************************************************************************************************
+- *function:  construct DELBA frame
+- *   input:  u8*		dst	//DELBA frame's destination
+- *	     struct ba_record  *pBA	//BA_RECORD entry which stores the necessary information for BA
+- *	     enum tr_select	TxRxSelect  //TX RX direction
+- *	     u16		ReasonCode  //status code.
+- *  output:  none
+- *  return:  sk_buff*		skb     //return constructed skb to xmit
+- ********************************************************************************************************************/
+-static struct sk_buff *ieee80211_DELBA(
+-	struct ieee80211_device  *ieee,
+-	u8		         *dst,
+-	struct ba_record         *pBA,
+-	enum tr_select		 TxRxSelect,
+-	u16			 ReasonCode
+-	)
+-{
+-	union delba_param_set	DelbaParamSet;
+-	struct sk_buff *skb = NULL;
+-	struct rtl_80211_hdr_3addr *Delba = NULL;
+-	u8 *tag = NULL;
+-	//len = head len + DELBA Parameter Set(2) + Reason Code(2)
+-	u16 len = 6 + ieee->tx_headroom;
+-
+-	if (net_ratelimit())
+-		IEEE80211_DEBUG(IEEE80211_DL_TRACE | IEEE80211_DL_BA,
+-				"========>%s(), ReasonCode(%d) sentd to:%pM\n",
+-				__func__, ReasonCode, dst);
+-
+-	memset(&DelbaParamSet, 0, 2);
+-
+-	DelbaParamSet.field.initiator	= (TxRxSelect == TX_DIR) ? 1 : 0;
+-	DelbaParamSet.field.tid	= pBA->param_set.field.tid;
+-
+-	skb = dev_alloc_skb(len + sizeof(struct rtl_80211_hdr_3addr)); //need to add something others? FIXME
+-	if (!skb)
+-		return NULL;
+-//	memset(skb->data, 0, len+sizeof( struct rtl_80211_hdr_3addr));
+-	skb_reserve(skb, ieee->tx_headroom);
+-
+-	Delba = skb_put(skb, sizeof(struct rtl_80211_hdr_3addr));
+-
+-	memcpy(Delba->addr1, dst, ETH_ALEN);
+-	memcpy(Delba->addr2, ieee->dev->dev_addr, ETH_ALEN);
+-	memcpy(Delba->addr3, ieee->current_network.bssid, ETH_ALEN);
+-	Delba->frame_ctl = cpu_to_le16(IEEE80211_STYPE_MANAGE_ACT); //action frame
+-
+-	tag = skb_put(skb, 6);
+-
+-	*tag++ = ACT_CAT_BA;
+-	*tag++ = ACT_DELBA;
+-
+-	// DELBA Parameter Set
+-
+-	put_unaligned_le16(DelbaParamSet.short_data, tag);
+-	tag += 2;
+-	// Reason Code
+-
+-	put_unaligned_le16(ReasonCode, tag);
+-	tag += 2;
+-
+-	IEEE80211_DEBUG_DATA(IEEE80211_DL_DATA | IEEE80211_DL_BA, skb->data, skb->len);
+-	if (net_ratelimit())
+-		IEEE80211_DEBUG(IEEE80211_DL_TRACE | IEEE80211_DL_BA,
+-				"<=====%s()\n", __func__);
+-	return skb;
+-}
+-
+-/********************************************************************************************************************
+- *function: send ADDBAReq frame out
+- *   input:  u8*		dst	//ADDBAReq frame's destination
+- *	     struct ba_record  *pBA	//BA_RECORD entry which stores the necessary information for BA
+- *  output:  none
+- *  notice: If any possible, please hide pBA in ieee. And temporarily use Manage Queue as softmac_mgmt_xmit() usually does
+- ********************************************************************************************************************/
+-static void ieee80211_send_ADDBAReq(struct ieee80211_device *ieee,
+-				    u8 *dst, struct ba_record *pBA)
+-{
+-	struct sk_buff *skb;
+-	skb = ieee80211_ADDBA(ieee, dst, pBA, 0, ACT_ADDBAREQ); //construct ACT_ADDBAREQ frames so set statuscode zero.
+-
+-	if (skb) {
+-		softmac_mgmt_xmit(skb, ieee);
+-		//add statistic needed here.
+-		//and skb will be freed in softmac_mgmt_xmit(), so omit all dev_kfree_skb_any() outside softmac_mgmt_xmit()
+-		//WB
+-	} else {
+-		IEEE80211_DEBUG(IEEE80211_DL_ERR, "alloc skb error in function %s()\n", __func__);
+-	}
+-}
+-
+-/********************************************************************************************************************
+- *function: send ADDBARSP frame out
+- *   input:  u8*		dst	//DELBA frame's destination
+- *	     struct ba_record  *pBA	//BA_RECORD entry which stores the necessary information for BA
+- *	     u16		StatusCode //RSP StatusCode
+- *  output:  none
+- *  notice: If any possible, please hide pBA in ieee. And temporarily use Manage Queue as softmac_mgmt_xmit() usually does
+- ********************************************************************************************************************/
+-static void ieee80211_send_ADDBARsp(struct ieee80211_device *ieee, u8 *dst,
+-				    struct ba_record *pBA, u16 StatusCode)
+-{
+-	struct sk_buff *skb;
+-	skb = ieee80211_ADDBA(ieee, dst, pBA, StatusCode, ACT_ADDBARSP); //construct ACT_ADDBARSP frames
+-	if (skb) {
+-		softmac_mgmt_xmit(skb, ieee);
+-		//same above
+-	} else {
+-		IEEE80211_DEBUG(IEEE80211_DL_ERR, "alloc skb error in function %s()\n", __func__);
+-	}
+-
+-	return;
+-
+-}
+-/********************************************************************************************************************
+- *function: send ADDBARSP frame out
+- *   input:  u8*		dst	//DELBA frame's destination
+- *	     struct ba_record  *pBA	//BA_RECORD entry which stores the necessary information for BA
+- *	     enum tr_select     TxRxSelect //TX or RX
+- *	     u16		ReasonCode //DEL ReasonCode
+- *  output:  none
+- *  notice: If any possible, please hide pBA in ieee. And temporarily use Manage Queue as softmac_mgmt_xmit() usually does
+- ********************************************************************************************************************/
+-
+-static void ieee80211_send_DELBA(struct ieee80211_device *ieee, u8 *dst,
+-				 struct ba_record *pBA, enum tr_select TxRxSelect,
+-				 u16 ReasonCode)
+-{
+-	struct sk_buff *skb;
+-	skb = ieee80211_DELBA(ieee, dst, pBA, TxRxSelect, ReasonCode); //construct ACT_ADDBARSP frames
+-	if (skb) {
+-		softmac_mgmt_xmit(skb, ieee);
+-		//same above
+-	} else {
+-		IEEE80211_DEBUG(IEEE80211_DL_ERR, "alloc skb error in function %s()\n", __func__);
+-	}
+-}
+-
+-/********************************************************************************************************************
+- *function: RX ADDBAReq
+- *   input:  struct sk_buff *   skb	//incoming ADDBAReq skb.
+- *  return:  0(pass), other(fail)
+- *  notice:  As this function need support of QOS, I comment some code out. And when qos is ready, this code need to be support.
+- ********************************************************************************************************************/
+-int ieee80211_rx_ADDBAReq(struct ieee80211_device *ieee, struct sk_buff *skb)
+-{
+-	struct rtl_80211_hdr_3addr *req = NULL;
+-	u16 rc = 0;
+-	u8 *dst = NULL, *pDialogToken = NULL, *tag = NULL;
+-	struct ba_record *pBA = NULL;
+-	union ba_param_set     *pBaParamSet = NULL;
+-	u16 *pBaTimeoutVal = NULL;
+-	union sequence_control *pBaStartSeqCtrl = NULL;
+-	struct rx_ts_record  *pTS = NULL;
+-
+-	if (skb->len < sizeof(struct rtl_80211_hdr_3addr) + 9) {
+-		IEEE80211_DEBUG(IEEE80211_DL_ERR,
+-				" Invalid skb len in BAREQ(%d / %zu)\n",
+-				skb->len,
+-				(sizeof(struct rtl_80211_hdr_3addr) + 9));
+-		return -1;
+-	}
+-
+-	IEEE80211_DEBUG_DATA(IEEE80211_DL_DATA | IEEE80211_DL_BA, skb->data, skb->len);
+-
+-	req = (struct rtl_80211_hdr_3addr *)skb->data;
+-	tag = (u8 *)req;
+-	dst = &req->addr2[0];
+-	tag += sizeof(struct rtl_80211_hdr_3addr);
+-	pDialogToken = tag + 2;  //category+action
+-	pBaParamSet = (union ba_param_set *)(tag + 3);   //+DialogToken
+-	pBaTimeoutVal = (u16 *)(tag + 5);
+-	pBaStartSeqCtrl = (union sequence_control *)(req + 7);
+-
+-	netdev_info(ieee->dev, "====================>rx ADDBAREQ from :%pM\n", dst);
+-//some other capability is not ready now.
+-	if ((ieee->current_network.qos_data.active == 0) ||
+-		(!ieee->pHTInfo->bCurrentHTSupport)) //||
+-	//	(!ieee->pStaQos->bEnableRxImmBA)	)
+-	{
+-		rc = ADDBA_STATUS_REFUSED;
+-		IEEE80211_DEBUG(IEEE80211_DL_ERR, "Failed to reply on ADDBA_REQ as some capability is not ready(%d, %d)\n", ieee->current_network.qos_data.active, ieee->pHTInfo->bCurrentHTSupport);
+-		goto OnADDBAReq_Fail;
+-	}
+-	// Search for related traffic stream.
+-	// If there is no matched TS, reject the ADDBA request.
+-	if (!GetTs(
+-			ieee,
+-			(struct ts_common_info **)(&pTS),
+-			dst,
+-			(u8)(pBaParamSet->field.tid),
+-			RX_DIR,
+-			true)) {
+-		rc = ADDBA_STATUS_REFUSED;
+-		IEEE80211_DEBUG(IEEE80211_DL_ERR, "can't get TS in %s()\n", __func__);
+-		goto OnADDBAReq_Fail;
+-	}
+-	pBA = &pTS->rx_admitted_ba_record;
+-	// To Determine the ADDBA Req content
+-	// We can do much more check here, including buffer_size, AMSDU_Support, Policy, StartSeqCtrl...
+-	// I want to check StartSeqCtrl to make sure when we start aggregation!!!
+-	//
+-	if (pBaParamSet->field.ba_policy == BA_POLICY_DELAYED) {
+-		rc = ADDBA_STATUS_INVALID_PARAM;
+-		IEEE80211_DEBUG(IEEE80211_DL_ERR, "BA Policy is not correct in %s()\n", __func__);
+-		goto OnADDBAReq_Fail;
+-	}
+-		// Admit the ADDBA Request
+-	//
+-	DeActivateBAEntry(ieee, pBA);
+-	pBA->dialog_token = *pDialogToken;
+-	pBA->param_set = *pBaParamSet;
+-	pBA->timeout_value = *pBaTimeoutVal;
+-	pBA->start_seq_ctrl = *pBaStartSeqCtrl;
+-	//for half N mode we only aggregate 1 frame
+-	if (ieee->GetHalfNmodeSupportByAPsHandler(ieee->dev))
+-		pBA->param_set.field.buffer_size = 1;
+-	else
+-		pBA->param_set.field.buffer_size = 32;
+-	ActivateBAEntry(ieee, pBA, pBA->timeout_value);
+-	ieee80211_send_ADDBARsp(ieee, dst, pBA, ADDBA_STATUS_SUCCESS);
+-
+-	// End of procedure.
+-	return 0;
+-
+-OnADDBAReq_Fail:
+-	{
+-		struct ba_record	BA;
+-		BA.param_set = *pBaParamSet;
+-		BA.timeout_value = *pBaTimeoutVal;
+-		BA.dialog_token = *pDialogToken;
+-		BA.param_set.field.ba_policy = BA_POLICY_IMMEDIATE;
+-		ieee80211_send_ADDBARsp(ieee, dst, &BA, rc);
+-		return 0; //we send RSP out.
+-	}
+-
+-}
+-
+-/********************************************************************************************************************
+- *function: RX ADDBARSP
+- *   input:  struct sk_buff *   skb	//incoming ADDBAReq skb.
+- *  return:  0(pass), other(fail)
+- *  notice:  As this function need support of QOS, I comment some code out. And when qos is ready, this code need to be support.
+- ********************************************************************************************************************/
+-int ieee80211_rx_ADDBARsp(struct ieee80211_device *ieee, struct sk_buff *skb)
+-{
+-	struct rtl_80211_hdr_3addr *rsp = NULL;
+-	struct ba_record        *pPendingBA, *pAdmittedBA;
+-	struct tx_ts_record     *pTS = NULL;
+-	u8 *dst = NULL, *pDialogToken = NULL, *tag = NULL;
+-	u16 *pStatusCode = NULL, *pBaTimeoutVal = NULL;
+-	union ba_param_set       *pBaParamSet = NULL;
+-	u16			ReasonCode;
+-
+-	if (skb->len < sizeof(struct rtl_80211_hdr_3addr) + 9) {
+-		IEEE80211_DEBUG(IEEE80211_DL_ERR,
+-				" Invalid skb len in BARSP(%d / %zu)\n",
+-				skb->len,
+-				(sizeof(struct rtl_80211_hdr_3addr) + 9));
+-		return -1;
+-	}
+-	rsp = (struct rtl_80211_hdr_3addr *)skb->data;
+-	tag = (u8 *)rsp;
+-	dst = &rsp->addr2[0];
+-	tag += sizeof(struct rtl_80211_hdr_3addr);
+-	pDialogToken = tag + 2;
+-	pStatusCode = (u16 *)(tag + 3);
+-	pBaParamSet = (union ba_param_set *)(tag + 5);
+-	pBaTimeoutVal = (u16 *)(tag + 7);
+-
+-	// Check the capability
+-	// Since we can always receive A-MPDU, we just check if it is under HT mode.
+-	if (ieee->current_network.qos_data.active == 0  ||
+-	    !ieee->pHTInfo->bCurrentHTSupport ||
+-	    !ieee->pHTInfo->bCurrentAMPDUEnable) {
+-		IEEE80211_DEBUG(IEEE80211_DL_ERR, "reject to ADDBA_RSP as some capability is not ready(%d, %d, %d)\n", ieee->current_network.qos_data.active, ieee->pHTInfo->bCurrentHTSupport, ieee->pHTInfo->bCurrentAMPDUEnable);
+-		ReasonCode = DELBA_REASON_UNKNOWN_BA;
+-		goto OnADDBARsp_Reject;
+-	}
+-
+-
+-	//
+-	// Search for related TS.
+-	// If there is no TS found, we wil reject ADDBA Rsp by sending DELBA frame.
+-	//
+-	if (!GetTs(
+-			ieee,
+-			(struct ts_common_info **)(&pTS),
+-			dst,
+-			(u8)(pBaParamSet->field.tid),
+-			TX_DIR,
+-			false)) {
+-		IEEE80211_DEBUG(IEEE80211_DL_ERR, "can't get TS in %s()\n", __func__);
+-		ReasonCode = DELBA_REASON_UNKNOWN_BA;
+-		goto OnADDBARsp_Reject;
+-	}
+-
+-	pTS->add_ba_req_in_progress = false;
+-	pPendingBA = &pTS->tx_pending_ba_record;
+-	pAdmittedBA = &pTS->tx_admitted_ba_record;
+-
+-
+-	//
+-	// Check if related BA is waiting for setup.
+-	// If not, reject by sending DELBA frame.
+-	//
+-	if (pAdmittedBA->valid) {
+-		// Since BA is already setup, we ignore all other ADDBA Response.
+-		IEEE80211_DEBUG(IEEE80211_DL_BA, "OnADDBARsp(): Recv ADDBA Rsp. Drop because already admit it! \n");
+-		return -1;
+-	} else if ((!pPendingBA->valid) || (*pDialogToken != pPendingBA->dialog_token)) {
+-		IEEE80211_DEBUG(IEEE80211_DL_ERR,  "OnADDBARsp(): Recv ADDBA Rsp. BA invalid, DELBA! \n");
+-		ReasonCode = DELBA_REASON_UNKNOWN_BA;
+-		goto OnADDBARsp_Reject;
+-	} else {
+-		IEEE80211_DEBUG(IEEE80211_DL_BA, "OnADDBARsp(): Recv ADDBA Rsp. BA is admitted! Status code:%X\n", *pStatusCode);
+-		DeActivateBAEntry(ieee, pPendingBA);
+-	}
+-
+-
+-	if (*pStatusCode == ADDBA_STATUS_SUCCESS) {
+-		//
+-		// Determine ADDBA Rsp content here.
+-		// We can compare the value of BA parameter set that Peer returned and Self sent.
+-		// If it is OK, then admitted. Or we can send DELBA to cancel BA mechanism.
+-		//
+-		if (pBaParamSet->field.ba_policy == BA_POLICY_DELAYED) {
+-			// Since this is a kind of ADDBA failed, we delay next ADDBA process.
+-			pTS->add_ba_req_delayed = true;
+-			DeActivateBAEntry(ieee, pAdmittedBA);
+-			ReasonCode = DELBA_REASON_END_BA;
+-			goto OnADDBARsp_Reject;
+-		}
+-
+-
+-		//
+-		// Admitted condition
+-		//
+-		pAdmittedBA->dialog_token = *pDialogToken;
+-		pAdmittedBA->timeout_value = *pBaTimeoutVal;
+-		pAdmittedBA->start_seq_ctrl = pPendingBA->start_seq_ctrl;
+-		pAdmittedBA->param_set = *pBaParamSet;
+-		DeActivateBAEntry(ieee, pAdmittedBA);
+-		ActivateBAEntry(ieee, pAdmittedBA, *pBaTimeoutVal);
+-	} else {
+-		// Delay next ADDBA process.
+-		pTS->add_ba_req_delayed = true;
+-	}
+-
+-	// End of procedure
+-	return 0;
+-
+-OnADDBARsp_Reject:
+-	{
+-		struct ba_record	BA;
+-		BA.param_set = *pBaParamSet;
+-		ieee80211_send_DELBA(ieee, dst, &BA, TX_DIR, ReasonCode);
+-		return 0;
+-	}
+-
+-}
+-
+-/********************************************************************************************************************
+- *function: RX DELBA
+- *   input:  struct sk_buff *   skb	//incoming ADDBAReq skb.
+- *  return:  0(pass), other(fail)
+- *  notice:  As this function need support of QOS, I comment some code out. And when qos is ready, this code need to be support.
+- ********************************************************************************************************************/
+-int ieee80211_rx_DELBA(struct ieee80211_device *ieee, struct sk_buff *skb)
+-{
+-	struct rtl_80211_hdr_3addr *delba = NULL;
+-	union delba_param_set   *pDelBaParamSet = NULL;
+-	u8			*dst = NULL;
+-
+-	if (skb->len < sizeof(struct rtl_80211_hdr_3addr) + 6) {
+-		IEEE80211_DEBUG(IEEE80211_DL_ERR,
+-				" Invalid skb len in DELBA(%d / %zu)\n",
+-				skb->len,
+-				(sizeof(struct rtl_80211_hdr_3addr) + 6));
+-		return -1;
+-	}
+-
+-	if (ieee->current_network.qos_data.active == 0 ||
+-	    !ieee->pHTInfo->bCurrentHTSupport) {
+-		IEEE80211_DEBUG(IEEE80211_DL_ERR, "received DELBA while QOS or HT is not supported(%d, %d)\n", ieee->current_network.qos_data.active, ieee->pHTInfo->bCurrentHTSupport);
+-		return -1;
+-	}
+-
+-	IEEE80211_DEBUG_DATA(IEEE80211_DL_DATA | IEEE80211_DL_BA, skb->data, skb->len);
+-	delba = (struct rtl_80211_hdr_3addr *)skb->data;
+-	dst = &delba->addr2[0];
+-	pDelBaParamSet = (union delba_param_set *)&delba->payload[2];
+-
+-	if (pDelBaParamSet->field.initiator == 1) {
+-		struct rx_ts_record *pRxTs;
+-
+-		if (!GetTs(
+-				ieee,
+-				(struct ts_common_info **)&pRxTs,
+-				dst,
+-				(u8)pDelBaParamSet->field.tid,
+-				RX_DIR,
+-				false)) {
+-			IEEE80211_DEBUG(IEEE80211_DL_ERR,  "can't get TS for RXTS in %s()\n", __func__);
+-			return -1;
+-		}
+-
+-		RxTsDeleteBA(ieee, pRxTs);
+-	} else {
+-		struct tx_ts_record *pTxTs;
+-
+-		if (!GetTs(
+-			ieee,
+-			(struct ts_common_info **)&pTxTs,
+-			dst,
+-			(u8)pDelBaParamSet->field.tid,
+-			TX_DIR,
+-			false)) {
+-			IEEE80211_DEBUG(IEEE80211_DL_ERR,  "can't get TS for TXTS in %s()\n", __func__);
+-			return -1;
+-		}
+-
+-		pTxTs->using_ba = false;
+-		pTxTs->add_ba_req_in_progress = false;
+-		pTxTs->add_ba_req_delayed = false;
+-		del_timer_sync(&pTxTs->ts_add_ba_timer);
+-		//PlatformCancelTimer(Adapter, &pTxTs->ts_add_ba_timer);
+-		TxTsDeleteBA(ieee, pTxTs);
+-	}
+-	return 0;
+-}
+-
+-//
+-// ADDBA initiate. This can only be called by TX side.
+-//
+-void
+-TsInitAddBA(
+-	struct ieee80211_device *ieee,
+-	struct tx_ts_record     *pTS,
+-	u8		Policy,
+-	u8		bOverwritePending
+-	)
+-{
+-	struct ba_record *pBA = &pTS->tx_pending_ba_record;
+-
+-	if (pBA->valid && !bOverwritePending)
+-		return;
+-
+-	// Set parameters to "Pending" variable set
+-	DeActivateBAEntry(ieee, pBA);
+-
+-	pBA->dialog_token++;						// DialogToken: Only keep the latest dialog token
+-	pBA->param_set.field.amsdu_support = 0;	// Do not support A-MSDU with A-MPDU now!!
+-	pBA->param_set.field.ba_policy = Policy;	// Policy: Delayed or Immediate
+-	pBA->param_set.field.tid = pTS->ts_common_info.t_spec.ts_info.uc_tsid;	// TID
+-	// buffer_size: This need to be set according to A-MPDU vector
+-	pBA->param_set.field.buffer_size = 32;		// buffer_size: This need to be set according to A-MPDU vector
+-	pBA->timeout_value = 0;					// Timeout value: Set 0 to disable Timer
+-	pBA->start_seq_ctrl.field.seq_num = (pTS->tx_cur_seq + 3) % 4096;	// Block Ack will start after 3 packets later.
+-
+-	ActivateBAEntry(ieee, pBA, BA_SETUP_TIMEOUT);
+-
+-	ieee80211_send_ADDBAReq(ieee, pTS->ts_common_info.addr, pBA);
+-}
+-
+-void
+-TsInitDelBA(struct ieee80211_device *ieee, struct ts_common_info *pTsCommonInfo, enum tr_select TxRxSelect)
+-{
+-	if (TxRxSelect == TX_DIR) {
+-		struct tx_ts_record *pTxTs = (struct tx_ts_record *)pTsCommonInfo;
+-
+-		if (TxTsDeleteBA(ieee, pTxTs))
+-			ieee80211_send_DELBA(
+-				ieee,
+-				pTsCommonInfo->addr,
+-				(pTxTs->tx_admitted_ba_record.valid) ? (&pTxTs->tx_admitted_ba_record) : (&pTxTs->tx_pending_ba_record),
+-				TxRxSelect,
+-				DELBA_REASON_END_BA);
+-	} else if (TxRxSelect == RX_DIR) {
+-		struct rx_ts_record *pRxTs = (struct rx_ts_record *)pTsCommonInfo;
+-		if (RxTsDeleteBA(ieee, pRxTs))
+-			ieee80211_send_DELBA(
+-				ieee,
+-				pTsCommonInfo->addr,
+-				&pRxTs->rx_admitted_ba_record,
+-				TxRxSelect,
+-				DELBA_REASON_END_BA);
+-	}
+-}
+-/********************************************************************************************************************
+- *function:  BA setup timer
+- *   input:  unsigned long	 data		//acturally we send struct tx_ts_record or struct rx_ts_record to these timer
+- *  return:  NULL
+- *  notice:
+- ********************************************************************************************************************/
+-void BaSetupTimeOut(struct timer_list *t)
+-{
+-	struct tx_ts_record *pTxTs = from_timer(pTxTs, t, tx_pending_ba_record.timer);
+-
+-	pTxTs->add_ba_req_in_progress = false;
+-	pTxTs->add_ba_req_delayed = true;
+-	pTxTs->tx_pending_ba_record.valid = false;
+-}
+-
+-void TxBaInactTimeout(struct timer_list *t)
+-{
+-	struct tx_ts_record *pTxTs = from_timer(pTxTs, t, tx_admitted_ba_record.timer);
+-	struct ieee80211_device *ieee = container_of(pTxTs, struct ieee80211_device, TxTsRecord[pTxTs->num]);
+-	TxTsDeleteBA(ieee, pTxTs);
+-	ieee80211_send_DELBA(
+-		ieee,
+-		pTxTs->ts_common_info.addr,
+-		&pTxTs->tx_admitted_ba_record,
+-		TX_DIR,
+-		DELBA_REASON_TIMEOUT);
+-}
+-
+-void RxBaInactTimeout(struct timer_list *t)
+-{
+-	struct rx_ts_record *pRxTs = from_timer(pRxTs, t, rx_admitted_ba_record.timer);
+-	struct ieee80211_device *ieee = container_of(pRxTs, struct ieee80211_device, RxTsRecord[pRxTs->num]);
+-
+-	RxTsDeleteBA(ieee, pRxTs);
+-	ieee80211_send_DELBA(
+-		ieee,
+-		pRxTs->ts_common_info.addr,
+-		&pRxTs->rx_admitted_ba_record,
+-		RX_DIR,
+-		DELBA_REASON_TIMEOUT);
+-}
+diff --git a/drivers/staging/rtl8192u/ieee80211/rtl819x_HT.h b/drivers/staging/rtl8192u/ieee80211/rtl819x_HT.h
+deleted file mode 100644
+index 79346a00af09..000000000000
+--- a/drivers/staging/rtl8192u/ieee80211/rtl819x_HT.h
++++ /dev/null
+@@ -1,302 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _RTL819XU_HTTYPE_H_
+-#define _RTL819XU_HTTYPE_H_
+-
+-/*
+- * The HT Capability element is present in beacons, association request,
+- * reassociation request and probe response frames
+- */
+-
+-/*
+- * MIMO Power Save Settings
+- */
+-#define MIMO_PS_STATIC				0
+-
+-/*
+- * There should be 128 bits to cover all of the MCS rates. However, since
+- * 8190 does not support too much rates, one integer is quite enough.
+- */
+-#define HTCLNG	4
+-
+-/*
+- * Represent Channel Width in HT Capabilities
+- */
+-enum ht_channel_width {
+-	HT_CHANNEL_WIDTH_20 = 0,
+-	HT_CHANNEL_WIDTH_20_40 = 1,
+-};
+-
+-/*
+- * Represent Extension Channel Offset in HT Capabilities
+- * This is available only in 40Mhz mode.
+- */
+-enum ht_extension_chan_offset {
+-	HT_EXTCHNL_OFFSET_NO_EXT = 0,
+-	HT_EXTCHNL_OFFSET_UPPER = 1,
+-	HT_EXTCHNL_OFFSET_NO_DEF = 2,
+-	HT_EXTCHNL_OFFSET_LOWER = 3,
+-};
+-
+-struct ht_capability_ele {
+-	//HT capability info
+-	u8	AdvCoding:1;
+-	u8	ChlWidth:1;
+-	u8	MimoPwrSave:2;
+-	u8	GreenField:1;
+-	u8	ShortGI20Mhz:1;
+-	u8	ShortGI40Mhz:1;
+-	u8	TxSTBC:1;
+-	u8	RxSTBC:2;
+-	u8	DelayBA:1;
+-	u8	MaxAMSDUSize:1;
+-	u8	DssCCk:1;
+-	u8	PSMP:1;
+-	u8	Rsvd1:1;
+-	u8	LSigTxopProtect:1;
+-
+-	//MAC HT parameters info
+-	u8	MaxRxAMPDUFactor:2;
+-	u8	MPDUDensity:3;
+-	u8	Rsvd2:3;
+-
+-	//Supported MCS set
+-	u8	MCS[16];
+-
+-	//Extended HT Capability Info
+-	u16	ExtHTCapInfo;
+-
+-	//TXBF Capabilities
+-	u8	TxBFCap[4];
+-
+-	//Antenna Selection Capabilities
+-	u8	ASCap;
+-
+-} __packed;
+-
+-/*
+- * The HT Information element is present in beacons
+- * Only AP is required to include this element
+- */
+-typedef struct _HT_INFORMATION_ELE {
+-	u8	ControlChl;
+-
+-	u8	ExtChlOffset:2;
+-	u8	RecommemdedTxWidth:1;
+-	u8	RIFS:1;
+-	u8	PSMPAccessOnly:1;
+-	u8	SrvIntGranularity:3;
+-
+-	u8	OptMode:2;
+-	u8	NonGFDevPresent:1;
+-	u8	Revd1:5;
+-	u8	Revd2:8;
+-
+-	u8	Rsvd3:6;
+-	u8	DualBeacon:1;
+-	u8	DualCTSProtect:1;
+-
+-	u8	SecondaryBeacon:1;
+-	u8	LSigTxopProtectFull:1;
+-	u8	PcoActive:1;
+-	u8	PcoPhase:1;
+-	u8	Rsvd4:4;
+-
+-	u8	BasicMSC[16];
+-} __attribute__ ((packed)) HT_INFORMATION_ELE, *PHT_INFORMATION_ELE;
+-
+-typedef enum _HT_SPEC_VER {
+-	HT_SPEC_VER_IEEE = 0,
+-	HT_SPEC_VER_EWC = 1,
+-} HT_SPEC_VER, *PHT_SPEC_VER;
+-
+-typedef enum _HT_AGGRE_MODE_E {
+-	HT_AGG_AUTO = 0,
+-	HT_AGG_FORCE_ENABLE = 1,
+-	HT_AGG_FORCE_DISABLE = 2,
+-} HT_AGGRE_MODE_E, *PHT_AGGRE_MODE_E;
+-
+-/*
+- *  The Data structure is used to keep HT related variables when card is
+- *  configured as non-AP STA mode.  **Note**  Current_xxx should be set
+- *  to default value in HTInitializeHTInfo()
+- */
+-typedef struct _RT_HIGH_THROUGHPUT {
+-	u8				bEnableHT;
+-	u8				bCurrentHTSupport;
+-
+-	u8				bRegBW40MHz;				// Tx 40MHz channel capability
+-	u8				bCurBW40MHz;				// Tx 40MHz channel capability
+-
+-	u8				bRegShortGI40MHz;			// Tx Short GI for 40Mhz
+-	u8				bCurShortGI40MHz;			// Tx Short GI for 40MHz
+-
+-	u8				bRegShortGI20MHz;			// Tx Short GI for 20MHz
+-	u8				bCurShortGI20MHz;			// Tx Short GI for 20MHz
+-
+-	u8				bRegSuppCCK;				// Tx CCK rate capability
+-	u8				bCurSuppCCK;				// Tx CCK rate capability
+-
+-	// 802.11n spec version for "peer"
+-	HT_SPEC_VER			ePeerHTSpecVer;
+-
+-	// HT related information for "Self"
+-	struct ht_capability_ele	SelfHTCap;		// This is HT cap element sent to peer STA, which also indicate HT Rx capabilities.
+-	HT_INFORMATION_ELE	SelfHTInfo;		// This is HT info element sent to peer STA, which also indicate HT Rx capabilities.
+-
+-	// HT related information for "Peer"
+-	u8				PeerHTCapBuf[32];
+-	u8				PeerHTInfoBuf[32];
+-
+-	// A-MSDU related
+-	u8				bAMSDU_Support;			// This indicates Tx A-MSDU capability
+-	u16				nAMSDU_MaxSize;			// This indicates Tx A-MSDU capability
+-	u8				bCurrent_AMSDU_Support;	// This indicates Tx A-MSDU capability
+-	u16				nCurrent_AMSDU_MaxSize;	// This indicates Tx A-MSDU capability
+-
+-	// AMPDU  related <2006.08.10 Emily>
+-	u8				bAMPDUEnable;				// This indicate Tx A-MPDU capability
+-	u8				bCurrentAMPDUEnable;		// This indicate Tx A-MPDU capability
+-	u8				AMPDU_Factor;				// This indicate Tx A-MPDU capability
+-	u8				CurrentAMPDUFactor;		// This indicate Tx A-MPDU capability
+-	u8				MPDU_Density;				// This indicate Tx A-MPDU capability
+-	u8				CurrentMPDUDensity;			// This indicate Tx A-MPDU capability
+-
+-	// Forced A-MPDU enable
+-	HT_AGGRE_MODE_E	ForcedAMPDUMode;
+-	u8				ForcedAMPDUFactor;
+-	u8				ForcedMPDUDensity;
+-
+-	// Forced A-MSDU enable
+-	HT_AGGRE_MODE_E	ForcedAMSDUMode;
+-	u16				ForcedAMSDUMaxSize;
+-
+-	u8				bForcedShortGI;
+-
+-	u8				CurrentOpMode;
+-
+-	// MIMO PS related
+-	u8				SelfMimoPs;
+-	u8				PeerMimoPs;
+-
+-	// 40MHz Channel Offset settings.
+-	enum ht_extension_chan_offset	CurSTAExtChnlOffset;
+-	u8				bCurTxBW40MHz;	// If we use 40 MHz to Tx
+-	u8				PeerBandwidth;
+-
+-	// For Bandwidth Switching
+-	u8				bSwBwInProgress;
+-	u8				SwBwStep;
+-	//struct timer_list		SwBwTimer;  //moved to ieee80211_device. as timer_list need include some header file here.
+-
+-	// For Realtek proprietary A-MPDU factor for aggregation
+-	u8				bRegRT2RTAggregation;
+-	u8				bCurrentRT2RTAggregation;
+-	u8				bCurrentRT2RTLongSlotTime;
+-	u8				szRT2RTAggBuffer[10];
+-
+-	// Rx Reorder control
+-	u8				bRegRxReorderEnable;
+-	u8				bCurRxReorderEnable;
+-	u8				RxReorderWinSize;
+-	u8				RxReorderPendingTime;
+-	u16				RxReorderDropCounter;
+-
+-#ifdef USB_TX_DRIVER_AGGREGATION_ENABLE
+-	u8				UsbTxAggrNum;
+-#endif
+-#ifdef USB_RX_AGGREGATION_SUPPORT
+-	u8				UsbRxFwAggrEn;
+-	u8				UsbRxFwAggrPageNum;
+-	u8				UsbRxFwAggrPacketNum;
+-	u8				UsbRxFwAggrTimeout;
+-#endif
+-
+-	// Add for Broadcom(Linksys) IOT. Joseph
+-	u8				bIsPeerBcm;
+-
+-	// For IOT issue.
+-	u8				IOTPeer;
+-	u32				IOTAction;
+-} __attribute__ ((packed)) RT_HIGH_THROUGHPUT, *PRT_HIGH_THROUGHPUT;
+-
+-/*
+- * The Data structure is used to keep HT related variable for "each AP"
+- * when card is configured as "STA mode"
+- */
+-typedef struct _BSS_HT {
+-	u8				bdSupportHT;
+-
+-	// HT related elements
+-	u8					bdHTCapBuf[32];
+-	u16					bdHTCapLen;
+-	u8					bdHTInfoBuf[32];
+-	u16					bdHTInfoLen;
+-
+-	HT_SPEC_VER				bdHTSpecVer;
+-	//struct ht_capability_ele              bdHTCapEle;
+-	//HT_INFORMATION_ELE		bdHTInfoEle;
+-
+-	u8					bdRT2RTAggregation;
+-	u8					bdRT2RTLongSlotTime;
+-} __attribute__ ((packed)) BSS_HT, *PBSS_HT;
+-
+-extern u8 MCS_FILTER_ALL[16];
+-extern u8 MCS_FILTER_1SS[16];
+-
+-/*
+- * 2007/07/11 MH Modify the macro. Becaus STA may link with a N-AP. If we set
+- * STA in A/B/G mode and AP is still in N mode. The macro will be wrong. We have
+- * to add a macro to judge wireless mode.
+- */
+-#define PICK_RATE(_nLegacyRate, _nMcsRate)	\
+-		(_nMcsRate == 0) ? (_nLegacyRate & 0x7f) : (_nMcsRate)
+-/* 2007/07/12 MH We only define legacy and HT wireless mode now. */
+-#define	LEGACY_WIRELESS_MODE	IEEE_MODE_MASK
+-
+-#define CURRENT_RATE(WirelessMode, LegacyRate, HTRate)           \
+-		((WirelessMode & (LEGACY_WIRELESS_MODE)) != 0) ? \
+-			(LegacyRate) :                           \
+-			(PICK_RATE(LegacyRate, HTRate))
+-
+-// MCS Bw 40 {1~7, 12~15,32}
+-#define	RATE_ADPT_1SS_MASK		0xFF
+-#define	RATE_ADPT_2SS_MASK		0xF0 //Skip MCS8~11 because mcs7 > mcs6, 9, 10, 11. 2007.01.16 by Emily
+-#define	RATE_ADPT_MCS32_MASK		0x01
+-
+-#define		IS_11N_MCS_RATE(rate)		(rate & 0x80)
+-
+-typedef enum _HT_AGGRE_SIZE {
+-	HT_AGG_SIZE_8K = 0,
+-	HT_AGG_SIZE_16K = 1,
+-	HT_AGG_SIZE_32K = 2,
+-	HT_AGG_SIZE_64K = 3,
+-} HT_AGGRE_SIZE_E, *PHT_AGGRE_SIZE_E;
+-
+-/* Indicate different AP vendor for IOT issue */
+-typedef enum _HT_IOT_PEER {
+-	HT_IOT_PEER_UNKNOWN = 0,
+-	HT_IOT_PEER_REALTEK = 1,
+-	HT_IOT_PEER_BROADCOM = 2,
+-	HT_IOT_PEER_RALINK = 3,
+-	HT_IOT_PEER_ATHEROS = 4,
+-	HT_IOT_PEER_CISCO = 5,
+-	HT_IOT_PEER_MAX = 6
+-} HT_IOT_PEER_E, *PHTIOT_PEER_E;
+-
+-/*
+- * IOT Action for different AP
+- */
+-typedef enum _HT_IOT_ACTION {
+-	HT_IOT_ACT_TX_USE_AMSDU_4K = 0x00000001,
+-	HT_IOT_ACT_TX_USE_AMSDU_8K = 0x00000002,
+-	HT_IOT_ACT_DISABLE_MCS14 = 0x00000004,
+-	HT_IOT_ACT_DISABLE_MCS15 = 0x00000008,
+-	HT_IOT_ACT_DISABLE_ALL_2SS = 0x00000010,
+-	HT_IOT_ACT_DISABLE_EDCA_TURBO = 0x00000020,
+-	HT_IOT_ACT_MGNT_USE_CCK_6M = 0x00000040,
+-	HT_IOT_ACT_CDD_FSYNC = 0x00000080,
+-	HT_IOT_ACT_PURE_N_MODE = 0x00000100,
+-	HT_IOT_ACT_FORCED_CTS2SELF = 0x00000200,
+-} HT_IOT_ACTION_E, *PHT_IOT_ACTION_E;
+-
+-#endif //_RTL819XU_HTTYPE_H_
+diff --git a/drivers/staging/rtl8192u/ieee80211/rtl819x_HTProc.c b/drivers/staging/rtl8192u/ieee80211/rtl819x_HTProc.c
+deleted file mode 100644
+index a93f09033d9d..000000000000
+--- a/drivers/staging/rtl8192u/ieee80211/rtl819x_HTProc.c
++++ /dev/null
+@@ -1,1295 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-
+-/*
+- * As this function is mainly ported from Windows driver, so leave the name
+- * little changed. If any confusion caused, tell me. Created by WB. 2008.05.08
+- */
+-#include "ieee80211.h"
+-
+-u8 MCS_FILTER_ALL[16] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x1f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+-
+-u8 MCS_FILTER_1SS[16] = {0xff, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+-
+-u16 MCS_DATA_RATE[2][2][77] = {
+-	{	{13, 26, 39, 52, 78, 104, 117, 130, 26, 52, 78, 104, 156, 208, 234, 260,
+-		 39, 78, 117, 234, 312, 351, 390, 52, 104, 156, 208, 312, 416, 468, 520,
+-		 0, 78, 104, 130, 117, 156, 195, 104, 130, 130, 156, 182, 182, 208, 156, 195,
+-		 195, 234, 273, 273, 312, 130, 156, 181, 156, 181, 208, 234, 208, 234, 260, 260,
+-		 286, 195, 234, 273, 234, 273, 312, 351, 312, 351, 390, 390, 429},			// Long GI, 20MHz
+-		{14, 29, 43, 58, 87, 116, 130, 144, 29, 58, 87, 116, 173, 231, 260, 289,
+-		 43, 87, 130, 173, 260, 347, 390, 433, 58, 116, 173, 231, 347, 462, 520, 578,
+-		 0, 87, 116, 144, 130, 173, 217, 116, 144, 144, 173, 202, 202, 231, 173, 217,
+-		 217, 260, 303, 303, 347, 144, 173, 202, 173, 202, 231, 260, 231, 260, 289, 289,
+-		 318, 217, 260, 303, 260, 303, 347, 390, 347, 390, 433, 433, 477}	},		// Short GI, 20MHz
+-	{	{27, 54, 81, 108, 162, 216, 243, 270, 54, 108, 162, 216, 324, 432, 486, 540,
+-		 81, 162, 243, 324, 486, 648, 729, 810, 108, 216, 324, 432, 648, 864, 972, 1080,
+-		 12, 162, 216, 270, 243, 324, 405, 216, 270, 270, 324, 378, 378, 432, 324, 405,
+-		 405, 486, 567, 567, 648, 270, 324, 378, 324, 378, 432, 486, 432, 486, 540, 540,
+-		 594, 405, 486, 567, 486, 567, 648, 729, 648, 729, 810, 810, 891},	// Long GI, 40MHz
+-		{30, 60, 90, 120, 180, 240, 270, 300, 60, 120, 180, 240, 360, 480, 540, 600,
+-		 90, 180, 270, 360, 540, 720, 810, 900, 120, 240, 360, 480, 720, 960, 1080, 1200,
+-		 13, 180, 240, 300, 270, 360, 450, 240, 300, 300, 360, 420, 420, 480, 360, 450,
+-		 450, 540, 630, 630, 720, 300, 360, 420, 360, 420, 480, 540, 480, 540, 600, 600,
+-		 660, 450, 540, 630, 540, 630, 720, 810, 720, 810, 900, 900, 990}	}	// Short GI, 40MHz
+-};
+-
+-static u8 UNKNOWN_BORADCOM[3] = {0x00, 0x14, 0xbf};
+-static u8 LINKSYSWRT330_LINKSYSWRT300_BROADCOM[3] = {0x00, 0x1a, 0x70};
+-static u8 LINKSYSWRT350_LINKSYSWRT150_BROADCOM[3] = {0x00, 0x1d, 0x7e};
+-static u8 NETGEAR834Bv2_BROADCOM[3] = {0x00, 0x1b, 0x2f};
+-static u8 BELKINF5D8233V1_RALINK[3] = {0x00, 0x17, 0x3f};	//cosa 03202008
+-static u8 BELKINF5D82334V3_RALINK[3] = {0x00, 0x1c, 0xdf};
+-static u8 PCI_RALINK[3] = {0x00, 0x90, 0xcc};
+-static u8 EDIMAX_RALINK[3] = {0x00, 0x0e, 0x2e};
+-static u8 AIRLINK_RALINK[3] = {0x00, 0x18, 0x02};
+-//static u8 DLINK_ATHEROS[3] = {0x00, 0x1c, 0xf0};
+-static u8 CISCO_BROADCOM[3] = {0x00, 0x17, 0x94};
+-/*
+- * 2008/04/01 MH For Cisco G mode RX TP We need to change FW duration. Should we
+- * put the code in other place??
+- * static u8 WIFI_CISCO_G_AP[3] = {0x00, 0x40, 0x96};
+- */
+-/*
+- *function:  This function update default settings in pHTInfo structure
+- *   input:  PRT_HIGH_THROUGHPUT	pHTInfo
+- *  output:  none
+- *  return:  none
+- *  notice:  These value need be modified if any changes.
+- */
+-void HTUpdateDefaultSetting(struct ieee80211_device *ieee)
+-{
+-	PRT_HIGH_THROUGHPUT	pHTInfo = ieee->pHTInfo;
+-	//const typeof( ((struct ieee80211_device *)0)->pHTInfo ) *__mptr = &pHTInfo;
+-
+-	//printk("pHTinfo:%p, &pHTinfo:%p, mptr:%p,  offsetof:%x\n", pHTInfo, &pHTInfo, __mptr, offsetof(struct ieee80211_device, pHTInfo));
+-	//printk("===>ieee:%p,\n", ieee);
+-	// ShortGI support
+-	pHTInfo->bRegShortGI20MHz = 1;
+-	pHTInfo->bRegShortGI40MHz = 1;
+-
+-	// 40MHz channel support
+-	pHTInfo->bRegBW40MHz = 1;
+-
+-	// CCK rate support in 40MHz channel
+-	if (pHTInfo->bRegBW40MHz)
+-		pHTInfo->bRegSuppCCK = 1;
+-	else
+-		pHTInfo->bRegSuppCCK = true;
+-
+-	// AMSDU related
+-	pHTInfo->nAMSDU_MaxSize = 7935UL;
+-	pHTInfo->bAMSDU_Support = 0;
+-
+-	// AMPDU related
+-	pHTInfo->bAMPDUEnable = 1;
+-	pHTInfo->AMPDU_Factor = 2; //// 0: 2n13(8K), 1:2n14(16K), 2:2n15(32K), 3:2n16(64k)
+-	pHTInfo->MPDU_Density = 0;// 0: No restriction, 1: 1/8usec, 2: 1/4usec, 3: 1/2usec, 4: 1usec, 5: 2usec, 6: 4usec, 7:8usec
+-
+-	// MIMO Power Save
+-	pHTInfo->SelfMimoPs = 3;// 0: Static Mimo Ps, 1: Dynamic Mimo Ps, 3: No Limitation, 2: Reserved(Set to 3 automatically.)
+-	if (pHTInfo->SelfMimoPs == 2)
+-		pHTInfo->SelfMimoPs = 3;
+-	// 8190 only. Assign rate operation mode to firmware
+-	ieee->bTxDisableRateFallBack = 0;
+-	ieee->bTxUseDriverAssingedRate = 0;
+-
+-	/*
+-	 * 8190 only, Realtek proprietary aggregation mode
+-	 * Set MPDUDensity=2,   1: Set MPDUDensity=2(32k)  for Realtek AP and set MPDUDensity=0(8k) for others
+-	 */
+-	pHTInfo->bRegRT2RTAggregation = 1;//0: Set MPDUDensity=2,   1: Set MPDUDensity=2(32k)  for Realtek AP and set MPDUDensity=0(8k) for others
+-
+-	// For Rx Reorder Control
+-	pHTInfo->bRegRxReorderEnable = 1;
+-	pHTInfo->RxReorderWinSize = 64;
+-	pHTInfo->RxReorderPendingTime = 30;
+-
+-#ifdef USB_TX_DRIVER_AGGREGATION_ENABLE
+-	pHTInfo->UsbTxAggrNum = 4;
+-#endif
+-#ifdef USB_RX_AGGREGATION_SUPPORT
+-	pHTInfo->UsbRxFwAggrEn = 1;
+-	pHTInfo->UsbRxFwAggrPageNum = 24;
+-	pHTInfo->UsbRxFwAggrPacketNum = 8;
+-	pHTInfo->UsbRxFwAggrTimeout = 16; ////usb rx FW aggregation timeout threshold.It's in units of 64us
+-#endif
+-}
+-
+-/*
+- *function:  This function print out each field on HT capability
+- *           IE mainly from (Beacon/ProbeRsp/AssocReq)
+- *   input:  u8*	CapIE       //Capability IE to be printed out
+- *	     u8*	TitleString //mainly print out caller function
+- *  output:  none
+- *  return:  none
+- *  notice:  Driver should not print out this message by default.
+- */
+-void HTDebugHTCapability(u8 *CapIE, u8 *TitleString)
+-{
+-	static u8	          EWC11NHTCap[] = {0x00, 0x90, 0x4c, 0x33};	// For 11n EWC definition, 2007.07.17, by Emily
+-	struct ht_capability_ele *pCapELE;
+-
+-	if (!memcmp(CapIE, EWC11NHTCap, sizeof(EWC11NHTCap))) {
+-		//EWC IE
+-		IEEE80211_DEBUG(IEEE80211_DL_HT, "EWC IE in %s()\n", __func__);
+-		pCapELE = (struct ht_capability_ele *)(&CapIE[4]);
+-	} else {
+-		pCapELE = (struct ht_capability_ele *)(&CapIE[0]);
+-	}
+-	IEEE80211_DEBUG(IEEE80211_DL_HT, "<Log HT Capability>. Called by %s\n", TitleString);
+-
+-	IEEE80211_DEBUG(IEEE80211_DL_HT,  "\tSupported Channel Width = %s\n", (pCapELE->ChlWidth) ? "20MHz" : "20/40MHz");
+-	IEEE80211_DEBUG(IEEE80211_DL_HT,  "\tSupport Short GI for 20M = %s\n", (pCapELE->ShortGI20Mhz) ? "YES" : "NO");
+-	IEEE80211_DEBUG(IEEE80211_DL_HT,  "\tSupport Short GI for 40M = %s\n", (pCapELE->ShortGI40Mhz) ? "YES" : "NO");
+-	IEEE80211_DEBUG(IEEE80211_DL_HT,  "\tSupport TX STBC = %s\n", (pCapELE->TxSTBC) ? "YES" : "NO");
+-	IEEE80211_DEBUG(IEEE80211_DL_HT,  "\tMax AMSDU Size = %s\n", (pCapELE->MaxAMSDUSize) ? "3839" : "7935");
+-	IEEE80211_DEBUG(IEEE80211_DL_HT,  "\tSupport CCK in 20/40 mode = %s\n", (pCapELE->DssCCk) ? "YES" : "NO");
+-	IEEE80211_DEBUG(IEEE80211_DL_HT,  "\tMax AMPDU Factor = %d\n", pCapELE->MaxRxAMPDUFactor);
+-	IEEE80211_DEBUG(IEEE80211_DL_HT,  "\tMPDU Density = %d\n", pCapELE->MPDUDensity);
+-	IEEE80211_DEBUG(IEEE80211_DL_HT,  "\tMCS Rate Set = [%x][%x][%x][%x][%x]\n", pCapELE->MCS[0],\
+-				pCapELE->MCS[1], pCapELE->MCS[2], pCapELE->MCS[3], pCapELE->MCS[4]);
+-}
+-
+-/*
+- *function:  This function print out each field on HT Information
+- *           IE mainly from (Beacon/ProbeRsp)
+- *   input:  u8*	InfoIE       //Capability IE to be printed out
+- *	     u8*	TitleString //mainly print out caller function
+- *  output:  none
+- *  return:  none
+- *  notice:  Driver should not print out this message by default.
+- */
+-void HTDebugHTInfo(u8 *InfoIE, u8 *TitleString)
+-{
+-	static u8	EWC11NHTInfo[] = {0x00, 0x90, 0x4c, 0x34};	// For 11n EWC definition, 2007.07.17, by Emily
+-	PHT_INFORMATION_ELE		pHTInfoEle;
+-
+-	if (!memcmp(InfoIE, EWC11NHTInfo, sizeof(EWC11NHTInfo))) {
+-		// Not EWC IE
+-		IEEE80211_DEBUG(IEEE80211_DL_HT, "EWC IE in %s()\n", __func__);
+-		pHTInfoEle = (PHT_INFORMATION_ELE)(&InfoIE[4]);
+-	} else {
+-		pHTInfoEle = (PHT_INFORMATION_ELE)(&InfoIE[0]);
+-	}
+-
+-	IEEE80211_DEBUG(IEEE80211_DL_HT, "<Log HT Information Element>. Called by %s\n", TitleString);
+-
+-	IEEE80211_DEBUG(IEEE80211_DL_HT, "\tPrimary channel = %d\n", pHTInfoEle->ControlChl);
+-	IEEE80211_DEBUG(IEEE80211_DL_HT, "\tSecondary channel =");
+-	switch (pHTInfoEle->ExtChlOffset) {
+-	case 0:
+-		IEEE80211_DEBUG(IEEE80211_DL_HT, "Not Present\n");
+-		break;
+-	case 1:
+-		IEEE80211_DEBUG(IEEE80211_DL_HT, "Upper channel\n");
+-		break;
+-	case 2:
+-		IEEE80211_DEBUG(IEEE80211_DL_HT, "Reserved. Eooro!!!\n");
+-		break;
+-	case 3:
+-		IEEE80211_DEBUG(IEEE80211_DL_HT, "Lower Channel\n");
+-		break;
+-	}
+-	IEEE80211_DEBUG(IEEE80211_DL_HT, "\tRecommended channel width = %s\n", (pHTInfoEle->RecommemdedTxWidth) ? "20Mhz" : "40Mhz");
+-
+-	IEEE80211_DEBUG(IEEE80211_DL_HT, "\tOperation mode for protection = ");
+-	switch (pHTInfoEle->OptMode) {
+-	case 0:
+-		IEEE80211_DEBUG(IEEE80211_DL_HT, "No Protection\n");
+-		break;
+-	case 1:
+-		IEEE80211_DEBUG(IEEE80211_DL_HT, "HT non-member protection mode\n");
+-		break;
+-	case 2:
+-		IEEE80211_DEBUG(IEEE80211_DL_HT, "Suggest to open protection\n");
+-		break;
+-	case 3:
+-		IEEE80211_DEBUG(IEEE80211_DL_HT, "HT mixed mode\n");
+-		break;
+-	}
+-
+-	IEEE80211_DEBUG(IEEE80211_DL_HT, "\tBasic MCS Rate Set = [%x][%x][%x][%x][%x]\n", pHTInfoEle->BasicMSC[0],\
+-				pHTInfoEle->BasicMSC[1], pHTInfoEle->BasicMSC[2], pHTInfoEle->BasicMSC[3], pHTInfoEle->BasicMSC[4]);
+-}
+-
+-static u16 HTMcsToDataRate(struct ieee80211_device *ieee, u8 nMcsRate)
+-{
+-	PRT_HIGH_THROUGHPUT	pHTInfo = ieee->pHTInfo;
+-
+-	u8	is40MHz = (pHTInfo->bCurBW40MHz) ? 1 : 0;
+-	u8	isShortGI = (pHTInfo->bCurBW40MHz) ?
+-						((pHTInfo->bCurShortGI40MHz) ? 1 : 0) :
+-						((pHTInfo->bCurShortGI20MHz) ? 1 : 0);
+-	return MCS_DATA_RATE[is40MHz][isShortGI][(nMcsRate & 0x7f)];
+-}
+-
+-/*
+- *function:  This function returns current datarate.
+- *   input:  struct ieee80211_device*	ieee
+- *	     u8				nDataRate
+- *  output:  none
+- *  return:  tx rate
+- *  notice:  quite unsure about how to use this function //wb
+- */
+-u16  TxCountToDataRate(struct ieee80211_device *ieee, u8 nDataRate)
+-{
+-	//PRT_HIGH_THROUGHPUT	pHTInfo = ieee->pHTInfo;
+-	u16		CCKOFDMRate[12] = {0x02, 0x04, 0x0b, 0x16, 0x0c, 0x12, 0x18, 0x24, 0x30, 0x48, 0x60, 0x6c};
+-	u8	is40MHz = 0;
+-	u8	isShortGI = 0;
+-
+-	if (nDataRate < 12) {
+-		return CCKOFDMRate[nDataRate];
+-	} else {
+-		if (nDataRate >= 0x10 && nDataRate <= 0x1f) { //if(nDataRate > 11 && nDataRate < 28 )
+-			is40MHz = 0;
+-			isShortGI = 0;
+-
+-		      // nDataRate = nDataRate - 12;
+-		} else if (nDataRate >= 0x20  && nDataRate <= 0x2f) { //(27, 44)
+-			is40MHz = 1;
+-			isShortGI = 0;
+-
+-			//nDataRate = nDataRate - 28;
+-		} else if (nDataRate >= 0x30  && nDataRate <= 0x3f) { //(43, 60)
+-			is40MHz = 0;
+-			isShortGI = 1;
+-
+-			//nDataRate = nDataRate - 44;
+-		} else if (nDataRate >= 0x40  && nDataRate <= 0x4f) { //(59, 76)
+-			is40MHz = 1;
+-			isShortGI = 1;
+-
+-			//nDataRate = nDataRate - 60;
+-		}
+-		return MCS_DATA_RATE[is40MHz][isShortGI][nDataRate & 0xf];
+-	}
+-}
+-
+-bool IsHTHalfNmodeAPs(struct ieee80211_device *ieee)
+-{
+-	bool			retValue = false;
+-	struct ieee80211_network *net = &ieee->current_network;
+-
+-	if ((memcmp(net->bssid, BELKINF5D8233V1_RALINK, 3) == 0) ||
+-	    (memcmp(net->bssid, BELKINF5D82334V3_RALINK, 3) == 0) ||
+-	    (memcmp(net->bssid, PCI_RALINK, 3) == 0) ||
+-	    (memcmp(net->bssid, EDIMAX_RALINK, 3) == 0) ||
+-	    (memcmp(net->bssid, AIRLINK_RALINK, 3) == 0) ||
+-	    (net->ralink_cap_exist))
+-		retValue = true;
+-	else if ((memcmp(net->bssid, UNKNOWN_BORADCOM, 3) == 0) ||
+-		 (memcmp(net->bssid, LINKSYSWRT330_LINKSYSWRT300_BROADCOM, 3) == 0) ||
+-		 (memcmp(net->bssid, LINKSYSWRT350_LINKSYSWRT150_BROADCOM, 3) == 0) ||
+-		 (memcmp(net->bssid, NETGEAR834Bv2_BROADCOM, 3) == 0) ||
+-		 (net->broadcom_cap_exist))
+-		retValue = true;
+-	else if (net->bssht.bdRT2RTAggregation)
+-		retValue = true;
+-	else
+-		retValue = false;
+-
+-	return retValue;
+-}
+-
+-/*
+- *function:  This function returns peer IOT.
+- *   input:  struct ieee80211_device*	ieee
+- *  output:  none
+- *  return:
+- *  notice:
+- */
+-static void HTIOTPeerDetermine(struct ieee80211_device *ieee)
+-{
+-	PRT_HIGH_THROUGHPUT	pHTInfo = ieee->pHTInfo;
+-	struct ieee80211_network *net = &ieee->current_network;
+-
+-	if (net->bssht.bdRT2RTAggregation)
+-		pHTInfo->IOTPeer = HT_IOT_PEER_REALTEK;
+-	else if (net->broadcom_cap_exist)
+-		pHTInfo->IOTPeer = HT_IOT_PEER_BROADCOM;
+-	else if ((memcmp(net->bssid, UNKNOWN_BORADCOM, 3) == 0) ||
+-		 (memcmp(net->bssid, LINKSYSWRT330_LINKSYSWRT300_BROADCOM, 3) == 0) ||
+-		 (memcmp(net->bssid, LINKSYSWRT350_LINKSYSWRT150_BROADCOM, 3) == 0) ||
+-		 (memcmp(net->bssid, NETGEAR834Bv2_BROADCOM, 3) == 0))
+-		pHTInfo->IOTPeer = HT_IOT_PEER_BROADCOM;
+-	else if ((memcmp(net->bssid, BELKINF5D8233V1_RALINK, 3) == 0) ||
+-		 (memcmp(net->bssid, BELKINF5D82334V3_RALINK, 3) == 0) ||
+-		 (memcmp(net->bssid, PCI_RALINK, 3) == 0) ||
+-		 (memcmp(net->bssid, EDIMAX_RALINK, 3) == 0) ||
+-		 (memcmp(net->bssid, AIRLINK_RALINK, 3) == 0) ||
+-		 net->ralink_cap_exist)
+-		pHTInfo->IOTPeer = HT_IOT_PEER_RALINK;
+-	else if (net->atheros_cap_exist)
+-		pHTInfo->IOTPeer = HT_IOT_PEER_ATHEROS;
+-	else if (memcmp(net->bssid, CISCO_BROADCOM, 3) == 0)
+-		pHTInfo->IOTPeer = HT_IOT_PEER_CISCO;
+-	else
+-		pHTInfo->IOTPeer = HT_IOT_PEER_UNKNOWN;
+-
+-	IEEE80211_DEBUG(IEEE80211_DL_IOT, "Joseph debug!! IOTPEER: %x\n", pHTInfo->IOTPeer);
+-}
+-
+-/*
+- *function:  Check whether driver should declare received rate up to MCS13
+- *           only since some chipset is not good at receiving MCS14~15 frame
+- *           from some AP.
+- *   input:  struct ieee80211_device*	ieee
+- *	     u8 *			PeerMacAddr
+- *  output:  none
+- *  return:  return 1 if driver should declare MCS13 only(otherwise return 0)
+- */
+-static u8 HTIOTActIsDisableMCS14(struct ieee80211_device *ieee, u8 *PeerMacAddr)
+-{
+-	return 0;
+-}
+-
+-/*
+- * Function:	HTIOTActIsDisableMCS15
+- *
+- * Overview:	Check whether driver should declare capability of receiving
+- *              MCS15
+- *
+- * Input:
+- *			PADAPTER		Adapter,
+- *
+- * Output:		None
+- * Return:	true if driver should disable MCS15
+- * 2008.04.15	Emily
+- */
+-static bool HTIOTActIsDisableMCS15(struct ieee80211_device *ieee)
+-{
+-	bool retValue = false;
+-
+-#ifdef TODO
+-	// Apply for 819u only
+-#if (HAL_CODE_BASE == RTL8192)
+-
+-#if (DEV_BUS_TYPE == USB_INTERFACE)
+-	// Alway disable MCS15 by Jerry Chang's request.by Emily, 2008.04.15
+-	retValue = true;
+-#elif (DEV_BUS_TYPE == PCI_INTERFACE)
+-	// Enable MCS15 if the peer is Cisco AP. by Emily, 2008.05.12
+-//	if(pBssDesc->bCiscoCapExist)
+-//		retValue = false;
+-//	else
+-		retValue = false;
+-#endif
+-#endif
+-#endif
+-	// Jerry Chang suggest that 8190 1x2 does not need to disable MCS15
+-
+-	return retValue;
+-}
+-
+-/*
+- * Function:	HTIOTActIsDisableMCSTwoSpatialStream
+- *
+- * Overview:	Check whether driver should declare capability of receiving
+- *              All 2 ss packets
+- *
+- * Input:
+- *			PADAPTER		Adapter,
+- *
+- * Output:		None
+- * Return:	true if driver should disable all two spatial stream packet
+- * 2008.04.21	Emily
+- */
+-static bool HTIOTActIsDisableMCSTwoSpatialStream(struct ieee80211_device *ieee,
+-						 u8 *PeerMacAddr)
+-{
+-#ifdef TODO
+-	// Apply for 819u only
+-#endif
+-	return false;
+-}
+-
+-/*
+- *function:  Check whether driver should disable EDCA turbo mode
+- *   input:  struct ieee80211_device*	ieee
+- *	     u8*			PeerMacAddr
+- *  output:  none
+- *  return:  return 1 if driver should disable EDCA turbo mode
+- *           (otherwise return 0)
+- */
+-static u8 HTIOTActIsDisableEDCATurbo(struct ieee80211_device *ieee,
+-				     u8 *PeerMacAddr)
+-{	/* default enable EDCA Turbo mode. */
+-	return false;
+-}
+-
+-/*
+- *function:  Check whether we need to use OFDM to sned MGNT frame for
+- *           broadcom AP
+- *   input:  struct ieee80211_network *network   //current network we live
+- *  output:  none
+- *  return:  return 1 if true
+- */
+-static u8 HTIOTActIsMgntUseCCK6M(struct ieee80211_network *network)
+-{
+-	u8	retValue = 0;
+-
+-	// 2008/01/25 MH Judeg if we need to use OFDM to sned MGNT frame for broadcom AP.
+-	// 2008/01/28 MH We must prevent that we select null bssid to link.
+-
+-	if (network->broadcom_cap_exist)
+-		retValue = 1;
+-
+-	return retValue;
+-}
+-
+-static u8 HTIOTActIsCCDFsync(u8 *PeerMacAddr)
+-{
+-	u8	retValue = 0;
+-
+-	if ((memcmp(PeerMacAddr, UNKNOWN_BORADCOM, 3) == 0) ||
+-	    (memcmp(PeerMacAddr, LINKSYSWRT330_LINKSYSWRT300_BROADCOM, 3) == 0) ||
+-	    (memcmp(PeerMacAddr, LINKSYSWRT350_LINKSYSWRT150_BROADCOM, 3) == 0))
+-		retValue = 1;
+-
+-	return retValue;
+-}
+-
+-void HTResetIOTSetting(PRT_HIGH_THROUGHPUT pHTInfo)
+-{
+-	pHTInfo->IOTAction = 0;
+-	pHTInfo->IOTPeer = HT_IOT_PEER_UNKNOWN;
+-}
+-
+-/*
+- *function:  Construct Capablility Element in Beacon... if HTEnable is turned on
+- *   input:  struct ieee80211_device*	ieee
+- *	     u8*		     posHTCap //pointer to store Capability Ele
+- *	     u8*		     len //store length of CE
+- *	     u8			     IsEncrypt //whether encrypt, needed further
+- *  output:  none
+- *  return:  none
+- *  notice:  posHTCap can't be null and should be initialized before.
+- */
+-void HTConstructCapabilityElement(struct ieee80211_device *ieee, u8 *posHTCap, u8 *len, u8 IsEncrypt)
+-{
+-	PRT_HIGH_THROUGHPUT	pHT = ieee->pHTInfo;
+-	struct ht_capability_ele   *pCapELE = NULL;
+-	//u8 bIsDeclareMCS13;
+-
+-	if (!posHTCap || !pHT) {
+-		IEEE80211_DEBUG(IEEE80211_DL_ERR,
+-				"posHTCap or pHTInfo can't be null in %s\n",
+-				__func__);
+-		return;
+-	}
+-	memset(posHTCap, 0, *len);
+-	if (pHT->ePeerHTSpecVer == HT_SPEC_VER_EWC) {
+-		static const u8	EWC11NHTCap[] = {0x00, 0x90, 0x4c, 0x33};
+-
+-		memcpy(posHTCap, EWC11NHTCap, sizeof(EWC11NHTCap));
+-		pCapELE = (struct ht_capability_ele *)&posHTCap[4];
+-	} else {
+-		pCapELE = (struct ht_capability_ele *)posHTCap;
+-	}
+-
+-	//HT capability info
+-	pCapELE->AdvCoding		= 0; // This feature is not supported now!!
+-	if (ieee->GetHalfNmodeSupportByAPsHandler(ieee->dev))
+-		pCapELE->ChlWidth = 0;
+-	else
+-		pCapELE->ChlWidth = (pHT->bRegBW40MHz ? 1 : 0);
+-
+-//	pCapELE->ChlWidth		= (pHT->bRegBW40MHz?1:0);
+-	pCapELE->MimoPwrSave		= pHT->SelfMimoPs;
+-	pCapELE->GreenField		= 0; // This feature is not supported now!!
+-	pCapELE->ShortGI20Mhz		= 1; // We can receive Short GI!!
+-	pCapELE->ShortGI40Mhz		= 1; // We can receive Short GI!!
+-	//DbgPrint("TX HT cap/info ele BW=%d SG20=%d SG40=%d\n\r",
+-	//pCapELE->ChlWidth, pCapELE->ShortGI20Mhz, pCapELE->ShortGI40Mhz);
+-	pCapELE->TxSTBC			= 1;
+-	pCapELE->RxSTBC			= 0;
+-	pCapELE->DelayBA		= 0;	// Do not support now!!
+-	pCapELE->MaxAMSDUSize	        = (MAX_RECEIVE_BUFFER_SIZE >= 7935) ? 1 : 0;
+-	pCapELE->DssCCk			= ((pHT->bRegBW40MHz) ? (pHT->bRegSuppCCK ? 1 : 0) : 0);
+-	pCapELE->PSMP			= 0; // Do not support now!!
+-	pCapELE->LSigTxopProtect	= 0; // Do not support now!!
+-
+-	/*
+-	 * MAC HT parameters info
+-	 * TODO: Nedd to take care of this part
+-	 */
+-	IEEE80211_DEBUG(IEEE80211_DL_HT, "TX HT cap/info ele BW=%d MaxAMSDUSize:%d DssCCk:%d\n", pCapELE->ChlWidth, pCapELE->MaxAMSDUSize, pCapELE->DssCCk);
+-
+-	if (IsEncrypt) {
+-		pCapELE->MPDUDensity	= 7; // 8us
+-		pCapELE->MaxRxAMPDUFactor = 2; // 2 is for 32 K and 3 is 64K
+-	} else {
+-		pCapELE->MaxRxAMPDUFactor = 3; // 2 is for 32 K and 3 is 64K
+-		pCapELE->MPDUDensity	= 0; // no density
+-	}
+-
+-	//Supported MCS set
+-	memcpy(pCapELE->MCS, ieee->Regdot11HTOperationalRateSet, 16);
+-	if (pHT->IOTAction & HT_IOT_ACT_DISABLE_MCS15)
+-		pCapELE->MCS[1] &= 0x7f;
+-
+-	if (pHT->IOTAction & HT_IOT_ACT_DISABLE_MCS14)
+-		pCapELE->MCS[1] &= 0xbf;
+-
+-	if (pHT->IOTAction & HT_IOT_ACT_DISABLE_ALL_2SS)
+-		pCapELE->MCS[1] &= 0x00;
+-
+-	/*
+-	 * 2008.06.12
+-	 * For RTL819X, if pairwisekey = wep/tkip, ap is ralink, we support only MCS0~7.
+-	 */
+-	if (ieee->GetHalfNmodeSupportByAPsHandler(ieee->dev)) {
+-		int i;
+-
+-		for (i = 1; i < 16; i++)
+-			pCapELE->MCS[i] = 0;
+-	}
+-
+-	//Extended HT Capability Info
+-	memset(&pCapELE->ExtHTCapInfo, 0, 2);
+-
+-	//TXBF Capabilities
+-	memset(pCapELE->TxBFCap, 0, 4);
+-
+-	//Antenna Selection Capabilities
+-	pCapELE->ASCap = 0;
+-//add 2 to give space for element ID and len when construct frames
+-	if (pHT->ePeerHTSpecVer == HT_SPEC_VER_EWC)
+-		*len = 30 + 2;
+-	else
+-		*len = 26 + 2;
+-
+-//	IEEE80211_DEBUG_DATA(IEEE80211_DL_DATA | IEEE80211_DL_HT, posHTCap, *len -2);
+-
+-	/*
+-	 * Print each field in detail. Driver should not print out this message
+-	 * by default
+-	 */
+-//	HTDebugHTCapability(posHTCap, (u8*)"HTConstructCapability()");
+-}
+-
+-/*
+- *function:  Construct Information Element in Beacon... if HTEnable is turned on
+- *   input:  struct ieee80211_device*	ieee
+- *	     u8*		     posHTCap //pointer to store Information Ele
+- *	     u8*		     len   //store len of
+- *	     u8			     IsEncrypt //whether encrypt, needed further
+- *  output:  none
+- *  return:  none
+- *  notice:  posHTCap can't be null and be initialized before.
+- *           Only AP and IBSS sta should do this
+- */
+-void HTConstructInfoElement(struct ieee80211_device *ieee, u8 *posHTInfo, u8 *len, u8 IsEncrypt)
+-{
+-	PRT_HIGH_THROUGHPUT	pHT = ieee->pHTInfo;
+-	PHT_INFORMATION_ELE		pHTInfoEle = (PHT_INFORMATION_ELE)posHTInfo;
+-
+-	if (!posHTInfo || !pHTInfoEle) {
+-		IEEE80211_DEBUG(IEEE80211_DL_ERR,
+-				"posHTInfo or pHTInfoEle can't be null in %s\n",
+-				__func__);
+-		return;
+-	}
+-
+-	memset(posHTInfo, 0, *len);
+-	if ((ieee->iw_mode == IW_MODE_ADHOC) || (ieee->iw_mode == IW_MODE_MASTER)) { //ap mode is not currently supported
+-		pHTInfoEle->ControlChl			= ieee->current_network.channel;
+-		pHTInfoEle->ExtChlOffset		= ((!pHT->bRegBW40MHz) ? HT_EXTCHNL_OFFSET_NO_EXT :
+-											(ieee->current_network.channel <= 6) ?
+-												HT_EXTCHNL_OFFSET_UPPER : HT_EXTCHNL_OFFSET_LOWER);
+-		pHTInfoEle->RecommemdedTxWidth	= pHT->bRegBW40MHz;
+-		pHTInfoEle->RIFS					= 0;
+-		pHTInfoEle->PSMPAccessOnly		= 0;
+-		pHTInfoEle->SrvIntGranularity		= 0;
+-		pHTInfoEle->OptMode				= pHT->CurrentOpMode;
+-		pHTInfoEle->NonGFDevPresent		= 0;
+-		pHTInfoEle->DualBeacon			= 0;
+-		pHTInfoEle->SecondaryBeacon		= 0;
+-		pHTInfoEle->LSigTxopProtectFull		= 0;
+-		pHTInfoEle->PcoActive				= 0;
+-		pHTInfoEle->PcoPhase				= 0;
+-
+-		memset(pHTInfoEle->BasicMSC, 0, 16);
+-
+-		*len = 22 + 2; //same above
+-	} else {
+-		//STA should not generate High Throughput Information Element
+-		*len = 0;
+-	}
+-	//IEEE80211_DEBUG_DATA(IEEE80211_DL_DATA | IEEE80211_DL_HT, posHTInfo, *len - 2);
+-	//HTDebugHTInfo(posHTInfo, "HTConstructInforElement");
+-}
+-
+-/*
+- * According to experiment, Realtek AP to STA (based on rtl8190) may achieve
+- * best performance if both STA and AP set limitation of aggregation size to
+- * 32K, that is, set AMPDU density to 2 (Ref: IEEE 11n specification).
+- * However, if Realtek STA associates to other AP, STA should set limitation of
+- * aggregation size to 8K, otherwise, performance of traffic stream from STA to
+- * AP will be much less than the traffic stream from AP to STA if both of the
+- * stream runs concurrently at the same time.
+- *
+- *  Frame Format
+- *  Element ID		Length		OUI		Type1		Reserved
+- *  1 byte		1 byte		3 bytes		1 byte		1 byte
+- *
+- *  OUI		= 0x00, 0xe0, 0x4c,
+- *  Type	= 0x02
+- *  Reserved	= 0x00
+- *
+- *  2007.8.21 by Emily
+- */
+-/*
+- *function:  Construct  Information Element in Beacon... in RT2RT condition
+- *   input:  struct ieee80211_device*	ieee
+- *	     u8*		  posRT2RTAgg //pointer to store Information Ele
+- *	     u8*		  len   //store len
+- *  output:  none
+- *  return:  none
+- *  notice:
+- */
+-void HTConstructRT2RTAggElement(struct ieee80211_device *ieee, u8 *posRT2RTAgg, u8 *len)
+-{
+-	if (!posRT2RTAgg) {
+-		IEEE80211_DEBUG(IEEE80211_DL_ERR,
+-				"posRT2RTAgg can't be null in %s\n",
+-				__func__);
+-		return;
+-	}
+-	memset(posRT2RTAgg, 0, *len);
+-	*posRT2RTAgg++ = 0x00;
+-	*posRT2RTAgg++ = 0xe0;
+-	*posRT2RTAgg++ = 0x4c;
+-	*posRT2RTAgg++ = 0x02;
+-	*posRT2RTAgg++ = 0x01;
+-	*posRT2RTAgg = 0x10;//*posRT2RTAgg = 0x02;
+-
+-	if (ieee->bSupportRemoteWakeUp)
+-		*posRT2RTAgg |= 0x08;//RT_HT_CAP_USE_WOW;
+-
+-	*len = 6 + 2;
+-	return;
+-#ifdef TODO
+-#if (HAL_CODE_BASE == RTL8192 && DEV_BUS_TYPE == USB_INTERFACE)
+-	/*
+-	//Emily. If it is required to Ask Realtek AP to send AMPDU during AES mode, enable this
+-	   section of code.
+-	if(IS_UNDER_11N_AES_MODE(Adapter))
+-	{
+-		posRT2RTAgg->octet[5] |= RT_HT_CAP_USE_AMPDU;
+-	}else
+-	{
+-		posRT2RTAgg->octet[5] &= 0xfb;
+-	}
+-	*/
+-#else
+-	// Do Nothing
+-#endif
+-
+-	posRT2RTAgg->Length = 6;
+-#endif
+-}
+-
+-/*
+- *function:  Pick the right Rate Adaptive table to use
+- *   input:  struct ieee80211_device*	ieee
+- *	     u8*		      pOperateMCS //A pointer to MCS rate bitmap
+- *  return:  always we return true
+- *  notice:
+- */
+-static u8 HT_PickMCSRate(struct ieee80211_device *ieee, u8 *pOperateMCS)
+-{
+-	if (!pOperateMCS) {
+-		IEEE80211_DEBUG(IEEE80211_DL_ERR,
+-				"pOperateMCS can't be null in %s\n",
+-				__func__);
+-		return false;
+-	}
+-
+-	switch (ieee->mode) {
+-	case IEEE_A:
+-	case IEEE_B:
+-	case IEEE_G:
+-		//legacy rate routine handled at selectedrate
+-
+-		//no MCS rate
+-		memset(pOperateMCS, 0, 16);
+-		break;
+-
+-	case IEEE_N_24G:	//assume CCK rate ok
+-	case IEEE_N_5G:
+-		// Legacy part we only use 6, 5.5,2,1 for N_24G and 6 for N_5G.
+-		// Legacy part shall be handled at SelectRateSet().
+-
+-		//HT part
+-		// TODO: may be different if we have different number of antenna
+-		pOperateMCS[0] &= RATE_ADPT_1SS_MASK;	//support MCS 0~7
+-		pOperateMCS[1] &= RATE_ADPT_2SS_MASK;
+-		pOperateMCS[3] &= RATE_ADPT_MCS32_MASK;
+-		break;
+-
+-	//should never reach here
+-	default:
+-		break;
+-	}
+-
+-	return true;
+-}
+-
+-/*
+- *	Description:
+- *		This function will get the highest speed rate in input MCS set.
+- *
+- *	/param	Adapter			Pionter to Adapter entity
+- *			pMCSRateSet		Pointer to MCS rate bitmap
+- *			pMCSFilter		Pointer to MCS rate filter
+- *
+- *	/return	Highest MCS rate included in pMCSRateSet and filtered by pMCSFilter.
+- *
+- */
+-/*
+- *function:  This function will get the highest speed rate in input MCS set.
+- *   input:  struct ieee80211_device*	ieee
+- *	     u8*			pMCSRateSet //Pointer to MCS rate bitmap
+- *	     u8*			pMCSFilter //Pointer to MCS rate filter
+- *  return:  Highest MCS rate included in pMCSRateSet and filtered by pMCSFilter
+- *  notice:
+- */
+-u8 HTGetHighestMCSRate(struct ieee80211_device *ieee, u8 *pMCSRateSet, u8 *pMCSFilter)
+-{
+-	u8		i, j;
+-	u8		bitMap;
+-	u8		mcsRate = 0;
+-	u8		availableMcsRate[16];
+-
+-	if (!pMCSRateSet || !pMCSFilter) {
+-		IEEE80211_DEBUG(IEEE80211_DL_ERR,
+-				"pMCSRateSet or pMCSFilter can't be null in %s\n",
+-				__func__);
+-		return false;
+-	}
+-	for (i = 0; i < 16; i++)
+-		availableMcsRate[i] = pMCSRateSet[i] & pMCSFilter[i];
+-
+-	for (i = 0; i < 16; i++) {
+-		if (availableMcsRate[i] != 0)
+-			break;
+-	}
+-	if (i == 16)
+-		return false;
+-
+-	for (i = 0; i < 16; i++) {
+-		if (availableMcsRate[i] != 0) {
+-			bitMap = availableMcsRate[i];
+-			for (j = 0; j < 8; j++) {
+-				if ((bitMap % 2) != 0) {
+-					if (HTMcsToDataRate(ieee, (8 * i + j)) > HTMcsToDataRate(ieee, mcsRate))
+-						mcsRate = (8 * i + j);
+-				}
+-				bitMap >>= 1;
+-			}
+-		}
+-	}
+-	return (mcsRate | 0x80);
+-}
+-
+-/*
+- * 1.Filter our operation rate set with AP's rate set
+- * 2.shall reference channel bandwidth, STBC, Antenna number
+- * 3.generate rate adative table for firmware
+- * David 20060906
+- *
+- * \pHTSupportedCap: the connected STA's supported rate Capability element
+- */
+-static u8 HTFilterMCSRate(struct ieee80211_device *ieee, u8 *pSupportMCS,
+-			  u8 *pOperateMCS)
+-{
+-	u8 i = 0;
+-
+-	// filter out operational rate set not supported by AP, the length of it is 16
+-	for (i = 0; i <= 15; i++)
+-		pOperateMCS[i] = ieee->Regdot11HTOperationalRateSet[i] & pSupportMCS[i];
+-
+-	// TODO: adjust our operational rate set  according to our channel bandwidth, STBC and Antenna number
+-	/*
+-	 * TODO: fill suggested rate adaptive rate index and give firmware info
+-	 * using Tx command packet we also shall suggested the first start rate
+-	 * set according to our signal strength
+-	 */
+-	HT_PickMCSRate(ieee, pOperateMCS);
+-
+-	// For RTL819X, if pairwisekey = wep/tkip, we support only MCS0~7.
+-	if (ieee->GetHalfNmodeSupportByAPsHandler(ieee->dev))
+-		pOperateMCS[1] = 0;
+-
+-	/*
+-	 * For RTL819X, we support only MCS0~15.
+-	 * And also, we do not know how to use MCS32 now.
+-	 */
+-	for (i = 2; i <= 15; i++)
+-		pOperateMCS[i] = 0;
+-
+-	return true;
+-}
+-
+-void HTOnAssocRsp(struct ieee80211_device *ieee)
+-{
+-	PRT_HIGH_THROUGHPUT	pHTInfo = ieee->pHTInfo;
+-	struct ht_capability_ele       *pPeerHTCap = NULL;
+-	PHT_INFORMATION_ELE		pPeerHTInfo = NULL;
+-	u16	nMaxAMSDUSize = 0;
+-	u8	*pMcsFilter = NULL;
+-
+-	static u8				EWC11NHTCap[] = {0x00, 0x90, 0x4c, 0x33};		// For 11n EWC definition, 2007.07.17, by Emily
+-	static u8				EWC11NHTInfo[] = {0x00, 0x90, 0x4c, 0x34};	// For 11n EWC definition, 2007.07.17, by Emily
+-
+-	if (!pHTInfo->bCurrentHTSupport) {
+-		IEEE80211_DEBUG(IEEE80211_DL_ERR,
+-				"<=== %s: HT_DISABLE\n",
+-				__func__);
+-		return;
+-	}
+-	IEEE80211_DEBUG(IEEE80211_DL_HT, "===> HTOnAssocRsp_wq(): HT_ENABLE\n");
+-//	IEEE80211_DEBUG_DATA(IEEE80211_DL_DATA, pHTInfo->PeerHTCapBuf, sizeof(struct ht_capability_ele));
+-//	IEEE80211_DEBUG_DATA(IEEE80211_DL_DATA, pHTInfo->PeerHTInfoBuf, sizeof(HT_INFORMATION_ELE));
+-
+-//	HTDebugHTCapability(pHTInfo->PeerHTCapBuf,"HTOnAssocRsp_wq");
+-//	HTDebugHTInfo(pHTInfo->PeerHTInfoBuf,"HTOnAssocRsp_wq");
+-	//
+-	if (!memcmp(pHTInfo->PeerHTCapBuf, EWC11NHTCap, sizeof(EWC11NHTCap)))
+-		pPeerHTCap = (struct ht_capability_ele *)(&pHTInfo->PeerHTCapBuf[4]);
+-	else
+-		pPeerHTCap = (struct ht_capability_ele *)(pHTInfo->PeerHTCapBuf);
+-
+-	if (!memcmp(pHTInfo->PeerHTInfoBuf, EWC11NHTInfo, sizeof(EWC11NHTInfo)))
+-		pPeerHTInfo = (PHT_INFORMATION_ELE)(&pHTInfo->PeerHTInfoBuf[4]);
+-	else
+-		pPeerHTInfo = (PHT_INFORMATION_ELE)(pHTInfo->PeerHTInfoBuf);
+-
+-	////////////////////////////////////////////////////////
+-	// Configurations:
+-	////////////////////////////////////////////////////////
+-	IEEE80211_DEBUG_DATA(IEEE80211_DL_DATA | IEEE80211_DL_HT, pPeerHTCap, sizeof(struct ht_capability_ele));
+-//	IEEE80211_DEBUG_DATA(IEEE80211_DL_DATA|IEEE80211_DL_HT, pPeerHTInfo, sizeof(HT_INFORMATION_ELE));
+-	// Config Supported Channel Width setting
+-	//
+-	HTSetConnectBwMode(ieee, (enum ht_channel_width)(pPeerHTCap->ChlWidth), (enum ht_extension_chan_offset)(pPeerHTInfo->ExtChlOffset));
+-
+-	pHTInfo->bCurTxBW40MHz = (pPeerHTInfo->RecommemdedTxWidth == 1);
+-
+-	/*
+-	 * Update short GI/ long GI setting
+-	 *
+-	 * TODO:
+-	 */
+-	pHTInfo->bCurShortGI20MHz = pHTInfo->bRegShortGI20MHz &&
+-				    (pPeerHTCap->ShortGI20Mhz == 1);
+-	pHTInfo->bCurShortGI40MHz = pHTInfo->bRegShortGI40MHz &&
+-				   (pPeerHTCap->ShortGI40Mhz == 1);
+-
+-	/*
+-	 * Config TX STBC setting
+-	 *
+-	 * TODO:
+-	 */
+-
+-	/*
+-	 * Config DSSS/CCK  mode in 40MHz mode
+-	 *
+-	 * TODO:
+-	 */
+-	pHTInfo->bCurSuppCCK = pHTInfo->bRegSuppCCK &&
+-			       (pPeerHTCap->DssCCk == 1);
+-
+-	/*
+-	 * Config and configure A-MSDU setting
+-	 */
+-	pHTInfo->bCurrent_AMSDU_Support = pHTInfo->bAMSDU_Support;
+-
+-	nMaxAMSDUSize = (pPeerHTCap->MaxAMSDUSize == 0) ? 3839 : 7935;
+-
+-	if (pHTInfo->nAMSDU_MaxSize > nMaxAMSDUSize)
+-		pHTInfo->nCurrent_AMSDU_MaxSize = nMaxAMSDUSize;
+-	else
+-		pHTInfo->nCurrent_AMSDU_MaxSize = pHTInfo->nAMSDU_MaxSize;
+-	/*
+-	 * Config A-MPDU setting
+-	 */
+-	pHTInfo->bCurrentAMPDUEnable = pHTInfo->bAMPDUEnable;
+-
+-	/*
+-	 * <1> Decide AMPDU Factor
+-	 * By Emily
+-	 */
+-	if (!pHTInfo->bRegRT2RTAggregation) {
+-		// Decide AMPDU Factor according to protocol handshake
+-		if (pHTInfo->AMPDU_Factor > pPeerHTCap->MaxRxAMPDUFactor)
+-			pHTInfo->CurrentAMPDUFactor = pPeerHTCap->MaxRxAMPDUFactor;
+-		else
+-			pHTInfo->CurrentAMPDUFactor = pHTInfo->AMPDU_Factor;
+-	} else {
+-		/*
+-		 * Set MPDU density to 2 to Realtek AP, and set it to 0 for others
+-		 * Replace MPDU factor declared in original association response frame format. 2007.08.20 by Emily
+-		 */
+-		if (ieee->current_network.bssht.bdRT2RTAggregation) {
+-			if (ieee->pairwise_key_type != KEY_TYPE_NA)
+-				// Realtek may set 32k in security mode and 64k for others
+-				pHTInfo->CurrentAMPDUFactor = pPeerHTCap->MaxRxAMPDUFactor;
+-			else
+-				pHTInfo->CurrentAMPDUFactor = HT_AGG_SIZE_64K;
+-		} else {
+-			pHTInfo->CurrentAMPDUFactor = min_t(u32, pPeerHTCap->MaxRxAMPDUFactor,
+-							    HT_AGG_SIZE_32K);
+-		}
+-	}
+-
+-	/*
+-	 * <2> Set AMPDU Minimum MPDU Start Spacing
+-	 * 802.11n 3.0 section 9.7d.3
+-	 */
+-	pHTInfo->CurrentMPDUDensity = max_t(u32, pHTInfo->MPDU_Density,
+-					    pPeerHTCap->MPDUDensity);
+-
+-	if (ieee->pairwise_key_type != KEY_TYPE_NA)
+-		pHTInfo->CurrentMPDUDensity	= 7; // 8us
+-	// Force TX AMSDU
+-
+-	// Lanhsin: mark for tmp to avoid deauth by ap from  s3
+-	//if(memcmp(pMgntInfo->Bssid, NETGEAR834Bv2_BROADCOM, 3)==0)
+-	if (0) {
+-		pHTInfo->bCurrentAMPDUEnable = false;
+-		pHTInfo->ForcedAMSDUMode = HT_AGG_FORCE_ENABLE;
+-		pHTInfo->ForcedAMSDUMaxSize = 7935;
+-
+-		pHTInfo->IOTAction |=  HT_IOT_ACT_TX_USE_AMSDU_8K;
+-	}
+-
+-	// Rx Reorder Setting
+-	pHTInfo->bCurRxReorderEnable = pHTInfo->bRegRxReorderEnable;
+-
+-	/*
+-	 * Filter out unsupported HT rate for this AP
+-	 * Update RATR table
+-	 * This is only for 8190 ,8192 or later product which using firmware to
+-	 * handle rate adaptive mechanism.
+-	 */
+-
+-	/*
+-	 * Handle Ralink AP bad MCS rate set condition. Joseph.
+-	 * This fix the bug of Ralink AP. This may be removed in the future.
+-	 */
+-	if (pPeerHTCap->MCS[0] == 0)
+-		pPeerHTCap->MCS[0] = 0xff;
+-
+-	HTFilterMCSRate(ieee, pPeerHTCap->MCS, ieee->dot11HTOperationalRateSet);
+-
+-	/*
+-	 * Config MIMO Power Save setting
+-	 */
+-	pHTInfo->PeerMimoPs = pPeerHTCap->MimoPwrSave;
+-	if (pHTInfo->PeerMimoPs == MIMO_PS_STATIC)
+-		pMcsFilter = MCS_FILTER_1SS;
+-	else
+-		pMcsFilter = MCS_FILTER_ALL;
+-	//WB add for MCS8 bug
+-//	pMcsFilter = MCS_FILTER_1SS;
+-	ieee->HTHighestOperaRate = HTGetHighestMCSRate(ieee, ieee->dot11HTOperationalRateSet, pMcsFilter);
+-	ieee->HTCurrentOperaRate = ieee->HTHighestOperaRate;
+-
+-	/*
+-	 * Config current operation mode.
+-	 */
+-	pHTInfo->CurrentOpMode = pPeerHTInfo->OptMode;
+-}
+-
+-/*
+- *function:  initialize HT info(struct PRT_HIGH_THROUGHPUT)
+- *   input:  struct ieee80211_device*	ieee
+- *  output:  none
+- *  return:  none
+- *  notice: This function is called when
+- *                                  *  (1) MPInitialization Phase
+- *                                  *  (2) Receiving of Deauthentication from AP
+- */
+-// TODO: Should this funciton be called when receiving of Disassociation?
+-void HTInitializeHTInfo(struct ieee80211_device *ieee)
+-{
+-	PRT_HIGH_THROUGHPUT pHTInfo = ieee->pHTInfo;
+-
+-	/*
+-	 * These parameters will be reset when receiving deauthentication packet
+-	 */
+-	IEEE80211_DEBUG(IEEE80211_DL_HT, "===========>%s()\n", __func__);
+-	pHTInfo->bCurrentHTSupport = false;
+-
+-	// 40MHz channel support
+-	pHTInfo->bCurBW40MHz = false;
+-	pHTInfo->bCurTxBW40MHz = false;
+-
+-	// Short GI support
+-	pHTInfo->bCurShortGI20MHz = false;
+-	pHTInfo->bCurShortGI40MHz = false;
+-	pHTInfo->bForcedShortGI = false;
+-
+-	/*
+-	 * CCK rate support
+-	 * This flag is set to true to support CCK rate by default.
+-	 * It will be affected by "pHTInfo->bRegSuppCCK" and AP capabilities
+-	 * only when associate to 11N BSS.
+-	 */
+-	pHTInfo->bCurSuppCCK = true;
+-
+-	// AMSDU related
+-	pHTInfo->bCurrent_AMSDU_Support = false;
+-	pHTInfo->nCurrent_AMSDU_MaxSize = pHTInfo->nAMSDU_MaxSize;
+-
+-	// AMPUD related
+-	pHTInfo->CurrentMPDUDensity = pHTInfo->MPDU_Density;
+-	pHTInfo->CurrentAMPDUFactor = pHTInfo->AMPDU_Factor;
+-
+-	// Initialize all of the parameters related to 11n
+-	memset(&pHTInfo->SelfHTCap, 0, sizeof(pHTInfo->SelfHTCap));
+-	memset(&pHTInfo->SelfHTInfo, 0, sizeof(pHTInfo->SelfHTInfo));
+-	memset(&pHTInfo->PeerHTCapBuf, 0, sizeof(pHTInfo->PeerHTCapBuf));
+-	memset(&pHTInfo->PeerHTInfoBuf, 0, sizeof(pHTInfo->PeerHTInfoBuf));
+-
+-	pHTInfo->bSwBwInProgress = false;
+-
+-	// Set default IEEE spec for Draft N
+-	pHTInfo->ePeerHTSpecVer = HT_SPEC_VER_IEEE;
+-
+-	// Realtek proprietary aggregation mode
+-	pHTInfo->bCurrentRT2RTAggregation = false;
+-	pHTInfo->bCurrentRT2RTLongSlotTime = false;
+-	pHTInfo->IOTPeer = 0;
+-	pHTInfo->IOTAction = 0;
+-
+-	//MCS rate initialized here
+-	{
+-		u8 *RegHTSuppRateSets = &ieee->RegHTSuppRateSet[0];
+-
+-		RegHTSuppRateSets[0] = 0xFF;	//support MCS 0~7
+-		RegHTSuppRateSets[1] = 0xFF;	//support MCS 8~15
+-		RegHTSuppRateSets[4] = 0x01;	//support MCS 32
+-	}
+-}
+-
+-/*
+- *function:  initialize Bss HT structure(struct PBSS_HT)
+- *   input:  PBSS_HT pBssHT //to be initialized
+- *  output:  none
+- *  return:  none
+- *  notice: This function is called when initialize network structure
+- */
+-void HTInitializeBssDesc(PBSS_HT pBssHT)
+-{
+-	pBssHT->bdSupportHT = false;
+-	memset(pBssHT->bdHTCapBuf, 0, sizeof(pBssHT->bdHTCapBuf));
+-	pBssHT->bdHTCapLen = 0;
+-	memset(pBssHT->bdHTInfoBuf, 0, sizeof(pBssHT->bdHTInfoBuf));
+-	pBssHT->bdHTInfoLen = 0;
+-
+-	pBssHT->bdHTSpecVer = HT_SPEC_VER_IEEE;
+-
+-	pBssHT->bdRT2RTAggregation = false;
+-	pBssHT->bdRT2RTLongSlotTime = false;
+-}
+-
+-/*
+- *function:  initialize Bss HT structure(struct PBSS_HT)
+- *   input:  struct ieee80211_device	*ieee
+- *	     struct ieee80211_network	*pNetwork //usually current network
+- *                                                  we are live in
+- *  output:  none
+- *  return:  none
+- *  notice: This function should ONLY be called before association
+- */
+-void HTResetSelfAndSavePeerSetting(struct ieee80211_device *ieee,	struct ieee80211_network *pNetwork)
+-{
+-	PRT_HIGH_THROUGHPUT		pHTInfo = ieee->pHTInfo;
+-//	u16						nMaxAMSDUSize;
+-//	struct ht_capability_ele       *pPeerHTCap = (struct ht_capability_ele *)pNetwork->bssht.bdHTCapBuf;
+-//	PHT_INFORMATION_ELE		pPeerHTInfo = (PHT_INFORMATION_ELE)pNetwork->bssht.bdHTInfoBuf;
+-//	u8*	pMcsFilter;
+-	u8	bIOTAction = 0;
+-
+-	//
+-	//  Save Peer Setting before Association
+-	//
+-	IEEE80211_DEBUG(IEEE80211_DL_HT, "==============>%s()\n", __func__);
+-	/*unmark bEnableHT flag here is the same reason why unmarked in function ieee80211_softmac_new_net. WB 2008.09.10*/
+-//	if( pHTInfo->bEnableHT &&  pNetwork->bssht.bdSupportHT)
+-	if (pNetwork->bssht.bdSupportHT) {
+-		pHTInfo->bCurrentHTSupport = true;
+-		pHTInfo->ePeerHTSpecVer = pNetwork->bssht.bdHTSpecVer;
+-
+-		// Save HTCap and HTInfo information Element
+-		if (pNetwork->bssht.bdHTCapLen > 0 &&	pNetwork->bssht.bdHTCapLen <= sizeof(pHTInfo->PeerHTCapBuf))
+-			memcpy(pHTInfo->PeerHTCapBuf, pNetwork->bssht.bdHTCapBuf, pNetwork->bssht.bdHTCapLen);
+-
+-		if (pNetwork->bssht.bdHTInfoLen > 0 && pNetwork->bssht.bdHTInfoLen <= sizeof(pHTInfo->PeerHTInfoBuf))
+-			memcpy(pHTInfo->PeerHTInfoBuf, pNetwork->bssht.bdHTInfoBuf, pNetwork->bssht.bdHTInfoLen);
+-
+-		// Check whether RT to RT aggregation mode is enabled
+-		if (pHTInfo->bRegRT2RTAggregation) {
+-			pHTInfo->bCurrentRT2RTAggregation = pNetwork->bssht.bdRT2RTAggregation;
+-			pHTInfo->bCurrentRT2RTLongSlotTime = pNetwork->bssht.bdRT2RTLongSlotTime;
+-		} else {
+-			pHTInfo->bCurrentRT2RTAggregation = false;
+-			pHTInfo->bCurrentRT2RTLongSlotTime = false;
+-		}
+-
+-		// Determine the IOT Peer Vendor.
+-		HTIOTPeerDetermine(ieee);
+-
+-		/*
+-		 * Decide IOT Action
+-		 * Must be called after the parameter of pHTInfo->bCurrentRT2RTAggregation is decided
+-		 */
+-		pHTInfo->IOTAction = 0;
+-		bIOTAction = HTIOTActIsDisableMCS14(ieee, pNetwork->bssid);
+-		if (bIOTAction)
+-			pHTInfo->IOTAction |= HT_IOT_ACT_DISABLE_MCS14;
+-
+-		bIOTAction = HTIOTActIsDisableMCS15(ieee);
+-		if (bIOTAction)
+-			pHTInfo->IOTAction |= HT_IOT_ACT_DISABLE_MCS15;
+-
+-		bIOTAction = HTIOTActIsDisableMCSTwoSpatialStream(ieee, pNetwork->bssid);
+-		if (bIOTAction)
+-			pHTInfo->IOTAction |= HT_IOT_ACT_DISABLE_ALL_2SS;
+-
+-		bIOTAction = HTIOTActIsDisableEDCATurbo(ieee, pNetwork->bssid);
+-		if (bIOTAction)
+-			pHTInfo->IOTAction |= HT_IOT_ACT_DISABLE_EDCA_TURBO;
+-
+-		bIOTAction = HTIOTActIsMgntUseCCK6M(pNetwork);
+-		if (bIOTAction)
+-			pHTInfo->IOTAction |= HT_IOT_ACT_MGNT_USE_CCK_6M;
+-
+-		bIOTAction = HTIOTActIsCCDFsync(pNetwork->bssid);
+-		if (bIOTAction)
+-			pHTInfo->IOTAction |= HT_IOT_ACT_CDD_FSYNC;
+-	} else {
+-		pHTInfo->bCurrentHTSupport = false;
+-		pHTInfo->bCurrentRT2RTAggregation = false;
+-		pHTInfo->bCurrentRT2RTLongSlotTime = false;
+-
+-		pHTInfo->IOTAction = 0;
+-	}
+-}
+-
+-void HTUpdateSelfAndPeerSetting(struct ieee80211_device *ieee,	struct ieee80211_network *pNetwork)
+-{
+-	PRT_HIGH_THROUGHPUT	        pHTInfo = ieee->pHTInfo;
+-//	struct ht_capability_ele       *pPeerHTCap = (struct ht_capability_ele *)pNetwork->bssht.bdHTCapBuf;
+-	PHT_INFORMATION_ELE		pPeerHTInfo = (PHT_INFORMATION_ELE)pNetwork->bssht.bdHTInfoBuf;
+-
+-	if (pHTInfo->bCurrentHTSupport) {
+-		/*
+-		 * Config current operation mode.
+-		 */
+-		if (pNetwork->bssht.bdHTInfoLen != 0)
+-			pHTInfo->CurrentOpMode = pPeerHTInfo->OptMode;
+-
+-		/*
+-		 * <TODO: Config according to OBSS non-HT STA present!!>
+-		 */
+-	}
+-}
+-EXPORT_SYMBOL(HTUpdateSelfAndPeerSetting);
+-
+-/*
+- *function:  check whether HT control field exists
+- *   input:  struct ieee80211_device	*ieee
+- *	     u8*			pFrame //coming skb->data
+- *  output:  none
+- *  return:  return true if HT control field exists(false otherwise)
+- *  notice:
+- */
+-u8 HTCCheck(struct ieee80211_device *ieee, u8 *pFrame)
+-{
+-	if (ieee->pHTInfo->bCurrentHTSupport) {
+-		if ((IsQoSDataFrame(pFrame) && Frame_Order(pFrame)) == 1) {
+-			IEEE80211_DEBUG(IEEE80211_DL_HT, "HT CONTROL FILED EXIST!!\n");
+-			return true;
+-		}
+-	}
+-	return false;
+-}
+-
+-static void HTSetConnectBwModeCallback(struct ieee80211_device *ieee)
+-{
+-	PRT_HIGH_THROUGHPUT pHTInfo = ieee->pHTInfo;
+-
+-	IEEE80211_DEBUG(IEEE80211_DL_HT, "======>%s()\n", __func__);
+-
+-	if (pHTInfo->bCurBW40MHz) {
+-		if (pHTInfo->CurSTAExtChnlOffset == HT_EXTCHNL_OFFSET_UPPER)
+-			ieee->set_chan(ieee->dev, ieee->current_network.channel + 2);
+-		else if (pHTInfo->CurSTAExtChnlOffset == HT_EXTCHNL_OFFSET_LOWER)
+-			ieee->set_chan(ieee->dev, ieee->current_network.channel - 2);
+-		else
+-			ieee->set_chan(ieee->dev, ieee->current_network.channel);
+-
+-		ieee->SetBWModeHandler(ieee->dev, HT_CHANNEL_WIDTH_20_40, pHTInfo->CurSTAExtChnlOffset);
+-	} else {
+-		ieee->set_chan(ieee->dev, ieee->current_network.channel);
+-		ieee->SetBWModeHandler(ieee->dev, HT_CHANNEL_WIDTH_20, HT_EXTCHNL_OFFSET_NO_EXT);
+-	}
+-
+-	pHTInfo->bSwBwInProgress = false;
+-}
+-
+-/*
+- * This function set bandwidth mode in protocol layer.
+- */
+-void HTSetConnectBwMode(struct ieee80211_device *ieee, enum ht_channel_width Bandwidth, enum ht_extension_chan_offset Offset)
+-{
+-	PRT_HIGH_THROUGHPUT pHTInfo = ieee->pHTInfo;
+-//	u32 flags = 0;
+-
+-	if (!pHTInfo->bRegBW40MHz)
+-		return;
+-
+-	// To reduce dummy operation
+-//	if((pHTInfo->bCurBW40MHz==false && Bandwidth==HT_CHANNEL_WIDTH_20) ||
+-//	   (pHTInfo->bCurBW40MHz==true && Bandwidth==HT_CHANNEL_WIDTH_20_40 && Offset==pHTInfo->CurSTAExtChnlOffset))
+-//		return;
+-
+-//	spin_lock_irqsave(&(ieee->bw_spinlock), flags);
+-	if (pHTInfo->bSwBwInProgress) {
+-//		spin_unlock_irqrestore(&(ieee->bw_spinlock), flags);
+-		return;
+-	}
+-	//if in half N mode, set to 20M bandwidth please 09.08.2008 WB.
+-	if (Bandwidth == HT_CHANNEL_WIDTH_20_40 && (!ieee->GetHalfNmodeSupportByAPsHandler(ieee->dev))) {
+-			// Handle Illegal extension channel offset!!
+-		if (ieee->current_network.channel < 2 && Offset == HT_EXTCHNL_OFFSET_LOWER)
+-			Offset = HT_EXTCHNL_OFFSET_NO_EXT;
+-		if (Offset == HT_EXTCHNL_OFFSET_UPPER || Offset == HT_EXTCHNL_OFFSET_LOWER) {
+-			pHTInfo->bCurBW40MHz = true;
+-			pHTInfo->CurSTAExtChnlOffset = Offset;
+-		} else {
+-			pHTInfo->bCurBW40MHz = false;
+-			pHTInfo->CurSTAExtChnlOffset = HT_EXTCHNL_OFFSET_NO_EXT;
+-		}
+-	} else {
+-		pHTInfo->bCurBW40MHz = false;
+-		pHTInfo->CurSTAExtChnlOffset = HT_EXTCHNL_OFFSET_NO_EXT;
+-	}
+-
+-	pHTInfo->bSwBwInProgress = true;
+-
+-	/*
+-	 * TODO: 2007.7.13 by Emily Wait 2000ms  in order to guarantee that
+-	 * switching bandwidth is executed after scan is finished. It is a
+-	 * temporal solution because software should ganrantee the last
+-	 * operation of switching bandwidth is executed properlly.
+-	 */
+-	HTSetConnectBwModeCallback(ieee);
+-
+-//	spin_unlock_irqrestore(&(ieee->bw_spinlock), flags);
+-}
+diff --git a/drivers/staging/rtl8192u/ieee80211/rtl819x_Qos.h b/drivers/staging/rtl8192u/ieee80211/rtl819x_Qos.h
+deleted file mode 100644
+index 3052f53d2e7e..000000000000
+--- a/drivers/staging/rtl8192u/ieee80211/rtl819x_Qos.h
++++ /dev/null
+@@ -1,82 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef __INC_QOS_TYPE_H
+-#define __INC_QOS_TYPE_H
+-
+-/*
+- * ACI/AIFSN Field.
+- * Ref: WMM spec 2.2.2: WME Parameter Element, p.12.
+- * Note: 1 Byte Length
+- */
+-struct aci_aifsn {
+-	u8	aifsn:4;
+-	u8	acm:1;
+-	u8	aci:2;
+-	u8:1;
+-};
+-
+-/*
+- * Direction Field Values.
+- * Ref: WMM spec 2.2.11: WME TSPEC Element, p.18.
+- */
+-enum direction_value {
+-	DIR_UP			= 0,		// 0x00	// UpLink
+-	DIR_DOWN		= 1,		// 0x01	// DownLink
+-	DIR_DIRECT		= 2,		// 0x10	// DirectLink
+-	DIR_BI_DIR		= 3,		// 0x11	// Bi-Direction
+-};
+-
+-/*
+- * TS Info field in WMM TSPEC Element.
+- * Ref:
+- *	1. WMM spec 2.2.11: WME TSPEC Element, p.18.
+- *	2. 8185 QoS code: QOS_TSINFO [def. in QoS_mp.h]
+- * Note: sizeof 3 Bytes
+- */
+-struct qos_tsinfo {
+-	u16		uc_traffic_type:1;	        //WMM is reserved
+-	u16		uc_tsid:4;
+-	u16		uc_direction:2;
+-	u16		uc_access_policy:2;	        //WMM: bit8=0, bit7=1
+-	u16		uc_aggregation:1;	        //WMM is reserved
+-	u16		uc_psb:1;		        //WMMSA is APSD
+-	u16		uc_up:3;
+-	u16		uc_ts_info_ack_policy:2;	//WMM is reserved
+-	u8		uc_schedule:1;		        //WMM is reserved
+-	u8:7;
+-};
+-
+-/*
+- * WMM TSPEC Body.
+- * Ref: WMM spec 2.2.11: WME TSPEC Element, p.16.
+- * Note: sizeof 55 bytes
+- */
+-struct tspec_body {
+-	struct qos_tsinfo	ts_info;	//u8	TSInfo[3];
+-	u16	nominal_msd_usize;
+-	u16	max_msd_usize;
+-	u32	min_service_itv;
+-	u32	max_service_itv;
+-	u32	inactivity_itv;
+-	u32	suspen_itv;
+-	u32	service_start_time;
+-	u32	min_data_rate;
+-	u32	mean_data_rate;
+-	u32	peak_data_rate;
+-	u32	max_burst_size;
+-	u32	delay_bound;
+-	u32	min_phy_rate;
+-	u16	surplus_bandwidth_allowance;
+-	u16	medium_time;
+-};
+-
+-/*
+- *      802.11 Management frame Status Code field
+- */
+-struct octet_string {
+-	u8		*octet;
+-	u16             length;
+-};
+-
+-#define is_ac_valid(ac)			(((ac) <= 7) ? true : false)
+-
+-#endif // #ifndef __INC_QOS_TYPE_H
+diff --git a/drivers/staging/rtl8192u/ieee80211/rtl819x_TS.h b/drivers/staging/rtl8192u/ieee80211/rtl819x_TS.h
+deleted file mode 100644
+index 7ed140009760..000000000000
+--- a/drivers/staging/rtl8192u/ieee80211/rtl819x_TS.h
++++ /dev/null
+@@ -1,102 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _TSTYPE_H_
+-#define _TSTYPE_H_
+-#include "rtl819x_Qos.h"
+-
+-#define TS_ADDBA_DELAY		60
+-
+-#define TOTAL_TS_NUM		16
+-#define TCLAS_NUM		4
+-
+-/*  This define the Tx/Rx directions */
+-enum tr_select {
+-	TX_DIR = 0,
+-	RX_DIR = 1,
+-};
+-
+-union qos_tclas {
+-	struct type_general {
+-		u8		priority;
+-		u8		classifier_type;
+-		u8		mask;
+-	} type_general;
+-
+-	struct type0_eth {
+-		u8		priority;
+-		u8		classifier_type;
+-		u8		mask;
+-		u8		src_addr[6];
+-		u8		dst_addr[6];
+-		u16		type;
+-	} type0_eth;
+-
+-	struct type1_ipv4 {
+-		u8		priority;
+-		u8		classifier_type;
+-		u8		mask;
+-		u8		version;
+-		u8		src_ip[4];
+-		u8		dst_ip[4];
+-		u16		src_port;
+-		u16		dst_port;
+-		u8		dscp;
+-		u8		protocol;
+-		u8		reserved;
+-	} type1_ipv4;
+-
+-	struct type1_ipv6 {
+-		u8		priority;
+-		u8		classifier_type;
+-		u8		mask;
+-		u8		version;
+-		u8		src_ip[16];
+-		u8		dst_ip[16];
+-		u16		src_port;
+-		u16		dst_port;
+-		u8		flow_label[3];
+-	} type1_ipv6;
+-
+-	struct type2_8021q {
+-		u8		priority;
+-		u8		classifier_type;
+-		u8		mask;
+-		u16		tag_type;
+-	} type2_8021q;
+-};
+-
+-struct ts_common_info {
+-	struct list_head		list;
+-	struct timer_list		setup_timer;
+-	struct timer_list		inact_timer;
+-	u8				addr[6];
+-	struct tspec_body		t_spec;
+-	union qos_tclas			t_class[TCLAS_NUM];
+-	u8				t_clas_proc;
+-	u8				t_clas_num;
+-};
+-
+-struct tx_ts_record {
+-	struct ts_common_info		ts_common_info;
+-	u16				tx_cur_seq;
+-	struct ba_record		tx_pending_ba_record;
+-	struct ba_record		tx_admitted_ba_record;
+-	u8				add_ba_req_in_progress;
+-	u8				add_ba_req_delayed;
+-	u8				using_ba;
+-	struct timer_list		ts_add_ba_timer;
+-	u8				num;
+-};
+-
+-struct rx_ts_record {
+-	struct ts_common_info		ts_common_info;
+-	u16				rx_indicate_seq;
+-	u16				rx_timeout_indicate_seq;
+-	struct list_head		rx_pending_pkt_list;
+-	struct timer_list		rx_pkt_pending_timer;
+-	struct ba_record		rx_admitted_ba_record;
+-	u16				rx_last_seq_num;
+-	u8				rx_last_frag_num;
+-	u8				num;
+-};
+-
+-#endif
+diff --git a/drivers/staging/rtl8192u/ieee80211/rtl819x_TSProc.c b/drivers/staging/rtl8192u/ieee80211/rtl819x_TSProc.c
+deleted file mode 100644
+index 3aabb401b15a..000000000000
+--- a/drivers/staging/rtl8192u/ieee80211/rtl819x_TSProc.c
++++ /dev/null
+@@ -1,534 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-#include "ieee80211.h"
+-#include <linux/etherdevice.h>
+-#include <linux/slab.h>
+-#include "rtl819x_TS.h"
+-
+-static void TsSetupTimeOut(struct timer_list *unused)
+-{
+-	// Not implement yet
+-	// This is used for WMMSA and ACM , that would send ADDTSReq frame.
+-}
+-
+-static void TsInactTimeout(struct timer_list *unused)
+-{
+-	// Not implement yet
+-	// This is used for WMMSA and ACM.
+-	// This function would be call when TS is no Tx/Rx for some period of time.
+-}
+-
+-/********************************************************************************************************************
+- *function:  I still not understand this function, so wait for further implementation
+- *   input:  unsigned long	 data		//acturally we send struct tx_ts_record or struct rx_ts_record to these timer
+- *  return:  NULL
+- *  notice:
+- ********************************************************************************************************************/
+-static void RxPktPendingTimeout(struct timer_list *t)
+-{
+-	struct rx_ts_record     *pRxTs = from_timer(pRxTs, t, rx_pkt_pending_timer);
+-	struct ieee80211_device *ieee = container_of(pRxTs, struct ieee80211_device, RxTsRecord[pRxTs->num]);
+-
+-	struct rx_reorder_entry	*pReorderEntry = NULL;
+-
+-	//u32 flags = 0;
+-	unsigned long flags = 0;
+-	u8 index = 0;
+-	bool bPktInBuf = false;
+-
+-	spin_lock_irqsave(&(ieee->reorder_spinlock), flags);
+-	IEEE80211_DEBUG(IEEE80211_DL_REORDER, "==================>%s()\n", __func__);
+-	if (pRxTs->rx_timeout_indicate_seq != 0xffff) {
+-		// Indicate the pending packets sequentially according to SeqNum until meet the gap.
+-		while (!list_empty(&pRxTs->rx_pending_pkt_list)) {
+-			pReorderEntry = list_entry(pRxTs->rx_pending_pkt_list.prev, struct rx_reorder_entry, List);
+-			if (index == 0)
+-				pRxTs->rx_indicate_seq = pReorderEntry->SeqNum;
+-
+-			if (SN_LESS(pReorderEntry->SeqNum, pRxTs->rx_indicate_seq) ||
+-				SN_EQUAL(pReorderEntry->SeqNum, pRxTs->rx_indicate_seq)) {
+-				list_del_init(&pReorderEntry->List);
+-
+-				if (SN_EQUAL(pReorderEntry->SeqNum, pRxTs->rx_indicate_seq))
+-					pRxTs->rx_indicate_seq = (pRxTs->rx_indicate_seq + 1) % 4096;
+-
+-				IEEE80211_DEBUG(IEEE80211_DL_REORDER, "%s: IndicateSeq: %d\n", __func__, pReorderEntry->SeqNum);
+-				ieee->stats_IndicateArray[index] = pReorderEntry->prxb;
+-				index++;
+-
+-				list_add_tail(&pReorderEntry->List, &ieee->RxReorder_Unused_List);
+-			} else {
+-				bPktInBuf = true;
+-				break;
+-			}
+-		}
+-	}
+-
+-	if (index > 0) {
+-		// Set rx_timeout_indicate_seq to 0xffff to indicate no pending packets in buffer now.
+-		pRxTs->rx_timeout_indicate_seq = 0xffff;
+-
+-		// Indicate packets
+-		if (index > REORDER_WIN_SIZE) {
+-			IEEE80211_DEBUG(IEEE80211_DL_ERR, "RxReorderIndicatePacket(): Rx Reorder buffer full!! \n");
+-			spin_unlock_irqrestore(&(ieee->reorder_spinlock), flags);
+-			return;
+-		}
+-		ieee80211_indicate_packets(ieee, ieee->stats_IndicateArray, index);
+-	}
+-
+-	if (bPktInBuf && (pRxTs->rx_timeout_indicate_seq == 0xffff)) {
+-		pRxTs->rx_timeout_indicate_seq = pRxTs->rx_indicate_seq;
+-		mod_timer(&pRxTs->rx_pkt_pending_timer,
+-			  jiffies + msecs_to_jiffies(ieee->pHTInfo->RxReorderPendingTime));
+-	}
+-	spin_unlock_irqrestore(&(ieee->reorder_spinlock), flags);
+-}
+-
+-/********************************************************************************************************************
+- *function:  Add BA timer function
+- *   input:  unsigned long	 data		//acturally we send struct tx_ts_record or struct rx_ts_record to these timer
+- *  return:  NULL
+- *  notice:
+- ********************************************************************************************************************/
+-static void TsAddBaProcess(struct timer_list *t)
+-{
+-	struct tx_ts_record *pTxTs = from_timer(pTxTs, t, ts_add_ba_timer);
+-	u8 num = pTxTs->num;
+-	struct ieee80211_device *ieee = container_of(pTxTs, struct ieee80211_device, TxTsRecord[num]);
+-
+-	TsInitAddBA(ieee, pTxTs, BA_POLICY_IMMEDIATE, false);
+-	IEEE80211_DEBUG(IEEE80211_DL_BA, "%s: ADDBA Req is started!! \n", __func__);
+-}
+-
+-
+-static void ResetTsCommonInfo(struct ts_common_info *pTsCommonInfo)
+-{
+-	eth_zero_addr(pTsCommonInfo->addr);
+-	memset(&pTsCommonInfo->t_spec, 0, sizeof(struct tspec_body));
+-	memset(&pTsCommonInfo->t_class, 0, sizeof(union qos_tclas) * TCLAS_NUM);
+-	pTsCommonInfo->t_clas_proc = 0;
+-	pTsCommonInfo->t_clas_num = 0;
+-}
+-
+-static void ResetTxTsEntry(struct tx_ts_record *pTS)
+-{
+-	ResetTsCommonInfo(&pTS->ts_common_info);
+-	pTS->tx_cur_seq = 0;
+-	pTS->add_ba_req_in_progress = false;
+-	pTS->add_ba_req_delayed = false;
+-	pTS->using_ba = false;
+-	ResetBaEntry(&pTS->tx_admitted_ba_record); //For BA Originator
+-	ResetBaEntry(&pTS->tx_pending_ba_record);
+-}
+-
+-static void ResetRxTsEntry(struct rx_ts_record *pTS)
+-{
+-	ResetTsCommonInfo(&pTS->ts_common_info);
+-	pTS->rx_indicate_seq = 0xffff; // This indicate the rx_indicate_seq is not used now!!
+-	pTS->rx_timeout_indicate_seq = 0xffff; // This indicate the rx_timeout_indicate_seq is not used now!!
+-	ResetBaEntry(&pTS->rx_admitted_ba_record);	  // For BA Recipient
+-}
+-
+-void TSInitialize(struct ieee80211_device *ieee)
+-{
+-	struct tx_ts_record     *pTxTS  = ieee->TxTsRecord;
+-	struct rx_ts_record     *pRxTS  = ieee->RxTsRecord;
+-	struct rx_reorder_entry	*pRxReorderEntry = ieee->RxReorderEntry;
+-	u8				count = 0;
+-	IEEE80211_DEBUG(IEEE80211_DL_TS, "==========>%s()\n", __func__);
+-	// Initialize Tx TS related info.
+-	INIT_LIST_HEAD(&ieee->Tx_TS_Admit_List);
+-	INIT_LIST_HEAD(&ieee->Tx_TS_Pending_List);
+-	INIT_LIST_HEAD(&ieee->Tx_TS_Unused_List);
+-
+-	for (count = 0; count < TOTAL_TS_NUM; count++) {
+-		//
+-		pTxTS->num = count;
+-		// The timers for the operation of Traffic Stream and Block Ack.
+-		// DLS related timer will be add here in the future!!
+-		timer_setup(&pTxTS->ts_common_info.setup_timer, TsSetupTimeOut,
+-			    0);
+-		timer_setup(&pTxTS->ts_common_info.inact_timer, TsInactTimeout,
+-			    0);
+-		timer_setup(&pTxTS->ts_add_ba_timer, TsAddBaProcess, 0);
+-		timer_setup(&pTxTS->tx_pending_ba_record.timer, BaSetupTimeOut,
+-			    0);
+-		timer_setup(&pTxTS->tx_admitted_ba_record.timer,
+-			    TxBaInactTimeout, 0);
+-		ResetTxTsEntry(pTxTS);
+-		list_add_tail(&pTxTS->ts_common_info.list, &ieee->Tx_TS_Unused_List);
+-		pTxTS++;
+-	}
+-
+-	// Initialize Rx TS related info.
+-	INIT_LIST_HEAD(&ieee->Rx_TS_Admit_List);
+-	INIT_LIST_HEAD(&ieee->Rx_TS_Pending_List);
+-	INIT_LIST_HEAD(&ieee->Rx_TS_Unused_List);
+-	for (count = 0; count < TOTAL_TS_NUM; count++) {
+-		pRxTS->num = count;
+-		INIT_LIST_HEAD(&pRxTS->rx_pending_pkt_list);
+-		timer_setup(&pRxTS->ts_common_info.setup_timer, TsSetupTimeOut,
+-			    0);
+-		timer_setup(&pRxTS->ts_common_info.inact_timer, TsInactTimeout,
+-			    0);
+-		timer_setup(&pRxTS->rx_admitted_ba_record.timer,
+-			    RxBaInactTimeout, 0);
+-		timer_setup(&pRxTS->rx_pkt_pending_timer, RxPktPendingTimeout, 0);
+-		ResetRxTsEntry(pRxTS);
+-		list_add_tail(&pRxTS->ts_common_info.list, &ieee->Rx_TS_Unused_List);
+-		pRxTS++;
+-	}
+-	// Initialize unused Rx Reorder List.
+-	INIT_LIST_HEAD(&ieee->RxReorder_Unused_List);
+-	for (count = 0; count < REORDER_ENTRY_NUM; count++) {
+-		list_add_tail(&pRxReorderEntry->List, &ieee->RxReorder_Unused_List);
+-		if (count == (REORDER_ENTRY_NUM - 1))
+-			break;
+-		pRxReorderEntry = &ieee->RxReorderEntry[count + 1];
+-	}
+-}
+-
+-static void AdmitTS(struct ieee80211_device *ieee,
+-		    struct ts_common_info *pTsCommonInfo, u32 InactTime)
+-{
+-	del_timer_sync(&pTsCommonInfo->setup_timer);
+-	del_timer_sync(&pTsCommonInfo->inact_timer);
+-
+-	if (InactTime != 0)
+-		mod_timer(&pTsCommonInfo->inact_timer,
+-			  jiffies + msecs_to_jiffies(InactTime));
+-}
+-
+-
+-static struct ts_common_info *SearchAdmitTRStream(struct ieee80211_device *ieee,
+-						  u8 *Addr, u8 TID,
+-						  enum tr_select TxRxSelect)
+-{
+-	//DIRECTION_VALUE	dir;
+-	u8	dir;
+-	bool				search_dir[4] = {0};
+-	struct list_head		*psearch_list; //FIXME
+-	struct ts_common_info	*pRet = NULL;
+-	if (ieee->iw_mode == IW_MODE_MASTER) { //ap mode
+-		if (TxRxSelect == TX_DIR) {
+-			search_dir[DIR_DOWN] = true;
+-			search_dir[DIR_BI_DIR] = true;
+-		} else {
+-			search_dir[DIR_UP]	= true;
+-			search_dir[DIR_BI_DIR] = true;
+-		}
+-	} else if (ieee->iw_mode == IW_MODE_ADHOC) {
+-		if (TxRxSelect == TX_DIR)
+-			search_dir[DIR_UP]	= true;
+-		else
+-			search_dir[DIR_DOWN] = true;
+-	} else {
+-		if (TxRxSelect == TX_DIR) {
+-			search_dir[DIR_UP]	= true;
+-			search_dir[DIR_BI_DIR] = true;
+-			search_dir[DIR_DIRECT] = true;
+-		} else {
+-			search_dir[DIR_DOWN] = true;
+-			search_dir[DIR_BI_DIR] = true;
+-			search_dir[DIR_DIRECT] = true;
+-		}
+-	}
+-
+-	if (TxRxSelect == TX_DIR)
+-		psearch_list = &ieee->Tx_TS_Admit_List;
+-	else
+-		psearch_list = &ieee->Rx_TS_Admit_List;
+-
+-	//for(dir = DIR_UP; dir <= DIR_BI_DIR; dir++)
+-	for (dir = 0; dir <= DIR_BI_DIR; dir++) {
+-		if (!search_dir[dir])
+-			continue;
+-		list_for_each_entry(pRet, psearch_list, list) {
+-	//		IEEE80211_DEBUG(IEEE80211_DL_TS, "ADD:%pM, TID:%d, dir:%d\n", pRet->Addr, pRet->TSpec.ts_info.ucTSID, pRet->TSpec.ts_info.ucDirection);
+-			if (memcmp(pRet->addr, Addr, 6) == 0)
+-				if (pRet->t_spec.ts_info.uc_tsid == TID)
+-					if (pRet->t_spec.ts_info.uc_direction == dir) {
+-	//					printk("Bingo! got it\n");
+-						break;
+-					}
+-		}
+-		if (&pRet->list  != psearch_list)
+-			break;
+-	}
+-
+-	if (&pRet->list  != psearch_list)
+-		return pRet;
+-	else
+-		return NULL;
+-}
+-
+-static void MakeTSEntry(struct ts_common_info *pTsCommonInfo, u8 *Addr,
+-			struct tspec_body *pTSPEC, union qos_tclas *pTCLAS, u8 TCLAS_Num,
+-			u8 TCLAS_Proc)
+-{
+-	u8	count;
+-
+-	if (pTsCommonInfo == NULL)
+-		return;
+-
+-	memcpy(pTsCommonInfo->addr, Addr, 6);
+-
+-	if (pTSPEC != NULL)
+-		memcpy((u8 *)(&(pTsCommonInfo->t_spec)), (u8 *)pTSPEC, sizeof(struct tspec_body));
+-
+-	for (count = 0; count < TCLAS_Num; count++)
+-		memcpy((u8 *)(&(pTsCommonInfo->t_class[count])), (u8 *)pTCLAS, sizeof(union qos_tclas));
+-
+-	pTsCommonInfo->t_clas_proc = TCLAS_Proc;
+-	pTsCommonInfo->t_clas_num = TCLAS_Num;
+-}
+-
+-
+-bool GetTs(
+-	struct ieee80211_device		*ieee,
+-	struct ts_common_info		**ppTS,
+-	u8				*Addr,
+-	u8				TID,
+-	enum tr_select			TxRxSelect,  //Rx:1, Tx:0
+-	bool				bAddNewTs
+-	)
+-{
+-	u8	UP = 0;
+-	//
+-	// We do not build any TS for Broadcast or Multicast stream.
+-	// So reject these kinds of search here.
+-	//
+-	if (is_multicast_ether_addr(Addr)) {
+-		IEEE80211_DEBUG(IEEE80211_DL_ERR, "get TS for Broadcast or Multicast\n");
+-		return false;
+-	}
+-
+-	if (ieee->current_network.qos_data.supported == 0) {
+-		UP = 0;
+-	} else {
+-		// In WMM case: we use 4 TID only
+-		if (!is_ac_valid(TID)) {
+-			IEEE80211_DEBUG(IEEE80211_DL_ERR, " in %s(), TID(%d) is not valid\n", __func__, TID);
+-			return false;
+-		}
+-
+-		switch (TID) {
+-		case 0:
+-		case 3:
+-			UP = 0;
+-			break;
+-
+-		case 1:
+-		case 2:
+-			UP = 2;
+-			break;
+-
+-		case 4:
+-		case 5:
+-			UP = 5;
+-			break;
+-
+-		case 6:
+-		case 7:
+-			UP = 7;
+-			break;
+-		}
+-	}
+-
+-	*ppTS = SearchAdmitTRStream(
+-			ieee,
+-			Addr,
+-			UP,
+-			TxRxSelect);
+-	if (*ppTS != NULL) {
+-		return true;
+-	} else {
+-		if (!bAddNewTs) {
+-			IEEE80211_DEBUG(IEEE80211_DL_TS, "add new TS failed(tid:%d)\n", UP);
+-			return false;
+-		} else {
+-			//
+-			// Create a new Traffic stream for current Tx/Rx
+-			// This is for EDCA and WMM to add a new TS.
+-			// For HCCA or WMMSA, TS cannot be addmit without negotiation.
+-			//
+-			struct tspec_body	TSpec;
+-			struct qos_tsinfo	*pTSInfo = &TSpec.ts_info;
+-			struct list_head	*pUnusedList =
+-								(TxRxSelect == TX_DIR) ?
+-								(&ieee->Tx_TS_Unused_List) :
+-								(&ieee->Rx_TS_Unused_List);
+-
+-			struct list_head	*pAddmitList =
+-								(TxRxSelect == TX_DIR) ?
+-								(&ieee->Tx_TS_Admit_List) :
+-								(&ieee->Rx_TS_Admit_List);
+-
+-			enum direction_value	Dir =		(ieee->iw_mode == IW_MODE_MASTER) ?
+-								((TxRxSelect == TX_DIR) ? DIR_DOWN : DIR_UP) :
+-								((TxRxSelect == TX_DIR) ? DIR_UP : DIR_DOWN);
+-			IEEE80211_DEBUG(IEEE80211_DL_TS, "to add Ts\n");
+-			if (!list_empty(pUnusedList)) {
+-				(*ppTS) = list_entry(pUnusedList->next, struct ts_common_info, list);
+-				list_del_init(&(*ppTS)->list);
+-				if (TxRxSelect == TX_DIR) {
+-					struct tx_ts_record *tmp = container_of(*ppTS, struct tx_ts_record, ts_common_info);
+-					ResetTxTsEntry(tmp);
+-				} else {
+-					struct rx_ts_record *tmp = container_of(*ppTS, struct rx_ts_record, ts_common_info);
+-					ResetRxTsEntry(tmp);
+-				}
+-
+-				IEEE80211_DEBUG(IEEE80211_DL_TS, "to init current TS, UP:%d, Dir:%d, addr:%pM\n", UP, Dir, Addr);
+-				// Prepare TS Info related field
+-				pTSInfo->uc_traffic_type = 0;		// Traffic type: WMM is reserved in this field
+-				pTSInfo->uc_tsid = UP;			// TSID
+-				pTSInfo->uc_direction = Dir;		// Direction: if there is DirectLink, this need additional consideration.
+-				pTSInfo->uc_access_policy = 1;		// Access policy
+-				pTSInfo->uc_aggregation = 0;		// Aggregation
+-				pTSInfo->uc_psb = 0;			// Aggregation
+-				pTSInfo->uc_up = UP;			// User priority
+-				pTSInfo->uc_ts_info_ack_policy = 0;	// Ack policy
+-				pTSInfo->uc_schedule = 0;		// Schedule
+-
+-				MakeTSEntry(*ppTS, Addr, &TSpec, NULL, 0, 0);
+-				AdmitTS(ieee, *ppTS, 0);
+-				list_add_tail(&((*ppTS)->list), pAddmitList);
+-				// if there is DirectLink, we need to do additional operation here!!
+-
+-				return true;
+-			} else {
+-				IEEE80211_DEBUG(IEEE80211_DL_ERR, "in function %s() There is not enough TS record to be used!!", __func__);
+-				return false;
+-			}
+-		}
+-	}
+-}
+-
+-static void RemoveTsEntry(struct ieee80211_device *ieee, struct ts_common_info *pTs,
+-			  enum tr_select TxRxSelect)
+-{
+-	//u32 flags = 0;
+-	unsigned long flags = 0;
+-	del_timer_sync(&pTs->setup_timer);
+-	del_timer_sync(&pTs->inact_timer);
+-	TsInitDelBA(ieee, pTs, TxRxSelect);
+-
+-	if (TxRxSelect == RX_DIR) {
+-		struct rx_reorder_entry	*pRxReorderEntry;
+-		struct rx_ts_record     *pRxTS = (struct rx_ts_record *)pTs;
+-		if (timer_pending(&pRxTS->rx_pkt_pending_timer))
+-			del_timer_sync(&pRxTS->rx_pkt_pending_timer);
+-
+-		while (!list_empty(&pRxTS->rx_pending_pkt_list)) {
+-			spin_lock_irqsave(&(ieee->reorder_spinlock), flags);
+-			//pRxReorderEntry = list_entry(&pRxTS->rx_pending_pkt_list.prev,RX_REORDER_ENTRY,List);
+-			pRxReorderEntry = list_entry(pRxTS->rx_pending_pkt_list.prev, struct rx_reorder_entry, List);
+-			list_del_init(&pRxReorderEntry->List);
+-			{
+-				int i = 0;
+-				struct ieee80211_rxb *prxb = pRxReorderEntry->prxb;
+-				if (unlikely(!prxb)) {
+-					spin_unlock_irqrestore(&(ieee->reorder_spinlock), flags);
+-					return;
+-				}
+-				for (i =  0; i < prxb->nr_subframes; i++)
+-					dev_kfree_skb(prxb->subframes[i]);
+-
+-				kfree(prxb);
+-				prxb = NULL;
+-			}
+-			list_add_tail(&pRxReorderEntry->List, &ieee->RxReorder_Unused_List);
+-			spin_unlock_irqrestore(&(ieee->reorder_spinlock), flags);
+-		}
+-
+-	} else {
+-		struct tx_ts_record *pTxTS = (struct tx_ts_record *)pTs;
+-		del_timer_sync(&pTxTS->ts_add_ba_timer);
+-	}
+-}
+-
+-void RemovePeerTS(struct ieee80211_device *ieee, u8 *Addr)
+-{
+-	struct ts_common_info	*pTS, *pTmpTS;
+-
+-	printk("===========>%s,%pM\n", __func__, Addr);
+-	list_for_each_entry_safe(pTS, pTmpTS, &ieee->Tx_TS_Pending_List, list) {
+-		if (memcmp(pTS->addr, Addr, 6) == 0) {
+-			RemoveTsEntry(ieee, pTS, TX_DIR);
+-			list_del_init(&pTS->list);
+-			list_add_tail(&pTS->list, &ieee->Tx_TS_Unused_List);
+-		}
+-	}
+-
+-	list_for_each_entry_safe(pTS, pTmpTS, &ieee->Tx_TS_Admit_List, list) {
+-		if (memcmp(pTS->addr, Addr, 6) == 0) {
+-			printk("====>remove Tx_TS_admin_list\n");
+-			RemoveTsEntry(ieee, pTS, TX_DIR);
+-			list_del_init(&pTS->list);
+-			list_add_tail(&pTS->list, &ieee->Tx_TS_Unused_List);
+-		}
+-	}
+-
+-	list_for_each_entry_safe(pTS, pTmpTS, &ieee->Rx_TS_Pending_List, list) {
+-		if (memcmp(pTS->addr, Addr, 6) == 0) {
+-			RemoveTsEntry(ieee, pTS, RX_DIR);
+-			list_del_init(&pTS->list);
+-			list_add_tail(&pTS->list, &ieee->Rx_TS_Unused_List);
+-		}
+-	}
+-
+-	list_for_each_entry_safe(pTS, pTmpTS, &ieee->Rx_TS_Admit_List, list) {
+-		if (memcmp(pTS->addr, Addr, 6) == 0) {
+-			RemoveTsEntry(ieee, pTS, RX_DIR);
+-			list_del_init(&pTS->list);
+-			list_add_tail(&pTS->list, &ieee->Rx_TS_Unused_List);
+-		}
+-	}
+-}
+-
+-void RemoveAllTS(struct ieee80211_device *ieee)
+-{
+-	struct ts_common_info *pTS, *pTmpTS;
+-
+-	list_for_each_entry_safe(pTS, pTmpTS, &ieee->Tx_TS_Pending_List, list) {
+-		RemoveTsEntry(ieee, pTS, TX_DIR);
+-		list_del_init(&pTS->list);
+-		list_add_tail(&pTS->list, &ieee->Tx_TS_Unused_List);
+-	}
+-
+-	list_for_each_entry_safe(pTS, pTmpTS, &ieee->Tx_TS_Admit_List, list) {
+-		RemoveTsEntry(ieee, pTS, TX_DIR);
+-		list_del_init(&pTS->list);
+-		list_add_tail(&pTS->list, &ieee->Tx_TS_Unused_List);
+-	}
+-
+-	list_for_each_entry_safe(pTS, pTmpTS, &ieee->Rx_TS_Pending_List, list) {
+-		RemoveTsEntry(ieee, pTS, RX_DIR);
+-		list_del_init(&pTS->list);
+-		list_add_tail(&pTS->list, &ieee->Rx_TS_Unused_List);
+-	}
+-
+-	list_for_each_entry_safe(pTS, pTmpTS, &ieee->Rx_TS_Admit_List, list) {
+-		RemoveTsEntry(ieee, pTS, RX_DIR);
+-		list_del_init(&pTS->list);
+-		list_add_tail(&pTS->list, &ieee->Rx_TS_Unused_List);
+-	}
+-}
+-
+-void TsStartAddBaProcess(struct ieee80211_device *ieee, struct tx_ts_record *pTxTS)
+-{
+-	if (!pTxTS->add_ba_req_in_progress) {
+-		pTxTS->add_ba_req_in_progress = true;
+-		if (pTxTS->add_ba_req_delayed)	{
+-			IEEE80211_DEBUG(IEEE80211_DL_BA, "%s: Delayed Start ADDBA after 60 sec!!\n", __func__);
+-			mod_timer(&pTxTS->ts_add_ba_timer,
+-				  jiffies + msecs_to_jiffies(TS_ADDBA_DELAY));
+-		} else {
+-			IEEE80211_DEBUG(IEEE80211_DL_BA, "%s: Immediately Start ADDBA now!!\n", __func__);
+-			mod_timer(&pTxTS->ts_add_ba_timer, jiffies + 10); //set 10 ticks
+-		}
+-	} else {
+-		IEEE80211_DEBUG(IEEE80211_DL_ERR, "%s()==>BA timer is already added\n", __func__);
+-	}
+-}
+diff --git a/drivers/staging/rtl8192u/r8180_93cx6.c b/drivers/staging/rtl8192u/r8180_93cx6.c
+deleted file mode 100644
+index 2527cea60e3e..000000000000
+--- a/drivers/staging/rtl8192u/r8180_93cx6.c
++++ /dev/null
+@@ -1,170 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- *  This files contains card eeprom (93c46 or 93c56) programming routines,
+- *  memory is addressed by 16 bits words.
+- *
+- *  This is part of rtl8180 OpenSource driver.
+- *  Copyright (C) Andrea Merello 2004  <andrea.merello@gmail.com>
+- *
+- *  Parts of this driver are based on the GPL part of the
+- *  official realtek driver.
+- *
+- *  Parts of this driver are based on the rtl8180 driver skeleton
+- *  from Patric Schenke & Andres Salomon.
+- *
+- *  Parts of this driver are based on the Intel Pro Wireless 2100 GPL driver.
+- *
+- *  We want to thank the Authors of those projects and the Ndiswrapper
+- *  project Authors.
+- */
+-
+-#include "r8180_93cx6.h"
+-
+-static void eprom_cs(struct net_device *dev, short bit)
+-{
+-	u8 cmdreg;
+-	int err;
+-
+-	err = read_nic_byte_E(dev, EPROM_CMD, &cmdreg);
+-	if (err)
+-		return;
+-	if (bit)
+-		/* enable EPROM */
+-		write_nic_byte_E(dev, EPROM_CMD, cmdreg | EPROM_CS_BIT);
+-	else
+-		/* disable EPROM */
+-		write_nic_byte_E(dev, EPROM_CMD, cmdreg & ~EPROM_CS_BIT);
+-
+-	force_pci_posting(dev);
+-	udelay(EPROM_DELAY);
+-}
+-
+-static void eprom_ck_cycle(struct net_device *dev)
+-{
+-	u8 cmdreg;
+-	int err;
+-
+-	err = read_nic_byte_E(dev, EPROM_CMD, &cmdreg);
+-	if (err)
+-		return;
+-	write_nic_byte_E(dev, EPROM_CMD, cmdreg | EPROM_CK_BIT);
+-	force_pci_posting(dev);
+-	udelay(EPROM_DELAY);
+-
+-	read_nic_byte_E(dev, EPROM_CMD, &cmdreg);
+-	write_nic_byte_E(dev, EPROM_CMD, cmdreg & ~EPROM_CK_BIT);
+-	force_pci_posting(dev);
+-	udelay(EPROM_DELAY);
+-}
+-
+-static void eprom_w(struct net_device *dev, short bit)
+-{
+-	u8 cmdreg;
+-	int err;
+-
+-	err = read_nic_byte_E(dev, EPROM_CMD, &cmdreg);
+-	if (err)
+-		return;
+-	if (bit)
+-		write_nic_byte_E(dev, EPROM_CMD, cmdreg | EPROM_W_BIT);
+-	else
+-		write_nic_byte_E(dev, EPROM_CMD, cmdreg & ~EPROM_W_BIT);
+-
+-	force_pci_posting(dev);
+-	udelay(EPROM_DELAY);
+-}
+-
+-static short eprom_r(struct net_device *dev)
+-{
+-	u8 bit;
+-	int err;
+-
+-	err = read_nic_byte_E(dev, EPROM_CMD, &bit);
+-	if (err)
+-		return err;
+-
+-	udelay(EPROM_DELAY);
+-
+-	if (bit & EPROM_R_BIT)
+-		return 1;
+-
+-	return 0;
+-}
+-
+-static void eprom_send_bits_string(struct net_device *dev, short b[], int len)
+-{
+-	int i;
+-
+-	for (i = 0; i < len; i++) {
+-		eprom_w(dev, b[i]);
+-		eprom_ck_cycle(dev);
+-	}
+-}
+-
+-int eprom_read(struct net_device *dev, u32 addr)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	short read_cmd[] = {1, 1, 0};
+-	short addr_str[8];
+-	int i;
+-	int addr_len;
+-	u32 ret;
+-	int err;
+-
+-	ret = 0;
+-	/* enable EPROM programming */
+-	write_nic_byte_E(dev, EPROM_CMD,
+-		       (EPROM_CMD_PROGRAM << EPROM_CMD_OPERATING_MODE_SHIFT));
+-	force_pci_posting(dev);
+-	udelay(EPROM_DELAY);
+-
+-	if (priv->epromtype == EPROM_93c56) {
+-		addr_str[7] = addr & 1;
+-		addr_str[6] = addr & BIT(1);
+-		addr_str[5] = addr & BIT(2);
+-		addr_str[4] = addr & BIT(3);
+-		addr_str[3] = addr & BIT(4);
+-		addr_str[2] = addr & BIT(5);
+-		addr_str[1] = addr & BIT(6);
+-		addr_str[0] = addr & BIT(7);
+-		addr_len = 8;
+-	} else {
+-		addr_str[5] = addr & 1;
+-		addr_str[4] = addr & BIT(1);
+-		addr_str[3] = addr & BIT(2);
+-		addr_str[2] = addr & BIT(3);
+-		addr_str[1] = addr & BIT(4);
+-		addr_str[0] = addr & BIT(5);
+-		addr_len = 6;
+-	}
+-	eprom_cs(dev, 1);
+-	eprom_ck_cycle(dev);
+-	eprom_send_bits_string(dev, read_cmd, 3);
+-	eprom_send_bits_string(dev, addr_str, addr_len);
+-
+-	/*
+-	 * keep chip pin D to low state while reading.
+-	 * I'm unsure if it is necessary, but anyway shouldn't hurt
+-	 */
+-	eprom_w(dev, 0);
+-
+-	for (i = 0; i < 16; i++) {
+-		/* eeprom needs a clk cycle between writing opcode&adr
+-		 * and reading data. (eeprom outs a dummy 0)
+-		 */
+-		eprom_ck_cycle(dev);
+-		err = eprom_r(dev);
+-		if (err < 0)
+-			return err;
+-
+-		ret |= err << (15 - i);
+-	}
+-
+-	eprom_cs(dev, 0);
+-	eprom_ck_cycle(dev);
+-
+-	/* disable EPROM programming */
+-	write_nic_byte_E(dev, EPROM_CMD,
+-		       (EPROM_CMD_NORMAL << EPROM_CMD_OPERATING_MODE_SHIFT));
+-	return ret;
+-}
+diff --git a/drivers/staging/rtl8192u/r8180_93cx6.h b/drivers/staging/rtl8192u/r8180_93cx6.h
+deleted file mode 100644
+index 0cdd00a4f7b8..000000000000
+--- a/drivers/staging/rtl8192u/r8180_93cx6.h
++++ /dev/null
+@@ -1,25 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- *	This is part of rtl8187 OpenSource driver
+- *	Copyright (C) Andrea Merello 2004-2005  <andrea.merello@gmail.com>
+- *	Released under the terms of GPL (General Public Licence)
+- *
+- *	Parts of this driver are based on the GPL part of the
+- *	official realtek driver
+- *	Parts of this driver are based on the rtl8180 driver skeleton
+- *	from Patric Schenke & Andres Salomon
+- *	Parts of this driver are based on the Intel Pro Wireless 2100 GPL driver
+- *
+- *	We want to thank the Authors of such projects and the Ndiswrapper
+- *	project Authors.
+- */
+-
+-/*This files contains card eeprom (93c46 or 93c56) programming routines*/
+-/*memory is addressed by WORDS*/
+-
+-#include "r8192U.h"
+-#include "r8192U_hw.h"
+-
+-#define EPROM_DELAY 10
+-
+-int eprom_read(struct net_device *dev, u32 addr); /* reads a 16 bits word */
+diff --git a/drivers/staging/rtl8192u/r8190_rtl8256.c b/drivers/staging/rtl8192u/r8190_rtl8256.c
+deleted file mode 100644
+index 54747fda552f..000000000000
+--- a/drivers/staging/rtl8192u/r8190_rtl8256.c
++++ /dev/null
+@@ -1,294 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- * This is part of the rtl8192 driver
+- *
+- * This files contains programming code for the rtl8256
+- * radio frontend.
+- *
+- * *Many* thanks to Realtek Corp. for their great support!
+- */
+-
+-#include "r8192U.h"
+-#include "r8192U_hw.h"
+-#include "r819xU_phyreg.h"
+-#include "r819xU_phy.h"
+-#include "r8190_rtl8256.h"
+-
+-/*
+- * Forward declaration of local functions
+- */
+-static void phy_rf8256_config_para_file(struct net_device *dev);
+-
+-/*--------------------------------------------------------------------------
+- * Overview:	set RF band width (20M or 40M)
+- * Input:       struct net_device*	dev
+- *		WIRELESS_BANDWIDTH_E	Bandwidth	//20M or 40M
+- * Output:      NONE
+- * Return:      NONE
+- * Note:	8226 support both 20M  and 40 MHz
+- *--------------------------------------------------------------------------
+- */
+-void phy_set_rf8256_bandwidth(struct net_device *dev, enum ht_channel_width Bandwidth)
+-{
+-	u8	eRFPath;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	/* for(eRFPath = RF90_PATH_A; eRFPath <pHalData->NumTotalRFPath;
+-	 *  eRFPath++)
+-	 */
+-	for (eRFPath = 0; eRFPath < RF90_PATH_MAX; eRFPath++) {
+-		if (!rtl8192_phy_CheckIsLegalRFPath(dev, eRFPath))
+-			continue;
+-
+-		switch (Bandwidth) {
+-		case HT_CHANNEL_WIDTH_20:
+-				if (priv->card_8192_version == VERSION_819XU_A ||
+-				    priv->card_8192_version == VERSION_819XU_B) {
+-					/* 8256 D-cut, E-cut, xiong: consider it later! */
+-					rtl8192_phy_SetRFReg(dev,
+-						(enum rf90_radio_path_e)eRFPath,
+-						0x0b, bMask12Bits, 0x100); /* phy para:1ba */
+-					rtl8192_phy_SetRFReg(dev,
+-						(enum rf90_radio_path_e)eRFPath,
+-						0x2c, bMask12Bits, 0x3d7);
+-					rtl8192_phy_SetRFReg(dev,
+-						(enum rf90_radio_path_e)eRFPath,
+-						0x0e, bMask12Bits, 0x021);
+-					rtl8192_phy_SetRFReg(dev,
+-						(enum rf90_radio_path_e)eRFPath,
+-						0x14, bMask12Bits, 0x5ab);
+-				} else {
+-					RT_TRACE(COMP_ERR, "%s(): unknown hardware version\n", __func__);
+-					}
+-				break;
+-		case HT_CHANNEL_WIDTH_20_40:
+-				if (priv->card_8192_version == VERSION_819XU_A || priv->card_8192_version == VERSION_819XU_B) { /* 8256 D-cut, E-cut, xiong: consider it later! */
+-					rtl8192_phy_SetRFReg(dev, (enum rf90_radio_path_e)eRFPath, 0x0b, bMask12Bits, 0x300); /* phy para:3ba */
+-					rtl8192_phy_SetRFReg(dev, (enum rf90_radio_path_e)eRFPath, 0x2c, bMask12Bits, 0x3df);
+-					rtl8192_phy_SetRFReg(dev, (enum rf90_radio_path_e)eRFPath, 0x0e, bMask12Bits, 0x0a1);
+-
+-					if (priv->chan == 3 || priv->chan == 9)
+-						/* I need to set priv->chan whenever current channel changes */
+-						rtl8192_phy_SetRFReg(dev, (enum rf90_radio_path_e)eRFPath, 0x14, bMask12Bits, 0x59b);
+-					else
+-						rtl8192_phy_SetRFReg(dev, (enum rf90_radio_path_e)eRFPath, 0x14, bMask12Bits, 0x5ab);
+-				} else {
+-					RT_TRACE(COMP_ERR, "%s(): unknown hardware version\n", __func__);
+-					}
+-				break;
+-		default:
+-				RT_TRACE(COMP_ERR, "%s(): unknown Bandwidth: %#X\n", __func__, Bandwidth);
+-				break;
+-		}
+-	}
+-}
+-
+-/*--------------------------------------------------------------------------
+- * Overview:    Interface to config 8256
+- * Input:       struct net_device*	dev
+- * Output:      NONE
+- * Return:      NONE
+- *--------------------------------------------------------------------------
+- */
+-void phy_rf8256_config(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	/* Initialize general global value
+-	 *
+-	 * TODO: Extend RF_PATH_C and RF_PATH_D in the future
+-	 */
+-	priv->NumTotalRFPath = RTL819X_TOTAL_RF_PATH;
+-	/* Config BB and RF */
+-	phy_rf8256_config_para_file(dev);
+-}
+-
+-/*--------------------------------------------------------------------------
+- * Overview:    Interface to config 8256
+- * Input:       struct net_device*	dev
+- * Output:      NONE
+- * Return:      NONE
+- *--------------------------------------------------------------------------
+- */
+-static void phy_rf8256_config_para_file(struct net_device *dev)
+-{
+-	u32	u4RegValue = 0;
+-	u8	eRFPath;
+-	BB_REGISTER_DEFINITION_T	*pPhyReg;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u32	RegOffSetToBeCheck = 0x3;
+-	u32	RegValueToBeCheck = 0x7f1;
+-	u32	RF3_Final_Value = 0;
+-	u8	ConstRetryTimes = 5, RetryTimes = 5;
+-	u8 ret = 0;
+-	/* Initialize RF */
+-	for (eRFPath = (enum rf90_radio_path_e)RF90_PATH_A; eRFPath < priv->NumTotalRFPath; eRFPath++) {
+-		if (!rtl8192_phy_CheckIsLegalRFPath(dev, eRFPath))
+-			continue;
+-
+-		pPhyReg = &priv->PHYRegDef[eRFPath];
+-
+-		/* Joseph test for shorten RF config
+-		 * pHalData->RfReg0Value[eRFPath] =  rtl8192_phy_QueryRFReg(dev, (enum rf90_radio_path_e)eRFPath, rGlobalCtrl, bMaskDWord);
+-		 * ----Store original RFENV control type
+-		 */
+-		switch (eRFPath) {
+-		case RF90_PATH_A:
+-		case RF90_PATH_C:
+-			u4RegValue = rtl8192_QueryBBReg(dev, pPhyReg->rfintfs, bRFSI_RFENV);
+-			break;
+-		case RF90_PATH_B:
+-		case RF90_PATH_D:
+-			u4RegValue = rtl8192_QueryBBReg(dev, pPhyReg->rfintfs, bRFSI_RFENV << 16);
+-			break;
+-		}
+-
+-		/*----Set RF_ENV enable----*/
+-		rtl8192_setBBreg(dev, pPhyReg->rfintfe, bRFSI_RFENV << 16, 0x1);
+-
+-		/*----Set RF_ENV output high----*/
+-		rtl8192_setBBreg(dev, pPhyReg->rfintfo, bRFSI_RFENV, 0x1);
+-
+-		/* Set bit number of Address and Data for RF register */
+-		rtl8192_setBBreg(dev, pPhyReg->rfHSSIPara2, b3WireAddressLength, 0x0);	/* Set 0 to 4 bits for Z-serial and set 1 to 6 bits for 8258 */
+-		rtl8192_setBBreg(dev, pPhyReg->rfHSSIPara2, b3WireDataLength, 0x0);	/* Set 0 to 12 bits for Z-serial and 8258, and set 1 to 14 bits for ??? */
+-
+-		rtl8192_phy_SetRFReg(dev, (enum rf90_radio_path_e)eRFPath, 0x0, bMask12Bits, 0xbf);
+-
+-		/* Check RF block (for FPGA platform only)----
+-		 * TODO: this function should be removed on ASIC , Emily 2007.2.2
+-		 */
+-		if (rtl8192_phy_checkBBAndRF(dev, HW90_BLOCK_RF, (enum rf90_radio_path_e)eRFPath)) {
+-			RT_TRACE(COMP_ERR, "phy_rf8256_config():Check Radio[%d] Fail!!\n", eRFPath);
+-			goto phy_RF8256_Config_ParaFile_Fail;
+-		}
+-
+-		RetryTimes = ConstRetryTimes;
+-		RF3_Final_Value = 0;
+-		/*----Initialize RF fom connfiguration file----*/
+-		switch (eRFPath) {
+-		case RF90_PATH_A:
+-			while (RF3_Final_Value != RegValueToBeCheck && RetryTimes != 0) {
+-				ret = rtl8192_phy_ConfigRFWithHeaderFile(dev, (enum rf90_radio_path_e)eRFPath);
+-				RF3_Final_Value = rtl8192_phy_QueryRFReg(dev, (enum rf90_radio_path_e)eRFPath, RegOffSetToBeCheck, bMask12Bits);
+-				RT_TRACE(COMP_RF, "RF %d %d register final value: %x\n", eRFPath, RegOffSetToBeCheck, RF3_Final_Value);
+-				RetryTimes--;
+-			}
+-			break;
+-		case RF90_PATH_B:
+-			while (RF3_Final_Value != RegValueToBeCheck && RetryTimes != 0) {
+-				ret = rtl8192_phy_ConfigRFWithHeaderFile(dev, (enum rf90_radio_path_e)eRFPath);
+-				RF3_Final_Value = rtl8192_phy_QueryRFReg(dev, (enum rf90_radio_path_e)eRFPath, RegOffSetToBeCheck, bMask12Bits);
+-				RT_TRACE(COMP_RF, "RF %d %d register final value: %x\n", eRFPath, RegOffSetToBeCheck, RF3_Final_Value);
+-				RetryTimes--;
+-			}
+-			break;
+-		case RF90_PATH_C:
+-			while (RF3_Final_Value != RegValueToBeCheck && RetryTimes != 0) {
+-				ret = rtl8192_phy_ConfigRFWithHeaderFile(dev, (enum rf90_radio_path_e)eRFPath);
+-				RF3_Final_Value = rtl8192_phy_QueryRFReg(dev, (enum rf90_radio_path_e)eRFPath, RegOffSetToBeCheck, bMask12Bits);
+-				RT_TRACE(COMP_RF, "RF %d %d register final value: %x\n", eRFPath, RegOffSetToBeCheck, RF3_Final_Value);
+-				RetryTimes--;
+-			}
+-			break;
+-		case RF90_PATH_D:
+-			while (RF3_Final_Value != RegValueToBeCheck && RetryTimes != 0) {
+-				ret = rtl8192_phy_ConfigRFWithHeaderFile(dev, (enum rf90_radio_path_e)eRFPath);
+-				RF3_Final_Value = rtl8192_phy_QueryRFReg(dev, (enum rf90_radio_path_e)eRFPath, RegOffSetToBeCheck, bMask12Bits);
+-				RT_TRACE(COMP_RF, "RF %d %d register final value: %x\n", eRFPath, RegOffSetToBeCheck, RF3_Final_Value);
+-				RetryTimes--;
+-			}
+-			break;
+-		}
+-
+-		/*----Restore RFENV control type----*/
+-		switch (eRFPath) {
+-		case RF90_PATH_A:
+-		case RF90_PATH_C:
+-			rtl8192_setBBreg(dev, pPhyReg->rfintfs, bRFSI_RFENV, u4RegValue);
+-			break;
+-		case RF90_PATH_B:
+-		case RF90_PATH_D:
+-			rtl8192_setBBreg(dev, pPhyReg->rfintfs, bRFSI_RFENV << 16, u4RegValue);
+-			break;
+-		}
+-
+-		if (ret) {
+-			RT_TRACE(COMP_ERR, "%s():Radio[%d] Fail!!", __func__, eRFPath);
+-			goto phy_RF8256_Config_ParaFile_Fail;
+-		}
+-	}
+-
+-	RT_TRACE(COMP_PHY, "PHY Initialization Success\n");
+-	return;
+-
+-phy_RF8256_Config_ParaFile_Fail:
+-	RT_TRACE(COMP_ERR, "PHY Initialization failed\n");
+-}
+-
+-void phy_set_rf8256_cck_tx_power(struct net_device *dev, u8 powerlevel)
+-{
+-	u32	TxAGC = 0;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	TxAGC = powerlevel;
+-
+-	if (priv->bDynamicTxLowPower) {
+-		if (priv->CustomerID == RT_CID_819x_Netcore)
+-			TxAGC = 0x22;
+-		else
+-			TxAGC += priv->CckPwEnl;
+-	}
+-
+-	if (TxAGC > 0x24)
+-		TxAGC = 0x24;
+-	rtl8192_setBBreg(dev, rTxAGC_CCK_Mcs32, bTxAGCRateCCK, TxAGC);
+-}
+-
+-void phy_set_rf8256_ofdm_tx_power(struct net_device *dev, u8 powerlevel)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	/* Joseph TxPower for 8192 testing */
+-	u32 writeVal, powerBase0, powerBase1, writeVal_tmp;
+-	u8 index = 0;
+-	u16 RegOffset[6] = {0xe00, 0xe04, 0xe10, 0xe14, 0xe18, 0xe1c};
+-	u8 byte0, byte1, byte2, byte3;
+-
+-	powerBase0 = powerlevel + priv->TxPowerDiff;	/* OFDM rates */
+-	powerBase0 = (powerBase0 << 24) | (powerBase0 << 16) | (powerBase0 << 8) | powerBase0;
+-	powerBase1 = powerlevel;							/* MCS rates */
+-	powerBase1 = (powerBase1 << 24) | (powerBase1 << 16) | (powerBase1 << 8) | powerBase1;
+-
+-	for (index = 0; index < 6; index++) {
+-		writeVal = priv->MCSTxPowerLevelOriginalOffset[index] + ((index < 2) ? powerBase0 : powerBase1);
+-		byte0 = (u8)(writeVal & 0x7f);
+-		byte1 = (u8)((writeVal & 0x7f00) >> 8);
+-		byte2 = (u8)((writeVal & 0x7f0000) >> 16);
+-		byte3 = (u8)((writeVal & 0x7f000000) >> 24);
+-
+-		if (byte0 > 0x24)
+-			/* Max power index = 0x24 */
+-			byte0 = 0x24;
+-		if (byte1 > 0x24)
+-			byte1 = 0x24;
+-		if (byte2 > 0x24)
+-			byte2 = 0x24;
+-		if (byte3 > 0x24)
+-			byte3 = 0x24;
+-
+-		/* for tx power track */
+-		if (index == 3) {
+-			writeVal_tmp = (byte3 << 24) | (byte2 << 16) | (byte1 << 8) | byte0;
+-			priv->Pwr_Track = writeVal_tmp;
+-		}
+-
+-		if (priv->bDynamicTxHighPower) {
+-			/*Add by Jacken 2008/03/06
+-			 *Emily, 20080613. Set low tx power for both MCS and legacy OFDM
+-			 */
+-			writeVal = 0x03030303;
+-		} else {
+-			writeVal = (byte3 << 24) | (byte2 << 16) | (byte1 << 8) | byte0;
+-		}
+-		rtl8192_setBBreg(dev, RegOffset[index], 0x7f7f7f7f, writeVal);
+-	}
+-}
+diff --git a/drivers/staging/rtl8192u/r8190_rtl8256.h b/drivers/staging/rtl8192u/r8190_rtl8256.h
+deleted file mode 100644
+index 9ea67f86f911..000000000000
+--- a/drivers/staging/rtl8192u/r8190_rtl8256.h
++++ /dev/null
+@@ -1,24 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- *	 This is part of the rtl8180-sa2400 driver
+- *	 released under the GPL (See file COPYING for details).
+- *	 Copyright (c) 2005 Andrea Merello <andrea.merello@gmail.com>
+- *
+- *
+- *	 This files contains programming code for the rtl8256
+- *	 radio frontend.
+- *
+- *	 *Many* thanks to Realtek Corp. for their great support!
+- */
+-
+-#ifndef RTL8225H
+-#define RTL8225H
+-
+-#define RTL819X_TOTAL_RF_PATH 2 /* for 8192U */
+-void phy_set_rf8256_bandwidth(struct net_device *dev,
+-			      enum ht_channel_width bandwidth);
+-void phy_rf8256_config(struct net_device *dev);
+-void phy_set_rf8256_cck_tx_power(struct net_device *dev, u8 powerlevel);
+-void phy_set_rf8256_ofdm_tx_power(struct net_device *dev, u8 powerlevel);
+-
+-#endif
+diff --git a/drivers/staging/rtl8192u/r8192U.h b/drivers/staging/rtl8192u/r8192U.h
+deleted file mode 100644
+index ff0ada00bf41..000000000000
+--- a/drivers/staging/rtl8192u/r8192U.h
++++ /dev/null
+@@ -1,1129 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- * This is part of rtl8187 OpenSource driver.
+- * Copyright (C) Andrea Merello 2004-2005  <andrea.merello@gmail.com>
+- * Released under the terms of GPL (General Public Licence)
+- *
+- * Parts of this driver are based on the GPL part of the
+- * official realtek driver
+- *
+- * Parts of this driver are based on the rtl8192 driver skeleton
+- * from Patric Schenke & Andres Salomon
+- *
+- * Parts of this driver are based on the Intel Pro Wireless 2100 GPL driver
+- *
+- * We want to thank the Authors of those projects and the Ndiswrapper
+- * project Authors.
+- */
+-
+-#ifndef R8192U_H
+-#define R8192U_H
+-
+-#include <linux/compiler.h>
+-#include <linux/module.h>
+-#include <linux/kernel.h>
+-#include <linux/ioport.h>
+-#include <linux/sched.h>
+-#include <linux/types.h>
+-#include <linux/slab.h>
+-#include <linux/netdevice.h>
+-#include <linux/usb.h>
+-#include <linux/etherdevice.h>
+-#include <linux/delay.h>
+-#include <linux/rtnetlink.h>
+-#include <linux/wireless.h>
+-#include <linux/timer.h>
+-#include <linux/proc_fs.h>
+-#include <linux/if_arp.h>
+-#include <linux/random.h>
+-#include <linux/io.h>
+-#include "ieee80211/ieee80211.h"
+-
+-#define RTL8192U
+-#define RTL819XU_MODULE_NAME "rtl819xU"
+-/* HW security */
+-#define MAX_KEY_LEN     61
+-#define KEY_BUF_SIZE    5
+-
+-#define	RX_SMOOTH_FACTOR		20
+-#define DMESG(x, a...)  no_printk(x, ##a)
+-#define DMESGW(x, a...) no_printk(x, ##a)
+-#define DMESGE(x, a...) no_printk(x, ##a)
+-extern u32 rt_global_debug_component;
+-#define RT_TRACE(component, x, args...) \
+-	do {							\
+-		if (rt_global_debug_component & (component))	\
+-			pr_debug("RTL8192U: " x "\n", ##args);	\
+-	} while (0)
+-
+-#define COMP_TRACE              BIT(0)  /* Function call tracing. */
+-#define COMP_DBG                BIT(1)
+-#define COMP_INIT               BIT(2)  /* Driver initialization/halt/reset. */
+-
+-#define COMP_RECV               BIT(3)  /* Receive data path. */
+-#define COMP_SEND               BIT(4)  /* Send data path. */
+-#define COMP_IO                 BIT(5)
+-/* 802.11 Power Save mode or System/Device Power state. */
+-#define COMP_POWER              BIT(6)
+-/* 802.11 link related: join/start BSS, leave BSS. */
+-#define COMP_EPROM              BIT(7)
+-#define COMP_SWBW               BIT(8)  /* Bandwidth switch. */
+-#define COMP_POWER_TRACKING     BIT(9)  /* 8190 TX Power Tracking */
+-#define COMP_TURBO              BIT(10) /* Turbo Mode */
+-#define COMP_QOS                BIT(11)
+-#define COMP_RATE               BIT(12) /* Rate Adaptive mechanism */
+-#define COMP_RM                 BIT(13) /* Radio Measurement */
+-#define COMP_DIG                BIT(14)
+-#define COMP_PHY                BIT(15)
+-#define COMP_CH                 BIT(16) /* Channel setting debug */
+-#define COMP_TXAGC              BIT(17) /* Tx power */
+-#define COMP_HIPWR              BIT(18) /* High Power Mechanism */
+-#define COMP_HALDM              BIT(19) /* HW Dynamic Mechanism */
+-#define COMP_SEC                BIT(20) /* Event handling */
+-#define COMP_LED                BIT(21)
+-#define COMP_RF                 BIT(22)
+-#define COMP_RXDESC             BIT(23) /* Rx desc information for SD3 debug */
+-
+-/* 11n or 8190 specific code */
+-
+-#define COMP_FIRMWARE           BIT(24) /* Firmware downloading */
+-#define COMP_HT                 BIT(25) /* 802.11n HT related information */
+-#define COMP_AMSDU              BIT(26) /* A-MSDU Debugging */
+-#define COMP_SCAN               BIT(27)
+-#define COMP_DOWN               BIT(29) /* rm driver module */
+-#define COMP_RESET              BIT(30) /* Silent reset */
+-#define COMP_ERR                BIT(31) /* Error out, always on */
+-
+-#define RTL819x_DEBUG
+-#ifdef RTL819x_DEBUG
+-#define RTL8192U_ASSERT(expr) \
+-	do {								\
+-		if (!(expr)) {						\
+-			pr_debug("Assertion failed! %s, %s, %s, line = %d\n", \
+-				 #expr, __FILE__, __func__, __LINE__);	\
+-		}							\
+-	} while (0)
+-/*
+- * Debug out data buf.
+- * If you want to print DATA buffer related BA,
+- * please set ieee80211_debug_level to DATA|BA
+- */
+-#define RT_DEBUG_DATA(level, data, datalen) \
+-	do {								\
+-		if ((rt_global_debug_component & (level)) == (level)) {	\
+-			int i;						\
+-			u8 *pdata = (u8 *)data;				\
+-			pr_debug("RTL8192U: %s()\n", __func__);		\
+-			for (i = 0; i < (int)(datalen); i++) {		\
+-				printk("%2x ", pdata[i]);               \
+-				if ((i+1)%16 == 0)			\
+-					printk("\n");			\
+-			}						\
+-			printk("\n");					\
+-		}							\
+-	} while (0)
+-#else
+-#define RTL8192U_ASSERT(expr) do {} while (0)
+-#define RT_DEBUG_DATA(level, data, datalen) do {} while (0)
+-#endif /* RTL8169_DEBUG */
+-
+-/* Queue Select Value in TxDesc */
+-#define QSLT_BK                                 0x1
+-#define QSLT_BE                                 0x0
+-#define QSLT_VI                                 0x4
+-#define QSLT_VO                                 0x6
+-#define QSLT_BEACON                             0x10
+-#define QSLT_HIGH                               0x11
+-#define QSLT_MGNT                               0x12
+-#define QSLT_CMD                                0x13
+-
+-#define DESC90_RATE1M                           0x00
+-#define DESC90_RATE2M                           0x01
+-#define DESC90_RATE5_5M                         0x02
+-#define DESC90_RATE11M                          0x03
+-#define DESC90_RATE6M                           0x04
+-#define DESC90_RATE9M                           0x05
+-#define DESC90_RATE12M                          0x06
+-#define DESC90_RATE18M                          0x07
+-#define DESC90_RATE24M                          0x08
+-#define DESC90_RATE36M                          0x09
+-#define DESC90_RATE48M                          0x0a
+-#define DESC90_RATE54M                          0x0b
+-#define DESC90_RATEMCS0                         0x00
+-#define DESC90_RATEMCS1                         0x01
+-#define DESC90_RATEMCS2                         0x02
+-#define DESC90_RATEMCS3                         0x03
+-#define DESC90_RATEMCS4                         0x04
+-#define DESC90_RATEMCS5                         0x05
+-#define DESC90_RATEMCS6                         0x06
+-#define DESC90_RATEMCS7                         0x07
+-#define DESC90_RATEMCS8                         0x08
+-#define DESC90_RATEMCS9                         0x09
+-#define DESC90_RATEMCS10                        0x0a
+-#define DESC90_RATEMCS11                        0x0b
+-#define DESC90_RATEMCS12                        0x0c
+-#define DESC90_RATEMCS13                        0x0d
+-#define DESC90_RATEMCS14                        0x0e
+-#define DESC90_RATEMCS15                        0x0f
+-#define DESC90_RATEMCS32                        0x20
+-
+-#define RTL819X_DEFAULT_RF_TYPE RF_1T2R
+-
+-#define IEEE80211_WATCH_DOG_TIME    2000
+-#define		PHY_Beacon_RSSI_SLID_WIN_MAX		10
+-/* For Tx Power Tracking */
+-#define		OFDM_Table_Length	19
+-#define	CCK_Table_length	12
+-
+-/* For rtl819x */
+-struct tx_desc_819x_usb {
+-	/* DWORD 0 */
+-	u16	PktSize;
+-	u8	Offset;
+-	u8	Reserved0:3;
+-	u8	CmdInit:1;
+-	u8	LastSeg:1;
+-	u8	FirstSeg:1;
+-	u8	LINIP:1;
+-	u8	OWN:1;
+-
+-	/* DWORD 1 */
+-	u8	TxFWInfoSize;
+-	u8	RATid:3;
+-	u8	DISFB:1;
+-	u8	USERATE:1;
+-	u8	MOREFRAG:1;
+-	u8	NoEnc:1;
+-	u8	PIFS:1;
+-	u8	QueueSelect:5;
+-	u8	NoACM:1;
+-	u8	Reserved1:2;
+-	u8	SecCAMID:5;
+-	u8	SecDescAssign:1;
+-	u8	SecType:2;
+-
+-	/* DWORD 2 */
+-	u16	TxBufferSize;
+-	u8	ResvForPaddingLen:7;
+-	u8	Reserved3:1;
+-	u8	Reserved4;
+-
+-	/* DWORD 3, 4, 5 */
+-	u32	Reserved5;
+-	u32	Reserved6;
+-	u32	Reserved7;
+-};
+-
+-struct tx_desc_cmd_819x_usb {
+-	/* DWORD 0 */
+-	u16	Reserved0;
+-	u8	Reserved1;
+-	u8	Reserved2:3;
+-	u8	CmdInit:1;
+-	u8	LastSeg:1;
+-	u8	FirstSeg:1;
+-	u8	LINIP:1;
+-	u8	OWN:1;
+-
+-	/* DOWRD 1 */
+-	u8	TxFWInfoSize;
+-	u8	Reserved3;
+-	u8	QueueSelect;
+-	u8	Reserved4;
+-
+-	/* DOWRD 2 */
+-	u16	TxBufferSize;
+-	u16	Reserved5;
+-
+-	/* DWORD 3, 4, 5 */
+-	u32	Reserved6;
+-	u32	Reserved7;
+-	u32	Reserved8;
+-};
+-
+-struct tx_fwinfo_819x_usb {
+-	/* DOWRD 0 */
+-	u8	TxRate:7;
+-	u8	CtsEnable:1;
+-	u8	RtsRate:7;
+-	u8	RtsEnable:1;
+-	u8	TxHT:1;
+-	u8	Short:1;        /* Error out, always on */
+-	u8	TxBandwidth:1;	/* Used for HT MCS rate only */
+-	u8	TxSubCarrier:2; /* Used for legacy OFDM rate only */
+-	u8	STBC:2;
+-	u8	AllowAggregation:1;
+-	/* Interpret RtsRate field as high throughput data rate */
+-	u8	RtsHT:1;
+-	u8	RtsShort:1;     /* Short PLCP for CCK or short GI for 11n MCS */
+-	u8	RtsBandwidth:1;	/* Used for HT MCS rate only */
+-	u8	RtsSubcarrier:2;/* Used for legacy OFDM rate only */
+-	u8	RtsSTBC:2;
+-	/* Enable firmware to recalculate and assign packet duration */
+-	u8	EnableCPUDur:1;
+-
+-	/* DWORD 1 */
+-	u32	RxMF:2;
+-	u32	RxAMD:3;
+-	/* 1 indicate Tx info gathered by firmware and returned by Rx Cmd */
+-	u32	TxPerPktInfoFeedback:1;
+-	u32	Reserved1:2;
+-	u32	TxAGCOffSet:4;
+-	u32	TxAGCSign:1;
+-	u32	Tx_INFO_RSVD:6;
+-	u32	PacketID:13;
+-};
+-
+-struct rtl8192_rx_info {
+-	struct urb *urb;
+-	struct net_device *dev;
+-	u8 out_pipe;
+-};
+-
+-struct rx_desc_819x_usb {
+-	/* DOWRD 0 */
+-	u16                 Length:14;
+-	u16                 CRC32:1;
+-	u16                 ICV:1;
+-	u8                  RxDrvInfoSize;
+-	u8                  Shift:2;
+-	u8                  PHYStatus:1;
+-	u8                  SWDec:1;
+-	u8                  Reserved1:4;
+-
+-	/* DWORD 1 */
+-	u32                 Reserved2;
+-};
+-
+-struct rx_drvinfo_819x_usb {
+-	/* DWORD 0 */
+-	u16                 Reserved1:12;
+-	u16                 PartAggr:1;
+-	u16                 FirstAGGR:1;
+-	u16                 Reserved2:2;
+-
+-	u8                  RxRate:7;
+-	u8                  RxHT:1;
+-
+-	u8                  BW:1;
+-	u8                  SPLCP:1;
+-	u8                  Reserved3:2;
+-	u8                  PAM:1;
+-	u8                  Mcast:1;
+-	u8                  Bcast:1;
+-	u8                  Reserved4:1;
+-
+-	/* DWORD 1 */
+-	u32                  TSFL;
+-
+-};
+-
+-/* Support till 64 bit bus width OS */
+-#define MAX_DEV_ADDR_SIZE		8
+-/* For RTL8190 */
+-#define MAX_FIRMWARE_INFORMATION_SIZE   32
+-#define MAX_802_11_HEADER_LENGTH        (40 + MAX_FIRMWARE_INFORMATION_SIZE)
+-#define ENCRYPTION_MAX_OVERHEAD		128
+-#define	USB_HWDESC_HEADER_LEN		sizeof(struct tx_desc_819x_usb)
+-#define TX_PACKET_SHIFT_BYTES		(USB_HWDESC_HEADER_LEN + sizeof(struct tx_fwinfo_819x_usb))
+-#define MAX_FRAGMENT_COUNT		8
+-#ifdef USB_TX_DRIVER_AGGREGATION_ENABLE
+-#define MAX_TRANSMIT_BUFFER_SIZE			32000
+-#else
+-#define MAX_TRANSMIT_BUFFER_SIZE			8000
+-#endif
+-/* Octets for crc32 (FCS, ICV) */
+-#define scrclng					4
+-
+-enum rf_op_type {
+-	RF_OP_By_SW_3wire = 0,
+-	RF_OP_By_FW,
+-	RF_OP_MAX
+-};
+-
+-/* 8190 Loopback Mode definition */
+-typedef enum _rtl819xUsb_loopback {
+-	RTL819xU_NO_LOOPBACK = 0,
+-	RTL819xU_MAC_LOOPBACK = 1,
+-	RTL819xU_DMA_LOOPBACK = 2,
+-	RTL819xU_CCK_LOOPBACK = 3,
+-} rtl819xUsb_loopback_e;
+-
+-/* due to rtl8192 firmware */
+-typedef enum _desc_packet_type_e {
+-	DESC_PACKET_TYPE_INIT = 0,
+-	DESC_PACKET_TYPE_NORMAL = 1,
+-} desc_packet_type_e;
+-
+-typedef enum _firmware_status {
+-	FW_STATUS_0_INIT = 0,
+-	FW_STATUS_1_MOVE_BOOT_CODE = 1,
+-	FW_STATUS_2_MOVE_MAIN_CODE = 2,
+-	FW_STATUS_3_TURNON_CPU = 3,
+-	FW_STATUS_4_MOVE_DATA_CODE = 4,
+-	FW_STATUS_5_READY = 5,
+-} firmware_status_e;
+-
+-typedef struct _fw_seg_container {
+-	u16	seg_size;
+-	u8	*seg_ptr;
+-} fw_seg_container, *pfw_seg_container;
+-typedef struct _rt_firmware {
+-	firmware_status_e firmware_status;
+-	u16               cmdpacket_frag_threshold;
+-#define RTL8190_MAX_FIRMWARE_CODE_SIZE  64000
+-	u8                firmware_buf[RTL8190_MAX_FIRMWARE_CODE_SIZE];
+-	u16               firmware_buf_size;
+-} rt_firmware, *prt_firmware;
+-
+-/* Add this to 9100 bytes to receive A-MSDU from RT-AP */
+-#define MAX_RECEIVE_BUFFER_SIZE	9100
+-
+-typedef struct _rt_firmware_info_819xUsb {
+-	u8		sz_info[16];
+-} rt_firmware_info_819xUsb, *prt_firmware_info_819xUsb;
+-
+-/* Firmware Queue Layout */
+-#define NUM_OF_FIRMWARE_QUEUE		10
+-#define NUM_OF_PAGES_IN_FW		0x100
+-
+-#ifdef USE_ONE_PIPE
+-#define NUM_OF_PAGE_IN_FW_QUEUE_BE	0x000
+-#define NUM_OF_PAGE_IN_FW_QUEUE_BK	0x000
+-#define NUM_OF_PAGE_IN_FW_QUEUE_VI	0x0ff
+-#define NUM_OF_PAGE_IN_FW_QUEUE_VO	0x000
+-#define NUM_OF_PAGE_IN_FW_QUEUE_HCCA	0
+-#define NUM_OF_PAGE_IN_FW_QUEUE_CMD	0x0
+-#define NUM_OF_PAGE_IN_FW_QUEUE_MGNT	0x00
+-#define NUM_OF_PAGE_IN_FW_QUEUE_HIGH	0
+-#define NUM_OF_PAGE_IN_FW_QUEUE_BCN	0x0
+-#define NUM_OF_PAGE_IN_FW_QUEUE_PUB	0x00
+-#else
+-
+-#define NUM_OF_PAGE_IN_FW_QUEUE_BE	0x020
+-#define NUM_OF_PAGE_IN_FW_QUEUE_BK	0x020
+-#define NUM_OF_PAGE_IN_FW_QUEUE_VI	0x040
+-#define NUM_OF_PAGE_IN_FW_QUEUE_VO	0x040
+-#define NUM_OF_PAGE_IN_FW_QUEUE_HCCA	0
+-#define NUM_OF_PAGE_IN_FW_QUEUE_CMD	0x4
+-#define NUM_OF_PAGE_IN_FW_QUEUE_MGNT	0x20
+-#define NUM_OF_PAGE_IN_FW_QUEUE_HIGH	0
+-#define NUM_OF_PAGE_IN_FW_QUEUE_BCN	0x4
+-#define NUM_OF_PAGE_IN_FW_QUEUE_PUB	0x18
+-
+-#endif
+-
+-#define APPLIED_RESERVED_QUEUE_IN_FW	0x80000000
+-#define RSVD_FW_QUEUE_PAGE_BK_SHIFT	0x00
+-#define RSVD_FW_QUEUE_PAGE_BE_SHIFT	0x08
+-#define RSVD_FW_QUEUE_PAGE_VI_SHIFT	0x10
+-#define RSVD_FW_QUEUE_PAGE_VO_SHIFT	0x18
+-#define RSVD_FW_QUEUE_PAGE_MGNT_SHIFT	0x10
+-#define RSVD_FW_QUEUE_PAGE_CMD_SHIFT	0x08
+-#define RSVD_FW_QUEUE_PAGE_BCN_SHIFT	0x00
+-#define RSVD_FW_QUEUE_PAGE_PUB_SHIFT	0x08
+-
+-/*
+- * =================================================================
+- * =================================================================
+- */
+-
+-#define EPROM_93c46 0
+-#define EPROM_93c56 1
+-
+-#define DEFAULT_FRAG_THRESHOLD 2342U
+-#define MIN_FRAG_THRESHOLD     256U
+-#define DEFAULT_BEACONINTERVAL 0x64U
+-#define DEFAULT_BEACON_ESSID "Rtl819xU"
+-
+-#define DEFAULT_SSID ""
+-#define DEFAULT_RETRY_RTS 7
+-#define DEFAULT_RETRY_DATA 7
+-#define PRISM_HDR_SIZE 64
+-
+-#define		PHY_RSSI_SLID_WIN_MAX				100
+-
+-typedef enum _WIRELESS_MODE {
+-	WIRELESS_MODE_UNKNOWN = 0x00,
+-	WIRELESS_MODE_A = 0x01,
+-	WIRELESS_MODE_B = 0x02,
+-	WIRELESS_MODE_G = 0x04,
+-	WIRELESS_MODE_AUTO = 0x08,
+-	WIRELESS_MODE_N_24G = 0x10,
+-	WIRELESS_MODE_N_5G = 0x20
+-} WIRELESS_MODE;
+-
+-#define RTL_IOCTL_WPA_SUPPLICANT		(SIOCIWFIRSTPRIV + 30)
+-
+-typedef struct buffer {
+-	struct buffer *next;
+-	u32 *buf;
+-
+-} buffer;
+-
+-typedef struct rtl_reg_debug {
+-	unsigned int  cmd;
+-	struct {
+-		unsigned char type;
+-		unsigned char addr;
+-		unsigned char page;
+-		unsigned char length;
+-	} head;
+-	unsigned char buf[0xff];
+-} rtl_reg_debug;
+-
+-typedef struct _rt_9x_tx_rate_history {
+-	u32             cck[4];
+-	u32             ofdm[8];
+-	u32             ht_mcs[4][16];
+-} rt_tx_rahis_t, *prt_tx_rahis_t;
+-typedef struct _RT_SMOOTH_DATA_4RF {
+-	s8    elements[4][100]; /* array to store values */
+-	u32     index;            /* index to current array to store */
+-	u32     TotalNum;         /* num of valid elements */
+-	u32     TotalVal[4];      /* sum of valid elements */
+-} RT_SMOOTH_DATA_4RF, *PRT_SMOOTH_DATA_4RF;
+-
+-/* This maybe changed for D-cut larger aggregation size */
+-#define MAX_8192U_RX_SIZE			8192
+-/* Stats seems messed up, clean it ASAP */
+-typedef struct Stats {
+-	unsigned long txrdu;
+-	unsigned long rxok;
+-	unsigned long rxframgment;
+-	unsigned long rxurberr;
+-	unsigned long rxstaterr;
+-	/* 0: Total, 1: OK, 2: CRC, 3: ICV */
+-	unsigned long received_rate_histogram[4][32];
+-	/* 0: Long preamble/GI, 1: Short preamble/GI */
+-	unsigned long received_preamble_GI[2][32];
+-	/* level: (<4K), (4K~8K), (8K~16K), (16K~32K), (32K~64K) */
+-	unsigned long rx_AMPDUsize_histogram[5];
+-	/* level: (<5), (5~10), (10~20), (20~40), (>40) */
+-	unsigned long rx_AMPDUnum_histogram[5];
+-	unsigned long numpacket_matchbssid;
+-	unsigned long numpacket_toself;
+-	unsigned long num_process_phyinfo;
+-	unsigned long numqry_phystatus;
+-	unsigned long numqry_phystatusCCK;
+-	unsigned long numqry_phystatusHT;
+-	/* 0: 20M, 1: funn40M, 2: upper20M, 3: lower20M, 4: duplicate */
+-	unsigned long received_bwtype[5];
+-	unsigned long txnperr;
+-	unsigned long txnpdrop;
+-	unsigned long txresumed;
+-	unsigned long txnpokint;
+-	unsigned long txoverflow;
+-	unsigned long txlpokint;
+-	unsigned long txlpdrop;
+-	unsigned long txlperr;
+-	unsigned long txbeokint;
+-	unsigned long txbedrop;
+-	unsigned long txbeerr;
+-	unsigned long txbkokint;
+-	unsigned long txbkdrop;
+-	unsigned long txbkerr;
+-	unsigned long txviokint;
+-	unsigned long txvidrop;
+-	unsigned long txvierr;
+-	unsigned long txvookint;
+-	unsigned long txvodrop;
+-	unsigned long txvoerr;
+-	unsigned long txbeaconokint;
+-	unsigned long txbeacondrop;
+-	unsigned long txbeaconerr;
+-	unsigned long txmanageokint;
+-	unsigned long txmanagedrop;
+-	unsigned long txmanageerr;
+-	unsigned long txdatapkt;
+-	unsigned long txfeedback;
+-	unsigned long txfeedbackok;
+-
+-	unsigned long txoktotal;
+-	unsigned long txokbytestotal;
+-	unsigned long txokinperiod;
+-	unsigned long txmulticast;
+-	unsigned long txbytesmulticast;
+-	unsigned long txbroadcast;
+-	unsigned long txbytesbroadcast;
+-	unsigned long txunicast;
+-	unsigned long txbytesunicast;
+-
+-	unsigned long rxoktotal;
+-	unsigned long rxbytesunicast;
+-	unsigned long txfeedbackfail;
+-	unsigned long txerrtotal;
+-	unsigned long txerrbytestotal;
+-	unsigned long txerrmulticast;
+-	unsigned long txerrbroadcast;
+-	unsigned long txerrunicast;
+-	unsigned long txretrycount;
+-	unsigned long txfeedbackretry;
+-	u8	      last_packet_rate;
+-	unsigned long slide_signal_strength[100];
+-	unsigned long slide_evm[100];
+-	/* For recording sliding window's RSSI value */
+-	unsigned long slide_rssi_total;
+-	/* For recording sliding window's EVM value */
+-	unsigned long slide_evm_total;
+-	/* Transformed in dbm. Beautified signal strength for UI, not correct */
+-	long signal_strength;
+-	long signal_quality;
+-	long last_signal_strength_inpercent;
+-	/* Correct smoothed ss in dbm, only used in driver
+-	 * to report real power now
+-	 */
+-	long recv_signal_power;
+-	u8 rx_rssi_percentage[4];
+-	u8 rx_evm_percentage[2];
+-	long rxSNRdB[4];
+-	rt_tx_rahis_t txrate;
+-	/* For beacon RSSI */
+-	u32 Slide_Beacon_pwdb[100];
+-	u32 Slide_Beacon_Total;
+-	RT_SMOOTH_DATA_4RF              cck_adc_pwdb;
+-
+-	u32	CurrentShowTxate;
+-} Stats;
+-
+-/* Bandwidth Offset */
+-#define HAL_PRIME_CHNL_OFFSET_DONT_CARE		0
+-#define HAL_PRIME_CHNL_OFFSET_LOWER			1
+-#define HAL_PRIME_CHNL_OFFSET_UPPER			2
+-
+-typedef struct	ChnlAccessSetting {
+-	u16 SIFS_Timer;
+-	u16 DIFS_Timer;
+-	u16 SlotTimeTimer;
+-	u16 EIFS_Timer;
+-	u16 CWminIndex;
+-	u16 CWmaxIndex;
+-} *PCHANNEL_ACCESS_SETTING, CHANNEL_ACCESS_SETTING;
+-
+-typedef struct _BB_REGISTER_DEFINITION {
+-	/* set software control:        0x870~0x877 [8 bytes]  */
+-	u32 rfintfs;
+-	/* readback data:               0x8e0~0x8e7 [8 bytes]  */
+-	u32 rfintfi;
+-	/* output data:                 0x860~0x86f [16 bytes] */
+-	u32 rfintfo;
+-	/* output enable:               0x860~0x86f [16 bytes] */
+-	u32 rfintfe;
+-	/* LSSI data:                   0x840~0x84f [16 bytes] */
+-	u32 rf3wireOffset;
+-	/* BB Band Select:              0x878~0x87f [8 bytes]  */
+-	u32 rfLSSI_Select;
+-	/* Tx gain stage:               0x80c~0x80f [4 bytes]  */
+-	u32 rfTxGainStage;
+-	/* wire parameter control1:     0x820~0x823, 0x828~0x82b,
+-	 *                              0x830~0x833, 0x838~0x83b [16 bytes]
+-	 */
+-	u32 rfHSSIPara1;
+-	/* wire parameter control2:     0x824~0x827, 0x82c~0x82f,
+-	 *                              0x834~0x837, 0x83c~0x83f [16 bytes]
+-	 */
+-	u32 rfHSSIPara2;
+-	/* Tx Rx antenna control:       0x858~0x85f [16 bytes] */
+-	u32 rfSwitchControl;
+-	/* AGC parameter control1:	0xc50~0xc53, 0xc58~0xc5b,
+-	 *                              0xc60~0xc63, 0xc68~0xc6b [16 bytes]
+-	 */
+-	u32 rfAGCControl1;
+-	/* AGC parameter control2:      0xc54~0xc57, 0xc5c~0xc5f,
+-	 *                              0xc64~0xc67, 0xc6c~0xc6f [16 bytes]
+-	 */
+-	u32 rfAGCControl2;
+-	/* OFDM Rx IQ imbalance matrix:	0xc14~0xc17, 0xc1c~0xc1f,
+-	 *                              0xc24~0xc27, 0xc2c~0xc2f [16 bytes]
+-	 */
+-	u32 rfRxIQImbalance;
+-	/* Rx IQ DC offset and Rx digital filter, Rx DC notch filter:
+-	 *                              0xc10~0xc13, 0xc18~0xc1b,
+-	 *                              0xc20~0xc23, 0xc28~0xc2b [16 bytes]
+-	 */
+-	u32 rfRxAFE;
+-	/* OFDM Tx IQ imbalance matrix:	0xc80~0xc83, 0xc88~0xc8b,
+-	 *                              0xc90~0xc93, 0xc98~0xc9b [16 bytes]
+-	 */
+-	u32 rfTxIQImbalance;
+-	/* Tx IQ DC Offset and Tx DFIR type:
+-	 *                              0xc84~0xc87, 0xc8c~0xc8f,
+-	 *                              0xc94~0xc97, 0xc9c~0xc9f [16 bytes]
+-	 */
+-	u32 rfTxAFE;
+-	/* LSSI RF readback data:       0x8a0~0x8af [16 bytes] */
+-	u32 rfLSSIReadBack;
+-} BB_REGISTER_DEFINITION_T, *PBB_REGISTER_DEFINITION_T;
+-
+-typedef enum _RT_RF_TYPE_819xU {
+-	RF_TYPE_MIN = 0,
+-	RF_8225,
+-	RF_8256,
+-	RF_8258,
+-	RF_PSEUDO_11N = 4,
+-} RT_RF_TYPE_819xU, *PRT_RF_TYPE_819xU;
+-
+-/* 2007/10/08 MH Define RATR state. */
+-enum dynamic_ratr_state {
+-	DM_RATR_STA_HIGH = 0,
+-	DM_RATR_STA_MIDDLE = 1,
+-	DM_RATR_STA_LOW = 2,
+-	DM_RATR_STA_MAX
+-};
+-
+-typedef struct _rate_adaptive {
+-	u8				rate_adaptive_disabled;
+-	enum dynamic_ratr_state		ratr_state;
+-	u16				reserve;
+-
+-	u32				high_rssi_thresh_for_ra;
+-	u32				high2low_rssi_thresh_for_ra;
+-	u8				low2high_rssi_thresh_for_ra40M;
+-	u32				low_rssi_thresh_for_ra40M;
+-	u8				low2high_rssi_thresh_for_ra20M;
+-	u32				low_rssi_thresh_for_ra20M;
+-	u32				upper_rssi_threshold_ratr;
+-	u32				middle_rssi_threshold_ratr;
+-	u32				low_rssi_threshold_ratr;
+-	u32				low_rssi_threshold_ratr_40M;
+-	u32				low_rssi_threshold_ratr_20M;
+-	u8				ping_rssi_enable;
+-	u32				ping_rssi_ratr;
+-	u32				ping_rssi_thresh_for_ra;
+-	u32				last_ratr;
+-
+-} rate_adaptive, *prate_adaptive;
+-
+-#define TxBBGainTableLength 37
+-#define	CCKTxBBGainTableLength 23
+-
+-typedef struct _txbbgain_struct {
+-	long	txbb_iq_amplifygain;
+-	u32	txbbgain_value;
+-} txbbgain_struct, *ptxbbgain_struct;
+-
+-typedef struct _ccktxbbgain_struct {
+-	/* The value is from a22 to a29, one byte one time is much safer */
+-	u8	ccktxbb_valuearray[8];
+-} ccktxbbgain_struct, *pccktxbbgain_struct;
+-
+-typedef struct _init_gain {
+-	u8				xaagccore1;
+-	u8				xbagccore1;
+-	u8				xcagccore1;
+-	u8				xdagccore1;
+-	u8				cca;
+-
+-} init_gain, *pinit_gain;
+-
+-typedef struct _phy_ofdm_rx_status_report_819xusb {
+-	u8	trsw_gain_X[4];
+-	u8	pwdb_all;
+-	u8	cfosho_X[4];
+-	u8	cfotail_X[4];
+-	u8	rxevm_X[2];
+-	u8	rxsnr_X[4];
+-	u8	pdsnr_X[2];
+-	u8	csi_current_X[2];
+-	u8	csi_target_X[2];
+-	u8	sigevm;
+-	u8	max_ex_pwr;
+-	u8	sgi_en;
+-	u8  rxsc_sgien_exflg;
+-} phy_sts_ofdm_819xusb_t;
+-
+-typedef struct _phy_cck_rx_status_report_819xusb {
+-	/* For CCK rate descriptor. This is an unsigned 8:1 variable.
+-	 * LSB bit presend 0.5. And MSB 7 bts presend a signed value.
+-	 * Range from -64~+63.5.
+-	 */
+-	u8	adc_pwdb_X[4];
+-	u8	sq_rpt;
+-	u8	cck_agc_rpt;
+-} phy_sts_cck_819xusb_t;
+-
+-struct phy_ofdm_rx_status_rxsc_sgien_exintfflag {
+-	u8			reserved:4;
+-	u8			rxsc:2;
+-	u8			sgi_en:1;
+-	u8			ex_intf_flag:1;
+-};
+-
+-typedef enum _RT_CUSTOMER_ID {
+-	RT_CID_DEFAULT = 0,
+-	RT_CID_8187_ALPHA0 = 1,
+-	RT_CID_8187_SERCOMM_PS = 2,
+-	RT_CID_8187_HW_LED = 3,
+-	RT_CID_8187_NETGEAR = 4,
+-	RT_CID_WHQL = 5,
+-	RT_CID_819x_CAMEO  = 6,
+-	RT_CID_819x_RUNTOP = 7,
+-	RT_CID_819x_Senao = 8,
+-	RT_CID_TOSHIBA = 9,
+-	RT_CID_819x_Netcore = 10,
+-	RT_CID_Nettronix = 11,
+-	RT_CID_DLINK = 12,
+-	RT_CID_PRONET = 13,
+-} RT_CUSTOMER_ID, *PRT_CUSTOMER_ID;
+-
+-/*
+- * ==========================================================================
+- * LED customization.
+- * ==========================================================================
+- */
+-
+-typedef	enum _LED_STRATEGY_8190 {
+-	SW_LED_MODE0, /* SW control 1 LED via GPIO0. It is default option. */
+-	SW_LED_MODE1, /* SW control for PCI Express */
+-	SW_LED_MODE2, /* SW control for Cameo. */
+-	SW_LED_MODE3, /* SW control for RunTop. */
+-	SW_LED_MODE4, /* SW control for Netcore. */
+-	/* HW control 2 LEDs, LED0 and LED1 (4 different control modes) */
+-	HW_LED,
+-} LED_STRATEGY_8190, *PLED_STRATEGY_8190;
+-
+-typedef enum _RESET_TYPE {
+-	RESET_TYPE_NORESET = 0x00,
+-	RESET_TYPE_NORMAL = 0x01,
+-	RESET_TYPE_SILENT = 0x02
+-} RESET_TYPE;
+-
+-/* The simple tx command OP code. */
+-typedef enum _tag_TxCmd_Config_Index {
+-	TXCMD_TXRA_HISTORY_CTRL				= 0xFF900000,
+-	TXCMD_RESET_TX_PKT_BUFF				= 0xFF900001,
+-	TXCMD_RESET_RX_PKT_BUFF				= 0xFF900002,
+-	TXCMD_SET_TX_DURATION				= 0xFF900003,
+-	TXCMD_SET_RX_RSSI						= 0xFF900004,
+-	TXCMD_SET_TX_PWR_TRACKING			= 0xFF900005,
+-	TXCMD_XXXX_CTRL,
+-} DCMD_TXCMD_OP;
+-
+-enum version_819xu {
+-	VERSION_819XU_A, // A-cut
+-	VERSION_819XU_B, // B-cut
+-	VERSION_819XU_C,// C-cut
+-};
+-
+-//added for different RF type
+-enum rt_rf_type {
+-	RF_1T2R = 0,
+-	RF_2T4R,
+-};
+-
+-typedef struct r8192_priv {
+-	struct usb_device *udev;
+-	/* For maintain info from eeprom */
+-	short epromtype;
+-	u16 eeprom_vid;
+-	u16 eeprom_pid;
+-	u8  eeprom_CustomerID;
+-	u8  eeprom_ChannelPlan;
+-	RT_CUSTOMER_ID CustomerID;
+-	LED_STRATEGY_8190	LedStrategy;
+-	u8  txqueue_to_outpipemap[9];
+-	int irq;
+-	struct ieee80211_device *ieee80211;
+-
+-	/* O: rtl8192, 1: rtl8185 V B/C, 2: rtl8185 V D */
+-	short card_8192;
+-	/* If TCR reports card V B/C, this discriminates */
+-	enum version_819xu card_8192_version;
+-	short enable_gpio0;
+-	enum card_type {
+-		PCI, MINIPCI, CARDBUS, USB
+-	} card_type;
+-	short hw_plcp_len;
+-	short plcp_preamble_mode;
+-
+-	spinlock_t irq_lock;
+-	spinlock_t tx_lock;
+-	struct mutex mutex;
+-
+-	u16 irq_mask;
+-	short chan;
+-	short sens;
+-	short max_sens;
+-
+-	short up;
+-	/* If 1, allow bad crc frame, reception in monitor mode */
+-	short crcmon;
+-
+-	struct mutex wx_mutex;
+-
+-	enum rt_rf_type   rf_type;	    /* 0: 1T2R, 1: 2T4R */
+-	RT_RF_TYPE_819xU rf_chip;
+-
+-	short (*rf_set_sens)(struct net_device *dev, short sens);
+-	u8 (*rf_set_chan)(struct net_device *dev, u8 ch);
+-	void (*rf_close)(struct net_device *dev);
+-	void (*rf_init)(struct net_device *dev);
+-	short promisc;
+-	/* Stats */
+-	struct Stats stats;
+-	struct iw_statistics wstats;
+-
+-	/* RX stuff */
+-	struct urb **rx_urb;
+-	struct urb **rx_cmd_urb;
+-#ifdef THOMAS_BEACON
+-	u32 *oldaddr;
+-#endif
+-#ifdef THOMAS_TASKLET
+-	atomic_t irt_counter; /* count for irq_rx_tasklet */
+-#endif
+-#ifdef JACKSON_NEW_RX
+-	struct sk_buff **pp_rxskb;
+-	int     rx_inx;
+-#endif
+-
+-	struct sk_buff_head rx_queue;
+-	struct sk_buff_head skb_queue;
+-	struct work_struct qos_activate;
+-	short  tx_urb_index;
+-	atomic_t tx_pending[0x10]; /* UART_PRIORITY + 1 */
+-
+-	struct tasklet_struct irq_rx_tasklet;
+-	struct urb *rxurb_task;
+-
+-	/* Tx Related variables */
+-	u16	ShortRetryLimit;
+-	u16	LongRetryLimit;
+-	u32	TransmitConfig;
+-	u8	RegCWinMin;	/* For turbo mode CW adaptive */
+-
+-	u32     LastRxDescTSFHigh;
+-	u32     LastRxDescTSFLow;
+-
+-	/* Rx Related variables */
+-	u16	EarlyRxThreshold;
+-	u32	ReceiveConfig;
+-	u8	AcmControl;
+-
+-	u8	RFProgType;
+-
+-	u8 retry_data;
+-	u8 retry_rts;
+-	u16 rts;
+-
+-	struct	ChnlAccessSetting  ChannelAccessSetting;
+-	struct work_struct reset_wq;
+-
+-/**********************************************************/
+-	/* For rtl819xUsb */
+-	u16     basic_rate;
+-	u8      short_preamble;
+-	u8      slot_time;
+-	bool	bDcut;
+-	bool bCurrentRxAggrEnable;
+-	enum rf_op_type Rf_Mode;	/* For Firmware RF -R/W switch */
+-	prt_firmware		pFirmware;
+-	rtl819xUsb_loopback_e	LoopbackMode;
+-	u16 EEPROMTxPowerDiff;
+-	u8 EEPROMThermalMeter;
+-	u8 EEPROMPwDiff;
+-	u8 EEPROMCrystalCap;
+-	u8 EEPROM_Def_Ver;
+-	u8 EEPROMTxPowerLevelCCK;		/* CCK channel 1~14 */
+-	u8 EEPROMTxPowerLevelCCK_V1[3];
+-	u8 EEPROMTxPowerLevelOFDM24G[3];	/* OFDM 2.4G channel 1~14 */
+-	u8 EEPROMTxPowerLevelOFDM5G[24];	/* OFDM 5G */
+-
+-	/* PHY related */
+-	BB_REGISTER_DEFINITION_T PHYRegDef[4];	/* Radio A/B/C/D */
+-	/* Read/write are allow for following hardware information variables */
+-	u32	MCSTxPowerLevelOriginalOffset[6];
+-	u32	CCKTxPowerLevelOriginalOffset;
+-	u8	TxPowerLevelCCK[14];		/* CCK channel 1~14 */
+-	u8	TxPowerLevelOFDM24G[14];	/* OFDM 2.4G channel 1~14 */
+-	u8	TxPowerLevelOFDM5G[14];		/* OFDM 5G */
+-	u32	Pwr_Track;
+-	u8	TxPowerDiff;
+-	u8	AntennaTxPwDiff[2]; /* Antenna gain offset, 0: B, 1: C, 2: D */
+-	u8	CrystalCap;
+-	u8	ThermalMeter[2];    /* index 0: RFIC0, index 1: RFIC1 */
+-
+-	u8	CckPwEnl;
+-	/* Use to calculate PWBD */
+-	u8	bCckHighPower;
+-	long	undecorated_smoothed_pwdb;
+-
+-	/* For set channel */
+-	u8	SwChnlInProgress;
+-	u8	SwChnlStage;
+-	u8	SwChnlStep;
+-	u8	SetBWModeInProgress;
+-	enum ht_channel_width 	CurrentChannelBW;
+-	u8      ChannelPlan;
+-	/* 8190 40MHz mode */
+-	/* Control channel sub-carrier */
+-	u8	nCur40MhzPrimeSC;
+-	/* Test for shorten RF configuration time.
+-	 * We save RF reg0 in this variable to reduce RF reading.
+-	 */
+-	u32					RfReg0Value[4];
+-	u8					NumTotalRFPath;
+-	bool				brfpath_rxenable[4];
+-	/* RF set related */
+-	bool				SetRFPowerStateInProgress;
+-	struct timer_list watch_dog_timer;
+-
+-	/* For dynamic mechanism */
+-	/* Tx Power Control for Near/Far Range */
+-	bool	bdynamic_txpower;
+-	bool	bDynamicTxHighPower;
+-	bool	bDynamicTxLowPower;
+-	bool	bLastDTPFlag_High;
+-	bool	bLastDTPFlag_Low;
+-
+-	bool	bstore_last_dtpflag;
+-	/* Define to discriminate on High power State or
+-	 * on sitesurvey to change Tx gain index
+-	 */
+-	bool	bstart_txctrl_bydtp;
+-	rate_adaptive rate_adaptive;
+-	/* TX power tracking
+-	 * OPEN/CLOSE TX POWER TRACKING
+-	 */
+-	txbbgain_struct txbbgain_table[TxBBGainTableLength];
+-	u8		txpower_count; /* For 6 sec do tracking again */
+-	bool		btxpower_trackingInit;
+-	u8		OFDM_index;
+-	u8		CCK_index;
+-	/* CCK TX Power Tracking */
+-	ccktxbbgain_struct	cck_txbbgain_table[CCKTxBBGainTableLength];
+-	ccktxbbgain_struct	cck_txbbgain_ch14_table[CCKTxBBGainTableLength];
+-	u8 rfa_txpowertrackingindex;
+-	u8 rfa_txpowertrackingindex_real;
+-	u8 rfa_txpowertracking_default;
+-	u8 rfc_txpowertrackingindex;
+-	u8 rfc_txpowertrackingindex_real;
+-
+-	s8 cck_present_attenuation;
+-	u8 cck_present_attenuation_20Mdefault;
+-	u8 cck_present_attenuation_40Mdefault;
+-	s8 cck_present_attenuation_difference;
+-	bool btxpower_tracking;
+-	bool bcck_in_ch14;
+-	bool btxpowerdata_readfromEEPORM;
+-	u16	TSSI_13dBm;
+-	init_gain initgain_backup;
+-	u8 DefaultInitialGain[4];
+-	/* For EDCA Turbo mode */
+-	bool		bis_any_nonbepkts;
+-	bool		bcurrent_turbo_EDCA;
+-	bool		bis_cur_rdlstate;
+-	struct delayed_work fsync_work;
+-	bool bfsync_processing;	/* 500ms Fsync timer is active or not */
+-	u32	rate_record;
+-	u32	rateCountDiffRecord;
+-	u32	ContinueDiffCount;
+-	bool bswitch_fsync;
+-
+-	u8	framesync;
+-	u32	framesyncC34;
+-	u8	framesyncMonitor;
+-	u16	nrxAMPDU_size;
+-	u8	nrxAMPDU_aggr_num;
+-
+-	/* For gpio */
+-	bool bHwRadioOff;
+-
+-	u32 reset_count;
+-	bool bpbc_pressed;
+-	u32 txpower_checkcnt;
+-	u32 txpower_tracking_callback_cnt;
+-	u8 thermal_read_val[40];
+-	u8 thermal_readback_index;
+-	u32 ccktxpower_adjustcnt_not_ch14;
+-	u32 ccktxpower_adjustcnt_ch14;
+-	u8 tx_fwinfo_force_subcarriermode;
+-	u8 tx_fwinfo_force_subcarrierval;
+-	/* For silent reset */
+-	RESET_TYPE	ResetProgress;
+-	bool		bForcedSilentReset;
+-	bool		bDisableNormalResetCheck;
+-	u16		TxCounter;
+-	u16		RxCounter;
+-	int		IrpPendingCount;
+-	bool		bResetInProgress;
+-	bool		force_reset;
+-	u8		InitialGainOperateType;
+-
+-	u16		SifsTime;
+-
+-	/* Define work item */
+-
+-	struct delayed_work update_beacon_wq;
+-	struct delayed_work watch_dog_wq;
+-	struct delayed_work txpower_tracking_wq;
+-	struct delayed_work rfpath_check_wq;
+-	struct delayed_work gpio_change_rf_wq;
+-	struct delayed_work initialgain_operate_wq;
+-	struct workqueue_struct *priv_wq;
+-
+-	/* debugfs */
+-	struct dentry *debugfs_dir;
+-} r8192_priv;
+-
+-/* For rtl8187B */
+-typedef enum{
+-	BULK_PRIORITY = 0x01,
+-	LOW_PRIORITY,
+-	NORM_PRIORITY,
+-	VO_PRIORITY,
+-	VI_PRIORITY,
+-	BE_PRIORITY,
+-	BK_PRIORITY,
+-	RSVD2,
+-	RSVD3,
+-	BEACON_PRIORITY,
+-	HIGH_PRIORITY,
+-	MANAGE_PRIORITY,
+-	RSVD4,
+-	RSVD5,
+-	UART_PRIORITY
+-} priority_t;
+-
+-typedef enum {
+-	NIC_8192U = 1,
+-	NIC_8190P = 2,
+-	NIC_8192E = 3,
+-} nic_t;
+-
+-bool init_firmware(struct net_device *dev);
+-short rtl819xU_tx_cmd(struct net_device *dev, struct sk_buff *skb);
+-short rtl8192_tx(struct net_device *dev, struct sk_buff *skb);
+-
+-int read_nic_byte(struct net_device *dev, int x, u8 *data);
+-int read_nic_byte_E(struct net_device *dev, int x, u8 *data);
+-int read_nic_dword(struct net_device *dev, int x, u32 *data);
+-int read_nic_word(struct net_device *dev, int x, u16 *data);
+-int write_nic_byte(struct net_device *dev, int x, u8 y);
+-int write_nic_byte_E(struct net_device *dev, int x, u8 y);
+-int write_nic_word(struct net_device *dev, int x, u16 y);
+-int write_nic_dword(struct net_device *dev, int x, u32 y);
+-void force_pci_posting(struct net_device *dev);
+-
+-void rtl8192_rtx_disable(struct net_device *dev);
+-void rtl8192_rx_enable(struct net_device *dev);
+-
+-void rtl8192_update_msr(struct net_device *dev);
+-int rtl8192_down(struct net_device *dev);
+-int rtl8192_up(struct net_device *dev);
+-void rtl8192_commit(struct net_device *dev);
+-void rtl8192_set_chan(struct net_device *dev, short ch);
+-void rtl8192_set_rxconf(struct net_device *dev);
+-void rtl819xusb_beacon_tx(struct net_device *dev, u16 tx_rate);
+-
+-void EnableHWSecurityConfig8192(struct net_device *dev);
+-void setKey(struct net_device *dev, u8 EntryNo, u8 KeyIndex, u16 KeyType,
+-	    const u8 *MacAddr, u8 DefaultKey, u32 *KeyContent);
+-
+-void rtl8192_debugfs_init_one(struct net_device *dev);
+-void rtl8192_debugfs_exit_one(struct net_device *dev);
+-void rtl8192_debugfs_rename_one(struct net_device *dev);
+-void rtl8192_debugfs_init(void);
+-void rtl8192_debugfs_exit(void);
+-
+-#endif
+diff --git a/drivers/staging/rtl8192u/r8192U_core.c b/drivers/staging/rtl8192u/r8192U_core.c
+deleted file mode 100644
+index 0a60ef20107c..000000000000
+--- a/drivers/staging/rtl8192u/r8192U_core.c
++++ /dev/null
+@@ -1,4800 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/******************************************************************************
+- * Copyright(c) 2008 - 2010 Realtek Corporation. All rights reserved.
+- * Linux device driver for RTL8192U
+- *
+- * Based on the r8187 driver, which is:
+- * Copyright 2004-2005 Andrea Merello <andrea.merello@gmail.com>, et al.
+- *
+- * Contact Information:
+- * Jerry chuang <wlanfae@realtek.com>
+- */
+-
+-#ifndef CONFIG_FORCE_HARD_FLOAT
+-double __floatsidf(int i)
+-{
+-	return i;
+-}
+-
+-unsigned int __fixunsdfsi(double d)
+-{
+-	return d;
+-}
+-
+-double __adddf3(double a, double b)
+-{
+-	return a + b;
+-}
+-
+-double __addsf3(float a, float b)
+-{
+-	return a + b;
+-}
+-
+-double __subdf3(double a, double b)
+-{
+-	return a - b;
+-}
+-
+-double __extendsfdf2(float a)
+-{
+-	return a;
+-}
+-#endif
+-
+-#define CONFIG_RTL8192_IO_MAP
+-
+-#include <linux/uaccess.h>
+-#include "r8192U_hw.h"
+-#include "r8192U.h"
+-#include "r8190_rtl8256.h" /* RTL8225 Radio frontend */
+-#include "r8180_93cx6.h"   /* Card EEPROM */
+-#include "r8192U_wx.h"
+-#include "r819xU_phy.h"
+-#include "r819xU_phyreg.h"
+-#include "r819xU_cmdpkt.h"
+-#include "r8192U_dm.h"
+-#include <linux/usb.h>
+-#include <linux/slab.h>
+-#include <linux/seq_file.h>
+-/* FIXME: check if 2.6.7 is ok */
+-
+-#include "ieee80211/dot11d.h"
+-/* set here to open your trace code. */
+-u32 rt_global_debug_component = COMP_DOWN	|
+-				COMP_SEC	|
+-				COMP_ERR; /* always open err flags on */
+-
+-#define TOTAL_CAM_ENTRY 32
+-#define CAM_CONTENT_COUNT 8
+-
+-static const struct usb_device_id rtl8192_usb_id_tbl[] = {
+-	/* Realtek */
+-	{USB_DEVICE(0x0bda, 0x8709)},
+-	/* Corega */
+-	{USB_DEVICE(0x07aa, 0x0043)},
+-	/* Belkin */
+-	{USB_DEVICE(0x050d, 0x805E)},
+-	/* Sitecom */
+-	{USB_DEVICE(0x0df6, 0x0031)},
+-	/* EnGenius */
+-	{USB_DEVICE(0x1740, 0x9201)},
+-	/* Dlink */
+-	{USB_DEVICE(0x2001, 0x3301)},
+-	/* Zinwell */
+-	{USB_DEVICE(0x5a57, 0x0290)},
+-	/* LG */
+-	{USB_DEVICE(0x043e, 0x7a01)},
+-	{}
+-};
+-
+-MODULE_LICENSE("GPL");
+-MODULE_VERSION("V 1.1");
+-MODULE_DEVICE_TABLE(usb, rtl8192_usb_id_tbl);
+-MODULE_DESCRIPTION("Linux driver for Realtek RTL8192 USB WiFi cards");
+-
+-static char *ifname = "wlan%d";
+-static int hwwep = 1;  /* default use hw. set 0 to use software security */
+-
+-module_param(ifname, charp, 0644);
+-module_param(hwwep, int, 0644);
+-
+-MODULE_PARM_DESC(ifname, " Net interface name, wlan%d=default");
+-MODULE_PARM_DESC(hwwep, " Try to use hardware security support. ");
+-
+-static int rtl8192_usb_probe(struct usb_interface *intf,
+-			     const struct usb_device_id *id);
+-static void rtl8192_usb_disconnect(struct usb_interface *intf);
+-
+-static struct usb_driver rtl8192_usb_driver = {
+-	.name		= RTL819XU_MODULE_NAME,		  /* Driver name   */
+-	.id_table	= rtl8192_usb_id_tbl,		  /* PCI_ID table  */
+-	.probe		= rtl8192_usb_probe,		  /* probe fn      */
+-	.disconnect	= rtl8192_usb_disconnect,	  /* remove fn     */
+-	.suspend	= NULL,				  /* PM suspend fn */
+-	.resume		= NULL,				  /* PM resume fn  */
+-};
+-
+-struct CHANNEL_LIST {
+-	u8	Channel[32];
+-	u8	Len;
+-};
+-
+-static struct CHANNEL_LIST ChannelPlan[] = {
+-	/* FCC */
+-	{{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 36, 40, 44, 48, 52, 56, 60, 64, 149, 153, 157, 161, 165}, 24},
+-	/* IC */
+-	{{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}, 11},
+-	/* ETSI */
+-	{{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 36, 40, 44, 48, 52, 56, 60, 64}, 21},
+-	/* Spain. Change to ETSI. */
+-	{{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13}, 13},
+-	/* France. Change to ETSI. */
+-	{{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13}, 13},
+-	/* MKK */
+-	{{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 36, 40, 44, 48, 52, 56, 60, 64}, 22},
+-	/* MKK1 */
+-	{{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 36, 40, 44, 48, 52, 56, 60, 64}, 22},
+-	/* Israel. */
+-	{{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13}, 13},
+-	/* For 11a , TELEC */
+-	{{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 36, 40, 44, 48, 52, 56, 60, 64}, 22},
+-	/* MIC */
+-	{{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 36, 40, 44, 48, 52, 56, 60, 64}, 22},
+-	/* For Global Domain. 1-11:active scan, 12-14 passive scan. */
+-	{{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}, 14}
+-};
+-
+-static void rtl819x_set_channel_map(u8 channel_plan, struct r8192_priv *priv)
+-{
+-	int i, max_chan = -1, min_chan = -1;
+-	struct ieee80211_device *ieee = priv->ieee80211;
+-
+-	switch (channel_plan) {
+-	case COUNTRY_CODE_FCC:
+-	case COUNTRY_CODE_IC:
+-	case COUNTRY_CODE_ETSI:
+-	case COUNTRY_CODE_SPAIN:
+-	case COUNTRY_CODE_FRANCE:
+-	case COUNTRY_CODE_MKK:
+-	case COUNTRY_CODE_MKK1:
+-	case COUNTRY_CODE_ISRAEL:
+-	case COUNTRY_CODE_TELEC:
+-	case COUNTRY_CODE_MIC:
+-		rtl8192u_dot11d_init(ieee);
+-		ieee->bGlobalDomain = false;
+-		/* actually 8225 & 8256 rf chips only support B,G,24N mode */
+-		if ((priv->rf_chip == RF_8225) || (priv->rf_chip == RF_8256)) {
+-			min_chan = 1;
+-			max_chan = 14;
+-		} else {
+-			RT_TRACE(COMP_ERR,
+-				 "unknown rf chip, can't set channel map in function:%s()\n",
+-				 __func__);
+-		}
+-		if (ChannelPlan[channel_plan].Len != 0) {
+-			/* Clear old channel map */
+-			memset(GET_DOT11D_INFO(ieee)->channel_map, 0,
+-			       sizeof(GET_DOT11D_INFO(ieee)->channel_map));
+-			/* Set new channel map */
+-			for (i = 0; i < ChannelPlan[channel_plan].Len; i++) {
+-				if (ChannelPlan[channel_plan].Channel[i] < min_chan || ChannelPlan[channel_plan].Channel[i] > max_chan)
+-					break;
+-				GET_DOT11D_INFO(ieee)->channel_map[ChannelPlan[channel_plan].Channel[i]] = 1;
+-			}
+-		}
+-		break;
+-
+-	case COUNTRY_CODE_GLOBAL_DOMAIN:
+-		/* this flag enabled to follow 11d country IE setting,
+-		 * otherwise, it shall follow global domain settings.
+-		 */
+-		GET_DOT11D_INFO(ieee)->dot11d_enabled = 0;
+-		dot11d_reset(ieee);
+-		ieee->bGlobalDomain = true;
+-		break;
+-
+-	default:
+-		break;
+-	}
+-}
+-
+-static void CamResetAllEntry(struct net_device *dev)
+-{
+-	u32 ulcommand = 0;
+-	/* In static WEP, OID_ADD_KEY or OID_ADD_WEP are set before STA
+-	 * associate to AP. However, ResetKey is called on
+-	 * OID_802_11_INFRASTRUCTURE_MODE and MlmeAssociateRequest. In this
+-	 * condition, Cam can not be reset because upper layer will not set
+-	 * this static key again.
+-	 */
+-	ulcommand |= BIT(31) | BIT(30);
+-	write_nic_dword(dev, RWCAM, ulcommand);
+-}
+-
+-int write_nic_byte_E(struct net_device *dev, int indx, u8 data)
+-{
+-	int status;
+-	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
+-	struct usb_device *udev = priv->udev;
+-	u8 *usbdata = kzalloc(sizeof(data), GFP_KERNEL);
+-
+-	if (!usbdata)
+-		return -ENOMEM;
+-	*usbdata = data;
+-
+-	status = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
+-				 RTL8187_REQ_SET_REGS, RTL8187_REQT_WRITE,
+-				 indx | 0xfe00, 0, usbdata, 1, 500);
+-	kfree(usbdata);
+-
+-	if (status < 0) {
+-		netdev_err(dev, "%s TimeOut! status: %d\n", __func__, status);
+-		return status;
+-	}
+-	return 0;
+-}
+-
+-int read_nic_byte_E(struct net_device *dev, int indx, u8 *data)
+-{
+-	int status;
+-	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
+-	struct usb_device *udev = priv->udev;
+-	u8 *usbdata = kzalloc(sizeof(u8), GFP_KERNEL);
+-
+-	if (!usbdata)
+-		return -ENOMEM;
+-
+-	status = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+-				 RTL8187_REQ_GET_REGS, RTL8187_REQT_READ,
+-				 indx | 0xfe00, 0, usbdata, 1, 500);
+-	*data = *usbdata;
+-	kfree(usbdata);
+-
+-	if (status < 0) {
+-		netdev_err(dev, "%s failure status: %d\n", __func__, status);
+-		return status;
+-	}
+-
+-	return 0;
+-}
+-
+-/* as 92U has extend page from 4 to 16, so modify functions below. */
+-int write_nic_byte(struct net_device *dev, int indx, u8 data)
+-{
+-	int status;
+-
+-	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
+-	struct usb_device *udev = priv->udev;
+-	u8 *usbdata = kzalloc(sizeof(data), GFP_KERNEL);
+-
+-	if (!usbdata)
+-		return -ENOMEM;
+-	*usbdata = data;
+-
+-	status = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
+-				 RTL8187_REQ_SET_REGS, RTL8187_REQT_WRITE,
+-				 (indx & 0xff) | 0xff00, (indx >> 8) & 0x0f,
+-				 usbdata, 1, 500);
+-	kfree(usbdata);
+-
+-	if (status < 0) {
+-		netdev_err(dev, "%s TimeOut! status: %d\n", __func__, status);
+-		return status;
+-	}
+-
+-	return 0;
+-}
+-
+-int write_nic_word(struct net_device *dev, int indx, u16 data)
+-{
+-	int status;
+-
+-	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
+-	struct usb_device *udev = priv->udev;
+-	u16 *usbdata = kzalloc(sizeof(data), GFP_KERNEL);
+-
+-	if (!usbdata)
+-		return -ENOMEM;
+-	*usbdata = data;
+-
+-	status = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
+-				 RTL8187_REQ_SET_REGS, RTL8187_REQT_WRITE,
+-				 (indx & 0xff) | 0xff00, (indx >> 8) & 0x0f,
+-				 usbdata, 2, 500);
+-	kfree(usbdata);
+-
+-	if (status < 0) {
+-		netdev_err(dev, "%s TimeOut! status: %d\n", __func__, status);
+-		return status;
+-	}
+-
+-	return 0;
+-}
+-
+-int write_nic_dword(struct net_device *dev, int indx, u32 data)
+-{
+-	int status;
+-
+-	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
+-	struct usb_device *udev = priv->udev;
+-	u32 *usbdata = kzalloc(sizeof(data), GFP_KERNEL);
+-
+-	if (!usbdata)
+-		return -ENOMEM;
+-	*usbdata = data;
+-
+-	status = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
+-				 RTL8187_REQ_SET_REGS, RTL8187_REQT_WRITE,
+-				 (indx & 0xff) | 0xff00, (indx >> 8) & 0x0f,
+-				 usbdata, 4, 500);
+-	kfree(usbdata);
+-
+-	if (status < 0) {
+-		netdev_err(dev, "%s TimeOut! status: %d\n", __func__, status);
+-		return status;
+-	}
+-
+-	return 0;
+-}
+-
+-int read_nic_byte(struct net_device *dev, int indx, u8 *data)
+-{
+-	int status;
+-	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
+-	struct usb_device *udev = priv->udev;
+-	u8 *usbdata = kzalloc(sizeof(u8), GFP_KERNEL);
+-
+-	if (!usbdata)
+-		return -ENOMEM;
+-
+-	status = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+-				 RTL8187_REQ_GET_REGS, RTL8187_REQT_READ,
+-				 (indx & 0xff) | 0xff00, (indx >> 8) & 0x0f,
+-				 usbdata, 1, 500);
+-	*data = *usbdata;
+-	kfree(usbdata);
+-
+-	if (status < 0) {
+-		netdev_err(dev, "%s failure status: %d\n", __func__, status);
+-		return status;
+-	}
+-
+-	return 0;
+-}
+-
+-int read_nic_word(struct net_device *dev, int indx, u16 *data)
+-{
+-	int status;
+-	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
+-	struct usb_device *udev = priv->udev;
+-	u16 *usbdata = kzalloc(sizeof(u16), GFP_KERNEL);
+-
+-	if (!usbdata)
+-		return -ENOMEM;
+-
+-	status = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+-				 RTL8187_REQ_GET_REGS, RTL8187_REQT_READ,
+-				 (indx & 0xff) | 0xff00, (indx >> 8) & 0x0f,
+-				 usbdata, 2, 500);
+-	*data = *usbdata;
+-	kfree(usbdata);
+-
+-	if (status < 0) {
+-		netdev_err(dev, "%s failure status: %d\n", __func__, status);
+-		return status;
+-	}
+-
+-	return 0;
+-}
+-
+-static int read_nic_word_E(struct net_device *dev, int indx, u16 *data)
+-{
+-	int status;
+-	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
+-	struct usb_device *udev = priv->udev;
+-	u16 *usbdata = kzalloc(sizeof(u16), GFP_KERNEL);
+-
+-	if (!usbdata)
+-		return -ENOMEM;
+-
+-	status = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+-				 RTL8187_REQ_GET_REGS, RTL8187_REQT_READ,
+-				 indx | 0xfe00, 0, usbdata, 2, 500);
+-	*data = *usbdata;
+-	kfree(usbdata);
+-
+-	if (status < 0) {
+-		netdev_err(dev, "%s failure status: %d\n", __func__, status);
+-		return status;
+-	}
+-
+-	return 0;
+-}
+-
+-int read_nic_dword(struct net_device *dev, int indx, u32 *data)
+-{
+-	int status;
+-
+-	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
+-	struct usb_device *udev = priv->udev;
+-	u32 *usbdata = kzalloc(sizeof(u32), GFP_KERNEL);
+-
+-	if (!usbdata)
+-		return -ENOMEM;
+-
+-	status = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+-				 RTL8187_REQ_GET_REGS, RTL8187_REQT_READ,
+-				 (indx & 0xff) | 0xff00, (indx >> 8) & 0x0f,
+-				 usbdata, 4, 500);
+-	*data = *usbdata;
+-	kfree(usbdata);
+-
+-	if (status < 0) {
+-		netdev_err(dev, "%s failure status: %d\n", __func__, status);
+-		return status;
+-	}
+-
+-	return 0;
+-}
+-
+-/* u8 read_phy_cck(struct net_device *dev, u8 adr); */
+-/* u8 read_phy_ofdm(struct net_device *dev, u8 adr); */
+-/* this might still called in what was the PHY rtl8185/rtl8192 common code
+- * plans are to possibility turn it again in one common code...
+- */
+-inline void force_pci_posting(struct net_device *dev)
+-{
+-}
+-
+-static struct net_device_stats *rtl8192_stats(struct net_device *dev);
+-static void rtl8192_restart(struct work_struct *work);
+-static void watch_dog_timer_callback(struct timer_list *t);
+-
+-/****************************************************************************
+- *  -----------------------------MISC STUFF-------------------------
+- *****************************************************************************/
+-
+-short check_nic_enough_desc(struct net_device *dev, int queue_index)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	int used = atomic_read(&priv->tx_pending[queue_index]);
+-
+-	return (used < MAX_TX_URB);
+-}
+-
+-static void tx_timeout(struct net_device *dev, unsigned int txqueue)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	schedule_work(&priv->reset_wq);
+-}
+-
+-void rtl8192_update_msr(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u8 msr;
+-
+-	read_nic_byte(dev, MSR, &msr);
+-	msr &= ~MSR_LINK_MASK;
+-
+-	/* do not change in link_state != WLAN_LINK_ASSOCIATED.
+-	 * msr must be updated if the state is ASSOCIATING.
+-	 * this is intentional and make sense for ad-hoc and
+-	 * master (see the create BSS/IBSS func)
+-	 */
+-	if (priv->ieee80211->state == IEEE80211_LINKED) {
+-		if (priv->ieee80211->iw_mode == IW_MODE_INFRA)
+-			msr |= (MSR_LINK_MANAGED << MSR_LINK_SHIFT);
+-		else if (priv->ieee80211->iw_mode == IW_MODE_ADHOC)
+-			msr |= (MSR_LINK_ADHOC << MSR_LINK_SHIFT);
+-		else if (priv->ieee80211->iw_mode == IW_MODE_MASTER)
+-			msr |= (MSR_LINK_MASTER << MSR_LINK_SHIFT);
+-
+-	} else {
+-		msr |= (MSR_LINK_NONE << MSR_LINK_SHIFT);
+-	}
+-
+-	write_nic_byte(dev, MSR, msr);
+-}
+-
+-void rtl8192_set_chan(struct net_device *dev, short ch)
+-{
+-	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
+-
+-	RT_TRACE(COMP_CH, "=====>%s()====ch:%d\n", __func__, ch);
+-	priv->chan = ch;
+-
+-	/* this hack should avoid frame TX during channel setting*/
+-
+-	/* need to implement rf set channel here */
+-
+-	if (priv->rf_set_chan)
+-		priv->rf_set_chan(dev, priv->chan);
+-	mdelay(10);
+-}
+-
+-static void rtl8192_rx_isr(struct urb *urb);
+-
+-static u32 get_rxpacket_shiftbytes_819xusb(struct ieee80211_rx_stats *pstats)
+-{
+-	return (sizeof(struct rx_desc_819x_usb) + pstats->RxDrvInfoSize
+-		+ pstats->RxBufShift);
+-}
+-
+-void rtl8192_rx_enable(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
+-	struct urb *entry;
+-	struct sk_buff *skb;
+-	struct rtl8192_rx_info *info;
+-
+-	/* nomal packet rx procedure */
+-	while (skb_queue_len(&priv->rx_queue) < MAX_RX_URB) {
+-		skb = __dev_alloc_skb(RX_URB_SIZE, GFP_KERNEL);
+-		if (!skb)
+-			break;
+-		entry = usb_alloc_urb(0, GFP_KERNEL);
+-		if (!entry) {
+-			kfree_skb(skb);
+-			break;
+-		}
+-		usb_fill_bulk_urb(entry, priv->udev,
+-				  usb_rcvbulkpipe(priv->udev, 3),
+-				  skb_tail_pointer(skb),
+-				  RX_URB_SIZE, rtl8192_rx_isr, skb);
+-		info = (struct rtl8192_rx_info *)skb->cb;
+-		info->urb = entry;
+-		info->dev = dev;
+-		info->out_pipe = 3; /* denote rx normal packet queue */
+-		skb_queue_tail(&priv->rx_queue, skb);
+-		usb_submit_urb(entry, GFP_KERNEL);
+-	}
+-
+-	/* command packet rx procedure */
+-	while (skb_queue_len(&priv->rx_queue) < MAX_RX_URB + 3) {
+-		skb = __dev_alloc_skb(RX_URB_SIZE, GFP_KERNEL);
+-		if (!skb)
+-			break;
+-		entry = usb_alloc_urb(0, GFP_KERNEL);
+-		if (!entry) {
+-			kfree_skb(skb);
+-			break;
+-		}
+-		usb_fill_bulk_urb(entry, priv->udev,
+-				  usb_rcvbulkpipe(priv->udev, 9),
+-				  skb_tail_pointer(skb),
+-				  RX_URB_SIZE, rtl8192_rx_isr, skb);
+-		info = (struct rtl8192_rx_info *)skb->cb;
+-		info->urb = entry;
+-		info->dev = dev;
+-		info->out_pipe = 9; /* denote rx cmd packet queue */
+-		skb_queue_tail(&priv->rx_queue, skb);
+-		usb_submit_urb(entry, GFP_KERNEL);
+-	}
+-}
+-
+-void rtl8192_set_rxconf(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
+-	u32 rxconf;
+-
+-	read_nic_dword(dev, RCR, &rxconf);
+-	rxconf = rxconf & ~MAC_FILTER_MASK;
+-	rxconf = rxconf | RCR_AMF;
+-	rxconf = rxconf | RCR_ADF;
+-	rxconf = rxconf | RCR_AB;
+-	rxconf = rxconf | RCR_AM;
+-
+-	if (dev->flags & IFF_PROMISC)
+-		DMESG("NIC in promisc mode");
+-
+-	if (priv->ieee80211->iw_mode == IW_MODE_MONITOR ||
+-	    dev->flags & IFF_PROMISC) {
+-		rxconf = rxconf | RCR_AAP;
+-	} else {
+-		rxconf = rxconf | RCR_APM;
+-		rxconf = rxconf | RCR_CBSSID;
+-	}
+-
+-	if (priv->ieee80211->iw_mode == IW_MODE_MONITOR) {
+-		rxconf = rxconf | RCR_AICV;
+-		rxconf = rxconf | RCR_APWRMGT;
+-	}
+-
+-	if (priv->crcmon == 1 && priv->ieee80211->iw_mode == IW_MODE_MONITOR)
+-		rxconf = rxconf | RCR_ACRC32;
+-
+-	rxconf = rxconf & ~RX_FIFO_THRESHOLD_MASK;
+-	rxconf = rxconf | (RX_FIFO_THRESHOLD_NONE << RX_FIFO_THRESHOLD_SHIFT);
+-	rxconf = rxconf & ~MAX_RX_DMA_MASK;
+-	rxconf = rxconf | ((u32)7 << RCR_MXDMA_OFFSET);
+-
+-	rxconf = rxconf | RCR_ONLYERLPKT;
+-
+-	write_nic_dword(dev, RCR, rxconf);
+-}
+-
+-void rtl8192_rtx_disable(struct net_device *dev)
+-{
+-	u8 cmd;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	struct sk_buff *skb;
+-	struct rtl8192_rx_info *info;
+-
+-	read_nic_byte(dev, CMDR, &cmd);
+-	write_nic_byte(dev, CMDR, cmd & ~(CR_TE | CR_RE));
+-	force_pci_posting(dev);
+-	mdelay(10);
+-
+-	while ((skb = __skb_dequeue(&priv->rx_queue))) {
+-		info = (struct rtl8192_rx_info *)skb->cb;
+-		if (!info->urb)
+-			continue;
+-
+-		usb_kill_urb(info->urb);
+-		kfree_skb(skb);
+-	}
+-
+-	if (skb_queue_len(&priv->skb_queue))
+-		netdev_warn(dev, "skb_queue not empty\n");
+-
+-	skb_queue_purge(&priv->skb_queue);
+-}
+-
+-/* The prototype of rx_isr has changed since one version of Linux Kernel */
+-static void rtl8192_rx_isr(struct urb *urb)
+-{
+-	struct sk_buff *skb = (struct sk_buff *)urb->context;
+-	struct rtl8192_rx_info *info = (struct rtl8192_rx_info *)skb->cb;
+-	struct net_device *dev = info->dev;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	int out_pipe = info->out_pipe;
+-	int err;
+-
+-	if (!priv->up)
+-		return;
+-
+-	if (unlikely(urb->status)) {
+-		info->urb = NULL;
+-		priv->stats.rxstaterr++;
+-		priv->ieee80211->stats.rx_errors++;
+-		usb_free_urb(urb);
+-		return;
+-	}
+-	skb_unlink(skb, &priv->rx_queue);
+-	skb_put(skb, urb->actual_length);
+-
+-	skb_queue_tail(&priv->skb_queue, skb);
+-	tasklet_schedule(&priv->irq_rx_tasklet);
+-
+-	skb = dev_alloc_skb(RX_URB_SIZE);
+-	if (unlikely(!skb)) {
+-		usb_free_urb(urb);
+-		netdev_err(dev, "%s(): can't alloc skb\n", __func__);
+-		/* TODO check rx queue length and refill *somewhere* */
+-		return;
+-	}
+-
+-	usb_fill_bulk_urb(urb, priv->udev,
+-			  usb_rcvbulkpipe(priv->udev, out_pipe),
+-			  skb_tail_pointer(skb),
+-			  RX_URB_SIZE, rtl8192_rx_isr, skb);
+-
+-	info = (struct rtl8192_rx_info *)skb->cb;
+-	info->urb = urb;
+-	info->dev = dev;
+-	info->out_pipe = out_pipe;
+-
+-	urb->transfer_buffer = skb_tail_pointer(skb);
+-	urb->context = skb;
+-	skb_queue_tail(&priv->rx_queue, skb);
+-	err = usb_submit_urb(urb, GFP_ATOMIC);
+-	if (err && err != -EPERM)
+-		netdev_err(dev,
+-			   "can not submit rxurb, err is %x, URB status is %x\n",
+-			   err, urb->status);
+-}
+-
+-static u32 rtl819xusb_rx_command_packet(struct net_device *dev,
+-					struct ieee80211_rx_stats *pstats)
+-{
+-	u32	status;
+-
+-	status = cmpk_message_handle_rx(dev, pstats);
+-	if (status)
+-		DMESG("rxcommandpackethandle819xusb: It is a command packet\n");
+-
+-	return status;
+-}
+-
+-static void rtl8192_data_hard_stop(struct net_device *dev)
+-{
+-	/* FIXME !! */
+-}
+-
+-static void rtl8192_data_hard_resume(struct net_device *dev)
+-{
+-	/* FIXME !! */
+-}
+-
+-/* this function TX data frames when the ieee80211 stack requires this.
+- * It checks also if we need to stop the ieee tx queue, eventually do it
+- */
+-static void rtl8192_hard_data_xmit(struct sk_buff *skb, struct net_device *dev,
+-				   int rate)
+-{
+-	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
+-	unsigned long flags;
+-	struct cb_desc *tcb_desc = (struct cb_desc *)(skb->cb + MAX_DEV_ADDR_SIZE);
+-	u8 queue_index = tcb_desc->queue_index;
+-
+-	/* shall not be referred by command packet */
+-	RTL8192U_ASSERT(queue_index != TXCMD_QUEUE);
+-
+-	spin_lock_irqsave(&priv->tx_lock, flags);
+-
+-	*(struct net_device **)(skb->cb) = dev;
+-	tcb_desc->bTxEnableFwCalcDur = 1;
+-	skb_push(skb, priv->ieee80211->tx_headroom);
+-	rtl8192_tx(dev, skb);
+-
+-	spin_unlock_irqrestore(&priv->tx_lock, flags);
+-}
+-
+-/* This is a rough attempt to TX a frame
+- * This is called by the ieee 80211 stack to TX management frames.
+- * If the ring is full packet are dropped (for data frame the queue
+- * is stopped before this can happen).
+- */
+-static int rtl8192_hard_start_xmit(struct sk_buff *skb, struct net_device *dev)
+-{
+-	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
+-	int ret;
+-	unsigned long flags;
+-	struct cb_desc *tcb_desc = (struct cb_desc *)(skb->cb + MAX_DEV_ADDR_SIZE);
+-	u8 queue_index = tcb_desc->queue_index;
+-
+-	spin_lock_irqsave(&priv->tx_lock, flags);
+-
+-	memcpy((unsigned char *)(skb->cb), &dev, sizeof(dev));
+-	if (queue_index == TXCMD_QUEUE) {
+-		skb_push(skb, USB_HWDESC_HEADER_LEN);
+-		rtl819xU_tx_cmd(dev, skb);
+-		ret = 1;
+-	} else {
+-		skb_push(skb, priv->ieee80211->tx_headroom);
+-		ret = rtl8192_tx(dev, skb);
+-	}
+-
+-	spin_unlock_irqrestore(&priv->tx_lock, flags);
+-
+-	return ret;
+-}
+-
+-static void rtl8192_tx_isr(struct urb *tx_urb)
+-{
+-	struct sk_buff *skb = (struct sk_buff *)tx_urb->context;
+-	struct net_device *dev;
+-	struct r8192_priv *priv = NULL;
+-	struct cb_desc *tcb_desc;
+-	u8  queue_index;
+-
+-	if (!skb)
+-		return;
+-
+-	dev = *(struct net_device **)(skb->cb);
+-	tcb_desc = (struct cb_desc *)(skb->cb + MAX_DEV_ADDR_SIZE);
+-	queue_index = tcb_desc->queue_index;
+-
+-	priv = ieee80211_priv(dev);
+-
+-	if (tcb_desc->queue_index != TXCMD_QUEUE) {
+-		if (tx_urb->status == 0) {
+-			netif_trans_update(dev);
+-			priv->stats.txoktotal++;
+-			priv->ieee80211->LinkDetectInfo.NumTxOkInPeriod++;
+-			priv->stats.txbytesunicast +=
+-				(skb->len - priv->ieee80211->tx_headroom);
+-		} else {
+-			priv->ieee80211->stats.tx_errors++;
+-			/* TODO */
+-		}
+-	}
+-
+-	/* free skb and tx_urb */
+-	dev_kfree_skb_any(skb);
+-	usb_free_urb(tx_urb);
+-	atomic_dec(&priv->tx_pending[queue_index]);
+-
+-	/*
+-	 * Handle HW Beacon:
+-	 * We had transfer our beacon frame to host controller at this moment.
+-	 *
+-	 *
+-	 * Caution:
+-	 * Handling the wait queue of command packets.
+-	 * For Tx command packets, we must not do TCB fragment because it is
+-	 * not handled right now. We must cut the packets to match the size of
+-	 * TX_CMD_PKT before we send it.
+-	 */
+-
+-	/* Handle MPDU in wait queue. */
+-	if (queue_index != BEACON_QUEUE) {
+-		/* Don't send data frame during scanning.*/
+-		if ((skb_queue_len(&priv->ieee80211->skb_waitQ[queue_index]) != 0) &&
+-		    (!(priv->ieee80211->queue_stop))) {
+-			skb = skb_dequeue(&(priv->ieee80211->skb_waitQ[queue_index]));
+-			if (skb)
+-				priv->ieee80211->softmac_hard_start_xmit(skb,
+-									 dev);
+-
+-			return; /* avoid further processing AMSDU */
+-		}
+-	}
+-}
+-
+-static void rtl8192_config_rate(struct net_device *dev, u16 *rate_config)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	struct ieee80211_network *net;
+-	u8 i = 0, basic_rate = 0;
+-
+-	net = &priv->ieee80211->current_network;
+-
+-	for (i = 0; i < net->rates_len; i++) {
+-		basic_rate = net->rates[i] & 0x7f;
+-		switch (basic_rate) {
+-		case MGN_1M:
+-			*rate_config |= RRSR_1M;
+-			break;
+-		case MGN_2M:
+-			*rate_config |= RRSR_2M;
+-			break;
+-		case MGN_5_5M:
+-			*rate_config |= RRSR_5_5M;
+-			break;
+-		case MGN_11M:
+-			*rate_config |= RRSR_11M;
+-			break;
+-		case MGN_6M:
+-			*rate_config |= RRSR_6M;
+-			break;
+-		case MGN_9M:
+-			*rate_config |= RRSR_9M;
+-			break;
+-		case MGN_12M:
+-			*rate_config |= RRSR_12M;
+-			break;
+-		case MGN_18M:
+-			*rate_config |= RRSR_18M;
+-			break;
+-		case MGN_24M:
+-			*rate_config |= RRSR_24M;
+-			break;
+-		case MGN_36M:
+-			*rate_config |= RRSR_36M;
+-			break;
+-		case MGN_48M:
+-			*rate_config |= RRSR_48M;
+-			break;
+-		case MGN_54M:
+-			*rate_config |= RRSR_54M;
+-			break;
+-		}
+-	}
+-	for (i = 0; i < net->rates_ex_len; i++) {
+-		basic_rate = net->rates_ex[i] & 0x7f;
+-		switch (basic_rate) {
+-		case MGN_1M:
+-			*rate_config |= RRSR_1M;
+-			break;
+-		case MGN_2M:
+-			*rate_config |= RRSR_2M;
+-			break;
+-		case MGN_5_5M:
+-			*rate_config |= RRSR_5_5M;
+-			break;
+-		case MGN_11M:
+-			*rate_config |= RRSR_11M;
+-			break;
+-		case MGN_6M:
+-			*rate_config |= RRSR_6M;
+-			break;
+-		case MGN_9M:
+-			*rate_config |= RRSR_9M;
+-			break;
+-		case MGN_12M:
+-			*rate_config |= RRSR_12M;
+-			break;
+-		case MGN_18M:
+-			*rate_config |= RRSR_18M;
+-			break;
+-		case MGN_24M:
+-			*rate_config |= RRSR_24M;
+-			break;
+-		case MGN_36M:
+-			*rate_config |= RRSR_36M;
+-			break;
+-		case MGN_48M:
+-			*rate_config |= RRSR_48M;
+-			break;
+-		case MGN_54M:
+-			*rate_config |= RRSR_54M;
+-			break;
+-		}
+-	}
+-}
+-
+-#define SHORT_SLOT_TIME 9
+-#define NON_SHORT_SLOT_TIME 20
+-
+-static void rtl8192_update_cap(struct net_device *dev, u16 cap)
+-{
+-	u32 tmp = 0;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	struct ieee80211_network *net = &priv->ieee80211->current_network;
+-
+-	priv->short_preamble = cap & WLAN_CAPABILITY_SHORT_PREAMBLE;
+-	tmp = priv->basic_rate;
+-	if (priv->short_preamble)
+-		tmp |= BRSR_AckShortPmb;
+-	write_nic_dword(dev, RRSR, tmp);
+-
+-	if (net->mode & (IEEE_G | IEEE_N_24G)) {
+-		u8 slot_time = 0;
+-
+-		if ((cap & WLAN_CAPABILITY_SHORT_SLOT) &&
+-		    (!priv->ieee80211->pHTInfo->bCurrentRT2RTLongSlotTime))
+-			/* short slot time */
+-			slot_time = SHORT_SLOT_TIME;
+-		else	/* long slot time */
+-			slot_time = NON_SHORT_SLOT_TIME;
+-		priv->slot_time = slot_time;
+-		write_nic_byte(dev, SLOT_TIME, slot_time);
+-	}
+-}
+-
+-static void rtl8192_net_update(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	struct ieee80211_network *net;
+-	u16 BcnTimeCfg = 0, BcnCW = 6, BcnIFS = 0xf;
+-	u16 rate_config = 0;
+-
+-	net = &priv->ieee80211->current_network;
+-
+-	rtl8192_config_rate(dev, &rate_config);
+-	priv->basic_rate = rate_config & 0x15f;
+-
+-	write_nic_dword(dev, BSSIDR, ((u32 *)net->bssid)[0]);
+-	write_nic_word(dev, BSSIDR + 4, ((u16 *)net->bssid)[2]);
+-
+-	rtl8192_update_msr(dev);
+-	if (priv->ieee80211->iw_mode == IW_MODE_ADHOC) {
+-		write_nic_word(dev, ATIMWND, 2);
+-		write_nic_word(dev, BCN_DMATIME, 1023);
+-		write_nic_word(dev, BCN_INTERVAL, net->beacon_interval);
+-		write_nic_word(dev, BCN_DRV_EARLY_INT, 1);
+-		write_nic_byte(dev, BCN_ERR_THRESH, 100);
+-		BcnTimeCfg |= (BcnCW << BCN_TCFG_CW_SHIFT);
+-		/* TODO: BcnIFS may required to be changed on ASIC */
+-		BcnTimeCfg |= BcnIFS << BCN_TCFG_IFS;
+-
+-		write_nic_word(dev, BCN_TCFG, BcnTimeCfg);
+-	}
+-}
+-
+-/* temporary hw beacon is not used any more.
+- * open it when necessary
+- */
+-void rtl819xusb_beacon_tx(struct net_device *dev, u16  tx_rate)
+-{
+-}
+-
+-short rtl819xU_tx_cmd(struct net_device *dev, struct sk_buff *skb)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	int			status;
+-	struct urb		*tx_urb;
+-	unsigned int		idx_pipe;
+-	struct tx_desc_cmd_819x_usb *pdesc = (struct tx_desc_cmd_819x_usb *)skb->data;
+-	struct cb_desc *tcb_desc = (struct cb_desc *)(skb->cb + MAX_DEV_ADDR_SIZE);
+-	u8 queue_index = tcb_desc->queue_index;
+-
+-	atomic_inc(&priv->tx_pending[queue_index]);
+-	tx_urb = usb_alloc_urb(0, GFP_ATOMIC);
+-	if (!tx_urb) {
+-		dev_kfree_skb(skb);
+-		return -ENOMEM;
+-	}
+-
+-	memset(pdesc, 0, USB_HWDESC_HEADER_LEN);
+-	/* Tx descriptor ought to be set according to the skb->cb */
+-	pdesc->FirstSeg = 1;
+-	pdesc->LastSeg = 1;
+-	pdesc->CmdInit = tcb_desc->bCmdOrInit;
+-	pdesc->TxBufferSize = tcb_desc->txbuf_size;
+-	pdesc->OWN = 1;
+-	pdesc->LINIP = tcb_desc->bLastIniPkt;
+-
+-	/*---------------------------------------------------------------------
+-	 * Fill up USB_OUT_CONTEXT.
+-	 *---------------------------------------------------------------------
+-	 */
+-	idx_pipe = 0x04;
+-	usb_fill_bulk_urb(tx_urb, priv->udev,
+-			  usb_sndbulkpipe(priv->udev, idx_pipe),
+-			  skb->data, skb->len, rtl8192_tx_isr, skb);
+-
+-	status = usb_submit_urb(tx_urb, GFP_ATOMIC);
+-
+-	if (!status)
+-		return 0;
+-
+-	DMESGE("Error TX CMD URB, error %d", status);
+-	dev_kfree_skb(skb);
+-	usb_free_urb(tx_urb);
+-	return -1;
+-}
+-
+-/*
+- * Mapping Software/Hardware descriptor queue id to "Queue Select Field"
+- * in TxFwInfo data structure
+- * 2006.10.30 by Emily
+- *
+- * \param QUEUEID       Software Queue
+- */
+-static u8 MapHwQueueToFirmwareQueue(u8 QueueID)
+-{
+-	u8 QueueSelect = 0x0;       /* default set to */
+-
+-	switch (QueueID) {
+-	case BE_QUEUE:
+-		QueueSelect = QSLT_BE;
+-		break;
+-
+-	case BK_QUEUE:
+-		QueueSelect = QSLT_BK;
+-		break;
+-
+-	case VO_QUEUE:
+-		QueueSelect = QSLT_VO;
+-		break;
+-
+-	case VI_QUEUE:
+-		QueueSelect = QSLT_VI;
+-		break;
+-	case MGNT_QUEUE:
+-		QueueSelect = QSLT_MGNT;
+-		break;
+-
+-	case BEACON_QUEUE:
+-		QueueSelect = QSLT_BEACON;
+-		break;
+-
+-		/* TODO: mark other queue selection until we verify it is OK */
+-		/* TODO: Remove Assertions */
+-	case TXCMD_QUEUE:
+-		QueueSelect = QSLT_CMD;
+-		break;
+-	case HIGH_QUEUE:
+-		QueueSelect = QSLT_HIGH;
+-		break;
+-
+-	default:
+-		RT_TRACE(COMP_ERR,
+-			 "TransmitTCB(): Impossible Queue Selection: %d\n",
+-			 QueueID);
+-		break;
+-	}
+-	return QueueSelect;
+-}
+-
+-static u8 MRateToHwRate8190Pci(u8 rate)
+-{
+-	u8  ret = DESC90_RATE1M;
+-
+-	switch (rate) {
+-	case MGN_1M:
+-		ret = DESC90_RATE1M;
+-		break;
+-	case MGN_2M:
+-		ret = DESC90_RATE2M;
+-		break;
+-	case MGN_5_5M:
+-		ret = DESC90_RATE5_5M;
+-		break;
+-	case MGN_11M:
+-		ret = DESC90_RATE11M;
+-		break;
+-	case MGN_6M:
+-		ret = DESC90_RATE6M;
+-		break;
+-	case MGN_9M:
+-		ret = DESC90_RATE9M;
+-		break;
+-	case MGN_12M:
+-		ret = DESC90_RATE12M;
+-		break;
+-	case MGN_18M:
+-		ret = DESC90_RATE18M;
+-		break;
+-	case MGN_24M:
+-		ret = DESC90_RATE24M;
+-		break;
+-	case MGN_36M:
+-		ret = DESC90_RATE36M;
+-		break;
+-	case MGN_48M:
+-		ret = DESC90_RATE48M;
+-		break;
+-	case MGN_54M:
+-		ret = DESC90_RATE54M;
+-		break;
+-
+-	/* HT rate since here */
+-	case MGN_MCS0:
+-		ret = DESC90_RATEMCS0;
+-		break;
+-	case MGN_MCS1:
+-		ret = DESC90_RATEMCS1;
+-		break;
+-	case MGN_MCS2:
+-		ret = DESC90_RATEMCS2;
+-		break;
+-	case MGN_MCS3:
+-		ret = DESC90_RATEMCS3;
+-		break;
+-	case MGN_MCS4:
+-		ret = DESC90_RATEMCS4;
+-		break;
+-	case MGN_MCS5:
+-		ret = DESC90_RATEMCS5;
+-		break;
+-	case MGN_MCS6:
+-		ret = DESC90_RATEMCS6;
+-		break;
+-	case MGN_MCS7:
+-		ret = DESC90_RATEMCS7;
+-		break;
+-	case MGN_MCS8:
+-		ret = DESC90_RATEMCS8;
+-		break;
+-	case MGN_MCS9:
+-		ret = DESC90_RATEMCS9;
+-		break;
+-	case MGN_MCS10:
+-		ret = DESC90_RATEMCS10;
+-		break;
+-	case MGN_MCS11:
+-		ret = DESC90_RATEMCS11;
+-		break;
+-	case MGN_MCS12:
+-		ret = DESC90_RATEMCS12;
+-		break;
+-	case MGN_MCS13:
+-		ret = DESC90_RATEMCS13;
+-		break;
+-	case MGN_MCS14:
+-		ret = DESC90_RATEMCS14;
+-		break;
+-	case MGN_MCS15:
+-		ret = DESC90_RATEMCS15;
+-		break;
+-	case (0x80 | 0x20):
+-		ret = DESC90_RATEMCS32;
+-		break;
+-
+-	default:
+-		break;
+-	}
+-	return ret;
+-}
+-
+-static u8 QueryIsShort(u8 TxHT, u8 TxRate, struct cb_desc *tcb_desc)
+-{
+-	u8   tmp_Short;
+-
+-	tmp_Short = (TxHT == 1) ?
+-			((tcb_desc->bUseShortGI) ? 1 : 0) :
+-			((tcb_desc->bUseShortPreamble) ? 1 : 0);
+-
+-	if (TxHT == 1 && TxRate != DESC90_RATEMCS15)
+-		tmp_Short = 0;
+-
+-	return tmp_Short;
+-}
+-
+-static void tx_zero_isr(struct urb *tx_urb)
+-{
+-}
+-
+-/*
+- * The tx procedure is just as following,
+- * skb->cb will contain all the following information,
+- * priority, morefrag, rate, &dev.
+- */
+-short rtl8192_tx(struct net_device *dev, struct sk_buff *skb)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	struct cb_desc *tcb_desc = (struct cb_desc *)(skb->cb + MAX_DEV_ADDR_SIZE);
+-	struct tx_desc_819x_usb *tx_desc = (struct tx_desc_819x_usb *)skb->data;
+-	struct tx_fwinfo_819x_usb *tx_fwinfo =
+-		(struct tx_fwinfo_819x_usb *)(skb->data + USB_HWDESC_HEADER_LEN);
+-	struct usb_device *udev = priv->udev;
+-	int pend;
+-	int status, rt = -1;
+-	struct urb *tx_urb = NULL, *tx_urb_zero = NULL;
+-	unsigned int idx_pipe;
+-
+-	pend = atomic_read(&priv->tx_pending[tcb_desc->queue_index]);
+-	/* we are locked here so the two atomic_read and inc are executed
+-	 * without interleaves
+-	 * !!! For debug purpose
+-	 */
+-	if (pend > MAX_TX_URB) {
+-		netdev_dbg(dev, "To discard skb packet!\n");
+-		dev_kfree_skb_any(skb);
+-		return -1;
+-	}
+-
+-	tx_urb = usb_alloc_urb(0, GFP_ATOMIC);
+-	if (!tx_urb) {
+-		dev_kfree_skb_any(skb);
+-		return -ENOMEM;
+-	}
+-
+-	/* Fill Tx firmware info */
+-	memset(tx_fwinfo, 0, sizeof(struct tx_fwinfo_819x_usb));
+-	/* DWORD 0 */
+-	tx_fwinfo->TxHT = (tcb_desc->data_rate & 0x80) ? 1 : 0;
+-	tx_fwinfo->TxRate = MRateToHwRate8190Pci(tcb_desc->data_rate);
+-	tx_fwinfo->EnableCPUDur = tcb_desc->bTxEnableFwCalcDur;
+-	tx_fwinfo->Short = QueryIsShort(tx_fwinfo->TxHT, tx_fwinfo->TxRate,
+-					tcb_desc);
+-	if (tcb_desc->bAMPDUEnable) { /* AMPDU enabled */
+-		tx_fwinfo->AllowAggregation = 1;
+-		/* DWORD 1 */
+-		tx_fwinfo->RxMF = tcb_desc->ampdu_factor;
+-		tx_fwinfo->RxAMD = tcb_desc->ampdu_density & 0x07;
+-	} else {
+-		tx_fwinfo->AllowAggregation = 0;
+-		/* DWORD 1 */
+-		tx_fwinfo->RxMF = 0;
+-		tx_fwinfo->RxAMD = 0;
+-	}
+-
+-	/* Protection mode related */
+-	tx_fwinfo->RtsEnable = (tcb_desc->bRTSEnable) ? 1 : 0;
+-	tx_fwinfo->CtsEnable = (tcb_desc->bCTSEnable) ? 1 : 0;
+-	tx_fwinfo->RtsSTBC = (tcb_desc->bRTSSTBC) ? 1 : 0;
+-	tx_fwinfo->RtsHT = (tcb_desc->rts_rate & 0x80) ? 1 : 0;
+-	tx_fwinfo->RtsRate =  MRateToHwRate8190Pci((u8)tcb_desc->rts_rate);
+-	tx_fwinfo->RtsSubcarrier = (tx_fwinfo->RtsHT == 0) ? (tcb_desc->RTSSC) : 0;
+-	tx_fwinfo->RtsBandwidth = (tx_fwinfo->RtsHT == 1) ? ((tcb_desc->bRTSBW) ? 1 : 0) : 0;
+-	tx_fwinfo->RtsShort = (tx_fwinfo->RtsHT == 0) ? (tcb_desc->bRTSUseShortPreamble ? 1 : 0) :
+-			      (tcb_desc->bRTSUseShortGI ? 1 : 0);
+-
+-	/* Set Bandwidth and sub-channel settings. */
+-	if (priv->CurrentChannelBW == HT_CHANNEL_WIDTH_20_40) {
+-		if (tcb_desc->bPacketBW) {
+-			tx_fwinfo->TxBandwidth = 1;
+-			/* use duplicated mode */
+-			tx_fwinfo->TxSubCarrier = 0;
+-		} else {
+-			tx_fwinfo->TxBandwidth = 0;
+-			tx_fwinfo->TxSubCarrier = priv->nCur40MhzPrimeSC;
+-		}
+-	} else {
+-		tx_fwinfo->TxBandwidth = 0;
+-		tx_fwinfo->TxSubCarrier = 0;
+-	}
+-
+-	/* Fill Tx descriptor */
+-	memset(tx_desc, 0, sizeof(struct tx_desc_819x_usb));
+-	/* DWORD 0 */
+-	tx_desc->LINIP = 0;
+-	tx_desc->CmdInit = 1;
+-	tx_desc->Offset =  sizeof(struct tx_fwinfo_819x_usb) + 8;
+-	tx_desc->PktSize = (skb->len - TX_PACKET_SHIFT_BYTES) & 0xffff;
+-
+-	/*DWORD 1*/
+-	tx_desc->SecCAMID = 0;
+-	tx_desc->RATid = tcb_desc->RATRIndex;
+-	tx_desc->NoEnc = 1;
+-	tx_desc->SecType = 0x0;
+-	if (tcb_desc->bHwSec) {
+-		switch (priv->ieee80211->pairwise_key_type) {
+-		case KEY_TYPE_WEP40:
+-		case KEY_TYPE_WEP104:
+-			tx_desc->SecType = 0x1;
+-			tx_desc->NoEnc = 0;
+-			break;
+-		case KEY_TYPE_TKIP:
+-			tx_desc->SecType = 0x2;
+-			tx_desc->NoEnc = 0;
+-			break;
+-		case KEY_TYPE_CCMP:
+-			tx_desc->SecType = 0x3;
+-			tx_desc->NoEnc = 0;
+-			break;
+-		case KEY_TYPE_NA:
+-			tx_desc->SecType = 0x0;
+-			tx_desc->NoEnc = 1;
+-			break;
+-		}
+-	}
+-
+-	tx_desc->QueueSelect = MapHwQueueToFirmwareQueue(tcb_desc->queue_index);
+-	tx_desc->TxFWInfoSize =  sizeof(struct tx_fwinfo_819x_usb);
+-
+-	tx_desc->DISFB = tcb_desc->bTxDisableRateFallBack;
+-	tx_desc->USERATE = tcb_desc->bTxUseDriverAssingedRate;
+-
+-	/* Fill fields that are required to be initialized in
+-	 * all of the descriptors
+-	 */
+-	/* DWORD 0 */
+-	tx_desc->FirstSeg = 1;
+-	tx_desc->LastSeg = 1;
+-	tx_desc->OWN = 1;
+-
+-	/* DWORD 2 */
+-	tx_desc->TxBufferSize = (u32)(skb->len - USB_HWDESC_HEADER_LEN);
+-	idx_pipe = 0x5;
+-
+-	/* To submit bulk urb */
+-	usb_fill_bulk_urb(tx_urb, udev,
+-			  usb_sndbulkpipe(udev, idx_pipe), skb->data,
+-			  skb->len, rtl8192_tx_isr, skb);
+-
+-	status = usb_submit_urb(tx_urb, GFP_ATOMIC);
+-	if (!status) {
+-		/* We need to send 0 byte packet whenever
+-		 * 512N bytes/64N(HIGN SPEED/NORMAL SPEED) bytes packet has
+-		 * been transmitted. Otherwise, it will be halt to wait for
+-		 * another packet.
+-		 */
+-		bool bSend0Byte = false;
+-		u8 zero = 0;
+-
+-		if (udev->speed == USB_SPEED_HIGH) {
+-			if (skb->len > 0 && skb->len % 512 == 0)
+-				bSend0Byte = true;
+-		} else {
+-			if (skb->len > 0 && skb->len % 64 == 0)
+-				bSend0Byte = true;
+-		}
+-		if (bSend0Byte) {
+-			tx_urb_zero = usb_alloc_urb(0, GFP_ATOMIC);
+-			if (!tx_urb_zero) {
+-				rt = -ENOMEM;
+-				goto error;
+-			}
+-			usb_fill_bulk_urb(tx_urb_zero, udev,
+-					  usb_sndbulkpipe(udev, idx_pipe),
+-					  &zero, 0, tx_zero_isr, dev);
+-			status = usb_submit_urb(tx_urb_zero, GFP_ATOMIC);
+-			if (status) {
+-				RT_TRACE(COMP_ERR,
+-					 "Error TX URB for zero byte %d, error %d",
+-					 atomic_read(&priv->tx_pending[tcb_desc->queue_index]),
+-					 status);
+-				goto error;
+-			}
+-		}
+-		netif_trans_update(dev);
+-		atomic_inc(&priv->tx_pending[tcb_desc->queue_index]);
+-		return 0;
+-	}
+-
+-	RT_TRACE(COMP_ERR, "Error TX URB %d, error %d",
+-		 atomic_read(&priv->tx_pending[tcb_desc->queue_index]),
+-		 status);
+-
+-error:
+-	dev_kfree_skb_any(skb);
+-	usb_free_urb(tx_urb);
+-	usb_free_urb(tx_urb_zero);
+-	return rt;
+-}
+-
+-static short rtl8192_usb_initendpoints(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	priv->rx_urb = kmalloc_array(MAX_RX_URB + 1, sizeof(struct urb *),
+-				     GFP_KERNEL);
+-	if (!priv->rx_urb)
+-		return -ENOMEM;
+-
+-#ifndef JACKSON_NEW_RX
+-	for (i = 0; i < (MAX_RX_URB + 1); i++) {
+-		priv->rx_urb[i] = usb_alloc_urb(0, GFP_KERNEL);
+-		if (!priv->rx_urb[i])
+-			return -ENOMEM;
+-
+-		priv->rx_urb[i]->transfer_buffer =
+-			kmalloc(RX_URB_SIZE, GFP_KERNEL);
+-		if (!priv->rx_urb[i]->transfer_buffer)
+-			return -ENOMEM;
+-
+-		priv->rx_urb[i]->transfer_buffer_length = RX_URB_SIZE;
+-	}
+-#endif
+-
+-#ifdef THOMAS_BEACON
+-	{
+-		long align = 0;
+-		void *oldaddr, *newaddr;
+-
+-		priv->rx_urb[16] = usb_alloc_urb(0, GFP_KERNEL);
+-		if (!priv->rx_urb[16])
+-			return -ENOMEM;
+-		priv->oldaddr = kmalloc(16, GFP_KERNEL);
+-		if (!priv->oldaddr)
+-			return -ENOMEM;
+-		oldaddr = priv->oldaddr;
+-		align = ((long)oldaddr) & 3;
+-		if (align) {
+-			newaddr = oldaddr + 4 - align;
+-			priv->rx_urb[16]->transfer_buffer_length = 16 - 4 + align;
+-		} else {
+-			newaddr = oldaddr;
+-			priv->rx_urb[16]->transfer_buffer_length = 16;
+-		}
+-		priv->rx_urb[16]->transfer_buffer = newaddr;
+-	}
+-#endif
+-
+-	memset(priv->rx_urb, 0, sizeof(struct urb *) * MAX_RX_URB);
+-	priv->pp_rxskb = kcalloc(MAX_RX_URB, sizeof(struct sk_buff *),
+-				 GFP_KERNEL);
+-	if (!priv->pp_rxskb) {
+-		kfree(priv->rx_urb);
+-
+-		priv->pp_rxskb = NULL;
+-		priv->rx_urb = NULL;
+-
+-		DMESGE("Endpoint Alloc Failure");
+-		return -ENOMEM;
+-	}
+-
+-	netdev_dbg(dev, "End of initendpoints\n");
+-	return 0;
+-}
+-
+-#ifdef THOMAS_BEACON
+-static void rtl8192_usb_deleteendpoints(struct net_device *dev)
+-{
+-	int i;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	if (priv->rx_urb) {
+-		for (i = 0; i < (MAX_RX_URB + 1); i++) {
+-			usb_kill_urb(priv->rx_urb[i]);
+-			usb_free_urb(priv->rx_urb[i]);
+-		}
+-		kfree(priv->rx_urb);
+-		priv->rx_urb = NULL;
+-	}
+-	kfree(priv->oldaddr);
+-	priv->oldaddr = NULL;
+-
+-	kfree(priv->pp_rxskb);
+-	priv->pp_rxskb = NULL;
+-}
+-#else
+-void rtl8192_usb_deleteendpoints(struct net_device *dev)
+-{
+-	int i;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-#ifndef JACKSON_NEW_RX
+-
+-	if (priv->rx_urb) {
+-		for (i = 0; i < (MAX_RX_URB + 1); i++) {
+-			usb_kill_urb(priv->rx_urb[i]);
+-			kfree(priv->rx_urb[i]->transfer_buffer);
+-			usb_free_urb(priv->rx_urb[i]);
+-		}
+-		kfree(priv->rx_urb);
+-		priv->rx_urb = NULL;
+-	}
+-#else
+-	kfree(priv->rx_urb);
+-	priv->rx_urb = NULL;
+-	kfree(priv->oldaddr);
+-	priv->oldaddr = NULL;
+-
+-	kfree(priv->pp_rxskb);
+-	priv->pp_rxskb = 0;
+-
+-#endif
+-}
+-#endif
+-
+-static void rtl8192_update_ratr_table(struct net_device *dev);
+-static void rtl8192_link_change(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	struct ieee80211_device *ieee = priv->ieee80211;
+-
+-	if (ieee->state == IEEE80211_LINKED) {
+-		rtl8192_net_update(dev);
+-		rtl8192_update_ratr_table(dev);
+-		/* Add this as in pure N mode, wep encryption will use software
+-		 * way, but there is no chance to set this as wep will not set
+-		 * group key in wext.
+-		 */
+-		if (ieee->pairwise_key_type == KEY_TYPE_WEP40 ||
+-		    ieee->pairwise_key_type == KEY_TYPE_WEP104)
+-			EnableHWSecurityConfig8192(dev);
+-	}
+-	/*update timing params*/
+-	if (ieee->iw_mode == IW_MODE_INFRA || ieee->iw_mode == IW_MODE_ADHOC) {
+-		u32 reg = 0;
+-
+-		read_nic_dword(dev, RCR, &reg);
+-		if (priv->ieee80211->state == IEEE80211_LINKED)
+-			priv->ReceiveConfig = reg |= RCR_CBSSID;
+-		else
+-			priv->ReceiveConfig = reg &= ~RCR_CBSSID;
+-		write_nic_dword(dev, RCR, reg);
+-	}
+-}
+-
+-static const struct ieee80211_qos_parameters def_qos_parameters = {
+-	{cpu_to_le16(3), cpu_to_le16(3), cpu_to_le16(3), cpu_to_le16(3)},
+-	{cpu_to_le16(7), cpu_to_le16(7), cpu_to_le16(7), cpu_to_le16(7)},
+-	{2, 2, 2, 2},/* aifs */
+-	{0, 0, 0, 0},/* flags */
+-	{0, 0, 0, 0} /* tx_op_limit */
+-};
+-
+-static void rtl8192_update_beacon(struct work_struct *work)
+-{
+-	struct r8192_priv *priv = container_of(work, struct r8192_priv,
+-					       update_beacon_wq.work);
+-	struct net_device *dev = priv->ieee80211->dev;
+-	struct ieee80211_device *ieee = priv->ieee80211;
+-	struct ieee80211_network *net = &ieee->current_network;
+-
+-	if (ieee->pHTInfo->bCurrentHTSupport)
+-		HTUpdateSelfAndPeerSetting(ieee, net);
+-	ieee->pHTInfo->bCurrentRT2RTLongSlotTime =
+-		net->bssht.bdRT2RTLongSlotTime;
+-	rtl8192_update_cap(dev, net->capability);
+-}
+-
+-/*
+- * background support to run QoS activate functionality
+- */
+-static int WDCAPARA_ADD[] = {EDCAPARA_BE, EDCAPARA_BK,
+-			     EDCAPARA_VI, EDCAPARA_VO};
+-static void rtl8192_qos_activate(struct work_struct *work)
+-{
+-	struct r8192_priv *priv = container_of(work, struct r8192_priv,
+-					       qos_activate);
+-	struct net_device *dev = priv->ieee80211->dev;
+-	struct ieee80211_qos_parameters *qos_parameters =
+-		&priv->ieee80211->current_network.qos_data.parameters;
+-	u8 mode = priv->ieee80211->current_network.mode;
+-	u32  u1bAIFS;
+-	u32 u4bAcParam;
+-	u32 op_limit;
+-	u32 cw_max;
+-	u32 cw_min;
+-	int i;
+-
+-	mutex_lock(&priv->mutex);
+-	if (priv->ieee80211->state != IEEE80211_LINKED)
+-		goto success;
+-	RT_TRACE(COMP_QOS,
+-		 "qos active process with associate response received\n");
+-	/* It better set slot time at first
+-	 *
+-	 * For we just support b/g mode at present, let the slot time at
+-	 * 9/20 selection
+-	 *
+-	 * update the ac parameter to related registers
+-	 */
+-	for (i = 0; i <  QOS_QUEUE_NUM; i++) {
+-		/* Mode G/A: slotTimeTimer = 9; Mode B: 20 */
+-		u1bAIFS = qos_parameters->aifs[i] * ((mode & (IEEE_G | IEEE_N_24G)) ? 9 : 20) + aSifsTime;
+-		u1bAIFS <<= AC_PARAM_AIFS_OFFSET;
+-		op_limit = (u32)le16_to_cpu(qos_parameters->tx_op_limit[i]);
+-		op_limit <<= AC_PARAM_TXOP_LIMIT_OFFSET;
+-		cw_max = (u32)le16_to_cpu(qos_parameters->cw_max[i]);
+-		cw_max <<= AC_PARAM_ECW_MAX_OFFSET;
+-		cw_min = (u32)le16_to_cpu(qos_parameters->cw_min[i]);
+-		cw_min <<= AC_PARAM_ECW_MIN_OFFSET;
+-		u4bAcParam = op_limit | cw_max | cw_min | u1bAIFS;
+-		write_nic_dword(dev, WDCAPARA_ADD[i], u4bAcParam);
+-	}
+-
+-success:
+-	mutex_unlock(&priv->mutex);
+-}
+-
+-static int rtl8192_qos_handle_probe_response(struct r8192_priv *priv,
+-					     int active_network,
+-					     struct ieee80211_network *network)
+-{
+-	int ret = 0;
+-	u32 size = sizeof(struct ieee80211_qos_parameters);
+-
+-	if (priv->ieee80211->state != IEEE80211_LINKED)
+-		return ret;
+-
+-	if (priv->ieee80211->iw_mode != IW_MODE_INFRA)
+-		return ret;
+-
+-	if (network->flags & NETWORK_HAS_QOS_MASK) {
+-		if (active_network &&
+-		    (network->flags & NETWORK_HAS_QOS_PARAMETERS))
+-			network->qos_data.active = network->qos_data.supported;
+-
+-		if ((network->qos_data.active == 1) && (active_network == 1) &&
+-		    (network->flags & NETWORK_HAS_QOS_PARAMETERS) &&
+-		    (network->qos_data.old_param_count !=
+-		     network->qos_data.param_count)) {
+-			network->qos_data.old_param_count =
+-				network->qos_data.param_count;
+-			schedule_work(&priv->qos_activate);
+-			RT_TRACE(COMP_QOS,
+-				 "QoS parameters change call qos_activate\n");
+-		}
+-	} else {
+-		memcpy(&priv->ieee80211->current_network.qos_data.parameters,
+-		       &def_qos_parameters, size);
+-
+-		if ((network->qos_data.active == 1) && (active_network == 1)) {
+-			schedule_work(&priv->qos_activate);
+-			RT_TRACE(COMP_QOS,
+-				 "QoS was disabled call qos_activate\n");
+-		}
+-		network->qos_data.active = 0;
+-		network->qos_data.supported = 0;
+-	}
+-
+-	return 0;
+-}
+-
+-/* handle and manage frame from beacon and probe response */
+-static int rtl8192_handle_beacon(struct net_device *dev,
+-				 struct ieee80211_beacon *beacon,
+-				 struct ieee80211_network *network)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	rtl8192_qos_handle_probe_response(priv, 1, network);
+-	schedule_delayed_work(&priv->update_beacon_wq, 0);
+-	return 0;
+-}
+-
+-/*
+- * handling the beaconing responses. if we get different QoS setting
+- * off the network from the associated setting, adjust the QoS
+- * setting
+- */
+-static int rtl8192_qos_association_resp(struct r8192_priv *priv,
+-					struct ieee80211_network *network)
+-{
+-	unsigned long flags;
+-	u32 size = sizeof(struct ieee80211_qos_parameters);
+-	int set_qos_param = 0;
+-
+-	if (!priv || !network)
+-		return 0;
+-
+-	if (priv->ieee80211->state != IEEE80211_LINKED)
+-		return 0;
+-
+-	if (priv->ieee80211->iw_mode != IW_MODE_INFRA)
+-		return 0;
+-
+-	spin_lock_irqsave(&priv->ieee80211->lock, flags);
+-	if (network->flags & NETWORK_HAS_QOS_PARAMETERS) {
+-		memcpy(&priv->ieee80211->current_network.qos_data.parameters,
+-		       &network->qos_data.parameters,
+-		       sizeof(struct ieee80211_qos_parameters));
+-		priv->ieee80211->current_network.qos_data.active = 1;
+-		set_qos_param = 1;
+-		/* update qos parameter for current network */
+-		priv->ieee80211->current_network.qos_data.old_param_count =
+-			priv->ieee80211->current_network.qos_data.param_count;
+-		priv->ieee80211->current_network.qos_data.param_count =
+-			network->qos_data.param_count;
+-	} else {
+-		memcpy(&priv->ieee80211->current_network.qos_data.parameters,
+-		       &def_qos_parameters, size);
+-		priv->ieee80211->current_network.qos_data.active = 0;
+-		priv->ieee80211->current_network.qos_data.supported = 0;
+-		set_qos_param = 1;
+-	}
+-
+-	spin_unlock_irqrestore(&priv->ieee80211->lock, flags);
+-
+-	RT_TRACE(COMP_QOS, "%s: network->flags = %d,%d\n", __func__,
+-		 network->flags,
+-		 priv->ieee80211->current_network.qos_data.active);
+-	if (set_qos_param == 1)
+-		schedule_work(&priv->qos_activate);
+-
+-	return 0;
+-}
+-
+-static int rtl8192_handle_assoc_response(struct net_device *dev,
+-					 struct ieee80211_assoc_response_frame *resp,
+-					 struct ieee80211_network *network)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	rtl8192_qos_association_resp(priv, network);
+-	return 0;
+-}
+-
+-static void rtl8192_update_ratr_table(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	struct ieee80211_device *ieee = priv->ieee80211;
+-	u8 *pMcsRate = ieee->dot11HTOperationalRateSet;
+-	u32 ratr_value = 0;
+-	u8 rate_index = 0;
+-
+-	rtl8192_config_rate(dev, (u16 *)(&ratr_value));
+-	ratr_value |= (*(u16 *)(pMcsRate)) << 12;
+-	switch (ieee->mode) {
+-	case IEEE_A:
+-		ratr_value &= 0x00000FF0;
+-		break;
+-	case IEEE_B:
+-		ratr_value &= 0x0000000F;
+-		break;
+-	case IEEE_G:
+-		ratr_value &= 0x00000FF7;
+-		break;
+-	case IEEE_N_24G:
+-	case IEEE_N_5G:
+-		if (ieee->pHTInfo->PeerMimoPs == MIMO_PS_STATIC) {
+-			ratr_value &= 0x0007F007;
+-		} else {
+-			if (priv->rf_type == RF_1T2R)
+-				ratr_value &= 0x000FF007;
+-			else
+-				ratr_value &= 0x0F81F007;
+-		}
+-		break;
+-	default:
+-		break;
+-	}
+-	ratr_value &= 0x0FFFFFFF;
+-	if (ieee->pHTInfo->bCurTxBW40MHz && ieee->pHTInfo->bCurShortGI40MHz)
+-		ratr_value |= 0x80000000;
+-	else if (!ieee->pHTInfo->bCurTxBW40MHz &&
+-		 ieee->pHTInfo->bCurShortGI20MHz)
+-		ratr_value |= 0x80000000;
+-	write_nic_dword(dev, RATR0 + rate_index * 4, ratr_value);
+-	write_nic_byte(dev, UFWP, 1);
+-}
+-
+-static u8 ccmp_ie[4] = {0x00, 0x50, 0xf2, 0x04};
+-static u8 ccmp_rsn_ie[4] = {0x00, 0x0f, 0xac, 0x04};
+-static bool GetNmodeSupportBySecCfg8192(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	struct ieee80211_device *ieee = priv->ieee80211;
+-	struct ieee80211_network *network = &ieee->current_network;
+-	int wpa_ie_len = ieee->wpa_ie_len;
+-	struct ieee80211_crypt_data *crypt;
+-	int encrypt;
+-
+-	crypt = ieee->crypt[ieee->tx_keyidx];
+-	/* we use connecting AP's capability instead of only security config
+-	 * on our driver to distinguish whether it should use N mode or G mode
+-	 */
+-	encrypt = (network->capability & WLAN_CAPABILITY_PRIVACY) ||
+-		  (ieee->host_encrypt && crypt && crypt->ops &&
+-		   (strcmp(crypt->ops->name, "WEP") == 0));
+-
+-	/* simply judge  */
+-	if (encrypt && (wpa_ie_len == 0)) {
+-		/* wep encryption, no N mode setting */
+-		return false;
+-	} else if ((wpa_ie_len != 0)) {
+-		/* parse pairwise key type */
+-		if (((ieee->wpa_ie[0] == 0xdd) && (!memcmp(&(ieee->wpa_ie[14]), ccmp_ie, 4))) || ((ieee->wpa_ie[0] == 0x30) && (!memcmp(&ieee->wpa_ie[10], ccmp_rsn_ie, 4))))
+-			return true;
+-		else
+-			return false;
+-	} else {
+-		return true;
+-	}
+-
+-	return true;
+-}
+-
+-static bool GetHalfNmodeSupportByAPs819xUsb(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	return priv->ieee80211->bHalfWirelessN24GMode;
+-}
+-
+-static void rtl8192_refresh_supportrate(struct r8192_priv *priv)
+-{
+-	struct ieee80211_device *ieee = priv->ieee80211;
+-	/* We do not consider set support rate for ABG mode, only
+-	 * HT MCS rate is set here.
+-	 */
+-	if (ieee->mode == WIRELESS_MODE_N_24G ||
+-	    ieee->mode == WIRELESS_MODE_N_5G)
+-		memcpy(ieee->Regdot11HTOperationalRateSet,
+-		       ieee->RegHTSuppRateSet, 16);
+-	else
+-		memset(ieee->Regdot11HTOperationalRateSet, 0, 16);
+-}
+-
+-static u8 rtl8192_getSupportedWireleeMode(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u8 ret = 0;
+-
+-	switch (priv->rf_chip) {
+-	case RF_8225:
+-	case RF_8256:
+-	case RF_PSEUDO_11N:
+-		ret = WIRELESS_MODE_N_24G | WIRELESS_MODE_G | WIRELESS_MODE_B;
+-		break;
+-	case RF_8258:
+-		ret = WIRELESS_MODE_A | WIRELESS_MODE_N_5G;
+-		break;
+-	default:
+-		ret = WIRELESS_MODE_B;
+-		break;
+-	}
+-	return ret;
+-}
+-
+-static void rtl8192_SetWirelessMode(struct net_device *dev, u8 wireless_mode)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u8 bSupportMode = rtl8192_getSupportedWireleeMode(dev);
+-
+-	if (wireless_mode == WIRELESS_MODE_AUTO ||
+-	    (wireless_mode & bSupportMode) == 0) {
+-		if (bSupportMode & WIRELESS_MODE_N_24G) {
+-			wireless_mode = WIRELESS_MODE_N_24G;
+-		} else if (bSupportMode & WIRELESS_MODE_N_5G) {
+-			wireless_mode = WIRELESS_MODE_N_5G;
+-		} else if ((bSupportMode & WIRELESS_MODE_A)) {
+-			wireless_mode = WIRELESS_MODE_A;
+-		} else if ((bSupportMode & WIRELESS_MODE_G)) {
+-			wireless_mode = WIRELESS_MODE_G;
+-		} else if ((bSupportMode & WIRELESS_MODE_B)) {
+-			wireless_mode = WIRELESS_MODE_B;
+-		} else {
+-			RT_TRACE(COMP_ERR,
+-				 "%s(), No valid wireless mode supported, SupportedWirelessMode(%x)!!!\n",
+-				 __func__, bSupportMode);
+-			wireless_mode = WIRELESS_MODE_B;
+-		}
+-	}
+-	priv->ieee80211->mode = wireless_mode;
+-
+-	if (wireless_mode == WIRELESS_MODE_N_24G ||
+-	    wireless_mode == WIRELESS_MODE_N_5G)
+-		priv->ieee80211->pHTInfo->bEnableHT = 1;
+-	else
+-		priv->ieee80211->pHTInfo->bEnableHT = 0;
+-	RT_TRACE(COMP_INIT, "Current Wireless Mode is %x\n", wireless_mode);
+-	rtl8192_refresh_supportrate(priv);
+-}
+-
+-/* init priv variables here. only non_zero value should be initialized here. */
+-static int rtl8192_init_priv_variable(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u8 i;
+-
+-	priv->card_8192 = NIC_8192U;
+-	priv->chan = 1; /* set to channel 1 */
+-	priv->ieee80211->mode = WIRELESS_MODE_AUTO; /* SET AUTO */
+-	priv->ieee80211->iw_mode = IW_MODE_INFRA;
+-	priv->ieee80211->ieee_up = 0;
+-	priv->retry_rts = DEFAULT_RETRY_RTS;
+-	priv->retry_data = DEFAULT_RETRY_DATA;
+-	priv->ieee80211->rts = DEFAULT_RTS_THRESHOLD;
+-	priv->ieee80211->rate = 110; /* 11 mbps */
+-	priv->ieee80211->short_slot = 1;
+-	priv->promisc = (dev->flags & IFF_PROMISC) ? 1 : 0;
+-	priv->CckPwEnl = 6;
+-	/* for silent reset */
+-	priv->IrpPendingCount = 1;
+-	priv->ResetProgress = RESET_TYPE_NORESET;
+-	priv->bForcedSilentReset = false;
+-	priv->bDisableNormalResetCheck = false;
+-	priv->force_reset = false;
+-
+-	/* we don't use FW read/write RF until stable firmware is available. */
+-	priv->ieee80211->FwRWRF = 0;
+-	priv->ieee80211->current_network.beacon_interval =
+-		DEFAULT_BEACONINTERVAL;
+-	priv->ieee80211->softmac_features  = IEEE_SOFTMAC_SCAN |
+-		IEEE_SOFTMAC_ASSOCIATE | IEEE_SOFTMAC_PROBERQ |
+-		IEEE_SOFTMAC_PROBERS | IEEE_SOFTMAC_TX_QUEUE |
+-		IEEE_SOFTMAC_BEACONS;
+-
+-	priv->ieee80211->active_scan = 1;
+-	priv->ieee80211->modulation =
+-		IEEE80211_CCK_MODULATION | IEEE80211_OFDM_MODULATION;
+-	priv->ieee80211->host_encrypt = 1;
+-	priv->ieee80211->host_decrypt = 1;
+-	priv->ieee80211->start_send_beacons = NULL;
+-	priv->ieee80211->stop_send_beacons = NULL;
+-	priv->ieee80211->softmac_hard_start_xmit = rtl8192_hard_start_xmit;
+-	priv->ieee80211->set_chan = rtl8192_set_chan;
+-	priv->ieee80211->link_change = rtl8192_link_change;
+-	priv->ieee80211->softmac_data_hard_start_xmit = rtl8192_hard_data_xmit;
+-	priv->ieee80211->data_hard_stop = rtl8192_data_hard_stop;
+-	priv->ieee80211->data_hard_resume = rtl8192_data_hard_resume;
+-	priv->ieee80211->init_wmmparam_flag = 0;
+-	priv->ieee80211->fts = DEFAULT_FRAG_THRESHOLD;
+-	priv->ieee80211->check_nic_enough_desc = check_nic_enough_desc;
+-	priv->ieee80211->tx_headroom = TX_PACKET_SHIFT_BYTES;
+-	priv->ieee80211->qos_support = 1;
+-
+-	priv->ieee80211->SetBWModeHandler = rtl8192_SetBWMode;
+-	priv->ieee80211->handle_assoc_response = rtl8192_handle_assoc_response;
+-	priv->ieee80211->handle_beacon = rtl8192_handle_beacon;
+-
+-	priv->ieee80211->GetNmodeSupportBySecCfg = GetNmodeSupportBySecCfg8192;
+-	priv->ieee80211->GetHalfNmodeSupportByAPsHandler =
+-		GetHalfNmodeSupportByAPs819xUsb;
+-	priv->ieee80211->SetWirelessMode = rtl8192_SetWirelessMode;
+-
+-	priv->ieee80211->InitialGainHandler = InitialGain819xUsb;
+-	priv->card_type = USB;
+-	priv->ShortRetryLimit = 0x30;
+-	priv->LongRetryLimit = 0x30;
+-	priv->EarlyRxThreshold = 7;
+-	priv->enable_gpio0 = 0;
+-	priv->TransmitConfig =
+-		/* Max DMA Burst Size per Tx DMA Burst, 7: reserved. */
+-		(TCR_MXDMA_2048 << TCR_MXDMA_OFFSET)	  |
+-		/* Short retry limit */
+-		(priv->ShortRetryLimit << TCR_SRL_OFFSET) |
+-		/* Long retry limit */
+-		(priv->LongRetryLimit << TCR_LRL_OFFSET)  |
+-		/* FALSE: HW provides PLCP length and LENGEXT
+-		 * TRUE: SW provides them
+-		 */
+-		(false ? TCR_SAT : 0);
+-	priv->ReceiveConfig	=
+-		/* accept management/data */
+-		RCR_AMF | RCR_ADF |
+-		/* accept control frame for SW AP needs PS-poll */
+-		RCR_ACF |
+-		/* accept BC/MC/UC */
+-		RCR_AB | RCR_AM | RCR_APM |
+-		/* Max DMA Burst Size per Rx DMA Burst, 7: unlimited. */
+-		((u32)7 << RCR_MXDMA_OFFSET) |
+-		/* Rx FIFO Threshold, 7: No Rx threshold. */
+-		(priv->EarlyRxThreshold << RX_FIFO_THRESHOLD_SHIFT) |
+-		(priv->EarlyRxThreshold == 7 ? RCR_ONLYERLPKT : 0);
+-
+-	priv->AcmControl = 0;
+-	priv->pFirmware = kzalloc(sizeof(rt_firmware), GFP_KERNEL);
+-	if (!priv->pFirmware)
+-		return -ENOMEM;
+-
+-	/* rx related queue */
+-	skb_queue_head_init(&priv->rx_queue);
+-	skb_queue_head_init(&priv->skb_queue);
+-
+-	/* Tx related queue */
+-	for (i = 0; i < MAX_QUEUE_SIZE; i++)
+-		skb_queue_head_init(&priv->ieee80211->skb_waitQ[i]);
+-	for (i = 0; i < MAX_QUEUE_SIZE; i++)
+-		skb_queue_head_init(&priv->ieee80211->skb_aggQ[i]);
+-	for (i = 0; i < MAX_QUEUE_SIZE; i++)
+-		skb_queue_head_init(&priv->ieee80211->skb_drv_aggQ[i]);
+-	priv->rf_set_chan = rtl8192_phy_SwChnl;
+-
+-	return 0;
+-}
+-
+-/* init lock here */
+-static void rtl8192_init_priv_lock(struct r8192_priv *priv)
+-{
+-	spin_lock_init(&priv->tx_lock);
+-	spin_lock_init(&priv->irq_lock);
+-	mutex_init(&priv->wx_mutex);
+-	mutex_init(&priv->mutex);
+-}
+-
+-static void rtl819x_watchdog_wqcallback(struct work_struct *work);
+-
+-static void rtl8192_irq_rx_tasklet(struct tasklet_struct *t);
+-/* init tasklet and wait_queue here. only 2.6 above kernel is considered */
+-#define DRV_NAME "wlan0"
+-static void rtl8192_init_priv_task(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	INIT_WORK(&priv->reset_wq, rtl8192_restart);
+-
+-	INIT_DELAYED_WORK(&priv->watch_dog_wq,
+-			  rtl819x_watchdog_wqcallback);
+-	INIT_DELAYED_WORK(&priv->txpower_tracking_wq,
+-			  dm_txpower_trackingcallback);
+-	INIT_DELAYED_WORK(&priv->rfpath_check_wq,
+-			  dm_rf_pathcheck_workitemcallback);
+-	INIT_DELAYED_WORK(&priv->update_beacon_wq,
+-			  rtl8192_update_beacon);
+-	INIT_DELAYED_WORK(&priv->initialgain_operate_wq,
+-			  InitialGainOperateWorkItemCallBack);
+-	INIT_WORK(&priv->qos_activate, rtl8192_qos_activate);
+-
+-	tasklet_setup(&priv->irq_rx_tasklet, rtl8192_irq_rx_tasklet);
+-}
+-
+-static void rtl8192_get_eeprom_size(struct net_device *dev)
+-{
+-	u16 curCR = 0;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	RT_TRACE(COMP_EPROM, "===========>%s()\n", __func__);
+-	read_nic_word_E(dev, EPROM_CMD, &curCR);
+-	RT_TRACE(COMP_EPROM,
+-		 "read from Reg EPROM_CMD(%x):%x\n", EPROM_CMD, curCR);
+-	/* whether need I consider BIT(5?) */
+-	priv->epromtype =
+-		(curCR & Cmd9346CR_9356SEL) ? EPROM_93c56 : EPROM_93c46;
+-	RT_TRACE(COMP_EPROM,
+-		 "<===========%s(), epromtype:%d\n", __func__, priv->epromtype);
+-}
+-
+-/* used to swap endian. as ntohl & htonl are not necessary
+- * to swap endian, so use this instead.
+- */
+-static inline u16 endian_swap(u16 *data)
+-{
+-	u16 tmp = *data;
+-	*data = (tmp >> 8) | (tmp << 8);
+-	return *data;
+-}
+-
+-static int rtl8192_read_eeprom_info(struct net_device *dev)
+-{
+-	u16 wEPROM_ID = 0;
+-	u8 bMac_Tmp_Addr[6] = {0x00, 0xe0, 0x4c, 0x00, 0x00, 0x02};
+-	u8 bLoad_From_EEPOM = false;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u16 tmpValue = 0;
+-	int i;
+-	int ret;
+-
+-	RT_TRACE(COMP_EPROM, "===========>%s()\n", __func__);
+-	ret = eprom_read(dev, 0); /* first read EEPROM ID out; */
+-	if (ret < 0)
+-		return ret;
+-	wEPROM_ID = (u16)ret;
+-	RT_TRACE(COMP_EPROM, "EEPROM ID is 0x%x\n", wEPROM_ID);
+-
+-	if (wEPROM_ID != RTL8190_EEPROM_ID)
+-		RT_TRACE(COMP_ERR,
+-			 "EEPROM ID is invalid(is 0x%x(should be 0x%x)\n",
+-			 wEPROM_ID, RTL8190_EEPROM_ID);
+-	else
+-		bLoad_From_EEPOM = true;
+-
+-	if (bLoad_From_EEPOM) {
+-		tmpValue = eprom_read(dev, EEPROM_VID >> 1);
+-		ret = eprom_read(dev, EEPROM_VID >> 1);
+-		if (ret < 0)
+-			return ret;
+-		tmpValue = (u16)ret;
+-		priv->eeprom_vid = endian_swap(&tmpValue);
+-		ret = eprom_read(dev, EEPROM_PID >> 1);
+-		if (ret < 0)
+-			return ret;
+-		priv->eeprom_pid = (u16)ret;
+-		ret = eprom_read(dev, EEPROM_CHANNEL_PLAN >> 1);
+-		if (ret < 0)
+-			return ret;
+-		tmpValue = (u16)ret;
+-		priv->eeprom_ChannelPlan = (tmpValue & 0xff00) >> 8;
+-		priv->btxpowerdata_readfromEEPORM = true;
+-		ret = eprom_read(dev, (EEPROM_CUSTOMER_ID >> 1)) >> 8;
+-		if (ret < 0)
+-			return ret;
+-		priv->eeprom_CustomerID = (u16)ret;
+-	} else {
+-		priv->eeprom_vid = 0;
+-		priv->eeprom_pid = 0;
+-		priv->card_8192_version = VERSION_819XU_B;
+-		priv->eeprom_ChannelPlan = 0;
+-		priv->eeprom_CustomerID = 0;
+-	}
+-	RT_TRACE(COMP_EPROM,
+-		 "vid:0x%4x, pid:0x%4x, CustomID:0x%2x, ChanPlan:0x%x\n",
+-		 priv->eeprom_vid, priv->eeprom_pid, priv->eeprom_CustomerID,
+-		 priv->eeprom_ChannelPlan);
+-	/* set channelplan from eeprom */
+-	priv->ChannelPlan = priv->eeprom_ChannelPlan;
+-	if (bLoad_From_EEPOM) {
+-		u8 addr[ETH_ALEN];
+-
+-		for (i = 0; i < 6; i += 2) {
+-			ret = eprom_read(dev, (u16)((EEPROM_NODE_ADDRESS_BYTE_0 + i) >> 1));
+-			if (ret < 0)
+-				return ret;
+-			*(u16 *)(&addr[i]) = (u16)ret;
+-		}
+-		eth_hw_addr_set(dev, addr);
+-	} else {
+-		eth_hw_addr_set(dev, bMac_Tmp_Addr);
+-		/* should I set IDR0 here? */
+-	}
+-	RT_TRACE(COMP_EPROM, "MAC addr:%pM\n", dev->dev_addr);
+-	priv->rf_type = RTL819X_DEFAULT_RF_TYPE; /* default 1T2R */
+-	priv->rf_chip = RF_8256;
+-
+-	if (priv->card_8192_version == VERSION_819XU_A) {
+-		/* read Tx power gain offset of legacy OFDM to HT rate */
+-		if (bLoad_From_EEPOM) {
+-			ret = eprom_read(dev, (EEPROM_TX_POWER_DIFF >> 1));
+-			if (ret < 0)
+-				return ret;
+-			priv->EEPROMTxPowerDiff = ((u16)ret & 0xff00) >> 8;
+-		} else
+-			priv->EEPROMTxPowerDiff = EEPROM_DEFAULT_TX_POWER;
+-		RT_TRACE(COMP_EPROM, "TxPowerDiff:%d\n", priv->EEPROMTxPowerDiff);
+-		/* read ThermalMeter from EEPROM */
+-		if (bLoad_From_EEPOM) {
+-			ret = eprom_read(dev, (EEPROM_THERMAL_METER >> 1));
+-			if (ret < 0)
+-				return ret;
+-			priv->EEPROMThermalMeter = (u8)((u16)ret & 0x00ff);
+-		} else
+-			priv->EEPROMThermalMeter = EEPROM_DEFAULT_THERNAL_METER;
+-		RT_TRACE(COMP_EPROM, "ThermalMeter:%d\n", priv->EEPROMThermalMeter);
+-		/* for tx power track */
+-		priv->TSSI_13dBm = priv->EEPROMThermalMeter * 100;
+-		/* read antenna tx power offset of B/C/D to A from EEPROM */
+-		if (bLoad_From_EEPOM) {
+-			ret = eprom_read(dev, (EEPROM_PW_DIFF >> 1));
+-			if (ret < 0)
+-				return ret;
+-			priv->EEPROMPwDiff = ((u16)ret & 0x0f00) >> 8;
+-		} else
+-			priv->EEPROMPwDiff = EEPROM_DEFAULT_PW_DIFF;
+-		RT_TRACE(COMP_EPROM, "TxPwDiff:%d\n", priv->EEPROMPwDiff);
+-		/* Read CrystalCap from EEPROM */
+-		if (bLoad_From_EEPOM) {
+-			ret = eprom_read(dev, (EEPROM_CRYSTAL_CAP >> 1));
+-			if (ret < 0)
+-				return ret;
+-			priv->EEPROMCrystalCap = (u16)ret & 0x0f;
+-		} else
+-			priv->EEPROMCrystalCap = EEPROM_DEFAULT_CRYSTAL_CAP;
+-		RT_TRACE(COMP_EPROM, "CrystalCap = %d\n", priv->EEPROMCrystalCap);
+-		/* get per-channel Tx power level */
+-		if (bLoad_From_EEPOM) {
+-			ret = eprom_read(dev, (EEPROM_TX_PW_INDEX_VER >> 1));
+-			if (ret < 0)
+-				return ret;
+-			priv->EEPROM_Def_Ver = ((u16)ret & 0xff00) >> 8;
+-		} else
+-			priv->EEPROM_Def_Ver = 1;
+-		RT_TRACE(COMP_EPROM, "EEPROM_DEF_VER:%d\n", priv->EEPROM_Def_Ver);
+-		if (priv->EEPROM_Def_Ver == 0) { /* old eeprom definition */
+-			if (bLoad_From_EEPOM) {
+-				ret = eprom_read(dev, (EEPROM_TX_PW_INDEX_CCK >> 1));
+-				if (ret < 0)
+-					return ret;
+-				priv->EEPROMTxPowerLevelCCK = ((u16)ret & 0xff00) >> 8;
+-			} else
+-				priv->EEPROMTxPowerLevelCCK = 0x10;
+-			RT_TRACE(COMP_EPROM, "CCK Tx Power Levl: 0x%02x\n", priv->EEPROMTxPowerLevelCCK);
+-			for (i = 0; i < 3; i++) {
+-				if (bLoad_From_EEPOM) {
+-					ret = eprom_read(dev, (EEPROM_TX_PW_INDEX_OFDM_24G + i) >> 1);
+-					if (ret < 0)
+-						return ret;
+-					if (((EEPROM_TX_PW_INDEX_OFDM_24G + i) % 2) == 0)
+-						tmpValue = (u16)ret & 0x00ff;
+-					else
+-						tmpValue = ((u16)ret & 0xff00) >> 8;
+-				} else {
+-					tmpValue = 0x10;
+-				}
+-				priv->EEPROMTxPowerLevelOFDM24G[i] = (u8)tmpValue;
+-				RT_TRACE(COMP_EPROM, "OFDM 2.4G Tx Power Level, Index %d = 0x%02x\n", i, priv->EEPROMTxPowerLevelCCK);
+-			}
+-		} else if (priv->EEPROM_Def_Ver == 1) {
+-			if (bLoad_From_EEPOM) {
+-				ret = eprom_read(dev, EEPROM_TX_PW_INDEX_CCK_V1 >> 1);
+-				if (ret < 0)
+-					return ret;
+-				tmpValue = ((u16)ret & 0xff00) >> 8;
+-			} else {
+-				tmpValue = 0x10;
+-			}
+-			priv->EEPROMTxPowerLevelCCK_V1[0] = (u8)tmpValue;
+-
+-			if (bLoad_From_EEPOM) {
+-				ret = eprom_read(dev, (EEPROM_TX_PW_INDEX_CCK_V1 + 2) >> 1);
+-				if (ret < 0)
+-					return ret;
+-				tmpValue = (u16)ret;
+-			} else
+-				tmpValue = 0x1010;
+-			*((u16 *)(&priv->EEPROMTxPowerLevelCCK_V1[1])) = tmpValue;
+-			if (bLoad_From_EEPOM)
+-				tmpValue = eprom_read(dev,
+-					EEPROM_TX_PW_INDEX_OFDM_24G_V1 >> 1);
+-			else
+-				tmpValue = 0x1010;
+-			*((u16 *)(&priv->EEPROMTxPowerLevelOFDM24G[0])) = tmpValue;
+-			if (bLoad_From_EEPOM)
+-				tmpValue = eprom_read(dev, (EEPROM_TX_PW_INDEX_OFDM_24G_V1 + 2) >> 1);
+-			else
+-				tmpValue = 0x10;
+-			priv->EEPROMTxPowerLevelOFDM24G[2] = (u8)tmpValue;
+-		} /* endif EEPROM_Def_Ver == 1 */
+-
+-		/* update HAL variables */
+-		for (i = 0; i < 14; i++) {
+-			if (i <= 3)
+-				priv->TxPowerLevelOFDM24G[i] = priv->EEPROMTxPowerLevelOFDM24G[0];
+-			else if (i >= 4 && i <= 9)
+-				priv->TxPowerLevelOFDM24G[i] = priv->EEPROMTxPowerLevelOFDM24G[1];
+-			else
+-				priv->TxPowerLevelOFDM24G[i] = priv->EEPROMTxPowerLevelOFDM24G[2];
+-		}
+-
+-		for (i = 0; i < 14; i++) {
+-			if (priv->EEPROM_Def_Ver == 0) {
+-				if (i <= 3)
+-					priv->TxPowerLevelCCK[i] = priv->EEPROMTxPowerLevelOFDM24G[0] + (priv->EEPROMTxPowerLevelCCK - priv->EEPROMTxPowerLevelOFDM24G[1]);
+-				else if (i >= 4 && i <= 9)
+-					priv->TxPowerLevelCCK[i] = priv->EEPROMTxPowerLevelCCK;
+-				else
+-					priv->TxPowerLevelCCK[i] = priv->EEPROMTxPowerLevelOFDM24G[2] + (priv->EEPROMTxPowerLevelCCK - priv->EEPROMTxPowerLevelOFDM24G[1]);
+-			} else if (priv->EEPROM_Def_Ver == 1) {
+-				if (i <= 3)
+-					priv->TxPowerLevelCCK[i] = priv->EEPROMTxPowerLevelCCK_V1[0];
+-				else if (i >= 4 && i <= 9)
+-					priv->TxPowerLevelCCK[i] = priv->EEPROMTxPowerLevelCCK_V1[1];
+-				else
+-					priv->TxPowerLevelCCK[i] = priv->EEPROMTxPowerLevelCCK_V1[2];
+-			}
+-		}
+-		priv->TxPowerDiff = priv->EEPROMPwDiff;
+-		/* Antenna B gain offset to antenna A, bit0~3 */
+-		priv->AntennaTxPwDiff[0] = (priv->EEPROMTxPowerDiff & 0xf);
+-		/* Antenna C gain offset to antenna A, bit4~7 */
+-		priv->AntennaTxPwDiff[1] =
+-			(priv->EEPROMTxPowerDiff & 0xf0) >> 4;
+-		/* CrystalCap, bit12~15 */
+-		priv->CrystalCap = priv->EEPROMCrystalCap;
+-		/* ThermalMeter, bit0~3 for RFIC1, bit4~7 for RFIC2
+-		 * 92U does not enable TX power tracking.
+-		 */
+-		priv->ThermalMeter[0] = priv->EEPROMThermalMeter;
+-	} /* end if VersionID == VERSION_819XU_A */
+-
+-	/* for dlink led */
+-	switch (priv->eeprom_CustomerID) {
+-	case EEPROM_CID_RUNTOP:
+-		priv->CustomerID = RT_CID_819x_RUNTOP;
+-		break;
+-
+-	case EEPROM_CID_DLINK:
+-		priv->CustomerID = RT_CID_DLINK;
+-		break;
+-
+-	default:
+-		priv->CustomerID = RT_CID_DEFAULT;
+-		break;
+-	}
+-
+-	switch (priv->CustomerID) {
+-	case RT_CID_819x_RUNTOP:
+-		priv->LedStrategy = SW_LED_MODE2;
+-		break;
+-
+-	case RT_CID_DLINK:
+-		priv->LedStrategy = SW_LED_MODE4;
+-		break;
+-
+-	default:
+-		priv->LedStrategy = SW_LED_MODE0;
+-		break;
+-	}
+-
+-	if (priv->rf_type == RF_1T2R)
+-		RT_TRACE(COMP_EPROM, "\n1T2R config\n");
+-	else
+-		RT_TRACE(COMP_EPROM, "\n2T4R config\n");
+-
+-	/* We can only know RF type in the function. So we have to init
+-	 * DIG RATR table again.
+-	 */
+-	init_rate_adaptive(dev);
+-
+-	RT_TRACE(COMP_EPROM, "<===========%s()\n", __func__);
+-
+-	return 0;
+-}
+-
+-static short rtl8192_get_channel_map(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	if (priv->ChannelPlan > COUNTRY_CODE_GLOBAL_DOMAIN) {
+-		netdev_err(dev,
+-			   "rtl8180_init: Error channel plan! Set to default.\n");
+-		priv->ChannelPlan = 0;
+-	}
+-	RT_TRACE(COMP_INIT, "Channel plan is %d\n", priv->ChannelPlan);
+-
+-	rtl819x_set_channel_map(priv->ChannelPlan, priv);
+-	return 0;
+-}
+-
+-static short rtl8192_init(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	int err;
+-
+-	memset(&(priv->stats), 0, sizeof(struct Stats));
+-	memset(priv->txqueue_to_outpipemap, 0, 9);
+-#ifdef PIPE12
+-	{
+-		int i = 0;
+-		static const u8 queuetopipe[] = {3, 2, 1, 0, 4, 8, 7, 6, 5};
+-
+-		memcpy(priv->txqueue_to_outpipemap, queuetopipe, 9);
+-	}
+-#else
+-	{
+-		static const u8 queuetopipe[] = {3, 2, 1, 0, 4, 4, 0, 4, 4};
+-
+-		memcpy(priv->txqueue_to_outpipemap, queuetopipe, 9);
+-	}
+-#endif
+-	err = rtl8192_init_priv_variable(dev);
+-	if (err)
+-		return err;
+-
+-	rtl8192_init_priv_lock(priv);
+-	rtl8192_init_priv_task(dev);
+-	rtl8192_get_eeprom_size(dev);
+-	err = rtl8192_read_eeprom_info(dev);
+-	if (err) {
+-		DMESG("Reading EEPROM info failed");
+-		return err;
+-	}
+-	rtl8192_get_channel_map(dev);
+-	init_hal_dm(dev);
+-	timer_setup(&priv->watch_dog_timer, watch_dog_timer_callback, 0);
+-	if (rtl8192_usb_initendpoints(dev) != 0) {
+-		DMESG("Endopoints initialization failed");
+-		return -ENOMEM;
+-	}
+-
+-	return 0;
+-}
+-
+-/******************************************************************************
+- *function:  This function actually only set RRSR, RATR and BW_OPMODE registers
+- *	     not to do all the hw config as its name says
+- *   input:  net_device dev
+- *  output:  none
+- *  return:  none
+- *  notice:  This part need to modified according to the rate set we filtered
+- * ****************************************************************************/
+-static void rtl8192_hwconfig(struct net_device *dev)
+-{
+-	u32 regRATR = 0, regRRSR = 0;
+-	u8 regBwOpMode = 0, regTmp = 0;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u32 ratr_value = 0;
+-
+-	/* Set RRSR, RATR, and BW_OPMODE registers */
+-	switch (priv->ieee80211->mode) {
+-	case WIRELESS_MODE_B:
+-		regBwOpMode = BW_OPMODE_20MHZ;
+-		regRATR = RATE_ALL_CCK;
+-		regRRSR = RATE_ALL_CCK;
+-		break;
+-	case WIRELESS_MODE_A:
+-		regBwOpMode = BW_OPMODE_5G | BW_OPMODE_20MHZ;
+-		regRATR = RATE_ALL_OFDM_AG;
+-		regRRSR = RATE_ALL_OFDM_AG;
+-		break;
+-	case WIRELESS_MODE_G:
+-		regBwOpMode = BW_OPMODE_20MHZ;
+-		regRATR = RATE_ALL_CCK | RATE_ALL_OFDM_AG;
+-		regRRSR = RATE_ALL_CCK | RATE_ALL_OFDM_AG;
+-		break;
+-	case WIRELESS_MODE_AUTO:
+-		regBwOpMode = BW_OPMODE_20MHZ;
+-		regRATR = RATE_ALL_CCK | RATE_ALL_OFDM_AG |
+-			  RATE_ALL_OFDM_1SS | RATE_ALL_OFDM_2SS;
+-		regRRSR = RATE_ALL_CCK | RATE_ALL_OFDM_AG;
+-		break;
+-	case WIRELESS_MODE_N_24G:
+-		/* It support CCK rate by default. CCK rate will be filtered
+-		 * out only when associated AP does not support it.
+-		 */
+-		regBwOpMode = BW_OPMODE_20MHZ;
+-		regRATR = RATE_ALL_CCK | RATE_ALL_OFDM_AG |
+-			  RATE_ALL_OFDM_1SS | RATE_ALL_OFDM_2SS;
+-		regRRSR = RATE_ALL_CCK | RATE_ALL_OFDM_AG;
+-		break;
+-	case WIRELESS_MODE_N_5G:
+-		regBwOpMode = BW_OPMODE_5G;
+-		regRATR = RATE_ALL_OFDM_AG | RATE_ALL_OFDM_1SS |
+-			  RATE_ALL_OFDM_2SS;
+-		regRRSR = RATE_ALL_OFDM_AG;
+-		break;
+-	}
+-
+-	write_nic_byte(dev, BW_OPMODE, regBwOpMode);
+-	ratr_value = regRATR;
+-	if (priv->rf_type == RF_1T2R)
+-		ratr_value &= ~(RATE_ALL_OFDM_2SS);
+-	write_nic_dword(dev, RATR0, ratr_value);
+-	write_nic_byte(dev, UFWP, 1);
+-	read_nic_byte(dev, 0x313, &regTmp);
+-	regRRSR = ((regTmp) << 24) | (regRRSR & 0x00ffffff);
+-	write_nic_dword(dev, RRSR, regRRSR);
+-
+-	/* Set Retry Limit here */
+-	write_nic_word(dev, RETRY_LIMIT,
+-		       priv->ShortRetryLimit << RETRY_LIMIT_SHORT_SHIFT |
+-		       priv->LongRetryLimit << RETRY_LIMIT_LONG_SHIFT);
+-	/* Set Contention Window here */
+-
+-	/* Set Tx AGC */
+-
+-	/* Set Tx Antenna including Feedback control */
+-
+-	/* Set Auto Rate fallback control */
+-}
+-
+-/* InitializeAdapter and PhyCfg */
+-static bool rtl8192_adapter_start(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u32 dwRegRead = 0;
+-	bool init_status = true;
+-	u8 SECR_value = 0x0;
+-	u8 tmp;
+-
+-	RT_TRACE(COMP_INIT, "====>%s()\n", __func__);
+-	priv->Rf_Mode = RF_OP_By_SW_3wire;
+-	/* for ASIC power on sequence */
+-	write_nic_byte_E(dev, 0x5f, 0x80);
+-	mdelay(50);
+-	write_nic_byte_E(dev, 0x5f, 0xf0);
+-	write_nic_byte_E(dev, 0x5d, 0x00);
+-	write_nic_byte_E(dev, 0x5e, 0x80);
+-	write_nic_byte(dev, 0x17, 0x37);
+-	mdelay(10);
+-	priv->pFirmware->firmware_status = FW_STATUS_0_INIT;
+-	/* config CPUReset Register */
+-	/* Firmware Reset or not? */
+-	read_nic_dword(dev, CPU_GEN, &dwRegRead);
+-	dwRegRead |= CPU_GEN_SYSTEM_RESET; /* do nothing here? */
+-
+-	write_nic_dword(dev, CPU_GEN, dwRegRead);
+-	/* config BB. */
+-	rtl8192_BBConfig(dev);
+-
+-	/* Loopback mode or not */
+-	priv->LoopbackMode = RTL819xU_NO_LOOPBACK;
+-
+-	read_nic_dword(dev, CPU_GEN, &dwRegRead);
+-	if (priv->LoopbackMode == RTL819xU_NO_LOOPBACK)
+-		dwRegRead = (dwRegRead & CPU_GEN_NO_LOOPBACK_MSK) |
+-			    CPU_GEN_NO_LOOPBACK_SET;
+-	else if (priv->LoopbackMode == RTL819xU_MAC_LOOPBACK)
+-		dwRegRead |= CPU_CCK_LOOPBACK;
+-	else
+-		RT_TRACE(COMP_ERR,
+-			 "Serious error in %s(): wrong loopback mode setting(%d)\n",
+-			 __func__,  priv->LoopbackMode);
+-
+-	write_nic_dword(dev, CPU_GEN, dwRegRead);
+-
+-	/* after reset cpu, we need wait for a seconds to write in register. */
+-	udelay(500);
+-
+-	/* add for new bitfile:usb suspend reset pin set to 1. Do we need? */
+-	read_nic_byte_E(dev, 0x5f, &tmp);
+-	write_nic_byte_E(dev, 0x5f, tmp | 0x20);
+-
+-	/* Set Hardware */
+-	rtl8192_hwconfig(dev);
+-
+-	/* turn on Tx/Rx */
+-	write_nic_byte(dev, CMDR, CR_RE | CR_TE);
+-
+-	/* set IDR0 here */
+-	write_nic_dword(dev, MAC0, ((u32 *)dev->dev_addr)[0]);
+-	write_nic_word(dev, MAC4, ((u16 *)(dev->dev_addr + 4))[0]);
+-
+-	/* set RCR */
+-	write_nic_dword(dev, RCR, priv->ReceiveConfig);
+-
+-	/* Initialize Number of Reserved Pages in Firmware Queue */
+-	write_nic_dword(dev, RQPN1,
+-		NUM_OF_PAGE_IN_FW_QUEUE_BK << RSVD_FW_QUEUE_PAGE_BK_SHIFT |
+-		NUM_OF_PAGE_IN_FW_QUEUE_BE << RSVD_FW_QUEUE_PAGE_BE_SHIFT |
+-		NUM_OF_PAGE_IN_FW_QUEUE_VI << RSVD_FW_QUEUE_PAGE_VI_SHIFT |
+-		NUM_OF_PAGE_IN_FW_QUEUE_VO << RSVD_FW_QUEUE_PAGE_VO_SHIFT);
+-	write_nic_dword(dev, RQPN2,
+-		NUM_OF_PAGE_IN_FW_QUEUE_MGNT << RSVD_FW_QUEUE_PAGE_MGNT_SHIFT |
+-		NUM_OF_PAGE_IN_FW_QUEUE_CMD << RSVD_FW_QUEUE_PAGE_CMD_SHIFT);
+-	write_nic_dword(dev, RQPN3,
+-		APPLIED_RESERVED_QUEUE_IN_FW |
+-		NUM_OF_PAGE_IN_FW_QUEUE_BCN << RSVD_FW_QUEUE_PAGE_BCN_SHIFT);
+-	write_nic_dword(dev, RATR0 + 4 * 7, (RATE_ALL_OFDM_AG | RATE_ALL_CCK));
+-
+-	/* Set AckTimeout */
+-	/* TODO: (it value is only for FPGA version). need to be changed!! */
+-	write_nic_byte(dev, ACK_TIMEOUT, 0x30);
+-
+-	if (priv->ResetProgress == RESET_TYPE_NORESET)
+-		rtl8192_SetWirelessMode(dev, priv->ieee80211->mode);
+-	if (priv->ResetProgress == RESET_TYPE_NORESET) {
+-		CamResetAllEntry(dev);
+-		SECR_value |= SCR_TxEncEnable;
+-		SECR_value |= SCR_RxDecEnable;
+-		SECR_value |= SCR_NoSKMC;
+-		write_nic_byte(dev, SECR, SECR_value);
+-	}
+-
+-	/* Beacon related */
+-	write_nic_word(dev, ATIMWND, 2);
+-	write_nic_word(dev, BCN_INTERVAL, 100);
+-
+-#define DEFAULT_EDCA 0x005e4332
+-	{
+-		int i;
+-
+-		for (i = 0; i < QOS_QUEUE_NUM; i++)
+-			write_nic_dword(dev, WDCAPARA_ADD[i], DEFAULT_EDCA);
+-	}
+-
+-	rtl8192_phy_configmac(dev);
+-
+-	if (priv->card_8192_version == VERSION_819XU_A) {
+-		rtl8192_phy_getTxPower(dev);
+-		rtl8192_phy_setTxPower(dev, priv->chan);
+-	}
+-
+-	/* Firmware download */
+-	init_status = init_firmware(dev);
+-	if (!init_status) {
+-		RT_TRACE(COMP_ERR, "ERR!!! %s(): Firmware download is failed\n",
+-			 __func__);
+-		return init_status;
+-	}
+-	RT_TRACE(COMP_INIT, "%s():after firmware download\n", __func__);
+-
+-	/* config RF. */
+-	if (priv->ResetProgress == RESET_TYPE_NORESET) {
+-		rtl8192_phy_RFConfig(dev);
+-		RT_TRACE(COMP_INIT, "%s():after phy RF config\n", __func__);
+-	}
+-
+-	if (priv->ieee80211->FwRWRF)
+-		/* We can force firmware to do RF-R/W */
+-		priv->Rf_Mode = RF_OP_By_FW;
+-	else
+-		priv->Rf_Mode = RF_OP_By_SW_3wire;
+-
+-	rtl8192_phy_updateInitGain(dev);
+-	/*--set CCK and OFDM Block "ON"--*/
+-	rtl8192_setBBreg(dev, rFPGA0_RFMOD, bCCKEn, 0x1);
+-	rtl8192_setBBreg(dev, rFPGA0_RFMOD, bOFDMEn, 0x1);
+-
+-	if (priv->ResetProgress == RESET_TYPE_NORESET) {
+-		/* if D or C cut */
+-		u8 tmpvalue;
+-
+-		read_nic_byte(dev, 0x301, &tmpvalue);
+-		if (tmpvalue == 0x03) {
+-			priv->bDcut = true;
+-			RT_TRACE(COMP_POWER_TRACKING, "D-cut\n");
+-		} else {
+-			priv->bDcut = false;
+-			RT_TRACE(COMP_POWER_TRACKING, "C-cut\n");
+-		}
+-		dm_initialize_txpower_tracking(dev);
+-
+-		if (priv->bDcut) {
+-			u32 i, TempCCk;
+-			u32 tmpRegA = rtl8192_QueryBBReg(dev,
+-							 rOFDM0_XATxIQImbalance,
+-							 bMaskDWord);
+-
+-			for (i = 0; i < TxBBGainTableLength; i++) {
+-				if (tmpRegA == priv->txbbgain_table[i].txbbgain_value) {
+-					priv->rfa_txpowertrackingindex = (u8)i;
+-					priv->rfa_txpowertrackingindex_real =
+-						(u8)i;
+-					priv->rfa_txpowertracking_default =
+-						priv->rfa_txpowertrackingindex;
+-					break;
+-				}
+-			}
+-
+-			TempCCk = rtl8192_QueryBBReg(dev,
+-						     rCCK0_TxFilter1,
+-						     bMaskByte2);
+-
+-			for (i = 0; i < CCKTxBBGainTableLength; i++) {
+-				if (TempCCk == priv->cck_txbbgain_table[i].ccktxbb_valuearray[0]) {
+-					priv->cck_present_attenuation_20Mdefault = (u8)i;
+-					break;
+-				}
+-			}
+-			priv->cck_present_attenuation_40Mdefault = 0;
+-			priv->cck_present_attenuation_difference = 0;
+-			priv->cck_present_attenuation =
+-				priv->cck_present_attenuation_20Mdefault;
+-		}
+-	}
+-	write_nic_byte(dev, 0x87, 0x0);
+-
+-	return init_status;
+-}
+-
+-/* this configures registers for beacon tx and enables it via
+- * rtl8192_beacon_tx_enable(). rtl8192_beacon_tx_disable() might
+- * be used to stop beacon transmission
+- */
+-/***************************************************************************
+- *   -------------------------------NET STUFF---------------------------
+- ***************************************************************************/
+-
+-static struct net_device_stats *rtl8192_stats(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	return &priv->ieee80211->stats;
+-}
+-
+-static bool HalTxCheckStuck819xUsb(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u16		RegTxCounter;
+-	bool		bStuck = false;
+-
+-	read_nic_word(dev, 0x128, &RegTxCounter);
+-	RT_TRACE(COMP_RESET,
+-		 "%s():RegTxCounter is %d,TxCounter is %d\n", __func__,
+-		 RegTxCounter, priv->TxCounter);
+-	if (priv->TxCounter == RegTxCounter)
+-		bStuck = true;
+-
+-	priv->TxCounter = RegTxCounter;
+-
+-	return bStuck;
+-}
+-
+-/*
+- *	<Assumption: RT_TX_SPINLOCK is acquired.>
+- *	First added: 2006.11.19 by emily
+- */
+-static RESET_TYPE TxCheckStuck(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u8			QueueID;
+-	bool			bCheckFwTxCnt = false;
+-
+-	/* Decide such threshold according to current power save mode */
+-
+-	for (QueueID = 0; QueueID <= BEACON_QUEUE; QueueID++) {
+-		if (QueueID == TXCMD_QUEUE)
+-			continue;
+-		if ((skb_queue_len(&priv->ieee80211->skb_waitQ[QueueID]) == 0)  && (skb_queue_len(&priv->ieee80211->skb_aggQ[QueueID]) == 0))
+-			continue;
+-
+-		bCheckFwTxCnt = true;
+-	}
+-	if (bCheckFwTxCnt) {
+-		if (HalTxCheckStuck819xUsb(dev)) {
+-			RT_TRACE(COMP_RESET,
+-				 "%s: Fw indicates no Tx condition!\n",
+-				 __func__);
+-			return RESET_TYPE_SILENT;
+-		}
+-	}
+-	return RESET_TYPE_NORESET;
+-}
+-
+-static bool HalRxCheckStuck819xUsb(struct net_device *dev)
+-{
+-	u16	RegRxCounter;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	bool bStuck = false;
+-	static u8	rx_chk_cnt;
+-
+-	read_nic_word(dev, 0x130, &RegRxCounter);
+-	RT_TRACE(COMP_RESET,
+-		 "%s(): RegRxCounter is %d,RxCounter is %d\n", __func__,
+-		 RegRxCounter, priv->RxCounter);
+-	/* If rssi is small, we should check rx for long time because of bad rx.
+-	 * or maybe it will continuous silent reset every 2 seconds.
+-	 */
+-	rx_chk_cnt++;
+-	if (priv->undecorated_smoothed_pwdb >= (RATE_ADAPTIVE_TH_HIGH + 5)) {
+-		rx_chk_cnt = 0;	/* high rssi, check rx stuck right now. */
+-	} else if (priv->undecorated_smoothed_pwdb < (RATE_ADAPTIVE_TH_HIGH + 5) &&
+-		   ((priv->CurrentChannelBW != HT_CHANNEL_WIDTH_20 && priv->undecorated_smoothed_pwdb >= RATE_ADAPTIVE_TH_LOW_40M) ||
+-		    (priv->CurrentChannelBW == HT_CHANNEL_WIDTH_20 && priv->undecorated_smoothed_pwdb >= RATE_ADAPTIVE_TH_LOW_20M))) {
+-		if (rx_chk_cnt < 2)
+-			return bStuck;
+-
+-		rx_chk_cnt = 0;
+-	} else if (((priv->CurrentChannelBW != HT_CHANNEL_WIDTH_20 && priv->undecorated_smoothed_pwdb < RATE_ADAPTIVE_TH_LOW_40M) ||
+-		    (priv->CurrentChannelBW == HT_CHANNEL_WIDTH_20 && priv->undecorated_smoothed_pwdb < RATE_ADAPTIVE_TH_LOW_20M)) &&
+-		     priv->undecorated_smoothed_pwdb >= VERY_LOW_RSSI) {
+-		if (rx_chk_cnt < 4)
+-			return bStuck;
+-
+-		rx_chk_cnt = 0;
+-	} else {
+-		if (rx_chk_cnt < 8)
+-			return bStuck;
+-
+-		rx_chk_cnt = 0;
+-	}
+-
+-	if (priv->RxCounter == RegRxCounter)
+-		bStuck = true;
+-
+-	priv->RxCounter = RegRxCounter;
+-
+-	return bStuck;
+-}
+-
+-static RESET_TYPE RxCheckStuck(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	bool        bRxCheck = false;
+-
+-	if (priv->IrpPendingCount > 1)
+-		bRxCheck = true;
+-
+-	if (bRxCheck) {
+-		if (HalRxCheckStuck819xUsb(dev)) {
+-			RT_TRACE(COMP_RESET, "RxStuck Condition\n");
+-			return RESET_TYPE_SILENT;
+-		}
+-	}
+-	return RESET_TYPE_NORESET;
+-}
+-
+-/*
+- * This function is called by Checkforhang to check whether we should
+- * ask OS to reset driver
+- *
+- * Note:NIC with USB interface sholud not call this function because we
+- * cannot scan descriptor to judge whether there is tx stuck.
+- * Note: This function may be required to be rewrite for Vista OS.
+- * <<<Assumption: Tx spinlock has been acquired >>>
+- *
+- * 8185 and 8185b does not implement this function.
+- */
+-static RESET_TYPE rtl819x_ifcheck_resetornot(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	RESET_TYPE	TxResetType = RESET_TYPE_NORESET;
+-	RESET_TYPE	RxResetType = RESET_TYPE_NORESET;
+-	RT_RF_POWER_STATE	rfState;
+-
+-	rfState = priv->ieee80211->eRFPowerState;
+-
+-	TxResetType = TxCheckStuck(dev);
+-	if (rfState != eRfOff ||
+-	    (priv->ieee80211->iw_mode != IW_MODE_ADHOC)) {
+-		/* If driver is in the status of firmware download failure,
+-		 * driver skips RF initialization and RF is in turned off
+-		 * state. Driver should check whether Rx stuck and do silent
+-		 * reset. And if driver is in firmware download failure status,
+-		 * driver should initialize RF in the following silent reset
+-		 * procedure
+-		 *
+-		 * Driver should not check RX stuck in IBSS mode because it is
+-		 * required to set Check BSSID in order to send beacon,
+-		 * however, if check BSSID is set, STA cannot hear any packet
+-		 * at all.
+-		 */
+-		RxResetType = RxCheckStuck(dev);
+-	}
+-	if (TxResetType == RESET_TYPE_NORMAL ||
+-	    RxResetType == RESET_TYPE_NORMAL) {
+-		return RESET_TYPE_NORMAL;
+-	} else if (TxResetType == RESET_TYPE_SILENT ||
+-		   RxResetType == RESET_TYPE_SILENT) {
+-		RT_TRACE(COMP_RESET, "%s():silent reset\n", __func__);
+-		return RESET_TYPE_SILENT;
+-	} else {
+-		return RESET_TYPE_NORESET;
+-	}
+-}
+-
+-static void rtl8192_cancel_deferred_work(struct r8192_priv *priv);
+-static int _rtl8192_up(struct net_device *dev);
+-static int rtl8192_close(struct net_device *dev);
+-
+-static void CamRestoreAllEntry(struct net_device *dev)
+-{
+-	u8 EntryId = 0;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u8	*MacAddr = priv->ieee80211->current_network.bssid;
+-
+-	static u8	CAM_CONST_ADDR[4][6] = {
+-		{0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
+-		{0x00, 0x00, 0x00, 0x00, 0x00, 0x01},
+-		{0x00, 0x00, 0x00, 0x00, 0x00, 0x02},
+-		{0x00, 0x00, 0x00, 0x00, 0x00, 0x03} };
+-	static u8	CAM_CONST_BROAD[] = {
+-		0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+-
+-	RT_TRACE(COMP_SEC, "%s:\n", __func__);
+-
+-	if ((priv->ieee80211->pairwise_key_type == KEY_TYPE_WEP40) ||
+-	    (priv->ieee80211->pairwise_key_type == KEY_TYPE_WEP104)) {
+-		for (EntryId = 0; EntryId < 4; EntryId++) {
+-			MacAddr = CAM_CONST_ADDR[EntryId];
+-			setKey(dev, EntryId, EntryId,
+-			       priv->ieee80211->pairwise_key_type,
+-			       MacAddr, 0, NULL);
+-		}
+-
+-	} else if (priv->ieee80211->pairwise_key_type == KEY_TYPE_TKIP) {
+-		if (priv->ieee80211->iw_mode == IW_MODE_ADHOC)
+-			setKey(dev, 4, 0, priv->ieee80211->pairwise_key_type,
+-			       (const u8 *)dev->dev_addr, 0, NULL);
+-		else
+-			setKey(dev, 4, 0, priv->ieee80211->pairwise_key_type,
+-			       MacAddr, 0, NULL);
+-	} else if (priv->ieee80211->pairwise_key_type == KEY_TYPE_CCMP) {
+-		if (priv->ieee80211->iw_mode == IW_MODE_ADHOC)
+-			setKey(dev, 4, 0, priv->ieee80211->pairwise_key_type,
+-			       (const u8 *)dev->dev_addr, 0, NULL);
+-		else
+-			setKey(dev, 4, 0, priv->ieee80211->pairwise_key_type,
+-			       MacAddr, 0, NULL);
+-	}
+-
+-	if (priv->ieee80211->group_key_type == KEY_TYPE_TKIP) {
+-		MacAddr = CAM_CONST_BROAD;
+-		for (EntryId = 1; EntryId < 4; EntryId++) {
+-			setKey(dev, EntryId, EntryId,
+-			       priv->ieee80211->group_key_type,
+-			       MacAddr, 0, NULL);
+-		}
+-		if (priv->ieee80211->iw_mode == IW_MODE_ADHOC)
+-			setKey(dev, 0, 0, priv->ieee80211->group_key_type,
+-			       CAM_CONST_ADDR[0], 0, NULL);
+-	} else if (priv->ieee80211->group_key_type == KEY_TYPE_CCMP) {
+-		MacAddr = CAM_CONST_BROAD;
+-		for (EntryId = 1; EntryId < 4; EntryId++) {
+-			setKey(dev, EntryId, EntryId,
+-			       priv->ieee80211->group_key_type,
+-			       MacAddr, 0, NULL);
+-		}
+-
+-		if (priv->ieee80211->iw_mode == IW_MODE_ADHOC)
+-			setKey(dev, 0, 0, priv->ieee80211->group_key_type,
+-			       CAM_CONST_ADDR[0], 0, NULL);
+-	}
+-}
+-
+-/* This function is used to fix Tx/Rx stop bug temporarily.
+- * This function will do "system reset" to NIC when Tx or Rx is stuck.
+- * The method checking Tx/Rx stuck of this function is supported by FW,
+- * which reports Tx and Rx counter to register 0x128 and 0x130.
+- */
+-static void rtl819x_ifsilentreset(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u8	reset_times = 0;
+-	int reset_status = 0;
+-	struct ieee80211_device *ieee = priv->ieee80211;
+-
+-	/* If we need to check CCK stop, please uncomment this line. */
+-	/* bStuck = Adapter->HalFunc.CheckHWStopHandler(Adapter); */
+-
+-	if (priv->ResetProgress == RESET_TYPE_NORESET) {
+-RESET_START:
+-
+-		RT_TRACE(COMP_RESET, "=========>Reset progress!!\n");
+-
+-		/* Set the variable for reset. */
+-		priv->ResetProgress = RESET_TYPE_SILENT;
+-		mutex_lock(&priv->wx_mutex);
+-		if (priv->up == 0) {
+-			RT_TRACE(COMP_ERR,
+-				 "%s():the driver is not up! return\n",
+-				 __func__);
+-			mutex_unlock(&priv->wx_mutex);
+-			return;
+-		}
+-		priv->up = 0;
+-		RT_TRACE(COMP_RESET,
+-			 "%s():======>start to down the driver\n",
+-			 __func__);
+-
+-		rtl8192_rtx_disable(dev);
+-		rtl8192_cancel_deferred_work(priv);
+-		deinit_hal_dm(dev);
+-		del_timer_sync(&priv->watch_dog_timer);
+-
+-		ieee->sync_scan_hurryup = 1;
+-		if (ieee->state == IEEE80211_LINKED) {
+-			mutex_lock(&ieee->wx_mutex);
+-			netdev_dbg(dev, "ieee->state is IEEE80211_LINKED\n");
+-			ieee80211_stop_send_beacons(priv->ieee80211);
+-			del_timer_sync(&ieee->associate_timer);
+-			cancel_delayed_work(&ieee->associate_retry_wq);
+-			ieee80211_stop_scan(ieee);
+-			netif_carrier_off(dev);
+-			mutex_unlock(&ieee->wx_mutex);
+-		} else {
+-			netdev_dbg(dev, "ieee->state is NOT LINKED\n");
+-			ieee80211_softmac_stop_protocol(priv->ieee80211);
+-		}
+-		mutex_unlock(&priv->wx_mutex);
+-		RT_TRACE(COMP_RESET,
+-			 "%s():<==========down process is finished\n",
+-			 __func__);
+-		RT_TRACE(COMP_RESET,
+-			 "%s():===========>start up the driver\n",
+-			 __func__);
+-		reset_status = _rtl8192_up(dev);
+-
+-		RT_TRACE(COMP_RESET,
+-			 "%s():<===========up process is finished\n",
+-			 __func__);
+-		if (reset_status == -EAGAIN) {
+-			if (reset_times < 3) {
+-				reset_times++;
+-				goto RESET_START;
+-			} else {
+-				RT_TRACE(COMP_ERR,
+-					 " ERR!!! %s():  Reset Failed!!\n",
+-					 __func__);
+-			}
+-		}
+-		ieee->is_silent_reset = 1;
+-		EnableHWSecurityConfig8192(dev);
+-		if (ieee->state == IEEE80211_LINKED &&
+-		    ieee->iw_mode == IW_MODE_INFRA) {
+-			ieee->set_chan(ieee->dev,
+-				       ieee->current_network.channel);
+-
+-			queue_work(ieee->wq, &ieee->associate_complete_wq);
+-
+-		} else if (ieee->state == IEEE80211_LINKED &&
+-			   ieee->iw_mode == IW_MODE_ADHOC) {
+-			ieee->set_chan(ieee->dev,
+-				       ieee->current_network.channel);
+-			ieee->link_change(ieee->dev);
+-
+-			ieee80211_start_send_beacons(ieee);
+-
+-			if (ieee->data_hard_resume)
+-				ieee->data_hard_resume(ieee->dev);
+-			netif_carrier_on(ieee->dev);
+-		}
+-
+-		CamRestoreAllEntry(dev);
+-
+-		priv->ResetProgress = RESET_TYPE_NORESET;
+-		priv->reset_count++;
+-
+-		priv->bForcedSilentReset = false;
+-		priv->bResetInProgress = false;
+-
+-		/* For test --> force write UFWP. */
+-		write_nic_byte(dev, UFWP, 1);
+-		RT_TRACE(COMP_RESET,
+-			 "Reset finished!! ====>[%d]\n",
+-			 priv->reset_count);
+-	}
+-}
+-
+-static void rtl819x_update_rxcounts(struct r8192_priv *priv, u32 *TotalRxBcnNum,
+-			     u32 *TotalRxDataNum)
+-{
+-	u16			SlotIndex;
+-	u16			i;
+-
+-	*TotalRxBcnNum = 0;
+-	*TotalRxDataNum = 0;
+-
+-	SlotIndex = (priv->ieee80211->LinkDetectInfo.SlotIndex++) %
+-		    (priv->ieee80211->LinkDetectInfo.SlotNum);
+-	priv->ieee80211->LinkDetectInfo.RxBcnNum[SlotIndex] =
+-		priv->ieee80211->LinkDetectInfo.NumRecvBcnInPeriod;
+-	priv->ieee80211->LinkDetectInfo.RxDataNum[SlotIndex] =
+-		priv->ieee80211->LinkDetectInfo.NumRecvDataInPeriod;
+-	for (i = 0; i < priv->ieee80211->LinkDetectInfo.SlotNum; i++) {
+-		*TotalRxBcnNum += priv->ieee80211->LinkDetectInfo.RxBcnNum[i];
+-		*TotalRxDataNum += priv->ieee80211->LinkDetectInfo.RxDataNum[i];
+-	}
+-}
+-
+-static void rtl819x_watchdog_wqcallback(struct work_struct *work)
+-{
+-	struct delayed_work *dwork = to_delayed_work(work);
+-	struct r8192_priv *priv = container_of(dwork,
+-					       struct r8192_priv, watch_dog_wq);
+-	struct net_device *dev = priv->ieee80211->dev;
+-	struct ieee80211_device *ieee = priv->ieee80211;
+-	RESET_TYPE	ResetType = RESET_TYPE_NORESET;
+-	static u8	check_reset_cnt;
+-	bool bBusyTraffic = false;
+-	u32	TotalRxBcnNum = 0;
+-	u32	TotalRxDataNum = 0;
+-
+-	if (!priv->up)
+-		return;
+-	hal_dm_watchdog(dev);
+-
+-	/* to get busy traffic condition */
+-	if (ieee->state == IEEE80211_LINKED) {
+-		if (ieee->LinkDetectInfo.NumRxOkInPeriod > 666 ||
+-		    ieee->LinkDetectInfo.NumTxOkInPeriod > 666) {
+-			bBusyTraffic = true;
+-		}
+-		ieee->LinkDetectInfo.NumRxOkInPeriod = 0;
+-		ieee->LinkDetectInfo.NumTxOkInPeriod = 0;
+-		ieee->LinkDetectInfo.bBusyTraffic = bBusyTraffic;
+-	}
+-	/* for AP roaming */
+-	if (priv->ieee80211->state == IEEE80211_LINKED &&
+-	    priv->ieee80211->iw_mode == IW_MODE_INFRA) {
+-		rtl819x_update_rxcounts(priv, &TotalRxBcnNum, &TotalRxDataNum);
+-		if ((TotalRxBcnNum + TotalRxDataNum) == 0) {
+-#ifdef TODO
+-			if (rfState == eRfOff)
+-				RT_TRACE(COMP_ERR, "========>%s()\n", __func__);
+-#endif
+-			netdev_dbg(dev,
+-				   "===>%s(): AP is power off, connect another one\n",
+-				   __func__);
+-			priv->ieee80211->state = IEEE80211_ASSOCIATING;
+-			notify_wx_assoc_event(priv->ieee80211);
+-			RemovePeerTS(priv->ieee80211,
+-				     priv->ieee80211->current_network.bssid);
+-			priv->ieee80211->link_change(dev);
+-			queue_work(priv->ieee80211->wq,
+-				   &priv->ieee80211->associate_procedure_wq);
+-		}
+-	}
+-	priv->ieee80211->LinkDetectInfo.NumRecvBcnInPeriod = 0;
+-	priv->ieee80211->LinkDetectInfo.NumRecvDataInPeriod = 0;
+-	/* check if reset the driver */
+-	if (check_reset_cnt++ >= 3) {
+-		ResetType = rtl819x_ifcheck_resetornot(dev);
+-		check_reset_cnt = 3;
+-	}
+-	/* This is control by OID set in Pomelo */
+-	if ((priv->force_reset) || (priv->ResetProgress == RESET_TYPE_NORESET &&
+-	    (priv->bForcedSilentReset ||
+-	    (!priv->bDisableNormalResetCheck && ResetType == RESET_TYPE_SILENT)))) {
+-		RT_TRACE(COMP_RESET,
+-			 "%s():priv->force_reset is %d,priv->ResetProgress is %d, priv->bForcedSilentReset is %d,priv->bDisableNormalResetCheck is %d,ResetType is %d\n",
+-			 __func__, priv->force_reset, priv->ResetProgress,
+-			 priv->bForcedSilentReset,
+-			 priv->bDisableNormalResetCheck, ResetType);
+-		rtl819x_ifsilentreset(dev);
+-	}
+-	priv->force_reset = false;
+-	priv->bForcedSilentReset = false;
+-	priv->bResetInProgress = false;
+-	RT_TRACE(COMP_TRACE, " <==RtUsbCheckForHangWorkItemCallback()\n");
+-}
+-
+-static void watch_dog_timer_callback(struct timer_list *t)
+-{
+-	struct r8192_priv *priv = from_timer(priv, t, watch_dog_timer);
+-
+-	schedule_delayed_work(&priv->watch_dog_wq, 0);
+-	mod_timer(&priv->watch_dog_timer,
+-		  jiffies + msecs_to_jiffies(IEEE80211_WATCH_DOG_TIME));
+-}
+-
+-static int _rtl8192_up(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	int init_status = 0;
+-
+-	priv->up = 1;
+-	priv->ieee80211->ieee_up = 1;
+-	RT_TRACE(COMP_INIT, "Bringing up iface");
+-	init_status = rtl8192_adapter_start(dev);
+-	if (!init_status) {
+-		RT_TRACE(COMP_ERR, "ERR!!! %s(): initialization failed!\n",
+-			 __func__);
+-		priv->up = priv->ieee80211->ieee_up = 0;
+-		return -EAGAIN;
+-	}
+-	RT_TRACE(COMP_INIT, "start adapter finished\n");
+-	rtl8192_rx_enable(dev);
+-	if (priv->ieee80211->state != IEEE80211_LINKED)
+-		ieee80211_softmac_start_protocol(priv->ieee80211);
+-	ieee80211_reset_queue(priv->ieee80211);
+-	watch_dog_timer_callback(&priv->watch_dog_timer);
+-	if (!netif_queue_stopped(dev))
+-		netif_start_queue(dev);
+-	else
+-		netif_wake_queue(dev);
+-
+-	return 0;
+-}
+-
+-static int rtl8192_open(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	int ret;
+-
+-	mutex_lock(&priv->wx_mutex);
+-	ret = rtl8192_up(dev);
+-	mutex_unlock(&priv->wx_mutex);
+-	return ret;
+-}
+-
+-int rtl8192_up(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	if (priv->up == 1)
+-		return -1;
+-
+-	return _rtl8192_up(dev);
+-}
+-
+-static int rtl8192_close(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	int ret;
+-
+-	mutex_lock(&priv->wx_mutex);
+-
+-	ret = rtl8192_down(dev);
+-
+-	mutex_unlock(&priv->wx_mutex);
+-
+-	return ret;
+-}
+-
+-int rtl8192_down(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	int i;
+-
+-	if (priv->up == 0)
+-		return -1;
+-
+-	priv->up = 0;
+-	priv->ieee80211->ieee_up = 0;
+-	RT_TRACE(COMP_DOWN, "==========>%s()\n", __func__);
+-	/* FIXME */
+-	if (!netif_queue_stopped(dev))
+-		netif_stop_queue(dev);
+-
+-	rtl8192_rtx_disable(dev);
+-
+-	/* Tx related queue release */
+-	for (i = 0; i < MAX_QUEUE_SIZE; i++)
+-		skb_queue_purge(&priv->ieee80211->skb_waitQ[i]);
+-	for (i = 0; i < MAX_QUEUE_SIZE; i++)
+-		skb_queue_purge(&priv->ieee80211->skb_aggQ[i]);
+-
+-	for (i = 0; i < MAX_QUEUE_SIZE; i++)
+-		skb_queue_purge(&priv->ieee80211->skb_drv_aggQ[i]);
+-
+-	/* as cancel_delayed_work will del work->timer, so if work is not
+-	 * defined as struct delayed_work, it will corrupt
+-	 */
+-	rtl8192_cancel_deferred_work(priv);
+-	deinit_hal_dm(dev);
+-	del_timer_sync(&priv->watch_dog_timer);
+-
+-	ieee80211_softmac_stop_protocol(priv->ieee80211);
+-	memset(&priv->ieee80211->current_network, 0,
+-	       offsetof(struct ieee80211_network, list));
+-	RT_TRACE(COMP_DOWN, "<==========%s()\n", __func__);
+-
+-	return 0;
+-}
+-
+-void rtl8192_commit(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	if (priv->up == 0)
+-		return;
+-	priv->up = 0;
+-
+-	rtl8192_cancel_deferred_work(priv);
+-	del_timer_sync(&priv->watch_dog_timer);
+-
+-	ieee80211_softmac_stop_protocol(priv->ieee80211);
+-
+-	rtl8192_rtx_disable(dev);
+-	_rtl8192_up(dev);
+-}
+-
+-static void rtl8192_restart(struct work_struct *work)
+-{
+-	struct r8192_priv *priv = container_of(work, struct r8192_priv,
+-					       reset_wq);
+-	struct net_device *dev = priv->ieee80211->dev;
+-
+-	mutex_lock(&priv->wx_mutex);
+-
+-	rtl8192_commit(dev);
+-
+-	mutex_unlock(&priv->wx_mutex);
+-}
+-
+-static void r8192_set_multicast(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	short promisc;
+-
+-	/* FIXME FIXME */
+-
+-	promisc = (dev->flags & IFF_PROMISC) ? 1 : 0;
+-
+-	if (promisc != priv->promisc)
+-
+-		priv->promisc = promisc;
+-}
+-
+-static int r8192_set_mac_adr(struct net_device *dev, void *mac)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	struct sockaddr *addr = mac;
+-
+-	mutex_lock(&priv->wx_mutex);
+-
+-	eth_hw_addr_set(dev, addr->sa_data);
+-
+-	schedule_work(&priv->reset_wq);
+-	mutex_unlock(&priv->wx_mutex);
+-
+-	return 0;
+-}
+-
+-/* based on ipw2200 driver */
+-static int rtl8192_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
+-{
+-	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
+-	struct iwreq *wrq = (struct iwreq *)rq;
+-	int ret = -1;
+-	struct ieee80211_device *ieee = priv->ieee80211;
+-	u32 key[4];
+-	u8 broadcast_addr[6] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+-	struct iw_point *p = &wrq->u.data;
+-	struct ieee_param *ipw = NULL;
+-
+-	mutex_lock(&priv->wx_mutex);
+-
+-	if (p->length < sizeof(struct ieee_param) || !p->pointer) {
+-		ret = -EINVAL;
+-		goto out;
+-	}
+-
+-	ipw = memdup_user(p->pointer, p->length);
+-	if (IS_ERR(ipw)) {
+-		ret = PTR_ERR(ipw);
+-		goto out;
+-	}
+-
+-	switch (cmd) {
+-	case RTL_IOCTL_WPA_SUPPLICANT:
+-		/* parse here for HW security */
+-		if (ipw->cmd == IEEE_CMD_SET_ENCRYPTION) {
+-			if (ipw->u.crypt.set_tx) {
+-				if (strcmp(ipw->u.crypt.alg, "CCMP") == 0) {
+-					ieee->pairwise_key_type = KEY_TYPE_CCMP;
+-				} else if (strcmp(ipw->u.crypt.alg, "TKIP") == 0) {
+-					ieee->pairwise_key_type = KEY_TYPE_TKIP;
+-				} else if (strcmp(ipw->u.crypt.alg, "WEP") == 0) {
+-					if (ipw->u.crypt.key_len == 13)
+-						ieee->pairwise_key_type = KEY_TYPE_WEP104;
+-					else if (ipw->u.crypt.key_len == 5)
+-						ieee->pairwise_key_type = KEY_TYPE_WEP40;
+-				} else {
+-					ieee->pairwise_key_type = KEY_TYPE_NA;
+-				}
+-
+-				if (ieee->pairwise_key_type) {
+-					memcpy((u8 *)key, ipw->u.crypt.key, 16);
+-					EnableHWSecurityConfig8192(dev);
+-					/* We fill both index entry and 4th
+-					 * entry for pairwise key as in IPW
+-					 * interface, adhoc will only get here,
+-					 * so we need index entry for its
+-					 * default key serching!
+-					 */
+-					setKey(dev, 4, ipw->u.crypt.idx,
+-					       ieee->pairwise_key_type,
+-					       (u8 *)ieee->ap_mac_addr,
+-					       0, key);
+-					if (ieee->auth_mode != 2)
+-						setKey(dev, ipw->u.crypt.idx,
+-						       ipw->u.crypt.idx,
+-						       ieee->pairwise_key_type,
+-						       (u8 *)ieee->ap_mac_addr,
+-						       0, key);
+-				}
+-			} else {
+-				memcpy((u8 *)key, ipw->u.crypt.key, 16);
+-				if (strcmp(ipw->u.crypt.alg, "CCMP") == 0) {
+-					ieee->group_key_type = KEY_TYPE_CCMP;
+-				} else if (strcmp(ipw->u.crypt.alg, "TKIP") == 0) {
+-					ieee->group_key_type = KEY_TYPE_TKIP;
+-				} else if (strcmp(ipw->u.crypt.alg, "WEP") == 0) {
+-					if (ipw->u.crypt.key_len == 13)
+-						ieee->group_key_type = KEY_TYPE_WEP104;
+-					else if (ipw->u.crypt.key_len == 5)
+-						ieee->group_key_type = KEY_TYPE_WEP40;
+-				} else {
+-					ieee->group_key_type = KEY_TYPE_NA;
+-				}
+-
+-				if (ieee->group_key_type) {
+-					setKey(dev, ipw->u.crypt.idx,
+-					       /* KeyIndex */
+-					       ipw->u.crypt.idx,
+-					       /* KeyType */
+-					       ieee->group_key_type,
+-					       /* MacAddr */
+-					       broadcast_addr,
+-					       /* DefaultKey */
+-					       0,
+-					       /* KeyContent */
+-					       key);
+-				}
+-			}
+-		}
+-		ret = ieee80211_wpa_supplicant_ioctl(priv->ieee80211,
+-						     &wrq->u.data);
+-		break;
+-
+-	default:
+-		ret = -EOPNOTSUPP;
+-		break;
+-	}
+-	kfree(ipw);
+-	ipw = NULL;
+-out:
+-	mutex_unlock(&priv->wx_mutex);
+-	return ret;
+-}
+-
+-static u8 HwRateToMRate90(bool bIsHT, u8 rate)
+-{
+-	u8  ret_rate = 0xff;
+-
+-	if (!bIsHT) {
+-		switch (rate) {
+-		case DESC90_RATE1M:
+-			ret_rate = MGN_1M;
+-			break;
+-		case DESC90_RATE2M:
+-			ret_rate = MGN_2M;
+-			break;
+-		case DESC90_RATE5_5M:
+-			ret_rate = MGN_5_5M;
+-			break;
+-		case DESC90_RATE11M:
+-			ret_rate = MGN_11M;
+-			break;
+-		case DESC90_RATE6M:
+-			ret_rate = MGN_6M;
+-			break;
+-		case DESC90_RATE9M:
+-			ret_rate = MGN_9M;
+-			break;
+-		case DESC90_RATE12M:
+-			ret_rate = MGN_12M;
+-			break;
+-		case DESC90_RATE18M:
+-			ret_rate = MGN_18M;
+-			break;
+-		case DESC90_RATE24M:
+-			ret_rate = MGN_24M;
+-			break;
+-		case DESC90_RATE36M:
+-			ret_rate = MGN_36M;
+-			break;
+-		case DESC90_RATE48M:
+-			ret_rate = MGN_48M;
+-			break;
+-		case DESC90_RATE54M:
+-			ret_rate = MGN_54M;
+-			break;
+-
+-		default:
+-			ret_rate = 0xff;
+-			RT_TRACE(COMP_RECV,
+-				 "%s: Non supported Rate [%x], bIsHT = %d!!!\n",
+-				 __func__, rate, bIsHT);
+-			break;
+-		}
+-
+-	} else {
+-		switch (rate) {
+-		case DESC90_RATEMCS0:
+-			ret_rate = MGN_MCS0;
+-			break;
+-		case DESC90_RATEMCS1:
+-			ret_rate = MGN_MCS1;
+-			break;
+-		case DESC90_RATEMCS2:
+-			ret_rate = MGN_MCS2;
+-			break;
+-		case DESC90_RATEMCS3:
+-			ret_rate = MGN_MCS3;
+-			break;
+-		case DESC90_RATEMCS4:
+-			ret_rate = MGN_MCS4;
+-			break;
+-		case DESC90_RATEMCS5:
+-			ret_rate = MGN_MCS5;
+-			break;
+-		case DESC90_RATEMCS6:
+-			ret_rate = MGN_MCS6;
+-			break;
+-		case DESC90_RATEMCS7:
+-			ret_rate = MGN_MCS7;
+-			break;
+-		case DESC90_RATEMCS8:
+-			ret_rate = MGN_MCS8;
+-			break;
+-		case DESC90_RATEMCS9:
+-			ret_rate = MGN_MCS9;
+-			break;
+-		case DESC90_RATEMCS10:
+-			ret_rate = MGN_MCS10;
+-			break;
+-		case DESC90_RATEMCS11:
+-			ret_rate = MGN_MCS11;
+-			break;
+-		case DESC90_RATEMCS12:
+-			ret_rate = MGN_MCS12;
+-			break;
+-		case DESC90_RATEMCS13:
+-			ret_rate = MGN_MCS13;
+-			break;
+-		case DESC90_RATEMCS14:
+-			ret_rate = MGN_MCS14;
+-			break;
+-		case DESC90_RATEMCS15:
+-			ret_rate = MGN_MCS15;
+-			break;
+-		case DESC90_RATEMCS32:
+-			ret_rate = 0x80 | 0x20;
+-			break;
+-
+-		default:
+-			ret_rate = 0xff;
+-			RT_TRACE(COMP_RECV,
+-				 "%s: Non supported Rate [%x], bIsHT = %d!!!\n",
+-				 __func__, rate, bIsHT);
+-			break;
+-		}
+-	}
+-
+-	return ret_rate;
+-}
+-
+-/*
+- * Function:     UpdateRxPktTimeStamp
+- * Overview:     Record the TSF time stamp when receiving a packet
+- *
+- * Input:
+- *       PADAPTER        Adapter
+- *       PRT_RFD         pRfd,
+- *
+- * Output:
+- *       PRT_RFD         pRfd
+- *                               (pRfd->Status.TimeStampHigh is updated)
+- *                               (pRfd->Status.TimeStampLow is updated)
+- * Return:
+- *               None
+- */
+-static void UpdateRxPktTimeStamp8190(struct net_device *dev,
+-				     struct ieee80211_rx_stats *stats)
+-{
+-	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
+-
+-	if (stats->bIsAMPDU && !stats->bFirstMPDU) {
+-		stats->mac_time[0] = priv->LastRxDescTSFLow;
+-		stats->mac_time[1] = priv->LastRxDescTSFHigh;
+-	} else {
+-		priv->LastRxDescTSFLow = stats->mac_time[0];
+-		priv->LastRxDescTSFHigh = stats->mac_time[1];
+-	}
+-}
+-
+-/* 0-100 index. */
+-static long rtl819x_translate_todbm(u8 signal_strength_index)
+-{
+-	long	signal_power; /* in dBm. */
+-
+-	/* Translate to dBm (x=0.5y-95). */
+-	signal_power = (long)((signal_strength_index + 1) >> 1);
+-	signal_power -= 95;
+-
+-	return signal_power;
+-}
+-
+-/* We can not declare RSSI/EVM total value of sliding window to
+- * be a local static. Otherwise, it may increase when we return from S3/S4. The
+- * value will be kept in memory or disk. Declare the value in the adaptor
+- * and it will be reinitialized when returned from S3/S4.
+- */
+-static void rtl8192_process_phyinfo(struct r8192_priv *priv, u8 *buffer,
+-				    struct ieee80211_rx_stats *pprevious_stats,
+-				    struct ieee80211_rx_stats *pcurrent_stats)
+-{
+-	bool bcheck = false;
+-	u8	rfpath;
+-	u32	nspatial_stream, tmp_val;
+-	static u32 slide_rssi_index, slide_rssi_statistics;
+-	static u32 slide_evm_index, slide_evm_statistics;
+-	static u32 last_rssi, last_evm;
+-
+-	static u32 slide_beacon_adc_pwdb_index;
+-	static u32 slide_beacon_adc_pwdb_statistics;
+-	static u32 last_beacon_adc_pwdb;
+-
+-	struct rtl_80211_hdr_3addr *hdr;
+-	u16 sc;
+-	unsigned int seq;
+-
+-	hdr = (struct rtl_80211_hdr_3addr *)buffer;
+-	sc = le16_to_cpu(hdr->seq_ctl);
+-	seq = WLAN_GET_SEQ_SEQ(sc);
+-	/* to record the sequence number */
+-	pcurrent_stats->Seq_Num = seq;
+-
+-	/* Check whether we should take the previous packet into accounting */
+-	if (!pprevious_stats->bIsAMPDU) {
+-		/* if previous packet is not aggregated packet */
+-		bcheck = true;
+-	}
+-
+-	if (slide_rssi_statistics++ >= PHY_RSSI_SLID_WIN_MAX) {
+-		slide_rssi_statistics = PHY_RSSI_SLID_WIN_MAX;
+-		last_rssi = priv->stats.slide_signal_strength[slide_rssi_index];
+-		priv->stats.slide_rssi_total -= last_rssi;
+-	}
+-	priv->stats.slide_rssi_total += pprevious_stats->SignalStrength;
+-
+-	priv->stats.slide_signal_strength[slide_rssi_index++] =
+-		pprevious_stats->SignalStrength;
+-	if (slide_rssi_index >= PHY_RSSI_SLID_WIN_MAX)
+-		slide_rssi_index = 0;
+-
+-	/* <1> Showed on UI for user, in dbm */
+-	tmp_val = priv->stats.slide_rssi_total / slide_rssi_statistics;
+-	priv->stats.signal_strength = rtl819x_translate_todbm((u8)tmp_val);
+-	pcurrent_stats->rssi = priv->stats.signal_strength;
+-
+-	/* If the previous packet does not match the criteria, neglect it */
+-	if (!pprevious_stats->bPacketMatchBSSID) {
+-		if (!pprevious_stats->bToSelfBA)
+-			return;
+-	}
+-
+-	if (!bcheck)
+-		return;
+-
+-	/* only rtl8190 supported
+-	 * rtl8190_process_cck_rxpathsel(priv,pprevious_stats);
+-	 */
+-
+-	/* Check RSSI */
+-	priv->stats.num_process_phyinfo++;
+-
+-	/* record the general signal strength to the sliding window. */
+-
+-	/* <2> Showed on UI for engineering
+-	 * hardware does not provide rssi information for each rf path in CCK
+-	 */
+-	if (!pprevious_stats->bIsCCK &&
+-	    (pprevious_stats->bPacketToSelf || pprevious_stats->bToSelfBA)) {
+-		for (rfpath = RF90_PATH_A; rfpath < priv->NumTotalRFPath; rfpath++) {
+-			if (!rtl8192_phy_CheckIsLegalRFPath(priv->ieee80211->dev,
+-							    rfpath))
+-				continue;
+-			if (priv->stats.rx_rssi_percentage[rfpath] == 0)
+-				priv->stats.rx_rssi_percentage[rfpath] =
+-					pprevious_stats->RxMIMOSignalStrength[rfpath];
+-			if (pprevious_stats->RxMIMOSignalStrength[rfpath]  > priv->stats.rx_rssi_percentage[rfpath]) {
+-				priv->stats.rx_rssi_percentage[rfpath] =
+-					((priv->stats.rx_rssi_percentage[rfpath] * (RX_SMOOTH_FACTOR - 1)) +
+-					 (pprevious_stats->RxMIMOSignalStrength[rfpath])) / (RX_SMOOTH_FACTOR);
+-				priv->stats.rx_rssi_percentage[rfpath] = priv->stats.rx_rssi_percentage[rfpath]  + 1;
+-			} else {
+-				priv->stats.rx_rssi_percentage[rfpath] =
+-					((priv->stats.rx_rssi_percentage[rfpath] * (RX_SMOOTH_FACTOR - 1)) +
+-					 (pprevious_stats->RxMIMOSignalStrength[rfpath])) / (RX_SMOOTH_FACTOR);
+-			}
+-			RT_TRACE(COMP_DBG,
+-				 "priv->stats.rx_rssi_percentage[rfPath]  = %d\n",
+-				 priv->stats.rx_rssi_percentage[rfpath]);
+-		}
+-	}
+-
+-	/* Check PWDB. */
+-	RT_TRACE(COMP_RXDESC, "Smooth %s PWDB = %d\n",
+-		 pprevious_stats->bIsCCK ? "CCK" : "OFDM",
+-		 pprevious_stats->RxPWDBAll);
+-
+-	if (pprevious_stats->bPacketBeacon) {
+-		/* record the beacon pwdb to the sliding window. */
+-		if (slide_beacon_adc_pwdb_statistics++ >= PHY_Beacon_RSSI_SLID_WIN_MAX) {
+-			slide_beacon_adc_pwdb_statistics = PHY_Beacon_RSSI_SLID_WIN_MAX;
+-			last_beacon_adc_pwdb = priv->stats.Slide_Beacon_pwdb[slide_beacon_adc_pwdb_index];
+-			priv->stats.Slide_Beacon_Total -= last_beacon_adc_pwdb;
+-		}
+-		priv->stats.Slide_Beacon_Total += pprevious_stats->RxPWDBAll;
+-		priv->stats.Slide_Beacon_pwdb[slide_beacon_adc_pwdb_index] = pprevious_stats->RxPWDBAll;
+-		slide_beacon_adc_pwdb_index++;
+-		if (slide_beacon_adc_pwdb_index >= PHY_Beacon_RSSI_SLID_WIN_MAX)
+-			slide_beacon_adc_pwdb_index = 0;
+-		pprevious_stats->RxPWDBAll = priv->stats.Slide_Beacon_Total / slide_beacon_adc_pwdb_statistics;
+-		if (pprevious_stats->RxPWDBAll >= 3)
+-			pprevious_stats->RxPWDBAll -= 3;
+-	}
+-
+-	RT_TRACE(COMP_RXDESC, "Smooth %s PWDB = %d\n",
+-		 pprevious_stats->bIsCCK ? "CCK" : "OFDM",
+-		 pprevious_stats->RxPWDBAll);
+-
+-	if (pprevious_stats->bPacketToSelf ||
+-	    pprevious_stats->bPacketBeacon ||
+-	    pprevious_stats->bToSelfBA) {
+-		if (priv->undecorated_smoothed_pwdb < 0)
+-			/* initialize */
+-			priv->undecorated_smoothed_pwdb =
+-				pprevious_stats->RxPWDBAll;
+-		if (pprevious_stats->RxPWDBAll > (u32)priv->undecorated_smoothed_pwdb) {
+-			priv->undecorated_smoothed_pwdb =
+-				(((priv->undecorated_smoothed_pwdb) * (RX_SMOOTH_FACTOR - 1)) +
+-				 (pprevious_stats->RxPWDBAll)) / (RX_SMOOTH_FACTOR);
+-			priv->undecorated_smoothed_pwdb = priv->undecorated_smoothed_pwdb + 1;
+-		} else {
+-			priv->undecorated_smoothed_pwdb =
+-				(((priv->undecorated_smoothed_pwdb) * (RX_SMOOTH_FACTOR - 1)) +
+-				 (pprevious_stats->RxPWDBAll)) / (RX_SMOOTH_FACTOR);
+-		}
+-	}
+-
+-	/* Check EVM */
+-	/* record the general EVM to the sliding window. */
+-	if (pprevious_stats->SignalQuality) {
+-		if (pprevious_stats->bPacketToSelf ||
+-		    pprevious_stats->bPacketBeacon ||
+-		    pprevious_stats->bToSelfBA) {
+-			if (slide_evm_statistics++ >= PHY_RSSI_SLID_WIN_MAX) {
+-				slide_evm_statistics = PHY_RSSI_SLID_WIN_MAX;
+-				last_evm = priv->stats.slide_evm[slide_evm_index];
+-				priv->stats.slide_evm_total -= last_evm;
+-			}
+-
+-			priv->stats.slide_evm_total +=
+-				pprevious_stats->SignalQuality;
+-
+-			priv->stats.slide_evm[slide_evm_index++] =
+-				pprevious_stats->SignalQuality;
+-			if (slide_evm_index >= PHY_RSSI_SLID_WIN_MAX)
+-				slide_evm_index = 0;
+-
+-			/* <1> Showed on UI for user, in percentage. */
+-			tmp_val = priv->stats.slide_evm_total /
+-				  slide_evm_statistics;
+-			priv->stats.signal_quality = tmp_val;
+-			/* Showed on UI for user in Windows Vista,
+-			 * for Link quality.
+-			 */
+-			priv->stats.last_signal_strength_inpercent = tmp_val;
+-		}
+-
+-		/* <2> Showed on UI for engineering */
+-		if (pprevious_stats->bPacketToSelf ||
+-		    pprevious_stats->bPacketBeacon ||
+-		    pprevious_stats->bToSelfBA) {
+-			for (nspatial_stream = 0; nspatial_stream < 2; nspatial_stream++) { /* 2 spatial stream */
+-				if (pprevious_stats->RxMIMOSignalQuality[nspatial_stream] != -1) {
+-					if (priv->stats.rx_evm_percentage[nspatial_stream] == 0) /* initialize */
+-						priv->stats.rx_evm_percentage[nspatial_stream] = pprevious_stats->RxMIMOSignalQuality[nspatial_stream];
+-					priv->stats.rx_evm_percentage[nspatial_stream] =
+-						((priv->stats.rx_evm_percentage[nspatial_stream] * (RX_SMOOTH_FACTOR - 1)) +
+-						 (pprevious_stats->RxMIMOSignalQuality[nspatial_stream] * 1)) / (RX_SMOOTH_FACTOR);
+-				}
+-			}
+-		}
+-	}
+-}
+-
+-/*-----------------------------------------------------------------------------
+- * Function:	rtl819x_query_rxpwrpercentage()
+- *
+- * Overview:
+- *
+- * Input:		char		antpower
+- *
+- * Output:		NONE
+- *
+- * Return:		0-100 percentage
+- *---------------------------------------------------------------------------
+- */
+-static u8 rtl819x_query_rxpwrpercentage(s8 antpower)
+-{
+-	if ((antpower <= -100) || (antpower >= 20))
+-		return	0;
+-	else if (antpower >= 0)
+-		return	100;
+-	else
+-		return	100 + antpower;
+-
+-}	/* QueryRxPwrPercentage */
+-
+-static u8 rtl819x_evm_dbtopercentage(s8 value)
+-{
+-	s8 ret_val = clamp(-value, 0, 33) * 3;
+-
+-	if (ret_val == 99)
+-		ret_val = 100;
+-
+-	return ret_val;
+-}
+-
+-/* We want good-looking for signal strength/quality */
+-static long rtl819x_signal_scale_mapping(long currsig)
+-{
+-	long retsig;
+-
+-	/* Step 1. Scale mapping. */
+-	if (currsig >= 61 && currsig <= 100)
+-		retsig = 90 + ((currsig - 60) / 4);
+-	else if (currsig >= 41 && currsig <= 60)
+-		retsig = 78 + ((currsig - 40) / 2);
+-	else if (currsig >= 31 && currsig <= 40)
+-		retsig = 66 + (currsig - 30);
+-	else if (currsig >= 21 && currsig <= 30)
+-		retsig = 54 + (currsig - 20);
+-	else if (currsig >= 5 && currsig <= 20)
+-		retsig = 42 + (((currsig - 5) * 2) / 3);
+-	else if (currsig == 4)
+-		retsig = 36;
+-	else if (currsig == 3)
+-		retsig = 27;
+-	else if (currsig == 2)
+-		retsig = 18;
+-	else if (currsig == 1)
+-		retsig = 9;
+-	else
+-		retsig = currsig;
+-
+-	return retsig;
+-}
+-
+-static inline bool rx_hal_is_cck_rate(struct rx_drvinfo_819x_usb *pdrvinfo)
+-{
+-	if (pdrvinfo->RxHT)
+-		return false;
+-
+-	switch (pdrvinfo->RxRate) {
+-	case DESC90_RATE1M:
+-	case DESC90_RATE2M:
+-	case DESC90_RATE5_5M:
+-	case DESC90_RATE11M:
+-		return true;
+-	default:
+-		return false;
+-	}
+-}
+-
+-static void rtl8192_query_rxphystatus(struct r8192_priv *priv,
+-				      struct ieee80211_rx_stats *pstats,
+-				      struct rx_drvinfo_819x_usb  *pdrvinfo,
+-				      struct ieee80211_rx_stats *precord_stats,
+-				      bool bpacket_match_bssid,
+-				      bool bpacket_toself,
+-				      bool bPacketBeacon,
+-				      bool bToSelfBA)
+-{
+-	phy_sts_ofdm_819xusb_t *pofdm_buf;
+-	phy_sts_cck_819xusb_t	*pcck_buf;
+-	struct phy_ofdm_rx_status_rxsc_sgien_exintfflag *prxsc;
+-	u8	*prxpkt;
+-	u8	i, max_spatial_stream, tmp_rxsnr, tmp_rxevm, rxsc_sgien_exflg;
+-	s8	rx_pwr[4], rx_pwr_all = 0;
+-	s8	rx_snrX, rx_evmX;
+-	u8	evm, pwdb_all;
+-	u32	RSSI, total_rssi = 0;
+-	u8	is_cck_rate = 0;
+-	u8	rf_rx_num = 0;
+-	u8	sq;
+-
+-	priv->stats.numqry_phystatus++;
+-
+-	is_cck_rate = rx_hal_is_cck_rate(pdrvinfo);
+-
+-	/* Record it for next packet processing */
+-	memset(precord_stats, 0, sizeof(struct ieee80211_rx_stats));
+-	pstats->bPacketMatchBSSID =
+-		precord_stats->bPacketMatchBSSID = bpacket_match_bssid;
+-	pstats->bPacketToSelf = precord_stats->bPacketToSelf = bpacket_toself;
+-	pstats->bIsCCK = precord_stats->bIsCCK = is_cck_rate;
+-	pstats->bPacketBeacon = precord_stats->bPacketBeacon = bPacketBeacon;
+-	pstats->bToSelfBA = precord_stats->bToSelfBA = bToSelfBA;
+-
+-	prxpkt = (u8 *)pdrvinfo;
+-
+-	/* Move pointer to the 16th bytes. Phy status start address. */
+-	prxpkt += sizeof(struct rx_drvinfo_819x_usb);
+-
+-	/* Initial the cck and ofdm buffer pointer */
+-	pcck_buf = (phy_sts_cck_819xusb_t *)prxpkt;
+-	pofdm_buf = (phy_sts_ofdm_819xusb_t *)prxpkt;
+-
+-	pstats->RxMIMOSignalQuality[0] = -1;
+-	pstats->RxMIMOSignalQuality[1] = -1;
+-	precord_stats->RxMIMOSignalQuality[0] = -1;
+-	precord_stats->RxMIMOSignalQuality[1] = -1;
+-
+-	if (is_cck_rate) {
+-		/* (1)Hardware does not provide RSSI for CCK */
+-
+-		/* (2)PWDB, Average PWDB calculated by hardware
+-		 * (for rate adaptive)
+-		 */
+-		u8 report;
+-
+-		priv->stats.numqry_phystatusCCK++;
+-
+-		if (!priv->bCckHighPower) {
+-			report = pcck_buf->cck_agc_rpt & 0xc0;
+-			report >>= 6;
+-			switch (report) {
+-			case 0x3:
+-				rx_pwr_all = -35 - (pcck_buf->cck_agc_rpt & 0x3e);
+-				break;
+-			case 0x2:
+-				rx_pwr_all = -23 - (pcck_buf->cck_agc_rpt & 0x3e);
+-				break;
+-			case 0x1:
+-				rx_pwr_all = -11 - (pcck_buf->cck_agc_rpt & 0x3e);
+-				break;
+-			case 0x0:
+-				rx_pwr_all = 6 - (pcck_buf->cck_agc_rpt & 0x3e);
+-				break;
+-			}
+-		} else {
+-			report = pcck_buf->cck_agc_rpt & 0x60;
+-			report >>= 5;
+-			switch (report) {
+-			case 0x3:
+-				rx_pwr_all = -35 - ((pcck_buf->cck_agc_rpt & 0x1f) << 1);
+-				break;
+-			case 0x2:
+-				rx_pwr_all = -23 - ((pcck_buf->cck_agc_rpt & 0x1f) << 1);
+-				break;
+-			case 0x1:
+-				rx_pwr_all = -11 - ((pcck_buf->cck_agc_rpt & 0x1f) << 1);
+-				break;
+-			case 0x0:
+-				rx_pwr_all = 6 - ((pcck_buf->cck_agc_rpt & 0x1f) << 1);
+-				break;
+-			}
+-		}
+-
+-		pwdb_all = rtl819x_query_rxpwrpercentage(rx_pwr_all);
+-		pstats->RxPWDBAll = precord_stats->RxPWDBAll = pwdb_all;
+-		pstats->RecvSignalPower = pwdb_all;
+-
+-		/* (3) Get Signal Quality (EVM) */
+-
+-		if (pstats->RxPWDBAll > 40) {
+-			sq = 100;
+-		} else {
+-			sq = pcck_buf->sq_rpt;
+-
+-			if (pcck_buf->sq_rpt > 64)
+-				sq = 0;
+-			else if (pcck_buf->sq_rpt < 20)
+-				sq = 100;
+-			else
+-				sq = ((64 - sq) * 100) / 44;
+-		}
+-		pstats->SignalQuality = precord_stats->SignalQuality = sq;
+-		pstats->RxMIMOSignalQuality[0] =
+-			precord_stats->RxMIMOSignalQuality[0] = sq;
+-		pstats->RxMIMOSignalQuality[1] =
+-			precord_stats->RxMIMOSignalQuality[1] = -1;
+-
+-	} else {
+-		priv->stats.numqry_phystatusHT++;
+-
+-		/* (1)Get RSSI for HT rate */
+-		for (i = RF90_PATH_A; i < priv->NumTotalRFPath; i++) {
+-			/* We will judge RF RX path now. */
+-			if (priv->brfpath_rxenable[i])
+-				rf_rx_num++;
+-			else
+-				continue;
+-
+-			if (!rtl8192_phy_CheckIsLegalRFPath(priv->ieee80211->dev, i))
+-				continue;
+-
+-			rx_pwr[i] =
+-				((pofdm_buf->trsw_gain_X[i] & 0x3F) * 2) - 106;
+-
+-			/* Get Rx snr value in DB */
+-			tmp_rxsnr =	pofdm_buf->rxsnr_X[i];
+-			rx_snrX = (s8)(tmp_rxsnr);
+-			rx_snrX /= 2;
+-			priv->stats.rxSNRdB[i] = (long)rx_snrX;
+-
+-			/* Translate DBM to percentage. */
+-			RSSI = rtl819x_query_rxpwrpercentage(rx_pwr[i]);
+-			total_rssi += RSSI;
+-
+-			/* Record Signal Strength for next packet */
+-			pstats->RxMIMOSignalStrength[i] = (u8)RSSI;
+-			precord_stats->RxMIMOSignalStrength[i] = (u8)RSSI;
+-		}
+-
+-		/* (2)PWDB, Average PWDB calculated by hardware
+-		 * (for rate adaptive)
+-		 */
+-		rx_pwr_all = (((pofdm_buf->pwdb_all) >> 1) & 0x7f) - 106;
+-		pwdb_all = rtl819x_query_rxpwrpercentage(rx_pwr_all);
+-
+-		pstats->RxPWDBAll = precord_stats->RxPWDBAll = pwdb_all;
+-		pstats->RxPower = precord_stats->RxPower =  rx_pwr_all;
+-
+-		/* (3)EVM of HT rate */
+-		if (pdrvinfo->RxHT && pdrvinfo->RxRate >= DESC90_RATEMCS8 &&
+-		    pdrvinfo->RxRate <= DESC90_RATEMCS15)
+-			/* both spatial stream make sense */
+-			max_spatial_stream = 2;
+-		else
+-			/* only spatial stream 1 makes sense */
+-			max_spatial_stream = 1;
+-
+-		for (i = 0; i < max_spatial_stream; i++) {
+-			tmp_rxevm =	pofdm_buf->rxevm_X[i];
+-			rx_evmX = (s8)(tmp_rxevm);
+-
+-			/* Do not use shift operation like "rx_evmX >>= 1"
+-			 * because the compiler of free build environment will
+-			 * set the most significant bit to "zero" when doing
+-			 * shifting operation which may change a negative value
+-			 * to positive one, then the dbm value (which is
+-			 * supposed to be negative) is not correct anymore.
+-			 */
+-			rx_evmX /= 2;	/* dbm */
+-
+-			evm = rtl819x_evm_dbtopercentage(rx_evmX);
+-			if (i == 0)
+-				/* Fill value in RFD, Get the first spatial
+-				 * stream only
+-				 */
+-				pstats->SignalQuality =
+-					precord_stats->SignalQuality =
+-					evm & 0xff;
+-			pstats->RxMIMOSignalQuality[i] =
+-				precord_stats->RxMIMOSignalQuality[i] =
+-				evm & 0xff;
+-		}
+-
+-		/* record rx statistics for debug */
+-		rxsc_sgien_exflg = pofdm_buf->rxsc_sgien_exflg;
+-		prxsc =	(struct phy_ofdm_rx_status_rxsc_sgien_exintfflag *)
+-			&rxsc_sgien_exflg;
+-		if (pdrvinfo->BW)	/* 40M channel */
+-			priv->stats.received_bwtype[1 + prxsc->rxsc]++;
+-		else			/* 20M channel */
+-			priv->stats.received_bwtype[0]++;
+-	}
+-
+-	/* UI BSS List signal strength(in percentage), make it good looking,
+-	 * from 0~100. It is assigned to the BSS List in
+-	 * GetValueFromBeaconOrProbeRsp().
+-	 */
+-	if (is_cck_rate) {
+-		pstats->SignalStrength =
+-			precord_stats->SignalStrength =
+-			(u8)(rtl819x_signal_scale_mapping((long)pwdb_all));
+-	} else {
+-		/* We can judge RX path number now. */
+-		if (rf_rx_num != 0) {
+-			pstats->SignalStrength =
+-				precord_stats->SignalStrength =
+-				(u8)(rtl819x_signal_scale_mapping((long)(total_rssi /= rf_rx_num)));
+-		}
+-	}
+-}	/* QueryRxPhyStatus8190Pci */
+-
+-static void rtl8192_record_rxdesc_forlateruse(struct ieee80211_rx_stats *psrc_stats,
+-					      struct ieee80211_rx_stats *ptarget_stats)
+-{
+-	ptarget_stats->bIsAMPDU = psrc_stats->bIsAMPDU;
+-	ptarget_stats->bFirstMPDU = psrc_stats->bFirstMPDU;
+-	ptarget_stats->Seq_Num = psrc_stats->Seq_Num;
+-}
+-
+-static void TranslateRxSignalStuff819xUsb(struct sk_buff *skb,
+-					  struct ieee80211_rx_stats *pstats,
+-					  struct rx_drvinfo_819x_usb  *pdrvinfo)
+-{
+-	/* TODO: We must only check packet for current MAC address.
+-	 * Not finish
+-	 */
+-	struct rtl8192_rx_info *info = (struct rtl8192_rx_info *)skb->cb;
+-	struct net_device *dev = info->dev;
+-	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
+-	bool bpacket_match_bssid, bpacket_toself;
+-	bool bPacketBeacon = false, bToSelfBA = false;
+-	static struct ieee80211_rx_stats  previous_stats;
+-	struct rtl_80211_hdr_3addr *hdr;
+-	u16 fc, type;
+-
+-	/* Get Signal Quality for only RX data queue (but not command queue) */
+-
+-	u8 *tmp_buf;
+-	u8  *praddr;
+-
+-	/* Get MAC frame start address. */
+-	tmp_buf = (u8 *)skb->data;
+-
+-	hdr = (struct rtl_80211_hdr_3addr *)tmp_buf;
+-	fc = le16_to_cpu(hdr->frame_ctl);
+-	type = WLAN_FC_GET_TYPE(fc);
+-	praddr = hdr->addr1;
+-
+-	/* Check if the received packet is acceptable. */
+-	bpacket_match_bssid = (type != IEEE80211_FTYPE_CTL) &&
+-			       (ether_addr_equal(priv->ieee80211->current_network.bssid,  (fc & IEEE80211_FCTL_TODS) ? hdr->addr1 : (fc & IEEE80211_FCTL_FROMDS) ? hdr->addr2 : hdr->addr3))
+-			       && (!pstats->bHwError) && (!pstats->bCRC) && (!pstats->bICV);
+-	bpacket_toself =  bpacket_match_bssid &&
+-			  (ether_addr_equal(praddr, priv->ieee80211->dev->dev_addr));
+-
+-	if (WLAN_FC_GET_FRAMETYPE(fc) == IEEE80211_STYPE_BEACON)
+-		bPacketBeacon = true;
+-	if (WLAN_FC_GET_FRAMETYPE(fc) == IEEE80211_STYPE_BLOCKACK) {
+-		if ((ether_addr_equal(praddr, dev->dev_addr)))
+-			bToSelfBA = true;
+-	}
+-
+-	if (bpacket_match_bssid)
+-		priv->stats.numpacket_matchbssid++;
+-	if (bpacket_toself)
+-		priv->stats.numpacket_toself++;
+-	/* Process PHY information for previous packet (RSSI/PWDB/EVM)
+-	 * Because phy information is contained in the last packet of AMPDU
+-	 * only, so driver should process phy information of previous packet
+-	 */
+-	rtl8192_process_phyinfo(priv, tmp_buf, &previous_stats, pstats);
+-	rtl8192_query_rxphystatus(priv, pstats, pdrvinfo, &previous_stats,
+-				  bpacket_match_bssid, bpacket_toself,
+-				  bPacketBeacon, bToSelfBA);
+-	rtl8192_record_rxdesc_forlateruse(pstats, &previous_stats);
+-}
+-
+-/*
+- * Function:	UpdateReceivedRateHistogramStatistics
+- * Overview:	Record the received data rate
+- *
+- * Input:
+- *	struct net_device *dev
+- *	struct ieee80211_rx_stats *stats
+- *
+- * Output:
+- *
+- *			(priv->stats.ReceivedRateHistogram[] is updated)
+- * Return:
+- *		None
+- */
+-static void
+-UpdateReceivedRateHistogramStatistics8190(struct net_device *dev,
+-					  struct ieee80211_rx_stats *stats)
+-{
+-	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
+-	/* 0: Total, 1:OK, 2:CRC, 3:ICV */
+-	u32 rcvType = 1;
+-	u32 rateIndex;
+-	/* 1: short preamble/GI, 0: long preamble/GI */
+-	u32 preamble_guardinterval;
+-
+-	if (stats->bCRC)
+-		rcvType = 2;
+-	else if (stats->bICV)
+-		rcvType = 3;
+-
+-	if (stats->bShortPreamble)
+-		preamble_guardinterval = 1; /* short */
+-	else
+-		preamble_guardinterval = 0; /* long */
+-
+-	switch (stats->rate) {
+-	/* CCK rate */
+-	case MGN_1M:
+-		rateIndex = 0;
+-		break;
+-	case MGN_2M:
+-		rateIndex = 1;
+-		break;
+-	case MGN_5_5M:
+-		rateIndex = 2;
+-		break;
+-	case MGN_11M:
+-		rateIndex = 3;
+-		break;
+-	/* Legacy OFDM rate */
+-	case MGN_6M:
+-		rateIndex = 4;
+-		break;
+-	case MGN_9M:
+-		rateIndex = 5;
+-		break;
+-	case MGN_12M:
+-		rateIndex = 6;
+-		break;
+-	case MGN_18M:
+-		rateIndex = 7;
+-		break;
+-	case MGN_24M:
+-		rateIndex = 8;
+-		break;
+-	case MGN_36M:
+-		rateIndex = 9;
+-		break;
+-	case MGN_48M:
+-		rateIndex = 10;
+-		break;
+-	case MGN_54M:
+-		rateIndex = 11;
+-		break;
+-	/* 11n High throughput rate */
+-	case MGN_MCS0:
+-		rateIndex = 12;
+-		break;
+-	case MGN_MCS1:
+-		rateIndex = 13;
+-		break;
+-	case MGN_MCS2:
+-		rateIndex = 14;
+-		break;
+-	case MGN_MCS3:
+-		rateIndex = 15;
+-		break;
+-	case MGN_MCS4:
+-		rateIndex = 16;
+-		break;
+-	case MGN_MCS5:
+-		rateIndex = 17;
+-		break;
+-	case MGN_MCS6:
+-		rateIndex = 18;
+-		break;
+-	case MGN_MCS7:
+-		rateIndex = 19;
+-		break;
+-	case MGN_MCS8:
+-		rateIndex = 20;
+-		break;
+-	case MGN_MCS9:
+-		rateIndex = 21;
+-		break;
+-	case MGN_MCS10:
+-		rateIndex = 22;
+-		break;
+-	case MGN_MCS11:
+-		rateIndex = 23;
+-		break;
+-	case MGN_MCS12:
+-		rateIndex = 24;
+-		break;
+-	case MGN_MCS13:
+-		rateIndex = 25;
+-		break;
+-	case MGN_MCS14:
+-		rateIndex = 26;
+-		break;
+-	case MGN_MCS15:
+-		rateIndex = 27;
+-		break;
+-	default:
+-		rateIndex = 28;
+-		break;
+-	}
+-	priv->stats.received_preamble_GI[preamble_guardinterval][rateIndex]++;
+-	priv->stats.received_rate_histogram[0][rateIndex]++; /* total */
+-	priv->stats.received_rate_histogram[rcvType][rateIndex]++;
+-}
+-
+-static void query_rxdesc_status(struct sk_buff *skb,
+-				struct ieee80211_rx_stats *stats,
+-				bool bIsRxAggrSubframe)
+-{
+-	struct rtl8192_rx_info *info = (struct rtl8192_rx_info *)skb->cb;
+-	struct net_device *dev = info->dev;
+-	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
+-	struct rx_drvinfo_819x_usb  *driver_info = NULL;
+-
+-	/* Get Rx Descriptor Information */
+-	struct rx_desc_819x_usb *desc = (struct rx_desc_819x_usb *)skb->data;
+-
+-	stats->Length = desc->Length;
+-	stats->RxDrvInfoSize = desc->RxDrvInfoSize;
+-	stats->RxBufShift = 0;
+-	stats->bICV = desc->ICV;
+-	stats->bCRC = desc->CRC32;
+-	stats->bHwError = stats->bCRC | stats->bICV;
+-	/* RTL8190 set this bit to indicate that Hw does not decrypt packet */
+-	stats->Decrypted = !desc->SWDec;
+-
+-	if ((priv->ieee80211->pHTInfo->bCurrentHTSupport) &&
+-	    (priv->ieee80211->pairwise_key_type == KEY_TYPE_CCMP))
+-		stats->bHwError = false;
+-	else
+-		stats->bHwError = stats->bCRC | stats->bICV;
+-
+-	if (stats->Length < 24 || stats->Length > MAX_8192U_RX_SIZE)
+-		stats->bHwError |= 1;
+-	/* Get Driver Info */
+-	/* TODO: Need to verify it on FGPA platform
+-	 * Driver info are written to the RxBuffer following rx desc
+-	 */
+-	if (stats->RxDrvInfoSize != 0) {
+-		driver_info = (struct rx_drvinfo_819x_usb *)(skb->data
+-				+ sizeof(struct rx_desc_819x_usb)
+-				+ stats->RxBufShift
+-			      );
+-		/* unit: 0.5M */
+-		/* TODO */
+-		if (!stats->bHwError) {
+-			u8	ret_rate;
+-
+-			ret_rate = HwRateToMRate90(driver_info->RxHT,
+-						   driver_info->RxRate);
+-			if (ret_rate == 0xff) {
+-				/* Abnormal Case: Receive CRC OK packet with Rx
+-				 * descriptor indicating non supported rate.
+-				 * Special Error Handling here
+-				 */
+-
+-				stats->bHwError = 1;
+-				/* Set 1M rate by default */
+-				stats->rate = MGN_1M;
+-			} else {
+-				stats->rate = ret_rate;
+-			}
+-		} else {
+-			stats->rate = 0x02;
+-		}
+-
+-		stats->bShortPreamble = driver_info->SPLCP;
+-
+-		UpdateReceivedRateHistogramStatistics8190(dev, stats);
+-
+-		stats->bIsAMPDU = (driver_info->PartAggr == 1);
+-		stats->bFirstMPDU = (driver_info->PartAggr == 1) &&
+-				    (driver_info->FirstAGGR == 1);
+-		stats->TimeStampLow = driver_info->TSFL;
+-
+-		UpdateRxPktTimeStamp8190(dev, stats);
+-
+-		/* Rx A-MPDU */
+-		if (driver_info->FirstAGGR == 1 || driver_info->PartAggr == 1)
+-			RT_TRACE(COMP_RXDESC,
+-				 "driver_info->FirstAGGR = %d, driver_info->PartAggr = %d\n",
+-				 driver_info->FirstAGGR, driver_info->PartAggr);
+-	}
+-
+-	skb_pull(skb, sizeof(struct rx_desc_819x_usb));
+-	/* Get Total offset of MPDU Frame Body */
+-	if ((stats->RxBufShift + stats->RxDrvInfoSize) > 0) {
+-		stats->bShift = 1;
+-		skb_pull(skb, stats->RxBufShift + stats->RxDrvInfoSize);
+-	}
+-
+-	if (driver_info) {
+-		stats->RxIs40MHzPacket = driver_info->BW;
+-		TranslateRxSignalStuff819xUsb(skb, stats, driver_info);
+-	}
+-}
+-
+-static void rtl8192_rx_nomal(struct sk_buff *skb)
+-{
+-	struct rtl8192_rx_info *info = (struct rtl8192_rx_info *)skb->cb;
+-	struct net_device *dev = info->dev;
+-	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
+-	struct ieee80211_rx_stats stats = {
+-		.signal = 0,
+-		.noise = 0x100 - 98,
+-		.rate = 0,
+-		.freq = IEEE80211_24GHZ_BAND,
+-	};
+-	u32 rx_pkt_len = 0;
+-	struct rtl_80211_hdr_1addr *ieee80211_hdr = NULL;
+-	bool unicast_packet = false;
+-
+-	/* 20 is for ps-poll */
+-	if ((skb->len >= (20 + sizeof(struct rx_desc_819x_usb))) && (skb->len < RX_URB_SIZE)) {
+-		/* first packet should not contain Rx aggregation header */
+-		query_rxdesc_status(skb, &stats, false);
+-		/* TODO */
+-		/* hardware related info */
+-		/* Process the MPDU received */
+-		skb_trim(skb, skb->len - 4/*sCrcLng*/);
+-
+-		rx_pkt_len = skb->len;
+-		ieee80211_hdr = (struct rtl_80211_hdr_1addr *)skb->data;
+-		unicast_packet = false;
+-		if (is_broadcast_ether_addr(ieee80211_hdr->addr1)) {
+-			/* TODO */
+-		} else if (is_multicast_ether_addr(ieee80211_hdr->addr1)) {
+-			/* TODO */
+-		} else {
+-			/* unicast packet */
+-			unicast_packet = true;
+-		}
+-
+-		if (!ieee80211_rx(priv->ieee80211, skb, &stats)) {
+-			dev_kfree_skb_any(skb);
+-		} else {
+-			priv->stats.rxoktotal++;
+-			if (unicast_packet)
+-				priv->stats.rxbytesunicast += rx_pkt_len;
+-		}
+-	} else {
+-		priv->stats.rxurberr++;
+-		netdev_dbg(dev, "actual_length: %d\n", skb->len);
+-		dev_kfree_skb_any(skb);
+-	}
+-}
+-
+-static void rtl819xusb_process_received_packet(struct net_device *dev,
+-					       struct ieee80211_rx_stats *pstats)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	/* Get shifted bytes of Starting address of 802.11 header. */
+-	pstats->virtual_address += get_rxpacket_shiftbytes_819xusb(pstats);
+-#ifdef TODO	/* about HCT */
+-	if (!Adapter->bInHctTest)
+-		CountRxErrStatistics(Adapter, pRfd);
+-#endif
+-#ifdef ENABLE_PS  /* for adding ps function in future */
+-	RT_RF_POWER_STATE rtState;
+-	/* When RF is off, we should not count the packet for hw/sw synchronize
+-	 * reason, ie. there may be a duration while sw switch is changed and
+-	 * hw switch is being changed.
+-	 */
+-	Adapter->HalFunc.GetHwRegHandler(Adapter, HW_VAR_RF_STATE,
+-					 (u8 *)(&rtState));
+-	if (rtState == eRfOff)
+-		return;
+-#endif
+-	priv->stats.rxframgment++;
+-
+-#ifdef TODO
+-	RmMonitorSignalStrength(Adapter, pRfd);
+-#endif
+-	/* We have to release RFD and return if rx pkt is cmd pkt. */
+-	if (rtl819xusb_rx_command_packet(dev, pstats))
+-		return;
+-
+-#ifdef SW_CRC_CHECK
+-	SwCrcCheck();
+-#endif
+-}
+-
+-static void query_rx_cmdpkt_desc_status(struct sk_buff *skb,
+-					struct ieee80211_rx_stats *stats)
+-{
+-	struct rx_desc_819x_usb *desc = (struct rx_desc_819x_usb *)skb->data;
+-
+-	/* Get Rx Descriptor Information */
+-	stats->virtual_address = (u8 *)skb->data;
+-	stats->Length = desc->Length;
+-	stats->RxDrvInfoSize = 0;
+-	stats->RxBufShift = 0;
+-	stats->packetlength = stats->Length - scrclng;
+-	stats->fraglength = stats->packetlength;
+-	stats->fragoffset = 0;
+-	stats->ntotalfrag = 1;
+-}
+-
+-static void rtl8192_rx_cmd(struct sk_buff *skb)
+-{
+-	struct rtl8192_rx_info *info = (struct rtl8192_rx_info *)skb->cb;
+-	struct net_device *dev = info->dev;
+-	/* TODO */
+-	struct ieee80211_rx_stats stats = {
+-		.signal = 0,
+-		.noise = 0x100 - 98,
+-		.rate = 0,
+-		.freq = IEEE80211_24GHZ_BAND,
+-	};
+-
+-	if ((skb->len >= (20 + sizeof(struct rx_desc_819x_usb))) && (skb->len < RX_URB_SIZE)) {
+-		query_rx_cmdpkt_desc_status(skb, &stats);
+-		/* prfd->queue_id = 1; */
+-
+-		/* Process the command packet received. */
+-
+-		rtl819xusb_process_received_packet(dev, &stats);
+-
+-		dev_kfree_skb_any(skb);
+-	}
+-}
+-
+-static void rtl8192_irq_rx_tasklet(struct tasklet_struct *t)
+-{
+-	struct r8192_priv *priv = from_tasklet(priv, t, irq_rx_tasklet);
+-	struct sk_buff *skb;
+-	struct rtl8192_rx_info *info;
+-
+-	while (NULL != (skb = skb_dequeue(&priv->skb_queue))) {
+-		info = (struct rtl8192_rx_info *)skb->cb;
+-		switch (info->out_pipe) {
+-		/* Nomal packet pipe */
+-		case 3:
+-			priv->IrpPendingCount--;
+-			rtl8192_rx_nomal(skb);
+-			break;
+-
+-		/* Command packet pipe */
+-		case 9:
+-			RT_TRACE(COMP_RECV, "command in-pipe index(%d)\n",
+-				 info->out_pipe);
+-
+-			rtl8192_rx_cmd(skb);
+-			break;
+-
+-		default: /* should never get here! */
+-			RT_TRACE(COMP_ERR, "Unknown in-pipe index(%d)\n",
+-				 info->out_pipe);
+-			dev_kfree_skb(skb);
+-			break;
+-		}
+-	}
+-}
+-
+-static const struct net_device_ops rtl8192_netdev_ops = {
+-	.ndo_open               = rtl8192_open,
+-	.ndo_stop               = rtl8192_close,
+-	.ndo_get_stats          = rtl8192_stats,
+-	.ndo_tx_timeout         = tx_timeout,
+-	.ndo_do_ioctl           = rtl8192_ioctl,
+-	.ndo_set_rx_mode	= r8192_set_multicast,
+-	.ndo_set_mac_address    = r8192_set_mac_adr,
+-	.ndo_validate_addr      = eth_validate_addr,
+-	.ndo_start_xmit         = ieee80211_xmit,
+-};
+-
+-/****************************************************************************
+- *    ---------------------------- USB_STUFF---------------------------
+- *****************************************************************************/
+-
+-static int rtl8192_usb_probe(struct usb_interface *intf,
+-			     const struct usb_device_id *id)
+-{
+-	struct net_device *dev = NULL;
+-	struct r8192_priv *priv = NULL;
+-	struct usb_device *udev = interface_to_usbdev(intf);
+-	int ret;
+-
+-	RT_TRACE(COMP_INIT, "Oops: i'm coming\n");
+-
+-	dev = alloc_ieee80211(sizeof(struct r8192_priv));
+-	if (!dev)
+-		return -ENOMEM;
+-
+-	usb_set_intfdata(intf, dev);
+-	SET_NETDEV_DEV(dev, &intf->dev);
+-	priv = ieee80211_priv(dev);
+-	priv->ieee80211 = netdev_priv(dev);
+-	priv->udev = udev;
+-
+-	dev->netdev_ops = &rtl8192_netdev_ops;
+-
+-	dev->wireless_handlers = &r8192_wx_handlers_def;
+-
+-	dev->type = ARPHRD_ETHER;
+-
+-	dev->watchdog_timeo = HZ * 3;
+-
+-	if (dev_alloc_name(dev, ifname) < 0) {
+-		RT_TRACE(COMP_INIT,
+-			 "Oops: devname already taken! Trying wlan%%d...\n");
+-		ifname = "wlan%d";
+-		dev_alloc_name(dev, ifname);
+-	}
+-
+-	RT_TRACE(COMP_INIT, "Driver probe completed1\n");
+-	if (rtl8192_init(dev) != 0) {
+-		RT_TRACE(COMP_ERR, "Initialization failed");
+-		ret = -ENODEV;
+-		goto fail;
+-	}
+-	netif_carrier_off(dev);
+-	netif_stop_queue(dev);
+-
+-	ret = register_netdev(dev);
+-	if (ret)
+-		goto fail2;
+-
+-	RT_TRACE(COMP_INIT, "dev name=======> %s\n", dev->name);
+-	rtl8192_debugfs_init_one(dev);
+-
+-	RT_TRACE(COMP_INIT, "Driver probe completed\n");
+-	return 0;
+-
+-fail2:
+-	rtl8192_down(dev);
+-fail:
+-	kfree(priv->pFirmware);
+-	priv->pFirmware = NULL;
+-	rtl8192_usb_deleteendpoints(dev);
+-	msleep(10);
+-	free_ieee80211(dev);
+-
+-	RT_TRACE(COMP_ERR, "wlan driver load failed\n");
+-	return ret;
+-}
+-
+-/* detach all the work and timer structure declared or inititialize
+- * in r8192U_init function.
+- */
+-static void rtl8192_cancel_deferred_work(struct r8192_priv *priv)
+-{
+-	cancel_work_sync(&priv->reset_wq);
+-	cancel_delayed_work(&priv->watch_dog_wq);
+-	cancel_delayed_work(&priv->update_beacon_wq);
+-	cancel_work_sync(&priv->qos_activate);
+-}
+-
+-static void rtl8192_usb_disconnect(struct usb_interface *intf)
+-{
+-	struct net_device *dev = usb_get_intfdata(intf);
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-
+-	RT_TRACE(COMP_DOWN, "=============>wlan driver to be removed\n");
+-	rtl8192_debugfs_exit_one(dev);
+-
+-	unregister_netdev(dev);
+-
+-	rtl8192_down(dev);
+-	kfree(priv->pFirmware);
+-	priv->pFirmware = NULL;
+-	rtl8192_usb_deleteendpoints(dev);
+-	usleep_range(10000, 11000);
+-	free_ieee80211(dev);
+-
+-	RT_TRACE(COMP_DOWN, "wlan driver removed\n");
+-}
+-
+-static int rtl8192_usb_netdev_event(struct notifier_block *nb, unsigned long event,
+-				    void *data)
+-{
+-	struct net_device *netdev = netdev_notifier_info_to_dev(data);
+-
+-	if (netdev->netdev_ops != &rtl8192_netdev_ops)
+-		goto out;
+-
+-	switch (event) {
+-	case NETDEV_CHANGENAME:
+-		rtl8192_debugfs_rename_one(netdev);
+-		break;
+-	default:
+-		break;
+-	}
+-
+-out:
+-	return NOTIFY_DONE;
+-}
+-
+-static struct notifier_block rtl8192_usb_netdev_notifier = {
+-	.notifier_call = rtl8192_usb_netdev_event,
+-};
+-
+-static int __init rtl8192_usb_module_init(void)
+-{
+-	int ret;
+-
+-	pr_info("\nLinux kernel driver for RTL8192 based WLAN cards\n");
+-	pr_info("Copyright (c) 2007-2008, Realsil Wlan\n");
+-	RT_TRACE(COMP_INIT, "Initializing module");
+-	RT_TRACE(COMP_INIT, "Wireless extensions version %d", WIRELESS_EXT);
+-
+-	ret = register_netdevice_notifier(&rtl8192_usb_netdev_notifier);
+-	if (ret) {
+-		pr_err("register_netdevice_notifier failed %d\n", ret);
+-		return ret;
+-	}
+-
+-	rtl8192_debugfs_init();
+-	ret = ieee80211_debug_init();
+-	if (ret) {
+-		pr_err("ieee80211_debug_init() failed %d\n", ret);
+-		goto debugfs_exit;
+-	}
+-
+-	ret = ieee80211_crypto_init();
+-	if (ret) {
+-		pr_err("ieee80211_crypto_init() failed %d\n", ret);
+-		goto debug_exit;
+-	}
+-
+-	ret = ieee80211_crypto_tkip_init();
+-	if (ret) {
+-		pr_err("ieee80211_crypto_tkip_init() failed %d\n", ret);
+-		goto crypto_exit;
+-	}
+-
+-	ret = ieee80211_crypto_ccmp_init();
+-	if (ret) {
+-		pr_err("ieee80211_crypto_ccmp_init() failed %d\n", ret);
+-		goto crypto_tkip_exit;
+-	}
+-
+-	ret = ieee80211_crypto_wep_init();
+-	if (ret) {
+-		pr_err("ieee80211_crypto_wep_init() failed %d\n", ret);
+-		goto crypto_ccmp_exit;
+-	}
+-
+-	ret = usb_register(&rtl8192_usb_driver);
+-	if (ret)
+-		goto crypto_wep_exit;
+-	return ret;
+-
+-crypto_wep_exit:
+-	ieee80211_crypto_wep_exit();
+-crypto_ccmp_exit:
+-	ieee80211_crypto_ccmp_exit();
+-crypto_tkip_exit:
+-	ieee80211_crypto_tkip_exit();
+-crypto_exit:
+-	ieee80211_crypto_deinit();
+-debug_exit:
+-	ieee80211_debug_exit();
+-debugfs_exit:
+-	rtl8192_debugfs_exit();
+-	unregister_netdevice_notifier(&rtl8192_usb_netdev_notifier);
+-	return ret;
+-}
+-
+-static void __exit rtl8192_usb_module_exit(void)
+-{
+-	usb_deregister(&rtl8192_usb_driver);
+-	ieee80211_crypto_wep_exit();
+-	ieee80211_crypto_ccmp_exit();
+-	ieee80211_crypto_tkip_exit();
+-	ieee80211_crypto_deinit();
+-	ieee80211_debug_exit();
+-	rtl8192_debugfs_exit();
+-	unregister_netdevice_notifier(&rtl8192_usb_netdev_notifier);
+-	RT_TRACE(COMP_DOWN, "Exiting");
+-}
+-
+-void EnableHWSecurityConfig8192(struct net_device *dev)
+-{
+-	u8 SECR_value = 0x0;
+-	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
+-	struct ieee80211_device *ieee = priv->ieee80211;
+-
+-	SECR_value = SCR_TxEncEnable | SCR_RxDecEnable;
+-	if (((ieee->pairwise_key_type == KEY_TYPE_WEP40) || (ieee->pairwise_key_type == KEY_TYPE_WEP104)) && (priv->ieee80211->auth_mode != 2)) {
+-		SECR_value |= SCR_RxUseDK;
+-		SECR_value |= SCR_TxUseDK;
+-	} else if ((ieee->iw_mode == IW_MODE_ADHOC) && (ieee->pairwise_key_type & (KEY_TYPE_CCMP | KEY_TYPE_TKIP))) {
+-		SECR_value |= SCR_RxUseDK;
+-		SECR_value |= SCR_TxUseDK;
+-	}
+-	/* add HWSec active enable here.
+-	 * default using hwsec. when peer AP is in N mode only and
+-	 * pairwise_key_type is none_aes(which HT_IOT_ACT_PURE_N_MODE indicates
+-	 * it), use software security. when peer AP is in b,g,n mode mixed and
+-	 * pairwise_key_type is none_aes, use g mode hw security.
+-	 */
+-
+-	ieee->hwsec_active = 1;
+-
+-	/* add hwsec_support flag to totol control hw_sec on/off */
+-	if ((ieee->pHTInfo->IOTAction & HT_IOT_ACT_PURE_N_MODE) || !hwwep) {
+-		ieee->hwsec_active = 0;
+-		SECR_value &= ~SCR_RxDecEnable;
+-	}
+-	RT_TRACE(COMP_SEC, "%s:, hwsec:%d, pairwise_key:%d, SECR_value:%x\n",
+-		 __func__, ieee->hwsec_active, ieee->pairwise_key_type,
+-		 SECR_value);
+-	write_nic_byte(dev, SECR,  SECR_value);
+-}
+-
+-void setKey(struct net_device *dev, u8 entryno, u8 keyindex, u16 keytype,
+-	    const u8 *macaddr, u8 defaultkey, u32 *keycontent)
+-{
+-	u32 target_command = 0;
+-	u32 target_content = 0;
+-	u16 us_config = 0;
+-	u8 i;
+-
+-	if (entryno >= TOTAL_CAM_ENTRY)
+-		RT_TRACE(COMP_ERR, "cam entry exceeds in %s\n", __func__);
+-
+-	RT_TRACE(COMP_SEC,
+-		 "====>to %s, dev:%p, EntryNo:%d, KeyIndex:%d, KeyType:%d, MacAddr%pM\n",
+-		 __func__, dev, entryno, keyindex, keytype, macaddr);
+-
+-	if (defaultkey)
+-		us_config |= BIT(15) | (keytype << 2);
+-	else
+-		us_config |= BIT(15) | (keytype << 2) | keyindex;
+-
+-	for (i = 0; i < CAM_CONTENT_COUNT; i++) {
+-		target_command  = i + CAM_CONTENT_COUNT * entryno;
+-		target_command |= BIT(31) | BIT(16);
+-
+-		if (i == 0) { /* MAC|Config */
+-			target_content = (u32)(*(macaddr + 0)) << 16 |
+-					(u32)(*(macaddr + 1)) << 24 |
+-					(u32)us_config;
+-
+-			write_nic_dword(dev, WCAMI, target_content);
+-			write_nic_dword(dev, RWCAM, target_command);
+-		} else if (i == 1) { /* MAC */
+-			target_content = (u32)(*(macaddr + 2))	 |
+-					(u32)(*(macaddr + 3)) <<  8 |
+-					(u32)(*(macaddr + 4)) << 16 |
+-					(u32)(*(macaddr + 5)) << 24;
+-			write_nic_dword(dev, WCAMI, target_content);
+-			write_nic_dword(dev, RWCAM, target_command);
+-		} else {
+-			/* Key Material */
+-			if (keycontent) {
+-				write_nic_dword(dev, WCAMI,
+-						*(keycontent + i - 2));
+-				write_nic_dword(dev, RWCAM, target_command);
+-			}
+-		}
+-	}
+-}
+-
+-/***************************************************************************
+- *    ------------------- module init / exit stubs ----------------
+- ****************************************************************************/
+-module_init(rtl8192_usb_module_init);
+-module_exit(rtl8192_usb_module_exit);
+diff --git a/drivers/staging/rtl8192u/r8192U_debugfs.c b/drivers/staging/rtl8192u/r8192U_debugfs.c
+deleted file mode 100644
+index fe8ef72506ee..000000000000
+--- a/drivers/staging/rtl8192u/r8192U_debugfs.c
++++ /dev/null
+@@ -1,188 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/****************************************************************************
+- *   -----------------------------DEGUGFS STUFF-------------------------
+- ****************************************************************************/
+-#include <linux/debugfs.h>
+-#include <linux/seq_file.h>
+-#include "r8192U.h"
+-
+-#define KBUILD_MODNAME "r8192u_usb"
+-
+-static int rtl8192_usb_stats_ap_show(struct seq_file *m, void *v)
+-{
+-	struct net_device *dev = m->private;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	struct ieee80211_device *ieee = priv->ieee80211;
+-	struct ieee80211_network *target;
+-
+-	list_for_each_entry(target, &ieee->network_list, list) {
+-		const char *wpa = "non_WPA";
+-
+-		if (target->wpa_ie_len > 0 || target->rsn_ie_len > 0)
+-			wpa = "WPA";
+-
+-		seq_printf(m, "%s %s\n", target->ssid, wpa);
+-	}
+-
+-	return 0;
+-}
+-
+-static int rtl8192_usb_registers_show(struct seq_file *m, void *v)
+-{
+-	struct net_device *dev = m->private;
+-	int i, n, max = 0xff;
+-	u8 byte_rd;
+-
+-	seq_puts(m, "\n####################page 0##################\n ");
+-
+-	for (n = 0; n <= max;) {
+-		seq_printf(m, "\nD:  %2x > ", n);
+-
+-		for (i = 0; i < 16 && n <= max; i++, n++) {
+-			read_nic_byte(dev, 0x000 | n, &byte_rd);
+-			seq_printf(m, "%2x ", byte_rd);
+-		}
+-	}
+-
+-	seq_puts(m, "\n####################page 1##################\n ");
+-	for (n = 0; n <= max;) {
+-		seq_printf(m, "\nD:  %2x > ", n);
+-
+-		for (i = 0; i < 16 && n <= max; i++, n++) {
+-			read_nic_byte(dev, 0x100 | n, &byte_rd);
+-			seq_printf(m, "%2x ", byte_rd);
+-		}
+-	}
+-
+-	seq_puts(m, "\n####################page 3##################\n ");
+-	for (n = 0; n <= max;) {
+-		seq_printf(m, "\nD:  %2x > ", n);
+-
+-		for (i = 0; i < 16 && n <= max; i++, n++) {
+-			read_nic_byte(dev, 0x300 | n, &byte_rd);
+-			seq_printf(m, "%2x ", byte_rd);
+-		}
+-	}
+-
+-	seq_putc(m, '\n');
+-	return 0;
+-}
+-
+-static int rtl8192_usb_stats_tx_show(struct seq_file *m, void *v)
+-{
+-	struct net_device *dev = m->private;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	seq_printf(m,
+-		   "TX VI priority ok int: %lu\n"
+-		   "TX VI priority error int: %lu\n"
+-		   "TX VO priority ok int: %lu\n"
+-		   "TX VO priority error int: %lu\n"
+-		   "TX BE priority ok int: %lu\n"
+-		   "TX BE priority error int: %lu\n"
+-		   "TX BK priority ok int: %lu\n"
+-		   "TX BK priority error int: %lu\n"
+-		   "TX MANAGE priority ok int: %lu\n"
+-		   "TX MANAGE priority error int: %lu\n"
+-		   "TX BEACON priority ok int: %lu\n"
+-		   "TX BEACON priority error int: %lu\n"
+-		   "TX queue resume: %lu\n"
+-		   "TX queue stopped?: %d\n"
+-		   "TX fifo overflow: %lu\n"
+-		   "TX VI queue: %d\n"
+-		   "TX VO queue: %d\n"
+-		   "TX BE queue: %d\n"
+-		   "TX BK queue: %d\n"
+-		   "TX VI dropped: %lu\n"
+-		   "TX VO dropped: %lu\n"
+-		   "TX BE dropped: %lu\n"
+-		   "TX BK dropped: %lu\n"
+-		   "TX total data packets %lu\n",
+-		   priv->stats.txviokint,
+-		   priv->stats.txvierr,
+-		   priv->stats.txvookint,
+-		   priv->stats.txvoerr,
+-		   priv->stats.txbeokint,
+-		   priv->stats.txbeerr,
+-		   priv->stats.txbkokint,
+-		   priv->stats.txbkerr,
+-		   priv->stats.txmanageokint,
+-		   priv->stats.txmanageerr,
+-		   priv->stats.txbeaconokint,
+-		   priv->stats.txbeaconerr,
+-		   priv->stats.txresumed,
+-		   netif_queue_stopped(dev),
+-		   priv->stats.txoverflow,
+-		   atomic_read(&(priv->tx_pending[VI_PRIORITY])),
+-		   atomic_read(&(priv->tx_pending[VO_PRIORITY])),
+-		   atomic_read(&(priv->tx_pending[BE_PRIORITY])),
+-		   atomic_read(&(priv->tx_pending[BK_PRIORITY])),
+-		   priv->stats.txvidrop,
+-		   priv->stats.txvodrop,
+-		   priv->stats.txbedrop,
+-		   priv->stats.txbkdrop,
+-		   priv->stats.txdatapkt
+-		);
+-
+-	return 0;
+-}
+-
+-static int rtl8192_usb_stats_rx_show(struct seq_file *m, void *v)
+-{
+-	struct net_device *dev = m->private;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	seq_printf(m,
+-		   "RX packets: %lu\n"
+-		   "RX urb status error: %lu\n"
+-		   "RX invalid urb error: %lu\n",
+-		   priv->stats.rxoktotal,
+-		   priv->stats.rxstaterr,
+-		   priv->stats.rxurberr);
+-
+-	return 0;
+-}
+-
+-DEFINE_SHOW_ATTRIBUTE(rtl8192_usb_stats_rx);
+-DEFINE_SHOW_ATTRIBUTE(rtl8192_usb_stats_tx);
+-DEFINE_SHOW_ATTRIBUTE(rtl8192_usb_stats_ap);
+-DEFINE_SHOW_ATTRIBUTE(rtl8192_usb_registers);
+-
+-void rtl8192_debugfs_init_one(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	struct dentry *parent_dir = debugfs_lookup(KBUILD_MODNAME, NULL);
+-	struct dentry *dir = debugfs_create_dir(dev->name, parent_dir);
+-
+-	debugfs_create_file("stats-rx", 0444, dir, dev, &rtl8192_usb_stats_rx_fops);
+-	debugfs_create_file("stats-tx", 0444, dir, dev, &rtl8192_usb_stats_tx_fops);
+-	debugfs_create_file("stats-ap", 0444, dir, dev, &rtl8192_usb_stats_ap_fops);
+-	debugfs_create_file("registers", 0444, dir, dev, &rtl8192_usb_registers_fops);
+-
+-	priv->debugfs_dir = dir;
+-}
+-
+-void rtl8192_debugfs_exit_one(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	debugfs_remove_recursive(priv->debugfs_dir);
+-}
+-
+-void rtl8192_debugfs_rename_one(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	struct dentry *parent_dir = debugfs_lookup(KBUILD_MODNAME, NULL);
+-
+-	debugfs_rename(parent_dir, priv->debugfs_dir, parent_dir, dev->name);
+-}
+-
+-void rtl8192_debugfs_init(void)
+-{
+-	debugfs_create_dir(KBUILD_MODNAME, NULL);
+-}
+-
+-void rtl8192_debugfs_exit(void)
+-{
+-	debugfs_remove_recursive(debugfs_lookup(KBUILD_MODNAME, NULL));
+-}
+diff --git a/drivers/staging/rtl8192u/r8192U_dm.c b/drivers/staging/rtl8192u/r8192U_dm.c
+deleted file mode 100644
+index cbae852478ea..000000000000
+--- a/drivers/staging/rtl8192u/r8192U_dm.c
++++ /dev/null
+@@ -1,2821 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*++
+- * Copyright-c Realtek Semiconductor Corp. All rights reserved.
+- *
+- * Module Name:
+- *	r8192U_dm.c
+- *
+- * Abstract:
+- *	HW dynamic mechanism.
+- *--
+- */
+-#include "r8192U.h"
+-#include "r8192U_dm.h"
+-#include "r8192U_hw.h"
+-#include "r819xU_phy.h"
+-#include "r819xU_phyreg.h"
+-#include "r8190_rtl8256.h"
+-#include "r819xU_cmdpkt.h"
+-/*---------------------------Define Local Constant---------------------------*/
+-/* Indicate different AP vendor for IOT issue. */
+-static u32 edca_setting_DL[HT_IOT_PEER_MAX] = {
+-	0x5e4322, 0x5e4322, 0x5e4322, 0x604322, 0x00a44f, 0x5ea44f
+-};
+-
+-static u32 edca_setting_UL[HT_IOT_PEER_MAX] = {
+-	0x5e4322, 0x00a44f, 0x5e4322, 0x604322, 0x5ea44f, 0x5ea44f
+-};
+-
+-#define RTK_UL_EDCA 0xa44f
+-#define RTK_DL_EDCA 0x5e4322
+-/*---------------------------Define Local Constant---------------------------*/
+-
+-
+-/*------------------------Define global variable-----------------------------*/
+-/* Debug variable ? */
+-struct dig dm_digtable;
+-/* Store current software write register content for MAC PHY. */
+-u8		dm_shadow[16][256] = { {0} };
+-/* For Dynamic Rx Path Selection by Signal Strength */
+-static struct dynamic_rx_path_sel DM_RxPathSelTable;
+-
+-extern	void dm_check_fsync(struct net_device *dev);
+-
+-/* DM --> Rate Adaptive */
+-static	void	dm_check_rate_adaptive(struct net_device *dev);
+-
+-/* DM --> Bandwidth switch */
+-static	void	dm_init_bandwidth_autoswitch(struct net_device *dev);
+-static	void	dm_bandwidth_autoswitch(struct net_device *dev);
+-
+-/* DM --> TX power control */
+-static	void	dm_check_txpower_tracking(struct net_device *dev);
+-
+-/* DM --> Dynamic Init Gain by RSSI */
+-static	void	dm_dig_init(struct net_device *dev);
+-static	void	dm_ctrl_initgain_byrssi(struct net_device *dev);
+-static	void	dm_ctrl_initgain_byrssi_highpwr(struct net_device *dev);
+-static	void	dm_ctrl_initgain_byrssi_by_driverrssi(struct net_device *dev);
+-static	void	dm_ctrl_initgain_byrssi_by_fwfalse_alarm(struct net_device *dev);
+-static	void	dm_initial_gain(struct net_device *dev);
+-static	void	dm_pd_th(struct net_device *dev);
+-static	void	dm_cs_ratio(struct net_device *dev);
+-
+-static	void dm_init_ctstoself(struct net_device *dev);
+-/* DM --> EDCA turbo mode control */
+-static	void	dm_check_edca_turbo(struct net_device *dev);
+-
+-/* DM --> Check PBC */
+-static	void dm_check_pbc_gpio(struct net_device *dev);
+-
+-/* DM --> Check current RX RF path state */
+-static	void	dm_check_rx_path_selection(struct net_device *dev);
+-static	void dm_init_rxpath_selection(struct net_device *dev);
+-static	void dm_rxpath_sel_byrssi(struct net_device *dev);
+-
+-/* DM --> Fsync for broadcom ap */
+-static void dm_init_fsync(struct net_device *dev);
+-static void dm_deInit_fsync(struct net_device *dev);
+-
+-/* Added by vivi, 20080522 */
+-static	void	dm_check_txrateandretrycount(struct net_device *dev);
+-
+-/*---------------------Define local function prototype-----------------------*/
+-
+-/*---------------------Define of Tx Power Control For Near/Far Range --------*/   /*Add by Jacken 2008/02/18 */
+-static	void	dm_init_dynamic_txpower(struct net_device *dev);
+-static	void	dm_dynamic_txpower(struct net_device *dev);
+-
+-/* DM --> For rate adaptive and DIG, we must send RSSI to firmware */
+-static	void dm_send_rssi_tofw(struct net_device *dev);
+-static	void	dm_ctstoself(struct net_device *dev);
+-/*---------------------------Define function prototype------------------------*/
+-/* ================================================================================
+- *	HW Dynamic mechanism interface.
+- * ================================================================================
+- *
+- *
+- *	Description:
+- *		Prepare SW resource for HW dynamic mechanism.
+- *
+- *	Assumption:
+- *		This function is only invoked at driver initialization once.
+- */
+-void init_hal_dm(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	/* Undecorated Smoothed Signal Strength, it can utilized to dynamic mechanism. */
+-	priv->undecorated_smoothed_pwdb = -1;
+-
+-	/* Initial TX Power Control for near/far range , add by amy 2008/05/15, porting from windows code. */
+-	dm_init_dynamic_txpower(dev);
+-	init_rate_adaptive(dev);
+-	dm_dig_init(dev);
+-	dm_init_edca_turbo(dev);
+-	dm_init_bandwidth_autoswitch(dev);
+-	dm_init_fsync(dev);
+-	dm_init_rxpath_selection(dev);
+-	dm_init_ctstoself(dev);
+-
+-}	/* InitHalDm */
+-
+-void deinit_hal_dm(struct net_device *dev)
+-{
+-	dm_deInit_fsync(dev);
+-}
+-
+-#ifdef USB_RX_AGGREGATION_SUPPORT
+-void dm_CheckRxAggregation(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	PRT_HIGH_THROUGHPUT	pHTInfo = priv->ieee80211->pHTInfo;
+-	static unsigned long	lastTxOkCnt;
+-	static unsigned long	lastRxOkCnt;
+-	unsigned long		curTxOkCnt = 0;
+-	unsigned long		curRxOkCnt = 0;
+-
+-	curTxOkCnt = priv->stats.txbytesunicast - lastTxOkCnt;
+-	curRxOkCnt = priv->stats.rxbytesunicast - lastRxOkCnt;
+-
+-	if ((curTxOkCnt + curRxOkCnt) < 15000000)
+-		return;
+-
+-	if (curTxOkCnt > 4*curRxOkCnt) {
+-		if (priv->bCurrentRxAggrEnable) {
+-			write_nic_dword(dev, 0x1a8, 0);
+-			priv->bCurrentRxAggrEnable = false;
+-		}
+-	} else {
+-		if (!priv->bCurrentRxAggrEnable && !pHTInfo->bCurrentRT2RTAggregation) {
+-			u32 ulValue;
+-
+-			ulValue = (pHTInfo->UsbRxFwAggrEn<<24) | (pHTInfo->UsbRxFwAggrPageNum<<16) |
+-				(pHTInfo->UsbRxFwAggrPacketNum<<8) | (pHTInfo->UsbRxFwAggrTimeout);
+-			/* If usb rx firmware aggregation is enabled,
+-			 * when anyone of three threshold conditions above is reached,
+-			 * firmware will send aggregated packet to driver.
+-			 */
+-			write_nic_dword(dev, 0x1a8, ulValue);
+-			priv->bCurrentRxAggrEnable = true;
+-		}
+-	}
+-
+-	lastTxOkCnt = priv->stats.txbytesunicast;
+-	lastRxOkCnt = priv->stats.rxbytesunicast;
+-}	/* dm_CheckEdcaTurbo */
+-#endif
+-
+-void hal_dm_watchdog(struct net_device *dev)
+-{
+-	/*Add by amy 2008/05/15 ,porting from windows code.*/
+-	dm_check_rate_adaptive(dev);
+-	dm_dynamic_txpower(dev);
+-	dm_check_txrateandretrycount(dev);
+-	dm_check_txpower_tracking(dev);
+-	dm_ctrl_initgain_byrssi(dev);
+-	dm_check_edca_turbo(dev);
+-	dm_bandwidth_autoswitch(dev);
+-	dm_check_rx_path_selection(dev);
+-	dm_check_fsync(dev);
+-
+-	/* Add by amy 2008-05-15 porting from windows code. */
+-	dm_check_pbc_gpio(dev);
+-	dm_send_rssi_tofw(dev);
+-	dm_ctstoself(dev);
+-#ifdef USB_RX_AGGREGATION_SUPPORT
+-	dm_CheckRxAggregation(dev);
+-#endif
+-}	/* HalDmWatchDog */
+-
+-/* Decide Rate Adaptive Set according to distance (signal strength)
+- *	01/11/2008	MHC		Modify input arguments and RATR table level.
+- *	01/16/2008	MHC		RF_Type is assigned in ReadAdapterInfo(). We must call
+- *						the function after making sure RF_Type.
+- */
+-void init_rate_adaptive(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	prate_adaptive	pra = (prate_adaptive)&priv->rate_adaptive;
+-
+-	pra->ratr_state = DM_RATR_STA_MAX;
+-	pra->high2low_rssi_thresh_for_ra = RATE_ADAPTIVE_TH_HIGH;
+-	pra->low2high_rssi_thresh_for_ra20M = RATE_ADAPTIVE_TH_LOW_20M + 5;
+-	pra->low2high_rssi_thresh_for_ra40M = RATE_ADAPTIVE_TH_LOW_40M + 5;
+-
+-	pra->high_rssi_thresh_for_ra = RATE_ADAPTIVE_TH_HIGH + 5;
+-	pra->low_rssi_thresh_for_ra20M = RATE_ADAPTIVE_TH_LOW_20M;
+-	pra->low_rssi_thresh_for_ra40M = RATE_ADAPTIVE_TH_LOW_40M;
+-
+-	if (priv->CustomerID == RT_CID_819x_Netcore)
+-		pra->ping_rssi_enable = 1;
+-	else
+-		pra->ping_rssi_enable = 0;
+-	pra->ping_rssi_thresh_for_ra = 15;
+-
+-	if (priv->rf_type == RF_2T4R) {
+-		/* 07/10/08 MH Modify for RA smooth scheme.
+-		 * 2008/01/11 MH Modify 2T RATR table for different RSSI. 080515 porting by amy from windows code.
+-		 */
+-		pra->upper_rssi_threshold_ratr		=	0x8f0f0000;
+-		pra->middle_rssi_threshold_ratr		=	0x8f0ff000;
+-		pra->low_rssi_threshold_ratr		=	0x8f0ff001;
+-		pra->low_rssi_threshold_ratr_40M	=	0x8f0ff005;
+-		pra->low_rssi_threshold_ratr_20M	=	0x8f0ff001;
+-		pra->ping_rssi_ratr	=	0x0000000d;/* cosa add for test */
+-	} else if (priv->rf_type == RF_1T2R) {
+-		pra->upper_rssi_threshold_ratr		=	0x000f0000;
+-		pra->middle_rssi_threshold_ratr		=	0x000ff000;
+-		pra->low_rssi_threshold_ratr		=	0x000ff001;
+-		pra->low_rssi_threshold_ratr_40M	=	0x000ff005;
+-		pra->low_rssi_threshold_ratr_20M	=	0x000ff001;
+-		pra->ping_rssi_ratr	=	0x0000000d;/* cosa add for test */
+-	}
+-
+-}	/* InitRateAdaptive */
+-
+-/*-----------------------------------------------------------------------------
+- * Function:	dm_check_rate_adaptive()
+- *
+- * Overview:
+- *
+- * Input:		NONE
+- *
+- * Output:		NONE
+- *
+- * Return:		NONE
+- *---------------------------------------------------------------------------
+- */
+-static void dm_check_rate_adaptive(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	PRT_HIGH_THROUGHPUT	pHTInfo = priv->ieee80211->pHTInfo;
+-	prate_adaptive			pra = (prate_adaptive)&priv->rate_adaptive;
+-	u32						currentRATR, targetRATR = 0;
+-	u32						LowRSSIThreshForRA = 0, HighRSSIThreshForRA = 0;
+-	bool						bshort_gi_enabled = false;
+-	static u8					ping_rssi_state;
+-
+-	if (!priv->up) {
+-		RT_TRACE(COMP_RATE, "<---- dm_check_rate_adaptive(): driver is going to unload\n");
+-		return;
+-	}
+-
+-	if (pra->rate_adaptive_disabled) /* this variable is set by ioctl. */
+-		return;
+-
+-	/* TODO: Only 11n mode is implemented currently, */
+-	if (!(priv->ieee80211->mode == WIRELESS_MODE_N_24G ||
+-	      priv->ieee80211->mode == WIRELESS_MODE_N_5G))
+-		return;
+-
+-	if (priv->ieee80211->state == IEEE80211_LINKED) {
+-
+-		/* Check whether Short GI is enabled */
+-		bshort_gi_enabled = (pHTInfo->bCurTxBW40MHz && pHTInfo->bCurShortGI40MHz) ||
+-			(!pHTInfo->bCurTxBW40MHz && pHTInfo->bCurShortGI20MHz);
+-
+-		pra->upper_rssi_threshold_ratr =
+-				(pra->upper_rssi_threshold_ratr & (~BIT(31))) |
+-				((bshort_gi_enabled) ? BIT(31) : 0);
+-
+-		pra->middle_rssi_threshold_ratr =
+-				(pra->middle_rssi_threshold_ratr & (~BIT(31))) |
+-				((bshort_gi_enabled) ? BIT(31) : 0);
+-
+-		if (priv->CurrentChannelBW != HT_CHANNEL_WIDTH_20) {
+-			pra->low_rssi_threshold_ratr =
+-			      (pra->low_rssi_threshold_ratr_40M & (~BIT(31))) |
+-			      ((bshort_gi_enabled) ? BIT(31) : 0);
+-		} else {
+-			pra->low_rssi_threshold_ratr =
+-			(pra->low_rssi_threshold_ratr_20M & (~BIT(31))) |
+-			((bshort_gi_enabled) ? BIT(31) : 0);
+-		}
+-		/* cosa add for test */
+-		pra->ping_rssi_ratr =
+-				(pra->ping_rssi_ratr & (~BIT(31))) |
+-				((bshort_gi_enabled) ? BIT(31) : 0);
+-
+-		/* 2007/10/08 MH We support RA smooth scheme now. When it is the first
+-		 * time to link with AP. We will not change upper/lower threshold. If
+-		 * STA stay in high or low level, we must change two different threshold
+-		 * to prevent jumping frequently.
+-		 */
+-		if (pra->ratr_state == DM_RATR_STA_HIGH) {
+-			HighRSSIThreshForRA	= pra->high2low_rssi_thresh_for_ra;
+-			LowRSSIThreshForRA	= (priv->CurrentChannelBW != HT_CHANNEL_WIDTH_20) ?
+-					(pra->low_rssi_thresh_for_ra40M):(pra->low_rssi_thresh_for_ra20M);
+-		} else if (pra->ratr_state == DM_RATR_STA_LOW) {
+-			HighRSSIThreshForRA	= pra->high_rssi_thresh_for_ra;
+-			LowRSSIThreshForRA	= (priv->CurrentChannelBW != HT_CHANNEL_WIDTH_20) ?
+-					(pra->low2high_rssi_thresh_for_ra40M):(pra->low2high_rssi_thresh_for_ra20M);
+-		} else {
+-			HighRSSIThreshForRA	= pra->high_rssi_thresh_for_ra;
+-			LowRSSIThreshForRA	= (priv->CurrentChannelBW != HT_CHANNEL_WIDTH_20) ?
+-					(pra->low_rssi_thresh_for_ra40M):(pra->low_rssi_thresh_for_ra20M);
+-		}
+-
+-		if (priv->undecorated_smoothed_pwdb >= (long)HighRSSIThreshForRA) {
+-			pra->ratr_state = DM_RATR_STA_HIGH;
+-			targetRATR = pra->upper_rssi_threshold_ratr;
+-		} else if (priv->undecorated_smoothed_pwdb >= (long)LowRSSIThreshForRA) {
+-			pra->ratr_state = DM_RATR_STA_MIDDLE;
+-			targetRATR = pra->middle_rssi_threshold_ratr;
+-		} else {
+-			pra->ratr_state = DM_RATR_STA_LOW;
+-			targetRATR = pra->low_rssi_threshold_ratr;
+-		}
+-
+-		/* cosa add for test */
+-		if (pra->ping_rssi_enable) {
+-			if (priv->undecorated_smoothed_pwdb < (long)(pra->ping_rssi_thresh_for_ra+5)) {
+-				if ((priv->undecorated_smoothed_pwdb < (long)pra->ping_rssi_thresh_for_ra) ||
+-					ping_rssi_state) {
+-					pra->ratr_state = DM_RATR_STA_LOW;
+-					targetRATR = pra->ping_rssi_ratr;
+-					ping_rssi_state = 1;
+-				}
+-			} else {
+-				ping_rssi_state = 0;
+-			}
+-		}
+-
+-		/* 2008.04.01
+-		 * For RTL819X, if pairwisekey = wep/tkip, we support only MCS0~7.
+-		 */
+-		if (priv->ieee80211->GetHalfNmodeSupportByAPsHandler(dev))
+-			targetRATR &= 0xf00fffff;
+-
+-		/* Check whether updating of RATR0 is required */
+-		read_nic_dword(dev, RATR0, &currentRATR);
+-		if (targetRATR !=  currentRATR) {
+-			u32 ratr_value;
+-
+-			ratr_value = targetRATR;
+-			RT_TRACE(COMP_RATE, "currentRATR = %x, targetRATR = %x\n", currentRATR, targetRATR);
+-			if (priv->rf_type == RF_1T2R)
+-				ratr_value &= ~(RATE_ALL_OFDM_2SS);
+-			write_nic_dword(dev, RATR0, ratr_value);
+-			write_nic_byte(dev, UFWP, 1);
+-
+-			pra->last_ratr = targetRATR;
+-		}
+-
+-	} else {
+-		pra->ratr_state = DM_RATR_STA_MAX;
+-	}
+-
+-}	/* dm_CheckRateAdaptive */
+-
+-static void dm_init_bandwidth_autoswitch(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	priv->ieee80211->bandwidth_auto_switch.threshold_20Mhzto40Mhz = BW_AUTO_SWITCH_LOW_HIGH;
+-	priv->ieee80211->bandwidth_auto_switch.threshold_40Mhzto20Mhz = BW_AUTO_SWITCH_HIGH_LOW;
+-	priv->ieee80211->bandwidth_auto_switch.bforced_tx20Mhz = false;
+-	priv->ieee80211->bandwidth_auto_switch.bautoswitch_enable = false;
+-
+-}	/* dm_init_bandwidth_autoswitch */
+-
+-static void dm_bandwidth_autoswitch(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	if (priv->CurrentChannelBW == HT_CHANNEL_WIDTH_20 || !priv->ieee80211->bandwidth_auto_switch.bautoswitch_enable)
+-		return;
+-	if (!priv->ieee80211->bandwidth_auto_switch.bforced_tx20Mhz) { /* If send packets in 40 Mhz in 20/40 */
+-		if (priv->undecorated_smoothed_pwdb <= priv->ieee80211->bandwidth_auto_switch.threshold_40Mhzto20Mhz)
+-			priv->ieee80211->bandwidth_auto_switch.bforced_tx20Mhz = true;
+-	} else { /* in force send packets in 20 Mhz in 20/40 */
+-		if (priv->undecorated_smoothed_pwdb >= priv->ieee80211->bandwidth_auto_switch.threshold_20Mhzto40Mhz)
+-			priv->ieee80211->bandwidth_auto_switch.bforced_tx20Mhz = false;
+-	}
+-}	/* dm_BandwidthAutoSwitch */
+-
+-/* OFDM default at 0db, index=6. */
+-static u32 OFDMSwingTable[OFDM_Table_Length] = {
+-	0x7f8001fe,	/* 0, +6db */
+-	0x71c001c7,	/* 1, +5db */
+-	0x65400195,	/* 2, +4db */
+-	0x5a400169,	/* 3, +3db */
+-	0x50800142,	/* 4, +2db */
+-	0x47c0011f,	/* 5, +1db */
+-	0x40000100,	/* 6, +0db ===> default, upper for higher temperature, lower for low temperature */
+-	0x390000e4,	/* 7, -1db */
+-	0x32c000cb,	/* 8, -2db */
+-	0x2d4000b5,	/* 9, -3db */
+-	0x288000a2,	/* 10, -4db */
+-	0x24000090,	/* 11, -5db */
+-	0x20000080,	/* 12, -6db */
+-	0x1c800072,	/* 13, -7db */
+-	0x19800066,	/* 14, -8db */
+-	0x26c0005b,	/* 15, -9db */
+-	0x24400051,	/* 16, -10db */
+-	0x12000048,	/* 17, -11db */
+-	0x10000040	/* 18, -12db */
+-};
+-
+-static u8	CCKSwingTable_Ch1_Ch13[CCK_Table_length][8] = {
+-	{0x36, 0x35, 0x2e, 0x25, 0x1c, 0x12, 0x09, 0x04},	/* 0, +0db ===> CCK40M default */
+-	{0x30, 0x2f, 0x29, 0x21, 0x19, 0x10, 0x08, 0x03},	/* 1, -1db */
+-	{0x2b, 0x2a, 0x25, 0x1e, 0x16, 0x0e, 0x07, 0x03},	/* 2, -2db */
+-	{0x26, 0x25, 0x21, 0x1b, 0x14, 0x0d, 0x06, 0x03},	/* 3, -3db */
+-	{0x22, 0x21, 0x1d, 0x18, 0x11, 0x0b, 0x06, 0x02},	/* 4, -4db */
+-	{0x1f, 0x1e, 0x1a, 0x15, 0x10, 0x0a, 0x05, 0x02},	/* 5, -5db */
+-	{0x1b, 0x1a, 0x17, 0x13, 0x0e, 0x09, 0x04, 0x02},	/* 6, -6db ===> CCK20M default */
+-	{0x18, 0x17, 0x15, 0x11, 0x0c, 0x08, 0x04, 0x02},	/* 7, -7db */
+-	{0x16, 0x15, 0x12, 0x0f, 0x0b, 0x07, 0x04, 0x01},	/* 8, -8db */
+-	{0x13, 0x13, 0x10, 0x0d, 0x0a, 0x06, 0x03, 0x01},	/* 9, -9db */
+-	{0x11, 0x11, 0x0f, 0x0c, 0x09, 0x06, 0x03, 0x01},	/* 10, -10db */
+-	{0x0f, 0x0f, 0x0d, 0x0b, 0x08, 0x05, 0x03, 0x01}	/* 11, -11db */
+-};
+-
+-static u8	CCKSwingTable_Ch14[CCK_Table_length][8] = {
+-	{0x36, 0x35, 0x2e, 0x1b, 0x00, 0x00, 0x00, 0x00},	/* 0, +0db  ===> CCK40M default */
+-	{0x30, 0x2f, 0x29, 0x18, 0x00, 0x00, 0x00, 0x00},	/* 1, -1db */
+-	{0x2b, 0x2a, 0x25, 0x15, 0x00, 0x00, 0x00, 0x00},	/* 2, -2db */
+-	{0x26, 0x25, 0x21, 0x13, 0x00, 0x00, 0x00, 0x00},	/* 3, -3db */
+-	{0x22, 0x21, 0x1d, 0x11, 0x00, 0x00, 0x00, 0x00},	/* 4, -4db */
+-	{0x1f, 0x1e, 0x1a, 0x0f, 0x00, 0x00, 0x00, 0x00},	/* 5, -5db */
+-	{0x1b, 0x1a, 0x17, 0x0e, 0x00, 0x00, 0x00, 0x00},	/* 6, -6db  ===> CCK20M default */
+-	{0x18, 0x17, 0x15, 0x0c, 0x00, 0x00, 0x00, 0x00},	/* 7, -7db */
+-	{0x16, 0x15, 0x12, 0x0b, 0x00, 0x00, 0x00, 0x00},	/* 8, -8db */
+-	{0x13, 0x13, 0x10, 0x0a, 0x00, 0x00, 0x00, 0x00},	/* 9, -9db */
+-	{0x11, 0x11, 0x0f, 0x09, 0x00, 0x00, 0x00, 0x00},	/* 10, -10db */
+-	{0x0f, 0x0f, 0x0d, 0x08, 0x00, 0x00, 0x00, 0x00}	/* 11, -11db */
+-};
+-
+-static void dm_TXPowerTrackingCallback_TSSI(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	bool						viviflag = false;
+-	struct tx_config_cmd			        tx_cmd;
+-	u8						powerlevelOFDM24G;
+-	int						i = 0, j = 0, k = 0;
+-	u8						RF_Type, tmp_report[5] = {0, 0, 0, 0, 0};
+-	u32						Value;
+-	u8						Pwr_Flag;
+-	u16						Avg_TSSI_Meas, TSSI_13dBm, Avg_TSSI_Meas_from_driver = 0;
+-	bool rtStatus = true;
+-	u32						delta = 0;
+-
+-	write_nic_byte(dev, 0x1ba, 0);
+-
+-	priv->ieee80211->bdynamic_txpower_enable = false;
+-
+-	powerlevelOFDM24G = (u8)(priv->Pwr_Track>>24);
+-	RF_Type = priv->rf_type;
+-	Value = (RF_Type<<8) | powerlevelOFDM24G;
+-
+-	RT_TRACE(COMP_POWER_TRACKING, "powerlevelOFDM24G = %x\n", powerlevelOFDM24G);
+-
+-	for (j = 0; j <= 30; j++) { /* fill tx_cmd */
+-		tx_cmd.cmd_op = TXCMD_SET_TX_PWR_TRACKING;
+-		tx_cmd.cmd_length = sizeof(tx_cmd.cmd_op);
+-		tx_cmd.cmd_value = Value;
+-		rtStatus = SendTxCommandPacket(dev, &tx_cmd, sizeof(struct tx_config_cmd));
+-		if (rtStatus == RT_STATUS_FAILURE)
+-			RT_TRACE(COMP_POWER_TRACKING, "Set configuration with tx cmd queue fail!\n");
+-		usleep_range(1000, 2000);
+-		for (i = 0; i <= 30; i++) {
+-			read_nic_byte(dev, 0x1ba, &Pwr_Flag);
+-
+-			if (Pwr_Flag == 0) {
+-				usleep_range(1000, 2000);
+-				continue;
+-			}
+-			read_nic_word(dev, 0x13c, &Avg_TSSI_Meas);
+-			if (Avg_TSSI_Meas == 0) {
+-				write_nic_byte(dev, 0x1ba, 0);
+-				break;
+-			}
+-
+-			for (k = 0; k < 5; k++) {
+-				if (k != 4)
+-					read_nic_byte(dev, 0x134+k, &tmp_report[k]);
+-				else
+-					read_nic_byte(dev, 0x13e, &tmp_report[k]);
+-				RT_TRACE(COMP_POWER_TRACKING, "TSSI_report_value = %d\n", tmp_report[k]);
+-			}
+-
+-			/* check if the report value is right */
+-			for (k = 0; k < 5; k++) {
+-				if (tmp_report[k] <= 20) {
+-					viviflag = true;
+-					break;
+-				}
+-			}
+-			if (viviflag) {
+-				write_nic_byte(dev, 0x1ba, 0);
+-				viviflag = false;
+-				RT_TRACE(COMP_POWER_TRACKING, "we filtered the data\n");
+-				for (k = 0; k < 5; k++)
+-					tmp_report[k] = 0;
+-				break;
+-			}
+-
+-			for (k = 0; k < 5; k++)
+-				Avg_TSSI_Meas_from_driver += tmp_report[k];
+-
+-			Avg_TSSI_Meas_from_driver = Avg_TSSI_Meas_from_driver*100/5;
+-			RT_TRACE(COMP_POWER_TRACKING, "Avg_TSSI_Meas_from_driver = %d\n", Avg_TSSI_Meas_from_driver);
+-			TSSI_13dBm = priv->TSSI_13dBm;
+-			RT_TRACE(COMP_POWER_TRACKING, "TSSI_13dBm = %d\n", TSSI_13dBm);
+-
+-			if (Avg_TSSI_Meas_from_driver > TSSI_13dBm)
+-				delta = Avg_TSSI_Meas_from_driver - TSSI_13dBm;
+-			else
+-				delta = TSSI_13dBm - Avg_TSSI_Meas_from_driver;
+-
+-			if (delta <= E_FOR_TX_POWER_TRACK) {
+-				priv->ieee80211->bdynamic_txpower_enable = true;
+-				write_nic_byte(dev, 0x1ba, 0);
+-				RT_TRACE(COMP_POWER_TRACKING, "tx power track is done\n");
+-				RT_TRACE(COMP_POWER_TRACKING, "priv->rfa_txpowertrackingindex = %d\n", priv->rfa_txpowertrackingindex);
+-				RT_TRACE(COMP_POWER_TRACKING, "priv->rfa_txpowertrackingindex_real = %d\n", priv->rfa_txpowertrackingindex_real);
+-				RT_TRACE(COMP_POWER_TRACKING, "priv->cck_present_attenuation_difference = %d\n", priv->cck_present_attenuation_difference);
+-				RT_TRACE(COMP_POWER_TRACKING, "priv->cck_present_attenuation = %d\n", priv->cck_present_attenuation);
+-				return;
+-			}
+-			if (Avg_TSSI_Meas_from_driver < TSSI_13dBm - E_FOR_TX_POWER_TRACK) {
+-				if (priv->rfa_txpowertrackingindex > 0) {
+-					priv->rfa_txpowertrackingindex--;
+-					if (priv->rfa_txpowertrackingindex_real > 4) {
+-						priv->rfa_txpowertrackingindex_real--;
+-						rtl8192_setBBreg(dev, rOFDM0_XATxIQImbalance, bMaskDWord, priv->txbbgain_table[priv->rfa_txpowertrackingindex_real].txbbgain_value);
+-					}
+-				}
+-			} else {
+-				if (priv->rfa_txpowertrackingindex < 36) {
+-					priv->rfa_txpowertrackingindex++;
+-					priv->rfa_txpowertrackingindex_real++;
+-					rtl8192_setBBreg(dev, rOFDM0_XATxIQImbalance, bMaskDWord, priv->txbbgain_table[priv->rfa_txpowertrackingindex_real].txbbgain_value);
+-				}
+-			}
+-			priv->cck_present_attenuation_difference
+-				= priv->rfa_txpowertrackingindex - priv->rfa_txpowertracking_default;
+-
+-			if (priv->CurrentChannelBW == HT_CHANNEL_WIDTH_20)
+-				priv->cck_present_attenuation
+-					= priv->cck_present_attenuation_20Mdefault + priv->cck_present_attenuation_difference;
+-			else
+-				priv->cck_present_attenuation
+-					= priv->cck_present_attenuation_40Mdefault + priv->cck_present_attenuation_difference;
+-
+-			if (priv->cck_present_attenuation > -1 && priv->cck_present_attenuation < 23) {
+-				if (priv->ieee80211->current_network.channel == 14 && !priv->bcck_in_ch14) {
+-					priv->bcck_in_ch14 = true;
+-					dm_cck_txpower_adjust(dev, priv->bcck_in_ch14);
+-				} else if (priv->ieee80211->current_network.channel != 14 && priv->bcck_in_ch14) {
+-					priv->bcck_in_ch14 = false;
+-					dm_cck_txpower_adjust(dev, priv->bcck_in_ch14);
+-				} else
+-					dm_cck_txpower_adjust(dev, priv->bcck_in_ch14);
+-			}
+-			RT_TRACE(COMP_POWER_TRACKING, "priv->rfa_txpowertrackingindex = %d\n", priv->rfa_txpowertrackingindex);
+-			RT_TRACE(COMP_POWER_TRACKING, "priv->rfa_txpowertrackingindex_real = %d\n", priv->rfa_txpowertrackingindex_real);
+-			RT_TRACE(COMP_POWER_TRACKING, "priv->cck_present_attenuation_difference = %d\n", priv->cck_present_attenuation_difference);
+-			RT_TRACE(COMP_POWER_TRACKING, "priv->cck_present_attenuation = %d\n", priv->cck_present_attenuation);
+-
+-			if (priv->cck_present_attenuation_difference <= -12 || priv->cck_present_attenuation_difference >= 24) {
+-				priv->ieee80211->bdynamic_txpower_enable = true;
+-				write_nic_byte(dev, 0x1ba, 0);
+-				RT_TRACE(COMP_POWER_TRACKING, "tx power track--->limited\n");
+-				return;
+-			}
+-
+-			write_nic_byte(dev, 0x1ba, 0);
+-			Avg_TSSI_Meas_from_driver = 0;
+-			for (k = 0; k < 5; k++)
+-				tmp_report[k] = 0;
+-			break;
+-		}
+-	}
+-	priv->ieee80211->bdynamic_txpower_enable = true;
+-	write_nic_byte(dev, 0x1ba, 0);
+-}
+-
+-static void dm_TXPowerTrackingCallback_ThermalMeter(struct net_device *dev)
+-{
+-#define ThermalMeterVal	9
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u32 tmpRegA, TempCCk;
+-	u8 tmpOFDMindex, tmpCCKindex, tmpCCK20Mindex, tmpCCK40Mindex, tmpval;
+-	int i = 0, CCKSwingNeedUpdate = 0;
+-
+-	if (!priv->btxpower_trackingInit) {
+-		/* Query OFDM default setting */
+-		tmpRegA = rtl8192_QueryBBReg(dev, rOFDM0_XATxIQImbalance, bMaskDWord);
+-		for (i = 0; i < OFDM_Table_Length; i++) { /* find the index */
+-			if (tmpRegA == OFDMSwingTable[i]) {
+-				priv->OFDM_index = (u8)i;
+-				RT_TRACE(COMP_POWER_TRACKING, "Initial reg0x%x = 0x%x, OFDM_index=0x%x\n",
+-					rOFDM0_XATxIQImbalance, tmpRegA, priv->OFDM_index);
+-			}
+-		}
+-
+-		/* Query CCK default setting From 0xa22 */
+-		TempCCk = rtl8192_QueryBBReg(dev, rCCK0_TxFilter1, bMaskByte2);
+-		for (i = 0; i < CCK_Table_length; i++) {
+-			if (TempCCk == (u32)CCKSwingTable_Ch1_Ch13[i][0]) {
+-				priv->CCK_index = (u8) i;
+-				RT_TRACE(COMP_POWER_TRACKING, "Initial reg0x%x = 0x%x, CCK_index=0x%x\n",
+-					rCCK0_TxFilter1, TempCCk, priv->CCK_index);
+-				break;
+-			}
+-		}
+-		priv->btxpower_trackingInit = true;
+-		return;
+-	}
+-
+-	/* ==========================
+-	 * this is only for test, should be masked
+-	 * ==========================
+-	 */
+-
+-	/* read and filter out unreasonable value */
+-	tmpRegA = rtl8192_phy_QueryRFReg(dev, RF90_PATH_A, 0x12, 0x078);	/* 0x12: RF Reg[10:7] */
+-	RT_TRACE(COMP_POWER_TRACKING, "Readback ThermalMeterA = %d\n", tmpRegA);
+-	if (tmpRegA < 3 || tmpRegA > 13)
+-		return;
+-	if (tmpRegA >= 12)	/* if over 12, TP will be bad when high temperature */
+-		tmpRegA = 12;
+-	RT_TRACE(COMP_POWER_TRACKING, "Valid ThermalMeterA = %d\n", tmpRegA);
+-	priv->ThermalMeter[0] = ThermalMeterVal;	/* We use fixed value by Bryant's suggestion */
+-	priv->ThermalMeter[1] = ThermalMeterVal;	/* We use fixed value by Bryant's suggestion */
+-
+-	/* Get current RF-A temperature index */
+-	if (priv->ThermalMeter[0] >= (u8)tmpRegA) {	/* lower temperature */
+-		tmpOFDMindex = tmpCCK20Mindex = 6+(priv->ThermalMeter[0]-(u8)tmpRegA);
+-		tmpCCK40Mindex = tmpCCK20Mindex - 6;
+-		if (tmpOFDMindex >= OFDM_Table_Length)
+-			tmpOFDMindex = OFDM_Table_Length-1;
+-		if (tmpCCK20Mindex >= CCK_Table_length)
+-			tmpCCK20Mindex = CCK_Table_length-1;
+-		if (tmpCCK40Mindex >= CCK_Table_length)
+-			tmpCCK40Mindex = CCK_Table_length-1;
+-	} else {
+-		tmpval = (u8)tmpRegA - priv->ThermalMeter[0];
+-
+-		if (tmpval >= 6) {
+-			/* higher temperature */
+-			tmpOFDMindex = 0;
+-			tmpCCK20Mindex = 0;
+-		} else {
+-			/* max to +6dB */
+-			tmpOFDMindex = 6 - tmpval;
+-			tmpCCK20Mindex = 6 - tmpval;
+-		}
+-		tmpCCK40Mindex = 0;
+-	}
+-	if (priv->CurrentChannelBW != HT_CHANNEL_WIDTH_20)	/* 40M */
+-		tmpCCKindex = tmpCCK40Mindex;
+-	else
+-		tmpCCKindex = tmpCCK20Mindex;
+-
+-	if (priv->ieee80211->current_network.channel == 14 && !priv->bcck_in_ch14) {
+-		priv->bcck_in_ch14 = true;
+-		CCKSwingNeedUpdate = 1;
+-	} else if (priv->ieee80211->current_network.channel != 14 && priv->bcck_in_ch14) {
+-		priv->bcck_in_ch14 = false;
+-		CCKSwingNeedUpdate = 1;
+-	}
+-
+-	if (priv->CCK_index != tmpCCKindex) {
+-		priv->CCK_index = tmpCCKindex;
+-		CCKSwingNeedUpdate = 1;
+-	}
+-
+-	if (CCKSwingNeedUpdate) {
+-		dm_cck_txpower_adjust(dev, priv->bcck_in_ch14);
+-	}
+-	if (priv->OFDM_index != tmpOFDMindex) {
+-		priv->OFDM_index = tmpOFDMindex;
+-		rtl8192_setBBreg(dev, rOFDM0_XATxIQImbalance, bMaskDWord, OFDMSwingTable[priv->OFDM_index]);
+-		RT_TRACE(COMP_POWER_TRACKING, "Update OFDMSwing[%d] = 0x%x\n",
+-			priv->OFDM_index, OFDMSwingTable[priv->OFDM_index]);
+-	}
+-	priv->txpower_count = 0;
+-}
+-
+-void dm_txpower_trackingcallback(struct work_struct *work)
+-{
+-	struct delayed_work *dwork = to_delayed_work(work);
+-	struct r8192_priv *priv = container_of(dwork, struct r8192_priv, txpower_tracking_wq);
+-	struct net_device *dev = priv->ieee80211->dev;
+-
+-	if (priv->bDcut)
+-		dm_TXPowerTrackingCallback_TSSI(dev);
+-	else
+-		dm_TXPowerTrackingCallback_ThermalMeter(dev);
+-}
+-
+-static void dm_InitializeTXPowerTracking_TSSI(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	/* Initial the Tx BB index and mapping value */
+-	priv->txbbgain_table[0].txbb_iq_amplifygain =			12;
+-	priv->txbbgain_table[0].txbbgain_value = 0x7f8001fe;
+-	priv->txbbgain_table[1].txbb_iq_amplifygain =			11;
+-	priv->txbbgain_table[1].txbbgain_value = 0x788001e2;
+-	priv->txbbgain_table[2].txbb_iq_amplifygain =			10;
+-	priv->txbbgain_table[2].txbbgain_value = 0x71c001c7;
+-	priv->txbbgain_table[3].txbb_iq_amplifygain =			9;
+-	priv->txbbgain_table[3].txbbgain_value = 0x6b8001ae;
+-	priv->txbbgain_table[4].txbb_iq_amplifygain =		       8;
+-	priv->txbbgain_table[4].txbbgain_value = 0x65400195;
+-	priv->txbbgain_table[5].txbb_iq_amplifygain =		       7;
+-	priv->txbbgain_table[5].txbbgain_value = 0x5fc0017f;
+-	priv->txbbgain_table[6].txbb_iq_amplifygain =		       6;
+-	priv->txbbgain_table[6].txbbgain_value = 0x5a400169;
+-	priv->txbbgain_table[7].txbb_iq_amplifygain =		       5;
+-	priv->txbbgain_table[7].txbbgain_value = 0x55400155;
+-	priv->txbbgain_table[8].txbb_iq_amplifygain =		       4;
+-	priv->txbbgain_table[8].txbbgain_value = 0x50800142;
+-	priv->txbbgain_table[9].txbb_iq_amplifygain =		       3;
+-	priv->txbbgain_table[9].txbbgain_value = 0x4c000130;
+-	priv->txbbgain_table[10].txbb_iq_amplifygain =		       2;
+-	priv->txbbgain_table[10].txbbgain_value = 0x47c0011f;
+-	priv->txbbgain_table[11].txbb_iq_amplifygain =		       1;
+-	priv->txbbgain_table[11].txbbgain_value = 0x43c0010f;
+-	priv->txbbgain_table[12].txbb_iq_amplifygain =		       0;
+-	priv->txbbgain_table[12].txbbgain_value = 0x40000100;
+-	priv->txbbgain_table[13].txbb_iq_amplifygain =		       -1;
+-	priv->txbbgain_table[13].txbbgain_value = 0x3c8000f2;
+-	priv->txbbgain_table[14].txbb_iq_amplifygain =		     -2;
+-	priv->txbbgain_table[14].txbbgain_value = 0x390000e4;
+-	priv->txbbgain_table[15].txbb_iq_amplifygain =		     -3;
+-	priv->txbbgain_table[15].txbbgain_value = 0x35c000d7;
+-	priv->txbbgain_table[16].txbb_iq_amplifygain =		     -4;
+-	priv->txbbgain_table[16].txbbgain_value = 0x32c000cb;
+-	priv->txbbgain_table[17].txbb_iq_amplifygain =		     -5;
+-	priv->txbbgain_table[17].txbbgain_value = 0x300000c0;
+-	priv->txbbgain_table[18].txbb_iq_amplifygain =			    -6;
+-	priv->txbbgain_table[18].txbbgain_value = 0x2d4000b5;
+-	priv->txbbgain_table[19].txbb_iq_amplifygain =		     -7;
+-	priv->txbbgain_table[19].txbbgain_value = 0x2ac000ab;
+-	priv->txbbgain_table[20].txbb_iq_amplifygain =		     -8;
+-	priv->txbbgain_table[20].txbbgain_value = 0x288000a2;
+-	priv->txbbgain_table[21].txbb_iq_amplifygain =		     -9;
+-	priv->txbbgain_table[21].txbbgain_value = 0x26000098;
+-	priv->txbbgain_table[22].txbb_iq_amplifygain =		     -10;
+-	priv->txbbgain_table[22].txbbgain_value = 0x24000090;
+-	priv->txbbgain_table[23].txbb_iq_amplifygain =		     -11;
+-	priv->txbbgain_table[23].txbbgain_value = 0x22000088;
+-	priv->txbbgain_table[24].txbb_iq_amplifygain =		     -12;
+-	priv->txbbgain_table[24].txbbgain_value = 0x20000080;
+-	priv->txbbgain_table[25].txbb_iq_amplifygain =		     -13;
+-	priv->txbbgain_table[25].txbbgain_value = 0x1a00006c;
+-	priv->txbbgain_table[26].txbb_iq_amplifygain =		     -14;
+-	priv->txbbgain_table[26].txbbgain_value = 0x1c800072;
+-	priv->txbbgain_table[27].txbb_iq_amplifygain =		     -15;
+-	priv->txbbgain_table[27].txbbgain_value = 0x18000060;
+-	priv->txbbgain_table[28].txbb_iq_amplifygain =		     -16;
+-	priv->txbbgain_table[28].txbbgain_value = 0x19800066;
+-	priv->txbbgain_table[29].txbb_iq_amplifygain =		     -17;
+-	priv->txbbgain_table[29].txbbgain_value = 0x15800056;
+-	priv->txbbgain_table[30].txbb_iq_amplifygain =		     -18;
+-	priv->txbbgain_table[30].txbbgain_value = 0x26c0005b;
+-	priv->txbbgain_table[31].txbb_iq_amplifygain =		     -19;
+-	priv->txbbgain_table[31].txbbgain_value = 0x14400051;
+-	priv->txbbgain_table[32].txbb_iq_amplifygain =		     -20;
+-	priv->txbbgain_table[32].txbbgain_value = 0x24400051;
+-	priv->txbbgain_table[33].txbb_iq_amplifygain =		     -21;
+-	priv->txbbgain_table[33].txbbgain_value = 0x1300004c;
+-	priv->txbbgain_table[34].txbb_iq_amplifygain =		     -22;
+-	priv->txbbgain_table[34].txbbgain_value = 0x12000048;
+-	priv->txbbgain_table[35].txbb_iq_amplifygain =		     -23;
+-	priv->txbbgain_table[35].txbbgain_value = 0x11000044;
+-	priv->txbbgain_table[36].txbb_iq_amplifygain =		     -24;
+-	priv->txbbgain_table[36].txbbgain_value = 0x10000040;
+-
+-	/* ccktxbb_valuearray[0] is 0xA22 [1] is 0xA24 ...[7] is 0xA29
+-	 * This Table is for CH1~CH13
+-	 */
+-	priv->cck_txbbgain_table[0].ccktxbb_valuearray[0] = 0x36;
+-	priv->cck_txbbgain_table[0].ccktxbb_valuearray[1] = 0x35;
+-	priv->cck_txbbgain_table[0].ccktxbb_valuearray[2] = 0x2e;
+-	priv->cck_txbbgain_table[0].ccktxbb_valuearray[3] = 0x25;
+-	priv->cck_txbbgain_table[0].ccktxbb_valuearray[4] = 0x1c;
+-	priv->cck_txbbgain_table[0].ccktxbb_valuearray[5] = 0x12;
+-	priv->cck_txbbgain_table[0].ccktxbb_valuearray[6] = 0x09;
+-	priv->cck_txbbgain_table[0].ccktxbb_valuearray[7] = 0x04;
+-
+-	priv->cck_txbbgain_table[1].ccktxbb_valuearray[0] = 0x33;
+-	priv->cck_txbbgain_table[1].ccktxbb_valuearray[1] = 0x32;
+-	priv->cck_txbbgain_table[1].ccktxbb_valuearray[2] = 0x2b;
+-	priv->cck_txbbgain_table[1].ccktxbb_valuearray[3] = 0x23;
+-	priv->cck_txbbgain_table[1].ccktxbb_valuearray[4] = 0x1a;
+-	priv->cck_txbbgain_table[1].ccktxbb_valuearray[5] = 0x11;
+-	priv->cck_txbbgain_table[1].ccktxbb_valuearray[6] = 0x08;
+-	priv->cck_txbbgain_table[1].ccktxbb_valuearray[7] = 0x04;
+-
+-	priv->cck_txbbgain_table[2].ccktxbb_valuearray[0] = 0x30;
+-	priv->cck_txbbgain_table[2].ccktxbb_valuearray[1] = 0x2f;
+-	priv->cck_txbbgain_table[2].ccktxbb_valuearray[2] = 0x29;
+-	priv->cck_txbbgain_table[2].ccktxbb_valuearray[3] = 0x21;
+-	priv->cck_txbbgain_table[2].ccktxbb_valuearray[4] = 0x19;
+-	priv->cck_txbbgain_table[2].ccktxbb_valuearray[5] = 0x10;
+-	priv->cck_txbbgain_table[2].ccktxbb_valuearray[6] = 0x08;
+-	priv->cck_txbbgain_table[2].ccktxbb_valuearray[7] = 0x03;
+-
+-	priv->cck_txbbgain_table[3].ccktxbb_valuearray[0] = 0x2d;
+-	priv->cck_txbbgain_table[3].ccktxbb_valuearray[1] = 0x2d;
+-	priv->cck_txbbgain_table[3].ccktxbb_valuearray[2] = 0x27;
+-	priv->cck_txbbgain_table[3].ccktxbb_valuearray[3] = 0x1f;
+-	priv->cck_txbbgain_table[3].ccktxbb_valuearray[4] = 0x18;
+-	priv->cck_txbbgain_table[3].ccktxbb_valuearray[5] = 0x0f;
+-	priv->cck_txbbgain_table[3].ccktxbb_valuearray[6] = 0x08;
+-	priv->cck_txbbgain_table[3].ccktxbb_valuearray[7] = 0x03;
+-
+-	priv->cck_txbbgain_table[4].ccktxbb_valuearray[0] = 0x2b;
+-	priv->cck_txbbgain_table[4].ccktxbb_valuearray[1] = 0x2a;
+-	priv->cck_txbbgain_table[4].ccktxbb_valuearray[2] = 0x25;
+-	priv->cck_txbbgain_table[4].ccktxbb_valuearray[3] = 0x1e;
+-	priv->cck_txbbgain_table[4].ccktxbb_valuearray[4] = 0x16;
+-	priv->cck_txbbgain_table[4].ccktxbb_valuearray[5] = 0x0e;
+-	priv->cck_txbbgain_table[4].ccktxbb_valuearray[6] = 0x07;
+-	priv->cck_txbbgain_table[4].ccktxbb_valuearray[7] = 0x03;
+-
+-	priv->cck_txbbgain_table[5].ccktxbb_valuearray[0] = 0x28;
+-	priv->cck_txbbgain_table[5].ccktxbb_valuearray[1] = 0x28;
+-	priv->cck_txbbgain_table[5].ccktxbb_valuearray[2] = 0x22;
+-	priv->cck_txbbgain_table[5].ccktxbb_valuearray[3] = 0x1c;
+-	priv->cck_txbbgain_table[5].ccktxbb_valuearray[4] = 0x15;
+-	priv->cck_txbbgain_table[5].ccktxbb_valuearray[5] = 0x0d;
+-	priv->cck_txbbgain_table[5].ccktxbb_valuearray[6] = 0x07;
+-	priv->cck_txbbgain_table[5].ccktxbb_valuearray[7] = 0x03;
+-
+-	priv->cck_txbbgain_table[6].ccktxbb_valuearray[0] = 0x26;
+-	priv->cck_txbbgain_table[6].ccktxbb_valuearray[1] = 0x25;
+-	priv->cck_txbbgain_table[6].ccktxbb_valuearray[2] = 0x21;
+-	priv->cck_txbbgain_table[6].ccktxbb_valuearray[3] = 0x1b;
+-	priv->cck_txbbgain_table[6].ccktxbb_valuearray[4] = 0x14;
+-	priv->cck_txbbgain_table[6].ccktxbb_valuearray[5] = 0x0d;
+-	priv->cck_txbbgain_table[6].ccktxbb_valuearray[6] = 0x06;
+-	priv->cck_txbbgain_table[6].ccktxbb_valuearray[7] = 0x03;
+-
+-	priv->cck_txbbgain_table[7].ccktxbb_valuearray[0] = 0x24;
+-	priv->cck_txbbgain_table[7].ccktxbb_valuearray[1] = 0x23;
+-	priv->cck_txbbgain_table[7].ccktxbb_valuearray[2] = 0x1f;
+-	priv->cck_txbbgain_table[7].ccktxbb_valuearray[3] = 0x19;
+-	priv->cck_txbbgain_table[7].ccktxbb_valuearray[4] = 0x13;
+-	priv->cck_txbbgain_table[7].ccktxbb_valuearray[5] = 0x0c;
+-	priv->cck_txbbgain_table[7].ccktxbb_valuearray[6] = 0x06;
+-	priv->cck_txbbgain_table[7].ccktxbb_valuearray[7] = 0x03;
+-
+-	priv->cck_txbbgain_table[8].ccktxbb_valuearray[0] = 0x22;
+-	priv->cck_txbbgain_table[8].ccktxbb_valuearray[1] = 0x21;
+-	priv->cck_txbbgain_table[8].ccktxbb_valuearray[2] = 0x1d;
+-	priv->cck_txbbgain_table[8].ccktxbb_valuearray[3] = 0x18;
+-	priv->cck_txbbgain_table[8].ccktxbb_valuearray[4] = 0x11;
+-	priv->cck_txbbgain_table[8].ccktxbb_valuearray[5] = 0x0b;
+-	priv->cck_txbbgain_table[8].ccktxbb_valuearray[6] = 0x06;
+-	priv->cck_txbbgain_table[8].ccktxbb_valuearray[7] = 0x02;
+-
+-	priv->cck_txbbgain_table[9].ccktxbb_valuearray[0] = 0x20;
+-	priv->cck_txbbgain_table[9].ccktxbb_valuearray[1] = 0x20;
+-	priv->cck_txbbgain_table[9].ccktxbb_valuearray[2] = 0x1b;
+-	priv->cck_txbbgain_table[9].ccktxbb_valuearray[3] = 0x16;
+-	priv->cck_txbbgain_table[9].ccktxbb_valuearray[4] = 0x11;
+-	priv->cck_txbbgain_table[9].ccktxbb_valuearray[5] = 0x08;
+-	priv->cck_txbbgain_table[9].ccktxbb_valuearray[6] = 0x05;
+-	priv->cck_txbbgain_table[9].ccktxbb_valuearray[7] = 0x02;
+-
+-	priv->cck_txbbgain_table[10].ccktxbb_valuearray[0] = 0x1f;
+-	priv->cck_txbbgain_table[10].ccktxbb_valuearray[1] = 0x1e;
+-	priv->cck_txbbgain_table[10].ccktxbb_valuearray[2] = 0x1a;
+-	priv->cck_txbbgain_table[10].ccktxbb_valuearray[3] = 0x15;
+-	priv->cck_txbbgain_table[10].ccktxbb_valuearray[4] = 0x10;
+-	priv->cck_txbbgain_table[10].ccktxbb_valuearray[5] = 0x0a;
+-	priv->cck_txbbgain_table[10].ccktxbb_valuearray[6] = 0x05;
+-	priv->cck_txbbgain_table[10].ccktxbb_valuearray[7] = 0x02;
+-
+-	priv->cck_txbbgain_table[11].ccktxbb_valuearray[0] = 0x1d;
+-	priv->cck_txbbgain_table[11].ccktxbb_valuearray[1] = 0x1c;
+-	priv->cck_txbbgain_table[11].ccktxbb_valuearray[2] = 0x18;
+-	priv->cck_txbbgain_table[11].ccktxbb_valuearray[3] = 0x14;
+-	priv->cck_txbbgain_table[11].ccktxbb_valuearray[4] = 0x0f;
+-	priv->cck_txbbgain_table[11].ccktxbb_valuearray[5] = 0x0a;
+-	priv->cck_txbbgain_table[11].ccktxbb_valuearray[6] = 0x05;
+-	priv->cck_txbbgain_table[11].ccktxbb_valuearray[7] = 0x02;
+-
+-	priv->cck_txbbgain_table[12].ccktxbb_valuearray[0] = 0x1b;
+-	priv->cck_txbbgain_table[12].ccktxbb_valuearray[1] = 0x1a;
+-	priv->cck_txbbgain_table[12].ccktxbb_valuearray[2] = 0x17;
+-	priv->cck_txbbgain_table[12].ccktxbb_valuearray[3] = 0x13;
+-	priv->cck_txbbgain_table[12].ccktxbb_valuearray[4] = 0x0e;
+-	priv->cck_txbbgain_table[12].ccktxbb_valuearray[5] = 0x09;
+-	priv->cck_txbbgain_table[12].ccktxbb_valuearray[6] = 0x04;
+-	priv->cck_txbbgain_table[12].ccktxbb_valuearray[7] = 0x02;
+-
+-	priv->cck_txbbgain_table[13].ccktxbb_valuearray[0] = 0x1a;
+-	priv->cck_txbbgain_table[13].ccktxbb_valuearray[1] = 0x19;
+-	priv->cck_txbbgain_table[13].ccktxbb_valuearray[2] = 0x16;
+-	priv->cck_txbbgain_table[13].ccktxbb_valuearray[3] = 0x12;
+-	priv->cck_txbbgain_table[13].ccktxbb_valuearray[4] = 0x0d;
+-	priv->cck_txbbgain_table[13].ccktxbb_valuearray[5] = 0x09;
+-	priv->cck_txbbgain_table[13].ccktxbb_valuearray[6] = 0x04;
+-	priv->cck_txbbgain_table[13].ccktxbb_valuearray[7] = 0x02;
+-
+-	priv->cck_txbbgain_table[14].ccktxbb_valuearray[0] = 0x18;
+-	priv->cck_txbbgain_table[14].ccktxbb_valuearray[1] = 0x17;
+-	priv->cck_txbbgain_table[14].ccktxbb_valuearray[2] = 0x15;
+-	priv->cck_txbbgain_table[14].ccktxbb_valuearray[3] = 0x11;
+-	priv->cck_txbbgain_table[14].ccktxbb_valuearray[4] = 0x0c;
+-	priv->cck_txbbgain_table[14].ccktxbb_valuearray[5] = 0x08;
+-	priv->cck_txbbgain_table[14].ccktxbb_valuearray[6] = 0x04;
+-	priv->cck_txbbgain_table[14].ccktxbb_valuearray[7] = 0x02;
+-
+-	priv->cck_txbbgain_table[15].ccktxbb_valuearray[0] = 0x17;
+-	priv->cck_txbbgain_table[15].ccktxbb_valuearray[1] = 0x16;
+-	priv->cck_txbbgain_table[15].ccktxbb_valuearray[2] = 0x13;
+-	priv->cck_txbbgain_table[15].ccktxbb_valuearray[3] = 0x10;
+-	priv->cck_txbbgain_table[15].ccktxbb_valuearray[4] = 0x0c;
+-	priv->cck_txbbgain_table[15].ccktxbb_valuearray[5] = 0x08;
+-	priv->cck_txbbgain_table[15].ccktxbb_valuearray[6] = 0x04;
+-	priv->cck_txbbgain_table[15].ccktxbb_valuearray[7] = 0x02;
+-
+-	priv->cck_txbbgain_table[16].ccktxbb_valuearray[0] = 0x16;
+-	priv->cck_txbbgain_table[16].ccktxbb_valuearray[1] = 0x15;
+-	priv->cck_txbbgain_table[16].ccktxbb_valuearray[2] = 0x12;
+-	priv->cck_txbbgain_table[16].ccktxbb_valuearray[3] = 0x0f;
+-	priv->cck_txbbgain_table[16].ccktxbb_valuearray[4] = 0x0b;
+-	priv->cck_txbbgain_table[16].ccktxbb_valuearray[5] = 0x07;
+-	priv->cck_txbbgain_table[16].ccktxbb_valuearray[6] = 0x04;
+-	priv->cck_txbbgain_table[16].ccktxbb_valuearray[7] = 0x01;
+-
+-	priv->cck_txbbgain_table[17].ccktxbb_valuearray[0] = 0x14;
+-	priv->cck_txbbgain_table[17].ccktxbb_valuearray[1] = 0x14;
+-	priv->cck_txbbgain_table[17].ccktxbb_valuearray[2] = 0x11;
+-	priv->cck_txbbgain_table[17].ccktxbb_valuearray[3] = 0x0e;
+-	priv->cck_txbbgain_table[17].ccktxbb_valuearray[4] = 0x0b;
+-	priv->cck_txbbgain_table[17].ccktxbb_valuearray[5] = 0x07;
+-	priv->cck_txbbgain_table[17].ccktxbb_valuearray[6] = 0x03;
+-	priv->cck_txbbgain_table[17].ccktxbb_valuearray[7] = 0x02;
+-
+-	priv->cck_txbbgain_table[18].ccktxbb_valuearray[0] = 0x13;
+-	priv->cck_txbbgain_table[18].ccktxbb_valuearray[1] = 0x13;
+-	priv->cck_txbbgain_table[18].ccktxbb_valuearray[2] = 0x10;
+-	priv->cck_txbbgain_table[18].ccktxbb_valuearray[3] = 0x0d;
+-	priv->cck_txbbgain_table[18].ccktxbb_valuearray[4] = 0x0a;
+-	priv->cck_txbbgain_table[18].ccktxbb_valuearray[5] = 0x06;
+-	priv->cck_txbbgain_table[18].ccktxbb_valuearray[6] = 0x03;
+-	priv->cck_txbbgain_table[18].ccktxbb_valuearray[7] = 0x01;
+-
+-	priv->cck_txbbgain_table[19].ccktxbb_valuearray[0] = 0x12;
+-	priv->cck_txbbgain_table[19].ccktxbb_valuearray[1] = 0x12;
+-	priv->cck_txbbgain_table[19].ccktxbb_valuearray[2] = 0x0f;
+-	priv->cck_txbbgain_table[19].ccktxbb_valuearray[3] = 0x0c;
+-	priv->cck_txbbgain_table[19].ccktxbb_valuearray[4] = 0x09;
+-	priv->cck_txbbgain_table[19].ccktxbb_valuearray[5] = 0x06;
+-	priv->cck_txbbgain_table[19].ccktxbb_valuearray[6] = 0x03;
+-	priv->cck_txbbgain_table[19].ccktxbb_valuearray[7] = 0x01;
+-
+-	priv->cck_txbbgain_table[20].ccktxbb_valuearray[0] = 0x11;
+-	priv->cck_txbbgain_table[20].ccktxbb_valuearray[1] = 0x11;
+-	priv->cck_txbbgain_table[20].ccktxbb_valuearray[2] = 0x0f;
+-	priv->cck_txbbgain_table[20].ccktxbb_valuearray[3] = 0x0c;
+-	priv->cck_txbbgain_table[20].ccktxbb_valuearray[4] = 0x09;
+-	priv->cck_txbbgain_table[20].ccktxbb_valuearray[5] = 0x06;
+-	priv->cck_txbbgain_table[20].ccktxbb_valuearray[6] = 0x03;
+-	priv->cck_txbbgain_table[20].ccktxbb_valuearray[7] = 0x01;
+-
+-	priv->cck_txbbgain_table[21].ccktxbb_valuearray[0] = 0x10;
+-	priv->cck_txbbgain_table[21].ccktxbb_valuearray[1] = 0x10;
+-	priv->cck_txbbgain_table[21].ccktxbb_valuearray[2] = 0x0e;
+-	priv->cck_txbbgain_table[21].ccktxbb_valuearray[3] = 0x0b;
+-	priv->cck_txbbgain_table[21].ccktxbb_valuearray[4] = 0x08;
+-	priv->cck_txbbgain_table[21].ccktxbb_valuearray[5] = 0x05;
+-	priv->cck_txbbgain_table[21].ccktxbb_valuearray[6] = 0x03;
+-	priv->cck_txbbgain_table[21].ccktxbb_valuearray[7] = 0x01;
+-
+-	priv->cck_txbbgain_table[22].ccktxbb_valuearray[0] = 0x0f;
+-	priv->cck_txbbgain_table[22].ccktxbb_valuearray[1] = 0x0f;
+-	priv->cck_txbbgain_table[22].ccktxbb_valuearray[2] = 0x0d;
+-	priv->cck_txbbgain_table[22].ccktxbb_valuearray[3] = 0x0b;
+-	priv->cck_txbbgain_table[22].ccktxbb_valuearray[4] = 0x08;
+-	priv->cck_txbbgain_table[22].ccktxbb_valuearray[5] = 0x05;
+-	priv->cck_txbbgain_table[22].ccktxbb_valuearray[6] = 0x03;
+-	priv->cck_txbbgain_table[22].ccktxbb_valuearray[7] = 0x01;
+-
+-	/* ccktxbb_valuearray[0] is 0xA22 [1] is 0xA24 ...[7] is 0xA29
+-	 * This Table is for CH14
+-	 */
+-	priv->cck_txbbgain_ch14_table[0].ccktxbb_valuearray[0] = 0x36;
+-	priv->cck_txbbgain_ch14_table[0].ccktxbb_valuearray[1] = 0x35;
+-	priv->cck_txbbgain_ch14_table[0].ccktxbb_valuearray[2] = 0x2e;
+-	priv->cck_txbbgain_ch14_table[0].ccktxbb_valuearray[3] = 0x1b;
+-	priv->cck_txbbgain_ch14_table[0].ccktxbb_valuearray[4] = 0x00;
+-	priv->cck_txbbgain_ch14_table[0].ccktxbb_valuearray[5] = 0x00;
+-	priv->cck_txbbgain_ch14_table[0].ccktxbb_valuearray[6] = 0x00;
+-	priv->cck_txbbgain_ch14_table[0].ccktxbb_valuearray[7] = 0x00;
+-
+-	priv->cck_txbbgain_ch14_table[1].ccktxbb_valuearray[0] = 0x33;
+-	priv->cck_txbbgain_ch14_table[1].ccktxbb_valuearray[1] = 0x32;
+-	priv->cck_txbbgain_ch14_table[1].ccktxbb_valuearray[2] = 0x2b;
+-	priv->cck_txbbgain_ch14_table[1].ccktxbb_valuearray[3] = 0x19;
+-	priv->cck_txbbgain_ch14_table[1].ccktxbb_valuearray[4] = 0x00;
+-	priv->cck_txbbgain_ch14_table[1].ccktxbb_valuearray[5] = 0x00;
+-	priv->cck_txbbgain_ch14_table[1].ccktxbb_valuearray[6] = 0x00;
+-	priv->cck_txbbgain_ch14_table[1].ccktxbb_valuearray[7] = 0x00;
+-
+-	priv->cck_txbbgain_ch14_table[2].ccktxbb_valuearray[0] = 0x30;
+-	priv->cck_txbbgain_ch14_table[2].ccktxbb_valuearray[1] = 0x2f;
+-	priv->cck_txbbgain_ch14_table[2].ccktxbb_valuearray[2] = 0x29;
+-	priv->cck_txbbgain_ch14_table[2].ccktxbb_valuearray[3] = 0x18;
+-	priv->cck_txbbgain_ch14_table[2].ccktxbb_valuearray[4] = 0x00;
+-	priv->cck_txbbgain_ch14_table[2].ccktxbb_valuearray[5] = 0x00;
+-	priv->cck_txbbgain_ch14_table[2].ccktxbb_valuearray[6] = 0x00;
+-	priv->cck_txbbgain_ch14_table[2].ccktxbb_valuearray[7] = 0x00;
+-
+-	priv->cck_txbbgain_ch14_table[3].ccktxbb_valuearray[0] = 0x2d;
+-	priv->cck_txbbgain_ch14_table[3].ccktxbb_valuearray[1] = 0x2d;
+-	priv->cck_txbbgain_ch14_table[3].ccktxbb_valuearray[2] = 0x27;
+-	priv->cck_txbbgain_ch14_table[3].ccktxbb_valuearray[3] = 0x17;
+-	priv->cck_txbbgain_ch14_table[3].ccktxbb_valuearray[4] = 0x00;
+-	priv->cck_txbbgain_ch14_table[3].ccktxbb_valuearray[5] = 0x00;
+-	priv->cck_txbbgain_ch14_table[3].ccktxbb_valuearray[6] = 0x00;
+-	priv->cck_txbbgain_ch14_table[3].ccktxbb_valuearray[7] = 0x00;
+-
+-	priv->cck_txbbgain_ch14_table[4].ccktxbb_valuearray[0] = 0x2b;
+-	priv->cck_txbbgain_ch14_table[4].ccktxbb_valuearray[1] = 0x2a;
+-	priv->cck_txbbgain_ch14_table[4].ccktxbb_valuearray[2] = 0x25;
+-	priv->cck_txbbgain_ch14_table[4].ccktxbb_valuearray[3] = 0x15;
+-	priv->cck_txbbgain_ch14_table[4].ccktxbb_valuearray[4] = 0x00;
+-	priv->cck_txbbgain_ch14_table[4].ccktxbb_valuearray[5] = 0x00;
+-	priv->cck_txbbgain_ch14_table[4].ccktxbb_valuearray[6] = 0x00;
+-	priv->cck_txbbgain_ch14_table[4].ccktxbb_valuearray[7] = 0x00;
+-
+-	priv->cck_txbbgain_ch14_table[5].ccktxbb_valuearray[0] = 0x28;
+-	priv->cck_txbbgain_ch14_table[5].ccktxbb_valuearray[1] = 0x28;
+-	priv->cck_txbbgain_ch14_table[5].ccktxbb_valuearray[2] = 0x22;
+-	priv->cck_txbbgain_ch14_table[5].ccktxbb_valuearray[3] = 0x14;
+-	priv->cck_txbbgain_ch14_table[5].ccktxbb_valuearray[4] = 0x00;
+-	priv->cck_txbbgain_ch14_table[5].ccktxbb_valuearray[5] = 0x00;
+-	priv->cck_txbbgain_ch14_table[5].ccktxbb_valuearray[6] = 0x00;
+-	priv->cck_txbbgain_ch14_table[5].ccktxbb_valuearray[7] = 0x00;
+-
+-	priv->cck_txbbgain_ch14_table[6].ccktxbb_valuearray[0] = 0x26;
+-	priv->cck_txbbgain_ch14_table[6].ccktxbb_valuearray[1] = 0x25;
+-	priv->cck_txbbgain_ch14_table[6].ccktxbb_valuearray[2] = 0x21;
+-	priv->cck_txbbgain_ch14_table[6].ccktxbb_valuearray[3] = 0x13;
+-	priv->cck_txbbgain_ch14_table[6].ccktxbb_valuearray[4] = 0x00;
+-	priv->cck_txbbgain_ch14_table[6].ccktxbb_valuearray[5] = 0x00;
+-	priv->cck_txbbgain_ch14_table[6].ccktxbb_valuearray[6] = 0x00;
+-	priv->cck_txbbgain_ch14_table[6].ccktxbb_valuearray[7] = 0x00;
+-
+-	priv->cck_txbbgain_ch14_table[7].ccktxbb_valuearray[0] = 0x24;
+-	priv->cck_txbbgain_ch14_table[7].ccktxbb_valuearray[1] = 0x23;
+-	priv->cck_txbbgain_ch14_table[7].ccktxbb_valuearray[2] = 0x1f;
+-	priv->cck_txbbgain_ch14_table[7].ccktxbb_valuearray[3] = 0x12;
+-	priv->cck_txbbgain_ch14_table[7].ccktxbb_valuearray[4] = 0x00;
+-	priv->cck_txbbgain_ch14_table[7].ccktxbb_valuearray[5] = 0x00;
+-	priv->cck_txbbgain_ch14_table[7].ccktxbb_valuearray[6] = 0x00;
+-	priv->cck_txbbgain_ch14_table[7].ccktxbb_valuearray[7] = 0x00;
+-
+-	priv->cck_txbbgain_ch14_table[8].ccktxbb_valuearray[0] = 0x22;
+-	priv->cck_txbbgain_ch14_table[8].ccktxbb_valuearray[1] = 0x21;
+-	priv->cck_txbbgain_ch14_table[8].ccktxbb_valuearray[2] = 0x1d;
+-	priv->cck_txbbgain_ch14_table[8].ccktxbb_valuearray[3] = 0x11;
+-	priv->cck_txbbgain_ch14_table[8].ccktxbb_valuearray[4] = 0x00;
+-	priv->cck_txbbgain_ch14_table[8].ccktxbb_valuearray[5] = 0x00;
+-	priv->cck_txbbgain_ch14_table[8].ccktxbb_valuearray[6] = 0x00;
+-	priv->cck_txbbgain_ch14_table[8].ccktxbb_valuearray[7] = 0x00;
+-
+-	priv->cck_txbbgain_ch14_table[9].ccktxbb_valuearray[0] = 0x20;
+-	priv->cck_txbbgain_ch14_table[9].ccktxbb_valuearray[1] = 0x20;
+-	priv->cck_txbbgain_ch14_table[9].ccktxbb_valuearray[2] = 0x1b;
+-	priv->cck_txbbgain_ch14_table[9].ccktxbb_valuearray[3] = 0x10;
+-	priv->cck_txbbgain_ch14_table[9].ccktxbb_valuearray[4] = 0x00;
+-	priv->cck_txbbgain_ch14_table[9].ccktxbb_valuearray[5] = 0x00;
+-	priv->cck_txbbgain_ch14_table[9].ccktxbb_valuearray[6] = 0x00;
+-	priv->cck_txbbgain_ch14_table[9].ccktxbb_valuearray[7] = 0x00;
+-
+-	priv->cck_txbbgain_ch14_table[10].ccktxbb_valuearray[0] = 0x1f;
+-	priv->cck_txbbgain_ch14_table[10].ccktxbb_valuearray[1] = 0x1e;
+-	priv->cck_txbbgain_ch14_table[10].ccktxbb_valuearray[2] = 0x1a;
+-	priv->cck_txbbgain_ch14_table[10].ccktxbb_valuearray[3] = 0x0f;
+-	priv->cck_txbbgain_ch14_table[10].ccktxbb_valuearray[4] = 0x00;
+-	priv->cck_txbbgain_ch14_table[10].ccktxbb_valuearray[5] = 0x00;
+-	priv->cck_txbbgain_ch14_table[10].ccktxbb_valuearray[6] = 0x00;
+-	priv->cck_txbbgain_ch14_table[10].ccktxbb_valuearray[7] = 0x00;
+-
+-	priv->cck_txbbgain_ch14_table[11].ccktxbb_valuearray[0] = 0x1d;
+-	priv->cck_txbbgain_ch14_table[11].ccktxbb_valuearray[1] = 0x1c;
+-	priv->cck_txbbgain_ch14_table[11].ccktxbb_valuearray[2] = 0x18;
+-	priv->cck_txbbgain_ch14_table[11].ccktxbb_valuearray[3] = 0x0e;
+-	priv->cck_txbbgain_ch14_table[11].ccktxbb_valuearray[4] = 0x00;
+-	priv->cck_txbbgain_ch14_table[11].ccktxbb_valuearray[5] = 0x00;
+-	priv->cck_txbbgain_ch14_table[11].ccktxbb_valuearray[6] = 0x00;
+-	priv->cck_txbbgain_ch14_table[11].ccktxbb_valuearray[7] = 0x00;
+-
+-	priv->cck_txbbgain_ch14_table[12].ccktxbb_valuearray[0] = 0x1b;
+-	priv->cck_txbbgain_ch14_table[12].ccktxbb_valuearray[1] = 0x1a;
+-	priv->cck_txbbgain_ch14_table[12].ccktxbb_valuearray[2] = 0x17;
+-	priv->cck_txbbgain_ch14_table[12].ccktxbb_valuearray[3] = 0x0e;
+-	priv->cck_txbbgain_ch14_table[12].ccktxbb_valuearray[4] = 0x00;
+-	priv->cck_txbbgain_ch14_table[12].ccktxbb_valuearray[5] = 0x00;
+-	priv->cck_txbbgain_ch14_table[12].ccktxbb_valuearray[6] = 0x00;
+-	priv->cck_txbbgain_ch14_table[12].ccktxbb_valuearray[7] = 0x00;
+-
+-	priv->cck_txbbgain_ch14_table[13].ccktxbb_valuearray[0] = 0x1a;
+-	priv->cck_txbbgain_ch14_table[13].ccktxbb_valuearray[1] = 0x19;
+-	priv->cck_txbbgain_ch14_table[13].ccktxbb_valuearray[2] = 0x16;
+-	priv->cck_txbbgain_ch14_table[13].ccktxbb_valuearray[3] = 0x0d;
+-	priv->cck_txbbgain_ch14_table[13].ccktxbb_valuearray[4] = 0x00;
+-	priv->cck_txbbgain_ch14_table[13].ccktxbb_valuearray[5] = 0x00;
+-	priv->cck_txbbgain_ch14_table[13].ccktxbb_valuearray[6] = 0x00;
+-	priv->cck_txbbgain_ch14_table[13].ccktxbb_valuearray[7] = 0x00;
+-
+-	priv->cck_txbbgain_ch14_table[14].ccktxbb_valuearray[0] = 0x18;
+-	priv->cck_txbbgain_ch14_table[14].ccktxbb_valuearray[1] = 0x17;
+-	priv->cck_txbbgain_ch14_table[14].ccktxbb_valuearray[2] = 0x15;
+-	priv->cck_txbbgain_ch14_table[14].ccktxbb_valuearray[3] = 0x0c;
+-	priv->cck_txbbgain_ch14_table[14].ccktxbb_valuearray[4] = 0x00;
+-	priv->cck_txbbgain_ch14_table[14].ccktxbb_valuearray[5] = 0x00;
+-	priv->cck_txbbgain_ch14_table[14].ccktxbb_valuearray[6] = 0x00;
+-	priv->cck_txbbgain_ch14_table[14].ccktxbb_valuearray[7] = 0x00;
+-
+-	priv->cck_txbbgain_ch14_table[15].ccktxbb_valuearray[0] = 0x17;
+-	priv->cck_txbbgain_ch14_table[15].ccktxbb_valuearray[1] = 0x16;
+-	priv->cck_txbbgain_ch14_table[15].ccktxbb_valuearray[2] = 0x13;
+-	priv->cck_txbbgain_ch14_table[15].ccktxbb_valuearray[3] = 0x0b;
+-	priv->cck_txbbgain_ch14_table[15].ccktxbb_valuearray[4] = 0x00;
+-	priv->cck_txbbgain_ch14_table[15].ccktxbb_valuearray[5] = 0x00;
+-	priv->cck_txbbgain_ch14_table[15].ccktxbb_valuearray[6] = 0x00;
+-	priv->cck_txbbgain_ch14_table[15].ccktxbb_valuearray[7] = 0x00;
+-
+-	priv->cck_txbbgain_ch14_table[16].ccktxbb_valuearray[0] = 0x16;
+-	priv->cck_txbbgain_ch14_table[16].ccktxbb_valuearray[1] = 0x15;
+-	priv->cck_txbbgain_ch14_table[16].ccktxbb_valuearray[2] = 0x12;
+-	priv->cck_txbbgain_ch14_table[16].ccktxbb_valuearray[3] = 0x0b;
+-	priv->cck_txbbgain_ch14_table[16].ccktxbb_valuearray[4] = 0x00;
+-	priv->cck_txbbgain_ch14_table[16].ccktxbb_valuearray[5] = 0x00;
+-	priv->cck_txbbgain_ch14_table[16].ccktxbb_valuearray[6] = 0x00;
+-	priv->cck_txbbgain_ch14_table[16].ccktxbb_valuearray[7] = 0x00;
+-
+-	priv->cck_txbbgain_ch14_table[17].ccktxbb_valuearray[0] = 0x14;
+-	priv->cck_txbbgain_ch14_table[17].ccktxbb_valuearray[1] = 0x14;
+-	priv->cck_txbbgain_ch14_table[17].ccktxbb_valuearray[2] = 0x11;
+-	priv->cck_txbbgain_ch14_table[17].ccktxbb_valuearray[3] = 0x0a;
+-	priv->cck_txbbgain_ch14_table[17].ccktxbb_valuearray[4] = 0x00;
+-	priv->cck_txbbgain_ch14_table[17].ccktxbb_valuearray[5] = 0x00;
+-	priv->cck_txbbgain_ch14_table[17].ccktxbb_valuearray[6] = 0x00;
+-	priv->cck_txbbgain_ch14_table[17].ccktxbb_valuearray[7] = 0x00;
+-
+-	priv->cck_txbbgain_ch14_table[18].ccktxbb_valuearray[0] = 0x13;
+-	priv->cck_txbbgain_ch14_table[18].ccktxbb_valuearray[1] = 0x13;
+-	priv->cck_txbbgain_ch14_table[18].ccktxbb_valuearray[2] = 0x10;
+-	priv->cck_txbbgain_ch14_table[18].ccktxbb_valuearray[3] = 0x0a;
+-	priv->cck_txbbgain_ch14_table[18].ccktxbb_valuearray[4] = 0x00;
+-	priv->cck_txbbgain_ch14_table[18].ccktxbb_valuearray[5] = 0x00;
+-	priv->cck_txbbgain_ch14_table[18].ccktxbb_valuearray[6] = 0x00;
+-	priv->cck_txbbgain_ch14_table[18].ccktxbb_valuearray[7] = 0x00;
+-
+-	priv->cck_txbbgain_ch14_table[19].ccktxbb_valuearray[0] = 0x12;
+-	priv->cck_txbbgain_ch14_table[19].ccktxbb_valuearray[1] = 0x12;
+-	priv->cck_txbbgain_ch14_table[19].ccktxbb_valuearray[2] = 0x0f;
+-	priv->cck_txbbgain_ch14_table[19].ccktxbb_valuearray[3] = 0x09;
+-	priv->cck_txbbgain_ch14_table[19].ccktxbb_valuearray[4] = 0x00;
+-	priv->cck_txbbgain_ch14_table[19].ccktxbb_valuearray[5] = 0x00;
+-	priv->cck_txbbgain_ch14_table[19].ccktxbb_valuearray[6] = 0x00;
+-	priv->cck_txbbgain_ch14_table[19].ccktxbb_valuearray[7] = 0x00;
+-
+-	priv->cck_txbbgain_ch14_table[20].ccktxbb_valuearray[0] = 0x11;
+-	priv->cck_txbbgain_ch14_table[20].ccktxbb_valuearray[1] = 0x11;
+-	priv->cck_txbbgain_ch14_table[20].ccktxbb_valuearray[2] = 0x0f;
+-	priv->cck_txbbgain_ch14_table[20].ccktxbb_valuearray[3] = 0x09;
+-	priv->cck_txbbgain_ch14_table[20].ccktxbb_valuearray[4] = 0x00;
+-	priv->cck_txbbgain_ch14_table[20].ccktxbb_valuearray[5] = 0x00;
+-	priv->cck_txbbgain_ch14_table[20].ccktxbb_valuearray[6] = 0x00;
+-	priv->cck_txbbgain_ch14_table[20].ccktxbb_valuearray[7] = 0x00;
+-
+-	priv->cck_txbbgain_ch14_table[21].ccktxbb_valuearray[0] = 0x10;
+-	priv->cck_txbbgain_ch14_table[21].ccktxbb_valuearray[1] = 0x10;
+-	priv->cck_txbbgain_ch14_table[21].ccktxbb_valuearray[2] = 0x0e;
+-	priv->cck_txbbgain_ch14_table[21].ccktxbb_valuearray[3] = 0x08;
+-	priv->cck_txbbgain_ch14_table[21].ccktxbb_valuearray[4] = 0x00;
+-	priv->cck_txbbgain_ch14_table[21].ccktxbb_valuearray[5] = 0x00;
+-	priv->cck_txbbgain_ch14_table[21].ccktxbb_valuearray[6] = 0x00;
+-	priv->cck_txbbgain_ch14_table[21].ccktxbb_valuearray[7] = 0x00;
+-
+-	priv->cck_txbbgain_ch14_table[22].ccktxbb_valuearray[0] = 0x0f;
+-	priv->cck_txbbgain_ch14_table[22].ccktxbb_valuearray[1] = 0x0f;
+-	priv->cck_txbbgain_ch14_table[22].ccktxbb_valuearray[2] = 0x0d;
+-	priv->cck_txbbgain_ch14_table[22].ccktxbb_valuearray[3] = 0x08;
+-	priv->cck_txbbgain_ch14_table[22].ccktxbb_valuearray[4] = 0x00;
+-	priv->cck_txbbgain_ch14_table[22].ccktxbb_valuearray[5] = 0x00;
+-	priv->cck_txbbgain_ch14_table[22].ccktxbb_valuearray[6] = 0x00;
+-	priv->cck_txbbgain_ch14_table[22].ccktxbb_valuearray[7] = 0x00;
+-
+-	priv->btxpower_tracking = true;
+-	priv->txpower_count       = 0;
+-	priv->btxpower_trackingInit = false;
+-}
+-
+-static void dm_InitializeTXPowerTracking_ThermalMeter(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	/* Tx Power tracking by Thermal Meter requires Firmware R/W 3-wire. This mechanism
+-	 * can be enabled only when Firmware R/W 3-wire is enabled. Otherwise, frequent r/w
+-	 * 3-wire by driver causes RF to go into a wrong state.
+-	 */
+-	if (priv->ieee80211->FwRWRF)
+-		priv->btxpower_tracking = true;
+-	else
+-		priv->btxpower_tracking = false;
+-	priv->txpower_count       = 0;
+-	priv->btxpower_trackingInit = false;
+-}
+-
+-void dm_initialize_txpower_tracking(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	if (priv->bDcut)
+-		dm_InitializeTXPowerTracking_TSSI(dev);
+-	else
+-		dm_InitializeTXPowerTracking_ThermalMeter(dev);
+-} /* dm_InitializeTXPowerTracking */
+-
+-static void dm_CheckTXPowerTracking_TSSI(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	static u32 tx_power_track_counter;
+-
+-	if (!priv->btxpower_tracking)
+-		return;
+-	if ((tx_power_track_counter % 30 == 0) && (tx_power_track_counter != 0))
+-		queue_delayed_work(priv->priv_wq, &priv->txpower_tracking_wq, 0);
+-	tx_power_track_counter++;
+-}
+-
+-static void dm_CheckTXPowerTracking_ThermalMeter(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	static u8	TM_Trigger;
+-	if (!priv->btxpower_tracking)
+-		return;
+-	if (priv->txpower_count  <= 2) {
+-		priv->txpower_count++;
+-		return;
+-	}
+-
+-	if (!TM_Trigger) {
+-		/* Attention!! You have to write all 12bits of data to RF, or it may cause RF to crash
+-		 * actually write reg0x02 bit1=0, then bit1=1.
+-		 * DbgPrint("Trigger ThermalMeter, write RF reg0x2 = 0x4d to 0x4f\n");
+-		 */
+-		rtl8192_phy_SetRFReg(dev, RF90_PATH_A, 0x02, bMask12Bits, 0x4d);
+-		rtl8192_phy_SetRFReg(dev, RF90_PATH_A, 0x02, bMask12Bits, 0x4f);
+-		rtl8192_phy_SetRFReg(dev, RF90_PATH_A, 0x02, bMask12Bits, 0x4d);
+-		rtl8192_phy_SetRFReg(dev, RF90_PATH_A, 0x02, bMask12Bits, 0x4f);
+-		TM_Trigger = 1;
+-		return;
+-	}
+-	queue_delayed_work(priv->priv_wq, &priv->txpower_tracking_wq, 0);
+-	TM_Trigger = 0;
+-}
+-
+-static void dm_check_txpower_tracking(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-#ifdef RTL8190P
+-	dm_CheckTXPowerTracking_TSSI(dev);
+-#else
+-	if (priv->bDcut)
+-		dm_CheckTXPowerTracking_TSSI(dev);
+-	else
+-		dm_CheckTXPowerTracking_ThermalMeter(dev);
+-#endif
+-
+-}	/* dm_CheckTXPowerTracking */
+-
+-static void dm_CCKTxPowerAdjust_TSSI(struct net_device *dev, bool  bInCH14)
+-{
+-	u32 TempVal;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	/* Write 0xa22 0xa23 */
+-	TempVal = 0;
+-	if (!bInCH14) {
+-		/* Write 0xa22 0xa23 */
+-		TempVal =	priv->cck_txbbgain_table[priv->cck_present_attenuation].ccktxbb_valuearray[0] +
+-					(priv->cck_txbbgain_table[priv->cck_present_attenuation].ccktxbb_valuearray[1]<<8);
+-
+-		rtl8192_setBBreg(dev, rCCK0_TxFilter1, bMaskHWord, TempVal);
+-		/* Write 0xa24 ~ 0xa27 */
+-		TempVal =	priv->cck_txbbgain_table[priv->cck_present_attenuation].ccktxbb_valuearray[2] +
+-					(priv->cck_txbbgain_table[priv->cck_present_attenuation].ccktxbb_valuearray[3]<<8) +
+-					(priv->cck_txbbgain_table[priv->cck_present_attenuation].ccktxbb_valuearray[4]<<16)+
+-					(priv->cck_txbbgain_table[priv->cck_present_attenuation].ccktxbb_valuearray[5]<<24);
+-		rtl8192_setBBreg(dev, rCCK0_TxFilter2, bMaskDWord, TempVal);
+-		/* Write 0xa28  0xa29 */
+-		TempVal =	priv->cck_txbbgain_table[priv->cck_present_attenuation].ccktxbb_valuearray[6] +
+-					(priv->cck_txbbgain_table[priv->cck_present_attenuation].ccktxbb_valuearray[7]<<8);
+-
+-		rtl8192_setBBreg(dev, rCCK0_DebugPort, bMaskLWord, TempVal);
+-	} else {
+-		TempVal =	priv->cck_txbbgain_ch14_table[priv->cck_present_attenuation].ccktxbb_valuearray[0] +
+-					(priv->cck_txbbgain_ch14_table[priv->cck_present_attenuation].ccktxbb_valuearray[1]<<8);
+-
+-		rtl8192_setBBreg(dev, rCCK0_TxFilter1, bMaskHWord, TempVal);
+-		/* Write 0xa24 ~ 0xa27 */
+-		TempVal =	priv->cck_txbbgain_ch14_table[priv->cck_present_attenuation].ccktxbb_valuearray[2] +
+-					(priv->cck_txbbgain_ch14_table[priv->cck_present_attenuation].ccktxbb_valuearray[3]<<8) +
+-					(priv->cck_txbbgain_ch14_table[priv->cck_present_attenuation].ccktxbb_valuearray[4]<<16)+
+-					(priv->cck_txbbgain_ch14_table[priv->cck_present_attenuation].ccktxbb_valuearray[5]<<24);
+-		rtl8192_setBBreg(dev, rCCK0_TxFilter2, bMaskDWord, TempVal);
+-		/* Write 0xa28  0xa29 */
+-		TempVal =	priv->cck_txbbgain_ch14_table[priv->cck_present_attenuation].ccktxbb_valuearray[6] +
+-					(priv->cck_txbbgain_ch14_table[priv->cck_present_attenuation].ccktxbb_valuearray[7]<<8);
+-
+-		rtl8192_setBBreg(dev, rCCK0_DebugPort, bMaskLWord, TempVal);
+-	}
+-}
+-
+-static void dm_CCKTxPowerAdjust_ThermalMeter(struct net_device *dev, bool  bInCH14)
+-{
+-	u32 TempVal;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	TempVal = 0;
+-	if (!bInCH14) {
+-		/* Write 0xa22 0xa23 */
+-		TempVal =	CCKSwingTable_Ch1_Ch13[priv->CCK_index][0] +
+-					(CCKSwingTable_Ch1_Ch13[priv->CCK_index][1]<<8);
+-		rtl8192_setBBreg(dev, rCCK0_TxFilter1, bMaskHWord, TempVal);
+-		RT_TRACE(COMP_POWER_TRACKING, "CCK not chnl 14, reg 0x%x = 0x%x\n",
+-			rCCK0_TxFilter1, TempVal);
+-		/* Write 0xa24 ~ 0xa27 */
+-		TempVal =	CCKSwingTable_Ch1_Ch13[priv->CCK_index][2] +
+-					(CCKSwingTable_Ch1_Ch13[priv->CCK_index][3]<<8) +
+-					(CCKSwingTable_Ch1_Ch13[priv->CCK_index][4]<<16)+
+-					(CCKSwingTable_Ch1_Ch13[priv->CCK_index][5]<<24);
+-		rtl8192_setBBreg(dev, rCCK0_TxFilter2, bMaskDWord, TempVal);
+-		RT_TRACE(COMP_POWER_TRACKING, "CCK not chnl 14, reg 0x%x = 0x%x\n",
+-			rCCK0_TxFilter2, TempVal);
+-		/* Write 0xa28  0xa29 */
+-		TempVal =	CCKSwingTable_Ch1_Ch13[priv->CCK_index][6] +
+-					(CCKSwingTable_Ch1_Ch13[priv->CCK_index][7]<<8);
+-
+-		rtl8192_setBBreg(dev, rCCK0_DebugPort, bMaskLWord, TempVal);
+-		RT_TRACE(COMP_POWER_TRACKING, "CCK not chnl 14, reg 0x%x = 0x%x\n",
+-			rCCK0_DebugPort, TempVal);
+-	} else {
+-		/* Write 0xa22 0xa23 */
+-		TempVal =	CCKSwingTable_Ch14[priv->CCK_index][0] +
+-					(CCKSwingTable_Ch14[priv->CCK_index][1]<<8);
+-
+-		rtl8192_setBBreg(dev, rCCK0_TxFilter1, bMaskHWord, TempVal);
+-		RT_TRACE(COMP_POWER_TRACKING, "CCK chnl 14, reg 0x%x = 0x%x\n",
+-			 rCCK0_TxFilter1, TempVal);
+-		/* Write 0xa24 ~ 0xa27 */
+-		TempVal =	CCKSwingTable_Ch14[priv->CCK_index][2] +
+-					(CCKSwingTable_Ch14[priv->CCK_index][3]<<8) +
+-					(CCKSwingTable_Ch14[priv->CCK_index][4]<<16)+
+-					(CCKSwingTable_Ch14[priv->CCK_index][5]<<24);
+-		rtl8192_setBBreg(dev, rCCK0_TxFilter2, bMaskDWord, TempVal);
+-		RT_TRACE(COMP_POWER_TRACKING, "CCK chnl 14, reg 0x%x = 0x%x\n",
+-			 rCCK0_TxFilter2, TempVal);
+-		/* Write 0xa28  0xa29 */
+-		TempVal =	CCKSwingTable_Ch14[priv->CCK_index][6] +
+-					(CCKSwingTable_Ch14[priv->CCK_index][7]<<8);
+-
+-		rtl8192_setBBreg(dev, rCCK0_DebugPort, bMaskLWord, TempVal);
+-		RT_TRACE(COMP_POWER_TRACKING, "CCK chnl 14, reg 0x%x = 0x%x\n",
+-			 rCCK0_DebugPort, TempVal);
+-	}
+-}
+-
+-void dm_cck_txpower_adjust(struct net_device *dev, bool binch14)
+-{	/*  dm_CCKTxPowerAdjust */
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	if (priv->bDcut)
+-		dm_CCKTxPowerAdjust_TSSI(dev, binch14);
+-	else
+-		dm_CCKTxPowerAdjust_ThermalMeter(dev, binch14);
+-}
+-
+-#ifndef RTL8192U
+-static void dm_txpower_reset_recovery(
+-	struct net_device *dev
+-)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	RT_TRACE(COMP_POWER_TRACKING, "Start Reset Recovery ==>\n");
+-	rtl8192_setBBreg(dev, rOFDM0_XATxIQImbalance, bMaskDWord, priv->txbbgain_table[priv->rfa_txpowertrackingindex].txbbgain_value);
+-	RT_TRACE(COMP_POWER_TRACKING, "Reset Recovery: Fill in 0xc80 is %08x\n", priv->txbbgain_table[priv->rfa_txpowertrackingindex].txbbgain_value);
+-	RT_TRACE(COMP_POWER_TRACKING, "Reset Recovery: Fill in RFA_txPowerTrackingIndex is %x\n", priv->rfa_txpowertrackingindex);
+-	RT_TRACE(COMP_POWER_TRACKING, "Reset Recovery : RF A I/Q Amplify Gain is %ld\n", priv->txbbgain_table[priv->rfa_txpowertrackingindex].txbb_iq_amplifygain);
+-	RT_TRACE(COMP_POWER_TRACKING, "Reset Recovery: CCK Attenuation is %d dB\n", priv->cck_present_attenuation);
+-	dm_cck_txpower_adjust(dev, priv->bcck_in_ch14);
+-
+-	rtl8192_setBBreg(dev, rOFDM0_XCTxIQImbalance, bMaskDWord, priv->txbbgain_table[priv->rfc_txpowertrackingindex].txbbgain_value);
+-	RT_TRACE(COMP_POWER_TRACKING, "Reset Recovery: Fill in 0xc90 is %08x\n", priv->txbbgain_table[priv->rfc_txpowertrackingindex].txbbgain_value);
+-	RT_TRACE(COMP_POWER_TRACKING, "Reset Recovery: Fill in RFC_txPowerTrackingIndex is %x\n", priv->rfc_txpowertrackingindex);
+-	RT_TRACE(COMP_POWER_TRACKING, "Reset Recovery : RF C I/Q Amplify Gain is %ld\n", priv->txbbgain_table[priv->rfc_txpowertrackingindex].txbb_iq_amplifygain);
+-
+-}	/* dm_TXPowerResetRecovery */
+-
+-void dm_restore_dynamic_mechanism_state(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u32	reg_ratr = priv->rate_adaptive.last_ratr;
+-
+-	if (!priv->up) {
+-		RT_TRACE(COMP_RATE, "<---- dm_restore_dynamic_mechanism_state(): driver is going to unload\n");
+-		return;
+-	}
+-
+-	/* Restore previous state for rate adaptive */
+-	if (priv->rate_adaptive.rate_adaptive_disabled)
+-		return;
+-	/* TODO: Only 11n mode is implemented currently, */
+-	if (!(priv->ieee80211->mode == WIRELESS_MODE_N_24G ||
+-	      priv->ieee80211->mode == WIRELESS_MODE_N_5G))
+-		return;
+-
+-	{
+-			/* 2007/11/15 MH Copy from 8190PCI. */
+-			u32 ratr_value;
+-
+-			ratr_value = reg_ratr;
+-			if (priv->rf_type == RF_1T2R) {	/* 1T2R, Spatial Stream 2 should be disabled */
+-				ratr_value &= ~(RATE_ALL_OFDM_2SS);
+-			}
+-			write_nic_dword(dev, RATR0, ratr_value);
+-			write_nic_byte(dev, UFWP, 1);
+-	}
+-	/* Restore TX Power Tracking Index */
+-	if (priv->btxpower_trackingInit && priv->btxpower_tracking)
+-		dm_txpower_reset_recovery(dev);
+-
+-	/* Restore BB Initial Gain */
+-	dm_bb_initialgain_restore(dev);
+-
+-}	/* DM_RestoreDynamicMechanismState */
+-
+-static void dm_bb_initialgain_restore(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u32 bit_mask = 0x7f; /* Bit0~ Bit6 */
+-
+-	if (dm_digtable.dig_algorithm == DIG_ALGO_BY_RSSI)
+-		return;
+-
+-	/* Disable Initial Gain */
+-	rtl8192_setBBreg(dev, UFWP, bMaskByte1, 0x8);	/* Only clear byte 1 and rewrite. */
+-	rtl8192_setBBreg(dev, rOFDM0_XAAGCCore1, bit_mask, (u32)priv->initgain_backup.xaagccore1);
+-	rtl8192_setBBreg(dev, rOFDM0_XBAGCCore1, bit_mask, (u32)priv->initgain_backup.xbagccore1);
+-	rtl8192_setBBreg(dev, rOFDM0_XCAGCCore1, bit_mask, (u32)priv->initgain_backup.xcagccore1);
+-	rtl8192_setBBreg(dev, rOFDM0_XDAGCCore1, bit_mask, (u32)priv->initgain_backup.xdagccore1);
+-	bit_mask  = bMaskByte2;
+-	rtl8192_setBBreg(dev, rCCK0_CCA, bit_mask, (u32)priv->initgain_backup.cca);
+-
+-	RT_TRACE(COMP_DIG, "dm_BBInitialGainRestore 0xc50 is %x\n", priv->initgain_backup.xaagccore1);
+-	RT_TRACE(COMP_DIG, "dm_BBInitialGainRestore 0xc58 is %x\n", priv->initgain_backup.xbagccore1);
+-	RT_TRACE(COMP_DIG, "dm_BBInitialGainRestore 0xc60 is %x\n", priv->initgain_backup.xcagccore1);
+-	RT_TRACE(COMP_DIG, "dm_BBInitialGainRestore 0xc68 is %x\n", priv->initgain_backup.xdagccore1);
+-	RT_TRACE(COMP_DIG, "dm_BBInitialGainRestore 0xa0a is %x\n", priv->initgain_backup.cca);
+-	/* Enable Initial Gain */
+-	rtl8192_setBBreg(dev, UFWP, bMaskByte1, 0x1);	/* Only clear byte 1 and rewrite. */
+-
+-}	/* dm_BBInitialGainRestore */
+-
+-static void dm_bb_initialgain_backup(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u32 bit_mask = bMaskByte0; /* Bit0~ Bit6 */
+-
+-	if (dm_digtable.dig_algorithm == DIG_ALGO_BY_RSSI)
+-		return;
+-
+-	rtl8192_setBBreg(dev, UFWP, bMaskByte1, 0x8);	/* Only clear byte 1 and rewrite. */
+-	priv->initgain_backup.xaagccore1 = (u8)rtl8192_QueryBBReg(dev, rOFDM0_XAAGCCore1, bit_mask);
+-	priv->initgain_backup.xbagccore1 = (u8)rtl8192_QueryBBReg(dev, rOFDM0_XBAGCCore1, bit_mask);
+-	priv->initgain_backup.xcagccore1 = (u8)rtl8192_QueryBBReg(dev, rOFDM0_XCAGCCore1, bit_mask);
+-	priv->initgain_backup.xdagccore1 = (u8)rtl8192_QueryBBReg(dev, rOFDM0_XDAGCCore1, bit_mask);
+-	bit_mask  = bMaskByte2;
+-	priv->initgain_backup.cca = (u8)rtl8192_QueryBBReg(dev, rCCK0_CCA, bit_mask);
+-
+-	RT_TRACE(COMP_DIG, "BBInitialGainBackup 0xc50 is %x\n", priv->initgain_backup.xaagccore1);
+-	RT_TRACE(COMP_DIG, "BBInitialGainBackup 0xc58 is %x\n", priv->initgain_backup.xbagccore1);
+-	RT_TRACE(COMP_DIG, "BBInitialGainBackup 0xc60 is %x\n", priv->initgain_backup.xcagccore1);
+-	RT_TRACE(COMP_DIG, "BBInitialGainBackup 0xc68 is %x\n", priv->initgain_backup.xdagccore1);
+-	RT_TRACE(COMP_DIG, "BBInitialGainBackup 0xa0a is %x\n", priv->initgain_backup.cca);
+-
+-}   /* dm_BBInitialGainBakcup */
+-
+-#endif
+-/*-----------------------------------------------------------------------------
+- * Function:	dm_dig_init()
+- *
+- * Overview:	Set DIG scheme init value.
+- *
+- * Input:		NONE
+- *
+- * Output:		NONE
+- *
+- * Return:		NONE
+- *---------------------------------------------------------------------------
+- */
+-static void dm_dig_init(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	/* 2007/10/05 MH Disable DIG scheme now. Not tested. */
+-	dm_digtable.dig_enable_flag	= true;
+-	dm_digtable.dig_algorithm = DIG_ALGO_BY_RSSI;
+-	dm_digtable.dig_algorithm_switch = 0;
+-
+-	/* 2007/10/04 MH Define init gain threshold. */
+-	dm_digtable.dig_state		= DM_STA_DIG_MAX;
+-	dm_digtable.dig_highpwr_state	= DM_STA_DIG_MAX;
+-
+-	dm_digtable.rssi_low_thresh	= DM_DIG_THRESH_LOW;
+-	dm_digtable.rssi_high_thresh	= DM_DIG_THRESH_HIGH;
+-
+-	dm_digtable.rssi_high_power_lowthresh = DM_DIG_HIGH_PWR_THRESH_LOW;
+-	dm_digtable.rssi_high_power_highthresh = DM_DIG_HIGH_PWR_THRESH_HIGH;
+-
+-	dm_digtable.rssi_val = 50;	/* for new dig debug rssi value */
+-	dm_digtable.backoff_val = DM_DIG_BACKOFF;
+-	if (priv->CustomerID == RT_CID_819x_Netcore)
+-		dm_digtable.rx_gain_range_min = DM_DIG_MIN_NETCORE;
+-	else
+-		dm_digtable.rx_gain_range_min = DM_DIG_MIN;
+-
+-}	/* dm_dig_init */
+-
+-/*-----------------------------------------------------------------------------
+- * Function:	dm_ctrl_initgain_byrssi()
+- *
+- * Overview:	Driver must monitor RSSI and notify firmware to change initial
+- *				gain according to different threshold. BB team provide the
+- *				suggested solution.
+- *
+- * Input:			struct net_device *dev
+- *
+- * Output:		NONE
+- *
+- * Return:		NONE
+- *---------------------------------------------------------------------------
+- */
+-static void dm_ctrl_initgain_byrssi(struct net_device *dev)
+-{
+-	if (!dm_digtable.dig_enable_flag)
+-		return;
+-
+-	if (dm_digtable.dig_algorithm == DIG_ALGO_BY_FALSE_ALARM)
+-		dm_ctrl_initgain_byrssi_by_fwfalse_alarm(dev);
+-	else if (dm_digtable.dig_algorithm == DIG_ALGO_BY_RSSI)
+-		dm_ctrl_initgain_byrssi_by_driverrssi(dev);
+-	/* ; */
+-	else
+-		return;
+-}
+-
+-static void dm_ctrl_initgain_byrssi_by_driverrssi(
+-	struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u8 i;
+-	static u8	fw_dig;
+-
+-	if (!dm_digtable.dig_enable_flag)
+-		return;
+-
+-	if (dm_digtable.dig_algorithm_switch)	/* if switched algorithm, we have to disable FW Dig. */
+-		fw_dig = 0;
+-
+-	if (fw_dig <= 3) { /* execute several times to make sure the FW Dig is disabled */
+-		/* FW DIG Off */
+-		for (i = 0; i < 3; i++)
+-			rtl8192_setBBreg(dev, UFWP, bMaskByte1, 0x8);	/* Only clear byte 1 and rewrite. */
+-		fw_dig++;
+-		dm_digtable.dig_state = DM_STA_DIG_OFF;	/* fw dig off. */
+-	}
+-
+-	if (priv->ieee80211->state == IEEE80211_LINKED)
+-		dm_digtable.cur_connect_state = DIG_CONNECT;
+-	else
+-		dm_digtable.cur_connect_state = DIG_DISCONNECT;
+-
+-	dm_digtable.rssi_val = priv->undecorated_smoothed_pwdb;
+-	dm_initial_gain(dev);
+-	dm_pd_th(dev);
+-	dm_cs_ratio(dev);
+-	if (dm_digtable.dig_algorithm_switch)
+-		dm_digtable.dig_algorithm_switch = 0;
+-	dm_digtable.pre_connect_state = dm_digtable.cur_connect_state;
+-
+-}	/* dm_CtrlInitGainByRssi */
+-
+-static void dm_ctrl_initgain_byrssi_by_fwfalse_alarm(
+-	struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	static u32 reset_cnt;
+-	u8 i;
+-
+-	if (!dm_digtable.dig_enable_flag)
+-		return;
+-
+-	if (dm_digtable.dig_algorithm_switch) {
+-		dm_digtable.dig_state = DM_STA_DIG_MAX;
+-		/* Fw DIG On. */
+-		for (i = 0; i < 3; i++)
+-			rtl8192_setBBreg(dev, UFWP, bMaskByte1, 0x1);	/* Only clear byte 1 and rewrite.*/
+-		dm_digtable.dig_algorithm_switch = 0;
+-	}
+-
+-	if (priv->ieee80211->state != IEEE80211_LINKED)
+-		return;
+-
+-	/* For smooth, we can not change DIG state. */
+-	if ((priv->undecorated_smoothed_pwdb > dm_digtable.rssi_low_thresh) &&
+-	    (priv->undecorated_smoothed_pwdb < dm_digtable.rssi_high_thresh))
+-		return;
+-
+-	/* 1. When RSSI decrease, We have to judge if it is smaller than a threshold
+-	 * and then execute the step below.
+-	 */
+-	if (priv->undecorated_smoothed_pwdb <= dm_digtable.rssi_low_thresh) {
+-		/* 2008/02/05 MH When we execute silent reset, the DIG PHY parameters
+-		 * will be reset to init value. We must prevent the condition.
+-		 */
+-		if (dm_digtable.dig_state == DM_STA_DIG_OFF &&
+-		    (priv->reset_count == reset_cnt)) {
+-			return;
+-		}
+-		reset_cnt = priv->reset_count;
+-
+-		/* If DIG is off, DIG high power state must reset. */
+-		dm_digtable.dig_highpwr_state = DM_STA_DIG_MAX;
+-		dm_digtable.dig_state = DM_STA_DIG_OFF;
+-
+-		/*  1.1 DIG Off. */
+-		rtl8192_setBBreg(dev, UFWP, bMaskByte1, 0x8);	/*  Only clear byte 1 and rewrite. */
+-
+-		/*  1.2 Set initial gain. */
+-		write_nic_byte(dev, rOFDM0_XAAGCCore1, 0x17);
+-		write_nic_byte(dev, rOFDM0_XBAGCCore1, 0x17);
+-		write_nic_byte(dev, rOFDM0_XCAGCCore1, 0x17);
+-		write_nic_byte(dev, rOFDM0_XDAGCCore1, 0x17);
+-
+-		/*  1.3 Lower PD_TH for OFDM. */
+-		if (priv->CurrentChannelBW != HT_CHANNEL_WIDTH_20) {
+-			/* 2008/01/11 MH 40MHZ 90/92 register are not the same.
+-			 * 2008/02/05 MH SD3-Jerry 92U/92E PD_TH are the same.
+-			 */
+-			write_nic_byte(dev, (rOFDM0_XATxAFE+3), 0x00);
+-		} else
+-			write_nic_byte(dev, rOFDM0_RxDetector1, 0x42);
+-
+-		/* 1.4 Lower CS ratio for CCK. */
+-		write_nic_byte(dev, 0xa0a, 0x08);
+-
+-		/* 1.5 Higher EDCCA. */
+-		return;
+-	}
+-
+-	/* 2. When RSSI increase, We have to judge if it is larger than a threshold
+-	 * and then execute the step below.
+-	 */
+-	if (priv->undecorated_smoothed_pwdb >= dm_digtable.rssi_high_thresh) {
+-		u8 reset_flag = 0;
+-
+-		if (dm_digtable.dig_state == DM_STA_DIG_ON &&
+-		    (priv->reset_count == reset_cnt)) {
+-			dm_ctrl_initgain_byrssi_highpwr(dev);
+-			return;
+-		}
+-		if (priv->reset_count != reset_cnt)
+-			reset_flag = 1;
+-
+-		reset_cnt = priv->reset_count;
+-
+-		dm_digtable.dig_state = DM_STA_DIG_ON;
+-
+-		/* 2.1 Set initial gain.
+-		 * 2008/02/26 MH SD3-Jerry suggest to prevent dirty environment.
+-		 */
+-		if (reset_flag == 1) {
+-			write_nic_byte(dev, rOFDM0_XAAGCCore1, 0x2c);
+-			write_nic_byte(dev, rOFDM0_XBAGCCore1, 0x2c);
+-			write_nic_byte(dev, rOFDM0_XCAGCCore1, 0x2c);
+-			write_nic_byte(dev, rOFDM0_XDAGCCore1, 0x2c);
+-		} else {
+-			write_nic_byte(dev, rOFDM0_XAAGCCore1, 0x20);
+-			write_nic_byte(dev, rOFDM0_XBAGCCore1, 0x20);
+-			write_nic_byte(dev, rOFDM0_XCAGCCore1, 0x20);
+-			write_nic_byte(dev, rOFDM0_XDAGCCore1, 0x20);
+-		}
+-
+-		/* 2.2 Higher PD_TH for OFDM. */
+-		if (priv->CurrentChannelBW != HT_CHANNEL_WIDTH_20) {
+-			/* 2008/01/11 MH 40MHZ 90/92 register are not the same.
+-			 * 2008/02/05 MH SD3-Jerry 92U/92E PD_TH are the same.
+-			 */
+-			write_nic_byte(dev, (rOFDM0_XATxAFE+3), 0x20);
+-		} else
+-			write_nic_byte(dev, rOFDM0_RxDetector1, 0x44);
+-
+-		/* 2.3 Higher CS ratio for CCK. */
+-		write_nic_byte(dev, 0xa0a, 0xcd);
+-
+-		/* 2.4 Lower EDCCA.
+-		 * 2008/01/11 MH 90/92 series are the same.
+-		 */
+-
+-		/* 2.5 DIG On. */
+-		rtl8192_setBBreg(dev, UFWP, bMaskByte1, 0x1);	/*  Only clear byte 1 and rewrite. */
+-	}
+-
+-	dm_ctrl_initgain_byrssi_highpwr(dev);
+-
+-}	/* dm_CtrlInitGainByRssi */
+-
+-/*-----------------------------------------------------------------------------
+- * Function:	dm_ctrl_initgain_byrssi_highpwr()
+- *
+- * Overview:
+- *
+- * Input:		NONE
+- *
+- * Output:		NONE
+- *
+- * Return:		NONE
+- *---------------------------------------------------------------------------
+- */
+-static void dm_ctrl_initgain_byrssi_highpwr(
+-	struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	static u32 reset_cnt_highpwr;
+-
+-	/*  For smooth, we can not change high power DIG state in the range. */
+-	if ((priv->undecorated_smoothed_pwdb > dm_digtable.rssi_high_power_lowthresh) &&
+-		(priv->undecorated_smoothed_pwdb < dm_digtable.rssi_high_power_highthresh))
+-		return;
+-
+-	/* 3. When RSSI >75% or <70%, it is a high power issue. We have to judge if
+-	 *    it is larger than a threshold and then execute the step below.
+-	 *
+-	 * 2008/02/05 MH SD3-Jerry Modify PD_TH for high power issue.
+-	 */
+-	if (priv->undecorated_smoothed_pwdb >= dm_digtable.rssi_high_power_highthresh) {
+-		if (dm_digtable.dig_highpwr_state == DM_STA_DIG_ON &&
+-		    (priv->reset_count == reset_cnt_highpwr))
+-			return;
+-		dm_digtable.dig_highpwr_state = DM_STA_DIG_ON;
+-
+-		/* 3.1 Higher PD_TH for OFDM for high power state. */
+-		if (priv->CurrentChannelBW != HT_CHANNEL_WIDTH_20) {
+-			write_nic_byte(dev, (rOFDM0_XATxAFE+3), 0x10);
+-		} else
+-			write_nic_byte(dev, rOFDM0_RxDetector1, 0x43);
+-	} else {
+-		if (dm_digtable.dig_highpwr_state == DM_STA_DIG_OFF &&
+-		    (priv->reset_count == reset_cnt_highpwr))
+-			return;
+-		dm_digtable.dig_highpwr_state = DM_STA_DIG_OFF;
+-
+-		if (priv->undecorated_smoothed_pwdb < dm_digtable.rssi_high_power_lowthresh &&
+-			 priv->undecorated_smoothed_pwdb >= dm_digtable.rssi_high_thresh) {
+-			/*  3.2 Recover PD_TH for OFDM for normal power region. */
+-			if (priv->CurrentChannelBW != HT_CHANNEL_WIDTH_20) {
+-				write_nic_byte(dev, (rOFDM0_XATxAFE+3), 0x20);
+-			} else
+-				write_nic_byte(dev, rOFDM0_RxDetector1, 0x44);
+-		}
+-	}
+-
+-	reset_cnt_highpwr = priv->reset_count;
+-
+-}	/* dm_CtrlInitGainByRssiHighPwr */
+-
+-static void dm_initial_gain(
+-	struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u8					initial_gain = 0;
+-	static u8				initialized, force_write;
+-	static u32			reset_cnt;
+-	u8				tmp;
+-
+-	if (dm_digtable.dig_algorithm_switch) {
+-		initialized = 0;
+-		reset_cnt = 0;
+-	}
+-
+-	if (dm_digtable.pre_connect_state == dm_digtable.cur_connect_state) {
+-		if (dm_digtable.cur_connect_state == DIG_CONNECT) {
+-			if ((dm_digtable.rssi_val + 10 - dm_digtable.backoff_val) > DM_DIG_MAX)
+-				dm_digtable.cur_ig_value = DM_DIG_MAX;
+-			else if ((dm_digtable.rssi_val+10-dm_digtable.backoff_val) < dm_digtable.rx_gain_range_min)
+-				dm_digtable.cur_ig_value = dm_digtable.rx_gain_range_min;
+-			else
+-				dm_digtable.cur_ig_value = dm_digtable.rssi_val+10-dm_digtable.backoff_val;
+-		} else {	/* current state is disconnected */
+-			if (dm_digtable.cur_ig_value == 0)
+-				dm_digtable.cur_ig_value = priv->DefaultInitialGain[0];
+-			else
+-				dm_digtable.cur_ig_value = dm_digtable.pre_ig_value;
+-		}
+-	} else { /*  disconnected -> connected or connected -> disconnected */
+-		dm_digtable.cur_ig_value = priv->DefaultInitialGain[0];
+-		dm_digtable.pre_ig_value = 0;
+-	}
+-
+-	/* if silent reset happened, we should rewrite the values back */
+-	if (priv->reset_count != reset_cnt) {
+-		force_write = 1;
+-		reset_cnt = priv->reset_count;
+-	}
+-
+-	read_nic_byte(dev, rOFDM0_XAAGCCore1, &tmp);
+-	if (dm_digtable.pre_ig_value != tmp)
+-		force_write = 1;
+-
+-	{
+-		if ((dm_digtable.pre_ig_value != dm_digtable.cur_ig_value)
+-			|| !initialized || force_write) {
+-			initial_gain = (u8)dm_digtable.cur_ig_value;
+-			/*  Set initial gain. */
+-			write_nic_byte(dev, rOFDM0_XAAGCCore1, initial_gain);
+-			write_nic_byte(dev, rOFDM0_XBAGCCore1, initial_gain);
+-			write_nic_byte(dev, rOFDM0_XCAGCCore1, initial_gain);
+-			write_nic_byte(dev, rOFDM0_XDAGCCore1, initial_gain);
+-			dm_digtable.pre_ig_value = dm_digtable.cur_ig_value;
+-			initialized = 1;
+-			force_write = 0;
+-		}
+-	}
+-}
+-
+-static void dm_pd_th(
+-	struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	static u8				initialized, force_write;
+-	static u32			reset_cnt;
+-
+-	if (dm_digtable.dig_algorithm_switch) {
+-		initialized = 0;
+-		reset_cnt = 0;
+-	}
+-
+-	if (dm_digtable.pre_connect_state == dm_digtable.cur_connect_state) {
+-		if (dm_digtable.cur_connect_state == DIG_CONNECT) {
+-			if (dm_digtable.rssi_val >= dm_digtable.rssi_high_power_highthresh)
+-				dm_digtable.curpd_thstate = DIG_PD_AT_HIGH_POWER;
+-			else if (dm_digtable.rssi_val <= dm_digtable.rssi_low_thresh)
+-				dm_digtable.curpd_thstate = DIG_PD_AT_LOW_POWER;
+-			else if ((dm_digtable.rssi_val >= dm_digtable.rssi_high_thresh) &&
+-					(dm_digtable.rssi_val < dm_digtable.rssi_high_power_lowthresh))
+-				dm_digtable.curpd_thstate = DIG_PD_AT_NORMAL_POWER;
+-			else
+-				dm_digtable.curpd_thstate = dm_digtable.prepd_thstate;
+-		} else {
+-			dm_digtable.curpd_thstate = DIG_PD_AT_LOW_POWER;
+-		}
+-	} else { /* disconnected -> connected or connected -> disconnected */
+-		dm_digtable.curpd_thstate = DIG_PD_AT_LOW_POWER;
+-	}
+-
+-	/*  if silent reset happened, we should rewrite the values back */
+-	if (priv->reset_count != reset_cnt) {
+-		force_write = 1;
+-		reset_cnt = priv->reset_count;
+-	}
+-
+-	{
+-		if ((dm_digtable.prepd_thstate != dm_digtable.curpd_thstate) ||
+-		    (initialized <= 3) || force_write) {
+-			if (dm_digtable.curpd_thstate == DIG_PD_AT_LOW_POWER) {
+-				/*  Lower PD_TH for OFDM. */
+-				if (priv->CurrentChannelBW != HT_CHANNEL_WIDTH_20) {
+-					/* 2008/01/11 MH 40MHZ 90/92 register are not the same.
+-					 * 2008/02/05 MH SD3-Jerry 92U/92E PD_TH are the same.
+-					 */
+-					write_nic_byte(dev, (rOFDM0_XATxAFE+3), 0x00);
+-				} else
+-					write_nic_byte(dev, rOFDM0_RxDetector1, 0x42);
+-			} else if (dm_digtable.curpd_thstate == DIG_PD_AT_NORMAL_POWER) {
+-				/* Higher PD_TH for OFDM. */
+-				if (priv->CurrentChannelBW != HT_CHANNEL_WIDTH_20) {
+-					/* 2008/01/11 MH 40MHZ 90/92 register are not the same.
+-					 * 2008/02/05 MH SD3-Jerry 92U/92E PD_TH are the same.
+-					 */
+-					write_nic_byte(dev, (rOFDM0_XATxAFE+3), 0x20);
+-				} else
+-					write_nic_byte(dev, rOFDM0_RxDetector1, 0x44);
+-			} else if (dm_digtable.curpd_thstate == DIG_PD_AT_HIGH_POWER) {
+-				/* Higher PD_TH for OFDM for high power state. */
+-				if (priv->CurrentChannelBW != HT_CHANNEL_WIDTH_20) {
+-					write_nic_byte(dev, (rOFDM0_XATxAFE+3), 0x10);
+-				} else
+-					write_nic_byte(dev, rOFDM0_RxDetector1, 0x43);
+-			}
+-			dm_digtable.prepd_thstate = dm_digtable.curpd_thstate;
+-			if (initialized <= 3)
+-				initialized++;
+-			force_write = 0;
+-		}
+-	}
+-}
+-
+-static	void dm_cs_ratio(
+-	struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	static u8				initialized, force_write;
+-	static u32			reset_cnt;
+-
+-	if (dm_digtable.dig_algorithm_switch) {
+-		initialized = 0;
+-		reset_cnt = 0;
+-	}
+-
+-	if (dm_digtable.pre_connect_state == dm_digtable.cur_connect_state) {
+-		if (dm_digtable.cur_connect_state == DIG_CONNECT) {
+-			if (dm_digtable.rssi_val <= dm_digtable.rssi_low_thresh)
+-				dm_digtable.curcs_ratio_state = DIG_CS_RATIO_LOWER;
+-			else if (dm_digtable.rssi_val >= dm_digtable.rssi_high_thresh)
+-				dm_digtable.curcs_ratio_state = DIG_CS_RATIO_HIGHER;
+-			else
+-				dm_digtable.curcs_ratio_state = dm_digtable.precs_ratio_state;
+-		} else {
+-			dm_digtable.curcs_ratio_state = DIG_CS_RATIO_LOWER;
+-		}
+-	} else	/* disconnected -> connected or connected -> disconnected */
+-		dm_digtable.curcs_ratio_state = DIG_CS_RATIO_LOWER;
+-
+-	/* if silent reset happened, we should rewrite the values back */
+-	if (priv->reset_count != reset_cnt) {
+-		force_write = 1;
+-		reset_cnt = priv->reset_count;
+-	}
+-
+-	{
+-		if ((dm_digtable.precs_ratio_state != dm_digtable.curcs_ratio_state) ||
+-		    !initialized || force_write) {
+-			if (dm_digtable.curcs_ratio_state == DIG_CS_RATIO_LOWER) {
+-				/*  Lower CS ratio for CCK. */
+-				write_nic_byte(dev, 0xa0a, 0x08);
+-			} else if (dm_digtable.curcs_ratio_state == DIG_CS_RATIO_HIGHER) {
+-				/*  Higher CS ratio for CCK. */
+-				write_nic_byte(dev, 0xa0a, 0xcd);
+-			}
+-			dm_digtable.precs_ratio_state = dm_digtable.curcs_ratio_state;
+-			initialized = 1;
+-			force_write = 0;
+-		}
+-	}
+-}
+-
+-void dm_init_edca_turbo(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	priv->bcurrent_turbo_EDCA = false;
+-	priv->ieee80211->bis_any_nonbepkts = false;
+-	priv->bis_cur_rdlstate = false;
+-}	/* dm_init_edca_turbo */
+-
+-static void dm_check_edca_turbo(
+-	struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	PRT_HIGH_THROUGHPUT	pHTInfo = priv->ieee80211->pHTInfo;
+-
+-	/* Keep past Tx/Rx packet count for RT-to-RT EDCA turbo. */
+-	static unsigned long			lastTxOkCnt;
+-	static unsigned long			lastRxOkCnt;
+-	unsigned long				curTxOkCnt = 0;
+-	unsigned long				curRxOkCnt = 0;
+-
+-	/* Do not be Turbo if it's under WiFi config and Qos Enabled, because the EDCA parameters
+-	 * should follow the settings from QAP. By Bruce, 2007-12-07.
+-	 */
+-	if (priv->ieee80211->state != IEEE80211_LINKED)
+-		goto dm_CheckEdcaTurbo_EXIT;
+-	/* We do not turn on EDCA turbo mode for some AP that has IOT issue */
+-	if (priv->ieee80211->pHTInfo->IOTAction & HT_IOT_ACT_DISABLE_EDCA_TURBO)
+-		goto dm_CheckEdcaTurbo_EXIT;
+-
+-	if (!priv->ieee80211->bis_any_nonbepkts) {
+-		curTxOkCnt = priv->stats.txbytesunicast - lastTxOkCnt;
+-		curRxOkCnt = priv->stats.rxbytesunicast - lastRxOkCnt;
+-		/* For RT-AP, we needs to turn it on when Rx>Tx */
+-		if (curRxOkCnt > 4*curTxOkCnt) {
+-			if (!priv->bis_cur_rdlstate || !priv->bcurrent_turbo_EDCA) {
+-				write_nic_dword(dev, EDCAPARA_BE, edca_setting_DL[pHTInfo->IOTPeer]);
+-				priv->bis_cur_rdlstate = true;
+-			}
+-		} else {
+-			if (priv->bis_cur_rdlstate || !priv->bcurrent_turbo_EDCA) {
+-				write_nic_dword(dev, EDCAPARA_BE, edca_setting_UL[pHTInfo->IOTPeer]);
+-				priv->bis_cur_rdlstate = false;
+-			}
+-		}
+-
+-		priv->bcurrent_turbo_EDCA = true;
+-	} else {
+-		/* Turn Off EDCA turbo here.
+-		 * Restore original EDCA according to the declaration of AP.
+-		 */
+-		if (priv->bcurrent_turbo_EDCA) {
+-			u8	u1bAIFS;
+-			u32	u4bAcParam, op_limit, cw_max, cw_min;
+-
+-			struct ieee80211_qos_parameters *qos_parameters = &priv->ieee80211->current_network.qos_data.parameters;
+-			u8 mode = priv->ieee80211->mode;
+-
+-			/*  For Each time updating EDCA parameter, reset EDCA turbo mode status. */
+-			dm_init_edca_turbo(dev);
+-
+-			u1bAIFS = qos_parameters->aifs[0] * ((mode & (IEEE_G | IEEE_N_24G)) ? 9 : 20) + aSifsTime;
+-
+-			op_limit = (u32)le16_to_cpu(qos_parameters->tx_op_limit[0]);
+-			cw_max   = (u32)le16_to_cpu(qos_parameters->cw_max[0]);
+-			cw_min   = (u32)le16_to_cpu(qos_parameters->cw_min[0]);
+-
+-			op_limit <<= AC_PARAM_TXOP_LIMIT_OFFSET;
+-			cw_max   <<= AC_PARAM_ECW_MAX_OFFSET;
+-			cw_min   <<= AC_PARAM_ECW_MIN_OFFSET;
+-			u1bAIFS  <<= AC_PARAM_AIFS_OFFSET;
+-
+-			u4bAcParam = op_limit | cw_max | cw_min | u1bAIFS;
+-			cpu_to_le32s(&u4bAcParam);
+-
+-			write_nic_dword(dev, EDCAPARA_BE, u4bAcParam);
+-
+-			/* Check ACM bit.
+-			 * If it is set, immediately set ACM control bit to downgrading AC for passing WMM testplan. Annie, 2005-12-13.
+-			 */
+-			{
+-				/*  TODO:  Modified this part and try to set acm control in only 1 IO processing!! */
+-
+-				struct aci_aifsn *pAciAifsn = (struct aci_aifsn *)&(qos_parameters->aifs[0]);
+-				u8		AcmCtrl;
+-
+-				read_nic_byte(dev, AcmHwCtrl, &AcmCtrl);
+-
+-				if (pAciAifsn->acm) { /*  acm bit is 1. */
+-					AcmCtrl |= AcmHw_BeqEn;
+-				} else {	/* ACM bit is 0. */
+-					AcmCtrl &= (~AcmHw_BeqEn);
+-				}
+-
+-				RT_TRACE(COMP_QOS, "SetHwReg8190pci(): [HW_VAR_ACM_CTRL] Write 0x%X\n", AcmCtrl);
+-				write_nic_byte(dev, AcmHwCtrl, AcmCtrl);
+-			}
+-			priv->bcurrent_turbo_EDCA = false;
+-		}
+-	}
+-
+-dm_CheckEdcaTurbo_EXIT:
+-	/* Set variables for next time. */
+-	priv->ieee80211->bis_any_nonbepkts = false;
+-	lastTxOkCnt = priv->stats.txbytesunicast;
+-	lastRxOkCnt = priv->stats.rxbytesunicast;
+-}	/* dm_CheckEdcaTurbo */
+-
+-static void dm_init_ctstoself(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	priv->ieee80211->bCTSToSelfEnable = true;
+-	priv->ieee80211->CTSToSelfTH = CTS_TO_SELF_TH_VAL;
+-}
+-
+-static void dm_ctstoself(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	PRT_HIGH_THROUGHPUT	pHTInfo = priv->ieee80211->pHTInfo;
+-	static unsigned long				lastTxOkCnt;
+-	static unsigned long				lastRxOkCnt;
+-	unsigned long						curTxOkCnt = 0;
+-	unsigned long						curRxOkCnt = 0;
+-
+-	if (!priv->ieee80211->bCTSToSelfEnable) {
+-		pHTInfo->IOTAction &= ~HT_IOT_ACT_FORCED_CTS2SELF;
+-		return;
+-	}
+-	/* 1. Uplink
+-	 * 2. Linksys350/Linksys300N
+-	 * 3. <50 disable, >55 enable
+-	 */
+-
+-	if (pHTInfo->IOTPeer == HT_IOT_PEER_BROADCOM) {
+-		curTxOkCnt = priv->stats.txbytesunicast - lastTxOkCnt;
+-		curRxOkCnt = priv->stats.rxbytesunicast - lastRxOkCnt;
+-		if (curRxOkCnt > 4*curTxOkCnt) { /* downlink, disable CTS to self */
+-			pHTInfo->IOTAction &= ~HT_IOT_ACT_FORCED_CTS2SELF;
+-		} else { /* uplink */
+-			pHTInfo->IOTAction |= HT_IOT_ACT_FORCED_CTS2SELF;
+-		}
+-
+-		lastTxOkCnt = priv->stats.txbytesunicast;
+-		lastRxOkCnt = priv->stats.rxbytesunicast;
+-	}
+-}
+-
+-/*-----------------------------------------------------------------------------
+- * Function:	dm_check_pbc_gpio()
+- *
+- * Overview:	Check if PBC button is pressed.
+- *
+- * Input:		NONE
+- *
+- * Output:		NONE
+- *
+- * Return:		NONE
+- *---------------------------------------------------------------------------
+- */
+-static	void	dm_check_pbc_gpio(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u8 tmp1byte;
+-
+-	read_nic_byte(dev, GPI, &tmp1byte);
+-	if (tmp1byte == 0xff)
+-		return;
+-
+-	if (tmp1byte & BIT(6) || tmp1byte & BIT(0)) {
+-		/* Here we only set bPbcPressed to TRUE
+-		 * After trigger PBC, the variable will be set to FALSE
+-		 */
+-		RT_TRACE(COMP_IO, "CheckPbcGPIO - PBC is pressed\n");
+-		priv->bpbc_pressed = true;
+-	}
+-}
+-
+-/*-----------------------------------------------------------------------------
+- * Function:	DM_RFPathCheckWorkItemCallBack()
+- *
+- * Overview:	Check if Current RF RX path is enabled
+- *
+- * Input:		NONE
+- *
+- * Output:		NONE
+- *
+- * Return:		NONE
+- *---------------------------------------------------------------------------
+- */
+-void dm_rf_pathcheck_workitemcallback(struct work_struct *work)
+-{
+-	struct delayed_work *dwork = to_delayed_work(work);
+-	struct r8192_priv *priv = container_of(dwork, struct r8192_priv, rfpath_check_wq);
+-	struct net_device *dev = priv->ieee80211->dev;
+-	u8 rfpath = 0, i;
+-
+-	/* 2008/01/30 MH After discussing with SD3 Jerry, 0xc04/0xd04 register will
+-	 * always be the same. We only read 0xc04 now.
+-	 */
+-	read_nic_byte(dev, 0xc04, &rfpath);
+-
+-	/* Check Bit 0-3, it means if RF A-D is enabled. */
+-	for (i = 0; i < RF90_PATH_MAX; i++) {
+-		if (rfpath & (0x01<<i))
+-			priv->brfpath_rxenable[i] = true;
+-		else
+-			priv->brfpath_rxenable[i] = false;
+-	}
+-
+-	dm_rxpath_sel_byrssi(dev);
+-}	/* DM_RFPathCheckWorkItemCallBack */
+-
+-static void dm_init_rxpath_selection(struct net_device *dev)
+-{
+-	u8 i;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	if (priv->CustomerID == RT_CID_819x_Netcore)
+-		DM_RxPathSelTable.cck_method = CCK_RX_VERSION_2;
+-	else
+-		DM_RxPathSelTable.cck_method = CCK_RX_VERSION_1;
+-	DM_RxPathSelTable.disabled_rf = 0;
+-	for (i = 0; i < 4; i++) {
+-		DM_RxPathSelTable.rf_rssi[i] = 50;
+-		DM_RxPathSelTable.cck_pwdb_sta[i] = -64;
+-		DM_RxPathSelTable.rf_enable_rssi_th[i] = 100;
+-	}
+-}
+-
+-static void dm_rxpath_sel_byrssi(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u8				i, max_rssi_index = 0, min_rssi_index = 0, sec_rssi_index = 0, rf_num = 0;
+-	u8				tmp_max_rssi = 0, tmp_min_rssi = 0, tmp_sec_rssi = 0;
+-	u8				cck_default_Rx = 0x2;  /* RF-C */
+-	u8				cck_optional_Rx = 0x3; /* RF-D */
+-	long				tmp_cck_max_pwdb = 0, tmp_cck_min_pwdb = 0, tmp_cck_sec_pwdb = 0;
+-	u8				cck_rx_ver2_max_index = 0, cck_rx_ver2_min_index = 0, cck_rx_ver2_sec_index = 0;
+-	u8				cur_rf_rssi;
+-	long				cur_cck_pwdb;
+-	static u8			disabled_rf_cnt, cck_Rx_Path_initialized;
+-	u8				update_cck_rx_path;
+-
+-	if (priv->rf_type != RF_2T4R)
+-		return;
+-
+-	if (!cck_Rx_Path_initialized) {
+-		read_nic_byte(dev, 0xa07, &DM_RxPathSelTable.cck_rx_path);
+-		DM_RxPathSelTable.cck_rx_path &= 0xf;
+-		cck_Rx_Path_initialized = 1;
+-	}
+-
+-	read_nic_byte(dev, 0xc04, &DM_RxPathSelTable.disabled_rf);
+-	DM_RxPathSelTable.disabled_rf = ~DM_RxPathSelTable.disabled_rf & 0xf;
+-
+-	if (priv->ieee80211->mode == WIRELESS_MODE_B) {
+-		DM_RxPathSelTable.cck_method = CCK_RX_VERSION_2;	/* pure B mode, fixed cck version2 */
+-	}
+-
+-	/* decide max/sec/min rssi index */
+-	for (i = 0; i < RF90_PATH_MAX; i++) {
+-		DM_RxPathSelTable.rf_rssi[i] = priv->stats.rx_rssi_percentage[i];
+-
+-		if (priv->brfpath_rxenable[i]) {
+-			rf_num++;
+-			cur_rf_rssi = DM_RxPathSelTable.rf_rssi[i];
+-
+-			if (rf_num == 1) { /* find first enabled rf path and the rssi values */
+-				/* initialize, set all rssi index to the same one */
+-				max_rssi_index = min_rssi_index = sec_rssi_index = i;
+-				tmp_max_rssi = tmp_min_rssi = tmp_sec_rssi = cur_rf_rssi;
+-			} else if (rf_num == 2) { /* we pick up the max index first, and let sec and min to be the same one */
+-				if (cur_rf_rssi >= tmp_max_rssi) {
+-					tmp_max_rssi = cur_rf_rssi;
+-					max_rssi_index = i;
+-				} else {
+-					tmp_sec_rssi = tmp_min_rssi = cur_rf_rssi;
+-					sec_rssi_index = min_rssi_index = i;
+-				}
+-			} else {
+-				if (cur_rf_rssi > tmp_max_rssi) {
+-					tmp_sec_rssi = tmp_max_rssi;
+-					sec_rssi_index = max_rssi_index;
+-					tmp_max_rssi = cur_rf_rssi;
+-					max_rssi_index = i;
+-				} else if (cur_rf_rssi == tmp_max_rssi) {	/* let sec and min point to the different index */
+-					tmp_sec_rssi = cur_rf_rssi;
+-					sec_rssi_index = i;
+-				} else if ((cur_rf_rssi < tmp_max_rssi) && (cur_rf_rssi > tmp_sec_rssi)) {
+-					tmp_sec_rssi = cur_rf_rssi;
+-					sec_rssi_index = i;
+-				} else if (cur_rf_rssi == tmp_sec_rssi) {
+-					if (tmp_sec_rssi == tmp_min_rssi) {
+-						/* let sec and min point to the different index */
+-						tmp_sec_rssi = cur_rf_rssi;
+-						sec_rssi_index = i;
+-					} else {
+-						/* This case we don't need to set any index */
+-					}
+-				} else if ((cur_rf_rssi < tmp_sec_rssi) && (cur_rf_rssi > tmp_min_rssi)) {
+-					/* This case we don't need to set any index */
+-				} else if (cur_rf_rssi == tmp_min_rssi) {
+-					if (tmp_sec_rssi == tmp_min_rssi) {
+-						/* let sec and min point to the different index */
+-						tmp_min_rssi = cur_rf_rssi;
+-						min_rssi_index = i;
+-					} else {
+-						/* This case we don't need to set any index */
+-					}
+-				} else if (cur_rf_rssi < tmp_min_rssi) {
+-					tmp_min_rssi = cur_rf_rssi;
+-					min_rssi_index = i;
+-				}
+-			}
+-		}
+-	}
+-
+-	rf_num = 0;
+-	/* decide max/sec/min cck pwdb index */
+-	if (DM_RxPathSelTable.cck_method == CCK_RX_VERSION_2) {
+-		for (i = 0; i < RF90_PATH_MAX; i++) {
+-			if (priv->brfpath_rxenable[i]) {
+-				rf_num++;
+-				cur_cck_pwdb =  DM_RxPathSelTable.cck_pwdb_sta[i];
+-
+-				if (rf_num == 1) {	/* find first enabled rf path and the rssi values */
+-					/* initialize, set all rssi index to the same one */
+-					cck_rx_ver2_max_index = cck_rx_ver2_min_index = cck_rx_ver2_sec_index = i;
+-					tmp_cck_max_pwdb = tmp_cck_min_pwdb = tmp_cck_sec_pwdb = cur_cck_pwdb;
+-				} else if (rf_num == 2) {	/* we pick up the max index first, and let sec and min to be the same one */
+-					if (cur_cck_pwdb >= tmp_cck_max_pwdb) {
+-						tmp_cck_max_pwdb = cur_cck_pwdb;
+-						cck_rx_ver2_max_index = i;
+-					} else {
+-						tmp_cck_sec_pwdb = tmp_cck_min_pwdb = cur_cck_pwdb;
+-						cck_rx_ver2_sec_index = cck_rx_ver2_min_index = i;
+-					}
+-				} else {
+-					if (cur_cck_pwdb > tmp_cck_max_pwdb) {
+-						tmp_cck_sec_pwdb = tmp_cck_max_pwdb;
+-						cck_rx_ver2_sec_index = cck_rx_ver2_max_index;
+-						tmp_cck_max_pwdb = cur_cck_pwdb;
+-						cck_rx_ver2_max_index = i;
+-					} else if (cur_cck_pwdb == tmp_cck_max_pwdb) {
+-						/* let sec and min point to the different index */
+-						tmp_cck_sec_pwdb = cur_cck_pwdb;
+-						cck_rx_ver2_sec_index = i;
+-					} else if ((cur_cck_pwdb < tmp_cck_max_pwdb) && (cur_cck_pwdb > tmp_cck_sec_pwdb)) {
+-						tmp_cck_sec_pwdb = cur_cck_pwdb;
+-						cck_rx_ver2_sec_index = i;
+-					} else if (cur_cck_pwdb == tmp_cck_sec_pwdb && tmp_cck_sec_pwdb == tmp_cck_min_pwdb) {
+-						/* let sec and min point to the different index */
+-						tmp_cck_sec_pwdb = cur_cck_pwdb;
+-						cck_rx_ver2_sec_index = i;
+-						/* otherwise we don't need to set any index */
+-					} else if ((cur_cck_pwdb < tmp_cck_sec_pwdb) && (cur_cck_pwdb > tmp_cck_min_pwdb)) {
+-						/*  This case we don't need to set any index */
+-					} else if (cur_cck_pwdb == tmp_cck_min_pwdb && tmp_cck_sec_pwdb == tmp_cck_min_pwdb) {
+-						/*  let sec and min point to the different index */
+-						tmp_cck_min_pwdb = cur_cck_pwdb;
+-						cck_rx_ver2_min_index = i;
+-						/* otherwise we don't need to set any index */
+-					} else if (cur_cck_pwdb < tmp_cck_min_pwdb) {
+-						tmp_cck_min_pwdb = cur_cck_pwdb;
+-						cck_rx_ver2_min_index = i;
+-					}
+-				}
+-			}
+-		}
+-	}
+-
+-	/* Set CCK Rx path
+-	 * reg0xA07[3:2]=cck default rx path, reg0xa07[1:0]=cck optional rx path.
+-	 */
+-	update_cck_rx_path = 0;
+-	if (DM_RxPathSelTable.cck_method == CCK_RX_VERSION_2) {
+-		cck_default_Rx = cck_rx_ver2_max_index;
+-		cck_optional_Rx = cck_rx_ver2_sec_index;
+-		if (tmp_cck_max_pwdb != -64)
+-			update_cck_rx_path = 1;
+-	}
+-
+-	if (tmp_min_rssi < RX_PATH_SELECTION_SS_TH_LOW && disabled_rf_cnt < 2) {
+-		if ((tmp_max_rssi - tmp_min_rssi) >= RX_PATH_SELECTION_DIFF_TH) {
+-			/* record the enabled rssi threshold */
+-			DM_RxPathSelTable.rf_enable_rssi_th[min_rssi_index] = tmp_max_rssi+5;
+-			/* disable the BB Rx path, OFDM */
+-			rtl8192_setBBreg(dev, rOFDM0_TRxPathEnable, 0x1<<min_rssi_index, 0x0);	/* 0xc04[3:0] */
+-			rtl8192_setBBreg(dev, rOFDM1_TRxPathEnable, 0x1<<min_rssi_index, 0x0);	/* 0xd04[3:0] */
+-			disabled_rf_cnt++;
+-		}
+-		if (DM_RxPathSelTable.cck_method == CCK_RX_VERSION_1) {
+-			cck_default_Rx = max_rssi_index;
+-			cck_optional_Rx = sec_rssi_index;
+-			if (tmp_max_rssi)
+-				update_cck_rx_path = 1;
+-		}
+-	}
+-
+-	if (update_cck_rx_path) {
+-		DM_RxPathSelTable.cck_rx_path = (cck_default_Rx<<2)|(cck_optional_Rx);
+-		rtl8192_setBBreg(dev, rCCK0_AFESetting, 0x0f000000, DM_RxPathSelTable.cck_rx_path);
+-	}
+-
+-	if (DM_RxPathSelTable.disabled_rf) {
+-		for (i = 0; i < 4; i++) {
+-			if ((DM_RxPathSelTable.disabled_rf >> i) & 0x1) {	/* disabled rf */
+-				if (tmp_max_rssi >= DM_RxPathSelTable.rf_enable_rssi_th[i]) {
+-					/* enable the BB Rx path */
+-					rtl8192_setBBreg(dev, rOFDM0_TRxPathEnable, 0x1<<i, 0x1);	/* 0xc04[3:0] */
+-					rtl8192_setBBreg(dev, rOFDM1_TRxPathEnable, 0x1<<i, 0x1);	/* 0xd04[3:0] */
+-					DM_RxPathSelTable.rf_enable_rssi_th[i] = 100;
+-					disabled_rf_cnt--;
+-				}
+-			}
+-		}
+-	}
+-}
+-
+-/*-----------------------------------------------------------------------------
+- * Function:	dm_check_rx_path_selection()
+- *
+- * Overview:	Call a workitem to check current RXRF path and Rx Path selection by RSSI.
+- *
+- * Input:		NONE
+- *
+- * Output:		NONE
+- *
+- * Return:		NONE
+- *---------------------------------------------------------------------------
+- */
+-static void dm_check_rx_path_selection(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	queue_delayed_work(priv->priv_wq, &priv->rfpath_check_wq, 0);
+-}	/* dm_CheckRxRFPath */
+-
+-static void dm_init_fsync(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	priv->ieee80211->fsync_time_interval = 500;
+-	priv->ieee80211->fsync_rate_bitmap = 0x0f000800;
+-	priv->ieee80211->fsync_rssi_threshold = 30;
+-	priv->ieee80211->bfsync_enable = false;
+-	priv->ieee80211->fsync_multiple_timeinterval = 3;
+-	priv->ieee80211->fsync_firstdiff_ratethreshold = 100;
+-	priv->ieee80211->fsync_seconddiff_ratethreshold = 200;
+-	priv->ieee80211->fsync_state = Default_Fsync;
+-	priv->framesyncMonitor = 1;	/* current default 0xc38 monitor on */
+-	INIT_DELAYED_WORK(&priv->fsync_work, dm_fsync_work_callback);
+-}
+-
+-static void dm_deInit_fsync(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	cancel_delayed_work_sync(&priv->fsync_work);
+-}
+-
+-void dm_fsync_work_callback(struct work_struct *work)
+-{
+-	struct r8192_priv *priv =
+-	    container_of(work, struct r8192_priv, fsync_work.work);
+-	struct net_device *dev = priv->ieee80211->dev;
+-	u32 rate_index, rate_count = 0, rate_count_diff = 0;
+-	bool		bSwitchFromCountDiff = false;
+-	bool		bDoubleTimeInterval = false;
+-
+-	if (priv->ieee80211->state == IEEE80211_LINKED &&
+-	    priv->ieee80211->bfsync_enable &&
+-		(priv->ieee80211->pHTInfo->IOTAction & HT_IOT_ACT_CDD_FSYNC)) {
+-		/* Count rate 54, MCS [7], [12, 13, 14, 15] */
+-		u32 rate_bitmap;
+-
+-		for (rate_index = 0; rate_index <= 27; rate_index++) {
+-			rate_bitmap  = 1 << rate_index;
+-			if (priv->ieee80211->fsync_rate_bitmap &  rate_bitmap)
+-				rate_count += priv->stats.received_rate_histogram[1][rate_index];
+-		}
+-
+-		if (rate_count < priv->rate_record)
+-			rate_count_diff = 0xffffffff - rate_count + priv->rate_record;
+-		else
+-			rate_count_diff = rate_count - priv->rate_record;
+-		if (rate_count_diff < priv->rateCountDiffRecord) {
+-			u32 DiffNum = priv->rateCountDiffRecord - rate_count_diff;
+-			/* Continue count */
+-			if (DiffNum >= priv->ieee80211->fsync_seconddiff_ratethreshold)
+-				priv->ContinueDiffCount++;
+-			else
+-				priv->ContinueDiffCount = 0;
+-
+-			/* Continue count over */
+-			if (priv->ContinueDiffCount >= 2) {
+-				bSwitchFromCountDiff = true;
+-				priv->ContinueDiffCount = 0;
+-			}
+-		} else {
+-			/* Stop the continued count */
+-			priv->ContinueDiffCount = 0;
+-		}
+-
+-		/* If Count diff <= FsyncRateCountThreshold */
+-		if (rate_count_diff <= priv->ieee80211->fsync_firstdiff_ratethreshold) {
+-			bSwitchFromCountDiff = true;
+-			priv->ContinueDiffCount = 0;
+-		}
+-		priv->rate_record = rate_count;
+-		priv->rateCountDiffRecord = rate_count_diff;
+-		RT_TRACE(COMP_HALDM, "rateRecord %d rateCount %d, rateCountdiff %d bSwitchFsync %d\n", priv->rate_record, rate_count, rate_count_diff, priv->bswitch_fsync);
+-		/* if we never receive those mcs rate and rssi > 30 % then switch fsyn */
+-		if (priv->undecorated_smoothed_pwdb > priv->ieee80211->fsync_rssi_threshold && bSwitchFromCountDiff) {
+-			bDoubleTimeInterval = true;
+-			priv->bswitch_fsync = !priv->bswitch_fsync;
+-			if (priv->bswitch_fsync) {
+-				write_nic_byte(dev, 0xC36, 0x1c);
+-				write_nic_byte(dev, 0xC3e, 0x90);
+-			} else {
+-				write_nic_byte(dev, 0xC36, 0x5c);
+-				write_nic_byte(dev, 0xC3e, 0x96);
+-			}
+-		} else if (priv->undecorated_smoothed_pwdb <= priv->ieee80211->fsync_rssi_threshold) {
+-			if (priv->bswitch_fsync) {
+-				priv->bswitch_fsync  = false;
+-				write_nic_byte(dev, 0xC36, 0x5c);
+-				write_nic_byte(dev, 0xC3e, 0x96);
+-			}
+-		}
+-		if (bDoubleTimeInterval) {
+-			cancel_delayed_work_sync(&priv->fsync_work);
+-			schedule_delayed_work(&priv->fsync_work,
+-					      msecs_to_jiffies(priv
+-					      ->ieee80211->fsync_time_interval *
+-					      priv->ieee80211->fsync_multiple_timeinterval));
+-		} else {
+-			cancel_delayed_work_sync(&priv->fsync_work);
+-			schedule_delayed_work(&priv->fsync_work,
+-					      msecs_to_jiffies(priv
+-					      ->ieee80211->fsync_time_interval));
+-		}
+-	} else {
+-		/* Let Register return to default value; */
+-		if (priv->bswitch_fsync) {
+-			priv->bswitch_fsync  = false;
+-			write_nic_byte(dev, 0xC36, 0x5c);
+-			write_nic_byte(dev, 0xC3e, 0x96);
+-		}
+-		priv->ContinueDiffCount = 0;
+-		write_nic_dword(dev, rOFDM0_RxDetector2, 0x465c52cd);
+-	}
+-	RT_TRACE(COMP_HALDM, "ContinueDiffCount %d\n", priv->ContinueDiffCount);
+-	RT_TRACE(COMP_HALDM, "rateRecord %d rateCount %d, rateCountdiff %d bSwitchFsync %d\n", priv->rate_record, rate_count, rate_count_diff, priv->bswitch_fsync);
+-}
+-
+-static void dm_StartHWFsync(struct net_device *dev)
+-{
+-	RT_TRACE(COMP_HALDM, "%s\n", __func__);
+-	write_nic_dword(dev, rOFDM0_RxDetector2, 0x465c12cf);
+-	write_nic_byte(dev, 0xc3b, 0x41);
+-}
+-
+-static void dm_EndSWFsync(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	RT_TRACE(COMP_HALDM, "%s\n", __func__);
+-	cancel_delayed_work_sync(&priv->fsync_work);
+-
+-	/* Let Register return to default value; */
+-	if (priv->bswitch_fsync) {
+-		priv->bswitch_fsync  = false;
+-
+-		write_nic_byte(dev, 0xC36, 0x5c);
+-
+-		write_nic_byte(dev, 0xC3e, 0x96);
+-	}
+-
+-	priv->ContinueDiffCount = 0;
+-	write_nic_dword(dev, rOFDM0_RxDetector2, 0x465c52cd);
+-}
+-
+-static void dm_StartSWFsync(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u32			rateIndex;
+-	u32			rateBitmap;
+-
+-	RT_TRACE(COMP_HALDM, "%s\n", __func__);
+-	/* Initial rate record to zero, start to record. */
+-	priv->rate_record = 0;
+-	/* Initialize continue diff count to zero, start to record. */
+-	priv->ContinueDiffCount = 0;
+-	priv->rateCountDiffRecord = 0;
+-	priv->bswitch_fsync  = false;
+-
+-	if (priv->ieee80211->mode == WIRELESS_MODE_N_24G) {
+-		priv->ieee80211->fsync_firstdiff_ratethreshold = 600;
+-		priv->ieee80211->fsync_seconddiff_ratethreshold = 0xffff;
+-	} else {
+-		priv->ieee80211->fsync_firstdiff_ratethreshold = 200;
+-		priv->ieee80211->fsync_seconddiff_ratethreshold = 200;
+-	}
+-	for (rateIndex = 0; rateIndex <= 27; rateIndex++) {
+-		rateBitmap = 1 << rateIndex;
+-		if (priv->ieee80211->fsync_rate_bitmap &  rateBitmap)
+-			priv->rate_record += priv->stats.received_rate_histogram[1][rateIndex];
+-	}
+-	cancel_delayed_work_sync(&priv->fsync_work);
+-	schedule_delayed_work(&priv->fsync_work,
+-			      msecs_to_jiffies(priv->ieee80211->fsync_time_interval));
+-
+-	write_nic_dword(dev, rOFDM0_RxDetector2, 0x465c12cd);
+-}
+-
+-static void dm_EndHWFsync(struct net_device *dev)
+-{
+-	RT_TRACE(COMP_HALDM, "%s\n", __func__);
+-	write_nic_dword(dev, rOFDM0_RxDetector2, 0x465c52cd);
+-	write_nic_byte(dev, 0xc3b, 0x49);
+-}
+-
+-void dm_check_fsync(struct net_device *dev)
+-{
+-#define	RegC38_Default				0
+-#define	RegC38_NonFsync_Other_AP		1
+-#define	RegC38_Fsync_AP_BCM			2
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	static u8		reg_c38_State = RegC38_Default;
+-	static u32	reset_cnt;
+-
+-	RT_TRACE(COMP_HALDM, "RSSI %d TimeInterval %d MultipleTimeInterval %d\n", priv->ieee80211->fsync_rssi_threshold, priv->ieee80211->fsync_time_interval, priv->ieee80211->fsync_multiple_timeinterval);
+-	RT_TRACE(COMP_HALDM, "RateBitmap 0x%x FirstDiffRateThreshold %d SecondDiffRateThreshold %d\n", priv->ieee80211->fsync_rate_bitmap, priv->ieee80211->fsync_firstdiff_ratethreshold, priv->ieee80211->fsync_seconddiff_ratethreshold);
+-
+-	if (priv->ieee80211->state == IEEE80211_LINKED &&
+-		(priv->ieee80211->pHTInfo->IOTAction & HT_IOT_ACT_CDD_FSYNC)) {
+-		if (priv->ieee80211->bfsync_enable == 0) {
+-			switch (priv->ieee80211->fsync_state) {
+-			case Default_Fsync:
+-				dm_StartHWFsync(dev);
+-				priv->ieee80211->fsync_state = HW_Fsync;
+-				break;
+-			case SW_Fsync:
+-				dm_EndSWFsync(dev);
+-				dm_StartHWFsync(dev);
+-				priv->ieee80211->fsync_state = HW_Fsync;
+-				break;
+-			case HW_Fsync:
+-			default:
+-				break;
+-			}
+-		} else {
+-			switch (priv->ieee80211->fsync_state) {
+-			case Default_Fsync:
+-				dm_StartSWFsync(dev);
+-				priv->ieee80211->fsync_state = SW_Fsync;
+-				break;
+-			case HW_Fsync:
+-				dm_EndHWFsync(dev);
+-				dm_StartSWFsync(dev);
+-				priv->ieee80211->fsync_state = SW_Fsync;
+-				break;
+-			case SW_Fsync:
+-			default:
+-				break;
+-			}
+-		}
+-		if (priv->framesyncMonitor) {
+-			if (reg_c38_State != RegC38_Fsync_AP_BCM) {
+-				/* For broadcom AP we write different default value */
+-				write_nic_byte(dev, rOFDM0_RxDetector3, 0x95);
+-
+-				reg_c38_State = RegC38_Fsync_AP_BCM;
+-			}
+-		}
+-	} else {
+-		switch (priv->ieee80211->fsync_state) {
+-		case HW_Fsync:
+-			dm_EndHWFsync(dev);
+-			priv->ieee80211->fsync_state = Default_Fsync;
+-			break;
+-		case SW_Fsync:
+-			dm_EndSWFsync(dev);
+-			priv->ieee80211->fsync_state = Default_Fsync;
+-			break;
+-		case Default_Fsync:
+-		default:
+-			break;
+-		}
+-
+-		if (priv->framesyncMonitor) {
+-			if (priv->ieee80211->state == IEEE80211_LINKED) {
+-				if (priv->undecorated_smoothed_pwdb <= REG_C38_TH) {
+-					if (reg_c38_State != RegC38_NonFsync_Other_AP) {
+-						write_nic_byte(dev, rOFDM0_RxDetector3, 0x90);
+-
+-						reg_c38_State = RegC38_NonFsync_Other_AP;
+-					}
+-				} else if (priv->undecorated_smoothed_pwdb >= (REG_C38_TH + 5)) {
+-					if (reg_c38_State) {
+-						write_nic_byte(dev, rOFDM0_RxDetector3, priv->framesync);
+-						reg_c38_State = RegC38_Default;
+-					}
+-				}
+-			} else {
+-				if (reg_c38_State) {
+-					write_nic_byte(dev, rOFDM0_RxDetector3, priv->framesync);
+-					reg_c38_State = RegC38_Default;
+-				}
+-			}
+-		}
+-	}
+-	if (priv->framesyncMonitor) {
+-		if (priv->reset_count != reset_cnt) { /* After silent reset, the reg_c38_State will be returned to default value */
+-			write_nic_byte(dev, rOFDM0_RxDetector3, priv->framesync);
+-			reg_c38_State = RegC38_Default;
+-			reset_cnt = priv->reset_count;
+-		}
+-	} else {
+-		if (reg_c38_State) {
+-			write_nic_byte(dev, rOFDM0_RxDetector3, priv->framesync);
+-			reg_c38_State = RegC38_Default;
+-		}
+-	}
+-}
+-
+-/*---------------------------Define function prototype------------------------*/
+-/*-----------------------------------------------------------------------------
+- * Function:	DM_DynamicTxPower()
+- *
+- * Overview:	Detect Signal strength to control TX Registry
+-			Tx Power Control For Near/Far Range
+- *
+- * Input:		NONE
+- *
+- * Output:		NONE
+- *
+- * Return:		NONE
+- *---------------------------------------------------------------------------
+- */
+-static void dm_init_dynamic_txpower(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	/* Initial TX Power Control for near/far range , add by amy 2008/05/15, porting from windows code. */
+-	priv->ieee80211->bdynamic_txpower_enable = true;    /* Default to enable Tx Power Control */
+-	priv->bLastDTPFlag_High = false;
+-	priv->bLastDTPFlag_Low = false;
+-	priv->bDynamicTxHighPower = false;
+-	priv->bDynamicTxLowPower = false;
+-}
+-
+-static void dm_dynamic_txpower(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	unsigned int txhipower_threshold = 0;
+-	unsigned int txlowpower_threshold = 0;
+-
+-	if (!priv->ieee80211->bdynamic_txpower_enable) {
+-		priv->bDynamicTxHighPower = false;
+-		priv->bDynamicTxLowPower = false;
+-		return;
+-	}
+-	if ((priv->ieee80211->current_network.atheros_cap_exist) && (priv->ieee80211->mode == IEEE_G)) {
+-		txhipower_threshold = TX_POWER_ATHEROAP_THRESH_HIGH;
+-		txlowpower_threshold = TX_POWER_ATHEROAP_THRESH_LOW;
+-	} else {
+-		txhipower_threshold = TX_POWER_NEAR_FIELD_THRESH_HIGH;
+-		txlowpower_threshold = TX_POWER_NEAR_FIELD_THRESH_LOW;
+-	}
+-
+-	RT_TRACE(COMP_TXAGC, "priv->undecorated_smoothed_pwdb = %ld\n", priv->undecorated_smoothed_pwdb);
+-
+-	if (priv->ieee80211->state == IEEE80211_LINKED) {
+-		if (priv->undecorated_smoothed_pwdb >= txhipower_threshold) {
+-			priv->bDynamicTxHighPower = true;
+-			priv->bDynamicTxLowPower = false;
+-		} else {
+-			/* high power state check */
+-			if (priv->undecorated_smoothed_pwdb < txlowpower_threshold && priv->bDynamicTxHighPower)
+-				priv->bDynamicTxHighPower = false;
+-
+-			/* low power state check */
+-			if (priv->undecorated_smoothed_pwdb < 35)
+-				priv->bDynamicTxLowPower = true;
+-			else if (priv->undecorated_smoothed_pwdb >= 40)
+-				priv->bDynamicTxLowPower = false;
+-		}
+-	} else {
+-		priv->bDynamicTxHighPower = false;
+-		priv->bDynamicTxLowPower = false;
+-	}
+-
+-	if ((priv->bDynamicTxHighPower != priv->bLastDTPFlag_High) ||
+-		(priv->bDynamicTxLowPower != priv->bLastDTPFlag_Low)) {
+-		RT_TRACE(COMP_TXAGC, "SetTxPowerLevel8190()  channel = %d\n", priv->ieee80211->current_network.channel);
+-
+-#if  defined(RTL8190P) || defined(RTL8192E)
+-		SetTxPowerLevel8190(Adapter, pHalData->CurrentChannel);
+-#endif
+-
+-		rtl8192_phy_setTxPower(dev, priv->ieee80211->current_network.channel);
+-		/*pHalData->bStartTxCtrlByTPCNFR = FALSE;    Clear th flag of Set TX Power from Sitesurvey*/
+-	}
+-	priv->bLastDTPFlag_High = priv->bDynamicTxHighPower;
+-	priv->bLastDTPFlag_Low = priv->bDynamicTxLowPower;
+-
+-}	/* dm_dynamic_txpower */
+-
+-/* added by vivi, for read tx rate and retrycount */
+-static void dm_check_txrateandretrycount(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	struct ieee80211_device *ieee = priv->ieee80211;
+-	/* for 11n tx rate */
+-	read_nic_byte(dev, CURRENT_TX_RATE_REG, &ieee->softmac_stats.CurrentShowTxate);
+-	/* for initial tx rate */
+-	read_nic_byte(dev, INITIAL_TX_RATE_REG, &ieee->softmac_stats.last_packet_rate);
+-	/* for tx retry count */
+-	read_nic_dword(dev, TX_RETRY_COUNT_REG, &ieee->softmac_stats.txretrycount);
+-}
+-
+-static void dm_send_rssi_tofw(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	/* If we test chariot, we should stop the TX command ?
+-	 * Because 92E will always silent reset when we send tx command. We use register
+-	 * 0x1e0(byte) to notify driver.
+-	 */
+-	write_nic_byte(dev, DRIVER_RSSI, (u8)priv->undecorated_smoothed_pwdb);
+-}
+-
+-/*---------------------------Define function prototype------------------------*/
+diff --git a/drivers/staging/rtl8192u/r8192U_dm.h b/drivers/staging/rtl8192u/r8192U_dm.h
+deleted file mode 100644
+index f4eb18216677..000000000000
+--- a/drivers/staging/rtl8192u/r8192U_dm.h
++++ /dev/null
+@@ -1,176 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*****************************************************************************
+- *	Copyright(c) 2007,  RealTEK Technology Inc. All Right Reserved.
+- *
+- * Module:		Hal819xUsbDM.h	(RTL8192  Header H File)
+- *
+- *
+- * Note:		For dynamic control definition constant structure.
+- *
+- *
+- * Export:
+- *
+- * Abbrev:
+- *
+- * History:
+- *	Data		Who		Remark
+- *	10/04/2007  MHC		Create initial version.
+- *
+- *****************************************************************************/
+- /* Check to see if the file has been included already.  */
+-#ifndef	__R8192UDM_H__
+-#define __R8192UDM_H__
+-
+-/*--------------------------Define Parameters-------------------------------*/
+-#define         DM_DIG_THRESH_HIGH                      40
+-#define         DM_DIG_THRESH_LOW                       35
+-
+-#define         DM_DIG_HIGH_PWR_THRESH_HIGH             75
+-#define         DM_DIG_HIGH_PWR_THRESH_LOW              70
+-
+-#define         BW_AUTO_SWITCH_HIGH_LOW                 25
+-#define         BW_AUTO_SWITCH_LOW_HIGH                 30
+-
+-#define         DM_DIG_BACKOFF                          12
+-#define         DM_DIG_MAX                            0x36
+-#define         DM_DIG_MIN                            0x1c
+-#define         DM_DIG_MIN_NETCORE                    0x12
+-
+-#define         RX_PATH_SELECTION_SS_TH_LOW             30
+-#define         RX_PATH_SELECTION_DIFF_TH               18
+-
+-#define         RATE_ADAPTIVE_TH_HIGH                   50
+-#define         RATE_ADAPTIVE_TH_LOW_20M                30
+-#define         RATE_ADAPTIVE_TH_LOW_40M                10
+-#define         VERY_LOW_RSSI                           15
+-#define         CTS_TO_SELF_TH_VAL                      30
+-
+-/* defined by vivi, for tx power track */
+-#define         E_FOR_TX_POWER_TRACK                   300
+-/* Dynamic Tx Power Control Threshold */
+-#define         TX_POWER_NEAR_FIELD_THRESH_HIGH         68
+-#define         TX_POWER_NEAR_FIELD_THRESH_LOW          62
+-/* added by amy for atheros AP */
+-#define         TX_POWER_ATHEROAP_THRESH_HIGH           78
+-#define         TX_POWER_ATHEROAP_THRESH_LOW            72
+-
+-/* defined by vivi, for showing on UI */
+-#define         CURRENT_TX_RATE_REG                  0x1b8
+-#define         INITIAL_TX_RATE_REG                  0x1b9
+-#define         TX_RETRY_COUNT_REG                   0x1ac
+-#define         REG_C38_TH                              20
+-/*--------------------------Define Parameters-------------------------------*/
+-
+-/*------------------------------Define structure----------------------------*/
+-
+-enum dig_algorithm {
+-	DIG_ALGO_BY_FALSE_ALARM = 0,
+-	DIG_ALGO_BY_RSSI	= 1,
+-};
+-
+-enum dynamic_init_gain_state {
+-	DM_STA_DIG_OFF = 0,
+-	DM_STA_DIG_ON,
+-	DM_STA_DIG_MAX
+-};
+-
+-enum dig_connect {
+-	DIG_DISCONNECT = 0,
+-	DIG_CONNECT    = 1,
+-};
+-
+-enum dig_pkt_detection_threshold {
+-	DIG_PD_AT_LOW_POWER    = 0,
+-	DIG_PD_AT_NORMAL_POWER = 1,
+-	DIG_PD_AT_HIGH_POWER   = 2,
+-};
+-
+-enum dig_cck_cs_ratio_state {
+-	DIG_CS_RATIO_LOWER  = 0,
+-	DIG_CS_RATIO_HIGHER = 1,
+-};
+-
+-/* 2007/10/04 MH Define upper and lower threshold of DIG enable or disable. */
+-struct dig {
+-	u8                                 dig_enable_flag;
+-	enum dig_algorithm                 dig_algorithm;
+-	u8                                 dig_algorithm_switch;
+-
+-	long                               rssi_low_thresh;
+-	long                               rssi_high_thresh;
+-
+-	long                               rssi_high_power_lowthresh;
+-	long                               rssi_high_power_highthresh;
+-
+-	enum dynamic_init_gain_state       dig_state;
+-	enum dynamic_init_gain_state       dig_highpwr_state;
+-	enum dig_connect                   cur_connect_state;
+-	enum dig_connect                   pre_connect_state;
+-
+-	enum dig_pkt_detection_threshold   curpd_thstate;
+-	enum dig_pkt_detection_threshold   prepd_thstate;
+-	enum dig_cck_cs_ratio_state        curcs_ratio_state;
+-	enum dig_cck_cs_ratio_state        precs_ratio_state;
+-
+-	u32                                pre_ig_value;
+-	u32                                cur_ig_value;
+-
+-	u8                                 backoff_val;
+-	u8                                 rx_gain_range_min;
+-
+-	long                               rssi_val;
+-};
+-
+-enum cck_rx_path_method {
+-	CCK_RX_VERSION_1 = 0,
+-	CCK_RX_VERSION_2 = 1,
+-};
+-
+-struct dynamic_rx_path_sel {
+-	enum cck_rx_path_method            cck_method;
+-	u8                                 cck_rx_path;
+-
+-	u8                                 disabled_rf;
+-
+-	u8                                 rf_rssi[4];
+-	u8                                 rf_enable_rssi_th[4];
+-	long                               cck_pwdb_sta[4];
+-};
+-
+-struct tx_config_cmd {
+-	u32     cmd_op;        /* Command packet type. */
+-	u32     cmd_length;    /* Command packet length. */
+-	u32     cmd_value;
+-};
+-
+-/*------------------------------Define structure----------------------------*/
+-
+-/*------------------------Export global variable----------------------------*/
+-extern struct dig dm_digtable;
+-extern u8 dm_shadow[16][256];
+-/*------------------------Export global variable----------------------------*/
+-
+-/*------------------------Export Marco Definition---------------------------*/
+-
+-/*------------------------Export Marco Definition---------------------------*/
+-
+-/*--------------------------Exported Function prototype---------------------*/
+-void init_hal_dm(struct net_device *dev);
+-void deinit_hal_dm(struct net_device *dev);
+-void hal_dm_watchdog(struct net_device *dev);
+-void init_rate_adaptive(struct net_device *dev);
+-void dm_txpower_trackingcallback(struct work_struct *work);
+-void dm_restore_dynamic_mechanism_state(struct net_device *dev);
+-void dm_force_tx_fw_info(struct net_device *dev,
+-			 u32 force_type, u32 force_value);
+-void dm_init_edca_turbo(struct net_device *dev);
+-void dm_rf_operation_test_callback(unsigned long data);
+-void dm_rf_pathcheck_workitemcallback(struct work_struct *work);
+-void dm_fsync_work_callback(struct work_struct *work);
+-void dm_cck_txpower_adjust(struct net_device *dev, bool  binch14);
+-void dm_initialize_txpower_tracking(struct net_device *dev);
+-/*--------------------------Exported Function prototype---------------------*/
+-
+-#endif	/*__R8192UDM_H__ */
+-
+-/* End of r8192U_dm.h */
+diff --git a/drivers/staging/rtl8192u/r8192U_hw.h b/drivers/staging/rtl8192u/r8192U_hw.h
+deleted file mode 100644
+index 217e77766442..000000000000
+--- a/drivers/staging/rtl8192u/r8192U_hw.h
++++ /dev/null
+@@ -1,246 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- *	This is part of rtl8187 OpenSource driver.
+- *	Copyright (C) Andrea Merello 2004-2005  <andrea.merello@gmail.com>
+- *
+- *	Parts of this driver are based on the GPL part of the
+- *	official Realtek driver.
+- *	Parts of this driver are based on the rtl8180 driver skeleton
+- *	from Patric Schenke & Andres Salomon.
+- *	Parts of this driver are based on the Intel Pro Wireless
+- *	2100 GPL driver.
+- *
+- *	We want to thank the Authors of those projects
+- *	and the Ndiswrapper project Authors.
+- */
+-
+-/* Mariusz Matuszek added full registers definition with Realtek's name */
+-
+-/* this file contains register definitions for the rtl8187 MAC controller */
+-#ifndef R8192_HW
+-#define R8192_HW
+-
+-#define	RTL8187_REQT_READ	0xc0
+-#define	RTL8187_REQT_WRITE	0x40
+-#define	RTL8187_REQ_GET_REGS	0x05
+-#define	RTL8187_REQ_SET_REGS	0x05
+-
+-#define MAX_TX_URB 5
+-#define MAX_RX_URB 16
+-
+-#define R8180_MAX_RETRY 255
+-
+-#define RX_URB_SIZE 9100
+-
+-#define RTL8190_EEPROM_ID	0x8129
+-#define EEPROM_VID		0x02
+-#define EEPROM_PID		0x04
+-#define EEPROM_NODE_ADDRESS_BYTE_0	0x0C
+-
+-#define EEPROM_TX_POWER_DIFF	0x1F
+-#define EEPROM_THERMAL_METER	0x20
+-#define EEPROM_PW_DIFF		0x21	//0x21
+-#define EEPROM_CRYSTAL_CAP	0x22	//0x22
+-
+-#define EEPROM_TX_PW_INDEX_CCK	0x23	//0x23
+-#define EEPROM_TX_PW_INDEX_OFDM_24G	0x24	//0x24~0x26
+-#define EEPROM_TX_PW_INDEX_CCK_V1	0x29	//0x29~0x2B
+-#define EEPROM_TX_PW_INDEX_OFDM_24G_V1	0x2C	//0x2C~0x2E
+-#define EEPROM_TX_PW_INDEX_VER		0x27	//0x27
+-
+-#define EEPROM_DEFAULT_THERNAL_METER		0x7
+-#define EEPROM_DEFAULT_PW_DIFF			0x4
+-#define EEPROM_DEFAULT_CRYSTAL_CAP		0x5
+-#define EEPROM_DEFAULT_TX_POWER		0x1010
+-#define EEPROM_CUSTOMER_ID			0x7B	//0x7B:CustomerID
+-#define EEPROM_CHANNEL_PLAN			0x16	//0x7C
+-
+-#define EEPROM_CID_RUNTOP				0x2
+-#define EEPROM_CID_DLINK				0x8
+-
+-#define AC_PARAM_TXOP_LIMIT_OFFSET	16
+-#define AC_PARAM_ECW_MAX_OFFSET		12
+-#define AC_PARAM_ECW_MIN_OFFSET		8
+-#define AC_PARAM_AIFS_OFFSET		0
+-
+-//#endif
+-enum _RTL8192Usb_HW {
+-	MAC0			= 0x000,
+-	MAC4			= 0x004,
+-
+-#define	BB_GLOBAL_RESET_BIT	0x1
+-	BB_GLOBAL_RESET		= 0x020, // BasebandGlobal Reset Register
+-	BSSIDR			= 0x02E, // BSSID Register
+-	CMDR			= 0x037, // Command register
+-#define CR_RE			0x08
+-#define CR_TE			0x04
+-	SIFS			= 0x03E, // SIFS register
+-
+-#define TCR_MXDMA_2048		7
+-#define TCR_LRL_OFFSET		0
+-#define TCR_SRL_OFFSET		8
+-#define TCR_MXDMA_OFFSET	21
+-#define TCR_SAT			BIT(24)	// Enable Rate depedent ack timeout timer
+-	RCR			= 0x044, // Receive Configuration Register
+-#define MAC_FILTER_MASK (BIT(0) | BIT(1) | BIT(2) | BIT(3) | BIT(5) | \
+-			 BIT(12) | BIT(18) | BIT(19) | BIT(20) | BIT(21) | \
+-			 BIT(22) | BIT(23))
+-#define RX_FIFO_THRESHOLD_MASK (BIT(13) | BIT(14) | BIT(15))
+-#define RX_FIFO_THRESHOLD_SHIFT 13
+-#define RX_FIFO_THRESHOLD_NONE 7
+-#define MAX_RX_DMA_MASK	(BIT(8) | BIT(9) | BIT(10))
+-#define RCR_MXDMA_OFFSET	8
+-#define RCR_FIFO_OFFSET		13
+-#define RCR_ONLYERLPKT		BIT(31)			// Early Receiving based on Packet Size.
+-#define RCR_CBSSID		BIT(23)			// Accept BSSID match packet
+-#define RCR_APWRMGT		BIT(22)			// Accept power management packet
+-#define RCR_AMF			BIT(20)			// Accept management type frame
+-#define RCR_ACF			BIT(19)			// Accept control type frame
+-#define RCR_ADF			BIT(18)			// Accept data type frame
+-#define RCR_AICV		BIT(12)			// Accept ICV error packet
+-#define	RCR_ACRC32		BIT(5)			// Accept CRC32 error packet
+-#define	RCR_AB			BIT(3)			// Accept broadcast packet
+-#define	RCR_AM			BIT(2)			// Accept multicast packet
+-#define	RCR_APM			BIT(1)			// Accept physical match packet
+-#define	RCR_AAP			BIT(0)			// Accept all unicast packet
+-	SLOT_TIME		= 0x049, // Slot Time Register
+-	ACK_TIMEOUT		= 0x04c, // Ack Timeout Register
+-	EDCAPARA_BE		= 0x050, // EDCA Parameter of AC BE
+-	EDCAPARA_BK		= 0x054, // EDCA Parameter of AC BK
+-	EDCAPARA_VO		= 0x058, // EDCA Parameter of AC VO
+-	EDCAPARA_VI		= 0x05C, // EDCA Parameter of AC VI
+-	BCN_TCFG		= 0x062, // Beacon Time Configuration
+-#define BCN_TCFG_CW_SHIFT		8
+-#define BCN_TCFG_IFS			0
+-	BCN_INTERVAL		= 0x070, // Beacon Interval (TU)
+-	ATIMWND			= 0x072, // ATIM Window Size (TU)
+-	BCN_DRV_EARLY_INT	= 0x074, // Driver Early Interrupt Time (TU). Time to send interrupt to notify to change beacon content before TBTT
+-	BCN_DMATIME		= 0x076, // Beacon DMA and ATIM interrupt time (US). Indicates the time before TBTT to perform beacon queue DMA
+-	BCN_ERR_THRESH		= 0x078, // Beacon Error Threshold
+-	RWCAM			= 0x0A0, //IN 8190 Data Sheet is called CAMcmd
+-	WCAMI			= 0x0A4, // Software write CAM input content
+-	SECR			= 0x0B0, //Security Configuration Register
+-#define	SCR_TxUseDK		BIT(0)			//Force Tx Use Default Key
+-#define SCR_RxUseDK		BIT(1)			//Force Rx Use Default Key
+-#define SCR_TxEncEnable		BIT(2)			//Enable Tx Encryption
+-#define SCR_RxDecEnable		BIT(3)			//Enable Rx Decryption
+-#define SCR_SKByA2		BIT(4)			//Search kEY BY A2
+-#define SCR_NoSKMC		BIT(5)			//No Key Search for Multicast
+-
+-//----------------------------------------------------------------------------
+-//       8190 CPU General Register		(offset 0x100, 4 byte)
+-//----------------------------------------------------------------------------
+-#define	CPU_CCK_LOOPBACK	0x00030000
+-#define	CPU_GEN_SYSTEM_RESET	0x00000001
+-#define	CPU_GEN_FIRMWARE_RESET	0x00000008
+-#define	CPU_GEN_BOOT_RDY	0x00000010
+-#define	CPU_GEN_FIRM_RDY	0x00000020
+-#define	CPU_GEN_PUT_CODE_OK	0x00000080
+-#define	CPU_GEN_BB_RST		0x00000100
+-#define	CPU_GEN_PWR_STB_CPU	0x00000004
+-#define CPU_GEN_NO_LOOPBACK_MSK	0xFFF8FFFF // Set bit18,17,16 to 0. Set bit19
+-#define CPU_GEN_NO_LOOPBACK_SET	0x00080000 // Set BIT19 to 1
+-	CPU_GEN			= 0x100, // CPU Reset Register
+-
+-	AcmHwCtrl		= 0x171, // ACM Hardware Control Register
+-//----------------------------------------------------------------------------
+-////
+-////       8190 AcmHwCtrl bits                                    (offset 0x171, 1 byte)
+-////----------------------------------------------------------------------------
+-//
+-#define AcmHw_BeqEn             BIT(1)
+-
+-	RQPN1			= 0x180, // Reserved Queue Page Number , Vo Vi, Be, Bk
+-	RQPN2			= 0x184, // Reserved Queue Page Number, HCCA, Cmd, Mgnt, High
+-	RQPN3			= 0x188, // Reserved Queue Page Number, Bcn, Public,
+-	QPNR			= 0x1D0, //0x1F0, // Queue Packet Number report per TID
+-
+-#define	BW_OPMODE_5G			BIT(1)
+-#define	BW_OPMODE_20MHZ			BIT(2)
+-	BW_OPMODE		= 0x300, // Bandwidth operation mode
+-	MSR			= 0x303, // Media Status register
+-#define MSR_LINK_MASK      (BIT(0) | BIT(1))
+-#define MSR_LINK_MANAGED   2
+-#define MSR_LINK_NONE      0
+-#define MSR_LINK_SHIFT     0
+-#define MSR_LINK_ADHOC     1
+-#define MSR_LINK_MASTER    3
+-	RETRY_LIMIT		= 0x304, // Retry Limit [15:8]-short, [7:0]-long
+-#define RETRY_LIMIT_SHORT_SHIFT 8
+-#define RETRY_LIMIT_LONG_SHIFT 0
+-	RRSR			= 0x310, // Response Rate Set
+-#define RRSR_1M						BIT(0)
+-#define RRSR_2M						BIT(1)
+-#define RRSR_5_5M					BIT(2)
+-#define RRSR_11M					BIT(3)
+-#define RRSR_6M						BIT(4)
+-#define RRSR_9M						BIT(5)
+-#define RRSR_12M					BIT(6)
+-#define RRSR_18M					BIT(7)
+-#define RRSR_24M					BIT(8)
+-#define RRSR_36M					BIT(9)
+-#define RRSR_48M					BIT(10)
+-#define RRSR_54M					BIT(11)
+-#define BRSR_AckShortPmb			BIT(23)		// CCK ACK: use Short Preamble or not.
+-	UFWP			= 0x318,
+-	RATR0			= 0x320, // Rate Adaptive Table register1
+-	DRIVER_RSSI		= 0x32c,					// Driver tell Firmware current RSSI
+-//----------------------------------------------------------------------------
+-//       8190 Rate Adaptive Table Register	(offset 0x320, 4 byte)
+-//----------------------------------------------------------------------------
+-//CCK
+-#define	RATR_1M			0x00000001
+-#define	RATR_2M			0x00000002
+-#define	RATR_55M		0x00000004
+-#define	RATR_11M		0x00000008
+-//OFDM
+-#define	RATR_6M			0x00000010
+-#define	RATR_9M			0x00000020
+-#define	RATR_12M		0x00000040
+-#define	RATR_18M		0x00000080
+-#define	RATR_24M		0x00000100
+-#define	RATR_36M		0x00000200
+-#define	RATR_48M		0x00000400
+-#define	RATR_54M		0x00000800
+-//MCS 1 Spatial Stream
+-#define	RATR_MCS0		0x00001000
+-#define	RATR_MCS1		0x00002000
+-#define	RATR_MCS2		0x00004000
+-#define	RATR_MCS3		0x00008000
+-#define	RATR_MCS4		0x00010000
+-#define	RATR_MCS5		0x00020000
+-#define	RATR_MCS6		0x00040000
+-#define	RATR_MCS7		0x00080000
+-//MCS 2 Spatial Stream
+-#define	RATR_MCS8		0x00100000
+-#define	RATR_MCS9		0x00200000
+-#define	RATR_MCS10		0x00400000
+-#define	RATR_MCS11		0x00800000
+-#define	RATR_MCS12		0x01000000
+-#define	RATR_MCS13		0x02000000
+-#define	RATR_MCS14		0x04000000
+-#define	RATR_MCS15		0x08000000
+-// ALL CCK Rate
+-#define RATE_ALL_CCK		(RATR_1M | RATR_2M | RATR_55M | RATR_11M)
+-#define RATE_ALL_OFDM_AG	(RATR_6M | RATR_9M | RATR_12M | RATR_18M |\
+-				 RATR_24M | RATR_36M | RATR_48M | RATR_54M)
+-#define RATE_ALL_OFDM_1SS	(RATR_MCS0 | RATR_MCS1 | RATR_MCS2 | RATR_MCS3 |\
+-				 RATR_MCS4 | RATR_MCS5 | RATR_MCS6 | RATR_MCS7)
+-#define RATE_ALL_OFDM_2SS	(RATR_MCS8 | RATR_MCS9 | RATR_MCS10 | RATR_MCS11 |\
+-				 RATR_MCS12 | RATR_MCS13 | RATR_MCS14 | RATR_MCS15)
+-	EPROM_CMD		= 0xfe58,
+-#define Cmd9346CR_9356SEL	BIT(4)
+-#define EPROM_CMD_OPERATING_MODE_SHIFT 6
+-#define EPROM_CMD_NORMAL 0
+-#define EPROM_CMD_PROGRAM 2
+-#define EPROM_CS_BIT BIT(3)
+-#define EPROM_CK_BIT BIT(2)
+-#define EPROM_W_BIT  BIT(1)
+-#define EPROM_R_BIT  BIT(0)
+-};
+-
+-//----------------------------------------------------------------------------
+-//       818xB AnaParm & AnaParm2 Register
+-//----------------------------------------------------------------------------
+-#define GPI 0x108
+-#endif
+diff --git a/drivers/staging/rtl8192u/r8192U_wx.c b/drivers/staging/rtl8192u/r8192U_wx.c
+deleted file mode 100644
+index 203ea3bfc843..000000000000
+--- a/drivers/staging/rtl8192u/r8192U_wx.c
++++ /dev/null
+@@ -1,943 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/******************************************************************************
+- *
+- * This file contains wireless extension handlers.
+- *
+- * This is part of rtl8180 OpenSource driver.
+- * Copyright (C) Andrea Merello 2004-2005  <andrea.merello@gmail.com>
+- *
+- * Parts of this driver are based on the GPL part
+- * of the official realtek driver.
+- *
+- * Parts of this driver are based on the rtl8180 driver skeleton
+- * from Patric Schenke & Andres Salomon.
+- *
+- * Parts of this driver are based on the Intel Pro Wireless 2100 GPL driver.
+- *
+- * We want to thank the Authors of those projects and the Ndiswrapper
+- * project Authors.
+- *
+- *****************************************************************************/
+-
+-#include <linux/string.h>
+-#include "r8192U.h"
+-#include "r8192U_hw.h"
+-
+-#include "ieee80211/dot11d.h"
+-#include "r8192U_wx.h"
+-
+-#define RATE_COUNT 12
+-static const u32 rtl8180_rates[] = {1000000, 2000000, 5500000, 11000000,
+-	6000000, 9000000, 12000000, 18000000, 24000000, 36000000, 48000000, 54000000};
+-
+-#ifndef ENETDOWN
+-#define ENETDOWN 1
+-#endif
+-
+-static int r8192_wx_get_freq(struct net_device *dev,
+-			     struct iw_request_info *a,
+-			     union iwreq_data *wrqu, char *b)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	return ieee80211_wx_get_freq(priv->ieee80211, a, wrqu, b);
+-}
+-
+-static int r8192_wx_get_mode(struct net_device *dev, struct iw_request_info *a,
+-			     union iwreq_data *wrqu, char *b)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	return ieee80211_wx_get_mode(priv->ieee80211, a, wrqu, b);
+-}
+-
+-static int r8192_wx_get_rate(struct net_device *dev,
+-			     struct iw_request_info *info,
+-			     union iwreq_data *wrqu, char *extra)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	return ieee80211_wx_get_rate(priv->ieee80211, info, wrqu, extra);
+-}
+-
+-static int r8192_wx_set_rate(struct net_device *dev,
+-			     struct iw_request_info *info,
+-			     union iwreq_data *wrqu, char *extra)
+-{
+-	int ret;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	mutex_lock(&priv->wx_mutex);
+-
+-	ret = ieee80211_wx_set_rate(priv->ieee80211, info, wrqu, extra);
+-
+-	mutex_unlock(&priv->wx_mutex);
+-
+-	return ret;
+-}
+-
+-static int r8192_wx_set_rts(struct net_device *dev,
+-			    struct iw_request_info *info,
+-			    union iwreq_data *wrqu, char *extra)
+-{
+-	int ret;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	mutex_lock(&priv->wx_mutex);
+-
+-	ret = ieee80211_wx_set_rts(priv->ieee80211, info, wrqu, extra);
+-
+-	mutex_unlock(&priv->wx_mutex);
+-
+-	return ret;
+-}
+-
+-static int r8192_wx_get_rts(struct net_device *dev,
+-			    struct iw_request_info *info,
+-			    union iwreq_data *wrqu, char *extra)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	return ieee80211_wx_get_rts(priv->ieee80211, info, wrqu, extra);
+-}
+-
+-static int r8192_wx_set_power(struct net_device *dev,
+-			      struct iw_request_info *info,
+-			      union iwreq_data *wrqu, char *extra)
+-{
+-	int ret;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	mutex_lock(&priv->wx_mutex);
+-
+-	ret = ieee80211_wx_set_power(priv->ieee80211, info, wrqu, extra);
+-
+-	mutex_unlock(&priv->wx_mutex);
+-
+-	return ret;
+-}
+-
+-static int r8192_wx_get_power(struct net_device *dev,
+-			      struct iw_request_info *info,
+-			      union iwreq_data *wrqu, char *extra)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	return ieee80211_wx_get_power(priv->ieee80211, info, wrqu, extra);
+-}
+-
+-static int r8192_wx_force_reset(struct net_device *dev,
+-				struct iw_request_info *info,
+-				union iwreq_data *wrqu, char *extra)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	mutex_lock(&priv->wx_mutex);
+-
+-	netdev_dbg(dev, "%s(): force reset ! extra is %d\n", __func__, *extra);
+-	priv->force_reset = *extra;
+-	mutex_unlock(&priv->wx_mutex);
+-	return 0;
+-}
+-
+-static int r8192_wx_set_rawtx(struct net_device *dev,
+-			      struct iw_request_info *info,
+-			      union iwreq_data *wrqu, char *extra)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	int ret;
+-
+-	mutex_lock(&priv->wx_mutex);
+-
+-	ret = ieee80211_wx_set_rawtx(priv->ieee80211, info, wrqu, extra);
+-
+-	mutex_unlock(&priv->wx_mutex);
+-
+-	return ret;
+-}
+-
+-static int r8192_wx_set_crcmon(struct net_device *dev,
+-			       struct iw_request_info *info,
+-			       union iwreq_data *wrqu, char *extra)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	int *parms = (int *)extra;
+-	int enable = (parms[0] > 0);
+-
+-	mutex_lock(&priv->wx_mutex);
+-
+-	if (enable)
+-		priv->crcmon = 1;
+-	else
+-		priv->crcmon = 0;
+-
+-	DMESG("bad CRC in monitor mode are %s",
+-	      priv->crcmon ? "accepted" : "rejected");
+-
+-	mutex_unlock(&priv->wx_mutex);
+-
+-	return 0;
+-}
+-
+-static int r8192_wx_set_mode(struct net_device *dev, struct iw_request_info *a,
+-			     union iwreq_data *wrqu, char *b)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	int ret;
+-
+-	mutex_lock(&priv->wx_mutex);
+-
+-	ret = ieee80211_wx_set_mode(priv->ieee80211, a, wrqu, b);
+-
+-	rtl8192_set_rxconf(dev);
+-
+-	mutex_unlock(&priv->wx_mutex);
+-	return ret;
+-}
+-
+-struct  iw_range_with_scan_capa {
+-	/* Informative stuff (to choose between different interface) */
+-	__u32           throughput;     /* To give an idea... */
+-	/* In theory this value should be the maximum benchmarked
+-	 * TCP/IP throughput, because with most of these devices the
+-	 * bit rate is meaningless (overhead an co) to estimate how
+-	 * fast the connection will go and pick the fastest one.
+-	 * I suggest people to play with Netperf or any benchmark...
+-	 */
+-
+-	/* NWID (or domain id) */
+-	__u32           min_nwid;       /* Minimal NWID we are able to set */
+-	__u32           max_nwid;       /* Maximal NWID we are able to set */
+-
+-	/* Old Frequency (backward compat - moved lower ) */
+-	__u16           old_num_channels;
+-	__u8            old_num_frequency;
+-
+-	/* Scan capabilities */
+-	__u8            scan_capa;
+-};
+-
+-static int rtl8180_wx_get_range(struct net_device *dev,
+-				struct iw_request_info *info,
+-				union iwreq_data *wrqu, char *extra)
+-{
+-	struct iw_range *range = (struct iw_range *)extra;
+-	struct iw_range_with_scan_capa *tmp = (struct iw_range_with_scan_capa *)range;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u16 val;
+-	int i;
+-
+-	wrqu->data.length = sizeof(*range);
+-	memset(range, 0, sizeof(*range));
+-
+-	/* Let's try to keep this struct in the same order as in
+-	 * linux/include/wireless.h
+-	 */
+-
+-	/* TODO: See what values we can set, and remove the ones we can't
+-	 * set, or fill them with some default data.
+-	 */
+-
+-	/* ~5 Mb/s real (802.11b) */
+-	range->throughput = 5 * 1000 * 1000;
+-
+-	/* TODO: Not used in 802.11b? */
+-	/* range->min_nwid; */	/* Minimal NWID we are able to set */
+-	/* TODO: Not used in 802.11b? */
+-	/* range->max_nwid; */	/* Maximal NWID we are able to set */
+-
+-	/* Old Frequency (backward compat - moved lower ) */
+-	/* range->old_num_channels; */
+-	/* range->old_num_frequency; */
+-	/* range->old_freq[6]; */ /* Filler to keep "version" at the same offset */
+-	if (priv->rf_set_sens)
+-		range->sensitivity = priv->max_sens;	/* signal level threshold range */
+-
+-	range->max_qual.qual = 100;
+-	/* TODO: Find real max RSSI and stick here */
+-	range->max_qual.level = 0;
+-	range->max_qual.noise = 0x100 - 98;
+-	range->max_qual.updated = 7; /* Updated all three */
+-
+-	range->avg_qual.qual = 92; /* > 8% missed beacons is 'bad' */
+-	/* TODO: Find real 'good' to 'bad' threshold value for RSSI */
+-	range->avg_qual.level = 0x100 - 78;
+-	range->avg_qual.noise = 0;
+-	range->avg_qual.updated = 7; /* Updated all three */
+-
+-	range->num_bitrates = RATE_COUNT;
+-
+-	for (i = 0; i < RATE_COUNT && i < IW_MAX_BITRATES; i++)
+-		range->bitrate[i] = rtl8180_rates[i];
+-
+-	range->min_frag = MIN_FRAG_THRESHOLD;
+-	range->max_frag = MAX_FRAG_THRESHOLD;
+-
+-	range->min_pmp = 0;
+-	range->max_pmp = 5000000;
+-	range->min_pmt = 0;
+-	range->max_pmt = 65535 * 1000;
+-	range->pmp_flags = IW_POWER_PERIOD;
+-	range->pmt_flags = IW_POWER_TIMEOUT;
+-	range->pm_capa = IW_POWER_PERIOD | IW_POWER_TIMEOUT | IW_POWER_ALL_R;
+-
+-	range->we_version_compiled = WIRELESS_EXT;
+-	range->we_version_source = 16;
+-
+-	/* range->retry_capa; */	/* What retry options are supported */
+-	/* range->retry_flags; */	/* How to decode max/min retry limit */
+-	/* range->r_time_flags; */	/* How to decode max/min retry life */
+-	/* range->min_retry; */		/* Minimal number of retries */
+-	/* range->max_retry; */		/* Maximal number of retries */
+-	/* range->min_r_time; */	/* Minimal retry lifetime */
+-	/* range->max_r_time; */	/* Maximal retry lifetime */
+-
+-	for (i = 0, val = 0; i < 14; i++) {
+-		/* Include only legal frequencies for some countries */
+-		if ((GET_DOT11D_INFO(priv->ieee80211)->channel_map)[i + 1]) {
+-			range->freq[val].i = i + 1;
+-			range->freq[val].m = ieee80211_wlan_frequencies[i] * 100000;
+-			range->freq[val].e = 1;
+-			val++;
+-		} else {
+-			/* FIXME: do we need to set anything for channels */
+-			/* we don't use ? */
+-		}
+-
+-		if (val == IW_MAX_FREQUENCIES)
+-			break;
+-	}
+-	range->num_frequency = val;
+-	range->num_channels = val;
+-	range->enc_capa = IW_ENC_CAPA_WPA | IW_ENC_CAPA_WPA2 |
+-			  IW_ENC_CAPA_CIPHER_TKIP | IW_ENC_CAPA_CIPHER_CCMP;
+-	tmp->scan_capa = 0x01;
+-	return 0;
+-}
+-
+-static int r8192_wx_set_scan(struct net_device *dev, struct iw_request_info *a,
+-			     union iwreq_data *wrqu, char *b)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	struct ieee80211_device *ieee = priv->ieee80211;
+-	int ret = 0;
+-
+-	if (!priv->up)
+-		return -ENETDOWN;
+-
+-	if (priv->ieee80211->LinkDetectInfo.bBusyTraffic)
+-		return -EAGAIN;
+-	if (wrqu->data.flags & IW_SCAN_THIS_ESSID) {
+-		struct iw_scan_req *req = (struct iw_scan_req *)b;
+-
+-		if (req->essid_len) {
+-			int len = min_t(int, req->essid_len, IW_ESSID_MAX_SIZE);
+-
+-			ieee->current_network.ssid_len = len;
+-			memcpy(ieee->current_network.ssid, req->essid, len);
+-		}
+-	}
+-
+-	mutex_lock(&priv->wx_mutex);
+-	if (priv->ieee80211->state != IEEE80211_LINKED) {
+-		priv->ieee80211->scanning = 0;
+-		ieee80211_softmac_scan_syncro(priv->ieee80211);
+-		ret = 0;
+-	} else {
+-		ret = ieee80211_wx_set_scan(priv->ieee80211, a, wrqu, b);
+-	}
+-	mutex_unlock(&priv->wx_mutex);
+-	return ret;
+-}
+-
+-static int r8192_wx_get_scan(struct net_device *dev, struct iw_request_info *a,
+-			     union iwreq_data *wrqu, char *b)
+-{
+-	int ret;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	if (!priv->up)
+-		return -ENETDOWN;
+-
+-	mutex_lock(&priv->wx_mutex);
+-
+-	ret = ieee80211_wx_get_scan(priv->ieee80211, a, wrqu, b);
+-
+-	mutex_unlock(&priv->wx_mutex);
+-
+-	return ret;
+-}
+-
+-static int r8192_wx_set_essid(struct net_device *dev,
+-			      struct iw_request_info *a,
+-			      union iwreq_data *wrqu, char *b)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	int ret;
+-
+-	mutex_lock(&priv->wx_mutex);
+-
+-	ret = ieee80211_wx_set_essid(priv->ieee80211, a, wrqu, b);
+-
+-	mutex_unlock(&priv->wx_mutex);
+-
+-	return ret;
+-}
+-
+-static int r8192_wx_get_essid(struct net_device *dev,
+-			      struct iw_request_info *a,
+-			      union iwreq_data *wrqu, char *b)
+-{
+-	int ret;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	mutex_lock(&priv->wx_mutex);
+-
+-	ret = ieee80211_wx_get_essid(priv->ieee80211, a, wrqu, b);
+-
+-	mutex_unlock(&priv->wx_mutex);
+-
+-	return ret;
+-}
+-
+-static int r8192_wx_set_freq(struct net_device *dev, struct iw_request_info *a,
+-			     union iwreq_data *wrqu, char *b)
+-{
+-	int ret;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	mutex_lock(&priv->wx_mutex);
+-
+-	ret = ieee80211_wx_set_freq(priv->ieee80211, a, wrqu, b);
+-
+-	mutex_unlock(&priv->wx_mutex);
+-	return ret;
+-}
+-
+-static int r8192_wx_get_name(struct net_device *dev,
+-			     struct iw_request_info *info,
+-			     union iwreq_data *wrqu, char *extra)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	return ieee80211_wx_get_name(priv->ieee80211, info, wrqu, extra);
+-}
+-
+-static int r8192_wx_set_frag(struct net_device *dev,
+-			     struct iw_request_info *info,
+-			     union iwreq_data *wrqu, char *extra)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	if (wrqu->frag.disabled) {
+-		priv->ieee80211->fts = DEFAULT_FRAG_THRESHOLD;
+-	} else {
+-		if (wrqu->frag.value < MIN_FRAG_THRESHOLD ||
+-		    wrqu->frag.value > MAX_FRAG_THRESHOLD)
+-			return -EINVAL;
+-
+-		priv->ieee80211->fts = wrqu->frag.value & ~0x1;
+-	}
+-
+-	return 0;
+-}
+-
+-static int r8192_wx_get_frag(struct net_device *dev,
+-			     struct iw_request_info *info,
+-			     union iwreq_data *wrqu, char *extra)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	wrqu->frag.value = priv->ieee80211->fts;
+-	wrqu->frag.fixed = 0;	/* no auto select */
+-	wrqu->frag.disabled = (wrqu->frag.value == DEFAULT_FRAG_THRESHOLD);
+-
+-	return 0;
+-}
+-
+-static int r8192_wx_set_wap(struct net_device *dev,
+-			    struct iw_request_info *info,
+-			    union iwreq_data *awrq,
+-			    char *extra)
+-{
+-	int ret;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	/* struct sockaddr *temp = (struct sockaddr *)awrq; */
+-	mutex_lock(&priv->wx_mutex);
+-
+-	ret = ieee80211_wx_set_wap(priv->ieee80211, info, awrq, extra);
+-
+-	mutex_unlock(&priv->wx_mutex);
+-
+-	return ret;
+-}
+-
+-static int r8192_wx_get_wap(struct net_device *dev,
+-			    struct iw_request_info *info,
+-			    union iwreq_data *wrqu, char *extra)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	return ieee80211_wx_get_wap(priv->ieee80211, info, wrqu, extra);
+-}
+-
+-static int r8192_wx_get_enc(struct net_device *dev,
+-			    struct iw_request_info *info,
+-			    union iwreq_data *wrqu, char *key)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	return ieee80211_wx_get_encode(priv->ieee80211, info, wrqu, key);
+-}
+-
+-static int r8192_wx_set_enc(struct net_device *dev,
+-			    struct iw_request_info *info,
+-			    union iwreq_data *wrqu, char *key)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	struct ieee80211_device *ieee = priv->ieee80211;
+-	int ret;
+-	u32 hwkey[4] = {0, 0, 0, 0};
+-	u8 mask = 0xff;
+-	u32 key_idx = 0;
+-	u8 zero_addr[4][6] = {	{0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
+-				{0x00, 0x00, 0x00, 0x00, 0x00, 0x01},
+-				{0x00, 0x00, 0x00, 0x00, 0x00, 0x02},
+-				{0x00, 0x00, 0x00, 0x00, 0x00, 0x03} };
+-	int i;
+-
+-	if (!priv->up)
+-		return -ENETDOWN;
+-
+-	mutex_lock(&priv->wx_mutex);
+-
+-	RT_TRACE(COMP_SEC, "Setting SW wep key");
+-	ret = ieee80211_wx_set_encode(priv->ieee80211, info, wrqu, key);
+-
+-	mutex_unlock(&priv->wx_mutex);
+-
+-	/* sometimes, the length is zero while we do not type key value */
+-	if (wrqu->encoding.length != 0) {
+-		for (i = 0; i < 4; i++) {
+-			hwkey[i] |=  key[4 * i + 0] & mask;
+-			if (i == 1 && (4 * i + 1) == wrqu->encoding.length)
+-				mask = 0x00;
+-			if (i == 3 && (4 * i + 1) == wrqu->encoding.length)
+-				mask = 0x00;
+-			hwkey[i] |= (key[4 * i + 1] & mask) << 8;
+-			hwkey[i] |= (key[4 * i + 2] & mask) << 16;
+-			hwkey[i] |= (key[4 * i + 3] & mask) << 24;
+-		}
+-
+-		#define CONF_WEP40  0x4
+-		#define CONF_WEP104 0x14
+-
+-		switch (wrqu->encoding.flags & IW_ENCODE_INDEX) {
+-		case 0:
+-			key_idx = ieee->tx_keyidx;
+-			break;
+-		case 1:
+-			key_idx = 0;
+-			break;
+-		case 2:
+-			key_idx = 1;
+-			break;
+-		case 3:
+-			key_idx = 2;
+-			break;
+-		case 4:
+-			key_idx	= 3;
+-			break;
+-		default:
+-			break;
+-		}
+-
+-		if (wrqu->encoding.length == 0x5) {
+-			ieee->pairwise_key_type = KEY_TYPE_WEP40;
+-			EnableHWSecurityConfig8192(dev);
+-
+-			setKey(dev,
+-			       key_idx,                /* EntryNo */
+-			       key_idx,                /* KeyIndex */
+-			       KEY_TYPE_WEP40,         /* KeyType */
+-			       zero_addr[key_idx],
+-			       0,                      /* DefaultKey */
+-			       hwkey);                 /* KeyContent */
+-		} else if (wrqu->encoding.length == 0xd) {
+-			ieee->pairwise_key_type = KEY_TYPE_WEP104;
+-			EnableHWSecurityConfig8192(dev);
+-
+-			setKey(dev,
+-			       key_idx,                /* EntryNo */
+-			       key_idx,                /* KeyIndex */
+-			       KEY_TYPE_WEP104,        /* KeyType */
+-			       zero_addr[key_idx],
+-			       0,                      /* DefaultKey */
+-			       hwkey);                 /* KeyContent */
+-		} else {
+-			netdev_warn(dev, "wrong type in WEP, not WEP40 and WEP104\n");
+-		}
+-	}
+-
+-	return ret;
+-}
+-
+-static int r8192_wx_set_scan_type(struct net_device *dev, struct iw_request_info *aa,
+-				  union iwreq_data *wrqu, char *p)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	int *parms = (int *)p;
+-	int mode = parms[0];
+-
+-	priv->ieee80211->active_scan = mode;
+-
+-	return 1;
+-}
+-
+-static int r8192_wx_set_retry(struct net_device *dev,
+-			      struct iw_request_info *info,
+-			      union iwreq_data *wrqu, char *extra)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	int err = 0;
+-
+-	mutex_lock(&priv->wx_mutex);
+-
+-	if (wrqu->retry.flags & IW_RETRY_LIFETIME ||
+-	    wrqu->retry.disabled){
+-		err = -EINVAL;
+-		goto exit;
+-	}
+-	if (!(wrqu->retry.flags & IW_RETRY_LIMIT)) {
+-		err = -EINVAL;
+-		goto exit;
+-	}
+-
+-	if (wrqu->retry.value > R8180_MAX_RETRY) {
+-		err = -EINVAL;
+-		goto exit;
+-	}
+-	if (wrqu->retry.flags & IW_RETRY_MAX) {
+-		priv->retry_rts = wrqu->retry.value;
+-		DMESG("Setting retry for RTS/CTS data to %d", wrqu->retry.value);
+-
+-	} else {
+-		priv->retry_data = wrqu->retry.value;
+-		DMESG("Setting retry for non RTS/CTS data to %d", wrqu->retry.value);
+-	}
+-
+-	/* FIXME !
+-	 * We might try to write directly the TX config register
+-	 * or to restart just the (R)TX process.
+-	 * I'm unsure if whole reset is really needed
+-	 */
+-
+-	rtl8192_commit(dev);
+-exit:
+-	mutex_unlock(&priv->wx_mutex);
+-
+-	return err;
+-}
+-
+-static int r8192_wx_get_retry(struct net_device *dev,
+-			      struct iw_request_info *info,
+-			      union iwreq_data *wrqu, char *extra)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	wrqu->retry.disabled = 0; /* can't be disabled */
+-
+-	if ((wrqu->retry.flags & IW_RETRY_TYPE) ==
+-	    IW_RETRY_LIFETIME)
+-		return -EINVAL;
+-
+-	if (wrqu->retry.flags & IW_RETRY_MAX) {
+-		wrqu->retry.flags = IW_RETRY_LIMIT | IW_RETRY_MAX;
+-		wrqu->retry.value = priv->retry_rts;
+-	} else {
+-		wrqu->retry.flags = IW_RETRY_LIMIT | IW_RETRY_MIN;
+-		wrqu->retry.value = priv->retry_data;
+-	}
+-
+-	return 0;
+-}
+-
+-static int r8192_wx_get_sens(struct net_device *dev,
+-			     struct iw_request_info *info,
+-			     union iwreq_data *wrqu, char *extra)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	if (!priv->rf_set_sens)
+-		return -1; /* we have not this support for this radio */
+-	wrqu->sens.value = priv->sens;
+-	return 0;
+-}
+-
+-static int r8192_wx_set_sens(struct net_device *dev,
+-			     struct iw_request_info *info,
+-			     union iwreq_data *wrqu, char *extra)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	short err = 0;
+-
+-	mutex_lock(&priv->wx_mutex);
+-	if (!priv->rf_set_sens) {
+-		err = -1; /* we have not this support for this radio */
+-		goto exit;
+-	}
+-	if (priv->rf_set_sens(dev, wrqu->sens.value) == 0)
+-		priv->sens = wrqu->sens.value;
+-	else
+-		err = -EINVAL;
+-
+-exit:
+-	mutex_unlock(&priv->wx_mutex);
+-
+-	return err;
+-}
+-
+-/* hw security need to reorganized. */
+-static int r8192_wx_set_enc_ext(struct net_device *dev,
+-				struct iw_request_info *info,
+-				union iwreq_data *wrqu, char *extra)
+-{
+-	int ret = 0;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	struct ieee80211_device *ieee = priv->ieee80211;
+-
+-	mutex_lock(&priv->wx_mutex);
+-	ret = ieee80211_wx_set_encode_ext(priv->ieee80211, info, wrqu, extra);
+-
+-	{
+-		u8 broadcast_addr[6] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+-		u8 zero[6] = {0};
+-		u32 key[4] = {0};
+-		struct iw_encode_ext *ext = (struct iw_encode_ext *)extra;
+-		struct iw_point *encoding = &wrqu->encoding;
+-		u8 idx = 0, alg = 0, group = 0;
+-
+-		if ((encoding->flags & IW_ENCODE_DISABLED) || ext->alg == IW_ENCODE_ALG_NONE)
+-			/* none is not allowed to use hwsec WB 2008.07.01 */
+-			goto end_hw_sec;
+-
+-		/* as IW_ENCODE_ALG_CCMP is defined to be 3 and KEY_TYPE_CCMP is defined to 4; */
+-		alg =  (ext->alg == IW_ENCODE_ALG_CCMP) ? KEY_TYPE_CCMP : ext->alg;
+-		idx = encoding->flags & IW_ENCODE_INDEX;
+-		if (idx)
+-			idx--;
+-		group = ext->ext_flags & IW_ENCODE_EXT_GROUP_KEY;
+-
+-		if ((!group) || (ieee->iw_mode == IW_MODE_ADHOC) || (alg ==  KEY_TYPE_WEP40)) {
+-			if ((ext->key_len == 13) && (alg == KEY_TYPE_WEP40))
+-				alg = KEY_TYPE_WEP104;
+-			ieee->pairwise_key_type = alg;
+-			EnableHWSecurityConfig8192(dev);
+-		}
+-		memcpy((u8 *)key, ext->key, 16); /* we only get 16 bytes key.why? WB 2008.7.1 */
+-
+-		if ((alg & KEY_TYPE_WEP40) && (ieee->auth_mode != 2)) {
+-			setKey(dev,
+-			       idx,	/* EntryNao */
+-			       idx,	/* KeyIndex */
+-			       alg,	/* KeyType */
+-			       zero,	/* MacAddr */
+-			       0,	/* DefaultKey */
+-			       key);	/* KeyContent */
+-		} else if (group) {
+-			ieee->group_key_type = alg;
+-			setKey(dev,
+-			       idx,	/* EntryNo */
+-			       idx,	/* KeyIndex */
+-			       alg,	/* KeyType */
+-			       broadcast_addr,	/* MacAddr */
+-			       0,		/* DefaultKey */
+-			       key);		/* KeyContent */
+-		} else {	/* pairwise key */
+-			setKey(dev,
+-			       4,	/* EntryNo */
+-			       idx,	/* KeyIndex */
+-			       alg,	/* KeyType */
+-			       (u8 *)ieee->ap_mac_addr,/* MacAddr */
+-			       0,			/* DefaultKey */
+-			       key);			/* KeyContent */
+-		}
+-	}
+-
+-end_hw_sec:
+-
+-	mutex_unlock(&priv->wx_mutex);
+-	return ret;
+-}
+-
+-static int r8192_wx_set_auth(struct net_device *dev,
+-			     struct iw_request_info *info,
+-			     union iwreq_data *data, char *extra)
+-{
+-	int ret = 0;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	mutex_lock(&priv->wx_mutex);
+-	ret = ieee80211_wx_set_auth(priv->ieee80211, info, &data->param, extra);
+-	mutex_unlock(&priv->wx_mutex);
+-	return ret;
+-}
+-
+-static int r8192_wx_set_mlme(struct net_device *dev,
+-			     struct iw_request_info *info,
+-			     union iwreq_data *wrqu, char *extra)
+-{
+-	int ret = 0;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	mutex_lock(&priv->wx_mutex);
+-	ret = ieee80211_wx_set_mlme(priv->ieee80211, info, wrqu, extra);
+-
+-	mutex_unlock(&priv->wx_mutex);
+-	return ret;
+-}
+-
+-static int r8192_wx_set_gen_ie(struct net_device *dev,
+-			       struct iw_request_info *info,
+-			       union iwreq_data *data, char *extra)
+-{
+-	int ret = 0;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	mutex_lock(&priv->wx_mutex);
+-	ret = ieee80211_wx_set_gen_ie(priv->ieee80211, extra, data->data.length);
+-	mutex_unlock(&priv->wx_mutex);
+-	return ret;
+-}
+-
+-static int dummy(struct net_device *dev, struct iw_request_info *a,
+-		 union iwreq_data *wrqu, char *b)
+-{
+-	return -1;
+-}
+-
+-static iw_handler r8192_wx_handlers[] = {
+-	NULL,                     /* SIOCSIWCOMMIT */
+-	r8192_wx_get_name,	  /* SIOCGIWNAME */
+-	dummy,                    /* SIOCSIWNWID */
+-	dummy,                    /* SIOCGIWNWID */
+-	r8192_wx_set_freq,        /* SIOCSIWFREQ */
+-	r8192_wx_get_freq,        /* SIOCGIWFREQ */
+-	r8192_wx_set_mode,        /* SIOCSIWMODE */
+-	r8192_wx_get_mode,        /* SIOCGIWMODE */
+-	r8192_wx_set_sens,        /* SIOCSIWSENS */
+-	r8192_wx_get_sens,        /* SIOCGIWSENS */
+-	NULL,                     /* SIOCSIWRANGE */
+-	rtl8180_wx_get_range,	  /* SIOCGIWRANGE */
+-	NULL,                     /* SIOCSIWPRIV */
+-	NULL,                     /* SIOCGIWPRIV */
+-	NULL,                     /* SIOCSIWSTATS */
+-	NULL,                     /* SIOCGIWSTATS */
+-	dummy,                    /* SIOCSIWSPY */
+-	dummy,                    /* SIOCGIWSPY */
+-	NULL,                     /* SIOCGIWTHRSPY */
+-	NULL,                     /* SIOCWIWTHRSPY */
+-	r8192_wx_set_wap,	  /* SIOCSIWAP */
+-	r8192_wx_get_wap,         /* SIOCGIWAP */
+-	r8192_wx_set_mlme,                     /* MLME-- */
+-	dummy,                     /* SIOCGIWAPLIST -- deprecated */
+-	r8192_wx_set_scan,        /* SIOCSIWSCAN */
+-	r8192_wx_get_scan,        /* SIOCGIWSCAN */
+-	r8192_wx_set_essid,       /* SIOCSIWESSID */
+-	r8192_wx_get_essid,       /* SIOCGIWESSID */
+-	dummy,                    /* SIOCSIWNICKN */
+-	dummy,                    /* SIOCGIWNICKN */
+-	NULL,                     /* -- hole -- */
+-	NULL,                     /* -- hole -- */
+-	r8192_wx_set_rate,        /* SIOCSIWRATE */
+-	r8192_wx_get_rate,        /* SIOCGIWRATE */
+-	r8192_wx_set_rts,                    /* SIOCSIWRTS */
+-	r8192_wx_get_rts,                    /* SIOCGIWRTS */
+-	r8192_wx_set_frag,        /* SIOCSIWFRAG */
+-	r8192_wx_get_frag,        /* SIOCGIWFRAG */
+-	dummy,                    /* SIOCSIWTXPOW */
+-	dummy,                    /* SIOCGIWTXPOW */
+-	r8192_wx_set_retry,       /* SIOCSIWRETRY */
+-	r8192_wx_get_retry,       /* SIOCGIWRETRY */
+-	r8192_wx_set_enc,         /* SIOCSIWENCODE */
+-	r8192_wx_get_enc,         /* SIOCGIWENCODE */
+-	r8192_wx_set_power,                    /* SIOCSIWPOWER */
+-	r8192_wx_get_power,                    /* SIOCGIWPOWER */
+-	NULL,			/*---hole---*/
+-	NULL,			/*---hole---*/
+-	r8192_wx_set_gen_ie, /* NULL, */		/* SIOCSIWGENIE */
+-	NULL,			/* SIOCSIWGENIE */
+-
+-	r8192_wx_set_auth,/* NULL, */			/* SIOCSIWAUTH */
+-	NULL,/* r8192_wx_get_auth, */ /* NULL, */	/* SIOCSIWAUTH */
+-	r8192_wx_set_enc_ext,			/* SIOCSIWENCODEEXT */
+-	NULL,/* r8192_wx_get_enc_ext, *//* NULL, */			/* SIOCSIWENCODEEXT */
+-	NULL,			/* SIOCSIWPMKSA */
+-	NULL,			 /*---hole---*/
+-
+-};
+-
+-static const struct iw_priv_args r8192_private_args[] = {
+-	{
+-		SIOCIWFIRSTPRIV + 0x0,
+-		IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, 0, "badcrc"
+-	},
+-	{
+-		SIOCIWFIRSTPRIV + 0x1,
+-		IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, 0, "activescan"
+-
+-	},
+-	{
+-		SIOCIWFIRSTPRIV + 0x2,
+-		IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, 0, "rawtx"
+-	},
+-	{
+-		SIOCIWFIRSTPRIV + 0x3,
+-		IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, 0, "forcereset"
+-	}
+-};
+-
+-static iw_handler r8192_private_handler[] = {
+-	r8192_wx_set_crcmon,
+-	r8192_wx_set_scan_type,
+-	r8192_wx_set_rawtx,
+-	r8192_wx_force_reset,
+-};
+-
+-struct iw_statistics *r8192_get_wireless_stats(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	struct ieee80211_device *ieee = priv->ieee80211;
+-	struct iw_statistics *wstats = &priv->wstats;
+-	int tmp_level = 0;
+-	int tmp_qual = 0;
+-	int tmp_noise = 0;
+-
+-	if (ieee->state < IEEE80211_LINKED) {
+-		wstats->qual.qual = 0;
+-		wstats->qual.level = 0;
+-		wstats->qual.noise = 0;
+-		wstats->qual.updated = IW_QUAL_ALL_UPDATED | IW_QUAL_DBM;
+-		return wstats;
+-	}
+-
+-	tmp_level = (&ieee->current_network)->stats.rssi;
+-	tmp_qual = (&ieee->current_network)->stats.signal;
+-	tmp_noise = (&ieee->current_network)->stats.noise;
+-
+-	wstats->qual.level = tmp_level;
+-	wstats->qual.qual = tmp_qual;
+-	wstats->qual.noise = tmp_noise;
+-	wstats->qual.updated = IW_QUAL_ALL_UPDATED | IW_QUAL_DBM;
+-	return wstats;
+-}
+-
+-const struct iw_handler_def  r8192_wx_handlers_def = {
+-	.standard = r8192_wx_handlers,
+-	.num_standard = ARRAY_SIZE(r8192_wx_handlers),
+-	.private = r8192_private_handler,
+-	.num_private = ARRAY_SIZE(r8192_private_handler),
+-	.num_private_args = sizeof(r8192_private_args) / sizeof(struct iw_priv_args),
+-	.get_wireless_stats = r8192_get_wireless_stats,
+-	.private_args = (struct iw_priv_args *)r8192_private_args,
+-};
+diff --git a/drivers/staging/rtl8192u/r8192U_wx.h b/drivers/staging/rtl8192u/r8192U_wx.h
+deleted file mode 100644
+index 27423cd64b4c..000000000000
+--- a/drivers/staging/rtl8192u/r8192U_wx.h
++++ /dev/null
+@@ -1,24 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- * This is part of rtl8180 OpenSource driver - v 0.3
+- * Copyright (C) Andrea Merello 2004  <andrea.merello@gmail.com>
+- *
+- * Parts of this driver are based on the GPL part of the official realtek driver
+- * Parts of this driver are based on the rtl8180 driver skeleton from Patric
+- * Schenke & Andres Salomon
+- * Parts of this driver are based on the Intel Pro Wireless 2100 GPL driver
+- *
+- * We want to thank the Authors of such projects and the Ndiswrapper project
+- * Authors.
+- */
+-
+-/* this file (will) contains wireless extension handlers */
+-
+-#ifndef R8180_WX_H
+-#define R8180_WX_H
+-
+-extern const struct iw_handler_def r8192_wx_handlers_def;
+-/* Enable  the rtl819x_core.c to share this function, david 2008.9.22 */
+-struct iw_statistics *r8192_get_wireless_stats(struct net_device *dev);
+-
+-#endif
+diff --git a/drivers/staging/rtl8192u/r819xU_cmdpkt.c b/drivers/staging/rtl8192u/r819xU_cmdpkt.c
+deleted file mode 100644
+index 30a320422358..000000000000
+--- a/drivers/staging/rtl8192u/r819xU_cmdpkt.c
++++ /dev/null
+@@ -1,508 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/******************************************************************************
+- *
+- *  (c) Copyright 2008, RealTEK Technologies Inc. All Rights Reserved.
+- *
+- *  Module:	r819xusb_cmdpkt.c
+- *		(RTL8190 TX/RX command packet handler Source C File)
+- *
+- *  Note:	The module is responsible for handling TX and RX command packet.
+- *		1. TX : Send set and query configuration command packet.
+- *		2. RX : Receive tx feedback, beacon state, query configuration
+- *			command packet.
+- *
+- *  Function:
+- *
+- *  Export:
+- *
+- *  Abbrev:
+- *
+- *  History:
+- *
+- *	Date		Who		Remark
+- *	05/06/2008	amy		Create initial version porting from
+- *					windows driver.
+- *
+- ******************************************************************************/
+-#include "r8192U.h"
+-#include "r819xU_cmdpkt.h"
+-
+-rt_status SendTxCommandPacket(struct net_device *dev, void *pData, u32 DataLen)
+-{
+-	struct r8192_priv   *priv = ieee80211_priv(dev);
+-	struct sk_buff	    *skb;
+-	struct cb_desc	    *tcb_desc;
+-
+-	/* Get TCB and local buffer from common pool.
+-	 * (It is shared by CmdQ, MgntQ, and USB coalesce DataQ)
+-	 */
+-	skb  = dev_alloc_skb(USB_HWDESC_HEADER_LEN + DataLen + 4);
+-	if (!skb)
+-		return RT_STATUS_FAILURE;
+-	memcpy((unsigned char *)(skb->cb), &dev, sizeof(dev));
+-	tcb_desc = (struct cb_desc *)(skb->cb + MAX_DEV_ADDR_SIZE);
+-	tcb_desc->queue_index = TXCMD_QUEUE;
+-	tcb_desc->bCmdOrInit = DESC_PACKET_TYPE_NORMAL;
+-	tcb_desc->bLastIniPkt = 0;
+-	skb_reserve(skb, USB_HWDESC_HEADER_LEN);
+-	skb_put_data(skb, pData, DataLen);
+-	tcb_desc->txbuf_size = (u16)DataLen;
+-
+-	if (!priv->ieee80211->check_nic_enough_desc(dev, tcb_desc->queue_index) ||
+-	    (!skb_queue_empty(&priv->ieee80211->skb_waitQ[tcb_desc->queue_index])) ||
+-	    (priv->ieee80211->queue_stop)) {
+-		RT_TRACE(COMP_FIRMWARE, "=== NULL packet ======> tx full!\n");
+-		skb_queue_tail(&priv->ieee80211->skb_waitQ[tcb_desc->queue_index], skb);
+-	} else {
+-		priv->ieee80211->softmac_hard_start_xmit(skb, dev);
+-	}
+-
+-	return RT_STATUS_SUCCESS;
+-}
+-
+-static void cmpk_count_txstatistic(struct net_device *dev, struct cmd_pkt_tx_feedback *pstx_fb)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-#ifdef ENABLE_PS
+-	RT_RF_POWER_STATE	rtState;
+-
+-	pAdapter->HalFunc.GetHwRegHandler(pAdapter, HW_VAR_RF_STATE,
+-					  (pu1Byte)(&rtState));
+-
+-	/* When RF is off, we should not count the packet for hw/sw synchronize
+-	 * reason, ie. there may be a duration while sw switch is changed and
+-	 * hw switch is being changed.
+-	 */
+-	if (rtState == eRfOff)
+-		return;
+-#endif
+-
+-#ifdef TODO
+-	if (pAdapter->bInHctTest)
+-		return;
+-#endif
+-	/* We can not know the packet length and transmit type:
+-	 * broadcast or uni or multicast. So the relative statistics
+-	 * must be collected in tx feedback info.
+-	 */
+-	if (pstx_fb->tok) {
+-		priv->stats.txfeedbackok++;
+-		priv->stats.txoktotal++;
+-		priv->stats.txokbytestotal += pstx_fb->pkt_length;
+-		priv->stats.txokinperiod++;
+-
+-		/* We can not make sure broadcast/multicast or unicast mode. */
+-		if (pstx_fb->pkt_type == PACKET_MULTICAST) {
+-			priv->stats.txmulticast++;
+-			priv->stats.txbytesmulticast += pstx_fb->pkt_length;
+-		} else if (pstx_fb->pkt_type == PACKET_BROADCAST) {
+-			priv->stats.txbroadcast++;
+-			priv->stats.txbytesbroadcast += pstx_fb->pkt_length;
+-		} else {
+-			priv->stats.txunicast++;
+-			priv->stats.txbytesunicast += pstx_fb->pkt_length;
+-		}
+-	} else {
+-		priv->stats.txfeedbackfail++;
+-		priv->stats.txerrtotal++;
+-		priv->stats.txerrbytestotal += pstx_fb->pkt_length;
+-
+-		/* We can not make sure broadcast/multicast or unicast mode. */
+-		if (pstx_fb->pkt_type == PACKET_MULTICAST)
+-			priv->stats.txerrmulticast++;
+-		else if (pstx_fb->pkt_type == PACKET_BROADCAST)
+-			priv->stats.txerrbroadcast++;
+-		else
+-			priv->stats.txerrunicast++;
+-	}
+-
+-	priv->stats.txretrycount += pstx_fb->retry_cnt;
+-	priv->stats.txfeedbackretry += pstx_fb->retry_cnt;
+-}
+-
+-/*-----------------------------------------------------------------------------
+- * Function:    cmpk_handle_tx_feedback()
+- *
+- * Overview:	The function is responsible for extract the message inside TX
+- *		feedbck message from firmware. It will contain dedicated info in
+- *		ws-06-0063-rtl8190-command-packet-specification.
+- *		Please refer to chapter "TX Feedback Element".
+- *              We have to read 20 bytes in the command packet.
+- *
+- * Input:       struct net_device	*dev
+- *              u8			*pmsg	- Msg Ptr of the command packet.
+- *
+- * Output:      NONE
+- *
+- * Return:      NONE
+- *
+- * Revised History:
+- *  When		Who	Remark
+- *  05/08/2008		amy	Create Version 0 porting from windows code.
+- *
+- *---------------------------------------------------------------------------
+- */
+-static void cmpk_handle_tx_feedback(struct net_device *dev, u8 *pmsg)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	struct cmd_pkt_tx_feedback rx_tx_fb;
+-
+-	priv->stats.txfeedback++;
+-
+-	/* 1. Extract TX feedback info from RFD to temp structure buffer. */
+-	/* It seems that FW use big endian(MIPS) and DRV use little endian in
+-	 * windows OS. So we have to read the content byte by byte or transfer
+-	 * endian type before copy the message copy.
+-	 */
+-	/* Use pointer to transfer structure memory. */
+-	memcpy((u8 *)&rx_tx_fb, pmsg, sizeof(struct cmd_pkt_tx_feedback));
+-	/* 2. Use tx feedback info to count TX statistics. */
+-	cmpk_count_txstatistic(dev, &rx_tx_fb);
+-	/* Comment previous method for TX statistic function. */
+-	/* Collect info TX feedback packet to fill TCB. */
+-	/* We can not know the packet length and transmit type: broadcast or uni
+-	 * or multicast.
+-	 */
+-}
+-
+-static void cmdpkt_beacontimerinterrupt_819xusb(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u16 tx_rate;
+-
+-	/* 87B have to S/W beacon for DTM encryption_cmn. */
+-	if (priv->ieee80211->current_network.mode == IEEE_A ||
+-	    priv->ieee80211->current_network.mode == IEEE_N_5G ||
+-	    (priv->ieee80211->current_network.mode == IEEE_N_24G &&
+-	     (!priv->ieee80211->pHTInfo->bCurSuppCCK))) {
+-		tx_rate = 60;
+-		DMESG("send beacon frame  tx rate is 6Mbpm\n");
+-	} else {
+-		tx_rate = 10;
+-		DMESG("send beacon frame  tx rate is 1Mbpm\n");
+-	}
+-
+-	rtl819xusb_beacon_tx(dev, tx_rate); /* HW Beacon */
+-}
+-
+-/*-----------------------------------------------------------------------------
+- * Function:    cmpk_handle_interrupt_status()
+- *
+- * Overview:    The function is responsible for extract the message from
+- *		firmware. It will contain dedicated info in
+- *		ws-07-0063-v06-rtl819x-command-packet-specification-070315.doc.
+- *		Please refer to chapter "Interrupt Status Element".
+- *
+- * Input:       struct net_device *dev
+- *              u8 *pmsg		- Message Pointer of the command packet.
+- *
+- * Output:      NONE
+- *
+- * Return:      NONE
+- *
+- * Revised History:
+- *  When		Who	Remark
+- *  05/12/2008		amy	Add this for rtl8192 porting from windows code.
+- *
+- *---------------------------------------------------------------------------
+- */
+-static void cmpk_handle_interrupt_status(struct net_device *dev, u8 *pmsg)
+-{
+-	struct cmd_pkt_interrupt_status	 rx_intr_status;	/* */
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	DMESG("---> cmpk_Handle_Interrupt_Status()\n");
+-
+-	/* 1. Extract TX feedback info from RFD to temp structure buffer. */
+-	/* It seems that FW use big endian(MIPS) and DRV use little endian in
+-	 * windows OS. So we have to read the content byte by byte or transfer
+-	 * endian type before copy the message copy.
+-	 */
+-	rx_intr_status.length = pmsg[1];
+-	if (rx_intr_status.length != (sizeof(struct cmd_pkt_interrupt_status) - 2)) {
+-		DMESG("cmpk_Handle_Interrupt_Status: wrong length!\n");
+-		return;
+-	}
+-
+-	/* Statistics of beacon for ad-hoc mode. */
+-	if (priv->ieee80211->iw_mode == IW_MODE_ADHOC) {
+-		/* 2 maybe need endian transform? */
+-		rx_intr_status.interrupt_status = *((u32 *)(pmsg + 4));
+-
+-		DMESG("interrupt status = 0x%x\n",
+-		      rx_intr_status.interrupt_status);
+-
+-		if (rx_intr_status.interrupt_status & ISR_TX_BCN_OK) {
+-			priv->ieee80211->bibsscoordinator = true;
+-			priv->stats.txbeaconokint++;
+-		} else if (rx_intr_status.interrupt_status & ISR_TX_BCN_ERR) {
+-			priv->ieee80211->bibsscoordinator = false;
+-			priv->stats.txbeaconerr++;
+-		}
+-
+-		if (rx_intr_status.interrupt_status & ISR_BCN_TIMER_INTR)
+-			cmdpkt_beacontimerinterrupt_819xusb(dev);
+-	}
+-
+-	/* Other information in interrupt status we need? */
+-
+-	DMESG("<---- cmpk_handle_interrupt_status()\n");
+-}
+-
+-/*-----------------------------------------------------------------------------
+- * Function:	cmpk_count_tx_status()
+- *
+- * Overview:	Count aggregated tx status from firmwar of one type rx command
+- *		packet element id = RX_TX_STATUS.
+- *
+- * Input:	NONE
+- *
+- * Output:	NONE
+- *
+- * Return:	NONE
+- *
+- * Revised History:
+- *	When		Who	Remark
+- *	05/12/2008	amy	Create Version 0 porting from windows code.
+- *
+- *---------------------------------------------------------------------------
+- */
+-static void cmpk_count_tx_status(struct net_device *dev,
+-				 cmpk_tx_status_t *pstx_status)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-#ifdef ENABLE_PS
+-
+-	RT_RF_POWER_STATE	rtstate;
+-
+-	pAdapter->HalFunc.GetHwRegHandler(pAdapter, HW_VAR_RF_STATE,
+-					  (pu1Byte)(&rtState));
+-
+-	/* When RF is off, we should not count the packet for hw/sw synchronize
+-	 * reason, ie. there may be a duration while sw switch is changed and
+-	 * hw switch is being changed.
+-	 */
+-	if (rtState == eRfOff)
+-		return;
+-#endif
+-
+-	priv->stats.txfeedbackok	+= pstx_status->txok;
+-	priv->stats.txoktotal		+= pstx_status->txok;
+-
+-	priv->stats.txfeedbackfail	+= pstx_status->txfail;
+-	priv->stats.txerrtotal		+= pstx_status->txfail;
+-
+-	priv->stats.txretrycount	+= pstx_status->txretry;
+-	priv->stats.txfeedbackretry	+= pstx_status->txretry;
+-
+-	priv->stats.txmulticast		+= pstx_status->txmcok;
+-	priv->stats.txbroadcast		+= pstx_status->txbcok;
+-	priv->stats.txunicast		+= pstx_status->txucok;
+-
+-	priv->stats.txerrmulticast	+= pstx_status->txmcfail;
+-	priv->stats.txerrbroadcast	+= pstx_status->txbcfail;
+-	priv->stats.txerrunicast	+= pstx_status->txucfail;
+-
+-	priv->stats.txbytesmulticast	+= pstx_status->txmclength;
+-	priv->stats.txbytesbroadcast	+= pstx_status->txbclength;
+-	priv->stats.txbytesunicast	+= pstx_status->txuclength;
+-
+-	priv->stats.last_packet_rate	= pstx_status->rate;
+-}
+-
+-/*-----------------------------------------------------------------------------
+- * Function:	cmpk_handle_tx_status()
+- *
+- * Overview:	Firmware add a new tx feedback status to reduce rx command
+- *		packet buffer operation load.
+- *
+- * Input:		NONE
+- *
+- * Output:		NONE
+- *
+- * Return:		NONE
+- *
+- * Revised History:
+- *	When		Who	Remark
+- *	05/12/2008	amy	Create Version 0 porting from windows code.
+- *
+- *---------------------------------------------------------------------------
+- */
+-static void cmpk_handle_tx_status(struct net_device *dev, u8 *pmsg)
+-{
+-	cmpk_tx_status_t	rx_tx_sts;
+-
+-	memcpy((void *)&rx_tx_sts, (void *)pmsg, sizeof(cmpk_tx_status_t));
+-	/* 2. Use tx feedback info to count TX statistics. */
+-	cmpk_count_tx_status(dev, &rx_tx_sts);
+-}
+-
+-/*-----------------------------------------------------------------------------
+- * Function:	cmpk_handle_tx_rate_history()
+- *
+- * Overview:	Firmware add a new tx rate history
+- *
+- * Input:		NONE
+- *
+- * Output:		NONE
+- *
+- * Return:		NONE
+- *
+- * Revised History:
+- *	When		Who	Remark
+- *	05/12/2008	amy	Create Version 0 porting from windows code.
+- *
+- *---------------------------------------------------------------------------
+- */
+-static void cmpk_handle_tx_rate_history(struct net_device *dev, u8 *pmsg)
+-{
+-	cmpk_tx_rahis_t	*ptxrate;
+-	u8		i, j;
+-	u16		length = sizeof(cmpk_tx_rahis_t);
+-	u32		*ptemp;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-#ifdef ENABLE_PS
+-	pAdapter->HalFunc.GetHwRegHandler(pAdapter, HW_VAR_RF_STATE,
+-					  (pu1Byte)(&rtState));
+-
+-	/* When RF is off, we should not count the packet for hw/sw synchronize
+-	 * reason, ie. there may be a duration while sw switch is changed and
+-	 * hw switch is being changed.
+-	 */
+-	if (rtState == eRfOff)
+-		return;
+-#endif
+-
+-	ptemp = (u32 *)pmsg;
+-
+-	/* Do endian transfer to word alignment(16 bits) for windows system.
+-	 * You must do different endian transfer for linux and MAC OS
+-	 */
+-	for (i = 0; i < (length/4); i++) {
+-		u16	 temp1, temp2;
+-
+-		temp1 = ptemp[i] & 0x0000FFFF;
+-		temp2 = ptemp[i] >> 16;
+-		ptemp[i] = (temp1 << 16) | temp2;
+-	}
+-
+-	ptxrate = (cmpk_tx_rahis_t *)pmsg;
+-
+-	if (!ptxrate)
+-		return;
+-
+-	for (i = 0; i < 16; i++) {
+-		/* Collect CCK rate packet num */
+-		if (i < 4)
+-			priv->stats.txrate.cck[i] += ptxrate->cck[i];
+-
+-		/* Collect OFDM rate packet num */
+-		if (i < 8)
+-			priv->stats.txrate.ofdm[i] += ptxrate->ofdm[i];
+-
+-		for (j = 0; j < 4; j++)
+-			priv->stats.txrate.ht_mcs[j][i] += ptxrate->ht_mcs[j][i];
+-	}
+-}
+-
+-/*-----------------------------------------------------------------------------
+- * Function:    cmpk_message_handle_rx()
+- *
+- * Overview:    In the function, we will capture different RX command packet
+- *		info. Every RX command packet element has different message
+- *		length and meaning in content. We only support three type of RX
+- *		command packet now. Please refer to document
+- *		ws-06-0063-rtl8190-command-packet-specification.
+- *
+- * Input:       NONE
+- *
+- * Output:      NONE
+- *
+- * Return:      NONE
+- *
+- * Revised History:
+- *  When		Who	Remark
+- *  05/06/2008		amy	Create Version 0 porting from windows code.
+- *
+- *---------------------------------------------------------------------------
+- */
+-u32 cmpk_message_handle_rx(struct net_device *dev,
+-			   struct ieee80211_rx_stats *pstats)
+-{
+-	int			total_length;
+-	u8			cmd_length, exe_cnt = 0;
+-	u8			element_id;
+-	u8			*pcmd_buff;
+-
+-	/* 0. Check inpt arguments. It is a command queue message or
+-	 * pointer is null.
+-	 */
+-	if (!pstats)
+-		return 0;	/* This is not a command packet. */
+-
+-	/* 1. Read received command packet message length from RFD. */
+-	total_length = pstats->Length;
+-
+-	/* 2. Read virtual address from RFD. */
+-	pcmd_buff = pstats->virtual_address;
+-
+-	/* 3. Read command packet element id and length. */
+-	element_id = pcmd_buff[0];
+-
+-	/* 4. Check every received command packet content according to different
+-	 *    element type. Because FW may aggregate RX command packet to
+-	 *    minimize transmit time between DRV and FW.
+-	 */
+-	/* Add a counter to prevent the lock in the loop from being held too
+-	 * long
+-	 */
+-	while (total_length > 0 && exe_cnt++ < 100) {
+-		/* We support aggregation of different cmd in the same packet */
+-		element_id = pcmd_buff[0];
+-
+-		switch (element_id) {
+-		case RX_TX_FEEDBACK:
+-			cmpk_handle_tx_feedback(dev, pcmd_buff);
+-			cmd_length = CMPK_RX_TX_FB_SIZE;
+-			break;
+-
+-		case RX_INTERRUPT_STATUS:
+-			cmpk_handle_interrupt_status(dev, pcmd_buff);
+-			cmd_length = sizeof(struct cmd_pkt_interrupt_status);
+-			break;
+-
+-		case BOTH_QUERY_CONFIG:
+-			cmd_length = CMPK_BOTH_QUERY_CONFIG_SIZE;
+-			break;
+-
+-		case RX_TX_STATUS:
+-			cmpk_handle_tx_status(dev, pcmd_buff);
+-			cmd_length = CMPK_RX_TX_STS_SIZE;
+-			break;
+-
+-		case RX_TX_PER_PKT_FEEDBACK:
+-			/* You must at lease add a switch case element here,
+-			 * Otherwise, we will jump to default case.
+-			 */
+-			cmd_length = CMPK_RX_TX_FB_SIZE;
+-			break;
+-
+-		case RX_TX_RATE_HISTORY:
+-			cmpk_handle_tx_rate_history(dev, pcmd_buff);
+-			cmd_length = CMPK_TX_RAHIS_SIZE;
+-			break;
+-
+-		default:
+-
+-			RT_TRACE(COMP_ERR, "---->%s():unknown CMD Element\n",
+-				 __func__);
+-			return 1;	/* This is a command packet. */
+-		}
+-
+-		total_length -= cmd_length;
+-		pcmd_buff    += cmd_length;
+-	}
+-	return	1;	/* This is a command packet. */
+-}
+diff --git a/drivers/staging/rtl8192u/r819xU_cmdpkt.h b/drivers/staging/rtl8192u/r819xU_cmdpkt.h
+deleted file mode 100644
+index be45cd609d67..000000000000
+--- a/drivers/staging/rtl8192u/r819xU_cmdpkt.h
++++ /dev/null
+@@ -1,190 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef R819XUSB_CMDPKT_H
+-#define R819XUSB_CMDPKT_H
+-/* Different command packet have dedicated message length and definition. */
+-#define		CMPK_RX_TX_FB_SIZE		sizeof(struct cmd_pkt_tx_feedback)	/* 20 */
+-#define		CMPK_BOTH_QUERY_CONFIG_SIZE	sizeof(struct cmd_pkt_set_configuration)	/* 16 */
+-#define		CMPK_RX_TX_STS_SIZE		sizeof(cmpk_tx_status_t)
+-#define		CMPK_TX_RAHIS_SIZE		sizeof(cmpk_tx_rahis_t)
+-
+-/* 2008/05/08 amy For USB constant. */
+-#define ISR_TX_BCN_OK		BIT(27)		/* Transmit Beacon OK */
+-#define ISR_TX_BCN_ERR		BIT(26)		/* Transmit Beacon Error */
+-#define ISR_BCN_TIMER_INTR	BIT(13)		/* Beacon Timer Interrupt */
+-
+-/* Define element ID of command packet. */
+-
+-/*------------------------------Define structure----------------------------*/
+-/* Define different command packet structure. */
+-/* 1. RX side: TX feedback packet. */
+-struct cmd_pkt_tx_feedback {
+-	/* DWORD 0 */
+-	u8	element_id;			/* Command packet type. */
+-	u8	length;				/* Command packet length. */
+-	/* Change tx feedback info field. */
+-	/*------TX Feedback Info Field */
+-	u8	TID:4;
+-	u8	fail_reason:3;
+-	u8	tok:1;				/* Transmit ok. */
+-	u8	reserve1:4;
+-	u8	pkt_type:2;
+-	u8	bandwidth:1;
+-	u8	qos_pkt:1;
+-
+-	/* DWORD 1 */
+-	u8	reserve2;
+-	/*------TX Feedback Info Field */
+-	u8	retry_cnt;
+-	u16	pkt_id;
+-
+-	/* DWORD 3 */
+-	u16	seq_num;
+-	u8	s_rate;				/* Start rate. */
+-	u8	f_rate;				/* Final rate. */
+-
+-	/* DWORD 4 */
+-	u8	s_rts_rate;
+-	u8	f_rts_rate;
+-	u16	pkt_length;
+-
+-	/* DWORD 5 */
+-	u16	reserve3;
+-	u16	duration;
+-};
+-
+-/* 2. RX side: Interrupt status packet. It includes Beacon State,
+- * Beacon Timer Interrupt and other useful information in MAC ISR Reg.
+- */
+-struct cmd_pkt_interrupt_status {
+-	u8	element_id;			/* Command packet type. */
+-	u8	length;				/* Command packet length. */
+-	u16	reserve;
+-	u32	interrupt_status;		/* Interrupt Status. */
+-};
+-
+-/* 3. TX side: Set configuration packet. */
+-struct cmd_pkt_set_configuration {
+-	u8	element_id;			/* Command packet type. */
+-	u8	length;				/* Command packet length. */
+-	u16	reserve1;
+-	/* Configuration info. */
+-	u8	cfg_reserve1:3;
+-	u8	cfg_size:2;
+-	u8	cfg_type:2;
+-	u8	cfg_action:1;
+-	u8	cfg_reserve2;
+-	u8	cfg_page:4;
+-	u8	cfg_reserve3:4;
+-	u8	cfg_offset;
+-	u32	value;
+-	u32	mask;
+-};
+-
+-/* 4. Both side : TX/RX query configuration packet. The query structure is the
+- *    same as set configuration.
+- */
+-#define		cmpk_query_cfg	cmd_pkt_set_configuration
+-
+-/* 5. Multi packet feedback status. */
+-typedef struct tag_tx_stats_feedback {
+-	/* For endian transfer --> Driver will not the same as
+-	 *  firmware structure.
+-	 */
+-	/* DW 0 */
+-	u16	reserve1;
+-	u8	length;				/* Command packet length */
+-	u8	element_id;			/* Command packet type */
+-
+-	/* DW 1 */
+-	u16	txfail;				/* Tx fail count */
+-	u16	txok;				/* Tx ok count */
+-
+-	/* DW 2 */
+-	u16	txmcok;				/* Tx multicast */
+-	u16	txretry;			/* Tx retry count */
+-
+-	/* DW 3 */
+-	u16	txucok;				/* Tx unicast */
+-	u16	txbcok;				/* Tx broadcast */
+-
+-	/* DW 4 */
+-	u16	txbcfail;
+-	u16	txmcfail;
+-
+-	/* DW 5 */
+-	u16	reserve2;
+-	u16	txucfail;
+-
+-	/* DW 6-8 */
+-	u32	txmclength;
+-	u32	txbclength;
+-	u32	txuclength;
+-
+-	/* DW 9 */
+-	u16	reserve3_23;
+-	u8	reserve3_1;
+-	u8	rate;
+-} __packed cmpk_tx_status_t;
+-
+-/* 6. Debug feedback message. */
+-/* Define RX debug message  */
+-typedef struct tag_rx_debug_message_feedback {
+-	/* For endian transfer --> for driver */
+-	/* DW 0 */
+-	u16	reserve1;
+-	u8	length;				/* Command packet length */
+-	u8	element_id;			/* Command packet type */
+-
+-	/* DW 1-?? */
+-	/* Variable debug message. */
+-
+-} cmpk_rx_dbginfo_t;
+-
+-/* Define transmit rate history. For big endian format. */
+-typedef struct tag_tx_rate_history {
+-	/* For endian transfer --> for driver */
+-	/* DW 0 */
+-	u8	element_id;			/* Command packet type */
+-	u8	length;				/* Command packet length */
+-	u16	reserved1;
+-
+-	/* DW 1-2	CCK rate counter */
+-	u16	cck[4];
+-
+-	/* DW 3-6 */
+-	u16	ofdm[8];
+-
+-	/* DW 7-14	BW=0 SG=0
+-	 * DW 15-22	BW=1 SG=0
+-	 * DW 23-30	BW=0 SG=1
+-	 * DW 31-38	BW=1 SG=1
+-	 */
+-	u16	ht_mcs[4][16];
+-
+-} __packed cmpk_tx_rahis_t;
+-
+-typedef enum tag_command_packet_directories {
+-	RX_TX_FEEDBACK			= 0,
+-	RX_INTERRUPT_STATUS		= 1,
+-	TX_SET_CONFIG			= 2,
+-	BOTH_QUERY_CONFIG		= 3,
+-	RX_TX_STATUS			= 4,
+-	RX_DBGINFO_FEEDBACK		= 5,
+-	RX_TX_PER_PKT_FEEDBACK		= 6,
+-	RX_TX_RATE_HISTORY		= 7,
+-	RX_CMD_ELE_MAX
+-} cmpk_element_e;
+-
+-typedef enum _rt_status {
+-	RT_STATUS_SUCCESS,
+-	RT_STATUS_FAILURE,
+-	RT_STATUS_PENDING,
+-	RT_STATUS_RESOURCE
+-} rt_status, *prt_status;
+-
+-u32 cmpk_message_handle_rx(struct net_device *dev,
+-			   struct ieee80211_rx_stats *pstats);
+-rt_status SendTxCommandPacket(struct net_device *dev,
+-			      void *pData, u32 DataLen);
+-
+-#endif
+diff --git a/drivers/staging/rtl8192u/r819xU_firmware.c b/drivers/staging/rtl8192u/r819xU_firmware.c
+deleted file mode 100644
+index 4f8629e47e82..000000000000
+--- a/drivers/staging/rtl8192u/r819xU_firmware.c
++++ /dev/null
+@@ -1,340 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/**************************************************************************************************
+- * Procedure:    Init boot code/firmware code/data session
+- *
+- * Description: This routine will initialize firmware. If any error occurs during the initialization
+- *		process, the routine shall terminate immediately and return fail.
+- *		NIC driver should call NdisOpenFile only from MiniportInitialize.
+- *
+- * Arguments:   The pointer of the adapter
+-
+- * Returns:
+- *        NDIS_STATUS_FAILURE - the following initialization process should be terminated
+- *        NDIS_STATUS_SUCCESS - if firmware initialization process success
+- **************************************************************************************************/
+-
+-#include "r8192U.h"
+-#include "r8192U_hw.h"
+-#include "r819xU_firmware_img.h"
+-#include "r819xU_firmware.h"
+-#include <linux/firmware.h>
+-
+-static void firmware_init_param(struct net_device *dev)
+-{
+-	struct r8192_priv	*priv = ieee80211_priv(dev);
+-	rt_firmware		*pfirmware = priv->pFirmware;
+-
+-	pfirmware->cmdpacket_frag_threshold = GET_COMMAND_PACKET_FRAG_THRESHOLD(MAX_TRANSMIT_BUFFER_SIZE);
+-}
+-
+-/*
+- * segment the img and use the ptr and length to remember info on each segment
+- *
+- */
+-static bool fw_download_code(struct net_device *dev, u8 *code_virtual_address,
+-			     u32 buffer_len)
+-{
+-	struct r8192_priv   *priv = ieee80211_priv(dev);
+-	bool		    rt_status = true;
+-	u16		    frag_threshold;
+-	u16		    frag_length, frag_offset = 0;
+-	int		    i;
+-
+-	rt_firmware	    *pfirmware = priv->pFirmware;
+-	struct sk_buff	    *skb;
+-	unsigned char	    *seg_ptr;
+-	struct cb_desc		    *tcb_desc;
+-	u8                  bLastIniPkt;
+-	u8		    index;
+-
+-	firmware_init_param(dev);
+-	/* Fragmentation might be required */
+-	frag_threshold = pfirmware->cmdpacket_frag_threshold;
+-	do {
+-		if ((buffer_len - frag_offset) > frag_threshold) {
+-			frag_length = frag_threshold;
+-			bLastIniPkt = 0;
+-		} else {
+-			frag_length = buffer_len - frag_offset;
+-			bLastIniPkt = 1;
+-		}
+-
+-		/* Allocate skb buffer to contain firmware info and tx descriptor info
+-		 * add 4 to avoid packet appending overflow.
+-		 */
+-		skb  = dev_alloc_skb(USB_HWDESC_HEADER_LEN + frag_length + 4);
+-		if (!skb)
+-			return false;
+-		memcpy((unsigned char *)(skb->cb), &dev, sizeof(dev));
+-		tcb_desc = (struct cb_desc *)(skb->cb + MAX_DEV_ADDR_SIZE);
+-		tcb_desc->queue_index = TXCMD_QUEUE;
+-		tcb_desc->bCmdOrInit = DESC_PACKET_TYPE_INIT;
+-		tcb_desc->bLastIniPkt = bLastIniPkt;
+-
+-		skb_reserve(skb, USB_HWDESC_HEADER_LEN);
+-		seg_ptr = skb->data;
+-		/*
+-		 * Transform from little endian to big endian
+-		 * and pending  zero
+-		 */
+-		for (i = 0; i < frag_length; i += 4) {
+-			*seg_ptr++ = ((i+0) < frag_length)?code_virtual_address[i+3] : 0;
+-			*seg_ptr++ = ((i+1) < frag_length)?code_virtual_address[i+2] : 0;
+-			*seg_ptr++ = ((i+2) < frag_length)?code_virtual_address[i+1] : 0;
+-			*seg_ptr++ = ((i+3) < frag_length)?code_virtual_address[i+0] : 0;
+-		}
+-		tcb_desc->txbuf_size = (u16)i;
+-		skb_put(skb, i);
+-
+-		index = tcb_desc->queue_index;
+-		if (!priv->ieee80211->check_nic_enough_desc(dev, index) ||
+-		       (!skb_queue_empty(&priv->ieee80211->skb_waitQ[index])) ||
+-		       (priv->ieee80211->queue_stop)) {
+-			RT_TRACE(COMP_FIRMWARE, "=====================================================> tx full!\n");
+-			skb_queue_tail(&priv->ieee80211->skb_waitQ[tcb_desc->queue_index], skb);
+-		} else {
+-			priv->ieee80211->softmac_hard_start_xmit(skb, dev);
+-		}
+-
+-		code_virtual_address += frag_length;
+-		frag_offset += frag_length;
+-
+-	} while (frag_offset < buffer_len);
+-
+-	return rt_status;
+-}
+-
+-/*
+- * Procedure:	Check whether main code is download OK. If OK, turn on CPU
+- *
+- * Description:	CPU register locates in different page against general register.
+- *	    Switch to CPU register in the begin and switch back before return
+- *
+- *
+- * Arguments:   The pointer of the adapter
+- *
+- * Returns:
+- *        NDIS_STATUS_FAILURE - the following initialization process should
+- *				be terminated
+- *        NDIS_STATUS_SUCCESS - if firmware initialization process success
+- */
+-static bool CPUcheck_maincodeok_turnonCPU(struct net_device *dev)
+-{
+-	bool		rt_status = true;
+-	int		check_putcodeOK_time = 200000, check_bootOk_time = 200000;
+-	u32		CPU_status = 0;
+-
+-	/* Check whether put code OK */
+-	do {
+-		read_nic_dword(dev, CPU_GEN, &CPU_status);
+-
+-		if (CPU_status&CPU_GEN_PUT_CODE_OK)
+-			break;
+-
+-	} while (check_putcodeOK_time--);
+-
+-	if (!(CPU_status&CPU_GEN_PUT_CODE_OK)) {
+-		RT_TRACE(COMP_ERR, "Download Firmware: Put code fail!\n");
+-		goto CPUCheckMainCodeOKAndTurnOnCPU_Fail;
+-	} else {
+-		RT_TRACE(COMP_FIRMWARE, "Download Firmware: Put code ok!\n");
+-	}
+-
+-	/* Turn On CPU */
+-	read_nic_dword(dev, CPU_GEN, &CPU_status);
+-	write_nic_byte(dev, CPU_GEN,
+-		       (u8)((CPU_status | CPU_GEN_PWR_STB_CPU) & 0xff));
+-	mdelay(1000);
+-
+-	/* Check whether CPU boot OK */
+-	do {
+-		read_nic_dword(dev, CPU_GEN, &CPU_status);
+-
+-		if (CPU_status&CPU_GEN_BOOT_RDY)
+-			break;
+-	} while (check_bootOk_time--);
+-
+-	if (!(CPU_status&CPU_GEN_BOOT_RDY))
+-		goto CPUCheckMainCodeOKAndTurnOnCPU_Fail;
+-	else
+-		RT_TRACE(COMP_FIRMWARE, "Download Firmware: Boot ready!\n");
+-
+-	return rt_status;
+-
+-CPUCheckMainCodeOKAndTurnOnCPU_Fail:
+-	RT_TRACE(COMP_ERR, "ERR in %s()\n", __func__);
+-	rt_status = false;
+-	return rt_status;
+-}
+-
+-static bool CPUcheck_firmware_ready(struct net_device *dev)
+-{
+-	bool		rt_status = true;
+-	int		check_time = 200000;
+-	u32		CPU_status = 0;
+-
+-	/* Check Firmware Ready */
+-	do {
+-		read_nic_dword(dev, CPU_GEN, &CPU_status);
+-
+-		if (CPU_status&CPU_GEN_FIRM_RDY)
+-			break;
+-
+-	} while (check_time--);
+-
+-	if (!(CPU_status&CPU_GEN_FIRM_RDY))
+-		goto CPUCheckFirmwareReady_Fail;
+-	else
+-		RT_TRACE(COMP_FIRMWARE, "Download Firmware: Firmware ready!\n");
+-
+-	return rt_status;
+-
+-CPUCheckFirmwareReady_Fail:
+-	RT_TRACE(COMP_ERR, "ERR in %s()\n", __func__);
+-	rt_status = false;
+-	return rt_status;
+-}
+-
+-bool init_firmware(struct net_device *dev)
+-{
+-	struct r8192_priv	*priv = ieee80211_priv(dev);
+-	bool			rt_status = true;
+-
+-	u32			file_length = 0;
+-	u8			*mapped_file = NULL;
+-	u32			init_step = 0;
+-	enum opt_rst_type_e	   rst_opt = OPT_SYSTEM_RESET;
+-	enum firmware_init_step_e  starting_state = FW_INIT_STEP0_BOOT;
+-
+-	rt_firmware		*pfirmware = priv->pFirmware;
+-	const struct firmware	*fw_entry;
+-	const char *fw_name[3] = { "RTL8192U/boot.img",
+-			   "RTL8192U/main.img",
+-			   "RTL8192U/data.img"};
+-	int rc;
+-
+-	RT_TRACE(COMP_FIRMWARE, " PlatformInitFirmware()==>\n");
+-
+-	if (pfirmware->firmware_status == FW_STATUS_0_INIT) {
+-		/* it is called by reset */
+-		rst_opt = OPT_SYSTEM_RESET;
+-		starting_state = FW_INIT_STEP0_BOOT;
+-		/* TODO: system reset */
+-
+-	} else if (pfirmware->firmware_status == FW_STATUS_5_READY) {
+-		/* it is called by Initialize */
+-		rst_opt = OPT_FIRMWARE_RESET;
+-		starting_state = FW_INIT_STEP2_DATA;
+-	} else {
+-		RT_TRACE(COMP_FIRMWARE, "PlatformInitFirmware: undefined firmware state\n");
+-	}
+-
+-	/*
+-	 * Download boot, main, and data image for System reset.
+-	 * Download data image for firmware reset
+-	 */
+-	for (init_step = starting_state; init_step <= FW_INIT_STEP2_DATA; init_step++) {
+-		/*
+-		 * Open image file, and map file to continuous memory if open file success.
+-		 * or read image file from array. Default load from IMG file
+-		 */
+-		if (rst_opt == OPT_SYSTEM_RESET) {
+-			rc = request_firmware(&fw_entry, fw_name[init_step], &priv->udev->dev);
+-			if (rc < 0) {
+-				RT_TRACE(COMP_ERR, "request firmware fail!\n");
+-				goto download_firmware_fail;
+-			}
+-
+-			if (fw_entry->size > sizeof(pfirmware->firmware_buf)) {
+-				RT_TRACE(COMP_ERR, "img file size exceed the container buffer fail!\n");
+-				goto download_firmware_fail;
+-			}
+-
+-			if (init_step != FW_INIT_STEP1_MAIN) {
+-				memcpy(pfirmware->firmware_buf, fw_entry->data, fw_entry->size);
+-				mapped_file = pfirmware->firmware_buf;
+-				file_length = fw_entry->size;
+-			} else {
+-				memset(pfirmware->firmware_buf, 0, 128);
+-				memcpy(&pfirmware->firmware_buf[128], fw_entry->data, fw_entry->size);
+-				mapped_file = pfirmware->firmware_buf;
+-				file_length = fw_entry->size + 128;
+-			}
+-			pfirmware->firmware_buf_size = file_length;
+-		} else if (rst_opt == OPT_FIRMWARE_RESET) {
+-			/* we only need to download data.img here */
+-			mapped_file = pfirmware->firmware_buf;
+-			file_length = pfirmware->firmware_buf_size;
+-		}
+-
+-		/* Download image file */
+-		/* The firmware download process is just as following,
+-		 * 1. that is each packet will be segmented and inserted to the wait queue.
+-		 * 2. each packet segment will be put in the skb_buff packet.
+-		 * 3. each skb_buff packet data content will already include the firmware info
+-		 *   and Tx descriptor info
+-		 */
+-		rt_status = fw_download_code(dev, mapped_file, file_length);
+-		if (rst_opt == OPT_SYSTEM_RESET)
+-			release_firmware(fw_entry);
+-
+-		if (!rt_status)
+-			goto download_firmware_fail;
+-
+-		switch (init_step) {
+-		case FW_INIT_STEP0_BOOT:
+-			/* Download boot
+-			 * initialize command descriptor.
+-			 * will set polling bit when firmware code is also configured
+-			 */
+-			pfirmware->firmware_status = FW_STATUS_1_MOVE_BOOT_CODE;
+-			/* mdelay(1000); */
+-			/*
+-			 * To initialize IMEM, CPU move code  from 0x80000080,
+-			 * hence, we send 0x80 byte packet
+-			 */
+-			break;
+-
+-		case FW_INIT_STEP1_MAIN:
+-			/* Download firmware code. Wait until Boot Ready and Turn on CPU */
+-			pfirmware->firmware_status = FW_STATUS_2_MOVE_MAIN_CODE;
+-
+-			/* Check Put Code OK and Turn On CPU */
+-			rt_status = CPUcheck_maincodeok_turnonCPU(dev);
+-			if (!rt_status) {
+-				RT_TRACE(COMP_ERR, "CPUcheck_maincodeok_turnonCPU fail!\n");
+-				goto download_firmware_fail;
+-			}
+-
+-			pfirmware->firmware_status = FW_STATUS_3_TURNON_CPU;
+-			break;
+-
+-		case FW_INIT_STEP2_DATA:
+-			/* download initial data code */
+-			pfirmware->firmware_status = FW_STATUS_4_MOVE_DATA_CODE;
+-			mdelay(1);
+-
+-			rt_status = CPUcheck_firmware_ready(dev);
+-			if (!rt_status) {
+-				RT_TRACE(COMP_ERR, "CPUcheck_firmware_ready fail(%d)!\n", rt_status);
+-				goto download_firmware_fail;
+-			}
+-
+-			/* wait until data code is initialized ready.*/
+-			pfirmware->firmware_status = FW_STATUS_5_READY;
+-			break;
+-		}
+-	}
+-
+-	RT_TRACE(COMP_FIRMWARE, "Firmware Download Success\n");
+-	return rt_status;
+-
+-download_firmware_fail:
+-	RT_TRACE(COMP_ERR, "ERR in %s()\n", __func__);
+-	rt_status = false;
+-	return rt_status;
+-}
+-
+-MODULE_FIRMWARE("RTL8192U/boot.img");
+-MODULE_FIRMWARE("RTL8192U/main.img");
+-MODULE_FIRMWARE("RTL8192U/data.img");
+diff --git a/drivers/staging/rtl8192u/r819xU_firmware.h b/drivers/staging/rtl8192u/r819xU_firmware.h
+deleted file mode 100644
+index b84344c1e62b..000000000000
+--- a/drivers/staging/rtl8192u/r819xU_firmware.h
++++ /dev/null
+@@ -1,19 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef __INC_FIRMWARE_H
+-#define __INC_FIRMWARE_H
+-
+-#define GET_COMMAND_PACKET_FRAG_THRESHOLD(v) \
+-	(4 * ((v) / 4) - 8 - USB_HWDESC_HEADER_LEN)
+-
+-enum firmware_init_step_e {
+-	FW_INIT_STEP0_BOOT = 0,
+-	FW_INIT_STEP1_MAIN = 1,
+-	FW_INIT_STEP2_DATA = 2,
+-};
+-
+-enum opt_rst_type_e {
+-	OPT_SYSTEM_RESET = 0,
+-	OPT_FIRMWARE_RESET = 1,
+-};
+-
+-#endif
+diff --git a/drivers/staging/rtl8192u/r819xU_firmware_img.c b/drivers/staging/rtl8192u/r819xU_firmware_img.c
+deleted file mode 100644
+index 0af062036688..000000000000
+--- a/drivers/staging/rtl8192u/r819xU_firmware_img.c
++++ /dev/null
+@@ -1,549 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*Created on  2008/ 7/16,  5:31*/
+-#include <linux/types.h>
+-#include "r819xU_firmware_img.h"
+-
+-u32 Rtl8192UsbPHY_REGArray[] = {
+-	0x0, };
+-
+-u32 Rtl8192UsbPHY_REG_1T2RArray[] = {
+-	0x800, 0x00000000,
+-	0x804, 0x00000001,
+-	0x808, 0x0000fc00,
+-	0x80c, 0x0000001c,
+-	0x810, 0x801010aa,
+-	0x814, 0x008514d0,
+-	0x818, 0x00000040,
+-	0x81c, 0x00000000,
+-	0x820, 0x00000004,
+-	0x824, 0x00690000,
+-	0x828, 0x00000004,
+-	0x82c, 0x00e90000,
+-	0x830, 0x00000004,
+-	0x834, 0x00690000,
+-	0x838, 0x00000004,
+-	0x83c, 0x00e90000,
+-	0x840, 0x00000000,
+-	0x844, 0x00000000,
+-	0x848, 0x00000000,
+-	0x84c, 0x00000000,
+-	0x850, 0x00000000,
+-	0x854, 0x00000000,
+-	0x858, 0x65a965a9,
+-	0x85c, 0x65a965a9,
+-	0x860, 0x001f0010,
+-	0x864, 0x007f0010,
+-	0x868, 0x001f0010,
+-	0x86c, 0x007f0010,
+-	0x870, 0x0f100f70,
+-	0x874, 0x0f100f70,
+-	0x878, 0x00000000,
+-	0x87c, 0x00000000,
+-	0x880, 0x6870e36c,
+-	0x884, 0xe3573600,
+-	0x888, 0x4260c340,
+-	0x88c, 0x0000ff00,
+-	0x890, 0x00000000,
+-	0x894, 0xfffffffe,
+-	0x898, 0x4c42382f,
+-	0x89c, 0x00656056,
+-	0x8b0, 0x00000000,
+-	0x8e0, 0x00000000,
+-	0x8e4, 0x00000000,
+-	0x900, 0x00000000,
+-	0x904, 0x00000023,
+-	0x908, 0x00000000,
+-	0x90c, 0x31121311,
+-	0xa00, 0x00d0c7d8,
+-	0xa04, 0x811f0008,
+-	0xa08, 0x80cd8300,
+-	0xa0c, 0x2e62740f,
+-	0xa10, 0x95009b78,
+-	0xa14, 0x11145008,
+-	0xa18, 0x00881117,
+-	0xa1c, 0x89140fa0,
+-	0xa20, 0x1a1b0000,
+-	0xa24, 0x090e1317,
+-	0xa28, 0x00000204,
+-	0xa2c, 0x00000000,
+-	0xc00, 0x00000040,
+-	0xc04, 0x00005433,
+-	0xc08, 0x000000e4,
+-	0xc0c, 0x6c6c6c6c,
+-	0xc10, 0x08800000,
+-	0xc14, 0x40000100,
+-	0xc18, 0x08000000,
+-	0xc1c, 0x40000100,
+-	0xc20, 0x08000000,
+-	0xc24, 0x40000100,
+-	0xc28, 0x08000000,
+-	0xc2c, 0x40000100,
+-	0xc30, 0x6de9ac44,
+-	0xc34, 0x465c52cd,
+-	0xc38, 0x497f5994,
+-	0xc3c, 0x0a969764,
+-	0xc40, 0x1f7c403f,
+-	0xc44, 0x000100b7,
+-	0xc48, 0xec020000,
+-	0xc4c, 0x00000300,
+-	0xc50, 0x69543420,
+-	0xc54, 0x433c0094,
+-	0xc58, 0x69543420,
+-	0xc5c, 0x433c0094,
+-	0xc60, 0x69543420,
+-	0xc64, 0x433c0094,
+-	0xc68, 0x69543420,
+-	0xc6c, 0x433c0094,
+-	0xc70, 0x2c7f000d,
+-	0xc74, 0x0186175b,
+-	0xc78, 0x0000001f,
+-	0xc7c, 0x00b91612,
+-	0xc80, 0x40000100,
+-	0xc84, 0x20000000,
+-	0xc88, 0x40000100,
+-	0xc8c, 0x20200000,
+-	0xc90, 0x40000100,
+-	0xc94, 0x00000000,
+-	0xc98, 0x40000100,
+-	0xc9c, 0x00000000,
+-	0xca0, 0x00492492,
+-	0xca4, 0x00000000,
+-	0xca8, 0x00000000,
+-	0xcac, 0x00000000,
+-	0xcb0, 0x00000000,
+-	0xcb4, 0x00000000,
+-	0xcb8, 0x00000000,
+-	0xcbc, 0x00492492,
+-	0xcc0, 0x00000000,
+-	0xcc4, 0x00000000,
+-	0xcc8, 0x00000000,
+-	0xccc, 0x00000000,
+-	0xcd0, 0x00000000,
+-	0xcd4, 0x00000000,
+-	0xcd8, 0x64b22427,
+-	0xcdc, 0x00766932,
+-	0xce0, 0x00222222,
+-	0xd00, 0x00000750,
+-	0xd04, 0x00000403,
+-	0xd08, 0x0000907f,
+-	0xd0c, 0x00000001,
+-	0xd10, 0xa0633333,
+-	0xd14, 0x33333c63,
+-	0xd18, 0x6a8f5b6b,
+-	0xd1c, 0x00000000,
+-	0xd20, 0x00000000,
+-	0xd24, 0x00000000,
+-	0xd28, 0x00000000,
+-	0xd2c, 0xcc979975,
+-	0xd30, 0x00000000,
+-	0xd34, 0x00000000,
+-	0xd38, 0x00000000,
+-	0xd3c, 0x00027293,
+-	0xd40, 0x00000000,
+-	0xd44, 0x00000000,
+-	0xd48, 0x00000000,
+-	0xd4c, 0x00000000,
+-	0xd50, 0x6437140a,
+-	0xd54, 0x024dbd02,
+-	0xd58, 0x00000000,
+-	0xd5c, 0x04032064,
+-	0xe00, 0x161a1a1a,
+-	0xe04, 0x12121416,
+-	0xe08, 0x00001800,
+-	0xe0c, 0x00000000,
+-	0xe10, 0x161a1a1a,
+-	0xe14, 0x12121416,
+-	0xe18, 0x161a1a1a,
+-	0xe1c, 0x12121416,
+-};
+-
+-u32 Rtl8192UsbRadioA_Array[] = {
+-	0x019, 0x00000003,
+-	0x000, 0x000000bf,
+-	0x001, 0x00000ee0,
+-	0x002, 0x0000004c,
+-	0x003, 0x000007f1,
+-	0x004, 0x00000975,
+-	0x005, 0x00000c58,
+-	0x006, 0x00000ae6,
+-	0x007, 0x000000ca,
+-	0x008, 0x00000e1c,
+-	0x009, 0x000007f0,
+-	0x00a, 0x000009d0,
+-	0x00b, 0x000001ba,
+-	0x00c, 0x00000240,
+-	0x00e, 0x00000020,
+-	0x00f, 0x00000990,
+-	0x012, 0x00000806,
+-	0x014, 0x000005ab,
+-	0x015, 0x00000f80,
+-	0x016, 0x00000020,
+-	0x017, 0x00000597,
+-	0x018, 0x0000050a,
+-	0x01a, 0x00000f80,
+-	0x01b, 0x00000f5e,
+-	0x01c, 0x00000008,
+-	0x01d, 0x00000607,
+-	0x01e, 0x000006cc,
+-	0x01f, 0x00000000,
+-	0x020, 0x000001a5,
+-	0x01f, 0x00000001,
+-	0x020, 0x00000165,
+-	0x01f, 0x00000002,
+-	0x020, 0x000000c6,
+-	0x01f, 0x00000003,
+-	0x020, 0x00000086,
+-	0x01f, 0x00000004,
+-	0x020, 0x00000046,
+-	0x01f, 0x00000005,
+-	0x020, 0x000001e6,
+-	0x01f, 0x00000006,
+-	0x020, 0x000001a6,
+-	0x01f, 0x00000007,
+-	0x020, 0x00000166,
+-	0x01f, 0x00000008,
+-	0x020, 0x000000c7,
+-	0x01f, 0x00000009,
+-	0x020, 0x00000087,
+-	0x01f, 0x0000000a,
+-	0x020, 0x000000f7,
+-	0x01f, 0x0000000b,
+-	0x020, 0x000000d7,
+-	0x01f, 0x0000000c,
+-	0x020, 0x000000b7,
+-	0x01f, 0x0000000d,
+-	0x020, 0x00000097,
+-	0x01f, 0x0000000e,
+-	0x020, 0x00000077,
+-	0x01f, 0x0000000f,
+-	0x020, 0x00000057,
+-	0x01f, 0x00000010,
+-	0x020, 0x00000037,
+-	0x01f, 0x00000011,
+-	0x020, 0x000000fb,
+-	0x01f, 0x00000012,
+-	0x020, 0x000000db,
+-	0x01f, 0x00000013,
+-	0x020, 0x000000bb,
+-	0x01f, 0x00000014,
+-	0x020, 0x000000ff,
+-	0x01f, 0x00000015,
+-	0x020, 0x000000e3,
+-	0x01f, 0x00000016,
+-	0x020, 0x000000c3,
+-	0x01f, 0x00000017,
+-	0x020, 0x000000a3,
+-	0x01f, 0x00000018,
+-	0x020, 0x00000083,
+-	0x01f, 0x00000019,
+-	0x020, 0x00000063,
+-	0x01f, 0x0000001a,
+-	0x020, 0x00000043,
+-	0x01f, 0x0000001b,
+-	0x020, 0x00000023,
+-	0x01f, 0x0000001c,
+-	0x020, 0x00000003,
+-	0x01f, 0x0000001d,
+-	0x020, 0x000001e3,
+-	0x01f, 0x0000001e,
+-	0x020, 0x000001c3,
+-	0x01f, 0x0000001f,
+-	0x020, 0x000001a3,
+-	0x01f, 0x00000020,
+-	0x020, 0x00000183,
+-	0x01f, 0x00000021,
+-	0x020, 0x00000163,
+-	0x01f, 0x00000022,
+-	0x020, 0x00000143,
+-	0x01f, 0x00000023,
+-	0x020, 0x00000123,
+-	0x01f, 0x00000024,
+-	0x020, 0x00000103,
+-	0x023, 0x00000203,
+-	0x024, 0x00000200,
+-	0x00b, 0x000001ba,
+-	0x02c, 0x000003d7,
+-	0x02d, 0x00000ff0,
+-	0x000, 0x00000037,
+-	0x004, 0x00000160,
+-	0x007, 0x00000080,
+-	0x002, 0x0000088d,
+-	0x0fe, 0x00000000,
+-	0x0fe, 0x00000000,
+-	0x016, 0x00000200,
+-	0x016, 0x00000380,
+-	0x016, 0x00000020,
+-	0x016, 0x000001a0,
+-	0x000, 0x000000bf,
+-	0x00d, 0x0000001f,
+-	0x00d, 0x00000c9f,
+-	0x002, 0x0000004d,
+-	0x000, 0x00000cbf,
+-	0x004, 0x00000975,
+-	0x007, 0x00000700,
+-};
+-
+-u32 Rtl8192UsbRadioB_Array[] = {
+-	0x019, 0x00000003,
+-	0x000, 0x000000bf,
+-	0x001, 0x000006e0,
+-	0x002, 0x0000004c,
+-	0x003, 0x000007f1,
+-	0x004, 0x00000975,
+-	0x005, 0x00000c58,
+-	0x006, 0x00000ae6,
+-	0x007, 0x000000ca,
+-	0x008, 0x00000e1c,
+-	0x000, 0x000000b7,
+-	0x00a, 0x00000850,
+-	0x000, 0x000000bf,
+-	0x00b, 0x000001ba,
+-	0x00c, 0x00000240,
+-	0x00e, 0x00000020,
+-	0x015, 0x00000f80,
+-	0x016, 0x00000020,
+-	0x017, 0x00000597,
+-	0x018, 0x0000050a,
+-	0x01a, 0x00000e00,
+-	0x01b, 0x00000f5e,
+-	0x01d, 0x00000607,
+-	0x01e, 0x000006cc,
+-	0x00b, 0x000001ba,
+-	0x023, 0x00000203,
+-	0x024, 0x00000200,
+-	0x000, 0x00000037,
+-	0x004, 0x00000160,
+-	0x016, 0x00000200,
+-	0x016, 0x00000380,
+-	0x016, 0x00000020,
+-	0x016, 0x000001a0,
+-	0x00d, 0x00000ccc,
+-	0x000, 0x000000bf,
+-	0x002, 0x0000004d,
+-	0x000, 0x00000cbf,
+-	0x004, 0x00000975,
+-	0x007, 0x00000700,
+-};
+-
+-u32 Rtl8192UsbRadioC_Array[] = {
+-	0x0, };
+-
+-u32 Rtl8192UsbRadioD_Array[] = {
+-	0x0, };
+-
+-u32 Rtl8192UsbMACPHY_Array[] = {
+-	0x03c, 0xffff0000, 0x00000f0f,
+-	0x340, 0xffffffff, 0x161a1a1a,
+-	0x344, 0xffffffff, 0x12121416,
+-	0x348, 0x0000ffff, 0x00001818,
+-	0x12c, 0xffffffff, 0x04000802,
+-	0x318, 0x00000fff, 0x00000100,
+-};
+-
+-u32 Rtl8192UsbMACPHY_Array_PG[] = {
+-	0x03c, 0xffff0000, 0x00000f0f,
+-	0xe00, 0xffffffff, 0x06090909,
+-	0xe04, 0xffffffff, 0x00030306,
+-	0xe08, 0x0000ff00, 0x00000000,
+-	0xe10, 0xffffffff, 0x0a0c0d0f,
+-	0xe14, 0xffffffff, 0x06070809,
+-	0xe18, 0xffffffff, 0x0a0c0d0f,
+-	0xe1c, 0xffffffff, 0x06070809,
+-	0x12c, 0xffffffff, 0x04000802,
+-	0x318, 0x00000fff, 0x00000800,
+-};
+-
+-u32 Rtl8192UsbAGCTAB_Array[] = {
+-	0xc78, 0x7d000001,
+-	0xc78, 0x7d010001,
+-	0xc78, 0x7d020001,
+-	0xc78, 0x7d030001,
+-	0xc78, 0x7d040001,
+-	0xc78, 0x7d050001,
+-	0xc78, 0x7c060001,
+-	0xc78, 0x7b070001,
+-	0xc78, 0x7a080001,
+-	0xc78, 0x79090001,
+-	0xc78, 0x780a0001,
+-	0xc78, 0x770b0001,
+-	0xc78, 0x760c0001,
+-	0xc78, 0x750d0001,
+-	0xc78, 0x740e0001,
+-	0xc78, 0x730f0001,
+-	0xc78, 0x72100001,
+-	0xc78, 0x71110001,
+-	0xc78, 0x70120001,
+-	0xc78, 0x6f130001,
+-	0xc78, 0x6e140001,
+-	0xc78, 0x6d150001,
+-	0xc78, 0x6c160001,
+-	0xc78, 0x6b170001,
+-	0xc78, 0x6a180001,
+-	0xc78, 0x69190001,
+-	0xc78, 0x681a0001,
+-	0xc78, 0x671b0001,
+-	0xc78, 0x661c0001,
+-	0xc78, 0x651d0001,
+-	0xc78, 0x641e0001,
+-	0xc78, 0x491f0001,
+-	0xc78, 0x48200001,
+-	0xc78, 0x47210001,
+-	0xc78, 0x46220001,
+-	0xc78, 0x45230001,
+-	0xc78, 0x44240001,
+-	0xc78, 0x43250001,
+-	0xc78, 0x28260001,
+-	0xc78, 0x27270001,
+-	0xc78, 0x26280001,
+-	0xc78, 0x25290001,
+-	0xc78, 0x242a0001,
+-	0xc78, 0x232b0001,
+-	0xc78, 0x222c0001,
+-	0xc78, 0x212d0001,
+-	0xc78, 0x202e0001,
+-	0xc78, 0x0a2f0001,
+-	0xc78, 0x08300001,
+-	0xc78, 0x06310001,
+-	0xc78, 0x05320001,
+-	0xc78, 0x04330001,
+-	0xc78, 0x03340001,
+-	0xc78, 0x02350001,
+-	0xc78, 0x01360001,
+-	0xc78, 0x00370001,
+-	0xc78, 0x00380001,
+-	0xc78, 0x00390001,
+-	0xc78, 0x003a0001,
+-	0xc78, 0x003b0001,
+-	0xc78, 0x003c0001,
+-	0xc78, 0x003d0001,
+-	0xc78, 0x003e0001,
+-	0xc78, 0x003f0001,
+-	0xc78, 0x7d400001,
+-	0xc78, 0x7d410001,
+-	0xc78, 0x7d420001,
+-	0xc78, 0x7d430001,
+-	0xc78, 0x7d440001,
+-	0xc78, 0x7d450001,
+-	0xc78, 0x7c460001,
+-	0xc78, 0x7b470001,
+-	0xc78, 0x7a480001,
+-	0xc78, 0x79490001,
+-	0xc78, 0x784a0001,
+-	0xc78, 0x774b0001,
+-	0xc78, 0x764c0001,
+-	0xc78, 0x754d0001,
+-	0xc78, 0x744e0001,
+-	0xc78, 0x734f0001,
+-	0xc78, 0x72500001,
+-	0xc78, 0x71510001,
+-	0xc78, 0x70520001,
+-	0xc78, 0x6f530001,
+-	0xc78, 0x6e540001,
+-	0xc78, 0x6d550001,
+-	0xc78, 0x6c560001,
+-	0xc78, 0x6b570001,
+-	0xc78, 0x6a580001,
+-	0xc78, 0x69590001,
+-	0xc78, 0x685a0001,
+-	0xc78, 0x675b0001,
+-	0xc78, 0x665c0001,
+-	0xc78, 0x655d0001,
+-	0xc78, 0x645e0001,
+-	0xc78, 0x495f0001,
+-	0xc78, 0x48600001,
+-	0xc78, 0x47610001,
+-	0xc78, 0x46620001,
+-	0xc78, 0x45630001,
+-	0xc78, 0x44640001,
+-	0xc78, 0x43650001,
+-	0xc78, 0x28660001,
+-	0xc78, 0x27670001,
+-	0xc78, 0x26680001,
+-	0xc78, 0x25690001,
+-	0xc78, 0x246a0001,
+-	0xc78, 0x236b0001,
+-	0xc78, 0x226c0001,
+-	0xc78, 0x216d0001,
+-	0xc78, 0x206e0001,
+-	0xc78, 0x0a6f0001,
+-	0xc78, 0x08700001,
+-	0xc78, 0x06710001,
+-	0xc78, 0x05720001,
+-	0xc78, 0x04730001,
+-	0xc78, 0x03740001,
+-	0xc78, 0x02750001,
+-	0xc78, 0x01760001,
+-	0xc78, 0x00770001,
+-	0xc78, 0x00780001,
+-	0xc78, 0x00790001,
+-	0xc78, 0x007a0001,
+-	0xc78, 0x007b0001,
+-	0xc78, 0x007c0001,
+-	0xc78, 0x007d0001,
+-	0xc78, 0x007e0001,
+-	0xc78, 0x007f0001,
+-	0xc78, 0x2e00001e,
+-	0xc78, 0x2e01001e,
+-	0xc78, 0x2e02001e,
+-	0xc78, 0x2e03001e,
+-	0xc78, 0x2e04001e,
+-	0xc78, 0x2e05001e,
+-	0xc78, 0x3006001e,
+-	0xc78, 0x3407001e,
+-	0xc78, 0x3908001e,
+-	0xc78, 0x3c09001e,
+-	0xc78, 0x3f0a001e,
+-	0xc78, 0x420b001e,
+-	0xc78, 0x440c001e,
+-	0xc78, 0x450d001e,
+-	0xc78, 0x460e001e,
+-	0xc78, 0x460f001e,
+-	0xc78, 0x4710001e,
+-	0xc78, 0x4811001e,
+-	0xc78, 0x4912001e,
+-	0xc78, 0x4a13001e,
+-	0xc78, 0x4b14001e,
+-	0xc78, 0x4b15001e,
+-	0xc78, 0x4c16001e,
+-	0xc78, 0x4d17001e,
+-	0xc78, 0x4e18001e,
+-	0xc78, 0x4f19001e,
+-	0xc78, 0x4f1a001e,
+-	0xc78, 0x501b001e,
+-	0xc78, 0x511c001e,
+-	0xc78, 0x521d001e,
+-	0xc78, 0x521e001e,
+-	0xc78, 0x531f001e,
+-	0xc78, 0x5320001e,
+-	0xc78, 0x5421001e,
+-	0xc78, 0x5522001e,
+-	0xc78, 0x5523001e,
+-	0xc78, 0x5624001e,
+-	0xc78, 0x5725001e,
+-	0xc78, 0x5726001e,
+-	0xc78, 0x5827001e,
+-	0xc78, 0x5828001e,
+-	0xc78, 0x5929001e,
+-	0xc78, 0x592a001e,
+-	0xc78, 0x5a2b001e,
+-	0xc78, 0x5b2c001e,
+-	0xc78, 0x5c2d001e,
+-	0xc78, 0x5c2e001e,
+-	0xc78, 0x5d2f001e,
+-	0xc78, 0x5e30001e,
+-	0xc78, 0x5f31001e,
+-	0xc78, 0x6032001e,
+-	0xc78, 0x6033001e,
+-	0xc78, 0x6134001e,
+-	0xc78, 0x6235001e,
+-	0xc78, 0x6336001e,
+-	0xc78, 0x6437001e,
+-	0xc78, 0x6438001e,
+-	0xc78, 0x6539001e,
+-	0xc78, 0x663a001e,
+-	0xc78, 0x673b001e,
+-	0xc78, 0x673c001e,
+-	0xc78, 0x683d001e,
+-	0xc78, 0x693e001e,
+-	0xc78, 0x6a3f001e,
+-};
+diff --git a/drivers/staging/rtl8192u/r819xU_firmware_img.h b/drivers/staging/rtl8192u/r819xU_firmware_img.h
+deleted file mode 100644
+index 61585a72465e..000000000000
+--- a/drivers/staging/rtl8192u/r819xU_firmware_img.h
++++ /dev/null
+@@ -1,26 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef IMG_H
+-#define IMG_H
+-
+-#define MACPHY_Array_PGLength 30
+-#define PHY_REG_1T2RArrayLength 296
+-#define AGCTAB_ArrayLength 384
+-#define MACPHY_ArrayLength 18
+-
+-#define RadioA_ArrayLength 246
+-#define RadioB_ArrayLength 78
+-#define RadioC_ArrayLength 1
+-#define RadioD_ArrayLength 1
+-#define PHY_REGArrayLength 1
+-
+-extern u32 Rtl8192UsbPHY_REGArray[];
+-extern u32 Rtl8192UsbPHY_REG_1T2RArray[];
+-extern u32 Rtl8192UsbRadioA_Array[];
+-extern u32 Rtl8192UsbRadioB_Array[];
+-extern u32 Rtl8192UsbRadioC_Array[];
+-extern u32 Rtl8192UsbRadioD_Array[];
+-extern u32 Rtl8192UsbMACPHY_Array[];
+-extern u32 Rtl8192UsbMACPHY_Array_PG[];
+-extern u32 Rtl8192UsbAGCTAB_Array[];
+-
+-#endif
+diff --git a/drivers/staging/rtl8192u/r819xU_phy.c b/drivers/staging/rtl8192u/r819xU_phy.c
+deleted file mode 100644
+index e6836eacc7aa..000000000000
+--- a/drivers/staging/rtl8192u/r819xU_phy.c
++++ /dev/null
+@@ -1,1646 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-#include "r8192U.h"
+-#include "r8192U_hw.h"
+-#include "r819xU_phy.h"
+-#include "r819xU_phyreg.h"
+-#include "r8190_rtl8256.h"
+-#include "r8192U_dm.h"
+-#include "r819xU_firmware_img.h"
+-
+-#include "ieee80211/dot11d.h"
+-#include <linux/bitops.h>
+-
+-static u32 RF_CHANNEL_TABLE_ZEBRA[] = {
+-	0,
+-	0x085c, /* 2412 1  */
+-	0x08dc, /* 2417 2  */
+-	0x095c, /* 2422 3  */
+-	0x09dc, /* 2427 4  */
+-	0x0a5c, /* 2432 5  */
+-	0x0adc, /* 2437 6  */
+-	0x0b5c, /* 2442 7  */
+-	0x0bdc, /* 2447 8  */
+-	0x0c5c, /* 2452 9  */
+-	0x0cdc, /* 2457 10 */
+-	0x0d5c, /* 2462 11 */
+-	0x0ddc, /* 2467 12 */
+-	0x0e5c, /* 2472 13 */
+-	0x0f72, /* 2484    */
+-};
+-
+-#define rtl819XMACPHY_Array Rtl8192UsbMACPHY_Array
+-
+-/******************************************************************************
+- * function:  This function checks different RF type to execute legal judgement.
+- *            If RF Path is illegal, we will return false.
+- * input:     net_device	 *dev
+- *            u32		 e_rfpath
+- * output:    none
+- * return:    0(illegal, false), 1(legal, true)
+- *****************************************************************************/
+-u8 rtl8192_phy_CheckIsLegalRFPath(struct net_device *dev, u32 e_rfpath)
+-{
+-	u8 ret = 1;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	if (priv->rf_type == RF_2T4R) {
+-		ret = 0;
+-	} else if (priv->rf_type == RF_1T2R) {
+-		if (e_rfpath == RF90_PATH_A || e_rfpath == RF90_PATH_B)
+-			ret = 1;
+-		else if (e_rfpath == RF90_PATH_C || e_rfpath == RF90_PATH_D)
+-			ret = 0;
+-	}
+-	return ret;
+-}
+-
+-/******************************************************************************
+- * function:  This function sets specific bits to BB register
+- * input:     net_device *dev
+- *            u32        reg_addr   //target addr to be modified
+- *            u32        bitmask    //taget bit pos to be modified
+- *            u32        data       //value to be write
+- * output:    none
+- * return:    none
+- * notice:
+- ******************************************************************************/
+-void rtl8192_setBBreg(struct net_device *dev, u32 reg_addr, u32 bitmask,
+-		      u32 data)
+-{
+-	u32 reg, bitshift;
+-
+-	if (bitmask != bMaskDWord) {
+-		read_nic_dword(dev, reg_addr, &reg);
+-		bitshift = ffs(bitmask) - 1;
+-		reg &= ~bitmask;
+-		reg |= data << bitshift;
+-		write_nic_dword(dev, reg_addr, reg);
+-	} else {
+-		write_nic_dword(dev, reg_addr, data);
+-	}
+-}
+-
+-/******************************************************************************
+- * function:  This function reads specific bits from BB register
+- * input:     net_device	*dev
+- *            u32		reg_addr   //target addr to be readback
+- *            u32		bitmask    //taget bit pos to be readback
+- * output:    none
+- * return:    u32		data       //the readback register value
+- * notice:
+- ******************************************************************************/
+-u32 rtl8192_QueryBBReg(struct net_device *dev, u32 reg_addr, u32 bitmask)
+-{
+-	u32 reg, bitshift;
+-
+-	read_nic_dword(dev, reg_addr, &reg);
+-	bitshift = ffs(bitmask) - 1;
+-
+-	return (reg & bitmask) >> bitshift;
+-}
+-
+-static u32 phy_FwRFSerialRead(struct net_device *dev,
+-			      enum rf90_radio_path_e e_rfpath,
+-			      u32 offset);
+-
+-static void phy_FwRFSerialWrite(struct net_device *dev,
+-				enum rf90_radio_path_e e_rfpath,
+-				u32  offset,
+-				u32  data);
+-
+-/******************************************************************************
+- * function:  This function reads register from RF chip
+- * input:     net_device        *dev
+- *            rf90_radio_path_e e_rfpath    //radio path of A/B/C/D
+- *            u32               offset     //target address to be read
+- * output:    none
+- * return:    u32               readback value
+- * notice:    There are three types of serial operations:
+- *            (1) Software serial write.
+- *            (2)Hardware LSSI-Low Speed Serial Interface.
+- *            (3)Hardware HSSI-High speed serial write.
+- *            Driver here need to implement (1) and (2)
+- *            ---need more spec for this information.
+- ******************************************************************************/
+-static u32 rtl8192_phy_RFSerialRead(struct net_device *dev,
+-				    enum rf90_radio_path_e e_rfpath, u32 offset)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u32 ret = 0;
+-	u32 new_offset = 0;
+-	BB_REGISTER_DEFINITION_T *pPhyReg = &priv->PHYRegDef[e_rfpath];
+-
+-	rtl8192_setBBreg(dev, pPhyReg->rfLSSIReadBack, bLSSIReadBackData, 0);
+-	/* Make sure RF register offset is correct */
+-	offset &= 0x3f;
+-
+-	/* Switch page for 8256 RF IC */
+-	if (priv->rf_chip == RF_8256) {
+-		if (offset >= 31) {
+-			priv->RfReg0Value[e_rfpath] |= 0x140;
+-			/* Switch to Reg_Mode2 for Reg 31-45 */
+-			rtl8192_setBBreg(dev, pPhyReg->rf3wireOffset,
+-					 bMaskDWord,
+-					 priv->RfReg0Value[e_rfpath]<<16);
+-			/* Modify offset */
+-			new_offset = offset - 30;
+-		} else if (offset >= 16) {
+-			priv->RfReg0Value[e_rfpath] |= 0x100;
+-			priv->RfReg0Value[e_rfpath] &= (~0x40);
+-			/* Switch to Reg_Mode1 for Reg16-30 */
+-			rtl8192_setBBreg(dev, pPhyReg->rf3wireOffset,
+-					 bMaskDWord,
+-					 priv->RfReg0Value[e_rfpath]<<16);
+-
+-			new_offset = offset - 15;
+-		} else {
+-			new_offset = offset;
+-		}
+-	} else {
+-		RT_TRACE((COMP_PHY|COMP_ERR),
+-			 "check RF type here, need to be 8256\n");
+-		new_offset = offset;
+-	}
+-	/* Put desired read addr to LSSI control Register */
+-	rtl8192_setBBreg(dev, pPhyReg->rfHSSIPara2, bLSSIReadAddress,
+-			 new_offset);
+-	/* Issue a posedge trigger */
+-	rtl8192_setBBreg(dev, pPhyReg->rfHSSIPara2,  bLSSIReadEdge, 0x0);
+-	rtl8192_setBBreg(dev, pPhyReg->rfHSSIPara2,  bLSSIReadEdge, 0x1);
+-
+-	/* TODO: we should not delay such a long time. Ask for help from SD3 */
+-	usleep_range(1000, 1000);
+-
+-	ret = rtl8192_QueryBBReg(dev, pPhyReg->rfLSSIReadBack,
+-				 bLSSIReadBackData);
+-
+-	/* Switch back to Reg_Mode0 */
+-	if (priv->rf_chip == RF_8256) {
+-		priv->RfReg0Value[e_rfpath] &= 0xebf;
+-
+-		rtl8192_setBBreg(dev, pPhyReg->rf3wireOffset, bMaskDWord,
+-				 priv->RfReg0Value[e_rfpath] << 16);
+-	}
+-
+-	return ret;
+-}
+-
+-/******************************************************************************
+- * function:  This function writes data to RF register
+- * input:     net_device        *dev
+- *            rf90_radio_path_e e_rfpath  //radio path of A/B/C/D
+- *            u32               offset   //target address to be written
+- *            u32               data	 //the new register data to be written
+- * output:    none
+- * return:    none
+- * notice:    For RF8256 only.
+- * ===========================================================================
+- * Reg Mode	RegCTL[1]	RegCTL[0]		Note
+- *		(Reg00[12])	(Reg00[10])
+- * ===========================================================================
+- * Reg_Mode0	0		x			Reg 0 ~ 15(0x0 ~ 0xf)
+- * ---------------------------------------------------------------------------
+- * Reg_Mode1	1		0			Reg 16 ~ 30(0x1 ~ 0xf)
+- * ---------------------------------------------------------------------------
+- * Reg_Mode2	1		1			Reg 31 ~ 45(0x1 ~ 0xf)
+- * ---------------------------------------------------------------------------
+- *****************************************************************************/
+-static void rtl8192_phy_RFSerialWrite(struct net_device *dev,
+-				      enum rf90_radio_path_e e_rfpath,
+-				      u32 offset,
+-				      u32 data)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u32 DataAndAddr = 0, new_offset = 0;
+-	BB_REGISTER_DEFINITION_T	*pPhyReg = &priv->PHYRegDef[e_rfpath];
+-
+-	offset &= 0x3f;
+-	if (priv->rf_chip == RF_8256) {
+-		if (offset >= 31) {
+-			priv->RfReg0Value[e_rfpath] |= 0x140;
+-			rtl8192_setBBreg(dev, pPhyReg->rf3wireOffset,
+-					 bMaskDWord,
+-					 priv->RfReg0Value[e_rfpath] << 16);
+-			new_offset = offset - 30;
+-		} else if (offset >= 16) {
+-			priv->RfReg0Value[e_rfpath] |= 0x100;
+-			priv->RfReg0Value[e_rfpath] &= (~0x40);
+-			rtl8192_setBBreg(dev, pPhyReg->rf3wireOffset,
+-					 bMaskDWord,
+-					 priv->RfReg0Value[e_rfpath]<<16);
+-			new_offset = offset - 15;
+-		} else {
+-			new_offset = offset;
+-		}
+-	} else {
+-		RT_TRACE((COMP_PHY|COMP_ERR),
+-			 "check RF type here, need to be 8256\n");
+-		new_offset = offset;
+-	}
+-
+-	/* Put write addr in [5:0] and write data in [31:16] */
+-	DataAndAddr = (data<<16) | (new_offset&0x3f);
+-
+-	/* Write operation */
+-	rtl8192_setBBreg(dev, pPhyReg->rf3wireOffset, bMaskDWord, DataAndAddr);
+-
+-	if (offset == 0x0)
+-		priv->RfReg0Value[e_rfpath] = data;
+-
+-	/* Switch back to Reg_Mode0 */
+-	if (priv->rf_chip == RF_8256) {
+-		if (offset != 0) {
+-			priv->RfReg0Value[e_rfpath] &= 0xebf;
+-			rtl8192_setBBreg(dev, pPhyReg->rf3wireOffset,
+-					 bMaskDWord,
+-					 priv->RfReg0Value[e_rfpath] << 16);
+-		}
+-	}
+-}
+-
+-/******************************************************************************
+- * function:  This function set specific bits to RF register
+- * input:     net_device        dev
+- *            rf90_radio_path_e e_rfpath  //radio path of A/B/C/D
+- *            u32               reg_addr //target addr to be modified
+- *            u32               bitmask  //taget bit pos to be modified
+- *            u32               data     //value to be written
+- * output:    none
+- * return:    none
+- * notice:
+- *****************************************************************************/
+-void rtl8192_phy_SetRFReg(struct net_device *dev,
+-			  enum rf90_radio_path_e e_rfpath,
+-			  u32 reg_addr, u32 bitmask, u32 data)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u32 reg, bitshift;
+-
+-	if (!rtl8192_phy_CheckIsLegalRFPath(dev, e_rfpath))
+-		return;
+-
+-	if (priv->Rf_Mode == RF_OP_By_FW) {
+-		if (bitmask != bMask12Bits) {
+-			/* RF data is 12 bits only */
+-			reg = phy_FwRFSerialRead(dev, e_rfpath, reg_addr);
+-			bitshift =  ffs(bitmask) - 1;
+-			reg &= ~bitmask;
+-			reg |= data << bitshift;
+-
+-			phy_FwRFSerialWrite(dev, e_rfpath, reg_addr, reg);
+-		} else {
+-			phy_FwRFSerialWrite(dev, e_rfpath, reg_addr, data);
+-		}
+-
+-		udelay(200);
+-
+-	} else {
+-		if (bitmask != bMask12Bits) {
+-			/* RF data is 12 bits only */
+-			reg = rtl8192_phy_RFSerialRead(dev, e_rfpath, reg_addr);
+-			bitshift =  ffs(bitmask) - 1;
+-			reg &= ~bitmask;
+-			reg |= data << bitshift;
+-
+-			rtl8192_phy_RFSerialWrite(dev, e_rfpath, reg_addr, reg);
+-		} else {
+-			rtl8192_phy_RFSerialWrite(dev, e_rfpath, reg_addr, data);
+-		}
+-	}
+-}
+-
+-/******************************************************************************
+- * function:  This function reads specific bits from RF register
+- * input:     net_device        *dev
+- *            u32               reg_addr //target addr to be readback
+- *            u32               bitmask  //taget bit pos to be readback
+- * output:    none
+- * return:    u32               data     //the readback register value
+- * notice:
+- *****************************************************************************/
+-u32 rtl8192_phy_QueryRFReg(struct net_device *dev,
+-			   enum rf90_radio_path_e e_rfpath,
+-			   u32 reg_addr, u32 bitmask)
+-{
+-	u32 reg, bitshift;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	if (!rtl8192_phy_CheckIsLegalRFPath(dev, e_rfpath))
+-		return 0;
+-	if (priv->Rf_Mode == RF_OP_By_FW) {
+-		reg = phy_FwRFSerialRead(dev, e_rfpath, reg_addr);
+-		udelay(200);
+-	} else {
+-		reg = rtl8192_phy_RFSerialRead(dev, e_rfpath, reg_addr);
+-	}
+-	bitshift =  ffs(bitmask) - 1;
+-	reg = (reg & bitmask) >> bitshift;
+-	return reg;
+-}
+-
+-/******************************************************************************
+- * function:  We support firmware to execute RF-R/W.
+- * input:     net_device        *dev
+- *            rf90_radio_path_e e_rfpath
+- *            u32               offset
+- * output:    none
+- * return:    u32
+- * notice:
+- ****************************************************************************/
+-static u32 phy_FwRFSerialRead(struct net_device *dev,
+-			      enum rf90_radio_path_e e_rfpath,
+-			      u32 offset)
+-{
+-	u32		reg = 0;
+-	u32		data = 0;
+-	u8		time = 0;
+-	u32		tmp;
+-
+-	/* Firmware RF Write control.
+-	 * We can not execute the scheme in the initial step.
+-	 * Otherwise, RF-R/W will waste much time.
+-	 * This is only for site survey.
+-	 */
+-	/* 1. Read operation need not insert data. bit 0-11 */
+-	/* 2. Write RF register address. bit 12-19 */
+-	data |= ((offset&0xFF)<<12);
+-	/* 3. Write RF path.  bit 20-21 */
+-	data |= ((e_rfpath&0x3)<<20);
+-	/* 4. Set RF read indicator. bit 22=0 */
+-	/* 5. Trigger Fw to operate the command. bit 31 */
+-	data |= 0x80000000;
+-	/* 6. We can not execute read operation if bit 31 is 1. */
+-	read_nic_dword(dev, QPNR, &tmp);
+-	while (tmp & 0x80000000) {
+-		/* If FW can not finish RF-R/W for more than ?? times.
+-		 * We must reset FW.
+-		 */
+-		if (time++ < 100) {
+-			udelay(10);
+-			read_nic_dword(dev, QPNR, &tmp);
+-		} else {
+-			break;
+-		}
+-	}
+-	/* 7. Execute read operation. */
+-	write_nic_dword(dev, QPNR, data);
+-	/* 8. Check if firmware send back RF content. */
+-	read_nic_dword(dev, QPNR, &tmp);
+-	while (tmp & 0x80000000) {
+-		/* If FW can not finish RF-R/W for more than ?? times.
+-		 * We must reset FW.
+-		 */
+-		if (time++ < 100) {
+-			udelay(10);
+-			read_nic_dword(dev, QPNR, &tmp);
+-		} else {
+-			return 0;
+-		}
+-	}
+-	read_nic_dword(dev, RF_DATA, &reg);
+-
+-	return reg;
+-}
+-
+-/******************************************************************************
+- * function:  We support firmware to execute RF-R/W.
+- * input:     net_device        *dev
+- *            rf90_radio_path_e e_rfpath
+- *            u32               offset
+- *            u32               data
+- * output:    none
+- * return:    none
+- * notice:
+- ****************************************************************************/
+-static void phy_FwRFSerialWrite(struct net_device *dev,
+-				enum rf90_radio_path_e e_rfpath,
+-				u32 offset, u32 data)
+-{
+-	u8	time = 0;
+-	u32	tmp;
+-
+-	/* Firmware RF Write control.
+-	 * We can not execute the scheme in the initial step.
+-	 * Otherwise, RF-R/W will waste much time.
+-	 * This is only for site survey.
+-	 */
+-
+-	/* 1. Set driver write bit and 12 bit data. bit 0-11 */
+-	/* 2. Write RF register address. bit 12-19 */
+-	data |= ((offset&0xFF)<<12);
+-	/* 3. Write RF path.  bit 20-21 */
+-	data |= ((e_rfpath&0x3)<<20);
+-	/* 4. Set RF write indicator. bit 22=1 */
+-	data |= 0x400000;
+-	/* 5. Trigger Fw to operate the command. bit 31=1 */
+-	data |= 0x80000000;
+-
+-	/* 6. Write operation. We can not write if bit 31 is 1. */
+-	read_nic_dword(dev, QPNR, &tmp);
+-	while (tmp & 0x80000000) {
+-		/* If FW can not finish RF-R/W for more than ?? times.
+-		 * We must reset FW.
+-		 */
+-		if (time++ < 100) {
+-			udelay(10);
+-			read_nic_dword(dev, QPNR, &tmp);
+-		} else {
+-			break;
+-		}
+-	}
+-	/* 7. No matter check bit. We always force the write.
+-	 * Because FW will not accept the command.
+-	 */
+-	write_nic_dword(dev, QPNR, data);
+-	/* According to test, we must delay 20us to wait firmware
+-	 * to finish RF write operation.
+-	 */
+-	/* We support delay in firmware side now. */
+-}
+-
+-/******************************************************************************
+- * function:  This function reads BB parameters from header file we generate,
+- *            and do register read/write
+- * input:     net_device	*dev
+- * output:    none
+- * return:    none
+- * notice:    BB parameters may change all the time, so please make
+- *            sure it has been synced with the newest.
+- *****************************************************************************/
+-void rtl8192_phy_configmac(struct net_device *dev)
+-{
+-	u32 dwArrayLen = 0, i;
+-	u32 *pdwArray = NULL;
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	if (priv->btxpowerdata_readfromEEPORM) {
+-		RT_TRACE(COMP_PHY, "Rtl819XMACPHY_Array_PG\n");
+-		dwArrayLen = MACPHY_Array_PGLength;
+-		pdwArray = Rtl8192UsbMACPHY_Array_PG;
+-
+-	} else {
+-		RT_TRACE(COMP_PHY, "Rtl819XMACPHY_Array\n");
+-		dwArrayLen = MACPHY_ArrayLength;
+-		pdwArray = rtl819XMACPHY_Array;
+-	}
+-	for (i = 0; i < dwArrayLen; i = i+3) {
+-		if (pdwArray[i] == 0x318)
+-			pdwArray[i+2] = 0x00000800;
+-
+-		RT_TRACE(COMP_DBG,
+-			 "Rtl8190MACPHY_Array[0]=%x Rtl8190MACPHY_Array[1]=%x Rtl8190MACPHY_Array[2]=%x\n",
+-			 pdwArray[i], pdwArray[i+1], pdwArray[i+2]);
+-		rtl8192_setBBreg(dev, pdwArray[i], pdwArray[i+1],
+-				 pdwArray[i+2]);
+-	}
+-}
+-
+-/******************************************************************************
+- * function:  This function does dirty work
+- * input:     net_device	*dev
+- *            u8                ConfigType
+- * output:    none
+- * return:    none
+- * notice:    BB parameters may change all the time, so please make
+- *            sure it has been synced with the newest.
+- *****************************************************************************/
+-static void rtl8192_phyConfigBB(struct net_device *dev,
+-				enum baseband_config_type ConfigType)
+-{
+-	u32 i;
+-
+-	if (ConfigType == BASEBAND_CONFIG_PHY_REG) {
+-		for (i = 0; i < PHY_REG_1T2RArrayLength; i += 2) {
+-			rtl8192_setBBreg(dev, Rtl8192UsbPHY_REG_1T2RArray[i],
+-					 bMaskDWord,
+-					 Rtl8192UsbPHY_REG_1T2RArray[i+1]);
+-			RT_TRACE(COMP_DBG,
+-				 "i: %x, Rtl819xUsbPHY_REGArray[0]=%x Rtl819xUsbPHY_REGArray[1]=%x\n",
+-				 i, Rtl8192UsbPHY_REG_1T2RArray[i],
+-				 Rtl8192UsbPHY_REG_1T2RArray[i+1]);
+-		}
+-	} else if (ConfigType == BASEBAND_CONFIG_AGC_TAB) {
+-		for (i = 0; i < AGCTAB_ArrayLength; i += 2) {
+-			rtl8192_setBBreg(dev, Rtl8192UsbAGCTAB_Array[i],
+-					 bMaskDWord, Rtl8192UsbAGCTAB_Array[i+1]);
+-			RT_TRACE(COMP_DBG,
+-				 "i: %x, Rtl8192UsbAGCTAB_Array[0]=%x Rtl8192UsbAGCTAB_Array[1]=%x\n",
+-				 i, Rtl8192UsbAGCTAB_Array[i],
+-				 Rtl8192UsbAGCTAB_Array[i+1]);
+-		}
+-	}
+-}
+-
+-/******************************************************************************
+- * function:  This function initializes Register definition offset for
+- *            Radio Path A/B/C/D
+- * input:     net_device	*dev
+- * output:    none
+- * return:    none
+- * notice:    Initialization value here is constant and it should never
+- *            be changed
+- *****************************************************************************/
+-static void rtl8192_InitBBRFRegDef(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	/* RF Interface Software Control */
+-	/* 16 LSBs if read 32-bit from 0x870 */
+-	priv->PHYRegDef[RF90_PATH_A].rfintfs = rFPGA0_XAB_RFInterfaceSW;
+-	/* 16 MSBs if read 32-bit from 0x870 (16-bit for 0x872) */
+-	priv->PHYRegDef[RF90_PATH_B].rfintfs = rFPGA0_XAB_RFInterfaceSW;
+-	/* 16 LSBs if read 32-bit from 0x874 */
+-	priv->PHYRegDef[RF90_PATH_C].rfintfs = rFPGA0_XCD_RFInterfaceSW;
+-	/* 16 MSBs if read 32-bit from 0x874 (16-bit for 0x876) */
+-	priv->PHYRegDef[RF90_PATH_D].rfintfs = rFPGA0_XCD_RFInterfaceSW;
+-
+-	/* RF Interface Readback Value */
+-	/* 16 LSBs if read 32-bit from 0x8E0 */
+-	priv->PHYRegDef[RF90_PATH_A].rfintfi = rFPGA0_XAB_RFInterfaceRB;
+-	/* 16 MSBs if read 32-bit from 0x8E0 (16-bit for 0x8E2) */
+-	priv->PHYRegDef[RF90_PATH_B].rfintfi = rFPGA0_XAB_RFInterfaceRB;
+-	/* 16 LSBs if read 32-bit from 0x8E4 */
+-	priv->PHYRegDef[RF90_PATH_C].rfintfi = rFPGA0_XCD_RFInterfaceRB;
+-	/* 16 MSBs if read 32-bit from 0x8E4 (16-bit for 0x8E6) */
+-	priv->PHYRegDef[RF90_PATH_D].rfintfi = rFPGA0_XCD_RFInterfaceRB;
+-
+-	/* RF Interface Output (and Enable) */
+-	/* 16 LSBs if read 32-bit from 0x860 */
+-	priv->PHYRegDef[RF90_PATH_A].rfintfo = rFPGA0_XA_RFInterfaceOE;
+-	/* 16 LSBs if read 32-bit from 0x864 */
+-	priv->PHYRegDef[RF90_PATH_B].rfintfo = rFPGA0_XB_RFInterfaceOE;
+-	/* 16 LSBs if read 32-bit from 0x868 */
+-	priv->PHYRegDef[RF90_PATH_C].rfintfo = rFPGA0_XC_RFInterfaceOE;
+-	/* 16 LSBs if read 32-bit from 0x86C */
+-	priv->PHYRegDef[RF90_PATH_D].rfintfo = rFPGA0_XD_RFInterfaceOE;
+-
+-	/* RF Interface (Output and) Enable */
+-	/* 16 MSBs if read 32-bit from 0x860 (16-bit for 0x862) */
+-	priv->PHYRegDef[RF90_PATH_A].rfintfe = rFPGA0_XA_RFInterfaceOE;
+-	/* 16 MSBs if read 32-bit from 0x864 (16-bit for 0x866) */
+-	priv->PHYRegDef[RF90_PATH_B].rfintfe = rFPGA0_XB_RFInterfaceOE;
+-	/* 16 MSBs if read 32-bit from 0x86A (16-bit for 0x86A) */
+-	priv->PHYRegDef[RF90_PATH_C].rfintfe = rFPGA0_XC_RFInterfaceOE;
+-	/* 16 MSBs if read 32-bit from 0x86C (16-bit for 0x86E) */
+-	priv->PHYRegDef[RF90_PATH_D].rfintfe = rFPGA0_XD_RFInterfaceOE;
+-
+-	/* Addr of LSSI. Write RF register by driver */
+-	priv->PHYRegDef[RF90_PATH_A].rf3wireOffset = rFPGA0_XA_LSSIParameter;
+-	priv->PHYRegDef[RF90_PATH_B].rf3wireOffset = rFPGA0_XB_LSSIParameter;
+-	priv->PHYRegDef[RF90_PATH_C].rf3wireOffset = rFPGA0_XC_LSSIParameter;
+-	priv->PHYRegDef[RF90_PATH_D].rf3wireOffset = rFPGA0_XD_LSSIParameter;
+-
+-	/* RF parameter */
+-	/* BB Band Select */
+-	priv->PHYRegDef[RF90_PATH_A].rfLSSI_Select = rFPGA0_XAB_RFParameter;
+-	priv->PHYRegDef[RF90_PATH_B].rfLSSI_Select = rFPGA0_XAB_RFParameter;
+-	priv->PHYRegDef[RF90_PATH_C].rfLSSI_Select = rFPGA0_XCD_RFParameter;
+-	priv->PHYRegDef[RF90_PATH_D].rfLSSI_Select = rFPGA0_XCD_RFParameter;
+-
+-	/* Tx AGC Gain Stage (same for all path. Should we remove this?) */
+-	priv->PHYRegDef[RF90_PATH_A].rfTxGainStage = rFPGA0_TxGainStage;
+-	priv->PHYRegDef[RF90_PATH_B].rfTxGainStage = rFPGA0_TxGainStage;
+-	priv->PHYRegDef[RF90_PATH_C].rfTxGainStage = rFPGA0_TxGainStage;
+-	priv->PHYRegDef[RF90_PATH_D].rfTxGainStage = rFPGA0_TxGainStage;
+-
+-	/* Tranceiver A~D HSSI Parameter-1 */
+-	/* wire control parameter1 */
+-	priv->PHYRegDef[RF90_PATH_A].rfHSSIPara1 = rFPGA0_XA_HSSIParameter1;
+-	priv->PHYRegDef[RF90_PATH_B].rfHSSIPara1 = rFPGA0_XB_HSSIParameter1;
+-	priv->PHYRegDef[RF90_PATH_C].rfHSSIPara1 = rFPGA0_XC_HSSIParameter1;
+-	priv->PHYRegDef[RF90_PATH_D].rfHSSIPara1 = rFPGA0_XD_HSSIParameter1;
+-
+-	/* Tranceiver A~D HSSI Parameter-2 */
+-	/* wire control parameter2 */
+-	priv->PHYRegDef[RF90_PATH_A].rfHSSIPara2 = rFPGA0_XA_HSSIParameter2;
+-	priv->PHYRegDef[RF90_PATH_B].rfHSSIPara2 = rFPGA0_XB_HSSIParameter2;
+-	priv->PHYRegDef[RF90_PATH_C].rfHSSIPara2 = rFPGA0_XC_HSSIParameter2;
+-	priv->PHYRegDef[RF90_PATH_D].rfHSSIPara2 = rFPGA0_XD_HSSIParameter2;
+-
+-	/* RF Switch Control */
+-	/* TR/Ant switch control */
+-	priv->PHYRegDef[RF90_PATH_A].rfSwitchControl = rFPGA0_XAB_SwitchControl;
+-	priv->PHYRegDef[RF90_PATH_B].rfSwitchControl = rFPGA0_XAB_SwitchControl;
+-	priv->PHYRegDef[RF90_PATH_C].rfSwitchControl = rFPGA0_XCD_SwitchControl;
+-	priv->PHYRegDef[RF90_PATH_D].rfSwitchControl = rFPGA0_XCD_SwitchControl;
+-
+-	/* AGC control 1 */
+-	priv->PHYRegDef[RF90_PATH_A].rfAGCControl1 = rOFDM0_XAAGCCore1;
+-	priv->PHYRegDef[RF90_PATH_B].rfAGCControl1 = rOFDM0_XBAGCCore1;
+-	priv->PHYRegDef[RF90_PATH_C].rfAGCControl1 = rOFDM0_XCAGCCore1;
+-	priv->PHYRegDef[RF90_PATH_D].rfAGCControl1 = rOFDM0_XDAGCCore1;
+-
+-	/* AGC control 2 */
+-	priv->PHYRegDef[RF90_PATH_A].rfAGCControl2 = rOFDM0_XAAGCCore2;
+-	priv->PHYRegDef[RF90_PATH_B].rfAGCControl2 = rOFDM0_XBAGCCore2;
+-	priv->PHYRegDef[RF90_PATH_C].rfAGCControl2 = rOFDM0_XCAGCCore2;
+-	priv->PHYRegDef[RF90_PATH_D].rfAGCControl2 = rOFDM0_XDAGCCore2;
+-
+-	/* RX AFE control 1 */
+-	priv->PHYRegDef[RF90_PATH_A].rfRxIQImbalance = rOFDM0_XARxIQImbalance;
+-	priv->PHYRegDef[RF90_PATH_B].rfRxIQImbalance = rOFDM0_XBRxIQImbalance;
+-	priv->PHYRegDef[RF90_PATH_C].rfRxIQImbalance = rOFDM0_XCRxIQImbalance;
+-	priv->PHYRegDef[RF90_PATH_D].rfRxIQImbalance = rOFDM0_XDRxIQImbalance;
+-
+-	/* RX AFE control 1 */
+-	priv->PHYRegDef[RF90_PATH_A].rfRxAFE = rOFDM0_XARxAFE;
+-	priv->PHYRegDef[RF90_PATH_B].rfRxAFE = rOFDM0_XBRxAFE;
+-	priv->PHYRegDef[RF90_PATH_C].rfRxAFE = rOFDM0_XCRxAFE;
+-	priv->PHYRegDef[RF90_PATH_D].rfRxAFE = rOFDM0_XDRxAFE;
+-
+-	/* Tx AFE control 1 */
+-	priv->PHYRegDef[RF90_PATH_A].rfTxIQImbalance = rOFDM0_XATxIQImbalance;
+-	priv->PHYRegDef[RF90_PATH_B].rfTxIQImbalance = rOFDM0_XBTxIQImbalance;
+-	priv->PHYRegDef[RF90_PATH_C].rfTxIQImbalance = rOFDM0_XCTxIQImbalance;
+-	priv->PHYRegDef[RF90_PATH_D].rfTxIQImbalance = rOFDM0_XDTxIQImbalance;
+-
+-	/* Tx AFE control 2 */
+-	priv->PHYRegDef[RF90_PATH_A].rfTxAFE = rOFDM0_XATxAFE;
+-	priv->PHYRegDef[RF90_PATH_B].rfTxAFE = rOFDM0_XBTxAFE;
+-	priv->PHYRegDef[RF90_PATH_C].rfTxAFE = rOFDM0_XCTxAFE;
+-	priv->PHYRegDef[RF90_PATH_D].rfTxAFE = rOFDM0_XDTxAFE;
+-
+-	/* Tranceiver LSSI Readback */
+-	priv->PHYRegDef[RF90_PATH_A].rfLSSIReadBack = rFPGA0_XA_LSSIReadBack;
+-	priv->PHYRegDef[RF90_PATH_B].rfLSSIReadBack = rFPGA0_XB_LSSIReadBack;
+-	priv->PHYRegDef[RF90_PATH_C].rfLSSIReadBack = rFPGA0_XC_LSSIReadBack;
+-	priv->PHYRegDef[RF90_PATH_D].rfLSSIReadBack = rFPGA0_XD_LSSIReadBack;
+-}
+-
+-/******************************************************************************
+- * function:  This function is to write register and then readback to make
+- *            sure whether BB and RF is OK
+- * input:     net_device        *dev
+- *            hw90_block_e      CheckBlock
+- *            rf90_radio_path_e e_rfpath  //only used when checkblock is
+- *                                       //HW90_BLOCK_RF
+- * output:    none
+- * return:    return whether BB and RF is ok (0:OK, 1:Fail)
+- * notice:    This function may be removed in the ASIC
+- ******************************************************************************/
+-u8 rtl8192_phy_checkBBAndRF(struct net_device *dev, enum hw90_block_e CheckBlock,
+-			    enum rf90_radio_path_e e_rfpath)
+-{
+-	u8 ret = 0;
+-	u32 i, CheckTimes = 4, reg = 0;
+-	u32 WriteAddr[4];
+-	u32 WriteData[] = {0xfffff027, 0xaa55a02f, 0x00000027, 0x55aa502f};
+-
+-	/* Initialize register address offset to be checked */
+-	WriteAddr[HW90_BLOCK_MAC] = 0x100;
+-	WriteAddr[HW90_BLOCK_PHY0] = 0x900;
+-	WriteAddr[HW90_BLOCK_PHY1] = 0x800;
+-	WriteAddr[HW90_BLOCK_RF] = 0x3;
+-	RT_TRACE(COMP_PHY, "%s(), CheckBlock: %d\n", __func__, CheckBlock);
+-	for (i = 0; i < CheckTimes; i++) {
+-		/* Write data to register and readback */
+-		switch (CheckBlock) {
+-		case HW90_BLOCK_MAC:
+-			RT_TRACE(COMP_ERR,
+-				 "PHY_CheckBBRFOK(): Never Write 0x100 here!\n");
+-			break;
+-
+-		case HW90_BLOCK_PHY0:
+-		case HW90_BLOCK_PHY1:
+-			write_nic_dword(dev, WriteAddr[CheckBlock],
+-					WriteData[i]);
+-			read_nic_dword(dev, WriteAddr[CheckBlock], &reg);
+-			break;
+-
+-		case HW90_BLOCK_RF:
+-			WriteData[i] &= 0xfff;
+-			rtl8192_phy_SetRFReg(dev, e_rfpath,
+-					     WriteAddr[HW90_BLOCK_RF],
+-					     bMask12Bits, WriteData[i]);
+-			/* TODO: we should not delay for such a long time.
+-			 * Ask SD3
+-			 */
+-			usleep_range(1000, 1000);
+-			reg = rtl8192_phy_QueryRFReg(dev, e_rfpath,
+-						     WriteAddr[HW90_BLOCK_RF],
+-						     bMask12Bits);
+-			usleep_range(1000, 1000);
+-			break;
+-
+-		default:
+-			ret = 1;
+-			break;
+-		}
+-
+-		/* Check whether readback data is correct */
+-		if (reg != WriteData[i]) {
+-			RT_TRACE((COMP_PHY|COMP_ERR),
+-				 "error reg: %x, WriteData: %x\n",
+-				 reg, WriteData[i]);
+-			ret = 1;
+-			break;
+-		}
+-	}
+-
+-	return ret;
+-}
+-
+-/******************************************************************************
+- * function:  This function initializes BB&RF
+- * input:     net_device	*dev
+- * output:    none
+- * return:    none
+- * notice:    Initialization value may change all the time, so please make
+- *            sure it has been synced with the newest.
+- ******************************************************************************/
+-static void rtl8192_BB_Config_ParaFile(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u8 reg_u8 = 0, eCheckItem = 0, status = 0;
+-	u32 reg_u32 = 0;
+-
+-	/**************************************
+-	 * <1> Initialize BaseBand
+-	 *************************************/
+-
+-	/* --set BB Global Reset-- */
+-	read_nic_byte(dev, BB_GLOBAL_RESET, &reg_u8);
+-	write_nic_byte(dev, BB_GLOBAL_RESET, (reg_u8|BB_GLOBAL_RESET_BIT));
+-	mdelay(50);
+-	/* ---set BB reset Active--- */
+-	read_nic_dword(dev, CPU_GEN, &reg_u32);
+-	write_nic_dword(dev, CPU_GEN, (reg_u32&(~CPU_GEN_BB_RST)));
+-
+-	/* ----Ckeck FPGAPHY0 and PHY1 board is OK---- */
+-	/* TODO: this function should be removed on ASIC */
+-	for (eCheckItem = (enum hw90_block_e)HW90_BLOCK_PHY0;
+-	     eCheckItem <= HW90_BLOCK_PHY1; eCheckItem++) {
+-		/* don't care RF path */
+-		status = rtl8192_phy_checkBBAndRF(dev, (enum hw90_block_e)eCheckItem,
+-						  (enum rf90_radio_path_e)0);
+-		if (status != 0) {
+-			RT_TRACE((COMP_ERR | COMP_PHY),
+-				 "phy_rf8256_config(): Check PHY%d Fail!!\n",
+-				 eCheckItem-1);
+-			return;
+-		}
+-	}
+-	/* ---- Set CCK and OFDM Block "OFF"---- */
+-	rtl8192_setBBreg(dev, rFPGA0_RFMOD, bCCKEn|bOFDMEn, 0x0);
+-	/* ----BB Register Initilazation---- */
+-	/* ==m==>Set PHY REG From Header<==m== */
+-	rtl8192_phyConfigBB(dev, BASEBAND_CONFIG_PHY_REG);
+-
+-	/* ----Set BB reset de-Active---- */
+-	read_nic_dword(dev, CPU_GEN, &reg_u32);
+-	write_nic_dword(dev, CPU_GEN, (reg_u32|CPU_GEN_BB_RST));
+-
+-	/* ----BB AGC table Initialization---- */
+-	/* ==m==>Set PHY REG From Header<==m== */
+-	rtl8192_phyConfigBB(dev, BASEBAND_CONFIG_AGC_TAB);
+-
+-	/* ----Enable XSTAL ---- */
+-	write_nic_byte_E(dev, 0x5e, 0x00);
+-	if (priv->card_8192_version == VERSION_819XU_A) {
+-		/* Antenna gain offset from B/C/D to A */
+-		reg_u32 = priv->AntennaTxPwDiff[1]<<4 |
+-			   priv->AntennaTxPwDiff[0];
+-		rtl8192_setBBreg(dev, rFPGA0_TxGainStage, (bXBTxAGC|bXCTxAGC),
+-				 reg_u32);
+-
+-		/* XSTALLCap */
+-		reg_u32 = priv->CrystalCap & 0xf;
+-		rtl8192_setBBreg(dev, rFPGA0_AnalogParameter1, bXtalCap,
+-				 reg_u32);
+-	}
+-
+-	/* Check if the CCK HighPower is turned ON.
+-	 * This is used to calculate PWDB.
+-	 */
+-	priv->bCckHighPower = (u8)rtl8192_QueryBBReg(dev,
+-						     rFPGA0_XA_HSSIParameter2,
+-						     0x200);
+-}
+-
+-/******************************************************************************
+- * function:  This function initializes BB&RF
+- * input:     net_device	*dev
+- * output:    none
+- * return:    none
+- * notice:    Initialization value may change all the time, so please make
+- *            sure it has been synced with the newest.
+- *****************************************************************************/
+-void rtl8192_BBConfig(struct net_device *dev)
+-{
+-	rtl8192_InitBBRFRegDef(dev);
+-	/* config BB&RF. As hardCode based initialization has not been well
+-	 * implemented, so use file first.
+-	 * FIXME: should implement it for hardcode?
+-	 */
+-	rtl8192_BB_Config_ParaFile(dev);
+-}
+-
+-/******************************************************************************
+- * function:  This function obtains the initialization value of Tx power Level
+- *            offset
+- * input:     net_device	*dev
+- * output:    none
+- * return:    none
+- *****************************************************************************/
+-void rtl8192_phy_getTxPower(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u8 tmp;
+-
+-	read_nic_dword(dev, rTxAGC_Rate18_06,
+-		       &priv->MCSTxPowerLevelOriginalOffset[0]);
+-	read_nic_dword(dev, rTxAGC_Rate54_24,
+-		       &priv->MCSTxPowerLevelOriginalOffset[1]);
+-	read_nic_dword(dev, rTxAGC_Mcs03_Mcs00,
+-		       &priv->MCSTxPowerLevelOriginalOffset[2]);
+-	read_nic_dword(dev, rTxAGC_Mcs07_Mcs04,
+-		       &priv->MCSTxPowerLevelOriginalOffset[3]);
+-	read_nic_dword(dev, rTxAGC_Mcs11_Mcs08,
+-		       &priv->MCSTxPowerLevelOriginalOffset[4]);
+-	read_nic_dword(dev, rTxAGC_Mcs15_Mcs12,
+-		       &priv->MCSTxPowerLevelOriginalOffset[5]);
+-
+-	/* Read rx initial gain */
+-	read_nic_byte(dev, rOFDM0_XAAGCCore1, &priv->DefaultInitialGain[0]);
+-	read_nic_byte(dev, rOFDM0_XBAGCCore1, &priv->DefaultInitialGain[1]);
+-	read_nic_byte(dev, rOFDM0_XCAGCCore1, &priv->DefaultInitialGain[2]);
+-	read_nic_byte(dev, rOFDM0_XDAGCCore1, &priv->DefaultInitialGain[3]);
+-	RT_TRACE(COMP_INIT,
+-		 "Default initial gain (c50=0x%x, c58=0x%x, c60=0x%x, c68=0x%x)\n",
+-		 priv->DefaultInitialGain[0], priv->DefaultInitialGain[1],
+-		 priv->DefaultInitialGain[2], priv->DefaultInitialGain[3]);
+-
+-	/* Read framesync */
+-	read_nic_byte(dev, rOFDM0_RxDetector3, &priv->framesync);
+-	read_nic_byte(dev, rOFDM0_RxDetector2, &tmp);
+-	priv->framesyncC34 = tmp;
+-	RT_TRACE(COMP_INIT, "Default framesync (0x%x) = 0x%x\n",
+-		rOFDM0_RxDetector3, priv->framesync);
+-
+-	/* Read SIFS (save the value read fome MACPHY_REG.txt) */
+-	read_nic_word(dev, SIFS, &priv->SifsTime);
+-}
+-
+-/******************************************************************************
+- * function:  This function sets the initialization value of Tx power Level
+- *            offset
+- * input:     net_device        *dev
+- *            u8                channel
+- * output:    none
+- * return:    none
+- ******************************************************************************/
+-void rtl8192_phy_setTxPower(struct net_device *dev, u8 channel)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u8	powerlevel = priv->TxPowerLevelCCK[channel-1];
+-	u8	powerlevelOFDM24G = priv->TxPowerLevelOFDM24G[channel-1];
+-
+-	switch (priv->rf_chip) {
+-	case RF_8256:
+-		/* need further implement */
+-		phy_set_rf8256_cck_tx_power(dev, powerlevel);
+-		phy_set_rf8256_ofdm_tx_power(dev, powerlevelOFDM24G);
+-		break;
+-	default:
+-		RT_TRACE((COMP_PHY|COMP_ERR),
+-			 "error RF chipID(8225 or 8258) in function %s()\n",
+-			 __func__);
+-		break;
+-	}
+-}
+-
+-/******************************************************************************
+- * function:  This function checks Rf chip to do RF config
+- * input:     net_device	*dev
+- * output:    none
+- * return:    only 8256 is supported
+- ******************************************************************************/
+-void rtl8192_phy_RFConfig(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	switch (priv->rf_chip) {
+-	case RF_8256:
+-		phy_rf8256_config(dev);
+-		break;
+-	default:
+-		RT_TRACE(COMP_ERR, "error chip id\n");
+-		break;
+-	}
+-}
+-
+-/******************************************************************************
+- * function:  This function updates Initial gain
+- * input:     net_device	*dev
+- * output:    none
+- * return:    As Windows has not implemented this, wait for complement
+- ******************************************************************************/
+-void rtl8192_phy_updateInitGain(struct net_device *dev)
+-{
+-}
+-
+-/******************************************************************************
+- * function:  This function read RF parameters from general head file,
+- *            and do RF 3-wire
+- * input:     net_device	*dev
+- *            rf90_radio_path_e e_rfpath
+- * output:    none
+- * return:    return code show if RF configuration is successful(0:pass, 1:fail)
+- * notice:    Delay may be required for RF configuration
+- *****************************************************************************/
+-u8 rtl8192_phy_ConfigRFWithHeaderFile(struct net_device *dev,
+-				      enum rf90_radio_path_e	e_rfpath)
+-{
+-	int i;
+-
+-	switch (e_rfpath) {
+-	case RF90_PATH_A:
+-		for (i = 0; i < RadioA_ArrayLength; i = i+2) {
+-			if (Rtl8192UsbRadioA_Array[i] == 0xfe) {
+-				mdelay(100);
+-				continue;
+-			}
+-			rtl8192_phy_SetRFReg(dev, e_rfpath,
+-					     Rtl8192UsbRadioA_Array[i],
+-					     bMask12Bits,
+-					     Rtl8192UsbRadioA_Array[i+1]);
+-			mdelay(1);
+-		}
+-		break;
+-	case RF90_PATH_B:
+-		for (i = 0; i < RadioB_ArrayLength; i = i+2) {
+-			if (Rtl8192UsbRadioB_Array[i] == 0xfe) {
+-				mdelay(100);
+-				continue;
+-			}
+-			rtl8192_phy_SetRFReg(dev, e_rfpath,
+-					     Rtl8192UsbRadioB_Array[i],
+-					     bMask12Bits,
+-					     Rtl8192UsbRadioB_Array[i+1]);
+-			mdelay(1);
+-		}
+-		break;
+-	case RF90_PATH_C:
+-		for (i = 0; i < RadioC_ArrayLength; i = i+2) {
+-			if (Rtl8192UsbRadioC_Array[i] == 0xfe) {
+-				mdelay(100);
+-				continue;
+-			}
+-			rtl8192_phy_SetRFReg(dev, e_rfpath,
+-					     Rtl8192UsbRadioC_Array[i],
+-					     bMask12Bits,
+-					     Rtl8192UsbRadioC_Array[i+1]);
+-			mdelay(1);
+-		}
+-		break;
+-	case RF90_PATH_D:
+-		for (i = 0; i < RadioD_ArrayLength; i = i+2) {
+-			if (Rtl8192UsbRadioD_Array[i] == 0xfe) {
+-				mdelay(100);
+-				continue;
+-			}
+-			rtl8192_phy_SetRFReg(dev, e_rfpath,
+-					     Rtl8192UsbRadioD_Array[i],
+-					     bMask12Bits,
+-					     Rtl8192UsbRadioD_Array[i+1]);
+-			mdelay(1);
+-		}
+-		break;
+-	default:
+-		break;
+-	}
+-
+-	return 0;
+-}
+-
+-/******************************************************************************
+- * function:  This function sets Tx Power of the channel
+- * input:     net_device        *dev
+- *            u8                channel
+- * output:    none
+- * return:    none
+- * notice:
+- ******************************************************************************/
+-static void rtl8192_SetTxPowerLevel(struct net_device *dev, u8 channel)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u8	powerlevel = priv->TxPowerLevelCCK[channel-1];
+-	u8	powerlevelOFDM24G = priv->TxPowerLevelOFDM24G[channel-1];
+-
+-	switch (priv->rf_chip) {
+-	case RF_8225:
+-		break;
+-
+-	case RF_8256:
+-		phy_set_rf8256_cck_tx_power(dev, powerlevel);
+-		phy_set_rf8256_ofdm_tx_power(dev, powerlevelOFDM24G);
+-		break;
+-
+-	case RF_8258:
+-		break;
+-	default:
+-		RT_TRACE(COMP_ERR, "unknown rf chip ID in %s()\n", __func__);
+-		break;
+-	}
+-}
+-
+-/******************************************************************************
+- * function:  This function sets command table variable (struct sw_chnl_cmd).
+- * input:     sw_chnl_cmd      *CmdTable    //table to be set
+- *            u32            CmdTableIdx  //variable index in table to be set
+- *            u32            CmdTableSz   //table size
+- *            switch_chan_cmd_id    CmdID        //command ID to set
+- *            u32            Para1
+- *            u32            Para2
+- *            u32            msDelay
+- * output:
+- * return:    true if finished, false otherwise
+- * notice:
+- ******************************************************************************/
+-static u8 rtl8192_phy_SetSwChnlCmdArray(struct sw_chnl_cmd *CmdTable, u32 CmdTableIdx,
+-					u32 CmdTableSz, enum switch_chan_cmd_id CmdID,
+-					u32 Para1, u32 Para2, u32 msDelay)
+-{
+-	struct sw_chnl_cmd *pCmd;
+-
+-	if (!CmdTable) {
+-		RT_TRACE(COMP_ERR, "%s(): CmdTable cannot be NULL\n", __func__);
+-		return false;
+-	}
+-	if (CmdTableIdx >= CmdTableSz) {
+-		RT_TRACE(COMP_ERR, "%s(): Access invalid index, please check size of the table, CmdTableIdx:%d, CmdTableSz:%d\n",
+-			 __func__, CmdTableIdx, CmdTableSz);
+-		return false;
+-	}
+-
+-	pCmd = CmdTable + CmdTableIdx;
+-	pCmd->cmd_id = CmdID;
+-	pCmd->para_1 = Para1;
+-	pCmd->para_2 = Para2;
+-	pCmd->ms_delay = msDelay;
+-
+-	return true;
+-}
+-
+-/******************************************************************************
+- * function:  This function sets channel step by step
+- * input:     net_device        *dev
+- *            u8                channel
+- *            u8                *stage   //3 stages
+- *            u8                *step
+- *            u32               *delay   //whether need to delay
+- * output:    store new stage, step and delay for next step
+- *            (combine with function above)
+- * return:    true if finished, false otherwise
+- * notice:    Wait for simpler function to replace it
+- *****************************************************************************/
+-static u8 rtl8192_phy_SwChnlStepByStep(struct net_device *dev, u8 channel,
+-				       u8 *stage, u8 *step, u32 *delay)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	struct sw_chnl_cmd *pre_cmd;
+-	u32 pre_cmd_cnt = 0;
+-	struct sw_chnl_cmd *post_cmd;
+-	u32 post_cmd_cnt = 0;
+-	struct sw_chnl_cmd *rf_cmd;
+-	u32 rf_cmd_cnt = 0;
+-	struct sw_chnl_cmd *current_cmd = NULL;
+-	u8 e_rfpath;
+-	bool ret;
+-
+-	pre_cmd = kcalloc(MAX_PRECMD_CNT, sizeof(*pre_cmd), GFP_KERNEL);
+-	if (!pre_cmd)
+-		return false;
+-
+-	post_cmd = kcalloc(MAX_POSTCMD_CNT, sizeof(*post_cmd), GFP_KERNEL);
+-	if (!post_cmd) {
+-		kfree(pre_cmd);
+-		return false;
+-	}
+-
+-	rf_cmd = kcalloc(MAX_RFDEPENDCMD_CNT, sizeof(*rf_cmd), GFP_KERNEL);
+-	if (!rf_cmd) {
+-		kfree(pre_cmd);
+-		kfree(post_cmd);
+-		return false;
+-	}
+-
+-	RT_TRACE(COMP_CH, "%s() stage: %d, step: %d, channel: %d\n",
+-		 __func__, *stage, *step, channel);
+-	if (!is_legal_channel(priv->ieee80211, channel)) {
+-		RT_TRACE(COMP_ERR, "set to illegal channel: %d\n", channel);
+-		/* return true to tell upper caller function this channel
+-		 * setting is finished! Or it will in while loop.
+-		 */
+-		ret = true;
+-		goto out;
+-	}
+-	/* FIXME: need to check whether channel is legal or not here */
+-
+-	/* <1> Fill up pre common command. */
+-	rtl8192_phy_SetSwChnlCmdArray(pre_cmd, pre_cmd_cnt++,
+-				      MAX_PRECMD_CNT, CMD_ID_SET_TX_PWR_LEVEL,
+-				      0, 0, 0);
+-	rtl8192_phy_SetSwChnlCmdArray(pre_cmd, pre_cmd_cnt++,
+-				      MAX_PRECMD_CNT, CMD_ID_END, 0, 0, 0);
+-
+-	/* <2> Fill up post common command. */
+-	rtl8192_phy_SetSwChnlCmdArray(post_cmd, post_cmd_cnt++,
+-				      MAX_POSTCMD_CNT, CMD_ID_END, 0, 0, 0);
+-
+-	/* <3> Fill up RF dependent command. */
+-	switch (priv->rf_chip) {
+-	case RF_8225:
+-		if (!(channel >= 1 && channel <= 14)) {
+-			RT_TRACE(COMP_ERR,
+-				 "illegal channel for Zebra 8225: %d\n",
+-				 channel);
+-			ret = true;
+-			goto out;
+-		}
+-		rtl8192_phy_SetSwChnlCmdArray(rf_cmd, rf_cmd_cnt++,
+-					      MAX_RFDEPENDCMD_CNT,
+-					      CMD_ID_RF_WRITE_REG,
+-					      rZebra1_Channel,
+-					      RF_CHANNEL_TABLE_ZEBRA[channel],
+-					      10);
+-		rtl8192_phy_SetSwChnlCmdArray(rf_cmd, rf_cmd_cnt++,
+-					      MAX_RFDEPENDCMD_CNT,
+-					      CMD_ID_END, 0, 0, 0);
+-		break;
+-
+-	case RF_8256:
+-		/* TEST!! This is not the table for 8256!! */
+-		if (!(channel >= 1 && channel <= 14)) {
+-			RT_TRACE(COMP_ERR,
+-				 "illegal channel for Zebra 8256: %d\n",
+-				 channel);
+-			ret = true;
+-			goto out;
+-		}
+-		rtl8192_phy_SetSwChnlCmdArray(rf_cmd, rf_cmd_cnt++,
+-					      MAX_RFDEPENDCMD_CNT,
+-					      CMD_ID_RF_WRITE_REG,
+-					      rZebra1_Channel, channel, 10);
+-		rtl8192_phy_SetSwChnlCmdArray(rf_cmd, rf_cmd_cnt++,
+-					      MAX_RFDEPENDCMD_CNT,
+-					      CMD_ID_END, 0, 0, 0);
+-		break;
+-
+-	case RF_8258:
+-		break;
+-
+-	default:
+-		RT_TRACE(COMP_ERR, "Unknown RFChipID: %d\n", priv->rf_chip);
+-		ret = true;
+-		goto out;
+-	}
+-
+-	do {
+-		switch (*stage) {
+-		case 0:
+-			current_cmd = &pre_cmd[*step];
+-			break;
+-		case 1:
+-			current_cmd = &rf_cmd[*step];
+-			break;
+-		case 2:
+-			current_cmd = &post_cmd[*step];
+-			break;
+-		}
+-
+-		if (current_cmd->cmd_id == CMD_ID_END) {
+-			if ((*stage) == 2) {
+-				*delay = current_cmd->ms_delay;
+-				ret = true;
+-				goto out;
+-			}
+-			(*stage)++;
+-			(*step) = 0;
+-			continue;
+-		}
+-
+-		switch (current_cmd->cmd_id) {
+-		case CMD_ID_SET_TX_PWR_LEVEL:
+-			if (priv->card_8192_version == VERSION_819XU_A)
+-				/* consider it later! */
+-				rtl8192_SetTxPowerLevel(dev, channel);
+-			break;
+-		case CMD_ID_WRITE_PORT_ULONG:
+-			write_nic_dword(dev, current_cmd->para_1,
+-					current_cmd->para_2);
+-			break;
+-		case CMD_ID_WRITE_PORT_USHORT:
+-			write_nic_word(dev, current_cmd->para_1,
+-				       (u16)current_cmd->para_2);
+-			break;
+-		case CMD_ID_WRITE_PORT_UCHAR:
+-			write_nic_byte(dev, current_cmd->para_1,
+-				       (u8)current_cmd->para_2);
+-			break;
+-		case CMD_ID_RF_WRITE_REG:
+-			for (e_rfpath = 0; e_rfpath < RF90_PATH_MAX; e_rfpath++) {
+-				rtl8192_phy_SetRFReg(dev,
+-						     (enum rf90_radio_path_e)e_rfpath,
+-						     current_cmd->para_1,
+-						     bZebra1_ChannelNum,
+-						     current_cmd->para_2);
+-			}
+-			break;
+-		default:
+-			break;
+-		}
+-
+-		break;
+-	} while (true);
+-
+-	*delay = current_cmd->ms_delay;
+-	(*step)++;
+-	ret = false;
+-
+-out:
+-	kfree(pre_cmd);
+-	kfree(post_cmd);
+-	kfree(rf_cmd);
+-
+-	return ret;
+-}
+-
+-/******************************************************************************
+- * function:  This function does actually set channel work
+- * input:     net_device        *dev
+- *            u8                channel
+- * output:    none
+- * return:    none
+- * notice:    We should not call this function directly
+- *****************************************************************************/
+-static void rtl8192_phy_FinishSwChnlNow(struct net_device *dev, u8 channel)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u32	delay = 0;
+-
+-	while (!rtl8192_phy_SwChnlStepByStep(dev, channel, &priv->SwChnlStage,
+-					     &priv->SwChnlStep, &delay)) {
+-		if (!priv->up)
+-			break;
+-	}
+-}
+-
+-/******************************************************************************
+- * function:  Callback routine of the work item for switch channel.
+- * input:     net_device	*dev
+- *
+- * output:    none
+- * return:    none
+- *****************************************************************************/
+-void rtl8192_SwChnl_WorkItem(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	RT_TRACE(COMP_CH, "==> SwChnlCallback819xUsbWorkItem(), chan:%d\n",
+-		 priv->chan);
+-
+-	rtl8192_phy_FinishSwChnlNow(dev, priv->chan);
+-
+-	RT_TRACE(COMP_CH, "<== SwChnlCallback819xUsbWorkItem()\n");
+-}
+-
+-/******************************************************************************
+- * function:  This function scheduled actual work item to set channel
+- * input:     net_device        *dev
+- *            u8                channel   //channel to set
+- * output:    none
+- * return:    return code show if workitem is scheduled (1:pass, 0:fail)
+- * notice:    Delay may be required for RF configuration
+- ******************************************************************************/
+-u8 rtl8192_phy_SwChnl(struct net_device *dev, u8 channel)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	RT_TRACE(COMP_CH, "%s(), SwChnlInProgress: %d\n", __func__,
+-		 priv->SwChnlInProgress);
+-	if (!priv->up)
+-		return false;
+-	if (priv->SwChnlInProgress)
+-		return false;
+-
+-	/* -------------------------------------------- */
+-	switch (priv->ieee80211->mode) {
+-	case WIRELESS_MODE_A:
+-	case WIRELESS_MODE_N_5G:
+-		if (channel <= 14) {
+-			RT_TRACE(COMP_ERR, "WIRELESS_MODE_A but channel<=14\n");
+-			return false;
+-		}
+-		break;
+-	case WIRELESS_MODE_B:
+-		if (channel > 14) {
+-			RT_TRACE(COMP_ERR, "WIRELESS_MODE_B but channel>14\n");
+-			return false;
+-		}
+-		break;
+-	case WIRELESS_MODE_G:
+-	case WIRELESS_MODE_N_24G:
+-		if (channel > 14) {
+-			RT_TRACE(COMP_ERR, "WIRELESS_MODE_G but channel>14\n");
+-			return false;
+-		}
+-		break;
+-	}
+-	/* -------------------------------------------- */
+-
+-	priv->SwChnlInProgress = true;
+-	if (channel == 0)
+-		channel = 1;
+-
+-	priv->chan = channel;
+-
+-	priv->SwChnlStage = 0;
+-	priv->SwChnlStep = 0;
+-	if (priv->up)
+-		rtl8192_SwChnl_WorkItem(dev);
+-
+-	priv->SwChnlInProgress = false;
+-	return true;
+-}
+-
+-/******************************************************************************
+- * function:  Callback routine of the work item for set bandwidth mode.
+- * input:     net_device	 *dev
+- * output:    none
+- * return:    none
+- * notice:    I doubt whether SetBWModeInProgress flag is necessary as we can
+- *            test whether current work in the queue or not.//do I?
+- *****************************************************************************/
+-void rtl8192_SetBWModeWorkItem(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-	u8 regBwOpMode;
+-
+-	RT_TRACE(COMP_SWBW, "%s()  Switch to %s bandwidth\n", __func__,
+-		 priv->CurrentChannelBW == HT_CHANNEL_WIDTH_20?"20MHz":"40MHz");
+-
+-	if (priv->rf_chip == RF_PSEUDO_11N) {
+-		priv->SetBWModeInProgress = false;
+-		return;
+-	}
+-
+-	/* <1> Set MAC register */
+-	read_nic_byte(dev, BW_OPMODE, &regBwOpMode);
+-
+-	switch (priv->CurrentChannelBW) {
+-	case HT_CHANNEL_WIDTH_20:
+-		regBwOpMode |= BW_OPMODE_20MHZ;
+-		/* We have not verify whether this register works */
+-		write_nic_byte(dev, BW_OPMODE, regBwOpMode);
+-		break;
+-
+-	case HT_CHANNEL_WIDTH_20_40:
+-		regBwOpMode &= ~BW_OPMODE_20MHZ;
+-		/* We have not verify whether this register works */
+-		write_nic_byte(dev, BW_OPMODE, regBwOpMode);
+-		break;
+-
+-	default:
+-		RT_TRACE(COMP_ERR,
+-			 "SetChannelBandwidth819xUsb(): unknown Bandwidth: %#X\n",
+-			 priv->CurrentChannelBW);
+-		break;
+-	}
+-
+-	/* <2> Set PHY related register */
+-	switch (priv->CurrentChannelBW) {
+-	case HT_CHANNEL_WIDTH_20:
+-		rtl8192_setBBreg(dev, rFPGA0_RFMOD, bRFMOD, 0x0);
+-		rtl8192_setBBreg(dev, rFPGA1_RFMOD, bRFMOD, 0x0);
+-		rtl8192_setBBreg(dev, rFPGA0_AnalogParameter1,
+-				 0x00100000, 1);
+-
+-		/* Correct the tx power for CCK rate in 20M. */
+-		priv->cck_present_attenuation =
+-			priv->cck_present_attenuation_20Mdefault +
+-			priv->cck_present_attenuation_difference;
+-
+-		if (priv->cck_present_attenuation > 22)
+-			priv->cck_present_attenuation = 22;
+-		if (priv->cck_present_attenuation < 0)
+-			priv->cck_present_attenuation = 0;
+-		RT_TRACE(COMP_INIT,
+-			 "20M, pHalData->CCKPresentAttentuation = %d\n",
+-			 priv->cck_present_attenuation);
+-
+-		if (priv->chan == 14 && !priv->bcck_in_ch14) {
+-			priv->bcck_in_ch14 = true;
+-			dm_cck_txpower_adjust(dev, priv->bcck_in_ch14);
+-		} else if (priv->chan != 14 && priv->bcck_in_ch14) {
+-			priv->bcck_in_ch14 = false;
+-			dm_cck_txpower_adjust(dev, priv->bcck_in_ch14);
+-		} else {
+-			dm_cck_txpower_adjust(dev, priv->bcck_in_ch14);
+-		}
+-
+-		break;
+-	case HT_CHANNEL_WIDTH_20_40:
+-		rtl8192_setBBreg(dev, rFPGA0_RFMOD, bRFMOD, 0x1);
+-		rtl8192_setBBreg(dev, rFPGA1_RFMOD, bRFMOD, 0x1);
+-		rtl8192_setBBreg(dev, rCCK0_System, bCCKSideBand,
+-				 priv->nCur40MhzPrimeSC >> 1);
+-		rtl8192_setBBreg(dev, rFPGA0_AnalogParameter1, 0x00100000, 0);
+-		rtl8192_setBBreg(dev, rOFDM1_LSTF, 0xC00,
+-				 priv->nCur40MhzPrimeSC);
+-		priv->cck_present_attenuation =
+-			priv->cck_present_attenuation_40Mdefault +
+-			priv->cck_present_attenuation_difference;
+-
+-		if (priv->cck_present_attenuation > 22)
+-			priv->cck_present_attenuation = 22;
+-		if (priv->cck_present_attenuation < 0)
+-			priv->cck_present_attenuation = 0;
+-
+-		RT_TRACE(COMP_INIT,
+-			 "40M, pHalData->CCKPresentAttentuation = %d\n",
+-			 priv->cck_present_attenuation);
+-		if (priv->chan == 14 && !priv->bcck_in_ch14) {
+-			priv->bcck_in_ch14 = true;
+-			dm_cck_txpower_adjust(dev, priv->bcck_in_ch14);
+-		} else if (priv->chan != 14 && priv->bcck_in_ch14) {
+-			priv->bcck_in_ch14 = false;
+-			dm_cck_txpower_adjust(dev, priv->bcck_in_ch14);
+-		} else {
+-			dm_cck_txpower_adjust(dev, priv->bcck_in_ch14);
+-		}
+-
+-		break;
+-	default:
+-		RT_TRACE(COMP_ERR,
+-			 "SetChannelBandwidth819xUsb(): unknown Bandwidth: %#X\n",
+-			 priv->CurrentChannelBW);
+-		break;
+-	}
+-	/* Skip over setting of J-mode in BB register here.
+-	 * Default value is "None J mode".
+-	 */
+-
+-	/* <3> Set RF related register */
+-	switch (priv->rf_chip) {
+-	case RF_8225:
+-		break;
+-
+-	case RF_8256:
+-		phy_set_rf8256_bandwidth(dev, priv->CurrentChannelBW);
+-		break;
+-
+-	case RF_8258:
+-		break;
+-
+-	case RF_PSEUDO_11N:
+-		break;
+-
+-	default:
+-		RT_TRACE(COMP_ERR, "Unknown RFChipID: %d\n", priv->rf_chip);
+-		break;
+-	}
+-	priv->SetBWModeInProgress = false;
+-
+-	RT_TRACE(COMP_SWBW, "<==SetBWMode819xUsb(), %d\n",
+-		 atomic_read(&priv->ieee80211->atm_swbw));
+-}
+-
+-/******************************************************************************
+- * function:  This function schedules bandwidth switch work.
+- * input:     struct net_deviceq   *dev
+- *            HT_CHANNEL_WIDTH     bandwidth  //20M or 40M
+- *            HT_EXTCHNL_OFFSET    offset     //Upper, Lower, or Don't care
+- * output:    none
+- * return:    none
+- * notice:    I doubt whether SetBWModeInProgress flag is necessary as we can
+- *	      test whether current work in the queue or not.//do I?
+- *****************************************************************************/
+-void rtl8192_SetBWMode(struct net_device *dev,
+-		       enum ht_channel_width bandwidth,
+-		       enum ht_extension_chan_offset offset)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	if (priv->SetBWModeInProgress)
+-		return;
+-	priv->SetBWModeInProgress = true;
+-
+-	priv->CurrentChannelBW = bandwidth;
+-
+-	if (offset == HT_EXTCHNL_OFFSET_LOWER)
+-		priv->nCur40MhzPrimeSC = HAL_PRIME_CHNL_OFFSET_UPPER;
+-	else if (offset == HT_EXTCHNL_OFFSET_UPPER)
+-		priv->nCur40MhzPrimeSC = HAL_PRIME_CHNL_OFFSET_LOWER;
+-	else
+-		priv->nCur40MhzPrimeSC = HAL_PRIME_CHNL_OFFSET_DONT_CARE;
+-
+-	rtl8192_SetBWModeWorkItem(dev);
+-}
+-
+-void InitialGain819xUsb(struct net_device *dev,	u8 Operation)
+-{
+-	struct r8192_priv *priv = ieee80211_priv(dev);
+-
+-	priv->InitialGainOperateType = Operation;
+-
+-	if (priv->up)
+-		queue_delayed_work(priv->priv_wq, &priv->initialgain_operate_wq, 0);
+-}
+-
+-void InitialGainOperateWorkItemCallBack(struct work_struct *work)
+-{
+-	struct delayed_work *dwork = to_delayed_work(work);
+-	struct r8192_priv *priv = container_of(dwork, struct r8192_priv,
+-					       initialgain_operate_wq);
+-	struct net_device *dev = priv->ieee80211->dev;
+-#define SCAN_RX_INITIAL_GAIN	0x17
+-#define POWER_DETECTION_TH	0x08
+-	u32	bitmask;
+-	u8	initial_gain;
+-	u8	Operation;
+-
+-	Operation = priv->InitialGainOperateType;
+-
+-	switch (Operation) {
+-	case IG_Backup:
+-		RT_TRACE(COMP_SCAN, "IG_Backup, backup the initial gain.\n");
+-		initial_gain = SCAN_RX_INITIAL_GAIN;
+-		bitmask = bMaskByte0;
+-		if (dm_digtable.dig_algorithm == DIG_ALGO_BY_FALSE_ALARM)
+-			/* FW DIG OFF */
+-			rtl8192_setBBreg(dev, UFWP, bMaskByte1, 0x8);
+-		priv->initgain_backup.xaagccore1 =
+-			(u8)rtl8192_QueryBBReg(dev, rOFDM0_XAAGCCore1, bitmask);
+-		priv->initgain_backup.xbagccore1 =
+-			(u8)rtl8192_QueryBBReg(dev, rOFDM0_XBAGCCore1, bitmask);
+-		priv->initgain_backup.xcagccore1 =
+-			(u8)rtl8192_QueryBBReg(dev, rOFDM0_XCAGCCore1, bitmask);
+-		priv->initgain_backup.xdagccore1 =
+-			(u8)rtl8192_QueryBBReg(dev, rOFDM0_XDAGCCore1, bitmask);
+-		bitmask = bMaskByte2;
+-		priv->initgain_backup.cca =
+-			(u8)rtl8192_QueryBBReg(dev, rCCK0_CCA, bitmask);
+-
+-		RT_TRACE(COMP_SCAN, "Scan InitialGainBackup 0xc50 is %x\n",
+-			 priv->initgain_backup.xaagccore1);
+-		RT_TRACE(COMP_SCAN, "Scan InitialGainBackup 0xc58 is %x\n",
+-			 priv->initgain_backup.xbagccore1);
+-		RT_TRACE(COMP_SCAN, "Scan InitialGainBackup 0xc60 is %x\n",
+-			 priv->initgain_backup.xcagccore1);
+-		RT_TRACE(COMP_SCAN, "Scan InitialGainBackup 0xc68 is %x\n",
+-			 priv->initgain_backup.xdagccore1);
+-		RT_TRACE(COMP_SCAN, "Scan InitialGainBackup 0xa0a is %x\n",
+-			 priv->initgain_backup.cca);
+-
+-		RT_TRACE(COMP_SCAN, "Write scan initial gain = 0x%x\n",
+-			 initial_gain);
+-		write_nic_byte(dev, rOFDM0_XAAGCCore1, initial_gain);
+-		write_nic_byte(dev, rOFDM0_XBAGCCore1, initial_gain);
+-		write_nic_byte(dev, rOFDM0_XCAGCCore1, initial_gain);
+-		write_nic_byte(dev, rOFDM0_XDAGCCore1, initial_gain);
+-		RT_TRACE(COMP_SCAN, "Write scan 0xa0a = 0x%x\n",
+-			 POWER_DETECTION_TH);
+-		write_nic_byte(dev, 0xa0a, POWER_DETECTION_TH);
+-		break;
+-	case IG_Restore:
+-		RT_TRACE(COMP_SCAN, "IG_Restore, restore the initial gain.\n");
+-		bitmask = 0x7f; /* Bit0 ~ Bit6 */
+-		if (dm_digtable.dig_algorithm == DIG_ALGO_BY_FALSE_ALARM)
+-			/* FW DIG OFF */
+-			rtl8192_setBBreg(dev, UFWP, bMaskByte1, 0x8);
+-
+-		rtl8192_setBBreg(dev, rOFDM0_XAAGCCore1, bitmask,
+-				 (u32)priv->initgain_backup.xaagccore1);
+-		rtl8192_setBBreg(dev, rOFDM0_XBAGCCore1, bitmask,
+-				 (u32)priv->initgain_backup.xbagccore1);
+-		rtl8192_setBBreg(dev, rOFDM0_XCAGCCore1, bitmask,
+-				 (u32)priv->initgain_backup.xcagccore1);
+-		rtl8192_setBBreg(dev, rOFDM0_XDAGCCore1, bitmask,
+-				 (u32)priv->initgain_backup.xdagccore1);
+-		bitmask  = bMaskByte2;
+-		rtl8192_setBBreg(dev, rCCK0_CCA, bitmask,
+-				 (u32)priv->initgain_backup.cca);
+-
+-		RT_TRACE(COMP_SCAN, "Scan BBInitialGainRestore 0xc50 is %x\n",
+-			 priv->initgain_backup.xaagccore1);
+-		RT_TRACE(COMP_SCAN, "Scan BBInitialGainRestore 0xc58 is %x\n",
+-			 priv->initgain_backup.xbagccore1);
+-		RT_TRACE(COMP_SCAN, "Scan BBInitialGainRestore 0xc60 is %x\n",
+-			 priv->initgain_backup.xcagccore1);
+-		RT_TRACE(COMP_SCAN, "Scan BBInitialGainRestore 0xc68 is %x\n",
+-			 priv->initgain_backup.xdagccore1);
+-		RT_TRACE(COMP_SCAN, "Scan BBInitialGainRestore 0xa0a is %x\n",
+-			 priv->initgain_backup.cca);
+-
+-		rtl8192_phy_setTxPower(dev, priv->ieee80211->current_network.channel);
+-
+-		if (dm_digtable.dig_algorithm == DIG_ALGO_BY_FALSE_ALARM)
+-			/* FW DIG ON */
+-			rtl8192_setBBreg(dev, UFWP, bMaskByte1, 0x1);
+-		break;
+-	default:
+-		RT_TRACE(COMP_SCAN, "Unknown IG Operation.\n");
+-		break;
+-	}
+-}
+diff --git a/drivers/staging/rtl8192u/r819xU_phy.h b/drivers/staging/rtl8192u/r819xU_phy.h
+deleted file mode 100644
+index bafaa6a90c50..000000000000
+--- a/drivers/staging/rtl8192u/r819xU_phy.h
++++ /dev/null
+@@ -1,81 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _R819XU_PHY_H
+-#define _R819XU_PHY_H
+-
+-/* Channel switch: The size of command tables for switch channel */
+-#define MAX_PRECMD_CNT 16
+-#define MAX_RFDEPENDCMD_CNT 16
+-#define MAX_POSTCMD_CNT 16
+-
+-enum baseband_config_type {
+-	BASEBAND_CONFIG_PHY_REG = 0,			//Radio Path A
+-	BASEBAND_CONFIG_AGC_TAB = 1,			//Radio Path B
+-};
+-
+-enum switch_chan_cmd_id {
+-	CMD_ID_END,
+-	CMD_ID_SET_TX_PWR_LEVEL,
+-	CMD_ID_WRITE_PORT_ULONG,
+-	CMD_ID_WRITE_PORT_USHORT,
+-	CMD_ID_WRITE_PORT_UCHAR,
+-	CMD_ID_RF_WRITE_REG,
+-};
+-
+-/* -----------------------Define structure---------------------- */
+-/* 1. Switch channel related */
+-struct sw_chnl_cmd {
+-	enum switch_chan_cmd_id	cmd_id;
+-	u32		        para_1;
+-	u32		        para_2;
+-	u32		        ms_delay;
+-} __packed;
+-
+-enum hw90_block_e {
+-	HW90_BLOCK_MAC = 0,
+-	HW90_BLOCK_PHY0 = 1,
+-	HW90_BLOCK_PHY1 = 2,
+-	HW90_BLOCK_RF = 3,
+-	HW90_BLOCK_MAXIMUM = 4, /* Never use this */
+-};
+-
+-enum rf90_radio_path_e {
+-	RF90_PATH_A = 0,			/* Radio Path A */
+-	RF90_PATH_B = 1,			/* Radio Path B */
+-	RF90_PATH_C = 2,			/* Radio Path C */
+-	RF90_PATH_D = 3,			/* Radio Path D */
+-	RF90_PATH_MAX				/* Max RF number 92 support */
+-};
+-
+-u8 rtl8192_phy_CheckIsLegalRFPath(struct net_device *dev, u32 e_rfpath);
+-void rtl8192_setBBreg(struct net_device *dev, u32 reg_addr,
+-		      u32 bitmask, u32 data);
+-u32 rtl8192_QueryBBReg(struct net_device *dev, u32 reg_addr, u32 bitmask);
+-void rtl8192_phy_SetRFReg(struct net_device *dev,
+-			  enum rf90_radio_path_e e_rfpath,
+-			  u32 reg_addr, u32 bitmask, u32 data);
+-u32 rtl8192_phy_QueryRFReg(struct net_device *dev,
+-			   enum rf90_radio_path_e e_rfpath,
+-			   u32 reg_addr, u32 bitmask);
+-void rtl8192_phy_configmac(struct net_device *dev);
+-u8 rtl8192_phy_checkBBAndRF(struct net_device *dev,
+-			    enum hw90_block_e CheckBlock,
+-			    enum rf90_radio_path_e e_rfpath);
+-void rtl8192_BBConfig(struct net_device *dev);
+-void rtl8192_phy_getTxPower(struct net_device *dev);
+-void rtl8192_phy_setTxPower(struct net_device *dev, u8 channel);
+-void rtl8192_phy_RFConfig(struct net_device *dev);
+-void rtl8192_phy_updateInitGain(struct net_device *dev);
+-u8 rtl8192_phy_ConfigRFWithHeaderFile(struct net_device *dev,
+-				      enum rf90_radio_path_e e_rfpath);
+-
+-u8 rtl8192_phy_SwChnl(struct net_device *dev, u8 channel);
+-void rtl8192_SetBWMode(struct net_device *dev,
+-		       enum ht_channel_width bandwidth,
+-		       enum ht_extension_chan_offset offset);
+-void rtl8192_SwChnl_WorkItem(struct net_device *dev);
+-void rtl8192_SetBWModeWorkItem(struct net_device *dev);
+-void InitialGain819xUsb(struct net_device *dev, u8 Operation);
+-
+-void InitialGainOperateWorkItemCallBack(struct work_struct *work);
+-
+-#endif
+diff --git a/drivers/staging/rtl8192u/r819xU_phyreg.h b/drivers/staging/rtl8192u/r819xU_phyreg.h
+deleted file mode 100644
+index c9669821b278..000000000000
+--- a/drivers/staging/rtl8192u/r819xU_phyreg.h
++++ /dev/null
+@@ -1,143 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _R819XU_PHYREG_H
+-#define _R819XU_PHYREG_H
+-
+-#define   RF_DATA				0x1d4					/* FW will write RF data in the register.*/
+-
+-/* page8 */
+-#define rFPGA0_RFMOD				0x800  /* RF mode & CCK TxSC */
+-#define rFPGA0_TxGainStage			0x80c
+-#define rFPGA0_XA_HSSIParameter1	0x820
+-#define rFPGA0_XA_HSSIParameter2	0x824
+-#define rFPGA0_XB_HSSIParameter1	0x828
+-#define rFPGA0_XB_HSSIParameter2	0x82c
+-#define rFPGA0_XC_HSSIParameter1	0x830
+-#define rFPGA0_XC_HSSIParameter2	0x834
+-#define rFPGA0_XD_HSSIParameter1	0x838
+-#define rFPGA0_XD_HSSIParameter2	0x83c
+-#define rFPGA0_XA_LSSIParameter		0x840
+-#define rFPGA0_XB_LSSIParameter		0x844
+-#define rFPGA0_XC_LSSIParameter		0x848
+-#define rFPGA0_XD_LSSIParameter		0x84c
+-#define rFPGA0_XAB_SwitchControl	0x858
+-#define rFPGA0_XCD_SwitchControl	0x85c
+-#define rFPGA0_XA_RFInterfaceOE		0x860
+-#define rFPGA0_XB_RFInterfaceOE		0x864
+-#define rFPGA0_XC_RFInterfaceOE		0x868
+-#define rFPGA0_XD_RFInterfaceOE		0x86c
+-#define rFPGA0_XAB_RFInterfaceSW	0x870
+-#define rFPGA0_XCD_RFInterfaceSW	0x874
+-#define rFPGA0_XAB_RFParameter		0x878
+-#define rFPGA0_XCD_RFParameter		0x87c
+-#define rFPGA0_AnalogParameter1		0x880
+-#define rFPGA0_AnalogParameter4		0x88c
+-#define rFPGA0_XA_LSSIReadBack		0x8a0
+-#define rFPGA0_XB_LSSIReadBack		0x8a4
+-#define rFPGA0_XC_LSSIReadBack		0x8a8
+-#define rFPGA0_XD_LSSIReadBack		0x8ac
+-#define rFPGA0_XAB_RFInterfaceRB	0x8e0
+-#define rFPGA0_XCD_RFInterfaceRB	0x8e4
+-
+-/* page 9 */
+-#define rFPGA1_RFMOD				0x900  /* RF mode & OFDM TxSC */
+-
+-/* page a */
+-#define rCCK0_System				0xa00
+-#define rCCK0_AFESetting			0xa04
+-#define rCCK0_CCA					0xa08
+-#define rCCK0_TxFilter1				0xa20
+-#define rCCK0_TxFilter2				0xa24
+-#define rCCK0_DebugPort				0xa28  /* debug port and Tx filter3 */
+-
+-/* page c */
+-#define rOFDM0_TRxPathEnable		0xc04
+-#define rOFDM0_XARxAFE				0xc10  /* RxIQ DC offset, Rx digital filter, DC notch filter */
+-#define rOFDM0_XARxIQImbalance		0xc14  /* RxIQ imbalance matrix */
+-#define rOFDM0_XBRxAFE				0xc18
+-#define rOFDM0_XBRxIQImbalance		0xc1c
+-#define rOFDM0_XCRxAFE				0xc20
+-#define rOFDM0_XCRxIQImbalance		0xc24
+-#define rOFDM0_XDRxAFE				0xc28
+-#define rOFDM0_XDRxIQImbalance		0xc2c
+-#define rOFDM0_RxDetector1			0xc30  /* PD,BW & SBD */
+-#define rOFDM0_RxDetector2			0xc34  /* SBD & Fame Sync.*/
+-#define rOFDM0_RxDetector3			0xc38  /* Frame Sync.*/
+-#define rOFDM0_ECCAThreshold		0xc4c /* energy CCA */
+-#define rOFDM0_XAAGCCore1		0xc50
+-#define rOFDM0_XAAGCCore2		0xc54
+-#define rOFDM0_XBAGCCore1		0xc58
+-#define rOFDM0_XBAGCCore2		0xc5c
+-#define rOFDM0_XCAGCCore1		0xc60
+-#define rOFDM0_XCAGCCore2		0xc64
+-#define rOFDM0_XDAGCCore1		0xc68
+-#define rOFDM0_XDAGCCore2		0xc6c
+-#define rOFDM0_XATxIQImbalance		0xc80
+-#define rOFDM0_XATxAFE				0xc84
+-#define rOFDM0_XBTxIQImbalance		0xc88
+-#define rOFDM0_XBTxAFE				0xc8c
+-#define rOFDM0_XCTxIQImbalance		0xc90
+-#define rOFDM0_XCTxAFE				0xc94
+-#define rOFDM0_XDTxIQImbalance		0xc98
+-#define rOFDM0_XDTxAFE				0xc9c
+-
+-/* page d */
+-#define rOFDM1_LSTF				0xd00
+-#define rOFDM1_TRxPathEnable		0xd04
+-
+-/* page e */
+-#define rTxAGC_Rate18_06			0xe00
+-#define rTxAGC_Rate54_24			0xe04
+-#define rTxAGC_CCK_Mcs32			0xe08
+-#define rTxAGC_Mcs03_Mcs00			0xe10
+-#define rTxAGC_Mcs07_Mcs04			0xe14
+-#define rTxAGC_Mcs11_Mcs08			0xe18
+-#define rTxAGC_Mcs15_Mcs12			0xe1c
+-
+-/* RF
+- * Zebra1
+- */
+-#define rZebra1_Channel				0x7
+-
+-/* Zebra4 */
+-#define rGlobalCtrl				0
+-
+-/* Bit Mask
+- * page-8
+- */
+-#define bRFMOD						0x1
+-#define bCCKEn						0x1000000
+-#define bOFDMEn						0x2000000
+-#define bXBTxAGC					0xf00
+-#define bXCTxAGC					0xf000
+-#define b3WireDataLength			0x800
+-#define b3WireAddressLength			0x400
+-#define bRFSI_RFENV				0x10
+-#define bLSSIReadAddress			0x3f000000   /* LSSI "Read" Address */
+-#define bLSSIReadEdge				0x80000000   /* LSSI "Read" edge signal */
+-#define bLSSIReadBackData			0xfff
+-#define bXtalCap					0x0f000000
+-
+-/* page-a */
+-#define bCCKSideBand				0x10
+-
+-/* page e */
+-#define bTxAGCRateCCK			0x7f00
+-
+-/* RF
+- * Zebra1
+- */
+-#define bZebra1_ChannelNum        0xf80
+-
+-/* RTL8258 */
+-/* for PutRegsetting & GetRegSetting BitMask */
+-#define bMaskByte0                0xff
+-#define bMaskByte1                0xff00
+-#define bMaskByte2                0xff0000
+-#define bMaskHWord                0xffff0000
+-#define bMaskLWord                0x0000ffff
+-#define bMaskDWord                0xffffffff
+-
+-/* for PutRFRegsetting & GetRFRegSetting BitMask */
+-#define bMask12Bits               0xfff
+-
+-#endif	/* __INC_HAL8190PCIPHYREG_H */
 -- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+2.42.0
+
