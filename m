@@ -2,103 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF0B7C91D3
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 02:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D5D7C91D9
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 02:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232607AbjJNAb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 20:31:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39950 "EHLO
+        id S232540AbjJNAk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 20:40:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231469AbjJNAb5 (ORCPT
+        with ESMTP id S231814AbjJNAk0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 20:31:57 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2DBCBE
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 17:31:55 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7c97d5d5aso41470397b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 17:31:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697243515; x=1697848315; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wup1ljyUWeQFKZrcp5IVFWzCnbDe777WHGk4V9tmRQM=;
-        b=oKTjSwI5pykMkJKbV5u4ng9pBbEfMVBFAUt+zxT594mUo/2tv/vwQetvtN6vWE59q9
-         phwz6YtUBCyySRCDhy+SxzEWfBrF1GHRmWB90bw9MVG8oigSL/FkURAp+obG7kgeaySD
-         BPKeqXRyUXQ9UrGG0HPLgRvVdQUD64C38azgR1dSC73/c9qGymfrABOVov9XsBlPA0wi
-         AaVDiTrt7nLSxWI9FuvLSsxCDeFDlrblgB768BUeC/78LrDH3Q7W1vEAw0Pk+vMt1epl
-         AyH0gjozHqzDNWFTsPYmpTqDFy+awFxp4/44bZh8W4cgUIyYDY1b3AE+Ac2FOHVbMqln
-         g8Gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697243515; x=1697848315;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wup1ljyUWeQFKZrcp5IVFWzCnbDe777WHGk4V9tmRQM=;
-        b=aR46CrB3ozRadU30g1hLdDi+F8lZyE8x++AQEB6d1L9fExLR316IGPERa6/qybENz/
-         z5mb3qQznFM5OswyQVGZSGnmc2xlS+4bRoVAyrNl2OZwoYCQQFQ7HjZ+MfLcoBtP6JO3
-         7zxFqJ+z9Gk98dmo1Z/DaDQpusXK3nA4mEXnFgWYDmJdUCJGTUvwTSqw3koop0v1ltgk
-         JcruspJQnIERKyIglXKL3DTXqgeVPzgPBqOzgruOvqpBhvQkIx36PTFtq+4IyecpHPeO
-         c3/Z3uciPCoYJ2qaMFhgC//XHZbm+ISCkQSql0bGTU2P5Yu7XFjS95VxvJNBMGn4m/J3
-         5ZWA==
-X-Gm-Message-State: AOJu0YyZENw8D0I9dKFYc4PXGwwD1EOFWprPIEcGj7UVK6L5JnOYh2Q/
-        /6rqpP65wusH5pJXMnntAqQ5IxvZYCk=
-X-Google-Smtp-Source: AGHT+IHQQYB+851NvjeGmGuKbGvRshCOqjfyFaYJj9UwpSg0M1KsN+HerqjxrMu5GRxGP5xT5pAfjDRedWg=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:212:b0:d89:b072:d06f with SMTP id
- j18-20020a056902021200b00d89b072d06fmr531497ybs.7.1697243514939; Fri, 13 Oct
- 2023 17:31:54 -0700 (PDT)
-Date:   Fri, 13 Oct 2023 17:31:53 -0700
-In-Reply-To: <20231010200220.897953-7-john.allen@amd.com>
-Mime-Version: 1.0
-References: <20231010200220.897953-1-john.allen@amd.com> <20231010200220.897953-7-john.allen@amd.com>
-Message-ID: <ZSnheYDyzhZ1DOW5@google.com>
-Subject: Re: [PATCH 6/9] KVM: SVM: Add MSR_IA32_XSS to the GHCB for hypervisor kernel
-From:   Sean Christopherson <seanjc@google.com>
-To:     John Allen <john.allen@amd.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, weijiang.yang@intel.com,
-        rick.p.edgecombe@intel.com, x86@kernel.org,
-        thomas.lendacky@amd.com, bp@alien8.de
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Fri, 13 Oct 2023 20:40:26 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A139BF
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 17:40:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id CEEDDC433CA;
+        Sat, 14 Oct 2023 00:40:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697244024;
+        bh=LBRj7RPpH0t4uglFprw3OonulBFR3UbaQLNWIGKmsf0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=uVavqv7NwI6oHhj42YaTFmb7lwoo3iGH4auhp9kxae0cGBRYb/9URRCMGnT+0Knew
+         /Cv2vX0lxILkc5TP0lnmCfLkk0Z3eUPCnVNFgQm73S3R2+NKgxmORsuxj9EBGze0di
+         5k01Md8t17sXBj9YkcoNiThJiXo4XmpX4a0gMLAzaiLqzfo2gXwg9ZNaf9+UwZPa4j
+         KG72rIjbXzIJg5mSxwWAKYxGSDrK4axVfUxu5tNiA57rYz1MIpGg1YgMbcrNcBb3PG
+         GAyzq6z1qmprLeOaggysqblSYVaDd8SUdJTShjQFAhJr5SRetW7vgJRk3ouZjYL0uC
+         Po72e/5PBQGsg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B5C70E1F66B;
+        Sat, 14 Oct 2023 00:40:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] net: ti: icssg-prueth: Fix tx_total_bytes count
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169724402474.30425.14506920247317022113.git-patchwork-notify@kernel.org>
+Date:   Sat, 14 Oct 2023 00:40:24 +0000
+References: <20231012064626.977466-1-danishanwar@ti.com>
+In-Reply-To: <20231012064626.977466-1-danishanwar@ti.com>
+To:     MD Danish Anwar <danishanwar@ti.com>
+Cc:     pabeni@redhat.com, kuba@kernel.org, edumazet@google.com,
+        davem@davemloft.net, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, srk@ti.com, vigneshr@ti.com,
+        r-gunasekaran@ti.com, rogerq@kernel.org, andrew@lunn.ch
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023, John Allen wrote:
-> When a guest issues a cpuid instruction for Fn0000000D_x0B
-> (CetUserOffset), KVM will intercept and need to access the guest
-> MSR_IA32_XSS value. For SEV-ES, this is encrypted and needs to be
-> included in the GHCB to be visible to the hypervisor.
+Hello:
+
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Thu, 12 Oct 2023 12:16:26 +0530 you wrote:
+> ICSSG HW stats on TX side considers 8 preamble bytes as data bytes. Due
+> to this the tx_bytes of ICSSG interface doesn't match the rx_bytes of the
+> link partner. There is no public errata available yet.
 > 
-> Signed-off-by: John Allen <john.allen@amd.com>
-> ---
-> @@ -3032,6 +3037,9 @@ static void sev_es_init_vmcb(struct vcpu_svm *svm)
->  		if (guest_cpuid_has(&svm->vcpu, X86_FEATURE_RDTSCP))
->  			svm_clr_intercept(svm, INTERCEPT_RDTSCP);
->  	}
-> +
-> +	if (kvm_caps.supported_xss)
-> +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_XSS, 1, 1);
+> As a workaround to fix this, decrease tx_bytes by 8 bytes for every tx
+> frame.
+> 
+> [...]
 
-This creates a giant gaping virtualization hole for the guest to walk through.
-Want to hide shadow stacks from the guest because hardware is broken?  Too bad,
-the guest can still set any and all XFeature bits it wants!  I realize "KVM"
-already creates such a hole by disabling interception of XSETBV, but that doesn't
-make it right.  In quotes because it's not like KVM has a choice for SEV-ES guests.
+Here is the summary with links:
+  - [v2] net: ti: icssg-prueth: Fix tx_total_bytes count
+    https://git.kernel.org/netdev/net/c/2c0d808f36cc
 
-This is another example of SEV-SNP and beyond clearly being designed to work with
-a paravisor, SVM_VMGEXIT_AP_CREATE being the other big one that comes to mind.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-KVM should at least block CET by killing the VM if the guest illegally sets
-CR4.CET.  Ugh, and is that even possible with SVM_VMGEXIT_AP_CREATE?  The guest
-can shove in whatever CR4 it wants, so long as it the value is supported by
-hardware.
 
-At what point do we bite the bullet and require a paravisor?  Because the more I
-see of SNP, the more I'm convinced that it's not entirely safe to run untrusted
-guest code at VMPL0.
