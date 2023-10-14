@@ -2,137 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE727C92F6
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 08:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9F07C92FE
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 08:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232865AbjJNGcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 02:32:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54110 "EHLO
+        id S232848AbjJNGfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 02:35:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232834AbjJNGct (ORCPT
+        with ESMTP id S232800AbjJNGfx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 02:32:49 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E6DBF;
-        Fri, 13 Oct 2023 23:32:48 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d852b28ec3bso3047139276.2;
-        Fri, 13 Oct 2023 23:32:48 -0700 (PDT)
+        Sat, 14 Oct 2023 02:35:53 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9298ACC
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 23:35:50 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-5046bf37ec1so3577170e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 23:35:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697265167; x=1697869967; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k5xaWOo1D+HhhlwPdSC9+vAnZB9g/JHmWJaQdfHTbHA=;
-        b=GW74oVZtoD83QmniCy5H3KOl78xBU+hvJ2YZJTxAt7zXRD2tRq12teVeW6h0wgxQyU
-         5BUcp4zx6Akgogw3B+s5Z2dr/slLOgpMUVbhKjIX0HcI54mQJ5EXQCBiNZA47EnRTdpC
-         qnwqzLZSHVHxApReghe5e072hEwdsYg4hjKNaXvLfLm2Hw0mLnCl9mXyxNQ9Q3hwBc80
-         Zn4Su+uiBjV08nnjtvCUPHJ36omLjaW4ULpFh7mdAodvBJdqh1nAai52Ul1jN+NcfgNC
-         0XNVzvh3bTn8fsoKve6+RX5tDTLvF5IUmiN7aFArCrI3GHlgtJjS/huJuOCWcWVUsWgh
-         XvOg==
+        d=gmail.com; s=20230601; t=1697265349; x=1697870149; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RJyWt/G9UgfvUHmmjADyY97GEgcUxAnVJZD4ohf6ujU=;
+        b=YhK9+WKLhXYSQCY7XBlzQBKrNfE0FIf6lwovTgQMjoj7m1HFZEK3MF/mTP1Ysj+4Sn
+         znYL/tGI8BoQJMz839/JWvFkw00/g5Bo0G7p/cih1mbiQwF1mXYa5DL7YOHW1sDKDIbL
+         Ww1fFr7ti37PmzckERUNSPG64IBD83v8KknzqLfJ2muWg3d7ZbJRawzFDJS0C1ZrLrkV
+         HEaId6jRgJtX2bxCKUzCxMnKn4epu28GIoC1iXui+ZGcp2xtqlpYk/+/5HDKJv1cJaMS
+         wcep6DRTBHMeABpCWC9qiDAeUzWhHFSvGrkmaddddYP77nZ4/5U2/F7Nja8YHBREJujL
+         MRaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697265167; x=1697869967;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k5xaWOo1D+HhhlwPdSC9+vAnZB9g/JHmWJaQdfHTbHA=;
-        b=sSVj57VxC24PWmCACfh7Eea0X0S1gNDo7xQWgCyUUHamd51rteZFWpJC/fVskzA34Z
-         rSxFMrJxa2QfK9OL6+lnKyCElNXU1BoFdntjzMVChYLAZD5oluK2iNV0UmgiDG8xxtZX
-         esVnxPa2jtqSxAQMqwCkkpavaLhuutKpDaRPW81TsAB+V7r3tPodePQiskhyrT85gsnM
-         mebBtTNu6/y++0mVHzQltv2gxxJZtJnR6X/Esuou9xJAaA4MkAwAe1aXDsMjzEs3gI0R
-         WPTP1OQ/5AJAjqNDSS9/YIko2p07HYHyyXUlJbj4gS9J6pgvhkHUJ4jKWLFr1zjIOyH0
-         Ax5Q==
-X-Gm-Message-State: AOJu0YzWukohOZQ/kkMgBDfX2S7IfE04WEGxc1GyzszI91IJpeSQvNiX
-        TbDcF1EuNOUzkw0ha95Joiw45TWDKbzex9NqjzIT4RjGCEA=
-X-Google-Smtp-Source: AGHT+IGPiXdzPkbTZU28IfldxGb2Y7+zxLcJpBsvmBNVWYVOL7sa/F/x0SdIGq9PR/oFl2J8SrF3RzB9iRnLCSi/BfQ=
-X-Received: by 2002:a25:230e:0:b0:d9a:b9fe:a318 with SMTP id
- j14-20020a25230e000000b00d9ab9fea318mr6951399ybj.58.1697265167476; Fri, 13
- Oct 2023 23:32:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+fyA4RABYNPZZSk9+9U51u53kbSzqgwdi1KDDGRxXi8q5TtxQ@mail.gmail.com>
- <ZSm9zeepuZ94A-ZI@google.com>
-In-Reply-To: <ZSm9zeepuZ94A-ZI@google.com>
-From:   John Salamon <salamonj9@gmail.com>
-Date:   Sat, 14 Oct 2023 17:02:35 +1030
-Message-ID: <CA+fyA4QD6ojC7NMaYigK2xvHt0cpEPY3daGx01Hh3NVHV1sfMQ@mail.gmail.com>
-Subject: Re: uinput: waiting for UI_FF_UPLOAD events will not inform user when
- allocation is required
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     rydberg@bitmath.org, linux-input@vger.kernel.org,
+        d=1e100.net; s=20230601; t=1697265349; x=1697870149;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RJyWt/G9UgfvUHmmjADyY97GEgcUxAnVJZD4ohf6ujU=;
+        b=Z+N1prq2d6Nl4svQFkA+FVxjr/NVIqULLv6zel6ejDolgdmGpvu5y3YG3UkA3Z/CKn
+         nHrOmTFUcepUTtoBb0ThjQ/6Fk+qBg031gkaI33TCZWDWMtQHlyeeIEZg36BZgfKhvQZ
+         h3ajlhHpwMf4rkPySwpBrcTfMDf78+6XnZMsJYzr0lRsqUkbTKRiCBjlRVOYeC+ibs1X
+         VyMfBBL50oxD9c/8c42Or/JgRww7Ow1ehet6ber3Tg/ApeSyIChNmaZHwimESGll2Z9X
+         Z7yQ9p7m+XkhGmQkQ3VcebyihAmH4womH48BTwoPxnk+9pAtAueTeQJ14Jf2ayYmyriI
+         3zuA==
+X-Gm-Message-State: AOJu0Yyo/DXTjuWKEK8AVzkPW6mykdz66vBL1g9TCqmfB8nbmtZr71/p
+        Qjx+uEvMFU6yJoVBfbFvjqE=
+X-Google-Smtp-Source: AGHT+IEy1YVM+k76/k7sHjrEvJ2I9VtPmniChxu10UiPmEh5XOEZX1I4i/sNqFMuzVTFUlqoFOy4rQ==
+X-Received: by 2002:ac2:4199:0:b0:506:8d2a:e31f with SMTP id z25-20020ac24199000000b005068d2ae31fmr14219474lfh.46.1697265348575;
+        Fri, 13 Oct 2023 23:35:48 -0700 (PDT)
+Received: from flex1911-laptop.. ([85.172.95.194])
+        by smtp.googlemail.com with ESMTPSA id x9-20020a056512078900b00507a0098424sm302560lfr.109.2023.10.13.23.35.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Oct 2023 23:35:48 -0700 (PDT)
+From:   Artem Borisov <dedsa2002@gmail.com>
+Cc:     perex@perex.cz, Artem Borisov <dedsa2002@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: [PATCH] ALSA: hda/realtek: Add quirk for ASUS ROG GU603ZV
+Date:   Sat, 14 Oct 2023 09:34:46 +0300
+Message-ID: <20231014063458.13474-1-dedsa2002@gmail.com>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+Enables the SPI-connected Cirrus amp and the required pins
+for headset mic detection.
 
-Thank you for the clarification.
+As of BIOS version 313 it is still necessary to modify the
+ACPI table to add the related _DSD properties:
+  https://gist.github.com/Flex1911/1bce378645fc95a5743671bd5deabfc8
 
-> The handler of force feedback effects should know what effects (with
-> what IDs) have been uploaded to the device so far, so whenever it sees a
-> request for an effect with previously unseen effect_id it should
-> recognize this as a signal that a new effect/id has been allocated by
-> the kernel.
+Signed-off-by: Artem Borisov <dedsa2002@gmail.com>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-In that case, would you consider accepting a patch adding a sentence
-or two explaining that handlers will need to keep track of effect IDs
-in this manner? Either in uinput documentation or just in the comment
-describing how to implement upload_effect() in uinput.h. Something
-along the lines of "Effects received here will never have an ID of -1.
-Handlers of these effects must recognize previously unseen effect IDs
-to know when a new effect has been allocated.".
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 3eeecf67c..29c267ea3 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9787,6 +9787,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x1463, "Asus GA402X", ALC285_FIXUP_ASUS_I2C_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1473, "ASUS GU604V", ALC285_FIXUP_ASUS_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1483, "ASUS GU603V", ALC285_FIXUP_ASUS_HEADSET_MIC),
++	SND_PCI_QUIRK(0x1043, 0x1663, "ASUS GU603ZV", ALC285_FIXUP_ASUS_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1493, "ASUS GV601V", ALC285_FIXUP_ASUS_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook UX31A", ALC269VB_FIXUP_ASUS_ZENBOOK_UX31A),
+ 	SND_PCI_QUIRK(0x1043, 0x1573, "ASUS GZ301V", ALC285_FIXUP_ASUS_HEADSET_MIC),
+-- 
+2.41.0
 
-Cheers,
-John
-
-
-On Sat, Oct 14, 2023 at 8:29=E2=80=AFAM Dmitry Torokhov
-<dmitry.torokhov@gmail.com> wrote:
->
-> Hi John,
->
-> On Tue, Oct 10, 2023 at 05:38:27PM +1030, John Salamon wrote:
-> > Currently the "fake" input events generated by uinput in response to
-> > effect uploads will return an effect with an id that has already been
-> > handled by input_ff_upload in ff-core.c, which can modify the effect
-> > id. This causes a problem specifically when the effect originally
-> > uploaded via the EVIOCSFF ioctl contained an effect with -1, as the
-> > userspace code handling UI_FF_UPLOAD receives an effect with an id
-> > other than -1, and therefore will not know an allocation was
-> > requested.
->
-> The kernel never changes ID of an existing effect, the only time ID is
-> changed is when userspace indicates that a new effect should be created
-> by setting effect ID to -1.
->
-> The handler of force feedback effects should know what effects (with
-> what IDs) have been uploaded to the device so far, so whenever it sees a
-> request for an effect with previously unseen effect_id it should
-> recognize this as a signal that a new effect/id has been allocated by
-> the kernel.
->
-> >
-> > I notice that the "old" field on the ff_effect struct is set to NULL
-> > when the -1 id is changed (in input_ff_upload), which can serve as a
-> > flag that an allocation was requested. If it is the intention is that
-> > uinput users check if old =3D=3D NULL to know when allocations are need=
-ed
-> > I think uinput documentation should describe this.
->
-> No, not really, as explained above.
->
-> >
-> > I first noticed this using python-evdev, see my issue report here:
-> > https://github.com/gvalkov/python-evdev/issues/199
->
-> Thanks.
->
-> --
-> Dmitry
