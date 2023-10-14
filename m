@@ -2,169 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F7B7C937A
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 10:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4BD37C937E
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 10:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232937AbjJNIbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 04:31:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56090 "EHLO
+        id S232091AbjJNIgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 04:36:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231377AbjJNIbv (ORCPT
+        with ESMTP id S229830AbjJNIgT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 04:31:51 -0400
-Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C129FBB;
-        Sat, 14 Oct 2023 01:31:49 -0700 (PDT)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id C3E3F1000C4; Sat, 14 Oct 2023 09:31:47 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-        t=1697272307; bh=XsNGeilpUplKizUnx/qOZo3xjouGfDpjsPn9CRnokek=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ijIzx2jp1WzMQE8iElh52WDBYVSbJDBeO1DyETXybgvzCjWPMwTQS+kVSG6n01uIC
-         JregG6Q8mt6N3OHGp5WlfhmpQ5mweHFRlpXKZOAUCjCfsMEMYxzZtdc6sByDkXo711
-         hw5OlA+64xysXPTSEPrvog3wnoYHQduGR2IdTxb+bQcqkyc3fIPqBvL9DGii1Qh38f
-         6slXu0E8lJAkO2BkUYb2b3lFSZeedXhzPIVlHT6FRuNrYgDqk9Veuh+87MDNB6Ha5e
-         BkW1ctXpq4VRFh4IC/R9ZRg3dJNT9skMTn8XXbNnY5/M4edMabuCoutNWzQ6k6x4CL
-         Yu3FZ/rbjCuuw==
-Date:   Sat, 14 Oct 2023 09:31:47 +0100
-From:   Sean Young <sean@mess.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        linux-media@vger.kernel.org,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] pwm: make it possible to apply pwm changes in
- atomic context
-Message-ID: <ZSpR8+vTxTi0/nQK@gofer.mess.org>
-References: <cover.1697193646.git.sean@mess.org>
- <9c0f1616fca5b218336b9321bfefe7abb7e1749f.1697193646.git.sean@mess.org>
- <ZSkvTKr42sUZImiM@orome.fritz.box>
- <ZSlbFukZKGNpR5PM@gofer.mess.org>
- <ZSljioc2OfPfxVeB@orome.fritz.box>
- <20231013180449.mcdmklbsz2rlymzz@pengutronix.de>
+        Sat, 14 Oct 2023 04:36:19 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0F2BB;
+        Sat, 14 Oct 2023 01:36:16 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-503056c8195so3792254e87.1;
+        Sat, 14 Oct 2023 01:36:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697272574; x=1697877374; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=W9Daja05OoueSFXSKgaA2RDObCdOKO/kxeq5hi1gOh8=;
+        b=GcYdKXPK98KFaRNNlG5TEgGedPcpsDazv23fsEOg0LCwb57UwX9t5cPrQNKiEz6zhL
+         +7CnxpkhiTh5sVlu8Rll+iLXEczpcsnuncof88FhljdVgqmZdz3ZLQ4D5C+qqlEdQmmw
+         UxTRdBhFH/rJgSFxk201WC/M5NradisxXWt1mIYQnrNoqkH7ml7RbspRKdOZhc3jqAU3
+         usXjV/S80q14vx7jCMmnOzZwY7YbjsdGh/PphCcUafjCzteYgykUoUxQnQDsIRallk3b
+         wfDAxxmw+9QMAzKkBJ7yuozG52Z8CqeV0jiGDT5cVLYa0lw4Pcj/GYxAyLiInb5aMEnL
+         eqig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697272574; x=1697877374;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=W9Daja05OoueSFXSKgaA2RDObCdOKO/kxeq5hi1gOh8=;
+        b=F+hyIyqFel0ezzfT0cn3pn55XnzgSG2TJAi0HMPfkQulGkSzW/UkedKoTJNVYtDFmx
+         dqU2HKQFqCfme1sFzR8G8S/F3tERRj1/myA+RLrcuyyyNBDFAbwWePZcZqNDT06nIEN8
+         VIznquUaQCweZp3EShX8BGe4LPxykLlRa5MZsqCaJotW7nQWKZG85Bp6FMZxwNWEnddl
+         VAQE/rl0asvC2K/S6ADwz5RjreAhspwDSfaJ5TdES4xDGxUZzbpZlZ2BLFKHgvfl+Gaj
+         /pVNZaU9h+jWRRw6T3WzquuTyQdcfLu2RrxheNZDCZM5Bg0G6SP8uRwNkX+5BQW0+BOb
+         YbMQ==
+X-Gm-Message-State: AOJu0Yw4ZQlxAYjHOb0gPEbdBZZJKYyHcwvFDgodn8d8NnTz012Qteh3
+        OPhkO0tMJ9rbohhOMrsFhUayxGROY1EJqPmB
+X-Google-Smtp-Source: AGHT+IGvLscpO9yWdAIJJ13Cw6iCySJGJ4wD4sXRZaN/KqdyAi/3XNVRnoXWFffILua0zQVXuSAVHg==
+X-Received: by 2002:a05:6512:328f:b0:503:1c07:f7f9 with SMTP id p15-20020a056512328f00b005031c07f7f9mr21864177lfe.29.1697272574265;
+        Sat, 14 Oct 2023 01:36:14 -0700 (PDT)
+Received: from HP-ENVY-Notebook.lan (81-229-94-10-no68.tbcn.telia.com. [81.229.94.10])
+        by smtp.googlemail.com with ESMTPSA id s8-20020ac25fa8000000b0050482b29ac9sm3700940lfe.212.2023.10.14.01.36.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Oct 2023 01:36:13 -0700 (PDT)
+From:   Jonathan Bergh <bergh.jonathan@gmail.com>
+To:     hdegoede@redhat.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jonathan Bergh <bergh.jonathan@gmail.com>
+Subject: [PATCH] staging: media: atomisp: Removed duplicate comment and fixed comment format
+Date:   Sat, 14 Oct 2023 10:35:45 +0200
+Message-Id: <20231014083545.173238-1-bergh.jonathan@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231013180449.mcdmklbsz2rlymzz@pengutronix.de>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Fixed the following issues:
+ * Removed a duplicate comment
+ * Fixed up minor comment format issue
 
-On Fri, Oct 13, 2023 at 08:04:49PM +0200, Uwe Kleine-König wrote:
-> On Fri, Oct 13, 2023 at 05:34:34PM +0200, Thierry Reding wrote:
-> > On Fri, Oct 13, 2023 at 03:58:30PM +0100, Sean Young wrote:
-> > > On Fri, Oct 13, 2023 at 01:51:40PM +0200, Thierry Reding wrote:
-> > > > On Fri, Oct 13, 2023 at 11:46:14AM +0100, Sean Young wrote:
-> > > > [...]
-> > > > > diff --git a/include/linux/pwm.h b/include/linux/pwm.h
-> > > > > index d2f9f690a9c1..93f166ab03c1 100644
-> > > > > --- a/include/linux/pwm.h
-> > > > > +++ b/include/linux/pwm.h
-> > > > > @@ -267,6 +267,7 @@ struct pwm_capture {
-> > > > >   * @get_state: get the current PWM state. This function is only
-> > > > >   *	       called once per PWM device when the PWM chip is
-> > > > >   *	       registered.
-> > > > > + * @atomic: can the driver execute pwm_apply_state in atomic context
-> > > > >   * @owner: helps prevent removal of modules exporting active PWMs
-> > > > >   */
-> > > > >  struct pwm_ops {
-> > > > > @@ -278,6 +279,7 @@ struct pwm_ops {
-> > > > >  		     const struct pwm_state *state);
-> > > > >  	int (*get_state)(struct pwm_chip *chip, struct pwm_device *pwm,
-> > > > >  			 struct pwm_state *state);
-> > > > > +	bool atomic;
-> > > > >  	struct module *owner;
-> > > > >  };
-> > > > 
-> > > > As I mentioned earlier, this really belongs in struct pwm_chip rather
-> > > > than struct pwm_ops. I know that Uwe said this is unlikely to happen,
-> > > > and that may be true, but at the same time it's not like I'm asking
-> > > > much. Whether you put this in struct pwm_ops or struct pwm_chip is
-> > > > about the same amount of code, and putting it into pwm_chip is much
-> > > > more flexible, so it's really a no-brainer.
-> > > 
-> > > Happy to change this of course. I changed it and then changed it back after
-> > > Uwe's comment, I'll fix this in the next version.
-> > > 
-> > > One tiny advantage is that pwm_ops is static const while pwm_chip is
-> > > allocated per-pwm, so will need instructions for setting the value. Having
-> > > said that, the difference is tiny, it's a single bool.
-> > 
-> > Yeah, it's typically a single assignment, so from a code point of view
-> > it should be pretty much the same. I suppose from an instruction level
-> > point of view, yes, this might add a teeny-tiny bit of overhead.
-> > 
-> > On the other hand it lets us do interesting things like initialize
-> > chip->atomic = !regmap_might_sleep() for those drivers that use regmap
-> > and then not worry about it any longer.
+Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
+---
+ drivers/staging/media/atomisp/i2c/gc2235.h | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-Sure.
+diff --git a/drivers/staging/media/atomisp/i2c/gc2235.h b/drivers/staging/media/atomisp/i2c/gc2235.h
+index 55ea422291ba..ade28950db73 100644
+--- a/drivers/staging/media/atomisp/i2c/gc2235.h
++++ b/drivers/staging/media/atomisp/i2c/gc2235.h
+@@ -74,9 +74,6 @@
+ #define GC2235_COARSE_INTG_TIME_MIN 1
+ #define GC2235_COARSE_INTG_TIME_MAX_MARGIN 6
+ 
+-/*
+- * GC2235 System control registers
+- */
+ /*
+  * GC2235 System control registers
+  */
+@@ -167,7 +164,7 @@ enum gc2235_tok_type {
+ 	GC2235_TOK_MASK = 0xfff0
+ };
+ 
+-/**
++/*
+  * struct gc2235_reg - MI sensor  register format
+  * @type: type of the register
+  * @reg: 8-bit offset to register
+-- 
+2.34.1
 
-> > Given that, I'm also wondering if we should try to keep the terminology
-> > a bit more consistent. "Atomic" is somewhat overloaded because ->apply()
-> > and ->get_state() are part of the "atomic" PWM API (in the sense that
-> > applying changes are done as a single, atomic operation, rather than in
-> > the sense of "non-sleeping" operation).
-
-Good point.
-
-> > So pwm_apply_state_atomic() is then doubly atomic, which is a bit weird.
-> > On the other hand it's a bit tedious to convert all existing users to
-> > pwm_apply_state_might_sleep().
-> > 
-> > Perhaps as a compromise we can add pwm_apply_state_might_sleep() and
-> > make pwm_apply_state() a (deprecated) alias for that, so that existing
-> > drivers can be converted one by one.
-> 
-> To throw in my green for our bike shed: I'd pick
-> 
-> 	pwm_apply_state_cansleep()
-> 
-> to match what gpio does (with gpiod_set_value_cansleep()). (Though I
-> have to admit that semantically Thierry's might_sleep is nicer as it
-> matches might_sleep().)
-
-I have to agree here. "can" is shorter and clearer than "might", since
-"can" expresses capability. Having said that the mixture of nomenclature is
-not great, so there is very little between them.
-
-> If we don't want to have an explicit indicator for the atomic/fast
-> variant (again similar to the gpio framework), maybe we can drop
-> "_state" which I think is somehow redundant and go for:
-> 
-> 	pwm_apply (fast)
-> 	pwm_apply_cansleep (sleeping)
-> 	pwm_apply_state (compat alias for pwm_apply_cansleep())
-> 
-> (maybe replace cansleep with might_sleep).
-
-This is very nice. :) There are callsites in 15 files, might as well rename
-it and do away with pwm_apply_state()
-
-> Similar for pwm_get_state()
-> we could use the opportunity and make
-> 
-> 	pwm_get()
-> 
-> actually call ->get_state() and introduce
-> 
-> 	pwm_get_lastapplied()
-> 
-> with the semantic of todays pwm_get_state(). Do we need a
-> pwm_get_cansleep/might_sleep()?
-
-Not all drivers implement .get_state(), how would we handle those?
-
-
-Thanks,
-
-Sean
