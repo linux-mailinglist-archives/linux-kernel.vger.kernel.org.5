@@ -2,54 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB297C934D
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 09:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5623A7C934E
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 09:45:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232717AbjJNHma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 03:42:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40444 "EHLO
+        id S232924AbjJNHpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 03:45:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232946AbjJNHm0 (ORCPT
+        with ESMTP id S229518AbjJNHp2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 03:42:26 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B85ECF
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 00:42:23 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c88b46710bso20778465ad.1
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 00:42:23 -0700 (PDT)
+        Sat, 14 Oct 2023 03:45:28 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69075BF
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 00:45:25 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-577e62e2adfso1929335a12.2
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 00:45:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697269343; x=1697874143; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MWOAPqRfJlFeGZpcN7zM2S+ByCB4SMNDEstgKNTnaCs=;
-        b=AkHjspckxsgd2hxEurDMoIaqdpc26U/hAk3ns5JmzsnDOLfKFX9gPbQkDRScCIu97o
-         TjeqYN2u7BZ3MZth50pxQRQ/YsiUWLaevy9kARkYNWCjln8AwqT68hhtvbJCqi59W1Xx
-         kNMzbB1ELctinhUfOsfUM3ZUA0Y0Ue4bvdfX8oHY5wfSr6liGuMKPTKU0shgaWYBdcp+
-         1qfRyT2fCPQfD0xBkGSe/imxdz/OCorZe4cStU1A02NrZSsuBK4gcM/bg0ywbkrpgdAQ
-         u7YtZ6fTN4jUULn9kVzbGkg4YCEzTAUwXaS9fXqo8Ie13PtcLUcIHdX7dPSkgBwlgw5q
-         3KRA==
+        d=linaro.org; s=google; t=1697269525; x=1697874325; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vqzza3fB+lsTu4YDyKGQewlzLBuqykDjZxJnSTk9ygs=;
+        b=O22icRODd7YeUQ3NMkgufhsxl+X9aQcr1ZQLQqEAoLgn7zhy2F8gUxcADh7HEnpbaN
+         BDNjPpsgMNEGCVkkSNKepZdev+jjuy5WERpN3dVLetXF6YxSnRNFfB2YDxKXXTPBT6uV
+         lGdsz1iQswTpiRnmBr1BhlLayVdFMaA1U7pZiKaDIURFHFDttabWiAocm2ivvmUb7gLL
+         xUu/WtsN8W7TAS6IKEDh7IMczr6X4YYIoWP3jxqSsfE4mwrX5oi46HadeUqE+ceq05gF
+         BZq82u5ujjzzzU1COKg/a9OmrYTVd5sZC+nWeYdvMHnWk2TBj5uZMvP1yb8VtQnQFeao
+         eutw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697269343; x=1697874143;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MWOAPqRfJlFeGZpcN7zM2S+ByCB4SMNDEstgKNTnaCs=;
-        b=wGAzTDns/PFkYJmthLIoK3YgbXtXKEEqjvj82YJ0IdIhPxeNm3N0Eo4KdSBcjQZVxD
-         bXxNpT7Mzri8pxdtVm6LrZkxYkd5A53JpzwxC4UiV7I278jyJC4admBYRZjW6/MeYUW3
-         Vcolj+M7+wa2E2BVvM8d0cIhyMDZ3CKDM/ST4ZZJl57NNZIREz9zb6PEkZGKUpBXoWgQ
-         4FZSU0giteTkQkyukhIWG1szrU4s0wyDLPlrNKm5dAC7IwsFn4A3Y2iO5vV/X7xcn5Um
-         FCur+mXajXUz7QwCiauWe/ncDAKKOhaf5PBDERfYw3qhTx/c8BALN+RpLB+lAIV9Ugvo
-         NUyg==
-X-Gm-Message-State: AOJu0YxTm6wf8U1XQVhJmOQE3kthPGOstMwYznPplkd5ysgUUKEGtage
-        RJjBvPN/QZxtyoTpgx0X3XwGIw==
-X-Google-Smtp-Source: AGHT+IE4fFHIwPowtX28NpMjG4rwpVawnPYgQzzkATlSIS071tzOVwmxcTYq9ltdsTO+Ac9Hv4/pXg==
-X-Received: by 2002:a17:902:e80e:b0:1c6:2b9d:56ce with SMTP id u14-20020a170902e80e00b001c62b9d56cemr28094278plg.21.1697269342540;
-        Sat, 14 Oct 2023 00:42:22 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697269525; x=1697874325;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Vqzza3fB+lsTu4YDyKGQewlzLBuqykDjZxJnSTk9ygs=;
+        b=TX/P5umqNg0G7lkj8XfQWX0rqzrEHue3ZJnXxnsP9ZugkDAIdEk5JDjcNHLJrT4aGZ
+         EinFrzsZHAmmj5Q+K8pZWLEAIcjR0NIglT1o6DoqM7dldtOhcfYe9rSoRDgnYa+bCc1P
+         99Wnh+bgOJ79raN6IE9KMtJrOCkNh8lLG+E0bDsHEKv/ckop4e55AGbk1+1ody6R2IJr
+         D8f5UnQX/BuxLuXuUgkfGc+71yKlLXbkyddZ3SzDrMR+Y/dQacg5y3opT7NFDMKcRoKF
+         h2CTqDOHlulHsKS2RQxP93EzbCmPQlaQOIRjEeDKC5gruVi+kJLYSZY0PVhCrdMYM4+3
+         n5fQ==
+X-Gm-Message-State: AOJu0YzRkqNdiwrYnc4ieD6OzqJcVl0ehdkKexoK/GQp3Yfe3+UQHulp
+        oXiprFxjSLjiH2Zh1PM/lXeztg==
+X-Google-Smtp-Source: AGHT+IF4z4Im1nLH/k2ekf0tUd+qFPog23mz/Cdj38aUXoF9RZZSYKa8hP9ec6ysGxLmrBKlb+u/Ww==
+X-Received: by 2002:a17:903:2305:b0:1c6:c3f:9dc3 with SMTP id d5-20020a170903230500b001c60c3f9dc3mr28632806plh.54.1697269524823;
+        Sat, 14 Oct 2023 00:45:24 -0700 (PDT)
 Received: from leoy-huanghe.lan ([98.98.49.106])
-        by smtp.gmail.com with ESMTPSA id e11-20020a170902b78b00b001c5b8087fe5sm4957319pls.94.2023.10.14.00.42.18
+        by smtp.gmail.com with ESMTPSA id r8-20020a170902be0800b001c3e732b8dbsm4965124pls.168.2023.10.14.00.45.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Oct 2023 00:42:22 -0700 (PDT)
+        Sat, 14 Oct 2023 00:45:24 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         James Clark <james.clark@arm.com>,
@@ -68,82 +67,42 @@ Cc:     John Garry <john.g.garry@oracle.com>,
         coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
         linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
         Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v1 RESEND 2/2] perf cs-etm: Respect timestamp option
-Date:   Sat, 14 Oct 2023 15:41:59 +0800
-Message-Id: <20231014074159.1667880-3-leo.yan@linaro.org>
+Subject: [PATCH v1 0/2] perf cs-etm: Add support for itrace option 'T'
+Date:   Sat, 14 Oct 2023 15:45:11 +0800
+Message-Id: <20231014074513.1668000-1-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231014074159.1667880-1-leo.yan@linaro.org>
-References: <20231014074159.1667880-1-leo.yan@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When users pass the option '--timestamp' or '-T' in the record command,
-all events will set the PERF_SAMPLE_TIME bit in the attribution.  In
-this case, the AUX event will record the kernel timestamp, but it
-doesn't mean Arm CoreSight enables timestamp packets in its hardware
-tracing.
+This patch set is to introduce a new itrace option 'T' for forcily use
+timestamp trace for kernel time and support this option in cs-etm.
 
-If the option '--timestamp' or '-T' is set, this patch always enables
-Arm CoreSight timestamp, as a result, the bit 28 in event's config is to
-be set.
+Some Arm platforms (either Arm CPUs prior to Armv8 or miss the FEAT_TRF
+feature, currently the ETM driver cannot decide if the timestamp trace
+is same with kernel time.  This is why we introduce the itrace option
+'T', we leave decision to users so users can specify this option to
+forcily use the timestamp trace as the kernel time.
 
-Before:
+This patch set is tested on Arm Juno board.
 
-  # perf record -e cs_etm// --per-thread --timestamp -- ls
-  # perf script --header-only
-  ...
-  # event : name = cs_etm//, , id = { 69 }, type = 12, size = 136,
-  config = 0, { sample_period, sample_freq } = 1,
-  sample_type = IP|TID|TIME|CPU|IDENTIFIER, read_format = ID|LOST,
-  disabled = 1, enable_on_exec = 1, sample_id_all = 1, exclude_guest = 1
-  ...
+Leo Yan (2):
+  perf auxtrace: Add 'T' itrace option for timestamp trace
+  perf cs-etm: Enable itrace option 'T'
 
-After:
+ tools/perf/Documentation/itrace.txt |  1 +
+ tools/perf/util/auxtrace.c          |  3 +++
+ tools/perf/util/auxtrace.h          |  3 +++
+ tools/perf/util/cs-etm.c            | 21 ++++++++++++++++++---
+ 4 files changed, 25 insertions(+), 3 deletions(-)
 
-  # perf record -e cs_etm// --per-thread --timestamp -- ls
-  # perf script --header-only
-  ...
-  # event : name = cs_etm//, , id = { 49 }, type = 12, size = 136,
-  config = 0x10000000, { sample_period, sample_freq } = 1,
-  sample_type = IP|TID|TIME|CPU|IDENTIFIER, read_format = ID|LOST,
-  disabled = 1, enable_on_exec = 1, sample_id_all = 1, exclude_guest = 1
-  ...
-
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
-Reviewed-by: James Clark <james.clark@arm.com>
----
- tools/perf/arch/arm/util/cs-etm.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
-index cf9ef9ba800b..58c506e9788d 100644
---- a/tools/perf/arch/arm/util/cs-etm.c
-+++ b/tools/perf/arch/arm/util/cs-etm.c
-@@ -442,6 +442,15 @@ static int cs_etm_recording_options(struct auxtrace_record *itr,
- 					   "contextid", 1);
- 	}
- 
-+	/*
-+	 * When the option '--timestamp' or '-T' is enabled, the PERF_SAMPLE_TIME
-+	 * bit is set for all events.  In this case, always enable Arm CoreSight
-+	 * timestamp tracing.
-+	 */
-+	if (opts->sample_time_set)
-+		evsel__set_config_if_unset(cs_etm_pmu, cs_etm_evsel,
-+					   "timestamp", 1);
-+
- 	/* Add dummy event to keep tracking */
- 	err = parse_event(evlist, "dummy:u");
- 	if (err)
 -- 
 2.34.1
 
