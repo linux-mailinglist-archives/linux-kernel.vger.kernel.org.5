@@ -2,98 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92DFF7C92A2
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 05:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CA6E7C92B4
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 06:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232383AbjJNDv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 23:51:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37758 "EHLO
+        id S232788AbjJNEHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 00:07:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJNDvZ (ORCPT
+        with ESMTP id S232715AbjJNEHE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 23:51:25 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A0D9C0;
-        Fri, 13 Oct 2023 20:51:24 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-27b22de9b5bso1913621a91.3;
-        Fri, 13 Oct 2023 20:51:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697255483; x=1697860283; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XBj8j89zDLkCdR77CxvVfssAX/S5nXsHlrO7MTMB6qI=;
-        b=HV9MVLhf4GjJrRejeH2TczXvg16LXW7ggrKWn4oFvihIid3tLfIvegxxxHXGG0PXr4
-         efGAhOSltaWMzXjACIaAZC2NcfgE4QRatCzWII1HtKGxI2c3llbEf1UUnR/ENsRZ2oeP
-         9eoNnZR8Yj7sV9ulXFwIdekNNh707nlAmnvrA+vBCgWwrHMaRFb5ReDE0tt3drRzec06
-         ps5UrLs1uS59oN5MXRTNSVyyBDwAmv0acPoDQpO9Nd+jWVcvSIhHjDHkeEHTDWGlIoTC
-         SilM9/cUUd00HOsUPm3kX2RlxGILRbQ/MELfrmtOUkUnHrW9e++B+eBe4triTA2Gk7KI
-         fYTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697255483; x=1697860283;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XBj8j89zDLkCdR77CxvVfssAX/S5nXsHlrO7MTMB6qI=;
-        b=wRgVl9ILPsKtuJASW+uY4s+gsYvgid+Ft9ItaKiN7I8ggd3+OlnFqXArLD7JGDkTWg
-         ZE9MX2DVZRT1kL40WNjnC5JbTSvUHQAmvJkvFobi4cuteC75KFsnIvsVLGUQhaQKN0xT
-         OknB2bNmMhLqxovIvJMk91YPbfchCFbY3n4oSJHtuJ9a0Ym+E25Xq+aSCUkIPy+GDmzs
-         IJAbGdR5MVoGOi44UitS0YmuPdbhgyLMfjbvm9cyEGE7x/5ijXtIp7G2FAVK+NSgcpHc
-         TUrTwcuRZjn/aBezED9AfaSWH6d1OYRVdtFhrRrdqI+A2kxk3Lp6DMAJQlies4ip0Ebu
-         9HKA==
-X-Gm-Message-State: AOJu0YwcV8EFIEb+7yWK2eNFkL7QrL9Tkw0AiJuJVlJ9tMPs6FoeVlhX
-        RuhKcyFJyOV7zMGO8TNtQcs=
-X-Google-Smtp-Source: AGHT+IFEYqEl9E3FXY/KxBruAUPZasFbtjlJ7Mg8gHysU4PUcIcYONQHdsd0SlFMWaOHTVNmI7gptg==
-X-Received: by 2002:a17:90b:1d8b:b0:27d:2ecd:6a23 with SMTP id pf11-20020a17090b1d8b00b0027d2ecd6a23mr4029697pjb.14.1697255483566;
-        Fri, 13 Oct 2023 20:51:23 -0700 (PDT)
-Received: from pek-lxu-l1.wrs.com ([111.198.228.56])
-        by smtp.gmail.com with ESMTPSA id 29-20020a17090a01dd00b0027476c68cc3sm931099pjd.22.2023.10.13.20.51.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 20:51:23 -0700 (PDT)
-From:   Edward AD <twuufnxlz@gmail.com>
-To:     horms@kernel.org
-Cc:     bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com,
-        syzbot+225bfad78b079744fd5e@syzkaller.appspotmail.com,
-        syzkaller-bugs@googlegroups.com, twuufnxlz@gmail.com
-Subject: Re: [PATCH] media: imon: fix stall in worker_thread
-Date:   Sat, 14 Oct 2023 11:51:15 +0800
-Message-ID: <20231014035114.1057686-2-twuufnxlz@gmail.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231013105909.GC29570@kernel.org>
-References: <20231013105909.GC29570@kernel.org>
+        Sat, 14 Oct 2023 00:07:04 -0400
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5ADC2;
+        Fri, 13 Oct 2023 21:07:01 -0700 (PDT)
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+        id 1qrVvK-0070KV-3B; Sat, 14 Oct 2023 12:06:47 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 14 Oct 2023 12:06:50 +0800
+Date:   Sat, 14 Oct 2023 12:06:50 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Denis Kenzior <denkenz@gmail.com>
+Cc:     Dimitri John Ledkov <dimitri.ledkov@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        James Prestwood <prestwoj@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>
+Subject: Re: [PATCH] crypto: remove md4 driver
+Message-ID: <ZSoT2loMni1PWqiq@gondor.apana.org.au>
+References: <20231008040140.1647892-1-dimitri.ledkov@canonical.com>
+ <ZSkeWHdOAOfjtpwJ@gondor.apana.org.au>
+ <2e52c8b4-e70a-453f-853a-1962c8167dfa@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2e52c8b4-e70a-453f-853a-1962c8167dfa@gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Oct 2023 12:59:09 +0200 Simon Horman wrote:
-> The code is already switching based on urb->status,
-> so unless the warning message is really desired,
-> perhaps this is more appropriate?
+On Fri, Oct 13, 2023 at 09:37:52AM -0500, Denis Kenzior wrote:
+>
+> Does this patch break userspace?
 > 
-> diff --git a/drivers/media/rc/imon.c b/drivers/media/rc/imon.c
-> index 74546f7e3469..0e2f06f2f456 100644
-> --- a/drivers/media/rc/imon.c
-> +++ b/drivers/media/rc/imon.c
-> @@ -1799,6 +1799,7 @@ static void usb_rx_callback_intf1(struct urb *urb)
+> Here's a thread regarding MD4 the last time its removal was attempted:
+> https://lore.kernel.org/linux-crypto/20210818144617.110061-1-ardb@kernel.org/
 > 
->  	switch (urb->status) {
->  	case -ENOENT:		/* usbcore unlink successful! */
-> +	case -EPROTO:		/* XXX: something goes here */
->  		return;
+> Please note that iwd does use MD4 hashes here:
+> https://git.kernel.org/pub/scm/libs/ell/ell.git/tree/ell/checksum.c#n63
 > 
->  	case -ESHUTDOWN:	/* transport endpoint was shut down */
+> https://git.kernel.org/pub/scm/network/wireless/iwd.git/tree/src/eap-mschapv2.c#n165
 
-Hi Simon Horman, 
+I've backed this out for now.
 
-Who added the above code where?
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
