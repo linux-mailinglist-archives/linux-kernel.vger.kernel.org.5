@@ -2,85 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E667C941D
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 12:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FD147C941F
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 12:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233052AbjJNKTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 06:19:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49346 "EHLO
+        id S233139AbjJNKUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 06:20:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232937AbjJNKTK (ORCPT
+        with ESMTP id S233018AbjJNKUW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 06:19:10 -0400
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68224A2;
-        Sat, 14 Oct 2023 03:19:08 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 829C440E01B0;
-        Sat, 14 Oct 2023 10:19:05 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id TFanxg4EsZFy; Sat, 14 Oct 2023 10:19:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1697278743; bh=qPg+S/kRBxm8lPuVHVphsAidnPbVbymUJCgQF2Lo+KY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K6Ia4AGMeu0o9uPcKjIjalp2+Ycy4Mq8nr280WKJHKXqz9/SXRLmXVnWVMM0GsYFK
-         e1vufPdolIz6QrnRRdk0aePHwbWMXR0CldUOMKlSIpDsYk9Z6hxTdBlkWvuvUA/Vjr
-         zA/7MuUwUFZcmmhd7Czx+ySgVvjPoj2ZJQNPNQvAFIZOuGlp5tLvZgZcxYwyGTlraZ
-         MezA8YdiHme039IY0eqzR63DaV+F1RHciKcv9oo7F0YdPw2sUFF2fyeLArdQiKykas
-         9JwGFrhZ/N0l134CdtI7qiyoqJtlIHDfgk5xlKAVYFUXBn6jOJJlaJg+wLfX74eZG4
-         xShGWPN4TdaAnUjAXA/ClE6Evl4o1h1jkihfgdLQhD2/jPLx4Yz28ec+Z82wCIjuXq
-         sOLh2p4B6mWGAQ8gM6aJ/dxJ6RnzPNiBgg2ZdRHtG615bWbQyRbYY4Mk6G1kvgAg/W
-         HMmz5PhTdqrxPX3USGTc4qYZj/vWZZgORc05PcKO666avyTF85Xp/Qd9j+UDSqqe8+
-         qW+mWwJQ4liGMNuqn56xbv8j0jIJQ0t3Sb2vdNGQsKOYA3MLjROp4c9vo547I9Jmmb
-         zdUIaHaT1S8SznkTu1ZaIU24qIqEsIFGPero7CHKsSnz/fwzUNLBVX6OxU5mOjjoVk
-         OoE55K0omXkvNkCU2mM9HTNA=
-Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AF21440E01AA;
-        Sat, 14 Oct 2023 10:18:55 +0000 (UTC)
-Date:   Sat, 14 Oct 2023 12:18:50 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Zhiquan Li <zhiquan1.li@intel.com>
-Cc:     "Luck, Tony" <tony.luck@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "patches@lists.linux.dev" <patches@lists.linux.dev>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "naoya.horiguchi@nec.com" <naoya.horiguchi@nec.com>
-Subject: Re: [PATCH v3] x86/mce: Set PG_hwpoison page flag to avoid the
- capture kernel panic
-Message-ID: <20231014101850.GAZSprCtc6QYEiGedU@fat_crate.local>
-References: <20231014051754.3759099-1-zhiquan1.li@intel.com>
- <SJ1PR11MB6083A23BB89F4EE0F44B2794FCD1A@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <233e17ac-0ae5-4392-a5e4-ab811a155805@intel.com>
+        Sat, 14 Oct 2023 06:20:22 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E57BB;
+        Sat, 14 Oct 2023 03:20:19 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-32003aae100so2607010f8f.0;
+        Sat, 14 Oct 2023 03:20:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697278818; x=1697883618; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Ie5xf8EyweRzmPDBS9SvXeHusgJJJ9gjTy3vmvQyAo=;
+        b=KcQwHAEg9fnSTGZuFDQfe4S958d1ABu66vJylb76e/YDU67frJmXYQm7G+UCRHRHNC
+         9a6WpCjVPFL3w/UubDjtcl3lo+q3RYsczTiOfUWw1CaJrTrLAbGx3gjvEJVPmuuyWiC0
+         0badNP988mOt3yZkMAPLTpXWkhsdRiiEos7RJXVaaVLDKp906u/J5tvhrddsYwSV5jHF
+         y4+Y6A+SrJV/uFW+Nh2/eQGQYYJw2WA7BFB/VoJM3UmmZko2/fHwGAGdQysVu+EB/FXe
+         Pkaqj42keS/MCwSHQ2eUG8ESkUVLKHwE/EPmcHd/jjhvlXq8h6e0Dh1b0cY7HIwSciaT
+         VY3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697278818; x=1697883618;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+Ie5xf8EyweRzmPDBS9SvXeHusgJJJ9gjTy3vmvQyAo=;
+        b=jniV2DCQQOWA3caQytEwbx6I9RXldWLguRGQn6hZKfiR3AwA4NBkiVseJysQGuMWV1
+         776FKpMUpx9Dh1vn854xmBxPWoEVTGHY+PtlqWnyeIXW1jKLqlw5/3f8CIHUIXQuuz/g
+         6TV9VQXXq+o5+dS+3svEFXSrXnfTqL16d2VGtUwUMscA6wAWiPvvTtjye8J8SI2Lysfg
+         dcKM1UYBsrQGNk3/X1/l0OoeKejkKy2fQTpQJBDR9rL/8J0goxOuApysyT1rbhJhhBwk
+         GSyenHL7yjgqTICpj8yJmrwJ9c/G4Q0lnmjjuOYEEnCCOKP7sYxr/E9KTYqdnox0/x3G
+         F1RQ==
+X-Gm-Message-State: AOJu0YwvuOAKxP470kf9+5Yj6PZvlHvLERbf2vPtxc1Efkr9S0f8YsxC
+        EjtlJ/7Sj/LfxHkepyv9ECjDXp1nr8YL7A==
+X-Google-Smtp-Source: AGHT+IHv4+aMzxNgMkKxkfp1l7K1tJcDgPQsoAHsgt+Q6FwksWagNlKtvxEfQ9mafuFvwRzSb4YEpw==
+X-Received: by 2002:adf:a351:0:b0:317:dadc:4a63 with SMTP id d17-20020adfa351000000b00317dadc4a63mr1809826wrb.8.1697278817516;
+        Sat, 14 Oct 2023 03:20:17 -0700 (PDT)
+Received: from [127.0.1.1] (2a02-8389-41cf-e200-57e7-d911-5fee-d153.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:57e7:d911:5fee:d153])
+        by smtp.gmail.com with ESMTPSA id ce9-20020a5d5e09000000b0032d687fd9d0sm11052999wrb.19.2023.10.14.03.20.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Oct 2023 03:20:16 -0700 (PDT)
+From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Date:   Sat, 14 Oct 2023 12:20:15 +0200
+Subject: [PATCH v3] Input: bcm5974 - check endpoint type before starting
+ traffic
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <233e17ac-0ae5-4392-a5e4-ab811a155805@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231007-topic-bcm5974_bulk-v3-1-d0f38b9d2935@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAF5rKmUC/4WNzQ6CMBAGX8X0bE1/gIIn38MY0y0LNFIgLRIN4
+ d1tOXnS4+zmm1lJQG8xkPNhJR4XG+w4RJDHAzGdHlqkto5MBBOSM6boPE7WUDAur1R2h2f/oKY
+ oQGUStAJN4hB0QApeD6ZLU6fDjD49Jo+Nfe216y1yZ8M8+vceX3i6/uwsnHIq8xywakpdl+zSO
+ m37kxkdSbpF/FeIqGCCc8lNKbGBb8W2bR/LaZnsEAEAAA==
+To:     John Horan <knasher@gmail.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+        syzbot+348331f63b034f89b622@syzkaller.appspotmail.com
+X-Mailer: b4 0.12.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1697278815; l=3983;
+ i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
+ bh=h8uSGsYbFKdFPkfSUQO12RQLGCv1L8JG0Pt1bF6waoc=;
+ b=x0vhKkpSsHchHl8rbD0ZlRP2rJsgtYDu2P9fqM7Vk3UfPBV2oyep599AdTeNlt1lSTrTQ3WBs
+ snMQLsuf7xvBAihHhpB8vQ+z37uLHOoEamq2jry6VjmVt4KRngL4iVQ
+X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
+ pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 14, 2023 at 05:34:12PM +0800, Zhiquan Li wrote:
-> Oh, this is V3, not RESEND, I should reset the SoB chain.
+syzbot has found a type mismatch between a USB pipe and the transfer
+endpoint, which is triggered by the bcm5974 driver[1].
 
-You should slow down and take the time to read the document I pointed
-you at.
+This driver expects the device to provide input interrupt endpoints and
+if that is not the case, the driver registration should terminate.
 
+Repros are available to reproduce this issue with a certain setup for
+the dummy_hcd, leading to an interrupt/bulk mismatch which is caught in
+the USB core after calling usb_submit_urb() with the following message:
+"BOGUS urb xfer, pipe 1 != type 3"
+
+Some other device drivers (like the appletouch driver bcm5974 is mainly
+based on) provide some checking mechanism to make sure that an IN
+interrupt endpoint is available. In this particular case the endpoint
+addresses are provided by a config table, so the checking can be
+targeted to the provided endpoints.
+
+Add some basic checking to guarantee that the endpoints available match
+the expected type for both the trackpad and button endpoints.
+
+This issue was only found for the trackpad endpoint, but the checking
+has been added to the button endpoint as well for the same reasons.
+
+Given that there was never a check for the endpoint type, this bug has
+been there since the first implementation of the driver (f89bd95c5c94).
+
+[1] https://syzkaller.appspot.com/bug?extid=348331f63b034f89b622
+
+Fixes: f89bd95c5c94 ("Input: bcm5974 - add driver for Macbook Air and Pro Penryn touchpads")
+Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Reported-and-tested-by: syzbot+348331f63b034f89b622@syzkaller.appspotmail.com
+---
+Changes in v3:
+- Use usb_check_int_endpoints() to validate the endpoints.
+- Link to v2: https://lore.kernel.org/r/20231007-topic-bcm5974_bulk-v2-1-021131c83efb@gmail.com
+
+Changes in v2:
+- Keep error = -ENOMEM for the rest of the probe and return -ENODEV if
+  the endpoint check fails.
+- Check function returns now bool and was renamed (_is_ for
+  bool-returning functions).
+- Link to v1: https://lore.kernel.org/r/20231007-topic-bcm5974_bulk-v1-1-355be9f8ad80@gmail.com
+---
+ drivers/input/mouse/bcm5974.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/drivers/input/mouse/bcm5974.c b/drivers/input/mouse/bcm5974.c
+index ca150618d32f..953992b458e9 100644
+--- a/drivers/input/mouse/bcm5974.c
++++ b/drivers/input/mouse/bcm5974.c
+@@ -19,6 +19,7 @@
+  * Copyright (C) 2006	   Nicolas Boichat (nicolas@boichat.ch)
+  */
+ 
++#include "linux/usb.h"
+ #include <linux/kernel.h>
+ #include <linux/errno.h>
+ #include <linux/slab.h>
+@@ -193,6 +194,8 @@ enum tp_type {
+ 
+ /* list of device capability bits */
+ #define HAS_INTEGRATED_BUTTON	1
++/* maximum number of supported endpoints (currently trackpad and button) */
++#define MAX_ENDPOINTS	2
+ 
+ /* trackpad finger data block size */
+ #define FSIZE_TYPE1		(14 * sizeof(__le16))
+@@ -891,6 +894,18 @@ static int bcm5974_resume(struct usb_interface *iface)
+ 	return error;
+ }
+ 
++static bool bcm5974_check_endpoints(struct usb_interface *iface,
++				    const struct bcm5974_config *cfg)
++{
++	u8 ep_addr[MAX_ENDPOINTS + 1] = {0};
++
++	ep_addr[0] = cfg->tp_ep;
++	if (cfg->tp_type == TYPE1)
++		ep_addr[1] = cfg->bt_ep;
++
++	return usb_check_int_endpoints(iface, ep_addr);
++}
++
+ static int bcm5974_probe(struct usb_interface *iface,
+ 			 const struct usb_device_id *id)
+ {
+@@ -903,6 +918,11 @@ static int bcm5974_probe(struct usb_interface *iface,
+ 	/* find the product index */
+ 	cfg = bcm5974_get_config(udev);
+ 
++	if (!bcm5974_check_endpoints(iface, cfg)) {
++		dev_err(&iface->dev, "Unexpected non-int endpoint\n");
++		return -ENODEV;
++	}
++
+ 	/* allocate memory for our device state and initialize it */
+ 	dev = kzalloc(sizeof(struct bcm5974), GFP_KERNEL);
+ 	input_dev = input_allocate_device();
+
+---
+base-commit: 401644852d0b2a278811de38081be23f74b5bb04
+change-id: 20231007-topic-bcm5974_bulk-c66b743ba7ba
+
+Best regards,
 -- 
-Regards/Gruss,
-    Boris.
+Javier Carrasco <javier.carrasco.cruz@gmail.com>
 
-https://people.kernel.org/tglx/notes-about-netiquette
