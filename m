@@ -2,66 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4BD37C937E
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 10:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6E77C9386
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 10:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232091AbjJNIgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 04:36:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41902 "EHLO
+        id S232848AbjJNImG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 04:42:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229830AbjJNIgT (ORCPT
+        with ESMTP id S232981AbjJNImE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 04:36:19 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0F2BB;
-        Sat, 14 Oct 2023 01:36:16 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-503056c8195so3792254e87.1;
-        Sat, 14 Oct 2023 01:36:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697272574; x=1697877374; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=W9Daja05OoueSFXSKgaA2RDObCdOKO/kxeq5hi1gOh8=;
-        b=GcYdKXPK98KFaRNNlG5TEgGedPcpsDazv23fsEOg0LCwb57UwX9t5cPrQNKiEz6zhL
-         +7CnxpkhiTh5sVlu8Rll+iLXEczpcsnuncof88FhljdVgqmZdz3ZLQ4D5C+qqlEdQmmw
-         UxTRdBhFH/rJgSFxk201WC/M5NradisxXWt1mIYQnrNoqkH7ml7RbspRKdOZhc3jqAU3
-         usXjV/S80q14vx7jCMmnOzZwY7YbjsdGh/PphCcUafjCzteYgykUoUxQnQDsIRallk3b
-         wfDAxxmw+9QMAzKkBJ7yuozG52Z8CqeV0jiGDT5cVLYa0lw4Pcj/GYxAyLiInb5aMEnL
-         eqig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697272574; x=1697877374;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=W9Daja05OoueSFXSKgaA2RDObCdOKO/kxeq5hi1gOh8=;
-        b=F+hyIyqFel0ezzfT0cn3pn55XnzgSG2TJAi0HMPfkQulGkSzW/UkedKoTJNVYtDFmx
-         dqU2HKQFqCfme1sFzR8G8S/F3tERRj1/myA+RLrcuyyyNBDFAbwWePZcZqNDT06nIEN8
-         VIznquUaQCweZp3EShX8BGe4LPxykLlRa5MZsqCaJotW7nQWKZG85Bp6FMZxwNWEnddl
-         VAQE/rl0asvC2K/S6ADwz5RjreAhspwDSfaJ5TdES4xDGxUZzbpZlZ2BLFKHgvfl+Gaj
-         /pVNZaU9h+jWRRw6T3WzquuTyQdcfLu2RrxheNZDCZM5Bg0G6SP8uRwNkX+5BQW0+BOb
-         YbMQ==
-X-Gm-Message-State: AOJu0Yw4ZQlxAYjHOb0gPEbdBZZJKYyHcwvFDgodn8d8NnTz012Qteh3
-        OPhkO0tMJ9rbohhOMrsFhUayxGROY1EJqPmB
-X-Google-Smtp-Source: AGHT+IGvLscpO9yWdAIJJ13Cw6iCySJGJ4wD4sXRZaN/KqdyAi/3XNVRnoXWFffILua0zQVXuSAVHg==
-X-Received: by 2002:a05:6512:328f:b0:503:1c07:f7f9 with SMTP id p15-20020a056512328f00b005031c07f7f9mr21864177lfe.29.1697272574265;
-        Sat, 14 Oct 2023 01:36:14 -0700 (PDT)
-Received: from HP-ENVY-Notebook.lan (81-229-94-10-no68.tbcn.telia.com. [81.229.94.10])
-        by smtp.googlemail.com with ESMTPSA id s8-20020ac25fa8000000b0050482b29ac9sm3700940lfe.212.2023.10.14.01.36.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Oct 2023 01:36:13 -0700 (PDT)
-From:   Jonathan Bergh <bergh.jonathan@gmail.com>
-To:     hdegoede@redhat.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan Bergh <bergh.jonathan@gmail.com>
-Subject: [PATCH] staging: media: atomisp: Removed duplicate comment and fixed comment format
-Date:   Sat, 14 Oct 2023 10:35:45 +0200
-Message-Id: <20231014083545.173238-1-bergh.jonathan@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Sat, 14 Oct 2023 04:42:04 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26EF8CF;
+        Sat, 14 Oct 2023 01:42:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4D53C433CC;
+        Sat, 14 Oct 2023 08:42:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697272921;
+        bh=G4Swg/OELkKA5zlwNUrWJdm9EBLT0JpHuSiYFDVKAVw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=K+yp/KOZHEM3arVfGghtli0iELZWZqeBdZQjVLVWAUiNiyjaLooZNU+qmDCQBd7ul
+         wJaBzeZOVlPFEUG5h5tlObcnYkX0avwfR0zxFXrVQEiQDnBc/Lml9dt/p9dThylmIB
+         6dy7VAWjVXsKM31JLEaZWzS991xED7EXyxYEqup8PHhHUWT6i4XXZP3blNDWD9gE4P
+         HBZnzVjpf+964c0m1gsJz512u75AQxj5sGo0kVtbsfwjz6xNJ/scm1p3BONbVF4ExA
+         K1tnbxCnRJlB0L9unW/GUHbyPmh79PM5kqNhJnIfBbfDsshHj4MN11rBcR3rT09vWo
+         iM+Y47HqeqnfA==
+Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-1e12f41e496so1689244fac.3;
+        Sat, 14 Oct 2023 01:42:01 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yz4FCxjo8rnzI9SUZWLZiNWUksnpsU8wpWJrHegCFqAKgy8qbpN
+        b6VpC3Sujat6zTsBAlc5WTJ1PeSa0Fe2M75/tcU=
+X-Google-Smtp-Source: AGHT+IEDHn8hDctpEgrOdAxDg4ZGS+fyZbcsCWC8+bRNQUrpKMWoTdaHrZNdtFPEOiGiKHQudHJYv6z04ih1iicSLkY=
+X-Received: by 2002:a05:6870:7687:b0:1e9:d6c8:d031 with SMTP id
+ dx7-20020a056870768700b001e9d6c8d031mr4746345oab.26.1697272921007; Sat, 14
+ Oct 2023 01:42:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20231009124210.1064021-1-masahiroy@kernel.org>
+ <20231009124210.1064021-5-masahiroy@kernel.org> <20231009164424.GB1153868@dev-arch.thelio-3990X>
+In-Reply-To: <20231009164424.GB1153868@dev-arch.thelio-3990X>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 14 Oct 2023 17:41:25 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASZ78NX13cfGiCeXGxB7A_2CasuAgNv-XzyWM79PD2NwA@mail.gmail.com>
+Message-ID: <CAK7LNASZ78NX13cfGiCeXGxB7A_2CasuAgNv-XzyWM79PD2NwA@mail.gmail.com>
+Subject: Re: [PATCH 5/5] kbuild: unify no-compiler-targets and no-sync-config-targets
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-um@lists.infradead.org,
+        loongarch@lists.linux.dev, sparclinux@vger.kernel.org,
+        x86@kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,38 +64,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed the following issues:
- * Removed a duplicate comment
- * Fixed up minor comment format issue
+On Tue, Oct 10, 2023 at 1:44=E2=80=AFAM Nathan Chancellor <nathan@kernel.or=
+g> wrote:
+>
+> On Mon, Oct 09, 2023 at 09:42:10PM +0900, Masahiro Yamada wrote:
+> > Now that vdso_install does not depend on any in-tree build artifact,
+> > it no longer invokes a compiler, making no-compiler-targets the same
+> > as no-sync-config-targets.
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> >
+> >  Makefile | 13 +------------
+> >  1 file changed, 1 insertion(+), 12 deletions(-)
+> >
+> > diff --git a/Makefile b/Makefile
+> > index 2170d56630e8..982b1ad33287 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -277,10 +277,6 @@ no-dot-config-targets :=3D $(clean-targets) \
+> >                        $(version_h) headers headers_% archheaders archs=
+cripts \
+> >                        %asm-generic kernelversion %src-pkg dt_binding_c=
+heck \
+> >                        outputmakefile rustavailable rustfmt rustfmtchec=
+k
+> > -# Installation targets should not require compiler. Unfortunately, vds=
+o_install
+> > -# is an exception where build artifacts may be updated. This must be f=
+ixed.
+> > -no-compiler-targets :=3D $(no-dot-config-targets) install dtbs_install=
+ \
+> > -                     headers_install modules_install modules_sign kern=
+elrelease image_name
+> >  no-sync-config-targets :=3D $(no-dot-config-targets) %install modules_=
+sign kernelrelease \
+> >                         image_name
+> >  single-targets :=3D %.a %.i %.ko %.lds %.ll %.lst %.mod %.o %.rsi %.s =
+%.symtypes %/
+> > @@ -288,7 +284,6 @@ single-targets :=3D %.a %.i %.ko %.lds %.ll %.lst %=
+.mod %.o %.rsi %.s %.symtypes %
+> >  config-build :=3D
+> >  mixed-build  :=3D
+> >  need-config  :=3D 1
+> > -need-compiler        :=3D 1
+> >  may-sync-config      :=3D 1
+> >  single-build :=3D
+> >
+> > @@ -298,12 +293,6 @@ ifneq ($(filter $(no-dot-config-targets), $(MAKECM=
+DGOALS)),)
+> >       endif
+> >  endif
+> >
+> > -ifneq ($(filter $(no-compiler-targets), $(MAKECMDGOALS)),)
+> > -     ifeq ($(filter-out $(no-compiler-targets), $(MAKECMDGOALS)),)
+> > -             need-compiler :=3D
+> > -     endif
+> > -endif
+> > -
+>
+> MIPS and LoongArch seem to have grown a usage of need-compiler in
+> 4fe4a6374c4d ("MIPS: Only fiddle with CHECKFLAGS if `need-compiler'")
+> and 54c2c9df083f ("LoongArch: Only fiddle with CHECKFLAGS if
+> `need-compiler'"). With this removal, should those be updated as well?
 
-Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
----
- drivers/staging/media/atomisp/i2c/gc2235.h | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/staging/media/atomisp/i2c/gc2235.h b/drivers/staging/media/atomisp/i2c/gc2235.h
-index 55ea422291ba..ade28950db73 100644
---- a/drivers/staging/media/atomisp/i2c/gc2235.h
-+++ b/drivers/staging/media/atomisp/i2c/gc2235.h
-@@ -74,9 +74,6 @@
- #define GC2235_COARSE_INTG_TIME_MIN 1
- #define GC2235_COARSE_INTG_TIME_MAX_MARGIN 6
- 
--/*
-- * GC2235 System control registers
-- */
- /*
-  * GC2235 System control registers
-  */
-@@ -167,7 +164,7 @@ enum gc2235_tok_type {
- 	GC2235_TOK_MASK = 0xfff0
- };
- 
--/**
-+/*
-  * struct gc2235_reg - MI sensor  register format
-  * @type: type of the register
-  * @reg: 8-bit offset to register
--- 
-2.34.1
+Right, but may-sync-config and need-compiler are not
+interchangeable due to the following code.
 
+ifneq ($(KBUILD_EXTMOD),)
+        may-sync-config :=3D
+endif
+
+
+I will keep both.
+
+
+--=20
+Best Regards
+Masahiro Yamada
