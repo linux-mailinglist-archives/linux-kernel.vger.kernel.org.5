@@ -2,108 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B4AB7C928F
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 05:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1043F7C9295
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 05:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232383AbjJNDkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 23:40:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53620 "EHLO
+        id S232783AbjJNDlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 23:41:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJNDkU (ORCPT
+        with ESMTP id S229518AbjJNDlm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 23:40:20 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5033CBE
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 20:40:17 -0700 (PDT)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8DxBfGfDSplLO0xAA--.31076S3;
-        Sat, 14 Oct 2023 11:40:15 +0800 (CST)
-Received: from [10.130.0.149] (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Bx7tyeDSplbswjAA--.10433S3;
-        Sat, 14 Oct 2023 11:40:14 +0800 (CST)
-Subject: Re: [PATCH v2 4/8] objtool/LoongArch: Enable orc to be built
-To:     Huacai Chen <chenhuacai@kernel.org>
-References: <1696856590-30298-1-git-send-email-yangtiezhu@loongson.cn>
- <1696856590-30298-5-git-send-email-yangtiezhu@loongson.cn>
- <CAAhV-H6bKnCjjbD=ghJvjYkD4vnMsUNzataMV965zvO=vzQf5Q@mail.gmail.com>
-Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
-        loongson-kernel@lists.loongnix.cn
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <5f31f8e9-75ad-4cb8-5998-dc9c8d00c70f@loongson.cn>
-Date:   Sat, 14 Oct 2023 11:40:14 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        Fri, 13 Oct 2023 23:41:42 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0224C0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 20:41:18 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-32d9d8284abso1084295f8f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 20:41:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1697254877; x=1697859677; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8+uqdmO4xgns3ugpSGvOEmhx6xIg/OI7rgx8ycNmbLk=;
+        b=ItjQ00PPlEnDC1tcuUDvWUvLQiOPtpY9hnAMUolMg016ZmvKA3bHMuTlpC9/1kab67
+         xZe04ZPxEBL9H53b2SXfYlV70dVUgC0/Osz8V3fc/REn203VKD33RiJrXBXCxfhwztH2
+         RpMP8tFUB67UHKHPBkqJbqq1LU6+xIpnZFRSXWphwJKq2aG5dHNlI34nFVZMy3Vk1yz3
+         RmdnJ3ELRmHFt7b53x9TSHjzT5khf6wzCn+V6SoXXDx9ZA5xn5oQljyZXqTKBaRkn9Rb
+         QLbdKPbpN1lP5twI8nLKIDVaQm3PhPa2tnbqiRpXxts7/yU3oIIyWEyJinyscvQNHeGx
+         Z+iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697254877; x=1697859677;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8+uqdmO4xgns3ugpSGvOEmhx6xIg/OI7rgx8ycNmbLk=;
+        b=K14qAPr65rk2GElEYbZFx1s4HfRuSD7j2ymYF6Dk0Gq0cbDdL1ZrLByxf5CH64mfH8
+         Ae+yNi4RgkUgeY7eVbNXkOAy3GfvaEIHfP9EkmDgZD928AG3d71hqZPM540PlLWr2wGp
+         IH0KPs2P26r6DAt9q3hHLH6yel0ZUKlmFC40loOc98OsdmYwH58fHPawCHC1vDbVGKwX
+         8GTjuCp6UL+uZgjFe/ApS/p/nROnJhiZdy8Zhrq0goFHcltLQD5BOfMv+dWi99FunyfC
+         AgCiAz9ADkaBkUcU4BTtUKqhQ5TZLbUMC6dzhzkThdxhLpd/CreL5dui8D1Vctg3k2p6
+         v6yw==
+X-Gm-Message-State: AOJu0YxATDADIk1UmDwMlJsPe3eJdRv/NY4KSJmMmffJm8NlBLDgaHyz
+        FrhTt2NtqyYVBw64xhR6WQXCyS06VUhb2gMnI+rPAg==
+X-Google-Smtp-Source: AGHT+IE7iLanycP/oqIhjHkrP56/fLQX49HZv8wbRAs004f3GzJmu2RKZ2sKkYWjuCblXh4FuZwT4KqsBRbMfm2LvT0=
+X-Received: by 2002:adf:a4da:0:b0:32d:7615:372b with SMTP id
+ h26-20020adfa4da000000b0032d7615372bmr8604025wrb.12.1697254877240; Fri, 13
+ Oct 2023 20:41:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAAhV-H6bKnCjjbD=ghJvjYkD4vnMsUNzataMV965zvO=vzQf5Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Bx7tyeDSplbswjAA--.10433S3
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj9xXoW7JF45Xw4fCryUXw47Gw1rAFc_yoWfAFb_Wr
-        n2yr1DGr1UuFnxC3ZIkayUZFyDt3W5Xa17Gay8ursrXrn3JrWF9FWkurn3ur4rJ3y3CF4D
-        ur1vyFy5CF1DWosvyTuYvTs0mTUanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUj1kv1TuYvT
-        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-        cSsGvfJTRUUUbxkYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-        vaj40_Wr0E3s1l1IIY67AEw4v_JrI_Jryl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-        Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
-        8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AK
-        xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzV
-        AYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
-        14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIx
-        kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAF
-        wI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r
-        4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8r9N3UU
-        UUU==
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231011065446.53034-1-cuiyunhui@bytedance.com>
+ <87sf6gcyb3.fsf@email.froward.int.ebiederm.org> <CAEEQ3wm8oE1dXo7AuU3gY90oF_G21OqNZwnkqhhd1-_j4wWbYQ@mail.gmail.com>
+ <87r0lyad40.fsf@email.froward.int.ebiederm.org>
+In-Reply-To: <87r0lyad40.fsf@email.froward.int.ebiederm.org>
+From:   yunhui cui <cuiyunhui@bytedance.com>
+Date:   Sat, 14 Oct 2023 11:41:06 +0800
+Message-ID: <CAEEQ3wmerA8p2qpEAn9pGW5BW35777VFwabusyFTAEyaf-0JPg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] pid_ns: support pidns switching between sibling
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     akpm@linux-foundation.org, keescook@chromium.org,
+        brauner@kernel.org, jeffxu@google.com, frederic@kernel.org,
+        mcgrof@kernel.org, cyphar@cyphar.com, rongtao@cestc.cn,
+        linux-kernel@vger.kernel.org,
+        Linux Containers <containers@lists.linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Eric=EF=BC=8C
 
-
-On 10/10/2023 08:52 PM, Huacai Chen wrote:
-> Hi, Tiezhu,
+On Fri, Oct 13, 2023 at 9:04=E2=80=AFPM Eric W. Biederman <ebiederm@xmissio=
+n.com> wrote:
 >
-> On Mon, Oct 9, 2023 at 9:03 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->>
->> Implement arch-specific init_orc_entry(), reg_name(), orc_type_name(),
->> print_reg() and orc_print_dump(), then set BUILD_ORC as y to build the
->> orc related files.
+> yunhui cui <cuiyunhui@bytedance.com> writes:
+>
+> > Hi Eric,
+> >
+> > On Thu, Oct 12, 2023 at 11:31=E2=80=AFAM Eric W. Biederman
+> > <ebiederm@xmission.com> wrote:
+> >>
+> >> The check you are deleting is what verifies the pid namespaces you are
+> >> attempting to change pid_ns_for_children to is a member of the tasks
+> >> current pid namespace (aka task_active_pid_ns).
+> >>
+> >>
+> >> There is a perfectly good comment describing why what you are attempti=
+ng
+> >> to do is unsupportable.
+> >>
+> >>         /*
+> >>          * Only allow entering the current active pid namespace
+> >>          * or a child of the current active pid namespace.
+> >>          *
+> >>          * This is required for fork to return a usable pid value and
+> >>          * this maintains the property that processes and their
+> >>          * children can not escape their current pid namespace.
+> >>          */
+> >>
+> >>
+> >> If you pick a pid namespace that does not meet the restrictions you ar=
+e
+> >> removing the pid of the new child can not be mapped into the pid
+> >> namespace of the parent that called setns.
+> >>
+> >> AKA the following code can not work.
+> >>
+> >> pid =3D fork();
+> >> if (!pid) {
+> >>         /* child */
+> >>         do_something();
+> >>         _exit(0);
+> >> }
+> >> waitpid(pid);
+> >
+> > Sorry, I don't understand what you mean here.
+>
+> What I mean is that if your simple patch was adopted,
+> then the classic way of controlling a fork would fail.
+>
+>         pid =3D fork()
+>         ^--------------- Would return 0 for both parent and child
+>         ^--------------- Look at pid_nr_ns to understand.
+>         if (!pid() {
+>                 /* child */
+>                 do_something();
+>                 _exit(0);
+>         }
+>         waitpid(pid);
 
-...
+okay, The reason here is that pid_nr_ns has no pid in the current
+pidns of the child process, and returns 0.
+Can this also support sibling traversal? If so, it means that the
+process also has a pid in its sibling's pidns.
 
->> +#define ORC_REG_SP                     2
->> +#define ORC_REG_BP                     3
-> There is no BP register for LoongArch, so I think all 'BP' should be
-> 'FP' in this patch.
 
-Makes sense, thank you, will do it.
+>
+> For your use case there are more serious problems as well.  The entire
+> process hierarchy built would be incorrect.   Which means children
+> signaling parents when they exit would be incorrect, and that parents
+> would not be able to wait on their children.
 
->> +#define ORC_REG_MAX                    4
-
-...
-
->> +struct orc_entry {
->> +       s16             sp_offset;
->> +       s16             bp_offset;
->> +       s16             ra_offset;
->> +       unsigned int    sp_reg:4;
->> +       unsigned int    bp_reg:4;
->> +       unsigned int    ra_reg:4;
->> +       unsigned int    type:3;
->> +       unsigned int    signal:1;
->> +};
-
-At the same time, I will replace bp_offset with fp_offset and
-replace bp_reg with fp_reg, then modify the related code.
+Therefore, support for slibing pidns must be added to the entire logic of p=
+idns.
+Do you have any plans to support this, or what are the good reasons
+for not supporting it?
 
 Thanks,
-Tiezhu
-
+Yunhui
