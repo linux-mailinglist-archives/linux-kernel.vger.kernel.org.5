@@ -2,214 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 889427C9399
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 10:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB377C939C
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 11:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232950AbjJNI5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 04:57:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46254 "EHLO
+        id S232957AbjJNJC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 05:02:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231534AbjJNI5p (ORCPT
+        with ESMTP id S232750AbjJNJC2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 04:57:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 556C4C2
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 01:57:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697273864; x=1728809864;
-  h=date:from:to:cc:subject:message-id;
-  bh=wloOBVhLTg7DBYUa+jtbsSYi74M3tG00PO/LZYL5C78=;
-  b=AjX/GYpKO5ouoqzEIKoV47Q2xPzJtwYIYnqJ5H0Y5i2Il+abkC5DP085
-   5Ztx9lhFCzqtOsLdqBMesVviQn1R7z4xunnzxH6shEGEW0rDcB+vA/Myo
-   rkFqud9O70PUmFGElVk2MxbEGyzD6F6Ffp4g7SMKwVVTfaZk9Sk1ro7rc
-   ZrrApnAlQ3zpyMJiIiXDRZ9SRCGkDBFlpSoHVaf5mUH48r/GseuegcPAT
-   zs0qsF37Q/igthZTsGPvj/NGQY232D/eqQlCBIp1RXiTyelAF7h8IYCFH
-   /qFLArUoD5ya9m7JnNgXj1jcll8z5t9mZWHq9pKYah3B3rABn+be9znl1
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="365579489"
-X-IronPort-AV: E=Sophos;i="6.03,224,1694761200"; 
-   d="scan'208";a="365579489"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2023 01:57:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="758755313"
-X-IronPort-AV: E=Sophos;i="6.03,224,1694761200"; 
-   d="scan'208";a="758755313"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 14 Oct 2023 01:57:42 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qraSq-0005wR-0i;
-        Sat, 14 Oct 2023 08:57:40 +0000
-Date:   Sat, 14 Oct 2023 16:57:33 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/core] BUILD SUCCESS
- 1b8a955dd338dfbf39831d4687c25263e885a9cb
-Message-ID: <202310141631.T6kLv5UC-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 14 Oct 2023 05:02:28 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71458BF;
+        Sat, 14 Oct 2023 02:02:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91C14C433CB;
+        Sat, 14 Oct 2023 09:02:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697274143;
+        bh=q3aIQAuGvEalvJHYNryE3fePayWggV6Dn+qBeFX+34s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Exx1S0w0PeoIpe/84fDYaVqKop1vQLJ2EaJFIBQLpyxL7mgHxSMTP3C+m11eghqg3
+         TUORXEG9dLnXoFfKsP67ypqtX6RXv2Ps80ICQCQcp5Z0vThHIjK9k65TC42ijalPuV
+         9ryvYIG415hvZTwV1XeMiBLL8Qu9MUPItpwLeNfzWVft3ftaJ6yAUjHh0G7e9SoCsC
+         wVtQfM+uEUBuVw6KB8n9S7bgBRQUdQ4636uwjbA+NfQmKmPF1DclMHTUbZF9iRAZ8o
+         RsXft9S2BOJAhdmkJZOjxZR1LhzUI0ZScs7Fi2ObH2PXUUni0k8MeG29UpI8tpuxmS
+         WcPoN6LQemDvQ==
+Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-1e9a757e04eso1642492fac.0;
+        Sat, 14 Oct 2023 02:02:23 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwJnWzPkcNUNO5o7L/YBK5kMWLtb4iogcOHXN6djNSOtsvALKbt
+        6Cp1Q6I/qp+xgXiMgYACsTjFKwZi5mfr9bJMp/E=
+X-Google-Smtp-Source: AGHT+IHqWtE8o7PhfqWEFTDLju6aH2tyNyhvJWyLTtp4uE/cubOMSAd8e6I4cAdTjpAJSKQxpxsIPgdtzLoUTdjg4sQ=
+X-Received: by 2002:a05:6870:c081:b0:1dc:dcf9:18d8 with SMTP id
+ c1-20020a056870c08100b001dcdcf918d8mr1423504oad.24.1697274142906; Sat, 14 Oct
+ 2023 02:02:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231012105420.16779-2-ricardo@marliere.net>
+In-Reply-To: <20231012105420.16779-2-ricardo@marliere.net>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 14 Oct 2023 18:01:46 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATgyPVNk=5mq9D_4Hg3GTesDEwB=XKDUVXdjUintwWenA@mail.gmail.com>
+Message-ID: <CAK7LNATgyPVNk=5mq9D_4Hg3GTesDEwB=XKDUVXdjUintwWenA@mail.gmail.com>
+Subject: Re: [PATCH] docs: kbuild: add INSTALL_DTBS_PATH
+To:     "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
-branch HEAD: 1b8a955dd338dfbf39831d4687c25263e885a9cb  sched: Make PELT acronym definition searchable
+On Thu, Oct 12, 2023 at 7:56=E2=80=AFPM Ricardo B. Marliere
+<ricardo@marliere.net> wrote:
+>
+> The documentation for kbuild and makefiles is missing an explanation of
+> a variable important for some architectures.
+>
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> ---
 
-elapsed time: 1477m
+Applied to linux-kbuild.
+Thanks.
 
-configs tested: 138
-configs skipped: 2
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+>  Documentation/kbuild/kbuild.rst    | 6 ++++++
+>  Documentation/kbuild/makefiles.rst | 7 +++++++
+>  2 files changed, 13 insertions(+)
+>
+> diff --git a/Documentation/kbuild/kbuild.rst b/Documentation/kbuild/kbuil=
+d.rst
+> index bd906407e307..9c8d1d046ea5 100644
+> --- a/Documentation/kbuild/kbuild.rst
+> +++ b/Documentation/kbuild/kbuild.rst
+> @@ -243,6 +243,12 @@ The output directory is often set using "O=3D..." on=
+ the commandline.
+>
+>  The value can be overridden in which case the default value is ignored.
+>
+> +INSTALL_DTBS_PATH
+> +-----------------
+> +INSTALL_DTBS_PATH specifies where to install device tree blobs for
+> +relocations required by build roots.  This is not defined in the
+> +makefile but the argument can be passed to make if needed.
+> +
+>  KBUILD_ABS_SRCTREE
+>  --------------------------------------------------
+>  Kbuild uses a relative path to point to the tree when possible. For inst=
+ance,
+> diff --git a/Documentation/kbuild/makefiles.rst b/Documentation/kbuild/ma=
+kefiles.rst
+> index e67eb261c9b0..d88d4f0f4f89 100644
+> --- a/Documentation/kbuild/makefiles.rst
+> +++ b/Documentation/kbuild/makefiles.rst
+> @@ -1623,6 +1623,13 @@ INSTALL_MOD_STRIP
+>    INSTALL_MOD_STRIP value will be used as the option(s) to the strip
+>    command.
+>
+> +INSTALL_DTBS_PATH
+> +  This variable specifies a prefix for relocations required by build
+> +  roots. It defines a place for installing the device tree blobs. Like
+> +  INSTALL_MOD_PATH, it isn't defined in the Makefile, but can be passed
+> +  by the user if desired. Otherwise it defaults to the kernel install
+> +  path.
+> +
+>  Makefile language
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> --
+> 2.42.0
+>
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231013   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                     am200epdkit_defconfig   clang
-arm                                 defconfig   gcc  
-arm                   randconfig-001-20231014   gcc  
-arm                         socfpga_defconfig   clang
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231013   gcc  
-i386                  randconfig-001-20231014   gcc  
-i386                  randconfig-002-20231013   gcc  
-i386                  randconfig-002-20231014   gcc  
-i386                  randconfig-003-20231013   gcc  
-i386                  randconfig-003-20231014   gcc  
-i386                  randconfig-004-20231013   gcc  
-i386                  randconfig-004-20231014   gcc  
-i386                  randconfig-005-20231013   gcc  
-i386                  randconfig-005-20231014   gcc  
-i386                  randconfig-006-20231013   gcc  
-i386                  randconfig-006-20231014   gcc  
-loongarch                        alldefconfig   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231013   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                       m5249evb_defconfig   gcc  
-m68k                           virt_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                  decstation_64_defconfig   gcc  
-mips                           ip27_defconfig   clang
-mips                        maltaup_defconfig   clang
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                generic-64bit_defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                    sam440ep_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231013   gcc  
-riscv                 randconfig-001-20231014   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231013   gcc  
-s390                  randconfig-001-20231014   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                           se7705_defconfig   gcc  
-sh                            titan_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231014   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                randconfig-001-20231013   gcc  
-x86_64                randconfig-001-20231014   gcc  
-x86_64                randconfig-002-20231013   gcc  
-x86_64                randconfig-002-20231014   gcc  
-x86_64                randconfig-003-20231013   gcc  
-x86_64                randconfig-003-20231014   gcc  
-x86_64                randconfig-004-20231013   gcc  
-x86_64                randconfig-004-20231014   gcc  
-x86_64                randconfig-005-20231013   gcc  
-x86_64                randconfig-005-20231014   gcc  
-x86_64                randconfig-006-20231013   gcc  
-x86_64                randconfig-006-20231014   gcc  
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                         rhel-8.3-kunit   gcc  
-x86_64                           rhel-8.3-ltp   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--=20
+Best Regards
+Masahiro Yamada
