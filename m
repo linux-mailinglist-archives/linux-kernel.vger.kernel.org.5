@@ -2,66 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B3F17C9276
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 05:17:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A217C927D
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 05:29:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232769AbjJNDRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 23:17:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45174 "EHLO
+        id S232750AbjJND3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 23:29:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbjJNDRR (ORCPT
+        with ESMTP id S229518AbjJND3C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 23:17:17 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AFD2BF
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 20:17:14 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-5856082f92dso1767027a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 20:17:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697253434; x=1697858234; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Cygcl9PmHTIW27CQufR8VhIxisSzXoKQWoi0Hf3IAWI=;
-        b=1+NygvOfJg0W+zLTPqNITbFbaF0LwuY/no3E4jZrvj42scbKwP8v/wRlGsN8whgJhl
-         YpvE+XaxV7oCRdj0bgW82bkeQo5Yj+c7q/l2kAw6ip8DaKVYq7Ji2urlfx7KFSiBX4KD
-         z8/TGwvqSvCpSLegYmyOEWuVkrOLAojUg0bzC5T3sohfwgCttqQcZnfe09usLik2O/kV
-         SZKi0oeRKLIs0XJFF8NtmvPrT2HZZ9ddbbsiLlYCPATumnHtV/FYc0D0ihjh3CvpDWtD
-         Z594fVrNZzGu+EzIV8A9WpmXZQViyXOEDuTAmxkF9Zjz60Dve8GOG6EA/LxGZq/q7Lbm
-         4C5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697253434; x=1697858234;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Cygcl9PmHTIW27CQufR8VhIxisSzXoKQWoi0Hf3IAWI=;
-        b=U8xTxzURalywcfZg/35DPjbArAn2Ue0Fbz0EVQcDNOAXBP5Q3E5FNvilAFuCAySczt
-         fBzjjRY0SIryLrtf9FRrxWd08uDD3CjppGj97rjcrlSu4W7I5NnFs5Raf2fb3XvR1mkw
-         An53m0pDTXHydUlqDWweUvrI00zDOq71E5yXlpGgk9T205uniyGLux6gQs77iyafSTKm
-         NK3Q0BLVe6IuOQPUFM39dgpzmny57a2v7WyYTUKxyMI9O3ZGEplyYUtlMMPV/0FWSbtS
-         3jBj3iV5azfKTCD7q5QgusiXbTPRjAOkIRrJ0eXnmoWWBthvt/yt6z2vvTP9l+X+CQEl
-         Z8Wg==
-X-Gm-Message-State: AOJu0YzlSP0VLm7U6lz1yt2GdXhLebc+AxW2PI66OfIBufeY7HM8ptak
-        JXCrU2YchzLvP9EqVTLwFeFqZpl94b0=
-X-Google-Smtp-Source: AGHT+IGr78g2jXoouBJder6syoTwtrbmWyiVJWo80raBkuAFBVoRCBxKZJB0snIcYs+zarooC8jRwRH9JCw=
-X-Received: from badhri.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:6442])
- (user=badhri job=sendgmr) by 2002:a65:6697:0:b0:5ab:7d1d:3322 with SMTP id
- b23-20020a656697000000b005ab7d1d3322mr90269pgw.9.1697253433887; Fri, 13 Oct
- 2023 20:17:13 -0700 (PDT)
-Date:   Sat, 14 Oct 2023 03:17:09 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-Message-ID: <20231014031709.1900370-1-badhri@google.com>
-Subject: [PATCH v1] usb: typec: tcpm: Check for sink pdp op current only for pd
-From:   Badhri Jagan Sridharan <badhri@google.com>
-To:     gregkh@linuxfoundation.org, linux@roeck-us.net,
-        heikki.krogerus@linux.intel.com
-Cc:     kyletso@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rdbabiera@google.com,
-        amitsd@google.com, stable@vger.kernel.org,
-        Badhri Jagan Sridharan <badhri@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        Fri, 13 Oct 2023 23:29:02 -0400
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F9BFC0;
+        Fri, 13 Oct 2023 20:28:58 -0700 (PDT)
+X-UUID: bb6b3defdbf7419c90c7d3bc44c3da64-20231014
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:c558d7f0-915c-41bc-b38f-8bca20620a3b,IP:5,U
+        RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
+        ION:release,TS:-35
+X-CID-INFO: VERSION:1.1.32,REQID:c558d7f0-915c-41bc-b38f-8bca20620a3b,IP:5,URL
+        :0,TC:0,Content:-25,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+        N:release,TS:-35
+X-CID-META: VersionHash:5f78ec9,CLOUDID:7cd51bc4-1e57-4345-9d31-31ad9818b39f,B
+        ulkID:231014112849SB64LA8R,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
+        02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
+        L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_SNR
+X-UUID: bb6b3defdbf7419c90c7d3bc44c3da64-20231014
+X-User: aichao@kylinos.cn
+Received: from localhost.localdomain [(112.64.161.44)] by mailgw
+        (envelope-from <aichao@kylinos.cn>)
+        (Generic MTA)
+        with ESMTP id 2130785070; Sat, 14 Oct 2023 11:28:47 +0800
+From:   Ai Chao <aichao@kylinos.cn>
+To:     hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com,
+        markgross@kernel.org
+Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Ai Chao <aichao@kylinos.cn>
+Subject: [PATCH v2] platform/x86: support to store/show powermode value for Inspur
+Date:   Sat, 14 Oct 2023 11:28:44 +0800
+Message-Id: <20231014032844.3823198-1-aichao@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,54 +56,280 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TCPM checks for sink caps operational current even when PD is disabled.
-This incorrectly sets tcpm_set_charge() when PD is disabled.
-Check for sink caps only when PD is disabled.
+Support to store/show powermode value for Inspur by WMI interface.
+This driver provides support for Inspur WMI hotkeys. User used Fn+Q to
+change the power mode. If desktop applications receive hotkey(Fn+Q)
+event, then it get the currently power mode and change the power mode.
+The desktop applications modify brightness and cpufreq based on
+power mode.
 
-[   97.572342] Start toggling
-[   97.578949] CC1: 0 -> 0, CC2: 0 -> 0 [state TOGGLING, polarity 0, disconnected]
-[   99.571648] CC1: 0 -> 0, CC2: 0 -> 4 [state TOGGLING, polarity 0, connected]
-[   99.571658] state change TOGGLING -> SNK_ATTACH_WAIT [rev3 NONE_AMS]
-[   99.571673] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 170 ms [rev3 NONE_AMS]
-[   99.741778] state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED [delayed 170 ms]
-[   99.789283] CC1: 0 -> 0, CC2: 4 -> 5 [state SNK_DEBOUNCED, polarity 0, connected]
-[   99.789306] state change SNK_DEBOUNCED -> SNK_DEBOUNCED [rev3 NONE_AMS]
-[   99.903584] VBUS on
-[   99.903591] state change SNK_DEBOUNCED -> SNK_ATTACHED [rev3 NONE_AMS]
-[   99.903600] polarity 1
-[   99.910155] enable vbus discharge ret:0
-[   99.910160] Requesting mux state 1, usb-role 2, orientation 2
-[   99.946791] state change SNK_ATTACHED -> SNK_STARTUP [rev3 NONE_AMS]
-[   99.946798] state change SNK_STARTUP -> SNK_DISCOVERY [rev3 NONE_AMS]
-[   99.946800] Setting voltage/current limit 5000 mV 500 mA
-[   99.946803] vbus=0 charge:=1
-[  100.027139] state change SNK_DISCOVERY -> SNK_READY [rev3 NONE_AMS]
-[  100.027145] Setting voltage/current limit 5000 mV 3000 mA
-[  100.466830] VBUS on
+change for v2
+- Remove Event GUID, remove inspur_wmi_notify and inspur_wmi_notify.
+- Add more explanation.
 
-Cc: stable@vger.kernel.org
-Fixes: 34fde9ec08a3 ("FROMGIT: usb: typec: tcpm: not sink vbus if operational current is 0mA")
-Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+Signed-off-by: Ai Chao <aichao@kylinos.cn>
 ---
- drivers/usb/typec/tcpm/tcpm.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/platform/x86/Kconfig      |  14 ++
+ drivers/platform/x86/Makefile     |   3 +
+ drivers/platform/x86/inspur-wmi.c | 210 ++++++++++++++++++++++++++++++
+ 3 files changed, 227 insertions(+)
+ create mode 100644 drivers/platform/x86/inspur-wmi.c
 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index 6e843c511b85..994493481c24 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -4268,7 +4268,8 @@ static void run_state_machine(struct tcpm_port *port)
- 				current_lim = PD_P_SNK_STDBY_MW / 5;
- 			tcpm_set_current_limit(port, current_lim, 5000);
- 			/* Not sink vbus if operational current is 0mA */
--			tcpm_set_charge(port, !!pdo_max_current(port->snk_pdo[0]));
-+			tcpm_set_charge(port, port->pd_supported ?
-+					!!pdo_max_current(port->snk_pdo[0]) : true);
+diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+index 2a1070543391..fa2a4335c83d 100644
+--- a/drivers/platform/x86/Kconfig
++++ b/drivers/platform/x86/Kconfig
+@@ -988,6 +988,20 @@ config TOUCHSCREEN_DMI
+ 	  the OS-image for the device. This option supplies the missing info.
+ 	  Enable this for x86 tablets with Silead or Chipone touchscreens.
  
- 			if (!port->pd_supported)
- 				tcpm_set_state(port, SNK_READY, 0);
-
-base-commit: 1034cc423f1b4a7a9a56d310ca980fcd2753e11d
++config INSPUR_WMI
++	tristate "Inspur WMI hotkeys driver"
++	depends on ACPI_WMI
++	depends on INPUT
++	help
++	This driver provides support for Inspur WMI hotkeys.
++	User used Fn+Q to change the power mode. If desktop applications
++	receive hotkeys(Fn+Q) event, then it get the currently power mode
++	and change the power mode. The desktop applications modify brightness
++	and cpufreq based on power mode.
++
++	To compile this driver as a module, choose M here: the module
++	will be called inspur-wmi.
++
+ source "drivers/platform/x86/x86-android-tablets/Kconfig"
+ 
+ config FW_ATTR_CLASS
+diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+index b457de5abf7d..9285c252757e 100644
+--- a/drivers/platform/x86/Makefile
++++ b/drivers/platform/x86/Makefile
+@@ -98,6 +98,9 @@ obj-$(CONFIG_TOSHIBA_WMI)	+= toshiba-wmi.o
+ # before toshiba_acpi initializes
+ obj-$(CONFIG_ACPI_TOSHIBA)	+= toshiba_acpi.o
+ 
++# Inspur
++obj-$(CONFIG_INSPUR_WMI)	+= inspur-wmi.o
++
+ # Laptop drivers
+ obj-$(CONFIG_ACPI_CMPC)		+= classmate-laptop.o
+ obj-$(CONFIG_COMPAL_LAPTOP)	+= compal-laptop.o
+diff --git a/drivers/platform/x86/inspur-wmi.c b/drivers/platform/x86/inspur-wmi.c
+new file mode 100644
+index 000000000000..ef6cfd87f074
+--- /dev/null
++++ b/drivers/platform/x86/inspur-wmi.c
+@@ -0,0 +1,210 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ *  Inspur WMI hotkeys
++ *
++ *  Copyright (C) 2018	      Ai Chao <aichao@kylinos.cn>
++ */
++
++#include <linux/acpi.h>
++#include <linux/device.h>
++#include <linux/input.h>
++#include <linux/module.h>
++#include <linux/wmi.h>
++
++#define WMI_INSPUR_POWERMODE_BIOS_GUID "596C31E3-332D-43C9-AEE9-585493284F5D"
++
++enum inspur_wmi_method_ids {
++	INSPUR_WMI_GET_POWERMODE = 0x02,
++	INSPUR_WMI_SET_POWERMODE = 0x03,
++};
++
++struct inspur_wmi_priv {
++	struct input_dev *idev;
++	struct wmi_device *wdev;
++};
++
++static int inspur_wmi_perform_query(struct wmi_device *wdev,
++				    enum inspur_wmi_method_ids query_id,
++				    void *buffer, size_t insize,
++				    size_t outsize)
++{
++	union acpi_object *obj;
++	acpi_status status;
++	int ret = 0;
++	struct acpi_buffer input = { insize, buffer};
++	struct acpi_buffer output = { ACPI_ALLOCATE_BUFFER, NULL };
++
++	status = wmidev_evaluate_method(wdev, 0, query_id, &input, &output);
++	if (ACPI_FAILURE(status)) {
++		dev_err(&wdev->dev, "EC Powermode control failed: %s\n",
++			acpi_format_exception(status));
++		return -EIO;
++	}
++
++	obj = output.pointer;
++	if (!obj)
++		return -EINVAL;
++
++	if (obj->type != ACPI_TYPE_BUFFER) {
++		ret = -EINVAL;
++		goto out_free;
++	}
++
++	/* Ignore output data of zero size */
++	if (!outsize)
++		goto out_free;
++
++	if (obj->buffer.length != outsize) {
++		ret = -EINVAL;
++		goto out_free;
++	}
++
++	memcpy(buffer, obj->buffer.pointer, obj->buffer.length);
++
++out_free:
++	kfree(obj);
++	return ret;
++}
++
++/**
++ * Set Power Mode to EC RAM. If Power Mode value greater than 0x3,
++ * return error
++ * Method ID: 0x3
++ * Arg: 4 Bytes
++ * Byte [0]: Power Mode:
++ *         0x0: Balance Mode
++ *         0x1: Performance Mode
++ *         0x2: Power Saver Mode
++ * Return Value: 4 Bytes
++ * Byte [0]: Return Code
++ *         0x0: No Error
++ *         0x1: Error
++ */
++static ssize_t powermode_store(struct device *dev,
++			       struct device_attribute *attr,
++			       const char *buf, size_t count)
++{
++	struct inspur_wmi_priv *priv = dev_get_drvdata(dev);
++	int ret;
++	u32 mode;
++	u8 *ret_code;
++
++	ret = kstrtoint(buf, 0, &mode);
++	if (ret)
++		return ret;
++
++	ret = inspur_wmi_perform_query(priv->wdev,
++				       INSPUR_WMI_SET_POWERMODE,
++				       &mode, sizeof(mode), sizeof(mode));
++
++	if (ret < 0)
++		return ret;
++
++	ret_code = (u8 *)(&mode);
++	if (ret_code[0])
++		return -EBADRQC;
++
++	return count;
++}
++
++/**
++ * Get Power Mode from EC RAM, If Power Mode value greater than 0x3,
++ * return error
++ * Method ID: 0x2
++ * Return Value: 4 Bytes
++ * Byte [0]: Return Code
++ *         0x0: No Error
++ *         0x1: Error
++ * Byte [1]: Power Mode
++ *         0x0: Balance Mode
++ *         0x1: Performance Mode
++ *         0x2: Power Saver Mode
++ */
++static ssize_t powermode_show(struct device *dev,
++			      struct device_attribute *attr,
++			      char *buf)
++{
++	struct inspur_wmi_priv *priv = dev_get_drvdata(dev);
++	u32 mode = 0;
++	int ret;
++	u8 *ret_code;
++
++	ret = inspur_wmi_perform_query(priv->wdev,
++				       INSPUR_WMI_GET_POWERMODE,
++				       &mode, sizeof(mode), sizeof(mode));
++	if (ret < 0)
++		return ret;
++
++	ret_code = (u8 *)(&mode);
++	if (ret_code[0])
++		return -EBADRQC;
++
++	return sprintf(buf, "%u\n", ret_code[1]);
++}
++
++static DEVICE_ATTR_RW(powermode);
++
++static struct attribute *inspur_wmi_attrs[] = {
++	&dev_attr_powermode.attr,
++	NULL,
++};
++
++static const struct attribute_group inspur_wmi_group = {
++	.attrs = inspur_wmi_attrs,
++};
++
++static const struct attribute_group *inspur_wmi_groups[] = {
++	&inspur_wmi_group,
++	NULL,
++};
++
++static int inspur_wmi_input_setup(struct wmi_device *wdev)
++{
++	struct inspur_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
++
++	priv->idev = devm_input_allocate_device(&wdev->dev);
++	if (!priv->idev)
++		return -ENOMEM;
++
++	priv->idev->name = "Inspur WMI hotkeys";
++	priv->idev->phys = "wmi/input0";
++	priv->idev->id.bustype = BUS_HOST;
++	priv->idev->dev.parent = &wdev->dev;
++
++	return input_register_device(priv->idev);
++}
++
++static int inspur_wmi_probe(struct wmi_device *wdev, const void *context)
++{
++	struct inspur_wmi_priv *priv;
++
++	priv = devm_kzalloc(&wdev->dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	priv->wdev = wdev;
++	dev_set_drvdata(&wdev->dev, priv);
++
++	return inspur_wmi_input_setup(wdev);
++}
++
++static const struct wmi_device_id inspur_wmi_id_table[] = {
++	{ .guid_string = WMI_INSPUR_POWERMODE_BIOS_GUID },
++	{  }
++};
++
++static struct wmi_driver inspur_wmi_driver = {
++	.driver = {
++		.name = "inspur-wmi",
++		.dev_groups = inspur_wmi_groups,
++	},
++	.id_table = inspur_wmi_id_table,
++	.probe = inspur_wmi_probe,
++};
++
++module_wmi_driver(inspur_wmi_driver);
++
++MODULE_DEVICE_TABLE(wmi, inspur_wmi_id_table);
++MODULE_AUTHOR("Ai Chao <aichao@kylinos.cn>");
++MODULE_DESCRIPTION("Inspur WMI hotkeys");
++MODULE_LICENSE("GPL");
 -- 
-2.42.0.655.g421f12c284-goog
+2.25.1
 
