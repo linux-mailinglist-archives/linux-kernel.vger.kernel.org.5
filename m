@@ -2,179 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9897C9421
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 12:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 811907C9424
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 12:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233033AbjJNK3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 06:29:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38034 "EHLO
+        id S233018AbjJNKe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 06:34:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232937AbjJNK3P (ORCPT
+        with ESMTP id S232937AbjJNKeZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 06:29:15 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FEB5A2;
-        Sat, 14 Oct 2023 03:29:13 -0700 (PDT)
-Date:   Sat, 14 Oct 2023 10:29:09 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697279350;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=eE+poOiRRwrdwN/fZ4h4/pg7LGMoOCv7Xn+HsYY3yV8=;
-        b=ivZ5MQYSWP776eH5qHrKWywfAcZ4TtnO4uYjOqTjm6Sli8kWy+km8oIA5LD9JK6lIv1z1m
-        gCwXamLA8Ft6YqhHDMIOAuRF3z6bC+DaD45IiW5OjgYRYcjZmhy2WWfjKiXM93xgenAVpT
-        yFaoPydvGS4am/0LIeV4//WCoq+AShfJIzffEoRH9rS9uy0C0s/rLeHUl5aJI43l0pxIXg
-        pZwy92G/V9erHDQqzvHnakzIs7uUxw2rk2Jo+0H3gVQIebk1ZMhfECHi701s+GUDCRrTrf
-        7qaA8S1uDwfWAKPMQ+o0PjzHyGdzvkhNG44KvpFzbNJBkWDbPEg9vEM9QJe9Jw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697279350;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=eE+poOiRRwrdwN/fZ4h4/pg7LGMoOCv7Xn+HsYY3yV8=;
-        b=wMqTVbvoq6zLujsaJLS9kvlnyQrgXsWgg+tytMQiyan8viXSVsxKCY0+jyhy4J4vAPctp8
-        jYE0nKj/eFr/plCw==
-From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] locking/seqlock: Propagate 'const' pointers
- within read-only methods, remove forced type casts
-Cc:     Ingo Molnar <mingo@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Waiman Long <longman@redhat.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        Sat, 14 Oct 2023 06:34:25 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34ED6B3
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 03:34:24 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-53e16f076b3so4880850a12.0
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 03:34:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697279662; x=1697884462; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tFEZfw7PCCJHkUK5SvZXZL44soySFnk4Afiww2L6bMw=;
+        b=E4l0iuGYWst0gBM08Dv3e/hXj36/DxtUnbNNpmx2gWSz1JIl6qmVHoJO9o6/JBPTpF
+         NRP0pr7kHU+QDidmrQB9OMX6XnDdZ7ZAM18Ejm76hadpjLoQZdtP+ii+kz4oyB2lZDKy
+         vwQQUJmYeHNMbyh93hhq7aIwBTw68a31AhfTf02M8fyPh0e1F50EpUkVF3J89Ff1wh/g
+         KNyr3EXQAxtJladQUOqDksuB/zoSdZR/Op1qYUR3qvdhzGBFri16hazBIYhkTl7he3sv
+         NU7mTSxAwbS2kS/0H5Qhx0lyGh9K0kieujooHFJmnbkRmxL6gfpSglGA6Nf8NOmuO/+1
+         T9YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697279662; x=1697884462;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tFEZfw7PCCJHkUK5SvZXZL44soySFnk4Afiww2L6bMw=;
+        b=HSFWzvIczYRBptdanZEK9VpJUM1NhATlI0HYR6O/3oa7pcPnaWd6pqR057yEE2voJ7
+         hRRwFxlPGvmJNy/2n0UuYxWMMohOtTGM3b85K5JiIrso7bpDKYOTnpl14ybVfn/e44iX
+         9MZcAsrJwjaiL4tRweNwiQshwRh27GUURPkbKvqE/JwFoChza0f2Xl+HgfrWWknYVasM
+         2CRqYv9CpxYKT5wwjFphQQ2pusqRVmx7/jjxmWHcwMVmh2m1KxcRtFGAFu7nwkU3sR8h
+         bfRGE3Y7HGX6jXwGGjByFlnd3sUzAujguk7QVnZmoHXU2gc1TPpeYINOz6UyVb9Ln1fD
+         Fxyg==
+X-Gm-Message-State: AOJu0YxIXNaKg5eDunKWdXyHJ77UJZElNVVSGwPRtYQ9B0KwoWphtwao
+        4YJcS1UAILUWjKrhX9g4Sh7AaMOhJN1aWdHTMfU=
+X-Google-Smtp-Source: AGHT+IEC9nA9NZObni0rlKqgWO2Sr/7vlaDL/fV838uANMiozyQ8B8IvLvtv05xezfE57EJSYqAgyOOKdHiMhGdVmo0=
+X-Received: by 2002:a50:d619:0:b0:53d:e91b:7158 with SMTP id
+ x25-20020a50d619000000b0053de91b7158mr2204250edi.0.1697279662382; Sat, 14 Oct
+ 2023 03:34:22 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <169727934984.3135.3212674170316933544.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20231011204150.51166-1-ubizjak@gmail.com> <ZSpnpfn/mSYrgC9C@gmail.com>
+In-Reply-To: <ZSpnpfn/mSYrgC9C@gmail.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Sat, 14 Oct 2023 12:34:14 +0200
+Message-ID: <CAFULd4bt0ZjU7S+FKmSe6FG1OBPEgm1nyh_YG6=O0FazgBVaRw@mail.gmail.com>
+Subject: Re: [PATCH tip] x86/percpu: Rewrite arch_raw_cpu_ptr()
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nadav Amit <namit@vmware.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/core branch of tip:
+On Sat, Oct 14, 2023 at 12:04=E2=80=AFPM Ingo Molnar <mingo@kernel.org> wro=
+te:
+>
+>
+> * Uros Bizjak <ubizjak@gmail.com> wrote:
+>
+> > Implement arch_raw_cpu_ptr() as a load from this_cpu_off and then
+> > add the ptr value to the base. This way, the compiler can propagate
+> > addend to the following instruction and simplify address calculation.
+> >
+> > E.g.: address calcuation in amd_pmu_enable_virt() improves from:
+> >
+> >     48 c7 c0 00 00 00 00      mov    $0x0,%rax
+> >       87b7: R_X86_64_32S      cpu_hw_events
+> >
+> >     65 48 03 05 00 00 00      add    %gs:0x0(%rip),%rax
+> >     00
+> >       87bf: R_X86_64_PC32     this_cpu_off-0x4
+> >
+> >     48 c7 80 28 13 00 00      movq   $0x0,0x1328(%rax)
+> >     00 00 00 00
+> >
+> > to:
+> >
+> >     65 48 8b 05 00 00 00      mov    %gs:0x0(%rip),%rax
+> >     00
+> >       8798: R_X86_64_PC32     this_cpu_off-0x4
+> >     48 c7 80 00 00 00 00      movq   $0x0,0x0(%rax)
+> >     00 00 00 00
+> >       87a6: R_X86_64_32S      cpu_hw_events+0x1328
+> >
+> > The compiler can also eliminate redundant loads from this_cpu_off,
+> > reducing the number of percpu offset reads (either from this_cpu_off
+> > or with rdgsbase) from 1663 to 1571.
+> >
+> > Additionaly, the patch introduces 'rdgsbase' alternative for CPUs with
+> > X86_FEATURE_FSGSBASE. The rdgsbase instruction *probably* will end up
+> > only decoding in the first decoder etc. But we're talking single-cycle
+> > kind of effects, and the rdgsbase case should be much better from
+> > a cache perspective and might use fewer memory pipeline resources to
+> > offset the fact that it uses an unusual front end decoder resource...
+>
+> So the 'additionally' wording in the changelog should have been a big hin=
+t
+> already that the introduction of RDGSBASE usage needs to be a separate
+> patch. ;-)
 
-Commit-ID:     886ee55eabac0d46faf8bc0b22207ca2740847ba
-Gitweb:        https://git.kernel.org/tip/886ee55eabac0d46faf8bc0b22207ca2740847ba
-Author:        Ingo Molnar <mingo@kernel.org>
-AuthorDate:    Fri, 13 Oct 2023 10:15:46 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Sat, 14 Oct 2023 11:06:15 +02:00
+Indeed. I think that the first part should be universally beneficial,
+as it converts
 
-locking/seqlock: Propagate 'const' pointers within read-only methods, remove forced type casts
+mov symbol, %rax
+add %gs:this_cpu_off, %rax
 
-Currently __seqprop_ptr() is an inline function that must chose to either
-use 'const' or non-const seqcount related pointers - but this results in
-the undesirable loss of 'const' propagation, via a forced type cast.
+to:
 
-The easiest solution would be to turn the pointer wrappers into macros that
-pass through whatever type is passed to them - but the clever maze of
-seqlock API instantiation macros relies on the GCC CPP '##' macro
-extension, which isn't recursive, so inline functions must be used here.
+mov %gs:this_cpu_off, %rax
+add symbol, %rax
 
-So create two wrapper variants instead: 'ptr' and 'const_ptr', and pick the
-right one for the codepaths that are const: read_seqcount_begin() and
-read_seqcount_retry().
+and allows the compiler to propagate addition into address calculation
+(the latter is also similar to the code, generated by _seg_gs
+approach).
 
-This cleans up type handling and allows the removal of all type forcing.
+At this point, the "experimental" part could either
 
-No change in functionality.
+a) introduce RDGSBASE:
 
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Oleg Nesterov <oleg@redhat.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Waiman Long <longman@redhat.com>
-Cc: Will Deacon <will.deacon@arm.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Paul E. McKenney <paulmck@kernel.org>
----
- include/linux/seqlock.h | 26 +++++++++++++++++++-------
- 1 file changed, 19 insertions(+), 7 deletions(-)
+As discussed with Sean, this could be problematic, at least with KVM,
+and has some other drawbacks (e.g. larger binary size, limited CSE of
+asm).
 
-diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index 4b8dcd3..80f21d2 100644
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -200,9 +200,15 @@ typedef struct seqcount_##lockname {					\
- } seqcount_##lockname##_t;						\
- 									\
- static __always_inline seqcount_t *					\
--__seqprop_##lockname##_ptr(const seqcount_##lockname##_t *s)		\
-+__seqprop_##lockname##_ptr(seqcount_##lockname##_t *s)			\
- {									\
--	return (void *)&s->seqcount; /* drop const */			\
-+	return &s->seqcount;						\
-+}									\
-+									\
-+static __always_inline const seqcount_t *				\
-+__seqprop_##lockname##_const_ptr(const seqcount_##lockname##_t *s)	\
-+{									\
-+	return &s->seqcount;						\
- }									\
- 									\
- static __always_inline unsigned						\
-@@ -247,9 +253,14 @@ __seqprop_##lockname##_assert(const seqcount_##lockname##_t *s)		\
-  * __seqprop() for seqcount_t
-  */
- 
--static inline seqcount_t *__seqprop_ptr(const seqcount_t *s)
-+static inline seqcount_t *__seqprop_ptr(seqcount_t *s)
-+{
-+	return s;
-+}
-+
-+static inline const seqcount_t *__seqprop_const_ptr(const seqcount_t *s)
- {
--	return (void *)s; /* drop const */
-+	return s;
- }
- 
- static inline unsigned __seqprop_sequence(const seqcount_t *s)
-@@ -302,6 +313,7 @@ SEQCOUNT_LOCKNAME(mutex,        struct mutex,    true,     mutex)
- 	__seqprop_case((s),	mutex,		prop))
- 
- #define seqprop_ptr(s)			__seqprop(s, ptr)(s)
-+#define seqprop_const_ptr(s)		__seqprop(s, const_ptr)(s)
- #define seqprop_sequence(s)		__seqprop(s, sequence)(s)
- #define seqprop_preemptible(s)		__seqprop(s, preemptible)(s)
- #define seqprop_assert(s)		__seqprop(s, assert)(s)
-@@ -353,7 +365,7 @@ SEQCOUNT_LOCKNAME(mutex,        struct mutex,    true,     mutex)
-  */
- #define read_seqcount_begin(s)						\
- ({									\
--	seqcount_lockdep_reader_access(seqprop_ptr(s));			\
-+	seqcount_lockdep_reader_access(seqprop_const_ptr(s));		\
- 	raw_read_seqcount_begin(s);					\
- })
- 
-@@ -419,7 +431,7 @@ SEQCOUNT_LOCKNAME(mutex,        struct mutex,    true,     mutex)
-  * Return: true if a read section retry is required, else false
-  */
- #define __read_seqcount_retry(s, start)					\
--	do___read_seqcount_retry(seqprop_ptr(s), start)
-+	do___read_seqcount_retry(seqprop_const_ptr(s), start)
- 
- static inline int do___read_seqcount_retry(const seqcount_t *s, unsigned start)
- {
-@@ -439,7 +451,7 @@ static inline int do___read_seqcount_retry(const seqcount_t *s, unsigned start)
-  * Return: true if a read section retry is required, else false
-  */
- #define read_seqcount_retry(s, start)					\
--	do_read_seqcount_retry(seqprop_ptr(s), start)
-+	do_read_seqcount_retry(seqprop_const_ptr(s), start)
- 
- static inline int do_read_seqcount_retry(const seqcount_t *s, unsigned start)
- {
+b) move to __seg_gs approach via _raw_cpu_read[1]:
+
+This approach solves the "limited CSE with assembly" compiler issue,
+since it exposes load to the compiler, and has greater optimization
+potential.
+
+[1] https://lore.kernel.org/lkml/20231010164234.140750-1-ubizjak@gmail.com/
+
+Unfortunately, these two are mutually exclusive, since RDGSBASE is
+implemented as asm.
+
+To move things forward, I propose to proceed conservatively with the
+original patch [1], but this one should be split into two parts. The
+first will introduce the switch to MOV with tcp_ptr__ +=3D (unsigned
+long)(ptr), and the second will add __seg_gs part.
+
+At this point, we can experiment with RDGSBASE, and compare it with
+both approaches, with and without __seg_gs, by just changing the asm
+template to:
+
++       asm (ALTERNATIVE("mov " __percpu_arg(1) ", %0",        \
++                        "rdgsbase %0",                         \
++                        X86_FEATURE_FSGSBASE)                  \
+
+Uros.
