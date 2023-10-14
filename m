@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 219757C9395
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 10:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 889427C9399
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 10:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232848AbjJNI4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 04:56:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55476 "EHLO
+        id S232950AbjJNI5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 04:57:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231534AbjJNI4p (ORCPT
+        with ESMTP id S231534AbjJNI5p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 04:56:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A350C2
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 01:56:43 -0700 (PDT)
+        Sat, 14 Oct 2023 04:57:45 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 556C4C2
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 01:57:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697273803; x=1728809803;
+  t=1697273864; x=1728809864;
   h=date:from:to:cc:subject:message-id;
-  bh=DZgk6SeeQLtJe+2KaiOKv2Po43q8P0YKh0aqme73S+w=;
-  b=nIDq12yerxMwTBgMKniOi3GgBdR0LaHuPbg3h0b4mVuSv3poqqofWEvX
-   +oU9LFBjaZVKzLlOS47RCvRlVr8+FnFuDFArzaFf6lR9JceAYNjFZKkdB
-   exT14dmw3oiN0351rGMalT28AjGZG6++NttfwNtQ+A+/GWlv1LkbVtyat
-   QPhQZc1Wx3ZGQvGMgNwUNtWAbeNSeViytFIFxcw99Lr5T0a+ojsncCGjY
-   9Hd2GkUJhFgX2Bg3UbOGGFqpb2UgrL75/OAeduWo0Z7nIp3ZK3Dxr6hne
-   u6Nz9csg07xbQydV3LdE6vQw+8AFm0PwumPagNrpxeTNUqb2JuaXRNDgE
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="416375186"
+  bh=wloOBVhLTg7DBYUa+jtbsSYi74M3tG00PO/LZYL5C78=;
+  b=AjX/GYpKO5ouoqzEIKoV47Q2xPzJtwYIYnqJ5H0Y5i2Il+abkC5DP085
+   5Ztx9lhFCzqtOsLdqBMesVviQn1R7z4xunnzxH6shEGEW0rDcB+vA/Myo
+   rkFqud9O70PUmFGElVk2MxbEGyzD6F6Ffp4g7SMKwVVTfaZk9Sk1ro7rc
+   ZrrApnAlQ3zpyMJiIiXDRZ9SRCGkDBFlpSoHVaf5mUH48r/GseuegcPAT
+   zs0qsF37Q/igthZTsGPvj/NGQY232D/eqQlCBIp1RXiTyelAF7h8IYCFH
+   /qFLArUoD5ya9m7JnNgXj1jcll8z5t9mZWHq9pKYah3B3rABn+be9znl1
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="365579489"
 X-IronPort-AV: E=Sophos;i="6.03,224,1694761200"; 
-   d="scan'208";a="416375186"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2023 01:56:43 -0700
+   d="scan'208";a="365579489"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2023 01:57:43 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="1002256168"
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="758755313"
 X-IronPort-AV: E=Sophos;i="6.03,224,1694761200"; 
-   d="scan'208";a="1002256168"
+   d="scan'208";a="758755313"
 Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 14 Oct 2023 01:56:42 -0700
+  by fmsmga007.fm.intel.com with ESMTP; 14 Oct 2023 01:57:42 -0700
 Received: from kbuild by f64821696465 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qraRr-0005w4-2w;
-        Sat, 14 Oct 2023 08:56:39 +0000
-Date:   Sat, 14 Oct 2023 16:56:01 +0800
+        id 1qraSq-0005wR-0i;
+        Sat, 14 Oct 2023 08:57:40 +0000
+Date:   Sat, 14 Oct 2023 16:57:33 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
+To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:rcu/next] BUILD SUCCESS
- c06828f759e856e1affb37e480ce13c4072a9039
-Message-ID: <202310141659.IzyO8B8K-lkp@intel.com>
+Subject: [tip:sched/core] BUILD SUCCESS
+ 1b8a955dd338dfbf39831d4687c25263e885a9cb
+Message-ID: <202310141631.T6kLv5UC-lkp@intel.com>
 User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,12 +59,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
-branch HEAD: c06828f759e856e1affb37e480ce13c4072a9039  srcu: Explain why callbacks invocations can't run concurrently
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
+branch HEAD: 1b8a955dd338dfbf39831d4687c25263e885a9cb  sched: Make PELT acronym definition searchable
 
-elapsed time: 1938m
+elapsed time: 1477m
 
-configs tested: 139
+configs tested: 138
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -85,7 +84,6 @@ arm                               allnoconfig   gcc
 arm                              allyesconfig   gcc  
 arm                     am200epdkit_defconfig   clang
 arm                                 defconfig   gcc  
-arm                   randconfig-001-20231013   gcc  
 arm                   randconfig-001-20231014   gcc  
 arm                         socfpga_defconfig   clang
 arm64                            allmodconfig   gcc  
