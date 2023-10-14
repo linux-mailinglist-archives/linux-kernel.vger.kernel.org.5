@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5197C93DE
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 11:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC267C93E3
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 11:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233117AbjJNJak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 05:30:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50666 "EHLO
+        id S233109AbjJNJar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 05:30:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233060AbjJNJae (ORCPT
+        with ESMTP id S233072AbjJNJag (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 05:30:34 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B68C9;
+        Sat, 14 Oct 2023 05:30:36 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04D20CF;
+        Sat, 14 Oct 2023 02:30:33 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-32d569e73acso2623937f8f.1;
         Sat, 14 Oct 2023 02:30:32 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-32d895584f1so2545285f8f.1;
-        Sat, 14 Oct 2023 02:30:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697275830; x=1697880630; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697275831; x=1697880631; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=q6koVxPtzrD7o9FAQB6V+JanZ/7Pr8hCJXGDCNd80ek=;
-        b=eur3aLFkxrOjy9chQTJcDwiRqTtYFWbbQ7IgUoQiYszOocEh9InZXGfGEcrDMs9QnH
-         ve9nw0PqvHGBS7THjENKXQCpiRJBkgfdmxPiOsc2LOVsgu+3X86Il7EMrEIgIPd1rEVg
-         d5f1Q4MxDSwDUPk71mAdjU2d+bTQhmCE09ew+YHEAJ3jfs9L9ivCev1/4z7pNeozcC3b
-         Cn5wW4dvlSCl1iYEGOSVh/J+CilVAh/8BTp24QthuUQjFpUX0OYhSqfoTOH9Z0yYxesU
-         eoLOHs6CDrLQp/hOCdMwjnfGmoReQv6hAbmqFMJTAZTuXYgrmciABSpyBvs1wiezoK3u
-         JqPw==
+        bh=SSAhxNCccBDPfEaHOYwSm94ZHYVqbuNn4mUPNvHQg0g=;
+        b=jNgf+cZ2b3PzrOJdmUcMRYCiTaEQ4UvvU/wqx+0p7vn/FhGwBwK/pLpgY9B+r7aoOl
+         r1RLgxN8tO7AdBzeCJKcoYzsTE7aUy+ITPB5E5wE47zMw4rP1dVEfnDFo4A7xnVRQ+L2
+         SgUMm0k6ktXLC1NZGhu8G9TtyAim+LOfOxaf1FzyIao4W4RcabqQ3Pm7Pdetymdy1yog
+         q6cAhf92iKnAcG8IZzYTZ3ZzQ9QGxfLY/46aG6HKeBlzRzWKPsBeQVjBsi2m60A5QW+K
+         bOj0CFFIRi9UffUU1uVcF1Uy1un8+Re5s2Ni3nhwEzrDEq56Z/euz+8KQjcZBn+/5PQg
+         jiKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697275830; x=1697880630;
+        d=1e100.net; s=20230601; t=1697275831; x=1697880631;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=q6koVxPtzrD7o9FAQB6V+JanZ/7Pr8hCJXGDCNd80ek=;
-        b=JcC/yfb6YuwMVUxFid0iY/tJplIF5qH8NV3bDAErPhpq0IhTTxHIEGWHxdZY4ObYSs
-         K1HL+JEEvJh1UHOY76Csq6W6zmeL/C0OaogE64BdZiVlfKvzMm3oekw4Wsmvty2qyYbl
-         qgNR1g3LsbcNqkRfA3HZeFD3KDqGOyX8/yd/Zi/k8hA/NUmFt/bIZvHnSdnPk07zm3b+
-         42zkQvbrrmRf0lfD2nMwSqJw6Sokl9JF4L3n05eyMkeiQvMmE9fc4ozPjIPTTWxzcPV8
-         j0yZU0NyrFZ18NKGbavgG3T/QfKZq72QtHxpEalIL94m6WGSl5tCgNoYdN5iZQUfm8kO
-         iwEA==
-X-Gm-Message-State: AOJu0YxiFudRBlc3RhvhggxUt4GjZIInJNX3yVnsby/xA39rJlRzYUj8
-        17MQR/9NwMjUwfsRv08IB/s=
-X-Google-Smtp-Source: AGHT+IEa/pVJV1zL9u/NKupVwJHsJkUXFtiQ+cU99ZvrzOeJOLZfsWnPZtcfpWn30eqTT8jSQ+kE6w==
-X-Received: by 2002:a05:6000:1946:b0:327:e073:d604 with SMTP id e6-20020a056000194600b00327e073d604mr22673813wry.45.1697275830092;
-        Sat, 14 Oct 2023 02:30:30 -0700 (PDT)
+        bh=SSAhxNCccBDPfEaHOYwSm94ZHYVqbuNn4mUPNvHQg0g=;
+        b=dH8jvzEmKrQw6d08FwRQOBgtlRtLPxslcP9zhJyL8uSEDj/Q56G+PgtHGrI0ticUTq
+         Hu3vjK58ldqSo47/YqRbRMOfzCg7WQvKiwe3RzCw+znePvPJ+RivO3BDwcgK7p4AcwXE
+         i05e7D4LcWFApc3EV6ZtrcIw/1WuY7Cq5yWU2RpUtmqKtJA0JBO/J1O1T/sIjgsfil1O
+         n5/9oaST82OkCvGbR5wgMB/pBeSCtaEnRCVIlGi6Jgdq4RIQdXP58Kpa910Bicw6Dyd1
+         lXw+O0Wxgdft+x9G6wYyJf5pWS8VV7G1/X7OTuNa+wtlrb2923doWTVJk+tSYTHpSLZs
+         DxZQ==
+X-Gm-Message-State: AOJu0Yx7g9YCQhW4wzCDcZAFCIQo2qbmlTW5eGp7zSQrPXOFPWlNHH0S
+        nA5eeq6ZKPWp39Esyzow9yw=
+X-Google-Smtp-Source: AGHT+IFpFx9x4EPEvCFdXGS/SpNKLQq7KRgOHBLFfKy+KqvZNLFbEiecbXCUkuM9Sz82toMeuJ08jw==
+X-Received: by 2002:adf:f084:0:b0:314:a3f:9c08 with SMTP id n4-20020adff084000000b003140a3f9c08mr24141801wro.39.1697275831283;
+        Sat, 14 Oct 2023 02:30:31 -0700 (PDT)
 Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id u12-20020adff88c000000b0032d9a1f2ec3sm3691564wrp.27.2023.10.14.02.30.28
+        by smtp.googlemail.com with ESMTPSA id u12-20020adff88c000000b0032d9a1f2ec3sm3691564wrp.27.2023.10.14.02.30.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Oct 2023 02:30:29 -0700 (PDT)
+        Sat, 14 Oct 2023 02:30:31 -0700 (PDT)
 From:   Christian Marangi <ansuelsmth@gmail.com>
 To:     Raju Rangoju <rajur@chelsio.com>,
         "David S. Miller" <davem@davemloft.net>,
@@ -69,9 +69,9 @@ To:     Raju Rangoju <rajur@chelsio.com>,
         linux-arm-kernel@lists.infradead.org,
         linux-wireless@vger.kernel.org
 Cc:     Christian Marangi <ansuelsmth@gmail.com>
-Subject: [net-next PATCH v3 3/4] net: stmmac: move TX timer arm after DMA enable
-Date:   Sat, 14 Oct 2023 11:29:53 +0200
-Message-Id: <20231014092954.1850-4-ansuelsmth@gmail.com>
+Subject: [net-next PATCH v3 4/4] net: stmmac: increase TX coalesce timer to 5ms
+Date:   Sat, 14 Oct 2023 11:29:54 +0200
+Message-Id: <20231014092954.1850-5-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231014092954.1850-1-ansuelsmth@gmail.com>
 References: <20231014092954.1850-1-ansuelsmth@gmail.com>
@@ -87,97 +87,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move TX timer arm call after DMA interrupt is enabled again.
+Commit 8fce33317023 ("net: stmmac: Rework coalesce timer and fix
+multi-queue races") decreased the TX coalesce timer from 40ms to 1ms.
 
-The TX timer arm function changed logic and now is skipped if a napi is
-already scheduled. By moving the TX timer arm call after DMA is enabled,
-we permit to correctly skip if a DMA interrupt has been fired and a napi
-has been scheduled again.
+This caused some performance regression on some target (regression was
+reported at least on ipq806x) in the order of 600mbps dropping from
+gigabit handling to only 200mbps.
+
+The problem was identified in the TX timer getting armed too much time.
+While this was fixed and improved in another commit, performance can be
+improved even further by increasing the timer delay a bit moving from
+1ms to 5ms.
+
+The value is a good balance between battery saving by prevending too
+much interrupt to be generated and permitting good performance for
+internet oriented devices.
 
 Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 ---
- .../net/ethernet/stmicro/stmmac/stmmac_main.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/common.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 5124ee87286c..240a18b97825 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -2545,7 +2545,8 @@ static void stmmac_bump_dma_threshold(struct stmmac_priv *priv, u32 chan)
-  * @queue: TX queue index
-  * Description: it reclaims the transmit resources after transmission completes.
-  */
--static int stmmac_tx_clean(struct stmmac_priv *priv, int budget, u32 queue)
-+static int stmmac_tx_clean(struct stmmac_priv *priv, int budget, u32 queue,
-+			   bool *pending_packets)
- {
- 	struct stmmac_tx_queue *tx_q = &priv->dma_conf.tx_queue[queue];
- 	struct stmmac_txq_stats *txq_stats = &priv->xstats.txq_stats[queue];
-@@ -2706,7 +2707,7 @@ static int stmmac_tx_clean(struct stmmac_priv *priv, int budget, u32 queue)
- 
- 	/* We still have pending packets, let's call for a new scheduling */
- 	if (tx_q->dirty_tx != tx_q->cur_tx)
--		stmmac_tx_timer_arm(priv, queue);
-+		*pending_packets = true;
- 
- 	flags = u64_stats_update_begin_irqsave(&txq_stats->syncp);
- 	txq_stats->tx_packets += tx_packets;
-@@ -5572,6 +5573,7 @@ static int stmmac_napi_poll_tx(struct napi_struct *napi, int budget)
- 		container_of(napi, struct stmmac_channel, tx_napi);
- 	struct stmmac_priv *priv = ch->priv_data;
- 	struct stmmac_txq_stats *txq_stats;
-+	bool pending_packets = false;
- 	u32 chan = ch->index;
- 	unsigned long flags;
- 	int work_done;
-@@ -5581,7 +5583,7 @@ static int stmmac_napi_poll_tx(struct napi_struct *napi, int budget)
- 	txq_stats->napi_poll++;
- 	u64_stats_update_end_irqrestore(&txq_stats->syncp, flags);
- 
--	work_done = stmmac_tx_clean(priv, budget, chan);
-+	work_done = stmmac_tx_clean(priv, budget, chan, &pending_packets);
- 	work_done = min(work_done, budget);
- 
- 	if (work_done < budget && napi_complete_done(napi, work_done)) {
-@@ -5592,6 +5594,10 @@ static int stmmac_napi_poll_tx(struct napi_struct *napi, int budget)
- 		spin_unlock_irqrestore(&ch->lock, flags);
- 	}
- 
-+	/* TX still have packet to handle, check if we need to arm tx timer */
-+	if (pending_packets)
-+		stmmac_tx_timer_arm(priv, chan);
-+
- 	return work_done;
- }
- 
-@@ -5600,6 +5606,7 @@ static int stmmac_napi_poll_rxtx(struct napi_struct *napi, int budget)
- 	struct stmmac_channel *ch =
- 		container_of(napi, struct stmmac_channel, rxtx_napi);
- 	struct stmmac_priv *priv = ch->priv_data;
-+	bool tx_pending_packets = false;
- 	int rx_done, tx_done, rxtx_done;
- 	struct stmmac_rxq_stats *rxq_stats;
- 	struct stmmac_txq_stats *txq_stats;
-@@ -5616,7 +5623,7 @@ static int stmmac_napi_poll_rxtx(struct napi_struct *napi, int budget)
- 	txq_stats->napi_poll++;
- 	u64_stats_update_end_irqrestore(&txq_stats->syncp, flags);
- 
--	tx_done = stmmac_tx_clean(priv, budget, chan);
-+	tx_done = stmmac_tx_clean(priv, budget, chan, &tx_pending_packets);
- 	tx_done = min(tx_done, budget);
- 
- 	rx_done = stmmac_rx_zc(priv, budget, chan);
-@@ -5641,6 +5648,10 @@ static int stmmac_napi_poll_rxtx(struct napi_struct *napi, int budget)
- 		spin_unlock_irqrestore(&ch->lock, flags);
- 	}
- 
-+	/* TX still have packet to handle, check if we need to arm tx timer */
-+	if (tx_pending_packets)
-+		stmmac_tx_timer_arm(priv, chan);
-+
- 	return min(rxtx_done, budget - 1);
- }
- 
+diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
+index 1e996c29043d..e3f650e88f82 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/common.h
++++ b/drivers/net/ethernet/stmicro/stmmac/common.h
+@@ -293,7 +293,7 @@ struct stmmac_safety_stats {
+ #define MIN_DMA_RIWT		0x10
+ #define DEF_DMA_RIWT		0xa0
+ /* Tx coalesce parameters */
+-#define STMMAC_COAL_TX_TIMER	1000
++#define STMMAC_COAL_TX_TIMER	5000
+ #define STMMAC_MAX_COAL_TX_TICK	100000
+ #define STMMAC_TX_MAX_FRAMES	256
+ #define STMMAC_TX_FRAMES	25
 -- 
 2.40.1
 
