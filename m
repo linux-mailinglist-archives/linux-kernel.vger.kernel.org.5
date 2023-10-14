@@ -2,148 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D779D7C92EF
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 08:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B97A57C92F4
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 08:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232717AbjJNGXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 02:23:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48200 "EHLO
+        id S232850AbjJNGcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 02:32:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJNGXR (ORCPT
+        with ESMTP id S232834AbjJNGcH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 02:23:17 -0400
-Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D50E2BF
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 23:23:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=yFzlpkyvZPpAIoodnzAqzdRSObdnjJuYo39Mj5FNOmQ=;
-  b=eXEh3NBJLfWVhwyl2lcUoAdjPzfbpjWCfIF9HQW00x8N1GW1u2LyLc2o
-   H0RkghrxGuq/PxCITTFZ0JH2G9fxzFlVX4ZcumAclr9pwm0dE6GgQlIu5
-   e6AFw8IUYBjHIAA6B/zia4er/+EEeBCS7an3UL42DTrhVbebr+9O1mKVh
-   c=;
-Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.03,224,1694728800"; 
-   d="scan'208";a="131207271"
-Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2023 08:23:12 +0200
-Date:   Sat, 14 Oct 2023 08:23:13 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Gilbert Adikankwu <gilbertadikankwu@gmail.com>
-cc:     outreachy@lists.linux.dev, manishc@marvell.com,
-        GR-Linux-NIC-Dev@marvell.com, coiby.xu@gmail.com,
-        gregkh@linuxfoundation.org, netdev@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: qlge: Add bool type to qlge_idc_wait()
-In-Reply-To: <ZSoxLxs45bIuBrHg@gilbert-PC>
-Message-ID: <alpine.DEB.2.22.394.2310140819450.3383@hadrien>
-References: <ZSoxLxs45bIuBrHg@gilbert-PC>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 14 Oct 2023 02:32:07 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA35A83;
+        Fri, 13 Oct 2023 23:32:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 713C3C433C8;
+        Sat, 14 Oct 2023 06:32:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697265123;
+        bh=Ffi+C81280oTaUbbqC5yjytRaq/0dcSQG4hyd9h3jnY=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=fWFo+hWncUlJGQ/i4ThyoSRYQ/dX0Xpd24G6XbCzH/P5bNmLe0d5mDzUU0g5l8aAP
+         e+kZuc8kfbXzqwIhNDRw2OLT27jn22cqnUb8ZrthH2cRRCBXzSPt4yuuWzlJBmMk+v
+         MZK2SgpsCf6S9/kZxPCxCI/+E3YNxqFpiGwsmcxm9I6Oy9r1EjxvLs5pfcZjdeimNK
+         uQl1iWwFJIxVRbjPrnnT8zNJIxaIwY3pwWf1Pe8lag+0m+JImF6PcsJACLn7Z3mIqP
+         aWOsoigNfAB7nV9RvQqsKfc/E/YRL44kRROHiu+nrMBXK7vqhWSijiZ5OxNnGwSgMN
+         0ompTjU8OsxLA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5D602C73FEA;
+        Sat, 14 Oct 2023 06:32:03 +0000 (UTC)
+Subject: Re: [git pull] Input updates for v6.6-rc5
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <ZSoV4d4p8RKxEVeG@google.com>
+References: <ZSoV4d4p8RKxEVeG@google.com>
+X-PR-Tracked-List-Id: <linux-input.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ZSoV4d4p8RKxEVeG@google.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git tags/input-for-v6.6-rc5
+X-PR-Tracked-Commit-Id: 5c15c60e7be615f05a45cd905093a54b11f461bc
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 727fb83765049981e342db4c5a8b51aca72201d8
+Message-Id: <169726512337.29301.12185191448125444257.pr-tracker-bot@kernel.org>
+Date:   Sat, 14 Oct 2023 06:32:03 +0000
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The pull request you sent on Fri, 13 Oct 2023 21:15:29 -0700:
 
+> git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git tags/input-for-v6.6-rc5
 
-On Sat, 14 Oct 2023, Gilbert Adikankwu wrote:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/727fb83765049981e342db4c5a8b51aca72201d8
 
-> Reported by checkpatch:
->
-> WARNING: else is not generally useful after a break or return
->
-> The idea of the break statements in the if/else is so that the loop is
-> exited immediately the value of status is changed. And returned
-> immediately. For if/else conditionals, the block to be executed will
-> always be one of the two. Introduce a bool type variable 's_sig' that
-> evaluates to true when the value of status is changed within the if/else
-> block.
+Thank you!
 
-The idea of the checkpatch warning is that eg
-
-found = search();
-if (!found)
-  break;
-else do_something();
-
-is equvalent to:
-
-found = search();
-if (!found)
-  break;
-do_something();
-
-Because now the normal computation is at top level and the if branches are
-only used for error handling.
-
-But that is not the case in your code.  In your code, it seems that there
-are two cases where one would like to break out of the loop.  The code
-would be better left as it is.
-
-julia
-
->
-> Signed-off-by: Gilbert Adikankwu <gilbertadikankwu@gmail.com>
-> ---
->  drivers/staging/qlge/qlge.h     | 1 +
->  drivers/staging/qlge/qlge_mpi.c | 8 ++++++--
->  2 files changed, 7 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/staging/qlge/qlge.h b/drivers/staging/qlge/qlge.h
-> index d0dd659834ee..b846bca82571 100644
-> --- a/drivers/staging/qlge/qlge.h
-> +++ b/drivers/staging/qlge/qlge.h
-> @@ -11,6 +11,7 @@
->  #include <linux/netdevice.h>
->  #include <linux/rtnetlink.h>
->  #include <linux/if_vlan.h>
-> +#include <linux/types.h>
->
->  /*
->   * General definitions...
-> diff --git a/drivers/staging/qlge/qlge_mpi.c b/drivers/staging/qlge/qlge_mpi.c
-> index 96a4de6d2b34..44cb879240a0 100644
-> --- a/drivers/staging/qlge/qlge_mpi.c
-> +++ b/drivers/staging/qlge/qlge_mpi.c
-> @@ -909,6 +909,7 @@ int qlge_mb_wol_set_magic(struct qlge_adapter *qdev, u32 enable_wol)
->  static int qlge_idc_wait(struct qlge_adapter *qdev)
->  {
->  	int status = -ETIMEDOUT;
-> +	bool s_sig = false;
->  	struct mbox_params *mbcp = &qdev->idc_mbc;
->  	long wait_time;
->
-> @@ -934,14 +935,17 @@ static int qlge_idc_wait(struct qlge_adapter *qdev)
->  		} else if (mbcp->mbox_out[0] == AEN_IDC_CMPLT) {
->  			netif_err(qdev, drv, qdev->ndev, "IDC Success.\n");
->  			status = 0;
-> -			break;
-> +			s_sig = true;
->  		} else {
->  			netif_err(qdev, drv, qdev->ndev,
->  				  "IDC: Invalid State 0x%.04x.\n",
->  				  mbcp->mbox_out[0]);
->  			status = -EIO;
-> -			break;
-> +			s_sig = true;
->  		}
-> +
-> +		if (s_sig)
-> +			break;
->  	}
->
->  	return status;
-> --
-> 2.34.1
->
->
->
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
