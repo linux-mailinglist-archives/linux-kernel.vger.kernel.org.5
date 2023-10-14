@@ -2,117 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 082247C9647
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 22:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AF857C963F
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 22:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbjJNUkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 16:40:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50852 "EHLO
+        id S233197AbjJNU3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 16:29:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231495AbjJNUZ2 (ORCPT
+        with ESMTP id S230106AbjJNU3S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 16:25:28 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18680B7;
-        Sat, 14 Oct 2023 13:25:27 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id ca18e2360f4ac-79fe612beabso134480239f.3;
-        Sat, 14 Oct 2023 13:25:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697315126; x=1697919926; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E5emPS0MjB2QN+kJ9u45m+WJbhux12t/sQVDicjCU/8=;
-        b=FoZNg/9m2jGGR7OXBZEqZS1ob68oXOgCSQtor36JxX9h/EneI1/IbWE4TijMQHg6Te
-         2Jud98WUAs9qLmtXthB/MHwHVJoucMd2pK25NN2Cy0es07grH92gO5zE6V2qHn2IwrkW
-         cz8myndtn4WBQ8XLNCM8cq8Sm1y2hPsnVyCKcjWVFRe5gsdyZU1Xdrn7UI9JzmovWd4D
-         3Hk0Y/cIZsyxd9GTrSTTH5H38/hjuxIVnrqI5o/MQ5wXqNqP3/b/I+Cid4jdLYZPmq6u
-         9xbShp9RSv/WivYv3Y7mfudDE+Y24IAycY/GfEaRcbBKf10zeIDi2bavi+w0FTIA3pEQ
-         OUUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697315126; x=1697919926;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E5emPS0MjB2QN+kJ9u45m+WJbhux12t/sQVDicjCU/8=;
-        b=n0scYJyKs/VkRdzrlS5xlICJVxPM3jMzeS8CMkGUcWvWPV83//y7Uk7fDW4EdZd0tk
-         dL9lIgQ+T+Ddda928raB4jPR3brPPULHUtR/+XXZy0do0lxk4El5xuHAzSU78BZ3i2nD
-         DeBmQmN/mRpU6wGWjhvHS/XnXojafruPki7kvUNrJc1EIykdQ65IzNdRHZVPji8TYV8x
-         nzQtCLp5U5RwS9PxhHvbSe51/wBJZmzEkWA3t3PMt5uF0/tdHAOgAmqbkwnPxPOgXabk
-         yTJne+xk72g/DxYORgzX6WrS3QaR/w51r7QI7OIXnTY79n4gS27WYOFLOJX2UT9vBDed
-         x0dQ==
-X-Gm-Message-State: AOJu0YyCusGpJf70DpLpNWTyd9KaNRZNlPJ4TCXyBlmdiTpUxSUeDFQY
-        oIe8/3t1pTQ4FF20wiK8g8k=
-X-Google-Smtp-Source: AGHT+IHQ0wSofw+mCUxwMOTU704LFNtov6E/5kWHV55+P8O46TcQpo0iXIpmVZ9xJ+NCX1B/ckWz1g==
-X-Received: by 2002:a5d:9d10:0:b0:79f:c9ad:19ce with SMTP id j16-20020a5d9d10000000b0079fc9ad19cemr30998453ioj.15.1697315126209;
-        Sat, 14 Oct 2023 13:25:26 -0700 (PDT)
-Received: from smtpclient.apple ([2601:647:4b00:6db0:ed49:22d9:e5d5:b7e4])
-        by smtp.gmail.com with ESMTPSA id x4-20020a170902ea8400b001c5076ae6absm5861510plb.126.2023.10.14.13.25.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 14 Oct 2023 13:25:25 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.200.91.1.1\))
-Subject: Re: [PATCH v10 25/27] x86: enable initial Rust support
-From:   comex <comexk@gmail.com>
-In-Reply-To: <5D8CA5EF-F5B0-4911-85B8-A363D9344FA7@zytor.com>
-Date:   Sat, 14 Oct 2023 13:25:12 -0700
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ramon de C Valle <rcvalle@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, patches@lists.linux.dev,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        David Gow <davidgow@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        linux-doc@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <BDD45A2A-1447-40DD-B5F3-29DEE976A3CD@gmail.com>
-References: <20220927131518.30000-1-ojeda@kernel.org>
- <20220927131518.30000-26-ojeda@kernel.org>
- <Y0BfN1BdVCWssvEu@hirez.programming.kicks-ass.net>
- <CABCJKuenkHXtbWOLZ0_isGewxd19qkM7OcLeE2NzM6dSkXS4mQ@mail.gmail.com>
- <CANiq72k6s4=0E_AHv7FPsCQhkyxf7c-b+wUtzfjf+Spehe9Fmg@mail.gmail.com>
- <CABCJKuca0fOAs=E6LeHJiT2LOXEoPvLVKztA=u+ARcw=tbT=tw@mail.gmail.com>
- <20231012104741.GN6307@noisy.programming.kicks-ass.net>
- <CABCJKufEagwJ=TQnmVSK07RDjsPUt=3JGtwnK9ASmFqb7Vx8JQ@mail.gmail.com>
- <202310121130.256F581823@keescook>
- <CAOcBZOTed1a1yOimdUN9yuuysZ1h6VXa57+5fLAE99SZxCwBMQ@mail.gmail.com>
- <20231013075005.GB12118@noisy.programming.kicks-ass.net>
- <CAOcBZOTP_vQuFaqREqy-hkG69aBvJ+xrhEQi_EFKvtsNjne1dw@mail.gmail.com>
- <CAHk-=wjLUit_gae7anFNz4sV0o2Uc=TD_9P8sYeqMSeW_UG2Rg@mail.gmail.com>
- <5D8CA5EF-F5B0-4911-85B8-A363D9344FA7@zytor.com>
-To:     "H. Peter Anvin" <hpa@zytor.com>
-X-Mailer: Apple Mail (2.3774.200.91.1.1)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sat, 14 Oct 2023 16:29:18 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F93BF;
+        Sat, 14 Oct 2023 13:29:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697315357; x=1728851357;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=CwUaiwu/anajycCO/09r6K08x3++4gPe/DXKlXMNQ+4=;
+  b=HPYSqrdqNH9pRYtsq+dgDMgydrfPdNVvYmbpk3rGdednvC0qQDYqZm+L
+   TSYzvZBb1d27hZXNxoZ7KJACzH9yAcDPy2u6s/7tTQJ5Ng/D04sriCQFy
+   HrWjZXil/UmS+damdtj4FXzVPOnoXeuflffHQV7+1P/DxU9ZdqirUTXXV
+   3dDetcPvQCMDjwr43011lljcxkurfkb2/THYZiFhh5Hbh60BXamLTT1XO
+   HwffxqIOhNRJ6TQiz+2O4s1y+TggFY04yjlXKoYLCH9gbLmSSk5KphdQb
+   aXfrUYRXJJEcVMSOZIG9oXa9mOtm9q7k2b8QBWLldvcTUS+/WIu/hRbO1
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="375698737"
+X-IronPort-AV: E=Sophos;i="6.03,224,1694761200"; 
+   d="scan'208";a="375698737"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2023 13:29:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="898955883"
+X-IronPort-AV: E=Sophos;i="6.03,224,1694761200"; 
+   d="scan'208";a="898955883"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 14 Oct 2023 13:27:19 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qrlG3-0006cV-2a;
+        Sat, 14 Oct 2023 20:29:11 +0000
+Date:   Sun, 15 Oct 2023 04:28:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Angelina Vu <angelinavu@linux.microsoft.com>,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, kys@microsoft.com,
+        haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com
+Subject: Re: [PATCH] hv_balloon: Add module parameter to configure balloon
+ floor value
+Message-ID: <202310150425.g4PXZjIU-lkp@intel.com>
+References: <1696978087-4421-1-git-send-email-angelinavu@linux.microsoft.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1696978087-4421-1-git-send-email-angelinavu@linux.microsoft.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Angelina,
 
+kernel test robot noticed the following build warnings:
 
-> On Oct 13, 2023, at 12:00=E2=80=AFPM, H. Peter Anvin <hpa@zytor.com> =
-wrote:
->=20
-> Transparent unions have been standard C since C99.
+[auto build test WARNING on linus/master]
+[also build test WARNING on v6.6-rc5 next-20231013]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-I don=E2=80=99t think that=E2=80=99s right.  Certainly =
-__attribute__((transparent_union)) is not standard C; are you referring =
-to a different feature?
+url:    https://github.com/intel-lab-lkp/linux/commits/Angelina-Vu/hv_balloon-Add-module-parameter-to-configure-balloon-floor-value/20231011-064921
+base:   linus/master
+patch link:    https://lore.kernel.org/r/1696978087-4421-1-git-send-email-angelinavu%40linux.microsoft.com
+patch subject: [PATCH] hv_balloon: Add module parameter to configure balloon floor value
+config: i386-randconfig-061-20231014 (https://download.01.org/0day-ci/archive/20231015/202310150425.g4PXZjIU-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231015/202310150425.g4PXZjIU-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310150425.g4PXZjIU-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> drivers/hv/hv_balloon.c:1100:15: sparse: sparse: symbol 'balloon_floor' was not declared. Should it be static?
+   drivers/hv/hv_balloon.c:2079:9: sparse: sparse: context imbalance in 'balloon_remove' - wrong count at exit
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
