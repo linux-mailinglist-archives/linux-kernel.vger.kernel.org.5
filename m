@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAA747C9233
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 03:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65AD57C9237
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 03:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232829AbjJNBxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 21:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39306 "EHLO
+        id S232775AbjJNByN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 21:54:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233009AbjJNBxS (ORCPT
+        with ESMTP id S232869AbjJNBxj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 21:53:18 -0400
+        Fri, 13 Oct 2023 21:53:39 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E678511D;
-        Fri, 13 Oct 2023 18:52:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6B7ED7F;
+        Fri, 13 Oct 2023 18:53:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697248373; x=1728784373;
+  t=1697248390; x=1728784390;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=hGzeLeDXJBlYc55eMx1ZtOX5cNrHpYcS8zLTIIs6dJE=;
-  b=eM6J6+2ZAH4DhK9P/+/QRCWrDk3ylt4AxtI0MsF2gfNwZl6WVRt4y+oD
-   iMNjj6BQ00yvOZEkTH15+CS5WjlxSln9kXJIx8EJlHda7wxzBNkswfuNg
-   HKgTNp8o62S/947C6AKGE5UJnwafsD9+gydKo3nnSU4NM6JD2i6Bp9y/E
-   6In5E0N7JPHpu5s/9IZzjFV1yDqKy4w7/7PFszgc1rkO36kPdtnchBrvT
-   zxogBaKn8SCpnsiB9JDVIEKhJxxh7NKvj8rgtPwyELkBA7LX5wRXLOZZh
-   1YIwi8GFv0hQdJSesfknA86kTsADVlh52922av/SQ5xaYa2UoS2fJNY4l
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="389154750"
+  bh=mShWGgWBQXzMzsC9PdDHm9PcCowo8J5BYKsC3OZBQzU=;
+  b=Pn+o6n8lalEm3W0mYDSLwMvsrVgGsXfvz27rx6C1Ng7tluNqsqh8ioHn
+   DE8kkYtf+FvJAwqhLhZyOlZHNmB160uIixVUaW5t6PnHGh9xM81Pithzw
+   TtkJ2BFUyO7vkG2jXrjCXrKpi5ShOXudiTcT/IbMwasiA1mIilYdSzoa4
+   tL8pU0Ej6NLhp6Ml2G5aGaStPV34cGHYljU6CcLqyWxsonYY5jr0PQ3sw
+   aEEmwh6Uc+/mFdQMAyChD7iU36tou+gZPILKtI2Rd9LNUff4KxNP8TDsK
+   ENgC5f8G9MuCuxhuaOH9fOVHABRKxP8zw+4lt6KJMlpPv0UMeQcB6EXRW
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="389154757"
 X-IronPort-AV: E=Sophos;i="6.03,223,1694761200"; 
-   d="scan'208";a="389154750"
+   d="scan'208";a="389154757"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
   by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 18:52:21 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="731565693"
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="731565696"
 X-IronPort-AV: E=Sophos;i="6.03,223,1694761200"; 
-   d="scan'208";a="731565693"
+   d="scan'208";a="731565696"
 Received: from b49691a75598.jf.intel.com ([10.54.34.22])
   by orsmga006.jf.intel.com with ESMTP; 13 Oct 2023 18:52:20 -0700
 From:   weilin.wang@intel.com
@@ -55,9 +55,9 @@ Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
         Caleb Biggers <caleb.biggers@intel.com>,
         Mark Rutland <mark.rutland@arm.com>,
         Yang Jihong <yangjihong1@huawei.com>
-Subject: [RFC PATCH v2 12/17] perf stat: Add function to combine metrics for hardware-grouping
-Date:   Fri, 13 Oct 2023 18:51:57 -0700
-Message-Id: <20231014015202.1175377-13-weilin.wang@intel.com>
+Subject: [RFC PATCH v2 13/17] perf stat: Handle taken alone in hardware-grouping
+Date:   Fri, 13 Oct 2023 18:51:58 -0700
+Message-Id: <20231014015202.1175377-14-weilin.wang@intel.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20231014015202.1175377-1-weilin.wang@intel.com>
 References: <20231014015202.1175377-1-weilin.wang@intel.com>
@@ -74,100 +74,163 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Weilin Wang <weilin.wang@intel.com>
 
-This function is very similar to the existing build_combined_expr_ctx().
-Should be able to reuse current function instead of adding a new one. Will
-fix this later.
+Add taken alone into consideration when grouping. Only one taken
+alone event is supported per group.
 
 Signed-off-by: Weilin Wang <weilin.wang@intel.com>
 ---
- tools/perf/util/metricgroup.c | 51 +++++++++++++++++++++++++++++++----
- 1 file changed, 46 insertions(+), 5 deletions(-)
+ tools/perf/pmu-events/jevents.py   |  7 +++++--
+ tools/perf/pmu-events/pmu-events.h |  1 +
+ tools/perf/util/metricgroup.c      | 18 +++++++++++++-----
+ tools/perf/util/metricgroup.h      |  2 ++
+ 4 files changed, 21 insertions(+), 7 deletions(-)
 
+diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
+index 1b3776c92..8566ea225 100755
+--- a/tools/perf/pmu-events/jevents.py
++++ b/tools/perf/pmu-events/jevents.py
+@@ -55,7 +55,9 @@ _json_event_attributes = [
+     # Counter this event could use
+     'counter',
+     # Longer things (the last won't be iterated over during decompress).
+-    'long_desc'
++    'long_desc',
++    # Taken alone event could not be collected in the same group with other taken alone event
++    'taken_alone'
+ ]
+ 
+ # Attributes that are in pmu_unit_layout.
+@@ -71,7 +73,7 @@ _json_metric_attributes = [
+ ]
+ # Attributes that are bools or enum int values, encoded as '0', '1',...
+ _json_enum_attributes = ['aggr_mode', 'deprecated', 'event_grouping', 'perpkg',
+-    'size', 'fixed_size'
++    'size', 'fixed_size', 'taken_alone'
+ ]
+ 
+ def removesuffix(s: str, suffix: str) -> str:
+@@ -330,6 +332,7 @@ class JsonEvent:
+       extra_desc += '  Spec update: ' + jd['Errata']
+     self.pmu = unit_to_pmu(jd.get('Unit'))
+     self.counter = jd.get('Counter')
++    self.taken_alone = jd.get('TakenAlone')
+     self.size = jd.get('Size')
+     self.fixed_size = jd.get('FixedSize')
+     filter = jd.get('Filter')
+diff --git a/tools/perf/pmu-events/pmu-events.h b/tools/perf/pmu-events/pmu-events.h
+index 65e0c5dd8..ce10356e9 100644
+--- a/tools/perf/pmu-events/pmu-events.h
++++ b/tools/perf/pmu-events/pmu-events.h
+@@ -50,6 +50,7 @@ struct pmu_event {
+ 	const char *unit;
+ 	bool perpkg;
+ 	bool deprecated;
++	bool taken_alone;
+ };
+ 
+ struct pmu_metric {
 diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index fd92e9283..9211e8c09 100644
+index 9211e8c09..100c9d948 100644
 --- a/tools/perf/util/metricgroup.c
 +++ b/tools/perf/util/metricgroup.c
-@@ -1432,10 +1432,50 @@ static int build_combined_expr_ctx(const struct list_head *metric_list,
- 	return ret;
- }
- 
-+/**
-+ * hw_aware_build_combined_expr_ctx - Make an expr_parse_ctx with all !group_events
-+ *                           metric IDs, as the IDs are held in a set,
-+ *                           duplicates will be removed.
-+ * @metric_list: List to take metrics from.
-+ * @combined: Out argument for result.
-+ */
-+static int hw_aware_build_combined_expr_ctx(const struct list_head *metric_list,
-+				   struct expr_parse_ctx **combined)
-+{
-+	struct hashmap_entry *cur;
-+	size_t bkt;
-+	struct metric *m;
-+	char *dup;
-+	int ret;
-+
-+	*combined = expr__ctx_new();
-+	if (!*combined)
-+		return -ENOMEM;
-+
-+	list_for_each_entry(m, metric_list, nd) {
-+		hashmap__for_each_entry(m->pctx->ids, cur, bkt) {
-+			pr_debug2("metric: %s\n", m->metric_name);
-+			dup = strdup(cur->pkey);
-+			if (!dup) {
-+				ret = -ENOMEM;
-+				goto err_out;
-+			}
-+			ret = expr__add_id(*combined, dup);
-+			if (ret)
-+				goto err_out;
-+		}
-+	}
-+	return 0;
-+err_out:
-+	expr__ctx_free(*combined);
-+	*combined = NULL;
-+	return ret;
-+}
-+
- /**
-  * set_counter_bitmap - The counter bit mapping: [8-15,0-7], e.g. the GP0 is the
-- * 8th bit and GP7 is the 1st bit in this 16-bits bitmap. It is helpful for
-- * assigning GP4-7 before GP0-3 because some events can be collected using GP0-3
-+ * 8th bit and GP7 is the 1st bit in this 16-bits bitmap.  The is helpful to
-+ * assign GP4-7 before GP0-3 because some events can be collected using GP0-3
-  * only on some platforms.
-  */
- static int set_counter_bitmap(int pos, unsigned long *bitmap)
-@@ -1722,8 +1762,7 @@ static int metricgroup__add_pmu_layout_callback(const struct pmu_layout *pl,
-  * @table: pmu_layouts table that is searched for counter info.
-  */
- static int get_pmu_counter_layouts(struct list_head *pmu_info_list,
--				   const struct pmu_layouts_table
--				   *table)
-+				   const struct pmu_layouts_table *table)
+@@ -1624,6 +1624,7 @@ static void metricgroup__free_pmu_info(struct list_head *pmu_info_list)
+ static struct metricgroup__event_info *event_info__new(const char *name,
+ 						      const char *pmu_name,
+ 						      const char *counter,
++						      bool taken_alone,
+ 						      bool free_counter)
  {
- 	LIST_HEAD(list);
+ 	int ret = 0;
+@@ -1638,6 +1639,7 @@ static struct metricgroup__event_info *event_info__new(const char *name,
+ 		pmu_name = "core";
+ 
+ 	e->name = name;
++	e->taken_alone = taken_alone;
+ 	e->free_counter = free_counter;
+ 	e->pmu_name = pmu_name;
+ 	if (free_counter) {
+@@ -1676,7 +1678,8 @@ static int metricgroup__add_metric_event_callback(const struct pmu_event *pe,
+ 	if (!strcasecmp(pe->name, d->event_name)) {
+ 		if (!pe->counter)
+ 			return -EINVAL;
+-		event = event_info__new(d->event_id, pe->pmu, pe->counter, /*free_counter=*/false);
++		event = event_info__new(d->event_id, pe->pmu, pe->counter,
++					pe->taken_alone, /*free_counter=*/false);
+ 		if (!event)
+ 			return -ENOMEM;
+ 		list_add(&event->nd, d->list);
+@@ -1799,6 +1802,8 @@ static int find_and_set_counters(struct metricgroup__event_info *e,
  	int ret;
-@@ -2155,6 +2194,8 @@ static int hw_aware_parse_ids(struct perf_pmu *fake_pmu,
- 	*out_evlist = parsed_evlist;
- 	parsed_evlist = NULL;
- err_out:
-+	parse_events_error__exit(&parse_error);
-+	evlist__delete(parsed_evlist);
- 	metricgroup__free_grouping_strs(&groupings);
- 	return ret;
+ 	unsigned long find_bit = 0;
+ 
++	if (e->taken_alone && current_group->taken_alone)
++		return -ENOSPC;
+ 	if (e->free_counter)
+ 		return 0;
+ 	if (e->fixed_counter) {
+@@ -1833,11 +1838,13 @@ static int _insert_event(struct metricgroup__event_info *e,
+ 		list_add(&event->nd, &group->event_head);
+ 	else
+ 		list_add_tail(&event->nd, &group->event_head);
++	if (e->taken_alone)
++		group->taken_alone = true;
+ 	return 0;
  }
-@@ -2277,7 +2318,7 @@ static int hw_aware_parse_groups(struct evlist *perf_evlist,
- 	if (!metric_no_merge) {
- 		struct expr_parse_ctx *combined = NULL;
  
--		ret = build_combined_expr_ctx(&metric_list, &combined);
-+		ret = hw_aware_build_combined_expr_ctx(&metric_list, &combined);
+ /**
+- * Insert the new_group node at the end of the group list.
++ * Initialize the new group and insert it to the end of the group list.
+  */
+ static int insert_new_group(struct list_head *head,
+ 			   struct metricgroup__group *new_group,
+@@ -1847,6 +1854,7 @@ static int insert_new_group(struct list_head *head,
+ 	INIT_LIST_HEAD(&new_group->event_head);
+ 	fill_counter_bitmap(new_group->gp_counters, 0, size);
+ 	fill_counter_bitmap(new_group->fixed_counters, 0, fixed_size);
++	new_group->taken_alone = false;
+ 	list_add_tail(&new_group->nd, head);
+ 	return 0;
+ }
+@@ -2050,8 +2058,8 @@ static int create_grouping(struct list_head *pmu_info_list,
+ 	//TODO: for each new core group, we should consider to add events that uses fixed counters
+ 	list_for_each_entry(e, event_info_list, nd) {
+ 		bitmap_scnprintf(e->counters, NR_COUNTERS, bit_buf, NR_COUNTERS);
+-		pr_debug("Event name %s, [pmu]=%s, [counters]=%s\n", e->name,
+-			e->pmu_name, bit_buf);
++		pr_debug("Event name %s, [pmu]=%s, [counters]=%s, [taken_alone]=%d\n",
++			e->name, e->pmu_name, bit_buf, e->taken_alone);
+ 		ret = assign_event_grouping(e, pmu_info_list, &groups);
+ 		if (ret)
+ 			goto out;
+@@ -2098,7 +2106,7 @@ static int hw_aware_build_grouping(struct expr_parse_ctx *ctx __maybe_unused,
+ 		if (is_special_event(id)) {
+ 			struct metricgroup__event_info *event;
  
- 		if (!ret && combined && hashmap__size(combined->ids)) {
- 			ret = hw_aware_parse_ids(fake_pmu, combined,
+-			event = event_info__new(id, "default_core", "0",
++			event = event_info__new(id, "default_core", "0", false,
+ 						/*free_counter=*/true);
+ 			if (!event)
+ 				goto err_out;
+diff --git a/tools/perf/util/metricgroup.h b/tools/perf/util/metricgroup.h
+index 37fdf8c5b..8f6a1bb9d 100644
+--- a/tools/perf/util/metricgroup.h
++++ b/tools/perf/util/metricgroup.h
+@@ -105,6 +105,7 @@ struct metricgroup__event_info {
+ 	const char *pmu_name;
+ 	bool fixed_counter;
+ 	bool free_counter;
++	bool taken_alone;
+ 	/** The counters the event allowed to be collected on. */
+ 	DECLARE_BITMAP(counters, NR_COUNTERS);
+ };
+@@ -154,6 +155,7 @@ struct metricgroup__group {
+ 	DECLARE_BITMAP(fixed_counters, NR_COUNTERS);
+ 	/** Head to the list of event names in this group*/
+ 	struct list_head event_head;
++	bool taken_alone;
+ };
+ 
+ struct metricgroup__group_events {
 -- 
 2.39.3
 
