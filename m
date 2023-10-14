@@ -2,155 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD90F7C961F
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 21:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91ED07C9623
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 21:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229735AbjJNTs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 15:48:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45062 "EHLO
+        id S229872AbjJNT5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 15:57:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjJNTsY (ORCPT
+        with ESMTP id S229490AbjJNT5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 15:48:24 -0400
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2099.outbound.protection.outlook.com [40.107.13.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A42E8B7
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 12:48:22 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KuGArKBUVWuSJ4fIajntVAfQrOq3sFfrzsBjqZElsboclHJ+uV2PVKFwWRnm2jlZDJVgQN4XDVRR6X1NLNgbUavKzeuDSs69E2IcPNp6X1xnfwWDOnJd4o3zgtXUL/1b9OMqfhi9eXm1Ulys2BvF7SazcYicpZrjtPH/DbGtRzTx3TV0/5hhJUEQ4mdaATAYHWmEuBKp3CVgnjBuHNAWciQPHL1fwxO8oCrgUrKBL41yB9SW+32TFQI1yae8luqzjIjm+U4qOBG3XF8ZQRcDiE1xL1AfazP2BGTUfLRTIJPEhjase4c/xkGRY2JSrjk8PhCH2eKWRpFt0/6j1ChILA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=I6laOVlqVYatfQGeyyKrE00YmW0thGkrTqj9DbWPycw=;
- b=acOLJfnctpnAO/ky0XP3R+jJbTTOEqsXTpeDt1kENDVY6nbiGU2CbfihuRgQ10MvocapvsoFpRqlodF4Do8+5iujStka3lq+zh4H17T4e8DA3T6iALJ2knwzn9BWzGRAuiiiW4CdaFWaDHZTa8vnOcZEl46IhoK26fjA1TATRc9N7DHroQlnbCBjv4ku4/RuPqsXeMAmOSn/U1XvvYS8dfr5UK/FcnxBlSS90vGpniYA1l86GIyujfkIyo4KJFRoPe0a/KUN9zLUR2OrE/ubzt0jhNgGpziMWDuZI8O9CuvgWlqipj2OGJLsyWMPOdLjxbTFQqLhAbWNPBZm99XGGg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bang-olufsen.dk; dmarc=pass action=none
- header.from=bang-olufsen.dk; dkim=pass header.d=bang-olufsen.dk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bang-olufsen.dk;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I6laOVlqVYatfQGeyyKrE00YmW0thGkrTqj9DbWPycw=;
- b=evXKiRZmnJue6H88P07yetxEgBqOn1DQJN16W57FCr2SfwKPKY8id/61uQUX6uzYnfHg5Z+4f6MlflfZTRUhJeeIJhuQnK3uRGtcPptLqhpxF3bXZBUO7v+yjQbIVC8HOObHJAiKxn50iwDsVHf5pVPCsaWddXrOuans5z9xhpU=
-Received: from AM6PR03MB3943.eurprd03.prod.outlook.com (2603:10a6:20b:26::24)
- by PA4PR03MB6797.eurprd03.prod.outlook.com (2603:10a6:102:f1::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.46; Sat, 14 Oct
- 2023 19:48:19 +0000
-Received: from AM6PR03MB3943.eurprd03.prod.outlook.com
- ([fe80::fb3c:4931:e74e:c691]) by AM6PR03MB3943.eurprd03.prod.outlook.com
- ([fe80::fb3c:4931:e74e:c691%3]) with mapi id 15.20.6863.043; Sat, 14 Oct 2023
- 19:48:19 +0000
-From:   =?utf-8?B?QWx2aW4gxaBpcHJhZ2E=?= <ALSI@bang-olufsen.dk>
-To:     =?utf-8?B?QWx2aW4gxaBpcHJhZ2E=?= <alvin@pqrs.dk>
-CC:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drm: bridge: adv7511: get edid in hpd_work to update CEC
- phys address
-Thread-Topic: [PATCH] drm: bridge: adv7511: get edid in hpd_work to update CEC
- phys address
-Thread-Index: AQHZ/taq5D2UjK1S+kWjz8DqNvYQ77BJsRQA
-Date:   Sat, 14 Oct 2023 19:48:18 +0000
-Message-ID: <suuq6vyosh6ddh7szjwuznmr326cpxjtugw3chbnogome7lmpp@fr2lblb6qudg>
-References: <20231014-adv7511-cec-edid-v1-1-a58ceae0b57e@bang-olufsen.dk>
-In-Reply-To: <20231014-adv7511-cec-edid-v1-1-a58ceae0b57e@bang-olufsen.dk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bang-olufsen.dk;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AM6PR03MB3943:EE_|PA4PR03MB6797:EE_
-x-ms-office365-filtering-correlation-id: a87eb120-976a-40cd-23ed-08dbccee83d3
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: G3zFLwfYbW7Z73DDeFvwrfviCYVaLNR8sZsFDQZjuRZx1u+7a7TFuloDoLqvhYFErwlnxxdovQlW3ACXy4dNIDXB3FVmUx3IeURDL6KkGg6K8spQ743pxL3AOsJjQRciZ0wW/HT9m//6r5VWupnaYxxOpqNUgXX9k8nhnW2kuOUtDirOz04PyNacYfl6ogPNawRiJtXVOPLJI/GRq283SS9DqdIIqZQ7105bA8Nn4B6koE9UZpYDo2t+L5hwU/zcxPet/4LiH9OpIOvTwxL156parLVK/4wqcI+NRR+DnQ7h+yz746Pkx6aYPM55U5lGXvp24Phhr4gmrh/WbkoT33rvVuG+AXWnO7L6D7EQH2egyhJBTmWrobvW+nD1xtnKCL+ELJEbs0qyiHKsfXwYWCxG6C/3v99F2lUYWA9XIBf2lAmrgSMOUnbIzNLkiBFam5gNN1+KCcEjRt8hM+OTewUq7NWb9P/j9RQizZJpOCjN3LLtCWOaNNwf2YY214pnUPXNhVm/6CqLA57DzDeXCnMqLsCNZ62sMa5HnVryRXqV3Vh2MDyFUKmEPDAhCk0UDBxGDGBoPJf9TmfV30b+qtxyRcxG+bZ1jPnwJKBnMEPJj2ZBPOdN2jylNvXnt0FO
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR03MB3943.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(366004)(346002)(136003)(376002)(39850400004)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(6506007)(9686003)(6512007)(71200400001)(6486002)(478600001)(33716001)(86362001)(122000001)(85182001)(85202003)(38070700005)(38100700002)(2906002)(7416002)(83380400001)(316002)(66574015)(26005)(64756008)(4744005)(76116006)(66446008)(6916009)(91956017)(66946007)(66556008)(66476007)(54906003)(8936002)(5660300002)(4326008)(41300700001)(8676002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?NGN3MnVVUGdJcXFBNnIwNWU0OEcwQlJENE5BSTNRdjhyTFI3eGJhcW0raHBj?=
- =?utf-8?B?TUNPZ2MwbCtVV0kyNTJTU2JzL2pORE8rWGpDbzlGd3FCTWFCa255T2dWTVV2?=
- =?utf-8?B?VGhmSW41VTRBUjFmNE42TWlMeWJQb2g1WTJGZXk2WmR2NDBiY2REZkJ3NSt0?=
- =?utf-8?B?dmlHUHB5eU0xSWRVNXkvRlJQTTNnTHA1UnB3eUVEMkUvRldDaWN2SytocnRR?=
- =?utf-8?B?SUFuNWtMalVveHoxZUhsdjFqc2NVWSt1NHlvR1JrUGtRVXBRdlhtUkhDc0I2?=
- =?utf-8?B?VnJyOWFsS0tjZWdOc3h5c29ML1ZodDIrVTVzaW9sQitaNUtxS3RJSEI1dytI?=
- =?utf-8?B?aXU1QjFKVVhlSGIxZFFyUDE5OGtiazg4ZVdpQzUxcmRUZWpZYnBvaGsyaHlz?=
- =?utf-8?B?V3hCRytzd0Nwc0dEWVJVK1padHpuVUlXOEVmYXNWNXp0aHZoV3VtUlVPQTNy?=
- =?utf-8?B?K2Rwa1ExaStUOTkveTVWNldoY0hETVIxbUFUdTZkbVlOaEt6WFprc0oxOVFl?=
- =?utf-8?B?K3lhN3V6ZnFjUk5OUU1oVS8yUi83dVlIMjNYay95ZjdVd2JRR3FBOHR5cDNI?=
- =?utf-8?B?cmovOGJPTVJFN1pOR3pPTWxINmpLZWQyeTBkcU9QWFQ3QnM1aFpYZkllSXhD?=
- =?utf-8?B?UitQSE9DWjhJbmpBVFhyaFRnazJwN0ZKejYwRGN1TzM5YzN1Z09zL04rUTFn?=
- =?utf-8?B?S2h5QXpCbGJwdzdud1IvRCtkUUZIQTM3RkNqTmkwdXg4QVNBVW9VYnE1Wjl1?=
- =?utf-8?B?UVdvWGV5SDdwVkpWU3pmT2RDVkNBN08rLy9HZkdDR1ljUktycFZOUDE2bWR1?=
- =?utf-8?B?S1lDTE5ZVDF5T2lRamZxSHplLzNwQWxvSFNYdWVZdmtRWHdlVGZMZ3hsdGtW?=
- =?utf-8?B?b1Z4dVFXc0MycjNMb0RhOHRtcFQ3K1ZVeHlOTXhDNkZ0UDQxRTNQc3Z2Rmcw?=
- =?utf-8?B?REF5RDdQMHJISXFKYXcrMFBkeWlha3gvS05SSFB4OU1mUEdTNW02S3JVZ3Vn?=
- =?utf-8?B?c1AwOFhxaWd5K051Z0FIL3ExWXpucnZLYkJiaDVJakFSUGt4SWJjdWRZTlMv?=
- =?utf-8?B?U1lJRGpTK01Fem4zcHF4L1JCK2tPQllnRUFyeU9WYUlsc3Z4NXhMaXJZZXVG?=
- =?utf-8?B?SnBVOW4wMElZV0JOcUNSWGxXNWpoNXZBeGRvYTZsS2xlelp0cHJjcStScGs2?=
- =?utf-8?B?WXZ0YVE1VUlxYkgwRHBOUEZhcysxRGFqVHBwM1FsWThFaEVHWGZZSVNNS2di?=
- =?utf-8?B?UVFUNlRnemw1elQ0UXVhSGJkRnNoYTdVY290TTVlTUtSeW9pMWxXY2JRZ1Fl?=
- =?utf-8?B?TVZzeVp4bWNZMFZqUm9zTk4yNThWOWdRQ0c3QkM2U2VEQ25reTM2QTFGeFYx?=
- =?utf-8?B?ejE2b1pxYTlDY1BwZmM0NGJNSExiVXFqbGpVYlcvdWpUNkNGbHpNcHhUWlJq?=
- =?utf-8?B?d1M3RVJxYWtLZ1QwRi9CdUJXL2RLT2hMZXhTQ2QreUNOWVVadGovT3RVN25H?=
- =?utf-8?B?aUpuVVk0RTBFZ2lEQnNFN0dSZmNGNGRPd1Z3MWp6cmdtMDBLU2ZEOWtMU1E5?=
- =?utf-8?B?bGNuZzZOYmt6RXZONmxkZVZxdXVRdjVaL1hWRTlPU1VYV2pXdFVVYnluTk9q?=
- =?utf-8?B?MXM0aFlWWU4vMVY3alVscUwrNm1pZWJ4Y0VOOVB0SVA0NnhWNTFTMjJvYWpW?=
- =?utf-8?B?LythR3kxb3BBSkZKVEFqWlNJak04UnJxT2d1ZDhIeVdLQm13SWtkLzdiekFC?=
- =?utf-8?B?QU1NeW9JM2dRSjlqTjJCSlhyeDl2VmpIL3Y4NWdOZEkrMnZZeTBNQk9QSjdC?=
- =?utf-8?B?dFVxNWZHcDAxU1QrdlZCVXh6MHdncnA2M3E1TUhWR3kzOG9jb3RDZU1rbE05?=
- =?utf-8?B?Sjh1ck1ya0ozZXBnZ3hMWFNBMEluTVVHbUFrU2NUVHZxdzNZc2RSSDN0dzFi?=
- =?utf-8?B?UVBWTi9DeEZ2aHV5NHM0NHh0SWRSVnlNMUFLK0ZUL1p0WHpycHZrTXB5RkY4?=
- =?utf-8?B?NzlwU1FuK2x5S0hhRFJiQ3JqNFlvRjN2NVNtVkJ4eFJyRkkrOURUcjFtaUlt?=
- =?utf-8?B?RWhoWmM2Z3p0SU9ydE03N2p1Zld5TTVOR2IwZXFMemdsNE04MjdDLzUyL05P?=
- =?utf-8?Q?+Sum6dwN0ynVA545jM8taCrdJ?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <AEE2F442A810F14AA91C6A54B4680B7A@eurprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Sat, 14 Oct 2023 15:57:39 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D6ADB7
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 12:57:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
+ t=1697313453; x=1697918253; i=aros@gmx.com;
+ bh=OJ10MhnuLe89O+Cxce6qshxsCEIpOlpY3U8dRVBV3JY=;
+ h=X-UI-Sender-Class:Date:From:Subject:To;
+ b=Qm966Y5sZsNpPehwfYFEW/qCMACkEgOiBA7j6kK4W3dgHekp9sJm2kuUhEGC10rGJmDGJtXWtbw
+ MMJvmKvJowUGifjGaeHypzOwcHOMtyi3w0GfByG7WmbqAZoToxqYzfUvcVpCOW0WfowAtPxUhNuwh
+ S+b9LqipOlNcMnjZLqg3tS4MvN/PRNp5NH9Zlh14dWy/Eip7l4G5Qu/DOJfKOhBARhR64COhndl8O
+ 32MRVGJLCbcD9O20xmq3LhHVn5rQzkNfwuOxThvEelumAIkjFICFwftCX11ejHROmSkPJWaCHqfqY
+ zFf+qhjVOL42UYm2FfgRpnh2TbtNcwdTByrg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [10.32.110.19] ([98.159.234.33]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1ML9uU-1r8jPz1LSk-00I9bR; Sat, 14
+ Oct 2023 21:57:33 +0200
+Message-ID: <1d521170-85c9-41bb-ad79-5d2bf3aae7f2@gmx.com>
+Date:   Sat, 14 Oct 2023 19:57:32 +0000
 MIME-Version: 1.0
-X-OriginatorOrg: bang-olufsen.dk
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB3943.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a87eb120-976a-40cd-23ed-08dbccee83d3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Oct 2023 19:48:18.8409
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 210d08b8-83f7-470a-bc96-381193ca14a1
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: I4uaRLpzPHc9y5HShDlF3KXpsTlZNLSCaT+NMDQ90nUifCm5M+Alo1SuZeZuaBTrKfjHvrLT6gkQ+ldvxkUEKA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR03MB6797
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+From:   "Artem S. Tashkinov" <aros@gmx.com>
+Subject: Printing HW configuration on boot
+To:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:+8Preq0RKuZir/w7n27r8p/O9XL0+cvz4mTeG9NPLZY2+sbWhB4
+ p/njRp9V6BrUZHBwjxQ6G9crjiomwl3VRC/sEFJII2MzbatD3QfcR3OV0oMulxGrJwrZ23r
+ WH5LtNeh8F6rr58FqdAHvleHbOqBgnY5/O7mhX6B7Vt/H6KF6n8SZpRrnel2revg15MOqPU
+ zsmqnVPR+uXIkESKf9mzQ==
+UI-OutboundReport: notjunk:1;M01:P0:4qs/YGuchwk=;Ea1sPh7JwRg4abv321MQE1PHNrj
+ xZfegvT6B4penRoy8nbfFNKVeOgUbnCBXkiAEEHocbDTms2af2LiB6IPLEP+ad8klQ/sZH/e8
+ 3cZwmkTXaRkqpfXRwYZiUOtjgEjeH5NAj6+GbFYEg7MTK1LqNBqEFSkgsvX6VAu2WkhaAB5Mu
+ QG0KROI6sru49V4dMPJwvphm9WcwAybEkU9cw+Ag8+M55LLXLbqhzcZAFU2n+Ss08SmsP8naJ
+ 3PwZBbIOQh2dt29RAHHM2DeK26gxr7nwnuuI+jmlSwiayEdgPF3lb0v4YXz3hoy/j0bwxGQgy
+ i/izONjIpsGoA4ThpgrwQOqKN+13wMuVbM7Iadvz3rsfpOuR+WKIf4n4RyoGUc0bcwhnLW1+5
+ ByMQRehs226Y4ZmeIS25vvWwyLXr2iPQ1LTzuTMFZJa9D0GWg1UfCpw9WFmrt597xbjsM7jbj
+ 2m8t8pUoR5CMi4LYmfJG33y+gWoQEPHV+zXoeOCfkns6M1we4VDqUE48qRSwPCvaS8UFQvggk
+ kwUd9IkvExhAG8+OxROnmzDPmkMvMJ6QHlDq9s7GT1aQtqD6+W3N4gJ1uN4d7uco2N1M/piKb
+ I3Ln7VW/eMJmLFob/wr5r+inucDEsID0YH47VeejDiXuK3tHcuTantYmpY/6qrnZqb5OES+yv
+ CXVMbJtPR+/WjYCOVBB6h+1QQCKbwdRBYIdlKrrjxMRlPB0x2KCECR6CBimoly2b3k1nOp9Wr
+ P8pjFcvfn4qYYOaKVKQRkDaOMletW8g4uKpo5NQsMo9F/85qkdbSyb5oahrxK3/VLNHD9+Xr9
+ X5IyNZQWrgClzTgU1qsbAHlee0UE2QOkIGMQTVxjtUTG0qSAywUUClzl8jpohXSqw8SiFASmw
+ mWIXmkenJ+2j2tumQMYOPuOBGaHtv5efSDKdkBkS8/PgxXzTzRedFc1g7Sp89gb00hfhTyo0m
+ KGNswYHGRokppl/FiDMRChzMVjA=
+X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RCVD_IN_SBL,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU2F0LCBPY3QgMTQsIDIwMjMgYXQgMDk6NDM6MDFQTSArMDIwMCwgQWx2aW4gxaBpcHJhZ2Eg
-d3JvdGU6DQo+IEZyb206IEFsdmluIMWgaXByYWdhIDxhbHNpQGJhbmctb2x1ZnNlbi5kaz4NCj4g
-DQo+IFRoZSBhZHY3NTExIGRyaXZlciBpcyBzb2xlbHkgcmVzcG9uc2libGUgZm9yIHNldHRpbmcg
-dGhlIHBoeXNpY2FsDQo+IGFkZHJlc3Mgb2YgaXRzIENFQyBhZGFwdGVyLiBUbyBkbyB0aGlzLCBp
-dCBtdXN0IHJlYWQgdGhlIEVESUQuIEhvd2V2ZXIsDQo+IEVESUQgaXMgb25seSByZWFkIHdoZW4g
-ZWl0aGVyIHRoZSBkcm1fYnJpZGdlX2Z1bmNzIDo6IGdldF9lZGlkIG9yDQo+IGRybV9jb25uZWN0
-b3JfaGVscGVyX2Z1bmNzIDo6IGdldF9tb2RlcyBvcHMgYXJlIGNhbGxlZC4gV2l0aG91dCBsb3Nz
-IG9mDQo+IGdlbmVyYWxpdHksIGl0IGNhbm5vdCBiZSBhc3N1bWVkIHRoYXQgdGhlc2Ugb3BzIGFy
-ZSBjYWxsZWQgd2hlbiBhIHNpbmsNCj4gZ2V0cyBhdHRhY2hlZC4gVGhlcmVmb3JlIHRoZXJlIGV4
-aXN0IHNjZW5hcmlvcyBpbiB3aGljaCB0aGUgQ0VDIHBoeXNpY2FsDQo+IGFkZHJlc3Mgd2lsbCBi
-ZSBpbnZhbGlkIChmLmYuZi5mKSwgcmVuZGVyaW5nIHRoZSBDRUMgYWRhcHRlciBpbm9wZXJhYmxl
-Lg0KPiANCj4gQWRkcmVzcyB0aGlzIHByb2JsZW0gYnkgYWx3YXlzIGZldGNoaW5nIHRoZSBFRElE
-IGluIHRoZSBIUEQgd29yayB3aGVuIHdlDQo+IGRldGVjdCBhIGNvbm5lY3Rpb24uIFRoZSBDRUMg
-cGh5c2ljYWwgYWRkcmVzcyBpcyBzZXQgaW4gdGhlIHByb2Nlc3MuDQo+IA0KPiBTaWduZWQtb2Zm
-LWJ5OiBBbHZpbiDFoGlwcmFnYSA8YWxzaUBiYW5nLW9sdWZzZW4uZGs+DQoNCg0KT29wcywgSSB0
-aGluayB0aGF0IEkgZ290IHRoZSBzdWJqZWN0IHByZWZpeCB3cm9uZy4gSXQgc2hvdWxkIGJlDQoN
-CiAgICBkcm0vYnJpZGdlOg0KDQphbmQgbm90DQoNCiAgICBkcm06IGJyaWRnZToNCg0KcmlnaHQ/
-DQoNClRoYW5rcy4NCg0KS2luZCByZWdhcmRzLA0KQWx2aW4=
+Hi everyone,
+
+dmesg is an invaluable source of information about the system however
+oftentimes it's the only source of information and it gets really hard
+to extract information from it.
+
+It would be great if someone coded the following feature: a printout of
+system configuration before the kernel runs /sbin/init, e.g. something
+like this:
+
+=3D=3D=3D=3D=3D=3D=3D Detected hardware configuration =3D=3D=3D=3D=3D=3D=
+=3D
+Arch: x86-64, EFI, Secure boot enabled
+CPU: Intel/AMD Something; X cores/Y threads
+GPU: AMD/Intel/NVIDIA VEN_ID/DEV_ID, VRAM MB
+RAM: 32614128K/33414620K available, ECC enabled
+Motherboard: Vendor, Model, BIOS revision
+Console: i915drmfb, 1024x768@24bit
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+Some (all?) of this information is already there but it's hard to find
+and read.
+
+Thanks a ton,
+Artem
