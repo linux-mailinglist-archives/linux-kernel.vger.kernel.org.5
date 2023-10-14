@@ -2,132 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1038F7C961D
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 21:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD90F7C961F
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 21:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbjJNTnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 15:43:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53296 "EHLO
+        id S229735AbjJNTs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 15:48:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjJNTnN (ORCPT
+        with ESMTP id S229490AbjJNTsY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 15:43:13 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2020CB7
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 12:43:11 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso505316966b.1
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 12:43:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pqrs.dk; s=google; t=1697312589; x=1697917389; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9HxHVZc6YcEpPz9+wvy4GvoTV26RHqH6Rd4h4faexEg=;
-        b=D/PHpq6tLdygH+w0oPbuYLuF600kO1CPvHgwrw3L7QglZi4/xtYGJyGux1DvVSTba9
-         Vk1EuqINcsUBhOF6ffAzxEZDPHruPy27Zsav5In76kN6JTvDC9Zuv3F6+qdZiSNVQD6S
-         J+cNJ3JupMQ93tSj3kdGCFsOmROPKWXb5CiRL6Sr3RJmafz9ZIK+Iitf1fkagnmj5qsZ
-         cqiQpqgrtr8X/EhQtEwEy/d7Dy3CJus+SGYPn5CURnc2hfWL7TMNFOOSPEXV2ZLOyzEe
-         41XR5JQJRLwoMD/+NWSUB74Rtvso0V3lvE7a5CMZjWmMBcXR7d0sN5KSZcDvqiI2FcRv
-         AaCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697312589; x=1697917389;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9HxHVZc6YcEpPz9+wvy4GvoTV26RHqH6Rd4h4faexEg=;
-        b=dhUJaW9Wzp2mMo7d7IIYkBDu3kXEkzwqp0NdI64leN3j+7fUWXosgKxFCTmrnNVDUB
-         FGa1PmAuNMHGg1masBIlz65gygA+dFw9rwBb2sYFZZhdGVEYJNnSCrqDpsqhjhaWcQro
-         dP3UBvykseCiGSTdzOiGyNwaYIK2gAtHHu7UAxTRvdMaA946SZ9SkTCQ8UxBDcpOCDBT
-         b/ddbX7lXQJKIxLq0sNtCMpkPiPM39AI+Xl7BHGW95sCr64ci/1pWJ2zfDPzmcGCNkup
-         faODxlw9937zstACsEctxicd45ycPESO11/w0pJxbDq0ayEkWqFM2OLvNOrb0RHiGGv9
-         gYaA==
-X-Gm-Message-State: AOJu0YwroS/K2V9ayQZ4UiCmg4u/h+abcORFerNw3ZFnuVbdmh1yHMjH
-        WqZufVAQ35G6If35rU0NDB3Seg==
-X-Google-Smtp-Source: AGHT+IGl30Gorqg9oio+b+sZtLdUF1DgfPaothJCR+sUNvv/emVXwerBBHvRMx2mnxP8dh03QHmoBQ==
-X-Received: by 2002:a17:907:31c2:b0:9be:30c2:b8ff with SMTP id xf2-20020a17090731c200b009be30c2b8ffmr3129489ejb.61.1697312589449;
-        Sat, 14 Oct 2023 12:43:09 -0700 (PDT)
-Received: from capella.localdomain (80.71.142.18.ipv4.parknet.dk. [80.71.142.18])
-        by smtp.gmail.com with ESMTPSA id fi27-20020a170906da1b00b009934b1eb577sm1301000ejb.77.2023.10.14.12.43.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Oct 2023 12:43:08 -0700 (PDT)
-From:   =?utf-8?q?Alvin_=C5=A0ipraga?= <alvin@pqrs.dk>
-Date:   Sat, 14 Oct 2023 21:43:01 +0200
-Subject: [PATCH] drm: bridge: adv7511: get edid in hpd_work to update CEC
- phys address
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231014-adv7511-cec-edid-v1-1-a58ceae0b57e@bang-olufsen.dk>
-X-B4-Tracking: v=1; b=H4sIAETvKmUC/x3MMQqAMAxA0atIZgNNVYpeRRxqk2oWlRZEkN7d4
- viG/1/IklQyTM0LSW7Neh4V1DYQdn9sgsrVYI3tyFCPnm83EGGQgMLKGKMbVu58GO0INbuSRH3
- +5byU8gFL8yvAYgAAAA==
-To:     Andrzej Hajda <andrzej.hajda@intel.com>,
+        Sat, 14 Oct 2023 15:48:24 -0400
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2099.outbound.protection.outlook.com [40.107.13.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A42E8B7
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 12:48:22 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KuGArKBUVWuSJ4fIajntVAfQrOq3sFfrzsBjqZElsboclHJ+uV2PVKFwWRnm2jlZDJVgQN4XDVRR6X1NLNgbUavKzeuDSs69E2IcPNp6X1xnfwWDOnJd4o3zgtXUL/1b9OMqfhi9eXm1Ulys2BvF7SazcYicpZrjtPH/DbGtRzTx3TV0/5hhJUEQ4mdaATAYHWmEuBKp3CVgnjBuHNAWciQPHL1fwxO8oCrgUrKBL41yB9SW+32TFQI1yae8luqzjIjm+U4qOBG3XF8ZQRcDiE1xL1AfazP2BGTUfLRTIJPEhjase4c/xkGRY2JSrjk8PhCH2eKWRpFt0/6j1ChILA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=I6laOVlqVYatfQGeyyKrE00YmW0thGkrTqj9DbWPycw=;
+ b=acOLJfnctpnAO/ky0XP3R+jJbTTOEqsXTpeDt1kENDVY6nbiGU2CbfihuRgQ10MvocapvsoFpRqlodF4Do8+5iujStka3lq+zh4H17T4e8DA3T6iALJ2knwzn9BWzGRAuiiiW4CdaFWaDHZTa8vnOcZEl46IhoK26fjA1TATRc9N7DHroQlnbCBjv4ku4/RuPqsXeMAmOSn/U1XvvYS8dfr5UK/FcnxBlSS90vGpniYA1l86GIyujfkIyo4KJFRoPe0a/KUN9zLUR2OrE/ubzt0jhNgGpziMWDuZI8O9CuvgWlqipj2OGJLsyWMPOdLjxbTFQqLhAbWNPBZm99XGGg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bang-olufsen.dk; dmarc=pass action=none
+ header.from=bang-olufsen.dk; dkim=pass header.d=bang-olufsen.dk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bang-olufsen.dk;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=I6laOVlqVYatfQGeyyKrE00YmW0thGkrTqj9DbWPycw=;
+ b=evXKiRZmnJue6H88P07yetxEgBqOn1DQJN16W57FCr2SfwKPKY8id/61uQUX6uzYnfHg5Z+4f6MlflfZTRUhJeeIJhuQnK3uRGtcPptLqhpxF3bXZBUO7v+yjQbIVC8HOObHJAiKxn50iwDsVHf5pVPCsaWddXrOuans5z9xhpU=
+Received: from AM6PR03MB3943.eurprd03.prod.outlook.com (2603:10a6:20b:26::24)
+ by PA4PR03MB6797.eurprd03.prod.outlook.com (2603:10a6:102:f1::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.46; Sat, 14 Oct
+ 2023 19:48:19 +0000
+Received: from AM6PR03MB3943.eurprd03.prod.outlook.com
+ ([fe80::fb3c:4931:e74e:c691]) by AM6PR03MB3943.eurprd03.prod.outlook.com
+ ([fe80::fb3c:4931:e74e:c691%3]) with mapi id 15.20.6863.043; Sat, 14 Oct 2023
+ 19:48:19 +0000
+From:   =?utf-8?B?QWx2aW4gxaBpcHJhZ2E=?= <ALSI@bang-olufsen.dk>
+To:     =?utf-8?B?QWx2aW4gxaBpcHJhZ2E=?= <alvin@pqrs.dk>
+CC:     Andrzej Hajda <andrzej.hajda@intel.com>,
         Neil Armstrong <neil.armstrong@linaro.org>,
         Robert Foss <rfoss@kernel.org>,
         Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
         Jonas Karlman <jonas@kwiboo.se>,
         Jernej Skrabec <jernej.skrabec@gmail.com>,
         David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        =?utf-8?q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>
-X-Mailer: b4 0.12.3
+        Daniel Vetter <daniel@ffwll.ch>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drm: bridge: adv7511: get edid in hpd_work to update CEC
+ phys address
+Thread-Topic: [PATCH] drm: bridge: adv7511: get edid in hpd_work to update CEC
+ phys address
+Thread-Index: AQHZ/taq5D2UjK1S+kWjz8DqNvYQ77BJsRQA
+Date:   Sat, 14 Oct 2023 19:48:18 +0000
+Message-ID: <suuq6vyosh6ddh7szjwuznmr326cpxjtugw3chbnogome7lmpp@fr2lblb6qudg>
+References: <20231014-adv7511-cec-edid-v1-1-a58ceae0b57e@bang-olufsen.dk>
+In-Reply-To: <20231014-adv7511-cec-edid-v1-1-a58ceae0b57e@bang-olufsen.dk>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=bang-olufsen.dk;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AM6PR03MB3943:EE_|PA4PR03MB6797:EE_
+x-ms-office365-filtering-correlation-id: a87eb120-976a-40cd-23ed-08dbccee83d3
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: G3zFLwfYbW7Z73DDeFvwrfviCYVaLNR8sZsFDQZjuRZx1u+7a7TFuloDoLqvhYFErwlnxxdovQlW3ACXy4dNIDXB3FVmUx3IeURDL6KkGg6K8spQ743pxL3AOsJjQRciZ0wW/HT9m//6r5VWupnaYxxOpqNUgXX9k8nhnW2kuOUtDirOz04PyNacYfl6ogPNawRiJtXVOPLJI/GRq283SS9DqdIIqZQ7105bA8Nn4B6koE9UZpYDo2t+L5hwU/zcxPet/4LiH9OpIOvTwxL156parLVK/4wqcI+NRR+DnQ7h+yz746Pkx6aYPM55U5lGXvp24Phhr4gmrh/WbkoT33rvVuG+AXWnO7L6D7EQH2egyhJBTmWrobvW+nD1xtnKCL+ELJEbs0qyiHKsfXwYWCxG6C/3v99F2lUYWA9XIBf2lAmrgSMOUnbIzNLkiBFam5gNN1+KCcEjRt8hM+OTewUq7NWb9P/j9RQizZJpOCjN3LLtCWOaNNwf2YY214pnUPXNhVm/6CqLA57DzDeXCnMqLsCNZ62sMa5HnVryRXqV3Vh2MDyFUKmEPDAhCk0UDBxGDGBoPJf9TmfV30b+qtxyRcxG+bZ1jPnwJKBnMEPJj2ZBPOdN2jylNvXnt0FO
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR03MB3943.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(366004)(346002)(136003)(376002)(39850400004)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(6506007)(9686003)(6512007)(71200400001)(6486002)(478600001)(33716001)(86362001)(122000001)(85182001)(85202003)(38070700005)(38100700002)(2906002)(7416002)(83380400001)(316002)(66574015)(26005)(64756008)(4744005)(76116006)(66446008)(6916009)(91956017)(66946007)(66556008)(66476007)(54906003)(8936002)(5660300002)(4326008)(41300700001)(8676002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?NGN3MnVVUGdJcXFBNnIwNWU0OEcwQlJENE5BSTNRdjhyTFI3eGJhcW0raHBj?=
+ =?utf-8?B?TUNPZ2MwbCtVV0kyNTJTU2JzL2pORE8rWGpDbzlGd3FCTWFCa255T2dWTVV2?=
+ =?utf-8?B?VGhmSW41VTRBUjFmNE42TWlMeWJQb2g1WTJGZXk2WmR2NDBiY2REZkJ3NSt0?=
+ =?utf-8?B?dmlHUHB5eU0xSWRVNXkvRlJQTTNnTHA1UnB3eUVEMkUvRldDaWN2SytocnRR?=
+ =?utf-8?B?SUFuNWtMalVveHoxZUhsdjFqc2NVWSt1NHlvR1JrUGtRVXBRdlhtUkhDc0I2?=
+ =?utf-8?B?VnJyOWFsS0tjZWdOc3h5c29ML1ZodDIrVTVzaW9sQitaNUtxS3RJSEI1dytI?=
+ =?utf-8?B?aXU1QjFKVVhlSGIxZFFyUDE5OGtiazg4ZVdpQzUxcmRUZWpZYnBvaGsyaHlz?=
+ =?utf-8?B?V3hCRytzd0Nwc0dEWVJVK1padHpuVUlXOEVmYXNWNXp0aHZoV3VtUlVPQTNy?=
+ =?utf-8?B?K2Rwa1ExaStUOTkveTVWNldoY0hETVIxbUFUdTZkbVlOaEt6WFprc0oxOVFl?=
+ =?utf-8?B?K3lhN3V6ZnFjUk5OUU1oVS8yUi83dVlIMjNYay95ZjdVd2JRR3FBOHR5cDNI?=
+ =?utf-8?B?cmovOGJPTVJFN1pOR3pPTWxINmpLZWQyeTBkcU9QWFQ3QnM1aFpYZkllSXhD?=
+ =?utf-8?B?UitQSE9DWjhJbmpBVFhyaFRnazJwN0ZKejYwRGN1TzM5YzN1Z09zL04rUTFn?=
+ =?utf-8?B?S2h5QXpCbGJwdzdud1IvRCtkUUZIQTM3RkNqTmkwdXg4QVNBVW9VYnE1Wjl1?=
+ =?utf-8?B?UVdvWGV5SDdwVkpWU3pmT2RDVkNBN08rLy9HZkdDR1ljUktycFZOUDE2bWR1?=
+ =?utf-8?B?S1lDTE5ZVDF5T2lRamZxSHplLzNwQWxvSFNYdWVZdmtRWHdlVGZMZ3hsdGtW?=
+ =?utf-8?B?b1Z4dVFXc0MycjNMb0RhOHRtcFQ3K1ZVeHlOTXhDNkZ0UDQxRTNQc3Z2Rmcw?=
+ =?utf-8?B?REF5RDdQMHJISXFKYXcrMFBkeWlha3gvS05SSFB4OU1mUEdTNW02S3JVZ3Vn?=
+ =?utf-8?B?c1AwOFhxaWd5K051Z0FIL3ExWXpucnZLYkJiaDVJakFSUGt4SWJjdWRZTlMv?=
+ =?utf-8?B?U1lJRGpTK01Fem4zcHF4L1JCK2tPQllnRUFyeU9WYUlsc3Z4NXhMaXJZZXVG?=
+ =?utf-8?B?SnBVOW4wMElZV0JOcUNSWGxXNWpoNXZBeGRvYTZsS2xlelp0cHJjcStScGs2?=
+ =?utf-8?B?WXZ0YVE1VUlxYkgwRHBOUEZhcysxRGFqVHBwM1FsWThFaEVHWGZZSVNNS2di?=
+ =?utf-8?B?UVFUNlRnemw1elQ0UXVhSGJkRnNoYTdVY290TTVlTUtSeW9pMWxXY2JRZ1Fl?=
+ =?utf-8?B?TVZzeVp4bWNZMFZqUm9zTk4yNThWOWdRQ0c3QkM2U2VEQ25reTM2QTFGeFYx?=
+ =?utf-8?B?ejE2b1pxYTlDY1BwZmM0NGJNSExiVXFqbGpVYlcvdWpUNkNGbHpNcHhUWlJq?=
+ =?utf-8?B?d1M3RVJxYWtLZ1QwRi9CdUJXL2RLT2hMZXhTQ2QreUNOWVVadGovT3RVN25H?=
+ =?utf-8?B?aUpuVVk0RTBFZ2lEQnNFN0dSZmNGNGRPd1Z3MWp6cmdtMDBLU2ZEOWtMU1E5?=
+ =?utf-8?B?bGNuZzZOYmt6RXZONmxkZVZxdXVRdjVaL1hWRTlPU1VYV2pXdFVVYnluTk9q?=
+ =?utf-8?B?MXM0aFlWWU4vMVY3alVscUwrNm1pZWJ4Y0VOOVB0SVA0NnhWNTFTMjJvYWpW?=
+ =?utf-8?B?LythR3kxb3BBSkZKVEFqWlNJak04UnJxT2d1ZDhIeVdLQm13SWtkLzdiekFC?=
+ =?utf-8?B?QU1NeW9JM2dRSjlqTjJCSlhyeDl2VmpIL3Y4NWdOZEkrMnZZeTBNQk9QSjdC?=
+ =?utf-8?B?dFVxNWZHcDAxU1QrdlZCVXh6MHdncnA2M3E1TUhWR3kzOG9jb3RDZU1rbE05?=
+ =?utf-8?B?Sjh1ck1ya0ozZXBnZ3hMWFNBMEluTVVHbUFrU2NUVHZxdzNZc2RSSDN0dzFi?=
+ =?utf-8?B?UVBWTi9DeEZ2aHV5NHM0NHh0SWRSVnlNMUFLK0ZUL1p0WHpycHZrTXB5RkY4?=
+ =?utf-8?B?NzlwU1FuK2x5S0hhRFJiQ3JqNFlvRjN2NVNtVkJ4eFJyRkkrOURUcjFtaUlt?=
+ =?utf-8?B?RWhoWmM2Z3p0SU9ydE03N2p1Zld5TTVOR2IwZXFMemdsNE04MjdDLzUyL05P?=
+ =?utf-8?Q?+Sum6dwN0ynVA545jM8taCrdJ?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <AEE2F442A810F14AA91C6A54B4680B7A@eurprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: bang-olufsen.dk
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB3943.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a87eb120-976a-40cd-23ed-08dbccee83d3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Oct 2023 19:48:18.8409
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 210d08b8-83f7-470a-bc96-381193ca14a1
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: I4uaRLpzPHc9y5HShDlF3KXpsTlZNLSCaT+NMDQ90nUifCm5M+Alo1SuZeZuaBTrKfjHvrLT6gkQ+ldvxkUEKA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR03MB6797
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alvin Šipraga <alsi@bang-olufsen.dk>
-
-The adv7511 driver is solely responsible for setting the physical
-address of its CEC adapter. To do this, it must read the EDID. However,
-EDID is only read when either the drm_bridge_funcs :: get_edid or
-drm_connector_helper_funcs :: get_modes ops are called. Without loss of
-generality, it cannot be assumed that these ops are called when a sink
-gets attached. Therefore there exist scenarios in which the CEC physical
-address will be invalid (f.f.f.f), rendering the CEC adapter inoperable.
-
-Address this problem by always fetching the EDID in the HPD work when we
-detect a connection. The CEC physical address is set in the process.
-
-Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
----
-Pardon the insertion of the ugly adv7511_get_edid() prototype, but I did
-not want to clobber git history by rearranging a bunch of functions. If
-this is the preferred approach I will happily re-spin the patch.
----
- drivers/gpu/drm/bridge/adv7511/adv7511_drv.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-index 2611afd2c1c1..3d32c109963c 100644
---- a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-+++ b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-@@ -424,6 +424,9 @@ static bool adv7511_hpd(struct adv7511 *adv7511)
- 	return false;
- }
- 
-+static struct edid *adv7511_get_edid(struct adv7511 *adv7511,
-+				     struct drm_connector *connector);
-+
- static void adv7511_hpd_work(struct work_struct *work)
- {
- 	struct adv7511 *adv7511 = container_of(work, struct adv7511, hpd_work);
-@@ -457,6 +460,9 @@ static void adv7511_hpd_work(struct work_struct *work)
- 		if (adv7511->connector.dev) {
- 			if (status == connector_status_disconnected)
- 				cec_phys_addr_invalidate(adv7511->cec_adap);
-+			else
-+				adv7511_get_edid(adv7511, &adv7511->connector);
-+
- 			drm_kms_helper_hotplug_event(adv7511->connector.dev);
- 		} else {
- 			drm_bridge_hpd_notify(&adv7511->bridge, status);
-
----
-base-commit: 4366faf43308bd91c59a20c43a9f853a9c3bb6e4
-change-id: 20231014-adv7511-cec-edid-ff75bd3ac929
-
+T24gU2F0LCBPY3QgMTQsIDIwMjMgYXQgMDk6NDM6MDFQTSArMDIwMCwgQWx2aW4gxaBpcHJhZ2Eg
+d3JvdGU6DQo+IEZyb206IEFsdmluIMWgaXByYWdhIDxhbHNpQGJhbmctb2x1ZnNlbi5kaz4NCj4g
+DQo+IFRoZSBhZHY3NTExIGRyaXZlciBpcyBzb2xlbHkgcmVzcG9uc2libGUgZm9yIHNldHRpbmcg
+dGhlIHBoeXNpY2FsDQo+IGFkZHJlc3Mgb2YgaXRzIENFQyBhZGFwdGVyLiBUbyBkbyB0aGlzLCBp
+dCBtdXN0IHJlYWQgdGhlIEVESUQuIEhvd2V2ZXIsDQo+IEVESUQgaXMgb25seSByZWFkIHdoZW4g
+ZWl0aGVyIHRoZSBkcm1fYnJpZGdlX2Z1bmNzIDo6IGdldF9lZGlkIG9yDQo+IGRybV9jb25uZWN0
+b3JfaGVscGVyX2Z1bmNzIDo6IGdldF9tb2RlcyBvcHMgYXJlIGNhbGxlZC4gV2l0aG91dCBsb3Nz
+IG9mDQo+IGdlbmVyYWxpdHksIGl0IGNhbm5vdCBiZSBhc3N1bWVkIHRoYXQgdGhlc2Ugb3BzIGFy
+ZSBjYWxsZWQgd2hlbiBhIHNpbmsNCj4gZ2V0cyBhdHRhY2hlZC4gVGhlcmVmb3JlIHRoZXJlIGV4
+aXN0IHNjZW5hcmlvcyBpbiB3aGljaCB0aGUgQ0VDIHBoeXNpY2FsDQo+IGFkZHJlc3Mgd2lsbCBi
+ZSBpbnZhbGlkIChmLmYuZi5mKSwgcmVuZGVyaW5nIHRoZSBDRUMgYWRhcHRlciBpbm9wZXJhYmxl
+Lg0KPiANCj4gQWRkcmVzcyB0aGlzIHByb2JsZW0gYnkgYWx3YXlzIGZldGNoaW5nIHRoZSBFRElE
+IGluIHRoZSBIUEQgd29yayB3aGVuIHdlDQo+IGRldGVjdCBhIGNvbm5lY3Rpb24uIFRoZSBDRUMg
+cGh5c2ljYWwgYWRkcmVzcyBpcyBzZXQgaW4gdGhlIHByb2Nlc3MuDQo+IA0KPiBTaWduZWQtb2Zm
+LWJ5OiBBbHZpbiDFoGlwcmFnYSA8YWxzaUBiYW5nLW9sdWZzZW4uZGs+DQoNCg0KT29wcywgSSB0
+aGluayB0aGF0IEkgZ290IHRoZSBzdWJqZWN0IHByZWZpeCB3cm9uZy4gSXQgc2hvdWxkIGJlDQoN
+CiAgICBkcm0vYnJpZGdlOg0KDQphbmQgbm90DQoNCiAgICBkcm06IGJyaWRnZToNCg0KcmlnaHQ/
+DQoNClRoYW5rcy4NCg0KS2luZCByZWdhcmRzLA0KQWx2aW4=
