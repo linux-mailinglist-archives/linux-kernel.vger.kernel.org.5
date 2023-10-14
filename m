@@ -2,236 +2,405 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D47897C9741
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 01:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 399F57C974E
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 01:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233337AbjJNXUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 19:20:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53786 "EHLO
+        id S233033AbjJNXjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 19:39:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229733AbjJNXUs (ORCPT
+        with ESMTP id S229555AbjJNXji (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 19:20:48 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F12C3A9;
-        Sat, 14 Oct 2023 16:20:46 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FFDDC433C8;
-        Sat, 14 Oct 2023 23:20:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697325646;
-        bh=pZByRqicRE3aNH8i7QtO2qzFZjBI0dEQxI30C4vTcFM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JsO3biSddsSf/3of9SNqflvn9NwMYaIVb1GWLx8DyxtCghQnqIQRp9oFJvz8jsn2C
-         qXPQdapZoCvEHn+RzeltXOBRvdK0WhgFTaxCE22N/oCBRjiVGhMmTmEtZxFmTaQnym
-         5hBZgjrjjf8ZWY78xHwQIj+bB5x8f681olw5pmoFAxMhBm5eXltn3Ti8hYhiBbm5uk
-         S3fMNdpect2CNOtkiXy3oxoTL12BU98kjPt/R5RlK8fahNTF9FYy3SlBRfZPcMCEJ6
-         b6Ouf6gBvNqX8HtRdwE7A9ChjvnVwGQKuJHHdP7jZzOQmLb+4Dd5+rrnW8QiKmozuB
-         G8lVJsgUF0qcw==
-Date:   Sun, 15 Oct 2023 01:20:42 +0200
-From:   Alejandro Colomar <alx@kernel.org>
-To:     Guo Ren <guoren@kernel.org>
-Cc:     linux-man <linux-man@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: set_thread_area.2: csky architecture undocumented
-Message-ID: <ZSsiSlJC5sHAyUk-@debian>
-References: <014e670b-2a11-3deb-4e7e-bfe9defd8597@gmail.com>
- <c669c780-f6e8-bd2a-e6ec-0a5960b7d7d8@gmail.com>
- <CAJF2gTQPai9k6XqqStbvk0waF+tmMQm9PMMZe3T8m6ioAjdTFA@mail.gmail.com>
+        Sat, 14 Oct 2023 19:39:38 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E927A9;
+        Sat, 14 Oct 2023 16:39:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+ t=1697326759; x=1697931559; i=w_armin@gmx.de;
+ bh=l0lLG2Be63Vp+UODA2JuhJ/gylJq81V3ALg9rHeYehQ=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=okFF1wmg/N/GP7ub+OhhJvorDEE2UA6UcdVGwfpsdtCwzrGqMXJTq9FhHxzfnuSEzeoDw/fgHzy
+ hM6OA85Suuj293Kt+3iNI9/eFSBvNkstygcjyFU8aTMnn3atcRmTBSJZ2q60KXR0jPm8/AVSNU3IZ
+ 2+aWKdqA5bWzrYJXTy72aM5DXoKFHlJHMhpkC49fdhy3s5ZQ/h819B/HqBm0w+l5/OU7Cgq4s6zc5
+ zMDTUtPr/M8Za/0FBGGOk07JH2BSvrbSIDe57XkzQ+V7jxKitIHOvTvYerVKh24UgfLG9dMBxy83F
+ HEa7Bmc1ivneA8IwfWMSU0xOBdina5Ma5dsg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1My36T-1rlJ601vSx-00zaZt; Sun, 15
+ Oct 2023 01:39:19 +0200
+Message-ID: <d3245372-0cd4-49ff-acbc-87ff156a00fc@gmx.de>
+Date:   Sun, 15 Oct 2023 01:39:15 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="+7sKm7wLEzKNfm8V"
-Content-Disposition: inline
-In-Reply-To: <CAJF2gTQPai9k6XqqStbvk0waF+tmMQm9PMMZe3T8m6ioAjdTFA@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] platform/x86: support to store/show powermode value
+ for Inspur
+To:     Ai Chao <aichao@kylinos.cn>, hdegoede@redhat.com,
+        ilpo.jarvinen@linux.intel.com, markgross@kernel.org
+Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+References: <20231014032844.3823198-1-aichao@kylinos.cn>
+Content-Language: en-US
+From:   Armin Wolf <W_Armin@gmx.de>
+In-Reply-To: <20231014032844.3823198-1-aichao@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:yhgEJJiiKpj6ehc1+zVyv6fBzpr3wxxYWYW9x1qyMMR4ID+xC3r
+ 9c+ojstsbFjrIP3kv3ls5iWa+08YxTOTcIwnjtCFOhgxcK3xlBLVrsEB7tLJ2cnLgOnBuPO
+ FWyv4HBNmO3lY3RvG4L65aAmoXoTqii23HQG+RVaZ6WWyvMIEqY8DuD8H6THszIMoVGLPvw
+ n0zvFZPqLG7Sq0k9/Ds9g==
+UI-OutboundReport: notjunk:1;M01:P0:crr0p7Tctx8=;rB33qj3gOaRzI+P08nUJGdajj24
+ KuelCtRftrTjkpXbaInTCMgEoyzPaViZewiqJBNjeL/W3jNynAlAEdc4sIwGCTLv8tut7/WF9
+ /o+7n2MLQH9SYjKcpPc6y/jJuOwWYZlFwugXSEVPpjX15FqltyWVNbyp93ApV1F0fqYhtpRMG
+ c69PDUClXajWrLmS34A7q3OcXTswOMxQXYdoYNrL7o69W37RY8Vjjwswf7ljP5ukl4Avp/dFf
+ KBnPm/pyuGC+tP8tRGreTENk9EZQm1r5akZ9rxAdGKNIfwN3jplzumztLF/IXEH9SpogjBsRZ
+ 3TZrfxOTTINcCQMZCNOzBBI84hbxmwFww3AOWVJSkTYeNvo1QLUyWWVhrdkhLHHo5bTcy/VOL
+ bP1yeuo+pphYzfOu1kC1clqAJwqMkj2mLUdNp+27BcrzvNbdc2ebw42PdohEhRr+FHl3LFhJJ
+ 7GYSqmbTvQN5hBzRixQUCxv6BoXWnKiVlEYzsz3HVMjogRcKuTohrtSv/eJHDnpYHoto/qWeD
+ ye3ppCFncpuhPyVa00EmgzW+W0OYvwdEwWsPykRWzU1iirg1po5YuAdly12/FU70bDQA2afLK
+ KJhji080iF/oCRGJdXK9DiQiTiC1cc38HI3JyQdV9gXBSCHGRYl+mR7TPELZ/sa4YlQD7Tu6K
+ tCb9++TrDNDizzGRtMVrFRew6i4Qe3kDVTscQWQ294z3CtOR3qRO/7vuYKOJguZbNTXbs+E2V
+ xuY0wQ0cP6ueeW6QSodiIpsK9SV78dGtBxkBRgtpAMrBXlvgfXAVT2hYasz46DqBSXoHA7xxJ
+ bIytW2xEOp6gLFCS+GPQk19zhok1SAqq1VNzZ/lXFVjWshv4O243c4R5Uryv5tZ4XxQ3jhvR5
+ d8qQGsEBFOxfZeBreHV/WHba5xo14An+CyO4EvogkNSDoyF7GQ0UseiZNCy46I4uphD5hmaNN
+ Ib+5sq2ZV/+uX8pxODMcstyKSuI=
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am 14.10.23 um 05:28 schrieb Ai Chao:
 
---+7sKm7wLEzKNfm8V
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Date: Sun, 15 Oct 2023 01:20:42 +0200
-From: Alejandro Colomar <alx@kernel.org>
-To: Guo Ren <guoren@kernel.org>
-Cc: linux-man <linux-man@vger.kernel.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	linux-csky@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: set_thread_area.2: csky architecture undocumented
+> Support to store/show powermode value for Inspur by WMI interface.
+> This driver provides support for Inspur WMI hotkeys. User used Fn+Q to
+> change the power mode. If desktop applications receive hotkey(Fn+Q)
+> event, then it get the currently power mode and change the power mode.
+> The desktop applications modify brightness and cpufreq based on
+> power mode.
+>
+> change for v2
+> - Remove Event GUID, remove inspur_wmi_notify and inspur_wmi_notify.
+> - Add more explanation.
+>
+> Signed-off-by: Ai Chao <aichao@kylinos.cn>
+> ---
+>   drivers/platform/x86/Kconfig      |  14 ++
+>   drivers/platform/x86/Makefile     |   3 +
+>   drivers/platform/x86/inspur-wmi.c | 210 ++++++++++++++++++++++++++++++
+>   3 files changed, 227 insertions(+)
+>   create mode 100644 drivers/platform/x86/inspur-wmi.c
+>
+> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+> index 2a1070543391..fa2a4335c83d 100644
+> --- a/drivers/platform/x86/Kconfig
+> +++ b/drivers/platform/x86/Kconfig
+> @@ -988,6 +988,20 @@ config TOUCHSCREEN_DMI
+>   	  the OS-image for the device. This option supplies the missing info.
+>   	  Enable this for x86 tablets with Silead or Chipone touchscreens.
+>
+> +config INSPUR_WMI
+> +	tristate "Inspur WMI hotkeys driver"
+> +	depends on ACPI_WMI
+> +	depends on INPUT
 
-Hi Guo,
+The driver does not provide a input device anymore, please remove the
+dependency on CONFIG_INPUT.
 
-On Tue, Nov 24, 2020 at 08:07:07PM +0800, Guo Ren wrote:
+> +	help
+> +	This driver provides support for Inspur WMI hotkeys.
+> +	User used Fn+Q to change the power mode. If desktop applications
+> +	receive hotkeys(Fn+Q) event, then it get the currently power mode
+> +	and change the power mode. The desktop applications modify brightness
+> +	and cpufreq based on power mode.
+> +
 
-Huh, 3 years already!  I've had this in my head for all this time; just
-didn't find the energy to act on it.
+I assume the whole hotkey stuff uses the other WMI GUID, right? In this ca=
+se the
+current driver should not be called "Inspur WMI hotkeys driver", since it =
+does not
+handle those hotkey notifications. Better call it "Inspur WMI power mode d=
+river",
+and remove all references to the hotkeys.
 
-> Thx Michael & Alejandro,
->=20
-> Yes, the man page has no csky's.
+> +	To compile this driver as a module, choose M here: the module
+> +	will be called inspur-wmi.
+> +
+>   source "drivers/platform/x86/x86-android-tablets/Kconfig"
+>
+>   config FW_ATTR_CLASS
+> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefi=
+le
+> index b457de5abf7d..9285c252757e 100644
+> --- a/drivers/platform/x86/Makefile
+> +++ b/drivers/platform/x86/Makefile
+> @@ -98,6 +98,9 @@ obj-$(CONFIG_TOSHIBA_WMI)	+=3D toshiba-wmi.o
+>   # before toshiba_acpi initializes
+>   obj-$(CONFIG_ACPI_TOSHIBA)	+=3D toshiba_acpi.o
+>
+> +# Inspur
+> +obj-$(CONFIG_INSPUR_WMI)	+=3D inspur-wmi.o
+> +
+>   # Laptop drivers
+>   obj-$(CONFIG_ACPI_CMPC)		+=3D classmate-laptop.o
+>   obj-$(CONFIG_COMPAL_LAPTOP)	+=3D compal-laptop.o
+> diff --git a/drivers/platform/x86/inspur-wmi.c b/drivers/platform/x86/in=
+spur-wmi.c
+> new file mode 100644
+> index 000000000000..ef6cfd87f074
+> --- /dev/null
+> +++ b/drivers/platform/x86/inspur-wmi.c
+> @@ -0,0 +1,210 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + *  Inspur WMI hotkeys
+> + *
+> + *  Copyright (C) 2018	      Ai Chao <aichao@kylinos.cn>
+> + */
+> +
+> +#include <linux/acpi.h>
+> +#include <linux/device.h>
+> +#include <linux/input.h>
+> +#include <linux/module.h>
+> +#include <linux/wmi.h>
+> +
+> +#define WMI_INSPUR_POWERMODE_BIOS_GUID "596C31E3-332D-43C9-AEE9-5854932=
+84F5D"
+> +
+> +enum inspur_wmi_method_ids {
+> +	INSPUR_WMI_GET_POWERMODE =3D 0x02,
+> +	INSPUR_WMI_SET_POWERMODE =3D 0x03,
+> +};
+> +
+> +struct inspur_wmi_priv {
+> +	struct input_dev *idev;
+> +	struct wmi_device *wdev;
+> +};
+> +
+> +static int inspur_wmi_perform_query(struct wmi_device *wdev,
+> +				    enum inspur_wmi_method_ids query_id,
+> +				    void *buffer, size_t insize,
+> +				    size_t outsize)
+> +{
+> +	union acpi_object *obj;
+> +	acpi_status status;
+> +	int ret =3D 0;
+> +	struct acpi_buffer input =3D { insize, buffer};
+> +	struct acpi_buffer output =3D { ACPI_ALLOCATE_BUFFER, NULL };
 
-I've applied a patch to add initial documentation for it:
-<https://www.alejandro-colomar.es/src/alx/linux/man-pages/man-pages.git/com=
-mit/?h=3Dcontrib&id=3Da63979eb24aaf73f4be5799cc9579f84a3874b7d>
+Please order the variable declarations in a reverse xmas tree order,
+seeDocumentation/process/maintainer-netdev.rst#Local variable ordering for
+details.
 
->=20
-> C-SKY have abiv1 and abiv2
-> For abiv1: There is no register for tls saving, We use trap 3 to got
-> tls and use set_thread_area to init ti->tp_value.
-> For abiv2: The r31 is the tls register. We could directly read r31 to
-> got r31 and use set_thread_area to init reg->tls value.
->=20
-> In glibc:
-> # ifdef __CSKYABIV2__
-> /* Define r31 as thread pointer register.  */
-> #  define READ_THREAD_POINTER() \
->         mov r0, r31;
-> # else
-> #  define READ_THREAD_POINTER() \
->         trap 3;
-> # endif
->=20
-> /* Code to initially initialize the thread pointer.  This might need
->    special attention since 'errno' is not yet available and if the
->    operation can cause a failure 'errno' must not be touched.  */
-> # define TLS_INIT_TP(tcbp) \
->   ({ INTERNAL_SYSCALL_DECL (err);                                       \
->      long result_var;                                                   \
->      result_var =3D INTERNAL_SYSCALL (set_thread_area, err, 1,           =
- \
->                     (char *) (tcbp) + TLS_TCB_OFFSET);                  \
->      INTERNAL_SYSCALL_ERROR_P (result_var, err)                         \
->        ? "unknown error" : NULL; })
->=20
-> In kernel:
-> SYSCALL_DEFINE1(set_thread_area, unsigned long, addr)
-> {
->         struct thread_info *ti =3D task_thread_info(current);
->         struct pt_regs *reg =3D current_pt_regs();
->=20
->         reg->tls =3D addr;
->         ti->tp_value =3D addr;
->=20
->         return 0;
-> }
->=20
-> Any comments are welcome :)
+> +
+> +	status =3D wmidev_evaluate_method(wdev, 0, query_id, &input, &output);
+> +	if (ACPI_FAILURE(status)) {
+> +		dev_err(&wdev->dev, "EC Powermode control failed: %s\n",
+> +			acpi_format_exception(status));
+> +		return -EIO;
+> +	}
+> +
+> +	obj =3D output.pointer;
+> +	if (!obj)
+> +		return -EINVAL;
+> +
+> +	if (obj->type !=3D ACPI_TYPE_BUFFER) {
+> +		ret =3D -EINVAL;
+> +		goto out_free;
+> +	}
+> +
+> +	/* Ignore output data of zero size */
+> +	if (!outsize)
+> +		goto out_free;
 
-I'm sorry, but I have little understanding of this syscall, and that
-shounds like gibberish to me :)
+Since all users of this functions set outsize to something greater than ze=
+ro,
+this check is pointless. Please remove it.
 
-Feel free to send a patch to improve the documentation for csky.
+> +
+> +	if (obj->buffer.length !=3D outsize) {
+> +		ret =3D -EINVAL;
+> +		goto out_free;
+> +	}
+> +
+> +	memcpy(buffer, obj->buffer.pointer, obj->buffer.length);
+> +
+> +out_free:
+> +	kfree(obj);
+> +	return ret;
+> +}
+> +
+> +/**
+> + * Set Power Mode to EC RAM. If Power Mode value greater than 0x3,
+> + * return error
+> + * Method ID: 0x3
+> + * Arg: 4 Bytes
+> + * Byte [0]: Power Mode:
+> + *         0x0: Balance Mode
+> + *         0x1: Performance Mode
+> + *         0x2: Power Saver Mode
+> + * Return Value: 4 Bytes
+> + * Byte [0]: Return Code
+> + *         0x0: No Error
+> + *         0x1: Error
+> + */
 
-Cheers,
-Alex
+Now i understand what this power mode means. Why not use the platform prof=
+ile interface
+for this? All tree modes (Balance, Performance, Power Saver) would perfect=
+ly map to standard
+platform profiles (BALANCED, PERFORMANCE, LOW_POWER), and using the platfo=
+rm profile interface
+would allow userspace software to control the power mode over a standard i=
+nterface.
 
->=20
->=20
-> On Tue, Nov 24, 2020 at 5:51 PM Michael Kerrisk (man-pages)
-> <mtk.manpages@gmail.com> wrote:
-> >
-> > Hi Alex,
-> >
-> > On 11/23/20 10:31 PM, Alejandro Colomar (man-pages) wrote:
-> > > Hi Michael,
-> > >
-> > > SYNOPSIS
-> > >        #include <linux/unistd.h>
-> > >
-> > >        #if defined __i386__ || defined __x86_64__
-> > >        # include <asm/ldt.h>
-> > >
-> > >        int get_thread_area(struct user_desc *u_info);
-> > >        int set_thread_area(struct user_desc *u_info);
-> > >
-> > >        #elif defined __m68k__
-> > >
-> > >        int get_thread_area(void);
-> > >        int set_thread_area(unsigned long tp);
-> > >
-> > >        #elif defined __mips__
-> > >
-> > >        int set_thread_area(unsigned long addr);
-> > >
-> > >        #endif
-> > >
-> > >        Note: There are no glibc wrappers for these system  calls;  see
-> > >        NOTES.
-> > >
-> > >
-> > > $ grep -rn 'SYSCALL_DEFINE.*et_thread_area'
-> > > arch/csky/kernel/syscall.c:6:
-> > > SYSCALL_DEFINE1(set_thread_area, unsigned long, addr)
-> > > arch/mips/kernel/syscall.c:86:
-> > > SYSCALL_DEFINE1(set_thread_area, unsigned long, addr)
-> > > arch/x86/kernel/tls.c:191:
-> > > SYSCALL_DEFINE1(set_thread_area, struct user_desc __user *, u_info)
-> > > arch/x86/kernel/tls.c:243:
-> > > SYSCALL_DEFINE1(get_thread_area, struct user_desc __user *, u_info)
-> > > arch/x86/um/tls_32.c:277:
-> > > SYSCALL_DEFINE1(set_thread_area, struct user_desc __user *, user_desc)
-> > > arch/x86/um/tls_32.c:325:
-> > > SYSCALL_DEFINE1(get_thread_area, struct user_desc __user *, user_desc)
-> > >
-> > >
-> > > See kernel commit 4859bfca11c7d63d55175bcd85a75d6cee4b7184
-> > >
-> > >
-> > > I'd change
-> > > -      #elif defined __mips__
-> > > +      #elif defined(__mips__ || __csky__)
-> > >
-> > > and then change the rest of the text to add csky when appropriate.
-> > > Am I correct?
-> >
-> > AFAICT, you are correct. I think the reason that csky is missing is
-> > that the architecture was added after this manual pages was added.
-> >
-> > Thanks,
-> >
-> > Michael
-> >
-> >
-> > --
-> > Michael Kerrisk
-> > Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-> > Linux/UNIX System Programming Training: http://man7.org/training/
->=20
->=20
->=20
-> --
-> Best Regards
->  Guo Ren
->=20
-> ML: https://lore.kernel.org/linux-csky/
+I believe drivers/platform/surface/surface_platform_profile.c is a good ex=
+ample for such a driver,
+_except_ that it ignores the return value of platform_profile_register().
 
---=20
-<https://www.alejandro-colomar.es/>
+> +static ssize_t powermode_store(struct device *dev,
+> +			       struct device_attribute *attr,
+> +			       const char *buf, size_t count)
+> +{
+> +	struct inspur_wmi_priv *priv =3D dev_get_drvdata(dev);
+> +	int ret;
+> +	u32 mode;
 
---+7sKm7wLEzKNfm8V
-Content-Type: application/pgp-signature; name="signature.asc"
+Since the buffer passed to the WMI method is structured in bytes, maybe yo=
+u could use a
+byte array in those cases? This would remove the need to cast "mode" to a =
+"u8 *".
 
------BEGIN PGP SIGNATURE-----
+> +	u8 *ret_code;
+> +
+> +	ret =3D kstrtoint(buf, 0, &mode);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret =3D inspur_wmi_perform_query(priv->wdev,
+> +				       INSPUR_WMI_SET_POWERMODE,
+> +				       &mode, sizeof(mode), sizeof(mode));
+> +
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret_code =3D (u8 *)(&mode);
+> +	if (ret_code[0])
+> +		return -EBADRQC;
+> +
+> +	return count;
+> +}
+> +
+> +/**
+> + * Get Power Mode from EC RAM, If Power Mode value greater than 0x3,
+> + * return error
+> + * Method ID: 0x2
+> + * Return Value: 4 Bytes
+> + * Byte [0]: Return Code
+> + *         0x0: No Error
+> + *         0x1: Error
+> + * Byte [1]: Power Mode
+> + *         0x0: Balance Mode
+> + *         0x1: Performance Mode
+> + *         0x2: Power Saver Mode
+> + */
+> +static ssize_t powermode_show(struct device *dev,
+> +			      struct device_attribute *attr,
+> +			      char *buf)
+> +{
+> +	struct inspur_wmi_priv *priv =3D dev_get_drvdata(dev);
+> +	u32 mode =3D 0;
 
-iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmUrIkoACgkQnowa+77/
-2zJBLQ//XczzypNTi/1rlE2DDav7YKOaYkSEV4zNIYOD7QRlFeu5bZloPNIpMm2i
-dvwoKgQv+Jkex+diXoab4qDLD7oj8H+Ykrg4yEshEOP0f4BULBG6sV2/FieDIuoj
-fWauz5kls3qTCUNa3omyFAa7IbbQ01Lrn89JzMBxw8mo7MSMYv/WObWsc/BsPEAU
-gVPdVjCNwKJHajBIPAkSSnMBl83fqfGEsahdC1BrGe6NiDgAnCptcIOnGv8Qkgsn
-ElV1vwLGN3OESajN3fJz5iWhBB6xkgoCI1E9iYCYfj44AZDzpfnFD9M9yQHuEOsg
-TkEWkY5HdsJ/PhIcWn9Renwl/0rFvpV+2VYOY4Zm0P967uTP3Tbi+6fOy2g+VHgE
-6Cn7IxBoQ4gdH/NuLHfgbNPu5ZfS7vAKWTB7HRAu7tmLHWIUy50nZ6Q7zRCvgy9T
-4SCkFgPJsUB0IVhxCrgqgzlVB+ihk/Cr434z6GIZjZUE0bxTzHYtbMgTs44N2HpQ
-0l0lpaA8RDEwUIDXLZhzk62EjnYZcBGNeziOY4gYahru2uTOMg3K6qYBfKMzdYva
-79KWKO0VeVXIQN2zuVwi6mQa5biUQGDjxk3io/lgsIU64PN1FczV9EYoxSWQnoM4
-+44LIov8C3BiswxLN+XVJE1ZWPq7Nk6CBnoNy1ofMdPdr9jbHSg=
-=QgYa
------END PGP SIGNATURE-----
+Same as above.
 
---+7sKm7wLEzKNfm8V--
+> +	int ret;
+> +	u8 *ret_code;
+> +
+> +	ret =3D inspur_wmi_perform_query(priv->wdev,
+> +				       INSPUR_WMI_GET_POWERMODE,
+> +				       &mode, sizeof(mode), sizeof(mode));
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret_code =3D (u8 *)(&mode);
+> +	if (ret_code[0])
+> +		return -EBADRQC;
+> +
+> +	return sprintf(buf, "%u\n", ret_code[1]);
+> +}
+> +
+> +static DEVICE_ATTR_RW(powermode);
+> +
+> +static struct attribute *inspur_wmi_attrs[] =3D {
+> +	&dev_attr_powermode.attr,
+> +	NULL,
+> +};
+> +
+> +static const struct attribute_group inspur_wmi_group =3D {
+> +	.attrs =3D inspur_wmi_attrs,
+> +};
+> +
+> +static const struct attribute_group *inspur_wmi_groups[] =3D {
+> +	&inspur_wmi_group,
+> +	NULL,
+> +};
+> +
+> +static int inspur_wmi_input_setup(struct wmi_device *wdev)
+> +{
+> +	struct inspur_wmi_priv *priv =3D dev_get_drvdata(&wdev->dev);
+> +
+> +	priv->idev =3D devm_input_allocate_device(&wdev->dev);
+> +	if (!priv->idev)
+> +		return -ENOMEM;
+> +
+> +	priv->idev->name =3D "Inspur WMI hotkeys";
+> +	priv->idev->phys =3D "wmi/input0";
+> +	priv->idev->id.bustype =3D BUS_HOST;
+> +	priv->idev->dev.parent =3D &wdev->dev;
+> +
+> +	return input_register_device(priv->idev);
+> +}
+
+Please remove all remains of the hotkey handling.
+
+> +
+> +static int inspur_wmi_probe(struct wmi_device *wdev, const void *contex=
+t)
+> +{
+> +	struct inspur_wmi_priv *priv;
+> +
+> +	priv =3D devm_kzalloc(&wdev->dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	priv->wdev =3D wdev;
+> +	dev_set_drvdata(&wdev->dev, priv);
+> +
+> +	return inspur_wmi_input_setup(wdev);
+> +}
+> +
+> +static const struct wmi_device_id inspur_wmi_id_table[] =3D {
+> +	{ .guid_string =3D WMI_INSPUR_POWERMODE_BIOS_GUID },
+> +	{  }
+> +};
+> +
+> +static struct wmi_driver inspur_wmi_driver =3D {
+> +	.driver =3D {
+> +		.name =3D "inspur-wmi",
+> +		.dev_groups =3D inspur_wmi_groups,
+> +	},
+> +	.id_table =3D inspur_wmi_id_table,
+> +	.probe =3D inspur_wmi_probe,
+> +};
+> +
+> +module_wmi_driver(inspur_wmi_driver);
+> +
+> +MODULE_DEVICE_TABLE(wmi, inspur_wmi_id_table);
+
+Can you move this right below "inspur_wmi_id_table" please?
+
+> +MODULE_AUTHOR("Ai Chao <aichao@kylinos.cn>");
+> +MODULE_DESCRIPTION("Inspur WMI hotkeys");
+> +MODULE_LICENSE("GPL");
