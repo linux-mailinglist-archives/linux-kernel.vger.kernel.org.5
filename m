@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA20D7C9656
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 22:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2B37C9657
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 22:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233285AbjJNUv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 16:51:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59896 "EHLO
+        id S233327AbjJNUwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 16:52:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232548AbjJNUvr (ORCPT
+        with ESMTP id S233300AbjJNUvr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 14 Oct 2023 16:51:47 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45844E5
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 13:51:42 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c4fe37f166so31349001fa.1
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 13:51:42 -0700 (PDT)
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D69AE8
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 13:51:43 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-507a772ed97so488057e87.3
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 13:51:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697316700; x=1697921500; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1697316701; x=1697921501; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=bRAJxOH+ejiFnd2dNnRhzRVyCxEiMIKKKk9Axu7hk70=;
-        b=XYNtJSZK/uzSruRzgwY9rbGzw3b5LZBXjrfV1JJ5cBMaNlH4e2QOAnMN6K5LiEuVDW
-         T8iQCPgKd6bcM1yN6YEDNHi3sBV9T6vxBlszwxGV2VLV9moIAysVUUjmKL7ZXqnmrwoq
-         hrvJIA/TRSA2W8xr/oYcPfTQEu80UEkwQNY2rNW2XtAcXId83xneZZ03AdfL9P5nQxqZ
-         dPH0tFdvo0a7IyRAdhk5K03r1/PJtrWqd6w5nbRJnwfkaRWVCZX9ZQMsr+D7Cv73EH1u
-         Ut7FLrXQHe3fJ6oc8pQiYFQqS3aacvOep7oJKguFjvcfK0lku58rolqvLmDIzpeu0UB+
-         yZdQ==
+        bh=e1L3K+Ebs1IkB2w2DJrMtsRdnXrx4C52cUF/HzYsLH8=;
+        b=hgcT2xmzTa2ohiYfPvBgzJfM95hZwp9YcR0f64odrMk4/FOXw6mQrQl4/PszvgTLjl
+         v1XB43QvH5psCS/tdEPbAkiZVM0MFjwnbynU+fnufV5GlvpSA45369Wiu9MQBgE5PimC
+         2QQkjrdm0ozN6KLNzGRHL1A4OVJSmx7v2ND8vQ4kgP27IN9Mfn9+aNYOW+2jfnS0Naxm
+         IUaA7ioovaTRxSEJHECdaLNHhkh8tZaORZDWqDyAb2PTZnJgSL/pZV14UcY6LUJ052xo
+         8DoqRJ2CWGZoKFBkSSsk5M5ieVxQ0l1MjWJGKWQt/b356VmbNROqstobR5Ztww2LZZfE
+         Hqog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697316700; x=1697921500;
+        d=1e100.net; s=20230601; t=1697316701; x=1697921501;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bRAJxOH+ejiFnd2dNnRhzRVyCxEiMIKKKk9Axu7hk70=;
-        b=ObFJW7x6ZiyqTnmkmqOHfRGmNRonUi8yK4WesBS+TFQRSXGwz0BsA1sWFj1RKRzYxt
-         dn8ZO3ElhvB6qsMuBTEm7EZLKCUi8ZioFz8zHd5RDvLdpq/c1m0xOu+oR4qOacw46ygl
-         GOhHl+RnjqdMTKifM3FlOQ1KyiawQUEtnuksDwgKfSNHodxERTq8EAeOZ/4mpooWTTrs
-         y0ul24XsOsQrHUPhvk8n+0u8wRQsnxMxaDIkdkwI4JHREfUrzKLpoxP/+CRCAEBmhptG
-         f3sd4rgo1xLSrU/LKyyqE0UCYX7VfPzbVV+FAxHaC/ucWjBzhFLeVy7W4UPPhDGVH7Vk
-         yn+w==
-X-Gm-Message-State: AOJu0YyOStyWv4cChXzfDtMoLePyr56fBYLH08anXeP+MfDvDwMyZVUK
-        KqU13N0dEJbf39ZZcb5p3078NQ==
-X-Google-Smtp-Source: AGHT+IHiYFzH4L27RvGel/ewKBVSDQZKNNhqc1MjbrSoR+syC458v0e8MZxut888hqckGMcP6t+aYw==
-X-Received: by 2002:ac2:46ed:0:b0:507:a12c:558c with SMTP id q13-20020ac246ed000000b00507a12c558cmr2254730lfo.46.1697316700511;
-        Sat, 14 Oct 2023 13:51:40 -0700 (PDT)
+        bh=e1L3K+Ebs1IkB2w2DJrMtsRdnXrx4C52cUF/HzYsLH8=;
+        b=Q7hKxh50zkK913cmKynsHS+sgNkztqld/7UR+eM+K3pCJ2B6Eg6mIg5mn1ckavWO49
+         zK8sYfYMzPyHfhwet8PJQdLSpkU+6sBFn01NRM8sn5hG1i6tNSqto86wsi5Oqhr/KTcQ
+         t4hqHK6kXCy87laafYt7oHLov3nMy532MyeWDWQD9g+T5EWtyYVYaQfMtIixG+LHSJFI
+         FXosbKEoy+SYJpmrWh1emQKZ1CPFA+iTgwUQRdPLvnVNGmn4RXcggW7oqlgV1AoyqSmb
+         cKq9+EBmSyc+w1cSRSJvHTBAaJlLvzETDtcTGy131MpqAb/QEarCpD7Wzx+xWtXZfUCY
+         pTjQ==
+X-Gm-Message-State: AOJu0Yxs02Ve4SXnFXdipLb+hr453lNDh6+AiZTiBtTpBCFoZRqHIJfG
+        49DMJiB5U0L+zK3aWF7E+a/2ow==
+X-Google-Smtp-Source: AGHT+IHtQpWgOHFYKb5Kidy8nqsBhBLPrhhxehpUXmo1r7QzUOnSNYAcKW4qHHgvbKZzfo+tqHM7mg==
+X-Received: by 2002:a05:6512:b01:b0:503:19d9:4b6f with SMTP id w1-20020a0565120b0100b0050319d94b6fmr29910390lfu.0.1697316701548;
+        Sat, 14 Oct 2023 13:51:41 -0700 (PDT)
 Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id o17-20020ac24e91000000b004ff96c09b47sm49926lfr.260.2023.10.14.13.51.39
+        by smtp.gmail.com with ESMTPSA id o17-20020ac24e91000000b004ff96c09b47sm49926lfr.260.2023.10.14.13.51.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Oct 2023 13:51:40 -0700 (PDT)
+        Sat, 14 Oct 2023 13:51:41 -0700 (PDT)
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 14 Oct 2023 22:51:35 +0200
-Subject: [PATCH net-next v2 4/5] ARM: dts: nxp: Fix some common switch
- mistakes
+Date:   Sat, 14 Oct 2023 22:51:36 +0200
+Subject: [PATCH net-next v2 5/5] ARM64: dts: marvell: Fix some common
+ switch mistakes
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231014-marvell-88e6152-wan-led-v2-4-7fca08b68849@linaro.org>
+Message-Id: <20231014-marvell-88e6152-wan-led-v2-5-7fca08b68849@linaro.org>
 References: <20231014-marvell-88e6152-wan-led-v2-0-7fca08b68849@linaro.org>
 In-Reply-To: <20231014-marvell-88e6152-wan-led-v2-0-7fca08b68849@linaro.org>
 To:     Andrew Lunn <andrew@lunn.ch>,
@@ -79,9 +79,8 @@ Cc:     Christian Marangi <ansuelsmth@gmail.com>,
         Linus Walleij <linus.walleij@linaro.org>
 X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -89,118 +88,217 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fix some errors in the Marvell MV88E6xxx switch descriptions:
-- switch0@0 is not OK, should be switch@0
+- The top node had no address size or cells.
+- switch0@0 is not OK, should be switch@0.
+- port@a is not normal port naming, use decimal port@10.
 
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- arch/arm/boot/dts/nxp/vf/vf610-zii-cfu1.dts      | 2 +-
- arch/arm/boot/dts/nxp/vf/vf610-zii-scu4-aib.dts  | 8 ++++----
- arch/arm/boot/dts/nxp/vf/vf610-zii-spb4.dts      | 2 +-
- arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-dtu.dts  | 4 ++--
- arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-spu3.dts | 2 +-
- 5 files changed, 9 insertions(+), 9 deletions(-)
+ .../boot/dts/marvell/armada-3720-espressobin.dtsi  |  4 +--
+ .../boot/dts/marvell/armada-3720-gl-mv1000.dts     |  4 +--
+ .../boot/dts/marvell/armada-3720-turris-mox.dts    | 32 +++++++++++-----------
+ .../boot/dts/marvell/armada-7040-mochabin.dts      |  2 --
+ .../dts/marvell/armada-8040-clearfog-gt-8k.dts     |  2 +-
+ arch/arm64/boot/dts/marvell/cn9130-crb.dtsi        |  6 ++--
+ 6 files changed, 21 insertions(+), 29 deletions(-)
 
-diff --git a/arch/arm/boot/dts/nxp/vf/vf610-zii-cfu1.dts b/arch/arm/boot/dts/nxp/vf/vf610-zii-cfu1.dts
-index 1a19aec8957b..add47d8fb58a 100644
---- a/arch/arm/boot/dts/nxp/vf/vf610-zii-cfu1.dts
-+++ b/arch/arm/boot/dts/nxp/vf/vf610-zii-cfu1.dts
-@@ -162,7 +162,7 @@ mdio1: mdio {
- 		suppress-preamble;
- 		status = "okay";
+diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
+index 5fc613d24151..b526efeee293 100644
+--- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
++++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
+@@ -145,10 +145,8 @@ &usb2 {
+ };
  
--		switch0: switch0@0 {
-+		switch0: switch@0 {
- 			compatible = "marvell,mv88e6085";
- 			pinctrl-names = "default";
- 			pinctrl-0 = <&pinctrl_switch>;
-diff --git a/arch/arm/boot/dts/nxp/vf/vf610-zii-scu4-aib.dts b/arch/arm/boot/dts/nxp/vf/vf610-zii-scu4-aib.dts
-index df1335492a19..50356bd87d04 100644
---- a/arch/arm/boot/dts/nxp/vf/vf610-zii-scu4-aib.dts
-+++ b/arch/arm/boot/dts/nxp/vf/vf610-zii-scu4-aib.dts
-@@ -47,7 +47,7 @@ mdio_mux_1: mdio@1 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
+ &mdio {
+-	switch0: switch0@1 {
++	switch0: switch@1 {
+ 		compatible = "marvell,mv88e6085";
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+ 		reg = <1>;
  
--			switch0: switch0@0 {
-+			switch0: switch@0 {
- 				compatible = "marvell,mv88e6190";
- 				reg = <0>;
- 				dsa,member = <0 0>;
-@@ -130,7 +130,7 @@ mdio_mux_2: mdio@2 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
+ 		dsa,member = <0 0>;
+diff --git a/arch/arm64/boot/dts/marvell/armada-3720-gl-mv1000.dts b/arch/arm64/boot/dts/marvell/armada-3720-gl-mv1000.dts
+index b1b45b4fa9d4..5de4417f929c 100644
+--- a/arch/arm64/boot/dts/marvell/armada-3720-gl-mv1000.dts
++++ b/arch/arm64/boot/dts/marvell/armada-3720-gl-mv1000.dts
+@@ -152,10 +152,8 @@ &uart0 {
+ };
  
--			switch1: switch1@0 {
-+			switch1: switch@0 {
- 				compatible = "marvell,mv88e6190";
- 				reg = <0>;
- 				dsa,member = <0 1>;
-@@ -188,7 +188,7 @@ mdio_mux_4: mdio@4 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
+ &mdio {
+-	switch0: switch0@1 {
++	switch0: switch@1 {
+ 		compatible = "marvell,mv88e6085";
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+ 		reg = <1>;
  
--			switch2: switch2@0 {
-+			switch2: switch@0 {
- 				compatible = "marvell,mv88e6190";
- 				reg = <0>;
- 				dsa,member = <0 2>;
-@@ -276,7 +276,7 @@ mdio_mux_8: mdio@8 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
+ 		dsa,member = <0 0>;
+diff --git a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
+index 9eab2bb22134..ea66ba5a9762 100644
+--- a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
++++ b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
+@@ -305,7 +305,7 @@ phy1: ethernet-phy@1 {
+ 	};
  
--			switch3: switch3@0 {
-+			switch3: switch@0 {
- 				compatible = "marvell,mv88e6190";
- 				reg = <0>;
- 				dsa,member = <0 3>;
-diff --git a/arch/arm/boot/dts/nxp/vf/vf610-zii-spb4.dts b/arch/arm/boot/dts/nxp/vf/vf610-zii-spb4.dts
-index 1461804ecaea..20e9e2dacbe6 100644
---- a/arch/arm/boot/dts/nxp/vf/vf610-zii-spb4.dts
-+++ b/arch/arm/boot/dts/nxp/vf/vf610-zii-spb4.dts
-@@ -123,7 +123,7 @@ mdio1: mdio {
- 		suppress-preamble;
- 		status = "okay";
- 
--		switch0: switch0@0 {
-+		switch0: switch@0 {
- 			compatible = "marvell,mv88e6190";
- 			pinctrl-0 = <&pinctrl_gpio_switch0>;
- 			pinctrl-names = "default";
-diff --git a/arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-dtu.dts b/arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-dtu.dts
-index 463c2452b9b7..aa53a60518c3 100644
---- a/arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-dtu.dts
-+++ b/arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-dtu.dts
-@@ -112,7 +112,7 @@ mdio1: mdio {
- 		suppress-preamble;
- 		status = "okay";
- 
--		switch0: switch0@0 {
-+		switch0: switch@0 {
- 			compatible = "marvell,mv88e6190";
- 			pinctrl-0 = <&pinctrl_gpio_switch0>;
- 			pinctrl-names = "default";
-@@ -167,7 +167,7 @@ port@9 {
- 				};
+ 	/* switch nodes are enabled by U-Boot if modules are present */
+-	switch0@10 {
++	switch@10 {
+ 		compatible = "marvell,mv88e6190";
+ 		reg = <0x10>;
+ 		dsa,member = <0 0>;
+@@ -410,8 +410,8 @@ port@9 {
+ 				managed = "in-band-status";
  			};
  
--			mdio1 {
-+			mdio-external {
- 				compatible = "marvell,mv88e6xxx-mdio-external";
- 				#address-cells = <1>;
- 				#size-cells = <0>;
-diff --git a/arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-spu3.dts b/arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-spu3.dts
-index f5ae0d5de315..0b7063b74130 100644
---- a/arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-spu3.dts
-+++ b/arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-spu3.dts
-@@ -137,7 +137,7 @@ mdio1: mdio {
- 		suppress-preamble;
- 		status = "okay";
+-			switch0port10: port@a {
+-				reg = <0xa>;
++			switch0port10: port@10 {
++				reg = <10>;
+ 				label = "dsa";
+ 				phy-mode = "2500base-x";
+ 				managed = "in-band-status";
+@@ -419,8 +419,8 @@ switch0port10: port@a {
+ 				status = "disabled";
+ 			};
  
--		switch0: switch0@0 {
-+		switch0: switch@0 {
- 			compatible = "marvell,mv88e6190";
- 			pinctrl-0 = <&pinctrl_gpio_switch0>;
- 			pinctrl-names = "default";
+-			port-sfp@a {
+-				reg = <0xa>;
++			port-sfp@10 {
++				reg = <10>;
+ 				label = "sfp";
+ 				sfp = <&sfp>;
+ 				phy-mode = "sgmii";
+@@ -430,7 +430,7 @@ port-sfp@a {
+ 		};
+ 	};
+ 
+-	switch0@2 {
++	switch@2 {
+ 		compatible = "marvell,mv88e6085";
+ 		reg = <0x2>;
+ 		dsa,member = <0 0>;
+@@ -497,7 +497,7 @@ port@5 {
+ 		};
+ 	};
+ 
+-	switch1@11 {
++	switch@11 {
+ 		compatible = "marvell,mv88e6190";
+ 		reg = <0x11>;
+ 		dsa,member = <0 1>;
+@@ -602,8 +602,8 @@ switch1port9: port@9 {
+ 				link = <&switch0port10>;
+ 			};
+ 
+-			switch1port10: port@a {
+-				reg = <0xa>;
++			switch1port10: port@10 {
++				reg = <10>;
+ 				label = "dsa";
+ 				phy-mode = "2500base-x";
+ 				managed = "in-band-status";
+@@ -611,8 +611,8 @@ switch1port10: port@a {
+ 				status = "disabled";
+ 			};
+ 
+-			port-sfp@a {
+-				reg = <0xa>;
++			port-sfp@10 {
++				reg = <10>;
+ 				label = "sfp";
+ 				sfp = <&sfp>;
+ 				phy-mode = "sgmii";
+@@ -622,7 +622,7 @@ port-sfp@a {
+ 		};
+ 	};
+ 
+-	switch1@2 {
++	switch@2 {
+ 		compatible = "marvell,mv88e6085";
+ 		reg = <0x2>;
+ 		dsa,member = <0 1>;
+@@ -689,7 +689,7 @@ port@5 {
+ 		};
+ 	};
+ 
+-	switch2@12 {
++	switch@12 {
+ 		compatible = "marvell,mv88e6190";
+ 		reg = <0x12>;
+ 		dsa,member = <0 2>;
+@@ -794,8 +794,8 @@ switch2port9: port@9 {
+ 				link = <&switch1port10 &switch0port10>;
+ 			};
+ 
+-			port-sfp@a {
+-				reg = <0xa>;
++			port-sfp@10 {
++				reg = <10>;
+ 				label = "sfp";
+ 				sfp = <&sfp>;
+ 				phy-mode = "sgmii";
+@@ -805,7 +805,7 @@ port-sfp@a {
+ 		};
+ 	};
+ 
+-	switch2@2 {
++	switch@2 {
+ 		compatible = "marvell,mv88e6085";
+ 		reg = <0x2>;
+ 		dsa,member = <0 2>;
+diff --git a/arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts b/arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts
+index 48202810bf78..3cc794fcf12e 100644
+--- a/arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts
++++ b/arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts
+@@ -303,8 +303,6 @@ eth2phy: ethernet-phy@1 {
+ 	/* 88E6141 Topaz switch */
+ 	switch: switch@3 {
+ 		compatible = "marvell,mv88e6085";
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+ 		reg = <3>;
+ 
+ 		pinctrl-names = "default";
+diff --git a/arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts b/arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts
+index 4125202028c8..7a25ea36b565 100644
+--- a/arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts
++++ b/arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts
+@@ -497,7 +497,7 @@ ge_phy: ethernet-phy@0 {
+ 		reset-deassert-us = <10000>;
+ 	};
+ 
+-	switch0: switch0@4 {
++	switch0: switch@4 {
+ 		compatible = "marvell,mv88e6085";
+ 		reg = <4>;
+ 		pinctrl-names = "default";
+diff --git a/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi b/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi
+index 32cfb3e2efc3..2f6281b66467 100644
+--- a/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi
++++ b/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi
+@@ -207,11 +207,9 @@ phy0: ethernet-phy@0 {
+ 		reg = <0>;
+ 	};
+ 
+-	switch6: switch0@6 {
++	switch6: switch@6 {
+ 		/* Actual device is MV88E6393X */
+ 		compatible = "marvell,mv88e6190";
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+ 		reg = <6>;
+ 		interrupt-parent = <&cp0_gpio1>;
+ 		interrupts = <28 IRQ_TYPE_LEVEL_LOW>;
+@@ -280,7 +278,7 @@ port@9 {
+ 				managed = "in-band-status";
+ 			};
+ 
+-			port@a {
++			port@10 {
+ 				reg = <10>;
+ 				ethernet = <&cp0_eth0>;
+ 				phy-mode = "10gbase-r";
 
 -- 
 2.34.1
