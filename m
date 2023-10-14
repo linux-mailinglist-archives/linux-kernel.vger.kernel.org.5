@@ -2,126 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B8F7C95DC
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 20:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A3F7C95E2
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 20:20:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233305AbjJNSNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 14:13:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37734 "EHLO
+        id S233306AbjJNSUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 14:20:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230016AbjJNSNm (ORCPT
+        with ESMTP id S231330AbjJNSUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 14:13:42 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 654BBCC
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 11:13:40 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9a39444700so3606813276.0
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 11:13:40 -0700 (PDT)
+        Sat, 14 Oct 2023 14:20:10 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C71EED6
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 11:20:07 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-53e855d7dacso628394a12.0
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 11:20:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697307219; x=1697912019; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=rKyrhxaGZv0nPLnMXbvJXkiVEGuU/Lq6wP9rgM/Alfg=;
-        b=u/yYNOojuWmJosMmEwVDzzax7C8pIpjeMNn6ObQ2JFgunKX5fe3pJvQUIhHaq3wXfx
-         muDTEoWT32bmlJ0SmlSdQjj4DayGooJQ6F1X/SZv0NLDdmcbCb1lyRWbVsEyOz1RWE1Z
-         /5e83rH3pztsq+OrAwowSsXxvfydaRQOUAKDex/lwj2iwlzODSKDhM1myiOOlt0XTzBt
-         gR/qxsCJCPcbObAYBnc3ECzKuxca/dwcoUcoOENHJOoXOSZtHhsKaGZIDVFX0alEXYx5
-         3FI5Omjd7jEhF/5ukmATWtr67wQgkI/sd3bcLNm+C5xKMwdcqcA5lAodoPOYzxswrBKL
-         ASCw==
+        d=pqrs.dk; s=google; t=1697307606; x=1697912406; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6fOl+bxIlDqRdabWV4eMcPga/r08+UAl61pbyIP1Fbo=;
+        b=CI/R2blfT4aj3bZA7FuBTBeCrJ5D1W2lHpUTuttuu2icJ7h6uiub6248pm+8c6M8NM
+         m4fTxS5O9ojlGfEH93efaSgq3rTL5da5LiMNZQ9hT5+pw4kpUh1onmnSTYXxF7fk9MxP
+         ThSlg1PWRHIKfB1jpIjpZHj28T/6vhLCDNLMiU6OPcD6dI4Pfsvee4yf1RDiapfdjs9q
+         CAcuvii6W0pfYj11QwCEoNmtkPN2WBeGshP5tbkHqa7ZhomYk86kzPx98Z/DJJkx4HGH
+         afxqRWLjuDPK0DbK1nbItP9BVuxmWK9TJaBHX+48xzzaLXjty4SHHz1Reoc6SEnnRn6O
+         kMRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697307219; x=1697912019;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rKyrhxaGZv0nPLnMXbvJXkiVEGuU/Lq6wP9rgM/Alfg=;
-        b=WfrchimKrQJVw12wIye9Fl2jphOSTMQAezY8PM19vDI7pusHai6lwP/TSHAfCW3sUq
-         VL9Wv1FzymaAc1aYT7BMbvgXJzDOpMRj55V1E3YKnW53hi7v6Myn2UlqdjERADGwChIT
-         8hoT4pFhw9UlTQrWfMt9y4EodGSa2ZbzkzNzCB6aYrYN5c7Bx90aI7OHrFQxyr+P9qgK
-         g5hRoZa4YFrWwK6qPc3+EP0f3R/z5rRtfN0/AwaJBPWChbK95MYC52dF+hOXOX+MkvvZ
-         nY/M1xVU3hIZNIatOgkUx+nrmig9TlNXP7HxxJGarS7pqDraUmPip9z1wNGrU+TFsn5z
-         clrg==
-X-Gm-Message-State: AOJu0Yw9c3uY4wu3naunuP8l2FlDCQ90nyac7ukMjkOqwbyIulvbsScy
-        vvuhNfQce76FBpFvwNLiamggrr2KP2Vjt6rMMRJJ
-X-Google-Smtp-Source: AGHT+IH0MJExwfauji0fzv9X3e2ja5LOFD5TgaDDRwSxh/LV1XA12gw16CrCrlDxSl0RHLgxPKVAr43tr6sACN2TaXH5
-X-Received: from vamshig51.c.googlers.com ([fda3:e722:ac3:cc00:3:22c1:c0a8:70c])
- (user=vamshigajjela job=sendgmr) by 2002:a25:d748:0:b0:d89:cd65:c2b0 with
- SMTP id o69-20020a25d748000000b00d89cd65c2b0mr95600ybg.6.1697307219523; Sat,
- 14 Oct 2023 11:13:39 -0700 (PDT)
-Date:   Sat, 14 Oct 2023 23:43:33 +0530
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-Message-ID: <20231014181333.2579530-1-vamshigajjela@google.com>
-Subject: [PATCH v2 1/3] serial: core: Potential overflow of frame_time
-From:   Vamshi Gajjela <vamshigajjela@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        ilpo.jarvinen@linux.intel.com
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        manugautam@google.com, Subhash Jadavani <sjadavani@google.com>,
-        Channa Kadabi <kadabi@google.com>,
-        VAMSHI GAJJELA <vamshigajjela@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1697307606; x=1697912406;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6fOl+bxIlDqRdabWV4eMcPga/r08+UAl61pbyIP1Fbo=;
+        b=GUUZ5OD3FYs6KOIg+Pozaip6UdxQYr04FHt8kzS7j0LBAexqeZnv5Babk6m8zfSDhv
+         IZCslJGYk3zuuqrydHUYcCCsbovAGNmbknboTJ/hsS+cMo6/3l9PuLE3FM8m0lCgpmcJ
+         oBv3irF+twiQwm8hC9twRgXZeJPZpJiYzXiTaI2BuGVCjc5K2uC/C1kDZagwzXE+exUa
+         7X+ZFmOrTRJ9Dkjdgu0AaPoM4S4F9MVF00OKbXsiHdKBQCEobG7voLu+blzHLxpooxXV
+         SqiFYnjdpTr1sOhs49lVQ1uiMYA+/7IhQSQSVhjweAOCtpsB9/zZIV35RLSu729WlR5j
+         nojw==
+X-Gm-Message-State: AOJu0Yx1uqvTjmaCoUbY9gatUITUrLPi7mjY/tcxzbBNxYeQfqwqCPDr
+        DDee8I3KMfLNqcNVU9iJRU2dJQ==
+X-Google-Smtp-Source: AGHT+IFR9nQTum39uWgT3lfCZqNdApJtGkGJUxCRS85dC01cenjmbGl9KKwCRplUainYK5xaGtAtLA==
+X-Received: by 2002:a05:6402:241a:b0:53d:bdd2:3d62 with SMTP id t26-20020a056402241a00b0053dbdd23d62mr11762343eda.30.1697307606118;
+        Sat, 14 Oct 2023 11:20:06 -0700 (PDT)
+Received: from capella.localdomain (80.71.142.18.ipv4.parknet.dk. [80.71.142.18])
+        by smtp.gmail.com with ESMTPSA id i13-20020a056402054d00b005231e3d89efsm13032574edx.31.2023.10.14.11.20.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Oct 2023 11:20:05 -0700 (PDT)
+From:   =?utf-8?q?Alvin_=C5=A0ipraga?= <alvin@pqrs.dk>
+Subject: [PATCH v4 0/3] clk: si5351: add option to adjust PLL without
+ glitches
+Date:   Sat, 14 Oct 2023 20:19:40 +0200
+Message-Id: <20231014-alvin-clk-si5351-no-pll-reset-v4-0-a3567024007d@bang-olufsen.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIALzbKmUC/y2NQQ6CMBAAv0L27JJuoQY9+Q/DoSmLbGgKtoRoC
+ H+3oseZw8wGiaNwgmuxQeRVkkwhQ30qwA02PBilywxa6YoU1Wj9KgGdHzGJqQxhmHD2HiMnXpB
+ db52yZ2OUg9yYI/fyOvr3NvMgaZni+9it9LX/smqIqNJ1aRptLgbpN7rNz5jKboR23/cPER/K6
+ a0AAAA=
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        =?utf-8?q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>
+Cc:     Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rabeeh Khoury <rabeeh@solid-run.com>,
+        Jacob Siverskog <jacob@teenage.engineering>,
+        Sergej Sawazki <sergej@taudac.com>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: VAMSHI GAJJELA <vamshigajjela@google.com>
+This series intends to address a problem I had when using the Si5351A as
+a runtime adjustable audio bit clock. The basic issue is that the driver
+in its current form unconditionally resets the PLL whenever adjusting
+its rate. But this reset causes an unwanted ~1.4 ms LOW signal glitch in
+the clock output.
 
-uart_update_timeout() sets a u64 value to an unsigned int frame_time.
-While it can be cast to u32 before assignment, there's a specific case
-where frame_time is cast to u64. Since frame_time consistently
-participates in u64 arithmetic, its data type is converted to u64 to
-eliminate the need for explicit casting.
+As a remedy, a new property is added to control the reset behaviour of
+the PLLs more precisely. In the process I also converted the bindings to
+YAML.
 
-Signed-off-by: VAMSHI GAJJELA <vamshigajjela@google.com>
+Changes:
+
+v3 -> v4:
+
+- remove spurious | per Rob's suggestion
+- simplify conditional clocks/clock-names per Rob's suggestion
+- remove mention of clkout[0-7] still being admissible in the commit
+  body of patch 1 - while the Linux driver still tolerates this, the
+  new dt-bindings do not
+
+v2 -> v3:
+
+- address further comments from Rob:
+  - drop unnecessary refs and minItems
+  - simplify if conditions for chip variants
+  - ignore his comment about dropping '|', as line would be >80 columns
+  - move additionalProperties: false close to type: object
+  - define clocks/clock-names at top-level
+- drop patch to dove-cubox dts per Krzysztof's comment - will send
+  separately
+- collect Sebastian's Acked-by
+
+v1 -> v2:
+
+- address Rob's comments on the two dt-bindings patches
+- new patch to correct the clock node names in the only upstream device
+  tree using si5351
+
 ---
-v2:
-- use DIV64_U64_ROUND_UP with frame_time
+Alvin Šipraga (3):
+      dt-bindings: clock: si5351: convert to yaml
+      dt-bindings: clock: si5351: add PLL reset mode property
+      clk: si5351: allow PLLs to be adjusted without reset
 
- drivers/tty/serial/8250/8250_port.c | 2 +-
- include/linux/serial_core.h         | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
-index 141627370aab..d1bf794498c4 100644
---- a/drivers/tty/serial/8250/8250_port.c
-+++ b/drivers/tty/serial/8250/8250_port.c
-@@ -1510,7 +1510,7 @@ static inline void __stop_tx(struct uart_8250_port *p)
- 			 * rather than after it is fully sent.
- 			 * Roughly estimate 1 extra bit here with / 7.
- 			 */
--			stop_delay = p->port.frame_time + DIV_ROUND_UP(p->port.frame_time, 7);
-+			stop_delay = p->port.frame_time + DIV64_U64_ROUND_UP(p->port.frame_time, 7);
- 		}
- 
- 		__stop_tx_rs485(p, stop_delay);
-diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
-index bb6f073bc159..b128513b009a 100644
---- a/include/linux/serial_core.h
-+++ b/include/linux/serial_core.h
-@@ -558,7 +558,7 @@ struct uart_port {
- 
- 	bool			hw_stopped;		/* sw-assisted CTS flow state */
- 	unsigned int		mctrl;			/* current modem ctrl settings */
--	unsigned int		frame_time;		/* frame timing in ns */
-+	unsigned long		frame_time;		/* frame timing in ns */
- 	unsigned int		type;			/* port type */
- 	const struct uart_ops	*ops;
- 	unsigned int		custom_divisor;
-@@ -764,7 +764,7 @@ unsigned int uart_get_divisor(struct uart_port *port, unsigned int baud);
-  */
- static inline unsigned long uart_fifo_timeout(struct uart_port *port)
- {
--	u64 fifo_timeout = (u64)READ_ONCE(port->frame_time) * port->fifosize;
-+	u64 fifo_timeout = READ_ONCE(port->frame_time) * port->fifosize;
- 
- 	/* Add .02 seconds of slop */
- 	fifo_timeout += 20 * NSEC_PER_MSEC;
--- 
-2.42.0.655.g421f12c284-goog
+ .../devicetree/bindings/clock/silabs,si5351.txt    | 126 ----------
+ .../devicetree/bindings/clock/silabs,si5351.yaml   | 269 +++++++++++++++++++++
+ drivers/clk/clk-si5351.c                           |  47 +++-
+ include/linux/platform_data/si5351.h               |   2 +
+ 4 files changed, 315 insertions(+), 129 deletions(-)
+---
+base-commit: b7c08e5d3824bc57182b308c1e158ddfdbe4cd00
+change-id: 20231014-alvin-clk-si5351-no-pll-reset-ecfac0a6550c
 
