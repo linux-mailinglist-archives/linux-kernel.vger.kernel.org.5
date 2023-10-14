@@ -2,448 +2,594 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D497C9466
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 13:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A634B7C946B
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 13:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233130AbjJNLtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 07:49:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45330 "EHLO
+        id S233178AbjJNL5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 07:57:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232994AbjJNLtp (ORCPT
+        with ESMTP id S233176AbjJNL4s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 07:49:45 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA184AD;
-        Sat, 14 Oct 2023 04:49:42 -0700 (PDT)
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39EAV5iO008923;
-        Sat, 14 Oct 2023 11:49:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=vZZlyaxg0xJ4c/wEf3XbGS+df/jGZtLB+IoqsLRMFK8=;
- b=FHTRThD5SJ7wfcmnUkdfqhowYxG682XWhCB9rAmH08XB9IbhKPdqMmEKjoavcE1oveE7
- EYjYwRkK7lnznRMsjtTWvpzIn1EPtlq229LkmcXYnnWC/GjCU9hCjuwXikHCJz7BQQof
- BIJsS9cryvIv+FFKpXvUplLlpjese4PhHkdE4Byr9OT7VvMzT151JUvF5ez00Nx8Ge1C
- Lqa50W891wfFAaZuZ5B2p1031zjiNqOCtkLfnPvbsmENX6iEVsFQqqG9Qz36MprKtmO1
- nm+s7irPOSxSxBLrdH7UcGCxC46VNIxsu/PQ8QAN02d4arFGpG0dBn1VNPZ/dHj+HSZq sA== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tqk1crb5n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 14 Oct 2023 11:49:06 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39E7rFsc034464;
-        Sat, 14 Oct 2023 11:49:05 GMT
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2040.outbound.protection.outlook.com [104.47.56.40])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3tqhe2576s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 14 Oct 2023 11:49:05 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DmNvy2LUBttQK0amw4MuTDA9bKI2t36vdFs1s/g+V2dbbkNQnm3chjBKxG1DGZo4R0qyYfsktgqgy0mtRw2dDej880qESk+P325Q+5Mkh1DVi0HkZmwR/OfrlIbFNYzG1c9awhK4bd+9RpqSXuzfnudlsQ/K24hhmqKeZ+AcAAIoY1Wu6gZWuIgimQaMZIBhXsUV7B2YoeGOxk1hjrI4DT1FPsNUqFnrZr5eZkX8YC4gxNfCQ8HQ2znzPQoh3KKdN47EztcED7omWsImzuw+DADX1eBr82NlorDNfYRmEkHNHks3Z+YoRz2kUkxhNXt3vlyQBTHoFZTq67RPP2OahA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vZZlyaxg0xJ4c/wEf3XbGS+df/jGZtLB+IoqsLRMFK8=;
- b=TIaSscD8wPl57Kq70Fahiyrws89fC+QFxwABBH8BKlDOftgM6gvMBlt6H1i1D+7OjzJJ60e2h9AZQRM+3Zi7SqJ/EGAs7iN52RHmh06u61/qK5CE6KRB6MwGwlaP214hb4I/9ZEEGJtOjk+e4sXvCOrS2WGRsNEg5SmuYLxBKK/mWBhVhBKNAPpDdY7y+wrkPPhR+RnT8Iu2Zpi+QfZX5vfE0yc3/jp86BfsApD0QFDi8EXf0cDyvUgCVzAjtK2qAPwh5Ye5jFmJcSCWztYKTB0uOkDJpmB1jMupcCvlo79slGIOTZiG3+Q/PAazw1LpTRWPmpgCfswNY3LnHF2tKA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Sat, 14 Oct 2023 07:56:48 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB787AD;
+        Sat, 14 Oct 2023 04:56:44 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-406619b53caso30357375e9.1;
+        Sat, 14 Oct 2023 04:56:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vZZlyaxg0xJ4c/wEf3XbGS+df/jGZtLB+IoqsLRMFK8=;
- b=fHzXNg3/NkHxhIXreofoN6YVkON/MZPCbAa6UgU0/qmZCN5DeSImB3S4Ss1a5806CV2xy4cyjZ+n95d7maKZ69mCnEysu0RopjdRIIrzuUTNC5awUESN08ko3gb/faC0ad0iBW+z5fvoOwpXQnnoPiXCedtTBXI20NehLUzVnEk=
-Received: from PH0PR10MB5433.namprd10.prod.outlook.com (2603:10b6:510:e0::9)
- by MW4PR10MB6582.namprd10.prod.outlook.com (2603:10b6:303:229::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.45; Sat, 14 Oct
- 2023 11:49:02 +0000
-Received: from PH0PR10MB5433.namprd10.prod.outlook.com
- ([fe80::9e2f:88c3:ca28:45a3]) by PH0PR10MB5433.namprd10.prod.outlook.com
- ([fe80::9e2f:88c3:ca28:45a3%3]) with mapi id 15.20.6863.043; Sat, 14 Oct 2023
- 11:49:02 +0000
-Message-ID: <12b082c8-908f-4de2-b0b5-4b638e10c402@oracle.com>
-Date:   Sat, 14 Oct 2023 13:48:54 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] docs: add backporting and conflict resolution document
-Content-Language: en-US
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        backports@vger.kernel.org,
-        Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Hutchings <ben@decadent.org.uk>
-References: <20230824092325.1464227-1-vegard.nossum@oracle.com>
- <87bkdfg2ds.fsf@meer.lwn.net> <877cnu5jy0.fsf@meer.lwn.net>
- <83fd1a05-974e-4d91-82b0-c09cc2f8da1e@oracle.com>
- <20231014094320.GC20662@1wt.eu>
-From:   Vegard Nossum <vegard.nossum@oracle.com>
-Autocrypt: addr=vegard.nossum@oracle.com; keydata=
- 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 8A==
-In-Reply-To: <20231014094320.GC20662@1wt.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PR3P251CA0006.EURP251.PROD.OUTLOOK.COM
- (2603:10a6:102:b5::24) To PH0PR10MB5433.namprd10.prod.outlook.com
- (2603:10b6:510:e0::9)
+        d=gmail.com; s=20230601; t=1697284603; x=1697889403; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HcvZ+aXOynMpDzQNzlsLqcG5LjH/lrOgjIR3ADaupcI=;
+        b=NhFuxeKsdDQUc17FSexSuT1kP9jfHMDXKHqZwDNAxkJevelmj20LS31wvUCSdOZ5jZ
+         Mi3ZQIFZdD8qpDg+aN4H6TvOPXsS2Ii5H92TyZFAJrEj5zqNaU2DV2MbmRiSpnns2WWC
+         2uHQos8tOolQ406WQXT+Z6RiGK1M+B5z/EVf62o27p1uEDP3oR7XXMw64j2ZMtF0sIZu
+         QLnKXcuFftMFhyBzJJdi6PZwgj/hLYuLDcPYvNS20pHxl9wQ3y+w8iaNdvo93+VLCwVz
+         vB/At0F+TYF4o+g7Y1rkaU1XhDqQuJc5V14HtAWi+SNhQtieHYZ8yZzqvtP5WI1Ffqm8
+         +07g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697284603; x=1697889403;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HcvZ+aXOynMpDzQNzlsLqcG5LjH/lrOgjIR3ADaupcI=;
+        b=FJbOzv8P4NP4HdcYaIQo+vGdDfZ7QY8nrWP7Lz13fR/rmIf7SpBvTQiXuIaTqzB0eC
+         mAVPcdXVsN4lfDrJ9fnXJnk/YizgmiFOKYnJtJTOHNMCwlJSxe4V13cTUX6XLiAftlRI
+         jQyRAxrhp9tbxP7Q4jd2iZexMg34TgPO/8ORM2rviM/8TK2CMiz8WRS3ylJqv/9GnGh0
+         x76CQg8ekva/3IRnk4aNQ+JeJ68W4gg7Bwi9RdmFNsNQkKuct56iqeiFY4rC6q0PBm25
+         hLJXAhuG033i5jZZe86ArE6w55R53wIsFWJxjqeShBomjsMOe7a1OjjS2nY7X4gvR/9N
+         6tLA==
+X-Gm-Message-State: AOJu0Yw37Oww6YDuqzDdinzRDp+wjhKBMwWaU3Em46XVbPbf/Wf58Tde
+        rvWhbtkqUnRka4MOqnfE0RTFiUAdFyPPxg==
+X-Google-Smtp-Source: AGHT+IE4UmJmzPROZ4eItT2e2nw9W/dYbkY8/Nxze+h7mScDJem4AvrIZ39j0ePw6U+vP7jwij6x9Q==
+X-Received: by 2002:adf:fc09:0:b0:31c:7ada:5e05 with SMTP id i9-20020adffc09000000b0031c7ada5e05mr22976317wrr.51.1697284602571;
+        Sat, 14 Oct 2023 04:56:42 -0700 (PDT)
+Received: from localhost.localdomain ([111.88.101.202])
+        by smtp.gmail.com with ESMTPSA id p13-20020a5d68cd000000b0031ae8d86af4sm22721758wrw.103.2023.10.14.04.56.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Oct 2023 04:56:42 -0700 (PDT)
+From:   Muhammad Muzammil <m.muzzammilashraf@gmail.com>
+To:     james.smart@broadcom.com, dick.kennedy@broadcom.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Muhammad Muzammil <m.muzzammilashraf@gmail.com>
+Subject: [PATCH] drivers: scsi: lpfc: Fixed multiple typos in multiple files
+Date:   Sat, 14 Oct 2023 16:55:51 +0500
+Message-Id: <20231014115551.8607-1-m.muzzammilashraf@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5433:EE_|MW4PR10MB6582:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7e5094d1-8cb3-4542-db79-08dbccab8f8a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VfaImDhJi/2cs3KiJteJkjOj84MGLGLNFqpaDXaUjmwAsgNDW8h8pTG7+UjNN8Ja4L4B8IQokqAAGbUN95y9IEIZZWfBWlrxCaIPkn6ASPkG3n1q0e6R3T1hbYp531SkQNXeoiC9tdF2Tt9UhceszfGHJOZmUulFxUWet8XSxRIYZVkSDcHefTuwP+CQeUAhoL+SubPz+Gh/NGjqQOG4YbtZJFkgo1QB8U+0lddc1D/JgzPxIv98w7GmTW83e3QZnBAfqKoyE6UgUDcqSCqNdgSoRBP4Czymcc53No9tehKqyWXudZIGgDuw2lUKUQGwNLXE8HJ68+dXjTtpbVGLakrMv4rZ19B4aVEtczu04A/TsP1ibwFaZzs69nCk1nXuaJK1yZbjssjS8hZfIbl5yrUufvCeV1toeP+RVOkI9jXhrUFcd2DsBt5j0fpL+s5ZfEskEq0guVP6F7jtoOgu8Fbo4hYCwa7RiafzXr1vlMh50nwWbTZAxEchwD65MqcPp/RYyblv8TerPmmbPzfhgUwfDQ1TrNati/Ms1agX2KrD8HWBLvZC6d+NlegGg5+nj4P1i8UwqOEUw9urFMhwLxmLDwoxII36KJw13IqBKW7q4N4P7xTNN2uZl89IAP3Q8AjitaLkh5ZtKzjRHJ/d/ANHeRADfY7gfS8pHOlc88fEbTEsLIPJyF5xjC5vLDQS1vU39//ROfB4U2r5wwuYL0SnywcrGNTIP/NlWlZMMH4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5433.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(136003)(346002)(39860400002)(376002)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(6666004)(66899024)(6512007)(26005)(6506007)(83380400001)(53546011)(6486002)(2906002)(44832011)(478600001)(4326008)(7416002)(5660300002)(30864003)(8676002)(2616005)(966005)(8936002)(66476007)(66556008)(66946007)(316002)(54906003)(41300700001)(6916009)(38100700002)(86362001)(36756003)(31696002)(31686004)(781001)(15519875007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cFkxYVJnWFZmSHM2dUdlZWtEZi9ER0FXWGRvWTBjOVQ1elAxeG41MmxHWmFE?=
- =?utf-8?B?a0tpa3VtQUxPQzhkSlFoeEpuODladVFBOXYwTmY4WHlNWjFGMGUzMFR6MHRS?=
- =?utf-8?B?SVcvTTJIL3ZoUGlyWW1xUU42Ujd0dlU1QWRiZnlEOFlldUNab0MzbXJzcWJ1?=
- =?utf-8?B?YzVKVkhtWmNuTUUxNTBteG5lTnNIMDRIVTl1bmk0c3YydHdDN2ltdHhkZ0JU?=
- =?utf-8?B?MDVBN2g1VTlqcmtCOGpJMEtDb0EwMGd6N3FrRXpDSFdWV0hBQ2swc09pbG4x?=
- =?utf-8?B?L2hOeVIvWFA1Qk1iVDZnUDE0S0NXQlgwakkzRWd2Mkx3ZjV5YjZWbDhrTnBj?=
- =?utf-8?B?SmRPZm9XSHlSb3JINHp3K1VrUWlGdWtKclE2S1dHSFJXdjhiekhHcEtOajJL?=
- =?utf-8?B?eHhZejhDeXB1aDgrNDJndzJQQTBrV3lFamNIYWNtLzVmY2pYVzRnUGN4d0Nw?=
- =?utf-8?B?ckd6WkJSOVN1bEFIMU1kYkhaMkVTQkppUm1SNERpNXdlTnlLSlNHNDBKOU5F?=
- =?utf-8?B?VFZuaXJyUnlkQzdtdlBxSDh4ekxhS2krY3dRNmtwVWFkWUhmalBmVHYwUUNE?=
- =?utf-8?B?Y0NQOEZjRFJCSktMbGJVNUdLYkRhS1JSRzBjai9icFNxZ01lYzEzTHNOTGhE?=
- =?utf-8?B?ZmsrMVcrNncvVlBWdVFVZG4vWXNXRHo1aURvbk1aa3hoRndpU3lMN2JTRGhw?=
- =?utf-8?B?RGZlRlJzVFlwWTZDYno3a0EwV0FlcnZyeFd3alUxYlVsaGI1eVF4TjhyQlZi?=
- =?utf-8?B?YXRjV3dsRG1qc2hTVng0SEpac1hqNXdhVWtCOWlGVTFDQnhlVFNrZGlSVDc2?=
- =?utf-8?B?eCtUNU1ISXAvSVJoSjQ0NHpWdXBtSi9NT01HL3N5dnBPWjdVa1RxeTArYVJy?=
- =?utf-8?B?Mkc4cEg0ckRZYUtaNVNnemVuaHBsYWdCa3puZExVSWlhZnVzdFEyMDU1L0xu?=
- =?utf-8?B?cEJlMkczbVM1ZUw0ekxaNTlITnR5MGpKa0JYbUVwaWFpQTJvY0lWdW1wdUpu?=
- =?utf-8?B?QzlmcG5XcnRUMzhFcCtBM2V4U2puKzB5clRIRHF4YTdsYkhBRWY0UzJIZ1F2?=
- =?utf-8?B?ZnFoa0pCeWE4cXpyTkpmbzdIRCs2SkNIcXJyQk1wZkE4QmdFREpYWG15Ry8r?=
- =?utf-8?B?S3A0NlhGWVI3RkpoMit1QkRLbks5R1lUbTVMbkI0RmZleWFoQjBuNEN1V1hq?=
- =?utf-8?B?K1hPV1VhbEhqY0VONDlBNk9CWnlqNGwvUlN5SWJwNTAyYVJNNFVJbWZla09B?=
- =?utf-8?B?a3V2RDVJbDl6d2ZPYXNGMmlkRGVpT3gvSnV4Y3JjK2tobWxhbEhDNStKVUtX?=
- =?utf-8?B?bVVldmd5SExiUE9mMUoxbUNMeFhvSXJMY0lNa0FSZkN3dnRXazlrQUtkWith?=
- =?utf-8?B?bDh0SVlNYVMzUFFIeGc4d1JMZ1FUemlvak1PZWhZV3RnY21INE5sOGtyUm9v?=
- =?utf-8?B?dUdOd1lRUkVlT1hFTFIzdTVSOU5SdHcrRzl4M0djRjZUWVZROTdEcjE2S0cz?=
- =?utf-8?B?M3BscU5ta0JKQm5JZGFydEZiTHFNTSs2d1g5UmJYTmpyOXZiNDZuVzhMQ0dr?=
- =?utf-8?B?by8vUmV2MnZsL2tIM0ZyUzdJeDdqWDY0TGR1Yk00QXFJQUIvb21NUzkrTUc5?=
- =?utf-8?B?bmF4WVpUUEI3K3NWai9MNWJRWThac0FLZ0M5S2NXcnhLRmRIQy9MLzc2emRG?=
- =?utf-8?B?dEhVbVJpODZNUG9VWmhHYTlKck1kVHg4aWwrNDdaY1RSY3VvRWd2ZWFuNzVq?=
- =?utf-8?B?Q0VrZGJuMTMya1I4aFAyMitDWnowRCtucUUrSVZVWHdRdWNFMHpEdVI1ZmEr?=
- =?utf-8?B?aC9yeDNrZzRTTWluTkViZVBXMXhxZWNBTVZXNnhSRDczU2VBZDM3RmF6YkU2?=
- =?utf-8?B?b1YwZjdZVHFhREtXR082MXFKSU5LZWNVeEx6cXowRlJXWGtIclI1TzRQMEd5?=
- =?utf-8?B?R0xjZVNGdCt5c08yTUcwaWVYdUwwNnlnVzQzNytyT3JUVzBvcHBmQ2dTL256?=
- =?utf-8?B?SVlEdXpaZ0lhRG0rOUhNRG1HVGV2RkZ0NmtjQmtodC9UU25BVVpXM0dKTTJk?=
- =?utf-8?B?TytWUWRoT3UwNGFUWE51aDA2ckZDbkk3c3o2YW9aRjRYSkh1YUhVYnoxYXdS?=
- =?utf-8?Q?pGb0CMe/o8l3UjkSbuXpduv7r?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?Q040WFhCNG1yQmlaUjNVNVRSN2VxbjFzTWt3T0lJdjV1OFl3dCtvQmVLTXRa?=
- =?utf-8?B?OW5MWkRZczBTbTVvYWNJNEtwVGxvKzdZM0RQQ3RUN3UzcTdyME9ZaU9sSlBS?=
- =?utf-8?B?NU93WmFXN25KaTA4SXpJMWtFZElSNjJrNFNaTUduU3NSSVU3RU1ocE5kZjJw?=
- =?utf-8?B?MlMxUzRobjA3TmNFeFVyMFJ2cWN4eUpkY3ZpT2c5S29ZenJkVUhmMTg3RHQ1?=
- =?utf-8?B?aHE2Y1RiY2h4aURJNFpvVHIwN3d2ejFJb29VanU2TWVUVVRlVndwSFVwWVZv?=
- =?utf-8?B?U2JPUEhEOUxTVmtlWmVxdVhNZVl4bXRqY0lSWFIzLzRIa3I0Q2M5VGFZZUQz?=
- =?utf-8?B?MG5TZnlXK0hQUWNCUWZvM1YwUU9pYnZvK2JZbTZ2WVFweTNGYjVXZVo4Sll0?=
- =?utf-8?B?YmZBQmZIR1VYZy9NUWhjWnhPVWh1bXpyek9adElzWVVwNEN4cjRkbFJwYnky?=
- =?utf-8?B?NFlub1dVOHRlSmlOWnI0dWJ1Zk9zVFdIelA4bFpQek1nSkNFYWFsaXRwUE9R?=
- =?utf-8?B?M3hhRjUvTDZzTFQ2cEZzWTBZTXRvdVNmNXpPb2k4MzY5Yk4vRjNiVnZLcEk4?=
- =?utf-8?B?ZUp2VGlpOXE0Wk9oWU9VNk85UHY1L3NNU0VnQ1hORFVkZnc3RmhFS0k3R3VT?=
- =?utf-8?B?b2ZPQkVLbXNXS0pScXFaM2dCbE1RWEttbkR5Vi9idHNFVE90c1d3MFJOS3hp?=
- =?utf-8?B?eGlDU1d5UDZZVTI0U2ZKbG5kcHVVSmtFU1BpZXdJZkJvdGJ4aUxqbnZ0dVFa?=
- =?utf-8?B?V2Z0dzBYdjNSWlBBb1V0bW80WldoMFAxRS9yR2ZGczBBdkJxbS9FaGpJTDgv?=
- =?utf-8?B?aDZGSHFIcUZBNFBaZmpZajROQWFnTXhZYW50VGlBdVVVRFJIM1NSWldyWlRH?=
- =?utf-8?B?RG9iUG1rYS9zMWVqV3dENGpQZTZ5bERpbkFvdXdrbjFpb1kvdHo2MFlFVkF4?=
- =?utf-8?B?TWx1bCs4OFRMQll1VTI1cHhDRXc4UnpVdHZZWVdPdFdmODJ6VXVSdnIyVDMx?=
- =?utf-8?B?eTRKQ3d0Tm9DSFVrU2dLaXFmN04xNHdnQmhZMmVLb1o0Q2NTUzQzZy9tTW5p?=
- =?utf-8?B?K0tBVHVKVlQ1anA1V1NuTml5dE5tZVZxYWhJZElDaEhaYkJCTnJTTG9tMWJz?=
- =?utf-8?B?aTc2aGoxazltRW1KeVZTeXdDVklIaWVOanByNkY4b0JtOTAwSndPcmpFcHh4?=
- =?utf-8?B?M0FDR1hGRUxpR2tXYUxFNU92Qm1BMGk0RCs3ZUlJNFdJLzZ4T0R5ZVR6N1Vy?=
- =?utf-8?B?QXhjdHJjejY1MExIci9KNmRZWVEyaktXWmRXZzNXV0MyMjRBc2RmaWlLOEtH?=
- =?utf-8?B?cFp3bUo1RFQ5OHlLNkh4K0NWc0hsN3pwc05zMld2RUJ0TGhyT2dxOGRZeGUz?=
- =?utf-8?B?UVVndGQybTRYaGc9PQ==?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7e5094d1-8cb3-4542-db79-08dbccab8f8a
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5433.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2023 11:49:02.5496
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lJmx+jCyGZORcVpjSThFV9VHMNCDFgi9oVkjM2a+WiIonrw1RIsuIjX+x21LcLMOrOJpIiSPFVTjksSxyrjbnTIMj2HQtrJR2+4pCD8ru34=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR10MB6582
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-13_12,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0
- suspectscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310140105
-X-Proofpoint-GUID: a_uH7VecOy7E21WyDd8S_eQiM37PBEC4
-X-Proofpoint-ORIG-GUID: a_uH7VecOy7E21WyDd8S_eQiM37PBEC4
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+lpfc.h: Fixed multiple typos
+lpfc_attr.c: Fixed multiple typos
+lpfc_bsg.c: Fixed multiple typos
+lpfc_ct.c: Fixed multiple typos
+lpfc_debugfs.c: Fixed multiple typos
+lpfc_disc.h: Fixed multiple typos
+lpfc_els.c: Fixed multiple typos
+lpfc_hbadisc.c: Fixed multiple typos
+lpfc_init.c: Fixed multiple typos
+lpfc_nportdisc.c: Fixed multiple typos
+lpfc_nvme.c: Fixed multiple typos
+lpfc_nvmet.c: Fixed multiple typos
+lpfc_scsi.c: Fixed multiple typos
+lpfc_sli.c: Fixed multiple typos
 
-On 14/10/2023 11:43, Willy Tarreau wrote:
-> Hi Vegard,
-> 
-> On Fri, Oct 13, 2023 at 05:24:31PM +0200, Vegard Nossum wrote:
->> I've now added Steven Rostedt and Willy Tarreau as well on the
->> off-chance that they have something to say about it (Steven presented
->> his conflict resolution method at Kernel Recipes and I think Willy is
->> experienced with backporting), but this is in no way meant as pressure
->> to review this patch. Here's a link to the top of the thread:
->>
->> https://lore.kernel.org/all/20230824092325.1464227-1-vegard.nossum@oracle.com/
+Signed-off-by: Muhammad Muzammil <m.muzzammilashraf@gmail.com>
+---
+ drivers/scsi/lpfc/lpfc.h           |  2 +-
+ drivers/scsi/lpfc/lpfc_attr.c      |  2 +-
+ drivers/scsi/lpfc/lpfc_bsg.c       |  6 +++---
+ drivers/scsi/lpfc/lpfc_ct.c        |  4 ++--
+ drivers/scsi/lpfc/lpfc_debugfs.c   |  4 ++--
+ drivers/scsi/lpfc/lpfc_disc.h      |  4 ++--
+ drivers/scsi/lpfc/lpfc_els.c       | 16 ++++++++--------
+ drivers/scsi/lpfc/lpfc_hbadisc.c   |  8 ++++----
+ drivers/scsi/lpfc/lpfc_init.c      | 22 +++++++++++-----------
+ drivers/scsi/lpfc/lpfc_nportdisc.c |  4 ++--
+ drivers/scsi/lpfc/lpfc_nvme.c      |  2 +-
+ drivers/scsi/lpfc/lpfc_nvmet.c     | 12 ++++++------
+ drivers/scsi/lpfc/lpfc_scsi.c      |  6 +++---
+ drivers/scsi/lpfc/lpfc_sli.c       |  8 ++++----
+ 14 files changed, 50 insertions(+), 50 deletions(-)
 
-(Adding Ben Hutchings to Cc as well for the same reasons.)
+diff --git a/drivers/scsi/lpfc/lpfc.h b/drivers/scsi/lpfc/lpfc.h
+index af15f7a22d25..04da321425e2 100644
+--- a/drivers/scsi/lpfc/lpfc.h
++++ b/drivers/scsi/lpfc/lpfc.h
+@@ -1208,7 +1208,7 @@ struct lpfc_hba {
+ 
+ 	uint32_t hbq_in_use;		/* HBQs in use flag */
+ 	uint32_t hbq_count;	        /* Count of configured HBQs */
+-	struct hbq_s hbqs[LPFC_MAX_HBQS]; /* local copy of hbq indicies  */
++	struct hbq_s hbqs[LPFC_MAX_HBQS]; /* local copy of hbq indices  */
+ 
+ 	atomic_t fcp_qidx;         /* next FCP WQ (RR Policy) */
+ 	atomic_t nvme_qidx;        /* next NVME WQ (RR Policy) */
+diff --git a/drivers/scsi/lpfc/lpfc_attr.c b/drivers/scsi/lpfc/lpfc_attr.c
+index b1c9107d3408..50915ac4d7a9 100644
+--- a/drivers/scsi/lpfc/lpfc_attr.c
++++ b/drivers/scsi/lpfc/lpfc_attr.c
+@@ -3985,7 +3985,7 @@ lpfc_tgt_queue_depth_set(struct lpfc_vport *vport, uint val)
+ 	spin_lock_irq(shost->host_lock);
+ 	vport->cfg_tgt_queue_depth = val;
+ 
+-	/* Next loop thru nodelist and change cmd_qdepth */
++	/* Next loop through nodelist and change cmd_qdepth */
+ 	list_for_each_entry(ndlp, &vport->fc_nodes, nlp_listp)
+ 		ndlp->cmd_qdepth = vport->cfg_tgt_queue_depth;
+ 
+diff --git a/drivers/scsi/lpfc/lpfc_bsg.c b/drivers/scsi/lpfc/lpfc_bsg.c
+index 595dca92e8db..233333f4b9f4 100644
+--- a/drivers/scsi/lpfc/lpfc_bsg.c
++++ b/drivers/scsi/lpfc/lpfc_bsg.c
+@@ -2057,7 +2057,7 @@ lpfc_sli4_bsg_diag_loopback_mode(struct lpfc_hba *phba, struct bsg_job *job)
+ 	phba->link_flag |= LS_LOOPBACK_MODE;
+ 	spin_unlock_irq(&phba->hbalock);
+ 
+-	/* reset port to start frome scratch */
++	/* reset port to start from scratch */
+ 	rc = lpfc_selective_reset(phba);
+ 	if (rc)
+ 		goto job_done;
+@@ -2328,7 +2328,7 @@ lpfc_sli4_bsg_diag_mode_end(struct bsg_job *job)
+  * @job: LPFC_BSG_VENDOR_DIAG_LINK_TEST
+  *
+  * This function is to perform SLI4 diag link test request from the user
+- * applicaiton.
++ * application.
+  */
+ static int
+ lpfc_sli4_bsg_link_diag_test(struct bsg_job *job)
+@@ -4804,7 +4804,7 @@ lpfc_bsg_issue_mbox(struct lpfc_hba *phba, struct bsg_job *job,
+ 	} else if (phba->sli_rev == LPFC_SLI_REV4) {
+ 		/* Let type 4 (well known data) through because the data is
+ 		 * returned in varwords[4-8]
+-		 * otherwise check the recieve length and fetch the buffer addr
++		 * otherwise check the receive length and fetch the buffer addr
+ 		 */
+ 		if ((pmb->mbxCommand == MBX_DUMP_MEMORY) &&
+ 			(pmb->un.varDmp.type != DMP_WELL_KNOWN)) {
+diff --git a/drivers/scsi/lpfc/lpfc_ct.c b/drivers/scsi/lpfc/lpfc_ct.c
+index baae1f8279e0..2501fa166528 100644
+--- a/drivers/scsi/lpfc/lpfc_ct.c
++++ b/drivers/scsi/lpfc/lpfc_ct.c
+@@ -2356,7 +2356,7 @@ lpfc_cmpl_ct_disc_fdmi(struct lpfc_hba *phba, struct lpfc_iocbq *cmdiocb,
+ 	}
+ 
+ 	/*
+-	 * On success, need to cycle thru FDMI registration for discovery
++	 * On success, need to cycle through FDMI registration for discovery
+ 	 * DHBA -> DPRT -> RHBA -> RPA  (physical port)
+ 	 * DPRT -> RPRT (vports)
+ 	 */
+@@ -2468,7 +2468,7 @@ lpfc_fdmi_change_check(struct lpfc_vport *vport)
+ 		lpfc_ns_cmd(vport, SLI_CTNS_RSNN_NN, 0, 0);
+ 
+ 		/* Since this effects multiple HBA and PORT attributes, we need
+-		 * de-register and go thru the whole FDMI registration cycle.
++		 * de-register and go through the whole FDMI registration cycle.
+ 		 * DHBA -> DPRT -> RHBA -> RPA  (physical port)
+ 		 * DPRT -> RPRT (vports)
+ 		 */
+diff --git a/drivers/scsi/lpfc/lpfc_debugfs.c b/drivers/scsi/lpfc/lpfc_debugfs.c
+index ea9b42225e62..39a743cf20ae 100644
+--- a/drivers/scsi/lpfc/lpfc_debugfs.c
++++ b/drivers/scsi/lpfc/lpfc_debugfs.c
+@@ -3152,7 +3152,7 @@ static int lpfc_idiag_cmd_get(const char __user *buf, size_t nbytes,
+ 	memset(mybuf, 0, sizeof(mybuf));
+ 	memset(idiag_cmd, 0, sizeof(*idiag_cmd));
+ 	bsize = min(nbytes, (sizeof(mybuf)-1));
+-
++.
+ 	if (copy_from_user(mybuf, buf, bsize))
+ 		return -EFAULT;
+ 	pbuf = &mybuf[0];
+@@ -6655,7 +6655,7 @@ lpfc_debugfs_terminate(struct lpfc_vport *vport)
+  * lpfc_debug_dump_all_queues - dump all the queues with a hba
+  * @phba: Pointer to HBA context object.
+  *
+- * This function dumps entries of all the queues asociated with the @phba.
++ * This function dumps entries of all the queues associated with the @phba.
+  **/
+ void
+ lpfc_debug_dump_all_queues(struct lpfc_hba *phba)
+diff --git a/drivers/scsi/lpfc/lpfc_disc.h b/drivers/scsi/lpfc/lpfc_disc.h
+index f82615d87c4b..c5507eedabda 100644
+--- a/drivers/scsi/lpfc/lpfc_disc.h
++++ b/drivers/scsi/lpfc/lpfc_disc.h
+@@ -261,13 +261,13 @@ struct lpfc_node_rrq {
+  * from the PLOGI or ADISC lists. Once the PLOGI and ADISC lists are populated,
+  * we will first process the ADISC list.  32 entries are processed initially and
+  * ADISC is initited for each one.  Completions / Events for each node are
+- * funnelled thru the state machine.  As each node finishes ADISC processing, it
++ * funnelled through the state machine.  As each node finishes ADISC processing, it
+  * starts ADISC for any nodes waiting for ADISC processing. If no nodes are
+  * waiting, and the ADISC list count is identically 0, then we are done. For
+  * Link Up discovery, since all nodes on the PLOGI list are UNREG_LOGIN'ed, we
+  * can issue a CLEAR_LA and reenable Link Events. Next we will process the PLOGI
+  * list.  32 entries are processed initially and PLOGI is initited for each one.
+- * Completions / Events for each node are funnelled thru the state machine.  As
++ * Completions / Events for each node are funnelled through the state machine.  As
+  * each node finishes PLOGI processing, it starts PLOGI for any nodes waiting
+  * for PLOGI processing. If no nodes are waiting, and the PLOGI list count is
+  * identically 0, then we are done. We have now completed discovery / RSCN
+diff --git a/drivers/scsi/lpfc/lpfc_els.c b/drivers/scsi/lpfc/lpfc_els.c
+index 54e47f268235..e06f235d4865 100644
+--- a/drivers/scsi/lpfc/lpfc_els.c
++++ b/drivers/scsi/lpfc/lpfc_els.c
+@@ -1639,7 +1639,7 @@ lpfc_more_plogi(struct lpfc_vport *vport)
+ 			 vport->fc_flag, vport->port_state);
+ 	/* Check to see if there are more PLOGIs to be sent */
+ 	if (vport->fc_flag & FC_NLP_MORE)
+-		/* go thru NPR nodes and issue any remaining ELS PLOGIs */
++		/* go through NPR nodes and issue any remaining ELS PLOGIs */
+ 		lpfc_els_disc_plogi(vport);
+ 
+ 	return;
+@@ -2480,7 +2480,7 @@ lpfc_issue_els_prli(struct lpfc_vport *vport, struct lpfc_nodelist *ndlp,
+ 	 * If we are in RSCN mode, the FC4 types supported from a
+ 	 * previous GFT_ID command may not be accurate. So, if we
+ 	 * are a NVME Initiator, always look for the possibility of
+-	 * the remote NPort beng a NVME Target.
++	 * the remote NPort being a NVME Target.
+ 	 */
+ 	if (phba->sli_rev == LPFC_SLI_REV4 &&
+ 	    vport->fc_flag & FC_RSCN_MODE &&
+@@ -2659,7 +2659,7 @@ lpfc_rscn_disc(struct lpfc_vport *vport)
+ 	lpfc_can_disctmo(vport);
+ 
+ 	/* RSCN discovery */
+-	/* go thru NPR nodes and issue ELS PLOGIs */
++	/* go through NPR nodes and issue ELS PLOGIs */
+ 	if (vport->fc_npr_cnt)
+ 		if (lpfc_els_disc_plogi(vport))
+ 			return;
+@@ -2719,7 +2719,7 @@ lpfc_adisc_done(struct lpfc_vport *vport)
+ 		lpfc_issue_clear_la(phba, vport);
+ 		if (!(vport->fc_flag & FC_ABORT_DISCOVERY)) {
+ 			vport->num_disc_nodes = 0;
+-			/* go thru NPR list, issue ELS PLOGIs */
++			/* go through NPR list, issue ELS PLOGIs */
+ 			if (vport->fc_npr_cnt)
+ 				lpfc_els_disc_plogi(vport);
+ 			if (!vport->num_disc_nodes) {
+@@ -2758,7 +2758,7 @@ lpfc_more_adisc(struct lpfc_vport *vport)
+ 	/* Check to see if there are more ADISCs to be sent */
+ 	if (vport->fc_flag & FC_NLP_MORE) {
+ 		lpfc_set_disctmo(vport);
+-		/* go thru NPR nodes and issue any remaining ELS ADISCs */
++		/* go through NPR nodes and issue any remaining ELS ADISCs */
+ 		lpfc_els_disc_adisc(vport);
+ 	}
+ 	if (!vport->num_disc_nodes)
+@@ -6522,7 +6522,7 @@ lpfc_els_disc_adisc(struct lpfc_vport *vport)
+ 	struct lpfc_nodelist *ndlp, *next_ndlp;
+ 	int sentadisc = 0;
+ 
+-	/* go thru NPR nodes and issue any remaining ELS ADISCs */
++	/* go through NPR nodes and issue any remaining ELS ADISCs */
+ 	list_for_each_entry_safe(ndlp, next_ndlp, &vport->fc_nodes, nlp_listp) {
+ 
+ 		if (ndlp->nlp_state != NLP_STE_NPR_NODE ||
+@@ -6594,7 +6594,7 @@ lpfc_els_disc_plogi(struct lpfc_vport *vport)
+ 	struct lpfc_nodelist *ndlp, *next_ndlp;
+ 	int sentplogi = 0;
+ 
+-	/* go thru NPR nodes and issue any remaining ELS PLOGIs */
++	/* go through NPR nodes and issue any remaining ELS PLOGIs */
+ 	list_for_each_entry_safe(ndlp, next_ndlp, &vport->fc_nodes, nlp_listp) {
+ 		if (ndlp->nlp_state == NLP_STE_NPR_NODE &&
+ 				(ndlp->nlp_flag & NLP_NPR_2B_DISC) != 0 &&
+@@ -9440,7 +9440,7 @@ lpfc_els_rcv_edc(struct lpfc_vport *vport, struct lpfc_iocbq *cmdiocb,
+ }
+ 
+ /**
+- * lpfc_els_timeout - Handler funciton to the els timer
++ * lpfc_els_timeout - Handler function to the els timer
+  * @t: timer context used to obtain the vport.
+  *
+  * This routine is invoked by the ELS timer after timeout. It posts the ELS
+diff --git a/drivers/scsi/lpfc/lpfc_hbadisc.c b/drivers/scsi/lpfc/lpfc_hbadisc.c
+index 5154eeaee0ec..935c225fa7d8 100644
+--- a/drivers/scsi/lpfc/lpfc_hbadisc.c
++++ b/drivers/scsi/lpfc/lpfc_hbadisc.c
+@@ -3896,7 +3896,7 @@ lpfc_mbx_cmpl_reg_login(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
+ 		 * mbox reg login, we may have cycled
+ 		 * back through the state and be
+ 		 * back at reg login state so this
+-		 * mbox needs to be ignored becase
++		 * mbox needs to be ignored because
+ 		 * there is another reg login in
+ 		 * process.
+ 		 */
+@@ -3906,7 +3906,7 @@ lpfc_mbx_cmpl_reg_login(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
+ 
+ 		/*
+ 		 * We cannot leave the RPI registered because
+-		 * if we go thru discovery again for this ndlp
++		 * if we go through discovery again for this ndlp
+ 		 * a subsequent REG_RPI will fail.
+ 		 */
+ 		ndlp->nlp_flag |= NLP_RPI_REGISTERED;
+@@ -4022,7 +4022,7 @@ lpfc_mbx_cmpl_reg_vpi(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
+ 	vport->fc_flag &= ~FC_VPORT_NEEDS_REG_VPI;
+ 	spin_unlock_irq(shost->host_lock);
+ 	vport->num_disc_nodes = 0;
+-	/* go thru NPR list and issue ELS PLOGIs */
++	/* go through NPR list and issue ELS PLOGIs */
+ 	if (vport->fc_npr_cnt)
+ 		lpfc_els_disc_plogi(vport);
+ 
+@@ -5988,7 +5988,7 @@ lpfc_disc_start(struct lpfc_vport *vport)
+ 
+ 		if (!(vport->fc_flag & FC_ABORT_DISCOVERY)) {
+ 			vport->num_disc_nodes = 0;
+-			/* go thru NPR nodes and issue ELS PLOGIs */
++			/* go through NPR nodes and issue ELS PLOGIs */
+ 			if (vport->fc_npr_cnt)
+ 				lpfc_els_disc_plogi(vport);
+ 
+diff --git a/drivers/scsi/lpfc/lpfc_init.c b/drivers/scsi/lpfc/lpfc_init.c
+index 9e59c050103d..42c0d7a36878 100644
+--- a/drivers/scsi/lpfc/lpfc_init.c
++++ b/drivers/scsi/lpfc/lpfc_init.c
+@@ -4117,7 +4117,7 @@ lpfc_sli4_els_sgl_update(struct lpfc_hba *phba)
+ 				 &phba->sli4_hba.lpfc_els_sgl_list);
+ 		spin_unlock_irq(&phba->sli4_hba.sgl_list_lock);
+ 	} else if (els_xri_cnt < phba->sli4_hba.els_xri_cnt) {
+-		/* els xri-sgl shrinked */
++		/* els xri-sgl shrunk */
+ 		xri_cnt = phba->sli4_hba.els_xri_cnt - els_xri_cnt;
+ 		lpfc_printf_log(phba, KERN_INFO, LOG_SLI,
+ 				"3158 ELS xri-sgl count decreased from "
+@@ -10430,7 +10430,7 @@ lpfc_alloc_io_wq_cq(struct lpfc_hba *phba, int idx)
+  *
+  * Return codes
+  *      0 - successful
+- *      -ENOMEM - No availble memory
++ *      -ENOMEM - No available memory
+  *      -EIO - The mailbox failed to complete successfully.
+  **/
+ int
+@@ -10835,7 +10835,7 @@ lpfc_sli4_release_hdwq(struct lpfc_hba *phba)
+ 
+ 	hdwq = phba->sli4_hba.hdwq;
+ 
+-	/* Loop thru all Hardware Queues */
++	/* Loop through all Hardware Queues */
+ 	for (idx = 0; idx < phba->cfg_hdw_queue; idx++) {
+ 		/* Free the CQ/WQ corresponding to the Hardware Queue */
+ 		lpfc_sli4_queue_free(hdwq[idx].io_cq);
+@@ -10847,7 +10847,7 @@ lpfc_sli4_release_hdwq(struct lpfc_hba *phba)
+ 			lpfc_free_sgl_per_hdwq(phba, &hdwq[idx]);
+ 		lpfc_free_cmd_rsp_buf_per_hdwq(phba, &hdwq[idx]);
+ 	}
+-	/* Loop thru all IRQ vectors */
++	/* Loop through all IRQ vectors */
+ 	for (idx = 0; idx < phba->cfg_irq_chann; idx++) {
+ 		/* Free the EQ corresponding to the IRQ vector */
+ 		eq = phba->sli4_hba.hba_eq_hdl[idx].eq;
+@@ -11037,7 +11037,7 @@ lpfc_setup_cq_lookup(struct lpfc_hba *phba)
+ 
+ 	memset(phba->sli4_hba.cq_lookup, 0,
+ 	       (sizeof(struct lpfc_queue *) * (phba->sli4_hba.cq_max + 1)));
+-	/* Loop thru all IRQ vectors */
++	/* Loop through all IRQ vectors */
+ 	for (qidx = 0; qidx < phba->cfg_irq_chann; qidx++) {
+ 		/* Get the EQ corresponding to the IRQ vector */
+ 		eq = phba->sli4_hba.hba_eq_hdl[qidx].eq;
+@@ -11134,7 +11134,7 @@ lpfc_sli4_queue_setup(struct lpfc_hba *phba)
+ 		goto out_error;
+ 	}
+ 
+-	/* Loop thru all IRQ vectors */
++	/* Loop through all IRQ vectors */
+ 	for (qidx = 0; qidx < phba->cfg_irq_chann; qidx++) {
+ 		/* Create HBA Event Queues (EQs) in order */
+ 		for_each_present_cpu(cpu) {
+@@ -11170,7 +11170,7 @@ lpfc_sli4_queue_setup(struct lpfc_hba *phba)
+ 		}
+ 	}
+ 
+-	/* Loop thru all Hardware Queues */
++	/* Loop through all Hardware Queues */
+ 	for (qidx = 0; qidx < phba->cfg_hdw_queue; qidx++) {
+ 		cpu = lpfc_find_cpu_handle(phba, qidx, LPFC_FIND_BY_HDWQ);
+ 		cpup = &phba->sli4_hba.cpu_map[cpu];
+@@ -11482,14 +11482,14 @@ lpfc_sli4_queue_unset(struct lpfc_hba *phba)
+ 
+ 	/* Unset fast-path SLI4 queues */
+ 	if (phba->sli4_hba.hdwq) {
+-		/* Loop thru all Hardware Queues */
++		/* Loop through all Hardware Queues */
+ 		for (qidx = 0; qidx < phba->cfg_hdw_queue; qidx++) {
+ 			/* Destroy the CQ/WQ corresponding to Hardware Queue */
+ 			qp = &phba->sli4_hba.hdwq[qidx];
+ 			lpfc_wq_destroy(phba, qp->io_wq);
+ 			lpfc_cq_destroy(phba, qp->io_cq);
+ 		}
+-		/* Loop thru all IRQ vectors */
++		/* Loop through all IRQ vectors */
+ 		for (qidx = 0; qidx < phba->cfg_irq_chann; qidx++) {
+ 			/* Destroy the EQ corresponding to the IRQ vector */
+ 			eq = phba->sli4_hba.hba_eq_hdl[qidx].eq;
+@@ -12253,7 +12253,7 @@ lpfc_sli_enable_intr(struct lpfc_hba *phba, uint32_t cfg_mode)
+ 		}
+ 	}
+ 
+-	/* Fallback to INTx if both MSI-X/MSI initalization failed */
++	/* Fallback to INTx if both MSI-X/MSI initialization failed */
+ 	if (phba->intr_type == NONE) {
+ 		retval = request_irq(phba->pcidev->irq, lpfc_sli_intr_handler,
+ 				     IRQF_SHARED, LPFC_DRIVER_NAME, phba);
+@@ -13242,7 +13242,7 @@ lpfc_sli4_enable_intr(struct lpfc_hba *phba, uint32_t cfg_mode)
+ 		}
+ 	}
+ 
+-	/* Fallback to INTx if both MSI-X/MSI initalization failed */
++	/* Fallback to INTx if both MSI-X/MSI initialization failed */
+ 	if (phba->intr_type == NONE) {
+ 		retval = request_irq(phba->pcidev->irq, lpfc_sli4_intr_handler,
+ 				     IRQF_SHARED, LPFC_DRIVER_NAME, phba);
+diff --git a/drivers/scsi/lpfc/lpfc_nportdisc.c b/drivers/scsi/lpfc/lpfc_nportdisc.c
+index 1eb7f7e60bba..df249fce27a3 100644
+--- a/drivers/scsi/lpfc/lpfc_nportdisc.c
++++ b/drivers/scsi/lpfc/lpfc_nportdisc.c
+@@ -2950,13 +2950,13 @@ lpfc_device_recov_npr_node(struct lpfc_vport *vport, struct lpfc_nodelist *ndlp,
+  * the PLOGI or ADISC lists. Once the PLOGI and ADISC lists are populated,
+  * we will first process the ADISC list.  32 entries are processed initially and
+  * ADISC is initited for each one.  Completions / Events for each node are
+- * funnelled thru the state machine.  As each node finishes ADISC processing, it
++ * funnelled through the state machine.  As each node finishes ADISC processing, it
+  * starts ADISC for any nodes waiting for ADISC processing. If no nodes are
+  * waiting, and the ADISC list count is identically 0, then we are done. For
+  * Link Up discovery, since all nodes on the PLOGI list are UNREG_LOGIN'ed, we
+  * can issue a CLEAR_LA and reenable Link Events. Next we will process the PLOGI
+  * list.  32 entries are processed initially and PLOGI is initited for each one.
+- * Completions / Events for each node are funnelled thru the state machine.  As
++ * Completions / Events for each node are funnelled through the state machine.  As
+  * each node finishes PLOGI processing, it starts PLOGI for any nodes waiting
+  * for PLOGI processing. If no nodes are waiting, and the PLOGI list count is
+  * indentically 0, then we are done. We have now completed discovery / RSCN
+diff --git a/drivers/scsi/lpfc/lpfc_nvme.c b/drivers/scsi/lpfc/lpfc_nvme.c
+index 96e11a26c297..5273b8522a3b 100644
+--- a/drivers/scsi/lpfc/lpfc_nvme.c
++++ b/drivers/scsi/lpfc/lpfc_nvme.c
+@@ -242,7 +242,7 @@ lpfc_nvme_remoteport_delete(struct nvme_fc_remote_port *remoteport)
+  * @phba: pointer to lpfc hba data structure.
+  * @axchg: pointer to exchange context for the NVME LS request
+  *
+- * This routine is used for processing an asychronously received NVME LS
++ * This routine is used for processing an asynchronously received NVME LS
+  * request. Any remaining validation is done and the LS is then forwarded
+  * to the nvme-fc transport via nvme_fc_rcv_ls_req().
+  *
+diff --git a/drivers/scsi/lpfc/lpfc_nvmet.c b/drivers/scsi/lpfc/lpfc_nvmet.c
+index 425328d9c2d8..a7787915c6d1 100644
+--- a/drivers/scsi/lpfc/lpfc_nvmet.c
++++ b/drivers/scsi/lpfc/lpfc_nvmet.c
+@@ -567,8 +567,8 @@ lpfc_nvmet_ktime(struct lpfc_hba *phba,
+ 	 * TRSP cmpl is passed to NVME Layer.
+ 	 * Segment 10 - Time from FCP command received by
+ 	 * MSI-X ISR to command is completed on wire.
+-	 * (Segments 1 thru 8) for READDATA / WRITEDATA
+-	 * (Segments 1 thru 4) for READDATA_RSP
++	 * (Segments 1 through 8) for READDATA / WRITEDATA
++	 * (Segments 1 through 4) for READDATA_RSP
+ 	 */
+ 	seg1 = ctxp->ts_cmd_nvme - ctxp->ts_isr_cmd;
+ 	segsum = seg1;
+@@ -598,7 +598,7 @@ lpfc_nvmet_ktime(struct lpfc_hba *phba,
+ 	segsum += seg5;
+ 
+ 
+-	/* For auto rsp commands seg6 thru seg10 will be 0 */
++	/* For auto rsp commands seg6 through seg10 will be 0 */
+ 	if (ctxp->ts_nvme_status > ctxp->ts_data_nvme) {
+ 		seg6 = ctxp->ts_nvme_status - ctxp->ts_isr_cmd;
+ 		if (segsum > seg6)
+@@ -1534,8 +1534,8 @@ lpfc_nvmet_setup_io_context(struct lpfc_hba *phba)
+ 
+ 	/*
+ 	 * Setup the next CPU context info ptr for each MRQ.
+-	 * MRQ 0 will cycle thru CPUs 0 - X separately from
+-	 * MRQ 1 cycling thru CPUs 0 - X, and so on.
++	 * MRQ 0 will cycle through CPUs 0 - X separately from
++	 * MRQ 1 cycling through CPUs 0 - X, and so on.
+ 	 */
+ 	for (j = 0; j < phba->cfg_nvmet_mrq; j++) {
+ 		last_infop = lpfc_get_ctx_list(phba,
+@@ -2129,7 +2129,7 @@ lpfc_nvmet_destroy_targetport(struct lpfc_hba *phba)
+  * @phba: pointer to lpfc hba data structure.
+  * @axchg: pointer to exchange context for the NVME LS request
+  *
+- * This routine is used for processing an asychronously received NVME LS
++ * This routine is used for processing an asynchronously received NVME LS
+  * request. Any remaining validation is done and the LS is then forwarded
+  * to the nvmet-fc transport via nvmet_fc_rcv_ls_req().
+  *
+diff --git a/drivers/scsi/lpfc/lpfc_scsi.c b/drivers/scsi/lpfc/lpfc_scsi.c
+index d26941b131fd..682c1e4c69ba 100644
+--- a/drivers/scsi/lpfc/lpfc_scsi.c
++++ b/drivers/scsi/lpfc/lpfc_scsi.c
+@@ -2568,7 +2568,7 @@ lpfc_bg_scsi_prep_dma_buf_s3(struct lpfc_hba *phba,
+ 			lpfc_cmd->prot_seg_cnt = protsegcnt;
+ 
+ 			/*
+-			 * There is a minimun of 4 BPLs used for every
++			 * There is a minimum of 4 BPLs used for every
+ 			 * protection data segment.
+ 			 */
+ 			if ((lpfc_cmd->prot_seg_cnt * 4) >
+@@ -3373,7 +3373,7 @@ lpfc_bg_scsi_prep_dma_buf_s4(struct lpfc_hba *phba,
+ 
+ 			lpfc_cmd->prot_seg_cnt = protsegcnt;
+ 			/*
+-			 * There is a minimun of 3 SGEs used for every
++			 * There is a minimum of 3 SGEs used for every
+ 			 * protection data segment.
+ 			 */
+ 			if (((lpfc_cmd->prot_seg_cnt * 3) >
+@@ -5690,7 +5690,7 @@ lpfc_taskmgmt_name(uint8_t task_mgmt_cmd)
+  * @vport: The virtual port for which this call is being executed.
+  * @lpfc_cmd: Pointer to lpfc_io_buf data structure.
+  *
+- * This routine checks the FCP RSP INFO to see if the tsk mgmt command succeded
++ * This routine checks the FCP RSP INFO to see if the tsk mgmt command succeeded
+  *
+  * Return code :
+  *   0x2003 - Error
+diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
+index 4dfadf254a72..24d82df23d81 100644
+--- a/drivers/scsi/lpfc/lpfc_sli.c
++++ b/drivers/scsi/lpfc/lpfc_sli.c
+@@ -1162,7 +1162,7 @@ lpfc_test_rrq_active(struct lpfc_hba *phba, struct lpfc_nodelist *ndlp,
+  * The active bit is always set in the active rrq xri_bitmap even
+  * if there is no slot avaiable for the other rrq information.
+  *
+- * returns 0 rrq actived for this xri
++ * returns 0 rrq activated for this xri
+  *         < 0 No memory or invalid ndlp.
+  **/
+ int
+@@ -6150,7 +6150,7 @@ lpfc_sli4_arm_cqeq_intr(struct lpfc_hba *phba)
+ 					   LPFC_QUEUE_REARM);
+ 
+ 	if (sli4_hba->hdwq) {
+-		/* Loop thru all Hardware Queues */
++		/* Loop through all Hardware Queues */
+ 		for (qidx = 0; qidx < phba->cfg_hdw_queue; qidx++) {
+ 			qp = &sli4_hba->hdwq[qidx];
+ 			/* ARM the corresponding CQ */
+@@ -6158,7 +6158,7 @@ lpfc_sli4_arm_cqeq_intr(struct lpfc_hba *phba)
+ 						LPFC_QUEUE_REARM);
+ 		}
+ 
+-		/* Loop thru all IRQ vectors */
++		/* Loop through all IRQ vectors */
+ 		for (qidx = 0; qidx < phba->cfg_irq_chann; qidx++) {
+ 			eq = sli4_hba->hba_eq_hdl[qidx].eq;
+ 			/* ARM the corresponding EQ */
+@@ -15744,7 +15744,7 @@ __lpfc_sli4_switch_eqmode(struct lpfc_queue *eq, uint8_t mode)
+ 	 * try to process the eq _but_ that's fine.  We have a
+ 	 * synchronization mechanism in place (queue_claimed) to
+ 	 * deal with it.  This is just a draining phase for int-
+-	 * errupt handler (not eq's) as we have guranteed through
++	 * errupt handler (not eq's) as we have guaranteed through
+ 	 * barrier that all the CPUs have seen the new CQ_POLLED
+ 	 * state. which will effectively disable the REARMING of
+ 	 * the EQ.  The whole idea is eq's die off eventually as
+-- 
+2.27.0
 
-> That's a very nice description, I'm sure it can help (and I learned a
-> few points there already). There are a few points I'm not seeing there,
-> though, base on my habits:
-
-Thanks for the quick and comprehensive response!
-
->    - in my experience, there's a huge difference between backporting
->      code you don't know and code you know. I'm dealing with haproxy
->      backports several times a week and I tend to know this code, so I
->      use my intuition a lot and have no problem adjusting stuff around
->      the conflicting parts. However when I was dealing with extended
->      kernels, that was not the case at all, because I didn't know that
->      code, and worse, I wasn't skilled at all on many of the parts I had
->      to deal with. While it's OK to take the blame for a failed backport,
->      it's generally not OK to expose users to risks caused by your lack
->      of knowledge. In this case it means you need to be extra cautious,
->      and very often to actually *ask* authors or maintainers for help.
->      If maintainers do not want to help backporting some patches to an
->      older version of their code, usually it should be perceived as a
->      hint that they'll find it complicated to do it right; then take that
->      as a hint that there's little chances you'll get it right by yourself
->      while ignoring that code. This may imply dropping the fix, documenting
->      the area as broken, or asking for help on various lists until someone
->      more knowledgeable can help.
-
-I agree -- backports ARE very easy to get wrong, EVEN when you know the
-code well. This is stressed several times in the document, especially in
-the last two sections about build and runtime testing, but also in the
-section on error handling.
-
-However, I'm wary of being too stern as well. There are already a
-million ways to introduce subtle bugs and put users at risk, but we
-rarely try to put people off contributing regular patches (at least in
-this specific way :-P).
-
-Did you see this meme? https://i.imgur.com/yk5rf13.png
-
-I think conflicts have a bit of a bad reputation exactly because you're
-presented with something that's hard to make sense of at first sight.
-I'd like to dispel this myth that you need to be an expert to make sense
-of conflict markers. I think with the right attitude, the right tools,
-and the right approach you can go a LONG way. Also, nobody is born an
-expert and we should encourage people to gain experience in this area IMHO.
-
-With that said, how about if we add a short section near the end about
-submitting stable backports where we encourage submitters to 1) approach
-the backporting process in a humble way, 2) describe the reason for the
-conflict in the changelog and their resolution, 3) be honest about their
-confidence in their resolution, 4) ask relevant maintainers for an
-explicit ack?
-
-I'm open to other ideas, I just want to make sure we strike the right
-balance of encouragement vs. discouragement.
-
->    - the tool that helped me the most in resolving rename conflicts is
->      "patch". As you explained, "git am" is a bit stubborn. But patch is
->      way more lenient (and will often do mistakes). In the very old 2.6.32
->      I used to rely on "git show XX | patch -p1" way more often than
->      "git am". For a rename, you do "git show XX -- file |patch otherfile".
->      It works the same with file-based patches or mbox: "patch -p1 < mbox".
->      Patch however will not place the conflict markers and will leave .rej
->      files. I then opened them in an editor next to the file to edit, to
->      locate the area and copy the relevant part to its location. Emacs'
->      ediff is also extremely convenient to pick select parts of each file.
-> 
->    - control the patches: after I'm pretty sure I have resolved a patch,
->      I compare it side by side with the original one. Normally, backported
->      patches should have the same structure as the original. Using whatever
->      editor supporting a vertical split helps a lot. Otherwise I also use
->      "diff -y --width 200" between them to focus on differences (typically
->      line numbers). It's not rare that a part is missing, either because
->      I messed up, or because I forgot to process a .rej that I mistakenly
->      removed, or because a file was added, I reset the tree and it's left
->      untracked. So any difference between the patches should have its own
->      explanation (line numbers, function names, file names, occurrences).
->      By the way, it can very easily happen that applying a patch will work
->      fine but it will apply to the wrong function because some code patterns
->      especially in error unrolling paths are often the same between several
->      functions. It happened to me quite a few times in the past, and even
->      a few of these persisted till the public patch review. That's really
->      a risk that must not be minimized!
-
-There is a section on this: "Verifying the result", and also describes
-doing a side-by-side diff of the old and new patches.
-
-The bit about applying the patch to the wrong function -- I doubt this
-happens that much when using cherry-pick, since it knows both sides of
-the history and can tell when code moves around. You're probably right
-that it can easily happen with plain git am/patch though. In my mind,
-this is an argument in favour of using cherry-pick whenever possible.
-
->    - something quite common is that as code evolves, it gets refactored
->      so that what used to appear at 3 locations in the past now moved to
->      a single function. But when you're backporting, you're doing the
->      reverse work, you're taking a patch for a single location that may
->      apply to multiple ones. Often the hint is that the function name
->      changed. But sometimes it's not even the case. If what you've found
->      looks like a nasty bug pattern that looks like it could easily have
->      been copy-pasted at other places, it's worth looking for it elsewhere
->      using git grep. If you find the same pattern, then you search for it
->      into the tree the patch comes from. If you don't find it, it's likely
->      that you'll need to adjust it, and git log is your friend to figure
->      what happened to these areas. Note that git blame doesn't work for
->      removed code. If you find the same pattern elsewhere in mainline, it's
->      worth asking the patch author if that one is also an occurrence of the
->      same bug or just normal. It's not uncommon to find new bugs during a
->      backport.
-
-Very good point.
-
-I think this fits very well alongside the sections on function
-arguments, error handling, etc. since it details a specific thing that
-can go easily wrong.
-
-Can I take what you wrote above, or do you want to submit your own
-incremental patch? I think we could insert it almost verbatim.
-
-> 
->    - color diff: usually I just rely on:
-> 
->       [color]
->           ui = true
-> 
->      But I also recently got used to using diff-highlight that will
->      highlight different characters between lines. It's nice for complex
->      "if" conditions where you don't see the difference, or for spaces
->      vs tabs:
-> 
->      [pager]
->          log = /usr/doc/git-2.35.3/contrib/diff-highlight/diff-highlight | less
->          show = /usr/doc/git-2.35.3/contrib/diff-highlight/diff-highlight | less
->          diff = /usr/doc/git-2.35.3/contrib/diff-highlight/diff-highlight | less
-
-Right, git log/show/diff --word-diff=color can also do this to some degree.
-
-There is also core.whitespace/color.diff.whitespace that will highlight
-some common whitespace errors.
-
-I haven't used diff-highlight myself -- I'll give it a try.
-
-In this case, I was using colordiff specifically to do the side-by-side
-diff of the two patches since it handles the <() shell syntax _and_ does
-the highlighting of differences between the patches.
-
->    - git add, git add and git add: when fixing patches by hand, it's very
->      common to leave some parts not added (especially with | patch -p1).
->      It's useful to work on a clean tree to more easily spot untracked
->      files with "git status".
-
-Yet another reason to use git cherry-pick instead of manual patch
-commands: it keeps track of unmerged files for you. ;-)
-
-So I'm a bit torn on this. I think in this particular document I'd like
-to encourage the use of git and doing things "the git way" as much as
-possible.
-
->> I feel like in the worst case, somebody sees the document down the line
->> and vehemently disagrees with something and we either fix it or take it
->> out completely.
-> 
-> No I don't disagree and even find it useful. If at least it could help
-> people figure the pain it is to backport any single patch, and encourage
-> them to help stable maintainers, that would already be awesome!
-> 
->> I'd like to add that my impression is that a LOT of people *fear*
->> backporting and conflict resolution -- and it doesn't have to be that
->> way. We should be talking about merge conflicts and what good workflows
->> look like (one of the reasons why I was very happy to see Steven's
->> presentation at KR), instead of leaving everybody to figure it out on
->> their own. This document is my contribution towards that.
-> 
-> I'm not completely sold to this. Yes we should teach more people to
-> perform that task themselves. But there's a big difference between
-> backporting a few patches and feeling like you could maintain your own
-> kernel because now you know how to resolve conflicts. What I mentioned
-> above about dealing with patches you don't understand must not be
-> underestimated, that's the biggest challenge I faced when working on
-> stable kernels. There's probably a feeling of shame of not understanding
-> something, but I can say that many times I asked for help and was helped
-> even by top-ranked developers, and nobody ever laughed at me for not
-> understanding a certain area. But doing that in your garage for your
-> own kernel or for your company's products is a huge problem because it's
-> unlikely that you'll get help from the maintainers this time, so you're
-> left on your own with your own understanding of certain patches.
-> 
-> Thus, yes to backports, no to kernel forks being a collection of
-> backports.
-
-Right; almost every time I talk about backporting it's really in the
-context of contributing these backports to stable. I'm not in favour of
-forks either and I'm not trying to encourage it.
-
-Let me try to come up with a specific addition related to the changes
-you requested above and see if you agree with the wording.
-
-Thanks,
-
-
-Vegard
