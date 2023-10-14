@@ -2,70 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E7197C96F8
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 00:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D687C96FA
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 00:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbjJNWCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 18:02:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49526 "EHLO
+        id S230217AbjJNWI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 18:08:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229733AbjJNWCX (ORCPT
+        with ESMTP id S229555AbjJNWIZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 18:02:23 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A107CC9
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 15:02:21 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-53e04b17132so5101785a12.0
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 15:02:21 -0700 (PDT)
+        Sat, 14 Oct 2023 18:08:25 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0BA1C9
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 15:08:23 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-4054496bde3so32870775e9.1
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 15:08:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697320940; x=1697925740; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697321302; x=1697926102; darn=vger.kernel.org;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=yw5vvsnklLOxFa36qbTkixstFBDrpNV+YUNVB4IFmfU=;
-        b=EcVwkuCVmJH53rGXhkX6Lo3DpWrFGlbdAETXP61QaTcTz6Gs9G1h/Bo1hMlJV+sefx
-         P6WDj/VL8gRJ85TM0CPzmr9gBbg/aazvrz0rWSCdkrc9jQPvPO4HVcS9gjiSPfUegyXn
-         OmxUNUOplpfGUL691lyCOXqVo2xU72gp5T7YNniaw3ATW7kf1IzNQuohKqRCYyM/MJG9
-         xSbQnG0zcAIJcAuGmU4VTsW5kUW95JD5Kbsxrr3t+re3ITlh0h5LICKQ/4Rp5ZIUxrJZ
-         dikxqeFMO0170lkdsNRmWrohAR0/oiOnHBokF7gO7ShL+6KoZu26bijNryZ5nNzqfmsT
-         i3Zw==
+        bh=ghDZoWO9ubo5ZD+moVqdmgS7dUweAjCjy7g/qakcfGI=;
+        b=kUaPEhU4OZGvmuaJUBM+yhEeQ7Ldm2cSfMA9HIMzN+a0SgokQHVlzUFPjS8ICKhCVI
+         y+QyyP2PS1eWMA4bVhZpqxcU/YU3rmEiHcDl6V1BgCmxUaO6L3/8GRTVjI+ZnqaK3nPK
+         yMOpLzROssUIAlxLEXZa9Nqjsmp1FCG6dksTEsXIWeTUjaQ9kbq/WvfBV4BtONhVFjqr
+         9iqTpTlQ8VBN+HRMDYMeGHlCLy/tPKWcrXWNWAJ22tfFjulUPJO4cpYVu7wObEiW96iU
+         eKlTB8wrUUIzDBOwdTvs4cnpyPg8kbY1KBHe8tSfu7V5tPG50qxHedToAhKuSvmPfGK7
+         kJiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697320940; x=1697925740;
+        d=1e100.net; s=20230601; t=1697321302; x=1697926102;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :sender:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=yw5vvsnklLOxFa36qbTkixstFBDrpNV+YUNVB4IFmfU=;
-        b=O6hhi7SQNB/zEvnkdiCh+uxfb6fsPH80O0U0I19VBO0BHMSSxNkbHWpbi01sFwvH1O
-         Flo/513iyc3BNghxqdsapqhthAB83vgPqsoKco2YsysR6u5Biw1NAkaCGomsUVQGLbXA
-         9pIs8kpO3bGW/3gdf4qrdSWOHk9ngzEhPlk+ZueFL/rVtx6oAurUfH3UyOGOBv5/z6Gf
-         XahAmtbb0ahCt8jtZJGRKd4JSOKMMw9XkXi1gtbLYwx+ksPlTY/CEYh8MFNtXX49N+aL
-         29lhGdV+rrq20Bj/LVH8zEB7Od5pYhGsg7FlhkdsmveREU5Kh8fDiaogSwfw76NiJYEg
-         r6SA==
-X-Gm-Message-State: AOJu0YzC+MIw3kxaSi8KSoVorJjVX1hgZ/upgirg4VGkc4LvKAyuSKas
-        TXI8GPe14h4X1Y8TnVGd0+8=
-X-Google-Smtp-Source: AGHT+IH8FyIApLYRELzk2Wott6y3EXgwP+Fv9Ag++D2Dkans35dZiSu2QgwREjfXY57pPEACKvbmxg==
-X-Received: by 2002:a50:8716:0:b0:53e:2f63:bdc1 with SMTP id i22-20020a508716000000b0053e2f63bdc1mr5650570edb.10.1697320939758;
-        Sat, 14 Oct 2023 15:02:19 -0700 (PDT)
+        bh=ghDZoWO9ubo5ZD+moVqdmgS7dUweAjCjy7g/qakcfGI=;
+        b=QiRoheakOYa2fh4MzIa48n31jrHEFUiQmQ0bPlzwPdATb3niiSqGwbVSIC2F1abFYe
+         XLIqfKqwJdux1IyJJwpA0+oJSx0xf3jJDXNaRzw1wURAcvp104fd428XBJ+ZHGEd4avQ
+         Y3GaZbdxRyr2syoKvioir7VUOR4+01wFFXmvMcBXVdvEnvapgBoiULRWXunovRMR7aMS
+         LCYbJ6+NQi/P9pBMC7kukY4ibVfnNigahiNVa80ya8K9u1XJx7KwJiPJfs7ywVuIk7wz
+         SzpwyEl/Oruc2NlkRP8/+ro4hyX5/5vHU+gFKQ73QiA/MT2PMS7oBlUajPqrweGWGygo
+         ttMA==
+X-Gm-Message-State: AOJu0Yx0LzVcAMOtByvnERiSv+zOTrYd3WSwUdTfGSLPS83O1FzDchNe
+        pnxjukjFkzMvUfz63J+jiIE=
+X-Google-Smtp-Source: AGHT+IEUeilQeSXlpgldc67C9sLaN2NGvhi+DV75IkdDAjdsg0nUiNaTAwtibe5+Ie2BOjEkVRYKzA==
+X-Received: by 2002:a5d:570d:0:b0:32d:9e48:c2ef with SMTP id a13-20020a5d570d000000b0032d9e48c2efmr4408631wrv.44.1697321301857;
+        Sat, 14 Oct 2023 15:08:21 -0700 (PDT)
 Received: from gmail.com (1F2EF7B2.nat.pool.telekom.hu. [31.46.247.178])
-        by smtp.gmail.com with ESMTPSA id f26-20020a50ee9a000000b0052e1783ab25sm13255497edr.70.2023.10.14.15.02.18
+        by smtp.gmail.com with ESMTPSA id hy1-20020a1709068a6100b0099bc08862b6sm1456293ejc.171.2023.10.14.15.08.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Oct 2023 15:02:18 -0700 (PDT)
+        Sat, 14 Oct 2023 15:08:20 -0700 (PDT)
 Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sun, 15 Oct 2023 00:02:16 +0200
+Date:   Sun, 15 Oct 2023 00:08:17 +0200
 From:   Ingo Molnar <mingo@kernel.org>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [GIT PULL] scheduler fixes
-Message-ID: <ZSsP6Fq86Vn1goMS@gmail.com>
+        Andrew Morton <akpm@linux-foundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
+Subject: [GIT PULL] x86 fixes
+Message-ID: <ZSsRUR7nXpY7lAWM@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -79,156 +74,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
 Linus,
 
-Please pull the latest sched/urgent git tree from:
+Please pull the latest x86/urgent git tree from:
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-urgent-2023-10-14
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-2023-10-15
 
-   # HEAD: b01db23d5923a35023540edc4f0c5f019e11ac7d sched/eevdf: Fix pick_eevdf()
+   # HEAD: d35652a5fc9944784f6f50a5c979518ff8dacf61 x86/alternatives: Disable KASAN in apply_alternatives()
 
-Two EEVDF fixes.
+Fix a false-positive KASAN warning, fix an AMD erratum on Zen4 CPUs,
+and fix kernel-doc build warnings.
 
  Thanks,
 
 	Ingo
 
 ------------------>
-Benjamin Segall (1):
-      sched/eevdf: Fix pick_eevdf()
+Borislav Petkov (AMD) (1):
+      x86/cpu: Fix AMD erratum #1485 on Zen4-based CPUs
 
-Peter Zijlstra (1):
-      sched/eevdf: Fix min_deadline heap integrity
+Kirill A. Shutemov (1):
+      x86/alternatives: Disable KASAN in apply_alternatives()
+
+Randy Dunlap (1):
+      x86/resctrl: Fix kernel-doc warnings
 
 
- kernel/sched/fair.c | 73 +++++++++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 59 insertions(+), 14 deletions(-)
+ arch/x86/include/asm/msr-index.h      |  9 +++++++--
+ arch/x86/kernel/alternative.c         | 13 +++++++++++++
+ arch/x86/kernel/cpu/amd.c             |  8 ++++++++
+ arch/x86/kernel/cpu/resctrl/monitor.c | 10 +++++-----
+ 4 files changed, 33 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index ef7490c4b8b4..061a30a8925a 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -872,14 +872,16 @@ struct sched_entity *__pick_first_entity(struct cfs_rq *cfs_rq)
-  *
-  * Which allows an EDF like search on (sub)trees.
-  */
--static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
-+static struct sched_entity *__pick_eevdf(struct cfs_rq *cfs_rq)
- {
- 	struct rb_node *node = cfs_rq->tasks_timeline.rb_root.rb_node;
- 	struct sched_entity *curr = cfs_rq->curr;
- 	struct sched_entity *best = NULL;
-+	struct sched_entity *best_left = NULL;
+diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+index 1d111350197f..b37abb55e948 100644
+--- a/arch/x86/include/asm/msr-index.h
++++ b/arch/x86/include/asm/msr-index.h
+@@ -637,12 +637,17 @@
+ /* AMD Last Branch Record MSRs */
+ #define MSR_AMD64_LBR_SELECT			0xc000010e
  
- 	if (curr && (!curr->on_rq || !entity_eligible(cfs_rq, curr)))
- 		curr = NULL;
-+	best = curr;
+-/* Fam 17h MSRs */
+-#define MSR_F17H_IRPERF			0xc00000e9
++/* Zen4 */
++#define MSR_ZEN4_BP_CFG			0xc001102e
++#define MSR_ZEN4_BP_CFG_SHARED_BTB_FIX_BIT 5
  
++/* Zen 2 */
+ #define MSR_ZEN2_SPECTRAL_CHICKEN	0xc00110e3
+ #define MSR_ZEN2_SPECTRAL_CHICKEN_BIT	BIT_ULL(1)
+ 
++/* Fam 17h MSRs */
++#define MSR_F17H_IRPERF			0xc00000e9
++
+ /* Fam 16h MSRs */
+ #define MSR_F16H_L2I_PERF_CTL		0xc0010230
+ #define MSR_F16H_L2I_PERF_CTR		0xc0010231
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index 517ee01503be..73be3931e4f0 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -403,6 +403,17 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
+ 	u8 insn_buff[MAX_PATCH_LEN];
+ 
+ 	DPRINTK(ALT, "alt table %px, -> %px", start, end);
++
++	/*
++	 * In the case CONFIG_X86_5LEVEL=y, KASAN_SHADOW_START is defined using
++	 * cpu_feature_enabled(X86_FEATURE_LA57) and is therefore patched here.
++	 * During the process, KASAN becomes confused seeing partial LA57
++	 * conversion and triggers a false-positive out-of-bound report.
++	 *
++	 * Disable KASAN until the patching is complete.
++	 */
++	kasan_disable_current();
++
  	/*
- 	 * Once selected, run a task until it either becomes non-eligible or
-@@ -900,33 +902,75 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
- 		}
+ 	 * The scan order should be from start to end. A later scanned
+ 	 * alternative code can overwrite previously scanned alternative code.
+@@ -452,6 +463,8 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
  
- 		/*
--		 * If this entity has an earlier deadline than the previous
--		 * best, take this one. If it also has the earliest deadline
--		 * of its subtree, we're done.
-+		 * Now we heap search eligible trees for the best (min_)deadline
- 		 */
--		if (!best || deadline_gt(deadline, best, se)) {
-+		if (!best || deadline_gt(deadline, best, se))
- 			best = se;
--			if (best->deadline == best->min_deadline)
-+
-+		/*
-+		 * Every se in a left branch is eligible, keep track of the
-+		 * branch with the best min_deadline
-+		 */
-+		if (node->rb_left) {
-+			struct sched_entity *left = __node_2_se(node->rb_left);
-+
-+			if (!best_left || deadline_gt(min_deadline, best_left, left))
-+				best_left = left;
-+
-+			/*
-+			 * min_deadline is in the left branch. rb_left and all
-+			 * descendants are eligible, so immediately switch to the second
-+			 * loop.
-+			 */
-+			if (left->min_deadline == se->min_deadline)
- 				break;
- 		}
- 
--		/*
--		 * If the earlest deadline in this subtree is in the fully
--		 * eligible left half of our space, go there.
--		 */
-+		/* min_deadline is at this node, no need to look right */
-+		if (se->deadline == se->min_deadline)
-+			break;
-+
-+		/* else min_deadline is in the right branch. */
-+		node = node->rb_right;
-+	}
-+
-+	/*
-+	 * We ran into an eligible node which is itself the best.
-+	 * (Or nr_running == 0 and both are NULL)
-+	 */
-+	if (!best_left || (s64)(best_left->min_deadline - best->deadline) > 0)
-+		return best;
-+
-+	/*
-+	 * Now best_left and all of its children are eligible, and we are just
-+	 * looking for deadline == min_deadline
-+	 */
-+	node = &best_left->run_node;
-+	while (node) {
-+		struct sched_entity *se = __node_2_se(node);
-+
-+		/* min_deadline is the current node */
-+		if (se->deadline == se->min_deadline)
-+			return se;
-+
-+		/* min_deadline is in the left branch */
- 		if (node->rb_left &&
- 		    __node_2_se(node->rb_left)->min_deadline == se->min_deadline) {
- 			node = node->rb_left;
- 			continue;
- 		}
- 
-+		/* else min_deadline is in the right branch */
- 		node = node->rb_right;
+ 		text_poke_early(instr, insn_buff, insn_buff_sz);
  	}
-+	return NULL;
-+}
- 
--	if (!best || (curr && deadline_gt(deadline, best, curr)))
--		best = curr;
-+static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
-+{
-+	struct sched_entity *se = __pick_eevdf(cfs_rq);
- 
--	if (unlikely(!best)) {
-+	if (!se) {
- 		struct sched_entity *left = __pick_first_entity(cfs_rq);
- 		if (left) {
- 			pr_err("EEVDF scheduling fail, picking leftmost\n");
-@@ -934,7 +978,7 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
- 		}
- 	}
- 
--	return best;
-+	return se;
++
++	kasan_enable_current();
  }
  
- #ifdef CONFIG_SCHED_DEBUG
-@@ -3613,6 +3657,7 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
- 		 */
- 		deadline = div_s64(deadline * old_weight, weight);
- 		se->deadline = se->vruntime + deadline;
-+		min_deadline_cb_propagate(&se->run_node, NULL);
- 	}
+ static inline bool is_jcc32(struct insn *insn)
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index 03ef962a6992..ece2b5b7b0fe 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -80,6 +80,10 @@ static const int amd_div0[] =
+ 	AMD_LEGACY_ERRATUM(AMD_MODEL_RANGE(0x17, 0x00, 0x0, 0x2f, 0xf),
+ 			   AMD_MODEL_RANGE(0x17, 0x50, 0x0, 0x5f, 0xf));
  
- #ifdef CONFIG_SMP
++static const int amd_erratum_1485[] =
++	AMD_LEGACY_ERRATUM(AMD_MODEL_RANGE(0x19, 0x10, 0x0, 0x1f, 0xf),
++			   AMD_MODEL_RANGE(0x19, 0x60, 0x0, 0xaf, 0xf));
++
+ static bool cpu_has_amd_erratum(struct cpuinfo_x86 *cpu, const int *erratum)
+ {
+ 	int osvw_id = *erratum++;
+@@ -1149,6 +1153,10 @@ static void init_amd(struct cpuinfo_x86 *c)
+ 		pr_notice_once("AMD Zen1 DIV0 bug detected. Disable SMT for full protection.\n");
+ 		setup_force_cpu_bug(X86_BUG_DIV0);
+ 	}
++
++	if (!cpu_has(c, X86_FEATURE_HYPERVISOR) &&
++	     cpu_has_amd_erratum(c, amd_erratum_1485))
++		msr_set_bit(MSR_ZEN4_BP_CFG, MSR_ZEN4_BP_CFG_SHARED_BTB_FIX_BIT);
+ }
+ 
+ #ifdef CONFIG_X86_32
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+index ded1fc7cb7cb..f136ac046851 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -30,15 +30,15 @@ struct rmid_entry {
+ 	struct list_head		list;
+ };
+ 
+-/**
+- * @rmid_free_lru    A least recently used list of free RMIDs
++/*
++ * @rmid_free_lru - A least recently used list of free RMIDs
+  *     These RMIDs are guaranteed to have an occupancy less than the
+  *     threshold occupancy
+  */
+ static LIST_HEAD(rmid_free_lru);
+ 
+-/**
+- * @rmid_limbo_count     count of currently unused but (potentially)
++/*
++ * @rmid_limbo_count - count of currently unused but (potentially)
+  *     dirty RMIDs.
+  *     This counts RMIDs that no one is currently using but that
+  *     may have a occupancy value > resctrl_rmid_realloc_threshold. User can
+@@ -46,7 +46,7 @@ static LIST_HEAD(rmid_free_lru);
+  */
+ static unsigned int rmid_limbo_count;
+ 
+-/**
++/*
+  * @rmid_entry - The entry in the limbo and free lists.
+  */
+ static struct rmid_entry	*rmid_ptrs;
