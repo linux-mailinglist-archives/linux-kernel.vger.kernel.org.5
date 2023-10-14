@@ -2,95 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 182EC7C93BA
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 11:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 720C27C93BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 11:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232999AbjJNJZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 05:25:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37504 "EHLO
+        id S233020AbjJNJ0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 05:26:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231377AbjJNJZB (ORCPT
+        with ESMTP id S232937AbjJNJ0r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 05:25:01 -0400
-Received: from out203-205-221-149.mail.qq.com (out203-205-221-149.mail.qq.com [203.205.221.149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44AC4AD;
-        Sat, 14 Oct 2023 02:24:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1697275497;
-        bh=Vw3LE+Tmc3qVjQ4FoHkWDrAwkVApf+QWFWyArfPalQk=;
-        h=From:To:Cc:Subject:Date;
-        b=Hq4FcTGbJbxOkeDlltPPfPiGYRFJ6/dx6NuuICuzJMq9BEyizxDV7pzk/NvyEE97G
-         pD7aosqp0jKSCUicq85l7cMh7AoVfUNKSsIhHLV6NOaJmHlyFYqxzR3kWu2SqhMaVL
-         wcC8g1NPekn52kfcbrpyf5tNfFL4yfozkXY70oy4=
-Received: from KernelDevBox.byted.org ([180.184.51.70])
-        by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
-        id 6372385B; Sat, 14 Oct 2023 17:24:55 +0800
-X-QQ-mid: xmsmtpt1697275495tjv34p9ek
-Message-ID: <tencent_A06A37B6A0C0643DEC1524501525866FAC09@qq.com>
-X-QQ-XMAILINFO: MWBbVm9/0ltkXrz4vFd5e88m18OA1A/UuI1XeYAgyJeKVrHh720EvpMYv9l1CY
-         880gv3o8poCYOZw1t5e8+FOSapKh836Gdm1emw8548VmY/GIWVEPw4NyCmKy+XZXJSedK5bVbu12
-         GexQ/C8waLZ0qJsfazLT7bGvz3nnKDa4zogvTLsKv/8GBNjKqM95RQEr6bciGZZ2kxni9uk3CaTK
-         wfIJaafvPlURJc4NVxUw9j9Wp6h2NIqqLVXlFujB2OVYmkFEKJFPU05BxfA6BtRN2uss+x9yrFLb
-         I6DtmaAtcaIHqSF4wKtDqSxfhnqQdSzbEEICZu6UvajaC7qKSze8jNWJRmc9u2q+Gc7CFmBPkKZy
-         t5EUV70gMIg0ZHrJt4ZhWXfyCYLlrWp8TDsCA1WSf7XjpDfK9/uRzCAEldfrVzpfwrIjN1yI+moI
-         zz+qJ2zF4c4+E36Dt2UYyLG38Q/vy0oKOFVPUg6+0xvhSdD7aXfyfaKJ/ejt6Vu3bRP2XoSifZ8A
-         kl11ME5GHzov5iPv7sgUVrXFuqqS8fUJ07X1yPWQKIUpzFGGj9jRTPchKz8NothAsHGhSGbXGV/4
-         fQ5zIB/T0LIzc3DyZScv+fTMb0MvQLuV6lV9FMgNTH4k2gD9/CcD7onOYPzihs/ZQ8tEpm4Kwt7b
-         r3iIvpeQfr14IOc93HjGshTxz9MEOaURkbTtmoDDUk/vmeG8qIHhgVMdUIX83fPQPC8EDfPwSN0Z
-         eIYcSXrMCEdj8q9zRs8Vl2Tj4wuK7erSs5GjfnXmTpjq/dz4Dhhu2ufYbslRQ3sVPcB6+DZmvz4d
-         FEY2YQR2mC/u4UP5YKHBaU0kzutx1bJXKea1s1K0SN4ZcRBNiiVTCaRrqJFPX/jDXjUG7cr2gQoy
-         W6S/bbRubZQetm/gZ7704DcbFxh/Jzmg5PVJWnp7oniSKXtnH1MIvGtFEX5TvWq3lE5zKngH/fHV
-         V7fxi6imWoOamicW17TTcRRdCYcBdltXf3mZ5NsU3aasR4WwFcMQ==
-X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
-From:   Zhang Shurong <zhang_shurong@foxmail.com>
-To:     heikki.krogerus@linux.intel.com
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Zhang Shurong <zhang_shurong@foxmail.com>
-Subject: [PATCH] usb: typec: retimer: Check dev_set_name() return value
-Date:   Sat, 14 Oct 2023 17:24:53 +0800
-X-OQ-MSGID: <20231014092453.2785962-1-zhang_shurong@foxmail.com>
-X-Mailer: git-send-email 2.30.2
+        Sat, 14 Oct 2023 05:26:47 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E606C2;
+        Sat, 14 Oct 2023 02:26:46 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0946C433D9;
+        Sat, 14 Oct 2023 09:26:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697275605;
+        bh=aGl4g3Sh3c+rQVAipdArG0sIEhyzdN1YpzpNOg38+TI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RaWJ/fOo5o9ngjwhlR5S1QxO8pKwquGkpkBM6XON34hCB9ktWAhmItUaTCPG8EXPv
+         Q0rN9mTSYY5a22niHACtv8SKegbOBoDoy7ux0LbcOwvMhGDsU8avWdT0Piye8E3wCR
+         OMvDD9CglE649f8pRbJlRWA6XZlz/T6PTXmo0D6w2a5IUWzOqgkzWIW5vMVMvF4h++
+         zrK9Joklh91odonXxDzQybPy2znw0P+/NjNs/2nYQhN8Pab9pT79S86VGIYcHhAOH+
+         T0hcJpbTAisMpbG+aDEiReqd3yLtGEv88A4WcelCwp6IAj0P5wIAkrDd+8PBHZrrQD
+         bV8c2MdvRQIlQ==
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-1e562706d29so1648814fac.2;
+        Sat, 14 Oct 2023 02:26:45 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxQfUZBdUdX6eysUg7j8j1tu4bCDp5bkPfwOkYBwE4HbKuCkdFC
+        RNSbORV1dlGVZEhjZABUtNRYznNx1B/j3LfRrog=
+X-Google-Smtp-Source: AGHT+IEwEQUUC1JNZqjlzEvZLXYqnFViuoo3sDCGG2QuSlxycV452MkTdFFBAni9pTPEblM/p69MXbyOyylRdCUdRis=
+X-Received: by 2002:a05:6870:d905:b0:1e9:f4e4:2882 with SMTP id
+ gq5-20020a056870d90500b001e9f4e42882mr3597436oab.38.1697275604992; Sat, 14
+ Oct 2023 02:26:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20231005214057.759089-1-mmaurer@google.com> <CAK7LNATBBk-a0EJcxpWGJ9n+9BHQUw3a4s41LTtC-R8fYrVMpw@mail.gmail.com>
+ <CANiq72=Dsaa77n-OKDZCcv6TWgxZf7R00n=X137WbsUzwgU4RA@mail.gmail.com>
+In-Reply-To: <CANiq72=Dsaa77n-OKDZCcv6TWgxZf7R00n=X137WbsUzwgU4RA@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 14 Oct 2023 18:26:08 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATmscONw-Sy7tkgEY=z9i7Rgt0G0Mq9+FV8nN_vP+Q4mg@mail.gmail.com>
+Message-ID: <CAK7LNATmscONw-Sy7tkgEY=z9i7Rgt0G0Mq9+FV8nN_vP+Q4mg@mail.gmail.com>
+Subject: Re: [PATCH v4] rust: Respect HOSTCC when linking for host
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Matthew Maurer <mmaurer@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's possible that dev_set_name() returns -ENOMEM.
-We fix this by catching the error and handling it.
+On Tue, Oct 10, 2023 at 7:00=E2=80=AFAM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+>
+> On Sat, Oct 7, 2023 at 5:38=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.=
+org> wrote:
+> >
+> > Acked-by: Masahiro Yamada <masahiroy@kernel.org>
+> >
+> > if Miguel picked this up.
+> >
+> > Please let me know if I should pick this up.
+>
+> Thanks a lot for taking a look Masahiro -- either way is fine for me.
+> If you want to take it, please feel free to add my `Acked-by`.
+>
+> Cheers,
+> Miguel
 
-Fixes: ddaf8d96f93b ("usb: typec: Add support for retimers")
-Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
----
- drivers/usb/typec/retimer.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+I do not see this yet in linux-next.
 
-diff --git a/drivers/usb/typec/retimer.c b/drivers/usb/typec/retimer.c
-index 4a7d1b5c4d86..f163856a78cd 100644
---- a/drivers/usb/typec/retimer.c
-+++ b/drivers/usb/typec/retimer.c
-@@ -122,8 +122,13 @@ typec_retimer_register(struct device *parent, const struct typec_retimer_desc *d
- 	retimer->dev.class = &retimer_class;
- 	retimer->dev.type = &typec_retimer_dev_type;
- 	retimer->dev.driver_data = desc->drvdata;
--	dev_set_name(&retimer->dev, "%s-retimer",
-+	ret = dev_set_name(&retimer->dev, "%s-retimer",
- 		     desc->name ? desc->name : dev_name(parent));
-+	if (ret) {
-+		dev_err(parent, "failed to register retimer (%d)\n", ret);
-+		put_device(&retimer->dev);
-+		return ERR_PTR(ret);
-+	}
- 
- 	ret = device_add(&retimer->dev);
- 	if (ret) {
--- 
-2.30.2
+So, I applied to linux-kbuild with Miguel's Ack now.
 
+
+
+--=20
+Best Regards
+Masahiro Yamada
