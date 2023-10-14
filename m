@@ -2,89 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B89DD7C9256
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 04:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC9D87C925D
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 05:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232686AbjJNCnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 22:43:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44366 "EHLO
+        id S232717AbjJNCxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 22:53:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJNCnc (ORCPT
+        with ESMTP id S229518AbjJNCxt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 22:43:32 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 896EFA9;
-        Fri, 13 Oct 2023 19:43:30 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1ca052ec63bso9580235ad.1;
-        Fri, 13 Oct 2023 19:43:30 -0700 (PDT)
+        Fri, 13 Oct 2023 22:53:49 -0400
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77CFCB7;
+        Fri, 13 Oct 2023 19:53:46 -0700 (PDT)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-59b5484fbe6so33749747b3.1;
+        Fri, 13 Oct 2023 19:53:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697251410; x=1697856210; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jTITjb+//k4DyyD3GweboqFVPC/ATyRtYY/wTSNvCM4=;
-        b=cmHqSYBvcsZgIAwxhCaaujB13IaNCplRmerI9luJ8GQ7jlUoxJ1yy6o0N2rDRreKUi
-         hm4wRERJHYjE86cO8WFaoNmasFsEZspnjhBMOduno0ZfdVbgGASmxdpzfCZLoNDvKTWe
-         69HeXWBEYwghHww9A8ErfCl07khAWxaJ/eYIGyNRk7wHhGz1E3FXJy0faUTRtf2RfQyL
-         hZZnM7UQBUvqNiIn25cORFmMrwBTsb734xwOTXOS/IhNWAyJz6cCIcdyce5q9JOQdOhO
-         F4C+t+4DSnB+EnHNEX1bjo2A7wXYfHSjIJmJY2PTiKRVvgsw1wLN/OyWWnCwlylf/3eL
-         Wbew==
+        d=gmail.com; s=20230601; t=1697252025; x=1697856825; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hGncKTdfCimdngO7kKPOQgHCStOsPVpBFk/n5kdBRjA=;
+        b=AF57E7ZkrpqQEFli4FO2dD5xBD0mVV4F0PkOM5QE28ULYC9PnhVxPc8c7rLIyxlu2h
+         WQPkYVV7XqtXf10Pj90yifND2SsgxLKAV3I+U5zWQWp2ZTz1q18mhzXxv7VfKm6XZolk
+         zCdVFMB7weDm8uh5aqPQMzfqs3JtjLAcN8ydrCqgnMpI3SzbvInTNAaWKHmPMR7vTf7z
+         fh+wTQV4E5gca6FxNdgwZWfMCI1UTelXKyWAyDrm+IDfK3Htmq2XfujH777mZo+rt875
+         dQZEZZxGHksLszkWxDAnaq+zR1G+6ZTI+46bO4kon2zKRbe0BhL9MdCu8oyhWW8owNXi
+         h/9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697251410; x=1697856210;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jTITjb+//k4DyyD3GweboqFVPC/ATyRtYY/wTSNvCM4=;
-        b=YRwwcZ3vDClUT5eARegF48CQvHo5ctI/sNjmLaQoZvgxvMiThCqvTROOvKl5bQNCZU
-         NFMsIvpzv5lX3Rz7Co00AvSIIby8jbN5D3eq5jXjUu0sTi/+8g0jfhkRdIzPaF3K5Mc/
-         IHsZ3o/NM32q8bMupA9S0J2zIOyfjZGklKjsoadaj+WKdF4YKDZeafsFCpv0GTv00lHc
-         4wAAlkBfaD73ZI2orD2tgpuvouTildumT3s3JXVOxN6oKbfm8TRrq/8RRsQX+1kwlK9V
-         BC1QPEjivZY/UQAWFPQdM1nAfddz+LCBpcFXjwzLon3PF3l0IYXJbWCku4OKgA9GTtez
-         YWrA==
-X-Gm-Message-State: AOJu0Yze4awPKw4+H7joHnlBm9tM8h/C6d9dDr+0gyxn+sdblw8xOkYQ
-        WghJctTKZDFQxs9zvo1ngUI=
-X-Google-Smtp-Source: AGHT+IEqg4czoCTQgV5nzmU+1DggLn8urc5zF5zeamlQc9J5Vg1C0OuNeAgCLyJ44mKzrTZyXZf7GQ==
-X-Received: by 2002:a05:6a21:62a:b0:170:3e5b:bccd with SMTP id ll42-20020a056a21062a00b001703e5bbccdmr14673239pzb.30.1697251409932;
-        Fri, 13 Oct 2023 19:43:29 -0700 (PDT)
-Received: from pek-lxu-l1.wrs.com ([111.198.228.56])
-        by smtp.gmail.com with ESMTPSA id d13-20020a17090b004d00b00273744e6eccsm771880pjt.12.2023.10.13.19.43.24
+        d=1e100.net; s=20230601; t=1697252025; x=1697856825;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hGncKTdfCimdngO7kKPOQgHCStOsPVpBFk/n5kdBRjA=;
+        b=gHek8FFNWjXmj2SmZCcbkfmzbWpZ1E0D+xLVCamkXzLhTe9adfywhVZm4lQeB1nleg
+         VJuQYAiqC5gjQqDCMV34tHFbx0CMWa2Lzoz/E75Z7s1jnhr3qfywM1BaDfdl91DMJEa1
+         YB1wdYHOsO4N3ESyLv+2hDPxQZNZmDME7jXLXrys5JLLk31UqvneUV/Qx/mxf6yowpmr
+         2v3IoLNHTg2CLKaIDIzPtCEpBvP2ihCChW7Rh1MEUQEDPtzVAkLMR9s8LSQ9+S8mGnWE
+         cPaE9ognIoJrQf0NHZMlpZPh6NgPN9X0PvG56IIxFkJYzksjG8YsY1vWoBvJf8teEZKc
+         dHIw==
+X-Gm-Message-State: AOJu0Yy6MznIPLiiCw0gpy3Pa3RgOkZghMqDdH5rfKNLxMX8QczfEcka
+        sm0gDufGF5LeVWaNW3PPHsp7Ufv52muQAg==
+X-Google-Smtp-Source: AGHT+IF64BUBlHNToy/kVSEqM9physpRohj2L1qshJhiIksiQK26raMAYveyRWZt09UIwX5jq0K99A==
+X-Received: by 2002:a81:ad42:0:b0:5a7:aa65:c536 with SMTP id l2-20020a81ad42000000b005a7aa65c536mr14292411ywk.0.1697252025487;
+        Fri, 13 Oct 2023 19:53:45 -0700 (PDT)
+Received: from localhost ([2607:fb90:3e1c:8d18:7450:8e7a:f047:ce0a])
+        by smtp.gmail.com with ESMTPSA id f124-20020a0ddc82000000b0058427045833sm242832ywe.133.2023.10.13.19.53.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 19:43:29 -0700 (PDT)
-From:   Edward AD <twuufnxlz@gmail.com>
-To:     horms@kernel.org
-Cc:     davem@davemloft.net, edumazet@google.com, johannes.berg@intel.com,
-        johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzbot+509238e523e032442b80@syzkaller.appspotmail.com,
-        syzkaller-bugs@googlegroups.com, twuufnxlz@gmail.com
-Subject: Re: [PATCH] rfkill: fix deadlock in rfkill_send_events
-Date:   Sat, 14 Oct 2023 10:43:22 +0800
-Message-ID: <20231014024321.1002066-2-twuufnxlz@gmail.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231013110638.GD29570@kernel.org>
-References: <20231013110638.GD29570@kernel.org>
+        Fri, 13 Oct 2023 19:53:44 -0700 (PDT)
+Date:   Fri, 13 Oct 2023 19:53:43 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc:     Jan Kara <jack@suse.cz>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] lib/find: Make functions safe on changing bitmaps
+Message-ID: <ZSoCt5+DybhpsuGv@yury-ThinkPad>
+References: <20231011144320.29201-1-jack@suse.cz>
+ <20231011150252.32737-1-jack@suse.cz>
+ <ZSbo1aAjteepdmcz@yury-ThinkPad>
+ <20231012122110.zii5pg3ohpragpi7@quack3>
+ <ZSndoNcA7YWHXeUi@yury-ThinkPad>
+ <021970ad-942a-4fe8-ac95-c8089527f7d2@alu.unizg.hr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <021970ad-942a-4fe8-ac95-c8089527f7d2@alu.unizg.hr>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Simon Horman,
-On Fri, 13 Oct 2023 13:06:38 +0200, Simon Horman wrote:
-> I am wondering if you considered moving the rfkill_sync() calls
-> to before &data->mtx is taken, to avoid the need to drop and
-> retake it?
-If you move rfkill_sync() before calling &data->mtx, more code will be added 
-because rfkill_sync() is in the loop body.
+On Sat, Oct 14, 2023 at 04:21:50AM +0200, Mirsad Goran Todorovac wrote:
+> On 10/14/2023 2:15 AM, Yury Norov wrote:
+> > Restore LKML
+> > 
+> > On Thu, Oct 12, 2023 at 02:21:10PM +0200, Jan Kara wrote:
+> > > On Wed 11-10-23 11:26:29, Yury Norov wrote:
+> > > > Long story short: KCSAN found some potential issues related to how
+> > > > people use bitmap API. And instead of working through that issues,
+> > > > the following code shuts down KCSAN by applying READ_ONCE() here
+> > > > and there.
+> > > 
+> > > I'm sorry but this is not what the patch does. I'm not sure how to get the
+> > > message across so maybe let me start from a different angle:
+> > > 
+> > > Bitmaps are perfectly fine to be used without any external locking if
+> > > only atomic bit ops (set_bit, clear_bit, test_and_{set/clear}_bit) are
+> > > used. This is a significant performance gain compared to using a spinlock
+> > > or other locking and people do this for a long time. I hope we agree on
+> > > that.
+> > > 
+> > > Now it is also common that you need to find a set / clear bit in a bitmap.
+> > > To maintain lockless protocol and deal with races people employ schemes
+> > > like (the dumbest form):
+> > > 
+> > > 	do {
+> > > 		bit = find_first_bit(bitmap, n);
+> > > 		if (bit >= n)
+> > > 			abort...
+> > > 	} while (!test_and_clear_bit(bit, bitmap));
+> > > 
+> > > So the code loops until it finds a set bit that is successfully cleared by
+> > > it. This is perfectly fine and safe lockless code and such use should be
+> > > supported. Agreed?
+> > 
+> > Great example. When you're running non-atomic functions concurrently,
+> > the result may easily become incorrect, and this is what you're
+> > demonstrating here.
+> > 
+> > Regarding find_first_bit() it means that:
+> >   - it may erroneously return unset bit;
+> >   - it may erroneously return non-first set bit;
+> >   - it may erroneously return no bits for non-empty bitmap.
+> > 
+> > Effectively it means that find_first bit may just return a random number.
+> > 
+> > Let's take another example:
+> > 
+> > 	do {
+> > 		bit = get_random_number();
+> > 		if (bit >= n)
+> > 			abort...
+> > 	} while (!test_and_clear_bit(bit, bitmap));
+> > 
+> > When running concurrently, the difference between this and your code
+> > is only in probability of getting set bit somewhere from around the
+> > beginning of bitmap.
+> > 
+> > The key point is that find_bit() may return undef even if READ_ONCE() is
+> > used. If bitmap gets changed anytime in the process, the result becomes
+> > invalid. It may happen even after returning from find_first_bit().
+> > 
+> > And if my understanding correct, your code is designed in the
+> > assumption that find_first_bit() may return garbage, so handles it
+> > correctly.
+> > 
+> > > *Except* that the above actually is not safe due to find_first_bit()
+> > > implementation and KCSAN warns about that. The problem is that:
+> > > 
+> > > Assume *addr == 1
+> > > CPU1			CPU2
+> > > find_first_bit(addr, 64)
+> > >    val = *addr;
+> > >    if (val) -> true
+> > > 			clear_bit(0, addr)
+> > >      val = *addr -> compiler decided to refetch addr contents for whatever
+> > > 		   reason in the generated assembly
+> > >      __ffs(val) -> now executed for value 0 which has undefined results.
+> > 
+> > Yes, __ffs(0) is undef. But the whole function is undef when accessing
+> > bitmap concurrently.
+> > 
+> > > And the READ_ONCE() this patch adds prevents the compiler from adding the
+> > > refetching of addr into the assembly.
+> > 
+> > That's true. But it doesn't improve on the situation. It was an undef
+> > before, and it's undef after, but a 2% slower undef.
+> > 
+> > Now on that KCSAN warning. If I understand things correctly, for the
+> > example above, KCSAN warning is false-positive, because you're
+> > intentionally running lockless.
+> > 
+> > But for some other people it may be a true error, and now they'll have
+> > no chance to catch it if KCSAN is forced to ignore find_bit() entirely.
+> > 
+> > We've got the whole class of lockless algorithms that allow safe concurrent
+> > access to the memory. And now that there's a tool that searches for them
+> > (concurrent accesses), we need to have an option to somehow teach it
+> > to suppress irrelevant warnings. Maybe something like this?
+> > 
+> >          lockless_algorithm_begin(bitmap, bitmap_size(nbits));
+> > 	do {
+> > 		bit = find_first_bit(bitmap, nbits);
+> > 		if (bit >= nbits)
+> > 			break;
+> > 	} while (!test_and_clear_bit(bit, bitmap));
+> >          lockless_algorithm_end(bitmap, bitmap_size(nbits));
+> > 
+> > And, of course, as I suggested a couple iterations ago, you can invent
+> > a thread-safe version of find_bit(), that would be perfectly correct
+> > for lockless use:
+> > 
+> >   unsigned long _find_and_clear_bit(volatile unsigned long *addr, unsigned long size)
+> >   {
+> >          unsigned long bit = 0;
+> >          while (!test_and_clear_bit(bit, bitmap) {
+> >                  bit = FIND_FIRST_BIT(addr[idx], /* nop */, size);
+> >                  if (bit >= size)
+> >                          return size;
+> >          }
+> > 
+> >          return bit;
+> >   }
 > 
-> Perhaps it doesn't work for some reason (compile tested only!).
-> But this does seem somehow cleaner for me.
-BR,
-edward
+> Hi, Yuri,
+> 
+> But the code above effectively does the same as the READ_ONCE() macro
+> as defined in rwonce.h:
+> 
+> #ifndef __READ_ONCE
+> #define __READ_ONCE(x)	(*(const volatile __unqual_scalar_typeof(x) *)&(x))
+> #endif
+> 
+> #define READ_ONCE(x)							\
+> ({									\
+> 	compiletime_assert_rwonce_type(x);				\
+> 	__READ_ONCE(x);							\
+> })
+> 
+> Both uses only prevent the funny stuff the compiler might have done to the
+> read of the addr[idx], there's no black magic in READ_ONCE().
+> 
+> Both examples would probably result in the same assembly and produce the
+> same 2% slowdown ...
+> 
+> Only you declare volatile in one place, and READ_ONCE() in each read, but
+> this will only compile a bit slower and generate the same machine code.
+
+The difference is that find_and_clear_bit() has a semantics of
+atomic operation. Those who will decide to use it will also anticipate
+associate downsides. And other hundreds (or thousands) users of
+non-atomic find_bit() functions will not have to pay extra buck
+for unneeded atomicity.
+
+Check how 'volatile' is used in test_and_clear_bit(), and consider
+find_and_clear_bit() as a wrapper around test_and_clear_bit().
+
+In other words, this patch suggests to make find_bit() thread-safe by
+using READ_ONCE(), and it doesn't work. find_and_clear_bit(), on the
+other hand, is simply a wrapper around test_and_clear_bit(), and
+doesn't imply any new restriction that test_and_clear_bit() doesn't.
+
+Think of it as an optimized version of:
+         while (bit < nbits && !test_and_clear_bit(bit, bitmap)
+                bit++;
+
+If you think it's worth to try in your code, I can send a patch for
+you.
+
+Thanks,
+Yury
