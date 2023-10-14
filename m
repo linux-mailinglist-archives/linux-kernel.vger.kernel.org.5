@@ -2,76 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B38B7C9685
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 23:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F087C96AE
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 00:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233331AbjJNVfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 17:35:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57962 "EHLO
+        id S233335AbjJNV6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 17:58:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231987AbjJNVfQ (ORCPT
+        with ESMTP id S231987AbjJNV6U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 17:35:16 -0400
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3190CC;
-        Sat, 14 Oct 2023 14:35:14 -0700 (PDT)
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-1e5602c12e5so1884437fac.3;
-        Sat, 14 Oct 2023 14:35:14 -0700 (PDT)
+        Sat, 14 Oct 2023 17:58:20 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D1DDC9;
+        Sat, 14 Oct 2023 14:58:19 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-538e8eca9c1so5568120a12.3;
+        Sat, 14 Oct 2023 14:58:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697320697; x=1697925497; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=k3rqTgJ5wiRPiIuu/wLqZjqyoaaSm39dvqVRU6EIaGo=;
+        b=I55+kMc6eieL6GYnGBKwYPFll+mRlCRApgP5/jjhBhoOG7Zg9wUfEFCKITLTtdkC0T
+         GyoyE7jJkXxdENSqdphBPwIcuawM8OzlKnQI9C1lTYnbsqwrgqQbJrbkYCDT1rU1lX1/
+         NTBE54OP0eoI70JiNjYJW+ajLyRKVDgibb+IbyGNZG4tWqgVmbyhMqNWoTzVEVUzgEiF
+         em2E9ymfy8onRQmagCHp+uMLmD2mOfIIkmuSLRH7TUoAcY7dxraNwW/7NEJQJTR+WHv7
+         2zU1LHvrK4m+5xs6rbbn+pWrWAzN8QuKA0Z1VWHHpAlo66h5YvPOQS64afN54JXvVji0
+         bKYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697319314; x=1697924114;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=MBwRMIVROmmBQpDc6SVXosJBDiLfO3KWW/346cMaQiY=;
-        b=YKf78jn6KC/TudurfnV/D1x5YxmIAAvVBhHm3I2FmuIZIEJ/eHLYHdpbV+XNNnMWmc
-         GcFQJzgnR9qDbZ0nqg9gTLqQid5ShaN9dIvEBZaidmDXPWztv6IR4cUAUTQXhy+ONTjx
-         qDFNWq9/d2yJYobd6HNnF9DOAs9Prsvy7TeOp2L/gufpooat5ThP7HqCX8LJokUjKlyM
-         rD9wRzQ98sF/Jek7RIr/kVIOo2sJ7ZgmfDPn/cOyjM4jSDy91SVnH1E11adQzpfpUDXU
-         WNNqSc1gBrVdaLAgJsJncIJ0Umk8wS9n31xZd/4uJliGO/hCxdcSN3MY+whTYM4oXt5q
-         2B0Q==
-X-Gm-Message-State: AOJu0YxM2Q/11xoMuG6Ujo0tym190v9fY6okUZCXiwVCgbQD2PXgfpuU
-        sfl+GUAhpLdMTUpSaGogAA==
-X-Google-Smtp-Source: AGHT+IFh0ejBA0W/YnotiYIWBBpOzR7ycB6HKOGMnb3NELy6Kfr3Pi1cDDqsdVs5YRxjMJ/+og7j5g==
-X-Received: by 2002:a05:6870:b79c:b0:1e9:dd69:2fba with SMTP id ed28-20020a056870b79c00b001e9dd692fbamr5560561oab.9.1697319314080;
-        Sat, 14 Oct 2023 14:35:14 -0700 (PDT)
-Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id dy40-20020a056870c7a800b001e1754b9fc1sm1221798oab.24.2023.10.14.14.35.12
+        d=1e100.net; s=20230601; t=1697320697; x=1697925497;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=k3rqTgJ5wiRPiIuu/wLqZjqyoaaSm39dvqVRU6EIaGo=;
+        b=fm2j4AYEvGYDcnoD4ej7QS8k4UiFM5T4qxc8YhEUTxMRuyjTtjCXNhKpBluetdsbOc
+         HXjwnhEMwDEwUAHnfsYxaFpyF/kJD0GkfLfhZ1+l/pooKic6DXfqOv8A6iqVaUmMlGrV
+         F+5bU94iNqu/Z63vsIXaEK1/vnzbLDCoNye0L9d1GEAOpJCCwkwUTnq5GeyhZtXArC6B
+         0ooY4chpGmkhEFXw5i81X0kW1o+isxXfiE95S64BHIimPfi7KVthQZEp1z4BSAU3y97o
+         iSoiz2IA+JQL+etK3UoObtilYQXCQxIrMgUq+tgVIjuR/rOc1IhvnZSi/PLGEK1HKiZ2
+         J2VA==
+X-Gm-Message-State: AOJu0Yw2zoyopLi0NgFCzNeYtvKIBi87Mp/U15zmmIbhUo/ImWdXjkF2
+        OcVrz8gXPJO3IizXVA5liRE=
+X-Google-Smtp-Source: AGHT+IFUdDx511EOY3CmDiG8CiCqIVVT01V76bbhfMm3qmD3XI8pW48takEHxunqaD31+hsEQ7c7rg==
+X-Received: by 2002:a17:906:4fc7:b0:9be:aebc:d480 with SMTP id i7-20020a1709064fc700b009beaebcd480mr2359055ejw.24.1697320697107;
+        Sat, 14 Oct 2023 14:58:17 -0700 (PDT)
+Received: from gmail.com (1F2EF7B2.nat.pool.telekom.hu. [31.46.247.178])
+        by smtp.gmail.com with ESMTPSA id e8-20020a17090681c800b009be23a040cfsm1402017ejx.40.2023.10.14.14.58.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Oct 2023 14:35:13 -0700 (PDT)
-Received: (nullmailer pid 2970737 invoked by uid 1000);
-        Sat, 14 Oct 2023 21:35:12 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Sat, 14 Oct 2023 14:58:14 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Sat, 14 Oct 2023 23:58:11 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] perf events fix
+Message-ID: <ZSsO8/2KhWgd6kLS@gmail.com>
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Russell King <linux@armlinux.org.uk>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Eric Dumazet <edumazet@google.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-In-Reply-To: <20231014-marvell-88e6152-wan-led-v2-1-7fca08b68849@linaro.org>
-References: <20231014-marvell-88e6152-wan-led-v2-0-7fca08b68849@linaro.org>
- <20231014-marvell-88e6152-wan-led-v2-1-7fca08b68849@linaro.org>
-Message-Id: <169731931217.2970721.15978003644189758136.robh@kernel.org>
-Subject: Re: [PATCH net-next v2 1/5] dt-bindings: marvell: Rewrite
- MV88E6xxx in schema
-Date:   Sat, 14 Oct 2023 16:35:12 -0500
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -79,51 +79,48 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Sat, 14 Oct 2023 22:51:32 +0200, Linus Walleij wrote:
-> This is an attempt to rewrite the Marvell MV88E6xxx switch bindings
-> in YAML schema.
-> 
-> The current text binding says:
->   WARNING: This binding is currently unstable. Do not program it into a
->   FLASH never to be changed again. Once this binding is stable, this
->   warning will be removed.
-> 
-> Well that never happened before we switched to YAML markup,
-> we can't have it like this, what about fixing the mess?
-> 
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
->  .../bindings/net/dsa/marvell,mv88e6xxx.yaml        | 241 +++++++++++++++++++++
->  .../devicetree/bindings/net/dsa/marvell.txt        | 109 ----------
->  MAINTAINERS                                        |   2 +-
->  3 files changed, 242 insertions(+), 110 deletions(-)
-> 
+Linus,
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Please pull the latest perf/urgent git tree from:
 
-yamllint warnings/errors:
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf-urgent-2023-10-14
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/marvell,mvusb.example.dtb: switch@0: ports: '#address-cells' is a required property
-	from schema $id: http://devicetree.org/schemas/net/dsa/marvell,mv88e6xxx.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/marvell,mvusb.example.dtb: switch@0: ports: '#size-cells' is a required property
-	from schema $id: http://devicetree.org/schemas/net/dsa/marvell,mv88e6xxx.yaml#
+   # HEAD: e53899771a02f798d436655efbd9d4b46c0f9265 perf/x86/lbr: Filter vsyscall addresses
 
-doc reference errors (make refcheckdocs):
+Fix an LBR sampling bug.
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231014-marvell-88e6152-wan-led-v2-1-7fca08b68849@linaro.org
+ Thanks,
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
+	Ingo
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+------------------>
+JP Kobryn (1):
+      perf/x86/lbr: Filter vsyscall addresses
 
-pip3 install dtschema --upgrade
 
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+ arch/x86/events/utils.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
+diff --git a/arch/x86/events/utils.c b/arch/x86/events/utils.c
+index 76b1f8bb0fd5..dab4ed199227 100644
+--- a/arch/x86/events/utils.c
++++ b/arch/x86/events/utils.c
+@@ -1,5 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <asm/insn.h>
++#include <linux/mm.h>
+ 
+ #include "perf_event.h"
+ 
+@@ -132,9 +133,9 @@ static int get_branch_type(unsigned long from, unsigned long to, int abort,
+ 		 * The LBR logs any address in the IP, even if the IP just
+ 		 * faulted. This means userspace can control the from address.
+ 		 * Ensure we don't blindly read any address by validating it is
+-		 * a known text address.
++		 * a known text address and not a vsyscall address.
+ 		 */
+-		if (kernel_text_address(from)) {
++		if (kernel_text_address(from) && !in_gate_area_no_mm(from)) {
+ 			addr = (void *)from;
+ 			/*
+ 			 * Assume we can get the maximum possible size
