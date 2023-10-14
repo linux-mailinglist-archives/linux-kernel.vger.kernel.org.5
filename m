@@ -2,104 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D06277C9637
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 22:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 082247C9647
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 22:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbjJNUCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 16:02:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57254 "EHLO
+        id S231309AbjJNUkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 16:40:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjJNUCp (ORCPT
+        with ESMTP id S231495AbjJNUZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 16:02:45 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 531ECB7
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 13:02:44 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-351367c8fcdso12486335ab.3
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 13:02:44 -0700 (PDT)
+        Sat, 14 Oct 2023 16:25:28 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18680B7;
+        Sat, 14 Oct 2023 13:25:27 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id ca18e2360f4ac-79fe612beabso134480239f.3;
+        Sat, 14 Oct 2023 13:25:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697313763; x=1697918563; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1697315126; x=1697919926; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YuUrYpvnqDMxLzTPZKkvRFwxUirANKIHNsy0NE09+KA=;
-        b=XniL/yl7qxQTTTpLhN39CilgYyXjJ91JlnPjYyQyfRoZdGX/F0Kdg05tS4zLcN5UzE
-         yTfh5UhYZDAGZbYq6rbhGzFNIqjoMifaGf3GNXEgsBbvvvh3YS7pvDGOot/EWW/UN0wA
-         6G5c1GdxiBrFCAFAQV2xD82n9OuwKucbDE6jYRV8cI379ipeYwOqA/zrhLf6qUF8t5a5
-         mMbdPcvgdZB/YKBFaCLrE2jzWAOs89/usHSozzuIaRTv57kJrVAxU5Dh6mcL+9gs2/Sn
-         1HX44JJiKIf2mGOQ/H07FWQ6ALvU10gmGidtRG9+CDFjPabZwbn7bF4mpKXtmYxjvRI2
-         oRmQ==
+        bh=E5emPS0MjB2QN+kJ9u45m+WJbhux12t/sQVDicjCU/8=;
+        b=FoZNg/9m2jGGR7OXBZEqZS1ob68oXOgCSQtor36JxX9h/EneI1/IbWE4TijMQHg6Te
+         2Jud98WUAs9qLmtXthB/MHwHVJoucMd2pK25NN2Cy0es07grH92gO5zE6V2qHn2IwrkW
+         cz8myndtn4WBQ8XLNCM8cq8Sm1y2hPsnVyCKcjWVFRe5gsdyZU1Xdrn7UI9JzmovWd4D
+         3Hk0Y/cIZsyxd9GTrSTTH5H38/hjuxIVnrqI5o/MQ5wXqNqP3/b/I+Cid4jdLYZPmq6u
+         9xbShp9RSv/WivYv3Y7mfudDE+Y24IAycY/GfEaRcbBKf10zeIDi2bavi+w0FTIA3pEQ
+         OUUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697313763; x=1697918563;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1697315126; x=1697919926;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YuUrYpvnqDMxLzTPZKkvRFwxUirANKIHNsy0NE09+KA=;
-        b=j5w1hyHsUdhde6FLvt8q4cW7fk+dF2TvO5lplWQizSdou4gzDd/7P4dWELhwgY5FcW
-         5Y8BbojkAyWkLNb6UaSMnyGhe5fhiSuLCvfxqmvXdL3PNLiyonwRTgCN/XfpTlMQ8mhu
-         kKL/EPLIju54O2QPLHE5S7GYXWgp7NgDQiKwMyePlSaXvTKcTnHTFVC7ZDVrhxFqDRhx
-         x/l7o5YjRaUEr19zY6NUL/n39c3rNgq5K70ytNARDBTeE9yb+rNkTHDXQcoAZXJkSCPv
-         IUVijmr2ellFCXsJoMvIejgu6vFZ7/ZKzuu1MHj1XTtKy7WJSCsszHY1/XMhWyyPs/MX
-         IUjg==
-X-Gm-Message-State: AOJu0YzbdmHwPAWg2Rx1LrF66hWQa7ZmW2BMuJA+0Kr14oRgyghJdsP6
-        QrnM4WoRdeO6tfb+6l7jZRw=
-X-Google-Smtp-Source: AGHT+IHUbuZbMaT4g/6Kg6pA4EQGMHR1Ur43zi07zof3jJPeXKvSW3OtE+/h0wBWLhgGmPzGUlk+Tw==
-X-Received: by 2002:a05:6e02:2189:b0:34f:e4e1:b4aa with SMTP id j9-20020a056e02218900b0034fe4e1b4aamr35858798ila.14.1697313763610;
-        Sat, 14 Oct 2023 13:02:43 -0700 (PDT)
-Received: from Negi ([68.181.16.134])
-        by smtp.gmail.com with ESMTPSA id b21-20020a170902d31500b001c72f4334afsm5903041plc.20.2023.10.14.13.02.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Oct 2023 13:02:43 -0700 (PDT)
-Date:   Sat, 14 Oct 2023 13:02:42 -0700
-From:   Soumya Negi <soumya.negi97@gmail.com>
-To:     Martyn Welch <martyn@welchs.me.uk>,
-        Manohar Vanga <manohar.vanga@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     outreachy@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH 0/4] staging: vme_user: Coding style cleanup patches
-Message-ID: <20231014200241.GA20874@Negi>
-References: <cover.1697240381.git.soumya.negi97@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1697240381.git.soumya.negi97@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        bh=E5emPS0MjB2QN+kJ9u45m+WJbhux12t/sQVDicjCU/8=;
+        b=n0scYJyKs/VkRdzrlS5xlICJVxPM3jMzeS8CMkGUcWvWPV83//y7Uk7fDW4EdZd0tk
+         dL9lIgQ+T+Ddda928raB4jPR3brPPULHUtR/+XXZy0do0lxk4El5xuHAzSU78BZ3i2nD
+         DeBmQmN/mRpU6wGWjhvHS/XnXojafruPki7kvUNrJc1EIykdQ65IzNdRHZVPji8TYV8x
+         nzQtCLp5U5RwS9PxhHvbSe51/wBJZmzEkWA3t3PMt5uF0/tdHAOgAmqbkwnPxPOgXabk
+         yTJne+xk72g/DxYORgzX6WrS3QaR/w51r7QI7OIXnTY79n4gS27WYOFLOJX2UT9vBDed
+         x0dQ==
+X-Gm-Message-State: AOJu0YyCusGpJf70DpLpNWTyd9KaNRZNlPJ4TCXyBlmdiTpUxSUeDFQY
+        oIe8/3t1pTQ4FF20wiK8g8k=
+X-Google-Smtp-Source: AGHT+IHQ0wSofw+mCUxwMOTU704LFNtov6E/5kWHV55+P8O46TcQpo0iXIpmVZ9xJ+NCX1B/ckWz1g==
+X-Received: by 2002:a5d:9d10:0:b0:79f:c9ad:19ce with SMTP id j16-20020a5d9d10000000b0079fc9ad19cemr30998453ioj.15.1697315126209;
+        Sat, 14 Oct 2023 13:25:26 -0700 (PDT)
+Received: from smtpclient.apple ([2601:647:4b00:6db0:ed49:22d9:e5d5:b7e4])
+        by smtp.gmail.com with ESMTPSA id x4-20020a170902ea8400b001c5076ae6absm5861510plb.126.2023.10.14.13.25.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 14 Oct 2023 13:25:25 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.200.91.1.1\))
+Subject: Re: [PATCH v10 25/27] x86: enable initial Rust support
+From:   comex <comexk@gmail.com>
+In-Reply-To: <5D8CA5EF-F5B0-4911-85B8-A363D9344FA7@zytor.com>
+Date:   Sat, 14 Oct 2023 13:25:12 -0700
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Ramon de C Valle <rcvalle@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, patches@lists.linux.dev,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        David Gow <davidgow@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        linux-doc@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <BDD45A2A-1447-40DD-B5F3-29DEE976A3CD@gmail.com>
+References: <20220927131518.30000-1-ojeda@kernel.org>
+ <20220927131518.30000-26-ojeda@kernel.org>
+ <Y0BfN1BdVCWssvEu@hirez.programming.kicks-ass.net>
+ <CABCJKuenkHXtbWOLZ0_isGewxd19qkM7OcLeE2NzM6dSkXS4mQ@mail.gmail.com>
+ <CANiq72k6s4=0E_AHv7FPsCQhkyxf7c-b+wUtzfjf+Spehe9Fmg@mail.gmail.com>
+ <CABCJKuca0fOAs=E6LeHJiT2LOXEoPvLVKztA=u+ARcw=tbT=tw@mail.gmail.com>
+ <20231012104741.GN6307@noisy.programming.kicks-ass.net>
+ <CABCJKufEagwJ=TQnmVSK07RDjsPUt=3JGtwnK9ASmFqb7Vx8JQ@mail.gmail.com>
+ <202310121130.256F581823@keescook>
+ <CAOcBZOTed1a1yOimdUN9yuuysZ1h6VXa57+5fLAE99SZxCwBMQ@mail.gmail.com>
+ <20231013075005.GB12118@noisy.programming.kicks-ass.net>
+ <CAOcBZOTP_vQuFaqREqy-hkG69aBvJ+xrhEQi_EFKvtsNjne1dw@mail.gmail.com>
+ <CAHk-=wjLUit_gae7anFNz4sV0o2Uc=TD_9P8sYeqMSeW_UG2Rg@mail.gmail.com>
+ <5D8CA5EF-F5B0-4911-85B8-A363D9344FA7@zytor.com>
+To:     "H. Peter Anvin" <hpa@zytor.com>
+X-Mailer: Apple Mail (2.3774.200.91.1.1)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 04:47:12PM -0700, Soumya Negi wrote:
-> This patchset performs trivial code cleanups on the driver 
-> staging/vme_user to improve code readability. All patches address 
-> issues reported by checkpatch.pl, and may be applied in any sequence.
 
-I have made a mistake here in the cover letter message. These patches need to
-be applied in order. I think I will have to send a v2. Will hold off on
-sending it just in case any other problems are pointed out by someone after 
-review.  
 
-Regards,
-Soumya
+> On Oct 13, 2023, at 12:00=E2=80=AFPM, H. Peter Anvin <hpa@zytor.com> =
+wrote:
+>=20
+> Transparent unions have been standard C since C99.
 
-> Soumya Negi (4):
->   staging: vme_user: Correct spelling mistakes in comments
->   staging: vme_user: Fix unbalanced {} in if-else blocks
->   staging: vme_user: Add spaces around '*'
->   staging: vme_user: Add spaces around '<<' operator
-> 
->  drivers/staging/vme_user/vme.c        |   7 +-
->  drivers/staging/vme_user/vme.h        |   2 +-
->  drivers/staging/vme_user/vme_tsi148.c |   7 +-
->  drivers/staging/vme_user/vme_tsi148.h | 548 +++++++++++++-------------
->  4 files changed, 283 insertions(+), 281 deletions(-)
-> 
-> -- 
-> 2.42.0
-> 
+I don=E2=80=99t think that=E2=80=99s right.  Certainly =
+__attribute__((transparent_union)) is not standard C; are you referring =
+to a different feature?
