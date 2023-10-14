@@ -2,92 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA637C948B
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 14:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 113C97C9491
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 14:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233199AbjJNMPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 08:15:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42694 "EHLO
+        id S233192AbjJNMUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 08:20:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232994AbjJNMPB (ORCPT
+        with ESMTP id S232937AbjJNMUt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 08:15:01 -0400
-Received: from out203-205-221-240.mail.qq.com (out203-205-221-240.mail.qq.com [203.205.221.240])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 929C9A9
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 05:14:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1697285697;
-        bh=YQheIxJjOau1s9uk+wO2dkdpHL1+wExdCD1+23pg5Oc=;
-        h=From:To:Cc:Subject:Date;
-        b=aHgkbvsTX81K37sYgwyGDW1oDVk/2Hm/y3Stw7Y6MIqA0MuOafDWaaxHYZZ8iKC/q
-         bTTKm4qU/E5AzIRC452sJn+FmUX9G8UuA+Ji80DIIVgBgGSrhJK8EjokFoCqO4QOnj
-         S7q6+2OFjczStaEMvvQdQqu+Ut+xv0AqUJAojzyk=
-Received: from KernelDevBox.byted.org ([180.184.49.4])
-        by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
-        id 3B6A8E9A; Sat, 14 Oct 2023 20:14:54 +0800
-X-QQ-mid: xmsmtpt1697285694tghy4mbab
-Message-ID: <tencent_C816151C508524D86E346A69B706C0D03C09@qq.com>
-X-QQ-XMAILINFO: OGEC8BYa7lsBWWZ/vEd4TQyQV9TARh6WvGGkSsO7/3IuF9yTmPnEUCQIn8ey2z
-         F64IQTFMZP37lymHUS6B2HZo4knNaarGV2AJKI0/yTUoLqfNF4afRuhhV4FTNaoSbeWeTktBa01p
-         JD4VwXJudoABheJBhAln465jjNlbz+PN6oeSO6JNDmPskkFClQDABviiDTBWrUidCOn/iR6SKVep
-         7P9tbTQhjAEBati0PEr7KJd0GzpWhIerLX/BtXOXLvC+fTwkCfM/Hj5SgJp9yum/bb1Qznc1tjE6
-         3tMx7ExLXY1y821ipYkuuelfpdP31zq/zL3ipJuYIxBBHuGaWnnPq++I8dYdCV/Ture6ssLqk9qC
-         qcCXEO9lC+0o5c68yDTu7NMukeKRl1O04UQQC2cA8N9Kr2qFbphyC1HIieIeJ6IfywqBlXKajofI
-         O2x5CIeWnDQh+ONXQVm8VaB+Gt3U57AncYVPzbSHGuo/sRxPzwOyHT2IcqQmNtTv4iUqMme0TEl/
-         CuZ63UASKrVN7Ylw6O/N2yqTpEdXvUyAk5RQRMBU1FdfIY3Wa6eHYSWxzgK3VMt9AVTkjt2FDT2w
-         1encBQgxY5THYl1runLZR1+trSAJvHQiZ8gtGSJwmy5ole1jRD60lrSLrsoAzJcweW5jFIfEvVJ2
-         quMcPFQzMVZiEOpGHUgrbsVbM2lpYXNPYT0TNGcZbowROSBnw/gEqK6XoY1SquAj0S2SGZrFnVEh
-         rj+wdVDzIkbrNbojMWEv1G1JkWvt6gsdIWZZgCvkltWD8U/OdcOyRHnlgbJJncplq2uVO/sjNeul
-         fw5AvqlFOJUW1rebBiLRw9F+xJy49ZA5xYdVZqEND1+p2VWkBEHCSzw9E8e8cr0ppCgKhdMAFmBm
-         ymULOurlgBRfIeZKtH6SY/6KRUEsomydJTRfpNl5zmUjj40C0xNJ5k0SD1JQKkT6qgAH/po+Q1rP
-         cfaacsbGI0CrhReW36tO2u3h4ZBtlznK+ZlUdGM6Ok9boHcJb3JuvvMCpr0qOVHOq3AyYnD1RGzF
-         0YUZGzbA==
-X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
-From:   Zhang Shurong <zhang_shurong@foxmail.com>
-To:     daniel@ffwll.ch
-Cc:     deller@gmx.de, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Zhang Shurong <zhang_shurong@foxmail.com>
-Subject: [PATCH] fbdev: fbmon: fix potential divide error in fb_validate_mode
-Date:   Sat, 14 Oct 2023 20:14:53 +0800
-X-OQ-MSGID: <20231014121453.3034941-1-zhang_shurong@foxmail.com>
-X-Mailer: git-send-email 2.30.2
+        Sat, 14 Oct 2023 08:20:49 -0400
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EA3CA9
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 05:20:47 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id D9E165C0288;
+        Sat, 14 Oct 2023 08:20:43 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Sat, 14 Oct 2023 08:20:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1697286043; x=1697372443; bh=nZ
+        iSaf+2rKUZmRmaI+hHKAfBctJh+V32I+xRn4B5yaM=; b=DMW+athuAfhfxrMpLC
+        q6fqoed/7uX/mQHSbMR9RebUkAwQN8SRxLbcbUb9TCfjETOaCz1UcuQzyfkjupCG
+        37vWO7Gj3ZM6I7OgNerhAR3bdD+2qyfgzOoe/KSTp9oaTrdWOX4dzr3pFAOC+Tyn
+        HIk+1hKIyyKnf9saGXX0+NEEvehgAbSmzhlj8IJ/n0kWlxJuuqQ0aJDOi6Gu6PSd
+        vxCpdLpLRBYHLiY4mKgljlkkE0YuCFfMCOsVUuAWBHU9izSeLKs4xhdYt0T3eEJ/
+        KvoS5zH7X/7H39WfjkVkGacluJRYX6+2FytfyFCO9YvgBUmoeDmAoFg6eIjLXOje
+        oY3g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1697286043; x=1697372443; bh=nZiSaf+2rKUZm
+        RmaI+hHKAfBctJh+V32I+xRn4B5yaM=; b=XmVc3oRK5xPIG+LC89BayxU//H3dA
+        15HdljrBlx5vfugHwIgHCZ81WuegEXJri7T/ACzuyzUcsRHaEI7DB5bm3N+jM+jt
+        jThIUfClB+A5Dc+MD01TuRpZC+3Li6gB9/DC5zQBc7L/3wPMbIqR0zaVWPe7aOGp
+        z1A+dyo9LhOXdncC2ZoxOWvmdvGPgYwiO3kUyGS9m3bwUNdkJi8C6Be6jlC/7XsG
+        StGUotCR1e12EVsdSGrfqkm19lUDtkIKDC5x24TCnNftg2m27LlEljRQKYEKRmy1
+        Yh3oaNNHlWeQUlomoQayDHiMP/H7Tm4CsBbq9MGEBhnb3RhHUwxeHSW5A==
+X-ME-Sender: <xms:m4cqZdSeswWWvO027zq8PS0N9IfdsxN0i8f4d_HHUzLWN0qCFWkXWA>
+    <xme:m4cqZWw0k1kGXAc4iu6z2-ja-hPSLRVLK3hpx5tVkMpG2dEgIqsZ_VtTcM2Goj_AB
+    5suOAUDdeZLtGVidNU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrieehgdehtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:m4cqZS2ytldwAXeJP2PaXElU6rm5WO4IqLfA8v6jj1_1ewCRt4HR1w>
+    <xmx:m4cqZVC3PQlDUr3F-AZaImYU3DG_Jle3dFQxnD-KUyRnkNjlvgmdbg>
+    <xmx:m4cqZWix_PsRLPtMETcHcLKMTGronhRIV_Zi0OpkHtHMjwwp6H0fHA>
+    <xmx:m4cqZRVhVv0aNDlcqNSdu3vGQn6-thVaJ6om4XZj63ZJ931YmzZWUQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 6EC65B6008D; Sat, 14 Oct 2023 08:20:43 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1019-ged83ad8595-fm-20231002.001-ged83ad85
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Message-Id: <268a2031-63b8-4c7d-b1e5-8ab83ca80b4a@app.fastmail.com>
+In-Reply-To: <52b07a3861a34fb0deb6251bae8bd885815c6944.1693311370.git.viresh.kumar@linaro.org>
+References: <cover.1693311370.git.viresh.kumar@linaro.org>
+ <52b07a3861a34fb0deb6251bae8bd885815c6944.1693311370.git.viresh.kumar@linaro.org>
+Date:   Sat, 14 Oct 2023 14:19:52 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Viresh Kumar" <viresh.kumar@linaro.org>,
+        "Juergen Gross" <jgross@suse.com>,
+        "Stefano Stabellini" <sstabellini@kernel.org>,
+        "Oleksandr Tyshchenko" <oleksandr_tyshchenko@epam.com>
+Cc:     "Stratos Mailing List" <stratos-dev@op-lists.linaro.org>,
+        "Erik Schilling" <erik.schilling@linaro.org>,
+        "Manos Pitsidianakis" <manos.pitsidianakis@linaro.org>,
+        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org
+Subject: Re: [Stratos-dev] [PATCH 2/2] xen: privcmd: Add support for ioeventfd
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can easily use FBIOPUT_VSCREENINFO set fb_var_screeninfo, so
-it's possible for a divide by zero error to occur.
+On Tue, Aug 29, 2023, at 14:29, Viresh Kumar via Stratos-dev wrote:
 
-Fix this by making sure the divisor is non-zero before the computation.
+> +/* For privcmd_ioeventfd::flags */
+> +#define PRIVCMD_IOEVENTFD_FLAG_DEASSIGN (1 << 0)
+> +
+> +struct privcmd_ioeventfd {
+> +	void __user *ioreq;
+> +	unsigned int __user *ports;
+> +	__u64 addr;
+> +	__u32 addr_len;
+> +	__u32 event_fd;
+> +	__u32 vcpus;
+> +	__u32 vq;
+> +	__u32 flags;
+> +	domid_t dom;
+> +	__u8 pad[2];
+> +};
 
-Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
----
- drivers/video/fbdev/core/fbmon.c | 3 +++
- 1 file changed, 3 insertions(+)
+Using indirect pointers in an ioctl command argument means that
+the layout is architecture specific, in particular you can't
+use the same one from 32-bit compat tasks. The general recommendation
+is to have __u64 members and use u64_to_user_ptr() to access it
+from the kernel if you are unable to avoid the pointers altogether.
 
-diff --git a/drivers/video/fbdev/core/fbmon.c b/drivers/video/fbdev/core/fbmon.c
-index 79e5bfbdd34c..bdd15b8e3a71 100644
---- a/drivers/video/fbdev/core/fbmon.c
-+++ b/drivers/video/fbdev/core/fbmon.c
-@@ -1470,6 +1470,9 @@ int fb_validate_mode(const struct fb_var_screeninfo *var, struct fb_info *info)
- 	if (var->vmode & FB_VMODE_DOUBLE)
- 		vtotal *= 2;
- 
-+	if (!htotal || !vtotal)
-+		return -EINVAL;
-+
- 	hfreq = pixclock/htotal;
- 	hfreq = (hfreq + 500) / 1000 * 1000;
- 
--- 
-2.30.2
+>  /*
+>   * @cmd: IOCTL_PRIVCMD_HYPERCALL
+>   * @arg: &privcmd_hypercall_t
+> @@ -139,5 +155,7 @@ struct privcmd_irqfd {
+>  	_IOC(_IOC_NONE, 'P', 7, sizeof(struct privcmd_mmap_resource))
+>  #define IOCTL_PRIVCMD_IRQFD					\
+>  	_IOC(_IOC_NONE, 'P', 8, sizeof(struct privcmd_irqfd))
+> +#define IOCTL_PRIVCMD_IOEVENTFD					\
+> +	_IOC(_IOC_NONE, 'P', 9, sizeof(struct privcmd_ioeventfd))
 
+_IOC() an internal helper that you should not use in driver code.
+In particular, you go the data direction wrong here, which breaks
+a number of tools, as having "_IOC_NONE" should never be paired with
+a nonzero size.
+
+Instead, you should use the existing _IOWR() or _IOR() macros without
+the 'sizeof()' like
+
+#define IOCTL_PRIVCMD_IOEVENTFD _IOWR('P', 9, struct privcmd_ioeventfd)
+
+You clearly copied this from the other ioctl command definitions in
+the same file that we can't easily fix without breaking the user
+ABI, but I still think you should try to do it correctly for new
+commands.
+
+     Arnd
