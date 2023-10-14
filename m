@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 560E47C92C5
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 06:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 954947C92C6
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 06:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232853AbjJNEkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 00:40:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43374 "EHLO
+        id S232864AbjJNEkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 00:40:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232820AbjJNEj6 (ORCPT
+        with ESMTP id S232840AbjJNEj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 00:39:58 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A93C0
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 21:39:56 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d865854ef96so3086299276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 21:39:56 -0700 (PDT)
+        Sat, 14 Oct 2023 00:39:59 -0400
+Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45389C0
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 21:39:58 -0700 (PDT)
+Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-57e3c2adbf0so1475927eaf.2
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 21:39:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=darkphysics.net; s=google; t=1697258396; x=1697863196; darn=vger.kernel.org;
+        d=darkphysics.net; s=google; t=1697258397; x=1697863197; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3p4Okgx4XgnfPEk0qlyDp2kdSWTE4Yw2JPS7XRRWXKU=;
-        b=in8BDVw2NSqC/hwwBFHlITLRGfHF369gMtyQKk6s3in8kKCGVYwyvh4rEI4Yqqm2KC
-         4JKW3tNAFE8OJbi9p7elVWukREQ3AlU+tg0i2OHcHI1VoDbA6h1eDnnEv9+GHH6x+mNg
-         nIxlC0PNNzxZpoLWC30q2CnFJZ/KxxaVvaSx0tExLODlwGCIDLSG6Pjk/0y2G/Eoywac
-         XrFLXmiPMh30tstN5YXfsIsXxkBOmcuzeNcIfEClj/EnDmgMyXRIta7JfRt2CudoBEOJ
-         C7G9s4WDqU/vIs3GlO9LbPbd6j6p0TXfHIRKWvUygE+Om11/K/YoGoBJyL7PwFjRK6w3
-         Jadg==
+        bh=mX2HZxkrDDTk+fsvecnLv5LzD6HcEuvgwVlrQ23incY=;
+        b=ftjWoiVBNr5YL/SFWrSIV7kUB4qh7IB4TWSdWxZX5WBNKfJzE9hhGKwRX6KctPHDFz
+         lB89NTBJGcxk3s7G7LHJqdt12g3LtPc3A34vqV9kISI9XweuKfWCNfpt4VvdZ7C35eZl
+         2b11uVAp9bwsFLgmC0wxFQNRgjhl++cmsCEVU5XSeH7ozjlSsKG6B9DRNRcrG92fDttr
+         ebkU1PSB5lV0Zyq+c9QIgugZsdwGCUNl3VFf00jZ8eBvrBMnYXO2eTFhghoB8n+n89P8
+         oPmN+DRUAB4SxaKlpj/5oz9m/6ZdgdDWHoY0x0/ltNbc+IxNiJ08R2cIKyMlr3lh56iz
+         nTQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697258396; x=1697863196;
+        d=1e100.net; s=20230601; t=1697258397; x=1697863197;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3p4Okgx4XgnfPEk0qlyDp2kdSWTE4Yw2JPS7XRRWXKU=;
-        b=pnZuxJTWvgnob5KLDg1YinEgN04jy0tHlBxO94lMRFNziyOuAWPF9zXl6dbHwMucTJ
-         EAcSJozsv9ej00jC2UIA3FnbkF7QUweVfHlL4pbH/EriLoMJuUL3tuXIDa1SsaF4vzFC
-         QRlI0T1XeefnJ/r9MgzsEI+oHWHA8iI4AF1hEgD6/0Y+UAUfOr6iQPMykBaan2+1zw2O
-         3MYmtHaFvpfRMPTxsVhJ1gxSlO9MWrSrRDG2lna4GLW4Ymy7QfkghT538uc9Gp0q3xWp
-         BO11SJ0bfg0QiQQfakbU/HsIApVKgJnOdetDYSdAAb4Tg8+cQahknfTdoFaRns6I20dr
-         STvQ==
-X-Gm-Message-State: AOJu0YwmqRAGfu+SGpo9WyKJAmX8xMavA/fdGM87+rn5ii3TaEdJmHIt
-        D2NtNGjHfse1t0IIaXiGrFpVRw==
-X-Google-Smtp-Source: AGHT+IGOm4VbjmfX1M+04K7SHGsvYD4Af/ZHbQ1I2dUB4WYp6pgyJp2GGtzKt+QJxwbyW/FYiNDBlg==
-X-Received: by 2002:a25:c702:0:b0:d9a:c946:bb47 with SMTP id w2-20020a25c702000000b00d9ac946bb47mr6573250ybe.5.1697258396095;
-        Fri, 13 Oct 2023 21:39:56 -0700 (PDT)
+        bh=mX2HZxkrDDTk+fsvecnLv5LzD6HcEuvgwVlrQ23incY=;
+        b=JT1e38sM+Gs9DejN0Cwuxt/ziYGCLDoNgRea/x4G4S26OD/+y5zpr7tDtba4v8j0wW
+         ioxHYdRrgJPecQxCnPBXmlSntBtnJiMtgIBzCOM3ezSTdvW1mY+vHQ+0zRG+RcYwmGJL
+         x5LunPzfasGE1BZufg0gbD0ekXHIg9LYkhwJI+7HLDLViU0f+TZWi8KAoJS2R80bfxWB
+         UbhAr3lzG8fFL6pEi3n51vGQxnkuN23BoSubskXCBz/9C09NMGw7fLFK7pSvZ0X7B6c9
+         uIYV4VYGA+NEly4yngY+/mK9BnIoPu1nv8PFXjeI6GiugVFsqCcw+m/PvWT3jsAeqdcP
+         pGpQ==
+X-Gm-Message-State: AOJu0YyRvMz5XkkGY+OLsYZjyQWb0dmAN+KDegkgwutq7t5CUCkH+oXm
+        bGBE5MrH69XCU5dxfMsT3GhbUQ==
+X-Google-Smtp-Source: AGHT+IFwNlWt0M0if1Y6SYtl5KS20jSK1omEAcmkBly97Rf6gEIkFnakdZJmIUHsWhh7sX6O88AjNQ==
+X-Received: by 2002:a05:6358:921:b0:143:8f7f:9150 with SMTP id r33-20020a056358092100b001438f7f9150mr33000446rwi.13.1697258397463;
+        Fri, 13 Oct 2023 21:39:57 -0700 (PDT)
 Received: from basil.darkphysics (c-76-146-178-2.hsd1.wa.comcast.net. [76.146.178.2])
-        by smtp.gmail.com with ESMTPSA id y6-20020aa78046000000b006934350c3absm14271926pfm.109.2023.10.13.21.39.55
+        by smtp.gmail.com with ESMTPSA id y6-20020aa78046000000b006934350c3absm14271926pfm.109.2023.10.13.21.39.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 21:39:55 -0700 (PDT)
+        Fri, 13 Oct 2023 21:39:57 -0700 (PDT)
 From:   Tree Davies <tdavies@darkphysics.net>
 To:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com,
         anjan@momi.ca
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Tree Davies <tdavies@darkphysics.net>
-Subject: [PATCH 2/4] Staging: rtl8192e: Rename variable TSInfo
-Date:   Fri, 13 Oct 2023 21:44:33 -0700
-Message-ID: <20231014044435.11947-3-tdavies@darkphysics.net>
+Subject: [PATCH 3/4] Staging: rtl8192e: Rename variable ReasonCode
+Date:   Fri, 13 Oct 2023 21:44:34 -0700
+Message-ID: <20231014044435.11947-4-tdavies@darkphysics.net>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231014044435.11947-1-tdavies@darkphysics.net>
 References: <20231014044435.11947-1-tdavies@darkphysics.net>
@@ -73,65 +73,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename variable TSInfo to ts_info to fix checkpatch warning Avoid CamelCase.
+Rename variable ReasonCode to reason_code to fix checkpatch warning
+Avoid CamelCase.
 
 Signed-off-by: Tree Davies <tdavies@darkphysics.net>
 ---
- drivers/staging/rtl8192e/rtl819x_BAProc.c | 2 +-
- drivers/staging/rtl8192e/rtl819x_Qos.h    | 2 +-
- drivers/staging/rtl8192e/rtl819x_TSProc.c | 6 +++---
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/staging/rtl8192e/rtl819x_BAProc.c | 26 +++++++++++------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/staging/rtl8192e/rtl819x_BAProc.c b/drivers/staging/rtl8192e/rtl819x_BAProc.c
-index a2a0573c3444..a5165fe88217 100644
+index a5165fe88217..34fc400035c8 100644
 --- a/drivers/staging/rtl8192e/rtl819x_BAProc.c
 +++ b/drivers/staging/rtl8192e/rtl819x_BAProc.c
-@@ -474,7 +474,7 @@ void rtllib_ts_init_add_ba(struct rtllib_device *ieee, struct tx_ts_record *pTS,
- 	ba->dialog_token++;
- 	ba->ba_param_set.field.amsdu_support = 0;
- 	ba->ba_param_set.field.ba_policy = policy;
--	ba->ba_param_set.field.tid = pTS->TsCommonInfo.TSpec.f.TSInfo.field.ucTSID;
-+	ba->ba_param_set.field.tid = pTS->TsCommonInfo.TSpec.f.ts_info.field.ucTSID;
- 	ba->ba_param_set.field.buffer_size = 32;
- 	ba->ba_timeout_value = 0;
- 	ba->ba_start_seq_ctrl.field.seq_num = (pTS->TxCurSeq + 3) % 4096;
-diff --git a/drivers/staging/rtl8192e/rtl819x_Qos.h b/drivers/staging/rtl8192e/rtl819x_Qos.h
-index 0499711ea2bf..37677366c397 100644
---- a/drivers/staging/rtl8192e/rtl819x_Qos.h
-+++ b/drivers/staging/rtl8192e/rtl819x_Qos.h
-@@ -60,7 +60,7 @@ union tspec_body {
- 	u8		charData[55];
+@@ -125,7 +125,7 @@ static struct sk_buff *rtllib_ADDBA(struct rtllib_device *ieee, u8 *dst,
  
- 	struct {
--		union qos_tsinfo TSInfo;
-+		union qos_tsinfo ts_info;
- 		u16	NominalMSDUsize;
- 		u16	MaxMSDUsize;
- 		u32	MinServiceItv;
-diff --git a/drivers/staging/rtl8192e/rtl819x_TSProc.c b/drivers/staging/rtl8192e/rtl819x_TSProc.c
-index eaa2a82558f1..16d5164e860d 100644
---- a/drivers/staging/rtl8192e/rtl819x_TSProc.c
-+++ b/drivers/staging/rtl8192e/rtl819x_TSProc.c
-@@ -201,8 +201,8 @@ static struct ts_common_info *SearchAdmitTRStream(struct rtllib_device *ieee,
- 			continue;
- 		list_for_each_entry(pRet, psearch_list, List) {
- 			if (memcmp(pRet->addr, addr, 6) == 0 &&
--			    pRet->TSpec.f.TSInfo.field.ucTSID == TID &&
--			    pRet->TSpec.f.TSInfo.field.ucDirection == dir)
-+			    pRet->TSpec.f.ts_info.field.ucTSID == TID &&
-+			    pRet->TSpec.f.ts_info.field.ucDirection == dir)
- 				break;
- 		}
- 		if (&pRet->List  != psearch_list)
-@@ -242,7 +242,7 @@ bool rtllib_get_ts(struct rtllib_device *ieee, struct ts_common_info **ppTS,
+ static struct sk_buff *rtllib_DELBA(struct rtllib_device *ieee, u8 *dst,
+ 				    struct ba_record *ba,
+-				    enum tr_select TxRxSelect, u16 ReasonCode)
++				    enum tr_select TxRxSelect, u16 reason_code)
  {
- 	u8	UP = 0;
- 	union tspec_body TSpec;
--	union qos_tsinfo *ts_info = &TSpec.f.TSInfo;
-+	union qos_tsinfo *ts_info = &TSpec.f.ts_info;
- 	struct list_head *pUnusedList;
- 	struct list_head *pAddmitList;
- 	enum direction_value Dir;
+ 	union delba_param_set DelbaParamSet;
+ 	struct sk_buff *skb = NULL;
+@@ -134,8 +134,8 @@ static struct sk_buff *rtllib_DELBA(struct rtllib_device *ieee, u8 *dst,
+ 	u16 len = 6 + ieee->tx_headroom;
+ 
+ 	if (net_ratelimit())
+-		netdev_dbg(ieee->dev, "%s(): ReasonCode(%d) sentd to: %pM\n",
+-			   __func__, ReasonCode, dst);
++		netdev_dbg(ieee->dev, "%s(): reason_code(%d) sentd to: %pM\n",
++			   __func__, reason_code, dst);
+ 
+ 	memset(&DelbaParamSet, 0, 2);
+ 
+@@ -163,7 +163,7 @@ static struct sk_buff *rtllib_DELBA(struct rtllib_device *ieee, u8 *dst,
+ 	put_unaligned_le16(DelbaParamSet.short_data, tag);
+ 	tag += 2;
+ 
+-	put_unaligned_le16(ReasonCode, tag);
++	put_unaligned_le16(reason_code, tag);
+ 	tag += 2;
+ 
+ #ifdef VERBOSE_DEBUG
+@@ -200,11 +200,11 @@ static void rtllib_send_ADDBARsp(struct rtllib_device *ieee, u8 *dst,
+ 
+ static void rtllib_send_DELBA(struct rtllib_device *ieee, u8 *dst,
+ 			      struct ba_record *ba, enum tr_select TxRxSelect,
+-			      u16 ReasonCode)
++			      u16 reason_code)
+ {
+ 	struct sk_buff *skb;
+ 
+-	skb = rtllib_DELBA(ieee, dst, ba, TxRxSelect, ReasonCode);
++	skb = rtllib_DELBA(ieee, dst, ba, TxRxSelect, reason_code);
+ 	if (skb)
+ 		softmac_mgmt_xmit(skb, ieee);
+ 	else
+@@ -308,7 +308,7 @@ int rtllib_rx_ADDBARsp(struct rtllib_device *ieee, struct sk_buff *skb)
+ 	u8 *dst = NULL, *pDialogToken = NULL, *tag = NULL;
+ 	u16 *status_code = NULL, *pBaTimeoutVal = NULL;
+ 	union ba_param_set *pBaParamSet = NULL;
+-	u16			ReasonCode;
++	u16			reason_code;
+ 
+ 	if (skb->len < sizeof(struct ieee80211_hdr_3addr) + 9) {
+ 		netdev_warn(ieee->dev, "Invalid skb len in BARSP(%d / %d)\n",
+@@ -333,14 +333,14 @@ int rtllib_rx_ADDBARsp(struct rtllib_device *ieee, struct sk_buff *skb)
+ 			    ieee->current_network.qos_data.active,
+ 			    ieee->ht_info->current_ht_support,
+ 			    ieee->ht_info->bCurrentAMPDUEnable);
+-		ReasonCode = DELBA_REASON_UNKNOWN_BA;
++		reason_code = DELBA_REASON_UNKNOWN_BA;
+ 		goto OnADDBARsp_Reject;
+ 	}
+ 
+ 	if (!rtllib_get_ts(ieee, (struct ts_common_info **)&pTS, dst,
+ 		   (u8)(pBaParamSet->field.tid), TX_DIR, false)) {
+ 		netdev_warn(ieee->dev, "%s(): can't get TS\n", __func__);
+-		ReasonCode = DELBA_REASON_UNKNOWN_BA;
++		reason_code = DELBA_REASON_UNKNOWN_BA;
+ 		goto OnADDBARsp_Reject;
+ 	}
+ 
+@@ -357,7 +357,7 @@ int rtllib_rx_ADDBARsp(struct rtllib_device *ieee, struct sk_buff *skb)
+ 		netdev_warn(ieee->dev,
+ 			    "%s(): ADDBA Rsp. BA invalid, DELBA!\n",
+ 			    __func__);
+-		ReasonCode = DELBA_REASON_UNKNOWN_BA;
++		reason_code = DELBA_REASON_UNKNOWN_BA;
+ 		goto OnADDBARsp_Reject;
+ 	} else {
+ 		netdev_dbg(ieee->dev,
+@@ -370,7 +370,7 @@ int rtllib_rx_ADDBARsp(struct rtllib_device *ieee, struct sk_buff *skb)
+ 		if (pBaParamSet->field.ba_policy == BA_POLICY_DELAYED) {
+ 			pTS->bAddBaReqDelayed = true;
+ 			deactivate_ba_entry(ieee, pAdmittedBA);
+-			ReasonCode = DELBA_REASON_END_BA;
++			reason_code = DELBA_REASON_END_BA;
+ 			goto OnADDBARsp_Reject;
+ 		}
+ 
+@@ -383,7 +383,7 @@ int rtllib_rx_ADDBARsp(struct rtllib_device *ieee, struct sk_buff *skb)
+ 	} else {
+ 		pTS->bAddBaReqDelayed = true;
+ 		pTS->bDisable_AddBa = true;
+-		ReasonCode = DELBA_REASON_END_BA;
++		reason_code = DELBA_REASON_END_BA;
+ 		goto OnADDBARsp_Reject;
+ 	}
+ 
+@@ -394,7 +394,7 @@ int rtllib_rx_ADDBARsp(struct rtllib_device *ieee, struct sk_buff *skb)
+ 		struct ba_record BA;
+ 
+ 		BA.ba_param_set = *pBaParamSet;
+-		rtllib_send_DELBA(ieee, dst, &BA, TX_DIR, ReasonCode);
++		rtllib_send_DELBA(ieee, dst, &BA, TX_DIR, reason_code);
+ 		return 0;
+ 	}
+ }
 -- 
 2.39.2
 
