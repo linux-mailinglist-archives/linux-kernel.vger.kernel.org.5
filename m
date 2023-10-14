@@ -2,109 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1D877C924C
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 04:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DFE67C9252
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 04:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232350AbjJNCMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 22:12:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53508 "EHLO
+        id S232695AbjJNCWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 22:22:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJNCMX (ORCPT
+        with ESMTP id S229518AbjJNCWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 22:12:23 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CBC05A9
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 19:12:20 -0700 (PDT)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8DxfesC+SllGukxAA--.28251S3;
-        Sat, 14 Oct 2023 10:12:18 +0800 (CST)
-Received: from [10.130.0.149] (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Dx_y8B+SllHbojAA--.9890S3;
-        Sat, 14 Oct 2023 10:12:17 +0800 (CST)
-Subject: Re: [PATCH v2 1/8] objtool/LoongArch: Enable objtool to be built
-To:     Huacai Chen <chenhuacai@kernel.org>
-References: <1696856590-30298-1-git-send-email-yangtiezhu@loongson.cn>
- <1696856590-30298-2-git-send-email-yangtiezhu@loongson.cn>
- <CAAhV-H7NQM_W-T80UdPy0F7jUFa-eWKLymoLHkgUGoAGzZPUTQ@mail.gmail.com>
-Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
-        loongson-kernel@lists.loongnix.cn
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <872be5af-26f0-34db-dedb-0d6ecb7092c0@loongson.cn>
-Date:   Sat, 14 Oct 2023 10:12:17 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        Fri, 13 Oct 2023 22:22:02 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E78A9;
+        Fri, 13 Oct 2023 19:21:58 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 9BD3A60152;
+        Sat, 14 Oct 2023 04:21:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1697250114; bh=JZSPijZWtC9fSzTN6rP8wgc/TQMAaBgOg7i84LxeGKc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=HxNWq3UhqmLMYPViHyiyuNCKpYA6Gu0Xp42sH1eqiDVpM2irQZP2lEHsSbbX1L34L
+         oMuzvGRauSRqdDxMOGDELw9FjHAX/ttqxiR9gvfKNDFYBbmM2mq5VN5TK5wIL92x9E
+         RVA7CZnaMqjXV6uVU2rkPciksGSuKcdrGlrMuBeDNFWaFawotg5+QON93JMXdnnrmk
+         JJRizrP7+olkUhugFlP+9f0WWZjZTbFnQJXGOH17TgsQbQhEkOItAYvJpR8mchdbId
+         2DPFoEb/iYMHswbIf+1uvgDQrVrKSh0YoQ+IrQeeuxGQqntwDPyNh8Se2am0wCsNCU
+         8eX6xwp+ap76w==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id LOMkYWKqLERe; Sat, 14 Oct 2023 04:21:51 +0200 (CEST)
+Received: from [192.168.1.3] (78-2-88-84.adsl.net.t-com.hr [78.2.88.84])
+        by domac.alu.hr (Postfix) with ESMTPSA id E737D6013C;
+        Sat, 14 Oct 2023 04:21:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1697250111; bh=JZSPijZWtC9fSzTN6rP8wgc/TQMAaBgOg7i84LxeGKc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=hXhmO1vZDJhlSprsnHhCCdZK3hYR1ynG4lrHImeLCV0HCKBSjTQxMAPPPoBNI5jcw
+         Ga/qUwspnF2ioKro4ziV4VMiB4A8Zm5jZ57baieYcB68lvSyPM6s9RfTUmQgholtF6
+         mR9wXkjYms4neFWIgIuzBGS6gEctiMsZq0wx3kRvRq4326D9h3vVaMKHKM3Q8pR9aw
+         J8L63VvYIXZXpCwLvJL51UXZRGzQe8/a7g0zwmw0T4B8Zu49XqfNgPGzBnQS5ClSUs
+         D6Q81owYqvuBua9s8OMUYN0oJwLcrsjstT8GB7vHXg5Jcxty8WYC8rcjm/udqXwPj2
+         yGVcXfLsbliPQ==
+Message-ID: <021970ad-942a-4fe8-ac95-c8089527f7d2@alu.unizg.hr>
+Date:   Sat, 14 Oct 2023 04:21:50 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAAhV-H7NQM_W-T80UdPy0F7jUFa-eWKLymoLHkgUGoAGzZPUTQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] lib/find: Make functions safe on changing bitmaps
+Content-Language: en-US
+To:     Yury Norov <yury.norov@gmail.com>, Jan Kara <jack@suse.cz>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231011144320.29201-1-jack@suse.cz>
+ <20231011150252.32737-1-jack@suse.cz> <ZSbo1aAjteepdmcz@yury-ThinkPad>
+ <20231012122110.zii5pg3ohpragpi7@quack3> <ZSndoNcA7YWHXeUi@yury-ThinkPad>
+From:   Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+Autocrypt: addr=mirsad.todorovac@alu.unizg.hr; keydata=
+ xjMEYp0QmBYJKwYBBAHaRw8BAQdAI14D1/OE3jLBYycg8HaOJOYrvEaox0abFZtJf3vagyLN
+ Nk1pcnNhZCBHb3JhbiBUb2Rvcm92YWMgPG1pcnNhZC50b2Rvcm92YWNAYWx1LnVuaXpnLmhy
+ PsKPBBMWCAA3FiEEdCs8n09L2Xwp/ytk6p9/SWOJhIAFAmKdEJgFCQ0oaIACGwMECwkIBwUV
+ CAkKCwUWAgMBAAAKCRDqn39JY4mEgIf/AP9hx09nve6VH6D/F3m5jRT5m1lzt5YzSMpxLGGU
+ vGlI4QEAvOvGI6gPCQMhuQQrOfRr1CnnTXeaXHhlp9GaZEW45QzOOARinRCZEgorBgEEAZdV
+ AQUBAQdAqJ1CxZGdTsiS0cqW3AvoufnWUIC/h3W2rpJ+HUxm61QDAQgHwn4EGBYIACYWIQR0
+ KzyfT0vZfCn/K2Tqn39JY4mEgAUCYp0QmQUJDShogAIbDAAKCRDqn39JY4mEgIMnAQDPKMJJ
+ fs8+QnWS2xx299NkVTRsZwfg54z9NIvH5L3HiAD9FT3zfHfvQxIViWEzcj0q+FLWoRkOh02P
+ Ny0lWTyFlgc=
+Organization: Academy of Fine Arts, University of Zagreb
+In-Reply-To: <ZSndoNcA7YWHXeUi@yury-ThinkPad>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Dx_y8B+SllHbojAA--.9890S3
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj9xXoWrur47Ar4rGrWUCFWxCw47Jrc_yoWkZrc_uw
-        17Wa1kur1rXFWft3Z0vF95uF98GayrZrs5ArWvqr43W3Z8ta1DGFZrX348Zr45K3yvvFsx
-        CFZ5Jr13CrnFgosvyTuYvTs0mTUanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUj1kv1TuYvT
-        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-        cSsGvfJTRUUUbxkYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-        vaj40_Wr0E3s1l1IIY67AEw4v_JrI_Jryl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-        Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
-        8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AK
-        xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzV
-        AYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
-        14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIx
-        kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAF
-        wI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r
-        4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8r9N3UU
-        UUU==
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/10/2023 08:45 PM, Huacai Chen wrote:
-> Hi, Tiezhu,
->
-> On Mon, Oct 9, 2023 at 9:03 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+On 10/14/2023 2:15 AM, Yury Norov wrote:
+> Restore LKML
+> 
+> On Thu, Oct 12, 2023 at 02:21:10PM +0200, Jan Kara wrote:
+>> On Wed 11-10-23 11:26:29, Yury Norov wrote:
+>>> Long story short: KCSAN found some potential issues related to how
+>>> people use bitmap API. And instead of working through that issues,
+>>> the following code shuts down KCSAN by applying READ_ONCE() here
+>>> and there.
 >>
->> Add the minimal changes to enable objtool build on LoongArch,
->> most of the functions are stubs to only fix the build errors
->> when make -C tools/objtool.
+>> I'm sorry but this is not what the patch does. I'm not sure how to get the
+>> message across so maybe let me start from a different angle:
 >>
->> This is similar with commit e52ec98c5ab1 ("objtool/powerpc:
->> Enable objtool to be built on ppc").
+>> Bitmaps are perfectly fine to be used without any external locking if
+>> only atomic bit ops (set_bit, clear_bit, test_and_{set/clear}_bit) are
+>> used. This is a significant performance gain compared to using a spinlock
+>> or other locking and people do this for a long time. I hope we agree on
+>> that.
+>>
+>> Now it is also common that you need to find a set / clear bit in a bitmap.
+>> To maintain lockless protocol and deal with races people employ schemes
+>> like (the dumbest form):
+>>
+>> 	do {
+>> 		bit = find_first_bit(bitmap, n);
+>> 		if (bit >= n)
+>> 			abort...
+>> 	} while (!test_and_clear_bit(bit, bitmap));
+>>
+>> So the code loops until it finds a set bit that is successfully cleared by
+>> it. This is perfectly fine and safe lockless code and such use should be
+>> supported. Agreed?
+> 
+> Great example. When you're running non-atomic functions concurrently,
+> the result may easily become incorrect, and this is what you're
+> demonstrating here.
+> 
+> Regarding find_first_bit() it means that:
+>   - it may erroneously return unset bit;
+>   - it may erroneously return non-first set bit;
+>   - it may erroneously return no bits for non-empty bitmap.
+> 
+> Effectively it means that find_first bit may just return a random number.
+> 
+> Let's take another example:
+> 
+> 	do {
+> 		bit = get_random_number();
+> 		if (bit >= n)
+> 			abort...
+> 	} while (!test_and_clear_bit(bit, bitmap));
+> 
+> When running concurrently, the difference between this and your code
+> is only in probability of getting set bit somewhere from around the
+> beginning of bitmap.
+> 
+> The key point is that find_bit() may return undef even if READ_ONCE() is
+> used. If bitmap gets changed anytime in the process, the result becomes
+> invalid. It may happen even after returning from find_first_bit().
+> 
+> And if my understanding correct, your code is designed in the
+> assumption that find_first_bit() may return garbage, so handles it
+> correctly.
+> 
+>> *Except* that the above actually is not safe due to find_first_bit()
+>> implementation and KCSAN warns about that. The problem is that:
+>>
+>> Assume *addr == 1
+>> CPU1			CPU2
+>> find_first_bit(addr, 64)
+>>    val = *addr;
+>>    if (val) -> true
+>> 			clear_bit(0, addr)
+>>      val = *addr -> compiler decided to refetch addr contents for whatever
+>> 		   reason in the generated assembly
+>>      __ffs(val) -> now executed for value 0 which has undefined results.
+> 
+> Yes, __ffs(0) is undef. But the whole function is undef when accessing
+> bitmap concurrently.
+> 
+>> And the READ_ONCE() this patch adds prevents the compiler from adding the
+>> refetching of addr into the assembly.
+> 
+> That's true. But it doesn't improve on the situation. It was an undef
+> before, and it's undef after, but a 2% slower undef.
+> 
+> Now on that KCSAN warning. If I understand things correctly, for the
+> example above, KCSAN warning is false-positive, because you're
+> intentionally running lockless.
+> 
+> But for some other people it may be a true error, and now they'll have
+> no chance to catch it if KCSAN is forced to ignore find_bit() entirely.
+> 
+> We've got the whole class of lockless algorithms that allow safe concurrent
+> access to the memory. And now that there's a tool that searches for them
+> (concurrent accesses), we need to have an option to somehow teach it
+> to suppress irrelevant warnings. Maybe something like this?
+> 
+>          lockless_algorithm_begin(bitmap, bitmap_size(nbits));
+> 	do {
+> 		bit = find_first_bit(bitmap, nbits);
+> 		if (bit >= nbits)
+> 			break;
+> 	} while (!test_and_clear_bit(bit, bitmap));
+>          lockless_algorithm_end(bitmap, bitmap_size(nbits));
+> 
+> And, of course, as I suggested a couple iterations ago, you can invent
+> a thread-safe version of find_bit(), that would be perfectly correct
+> for lockless use:
+> 
+>   unsigned long _find_and_clear_bit(volatile unsigned long *addr, unsigned long size)
+>   {
+>          unsigned long bit = 0;
+>   
+>          while (!test_and_clear_bit(bit, bitmap) {
+>                  bit = FIND_FIRST_BIT(addr[idx], /* nop */, size);
+>                  if (bit >= size)
+>                          return size;
+>          }
+> 
+>          return bit;
+>   }
 
-...
+Hi, Yuri,
 
->> diff --git a/tools/objtool/arch/loongarch/include/arch/special.h b/tools/objtool/arch/loongarch/include/arch/special.h
->> new file mode 100644
->> index 0000000..1a8245c
->> --- /dev/null
->> +++ b/tools/objtool/arch/loongarch/include/arch/special.h
->> @@ -0,0 +1,33 @@
->> +/* SPDX-License-Identifier: GPL-2.0-or-later */
->> +#ifndef _OBJTOOL_ARCH_SPECIAL_H
->> +#define _OBJTOOL_ARCH_SPECIAL_H
->> +
->> +/*
->> + * See more info about struct exception_table_entry
->> + * in arch/loongarch/include/asm/extable.h
->> + */
->> +#define EX_ENTRY_SIZE 12
->> +#define EX_ORIG_OFFSET 0
->> +#define EX_NEW_OFFSET 4
-> Other archs use tab for indentation in special.h
->
+But the code above effectively does the same as the READ_ONCE() macro
+as defined in rwonce.h:
 
-OK, thank you, will do it.
+#ifndef __READ_ONCE
+#define __READ_ONCE(x)	(*(const volatile __unqual_scalar_typeof(x) *)&(x))
+#endif
 
-Thanks,
-Tiezhu
+#define READ_ONCE(x)							\
+({									\
+	compiletime_assert_rwonce_type(x);				\
+	__READ_ONCE(x);							\
+})
 
+Both uses only prevent the funny stuff the compiler might have done to the
+read of the addr[idx], there's no black magic in READ_ONCE().
+
+Both examples would probably result in the same assembly and produce the
+same 2% slowdown ...
+
+Only you declare volatile in one place, and READ_ONCE() in each read, but
+this will only compile a bit slower and generate the same machine code.
+
+Best regards,
+Mirsad Todorovac
+
+
+> Didn't test that, but I hope 'volatile' specifier should be enough
+> for compiler to realize that it shouldn't optimize memory access, and
+> for KCSAN that everything's OK here.
+> 
+> By the way, thank you for respectful and professional communication.
+> 
+> Thanks,
+> Yury
+
+-- 
+Mirsad Todorovac
+Sistem inženjer
+Grafički fakultet | Akademija likovnih umjetnosti
+Sveučilište u Zagrebu
+
+System engineer
+Faculty of Graphic Arts | Academy of Fine Arts
+University of Zagreb, Republic of Croatia
+tel. +385 (0)1 3711 451
+mob. +385 91 57 88 355
