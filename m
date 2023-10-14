@@ -2,82 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7497C955C
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 18:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37CAD7C955D
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 18:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233208AbjJNQ0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 12:26:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33058 "EHLO
+        id S233237AbjJNQ0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 12:26:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230016AbjJNQ0g (ORCPT
+        with ESMTP id S233235AbjJNQ0x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 12:26:36 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51D04AB
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 09:26:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=In/qR0xPHX0R3ydjLmk4c6FPRcFQxtnno1hT+OX9s8w=; b=B3pZWy6FGwF8vOYjYih4ciOB1b
-        DTC+ShtekHkbehPWeUg6yaF32FZUkscZ/758qpw/8IpN0dPQb0/TVyET0hVH+Kz/oafjYSRRJ8fQ1
-        mcd+W2lyhDfECt7A5Uz0g5/Bn/T548vPQSNCSpRKvD/2lliSOZoTVbOxWZ+pCZrsOJZaf6tnlsOQ7
-        mHKbQrcc5LNsAADZs0sUzPxmybgdfJ80bCnvNY0zEvOhtJvmHzYfsB9REjo1ulp809MOwoyi1Rjqv
-        AmInhnbsOXHhLVwb3xV2aVP/yRqs3pW6YrREHPNNcYxfyuD5/weR54F6ZWbyOtEXYeQMffMdFnHn+
-        4BBzQOgg==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qrhTE-005ZLx-3A;
-        Sat, 14 Oct 2023 16:26:33 +0000
-Message-ID: <7ce37af9-229f-445b-9505-10f5b0c60c89@infradead.org>
-Date:   Sat, 14 Oct 2023 09:26:32 -0700
+        Sat, 14 Oct 2023 12:26:53 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 706BFAB;
+        Sat, 14 Oct 2023 09:26:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=m+eYhnlsWW3tRR7KfXjnN2nxeoc3/iQb0fw4Feji7t0=; b=xj1yq9Iznwrt6gJL/rfxOyAXUJ
+        BfGAiOO/IIyn/IEY+Opgpqtevmu3V+0NJtECPFSJOTB7sdHtXLPYofuI7OAP/atfXO/wPX31WZxAO
+        wJHmu4/qYrXx9QPk0NvwnOk0N1Szwsyi8NurihsKO6+Yut3XYGENbefon/po0ZuBbnZ4=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qrhTP-002BcC-5l; Sat, 14 Oct 2023 18:26:43 +0200
+Date:   Sat, 14 Oct 2023 18:26:43 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] net: netcp: replace deprecated strncpy with strscpy
+Message-ID: <327af7c3-3a5f-4c0c-b3f7-81ceef14226b@lunn.ch>
+References: <20231012-strncpy-drivers-net-ethernet-ti-netcp_ethss-c-v1-1-93142e620864@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm: Fixed multiple typos in multiple files
-Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Muhammad Muzammil <m.muzzammilashraf@gmail.com>,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20231014123349.11294-1-m.muzzammilashraf@gmail.com>
- <b72324e4-75d2-4d90-9e6d-342d10bb947b@infradead.org>
- <ZSq3iuuGy7zSl4sz@casper.infradead.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <ZSq3iuuGy7zSl4sz@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231012-strncpy-drivers-net-ethernet-ti-netcp_ethss-c-v1-1-93142e620864@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/14/23 08:45, Matthew Wilcox wrote:
-> On Sat, Oct 14, 2023 at 08:31:35AM -0700, Randy Dunlap wrote:
->>>  	/*
->>> -	 * The caller from rmap relay on disabled preemption becase they never
->>> +	 * The caller from rmap relay on disabled preemption because they never
->>>  	 * update their counter from in-interrupt context. For these two
->>
->> I don't know what that (partial) sentence is trying to say...
->> Maybe someone else does.
+On Thu, Oct 12, 2023 at 09:05:40PM +0000, Justin Stitt wrote:
+> strncpy() is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
 > 
-> s/relay/rely/
+> Considering the above, a suitable replacement is `strscpy` [2] due to
+> the fact that it guarantees NUL-termination on the destination buffer
+> without unnecessarily NUL-padding.
+> 
+> Other implementations of .*get_drvinfo also use strscpy so this patch
+> brings keystone_get_drvinfo() in line as well:
+> 
+> igb/igb_ethtool.c +851
+> static void igb_get_drvinfo(struct net_device *netdev,
+> 
+> igbvf/ethtool.c
+> 167:static void igbvf_get_drvinfo(struct net_device *netdev,
+> 
+> i40e/i40e_ethtool.c
+> 1999:static void i40e_get_drvinfo(struct net_device *netdev,
+> 
+> e1000/e1000_ethtool.c
+> 529:static void e1000_get_drvinfo(struct net_device *netdev,
+> 
+> ixgbevf/ethtool.c
+> 211:static void ixgbevf_get_drvinfo(struct net_device *netdev,
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+> Note: build-tested only.
+> 
+> Found with: $ rg "strncpy\("
+> ---
+>  drivers/net/ethernet/ti/netcp_ethss.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/ti/netcp_ethss.c b/drivers/net/ethernet/ti/netcp_ethss.c
+> index 2adf82a32bf6..02cb6474f6dc 100644
+> --- a/drivers/net/ethernet/ti/netcp_ethss.c
+> +++ b/drivers/net/ethernet/ti/netcp_ethss.c
+> @@ -1735,8 +1735,8 @@ static const struct netcp_ethtool_stat xgbe10_et_stats[] = {
+>  static void keystone_get_drvinfo(struct net_device *ndev,
+>  				 struct ethtool_drvinfo *info)
+>  {
+> -	strncpy(info->driver, NETCP_DRIVER_NAME, sizeof(info->driver));
+> -	strncpy(info->version, NETCP_DRIVER_VERSION, sizeof(info->version));
+> +	strscpy(info->driver, NETCP_DRIVER_NAME, sizeof(info->driver));
+> +	strscpy(info->version, NETCP_DRIVER_VERSION, sizeof(info->version));
+>  }
 
-Duh. Thanks.
+Hi Justin
 
-So either:
+We have been deprecating setting info->version in drivers, because it
+is mostly useless. The core now puts in the kernel git hash, which
+does actually represent something useful.
 
-+	 * The callers from rmap rely on disabled preemption because they never
-or
-+	 * The caller from rmap relies on disabled preemption because they never
+So feel free to just remove it, rather than figure out if its safe to
+convert to strscpy.
 
-but the entire paragraph still needs some care IMO.
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
--- 
-~Randy
+    Andrew
+
