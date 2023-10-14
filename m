@@ -2,49 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40FAA7C9550
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 18:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE0F7C9555
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 18:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233269AbjJNQQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 12:16:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59340 "EHLO
+        id S233230AbjJNQRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 12:17:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230211AbjJNQQJ (ORCPT
+        with ESMTP id S230211AbjJNQRi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 12:16:09 -0400
+        Sat, 14 Oct 2023 12:17:38 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C4AA2;
-        Sat, 14 Oct 2023 09:16:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA56AC433C8;
-        Sat, 14 Oct 2023 16:16:01 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54733A2;
+        Sat, 14 Oct 2023 09:17:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF41CC433C7;
+        Sat, 14 Oct 2023 16:17:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697300166;
-        bh=bloyWWM50cgSdXW/M/ONp1t9BKdvFll8JAVkflss0qk=;
+        s=k20201202; t=1697300257;
+        bh=xHY0aHf0uD11zRpqxPLjkEWTV0MfIpfqhqDSbGx/3+Q=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=X1EmAge9ScIen7JtkLBWghNUQoZoy6NrdY9FNXqGPKimSOb8r1kTs7tfdeHZNPfu/
-         RNDhoI+VmRsexi0e0SXt+tc9EIjIPw60d/r6XV28LspIuwRUvGBI3kd8QaKzeGm5xO
-         hc/5VkpxH39bziNl07SEOdU0vq5RzDq1C+FQf1b2uytuIYtSFAbraSQ6PvaYPMD+Pn
-         fDZIA1nVe7FPGRpjsmAY+UsrMBb+u1HJKuhcDz0z/XmCgGRHTvAA2+eIWNZkz3ZVvN
-         EKkF8OvaUP1rPC18c8k7C6IkJHXQOQepCuXFEWq/hN9YlRf09M9E5jQs+JwqPpkXfK
-         ACSuaD8wHHS9w==
-Date:   Sat, 14 Oct 2023 17:16:19 +0100
+        b=At2Q3ivBEO+OXY8uC47sAGzBJemm3FZ4BfSamI6PiCXBAQElgcbtZ3hBnhPSDf3GP
+         cdMt3u+vLbROMtypOnZW1rG8B9MQfI3P6phPTRiIvyCP/hSF485e91/vJzyaODEz2j
+         PsjKMD5zNqFbhHhWtc1KNxRSH21OvL+Ql4rNPMqKBuPEqhIQid/TOjpY7J20/OIXKD
+         LZV94XdL9C4Gz7HAGTdecNnSZQTLSjxWhTq/wEThigCQtM4uPeZrGbo4ibeIvyyCHd
+         JJe6DAflemxalqZNdKtgHcGR9sS/n7nEtEXxSjk9ZVzRTVzALSAtUTHP11aqjNh5CH
+         dhaPORddHjLFA==
+Date:   Sat, 14 Oct 2023 17:17:52 +0100
 From:   Jonathan Cameron <jic23@kernel.org>
-To:     Luca Weiss <luca.weiss@fairphone.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/4] iio: adc: Add PM7325 PMIC7 ADC bindings
-Message-ID: <20231014171619.7b7ea921@jic23-huawei>
-In-Reply-To: <20231013-fp5-thermals-v1-1-f14df01922e6@fairphone.com>
-References: <20231013-fp5-thermals-v1-0-f14df01922e6@fairphone.com>
-        <20231013-fp5-thermals-v1-1-f14df01922e6@fairphone.com>
+To:     <marius.cristea@microchip.com>
+Cc:     <lars@metafoo.de>, <lgirdwood@gmail.com>, <broonie@kernel.org>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] iio: adc: MCP3564: fix warn: unsigned '__x' is never
+ less than zero.
+Message-ID: <20231014171752.5c4d7a86@jic23-huawei>
+In-Reply-To: <20231013132333.10582-1-marius.cristea@microchip.com>
+References: <20231013132333.10582-1-marius.cristea@microchip.com>
 X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -59,96 +51,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Oct 2023 10:09:53 +0200
-Luca Weiss <luca.weiss@fairphone.com> wrote:
+On Fri, 13 Oct 2023 16:23:33 +0300
+<marius.cristea@microchip.com> wrote:
 
-> Add the defines for the ADC channels found on the PM7325. The list is
-> taken from downstream msm-5.4 and adjusted for mainline.
+> From: Marius Cristea <marius.cristea@microchip.com>
 > 
-> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+> The patch 33ec3e5fc1ea: "iio: adc: adding support for MCP3564 ADC"
+> leads to the following Smatch static checker warning:
+> 
+>    smatch warnings:
+>    drivers/iio/adc/mcp3564.c:1105 mcp3564_fill_scale_tbls() warn: unsigned '__x' is never less than zero.
+> 
+> vim +/__x +1105 drivers/iio/adc/mcp3564.c
+> 
+>    1094
+>    1095  static void mcp3564_fill_scale_tbls(struct mcp3564_state *adc)
+>    1096  {
+>    .....
+>    1103          for (i = 0; i < MCP3564_MAX_PGA; i++) {
+>    1104                  ref = adc->vref_mv;
+>  > 1105                  tmp1 = shift_right((u64)ref * NANO, pow);  
+>    1106                  div_u64_rem(tmp1, NANO, &tmp0);
+>    1107
+>    .....
+>    1113  }
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202309280738.NWjVfVt4-lkp@intel.com/
+> Fixes: 33ec3e5fc1ea (iio: adc: adding support for MCP3564 ADC)
+> Signed-off-by: Marius Cristea <marius.cristea@microchip.com>
+Applied to the togreg branch of iio.git and pushed out as testing briefly
+for 0-day to take a look.
 
-I assume this will go with the dts changes that use it.
+Thanks,
 
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Jonathan
 
 > ---
->  include/dt-bindings/iio/qcom,spmi-adc7-pm7325.h | 69 +++++++++++++++++++++++++
->  1 file changed, 69 insertions(+)
+>  drivers/iio/adc/mcp3564.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/include/dt-bindings/iio/qcom,spmi-adc7-pm7325.h b/include/dt-bindings/iio/qcom,spmi-adc7-pm7325.h
-> new file mode 100644
-> index 000000000000..96908014e09e
-> --- /dev/null
-> +++ b/include/dt-bindings/iio/qcom,spmi-adc7-pm7325.h
-> @@ -0,0 +1,69 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (c) 2020 The Linux Foundation. All rights reserved.
-> + */
-> +
-> +#ifndef _DT_BINDINGS_QCOM_SPMI_VADC_PM7325_H
-> +#define _DT_BINDINGS_QCOM_SPMI_VADC_PM7325_H
-> +
-> +#ifndef PM7325_SID
-> +#define PM7325_SID					1
-> +#endif
-> +
-> +#include <dt-bindings/iio/qcom,spmi-vadc.h>
-> +
-> +/* ADC channels for PM7325_ADC for PMIC7 */
-> +#define PM7325_ADC7_REF_GND			(PM7325_SID << 8 | ADC7_REF_GND)
-> +#define PM7325_ADC7_1P25VREF			(PM7325_SID << 8 | ADC7_1P25VREF)
-> +#define PM7325_ADC7_VREF_VADC			(PM7325_SID << 8 | ADC7_VREF_VADC)
-> +#define PM7325_ADC7_DIE_TEMP			(PM7325_SID << 8 | ADC7_DIE_TEMP)
-> +
-> +#define PM7325_ADC7_AMUX_THM1			(PM7325_SID << 8 | ADC7_AMUX_THM1)
-> +#define PM7325_ADC7_AMUX_THM2			(PM7325_SID << 8 | ADC7_AMUX_THM2)
-> +#define PM7325_ADC7_AMUX_THM3			(PM7325_SID << 8 | ADC7_AMUX_THM3)
-> +#define PM7325_ADC7_AMUX_THM4			(PM7325_SID << 8 | ADC7_AMUX_THM4)
-> +#define PM7325_ADC7_AMUX_THM5			(PM7325_SID << 8 | ADC7_AMUX_THM5)
-> +#define PM7325_ADC7_GPIO1			(PM7325_SID << 8 | ADC7_GPIO1)
-> +#define PM7325_ADC7_GPIO2			(PM7325_SID << 8 | ADC7_GPIO2)
-> +#define PM7325_ADC7_GPIO3			(PM7325_SID << 8 | ADC7_GPIO3)
-> +#define PM7325_ADC7_GPIO4			(PM7325_SID << 8 | ADC7_GPIO4)
-> +
-> +/* 30k pull-up1 */
-> +#define PM7325_ADC7_AMUX_THM1_30K_PU		(PM7325_SID << 8 | ADC7_AMUX_THM1_30K_PU)
-> +#define PM7325_ADC7_AMUX_THM2_30K_PU		(PM7325_SID << 8 | ADC7_AMUX_THM2_30K_PU)
-> +#define PM7325_ADC7_AMUX_THM3_30K_PU		(PM7325_SID << 8 | ADC7_AMUX_THM3_30K_PU)
-> +#define PM7325_ADC7_AMUX_THM4_30K_PU		(PM7325_SID << 8 | ADC7_AMUX_THM4_30K_PU)
-> +#define PM7325_ADC7_AMUX_THM5_30K_PU		(PM7325_SID << 8 | ADC7_AMUX_THM5_30K_PU)
-> +#define PM7325_ADC7_GPIO1_30K_PU		(PM7325_SID << 8 | ADC7_GPIO1_30K_PU)
-> +#define PM7325_ADC7_GPIO2_30K_PU		(PM7325_SID << 8 | ADC7_GPIO2_30K_PU)
-> +#define PM7325_ADC7_GPIO3_30K_PU		(PM7325_SID << 8 | ADC7_GPIO3_30K_PU)
-> +#define PM7325_ADC7_GPIO4_30K_PU		(PM7325_SID << 8 | ADC7_GPIO4_30K_PU)
-> +
-> +/* 100k pull-up2 */
-> +#define PM7325_ADC7_AMUX_THM1_100K_PU		(PM7325_SID << 8 | ADC7_AMUX_THM1_100K_PU)
-> +#define PM7325_ADC7_AMUX_THM2_100K_PU		(PM7325_SID << 8 | ADC7_AMUX_THM2_100K_PU)
-> +#define PM7325_ADC7_AMUX_THM3_100K_PU		(PM7325_SID << 8 | ADC7_AMUX_THM3_100K_PU)
-> +#define PM7325_ADC7_AMUX_THM4_100K_PU		(PM7325_SID << 8 | ADC7_AMUX_THM4_100K_PU)
-> +#define PM7325_ADC7_AMUX_THM5_100K_PU		(PM7325_SID << 8 | ADC7_AMUX_THM5_100K_PU)
-> +#define PM7325_ADC7_GPIO1_100K_PU		(PM7325_SID << 8 | ADC7_GPIO1_100K_PU)
-> +#define PM7325_ADC7_GPIO2_100K_PU		(PM7325_SID << 8 | ADC7_GPIO2_100K_PU)
-> +#define PM7325_ADC7_GPIO3_100K_PU		(PM7325_SID << 8 | ADC7_GPIO3_100K_PU)
-> +#define PM7325_ADC7_GPIO4_100K_PU		(PM7325_SID << 8 | ADC7_GPIO4_100K_PU)
-> +
-> +/* 400k pull-up3 */
-> +#define PM7325_ADC7_AMUX_THM1_400K_PU		(PM7325_SID << 8 | ADC7_AMUX_THM1_400K_PU)
-> +#define PM7325_ADC7_AMUX_THM2_400K_PU		(PM7325_SID << 8 | ADC7_AMUX_THM2_400K_PU)
-> +#define PM7325_ADC7_AMUX_THM3_400K_PU		(PM7325_SID << 8 | ADC7_AMUX_THM3_400K_PU)
-> +#define PM7325_ADC7_AMUX_THM4_400K_PU		(PM7325_SID << 8 | ADC7_AMUX_THM4_400K_PU)
-> +#define PM7325_ADC7_AMUX_THM5_400K_PU		(PM7325_SID << 8 | ADC7_AMUX_THM5_400K_PU)
-> +#define PM7325_ADC7_GPIO1_400K_PU		(PM7325_SID << 8 | ADC7_GPIO1_400K_PU)
-> +#define PM7325_ADC7_GPIO2_400K_PU		(PM7325_SID << 8 | ADC7_GPIO2_400K_PU)
-> +#define PM7325_ADC7_GPIO3_400K_PU		(PM7325_SID << 8 | ADC7_GPIO3_400K_PU)
-> +#define PM7325_ADC7_GPIO4_400K_PU		(PM7325_SID << 8 | ADC7_GPIO4_400K_PU)
-> +
-> +/* 1/3 Divider */
-> +#define PM7325_ADC7_GPIO4_DIV3			(PM7325_SID << 8 | ADC7_GPIO4_DIV3)
-> +
-> +#define PM7325_ADC7_VPH_PWR			(PM7325_SID << 8 | ADC7_VPH_PWR)
-> +
-> +#endif /* _DT_BINDINGS_QCOM_SPMI_VADC_PM7325_H */
+> diff --git a/drivers/iio/adc/mcp3564.c b/drivers/iio/adc/mcp3564.c
+> index 9ede1a5d5d7b..e3f1de5fcc5a 100644
+> --- a/drivers/iio/adc/mcp3564.c
+> +++ b/drivers/iio/adc/mcp3564.c
+> @@ -1102,7 +1102,7 @@ static void mcp3564_fill_scale_tbls(struct mcp3564_state *adc)
+>  
+>  	for (i = 0; i < MCP3564_MAX_PGA; i++) {
+>  		ref = adc->vref_mv;
+> -		tmp1 = shift_right((u64)ref * NANO, pow);
+> +		tmp1 = ((u64)ref * NANO) >> pow;
+>  		div_u64_rem(tmp1, NANO, &tmp0);
+>  
+>  		tmp1 = tmp1 * mcp3564_hwgain_frac[(2 * i) + 1];
 > 
+> base-commit: 5e99f692d4e32e3250ab18d511894ca797407aec
 
