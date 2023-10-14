@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 612E27C922A
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 03:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79FA87C922B
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 03:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232807AbjJNBwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 21:52:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53992 "EHLO
+        id S232710AbjJNBwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 21:52:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232730AbjJNBw1 (ORCPT
+        with ESMTP id S232824AbjJNBwp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 21:52:27 -0400
+        Fri, 13 Oct 2023 21:52:45 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F41D8B7;
-        Fri, 13 Oct 2023 18:52:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 597F0116;
+        Fri, 13 Oct 2023 18:52:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697248345; x=1728784345;
+  t=1697248355; x=1728784355;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Ucms9PcDVzc6u5A1kJWl+5kF+z6+f70CH8rXovuIyGc=;
-  b=Y2UfvpaqUupmXv+pBetGePWhYNhOqtx7S2e7e3GrFo5oiBe1uyQOh2T/
-   B466VuG0O+BtoyiPmvOyoBFRVnphyVfV0KmSG2fH6IWyibpoY7cOhOyWf
-   a4fbg5WrwXIK39Vafhmi1htPUf7jXfEvjRBN8PE6Fmo0jVB7ugZJZbCRb
-   vUdQQDwypYpJU08PNSRcLUGaGYt/VGtn/ZQ2FLHPYgGPw8lP4un4Bvh4z
-   IaL9hc/ukwl5crWBeue4ObU2pwhnU5bF4MTetlmkRMYAApwzSflSWgSRb
-   PkrRIiCZT8q6eiLBaY129E7PRt0ki7WSygdeQE6y0j4X9/x2JZHB4gMGf
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="389154702"
+  bh=hFwGUjeSEwV3M8jNdW1cuoi8OgD2wUFllwc1RJBRXBA=;
+  b=Nyl1hKVwHx0eHUdm8dk8S/H9N4a50493wzh3PFN9TwMNF15bVx/tXSOz
+   cp4LdGMVUqHCpxbCqy47A4ejtJoOBIHNUEnreLBq7yQ4EQpy/QVkKrJdQ
+   nU4HrJ/gornpHA6K86T4umsVtrIjlDz91rPu8+l5bVVPG54YTo3mE1BVX
+   CIKOmmrMbKjkF4s4WFi0xwUMhT5RH9WWJunJ2T5Dg+a7VNVKg+JAO/OZC
+   yuJOtrS+V+TwKeYM3Z0HKcAOEpc0C9ihoFDbGT7t2JuzWcJl2Ww0EtDWB
+   v4AdlqQlU8WFhOKeQ9QGgQhpMN4Hjy2mzS+B1rwi7e1EIBvDVIhTKpItO
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="389154719"
 X-IronPort-AV: E=Sophos;i="6.03,223,1694761200"; 
-   d="scan'208";a="389154702"
+   d="scan'208";a="389154719"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 18:52:19 -0700
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 18:52:21 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="731565676"
+X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="731565680"
 X-IronPort-AV: E=Sophos;i="6.03,223,1694761200"; 
-   d="scan'208";a="731565676"
+   d="scan'208";a="731565680"
 Received: from b49691a75598.jf.intel.com ([10.54.34.22])
   by orsmga006.jf.intel.com with ESMTP; 13 Oct 2023 18:52:19 -0700
 From:   weilin.wang@intel.com
@@ -55,9 +55,9 @@ Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
         Caleb Biggers <caleb.biggers@intel.com>,
         Mark Rutland <mark.rutland@arm.com>,
         Yang Jihong <yangjihong1@huawei.com>
-Subject: [RFC PATCH v2 07/17] perf stat: Add functions to set counter bitmaps for hardware-grouping method
-Date:   Fri, 13 Oct 2023 18:51:52 -0700
-Message-Id: <20231014015202.1175377-8-weilin.wang@intel.com>
+Subject: [RFC PATCH v2 08/17] perf stat: Add functions to get counter info
+Date:   Fri, 13 Oct 2023 18:51:53 -0700
+Message-Id: <20231014015202.1175377-9-weilin.wang@intel.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20231014015202.1175377-1-weilin.wang@intel.com>
 References: <20231014015202.1175377-1-weilin.wang@intel.com>
@@ -74,287 +74,220 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Weilin Wang <weilin.wang@intel.com>
 
-Add metricgroup__event_info data structure to represent an event in the
-metric grouping context; the list of counters and the PMU name an event
-should be collected with.
+Add data structure metricgroup__pmu_counters to represent hardware counters
+available in the system.
 
-Add functions to parse event counter info from pmu-events and generate a
-list of metricgroup__event_info data to prepare grouping.
+Add functions to parse pmu-events and create the list of pmu_info_list to
+hold the counter information of the system.
+
+Add functions to free pmu_info_list and event_info_list before exit
+grouping for hardware-grouping method
+
+This method would fall back to normal grouping when event json files do not
+support hardware aware grouping.
 
 Signed-off-by: Weilin Wang <weilin.wang@intel.com>
 ---
- tools/perf/util/metricgroup.c | 196 +++++++++++++++++++++++++++++++++-
- tools/perf/util/metricgroup.h |  27 +++++
- 2 files changed, 220 insertions(+), 3 deletions(-)
+ tools/perf/util/metricgroup.c | 85 +++++++++++++++++++++++++++++++++--
+ tools/perf/util/metricgroup.h | 15 +++++++
+ tools/perf/util/pmu.c         |  5 +++
+ tools/perf/util/pmu.h         |  1 +
+ 4 files changed, 103 insertions(+), 3 deletions(-)
 
 diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index 8d4e29eb1..6af8a7341 100644
+index 6af8a7341..75257b68b 100644
 --- a/tools/perf/util/metricgroup.c
 +++ b/tools/perf/util/metricgroup.c
-@@ -1432,6 +1432,182 @@ static int build_combined_expr_ctx(const struct list_head *metric_list,
+@@ -1507,6 +1507,27 @@ static int parse_counter(const char *counter,
+ 	return 0;
+ }
+ 
++static void metricgroup__free_event_info(struct list_head
++					*event_info_list)
++{
++	struct metricgroup__event_info *e, *tmp;
++
++	list_for_each_entry_safe(e, tmp, event_info_list, nd) {
++		list_del_init(&e->nd);
++		free(e);
++	}
++}
++
++static void metricgroup__free_pmu_info(struct list_head *pmu_info_list)
++{
++	struct metricgroup__pmu_counters *p, *tmp;
++
++	list_for_each_entry_safe(p, tmp, pmu_info_list, nd) {
++		list_del_init(&p->nd);
++		free(p);
++	}
++}
++
+ static struct metricgroup__event_info *event_info__new(const char *name,
+ 						      const char *pmu_name,
+ 						      const char *counter,
+@@ -1525,7 +1546,7 @@ static struct metricgroup__event_info *event_info__new(const char *name,
+ 
+ 	e->name = name;
+ 	e->free_counter = free_counter;
+-	e->pmu_name = strdup(pmu_name);
++	e->pmu_name = pmu_name;
+ 	if (free_counter) {
+ 		ret = set_counter_bitmap(0, e->counters);
+ 		if (ret)
+@@ -1560,6 +1581,8 @@ static int metricgroup__add_metric_event_callback(const struct pmu_event *pe,
+ 	struct metricgroup__add_metric_event_data *d = data;
+ 
+ 	if (!strcasecmp(pe->name, d->event_name)) {
++		if (!pe->counter)
++			return -EINVAL;
+ 		event = event_info__new(d->event_id, pe->pmu, pe->counter, /*free_counter=*/false);
+ 		if (!event)
+ 			return -ENOMEM;
+@@ -1599,7 +1622,7 @@ static int get_metricgroup_events(const char *full_id,
+ 			.event_name = id,
+ 			.event_id = full_id,
+ 		};
+-		ret = pmu_events_table_for_each_event(table,
++		ret = pmu_events_table__for_each_event(table, /*pmu=*/NULL,
+ 				metricgroup__add_metric_event_callback, &data);
+ 	}
+ 
+@@ -1608,6 +1631,57 @@ static int get_metricgroup_events(const char *full_id,
  	return ret;
  }
  
-+/**
-+ * set_counter_bitmap - The counter bit mapping: [8-15,0-7], e.g. the GP0 is the
-+ * 8th bit and GP7 is the 1st bit in this 16-bits bitmap. It is helpful for
-+ * assigning GP4-7 before GP0-3 because some events can be collected using GP0-3
-+ * only on some platforms.
-+ */
-+static int set_counter_bitmap(int pos, unsigned long *bitmap)
++static struct metricgroup__pmu_counters *pmu_layout__new(const struct pmu_layout *pl)
 +{
-+	if (pos >= NR_COUNTERS || pos < 0)
-+		return -EINVAL;
-+	if (pos <= 7)
-+		pos = TRANSFER_FIRST_BYTE(pos);
-+	else
-+		pos = TRANSFER_SEC_BYTE(pos);
-+	*bitmap |= 1ul << pos;
-+	return 0;
++	struct metricgroup__pmu_counters *l;
++
++	l = zalloc(sizeof(*l));
++
++	if (!l)
++		return NULL;
++
++	l->name = pl->pmu;
++	l->size = pl->size;
++	l->fixed_size = pl->fixed_size;
++	pr_debug("create new pmu_layout: [pmu]=%s, [gp_size]=%ld, [fixed_size]=%ld\n",
++		l->name, l->size, l->fixed_size);
++	return l;
 +}
 +
-+static int parse_fixed_counter(const char *counter,
-+			      unsigned long *bitmap,
-+			      bool *fixed)
++static int metricgroup__add_pmu_layout_callback(const struct pmu_layout *pl,
++						void *data)
 +{
-+	int ret = -ENOENT;
-+	//TODO: this pattern is different on some other platforms
-+	const char *pattern = "Fixed counter ";
-+	int pos = 0;
++	struct metricgroup__pmu_counters *pmu;
++	struct list_head *d = data;
++	int ret = 0;
 +
-+	if (!strncmp(counter, pattern, strlen(pattern))) {
-+		pos = atoi(counter + strlen(pattern));
-+		ret = set_counter_bitmap(pos, bitmap);
-+		if (ret)
-+			return ret;
-+		*fixed = true;
-+		return 0;
-+	}
++	pmu = pmu_layout__new(pl);
++	if (!pmu)
++		return -ENOMEM;
++	list_add(&pmu->nd, d);
 +	return ret;
 +}
 +
 +/**
-+ * parse_counter - Parse event counter info from pmu-events and set up bitmap
-+ * accordingly.
-+ *
-+ * @counter: counter info string to be parsed.
-+ * @bitmap: bitmap to set based on counter info parsed.
-+ * @fixed: is set to true if the event uses fixed counter.
++ * get_pmu_counter_layouts - Find counter info of the architecture from
++ * the pmu_layouts table
++ * @pmu_info_list: the list that the new counter info of a pmu is added to.
++ * @table: pmu_layouts table that is searched for counter info.
 + */
-+static int parse_counter(const char *counter,
-+			unsigned long *bitmap,
-+			bool *fixed)
-+{
-+	int ret = 0;
-+	char *p;
-+	char *tok;
-+	int pos = 0;
-+
-+	ret = parse_fixed_counter(counter, bitmap, fixed);
-+	// ret==0 means matched with fixed counter
-+	if (ret == 0)
-+		return ret;
-+
-+	p = strdup(counter);
-+	tok = strtok(p, ",");
-+	if (!tok)
-+		return -ENOENT;
-+
-+	while (tok) {
-+		pos = atoi(tok);
-+		ret = set_counter_bitmap(pos, bitmap);
-+		if (ret)
-+			return ret;
-+		tok = strtok(NULL, ",");
-+	}
-+	return 0;
-+}
-+
-+static struct metricgroup__event_info *event_info__new(const char *name,
-+						      const char *pmu_name,
-+						      const char *counter,
-+						      bool free_counter)
-+{
-+	int ret = 0;
-+	char *bit_buf = malloc(NR_COUNTERS);
-+	bool fixed_counter = false;
-+	struct metricgroup__event_info *e;
-+
-+	e = zalloc(sizeof(*e));
-+	if (!e)
-+		return NULL;
-+	if (!pmu_name)
-+		pmu_name = "core";
-+
-+	e->name = name;
-+	e->free_counter = free_counter;
-+	e->pmu_name = strdup(pmu_name);
-+	if (free_counter) {
-+		ret = set_counter_bitmap(0, e->counters);
-+		if (ret)
-+			return NULL;
-+	} else {
-+		ret = parse_counter(counter, e->counters, &fixed_counter);
-+		if (ret)
-+			return NULL;
-+		e->fixed_counter = fixed_counter;
-+	}
-+
-+	bitmap_scnprintf(e->counters, NR_COUNTERS, bit_buf, NR_COUNTERS);
-+	pr_debug("Event %s requires pmu %s counter: %s bitmap %s, [pmu=%s]\n",
-+		e->name, e->pmu_name, counter, bit_buf, pmu_name);
-+
-+	return e;
-+}
-+
-+struct metricgroup__add_metric_event_data {
-+	struct list_head *list;
-+	/* pure event name, exclude umask and other info*/
-+	const char *event_name;
-+	/* event name and umask if applicable*/
-+	const char *event_id;
-+};
-+
-+static int metricgroup__add_metric_event_callback(const struct pmu_event *pe,
-+						 const struct pmu_events_table *table __maybe_unused,
-+						 void *data)
-+{
-+	struct metricgroup__event_info *event;
-+	struct metricgroup__add_metric_event_data *d = data;
-+
-+	if (!strcasecmp(pe->name, d->event_name)) {
-+		event = event_info__new(d->event_id, pe->pmu, pe->counter, /*free_counter=*/false);
-+		if (!event)
-+			return -ENOMEM;
-+		list_add(&event->nd, d->list);
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * get_metricgroup_events - Find counter requirement of events from the
-+ * pmu_events table
-+ * @full_id: the full event identifiers.
-+ * @table: pmu_events table that is searched for event data.
-+ * @event_info_list: the list that the new event counter info added to.
-+ */
-+static int get_metricgroup_events(const char *full_id,
-+				 const struct pmu_events_table *table,
-+				 struct list_head *event_info_list)
++static int get_pmu_counter_layouts(struct list_head *pmu_info_list,
++				   const struct pmu_layouts_table
++				   *table)
 +{
 +	LIST_HEAD(list);
-+	int ret = 0;
-+	const char *id;
-+	const char *rsep, *sep = strchr(full_id, '@');
++	int ret;
 +
-+	if (sep) {
-+		rsep = strchr(full_id, ',');
-+		id = strndup(sep + 1, rsep - sep - 1);
-+		if (ret)
-+			goto out;
-+	} else {
-+		id = full_id;
-+	}
-+	{
-+		struct metricgroup__add_metric_event_data data = {
-+			.list = &list,
-+			.event_name = id,
-+			.event_id = full_id,
-+		};
-+		ret = pmu_events_table_for_each_event(table,
-+				metricgroup__add_metric_event_callback, &data);
-+	}
++	ret = pmu_layouts_table__for_each_layout(table,
++						metricgroup__add_pmu_layout_callback, &list);
 +
-+out:
-+	list_splice(&list, event_info_list);
++	list_splice(&list, pmu_info_list);
 +	return ret;
 +}
 +
  /**
   * hw_aware_build_grouping - Build event groupings by reading counter
   * requirement of the events and counter available on the system from
-@@ -1445,9 +1621,25 @@ static int hw_aware_build_grouping(struct expr_parse_ctx *ctx __maybe_unused,
- 				  const char *modifier __maybe_unused)
- {
- 	int ret = 0;
-+	struct hashmap_entry *cur;
-+	LIST_HEAD(pmu_info_list);
-+	LIST_HEAD(event_info_list);
-+	size_t bkt;
-+	const struct pmu_events_table *etable = pmu_events_table__find();
-+
-+#define RETURN_IF_NON_ZERO(x) do { if (x) return x; } while (0)
-+	hashmap__for_each_entry(ctx->ids, cur, bkt) {
-+		const char *id = cur->pkey;
-+
-+		pr_debug("found event %s\n", id);
-+
-+		ret = get_metricgroup_events(id, etable, &event_info_list);
-+		if (ret)
-+			return ret;
-+	}
+@@ -1626,6 +1700,7 @@ static int hw_aware_build_grouping(struct expr_parse_ctx *ctx __maybe_unused,
+ 	LIST_HEAD(event_info_list);
+ 	size_t bkt;
+ 	const struct pmu_events_table *etable = pmu_events_table__find();
++	const struct pmu_layouts_table *ltable = pmu_layouts_table__find();
  
--	pr_debug("This is a placeholder\n");
- 	return ret;
-+#undef RETURN_IF_NON_ZERO
- }
+ #define RETURN_IF_NON_ZERO(x) do { if (x) return x; } while (0)
+ 	hashmap__for_each_entry(ctx->ids, cur, bkt) {
+@@ -1635,9 +1710,13 @@ static int hw_aware_build_grouping(struct expr_parse_ctx *ctx __maybe_unused,
  
- static void group_str_free(struct metricgroup__group_strs *g)
-@@ -1521,8 +1713,6 @@ static int hw_aware_parse_ids(struct perf_pmu *fake_pmu,
- 	*out_evlist = parsed_evlist;
- 	parsed_evlist = NULL;
- err_out:
--	parse_events_error__exit(&parse_error);
--	evlist__delete(parsed_evlist);
- 	metricgroup__free_grouping_strs(&groupings);
+ 		ret = get_metricgroup_events(id, etable, &event_info_list);
+ 		if (ret)
+-			return ret;
++			goto err_out;
+ 	}
++	ret = get_pmu_counter_layouts(&pmu_info_list, ltable);
+ 
++err_out:
++	metricgroup__free_event_info(&event_info_list);
++	metricgroup__free_pmu_info(&pmu_info_list);
  	return ret;
+ #undef RETURN_IF_NON_ZERO
  }
 diff --git a/tools/perf/util/metricgroup.h b/tools/perf/util/metricgroup.h
-index 89809df85..3704545c9 100644
+index 3704545c9..802ca15e7 100644
 --- a/tools/perf/util/metricgroup.h
 +++ b/tools/perf/util/metricgroup.h
-@@ -5,6 +5,7 @@
- #include <linux/list.h>
- #include <linux/rbtree.h>
- #include <stdbool.h>
-+#include <linux/bitmap.h>
- #include "pmu-events/pmu-events.h"
- #include "strbuf.h"
- 
-@@ -67,6 +68,32 @@ struct metric_expr {
- 	int runtime;
+@@ -94,6 +94,21 @@ struct metricgroup__event_info {
+ 	DECLARE_BITMAP(counters, NR_COUNTERS);
  };
  
-+/* Maximum number of counters per PMU*/
-+#define NR_COUNTERS	16
-+/*
-+ * Transfer bit position in the bitmap to ensure start assigning counter from
-+ * the last GP counter to the first.
-+ * bit15 <---> bit0
-+ * [GP8-GP15] [GP0-GP7]
-+ */
-+#define TRANSFER_FIRST_BYTE(pos) (7 - pos)
-+#define TRANSFER_SEC_BYTE(pos) (23 - pos)
-+
 +/**
-+ * An event used in a metric. This info is for metric grouping.
++ * A node is the counter availability of a pmu.
++ * This info is built up at the beginning from JSON file and
++ * used as a reference in metric grouping process.
 + */
-+struct metricgroup__event_info {
++struct metricgroup__pmu_counters {
 +	struct list_head nd;
-+	/** The name of the event. */
++	/** The name of the pmu the event collected on. */
 +	const char *name;
-+	/** The name of the pmu the event be collected on. */
-+	const char *pmu_name;
-+	bool fixed_counter;
-+	bool free_counter;
-+	/** The counters the event allowed to be collected on. */
-+	DECLARE_BITMAP(counters, NR_COUNTERS);
++	//DECLARE_BITMAP(counter_bits, NR_COUNTERS);
++	/** The number of gp counters in the pmu. */
++	size_t size;
++	size_t fixed_size;
 +};
 +
  /**
   * Each group is one node in the group string list.
   */
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index cde33e019..af4056a88 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -813,6 +813,11 @@ __weak const struct pmu_metrics_table *pmu_metrics_table__find(void)
+ 	return perf_pmu__find_metrics_table(NULL);
+ }
+ 
++__weak const struct pmu_layouts_table *pmu_layouts_table__find(void)
++{
++	return perf_pmu__find_layouts_table(NULL);
++}
++
+ /**
+  * perf_pmu__match_ignoring_suffix - Does the pmu_name match tok ignoring any
+  *                                   trailing suffix? The Suffix must be in form
+diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+index 6a4e170c6..3e9243e00 100644
+--- a/tools/perf/util/pmu.h
++++ b/tools/perf/util/pmu.h
+@@ -240,6 +240,7 @@ void pmu_add_cpu_aliases_table(struct perf_pmu *pmu,
+ char *perf_pmu__getcpuid(struct perf_pmu *pmu);
+ const struct pmu_events_table *pmu_events_table__find(void);
+ const struct pmu_metrics_table *pmu_metrics_table__find(void);
++const struct pmu_layouts_table *pmu_layouts_table__find(void);
+ 
+ int perf_pmu__convert_scale(const char *scale, char **end, double *sval);
+ 
 -- 
 2.39.3
 
