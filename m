@@ -2,85 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54CBC7C93C2
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 11:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A200C7C93C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 11:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233033AbjJNJ1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 05:27:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53936 "EHLO
+        id S233026AbjJNJ25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 05:28:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232937AbjJNJ1d (ORCPT
+        with ESMTP id S232957AbjJNJ2z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 05:27:33 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CEF5AD;
-        Sat, 14 Oct 2023 02:27:32 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40776b20031so8136525e9.0;
-        Sat, 14 Oct 2023 02:27:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697275650; x=1697880450; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=yqjTtNujnWMy88VPNV8UrR+LdaZ9WG6NKz13qE7MTmE=;
-        b=EkG7/6rcELYTWZdbyasOiyeX9cnKK/pl8B9uTCLQOUCHXPBumMWycoQQu8iYdN4+rQ
-         L8j8FdASQQPqlAp4oVRZtkVKXDh2HOPsBk6hKr0lgdCk/AWN8/Vicf4Et5h4QyxK9abw
-         9JuZyVbaz5AwmpaLnuNzj0kF3liKt/WHlU9EvACk7y9HRXd5WxlDC3r4DekuC9Fo3mms
-         6N4fOZl7oeHZEolDuxxktGgKdPX4CudeKCjKL6Ij1JwQl72Y2MVTTZ8XDFdldfEiCfHt
-         Oia8AzUgSD3VRQgCVOcOGYzo8K+H7XBlgQBnYVK58sAC2waeZwBJUb2gzR57tXIKNPXV
-         cvZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697275650; x=1697880450;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yqjTtNujnWMy88VPNV8UrR+LdaZ9WG6NKz13qE7MTmE=;
-        b=UHYsWodLO9EZCadEaH6DvEvgXtICuNXz2KXIFc3MciuP4C53W7kZBcTfPjPGur4pr1
-         nvpJ18sBijvHL/WzhdnjL+OPC6fRuDICLM7p+cyibEaWphR4fPhMLDv3qH1w/pns41VC
-         tEP5ElilzxGIZP5QNmJhMY87eZirRB/hSAzXXBYzM2eFhh6oeG/dkDY2sJ6/ml1UEBJe
-         8cx9qA8KbHTCPbbVwcTl4JKloSUkfz67FV97I8QjE5BW6tmZaCKkVmBYFcYtJBDhDTXF
-         wt7unyEywxLQB4koRWwcuMNbOgIy1SMmo/lbCLG3jvrdkJJUHC6KA7NkLh/2h9UXpef1
-         uzUA==
-X-Gm-Message-State: AOJu0YwgJqsBnmoditjDdptyhDxbt2HcJ7bw5JYbYzRDfAsOln2aOOzd
-        FxG2ttGTHAlPwwLomZtOyLc=
-X-Google-Smtp-Source: AGHT+IEKzWJbvz9sdajMP9sZmmvJ1GgbFvXL53QYeHYszED8GAmWTvoPfVlS7CXVxkH04Co8ImitsQ==
-X-Received: by 2002:a05:600c:3544:b0:407:39ea:d926 with SMTP id i4-20020a05600c354400b0040739ead926mr18548553wmq.9.1697275650125;
-        Sat, 14 Oct 2023 02:27:30 -0700 (PDT)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id bd10-20020a05600c1f0a00b004077219aed5sm1514878wmb.6.2023.10.14.02.27.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Oct 2023 02:27:29 -0700 (PDT)
-Message-ID: <652a5f01.050a0220.6635d.5a6a@mx.google.com>
-X-Google-Original-Message-ID: <ZSpe//2oYu6+cZws@Ansuel-xps.>
-Date:   Sat, 14 Oct 2023 11:27:27 +0200
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Raju Rangoju <rajur@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@kernel.org>, Simon Horman <horms@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-wireless@vger.kernel.org
-Subject: Re: [net-next PATCH v2 3/4] net: stmmac: move TX timer arm after DMA
- enable
-References: <20231012100459.6158-1-ansuelsmth@gmail.com>
- <20231012100459.6158-4-ansuelsmth@gmail.com>
- <20231013181305.605fc789@kernel.org>
+        Sat, 14 Oct 2023 05:28:55 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0911AD
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 02:28:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F6E6C433C8;
+        Sat, 14 Oct 2023 09:28:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697275734;
+        bh=ZpEO1IMYtH2irsHJdzCqFNZXRTOe6izWzOLePcvLYVQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bFcq0GjznydPaTONKjqfjV1+Nr7NZVwNPCQW5bLkxT1fQZovxY9n1S6AvO4BFzWuU
+         TjR6cYOn61RQGer1aEsC4MPdJvFsGAslrjiZtzLUnGEUVNs91m9cmwvzq2qT5YNRcG
+         l6zO8wCj9jejD8frT/V93xclYkS6S3IXunPiHuLvx2EL7DTPGOcqkrwE9GpJh3M1ZK
+         bVFGRUI5GflYDnfCP5qrC+KThsY3q7iP4WZOoSlUM0lcAv1eUQc/UOZsCqUTEKyhVn
+         hB0u8fypH9jkVxH2IVGTufXhjD17LMQI5jPHVb5xCgF+Hp2fDvLmB6JXCIV3gLeuV0
+         n+y2+d3E6cfAw==
+Date:   Sat, 14 Oct 2023 10:28:49 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     Inochi Amaoto <inochiama@outlook.com>,
+        Chao Wei <chao.wei@sophgo.com>,
+        Chen Wang <unicorn_wang@outlook.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v2 4/7] riscv: dts: sophgo: Separate common devices from
+ cv1800b soc
+Message-ID: <20231014-scooter-blurred-995313b571ea@spud>
+References: <IA1PR20MB49531C1C34C3E972DBBA4151BBCEA@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <20231009112642.477337-1-inochiama@outlook.com>
+ <IA1PR20MB49532560A3CA2670A0EAB846BBCEA@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <20231013-catchable-wince-f24060feb639@spud>
+ <ZSpZmsb29ZC5L9dS@xhacker>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="a/zpBNbMNsth1Q72"
 Content-Disposition: inline
-In-Reply-To: <20231013181305.605fc789@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+In-Reply-To: <ZSpZmsb29ZC5L9dS@xhacker>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -89,17 +63,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 06:13:05PM -0700, Jakub Kicinski wrote:
-> On Thu, 12 Oct 2023 12:04:58 +0200 Christian Marangi wrote:
-> > +static int stmmac_tx_clean(struct stmmac_priv *priv, int budget, u32 queue
-> 
-> missing comma at the end, does not build :(
-> -- 
-> pw-bot: cr
 
-Sorry for wasting your time :(
-Having to port this between 6.1 and net-next and it slipped in while
-fixing the rebase conflict. Totally my fault.
+--a/zpBNbMNsth1Q72
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-	Ansuel
+> Maybe this has been discussed before but I didn't find it. I'm wondering
+> the reason of adding each plic and clint binding for each SoC, can we
+> just use the thead,c900-plic for plic?
+> FWICT, arm gic dt usage follows this way, there's no binding for each SoC's
+> gic but directly use "arm,gic-v3" and so on.
+
+I'm not aware of why the gic-v3 is done like this, but having different
+compatibles allows differentiation between implementations/integrations
+of this interrupt controller. I think having that ability is especially
+helpful given T-Head have open-sourced a bunch of their IP.
+
+--a/zpBNbMNsth1Q72
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSpfUQAKCRB4tDGHoIJi
+0pX2AP4wYdW2thFcBTVUGxaO74xEyj4aQ1WBKWyE5D7v2uZ9JAEAkJn4LfRJBEGC
+c4In3tyIqVJS+5Y1dWIQO6WzcjO0tgk=
+=XuAN
+-----END PGP SIGNATURE-----
+
+--a/zpBNbMNsth1Q72--
