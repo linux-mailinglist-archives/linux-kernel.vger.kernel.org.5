@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82DB27C956E
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 18:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 023217C9573
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 18:48:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233197AbjJNQqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 12:46:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39116 "EHLO
+        id S233245AbjJNQsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 12:48:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230016AbjJNQqM (ORCPT
+        with ESMTP id S230016AbjJNQso (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 12:46:12 -0400
+        Sat, 14 Oct 2023 12:48:44 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E53FDB7;
-        Sat, 14 Oct 2023 09:46:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03D9BC433C7;
-        Sat, 14 Oct 2023 16:46:06 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA4DEAD;
+        Sat, 14 Oct 2023 09:48:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95D62C433C7;
+        Sat, 14 Oct 2023 16:48:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697301970;
-        bh=UkfmNLmsfbE9sjB4/yEQF1Ft7jr9aA3XJDIvkkE44fo=;
+        s=k20201202; t=1697302122;
+        bh=IJrlNnqjIUUh+gSh65AnT5Tv6b5rLf5FsYIFFFMO0Qw=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YmPSIqUvEHAxvFAjD6DrziJgMQL/SbwsYC8Z61eSceDlL32C92Ogki1SAOSWthKCk
-         j7BwSQ5azdfLnbONZN6EkgLERGpNEOtubu/H/+IRWn7Omico3Ic+v0jNCZt6WP2nOO
-         wWWnxMyIiioYfN1PoJh0Da524R+9v3F8SshyArfE9DABTOlbNRqRu4kXs1tpf0+Fr2
-         bh3SUJKs9gk+wsw3oOHQcEicNxA4ntPc4ZcEhcQqO+8cC/sQhZm+FW6znO2ULQ5p2e
-         qHevB5ZVnrnLP7eDF3UN2j8PBrRuJuD6iza2TYJ9enV0Jy3aT1ME4XiIqwCoCv5hBj
-         y68Mw4NJGN4eA==
-Date:   Sat, 14 Oct 2023 17:46:26 +0100
+        b=Av9m+yWLNk2ELds81JPlt3JNOqssW9vVhy+ss1zm5HxUxp3eyOOmDjVIrUq3YczhP
+         cbnWJWK7DjckmdMhTWxZ0RGCZZCKORNSVwxKhFtNUh6JW7Q5rKv7YKUcXUe/yDwrQf
+         gEWQGvI79xS720TEhZCjO/ELLhsloTWuaj4BmxTgcpK3Sem/e2AX8k0kjxsBkqRF8u
+         KSCldX31xjLWtnys4xlng/1Z1hNUsPqApDMw2E1sWOMnJ2ZLBb91Lk0pOUpEUm0pH/
+         2SmXlWDjQo4fXosXegJN+72jvUoi+s7Lv8x/dfRaNGxXo3s0rk3xIPr/jVF1qMWM8Y
+         OLwQXnhVnxBpQ==
+Date:   Sat, 14 Oct 2023 17:48:58 +0100
 From:   Jonathan Cameron <jic23@kernel.org>
-To:     Jagath Jog J <jagathjog1996@gmail.com>
-Cc:     andriy.shevchenko@linux.intel.com, u.kleine-koenig@pengutronix.de,
-        lars@metafoo.de, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, linus.walleij@linaro.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] iio: imu: Add driver for BMI323 IMU
-Message-ID: <20231014174626.3c203096@jic23-huawei>
-In-Reply-To: <20231013034808.8948-3-jagathjog1996@gmail.com>
-References: <20231013034808.8948-1-jagathjog1996@gmail.com>
-        <20231013034808.8948-3-jagathjog1996@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Peter Rosin <peda@axentia.se>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Liam Beguin <liambeguin@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iio: afe: rescale: Accept only offset channels
+Message-ID: <20231014174858.73bcabbc@jic23-huawei>
+In-Reply-To: <20230902-iio-rescale-only-offset-v2-1-988b807754c8@linaro.org>
+References: <20230902-iio-rescale-only-offset-v2-1-988b807754c8@linaro.org>
 X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -54,127 +53,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Oct 2023 09:18:08 +0530
-Jagath Jog J <jagathjog1996@gmail.com> wrote:
+On Sat, 02 Sep 2023 21:46:20 +0200
+Linus Walleij <linus.walleij@linaro.org> wrote:
 
-> The Bosch BMI323 is a 6-axis low-power IMU that provide measurements for
-> acceleration, angular rate, and temperature. This sensor includes
-> motion-triggered interrupt features, such as a step counter, tap detection,
-> and activity/inactivity interrupt capabilities.
+> As noted by Jonathan Cameron: it is perfectly legal for a channel
+> to have an offset but no scale in addition to the raw interface.
+> The conversion will imply that scale is 1:1.
 > 
-> The driver supports various functionalities, including data ready, FIFO
-> data handling, and events such as tap detection, step counting, and
-> activity interrupts.
+> Make rescale_configure_channel() accept just scale, or just offset
+> to process a channel.
 > 
-> Signed-off-by: Jagath Jog J <jagathjog1996@gmail.com>
-Hi Jagath,
+> When a user asks for IIO_CHAN_INFO_OFFSET in rescale_read_raw()
+> we now have to deal with the fact that OFFSET could be present
+> but SCALE missing. Add code to simply scale 1:1 in this case.
+> 
+> Link: https://lore.kernel.org/linux-iio/CACRpkdZXBjHU4t-GVOCFxRO-AHGxKnxMeHD2s4Y4PuC29gBq6g@mail.gmail.com/
+> Fixes: 53ebee949980 ("iio: afe: iio-rescale: Support processed channels")
+> Fixes: 9decacd8b3a4 ("iio: afe: rescale: Fix boolean logic bug")
+> Reported-by: Jonathan Cameron <jic23@kernel.org>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 
-Nice driver.
+Peter, can you take a look at this v2?
 
-We are rapidly approaching the end of this cycle and as this is a
-large driver, I think it could do to remain on list at least a week
-before I apply it or until it picks up some tags from others if that
-happens sooner. Hence I'm afraid it might well sneak into next cycle.
-
-A couple of really small things in the docs and build files from me.
+Thanks,
 
 Jonathan
-
 > ---
->  Documentation/ABI/testing/sysfs-bus-iio |   18 +
->  MAINTAINERS                             |    7 +
->  drivers/iio/imu/Kconfig                 |    1 +
->  drivers/iio/imu/Makefile                |    1 +
->  drivers/iio/imu/bmi323/Kconfig          |   33 +
->  drivers/iio/imu/bmi323/Makefile         |    7 +
->  drivers/iio/imu/bmi323/bmi323.h         |  209 +++
->  drivers/iio/imu/bmi323/bmi323_core.c    | 2139 +++++++++++++++++++++++
->  drivers/iio/imu/bmi323/bmi323_i2c.c     |  121 ++
->  drivers/iio/imu/bmi323/bmi323_spi.c     |   92 +
->  10 files changed, 2628 insertions(+)
->  create mode 100644 drivers/iio/imu/bmi323/Kconfig
->  create mode 100644 drivers/iio/imu/bmi323/Makefile
->  create mode 100644 drivers/iio/imu/bmi323/bmi323.h
->  create mode 100644 drivers/iio/imu/bmi323/bmi323_core.c
->  create mode 100644 drivers/iio/imu/bmi323/bmi323_i2c.c
->  create mode 100644 drivers/iio/imu/bmi323/bmi323_spi.c
+> Changes in v2:
+> - Fix rescale_read_raw() handle channels with offset but no scale.
+> - Link to v1: https://lore.kernel.org/r/20230830-iio-rescale-only-offset-v1-1-40ab9f4436c7@linaro.org
+> ---
+>  drivers/iio/afe/iio-rescale.c | 19 +++++++++++++++----
+>  1 file changed, 15 insertions(+), 4 deletions(-)
 > 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
-> index 19cde14f3869..c66fc560ee4b 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-iio
-> +++ b/Documentation/ABI/testing/sysfs-bus-iio
-> @@ -2254,3 +2254,21 @@ Description:
->  		If a label is defined for this event add that to the event
->  		specific attributes. This is useful for userspace to be able to
->  		better identify an individual event.
-> +
-> +What:		/sys/.../events/in_accel_gesture_tap_wait_timeout
-> +KernelVersion:	6.7
-> +Contact:	linux-iio@vger.kernel.org
-> +Description:
-> +		Enable tap gesture confirmation with timeout.
-
-> +
-> +What:		/sys/.../events/in_accel_gesture_tap_wait_dur
-> +KernelVersion:	6.7
-> +Contact:	linux-iio@vger.kernel.org
-> +Description:
-> +		Timeout value for tap gesture confirmation.
-
-Units need to be specified.  Seconds?
-
-> +
-> +What:		/sys/.../events/in_accel_gesture_tap_wait_dur_available
-> +KernelVersion:	6.7
-> +Contact:	linux-iio@vger.kernel.org
-> +Description:
-> +		List of available timeout value for tap gesture confirmation.
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 4e07c032d06a..47ca415212a7 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -3595,6 +3595,13 @@ S:	Maintained
->  F:	Documentation/devicetree/bindings/iio/accel/bosch,bma400.yaml
->  F:	drivers/iio/accel/bma400*
+> diff --git a/drivers/iio/afe/iio-rescale.c b/drivers/iio/afe/iio-rescale.c
+> index 1f280c360701..56e5913ab82d 100644
+> --- a/drivers/iio/afe/iio-rescale.c
+> +++ b/drivers/iio/afe/iio-rescale.c
+> @@ -214,8 +214,18 @@ static int rescale_read_raw(struct iio_dev *indio_dev,
+>  				return ret < 0 ? ret : -EOPNOTSUPP;
+>  		}
 >  
-> +BOSCH SENSORTEC BMI323 IMU IIO DRIVER
-> +M:	Jagath Jog J <jagathjog1996@gmail.com>
-> +L:	linux-iio@vger.kernel.org
-> +S:	Maintained
-> +F:	Documentation/devicetree/bindings/iio/imu/bosch,bma400.yaml
-> +F:	drivers/iio/imu/bmi323/
+> -		ret = iio_read_channel_scale(rescale->source, &scale, &scale2);
+> -		return rescale_process_offset(rescale, ret, scale, scale2,
+> +		if (iio_channel_has_info(rescale->source->channel,
+> +					 IIO_CHAN_INFO_SCALE)) {
+> +			ret = iio_read_channel_scale(rescale->source, &scale, &scale2);
+> +			return rescale_process_offset(rescale, ret, scale, scale2,
+> +						      schan_off, val, val2);
+> +		}
 > +
->  BPF JIT for ARM
->  M:	Shubham Bansal <illusionist.neo@gmail.com>
->  L:	bpf@vger.kernel.org
-> diff --git a/drivers/iio/imu/Kconfig b/drivers/iio/imu/Kconfig
-> index c2f97629e9cd..6c9a85294bc1 100644
-> --- a/drivers/iio/imu/Kconfig
-> +++ b/drivers/iio/imu/Kconfig
-> @@ -54,6 +54,7 @@ config ADIS16480
+> +		/*
+> +		 * If we get here we have no scale so scale 1:1 but apply
+> +		 * rescaler and offset, if any.
+> +		 */
+> +		return rescale_process_offset(rescale, IIO_VAL_FRACTIONAL, 1, 1,
+>  					      schan_off, val, val2);
+>  	default:
+>  		return -EINVAL;
+> @@ -280,8 +290,9 @@ static int rescale_configure_channel(struct device *dev,
+>  	chan->type = rescale->cfg->type;
 >  
->  source "drivers/iio/imu/bmi160/Kconfig"
->  source "drivers/iio/imu/bno055/Kconfig"
-> +source "drivers/iio/imu/bmi323/Kconfig"
-Same on ordering.
->  
->  config FXOS8700
->  	tristate
-> diff --git a/drivers/iio/imu/Makefile b/drivers/iio/imu/Makefile
-> index 6eb612034722..627406476357 100644
-> --- a/drivers/iio/imu/Makefile
-> +++ b/drivers/iio/imu/Makefile
-> @@ -16,6 +16,7 @@ obj-$(CONFIG_IIO_ADIS_LIB) += adis_lib.o
->  
->  obj-y += bmi160/
->  obj-y += bno055/
-> +obj-y += bmi323/ 
-Alphabetical order. 
-
-> diff --git a/drivers/iio/imu/bmi323/bmi323_core.c b/drivers/iio/imu/bmi323/bmi323_core.c
-> new file mode 100644
-> index 000000000000..0bd5dedd9a63
-> --- /dev/null
-> +++ b/drivers/iio/imu/bmi323/bmi323_core.c
-> @@ -0,0 +1,2139 @@
+>  	if (iio_channel_has_info(schan, IIO_CHAN_INFO_RAW) &&
+> -	    iio_channel_has_info(schan, IIO_CHAN_INFO_SCALE)) {
+> -		dev_info(dev, "using raw+scale source channel\n");
+> +	    (iio_channel_has_info(schan, IIO_CHAN_INFO_SCALE) ||
+> +	     iio_channel_has_info(schan, IIO_CHAN_INFO_OFFSET))) {
+> +		dev_info(dev, "using raw+scale/offset source channel\n");
+>  	} else if (iio_channel_has_info(schan, IIO_CHAN_INFO_PROCESSED)) {
+>  		dev_info(dev, "using processed channel\n");
+>  		rescale->chan_processed = true;
+> 
+> ---
+> base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+> change-id: 20230830-iio-rescale-only-offset-f28e05bd2deb
+> 
+> Best regards,
 
