@@ -2,65 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C652F7C964F
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 22:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 214377C9650
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 22:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231893AbjJNUvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 16:51:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46124 "EHLO
+        id S233264AbjJNUvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 16:51:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbjJNUvj (ORCPT
+        with ESMTP id S232548AbjJNUvl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 16:51:39 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A69CC
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 13:51:37 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-5046bf37ec1so4087541e87.1
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 13:51:37 -0700 (PDT)
+        Sat, 14 Oct 2023 16:51:41 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3D7DDA
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 13:51:38 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-5079f6efd64so1435210e87.2
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 13:51:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697316696; x=1697921496; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Qto4krpjBE/Wuaeru9wVjaS4puBPq/i+G9Tt+UL8VeY=;
-        b=Mnr6dEfnv2ulV59TcxRwGVHuj6bbmpBcymfB9fS1q1DqPpRIZPibPDrimYIIUHsJHY
-         1JXGycQaj1WI6mnY4Ll/AgEjqzxKncXQE8mk0giPs6ZSwSKBfOcO6rt2Q+Jxz1cZhNGn
-         v4HJoPL9J7Fpu74QVWX5Fs/hxbDKQ3Lu7YIUYniFGP6uAsy5c9oJUu132bPNe3x1JaDt
-         UHbLKSA8+KBsJqRfnXPKOMGtkhgIbBTxMvxeES5ZKTyVi14gVZeRPcJhClz+PiuvMUkE
-         1hAvf3qBMouT+mxeKsFogjvtQpWuR5tEtGnDW/DJ5K/BkfcCbG9Io5KOoTEIfnF+EAhm
-         OaIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697316696; x=1697921496;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=linaro.org; s=google; t=1697316697; x=1697921497; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Qto4krpjBE/Wuaeru9wVjaS4puBPq/i+G9Tt+UL8VeY=;
-        b=m+ViIGcxZ7rd0COrR5U5X6T3mrQzkydY6NVsnonScXz0USwCqgGt3F6upe/gHKj/49
-         lNjXS5fvVStCTOWllSa9P7LM8RC2kZn4jerVcKGlOB1aS/b04bJBdwisJWiKwGJX35kX
-         rIRU/lk0Nx1aPucDDNIXmOzlG0kzNbePMpZE6tlxVeBfzl3WI6LSuanM1qc9nZBo1hfW
-         ExWMzfZlmPX/8x6YOXtBHrDReV6GIljXU3mPqFUurOqzQPcLTHcNPV2WpUUbBTRGlyyU
-         TqWb11Cs8VNyKKYtxc/dC8W8UeAyOb+fiX06m1XeeeZGaZ08zEXGhATJkgS8X13tpjKq
-         1PmA==
-X-Gm-Message-State: AOJu0Yz4kBcMUZBDAd8nLjtDw6QZuP5Susjn2coUSe9A1gkC5JdKgSXH
-        VHYocMu4LvCs89R1HjI07OnzQeUlzxvnRNwZNFw=
-X-Google-Smtp-Source: AGHT+IE2LkLny2Hv7hkf3yTWo3sEWQ3xuaqPwi7Pl1HEr4EfSbhQQmLHHadFrPJoUvbWPgZgxpS18Q==
-X-Received: by 2002:ac2:4ade:0:b0:507:a6e9:fbba with SMTP id m30-20020ac24ade000000b00507a6e9fbbamr1037614lfp.63.1697316696085;
-        Sat, 14 Oct 2023 13:51:36 -0700 (PDT)
+        bh=Xcek1IExtexURMeKlMsRJspW07mCiJH38XQWX0Z5ASQ=;
+        b=Ho/Ip+wQpanOLGx8D3hzsLV4Tar+92HUj1Gz3RrvpiKm7nrhMMprgjbrr9tviAYTwZ
+         wy48pCICv5Ux6E1QBb7plk+9X79G/Q6gPcnDKpj9MPgZvlZy7yAP0/0xcDqogfXN/WsZ
+         B8R2LnN0f5SV0NGPGhyw722BZTWB9cMvidX6zxZG4xbF+Ex+0SrIUO4mUucPSOJ7K5zD
+         UnCo6XSyALVek5E1/UP/7BqhUIeK3/WMASl9xfBkm/OR8PxwL0V+GTAAfjm2VawdrR44
+         hImgWHksD8aReeQ5yxMI83MNN3RbPcQ8r30huphq9JuL2ASnlMdY7Ogk5OCORhDmzCBQ
+         1lvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697316697; x=1697921497;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Xcek1IExtexURMeKlMsRJspW07mCiJH38XQWX0Z5ASQ=;
+        b=ifp3Ppc1slISiAbx79Bkfxt+CDeunmOJlXvfJAKgEStEQCUm5YxBMcLkNjdT/jGZqn
+         BkrNKkjfysINK4W3cu9URz34cysV/XZPheqYr7troO/NSZK6KMe3SJoda6yPkcjVaiVZ
+         polC7P33zG5Dg91+TT0pdZB20l9RJjkK0bkXZJWEy6x9Btsmc/TCibd4EoVjKzxJhU5b
+         P0wuJR66p6hOj4LPEgpChDvN6d66g9293y5ke1PfMtOLsZ4FRiWSQyd+o17BL8jyeouu
+         q0Rv/+sv6wsWAfjj9QMm/W8kYvOLhwTNKgHdN80JOwPP8WqREzpHOiXT52GxED1pqaVk
+         Ql6Q==
+X-Gm-Message-State: AOJu0YyalOFz/9Y3cI2/wGMZqAodkH7Kr+lGjqKOmYBSygNDKKMjTnhv
+        bBk7Mc3gFh3xRg3JAW5twKzTNQ==
+X-Google-Smtp-Source: AGHT+IFWoXuCIM9U+91E+u52ZglKN4DGR6vV6X5C3ttGMvevAUGWFRpQStXCC1OTmn0FFO1NbGVcKQ==
+X-Received: by 2002:a19:4f09:0:b0:500:c534:3e4e with SMTP id d9-20020a194f09000000b00500c5343e4emr24511184lfb.60.1697316697262;
+        Sat, 14 Oct 2023 13:51:37 -0700 (PDT)
 Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id o17-20020ac24e91000000b004ff96c09b47sm49926lfr.260.2023.10.14.13.51.35
+        by smtp.gmail.com with ESMTPSA id o17-20020ac24e91000000b004ff96c09b47sm49926lfr.260.2023.10.14.13.51.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Oct 2023 13:51:35 -0700 (PDT)
+        Sat, 14 Oct 2023 13:51:36 -0700 (PDT)
 From:   Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH net-next v2 0/5] Create a binding for the Marvell MV88E6xxx
- DSA switches
-Date:   Sat, 14 Oct 2023 22:51:31 +0200
-Message-Id: <20231014-marvell-88e6152-wan-led-v2-0-7fca08b68849@linaro.org>
+Date:   Sat, 14 Oct 2023 22:51:32 +0200
+Subject: [PATCH net-next v2 1/5] dt-bindings: marvell: Rewrite MV88E6xxx in
+ schema
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAFP/KmUC/3WNwQ6DIBAFf8XsudsA1oo99T8aDyirklBowFAbw
- 7+X2HOPk8mbt0OkYCjCrdohUDLReFdAnCoYF+VmQqMLg2Ci5oxJfKqQyFqUkq68EfhWDi3pwuO
- lHtpJi0lDWb8CTWY7yg9wtKKjbYW+mMXE1YfPcZn44X91Xv+tJ44MWcvFoLpONu14t8ap4M8+z
- NDnnL8WSdfXyQAAAA==
+Message-Id: <20231014-marvell-88e6152-wan-led-v2-1-7fca08b68849@linaro.org>
+References: <20231014-marvell-88e6152-wan-led-v2-0-7fca08b68849@linaro.org>
+In-Reply-To: <20231014-marvell-88e6152-wan-led-v2-0-7fca08b68849@linaro.org>
 To:     Andrew Lunn <andrew@lunn.ch>,
         Gregory Clement <gregory.clement@bootlin.com>,
         Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
@@ -88,68 +87,400 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This shows the path we could take with this, deprecating the
-weird external bus thing.
+This is an attempt to rewrite the Marvell MV88E6xxx switch bindings
+in YAML schema.
 
-I don't know what to do about the irq lines with a pointless
-type flag that should be onecell:ed.
+The current text binding says:
+  WARNING: This binding is currently unstable. Do not program it into a
+  FLASH never to be changed again. Once this binding is stable, this
+  warning will be removed.
 
-I need proper schema checking to add LED support to the
-Marvell switch. Just how it is, it can't go on like this.
-
-Some Device Tree fixes are included in the series, these
-remove the major and most annoying warnings fallout noise:
-some warnings remain, and these are of more serious nature,
-such as missing phy-mode.
+Well that never happened before we switched to YAML markup,
+we can't have it like this, what about fixing the mess?
 
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
-Changes in v2:
-- Break out a separate Marvell MV88E6060 binding file. I stand corrected.
-- Drop the idea to rely on nodename mdio-external for the external
-  MDIO bus, keep the compatible, drop patch for the driver.
-- Fix more Marvell DT mistakes.
-- Fix NXP DT mistakes in a separate patch.
-- Fix Marvell ARM64 mistakes in a separate patch.
-- Link to v1: https://lore.kernel.org/r/20231013-marvell-88e6152-wan-led-v1-0-0712ba99857c@linaro.org
-
----
-Linus Walleij (5):
-      dt-bindings: marvell: Rewrite MV88E6xxx in schema
-      dt-bindings: marvell: Add Marvell MV88E6060 DSA schema
-      ARM: dts: marvell: Fix some common switch mistakes
-      ARM: dts: nxp: Fix some common switch mistakes
-      ARM64: dts: marvell: Fix some common switch mistakes
-
- .../bindings/net/dsa/marvell,mv88e6060.yaml        | 106 +++++++++
  .../bindings/net/dsa/marvell,mv88e6xxx.yaml        | 241 +++++++++++++++++++++
  .../devicetree/bindings/net/dsa/marvell.txt        | 109 ----------
- MAINTAINERS                                        |   3 +-
- arch/arm/boot/dts/marvell/armada-370-rd.dts        |   2 -
- .../dts/marvell/armada-381-netgear-gs110emx.dts    |   6 +-
- .../dts/marvell/armada-385-clearfog-gtr-l8.dts     |   2 +-
- .../dts/marvell/armada-385-clearfog-gtr-s4.dts     |   2 +-
- arch/arm/boot/dts/marvell/armada-385-linksys.dtsi  |   2 -
- .../boot/dts/marvell/armada-385-turris-omnia.dts   |  16 +-
- arch/arm/boot/dts/marvell/armada-388-clearfog.dts  |   2 -
- .../boot/dts/marvell/armada-xp-linksys-mamba.dts   |   2 -
- arch/arm/boot/dts/nxp/vf/vf610-zii-cfu1.dts        |   2 +-
- arch/arm/boot/dts/nxp/vf/vf610-zii-scu4-aib.dts    |   8 +-
- arch/arm/boot/dts/nxp/vf/vf610-zii-spb4.dts        |   2 +-
- arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-dtu.dts    |   4 +-
- arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-spu3.dts   |   2 +-
- .../boot/dts/marvell/armada-3720-espressobin.dtsi  |   4 +-
- .../boot/dts/marvell/armada-3720-gl-mv1000.dts     |   4 +-
- .../boot/dts/marvell/armada-3720-turris-mox.dts    |  32 +--
- .../boot/dts/marvell/armada-7040-mochabin.dts      |   2 -
- .../dts/marvell/armada-8040-clearfog-gt-8k.dts     |   2 +-
- arch/arm64/boot/dts/marvell/cn9130-crb.dtsi        |   6 +-
- 23 files changed, 390 insertions(+), 171 deletions(-)
----
-base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-change-id: 20231008-marvell-88e6152-wan-led-88c43b7fd2fd
+ MAINTAINERS                                        |   2 +-
+ 3 files changed, 242 insertions(+), 110 deletions(-)
 
-Best regards,
+diff --git a/Documentation/devicetree/bindings/net/dsa/marvell,mv88e6xxx.yaml b/Documentation/devicetree/bindings/net/dsa/marvell,mv88e6xxx.yaml
+new file mode 100644
+index 000000000000..22ae844da2b5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/dsa/marvell,mv88e6xxx.yaml
+@@ -0,0 +1,241 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/dsa/marvell,mv88e6xxx.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Marvell MV88E6xxx DSA switch family
++
++maintainers:
++  - Andrew Lunn <andrew@lunn.ch>
++
++description:
++  The Marvell MV88E6xxx switch series has been produced and sold
++  by Marvell since at least 2010. The switch has a few compatibles which
++  just indicate the base address of the switch, then operating systems
++  can investigate switch ID registers to find out which actual version
++  of the switch it is dealing with.
++
++properties:
++  compatible:
++    oneOf:
++      - enum:
++          - marvell,mv88e6085
++          - marvell,mv88e6190
++          - marvell,mv88e6250
++    description: |
++      marvell,mv88e6085: This switch uses base address 0x10.
++        This switch and its siblings will be autodetected from
++        ID registers found in the switch, so only "marvell,mv88e6085" should be
++        specified. This includes the following list of MV88Exxxx switches:
++        6085, 6095, 6097, 6123, 6131, 6141, 6161, 6165, 6171, 6172, 6175, 6176,
++        6185, 6240, 6320, 6321, 6341, 6350, 6351, 6352
++      marvell,mv88e6190: This switch uses base address 0x00.
++        This switch and its siblings will be autodetected from
++        ID registers found in the switch, so only "marvell,mv88e6190" should be
++        specified. This includes the following list of MV88Exxxx switches:
++        6190, 6190X, 6191, 6290, 6361, 6390, 6390X
++      marvell,mv88e6250: This switch uses base address 0x08 or 0x18.
++        This switch and its siblings will be autodetected from
++        ID registers found in the switch, so only "marvell,mv88e6250" should be
++        specified. This includes the following list of MV88Exxxx switches:
++        6220, 6250
++
++  reg:
++    maxItems: 1
++
++  eeprom-length:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: Set to the length of an EEPROM connected to the switch. Must be
++      set if the switch can not detect the presence and/or size of a connected
++      EEPROM, otherwise optional.
++
++  reset-gpios:
++    description:
++      GPIO to be used to reset the whole device
++    maxItems: 1
++
++  interrupts:
++    description: The switch provides an external interrupt line, but it is
++      not always used by target systems.
++    maxItems: 1
++
++  interrupt-controller:
++    description: The switch has an internal interrupt controller used by
++      the different sub-blocks.
++
++  '#interrupt-cells':
++    description: The internal interrupt controller only supports triggering
++      on active high level interrupts so the second cell must alway be set to
++      IRQ_TYPE_LEVEL_HIGH.
++    const: 2
++
++  mdio:
++    $ref: /schemas/net/mdio.yaml#
++    unevaluatedProperties: false
++    description: Marvell MV88E6xxx switches have an internal mdio bus to
++      access switch ports, which is handled in this node.
++
++  mdio-external:
++    $ref: /schemas/net/mdio.yaml#
++    unevaluatedProperties: false
++    description: Marvell MV88E6xxx switches have an external mdio bus to
++      access external PHYs connected to the switch ports.
++
++    properties:
++      compatible:
++        const: marvell,mv88e6xxx-mdio-external
++
++    required:
++      - compatible
++
++$ref: dsa.yaml#
++
++patternProperties:
++  "^(ethernet-)?ports$":
++    type: object
++    patternProperties:
++      "^(ethernet-)?port@[0-9]+$":
++        type: object
++        description: Ethernet switch ports
++
++        $ref: dsa-port.yaml#
++
++        unevaluatedProperties: false
++
++oneOf:
++  - required:
++      - ports
++  - required:
++      - ethernet-ports
++
++required:
++  - compatible
++  - reg
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++    mdio {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        switch0: switch@0 {
++            compatible = "marvell,mv88e6085";
++            reg = <0>;
++            reset-gpios = <&gpio5 1 GPIO_ACTIVE_LOW>;
++            interrupt-parent = <&gpio0>;
++            interrupts = <27 IRQ_TYPE_LEVEL_LOW>;
++            interrupt-controller;
++            #interrupt-cells = <2>;
++
++            ports {
++                #address-cells = <1>;
++                #size-cells = <0>;
++
++                port@0 {
++                    reg = <0>;
++                    label = "lan1";
++                };
++                port@1 {
++                    reg = <1>;
++                    label = "lan2";
++                };
++                port@2 {
++                    reg = <2>;
++                    label = "lan3";
++                };
++                port@3 {
++                    reg = <3>;
++                    label = "lan4";
++                };
++                port@4 {
++                    reg = <4>;
++                    label = "wan";
++                };
++
++                port@5 {
++                    reg = <5>;
++                    phy-mode = "sgmii";
++                    ethernet = <&eth2>;
++
++                    fixed-link {
++                        speed = <1000>;
++                        full-duplex;
++                    };
++                };
++            };
++
++            mdio {
++                #address-cells = <1>;
++                #size-cells = <0>;
++                switch0phy0: switch0phy@0 {
++                    reg = <0>;
++                    interrupt-parent = <&switch0>;
++                    interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
++                };
++            };
++        };
++    };
++
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++    mdio {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        switch1: switch@0 {
++            compatible = "marvell,mv88e6190";
++            reg = <0>;
++            reset-gpios = <&gpio5 1 GPIO_ACTIVE_LOW>;
++            interrupt-parent = <&gpio0>;
++            interrupts = <27 IRQ_TYPE_LEVEL_LOW>;
++            interrupt-controller;
++            #interrupt-cells = <2>;
++
++            ports {
++                #address-cells = <1>;
++                #size-cells = <0>;
++
++                port@0 {
++                    reg = <0>;
++                    label = "lan1";
++                };
++                port@1 {
++                    reg = <1>;
++                    label = "lan2";
++                };
++                port@2 {
++                    reg = <2>;
++                    label = "lan3";
++                };
++                port@3 {
++                    reg = <3>;
++                    label = "lan4";
++                };
++            };
++
++            mdio {
++                #address-cells = <1>;
++                #size-cells = <0>;
++                switch1phy0: switch1phy@0 {
++                    reg = <0>;
++                    interrupt-parent = <&switch1>;
++                    interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
++                };
++            };
++
++            mdio-external {
++                compatible = "marvell,mv88e6xxx-mdio-external";
++                #address-cells = <1>;
++                #size-cells = <0>;
++                switch1phy9: switch1phy@9 {
++                    reg = <9>;
++                };
++            };
++        };
++    };
+diff --git a/Documentation/devicetree/bindings/net/dsa/marvell.txt b/Documentation/devicetree/bindings/net/dsa/marvell.txt
+deleted file mode 100644
+index 6ec0c181b6db..000000000000
+--- a/Documentation/devicetree/bindings/net/dsa/marvell.txt
++++ /dev/null
+@@ -1,109 +0,0 @@
+-Marvell DSA Switch Device Tree Bindings
+----------------------------------------
+-
+-WARNING: This binding is currently unstable. Do not program it into a
+-FLASH never to be changed again. Once this binding is stable, this
+-warning will be removed.
+-
+-If you need a stable binding, use the old dsa.txt binding.
+-
+-Marvell Switches are MDIO devices. The following properties should be
+-placed as a child node of an mdio device.
+-
+-The properties described here are those specific to Marvell devices.
+-Additional required and optional properties can be found in dsa.txt.
+-
+-The compatibility string is used only to find an identification register,
+-which is at a different MDIO base address in different switch families.
+-- "marvell,mv88e6085"	: Switch has base address 0x10. Use with models:
+-			  6085, 6095, 6097, 6123, 6131, 6141, 6161, 6165,
+-			  6171, 6172, 6175, 6176, 6185, 6240, 6320, 6321,
+-			  6341, 6350, 6351, 6352
+-- "marvell,mv88e6190"	: Switch has base address 0x00. Use with models:
+-			  6190, 6190X, 6191, 6290, 6361, 6390, 6390X
+-- "marvell,mv88e6250"	: Switch has base address 0x08 or 0x18. Use with model:
+-			  6220, 6250
+-
+-Required properties:
+-- compatible		: Should be one of "marvell,mv88e6085",
+-			  "marvell,mv88e6190" or "marvell,mv88e6250" as
+-			  indicated above
+-- reg			: Address on the MII bus for the switch.
+-
+-Optional properties:
+-
+-- reset-gpios		: Should be a gpio specifier for a reset line
+-- interrupts		: Interrupt from the switch
+-- interrupt-controller	: Indicates the switch is itself an interrupt
+-			  controller. This is used for the PHY interrupts.
+-#interrupt-cells = <2>	: Controller uses two cells, number and flag
+-- eeprom-length		: Set to the length of an EEPROM connected to the
+-			  switch. Must be set if the switch can not detect
+-			  the presence and/or size of a connected EEPROM,
+-			  otherwise optional.
+-- mdio			: Container of PHY and devices on the switches MDIO
+-			  bus.
+-- mdio?		: Container of PHYs and devices on the external MDIO
+-			  bus. The node must contains a compatible string of
+-			  "marvell,mv88e6xxx-mdio-external"
+-
+-Example:
+-
+-	mdio {
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		interrupt-parent = <&gpio0>;
+-		interrupts = <27 IRQ_TYPE_LEVEL_LOW>;
+-		interrupt-controller;
+-		#interrupt-cells = <2>;
+-
+-		switch0: switch@0 {
+-			compatible = "marvell,mv88e6085";
+-			reg = <0>;
+-			reset-gpios = <&gpio5 1 GPIO_ACTIVE_LOW>;
+-
+-			mdio {
+-				#address-cells = <1>;
+-				#size-cells = <0>;
+-				switch1phy0: switch1phy0@0 {
+-					reg = <0>;
+-					interrupt-parent = <&switch0>;
+-					interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
+-				};
+-			};
+-		};
+-	};
+-
+-	mdio {
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		interrupt-parent = <&gpio0>;
+-		interrupts = <27 IRQ_TYPE_LEVEL_LOW>;
+-		interrupt-controller;
+-		#interrupt-cells = <2>;
+-
+-		switch0: switch@0 {
+-			compatible = "marvell,mv88e6190";
+-			reg = <0>;
+-			reset-gpios = <&gpio5 1 GPIO_ACTIVE_LOW>;
+-
+-			mdio {
+-				#address-cells = <1>;
+-				#size-cells = <0>;
+-				switch1phy0: switch1phy0@0 {
+-					reg = <0>;
+-					interrupt-parent = <&switch0>;
+-					interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
+-				};
+-			};
+-
+-			mdio1 {
+-				compatible = "marvell,mv88e6xxx-mdio-external";
+-				#address-cells = <1>;
+-				#size-cells = <0>;
+-				switch1phy9: switch1phy0@9 {
+-					reg = <9>;
+-				};
+-			};
+-		};
+-	};
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 90f13281d297..1b4475254d27 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -12625,7 +12625,7 @@ MARVELL 88E6XXX ETHERNET SWITCH FABRIC DRIVER
+ M:	Andrew Lunn <andrew@lunn.ch>
+ L:	netdev@vger.kernel.org
+ S:	Maintained
+-F:	Documentation/devicetree/bindings/net/dsa/marvell.txt
++F:	Documentation/devicetree/bindings/net/dsa/marvell,mv88e6xxx.yaml
+ F:	Documentation/networking/devlink/mv88e6xxx.rst
+ F:	drivers/net/dsa/mv88e6xxx/
+ F:	include/linux/dsa/mv88e6xxx.h
+
 -- 
-Linus Walleij <linus.walleij@linaro.org>
+2.34.1
 
