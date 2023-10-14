@@ -2,193 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD147C941F
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 12:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9897C9421
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 12:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233139AbjJNKUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 06:20:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37680 "EHLO
+        id S233033AbjJNK3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 06:29:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233018AbjJNKUW (ORCPT
+        with ESMTP id S232937AbjJNK3P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 06:20:22 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E57BB;
-        Sat, 14 Oct 2023 03:20:19 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-32003aae100so2607010f8f.0;
-        Sat, 14 Oct 2023 03:20:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697278818; x=1697883618; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+Ie5xf8EyweRzmPDBS9SvXeHusgJJJ9gjTy3vmvQyAo=;
-        b=KcQwHAEg9fnSTGZuFDQfe4S958d1ABu66vJylb76e/YDU67frJmXYQm7G+UCRHRHNC
-         9a6WpCjVPFL3w/UubDjtcl3lo+q3RYsczTiOfUWw1CaJrTrLAbGx3gjvEJVPmuuyWiC0
-         0badNP988mOt3yZkMAPLTpXWkhsdRiiEos7RJXVaaVLDKp906u/J5tvhrddsYwSV5jHF
-         y4+Y6A+SrJV/uFW+Nh2/eQGQYYJw2WA7BFB/VoJM3UmmZko2/fHwGAGdQysVu+EB/FXe
-         Pkaqj42keS/MCwSHQ2eUG8ESkUVLKHwE/EPmcHd/jjhvlXq8h6e0Dh1b0cY7HIwSciaT
-         VY3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697278818; x=1697883618;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+Ie5xf8EyweRzmPDBS9SvXeHusgJJJ9gjTy3vmvQyAo=;
-        b=jniV2DCQQOWA3caQytEwbx6I9RXldWLguRGQn6hZKfiR3AwA4NBkiVseJysQGuMWV1
-         776FKpMUpx9Dh1vn854xmBxPWoEVTGHY+PtlqWnyeIXW1jKLqlw5/3f8CIHUIXQuuz/g
-         6TV9VQXXq+o5+dS+3svEFXSrXnfTqL16d2VGtUwUMscA6wAWiPvvTtjye8J8SI2Lysfg
-         dcKM1UYBsrQGNk3/X1/l0OoeKejkKy2fQTpQJBDR9rL/8J0goxOuApysyT1rbhJhhBwk
-         GSyenHL7yjgqTICpj8yJmrwJ9c/G4Q0lnmjjuOYEEnCCOKP7sYxr/E9KTYqdnox0/x3G
-         F1RQ==
-X-Gm-Message-State: AOJu0YwvuOAKxP470kf9+5Yj6PZvlHvLERbf2vPtxc1Efkr9S0f8YsxC
-        EjtlJ/7Sj/LfxHkepyv9ECjDXp1nr8YL7A==
-X-Google-Smtp-Source: AGHT+IHv4+aMzxNgMkKxkfp1l7K1tJcDgPQsoAHsgt+Q6FwksWagNlKtvxEfQ9mafuFvwRzSb4YEpw==
-X-Received: by 2002:adf:a351:0:b0:317:dadc:4a63 with SMTP id d17-20020adfa351000000b00317dadc4a63mr1809826wrb.8.1697278817516;
-        Sat, 14 Oct 2023 03:20:17 -0700 (PDT)
-Received: from [127.0.1.1] (2a02-8389-41cf-e200-57e7-d911-5fee-d153.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:57e7:d911:5fee:d153])
-        by smtp.gmail.com with ESMTPSA id ce9-20020a5d5e09000000b0032d687fd9d0sm11052999wrb.19.2023.10.14.03.20.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Oct 2023 03:20:16 -0700 (PDT)
-From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date:   Sat, 14 Oct 2023 12:20:15 +0200
-Subject: [PATCH v3] Input: bcm5974 - check endpoint type before starting
- traffic
+        Sat, 14 Oct 2023 06:29:15 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FEB5A2;
+        Sat, 14 Oct 2023 03:29:13 -0700 (PDT)
+Date:   Sat, 14 Oct 2023 10:29:09 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1697279350;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=eE+poOiRRwrdwN/fZ4h4/pg7LGMoOCv7Xn+HsYY3yV8=;
+        b=ivZ5MQYSWP776eH5qHrKWywfAcZ4TtnO4uYjOqTjm6Sli8kWy+km8oIA5LD9JK6lIv1z1m
+        gCwXamLA8Ft6YqhHDMIOAuRF3z6bC+DaD45IiW5OjgYRYcjZmhy2WWfjKiXM93xgenAVpT
+        yFaoPydvGS4am/0LIeV4//WCoq+AShfJIzffEoRH9rS9uy0C0s/rLeHUl5aJI43l0pxIXg
+        pZwy92G/V9erHDQqzvHnakzIs7uUxw2rk2Jo+0H3gVQIebk1ZMhfECHi701s+GUDCRrTrf
+        7qaA8S1uDwfWAKPMQ+o0PjzHyGdzvkhNG44KvpFzbNJBkWDbPEg9vEM9QJe9Jw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1697279350;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=eE+poOiRRwrdwN/fZ4h4/pg7LGMoOCv7Xn+HsYY3yV8=;
+        b=wMqTVbvoq6zLujsaJLS9kvlnyQrgXsWgg+tytMQiyan8viXSVsxKCY0+jyhy4J4vAPctp8
+        jYE0nKj/eFr/plCw==
+From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] locking/seqlock: Propagate 'const' pointers
+ within read-only methods, remove forced type casts
+Cc:     Ingo Molnar <mingo@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Waiman Long <longman@redhat.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
+Message-ID: <169727934984.3135.3212674170316933544.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231007-topic-bcm5974_bulk-v3-1-d0f38b9d2935@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAF5rKmUC/4WNzQ6CMBAGX8X0bE1/gIIn38MY0y0LNFIgLRIN4
- d1tOXnS4+zmm1lJQG8xkPNhJR4XG+w4RJDHAzGdHlqkto5MBBOSM6boPE7WUDAur1R2h2f/oKY
- oQGUStAJN4hB0QApeD6ZLU6fDjD49Jo+Nfe216y1yZ8M8+vceX3i6/uwsnHIq8xywakpdl+zSO
- m37kxkdSbpF/FeIqGCCc8lNKbGBb8W2bR/LaZnsEAEAAA==
-To:     John Horan <knasher@gmail.com>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Javier Carrasco <javier.carrasco.cruz@gmail.com>,
-        syzbot+348331f63b034f89b622@syzkaller.appspotmail.com
-X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697278815; l=3983;
- i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
- bh=h8uSGsYbFKdFPkfSUQO12RQLGCv1L8JG0Pt1bF6waoc=;
- b=x0vhKkpSsHchHl8rbD0ZlRP2rJsgtYDu2P9fqM7Vk3UfPBV2oyep599AdTeNlt1lSTrTQ3WBs
- snMQLsuf7xvBAihHhpB8vQ+z37uLHOoEamq2jry6VjmVt4KRngL4iVQ
-X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
- pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a type mismatch between a USB pipe and the transfer
-endpoint, which is triggered by the bcm5974 driver[1].
+The following commit has been merged into the locking/core branch of tip:
 
-This driver expects the device to provide input interrupt endpoints and
-if that is not the case, the driver registration should terminate.
+Commit-ID:     886ee55eabac0d46faf8bc0b22207ca2740847ba
+Gitweb:        https://git.kernel.org/tip/886ee55eabac0d46faf8bc0b22207ca2740847ba
+Author:        Ingo Molnar <mingo@kernel.org>
+AuthorDate:    Fri, 13 Oct 2023 10:15:46 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Sat, 14 Oct 2023 11:06:15 +02:00
 
-Repros are available to reproduce this issue with a certain setup for
-the dummy_hcd, leading to an interrupt/bulk mismatch which is caught in
-the USB core after calling usb_submit_urb() with the following message:
-"BOGUS urb xfer, pipe 1 != type 3"
+locking/seqlock: Propagate 'const' pointers within read-only methods, remove forced type casts
 
-Some other device drivers (like the appletouch driver bcm5974 is mainly
-based on) provide some checking mechanism to make sure that an IN
-interrupt endpoint is available. In this particular case the endpoint
-addresses are provided by a config table, so the checking can be
-targeted to the provided endpoints.
+Currently __seqprop_ptr() is an inline function that must chose to either
+use 'const' or non-const seqcount related pointers - but this results in
+the undesirable loss of 'const' propagation, via a forced type cast.
 
-Add some basic checking to guarantee that the endpoints available match
-the expected type for both the trackpad and button endpoints.
+The easiest solution would be to turn the pointer wrappers into macros that
+pass through whatever type is passed to them - but the clever maze of
+seqlock API instantiation macros relies on the GCC CPP '##' macro
+extension, which isn't recursive, so inline functions must be used here.
 
-This issue was only found for the trackpad endpoint, but the checking
-has been added to the button endpoint as well for the same reasons.
+So create two wrapper variants instead: 'ptr' and 'const_ptr', and pick the
+right one for the codepaths that are const: read_seqcount_begin() and
+read_seqcount_retry().
 
-Given that there was never a check for the endpoint type, this bug has
-been there since the first implementation of the driver (f89bd95c5c94).
+This cleans up type handling and allows the removal of all type forcing.
 
-[1] https://syzkaller.appspot.com/bug?extid=348331f63b034f89b622
+No change in functionality.
 
-Fixes: f89bd95c5c94 ("Input: bcm5974 - add driver for Macbook Air and Pro Penryn touchpads")
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Reported-and-tested-by: syzbot+348331f63b034f89b622@syzkaller.appspotmail.com
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Waiman Long <longman@redhat.com>
+Cc: Will Deacon <will.deacon@arm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Paul E. McKenney <paulmck@kernel.org>
 ---
-Changes in v3:
-- Use usb_check_int_endpoints() to validate the endpoints.
-- Link to v2: https://lore.kernel.org/r/20231007-topic-bcm5974_bulk-v2-1-021131c83efb@gmail.com
+ include/linux/seqlock.h | 26 +++++++++++++++++++-------
+ 1 file changed, 19 insertions(+), 7 deletions(-)
 
-Changes in v2:
-- Keep error = -ENOMEM for the rest of the probe and return -ENODEV if
-  the endpoint check fails.
-- Check function returns now bool and was renamed (_is_ for
-  bool-returning functions).
-- Link to v1: https://lore.kernel.org/r/20231007-topic-bcm5974_bulk-v1-1-355be9f8ad80@gmail.com
----
- drivers/input/mouse/bcm5974.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
-
-diff --git a/drivers/input/mouse/bcm5974.c b/drivers/input/mouse/bcm5974.c
-index ca150618d32f..953992b458e9 100644
---- a/drivers/input/mouse/bcm5974.c
-+++ b/drivers/input/mouse/bcm5974.c
-@@ -19,6 +19,7 @@
-  * Copyright (C) 2006	   Nicolas Boichat (nicolas@boichat.ch)
+diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
+index 4b8dcd3..80f21d2 100644
+--- a/include/linux/seqlock.h
++++ b/include/linux/seqlock.h
+@@ -200,9 +200,15 @@ typedef struct seqcount_##lockname {					\
+ } seqcount_##lockname##_t;						\
+ 									\
+ static __always_inline seqcount_t *					\
+-__seqprop_##lockname##_ptr(const seqcount_##lockname##_t *s)		\
++__seqprop_##lockname##_ptr(seqcount_##lockname##_t *s)			\
+ {									\
+-	return (void *)&s->seqcount; /* drop const */			\
++	return &s->seqcount;						\
++}									\
++									\
++static __always_inline const seqcount_t *				\
++__seqprop_##lockname##_const_ptr(const seqcount_##lockname##_t *s)	\
++{									\
++	return &s->seqcount;						\
+ }									\
+ 									\
+ static __always_inline unsigned						\
+@@ -247,9 +253,14 @@ __seqprop_##lockname##_assert(const seqcount_##lockname##_t *s)		\
+  * __seqprop() for seqcount_t
   */
  
-+#include "linux/usb.h"
- #include <linux/kernel.h>
- #include <linux/errno.h>
- #include <linux/slab.h>
-@@ -193,6 +194,8 @@ enum tp_type {
- 
- /* list of device capability bits */
- #define HAS_INTEGRATED_BUTTON	1
-+/* maximum number of supported endpoints (currently trackpad and button) */
-+#define MAX_ENDPOINTS	2
- 
- /* trackpad finger data block size */
- #define FSIZE_TYPE1		(14 * sizeof(__le16))
-@@ -891,6 +894,18 @@ static int bcm5974_resume(struct usb_interface *iface)
- 	return error;
- }
- 
-+static bool bcm5974_check_endpoints(struct usb_interface *iface,
-+				    const struct bcm5974_config *cfg)
+-static inline seqcount_t *__seqprop_ptr(const seqcount_t *s)
++static inline seqcount_t *__seqprop_ptr(seqcount_t *s)
 +{
-+	u8 ep_addr[MAX_ENDPOINTS + 1] = {0};
-+
-+	ep_addr[0] = cfg->tp_ep;
-+	if (cfg->tp_type == TYPE1)
-+		ep_addr[1] = cfg->bt_ep;
-+
-+	return usb_check_int_endpoints(iface, ep_addr);
++	return s;
 +}
 +
- static int bcm5974_probe(struct usb_interface *iface,
- 			 const struct usb_device_id *id)
++static inline const seqcount_t *__seqprop_const_ptr(const seqcount_t *s)
  {
-@@ -903,6 +918,11 @@ static int bcm5974_probe(struct usb_interface *iface,
- 	/* find the product index */
- 	cfg = bcm5974_get_config(udev);
+-	return (void *)s; /* drop const */
++	return s;
+ }
  
-+	if (!bcm5974_check_endpoints(iface, cfg)) {
-+		dev_err(&iface->dev, "Unexpected non-int endpoint\n");
-+		return -ENODEV;
-+	}
-+
- 	/* allocate memory for our device state and initialize it */
- 	dev = kzalloc(sizeof(struct bcm5974), GFP_KERNEL);
- 	input_dev = input_allocate_device();
-
----
-base-commit: 401644852d0b2a278811de38081be23f74b5bb04
-change-id: 20231007-topic-bcm5974_bulk-c66b743ba7ba
-
-Best regards,
--- 
-Javier Carrasco <javier.carrasco.cruz@gmail.com>
-
+ static inline unsigned __seqprop_sequence(const seqcount_t *s)
+@@ -302,6 +313,7 @@ SEQCOUNT_LOCKNAME(mutex,        struct mutex,    true,     mutex)
+ 	__seqprop_case((s),	mutex,		prop))
+ 
+ #define seqprop_ptr(s)			__seqprop(s, ptr)(s)
++#define seqprop_const_ptr(s)		__seqprop(s, const_ptr)(s)
+ #define seqprop_sequence(s)		__seqprop(s, sequence)(s)
+ #define seqprop_preemptible(s)		__seqprop(s, preemptible)(s)
+ #define seqprop_assert(s)		__seqprop(s, assert)(s)
+@@ -353,7 +365,7 @@ SEQCOUNT_LOCKNAME(mutex,        struct mutex,    true,     mutex)
+  */
+ #define read_seqcount_begin(s)						\
+ ({									\
+-	seqcount_lockdep_reader_access(seqprop_ptr(s));			\
++	seqcount_lockdep_reader_access(seqprop_const_ptr(s));		\
+ 	raw_read_seqcount_begin(s);					\
+ })
+ 
+@@ -419,7 +431,7 @@ SEQCOUNT_LOCKNAME(mutex,        struct mutex,    true,     mutex)
+  * Return: true if a read section retry is required, else false
+  */
+ #define __read_seqcount_retry(s, start)					\
+-	do___read_seqcount_retry(seqprop_ptr(s), start)
++	do___read_seqcount_retry(seqprop_const_ptr(s), start)
+ 
+ static inline int do___read_seqcount_retry(const seqcount_t *s, unsigned start)
+ {
+@@ -439,7 +451,7 @@ static inline int do___read_seqcount_retry(const seqcount_t *s, unsigned start)
+  * Return: true if a read section retry is required, else false
+  */
+ #define read_seqcount_retry(s, start)					\
+-	do_read_seqcount_retry(seqprop_ptr(s), start)
++	do_read_seqcount_retry(seqprop_const_ptr(s), start)
+ 
+ static inline int do_read_seqcount_retry(const seqcount_t *s, unsigned start)
+ {
