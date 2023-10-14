@@ -2,67 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 618D67C938C
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 10:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D84327C938D
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 10:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233002AbjJNIrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 04:47:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34338 "EHLO
+        id S233014AbjJNIr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 04:47:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231377AbjJNIrU (ORCPT
+        with ESMTP id S232842AbjJNIr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 04:47:20 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A692BB
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 01:47:19 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qraIZ-0000cq-7e; Sat, 14 Oct 2023 10:47:03 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qraIX-001aEA-Vi; Sat, 14 Oct 2023 10:47:01 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qraIX-00G784-Ls; Sat, 14 Oct 2023 10:47:01 +0200
-Date:   Sat, 14 Oct 2023 10:47:01 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
-Cc:     Alexander Stein <alexander.stein@ew.tq-group.com>,
-        Sean Young <sean@mess.org>, linux-media@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Stefan Wahren <wahrenst@gmx.net>, linux-pwm@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] pwm: bcm2835: allow pwm driver to be used in
- atomic context
-Message-ID: <20231014084701.6fuuwcu4pknm7jju@pengutronix.de>
-References: <cover.1697193646.git.sean@mess.org>
- <6ce73b2688f059e7169935699044104cf37b2425.1697193646.git.sean@mess.org>
- <84429d39-aa54-462d-85cd-c5d06a614a0e@gmx.net>
- <5203415.ElGaqSPkdT@steina-w>
- <20231013175140.dzlz4grrgngoyxbc@pengutronix.de>
- <e3e1bca1-bffa-d97a-d4af-27a10c43c064@gmail.com>
+        Sat, 14 Oct 2023 04:47:56 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72881BB
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 01:47:54 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-5333fb34be3so4794335a12.1
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 01:47:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697273273; x=1697878073; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=t/ZB1Xuba67ZGL+J/Ky5G/n0+9BlaRr5Ghf3uJthUKY=;
+        b=SwC+5AC6ddIwBowSawOLD6mbAOjiRohzK7/c7W7oQ/1fw+YKcIdEiw7a+ybt+Llw3d
+         YYSu97ygqoN5bWwZ1Og0VHT5RI/++qhDtJDp2M8n4rzIRTThJuE8QxwuJ/j1bGJXFmlE
+         TrLx7IkUqo+0YA6/UDoLM1BITZe22yarKzTc1gmfi1WNm/MO50hHYz9LL8e58mNSZb2m
+         qEpb88mpyiRni7XgGlESvC5FkvNcqoWAACqYxjldXzuoNClzRDbfoAchdf8cCvK8OaHR
+         11XYbcuYqK6Mnv8zyu04UqWedEq0sa6M6cV7soCYaLeLsqg2ePsOoqTzt7dbmsvEXFWS
+         DpCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697273273; x=1697878073;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=t/ZB1Xuba67ZGL+J/Ky5G/n0+9BlaRr5Ghf3uJthUKY=;
+        b=Y3EJkuPof6s1pQcQme77MySMxqV3sGGk5xq/MgiPpOKSH4+QKY+LW3oLBgr0V+pB2X
+         fNRNvUQ8nkngd34GKhsGJmKRtivM3gX0ztvwkqL20bUCsSTMwVpDyCfNgCS4vJoptEZN
+         ALuoIIVJD0Q+HIPWBOSXo0+TjKFhhNpXgwZokmt9TDF7AY2B7xMEBuWjrW5EBjGT/ted
+         jX4gfIfIChSCin1Kt1PnCui19uizcLaTtbOG7K63+NNNbCziNw2DUSPRCNOytQJ3j+TG
+         YiqdBXwwr3LDNL3EAjAtO2IddtOo58eUP9Vqz39PF0OgLxnDl0DjccP336iX368ko8WP
+         hBaw==
+X-Gm-Message-State: AOJu0YxFwiZQ3FLjJK/zBlkS1cf55rWHLBn7b2iEgd71yuLqKBMmwpBD
+        q8vnAkcX3YLtVNHarweQKlKJ6MZ73XE=
+X-Google-Smtp-Source: AGHT+IH/J4DZUIZSI1zbYyxxR72NuE/vcCpASs4+u25uAqK8Y6bzH8mxI2qr8h/eOAJCe0xVmH77DA==
+X-Received: by 2002:aa7:c549:0:b0:525:6e47:10f6 with SMTP id s9-20020aa7c549000000b005256e4710f6mr25869905edr.22.1697273272652;
+        Sat, 14 Oct 2023 01:47:52 -0700 (PDT)
+Received: from gmail.com (1F2EF7B2.nat.pool.telekom.hu. [31.46.247.178])
+        by smtp.gmail.com with ESMTPSA id p22-20020a05640210d600b00530a9488623sm12441690edu.46.2023.10.14.01.47.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Oct 2023 01:47:52 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Sat, 14 Oct 2023 10:47:49 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Ashish Kalra <Ashish.Kalra@amd.com>
+Cc:     dave.hansen@linux.intel.com, luto@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        thomas.lendacky@amd.com, linux-kernel@vger.kernel.org,
+        peterz@infradead.org
+Subject: Re: [PATCH] x86/mm: fix pg_level_to_pfn for 5-level paging mode.
+Message-ID: <ZSpVtZhks7Wm5Upc@gmail.com>
+References: <20231013191703.422085-1-Ashish.Kalra@amd.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="giqnk66nh3wiw3cc"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e3e1bca1-bffa-d97a-d4af-27a10c43c064@gmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231013191703.422085-1-Ashish.Kalra@amd.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -70,68 +76,38 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---giqnk66nh3wiw3cc
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+* Ashish Kalra <Ashish.Kalra@amd.com> wrote:
 
-Hello Ivaylo,
+> From: Ashish Kalra <ashish.kalra@amd.com>
+> 
+> Add support for 5-level paging in pg_level_to_pfn().
+> 
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> ---
+>  arch/x86/mm/mem_encrypt_amd.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/arch/x86/mm/mem_encrypt_amd.c b/arch/x86/mm/mem_encrypt_amd.c
+> index 6faea41e99b6..45914568596a 100644
+> --- a/arch/x86/mm/mem_encrypt_amd.c
+> +++ b/arch/x86/mm/mem_encrypt_amd.c
+> @@ -267,6 +267,10 @@ static unsigned long pg_level_to_pfn(int level, pte_t *kpte, pgprot_t *ret_prot)
+>  		pfn = pud_pfn(*(pud_t *)kpte);
+>  		prot = pud_pgprot(*(pud_t *)kpte);
+>  		break;
+> +	case PG_LEVEL_512G:
+> +		pfn = p4d_pfn(*(p4d_t *)kpte);
+> +		prot = p4d_pgprot(*(p4d_t *)kpte);
+> +		break;
 
-On Sat, Oct 14, 2023 at 09:51:12AM +0300, Ivaylo Dimitrov wrote:
-> On 13.10.23 =D0=B3. 20:51 =D1=87., Uwe Kleine-K=C3=B6nig wrote:
-> > Hello,
-> >=20
-> > On Fri, Oct 13, 2023 at 01:13:50PM +0200, Alexander Stein wrote:
-> > > Am Freitag, 13. Oktober 2023, 13:04:48 CEST schrieb Stefan Wahren:
-> > > > Am 13.10.23 um 12:46 schrieb Sean Young:
-> > > > > clk_get_rate() may do a mutex lock. Since the clock rate cannot c=
-hange on
-> > > > > an rpi, simply fetch it once.
-> > > >=20
-> > > > does it mean you checked all possible SoCs (BCM2835, BCM2836, BCM28=
-37,
-> > > > BCM2711, BCM2712) for this change?
-> > > >=20
-> > > > Is it impossible that the real clock can never be influenced by tur=
-bo
-> > > > mode like SPI?
-> > >=20
-> > > Assuming the clock can change, which I would, then a clock notifier s=
-eems
-> > > appropriate. See [1] for an example.
-> >=20
-> > I'm not a fan. If the clock changes, the output also changes. With a
-> > clock notifier you can soften the issue and reconfigure to something
-> > similar as the original wave form, but a glitch happens for sure.
-> >=20
->=20
-> Right, but without notifier, everything rate related after the change will
-> be wrong
+Mind explaining what happens if we don't have this fix, how you found it, 
+which users are expected to be affected by it, whether that's the full 
+known extent of 5-level paging support deficiencies in mem_encrypt_amd.c, 
+etc?
 
-So we agree clk_rate_exclusive_get() is the way to go?! It's simple, no
-need for a notifier and no glitches.
+In addition to such patches being much easier on the eyes, it also helps 
+maintainers prioritize patches.
 
-Best regards
-Uwe
+Thanks,
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
-   |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---giqnk66nh3wiw3cc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUqVYUACgkQj4D7WH0S
-/k4wigf9HHL4tqjTV1EyBXB1X+oKJKBONPLDUgJ+rE5Gw+/6EoqDq+HBK1UMKuaT
-PojCSO0QM0v7tHpApWQ51j9mZxkFWF9UJZCURBEP5mPSr4zVBrpa4oMh7E8Ga/2P
-SL7R9xAZxpl2TJbF5FnMQUlsRNP0LJf/KKjW0nknisJeqbziyeXcVVaLEBh+B84v
-OzpgTugHJhfb+T4T0842KaI4sVm2yLGlY4L75EssrwWWEBIYWLknh5VPb1G1my1f
-sP7n71Z6FbqLR1Jk5o3TTWdsJiD0whcTkbUgfFsVUO18Pat9LzYksSOK8zP6+TSn
-LPcN7mgljq64D0MtjOPK7lYfGkoZcA==
-=YY+P
------END PGP SIGNATURE-----
-
---giqnk66nh3wiw3cc--
+	Ingo
