@@ -2,119 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B937C930F
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 08:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 599557C9311
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 08:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232885AbjJNGva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 02:51:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44242 "EHLO
+        id S232750AbjJNG6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 02:58:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbjJNGv1 (ORCPT
+        with ESMTP id S229518AbjJNG6V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 02:51:27 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E58D1BF;
-        Fri, 13 Oct 2023 23:51:25 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-991c786369cso451260766b.1;
-        Fri, 13 Oct 2023 23:51:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697266284; x=1697871084; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vx7O+/mPyye+58XO3gfh4ede5Ey/i5cAVMi6RSAm2Fo=;
-        b=eyom93PuMzfsRBELugxDlR2Fn26QgcRhWq4dav/jtTvJF4Cg4BqqBwrDltFOHUnwdV
-         19q1iqpKHF1uF0lpU9PU8Dv+PpqmkVeNNfOjGwQecN4/wIZMLE1TUBKUPAPDBW339sX8
-         VEsdV6UlIzgmebBtASK3E/jsWQGAyX9Gh7e/5W2cIQU9qiV5bVKrMj1T/ugDmght+7cz
-         MFJxxi1spS0henp9x56z9uncH+dUZ19/yYNj4Mjzuzs7mKZUxcO91cMXt7WbshsL3jTd
-         5gMNBYV3kzzUdPmv+FWi+SUKkpooGvoZDnaf26eUGEEEc9mXU+6AJOL2l8U6HqOwKzWT
-         Bisg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697266284; x=1697871084;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vx7O+/mPyye+58XO3gfh4ede5Ey/i5cAVMi6RSAm2Fo=;
-        b=IcOIq5xQwCQ53a4YoRyzB0DlaHj2fjXNbhOh33qicgGmesRGI3dpw7aD9koiRRVn1r
-         ejzCv+Hzbva6DdaYnXC/itHRk/pt25LPeJwTB1ysMTTfKv67ffWvGDmriUKfdWMYNE1w
-         UIjpMgwXYRCCweWlOIJjMVnTe45wVxZvTXA/jkmJJpyo2zCphSgUFpmJWWiGxZpJXd+Q
-         IACdVF3Q9odaI4xCH1+ABUaQosEyj3gdAQTKoPViwlAVhFkJUgOrPwEo0VlqjdxhnANA
-         OfxqMthc9nisU5kMlPtiyYMNiVKvw3qHWVd+rt5sbvt602HNpHTK5L4JBEPJgHAJsWXW
-         ScHA==
-X-Gm-Message-State: AOJu0YynjYPf8EYHY8Yq9BTOSVUKfojGJAfZUOemhK6NBafXQlmKG/8E
-        g0kn27xxx/j9OUZhDpCg/OcXu/3lar0=
-X-Google-Smtp-Source: AGHT+IGHbW+Ptdwzy92Kz+QYUaTmu72lqWDKNL7sbirXYuuiSg/ZwJ9LU+rrZG32uOTt1WvTB/WsDw==
-X-Received: by 2002:a17:906:3150:b0:9a1:f81f:d0d5 with SMTP id e16-20020a170906315000b009a1f81fd0d5mr23804043eje.54.1697266284068;
-        Fri, 13 Oct 2023 23:51:24 -0700 (PDT)
-Received: from [192.168.1.10] ([95.43.220.235])
-        by smtp.googlemail.com with ESMTPSA id b8-20020a1709063f8800b00997e00e78e6sm540548ejj.112.2023.10.13.23.51.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 13 Oct 2023 23:51:23 -0700 (PDT)
-Subject: Re: [PATCH v2 2/3] pwm: bcm2835: allow pwm driver to be used in
- atomic context
-To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Alexander Stein <alexander.stein@ew.tq-group.com>
-Cc:     Sean Young <sean@mess.org>, linux-media@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Stefan Wahren <wahrenst@gmx.net>, linux-pwm@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <cover.1697193646.git.sean@mess.org>
- <6ce73b2688f059e7169935699044104cf37b2425.1697193646.git.sean@mess.org>
- <84429d39-aa54-462d-85cd-c5d06a614a0e@gmx.net> <5203415.ElGaqSPkdT@steina-w>
- <20231013175140.dzlz4grrgngoyxbc@pengutronix.de>
-From:   Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
-Message-ID: <e3e1bca1-bffa-d97a-d4af-27a10c43c064@gmail.com>
-Date:   Sat, 14 Oct 2023 09:51:12 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Firefox/60.0 Thunderbird/60.6.1
+        Sat, 14 Oct 2023 02:58:21 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 637E4BB;
+        Fri, 13 Oct 2023 23:58:19 -0700 (PDT)
+Date:   Sat, 14 Oct 2023 08:58:13 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1697266697;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sN/M4L6Q9tZIGosWFp/kcGmAa2Y/6EWiUPwyWfd8rKE=;
+        b=rZv9zF571294pKPYQEo+flX23oNTcz7yICfujI8U7SWOjEeeQU2OGHKTocOVg8qTK6qRuE
+        0mn5Ec8Hq/nbnU5rIKwT4ogtLCW0nFDa8cyMkdijXM0yc0Eioe0gPdIowLOGiYSwXokVYq
+        JsJFUPuNvBFy/bm/4YQInOd+cPaMDL5iPBnMOraBIafXrx3KcfFMiT0Xi+RzKI+1Tczx7d
+        8HTp1qamuebvdSiUlwMZBbD/5nQsjnqSHWMK41UodMJXMHkyGTn9rN70xZ8k5NCEnjocBI
+        L64bjgO9iLDM7p0H6zdkODOX5RXAf1OA6pGbMvr1r4DbgU6Ifhftp6df1uyDKA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1697266697;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sN/M4L6Q9tZIGosWFp/kcGmAa2Y/6EWiUPwyWfd8rKE=;
+        b=zI/SGN9WX+UWpuGElmwJn8VnnTpxCeZTQAIXKLSxcDwJO/92htVLVxVMct33PGHEzHMWny
+        OIte2F/uIaH8oAAw==
+From:   Nam Cao <namcao@linutronix.de>
+To:     Gilbert Adikankwu <gilbertadikankwu@gmail.com>
+Cc:     outreachy@lists.linux.dev, manishc@marvell.com,
+        GR-Linux-NIC-Dev@marvell.com, coiby.xu@gmail.com,
+        gregkh@linuxfoundation.org, netdev@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: qlge: Add bool type to qlge_idc_wait()
+Message-ID: <20231014065813.mQvFyjWb@linutronix.de>
+References: <ZSoxLxs45bIuBrHg@gilbert-PC>
 MIME-Version: 1.0
-In-Reply-To: <20231013175140.dzlz4grrgngoyxbc@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZSoxLxs45bIuBrHg@gilbert-PC>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 13.10.23 г. 20:51 ч., Uwe Kleine-König wrote:
-> Hello,
+On Sat, Oct 14, 2023 at 07:11:59AM +0100, Gilbert Adikankwu wrote:
+> Reported by checkpatch:
 > 
-> On Fri, Oct 13, 2023 at 01:13:50PM +0200, Alexander Stein wrote:
->> Am Freitag, 13. Oktober 2023, 13:04:48 CEST schrieb Stefan Wahren:
->>> Am 13.10.23 um 12:46 schrieb Sean Young:
->>>> clk_get_rate() may do a mutex lock. Since the clock rate cannot change on
->>>> an rpi, simply fetch it once.
->>>
->>> does it mean you checked all possible SoCs (BCM2835, BCM2836, BCM2837,
->>> BCM2711, BCM2712) for this change?
->>>
->>> Is it impossible that the real clock can never be influenced by turbo
->>> mode like SPI?
->>
->> Assuming the clock can change, which I would, then a clock notifier seems
->> appropriate. See [1] for an example.
+> WARNING: else is not generally useful after a break or return
+>
+
+What checkpatch is telling you here is that the "else" is redundant and
+can be removed. Although your patch suppresses the warning, it makes the
+code messier :(
+
+Best regards,
+Nam
+
+> The idea of the break statements in the if/else is so that the loop is
+> exited immediately the value of status is changed. And returned
+> immediately. For if/else conditionals, the block to be executed will
+> always be one of the two. Introduce a bool type variable 's_sig' that
+> evaluates to true when the value of status is changed within the if/else
+> block.
 > 
-> I'm not a fan. If the clock changes, the output also changes. With a
-> clock notifier you can soften the issue and reconfigure to something
-> similar as the original wave form, but a glitch happens for sure.
+> Signed-off-by: Gilbert Adikankwu <gilbertadikankwu@gmail.com>
+> ---
+>  drivers/staging/qlge/qlge.h     | 1 +
+>  drivers/staging/qlge/qlge_mpi.c | 8 ++++++--
+>  2 files changed, 7 insertions(+), 2 deletions(-)
 > 
-
-Right, but without notifier, everything rate related after the change 
-will be wrong
-
-Ivo
-
+> diff --git a/drivers/staging/qlge/qlge.h b/drivers/staging/qlge/qlge.h
+> index d0dd659834ee..b846bca82571 100644
+> --- a/drivers/staging/qlge/qlge.h
+> +++ b/drivers/staging/qlge/qlge.h
+> @@ -11,6 +11,7 @@
+>  #include <linux/netdevice.h>
+>  #include <linux/rtnetlink.h>
+>  #include <linux/if_vlan.h>
+> +#include <linux/types.h>
+>  
+>  /*
+>   * General definitions...
+> diff --git a/drivers/staging/qlge/qlge_mpi.c b/drivers/staging/qlge/qlge_mpi.c
+> index 96a4de6d2b34..44cb879240a0 100644
+> --- a/drivers/staging/qlge/qlge_mpi.c
+> +++ b/drivers/staging/qlge/qlge_mpi.c
+> @@ -909,6 +909,7 @@ int qlge_mb_wol_set_magic(struct qlge_adapter *qdev, u32 enable_wol)
+>  static int qlge_idc_wait(struct qlge_adapter *qdev)
+>  {
+>  	int status = -ETIMEDOUT;
+> +	bool s_sig = false;
+>  	struct mbox_params *mbcp = &qdev->idc_mbc;
+>  	long wait_time;
+>  
+> @@ -934,14 +935,17 @@ static int qlge_idc_wait(struct qlge_adapter *qdev)
+>  		} else if (mbcp->mbox_out[0] == AEN_IDC_CMPLT) {
+>  			netif_err(qdev, drv, qdev->ndev, "IDC Success.\n");
+>  			status = 0;
+> -			break;
+> +			s_sig = true;
+>  		} else {
+>  			netif_err(qdev, drv, qdev->ndev,
+>  				  "IDC: Invalid State 0x%.04x.\n",
+>  				  mbcp->mbox_out[0]);
+>  			status = -EIO;
+> -			break;
+> +			s_sig = true;
+>  		}
+> +
+> +		if (s_sig)
+> +			break;
+>  	}
+>  
+>  	return status;
+> -- 
+> 2.34.1
+> 
