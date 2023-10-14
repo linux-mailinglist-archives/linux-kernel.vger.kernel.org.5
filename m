@@ -2,134 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A187E7C9469
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 13:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BE0A7C946E
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 13:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233153AbjJNL4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 07:56:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53628 "EHLO
+        id S233179AbjJNL7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 07:59:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232957AbjJNL4l (ORCPT
+        with ESMTP id S233113AbjJNL7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 07:56:41 -0400
-Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02olkn2018.outbound.protection.outlook.com [40.92.48.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16711AD;
-        Sat, 14 Oct 2023 04:56:36 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DEAiAGfigTsUok9Gq+vNALOYqZWzXiC7NFyLkmwHEaFhRAkqrsP9wSkiPbkdw/iFG0WcSkMXw/GQWvoPg6QqT8E6yIiBr825ML+L/lXaDeMaRGAwxhjJ6aWLqzYXk45ceQV08mZ1f2G7r58F6xNgT1fNs/xY7EnveyaXLrYptd0SxT8HnlrOWFnqIkcf9lzecj4ELgK2bnwS43BMjNdVmeQSy1kb5hATkcvLiYP3xATY4VTBods3U019Ky9RhBv/t1lpYsNmJzOCyEY2Mfrxh8d3YL5AhaKu0bCF5Gpgo7s+wt4MSd+shg8enmd7DoMIucLPsOox1ZzVFTfWanjL5Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lE+tqS/1GBRACqs+fGXENQE4MPOsOZ5CU7VilGbgWqs=;
- b=BhaCUsv9lqttntnZayDta9O32P9eNelwwjH8twvbswzzG/wEvjHx6vgIQb5EwwczDdnPTNQgJk0QmDfbzP7T65hd0n0ftWEwjY5odX3T4JK8yXy2LSGtQHP0YRyo7OJGyG+iJpIg1CJLIfPp97a1nv+bfzJlu4hxyuaIRMpiQcIR5RgNqHco+qRE/WsayMO0B6tRFxdGr4wwuZghOzj7BL1QAIWgtpjYFSsWBun5z6DGZjzgDuHZRdQ83SoVHQk6vXU0eKoE6khlhF2DiHAJIIzdfVVSxyULF4gXNnxcbJVNCWuGXJGla2th1aEo1fzd6N6M+GV8aZtLmAgoffMsbA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from DU0PR02MB7899.eurprd02.prod.outlook.com (2603:10a6:10:347::11)
- by DB5PR02MB10137.eurprd02.prod.outlook.com (2603:10a6:10:48e::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.42; Sat, 14 Oct
- 2023 11:56:34 +0000
-Received: from DU0PR02MB7899.eurprd02.prod.outlook.com
- ([fe80::b753:178a:394e:af8e]) by DU0PR02MB7899.eurprd02.prod.outlook.com
- ([fe80::b753:178a:394e:af8e%7]) with mapi id 15.20.6863.043; Sat, 14 Oct 2023
- 11:56:34 +0000
-Date:   Sat, 14 Oct 2023 12:56:31 +0100
-From:   Cameron Williams <cang1@live.co.uk>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     jirislaby@kernel.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org
-Subject: Re: [PATCH v2 1/7] tty: 8250: Fix IS-200 PCI ID comment
-Message-ID: <DU0PR02MB7899E040B68084B59972EC66C4D1A@DU0PR02MB7899.eurprd02.prod.outlook.com>
-References: <DU0PR02MB7899233A57F6E714C0DD8FF2C4D2A@DU0PR02MB7899.eurprd02.prod.outlook.com>
- <2023101431-online-sharpness-84d1@gregkh>
+        Sat, 14 Oct 2023 07:59:34 -0400
+Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15FA8A9;
+        Sat, 14 Oct 2023 04:59:32 -0700 (PDT)
+Received: by mail-vk1-xa34.google.com with SMTP id 71dfb90a1353d-49ad8b76003so1151532e0c.3;
+        Sat, 14 Oct 2023 04:59:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697284771; x=1697889571; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HZlc482k/rrtYqYbzZMx2rkwqW6WN7JZHueUcH2+av8=;
+        b=lFhM3OYhck0X7bRC9rHWiSvonGLxp7P8M6Yxy61fGfjCyf6VTqnabghNX10tLNAOJs
+         QH5KcIa/VLUTqePIzUwVultheYFtJ8ojo7ymJ2JZPR62h+8EEgVdflCkFAmJrSKmpMcg
+         clz5eHfECyULTAfi+L03wbSqTC7mxKJcJ9xiKOzcPQVlG/rupmUiciBjCjURExaXIR4N
+         jFW88wlZJYlSWljSQYXNpDw6hEAZaUSppsWprbfB9UIFcaO0LfGldrg4pGxNsSxXzx9h
+         6kwyrA++vD1CVTu8reHAtYwSllcOTqkBP22Vm4BhbUKSKR5V3LoiSGI0vcRM8aVsFIhm
+         XguQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697284771; x=1697889571;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HZlc482k/rrtYqYbzZMx2rkwqW6WN7JZHueUcH2+av8=;
+        b=YN/Hj6C33n4tq/jjbi/0RkOOFepFviXold2RdGuiuk0qdrWE4tHAvXfuhEy3cQY281
+         5CUm5CF5GjXUF2+I8RC8clebuCEEqEvIdJIxGThIEU5pey7pG5kjF4BBzuhcNvc9gAQp
+         /vf6uC0BQV3E7rzGNYQwW7IUqRLjEBN4M/53EJABQ0AIqiSQLk3PashifBEkR+60Hvfx
+         x1n6Nv0NBRD6Nm1nGFxKTjLtaP9Uw7v+9CDoVVvJQJa1RGOZS9mFvINmqS+I/K/pKejb
+         1N2xSCFQBhNFXspBS0NnyaP+qmtszyxP9vfH35huQ1awN+LPq8WUddmPxWdiXE6QFemD
+         RgVA==
+X-Gm-Message-State: AOJu0Ywr6rGI3ygXGI97eClFCmbqj1mE86IvcqOWKKpFM0dqhl2JeU5Y
+        sJ3xLukfh7PZaDPcwmlZGeo=
+X-Google-Smtp-Source: AGHT+IFRpDpRJ4qHUzHOJR30FoxUvX1FnX7kQ21oTbc/rsFp2eIu/q0xyG7y6Tc4wsOvzFbBZdT6aQ==
+X-Received: by 2002:a1f:a9c9:0:b0:49e:1eca:f847 with SMTP id s192-20020a1fa9c9000000b0049e1ecaf847mr15754459vke.15.1697284770972;
+        Sat, 14 Oct 2023 04:59:30 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id g10-20020a056122062a00b004961bbadb84sm258976vkp.7.2023.10.14.04.59.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Oct 2023 04:59:29 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 14 Oct 2023 04:59:28 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     gregkh@linuxfoundation.org, heikki.krogerus@linux.intel.com,
+        kyletso@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdbabiera@google.com,
+        amitsd@google.com, stable@vger.kernel.org
+Subject: Re: [PATCH v1] usb: typec: tcpm: Check for sink pdp op current only
+ for pd
+Message-ID: <636e2ace-30cb-4d05-b67f-7047f6fad2a9@roeck-us.net>
+References: <20231014031709.1900370-1-badhri@google.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2023101431-online-sharpness-84d1@gregkh>
-X-TMN:  [lSLAQGE2Wpwhs4D03gihj3DFgBFf1TyJ]
-X-ClientProxiedBy: LO4P123CA0359.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:18d::22) To DU0PR02MB7899.eurprd02.prod.outlook.com
- (2603:10a6:10:347::11)
-X-Microsoft-Original-Message-ID: <ZSqB71hr003mJN8D@CHIHIRO>
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR02MB7899:EE_|DB5PR02MB10137:EE_
-X-MS-Office365-Filtering-Correlation-Id: e34cc2fe-32ad-46a7-ee31-08dbccac9c97
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: r6bX+obqWKKOrWGeqWtJgqpBNnh60N/oeCOzcWm4h24BYmQOjFJwvfZbx8qelW5+0lyB/jqNKCDT9GT5Vpnp0eYXyyAMNAkdpsM1BW5ef8TtDwaU3/++9EWDDgLmV8BUuDJO5aHoMu9RCAX9esLoKKVmfbOrbiskSF6RwDAvfz1p7LCyVEIJb1XIMpdB2EtSDSBgIVqvM7YZ7RS0LomvlniM+0PBiG43DY/KmNjYjfubdA8VC4RQRvGFx176jBcu46lR2W6ddjggkaqby1HIr+PfHu0mfq5bTLoYvRwF7EmsO3l8zRurQqMFxUWqF6dye5x54BmF11a4mCvqqfBhaBcfMrUQGoyCT8XrKI7WpizyA9vQNO1Yq21/xhesfsCjwcJWIAd37+FG2Hn3Y+fuiA7TuyHP9BHbzv34PZxd9UX7h/WoEUlehNYmZ9WxqpURgWS1epUzgSrgNh7DA/PgiI5uJCn8zhIUN9QHC4zmBypGaqasprJouHni0bBUgzMCHDeOfexZVdqIdKImPIelIBJ+/GkGBHxSDCJ1mdhRE9Npu8idRo1qlZJRPP4dQbFn
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ss0o1TPZmIgjU5t/yNIU+LnqDeLJocZmgMq/rrzEkYZft/8nIUWXggshkeiS?=
- =?us-ascii?Q?ZJhqyYYc7uGXGOIywZj2gZ9M2xh3pqZAYk+UFvgidHS++dCtmwHGVpM+nifw?=
- =?us-ascii?Q?0EM3O6fhNAUJ1UEhkh/BV3XcY7GtjqJ4/Z57XXktiwuURZ+WBShnYpA/KdD1?=
- =?us-ascii?Q?W4XgbbPERSrACm2lyKlNesTYMMUH0k2vpAwUqWHCnbI9Efyyb3Wy+psUQhit?=
- =?us-ascii?Q?aVJJAje2/rwMfLjk8Viv4RbvvGTQdUiH41G39NWdXJlaOJ9g8jZetHSbwcRp?=
- =?us-ascii?Q?wR/Q5WVZlRIc+o3l4nP6W2h7LYHiaerT07KXZVFcV2wNsCatkDvutimRMA/S?=
- =?us-ascii?Q?/O7xF7qyaknkJ5EjlBoJPg5HJHTB1u5KScFaBGPWlY7bvbQTy3/Nv9z6b/8D?=
- =?us-ascii?Q?z3eQNBcRlHzxQmN8QgeUEev5iQrB/3XSaVneNyigF4BQI69KYwM6OQVYFCmN?=
- =?us-ascii?Q?JzSuFWKWzX67ekjcTdcjYoSqVxNtW8EUHQkM/LvrDUMCODpPQIOiVS8r16/z?=
- =?us-ascii?Q?Zqzn0dUfcJQNa3Paj6yU4lvcrU1ox1kFBBIHE5kS4/5AEevFw0pRKsFcxZwx?=
- =?us-ascii?Q?RiftpXmjeY7tQfPqGk9Uj3hjnjKp0o1xQy0GZhBK5ABsewFCGuNTwaBmLfl6?=
- =?us-ascii?Q?eg3jcxboG91M4WrSsdQ0mIpK/gvqAe/FPJDSdUO2ISBkc4+FtPApWf7CvQcl?=
- =?us-ascii?Q?2f68EsBB0mB4fGMtpfz8R0Nc56xVKm3mkIVDQ29kXchVTDi8uS98+r9ANQ/l?=
- =?us-ascii?Q?Hev578o9MTx1RaQ1D46JmG9s1HecbkW5vNDAvK/wiyVtFwWdxf0Qh6Sz54GL?=
- =?us-ascii?Q?KMM4BLYTkw4MBGcm8jWUSW/6gSr9sKtfGG6vRUxRqKypb1acNWVxE5/z7bAs?=
- =?us-ascii?Q?zsWgrjoMMqF/Q0vyBx/Ttzch5lnU8cCn9czD9hLTF6ASZcZv+uz8brcXCbMr?=
- =?us-ascii?Q?aJuyuE6jsG6zQ4txeVymKMskG4s3bbgjQLWiBe3MZdYPBKzmkhIZUUwXUAwV?=
- =?us-ascii?Q?JE+hWIfSliOAW3Zjg2HcBTLyJY5zfl574srKNGzCvh5mUQYdMO6TQcRrPGYP?=
- =?us-ascii?Q?WcJlVP336uKq++SvFKGy9HV0e1lhzIvqcxl1E0HYiqBeuIV0AH/ibU+pYjIg?=
- =?us-ascii?Q?DF2oUr1vMHszI4KfLsQxBbixjTzkaNSUUaVzllkMUU8TYAhQP3G62SF3xZj5?=
- =?us-ascii?Q?r1yUcF+KUicsADJ9XmrcVM9LoZCCJnrz8nTy3A=3D=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-bcc80.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: e34cc2fe-32ad-46a7-ee31-08dbccac9c97
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR02MB7899.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2023 11:56:34.0255
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB5PR02MB10137
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231014031709.1900370-1-badhri@google.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 14, 2023 at 10:28:33AM +0200, Greg KH wrote:
-> On Fri, Oct 13, 2023 at 11:11:09PM +0100, Cameron Williams wrote:
-> > Fix the PCI comment for the IS-200 card
+On Sat, Oct 14, 2023 at 03:17:09AM +0000, Badhri Jagan Sridharan wrote:
+> TCPM checks for sink caps operational current even when PD is disabled.
+> This incorrectly sets tcpm_set_charge() when PD is disabled.
+> Check for sink caps only when PD is disabled.
+                                      ^^^^^^^^
+
+enabled ?
+
 > 
-> "Fix" it how?  What was wrong with it, and what is now right with it?
->
-I should have specified better, my mistake. The PCI ID comment (135a.0811)
-is incorrect, the card ID itself is 0x0d80 and the definition used
-(PCI_DEVICE_ID_INTASHIELD_IS200) is indeed 0x0d80. It's just a cosmetic change
-as the rest of the IS range of cards are also being added in this series and their
-IDs are all 0x0020 offset from each other (though the IS-300, 0x0da0 is in a
-parport_serial patch). Makes no functional difference.
-  
-> > 
-> > Signed-off-by: Cameron Williams <cang1@live.co.uk>
-> > ---
-> > This is a resubmission series for the patch series below. That series
-> > was lots of changes sent to lots of maintainers, this series is just for
-> > the tty/serial/8250 subsystem.
+> [   97.572342] Start toggling
+> [   97.578949] CC1: 0 -> 0, CC2: 0 -> 0 [state TOGGLING, polarity 0, disconnected]
+> [   99.571648] CC1: 0 -> 0, CC2: 0 -> 4 [state TOGGLING, polarity 0, connected]
+> [   99.571658] state change TOGGLING -> SNK_ATTACH_WAIT [rev3 NONE_AMS]
+> [   99.571673] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 170 ms [rev3 NONE_AMS]
+> [   99.741778] state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED [delayed 170 ms]
+> [   99.789283] CC1: 0 -> 0, CC2: 4 -> 5 [state SNK_DEBOUNCED, polarity 0, connected]
+> [   99.789306] state change SNK_DEBOUNCED -> SNK_DEBOUNCED [rev3 NONE_AMS]
+> [   99.903584] VBUS on
+> [   99.903591] state change SNK_DEBOUNCED -> SNK_ATTACHED [rev3 NONE_AMS]
+> [   99.903600] polarity 1
+> [   99.910155] enable vbus discharge ret:0
+> [   99.910160] Requesting mux state 1, usb-role 2, orientation 2
+> [   99.946791] state change SNK_ATTACHED -> SNK_STARTUP [rev3 NONE_AMS]
+> [   99.946798] state change SNK_STARTUP -> SNK_DISCOVERY [rev3 NONE_AMS]
+> [   99.946800] Setting voltage/current limit 5000 mV 500 mA
+> [   99.946803] vbus=0 charge:=1
+> [  100.027139] state change SNK_DISCOVERY -> SNK_READY [rev3 NONE_AMS]
+> [  100.027145] Setting voltage/current limit 5000 mV 3000 mA
+> [  100.466830] VBUS on
 > 
-> Your patches here are not threaded at all, was that intentional?  Our
-> tools will not pick them up properly, and so I would have to do it by
-> hand, slowing things down and making me dread handling them.  Any reason
-> you didn't just use 'git send-email' to send it?
+> Cc: stable@vger.kernel.org
+> Fixes: 34fde9ec08a3 ("FROMGIT: usb: typec: tcpm: not sink vbus if operational current is 0mA")
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-This was not intentional, no. I had problems getting git send-email set up,
-somthing to do with TLS issues and since Mutt was already set up for general
-email, I chose to use that instead for convenience. I can look into getting
-git send-email working and re-sending this series as v3 if you want the
-series threading properly.
-> thanks,
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 6e843c511b85..994493481c24 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -4268,7 +4268,8 @@ static void run_state_machine(struct tcpm_port *port)
+>  				current_lim = PD_P_SNK_STDBY_MW / 5;
+>  			tcpm_set_current_limit(port, current_lim, 5000);
+>  			/* Not sink vbus if operational current is 0mA */
+> -			tcpm_set_charge(port, !!pdo_max_current(port->snk_pdo[0]));
+> +			tcpm_set_charge(port, port->pd_supported ?
+> +					!!pdo_max_current(port->snk_pdo[0]) : true);
+>  
+>  			if (!port->pd_supported)
+>  				tcpm_set_state(port, SNK_READY, 0);
 > 
-> greg k-h
-Thanks
-Cameron.
+> base-commit: 1034cc423f1b4a7a9a56d310ca980fcd2753e11d
+> -- 
+> 2.42.0.655.g421f12c284-goog
+> 
