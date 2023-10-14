@@ -2,72 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A5127C94DF
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 16:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB887C94E6
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 16:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233214AbjJNOjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 10:39:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54026 "EHLO
+        id S233250AbjJNOog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 10:44:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233033AbjJNOjn (ORCPT
+        with ESMTP id S233033AbjJNOof (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 10:39:43 -0400
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 1086BCC
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 07:39:40 -0700 (PDT)
-Received: (qmail 76119 invoked by uid 1000); 14 Oct 2023 10:39:39 -0400
-Date:   Sat, 14 Oct 2023 10:39:39 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Zhang Shurong <zhang_shurong@foxmail.com>
-Cc:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: typec: retimer: Check dev_set_name() return value
-Message-ID: <a1781264-64c4-47dc-918f-61b171694e56@rowland.harvard.edu>
-References: <tencent_A06A37B6A0C0643DEC1524501525866FAC09@qq.com>
+        Sat, 14 Oct 2023 10:44:35 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1EC2CA
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 07:44:33 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 638DCC433C7;
+        Sat, 14 Oct 2023 14:44:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697294673;
+        bh=11scpju71D+KerC5FhLxK9Ma2HRBqYwq2VHa/P5HXo8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tb40Oyx8m0AwzPXsLNlWOiSigEbsAvCNBdUpb2hrFWsFqQCrASeDhLRd7HQzzg0ev
+         LySdTO04dtwnNoNrNM0z2C02dwhFNeXDWP0Npm+pw3FKK07TdejIZJQOnPeqelqVsR
+         8b05MV4RpV1yiNOw6N2VlGGRzEzJfC+imxNtvnA4AYo8xPvQvvsybNz5CqurNrjd96
+         xD4vdsOEmP25fCCGy8pMoFd8k7Nj1ebREcJgHyXIR7Y1W6HHW1bW+Oa/Fs3n8FUNky
+         neYAProozhcaz3AqZxalAfVITm/Y/AZKf2cRlXMPUNYjoapEk+JnLjKWEGhnbVS6TG
+         791CflIJO8iTw==
+Date:   Sat, 14 Oct 2023 16:44:28 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Johannes Zink <j.zink@pengutronix.de>
+Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        patchwork-jzi@pengutronix.de, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de
+Subject: Re: [PATCH net-next 2/5] net: stmmac: fix PPS capture input index
+Message-ID: <20231014144428.GA1386676@kernel.org>
+References: <20231010-stmmac_fix_auxiliary_event_capture-v1-0-3eeca9e844fa@pengutronix.de>
+ <20231010-stmmac_fix_auxiliary_event_capture-v1-2-3eeca9e844fa@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <tencent_A06A37B6A0C0643DEC1524501525866FAC09@qq.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231010-stmmac_fix_auxiliary_event_capture-v1-2-3eeca9e844fa@pengutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 14, 2023 at 05:24:53PM +0800, Zhang Shurong wrote:
-> It's possible that dev_set_name() returns -ENOMEM.
-> We fix this by catching the error and handling it.
+On Thu, Oct 12, 2023 at 11:02:13AM +0200, Johannes Zink wrote:
+> The stmmac supports up to 4 auxiliary snapshots that can be enabled by
+> setting the appropriate bits in the PTP_ACR bitfield.
 > 
-> Fixes: ddaf8d96f93b ("usb: typec: Add support for retimers")
-> Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
-> ---
->  drivers/usb/typec/retimer.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+> Previously instead of setting the bits, a fixed value was written to
+> this bitfield instead of passing the appropriate bitmask.
 > 
-> diff --git a/drivers/usb/typec/retimer.c b/drivers/usb/typec/retimer.c
-> index 4a7d1b5c4d86..f163856a78cd 100644
-> --- a/drivers/usb/typec/retimer.c
-> +++ b/drivers/usb/typec/retimer.c
-> @@ -122,8 +122,13 @@ typec_retimer_register(struct device *parent, const struct typec_retimer_desc *d
->  	retimer->dev.class = &retimer_class;
->  	retimer->dev.type = &typec_retimer_dev_type;
->  	retimer->dev.driver_data = desc->drvdata;
-> -	dev_set_name(&retimer->dev, "%s-retimer",
-> +	ret = dev_set_name(&retimer->dev, "%s-retimer",
->  		     desc->name ? desc->name : dev_name(parent));
-> +	if (ret) {
-> +		dev_err(parent, "failed to register retimer (%d)\n", ret);
-> +		put_device(&retimer->dev);
-> +		return ERR_PTR(ret);
-> +	}
->  
->  	ret = device_add(&retimer->dev);
->  	if (ret) {
+> Now the correct bit is set according to the ptp_clock_request.extts_index
+> passed as a parameter to stmmac_enable().
+> 
+> Fixes: f4da56529da6 ("net: stmmac: Add support for external trigger timestamping")
+> Signed-off-by: Johannes Zink <j.zink@pengutronix.de>
 
-It should not be necessary to do this.  If dev_set_name() fails then 
-device_add() will also fail.
+Hi Johannes,
 
-Alan Stern
+The fix language of the subject and presence of a fixes tag implies that
+this is a bug fix. But it's not clear to me that this is resolving
+bug that manifests as a problem.
+
+If it is a bug fix then it should probably be targeted at 'net',
+creating a dependency for the remainder of this series.
+
+On the other hand, if it is not a bug fix then perhaps it is best to
+update the subject and drop the Fixes tag.
+
+I'm no expert on stmmac, but the rest of the series looks good to me.
+
+...
