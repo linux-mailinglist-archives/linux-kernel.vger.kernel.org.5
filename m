@@ -2,99 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EED67C9717
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 00:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAFE97C971C
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 00:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233300AbjJNWkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 18:40:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60964 "EHLO
+        id S233337AbjJNWt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 18:49:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229733AbjJNWkj (ORCPT
+        with ESMTP id S232947AbjJNWt4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 18:40:39 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55400D6;
-        Sat, 14 Oct 2023 15:40:37 -0700 (PDT)
-Date:   Sat, 14 Oct 2023 22:40:34 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697323235;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=a+HMQisxfJN8kCZQ+kN/QA80dgdEzqffBqO13ivJvd8=;
-        b=w+kGdM4QeePPkk5R2VXF/QNunRiRFDyZsFNqvbLdY4IUPj7lxNxKBuXGEv0oV3dzVzCvJH
-        i1mt8uy93DSqFqLkPimq1uHx9CKBUii/Q9sD98a6kL6EJWgEFxKxtNM8UWZ2sA8WWJa1TX
-        EKbYL4LipQHjWfT53UfSbFmnkw+xCAa45gGSs0dKOPtMeFrqqc95f9Pq9lszvtN6RtfF6F
-        GhAsNiLkCv/LUCnRppSxBuaRZ+xsKPLVINf2ZlLXO2ObRCcE0usjgRXe0JbDAgRNfZH4VE
-        eAbbqhnudZwvW9eGUBBr36hdLae+5ab5pjrjjw2A5/hM4CLhHjkVzdmiZpSBAg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697323235;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=a+HMQisxfJN8kCZQ+kN/QA80dgdEzqffBqO13ivJvd8=;
-        b=VLZ/diafTO0wa53DZwCdgg0f7neT2v85I7EtcUMjNih1hyWzOYoJWiJTdS49AK9hVSmk0A
-        5L8GCqmNnUcEJBBw==
-From:   "tip-bot2 for Alexey Dobriyan" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/bugs] x86/callthunks: Delete unused "struct thunk_desc"
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        Sat, 14 Oct 2023 18:49:56 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F0AC9
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 15:49:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E5578C433C8;
+        Sat, 14 Oct 2023 22:49:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697323795;
+        bh=r7KmBeLhIBHztwszX055XwePH4046HAouTs+IP0R7nQ=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=TpaNn6NprZ2j0FjjLY9/BOGIsnDfJ7XXqqBHX9k5Ap45ehJHhUrNmRShoeoGu9DLD
+         ziKkMU6W+TKMf0XW3G20G1kFUDD74PnQ4oN0ODqXfuKmSMRiRdcPVAg2RwX8ijWzR2
+         JbDyyUkRnlJGdkg1TMezw4IGfCjFyw6yMkYpkjG9zQWVozzzWxTIWIZMiUMzAtcs5g
+         XfAcFTbBM0zz0zvyWB72nVnM3qpeF17VcIn1FIK5O+FLEpKREck9JewAGCBOqnVl2u
+         iielkfR2zQjU1yLcJDtqcUIomzGX9FSPt5sJ+KHz6OmOlMvSFi1BPJlgLcMQ1JvfCo
+         i80MAVQkgDyDg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C918BC73FEA;
+        Sat, 14 Oct 2023 22:49:54 +0000 (UTC)
+Subject: Re: [GIT PULL] perf events fix
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <ZSsO8/2KhWgd6kLS@gmail.com>
+References: <ZSsO8/2KhWgd6kLS@gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ZSsO8/2KhWgd6kLS@gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf-urgent-2023-10-14
+X-PR-Tracked-Commit-Id: e53899771a02f798d436655efbd9d4b46c0f9265
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 23931d935363846a9b39a890d4aead208cd46681
+Message-Id: <169732379481.22000.5001415593902459941.pr-tracker-bot@kernel.org>
+Date:   Sat, 14 Oct 2023 22:49:54 +0000
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-MIME-Version: 1.0
-Message-ID: <169732323407.3135.7538979097197206726.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/bugs branch of tip:
+The pull request you sent on Sat, 14 Oct 2023 23:58:11 +0200:
 
-Commit-ID:     5f51ef7fe994a91dcae36119a83961f6b143371d
-Gitweb:        https://git.kernel.org/tip/5f51ef7fe994a91dcae36119a83961f6b143371d
-Author:        Alexey Dobriyan <adobriyan@gmail.com>
-AuthorDate:    Sat, 14 Oct 2023 19:05:28 +03:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Sun, 15 Oct 2023 00:30:30 +02:00
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf-urgent-2023-10-14
 
-x86/callthunks: Delete unused "struct thunk_desc"
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/23931d935363846a9b39a890d4aead208cd46681
 
-It looks like it was never used.
+Thank you!
 
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: linux-kernel@vger.kernel.org
----
- arch/x86/kernel/callthunks.c | 5 -----
- 1 file changed, 5 deletions(-)
-
-diff --git a/arch/x86/kernel/callthunks.c b/arch/x86/kernel/callthunks.c
-index faa9f22..e9ad518 100644
---- a/arch/x86/kernel/callthunks.c
-+++ b/arch/x86/kernel/callthunks.c
-@@ -48,11 +48,6 @@ EXPORT_SYMBOL_GPL(__x86_call_count);
- 
- extern s32 __call_sites[], __call_sites_end[];
- 
--struct thunk_desc {
--	void		*template;
--	unsigned int	template_size;
--};
--
- struct core_text {
- 	unsigned long	base;
- 	unsigned long	end;
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
