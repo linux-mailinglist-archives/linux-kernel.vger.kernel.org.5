@@ -2,58 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8917C92D0
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 06:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D3F7C92D8
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 07:20:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232800AbjJNE7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 00:59:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49588 "EHLO
+        id S232810AbjJNFUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 01:20:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJNE7V (ORCPT
+        with ESMTP id S229518AbjJNFUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 00:59:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 966BBC0;
-        Fri, 13 Oct 2023 21:59:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697259560; x=1728795560;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=/mdnpue4Nciffio8GLONGA7omAPMeo1KzhFrOJHbT50=;
-  b=IdG/eDlyXiJdn5TnWybYDn5od4OulhefWGyHHV1KPCFQTDVni5u4HI5K
-   tZEXaqSS9SDkRTrQQOx6ARjhgOZzYShkt+N3r87D67+TCH0yyxDaLVbeD
-   oVlmk7bHnxtpvIwgAow6FOQPyR9+piBkF3HC/pmHEgxtG2ZjDdgzB3pDf
-   AQl3VLR6cI9lOK9oXcetx1qUkVlHih5TI1sqY63ec9/++OYylTLLynYsI
-   wvqXawSWThEQbilOpaVhNIF/g7xTzuFvoKP7fGv7h45UbTRZD31Ix9wG7
-   xXL8zOOp0QyZZg+blG1nSK16d86MYf630I6pfMW45WNwksIQO6yyz9EbC
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="3912769"
-X-IronPort-AV: E=Sophos;i="6.03,224,1694761200"; 
-   d="scan'208";a="3912769"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2023 21:59:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="871363248"
-X-IronPort-AV: E=Sophos;i="6.03,224,1694761200"; 
-   d="scan'208";a="871363248"
-Received: from zhiquan-linux-dev.bj.intel.com ([10.238.156.102])
-  by fmsmga002.fm.intel.com with ESMTP; 13 Oct 2023 21:58:57 -0700
-From:   Zhiquan Li <zhiquan1.li@intel.com>
-To:     x86@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        bp@alien8.de, mingo@kernel.org, tony.luck@intel.com,
-        naoya.horiguchi@nec.com
-Cc:     zhiquan1.li@intel.com, Youquan Song <youquan.song@intel.com>
-Subject: [PATCH v3] x86/mce: Set PG_hwpoison page flag to avoid the capture kernel panic
-Date:   Sat, 14 Oct 2023 13:17:54 +0800
-Message-Id: <20231014051754.3759099-1-zhiquan1.li@intel.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 14 Oct 2023 01:20:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8409BBF;
+        Fri, 13 Oct 2023 22:20:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 838B0C433C7;
+        Sat, 14 Oct 2023 05:20:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697260809;
+        bh=Ytj2/J6JoBkWt+fErmzSJIMEUCzhsog0az/dPrYSoqI=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=ICYTGHBrHoTDiCb37W1wDlaDlK2hb/Usrv/wIXwmxTCIWFzfO9QvRdHfeAbkk45gm
+         OtFGC3aMI5oB9BrXLw5R675UrRIvEZleHHRci0z0YyJaAxxHmHI/eNdGcYSQMbxXvk
+         YLu9JKXVZl/AZ3mfmFT0q0FyYyBjudqMVgdOhDYF07XRNDENqcCOqdNfkvAJBUXs1x
+         aSOqcfKQK4oY4fcBsv9vsR4oUCAKoNw1LmLpFV8o5NXLHe+4VDpZPNJo5CWLgpDi8k
+         NDFu6b2/fgdUCusNpdKVD8TemfPcRWlfp+cNascn79BgHfWV5a9cACas3mSKLjrj6h
+         C5hreUQFnu+qg==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     Abhishek Kumar <kuabhs@chromium.org>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc:     johannes.berg@intel.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org
+Subject: Re: [PATCH 2/2] ath10k: mac: enable
+ WIPHY_FLAG_CHANNEL_CHANGE_ON_BEACON on ath10k
+References: <20230629035254.2.I23c5e51afcc6173299bb2806c8c38364ad15dd63@changeid>
+        <169634426707.121370.9448850980134728319.kvalo@kernel.org>
+Date:   Sat, 14 Oct 2023 08:20:05 +0300
+In-Reply-To: <169634426707.121370.9448850980134728319.kvalo@kernel.org> (Kalle
+        Valo's message of "Tue, 3 Oct 2023 14:44:28 +0000 (UTC)")
+Message-ID: <87il793hmi.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,100 +54,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Memory errors don't happen very often, especially the severity is fatal.
-However, in large-scale scenarios, such as data centers, it might still
-happen.  For some MCE fatal error cases, the kernel might call
-mce_panic() to terminate the production kernel directly, thus there is
-no opportunity to queue a task for calling memory_failure() which will
-try to make the kernel survive via memory failure handling.
+Kalle Valo <kvalo@kernel.org> writes:
 
-Unfortunately, the capture kernel will panic for the same reason if it
-touches the error memory again.  The consequence is that only an
-incomplete vmcore is left for sustaining engineers, it's a big headache
-for them to make clear what happened in the past.
+> Abhishek Kumar <kuabhs@chromium.org> wrote:
+>
+>> Enabling this flag, ensures that reg_call_notifier is called
+>> on beacon hints from handle_reg_beacon in cfg80211. This call
+>> propagates the channel property changes to ath10k driver, thus
+>> changing the channel property from passive scan to active scan
+>> based on beacon hints.
+>> Once the channels are rightly changed from passive to active,the
+>> connection to hidden SSID does not fail.
+>> 
+>> Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
+>
+> There's no Tested-on tag, on which hardware/firmware did you test this?
+>
+> This flag is now enabled on ALL ath10k supported hardware: SNOC, PCI, SDIO and
+> maybe soon USB. I'm just wondering can we trust that this doesn't break
+> anything.
 
-The main task of kdump kernel is providing a "window" - /proc/vmcore,
-for the dump program to access old memory.  A dump program running in
-userspace determines the "policy".  Which pages need to be dumped is
-determined by the configuration of dump program, it reads out the pages
-that the sustaining engineer is interested in and excludes the rest.
+Jeff, what are your thoughts on this? I'm worried how different ath10k
+firmwares can be and if this breaks something.
 
-Likewise, the dump program can exclude the poisoned page to avoid
-touching the error page again, the prerequisite is the PG_hwpoison page
-flag is set correctly by kernel.  The de facto dump program
-(makedumpfile) already supports this function in a decade ago.  To set
-the PG_hwpoison flag in the production kernel just before it panics is
-the only missing step to make everything work.
-
-And it would not introduce additional overhead in capture kernel or
-conflict with other hwpoision-related code in production kernel.  It
-leverages the already existing mechanisms to fix the issue as much as
-possible, so the code changes are lightweight.
-
-[ Tony: Changed TestSetPageHWPoison() to SetPageHWPoison() ]
-[ mingo: Fixed the comments & changelog ]
-
-Co-developed-by: Youquan Song <youquan.song@intel.com>
-Signed-off-by: Youquan Song <youquan.song@intel.com>
-Signed-off-by: Zhiquan Li <zhiquan1.li@intel.com>
-Signed-off-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Link: https://lore.kernel.org/all/20230719211625.298785-1-tony.luck@intel.com/#t
-
----
-
-V2: https://lore.kernel.org/all/20230914030539.1622477-1-zhiquan1.li@intel.com/
-
-Changes since V2:
-- Rebased to v6.6-rc5.
-- Explained full scenario in commit message per Boris's suggestion.
-- Included Ingo's fixes.
-  Link: https://lore.kernel.org/all/ZRsUpM%2FXtPAE50Rm@gmail.com/
-
-V1: https://lore.kernel.org/all/20230127015030.30074-1-tony.luck@intel.com/
-
-Changes since V1:
-- Revised the commit message as per Naoya's suggestion.
-- Replaced "TODO" comment in code with comments based on mailing list
-  discussion on the lack of value in covering other page types.
-- Added the tag from Naoya.
-  Link: https://lore.kernel.org/all/20230327083739.GA956278@hori.linux.bs1.fc.nec.co.jp/
----
- arch/x86/kernel/cpu/mce/core.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 6f35f724cc14..905e80c776b8 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -233,6 +233,7 @@ static noinstr void mce_panic(const char *msg, struct mce *final, char *exp)
- 	struct llist_node *pending;
- 	struct mce_evt_llist *l;
- 	int apei_err = 0;
-+	struct page *p;
- 
- 	/*
- 	 * Allow instrumentation around external facilities usage. Not that it
-@@ -286,6 +287,17 @@ static noinstr void mce_panic(const char *msg, struct mce *final, char *exp)
- 	if (!fake_panic) {
- 		if (panic_timeout == 0)
- 			panic_timeout = mca_cfg.panic_timeout;
-+		/*
-+		 * Kdump can exclude the HWPoison page to avoid touching the error
-+		 * page again, the prerequisite is that the PG_hwpoison page flag is
-+		 * set.  However, for some MCE fatal error cases, there is no
-+		 * opportunity to queue a task for calling memory_failure(), and as a
-+		 * result, the capture kernel panics.  So mark the page as HWPoison
-+		 * before kernel panic() for MCE.
-+		 */
-+		p = pfn_to_online_page(final->addr >> PAGE_SHIFT);
-+		if (final && (final->status & MCI_STATUS_ADDRV) && p)
-+			SetPageHWPoison(p);
- 		panic(msg);
- 	} else
- 		pr_emerg(HW_ERR "Fake kernel panic: %s\n", msg);
 -- 
-2.25.1
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
