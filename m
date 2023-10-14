@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA677C942E
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 12:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5A27C9430
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 12:50:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233133AbjJNKuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 06:50:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46128 "EHLO
+        id S233104AbjJNKuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 06:50:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233104AbjJNKuD (ORCPT
+        with ESMTP id S233190AbjJNKuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 06:50:03 -0400
+        Sat, 14 Oct 2023 06:50:13 -0400
 Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C273AA2
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 03:50:01 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59b5a586da6so22474137b3.1
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 03:50:01 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81CE7FC
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 03:50:10 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a21c283542so46577907b3.3
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 03:50:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697280601; x=1697885401; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1697280609; x=1697885409; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rhmpXagUV1Eroi8NsqxMkQ7rrh98dWj1q7PH6sEyJW0=;
-        b=wcNgefQ4O/Qa+X1vZ1a6Prnxsn9zQBeunBJaQVtybAUSD8Ps2zSAkmGhgoLYdg1Znm
-         MBHVq+P9Hfg0Ib/V59SJqAPgIGvaDLmsx70bCwly+H9Ackta0hUpZh/u4lY3tqQT1enm
-         7v23y44PpSgJ6aKqzw1kDF4fJZ63fEkKeIy8YePGLs4ynhRQU80+NLd0qPdQAZ840esq
-         WzPgKxEMgxNdPlW6FW9apro65szce1bKLo3cPshn5D4rJSkHRiAFFHrshRTmWwRn3hsT
-         f9PHGjyVLLywrlKJTJJupeiNl3peIEdWhzUGz18819QmQMP6Le8w8R9ZL0znau7WGThl
-         AJpA==
+        bh=I0MUXgCgPp7gRv8+WcNEgYQP5+7MSeABFPYxMKK1EzU=;
+        b=FL36PbjdncuCHtvIiTjirmj8Y1uHygRUSEiSeK5NjGaW8kAni8c6BvB7VTxYgtO3GY
+         mzzL1GlB7/TlqO/jV99WqnBvAt8nm1wBKYUwLZz1CiBCeD/oT8HQWTgtWKW0wzTNaqvM
+         MKEh7aczALaYKVEMwOMq4hIrfdhPorxcAyvMV61i5+CCOIO86PbJG7EfkpWplE4GWkle
+         3OHU1MyjtgDDdxc5GH6Uc7vOcMd7xT+w8Rm9gB733C0nYG1qf4YLn9jd9Eut/37YdaDG
+         Lp7rlqLFOgoQ2pCRBuJMDkkNl+Fq8u1V0c9MLt3/+gP7odqA/QMl4AOSsUXYnHb9jmrK
+         5u6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697280601; x=1697885401;
+        d=1e100.net; s=20230601; t=1697280609; x=1697885409;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rhmpXagUV1Eroi8NsqxMkQ7rrh98dWj1q7PH6sEyJW0=;
-        b=Voo9oPiuazxX4aQmojKiYY1j4mRGfKcgIX9PA//P5oXtuxaWm4RVh6AEchSBHC5fni
-         8Ad41tS2bZ2t/VXWmhQIjU/D4J0HPffYw+AfuLHjReTU7iMkXRVkBmgdnx4lCzfQpCQW
-         1Gj9MQakhPxLRBBgdVkNv3wtlP8oW/bGJbmJosLBDc2EiWEoGN8yF5mjwweeJ+B7Ad2u
-         FskOIA4qgOC/q0fURemb8XXW/GBvymmBF5/cokO3MvFNdpu40J3Ikv0Vau5FV0rsI7tC
-         TaYrr54JxDs2vSZiTi0aQX24uCz5lWvgu5OLCZyHywDqE0eDb0UQUYo4wZX3GmtgcIrs
-         C2WA==
-X-Gm-Message-State: AOJu0YyRTQ2RDSQCfDC3KWYpr5mKCfkGOYw9v5wScmEdXyhbP5mLLQzx
-        PxtfclwKvnaqZJR0DVmZLcJb+UZURQLWJuNjnvxl
-X-Google-Smtp-Source: AGHT+IE7JZZ8b+8I6w6WItkOzFEAzTGjgqr1rbZmCGJsOmyu9ORRrodargaaM+oO4bTNb44PEYUzZ9P0mZecR3ZMsH62
+        bh=I0MUXgCgPp7gRv8+WcNEgYQP5+7MSeABFPYxMKK1EzU=;
+        b=An8pw9e4FLTs01edXEoTirVQXY4HiS8DJ9hSJQsHIj7maEte+oSjvoa80S5VLKDRZh
+         ryYXcJdIPlItK2220SOo0uHxNDvuJdqawRVHLy9xScis90IsJjaJTfm8UQoBHI6etU2A
+         FlF7f2DEWvPT34e41MQoaESG0lb0XkE8CnpTTnwmnI7OCn4gZOmQhltMhjtSHLlI4zU4
+         tViOiqtxzpC3ORmD30uPIZxAAZ2m5zCeio9/SI01+4b8Mj7XAZmuPLGCNN3qI/aWtgc1
+         5k0eh+rUpAZzlp4F2+s8EggbcmkOZunq76RVh1xwOWHdQtYjCLGFsfMIpS2F5VqKDQ7e
+         QudA==
+X-Gm-Message-State: AOJu0YxT2Kgc2+iEMyLNDwchcJ+PGHrMN7pyFR72U2VKy/sHNsYXIE/6
+        WULqxA6rlyIzEMekXe8OTVLYGML5jl9mHxYHrBTR
+X-Google-Smtp-Source: AGHT+IECLjqnFxKwrfPtqN+hEWvDFTlsXiuek3R1asZ71+QVKuJMwQOlvflW0rK1xzYnt9ijnM15rGIZTBn4lcBdA8Wq
 X-Received: from vamshig51.c.googlers.com ([fda3:e722:ac3:cc00:3:22c1:c0a8:70c])
- (user=vamshigajjela job=sendgmr) by 2002:a05:690c:368b:b0:5a7:a731:3360 with
- SMTP id fu11-20020a05690c368b00b005a7a7313360mr88331ywb.2.1697280601060; Sat,
- 14 Oct 2023 03:50:01 -0700 (PDT)
-Date:   Sat, 14 Oct 2023 16:19:40 +0530
+ (user=vamshigajjela job=sendgmr) by 2002:a05:690c:4086:b0:5a4:f657:36d9 with
+ SMTP id gb6-20020a05690c408600b005a4f65736d9mr522763ywb.9.1697280609769; Sat,
+ 14 Oct 2023 03:50:09 -0700 (PDT)
+Date:   Sat, 14 Oct 2023 16:19:41 +0530
 In-Reply-To: <20231014104942.856152-1-vamshigajjela@google.com>
 Mime-Version: 1.0
 References: <20231014104942.856152-1-vamshigajjela@google.com>
 X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-Message-ID: <20231014104942.856152-2-vamshigajjela@google.com>
-Subject: [PATCH 1/3] serial: core: Potential overflow of frame_time
+Message-ID: <20231014104942.856152-3-vamshigajjela@google.com>
+Subject: [PATCH 2/3] serial: core: Make local variable size to u64
 From:   Vamshi Gajjela <vamshigajjela@google.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jiri Slaby <jirislaby@kernel.org>,
@@ -74,39 +74,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: VAMSHI GAJJELA <vamshigajjela@google.com>
 
-uart_update_timeout() sets a u64 value to an unsigned int frame_time.
-While it can be cast to u32 before assignment, there's a specific case
-where frame_time is cast to u64. Since frame_time consistently
-participates in u64 arithmetic, its data type is converted to u64 to
-eliminate the need for explicit casting.
+The variable size has been changed from u32 to u64 to accommodate a
+larger range of values without the need for explicit typecasting.
 
 Signed-off-by: VAMSHI GAJJELA <vamshigajjela@google.com>
 ---
- include/linux/serial_core.h | 4 ++--
+ drivers/tty/serial/serial_core.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
-index bb6f073bc159..b128513b009a 100644
---- a/include/linux/serial_core.h
-+++ b/include/linux/serial_core.h
-@@ -558,7 +558,7 @@ struct uart_port {
- 
- 	bool			hw_stopped;		/* sw-assisted CTS flow state */
- 	unsigned int		mctrl;			/* current modem ctrl settings */
--	unsigned int		frame_time;		/* frame timing in ns */
-+	unsigned long		frame_time;		/* frame timing in ns */
- 	unsigned int		type;			/* port type */
- 	const struct uart_ops	*ops;
- 	unsigned int		custom_divisor;
-@@ -764,7 +764,7 @@ unsigned int uart_get_divisor(struct uart_port *port, unsigned int baud);
-  */
- static inline unsigned long uart_fifo_timeout(struct uart_port *port)
+diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+index 7bdc21d5e13b..fb4696d17a8b 100644
+--- a/drivers/tty/serial/serial_core.c
++++ b/drivers/tty/serial/serial_core.c
+@@ -410,10 +410,10 @@ void
+ uart_update_timeout(struct uart_port *port, unsigned int cflag,
+ 		    unsigned int baud)
  {
--	u64 fifo_timeout = (u64)READ_ONCE(port->frame_time) * port->fifosize;
-+	u64 fifo_timeout = READ_ONCE(port->frame_time) * port->fifosize;
+-	unsigned int size = tty_get_frame_size(cflag);
++	u64 size = tty_get_frame_size(cflag);
+ 	u64 frame_time;
  
- 	/* Add .02 seconds of slop */
- 	fifo_timeout += 20 * NSEC_PER_MSEC;
+-	frame_time = (u64)size * NSEC_PER_SEC;
++	frame_time = size * NSEC_PER_SEC;
+ 	port->frame_time = DIV64_U64_ROUND_UP(frame_time, baud);
+ }
+ EXPORT_SYMBOL(uart_update_timeout);
 -- 
 2.42.0.655.g421f12c284-goog
 
