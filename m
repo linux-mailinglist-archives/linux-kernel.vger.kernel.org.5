@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD8897C942C
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 12:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA677C942E
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 12:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233081AbjJNKt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 06:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51524 "EHLO
+        id S233133AbjJNKuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 06:50:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232937AbjJNKt4 (ORCPT
+        with ESMTP id S233104AbjJNKuD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 06:49:56 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1965B3
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 03:49:54 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9a5a3f2d4fso4109253276.3
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 03:49:54 -0700 (PDT)
+        Sat, 14 Oct 2023 06:50:03 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C273AA2
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 03:50:01 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59b5a586da6so22474137b3.1
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 03:50:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697280594; x=1697885394; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=NAiku5347ZizUWkMfV4Tpm0aCJ6vyX6cDZT3shueHrI=;
-        b=Xz/Ji1/iNeybrU3FIMIa2jzsgoOuhNVYCrUetsmuuq/f49zaoxvrKTtl+e4/x0xTbU
-         +SaZqYnXMrJwt0Cy6RzdiiWRa6NWSXwGyyL8Z2eNH0lOVmXG8voWrSzCV8eh3cZY0+en
-         11PbcBV4NJYX6RaqH6trXV9Z+UwhaIL3fEWtGce/41fopOlSlKp5xqyvCjr+wP8UW5d/
-         hkIK5snyWt5QGlXCZeEWJH2znb6YomFR+TA45zoo5PFSg9VPyhWqs15j0uZZ3WdCwQHV
-         C03X8YP661+pv7jKABFOG9znGqd9+ukq2+V7g4R2omioHMJxRyIpeVrA9L0znqRWDyn0
-         yCmQ==
+        d=google.com; s=20230601; t=1697280601; x=1697885401; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rhmpXagUV1Eroi8NsqxMkQ7rrh98dWj1q7PH6sEyJW0=;
+        b=wcNgefQ4O/Qa+X1vZ1a6Prnxsn9zQBeunBJaQVtybAUSD8Ps2zSAkmGhgoLYdg1Znm
+         MBHVq+P9Hfg0Ib/V59SJqAPgIGvaDLmsx70bCwly+H9Ackta0hUpZh/u4lY3tqQT1enm
+         7v23y44PpSgJ6aKqzw1kDF4fJZ63fEkKeIy8YePGLs4ynhRQU80+NLd0qPdQAZ840esq
+         WzPgKxEMgxNdPlW6FW9apro65szce1bKLo3cPshn5D4rJSkHRiAFFHrshRTmWwRn3hsT
+         f9PHGjyVLLywrlKJTJJupeiNl3peIEdWhzUGz18819QmQMP6Le8w8R9ZL0znau7WGThl
+         AJpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697280594; x=1697885394;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NAiku5347ZizUWkMfV4Tpm0aCJ6vyX6cDZT3shueHrI=;
-        b=S3u8s/ahXoAT1uI0Meyctx/HKZnt2UEZM4ZbcBSb5lw/WmqK8euxFUL40f9n/dja36
-         gxTEFzzzF+DGwgO2U3YXeqf520QhxnjQynn1WgiAIkj9OdqD5kksh66O7FBfcmW+mLzh
-         VOcc5bmN080BzJRH8k1ZJd2PyvmaoNdwnDGkEQIEqB358y0okYxx10pNXXXtX65VMhdD
-         aHCXfd9/c18hsHOHumqxsU/RTJT5B6RM4LIEbA6Sqg3JFQevHFnveyvmSjVKdLNP44mr
-         +gUqs3Oywv8J90YvfaidFnoMPxUdfVa8naE9VrBXENFxRkpfA7r1q5wqW3Ev1oy0kYMJ
-         uHDQ==
-X-Gm-Message-State: AOJu0Yw+KER4riL+bhU2TejfuMADNl9+MIj5kvj264kO+p6/EFkzYOPG
-        GIhM49ggcFnZI/jgc/mg2LPLTSNTKY67lbDiDdmm
-X-Google-Smtp-Source: AGHT+IEguB8GfzrgDTM/AZnMoQZhepnfKiL/nsCmojqUSiWwL9t49ZooKOjA5lE1I2C0hekExVSysk98/FneNiNmuqqf
+        d=1e100.net; s=20230601; t=1697280601; x=1697885401;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rhmpXagUV1Eroi8NsqxMkQ7rrh98dWj1q7PH6sEyJW0=;
+        b=Voo9oPiuazxX4aQmojKiYY1j4mRGfKcgIX9PA//P5oXtuxaWm4RVh6AEchSBHC5fni
+         8Ad41tS2bZ2t/VXWmhQIjU/D4J0HPffYw+AfuLHjReTU7iMkXRVkBmgdnx4lCzfQpCQW
+         1Gj9MQakhPxLRBBgdVkNv3wtlP8oW/bGJbmJosLBDc2EiWEoGN8yF5mjwweeJ+B7Ad2u
+         FskOIA4qgOC/q0fURemb8XXW/GBvymmBF5/cokO3MvFNdpu40J3Ikv0Vau5FV0rsI7tC
+         TaYrr54JxDs2vSZiTi0aQX24uCz5lWvgu5OLCZyHywDqE0eDb0UQUYo4wZX3GmtgcIrs
+         C2WA==
+X-Gm-Message-State: AOJu0YyRTQ2RDSQCfDC3KWYpr5mKCfkGOYw9v5wScmEdXyhbP5mLLQzx
+        PxtfclwKvnaqZJR0DVmZLcJb+UZURQLWJuNjnvxl
+X-Google-Smtp-Source: AGHT+IE7JZZ8b+8I6w6WItkOzFEAzTGjgqr1rbZmCGJsOmyu9ORRrodargaaM+oO4bTNb44PEYUzZ9P0mZecR3ZMsH62
 X-Received: from vamshig51.c.googlers.com ([fda3:e722:ac3:cc00:3:22c1:c0a8:70c])
- (user=vamshigajjela job=sendgmr) by 2002:a25:cf48:0:b0:d9a:3ebc:3220 with
- SMTP id f69-20020a25cf48000000b00d9a3ebc3220mr358048ybg.11.1697280593824;
- Sat, 14 Oct 2023 03:49:53 -0700 (PDT)
-Date:   Sat, 14 Oct 2023 16:19:39 +0530
+ (user=vamshigajjela job=sendgmr) by 2002:a05:690c:368b:b0:5a7:a731:3360 with
+ SMTP id fu11-20020a05690c368b00b005a7a7313360mr88331ywb.2.1697280601060; Sat,
+ 14 Oct 2023 03:50:01 -0700 (PDT)
+Date:   Sat, 14 Oct 2023 16:19:40 +0530
+In-Reply-To: <20231014104942.856152-1-vamshigajjela@google.com>
 Mime-Version: 1.0
+References: <20231014104942.856152-1-vamshigajjela@google.com>
 X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-Message-ID: <20231014104942.856152-1-vamshigajjela@google.com>
-Subject: [PATCH 0/3] serial core type consistency and overflow checks
+Message-ID: <20231014104942.856152-2-vamshigajjela@google.com>
+Subject: [PATCH 1/3] serial: core: Potential overflow of frame_time
 From:   Vamshi Gajjela <vamshigajjela@google.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jiri Slaby <jirislaby@kernel.org>,
@@ -63,7 +65,7 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -72,20 +74,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: VAMSHI GAJJELA <vamshigajjela@google.com>
 
-This patch series introduces a set of enhancements to the serial core,
-primarily focusing on improving type consistency and ensuring proper
-handling of timeout values. The changes aim to enhance the reliability
-and maintainability of the serial core.
+uart_update_timeout() sets a u64 value to an unsigned int frame_time.
+While it can be cast to u32 before assignment, there's a specific case
+where frame_time is cast to u64. Since frame_time consistently
+participates in u64 arithmetic, its data type is converted to u64 to
+eliminate the need for explicit casting.
 
-VAMSHI GAJJELA (3):
-  serial: core: Potential overflow of frame_time
-  serial: core: Make local variable size to u64
-  serial: core: Update uart_poll_timeout function to return unsigned int
+Signed-off-by: VAMSHI GAJJELA <vamshigajjela@google.com>
+---
+ include/linux/serial_core.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- drivers/tty/serial/serial_core.c | 4 ++--
- include/linux/serial_core.h      | 8 ++++----
- 2 files changed, 6 insertions(+), 6 deletions(-)
-
+diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
+index bb6f073bc159..b128513b009a 100644
+--- a/include/linux/serial_core.h
++++ b/include/linux/serial_core.h
+@@ -558,7 +558,7 @@ struct uart_port {
+ 
+ 	bool			hw_stopped;		/* sw-assisted CTS flow state */
+ 	unsigned int		mctrl;			/* current modem ctrl settings */
+-	unsigned int		frame_time;		/* frame timing in ns */
++	unsigned long		frame_time;		/* frame timing in ns */
+ 	unsigned int		type;			/* port type */
+ 	const struct uart_ops	*ops;
+ 	unsigned int		custom_divisor;
+@@ -764,7 +764,7 @@ unsigned int uart_get_divisor(struct uart_port *port, unsigned int baud);
+  */
+ static inline unsigned long uart_fifo_timeout(struct uart_port *port)
+ {
+-	u64 fifo_timeout = (u64)READ_ONCE(port->frame_time) * port->fifosize;
++	u64 fifo_timeout = READ_ONCE(port->frame_time) * port->fifosize;
+ 
+ 	/* Add .02 seconds of slop */
+ 	fifo_timeout += 20 * NSEC_PER_MSEC;
 -- 
 2.42.0.655.g421f12c284-goog
 
