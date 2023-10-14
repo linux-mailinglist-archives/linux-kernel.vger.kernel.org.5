@@ -2,144 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5D87C95DA
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 20:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26B8F7C95DC
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 20:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233320AbjJNSLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 14:11:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39128 "EHLO
+        id S233305AbjJNSNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 14:13:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233305AbjJNSLK (ORCPT
+        with ESMTP id S230016AbjJNSNm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 14:11:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 365F6BB;
-        Sat, 14 Oct 2023 11:11:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697307068; x=1728843068;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=eiDmfD8lwVIVrPcqy/x65+noFv8kPKYhkxxPejyvs4k=;
-  b=NdDXoOA6p8UlKvJp2H/F583IP853etkFxXZyaVJrNYP790eGqvchvbXK
-   5Br7oPTbRcJASY6cGIyIAn9jzCBm3DL+YSyDrXFsaNTNejJo+AHlcsakc
-   qMaiFdVCdxbegRqNpjKCRPkSiRhdDGmgFlnd4BDs6dfHWJGYWby/8M+a1
-   SGTDIYKzqC//ejY4AhpRcQiB6C5T+4gq+gVYTmGAm9BNXUpZvcO5Si8+Y
-   fgCchV7DxJASUI/Al+IExJboSN920bquHS8uVeRE1L+0gS2JrD71rfysA
-   SdjoN47aretMAZs1TOfnikjFmbc/2tiuWPDOyF9NOdLYVgm42zMPMb8h+
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="385180115"
-X-IronPort-AV: E=Sophos;i="6.03,224,1694761200"; 
-   d="scan'208";a="385180115"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2023 11:11:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="898928706"
-X-IronPort-AV: E=Sophos;i="6.03,224,1694761200"; 
-   d="scan'208";a="898928706"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 14 Oct 2023 11:09:10 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qrj6L-0006U4-3D;
-        Sat, 14 Oct 2023 18:11:02 +0000
-Date:   Sun, 15 Oct 2023 02:11:01 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Mehdi Djait <mehdi.djait@bootlin.com>, mchehab@kernel.org,
-        heiko@sntech.de, hverkuil-cisco@xs4all.nl,
-        laurent.pinchart@ideasonboard.com,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        conor+dt@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        thomas.petazzoni@bootlin.com, alexandre.belloni@bootlin.com,
-        maxime.chevallier@bootlin.com, paul.kocialkowski@bootlin.com,
-        Mehdi Djait <mehdi.djait@bootlin.com>
-Subject: Re: [PATCH v6 3/3] media: i2c: Introduce a driver for the Techwell
- TW9900 decoder
-Message-ID: <202310150123.XoLU3dcO-lkp@intel.com>
-References: <857baa8073f0b8051720959ef8fb1d49a6161d36.1696608809.git.mehdi.djait@bootlin.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <857baa8073f0b8051720959ef8fb1d49a6161d36.1696608809.git.mehdi.djait@bootlin.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Sat, 14 Oct 2023 14:13:42 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 654BBCC
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 11:13:40 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9a39444700so3606813276.0
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 11:13:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697307219; x=1697912019; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=rKyrhxaGZv0nPLnMXbvJXkiVEGuU/Lq6wP9rgM/Alfg=;
+        b=u/yYNOojuWmJosMmEwVDzzax7C8pIpjeMNn6ObQ2JFgunKX5fe3pJvQUIhHaq3wXfx
+         muDTEoWT32bmlJ0SmlSdQjj4DayGooJQ6F1X/SZv0NLDdmcbCb1lyRWbVsEyOz1RWE1Z
+         /5e83rH3pztsq+OrAwowSsXxvfydaRQOUAKDex/lwj2iwlzODSKDhM1myiOOlt0XTzBt
+         gR/qxsCJCPcbObAYBnc3ECzKuxca/dwcoUcoOENHJOoXOSZtHhsKaGZIDVFX0alEXYx5
+         3FI5Omjd7jEhF/5ukmATWtr67wQgkI/sd3bcLNm+C5xKMwdcqcA5lAodoPOYzxswrBKL
+         ASCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697307219; x=1697912019;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rKyrhxaGZv0nPLnMXbvJXkiVEGuU/Lq6wP9rgM/Alfg=;
+        b=WfrchimKrQJVw12wIye9Fl2jphOSTMQAezY8PM19vDI7pusHai6lwP/TSHAfCW3sUq
+         VL9Wv1FzymaAc1aYT7BMbvgXJzDOpMRj55V1E3YKnW53hi7v6Myn2UlqdjERADGwChIT
+         8hoT4pFhw9UlTQrWfMt9y4EodGSa2ZbzkzNzCB6aYrYN5c7Bx90aI7OHrFQxyr+P9qgK
+         g5hRoZa4YFrWwK6qPc3+EP0f3R/z5rRtfN0/AwaJBPWChbK95MYC52dF+hOXOX+MkvvZ
+         nY/M1xVU3hIZNIatOgkUx+nrmig9TlNXP7HxxJGarS7pqDraUmPip9z1wNGrU+TFsn5z
+         clrg==
+X-Gm-Message-State: AOJu0Yw9c3uY4wu3naunuP8l2FlDCQ90nyac7ukMjkOqwbyIulvbsScy
+        vvuhNfQce76FBpFvwNLiamggrr2KP2Vjt6rMMRJJ
+X-Google-Smtp-Source: AGHT+IH0MJExwfauji0fzv9X3e2ja5LOFD5TgaDDRwSxh/LV1XA12gw16CrCrlDxSl0RHLgxPKVAr43tr6sACN2TaXH5
+X-Received: from vamshig51.c.googlers.com ([fda3:e722:ac3:cc00:3:22c1:c0a8:70c])
+ (user=vamshigajjela job=sendgmr) by 2002:a25:d748:0:b0:d89:cd65:c2b0 with
+ SMTP id o69-20020a25d748000000b00d89cd65c2b0mr95600ybg.6.1697307219523; Sat,
+ 14 Oct 2023 11:13:39 -0700 (PDT)
+Date:   Sat, 14 Oct 2023 23:43:33 +0530
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
+Message-ID: <20231014181333.2579530-1-vamshigajjela@google.com>
+Subject: [PATCH v2 1/3] serial: core: Potential overflow of frame_time
+From:   Vamshi Gajjela <vamshigajjela@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        ilpo.jarvinen@linux.intel.com
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        manugautam@google.com, Subhash Jadavani <sjadavani@google.com>,
+        Channa Kadabi <kadabi@google.com>,
+        VAMSHI GAJJELA <vamshigajjela@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mehdi,
+From: VAMSHI GAJJELA <vamshigajjela@google.com>
 
-kernel test robot noticed the following build errors:
+uart_update_timeout() sets a u64 value to an unsigned int frame_time.
+While it can be cast to u32 before assignment, there's a specific case
+where frame_time is cast to u64. Since frame_time consistently
+participates in u64 arithmetic, its data type is converted to u64 to
+eliminate the need for explicit casting.
 
-[auto build test ERROR on media-tree/master]
-[also build test ERROR on robh/for-next linus/master v6.6-rc5 next-20231013]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Signed-off-by: VAMSHI GAJJELA <vamshigajjela@google.com>
+---
+v2:
+- use DIV64_U64_ROUND_UP with frame_time
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Mehdi-Djait/dt-bindings-vendor-prefixes-Add-techwell-vendor-prefix/20231007-002623
-base:   git://linuxtv.org/media_tree.git master
-patch link:    https://lore.kernel.org/r/857baa8073f0b8051720959ef8fb1d49a6161d36.1696608809.git.mehdi.djait%40bootlin.com
-patch subject: [PATCH v6 3/3] media: i2c: Introduce a driver for the Techwell TW9900 decoder
-config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20231015/202310150123.XoLU3dcO-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231015/202310150123.XoLU3dcO-lkp@intel.com/reproduce)
+ drivers/tty/serial/8250/8250_port.c | 2 +-
+ include/linux/serial_core.h         | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310150123.XoLU3dcO-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   drivers/media/i2c/tw9900.c: In function 'tw9900_get_stream_std':
->> drivers/media/i2c/tw9900.c:359:15: error: implicit declaration of function 'FIELD_GET' [-Werror=implicit-function-declaration]
-     359 |         std = FIELD_GET(TW9900_STDNOW_MASK, ret);
-         |               ^~~~~~~~~
-   cc1: some warnings being treated as errors
-
-
-vim +/FIELD_GET +359 drivers/media/i2c/tw9900.c
-
-   347	
-   348	static int tw9900_get_stream_std(struct tw9900 *tw9900,
-   349					 v4l2_std_id *std_id)
-   350	{
-   351		int std, ret;
-   352	
-   353		ret = tw9900_read_reg(tw9900->client, TW9900_REG_STD_SEL);
-   354		if (ret < 0) {
-   355			*std_id = V4L2_STD_UNKNOWN;
-   356			return ret;
-   357		}
-   358	
- > 359		std = FIELD_GET(TW9900_STDNOW_MASK, ret);
-   360	
-   361		switch (std) {
-   362		case TW9900_STD_NTSC_M:
-   363			*std_id = V4L2_STD_NTSC;
-   364			break;
-   365		case TW9900_STD_PAL_BDGHI:
-   366			*std_id = V4L2_STD_PAL;
-   367			break;
-   368		case TW9900_STD_AUTO:
-   369			*std_id = V4L2_STD_UNKNOWN;
-   370			break;
-   371		default:
-   372			*std_id = V4L2_STD_UNKNOWN;
-   373			break;
-   374		}
-   375	
-   376		return 0;
-   377	}
-   378	
-
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+index 141627370aab..d1bf794498c4 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -1510,7 +1510,7 @@ static inline void __stop_tx(struct uart_8250_port *p)
+ 			 * rather than after it is fully sent.
+ 			 * Roughly estimate 1 extra bit here with / 7.
+ 			 */
+-			stop_delay = p->port.frame_time + DIV_ROUND_UP(p->port.frame_time, 7);
++			stop_delay = p->port.frame_time + DIV64_U64_ROUND_UP(p->port.frame_time, 7);
+ 		}
+ 
+ 		__stop_tx_rs485(p, stop_delay);
+diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
+index bb6f073bc159..b128513b009a 100644
+--- a/include/linux/serial_core.h
++++ b/include/linux/serial_core.h
+@@ -558,7 +558,7 @@ struct uart_port {
+ 
+ 	bool			hw_stopped;		/* sw-assisted CTS flow state */
+ 	unsigned int		mctrl;			/* current modem ctrl settings */
+-	unsigned int		frame_time;		/* frame timing in ns */
++	unsigned long		frame_time;		/* frame timing in ns */
+ 	unsigned int		type;			/* port type */
+ 	const struct uart_ops	*ops;
+ 	unsigned int		custom_divisor;
+@@ -764,7 +764,7 @@ unsigned int uart_get_divisor(struct uart_port *port, unsigned int baud);
+  */
+ static inline unsigned long uart_fifo_timeout(struct uart_port *port)
+ {
+-	u64 fifo_timeout = (u64)READ_ONCE(port->frame_time) * port->fifosize;
++	u64 fifo_timeout = READ_ONCE(port->frame_time) * port->fifosize;
+ 
+ 	/* Add .02 seconds of slop */
+ 	fifo_timeout += 20 * NSEC_PER_MSEC;
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.42.0.655.g421f12c284-goog
+
