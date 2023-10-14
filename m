@@ -2,304 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2B37C9657
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 22:52:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A0D7C966A
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 22:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233327AbjJNUwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 16:52:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59914 "EHLO
+        id S233313AbjJNUzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 16:55:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233300AbjJNUvr (ORCPT
+        with ESMTP id S229683AbjJNUzH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 16:51:47 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D69AE8
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 13:51:43 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-507a772ed97so488057e87.3
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 13:51:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697316701; x=1697921501; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=e1L3K+Ebs1IkB2w2DJrMtsRdnXrx4C52cUF/HzYsLH8=;
-        b=hgcT2xmzTa2ohiYfPvBgzJfM95hZwp9YcR0f64odrMk4/FOXw6mQrQl4/PszvgTLjl
-         v1XB43QvH5psCS/tdEPbAkiZVM0MFjwnbynU+fnufV5GlvpSA45369Wiu9MQBgE5PimC
-         2QQkjrdm0ozN6KLNzGRHL1A4OVJSmx7v2ND8vQ4kgP27IN9Mfn9+aNYOW+2jfnS0Naxm
-         IUaA7ioovaTRxSEJHECdaLNHhkh8tZaORZDWqDyAb2PTZnJgSL/pZV14UcY6LUJ052xo
-         8DoqRJ2CWGZoKFBkSSsk5M5ieVxQ0l1MjWJGKWQt/b356VmbNROqstobR5Ztww2LZZfE
-         Hqog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697316701; x=1697921501;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=e1L3K+Ebs1IkB2w2DJrMtsRdnXrx4C52cUF/HzYsLH8=;
-        b=Q7hKxh50zkK913cmKynsHS+sgNkztqld/7UR+eM+K3pCJ2B6Eg6mIg5mn1ckavWO49
-         zK8sYfYMzPyHfhwet8PJQdLSpkU+6sBFn01NRM8sn5hG1i6tNSqto86wsi5Oqhr/KTcQ
-         t4hqHK6kXCy87laafYt7oHLov3nMy532MyeWDWQD9g+T5EWtyYVYaQfMtIixG+LHSJFI
-         FXosbKEoy+SYJpmrWh1emQKZ1CPFA+iTgwUQRdPLvnVNGmn4RXcggW7oqlgV1AoyqSmb
-         cKq9+EBmSyc+w1cSRSJvHTBAaJlLvzETDtcTGy131MpqAb/QEarCpD7Wzx+xWtXZfUCY
-         pTjQ==
-X-Gm-Message-State: AOJu0Yxs02Ve4SXnFXdipLb+hr453lNDh6+AiZTiBtTpBCFoZRqHIJfG
-        49DMJiB5U0L+zK3aWF7E+a/2ow==
-X-Google-Smtp-Source: AGHT+IHtQpWgOHFYKb5Kidy8nqsBhBLPrhhxehpUXmo1r7QzUOnSNYAcKW4qHHgvbKZzfo+tqHM7mg==
-X-Received: by 2002:a05:6512:b01:b0:503:19d9:4b6f with SMTP id w1-20020a0565120b0100b0050319d94b6fmr29910390lfu.0.1697316701548;
-        Sat, 14 Oct 2023 13:51:41 -0700 (PDT)
-Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id o17-20020ac24e91000000b004ff96c09b47sm49926lfr.260.2023.10.14.13.51.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Oct 2023 13:51:41 -0700 (PDT)
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 14 Oct 2023 22:51:36 +0200
-Subject: [PATCH net-next v2 5/5] ARM64: dts: marvell: Fix some common
- switch mistakes
+        Sat, 14 Oct 2023 16:55:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D88BDC
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 13:54:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697316859;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=2nXLZgcvDK84RozLr2rRfXB0efNjmc1ATzlgzSv6qVk=;
+        b=NzX+X9dnh7RVYfE2977XkmPayK0pNB/otbE4ddBRL6VlHx1S2scK8lrNAoJ2tsrVeHk59v
+        Rk40JhFTx/5Nu9YHO6hi54WtSFYcHxvmlREYj917XuxMqnbR7PAX4EA7P/Xxnd5y1Yj7wp
+        vfR1zDVKO/75a0sRaHUJS4R+EOwCbGg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-660-_UuwKgd7MBWYQonL0hPq_g-1; Sat, 14 Oct 2023 16:54:16 -0400
+X-MC-Unique: _UuwKgd7MBWYQonL0hPq_g-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AFD9F8001EA;
+        Sat, 14 Oct 2023 20:54:15 +0000 (UTC)
+Received: from shalem.redhat.com (unknown [10.39.192.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EEDDB25C0;
+        Sat, 14 Oct 2023 20:54:14 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     Lee Jones <lee@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mfd: arizona-spi: Set pdata.hpdet_channel for ACPI enumerated devs
+Date:   Sat, 14 Oct 2023 22:54:14 +0200
+Message-ID: <20231014205414.59415-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231014-marvell-88e6152-wan-led-v2-5-7fca08b68849@linaro.org>
-References: <20231014-marvell-88e6152-wan-led-v2-0-7fca08b68849@linaro.org>
-In-Reply-To: <20231014-marvell-88e6152-wan-led-v2-0-7fca08b68849@linaro.org>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     Christian Marangi <ansuelsmth@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix some errors in the Marvell MV88E6xxx switch descriptions:
-- The top node had no address size or cells.
-- switch0@0 is not OK, should be switch@0.
-- port@a is not normal port naming, use decimal port@10.
+Commit 9e86b2ad4c11 changed the channel used for HPDET detection
+(headphones vs lineout detection) from being hardcoded to
+ARIZONA_ACCDET_MODE_HPL (HP left channel) to it being configurable
+through arizona_pdata.hpdet_channel the DT/OF parsing added for
+filling arizona_pdata on devicetree platforms ensures that
+arizona_pdata.hpdet_channel gets set to ARIZONA_ACCDET_MODE_HPL
+when not specified in the devicetree-node.
 
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+But on ACPI platforms where arizona_pdata is filled by
+arizona_spi_acpi_probe() arizona_pdata.hpdet_channel was not
+getting set, causing it to default to 0 aka ARIZONA_ACCDET_MODE_MIC.
+
+This causes headphones to get misdetected as line-out on some models.
+Fix this by setting hpdet_channel = ARIZONA_ACCDET_MODE_HPL.
+
+Fixes: e933836744a2 ("mfd: arizona: Add support for ACPI enumeration of WM5102 connected over SPI")
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- .../boot/dts/marvell/armada-3720-espressobin.dtsi  |  4 +--
- .../boot/dts/marvell/armada-3720-gl-mv1000.dts     |  4 +--
- .../boot/dts/marvell/armada-3720-turris-mox.dts    | 32 +++++++++++-----------
- .../boot/dts/marvell/armada-7040-mochabin.dts      |  2 --
- .../dts/marvell/armada-8040-clearfog-gt-8k.dts     |  2 +-
- arch/arm64/boot/dts/marvell/cn9130-crb.dtsi        |  6 ++--
- 6 files changed, 21 insertions(+), 29 deletions(-)
+ drivers/mfd/arizona-spi.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
-index 5fc613d24151..b526efeee293 100644
---- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
-+++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
-@@ -145,10 +145,8 @@ &usb2 {
- };
+diff --git a/drivers/mfd/arizona-spi.c b/drivers/mfd/arizona-spi.c
+index 02cf4f3e91d7..de5d894ac04a 100644
+--- a/drivers/mfd/arizona-spi.c
++++ b/drivers/mfd/arizona-spi.c
+@@ -159,6 +159,9 @@ static int arizona_spi_acpi_probe(struct arizona *arizona)
+ 	arizona->pdata.micd_ranges = arizona_micd_aosp_ranges;
+ 	arizona->pdata.num_micd_ranges = ARRAY_SIZE(arizona_micd_aosp_ranges);
  
- &mdio {
--	switch0: switch0@1 {
-+	switch0: switch@1 {
- 		compatible = "marvell,mv88e6085";
--		#address-cells = <1>;
--		#size-cells = <0>;
- 		reg = <1>;
++	/* Use left headphone speaker for HP vs line-out detection */
++	arizona->pdata.hpdet_channel = ARIZONA_ACCDET_MODE_HPL;
++
+ 	return 0;
+ }
  
- 		dsa,member = <0 0>;
-diff --git a/arch/arm64/boot/dts/marvell/armada-3720-gl-mv1000.dts b/arch/arm64/boot/dts/marvell/armada-3720-gl-mv1000.dts
-index b1b45b4fa9d4..5de4417f929c 100644
---- a/arch/arm64/boot/dts/marvell/armada-3720-gl-mv1000.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-3720-gl-mv1000.dts
-@@ -152,10 +152,8 @@ &uart0 {
- };
- 
- &mdio {
--	switch0: switch0@1 {
-+	switch0: switch@1 {
- 		compatible = "marvell,mv88e6085";
--		#address-cells = <1>;
--		#size-cells = <0>;
- 		reg = <1>;
- 
- 		dsa,member = <0 0>;
-diff --git a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-index 9eab2bb22134..ea66ba5a9762 100644
---- a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-@@ -305,7 +305,7 @@ phy1: ethernet-phy@1 {
- 	};
- 
- 	/* switch nodes are enabled by U-Boot if modules are present */
--	switch0@10 {
-+	switch@10 {
- 		compatible = "marvell,mv88e6190";
- 		reg = <0x10>;
- 		dsa,member = <0 0>;
-@@ -410,8 +410,8 @@ port@9 {
- 				managed = "in-band-status";
- 			};
- 
--			switch0port10: port@a {
--				reg = <0xa>;
-+			switch0port10: port@10 {
-+				reg = <10>;
- 				label = "dsa";
- 				phy-mode = "2500base-x";
- 				managed = "in-band-status";
-@@ -419,8 +419,8 @@ switch0port10: port@a {
- 				status = "disabled";
- 			};
- 
--			port-sfp@a {
--				reg = <0xa>;
-+			port-sfp@10 {
-+				reg = <10>;
- 				label = "sfp";
- 				sfp = <&sfp>;
- 				phy-mode = "sgmii";
-@@ -430,7 +430,7 @@ port-sfp@a {
- 		};
- 	};
- 
--	switch0@2 {
-+	switch@2 {
- 		compatible = "marvell,mv88e6085";
- 		reg = <0x2>;
- 		dsa,member = <0 0>;
-@@ -497,7 +497,7 @@ port@5 {
- 		};
- 	};
- 
--	switch1@11 {
-+	switch@11 {
- 		compatible = "marvell,mv88e6190";
- 		reg = <0x11>;
- 		dsa,member = <0 1>;
-@@ -602,8 +602,8 @@ switch1port9: port@9 {
- 				link = <&switch0port10>;
- 			};
- 
--			switch1port10: port@a {
--				reg = <0xa>;
-+			switch1port10: port@10 {
-+				reg = <10>;
- 				label = "dsa";
- 				phy-mode = "2500base-x";
- 				managed = "in-band-status";
-@@ -611,8 +611,8 @@ switch1port10: port@a {
- 				status = "disabled";
- 			};
- 
--			port-sfp@a {
--				reg = <0xa>;
-+			port-sfp@10 {
-+				reg = <10>;
- 				label = "sfp";
- 				sfp = <&sfp>;
- 				phy-mode = "sgmii";
-@@ -622,7 +622,7 @@ port-sfp@a {
- 		};
- 	};
- 
--	switch1@2 {
-+	switch@2 {
- 		compatible = "marvell,mv88e6085";
- 		reg = <0x2>;
- 		dsa,member = <0 1>;
-@@ -689,7 +689,7 @@ port@5 {
- 		};
- 	};
- 
--	switch2@12 {
-+	switch@12 {
- 		compatible = "marvell,mv88e6190";
- 		reg = <0x12>;
- 		dsa,member = <0 2>;
-@@ -794,8 +794,8 @@ switch2port9: port@9 {
- 				link = <&switch1port10 &switch0port10>;
- 			};
- 
--			port-sfp@a {
--				reg = <0xa>;
-+			port-sfp@10 {
-+				reg = <10>;
- 				label = "sfp";
- 				sfp = <&sfp>;
- 				phy-mode = "sgmii";
-@@ -805,7 +805,7 @@ port-sfp@a {
- 		};
- 	};
- 
--	switch2@2 {
-+	switch@2 {
- 		compatible = "marvell,mv88e6085";
- 		reg = <0x2>;
- 		dsa,member = <0 2>;
-diff --git a/arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts b/arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts
-index 48202810bf78..3cc794fcf12e 100644
---- a/arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts
-@@ -303,8 +303,6 @@ eth2phy: ethernet-phy@1 {
- 	/* 88E6141 Topaz switch */
- 	switch: switch@3 {
- 		compatible = "marvell,mv88e6085";
--		#address-cells = <1>;
--		#size-cells = <0>;
- 		reg = <3>;
- 
- 		pinctrl-names = "default";
-diff --git a/arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts b/arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts
-index 4125202028c8..7a25ea36b565 100644
---- a/arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts
-@@ -497,7 +497,7 @@ ge_phy: ethernet-phy@0 {
- 		reset-deassert-us = <10000>;
- 	};
- 
--	switch0: switch0@4 {
-+	switch0: switch@4 {
- 		compatible = "marvell,mv88e6085";
- 		reg = <4>;
- 		pinctrl-names = "default";
-diff --git a/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi b/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi
-index 32cfb3e2efc3..2f6281b66467 100644
---- a/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi
-+++ b/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi
-@@ -207,11 +207,9 @@ phy0: ethernet-phy@0 {
- 		reg = <0>;
- 	};
- 
--	switch6: switch0@6 {
-+	switch6: switch@6 {
- 		/* Actual device is MV88E6393X */
- 		compatible = "marvell,mv88e6190";
--		#address-cells = <1>;
--		#size-cells = <0>;
- 		reg = <6>;
- 		interrupt-parent = <&cp0_gpio1>;
- 		interrupts = <28 IRQ_TYPE_LEVEL_LOW>;
-@@ -280,7 +278,7 @@ port@9 {
- 				managed = "in-band-status";
- 			};
- 
--			port@a {
-+			port@10 {
- 				reg = <10>;
- 				ethernet = <&cp0_eth0>;
- 				phy-mode = "10gbase-r";
-
 -- 
-2.34.1
+2.41.0
 
