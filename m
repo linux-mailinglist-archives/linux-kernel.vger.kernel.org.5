@@ -2,129 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C809D7C9410
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 12:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B2287C9419
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 12:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233060AbjJNKE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 06:04:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39222 "EHLO
+        id S233086AbjJNKPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 06:15:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232950AbjJNKE1 (ORCPT
+        with ESMTP id S233014AbjJNKPS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 06:04:27 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0193FB3
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 03:04:26 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9a9f139cd94so463607366b.2
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 03:04:25 -0700 (PDT)
+        Sat, 14 Oct 2023 06:15:18 -0400
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6650BB3
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 03:15:17 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-59f6492b415so24845107b3.0
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 03:15:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697277864; x=1697882664; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=J4aHVvs+T5FOHBa8J3aziokf4Z6rf553mjVWTzRAy90=;
-        b=ffs7wENrCd+QG5Wo0o1C55GaJmBUbI6jmU5SDv4R5/W+XgORdeN5zxynl9oJ8l/h7D
-         Tvq0AQ3saqyidB5tBSFQ1urYbC9fvrvPLBVNoKZKKo6qcx3OftY/gNBRXwkTJKSrtxMY
-         y69f42Cguh74GUmGSgCZHhiV2ou/kfewyJO8yxn1hYB/w3K2PI2hO43qUykOfykMu/5d
-         QWJRegaWY7S1Vht96AR1cQrX6BKafi0cBpVR+JcghYxhbuPB43pN4df0LLNq+6aOmFpg
-         ja32Fmq1ag4hwmcIGqZg6eDHMbNCnG0tX6v8o5dfRKLnQnhB+zRqZgIjmbtIGEYN2T10
-         Tz/g==
+        d=gmail.com; s=20230601; t=1697278516; x=1697883316; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AAnTTZd/oNJv2+sQ0/p4aYX3rI9i+194grUqUEuTdNY=;
+        b=Rw0W/28Tn8uk6oG1QozP6ZL9zcHVfnOP338lusjsMHdOTm3REEzPPy7piqVDx2QZjW
+         KdlXl6QxEiVFPG92+W6rVv9bSZsCYaqW4qLv6qbWLWHtfEPz57qzH9khb4gamUc4CH2z
+         mA7f1TyoRSzdgg54GGUfhUw4c96ESQxx56cG45LSpJeMudxrc99aB0+MZurY2kwkBcgN
+         uFZhJeYLfv27lOL2P+AcZsUVFKoltU3Jna5zOEh/1NKi5pw5mmNlKWVbr6yMqW621c8o
+         geUtX0DqrIpgFtMoSrdR5JPrxrHqRuBm0Un8dJnHjK5wOQeEgyR/6aOvE1t8qMqzpkB4
+         MyyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697277864; x=1697882664;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1697278516; x=1697883316;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=J4aHVvs+T5FOHBa8J3aziokf4Z6rf553mjVWTzRAy90=;
-        b=J728y+6A1vF4I4PycXD6/OS7psJnfAkSbx4uMwN5BhYfkDGWC0kSqJF5Vs8lJ/5y48
-         ZH4cG7xlWE02XdtoFhXewvnMURkWiSIT34XsnQQyq6H4gtUFhqFf4xY1e0tjHA2nR9Vr
-         QptZXLKI0Rg18M6PShr6AMKvXokhAyC4O7k7oSX5sXsHCxl2Hd626uxtSj5KW2XacQ/7
-         maduTG3hrZPsQfmtKCVra4MuiFzCdihYBBoAMDEOPcLCTpGNkUYqR4qnhhgN1JfH/RG6
-         jqnTMHXZnfjFe/5EdcwYxU8OpLEpjX6pJkcmxH97kxk6ov1CXpgDCEn+k1MpRaHRiOG4
-         hCFg==
-X-Gm-Message-State: AOJu0YwD8ixLYsKDrn4bxvAGdRk9Uc/Yg7AyiGvFqma0bVw+q4YYVg4X
-        DxJOrV8msOBMpXhQaXrCXT4=
-X-Google-Smtp-Source: AGHT+IHVebeuQOvhYnosEFnRL4nO2T0QOFdRGkbgGwu1cMNHQL4VAiBVH71ut8FyCEmZWn+TBFqK9A==
-X-Received: by 2002:a17:907:6e9f:b0:9be:7dd3:40ab with SMTP id sh31-20020a1709076e9f00b009be7dd340abmr1449461ejc.2.1697277864201;
-        Sat, 14 Oct 2023 03:04:24 -0700 (PDT)
-Received: from gmail.com (1F2EF7B2.nat.pool.telekom.hu. [31.46.247.178])
-        by smtp.gmail.com with ESMTPSA id mm12-20020a170906cc4c00b009b2ca104988sm728298ejb.98.2023.10.14.03.04.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Oct 2023 03:04:23 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sat, 14 Oct 2023 12:04:21 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Nadav Amit <namit@vmware.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: Re: [PATCH tip] x86/percpu: Rewrite arch_raw_cpu_ptr()
-Message-ID: <ZSpnpfn/mSYrgC9C@gmail.com>
-References: <20231011204150.51166-1-ubizjak@gmail.com>
+        bh=AAnTTZd/oNJv2+sQ0/p4aYX3rI9i+194grUqUEuTdNY=;
+        b=qPamiM9T72Y8BFiQQu8v9pgfo2fLvPx0x6S7XLE6nO4BrX68xOjZxAMs92dbK4SosM
+         3Wo25UkQaxqZKUmEANIsttGY/vIy/f1EejL/a6QQoGQjIFrzQ0xi8uGdZ0BN17W4Uq/D
+         kiC4ur7Y+9wlQ4dE71/Xh7/oABdBh5Z78bD78SjPMFTic0TRWit+OsLETdmCscCXbRHi
+         wIDa+E7Tft2/0KyNh952fw/Ub5wKCBgpng3YeHrLEqEjQ7Qujg7QljqCwXx1TOsgOhi0
+         aSEBwj7hKttSpm7gBliueRBcQ4Ljnaf5ThxB92H2M8DEbdKHT12nwUIyzSahBgEM+FWN
+         +IHA==
+X-Gm-Message-State: AOJu0Yxn1B1PqzcKkRZicv533TVMeGNOaEp7lEVLdiL7o3lnJLMY87B8
+        2wCAvpd2awnXap7cqolW4TDwwWk+7mHPBRufJzEFnaCI3oiyRw==
+X-Google-Smtp-Source: AGHT+IEYeET9k9Qt04HFyvWvucYiOlGM7u/sgzP/p2kXn0h+m7E9plH1UqVRSps2fp0YUBVkvr16FJTS21IPszSGiXs=
+X-Received: by 2002:a0d:e841:0:b0:5a7:b545:dcaa with SMTP id
+ r62-20020a0de841000000b005a7b545dcaamr1372679ywe.23.1697278516577; Sat, 14
+ Oct 2023 03:15:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231011204150.51166-1-ubizjak@gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20231013132832.165768-1-2023002089@link.tyut.edu.cn>
+In-Reply-To: <20231013132832.165768-1-2023002089@link.tyut.edu.cn>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Sat, 14 Oct 2023 12:15:05 +0200
+Message-ID: <CANiq72npYE=W6B5Ln42Tr-Z8kPQihQit3k=C_wdO1kcx_Dvpxw@mail.gmail.com>
+Subject: Re: [PATCH] scripts/show_delta: add __main__ judgement before main code
+To:     Hu Haowen <2023002089@link.tyut.edu.cn>
+Cc:     gregkh@linuxfoundation.org, masahiroy@kernel.org,
+        akpm@linux-foundation.org, ndesaulniers@google.com,
+        n.schier@avm.de, ojeda@kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 13, 2023 at 3:29=E2=80=AFPM Hu Haowen <2023002089@link.tyut.edu=
+.cn> wrote:
+>
+> When doing Python programming it is a nice convention to insert the if
+> statement `if __name__ =3D=3D "__main__":` before any main code that does
+> actual functionalities to ensure the code will be executed only as a
+> script rather than as an imported module. Hence attach the missing
+> judgement to show_delta.
+>
+> Signed-off-by: Hu Haowen <2023002089@link.tyut.edu.cn>
 
-* Uros Bizjak <ubizjak@gmail.com> wrote:
+I am not sure why I was Cc'd, but the patch looks fine :)
 
-> Implement arch_raw_cpu_ptr() as a load from this_cpu_off and then
-> add the ptr value to the base. This way, the compiler can propagate
-> addend to the following instruction and simplify address calculation.
-> 
-> E.g.: address calcuation in amd_pmu_enable_virt() improves from:
-> 
->     48 c7 c0 00 00 00 00 	mov    $0x0,%rax
-> 	87b7: R_X86_64_32S	cpu_hw_events
-> 
->     65 48 03 05 00 00 00 	add    %gs:0x0(%rip),%rax
->     00
-> 	87bf: R_X86_64_PC32	this_cpu_off-0x4
-> 
->     48 c7 80 28 13 00 00 	movq   $0x0,0x1328(%rax)
->     00 00 00 00
-> 
-> to:
-> 
->     65 48 8b 05 00 00 00 	mov    %gs:0x0(%rip),%rax
->     00
-> 	8798: R_X86_64_PC32	this_cpu_off-0x4
->     48 c7 80 00 00 00 00 	movq   $0x0,0x0(%rax)
->     00 00 00 00
-> 	87a6: R_X86_64_32S	cpu_hw_events+0x1328
-> 
-> The compiler can also eliminate redundant loads from this_cpu_off,
-> reducing the number of percpu offset reads (either from this_cpu_off
-> or with rdgsbase) from 1663 to 1571.
-> 
-> Additionaly, the patch introduces 'rdgsbase' alternative for CPUs with
-> X86_FEATURE_FSGSBASE. The rdgsbase instruction *probably* will end up
-> only decoding in the first decoder etc. But we're talking single-cycle
-> kind of effects, and the rdgsbase case should be much better from
-> a cache perspective and might use fewer memory pipeline resources to
-> offset the fact that it uses an unusual front end decoder resource...
+Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
 
-So the 'additionally' wording in the changelog should have been a big hint 
-already that the introduction of RDGSBASE usage needs to be a separate 
-patch. ;-)
-
-Thanks,
-
-	Ingo
+Cheers,
+Miguel
