@@ -2,98 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE9F07C92FE
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 08:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13D727C92FA
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 08:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232848AbjJNGfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 02:35:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60804 "EHLO
+        id S232829AbjJNGfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 02:35:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232800AbjJNGfx (ORCPT
+        with ESMTP id S229518AbjJNGfL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 02:35:53 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9298ACC
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 23:35:50 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-5046bf37ec1so3577170e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 23:35:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697265349; x=1697870149; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RJyWt/G9UgfvUHmmjADyY97GEgcUxAnVJZD4ohf6ujU=;
-        b=YhK9+WKLhXYSQCY7XBlzQBKrNfE0FIf6lwovTgQMjoj7m1HFZEK3MF/mTP1Ysj+4Sn
-         znYL/tGI8BoQJMz839/JWvFkw00/g5Bo0G7p/cih1mbiQwF1mXYa5DL7YOHW1sDKDIbL
-         Ww1fFr7ti37PmzckERUNSPG64IBD83v8KknzqLfJ2muWg3d7ZbJRawzFDJS0C1ZrLrkV
-         HEaId6jRgJtX2bxCKUzCxMnKn4epu28GIoC1iXui+ZGcp2xtqlpYk/+/5HDKJv1cJaMS
-         wcep6DRTBHMeABpCWC9qiDAeUzWhHFSvGrkmaddddYP77nZ4/5U2/F7Nja8YHBREJujL
-         MRaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697265349; x=1697870149;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RJyWt/G9UgfvUHmmjADyY97GEgcUxAnVJZD4ohf6ujU=;
-        b=Z+N1prq2d6Nl4svQFkA+FVxjr/NVIqULLv6zel6ejDolgdmGpvu5y3YG3UkA3Z/CKn
-         nHrOmTFUcepUTtoBb0ThjQ/6Fk+qBg031gkaI33TCZWDWMtQHlyeeIEZg36BZgfKhvQZ
-         h3ajlhHpwMf4rkPySwpBrcTfMDf78+6XnZMsJYzr0lRsqUkbTKRiCBjlRVOYeC+ibs1X
-         VyMfBBL50oxD9c/8c42Or/JgRww7Ow1ehet6ber3Tg/ApeSyIChNmaZHwimESGll2Z9X
-         Z7yQ9p7m+XkhGmQkQ3VcebyihAmH4womH48BTwoPxnk+9pAtAueTeQJ14Jf2ayYmyriI
-         3zuA==
-X-Gm-Message-State: AOJu0Yyo/DXTjuWKEK8AVzkPW6mykdz66vBL1g9TCqmfB8nbmtZr71/p
-        Qjx+uEvMFU6yJoVBfbFvjqE=
-X-Google-Smtp-Source: AGHT+IEy1YVM+k76/k7sHjrEvJ2I9VtPmniChxu10UiPmEh5XOEZX1I4i/sNqFMuzVTFUlqoFOy4rQ==
-X-Received: by 2002:ac2:4199:0:b0:506:8d2a:e31f with SMTP id z25-20020ac24199000000b005068d2ae31fmr14219474lfh.46.1697265348575;
-        Fri, 13 Oct 2023 23:35:48 -0700 (PDT)
-Received: from flex1911-laptop.. ([85.172.95.194])
-        by smtp.googlemail.com with ESMTPSA id x9-20020a056512078900b00507a0098424sm302560lfr.109.2023.10.13.23.35.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 23:35:48 -0700 (PDT)
-From:   Artem Borisov <dedsa2002@gmail.com>
-Cc:     perex@perex.cz, Artem Borisov <dedsa2002@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ALSA: hda/realtek: Add quirk for ASUS ROG GU603ZV
-Date:   Sat, 14 Oct 2023 09:34:46 +0300
-Message-ID: <20231014063458.13474-1-dedsa2002@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Sat, 14 Oct 2023 02:35:11 -0400
+Received: from smtp.smtpout.orange.fr (smtp-13.smtpout.orange.fr [80.12.242.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65547C2
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 23:35:03 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id rYEiqpnupvhM3rYEiqYMnU; Sat, 14 Oct 2023 08:35:01 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1697265301;
+        bh=CxADXXhhxjM3tj/eg2DX7kLfA3AdAqKP4iJHaVmLDhs=;
+        h=From:To:Cc:Subject:Date;
+        b=ILrQ4XJbS8aVq6H2ZU6HW0E5LFiW+PZDIamMUNxW2ttR9mqFi48qE2Kkzf2egfDsQ
+         l+RoM4OHVWa9Lv7u5o/qSMUVL4Romq48Z9BfW43m0SczUedDrNW1bXX2kwEOUnRK9P
+         0r3hrsp/tYGbCn3ekbTAXnyu40mqE2oEBNLiPsfa3MANvqrrNiHJfSNRidlNvfFEoc
+         4U1X+13yFgBcoWJNIg07jP5b6/d/xLQRTRCmX0B8xNj+gfKYa9dtsg0jK3mdFm0lu3
+         GfPjdxZ4jMTs+PQBozZx/Zg7GhCmnshc9xkBcSl73W/DfkR2zYNnR/1HE7zleI6WNb
+         yjVWG1rGushcA==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 14 Oct 2023 08:35:01 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Pravin B Shelar <pshelar@ovn.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        netdev@vger.kernel.org, dev@openvswitch.org
+Subject: [PATCH v2 1/2] net: openvswitch: Use struct_size()
+Date:   Sat, 14 Oct 2023 08:34:52 +0200
+Message-Id: <e5122b4ff878cbf3ed72653a395ad5c4da04dc1e.1697264974.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enables the SPI-connected Cirrus amp and the required pins
-for headset mic detection.
+Use struct_size() instead of hand writing it.
+This is less verbose and more robust.
 
-As of BIOS version 313 it is still necessary to modify the
-ACPI table to add the related _DSD properties:
-  https://gist.github.com/Flex1911/1bce378645fc95a5743671bd5deabfc8
-
-Signed-off-by: Artem Borisov <dedsa2002@gmail.com>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+v2: No change
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 3eeecf67c..29c267ea3 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9787,6 +9787,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1043, 0x1463, "Asus GA402X", ALC285_FIXUP_ASUS_I2C_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x1473, "ASUS GU604V", ALC285_FIXUP_ASUS_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x1483, "ASUS GU603V", ALC285_FIXUP_ASUS_HEADSET_MIC),
-+	SND_PCI_QUIRK(0x1043, 0x1663, "ASUS GU603ZV", ALC285_FIXUP_ASUS_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x1493, "ASUS GV601V", ALC285_FIXUP_ASUS_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook UX31A", ALC269VB_FIXUP_ASUS_ZENBOOK_UX31A),
- 	SND_PCI_QUIRK(0x1043, 0x1573, "ASUS GZ301V", ALC285_FIXUP_ASUS_HEADSET_MIC),
+v1: https://lore.kernel.org/all/8be59c9e06fca8eff2f264abb4c2f74db0b19a9e.1696156198.git.christophe.jaillet@wanadoo.fr/
+
+
+This is IMHO more readable, even if not perfect.
+
+However (untested):
++	new = kzalloc(size_add(struct_size(new, masks, size),
+			       size_mul(sizeof(u64), size)), GFP_KERNEL);
+looks completely unreadable to me.
+---
+ net/openvswitch/flow_table.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/net/openvswitch/flow_table.c b/net/openvswitch/flow_table.c
+index 4f3b1798e0b2..d108ae0bd0ee 100644
+--- a/net/openvswitch/flow_table.c
++++ b/net/openvswitch/flow_table.c
+@@ -220,16 +220,13 @@ static struct mask_array *tbl_mask_array_alloc(int size)
+ 	struct mask_array *new;
+ 
+ 	size = max(MASK_ARRAY_SIZE_MIN, size);
+-	new = kzalloc(sizeof(struct mask_array) +
+-		      sizeof(struct sw_flow_mask *) * size +
++	new = kzalloc(struct_size(new, masks, size) +
+ 		      sizeof(u64) * size, GFP_KERNEL);
+ 	if (!new)
+ 		return NULL;
+ 
+ 	new->masks_usage_zero_cntr = (u64 *)((u8 *)new +
+-					     sizeof(struct mask_array) +
+-					     sizeof(struct sw_flow_mask *) *
+-					     size);
++					     struct_size(new, masks, size));
+ 
+ 	new->masks_usage_stats = __alloc_percpu(sizeof(struct mask_array_stats) +
+ 						sizeof(u64) * size,
 -- 
-2.41.0
+2.34.1
 
