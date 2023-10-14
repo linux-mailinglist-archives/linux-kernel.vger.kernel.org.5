@@ -2,169 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B5D47C91F0
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 02:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 501277C91F3
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Oct 2023 03:02:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232592AbjJNA7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Oct 2023 20:59:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49770 "EHLO
+        id S232540AbjJNBCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Oct 2023 21:02:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbjJNA7j (ORCPT
+        with ESMTP id S229518AbjJNBCP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Oct 2023 20:59:39 -0400
-Received: from matoro.tk (unknown [IPv6:2600:1700:4b10:9d80::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A5355BE;
-        Fri, 13 Oct 2023 17:59:34 -0700 (PDT)
-DKIM-Signature: a=rsa-sha256; bh=HBXsmAGmocJo6yoWBhkrgxNZCb9WtBCbFZetm3/XVE8=;
- c=relaxed/relaxed; d=matoro.tk;
- h=Subject:Subject:Sender:To:To:Cc:Cc:From:From:Date:Date:MIME-Version:MIME-Version:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Reply-To:In-Reply-To:In-Reply-To:Message-Id:Message-Id:References:References:Autocrypt:Openpgp;
- i=@matoro.tk; s=20230917; t=1697245166; v=1; x=1697677166;
- b=YbEaADeEU+Zf33KJ3Lum1ryo7UJhiVENwcitc417ymfUrcTDld2xvLxEQ2nRbQhVGNLSTRmg
- VGP/4ZxYHid4nX6Lt57LsZ4TZSS/HhWo4g9WC4BfWpNGFm58AoEbfoKhqkEHPevLAGC84OYXVH6
- II2wEh3/g5dxY/sMYwwaZOrJE1sPmHWmKdiACNPSoKppU7ewTsYaf1kRLmkgx8QbAV0UkTz5Pka
- jbpgiT3c5kV26/sF1jXLHC3zguK0nOarCH7l8YuPj4p49BksXbkmiqvbuRwm2+fMX0TvwimPAZB
- ZMWczcFsAgWIqfOWl96YOJGh2gCu7iDJtVzTIze68O4rerUb8Di9bGGaqtKZPWas0F3IkAj58hG
- 0o+zFV1+xBcmMks7Z+azSyKVfxQZxShg5LcS1VXg6KyeP88OngzHCr4WHttyv8GrtbAf1ehAz+/
- 4adbYFVH7DV6pHJqHCVJUEGHifRDoaKyjTHA4Z7IBs5vM8hH2n2Tp09XxmE1YEJjYYpnF6IPLrh
- q6DHymHy/K/TVMReDF4uWf4RcXKjtPNNIYDmTb9B/ZJIQ5Bx5RSGQfjGCLOhv63HWohjDs+UuJg
- 3arSMb6N0x+sjQrhZhAiLqFUBAbMXoOEykMZWiEy/r+P7GGOv9m5WrlG+oBmn+49PAJg3+xXudI
- ttE1RPOv2yk=
-Received: by matoro.tk (envelope-sender
- <matoro_mailinglist_kernel@matoro.tk>) with ESMTPS id c713fbfd; Fri, 13 Oct
- 2023 20:59:26 -0400
+        Fri, 13 Oct 2023 21:02:15 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2072.outbound.protection.outlook.com [40.107.244.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E25BF
+        for <linux-kernel@vger.kernel.org>; Fri, 13 Oct 2023 18:02:12 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DgSRkDeNAXzaGZ8m4jTbiNgzMDme0LHMP2G+kccpZO+KLXAr9gKbfLd04kaFeEfV2s9tK9tzui9P4AAELZIOEokda3oEguRGjmRKgEuhgMtCMlRxJe7qZrVbmZ9EUg+3J88d6drvOiByoM/btEfd1NtjUETt4p1SErh/KgKUp8ZXslkDjoLclBCVT31CedZbzQd5LLsWaHrYvlxKxYR2aj12VKeE8G8yn/2R43HfVKnYSgRcF217NlPknsR7WFhLuP5dkZO1Ur4KCbXuDhnAhD3BKGCTXMzZop0ZpJQsbbJSVJ54PWYigkPgLDAcVG0U2qg7WiC2KrS1sVyQNftAlA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=iWElid/sVX27Vke5EpEKw9XGh4o3Tyu2gIgo4ppOvD8=;
+ b=LbWTX+/320JK1CPZAcLJQi6TkVZGyDs6NVtu/eqkTmAVaFKQwPNWLAGqHJO4HUT/6Qa8lnHRs75wQK/bRF/zW2w1zaQWg7a0ZZGZhwgxdwihK5esHIsju3sDnCaftSrG5bqPRKQyT8IxooK4ftaj6Um4b67pjwFiBGBPWBwZn5eYQhtNqWcVtKGckjlmrYh03j14i0MHUd6vrESbRtnKPbwIN2ItRRkg2aDe4YZk4GAguRGx2Af/2eHFRZoAnngO1X5QglaJFDvcuq2nMnsjD93FKafdIM1HwZKisski2JWghhjMyPoxvtokZ1PMBCX2rYZ7O/YOZgbjesq9p9thfA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.232) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iWElid/sVX27Vke5EpEKw9XGh4o3Tyu2gIgo4ppOvD8=;
+ b=Ifj/EnYQJFHX+kDCkILfHmS5XtqMviPSkAjdK2TMHOPfOXRt1hzYyLVKeLkJHmNjUq6/RlJB5MSchVdI0Um+QwQpdFe8MtAaeShtmmd0IgU5UWWCbl04XHsVELOms0fGZYNpsXVqDAOhexNMXOSnTI4hcgQfSELGoJSjwYWAE+u+AzTRQ/8cZOxfdHPGkM5GhvhdhvNw6Tx6vxVfKFm0n6SSnYcM5TJoE4/+Rxrepk078/Ylzhdl6YYZ2GNHrjXFWvhl4uMEOmuDH9RZpyvB4yNo9dHgPpmI+DoEcRzV4HP1TYrfrEKzO8hn/xmXVA84bbasvi4RnJV3gSZVTSqBBQ==
+Received: from CYXPR02CA0012.namprd02.prod.outlook.com (2603:10b6:930:cf::27)
+ by DM6PR12MB4974.namprd12.prod.outlook.com (2603:10b6:5:1bb::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.47; Sat, 14 Oct
+ 2023 01:02:09 +0000
+Received: from CY4PEPF0000EDD1.namprd03.prod.outlook.com
+ (2603:10b6:930:cf:cafe::d5) by CYXPR02CA0012.outlook.office365.com
+ (2603:10b6:930:cf::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.28 via Frontend
+ Transport; Sat, 14 Oct 2023 01:02:09 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ CY4PEPF0000EDD1.mail.protection.outlook.com (10.167.241.205) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6838.22 via Frontend Transport; Sat, 14 Oct 2023 01:02:09 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 13 Oct
+ 2023 18:02:03 -0700
+Received: from drhqmail202.nvidia.com (10.126.190.181) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.41; Fri, 13 Oct 2023 18:02:03 -0700
+Received: from Asurada-Nvidia (10.127.8.11) by mail.nvidia.com
+ (10.126.190.181) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
+ Transport; Fri, 13 Oct 2023 18:02:02 -0700
+Date:   Fri, 13 Oct 2023 18:02:00 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     "Zhang, Tina" <tina.zhang@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+CC:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Michael Shavit <mshavit@google.com>,
+        Vasant Hegde <vasant.hegde@amd.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>
+Subject: Re: [PATCH v7 4/5] iommu: Support mm PASID 1:n with sva domains
+Message-ID: <ZSnoiPBLFATdtlpk@Asurada-Nvidia>
+References: <20231012030112.82270-1-tina.zhang@intel.com>
+ <20231012030112.82270-5-tina.zhang@intel.com>
+ <20231012134310.GI55194@ziepe.ca>
+ <MW5PR11MB5881ECF6757B0211A18B208C89D2A@MW5PR11MB5881.namprd11.prod.outlook.com>
+ <20231014000320.GC282036@ziepe.ca>
 MIME-Version: 1.0
-Date:   Fri, 13 Oct 2023 20:59:26 -0400
-From:   matoro <matoro_mailinglist_kernel@matoro.tk>
-To:     Steve French <smfrench@gmail.com>
-Cc:     Paulo Alcantara <pc@manguebit.com>,
-        "Dr. Bernd Feige" <bernd.feige@uniklinik-freiburg.de>,
-        Tom Talpey <tom@talpey.com>, Paul Aurich <paul@darkrain42.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        ronnie sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
-        Brian Pardy <brian.pardy@gmail.com>,
-        Bharath S M <bharathsm@microsoft.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: Possible bug report: kernel 6.5.0/6.5.1 high load when CIFS share
- is mounted (cifsd-cfid-laundromat in"D" state)
-In-Reply-To: <CAH2r5mse_2sfXF+tdTmie5LLtBuc+6DOumDH3rn=5V24yhrYVQ@mail.gmail.com>
-References: <CAO+kfxTwOvaxYV0ZRESxZB-4LHsF9b_VBjAKahhwUm5a1_c4ug@mail.gmail.com>
- <ZPfPfyIoVxw5L6El@debian.me>
- <CAO+kfxQgXOsx6u+xLKGJe0KDiFsRAGstSpnrwxjQF6udgz5HFQ@mail.gmail.com>
- <CAO+kfxTvA6N=i+jGf0XbSyqf85i=q+vR6R9d_42OWfM2sWWXaA@mail.gmail.com>
- <CAH2r5mtUedfLSv81Z-Yb3_=AbD_QpT3tVbU1PRzMTituaw7bgA@mail.gmail.com>
- <CAH2r5mt6YzapEKDo=hQ64yvBn7=jwMmY1c85NOABKcMPKPp3KA@mail.gmail.com>
- <CAO+kfxQtOKoKdb+LtMeFxgu8VXa73nbmTPSfscbdwjUXM7ME_A@mail.gmail.com>
- <CAH2r5msNf9WDHrBZSi5FhHDSewSNxMAuXTetMJDnoNh3CF_oMA@mail.gmail.com>
- <a895f860-11fa-e6d9-d042-a32bd08f9e9d@talpey.com>
- <CAH2r5mszCxPtdURenMVgeVDX5zc8knumH=ASXyUufPa7SxbJBw@mail.gmail.com>
- <ZRN9MtBqYnT6oX60@vaarsuvius>
- <85d538fec5a086acf62d5a803056586a6c00e4bd.camel@uniklinik-freiburg.de>
- <83d00d50bc628a85db71adb440d8afb5@matoro.tk>
- <E1F307C7-9B1E-40F6-860B-6050856E8395@manguebit.com>
- <CA6E0F87-65FD-4672-AA0C-A761E5006B7D@manguebit.com>
- <CAH2r5mse_2sfXF+tdTmie5LLtBuc+6DOumDH3rn=5V24yhrYVQ@mail.gmail.com>
-Message-ID: <c88b2ecd27524153c2acd8aba6ae3c80@matoro.tk>
-X-Sender: matoro_mailinglist_kernel@matoro.tk
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231014000320.GC282036@ziepe.ca>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD1:EE_|DM6PR12MB4974:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5b0183b3-dab0-4436-1179-08dbcc513134
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /Z4TgFahWVr3n6fy4VQCU3HHNUU+RZukeiFSkYeo7QsDXgtuOJ1wdSY2sG7ZLgPxRIkOe6WAKJOScL+0WuxnOhOiCqzX9Qxtt8h5aPvbPxSEZk02fRPdtewF53vdnP78EUHfksdgtDzsg3gj1UKNlwoUsHrp1cSjehWhIoLBFHRvi8Rbe0Cl/ZteAKz/sJgLAxJF3o5PVPO/AUY+PpnBQY/ZKnhwXQvZ0I3Bpio37tIU/EBGfzI5GwvFsXX4uzTqI/7wO3vdnbOCjlqApW3kSi9OjCcBOp5yqtbT1y5szVfoO+jMgEvRxgkLMGnEaAPbyIL+EDS/Avhh8O9vO5r1/Fg63UO5isQON0/5YqGwI4f/fGMg+l0Uk7EohuHX9esXfecxHbCb9+S0dEN7Z7Ks0e/xH7vgFXoJp6AUBGyEaIoFvGr4JahMGjyMSpoLX4OMd60beFekmqPUGugulp5mDN8Dw5wpA5zwsna5ZDJ23z/OrNea4vrU7f1dsiPQvhBqq2/u8+qnOC/8tb97NHSCiwDZPNGuQ1dXdb8n3Zb1SxyIDHV1+zPJpqx7TMtEeAQNYTfOzo0hcE3xFuAEmAkaOEUjuWnTjuaEY42ASzTK2X9Oh1LUoJw9UXydJW6cqTeeTq/BIc58k3ojdhvIy8agm0XtWxcRcqlTYC3T+3PWcmM/dKedkGUElqz7MA9O2C2Lp0epmkqSGZ975bVyhTNdR2w4rlk13IE/RnjHwin1OxXSXEMAiAKHZUfz1OCri5uh
+X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(376002)(346002)(136003)(396003)(230922051799003)(186009)(64100799003)(82310400011)(451199024)(1800799009)(36840700001)(46966006)(40470700004)(9686003)(478600001)(83380400001)(336012)(426003)(316002)(26005)(2906002)(4744005)(33716001)(41300700001)(4326008)(70206006)(5660300002)(70586007)(110136005)(8676002)(8936002)(36860700001)(47076005)(86362001)(82740400003)(7636003)(356005)(54906003)(55016003)(40480700001)(40460700003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2023 01:02:09.1876
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5b0183b3-dab0-4436-1179-08dbcc513134
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EDD1.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4974
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-13 20:13, Steve French wrote:
-> Let me know if those fixes help as two of them have not been sent to 
-> Linus
-> yet, but I could send tomorrow
+On Fri, Oct 13, 2023 at 09:03:20PM -0300, Jason Gunthorpe wrote:
+> On Fri, Oct 13, 2023 at 09:57:30AM +0000, Zhang, Tina wrote:
+> > I think I met some problem about my mailbox when I was sending this
+> > new version. It didn't cc iommu@lists.linux.dev. Should I resend
+> > this version again or reply to the patches with
+> > iommu@lists.linux.dev cc'd?
 > 
-> On Fri, Oct 13, 2023, 19:01 Paulo Alcantara <pc@manguebit.com> wrote:
-> 
->> You probably want these two as well
->> 
->> 
->> https://git.samba.org/?p=sfrench/cifs-2.6.git;a=commit;h=2da338ff752a2789470d733111a5241f30026675
->> 
->> 
->> https://git.samba.org/?p=sfrench/cifs-2.6.git;a=commit;h=3b8bb3171571f92eda863e5f78b063604c61f72a
->> 
->> as directory leases isn't supported in SMB1, so no waste of system
->> resources by having those kthreads running.
->> 
->> On 13 October 2023 20:52:11 GMT-03:00, Paulo Alcantara 
->> <pc@manguebit.com>
->> wrote:
->> >Could you please try two commits[1][2] from for-next?
->> >
->> >[1]
->> https://git.samba.org/?p=sfrench/cifs-2.6.git;a=commit;h=e95f3f74465072c2545d8e65a3c3a96e37129cf8
->> >[2]
->> https://git.samba.org/?p=sfrench/cifs-2.6.git;a=commit;h=81ba10959970d15c388bf29866b01b62f387e6a3
->> >
->> >On 13 October 2023 20:19:37 GMT-03:00, matoro <
->> matoro_mailinglist_kernel@matoro.tk> wrote:
->> >>On 2023-10-05 05:55, Dr. Bernd Feige wrote:
->> >>> Am Dienstag, dem 26.09.2023 um 17:54 -0700 schrieb Paul Aurich:
->> >>>> Perhaps the laundromat thread should be using msleep_interruptible()?
->> >>>>
->> >>>> Using an interruptible sleep appears to prevent the thread from
->> >>>> contributing
->> >>>> to the load average, and has the happy side-effect of removing the
->> >>>> up-to-1s delay
->> >>>> when tearing down the tcon (since a7c01fa93ae, kthread_stop() will
->> >>>> return
->> >>>> early triggered by kthread_stop).
->> >>>
->> >>> Sorry for chiming in so late - I'm also on gentoo (kernel 6.5.5-
->> >>> gentoo), but as a client of Windows AD.
->> >>>
->> >>> Just want to emphasize that using uninterruptible sleep has not just
->> >>> unhappy but devastating side-effects.
->> >>>
->> >>> I have 8 processors and 16 cifsd-cfid-laundromat processes, so
->> >>> /proc/loadavg reports a load average of 16 on a totally idle system.
->> >>>
->> >>> This means that load-balancing software will never start additional
->> >>> tasks on this system - "make -l" but also any other load-dependent
->> >>> system. Just reducing the number of cifsd-cfid-laundromat processes
->> >>> does not fix this - even a single one makes loadavg report a wrong
->> >>> result for load balancing.
->> >>>
->> >>> So, if cifsd-cfid-laundromat must really be uninterruptible, the only
->> >>> solution would be to change the way loadavg is computed by the kernel
->> >>> to exclude uninterruptible but sleeping processes. But must it be
->> >>> uninterruptible?
->> >>>
->> >>> Thanks and best regards,
->> >>> Bernd
->> >>
->> >>This is a huge problem here as well, as a client to Samba using SMB1
->> (for Unix extensions).
->> >>
->> >>For others encountering this problem, I was able to work around it with
->> the following snippet:
->> >>
->> >>diff --git a/fs/smb/client/cached_dir.c b/fs/smb/client/cached_dir.c
->> >>index 2d5e9a9d5b8b..fc2caccb597a 100644
->> >>--- a/fs/smb/client/cached_dir.c
->> >>+++ b/fs/smb/client/cached_dir.c
->> >>@@ -576,7 +576,7 @@ cifs_cfids_laundromat_thread(void *p)
->> >>        struct list_head entry;
->> >>
->> >>        while (!kthread_should_stop()) {
->> >>-               ssleep(1);
->> >>+               msleep_interruptible(1000);
->> >>                INIT_LIST_HEAD(&entry);
->> >>                if (kthread_should_stop())
->> >>                        return 0;
->> 
+> Tidy the nits and resend a v8 if addresses got missed
 
-Do you have backports of these to 6.5?  I tried to do it manually but 
-there's already so many changes between 6.5 and these commits.
+I was actually wondering why it missed iommu list. And it likely
+missed those maintainers too? Perhaps should run get_maintainer
+script and add the person who's going to take the series.
+
+Thanks
+Nic
