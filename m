@@ -2,125 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F107C97EB
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 06:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 145897C97F4
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 07:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233478AbjJOExh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 00:53:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57054 "EHLO
+        id S233477AbjJOFFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 01:05:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230091AbjJOExf (ORCPT
+        with ESMTP id S230091AbjJOFFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 00:53:35 -0400
-Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9D1DD9;
-        Sat, 14 Oct 2023 21:53:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=fMGwmeCiI2WGZSSIY9zDXk4JfSuYvkdAr36FIasOYjU=;
-  b=k5IQxBjXGV3CnXmP7VgfiaoFeBhRXdFbvwWcEJ86HrDH2aegcMqgy9/b
-   I9LI0HC1txkCq9sNogIroruo9K0Hh9y5ZrXnsAxRar8tN2v4I3LVDbRSv
-   x6yt7j8E7k1e7EcOSnJOckIDAkgHN9kLA1i0nOA4E0PtLe9QlrFZZ21U9
-   w=;
-Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.03,226,1694728800"; 
-   d="scan'208";a="68734435"
-Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2023 06:53:30 +0200
-Date:   Sun, 15 Oct 2023 06:53:29 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Kees Cook <keescook@chromium.org>
-cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Pravin B Shelar <pshelar@ovn.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, netdev@vger.kernel.org,
-        dev@openvswitch.org, linux-hardening@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH v2 2/2] net: openvswitch: Annotate struct mask_array with
- __counted_by
-In-Reply-To: <202310141928.23985F1CA@keescook>
-Message-ID: <alpine.DEB.2.22.394.2310150653070.3260@hadrien>
-References: <e5122b4ff878cbf3ed72653a395ad5c4da04dc1e.1697264974.git.christophe.jaillet@wanadoo.fr> <ca5c8049f58bb933f231afd0816e30a5aaa0eddd.1697264974.git.christophe.jaillet@wanadoo.fr> <202310141928.23985F1CA@keescook>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sun, 15 Oct 2023 01:05:39 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BFD2A9
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 22:05:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697346337; x=1728882337;
+  h=date:from:to:cc:subject:message-id;
+  bh=mnb61GytwGx87Z6/wx1dEXtRjvBzjUgzJRfekBMwYc4=;
+  b=E8HEAuNEhju+pRx0sK5PY835rcsJCWm/is8zPH2/85r05UVfcVDFCV38
+   X9a5ZFkWHiwp7t9ajTINZPUOrKBKakH6ipLVTb3tYnUhlSmlua0tjk00F
+   odxqWwXCp8Faf6bnxDkgGy4snVRNBpnFXdxbDbgItM/9JXe7Z+ocYejxj
+   H511GjYXMeYirxwrnWq1kcyDjCPK3oFVl4bwKTnFX6gBnJfYqxoGLL5dR
+   P1M6TTGOV2jEYXQY+IcLWRGYYeXvo4RxTY/9Z5bwUy3VqGOrGTxjldnxJ
+   uTAE26NvxDKj8UIIwH+8BMqKXer2RuMFDU3jxhxht74Lh5YeRF5sXQCdO
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="471595401"
+X-IronPort-AV: E=Sophos;i="6.03,226,1694761200"; 
+   d="scan'208";a="471595401"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2023 22:05:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="845987484"
+X-IronPort-AV: E=Sophos;i="6.03,226,1694761200"; 
+   d="scan'208";a="845987484"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 14 Oct 2023 22:05:36 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qrtJm-00073F-0i;
+        Sun, 15 Oct 2023 05:05:34 +0000
+Date:   Sun, 15 Oct 2023 13:05:14 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/merge] BUILD SUCCESS
+ e21cf2215a279c560ee307cda7777fdd57c6cfed
+Message-ID: <202310151311.hJwbCkSO-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/merge
+branch HEAD: e21cf2215a279c560ee307cda7777fdd57c6cfed  Merge branch 'x86/core' into x86/merge, to ease integration testing
 
+elapsed time: 2534m
 
-On Sat, 14 Oct 2023, Kees Cook wrote:
+configs tested: 100
+configs skipped: 2
 
-> On Sat, Oct 14, 2023 at 08:34:53AM +0200, Christophe JAILLET wrote:
-> > Prepare for the coming implementation by GCC and Clang of the __counted_by
-> > attribute. Flexible array members annotated with __counted_by can have
-> > their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> > (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> > functions).
-> >
-> > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > ---
-> > v2: Fix the subject  [Ilya Maximets]
-> >     fix the field name used with __counted_by  [Ilya Maximets]
-> >
-> > v1: https://lore.kernel.org/all/f66ddcf1ef9328f10292ea75a17b584359b6cde3.1696156198.git.christophe.jaillet@wanadoo.fr/
-> >
-> >
-> > This patch is part of a work done in parallel of what is currently worked
-> > on by Kees Cook.
-> >
-> > My patches are only related to corner cases that do NOT match the
-> > semantic of his Coccinelle script[1].
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-What was the problem with the semantic patch in this case?
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20231013   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                   randconfig-001-20231014   gcc  
+arm64                            allmodconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231014   gcc  
+i386                  randconfig-002-20231014   gcc  
+i386                  randconfig-003-20231014   gcc  
+i386                  randconfig-004-20231014   gcc  
+i386                  randconfig-005-20231014   gcc  
+i386                  randconfig-006-20231014   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231013   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20231013   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20231013   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                 randconfig-001-20231014   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231013   gcc  
+x86_64                randconfig-002-20231013   gcc  
+x86_64                randconfig-003-20231013   gcc  
+x86_64                randconfig-004-20231013   gcc  
+x86_64                randconfig-005-20231013   gcc  
+x86_64                randconfig-006-20231013   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
 
-thanks,
-julia
-
-
-> >
-> > In this case, in tbl_mask_array_alloc(), several things are allocated with
-> > a single allocation. Then, some pointer arithmetic computes the address of
-> > the memory after the flex-array.
-> >
-> > [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-> > ---
-> >  net/openvswitch/flow_table.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/net/openvswitch/flow_table.h b/net/openvswitch/flow_table.h
-> > index 9e659db78c05..f524dc3e4862 100644
-> > --- a/net/openvswitch/flow_table.h
-> > +++ b/net/openvswitch/flow_table.h
-> > @@ -48,7 +48,7 @@ struct mask_array {
-> >  	int count, max;
-> >  	struct mask_array_stats __percpu *masks_usage_stats;
-> >  	u64 *masks_usage_zero_cntr;
-> > -	struct sw_flow_mask __rcu *masks[];
-> > +	struct sw_flow_mask __rcu *masks[] __counted_by(max);
-> >  };
->
-> Yup, this looks correct to me. Thanks!
->
-> Reviewed-by: Kees Cook <keescook@chromium.org>
->
-> --
-> Kees Cook
->
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
