@@ -2,128 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC2737C97A2
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 04:20:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 194177C97AA
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 04:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233394AbjJOCUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 22:20:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60424 "EHLO
+        id S233410AbjJOCa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 22:30:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229733AbjJOCUL (ORCPT
+        with ESMTP id S233328AbjJOCaX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 22:20:11 -0400
-Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E62BD6;
-        Sat, 14 Oct 2023 19:20:09 -0700 (PDT)
-Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-5a822f96aedso21883197b3.2;
-        Sat, 14 Oct 2023 19:20:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697336409; x=1697941209; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zzmAztgi6ecB7UaqCGob459y4GhttsIKx/RrP9U9cpE=;
-        b=muLhtTxhk+Y2RvpPMifgCc108FOFO0xKAmoccZQdrcXOZc6QkfYl4/Lg5q8/dm6Ts6
-         VQbPLuNjxvTQUx+EKfpLvEP2Vd3oqq55lyuPWxJvb6KbqEZRSBwotvJfbai4fymo9ASY
-         9RAHY/Xu5qE2aooPlS4slMTtT9pZFAXYPh263pw+85WDoZKxaL3uan8RecFkWoaG+4JK
-         QPt41Aoq+j5trapeC3BsLpJoLiP/dN/B6u1kMNMYn2bElRXCZzqphQDfUekZMmILCfVR
-         SJ0/F/dgOxDkni9wrevsgvsGkwiBVxgz7XbW3L8V+wZwU57bf14vBRXTKYufBe/w5/g/
-         6PAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697336409; x=1697941209;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zzmAztgi6ecB7UaqCGob459y4GhttsIKx/RrP9U9cpE=;
-        b=kyqARCxAT+lUtf7xr1otVXZGS6SiRm2IxG/pquwh3WvvE4KBN1T8Yq4SNrQXwJVMEb
-         JDXcnOx1/Ux1Gdz4BTe3vW+eqrx8vV6sBhS8YQCDur5M/D9g2OlQSDCieDj85ysEXDib
-         +eMxB1U9x6//jP+bSejnQzazRCK8mjGetktZ7vxqJ2zzlQbxUODHmbwtPU48zlKtS5BJ
-         JUOR9Ik1AljAVwpRIw94KKDULhT2sSl1KTuJYkeEGKkvDjTqOQ/DnLlYItRE10CKDtTR
-         ok/OB2dpluU3/EACkzN+TNSIIDeEN+eOvK2YAcZ+DDMhy4QEBme9nAt/uIfAn0vwZ8y0
-         dRdg==
-X-Gm-Message-State: AOJu0YyQNht7LGA/dcBes4U9bUaDA5TQvVy0G9Z77uTD2D4N5d/Z9MB6
-        xrC7pW2W5b9scDtBb7WDZp8=
-X-Google-Smtp-Source: AGHT+IGkOEjO+bGWWFCarw0RLmOk68tVCv/6p3H378i9MP3Ve1TWkdNvsdbRXDgjuLQXDGyqdxhtJg==
-X-Received: by 2002:a05:690c:257:b0:5a7:b51a:e176 with SMTP id ba23-20020a05690c025700b005a7b51ae176mr14718261ywb.12.1697336408657;
-        Sat, 14 Oct 2023 19:20:08 -0700 (PDT)
-Received: from localhost ([2607:fb90:3e2c:8023:e145:ae9d:cf98:1574])
-        by smtp.gmail.com with ESMTPSA id z193-20020a0dd7ca000000b005a8073e2062sm1025954ywd.33.2023.10.14.19.20.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Oct 2023 19:20:08 -0700 (PDT)
-Date:   Sat, 14 Oct 2023 19:20:07 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Alexander Potapenko <glider@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@kernel.org>,
-        Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        netdev@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        dm-devel@redhat.com, ntfs3@lists.linux.dev,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 09/14] bitmap: extend bitmap_{get,set}_value8() to
- bitmap_{get,set}_bits()
-Message-ID: <ZStMV46v4EkoUHE8@yury-ThinkPad>
-References: <20231009151026.66145-1-aleksander.lobakin@intel.com>
- <20231009151026.66145-10-aleksander.lobakin@intel.com>
- <ZSQq02A9mTireK71@yury-ThinkPad>
- <a28542e2-4a5b-4c29-9d4a-12a0d2ab5527@intel.com>
+        Sat, 14 Oct 2023 22:30:23 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA5E0CC;
+        Sat, 14 Oct 2023 19:30:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697337021; x=1728873021;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=BUwl6/usmRlti/+3fPO0RhkKrPW43T4KsDphTzMcrXo=;
+  b=KvDeQ0n/ZR9SstlDI3+EINLBVOO7eOCLQ5bUbxdafprKdyz5GhVat6ky
+   rivAailrd4I0oXNK3QTtPkUtH45LnCtl+bAeBxakq6nEeo9PF6JvXJZGG
+   BnNSQ7TzeotQUAflzU8LqtlQlLML+mKZaZvYzwoMH8F2p/aWWqNIL0Ib1
+   CORKNYZ4nyRpKOx34jgsLKPF/di36SkxDfckcg6NnVXHt16C5rktj6QUt
+   PGgOlHVI4HL9KAAM8dUQUm8ugI4MuMxK+YlIrB7IXcS6huFBwAVeXESkJ
+   thd7HSpwlhUuqwIXJwotu/WK9FsjBzYkDBhBORbu43fZRdZ2TdwGDSof0
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="388217590"
+X-IronPort-AV: E=Sophos;i="6.03,226,1694761200"; 
+   d="scan'208";a="388217590"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2023 19:30:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="748833713"
+X-IronPort-AV: E=Sophos;i="6.03,226,1694761200"; 
+   d="scan'208";a="748833713"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 14 Oct 2023 19:30:14 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qrqtQ-0006wJ-0q;
+        Sun, 15 Oct 2023 02:30:12 +0000
+Date:   Sun, 15 Oct 2023 10:29:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        andersson@kernel.org, agross@kernel.org, konrad.dybcio@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        dmitry.baryshkov@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        jonathan@marek.ca, quic_tdas@quicinc.com,
+        vladimir.zapolskiy@linaro.org
+Cc:     oe-kbuild-all@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bryan.odonoghue@linaro.org
+Subject: Re: [PATCH v3 1/4] arm64: dts: qcom: sc8280xp: Add in CAMCC for
+ sc8280xp
+Message-ID: <202310151043.01L92wwx-lkp@intel.com>
+References: <20231011185540.2282975-2-bryan.odonoghue@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a28542e2-4a5b-4c29-9d4a-12a0d2ab5527@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231011185540.2282975-2-bryan.odonoghue@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 11:33:25AM +0200, Alexander Lobakin wrote:
-> From: Yury Norov <yury.norov@gmail.com>
-> Date: Mon, 9 Oct 2023 09:31:15 -0700
-> 
-> > + Alexander Potapenko <glider@google.com>
-> > 
-> > On Mon, Oct 09, 2023 at 05:10:21PM +0200, Alexander Lobakin wrote:
-> >> Sometimes there's need to get a 8/16/...-bit piece of a bitmap at a
-> >> particular offset. Currently, there are only bitmap_{get,set}_value8()
-> >> to do that for 8 bits and that's it.
-> > 
-> > And also a series from Alexander Potapenko, which I really hope will
-> > get into the -next really soon. It introduces bitmap_read/write which
-> > can set up to BITS_PER_LONG at once, with no limitations on alignment
-> > of position and length:
-> > 
-> > https://lore.kernel.org/linux-arm-kernel/ZRXbOoKHHafCWQCW@yury-ThinkPad/T/#mc311037494229647088b3a84b9f0d9b50bf227cb
-> > 
-> > Can you consider building your series on top of it?
-> 
-> Yeah, I mentioned in the cover letter that I'm aware of it and in fact
-> it doesn't conflict much, as the functions I'm adding here get optimized
-> as much as the original bitmap_{get,set}_value8(), while Alexander's
-> generic helpers are heavier.
-> I realize lots of calls will be optimized as well due to the offset and
-> the width being compile-time constants, but not all of them. The idea of
-> keeping two pairs of helpers initially came from Andy if I understood
-> him correctly.
-> What do you think? I can provide some bloat-o-meter stats after
-> rebasing. And either way, I see no issue in basing this series on top of
-> Alex' one.
+Hi Bryan,
 
-You're right, let's try both and see what how worse is one comparing
-to another wrt bloat-o-meter and overall code generation. If the
-difference is not that terrible, I'd stick to universal and simpler
-for users version.
+kernel test robot noticed the following build errors:
 
-If the difference is significant, we'd have to keep both. Maybe it's
-worth to try merge the aligned case into generic one, but it's not the
-purpose of your series, of course.
+[auto build test ERROR on robh/for-next]
+[also build test ERROR on linus/master v6.6-rc5 next-20231013]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Thanks,
-Yury
+url:    https://github.com/intel-lab-lkp/linux/commits/Bryan-O-Donoghue/arm64-dts-qcom-sc8280xp-Add-in-CAMCC-for-sc8280xp/20231012-025807
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+patch link:    https://lore.kernel.org/r/20231011185540.2282975-2-bryan.odonoghue%40linaro.org
+patch subject: [PATCH v3 1/4] arm64: dts: qcom: sc8280xp: Add in CAMCC for sc8280xp
+config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20231015/202310151043.01L92wwx-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231015/202310151043.01L92wwx-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310151043.01L92wwx-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from arch/arm64/boot/dts/qcom/sa8540p.dtsi:7,
+                    from arch/arm64/boot/dts/qcom/sa8295p-adp.dts:13:
+>> arch/arm64/boot/dts/qcom/sc8280xp.dtsi:11:10: fatal error: dt-bindings/clock/qcom,sc8280xp-camcc.h: No such file or directory
+      11 | #include <dt-bindings/clock/qcom,sc8280xp-camcc.h>
+         |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   compilation terminated.
+
+
+vim +11 arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+
+  > 11	#include <dt-bindings/clock/qcom,sc8280xp-camcc.h>
+    12	#include <dt-bindings/clock/qcom,sc8280xp-lpasscc.h>
+    13	#include <dt-bindings/interconnect/qcom,osm-l3.h>
+    14	#include <dt-bindings/interconnect/qcom,sc8280xp.h>
+    15	#include <dt-bindings/interrupt-controller/arm-gic.h>
+    16	#include <dt-bindings/mailbox/qcom-ipcc.h>
+    17	#include <dt-bindings/phy/phy-qcom-qmp.h>
+    18	#include <dt-bindings/power/qcom-rpmpd.h>
+    19	#include <dt-bindings/soc/qcom,gpr.h>
+    20	#include <dt-bindings/soc/qcom,rpmh-rsc.h>
+    21	#include <dt-bindings/sound/qcom,q6afe.h>
+    22	#include <dt-bindings/thermal/thermal.h>
+    23	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
