@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 471247C99F1
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 18:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 894037C99F2
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 18:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbjJOQNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 12:13:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41616 "EHLO
+        id S230091AbjJOQNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 12:13:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjJOQNV (ORCPT
+        with ESMTP id S229522AbjJOQNu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 12:13:21 -0400
+        Sun, 15 Oct 2023 12:13:50 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F02A6A3
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 09:13:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38411C433C8;
-        Sun, 15 Oct 2023 16:13:19 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42985A3
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 09:13:49 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82FDFC433C8;
+        Sun, 15 Oct 2023 16:13:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697386399;
-        bh=1M1k5UESPxlG1NghWMG6kdrgsF3T+29Q+UCFG4pZ4SU=;
+        s=korg; t=1697386428;
+        bh=fACR+XJLl9B/jjpthQjGUUKc7ebs03eV424puDrJuis=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i+aXD3jK1RJIEnCg/GnrjLl8R0Wabm1jzf0iWWFrkQbFxGRTufCMFWvlUiNaZZYGK
-         xjfzuUMdtS6Oc5PDUKghjp17lzhO/BhS/v1eBG7N1hG5T6gsNOdFS5L0Cre3K+cOvc
-         Br49Lug56ehkc/QMvzZ9+DxV91b6um6U8Pe/EiBo=
-Date:   Sun, 15 Oct 2023 18:13:14 +0200
+        b=dn8ffKcXqjz/kcKfeFJ2MowejFrBtDPmb1jSxphGkWhMbMdBF5ft8OclL/SGGclQO
+         v46UMb6f6nLAdb17eP5E0gcwdkup4qoIQn/YmSXd13rSVoRaAQAQFP2ebWvo5c0nmw
+         dr5cySAM2THcHcMqajWC6Kxqk/QL3WFeicd6SjxY=
+Date:   Sun, 15 Oct 2023 18:13:46 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     Calvince Otieno <calvncce@gmail.com>
 Cc:     gustavo@embeddedor.com, outreachy@lists.linux.dev,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: wlan-ng: remove unnecessary helper function
-Message-ID: <2023101552-delay-dish-e2ae@gregkh>
-References: <ZSvlS18qI7G7Dvpi@lab-ubuntu>
+Subject: Re: [PATCH] staging: wlan-ng: remove unused function prototypes
+Message-ID: <2023101530-estate-strum-cfab@gregkh>
+References: <ZSv2ObWLvlbM2hXn@lab-ubuntu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZSvlS18qI7G7Dvpi@lab-ubuntu>
+In-Reply-To: <ZSv2ObWLvlbM2hXn@lab-ubuntu>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -45,81 +45,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 15, 2023 at 04:12:43PM +0300, Calvince Otieno wrote:
-> The function prism2sta_inf_handover() is called by the parent
-> function prism2sta_ev_info() to print a literal debug information
-> string using pr_debug(). The debugging utility function can be called
-> directly within prism2sta_ev_info().
-> 
-> Furthermore, to make the debugging more module-specific, the netdev_dbg()
-> function is preferred over the generic pr_debug() utility function.
+On Sun, Oct 15, 2023 at 05:24:57PM +0300, Calvince Otieno wrote:
+> These functions are declared but not defined or used anywhere.
+> Their definitions were removed 15 years ago in the
+> commit cbec30c4c00c ("Staging: wlan-ng: Delete a large pile of
+> now-unused code.")
 > 
 > Signed-off-by: Calvince Otieno <calvncce@gmail.com>
 > ---
->  drivers/staging/wlan-ng/prism2sta.c | 30 ++---------------------------
->  1 file changed, 2 insertions(+), 28 deletions(-)
+>  drivers/staging/wlan-ng/prism2mgmt.h | 8 --------
+>  1 file changed, 8 deletions(-)
 > 
-> diff --git a/drivers/staging/wlan-ng/prism2sta.c b/drivers/staging/wlan-ng/prism2sta.c
-> index 57180bb71699..b5e95a3207fe 100644
-> --- a/drivers/staging/wlan-ng/prism2sta.c
-> +++ b/drivers/staging/wlan-ng/prism2sta.c
-> @@ -90,9 +90,6 @@ static int prism2sta_getcardinfo(struct wlandevice *wlandev);
->  static int prism2sta_globalsetup(struct wlandevice *wlandev);
->  static int prism2sta_setmulticast(struct wlandevice *wlandev,
->  				  struct net_device *dev);
-> -
-> -static void prism2sta_inf_handover(struct wlandevice *wlandev,
-> -				   struct hfa384x_inf_frame *inf);
->  static void prism2sta_inf_tallies(struct wlandevice *wlandev,
->  				  struct hfa384x_inf_frame *inf);
->  static void prism2sta_inf_hostscanresults(struct wlandevice *wlandev,
-> @@ -922,30 +919,6 @@ static int prism2sta_setmulticast(struct wlandevice *wlandev,
->  	return result;
->  }
+> diff --git a/drivers/staging/wlan-ng/prism2mgmt.h b/drivers/staging/wlan-ng/prism2mgmt.h
+> index 083a055ee986..8c3f1ac35913 100644
+> --- a/drivers/staging/wlan-ng/prism2mgmt.h
+> +++ b/drivers/staging/wlan-ng/prism2mgmt.h
+> @@ -78,14 +78,6 @@ void prism2mgmt_pstr2bytestr(struct hfa384x_bytestr *bytestr,
+>  void prism2mgmt_bytestr2pstr(struct hfa384x_bytestr *bytestr,
+>  			     struct p80211pstrd *pstr);
 >  
-> -/*
-> - * prism2sta_inf_handover
-> - *
-> - * Handles the receipt of a Handover info frame. Should only be present
-> - * in APs only.
-> - *
-> - * Arguments:
-> - *	wlandev		wlan device structure
-> - *	inf		ptr to info frame (contents in hfa384x order)
-> - *
-> - * Returns:
-> - *	nothing
-> - *
-> - * Side effects:
-> - *
-> - * Call context:
-> - *	interrupt
-> - */
-> -static void prism2sta_inf_handover(struct wlandevice *wlandev,
-> -				   struct hfa384x_inf_frame *inf)
-> -{
-> -	pr_debug("received infoframe:HANDOVER (unhandled)\n");
-> -}
+> -/* functions to convert Group Addresses */
+> -void prism2mgmt_get_grpaddr(u32 did, struct p80211pstrd *pstr,
+> -			    struct hfa384x *priv);
+> -int prism2mgmt_set_grpaddr(u32 did,
+> -			   u8 *prism2buf, struct p80211pstrd *pstr,
+> -			   struct hfa384x *priv);
+> -int prism2mgmt_get_grpaddr_index(u32 did);
 > -
->  /*
->   * prism2sta_inf_tallies
->   *
-> @@ -1724,7 +1697,8 @@ void prism2sta_ev_info(struct wlandevice *wlandev,
->  	/* Dispatch */
->  	switch (inf->infotype) {
->  	case HFA384x_IT_HANDOVERADDR:
-> -		prism2sta_inf_handover(wlandev, inf);
-> +		netdev_dbg(wlandev->netdev,
-> +			   "received infoframe:HANDOVER (unhandled)\n");
->  		break;
->  	case HFA384x_IT_COMMTALLIES:
->  		prism2sta_inf_tallies(wlandev, inf);
+>  void prism2sta_processing_defer(struct work_struct *data);
+>  
+>  void prism2sta_commsqual_defer(struct work_struct *data);
 > -- 
 > 2.34.1
 > 
 > 
-
-
 
 Hi,
 
