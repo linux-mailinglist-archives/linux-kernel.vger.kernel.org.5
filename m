@@ -2,79 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59CFA7C99E3
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 18:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F6D27C99E5
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 18:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbjJOQGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 12:06:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51024 "EHLO
+        id S230156AbjJOQIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 12:08:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjJOQG1 (ORCPT
+        with ESMTP id S229522AbjJOQIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 12:06:27 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED388A3
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 09:06:25 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c9e072472bso21328475ad.2
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 09:06:25 -0700 (PDT)
+        Sun, 15 Oct 2023 12:08:04 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F890AB;
+        Sun, 15 Oct 2023 09:08:02 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-405361bb9f7so37616635e9.2;
+        Sun, 15 Oct 2023 09:08:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697385985; x=1697990785; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+m9TMVLDEkbZEDJaRE0ie/5KoWcOFR+k5kgu1kYC8zg=;
-        b=G8RMvi8Pu5mvAJmnbzAVK/14mESc595psYbXCpwU0AveCOhKql4ZFZ1mWGuNzCErdE
-         KNAhzQ35hYi1f8oG+PMWKSu2+YvVJWjkTbX8FBKec7aNVU/LOjg0jVYaJplrPR7QDyuD
-         XiAATpfA8si+rGcUNihfaiGTuyEunkbgK+d8xU5LHheZB235xx6W0PvPGZKUXhLMKh35
-         Cuhf6YMp7Q9UpZhMC0D/hCbpmt8XbaZVkZg65qZbb/Q2SnnKEe4vakfx3Hgy4RbZWzO5
-         wXeHpv+YE9dBnkYhUOs6HR8FKtI41rxfvjBnpMtOrGlJXeuHCYZKlmtIByTr9+KERbQ0
-         pI+A==
+        d=gmail.com; s=20230601; t=1697386081; x=1697990881; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XujhMv/8pwB8H+Ij7K6MZPspXyDbpmJ+2p7uc4kDFNk=;
+        b=AB0lTmfgWQPvnHMkCiiWckdZn655ocvhrgppqgLxkhdTtwrpGmKdX5OlL7LRqQgsar
+         W0/tqUa0MwCJhoUYSEYT4JKpkPZ85CihR/cFynoarQUC7EQmqYCvI+zVEhfafO8IkZk3
+         OdGseues4F2kE6jkll6PNZwS+P1N+RlyLqj+feAiLi9DwNrflBQoYNTjUA354IwQtHW1
+         VXkquQAgLutmqTIl8sN9a5V0KlEeDbmXbvIkBXhgCvjUdrLFQrb4e5jS51jnNBQLwzhQ
+         F9vDxn3IDLUlSr7enAuvRJ+dTVPM/zji9On94hMGlEDbkDetLtBIIWZmfqBaXB+8ftTe
+         iruA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697385985; x=1697990785;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+m9TMVLDEkbZEDJaRE0ie/5KoWcOFR+k5kgu1kYC8zg=;
-        b=RMZSHE8U0Cvdfzl9iJq8joLTIZXDhD/vx0L2C6n2KcjF4AjS3BrmfLJIotd8s/RbTd
-         qZrHKxmBCfZmdMTlVs/k4csVUoiCRpE2SnZF5SzZm1DZKGvgvUL2zC/bAZOjnnWXx4Pu
-         DmCKuDKph+SWkwC4JixtKI3Ls3DLOQ5Ndb2A3AbcP0h9s2idquCHsMtvHwLKQJIf4aIX
-         7sNbCJ9JLR8+ktDged74Dt2LoPftxQa6peMQVeUYBf112Ulxf7cxjOutidvIIhvGTsZk
-         G1hKhB0bUZVFbNZRizdOXoM9oYa7mc6GE5frhAmCNfwISF1U+dbNHYyymIqsXBNilR6b
-         tIdw==
-X-Gm-Message-State: AOJu0YxAmlE3FGbrgGrziBNneIULMdhzrk5/HBeR2PYEHb56e+p4jDMK
-        fJitplUVZDHlHUfN/StDhKZGZg==
-X-Google-Smtp-Source: AGHT+IErqogL25VeiX9aK1IlyGTRWzr2zCYr06wCfdDmbs8ZozaBhw6D5Al91KGjpayqICdjk8IvxA==
-X-Received: by 2002:a17:903:187:b0:1c3:749f:6a5d with SMTP id z7-20020a170903018700b001c3749f6a5dmr32519021plg.4.1697385985387;
-        Sun, 15 Oct 2023 09:06:25 -0700 (PDT)
-Received: from [192.168.3.101] ([104.28.240.135])
-        by smtp.gmail.com with ESMTPSA id e4-20020a17090301c400b001aaf2e8b1eesm6951960plh.248.2023.10.15.09.06.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Oct 2023 09:06:24 -0700 (PDT)
-Message-ID: <1516f7d1-e11b-3244-76b9-e6ddafc29a32@bytedance.com>
-Date:   Mon, 16 Oct 2023 00:06:11 +0800
+        d=1e100.net; s=20230601; t=1697386081; x=1697990881;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XujhMv/8pwB8H+Ij7K6MZPspXyDbpmJ+2p7uc4kDFNk=;
+        b=cRvsQPwBYqsnjYiH1pZ7OzD+KEMb/kUIjWbQagaML1qHhIZhSEFkLz+ktcMtU8WyD1
+         nZJVcYIGk7Fwjx25l+CTkEzQVWRkGvRw8YwZz9oRheWFHLGN7ZRjnTxNT2+0aFPSQgVi
+         UotJJjZTNDQt3bt2y8hqdKlNzHwyzdch0V8LtiDNaYCQ1AzxSp4Hk4ngjsHK2Q2vru4E
+         k1aCAIYAy4XqcfmHHh8o1yDcHD+MNZtvJsqiENZkEvBKFD0knrl4XgK4BrJEWLElVqA5
+         0+P+5H6sdinR6KeF5SPpBEUvcsf8UDvlsmysMPPOTnT4JNUeC1HvqujKeI4VCOPmk+4C
+         E3PQ==
+X-Gm-Message-State: AOJu0YxN8czhQqsqjN9By13+sUH02C13lipa2rZJgo2ChPweHXiJZmv3
+        pmI1McKaHnqP3MXHSkV7Fo7LohqFu+nO3nJmKGU=
+X-Google-Smtp-Source: AGHT+IHRwQ5bE3hW1waPm3vlZF7IYRIPl+hr17w3AEC3uTMy8O1jLNp9Skrcd0Po7vdFsljBETR6eKnURnRLMkMbVyQ=
+X-Received: by 2002:a05:600c:21d1:b0:405:3ae6:2413 with SMTP id
+ x17-20020a05600c21d100b004053ae62413mr28009964wmj.25.1697386080580; Sun, 15
+ Oct 2023 09:08:00 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Content-Language: en-US
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     linux-trace-kernel@vger.kernel.org, davem@davemloft.net,
-        anil.s.keshavamurthy@intel.com, naveen.n.rao@linux.ibm.com,
-        rostedt@goodmis.org, peterz@infradead.org,
-        akpm@linux-foundation.org, sander@svanheule.net,
-        ebiggers@google.com, dan.j.williams@intel.com, jpoimboe@kernel.org,
-        linux-kernel@vger.kernel.org, lkp@intel.com, mattwu@163.com
-References: <20231015053251.707442-1-wuqiang.matt@bytedance.com>
- <20231015053251.707442-2-wuqiang.matt@bytedance.com>
- <20231016004356.b5f3f815cb8d7c0994934332@kernel.org>
-From:   "wuqiang.matt" <wuqiang.matt@bytedance.com>
-Subject: Re: [PATCH v10 1/5] lib: objpool added: ring-array based lockless
- MPMC
-In-Reply-To: <20231016004356.b5f3f815cb8d7c0994934332@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+References: <20231015141644.260646-1-akihiko.odaki@daynix.com> <20231015141644.260646-2-akihiko.odaki@daynix.com>
+In-Reply-To: <20231015141644.260646-2-akihiko.odaki@daynix.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sun, 15 Oct 2023 09:07:49 -0700
+Message-ID: <CAADnVQLfUDmgYng8Cw1hiZOMfWNWLjbn7ZGc4yOEz-XmeFEz5Q@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 1/7] bpf: Introduce BPF_PROG_TYPE_VNET_HASH
+To:     Akihiko Odaki <akihiko.odaki@daynix.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Yuri Benditovich <yuri.benditovich@daynix.com>,
+        Andrew Melnychenko <andrew@daynix.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,118 +96,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/15 23:43, Masami Hiramatsu (Google) wrote:
-> On Sun, 15 Oct 2023 13:32:47 +0800
-> "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
-> 
->> objpool is a scalable implementation of high performance queue for
->> object allocation and reclamation, such as kretprobe instances.
->>
->> With leveraging percpu ring-array to mitigate hot spots of memory
->> contention, it delivers near-linear scalability for high parallel
->> scenarios. The objpool is best suited for the following cases:
->> 1) Memory allocation or reclamation are prohibited or too expensive
->> 2) Consumers are of different priorities, such as irqs and threads
->>
->> Limitations:
->> 1) Maximum objects (capacity) is fixed after objpool creation
->> 2) All pre-allocated objects are managed in percpu ring array,
->>     which consumes more memory than linked lists
->>
-> 
-> Thanks for updating! This looks good to me except 2 points.
-> 
-> [...]
->> +
->> +/* initialize object pool and pre-allocate objects */
->> +int objpool_init(struct objpool_head *pool, int nr_objs, int object_size,
->> +		gfp_t gfp, void *context, objpool_init_obj_cb objinit,
->> +		objpool_fini_cb release)
->> +{
->> +	int rc, capacity, slot_size;
->> +
->> +	/* check input parameters */
->> +	if (nr_objs <= 0 || nr_objs > OBJPOOL_NR_OBJECT_MAX ||
->> +	    object_size <= 0 || object_size > OBJPOOL_OBJECT_SIZE_MAX)
->> +		return -EINVAL;
->> +
->> +	/* align up to unsigned long size */
->> +	object_size = ALIGN(object_size, sizeof(long));
->> +
->> +	/* calculate capacity of percpu objpool_slot */
->> +	capacity = roundup_pow_of_two(nr_objs);
-> 
-> This must be 'roundup_pow_of_two(nr_objs + 1)' because if nr_objs is power
-> of 2 and all objects are pushed on the same slot, tail == head. This
-> means empty and full is the same.
+On Sun, Oct 15, 2023 at 7:17=E2=80=AFAM Akihiko Odaki <akihiko.odaki@daynix=
+.com> wrote:
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 0448700890f7..298634556fab 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -988,6 +988,7 @@ enum bpf_prog_type {
+>         BPF_PROG_TYPE_SK_LOOKUP,
+>         BPF_PROG_TYPE_SYSCALL, /* a program that can execute syscalls */
+>         BPF_PROG_TYPE_NETFILTER,
+> +       BPF_PROG_TYPE_VNET_HASH,
 
-That won't happen. Would tail and head wrap only when >= 2^32. When all
-objects are pushed to the same slot, tail will be (head + capacity).
+Sorry, we do not add new stable program types anymore.
 
-> 
->> +	if (!capacity)
->> +		return -EINVAL;
->> +
->> +	/* initialize objpool pool */
->> +	memset(pool, 0, sizeof(struct objpool_head));
->> +	pool->nr_cpus = nr_cpu_ids;
->> +	pool->obj_size = object_size;
->> +	pool->capacity = capacity;
->> +	pool->gfp = gfp & ~__GFP_ZERO;
->> +	pool->context = context;
->> +	pool->release = release;
->> +	slot_size = pool->nr_cpus * sizeof(struct objpool_slot);
->> +	pool->cpu_slots = kzalloc(slot_size, pool->gfp);
->> +	if (!pool->cpu_slots)
->> +		return -ENOMEM;
->> +
->> +	/* initialize per-cpu slots */
->> +	rc = objpool_init_percpu_slots(pool, nr_objs, context, objinit);
->> +	if (rc)
->> +		objpool_fini_percpu_slots(pool);
->> +	else
->> +		refcount_set(&pool->ref, pool->nr_objs + 1);
->> +
->> +	return rc;
->> +}
->> +EXPORT_SYMBOL_GPL(objpool_init);
->> +
-> 
-> [...]
-> 
->> +
->> +/* drop unused objects and defref objpool for releasing */
->> +void objpool_fini(struct objpool_head *pool)
->> +{
->> +	void *obj;
->> +
->> +	do {
->> +		/* grab object from objpool and drop it */
->> +		obj = objpool_pop(pool);
->> +
->> +		/*
->> +		 * drop reference of objpool anyway even if
->> +		 * the obj is NULL, since one extra ref upon
->> +		 * objpool was already grabbed during pool
->> +		 * initialization in objpool_init()
->> +		 */
->> +		if (refcount_dec_and_test(&pool->ref))
->> +			objpool_free(pool);
-> 
-> Nit: you can call objpool_drop() instead of repeating the same thing here.
+> @@ -6111,6 +6112,10 @@ struct __sk_buff {
+>         __u8  tstamp_type;
+>         __u32 :24;              /* Padding, future use. */
+>         __u64 hwtstamp;
+> +
+> +       __u32 vnet_hash_value;
+> +       __u16 vnet_hash_report;
+> +       __u16 vnet_rss_queue;
+>  };
 
-objpool_drop won't deref objpool if given obj is NULL. But here we need
-drop objpool anyway even if obj is NULL.
+we also do not add anything to uapi __sk_buff.
 
-> Thank you,
-> 
->> +	} while (obj);
->> +}
->> +EXPORT_SYMBOL_GPL(objpool_fini);
->> -- 
->> 2.40.1
->>
+> +const struct bpf_verifier_ops vnet_hash_verifier_ops =3D {
+> +       .get_func_proto         =3D sk_filter_func_proto,
+> +       .is_valid_access        =3D sk_filter_is_valid_access,
+> +       .convert_ctx_access     =3D bpf_convert_ctx_access,
+> +       .gen_ld_abs             =3D bpf_gen_ld_abs,
+> +};
 
-Thanks for you time
+and we don't do ctx rewrites like this either.
 
-
+Please see how hid-bpf and cgroup rstat are hooking up bpf
+in _unstable_ way.
