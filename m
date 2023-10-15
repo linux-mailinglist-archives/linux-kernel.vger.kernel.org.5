@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F867C9B55
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 22:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9FB87C9B57
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 22:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbjJOUPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 16:15:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33914 "EHLO
+        id S231133AbjJOUPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 16:15:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbjJOUP3 (ORCPT
+        with ESMTP id S230467AbjJOUPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 16:15:29 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DF8EDE;
-        Sun, 15 Oct 2023 13:15:28 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9ae2cc4d17eso622201966b.1;
-        Sun, 15 Oct 2023 13:15:28 -0700 (PDT)
+        Sun, 15 Oct 2023 16:15:39 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EEB2D9;
+        Sun, 15 Oct 2023 13:15:37 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-53e2dc8fa02so4978647a12.2;
+        Sun, 15 Oct 2023 13:15:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697400927; x=1698005727; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697400936; x=1698005736; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KOqkDNi2G1klSItw+VfFUFmDBPvfXQMPHAdmvnTWKuY=;
-        b=dMLMAH/Z6JUUUKif67a1PIqErjC7VE0HEIAO/qhxt2Q1EQrsNeMccK0g4rmfn1piEI
-         MOASk5ymic0s5gIM67mPPgPaaRvbLPQlZTaZrs9KaKW7stBnpspRBDEXDkN5VtTYdgqk
-         OfRAnctFYtb8rzXnF+SFemkbi7qdAUf+F21DbuNynWXRgjaxIgEiVkVUPe9cNnm+KcBP
-         ovqdw897+lbmwDWf0IbepSCkHxtWIue46B/zyHiMnfapkF92ZEACifwthxtmS7Rkv3XK
-         KOKW/ohrwsIP3D//Ov0C8KwmibDVNmaEWFsVuU3TnmkWmGTPHYi/Yy8/WX2k9p24W6pT
-         XS8A==
+        bh=qh2e0sxZPUbHxzk4qSfOyASeBQgiUPXTS5/RpBzGDJ8=;
+        b=QG3bX8KDkaNhiiMco09vlpY33T7XbLm68u0qMZshfZv70c7cMxruEpprLsmWnsiH3q
+         Q4HmrGJcMMlAa76J7kpfTC9dr31DcGAjjbIFN6X4f7wIG4j/Q9Hxmtow03sC2QQsrDvL
+         JzPSsmDZprVxjCK55EfcHiU3pklqtiReCQrc44rX9Osfc36B49F6UwxqnbWZtS0lBsQs
+         h94EQIR88eijpcM9mBUcM2zKLIu3t4aHlHM9KhinQtfb1JAuqhbJj28DehM5gyeDE0iI
+         j35iby58Oeq5FkCcfidxJ95NO3nQhOZVq/QjkWxFzYdaZRW0PT+hw52dQyu4lWrW3JWf
+         i2+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697400927; x=1698005727;
+        d=1e100.net; s=20230601; t=1697400936; x=1698005736;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KOqkDNi2G1klSItw+VfFUFmDBPvfXQMPHAdmvnTWKuY=;
-        b=HCrxxLvXO7JwbhrT56p4dJZ+fsGmCQdmKTgdoCBbuTmwogdHTMdmRM6gIOk2kb7zxV
-         UFPsyQRoSUum+xjtjiD7iOFTz1oJrcAUmjiqW4mrOUDL9mTQv4tj/5nk6yplQ5UOF6M/
-         VbgKAvUHXZe4S+wKgY914Z85QtcAzXd5EQ+IZzb3mF7rez1+p1+s9jhYT++3CNwabYe4
-         +Nk1Cb/IB7/8S2LgyY5EI+Ln/UjTa3jb9K2I1d7N3z4EGmUmOKeqnwXsxSlwZVbakLj0
-         A9I5ZtMh/DAW+6qSzfSf3Y7YznFoYPwnTlrOxXuRtj3yYvq2JXCcbLasEzkVBC5/PjLO
-         KpPQ==
-X-Gm-Message-State: AOJu0Yw+hlY0P5/W7nxs1Q5lIR9vBCoywv+zJhAQhu7DHQaRqoVERhnC
-        9awHzsT9fnozc7glWiNQdI3bvFlFawoUSlQ=
-X-Google-Smtp-Source: AGHT+IGmDRzZZ15imc7zYxdckrpC7tosOr9IS4ylHP2yT0JnqKftSePWFbjYO1E8NFxywr2czVZL4A==
-X-Received: by 2002:a17:907:7ea4:b0:9be:6395:6b12 with SMTP id qb36-20020a1709077ea400b009be63956b12mr5248720ejc.27.1697400926427;
-        Sun, 15 Oct 2023 13:15:26 -0700 (PDT)
+        bh=qh2e0sxZPUbHxzk4qSfOyASeBQgiUPXTS5/RpBzGDJ8=;
+        b=iMGrtnHJsYEEVlUWOArBd1vgStUh56IPFaewWxJI74cOi6g4JP1rNQPE4KxwSs2URb
+         czMO8D3xqFXQW4O/24v71bpxMt747jHVJ/PQ7p52qpbyxhPBaLMsZAXilkaGlTUAqMlT
+         bLCPXVzbuhElU/jhTDi4A9cPPPxG/Ngdpv3kxL9Wri3gUCE228z3CSFQtNaAFIsdiLu6
+         e3M1fKUd/Zo7hF+4W9U/ySvnO2+18IVGLrn9AogSvF4NDrNypSYlejnAQ9Tru8LMeVjg
+         VKzR9BSy+tWTZxHjVg9J0Z1pu6GataPlmWT5p3TNe4ZAKN14SZw8QjjDhRYKsBh93suX
+         zQXw==
+X-Gm-Message-State: AOJu0Yxk9QsR9w4b+Ead1Zo5qSPDUptqH8xu2nLyLKowZcJoik/cqTJO
+        IV5z6im+xqakq0XvR291gg==
+X-Google-Smtp-Source: AGHT+IFqzTsU6PuT+EvGO/BJNuln/2IQzK8j3ikapXlYLlZLg5TqQn6SCwu5v+2ZILaHz6gL/ZAZew==
+X-Received: by 2002:a17:907:6d2a:b0:9bd:d1e8:57f1 with SMTP id sa42-20020a1709076d2a00b009bdd1e857f1mr5290693ejc.50.1697400935496;
+        Sun, 15 Oct 2023 13:15:35 -0700 (PDT)
 Received: from dorcaslitunya-virtual-machine.localdomain ([105.163.157.6])
-        by smtp.gmail.com with ESMTPSA id m10-20020a170906234a00b009ae587ce133sm2721766eja.188.2023.10.15.13.15.23
+        by smtp.gmail.com with ESMTPSA id m10-20020a170906234a00b009ae587ce133sm2721766eja.188.2023.10.15.13.15.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Oct 2023 13:15:26 -0700 (PDT)
+        Sun, 15 Oct 2023 13:15:35 -0700 (PDT)
 From:   Dorcas AnonoLitunya <anonolitunya@gmail.com>
 Cc:     anonolitunya@gmail.com, outreachy@lists.linux.dev,
         Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
@@ -57,9 +57,9 @@ Cc:     anonolitunya@gmail.com, outreachy@lists.linux.dev,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 4/5] Staging: sm750fb: Rename programModeRegisters
-Date:   Sun, 15 Oct 2023 23:12:37 +0300
-Message-ID: <1f4999e1523371bfb7dadde8eea7073ef3a04c75.1697400022.git.anonolitunya@gmail.com>
+Subject: [PATCH 5/5] Staging: sm750fb: Rename ddk750_setModeTiming
+Date:   Sun, 15 Oct 2023 23:12:38 +0300
+Message-ID: <a74a7782b02275a19e7002581855ec23f70b83fa.1697400022.git.anonolitunya@gmail.com>
 X-Mailer: git-send-email 2.42.0.345.gaab89be2eb
 In-Reply-To: <cover.1697400022.git.anonolitunya@gmail.com>
 References: <cover.1697400022.git.anonolitunya@gmail.com>
@@ -76,41 +76,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename function programModeRegisters to program_mode_registers. This
-follows snakecase naming convention and ensures consistent naming style
-throughout the file.Issue by checkpatch.
+Rename function ddk750_setModeTiming to ddk750_set_mode_timing.This
+patch affects three files as the function is imported to other external
+files.
+
+Renaming the function ensures snakecase naming convention is followed
+thus enabling consistent naming style throughout.Issue by checkpatch.
 
 Mutes the following checkpatch error:
-CHECK: Avoid CamelCase: <programModeRegisters>
+CHECK:Avoid CamelCase: <ddk750_setModeTiming>
 
 Signed-off-by: Dorcas AnonoLitunya <anonolitunya@gmail.com>
 ---
- drivers/staging/sm750fb/ddk750_mode.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/staging/sm750fb/ddk750_mode.c | 2 +-
+ drivers/staging/sm750fb/ddk750_mode.h | 2 +-
+ drivers/staging/sm750fb/sm750_hw.c    | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/staging/sm750fb/ddk750_mode.c b/drivers/staging/sm750fb/ddk750_mode.c
-index fc3db09de9ae..e901855fa9b6 100644
+index e901855fa9b6..f3f354831617 100644
 --- a/drivers/staging/sm750fb/ddk750_mode.c
 +++ b/drivers/staging/sm750fb/ddk750_mode.c
-@@ -75,8 +75,8 @@ display_control_adjust_SM750LE(struct mode_parameter *mode_param,
+@@ -207,7 +207,7 @@ static int program_mode_registers(struct mode_parameter *mode_param,
+ 	return ret;
  }
  
- /* only timing related registers will be  programed */
--static int programModeRegisters(struct mode_parameter *mode_param,
--				struct pll_value *pll)
-+static int program_mode_registers(struct mode_parameter *mode_param,
-+				  struct pll_value *pll)
+-int ddk750_setModeTiming(struct mode_parameter *parm, enum clock_type clock)
++int ddk750_set_mode_timing(struct mode_parameter *parm, enum clock_type clock)
  {
- 	int ret = 0;
- 	int cnt = 0;
-@@ -220,6 +220,6 @@ int ddk750_setModeTiming(struct mode_parameter *parm, enum clock_type clock)
- 		outb_p(0x88, 0x3d4);
- 		outb_p(0x06, 0x3d5);
- 	}
--	programModeRegisters(parm, &pll);
-+	program_mode_registers(parm, &pll);
- 	return 0;
- }
+ 	struct pll_value pll;
+ 
+diff --git a/drivers/staging/sm750fb/ddk750_mode.h b/drivers/staging/sm750fb/ddk750_mode.h
+index 2df78a0937b2..1b70885f85e5 100644
+--- a/drivers/staging/sm750fb/ddk750_mode.h
++++ b/drivers/staging/sm750fb/ddk750_mode.h
+@@ -33,5 +33,5 @@ struct mode_parameter {
+ 	enum spolarity clock_phase_polarity;
+ };
+ 
+-int ddk750_setModeTiming(struct mode_parameter *parm, enum clock_type clock);
++int ddk750_set_mode_timing(struct mode_parameter *parm, enum clock_type clock);
+ #endif
+diff --git a/drivers/staging/sm750fb/sm750_hw.c b/drivers/staging/sm750fb/sm750_hw.c
+index 71247eaf26ee..4bc89218c11c 100644
+--- a/drivers/staging/sm750fb/sm750_hw.c
++++ b/drivers/staging/sm750fb/sm750_hw.c
+@@ -305,7 +305,7 @@ int hw_sm750_crtc_setMode(struct lynxfb_crtc *crtc,
+ 		clock = SECONDARY_PLL;
+ 
+ 	pr_debug("Request pixel clock = %lu\n", modparm.pixel_clock);
+-	ret = ddk750_setModeTiming(&modparm, clock);
++	ret = ddk750_set_mode_timing(&modparm, clock);
+ 	if (ret) {
+ 		pr_err("Set mode timing failed\n");
+ 		goto exit;
 -- 
 2.42.0.345.gaab89be2eb
 
