@@ -2,103 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACDAA7C9916
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 15:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 495C77C9918
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 15:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbjJONLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 09:11:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46740 "EHLO
+        id S229816AbjJONMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 09:12:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbjJONLa (ORCPT
+        with ESMTP id S229614AbjJONMv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 09:11:30 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F8F8DE
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 06:11:26 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-406609df1a6so35466985e9.3
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 06:11:26 -0700 (PDT)
+        Sun, 15 Oct 2023 09:12:51 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0973BC1
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 06:12:49 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-406609df1a6so35472215e9.3
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 06:12:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697375484; x=1697980284; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=o11HJjwzxDPmGkLeY91KFGMkBQ1VW8cU0/SV0Rl7Esc=;
-        b=ZLM0dYkjpUtD/Ag76jvLdkC3A2nAtQu279XX7jWN+IZpuBWbBroOO0PnJaA5MmUc+g
-         NI8WFVTEznu9LhHPhe2XWbUctp1dQJSk48T0UB7UKzW8M/5VirxVfXuQ3zRE4t072cjq
-         +fzaD6F48XiEApOGEv6aXruj2+F1OG5W58iwv55mpm3p/hleS7/kopefIxtfXBw7Qm92
-         zlODLltNCpvH1D+K8cNEOilZ8dxpeqchh5hOXewYBa0TFbXuOLVHiRHGcocIXQZb00VC
-         cPHZUeaAu2iX8AV40xXWneKRIhxYnJHMXYSWIqHQQSDXMNEkLWUuN8AiQi1V41xs4II1
-         Z5oQ==
+        d=gmail.com; s=20230601; t=1697375567; x=1697980367; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2tW4gpmmxh+63YJI903yg6bkjFjycGTO0DBlFHUGBTM=;
+        b=etTqXfHZjB31k8DGeeebCIE2Ls1iMxOX6IrDDEJ1byEkFJFcHwLF6sZt0moOYTTzVE
+         Ul6kItwkhtYOmRhQ7Apsnnm45EJdHfCv8xNNzjXlbL8T4gjaGx3VdYGC2nR/VqjM5gv+
+         e9KGMalBt0ms8m/HxUDGiXEKpBPuJGCkIaFX1Nkj1SzlnuxlNS3+qmbIT25SXDMZcdLE
+         RBbfxRI39XtWJjBC24R+ptu5k+5/Gnwrv9FfKfQY9OBP3/GADkeLj5p663jDdTGnL/Hd
+         j61GFzokIGcyrYSau/5IeyLbVkyK7MLykQ2DQxqltEViaiwtJNaQ+wkv32EPGPMZga9Y
+         cU+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697375484; x=1697980284;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=o11HJjwzxDPmGkLeY91KFGMkBQ1VW8cU0/SV0Rl7Esc=;
-        b=P1Qktupu96mY2Wac5bPygLSO1hNY6qaIjgrmisjoOqHESz+TXCNjrBjfo28coBcUfG
-         S4sFWRzl/xNKDyELfuYEnGYC8Qwz9+xuPmBk8UGlC1EHz3H4vBpufDRqsUazdWlfi5nF
-         xYRcDbkbSKpqWuGKb5yjKvri1SevAOfW30zWwV4s64bmNjjk+CGm/1pZMb5/1xw4l37D
-         rnjyibB464T8eirU1E1YA76dMWcRfYs6JVdG07aRRPlIZfRye4BS9QT4Kfxdhcty8dxk
-         KKg1RHocLDAiC1y6vU8KVrfeHZYupxbr78ONLJwYYdSCVdf6NhtXdILGvSPXKYwpL545
-         8Dhw==
-X-Gm-Message-State: AOJu0YxXzk7on2ApAxjE0Te88BXNbX33rhc9UQ1wVc8X6WGPZd/6wy2u
-        wEy4Mk8hGSW/xg/+O4zHxVCXLx0mdx5Tck71
-X-Google-Smtp-Source: AGHT+IEzkCt3d3NFqv25/uXO5bvsjkDTqjCXWlWAUWwvWcDzzsFT7gyaHZMuVTXy1DQBLvywBfecWw==
-X-Received: by 2002:a05:600c:290:b0:406:177e:5df7 with SMTP id 16-20020a05600c029000b00406177e5df7mr27038881wmk.29.1697375484226;
-        Sun, 15 Oct 2023 06:11:24 -0700 (PDT)
-Received: from localhost.localdomain (ptr-4x653mgnc6rxc3brvi5.18120a2.ip6.access.telenet.be. [2a02:1810:a404:e700:259e:a1b4:62cb:af3d])
-        by smtp.gmail.com with ESMTPSA id u19-20020a05600c139300b0040651505684sm4508763wmf.29.2023.10.15.06.11.23
+        d=1e100.net; s=20230601; t=1697375567; x=1697980367;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2tW4gpmmxh+63YJI903yg6bkjFjycGTO0DBlFHUGBTM=;
+        b=YehpU7mZfPcG01yBg3GijVYg5MhLc4CJYnDMSDYAL9zW3VTmdLuXh9uuDc4XK6Edqe
+         L4CkoLhXae17CdrtmIwj50IM3pD78i+NpJerxDJ4oXvyb2rl4F+Bwqs4Glgjn8AVFBju
+         Nu9FPcI2gQzPuX1eSYXfOjeKCMfFB91K5oq4wRfmhLz1K8MTtsuzWkl84uIbNMCayS2P
+         iQwyei6aOVtg/DKmn2eU9XUte0yxTDTyWedIM181fK9tUVkGPRYctWtiCl8CUJAQSlkp
+         sCqOE7vY43S1hd/9Mf0s2CcSDqWUjFHl844kXR9gpiklTKnYzGphsfgAT6euqD4oKZg/
+         5g2A==
+X-Gm-Message-State: AOJu0Yz0vXzXA4Je6JNrCjcVrQxZPPddmW3ndBHLeWEldfIO+r6+2vlX
+        r2f/hd4SUv6ETS8vWDW+/8Plz7q5eo5+bQ==
+X-Google-Smtp-Source: AGHT+IHUXQ+o0u2TfCTD4y/bZVfWK0YTlVpXcTYyc02g4p2BYq725O2qRPTAP+aK3//eRfhD407BiQ==
+X-Received: by 2002:a7b:ce89:0:b0:404:f9c1:d5d7 with SMTP id q9-20020a7bce89000000b00404f9c1d5d7mr27585153wmj.25.1697375566890;
+        Sun, 15 Oct 2023 06:12:46 -0700 (PDT)
+Received: from lab-ubuntu ([41.90.64.203])
+        by smtp.gmail.com with ESMTPSA id m28-20020a05600c3b1c00b00405bbfd5d16sm4463112wms.7.2023.10.15.06.12.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Oct 2023 06:11:23 -0700 (PDT)
-From:   Yussef Dalton <yussef.dalton@gmail.com>
-To:     tzimmermann@suse.de
-Cc:     javierm@redhat.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Yussef Dalton <yussef.dalton@gmail.com>
-Subject: [PATCH] drm/tiny: print 'struct resource *' correctly
-Date:   Sun, 15 Oct 2023 15:11:00 +0200
-Message-ID: <20231015131100.331880-1-yussef.dalton@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Sun, 15 Oct 2023 06:12:46 -0700 (PDT)
+Date:   Sun, 15 Oct 2023 16:12:43 +0300
+From:   Calvince Otieno <calvncce@gmail.com>
+To:     gustavo@embeddedor.com, outreachy@lists.linux.dev
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Calvince Otieno <calvncce@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: wlan-ng: remove unnecessary helper function
+Message-ID: <ZSvlS18qI7G7Dvpi@lab-ubuntu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since format specifier %pr refers to a 'struct resource *', there is no
-need to take the address of the 'res' variable since it is already of
-type 'struct resource *'.
+The function prism2sta_inf_handover() is called by the parent
+function prism2sta_ev_info() to print a literal debug information
+string using pr_debug(). The debugging utility function can be called
+directly within prism2sta_ev_info().
 
-Signed-off-by: Yussef Dalton <yussef.dalton@gmail.com>
+Furthermore, to make the debugging more module-specific, the netdev_dbg()
+function is preferred over the generic pr_debug() utility function.
+
+Signed-off-by: Calvince Otieno <calvncce@gmail.com>
 ---
- drivers/gpu/drm/tiny/ofdrm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/staging/wlan-ng/prism2sta.c | 30 ++---------------------------
+ 1 file changed, 2 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/gpu/drm/tiny/ofdrm.c b/drivers/gpu/drm/tiny/ofdrm.c
-index 2d999a0facde..6372ab383747 100644
---- a/drivers/gpu/drm/tiny/ofdrm.c
-+++ b/drivers/gpu/drm/tiny/ofdrm.c
-@@ -1208,13 +1208,13 @@ static struct ofdrm_device *ofdrm_device_create(struct drm_driver *drv,
+diff --git a/drivers/staging/wlan-ng/prism2sta.c b/drivers/staging/wlan-ng/prism2sta.c
+index 57180bb71699..b5e95a3207fe 100644
+--- a/drivers/staging/wlan-ng/prism2sta.c
++++ b/drivers/staging/wlan-ng/prism2sta.c
+@@ -90,9 +90,6 @@ static int prism2sta_getcardinfo(struct wlandevice *wlandev);
+ static int prism2sta_globalsetup(struct wlandevice *wlandev);
+ static int prism2sta_setmulticast(struct wlandevice *wlandev,
+ 				  struct net_device *dev);
+-
+-static void prism2sta_inf_handover(struct wlandevice *wlandev,
+-				   struct hfa384x_inf_frame *inf);
+ static void prism2sta_inf_tallies(struct wlandevice *wlandev,
+ 				  struct hfa384x_inf_frame *inf);
+ static void prism2sta_inf_hostscanresults(struct wlandevice *wlandev,
+@@ -922,30 +919,6 @@ static int prism2sta_setmulticast(struct wlandevice *wlandev,
+ 	return result;
+ }
  
- 	ret = devm_aperture_acquire_from_firmware(dev, fb_pgbase, fb_pgsize);
- 	if (ret) {
--		drm_err(dev, "could not acquire memory range %pr: error %d\n", &res, ret);
-+		drm_err(dev, "could not acquire memory range %pr: error %d\n", res, ret);
- 		return ERR_PTR(ret);
- 	}
- 
- 	mem = devm_request_mem_region(&pdev->dev, fb_pgbase, fb_pgsize, drv->name);
- 	if (!mem) {
--		drm_warn(dev, "could not acquire memory region %pr\n", &res);
-+		drm_warn(dev, "could not acquire memory region %pr\n", res);
- 		return ERR_PTR(-ENOMEM);
- 	}
- 
+-/*
+- * prism2sta_inf_handover
+- *
+- * Handles the receipt of a Handover info frame. Should only be present
+- * in APs only.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	inf		ptr to info frame (contents in hfa384x order)
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt
+- */
+-static void prism2sta_inf_handover(struct wlandevice *wlandev,
+-				   struct hfa384x_inf_frame *inf)
+-{
+-	pr_debug("received infoframe:HANDOVER (unhandled)\n");
+-}
+-
+ /*
+  * prism2sta_inf_tallies
+  *
+@@ -1724,7 +1697,8 @@ void prism2sta_ev_info(struct wlandevice *wlandev,
+ 	/* Dispatch */
+ 	switch (inf->infotype) {
+ 	case HFA384x_IT_HANDOVERADDR:
+-		prism2sta_inf_handover(wlandev, inf);
++		netdev_dbg(wlandev->netdev,
++			   "received infoframe:HANDOVER (unhandled)\n");
+ 		break;
+ 	case HFA384x_IT_COMMTALLIES:
+ 		prism2sta_inf_tallies(wlandev, inf);
 -- 
-2.41.0
+2.34.1
 
