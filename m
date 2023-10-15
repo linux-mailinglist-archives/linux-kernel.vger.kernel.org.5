@@ -2,147 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B467C9A26
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 19:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A6297C9A31
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 19:12:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbjJORCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 13:02:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50508 "EHLO
+        id S230204AbjJORML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 13:12:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbjJORCb (ORCPT
+        with ESMTP id S229603AbjJORMJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 13:02:31 -0400
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2053.outbound.protection.outlook.com [40.107.6.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 141C8AB;
-        Sun, 15 Oct 2023 10:02:29 -0700 (PDT)
+        Sun, 15 Oct 2023 13:12:09 -0400
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01olkn2084.outbound.protection.outlook.com [40.92.65.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8043A1;
+        Sun, 15 Oct 2023 10:12:06 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DwmyzxIKnTE74mG7Chf87iIdtQwsyv4Kql/LWPpYHgZk/urk+Eztq5ZTgcmhgwDMYO757Ko0KanvGUJxJ39inG2FefnavE+SOWxM55zIVzw2gkH5gRYK3sVgXs1rD8Wvh9+9oQAZ3cTA/BWw+s38lBG1Fj19viXg5T8Cbh4Wn4UKNp48Kmxaaj6nHYLeiXpR05cScpC7JLdMmcSn2Odor0bvQKBhDd/HZ4cXesrbYQv2XZiLPd4Z2rMwAPSgB4NR4pjlxfuJWLOHO+lnZ1DLtg3CYfaWahqhTjvlK4vgDsE3HNEUMD27YBrcEDM6L4jenq5U0a11TlPx9IFuDC0Agw==
+ b=GRTAZdw/egehKQTf1+nMCCKrK+qLtXGxLRP4wJmDU+hEjAG8Ql9DgtrZqmzeQ4guGDfz26CXgD73/cGYRBDa650E4XPJJjWdrpceydnzMfVhRKAlA9J0UMX/ObZVYmtDySHKpvuZD1n8PINdm0gIft4CAVUNuN2JCaBTudlRJyoz+CMi4BXgrMeSo7pYEacnAmNWLtxRkCvDFMki62wE3Qv96BiNtL725xtrVjq3Hr3Xt+wOKC9d9A1H+gK3nt2KsQcdukonkF0v5WG7sCzusXfNUUWZV0EYWdptl4DfdudJqGU4pxzdM8TCjb5s0tXKYCCsmwR6oyisiLv5XhkQlg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bGe3W0doIg6S2a6Q1at2EJkEuXgPhd/SVP7hrwVMdsc=;
- b=J5EouLM5aXvtnkGKiYGRIVU1LSSniExLz10WGQetFFB4hM8CQ8B0NAJ0CMkcO92d6uqel0viqXmFKgU6/dRKlo6NFKoZN8b8+NQtpzq6cghLxDD1F17vl2D3NLmfuvMxsvX57kj/Z8/afGxgVqVPigImdMtjjY4akxr7MKwUihUjy7qNx3PvXxIYJ0QtrFkoD/z/siqu9lmA2fQ6zP0pugZx8VXRB0G6pyYQLuRIaRxUwD9QDdv4QKEg/Ritih4Vk+lzD1CdSEnOIpkmfi8HL+e2QllcxkdhTxUBxEj31rjsd3iZ/q7+xCvGJWZb+zXtu5/tiwBsHsfS5cJ3jIv1tQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bGe3W0doIg6S2a6Q1at2EJkEuXgPhd/SVP7hrwVMdsc=;
- b=yY/wrhmtdRSnnmb+nRfvYU0Mjh9+UUaEd+x/6fReOyO4G2L5Ty2Ymt8nYeBcZ6K6sxX2JsT1lTOL7ynoJj9F19C9vneTtalMXOnGdfnYa6EQEg5aBve3ygrGVkuOLxabmTBH3HiBUJZI0SCtKHnIKYJ1dNQvPYFHcnSzx1/dC/RLSKZvnXyPg7VtXQpFEn3iTp9XQFiBx0qtTm0KhHhDwR8FkH/hveVAiwX0AEmA3ZeOo8GzVT4/6xnD5vw1VQjdxkkFiJioZezi6noZoBUq0Gn2JUKfwQqRpcetXpOJl/phDJzuCm+T884rPl3glVZ4irfwKwcdQNtC1f6Bup8XUg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from PA4PR04MB7790.eurprd04.prod.outlook.com (2603:10a6:102:cc::8)
- by DB9PR04MB9791.eurprd04.prod.outlook.com (2603:10a6:10:4ce::9) with
+ bh=v8/KsQqUekhKrDcE+RqxBK2jZGrNr+hngWOUXVLaoWo=;
+ b=ZTmaf2HcJSaM3T69jsgpLDAoVHubMakUYYv2thftvgMjT+gvrPV6/eeh5Kw+DBE5odciuiN3IypJZAgZKQoYikO8wbi4xwGX4Vt5HQTZte0WOkkT8IZAwxfJsxKXl6qpCz8qqcMSZliS2/MSncaHLddhguiSf8mtu3wEZIXOvGnAkoS1UaCzNksi9v1KYRXV7+jv0WHC4fjlZqpFb/XOmpy36OpwaLZqi73SHExrlBaywOj+6ZC3B1y9Sc/BOA7Ikkpy6qQnLvpRl4ahnrwlEZ5OXVqILCfhxsIZIIXLayxdYj/j6LcVL/uxJ7gkUpH6C7QkaOJForFy4RKgEDAhjw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from DU0PR02MB7899.eurprd02.prod.outlook.com (2603:10a6:10:347::11)
+ by VI1PR02MB6093.eurprd02.prod.outlook.com (2603:10a6:800:18b::23) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.35; Sun, 15 Oct
- 2023 17:02:26 +0000
-Received: from PA4PR04MB7790.eurprd04.prod.outlook.com
- ([fe80::edd3:f00:3088:6e61]) by PA4PR04MB7790.eurprd04.prod.outlook.com
- ([fe80::edd3:f00:3088:6e61%4]) with mapi id 15.20.6863.046; Sun, 15 Oct 2023
- 17:02:25 +0000
-Message-ID: <d745361e-2867-4f3c-bd41-714c7a382910@suse.com>
-Date:   Sun, 15 Oct 2023 20:02:16 +0300
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] efi/unaccepted: Fix soft lockups caused by parallel
- memory acceptance
-Content-Language: en-US
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dario Faggioli <dfaggioli@suse.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        marcelo.cerri@canonical.com, tim.gardner@canonical.com,
-        khalid.elmously@canonical.com, philip.cox@canonical.com,
-        aarcange@redhat.com, peterx@redhat.com, x86@kernel.org,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@kernel.org
-References: <20231014204040.28765-1-kirill.shutemov@linux.intel.com>
-From:   Nikolay Borisov <nik.borisov@suse.com>
-In-Reply-To: <20231014204040.28765-1-kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR2P281CA0060.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:93::16) To PA4PR04MB7790.eurprd04.prod.outlook.com
- (2603:10a6:102:cc::8)
+ 2023 17:12:04 +0000
+Received: from DU0PR02MB7899.eurprd02.prod.outlook.com
+ ([fe80::b753:178a:394e:af8e]) by DU0PR02MB7899.eurprd02.prod.outlook.com
+ ([fe80::b753:178a:394e:af8e%7]) with mapi id 15.20.6886.034; Sun, 15 Oct 2023
+ 17:12:04 +0000
+From:   Cameron Williams <cang1@live.co.uk>
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Cc:     Cameron Williams <cang1@live.co.uk>
+Subject: [PATCH v3 0/7] Brainboxes serial cards additions/fixes
+Date:   Sun, 15 Oct 2023 18:10:15 +0100
+Message-ID: <DU0PR02MB789901A0FD8D0A16614B7B01C4D0A@DU0PR02MB7899.eurprd02.prod.outlook.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <BBPatchesV3>
+References: <BBPatchesV3>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-TMN:  [AZJUG0XghH28bKjVete8pFDtsutTIBNn]
+X-ClientProxiedBy: LO4P123CA0066.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:153::17) To DU0PR02MB7899.eurprd02.prod.outlook.com
+ (2603:10a6:10:347::11)
+X-Microsoft-Original-Message-ID: <20231015171141.3309-1-cang1@live.co.uk>
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PA4PR04MB7790:EE_|DB9PR04MB9791:EE_
-X-MS-Office365-Filtering-Correlation-Id: 67dba5cf-b8f6-4ec1-8509-08dbcda0818b
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
+X-MS-TrafficTypeDiagnostic: DU0PR02MB7899:EE_|VI1PR02MB6093:EE_
+X-MS-Office365-Filtering-Correlation-Id: c1ace2fd-2f9c-4894-d5be-08dbcda1da86
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vK82oIQ3knzn4TmyoR4KayR60LkxIN1KMamhXNqZkPvmBWLQ+CAjQkWtn0SOTNwBENO3UIgf0aiFKDwDJotwCf6AiXN9xjoiWgO9Prfa8csx9PcTfpB/rO6lm7PpRvKZPBUz/glqhCToUWbT/YbudrjIzYdEuUdm34yXIGS6hjL9spfkh68Z/4BTnrY1jkM9lEqHc2vaZDFbTu/jH76JeKi38b+V6lthrEDt4VTfikqSjv7/YrH3C8uZ9IeP3bcxkSC6HJNqsuETpjUmBS7YXvsATn9BcFIJjDlT4ZsNFTa5iOvtxhMY9hHBBNdu9GL0lV1xdU65c5Uoeo2tEnHYhaSinF//c3vd5HENHmxzlrssxqkVMWbFT7zAKGPj6YXUVEwZ7jbn2IDOf32MYNBG7vbjxsrRUVjBkuDVuz9CgRH1C/N519wejFMemRWmuTYAVcDoBalWultIo3EnE7Zjctdn4pjo8g/Un8bKdHawC2Lfb+li0heZ4G8Xh1X8UqkjLLtnNzEU0zkSGjwjtaMpHVMGoG9NhNakRH2LMvII9mnxne55sU3YZy/3Fe+mnjMtLZzUH9MpchnZX30FkQM1Tul5zhBG1MzTh6A+TYwapdKCHu2XYMd2DRohl+J6KgQU48Kryq4tKNatasdi8SAgIw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB7790.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(136003)(376002)(346002)(39860400002)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(31686004)(478600001)(110136005)(66946007)(66476007)(54906003)(6666004)(66556008)(6486002)(83380400001)(31696002)(86362001)(38100700002)(2616005)(6512007)(316002)(6506007)(41300700001)(5660300002)(36756003)(8936002)(8676002)(4326008)(7416002)(7406005)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: UXSwjT9a5X96BqLsaHtHvgi42WBwzoxrbh7DBLWTPf9dB1+05ApPG8aNotMJBR0Td6w9giwmQSqdMROzRddMexqx+qRKNTiU9ntxnzF1Y8hBOf1FP/K/q0lx/ZhlIpiVvfG2KTHOMqaBz5oLtB3DKbsI+e8KlqKoST/njr+ga8Zd24bRQhBNJ5ep3qwy4M/n+eFE4/9l7rGeI1jyBs2oVGgl0sNlXxGL3bJhAiFM1CvSSBm9PmsmYjAMf1Mg7rTGL3Tr4pFhqEvEEln8tzUXG1Ssc7zJldrFGedIPcm2xxZdyY2Tx/UxTNpzwiTAfN+JzJBykAAmwup6+XdfRWfVdTjHvzZSMVF7rNsSIDkaWuc8AYvjvKZiFDdtsRuF1BkK/6vO60TKRKdew72HNkS2eXo/y12dlkv8Psj7m7CAVQLVGtgCIHlfwcXlVxiomKSS+H5as7S9g4r0yEN+hyUoNk10Ux5YuGooydjlO9HKWPW9ffkAF28wCbca+E1HS+1HJNcUfn7InCDmdsTpANbsE24tqCkFBOPCUuQ5nh99htq+Yo0GlEoZYzPlSkba4trOJairzVcIbj/+p5pPq/X842yBu7/PJkH586fDeEpIaSPx/pWgTo/eJCcB2PbSiyoaHtH5zzvZnxPaJt/VLxYVdg==
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?T3B1R3d5Y2RqMVVqcFdiZGR0cGtBRTE2TWVWdW10cUYxbHIrMXBEWTlxYzRS?=
- =?utf-8?B?Q3dXZmtNUjFtYjNxNU9LaXc1RHdKdWZpZ1hUc2hiM2MvdWlkL0pZK0ZHRmhx?=
- =?utf-8?B?RlIyT0U0TzFzaDF6cWE1NDg5MWhVaDZEMndXNzEzNVlsVDNHYTBqMTE3TmtF?=
- =?utf-8?B?eWVxcHUrZFg2UmxrVDFsTzRqYWRxbGdsL2N6dS94cmVxOGt1a1IrVjg4U0k0?=
- =?utf-8?B?YUtrQmFBSTVjNGVCMUNMbDlyTXZsbEV2UGxEL0VCanh4Y3lja3RGcmViK2FP?=
- =?utf-8?B?VGc2cXdvQW1Ea0V6K2N2bjM5MURhSkJROWFUOThiMkNmVjM5VWdJaUtpWE1U?=
- =?utf-8?B?dGpIR3NuV0tjaThFcUhtVDVVdzI2SnVmQXpHZ2lyVTV3UlNiSkhNYjZHOU1R?=
- =?utf-8?B?cTc1Nzc5b1N4TmdxOHdCZVUzaVd2UlhvOGNCOHVHdVpqMHBBb3hqajdNZkh1?=
- =?utf-8?B?aS9rbHMySzQ5RHc4elZwODl3VlVmaG5QZFR2UlJnWE9uWlRoSU5oWkhUZGp1?=
- =?utf-8?B?N3g3YVZBdjBOLzhXZzlWdWIwNHdxKy9CRU4wbk5rclltci9OWkU3b0YvNUNT?=
- =?utf-8?B?ZnlXWVhvMFN2L3NtRzJUaHFWanVFTmRXT3N0Ykl4ZzZ3MitMbVdQQzBoKzRR?=
- =?utf-8?B?aml2TUJWLzZLWjM4ZzdnMW1aZ1YyQ0djMGcrRUx0KzlBcndMRjd4SDRMQkhK?=
- =?utf-8?B?RkxOdDZZaVN6MVpNdSt0aDdSTHFhTzFoS3hRVlVHL0xJZ21vZWRZL0hGenhF?=
- =?utf-8?B?RjZncTlHTnluZXJjK2plTzV2enlJWDFvdHIvVktGN3BURW1KK2grN3piMEwv?=
- =?utf-8?B?cFRNQ2JtVDI0cndhZisxZVVUV2V5MTI0WVNGMnV0eWwyY0I3VHVzaHVTbUl0?=
- =?utf-8?B?UWFrUGdQbHljZllQWVNhRC9BZDRQaHhXamF5dEhTdUdOcGlQbmVIUy9uZzVl?=
- =?utf-8?B?SDhNamtuTXl3SFJWZTdKaFd0T3NmKzBTM0V5VW9ETGdvTDkvUXBWU3cxenZp?=
- =?utf-8?B?clRnZHRBV1BMVWdvZnQ3U1YyU1dXcmFZK2lnQ2dhblAwOXVTQkhNblY1eWk2?=
- =?utf-8?B?NHlnQUhHLzA4emVQWndsUVFQUy9MNitUM2Q0aFJmRXhEM2svTXc3Y1F4Yzdr?=
- =?utf-8?B?NndaNXV4N3VHbkV2Myt0d3BVK3FBUlJJWnBpczE4OUlRUDFaSXZnZmZZcFVX?=
- =?utf-8?B?aTVaZFllRmNNSC81K2NHckg2ZUJXQVB2Y2hMMmJOQUhreHdCV0VrMkMvdG5w?=
- =?utf-8?B?OUsvYmVEMExUaGRGQlQ5NW55b1Z1ZG9MR1E5WlNwajVqeCtzYzRVbm93eklT?=
- =?utf-8?B?NERIQVVDOHIvM09CcDBzYjVTbzBSSkl0bE1JWGFHb0Q2TTRLS1BWc2srRGEx?=
- =?utf-8?B?aEphRHIxL1U2TGdYbjdNc2JzVUlQYlV3aThSbzZSdVc5Y1BWSTlHdzEwSmlm?=
- =?utf-8?B?ZWRKZ0JFQmU0UmVLTDh5Znlqc1dwRmNJTzN1NTV3cEpMSkU4Z1A3VVlWZ3pR?=
- =?utf-8?B?OXBkM0EyRjNJOEZqUStBL3NldCs3MmEyRU5BVTRXd1lDdWQ3VmNCWnBuTTdu?=
- =?utf-8?B?cEFCcWNzb0t5MDlwRkVKRG9lSmNOeEtaMk9wNFlvKzF2aGN3WDdZN1l6Y1hU?=
- =?utf-8?B?ZVBMeGZKd05Kb3NFUFQ3MFFWNXVFUzVkZEQ5S2Mwa1ZMZHFJYU13Qmh6SmNE?=
- =?utf-8?B?bFJ4b2VkTW9pWVRMSnRXMUl2REtLZnVYZFMzTWxNNVd1eWg5S2V0YUpDdlVE?=
- =?utf-8?B?ZVZtbnczbmlOc0RvTmdWL1diTUhMbVE1V3VHdm1WM2NKRlZmYlpkcHVNbVN4?=
- =?utf-8?B?QTNZTURtdTFUakhkMUE0alhjRTZKNVJyNlNtN1hFWDdFeFhNcmdoRmpudHhx?=
- =?utf-8?B?WjF6SDZRK1hWRUJrNGtlcGZ6U3ZySnVqUkNlLzdNdmNVcEtJTkdrbXNpaDZL?=
- =?utf-8?B?ekVaV3IyRHZHSHlCSUU1NHU4VXVFNWo1L3ZTMzkvZDV1a2N5VzRZSnZQYTI2?=
- =?utf-8?B?UXlGT25oSVZvUmsvZ0dqUEo0TWR2RzU2TmVqMUl4MHJMSHpTVkN2cTdZZWo5?=
- =?utf-8?B?RVlwb09VQ0VxMjVlbHQva0l4UE0wVFlLdWdHOTF4NC9QZUtPZGlFc0JyTDFE?=
- =?utf-8?B?TzJyaXlsRVVMaUE0TlBPaUMzTEhrek1QQzhZZWtTem1oQ21kRC8yMGMvOEFa?=
- =?utf-8?Q?xsOcCxuDxM1utAFC5nYFNGIuAtVLaLCC7OK/0SUXxy9t?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 67dba5cf-b8f6-4ec1-8509-08dbcda0818b
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB7790.eurprd04.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ipC3nN9nhQK4avj8d6452C3nF95C1E6cyYvA2yzYJ9aifR2I3QwesKroENmo?=
+ =?us-ascii?Q?G4HRHUf193oYBCvL64P0dgEIHVGURNsYAWQRaJL37veB6NLlyxcRKB+wwMNN?=
+ =?us-ascii?Q?eKzselFz1N/yr4J2jGaA+StOw7jW8KCR1qn4FSZvYVwC+7A1PaP2pxfMpOyF?=
+ =?us-ascii?Q?f8E/tebc29Z3smv9J4HD+I1MQs6Kee9dfXxUnfiZzHGASae950eE6vVvIMCd?=
+ =?us-ascii?Q?moh8n8R0y5PVcQOtAeI3tkQygQ0C8YkFH3dtKINKv4UJm4PV5JBEu/GZYbMw?=
+ =?us-ascii?Q?/Mou00vhhIjGpKwiUQ8UurR5SMuWQQtMo9QIr+FIuy855ucYEb0gc0XeEKfj?=
+ =?us-ascii?Q?awaqnyCl+vU2M0dPHaTp7NGu4lq49VflSGn/SkQpsVmTo7s+lXEaFaCFivmM?=
+ =?us-ascii?Q?XZJnsxMtM+SMdhPAJEreO9Goct9dmEd/tH7Y/mRIVyGqApTtIMXh6DJ57uQZ?=
+ =?us-ascii?Q?oq/2hembWv89+q20KSE418RNfzWiCWgtHRzB3HSYlzWx5xBw5wdcAQ22ZMTl?=
+ =?us-ascii?Q?GCCj3EDWQVmlzsZjvLD41+zBjMzWK0NPq1oezHcIIsICOPC9OHolDMx91ZfD?=
+ =?us-ascii?Q?m9qdEer+N9yiO/kDPc4/ceYlBHiNeUzO1sAAH3U6WJGQca+XHCs5gdos/ZU0?=
+ =?us-ascii?Q?UO9b6Wpit4cqsLnLi37jeFMFDsUZRbP+Wa5U8Q3LIJyeA5D2uXFlazh9eS36?=
+ =?us-ascii?Q?zlDHm4rYv54h9KYQqAnvMsSYE8f1PGlYdyRj+ySUd/n6jDyowPpmaR3QYtR0?=
+ =?us-ascii?Q?EXggZMzcivLaeNRoQk7SSOxn4+aGZOGDreft0F7u37m2+VKBfdmryFF7LMXR?=
+ =?us-ascii?Q?rGFyQh5xvwaOfVW9NqUcC8Zrm9HjuE6VDWpXRBZpQ7E5E5Vo04vzcfePz98M?=
+ =?us-ascii?Q?JoHuALSX+EwdEuUqhYZ0E0Qacjpr7sh2/7T29GdGLN+CswpGyUE52tdOp+6j?=
+ =?us-ascii?Q?mo5kDXPc7KQ8LzsByMXR6ueWcl61IuvMiPY/B1Aknm4drX1hVarfgutt4iZh?=
+ =?us-ascii?Q?QS6EVOG14K04+HD2l1z35Xbr9kKE4B2C9U9K/RJcLcSPoJOWhtvh/vy/4Ebr?=
+ =?us-ascii?Q?NAfb6tNGq9H1+H0dEQ/OPX5LtKwWs5lvXtVbN7X9tDIwqHWGoJTVYsbzZuFd?=
+ =?us-ascii?Q?SdwUz/Br7G8Ge2afde24ErP90SbgGc3WOZK2sRZ/lOYC+Unp9TGzee8GZbPv?=
+ =?us-ascii?Q?viz+LvZDq7tG2GNAM0H9/8lOS8SW7KebNhbKXQ=3D=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-ab7de.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: c1ace2fd-2f9c-4894-d5be-08dbcda1da86
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR02MB7899.eurprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2023 17:02:25.6903
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2023 17:12:04.5409
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ilMKUP3Spm/Cwa24d25BAfiwvtXI+2cYKCrcLctRKl2FvWffnvg5LJArI4F52Fvj3bw0L2Nnpu9G6IBt8Xd40g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9791
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR02MB6093
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -151,145 +98,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series adds and fixes the Brainboxes PCI/e range of serial cards,
+adding any missing production card IDs and fixing any bugs, mainly with
+the Oxford Semiconductor based PX cards.
 
+Change from v2 [1][2][3][4][5][6][7]:
+- No code changes
+- Amend patch 1 and 5 commit comment to better clarify what has been
+changed and why
+- Send using git send-email instead of Mutt so (hopefully) the
+threading works OK
+[1] https://lore.kernel.org/all/DU0PR02MB7899233A57F6E714C0DD8FF2C4D2A@DU0PR02MB7899.eurprd02.prod.outlook.com/
+[2] https://lore.kernel.org/all/DU0PR02MB7899CE749DADBEEE38564F9DC4D2A@DU0PR02MB7899.eurprd02.prod.outlook.com/
+[3] https://lore.kernel.org/all/DU0PR02MB789934AD01F657CD108E0999C4D2A@DU0PR02MB7899.eurprd02.prod.outlook.com/
+[4] https://lore.kernel.org/all/DU0PR02MB789954113A4F513D4CD65140C4D2A@DU0PR02MB7899.eurprd02.prod.outlook.com/
+[5] https://lore.kernel.org/all/DU0PR02MB78993B38B6D95DE0A84DA5E8C4D2A@DU0PR02MB7899.eurprd02.prod.outlook.com/
+[6] https://lore.kernel.org/all/DU0PR02MB789945AC3746E79AF2390C73C4D2A@DU0PR02MB7899.eurprd02.prod.outlook.com/
+[7] https://lore.kernel.org/all/DU0PR02MB789927949F9C84AACD694F48C4D2A@DU0PR02MB7899.eurprd02.prod.outlook.com/
 
-On 14.10.23 г. 23:40 ч., Kirill A. Shutemov wrote:
-> Michael reported soft lockups on a system that has unaccepted memory.
-> This occurs when a user attempts to allocate and accept memory on
-> multiple CPUs simultaneously.
-> 
-> The root cause of the issue is that memory acceptance is serialized with
-> a spinlock, allowing only one CPU to accept memory at a time. The other
-> CPUs spin and wait for their turn, leading to starvation and soft lockup
-> reports.
-> 
-> To address this, the code has been modified to release the spinlock
-> while accepting memory. This allows for parallel memory acceptance on
-> multiple CPUs.
-> 
-> A newly introduced "accepting_list" keeps track of which memory is
-> currently being accepted. This is necessary to prevent parallel
-> acceptance of the same memory block. If a collision occurs, the lock is
-> released and the process is retried.
-> 
-> Such collisions should rarely occur. The main path for memory acceptance
-> is the page allocator, which accepts memory in MAX_ORDER chunks. As long
-> as MAX_ORDER is equal to or larger than the unit_size, collisions will
-> never occur because the caller fully owns the memory block being
-> accepted.
-> 
-> Aside from the page allocator, only memblock and deferered_free_range()
-> accept memory, but this only happens during boot.
-> 
-> The code has been tested with unit_size == 128MiB to trigger collisions
-> and validate the retry codepath.
-> 
-> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Reported-by: Michael Roth <michael.roth@amd.com
-> Fixes: 2053bc57f367 ("efi: Add unaccepted memory support")
-> Cc: <stable@kernel.org>
-> ---
->   drivers/firmware/efi/unaccepted_memory.c | 55 ++++++++++++++++++++++--
->   1 file changed, 51 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/firmware/efi/unaccepted_memory.c b/drivers/firmware/efi/unaccepted_memory.c
-> index 853f7dc3c21d..8af0306c8e5c 100644
-> --- a/drivers/firmware/efi/unaccepted_memory.c
-> +++ b/drivers/firmware/efi/unaccepted_memory.c
-> @@ -5,9 +5,17 @@
->   #include <linux/spinlock.h>
->   #include <asm/unaccepted_memory.h>
->   
-> -/* Protects unaccepted memory bitmap */
-> +/* Protects unaccepted memory bitmap and accepting_list */
->   static DEFINE_SPINLOCK(unaccepted_memory_lock);
->   
-> +struct accept_range {
-> +	struct list_head list;
-> +	unsigned long start;
-> +	unsigned long end;
-> +};
-> +
-> +static LIST_HEAD(accepting_list);
-> +
->   /*
->    * accept_memory() -- Consult bitmap and accept the memory if needed.
->    *
-> @@ -24,6 +32,7 @@ void accept_memory(phys_addr_t start, phys_addr_t end)
->   {
->   	struct efi_unaccepted_memory *unaccepted;
->   	unsigned long range_start, range_end;
-> +	struct accept_range range, *entry;
->   	unsigned long flags;
->   	u64 unit_size;
->   
-> @@ -78,20 +87,58 @@ void accept_memory(phys_addr_t start, phys_addr_t end)
->   	if (end > unaccepted->size * unit_size * BITS_PER_BYTE)
->   		end = unaccepted->size * unit_size * BITS_PER_BYTE;
->   
-> -	range_start = start / unit_size;
-> -
-> +	range.start = start / unit_size;
-> +	range.end = DIV_ROUND_UP(end, unit_size);
-> +retry:
->   	spin_lock_irqsave(&unaccepted_memory_lock, flags);
-> +
-> +	/*
-> +	 * Check if anybody works on accepting the same range of the memory.
-> +	 *
-> +	 * The check with unit_size granularity. It is crucial to catch all
-> +	 * accept requests to the same unit_size block, even if they don't
-> +	 * overlap on physical address level.
-> +	 */
-> +	list_for_each_entry(entry, &accepting_list, list) {
-> +		if (entry->end < range.start)
-> +			continue;
-> +		if (entry->start >= range.end)
-> +			continue;
-> +
-> +		/*
-> +		 * Somebody else accepting the range. Or at least part of it.
-> +		 *
-> +		 * Drop the lock and retry until it is complete.
-> +		 */
-> +		spin_unlock_irqrestore(&unaccepted_memory_lock, flags);
-> +		cond_resched();
-> +		goto retry;
-> +	}
+Change from v1 [1][2][3][4]:
+- Split the patch into multiple commits for one subsystem/maintainer
+rather than a large series for multiple subsystems.
+[1] https://lore.kernel.org/all/DU0PR02MB789950E64D808DB57E9D7312C4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
+[2] https://lore.kernel.org/all/DU0PR02MB7899DE53DFC900EFB50E53F2C4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
+[3] https://lore.kernel.org/all/DU0PR02MB7899033E7E81EAF3694BC20AC4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
+[4] https://lore.kernel.org/all/DU0PR02MB7899EABA8C3DCAC94DCC79D4C4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
 
-So this works for the cases where we have concurrent acceptance of the 
-same range. What about the same range being accepted multiple times, one 
-after the other, the current code doesn't prevent this.
+Cameron Williams (7):
+  tty: 8250: Fix IS-200 PCI ID comment
+  tty: 8250: Add support for additional Brainboxes UC cards
+  tty: 8250: Add support for Brainboxes UP cards
+  tty: 8250: Add support for Intashield IS-100
+  tty: 8250: Add support for and fix up additional Brainboxes PX cards
+  tty: 8250: Add support for Intashield IX cards
+  tty: 8250: Add Brainboxes Oxford Semiconductor-based quirks
 
-What if you check whether the current range is fully contained within 
-the duplicate entry and if it's fully covered simply return ?
+ drivers/tty/serial/8250/8250_pci.c | 330 ++++++++++++++++++++++++++++-
+ 1 file changed, 321 insertions(+), 9 deletions(-)
 
-> +
-> +	/*
-> +	 * Register that the range is about to be accepted.
-> +	 * Make sure nobody else will accept it.
-> +	 */
-> +	list_add(&range.list, &accepting_list);
-> +
-> +	range_start = range.start;
->   	for_each_set_bitrange_from(range_start, range_end, unaccepted->bitmap,
-> -				   DIV_ROUND_UP(end, unit_size)) {
-> +				   range.end) {
->   		unsigned long phys_start, phys_end;
->   		unsigned long len = range_end - range_start;
->   
->   		phys_start = range_start * unit_size + unaccepted->phys_base;
->   		phys_end = range_end * unit_size + unaccepted->phys_base;
->   
-> +		spin_unlock_irqrestore(&unaccepted_memory_lock, flags);
-> +
->   		arch_accept_memory(phys_start, phys_end);
-> +
-> +		spin_lock_irqsave(&unaccepted_memory_lock, flags);
->   		bitmap_clear(unaccepted->bitmap, range_start, len);
->   	}
-> +
-> +	list_del(&range.list);
->   	spin_unlock_irqrestore(&unaccepted_memory_lock, flags);
->   }
->   
+-- 
+2.42.0
+
