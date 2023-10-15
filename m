@@ -2,37 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C8047C9917
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 15:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACDAA7C9916
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 15:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbjJONLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 09:11:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36418 "EHLO
+        id S229692AbjJONLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 09:11:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbjJONK7 (ORCPT
+        with ESMTP id S229603AbjJONLa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 09:10:59 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BB119A2;
-        Sun, 15 Oct 2023 06:10:56 -0700 (PDT)
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 39FDAB6v026284;
-        Sun, 15 Oct 2023 15:10:11 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     linux-doc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Jiri Kosina <jkosina@suse.cz>,
-        security@kernel.org, corbet@lwn.net, workflows@vger.kernel.org,
-        Willy Tarreau <w@1wt.eu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Solar Designer <solar@openwall.com>,
-        Vegard Nossum <vegard.nossum@oracle.com>
-Subject: [PATCH] Documentation: security-bugs.rst: linux-distros relaxed their rules
-Date:   Sun, 15 Oct 2023 15:09:59 +0200
-Message-Id: <20231015130959.26242-1-w@1wt.eu>
-X-Mailer: git-send-email 2.17.5
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        Sun, 15 Oct 2023 09:11:30 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F8F8DE
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 06:11:26 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-406609df1a6so35466985e9.3
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 06:11:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697375484; x=1697980284; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=o11HJjwzxDPmGkLeY91KFGMkBQ1VW8cU0/SV0Rl7Esc=;
+        b=ZLM0dYkjpUtD/Ag76jvLdkC3A2nAtQu279XX7jWN+IZpuBWbBroOO0PnJaA5MmUc+g
+         NI8WFVTEznu9LhHPhe2XWbUctp1dQJSk48T0UB7UKzW8M/5VirxVfXuQ3zRE4t072cjq
+         +fzaD6F48XiEApOGEv6aXruj2+F1OG5W58iwv55mpm3p/hleS7/kopefIxtfXBw7Qm92
+         zlODLltNCpvH1D+K8cNEOilZ8dxpeqchh5hOXewYBa0TFbXuOLVHiRHGcocIXQZb00VC
+         cPHZUeaAu2iX8AV40xXWneKRIhxYnJHMXYSWIqHQQSDXMNEkLWUuN8AiQi1V41xs4II1
+         Z5oQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697375484; x=1697980284;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=o11HJjwzxDPmGkLeY91KFGMkBQ1VW8cU0/SV0Rl7Esc=;
+        b=P1Qktupu96mY2Wac5bPygLSO1hNY6qaIjgrmisjoOqHESz+TXCNjrBjfo28coBcUfG
+         S4sFWRzl/xNKDyELfuYEnGYC8Qwz9+xuPmBk8UGlC1EHz3H4vBpufDRqsUazdWlfi5nF
+         xYRcDbkbSKpqWuGKb5yjKvri1SevAOfW30zWwV4s64bmNjjk+CGm/1pZMb5/1xw4l37D
+         rnjyibB464T8eirU1E1YA76dMWcRfYs6JVdG07aRRPlIZfRye4BS9QT4Kfxdhcty8dxk
+         KKg1RHocLDAiC1y6vU8KVrfeHZYupxbr78ONLJwYYdSCVdf6NhtXdILGvSPXKYwpL545
+         8Dhw==
+X-Gm-Message-State: AOJu0YxXzk7on2ApAxjE0Te88BXNbX33rhc9UQ1wVc8X6WGPZd/6wy2u
+        wEy4Mk8hGSW/xg/+O4zHxVCXLx0mdx5Tck71
+X-Google-Smtp-Source: AGHT+IEzkCt3d3NFqv25/uXO5bvsjkDTqjCXWlWAUWwvWcDzzsFT7gyaHZMuVTXy1DQBLvywBfecWw==
+X-Received: by 2002:a05:600c:290:b0:406:177e:5df7 with SMTP id 16-20020a05600c029000b00406177e5df7mr27038881wmk.29.1697375484226;
+        Sun, 15 Oct 2023 06:11:24 -0700 (PDT)
+Received: from localhost.localdomain (ptr-4x653mgnc6rxc3brvi5.18120a2.ip6.access.telenet.be. [2a02:1810:a404:e700:259e:a1b4:62cb:af3d])
+        by smtp.gmail.com with ESMTPSA id u19-20020a05600c139300b0040651505684sm4508763wmf.29.2023.10.15.06.11.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Oct 2023 06:11:23 -0700 (PDT)
+From:   Yussef Dalton <yussef.dalton@gmail.com>
+To:     tzimmermann@suse.de
+Cc:     javierm@redhat.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Yussef Dalton <yussef.dalton@gmail.com>
+Subject: [PATCH] drm/tiny: print 'struct resource *' correctly
+Date:   Sun, 15 Oct 2023 15:11:00 +0200
+Message-ID: <20231015131100.331880-1-yussef.dalton@gmail.com>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -40,78 +70,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The linux-distros list relaxed their rules to try to adapt better to
-how the Linux kernel works. Let's update the Coordination part to
-explain why and when to contact them or not to and how to avoid trouble
-in the future.
+Since format specifier %pr refers to a 'struct resource *', there is no
+need to take the address of the 'res' variable since it is already of
+type 'struct resource *'.
 
-Link: https://www.openwall.com/lists/oss-security/2023/09/08/4
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Solar Designer <solar@openwall.com>
-Cc: Vegard Nossum <vegard.nossum@oracle.com>
-Acked-by: Jiri Kosina <jkosina@suse.cz>
-Signed-off-by: Willy Tarreau <w@1wt.eu>
+Signed-off-by: Yussef Dalton <yussef.dalton@gmail.com>
 ---
+ drivers/gpu/drm/tiny/ofdrm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-This is the final version for merging. Changes since RFC:
-  - s/BEFORE/UNTIL from Vegard
-  - improved wording from Alexander
-  - acked-by from Jiri
-
-Thanks!
-Willy
-
----
- Documentation/process/security-bugs.rst | 35 ++++++++++++++++++-------
- 1 file changed, 26 insertions(+), 9 deletions(-)
-
-diff --git a/Documentation/process/security-bugs.rst b/Documentation/process/security-bugs.rst
-index 5a6993795bd2..692a3ba56cca 100644
---- a/Documentation/process/security-bugs.rst
-+++ b/Documentation/process/security-bugs.rst
-@@ -66,15 +66,32 @@ lifted, in perpetuity.
- Coordination with other groups
- ------------------------------
+diff --git a/drivers/gpu/drm/tiny/ofdrm.c b/drivers/gpu/drm/tiny/ofdrm.c
+index 2d999a0facde..6372ab383747 100644
+--- a/drivers/gpu/drm/tiny/ofdrm.c
++++ b/drivers/gpu/drm/tiny/ofdrm.c
+@@ -1208,13 +1208,13 @@ static struct ofdrm_device *ofdrm_device_create(struct drm_driver *drv,
  
--The kernel security team strongly recommends that reporters of potential
--security issues NEVER contact the "linux-distros" mailing list until
--AFTER discussing it with the kernel security team.  Do not Cc: both
--lists at once.  You may contact the linux-distros mailing list after a
--fix has been agreed on and you fully understand the requirements that
--doing so will impose on you and the kernel community.
--
--The different lists have different goals and the linux-distros rules do
--not contribute to actually fixing any potential security problems.
-+While the kernel security team solely focuses on getting bugs fixed,
-+other groups focus on fixing issues in distros and coordinating
-+disclosure between operating system vendors.  Coordination is usually
-+handled by the "linux-distros" mailing list and disclosure by the
-+public "oss-security" mailing list, both of which are closely related
-+and presented in the linux-distros wiki:
-+<https://oss-security.openwall.org/wiki/mailing-lists/distros>
-+
-+Please note that the respective policies and rules are different since
-+the 3 lists pursue different goals.  Coordinating between the kernel
-+security team and other teams is difficult since for the kernel security
-+team occasional embargoes (as subject to a maximum allowed number of
-+days) start from the availability of a fix, while for "linux-distros"
-+they start from the initial post to the list regardless of the
-+availability of a fix.
-+
-+As such, the kernel security team strongly recommends that as a reporter
-+of a potential security issue you DO NOT contact the "linux-distros"
-+mailing list UNTIL a fix is accepted by the affected code's maintainers
-+and you have read the distros wiki page above and you fully understand
-+the requirements that contacting "linux-distros" will impose on you and
-+the kernel community.  This also means that in general it doesn't make
-+sense to Cc: both lists at once, except maybe for coordination if and
-+while an accepted fix has not yet been merged.  In other words, until a
-+fix is accepted do not Cc: "linux-distros", and after it's merged do not
-+Cc: the kernel security team.
+ 	ret = devm_aperture_acquire_from_firmware(dev, fb_pgbase, fb_pgsize);
+ 	if (ret) {
+-		drm_err(dev, "could not acquire memory range %pr: error %d\n", &res, ret);
++		drm_err(dev, "could not acquire memory range %pr: error %d\n", res, ret);
+ 		return ERR_PTR(ret);
+ 	}
  
- CVE assignment
- --------------
+ 	mem = devm_request_mem_region(&pdev->dev, fb_pgbase, fb_pgsize, drv->name);
+ 	if (!mem) {
+-		drm_warn(dev, "could not acquire memory region %pr\n", &res);
++		drm_warn(dev, "could not acquire memory region %pr\n", res);
+ 		return ERR_PTR(-ENOMEM);
+ 	}
+ 
 -- 
-2.17.5
+2.41.0
 
