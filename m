@@ -2,113 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 353B37C987D
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 11:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B67FE7C9882
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 12:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbjJOJh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 05:37:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33872 "EHLO
+        id S229648AbjJOJz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 05:55:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbjJOJhZ (ORCPT
+        with ESMTP id S229559AbjJOJzY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 05:37:25 -0400
-Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [83.223.78.240])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0723BAD;
-        Sun, 15 Oct 2023 02:37:23 -0700 (PDT)
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL Global TLS RSA4096 SHA256 2022 CA1" (verified OK))
-        by bmailout2.hostsharing.net (Postfix) with ESMTPS id 865442800A287;
-        Sun, 15 Oct 2023 11:37:22 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 790F219279; Sun, 15 Oct 2023 11:37:22 +0200 (CEST)
-Date:   Sun, 15 Oct 2023 11:37:22 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Marcel Hamer <marcel.hamer@windriver.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: pciehp lockdep possible circular locking dependency
-Message-ID: <20231015093722.GA11283@wunner.de>
-References: <ZSUdqxOZ9HUFR32S@windriver.com>
+        Sun, 15 Oct 2023 05:55:24 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF324AD
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 02:55:21 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-53e855d7dacso1168428a12.0
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 02:55:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697363720; x=1697968520; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=WvfQbrUOAety/yQQMKIQiictUB3muNGYsVZ1vSvxI3g=;
+        b=GhXEcA0FIO87MWvMyLWvsXwtu/kLh+tzUnrnX4XJSYhVOlkGOupELtKMtpKtYW+ss5
+         DgLl/lIGgpUmqeIHRuFJLT12pLPS3349+Vi/stkwrb0HBxxeOuabCQ4O8QqOXOyvSXaM
+         2fIUFcrkux+ATazIFHHkdyOlTkm7efJkgtnvJv9aoj3n8iD0TQ0vgEc5nxgxKPHw0mMs
+         WqSdnLtlINHaclLt9CBNvpY2y+6AkwvgXJn4hUpcjAncj2NpE6178yIgUtRp39e2AZ+s
+         HgZHecW3O0qGvcGThi4NPfuI8zUsgTaAM4+14wjvK2zuWbJf4touk4LvO4UwbXXH/c5V
+         q0ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697363720; x=1697968520;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WvfQbrUOAety/yQQMKIQiictUB3muNGYsVZ1vSvxI3g=;
+        b=OYqVplKcs4L0ymNCDBwq2xQVcP9QJ3IRdD8jOgP9ni9yKh0DFF27kLWlqQkCV1kMQ6
+         nfpx/S+IrphIXGV4EFqKWVkRin5+3LCPCVmRorrc4xvSHIC87+DcX+Qo0K7oRIC0Z2D2
+         lMZa+MjqzQ56u922T3lU5lN92DdDPPv8XmNGcsSFcBV6UHN8noNKtNrAJIzdF9ALNoXL
+         1wcsZytzbSL9UBAe6q7d8HufbDz5NXqSzFbKLQ/CXltubAGB0YxvvzK78d8IKA+gdQA5
+         6Y3o7NkEMMKCq5733XwwEEkR91Lh6qpAfd6Ovx8h38VxPXjdewkWg493bCIV5MXwUo4F
+         rrwQ==
+X-Gm-Message-State: AOJu0Yza6Uj12ijsLJ/EQViGEWYeeGm4vOg/ERexpuLuu84w8DOKRJe1
+        JDEeny4EcUVkgrOkuYgZGQ==
+X-Google-Smtp-Source: AGHT+IHxoeMhCG3v2V0tkipffEqPtxQL84PiKF/YNHtRvpc/SoFf6I4cpvEwZBSzmd5ybZWGocFcYg==
+X-Received: by 2002:a17:906:254:b0:9b2:b691:9b5f with SMTP id 20-20020a170906025400b009b2b6919b5fmr27177944ejl.41.1697363720160;
+        Sun, 15 Oct 2023 02:55:20 -0700 (PDT)
+Received: from p183 ([46.53.250.251])
+        by smtp.gmail.com with ESMTPSA id o19-20020a17090637d300b009b65a698c16sm2038960ejc.220.2023.10.15.02.55.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Oct 2023 02:55:19 -0700 (PDT)
+Date:   Sun, 15 Oct 2023 12:55:17 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] smp: fix __smp_processor_id() backup macro
+Message-ID: <c22be6b2-5d80-4168-95cc-f86a79d8cb39@p183>
+References: <b12bdef9-d5c0-49cf-aea2-ff7b56220fdc@p183>
+ <20231014151221.46096b7fc17ccaeb691ff5d0@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZSUdqxOZ9HUFR32S@windriver.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231014151221.46096b7fc17ccaeb691ff5d0@linux-foundation.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 11:47:23AM +0200, Marcel Hamer wrote:
-> On kernel v6.6.0-rc5 we have discovered a lockdep warning when using PCIe
-> hotplug. The issue is reproducible using PCIe hotplug in a Qemu environment.
+On Sat, Oct 14, 2023 at 03:12:21PM -0700, Andrew Morton wrote:
+> On Sat, 14 Oct 2023 19:14:15 +0300 Alexey Dobriyan <adobriyan@gmail.com> wrote:
 > 
-> When reverting the following commit, the warning no longer exists:
+> > Every __smp_processor_id usage doesn't have arguments and
+> > every raw_smp_processor_id usage doesn't have arguments,
+> > therefore "#define __smp_processor_id(x)" can not possibly work.
+> > 
+> > ...
+> >
+> > --- a/include/linux/smp.h
+> > +++ b/include/linux/smp.h
+> > @@ -261,7 +261,7 @@ static inline int get_boot_cpu_id(void)
+> >   * regular asm read for the stable.
+> >   */
+> >  #ifndef __smp_processor_id
+> > -#define __smp_processor_id(x) raw_smp_processor_id(x)
+> > +#define __smp_processor_id() raw_smp_processor_id()
+> >  #endif
+> >  
 > 
-> commit f5eff5591b8f9c5effd25c92c758a127765f74c1
-> Author: Lukas Wunner <lukas@wunner.de>
-> Date:   Tue Apr 11 08:21:02 2023 +0200
-> 
->     PCI: pciehp: Fix AB-BA deadlock between reset_lock and device_lock
-> 
-> We have also experienced the issue on the v5.10-stable branch.
-> 
-> For now I have difficulty determining if this is a serious potential deadlock
-> candidate or if this is a false reporting. Any help here would be greatly
-> appreciated.
+> It's been that way for at least 4 years.  Presumably this is never used
+> and should be removed?
 
-Thanks a lot for the report.
+Deleting breaks compilation immediately.
 
-It's a false positive because the two stacktraces are identical
-but pciehp_ist() is single-threaded.  There is only ever a single
-instance of pciehp_ist() running per hotplug port, so two instances
-running on separate CPUs can't happen:
+C89 6.8.3 §4 says
 
-> [   19.885923] -> #1 (pci_rescan_remove_lock){+.+.}-{3:3}:
-> [   19.886623]        __mutex_lock+0x81/0xcb0
-> [   19.886889]        pciehp_configure_device+0x1f/0x100
-> [   19.887211]        pciehp_handle_presence_or_link_change+0x16e/0x4d0
-> [   19.887587]        pciehp_ist+0x157/0x190
-> [   19.887822]        irq_thread_fn+0x1f/0x60
-> [   19.888076]        irq_thread+0xe5/0x1b0
-> [   19.888306]        kthread+0xe4/0x120
-> [   19.888499]        ret_from_fork+0x2f/0x50
-> [   19.888728]        ret_from_fork_asm+0x1b/0x30
-> [   19.889018]
-> [   19.889018] -> #0 (&ctrl->reset_lock){.+.+}-{3:3}:
-> [   19.889382]        __lock_acquire+0x1509/0x25f0
-> [   19.889661]        lock_acquire+0xc1/0x2b0
-> [   19.889899]        down_read_nested+0x2f/0x160
-> [   19.890177]        pciehp_configure_device+0xb1/0x100
-> [   19.890492]        pciehp_handle_presence_or_link_change+0x16e/0x4d0
-> [   19.890876]        pciehp_ist+0x157/0x190
-> [   19.891085]        irq_thread_fn+0x1f/0x60
-> [   19.891301]        irq_thread+0xe5/0x1b0
-> [   19.891538]        kthread+0xe4/0x120
-> [   19.891764]        ret_from_fork+0x2f/0x50
-> [   19.891989]        ret_from_fork_asm+0x1b/0x30
+	"The number of arguments in an invocation of a function-like
+	macro shall agree with the number of parameters in the macro
+	definition, ..."
 
-lockdep doesn't appear to be smart enough to recognize that and
-we do not have an annotation which would tell lockdep that a
-particular function is always single-threaded.
+C99 relaxes this in 6.10.3 §4
 
-From a brief look, amending lockdep to cope with such situations
-seems non-trivial and I'm not sure if it happens frequently enough
-to justify the additional complexity.
+	the number of arguments (including those arguments
+	consisting of no preprocesing tokens) ... shall equal
+	the number of parameters in the macro definition.
 
-The only other option I see is to set lockdep_set_novalidate_class()
-for the reset_lock.  However that will prevent us from detecting
-*valid* issues with that lock.
+So, "#define M()" works with M() only, but "#define M(a)" worked with
+M(1) and started working as M() which is very funny.
 
-Hm, that's a difficult decision...
-
-Thanks,
-
-Lukas
+In other words changelog is wrong: it can and does work (sort of by
+accident).
