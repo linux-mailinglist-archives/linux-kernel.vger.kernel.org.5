@@ -2,124 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F5B87C9C8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 01:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59C237C9C8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 01:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbjJOXVi convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 15 Oct 2023 19:21:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38302 "EHLO
+        id S229765AbjJOX1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 19:27:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjJOXVg (ORCPT
+        with ESMTP id S229500AbjJOX1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 19:21:36 -0400
-Received: from mo-csw-fb.securemx.jp (mo-csw-fb1801.securemx.jp [210.130.202.160])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE239A9;
-        Sun, 15 Oct 2023 16:21:34 -0700 (PDT)
-Received: by mo-csw-fb.securemx.jp (mx-mo-csw-fb1801) id 39FMouak634900; Mon, 16 Oct 2023 07:50:56 +0900
-Received: by mo-csw.securemx.jp (mx-mo-csw1800) id 39FMoS9q1779506; Mon, 16 Oct 2023 07:50:29 +0900
-X-Iguazu-Qid: 2yAbn6s0GZ3E7cqpM0
-X-Iguazu-QSIG: v=2; s=0; t=1697410228; q=2yAbn6s0GZ3E7cqpM0; m=nv43srUfvixbPAZsBANMrJNL3Y/yk/ZyK6tJU6Wv3tA=
-Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
-        by relay.securemx.jp (mx-mr1801) id 39FMoQrH1898351
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 16 Oct 2023 07:50:27 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b2QuTO4Uog/Zb6mg4iSMO0y0FfU+w/+o+E26U1atOt+CQeiZI+wY2ojLV9UA0EGxZuAXXzr1nJSq0NI1x6g+adACDIrHvkpO8BIC9jPp2Af4KKQo87Bte1suMq/vOO27ioyzO7/StTQeGRtwm10SisbuMrrOGR8ru8KH2lnWvjQEc1cEBE7ixV+/EEDCYbioV5Gy32NGn5xSkTZqNH4877ieMgn8hHrdPRmEkfrUoA4arpezJncsMDLDMtgZMnRetT1BQjPrvppkSXQqmpK7s+v0Dc3PijPXiliJRkP5rFhK+40YjYcVTUZq/P/u8qM+cPRIad3zZ2SsSJdtplETyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JL/ggxVdMHugFO7wYGOT57XnnX8FFo/zrLQmR6iFBX0=;
- b=DYoHNSIDAY4CGKE0EUxBOU/noTEkmxRkevbdpibbBRkZoNL/eAqSTWD2En3l5cdZODNPsejuFecuETW5Y5LRDwm+pD0LdTIbzDEJFBJokZ8iJ31DeJLoPQxydD/XYbxv42qk2+MX4fkI+G6k1y7NpCyuJO4iGOgeDJOh6F8ATRKd5VLIfJ7JEGAx63Wut4XJLoa7f7+hAT+V55OcnnGnvlUpmYXmvNehrfFiL3gmsKVxpKtM5T3N/NCORxXm4rm++GVgdlTHAjUxtLw4ILZPKJfZyK0RAu2ND9DoqFO7BPvGRrEQ5PmbRkJDwVU+QjDj+7uc8FGgyDZwF+shGVv3QQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=toshiba.co.jp; dmarc=pass action=none
- header.from=toshiba.co.jp; dkim=pass header.d=toshiba.co.jp; arc=none
-From:   <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     <gustavoars@kernel.org>, <mturquette@baylibre.com>,
-        <sboyd@kernel.org>
-CC:     <keescook@chromium.org>, <linux-clk@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-hardening@vger.kernel.org>
-Subject: RE: [PATCH 2/2][next] clk: visconti: Add bounds-checking coverage for
- struct visconti_pll_provider
-Thread-Topic: [PATCH 2/2][next] clk: visconti: Add bounds-checking coverage
- for struct visconti_pll_provider
-Thread-Index: AQHZ/LJ2dpVjEBIgOEOHBXIfYO2wnbBLemLg
-Date:   Sun, 15 Oct 2023 22:50:25 +0000
-X-TSB-HOP2: ON
-Message-ID: <TYVPR01MB11245A06AA4A22CE6A1B5676792D0A@TYVPR01MB11245.jpnprd01.prod.outlook.com>
-References: <cover.1697076650.git.gustavoars@kernel.org>
- <675633f7ae9893371d35b238f06fd02a3acffebb.1697076650.git.gustavoars@kernel.org>
-In-Reply-To: <675633f7ae9893371d35b238f06fd02a3acffebb.1697076650.git.gustavoars@kernel.org>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=toshiba.co.jp;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYVPR01MB11245:EE_|TY3PR01MB10015:EE_
-x-ms-office365-filtering-correlation-id: 65110d56-d330-4edd-9665-08dbcdd11ebb
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2tkAWnix0QEO9AkaGxPFLzFhbDzlAE89Ljn8hP8UnNHzqs7u+Fs3fYkGVrb9SSfHwLs1N6vmR+IgAr5yge7rUzBEApmx7nu5YsGLemqQPUXMbAoa8x1bDwKtbS0DYAfGNkd6pznn2N3GF0lOG+H78IDEKXzKgIWgo0zF1xSj7YCyO4HLeASK7HHIQkdrl2tt+ZDSsHQCvJG0y7SL/GQnVbBs4ajkTTIT5W/LrtpWppwswk8GwBa5KD7k4AYEFaf1fT653wX7iO8wqON6xOlaUVTmWu0sjo32HAWLZ//hfvV00VOtdodM1NzVHnlTKB77aOQ1sW9z4pvvc2R0EncmZSpWek8ezb/53OFZJqxtRht8wH3V4zjoRmMKW2EI8J6K0eFVo6yt9A+WEIPiRtl7WXostPU3iH45YREuRgkclOX0FxfhjeDbUlnRd6h9cBL8odNPQ7N/fVfqQb9IkytcGdOwRx5olU8fDwGxRd8vpibfqkwNoyeCUzG9PMnocdBu2mgO+u8BLma4HaKHhFWvmSidUiPLq5M7hvLc0BQTu4bAsfUFTT2GkvsGfYvI0BeqYAkPethJ0GRAbTRUVYRNDrw9aAtx6qd7YpW/aiyNYxFmd06SI4j8edKoMNc7Uru8zIryfdeHie19+bUu6//GRA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYVPR01MB11245.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(346002)(39860400002)(396003)(136003)(230922051799003)(1800799009)(64100799003)(186009)(451199024)(478600001)(316002)(110136005)(66556008)(41300700001)(66446008)(8936002)(8676002)(4326008)(76116006)(66946007)(66476007)(54906003)(64756008)(55236004)(5660300002)(71200400001)(52536014)(6506007)(7696005)(53546011)(55016003)(122000001)(38100700002)(38070700005)(86362001)(9686003)(26005)(83380400001)(2906002)(33656002)(95630200002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-2022-jp?B?V1VFL1hNZnpXVlB4MnMrcWZKK1VCVXAzV005VXo4U2ttQ04yOTlVSFI2?=
- =?iso-2022-jp?B?dlhyWFpvNEdidXB1VWJqa3h4ejJCSHB5YXVqUjRYd1lEL3h6TitIMERQ?=
- =?iso-2022-jp?B?bVkzcFVrVGZyWFA3TTh0bitVeHdkWmdISkYrTXJjM205Y1NOcGZaWW5i?=
- =?iso-2022-jp?B?MzVNVlY5dy9iSDFyZ1cxaCtYQzFWTjJJTjNMOXlVQ2YydHJ1TmdEVlFL?=
- =?iso-2022-jp?B?SWdSZ0NDVTJPeFRnenA4cmVtTzA5L1BoL20vQUJqdERwWEZ0em1aUTlN?=
- =?iso-2022-jp?B?QlJ1bmx3SmpyMTg4MUVJb3Z5QkFvS1lLQTU0VmtidWp2NEdpTUNkS3JD?=
- =?iso-2022-jp?B?aW4rZVB4KzZPczBJZ2JheGVCZlh3UkREOTRRVFFNOEJON2dhbkNsRVlt?=
- =?iso-2022-jp?B?cGYzTHozajBGYmZKWGtsSHJJMHFLZDltRTVPc1p4Unp2OWFWNTF4T1BJ?=
- =?iso-2022-jp?B?b25sOVEwRXA2MjMyM3RwaE9XZmRCQUk1a3JPdVZzMUplSy80dk9KeVNO?=
- =?iso-2022-jp?B?OTYyV1VKVzNsVHJ4VzYvelJmS3BIUU4xMTFkTnRYYkd4eEJFVDRPWHd6?=
- =?iso-2022-jp?B?N2c0OUI3a1d0bjFNaXQ1UmhxQllPSGNSN1JFQm42dlB1anJSY1hZa0dr?=
- =?iso-2022-jp?B?ZmFFSTl5K3VmRGppTjV1SHpwK3BqY1B3VXBlOGdWT2NSYi8vS3V6d29z?=
- =?iso-2022-jp?B?VWNBd3pudEZWUWJkRmtiLzRNZUZGaVU3LzBpTUU0bDVWZGNlMkttalpm?=
- =?iso-2022-jp?B?WkVqODc2Rkc4S1k3cXRuc2RzUXIyZ0txYnovWk0ra2w5MVpjLzN2emFy?=
- =?iso-2022-jp?B?WVVlbk5jZDZiQWhyU3g5ZXJFaGZ1Ynp6TW9QQVBaYmlHRm16dE5CMjdP?=
- =?iso-2022-jp?B?M05yM29iUGJ0NWFTZExPeHY3bWxEVitkb0h6Y2FkZEFubXNsbDZIM1NL?=
- =?iso-2022-jp?B?NjlaVW5VN3VicUZCM3dhbGNMNjRsbWJIL1NLdXd4SGdiUGdqb0hlZ2dZ?=
- =?iso-2022-jp?B?YTVnNE10Ri9GYWNwYTlpMWQyWHgxa2toTi9KTU5FNC9SZy93Ymg2STY5?=
- =?iso-2022-jp?B?MW5lbFhRMGgwTThSa2prTFBKYThxR0h2YmVRaFA2eGZldEhiYWs0c2FI?=
- =?iso-2022-jp?B?bHJSd2NaQnVSTDFBVS9LdWdLd0ppcGZhaWlETjVZMEhtRld3YU14cTls?=
- =?iso-2022-jp?B?RGh0cFh2RjNteUhKQ2Zhb0pHMzlRMmI5U2ZFaU1FZ2RnQW5JZGg4KzRn?=
- =?iso-2022-jp?B?cEFOQnc1Q3dKSEhOanpxVlVOWmc2VC8yTXE5eG5KVFlzVlBsNHZRT3NH?=
- =?iso-2022-jp?B?V1lEYjNMMmNXbmt3NFpsZW1ENUNXWXl3VUVzbWpPSVdrOHUySWwwbEoy?=
- =?iso-2022-jp?B?NFZ4dWY5RVA1NURHSXg1akpKM1dsSlVSYXk2Qlk2QUZDR29HWFM1R2o3?=
- =?iso-2022-jp?B?NlJ4ak5CellIbUdUM1VZQ01RMWVtRnBVWFA5NmpQTVpUWk1NUWpHU0hm?=
- =?iso-2022-jp?B?OWtsWnJCWWpwWHRqamNqTTV5WG0zSGZiUXRDVkxWeGExRzNZakV6eGxi?=
- =?iso-2022-jp?B?diswQUtIc0dldzZKVVBzbzFPbm5LOXNHVW8xWWhnYXBPSzg4cEFFQlI2?=
- =?iso-2022-jp?B?MUZ2cTJNMXVLSnlGSjIvNzQ4WnFvSHNrbDRSalE0Rlc2ZEdacHFOTjhk?=
- =?iso-2022-jp?B?TWpIclVXQlBxbUZqamlOTHVqeVhub3dUU0NwN1VhZjg2Rm5lM3FaQitz?=
- =?iso-2022-jp?B?eEJJSG1CSndxUXVxdCtETTFweVAwakMzZ1dIdUFEWTVrZ0V5TVZVTkhw?=
- =?iso-2022-jp?B?dnNhcHpCcnBFSnVUOFNJWk9tVVA5bVZRcE1ibkNNY1ltemFsem9CRDAy?=
- =?iso-2022-jp?B?NkhDZTR3SDJmdlpuQ0t5Q3hvL2prYlNOdU1xTXg5TUEvZDVYYW5GKzU3?=
- =?iso-2022-jp?B?NlF0anR1aXdtTFdWMHlWZFdQWFpiWFowNnJoUGxVVDloczVLYTRoWWV6?=
- =?iso-2022-jp?B?L3RhT00xN1ZGMDMycmYzbnY0OStQdnkxVUVtSENlZFU3d0hDeUpidDlv?=
- =?iso-2022-jp?B?T3g1ZWt1ajFJRnUvNUllOTFaWlN1TC9FaVU5ZWRFa0tyR0JaRUphT1B3?=
- =?iso-2022-jp?B?bUhtZWlCbzQ4QjdPZGpHM24xTEQveGlQVG92TjdaRFl3TUFlUHdINWtY?=
- =?iso-2022-jp?B?dFUrQW5VUHlGQkZxcGNJWlJkMFJiUGpMRUlISkZsSzRTRVRBZ1ZGSDd6?=
- =?iso-2022-jp?B?NkJoWm42YUpvUUF4RmF4SVZabnpCR3F1YVBscTR0UmM3MEI0MzBvWWJk?=
- =?iso-2022-jp?B?ZHl3MjBsNFV4ODdHdkZmalpuQVRsUU9TMHc9PQ==?=
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 8BIT
-MIME-Version: 1.0
-X-OriginatorOrg: toshiba.co.jp
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYVPR01MB11245.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 65110d56-d330-4edd-9665-08dbcdd11ebb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2023 22:50:25.0447
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: f109924e-fb71-4ba0-b2cc-65dcdf6fbe4f
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mdCyyMhvKAE2qiZGg8Fx06ryprnLE4fdCZwSnkHpt/O9L2/S1n8hMr4aXi41zChvxo3Wx2Y2tr9qOUcR++evDuNT0CfpTY1L71R+BBaFHwNkfjB/0Eu3094QDf7K1EBR
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY3PR01MB10015
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        Sun, 15 Oct 2023 19:27:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAF68A9
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 16:27:06 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD9D7C433C7;
+        Sun, 15 Oct 2023 23:27:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697412426;
+        bh=fRB1OPPC8IqF8nm23lg41T/WPs9btQn1il3hRRjhvyI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Fn/wBjeWOA4tUtV79IIyEThgtSC5LXWADRseVRzh0L1w7y16DUBCrttM9s9FilGBy
+         0B4zsJXDkdCwh1Tp2BLWb4IioksuKFpyY7OwWYrKGFcw14s2E87byXd8ruHmwyy1qy
+         q+vxTYxQJGi5XWYiwXOI8vW7VHPHCjJuyN2su57a13yXvxE3kv7wl0Jq5VRlXEVvKZ
+         zw1rMGsS9cX6UKuGE8kCuBukvNMLAXDzaN4LL6ulhf+yW6pHndwZblGo4qO4MNlMJ8
+         eU5ZqnnIA7EFMm5yAYQQy4rMy9zaSh8skiy9uLB/u4PUQxdhcPoXxaJ5BO+/VBL9Ki
+         nb6M8TjVWeRiA==
+Date:   Mon, 16 Oct 2023 08:26:59 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     "wuqiang.matt" <wuqiang.matt@bytedance.com>
+Cc:     linux-trace-kernel@vger.kernel.org, davem@davemloft.net,
+        anil.s.keshavamurthy@intel.com, naveen.n.rao@linux.ibm.com,
+        rostedt@goodmis.org, peterz@infradead.org,
+        akpm@linux-foundation.org, sander@svanheule.net,
+        ebiggers@google.com, dan.j.williams@intel.com, jpoimboe@kernel.org,
+        linux-kernel@vger.kernel.org, lkp@intel.com, mattwu@163.com
+Subject: Re: [PATCH v10 1/5] lib: objpool added: ring-array based lockless
+ MPMC
+Message-Id: <20231016082659.6ca94a5dff368783698753f9@kernel.org>
+In-Reply-To: <1516f7d1-e11b-3244-76b9-e6ddafc29a32@bytedance.com>
+References: <20231015053251.707442-1-wuqiang.matt@bytedance.com>
+        <20231015053251.707442-2-wuqiang.matt@bytedance.com>
+        <20231016004356.b5f3f815cb8d7c0994934332@kernel.org>
+        <1516f7d1-e11b-3244-76b9-e6ddafc29a32@bytedance.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -127,63 +58,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gustavo A. R. Silva,
+On Mon, 16 Oct 2023 00:06:11 +0800
+"wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
 
-Thanks for your patch!
+> On 2023/10/15 23:43, Masami Hiramatsu (Google) wrote:
+> > On Sun, 15 Oct 2023 13:32:47 +0800
+> > "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
+> > 
+> >> objpool is a scalable implementation of high performance queue for
+> >> object allocation and reclamation, such as kretprobe instances.
+> >>
+> >> With leveraging percpu ring-array to mitigate hot spots of memory
+> >> contention, it delivers near-linear scalability for high parallel
+> >> scenarios. The objpool is best suited for the following cases:
+> >> 1) Memory allocation or reclamation are prohibited or too expensive
+> >> 2) Consumers are of different priorities, such as irqs and threads
+> >>
+> >> Limitations:
+> >> 1) Maximum objects (capacity) is fixed after objpool creation
+> >> 2) All pre-allocated objects are managed in percpu ring array,
+> >>     which consumes more memory than linked lists
+> >>
+> > 
+> > Thanks for updating! This looks good to me except 2 points.
+> > 
+> > [...]
+> >> +
+> >> +/* initialize object pool and pre-allocate objects */
+> >> +int objpool_init(struct objpool_head *pool, int nr_objs, int object_size,
+> >> +		gfp_t gfp, void *context, objpool_init_obj_cb objinit,
+> >> +		objpool_fini_cb release)
+> >> +{
+> >> +	int rc, capacity, slot_size;
+> >> +
+> >> +	/* check input parameters */
+> >> +	if (nr_objs <= 0 || nr_objs > OBJPOOL_NR_OBJECT_MAX ||
+> >> +	    object_size <= 0 || object_size > OBJPOOL_OBJECT_SIZE_MAX)
+> >> +		return -EINVAL;
+> >> +
+> >> +	/* align up to unsigned long size */
+> >> +	object_size = ALIGN(object_size, sizeof(long));
+> >> +
+> >> +	/* calculate capacity of percpu objpool_slot */
+> >> +	capacity = roundup_pow_of_two(nr_objs);
+> > 
+> > This must be 'roundup_pow_of_two(nr_objs + 1)' because if nr_objs is power
+> > of 2 and all objects are pushed on the same slot, tail == head. This
+> > means empty and full is the same.
+> 
+> That won't happen. Would tail and head wrap only when >= 2^32. When all
+> objects are pushed to the same slot, tail will be (head + capacity).
 
-> -----Original Message-----
-> From: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Sent: Thursday, October 12, 2023 11:19 AM
-> To: Michael Turquette <mturquette@baylibre.com>; Stephen Boyd
-> <sboyd@kernel.org>; iwamatsu nobuhiro(岩松 信洋 ○ＤＩＴＣ□ＤＩＴ○Ｏ
-> ＳＴ) <nobuhiro1.iwamatsu@toshiba.co.jp>
-> Cc: Kees Cook <keescook@chromium.org>; linux-clk@vger.kernel.org;
-> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org; Gustavo A.
-> R. Silva <gustavoars@kernel.org>; linux-hardening@vger.kernel.org
-> Subject: [PATCH 2/2][next] clk: visconti: Add bounds-checking coverage for
-> struct visconti_pll_provider
-> 
-> In order to gain the bounds-checking coverage that __counted_by provides to
-> flexible-array members at run-time via CONFIG_UBSAN_BOUNDS (for array
-> indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions), we must make sure that the counter member, in this particular case
-> `num`, is updated before the first access to the flex-array member, in this
-> particular case array `hws`. See below:
-> 
-> commit f316cdff8d67 ("clk: Annotate struct clk_hw_onecell_data with
-> __counted_by") introduced `__counted_by` for `struct clk_hw_onecell_data`
-> together with changes to relocate some of assignments of counter `num`
-> before `hws` is accessed:
-> 
-> include/linux/clk-provider.h:
-> 1380 struct clk_hw_onecell_data {
-> 1381         unsigned int num;
-> 1382         struct clk_hw *hws[] __counted_by(num);
-> 1383 };
-> 
-> However, this structure is used as a member in other structs, in this case in
-> `struct visconti_pll_provider`:
-> 
-> drivers/clk/visconti/pll.h:
->  16 struct visconti_pll_provider {
->  17         void __iomem *reg_base;
->  18         struct device_node *node;
->  19
->  20         /* Must be last */
->  21         struct clk_hw_onecell_data clk_data;
->  22 };
-> 
-> Hence, we need to move the assignments to `ctx->clk_data.num` after
-> allocation for `struct visconti_pll_provider` and before accessing the flexible
-> array `ctx->clk_data.hws`. And, as assignments for all members in `struct
-> visconti_pll_provider` are originally adjacent to each other, relocate all
-> assignments together, so we don't split up `ctx->clk_data.hws = nr_plls` from
-> the rest. :)
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Ah, indeed. OK.
 
-Acked-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+> 
+> > 
+> >> +	if (!capacity)
+> >> +		return -EINVAL;
+> >> +
+> >> +	/* initialize objpool pool */
+> >> +	memset(pool, 0, sizeof(struct objpool_head));
+> >> +	pool->nr_cpus = nr_cpu_ids;
+> >> +	pool->obj_size = object_size;
+> >> +	pool->capacity = capacity;
+> >> +	pool->gfp = gfp & ~__GFP_ZERO;
+> >> +	pool->context = context;
+> >> +	pool->release = release;
+> >> +	slot_size = pool->nr_cpus * sizeof(struct objpool_slot);
+> >> +	pool->cpu_slots = kzalloc(slot_size, pool->gfp);
+> >> +	if (!pool->cpu_slots)
+> >> +		return -ENOMEM;
+> >> +
+> >> +	/* initialize per-cpu slots */
+> >> +	rc = objpool_init_percpu_slots(pool, nr_objs, context, objinit);
+> >> +	if (rc)
+> >> +		objpool_fini_percpu_slots(pool);
+> >> +	else
+> >> +		refcount_set(&pool->ref, pool->nr_objs + 1);
+> >> +
+> >> +	return rc;
+> >> +}
+> >> +EXPORT_SYMBOL_GPL(objpool_init);
+> >> +
+> > 
+> > [...]
+> > 
+> >> +
+> >> +/* drop unused objects and defref objpool for releasing */
+> >> +void objpool_fini(struct objpool_head *pool)
+> >> +{
+> >> +	void *obj;
+> >> +
+> >> +	do {
+> >> +		/* grab object from objpool and drop it */
+> >> +		obj = objpool_pop(pool);
+> >> +
+> >> +		/*
+> >> +		 * drop reference of objpool anyway even if
+> >> +		 * the obj is NULL, since one extra ref upon
+> >> +		 * objpool was already grabbed during pool
+> >> +		 * initialization in objpool_init()
+> >> +		 */
+> >> +		if (refcount_dec_and_test(&pool->ref))
+> >> +			objpool_free(pool);
+> > 
+> > Nit: you can call objpool_drop() instead of repeating the same thing here.
+> 
+> objpool_drop won't deref objpool if given obj is NULL. But here we need
+> drop objpool anyway even if obj is NULL.
 
-Best regards,
-  Nobuhiro
+I guess you decrement for the 'objpool' itself if obj=NULL, but I think
+it is a bit hacky (so you added the comment).
+e.g. rethook is doing something like below.
 
+---
+/* extra count for this pool itself */
+count = 1;
+/* make the pool empty */
+while (objpool_pop(pool))
+	count++;
+
+if (refcount_sub_and_test(count, &pool->ref))
+	objpool_free(pool);
+---
+
+> 
+> > Thank you,
+> > 
+> >> +	} while (obj);
+> >> +}
+> >> +EXPORT_SYMBOL_GPL(objpool_fini);
+> >> -- 
+> >> 2.40.1
+> >>
+> 
+> Thanks for you time
+> 
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
