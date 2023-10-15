@@ -2,182 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB67A7C9837
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 09:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B77707C983D
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 09:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbjJOHDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 03:03:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41544 "EHLO
+        id S233320AbjJOHOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 03:14:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjJOHDb (ORCPT
+        with ESMTP id S229554AbjJOHOT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 03:03:31 -0400
-Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DBB9DA
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 00:03:29 -0700 (PDT)
-Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1e19cb7829bso2178915fac.1
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 00:03:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697353408; x=1697958208; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MLRkNFaYEa5fEuPGQ15E5Ms4Xg1BiQ5FIQ0TqbAruB8=;
-        b=Lw1l74ANC8ncUMq7ieasjhGxXlBKPeFoy9dtEcj/fjtCNetwd5YsFDIeafyieDl7Xo
-         Omsjl2E0hQLjMLzjWChKXJn/ZUCs7gzAA0Jk7srJFaAg60lrqRF7eZ9UVvHu9CfRMHwM
-         A+cPrRrZN6XqgiuHcDeR6R/YfZHLdgJZC1Po//bNpwZ5El/ocSo9LW5rZh7VFdBkAS2R
-         WMsR1cXNGMyAp9YtK1p8xEVDEGPs6kXnrQZ7mU+Wn5c8vHWXnh88+/leF9vcX+bs76jd
-         FPhxfSa202MYbRzQSgUkMsJHiwvsqPl52smthG/ph2g8toNKc1VWVRY0a+FBisWmO8z7
-         GYqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697353408; x=1697958208;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MLRkNFaYEa5fEuPGQ15E5Ms4Xg1BiQ5FIQ0TqbAruB8=;
-        b=oKZ8xHntXHtC41jpvZQIbIxJEWIleEUef0krvK/c7uH3VpSv9w9LIBAlYkodo6CK9h
-         kKhacWJMtWl0Vw++/TJfwqd3x/vwJ583Tc0LisZ7Twg2gAwRe2QSkou0zb3+68TGe1Pl
-         fhp3Hj5rrkWRTMvtFeZIRNiqrzHQWVG8gOqI1bInYx2gZcT32l5yBsy2cUclDnn5119D
-         BFr3RLc/vkfudhLitiYIxjS9rqak6iCfFiZb2C8eBmlwuYSLmsCq/fZqNbZNUfjEmNS0
-         Aah3uiA6z1bTyh4diKKShaQ5N1Q9BIHrO87NNjSkSbcbq6hzqH4UqCvKUIcoqRkIgwrD
-         6+Rw==
-X-Gm-Message-State: AOJu0YwhkFvz1VO696wEhn6eCOuxajGy0yRTpwG1yn/ka7UEv3OrnoJ7
-        RQtxxMcxgFmGiUtiKfb0nkdtmbcvvhUZNu0zd3CJFyBgw+s=
-X-Google-Smtp-Source: AGHT+IEvThvWI8FV/CqU2kJPc3U7/UyuJuKk10SW9jIKJzEha6TCiZLVqvS9n7R0UgdVq8Zh3tTIjQenawV67dQkuhY=
-X-Received: by 2002:a05:6870:13d0:b0:1e9:cd89:433b with SMTP id
- 16-20020a05687013d000b001e9cd89433bmr8844660oat.45.1697353408400; Sun, 15 Oct
- 2023 00:03:28 -0700 (PDT)
+        Sun, 15 Oct 2023 03:14:19 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2042.outbound.protection.outlook.com [40.107.94.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC4FEDA;
+        Sun, 15 Oct 2023 00:14:16 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HdpSwgJRgHSZGwrlZ+NbVlZxgQ+ir846xMjotsgrU9HmYdXE1/K8tLdQCjtQbx83n8QkAM/tgKl52mWAL9aDJ+htgyd+silroZdzY6lg/k7bjvqa9c+P1TKN3syWjFtqImNPlVjyw5T2A78XIrSRf//ltC5HdinOBMggJB28YsZ+bKIXuvelJ/UUg4PoeZUhpJb9l+fBgbVkvRR/e+fmw2x0HbascfxG4LwOPIOhTnNdf/mqVPLVGcxrtz3ZFz4wHdffcUvGHtIYDijenTLx2hDUDTg/xUFyGV+OPYpiagmpZ9jJ2AWq2KUARHAmnS2d/cehu3dFAssEMAdWye6ejg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WTNoaD1HRrfW/MsTD0wCVJVvWQmO75+gygUQyfLXR6Q=;
+ b=ckC7XE+7bSSy61mgmj9SGDh9bM9nVJJ2mup65aGsKaTz16QMKlAe+m2umMB7f07t83iDdTpMU5mIwhSZ8AuD4L20kCPiSRHZEBer/ed5t1YqmBJOmV0wUb9gp/Om6vKG0L3MP4bKKi01yk6BYhqajLGctGwnP/15KImJWGCB3EFs+VmBqPHk0qQl6qLrRJW7XpIaBIcm9C0+ffsZz/6/hQF3fU7D+8lhqku6fby+F3/EweE5vaEa0YDOtD4fwxPyRlW5cn35PMn/gXzxq4kiQ4z7/qyoPsARd9f2gEEzYAeDhO4yPuEwZQ+NsMCn58Vmd9FEQXRlHWStN6igOmcbzQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WTNoaD1HRrfW/MsTD0wCVJVvWQmO75+gygUQyfLXR6Q=;
+ b=FmIhRu0Vd8AFBqzYpjs3sio8qAt+yYuO4v+2cuKeQyHl2L79cRr4kUlKpRka/LnoN1GdkdzzL+3CchHhNQeZBglBQ2KVuPnDGTB+X0J1lXYwkHkqd/sWu4ca7JZ0cCCDHB4folE+RB1rBKgKn3gtpFd+iz5nPht+vL5mbRBMmAlb1d6IVuifJkuEBGyrj2IIBSZrmGKfBTfpLw2WyQZPIHzhZs67wqAwpwPPX93RzHFAkLQoYwsbnJO3g6cvQSMbmWRoUA/UTy5Nj1Ryz17yruCRs2mO5vTb2Yqq3PCKKDIlz37Hw5kSbp87penDAnEsCOHIqsHzLJHmwppLXp8e9Q==
+Received: from MW4PR03CA0319.namprd03.prod.outlook.com (2603:10b6:303:dd::24)
+ by DM4PR12MB6398.namprd12.prod.outlook.com (2603:10b6:8:b5::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.34; Sun, 15 Oct
+ 2023 07:14:14 +0000
+Received: from MWH0EPF000989E6.namprd02.prod.outlook.com
+ (2603:10b6:303:dd:cafe::ee) by MW4PR03CA0319.outlook.office365.com
+ (2603:10b6:303:dd::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.34 via Frontend
+ Transport; Sun, 15 Oct 2023 07:14:14 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ MWH0EPF000989E6.mail.protection.outlook.com (10.167.241.133) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6838.22 via Frontend Transport; Sun, 15 Oct 2023 07:14:14 +0000
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Sun, 15 Oct
+ 2023 00:14:04 -0700
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail204.nvidia.com
+ (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Sun, 15 Oct
+ 2023 00:14:04 -0700
+Received: from Asurada-Nvidia (10.127.8.14) by mail.nvidia.com (10.129.68.6)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
+ Transport; Sun, 15 Oct 2023 00:14:03 -0700
+Date:   Sun, 15 Oct 2023 00:14:01 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>, Yi Liu <yi.l.liu@intel.com>
+CC:     "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "kevin.tian@intel.com" <kevin.tian@intel.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "zhenzhong.duan@intel.com" <zhenzhong.duan@intel.com>,
+        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>
+Subject: Re: [PATCH v2 1/6] iommu: Add new iommu op to create domains owned
+ by userspace
+Message-ID: <ZSuROTyaxePoVFA+@Asurada-Nvidia>
+References: <20230928071528.26258-1-yi.l.liu@intel.com>
+ <20230928071528.26258-2-yi.l.liu@intel.com>
 MIME-Version: 1.0
-References: <202310150352.KyKovpbT-lkp@intel.com>
-In-Reply-To: <202310150352.KyKovpbT-lkp@intel.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Sun, 15 Oct 2023 09:03:18 +0200
-Message-ID: <CAMhs-H-KG_7evTk7o+KEce7EQyfeSNh7f=N52-6x1M_y0rgrPA@mail.gmail.com>
-Subject: Re: drivers/clk/ralink/clk-mtmips.c:821:34: warning: unused variable 'mtmips_of_match'
-To:     kernel test robot <lkp@intel.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230928071528.26258-2-yi.l.liu@intel.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWH0EPF000989E6:EE_|DM4PR12MB6398:EE_
+X-MS-Office365-Filtering-Correlation-Id: fafc7f26-c3a3-4202-e0e1-08dbcd4e56a2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: isCIWzJOt9LY/yQ+GJ2q9DEHgq9h/ldBVylPFKKMwvXbEZjwjQWe+JLIUIUwK69iOQoRDofYk5vws24BszI8yWk9pwPnoIXt3XndsgmZ1Vwc+C9nsd24iKGSLfMQwrqF3VYz0pyuYr+HHCFIUHsL44wKoJHzHfUV9io8w6v8XixUwxQfVsGF30dTr5CZNs6TedSTqgjo+g4ewXbu6XWgqeZgf+XECV2h3Coc7NnDV8LnTsbzbdUziEDixmcZ9IwjRP9Df0XsgQpHegmXysR4V1YcFaeO1BgNWJCF+q1oboT9NT5eq4jenUZP2j3/h2m6QUnmV6dVDu1n27DLqR1iTTTALSepTHiSE1vb97/IVJQ12zavT7ZqEgfpt3R5LVkho+JIN6SVRTto6CZIna1yo9ICLQL05fZ2wCZoMuPC3UIEg1IGGuMUDRWza6TDTRqnijhG41ZqT1uMkGZosQ7mimRl/4jPdz1aVfaHaBoUvZ4BPIiIwZfB7BRaLJjRsP8+JBt1wWVvYBSU/6rsOirub8RME0bt1kDK9FU6+MltnwvMTcE0h9XFMb9UPum9bHTRt9q2BsV7jydqTIHzRl2WbIth1/Ng6RP2ZEoU/ug5RjvPdZfug66Sq6X0l5KQ/G6m6IdP8oZDWOzTV6ZUWC3wPrdQdOg6kxZkHmuHMLqNDlIz7TfewnQ9hB4gI7FiQfPQ+eEEIw6pFjy4+2vNIjmybri7u47tkLFgY1MTO2xs04FamIJibmtaLMk0mivrp9C9
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(136003)(396003)(346002)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(82310400011)(46966006)(40470700004)(36840700001)(36860700001)(7416002)(478600001)(9686003)(26005)(5660300002)(4326008)(41300700001)(47076005)(83380400001)(8676002)(8936002)(4744005)(2906002)(70586007)(70206006)(54906003)(316002)(356005)(110136005)(336012)(426003)(82740400003)(7636003)(33716001)(86362001)(40460700003)(55016003)(40480700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2023 07:14:14.6152
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: fafc7f26-c3a3-4202-e0e1-08dbcd4e56a2
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000989E6.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6398
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Sep 28, 2023 at 12:15:23AM -0700, Yi Liu wrote:
 
-On Sat, Oct 14, 2023 at 9:25=E2=80=AFPM kernel test robot <lkp@intel.com> w=
-rote:
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
-t master
-> head:   70f8c6f8f8800d970b10676cceae42bba51a4899
-> commit: 6f3b15586eef736831abe6a14f2a6906bc0dc074 clk: ralink: add clock a=
-nd reset driver for MTMIPS SoCs
-> date:   4 months ago
-> config: hexagon-randconfig-r016-20230817 (https://download.01.org/0day-ci=
-/archive/20231015/202310150352.KyKovpbT-lkp@intel.com/config)
-> compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git =
-ae42196bc493ffe877a7e3dff8be32035dea4d07)
-> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
-ve/20231015/202310150352.KyKovpbT-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202310150352.KyKovpbT-lkp=
-@intel.com/
->
-> All warnings (new ones prefixed by >>):
->
->    In file included from drivers/clk/ralink/clk-mtmips.c:11:
->    In file included from include/linux/regmap.h:20:
->    In file included from include/linux/iopoll.h:14:
->    In file included from include/linux/io.h:13:
->    In file included from arch/hexagon/include/asm/io.h:334:
->    include/asm-generic/io.h:547:31: warning: performing pointer arithmeti=
-c on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            val =3D __raw_readb(PCI_IOBASE + addr);
->                              ~~~~~~~~~~ ^
->    include/asm-generic/io.h:560:61: warning: performing pointer arithmeti=
-c on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            val =3D __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE +=
- addr));
->                                                            ~~~~~~~~~~ ^
->    include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded fro=
-m macro '__le16_to_cpu'
->    #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
->                                                      ^
->    In file included from drivers/clk/ralink/clk-mtmips.c:11:
->    In file included from include/linux/regmap.h:20:
->    In file included from include/linux/iopoll.h:14:
->    In file included from include/linux/io.h:13:
->    In file included from arch/hexagon/include/asm/io.h:334:
->    include/asm-generic/io.h:573:61: warning: performing pointer arithmeti=
-c on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            val =3D __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE +=
- addr));
->                                                            ~~~~~~~~~~ ^
->    include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded fro=
-m macro '__le32_to_cpu'
->    #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
->                                                      ^
->    In file included from drivers/clk/ralink/clk-mtmips.c:11:
->    In file included from include/linux/regmap.h:20:
->    In file included from include/linux/iopoll.h:14:
->    In file included from include/linux/io.h:13:
->    In file included from arch/hexagon/include/asm/io.h:334:
->    include/asm-generic/io.h:584:33: warning: performing pointer arithmeti=
-c on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            __raw_writeb(value, PCI_IOBASE + addr);
->                                ~~~~~~~~~~ ^
->    include/asm-generic/io.h:594:59: warning: performing pointer arithmeti=
-c on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + add=
-r);
->                                                          ~~~~~~~~~~ ^
->    include/asm-generic/io.h:604:59: warning: performing pointer arithmeti=
-c on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + add=
-r);
->                                                          ~~~~~~~~~~ ^
->    drivers/clk/ralink/clk-mtmips.c:309:9: warning: variable 'ret' is unin=
-itialized when used here [-Wuninitialized]
->            return ret;
->                   ^~~
->    drivers/clk/ralink/clk-mtmips.c:285:9: note: initialize the variable '=
-ret' to silence this warning
->            int ret, i;
->                   ^
->                    =3D 0
->    drivers/clk/ralink/clk-mtmips.c:359:9: warning: variable 'ret' is unin=
-itialized when used here [-Wuninitialized]
->            return ret;
->                   ^~~
->    drivers/clk/ralink/clk-mtmips.c:335:9: note: initialize the variable '=
-ret' to silence this warning
->            int ret, i;
->                   ^
->                    =3D 0
-> >> drivers/clk/ralink/clk-mtmips.c:821:34: warning: unused variable 'mtmi=
-ps_of_match' [-Wunused-const-variable]
->    static const struct of_device_id mtmips_of_match[] =3D {
->                                     ^
->    9 warnings generated.
+> diff --git a/include/uapi/linux/iommufd.h b/include/uapi/linux/iommufd.h
+> index b4ba0c0cbab6..4a7c5c8fdbb4 100644
+> --- a/include/uapi/linux/iommufd.h
+> +++ b/include/uapi/linux/iommufd.h
+> @@ -347,10 +347,20 @@ struct iommu_vfio_ioas {
+>  };
+>  #define IOMMU_VFIO_IOAS _IO(IOMMUFD_TYPE, IOMMUFD_CMD_VFIO_IOAS)
+> 
+> +/**
+> + * enum iommufd_hwpt_alloc_flags - Flags for HWPT allocation
+> + * @IOMMU_HWPT_ALLOC_NEST_PARENT: If set, allocate a domain which can serve
+> + *                                as the parent domain in the nesting
+> + *                                configuration.
 
-I already sent this patch some time ago and still waiting for its review:
+I just noticed a nit here: we should probably align with other
+parts of this file by using "HWPT" v.s. "domain"? I.e.
 
-https://lore.kernel.org/lkml/20230827023932.501102-1-sergio.paracuellos@gma=
-il.com/t/
++ * @IOMMU_HWPT_ALLOC_NEST_PARENT: If set, allocate a HWPT which can serve
++ *                                as the parent HWPT in the nesting
++ *                                configuration.
 
-[snip]
-
-Thanks,
-    Sergio Paracuellos
+Thanks
+Nic
