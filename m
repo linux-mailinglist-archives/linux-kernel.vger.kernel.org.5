@@ -2,79 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA1A7C9872
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 11:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A64027C9874
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 11:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229709AbjJOJRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 05:17:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55936 "EHLO
+        id S229746AbjJOJYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 05:24:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjJOJRA (ORCPT
+        with ESMTP id S229561AbjJOJYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 05:17:00 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4649CD8
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 02:16:58 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-180-Twob8sPuO7K597X-Wl0xZw-1; Sun, 15 Oct 2023 10:16:55 +0100
-X-MC-Unique: Twob8sPuO7K597X-Wl0xZw-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 15 Oct
- 2023 10:16:54 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sun, 15 Oct 2023 10:16:54 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Alexey Dobriyan' <adobriyan@gmail.com>
-CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: RE: [PATCH] fs: move and constify sysctl_nr_open_min,
- sysctl_nr_open_max
-Thread-Topic: [PATCH] fs: move and constify sysctl_nr_open_min,
- sysctl_nr_open_max
-Thread-Index: AQHZ/HAt7Icw5TmRtk6309iepUgEDbBGK5FQgALK0wCAAaDLoA==
-Date:   Sun, 15 Oct 2023 09:16:54 +0000
-Message-ID: <42f1dc15162141acb5931bb628c56866@AcuMS.aculab.com>
-References: <02591c1e-936b-46bf-ad2b-402b33338eee@p183>
- <9b23bb6bcabe4f419cb8510e99275085@AcuMS.aculab.com>
- <261b7728-a9f3-4ceb-8325-b8ad1fae993c@p183>
-In-Reply-To: <261b7728-a9f3-4ceb-8325-b8ad1fae993c@p183>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sun, 15 Oct 2023 05:24:48 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49ED3A3
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 02:24:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1697361883;
+        bh=urG4oh7ObZeYy796+eJBTOzvZ+QqH/SVTyJ2zZ6fxs8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=io6+Y4+TXg3IBuIBwLGU1ltfzSdN84NFAuELISXW/8mT9o2gIBOYM8Hp1tkCIIQ+E
+         LulG1P+6C1jSP4VujEK9FgLKe2FpmwE8akAJOR0LGH9hKqXIQYCGeuD3HMXtPsHhqz
+         44+TRGTS6Q4NgqOsup8JHaztxUDQViGTVQ29i7Vs=
+Date:   Sun, 15 Oct 2023 11:24:43 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Calvince Otieno <calvncce@gmail.com>
+Cc:     Dan Carpenter <dan.carpenter@linaro.org>,
+        outreachy@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Luke Koch <lu.ale.koch@gmail.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Simon Horman <horms@kernel.org>, linux-staging@lists.linux.dev
+Subject: Re: [PATCH] staging: wlan-ng: remove unused functions
+Message-ID: <5dd59334-428b-4e27-8d19-7b8514bb5ef5@t-8ch.de>
+References: <ZSjpQlUcyOoYv4Yh@lab-ubuntu>
+ <62778e4d-cc2e-4310-b334-52b54cfe7e79@kadam.mountain>
+ <CADFX3OSqnjGrxRazmmcBuGUOyv4TuXGEJ8fqbAhR4X9j0rn6sA@mail.gmail.com>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CADFX3OSqnjGrxRazmmcBuGUOyv4TuXGEJ8fqbAhR4X9j0rn6sA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQWxleGV5IERvYnJpeWFuDQo+IFNlbnQ6IDE0IE9jdG9iZXIgMjAyMyAxMDoyMw0KPiAN
-Cj4gT24gVGh1LCBPY3QgMTIsIDIwMjMgYXQgMDE6NTQ6MDZQTSArMDAwMCwgRGF2aWQgTGFpZ2h0
-IHdyb3RlOg0KPiA+IEZyb206IEFsZXhleSBEb2JyaXlhbg0KPiA+ID4gU2VudDogMTEgT2N0b2Jl
-ciAyMDIzIDE5OjI0DQo+IA0KPiA+ID4gKy8qIG91ciBtaW4oKSBpcyB1bnVzYWJsZSBpbiBjb25z
-dGFudCBleHByZXNzaW9ucyA7LS8gKi8NCj4gPiA+ICsjZGVmaW5lIF9fY29uc3RfbWluKHgsIHkp
-ICgoeCkgPCAoeSkgPyAoeCkgOiAoeSkpDQo+ID4gPiArc3RhdGljIGNvbnN0IHVuc2lnbmVkIGlu
-dCBzeXNjdGxfbnJfb3Blbl9tYXggPQ0KPiA+ID4gKwlfX2NvbnN0X21pbihJTlRfTUFYLCB+KHNp
-emVfdCkwL3NpemVvZih2b2lkICopKSAmIC1CSVRTX1BFUl9MT05HOw0KPiA+DQo+ID4gSSB0aGlu
-ayB5b3UnbGwgZmluZCB0aGF0IG1pbigpIGlzIGZpbmUuDQo+IA0KPiBNYWlubGluZSBtaW4oKSBz
-dGlsbCBjYW4ndCBkbw0KPiANCj4gCXN0YXRpYyBjb25zdCB4ID0gbWluKDEsIDIpOw0KDQpUaGVy
-ZSBoYXMgYmVlbiBhIHdob2xlIGxvYWQgb2Ygc3R1ZmYgdGhhdCBpcyBzdXBwb3NlZCB0byBkbyB0
-aGF0DQpmb3IgYWdlcyAtIG15IGNoYW5nZXMgZG9uJ3QgYWZmZWN0IGl0Lg0KDQpJIHByZXN1bWUg
-dGhleSB3b3JrIC0gYmVjYXVzZSB0aGV5IG1ha2UgaXQgaG9ycmlibHkgY29tcGxpY2F0ZWQuDQoN
-CglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwg
-TW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzog
-MTM5NzM4NiAoV2FsZXMpDQo=
+Hi Calvince,
 
+On 2023-10-15 10:39:20+0300, Calvince Otieno wrote:
+> On Sun, Oct 15, 2023 at 10:38 AM Calvince Otieno <calvncce@gmail.com> wrote:
+> > On Fri, Oct 13, 2023 at 12:02 PM Dan Carpenter <dan.carpenter@linaro.org> wrote:
+> >
+> > On Fri, Oct 13, 2023 at 09:52:50AM +0300, Calvince Otieno wrote:
+> > > The following functions were defined in the prism2mgmt.h file but neither
+> > > declared nor used anywhere. It is recommended that they be removed.
+> > >
+> > >       - void prism2mgmt_get_grpaddr(u32 did, struct p80211pstrd *pstr,
+> > >                                     struct hfa384x *priv);
+> > >       - int prism2mgmt_set_grpaddr(u32 did,
+> > >                                  u8 *prism2buf, struct p80211pstrd *pstr,
+> > >                                  struct hfa384x *priv);
+> > >       - int prism2mgmt_get_grpaddr_index(u32 did);
+> > >
+> >
+> > Could you look up when the functions were deleted and add that
+> > information to the commit message?
+> >
+> >     These functions were removed five years ago in commit 123412341234
+> >     ("delete functions").
+> >
+> > regards,
+> > dan carpenter
+> 
+> I am  not able to locate exactly when these functions were deleted.
+> I have checked the commit history of these files prism2mgmt.h and prism2mgmt.c,
+> but, I can't find any commit relating to the removal of the above functions.
+
+you can use the "-S" argument to "git log" for this quite nicely:
+
+$ git log --pretty=oneline  -Sprism2mgmt_set_grpaddr drivers/staging/wlan-ng
+1e7201836c576883d5bd708810cc72ab1392756f Staging: wlan-ng: Delete a pile of unused mibs. And fix WEXT SET_TXPOWER.
+cbec30c4c00c9f5a7357f5c5dacb63ae2378afb4 Staging: wlan-ng: Delete a large pile of now-unused code.
+00b3ed1685089ff52169a715de11106ed37df087 Staging: add wlan-ng prism2 usb driver
+
+This shows all the commits that touched the drivers/staging/wlan-ng
+directory and added or removed the string "prism2mgmt_set_grpadd".
+
+You can check which of these three commits dropped the function and then
+repeat the procedure for the other two functions.
+
+Thomas
