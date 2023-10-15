@@ -2,65 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A4077C9A54
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 19:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0BC37C9A73
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 19:50:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbjJOR3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 13:29:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54708 "EHLO
+        id S230156AbjJORuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 13:50:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjJOR3J (ORCPT
+        with ESMTP id S229522AbjJORuC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 13:29:09 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A639A1
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 10:29:08 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c9bca1d96cso24307785ad.3
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 10:29:08 -0700 (PDT)
+        Sun, 15 Oct 2023 13:50:02 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22523AB
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 10:50:01 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-534694a9f26so5465a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 10:50:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697390948; x=1697995748; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vAQk8jHlo6qihQAGhtGMq0EcFI2VhaDfpD+f3tlG7rc=;
-        b=ThJvj7Hb4h2RdWI5QwDYkFXe+jW4XmXC0Ov0Y0F9Ei2Lg3IXR9EVlhqw6es2a0d4GF
-         AQK2GM1INglQX3BCgMXK4JRr8YvGh56LYuM5wNJpvowyWoUWj3pL+jdtHbX8sfuPemqZ
-         VxMdgHpHl5ILZiAx+jyLjIQHlzCdVdA/jTHcb44oF2y1NzaAAQhj57QZSYzdRQdj8WcU
-         qU+ow7WwGroGn6BLqiBGY7hWU7SJ6cyiNfj0orRW4c8B232zLbJDLY7nT4383HkWEbpr
-         6U6wSBS8iYb0Wb/FSPBNWAuQryCmDydevM7zpqiiTlYb/hTL60nk0cJSEEiAY2+FJmpN
-         5tSg==
+        d=google.com; s=20230601; t=1697392199; x=1697996999; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YhI6/CEtA7dPuJC2WbvamIAcAZbCRPrEicy0biCB5oM=;
+        b=yF2QnBJbFrpP1iRq/qALEwYezT77hXdRXPpmHRaAfADC17pW0W7k/k9lh3wZoIosLi
+         eCUp6YmLgyBitR3u0uiEoDY54n3Rfgv+90FoKq+EpEgYazD+Xdh5Bntz3CTXDjxvjpLQ
+         UQrB8FnTgu74TEbS0JVr60Cg3V79CUBo+pz2s6zCKpvzLd/qLYPu3J0JbvqHlQZGYwQU
+         m1YWqILXCuRMavlSAMipjDDBiNh3PD/jt1Ok7b+nER5ZA8grow7iD1S3azq4O9hhliLm
+         NALeekhhD10S4XbLv0xmMH1feQZkqUr0t3mCVxuU09jvThe+J1AbQPVys/xbN0wM4Kg5
+         iZlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697390948; x=1697995748;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vAQk8jHlo6qihQAGhtGMq0EcFI2VhaDfpD+f3tlG7rc=;
-        b=J/KvkZuYOYtrHirMpjMRueWce2Iq/WUX8PAU5tVI+B7mrnnn2cJWKYrHwNbxYbE59y
-         eIhCrTr7mysbfZljkkqj1tEsL+Pdojx3T80MhPm2L3LRIiWJLUbN9t1YvB1Qu2gp5rGm
-         91e3by/qtUfpAW8BH7SZqSyYq3xWEVq1o2n4jMF7NOkaJgw7eA3J2dVrW7RJvV4rCJjV
-         iIlfgW/aDaswMJ7XQzin2UBZd/Mweh9Ib7x+ojCovuMEBcexys2fvODggAiS6xtZGaJK
-         wZjdLYWnfRMZqo5tcOixf8J23EelROvsoq8rMdEPizOPuEXFNuuel64RzA1tYHjJFWaw
-         v9xg==
-X-Gm-Message-State: AOJu0Yy6DyXFwJ3+QpUuKg7sElzB4+y7h3peQiureC5b2AJpLO0fzqs5
-        IOj6vbF358emKv1KfF0d1t9ZxbUqDok04g==
-X-Google-Smtp-Source: AGHT+IHIJoFxkyoyQf+ABTRyoL7rWQoL57Nyqp0YObgIO0uCwzLRIHL0zD+np4P+w0uHZ9FUJCYYcw==
-X-Received: by 2002:a17:903:2103:b0:1c9:fa50:fb8e with SMTP id o3-20020a170903210300b001c9fa50fb8emr3810880ple.3.1697390947753;
-        Sun, 15 Oct 2023 10:29:07 -0700 (PDT)
-Received: from localhost.localdomain ([2804:1b2:f182:ece3:38de:3ac4:3149:fe7b])
-        by smtp.gmail.com with ESMTPSA id c15-20020a170902d48f00b001c73d829fb7sm6984118plg.15.2023.10.15.10.29.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Oct 2023 10:29:07 -0700 (PDT)
-From:   Edson Juliano Drosdeck <edson.drosdeck@gmail.com>
-To:     phil@philpotter.co.uk
-Cc:     linux-kernel@vger.kernel.org, edson.drosdeck@gmail.com
-Subject: [PATCH] cdrom: Missing a blank line after declarations
-Date:   Sun, 15 Oct 2023 14:28:46 -0300
-Message-Id: <20231015172846.7275-1-edson.drosdeck@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        d=1e100.net; s=20230601; t=1697392199; x=1697996999;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YhI6/CEtA7dPuJC2WbvamIAcAZbCRPrEicy0biCB5oM=;
+        b=ZkCnRCwJcNu/zR2bYaNKq7rMX2EKTVLCdh4GL/sVQgFQaBMVlTtdNx8k5Zpt2EmYR+
+         Bv+rPs9J7V9V+98QWLyfKihz3RSXmfNKkmOmGA6hDgHS2KaKPi8LrwMxIgtdHJRKlmNz
+         9+wVl8pzKH3URzFXDCZVjgvAgY1itJOXlViG1qunmJvtqZhPD0t+c+T1zYouMP5i0+yq
+         IFxUNH3m41xdEdXSGsfyJYxxW1LLl5jr8cXFbOsvCaJRMm7/F3dzT+sZAJ+Bbs/Uw95a
+         EzQFw4pWpoywS6lqTM89rzlvNZJDaLBmK9pLNQEfd9Y0OOHUca2sS/NDz4sO5yG/IkqA
+         6lBg==
+X-Gm-Message-State: AOJu0YxFGLDMnDwTm94JgYKIPwysw0cv0EawXu6FlyTcerVAhkUm6diP
+        sqkzHA56TxfrUdyH5KKdZWJeVmppgu1if9GugkdvKA==
+X-Google-Smtp-Source: AGHT+IF7HTW4HSQYWHMETNkTzAk/Ya6xhaLXwi7KHbmL9ZmGzJDwwiQqJu77JqH6Sl2GyBBNxDTh6tmX1tMx4sykqac=
+X-Received: by 2002:a50:8a95:0:b0:538:5f9e:f0fc with SMTP id
+ j21-20020a508a95000000b005385f9ef0fcmr147551edj.0.1697392199329; Sun, 15 Oct
+ 2023 10:49:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20231014181333.2579530-1-vamshigajjela@google.com> <20231014191355.7f44aac3537a8d260225fa0c@hugovil.com>
+In-Reply-To: <20231014191355.7f44aac3537a8d260225fa0c@hugovil.com>
+From:   VAMSHI GAJJELA <vamshigajjela@google.com>
+Date:   Sun, 15 Oct 2023 23:19:47 +0530
+Message-ID: <CAMTSyjohXMQVqesqWsqd=vfRGEhqFB=MBnh8ZRk3hjHOXLdEkg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] serial: core: Potential overflow of frame_time
+To:     Hugo Villeneuve <hugo@hugovil.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        ilpo.jarvinen@linux.intel.com, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, manugautam@google.com,
+        Subhash Jadavani <sjadavani@google.com>,
+        Channa Kadabi <kadabi@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,105 +74,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Warning found by checkpatch.pl script. Adding blank line after declarations.
+On Sun, Oct 15, 2023 at 4:44=E2=80=AFAM Hugo Villeneuve <hugo@hugovil.com> =
+wrote:
+>
+> On Sat, 14 Oct 2023 23:43:33 +0530
+> Vamshi Gajjela <vamshigajjela@google.com> wrote:
+>
+> > From: VAMSHI GAJJELA <vamshigajjela@google.com>
+>
+> Hi,
+> your commit title doesn't really explain what this patch is doing.
+>
+> Please see: https://cbea.ms/git-commit/#imperative
+Thanks Hugo for the review, I will provide details in the following respons=
+e.
+>
+>
+> > uart_update_timeout() sets a u64 value to an unsigned int frame_time.
+> > While it can be cast to u32 before assignment, there's a specific case
+> > where frame_time is cast to u64. Since frame_time consistently
+> > participates in u64 arithmetic, its data type is converted to u64 to
+> > eliminate the need for explicit casting.
+>
+> Again, refering to your title commit message, I would expect that you
+> would describe precisely how a potential overflow can happen here, and
+> I am not seeing it.
+>
+> And based on your log message, it seems that your commit is simply some
+> kind of optimization, not a fix?
 
-Signed-off-by: Edson Juliano Drosdeck <edson.drosdeck@gmail.com>
----
- drivers/cdrom/cdrom.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+In the function uart_update_timeout() within serial_core.c, a u64 value is
+assigned to an "unsigned int" variable frame_time. This raises concerns abo=
+ut
+potential overflow. While the code in the patch doesn't explicitly manifest
+the issue in the following line of uart_update_timeout()
 
-diff --git a/drivers/cdrom/cdrom.c b/drivers/cdrom/cdrom.c
-index cc2839805983..ae30390731bf 100644
---- a/drivers/cdrom/cdrom.c
-+++ b/drivers/cdrom/cdrom.c
-@@ -985,6 +985,7 @@ static void cdrom_count_tracks(struct cdrom_device_info *cdi, tracktype *tracks)
- 	struct cdrom_tochdr header;
- 	struct cdrom_tocentry entry;
- 	int ret, i;
-+
- 	tracks->data = 0;
- 	tracks->audio = 0;
- 	tracks->cdi = 0;
-@@ -1038,6 +1039,7 @@ int open_for_data(struct cdrom_device_info *cdi)
- 	int ret;
- 	const struct cdrom_device_ops *cdo = cdi->ops;
- 	tracktype tracks;
-+
- 	cd_dbg(CD_OPEN, "entering open_for_data\n");
- 	/* Check if the driver can report drive status.  If it can, we
- 	   can do clever things.  If it can't, well, we at least tried! */
-@@ -1202,6 +1204,7 @@ static int check_for_audio_disc(struct cdrom_device_info *cdi,
- {
-         int ret;
- 	tracktype tracks;
-+
- 	cd_dbg(CD_OPEN, "entering check_for_audio_disc\n");
- 	if (!(cdi->options & CDO_CHECK_TYPE))
- 		return 0;
-@@ -3038,6 +3041,7 @@ static noinline int mmc_ioctl_cdrom_subchannel(struct cdrom_device_info *cdi,
- 	int ret;
- 	struct cdrom_subchnl q;
- 	u_char requested, back;
-+
- 	if (copy_from_user(&q, (struct cdrom_subchnl __user *)arg, sizeof(q)))
- 		return -EFAULT;
- 	requested = q.cdsc_format;
-@@ -3063,6 +3067,7 @@ static noinline int mmc_ioctl_cdrom_play_msf(struct cdrom_device_info *cdi,
- {
- 	const struct cdrom_device_ops *cdo = cdi->ops;
- 	struct cdrom_msf msf;
-+
- 	cd_dbg(CD_DO_IOCTL, "entering CDROMPLAYMSF\n");
- 	if (copy_from_user(&msf, (struct cdrom_msf __user *)arg, sizeof(msf)))
- 		return -EFAULT;
-@@ -3083,6 +3088,7 @@ static noinline int mmc_ioctl_cdrom_play_blk(struct cdrom_device_info *cdi,
- {
- 	const struct cdrom_device_ops *cdo = cdi->ops;
- 	struct cdrom_blk blk;
-+
- 	cd_dbg(CD_DO_IOCTL, "entering CDROMPLAYBLK\n");
- 	if (copy_from_user(&blk, (struct cdrom_blk __user *)arg, sizeof(blk)))
- 		return -EFAULT;
-@@ -3177,6 +3183,7 @@ static noinline int mmc_ioctl_cdrom_start_stop(struct cdrom_device_info *cdi,
- 					       int cmd)
- {
- 	const struct cdrom_device_ops *cdo = cdi->ops;
-+
- 	cd_dbg(CD_DO_IOCTL, "entering CDROMSTART/CDROMSTOP\n");
- 	cgc->cmd[0] = GPCMD_START_STOP_UNIT;
- 	cgc->cmd[1] = 1;
-@@ -3190,6 +3197,7 @@ static noinline int mmc_ioctl_cdrom_pause_resume(struct cdrom_device_info *cdi,
- 						 int cmd)
- {
- 	const struct cdrom_device_ops *cdo = cdi->ops;
-+
- 	cd_dbg(CD_DO_IOCTL, "entering CDROMPAUSE/CDROMRESUME\n");
- 	cgc->cmd[0] = GPCMD_PAUSE_RESUME;
- 	cgc->cmd[8] = (cmd == CDROMRESUME) ? 1 : 0;
-@@ -3230,6 +3238,7 @@ static noinline int mmc_ioctl_dvd_auth(struct cdrom_device_info *cdi,
- {
- 	int ret;
- 	dvd_authinfo ai;
-+
- 	if (!CDROM_CAN(CDC_DVD))
- 		return -ENOSYS;
- 	cd_dbg(CD_DO_IOCTL, "entering DVD_AUTH\n");
-@@ -3248,6 +3257,7 @@ static noinline int mmc_ioctl_cdrom_next_writable(struct cdrom_device_info *cdi,
- {
- 	int ret;
- 	long next = 0;
-+
- 	cd_dbg(CD_DO_IOCTL, "entering CDROM_NEXT_WRITABLE\n");
- 	ret = cdrom_get_next_writable(cdi, &next);
- 	if (ret)
-@@ -3262,6 +3272,7 @@ static noinline int mmc_ioctl_cdrom_last_written(struct cdrom_device_info *cdi,
- {
- 	int ret;
- 	long last = 0;
-+
- 	cd_dbg(CD_DO_IOCTL, "entering CDROM_LAST_WRITTEN\n");
- 	ret = cdrom_get_last_written(cdi, &last);
- 	if (ret)
--- 
-2.39.2
+"port->frame_time =3D DIV64_U64_ROUND_UP(frame_time, baud);"
 
+lacks a u32 typecast for frame_time.
+
+In the function "uart_fifo_timeout" has the following line of code
+
+u64 fifo_timeout =3D (u64)READ_ONCE(port->frame_time) * port->fifosize;
+
+In the above line frame_time is typecast to u64
+
+also, timeout values in the serial core associated with frame_time are used
+in the u64 arithmetic. To maintain consistency and readability, I've update=
+d
+the size of frame_time from "unsigned int" to "unsigned long". This ensures
+uniformity with typecasts elsewhere in the code, addressing potential issue=
+s
+and enhancing clarity.
+
+I hope this provides clarity. Would you find it helpful if I were to provid=
+e
+further details in the commit message?
+>
+> Hugo.
+>
+>
+>
+> > Signed-off-by: VAMSHI GAJJELA <vamshigajjela@google.com>
+> > ---
+> > v2:
+> > - use DIV64_U64_ROUND_UP with frame_time
+> >
+> >  drivers/tty/serial/8250/8250_port.c | 2 +-
+> >  include/linux/serial_core.h         | 4 ++--
+> >  2 files changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8=
+250/8250_port.c
+> > index 141627370aab..d1bf794498c4 100644
+> > --- a/drivers/tty/serial/8250/8250_port.c
+> > +++ b/drivers/tty/serial/8250/8250_port.c
+> > @@ -1510,7 +1510,7 @@ static inline void __stop_tx(struct uart_8250_por=
+t *p)
+> >                        * rather than after it is fully sent.
+> >                        * Roughly estimate 1 extra bit here with / 7.
+> >                        */
+> > -                     stop_delay =3D p->port.frame_time + DIV_ROUND_UP(=
+p->port.frame_time, 7);
+> > +                     stop_delay =3D p->port.frame_time + DIV64_U64_ROU=
+ND_UP(p->port.frame_time, 7);
+> >               }
+> >
+> >               __stop_tx_rs485(p, stop_delay);
+> > diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
+> > index bb6f073bc159..b128513b009a 100644
+> > --- a/include/linux/serial_core.h
+> > +++ b/include/linux/serial_core.h
+> > @@ -558,7 +558,7 @@ struct uart_port {
+> >
+> >       bool                    hw_stopped;             /* sw-assisted CT=
+S flow state */
+> >       unsigned int            mctrl;                  /* current modem =
+ctrl settings */
+> > -     unsigned int            frame_time;             /* frame timing i=
+n ns */
+> > +     unsigned long           frame_time;             /* frame timing i=
+n ns */
+> >       unsigned int            type;                   /* port type */
+> >       const struct uart_ops   *ops;
+> >       unsigned int            custom_divisor;
+> > @@ -764,7 +764,7 @@ unsigned int uart_get_divisor(struct uart_port *por=
+t, unsigned int baud);
+> >   */
+> >  static inline unsigned long uart_fifo_timeout(struct uart_port *port)
+> >  {
+> > -     u64 fifo_timeout =3D (u64)READ_ONCE(port->frame_time) * port->fif=
+osize;
+> > +     u64 fifo_timeout =3D READ_ONCE(port->frame_time) * port->fifosize=
+;
+> >
+> >       /* Add .02 seconds of slop */
+> >       fifo_timeout +=3D 20 * NSEC_PER_MSEC;
+> > --
+> > 2.42.0.655.g421f12c284-goog
+> >
