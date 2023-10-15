@@ -2,58 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C61E7C979E
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 04:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2737C97A2
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 04:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233380AbjJOCQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 22:16:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43908 "EHLO
+        id S233394AbjJOCUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 22:20:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229733AbjJOCQK (ORCPT
+        with ESMTP id S229733AbjJOCUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 22:16:10 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E08D6;
-        Sat, 14 Oct 2023 19:16:07 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-50573e85ee0so4094547e87.3;
-        Sat, 14 Oct 2023 19:16:06 -0700 (PDT)
+        Sat, 14 Oct 2023 22:20:11 -0400
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E62BD6;
+        Sat, 14 Oct 2023 19:20:09 -0700 (PDT)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-5a822f96aedso21883197b3.2;
+        Sat, 14 Oct 2023 19:20:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697336165; x=1697940965; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=CqVE6uodm+iyb6Wqc7ayNNI6THJDNZR8gRKY9AL1+Rg=;
-        b=nRoBLHMBEGnq0B9XK8X3Ct2P7PLfznhN+qZw/Mus7LXBe+k9TsmOpljuJb7AMFW8tg
-         /eIjoXObjy5RLEeS4yaNNEIwjwGf+7RChi1Ar3jOv+cDPV6Z1hlggR5KT9uEJFhv7Rz4
-         BzrF8Igzg1Ts1rRQRYDuDhoa55E5pKArUOQWg1w+JDSylYjFe/oMwRlgOlL61EPzQHEg
-         7C5Nhsjk+Ec+4IiCDHNSj4F1Lr97z4L4MZWB2mGuw88Olu3WisCDf/SrZXEcaDjeDF1g
-         CKC84Tk4d79Q41XqbLixThSP7KArICy4nkpPS1KbIuyWuaRdFJEdTDBL+O6835jjGQdP
-         pmrQ==
+        d=gmail.com; s=20230601; t=1697336409; x=1697941209; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zzmAztgi6ecB7UaqCGob459y4GhttsIKx/RrP9U9cpE=;
+        b=muLhtTxhk+Y2RvpPMifgCc108FOFO0xKAmoccZQdrcXOZc6QkfYl4/Lg5q8/dm6Ts6
+         VQbPLuNjxvTQUx+EKfpLvEP2Vd3oqq55lyuPWxJvb6KbqEZRSBwotvJfbai4fymo9ASY
+         9RAHY/Xu5qE2aooPlS4slMTtT9pZFAXYPh263pw+85WDoZKxaL3uan8RecFkWoaG+4JK
+         QPt41Aoq+j5trapeC3BsLpJoLiP/dN/B6u1kMNMYn2bElRXCZzqphQDfUekZMmILCfVR
+         SJ0/F/dgOxDkni9wrevsgvsGkwiBVxgz7XbW3L8V+wZwU57bf14vBRXTKYufBe/w5/g/
+         6PAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697336165; x=1697940965;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CqVE6uodm+iyb6Wqc7ayNNI6THJDNZR8gRKY9AL1+Rg=;
-        b=dG/2y7PO05NhD4gtWSm1b2SbyqirOpGvd7Z8Y2pcx81MhaXLI9KKh97OLj4dX7jkvo
-         tv4gD6jpasrI4SsN2YtjQkTCf0XNtzMnhqnGtln7dkTi+DCIJteIfBNK/O0LX0+KSRXo
-         zWKfjlYAtBOnQXsMD4bWEXYla94RfiW1zgckIrrr6S9l5YJFH92ai4tmeClP4r3Z5sjN
-         0y9h+3oC7oR2tgsJkLEvZXHD3uix0m7rV+PM24LMWNuVnp8fjjyZKDW6wClH6IolQe/J
-         f098ElQeWKOuRTWRNq38k3XPWYUy471UcQRD88hRNkxmCCEyomnQcO8k+sciJpsxOHcE
-         Py8g==
-X-Gm-Message-State: AOJu0Ywel3kGZ+PZUQMc5CUaIBQSAgk+P9N/46eHjSZ5XOgE6TPslz0Y
-        6/eWQPgxOJJggJ8YHr9qPo4V5H1JE9hnOyacmqPMaCgkMu8=
-X-Google-Smtp-Source: AGHT+IHKx5dK8HN6Ub70InFkq5cz+jMHeSY+Ijdez+ueCMPXXZfFXC5hAdiXfX89AKweVDJBSeS7Z8aiNl1+l+W6dKU=
-X-Received: by 2002:a05:6512:3f10:b0:500:be57:ce53 with SMTP id
- y16-20020a0565123f1000b00500be57ce53mr31645337lfa.42.1697336164883; Sat, 14
- Oct 2023 19:16:04 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697336409; x=1697941209;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zzmAztgi6ecB7UaqCGob459y4GhttsIKx/RrP9U9cpE=;
+        b=kyqARCxAT+lUtf7xr1otVXZGS6SiRm2IxG/pquwh3WvvE4KBN1T8Yq4SNrQXwJVMEb
+         JDXcnOx1/Ux1Gdz4BTe3vW+eqrx8vV6sBhS8YQCDur5M/D9g2OlQSDCieDj85ysEXDib
+         +eMxB1U9x6//jP+bSejnQzazRCK8mjGetktZ7vxqJ2zzlQbxUODHmbwtPU48zlKtS5BJ
+         JUOR9Ik1AljAVwpRIw94KKDULhT2sSl1KTuJYkeEGKkvDjTqOQ/DnLlYItRE10CKDtTR
+         ok/OB2dpluU3/EACkzN+TNSIIDeEN+eOvK2YAcZ+DDMhy4QEBme9nAt/uIfAn0vwZ8y0
+         dRdg==
+X-Gm-Message-State: AOJu0YyQNht7LGA/dcBes4U9bUaDA5TQvVy0G9Z77uTD2D4N5d/Z9MB6
+        xrC7pW2W5b9scDtBb7WDZp8=
+X-Google-Smtp-Source: AGHT+IGkOEjO+bGWWFCarw0RLmOk68tVCv/6p3H378i9MP3Ve1TWkdNvsdbRXDgjuLQXDGyqdxhtJg==
+X-Received: by 2002:a05:690c:257:b0:5a7:b51a:e176 with SMTP id ba23-20020a05690c025700b005a7b51ae176mr14718261ywb.12.1697336408657;
+        Sat, 14 Oct 2023 19:20:08 -0700 (PDT)
+Received: from localhost ([2607:fb90:3e2c:8023:e145:ae9d:cf98:1574])
+        by smtp.gmail.com with ESMTPSA id z193-20020a0dd7ca000000b005a8073e2062sm1025954ywd.33.2023.10.14.19.20.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Oct 2023 19:20:08 -0700 (PDT)
+Date:   Sat, 14 Oct 2023 19:20:07 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Alexander Potapenko <glider@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@kernel.org>,
+        Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        netdev@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        dm-devel@redhat.com, ntfs3@lists.linux.dev,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 09/14] bitmap: extend bitmap_{get,set}_value8() to
+ bitmap_{get,set}_bits()
+Message-ID: <ZStMV46v4EkoUHE8@yury-ThinkPad>
+References: <20231009151026.66145-1-aleksander.lobakin@intel.com>
+ <20231009151026.66145-10-aleksander.lobakin@intel.com>
+ <ZSQq02A9mTireK71@yury-ThinkPad>
+ <a28542e2-4a5b-4c29-9d4a-12a0d2ab5527@intel.com>
 MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Sat, 14 Oct 2023 21:15:53 -0500
-Message-ID: <CAH2r5ms0UzM_VjC6rUjyYX5X1dR2Jxp3t9_fSoqw_0h2zqk4qg@mail.gmail.com>
-Subject: [GIT PULL] smb3 client fixes
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a28542e2-4a5b-4c29-9d4a-12a0d2ab5527@intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -64,38 +84,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull the following changes since commit
-94f6f0550c625fab1f373bb86a6669b45e9748b3:
+On Wed, Oct 11, 2023 at 11:33:25AM +0200, Alexander Lobakin wrote:
+> From: Yury Norov <yury.norov@gmail.com>
+> Date: Mon, 9 Oct 2023 09:31:15 -0700
+> 
+> > + Alexander Potapenko <glider@google.com>
+> > 
+> > On Mon, Oct 09, 2023 at 05:10:21PM +0200, Alexander Lobakin wrote:
+> >> Sometimes there's need to get a 8/16/...-bit piece of a bitmap at a
+> >> particular offset. Currently, there are only bitmap_{get,set}_value8()
+> >> to do that for 8 bits and that's it.
+> > 
+> > And also a series from Alexander Potapenko, which I really hope will
+> > get into the -next really soon. It introduces bitmap_read/write which
+> > can set up to BITS_PER_LONG at once, with no limitations on alignment
+> > of position and length:
+> > 
+> > https://lore.kernel.org/linux-arm-kernel/ZRXbOoKHHafCWQCW@yury-ThinkPad/T/#mc311037494229647088b3a84b9f0d9b50bf227cb
+> > 
+> > Can you consider building your series on top of it?
+> 
+> Yeah, I mentioned in the cover letter that I'm aware of it and in fact
+> it doesn't conflict much, as the functions I'm adding here get optimized
+> as much as the original bitmap_{get,set}_value8(), while Alexander's
+> generic helpers are heavier.
+> I realize lots of calls will be optimized as well due to the offset and
+> the width being compile-time constants, but not all of them. The idea of
+> keeping two pairs of helpers initially came from Andy if I understood
+> him correctly.
+> What do you think? I can provide some bloat-o-meter stats after
+> rebasing. And either way, I see no issue in basing this series on top of
+> Alex' one.
 
-  Linux 6.6-rc5 (2023-10-08 13:49:43 -0700)
+You're right, let's try both and see what how worse is one comparing
+to another wrt bloat-o-meter and overall code generation. If the
+difference is not that terrible, I'd stick to universal and simpler
+for users version.
 
-are available in the Git repository at:
+If the difference is significant, we'd have to keep both. Maybe it's
+worth to try merge the aligned case into generic one, but it's not the
+purpose of your series, of course.
 
-  git://git.samba.org/sfrench/cifs-2.6.git tags/6.6-rc5-smb3-client-fixes
-
-for you to fetch changes up to 81ba10959970d15c388bf29866b01b62f387e6a3:
-
-  smb: client: prevent new fids from being removed by laundromat
-(2023-10-12 09:41:32 -0500)
-
-----------------------------------------------------------------
-Two SMB3 client fixes
-- Fix caching race with open_cached_dir and laundromat cleanup of
-cached dirs (addresses a problem spotted with xfstest run with
-directory leases enabled)
-- reduce excessive resource usage of laundromat threads
-
-----------------------------------------------------------------
-Paulo Alcantara (2):
-      smb: client: make laundromat a delayed worker
-      smb: client: prevent new fids from being removed by laundromat
-
- fs/smb/client/cached_dir.c | 141 ++++++++++++++++++++++-----------------------
- fs/smb/client/cached_dir.h |   2 +-
- 2 files changed, 69 insertions(+), 74 deletions(-)
-
-
---
 Thanks,
-
-Steve
+Yury
