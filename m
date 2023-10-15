@@ -2,98 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0767C9B3D
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 22:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BCB67C9B4B
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 22:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbjJOUHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 16:07:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54578 "EHLO
+        id S230204AbjJOUN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 16:13:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJOUHB (ORCPT
+        with ESMTP id S230261AbjJOUNy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 16:07:01 -0400
-Received: from mail.z3ntu.xyz (mail.z3ntu.xyz [128.199.32.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEADDB7;
-        Sun, 15 Oct 2023 13:06:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=z3ntu;
-        t=1697400417; bh=gLXzkJlcOtiiXEeg7Iuty/PC2JvU2OIZdV/PvF/Q3tI=;
-        h=From:Date:Subject:To:Cc;
-        b=RN0J6xnJHoJM2GqLNuKraxSEjdpxtnbOWwlW8bSFR8bzyC1YvwKNIsWIkLN/vHi4G
-         Tk03S+7MiiBou2NRuVn0XSkeOhnRviUUDAzTYQKw0G/wKrutKC/ZGPzEAxDa2nRRfG
-         Z7PJy89ExVXA72jdu4ZGzwRfj+pPUYOoU4MaK75M=
-From:   Luca Weiss <luca@z3ntu.xyz>
-Date:   Sun, 15 Oct 2023 22:06:56 +0200
-Subject: [PATCH] arm64: dts: qcom: sdm632-fairphone-fp3: Enable LPASS
+        Sun, 15 Oct 2023 16:13:54 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF35B7;
+        Sun, 15 Oct 2023 13:13:53 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-98377c5d53eso581530566b.0;
+        Sun, 15 Oct 2023 13:13:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697400832; x=1698005632; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DT1W8gUSuxT3Wwy3qW2e2tPQ4NkLWmb+aTGBrsPTZaY=;
+        b=DNtQw7ocVHhbwP3gIBKkhIhpZX3BiAxtUxi9MasJuIPkip4XUOA/Egy5rS5M7AmZgc
+         fcEwHRQoUTvUMtKXV1nRDDKCFjIdcC9Nr6QOWxU6J7I+f/hM3hvAtVTmUhm9i3/vfVFr
+         6qPlZufVHyvnDLPADEAw2cwSNGYXh6IJPgAWbVYbrwb1ccLCt+hPiIpVCFuIjGUJY2jC
+         LrO7S2PRL/4xYaoVuDvqok2uZd0h7a+DytgrMCQtTcW6BtmuDOb2t+WiCle4yIevaGjF
+         Qy25Pwu12EWSAfWdr6r2baKFfdoh48EHjveh2aQ7pyzxqRQTHtXzRDGmjhi13PsE+L0I
+         n2Rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697400832; x=1698005632;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DT1W8gUSuxT3Wwy3qW2e2tPQ4NkLWmb+aTGBrsPTZaY=;
+        b=h+XnR53AZNzEmHqmeJa1dCaXqaV+NACbkLax6M3l0+WlptOZmqZZrSarBH8y2FMwCc
+         bT6iv3u74AbHKFMzhzguVsT0Zqsjbnf8MKYhzPNiHZ3XcTorIBOpttxwI+vqV5cmISMS
+         Fu0RP7oWAiwUsL7sS128q//G9ZGHbFkypu9YWhYE/CBAvzH05qB8kat6SKv15yblqbrI
+         linCcsfJX60dPd9kKFUoFKH3rQE3SMBCr+CaBR7soQaluOAkSVg3DfVGlMi0tYAipnyp
+         MkUTMJB+M6pMgARN1bw9JQjxa9csXkj65LTsDuCHwru1XNisnKeT5bkraYoxsXqiUeOt
+         vKtA==
+X-Gm-Message-State: AOJu0Yzau2YtT1wz57VNenPM2sHR98vS4+4tdcy7ALpUnEaDHiwW1qW6
+        x1AM7F/p3m26e7//OsPa57yQZWbCLt8WEvs=
+X-Google-Smtp-Source: AGHT+IEXViXuLbUs9s+KmzkE5bixqlOmue7yjzSoBKZULy7e0QSO4Sw9iKCVoEKX9cfxdOgfcgIHTQ==
+X-Received: by 2002:a17:907:a0d:b0:9c0:99c4:79e8 with SMTP id bb13-20020a1709070a0d00b009c099c479e8mr1751940ejc.6.1697400831619;
+        Sun, 15 Oct 2023 13:13:51 -0700 (PDT)
+Received: from dorcaslitunya-virtual-machine.localdomain ([105.163.157.6])
+        by smtp.gmail.com with ESMTPSA id m10-20020a170906234a00b009ae587ce133sm2721766eja.188.2023.10.15.13.13.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Oct 2023 13:13:50 -0700 (PDT)
+From:   Dorcas AnonoLitunya <anonolitunya@gmail.com>
+Cc:     anonolitunya@gmail.com, outreachy@lists.linux.dev,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Teddy Wang <teddy.wang@siliconmotion.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/5] staging: sm750fb: Renaming camelcase to snakecase
+Date:   Sun, 15 Oct 2023 23:12:33 +0300
+Message-ID: <cover.1697400022.git.anonolitunya@gmail.com>
+X-Mailer: git-send-email 2.42.0.345.gaab89be2eb
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231015-fp3-lpass-v1-1-4d46a399a035@z3ntu.xyz>
-X-B4-Tracking: v=1; b=H4sIAF9GLGUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2NDA0NT3bQCY92cgsTiYt0koxRTI4MUYzPTxCQloPqCotS0zAqwWdGxtbU
- A2KJWP1sAAAA=
-To:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Luca Weiss <luca@z3ntu.xyz>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=773; i=luca@z3ntu.xyz;
- h=from:subject:message-id; bh=gLXzkJlcOtiiXEeg7Iuty/PC2JvU2OIZdV/PvF/Q3tI=;
- b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBlLEZgmq7oITq5wM7PXUyggGCfRXuX9mJ0KLTY/
- SozJ5Fy2cGJAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZSxGYAAKCRBy2EO4nU3X
- VpfjEACcqk+1T732HNrdfn+AJ9ugYpgKXBq9bE0K5SK+axr9bvZt6uRvclCYev4ciVyZ4ppoVcw
- rt+I4J63pPERvCHknnsTgye+0w6HwPtvbrWLlS209Qz2HvGx5XYFxyGSJno2YofRgtSTJPtAOrB
- dilapKAbC1RSfJz5MOkQCm0Av+Z2rJWiijswwuM/WHL6wlG8FcUd+fKCigWLewAQfVSTUfnWoL2
- 5Usr2cczDIbU9Si5qBbwRnFIbrBbV5VB696J9y6/qDbz/7J7YZ6IAn7jf9af3G3sfuKJZA3ccMM
- wDJjNpKoHVHJm/y1Dgdp1LwEusonryq7ZgY/8uEUQQiOJHWWGW4H7/nXWK8WP97gNY+ybC+6fSf
- XFywaQD79CsQejuQvadQmkemcnckdS5fALY6KkGdjKnojQnX47TxemxnWow8RKcgKNinVbE7Uff
- qkwe94C8BzqHeaikz11F+C6VFhfy78vvwEvf3YmekeJq7bwOo+PBDDESi3MQ1GJiS5vPnutQ4sF
- o8Kfb8V956/TYJNmEPWDCy16YUeyFPIVi+KId206+jbUKRY/m/x1RpyA/Fx/JGEqA9TS+hKqmPh
- QbdpHfA1sLICOPA1BiUW7uJcAevHkAmthkkJol/Fs1FNbnQPc398x1j9ccT1SXyqGzL1qv4vL6R
- 7ObCugIq3Q3hCbw==
-X-Developer-Key: i=luca@z3ntu.xyz; a=openpgp;
- fpr=BD04DA24C971B8D587B2B8D7FAF69CF6CD2D02CD
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable the LPASS/ADSP found on the phone.
+Renames various function names and variable names that were previously
+in camelcase to snakecase to ensure consistent naming styles.This issues
+were highlighted by checkpatch.
 
-Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
----
- arch/arm64/boot/dts/qcom/sdm632-fairphone-fp3.dts | 4 ++++
- 1 file changed, 4 insertions(+)
+Dorcas AnonoLitunya (5):
+  Staging: sm750fb: Rename displayControlAdjust_SM750E
+  Staging: sm750fb: Rename pModeParam
+  Staging: sm750fb: Rename displayControl
+  Staging: sm750fb: Rename programModeRegisters
+  Staging: sm750fb: Rename ddk750_setModeTiming
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm632-fairphone-fp3.dts b/arch/arm64/boot/dts/qcom/sdm632-fairphone-fp3.dts
-index 301eca9a4f31..50309b1a6b7a 100644
---- a/arch/arm64/boot/dts/qcom/sdm632-fairphone-fp3.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm632-fairphone-fp3.dts
-@@ -80,6 +80,10 @@ nfc@28 {
- 	};
- };
- 
-+&lpass {
-+	status = "okay";
-+};
-+
- &pm8953_resin {
- 	status = "okay";
- 	linux,code = <KEY_VOLUMEDOWN>;
+ drivers/staging/sm750fb/ddk750_mode.c | 90 +++++++++++++--------------
+ drivers/staging/sm750fb/ddk750_mode.h |  2 +-
+ drivers/staging/sm750fb/sm750_hw.c    |  2 +-
+ 3 files changed, 47 insertions(+), 47 deletions(-)
 
----
-base-commit: 2933a1156742d8c47550493a77af8e2d81cf3c84
-change-id: 20231015-fp3-lpass-b2d520d365ab
-
-Best regards,
 -- 
-Luca Weiss <luca@z3ntu.xyz>
+2.42.0.345.gaab89be2eb
 
