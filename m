@@ -2,59 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 996257C97E4
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 06:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E7D67C97EA
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 06:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233441AbjJOEhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 00:37:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57502 "EHLO
+        id S233468AbjJOEsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 00:48:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230091AbjJOEhk (ORCPT
+        with ESMTP id S230091AbjJOEsk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 00:37:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26D92DD
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 21:37:39 -0700 (PDT)
+        Sun, 15 Oct 2023 00:48:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E33D9
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 21:48:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697344659; x=1728880659;
+  t=1697345318; x=1728881318;
   h=date:from:to:cc:subject:message-id:mime-version;
-  bh=a2q9IYUQ7FeFiriCNFDIJooBwHPaJOTF76PPDhNT2j0=;
-  b=Z8qOi/ag4FNSjzUyIY/VvfR63cpgwkGqA/u7vhwyhGseYrmGdKxX2g5E
-   9o0HFBM2Eq0hYvjLf1Og2AWZWHDZ6jt8XefTeykYDV8M2NlgyK7usetX4
-   fmJEgY3BssfXOJJgDZjXXObKtYAiEW9aYLZFO6cJxIIVImJZKbhI4Qo11
-   TnqFBfK0Gae2tGtHlWc0PeRJb3TE4HEbXyeQz2drznQMgnWXZHs7F8G4e
-   TLgH4TygnEZMNXhDJ3+HWDEblXX4MKn4f6xPDoKGFPnmjm2cNG3YerjdX
-   GyWfORKQsfv8EWAFoBoNK2nMZo6Uhet+BZEFwd4u6RgSpC+uLmZZC/1Gu
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="471594346"
+  bh=nWekX2Qj8+IwOIEXBxYcFbWVxiVUX/wA/uWt88Mcyzw=;
+  b=aw4K+GH0a3k3LHuQLUgEx+maOZnx7r2RY34gRta7cPs5iN3fOvy+zlaA
+   FsLV26CIRs8iwADG5tThO5GMV736W4iuuuOcBgA3aJ2lXm0oOb+rGF8fq
+   aC8/56vdQKc6k1VsG36RN/VL6GKdX5gxOF8RIQo9hh1QjNKKANwrf+azk
+   akyIJYW7Q/NwcBZ4seJINdDNc/4p2AsTsoB7TNhRJytU7kmGIe9/lpzGI
+   Am+Ve2xcHykOMJclI5wKXZ0O3aldLs8Smgq88MkjGUnFZlH9mq4ymEEJV
+   UCgbJ/RPJHqv1/dJUbS3iBeEe2hsHuY+b/CctkWR6tJdegtyGuR+eVaF5
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="451842634"
 X-IronPort-AV: E=Sophos;i="6.03,226,1694761200"; 
-   d="scan'208";a="471594346"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2023 21:37:38 -0700
+   d="scan'208";a="451842634"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2023 21:48:38 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="748855498"
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="1086655292"
 X-IronPort-AV: E=Sophos;i="6.03,226,1694761200"; 
-   d="scan'208";a="748855498"
+   d="scan'208";a="1086655292"
 Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 14 Oct 2023 21:37:36 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 14 Oct 2023 21:48:36 -0700
 Received: from kbuild by f64821696465 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qrssf-00072L-2N;
-        Sun, 15 Oct 2023 04:37:33 +0000
-Date:   Sun, 15 Oct 2023 12:37:06 +0800
+        id 1qrt3J-00072d-2k;
+        Sun, 15 Oct 2023 04:48:33 +0000
+Date:   Sun, 15 Oct 2023 12:48:00 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Patricia Alfonso <trishalfonso@google.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Richard Weinberger <richard@nod.at>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        David Gow <davidgow@google.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>
-Subject: arch/um/os-Linux/mem.c:28:6: warning: no previous prototype for
- 'kasan_map_memory'
-Message-ID: <202310151211.jASHBduj-lkp@intel.com>
+To:     Shannon Nelson <shannon.nelson@amd.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/net/ethernet/amd/pds_core/core.c:156:2-7: WARNING: NULL
+ check before some freeing functions is not needed.
+Message-ID: <202310151223.hg8OrOsd-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -68,58 +62,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Patricia,
-
-FYI, the error/warning still remains.
-
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 head:   9a3dad63edbe9a2ab2be1e7361a2133f519f855b
-commit: 5b301409e8bc5d7fad2ee138be44c5c529dd0874 UML: add support for KASAN under x86_64
-date:   1 year, 3 months ago
-config: um-allnoconfig (https://download.01.org/0day-ci/archive/20231015/202310151211.jASHBduj-lkp@intel.com/config)
+commit: ddbcb22055d136f58841c73ca2226dab79eb6101 pds_core: Kconfig and pds_core.rst
+date:   6 months ago
+config: x86_64-randconfig-103-20231015 (https://download.01.org/0day-ci/archive/20231015/202310151223.hg8OrOsd-lkp@intel.com/config)
 compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231015/202310151211.jASHBduj-lkp@intel.com/reproduce)
+reproduce: (https://download.01.org/0day-ci/archive/20231015/202310151223.hg8OrOsd-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310151211.jASHBduj-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310151223.hg8OrOsd-lkp@intel.com/
 
-All warnings (new ones prefixed by >>):
-
->> arch/um/os-Linux/mem.c:28:6: warning: no previous prototype for 'kasan_map_memory' [-Wmissing-prototypes]
-      28 | void kasan_map_memory(void *start, size_t len)
-         |      ^~~~~~~~~~~~~~~~
-   arch/um/os-Linux/mem.c:212:13: warning: no previous prototype for 'check_tmpexec' [-Wmissing-prototypes]
-     212 | void __init check_tmpexec(void)
-         |             ^~~~~~~~~~~~~
-
-
-vim +/kasan_map_memory +28 arch/um/os-Linux/mem.c
-
-    19	
-    20	/*
-    21	 * kasan_map_memory - maps memory from @start with a size of @len.
-    22	 * The allocated memory is filled with zeroes upon success.
-    23	 * @start: the start address of the memory to be mapped
-    24	 * @len: the length of the memory to be mapped
-    25	 *
-    26	 * This function is used to map shadow memory for KASAN in uml
-    27	 */
-  > 28	void kasan_map_memory(void *start, size_t len)
-    29	{
-    30		if (mmap(start,
-    31			 len,
-    32			 PROT_READ|PROT_WRITE,
-    33			 MAP_FIXED|MAP_ANONYMOUS|MAP_PRIVATE|MAP_NORESERVE,
-    34			 -1,
-    35			 0) == MAP_FAILED) {
-    36			os_info("Couldn't allocate shadow memory: %s\n.",
-    37				strerror(errno));
-    38			exit(1);
-    39		}
-    40	}
-    41	
+cocci warnings: (new ones prefixed by >>)
+>> drivers/net/ethernet/amd/pds_core/core.c:156:2-7: WARNING: NULL check before some freeing functions is not needed.
+   drivers/net/ethernet/amd/pds_core/core.c:159:2-7: WARNING: NULL check before some freeing functions is not needed.
 
 -- 
 0-DAY CI Kernel Test Service
