@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC6B7C9D08
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 03:47:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D997C9D0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 03:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231386AbjJPBrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 21:47:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50676 "EHLO
+        id S231366AbjJPBsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 21:48:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231303AbjJPBru (ORCPT
+        with ESMTP id S231324AbjJPBrx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 21:47:50 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42EB3E3;
-        Sun, 15 Oct 2023 18:47:48 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-27cefb5ae1fso2052772a91.3;
-        Sun, 15 Oct 2023 18:47:48 -0700 (PDT)
+        Sun, 15 Oct 2023 21:47:53 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B51EE9;
+        Sun, 15 Oct 2023 18:47:52 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-27d3ede72f6so2136314a91.1;
+        Sun, 15 Oct 2023 18:47:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697420867; x=1698025667; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697420871; x=1698025671; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rzhM/tCHpGy9FYSH/tZ16wiAC3i6sgxn/Z+el+7Dm1k=;
-        b=YDvJWz5SUv42X86EguqALMrurSGYJkzgaoj0EjkR1f4Kk28BlUTPX/3ubuM/P125+S
-         96cSveMxU0Wp4TPi4vGTgqfyqC4UD81CGmyVvAzxrZ068nypxtcfyPLB02P6NHnNCwfZ
-         X91N9QTRMOF3oTvXb/2i41QtMcDAYfU50CC0HGLyigzAc2rrDprnkAzGYkkGCn0YaGDu
-         hg9wlu+sHT4ybbgRM5pN91ILrvCNfm4ZSFOA7WCzdPC/VaSV2WiCyeRr01Od0NvZk1pz
-         BDkqishN7C46/anPZgiEIhbYPC6bIxMoWjvwbydIzcnAvUWUvDutleSPamdltv8q/IVn
-         TFSg==
+        bh=mi5UmAT05d3969V2jLDH5OfDsDaXCi2SPvi05677hA4=;
+        b=C5kTRMBFanemv7wO8grEXFn8sCR7wXzJ4Lv+wA9TIl+kJNxDaUi0T+cdqbrV4/WQcE
+         e6F2HK2t3D9j4PF8akTTbHWfquiP2luxfy0FuXMpLYyKRNQw7htfyIDWETv2VzGZ/uM1
+         zWGTWJmXMRZNapAWdlXoeQCz60YUOCRuikPSrsjjWJ1EuJHVBbF/VASOPKR9Mlvc3vYi
+         L8Qdlc4i2+oDzudw6IMjnz875Kl+ovhi81Im8qBNz0Ig+JY89z9SpV5BKnpak2BjPn1a
+         XSPTvWAOQetAjXosjUw/nl4hQ+oKNjUEBKGnrFO1wdCn3weZr20AzE+BqM5KB1Z86Ud/
+         6JNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697420867; x=1698025667;
+        d=1e100.net; s=20230601; t=1697420871; x=1698025671;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rzhM/tCHpGy9FYSH/tZ16wiAC3i6sgxn/Z+el+7Dm1k=;
-        b=ucL8t3qXJMkrSHEJvsjQih2KRmjeHCVzf/vdMTDlUHLdcu192D7xQeqgW/NJLWBo4h
-         y1SGy3iFFvTN6AHaEDkBkJMjaJ8DcNycb2EgADBir72+FvjxgvsXd/JOivXcAJeX0ygM
-         YISqC0P8yvAPAr+uKFbOBhKJdjjTv8uuoLsPvzL7TvNgPZVx1w1ASTnGtKJrbEnTzlal
-         10oMw14ZLrnQuyNl0Req2xkVgxTddnF/0p0fUxO60CJSPXnjdeYCbP8Na/mnE9cvcG64
-         88Wsvt35cgXW9WbKGHfuUI6XSr7Wb/qdfQj29e4RZSV6WNSfgmx5tNRwPN2Nimc4R7PQ
-         B6oQ==
-X-Gm-Message-State: AOJu0YyNRbBzUtGIVSObQjXvWq1uMe2HU2PjTgEZD0zzfE+xZLV7JXfG
-        EhYXvV4f44PIu33a9ytNZgFxtPS8CfXtLw==
-X-Google-Smtp-Source: AGHT+IHSVwNqssEMUtYCFYaIs6EUfdbJpktqLxGmk4ZEISa8uxTbyvKHI+bTGiJs64H2y879QLfg4w==
-X-Received: by 2002:a17:90b:23cc:b0:27d:2364:44f6 with SMTP id md12-20020a17090b23cc00b0027d236444f6mr7416596pjb.6.1697420866960;
-        Sun, 15 Oct 2023 18:47:46 -0700 (PDT)
+        bh=mi5UmAT05d3969V2jLDH5OfDsDaXCi2SPvi05677hA4=;
+        b=gNPspkZBG17h0ZNCiPpguqAPC/ugSzB9Z+cutjaOTnNDCAjYZ+BkI/KPCO1Cv+T+U7
+         pV2nlqzwWhkbl2VtNqXezE+tEv0eNyOhfVGAjPR+zIwhyPH6A8zfUsrozpHbGYPEDWJo
+         mV/I3a1VH81rLWRhYkJe+GViQ8tht+07elQKHBk6fD8nyX+7xI/mKjLhJbGHvDlHgJ5s
+         UjR14/4yZ7/Hu3xNhqgQE4tJTE9RhOlgGq6aUu3jhwBYM1Q0UOjnw8Ublw36rF/5lEC7
+         /P+qv7t/Uhdu+wzyECG3IElbpG0DbiHteyBNNkTKIWvUM/TZ5dqbF7mi6u2cqKwleWCz
+         V70g==
+X-Gm-Message-State: AOJu0YyKjJnBzdLJA08QAMOfCM94A2igroSbyfhFgEGZ/tMJf5XPEr3p
+        iDlnpe8KJp33fFr0AJdCAw3llFP16FC4Vw==
+X-Google-Smtp-Source: AGHT+IGH7TfUPliSmFctNHTFYoEc5e4R1mypniXEZZGepACzWiThk28fihmceiKF2saXXMrxHt+VWQ==
+X-Received: by 2002:a17:90b:8e:b0:27c:fc2a:a178 with SMTP id bb14-20020a17090b008e00b0027cfc2aa178mr14832393pjb.9.1697420870865;
+        Sun, 15 Oct 2023 18:47:50 -0700 (PDT)
 Received: from ubuntu.. ([203.205.141.13])
-        by smtp.googlemail.com with ESMTPSA id pd17-20020a17090b1dd100b0027cfb5f010dsm3574377pjb.4.2023.10.15.18.47.44
+        by smtp.googlemail.com with ESMTPSA id pd17-20020a17090b1dd100b0027cfb5f010dsm3574377pjb.4.2023.10.15.18.47.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Oct 2023 18:47:46 -0700 (PDT)
+        Sun, 15 Oct 2023 18:47:49 -0700 (PDT)
 From:   Hengqi Chen <hengqi.chen@gmail.com>
 To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
 Cc:     keescook@chromium.org, ast@kernel.org, daniel@iogearbox.net,
         andrii@kernel.org, luto@amacapital.net, wad@chromium.org,
         alexyonghe@tencent.com, hengqi.chen@gmail.com
-Subject: [PATCH v2 4/5] selftests/seccomp: Test seccomp filter load and attach
-Date:   Sun, 15 Oct 2023 23:29:52 +0000
-Message-Id: <20231015232953.84836-5-hengqi.chen@gmail.com>
+Subject: [PATCH v2 5/5] selftests/bpf: Skip BPF_PROG_TYPE_SECCOMP-related tests
+Date:   Sun, 15 Oct 2023 23:29:53 +0000
+Message-Id: <20231015232953.84836-6-hengqi.chen@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231015232953.84836-1-hengqi.chen@gmail.com>
 References: <20231015232953.84836-1-hengqi.chen@gmail.com>
@@ -65,7 +65,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,69 +73,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add testcases to exercise the newly added seccomp filter
-load and attach functionalities.
+We only allow BPF_PROG_TYPE_SECCOMP progs to be loaded via
+seccomp syscall. Skip related test on BPF side.
 
 Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
 ---
- tools/testing/selftests/seccomp/seccomp_bpf.c | 44 +++++++++++++++++++
- 1 file changed, 44 insertions(+)
+ tools/testing/selftests/bpf/prog_tests/libbpf_probes.c | 3 ++-
+ tools/testing/selftests/bpf/prog_tests/libbpf_str.c    | 3 +++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index 38f651469968..86600d40d01f 100644
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -4735,6 +4735,50 @@ TEST(user_notification_wait_killable_fatal)
- 	EXPECT_EQ(SIGTERM, WTERMSIG(status));
- }
+diff --git a/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c b/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c
+index 9f766ddd946a..134ae042c4da 100644
+--- a/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c
++++ b/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c
+@@ -28,7 +28,8 @@ void test_libbpf_probe_prog_types(void)
+ 		enum bpf_prog_type prog_type = (enum bpf_prog_type)e->val;
+ 		int res;
  
-+TEST(seccomp_filter_load_and_attach)
-+{
-+	struct sock_filter filter[] = {
-+		BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_ALLOW),
-+	};
-+	struct sock_fprog prog = {
-+		.len = (unsigned short)ARRAY_SIZE(filter),
-+		.filter = filter,
-+	};
-+	int fd, ret, flags;
+-		if (prog_type == BPF_PROG_TYPE_UNSPEC)
++		if (prog_type == BPF_PROG_TYPE_UNSPEC ||
++		    prog_type == BPF_PROG_TYPE_SECCOMP)
+ 			continue;
+ 
+ 		if (!test__start_subtest(prog_type_name))
+diff --git a/tools/testing/selftests/bpf/prog_tests/libbpf_str.c b/tools/testing/selftests/bpf/prog_tests/libbpf_str.c
+index c440ea3311ed..35365500c326 100644
+--- a/tools/testing/selftests/bpf/prog_tests/libbpf_str.c
++++ b/tools/testing/selftests/bpf/prog_tests/libbpf_str.c
+@@ -186,6 +186,9 @@ static void test_libbpf_bpf_prog_type_str(void)
+ 		const char *prog_type_str;
+ 		char buf[256];
+ 
++		if (prog_type == BPF_PROG_TYPE_SECCOMP)
++			continue;
 +
-+	flags = 0;
-+	fd = seccomp(SECCOMP_LOAD_FILTER, flags, &prog);
-+	ASSERT_GT(fd, -1);
-+
-+	flags = SECCOMP_FILTER_FLAG_BPF_PROG_FD;
-+	ret = seccomp(SECCOMP_SET_MODE_FILTER, flags, &fd);
-+	ASSERT_EQ(ret, 0);
-+
-+	close(fd);
-+}
-+
-+TEST(seccomp_attach_fd_failed)
-+{
-+	int fd, ret, flags;
-+
-+	fd = socket(AF_UNIX, SOCK_STREAM, 0);
-+	ASSERT_GT(fd, -1);
-+
-+	/* copy a sock_fprog from a fd */
-+	flags = 0;
-+	ret = seccomp(SECCOMP_SET_MODE_FILTER, flags, &fd);
-+	ASSERT_EQ(ret, -1);
-+	ASSERT_EQ(errno, EFAULT);
-+
-+	/* pass a non seccomp bpf prog fd */
-+	flags = SECCOMP_FILTER_FLAG_BPF_PROG_FD;
-+	ret = seccomp(SECCOMP_SET_MODE_FILTER, flags, &fd);
-+	ASSERT_EQ(ret, -1);
-+	ASSERT_EQ(errno, EBADF);
-+
-+	close(fd);
-+}
-+
- /*
-  * TODO:
-  * - expand NNP testing
+ 		prog_type_name = btf__str_by_offset(btf, e->name_off);
+ 		prog_type_str = libbpf_bpf_prog_type_str(prog_type);
+ 		ASSERT_OK_PTR(prog_type_str, prog_type_name);
 -- 
 2.34.1
 
