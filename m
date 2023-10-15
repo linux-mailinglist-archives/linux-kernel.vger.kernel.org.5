@@ -2,50 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D44B57C9933
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 15:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9336A7C993E
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 15:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbjJONkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 09:40:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59984 "EHLO
+        id S229779AbjJONzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 09:55:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbjJONkY (ORCPT
+        with ESMTP id S229555AbjJONzA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 09:40:24 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD14A6
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 06:40:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3734EC433C8;
-        Sun, 15 Oct 2023 13:40:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697377223;
-        bh=6Mewa66v8BFCchHUq3fJshoDXWM7XvqrgL6LOYfNQ5A=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=D3XCGPD7hW8kYrTPpM3j/FV684hSxNCdzR68EEKgdmGKo4/IMY1NjVw0E5XeIRzTl
-         nUNLyqFGY8ENnHfbYa5jCjY1D/DXwkUozUGcR2X1TaGM5wCUa51++tCcwilSORamAd
-         kIrrGvpcTqa3fHR7p/g5r1mIM0g70897IMU+Ll6lqPFYPgqnX38RPrN7VRyNvOfrGJ
-         myjVkiHGuUf4vBfvv8pBU49Q0Z9NujCptSHdaxLLOVTCTZRmjymdZndVP0q2fv9aYJ
-         UOxLuGoJTm3zMGR3lU/5X1NgKho1V19gjGhue79drxXN9f0ZIYZOLIpolXljY1pady
-         1jonfls8tmvFQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1F6A5C595D0;
-        Sun, 15 Oct 2023 13:40:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Sun, 15 Oct 2023 09:55:00 -0400
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 992C7B7;
+        Sun, 15 Oct 2023 06:54:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=HeLSDR+Sozk/FfhSf8rg92vqdhkO661vM3ya5zaMH5U=; b=dBH80M+EB+uzCY+jsCfyJJajSu
+        avIQe39UNTT4H89h2zGlhJ+CeY0HtZ0Cfk6Vmp4oMv8pDmdglNxfoEoh6gGprKk2+S5GfR/NWhccI
+        cFPY33XJNcE+im1+9tWTLgOY1GzVpCz+vSbB3EC4NpovOSy7vg7Rq6p3pisBoa3DS6VHL7h9LVgyy
+        RKt1Aw8WgN0uO65iRGr6lVdHhG4SgD0Y+FZNfVimyE9NMRhHYdEYeih0aFJ3pN1+RzaWTsfODg0Jv
+        qDl+d51du/A49xMnP/9UbDTTVFHC7L5lz5IvUXCoRLYqHP8F9Ozm4DsLyKBB/9JKJ5B5IOvlU8Bf0
+        IkZlxY2w==;
+Received: from [192.168.12.176]
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+        id 1qs1Zx-000lCB-PP; Sun, 15 Oct 2023 15:54:49 +0200
+Message-ID: <f5837e2d-2fbd-34f2-37eb-11701db4464e@igalia.com>
+Date:   Sun, 15 Oct 2023 15:54:49 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/5] i40e: Add basic devlink support
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169737722312.30429.981395182996753709.git-patchwork-notify@kernel.org>
-Date:   Sun, 15 Oct 2023 13:40:23 +0000
-References: <20231013170755.2367410-1-ivecera@redhat.com>
-In-Reply-To: <20231013170755.2367410-1-ivecera@redhat.com>
-To:     Ivan Vecera <ivecera@redhat.com>
-Cc:     netdev@vger.kernel.org, jesse.brandeburg@intel.com,
-        anthony.l.nguyen@intel.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v5] alpha: Clean-up the panic notifier code
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     linux-alpha@vger.kernel.org, mattst88@gmail.com,
+        linux-kernel@vger.kernel.org, kernel-dev@igalia.com,
+        kernel@gpiccoli.net, Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Petr Mladek <pmladek@suse.com>
+References: <20230902165725.3504046-1-gpiccoli@igalia.com>
+ <alpine.DEB.2.21.2310100109100.48714@angie.orcam.me.uk>
+Content-Language: en-US
+From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <alpine.DEB.2.21.2310100109100.48714@angie.orcam.me.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -54,38 +60,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
-
-On Fri, 13 Oct 2023 19:07:50 +0200 you wrote:
-> The series adds initial support for devlink to i40e driver.
+On 10/10/2023 02:16, Maciej W. Rozycki wrote:
+> On Sat, 2 Sep 2023, Guilherme G. Piccoli wrote:
 > 
-> Patch-set overview:
-> Patch 1: Adds initial devlink support (devlink and port registration)
-> Patch 2: Refactors and split i40e_nvm_version_str()
-> Patch 3: Adds support for 'devlink dev info'
-> Patch 4: Refactors existing helper function to read PBA ID
-> Patch 5: Adds 'board.id' to 'devlink dev info' using PBA ID
+>> So, let's clean the code and set the notifier to run as the
+>> latest, following the same approach other architectures are
+>> doing - also, remove the unnecessary include of a header already
+>> included indirectly.
 > 
-> [...]
+>  FWIW my understanding is our current policy is not to rely on indirect 
+> inclusions and if a given source relies on declarations or definitions 
+> provided by a header, then it is supposed to pull it explicitly.
+> 
+>  And in any case such an unrelated self-contained change is expected to be 
+> sent as a separate patch, in a series if there's a mechanical dependency.
+> 
+>   Maciej
+> 
 
-Here is the summary with links:
-  - [net-next,1/5] i40e: Add initial devlink support
-    https://git.kernel.org/netdev/net-next/c/9e479d64dc58
-  - [net-next,2/5] i40e: Split and refactor i40e_nvm_version_str()
-    https://git.kernel.org/netdev/net-next/c/7aabde397683
-  - [net-next,3/5] i40e: Add handler for devlink .info_get
-    https://git.kernel.org/netdev/net-next/c/5a423552e0d9
-  - [net-next,4/5] i40e: Refactor and rename i40e_read_pba_string()
-    https://git.kernel.org/netdev/net-next/c/df19ea696644
-  - [net-next,5/5] i40e: Add PBA as board id info to devlink .info_get
-    https://git.kernel.org/netdev/net-next/c/3e02480d5e38
+Hi Maciej, thanks for your review!
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+I'm not sure how the indirect inclusion is happening here. The only
+notifier present in this file is a panic notifier, and for this one, we
+have the "panic_notifier.h" header. It's like this for many others (if
+not all) panic notifiers in the kernel.
+
+Usually the indirect inclusion would happen if some other notifier block
+was used for any other reason, and we dropped the "notifier.h" include,
+which then would indirectly rely on "panic_notifier.h". In case I'm
+talking silly things, let me know! I might not have understood properly
+your point (and if so, apologies).
+
+Regarding split in another patch, it can easily be done, but I think
+it's quite self-contained now, a simple patch that cleans-up the alpha
+notifier. I've done that for other notifiers so far, but I'm OK either
+way, as long maintainers are happy and community agrees =)
+
+Cheers,
 
 
+Guilherme
