@@ -2,68 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 284357C97AB
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 04:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26FB57C97AC
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 04:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233405AbjJOCbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 22:31:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43116 "EHLO
+        id S233421AbjJOCce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 22:32:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233385AbjJOCbk (ORCPT
+        with ESMTP id S233385AbjJOCcc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 22:31:40 -0400
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 364C2D9
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 19:31:39 -0700 (PDT)
-Received: by mail-oo1-xc34.google.com with SMTP id 006d021491bc7-57b5f0d658dso1968167eaf.0
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 19:31:39 -0700 (PDT)
+        Sat, 14 Oct 2023 22:32:32 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61EFCD8
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 19:32:31 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d9ac43d3b71so3379590276.0
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 19:32:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697337098; x=1697941898; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697337150; x=1697941950; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=w3UcDOTXVnpUdSv4M3bD1yXTstgPxWK1PeD8ZLVfT6g=;
-        b=oY/u8rcl4AHbcP6+ZwJnOKE1gF513xnAESCu4km2p49ybGI9ukmWQkuCriRHzwDpoA
-         ors/XvzLzimX45ywSlKAqR5ylt2uroNyp6vKcAQXMTXvZCWP0G1y/5oA+czSpGmnv60P
-         ngiNh10wGqw4oS+opfyeIitYNZTkzL+eDcLyc=
+         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BARTmOCqxXmHFs7/pH7nQljcGTXtCWRURfFlQb+2N3o=;
+        b=eHkMzwe65Mhjo4N90YgpgvNw1rqUOE0awZhswkFdv7kFogb6dFHJoFk9kCFcVB0GeG
+         4L5fQfxQsE8in55rYghr+bdIVNCUYwgyNrjrg+fPAUjIdRK9sBGHkiCSbJfFlTOR4hWH
+         M/keKb07Kn7/kMrgYXw0pYFONXZLn5PrkrpdQfDSPKr8j9r83Zr0tEzc9mJ8+mQ9Baia
+         OTLSNLCRV7xxth3jwXezoYOcq3cilaf8ky2sQKUlSK+wkDFRRhVGzrzEQf0BO70LqsbR
+         VcqyEJchURxqC5bTWj5Q8NsbNlYJkpgXbCj47cP2yf1JJ8w6NDPL9BrajZvrHzIj/x8z
+         8Hsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697337098; x=1697941898;
+        d=1e100.net; s=20230601; t=1697337150; x=1697941950;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=w3UcDOTXVnpUdSv4M3bD1yXTstgPxWK1PeD8ZLVfT6g=;
-        b=OgzZABpTzUr74c3HBrUNlH6bKehQG/OsU+0cEXsC3m9kg0+6b2VeFq2lQk+iNmtBY0
-         RB8e4BJsMegR7g+VozMUlkEC9W29bU71Y4c5+jRJIbMowVZKbZG+5oCM2iY14FC9Auq+
-         oB2YvoT3BPWx/vBzd1msSvHeX0t8+1EcIelI3tRFnHsFjK8WeH3LI5sLSCRPslg5SPIt
-         pI98T4llZgJ785C8/GYz5rfYnlYyzgiFZ21s4ah9ERxhtdJA6QOAm4addwLd8OAhX21O
-         kHtzsfToYyZIS6jHzAAJpyVLO9+NcWri5z8gFmGVNFMLJGLbOUOxVBAa4Ouqzha+xNIX
-         IECg==
-X-Gm-Message-State: AOJu0Yx19dgwCNCcYWUWv02HmomUFqDLP6BIiVXCOXUd3xoEzxPTyso5
-        cDybfiiMgi0WB5BUkAN1FK3LWA==
-X-Google-Smtp-Source: AGHT+IHHtAlcIGg+Zt50I2CaWbpQ9qgynPGuWlNFgS+CA7bxaLDLrEv2OCfMiEjPuYZ5jDGG/UfOpQ==
-X-Received: by 2002:a05:6358:5289:b0:13a:4f34:8063 with SMTP id g9-20020a056358528900b0013a4f348063mr33060407rwa.32.1697337098456;
-        Sat, 14 Oct 2023 19:31:38 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id p28-20020aa79e9c000000b006905f6bfc37sm3315559pfq.31.2023.10.14.19.31.37
+        bh=BARTmOCqxXmHFs7/pH7nQljcGTXtCWRURfFlQb+2N3o=;
+        b=BD5hVhGYsI1BayCTwnINTXw0DDRoHyERx4v24/blNfc0Pw4eRmKeew6zEvyOifXGQ1
+         kxLvbAZ/e2YaMknY28M2pjv9WWrKuiEHknNbWJK+iaQC1gFBfveVd0Tzek7iLhgEDShh
+         aWeAYNT9uQibcOowAhkdZ6Z1aJ0NlYfsU2A/ad643PjMUsxtVfEq2xAEFjTzJ3ZbhBSR
+         Od4XqTc7oSOKUf1cMfmSdkyArFWLeMMZO8dMLbADsnE3Sd1WQFaUxuGCKoWim9AfA6mz
+         rS4Cx7BjaYDH+F9q8LodlBWX4gJ2eev42BpaRcnWCBvdhqVRt3vsDaJTXA46I1+wAn+z
+         rT5A==
+X-Gm-Message-State: AOJu0YwLFvNbyV346JW3uiYOVddfr0BHCbtA63xJao+eZ8TA8calTLOt
+        Wb/O4tABpYtfv6yKL6CjSvqEofFvV88qXg==
+X-Google-Smtp-Source: AGHT+IFwPvo7WG07rxkS9hryZQaonVFS8hwMNVeLsgecXoIyHICDK4ajblXogTBugxzY/MmC2ByZZg==
+X-Received: by 2002:a25:9387:0:b0:d9a:5dcc:dbf7 with SMTP id a7-20020a259387000000b00d9a5dccdbf7mr13290918ybm.47.1697337150126;
+        Sat, 14 Oct 2023 19:32:30 -0700 (PDT)
+Received: from localhost ([2607:fb90:3e2c:8023:e145:ae9d:cf98:1574])
+        by smtp.gmail.com with ESMTPSA id e77-20020a256950000000b00d72176bdc5csm1603244ybc.40.2023.10.14.19.32.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Oct 2023 19:31:37 -0700 (PDT)
-Date:   Sat, 14 Oct 2023 19:31:37 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Nick Terrell <nickrterrell@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Nick Terrell <terrelln@meta.com>,
-        Kernel Team <Kernel-team@fb.com>,
-        Nick Terrell <terrelln@fb.com>,
-        syzbot+1f2eb3e8cd123ffce499@syzkaller.appspotmail.com,
-        Eric Biggers <ebiggers@kernel.org>
-Subject: Re: [PATCH] zstd: Fix array-index-out-of-bounds UBSAN warning
-Message-ID: <202310141930.F1F809230@keescook>
-References: <20231012213428.1390905-1-nickrterrell@gmail.com>
+        Sat, 14 Oct 2023 19:32:29 -0700 (PDT)
+Date:   Sat, 14 Oct 2023 19:32:28 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        David Gow <davidgow@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        James Seo <james@equiv.tech>, Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Marco Elver <elver@google.com>,
+        Mark Brown <broonie@kernel.org>,
+        Ming Lei <ming.lei@redhat.com>,
+        Petr Tesarik <petr.tesarik.ext@huawei.com>,
+        Rae Moar <rmoar@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 0/2] lib: unload lib/bitmap.c
+Message-ID: <ZStPPLG7F9V+E7JA@yury-ThinkPad>
+References: <20231007233510.2097166-1-yury.norov@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231012213428.1390905-1-nickrterrell@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <20231007233510.2097166-1-yury.norov@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,26 +87,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 02:34:28PM -0700, Nick Terrell wrote:
-> From: Nick Terrell <terrelln@fb.com>
+On Sat, Oct 07, 2023 at 04:35:08PM -0700, Yury Norov wrote:
+> The file is intended to hold functions to operate on bit arrays, but
+> this days, more than 1/3 of bitmap.c is helpers for bitmap-to-string
+> converters, plus some wrappers for device.h.
 > 
-> Zstd used an array of length 1 to mean a flexible array for C89
-> compatibility. Switch to a C99 flexible array to fix the UBSAN warning.
+> So move those out of lib/bitmap.c in sake of readability and
+> maintainability.
 > 
-> Tested locally by booting the kernel and writing to and reading from a
-> BtrFS filesystem with zstd compression enabled. I was unable to reproduce
-> the issue before the fix, however it is a trivial change.
+> Functionally, this series is a no-op.
 > 
-> Reported-by: syzbot+1f2eb3e8cd123ffce499@syzkaller.appspotmail.com
-> Reported-by: Eric Biggers <ebiggers@kernel.org>
-> Reported-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Nick Terrell <terrelln@meta.com>
+> Yury Norov (2):
+>   lib/bitmap: move bitmap allocators for device to linux/device.h
+>   lib/bitmap: split-out string-related operations to a separate files
 
-Thanks! This 1-element conversion doesn't appear to need any sizeof()
-related changes, so AFAICT this header change is sufficient.
-
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
-
--- 
-Kees Cook
+OK, then if no objections, I drop #1 as a controversial, and pull #2
+into bitmap-for-next.
