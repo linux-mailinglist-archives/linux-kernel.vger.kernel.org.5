@@ -2,129 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 437EE7C992D
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 15:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D44B57C9933
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 15:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbjJONj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 09:39:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49670 "EHLO
+        id S229874AbjJONkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 09:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229779AbjJONj1 (ORCPT
+        with ESMTP id S229555AbjJONkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 09:39:27 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31808B7
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 06:39:25 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6c7ce16ddfaso2583802a34.3
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 06:39:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1697377164; x=1697981964; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZzrY7VrqbAXMDQ/An7uucXcUyYeK5QX4Iy/EeDSFw9Q=;
-        b=07gmkEyYlTje7KG4Pz5zn2csjnguffsHbs6sjyxvUXef52O04NwLi36J6q96N/nNCz
-         4lZgjiityXknQhYcWWuiVh2Rq30roM/XevjSLRfylPmjpmeYThXqXQvvjKYmUApX6cov
-         7gW5sjN1zTtBM9Eomqq2VAEq935rjGlT/LMNJvjK7nKA2roxhZ0RTUsgwEQ25qvlODgS
-         /kl/x1FF/gg7rRSI3fC+rxaSWCAOGcU4zpR9ddBiKHYtI4hrn5OJ1mtukZo+X6ko+4+O
-         oXjTLXFYQCySrFAHX19yeA6RwV575NJEEcACZHZZSEN8KvgUiOM0NjTHHmTvVFeTr27w
-         +XIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697377164; x=1697981964;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZzrY7VrqbAXMDQ/An7uucXcUyYeK5QX4Iy/EeDSFw9Q=;
-        b=ePWmsZSeAP4/tdtrMDea+yvYxWisAIkuZZaQzvWFZQohXJuryJhIH41gPd9RoLKc9o
-         gyjPcIoCzV+3+VlMhegV7Gkmf7wl0mz0FL3VXQdKdMtd7Av8aovpEq1FftYLQev9ZdoX
-         aWxxZ0iccnA79Uk7S7A2L6g9YgGe0iHsBOH728fcxx5iQzlF8I2j7AhrMMOabwBJxzcQ
-         b2H+b0qkdFJiPD+UeyBBShHKGgp+RVrK1dfsa5dgEIdNyel5uLVPD9WgvbfihByDZB0+
-         nHhmWjX6RcGX3JqCxFB6ZZPo0Cl9r1RCBPDcktoDe6Qc+cz1E1BR62FZ8Fu6iS8Xj+UC
-         iGuw==
-X-Gm-Message-State: AOJu0YwG90ZbjgB/mXmYCxAAd5nmIgiEr1v2pReOeTgVglKnk+4uijXj
-        VRoYNRU3vc6Kj/ct0qv1hTveGw==
-X-Google-Smtp-Source: AGHT+IHMn+MWkXPiN2PFxj8eGoPs4OSA1Ena1/nrJQ5EuTY6OU4nQm29Q9sWZwur4SV4dUon/ktE5w==
-X-Received: by 2002:a9d:7751:0:b0:6b9:ba85:a5fa with SMTP id t17-20020a9d7751000000b006b9ba85a5famr37027847otl.5.1697377164515;
-        Sun, 15 Oct 2023 06:39:24 -0700 (PDT)
-Received: from localhost ([2400:4050:a840:1e00:78d2:b862:10a7:d486])
-        by smtp.gmail.com with UTF8SMTPSA id h9-20020a654689000000b005af08f65227sm2518837pgr.80.2023.10.15.06.39.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Oct 2023 06:39:24 -0700 (PDT)
-From:   Akihiko Odaki <akihiko.odaki@daynix.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, Nick Terrell <terrelln@fb.com>,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Akihiko Odaki <akihiko.odaki@daynix.com>
-Subject: [PATCH bpf-next] selftests/bpf: Use pkg-config to determine ld flags
-Date:   Sun, 15 Oct 2023 22:39:14 +0900
-Message-ID: <20231015133916.257197-1-akihiko.odaki@daynix.com>
-X-Mailer: git-send-email 2.42.0
+        Sun, 15 Oct 2023 09:40:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD14A6
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 06:40:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3734EC433C8;
+        Sun, 15 Oct 2023 13:40:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697377223;
+        bh=6Mewa66v8BFCchHUq3fJshoDXWM7XvqrgL6LOYfNQ5A=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=D3XCGPD7hW8kYrTPpM3j/FV684hSxNCdzR68EEKgdmGKo4/IMY1NjVw0E5XeIRzTl
+         nUNLyqFGY8ENnHfbYa5jCjY1D/DXwkUozUGcR2X1TaGM5wCUa51++tCcwilSORamAd
+         kIrrGvpcTqa3fHR7p/g5r1mIM0g70897IMU+Ll6lqPFYPgqnX38RPrN7VRyNvOfrGJ
+         myjVkiHGuUf4vBfvv8pBU49Q0Z9NujCptSHdaxLLOVTCTZRmjymdZndVP0q2fv9aYJ
+         UOxLuGoJTm3zMGR3lU/5X1NgKho1V19gjGhue79drxXN9f0ZIYZOLIpolXljY1pady
+         1jonfls8tmvFQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1F6A5C595D0;
+        Sun, 15 Oct 2023 13:40:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Subject: Re: [PATCH net-next 0/5] i40e: Add basic devlink support
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169737722312.30429.981395182996753709.git-patchwork-notify@kernel.org>
+Date:   Sun, 15 Oct 2023 13:40:23 +0000
+References: <20231013170755.2367410-1-ivecera@redhat.com>
+In-Reply-To: <20231013170755.2367410-1-ivecera@redhat.com>
+To:     Ivan Vecera <ivecera@redhat.com>
+Cc:     netdev@vger.kernel.org, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When linking statically, libraries may require other dependencies to be
-included to ld flags. In particular, libelf may require libzstd. Use
-pkg-config to determine such dependencies.
+Hello:
 
-Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
----
- tools/testing/selftests/bpf/Makefile   | 3 ++-
- tools/testing/selftests/bpf/README.rst | 2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+This series was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index caede9b574cb..833134aa2eda 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -4,6 +4,7 @@ include ../../../scripts/Makefile.arch
- include ../../../scripts/Makefile.include
- 
- CXX ?= $(CROSS_COMPILE)g++
-+PKG_CONFIG ?= $(CROSS_COMPILE)pkg-config
- 
- CURDIR := $(abspath .)
- TOOLSDIR := $(abspath ../../..)
-@@ -31,7 +32,7 @@ CFLAGS += -g -O0 -rdynamic -Wall -Werror $(GENFLAGS) $(SAN_CFLAGS)	\
- 	  -I$(CURDIR) -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)		\
- 	  -I$(TOOLSINCDIR) -I$(APIDIR) -I$(OUTPUT)
- LDFLAGS += $(SAN_LDFLAGS)
--LDLIBS += -lelf -lz -lrt -lpthread
-+LDLIBS += $(shell $(PKG_CONFIG) --libs libelf zlib) -lrt -lpthread
- 
- ifneq ($(LLVM),)
- # Silence some warnings when compiled with clang
-diff --git a/tools/testing/selftests/bpf/README.rst b/tools/testing/selftests/bpf/README.rst
-index cb9b95702ac6..9af79c7a9b58 100644
---- a/tools/testing/selftests/bpf/README.rst
-+++ b/tools/testing/selftests/bpf/README.rst
-@@ -77,7 +77,7 @@ In case of linker errors when running selftests, try using static linking:
- 
- .. code-block:: console
- 
--  $ LDLIBS=-static vmtest.sh
-+  $ LDLIBS=-static PKG_CONFIG='pkg-config --static' vmtest.sh
- 
- .. note:: Some distros may not support static linking.
- 
+On Fri, 13 Oct 2023 19:07:50 +0200 you wrote:
+> The series adds initial support for devlink to i40e driver.
+> 
+> Patch-set overview:
+> Patch 1: Adds initial devlink support (devlink and port registration)
+> Patch 2: Refactors and split i40e_nvm_version_str()
+> Patch 3: Adds support for 'devlink dev info'
+> Patch 4: Refactors existing helper function to read PBA ID
+> Patch 5: Adds 'board.id' to 'devlink dev info' using PBA ID
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,1/5] i40e: Add initial devlink support
+    https://git.kernel.org/netdev/net-next/c/9e479d64dc58
+  - [net-next,2/5] i40e: Split and refactor i40e_nvm_version_str()
+    https://git.kernel.org/netdev/net-next/c/7aabde397683
+  - [net-next,3/5] i40e: Add handler for devlink .info_get
+    https://git.kernel.org/netdev/net-next/c/5a423552e0d9
+  - [net-next,4/5] i40e: Refactor and rename i40e_read_pba_string()
+    https://git.kernel.org/netdev/net-next/c/df19ea696644
+  - [net-next,5/5] i40e: Add PBA as board id info to devlink .info_get
+    https://git.kernel.org/netdev/net-next/c/3e02480d5e38
+
+You are awesome, thank you!
 -- 
-2.42.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
