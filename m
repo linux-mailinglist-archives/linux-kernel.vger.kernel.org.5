@@ -2,126 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB5B7C9AD2
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 20:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 822247C9AE0
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 20:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229772AbjJOSmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 14:42:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40500 "EHLO
+        id S229704AbjJOSxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 14:53:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjJOSmG (ORCPT
+        with ESMTP id S229518AbjJOSxE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 14:42:06 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E08AB;
-        Sun, 15 Oct 2023 11:42:04 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9bf0bee9f2fso38807466b.1;
-        Sun, 15 Oct 2023 11:42:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697395323; x=1698000123; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lqtpH20wflaioGvES9J8NH5ppY7AwDBKbQOe+1udiSg=;
-        b=eWuILn9UcVf3e/U9LwZxb1m1EN+Bf6mk8T03Iu3i2upfzE+Az7S/uj9wYlIbmyngUu
-         XJCnlp0Fo19S6qk96g6c2Bh+Ex0HF8e9cPSBcqogrACKgBDFEEAeI+OG5w3F1eMLQZ06
-         WiM2RfGllv7H12SzUN2yQ2e+JoHPdO46Hi9zyv/Th4IjxO8PUC+QWRBhnrZF1Xn9Qlh0
-         jTgdQNAiflnoMqMuAQ+uGF+idmf8VkiPuXfgr6mpNF1wANIiHoW2ZADEG1YrO4ey3Wkq
-         vFBRkDe0mKpnCGZHUBtUSuEmBkTGkWe5Z8EL4Syef2v+6gGv7o1gWWMCUFoF2R//7bb+
-         BE6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697395323; x=1698000123;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lqtpH20wflaioGvES9J8NH5ppY7AwDBKbQOe+1udiSg=;
-        b=JSILALsrTtvAvMHQ1g/loGZUqQmYg0Xw8Txk+KhMXd6EuLABEapDQgOufB78ZdOQZM
-         cGA0r22yDf4SWKHZABWhlbgy+0GErWkE4Gf8+RKt4svY1MiMcpYroy3i8bQl1B7kNUWL
-         BH7bhw3hnvwhy3NCnxAV2qbeLVRiNCzpHUk/6ZwBIEqB70eA5qdz9WMsY2zxcuwlqFXX
-         iLojIMpafz6ShVrU04q0Gkqtit9miCJNk7Z0nDiFFwD440LnBve+8ShTbrA9KbE6DXAr
-         roTMqSaav5TuWJQroJGsYmjjaMU4l25Yx6f0JUkuBU2JAkCcz5MhmccX6SL7/EiZx/ji
-         n59Q==
-X-Gm-Message-State: AOJu0YxW77um6PraBP+MGjrts/AzWUgMCfRVGcFUB64ZWCBc7n5k1H/3
-        FldPY07Vo9VEJOf8xOGQQRY=
-X-Google-Smtp-Source: AGHT+IHNaW6WWeWoA+ixNKPIZiaPZY/LmCPKta4SIuS41L9rhTiHm3rRf9wxlI/K+SAfdEX0xtYFSw==
-X-Received: by 2002:a17:907:6d1a:b0:9be:8de2:a56c with SMTP id sa26-20020a1709076d1a00b009be8de2a56cmr3832751ejc.0.1697395323004;
-        Sun, 15 Oct 2023 11:42:03 -0700 (PDT)
-Received: from [192.168.0.103] (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
-        by smtp.gmail.com with ESMTPSA id mr8-20020a170907828800b009adc5802d08sm2591566ejc.190.2023.10.15.11.42.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Oct 2023 11:42:02 -0700 (PDT)
-Message-ID: <08e266b5-cc6f-4428-bb50-11122a174e94@gmail.com>
-Date:   Sun, 15 Oct 2023 20:42:01 +0200
+        Sun, 15 Oct 2023 14:53:04 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34205A9;
+        Sun, 15 Oct 2023 11:53:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697395983; x=1728931983;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=452iiupu1odqW6I+HChLA99o8E7DPv+HDaY8t/F97ZU=;
+  b=f0kOjvvAEvugyCW3nhkWJn/5z8uuPVd7rOm8PuKyDseNpHMWTr1CPSgJ
+   ZVxlAkPBB291HH+jitUZmz6um+dNXi6vevJiWmblvQJshvLX7AUbwXRYU
+   5ye2eotgn0iLMR2yLvxz7hJFwtmllW9Bxq1jPXyDlRiEY4MghncRKAYlN
+   DZCv3hXpz9Ps4VdWaHmTwNAPY/X9zubqtkGw9vvhoIIVHsADn1PIBF70/
+   +3Rc25RCjcYvjddxuEw0b/QQPIuCsO3wDi7HNqJJV3jrjz75r/mAoM90l
+   44ZA4HVQ5XhpAM2TBhS2yJeOKacuV+ACxL8wEYcrGB34orNrq+y5JxK3z
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="385248199"
+X-IronPort-AV: E=Sophos;i="6.03,226,1694761200"; 
+   d="scan'208";a="385248199"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2023 11:53:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="790561121"
+X-IronPort-AV: E=Sophos;i="6.03,226,1694761200"; 
+   d="scan'208";a="790561121"
+Received: from bmihaile-mobl1.ger.corp.intel.com (HELO box.shutemov.name) ([10.249.37.165])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2023 11:52:54 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id BD735109D0A; Sun, 15 Oct 2023 21:52:51 +0300 (+03)
+Date:   Sun, 15 Oct 2023 21:52:51 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Nikolay Borisov <nik.borisov@suse.com>
+Cc:     Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dario Faggioli <dfaggioli@suse.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        marcelo.cerri@canonical.com, tim.gardner@canonical.com,
+        khalid.elmously@canonical.com, philip.cox@canonical.com,
+        aarcange@redhat.com, peterx@redhat.com, x86@kernel.org,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@kernel.org
+Subject: Re: [PATCH] efi/unaccepted: Fix soft lockups caused by parallel
+ memory acceptance
+Message-ID: <20231015185251.umkdsr7jx2qrlm2x@box.shutemov.name>
+References: <20231014204040.28765-1-kirill.shutemov@linux.intel.com>
+ <d745361e-2867-4f3c-bd41-714c7a382910@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] [RFC] wireless: move obsolete drivers to staging
-To:     Arnd Bergmann <arnd@arndb.de>, Arnd Bergmann <arnd@kernel.org>,
-        Kalle Valo <kvalo@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Jakub Kicinski <kuba@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        "David S . Miller" <davem@davemloft.net>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev
-References: <20231010155444.858483-1-arnd@kernel.org>
- <e93e4008-65c5-4f1d-812a-64b48f0513a2@gmail.com>
- <c8f43e1b-aed1-4b45-ba7c-d896ff66dfa7@app.fastmail.com>
-Content-Language: en-US
-From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
-In-Reply-To: <c8f43e1b-aed1-4b45-ba7c-d896ff66dfa7@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d745361e-2867-4f3c-bd41-714c7a382910@suse.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/23 17:36, Arnd Bergmann wrote:
-> At the moment, I'd suggest focusing on the drivers that still use wext 
-> (git grep -w iw_handler_def drivers), if we can show that rtl8192e, 
-> rtl8712 or ks7010 have been broken for a while, removing those would 
-> help with removing wext altogether.
+On Sun, Oct 15, 2023 at 08:02:16PM +0300, Nikolay Borisov wrote:
+> 
+> 
+> On 14.10.23 г. 23:40 ч., Kirill A. Shutemov wrote:
+> > Michael reported soft lockups on a system that has unaccepted memory.
+> > This occurs when a user attempts to allocate and accept memory on
+> > multiple CPUs simultaneously.
+> > 
+> > The root cause of the issue is that memory acceptance is serialized with
+> > a spinlock, allowing only one CPU to accept memory at a time. The other
+> > CPUs spin and wait for their turn, leading to starvation and soft lockup
+> > reports.
+> > 
+> > To address this, the code has been modified to release the spinlock
+> > while accepting memory. This allows for parallel memory acceptance on
+> > multiple CPUs.
+> > 
+> > A newly introduced "accepting_list" keeps track of which memory is
+> > currently being accepted. This is necessary to prevent parallel
+> > acceptance of the same memory block. If a collision occurs, the lock is
+> > released and the process is retried.
+> > 
+> > Such collisions should rarely occur. The main path for memory acceptance
+> > is the page allocator, which accepts memory in MAX_ORDER chunks. As long
+> > as MAX_ORDER is equal to or larger than the unit_size, collisions will
+> > never occur because the caller fully owns the memory block being
+> > accepted.
+> > 
+> > Aside from the page allocator, only memblock and deferered_free_range()
+> > accept memory, but this only happens during boot.
+> > 
+> > The code has been tested with unit_size == 128MiB to trigger collisions
+> > and validate the retry codepath.
+> > 
+> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > Reported-by: Michael Roth <michael.roth@amd.com
+> > Fixes: 2053bc57f367 ("efi: Add unaccepted memory support")
+> > Cc: <stable@kernel.org>
+> > ---
+> >   drivers/firmware/efi/unaccepted_memory.c | 55 ++++++++++++++++++++++--
+> >   1 file changed, 51 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/firmware/efi/unaccepted_memory.c b/drivers/firmware/efi/unaccepted_memory.c
+> > index 853f7dc3c21d..8af0306c8e5c 100644
+> > --- a/drivers/firmware/efi/unaccepted_memory.c
+> > +++ b/drivers/firmware/efi/unaccepted_memory.c
+> > @@ -5,9 +5,17 @@
+> >   #include <linux/spinlock.h>
+> >   #include <asm/unaccepted_memory.h>
+> > -/* Protects unaccepted memory bitmap */
+> > +/* Protects unaccepted memory bitmap and accepting_list */
+> >   static DEFINE_SPINLOCK(unaccepted_memory_lock);
+> > +struct accept_range {
+> > +	struct list_head list;
+> > +	unsigned long start;
+> > +	unsigned long end;
+> > +};
+> > +
+> > +static LIST_HEAD(accepting_list);
+> > +
+> >   /*
+> >    * accept_memory() -- Consult bitmap and accept the memory if needed.
+> >    *
+> > @@ -24,6 +32,7 @@ void accept_memory(phys_addr_t start, phys_addr_t end)
+> >   {
+> >   	struct efi_unaccepted_memory *unaccepted;
+> >   	unsigned long range_start, range_end;
+> > +	struct accept_range range, *entry;
+> >   	unsigned long flags;
+> >   	u64 unit_size;
+> > @@ -78,20 +87,58 @@ void accept_memory(phys_addr_t start, phys_addr_t end)
+> >   	if (end > unaccepted->size * unit_size * BITS_PER_BYTE)
+> >   		end = unaccepted->size * unit_size * BITS_PER_BYTE;
+> > -	range_start = start / unit_size;
+> > -
+> > +	range.start = start / unit_size;
+> > +	range.end = DIV_ROUND_UP(end, unit_size);
+> > +retry:
+> >   	spin_lock_irqsave(&unaccepted_memory_lock, flags);
+> > +
+> > +	/*
+> > +	 * Check if anybody works on accepting the same range of the memory.
+> > +	 *
+> > +	 * The check with unit_size granularity. It is crucial to catch all
+> > +	 * accept requests to the same unit_size block, even if they don't
+> > +	 * overlap on physical address level.
+> > +	 */
+> > +	list_for_each_entry(entry, &accepting_list, list) {
+> > +		if (entry->end < range.start)
+> > +			continue;
+> > +		if (entry->start >= range.end)
+> > +			continue;
+> > +
+> > +		/*
+> > +		 * Somebody else accepting the range. Or at least part of it.
+> > +		 *
+> > +		 * Drop the lock and retry until it is complete.
+> > +		 */
+> > +		spin_unlock_irqrestore(&unaccepted_memory_lock, flags);
+> > +		cond_resched();
+> > +		goto retry;
+> > +	}
+> 
+> So this works for the cases where we have concurrent acceptance of the same
+> range. What about the same range being accepted multiple times, one after
+> the other, the current code doesn't prevent this.
+
+That's why we have the bitmap. The bits got cleared there after the first
+accept. On the second, attempt for_each_set_bitrange_from() will skip the
+range.
+
+> What if you check whether the current range is fully contained within the
+> duplicate entry and if it's fully covered simply return ?
+
+If it is fully covered we still need to wait until somebody else finish
+the accept, so we cannot "just return".
+
+We can try to return if we saw the range on accepting_list list before,
+but it is disappeared, indicating that accept has been completed.
+
+But I don't think this optimization worthwhile. As I mentioned before, the
+collision is hardly happens. One more spin and bitmap check would not make
+a difference. And it adds complexity.
 
 
-Hi,
+> 
+> > +
+> > +	/*
+> > +	 * Register that the range is about to be accepted.
+> > +	 * Make sure nobody else will accept it.
+> > +	 */
+> > +	list_add(&range.list, &accepting_list);
+> > +
+> > +	range_start = range.start;
+> >   	for_each_set_bitrange_from(range_start, range_end, unaccepted->bitmap,
+> > -				   DIV_ROUND_UP(end, unit_size)) {
+> > +				   range.end) {
+> >   		unsigned long phys_start, phys_end;
+> >   		unsigned long len = range_end - range_start;
+> >   		phys_start = range_start * unit_size + unaccepted->phys_base;
+> >   		phys_end = range_end * unit_size + unaccepted->phys_base;
+> > +		spin_unlock_irqrestore(&unaccepted_memory_lock, flags);
+> > +
+> >   		arch_accept_memory(phys_start, phys_end);
+> > +
+> > +		spin_lock_irqsave(&unaccepted_memory_lock, flags);
+> >   		bitmap_clear(unaccepted->bitmap, range_start, len);
+> >   	}
+> > +
+> > +	list_del(&range.list);
+> >   	spin_unlock_irqrestore(&unaccepted_memory_lock, flags);
+> >   }
 
-__rtl8192e__
-this hardware is available on ebay 13 times.
-ping statistics:
-1191 packets transmitted, 1191 received, 0% packet loss, time 1192169ms
-rtt min/avg/max/mdev = 0.633/2.184/74.792/3.157 ms
-maximum download 12,5 MByte/s
-
-__rtl8712__
-stick packard bell AW-NU120
-ping statistics:
-678 packets transmitted, 652 received, 3.83481% packet loss, time 678287ms
-rtt min/avg/max/mdev = 0.943/4.835/231.435/17.900 ms
-maximum download 12,5 MByte/s
-
-I would like to remove the private functions as the "wireless tools" 
-package is deprecated. The following functions are available:
-kernel@matrix-ESPRIMO-P710:~/Documents/git/kernels/staging$ iwpriv wlan0
-wlan0     Available private ioctls :
-           read32           (8BE0) : set   1 int   & get   0
-           write32          (8BE1) : set   1 int   & get   0
-           driver_ext       (8BE2) : set   0       & get   0
-           mp_ioctl         (8BE3) : set   0       & get   0
-           apinfo           (8BE4) : set   1 int   & get   0
-           setpid           (8BE5) : set   1 int   & get   0
-           wps_start        (8BE6) : set   1 int   & get   0
-           chplan           (8BE7) : set   1 int   & get   0
-
-What do you think about this?
-
-Thanks
-
-Bye Philipp
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
