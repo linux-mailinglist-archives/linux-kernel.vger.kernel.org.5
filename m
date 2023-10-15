@@ -2,95 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDD3D7C995C
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 16:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 065427C9961
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 16:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229969AbjJOOLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 10:11:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37398 "EHLO
+        id S230008AbjJOORQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 10:17:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjJOOLu (ORCPT
+        with ESMTP id S229561AbjJOORO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 10:11:50 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4DA4C1
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 07:11:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4D07C433C8;
-        Sun, 15 Oct 2023 14:11:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697379109;
-        bh=LFNdNsGAMbqe7hSeH1fGRFeRTjU002PIz9XKawV1Jzo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=skSL6MG8l7wMkAGqXvF0oJSKdTWKSwCtreJt4iU3vrdia+jazYFbeFh9ga4kFr0t2
-         SFof4vJLThtIW7J5PEvtHq+vZCIY2gRxipBudDHBo5a8ycvbU4/dO7HHmxXCoeH1QM
-         l/ZvHKdWZ9z7OZE+BkgzgQvFmX9xSSnjnTrwR4DA4Ojstc6neVFx83HPkEo80VY459
-         4wW25wZFKcR1qML96cT7WnjviyydeaQ9s3BMwwlN8+lpWn4HnB0VcJLXOfz8rd0ML6
-         qgfFyWCDXc3PHUQ1JfrT2+syhy6ZNIx0zsUDCmW/1TCh8VL1MPbjlAzpxr819M6dLF
-         8RPX3Ei2Mwbvw==
-Date:   Sun, 15 Oct 2023 07:11:47 -0700
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Breno Leitao <leitao@debian.org>, tglx@linutronix.de, bp@alien8.de,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, leit@meta.com,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4] x86/bugs: Add a separate config for each mitigation
-Message-ID: <20231015141147.qeczgcfnl73zcqao@treble>
-References: <20231010103028.4192223-1-leitao@debian.org>
- <ZSca08rnmZfkONEH@gmail.com>
- <ZSfucR6docdnLznb@gmail.com>
- <20231012170548.o5vi4kgpvpjyld7s@treble>
- <ZShALJDaxJ9VJvek@gmail.com>
- <20231012204347.4aei5jr64fsv2iv5@treble>
- <ZSkhE2GWfGRW+9Hh@gmail.com>
+        Sun, 15 Oct 2023 10:17:14 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2274DA
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 07:17:11 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6b44befac59so1381263b3a.0
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 07:17:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1697379431; x=1697984231; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z+b0dEMOY183z9dPBZcXWdZ+T7lbIwplG3M4Qto5H1o=;
+        b=oOKWrKzvXwy6Iss50tPht/+1c1HJyTCKCwA46I9tiPP/IHCgdCNzKNIcGQ0J6Gv3M+
+         VHM2g+vzcIOHQrwnU8mEKqiJsjbflHEdg2GpV1SwawE+py0vyHW0/oFH+02d4tKUGAu1
+         6Q+y6T7ZRoJj+E5/pxcm7XtkwaavFP54+G5/l5ZxbmraAuPggemAJtmYWlfFyKkcNDVC
+         XA/piv1AsZaMtRWAZuG7ytz49tnZLSw1zvZZ0OUqa8d6kBcpELJ+wpuO47U+QAGqw5+Q
+         53T+VH0nTLUy0nP9Ac8/nlxctORyojWWh+uL661MD3da5xDNKlPHV+z+5WZBepDGf54s
+         88DA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697379431; x=1697984231;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Z+b0dEMOY183z9dPBZcXWdZ+T7lbIwplG3M4Qto5H1o=;
+        b=TyT5uf2nSiLNosu4Vzn1ni29FTtF1mjW37Pwk0IQjJYLYveladKY3lY+G6rblKhgRd
+         3MBIomIeqxvIdY+O0F3FKYL7pjnGwNzoIi8ou5XKXFxi48WM4zqN3XS3Pn86FfwD8q3a
+         fqYwQpvaS2+VlmUhl7nZHApPCoNX/hRMpyfiD4PLKzChIKI+xi/P3ipP24NNpYFLvK7q
+         VgKxildvnJfIGv1AHherhAhbOKAazDCEDfFnclke1MkRqTTXn+pj1wwQtK7Zb8x23BJf
+         9Q9vvnhw1VkmGKBDXIeT6f3eo12kYqYsgInVnXiuCp0ej70qSi8IiUP6pmES96Nf1YTF
+         MvVg==
+X-Gm-Message-State: AOJu0YyrQU15XdBjbHKDHoJhICxey/6xwgVzwqv9rkHKXYlHz9TyXdpC
+        Wcz4fq6wPTbAsLCuHQf1UkbYPA==
+X-Google-Smtp-Source: AGHT+IF8ctbxzi/yLoYKR8nfTMdLlPrANNX0a4fFaaxK61sDbvY5BiX2bAhQb9DCFQvUS99Sir6h0g==
+X-Received: by 2002:a05:6a21:6d92:b0:13a:dd47:c31a with SMTP id wl18-20020a056a216d9200b0013add47c31amr6752797pzb.20.1697379431188;
+        Sun, 15 Oct 2023 07:17:11 -0700 (PDT)
+Received: from localhost ([2400:4050:a840:1e00:78d2:b862:10a7:d486])
+        by smtp.gmail.com with UTF8SMTPSA id x6-20020aa78f06000000b006b3dc56c944sm3993752pfr.133.2023.10.15.07.17.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 15 Oct 2023 07:17:10 -0700 (PDT)
+From:   Akihiko Odaki <akihiko.odaki@daynix.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        bpf@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        linux-kselftest@vger.kernel.org,
+        Yuri Benditovich <yuri.benditovich@daynix.com>,
+        Andrew Melnychenko <andrew@daynix.com>,
+        Akihiko Odaki <akihiko.odaki@daynix.com>
+Subject: [RFC PATCH v2 0/7] tun: Introduce virtio-net hashing feature
+Date:   Sun, 15 Oct 2023 23:16:28 +0900
+Message-ID: <20231015141644.260646-1-akihiko.odaki@daynix.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZSkhE2GWfGRW+9Hh@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 12:50:59PM +0200, Ingo Molnar wrote:
-> 
-> * Josh Poimboeuf <jpoimboe@kernel.org> wrote:
-> 
-> > On Thu, Oct 12, 2023 at 08:51:24PM +0200, Ingo Molnar wrote:
-> > > > Another way to avoid ifdeffery:
-> > > > 
-> > > > static enum retbleed_mitigation_cmd retbleed_cmd __ro_after_init =
-> > > > 	IS_ENABLED(CONFIG_MITIGATION_RETBLEED) ? RETBLEED_CMD_AUTO : RETBLEED_CMD_OFF;
-> > > 
-> > > I think we could make it a simple:
-> > > 
-> > > 	static enum retbleed_mitigation_cmd retbleed_cmd __ro_after_init = IS_ENABLED(CONFIG_MITIGATION_RETBLEED);
-> > > 
-> > > Because RETBLEED_CMD_AUTO && RETBLEED_CMD_OFF maps naturally to 1 and 0. 
-> > > Maybe add a comment to the enum to maintain this property in the future 
-> > > too.
-> > 
-> > Hm, that both obfuscates the default and makes it fragile.  The fact
-> > that it would need a comment to try to prevent breaking it in the future
-> > is a clue that maybe we shouldn't do it ;-)
-> 
-> Can be enforced with BUILD_BUG_ON().
+virtio-net have two usage of hashes: one is RSS and another is hash
+reporting. Conventionally the hash calculation was done by the VMM.
+However, computing the hash after the queue was chosen defeats the
+purpose of RSS.
 
-That replaces fragility with brittleness.  If we change a default then
-we have to go rearrange the corresponding enum, and update the
-BUILD_BUG_ONs.
+Another approach is to use eBPF steering program. This approach has
+another downside: it cannot report the calculated hash due to the
+restrictive nature of eBPF.
 
-More importantly, it's still less readable because the reader now has to
-go read the enum values to cross-reference the hard-coded values of 0
-and 1 with the enums which are used everywhere else.
+Extend the steering program feature by introducing a dedicated program
+type: BPF_PROG_TYPE_VNET_HASH. This program type is capable to report
+the hash value and the queue to use at the same time.
+
+This is a rewrite of a RFC patch series submitted by Yuri Benditovich that
+incorporates feedbacks for the series and V1 of this series:
+https://lore.kernel.org/lkml/20210112194143.1494-1-yuri.benditovich@daynix.com/
+
+QEMU patched to use this new feature is available at:
+https://github.com/daynix/qemu/tree/akihikodaki/bpf
+
+The QEMU patches will soon be submitted to the upstream as RFC too.
+
+V1 -> V2:
+  Changed to introduce a new BPF program type.
+
+Akihiko Odaki (7):
+  bpf: Introduce BPF_PROG_TYPE_VNET_HASH
+  bpf: Add vnet_hash members to __sk_buff
+  skbuff: Introduce SKB_EXT_TUN_VNET_HASH
+  virtio_net: Add virtio_net_hdr_v1_hash_from_skb()
+  tun: Support BPF_PROG_TYPE_VNET_HASH
+  selftests/bpf: Test BPF_PROG_TYPE_VNET_HASH
+  vhost_net: Support VIRTIO_NET_F_HASH_REPORT
+
+ Documentation/bpf/bpf_prog_run.rst            |   1 +
+ Documentation/bpf/libbpf/program_types.rst    |   2 +
+ drivers/net/tun.c                             | 158 +++++--
+ drivers/vhost/net.c                           |  16 +-
+ include/linux/bpf_types.h                     |   2 +
+ include/linux/filter.h                        |   7 +
+ include/linux/skbuff.h                        |  10 +
+ include/linux/virtio_net.h                    |  22 +
+ include/uapi/linux/bpf.h                      |   5 +
+ kernel/bpf/verifier.c                         |   6 +
+ net/core/filter.c                             |  86 +++-
+ net/core/skbuff.c                             |   3 +
+ tools/include/uapi/linux/bpf.h                |   5 +
+ tools/lib/bpf/libbpf.c                        |   2 +
+ tools/testing/selftests/bpf/config            |   1 +
+ tools/testing/selftests/bpf/config.aarch64    |   1 -
+ .../selftests/bpf/prog_tests/vnet_hash.c      | 385 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/vnet_hash.c |  16 +
+ 18 files changed, 681 insertions(+), 47 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/vnet_hash.c
+ create mode 100644 tools/testing/selftests/bpf/progs/vnet_hash.c
 
 -- 
-Josh
+2.42.0
+
