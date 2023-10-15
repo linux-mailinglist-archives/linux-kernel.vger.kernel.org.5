@@ -2,145 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90A1C7C97F9
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 07:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24DC07C97FD
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 07:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233483AbjJOFOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 01:14:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46850 "EHLO
+        id S233499AbjJOFPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 01:15:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230091AbjJOFOJ (ORCPT
+        with ESMTP id S230091AbjJOFPr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 01:14:09 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC0BFB7;
-        Sat, 14 Oct 2023 22:14:06 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6b5e6301a19so1459759b3a.0;
-        Sat, 14 Oct 2023 22:14:06 -0700 (PDT)
+        Sun, 15 Oct 2023 01:15:47 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE6BD8
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 22:15:42 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-5b7179ff4easo68773a12.0
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 22:15:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697346846; x=1697951646; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=G+WDk3/mBm7uAe+u8znmKpDcmMQhVxbylz6EuuqaKXY=;
-        b=WOrAGgvBQwGu9OroYH1HUwpA7IE59B3L1osh4W0hakKjJN8FIJPcQeyJ/LzqThEnH9
-         bWdIeCDfBSbb0qBVdiLct7j31pw6AuCWQ+2jcEs7kbvybfxI+z9ZL5lnazAxgvH1bb+Y
-         MrNbXCBqgvpGi+tN8eKMo1cTMFfAO20xvkRhEZs4i4Z7vXrxdKqX3fPfJ7bemYjXNxSw
-         bX+4IsCtsz1bImfL+dtdR08pKvrcQlCVpgRSlQGFNZHPSlWZA61VyWcveX/zvxB/sCr3
-         BtjDBHYM1sJFsNQFK+1dbHwC+YWVRyPAxSIWBpAB8PrBp56syUsm0ijw+fu470+DCC1l
-         uYBQ==
+        d=google.com; s=20230601; t=1697346942; x=1697951742; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=TdaEzOTX6ywtIk5zck1LY8j1JHQ8Qsr1vK5cWeNfXMc=;
+        b=N3HanSpNBGNxmLQH3LAh2FcJBxee86VOHrOWCjZUsuwukqPNNiJxuIUb4s1cz1obLJ
+         FtivQJsGPyvkZollxt/yFS2FTJXjCNROE6/QIWrr1zyeJTIV0fWl73Gdm1uh00BytX1U
+         A9MhddtKlLy37VOV76DyXmfEYbkvOTHPQqDqSmfHiS1ZrjeldDah3m9+UBKurXGD8ewW
+         djrpNnVCDoIfeuvjV+hkFb+5EF80uZkT9ovQYjwBgxV9gupyTeGLE6EITfInb0YSpIKb
+         7vSgXSP8pqkTtwBkQ2OzfzolTZ2OkrSMIR5tx7z46pRejXW/Ld6vB6jkNxUMkzN54DeV
+         tDbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697346846; x=1697951646;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G+WDk3/mBm7uAe+u8znmKpDcmMQhVxbylz6EuuqaKXY=;
-        b=fVyjRtUfaSX9QFio2oYlXRLsXI0wy/FEwj9rE26ma3l2L7Uivts5rDn6nIJ9Ywro/Q
-         9ObpdnBzn2+p4qzIi1yRcqUrw98Canlvqt7LSbVKVyz0eSJLWBy2OTBSnGpHJnTrcMoj
-         Db49zhQ7FOo6ycfr7WiYPrjKLBvPNEzVeOBif08Ufd+10rxIUdzr+VEyMEr/qxgKPl/M
-         mTcy0NUye+t77kbdr+jRagFjWL8WN+JlTtU4Vi/YsvRYzLoNsXxxQqWRsw227ruCuJue
-         CxvU7ax2dOlDZENUKnulV33kz0U847Vs8p6weDqVRWTV1WnuBCdKgBaD0BvuVNvyR7Bf
-         rlQg==
-X-Gm-Message-State: AOJu0Yyfl4BWjPAuR1FqOo/vXyk6ccGJjMY8LN98pT+xHO2Znp7m0kg+
-        UGLq1/F1AzeG0Jk2E67v+PKylOZowBg=
-X-Google-Smtp-Source: AGHT+IFPYNO7aeSI01N8jGv3l6yrQeaszyKagpcRglFXE3YzTUrlgadgDCS5iFPaoBIOErN37Pt65A==
-X-Received: by 2002:a05:6a00:214a:b0:6bc:e7f8:821e with SMTP id o10-20020a056a00214a00b006bce7f8821emr1899469pfk.10.1697346846107;
-        Sat, 14 Oct 2023 22:14:06 -0700 (PDT)
-Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id e7-20020a62ee07000000b006879493aca0sm15531275pfi.26.2023.10.14.22.14.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Oct 2023 22:14:05 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id DAC739E897CB; Sun, 15 Oct 2023 12:14:02 +0700 (WIB)
-Date:   Sun, 15 Oct 2023 12:14:02 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     chenguohua@jari.cn, linux@armlinux.org.uk
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: sfp: Clean up errors in sfp.h
-Message-ID: <ZSt1GkmyO_6iit3-@debian.me>
-References: <1a7c167f.942.18b26fb3ec9.Coremail.chenguohua@jari.cn>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="v4L48laAikyil5vP"
-Content-Disposition: inline
-In-Reply-To: <1a7c167f.942.18b26fb3ec9.Coremail.chenguohua@jari.cn>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1697346942; x=1697951742;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TdaEzOTX6ywtIk5zck1LY8j1JHQ8Qsr1vK5cWeNfXMc=;
+        b=UwXaEI8awzb0D7f0pPgV141InD51w5Xq8MUZayBvHUVUxJqNM8VEoaclbcsUnk8lxo
+         g0ZeJUvizmsxfJ5aBTWLjXTabZf0ddlZbo+YUvJaZaK7d/4A1CvXLnVV/Vlk81t7DBiO
+         tBCnCcy/plhZNjmSJeMI9oSyXMvzZZZ/B77cuAlDEEzMR8njWhXppLpkT8tPQjXC43ZS
+         wqye2+98qq1rV4jnzAeOX5BkmDwgJsRUz1wIRAeFVW1ev2UTUGTY2riAFY6ppdOjlqEt
+         EQCvrkLxbiuonUOqsAW1fXr8a9Uz7dkYin359cAXHGpNgZS///GWDCLdjAVJ056VLTJC
+         jN5g==
+X-Gm-Message-State: AOJu0Yy23zA95Vo7WfTPEU+Kc7vBAOaYdl15MZe1SQKi3F1pfhUvxjdB
+        12nGj7GaH1VStvOTWkE0eZ7EUChy7zU=
+X-Google-Smtp-Source: AGHT+IG0jy59Rsv7ESphioQunhxw4q/SrMwa5fIMSN14rVK7m4kY8tzaw4ZKdhJgi38niKUcBa/gHCArfMo=
+X-Received: from badhri.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:6442])
+ (user=badhri job=sendgmr) by 2002:a63:334e:0:b0:58a:a0c:a62 with SMTP id
+ z75-20020a63334e000000b0058a0a0c0a62mr472465pgz.9.1697346942053; Sat, 14 Oct
+ 2023 22:15:42 -0700 (PDT)
+Date:   Sun, 15 Oct 2023 05:15:38 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
+Message-ID: <20231015051538.2344565-1-badhri@google.com>
+Subject: [PATCH v1] usb: typec: tcpm: Add additional checks for contaminant
+From:   Badhri Jagan Sridharan <badhri@google.com>
+To:     gregkh@linuxfoundation.org, linux@roeck-us.net,
+        heikki.krogerus@linux.intel.com
+Cc:     kyletso@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdbabiera@google.com,
+        amitsd@google.com, stable@vger.kernel.org,
+        Badhri Jagan Sridharan <badhri@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When transitioning from SNK_DEBOUNCED to unattached, its worthwhile to
+check for contaminant to mitigate wakeups.
 
---v4L48laAikyil5vP
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+```
+[81334.219571] Start toggling
+[81334.228220] CC1: 0 -> 0, CC2: 0 -> 0 [state TOGGLING, polarity 0, disconnected]
+[81334.305147] CC1: 0 -> 0, CC2: 0 -> 3 [state TOGGLING, polarity 0, connected]
+[81334.305162] state change TOGGLING -> SNK_ATTACH_WAIT [rev3 NONE_AMS]
+[81334.305187] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 170 ms [rev3 NONE_AMS]
+[81334.475515] state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED [delayed 170 ms]
+[81334.486480] CC1: 0 -> 0, CC2: 3 -> 0 [state SNK_DEBOUNCED, polarity 0, disconnected]
+[81334.486495] state change SNK_DEBOUNCED -> SNK_DEBOUNCED [rev3 NONE_AMS]
+[81334.486515] pending state change SNK_DEBOUNCED -> SNK_UNATTACHED @ 20 ms [rev3 NONE_AMS]
+[81334.506621] state change SNK_DEBOUNCED -> SNK_UNATTACHED [delayed 20 ms]
+[81334.506640] Start toggling
+[81334.516972] CC1: 0 -> 0, CC2: 0 -> 0 [state TOGGLING, polarity 0, disconnected]
+[81334.592759] CC1: 0 -> 0, CC2: 0 -> 3 [state TOGGLING, polarity 0, connected]
+[81334.592773] state change TOGGLING -> SNK_ATTACH_WAIT [rev3 NONE_AMS]
+[81334.592792] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 170 ms [rev3 NONE_AMS]
+[81334.762940] state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED [delayed 170 ms]
+[81334.773557] CC1: 0 -> 0, CC2: 3 -> 0 [state SNK_DEBOUNCED, polarity 0, disconnected]
+[81334.773570] state change SNK_DEBOUNCED -> SNK_DEBOUNCED [rev3 NONE_AMS]
+[81334.773588] pending state change SNK_DEBOUNCED -> SNK_UNATTACHED @ 20 ms [rev3 NONE_AMS]
+[81334.793672] state change SNK_DEBOUNCED -> SNK_UNATTACHED [delayed 20 ms]
+[81334.793681] Start toggling
+[81334.801840] CC1: 0 -> 0, CC2: 0 -> 0 [state TOGGLING, polarity 0, disconnected]
+[81334.878655] CC1: 0 -> 0, CC2: 0 -> 3 [state TOGGLING, polarity 0, connected]
+[81334.878672] state change TOGGLING -> SNK_ATTACH_WAIT [rev3 NONE_AMS]
+[81334.878696] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 170 ms [rev3 NONE_AMS]
+[81335.048968] state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED [delayed 170 ms]
+[81335.060684] CC1: 0 -> 0, CC2: 3 -> 0 [state SNK_DEBOUNCED, polarity 0, disconnected]
+[81335.060754] state change SNK_DEBOUNCED -> SNK_DEBOUNCED [rev3 NONE_AMS]
+[81335.060775] pending state change SNK_DEBOUNCED -> SNK_UNATTACHED @ 20 ms [rev3 NONE_AMS]
+[81335.080884] state change SNK_DEBOUNCED -> SNK_UNATTACHED [delayed 20 ms]
+[81335.080900] Start toggling
+```
 
-On Fri, Oct 13, 2023 at 11:01:21AM +0800, chenguohua@jari.cn wrote:
-> Fix the following errors reported by checkpatch:
->=20
-> ERROR: spaces required around that '=3D' (ctx:VxW)
->=20
-> Signed-off-by: GuoHua Cheng <chenguohua@jari.cn>
-> ---
->  include/linux/sfp.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->=20
-> diff --git a/include/linux/sfp.h b/include/linux/sfp.h
-> index 9346cd44814d..725c8381a347 100644
-> --- a/include/linux/sfp.h
-> +++ b/include/linux/sfp.h
-> @@ -289,10 +289,10 @@ enum {
->  	SFF8024_ENCODING_8B10B		=3D 0x01,
->  	SFF8024_ENCODING_4B5B		=3D 0x02,
->  	SFF8024_ENCODING_NRZ		=3D 0x03,
-> -	SFF8024_ENCODING_8472_MANCHESTER=3D 0x04,
-> +	SFF8024_ENCODING_8472_MANCHESTER =3D 0x04,
->  	SFF8024_ENCODING_8472_SONET	=3D 0x05,
->  	SFF8024_ENCODING_8472_64B66B	=3D 0x06,
-> -	SFF8024_ENCODING_8436_MANCHESTER=3D 0x06,
-> +	SFF8024_ENCODING_8436_MANCHESTER =3D 0x06,
->  	SFF8024_ENCODING_8436_SONET	=3D 0x04,
->  	SFF8024_ENCODING_8436_64B66B	=3D 0x05,
->  	SFF8024_ENCODING_256B257B	=3D 0x07,
-> @@ -306,11 +306,11 @@ enum {
->  	SFF8024_CONNECTOR_MT_RJ		=3D 0x08,
->  	SFF8024_CONNECTOR_MU		=3D 0x09,
->  	SFF8024_CONNECTOR_SG		=3D 0x0a,
-> -	SFF8024_CONNECTOR_OPTICAL_PIGTAIL=3D 0x0b,
-> +	SFF8024_CONNECTOR_OPTICAL_PIGTAIL =3D 0x0b,
->  	SFF8024_CONNECTOR_MPO_1X12	=3D 0x0c,
->  	SFF8024_CONNECTOR_MPO_2X16	=3D 0x0d,
->  	SFF8024_CONNECTOR_HSSDC_II	=3D 0x20,
-> -	SFF8024_CONNECTOR_COPPER_PIGTAIL=3D 0x21,
-> +	SFF8024_CONNECTOR_COPPER_PIGTAIL =3D 0x21,
->  	SFF8024_CONNECTOR_RJ45		=3D 0x22,
->  	SFF8024_CONNECTOR_NOSEPARATE	=3D 0x23,
->  	SFF8024_CONNECTOR_MXC_2X16	=3D 0x24,
+Cc: stable@vger.kernel.org
+Fixes: 00bdc7e4e0f56 ("usb: typec: tcpm: Add callbacks to mitigate wakeups due to contaminant")
+Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+---
+ drivers/usb/typec/tcpm/tcpm.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-To be consistent, other enum's indentation should also be aligned to match
-the longest ones (MANCHESTER and PIGTAIL).
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index 6e843c511b85..3634f9092a84 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -3903,7 +3903,9 @@ static void run_state_machine(struct tcpm_port *port)
+ 		port->potential_contaminant = ((port->enter_state == SRC_ATTACH_WAIT &&
+ 						port->state == SRC_UNATTACHED) ||
+ 					       (port->enter_state == SNK_ATTACH_WAIT &&
+-						port->state == SNK_UNATTACHED));
++						port->state == SNK_UNATTACHED) ||
++					       (port->enter_state == SNK_DEBOUNCED &&
++					        port->state == SNK_UNATTACHED));
+ 
+ 	port->enter_state = port->state;
+ 	switch (port->state) {
 
-In netdev, though, checkpatch fixes are not welcome (auto-rejected) as these
-make stable backports more convoluted.
+base-commit: 1034cc423f1b4a7a9a56d310ca980fcd2753e11d
+-- 
+2.42.0.655.g421f12c284-goog
 
-Thanks.
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---v4L48laAikyil5vP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZSt1GgAKCRD2uYlJVVFO
-o32hAP9QYVZ7joG4QINC/SIgwAKup3NqZVPF6Nd+fO62v8gFhwEAikdG0aJCslJx
-37l5zFrIz6QL6e2JYEElblDRIDNp4gc=
-=mbEP
------END PGP SIGNATURE-----
-
---v4L48laAikyil5vP--
