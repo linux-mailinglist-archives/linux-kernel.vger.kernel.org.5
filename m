@@ -2,141 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 495C77C9918
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 15:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8578E7C992B
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 15:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229816AbjJONMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 09:12:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52894 "EHLO
+        id S229603AbjJONgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 09:36:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbjJONMv (ORCPT
+        with ESMTP id S229614AbjJONgF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 09:12:51 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0973BC1
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 06:12:49 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-406609df1a6so35472215e9.3
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 06:12:48 -0700 (PDT)
+        Sun, 15 Oct 2023 09:36:05 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07D6DA6;
+        Sun, 15 Oct 2023 06:36:02 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-27cfb84432aso2281627a91.2;
+        Sun, 15 Oct 2023 06:36:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697375567; x=1697980367; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697376961; x=1697981761; darn=vger.kernel.org;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=2tW4gpmmxh+63YJI903yg6bkjFjycGTO0DBlFHUGBTM=;
-        b=etTqXfHZjB31k8DGeeebCIE2Ls1iMxOX6IrDDEJ1byEkFJFcHwLF6sZt0moOYTTzVE
-         Ul6kItwkhtYOmRhQ7Apsnnm45EJdHfCv8xNNzjXlbL8T4gjaGx3VdYGC2nR/VqjM5gv+
-         e9KGMalBt0ms8m/HxUDGiXEKpBPuJGCkIaFX1Nkj1SzlnuxlNS3+qmbIT25SXDMZcdLE
-         RBbfxRI39XtWJjBC24R+ptu5k+5/Gnwrv9FfKfQY9OBP3/GADkeLj5p663jDdTGnL/Hd
-         j61GFzokIGcyrYSau/5IeyLbVkyK7MLykQ2DQxqltEViaiwtJNaQ+wkv32EPGPMZga9Y
-         cU+A==
+        bh=jWM7j+OZCwLtm2rLuGsJS/VApTDDC6NKoILtMy2P7BE=;
+        b=KbDr62pDpYPxDPDu+6SLMcxawMby0UDawnZ3As1UnsNiTpUymrKu27KKG+GBPqps4o
+         k96Y3eovgVIwIy+n/AueIXsrWSr9CYsYsASGA/6vfMVJba+LFhIP3dJRiBGKZCrapdLt
+         byGNSR1m1xtfWwHMwYrcAGqcPvogW+9lVmfxBvdmZ7SgOjuvd+5WHwKAGLBY5geDZgoY
+         PlNRCI4DPLtLeIP7MlSdfNIrlcmg9+1LeDpIhmTtOS8tizi9WjFZMnGgg08URHkAzA0C
+         UvFHNL1jqVf+mZYGRPLdEOEwK88BOVmQ/RuyCxyCJWFuWxHOyjMtQ0OTzPRsI50ATgFa
+         HgRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697375567; x=1697980367;
+        d=1e100.net; s=20230601; t=1697376961; x=1697981761;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2tW4gpmmxh+63YJI903yg6bkjFjycGTO0DBlFHUGBTM=;
-        b=YehpU7mZfPcG01yBg3GijVYg5MhLc4CJYnDMSDYAL9zW3VTmdLuXh9uuDc4XK6Edqe
-         L4CkoLhXae17CdrtmIwj50IM3pD78i+NpJerxDJ4oXvyb2rl4F+Bwqs4Glgjn8AVFBju
-         Nu9FPcI2gQzPuX1eSYXfOjeKCMfFB91K5oq4wRfmhLz1K8MTtsuzWkl84uIbNMCayS2P
-         iQwyei6aOVtg/DKmn2eU9XUte0yxTDTyWedIM181fK9tUVkGPRYctWtiCl8CUJAQSlkp
-         sCqOE7vY43S1hd/9Mf0s2CcSDqWUjFHl844kXR9gpiklTKnYzGphsfgAT6euqD4oKZg/
-         5g2A==
-X-Gm-Message-State: AOJu0Yz0vXzXA4Je6JNrCjcVrQxZPPddmW3ndBHLeWEldfIO+r6+2vlX
-        r2f/hd4SUv6ETS8vWDW+/8Plz7q5eo5+bQ==
-X-Google-Smtp-Source: AGHT+IHUXQ+o0u2TfCTD4y/bZVfWK0YTlVpXcTYyc02g4p2BYq725O2qRPTAP+aK3//eRfhD407BiQ==
-X-Received: by 2002:a7b:ce89:0:b0:404:f9c1:d5d7 with SMTP id q9-20020a7bce89000000b00404f9c1d5d7mr27585153wmj.25.1697375566890;
-        Sun, 15 Oct 2023 06:12:46 -0700 (PDT)
-Received: from lab-ubuntu ([41.90.64.203])
-        by smtp.gmail.com with ESMTPSA id m28-20020a05600c3b1c00b00405bbfd5d16sm4463112wms.7.2023.10.15.06.12.45
+        bh=jWM7j+OZCwLtm2rLuGsJS/VApTDDC6NKoILtMy2P7BE=;
+        b=JCBHwRhP7nygtfMgA7IoNWbofFW+i9qoDyGeXFhTs7luiqrI3t3Lj117v00QehxdU0
+         jJ0mE87QgnbIdjEfWmxtfX/okyhZ8J9tsCbrLpb9RQyapVFwXBJxlw9PqM/mNWaEP8ru
+         HT7HDByMgbD6GOua5tncP7JExI3E9+eEmZ0notyuZfCKAElx7KoCreE7KAgEsHgZ+PgS
+         o2GuqB+7CCgHL/o3Yxj1PZI45wC2uHZFljpb0YwsDTpybsBCJZsm1ijKAGrKNhBCPcUy
+         5F4HK6xhZDhT3Nnv4VWMzFZSCq+hbZPjUG+ae+knPHKj9ryll47PX5ImZBa/deILT0Nn
+         UZbA==
+X-Gm-Message-State: AOJu0YyxJBvocEUlrFCTAiS4NCJN7B47S4dT8BY3kEEXZZWwt39OXt3l
+        BOrdHUIt78RMo5qWPWeGi04=
+X-Google-Smtp-Source: AGHT+IG3EY/GYPlQhjDKMrD7ydfH3jXllsSUiuQpVP2X+ZvbgJar2DW/73YFnlgwQl6OJ3GDzD4a6Q==
+X-Received: by 2002:a17:90a:1541:b0:268:1355:b03e with SMTP id y1-20020a17090a154100b002681355b03emr28186055pja.38.1697376961266;
+        Sun, 15 Oct 2023 06:36:01 -0700 (PDT)
+Received: from ubuntu ([122.171.162.0])
+        by smtp.gmail.com with ESMTPSA id e7-20020a17090a804700b00263b9e75aecsm2966806pjw.41.2023.10.15.06.36.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Oct 2023 06:12:46 -0700 (PDT)
-Date:   Sun, 15 Oct 2023 16:12:43 +0300
-From:   Calvince Otieno <calvncce@gmail.com>
-To:     gustavo@embeddedor.com, outreachy@lists.linux.dev
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Calvince Otieno <calvncce@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: wlan-ng: remove unnecessary helper function
-Message-ID: <ZSvlS18qI7G7Dvpi@lab-ubuntu>
+        Sun, 15 Oct 2023 06:36:01 -0700 (PDT)
+Date:   Sun, 15 Oct 2023 06:35:58 -0700
+From:   Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
+To:     Manish Chopra <manishc@marvell.com>, GR-Linux-NIC-Dev@marvell.com,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        netdev@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     kumaran.4353@gmail.com
+Subject: [PATCH] staging: qlge: Replace the occurrences of (1<<x) by BIT(x)
+Message-ID: <20231015133558.GA5489@ubuntu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function prism2sta_inf_handover() is called by the parent
-function prism2sta_ev_info() to print a literal debug information
-string using pr_debug(). The debugging utility function can be called
-directly within prism2sta_ev_info().
+Adhere to linux coding style. Reported by checkpatch.pl:
+CHECK: Prefer using the BIT macro
 
-Furthermore, to make the debugging more module-specific, the netdev_dbg()
-function is preferred over the generic pr_debug() utility function.
-
-Signed-off-by: Calvince Otieno <calvncce@gmail.com>
+Signed-off-by: Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
 ---
- drivers/staging/wlan-ng/prism2sta.c | 30 ++---------------------------
- 1 file changed, 2 insertions(+), 28 deletions(-)
+ drivers/staging/qlge/qlge.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/wlan-ng/prism2sta.c b/drivers/staging/wlan-ng/prism2sta.c
-index 57180bb71699..b5e95a3207fe 100644
---- a/drivers/staging/wlan-ng/prism2sta.c
-+++ b/drivers/staging/wlan-ng/prism2sta.c
-@@ -90,9 +90,6 @@ static int prism2sta_getcardinfo(struct wlandevice *wlandev);
- static int prism2sta_globalsetup(struct wlandevice *wlandev);
- static int prism2sta_setmulticast(struct wlandevice *wlandev,
- 				  struct net_device *dev);
--
--static void prism2sta_inf_handover(struct wlandevice *wlandev,
--				   struct hfa384x_inf_frame *inf);
- static void prism2sta_inf_tallies(struct wlandevice *wlandev,
- 				  struct hfa384x_inf_frame *inf);
- static void prism2sta_inf_hostscanresults(struct wlandevice *wlandev,
-@@ -922,30 +919,6 @@ static int prism2sta_setmulticast(struct wlandevice *wlandev,
- 	return result;
- }
- 
--/*
-- * prism2sta_inf_handover
-- *
-- * Handles the receipt of a Handover info frame. Should only be present
-- * in APs only.
-- *
-- * Arguments:
-- *	wlandev		wlan device structure
-- *	inf		ptr to info frame (contents in hfa384x order)
-- *
-- * Returns:
-- *	nothing
-- *
-- * Side effects:
-- *
-- * Call context:
-- *	interrupt
-- */
--static void prism2sta_inf_handover(struct wlandevice *wlandev,
--				   struct hfa384x_inf_frame *inf)
--{
--	pr_debug("received infoframe:HANDOVER (unhandled)\n");
--}
--
- /*
-  * prism2sta_inf_tallies
-  *
-@@ -1724,7 +1697,8 @@ void prism2sta_ev_info(struct wlandevice *wlandev,
- 	/* Dispatch */
- 	switch (inf->infotype) {
- 	case HFA384x_IT_HANDOVERADDR:
--		prism2sta_inf_handover(wlandev, inf);
-+		netdev_dbg(wlandev->netdev,
-+			   "received infoframe:HANDOVER (unhandled)\n");
- 		break;
- 	case HFA384x_IT_COMMTALLIES:
- 		prism2sta_inf_tallies(wlandev, inf);
+diff --git a/drivers/staging/qlge/qlge.h b/drivers/staging/qlge/qlge.h
+index d0dd659834ee..69c5b332fd7c 100644
+--- a/drivers/staging/qlge/qlge.h
++++ b/drivers/staging/qlge/qlge.h
+@@ -1273,7 +1273,7 @@ struct qlge_net_req_iocb {
+  */
+ struct wqicb {
+ 	__le16 len;
+-#define Q_LEN_V		(1 << 4)
++#define Q_LEN_V		BIT(4)
+ #define Q_LEN_CPP_CONT	0x0000
+ #define Q_LEN_CPP_16	0x0001
+ #define Q_LEN_CPP_32	0x0002
+@@ -1308,7 +1308,7 @@ struct cqicb {
+ #define FLAGS_LI	0x40
+ #define FLAGS_LC	0x80
+ 	__le16 len;
+-#define LEN_V		(1 << 4)
++#define LEN_V		BIT(4)
+ #define LEN_CPP_CONT	0x0000
+ #define LEN_CPP_32	0x0001
+ #define LEN_CPP_64	0x0002
 -- 
-2.34.1
+2.25.1
 
