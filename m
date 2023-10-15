@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1CC27C980B
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 07:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C2D7C980A
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 07:33:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233527AbjJOFdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 01:33:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35210 "EHLO
+        id S233502AbjJOFdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 01:33:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233521AbjJOFdb (ORCPT
+        with ESMTP id S233468AbjJOFdQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 01:33:31 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC5FAB7
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 22:33:07 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-57f02eeabcaso2152020eaf.0
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 22:33:07 -0700 (PDT)
+        Sun, 15 Oct 2023 01:33:16 -0400
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22630DA
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 22:33:14 -0700 (PDT)
+Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-57b64731334so2015914eaf.1
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 22:33:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697347987; x=1697952787; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3YSbbFplEMGgc8hs9UQZk79UvkhK9cFlSyrmMp8kdAQ=;
-        b=AFp308hAuHvw86EaRRO18dsF9leLOyhfadkGtooVYloikOH1Mn2pGwgoIPDSN/WMTy
-         od5znADUy/8VOJZqKcrELKOf+txxqgz2TVRDoAsiAXzIjx2OPYbDzphukCfBfoQrRNhV
-         +J9ngTNj1C00i3GLNo/j9GVTm7YqwSk/wCNAVLxR89L7AbNtSwccrRjwQPiK9FjZt7mZ
-         G+mpZyvGCN+9/485i0pU4e2lIFK6TS2WK/inyUqoVXcPBQEj/wLZa0+wk+CmN69EOrXN
-         kuDKm21+sN07O9HBX59p1MlUzf/ysqFb1+r9qV07jvjyZdSDu2ysO+iIph21ypqln+pA
-         WHvg==
+        d=bytedance.com; s=google; t=1697347993; x=1697952793; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V+Ts9CnCSvjw4g14e6BhAUxJGnXgp0+L5CmUoo/dpYw=;
+        b=FJXp/PLu6a/A5VnH/pjAZAoXTju06FHf3U3vlooEs3vRsd1sivwVpk88owgzQX7A15
+         Isdmww1sRfgQfhO4REx+foT9NNUmVQeCnknBDNf3FbvZy1FXhtuwL3EOAcgYJIJ75GFA
+         pg3lxyOourF+xxGrkSijRJabzinZBau6yenY5cRiJM3AcpxiY2nmLmwAmzeJtAerPdng
+         qGoAw2S7X9JRmCN098+yK42AKZsn3M/Tn52F2q1EcORkcr0YlbX7FWUBuD34RbPuSqL6
+         U5M95PDqlDnOFPqXKc3Ta/Dqfm/57HRKPD4dDbkhTjCItf4rWZg+Ruuv9YMWEjvZ2t8j
+         yz4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697347987; x=1697952787;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3YSbbFplEMGgc8hs9UQZk79UvkhK9cFlSyrmMp8kdAQ=;
-        b=hBnOdXaqD/cCpeTKACNdbUtp1fM1w4ADF/Tq8XKihA8qntB5YDNQxFXPS3WFPTx+8Z
-         kH9FDxLExheXpQaHZCnc29cM3VomtoglIbr/KRWQrYX1GJHWOPj1/OEUgUzget7ErGH/
-         0/Jvx6IBMi6PqiDa3dbL42uSUZ3tiiisiwCmTvD8vALrgNCdQiLkzeNd3+Bxv3HjTt71
-         LqTEGUTltlD7krAHr1W7cvm8tMsGT8K9JyQFQBwZWdXHw90/yY3tg5gduOZkx6pnGo84
-         pb7LrG5yqlWOakoJsCMZ6MDIh0V7C7nFV0ttatmMzK7UOSnwpkQU035kUeu2lWuH+lZh
-         JaAQ==
-X-Gm-Message-State: AOJu0YyBj+SBRn8jhD1K4I7VtpNIx0emToyARuQfj/Ns+/YKyPk/TFrH
-        +DiGUZF9wnQlQ1aH4K0cOJDheA==
-X-Google-Smtp-Source: AGHT+IEcgAokBU5YdThWVcsJQqO8kLV4eAzKTCIPBY/Tl6zvGnQacF65q5XNT2Za/cL93juYS2sNaw==
-X-Received: by 2002:a05:6358:33a4:b0:151:ac8d:bfe7 with SMTP id i36-20020a05635833a400b00151ac8dbfe7mr35376152rwd.22.1697347987054;
-        Sat, 14 Oct 2023 22:33:07 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697347993; x=1697952793;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=V+Ts9CnCSvjw4g14e6BhAUxJGnXgp0+L5CmUoo/dpYw=;
+        b=D4u4W/jTD5+0gkjIGmZ1EmklagN0h4bcxHFDh+bWHb/FsNNE9GT/SQo1aPMQwsypYH
+         x2oeUsFW9b8pD+tlIoO7imiVt5SW9cgH+KkgHtMdIpdtvNRPxqUQiHL86pXnPw8AvnnX
+         102vG6+75Txr/lb2ajs3Qi2R5WkM1ypjkhhMXtOLzrGNA9AGiLDxDy1hylFnsJTsgsIr
+         SmAI0V13VbjI5+y9vfF6Z8qw7qaNrHCv2GdPstL7pZIotlJmXUhT06FA0VvkK/VUsyJd
+         5FSHypKoDSAs9oESUOHse+NN6l8VYTWzfM+cEg06RQp1t8KxxILxgWmu3wQx+HY9Wmdy
+         SecQ==
+X-Gm-Message-State: AOJu0YyR9MBMKAHwcBACKuBlmBMDZmbOW1Xz/Bu8lefEoEud5h+y6zY0
+        IemFG2GP6cxLKQpi9hmMHo6uJA==
+X-Google-Smtp-Source: AGHT+IHeYXQnRqZ3zBv7mpWLGfA24cCZY3vfMrUYfrShCru8UFbFIT34J94uNEjrRoGI8HnjVzYDMw==
+X-Received: by 2002:a05:6358:99a8:b0:141:d2d:6da7 with SMTP id j40-20020a05635899a800b001410d2d6da7mr33312987rwb.17.1697347993286;
+        Sat, 14 Oct 2023 22:33:13 -0700 (PDT)
 Received: from devz1.bytedance.net ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id u22-20020a62ed16000000b00690fe1c928csm16187368pfh.147.2023.10.14.22.33.01
+        by smtp.gmail.com with ESMTPSA id u22-20020a62ed16000000b00690fe1c928csm16187368pfh.147.2023.10.14.22.33.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Oct 2023 22:33:06 -0700 (PDT)
+        Sat, 14 Oct 2023 22:33:12 -0700 (PDT)
 From:   "wuqiang.matt" <wuqiang.matt@bytedance.com>
 To:     linux-trace-kernel@vger.kernel.org, mhiramat@kernel.org,
         davem@davemloft.net, anil.s.keshavamurthy@intel.com,
@@ -58,10 +59,12 @@ To:     linux-trace-kernel@vger.kernel.org, mhiramat@kernel.org,
         dan.j.williams@intel.com, jpoimboe@kernel.org
 Cc:     linux-kernel@vger.kernel.org, lkp@intel.com, mattwu@163.com,
         "wuqiang.matt" <wuqiang.matt@bytedance.com>
-Subject: [PATCH v10 0/5] lib,kprobes: kretprobe scalability improvement
-Date:   Sun, 15 Oct 2023 13:32:46 +0800
-Message-Id: <20231015053251.707442-1-wuqiang.matt@bytedance.com>
+Subject: [PATCH v10 1/5] lib: objpool added: ring-array based lockless MPMC
+Date:   Sun, 15 Oct 2023 13:32:47 +0800
+Message-Id: <20231015053251.707442-2-wuqiang.matt@bytedance.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231015053251.707442-1-wuqiang.matt@bytedance.com>
+References: <20231015053251.707442-1-wuqiang.matt@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -73,37 +76,516 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series introduces a scalable and lockless ring-array based
-object pool to improve scalability of kretprobed routines.
+objpool is a scalable implementation of high performance queue for
+object allocation and reclamation, such as kretprobe instances.
 
-v10:
-  *) objpool simplified and improved according to Masami's advices
+With leveraging percpu ring-array to mitigate hot spots of memory
+contention, it delivers near-linear scalability for high parallel
+scenarios. The objpool is best suited for the following cases:
+1) Memory allocation or reclamation are prohibited or too expensive
+2) Consumers are of different priorities, such as irqs and threads
 
-wuqiang.matt (5):
-  lib: objpool added: ring-array based lockless MPMC
-  lib: objpool test module added
-  kprobes: kretprobe scalability improvement with objpool
-  kprobes: freelist.h removed
-  MAINTAINERS: objpool added
+Limitations:
+1) Maximum objects (capacity) is fixed after objpool creation
+2) All pre-allocated objects are managed in percpu ring array,
+   which consumes more memory than linked lists
 
- MAINTAINERS              |   7 +
- include/linux/freelist.h | 129 --------
- include/linux/kprobes.h  |  11 +-
- include/linux/objpool.h  | 176 ++++++++++
- include/linux/rethook.h  |  16 +-
- kernel/kprobes.c         |  93 +++---
- kernel/trace/fprobe.c    |  32 +-
- kernel/trace/rethook.c   |  90 +++--
- lib/Kconfig.debug        |  11 +
- lib/Makefile             |   4 +-
- lib/objpool.c            | 286 ++++++++++++++++
- lib/test_objpool.c       | 689 +++++++++++++++++++++++++++++++++++++++
- 12 files changed, 1270 insertions(+), 274 deletions(-)
- delete mode 100644 include/linux/freelist.h
+Signed-off-by: wuqiang.matt <wuqiang.matt@bytedance.com>
+---
+ include/linux/objpool.h | 176 +++++++++++++++++++++++++
+ lib/Makefile            |   2 +-
+ lib/objpool.c           | 286 ++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 463 insertions(+), 1 deletion(-)
  create mode 100644 include/linux/objpool.h
  create mode 100644 lib/objpool.c
- create mode 100644 lib/test_objpool.c
 
+diff --git a/include/linux/objpool.h b/include/linux/objpool.h
+new file mode 100644
+index 000000000000..4df18405420a
+--- /dev/null
++++ b/include/linux/objpool.h
+@@ -0,0 +1,176 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef _LINUX_OBJPOOL_H
++#define _LINUX_OBJPOOL_H
++
++#include <linux/types.h>
++#include <linux/refcount.h>
++
++/*
++ * objpool: ring-array based lockless MPMC queue
++ *
++ * Copyright: wuqiang.matt@bytedance.com,mhiramat@kernel.org
++ *
++ * objpool is a scalable implementation of high performance queue for
++ * object allocation and reclamation, such as kretprobe instances.
++ *
++ * With leveraging percpu ring-array to mitigate hot spots of memory
++ * contention, it delivers near-linear scalability for high parallel
++ * scenarios. The objpool is best suited for the following cases:
++ * 1) Memory allocation or reclamation are prohibited or too expensive
++ * 2) Consumers are of different priorities, such as irqs and threads
++ *
++ * Limitations:
++ * 1) Maximum objects (capacity) is fixed after objpool creation
++ * 2) All pre-allocated objects are managed in percpu ring array,
++ *    which consumes more memory than linked lists
++ */
++
++/**
++ * struct objpool_slot - percpu ring array of objpool
++ * @head: head sequence of the local ring array (to retrieve at)
++ * @tail: tail sequence of the local ring array (to append at)
++ * @last: the last sequence number marked as ready for retrieve
++ * @mask: bits mask for modulo capacity of the ring array indexes
++ * @entries: object entries on this slot
++ *
++ * Represents a cpu-local array-based ring buffer, its size is specialized
++ * during initialization of object pool. The percpu objpool node is to be
++ * allocated from local memory for NUMA system, and to be kept compact in
++ * continuous memory: CPU assigned number of objects are stored just after
++ * the body of objpool_node.
++ *
++ * Real size of the ring array is far too smaller than the value range of
++ * head and tail, typed as uint32_t: [0, 2^32), so only lower bits (mask)
++ * of head and tail are used as the actual position in the ring array. In
++ * general the ring array is acting like a small sliding window, which is
++ * always moving forward in the loop of [0, 2^32).
++ */
++struct objpool_slot {
++	uint32_t            head;
++	uint32_t            tail;
++	uint32_t            last;
++	uint32_t            mask;
++	void               *entries[];
++} __packed;
++
++struct objpool_head;
++
++/*
++ * caller-specified callback for object initial setup, it's only called
++ * once for each object (just after the memory allocation of the object)
++ */
++typedef int (*objpool_init_obj_cb)(void *obj, void *context);
++
++/* caller-specified cleanup callback for objpool destruction */
++typedef int (*objpool_fini_cb)(struct objpool_head *head, void *context);
++
++/**
++ * struct objpool_head - object pooling metadata
++ * @obj_size:   object size, aligned to sizeof(void *)
++ * @nr_objs:    total objs (to be pre-allocated with objpool)
++ * @nr_cpus:    local copy of nr_cpu_ids
++ * @capacity:   max objs can be managed by one objpool_slot
++ * @gfp:        gfp flags for kmalloc & vmalloc
++ * @ref:        refcount of objpool
++ * @flags:      flags for objpool management
++ * @cpu_slots:  pointer to the array of objpool_slot
++ * @release:    resource cleanup callback
++ * @context:    caller-provided context
++ */
++struct objpool_head {
++	int                     obj_size;
++	int                     nr_objs;
++	int                     nr_cpus;
++	int                     capacity;
++	gfp_t                   gfp;
++	refcount_t              ref;
++	unsigned long           flags;
++	struct objpool_slot   **cpu_slots;
++	objpool_fini_cb         release;
++	void                   *context;
++};
++
++#define OBJPOOL_NR_OBJECT_MAX	(1UL << 24) /* maximum numbers of total objects */
++#define OBJPOOL_OBJECT_SIZE_MAX	(1UL << 16) /* maximum size of an object */
++
++/**
++ * objpool_init() - initialize objpool and pre-allocated objects
++ * @pool:    the object pool to be initialized, declared by caller
++ * @nr_objs: total objects to be pre-allocated by this object pool
++ * @object_size: size of an object (should be > 0)
++ * @gfp:     flags for memory allocation (via kmalloc or vmalloc)
++ * @context: user context for object initialization callback
++ * @objinit: object initialization callback for extra setup
++ * @release: cleanup callback for extra cleanup task
++ *
++ * return value: 0 for success, otherwise error code
++ *
++ * All pre-allocated objects are to be zeroed after memory allocation.
++ * Caller could do extra initialization in objinit callback. objinit()
++ * will be called just after slot allocation and called only once for
++ * each object. After that the objpool won't touch any content of the
++ * objects. It's caller's duty to perform reinitialization after each
++ * pop (object allocation) or do clearance before each push (object
++ * reclamation).
++ */
++int objpool_init(struct objpool_head *pool, int nr_objs, int object_size,
++		 gfp_t gfp, void *context, objpool_init_obj_cb objinit,
++		 objpool_fini_cb release);
++
++/**
++ * objpool_pop() - allocate an object from objpool
++ * @pool: object pool
++ *
++ * return value: object ptr or NULL if failed
++ */
++void *objpool_pop(struct objpool_head *pool);
++
++/**
++ * objpool_push() - reclaim the object and return back to objpool
++ * @obj:  object ptr to be pushed to objpool
++ * @pool: object pool
++ *
++ * return: 0 or error code (it fails only when user tries to push
++ * the same object multiple times or wrong "objects" into objpool)
++ */
++int objpool_push(void *obj, struct objpool_head *pool);
++
++/**
++ * objpool_drop() - discard the object and deref objpool
++ * @obj:  object ptr to be discarded
++ * @pool: object pool
++ *
++ * return: 0 if objpool was released; -EAGAIN if there are still
++ *         outstanding objects
++ *
++ * objpool_drop is normally for the release of outstanding objects
++ * after objpool cleanup (objpool_fini). Thinking of this example:
++ * kretprobe is unregistered and objpool_fini() is called to release
++ * all remained objects, but there are still objects being used by
++ * unfinished kretprobes (like blockable function: sys_accept). So
++ * only when the last outstanding object is dropped could the whole
++ * objpool be released along with the call of objpool_drop()
++ */
++int objpool_drop(void *obj, struct objpool_head *pool);
++
++/**
++ * objpool_free() - release objpool forcely (all objects to be freed)
++ * @pool: object pool to be released
++ */
++void objpool_free(struct objpool_head *pool);
++
++/**
++ * objpool_fini() - deref object pool (also releasing unused objects)
++ * @pool: object pool to be dereferenced
++ *
++ * objpool_fini() will try to release all remained free objects and
++ * then drop an extra reference of objpool. So if all objects are
++ * already returned to objpool, the objpool will be freed too. But
++ * if there are still outstanding objects (blockable kretprobes),
++ * the objpool won't be released until all the outstanding objects
++ * are dropped
++ */
++void objpool_fini(struct objpool_head *pool);
++
++#endif /* _LINUX_OBJPOOL_H */
+diff --git a/lib/Makefile b/lib/Makefile
+index 1ffae65bb7ee..7a84c922d9ff 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -34,7 +34,7 @@ lib-y := ctype.o string.o vsprintf.o cmdline.o \
+ 	 is_single_threaded.o plist.o decompress.o kobject_uevent.o \
+ 	 earlycpio.o seq_buf.o siphash.o dec_and_lock.o \
+ 	 nmi_backtrace.o win_minmax.o memcat_p.o \
+-	 buildid.o
++	 buildid.o objpool.o
+ 
+ lib-$(CONFIG_PRINTK) += dump_stack.o
+ lib-$(CONFIG_SMP) += cpumask.o
+diff --git a/lib/objpool.c b/lib/objpool.c
+new file mode 100644
+index 000000000000..37a71e063f18
+--- /dev/null
++++ b/lib/objpool.c
+@@ -0,0 +1,286 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/objpool.h>
++#include <linux/slab.h>
++#include <linux/vmalloc.h>
++#include <linux/atomic.h>
++#include <linux/irqflags.h>
++#include <linux/cpumask.h>
++#include <linux/log2.h>
++
++/*
++ * objpool: ring-array based lockless MPMC/FIFO queues
++ *
++ * Copyright: wuqiang.matt@bytedance.com,mhiramat@kernel.org
++ */
++
++/* initialize percpu objpool_slot */
++static int
++objpool_init_percpu_slot(struct objpool_head *pool,
++			 struct objpool_slot *slot,
++			 int nodes, void *context,
++			 objpool_init_obj_cb objinit)
++{
++	void *obj = (void *)&slot->entries[pool->capacity];
++	int i;
++
++	/* initialize elements of percpu objpool_slot */
++	slot->mask = pool->capacity - 1;
++
++	for (i = 0; i < nodes; i++) {
++		if (objinit) {
++			int rc = objinit(obj, context);
++			if (rc)
++				return rc;
++		}
++		slot->entries[slot->tail & slot->mask] = obj;
++		obj = obj + pool->obj_size;
++		slot->tail++;
++		slot->last = slot->tail;
++		pool->nr_objs++;
++	}
++
++	return 0;
++}
++
++/* allocate and initialize percpu slots */
++static int
++objpool_init_percpu_slots(struct objpool_head *pool, int nr_objs,
++			  void *context, objpool_init_obj_cb objinit)
++{
++	int i, cpu_count = 0;
++
++	for (i = 0; i < pool->nr_cpus; i++) {
++
++		struct objpool_slot *slot;
++		int nodes, size, rc;
++
++		/* skip the cpu node which could never be present */
++		if (!cpu_possible(i))
++			continue;
++
++		/* compute how many objects to be allocated with this slot */
++		nodes = nr_objs / num_possible_cpus();
++		if (cpu_count < (nr_objs % num_possible_cpus()))
++			nodes++;
++		cpu_count++;
++
++		size = struct_size(slot, entries, pool->capacity) +
++			pool->obj_size * nodes;
++
++		/*
++		 * here we allocate percpu-slot & objs together in a single
++		 * allocation to make it more compact, taking advantage of
++		 * warm caches and TLB hits. in default vmalloc is used to
++		 * reduce the pressure of kernel slab system. as we know,
++		 * mimimal size of vmalloc is one page since vmalloc would
++		 * always align the requested size to page size
++		 */
++		if (pool->gfp & GFP_ATOMIC)
++			slot = kmalloc_node(size, pool->gfp, cpu_to_node(i));
++		else
++			slot = __vmalloc_node(size, sizeof(void *), pool->gfp,
++				cpu_to_node(i), __builtin_return_address(0));
++		if (!slot)
++			return -ENOMEM;
++		memset(slot, 0, size);
++		pool->cpu_slots[i] = slot;
++
++		/* initialize the objpool_slot of cpu node i */
++		rc = objpool_init_percpu_slot(pool, slot, nodes, context, objinit);
++		if (rc)
++			return rc;
++	}
++
++	return 0;
++}
++
++/* cleanup all percpu slots of the object pool */
++static void objpool_fini_percpu_slots(struct objpool_head *pool)
++{
++	int i;
++
++	if (!pool->cpu_slots)
++		return;
++
++	for (i = 0; i < pool->nr_cpus; i++)
++		kvfree(pool->cpu_slots[i]);
++	kfree(pool->cpu_slots);
++}
++
++/* initialize object pool and pre-allocate objects */
++int objpool_init(struct objpool_head *pool, int nr_objs, int object_size,
++		gfp_t gfp, void *context, objpool_init_obj_cb objinit,
++		objpool_fini_cb release)
++{
++	int rc, capacity, slot_size;
++
++	/* check input parameters */
++	if (nr_objs <= 0 || nr_objs > OBJPOOL_NR_OBJECT_MAX ||
++	    object_size <= 0 || object_size > OBJPOOL_OBJECT_SIZE_MAX)
++		return -EINVAL;
++
++	/* align up to unsigned long size */
++	object_size = ALIGN(object_size, sizeof(long));
++
++	/* calculate capacity of percpu objpool_slot */
++	capacity = roundup_pow_of_two(nr_objs);
++	if (!capacity)
++		return -EINVAL;
++
++	/* initialize objpool pool */
++	memset(pool, 0, sizeof(struct objpool_head));
++	pool->nr_cpus = nr_cpu_ids;
++	pool->obj_size = object_size;
++	pool->capacity = capacity;
++	pool->gfp = gfp & ~__GFP_ZERO;
++	pool->context = context;
++	pool->release = release;
++	slot_size = pool->nr_cpus * sizeof(struct objpool_slot);
++	pool->cpu_slots = kzalloc(slot_size, pool->gfp);
++	if (!pool->cpu_slots)
++		return -ENOMEM;
++
++	/* initialize per-cpu slots */
++	rc = objpool_init_percpu_slots(pool, nr_objs, context, objinit);
++	if (rc)
++		objpool_fini_percpu_slots(pool);
++	else
++		refcount_set(&pool->ref, pool->nr_objs + 1);
++
++	return rc;
++}
++EXPORT_SYMBOL_GPL(objpool_init);
++
++/* adding object to slot, abort if the slot was already full */
++static inline int
++objpool_try_add_slot(void *obj, struct objpool_head *pool, int cpu)
++{
++	struct objpool_slot *slot = pool->cpu_slots[cpu];
++	uint32_t head, tail;
++
++	/* loading tail and head as a local snapshot, tail first */
++	tail = READ_ONCE(slot->tail);
++
++	do {
++		head = READ_ONCE(slot->head);
++		/* fault caught: something must be wrong */
++		WARN_ON_ONCE(tail - head > pool->nr_objs);
++	} while (!try_cmpxchg_acquire(&slot->tail, &tail, tail + 1));
++
++	/* now the tail position is reserved for the given obj */
++	WRITE_ONCE(slot->entries[tail & slot->mask], obj);
++	/* update sequence to make this obj available for pop() */
++	smp_store_release(&slot->last, tail + 1);
++
++	return 0;
++}
++
++/* reclaim an object to object pool */
++int objpool_push(void *obj, struct objpool_head *pool)
++{
++	unsigned long flags;
++	int rc;
++
++	/* disable local irq to avoid preemption & interruption */
++	raw_local_irq_save(flags);
++	rc = objpool_try_add_slot(obj, pool, raw_smp_processor_id());
++	raw_local_irq_restore(flags);
++
++	return rc;
++}
++EXPORT_SYMBOL_GPL(objpool_push);
++
++/* try to retrieve object from slot */
++static inline void *objpool_try_get_slot(struct objpool_head *pool, int cpu)
++{
++	struct objpool_slot *slot = pool->cpu_slots[cpu];
++	uint32_t head = smp_load_acquire(&slot->head);
++
++	while (head != READ_ONCE(slot->last)) {
++		void *obj;
++
++		/* obj must be retrieved before moving forward head */
++		obj = READ_ONCE(slot->entries[head & slot->mask]);
++
++		/* move head forward to mark it's consumption */
++		if (try_cmpxchg_release(&slot->head, &head, head + 1))
++			return obj;
++	}
++
++	return NULL;
++}
++
++/* allocate an object from object pool */
++void *objpool_pop(struct objpool_head *pool)
++{
++	void *obj = NULL;
++	unsigned long flags;
++	int i, cpu;
++
++	/* disable local irq to avoid preemption & interruption */
++	raw_local_irq_save(flags);
++
++	cpu = raw_smp_processor_id();
++	for (i = 0; i < num_possible_cpus(); i++) {
++		obj = objpool_try_get_slot(pool, cpu);
++		if (obj)
++			break;
++		cpu = cpumask_next_wrap(cpu, cpu_possible_mask, -1, 1);
++	}
++	raw_local_irq_restore(flags);
++
++	return obj;
++}
++EXPORT_SYMBOL_GPL(objpool_pop);
++
++/* release whole objpool forcely */
++void objpool_free(struct objpool_head *pool)
++{
++	if (!pool->cpu_slots)
++		return;
++
++	/* release percpu slots */
++	objpool_fini_percpu_slots(pool);
++
++	/* call user's cleanup callback if provided */
++	if (pool->release)
++		pool->release(pool, pool->context);
++}
++EXPORT_SYMBOL_GPL(objpool_free);
++
++/* drop the allocated object, rather reclaim it to objpool */
++int objpool_drop(void *obj, struct objpool_head *pool)
++{
++	if (!obj || !pool)
++		return -EINVAL;
++
++	if (refcount_dec_and_test(&pool->ref)) {
++		objpool_free(pool);
++		return 0;
++	}
++
++	return -EAGAIN;
++}
++EXPORT_SYMBOL_GPL(objpool_drop);
++
++/* drop unused objects and defref objpool for releasing */
++void objpool_fini(struct objpool_head *pool)
++{
++	void *obj;
++
++	do {
++		/* grab object from objpool and drop it */
++		obj = objpool_pop(pool);
++
++		/*
++		 * drop reference of objpool anyway even if
++		 * the obj is NULL, since one extra ref upon
++		 * objpool was already grabbed during pool
++		 * initialization in objpool_init()
++		 */
++		if (refcount_dec_and_test(&pool->ref))
++			objpool_free(pool);
++	} while (obj);
++}
++EXPORT_SYMBOL_GPL(objpool_fini);
 -- 
 2.40.1
 
