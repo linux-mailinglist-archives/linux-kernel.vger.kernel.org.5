@@ -2,160 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE957C97C7
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 05:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B30DE7C97CA
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 05:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233460AbjJODhx convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 14 Oct 2023 23:37:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56534 "EHLO
+        id S233456AbjJOD6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 23:58:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233429AbjJODhu (ORCPT
+        with ESMTP id S233390AbjJOD6q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 23:37:50 -0400
-Received: from mail-oi1-f208.google.com (mail-oi1-f208.google.com [209.85.167.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E58D6
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 20:37:48 -0700 (PDT)
-Received: by mail-oi1-f208.google.com with SMTP id 5614622812f47-3ae3d83145cso5417126b6e.1
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 20:37:48 -0700 (PDT)
+        Sat, 14 Oct 2023 23:58:46 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E7F1DC
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 20:58:42 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-27cefad6c6fso2654761a91.2
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 20:58:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697342321; x=1697947121; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=shh/0TwHJv/d7VwXwypDokr6btLr6DjEH1mcpVIpW4Y=;
+        b=Dkrdn8PPycjNl9+oo/M69VPCpl/RIWyeCgx7vfAxSpokgEvCUjBm2LKfiQsqurgITc
+         HBeKxcw/HBYQL1HTQagAd2YKc3+IUpLsoY5Ib90lB+6D60hLjitSys1+auNU/7o6H4L6
+         K3MLYhBiRSmTadxmY9jJEL448tq/EGEzK2QkDKAwfpIJ+9sJVerXZxD2a27klEzPbGvP
+         p84Z8JWlxdLl/cXtlMMKIjdw3Yy4CKns7RxydaXw/2QLGDYJ2JlNJ7QX4NnzfV6+4wsC
+         WC+nbZYvI+QujG96fiCYZw2HrVURE15wbE3ecdfSo9+Ai0B3jciPKXmJ/iTU+yKSqc0N
+         vK9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697341067; x=1697945867;
-        h=content-transfer-encoding:to:from:subject:message-id:date
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=foF8w8a+Sc3aMYEjJANWw1plNPjcJQbPnL865dnxUWo=;
-        b=fPGtBynphPTgE2NbZt5Ub/zF19wrSEiN7RK74/gC2OCRECLeyKJzXxkA9YMglEoL/b
-         aN59/oUVO/Ukv2Rsa8vaI3IY7+YNA07hh472IvEhWLA5ISIwbwLa/NtdxcGYdHIoOICu
-         sR9We4g6/XFxq9qXAo7wdKnWde7vgLN6Pc3yV9E4KXC/crADsc3y+xS7HXwSEkjniftT
-         1imfVhq7PfBp+GbcnAsY1e8S+8O/seygR4Wn/3n92ZqzZBTtVanYkvO0h29vGEAWT5/T
-         JHK8DWoWY/9/sUcoXuuCA8BOBCDlJnhVysTh9FOFWGE5J9+EVRVHxhvx7TzLwaNjW2So
-         7UGw==
-X-Gm-Message-State: AOJu0YzaOmRMV+9AxBwusRzM9lhw8qTpKZsqDyH2BA27HExeuEJHwJ+V
-        bpik08qJ8sQQi2D+zJj7hQvY5g605YgKYg1vMcPsNqS5QszV
-X-Google-Smtp-Source: AGHT+IGsyZ0CVZPQIKSBXE2Ngyt2bDz2pyzbCDr2Xsmei5tIBjt7D/9dE16CAQNT9YtnIs7GTSb7j6pgJXBjgsVW/asO6sA1JIcf
-MIME-Version: 1.0
-X-Received: by 2002:a05:6808:2091:b0:3a1:c163:6022 with SMTP id
- s17-20020a056808209100b003a1c1636022mr1741075oiw.4.1697341067805; Sat, 14 Oct
- 2023 20:37:47 -0700 (PDT)
-Date:   Sat, 14 Oct 2023 20:37:47 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000068c7730607b903b7@google.com>
-Subject: [syzbot] [dri?] WARNING in drm_prime_fd_to_handle_ioctl
-From:   syzbot <syzbot+0da81ccba2345eeb7f48@syzkaller.appspotmail.com>
-To:     airlied@gmail.com, christian.koenig@amd.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        sumit.semwal@linaro.org, syzkaller-bugs@googlegroups.com,
-        tzimmermann@suse.de
+        d=1e100.net; s=20230601; t=1697342321; x=1697947121;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=shh/0TwHJv/d7VwXwypDokr6btLr6DjEH1mcpVIpW4Y=;
+        b=Etsh+PgWPsSzDuZB/+3cIAy5uHQaDFX2AwALUYJyFDLXN2CkffldgbO2OneLiYFXqX
+         x+jnIxTHpAWgb71pQyM3BYoYKaTmZ7tJOeUkF2TR0NtXw1UVOfesOWAVTZ0rEzTEpTkR
+         2freTDyIeDwdv19O50j2TI9I7Q1teQ8HnSIgwll4rbPnyfzggU9dzgv++Hjf2KaK/meC
+         O0KJrN42imndL57C2EYwIcdcVQGtef2qpFHW31Xl1DOTVFyvU2bYvy19u7KuEm1XMgvK
+         RdFgwez2qOVX8ZAo48qw1iMmCkfl3fxh5Yo2sjjMnO47ALstdfK2km+otWU32vFNXJ3A
+         Kf9g==
+X-Gm-Message-State: AOJu0Yz+AHQqxssbl0W1tpHcbWxYbkIxiNlgYrnJsgMQEtVGUAep+xlM
+        v/eeZ1XR/p2Of3XVxyfu+MER046IZnM=
+X-Google-Smtp-Source: AGHT+IE35cKxw5sBD/mR/Q5zVjNgyUV6uOsgqpFlMr7NvVz4geHj4d2P/SIA/RzrV79Ze0sb1nppTIv/pgo=
+X-Received: from badhri.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:6442])
+ (user=badhri job=sendgmr) by 2002:a05:6a00:1792:b0:68f:a681:390a with SMTP id
+ s18-20020a056a00179200b0068fa681390amr737762pfg.0.1697342321622; Sat, 14 Oct
+ 2023 20:58:41 -0700 (PDT)
+Date:   Sun, 15 Oct 2023 03:58:38 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
+Message-ID: <20231015035838.2207567-1-badhri@google.com>
+Subject: [PATCH v2] usb: typec: tcpm: Fix sink caps op current check
+From:   Badhri Jagan Sridharan <badhri@google.com>
+To:     gregkh@linuxfoundation.org, linux@roeck-us.net,
+        heikki.krogerus@linux.intel.com
+Cc:     kyletso@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdbabiera@google.com,
+        amitsd@google.com, stable@vger.kernel.org,
+        Badhri Jagan Sridharan <badhri@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+TCPM checks for sink caps operational current even when PD is disabled.
+This incorrectly sets tcpm_set_charge() when PD is disabled.
+Check for sink caps only when PD is enabled.
 
-syzbot found the following issue on:
+[   97.572342] Start toggling
+[   97.578949] CC1: 0 -> 0, CC2: 0 -> 0 [state TOGGLING, polarity 0, disconnected]
+[   99.571648] CC1: 0 -> 0, CC2: 0 -> 4 [state TOGGLING, polarity 0, connected]
+[   99.571658] state change TOGGLING -> SNK_ATTACH_WAIT [rev3 NONE_AMS]
+[   99.571673] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 170 ms [rev3 NONE_AMS]
+[   99.741778] state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED [delayed 170 ms]
+[   99.789283] CC1: 0 -> 0, CC2: 4 -> 5 [state SNK_DEBOUNCED, polarity 0, connected]
+[   99.789306] state change SNK_DEBOUNCED -> SNK_DEBOUNCED [rev3 NONE_AMS]
+[   99.903584] VBUS on
+[   99.903591] state change SNK_DEBOUNCED -> SNK_ATTACHED [rev3 NONE_AMS]
+[   99.903600] polarity 1
+[   99.910155] enable vbus discharge ret:0
+[   99.910160] Requesting mux state 1, usb-role 2, orientation 2
+[   99.946791] state change SNK_ATTACHED -> SNK_STARTUP [rev3 NONE_AMS]
+[   99.946798] state change SNK_STARTUP -> SNK_DISCOVERY [rev3 NONE_AMS]
+[   99.946800] Setting voltage/current limit 5000 mV 500 mA
+[   99.946803] vbus=0 charge:=1
+[  100.027139] state change SNK_DISCOVERY -> SNK_READY [rev3 NONE_AMS]
+[  100.027145] Setting voltage/current limit 5000 mV 3000 mA
+[  100.466830] VBUS on
 
-HEAD commit:    1c8b86a3799f Merge tag 'xsa441-6.6-tag' of git://git.kerne..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=13005e31680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=32d0b9b42ceb8b10
-dashboard link: https://syzkaller.appspot.com/bug?extid=0da81ccba2345eeb7f48
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13c48345680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=101b3679680000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/45e9377886e9/disk-1c8b86a3.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/9511a41a6d1e/vmlinux-1c8b86a3.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/fac07e1c3c1a/bzImage-1c8b86a3.xz
-
-The issue was bisected to:
-
-commit 85e26dd5100a182bf8448050427539c0a66ab793
-Author: Christian König <christian.koenig@amd.com>
-Date:   Thu Jan 26 09:24:26 2023 +0000
-
-    drm/client: fix circular reference counting issue
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14cf17f1680000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=16cf17f1680000
-console output: https://syzkaller.appspot.com/x/log.txt?x=12cf17f1680000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0da81ccba2345eeb7f48@syzkaller.appspotmail.com
-Fixes: 85e26dd5100a ("drm/client: fix circular reference counting issue")
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5040 at drivers/gpu/drm/drm_prime.c:326 drm_gem_prime_fd_to_handle drivers/gpu/drm/drm_prime.c:326 [inline]
-WARNING: CPU: 0 PID: 5040 at drivers/gpu/drm/drm_prime.c:326 drm_prime_fd_to_handle_ioctl+0x555/0x600 drivers/gpu/drm/drm_prime.c:374
-Modules linked in:
-CPU: 0 PID: 5040 Comm: syz-executor405 Not tainted 6.6.0-rc5-syzkaller-00055-g1c8b86a3799f #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-RIP: 0010:drm_gem_prime_fd_to_handle drivers/gpu/drm/drm_prime.c:326 [inline]
-RIP: 0010:drm_prime_fd_to_handle_ioctl+0x555/0x600 drivers/gpu/drm/drm_prime.c:374
-Code: 89 df e8 0e 9b 26 fd f0 48 ff 03 e9 7e fd ff ff e8 b0 dc d0 fc 4c 89 f7 44 89 eb e8 75 73 8b 05 e9 da fe ff ff e8 9b dc d0 fc <0f> 0b e9 5d fd ff ff e8 3f 94 26 fd e9 3a fc ff ff 48 8b 7c 24 08
-RSP: 0018:ffffc90003a5fc70 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff888018f14c00 RCX: 0000000000000000
-RDX: ffff88801d691dc0 RSI: ffffffff84b6ea15 RDI: ffff8881476f3928
-RBP: ffff88801fac5400 R08: 0000000000000007 R09: fffffffffffff000
-R10: ffff8881476f3800 R11: 0000000000000000 R12: ffffc90003a5fe10
-R13: ffff8881476f3800 R14: ffff88801c590c10 R15: 0000000000000000
-FS:  00005555555d6380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000555db75f4058 CR3: 0000000072209000 CR4: 0000000000350ef0
-Call Trace:
- <TASK>
- drm_ioctl_kernel+0x280/0x4c0 drivers/gpu/drm/drm_ioctl.c:789
- drm_ioctl+0x5cb/0xbf0 drivers/gpu/drm/drm_ioctl.c:892
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f0c8214be69
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 c1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fff6f4156f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f0c8214be69
-RDX: 0000000020000000 RSI: 00000000c00c642e RDI: 0000000000000003
-RBP: 0000000000000000 R08: 00000000000000a0 R09: 00000000000000a0
-R10: 00000000000000a0 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007f0c821c3820 R14: 00007fff6f415720 R15: 00007fff6f415710
- </TASK>
-
-
+Cc: stable@vger.kernel.org
+Fixes: 34fde9ec08a3 ("FROMGIT: usb: typec: tcpm: not sink vbus if operational current is 0mA")
+Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Changes since v1:
+* Fix commit title and description to address comments from Guenter Roeck
+---
+ drivers/usb/typec/tcpm/tcpm.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index 6e843c511b85..994493481c24 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -4268,7 +4268,8 @@ static void run_state_machine(struct tcpm_port *port)
+ 				current_lim = PD_P_SNK_STDBY_MW / 5;
+ 			tcpm_set_current_limit(port, current_lim, 5000);
+ 			/* Not sink vbus if operational current is 0mA */
+-			tcpm_set_charge(port, !!pdo_max_current(port->snk_pdo[0]));
++			tcpm_set_charge(port, port->pd_supported ?
++					!!pdo_max_current(port->snk_pdo[0]) : true);
+ 
+ 			if (!port->pd_supported)
+ 				tcpm_set_state(port, SNK_READY, 0);
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+base-commit: 1034cc423f1b4a7a9a56d310ca980fcd2753e11d
+-- 
+2.42.0.655.g421f12c284-goog
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
