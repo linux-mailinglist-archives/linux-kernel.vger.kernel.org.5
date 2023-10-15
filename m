@@ -2,119 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0577C99BF
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 17:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC04A7C99C1
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 17:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbjJOPSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 11:18:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36014 "EHLO
+        id S230026AbjJOPYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 11:24:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229779AbjJOPSU (ORCPT
+        with ESMTP id S229874AbjJOPYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 11:18:20 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F19F5;
-        Sun, 15 Oct 2023 08:18:15 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40684f53ef3so40329875e9.3;
-        Sun, 15 Oct 2023 08:18:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697383094; x=1697987894; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2no0yowA3lGSRYKd2XnR+vjmcZErrr5k9KrUOlR237s=;
-        b=YEz+0dVCd98HgxT5Fm++IXCiCGydtCQjxYQR9jAi/OmjcXfEa/VNmnV7RQaEbLIYz5
-         VZzYddcLgDa98hNLHimYSOyBwrfVonWzxJoQXgMocJplkKzrUJuQcwnzQiREQr7rp/Xk
-         ELBcDb0iKk7y7OPxtTL4lCg2HbncQetLeNGrFTlcIHinuo8RAdJN2oRdVE6WFVZv8Pfn
-         kLtXz5/H0g4wqBTpjSoqoomW9zPYDcg9WLekYAluBmXhj2o9f8uPygNCigwZuuwAGPcq
-         J4GFK7+Ys3I4bpjHtHgFqGLdojrlSAXnCpFsBGcwuBPfGimRRg09r+2kUf/Y/B8BM5f7
-         u6iQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697383094; x=1697987894;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2no0yowA3lGSRYKd2XnR+vjmcZErrr5k9KrUOlR237s=;
-        b=UT8XptV5YltIAjPwo5VSwrRdD5/ag7EGSZz9d2Kn3fNUUKyCQiDDfgL3y/YFaCH6+e
-         jzTZZ+XWvzJPzupc5fQVNL14fJ5IjezizMV1NzfOD304ngYVIR/c0mvpdvT9ZqT728LJ
-         bWI6vNs+4yFvu+GSJFtE0DoQEFGRu5b31bvNn6f2aMJUDR56tGxCSw9Gsa2AZ8fARMw+
-         HzxaD/YtWuGP6gtj4rftr2VWMU5F/HwNDKTq3awIeuVcvdxOkbZki7RwmT1ZJfeNtAY/
-         QC9RHu3FtrrzFNUwWMySmSy2c50QJyRt8mwL9JaTFSrP02f+pvnxfzhK6Vc1wK/L/NOE
-         d0eA==
-X-Gm-Message-State: AOJu0YynmWRLMWY+fiK+6DD8bwzxC7DWgWKWH6V6gHVn9XiYSnwCS9iG
-        6vI6PFZLkXmoX2BMrax9JSKoBGYw6OA=
-X-Google-Smtp-Source: AGHT+IH51KFZBCDp8L+Fmb1DEJVofovwBikpQNVLxXIdZSEJ/sC9YckYnbwPbbQ4k0eJkqfLG3lFyA==
-X-Received: by 2002:a05:600c:259:b0:403:b64:ad0a with SMTP id 25-20020a05600c025900b004030b64ad0amr25954953wmj.26.1697383093909;
-        Sun, 15 Oct 2023 08:18:13 -0700 (PDT)
-Received: from localhost.localdomain (13.red-83-35-58.dynamicip.rima-tde.net. [83.35.58.13])
-        by smtp.gmail.com with ESMTPSA id n35-20020a05600c3ba300b003fc16ee2864sm4712455wms.48.2023.10.15.08.18.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Oct 2023 08:18:13 -0700 (PDT)
-From:   Angel Iglesias <ang.iglesiasg@gmail.com>
-To:     linux-iio@vger.kernel.org
-Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
-        linux-kernel@vger.kernel.org,
-        Angel Iglesias <ang.iglesiasg@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Subject: [PATCH 5/5] iio: pressure: bmp280: Add support for BMP390
-Date:   Sun, 15 Oct 2023 17:16:27 +0200
-Message-ID: <defa66c54aeecb7dddfc8a3865b075e84cc32725.1697381932.git.ang.iglesiasg@gmail.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <cover.1697381932.git.ang.iglesiasg@gmail.com>
-References: <cover.1697381932.git.ang.iglesiasg@gmail.com>
+        Sun, 15 Oct 2023 11:24:04 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2674FC5
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 08:24:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99C6DC433C7;
+        Sun, 15 Oct 2023 15:24:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1697383441;
+        bh=6AcLuzp2faOAS838XmbUFOAOEQ1yB3YL3D7WqNbMO6U=;
+        h=Date:From:To:Cc:Subject:From;
+        b=dvHJK+FgCE2aDWWubcZ7FeGRobF3JQUqxhgObX5rlpS8nrKw5CleX2mAj63y5u2Tk
+         yOzvGJ2U9Jp4YsECNIUbq5pJTxaMKcNsDIcmEi0xA3EsSWDm/0NS61UjLS03pcnQbY
+         NweiSZl8QUZw8BwtmtirVUxLJMu6oSOLlWrgXak8=
+Date:   Sun, 15 Oct 2023 17:23:57 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Char/Misc driver fixes for 6.6-rc6
+Message-ID: <ZSwEDVXfNxshSzrQ@kroah.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add BMP390 device ID to the supported IDs on bmp380 sensor family
+The following changes since commit 8a749fd1a8720d4619c91c8b6e7528c0a355c0aa:
 
-Signed-off-by: Angel Iglesias <ang.iglesiasg@gmail.com>
+  Linux 6.6-rc4 (2023-10-01 14:15:13 -0700)
 
-diff --git a/drivers/iio/pressure/bmp280-core.c b/drivers/iio/pressure/bmp280-core.c
-index e3bb4d7906a9..d2345956ebc8 100644
---- a/drivers/iio/pressure/bmp280-core.c
-+++ b/drivers/iio/pressure/bmp280-core.c
-@@ -13,6 +13,7 @@
-  * https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp280-ds001.pdf
-  * https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf
-  * https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp388-ds001.pdf
-+ * https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp390-ds002.pdf
-  * https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp581-ds004.pdf
-  *
-  * Notice:
-@@ -1226,7 +1227,7 @@ static int bmp380_chip_config(struct bmp280_data *data)
- 
- static const int bmp380_oversampling_avail[] = { 1, 2, 4, 8, 16, 32 };
- static const int bmp380_iir_filter_coeffs_avail[] = { 1, 2, 4, 8, 16, 32, 64, 128};
--static const u8 bmp380_chip_ids[] = { BMP380_CHIP_ID };
-+static const u8 bmp380_chip_ids[] = { BMP380_CHIP_ID, BMP390_CHIP_ID };
- 
- const struct bmp280_chip_info bmp380_chip_info = {
- 	.id_reg = BMP380_REG_ID,
-diff --git a/drivers/iio/pressure/bmp280.h b/drivers/iio/pressure/bmp280.h
-index a230fcfc4a85..2971bf58f802 100644
---- a/drivers/iio/pressure/bmp280.h
-+++ b/drivers/iio/pressure/bmp280.h
-@@ -292,6 +292,7 @@
- #define BMP580_CHIP_ID_ALT		0x51
- #define BMP180_CHIP_ID			0x55
- #define BMP280_CHIP_ID			0x58
-+#define BMP390_CHIP_ID			0x60
- #define BME280_CHIP_ID			0x60
- #define BMP280_SOFT_RESET_VAL		0xB6
- 
--- 
-2.42.0
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-6.6-rc6
+
+for you to fetch changes up to ffd1f150fffe8a708f6ccd15152791d0e8f812b6:
+
+  Merge tag 'iio-fixes-for-6.6a' of https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio into char-misc-linus (2023-10-06 16:58:28 +0200)
+
+----------------------------------------------------------------
+Char/Misc driver fixes for 6.6-rc6
+
+Here is a small set of char/misc and other smaller driver subsystem
+fixes for 6.6-rc6.  Included in here are:
+  - lots of iio driver fixes
+  - binder memory leak fix
+  - mcb driver fixes
+  - counter driver fixes
+  - firmware loader documentation fix
+  - embargoed hardware issue documentation update
+
+All of these have been in linux-next for over a week with no reported
+issues.
+
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+----------------------------------------------------------------
+Alexander Zangerl (1):
+      iio: pressure: ms5611: ms5611_prom_is_valid false negative bug
+
+Alisa-Dariana Roman (1):
+      iio: adc: ad7192: Correct reference voltage
+
+Antoniu Miclaus (2):
+      iio: admv1013: add mixer_vgate corner cases
+      iio: addac: Kconfig: update ad74413r selections
+
+Carlos Llamas (1):
+      binder: fix memory leaks of spam and pending work
+
+Dharma Balasubiramani (1):
+      counter: microchip-tcb-capture: Fix the use of internal GCLK logic
+
+Fabrice Gasnier (1):
+      counter: chrdev: fix getting array extensions
+
+GONG, Ruiqi (1):
+      iio: irsd200: fix -Warray-bounds bug in irsd200_trigger_handler
+
+Greg Kroah-Hartman (3):
+      Merge tag 'counter-fixes-for-6.6a' of git://git.kernel.org/pub/scm/linux/kernel/git/wbg/counter into char-misc-linus
+      Merge tag 'coresight-fixes-v6.6-1' of git://git.kernel.org/pub/scm/linux/kernel/git/coresight/linux into char-misc-linus
+      Merge tag 'iio-fixes-for-6.6a' of https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio into char-misc-linus
+
+Jonathan Cameron (1):
+      iio: imu: bno055: Fix missing Kconfig dependencies
+
+Jorge Sanjuan Garcia (1):
+      mcb: remove is_added flag from mcb_device struct
+
+Kees Cook (1):
+      Documentation: embargoed-hardware-issues.rst: Clarify prenotifaction
+
+Krzysztof Kozlowski (1):
+      dt-bindings: iio: rohm,bu27010: add missing vdd-supply to example
+
+Lakshmi Yadlapati (1):
+      iio: pressure: dps310: Adjust Timeout Settings
+
+Linu Cherian (1):
+      coresight: Fix run time warnings while reusing ETR buffer
+
+Marcelo Schmitt (1):
+      iio: dac: ad3552r: Correct device IDs
+
+Mårten Lindahl (1):
+      iio: light: vcnl4000: Don't power on/off chip in config
+
+Phil Elwell (1):
+      iio: pressure: bmp280: Fix NULL pointer exception
+
+Philipp Rossak (1):
+      iio: adc: imx8qxp: Fix address for command buffer registers
+
+Rob Herring (1):
+      dt-bindings: iio: adc: adi,ad7292: Fix additionalProperties on channel nodes
+
+Russ Weight (1):
+      firmware_loader: Update contact emails for ABI docs
+
+Suzuki K Poulose (1):
+      coresight: tmc-etr: Disable warnings for allocation failures
+
+Tzung-Bi Shih (1):
+      iio: cros_ec: fix an use-after-free in cros_ec_sensors_push_data()
+
+ Documentation/ABI/testing/sysfs-class-firmware     | 14 +++++------
+ .../devicetree/bindings/iio/adc/adi,ad7292.yaml    |  2 +-
+ .../bindings/iio/light/rohm,bu27010.yaml           |  1 +
+ .../process/embargoed-hardware-issues.rst          | 19 ++++++++------
+ MAINTAINERS                                        |  2 +-
+ drivers/android/binder.c                           |  2 ++
+ drivers/counter/counter-chrdev.c                   |  4 +--
+ drivers/counter/microchip-tcb-capture.c            |  2 +-
+ drivers/hwtracing/coresight/coresight-tmc-etr.c    | 27 +++++++++++---------
+ drivers/iio/adc/ad7192.c                           | 29 +++++++++++++++++++---
+ drivers/iio/adc/imx8qxp-adc.c                      |  4 +--
+ drivers/iio/addac/Kconfig                          |  2 ++
+ .../common/cros_ec_sensors/cros_ec_sensors_core.c  |  6 ++++-
+ drivers/iio/dac/ad3552r.c                          |  4 +--
+ drivers/iio/frequency/admv1013.c                   |  4 +--
+ drivers/iio/imu/bno055/Kconfig                     |  2 ++
+ drivers/iio/light/vcnl4000.c                       |  1 -
+ drivers/iio/pressure/bmp280-core.c                 |  2 +-
+ drivers/iio/pressure/dps310.c                      |  8 +++---
+ drivers/iio/pressure/ms5611_core.c                 |  2 +-
+ drivers/iio/proximity/irsd200.c                    |  6 ++---
+ drivers/mcb/mcb-core.c                             | 10 +++-----
+ drivers/mcb/mcb-parse.c                            |  2 --
+ include/linux/mcb.h                                |  1 -
+ 24 files changed, 94 insertions(+), 62 deletions(-)
