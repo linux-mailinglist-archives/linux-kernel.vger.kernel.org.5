@@ -2,207 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8067C9886
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 12:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69B897C989C
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 12:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbjJOKBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 06:01:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55766 "EHLO
+        id S229826AbjJOKGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 06:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbjJOKBQ (ORCPT
+        with ESMTP id S230156AbjJOKG3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 06:01:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0854FDD
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 03:01:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697364075; x=1728900075;
-  h=date:from:to:cc:subject:message-id;
-  bh=sQB/sUJr76EKpXTdQLGITFzIX25dfe/kvuPxO1QPv+k=;
-  b=F35vgWCuL5y1R5gMMzqpsasgRq3aIu85UmQa+wLDnSdmC1B785QEMFiK
-   djoeV4sXtfbMzUwO/Mk9l1rnw4uLcD7fYmnlVAAHtw4096nVEJLidGYbQ
-   AFgWkawFRRKZIOO3ssyZamKjDqF9LAc56pdmJo7KYZGCJBlCQ1h3coT5A
-   +CaIXwl1N0tFVP9etImyYMqpyC/pmZdjcHjxVIoAn51pG8ovWhAIHTzuj
-   wiGHsbV0cahcv23IALrtfJJUE9LOJi85oF8XhE8P9W1CWjB3guEs+lJSP
-   CSpfyDiedLfF6FKz8rwxrj5hRk5hieMjB5B1AWo3NNFAAS5gPFOf5b2Zb
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="365642919"
-X-IronPort-AV: E=Sophos;i="6.03,226,1694761200"; 
-   d="scan'208";a="365642919"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2023 03:01:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="759039586"
-X-IronPort-AV: E=Sophos;i="6.03,226,1694761200"; 
-   d="scan'208";a="759039586"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 15 Oct 2023 03:01:13 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qrxvr-0007Ir-0k;
-        Sun, 15 Oct 2023 10:01:11 +0000
-Date:   Sun, 15 Oct 2023 18:00:40 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:dev.2023.10.12b] BUILD SUCCESS
- 7e39e5f8ed4cfb1b90fca53c0e5f8ef12581be70
-Message-ID: <202310151837.r2da1lUz-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sun, 15 Oct 2023 06:06:29 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D34D102;
+        Sun, 15 Oct 2023 03:06:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1697364383;
+        bh=lQ471ge3JT3D/IyXiBK6OqZg4gy00/Wz1cpF1NMX1CI=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=Jgv8/cUxgQM27y6U//UT8VctmRJrqlUlqIr1QQTvvhugWnDzvcBYSj+SLZifK2jTQ
+         owmdqqRmmp8iY6chJq2Mlnpjbq6RAj8jt0kTavOSSUm2KQgIWHKXgDY5hnkI1rXRb9
+         NIdVXDDuIe1rtwQ5evX8B8s9Peo+r//MyCvLnEJu3WQv7amCnhXoAL+d5jvpc0YjYY
+         35406tFs9oyMdUOOMphj3mCWt3yUm5zVp0ckK6CxgcejWbG+0vkHDPW3MGFNsWQ5DX
+         tEUDQT8EKLC+kMhx0X8thKh1EhRV8sMxpXYvKiRh1qX2qbrIMTQ4XvICpOiJdoeKvz
+         ZQx5NpTCbYS3w==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S7bVc4t2xz4wnw;
+        Sun, 15 Oct 2023 21:06:16 +1100 (AEDT)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     reiserfs-devel@vger.kernel.org, Peter Lafreniere <peter@n8pjl.ca>
+Cc:     jack@suse.cz, linux-kernel@vger.kernel.org, richard@nod.at,
+        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+        linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org,
+        linux-sh@vger.kernel.org, tsbogend@alpha.franken.de,
+        linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        geert@linux-m68k.org, linux-arm-kernel@lists.infradead.org,
+        linux@armlinux.org.uk, linux-alpha@vger.kernel.org,
+        richard.henderson@linaro.org, ink@jurassic.park.msu.ru
+In-Reply-To: <20230918175529.19011-1-peter@n8pjl.ca>
+References: <20230918175529.19011-1-peter@n8pjl.ca>
+Subject: Re: (subset) [PATCH 0/7] arch/*: config: Remove ReiserFS from defconfig
+Message-Id: <169736429854.960528.1442206910501555108.b4-ty@ellerman.id.au>
+Date:   Sun, 15 Oct 2023 21:04:58 +1100
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2023.10.12b
-branch HEAD: 7e39e5f8ed4cfb1b90fca53c0e5f8ef12581be70  EXP timers: Tag (hr)timer softirq as hotplug safe
+On Mon, 18 Sep 2023 17:56:09 +0000, Peter Lafreniere wrote:
+> ReiserFS has been considered deprecated for 19 months since commit
+> eb103a51640e ("reiserfs: Deprecate reiserfs"). However, there are
+> several architectures that still build it into their defconfig kernels.
+> 
+> As ReiserFS will be removed in 2025, delete all ReiserFS-related options
+> from defconfig files before the filesystem's removal.
+> 
+> [...]
 
-elapsed time: 2011m
+Applied to powerpc/next.
 
-configs tested: 130
-configs skipped: 2
+[2/7] arch: powerpc: remove ReiserFS from defconfig
+      https://git.kernel.org/powerpc/c/c945e6f453a361b0e9daddd2be9c099d1b80d6f8
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                          axs101_defconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231014   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                   randconfig-001-20231014   gcc  
-arm                   randconfig-001-20231015   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231014   gcc  
-i386                  randconfig-001-20231015   gcc  
-i386                  randconfig-002-20231014   gcc  
-i386                  randconfig-002-20231015   gcc  
-i386                  randconfig-003-20231014   gcc  
-i386                  randconfig-003-20231015   gcc  
-i386                  randconfig-004-20231014   gcc  
-i386                  randconfig-004-20231015   gcc  
-i386                  randconfig-005-20231014   gcc  
-i386                  randconfig-005-20231015   gcc  
-i386                  randconfig-006-20231014   gcc  
-i386                  randconfig-006-20231015   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231014   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                  decstation_64_defconfig   gcc  
-mips                           ip32_defconfig   gcc  
-mips                     loongson1b_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                    adder875_defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                 linkstation_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231014   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231014   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                   sh7724_generic_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231014   gcc  
-sparc                 randconfig-001-20231015   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                randconfig-001-20231014   gcc  
-x86_64                randconfig-001-20231015   gcc  
-x86_64                randconfig-002-20231014   gcc  
-x86_64                randconfig-002-20231015   gcc  
-x86_64                randconfig-003-20231014   gcc  
-x86_64                randconfig-003-20231015   gcc  
-x86_64                randconfig-004-20231014   gcc  
-x86_64                randconfig-004-20231015   gcc  
-x86_64                randconfig-005-20231014   gcc  
-x86_64                randconfig-005-20231015   gcc  
-x86_64                randconfig-006-20231014   gcc  
-x86_64                randconfig-006-20231015   gcc  
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                         rhel-8.3-kunit   gcc  
-x86_64                           rhel-8.3-ltp   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+cheers
