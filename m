@@ -2,121 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E91E47C98AD
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 12:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 156E27C98B8
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 12:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229779AbjJOKbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 06:31:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46280 "EHLO
+        id S229614AbjJOKpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 06:45:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbjJOKbo (ORCPT
+        with ESMTP id S229522AbjJOKpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 06:31:44 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 657B6DD
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 03:31:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1697365900;
-        bh=LXWDfpoZP6jZcN2pW3gdh9fiUrOU2L0I4poYZOCpU68=;
-        h=From:To:Cc:Subject:Date:From;
-        b=hEixdUl5pSqNTvbDH6lK6lbzSodhjWujiHO/+JG0SNXGZadhPfcRO/jDx0X6A3bjL
-         rj++NgjlaY7JNbT+8245OFt9zo2BqXvSAeTsYeqDoK8OK226L1mFnJZiGgHtIAXkY1
-         /1irW9jvPXqo7dLy/hbpcl5pFnviqbVFR+z2R9pEWZw0nXCJ0lJ54nTctLe60qTyC9
-         toGPJzcD10YA7PdtSp1Gz0Q72E4ztzVbIWaMRh0rV1LEiJ7mcLgqiY+oN9SHn6FJ3U
-         VSwuRBtxB5+jkLOtbpLn4Zkj8rPPn8O30whLsd59M4nmWgqEiiX+s2KMICM40EyYEO
-         9i9sdFGbpP2ig==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S7c3w0gPPz4wcJ;
-        Sun, 15 Oct 2023 21:31:39 +1100 (AEDT)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     atrajeev@linux.vnet.ibm.com, christophe.leroy@csgroup.eu,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-6.6-4 tag
-Date:   Sun, 15 Oct 2023 21:31:39 +1100
-Message-ID: <87mswkyy5w.fsf@mail.lhotse>
+        Sun, 15 Oct 2023 06:45:53 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F295FA3
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 03:45:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=OMXIfKJtP8Zr21SLnkQc019y62ZA5kcIt5+lgRa0zu0=; b=I8e6tOtk0j4vCBAqKN82Uj3a/T
+        3h+19CT7hkYdSa08ZGlG7qpiMGh1+WSpRZk3WInvKorKLQ3IxHFaLo8duLcQ4hz73Jj1jjv7mdpkZ
+        xYGZoqeeSAbOnkzy2PmJjcjttWhQyBVeAkMNJ+TIfT0TCjGmR0uxOsJGzrh6kHSOCOPZHl+o/z1zz
+        REP80ngeSHBFNFDICygeoJHWm+bDAzyn1+tr7tTs3zQ3B4jGZvn4/0Udn9qReQ+hqSM3C41kFUoHC
+        9KEopG8XuQxD20SG5Jv9qrHmtQROUFyDoUoFQtyxJuIkX1DI8e5qFgI95JbBH2ghA2Iku+mvQd+qg
+        E7l2pVjQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qrybj-004nqf-2a;
+        Sun, 15 Oct 2023 10:44:29 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DAB42300513; Sun, 15 Oct 2023 12:44:28 +0200 (CEST)
+Date:   Sun, 15 Oct 2023 12:44:28 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Youssef Esmat <youssefesmat@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, bsegall@google.com,
+        mingo@kernel.org, vincent.guittot@linaro.org,
+        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, mgorman@suse.de, bristot@redhat.com,
+        corbet@lwn.net, qyousef@layalina.io, chris.hyser@oracle.com,
+        patrick.bellasi@matbug.net, pjt@google.com, pavel@ucw.cz,
+        qperret@google.com, tim.c.chen@linux.intel.com, joshdon@google.com,
+        timj@gnu.org, kprateek.nayak@amd.com, yu.c.chen@intel.com,
+        joel@joelfernandes.org, efault@gmx.de, tglx@linutronix.de,
+        wuyun.abel@bytedance.com
+Subject: Re: [PATCH] sched/eevdf: Toggle eligibility through sched_feat
+Message-ID: <20231015104428.GA11840@noisy.programming.kicks-ass.net>
+References: <20231013030213.2472697-1-youssefesmat@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231013030213.2472697-1-youssefesmat@chromium.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+On Thu, Oct 12, 2023 at 10:02:13PM -0500, Youssef Esmat wrote:
+> Interactive workloads see performance gains by disabling eligibility
+> checks (EEVDF->EVDF). Disabling the checks reduces the number of
+> context switches and delays less important work (higher deadlines/nice
+> values) in favor of more important work (lower deadlines/nice values).
+> 
+> That said, that can add large latencies for some work loads and as the
+> default is eligibility on, but allowing it to be turned off when
+> beneficial.
+> 
+> Signed-off-by: Youssef Esmat <youssefesmat@chromium.org>
+> Link: https://lore.kernel.org/lkml/CA+q576MS0-MV1Oy-eecvmYpvNT3tqxD8syzrpxQ-Zk310hvRbw@mail.gmail.com/
+> ---
+>  kernel/sched/fair.c     | 3 +++
+>  kernel/sched/features.h | 1 +
+>  2 files changed, 4 insertions(+)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index a751e552f253..16106da5a354 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -728,6 +728,9 @@ int entity_eligible(struct cfs_rq *cfs_rq, struct sched_entity *se)
+>  	s64 avg = cfs_rq->avg_vruntime;
+>  	long load = cfs_rq->avg_load;
+>  
+> +	if (!sched_feat(ENFORCE_ELIGIBILITY))
+> +		return 1;
+> +
+>  	if (curr && curr->on_rq) {
+>  		unsigned long weight = scale_load_down(curr->load.weight);
+>  
 
-Hi Linus,
+Right.. could you pretty please try:
 
-Please pull some more powerpc fixes for 6.6:
+  git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git sched/eevdf
 
-The following changes since commit 58b33e78a31782ffe25d404d5eba9a45fe636e27:
+as of yesterday or so.
 
-  selftests/powerpc: Fix emit_tests to work with run_kselftest.sh (2023-09-22 20:29:48 +1000)
+It defaults to (EEVDF relevant features):
 
-are available in the git repository at:
+SCHED_FEAT(PLACE_LAG, true)
+SCHED_FEAT(PLACE_DEADLINE_INITIAL, true)
+SCHED_FEAT(PREEMPT_SHORT, true)
+SCHED_FEAT(PLACE_SLEEPER, false)
+SCHED_FEAT(GENTLE_SLEEPER, true)
+SCHED_FEAT(EVDF, false)
+SCHED_FEAT(DELAY_DEQUEUE, true)
+SCHED_FEAT(GENTLE_DELAY, true)
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-6.6-4
+If that doesn't do well enough, could you please try, in order of
+preference:
 
-for you to fetch changes up to f0eee815babed70a749d2496a7678be5b45b4c14:
+2) NO_GENTLE_DELAY
+3) NO_DELAY_DEQUEUE, PLACE_SLEEPER
+4) NO_DELAY_DEQUEUE, PLACE_SLEEPER, NO_GENTLE_SLEEPER
 
-  powerpc/47x: Fix 47x syscall return crash (2023-10-11 09:31:26 +1100)
+I really don't like the EVDF option, and I think you'll end up
+regretting using it sooner rather than later, just to make this one
+benchmark you have happy.
 
-- ------------------------------------------------------------------
-powerpc fixes for 6.6 #4
+I'm hoping the default is enough, but otherwise any of the above should
+be a *much* better scheduler.
 
- - Fix softlockup/crash when using hcall tracing.
-
- - Fix pte_access_permitted() for PAGE_NONE on 8xx.
-
- - Fix inverted pte_young() test in __ptep_test_and_clear_young() on 64-bit BookE.
-
- - Fix unhandled math emulation exception on 85xx.
-
- - Fix kernel crash on syscall return on 476.
-
-Thanks to: Athira Rajeev, Christophe Leroy, Eddie James, Naveen N Rao.
-
-- ------------------------------------------------------------------
-Athira Rajeev (2):
-      powerpc/pseries: Fix STK_PARAM access in the hcall tracing code
-      powerpc/pseries: Remove unused r0 in the hcall tracing code
-
-Christophe Leroy (3):
-      powerpc/8xx: Fix pte_access_permitted() for PAGE_NONE
-      powerpc/64e: Fix wrong test in __ptep_test_and_clear_young()
-      powerpc/85xx: Fix math emulation exception
-
-Michael Ellerman (1):
-      powerpc/47x: Fix 47x syscall return crash
-
-
- arch/powerpc/include/asm/nohash/32/pte-8xx.h | 7 +++++++
- arch/powerpc/include/asm/nohash/64/pgtable.h | 2 +-
- arch/powerpc/include/asm/nohash/pgtable.h    | 2 ++
- arch/powerpc/kernel/entry_32.S               | 8 +++++---
- arch/powerpc/kernel/head_85xx.S              | 2 +-
- arch/powerpc/platforms/pseries/hvCall.S      | 8 +-------
- 6 files changed, 17 insertions(+), 12 deletions(-)
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmUrvzYACgkQUevqPMjh
-pYCKAQ/+MjIJYV6DQPPoopfl1mFgPTKEGZh4xSj0VAuRHcvZGJT3UgJGu/ngnQw/
-IWjcdDuHg1eYayWLhQBYBzTZVN8nNxSF/eAxdYyV2CFHBDk3iED1rpFO8nlrM+wL
-rBfY+4U37Lx7HJDHPC6pzn+5hzIVBqwCh7cdS4z/VYW/7Nz1hPr5oD1MAYYTCBdV
-Yuan4v5VqfMmXPCn/kBgGWjE2kNIDBfPqyi3VC3uJu9Z/pVpkBT8GFSqbZ6pxIHw
-pOC8mkimWNkY3VZqqcrb649NeDHvZUjctzZTy45f3euC+x+UQ7kkI2Bc56DzcK4F
-6M+aI6t9WO0N4XVZxrHCC5j90/RZDccwTK/KBbtAPGhOjZTWSY5oZF+F3v/ga+/2
-IbcHSKHtFw3jf9JHpqe3VF9l4LbwsnYfh99ZaHZcfiY6007sJwzp8M+xbHOKLVVm
-4Q+J2qoTqdXSHXkO7ldCcBz7dcp3CI8EGs3Nvk+EBjRkMjlsShhsFq8yGgzAOS3Y
-AWg1br+w9udkvI4t7TWT8JhXy5jitSuB+Cxpe3wZ1PPRB9mVqICdIPcJ7XsAqMH1
-fbaa7wOXbAXPSIN1o70WmrENB1qn5HLoDPBpbSJc+EW2efCPhDN+IsRsqEkWjKD6
-hkD+z9B2WppLl79nE5Xso2/MwtxhlINVBpPyVLPvnVzYQ7An+1U=
-=p0qH
------END PGP SIGNATURE-----
+Also, bonus points if you can create us a stand alone benchmark that
+captures your metric (al-la facebook's schbench) without the whole
+chrome nonsense, that'd be epic.
