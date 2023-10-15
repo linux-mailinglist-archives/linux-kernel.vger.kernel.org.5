@@ -2,73 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3B927C9853
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 10:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C10D7C9857
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 10:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233421AbjJOIMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 04:12:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50778 "EHLO
+        id S233502AbjJOIPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 04:15:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233219AbjJOIMd (ORCPT
+        with ESMTP id S233219AbjJOIPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 04:12:33 -0400
-Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com [209.85.160.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34798D8
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 01:12:32 -0700 (PDT)
-Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1bf00f8cf77so4893047fac.0
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 01:12:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697357551; x=1697962351;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=R7s82+roOPlfIxFxcesoe/agXXe1PG2B5JIfkV+Tn4I=;
-        b=F68VQwy5LFDcxZApcWtHMi0JFRwjzy/vRQewl2I0DVITA5rdH1lTygKH7r0wp+UypZ
-         zkRyFz91W33DLRuISpNw+zXLcZ3Xr8GK/GHPHQeZTQ5tFuL3IsxvyZeBsriHHqMsa3Mh
-         G4k8oGGZCxgiZ3QQ2hLwgRIDFnHPrKHM+CvaHYvnBWra6t/Furh594p8ysmzrEKxFpVK
-         ng+wiR4UEXpAILysZuh8rL27uU9SmLoW+0lN/q0f4HoiTbGRnvyUnpC2hhPN7PAidxDO
-         YIOM1sRcx4HlBFmGPnXCDWvOjMiTB7C4IFSbZpgZmqJmnFBOF+74+JX2xg5q1+zVkczR
-         vBEg==
-X-Gm-Message-State: AOJu0Yzmhz5LwoTsHSUSb4cNSbV0mfoZCnNbYW4fDa3+//QnNPGMAsVI
-        DJjSFWWoRN8dcsJTziYbpxWuh/YfcNf7GxYO4GQ/bZXUh2R8
-X-Google-Smtp-Source: AGHT+IEMjWaIy/57FSEVmhDw40ov753cX5LYfycW4Hln1bHmXvX9Bu1nnktN5x4Oam9mGbywXo481e5Vb22JA32YcZU5nZTiB+C4
+        Sun, 15 Oct 2023 04:15:01 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3AB9D8;
+        Sun, 15 Oct 2023 01:15:00 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B029EC433C8;
+        Sun, 15 Oct 2023 08:14:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697357700;
+        bh=Qy3H3n+ebGcSxm6wqtM0xJech7O0PnKT9MlWPvzGbPQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o/hTz3pVaEgnklnkt43BnIuqemZvLp1juOTiNMV8lA5T8OsVbUh0mvQEnhWKd0kQk
+         8fxYul5QTFbWoWhBWU7svN2QS3GRz2kuRmGQmgsHp1mNPtX8skm/NASXhOwhC6DHbi
+         VemHIezE9Q2yftfyrmNOXay4I9dUCfJtiYxWObNJdcAi/mgpeTjZPiUY0H+WMXJQ5D
+         Ub0y9shnTpCOT0XOxTY1ldYUI0bPT3i4Q1a7yuf9aIynwxTCO4JM9pGWHTxHMqg8lZ
+         MNPtTQKlGJSNSmAKpuNM6geDH5sEVqCkFHewoZuSqB/nhzClJ40dy9wcBsOatEYbJ+
+         KOuJv7a0jpPow==
+Date:   Sun, 15 Oct 2023 11:14:55 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Junxian Huang <huangjunxian6@hisilicon.com>
+Cc:     jgg@ziepe.ca, dsahern@gmail.com, stephen@networkplumber.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 iproute2-next 1/2] rdma: Update uapi headers
+Message-ID: <20231015081455.GA25776@unreal>
+References: <20231010075526.3860869-1-huangjunxian6@hisilicon.com>
+ <20231010075526.3860869-2-huangjunxian6@hisilicon.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:41c8:b0:1e9:659c:3819 with SMTP id
- z8-20020a05687041c800b001e9659c3819mr5453327oac.9.1697357551325; Sun, 15 Oct
- 2023 01:12:31 -0700 (PDT)
-Date:   Sun, 15 Oct 2023 01:12:31 -0700
-In-Reply-To: <20231015074757.1816-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e7568c0607bcd926@google.com>
-Subject: Re: [syzbot] [dri?] WARNING in drm_prime_fd_to_handle_ioctl
-From:   syzbot <syzbot+0da81ccba2345eeb7f48@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231010075526.3860869-2-huangjunxian6@hisilicon.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Oct 10, 2023 at 03:55:25PM +0800, Junxian Huang wrote:
+> Update rdma_netlink.h file upto kernel commit aebf8145e11a
+> ("RDMA/core: Add support to dump SRQ resource in RAW format")
+> 
+> Signed-off-by: wenglianfa <wenglianfa@huawei.com>
+> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+> ---
+>  rdma/include/uapi/rdma/rdma_netlink.h | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
-
-Reported-and-tested-by: syzbot+0da81ccba2345eeb7f48@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         9a3dad63 Merge tag '6.6-rc5-ksmbd-server-fixes' of git..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=13e3e691680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=32d0b9b42ceb8b10
-dashboard link: https://syzkaller.appspot.com/bug?extid=0da81ccba2345eeb7f48
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=102c4e75680000
-
-Note: testing is done by a robot and is best-effort only.
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
