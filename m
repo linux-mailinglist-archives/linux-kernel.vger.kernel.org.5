@@ -2,277 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B60E7C990A
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 14:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6BA87C9910
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 15:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbjJOM6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 08:58:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46290 "EHLO
+        id S229881AbjJONDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 09:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbjJOM6H (ORCPT
+        with ESMTP id S229555AbjJOND3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 08:58:07 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 81463AD
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 05:58:02 -0700 (PDT)
-Received: from loongson.cn (unknown [111.9.175.10])
-        by gateway (Coremail) with SMTP id _____8Dxl+jX4StlyCQyAA--.60946S3;
-        Sun, 15 Oct 2023 20:57:59 +0800 (CST)
-Received: from [10.136.12.26] (unknown [111.9.175.10])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxH93T4Stlj18lAA--.15125S3;
-        Sun, 15 Oct 2023 20:57:56 +0800 (CST)
-Subject: Re: [PATCH v2 8/8] LoongArch: Add ORC unwinder support
-To:     Huacai Chen <chenhuacai@kernel.org>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
-        loongson-kernel@lists.loongnix.cn
-References: <1696856590-30298-1-git-send-email-yangtiezhu@loongson.cn>
- <1696856590-30298-9-git-send-email-yangtiezhu@loongson.cn>
- <CAAhV-H4pVRLPZ9OrfvV-UbPm1kRRJ0gpTqRtVbDd-eA5WzUaXg@mail.gmail.com>
- <bd40004b-10af-3c06-5ae0-750850f31446@loongson.cn>
- <CAAhV-H77o8nMiYrKJt9nocpsOh5e66dAeg+j4soncniLc+eY=w@mail.gmail.com>
-From:   Jinyang He <hejinyang@loongson.cn>
-Message-ID: <bb99083b-6f50-79c0-5407-ede327346887@loongson.cn>
-Date:   Sun, 15 Oct 2023 20:57:54 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <CAAhV-H77o8nMiYrKJt9nocpsOh5e66dAeg+j4soncniLc+eY=w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Sun, 15 Oct 2023 09:03:29 -0400
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2083.outbound.protection.outlook.com [40.107.7.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9914AD;
+        Sun, 15 Oct 2023 06:03:27 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OPLYd0SrtBj6SMjM7NDFEZjses4XG+wG5esz2laL20vx8qqyDeVc8ykd0ootR3o3y31VdfatZkBwSKIix9It8eP6szCEFOpqvXNTAh7Dxr44P7QibmDGnclyj1JcFWGd5gbvRaNWiFyD8mclVMlKd8W+QgXBgmNyylLsNAZuAToWI/YbAV38guw4fVpaB85sT6SWBdn065dhhSLfHmzURyeiiYAFvQFhMVrbWd20+iNYXJ0gTla0OG9rwTcJ3AAuXnw4NJBWuGRwsiBXQ3cohuM2rR8Su5HpOAb4U8XYAe97E/dNPn3krWQ3eyR1VqKZftHz/hPq13ep3rGO9mqdFw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WZEdw5yBq6bVsizgAYQQd+w/awdGEoftjGFqBmkQKO8=;
+ b=NH4egsltLDBL/KqnUtvX78TnP2ZlUnUSalwANo78RW+p0j8KLn4tl+w69YeuYreHzuPI6cCEdrH5uzNtUBDmu/CAqAq3vaS3lxTjdU9XdQXdhb+Li09f/86S9ashxh7uOvT4+qG1YQiLwKz5sd4DyS4SDFvc8h7apFjey/rdn7I9YrxJn6b3UXSi/qGbDgesWLyikSezM9YXZ4+iyMCziPtTENTI4XrH46B+waJvMh9FIreYT63xjnEGx5uVHKw3NDd/GoEzbWWhBi9b8/WCR/6z1hdiYoLFdKHznu1ILGBl2OOuWx1eiJduJ4iSOMV9KS0SzyfTYsWvurBAGc41TQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kunbus.com; dmarc=pass action=none header.from=kunbus.com;
+ dkim=pass header.d=kunbus.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kunbus.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WZEdw5yBq6bVsizgAYQQd+w/awdGEoftjGFqBmkQKO8=;
+ b=xFdjoCLO+Z3eOX24P3jnlWN7M2g1R5Y8km8L08czFWWJS2/azBskstBevn/sq+V/k1mvL3ZS0MlYsij+1smLbwsO2iBDg6jIfFcqJoerjolqVVC14O/eKLKUXkskTbqfh8qu9+mbHgV3vvU2qRf+3D5qv68BDsQ99gLa/KIXYAE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=kunbus.com;
+Received: from VI1P193MB0413.EURP193.PROD.OUTLOOK.COM (2603:10a6:803:4e::14)
+ by AM9P193MB1346.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:2fe::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.34; Sun, 15 Oct
+ 2023 13:03:24 +0000
+Received: from VI1P193MB0413.EURP193.PROD.OUTLOOK.COM
+ ([fe80::550d:2425:c0ed:3e59]) by VI1P193MB0413.EURP193.PROD.OUTLOOK.COM
+ ([fe80::550d:2425:c0ed:3e59%3]) with mapi id 15.20.6863.046; Sun, 15 Oct 2023
+ 13:03:23 +0000
+Message-ID: <0ca84efc-c999-4077-85aa-e13fd0984182@kunbus.com>
+Date:   Sun, 15 Oct 2023 15:03:20 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/6] Fixes and improvements for RS485
 Content-Language: en-US
-X-CM-TRANSID: AQAAf8AxH93T4Stlj18lAA--.15125S3
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
-X-Coremail-Antispam: 1Uk129KBj93XoWxKr15Ww1kArykCw17Zw47trc_yoW3JF45pa
-        yqkan7tF4DGr1qyr12qw15Zr9rt3srGw15WFn8KFyj9w1vqrnrtr4jqr4DuFnrWr4kta4I
-        v3WFqasrWF45A3cCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6r4j6r4UJwAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
-        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_
-        JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrw
-        CYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j
-        6r4UMxCIbckI1I0E14v26r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwV
-        AFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv2
-        0xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4
-        v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AK
-        xVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxU2MKZDUUUU
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        ilpo.jarvinen@linux.intel.com, u.kleine-koenig@pengutronix.de
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+        cniedermaier@dh-electronics.com, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, LinoSanfilippo@gmx.de,
+        lukas@wunner.de, p.rosenberger@kunbus.com
+References: <20231011181544.7893-1-l.sanfilippo@kunbus.com>
+From:   Lino Sanfilippo <l.sanfilippo@kunbus.com>
+In-Reply-To: <20231011181544.7893-1-l.sanfilippo@kunbus.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR0P281CA0008.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:15::13) To VI1P193MB0413.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:803:4e::14)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1P193MB0413:EE_|AM9P193MB1346:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2fd995d6-a9c4-421c-0124-08dbcd7f1cbc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: D/zoYB8EVLOnhqNN+AvpnsrPh0wNr7DwZGpX7+32dl3upTKppEN5L0f/Jd9482iwRGozIL9fsuHvDhZ1g4N+AvYz7o6N2NBrGoeCvGn2+/DYFNkAo9VCvMtTKsU1A9PV0upxFxb89ZIOryk/ulQZu4Mh95gT60mvg0s8bcT8tnCVgg4aqt2/Np2MIKX2hBSPSv4KV2w0//Q4TfvRCydQaHbvhNhDlF28s/UA6kNrjlQlQm7OicWrj2K/FtZEGMJaAM2+zaTxCDZ3D4bWgx5PBXv37TMDpBcJzpTft4o4F8ATgDBmmx1HLqKbogOlzJA2DRMZNjXfSfE1NjEzgonObgPe6RxustAGeZzly/YHyB9qCefurB9SC8U+Vu1rXp15W7BL3Fen2TNYr1Blf4ynDkZnJMf6ohigLGBVEodrHFmnRrVnKy7TP05nN/Vp7TEKkZbYAxyVVoaIh8rkugl2u9mzD5h+Ppi4F3UuzDHcy+MjhxC49qFVJ6u9hy94ARIaaELsrF+I0qnLciR5W91XUVhN6q+6PRbMUqZ+/yxVjlaiSmlu+RCOYrl1F6VmZQeIj15UXxAeLGm1pFrHnWOzhCzuaf0AZodUWeCB73UdHeHXu8jspLe0lWCOu9ps+wrDvViDP6Qmb4ymIg6XY1ru1g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1P193MB0413.EURP193.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(366004)(39830400003)(346002)(396003)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(31686004)(478600001)(6486002)(66946007)(66476007)(66556008)(83380400001)(31696002)(86362001)(38100700002)(316002)(6512007)(107886003)(53546011)(2616005)(52116002)(6506007)(41300700001)(5660300002)(36756003)(8676002)(4326008)(7416002)(2906002)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?R0NpcjhpOEoySXZFVDU3RXl4OTNYelpnUkRXdk02dHpScGRsWWlwc3BTOXVk?=
+ =?utf-8?B?aFdpbUt6WFBzK28zdXJ0L1J6RmVYMkw1Z2pVRG4vVk02L3pRUzFoZnJFcHEz?=
+ =?utf-8?B?MXhYVWxOVnprMDZ3Z1VOQk9yMzZUWndCckRvNlJabG9Kd3dlTm1sVSsxbzFP?=
+ =?utf-8?B?ZFZOaXhSZHRFYWxWaG1KTlJvMUdyMm9XakpwSGhFVHU5OFlORzNIYVEvK0M5?=
+ =?utf-8?B?bXRtQkRrV2NJRTl6YnRNODRSSGIyZzlnakZJOTdPeUpFYk1rQmV6R09UWEto?=
+ =?utf-8?B?ZFRFMDd2bFpILzNjd1dPd0Z0TnFoSmV3RW5PeVBBamQvdlNhdWhKRjFVOGhF?=
+ =?utf-8?B?MWRqUDMxZXRja3VWQTdTem85N1lpNkN6QmtJaUFPd3VXOUpSMURqdXFvdTJO?=
+ =?utf-8?B?WWsvSmJldVllODF1Uk9KY1B5R2lBL0o2dTRzSG1lQk45Mjk2bWlXRmJPS2pE?=
+ =?utf-8?B?L0hqdUhmUk5OUjNLMWNvR2JSS0tMY0FmUFhTRTJPUDZGUXlrTDZjNUhLalcv?=
+ =?utf-8?B?eks2ZVJFaHpzRENUQ3lGUm1sKzJVYVJCekVDSWhzZzI5MHVha2FJYmI1M01p?=
+ =?utf-8?B?NU1LUFVodFZxQlhKVVRmS2FRS1d2bkJibmFxeUNZd280ckFZdUFkbmE0amhF?=
+ =?utf-8?B?U1RRamFYaGtlVy8xcjkxdEJjejc4RDhENzZ0UG9lV3NOdkxKZ1dhcFBxd1NY?=
+ =?utf-8?B?b2p2bkgySkI2WmlJT2ozUkJMUGY2S0pMV3BPVHVnV1VlQXRzQm1nZzVkU2dN?=
+ =?utf-8?B?OFRYbDFTR2IzYmVsTWttZ2x1S0hHZS85WTliTEQ5bHU4dTI3MjVlT3lFWWJP?=
+ =?utf-8?B?ZmZhZVdOQkxtTDI1Mk9abkFkU1ZhaDMyWHp1WTM2YWxUMklMbmtXN1RCUE4w?=
+ =?utf-8?B?TnF0djdPVkdDbHladG4rUkxMYk5PbHhOZzg0MGwzOGg1NHd1U3NWdFhQSmth?=
+ =?utf-8?B?Rkd4akF5dkRSY3FjOHNPdW5IY2JnTGhkWDNOdmk4NEZub0VKMHpqWDdNdDhI?=
+ =?utf-8?B?TWFhcmEvS2oxOHM1VXZZVUZHZWdmcnNUSkowcjNGbEl6NGRSMisrZzRsYUYz?=
+ =?utf-8?B?dmVMd09CbTdyM0xLdU85bndnRUJUN0U2azZZL0JzbFlrYXJmaWZEM05kbG5i?=
+ =?utf-8?B?U28wZ1JMRGJYdFQyaXVUZXBxd2huZDYya0xYUFY5QVBCY1NOL0JKM0x1UkJ5?=
+ =?utf-8?B?aEJUWWRwNzNzQTRWNUZZUVR6eGZydW93VDZCMWFMSWZiakRPaERpUy9COFlI?=
+ =?utf-8?B?M3VUY29IOTl6UXdpcjU4Uks1Rmo2cmRSd1g3T0l0VWFrUUh6YmFyVTdvZDFE?=
+ =?utf-8?B?alQxSWJpMG02bTdBOE1BRHRNd2ZXbGRkd1BhVnA5YzI0d1dkZHVPZWt6YTRI?=
+ =?utf-8?B?WEN0K2x6a0hjZlRHbnVlY0hhRnJkc2VoaFhPYlpUVVpITnZyaEFWaGJkZmRv?=
+ =?utf-8?B?MHFPMVA3R0dNQnk5OXdaZnUwZVJRVk1EMGcvMmdGSHRJemdpTlB6RzBBV3NS?=
+ =?utf-8?B?M1lOM2Z2bW9ud25qUkZJOFdFTmRqNkxqNHdZWEhDWmt6UGxORFRXc3NQUkR3?=
+ =?utf-8?B?M2E1MnNLb3RRY0wwQjFEV1hleWdSekRxVVpxMEV6czZlenROTEpTdldyaTR2?=
+ =?utf-8?B?SFdCazI0MjJ4YzBGVitDK1FKL0RZV212a3huR1F3WmU0d2JScDBWL29YMlM4?=
+ =?utf-8?B?Ym9IWC9mNWZmby9yUmpPQ0gwK3VicjUzbnArWnRxNjQ0WnNBZmlqbXkyWXVk?=
+ =?utf-8?B?bWpyWVpmSmx0YnBTNG1uUzZWb3BGWWc5aS9ENlI0Q1JqZ0c1bXFCMkFOSXA3?=
+ =?utf-8?B?MFRwSHhLU0cvdHp4UHhHSzEwK0Fhai9scEY5NUt4aDdvN2tJdk82azBpSVdi?=
+ =?utf-8?B?TnVjUzJhUkZaWDQyTE1aQXcrbEgxYkRQYXpOSzRCa1RuUG5QUmxLaEdqN3ht?=
+ =?utf-8?B?S3UzRndzMlYwRVV5RFlBM3M4S2N6dWw1dHBaaEg5Z0NKWnZyUzQyVjZlZXhH?=
+ =?utf-8?B?djF0c3F5TWczMjRlZVVXb2dBcHNWcVM1QzFYMmlIYmV5MzRPNkZQNW40MENG?=
+ =?utf-8?B?VjdUc2o1T1NtVlZrM0MvODF0ZktDRDNJSGNBNEZDdEppRzg3VmRhb2xoZFMx?=
+ =?utf-8?B?OW9GVzVnNitYS3c3bGlvanhoQzlkWTN1Mm96UDZvUk1hT1FGaG5SSUxXUlpl?=
+ =?utf-8?Q?jUuXQ4nuyQ9kB7uc+7YvaHmk7XeJEP+YNBsen+IIRHjW?=
+X-OriginatorOrg: kunbus.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2fd995d6-a9c4-421c-0124-08dbcd7f1cbc
+X-MS-Exchange-CrossTenant-AuthSource: VI1P193MB0413.EURP193.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2023 13:03:23.6844
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: aaa4d814-e659-4b0a-9698-1c671f11520b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /vkiqOscqBKgWDgZi4v02pXHb1Fn6ie0elh6ihgKTE4FQjUxWoYT7JJNNBBHkbC0gtmYWGx2mznF7rTSH0TPig==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9P193MB1346
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-14 19:37, Huacai Chen wrote:
-
-> +CC Jinyang
->
-> On Sat, Oct 14, 2023 at 5:21 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->>
->>
->> On 10/11/2023 12:37 PM, Huacai Chen wrote:
->>> Hi, Tiezhu,
->>>
->>> Maybe "LoongArch: Add ORC stack unwinder support" is better.
->> OK, will modify it.
->>
->>> On Mon, Oct 9, 2023 at 9:03 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->>>> The kernel CONFIG_UNWINDER_ORC option enables the ORC unwinder, which is
->>>> similar in concept to a DWARF unwinder. The difference is that the format
->>>> of the ORC data is much simpler than DWARF, which in turn allows the ORC
->>>> unwinder to be much simpler and faster.
->> ...
->>
->>>> +ifdef CONFIG_OBJTOOL
->>>> +# https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=ecb802d02eeb
->>>> +# https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=816029e06768
->>>> +ifeq ($(shell as --help 2>&1 | grep -e '-mthin-add-sub'),)
->>>> +  $(error Sorry, you need a newer gas version with -mthin-add-sub option)
->>> I prefer no error out here, because without this option we can still
->>> built a runnable kernel.
->> I agree with you that it is better to not error out to stop compilation,
->> but there are many objtool warnings during the compile process with old
->> binutils, so it is necessary to give a warning so that the users know
->> what happened and how to fix the lots of objtool warnings.
->>
->> That is to say, I would prefer to replace "error" with "warning".
->>
->>>> +endif
->>>> +KBUILD_AFLAGS  += $(call cc-option,-mthin-add-sub) $(call cc-option,-Wa$(comma)-mthin-add-sub)
->>>> +KBUILD_CFLAGS  += $(call cc-option,-mthin-add-sub) $(call cc-option,-Wa$(comma)-mthin-add-sub)
->>>> +KBUILD_CFLAGS  += -fno-optimize-sibling-calls -fno-jump-tables -falign-functions=4
->>>> +endif
->> ...
->>
->>>> +#define ORC_REG_BP                     3
->>> Use FP instead of BP in this patch, too.
->> OK, will do it.
->>
->>>> +#define ORC_REG_MAX                    4
->> ...
->>
->>>> +.macro UNWIND_HINT_UNDEFINED
->>>> +       UNWIND_HINT type=UNWIND_HINT_TYPE_UNDEFINED
->>>> +.endm
->>> We don't need to set sp_reg=ORC_REG_UNDEFINED for UNWIND_HINT_UNDEFINED?
->> Yes, no need to set sp_reg, the instructions marked with UNDEFINED
->> are blind spots in ORC coverage, it is no related with stack trace,
->> this is similar with x86.
->>
->>>> +
->>>> +.macro UNWIND_HINT_EMPTY
->>>> +       UNWIND_HINT sp_reg=ORC_REG_UNDEFINED type=UNWIND_HINT_TYPE_CALL
->>>> +.endm
->>> We don't need to define UNWIND_HINT_END_OF_STACK?
->> Yes, it is useless now.
->>
->>>> +
->>>> +.macro UNWIND_HINT_REGS
->>>> +       UNWIND_HINT sp_reg=ORC_REG_SP type=UNWIND_HINT_TYPE_REGS
->>>> +.endm
->>>> +
->>>> +.macro UNWIND_HINT_FUNC
->>>> +       UNWIND_HINT sp_reg=ORC_REG_SP type=UNWIND_HINT_TYPE_CALL
->>>> +.endm
->>> We don't need to set sp_offset for UNWIND_HINT_REGS and UNWIND_HINT_FUNC?
->> sp_offset is 0 by default, no need to set it unless you need to change
->> its value, see include/linux/objtool.h
->> .macro UNWIND_HINT type:req sp_reg=0 sp_offset=0 signal=0
->>
->>>> +
->>>> +#endif /* __ASSEMBLY__ */
->> ...
->>
->>>> diff --git a/arch/loongarch/kernel/entry.S b/arch/loongarch/kernel/entry.S
->>>> index 65518bb..e43115f 100644
->>>> --- a/arch/loongarch/kernel/entry.S
->>>> +++ b/arch/loongarch/kernel/entry.S
->>>> @@ -14,11 +14,13 @@
->>>>   #include <asm/regdef.h>
->>>>   #include <asm/stackframe.h>
->>>>   #include <asm/thread_info.h>
->>>> +#include <asm/unwind_hints.h>
->>>>
->>>>          .text
->>>>          .cfi_sections   .debug_frame
->>>>          .align  5
->>>> -SYM_FUNC_START(handle_syscall)
->>>> +SYM_CODE_START(handle_syscall)
->>> Why?
->>>
->> see include/linux/linkage.h
->> FUNC -- C-like functions (proper stack frame etc.)
->> CODE -- non-C code (e.g. irq handlers with different, special stack etc.)
-> Hi, Jinyang,
->
-> What do you think about it? In our internal repo, most asm functions
-> changed in this patch are still marked with FUNC, not CODE.
-
-Hi, Huacai,
 
 
-As the anotations in the include/linux/linkage.h, CODE should be used for
-exception handler in case where the stack at the start of the handler
-is unbalanced with the stack at the exit. In validate_branch,
-validate_return, and validate_sibling_call it will not check the stack.
-CODE needs HINT to describe the actual stack at the beginning of the CODE.
+Ccing Uwe.
 
-In objtool's check flow, then entry check FUNC is validate_functions and
-the entry of check CODE is validate_unwind_hints. They actual check function
-is validate_branch. If ignore the stack check, they can get the same ORC
-info in most cases. In the internal repo, limited by what I knew about 
-objtool
-at that time, I might have done something wrong.  e.g. NOT_SIBLING_CALL_HINT
-could be a way to ignore stack checks. These exception handler code logic in
-upstream is cleaner than that in the internal repo. So I hope this can be
-fixed in upstream first.
-
-handle_syscall is an example of a FUNC that looks stack balanced. However,
-the RA register at the entry is not the real RA, and its SP is also changed
-from user stack SP to kernel stack SP. So in fact, it is not stack balanced.
-It needs to be marked as CODE, and annotate HINT at the CODE entry to
-describe the actual stack (, usually described as undefined).
-
-In short, objtool is strictly dependent on canonical codes so that it can
-get the ORC information right.
-
-Thanks,
-
-Jinyang
+On 11.10.23 20:15, Lino Sanfilippo wrote:
+> The following series includes some fixes and improvements around RS485 in
+> the serial core and UART drivers:
+> 
+> Patch 1: Do not hold the port lock when setting rx-during-tx GPIO
+> Patch 2: Get rid of useless wrapper pl011_get_rs485_mode()
+> Patch 3: set missing supported flag for RX during TX GPIO
+> Patch 4: fix sanitizing check for RTS settings
+> Patch 5: make sure RS485 is cannot be enabled when it is not supported
+> Patch 6: imx: do not set RS485 enabled if it is not supported
+> Patch 7: omap: do not override settings for rs485 support
+> 
+> Changes in v2:
+> - add missing 'Fixes' tags as requested by Greg
+> - corrected a typo as pointed out by Hugo
+> - fix issue in imx driver in the serial core as suggested by Uwe
+> - partly rephrase some commit messages
+> - add patch 7
+> 
+> Changes in v3
+> - Drop patch "Get rid of useless wrapper pl011_get_rs485_mode()" as
+>   requested by Greg
+> 
 
 
->
->>>> +       UNWIND_HINT_UNDEFINED
->>>>          csrrd           t0, PERCPU_BASE_KS
->> ...
->>
->>>> diff --git a/arch/loongarch/kernel/head.S b/arch/loongarch/kernel/head.S
->>>> index 53b883d..5664390 100644
->>>> --- a/arch/loongarch/kernel/head.S
->>>> +++ b/arch/loongarch/kernel/head.S
->>>> @@ -43,6 +43,7 @@ SYM_DATA(kernel_offset, .long _kernel_offset);
->>>>          .align 12
->>>>
->>>>   SYM_CODE_START(kernel_entry)                   # kernel entry point
->>>> +       UNWIND_HINT_EMPTY
->>> I'm not sure but I think this isn't needed, because
->>> "OBJECT_FILES_NON_STANDARD_head.o               :=y"
->> Yes, you are right, will remove it.
->>
->>>>          /* Config direct window and set PG */
->> ...
->>
->>>>   void __init setup_arch(char **cmdline_p)
->>>>   {
->>>> +       unwind_init();
->>> I think this line should be after cpu_probe().
->> I am OK to do this change, but if so, there are no stack trace before
->> cpu_probe() for the early code.
-> As I said before, stack trace needs printk, but printk cannot work
-> before cpu_probe().
->
->>>>          cpu_probe();
->>>>
->>>>          init_environ();
->> ...
->>
->>>> diff --git a/arch/loongarch/power/Makefile b/arch/loongarch/power/Makefile
->>>> index 58151d0..bbd1d47 100644
->>>> --- a/arch/loongarch/power/Makefile
->>>> +++ b/arch/loongarch/power/Makefile
->>>> @@ -1,3 +1,5 @@
->>>> +OBJECT_FILES_NON_STANDARD_suspend_asm.o := y
->>> hibernate_asm.o has no problem?
->> Yes, only suspend_asm.o has one warning, just ignore it.
-> What kind of warning? When I submitted the suspend patch, Jinyang told
-> me that with his changes loongarch_suspend_enter() can be a regular
-> function.
->
-> Huacai
+Sorry Uwe, you gave valuable input for the former version of this series and I
+just noticed now that I forgot to Cc you for this version. 
 
-Hi, Tiezhu,
-
-We can think the jirl with link register is a call instruction.
-loongarch_suspend_enter:
-     jirl   a0, t0, 0 /* Call BIOS's STR sleep routine */
-Its link register is a0, (not ra), we also think it is a call 
-instruction. The func is also stack banlaced. So the func can be a 
-regular function.
-
-Thanks,
-
-Jinyang
-
-
->> Thanks,
->> Tiezhu
->>
->>
-
+BR,
+Lino
