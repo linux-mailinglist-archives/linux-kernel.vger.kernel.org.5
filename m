@@ -2,106 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86ED07C9760
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 02:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C8FB7C9771
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 02:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233326AbjJOATy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 20:19:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40618 "EHLO
+        id S233328AbjJOAyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 20:54:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbjJOATy (ORCPT
+        with ESMTP id S232095AbjJOAyD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 20:19:54 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1F54CC;
-        Sat, 14 Oct 2023 17:19:52 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-5ac87af634aso955473a12.2;
-        Sat, 14 Oct 2023 17:19:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697329192; x=1697933992; darn=vger.kernel.org;
-        h=user-agent:content-disposition:mime-version:message-id:subject:to
-         :from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/DYEp35qic1kAb3LmlymDoS6bjtxg7Oyn8w01vjbBN0=;
-        b=ELJDb99tMgN0ApjHP7BMtZrntVnM26SwfSv/HQ1oMrQCVKTM3yiB8n92qbPzbYmvfC
-         nXnbIhqDr7FWaZpz5G7cVDgDgJcMtzCDzZJa+BV2uTr2HfvZsrmm50eUXVyXacQQ5NgC
-         1EJrZeTXi6WR6kl3xRqAYlIQaNoHqkGE4YuxF38YbkGfnNWeQdlG0dBiNQS802Xx+GZl
-         oIp/dMM7tHweSkRUWkLiVyDSAUv7WBPQ788bY7gNtrAwSIgjtxNrrkb3FY/CQhLuT+uQ
-         6sit1IuT69AxTdI7G2l06G+zQGFi4uHpVArwSBrIW6XeXO8l1tbANESqLil43XKo/sOw
-         rXCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697329192; x=1697933992;
-        h=user-agent:content-disposition:mime-version:message-id:subject:to
-         :from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/DYEp35qic1kAb3LmlymDoS6bjtxg7Oyn8w01vjbBN0=;
-        b=faNyT77KIPUnMaFwZinsSNqk6NBx+q119zqiCL7i3luDxbZwnqYgirNp1emJybY6cE
-         Z5jhOwjR6397TB4hyLNmEYHP/SV2SUk8g2Ud3MOBSpr/GHL+nkjKo9TY+h7RgaVAPv1Q
-         yLAfIx3sDEJ1jLMVLDj29zScSbo95Kc2hfkfDZBWUoOUCsBNxwC/+nyhIh7VkgyqBdSN
-         pKWcN8R3TXIvVXtcD94BPKj/aFwab8AkO9mvGv2rdsNfE1XMKeheDJ4WQ4u7kcLyZ05a
-         km25+9bNyD6TgUxpvgKl8D9h6CTdbSUIx6VGX2T16jLjuqL3vuacgaZEwzK4f12ZzvAa
-         fLeA==
-X-Gm-Message-State: AOJu0YwksTnRvcgfFcMqHMFkAtyecOuLJ2um4rB9ZcvAVkXFucD6zmXh
-        bNs59sJSI/RX2kuDs9/h8rsHDQ+ytG+x6RYx
-X-Google-Smtp-Source: AGHT+IH3+9qB9tQfEMwULFJwZFYHCZFV657ZMANCg9S81xDJCZW2dlV2hePQNq2UJNwzGIfP3AYO3A==
-X-Received: by 2002:a17:902:ecc5:b0:1c6:e8d:29ea with SMTP id a5-20020a170902ecc500b001c60e8d29eamr33123528plh.60.1697329192135;
-        Sat, 14 Oct 2023 17:19:52 -0700 (PDT)
-Received: from fpga ([2405:4802:1d8b:d300:e43c:5ed2:5abb:2c02])
-        by smtp.gmail.com with ESMTPSA id x4-20020a170902ea8400b001c5076ae6absm6001685plb.126.2023.10.14.17.19.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 14 Oct 2023 17:19:51 -0700 (PDT)
-Date:   Sat, 14 Oct 2023 20:19:46 -0400
-From:   "Duc-Long, Le" <duclong.linux@gmail.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] media: tc358746: fix the pll calculating function
-Message-ID: <20231015001946.GA10485@fpga>
+        Sat, 14 Oct 2023 20:54:03 -0400
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF82ECC;
+        Sat, 14 Oct 2023 17:53:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Fxni5dSBmJbibsqwhrWcgihmJb45z5XJE9yEcbUr3IQ=; b=remL+vZ6HueAFulPsMj0pfW7uY
+        psBV4lobi6JLREOl815YSw2H1fv2ryCihrz/xgr4XxYaDanbcY88sS6p/Tai2oM8HYQ6YrqpOg9OB
+        3h5gB6zUzIjsCtccKBl9SmFSk3KtBMSLjT5gy74RqONohJnZL+FpT+lgEHCmIsSBAilS7mjxcDARI
+        cXgiB+cHcAJgkZo6ih+pakXCsBPyMoI7FmH8ejaDQFlSX3O4YHeY3+BQ9ZUtKq/ipAf0WqJT4uZAH
+        pdo2KNUW4tlkBN+Jze0OYR9c3E37kDIrKxKDP8MmSx/cjZNe5aZtzJeU1u61wYhqifB35dW7GkjkF
+        GxNq6/SQ==;
+Received: from jlbec by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qrpO1-001Kco-0g;
+        Sun, 15 Oct 2023 00:53:41 +0000
+Date:   Sat, 14 Oct 2023 17:53:32 -0700
+From:   Joel Becker <jlbec@evilplan.org>
+To:     Breno Leitao <leitao@debian.org>
+Cc:     kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
+        Eric Dumazet <edumazet@google.com>, hch@lst.de,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        horms@kernel.org
+Subject: Re: [PATCH net-next v4 2/4] netconsole: Initialize configfs_item for
+ default targets
+Message-ID: <ZSs4DF1o9pDlRP7w@google.com>
+Mail-Followup-To: Breno Leitao <leitao@debian.org>, kuba@kernel.org,
+        davem@davemloft.net, pabeni@redhat.com,
+        Eric Dumazet <edumazet@google.com>, hch@lst.de,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        horms@kernel.org
+References: <20231012111401.333798-1-leitao@debian.org>
+ <20231012111401.333798-3-leitao@debian.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231012111401.333798-3-leitao@debian.org>
+X-Burt-Line: Trees are cool.
+X-Red-Smith: Ninety feet between bases is perhaps as close as man has ever
+ come to perfection.
+Sender: Joel Becker <jlbec@ftp.linux.org.uk>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Following formula of Pll_clk in 5.2 section, 50th page of
-TC358746AXBG/748XBG/748IXBG Functional Specification Rev 1.1 document.
-The formula of fout is as below:
-	fout = refclk * mul / (prediv * postdiv)
+On Thu, Oct 12, 2023 at 04:13:59AM -0700, Breno Leitao wrote:
+> For netconsole targets allocated during the boot time (passing
+> netconsole=... argument), netconsole_target->item is not initialized.
+> That is not a problem because it is not used inside configfs.
+> 
+> An upcoming patch will be using it, thus, initialize the targets with
+> the name 'cmdline' plus a counter starting from 0.  This name will match
+> entries in the configfs later.
+> 
+> Suggested-by: Joel Becker <jlbec@evilplan.org>
+> Signed-off-by: Breno Leitao <leitao@debian.org>
+Reviewed-by: Joel Becker <jlbec@evilplan.org>
 
-Remove "p" to avoid using 2 times of prediv in pll calculating function.
+> ---
+>  drivers/net/netconsole.c | 25 +++++++++++++++++++++++--
+>  1 file changed, 23 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/netconsole.c b/drivers/net/netconsole.c
+> index d609fb59cf99..e153bce4dee4 100644
+> --- a/drivers/net/netconsole.c
+> +++ b/drivers/net/netconsole.c
+> @@ -53,6 +53,8 @@ static bool oops_only = false;
+>  module_param(oops_only, bool, 0600);
+>  MODULE_PARM_DESC(oops_only, "Only log oops messages");
+>  
+> +#define NETCONSOLE_PARAM_TARGET_PREFIX "cmdline"
+> +
+>  #ifndef	MODULE
+>  static int __init option_setup(char *opt)
+>  {
+> @@ -165,6 +167,10 @@ static void netconsole_target_put(struct netconsole_target *nt)
+>  {
+>  }
+>  
+> +static void populate_configfs_item(struct netconsole_target *nt,
+> +				   int cmdline_count)
+> +{
+> +}
+>  #endif	/* CONFIG_NETCONSOLE_DYNAMIC */
+>  
+>  /* Allocate and initialize with defaults.
+> @@ -688,6 +694,17 @@ static struct configfs_subsystem netconsole_subsys = {
+>  	},
+>  };
+>  
+> +static void populate_configfs_item(struct netconsole_target *nt,
+> +				   int cmdline_count)
+> +{
+> +	char target_name[16];
+> +
+> +	snprintf(target_name, sizeof(target_name), "%s%d",
+> +		 NETCONSOLE_PARAM_TARGET_PREFIX, cmdline_count);
+> +	config_item_init_type_name(&nt->item, target_name,
+> +				   &netconsole_target_type);
+> +}
+> +
+>  #endif	/* CONFIG_NETCONSOLE_DYNAMIC */
+>  
+>  /* Handle network interface device notifications */
+> @@ -887,7 +904,8 @@ static void write_msg(struct console *con, const char *msg, unsigned int len)
+>  }
+>  
+>  /* Allocate new target (from boot/module param) and setup netpoll for it */
+> -static struct netconsole_target *alloc_param_target(char *target_config)
+> +static struct netconsole_target *alloc_param_target(char *target_config,
+> +						    int cmdline_count)
+>  {
+>  	struct netconsole_target *nt;
+>  	int err;
+> @@ -922,6 +940,7 @@ static struct netconsole_target *alloc_param_target(char *target_config)
+>  	if (err)
+>  		goto fail;
+>  
+> +	populate_configfs_item(nt, cmdline_count);
+>  	nt->enabled = true;
+>  
+>  	return nt;
+> @@ -954,6 +973,7 @@ static int __init init_netconsole(void)
+>  {
+>  	int err;
+>  	struct netconsole_target *nt, *tmp;
+> +	unsigned int count = 0;
+>  	bool extended = false;
+>  	unsigned long flags;
+>  	char *target_config;
+> @@ -961,7 +981,7 @@ static int __init init_netconsole(void)
+>  
+>  	if (strnlen(input, MAX_PARAM_LENGTH)) {
+>  		while ((target_config = strsep(&input, ";"))) {
+> -			nt = alloc_param_target(target_config);
+> +			nt = alloc_param_target(target_config, count);
+>  			if (IS_ERR(nt)) {
+>  				err = PTR_ERR(nt);
+>  				goto fail;
+> @@ -977,6 +997,7 @@ static int __init init_netconsole(void)
+>  			spin_lock_irqsave(&target_list_lock, flags);
+>  			list_add(&nt->list, &target_list);
+>  			spin_unlock_irqrestore(&target_list_lock, flags);
+> +			count++;
+>  		}
+>  	}
+>  
+> -- 
+> 2.34.1
+> 
 
-Signed-off-by: Duc-Long, Le <duclong.linux@gmail.com>
----
- drivers/media/i2c/tc358746.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/media/i2c/tc358746.c b/drivers/media/i2c/tc358746.c
-index 566f5eaddd57..4f54773886cc 100644
---- a/drivers/media/i2c/tc358746.c
-+++ b/drivers/media/i2c/tc358746.c
-@@ -839,14 +839,14 @@ static unsigned long tc358746_find_pll_settings(struct tc358746 *tc358746,
- 		if (fin < 4 * HZ_PER_MHZ || fin > 40 * HZ_PER_MHZ)
- 			continue;
- 
--		tmp = fout * p * postdiv;
-+		tmp = fout * postdiv;
- 		do_div(tmp, fin);
- 		mul = tmp;
- 		if (mul > 511)
- 			continue;
- 
- 		tmp = mul * fin;
--		do_div(tmp, p * postdiv);
-+		do_div(tmp, postdiv);
- 
- 		delta = abs(fout - tmp);
- 		if (delta < min_delta) {
 -- 
-2.17.1
 
+"I don't want to achieve immortality through my work; I want to
+ achieve immortality through not dying."
+        - Woody Allen
+
+			http://www.jlbec.org/
+			jlbec@evilplan.org
