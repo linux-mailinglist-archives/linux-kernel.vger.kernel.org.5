@@ -2,68 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5B6C7C9B6B
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 22:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DAC27C9B6C
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 22:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230339AbjJOUZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 16:25:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52332 "EHLO
+        id S230352AbjJOUZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 16:25:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229641AbjJOUZi (ORCPT
+        with ESMTP id S230200AbjJOUZk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 16:25:38 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD8F6B7
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 13:25:36 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9bda758748eso334651566b.2
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 13:25:36 -0700 (PDT)
+        Sun, 15 Oct 2023 16:25:40 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 233B4B7
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 13:25:38 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9ae2cc4d17eso622903066b.1
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 13:25:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697401535; x=1698006335; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697401536; x=1698006336; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IrkrxsPn2IZuqVMHhvR4XZKurOwbK1OYZ2ExToejPfA=;
-        b=mpB4g77PyxW3ScX1NhmCWpeCneVRrX1aEGac/yxeBPTCjHJTp5s98nTuiM1uSVXW4t
-         ofVQB41HZeUg8pdHl3wAl9jRBg4xzt5nteCQmlBj5MB4Gl8BsH1M3B6yUsHCwC3uvbl4
-         8bccaEjQSs4OgW6ujqwJg1kRAFlgqihNW54uXq70Kw69UbqPsufGnDgalVs2S+BgFEL5
-         dhP+Gw5184rrhNJoluVXQWpbxUKXkc3RZtXS9tbXKf1xYjQLUh/H90nbzNR7fLmj2woD
-         cMIiXYBdlIFAn9BjzsrUjgwzgiCscHOHHphNShp2oieG5Gpf4mR2q11HSjZtNn0svfS2
-         9I9Q==
+        bh=byi+rJWVYPv0yk6j35YrE2dkJDgxKKRYHdOnNqV3rg0=;
+        b=aPLc9AhTdrRbuOS3oHZdiOXvrxfRng5AEJtVm2W/CjPTsviiPEdZKp6E2boVf54JoS
+         LoM5NYu+6SiHoRDqC7tIx/bf67uNIJbbgq7a5UZA3kyqmhrn2MEsjRiRBIvEPkcEJs02
+         5hjBrBmbFou0puddXgkPry2tuIljpJ7ggoONXSn6zTX7xXD/ScQbIuF0Ry71AAyt9VUb
+         28LQCkPmZV0vg7Rblx+y9UjH92bYPRg6Zc9+myJUmx6imL2nZ1I5/If+npkr43YhI76L
+         ORYa8cNGZOVvC3u8T4Fb3mO/B0SlR5un7iV1PJptKNT1uZjjmeNiQw1t5jwFjgwXXY0B
+         EbdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697401535; x=1698006335;
+        d=1e100.net; s=20230601; t=1697401536; x=1698006336;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IrkrxsPn2IZuqVMHhvR4XZKurOwbK1OYZ2ExToejPfA=;
-        b=Ip6rJGiu6TqgAgH91iwOwZ8GuzUYfVklcImo2/pJ3n8+gnwbzMxuS2qX2OwLCVpisL
-         C2n0RuU+Iqkf/AunwQz3ZTOW/qXdxV0cMdHZxD+uUnRwsJKx4ekjjBsBjbEehmeXqk/p
-         ppKSRdysWDaNK4mN/UtU4dyhGVsCmx9igTmz2oCujHmAoJH9kh3O09X+JrZNCHBQS+nc
-         ColKT9MdsmU8dZJpMPMIMzr24jiTH35zogTgxylST+xWMhRZZlZz9GO79tqBAb0SGFmx
-         2mb+TOvzAFh812357mQRoCBTKQL+TANaeXLb/BUkBt34TnBLHKqguu8giNnI56uNwIjL
-         e9Fw==
-X-Gm-Message-State: AOJu0YxJtygNh8t16etfEr/y7C1tZQPLsL/IG/1S04E6rGX4ttIno/wG
-        KAH98iHtoQvqd3roRkb8huU=
-X-Google-Smtp-Source: AGHT+IGFxlv4etb0uyC9OGMkhlDc1Ei3Qej722yLsq9WAvPsAK9ZqiYiGDWpUUx/UtPC7byBwJwCDA==
-X-Received: by 2002:a17:907:5c6:b0:9c4:6893:ccc5 with SMTP id wg6-20020a17090705c600b009c46893ccc5mr375301ejb.57.1697401535225;
-        Sun, 15 Oct 2023 13:25:35 -0700 (PDT)
+        bh=byi+rJWVYPv0yk6j35YrE2dkJDgxKKRYHdOnNqV3rg0=;
+        b=PHlNZw5xR72fxP7IKCc9DZHfMV6M4mYCKuzCeglmf7CfrXmp/vGXSo0zXmYQ+N485a
+         bheObZtXo6cb5Uizufnv/hsB4icFaR2K/SnsZRT/c2lhnWwheVQCtioEdPgG/AOlAHWT
+         RFAizpR5+1nruNGmHj+7kmZ77ucF/CSHNbEXy5UI5V2BbKScriUMXq7JvKV3hu6fzndO
+         EyRW5ImTCdsD98daVp0fHqioZT5VTFsBU3qPeKr1KhjwsZ67AR0jsWMzyOc+qypmoTtJ
+         doxTE0G+o1wCbPXDdz0BFBgRijgvSduZv7agNF/vr349nt3AAujrpQ0T/wdLiDcG1Qpl
+         YqPA==
+X-Gm-Message-State: AOJu0Yz4BC+Tz6gNRV35H+haQd2Vv6Vn3QHH+LsHtEC8oET9f1GZZ/ai
+        FsAh19d2N5XLazuGQ8RWJ+A=
+X-Google-Smtp-Source: AGHT+IEHCXS4sPtNCXzWSLhl+kpUlP/lLXOnBZjVTxWWL25y2Y/vYdKZ6PLWhDX4XY4+5SJlbaUcDw==
+X-Received: by 2002:a17:906:8b:b0:9b2:b149:b81a with SMTP id 11-20020a170906008b00b009b2b149b81amr31570078ejc.64.1697401536137;
+        Sun, 15 Oct 2023 13:25:36 -0700 (PDT)
 Received: from localhost.localdomain ([46.248.82.114])
-        by smtp.gmail.com with ESMTPSA id v23-20020a1709067d9700b009b97d9ae329sm2686943ejo.198.2023.10.15.13.25.34
+        by smtp.gmail.com with ESMTPSA id v23-20020a1709067d9700b009b97d9ae329sm2686943ejo.198.2023.10.15.13.25.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Oct 2023 13:25:34 -0700 (PDT)
+        Sun, 15 Oct 2023 13:25:35 -0700 (PDT)
 From:   Uros Bizjak <ubizjak@gmail.com>
 To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     Uros Bizjak <ubizjak@gmail.com>, Andy Lutomirski <luto@kernel.org>,
+Cc:     Uros Bizjak <ubizjak@gmail.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Nadav Amit <namit@vmware.com>, Ingo Molnar <mingo@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
         Brian Gerst <brgerst@gmail.com>,
         Denys Vlasenko <dvlasenk@redhat.com>,
         "H . Peter Anvin" <hpa@zytor.com>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nadav Amit <namit@vmware.com>
-Subject: [PATCH -tip 2/3] x86/percpu: Use C for arch_raw_cpu_ptr()
-Date:   Sun, 15 Oct 2023 22:24:40 +0200
-Message-ID: <20231015202523.189168-2-ubizjak@gmail.com>
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: [PATCH -tip 3/3] x86/percpu: *NOT FOR MERGE* Implement arch_raw_cpu_ptr() with RDGSBASE
+Date:   Sun, 15 Oct 2023 22:24:41 +0200
+Message-ID: <20231015202523.189168-3-ubizjak@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231015202523.189168-1-ubizjak@gmail.com>
 References: <20231015202523.189168-1-ubizjak@gmail.com>
@@ -79,18 +81,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement arch_raw_cpu_ptr() in C to allow the compiler to perform
-better optimizations, such as setting an appropriate base to compute
-the address. The compiler is free to choose either MOV or ADD from
-this_cpu_off address to construct the optimal final address.
+*EXPERIMENTAL PATCH, NOT FOR MERGE*
 
-There are some other issues when memory access to the percpu area is
-implemented with an asm. Compilers can not eliminate asm common
-subexpressions over basic block boundaries, but are extremely good
-at optimizing memory access. By implementing arch_raw_cpu_ptr() in C,
-the compiler can eliminate additional redundant loads from this_cpu_off,
-further reducing the number of percpu offset reads from 1646 to 1631.
+The patch introduces 'rdgsbase' alternative for CPUs with
+X86_FEATURE_FSGSBASE. The rdgsbase instruction *probably* will end up
+only decoding in the first decoder etc. But we're talking single-cycle
+kind of effects, and the rdgsbase case should be much better from
+a cache perspective and might use fewer memory pipeline resources to
+offset the fact that it uses an unusual front end decoder resource...
 
+The drawback of the patch is also larger binary size:
+
+   text    data     bss     dec     hex filename
+25549518        4388100  808452 30746070        1d525d6 vmlinux-new.o
+25523192        4388212  808452 30719856        1d4bf70 vmlinux-old.o
+
+that increases by 25.7k (0.103%), due to 1578 rdgsbase altinstructions
+that are placed in the text section. The increase in text-size is not
+"real" - the 'rdgsbase' instruction should be smaller than a 'mov %gs';
+binary size increases because we obviously have two instructions, but
+the actual *executable* part likely stays the same, and it's just that
+we grow the altinstruction metadata.
+
+Sean says:
+
+"A significant percentage of data accesses in Intel's TDX-Module[*] use
+this pattern, e.g. even global data is relative to GS.base in the module
+due its rather odd and restricted environment.  Back in the early days
+of TDX, the module used RD{FS,GS}BASE instead of prefixes to get
+pointers to per-CPU and global data structures in the TDX-Module.  It's
+been a few years so I forget the exact numbers, but at the time a single
+transition between guest and host would have something like ~100 reads
+of FS.base or GS.base.  Switching from RD{FS,GS}BASE to prefixed accesses
+reduced the latency for a guest<->host transition through the TDX-Module
+by several thousand cycles, as every RD{FS,GS}BASE had a latency of
+~18 cycles (again, going off 3+ year old memories).
+
+The TDX-Module code is pretty much a pathological worth case scenario,
+but I suspect its usage is very similar to most usage of raw_cpu_ptr(),
+e.g. get a pointer to some data structure and then do multiple
+reads/writes from/to that data structure.
+
+The other wrinkle with RD{FS,FS}GSBASE is that they are trivially easy
+to emulate. If a hypervisor/VMM is advertising FSGSBASE even when it's
+not supported by hardware, e.g. to migrate VMs to older hardware, then
+every RDGSBASE will end up taking a few thousand cycles
+(#UD -> VM-Exit -> emulate).  I would be surprised if any hypervisor
+actually does this as it would be easier/smarter to simply not advertise
+FSGSBASE if migrating to older hardware might be necessary, e.g. KVM
+doesn't support emulating RD{FS,GS}BASE.  But at the same time, the whole
+reason I stumbled on the TDX-Module's sub-optimal RD{FS,GS}BASE usage was
+because I had hacked KVM to emulate RD{FS,GS}BASE so that I could do KVM
+TDX development on older hardware.  I.e. it's not impossible that this
+code could run on hardware where RDGSBASE is emulated in software.
+
+{RD,WR}{FS,GS}BASE were added as faster alternatives to {RD,WR}MSR,
+not to accelerate actual accesses to per-CPU data, TLS, etc.  E.g.
+loading a 64-bit base via a MOV to FS/GS is impossible.  And presumably
+saving a userspace controlled by actually accessing FS/GS is dangerous
+for one reason or another.
+
+The instructions are guarded by a CR4 bit, the ucode cost just to check
+CR4.FSGSBASE is probably non-trivial."
+
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Nadav Amit <namit@vmware.com>
+Cc: Ingo Molnar <mingo@kernel.org>
 Cc: Andy Lutomirski <luto@kernel.org>
 Cc: Brian Gerst <brgerst@gmail.com>
 Cc: Denys Vlasenko <dvlasenk@redhat.com>
@@ -99,54 +155,62 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Co-developed-by: Nadav Amit <namit@vmware.com>
-Signed-off-by: Nadav Amit <namit@vmware.com>
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
 ---
-v2: Use CONFIG_USE_X86_SEG_SUPPORT to handle
-    cases where KASAN is enabled.
-v3: Split the patch to the part that introduces MOV with
-    tcp_ptr__ += (unsigned long)(ptr) and the part that
-    introduces named address spaces.
----
- arch/x86/include/asm/percpu.h | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ arch/x86/include/asm/percpu.h | 23 +++++++++--------------
+ 1 file changed, 9 insertions(+), 14 deletions(-)
 
 diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
-index 915675f3ad60..54746903b8c3 100644
+index 54746903b8c3..e047a0bc5554 100644
 --- a/arch/x86/include/asm/percpu.h
 +++ b/arch/x86/include/asm/percpu.h
-@@ -49,6 +49,21 @@
+@@ -49,36 +49,31 @@
  #define __force_percpu_prefix	"%%"__stringify(__percpu_seg)":"
  #define __my_cpu_offset		this_cpu_read(this_cpu_off)
  
-+#ifdef CONFIG_USE_X86_SEG_SUPPORT
-+/*
-+ * Efficient implementation for cases in which the compiler supports
-+ * named address spaces.  Allows the compiler to perform additional
-+ * optimizations that can save more instructions.
-+ */
-+#define arch_raw_cpu_ptr(ptr)					\
-+({								\
-+	unsigned long tcp_ptr__;				\
-+	tcp_ptr__ = __raw_cpu_read(, this_cpu_off);		\
-+								\
-+	tcp_ptr__ += (unsigned long)(ptr);			\
-+	(typeof(*(ptr)) __kernel __force *)tcp_ptr__;		\
-+})
-+#else /* CONFIG_USE_X86_SEG_SUPPORT */
- /*
-  * Compared to the generic __my_cpu_offset version, the following
-  * saves one instruction and avoids clobbering a temp register.
-@@ -63,6 +78,8 @@
+-#ifdef CONFIG_USE_X86_SEG_SUPPORT
+-/*
+- * Efficient implementation for cases in which the compiler supports
+- * named address spaces.  Allows the compiler to perform additional
+- * optimizations that can save more instructions.
+- */
++#ifdef CONFIG_X86_64
+ #define arch_raw_cpu_ptr(ptr)					\
+ ({								\
+ 	unsigned long tcp_ptr__;				\
+-	tcp_ptr__ = __raw_cpu_read(, this_cpu_off);		\
++	asm (ALTERNATIVE("movq " __percpu_arg(1) ", %0",	\
++			 "rdgsbase %0",				\
++			 X86_FEATURE_FSGSBASE)			\
++	     : "=r" (tcp_ptr__)					\
++	     : "m" (__my_cpu_var(this_cpu_off)));		\
+ 								\
  	tcp_ptr__ += (unsigned long)(ptr);			\
  	(typeof(*(ptr)) __kernel __force *)tcp_ptr__;		\
  })
-+#endif /* CONFIG_USE_X86_SEG_SUPPORT */
-+
+-#else /* CONFIG_USE_X86_SEG_SUPPORT */
+-/*
+- * Compared to the generic __my_cpu_offset version, the following
+- * saves one instruction and avoids clobbering a temp register.
+- */
++#else /* CONFIG_X86_64 */
+ #define arch_raw_cpu_ptr(ptr)					\
+ ({								\
+ 	unsigned long tcp_ptr__;				\
+-	asm ("mov " __percpu_arg(1) ", %0"			\
++	asm ("movl " __percpu_arg(1) ", %0"			\
+ 	     : "=r" (tcp_ptr__)					\
+ 	     : "m" (__my_cpu_var(this_cpu_off)));		\
+ 								\
+ 	tcp_ptr__ += (unsigned long)(ptr);			\
+ 	(typeof(*(ptr)) __kernel __force *)tcp_ptr__;		\
+ })
+-#endif /* CONFIG_USE_X86_SEG_SUPPORT */
++#endif /* CONFIG_X86_64 */
+ 
  #else /* CONFIG_SMP */
  #define __percpu_seg_override
- #define __percpu_prefix		""
 -- 
 2.41.0
 
