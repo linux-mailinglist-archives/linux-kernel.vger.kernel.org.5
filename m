@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 881F67C9974
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 16:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7847C997C
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 16:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbjJOORq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 10:17:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43092 "EHLO
+        id S230261AbjJOOSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 10:18:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230091AbjJOORj (ORCPT
+        with ESMTP id S230174AbjJOORx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 10:17:39 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD691E6
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 07:17:35 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c9d407bb15so31347205ad.0
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 07:17:35 -0700 (PDT)
+        Sun, 15 Oct 2023 10:17:53 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B90DC133
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 07:17:43 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c8a1541233so22406175ad.1
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 07:17:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1697379454; x=1697984254; darn=vger.kernel.org;
+        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1697379462; x=1697984262; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=q3e16X3BnACnel0/w/bQT7bK9RdqePAG/1Ajmk33nB0=;
-        b=jOjNclAylNWhZ4hB+LFckWl9nZjeAdYIUYBxlpMMjRuXSf70wdqUDw1m3PBBelChkk
-         nLQqE4n8aa2ZoFfZ0BjparIqreNrV64Ff8ga//0p9P24HdmueiH3bYlOZh5ZRUTxmr2Q
-         Bsj5n/KP4Bxq9SQMLWBtg4QAkrprtUZBMOMUtzk1wBV8jdslEszB6tigt/mgtHUr2vpJ
-         JmIC6Jy+LcrAjl7OPP7dUxx0xGOGSWCJLnSZbdocit6jH4QD9KyHFU7VaAenZptOZxaF
-         //tXuDZUaogqUgVHPqMaYTdCX1EvdVrD0nkZ8h+qUdchz4L8I16yD4/NSCJ8//WBPnw2
-         OPmQ==
+        bh=kvSWVbZXn/MrVEcGpo16B6JSHdwZ2fR7rly5J6YWZNE=;
+        b=RFS2pRpOPj0Fz3zbI6kHMAvLIv9pOZrbCw4IRXWqTM7IE4gIwhuZ7cMWL1lnx2NzjC
+         JmP2knUtSyyY1syJLyq+qzp3nZc1bh+nyiKBD+XFfVODB9AmKmpspLEWul9jaksfPYFr
+         gBcy3eEG55wtAaa0jTvrgZKvGgbxI3eEu1jJTw5zD9zCWhHyN3HfaBCMAEqTPM9AyP+R
+         1C2HXXFQqdZ7eis759QCNODeaizm5UiraLBG3eSS/s6vVAZlmCMFmyTShNOh4Yb59fRT
+         aHjvrGrh9h5WNqVk4iyDoarINlIy4OjJwRPgwySNoqVkKpXCYwohnBXH/4xDkepnrruM
+         T9hA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697379454; x=1697984254;
+        d=1e100.net; s=20230601; t=1697379462; x=1697984262;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=q3e16X3BnACnel0/w/bQT7bK9RdqePAG/1Ajmk33nB0=;
-        b=hBtzGkc3zwM+GqxxOMeAJEpFM/jSg3SBNf+9fDmyX5S1J2/875UpRogzDRNttzF678
-         WgITnDe7739E5/s3x1sMgGOqGPzKvuxYNBjDMo0FJsnr8x/Cu1J92j/7t/PsyRh85axQ
-         AWthbGQp8xNaiEw+K4pOBM2H2T6hZV7T8m4rJP7IKrax8iUjYARjYL+veq1G+0Txrbo3
-         GlLcH4lo4sn3w6gpugA51ymzRrkuZHwQrRIinLIwYJ8JLJbYqmw6+JTEeWssbGdbY25+
-         Yf3M/SEE0FsEH5QynCCpAuy2ff5yiObyhH0ZhUCX+YEtyP8tV2lliRkmuCa3q4Lcp/um
-         pzxA==
-X-Gm-Message-State: AOJu0YysolJV/9DI3BgPZpz1Di867YVv/2urSrQqskLRFKWU0MveZ2u+
-        3sYHuAr/sbKP0yihHgvkPA5VYQ==
-X-Google-Smtp-Source: AGHT+IGa+4527nTRMoq3BT4pWp6MGz5aJZtlZUNhOW5hIrk1Y1oqpKECZxuWNJqZ5/MeAEwk4c/hSg==
-X-Received: by 2002:a17:90b:4ccb:b0:27d:51c4:1679 with SMTP id nd11-20020a17090b4ccb00b0027d51c41679mr4375745pjb.27.1697379454522;
-        Sun, 15 Oct 2023 07:17:34 -0700 (PDT)
+        bh=kvSWVbZXn/MrVEcGpo16B6JSHdwZ2fR7rly5J6YWZNE=;
+        b=Qjf1RJe2lUX2jmIYuPQqQRpQ9StufxqvE7UZzKCHFwENAxBNzTjBdAr9i3paq7uBfq
+         BuSKRo/kCYDnIiivKR2cdqeGbefB6XxTQiCKh53VlDLUDUZajd9hdFzyBlE8/TNpjAfN
+         XipOqkKZh7JGERQkAK8hAKmG3foTaRQqi74NGPuaIT2XM5aYUW/29S/E1P/c351Kj8U9
+         +ktRGGzftMBJIogPbwMqshoVNRQyfTdgzk1qiQhxoo1bZM4dOrLgruAQZvFJs8KBAB5U
+         9uJm8m/pl0AtMvL3iEaaF9hSmVAqb/9WnXgXF/dOlL+WdUQxZp16ln9k7TFQ8LvjO65b
+         3Czg==
+X-Gm-Message-State: AOJu0Yxn8OMet0fKd7UnXwKEczcb3kCg9ptGCAhPKoDkAkV7idzlnRVi
+        mvonpozZ0xtrchhHaTXivABgNdQM3E7WOOol6R934g==
+X-Google-Smtp-Source: AGHT+IE81It/1ElAFh3WqzA1MDP6+KyM5FALauAhwzot5b7EduhSxG7C2ZYhheRbI8ll3TgU9FJn+A==
+X-Received: by 2002:a17:902:aa48:b0:1c0:bcbc:d5d with SMTP id c8-20020a170902aa4800b001c0bcbc0d5dmr25880675plr.61.1697379461931;
+        Sun, 15 Oct 2023 07:17:41 -0700 (PDT)
 Received: from localhost ([2400:4050:a840:1e00:78d2:b862:10a7:d486])
-        by smtp.gmail.com with UTF8SMTPSA id ij6-20020a170902ab4600b001c0c79b386esm7058350plb.95.2023.10.15.07.17.28
+        by smtp.gmail.com with UTF8SMTPSA id d8-20020a170903230800b001c62c9d7289sm6869426plh.104.2023.10.15.07.17.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Oct 2023 07:17:34 -0700 (PDT)
+        Sun, 15 Oct 2023 07:17:41 -0700 (PDT)
 From:   Akihiko Odaki <akihiko.odaki@daynix.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -78,9 +78,9 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Yuri Benditovich <yuri.benditovich@daynix.com>,
         Andrew Melnychenko <andrew@daynix.com>,
         Akihiko Odaki <akihiko.odaki@daynix.com>
-Subject: [RFC PATCH v2 3/7] skbuff: Introduce SKB_EXT_TUN_VNET_HASH
-Date:   Sun, 15 Oct 2023 23:16:31 +0900
-Message-ID: <20231015141644.260646-4-akihiko.odaki@daynix.com>
+Subject: [RFC PATCH v2 4/7] virtio_net: Add virtio_net_hdr_v1_hash_from_skb()
+Date:   Sun, 15 Oct 2023 23:16:32 +0900
+Message-ID: <20231015141644.260646-5-akihiko.odaki@daynix.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231015141644.260646-1-akihiko.odaki@daynix.com>
 References: <20231015141644.260646-1-akihiko.odaki@daynix.com>
@@ -96,57 +96,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This new extension will be used by tun to carry the hash values and
-types to report with virtio-net headers.
+It is identical with virtio_net_hdr_from_skb() except that it
+impelements hash reporting.
 
 Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
 ---
- include/linux/skbuff.h | 10 ++++++++++
- net/core/skbuff.c      |  3 +++
- 2 files changed, 13 insertions(+)
+ include/linux/virtio_net.h | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index 4174c4b82d13..1f2e5d350810 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -333,6 +333,13 @@ struct tc_skb_ext {
- };
- #endif
+diff --git a/include/linux/virtio_net.h b/include/linux/virtio_net.h
+index 7b4dd69555e4..01e594b4586b 100644
+--- a/include/linux/virtio_net.h
++++ b/include/linux/virtio_net.h
+@@ -216,4 +216,26 @@ static inline int virtio_net_hdr_from_skb(const struct sk_buff *skb,
+ 	return 0;
+ }
  
-+#if IS_ENABLED(CONFIG_TUN)
-+struct tun_vnet_hash {
-+	u32 value;
-+	u16 report;
-+};
-+#endif
++static inline int virtio_net_hdr_v1_hash_from_skb(const struct sk_buff *skb,
++						  struct virtio_net_hdr_v1_hash *hdr,
++						  bool little_endian,
++						  bool has_data_valid,
++						  int vlan_hlen,
++						  u32 hash_value,
++						  u16 hash_report)
++{
++	int ret;
 +
- struct sk_buff_head {
- 	/* These two members must be first to match sk_buff. */
- 	struct_group_tagged(sk_buff_list, list,
-@@ -4631,6 +4638,9 @@ enum skb_ext_id {
- #endif
- #if IS_ENABLED(CONFIG_MCTP_FLOWS)
- 	SKB_EXT_MCTP,
-+#endif
-+#if IS_ENABLED(CONFIG_TUN)
-+	SKB_EXT_TUN_VNET_HASH,
- #endif
- 	SKB_EXT_NUM, /* must be last */
- };
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 4eaf7ed0d1f4..774c2b26bf25 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -4793,6 +4793,9 @@ static const u8 skb_ext_type_len[] = {
- #if IS_ENABLED(CONFIG_MCTP_FLOWS)
- 	[SKB_EXT_MCTP] = SKB_EXT_CHUNKSIZEOF(struct mctp_flow),
- #endif
-+#if IS_ENABLED(CONFIG_TUN)
-+	[SKB_EXT_TUN_VNET_HASH] = SKB_EXT_CHUNKSIZEOF(struct tun_vnet_hash),
-+#endif
- };
- 
- static __always_inline unsigned int skb_ext_total_length(void)
++	memset(hdr, 0, sizeof(*hdr));
++
++	ret = virtio_net_hdr_from_skb(skb, (struct virtio_net_hdr *)hdr,
++				      little_endian, has_data_valid, vlan_hlen);
++	if (!ret) {
++		hdr->hash_value = cpu_to_le32(hash_value);
++		hdr->hash_report = cpu_to_le16(hash_report);
++	}
++
++	return ret;
++}
++
+ #endif /* _LINUX_VIRTIO_NET_H */
 -- 
 2.42.0
 
