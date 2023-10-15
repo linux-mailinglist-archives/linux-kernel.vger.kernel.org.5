@@ -2,197 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74FDF7C98DE
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 14:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 062867C98E0
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 14:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229733AbjJOL6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 07:58:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41232 "EHLO
+        id S229614AbjJOMAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 08:00:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjJOL6n (ORCPT
+        with ESMTP id S229772AbjJOMAO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 07:58:43 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B1BA3
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 04:58:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697371122; x=1728907122;
-  h=date:from:to:cc:subject:message-id;
-  bh=lDocFs2bX0CHk15HW86lkvFZ1TiF7cdXp570uzErMx8=;
-  b=YDQfpB7c0CRZ47mc9IGPapBWzQmiYCxntlqh3t/9XWl6mbvBELZNn64P
-   vVtv0E/fjJs+dxIKXy5vuPR9SPK6MY/h0YkDvSS7LTaAgjsRiPeAmscso
-   qCM6cVElDYGk9mViobW7sprwcrt65GLsuvDQRUn8pjIweNL580INL/o7E
-   mOM9yoGkSWkk+GBW54OTI2ryNZT+S0YEtXVYQKgn3m32LFXGFt2WPqFw8
-   tVklQfOSiXMCPziJrwIOAeGVgQmXt3lq7/QD6UmHYawWRjq/xXlyfDSfj
-   Q+UhrBj1qMLXBcxB210LSKiiGAHDR9tUaw4jWZW940BB1Ak4egKesUYl0
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="451862314"
-X-IronPort-AV: E=Sophos;i="6.03,226,1694761200"; 
-   d="scan'208";a="451862314"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2023 04:58:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="755348572"
-X-IronPort-AV: E=Sophos;i="6.03,226,1694761200"; 
-   d="scan'208";a="755348572"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 15 Oct 2023 04:58:39 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qrzlV-0007O1-26;
-        Sun, 15 Oct 2023 11:58:37 +0000
-Date:   Sun, 15 Oct 2023 19:57:48 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/bugs] BUILD SUCCESS
- 5f51ef7fe994a91dcae36119a83961f6b143371d
-Message-ID: <202310151945.OdiZoJFl-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Sun, 15 Oct 2023 08:00:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147C4DC
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 04:59:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697371166;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7odMBbvZWVsldhQpSxACtvJJIZbtETAe+tcSmUnuJjg=;
+        b=a41EoqoW1G2L3hdhcydOQ0yobgubdV1VKWlS1ARhwEFqkaaauI2PwridMD5WiJTwfB7kJ8
+        cjgm9AoFczB7amyQxiP09gkftk81C8usZowc1vXtzDdxNjJblsda0mWyJDwq+D8uPbBKXI
+        hwabISiTnmiKAhZW/JwW6OlPwupqm7c=
+Received: from mail-vs1-f71.google.com (mail-vs1-f71.google.com
+ [209.85.217.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-205-oPq7Yw8uMF6FJ_qmb3ZiWA-1; Sun, 15 Oct 2023 07:59:19 -0400
+X-MC-Unique: oPq7Yw8uMF6FJ_qmb3ZiWA-1
+Received: by mail-vs1-f71.google.com with SMTP id ada2fe7eead31-457bcc71151so880361137.3
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 04:59:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697371159; x=1697975959;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7odMBbvZWVsldhQpSxACtvJJIZbtETAe+tcSmUnuJjg=;
+        b=D8/doDHGFqWl5OCry5xRAc4nJchLpaQo2Ogqhx3hzHuwYbOfRxS8Hrm4yXuPKPBhoy
+         W48o7l1P9OxQ+CF/DGOGH82F1nc7tBwVbAQw7+LkuIAVIaXXJ3AvMoH+HbZrlBDVt4FK
+         XhjJFNg2IFC1FIViH8Vgb7RPOD080skvOhlxVHo4SvzdwJ3eRiuWO13Cu9jqMf+hNmcE
+         emTBPR3HSvtBEyRmOlPbKi/GUkh9faujEuFd0HCjJaHKJO4uWmsxBHM0zS38W0CkEAd1
+         V2Bnzjn9iJBJc0jMBexjGeBbDV0WI1U1Vc6njArVKFWeU78Lx4tADGfy2I14xaZwKKsV
+         V+kw==
+X-Gm-Message-State: AOJu0YzgWn6fr/tdMa2QG2H6S2u5OuoGce2Xup5wn0H0HtcQ6x+vnX8L
+        Vx8TVjWGy0OvCUH13r2Fgt40EeC4T5ZN+3oW29Gw2i0C0cs01zDslYf0DP7dOk2ChySuI34KQdh
+        MHIIVHsvKmr1+1/OLHK0zhroyTfZLbi/ms9vgTQJ6
+X-Received: by 2002:a67:f918:0:b0:452:8e07:db61 with SMTP id t24-20020a67f918000000b004528e07db61mr28478021vsq.6.1697371158539;
+        Sun, 15 Oct 2023 04:59:18 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IELKarAPYFoutdt+n5qD/eLZFSa9kKfU3ZxWAZUeTN1sG50XRhX1O35PZcGF5uWUC5f/xEbG8Q271emAppLWM4=
+X-Received: by 2002:a67:f918:0:b0:452:8e07:db61 with SMTP id
+ t24-20020a67f918000000b004528e07db61mr28478004vsq.6.1697371158260; Sun, 15
+ Oct 2023 04:59:18 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230914015459.51740-1-sashal@kernel.org>
+In-Reply-To: <20230914015459.51740-1-sashal@kernel.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Date:   Sun, 15 Oct 2023 13:59:06 +0200
+Message-ID: <CABgObfbKV3TvVeixtVvp6f9Qtr47aiStUBsDH2_c6jrDGiWR_A@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 6.5 1/7] x86/reboot: VMCLEAR active VMCSes before
+ emergency reboot
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>,
+        Andrew Cooper <Andrew.Cooper3@citrix.com>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, akpm@linux-foundation.org, bhe@redhat.com,
+        eric.devolder@oracle.com, hbathini@linux.ibm.com,
+        sourabhjain@linux.ibm.com, bhelgaas@google.com,
+        kai.huang@intel.com, peterz@infradead.org, jpoimboe@kernel.org,
+        tiwai@suse.de, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/bugs
-branch HEAD: 5f51ef7fe994a91dcae36119a83961f6b143371d  x86/callthunks: Delete unused "struct thunk_desc"
+On Thu, Sep 14, 2023 at 3:55=E2=80=AFAM Sasha Levin <sashal@kernel.org> wro=
+te:
+>
+> From: Sean Christopherson <seanjc@google.com>
+>
+> [ Upstream commit b23c83ad2c638420ec0608a9de354507c41bec29 ]
+>
+> VMCLEAR active VMCSes before any emergency reboot, not just if the kernel
+> may kexec into a new kernel after a crash.  Per Intel's SDM, the VMX
+> architecture doesn't require the CPU to flush the VMCS cache on INIT.  If
+> an emergency reboot doesn't RESET CPUs, cached VMCSes could theoretically
+> be kept and only be written back to memory after the new kernel is booted=
+,
+> i.e. could effectively corrupt memory after reboot.
+>
+> Opportunistically remove the setting of the global pointer to NULL to mak=
+e
+> checkpatch happy.
 
-elapsed time: 781m
+Intended as a cleanup but I guess it does not hurt, since it was the first =
+patch
+in the large series that included it.
 
-configs tested: 121
-configs skipped: 2
+Acked-by: Paolo Bonzini <pbonzini@redhat.com>
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Paolo
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231015   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                      jornada720_defconfig   gcc  
-arm                       netwinder_defconfig   clang
-arm                   randconfig-001-20231015   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231015   gcc  
-i386                  randconfig-002-20231015   gcc  
-i386                  randconfig-003-20231015   gcc  
-i386                  randconfig-004-20231015   gcc  
-i386                  randconfig-005-20231015   gcc  
-i386                  randconfig-006-20231015   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231015   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                      bmips_stb_defconfig   clang
-mips                     cu1000-neo_defconfig   clang
-mips                            gpr_defconfig   gcc  
-mips                  maltasmvp_eva_defconfig   gcc  
-mips                       rbtx49xx_defconfig   clang
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                   bluestone_defconfig   clang
-powerpc                 canyonlands_defconfig   gcc  
-powerpc                 mpc834x_itx_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231015   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             alldefconfig   clang
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231015   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                   rts7751r2dplus_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231015   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                randconfig-001-20231015   gcc  
-x86_64                randconfig-002-20231015   gcc  
-x86_64                randconfig-003-20231015   gcc  
-x86_64                randconfig-004-20231015   gcc  
-x86_64                randconfig-005-20231015   gcc  
-x86_64                randconfig-006-20231015   gcc  
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                         rhel-8.3-kunit   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> Cc: Andrew Cooper <Andrew.Cooper3@citrix.com>
+> Link: https://lore.kernel.org/r/20230721201859.2307736-2-seanjc@google.co=
+m
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  arch/x86/include/asm/kexec.h  |  2 --
+>  arch/x86/include/asm/reboot.h |  2 ++
+>  arch/x86/kernel/crash.c       | 31 -------------------------------
+>  arch/x86/kernel/reboot.c      | 22 ++++++++++++++++++++++
+>  arch/x86/kvm/vmx/vmx.c        | 10 +++-------
+>  5 files changed, 27 insertions(+), 40 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/kexec.h b/arch/x86/include/asm/kexec.h
+> index 5b77bbc28f969..819046974b997 100644
+> --- a/arch/x86/include/asm/kexec.h
+> +++ b/arch/x86/include/asm/kexec.h
+> @@ -205,8 +205,6 @@ int arch_kimage_file_post_load_cleanup(struct kimage =
+*image);
+>  #endif
+>  #endif
+>
+> -typedef void crash_vmclear_fn(void);
+> -extern crash_vmclear_fn __rcu *crash_vmclear_loaded_vmcss;
+>  extern void kdump_nmi_shootdown_cpus(void);
+>
+>  #endif /* __ASSEMBLY__ */
+> diff --git a/arch/x86/include/asm/reboot.h b/arch/x86/include/asm/reboot.=
+h
+> index 9177b4354c3f5..dc201724a6433 100644
+> --- a/arch/x86/include/asm/reboot.h
+> +++ b/arch/x86/include/asm/reboot.h
+> @@ -25,6 +25,8 @@ void __noreturn machine_real_restart(unsigned int type)=
+;
+>  #define MRR_BIOS       0
+>  #define MRR_APM                1
+>
+> +typedef void crash_vmclear_fn(void);
+> +extern crash_vmclear_fn __rcu *crash_vmclear_loaded_vmcss;
+>  void cpu_emergency_disable_virtualization(void);
+>
+>  typedef void (*nmi_shootdown_cb)(int, struct pt_regs*);
+> diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
+> index cdd92ab43cda4..54cd959cb3160 100644
+> --- a/arch/x86/kernel/crash.c
+> +++ b/arch/x86/kernel/crash.c
+> @@ -48,38 +48,12 @@ struct crash_memmap_data {
+>         unsigned int type;
+>  };
+>
+> -/*
+> - * This is used to VMCLEAR all VMCSs loaded on the
+> - * processor. And when loading kvm_intel module, the
+> - * callback function pointer will be assigned.
+> - *
+> - * protected by rcu.
+> - */
+> -crash_vmclear_fn __rcu *crash_vmclear_loaded_vmcss =3D NULL;
+> -EXPORT_SYMBOL_GPL(crash_vmclear_loaded_vmcss);
+> -
+> -static inline void cpu_crash_vmclear_loaded_vmcss(void)
+> -{
+> -       crash_vmclear_fn *do_vmclear_operation =3D NULL;
+> -
+> -       rcu_read_lock();
+> -       do_vmclear_operation =3D rcu_dereference(crash_vmclear_loaded_vmc=
+ss);
+> -       if (do_vmclear_operation)
+> -               do_vmclear_operation();
+> -       rcu_read_unlock();
+> -}
+> -
+>  #if defined(CONFIG_SMP) && defined(CONFIG_X86_LOCAL_APIC)
+>
+>  static void kdump_nmi_callback(int cpu, struct pt_regs *regs)
+>  {
+>         crash_save_cpu(regs, cpu);
+>
+> -       /*
+> -        * VMCLEAR VMCSs loaded on all cpus if needed.
+> -        */
+> -       cpu_crash_vmclear_loaded_vmcss();
+> -
+>         /*
+>          * Disable Intel PT to stop its logging
+>          */
+> @@ -133,11 +107,6 @@ void native_machine_crash_shutdown(struct pt_regs *r=
+egs)
+>
+>         crash_smp_send_stop();
+>
+> -       /*
+> -        * VMCLEAR VMCSs loaded on this cpu if needed.
+> -        */
+> -       cpu_crash_vmclear_loaded_vmcss();
+> -
+>         cpu_emergency_disable_virtualization();
+>
+>         /*
+> diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
+> index 3adbe97015c13..3fa4c6717a1db 100644
+> --- a/arch/x86/kernel/reboot.c
+> +++ b/arch/x86/kernel/reboot.c
+> @@ -787,6 +787,26 @@ void machine_crash_shutdown(struct pt_regs *regs)
+>  }
+>  #endif
+>
+> +/*
+> + * This is used to VMCLEAR all VMCSs loaded on the
+> + * processor. And when loading kvm_intel module, the
+> + * callback function pointer will be assigned.
+> + *
+> + * protected by rcu.
+> + */
+> +crash_vmclear_fn __rcu *crash_vmclear_loaded_vmcss;
+> +EXPORT_SYMBOL_GPL(crash_vmclear_loaded_vmcss);
+> +
+> +static inline void cpu_crash_vmclear_loaded_vmcss(void)
+> +{
+> +       crash_vmclear_fn *do_vmclear_operation =3D NULL;
+> +
+> +       rcu_read_lock();
+> +       do_vmclear_operation =3D rcu_dereference(crash_vmclear_loaded_vmc=
+ss);
+> +       if (do_vmclear_operation)
+> +               do_vmclear_operation();
+> +       rcu_read_unlock();
+> +}
+>
+>  /* This is the CPU performing the emergency shutdown work. */
+>  int crashing_cpu =3D -1;
+> @@ -798,6 +818,8 @@ int crashing_cpu =3D -1;
+>   */
+>  void cpu_emergency_disable_virtualization(void)
+>  {
+> +       cpu_crash_vmclear_loaded_vmcss();
+> +
+>         cpu_emergency_vmxoff();
+>         cpu_emergency_svm_disable();
+>  }
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index df461f387e20d..f60fb79fea881 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -41,7 +41,7 @@
+>  #include <asm/idtentry.h>
+>  #include <asm/io.h>
+>  #include <asm/irq_remapping.h>
+> -#include <asm/kexec.h>
+> +#include <asm/reboot.h>
+>  #include <asm/perf_event.h>
+>  #include <asm/mmu_context.h>
+>  #include <asm/mshyperv.h>
+> @@ -754,7 +754,6 @@ static int vmx_set_guest_uret_msr(struct vcpu_vmx *vm=
+x,
+>         return ret;
+>  }
+>
+> -#ifdef CONFIG_KEXEC_CORE
+>  static void crash_vmclear_local_loaded_vmcss(void)
+>  {
+>         int cpu =3D raw_smp_processor_id();
+> @@ -764,7 +763,6 @@ static void crash_vmclear_local_loaded_vmcss(void)
+>                             loaded_vmcss_on_cpu_link)
+>                 vmcs_clear(v->vmcs);
+>  }
+> -#endif /* CONFIG_KEXEC_CORE */
+>
+>  static void __loaded_vmcs_clear(void *arg)
+>  {
+> @@ -8622,10 +8620,9 @@ static void __vmx_exit(void)
+>  {
+>         allow_smaller_maxphyaddr =3D false;
+>
+> -#ifdef CONFIG_KEXEC_CORE
+>         RCU_INIT_POINTER(crash_vmclear_loaded_vmcss, NULL);
+>         synchronize_rcu();
+> -#endif
+> +
+>         vmx_cleanup_l1d_flush();
+>  }
+>
+> @@ -8674,10 +8671,9 @@ static int __init vmx_init(void)
+>                 pi_init_cpu(cpu);
+>         }
+>
+> -#ifdef CONFIG_KEXEC_CORE
+>         rcu_assign_pointer(crash_vmclear_loaded_vmcss,
+>                            crash_vmclear_local_loaded_vmcss);
+> -#endif
+> +
+>         vmx_check_vmcs12_offsets();
+>
+>         /*
+> --
+> 2.40.1
+>
+
