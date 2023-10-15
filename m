@@ -2,249 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47DFC7C9AF9
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 21:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A107C9AFC
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 21:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbjJOTTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 15:19:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57870 "EHLO
+        id S230200AbjJOTTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 15:19:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229641AbjJOTTA (ORCPT
+        with ESMTP id S230318AbjJOTTQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 15:19:00 -0400
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2241EDD;
-        Sun, 15 Oct 2023 12:18:57 -0700 (PDT)
-Received: from [10.20.0.66] (unknown [62.214.178.66])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id AE40E61E5FE04;
-        Sun, 15 Oct 2023 21:18:08 +0200 (CEST)
-Message-ID: <998aa6dd-6c21-48c8-a069-3b8cc8df2bb3@molgen.mpg.de>
-Date:   Sun, 15 Oct 2023 21:18:06 +0200
+        Sun, 15 Oct 2023 15:19:16 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54728A9
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 12:19:14 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6b3c2607d9bso1586245b3a.1
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 12:19:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697397553; x=1698002353; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6D1FB5LCWe5+pgRGVMl8YGDlVNocRdZi5zO7vTLOp1k=;
+        b=MyrkOxwozyghqfVSD9W71fgqFXX7gNDI+XNCv0C32AaH6KE3gS6GerFe7KtHbRuJL5
+         MzVmxQMs8IJRmwPtgKZ+xO4O6l99/UVS0iUp/JUhZtW4X/ZT8r+c6Xd/lyE1sLdTYQTs
+         YTMBBYVT5IVVjWg8gFVGFc+2J3mykylPmLNOwtVowY/ZwAgSKNa5c0cbBCre2HBgljpV
+         2odOAxeKpJeuxMUI+syDdpx6/3joe1yOgsIJXj0oFRiFsRaMr0dSj0evR1qO6AIK4Dtk
+         0kfiF6GuQZKYNwQ4obz7Drv+1zC453FIBHDczpeEdlU81l23RMS6PhyQCNEPoj3S5Udu
+         Hw8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697397553; x=1698002353;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6D1FB5LCWe5+pgRGVMl8YGDlVNocRdZi5zO7vTLOp1k=;
+        b=ekJrXTbS+vuUgoiXCr/sZSswhxxWaOivdIkyAIThILKl0bx858wPeCzOJZ2Qja6spd
+         crBTe5pDy6avVgQbwG0kWA9Ot75ABRkJmvk6tofSzcxkqz4rE+82/LO4b5FCpYOV/cP1
+         yOJ9B1pZH6+ve9hur31k5W5wGRxvBzeY+ws7Fu6gqSoQeT8EqFx3UXucQNurHmjCP2BW
+         VPkPNxwzq0kkNtwRcDBl25SEs6EDTOaE3pWbHaT4X9fs4LdmflfJ1E7gfyXYaJ89TL8I
+         seu1RpL5AfRq4MJiLrRzU/u0yCo4OcSAfeDdJ7lQcyKC7gSy3XsGTOH37/N7REh37554
+         6qEA==
+X-Gm-Message-State: AOJu0YxkOcmIGpphB9IM4RFouA2qJD5POFBuL3gcirP2Ko4j2d43pw5j
+        cDxJre3t/ryqQqsMp7S1IWtivLdyC5DomA==
+X-Google-Smtp-Source: AGHT+IGwnPwzd1w/U3V/+aV6xYyt2haECnHpqgVZhtugIsRBR7bQ6rZcoH8alxLhhb2Gh41Crg25Wg==
+X-Received: by 2002:a05:6a20:5490:b0:13d:8876:4c97 with SMTP id i16-20020a056a20549000b0013d88764c97mr34217524pzk.16.1697397553507;
+        Sun, 15 Oct 2023 12:19:13 -0700 (PDT)
+Received: from Negi (2603-8000-b93d-20a0-2184-6fa4-0d39-1c6b.res6.spectrum.com. [2603:8000:b93d:20a0:2184:6fa4:d39:1c6b])
+        by smtp.gmail.com with ESMTPSA id i15-20020a63b30f000000b005891f3af36asm5641490pgf.87.2023.10.15.12.19.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Oct 2023 12:19:12 -0700 (PDT)
+Date:   Sun, 15 Oct 2023 12:19:10 -0700
+From:   Soumya Negi <soumya.negi97@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jonathan Kim <jonathankim@gctsemi.com>,
+        Dean ahn <deanahn@gctsemi.com>, outreachy@lists.linux.dev,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] tty: gdm724x: Add blank line after declaration
+Message-ID: <20231015191910.GA2361@Negi>
+References: <cover.1697184167.git.soumya.negi97@gmail.com>
+ <3b24ca9976cf873dbaadb499e09d7b545e9db89c.1697184167.git.soumya.negi97@gmail.com>
+ <2023101551-placidly-garnish-3ee7@gregkh>
+ <20231015060716.GA31326@Negi>
+ <2023101508-curry-disorder-1b10@gregkh>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 3/3] usb: chipidea: Add support for NPCM
-To:     Tomer Maimon <tmaimon77@gmail.com>
-Cc:     peter.chen@kernel.org, gregkh@linuxfoundation.org,
-        avifishman70@gmail.com, tali.perry1@gmail.com, joel@jms.id.au,
-        venture@google.com, yuenn@google.com, benjaminfair@google.com,
-        j.neuschaefer@gmx.net, openbmc@lists.ozlabs.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231012230057.3365626-1-tmaimon77@gmail.com>
- <20231012230057.3365626-4-tmaimon77@gmail.com>
- <7add0297-709f-4836-832f-f8fbd412eca5@molgen.mpg.de>
- <CAP6Zq1g0eT0X5UvQ6Zok=JdOb2WOJ89qFW2MtUQh_z737F7F1A@mail.gmail.com>
-Content-Language: en-US
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <CAP6Zq1g0eT0X5UvQ6Zok=JdOb2WOJ89qFW2MtUQh_z737F7F1A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2023101508-curry-disorder-1b10@gregkh>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Tomer,
+Hi Greg,
 
+On Sun, Oct 15, 2023 at 02:50:44PM +0200, Greg Kroah-Hartman wrote:
+> On Sat, Oct 14, 2023 at 11:07:16PM -0700, Soumya Negi wrote:
+> > On Sun, Oct 15, 2023 at 07:37:30AM +0200, Greg Kroah-Hartman wrote:
+> > > On Fri, Oct 13, 2023 at 01:26:35AM -0700, Soumya Negi wrote:
+> > > > Fix WARNING: Missing a blank line after declarations
+> > > > Issue found by checkpatch.pl
+> > > > 
+> > > > Signed-off-by: Soumya Negi <soumya.negi97@gmail.com>
+> > > > ---
+> > > >  drivers/staging/gdm724x/gdm_tty.c | 1 +
+> > > >  1 file changed, 1 insertion(+)
+> > > 
+> > > Why do you have "tty:" as the prefix for a staging driver?  Shouldn't it
+> > > be "staging: gdm724x: ...."?
+> > 
+> > Hi Greg,
+> > 
+> > Thats what I thought too. But when I looked at the git history for
+> > gdm_tty.c the last few commits had "tty:". So I went with that.
+> 
+> That is because those commits were tty-wide, and they changed things in
+> multiple drivers all at once, not just for the one file.
+>
+> > Should I change it to "staging:"?
+> 
+> Please do.
 
-Am 15.10.23 um 19:21 schrieb Tomer Maimon:
+I'm sending this patch in a new thread since the other patch in the
+patchset(had 2 patches) was reviewed as unneeded.
 
-> On Fri, 13 Oct 2023 at 16:18, Paul Menzel <pmenzel@molgen.mpg.de> wrote:
-
->> Am 13.10.23 um 01:00 schrieb Tomer Maimon:
->>> Add Nuvoton NPCM BMC SoCs support to USB ChipIdea driver.
->>> NPCM SoC include ChipIdea IP block that used for USB device controller
->>
->> include*s*
->> “that *is* used” or just “… used for”
-> Will do
->>
->>> mode.
->>
->> Please add a line, how you tested this patch.
-> I don't recall "how you tested the patch" done in the commit message,
-> I can add it in the cover letter
-
-In my opinion, adding a separate paragraph to the commit message would 
-be best.
-
->>> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
->>> Acked-by: Peter Chen <peter.chen@kernel.org>
->>> ---
->>>    drivers/usb/chipidea/Kconfig        |   4 +
->>>    drivers/usb/chipidea/Makefile       |   1 +
->>>    drivers/usb/chipidea/ci_hdrc_npcm.c | 114 ++++++++++++++++++++++++++++
->>>    3 files changed, 119 insertions(+)
->>>    create mode 100644 drivers/usb/chipidea/ci_hdrc_npcm.c
->>>
->>> diff --git a/drivers/usb/chipidea/Kconfig b/drivers/usb/chipidea/Kconfig
->>> index c815824a0b2d..bab45bc62361 100644
->>> --- a/drivers/usb/chipidea/Kconfig
->>> +++ b/drivers/usb/chipidea/Kconfig
->>> @@ -43,6 +43,10 @@ config USB_CHIPIDEA_MSM
->>>        tristate "Enable MSM hsusb glue driver" if EXPERT
->>>        default USB_CHIPIDEA
->>>
->>> +config USB_CHIPIDEA_NPCM
->>> +     tristate "Enable NPCM hsusb glue driver" if EXPERT
->>> +     default USB_CHIPIDEA
->>> +
->>>    config USB_CHIPIDEA_IMX
->>>        tristate "Enable i.MX USB glue driver" if EXPERT
->>>        depends on OF
->>> diff --git a/drivers/usb/chipidea/Makefile b/drivers/usb/chipidea/Makefile
->>> index 71afeab97e83..718cb24603dd 100644
->>> --- a/drivers/usb/chipidea/Makefile
->>> +++ b/drivers/usb/chipidea/Makefile
->>> @@ -13,6 +13,7 @@ ci_hdrc-$(CONFIG_USB_OTG_FSM)               += otg_fsm.o
->>>
->>>    obj-$(CONFIG_USB_CHIPIDEA_GENERIC)  += ci_hdrc_usb2.o
->>>    obj-$(CONFIG_USB_CHIPIDEA_MSM)              += ci_hdrc_msm.o
->>> +obj-$(CONFIG_USB_CHIPIDEA_NPCM)              += ci_hdrc_npcm.o
->>>    obj-$(CONFIG_USB_CHIPIDEA_PCI)              += ci_hdrc_pci.o
->>>    obj-$(CONFIG_USB_CHIPIDEA_IMX)              += usbmisc_imx.o ci_hdrc_imx.o
->>>    obj-$(CONFIG_USB_CHIPIDEA_TEGRA)    += ci_hdrc_tegra.o
->>> diff --git a/drivers/usb/chipidea/ci_hdrc_npcm.c b/drivers/usb/chipidea/ci_hdrc_npcm.c
->>> new file mode 100644
->>> index 000000000000..37b64a3dbd96
->>> --- /dev/null
->>> +++ b/drivers/usb/chipidea/ci_hdrc_npcm.c
->>> @@ -0,0 +1,114 @@
->>> +// SPDX-License-Identifier: GPL-2.0
->>> +// Copyright (c) 2023 Nuvoton Technology corporation.
->>> +
->>> +#include <linux/module.h>
->>> +#include <linux/platform_device.h>
->>> +#include <linux/pm_runtime.h>
->>> +#include <linux/usb/chipidea.h>
->>> +#include <linux/clk.h>
->>> +#include <linux/io.h>
->>> +#include <linux/reset-controller.h>
->>> +#include <linux/of.h>
->>> +
->>> +#include "ci.h"
->>> +
->>> +struct npcm_udc_data {
->>> +     struct platform_device  *ci;
->>> +     struct clk              *core_clk;
->>> +     struct ci_hdrc_platform_data pdata;
->>> +};
->>> +
->>> +static int npcm_udc_notify_event(struct ci_hdrc *ci, unsigned event)
->>> +{
->>> +     struct device *dev = ci->dev->parent;
->>> +
->>> +     switch (event) {
->>> +     case CI_HDRC_CONTROLLER_RESET_EVENT:
->>> +             /* clear all mode bits */
->>> +             hw_write(ci, OP_USBMODE, 0xffffffff, 0x0);
->>> +             break;
->>> +     default:
->>> +             dev_dbg(dev, "unknown ci_hdrc event\n");
->>
->> Please print it out.
-> Do you mean instead dev_dbg to use dev_info? in that case, each event
-> that didnt handled will cause a print.
-
-Sorry for not being clear. I meant print out `event`.
-
->>> +             break;
->>> +     }
->>> +
->>> +     return 0;
->>> +}
->>> +
->>> +static int npcm_udc_probe(struct platform_device *pdev)
->>> +{
->>> +     int ret;
->>> +     struct npcm_udc_data *ci;
->>> +     struct platform_device *plat_ci;
->>> +     struct device *dev = &pdev->dev;
->>> +
->>> +     ci = devm_kzalloc(&pdev->dev, sizeof(*ci), GFP_KERNEL);
->>> +     if (!ci)
->>> +             return -ENOMEM;
->>> +     platform_set_drvdata(pdev, ci);
->>> +
->>> +     ci->core_clk = devm_clk_get_optional(dev, NULL);
->>> +     if (IS_ERR(ci->core_clk))
->>> +             return PTR_ERR(ci->core_clk);
->>> +
->>> +     ret = clk_prepare_enable(ci->core_clk);
->>> +     if (ret)
->>> +             return dev_err_probe(dev, ret, "failed to enable the clock: %d\n", ret);
->>> +
->>> +     ci->pdata.name = dev_name(dev);
->>> +     ci->pdata.capoffset = DEF_CAPOFFSET;
->>> +     ci->pdata.flags = CI_HDRC_REQUIRES_ALIGNED_DMA |
->>> +             CI_HDRC_FORCE_VBUS_ACTIVE_ALWAYS;
->>> +     ci->pdata.phy_mode = USBPHY_INTERFACE_MODE_UTMI;
->>> +     ci->pdata.notify_event = npcm_udc_notify_event;
->>> +
->>> +     plat_ci = ci_hdrc_add_device(dev, pdev->resource, pdev->num_resources,
->>> +                                  &ci->pdata);
->>> +     if (IS_ERR(plat_ci)) {
->>> +             ret = PTR_ERR(plat_ci);
->>> +             dev_err(dev, "failed to register HDRC NPCM device: %d\n", ret);
->>> +             goto clk_err;
->>> +     }
->>> +
->>> +     pm_runtime_no_callbacks(dev);
->>> +     pm_runtime_enable(dev);
->>> +
->>> +     return 0;
->>> +
->>> +clk_err:
->>> +     clk_disable_unprepare(ci->core_clk);
->>> +     return ret;
->>> +}
->>> +
->>> +static int npcm_udc_remove(struct platform_device *pdev)
->>> +{
->>> +     struct npcm_udc_data *ci = platform_get_drvdata(pdev);
->>> +
->>> +     pm_runtime_disable(&pdev->dev);
->>> +     ci_hdrc_remove_device(ci->ci);
->>> +     clk_disable_unprepare(ci->core_clk);
->>> +
->>> +     return 0;
->>> +}
->>> +
->>> +static const struct of_device_id npcm_udc_dt_match[] = {
->>> +     { .compatible = "nuvoton,npcm750-udc", },
->>> +     { .compatible = "nuvoton,npcm845-udc", },
->>> +     { }
->>> +};
->>> +MODULE_DEVICE_TABLE(of, npcm_udc_dt_match);
->>> +
->>> +static struct platform_driver npcm_udc_driver = {
->>> +     .probe = npcm_udc_probe,
->>> +     .remove = npcm_udc_remove,
->>> +     .driver = {
->>> +             .name = "npcm_udc",
->>> +             .of_match_table = npcm_udc_dt_match,
->>> +     },
->>> +};
->>> +
->>> +module_platform_driver(npcm_udc_driver);
->>> +
->>> +MODULE_DESCRIPTION("NPCM USB device controller driver");
->>> +MODULE_AUTHOR("Tomer Maimon <tomer.maimon@nuvoton.com>");
->>
->> Should that address also be recorded as the patch author?
-> I prefer to use this e-mail since this is my main e-mail.
-
-Alright, if it’s fine with your employer that’s great.
-
->>> +MODULE_LICENSE("GPL v2");
-
-
-Kind regards,
-
-Paul
+Regards,
+Soumya
