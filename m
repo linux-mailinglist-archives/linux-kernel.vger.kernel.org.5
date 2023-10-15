@@ -2,43 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45C777C9A1A
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 18:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2F67C9A1C
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 18:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbjJOQng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 12:43:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38618 "EHLO
+        id S230225AbjJOQsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 12:48:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230178AbjJOQnf (ORCPT
+        with ESMTP id S229641AbjJOQsX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 12:43:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B0C4C1;
-        Sun, 15 Oct 2023 09:43:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DEDFC433C8;
-        Sun, 15 Oct 2023 16:43:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697388212;
-        bh=aMCfi2m7fZiWZANBzxu1L3TI50Dv3ltTV51JytDdT3w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gBcfMLRJFsZcuic1f3DLVljmM20WFghBz6qYUBPbtildmpYUqG7QgF8P7amozCGfN
-         LsP72j1BM27Q0QAFSFk7DlqmXVacvvWgdpucTWoAaW6NisEsaHzcpSWYFy92wcAy9A
-         /vhoUc8IhHuDRaqwj+nPxmyvt/cIA7TAOvREPBAg=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org
-Cc:     lwn@lwn.net, jslaby@suse.cz,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: Linux 6.1.58
-Date:   Sun, 15 Oct 2023 18:43:19 +0200
-Message-ID: <2023101519-stool-overtime-f1f4@gregkh>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <2023101518-subscript-entity-be71@gregkh>
-References: <2023101518-subscript-entity-be71@gregkh>
+        Sun, 15 Oct 2023 12:48:23 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD5DAB;
+        Sun, 15 Oct 2023 09:48:19 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39FGg2aZ008768;
+        Sun, 15 Oct 2023 16:48:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : from : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=mEUVVgqaCA4wpoOL2SQhIE0kR75KjYORD2C4fBXqT9Y=;
+ b=ERUOaU8wLOhBdYZHr7Vn6Wl14wJ8yYlsQ7P+uQgOSpb6UJlvzf15Be4wfAkvP23wYLnS
+ q4L9dxo4AMymLfJBXhHNo7qe5sqIqW4BiZ6CnPa5r3DT79C6Vupaa1/KjzpV8QTMz2Wf
+ OzfMUAfubhC84MV1r+dtY7PF9cW/Nb/fblEvvog9HlYyd+AnkesSLFQF+Zha+ligRPNu
+ nFavrwHdl5+TBgBoaUUBqpAmtwsWq+nC4Z3j0l+zBWShFZWEPvokNFoZmS2f42R0gOcH
+ fjesQA5BzjkNc6DZmRtmAE4Uo1tGPCedBiHrRGEYwHoLtD4H66p0C7KaAL8NbNHnDODa Mw== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tqkrpadqv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 15 Oct 2023 16:48:13 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39FGmDoY013458
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 15 Oct 2023 16:48:13 GMT
+Received: from [10.216.16.175] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Sun, 15 Oct
+ 2023 09:48:09 -0700
+Message-ID: <6b2115c2-ddd1-401e-81ef-e998264bfd89@quicinc.com>
+Date:   Sun, 15 Oct 2023 22:18:05 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC] usb: dwc3: core: Fix RAM interface getting stuck during
+ enumeration
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "quic_ppratap@quicinc.com" <quic_ppratap@quicinc.com>,
+        "quic_wcheng@quicinc.com" <quic_wcheng@quicinc.com>,
+        "quic_jackp@quicinc.com" <quic_jackp@quicinc.com>,
+        "quic_ugoswami@quicinc.com" <quic_ugoswami@quicinc.com>
+References: <20231011100214.25720-1-quic_kriskura@quicinc.com>
+ <20231012175912.umc3ugzk4iqwtcp3@synopsys.com>
+ <bac414a7-aa2a-4b93-82e0-998002c455e0@quicinc.com>
+ <20231012221744.ww2w6febhurvlqi6@synopsys.com>
+ <cabf2de7-bde2-4cec-9f99-2cb8c92875a5@quicinc.com>
+Content-Language: en-US
+In-Reply-To: <cabf2de7-bde2-4cec-9f99-2cb8c92875a5@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: nPLU4SAadXg2dZQpxeGhyhhG5LimVYnU
+X-Proofpoint-GUID: nPLU4SAadXg2dZQpxeGhyhhG5LimVYnU
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-15_03,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ malwarescore=0 adultscore=0 bulkscore=0 spamscore=0 priorityscore=1501
+ mlxscore=0 lowpriorityscore=0 suspectscore=0 mlxlogscore=986 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310150152
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -46,392 +87,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-diff --git a/Makefile b/Makefile
-index b435b56594f0..ce1eec0b5010 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- VERSION = 6
- PATCHLEVEL = 1
--SUBLEVEL = 57
-+SUBLEVEL = 58
- EXTRAVERSION =
- NAME = Curry Ramen
- 
-diff --git a/fs/nfs/direct.c b/fs/nfs/direct.c
-index 5a976fa343df..3bb530d4bb5c 100644
---- a/fs/nfs/direct.c
-+++ b/fs/nfs/direct.c
-@@ -93,10 +93,12 @@ nfs_direct_handle_truncated(struct nfs_direct_req *dreq,
- 		dreq->max_count = dreq_len;
- 		if (dreq->count > dreq_len)
- 			dreq->count = dreq_len;
--	}
- 
--	if (test_bit(NFS_IOHDR_ERROR, &hdr->flags) && !dreq->error)
--		dreq->error = hdr->error;
-+		if (test_bit(NFS_IOHDR_ERROR, &hdr->flags))
-+			dreq->error = hdr->error;
-+		else /* Clear outstanding error if this is EOF */
-+			dreq->error = 0;
-+	}
- }
- 
- static void
-@@ -118,18 +120,6 @@ nfs_direct_count_bytes(struct nfs_direct_req *dreq,
- 		dreq->count = dreq_len;
- }
- 
--static void nfs_direct_truncate_request(struct nfs_direct_req *dreq,
--					struct nfs_page *req)
--{
--	loff_t offs = req_offset(req);
--	size_t req_start = (size_t)(offs - dreq->io_start);
--
--	if (req_start < dreq->max_count)
--		dreq->max_count = req_start;
--	if (req_start < dreq->count)
--		dreq->count = req_start;
--}
--
- /**
-  * nfs_swap_rw - NFS address space operation for swap I/O
-  * @iocb: target I/O control block
-@@ -500,9 +490,7 @@ static void nfs_direct_add_page_head(struct list_head *list,
- 	kref_get(&head->wb_kref);
- }
- 
--static void nfs_direct_join_group(struct list_head *list,
--				  struct nfs_commit_info *cinfo,
--				  struct inode *inode)
-+static void nfs_direct_join_group(struct list_head *list, struct inode *inode)
- {
- 	struct nfs_page *req, *subreq;
- 
-@@ -524,7 +512,7 @@ static void nfs_direct_join_group(struct list_head *list,
- 				nfs_release_request(subreq);
- 			}
- 		} while ((subreq = subreq->wb_this_page) != req);
--		nfs_join_page_group(req, cinfo, inode);
-+		nfs_join_page_group(req, inode);
- 	}
- }
- 
-@@ -542,15 +530,20 @@ nfs_direct_write_scan_commit_list(struct inode *inode,
- static void nfs_direct_write_reschedule(struct nfs_direct_req *dreq)
- {
- 	struct nfs_pageio_descriptor desc;
--	struct nfs_page *req;
-+	struct nfs_page *req, *tmp;
- 	LIST_HEAD(reqs);
- 	struct nfs_commit_info cinfo;
-+	LIST_HEAD(failed);
- 
- 	nfs_init_cinfo_from_dreq(&cinfo, dreq);
- 	nfs_direct_write_scan_commit_list(dreq->inode, &reqs, &cinfo);
- 
--	nfs_direct_join_group(&reqs, &cinfo, dreq->inode);
-+	nfs_direct_join_group(&reqs, dreq->inode);
- 
-+	dreq->count = 0;
-+	dreq->max_count = 0;
-+	list_for_each_entry(req, &reqs, wb_list)
-+		dreq->max_count += req->wb_bytes;
- 	nfs_clear_pnfs_ds_commit_verifiers(&dreq->ds_cinfo);
- 	get_dreq(dreq);
- 
-@@ -558,40 +551,27 @@ static void nfs_direct_write_reschedule(struct nfs_direct_req *dreq)
- 			      &nfs_direct_write_completion_ops);
- 	desc.pg_dreq = dreq;
- 
--	while (!list_empty(&reqs)) {
--		req = nfs_list_entry(reqs.next);
-+	list_for_each_entry_safe(req, tmp, &reqs, wb_list) {
- 		/* Bump the transmission count */
- 		req->wb_nio++;
- 		if (!nfs_pageio_add_request(&desc, req)) {
--			spin_lock(&dreq->lock);
--			if (dreq->error < 0) {
--				desc.pg_error = dreq->error;
--			} else if (desc.pg_error != -EAGAIN) {
--				dreq->flags = 0;
--				if (!desc.pg_error)
--					desc.pg_error = -EIO;
-+			nfs_list_move_request(req, &failed);
-+			spin_lock(&cinfo.inode->i_lock);
-+			dreq->flags = 0;
-+			if (desc.pg_error < 0)
- 				dreq->error = desc.pg_error;
--			} else
--				dreq->flags = NFS_ODIRECT_RESCHED_WRITES;
--			spin_unlock(&dreq->lock);
--			break;
-+			else
-+				dreq->error = -EIO;
-+			spin_unlock(&cinfo.inode->i_lock);
- 		}
- 		nfs_release_request(req);
- 	}
- 	nfs_pageio_complete(&desc);
- 
--	while (!list_empty(&reqs)) {
--		req = nfs_list_entry(reqs.next);
-+	while (!list_empty(&failed)) {
-+		req = nfs_list_entry(failed.next);
- 		nfs_list_remove_request(req);
- 		nfs_unlock_and_release_request(req);
--		if (desc.pg_error == -EAGAIN) {
--			nfs_mark_request_commit(req, NULL, &cinfo, 0);
--		} else {
--			spin_lock(&dreq->lock);
--			nfs_direct_truncate_request(dreq, req);
--			spin_unlock(&dreq->lock);
--			nfs_release_request(req);
--		}
- 	}
- 
- 	if (put_dreq(dreq))
-@@ -611,6 +591,8 @@ static void nfs_direct_commit_complete(struct nfs_commit_data *data)
- 	if (status < 0) {
- 		/* Errors in commit are fatal */
- 		dreq->error = status;
-+		dreq->max_count = 0;
-+		dreq->count = 0;
- 		dreq->flags = NFS_ODIRECT_DONE;
- 	} else {
- 		status = dreq->error;
-@@ -621,12 +603,7 @@ static void nfs_direct_commit_complete(struct nfs_commit_data *data)
- 	while (!list_empty(&data->pages)) {
- 		req = nfs_list_entry(data->pages.next);
- 		nfs_list_remove_request(req);
--		if (status < 0) {
--			spin_lock(&dreq->lock);
--			nfs_direct_truncate_request(dreq, req);
--			spin_unlock(&dreq->lock);
--			nfs_release_request(req);
--		} else if (!nfs_write_match_verf(verf, req)) {
-+		if (status >= 0 && !nfs_write_match_verf(verf, req)) {
- 			dreq->flags = NFS_ODIRECT_RESCHED_WRITES;
- 			/*
- 			 * Despite the reboot, the write was successful,
-@@ -634,7 +611,7 @@ static void nfs_direct_commit_complete(struct nfs_commit_data *data)
- 			 */
- 			req->wb_nio = 0;
- 			nfs_mark_request_commit(req, NULL, &cinfo, 0);
--		} else
-+		} else /* Error or match */
- 			nfs_release_request(req);
- 		nfs_unlock_and_release_request(req);
- 	}
-@@ -687,7 +664,6 @@ static void nfs_direct_write_clear_reqs(struct nfs_direct_req *dreq)
- 	while (!list_empty(&reqs)) {
- 		req = nfs_list_entry(reqs.next);
- 		nfs_list_remove_request(req);
--		nfs_direct_truncate_request(dreq, req);
- 		nfs_release_request(req);
- 		nfs_unlock_and_release_request(req);
- 	}
-@@ -737,8 +713,7 @@ static void nfs_direct_write_completion(struct nfs_pgio_header *hdr)
- 	}
- 
- 	nfs_direct_count_bytes(dreq, hdr);
--	if (test_bit(NFS_IOHDR_UNSTABLE_WRITES, &hdr->flags) &&
--	    !test_bit(NFS_IOHDR_ERROR, &hdr->flags)) {
-+	if (test_bit(NFS_IOHDR_UNSTABLE_WRITES, &hdr->flags)) {
- 		if (!dreq->flags)
- 			dreq->flags = NFS_ODIRECT_DO_COMMIT;
- 		flags = dreq->flags;
-@@ -782,23 +757,18 @@ static void nfs_write_sync_pgio_error(struct list_head *head, int error)
- static void nfs_direct_write_reschedule_io(struct nfs_pgio_header *hdr)
- {
- 	struct nfs_direct_req *dreq = hdr->dreq;
--	struct nfs_page *req;
--	struct nfs_commit_info cinfo;
- 
- 	trace_nfs_direct_write_reschedule_io(dreq);
- 
--	nfs_init_cinfo_from_dreq(&cinfo, dreq);
- 	spin_lock(&dreq->lock);
--	if (dreq->error == 0)
-+	if (dreq->error == 0) {
- 		dreq->flags = NFS_ODIRECT_RESCHED_WRITES;
--	set_bit(NFS_IOHDR_REDO, &hdr->flags);
--	spin_unlock(&dreq->lock);
--	while (!list_empty(&hdr->pages)) {
--		req = nfs_list_entry(hdr->pages.next);
--		nfs_list_remove_request(req);
--		nfs_unlock_request(req);
--		nfs_mark_request_commit(req, NULL, &cinfo, 0);
-+		/* fake unstable write to let common nfs resend pages */
-+		hdr->verf.committed = NFS_UNSTABLE;
-+		hdr->good_bytes = hdr->args.offset + hdr->args.count -
-+			hdr->io_start;
- 	}
-+	spin_unlock(&dreq->lock);
- }
- 
- static const struct nfs_pgio_completion_ops nfs_direct_write_completion_ops = {
-@@ -826,11 +796,9 @@ static ssize_t nfs_direct_write_schedule_iovec(struct nfs_direct_req *dreq,
- {
- 	struct nfs_pageio_descriptor desc;
- 	struct inode *inode = dreq->inode;
--	struct nfs_commit_info cinfo;
- 	ssize_t result = 0;
- 	size_t requested_bytes = 0;
- 	size_t wsize = max_t(size_t, NFS_SERVER(inode)->wsize, PAGE_SIZE);
--	bool defer = false;
- 
- 	trace_nfs_direct_write_schedule_iovec(dreq);
- 
-@@ -871,39 +839,19 @@ static ssize_t nfs_direct_write_schedule_iovec(struct nfs_direct_req *dreq,
- 				break;
- 			}
- 
--			pgbase = 0;
--			bytes -= req_len;
--			requested_bytes += req_len;
--			pos += req_len;
--			dreq->bytes_left -= req_len;
--
--			if (defer) {
--				nfs_mark_request_commit(req, NULL, &cinfo, 0);
--				continue;
--			}
--
- 			nfs_lock_request(req);
- 			req->wb_index = pos >> PAGE_SHIFT;
- 			req->wb_offset = pos & ~PAGE_MASK;
--			if (nfs_pageio_add_request(&desc, req))
--				continue;
--
--			/* Exit on hard errors */
--			if (desc.pg_error < 0 && desc.pg_error != -EAGAIN) {
-+			if (!nfs_pageio_add_request(&desc, req)) {
- 				result = desc.pg_error;
- 				nfs_unlock_and_release_request(req);
- 				break;
- 			}
--
--			/* If the error is soft, defer remaining requests */
--			nfs_init_cinfo_from_dreq(&cinfo, dreq);
--			spin_lock(&dreq->lock);
--			dreq->flags = NFS_ODIRECT_RESCHED_WRITES;
--			spin_unlock(&dreq->lock);
--			nfs_unlock_request(req);
--			nfs_mark_request_commit(req, NULL, &cinfo, 0);
--			desc.pg_error = 0;
--			defer = true;
-+			pgbase = 0;
-+			bytes -= req_len;
-+			requested_bytes += req_len;
-+			pos += req_len;
-+			dreq->bytes_left -= req_len;
- 		}
- 		nfs_direct_release_pages(pagevec, npages);
- 		kvfree(pagevec);
-diff --git a/fs/nfs/write.c b/fs/nfs/write.c
-index 0a8aed0ac994..f41d24b54fd1 100644
---- a/fs/nfs/write.c
-+++ b/fs/nfs/write.c
-@@ -58,8 +58,7 @@ static const struct nfs_pgio_completion_ops nfs_async_write_completion_ops;
- static const struct nfs_commit_completion_ops nfs_commit_completion_ops;
- static const struct nfs_rw_ops nfs_rw_write_ops;
- static void nfs_inode_remove_request(struct nfs_page *req);
--static void nfs_clear_request_commit(struct nfs_commit_info *cinfo,
--				     struct nfs_page *req);
-+static void nfs_clear_request_commit(struct nfs_page *req);
- static void nfs_init_cinfo_from_inode(struct nfs_commit_info *cinfo,
- 				      struct inode *inode);
- static struct nfs_page *
-@@ -503,8 +502,8 @@ nfs_destroy_unlinked_subrequests(struct nfs_page *destroy_list,
-  * the (former) group.  All subrequests are removed from any write or commit
-  * lists, unlinked from the group and destroyed.
-  */
--void nfs_join_page_group(struct nfs_page *head, struct nfs_commit_info *cinfo,
--			 struct inode *inode)
-+void
-+nfs_join_page_group(struct nfs_page *head, struct inode *inode)
- {
- 	struct nfs_page *subreq;
- 	struct nfs_page *destroy_list = NULL;
-@@ -534,7 +533,7 @@ void nfs_join_page_group(struct nfs_page *head, struct nfs_commit_info *cinfo,
- 	 * Commit list removal accounting is done after locks are dropped */
- 	subreq = head;
- 	do {
--		nfs_clear_request_commit(cinfo, subreq);
-+		nfs_clear_request_commit(subreq);
- 		subreq = subreq->wb_this_page;
- 	} while (subreq != head);
- 
-@@ -568,10 +567,8 @@ nfs_lock_and_join_requests(struct page *page)
- {
- 	struct inode *inode = page_file_mapping(page)->host;
- 	struct nfs_page *head;
--	struct nfs_commit_info cinfo;
- 	int ret;
- 
--	nfs_init_cinfo_from_inode(&cinfo, inode);
- 	/*
- 	 * A reference is taken only on the head request which acts as a
- 	 * reference to the whole page group - the group will not be destroyed
-@@ -588,7 +585,7 @@ nfs_lock_and_join_requests(struct page *page)
- 		return ERR_PTR(ret);
- 	}
- 
--	nfs_join_page_group(head, &cinfo, inode);
-+	nfs_join_page_group(head, inode);
- 
- 	return head;
- }
-@@ -959,16 +956,18 @@ nfs_clear_page_commit(struct page *page)
- }
- 
- /* Called holding the request lock on @req */
--static void nfs_clear_request_commit(struct nfs_commit_info *cinfo,
--				     struct nfs_page *req)
-+static void
-+nfs_clear_request_commit(struct nfs_page *req)
- {
- 	if (test_bit(PG_CLEAN, &req->wb_flags)) {
- 		struct nfs_open_context *ctx = nfs_req_openctx(req);
- 		struct inode *inode = d_inode(ctx->dentry);
-+		struct nfs_commit_info cinfo;
- 
-+		nfs_init_cinfo_from_inode(&cinfo, inode);
- 		mutex_lock(&NFS_I(inode)->commit_mutex);
--		if (!pnfs_clear_request_commit(req, cinfo)) {
--			nfs_request_remove_commit_list(req, cinfo);
-+		if (!pnfs_clear_request_commit(req, &cinfo)) {
-+			nfs_request_remove_commit_list(req, &cinfo);
- 		}
- 		mutex_unlock(&NFS_I(inode)->commit_mutex);
- 		nfs_clear_page_commit(req->wb_page);
-diff --git a/include/linux/nfs_page.h b/include/linux/nfs_page.h
-index e39a8cf8b179..ba7e2e4b0926 100644
---- a/include/linux/nfs_page.h
-+++ b/include/linux/nfs_page.h
-@@ -145,9 +145,7 @@ extern	void nfs_unlock_request(struct nfs_page *req);
- extern	void nfs_unlock_and_release_request(struct nfs_page *);
- extern	struct nfs_page *nfs_page_group_lock_head(struct nfs_page *req);
- extern	int nfs_page_group_lock_subrequests(struct nfs_page *head);
--extern void nfs_join_page_group(struct nfs_page *head,
--				struct nfs_commit_info *cinfo,
--				struct inode *inode);
-+extern	void nfs_join_page_group(struct nfs_page *head, struct inode *inode);
- extern int nfs_page_group_lock(struct nfs_page *);
- extern void nfs_page_group_unlock(struct nfs_page *);
- extern bool nfs_page_group_sync_on_bit(struct nfs_page *, unsigned int);
-diff --git a/lib/test_meminit.c b/lib/test_meminit.c
-index 0ae35223d773..85d8dd8e01dc 100644
---- a/lib/test_meminit.c
-+++ b/lib/test_meminit.c
-@@ -93,7 +93,7 @@ static int __init test_pages(int *total_failures)
- 	int failures = 0, num_tests = 0;
- 	int i;
- 
--	for (i = 0; i <= MAX_ORDER; i++)
-+	for (i = 0; i < MAX_ORDER; i++)
- 		num_tests += do_alloc_pages_order(i, &failures);
- 
- 	REPORT_FAILURES_IN_FN();
+
+
+On 10/13/2023 9:28 AM, Krishna Kurapati PSSNV wrote:
+> 
+> 
+> On 10/13/2023 3:47 AM, Thinh Nguyen wrote:
+>> On Fri, Oct 13, 2023, Krishna Kurapati PSSNV wrote:
+>>>
+>>>
+>>> On 10/12/2023 11:29 PM, Thinh Nguyen wrote:
+>>>
+>>>>> -static int dwc3_gadget_soft_disconnect(struct dwc3 *dwc)
+>>>>> +int dwc3_gadget_soft_disconnect(struct dwc3 *dwc)
+>>>>>    {
+>>>>>        unsigned long flags;
+>>>>>        int ret;
+>>>>> @@ -2701,7 +2701,7 @@ static int dwc3_gadget_soft_disconnect(struct 
+>>>>> dwc3 *dwc)
+>>>>>        return ret;
+>>>>>    }
+>>>>> -static int dwc3_gadget_soft_connect(struct dwc3 *dwc)
+>>>>> +int dwc3_gadget_soft_connect(struct dwc3 *dwc)
+>>>>>    {
+>>>>>        int ret;
+>>>>> @@ -3963,6 +3963,7 @@ static void 
+>>>>> dwc3_gadget_disconnect_interrupt(struct dwc3 *dwc)
+>>>>>        dwc3_gadget_dctl_write_safe(dwc, reg);
+>>>>>        dwc->connected = false;
+>>>>> +    dwc->cable_disconnected = true;
+>>>>>        dwc3_disconnect_gadget(dwc);
+>>>>> @@ -4038,6 +4039,7 @@ static void 
+>>>>> dwc3_gadget_reset_interrupt(struct dwc3 *dwc)
+>>>>>         */
+>>>>>        dwc3_stop_active_transfers(dwc);
+>>>>>        dwc->connected = true;
+>>>>> +    dwc->cable_disconnected = false;
+>>>>>        reg = dwc3_readl(dwc->regs, DWC3_DCTL);
+>>>>>        reg &= ~DWC3_DCTL_TSTCTRL_MASK;
+>>>>> -- 
+>>>>> 2.42.0
+>>>>>
+>>>>
+>>>> We can just reset the controller when there's End Transfer command
+>>>> timeout as a failure recovery. No need to do what you're doing here.
+>>>>
+>>> Hi Thinh,
+>>>
+>>>   That was what I initially wanted to do, but there were couple of 
+>>> reasons I
+>>> wanted to take this approach:
+>>>
+>>> 1. We can't just reset the controller in midst of gadget_interrupt. 
+>>> We need
+>>> to process it completely and then take action.
+>>
+>> You can flag the driver so you can do the teardown/soft-reset at the
+>> appropriate time.
+>>
+>>>
+>>> 2. The above log was seen on QRD variant of SM8550/SM8650 easily. But on
+>>> other platforms of same targets, the issue comes up at some other 
+>>> instances
+>>> of code, at a point where no IRQ is running. In such cases its not 
+>>> possible
+>>> to accurately find out code portions and reset the controller. The way I
+>>> confirmed that both platforms are having the same issue is:
+>>>
+>>> a. During cable disconnect, I am not receiving disconnect interrupt
+>>> b. The reg dump is exactly same in both cases (BMU as well)
+>>>
+>>> So I felt it was better to fix it during cable disconnect because 
+>>> even if we
+>>> remove cable, we are still in device mode only and in this case we can
+>>> unblock suspend and also bring back controller to a known state.
+>>>
+>>> Let me know your thoughts on the above.
+>>>
+>>
+>> This issue happens outside of disconnect right? Did you account for port
+>> reset?
+>>
+>> The symptom should be the same. At some point, a command will be issued.
+>> If a command timed out, then something is really wrong (especially End
+>> Transfer command). We can attempt to recover base on this symptom then.
+>>
+>> And you don't need to poll for timeout for this specific type of error.
+>> Just read some known register like GSNPSID to see if it's invalid.
+> 
+> Hi Thinh,
+> 
+>   Yes. It actually happens before disconnect, but I was trying to handle 
+> it during disconnect. How about I add a check in gadget_ep_cmd saying 
+> that if cmd timeout happens, then read the snpsid and if it reads an 
+> invalid value, then I will call soft_disconnect followed by 
+> soft_connect. That must cover all cases ?
+> 
+Hi Thinh,
+
+One more datapoint for putting forward the above opinion. There are two 
+types of situations observed during bus reset when we try to do endxfer 
+on ep0in followed by set_stall on ep0out:
+
+1. If we issue endxfer for ep0in, and it times out, then the next 
+command set_stall is successful (only because all reads give zero and 
+since we check for CMDACT bit for ep0out after setting it, and since the 
+read of DEPCMD register gives "0" while polling for it, sw indicated 
+that set stall is successful. But when we check GEVTADDR at this point, 
+both ADDRLO and ADDRHI read zero.
+
+2. If ram access timeout occurs while polling for CMDACT bit after 
+issuing endxfer on ep0in, then at that instant, polling returns true, sw 
+indicates that endxfer is successful but inreality when checked, 
+GEVTADDR LO/HI read zero.
+
+So I think it would be better to check for validity of GEVADDR registers 
+at end of gadget_ep_cmd to identify id RAM access timeout happened and 
+call soft_disconnect followed by soft_connect.
+
+Let me know your thoughts on this
+
+Regards,
+Krishna,
