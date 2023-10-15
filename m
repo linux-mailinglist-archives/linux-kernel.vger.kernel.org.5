@@ -2,116 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B67FE7C9882
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 12:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A89C7C988A
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 12:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229648AbjJOJz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 05:55:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51596 "EHLO
+        id S229837AbjJOKDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 06:03:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbjJOJzY (ORCPT
+        with ESMTP id S229596AbjJOKD3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 05:55:24 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF324AD
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 02:55:21 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-53e855d7dacso1168428a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 02:55:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697363720; x=1697968520; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=WvfQbrUOAety/yQQMKIQiictUB3muNGYsVZ1vSvxI3g=;
-        b=GhXEcA0FIO87MWvMyLWvsXwtu/kLh+tzUnrnX4XJSYhVOlkGOupELtKMtpKtYW+ss5
-         DgLl/lIGgpUmqeIHRuFJLT12pLPS3349+Vi/stkwrb0HBxxeOuabCQ4O8QqOXOyvSXaM
-         2fIUFcrkux+ATazIFHHkdyOlTkm7efJkgtnvJv9aoj3n8iD0TQ0vgEc5nxgxKPHw0mMs
-         WqSdnLtlINHaclLt9CBNvpY2y+6AkwvgXJn4hUpcjAncj2NpE6178yIgUtRp39e2AZ+s
-         HgZHecW3O0qGvcGThi4NPfuI8zUsgTaAM4+14wjvK2zuWbJf4touk4LvO4UwbXXH/c5V
-         q0ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697363720; x=1697968520;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WvfQbrUOAety/yQQMKIQiictUB3muNGYsVZ1vSvxI3g=;
-        b=OYqVplKcs4L0ymNCDBwq2xQVcP9QJ3IRdD8jOgP9ni9yKh0DFF27kLWlqQkCV1kMQ6
-         nfpx/S+IrphIXGV4EFqKWVkRin5+3LCPCVmRorrc4xvSHIC87+DcX+Qo0K7oRIC0Z2D2
-         lMZa+MjqzQ56u922T3lU5lN92DdDPPv8XmNGcsSFcBV6UHN8noNKtNrAJIzdF9ALNoXL
-         1wcsZytzbSL9UBAe6q7d8HufbDz5NXqSzFbKLQ/CXltubAGB0YxvvzK78d8IKA+gdQA5
-         6Y3o7NkEMMKCq5733XwwEEkR91Lh6qpAfd6Ovx8h38VxPXjdewkWg493bCIV5MXwUo4F
-         rrwQ==
-X-Gm-Message-State: AOJu0Yza6Uj12ijsLJ/EQViGEWYeeGm4vOg/ERexpuLuu84w8DOKRJe1
-        JDEeny4EcUVkgrOkuYgZGQ==
-X-Google-Smtp-Source: AGHT+IHxoeMhCG3v2V0tkipffEqPtxQL84PiKF/YNHtRvpc/SoFf6I4cpvEwZBSzmd5ybZWGocFcYg==
-X-Received: by 2002:a17:906:254:b0:9b2:b691:9b5f with SMTP id 20-20020a170906025400b009b2b6919b5fmr27177944ejl.41.1697363720160;
-        Sun, 15 Oct 2023 02:55:20 -0700 (PDT)
-Received: from p183 ([46.53.250.251])
-        by smtp.gmail.com with ESMTPSA id o19-20020a17090637d300b009b65a698c16sm2038960ejc.220.2023.10.15.02.55.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Oct 2023 02:55:19 -0700 (PDT)
-Date:   Sun, 15 Oct 2023 12:55:17 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] smp: fix __smp_processor_id() backup macro
-Message-ID: <c22be6b2-5d80-4168-95cc-f86a79d8cb39@p183>
-References: <b12bdef9-d5c0-49cf-aea2-ff7b56220fdc@p183>
- <20231014151221.46096b7fc17ccaeb691ff5d0@linux-foundation.org>
+        Sun, 15 Oct 2023 06:03:29 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B68BCDE
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 03:03:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1697364200;
+        bh=kOWLjiDpvHE5NpXC9jG7b3FrojOzk472gOHlXk+Q33c=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=rBCIV0QeEgpaqeHWTRKOjcXQAoTKonEC1zu+hDBOH9+1Lc2hYuPynU4INIFqkiA/9
+         iPUXL+F/5yeB7Nao50xfT0Ax3C08fkIRGM1bMX+GvTCE6/4Nk7MVZkcRLQwLlS6Tmm
+         PcnTnaMG8KdcCWiCvQz1bljKwiDjGWj1FieYG/R+TOLyOetUuIeFj4ueNa+RMQIc4Y
+         O9I/8i8gSeqqe71JXX0ORfLeL2g34YiGh648nVWMI1y9iZf4G/knP52TDSkFDI0Int
+         zXbIUyjxqv2dObj9CC6WDcLmZFRhqEGLmjn+HgkXuh9P5bQ5heu5lEDp5YcQzBRoLV
+         ied1zNMhSWtbw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S7bRD5hCvz4wnx;
+        Sun, 15 Oct 2023 21:03:20 +1100 (AEDT)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+In-Reply-To: <cover.1695659959.git.christophe.leroy@csgroup.eu>
+References: <cover.1695659959.git.christophe.leroy@csgroup.eu>
+Subject: Re: (subset) [PATCH v2 00/37] Implement execute-only protection on powerpc
+Message-Id: <169736402375.957740.6017054245951697068.b4-ty@ellerman.id.au>
+Date:   Sun, 15 Oct 2023 21:00:23 +1100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231014151221.46096b7fc17ccaeb691ff5d0@linux-foundation.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 14, 2023 at 03:12:21PM -0700, Andrew Morton wrote:
-> On Sat, 14 Oct 2023 19:14:15 +0300 Alexey Dobriyan <adobriyan@gmail.com> wrote:
+On Mon, 25 Sep 2023 20:31:14 +0200, Christophe Leroy wrote:
+> This series reworks _PAGE_FLAGS on all platforms in order
+> to implement execute-only protection on all powerpc.
 > 
-> > Every __smp_processor_id usage doesn't have arguments and
-> > every raw_smp_processor_id usage doesn't have arguments,
-> > therefore "#define __smp_processor_id(x)" can not possibly work.
-> > 
-> > ...
-> >
-> > --- a/include/linux/smp.h
-> > +++ b/include/linux/smp.h
-> > @@ -261,7 +261,7 @@ static inline int get_boot_cpu_id(void)
-> >   * regular asm read for the stable.
-> >   */
-> >  #ifndef __smp_processor_id
-> > -#define __smp_processor_id(x) raw_smp_processor_id(x)
-> > +#define __smp_processor_id() raw_smp_processor_id()
-> >  #endif
-> >  
+> For all targets except 40x and 604 it will be a real execute-only
+> protection as the hardware and/or software allows a distinct protection.
 > 
-> It's been that way for at least 4 years.  Presumably this is never used
-> and should be removed?
+> For 40x and 604 that's a poor's man execute-only protection in the
+> way that once the page is in the TLB it can be executed. But it's
+> better than nothing and allows to have a similar implementation for
+> all sorts of powerpc.
+> 
+> [...]
 
-Deleting breaks compilation immediately.
+Patches 1 and 2 applied to powerpc/fixes.
 
-C89 6.8.3 §4 says
+[01/37] powerpc/8xx: Fix pte_access_permitted() for PAGE_NONE
+        https://git.kernel.org/powerpc/c/5d9cea8a552ee122e21fbd5a3c5d4eb85f648e06
+[02/37] powerpc/64e: Fix wrong test in __ptep_test_and_clear_young()
+        https://git.kernel.org/powerpc/c/5ea0bbaa32e8f54e9a57cfee4a3b8769b80be0d2
 
-	"The number of arguments in an invocation of a function-like
-	macro shall agree with the number of parameters in the macro
-	definition, ..."
-
-C99 relaxes this in 6.10.3 §4
-
-	the number of arguments (including those arguments
-	consisting of no preprocesing tokens) ... shall equal
-	the number of parameters in the macro definition.
-
-So, "#define M()" works with M() only, but "#define M(a)" worked with
-M(1) and started working as M() which is very funny.
-
-In other words changelog is wrong: it can and does work (sort of by
-accident).
+cheers
