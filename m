@@ -2,105 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8578E7C992B
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 15:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 437EE7C992D
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 15:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbjJONgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 09:36:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39896 "EHLO
+        id S229904AbjJONj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 09:39:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbjJONgF (ORCPT
+        with ESMTP id S229779AbjJONj1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 09:36:05 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07D6DA6;
-        Sun, 15 Oct 2023 06:36:02 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-27cfb84432aso2281627a91.2;
-        Sun, 15 Oct 2023 06:36:02 -0700 (PDT)
+        Sun, 15 Oct 2023 09:39:27 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31808B7
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 06:39:25 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6c7ce16ddfaso2583802a34.3
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 06:39:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697376961; x=1697981761; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jWM7j+OZCwLtm2rLuGsJS/VApTDDC6NKoILtMy2P7BE=;
-        b=KbDr62pDpYPxDPDu+6SLMcxawMby0UDawnZ3As1UnsNiTpUymrKu27KKG+GBPqps4o
-         k96Y3eovgVIwIy+n/AueIXsrWSr9CYsYsASGA/6vfMVJba+LFhIP3dJRiBGKZCrapdLt
-         byGNSR1m1xtfWwHMwYrcAGqcPvogW+9lVmfxBvdmZ7SgOjuvd+5WHwKAGLBY5geDZgoY
-         PlNRCI4DPLtLeIP7MlSdfNIrlcmg9+1LeDpIhmTtOS8tizi9WjFZMnGgg08URHkAzA0C
-         UvFHNL1jqVf+mZYGRPLdEOEwK88BOVmQ/RuyCxyCJWFuWxHOyjMtQ0OTzPRsI50ATgFa
-         HgRw==
+        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1697377164; x=1697981964; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZzrY7VrqbAXMDQ/An7uucXcUyYeK5QX4Iy/EeDSFw9Q=;
+        b=07gmkEyYlTje7KG4Pz5zn2csjnguffsHbs6sjyxvUXef52O04NwLi36J6q96N/nNCz
+         4lZgjiityXknQhYcWWuiVh2Rq30roM/XevjSLRfylPmjpmeYThXqXQvvjKYmUApX6cov
+         7gW5sjN1zTtBM9Eomqq2VAEq935rjGlT/LMNJvjK7nKA2roxhZ0RTUsgwEQ25qvlODgS
+         /kl/x1FF/gg7rRSI3fC+rxaSWCAOGcU4zpR9ddBiKHYtI4hrn5OJ1mtukZo+X6ko+4+O
+         oXjTLXFYQCySrFAHX19yeA6RwV575NJEEcACZHZZSEN8KvgUiOM0NjTHHmTvVFeTr27w
+         +XIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697376961; x=1697981761;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jWM7j+OZCwLtm2rLuGsJS/VApTDDC6NKoILtMy2P7BE=;
-        b=JCBHwRhP7nygtfMgA7IoNWbofFW+i9qoDyGeXFhTs7luiqrI3t3Lj117v00QehxdU0
-         jJ0mE87QgnbIdjEfWmxtfX/okyhZ8J9tsCbrLpb9RQyapVFwXBJxlw9PqM/mNWaEP8ru
-         HT7HDByMgbD6GOua5tncP7JExI3E9+eEmZ0notyuZfCKAElx7KoCreE7KAgEsHgZ+PgS
-         o2GuqB+7CCgHL/o3Yxj1PZI45wC2uHZFljpb0YwsDTpybsBCJZsm1ijKAGrKNhBCPcUy
-         5F4HK6xhZDhT3Nnv4VWMzFZSCq+hbZPjUG+ae+knPHKj9ryll47PX5ImZBa/deILT0Nn
-         UZbA==
-X-Gm-Message-State: AOJu0YyxJBvocEUlrFCTAiS4NCJN7B47S4dT8BY3kEEXZZWwt39OXt3l
-        BOrdHUIt78RMo5qWPWeGi04=
-X-Google-Smtp-Source: AGHT+IG3EY/GYPlQhjDKMrD7ydfH3jXllsSUiuQpVP2X+ZvbgJar2DW/73YFnlgwQl6OJ3GDzD4a6Q==
-X-Received: by 2002:a17:90a:1541:b0:268:1355:b03e with SMTP id y1-20020a17090a154100b002681355b03emr28186055pja.38.1697376961266;
-        Sun, 15 Oct 2023 06:36:01 -0700 (PDT)
-Received: from ubuntu ([122.171.162.0])
-        by smtp.gmail.com with ESMTPSA id e7-20020a17090a804700b00263b9e75aecsm2966806pjw.41.2023.10.15.06.36.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Oct 2023 06:36:01 -0700 (PDT)
-Date:   Sun, 15 Oct 2023 06:35:58 -0700
-From:   Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
-To:     Manish Chopra <manishc@marvell.com>, GR-Linux-NIC-Dev@marvell.com,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     kumaran.4353@gmail.com
-Subject: [PATCH] staging: qlge: Replace the occurrences of (1<<x) by BIT(x)
-Message-ID: <20231015133558.GA5489@ubuntu>
+        d=1e100.net; s=20230601; t=1697377164; x=1697981964;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZzrY7VrqbAXMDQ/An7uucXcUyYeK5QX4Iy/EeDSFw9Q=;
+        b=ePWmsZSeAP4/tdtrMDea+yvYxWisAIkuZZaQzvWFZQohXJuryJhIH41gPd9RoLKc9o
+         gyjPcIoCzV+3+VlMhegV7Gkmf7wl0mz0FL3VXQdKdMtd7Av8aovpEq1FftYLQev9ZdoX
+         aWxxZ0iccnA79Uk7S7A2L6g9YgGe0iHsBOH728fcxx5iQzlF8I2j7AhrMMOabwBJxzcQ
+         b2H+b0qkdFJiPD+UeyBBShHKGgp+RVrK1dfsa5dgEIdNyel5uLVPD9WgvbfihByDZB0+
+         nHhmWjX6RcGX3JqCxFB6ZZPo0Cl9r1RCBPDcktoDe6Qc+cz1E1BR62FZ8Fu6iS8Xj+UC
+         iGuw==
+X-Gm-Message-State: AOJu0YwG90ZbjgB/mXmYCxAAd5nmIgiEr1v2pReOeTgVglKnk+4uijXj
+        VRoYNRU3vc6Kj/ct0qv1hTveGw==
+X-Google-Smtp-Source: AGHT+IHMn+MWkXPiN2PFxj8eGoPs4OSA1Ena1/nrJQ5EuTY6OU4nQm29Q9sWZwur4SV4dUon/ktE5w==
+X-Received: by 2002:a9d:7751:0:b0:6b9:ba85:a5fa with SMTP id t17-20020a9d7751000000b006b9ba85a5famr37027847otl.5.1697377164515;
+        Sun, 15 Oct 2023 06:39:24 -0700 (PDT)
+Received: from localhost ([2400:4050:a840:1e00:78d2:b862:10a7:d486])
+        by smtp.gmail.com with UTF8SMTPSA id h9-20020a654689000000b005af08f65227sm2518837pgr.80.2023.10.15.06.39.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 15 Oct 2023 06:39:24 -0700 (PDT)
+From:   Akihiko Odaki <akihiko.odaki@daynix.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, Nick Terrell <terrelln@fb.com>,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Akihiko Odaki <akihiko.odaki@daynix.com>
+Subject: [PATCH bpf-next] selftests/bpf: Use pkg-config to determine ld flags
+Date:   Sun, 15 Oct 2023 22:39:14 +0900
+Message-ID: <20231015133916.257197-1-akihiko.odaki@daynix.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adhere to linux coding style. Reported by checkpatch.pl:
-CHECK: Prefer using the BIT macro
+When linking statically, libraries may require other dependencies to be
+included to ld flags. In particular, libelf may require libzstd. Use
+pkg-config to determine such dependencies.
 
-Signed-off-by: Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
+Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
 ---
- drivers/staging/qlge/qlge.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/testing/selftests/bpf/Makefile   | 3 ++-
+ tools/testing/selftests/bpf/README.rst | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/qlge/qlge.h b/drivers/staging/qlge/qlge.h
-index d0dd659834ee..69c5b332fd7c 100644
---- a/drivers/staging/qlge/qlge.h
-+++ b/drivers/staging/qlge/qlge.h
-@@ -1273,7 +1273,7 @@ struct qlge_net_req_iocb {
-  */
- struct wqicb {
- 	__le16 len;
--#define Q_LEN_V		(1 << 4)
-+#define Q_LEN_V		BIT(4)
- #define Q_LEN_CPP_CONT	0x0000
- #define Q_LEN_CPP_16	0x0001
- #define Q_LEN_CPP_32	0x0002
-@@ -1308,7 +1308,7 @@ struct cqicb {
- #define FLAGS_LI	0x40
- #define FLAGS_LC	0x80
- 	__le16 len;
--#define LEN_V		(1 << 4)
-+#define LEN_V		BIT(4)
- #define LEN_CPP_CONT	0x0000
- #define LEN_CPP_32	0x0001
- #define LEN_CPP_64	0x0002
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index caede9b574cb..833134aa2eda 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -4,6 +4,7 @@ include ../../../scripts/Makefile.arch
+ include ../../../scripts/Makefile.include
+ 
+ CXX ?= $(CROSS_COMPILE)g++
++PKG_CONFIG ?= $(CROSS_COMPILE)pkg-config
+ 
+ CURDIR := $(abspath .)
+ TOOLSDIR := $(abspath ../../..)
+@@ -31,7 +32,7 @@ CFLAGS += -g -O0 -rdynamic -Wall -Werror $(GENFLAGS) $(SAN_CFLAGS)	\
+ 	  -I$(CURDIR) -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)		\
+ 	  -I$(TOOLSINCDIR) -I$(APIDIR) -I$(OUTPUT)
+ LDFLAGS += $(SAN_LDFLAGS)
+-LDLIBS += -lelf -lz -lrt -lpthread
++LDLIBS += $(shell $(PKG_CONFIG) --libs libelf zlib) -lrt -lpthread
+ 
+ ifneq ($(LLVM),)
+ # Silence some warnings when compiled with clang
+diff --git a/tools/testing/selftests/bpf/README.rst b/tools/testing/selftests/bpf/README.rst
+index cb9b95702ac6..9af79c7a9b58 100644
+--- a/tools/testing/selftests/bpf/README.rst
++++ b/tools/testing/selftests/bpf/README.rst
+@@ -77,7 +77,7 @@ In case of linker errors when running selftests, try using static linking:
+ 
+ .. code-block:: console
+ 
+-  $ LDLIBS=-static vmtest.sh
++  $ LDLIBS=-static PKG_CONFIG='pkg-config --static' vmtest.sh
+ 
+ .. note:: Some distros may not support static linking.
+ 
 -- 
-2.25.1
+2.42.0
 
