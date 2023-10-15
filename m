@@ -2,127 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 156E27C98B8
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 12:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC5B77C98C2
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 13:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbjJOKpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 06:45:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37646 "EHLO
+        id S229682AbjJOLGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 07:06:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjJOKpx (ORCPT
+        with ESMTP id S229522AbjJOLGJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 06:45:53 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F295FA3
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 03:45:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OMXIfKJtP8Zr21SLnkQc019y62ZA5kcIt5+lgRa0zu0=; b=I8e6tOtk0j4vCBAqKN82Uj3a/T
-        3h+19CT7hkYdSa08ZGlG7qpiMGh1+WSpRZk3WInvKorKLQ3IxHFaLo8duLcQ4hz73Jj1jjv7mdpkZ
-        xYGZoqeeSAbOnkzy2PmJjcjttWhQyBVeAkMNJ+TIfT0TCjGmR0uxOsJGzrh6kHSOCOPZHl+o/z1zz
-        REP80ngeSHBFNFDICygeoJHWm+bDAzyn1+tr7tTs3zQ3B4jGZvn4/0Udn9qReQ+hqSM3C41kFUoHC
-        9KEopG8XuQxD20SG5Jv9qrHmtQROUFyDoUoFQtyxJuIkX1DI8e5qFgI95JbBH2ghA2Iku+mvQd+qg
-        E7l2pVjQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qrybj-004nqf-2a;
-        Sun, 15 Oct 2023 10:44:29 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DAB42300513; Sun, 15 Oct 2023 12:44:28 +0200 (CEST)
-Date:   Sun, 15 Oct 2023 12:44:28 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Youssef Esmat <youssefesmat@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, bsegall@google.com,
-        mingo@kernel.org, vincent.guittot@linaro.org,
-        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, mgorman@suse.de, bristot@redhat.com,
-        corbet@lwn.net, qyousef@layalina.io, chris.hyser@oracle.com,
-        patrick.bellasi@matbug.net, pjt@google.com, pavel@ucw.cz,
-        qperret@google.com, tim.c.chen@linux.intel.com, joshdon@google.com,
-        timj@gnu.org, kprateek.nayak@amd.com, yu.c.chen@intel.com,
-        joel@joelfernandes.org, efault@gmx.de, tglx@linutronix.de,
-        wuyun.abel@bytedance.com
-Subject: Re: [PATCH] sched/eevdf: Toggle eligibility through sched_feat
-Message-ID: <20231015104428.GA11840@noisy.programming.kicks-ass.net>
-References: <20231013030213.2472697-1-youssefesmat@chromium.org>
+        Sun, 15 Oct 2023 07:06:09 -0400
+X-Greylist: delayed 397 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 15 Oct 2023 04:06:06 PDT
+Received: from honk.sigxcpu.org (honk.sigxcpu.org [24.134.29.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12B38C5
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 04:06:06 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id 5B2C2FB06;
+        Sun, 15 Oct 2023 12:59:25 +0200 (CEST)
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id f7l20BZCmacd; Sun, 15 Oct 2023 12:59:24 +0200 (CEST)
+Date:   Sun, 15 Oct 2023 12:59:22 +0200
+From:   Guido =?iso-8859-1?Q?G=FCnther?= <guido.gunther@puri.sm>
+To:     Frank Oltmanns <frank@oltmanns.dev>
+Cc:     Purism Kernel Team <kernel@puri.sm>,
+        Ondrej Jirman <megous@megous.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ondrej Jirman <megi@xff.cz>,
+        Samuel Holland <samuel@sholland.org>
+Subject: Re: [PATCH 1/1] drm/panel: st7703: Pick different reset sequence
+Message-ID: <ZSvGCvniKkT-YPkJ@qwark.sigxcpu.org>
+References: <20230211171748.36692-1-frank@oltmanns.dev>
+ <20230211171748.36692-2-frank@oltmanns.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20231013030213.2472697-1-youssefesmat@chromium.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230211171748.36692-2-frank@oltmanns.dev>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_FAIL,
+        SPF_HELO_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 10:02:13PM -0500, Youssef Esmat wrote:
-> Interactive workloads see performance gains by disabling eligibility
-> checks (EEVDF->EVDF). Disabling the checks reduces the number of
-> context switches and delays less important work (higher deadlines/nice
-> values) in favor of more important work (lower deadlines/nice values).
+Hi,
+On Sat, Feb 11, 2023 at 06:17:48PM +0100, Frank Oltmanns wrote:
+> From: Ondrej Jirman <megi@xff.cz>
 > 
-> That said, that can add large latencies for some work loads and as the
-> default is eligibility on, but allowing it to be turned off when
-> beneficial.
+> Switching to a different reset sequence, enabling IOVCC before enabling
+> VCC.
 > 
-> Signed-off-by: Youssef Esmat <youssefesmat@chromium.org>
-> Link: https://lore.kernel.org/lkml/CA+q576MS0-MV1Oy-eecvmYpvNT3tqxD8syzrpxQ-Zk310hvRbw@mail.gmail.com/
+> There also needs to be a delay after enabling the supplies and before
+> deasserting the reset. The datasheet specifies 1ms after the supplies
+> reach the required voltage. Use 10-20ms to also give the power supplies
+> some time to reach the required voltage, too.
+> 
+> This fixes intermittent panel initialization failures and screen
+> corruption during resume from sleep on panel xingbangda,xbd599 (e.g.
+> used in PinePhone).
+> 
+> Signed-off-by: Ondrej Jirman <megi@xff.cz>
+> Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
+> Reported-by: Samuel Holland <samuel@sholland.org>
 > ---
->  kernel/sched/fair.c     | 3 +++
->  kernel/sched/features.h | 1 +
->  2 files changed, 4 insertions(+)
+>  drivers/gpu/drm/panel/panel-sitronix-st7703.c | 25 ++++++++++---------
+>  1 file changed, 13 insertions(+), 12 deletions(-)
 > 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index a751e552f253..16106da5a354 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -728,6 +728,9 @@ int entity_eligible(struct cfs_rq *cfs_rq, struct sched_entity *se)
->  	s64 avg = cfs_rq->avg_vruntime;
->  	long load = cfs_rq->avg_load;
+> diff --git a/drivers/gpu/drm/panel/panel-sitronix-st7703.c b/drivers/gpu/drm/panel/panel-sitronix-st7703.c
+> index 6747ca237ced..45695aa51f62 100644
+> --- a/drivers/gpu/drm/panel/panel-sitronix-st7703.c
+> +++ b/drivers/gpu/drm/panel/panel-sitronix-st7703.c
+> @@ -411,29 +411,30 @@ static int st7703_prepare(struct drm_panel *panel)
+>  		return 0;
 >  
-> +	if (!sched_feat(ENFORCE_ELIGIBILITY))
-> +		return 1;
+>  	dev_dbg(ctx->dev, "Resetting the panel\n");
+> -	ret = regulator_enable(ctx->vcc);
+> +	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
 > +
->  	if (curr && curr->on_rq) {
->  		unsigned long weight = scale_load_down(curr->load.weight);
+> +	ret = regulator_enable(ctx->iovcc);
+>  	if (ret < 0) {
+> -		dev_err(ctx->dev, "Failed to enable vcc supply: %d\n", ret);
+> +		dev_err(ctx->dev, "Failed to enable iovcc supply: %d\n", ret);
+>  		return ret;
+>  	}
+> -	ret = regulator_enable(ctx->iovcc);
+> +
+> +	ret = regulator_enable(ctx->vcc);
+>  	if (ret < 0) {
+> -		dev_err(ctx->dev, "Failed to enable iovcc supply: %d\n", ret);
+> -		goto disable_vcc;
+> +		dev_err(ctx->dev, "Failed to enable vcc supply: %d\n", ret);
+> +		regulator_disable(ctx->iovcc);
+> +		return ret;
+>  	}
 >  
+> -	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
+> -	usleep_range(20, 40);
+> +	/* Give power supplies time to stabilize before deasserting reset. */
+> +	usleep_range(10000, 20000);
+> +
+>  	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
+> -	msleep(20);
+> +	usleep_range(15000, 20000);
+>  
+>  	ctx->prepared = true;
+>  
+>  	return 0;
+> -
+> -disable_vcc:
+> -	regulator_disable(ctx->vcc);
+> -	return ret;
+>  }
+>  
+>  static const u32 mantix_bus_formats[] = {
 
-Right.. could you pretty please try:
+Reviewed-by: Guido Günther <agx@sigxcpu.org>
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git sched/eevdf
+Cheers,
+ -- Guido
 
-as of yesterday or so.
-
-It defaults to (EEVDF relevant features):
-
-SCHED_FEAT(PLACE_LAG, true)
-SCHED_FEAT(PLACE_DEADLINE_INITIAL, true)
-SCHED_FEAT(PREEMPT_SHORT, true)
-SCHED_FEAT(PLACE_SLEEPER, false)
-SCHED_FEAT(GENTLE_SLEEPER, true)
-SCHED_FEAT(EVDF, false)
-SCHED_FEAT(DELAY_DEQUEUE, true)
-SCHED_FEAT(GENTLE_DELAY, true)
-
-If that doesn't do well enough, could you please try, in order of
-preference:
-
-2) NO_GENTLE_DELAY
-3) NO_DELAY_DEQUEUE, PLACE_SLEEPER
-4) NO_DELAY_DEQUEUE, PLACE_SLEEPER, NO_GENTLE_SLEEPER
-
-I really don't like the EVDF option, and I think you'll end up
-regretting using it sooner rather than later, just to make this one
-benchmark you have happy.
-
-I'm hoping the default is enough, but otherwise any of the above should
-be a *much* better scheduler.
-
-Also, bonus points if you can create us a stand alone benchmark that
-captures your metric (al-la facebook's schbench) without the whole
-chrome nonsense, that'd be epic.
+> -- 
+> 2.39.1
+> 
