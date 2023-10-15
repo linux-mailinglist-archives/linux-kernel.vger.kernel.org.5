@@ -2,92 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56FBD7C9B75
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 22:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A725D7C9B79
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 22:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230417AbjJOU0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 16:26:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33852 "EHLO
+        id S230394AbjJOU1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 16:27:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230254AbjJOU0L (ORCPT
+        with ESMTP id S229990AbjJOU07 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 16:26:11 -0400
-Received: from mail.z3ntu.xyz (mail.z3ntu.xyz [128.199.32.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEAC0E5;
-        Sun, 15 Oct 2023 13:26:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=z3ntu;
-        t=1697401566; bh=CRuF/liPUhNN5c5DuAg2ZYTNkQ2T6KZbPNHUyMEfqNY=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc;
-        b=Yt/teconabEkOeHd+bDc4D60MsiL75ISlJ9BYz7poEM9pe9qw44pKEiwo+KklCaq2
-         sdWYgwzeUedoe5GBIq/u/lXykQTh41/ZEPyMRhuKPj8OqZ0xvH1dVbaeMYDVtmQxe4
-         CSPHb/7ZNcy2wAOoEDCtzKPHS9Cc1o8dHNrdCTZs=
-From:   Luca Weiss <luca@z3ntu.xyz>
-Date:   Sun, 15 Oct 2023 22:26:02 +0200
-Subject: [PATCH 2/2] arm64: dts: qcom: msm8953: Use non-deprecated
- qcom,domain in LPASS
+        Sun, 15 Oct 2023 16:26:59 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 955CCC1
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 13:26:57 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-32db8f8441eso24292f8f.0
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 13:26:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697401616; x=1698006416; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9mJQUt7Wf0+dPq/8JTeI94cIlxhXMv5ZBTCjETmdTqU=;
+        b=fP8Sj+Zmgowryvn3edaUpvRhj5ctaNKQFZeTysSjAZKduvzY/o+aQ6Jj0kMakxC0kT
+         RMVBkwehKFD4d0cEdjDRQAYqJtlnU5aWr/vk9kKeFJRkxWSy4N+r0y5ytkuRzNaSycFr
+         /mBzW5GQtaGoEkrRFVgr/yV1fAwQFYPWWrTyc7aVln2QIz+/I2vBCyvmHeUvqWWm+oud
+         pGeh4ROzyk0Np/O5cjxAkt6ZA3vAHbkHefCvL0XVO8gN+9ym9Jl58nmyFMGPWD5X3O/u
+         XRE18d0uTbEfvk5fMm77esD/uH00Ui1qigGEGvUwqNCfqJy//Gy1V5CHqy6hlnowNL3D
+         Mr1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697401616; x=1698006416;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9mJQUt7Wf0+dPq/8JTeI94cIlxhXMv5ZBTCjETmdTqU=;
+        b=jCWCaR1QEN4VxxYebUF9l0K5d3ow4tDIcYV/+vCi3hG4QELmUL2y3SD31pEnHoSXA9
+         pnlVAsl6Xli7+etOTyvZtS2aUwEl3DggHOs2eUiFLCv+Cjh3l4exb4nYDlF7IriR70Gq
+         6kPbEWf6A/rj2rKVT48YkDc663R5rClXEGvSoq+p/Ixq087dlF78yXbZp6zvXI3pDKQY
+         NqvePKkn1/7lzyOB1Fgqo0rRhlBEnKYJt0MlUEVXCysvFJn4XykeS4gTL241rnV5UuAH
+         hMt7b2Si7IVrQHWEAVlAOinzXDseMyAiKn7M8uobwOLCZdEXM7jreeUI+aWg8B7kZXH8
+         zQ6A==
+X-Gm-Message-State: AOJu0YyxZznIPSOeO2TCMLee6m8JkSkzkQObWBUTHy7p5UvlOI7Pneak
+        oxGaQADkIEgcRGYYG+6seDE=
+X-Google-Smtp-Source: AGHT+IE39XZwC0ne09DLeEYAEDmDf3xkSkL6BIj3dVUMU1+rWVkbO5e5YJUqWsPJnfwvd93Lb7r9Yg==
+X-Received: by 2002:a05:6000:1189:b0:321:6936:c217 with SMTP id g9-20020a056000118900b003216936c217mr26180665wrx.14.1697401615768;
+        Sun, 15 Oct 2023 13:26:55 -0700 (PDT)
+Received: from PC-PEDRO-ARCH.lan ([2001:8a0:7280:5801:9441:3dce:686c:bfc7])
+        by smtp.gmail.com with ESMTPSA id u1-20020adfa181000000b0032da49e18fasm4303429wru.23.2023.10.15.13.26.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Oct 2023 13:26:55 -0700 (PDT)
+From:   Pedro Falcato <pedro.falcato@gmail.com>
+To:     kasan-dev@googlegroups.com, Alexander Potapenko <glider@google.com>
+Cc:     Marco Elver <elver@google.com>, Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Pedro Falcato <pedro.falcato@gmail.com>
+Subject: [PATCH] mm: kmsan: Panic on failure to allocate early boot metadata
+Date:   Sun, 15 Oct 2023 21:26:50 +0100
+Message-ID: <20231015202650.85777-1-pedro.falcato@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231015-msm8953-misc-fixes-v1-2-b800deca9e46@z3ntu.xyz>
-References: <20231015-msm8953-misc-fixes-v1-0-b800deca9e46@z3ntu.xyz>
-In-Reply-To: <20231015-msm8953-misc-fixes-v1-0-b800deca9e46@z3ntu.xyz>
-To:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Luca Weiss <luca@z3ntu.xyz>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=785; i=luca@z3ntu.xyz;
- h=from:subject:message-id; bh=CRuF/liPUhNN5c5DuAg2ZYTNkQ2T6KZbPNHUyMEfqNY=;
- b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBlLErcZNnGQ3cULk1wyRP00UnGnFyYR/G1qKmDW
- c2vbm2K23mJAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZSxK3AAKCRBy2EO4nU3X
- Vo+sEACNhUz/14Pa00iSt33hmZzCXyHRnTgbYeMXkruc7oovQ6qPExI2XPM7zXAaFS+VPWG1hWy
- T7SWA8629CTNh1wLW9sHPt0k+drDENYzO1Dwhv2gE3CbosprkqIo3ZPZHKaDbUGW1P+YC+iFGtZ
- qN3C+FUc5XlIJh4NHBIExEp8lLsb58AGrNbSkX3PQiuQ4DEbweiiWphcdZap5HLchlnpcuMNC12
- RH7xY8/HDMrTk4TrVC+2fyqKvQJw75vdSOD+XdGo68Og/x5NApDzwLSp6y54plhqIsTt4ToBT94
- 4L+OPI2ZNPLqH7m6Lm7qsTyfGfzooBRNDr2kjUfLjBzxuJFcwQusVGd6FfjbeEAvGoQxXgK2d/q
- ZV03XCCj/yybchX+hY8UZ9YLA6knZAYlP2uvAgzsawihitsFlWb3CovcUyzdeAcFihgraMa2DM2
- hHo9qcwIKQXDay60DFmzN1AShwFtWWpenRmT/hUqA/1G1TLxpwZ/qlWN46k4sklM3XDw/TX6hFD
- OGp10RQQWfY0gj7bl/EaGnTkwjGN8DOKQ8JHb7O01R7r3YU1t6sOD+eXr4giNhz8UAwkK/6Ayva
- fp2pKrpWIH6IpaOdNPRxAaoMB7oo2rgerLKhDvYr+uH9cQNtTXG3V/mrvE5uNjmW0i/fiV7m5Cr
- tbd0tBb8FwUOziw==
-X-Developer-Key: i=luca@z3ntu.xyz; a=openpgp;
- fpr=BD04DA24C971B8D587B2B8D7FAF69CF6CD2D02CD
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the qcom,domain property instead of the deprecated qcom,apr-domain,
-which in turn also fixes a bunch of dtbs_checks warnings.
+Given large enough allocations and a machine with low enough memory (i.e
+a default QEMU VM), it's entirely possible that
+kmsan_init_alloc_meta_for_range's shadow+origin allocation fails.
 
-Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+Instead of eating a NULL deref kernel oops, check explicitly for memblock_alloc()
+failure and panic with a nice error message.
+
+Signed-off-by: Pedro Falcato <pedro.falcato@gmail.com>
 ---
- arch/arm64/boot/dts/qcom/msm8953.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/kmsan/shadow.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8953.dtsi b/arch/arm64/boot/dts/qcom/msm8953.dtsi
-index a3ba24ca599b..8374f9af8273 100644
---- a/arch/arm64/boot/dts/qcom/msm8953.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8953.dtsi
-@@ -1645,7 +1645,7 @@ smd-edge {
- 				apr {
- 					compatible = "qcom,apr-v2";
- 					qcom,smd-channels = "apr_audio_svc";
--					qcom,apr-domain = <APR_DOMAIN_ADSP>;
-+					qcom,domain = <APR_DOMAIN_ADSP>;
- 					#address-cells = <1>;
- 					#size-cells = <0>;
- 
-
+diff --git a/mm/kmsan/shadow.c b/mm/kmsan/shadow.c
+index 87318f9170f..3dae3d9c0b3 100644
+--- a/mm/kmsan/shadow.c
++++ b/mm/kmsan/shadow.c
+@@ -285,12 +285,18 @@ void __init kmsan_init_alloc_meta_for_range(void *start, void *end)
+ 	size = PAGE_ALIGN((u64)end - (u64)start);
+ 	shadow = memblock_alloc(size, PAGE_SIZE);
+ 	origin = memblock_alloc(size, PAGE_SIZE);
++
++	if (!shadow || !origin)
++		panic("%s: Failed to allocate metadata memory for early boot range "
++		      "of size %llu",
++		      __func__, size);
++
+ 	for (u64 addr = 0; addr < size; addr += PAGE_SIZE) {
+ 		page = virt_to_page_or_null((char *)start + addr);
+-		shadow_p = virt_to_page_or_null((char *)shadow + addr);
++		shadow_p = virt_to_page((char *)shadow + addr);
+ 		set_no_shadow_origin_page(shadow_p);
+ 		shadow_page_for(page) = shadow_p;
+-		origin_p = virt_to_page_or_null((char *)origin + addr);
++		origin_p = virt_to_page((char *)origin + addr);
+ 		set_no_shadow_origin_page(origin_p);
+ 		origin_page_for(page) = origin_p;
+ 	}
 -- 
 2.42.0
 
