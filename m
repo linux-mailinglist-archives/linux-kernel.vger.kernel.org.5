@@ -2,96 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AC507C9C00
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 23:48:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A0AE7C9C5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 00:15:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230442AbjJOVsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 17:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56602 "EHLO
+        id S230385AbjJOWPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 18:15:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjJOVse (ORCPT
+        with ESMTP id S229500AbjJOWPh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 17:48:34 -0400
-Received: from mail.andi.de1.cc (unknown [IPv6:2a02:c205:3004:2154::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D04E8C1;
-        Sun, 15 Oct 2023 14:48:31 -0700 (PDT)
-Received: from p5dc58b95.dip0.t-ipconnect.de ([93.197.139.149] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <andreas@kemnade.info>)
-        id 1qs8y9-0052jb-1N; Sun, 15 Oct 2023 23:48:17 +0200
-Date:   Sun, 15 Oct 2023 23:48:15 +0200
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     =?UTF-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@gmail.com>,
-        bcousson@baylibre.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, jarkko.nikula@bitmer.com,
-        dmitry.torokhov@gmail.com, linux-omap@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH 1/3] ASoC: ti: omap-mcbsp: Ignore errors for getting
- fck_src
-Message-ID: <20231015234815.637f5c14@aktux>
-In-Reply-To: <20231007062518.GM34982@atomide.com>
-References: <20230705190324.355282-1-andreas@kemnade.info>
-        <20230705190324.355282-2-andreas@kemnade.info>
-        <7d58d52d-2087-45af-b29e-2515b63ead13@gmail.com>
-        <20230920063353.GQ5285@atomide.com>
-        <dac768d2-2c66-4d6b-b3d3-d1ef69103c76@gmail.com>
-        <20230921121626.GT5285@atomide.com>
-        <20231006102348.GK34982@atomide.com>
-        <20231006213003.0fbac87a@aktux>
-        <20231007062518.GM34982@atomide.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
+        Sun, 15 Oct 2023 18:15:37 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD96AD;
+        Sun, 15 Oct 2023 15:15:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1697408130;
+        bh=REwvH9ugodppN/e6AKyeQfL7GJYvtPOiULrUJpz+qNo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CJN6ly98KBD/UQLWQahooW4mPpc10USetiXtZs4+lDtZCsiRz3YUSfNCA0gz1ohqu
+         78moz/B5zMng7jhbbgiiqdwrPZN1oxB49zP9qiK7hbQIDFwAA277NM8GXm+008fY09
+         OUht5yT0hzbgGTLfQD5VrKqlDA3vsVO8E7ksDjLHEU0N+pZb1G+sErI0vMdX4kSPIF
+         Tu87DG8BMjM0H4sbnNGblv78tLSXakI/faaQVnf7BoyKJt2j+fVKp54sZQPP/VkfJ9
+         +ZAGpiKUPevm5gRHVtkbzZBnfPcRBnknACeRx83xHXIZKeItkRawYV8jrXkdwJpYp7
+         vaJymP0sjQ83g==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S7vgx6hgTz4wcK;
+        Mon, 16 Oct 2023 09:15:25 +1100 (AEDT)
+Date:   Mon, 16 Oct 2023 09:15:24 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+Subject: Re: linux-next: manual merge of the tip tree with the asm-generic
+ tree
+Message-ID: <20231016091524.1c1cb83d@canb.auug.org.au>
+In-Reply-To: <20231012134442.16f3f9f6@canb.auug.org.au>
+References: <20231012134442.16f3f9f6@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/lkygVc3XrOh=7+t/HOg/eKR";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
+--Sig_/lkygVc3XrOh=7+t/HOg/eKR
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 7 Oct 2023 09:25:18 +0300
-Tony Lindgren <tony@atomide.com> wrote:
+Hi all,
 
-> * Andreas Kemnade <andreas@kemnade.info> [231006 19:30]:
-> > On Fri, 6 Oct 2023 13:23:48 +0300
-> > Tony Lindgren <tony@atomide.com> wrote:  
-> > > Here's what I think the regression fix for omap4 clocks would be, the
-> > > old main_clk is not the same as the module clock that we get by default.
-> > > If this looks OK I'll do a similar fix also for omap5.
-> > > 
-> > > Or is something else also needed?
-> > >   
-> > 
-> > hmm,
-> > audio output works, the waring is away, but something new is here:  
-> 
-> OK good to hear it works, I'll send out fixes for omap4 and 5, seems
-> the runtime PM warning is something different.
-> 
-> > omap-mcbsp 40124000.mcbsp: Runtime PM usage count underflow!
-> > # cat /sys/bus/platform/devices/40124000.mcbsp/power/runtime_status 
-> > active
-> > 
-> > even with no sound.  
-> 
-> I guess if the mcbsp instance is not used, runtime PM is enabled but
-> pm_runtime_resume_and_get() is never called by ASoC?
-> 
-> If so then the following might be a fix, not familiar with runtime PM
-> done by ASoC though and not sure if some kind of locking would be
-> needed here.
-> 
-just checked: that one fixes the regression. runtime suspends again.
+On Thu, 12 Oct 2023 13:44:42 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Today's linux-next merge of the tip tree got a conflict in:
+>=20
+>   arch/ia64/include/asm/cpu.h
+>   arch/ia64/kernel/topology.c
+>=20
+> between commit:
+>=20
+>   cf8e8658100d ("arch: Remove Itanium (IA-64) architecture")
+>=20
+> from the asm-generic tree and commit:
+>=20
+>   c4dd854f740c ("cpu-hotplug: Provide prototypes for arch CPU registratio=
+n")
+>=20
+> from the tip tree.
+>=20
+> I fixed it up (I deleted the files) and can carry the fix as
+> necessary. This is now fixed as far as linux-next is concerned, but any
+> non trivial conflicts should be mentioned to your upstream maintainer
+> when your tree is submitted for merging.  You may also want to consider
+> cooperating with the maintainer of the conflicting tree to minimise any
+> particularly complex conflicts.
 
-Regards,
-Andreas
+This is now a conflict between Linus' tree and the asm-generic tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/lkygVc3XrOh=7+t/HOg/eKR
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUsZHwACgkQAVBC80lX
+0Gz8Jwf+OVt4TOXztb6+gkPNtlgOweAvRVAKi4pq0ETol1kXTRo2VPjbT0ZAM2OP
+m2iAG+HLlBU6Z0LOOv2XizamwexfRD2/mOh4VRgw//KQaPBeB5FYmXsT1UDRgbCL
+5BXvJGf0lyBoPG6TNrJ5rWmmXP03n9X8G9tzY4RuRjNf3pj/OvYCOKbJ6FarEvVM
+rS4oBWqbOrKeBupgBFJ2/Ka0qJMwyJJaIlxc9kyp5UqzWRgDnv1D7vEe828FSe/5
+P3bj1XMC3JRD3exaWA8iugVSHTInKA1YRCp+t5gP9KFfxLRCeeAJztKZpSEVr2fq
+WCtf0IoT3lOMndMHgnojCW6wSf3btg==
+=1sCY
+-----END PGP SIGNATURE-----
+
+--Sig_/lkygVc3XrOh=7+t/HOg/eKR--
