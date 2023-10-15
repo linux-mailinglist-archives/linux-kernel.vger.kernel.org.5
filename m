@@ -2,52 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0027C97C0
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 05:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 708C07C97C3
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 05:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233441AbjJODHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Oct 2023 23:07:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36734 "EHLO
+        id S233428AbjJODgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Oct 2023 23:36:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233390AbjJODHk (ORCPT
+        with ESMTP id S233390AbjJODga (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Oct 2023 23:07:40 -0400
-Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00DD6DE
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 20:07:36 -0700 (PDT)
-Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-57b5e7c753fso4530778eaf.3
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 20:07:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697339256; x=1697944056;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HiHLlpJE9rT/tAnJYiWBwlesE5IJn5d+2V5sivCbVDQ=;
-        b=VF90ZS1/K6M0eRtR/7L947TPX/+rfR681HjtolbtiouYualtJbHZpH/NbXvWDMP2SU
-         KESBXUaJeFfIGhWLUT47HDWw9Mi+CFmu6CkgdoukdUvP/ZBp1brpT2Zh5EQjY+zbXDjV
-         mQ1/5N9ZAl3dFoj6226y/6xBQl72IjPIN7Fgmf1up7KeeNteX1WtoWFnJQO+9FREieNI
-         mgUFonAT8MR9itpCo10EpljIcAlos3InYqd608GSfoeai6EG2nbPWoTTpCmwl6DVGHlH
-         8tRbz5g2zWYxpXdwKJGL+IA7KK0K+mOXlrlhvgiMhQlCRFwf7TboiRTuHP8dLSqXI85f
-         p55A==
-X-Gm-Message-State: AOJu0YxrtGh49RSqv19S+8sTH6pLHaVIyJHaurf+gWNs7ylGoI8GJVzn
-        XXQX7l5W6Xy8x6yQYhc8JurAqn2YjWqREpiFVF8J2V/hyz26
-X-Google-Smtp-Source: AGHT+IEOiXTwMXPBzRi2m8/ygbn5M4mqy/gnQswvzGUdIAwN4DJ1wrM6n7RyCl7fmyjS9onlFpPxYpbUnvIpp484BOxDxEz1nVkO
-MIME-Version: 1.0
-X-Received: by 2002:a4a:641:0:b0:57b:ee95:ad48 with SMTP id
- 62-20020a4a0641000000b0057bee95ad48mr9915118ooj.0.1697339256326; Sat, 14 Oct
- 2023 20:07:36 -0700 (PDT)
-Date:   Sat, 14 Oct 2023 20:07:36 -0700
-In-Reply-To: <20231015024043.1689-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006fd2680607b89773@google.com>
-Subject: Re: [syzbot] [batman?] INFO: rcu detected stall in rtnl_newlink (3)
-From:   syzbot <syzbot+afb3084a933aa2bdacc6@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        Sat, 14 Oct 2023 23:36:30 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A338A6
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 20:36:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697340989; x=1728876989;
+  h=date:from:to:cc:subject:message-id;
+  bh=aWaa/NhKGly54WKVGz6d44oNGZgU1ey/vuZseCVooT0=;
+  b=Qpsa0bdlP8DK9voH5gDwHQZc2sxyPY3KQl4SKFLEww+z9c+PsXBJ699+
+   yIb272QJan2KKZCer+nAyqpn4rhZh9NEyQUZ9wHx2QB4y/gWuj4RYtxRv
+   CsyeJXj4CyPFQXmOXcGM0Jkn31gx/xB8WIf2wa/tkVZTCYQgOurDPMCvg
+   zp1Mo0Ghdgrzl1cR4eqodk4j7IjE66Z4KCRjJl/H24MaHhZfKfVKDY08r
+   9i5BWphD1lRfi0rN8znpXB2tsZ7XGZ4lmUvXVgkzGNUp64Obwqg6P6MyB
+   gb6xlLhWb2n1Ll7NbiMz0ugykQisTEYal1lpetbDVBhZwoly9rvsL1fOE
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="382591480"
+X-IronPort-AV: E=Sophos;i="6.03,226,1694761200"; 
+   d="scan'208";a="382591480"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2023 20:36:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="871627551"
+X-IronPort-AV: E=Sophos;i="6.03,226,1694761200"; 
+   d="scan'208";a="871627551"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 14 Oct 2023 20:36:27 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qrrvV-0006zp-2B;
+        Sun, 15 Oct 2023 03:36:25 +0000
+Date:   Sun, 15 Oct 2023 11:35:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:perf/core] BUILD SUCCESS
+ 7543365739a4ff61d40ad53ab68c17d2e7dfb0c9
+Message-ID: <202310151144.cca28XrW-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,20 +60,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/core
+branch HEAD: 7543365739a4ff61d40ad53ab68c17d2e7dfb0c9  perf/x86/amd/uncore: Fix uninitialized return value in amd_uncore_init()
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+elapsed time: 2625m
 
-Reported-and-tested-by: syzbot+afb3084a933aa2bdacc6@syzkaller.appspotmail.com
+configs tested: 18
+configs skipped: 113
 
-Tested on:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-commit:         d5280145 Revert ".gitignore: ignore *.cover and *.mbx"
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=13d5aab1680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=53de8828edb29baf
-dashboard link: https://syzkaller.appspot.com/bug?extid=afb3084a933aa2bdacc6
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=17530ab1680000
+tested configs:
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231013   gcc  
+i386                  randconfig-002-20231013   gcc  
+i386                  randconfig-003-20231013   gcc  
+i386                  randconfig-004-20231013   gcc  
+i386                  randconfig-005-20231013   gcc  
+i386                  randconfig-006-20231013   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231013   gcc  
+x86_64                randconfig-002-20231013   gcc  
+x86_64                randconfig-003-20231013   gcc  
+x86_64                randconfig-004-20231013   gcc  
+x86_64                randconfig-005-20231013   gcc  
+x86_64                randconfig-006-20231013   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
 
-Note: testing is done by a robot and is best-effort only.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
