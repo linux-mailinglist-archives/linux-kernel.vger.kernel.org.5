@@ -2,102 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C5C07C9819
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 08:07:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AAC07C9822
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Oct 2023 08:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229723AbjJOGHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 02:07:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33928 "EHLO
+        id S230106AbjJOGUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 02:20:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjJOGHX (ORCPT
+        with ESMTP id S229554AbjJOGUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 02:07:23 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB76FC5
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 23:07:19 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6b497c8575aso1706728b3a.1
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 23:07:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697350039; x=1697954839; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i3kGlq2Xx5BQrtm1OWloUhGm2g6MFTZwo7jhQhW9zsg=;
-        b=hpcC4fT/dJlD6/WyMRq8x0/jKUJkXeZa2M/B5ofFbmJ8U9ZlpYZn6UKVAZJnrite1W
-         tb+gS73QAJel5NbYVes2UMwZqz1unqIUHIx4vgHwVoe1gtIx46q3qha/uTDjEZBrMP1N
-         zs3ZCny8jFK4G6WcQcV2ovk+nYkI6ptYCnqaE1rj1XxUBhVxCR0ont7yxRxCCA/tWTyO
-         sy36G+5ph1gpu+olgSbfOa7+4EQI0zQEtmw4PiFISWZIL9DRKMXlmQZwBPEO127agGaO
-         zTZGsvAcl4p5KDgNLLVFh3lfJoWop/mLC8QBwjRmtdGcmJG7Fv3fH4TFKbaAVQsS/Tpq
-         pQyg==
+        Sun, 15 Oct 2023 02:20:39 -0400
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA76EDA
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 23:20:36 -0700 (PDT)
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3af5b5d816aso5490579b6e.3
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Oct 2023 23:20:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697350039; x=1697954839;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i3kGlq2Xx5BQrtm1OWloUhGm2g6MFTZwo7jhQhW9zsg=;
-        b=Wh22FNUKII8Mgg17gmmjb083mtQ+yAtE7ditoawhFbx2KZcE/kpHJ2x2rwiKAYFLq+
-         bumxlUQKCFsVLDzQ3cyo68pTSGKqDoHCoPCJVP3MInxd8QLWO9rtmOJj3hBA7aMV+xzS
-         YCJczwqavl2FauxtoDrq0zxkrxzKuQF3G/PYpibI2jmiQdUPL5lwpDVCOTV2zXMy9M3v
-         vwdZa2BOVmW7oRtQ2GGK/VgWN3Z0e5E+qBCvEmaoV83bs18Il0ekYmo1YA0QkDQ1RewN
-         CLuhkSmfWN6H60z1EZZpJSrUku2QrmeRjHQW8X1ZXejNK4EJ0RrUxR0ifqji870C4xIf
-         JthA==
-X-Gm-Message-State: AOJu0YwnrgSQMvUqvCWg2bkS41/w4PSDurqhzMmWlsy7DNPC+EVHdKHB
-        OdUXbjZmhzLkcXmeuEmj9YPliBGp2mgB0A==
-X-Google-Smtp-Source: AGHT+IFZon2eyX8yO2v2tuhGiWGE3ETezS14zyfWDXYBmJGr4Z49Me9EoSJztJD6sCKGOcbAMQHq4g==
-X-Received: by 2002:a05:6a20:9188:b0:140:f6c4:aa71 with SMTP id v8-20020a056a20918800b00140f6c4aa71mr34483243pzd.8.1697350038868;
-        Sat, 14 Oct 2023 23:07:18 -0700 (PDT)
-Received: from Negi (2603-8000-b93d-20a0-2184-6fa4-0d39-1c6b.res6.spectrum.com. [2603:8000:b93d:20a0:2184:6fa4:d39:1c6b])
-        by smtp.gmail.com with ESMTPSA id bx29-20020a056a02051d00b0056606274e54sm2284008pgb.31.2023.10.14.23.07.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Oct 2023 23:07:18 -0700 (PDT)
-Date:   Sat, 14 Oct 2023 23:07:16 -0700
-From:   Soumya Negi <soumya.negi97@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jonathan Kim <jonathankim@gctsemi.com>,
-        Dean ahn <deanahn@gctsemi.com>, outreachy@lists.linux.dev,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] tty: gdm724x: Add blank line after declaration
-Message-ID: <20231015060716.GA31326@Negi>
-References: <cover.1697184167.git.soumya.negi97@gmail.com>
- <3b24ca9976cf873dbaadb499e09d7b545e9db89c.1697184167.git.soumya.negi97@gmail.com>
- <2023101551-placidly-garnish-3ee7@gregkh>
+        d=1e100.net; s=20230601; t=1697350836; x=1697955636;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JnnxlBZS3D2FK4g6Uy7ps+bfDovN+JjodCSC2jnZejQ=;
+        b=H5Kz8W4JFKb+FShWtbGZdClCP+mXBBXH5usa2Evy4AKQ1fNvPwQBfwTRAMpLvgecvp
+         bdHE7f6OTIsB0Xe2XvVSFphf/pS7NzsO+L0UYMiQROnII4jXaaUK4Nrb4H58pj0TqN5x
+         DK1VBtdCLjD/vs4TWovUs2HpeY1vgcThjFCMFOocr+R+AlzxDrTPQPRMkzDDO+mzMC+L
+         9jdJqB/gRYKxOvXbau52iXrlbDrDjenVAf1x4jXFKsmYVr0MivDr44bbIDkfbx6cySJH
+         sRDKy56w2bLbXDqs6FbcZgrLxLMAKL+WwFxIVW6euNIxKvIUQkVJm4NxPkHdTTqgY3eh
+         NPWg==
+X-Gm-Message-State: AOJu0YwB0f7GTKQ190cx/5ahjnKmp08x9Cqi10O9Ftep1FTucLCOrrD0
+        6ntd2Qp00H78x4IN9aJe36jA8faLD73iZW1pztSEWSY/28ie
+X-Google-Smtp-Source: AGHT+IGdOmApbp1z+C4jkZhnMvLqnC6RfTusIF3Td3gW7xJSBZwQQZ2Gm5r1fGERsRs0BZ48WUtl4POS6SIIi2qUuNZw18KJEBSn
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023101551-placidly-garnish-3ee7@gregkh>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:2118:b0:3a9:b964:820e with SMTP id
+ r24-20020a056808211800b003a9b964820emr15443810oiw.3.1697350836276; Sat, 14
+ Oct 2023 23:20:36 -0700 (PDT)
+Date:   Sat, 14 Oct 2023 23:20:36 -0700
+In-Reply-To: <000000000000d04ea90604a6efcc@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a7d2820607bb49c2@google.com>
+Subject: Re: [syzbot] [kernel?] general protection fault in usb_hub_create_port_device
+From:   syzbot <syzbot+c063a4e176681d2e0380@syzkaller.appspotmail.com>
+To:     andriy.shevchenko@linux.intel.com, christophe.jaillet@wanadoo.fr,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, rafael@kernel.org, raychi@google.com,
+        royluo@google.com, stern@rowland.harvard.edu,
+        syzkaller-bugs@googlegroups.com, yuran.pereira@hotmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 15, 2023 at 07:37:30AM +0200, Greg Kroah-Hartman wrote:
-> On Fri, Oct 13, 2023 at 01:26:35AM -0700, Soumya Negi wrote:
-> > Fix WARNING: Missing a blank line after declarations
-> > Issue found by checkpatch.pl
-> > 
-> > Signed-off-by: Soumya Negi <soumya.negi97@gmail.com>
-> > ---
-> >  drivers/staging/gdm724x/gdm_tty.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> 
-> Why do you have "tty:" as the prefix for a staging driver?  Shouldn't it
-> be "staging: gdm724x: ...."?
+syzbot suspects this issue was fixed by commit:
 
-Hi Greg,
+commit fd6f7ad2fd4d53fa14f4fd190f9b05d043973892
+Author: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Date:   Mon Aug 28 14:58:24 2023 +0000
 
-Thats what I thought too. But when I looked at the git history for
-gdm_tty.c the last few commits had "tty:". So I went with that.
-Should I change it to "staging:"?
+    driver core: return an error when dev_set_name() hasn't happened
 
-Regards,
-Soumya
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=148e8a9d680000
+start commit:   7733171926cc Merge tag 'mailbox-v6.6' of git://git.linaro...
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b273cdfbc13e9a4b
+dashboard link: https://syzkaller.appspot.com/bug?extid=c063a4e176681d2e0380
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17a4ca00680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13bed168680000
 
-> thanks,
-> 
-> greg k-h
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: driver core: return an error when dev_set_name() hasn't happened
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
