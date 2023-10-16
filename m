@@ -2,114 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 613287CA7AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:05:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 102AE7CA7AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231508AbjJPMFF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Oct 2023 08:05:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45340 "EHLO
+        id S233392AbjJPMFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 08:05:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbjJPMFD (ORCPT
+        with ESMTP id S231819AbjJPMFL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 08:05:03 -0400
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC29DC;
-        Mon, 16 Oct 2023 05:05:00 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.229])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4S8FpB5mz7z9y0Ns;
-        Mon, 16 Oct 2023 19:52:02 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwBnwJHRJi1lVkJTAg--.47770S2;
-        Mon, 16 Oct 2023 13:04:42 +0100 (CET)
-Message-ID: <ae39864947debbc7c460db478b8abe1c147b7d5c.camel@huaweicloud.com>
-Subject: Re: [PATCH v15 00/11] LSM: Three basic syscalls
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Paul Moore <paul@paul-moore.com>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Cc:     linux-security-module@vger.kernel.org, jmorris@namei.org,
-        serge@hallyn.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, mic@digikod.net
-Date:   Mon, 16 Oct 2023 14:04:30 +0200
-In-Reply-To: <CAHC9VhSqY5+DR-jXprrftb1=CzDvhTh0Ep66A16RMd4L7W7TYw@mail.gmail.com>
-References: <20230912205658.3432-1-casey.ref@schaufler-ca.com>
-         <20230912205658.3432-1-casey@schaufler-ca.com>
-         <CAHC9VhRcbp3iWQwL7FTUrcU1C3OsZ413Nbq+17oTwW7hZ7XvBw@mail.gmail.com>
-         <CAHC9VhSqY5+DR-jXprrftb1=CzDvhTh0Ep66A16RMd4L7W7TYw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Mon, 16 Oct 2023 08:05:11 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2052.outbound.protection.outlook.com [40.107.244.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7647FE3;
+        Mon, 16 Oct 2023 05:05:10 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fte0x3OgPBYf4CI5jkHxr1Kc2tsVkX2LBR9iGn2Z2DXGVj8AC38xc56fdH9Dh9PFVcwh0a+GO2QI5RF1Fw7AaEgI/A8M8XO0v7AxwtG7saxV73NHmrUqS34WV0Oa+gVNmlh3Lv2EUo5ARfBk9tV/ek/UiZCEhd5YaeC9VKsO63Rt2Xd5ALFbAiLIl3P03hdwoXB0aPmGaDec9VfTXTovCYuOUQauljpnL3sGK6Hgul0j6k/UMlgk2azDmw9L7uOIog0JQjYIhR1kxM6r2UMH6WYXjOwfotomDPmkkcyBS+TX39d2CG4bz0yGPfycATV4n1ckkB5Sz9Ve6E4VQHyaGg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tzwmAtmOmC+swrHDVaarrd/NDG/3+QSSo56Kh1bC7RI=;
+ b=UCC708BTmIQtLdSUvrK3GGkTXRSf+HC/gSqHNm/vnk2SVIi+cxw43NeQ7mjN7IDJE6oOV9irO9oE0A3QHllFgmcXwxV3edBj3tcobDYTkWpAZDW1mpICbIU+ZS6Yu6jR/QJlJlT9RTR8Pb/HkZtPQCtaZBv/4ZIXfh6c/G8R6A7sa8pWKt7xhhoQ0dAnleMOaYDH3CEVIBruO6H4tx8us7P7CgSGYU9ikCBAv9miGmic9V9EG3pNXaJ8vRVPQUHVWHq5iiJeYlKnC9Dm1VL8izP3yWblBbT2FcP35RnU6LHSqZNqtSXodowM3udr+Fdz4+Xx+IvN751LYiNB/JhScg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tzwmAtmOmC+swrHDVaarrd/NDG/3+QSSo56Kh1bC7RI=;
+ b=gfJbs+hZYijJYdd0VDhV7A00pmf5Dj7Gq/doQJTmHQN2GI5Z1OTp/K2roUzoGzWkuQaBaSBFHS9K+gu+xnxpxRExa5u4S0w4gBsQ8xJweE7Uj2IqNPt4mLJsV1XxJBK/Gm7SxvuGIfRg80ngE2O8+wD40P6z2inNTvlG0xNrzi7FjoUtulWd4E1sFPBhd+tYUjSQPh2Rp66L6iz88WvDEk1YOHj9D6+UyHutRKjL2We5tl3kWAkvs3xSsIKt+CvP2GUMFdzwOx/tBSZxvELmVJIbGwfa6BgkIF34If2c/CVj9WBMmDMlqkk4cymPjaaZ7DfTV1/eo/cAzJ4PxgoeBw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by SA1PR12MB8920.namprd12.prod.outlook.com (2603:10b6:806:38e::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.35; Mon, 16 Oct
+ 2023 12:04:55 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3f66:c2b6:59eb:78c2]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3f66:c2b6:59eb:78c2%6]) with mapi id 15.20.6863.046; Mon, 16 Oct 2023
+ 12:04:55 +0000
+Date:   Mon, 16 Oct 2023 09:04:54 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Nicolin Chen <nicolinc@nvidia.com>
+Cc:     Yi Liu <yi.l.liu@intel.com>, "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "kevin.tian@intel.com" <kevin.tian@intel.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "zhenzhong.duan@intel.com" <zhenzhong.duan@intel.com>,
+        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>
+Subject: Re: [PATCH v2 1/6] iommu: Add new iommu op to create domains owned
+ by userspace
+Message-ID: <20231016120454.GS3952@nvidia.com>
+References: <20230928071528.26258-1-yi.l.liu@intel.com>
+ <20230928071528.26258-2-yi.l.liu@intel.com>
+ <ZSuROTyaxePoVFA+@Asurada-Nvidia>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZSuROTyaxePoVFA+@Asurada-Nvidia>
+X-ClientProxiedBy: BL1PR13CA0077.namprd13.prod.outlook.com
+ (2603:10b6:208:2b8::22) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-X-CM-TRANSID: LxC2BwBnwJHRJi1lVkJTAg--.47770S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7tw18CFyfWrWkCF45Kr4rKrg_yoW8uw1kpF
-        W3K3ZFkF4kJrZ5CFn7A3WUZ3yrKa93JrZrCF98Aryrua45Gr1Iqr93KanY9F1UZrZ3Ca4I
-        qr4jyrZ3Cw15A37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAMBF1jj5USuwABsF
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SA1PR12MB8920:EE_
+X-MS-Office365-Filtering-Correlation-Id: fb0c1aad-f645-4a1f-3e5c-08dbce401c3d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ZRKhEpFuTaIlRdgpAKq/EIt0gNiRM7/Y0KQ1PH4B/JcrvznPQMgU1RCJqvBv9Z5d2/0/8W2P2XyO9uGy4yz8wWMl+csHJ0HAThcuzsDANrzPclHNjNiUXrQPst0gwiSKO+epkgCcl77CzV+n7tyJzkofyHLQpbZ/7hz740ax4LeuxMYnLFRc1MMb1jKCcCM5eKNaFASCOPQ+XaoC27k/3ACKeen8+/yvLlMrKive3F/Vjij2t02uJsUexPWfy7MyAHGfqwJx51wHv5qepRJ4EYLMXUdli9R2dI2X6G2EExlIXv+nmZohuCaC2SCyfm1peAUZJOiPLoTV/uIGBcWROSVFxjH1D3k+0ABQhmNDyn8SAIhjYGZ/6tN90OkGO9bKiT16PpG6JVMEz2Q0yT/3DgkIZQ36SAHH7NlIfeyyOPLhMrskytGW/g7Di3u9yxblCc3gO69Hlp1XjsEXlxIKdE7VHiv4102PUKcc/PyI4J2ubB3WZZSTZIdVs8OTqBNhKkDsqKTi+fyHnHCHSuNtO89zrUns81QbUyq0bOMKpQU43opC70QwLQxULQbrG95H
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(376002)(346002)(366004)(39860400002)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(478600001)(66946007)(6636002)(66556008)(66476007)(54906003)(37006003)(6486002)(41300700001)(83380400001)(86362001)(38100700002)(316002)(6512007)(2616005)(26005)(1076003)(107886003)(6506007)(5660300002)(36756003)(33656002)(6862004)(7416002)(8936002)(8676002)(4326008)(4744005)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?OsPIdv6fOvrB/wWly+wS22jA1YtkIc00UTSNIEDZQzGkshX0+XmuqaXREvZY?=
+ =?us-ascii?Q?cqBo5R+bI06EKEkOHba3ZGp7d3mmacWxIpiFS5L/buTMeZpJUVUHSnrUKu8O?=
+ =?us-ascii?Q?BSgr5atAp6nh77T4xnk5SjzXmTXDk8C9F+S1hSdm2gSPk1rRqvnaDFfmowKy?=
+ =?us-ascii?Q?L45dcGsG9+I0TdiZ+ll1O/iOW8KREcFWzbFaqJJm3WUREDEJRMh3WD1yEZUD?=
+ =?us-ascii?Q?lRZzl6KUILdOKVf04UmG4qq8CsKdapPx2jp9cM1Obrj2Vfo4EO+J5hk05+BV?=
+ =?us-ascii?Q?Vf2plxqnxiCXUxHPyAS6yWZko9LNP9chyoi0jPARH163BLQNiKWl0SHxn4JP?=
+ =?us-ascii?Q?n0MfBszEfIbWZ3dpWzV52Pp1JK9ABhmK7VpSmNYSASa8NAK2K/Q7Z3mpO45C?=
+ =?us-ascii?Q?PLFu9R/MONFZAgcW7OpGSNtoZ2SN57a9J+w4+tXfst9tCvYI9mlA29ydg31a?=
+ =?us-ascii?Q?uBZCG7QeDcQs4ANcWPdot/GSw4plKkvEQ4iLNNoyvrTb9GqHvwFHv+e2ftDN?=
+ =?us-ascii?Q?cF2lTgY2Aee8I0sY0gXKhOGLCZcHgJFjJUaR7Ww+2rMaSrvIQAsf4r8sZMor?=
+ =?us-ascii?Q?CznMYvg2TO7mBsgTVky19LSiP6PShZhWTURm6xXxyF56WDJWCARhKza07JXI?=
+ =?us-ascii?Q?TqdR2d21cLAhj8j7crLtRPMy2vXggktqup/SuNhxH8m/iR1z12O5WlY3oC4P?=
+ =?us-ascii?Q?cKpmx2lTD5nSyiP3B0aEs2JAbT4OuuoiTlIWKstKtXhYQmgO8DCVu+Hi51pb?=
+ =?us-ascii?Q?+dUlUxj9NnVVwvp3Y5eTCbpKEGSLOXH0AbCDNBMrUrPhzNNjyjFiYluut5l/?=
+ =?us-ascii?Q?ZWH01x916OVF1Yc/09dl9JK485diZQTwpO7oNW88hSYs6gDy8HVnGMnHsnP/?=
+ =?us-ascii?Q?JzzT/QokmuN5YYmePIVwDEGnQTnRR3T+pdGz52M6CeyD0uQSLj/o9QofvRqe?=
+ =?us-ascii?Q?9JJqohVV7B+YAaoKzcSDlfj9qG+KgV1zJznIAzcDr7zdrxWV46an92tBGRAq?=
+ =?us-ascii?Q?gribG/wlevIHq79bcigQZHyycgzyoVHBBPK7+NA5s0ANidTL5aEKJotpOtQZ?=
+ =?us-ascii?Q?KGVhUhHtFyztFMqmj5yesq5b2+SdoUO4/1Uw23OIgqOZnoH+J67T59eEuzNY?=
+ =?us-ascii?Q?+aW3Nf03E8cwl0Euj3E+4Mi6Hc/6k/w8J1A81B8YnP+ulUi9RqQnuZmmb5m6?=
+ =?us-ascii?Q?s3ueSkaHoFdUhiCsztDuIhjPbHBGvaYF3XIdfxSySxiYcZiVKSf1fm+y3Brv?=
+ =?us-ascii?Q?SmTlfcROpKd28NMeDjPx51LTbdTWt/e8X/auH97Ye9V9J9EfY5YzIyj9iE6O?=
+ =?us-ascii?Q?dRnWSTvT67pQLAzCH1S2DJaL9o9bg1tSDKDnpF1DAwJDkZADSJNIZBoD7His?=
+ =?us-ascii?Q?2D0Xs68pdNE4qtrHlCwambXyrA9RYnySZe69qEx+nF1cMtQPBj/tmYZZ590o?=
+ =?us-ascii?Q?9QMDE/gID3T9Fgbqjm8UgzcBuK4ydLq6uQpXjGHTN6K1PfjTjPOBcBUKj8G+?=
+ =?us-ascii?Q?TdQfrfxSqHuc7Naa36TtpMYOuHdlfu7S+QhMiSlxywGr1r1GAbv9QibJMy4G?=
+ =?us-ascii?Q?PHSwNLEtxzdF8MUl+gK9ReLItb0mWeCYELI037rY?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fb0c1aad-f645-4a1f-3e5c-08dbce401c3d
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2023 12:04:55.1422
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YYGWNAHbF+DdybVHlSmusXav3GDgz5FCW3+TUwihkHWbzmS0a9MN2FGpj2wPuZOi
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8920
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-10-13 at 17:55 -0400, Paul Moore wrote:
-> On Thu, Oct 12, 2023 at 6:07 PM Paul Moore <paul@paul-moore.com> wrote:
-> > 
-> > On Tue, Sep 12, 2023 at 4:57 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> > > 
-> > > Add three system calls for the Linux Security Module ABI ...
-> > 
-> > First off, a big thank you to Casey who took it upon himself to turn
-> > my pseudo-code syscall suggestion into a proper patchset and saw it
-> > through 15 revisions.  Thanks also go out to everyone that has helped
-> > review and comment on this effort; I know everyone is busy, but these
-> > reviews are important.
-> > 
-> > I'm happy to say that I think we're in a good place with this revision
-> > of the LSM syscall patchset.  I only see two outstanding issues, and
-> > neither of those are bugs/showstoppers that affect the API, they are
-> > simply areas where the implementation could be improved.  With the
-> > understanding that Casey is busy for the rest of the month, and my
-> > desire to make sure this patchset gets a full dev cycle in linux-next,
-> > I'm going to suggest merging this into the lsm/next-queue branch soon
-> > (likely tomorrow) in preparation for merging it into lsm/next once the
-> > upcoming merge window closes.  Those who want to help improve the
-> > implementation, as suggested in the feedback on this revision or
-> > otherwise, are welcome to submit patches against the lsm/next-queue
-> > branch and I will merge them into that branch once they pass review.
-> > 
-> > If I don't hear any objections I'll plan on merging this patchset
-> > tomorrow, I'll send a follow-up reply to this email when it's done.
+On Sun, Oct 15, 2023 at 12:14:01AM -0700, Nicolin Chen wrote:
+> On Thu, Sep 28, 2023 at 12:15:23AM -0700, Yi Liu wrote:
 > 
-> Since it's been *almost* a full 24 hours and no objections I went
-> ahead and merged this patchset into lsm/next-queue with the intention
-> of bringing them into lsm/next after the upcoming merge window closes.
-> For those of you who have suggested changes, please feel free to
-> submit patches against the lsm/next-queue branch and we can get them
-> queued up along with these patches.
+> > diff --git a/include/uapi/linux/iommufd.h b/include/uapi/linux/iommufd.h
+> > index b4ba0c0cbab6..4a7c5c8fdbb4 100644
+> > --- a/include/uapi/linux/iommufd.h
+> > +++ b/include/uapi/linux/iommufd.h
+> > @@ -347,10 +347,20 @@ struct iommu_vfio_ioas {
+> >  };
+> >  #define IOMMU_VFIO_IOAS _IO(IOMMUFD_TYPE, IOMMUFD_CMD_VFIO_IOAS)
+> > 
+> > +/**
+> > + * enum iommufd_hwpt_alloc_flags - Flags for HWPT allocation
+> > + * @IOMMU_HWPT_ALLOC_NEST_PARENT: If set, allocate a domain which can serve
+> > + *                                as the parent domain in the nesting
+> > + *                                configuration.
+> 
+> I just noticed a nit here: we should probably align with other
+> parts of this file by using "HWPT" v.s. "domain"? I.e.
+> 
+> + * @IOMMU_HWPT_ALLOC_NEST_PARENT: If set, allocate a HWPT which can serve
+> + *                                as the parent HWPT in the nesting
+> + *                                configuration.
 
-Sorry, I just noticed LSM_ID_IMA. Since we have the 'integrity' LSM, I
-think it should be LSM_ID_INTEGRITY.
+Yes
 
-Mimi, all, do you agree? If yes, I send a patch shortly.
-
-Thanks
-
-Roberto
-
+Jason
