@@ -2,101 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 826D67CA6D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 13:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 281647CA6DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 13:41:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232745AbjJPLkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 07:40:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38832 "EHLO
+        id S232649AbjJPLlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 07:41:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbjJPLkK (ORCPT
+        with ESMTP id S231819AbjJPLlD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 07:40:10 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA0FE1;
-        Mon, 16 Oct 2023 04:40:09 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id 5614622812f47-3af5b5d7f16so2690949b6e.0;
-        Mon, 16 Oct 2023 04:40:09 -0700 (PDT)
+        Mon, 16 Oct 2023 07:41:03 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14306E5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 04:41:00 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-534694a9f26so11158a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 04:41:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697456458; x=1698061258; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2I6xiVgm8CDmOxobNPXJ5HYpt0gEXNwuNgT27rQ1pK8=;
+        b=2Q5uhr7KZnIOPozm+oy0vHWbp03Q1sFUZSwBPx0LsVQC/w/dnP/c3KuRsVKTGEu7kM
+         AROIj0DxDxL1/YKoSGX7rM5Lq1lTKGlp1lkaJWGbrOjLbVJXxdpyCT1WYWzb3vbWOBgk
+         anltbr9L+X2Hn1JBwCIzkQjRdEjjugweYDFB8mohX2nuHlw0wCfQMUy4FqZzgBkBaHdR
+         8SPVoFEJSGtEulLCD0j5oxaLuLvVE5dUJvuP0kmBS9RuKVQIuAeZGQ6X55Aqyj9Vn3md
+         s2mtdAxgTRbWRYgZ+LzvH0GL2oEeUQ6/l+nyB3P1/YMPXJaPilTrFc8I/841CfVH1Yba
+         CarQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697456408; x=1698061208;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:dkim-signature:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=tE3/kt7VPkaFdquQYklg8hmYnVUnseOhnUoih4hEER0=;
-        b=niR7CETXWTyqnpbNTQM9R9+3O+nRq6tX0tsjHqc2tVbuAFnQi+cOo9rrR2OLF/pQ46
-         TJUuRlGdyNA3XTF2M+IVi/VGLj6Z8YO3sMCaUpiI0zTW1YoYj9z/BcsICKblFfN05X5H
-         AjpJiWb3Iv28bNQk/wS3Zs6x/YqEsLfNFHiBWDW6fTxG07ddinrh5kSnCJU7V0X40/w0
-         21MhQkYkmnudyJMsAI6TsTnQYr10QelHYtWE/JgQvgy9inaCzwK5sY+Twlhyoc8b5A+1
-         VYyzDlZRSiWT/7auq/hyn/i66KxiIQkIXa1ypWBVyW4z0cu3tDC4mRFShE3q8yoxmSts
-         4lpw==
-X-Gm-Message-State: AOJu0YwFc7pb36RIyBJcIwaA9nspD8RUVxMQ/xYZJISiuLanKn8GDcW0
-        ZpS+FgQ38Q3QDMheovVEjbU=
-X-Google-Smtp-Source: AGHT+IHxDYPzvNS3lWU1QsDc586Js06uUe+5oigcPknJIMbnR2FqVnBRnij03C711FQbvHhcLy3Xug==
-X-Received: by 2002:a05:6808:1582:b0:3af:7db8:21ad with SMTP id t2-20020a056808158200b003af7db821admr43196719oiw.33.1697456408615;
-        Mon, 16 Oct 2023 04:40:08 -0700 (PDT)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id f18-20020aa79d92000000b006bc3e8f58besm3726935pfq.56.2023.10.16.04.40.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 04:40:08 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 08:40:00 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-        s=2023; t=1697456403;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tE3/kt7VPkaFdquQYklg8hmYnVUnseOhnUoih4hEER0=;
-        b=Tly0eZsWl0PYDKWvqPHKOAbv1/wJr0yDXEHYhkZ22t59XEtf39mUTX2rsE3I8NMi/l8Imm
-        DxJB6uyPhef6JqSNZkl2HldM1Pc0VLw9mdmCFqUjI7PLcHw9RmuN6szKNdpLAlHzbK+SlR
-        k6fNy9Q1OOmMHt13hU4tozESfZFEfYt1SuaivIwbZ8IRu68vUvoDVxB3FaEqZVNy1vhEJk
-        OjWnBbKUsoyps9G66fCr+VsusMr4lBdsvuOSVBA4nZMjKzCrzd4jwosP9ZCYr8y/wFctcG
-        OWKN6CpEfRsmrYu6+0uzOpVfIEXeeTQmzVpYx5BEth+yddX/k7RiYRU+0Xe+Pw==
-Authentication-Results: ORIGINATING;
-        auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-From:   "Ricardo B. Marliere" <ricardo@marliere.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Subject: Re: [PATCH 6.1 000/131] 6.1.59-rc1 review
-Message-ID: <pocozopagkwaphxqyupnpuntzxsb47ws6s7nzmawhnqa5brzph@ku2y2aucxs3l>
-References: <20231016084000.050926073@linuxfoundation.org>
+        d=1e100.net; s=20230601; t=1697456458; x=1698061258;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2I6xiVgm8CDmOxobNPXJ5HYpt0gEXNwuNgT27rQ1pK8=;
+        b=KjgN5EhL2mrtvr6J8e4FhshtvD7f7KGBLnW77sWcE1ddy3HmZpvtsIM6wqiSMWgo7m
+         tnGG3uW6yf1KvnYp87WdsbQMY0zWcngxiMl1slmguoIGCQHUd1DVUmeW9aQsXIwlfLmN
+         4QEjb9+WgbO6YMtEh8QaaBHQ1USh4QXgqF7xlwhsFgSCmYjoQ1FLsEVEDZttlL3q/1h1
+         7hPZ1u5H4HHEfAJkIDFYHK7Ia7IEuUIpej0e+fDvNdJk1Ok93/GlfulckWVh3LuGK6OG
+         ee7QmHLikuOLjIDQpJNYCLlq0IJbWEE5Rc6Z3VzCfXbRoLAb9uLY3H5gkzK31nJnd+kB
+         ppsA==
+X-Gm-Message-State: AOJu0YwBw8BbBMz/0wRmyo6B40iuF5iJ4OTkKr9EqXUICWOth6KspD6S
+        SEvZkftBgNUNCmSk762uLg/BUQpFWuUIaGViYh2PGA==
+X-Google-Smtp-Source: AGHT+IEd7QsZDGvewhvSCOpW/J+FnpZ5jMRtoRoEZoPIfRkDvA7e50KC0N8Z+vcUAqp+1WNdbYbn6DP3CRW+eN2eV5Y=
+X-Received: by 2002:a50:cd16:0:b0:538:1d3a:d704 with SMTP id
+ z22-20020a50cd16000000b005381d3ad704mr155111edi.1.1697456458241; Mon, 16 Oct
+ 2023 04:40:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231016084000.050926073@linuxfoundation.org>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <1697056244-21888-1-git-send-email-haiyangz@microsoft.com>
+In-Reply-To: <1697056244-21888-1-git-send-email-haiyangz@microsoft.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Mon, 16 Oct 2023 13:40:43 +0200
+Message-ID: <CANn89iLth-thO7=V=b+3dbP=K-m+hbBk75FtM+7cFiUphGXwoA@mail.gmail.com>
+Subject: Re: [PATCH net-next,v3] tcp: Set pingpong threshold via sysctl
+To:     Haiyang Zhang <haiyangz@microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+        kys@microsoft.com, davem@davemloft.net, kuba@kernel.org,
+        pabeni@redhat.com, corbet@lwn.net, dsahern@kernel.org,
+        ncardwell@google.com, ycheng@google.com, kuniyu@amazon.com,
+        morleyd@google.com, mfreemon@cloudflare.com, mubashirq@google.com,
+        linux-doc@vger.kernel.org, weiwan@google.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/10/16 10:39AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.59 release.
-> There are 131 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 18 Oct 2023 08:39:40 +0000.
-> Anything received after that time might be too late.
+On Wed, Oct 11, 2023 at 10:31=E2=80=AFPM Haiyang Zhang <haiyangz@microsoft.=
+com> wrote:
+>
+> TCP pingpong threshold is 1 by default. But some applications, like SQL D=
+B
+> may prefer a higher pingpong threshold to activate delayed acks in quick
+> ack mode for better performance.
+>
 
-No regressions on my system:
+...
 
-08:35:39 rbmarliere@debian ~
-$ dmesg -lerr
-08:35:42 rbmarliere@debian ~
-$ uname -a
-Linux debian 6.1.59-rc1+ #1 SMP PREEMPT_DYNAMIC Mon Oct 16 07:46:20 -03 2023 x86_64 GNU/Linux
+>
+> diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+> index f207712eece1..7d0fe76d56ef 100644
+> --- a/net/ipv4/tcp_output.c
+> +++ b/net/ipv4/tcp_output.c
+> @@ -170,10 +170,10 @@ static void tcp_event_data_sent(struct tcp_sock *tp=
+,
+>         tp->lsndtime =3D now;
+>
+>         /* If it is a reply for ato after last received
+> -        * packet, enter pingpong mode.
+> +        * packet, increase pingpong count.
+>          */
+>         if ((u32)(now - icsk->icsk_ack.lrcvtime) < icsk->icsk_ack.ato)
+> -               inet_csk_enter_pingpong_mode(sk);
+> +               inet_csk_inc_pingpong_cnt(sk);
+>  }
+>
+>  /* Account for an ACK we sent. */
 
-1 build warning:
-vmlinux.o: warning: objtool: set_ftrace_ops_ro+0x23: relocation to !ENDBR: kexec_mark_crashkres+0xe7
+OK, but I do not think we solved the fundamental problem of using
+jiffies for this heuristic,
+especially for HZ=3D100 or HZ=3D250 builds.
 
-
-Tested-by: Ricardo B. Marliere <ricardo@marliere.net>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
