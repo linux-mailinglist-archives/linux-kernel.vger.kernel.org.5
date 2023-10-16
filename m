@@ -2,197 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B90367C9E11
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 05:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0BBE7C9E17
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 06:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231487AbjJPD7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 23:59:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50402 "EHLO
+        id S231249AbjJPEC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 00:02:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231415AbjJPD7i (ORCPT
+        with ESMTP id S229503AbjJPEC0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 23:59:38 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB47CDA
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 20:59:32 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-774141bb415so244985485a.3
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 20:59:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697428772; x=1698033572; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=7Fy2uXPSp00n0L9agixVGjkKRi+BAuNJikDZecg3kJc=;
-        b=ibHRZaM+573wshnrKRlSglHzlFVf3SIfxhaFEg2Pk/4CVfrHQq7GNpPKO7A3hv68eV
-         FxkcXewXz/L30qN+BEio7VYsTNUXJ50LUkuFBpMAskHrXLE1abXnMYUx4j0DuS8kvpGT
-         5QByUyDsUSdeeiOIEcKw3Ms9k/xaCEwiurB6mqz50zulWZUvgLEDI8/jA+gaqc0zPgfp
-         Zlmg4CAf3XkW6GhTqiPAPZ1MWgGuEiRlPhjVsFOMhy1wcAGuCI4oq3WSergoxaK5wFuO
-         URlCX8a5S7TyzJ4l6c6S+9w16EE1X3ck/0+xOFqnIrk4e7qTskqlDSqzkM7VsVBi5oJb
-         OsjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697428772; x=1698033572;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7Fy2uXPSp00n0L9agixVGjkKRi+BAuNJikDZecg3kJc=;
-        b=c/2K9zWGO75q0UqZq0aehRLzi/7hMIzSAMJPdPM11l0Pyd0oUDnlczejUR+LVmPq0u
-         gu2+d/285mipXCSmskiL9VlwjBZg6yzaS/ISGCKsUhdstaDFRGH8OFCvRjgil5MKgOsV
-         8ysiju7o2mVGlpLEwl2gsBgKRHhJSZmen086aT5omempPOyPHaNAlKtE8g/cECOmwTTD
-         kP6Nr2vfiyTR37Fw8CVU5ZAHRdZPisaXgsXI/gGIFDafLRGQO2IyA61e4S+hrk1sBR0B
-         iQGQh0wKGfpKznDl/u2II1gTOqbO9qi/igYxZpb574Bl+aL2HDQYaW76elQ8el1CwMnJ
-         91Kw==
-X-Gm-Message-State: AOJu0YzKNPMB/++nssWBTSG7gFeRk5uxn+4Hlfyn/4Z5YB5ZHoo2VOo1
-        /fmYX0ni6GMaOLKrT4w4047H
-X-Google-Smtp-Source: AGHT+IGmaiHTpzlc1miv3/HBvOix8MsEgsaBm40HudFTD6vONeU9BVRe9umhScM/ElUfwEJHgYYTLQ==
-X-Received: by 2002:a05:620a:b5c:b0:775:7e16:2cdf with SMTP id x28-20020a05620a0b5c00b007757e162cdfmr29126942qkg.39.1697428771855;
-        Sun, 15 Oct 2023 20:59:31 -0700 (PDT)
-Received: from thinkpad ([59.92.103.190])
-        by smtp.gmail.com with ESMTPSA id w10-20020a0cc24a000000b0065b229ecb8dsm3101936qvh.3.2023.10.15.20.59.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Oct 2023 20:59:31 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 09:29:17 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     martin.petersen@oracle.com
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
-        linux-scsi@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        quic_asutoshd@quicinc.com, quic_cang@quicinc.com,
-        quic_nitirawa@quicinc.com, quic_narepall@quicinc.com,
-        quic_bhaskarv@quicinc.com, quic_richardp@quicinc.com,
-        quic_nguyenb@quicinc.com, quic_ziqichen@quicinc.com,
-        bmasney@redhat.com, krzysztof.kozlowski@linaro.org,
-        linux-kernel@vger.kernel.org, nm@ti.com, sboyd@kernel.org,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        cw00.choi@samsung.com, andersson@kernel.org,
-        konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jejb@linux.ibm.com
-Subject: Re: [PATCH v7 0/5] UFS: Add OPP support
-Message-ID: <20231016035917.GA39962@thinkpad>
-References: <20231012172129.65172-1-manivannan.sadhasivam@linaro.org>
+        Mon, 16 Oct 2023 00:02:26 -0400
+Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D93AD;
+        Sun, 15 Oct 2023 21:02:24 -0700 (PDT)
+Received: from localhost.localdomain (unknown [10.101.196.174])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 43BAB3F0C6;
+        Mon, 16 Oct 2023 04:02:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1697428940;
+        bh=vkafOmpdBRmco3tsD/n12uXh8EE6SvdVyF3TIx5/KiY=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=LfIysylXk+F/ROUKC4Q2wqhQ4OOd9ajiuEdPBqVJGauGHJvWmlqKOeZmm65H1SF/j
+         vIMAB7Gy1QXMiqXzVw9WUTS+6YYX1LUkUvfsuTgXYaH9e5NhbCvLfifOw9lgfpw5r5
+         GtRNW0QyiXlngsXfBskskWvZ7zPGr+ftxfSKO9l75QBT7NR5opLaTvYqAWwkgfo/uO
+         bAU+ks79D38JYUaLBLfePH5ruoU5teDcpLHvebA8pX6XvqmbBmZNda7bMVOUOYNiWe
+         AaDVs0IUhO/k2VBEh3qpNdn+8jXX16DE4hOb8ozay72KmpyBM7+4fVosGKGRlqWt+H
+         CC8dVJiH3EWOw==
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     bhelgaas@google.com
+Cc:     linux-pm@vger.kernel.org, linux-mmc@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Ricky Wu <ricky_wu@realtek.com>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        Lukas Wunner <lukas@wunner.de>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH] PCI: pciehp: Prevent child devices from doing RPM on PCIe Link Down
+Date:   Mon, 16 Oct 2023 12:01:31 +0800
+Message-Id: <20231016040132.23824-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231012172129.65172-1-manivannan.sadhasivam@linaro.org>
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 10:51:24PM +0530, Manivannan Sadhasivam wrote:
-> Hi,
-> 
-> This series adds OPP (Operating Points) support to UFSHCD driver.
-> 
-> Motivation behind adding OPP support is to scale both clocks as well as
-> regulators/performance state dynamically. Currently, UFSHCD just scales
-> clock frequency during runtime with the help of "freq-table-hz" property
-> defined in devicetree. With the addition of OPP tables in devicetree (as
-> done for Qcom SDM845 and SM8250 SoCs in this series) UFSHCD can now scale
-> both clocks and performance state of power domain which helps in power
-> saving.
-> 
-> For the addition of OPP support to UFSHCD, there are changes required to
-> the OPP framework and devfreq drivers. The OPP framework changes are already
-> merged and the devfreq change is added in this series.
-> 
-> Credits
-> =======
-> 
-> This series is a continuation of previous work by Krzysztof Kozlowski [1].
-> 
-> Testing
-> =======
-> 
-> This series is tested on 96Boards RB3 (SDM845 SoC) and RB5 (SM8250 SoC)
-> development boards.
-> 
-> Merging Strategy
-> ================
-> 
-> Since the devfreq patch got an Ack from the maintainer, either it can be merged
-> to scsi tree with rest of the patches or merged separately through devfreq tree.
-> 
+When inserting an SD7.0 card to Realtek card reader, it can trigger PCI
+slot Link down and causes the following error:
+[   63.898861] pcieport 0000:00:1c.0: pciehp: Slot(8): Link Down
+[   63.912118] BUG: unable to handle page fault for address: ffffb24d403e50=
+10
+[   63.912122] #PF: supervisor read access in kernel mode
+[   63.912125] #PF: error_code(0x0000) - not-present page
+[   63.912126] PGD 100000067 P4D 100000067 PUD 1001fe067 PMD 100d97067 PTE 0
+[   63.912131] Oops: 0000 [#1] PREEMPT SMP PTI
+[   63.912134] CPU: 3 PID: 534 Comm: kworker/3:10 Not tainted 6.4.0 #6
+[   63.912137] Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M.=
+/H370M Pro4, BIOS P3.40 10/25/2018
+[   63.912138] Workqueue: pm pm_runtime_work
+[   63.912144] RIP: 0010:ioread32+0x2e/0x70
+[   63.912148] Code: ff 03 00 77 25 48 81 ff 00 00 01 00 77 14 8b 15 08 d9 =
+54 01 b8 ff ff ff ff 85 d2 75 14 c3 cc cc cc cc 89 fa ed c3 cc cc cc cc <8b=
+> 07 c3 cc cc cc cc 55 83 ea 01 48 89 fe 48 c7 c7 98 6f 15 99 48
+[   63.912150] RSP: 0018:ffffb24d40a5bd78 EFLAGS: 00010296
+[   63.912152] RAX: ffffb24d403e5000 RBX: 0000000000000152 RCX: 00000000000=
+0007f
+[   63.912153] RDX: 000000000000ff00 RSI: ffffb24d403e5010 RDI: ffffb24d403=
+e5010
+[   63.912155] RBP: ffffb24d40a5bd98 R08: ffffb24d403e5010 R09: 00000000000=
+00000
+[   63.912156] R10: ffff9074cd95e7f4 R11: 0000000000000003 R12: 00000000000=
+0007f
+[   63.912158] R13: ffff9074e1a68c00 R14: ffff9074e1a68d00 R15: 00000000000=
+09003
+[   63.912159] FS:  0000000000000000(0000) GS:ffff90752a180000(0000) knlGS:=
+0000000000000000
+[   63.912161] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   63.912162] CR2: ffffb24d403e5010 CR3: 0000000152832006 CR4: 00000000003=
+706e0
+[   63.912164] Call Trace:
+[   63.912165]  <TASK>
+[   63.912167]  ? show_regs+0x68/0x70
+[   63.912171]  ? __die_body+0x20/0x70
+[   63.912173]  ? __die+0x2b/0x40
+[   63.912175]  ? page_fault_oops+0x160/0x480
+[   63.912177]  ? search_bpf_extables+0x63/0x90
+[   63.912180]  ? ioread32+0x2e/0x70
+[   63.912183]  ? search_exception_tables+0x5f/0x70
+[   63.912186]  ? kernelmode_fixup_or_oops+0xa2/0x120
+[   63.912189]  ? __bad_area_nosemaphore+0x179/0x230
+[   63.912191]  ? bad_area_nosemaphore+0x16/0x20
+[   63.912193]  ? do_kern_addr_fault+0x8b/0xa0
+[   63.912195]  ? exc_page_fault+0xe5/0x180
+[   63.912198]  ? asm_exc_page_fault+0x27/0x30
+[   63.912203]  ? ioread32+0x2e/0x70
+[   63.912206]  ? rtsx_pci_write_register+0x5b/0x90 [rtsx_pci]
+[   63.912217]  rtsx_set_l1off_sub+0x1c/0x30 [rtsx_pci]
+[   63.912226]  rts5261_set_l1off_cfg_sub_d0+0x36/0x40 [rtsx_pci]
+[   63.912234]  rtsx_pci_runtime_idle+0xc7/0x160 [rtsx_pci]
+[   63.912243]  ? __pfx_pci_pm_runtime_idle+0x10/0x10
+[   63.912246]  pci_pm_runtime_idle+0x34/0x70
+[   63.912248]  rpm_idle+0xc4/0x2b0
+[   63.912251]  pm_runtime_work+0x93/0xc0
+[   63.912254]  process_one_work+0x21a/0x430
+[   63.912258]  worker_thread+0x4a/0x3c0
+[   63.912261]  ? __pfx_worker_thread+0x10/0x10
+[   63.912263]  kthread+0x106/0x140
+[   63.912266]  ? __pfx_kthread+0x10/0x10
+[   63.912268]  ret_from_fork+0x29/0x50
+[   63.912273]  </TASK>
+[   63.912274] Modules linked in: nvme nvme_core snd_hda_codec_hdmi snd_sof=
+_pci_intel_cnl snd_sof_intel_hda_common snd_hda_codec_realtek snd_hda_codec=
+_generic snd_soc_hdac_hda soundwire_intel ledtrig_audio nls_iso8859_1 sound=
+wire_generic_allocation soundwire_cadence snd_sof_intel_hda_mlink snd_sof_i=
+ntel_hda snd_sof_pci snd_sof_xtensa_dsp snd_sof snd_sof_utils snd_hda_ext_c=
+ore snd_soc_acpi_intel_match snd_soc_acpi soundwire_bus snd_soc_core snd_co=
+mpress ac97_bus snd_pcm_dmaengine snd_hda_intel i915 snd_intel_dspcfg snd_i=
+ntel_sdw_acpi intel_rapl_msr snd_hda_codec intel_rapl_common snd_hda_core x=
+86_pkg_temp_thermal intel_powerclamp snd_hwdep coretemp snd_pcm kvm_intel d=
+rm_buddy ttm mei_hdcp kvm drm_display_helper snd_seq_midi snd_seq_midi_even=
+t cec crct10dif_pclmul ghash_clmulni_intel sha512_ssse3 aesni_intel crypto_=
+simd rc_core cryptd rapl snd_rawmidi drm_kms_helper binfmt_misc intel_cstat=
+e i2c_algo_bit joydev snd_seq snd_seq_device syscopyarea wmi_bmof snd_timer=
+ sysfillrect input_leds snd ee1004 sysimgblt mei_me soundcore
+[   63.912324]  mei intel_pch_thermal mac_hid acpi_tad acpi_pad sch_fq_code=
+l msr parport_pc ppdev lp ramoops drm parport reed_solomon efi_pstore ip_ta=
+bles x_tables autofs4 hid_generic usbhid hid rtsx_pci_sdmmc crc32_pclmul ah=
+ci e1000e i2c_i801 i2c_smbus rtsx_pci xhci_pci libahci xhci_pci_renesas vid=
+eo wmi
+[   63.912346] CR2: ffffb24d403e5010
+[   63.912348] ---[ end trace 0000000000000000 ]---
 
-Martin, can you please merge the ufs patches (drivers,bindings) for v6.7? Note
-that the devfreq patch already got merged and the above text is outdated (my
-bad).
+This happens because scheduled pm_runtime_idle() is not cancelled.
 
-- Mani
+So use pm_runtime_barrier() to ensure all devices on the bus stops
+runtime power management actions.
 
-> Thanks,
-> Mani
-> 
-> [1] https://lore.kernel.org/all/20220513061347.46480-1-krzysztof.kozlowski@linaro.org/
-> 
-> Changes in v7:
-> 
-> * Added missing EXPORT_SYMBOL_GPL() for ufshcd_opp_config_clks() API as reported
->   by Alessandro Carminati
-> 
-> Changes in v6:
-> 
-> * Collected tags from Dmitry
-> * Fixed bindings issues reported by Krzysztof
-> 
-> Changes in v5:
-> 
-> * Dropped the devfreq patch since it got applied
-> * Fixed the bindings issue reported by DT bot
-> * Rebased on top of mkp/scsi/for-next
-> 
-> Changes in v4:
-> 
-> * Rebased on top of v6.6-rc3
-> 
-> Changes in v3:
-> 
-> * Rebased on top of linux-next/master tag: next-20230731
-> * Dropped the already applied patches (dts, opp binding and framework)
-> * Moved the interconnect patches to a separate series:
->   https://lore.kernel.org/linux-scsi/20230731145020.41262-1-manivannan.sadhasivam@linaro.org/
-> * Moved ufshcd_opp_config_clks() API to ufshcd.c to fix the build failure
->   reported by Kbuild bot: https://lore.kernel.org/all/202307210542.KoLHRbU6-lkp@intel.com/
-> * Collected Acks
-> * v2: https://lore.kernel.org/all/20230720054100.9940-1-manivannan.sadhasivam@linaro.org/
-> 
-> Changes in v2:
-> 
-> * Added more description to the bindings patch 2/15
-> * Fixed dev_pm_opp_put() usage in patch 10/15
-> * Added a new patch for adding enums for UFS lanes 14/15
-> * Changed the icc variables to mem_bw and cfg_bw and used
->   the enums for gears and lanes in bw_table
-> * Collected review tags
-> * Added SCSI list and folks
-> * Removed duplicate patches
-> 
-> Krzysztof Kozlowski (2):
->   dt-bindings: ufs: common: add OPP table
->   arm64: dts: qcom: sdm845: Add OPP table support to UFSHC
-> 
-> Manivannan Sadhasivam (3):
->   scsi: ufs: core: Add OPP support for scaling clocks and regulators
->   scsi: ufs: host: Add support for parsing OPP
->   arm64: dts: qcom: sm8250: Add OPP table support to UFSHC
-> 
->  .../devicetree/bindings/ufs/ufs-common.yaml   |  35 +++-
->  arch/arm64/boot/dts/qcom/sdm845.dtsi          |  42 +++-
->  arch/arm64/boot/dts/qcom/sm8250.dtsi          |  39 +++-
->  drivers/ufs/core/ufshcd.c                     | 180 ++++++++++++++----
->  drivers/ufs/host/ufshcd-pltfrm.c              |  78 ++++++++
->  include/ufs/ufshcd.h                          |   7 +
->  6 files changed, 326 insertions(+), 55 deletions(-)
-> 
-> -- 
-> 2.25.1
-> 
+Link: https://lore.kernel.org/all/2ce258f371234b1f8a1a470d5488d00e@realtek.=
+com/
+Tested-by: Ricky Wu <ricky_wu@realtek.com>
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+ drivers/pci/hotplug/pciehp_pci.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
--- 
-மணிவண்ணன் சதாசிவம்
+diff --git a/drivers/pci/hotplug/pciehp_pci.c b/drivers/pci/hotplug/pciehp_=
+pci.c
+index ad12515a4a12..9ae4fa95c8c1 100644
+--- a/drivers/pci/hotplug/pciehp_pci.c
++++ b/drivers/pci/hotplug/pciehp_pci.c
+@@ -18,9 +18,18 @@
+ #include <linux/kernel.h>
+ #include <linux/types.h>
+ #include <linux/pci.h>
++#include <linux/pm_runtime.h>
+ #include "../pci.h"
+ #include "pciehp.h"
+=20
++int pci_dev_disconnect(struct pci_dev *pdev, void *unused)
++{
++	pm_runtime_barrier(&pdev->dev);
++	pci_dev_set_disconnected(pdev, NULL);
++
++	return 0;
++}
++
+ /**
+  * pciehp_configure_device() - enumerate PCI devices below a hotplug bridge
+  * @ctrl: PCIe hotplug controller
+@@ -98,7 +107,7 @@ void pciehp_unconfigure_device(struct controller *ctrl, =
+bool presence)
+ 		 __func__, pci_domain_nr(parent), parent->number);
+=20
+ 	if (!presence)
+-		pci_walk_bus(parent, pci_dev_set_disconnected, NULL);
++		pci_walk_bus(parent, pci_dev_disconnect, NULL);
+=20
+ 	pci_lock_rescan_remove();
+=20
+--=20
+2.34.1
+
