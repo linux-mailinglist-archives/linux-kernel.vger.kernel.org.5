@@ -2,179 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8EF7CA16E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 10:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E8DE7CA171
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 10:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230030AbjJPIUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 04:20:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50706 "EHLO
+        id S231971AbjJPIU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 04:20:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjJPIUV (ORCPT
+        with ESMTP id S230109AbjJPIU0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 04:20:21 -0400
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26893A1;
-        Mon, 16 Oct 2023 01:20:16 -0700 (PDT)
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-        by mailout.nyi.internal (Postfix) with ESMTP id D49E95C038A;
-        Mon, 16 Oct 2023 04:20:13 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Mon, 16 Oct 2023 04:20:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1697444413; x=1697530813; bh=7q
-        0NGsNM5BawRB9cyrdDLpuBJqBrzibSQtCtQq1DbgQ=; b=LALSR39/N+2FE+uQ6Y
-        cP81iYbNRFvOO1XPgWByXSem/M3l8PFA73j3yHSF9ZNim7PzBbyhKpVd/ZlcRbFh
-        6tPv0gL/dHgZbvsdOVPERy8/zhVYMB+SNAdF1mp2ceJrq/1KH/eSyqHmAVVCchct
-        OvA+YnHeXDV+y3AXnADNrfjXtkY2TM493WPEFSYdI0P3TG4lU5Oh9CTErqgDsWBB
-        54HoiXDpZLpiFAyEkhkWGZwOczQh9FdEHuNxUzaVrVnChtPYfAk9iDCz+p8QXoSH
-        pz8XFTt4WKfvUAzEG34pWPz7vh9zFV2gPnbjyeRAIEnEZVlF671X5DxvCkBI3mcq
-        YCmw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1697444413; x=1697530813; bh=7q0NGsNM5BawR
-        B9cyrdDLpuBJqBrzibSQtCtQq1DbgQ=; b=nkgcO9PBgZ/A1OttALfj2KhOVG8Rw
-        /5ZofOAP0haL6kGgunVg1B47R0NqmrbWrSDMAQbcJd26/Je93xUpdsqpE4GtM3ex
-        ZOzbXvWZ789Ud9Wu2rQkenHTsH3dbUZD0Cjty9YsI38a3qU6KZOcnZbE4E3938pD
-        6QbXHo/utvHlDnlw84rEqMa3IEkNCc7AAwaBRWpqRFAXMI3Bg95kCTe++kRRtkRs
-        +O3PvAkETLRpXN8Q1f0O/EGU7TRLe2zPNEMQQCLj4ZM10MhzL8EC8SkSBtnaoeLs
-        0qOFKARv2pwhFmJxvHyqBHVT12f60rZmCkrP5jqkowjZbkiA2niFSQeXQ==
-X-ME-Sender: <xms:PfIsZemL6Q1F_AX0yz3d-wUA_PX6C9RJ5qhwmRtin8L3mpA-0ZN5bw>
-    <xme:PfIsZV0E5hCASqFsutAuIvCD33_QI1DJUJ3Udsm8Nyx1QmCx0E67wa8uhKZ2PF5KG
-    6gnFWTN-jzpng>
-X-ME-Received: <xmr:PfIsZcrB93wnZW2tsjfuGyGERI9G4r5BcD_Ew6mXzl11MnOvAPrLaM2PeDE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrjedtucetufdoteggodetrfdotffvucfrrh
-    hofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgenuceurghi
-    lhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurh
-    epfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfmjfcu
-    oehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepheegvdevvdelje
-    eugfdtudduhfekledtiefhveejkeejuefhtdeufefhgfehkeetnecuvehluhhsthgvrhfu
-    ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtoh
-    hm
-X-ME-Proxy: <xmx:PfIsZSlrtOQiRQAojp6qkRAXzT9QixkVt-0f8d-TYrcCyfLwv4G9Qw>
-    <xmx:PfIsZc06KA0tC7tcepOmOeeMBQl3i_-FuIUlpWpJNsCuYQAAOhKkIQ>
-    <xmx:PfIsZZvT1zr8ay_p3nTBQEWPGsNT-f1G5cioXzfMrQg9lAL80QBgMA>
-    <xmx:PfIsZVsa97zhLObVdyIHaZlUcxyxS9nFYmKHmsB8OK-UmKRgROVXtQ>
-Feedback-ID: i787e41f1:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 16 Oct 2023 04:20:12 -0400 (EDT)
-Date:   Mon, 16 Oct 2023 10:20:10 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Lukas Wunner <lukas@wunner.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: linux-next: manual merge of the tty tree with the tty.current
- tree
-Message-ID: <2023101600-handling-dilation-c3e7@gregkh>
-References: <20231004125531.0c61a99d@canb.auug.org.au>
- <20231004131432.40b7b946@canb.auug.org.au>
- <2023100430-padding-deranged-1617@gregkh>
+        Mon, 16 Oct 2023 04:20:26 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37CFCDC;
+        Mon, 16 Oct 2023 01:20:24 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC20AC433C8;
+        Mon, 16 Oct 2023 08:20:20 +0000 (UTC)
+Message-ID: <dcf6f56a-2b6d-4178-ad8e-c0f40804aeba@xs4all.nl>
+Date:   Mon, 16 Oct 2023 10:20:19 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023100430-padding-deranged-1617@gregkh>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v11 34/56] media: usb: cx231xx: Set min_buffers_needed to
+ CX231XX_MIN_BUF
+Content-Language: en-US, nl
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com
+References: <20231012114642.19040-1-benjamin.gaignard@collabora.com>
+ <20231012114642.19040-35-benjamin.gaignard@collabora.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20231012114642.19040-35-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 08:38:51AM +0200, Greg KH wrote:
-> On Wed, Oct 04, 2023 at 01:14:32PM +1100, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > On Wed, 4 Oct 2023 12:55:31 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > >
-> > > Today's linux-next merge of the tty tree got a conflict in:
-> > > 
-> > >   drivers/tty/serial/serial_core.c
-> > > 
-> > > between commit:
-> > > 
-> > >   8679328eb859 ("serial: Reduce spinlocked portion of uart_rs485_config()")
-> > > 
-> > > from the tty.current tree and commit:
-> > > 
-> > >   559c7ff4e324 ("serial: core: Use port lock wrappers")
-> > > 
-> > > from the tty tree.
-> > > 
-> > > I fixed it up (see below) and can carry the fix as necessary. This
-> > > is now fixed as far as linux-next is concerned, but any non trivial
-> > > conflicts should be mentioned to your upstream maintainer when your tree
-> > > is submitted for merging.  You may also want to consider cooperating
-> > > with the maintainer of the conflicting tree to minimise any particularly
-> > > complex conflicts.
-> > 
-> > Not quite right :-(  This is what I used:
-> > 
-> > diff --cc drivers/tty/serial/serial_core.c
-> > index ca26a8aef2cb,b32bbd7aa3d3..ae1d6782ea0e
-> > --- a/drivers/tty/serial/serial_core.c
-> > +++ b/drivers/tty/serial/serial_core.c
-> > @@@ -1413,9 -1409,7 +1413,9 @@@ static int uart_rs485_config(struct uar
-> >   	uart_sanitize_serial_rs485(port, rs485);
-> >   	uart_set_rs485_termination(port, rs485);
-> >   
-> > - 	spin_lock_irqsave(&port->lock, flags);
-> > ++	uart_port_lock_irqsave(port, &flags);
-> >   	ret = port->rs485_config(port, NULL, rs485);
-> > - 	spin_unlock_irqrestore(&port->lock, flags);
-> > ++	uart_port_unlock_irqrestore(port, flags);
-> >   	if (ret)
-> >   		memset(rs485, 0, sizeof(*rs485));
-> >   
-> > @@@ -2480,12 -2474,13 +2480,12 @@@ int uart_resume_port(struct uart_drive
-> >   			if (ret == 0) {
-> >   				if (tty)
-> >   					uart_change_line_settings(tty, state, NULL);
-> >  +				uart_rs485_config(uport);
-> > - 				spin_lock_irq(&uport->lock);
-> > + 				uart_port_lock_irq(uport);
-> >   				if (!(uport->rs485.flags & SER_RS485_ENABLED))
-> >   					ops->set_mctrl(uport, uport->mctrl);
-> >  -				else
-> >  -					uart_rs485_config(uport);
-> >   				ops->start_tx(uport);
-> > - 				spin_unlock_irq(&uport->lock);
-> > + 				uart_port_unlock_irq(uport);
-> >   				tty_port_set_initialized(port, true);
-> >   			} else {
-> >   				/*
-> > @@@ -2592,10 -2587,10 +2592,10 @@@ uart_configure_port(struct uart_driver 
-> >   		port->mctrl &= TIOCM_DTR;
-> >   		if (!(port->rs485.flags & SER_RS485_ENABLED))
-> >   			port->ops->set_mctrl(port, port->mctrl);
-> > - 		spin_unlock_irqrestore(&port->lock, flags);
-> >  -		else
-> >  -			uart_rs485_config(port);
-> > + 		uart_port_unlock_irqrestore(port, flags);
-> >   
-> >  +		uart_rs485_config(port);
-> >  +
-> >   		/*
-> >   		 * If this driver supports console, and it hasn't been
-> >   		 * successfully registered yet, try to re-register it.
-> > 
-> > 
-> > -- 
-> > Cheers,
-> > Stephen Rothwell
+On 12/10/2023 13:46, Benjamin Gaignard wrote:
+> vb2 queue_setup checks for a minimum number of buffers so set
+> min_buffers_needed to  aCX231XX_MIN_BUFnd remove the useless check in
+
+Garbled line.
+
+Regards,
+
+	Hans
+
+> cx231xx queue_setup().
 > 
-> Thanks, looks good, I'll use this when I resolve the merge conflict when
-> it hits my branches.
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> ---
+>  drivers/media/usb/cx231xx/cx231xx-417.c   | 4 +---
+>  drivers/media/usb/cx231xx/cx231xx-video.c | 4 +---
+>  2 files changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/media/usb/cx231xx/cx231xx-417.c b/drivers/media/usb/cx231xx/cx231xx-417.c
+> index c5e21785fafe..fecdb12f5ef7 100644
+> --- a/drivers/media/usb/cx231xx/cx231xx-417.c
+> +++ b/drivers/media/usb/cx231xx/cx231xx-417.c
+> @@ -1223,9 +1223,6 @@ static int queue_setup(struct vb2_queue *vq,
+>  	dev->ts1.ts_packet_size  = mpeglinesize;
+>  	dev->ts1.ts_packet_count = mpeglines;
+>  
+> -	if (vq->num_buffers + *nbuffers < CX231XX_MIN_BUF)
+> -		*nbuffers = CX231XX_MIN_BUF - vq->num_buffers;
+> -
+>  	if (*nplanes)
+>  		return sizes[0] < size ? -EINVAL : 0;
+>  	*nplanes = 1;
+> @@ -1777,6 +1774,7 @@ int cx231xx_417_register(struct cx231xx *dev)
+>  	q = &dev->mpegq;
+>  	q->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+>  	q->io_modes = VB2_USERPTR | VB2_MMAP | VB2_DMABUF | VB2_READ;
+> +	q->min_buffers_needed = CX231XX_MIN_BUF;
+>  	q->drv_priv = dev;
+>  	q->buf_struct_size = sizeof(struct cx231xx_buffer);
+>  	q->ops = &cx231xx_video_qops;
+> diff --git a/drivers/media/usb/cx231xx/cx231xx-video.c b/drivers/media/usb/cx231xx/cx231xx-video.c
+> index e23b8ccd79d4..26b593844157 100644
+> --- a/drivers/media/usb/cx231xx/cx231xx-video.c
+> +++ b/drivers/media/usb/cx231xx/cx231xx-video.c
+> @@ -717,9 +717,6 @@ static int queue_setup(struct vb2_queue *vq,
+>  
+>  	dev->size = (dev->width * dev->height * dev->format->depth + 7) >> 3;
+>  
+> -	if (vq->num_buffers + *nbuffers < CX231XX_MIN_BUF)
+> -		*nbuffers = CX231XX_MIN_BUF - vq->num_buffers;
+> -
+>  	if (*nplanes)
+>  		return sizes[0] < dev->size ? -EINVAL : 0;
+>  	*nplanes = 1;
+> @@ -1805,6 +1802,7 @@ int cx231xx_register_analog_devices(struct cx231xx *dev)
+>  	q = &dev->vidq;
+>  	q->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+>  	q->io_modes = VB2_USERPTR | VB2_MMAP | VB2_DMABUF | VB2_READ;
+> +	q->min_buffers_needed = CX231XX_MIN_BUF;
+>  	q->drv_priv = dev;
+>  	q->buf_struct_size = sizeof(struct cx231xx_buffer);
+>  	q->ops = &cx231xx_video_qops;
 
-This should now be resolved in my tree, thanks!
-
-greg k-h
