@@ -2,78 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA727C9DFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 05:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA7C7C9E00
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 05:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231135AbjJPDlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 23:41:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56242 "EHLO
+        id S229636AbjJPDsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 23:48:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231477AbjJPDk6 (ORCPT
+        with ESMTP id S229503AbjJPDsU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 23:40:58 -0400
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99563D6
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 20:40:34 -0700 (PDT)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5a7ac4c3666so49882847b3.3
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 20:40:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697427634; x=1698032434; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BI2/fjvxux9kOhr+MN6nR47zrqV+MlgEJ7nQc3CGiEU=;
-        b=kDsZb28I2nOB/4Xu+ZiY7pJuoh2edxEOI3q40dYdKXUU6U3VUIeJeuxzXn1XT2hT5H
-         0nKh+xYp1IaePQ1N0+kcSRrAJSg7S8Riy7EKlmGC8uvsgNbuvGx9DQQCp5kS48L7xnYX
-         xkgC2vG30fZXnKmQ8Jz/25N7sPMYcl/ArgQUEULDGFt6eiPwEkb/1/ZF1ICLK3Zvk1AQ
-         567lqwtOHPGae0ItFk8IKHW7zQjXIppsTcyoSfbG5oudcQ8N4l+AGewCZfeGTe7QQffw
-         JDm/HB2ZCgp65U6d8jICQGnK+jXuoBx1NPhHUCaxQgodirv3tRGBLJTligNr95EqSp15
-         k7TQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697427634; x=1698032434;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=BI2/fjvxux9kOhr+MN6nR47zrqV+MlgEJ7nQc3CGiEU=;
-        b=gXeuMiMJit/MdcCgg1e6sG8vL78+w0cLCTB23iFcadrTx/G/ZZEdICpl+g7d/FpRKp
-         jKxk09ifdLd3mYODAvJhez4ED0IOuvid0QEnthb1QnUzdmCF0fm16/ekZfkLpLWPOwkH
-         mzobJpb1xo6MaajcN80k598L46X6xcEhUPSstolLfLsamw5U0fq5KUUHnw0Ev/dJEZjh
-         TI5+suoNf2ik3ktIlb9s7rrTHcayeBvRu+BEJzysHUJ0VcwPwrnB0k3J9iJfFZssSlp6
-         pzv0BQCS1c4+MZaD4JGydmVn5xfAyDLeD9Y9JgDfI7Z+zd2dsf/uLDhke6Y0FDi1nn69
-         qsrw==
-X-Gm-Message-State: AOJu0Yyst1+wbVd3/2KH6uHJzoMYB4mMEcIe6jCxJg1zyQLqft3aSvmP
-        SUDlqn/JKX2LCBzf8O7I3BygVsSx/uUItsmuofgr7g==
-X-Google-Smtp-Source: AGHT+IHros4bTzExUZqJrCKsN+Ddzh3apHzeOi8pHztUz/zBms1TVFaa5iq2H9se67ANKhFZ0rn2OA==
-X-Received: by 2002:a0d:d64b:0:b0:5a8:60ad:39a4 with SMTP id y72-20020a0dd64b000000b005a860ad39a4mr3655444ywd.3.1697427633775;
-        Sun, 15 Oct 2023 20:40:33 -0700 (PDT)
-Received: from [10.255.187.14] ([139.177.225.232])
-        by smtp.gmail.com with ESMTPSA id 66-20020a630045000000b005ab7b055573sm4753882pga.79.2023.10.15.20.40.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Oct 2023 20:40:33 -0700 (PDT)
-Message-ID: <cc3b202b-d4ea-4912-b4c7-28ed8fc68072@bytedance.com>
-Date:   Mon, 16 Oct 2023 11:40:24 +0800
+        Sun, 15 Oct 2023 23:48:20 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF68BAD;
+        Sun, 15 Oct 2023 20:48:18 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39G2qCk4026107;
+        Mon, 16 Oct 2023 03:48:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=qNg14GcggDnrj3270YNJfGynOyIYi98iCn9wUS7HdVo=;
+ b=TMqDbG8MiB/m4qsgHGITwiMljlKkmVjP41DQgGNk1pqZiLAyOGoeZ+d11+p+wgJGpXiR
+ Wb93k0rmrt2+YpCYdjVD5/BMJe77IWOB6NKcBJmLHC5C3+FutoNMdtyNckmvwt3/7p2C
+ +i26HAmWbVsJkkcpqm/KQzyEL3zA/u1fZXhkplE7f+7f2LBI2FZG63A47/9pauZWQgdc
+ zKMnv3HMnFRkQa87VzDF1Qt79bFYRZjzRwb84rDKVxej+lFUnStsPqgh6DuKW3FCqrEa
+ Fh8YMtAmAx9OqO+77MhHTGdf2+bCP/i6FxcMfcZ9B9Kh5hg3fcS1RI41sBFK7U6+3aQJ yA== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tqgbt37cq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Oct 2023 03:48:15 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39G3mEeA004601
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Oct 2023 03:48:14 GMT
+Received: from [10.216.5.27] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Sun, 15 Oct
+ 2023 20:48:10 -0700
+Message-ID: <20632da6-3144-47d3-b1dc-0446e4e55a19@quicinc.com>
+Date:   Mon, 16 Oct 2023 09:18:13 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 00/10] Introduce __mt_dup() to improve the performance
- of fork()
-To:     Liam.Howlett@oracle.com, corbet@lwn.net, akpm@linux-foundation.org,
-        willy@infradead.org, brauner@kernel.org, surenb@google.com,
-        michael.christie@oracle.com, mjguzik@gmail.com,
-        mathieu.desnoyers@efficios.com, npiggin@gmail.com,
-        peterz@infradead.org, oliver.sang@intel.com, mst@redhat.com
-Cc:     maple-tree@lists.infradead.org, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Peng Zhang <zhangpeng.00@bytedance.com>
-References: <20231016032226.59199-1-zhangpeng.00@bytedance.com>
-From:   Peng Zhang <zhangpeng.00@bytedance.com>
-In-Reply-To: <20231016032226.59199-1-zhangpeng.00@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH 2/2] usb: gadget: ncm: Add support to update
+ wMaxSegmentSize via configfs
+To:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        onathan Corbet <corbet@lwn.net>,
+        Linyu Yuan <quic_linyyuan@quicinc.com>,
+        <linux-usb@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_ppratap@quicinc.com>,
+        <quic_wcheng@quicinc.com>, <quic_jackp@quicinc.com>
+References: <20231009142005.21338-1-quic_kriskura@quicinc.com>
+ <20231009142005.21338-2-quic_kriskura@quicinc.com>
+ <CANP3RGfEk2DqZ3biyN78ycQYbDxCEG+H1me2vnEYuwXkNdXnTA@mail.gmail.com>
+ <CANP3RGcCpNOuVpdV9n0AFxZo-wsfwi8OfYgBk1WHNHaEd-4V-Q@mail.gmail.com>
+ <CANP3RGdY4LsOA6U5kuccApHCzL0_jBnY=pLOYrUuYtMZFTvnbw@mail.gmail.com>
+ <d19d9d08-c119-4991-b460-49925f601d15@quicinc.com>
+ <fad5a7fb-cce1-46bc-a0af-72405c76d107@quicinc.com>
+ <CANP3RGcqWBYd9FqAX47rE9pFgBTB8=0CGdwkScm-OH1epHcVWQ@mail.gmail.com>
+ <8ff92053-52ff-4950-95c8-0e986f6a028a@quicinc.com>
+ <CANP3RGd4G4dkMOyg6wSX29NYP2mp=LhMhmZpoG=rgoCz=bh1=w@mail.gmail.com>
+ <b12eb7b1-54e7-406f-8c19-0046555b82d3@quicinc.com>
+ <CANP3RGcUrFTaFL8V3tpuh+qQoEi84O0Dy9ie+XD=-H01c2btAw@mail.gmail.com>
+ <70c15867-ccce-4788-a0dd-38a73decb785@quicinc.com>
+ <d395d631-239a-43f1-bcbf-b88b11852c76@quicinc.com>
+ <CANP3RGcnpkcLK_CRfSLvxyGM3L0j5R3fybeF_L1bmRV9hNBcuQ@mail.gmail.com>
+Content-Language: en-US
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <CANP3RGcnpkcLK_CRfSLvxyGM3L0j5R3fybeF_L1bmRV9hNBcuQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 5_5IheJW5851YTctblNiWnZPfBAxQFV3
+X-Proofpoint-ORIG-GUID: 5_5IheJW5851YTctblNiWnZPfBAxQFV3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-15_09,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
+ priorityscore=1501 impostorscore=0 malwarescore=0 mlxlogscore=302
+ adultscore=0 spamscore=0 bulkscore=0 clxscore=1015 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310160032
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -82,84 +98,98 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-在 2023/10/16 11:22, Peng Zhang 写道:
-> Hi all,
-> 
-> This series introduces __mt_dup() to improve the performance of fork(). During
-> the duplication process of mmap, all VMAs are traversed and inserted one by one
-> into the new maple tree, causing the maple tree to be rebalanced multiple times.
-> Balancing the maple tree is a costly operation. To duplicate VMAs more
-> efficiently, mtree_dup() and __mt_dup() are introduced for the maple tree. They
-> can efficiently duplicate a maple tree.
-> 
-> Here are some algorithmic details about {mtree,__mt}_dup(). We perform a DFS
-> pre-order traversal of all nodes in the source maple tree. During this process,
-> we fully copy the nodes from the source tree to the new tree. This involves
-> memory allocation, and when encountering a new node, if it is a non-leaf node,
-> all its child nodes are allocated at once.
-> 
-> Some previous discussions can be referred to as [1]. For a more detailed
-> analysis of the algorithm, please refer to the logs for patch [3/10] and patch
-> [10/10]
-> 
-> There is a "spawn" in byte-unixbench[2], which can be used to test the
-> performance of fork(). I modified it slightly to make it work with
-> different number of VMAs.
-> 
-> Below are the test results. The first row shows the number of VMAs.
-> The second and third rows show the number of fork() calls per ten seconds,
-> corresponding to next-20231006 and the this patchset, respectively. The
-> test results were obtained with CPU binding to avoid scheduler load
-> balancing that could cause unstable results. There are still some
-> fluctuations in the test results, but at least they are better than the
-> original performance.
-> 
-> 21     121   221    421    821    1621   3221   6421   12821  25621  51221
-> 112100 76261 54227  34035  20195  11112  6017   3161   1606   802    393
-> 114558 83067 65008  45824  28751  16072  8922   4747   2436   1233   599
-> 2.19%  8.92% 19.88% 34.64% 42.37% 44.64% 48.28% 50.17% 51.68% 53.74% 52.42%
-> 
-> Thanks for Liam's review.
-> 
-> Changes since v4:
->   - Change the handling method for the failure of dup_mmap(). Handle it in
->     exit_mmap().
->   - Update check_forking() and bench_forking().
->   - Add the corresponding copyright statement.
-> 
-I apologize for forgetting to include all the links while editing the cover letter.
-Here they are:
-[1] https://lore.kernel.org/lkml/463899aa-6cbd-f08e-0aca-077b0e4e4475@bytedance.com/
-[2] https://github.com/kdlucas/byte-unixbench/tree/master
+On 10/16/2023 6:49 AM, Maciej Żenczykowski wrote:
 
-v1: https://lore.kernel.org/lkml/20230726080916.17454-1-zhangpeng.00@bytedance.com/
-v2: https://lore.kernel.org/lkml/20230830125654.21257-1-zhangpeng.00@bytedance.com/
-v3: https://lore.kernel.org/lkml/20230925035617.84767-1-zhangpeng.00@bytedance.com/
-v4: https://lore.kernel.org/lkml/20231009090320.64565-1-zhangpeng.00@bytedance.com/
+>>>>
+>>>> Hmm, I'm not sure.  I know I've experimented with high mtu ncm in the
+>>>> past
+>>>> (around 2.5 years ago).  I got it working between my Linux desktop (host)
+>>>> and a Pixel 6 (device/gadget) with absolutely no problems.
+>>>>
+>>>> I'm pretty sure I didn't change my desktop kernel, so I was probably
+>>>> limited to 8192 there
+>>>> (and I do more or less remember that).
+>>>>   From what I vaguely remember, it wasn't difficult (at all) to hit
+>>>> upwards of 7gbps for iperf tests.
+>>>> I don't remember how close to the theoretical USB 10gbps maximum of
+>>>> 9.7gbps I could get...
+>>>> [this was never the real bottleneck / issue, so I didn't ever dig
+>>>> particularly deep]
+>>>>
+>>>> I'm pretty sure my gadget side changes were non-configurable...
+>>>> Probably just bumped one or two constants...
+>>>>
+>>> Could you share what parameters you changed to get this high value of
+>>> iperf throughput.
+> 
+> Eh, I really don't remember, but it wasn't anything earth shattering.
+>  From what I recall it was just a matter of bumping mtu, and tweaking
+> irq pinning to stronger cores.
+> Indeed I'm not even certain that the mtu was required to be over 5gbps.
+> Though I may be confusing some things, as at least some of the testing was done
+> with the kernel's built in packet generator.
+> 
+>>>
+>>>> I do *very* *vaguely* recall there being some funkiness though, where
+>>>> 8192 was
+>>>> *less* efficient than some slightly smaller value.
+>>>>
+>>>> If I recall correctly the issue is that 8192 + ethernet overhead + NCM
+>>>> overhead only fits *once* into 16384, which leaves a lot of space
+>>>> wasted.
+>>>> While ~7.5 kb + overhead fits twice and is thus a fair bit better.
+>>> Right, same goes for using 5K vs 5.5K MTU. If MTU is 5K, 3 packets can
+>>> conveniently fit into an NTB but if its 5.5, at max only two (5.5k)
+>>> packets can fit in (essentially filling ~11k of the 16384 bytes and
+>>> wasting the rest)
+>>
+>> Formatting gone wrong. So pasting the first paragraph again here:
+>>
+>> "Right, same goes for using 5K vs 5.5K MTU. If MTU is 5K, 3 packets can
+>> conveniently fit into an NTB but if its 5.5, at max only two (5.5k)
+>> packets can fit in (essentially filling ~11k of the 16384 bytes and
+>> wasting the rest)"
+>>
+>>>
+>>> And whether its Ipv4/Ipv6 like you mentioned on [1], the MTU is what NCM
+>>> layer receives and we append the Ethernet header and add NCM headers and
+>>> send it out after aggregation. Why can't we set the MAX_DATAGRAM_SIZE to
+>>> ~8050 or ~8100 ? The reason I say this value is, obviously setting it to
+>>> 8192 would not efficiently use the NTB buffer. We need to fill as much
+>>> space in buffer as possible and assuming that each packet received on
+>>> ncm layer is of MTU size set (not less that that), we can assume that
+>>> even if only 2 packets are aggregated (minimum aggregation possible), we
+>>> would be filling (2 * (8050 + ETH_HLEN) + (room for NCM headers)) would
+>>> almost be close to 16384 ep max packet size. I already check 8050 MTU
+>>> and it works. We can add a comment in code detailing the above
+>>> explanation and why we chose to use 8050 or 8100 as MAX_DATAGRAM_SIZE.
+>>>
+>>> Hope my reasoning of why we can chose 8.1K or 8.05K makes sense. Let me
+>>> know your thoughts on this.
+> 
+> Maybe just use an L3 mtu of 8000 then?  That's a nice round number...
+> But I'm also fine with 8050 or 8100.. though 8100 seems 'rounder'.
+> 
+> I'm not sure what the actual overhead is... I guess we control the
+> overhead in one direction, but not in the other, and there could be
+> some slop, so we need to be a little generous?
+> 
+>>>
+Hi Maciej,
 
-> Peng Zhang (10):
->    maple_tree: Add mt_free_one() and mt_attr() helpers
->    maple_tree: Introduce {mtree,mas}_lock_nested()
->    maple_tree: Introduce interfaces __mt_dup() and mtree_dup()
->    radix tree test suite: Align kmem_cache_alloc_bulk() with kernel
->      behavior.
->    maple_tree: Add test for mtree_dup()
->    maple_tree: Update the documentation of maple tree
->    maple_tree: Skip other tests when BENCH is enabled
->    maple_tree: Update check_forking() and bench_forking()
->    maple_tree: Preserve the tree attributes when destroying maple tree
->    fork: Use __mt_dup() to duplicate maple tree in dup_mmap()
-> 
->   Documentation/core-api/maple_tree.rst |   4 +
->   include/linux/maple_tree.h            |   7 +
->   kernel/fork.c                         |  39 ++-
->   lib/maple_tree.c                      | 304 ++++++++++++++++++++-
->   lib/test_maple_tree.c                 | 123 +++++----
->   mm/memory.c                           |   7 +-
->   mm/mmap.c                             |   9 +-
->   tools/include/linux/rwsem.h           |   4 +
->   tools/include/linux/spinlock.h        |   1 +
->   tools/testing/radix-tree/linux.c      |  45 +++-
->   tools/testing/radix-tree/maple.c      | 363 ++++++++++++++++++++++++++
->   11 files changed, 815 insertions(+), 91 deletions(-)
-> 
+   Sure. Let's go with 8000 to leave some space for headers. And would 
+add the following paragraph as comment for readers to understand why 
+this value was set:
+
+"Although max mtu as dictated by u_ether is 15412 bytes, setting 
+max_segment_size to 15426 would not be efficient. If user chooses 
+segment size to be (> 8192), then we can't aggregate more than one 
+buffer in each NTB (assuming each packet coming from network layer is > 
+8192 bytes) as ep maxpacket limit is 16384. So let max_segment_size be 
+limited to 8000 to allow atleast 2 packets to be aggregated reducing 
+wastage of NTB buffer space"
+
+Hope that would be fine.
+
+Regards,
+Krishna,
