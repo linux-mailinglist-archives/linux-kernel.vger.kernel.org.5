@@ -2,50 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39AC77CB4C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 260447CB4BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:36:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234322AbjJPUgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 16:36:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52806 "EHLO
+        id S234300AbjJPUgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 16:36:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234226AbjJPUgH (ORCPT
+        with ESMTP id S234248AbjJPUgG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 16:36:07 -0400
+        Mon, 16 Oct 2023 16:36:06 -0400
 Received: from tarta.nabijaczleweli.xyz (tarta.nabijaczleweli.xyz [139.28.40.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 025A0123;
-        Mon, 16 Oct 2023 13:35:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 498FD12D;
+        Mon, 16 Oct 2023 13:35:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nabijaczleweli.xyz;
-        s=202305; t=1697488552;
-        bh=9mA+IthVHwQ9TSYNjqEKDb8kf+N/Q7iDq28AtGEeciE=;
+        s=202305; t=1697488554;
+        bh=yKqnk4KdW1G8ysN8p/704fCo5DUzCZ+wWpZiakGmbbc=;
         h=Date:From:Cc:Subject:References:In-Reply-To:From;
-        b=lxMf2+MOA79RE4VScijXoK8rNPHRW9UOeU2uTN7EM3YPwY4rpMY26E74YOCzDsc0Z
-         miHGoe4GCcbE5k25IyGVdqMmWJxWZh+jogsXmzP5wnwDpOlQoEz8ZWQTodNwrq06fW
-         GVNIsHHOzTflFS5iB1HYVf1kIu0pyLi6X5qxFwTgwLlLMF75VYilOd/IjwCMyMNQth
-         Uq8ISe3D6PQvpknfDVmM7vPOrsSu8KpwvEfBGTRC9PiOEeHwkdQCEvk5pHYFqklOWJ
-         Vu9zdP6SkVzUBVkaq+S2OUUtjBaG+CoHmFWm4rErLjAhDe/Dek3x0yFFEhZDSmsdHB
-         UjarR9JexTauQ==
+        b=jRVa45p81I96MvAlHdov6fY8gT4VGBQoFIRSUCCfB6WfpqB46snLFIrXqqaC7D6tx
+         qx2WoDz18lqvDyrYgQPZ7oxDzQ2bbLlGebQ6bmYjgr19EHMJNHV3ldO9ZmbLTSwp+f
+         v6Ap2pIY0JNAwg6ZvUFfel2aFzlckL8o+bJkB0nfxwmtwHWGxZajW2/jbAhncs0CPx
+         bv/5EUD++wYozIZLaSDlMF1luRAfwWuBv3NwS73kWGYk9IsC4meal1ogWUNtAzayYu
+         6SFiFSRvno0UvsRHN7hQXxVgmV8gmznX4kmKJjG5Of33d198+kPS4HHIeyO+AL2rQW
+         UcFqRDvfltF1w==
 Received: from tarta.nabijaczleweli.xyz (unknown [192.168.1.250])
-        by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id 44257FD48;
-        Mon, 16 Oct 2023 22:35:52 +0200 (CEST)
-Date:   Mon, 16 Oct 2023 22:35:52 +0200
+        by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id 7910D10418;
+        Mon, 16 Oct 2023 22:35:54 +0200 (CEST)
+Date:   Mon, 16 Oct 2023 22:35:54 +0200
 From:   Ahelenia =?utf-8?Q?Ziemia=C5=84ska?= 
         <nabijaczleweli@nabijaczleweli.xyz>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
+Cc:     Boris Pismenny <borisp@nvidia.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        David Howells <dhowells@redhat.com>,
-        Shigeru Yoshida <syoshida@redhat.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 07/11] kcm: kcm_splice_read: always request MSG_DONTWAIT
-Message-ID: <b5a634f5fe1a89d42a7a4f91316f888b02ca576f.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
+Subject: [PATCH 08/11] tls/sw: tls_sw_splice_read: always request
+ non-blocking I/O
+Message-ID: <0fffb097b4d2b328ef16e7353d6829f1ec9efcae.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
 References: <cover.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="3nezagrfhxjugaiu"
+        protocol="application/pgp-signature"; boundary="73zfmjpwwsl4usws"
 Content-Disposition: inline
 In-Reply-To: <cover.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
 User-Agent: NeoMutt/20231006
@@ -61,7 +60,7 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---3nezagrfhxjugaiu
+--73zfmjpwwsl4usws
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
@@ -69,52 +68,59 @@ Content-Transfer-Encoding: quoted-printable
 Otherwise we risk sleeping with the pipe locked for indeterminate
 lengths of time.
 
-Also: don't pass the SPLICE_F_*-style flags argument to
-skb_recv_datagram(), which expects MSG_*-style flags.
-This fixes SPLICE_F_NONBLOCK not having worked.
-
 Link: https://lore.kernel.org/linux-fsdevel/qk6hjuam54khlaikf2ssom6custxf5i=
 s2ekkaequf4hvode3ls@zgf7j5j4ubvw/t/#u
 Signed-off-by: Ahelenia Ziemia=C5=84ska <nabijaczleweli@nabijaczleweli.xyz>
 ---
- net/kcm/kcmsock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/tls/tls_sw.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/net/kcm/kcmsock.c b/net/kcm/kcmsock.c
-index dd1d8ffd5f59..de70156869e6 100644
---- a/net/kcm/kcmsock.c
-+++ b/net/kcm/kcmsock.c
-@@ -1028,7 +1028,7 @@ static ssize_t kcm_splice_read(struct socket *sock, l=
-off_t *ppos,
+diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
+index d1fc295b83b5..73d88c6739e8 100644
+--- a/net/tls/tls_sw.c
++++ b/net/tls/tls_sw.c
+@@ -2145,7 +2145,7 @@ ssize_t tls_sw_splice_read(struct socket *sock,  loff=
+_t *ppos,
+ 	int chunk;
+ 	int err;
 =20
- 	/* Only support splice for SOCKSEQPACKET */
+-	err =3D tls_rx_reader_lock(sk, ctx, flags & SPLICE_F_NONBLOCK);
++	err =3D tls_rx_reader_lock(sk, ctx, true);
+ 	if (err < 0)
+ 		return err;
 =20
--	skb =3D skb_recv_datagram(sk, flags, &err);
-+	skb =3D skb_recv_datagram(sk, MSG_DONTWAIT, &err);
- 	if (!skb)
- 		goto err_out;
+@@ -2154,8 +2154,7 @@ ssize_t tls_sw_splice_read(struct socket *sock,  loff=
+_t *ppos,
+ 	} else {
+ 		struct tls_decrypt_arg darg;
+=20
+-		err =3D tls_rx_rec_wait(sk, NULL, flags & SPLICE_F_NONBLOCK,
+-				      true);
++		err =3D tls_rx_rec_wait(sk, NULL, true, true);
+ 		if (err <=3D 0)
+ 			goto splice_read_end;
 =20
 --=20
 2.39.2
 
---3nezagrfhxjugaiu
+--73zfmjpwwsl4usws
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmUtnqcACgkQvP0LAY0m
-WPFfPg/7BLf4GfCFFFQnpfm/hNBXK7uaqDIVht6nNEUVcBLk74rgK5ueYbLfqUVp
-Kc+0lhKL1+bSUMuzrMJaSJVSWK3Vvz49OoZsSSOS9B0myJ7+LCuqbleTpWDtVkZV
-WxLWS/bOHIrTJfgFuK01+sQ6pPd351OPUhPe1eDp6wEFdJpx+AjChB+OSqbgQUlT
-W3PUhTzFHxgpxMbK0E9DGtOtbDJEqdmV4yfJznxKuIt6fKILfpDalFW8UoYbyVpp
-N4KWofvUTi2SvIvye5IZgZsQwLdGHBkoKbBjZHZxEvBLf3T7YLfDu74DddOIST64
-/HUsRAQcrilssrrLjvHZ0UmXtHlL15K+TkDpt6a9+6l+osqHz/uM861MH2W7qeFg
-OxJLZL/gMs7NGk7m+EsCMbz+FKzA3s+nNyPSyL0cOYyPJ+Huo4Zau86MyV4jqabt
-HwtUGgF8OX7JQRKlna+mOYsmFeRvPNet748OgwlAuIgRtg78lkSxN0Z44n4CaEzY
-gPTQd21aElCxkWflX6DC4T1tIjOg0dVY07sgELYd3ge6CU01rmreyOnbXc6B9ZOG
-i+QN4JZR0BkYXEs5j/vlI/s5jICilO3iqdjzFG6Sot/gQCysfazj3mL7X8wLWYKI
-RhYSUaF6QMc/siOJZnazRBhjNKuzPyiYGrQpDUZqwp6LIaNyuVo=
-=zW1r
+iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmUtnqoACgkQvP0LAY0m
+WPFlYhAAnkMDpuvV0EWTaMfU6iwNB92VTzc48ejj+wDFlYag8KeTHrZSj5Tapz7t
+mNy7Jz9XvCgH7eZcYKEC471JKkwwRK/lSo/sjaPlew/X881pIWG0KimcduEeYPrJ
+AU+qUaZurhgb/4FGFE/eQyLWl3J3ZByBxw0IEjK1TWESrBKf2qgPDFKaeDleb/V7
+7snl8x/fwLvxZY84ErfggX+YlAU0ErqrMnwN7VoXmvnvnxh6WzLyqUZuq5m9P/6L
+t8sbnAzsCmNzG2Q3RM63kb/5Fo/PDuGsBkutk3nj57Szo3N+QWEv+ibAGNWADI+Q
+WHgAo5UVMWvimlHU2PeKEg08HQJpwG4fIA5EW27WTwmiqcayMDGUPRYoo2ZDdTL3
+L6MdLvsUnDqTXvk1/rUBGimoUdK6+wY+FOtoP1ZsVKHA3fpKYKh2LmNYq9HdWnzF
+cc0UGI0LNMMkQJWXpSLlTXJqTZ6zu3uOjWAaBMi+73EweF928YWYOov2IGf+dDFe
+qz2yGTnvrDYyX6QlKnh+o+B5WGsU0t//ZLHUB78M3euF7KGdZmduyIJbl/b5uEe1
+AOd5bAtty5kfi0DHJj1POJb2d5o4t840BkKMuyqcv3VDtWBKRR8Y8mv4jTTPpyK5
+X7Qz4K14wdX0IOcHIITmIzgIlKmir3YImQ1e3A68YCi/U3p14UM=
+=Zwbs
 -----END PGP SIGNATURE-----
 
---3nezagrfhxjugaiu--
+--73zfmjpwwsl4usws--
