@@ -2,201 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B2D67CAF28
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:27:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6CE87CAF2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234217AbjJPQ1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 12:27:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34768 "EHLO
+        id S234000AbjJPQ17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 12:27:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233956AbjJPQ0p (ORCPT
+        with ESMTP id S234188AbjJPQ1n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 12:26:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D3561B8
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:26:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697473575; x=1729009575;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=j0F3RqkNuzCnSD28EKrzwxsTDd3MhHfXlE9zhrfTMD8=;
-  b=E9KzbFgjc1pLsGqwmoCpKE3vv9p7ZjngqTxlozF6qNPEH+LeYaCLKVc5
-   1hxmt7zZlPYB/288G16eTRW/WwkG9n4P/89gL+6wN3RjfGTTHl7wHl8vb
-   X+Cl8Hliyr7TlpWysWODapBoz1CH8V/OknEVXxvQz8Sac0oIHk6J/kkgh
-   SgG9buFtxIiBM770b3LXdNPYBJHK3KSiMJ1wFJ3TA3lPmmJ+QlPVG/ldd
-   WEaElTWeM6CV5QJ2wsbNFfwtug3DGpEGPizQjRC/+XwXIXep9clEq5y5i
-   Cx54Txxwq7mb/eN8gHRCCZP3cTmbbZreyTSYfgMJahl/Ym+SjrlBrGBLT
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="388432452"
-X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="388432452"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 09:26:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="3579363"
-Received: from ranaelna-mobl.amr.corp.intel.com (HELO box.shutemov.name) ([10.251.208.247])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 09:25:08 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 64C4510A1EC; Mon, 16 Oct 2023 19:26:09 +0300 (+03)
-Date:   Mon, 16 Oct 2023 19:26:09 +0300
-From:   kirill.shutemov@linux.intel.com
-To:     "Compostella, Jeremy" <jeremy.compostella@intel.com>
-Cc:     "Huang, Kai" <kai.huang@intel.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "Li, Xin3" <xin3.li@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>
-Subject: Re: [PATCH v3 1/2] x86/cpu/intel: Fix MTRR verification for TME
- enabled platforms
-Message-ID: <20231016162609.wfkfsams23exesvs@box.shutemov.name>
-References: <87a5t6ylpc.fsf@jcompost-mobl.amr.corp.intel.com>
- <00392c722e65c8d0da40384eecf8955be4875969.camel@intel.com>
- <20231002224752.33qa2lq7q2w4nqws@box>
- <65d26d679843e26fd5e6252a08391f87243a49c9.camel@intel.com>
- <20231003070659.hsjvnoc53agvms6c@box.shutemov.name>
- <87edhyyvkp.fsf@jcompost-mobl.amr.corp.intel.com>
- <20231014210125.iexeacn6p4naw5qz@box.shutemov.name>
- <87a5sizgr8.fsf@jcompost-mobl.amr.corp.intel.com>
+        Mon, 16 Oct 2023 12:27:43 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D05862702;
+        Mon, 16 Oct 2023 09:27:08 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-32da4ffd7e5so1271860f8f.0;
+        Mon, 16 Oct 2023 09:27:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697473627; x=1698078427; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=IMYUQ2LS/1q5+Qfwe+X4lk99RPotlvjWnMGp/QgUzgQ=;
+        b=bI3ZRLWyiIbeCWzm9aIJlt5qFGaHQu2iSHs817EErRgYQeM7oUW6UxHkAZMqX5BtRR
+         qqgjnBruifgjl77WNDNjwjrNbMCNLxyTlN0C4Z5yP3AxLS8snUG0DLIUV29XIimqYz8a
+         dOndkALntceUqHv8AWMzpVbrp/NycAbfKAYfUDFsdSFcTxkI/PfvSOj6IDuJGscqWJ/J
+         uZISZzNLRrOTZfvATSt/P7CLHvLpCdooKAEg2CsJdivbtVQge7SphpCP4KARfJ/maoPG
+         6nYlBecBriPWDXBRYjbDK/5m7Y64e5v2g9z7em5pPEs2y6OUz7XyMU/WIeuRql1FwYOi
+         yjpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697473627; x=1698078427;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IMYUQ2LS/1q5+Qfwe+X4lk99RPotlvjWnMGp/QgUzgQ=;
+        b=sJZoKc/cZEd39LDLQx63t45NmA21rehE04JxaregzMEow1jz7PtjheWa4cNw/4rRd+
+         JwVppUjX8vRwOyuzafwdkofn8AIOwQcikRmdawBQFKRrsdRNRqeRVjGZ/+pXzPyw6vMl
+         eb4wH06C62/6Z/QH3EVIaA4SlF7IhFfDPE/2Nq1coleEuphmIg8RP9MUCGYlT+YIs6oE
+         LxSUXX5XN/bndiYLwBl0jFBpswlwBm338y3PplP5rM/hTD+sSD/ufgK9jlh9WCzEq0SP
+         Q6FcJ0yAHkC373300w24usTPt0PhEOA874NveUlXFnkmOiXMgro5dV5FNVix7XjJbNA8
+         7VdQ==
+X-Gm-Message-State: AOJu0YysZWoU2veiGmng9d5earCjfXVJ9wBH5r4rhdZ64VjFa/kqzZwd
+        4a9nNbzDoeZBC8wtDXUsqkA=
+X-Google-Smtp-Source: AGHT+IGZbYa0CCoiFXxwCOjLMGFV+q0rjVMSOl7t/xlR4Yh18QMRi2gEGD/dpfEILIzP2v7wvi5ucw==
+X-Received: by 2002:adf:f1c5:0:b0:32d:bf1c:ce65 with SMTP id z5-20020adff1c5000000b0032dbf1cce65mr724254wro.22.1697473626397;
+        Mon, 16 Oct 2023 09:27:06 -0700 (PDT)
+Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
+        by smtp.gmail.com with ESMTPSA id v11-20020a5d6b0b000000b00324853fc8adsm27415367wrw.104.2023.10.16.09.27.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 09:27:05 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 17:27:04 +0100
+From:   Lorenzo Stoakes <lstoakes@gmail.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andy Lutomirski <luto@kernel.org>, Jan Kara <jack@suse.cz>,
+        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        lkft-triage@lists.linaro.org
+Subject: Re: [PATCH v4 3/3] mm: perform the mapping_map_writable() check
+ after call_mmap()
+Message-ID: <c9eb4cc6-7db4-4c2b-838d-43a0b319a4f0@lucifer.local>
+References: <cover.1697116581.git.lstoakes@gmail.com>
+ <55e413d20678a1bb4c7cce889062bbb07b0df892.1697116581.git.lstoakes@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87a5sizgr8.fsf@jcompost-mobl.amr.corp.intel.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <55e413d20678a1bb4c7cce889062bbb07b0df892.1697116581.git.lstoakes@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 09:14:35AM -0700, Compostella, Jeremy wrote:
-> <kirill.shutemov@linux.intel.com> writes:
-> 
-> > On Fri, Oct 13, 2023 at 04:03:02PM -0700, Compostella, Jeremy wrote:
-> >> "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com> writes:
-> >> > On Tue, Oct 03, 2023 at 02:06:52AM +0000, Huang, Kai wrote:
-> >> >> On Tue, 2023-10-03 at 01:47 +0300, kirill.shutemov@linux.intel.com wrote:
-> >> >> > On Fri, Sep 29, 2023 at 09:14:00AM +0000, Huang, Kai wrote:
-> >> >> > > On Thu, 2023-09-28 at 15:30 -0700, Compostella, Jeremy wrote:
-> >> >> > > > On TME enabled platform, BIOS publishes MTRR taking into account Total
-> >> >> > > > Memory Encryption (TME) reserved bits.
-> >> >> > > > 
-> >> >> > > > generic_get_mtrr() performs a sanity check of the MTRRs relying on the
-> >> >> > > > `phys_hi_rsvd' variable which is set using the cpuinfo_x86 structure
-> >> >> > > > `x86_phys_bits' field.  But at the time the generic_get_mtrr()
-> >> >> > > > function is ran the `x86_phys_bits' has not been updated by
-> >> >> > > > detect_tme() when TME is enabled.
-> >> >> > > > 
-> >> >> > > > Since the x86_phys_bits does not reflect yet the real maximal physical
-> >> >> > > > address size yet generic_get_mtrr() complains by logging the following
-> >> >> > > > messages.
-> >> >> > > > 
-> >> >> > > >     mtrr: your BIOS has configured an incorrect mask, fixing it.
-> >> >> > > >     mtrr: your BIOS has configured an incorrect mask, fixing it.
-> >> >> > > >     [...]
-> >> >> > > > 
-> >> >> > > > In such a situation, generic_get_mtrr() returns an incorrect size but
-> >> >> > > > no side effect were observed during our testing.
-> >> >> > > > 
-> >> >> > > > For `x86_phys_bits' to be updated before generic_get_mtrr() runs,
-> >> >> > > > move the detect_tme() call from init_intel() to early_init_intel().
-> >> >> > > 
-> >> >> > > Hi,
-> >> >> > > 
-> >> >> > > This move looks good to me, but +Kirill who is the author of detect_tme() for
-> >> >> > > further comments.
-> >> >> > > 
-> >> >> > > Also I am not sure whether it's worth to consider to move this to
-> >> >> > > get_cpu_address_sizes(), which calculates the virtual/physical address sizes. 
-> >> >> > > Thus it seems anything that can impact physical address size
-> >> >> > > could be put there.
-> >> >> > 
-> >> >> > Actually, I am not sure how this patch works. AFAICS after the patch we
-> >> >> > have the following callchain:
-> >> >> > 
-> >> >> > early_identify_cpu()
-> >> >> >   this_cpu->c_early_init() (which is early_init_init())
-> >> >> >     detect_tme()
-> >> >> >       c->x86_phys_bits -= keyid_bits;
-> >> >> >   get_cpu_address_sizes(c);
-> >> >> >     c->x86_phys_bits = eax & 0xff;
-> >> >> > 
-> >> >> > Looks like get_cpu_address_sizes() would override what detect_tme() does.
-> >> >> 
-> >> >> After this patch, early_identify_cpu() calls get_cpu_address_sizes() first and
-> >> >> then calls c_early_init(), which calls detect_tme().
-> >> >> 
-> >> >> So looks no override.  No?
-> >> 
-> >> No override indeed as get_cpu_address_sizes() is always called before
-> >> early_init_intel or init_intel().
-> >> 
-> >> - init/main.c::start_kernel()
-> >>   - arch/x86/kernel/setup.c::setup_arch()
-> >>     - arch/x86/kernel/cpu/common.c::early_cpu_init()
-> >>       - early_identify_cpu()
-> >>         - get_cpu_address_sizes(c)
-> >>           c->x86_phys_bits = eax & 0xff;
-> >>         - arch/x86/kernel/cpu/intel.c::early_init_intel()
-> >>           - detect_tme()
-> >>             c->x86_phys_bits -= keyid_bits;
-> >
-> > Hmm.. Do I read it wrong:
-> >
-> > 	static void __init early_identify_cpu(struct cpuinfo_x86 *c)
-> > 	{
-> > 	...
-> > 		/* cyrix could have cpuid enabled via c_identify()*/
-> > 		if (have_cpuid_p()) {
-> > 		...
-> > 		        // Here we call early_intel_init()
-> > 			if (this_cpu->c_early_init)
-> > 				this_cpu->c_early_init(c);
-> > 			...
-> > 		}
-> >
-> > 		get_cpu_address_sizes(c);
-> > 	...
-> > 	}
-> >
-> > ?
-> >
-> > As far as I see get_cpu_address_sizes() called after early_intel_init().
-> 
-> On `58720809f527 v6.6-rc6 6.6-rc6 2de3c93ef41b' is what I have:
-> 
-> ,----
-> | 1599  /* cyrix could have cpuid enabled via c_identify()*/
-> | 1600  if (have_cpuid_p()) {
-> | 1601  	cpu_detect(c);
-> | 1602  	get_cpu_vendor(c);
-> | 1603  	get_cpu_cap(c);
-> | 1604  	get_cpu_address_sizes(c);                   <= called first
-> | 1605  	setup_force_cpu_cap(X86_FEATURE_CPUID);
-> | 1606  	cpu_parse_early_param();
-> | 1607  
-> | 1608  	if (this_cpu->c_early_init)
-> | 1609  		this_cpu->c_early_init(c);
-> | 1610  
-> | 1611  	c->cpu_index = 0;
-> | 1612  	filter_cpuid_features(c, false);
-> | 1613  
-> | 1614  	if (this_cpu->c_bsp_init)
-> | 1615  		this_cpu->c_bsp_init(c);
-> | 1616  } else {
-> | 1617  	setup_clear_cpu_cap(X86_FEATURE_CPUID);
-> | 1618  }
-> `----
-> Listing 1: arch/x86/kernel/cpu/common.c
-> 
-> => get_cpu_address_sizes() is called first which is also conform to my
->    experiments and instrumentation.
+On Thu, Oct 12, 2023 at 06:04:30PM +0100, Lorenzo Stoakes wrote:
+> In order for a F_SEAL_WRITE sealed memfd mapping to have an opportunity to
+> clear VM_MAYWRITE, we must be able to invoke the appropriate vm_ops->mmap()
+> handler to do so. We would otherwise fail the mapping_map_writable() check
+> before we had the opportunity to avoid it.
+>
+> This patch moves this check after the call_mmap() invocation. Only memfd
+> actively denies write access causing a potential failure here (in
+> memfd_add_seals()), so there should be no impact on non-memfd cases.
+>
+> This patch makes the userland-visible change that MAP_SHARED, PROT_READ
+> mappings of an F_SEAL_WRITE sealed memfd mapping will now succeed.
+>
+> There is a delicate situation with cleanup paths assuming that a writable
+> mapping must have occurred in circumstances where it may now not have. In
+> order to ensure we do not accidentally mark a writable file unwritable by
+> mistake, we explicitly track whether we have a writable mapping and
+> unmap only if we do.
+>
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=217238
+> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
+> ---
+>  mm/mmap.c | 23 ++++++++++++++---------
+>  1 file changed, 14 insertions(+), 9 deletions(-)
+>
+[snip]
 
-Ah. It got patched in tip tree. See commit fbf6449f84bf.
+Andrew, could you apply the following -fix patch to this? As a bug was
+detected in the implementation [0] - I was being over-zealous in setting
+the writable_file_mapping flag and had falsely assumed vma->vm_file == file
+in all instances of the cleanup. The fix is to only set it in one place.
 
+[0]: https://lore.kernel.org/all/CA+G9fYtL7wK-dE-Tnz4t-GWmQb50EPYa=TWGjpgYU2Z=oeAO_w@mail.gmail.com/
+
+----8<----
+From 7feea6faada5b10a872c24755cc630220cba619a Mon Sep 17 00:00:00 2001
+From: Lorenzo Stoakes <lstoakes@gmail.com>
+Date: Mon, 16 Oct 2023 17:17:13 +0100
+Subject: [PATCH] mm: perform the mapping_map_writable() check after
+ call_mmap()
+
+Do not set writable_file_mapping in an instance where it is not appropriate
+to do so.
+
+Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
+---
+ mm/mmap.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 7f45a08e7973..8b57e42fd980 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -2923,10 +2923,8 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+ 	mm->map_count++;
+ 	if (vma->vm_file) {
+ 		i_mmap_lock_write(vma->vm_file->f_mapping);
+-		if (vma_is_shared_maywrite(vma)) {
++		if (vma_is_shared_maywrite(vma))
+ 			mapping_allow_writable(vma->vm_file->f_mapping);
+-			writable_file_mapping = true;
+-		}
+ 
+ 		flush_dcache_mmap_lock(vma->vm_file->f_mapping);
+ 		vma_interval_tree_insert(vma, &vma->vm_file->f_mapping->i_mmap);
 -- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+2.42.0
+
