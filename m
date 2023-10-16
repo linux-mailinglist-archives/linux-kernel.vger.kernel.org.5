@@ -2,176 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5917CB4DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 807947CB4DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:46:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232792AbjJPUng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 16:43:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60606 "EHLO
+        id S233333AbjJPUq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 16:46:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjJPUne (ORCPT
+        with ESMTP id S231221AbjJPUqy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 16:43:34 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A5289B
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:43:32 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-317c3ac7339so4494036f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:43:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697489011; x=1698093811; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Fevs8BaTUhicnuhgMWvL8W6tYhBEVRYenndQa8o+8OQ=;
-        b=SU2DNDwsbk2BrA+02VSwkRnIcHckNyY9fT9q5VH54QbrDvM+O8Ev2LDbVmwFRFo6Dx
-         fmRwsCembGMm3M45BA5QnOPNw0iCN+KiWDdBTKU0TqYhFBUAbqc/LdrNFv3OvAuXZvTY
-         90VD6u7X7I6BISQNcRIQRVk/gtt4jhbR0GOg6yxHO+2Kh8D3SkLNkwshklYQmV5Yv62T
-         qh9NO6r1YLEvHyajXRwmNb02ou6OLUjTh54QPzetZ5u8ZMbRR+aPPnMBO9Ltsn3otN+u
-         Y5BrbLoJuDBXT077KaKMZQDb+WLGRaZnIIRO3W25j3c0Yh+OBqjvvTS+Wtpaa3uXHz4h
-         Cs5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697489011; x=1698093811;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fevs8BaTUhicnuhgMWvL8W6tYhBEVRYenndQa8o+8OQ=;
-        b=Z3up81HzOrdlkZTTiR5dF2cSpfD3bEeRrsbrzsikTIGcBcjzelPrQEgGI88tpk51ZS
-         nPAnXFmwcXFZLhGwBHabRLy9n1MTBsO9l28C7mQtjnoFkjlNZokM3J4DEVD6n1vVriV7
-         7ZTjwB9CZVm/pQMu+kqiRpnKkOoPOLbLqxdiT4ksAE38myZyfbpmJTbJ0F70Bgbdih/K
-         HW2emSO1Odw4p34k32XnjGBXpWm/Ipu3C+rVU/d6rgp1tSWNVWBGdgeZAkP8d0CQQg3q
-         WFTob9f+7h+jiRnj1eRhJQSU5BPEWLwSp6LEBIPPcXneJ1W6xBiaKqKeRB8Xfb7r8Y1j
-         YDbA==
-X-Gm-Message-State: AOJu0YxT6i7UB8UABPOlPKtewlfKdcudjlc0AD7tezwaj0HYSRLTlsVt
-        codL0L3KFDxMfpHOWjSWVTTLDQ==
-X-Google-Smtp-Source: AGHT+IHALU/OrOrRzIG4eX7sHgu3cnTrX+LATpL8rpcRy8i9fKR9N3T53+IuWU8XxZY1N6EZ1bx8yQ==
-X-Received: by 2002:adf:f40d:0:b0:32d:a2c4:18bf with SMTP id g13-20020adff40d000000b0032da2c418bfmr371254wro.59.1697489010947;
-        Mon, 16 Oct 2023 13:43:30 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.154])
-        by smtp.gmail.com with ESMTPSA id p8-20020a5d6388000000b003247d3e5d99sm114174wru.55.2023.10.16.13.43.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 13:43:30 -0700 (PDT)
-Message-ID: <b5d3b52f-f551-483c-a4d4-763130b48fe3@linaro.org>
-Date:   Mon, 16 Oct 2023 22:43:28 +0200
-MIME-Version: 1.0
+        Mon, 16 Oct 2023 16:46:54 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 169BDA7;
+        Mon, 16 Oct 2023 13:46:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697489212; x=1729025212;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=jWNC44PjJekmYoP9qNTKNOtUAYXt6HTomi3f5rtSwoE=;
+  b=a3y7bhyNZaklVhuGPhAe6LVJTBbDTRxIyLuq34gKjMKbMxiZDRmA16gU
+   Jvz+61N3do/Fk6jJ2IA9v/CsPys4HR9sG97ZUEYz7IABfy9EvVPImWE4N
+   ZLhnbDs5PNEbA06ziPZSrALzKXMR5aH7lBET3VRkYCf8Zo5/AGtpJnzxY
+   tjbxLM6d+T86+o1iV7n5vFVQMw7FG09/tmX30ubXILgoU7W2rcZstHvoC
+   6Ztjw4RQSm+PfbU/+sZLkhfsAvBKujON/+FtJTn/jsEarQpKUOtZBJv3/
+   CkGypwXEgcnjgOyTgFbx6qP3k3VVh/v1vtpSr/pf9sAFLNWaBUQEy5JZQ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="376002114"
+X-IronPort-AV: E=Sophos;i="6.03,230,1694761200"; 
+   d="scan'208";a="376002114"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 13:46:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="872256696"
+X-IronPort-AV: E=Sophos;i="6.03,230,1694761200"; 
+   d="scan'208";a="872256696"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 16 Oct 2023 13:46:50 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Mon, 16 Oct 2023 13:46:49 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Mon, 16 Oct 2023 13:46:49 -0700
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.41) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Mon, 16 Oct 2023 13:46:49 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nm3lkB/PGMreh64iGDIocFQa/pWPHGp1rvkQ7TgJzHWmf5la7yXgccYuqWxPkUy/vaBkGpP7wLVF8kp+lOAEaZ9eB1K5chi1sKLQZLjBoW/S4169Xl5TMSzc5bkpCwwAFk4C/Acikedtvv6gGYEhuDTSfdKyLqET6oqLqjI7olFdNhnqfUTTPsFu3V/gzTfRDpRBOhQ1YrzGfMhvkMmYaAiDx9/5PNiiFCHiijzqoTmgbBZZ9v/PpeDf9R6aF2LP1X7n4pv3JCLrxvls5xdaR2RVbp1IwM0gnzPfuMwIZHlwTT1LrqkGzkSR8UKvAlKiNIgbwb0Z62zIZ/PkKlDCeQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tcGyQeMjLxS1vA8tCJHS4nfHcJ+DPPCvLN09h1KXtFU=;
+ b=kX7jLZCVW3aZ80lqxqwHxJw1C9i0OE7TPMjw3h2109gXTRDuZkse2TWtM2HF9AsSPnueFIexlwAgCKF47Xs33pasnuLxmYEGzqRNecj9tNguamvrX4ESbCak9Vgjq0HiBt6vv85lPtOy0JvuWdIzhFfhxLnRzxxKDlCLUJZimoujbwjNEag5wmDJUe49rAS8ZX6fEISZ2hygQT/QhrTCE14JYvlem1qrvwXe2qxqmYRGX66dnF1okN4qBqYPHDOnY1Uz2TafeuHePSnakqPoZypZCbCKwM3v+Jr3t5chzST+IB1eJvyySUzBRZAtMVRsyEoTfBgUVS7erYtFjjcM+A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by SA2PR11MB5036.namprd11.prod.outlook.com (2603:10b6:806:114::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.44; Mon, 16 Oct
+ 2023 20:46:46 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::bd70:f215:4a97:c84e]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::bd70:f215:4a97:c84e%6]) with mapi id 15.20.6886.034; Mon, 16 Oct 2023
+ 20:46:46 +0000
+Message-ID: <2c86957f-9705-4f24-aa43-60d89f636c31@intel.com>
+Date:   Mon, 16 Oct 2023 13:46:42 -0700
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: i3c: Fix silvaco,i3c-master compatible
- string
+Subject: Re: [PATCH v13 04/10] x86/resctrl: Add comments on RFTYPE flags
+ hierarchy
 Content-Language: en-US
-To:     Frank Li <Frank.li@nxp.com>
-Cc:     Conor Dooley <conor@kernel.org>, miquel.raynal@bootlin.com,
-        conor.culhane@silvaco.com, alexandre.belloni@bootlin.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        joe@perches.com, peng.fan@nxp.com, alexander.stein@ew.tq-group.com,
-        haibo.chen@nxp.com, ping.bai@nxp.com, xiaoning.wang@nxp.com,
-        sherry.sun@nxp.com, linux-i3c@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev
-References: <20231016152450.2850498-1-Frank.Li@nxp.com>
- <20231016-chatroom-regulator-a75f1d8be809@spud>
- <ZS2Pz1HxUgrx4+0R@lizhi-Precision-Tower-5810>
- <6110c58a-8003-4889-9a4b-6a7d1821c00e@linaro.org>
- <ZS2Y0YRPItYhUBXE@lizhi-Precision-Tower-5810>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ZS2Y0YRPItYhUBXE@lizhi-Precision-Tower-5810>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+To:     <babu.moger@amd.com>, <corbet@lwn.net>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <bp@alien8.de>
+CC:     <fenghua.yu@intel.com>, <dave.hansen@linux.intel.com>,
+        <x86@kernel.org>, <hpa@zytor.com>, <paulmck@kernel.org>,
+        <akpm@linux-foundation.org>, <quic_neeraju@quicinc.com>,
+        <rdunlap@infradead.org>, <damien.lemoal@opensource.wdc.com>,
+        <songmuchun@bytedance.com>, <peterz@infradead.org>,
+        <jpoimboe@kernel.org>, <pbonzini@redhat.com>,
+        <chang.seok.bae@intel.com>, <pawan.kumar.gupta@linux.intel.com>,
+        <jmattson@google.com>, <daniel.sneddon@linux.intel.com>,
+        <sandipan.das@amd.com>, <tony.luck@intel.com>,
+        <james.morse@arm.com>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bagasdotme@gmail.com>,
+        <eranian@google.com>, <christophe.leroy@csgroup.eu>,
+        <jarkko@kernel.org>, <adrian.hunter@intel.com>,
+        <quic_jiles@quicinc.com>, <peternewman@google.com>
+References: <20231013202602.2492645-1-babu.moger@amd.com>
+ <20231013202602.2492645-5-babu.moger@amd.com>
+ <d4a33013-0448-4c36-a168-b3a953024962@intel.com>
+ <0acbb031-a84e-1cbc-0857-f087b07a9056@amd.com>
+ <299778a6-5ea0-c70d-54d6-1ecdc1b417d6@amd.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <299778a6-5ea0-c70d-54d6-1ecdc1b417d6@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MW4PR03CA0083.namprd03.prod.outlook.com
+ (2603:10b6:303:b6::28) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|SA2PR11MB5036:EE_
+X-MS-Office365-Filtering-Correlation-Id: f8a5d747-e9ec-43ea-a3de-08dbce8902e8
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DG8sI9MiAGFrESCHg0Rd/WHSvCxL5F/Lw3s9QLQkK1rNlPonuQb8bgB3rRpeMogwrwetKdQPz3U6Ha1EwzHpf4jeBTB3y3Kiv46mEb0VKqmVXu3a/s694b0dOUeUt/6h0f0yp2QCUpq/WVvC6AaWc170RK3d9Qt6uSHkrbZPIbcTCMHFEYPPpIi25ATCm/+RwSV6Xr2eVXDY6eltDUrUiSrQNaw2pWSwU+BYxzv6Z1cAAaw30V90bW68BCbNTq+fbL6NxAakEOxHEvAc7mxZdWpDkIcXUFaMLzLgAIIx2azDUUuBbMXlnKqrnQ8oMrJjsB+skCwLfqzbOBOuWkeerKYM8TXpkOZrNYuklBGnr2LRI67e+GbdPs37Ab39p71Q+f4jB4nJAPvanprO2ILQjb1vnaSu7Rl4R8xNXfTauviEIpRwdu5cudPQy/XSrUrVhNy/eHJ/+A/XE6Jd6sy5TnPGUzXREvbrHoFNaaRq1VhmyfZq1shK9cKPVl3bvmHnP7hI0TgHX8ccHygN6r2yK21AUsL5Y68EDw/1BZtiGs1WF1al4OhJNXxasRkj9FB6BxQtkofclVrigzYVWHy8pdQ5uitR5scfu0vjJDOYRw6xDzw8gN+QnqPIdKzHaJNJumpmh1BNpZy7uWP3I0eqVg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(39860400002)(376002)(136003)(396003)(230922051799003)(64100799003)(1800799009)(451199024)(186009)(31686004)(6486002)(6666004)(53546011)(6506007)(478600001)(6512007)(31696002)(36756003)(86362001)(38100700002)(7416002)(82960400001)(7406005)(2906002)(26005)(2616005)(316002)(41300700001)(66946007)(8676002)(66556008)(4326008)(8936002)(66476007)(5660300002)(44832011)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QU5SU2lYUVUwSHZhUmQ3T1VGejdzeCs0NTh6TzRlRVBpRGk5N1dPTTE1bm8r?=
+ =?utf-8?B?SnprYkQvY1UweDd4b2RsS0h6V1ZuMk1EV0lSOFhaQzRDeCttcmNZc0VSOWFU?=
+ =?utf-8?B?NDAzd2V6elBibEtXRFo1Q3JEU0dGS0NiRVYwcTQxRFp6UnM3WVVpbzVsTDNJ?=
+ =?utf-8?B?WERJU1EyN2xhRmZUODhGbFJmbnJYSXpsZCtWM1Y4UVBvR1hhdnczK3RzcXVq?=
+ =?utf-8?B?c2FMdGJnRVR6V2hKMEpOZWcwUnphbE9UaTlIM3RJOFhaNmZob2VDcGxzWHA0?=
+ =?utf-8?B?TmJRc2crai9OSDh1TjN4dVdMNHBzT2NCSG0weW41RVRrQWFYdWtkbk5QS1U2?=
+ =?utf-8?B?R3JKa2hlWWlxRlZ3bmZvRjROR3c4WmZTbG9Ic1VkK3V1NmRyMUQ2ZVA4YnVD?=
+ =?utf-8?B?bjI1d2NEUGZZRUpmMjhJRjUra3lxN0p6SWxjVUQ1cWhqclJIdkpqNHJGdFAv?=
+ =?utf-8?B?MTNMY2VYdGNTVjZ3YTNCN05NcktMTmFjdTlTc2ZVeXhKRTVzYllNNGI1VG16?=
+ =?utf-8?B?Zkhnd2VoZE9DWXFCWWNMSVJWdi9qLzQxOWRjd2FYY3RUUVZFTHdKQzJPODNT?=
+ =?utf-8?B?V2FhNndQWlNWd0hFU2thNnU4aUx0eUtwOEZwSThSaVdTSC9CU2dzaTJKTTB0?=
+ =?utf-8?B?UGxZdHNncmV1bGg0cFRoeHBVdzl4NmhyNVhPNndzL2V1N20yQnNVM1pnZjVa?=
+ =?utf-8?B?bkpvTzR0TlhXekNjZHc1NDI0QS8vWXZaWm1YNWdPeFN5Qjc1bmYxQkcya0h4?=
+ =?utf-8?B?MTRXb1dXVXA5VnRkUmxmSnpkd1BNYlY0Sm5tLzE1aDA2VWhnWis5TzZNL09F?=
+ =?utf-8?B?bEJGelpvMk53S2Q5U0N3WllQamR0ZXk5R1BZcUlHYTV3emtVU0hwUXMwZ1E2?=
+ =?utf-8?B?dFQrUDEwdWtveWk2b1pvQ0JKODJjbU9zYUduNDladzV2RTBoMWRrUGFkQ2Ny?=
+ =?utf-8?B?alRPU0NrS0p2OTk2M2g2QkRlVXZMMFFFNkJrZGt2QkFLdzAwbmltTGkxV0Jj?=
+ =?utf-8?B?SUdjdEd4UE5MNzA0ZEl2dzBmWDRHbmQrL2M2MlBwenJOeDRIbzV3M2JnRVI0?=
+ =?utf-8?B?TWlVMWJuSlkvcG5GVjdDOTFteWk2eHpLdi9tN3ZER1RuaVdnbUhzcERPblVJ?=
+ =?utf-8?B?L3JzWXh3M0dQUDN2Vlp0RUw2TnZodjVqck5hV0ZkWmo4a1JYK1QwaXVOSlFM?=
+ =?utf-8?B?U3pLMVdzQytLeU1mUmUyelpDWlllZ2FjNS9uWHpVeEgzUGw1TUlCcGczN3JC?=
+ =?utf-8?B?QWhFa1hMajE5SjRHY2dJSzNZS3c3QnJoQ3RwUEQxeVU1THc2RXpMTElhT2to?=
+ =?utf-8?B?TUtqcnRBU2NPQ1k2L0hsQkxOWGtLcWlPRFRIQXJucGFNc1BqcXRVVHk4Z3RM?=
+ =?utf-8?B?eVdUUUFvbC9rbmpoZkVuYi9nSGZjeDE0OUoxM1ZCcEFmazBOTkZSc3FTL3Zu?=
+ =?utf-8?B?dnB2bU11ZWlsR0F0ait4ZG5QSExKQVRhTDFKcWxqakFIL3lDQ1RJa2F3a2Vu?=
+ =?utf-8?B?OVVwYTVCaFNzYUdVUVo1UlE5aWhRejFOWkU3ZVhxak9NODJmRVJ3S2FUVVVP?=
+ =?utf-8?B?Y0JjNy9keG1XN0lWekhLN0h0Y2g4SUpIMnNEb0JoT2JGa3Ezby8vb0V4UDE4?=
+ =?utf-8?B?S3dJQm12M1ZqTThiNFNURVQvUGNnU3BIbUIxZC94Q2lqLzNFVmtDdEpPWmJr?=
+ =?utf-8?B?Z3RKTWg1SGxINFZ1UW90UWtnTW5lemFlbjIyUi9ScGFzV2hON0RkNEdGU1hi?=
+ =?utf-8?B?NWVaTVdqNXcva252UlJYU0xUSUpaZUIrZkVCSDF5dVBhTEVsWFJZeDgwYVRN?=
+ =?utf-8?B?VEJnRFY1WEJGTmdadkdmTS85QW9RS3hEbzRQWHJxdHVLVm5VRjl2c2xweFBE?=
+ =?utf-8?B?SWZvQVM3N0IxL1FpekRCM3h0WEpYK1lDWXcycERrdVhtNmRaY3N6dFRLajZs?=
+ =?utf-8?B?RDBYU3NPQm1GMUVEekMrTjVEbkY1dm45cnNNanZSSlV6Q3FoOWxYUjFZTmtQ?=
+ =?utf-8?B?S1NjRmxWU3gvQ2o5M28xVWQxZGUydVF3ekMvQ0oxL1BnV2tHUVIvK2RLUldP?=
+ =?utf-8?B?RXM0VXMxRkJtZFpMSE9YekdJNVdsRXlTR2Y2eThNQUJUSjVwU0JrUFg2UTRJ?=
+ =?utf-8?B?cU9UMVFqZ2ZDeEZSZ3E2dHhaMk1LSVlXd25DVjg4TDlzbDc1K1BNVUtkMGNR?=
+ =?utf-8?B?RHc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: f8a5d747-e9ec-43ea-a3de-08dbce8902e8
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2023 20:46:46.2707
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AQnvMhm5/mfmWs0J24nAzaanZcKAn1zGI2/vDsAg/3npVuLYQa1hJwGrlr/ktxyN3Et2lT7/rr12z3Nycc3ZRlx/vB1ecNjfoOicempioIg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5036
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/10/2023 22:10, Frank Li wrote:
-> On Mon, Oct 16, 2023 at 09:57:18PM +0200, Krzysztof Kozlowski wrote:
->> On 16/10/2023 21:32, Frank Li wrote:
->>> On Mon, Oct 16, 2023 at 06:30:11PM +0100, Conor Dooley wrote:
->>>> On Mon, Oct 16, 2023 at 11:24:49AM -0400, Frank Li wrote:
->>>>> In driver, compatible string is silvaco,i3c-master instead of
->>>>> silvaco,i3c-master-v1.
+Hi Babu,
+
+On 10/14/2023 4:06 PM, Moger, Babu wrote:
+> On 10/13/2023 4:39 PM, Moger, Babu wrote:
+>> On 10/13/2023 4:23 PM, Reinette Chatre wrote:
+>>> On 10/13/2023 1:25 PM, Babu Moger wrote:
+>>>> resctrl uses RFTYPE flags for creating resctrl directory structure.
 >>>>
->>>> And what makes the driver right & the binding wrong? AFAICT, this is an
->>>> IP sold by silvaco & the -v1 suffix was explicitly requested during
->>>> review of the binding.
+>>>> Definitions and directory structures are not documented. Add
+>>>> comments to improve the readability and help future additions.
+>>>>
+>>>> Signed-off-by: Babu Moger <babu.moger@amd.com>
+>>>> ---
+>>>> v13: Fixed the format issues in the documentation. Needed few minor format
+>>>>       changes to address the syntax issues.(Reinette)
+>>>>       Removed "Reviewed-by and Tested-by" flags as the patch has changed.
+>>>>
+>>>> v12: Moved the comments from arch/x86/kernel/cpu/resctrl/internal.h
+>>>>       to Documentation/arch/x86/resctrl.rst. (Boris)
+>>>> ---
+>>>>   Documentation/arch/x86/resctrl.rst | 64 ++++++++++++++++++++++++++++++
+>>>>   1 file changed, 64 insertions(+)
+>>>>
+>>>> diff --git a/Documentation/arch/x86/resctrl.rst b/Documentation/arch/x86/resctrl.rst
+>>>> index 178ab1d8f747..1163da74f734 100644
+>>>> --- a/Documentation/arch/x86/resctrl.rst
+>>>> +++ b/Documentation/arch/x86/resctrl.rst
+>>>> @@ -369,6 +369,70 @@ When monitoring is enabled all MON groups will also contain:
+>>>>       the sum for all tasks in the CTRL_MON group and all tasks in
+>>>>       MON groups. Please see example section for more details on usage.
+>>>>   +RESCTRL filesystem implementation notes
+>>>> +=======================================
+>>>> +RESCTRL filesystem has two main components
+>>>> +    a. info
+>>>> +    b. base
+>>>> +
+>>>> +    /sys/fs/resctrl/
+>>>> +    |
+>>>> +    -> info
+>>>> +    |
+>>>> +    |  (Top level directory named "info". Contains files that
+>>>> +    |   provide details on control and monitoring resources")
+>>>> +    |
+>>>> +    -> base
+>>>> +
+>>> Could you please do a "make htmldocs" and then ensure that the output looks sane?
+>>> The resulting output does not look right to me. For example, the above turns into
+>>> a single line that looks like:
 >>>
->>> The driver existed for the long time. DTS files already use
->>> silvaco,i3c-master.
+>>> /sys/fs/resctrl/ | -> info | | (Top level directory named "info". Contains files that | provide details on control and monitoring resources") | -> base
 >>>
->>> There are two options, one change doc, the other change dts and drivers.
->>> I think change doc is easiest ways.
 >>>
->>> If there are v2 in future, we can added silvaco,i3c-master-v2 in future.
->>>
->>> If everyone prefer change drivers and dts, I can work on new patch. Just
->>> break back compatiblity.
+>>> The spacing also looks off when viewing this in html.
 >>
->> No, because Rob explicitly pointed out too generic name.
->> https://lore.kernel.org/all/20210111200821.GA2978830@robh.at.kernel.org/
->>
->> Is it some way to avoid implementing feedback or how does it work?
+> I have fixed the all the format issues. Please let me know if it
+> looks ok. I will send the final version after that.
 > 
-> Downstream use silvaco,i3c-master to match driver. Anyways, miss match
+> Attached the patch and also added the diff inline.
 
-Too bad for downstream.
+This still does not look as though you consider how the document 
+looks after the changes.
 
-> happened.
+Consider the organization. Before your changes (assume numbering starts
+at 1):
+
+1. User Interface for Resource Control feature
+1.1 Info directory
+1.2 Resource alloc and monitor groups
+1.2.1 Resource allocation rules
+1.2.2 Resource monitoring rules
+1.3 Notes on cache occupancy monitoring and control
+...
+
+After your changes:
+
+1. User Interface for Resource Control feature
+1.1 Info directory
+1.2 Resource alloc and monitor groups
+1.2.1 Resource allocation rules
+1.2.2 Resource monitoring rules
+1.2.3 RESCTRL filesystem implementation notes
+1.3 Notes on cache occupancy monitoring and control
+...
+
+Note how the "RESCTRL filesystem implementation notes" is inserted
+as a subsection of resource and monitoring groups. Since the text
+describes all files in resctrl (not just resource groups) I expect
+that it would not be buried as a subsection of resource groups.
+
+This addition also ignores existing customs. Nowhere in the
+entire document will you find "RESCTRL" (well, except for the
+config option).
+ 
+> Thanks
 > 
-> option 1: fix doc
-> option 2: fix driver and dts
+> diff --git a/Documentation/arch/x86/resctrl.rst b/Documentation/arch/x86/resctrl.rst
+> index 178ab1d8f747..e990272e9a4f 100644
+> --- a/Documentation/arch/x86/resctrl.rst
+> +++ b/Documentation/arch/x86/resctrl.rst
+> @@ -396,6 +396,67 @@ Resource monitoring rules
+>  3) Otherwise RDT events for the task will be reported in the root level
+>     "mon_data" group.
 > 
-> what do you perfer? 
+> +RESCTRL filesystem implementation notes
+> +---------------------------------------
+> +RESCTRL filesystem has two main components.
 
-Fix driver and dts, keep existing compatible as deprecated.
+This documentation was extracted as-is from the header file where it
+was next to the flags being documented. With this move all that context
+is lost so it may be helpful to summarize what is documented here.
 
-Best regards,
-Krzysztof
+> +
+> +a. info
+> +b. base
+> +
+> +::
 
+If I understand correctly, instead of adjusting to the target format you
+hardcode all the text as pre-formatted? That may be ok. I cannot speak to
+whether this matches expectations of the proposal to move the documentation
+here.
+
+> +
+> +       /sys/fs/resctrl/
+> +               |
+> +               |--> info (Top level directory named "info". Contains files that
+> +               |          provide details on control and monitoring resources")
+> +               |
+> +               |--> base (Root directory associated with default resource group as
+> +                          well as directories created by user for MON and CTRL groups.
+> +                          Contains files to interact with MON and CTRL groups)
+> +
+> +               Note: resctrl uses flags for files, not for directories. Directories
+> +                     are created based on the resource type. Added the directories
+> +                     below for better understanding. The RFTYPE flags are defined
+> +                     in arch/x86/kernel/cpu/resctrl/internal.h.
+> +
+> +"info directory structure"::
+> +
+
+This unexpected. In your previous response you noted that you did not know
+how to make it look like a header. I expected that you would read the manual
+to answer your own question but instead you just placed the title in quotes? I do
+not see how placing text in quotes create impression that it is a header.
+There is syntax to indicate section headers.
+
+Reinette
