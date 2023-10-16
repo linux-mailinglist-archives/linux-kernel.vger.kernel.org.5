@@ -2,175 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC667CA7CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8ED7CA7CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232090AbjJPMOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 08:14:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34044 "EHLO
+        id S232905AbjJPMPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 08:15:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbjJPMOE (ORCPT
+        with ESMTP id S232268AbjJPMPN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 08:14:04 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD5718E;
-        Mon, 16 Oct 2023 05:14:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697458442; x=1728994442;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=fYX09gVTs+rdDQq31Aoyype6rTbwF7iR1knuJuk7e3c=;
-  b=YJIgkJkiK06uaWWlR8PBXUYghOok8tWbm6xqg/Gp+UrIm9/teAqypPSw
-   XblyLHWYKcS4rlVfvmM7j4jYLckJzWY0100mIwISAO0DwH5jLtJ5jDeK4
-   IQDwrBX3rZGy3Y6cop36fusWR3WZZX04dfUSQXYr3Tj9u17s2ZTOGJoyv
-   xIHHEqoY3XlztNI0a3wFGLaUIpiHiOYrVVjliyK6RhygxHcQXz0PhferE
-   gOwpVBxSJIhsIbwmRr8anteOrjdWGWjHl9NgS/taEIgStVhwyyY7/2N80
-   jGzNad//S4EJFuYrPPAqW/QHYuvrFWlircBFxHWDMtB5tMblDY6uXpqiI
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="449720154"
-X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="449720154"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 05:14:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="929322173"
-X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="929322173"
-Received: from rhaeussl-mobl.ger.corp.intel.com ([10.252.59.103])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 05:13:59 -0700
-Date:   Mon, 16 Oct 2023 15:13:56 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Richard Laing <richard.laing@alliedtelesis.co.nz>
-cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        ilpo.jarvinen@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH] serial: 8250_dw: Allow TX FIFO to drain before writing
- to UART_LCR An issue has been observed on the Broadcom BCM56160 serial port
- which appears closely related to a similar issue on the Marvell Armada 38x
- serial port.
-In-Reply-To: <20231016013207.2249946-2-richard.laing@alliedtelesis.co.nz>
-Message-ID: <fb92ed83-478-4d71-2bd-ab3a37b1352@linux.intel.com>
-References: <20231016013207.2249946-1-richard.laing@alliedtelesis.co.nz> <20231016013207.2249946-2-richard.laing@alliedtelesis.co.nz>
+        Mon, 16 Oct 2023 08:15:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C989E6
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 05:14:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697458468;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8K0GBMWi7yuOkB+hNB45NjHQ0h2LLEOcT0QD5ygf2F4=;
+        b=LXqSiwwj+ZyGwYZ0xzV20R0KfE42NgLTc1zlQY7H1518W/Fl7U+DPXvWZUcetpXmBsYiH+
+        /OhRSlWmQc7opVVdGsQnXvwrQc8KHGGGjW19ERJXXGGdk1DYyvTybEYJXioRtfOSE0Ar79
+        l0FNtax2dxRKc6tk5l1iFcDNAZgjjEs=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-315-8rwf8HUWMnK4Q13pSLaVSQ-1; Mon, 16 Oct 2023 08:14:27 -0400
+X-MC-Unique: 8rwf8HUWMnK4Q13pSLaVSQ-1
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-7740cf4136aso516281485a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 05:14:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697458467; x=1698063267;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8K0GBMWi7yuOkB+hNB45NjHQ0h2LLEOcT0QD5ygf2F4=;
+        b=uGVAPx4zAgWtTKu86YMAevlNj3D6m0HZJYQzhvShLd7AQpOb2qwoZGf225sSJsulv0
+         NTRUg8iu4CTv+8Q+RZJ6Q/2repVTufzYw+AwctWBkZrCp5bDJE4L9pHWQ7xbc9xh++og
+         zmLs0ERh1SkGyFeM4vCU2wN9g6LN7AI00qIlThqnuyn4frAhPtI0bNdWBVXPLgMk+5k4
+         q5oNnNyO/d9kd9+SLLCwpBBVLK9b0Mm/fKykQmNCbV1h1mhYqpZOWUYipEjy/krWQ51C
+         OfPXvmC1a1VHHxgUhS+2PrYEED5fIhsFKZVTAMhRGKFrBAC2Jm5Lwaly4wufOPoRk5uv
+         mr4w==
+X-Gm-Message-State: AOJu0Yx+8nqa3+Yl35xfqYVwltQKghGGgo/LDUJHSyTW0Y4z4KWaZ6P0
+        KEANYwcPuSfcU82LpWyI5i1C9GZI2fSrRS7hqc5/DLBDPxBuFtN1ILids2QTXrAkH5sOdNNP7ul
+        FrHGYoAUNUhnxshKCIni5FLfiRgyInHnzQCQaoUUiqxKjwyr0M84dHNbaDdkaZLFAEulBS+7HGw
+        Dk3ctDvgw7
+X-Received: by 2002:a05:620a:999:b0:76d:ada0:4c0 with SMTP id x25-20020a05620a099900b0076dada004c0mr31781944qkx.76.1697458466969;
+        Mon, 16 Oct 2023 05:14:26 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGX+nJ0hdk4wSNp3IL6EMf+BSUKobIFwfujXQ3r3+l1dNl+KKT4FZ0JEJkvltb3efykENBxnQ==
+X-Received: by 2002:a05:620a:999:b0:76d:ada0:4c0 with SMTP id x25-20020a05620a099900b0076dada004c0mr31781918qkx.76.1697458466621;
+        Mon, 16 Oct 2023 05:14:26 -0700 (PDT)
+Received: from fedora (g2.ign.cz. [91.219.240.8])
+        by smtp.gmail.com with ESMTPSA id d4-20020a05620a166400b0077568327b54sm2930591qko.123.2023.10.16.05.14.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 05:14:26 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Nicolas Saenz Julienne <nsaenz@amazon.com>, kvm@vger.kernel.org
+Cc:     seanjc@google.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, graf@amazon.de, rkagan@amazon.de,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: x86: hyper-v: Don't auto-enable stimer during
+ deserialization
+In-Reply-To: <20231016095217.37574-1-nsaenz@amazon.com>
+References: <20231016095217.37574-1-nsaenz@amazon.com>
+Date:   Mon, 16 Oct 2023 14:14:22 +0200
+Message-ID: <87sf6a9335.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Oct 2023, Richard Laing wrote:
+Nicolas Saenz Julienne <nsaenz@amazon.com> writes:
 
-Your subject line is way too long. If you refer to some other issue, 
-please link to it properly with commit id and/or with Link: tags.
+> By not honoring the 'stimer->config.enable' state during stimer
+> deserialization we might introduce spurious timer interrupts. For
+> example through the following events:
+>  - The stimer is configured in auto-enable mode.
+>  - The stimer's count is set and the timer enabled.
+>  - The stimer expires, an interrupt is injected.
+>  - We live migrate the VM.
+>  - The stimer config and count are deserialized, auto-enable is ON, the
+>    stimer is re-enabled.
+>  - The stimer expires right away, and injects an unwarranted interrupt.
+>
+> So let's not change the stimer's enable state if the MSR write comes
+> from user-space.
+>
+> Fixes: 1f4b34f825e8 ("kvm/x86: Hyper-V SynIC timers")
+> Signed-off-by: Nicolas Saenz Julienne <nsaenz@amazon.com>
+> ---
+>  arch/x86/kvm/hyperv.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+> index 7c2dac6824e2..9f1deb6aa131 100644
+> --- a/arch/x86/kvm/hyperv.c
+> +++ b/arch/x86/kvm/hyperv.c
+> @@ -729,7 +729,7 @@ static int stimer_set_count(struct kvm_vcpu_hv_stimer *stimer, u64 count,
+>  	stimer->count = count;
+>  	if (stimer->count == 0)
+>  		stimer->config.enable = 0;
 
-> Writes to UART_LCR can result in characters that are currently held in the
-> TX FIFO being lost rather than sent, even if the userspace process has
-> attempted to flush them.
-> 
-> This is most visible when using the "resize" command (tested on Busybox),
-> where we have observed the escape code for restoring cursor position
-> becoming mangled.
-> 
-> Since this appears to be a more common problem add a new driver option
-> to flush the TX FIFO before writing to the UART_LCR.
+Can this branch be problematic too? E.g. if STIMER[X]_CONFIG is
+deserialized after STIMER[X]_COUNT we may erroneously reset 'enable' to
+0, right? In fact, when MSRs are ordered like this:
 
-This looks like a problem we already have solution for, the userspace can 
-use TCSADRAIN/FLUSH to indicate what kind of flushing it wants for Tx 
-when it makes the tcsetattr() call. Thus, userspace can avoid the Tx side 
-corruption as long as its behavior is sane and doesn't e.g. try to race 
-writes with tcsetattr() call as mentioned in commit 094fb49a2d0d ("tty: 
-Prevent writing chars during tcsetattr TCSADRAIN/FLUSH").
+#define HV_X64_MSR_STIMER0_CONFIG		0x400000B0
+#define HV_X64_MSR_STIMER0_COUNT		0x400000B1
 
-Have you tried to use the userspace solution? Isn't it working for some 
-reason?
+I would guess that we always de-serialize 'config' first. With
+auto-enable, the timer will get enabled when writing 'count' but what
+happens in other cases?
+
+Maybe the whole block needs to go under 'if (!host)' instead?
+
+> -	else if (stimer->config.auto_enable)
+> +	else if (stimer->config.auto_enable && !host)
+>  		stimer->config.enable = 1;
+>  
+>  	if (stimer->config.enable)
 
 -- 
- i.
-
-> 
-> Signed-off-by: Richard Laing <richard.laing@alliedtelesis.co.nz>
-> ---
->  drivers/tty/serial/8250/8250_dw.c    | 18 ++++++++++++++++++
->  drivers/tty/serial/8250/8250_dwlib.h |  1 +
->  2 files changed, 19 insertions(+)
-> 
-> diff --git a/drivers/tty/serial/8250/8250_dw.c b/drivers/tty/serial/8250/8250_dw.c
-> index f4cafca1a7da..17ee824294c7 100644
-> --- a/drivers/tty/serial/8250/8250_dw.c
-> +++ b/drivers/tty/serial/8250/8250_dw.c
-> @@ -161,6 +161,10 @@ static void dw8250_serial_out(struct uart_port *p, int offset, int value)
->  {
->  	struct dw8250_data *d = to_dw8250_data(p->private_data);
->  
-> +	/* Allow the TX to drain before we reconfigure */
-> +	if (offset == UART_LCR && d->drain_before_lcr_change)
-> +		dw8250_tx_wait_empty(p);
-> +
->  	writeb(value, p->membase + (offset << p->regshift));
->  
->  	if (offset == UART_LCR && !d->uart_16550_compatible)
-> @@ -197,6 +201,10 @@ static void dw8250_serial_outq(struct uart_port *p, int offset, int value)
->  {
->  	struct dw8250_data *d = to_dw8250_data(p->private_data);
->  
-> +	/* Allow the TX to drain before we reconfigure */
-> +	if (offset == UART_LCR && d->drain_before_lcr_change)
-> +		dw8250_tx_wait_empty(p);
-> +
->  	value &= 0xff;
->  	__raw_writeq(value, p->membase + (offset << p->regshift));
->  	/* Read back to ensure register write ordering. */
-> @@ -211,6 +219,10 @@ static void dw8250_serial_out32(struct uart_port *p, int offset, int value)
->  {
->  	struct dw8250_data *d = to_dw8250_data(p->private_data);
->  
-> +	/* Allow the TX to drain before we reconfigure */
-> +	if (offset == UART_LCR && d->drain_before_lcr_change)
-> +		dw8250_tx_wait_empty(p);
-> +
->  	writel(value, p->membase + (offset << p->regshift));
->  
->  	if (offset == UART_LCR && !d->uart_16550_compatible)
-> @@ -228,6 +240,10 @@ static void dw8250_serial_out32be(struct uart_port *p, int offset, int value)
->  {
->  	struct dw8250_data *d = to_dw8250_data(p->private_data);
->  
-> +	/* Allow the TX to drain before we reconfigure */
-> +	if (offset == UART_LCR && d->drain_before_lcr_change)
-> +		dw8250_tx_wait_empty(p);
-> +
->  	iowrite32be(value, p->membase + (offset << p->regshift));
->  
->  	if (offset == UART_LCR && !d->uart_16550_compatible)
-> @@ -597,6 +613,8 @@ static int dw8250_probe(struct platform_device *pdev)
->  	/* Always ask for fixed clock rate from a property. */
->  	device_property_read_u32(dev, "clock-frequency", &p->uartclk);
->  
-> +	data->drain_before_lcr_change = device_property_read_bool(dev, "drain-before-lcr-change");
-> +
->  	/* If there is separate baudclk, get the rate from it. */
->  	data->clk = devm_clk_get_optional(dev, "baudclk");
->  	if (data->clk == NULL)
-> diff --git a/drivers/tty/serial/8250/8250_dwlib.h b/drivers/tty/serial/8250/8250_dwlib.h
-> index f13e91f2cace..f7d88fa8f058 100644
-> --- a/drivers/tty/serial/8250/8250_dwlib.h
-> +++ b/drivers/tty/serial/8250/8250_dwlib.h
-> @@ -45,6 +45,7 @@ struct dw8250_data {
->  
->  	unsigned int		skip_autocfg:1;
->  	unsigned int		uart_16550_compatible:1;
-> +	unsigned int		drain_before_lcr_change:1;
->  };
->  
->  void dw8250_do_set_termios(struct uart_port *p, struct ktermios *termios, const struct ktermios *old);
+Vitaly
 
