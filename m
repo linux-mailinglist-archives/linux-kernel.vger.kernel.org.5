@@ -2,163 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 654F57CB191
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 19:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF7B7CB194
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 19:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233895AbjJPRs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 13:48:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58116 "EHLO
+        id S233964AbjJPRse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 13:48:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231611AbjJPRs1 (ORCPT
+        with ESMTP id S231611AbjJPRsb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 13:48:27 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 062099F;
-        Mon, 16 Oct 2023 10:48:26 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d9a7a3e17d1so5600259276.2;
+        Mon, 16 Oct 2023 13:48:31 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B6283
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 10:48:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697478509; x=1729014509;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=iL41oQCyVwRq9x2mG1TA/2QZ58eiTLKmDEp+riEPcfA=;
+  b=S2rrBx6eXe/JCkNYlH4T1Fb1stbU8m6+6nG9tp0FPMQwmwQBeeOkcR8Q
+   28mLbxFO4ucORA0dEYIqTJYWirzAaBQKHH+73VaE2YjKhDqSbGrtQtrFR
+   fAMLFG1cqZAFN3LLbgMURq+cbOmGk/bFXDQZB3cgVVExnbwkvi/otzGaW
+   Q9+vl107ZgDlUJOu64nXgl0RY0DX089LPkY0JEHDVMzdJ4RaF9oss44uE
+   OCgmoepdOTTKDVcAUyhnaQ7Tx4YVhOClcHZdgGf39c0fDOKVhq8E1Cnr+
+   IUFAfp+T7KSbHgCsBVgEXFOzfsrXt7sZgcAk3Cwq3iynhY9wkscyHy/fV
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="375966190"
+X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
+   d="scan'208";a="375966190"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 10:48:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="826119792"
+X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
+   d="scan'208";a="826119792"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 10:48:28 -0700
+Received: from [10.212.72.131] (kliang2-mobl1.ccr.corp.intel.com [10.212.72.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id C8F48580C4A;
         Mon, 16 Oct 2023 10:48:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697478505; x=1698083305; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6Gni6mzvaBaFKxuMxn9hZgE2UC6/dQHw9AadxVgtVNo=;
-        b=hrNRjp3Y8049a1H5L///I9LZfu0qTi+gWkje9FexowkWG2OadlQHJoBSUB5+RyAcHR
-         tABGr97G0FYH6oYe/B0u1wgMc+gW16JOvhvk62PUIXkvGiYDljewxwrN7PqFb0e/XMGg
-         ijWpx0SYdRk68w1sPBG6H7fD4BK48LJdV5SNJw8gbKj9u5+yhqOS1mEBzZhl8CAZD2NN
-         CbFVEUE1q8fsgUHHhVTUQAVee/RBgfyvdLUjBb8qqJ3nH8WMZ+Y69R0+yrLK0vWhlwVS
-         BU/8bjRUHmMJ2SF2+sAfHzkuprXvPnSZv10lGllwNcLMtWzovJGhSRk/fwGdzy1I+C/x
-         EjQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697478505; x=1698083305;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6Gni6mzvaBaFKxuMxn9hZgE2UC6/dQHw9AadxVgtVNo=;
-        b=k/iMZGgIYr0oRy/BuAYRdz8RqbSEgxCbW6P7dM9g7dUcZu7u+iiT0InZgS+jhkGgyz
-         zjYYKQfpmEdBnNi7i8bIIQjG9bnNdLy1RB4K4PB2XDn1URyaiQSUD5fvTjqjQ9BYkWHY
-         nzRUg01Y0uK4o68mMRejhEVekUu2/4/UVyT2jOtAZcvd8Wk+zCB671vAWuBxNqSCzCqc
-         YcfKc2rgQeLUISgwUHh+vj2DG2X+bWGqP1zchGlOFTfiaslilW8mgsd/Fy9xrxbJoreA
-         0yWYplHtBCTMJXH3bzPTsiZ1eE8wMrAKWbATHUbF586AmtRx5XoEDqFX6x2DACKci3oh
-         934Q==
-X-Gm-Message-State: AOJu0YyR935g6RMJ3bseCFJCQuIi9vnC1+OfRh+BooZSVgVRk7bVoLqM
-        O3mnbg1hFlHj1BZarT0BfF8=
-X-Google-Smtp-Source: AGHT+IFxhp5Fg6dD0ShGrsQoX3lKB8P2VZfUuC29sX4UXOWErGVDVNAevi+hJU45YX1WEraFAAwehQ==
-X-Received: by 2002:a25:3742:0:b0:d9a:4a5f:415d with SMTP id e63-20020a253742000000b00d9a4a5f415dmr18010718yba.0.1697478505154;
-        Mon, 16 Oct 2023 10:48:25 -0700 (PDT)
-Received: from localhost ([2607:fb90:be80:2b9:64a5:5a0e:5435:bd4])
-        by smtp.gmail.com with ESMTPSA id q17-20020a25f911000000b00d20d4ffbbdbsm2775571ybe.0.2023.10.16.10.48.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 10:48:24 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 10:48:23 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Alexander Potapenko <glider@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@kernel.org>,
-        Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        netdev@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        dm-devel@redhat.com, ntfs3@lists.linux.dev,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 09/13] bitmap: make bitmap_{get,set}_value8() use
- bitmap_{read,write}()
-Message-ID: <ZS13Z8Ls69lEBYib@yury-ThinkPad>
-References: <20231016165247.14212-1-aleksander.lobakin@intel.com>
- <20231016165247.14212-10-aleksander.lobakin@intel.com>
+Message-ID: <dcbd3cfa-039e-445f-ad74-29bab3021900@linux.intel.com>
+Date:   Mon, 16 Oct 2023 13:48:25 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231016165247.14212-10-aleksander.lobakin@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V4 1/7] perf: Add branch stack counters
+Content-Language: en-US
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
+        adrian.hunter@intel.com, ak@linux.intel.com, eranian@google.com,
+        alexey.v.bayduraev@linux.intel.com, tinghao.zhang@intel.com,
+        Sandipan Das <sandipan.das@amd.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+References: <20231004184044.3062788-1-kan.liang@linux.intel.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20231004184044.3062788-1-kan.liang@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 06:52:43PM +0200, Alexander Lobakin wrote:
-> Now that we have generic bitmap_read() and bitmap_write(), which are
-> inline and try to take care of non-bound-crossing and aligned cases
-> to keep them optimized, collapse bitmap_{get,set}_value8() into
-> simple wrappers around the former ones.
-> bloat-o-meter shows no difference in vmlinux and -2 bytes for
-> gpio-pca953x.ko, which says the code doesn't get optimized worse.
+Hi Peter,
 
-That's just amazing!
+Could you please share your comments for this series?
 
-bloat-o-meter itself doesn't say on optimization, but in this case
-I think that BITS_PER_BYTE passed at compile time allows to generate
-just as good code with the generic bitmap_write/read().
+Thanks,
+Kan
 
-Acked-by: Yury Norov <yury.norov@gmail.com>
-
-> Suggested-by: Yury Norov <yury.norov@gmail.com>
-> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-> ---
->  include/linux/bitmap.h | 38 +++++---------------------------------
->  1 file changed, 5 insertions(+), 33 deletions(-)
+On 2023-10-04 2:40 p.m., kan.liang@linux.intel.com wrote:
+> From: Kan Liang <kan.liang@linux.intel.com>
 > 
-> diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-> index 2020cb534ed7..c2680f67bc4e 100644
-> --- a/include/linux/bitmap.h
-> +++ b/include/linux/bitmap.h
-> @@ -572,39 +572,6 @@ static inline void bitmap_from_u64(unsigned long *dst, u64 mask)
->  	bitmap_from_arr64(dst, &mask, 64);
->  }
->  
-> -/**
-> - * bitmap_get_value8 - get an 8-bit value within a memory region
-> - * @map: address to the bitmap memory region
-> - * @start: bit offset of the 8-bit value; must be a multiple of 8
-> - *
-> - * Returns the 8-bit value located at the @start bit offset within the @src
-> - * memory region.
-> - */
-> -static inline unsigned long bitmap_get_value8(const unsigned long *map,
-> -					      unsigned long start)
-> -{
-> -	const size_t index = BIT_WORD(start);
-> -	const unsigned long offset = start % BITS_PER_LONG;
-> -
-> -	return (map[index] >> offset) & 0xFF;
-> -}
-> -
-> -/**
-> - * bitmap_set_value8 - set an 8-bit value within a memory region
-> - * @map: address to the bitmap memory region
-> - * @value: the 8-bit value; values wider than 8 bits may clobber bitmap
-> - * @start: bit offset of the 8-bit value; must be a multiple of 8
-> - */
-> -static inline void bitmap_set_value8(unsigned long *map, unsigned long value,
-> -				     unsigned long start)
-> -{
-> -	const size_t index = BIT_WORD(start);
-> -	const unsigned long offset = start % BITS_PER_LONG;
-> -
-> -	map[index] &= ~(0xFFUL << offset);
-> -	map[index] |= value << offset;
-> -}
-> -
->  /**
->   * bitmap_read - read a value of n-bits from the memory region
->   * @map: address to the bitmap memory region
-> @@ -676,6 +643,11 @@ static inline void bitmap_write(unsigned long *map,
->  	map[index + 1] |= (value >> space);
->  }
->  
-> +#define bitmap_get_value8(map, start)			\
-> +	bitmap_read(map, start, BITS_PER_BYTE)
-> +#define bitmap_set_value8(map, value, start)		\
-> +	bitmap_write(map, value, start, BITS_PER_BYTE)
+> Currently, the additional information of a branch entry is stored in a
+> u64 space. With more and more information added, the space is running
+> out. For example, the information of occurrences of events will be added
+> for each branch.
+> 
+> Two places were suggested to append the counters.
+> https://lore.kernel.org/lkml/20230802215814.GH231007@hirez.programming.kicks-ass.net/
+> One place is right after the flags of each branch entry. It changes the
+> existing struct perf_branch_entry. The later ARCH specific
+> implementation has to be really careful to consistently pick
+> the right struct.
+> The other place is right after the entire struct perf_branch_stack.
+> The disadvantage is that the pointer of the extra space has to be
+> recorded. The common interface perf_sample_save_brstack() has to be
+> updated.
+> 
+> The latter is much straightforward, and should be easily understood and
+> maintained. It is implemented in the patch.
+> 
+> Add a new branch sample type, PERF_SAMPLE_BRANCH_COUNTERS, to indicate
+> the event which is recorded in the branch info.
+> 
+> The "u64 counters" may store the occurrences of several events. The
+> information regarding the number of events/counters and the width of
+> each counter should be exposed via sysfs as a reference for the perf
+> tool. Define the branch_counter_nr and branch_counter_width ABI here.
+> The support will be implemented later in the Intel-specific patch.
+> 
+> Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> Cc: Sandipan Das <sandipan.das@amd.com>
+> Cc: Ravi Bangoria <ravi.bangoria@amd.com>
+> Cc: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+> ---
+> 
+> Changes since V3:
+> - Add a new branch sample type, PERF_SAMPLE_BRANCH_COUNTERS
+>   Drop the two  branch sample type in V2.
+> - Add the branch_counter_nr and branch_counter_width ABI
+> 
+>  .../testing/sysfs-bus-event_source-devices-caps |  6 ++++++
+>  arch/powerpc/perf/core-book3s.c                 |  2 +-
+>  arch/x86/events/amd/core.c                      |  2 +-
+>  arch/x86/events/core.c                          |  2 +-
+>  arch/x86/events/intel/core.c                    |  2 +-
+>  arch/x86/events/intel/ds.c                      |  4 ++--
+>  include/linux/perf_event.h                      | 17 ++++++++++++++++-
+>  include/uapi/linux/perf_event.h                 | 10 ++++++++++
+>  kernel/events/core.c                            |  8 ++++++++
+>  9 files changed, 46 insertions(+), 7 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-event_source-devices-caps b/Documentation/ABI/testing/sysfs-bus-event_source-devices-caps
+> index 8757dcf41c08..451f0c620aa7 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-event_source-devices-caps
+> +++ b/Documentation/ABI/testing/sysfs-bus-event_source-devices-caps
+> @@ -16,3 +16,9 @@ Description:
+>  		Example output in powerpc:
+>  		grep . /sys/bus/event_source/devices/cpu/caps/*
+>  		/sys/bus/event_source/devices/cpu/caps/pmu_name:POWER9
 > +
->  #endif /* __ASSEMBLY__ */
+> +		The "branch_counter_nr" in the supported platform exposes the
+> +		maximum number of counters which can be shown in the u64 counters
+> +		of PERF_SAMPLE_BRANCH_COUNTERS, while the "branch_counter_width"
+> +		exposes the width of each counter. Both of them can be used by
+> +		the perf tool to parse the logged counters in each branch.
+> diff --git a/arch/powerpc/perf/core-book3s.c b/arch/powerpc/perf/core-book3s.c
+> index 8c1f7def596e..3c14596bbfaf 100644
+> --- a/arch/powerpc/perf/core-book3s.c
+> +++ b/arch/powerpc/perf/core-book3s.c
+> @@ -2313,7 +2313,7 @@ static void record_and_restart(struct perf_event *event, unsigned long val,
+>  			struct cpu_hw_events *cpuhw;
+>  			cpuhw = this_cpu_ptr(&cpu_hw_events);
+>  			power_pmu_bhrb_read(event, cpuhw);
+> -			perf_sample_save_brstack(&data, event, &cpuhw->bhrb_stack);
+> +			perf_sample_save_brstack(&data, event, &cpuhw->bhrb_stack, NULL);
+>  		}
 >  
->  #endif /* __LINUX_BITMAP_H */
-> -- 
-> 2.41.0
+>  		if (event->attr.sample_type & PERF_SAMPLE_DATA_SRC &&
+> diff --git a/arch/x86/events/amd/core.c b/arch/x86/events/amd/core.c
+> index e24976593a29..4ee6390b45c9 100644
+> --- a/arch/x86/events/amd/core.c
+> +++ b/arch/x86/events/amd/core.c
+> @@ -940,7 +940,7 @@ static int amd_pmu_v2_handle_irq(struct pt_regs *regs)
+>  			continue;
+>  
+>  		if (has_branch_stack(event))
+> -			perf_sample_save_brstack(&data, event, &cpuc->lbr_stack);
+> +			perf_sample_save_brstack(&data, event, &cpuc->lbr_stack, NULL);
+>  
+>  		if (perf_event_overflow(event, &data, regs))
+>  			x86_pmu_stop(event, 0);
+> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+> index 40ad1425ffa2..40c9af124128 100644
+> --- a/arch/x86/events/core.c
+> +++ b/arch/x86/events/core.c
+> @@ -1702,7 +1702,7 @@ int x86_pmu_handle_irq(struct pt_regs *regs)
+>  		perf_sample_data_init(&data, 0, event->hw.last_period);
+>  
+>  		if (has_branch_stack(event))
+> -			perf_sample_save_brstack(&data, event, &cpuc->lbr_stack);
+> +			perf_sample_save_brstack(&data, event, &cpuc->lbr_stack, NULL);
+>  
+>  		if (perf_event_overflow(event, &data, regs))
+>  			x86_pmu_stop(event, 0);
+> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+> index a08f794a0e79..41a164764a84 100644
+> --- a/arch/x86/events/intel/core.c
+> +++ b/arch/x86/events/intel/core.c
+> @@ -3047,7 +3047,7 @@ static int handle_pmi_common(struct pt_regs *regs, u64 status)
+>  		perf_sample_data_init(&data, 0, event->hw.last_period);
+>  
+>  		if (has_branch_stack(event))
+> -			perf_sample_save_brstack(&data, event, &cpuc->lbr_stack);
+> +			perf_sample_save_brstack(&data, event, &cpuc->lbr_stack, NULL);
+>  
+>  		if (perf_event_overflow(event, &data, regs))
+>  			x86_pmu_stop(event, 0);
+> diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
+> index bf97ab904d40..cb3f329f8fa4 100644
+> --- a/arch/x86/events/intel/ds.c
+> +++ b/arch/x86/events/intel/ds.c
+> @@ -1755,7 +1755,7 @@ static void setup_pebs_fixed_sample_data(struct perf_event *event,
+>  		setup_pebs_time(event, data, pebs->tsc);
+>  
+>  	if (has_branch_stack(event))
+> -		perf_sample_save_brstack(data, event, &cpuc->lbr_stack);
+> +		perf_sample_save_brstack(data, event, &cpuc->lbr_stack, NULL);
+>  }
+>  
+>  static void adaptive_pebs_save_regs(struct pt_regs *regs,
+> @@ -1912,7 +1912,7 @@ static void setup_pebs_adaptive_sample_data(struct perf_event *event,
+>  
+>  		if (has_branch_stack(event)) {
+>  			intel_pmu_store_pebs_lbrs(lbr);
+> -			perf_sample_save_brstack(data, event, &cpuc->lbr_stack);
+> +			perf_sample_save_brstack(data, event, &cpuc->lbr_stack, NULL);
+>  		}
+>  	}
+>  
+> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> index e85cd1c0eaf3..9ad79f8107cb 100644
+> --- a/include/linux/perf_event.h
+> +++ b/include/linux/perf_event.h
+> @@ -1138,6 +1138,10 @@ static inline bool branch_sample_priv(const struct perf_event *event)
+>  	return event->attr.branch_sample_type & PERF_SAMPLE_BRANCH_PRIV_SAVE;
+>  }
+>  
+> +static inline bool branch_sample_counters(const struct perf_event *event)
+> +{
+> +	return event->attr.branch_sample_type & PERF_SAMPLE_BRANCH_COUNTERS;
+> +}
+>  
+>  struct perf_sample_data {
+>  	/*
+> @@ -1172,6 +1176,7 @@ struct perf_sample_data {
+>  	struct perf_callchain_entry	*callchain;
+>  	struct perf_raw_record		*raw;
+>  	struct perf_branch_stack	*br_stack;
+> +	u64				*br_stack_cntr;
+>  	union perf_sample_weight	weight;
+>  	union  perf_mem_data_src	data_src;
+>  	u64				txn;
+> @@ -1249,7 +1254,8 @@ static inline void perf_sample_save_raw_data(struct perf_sample_data *data,
+>  
+>  static inline void perf_sample_save_brstack(struct perf_sample_data *data,
+>  					    struct perf_event *event,
+> -					    struct perf_branch_stack *brs)
+> +					    struct perf_branch_stack *brs,
+> +					    u64 *brs_cntr)
+>  {
+>  	int size = sizeof(u64); /* nr */
+>  
+> @@ -1257,7 +1263,16 @@ static inline void perf_sample_save_brstack(struct perf_sample_data *data,
+>  		size += sizeof(u64);
+>  	size += brs->nr * sizeof(struct perf_branch_entry);
+>  
+> +	/*
+> +	 * The extension space for counters is appended after the
+> +	 * struct perf_branch_stack. It is used to store the occurrences
+> +	 * of events of each branch.
+> +	 */
+> +	if (brs_cntr)
+> +		size += brs->nr * sizeof(u64);
+> +
+>  	data->br_stack = brs;
+> +	data->br_stack_cntr = brs_cntr;
+>  	data->dyn_size += size;
+>  	data->sample_flags |= PERF_SAMPLE_BRANCH_STACK;
+>  }
+> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+> index 39c6a250dd1b..4461f380425b 100644
+> --- a/include/uapi/linux/perf_event.h
+> +++ b/include/uapi/linux/perf_event.h
+> @@ -204,6 +204,8 @@ enum perf_branch_sample_type_shift {
+>  
+>  	PERF_SAMPLE_BRANCH_PRIV_SAVE_SHIFT	= 18, /* save privilege mode */
+>  
+> +	PERF_SAMPLE_BRANCH_COUNTERS_SHIFT	= 19, /* save occurrences of events on a branch */
+> +
+>  	PERF_SAMPLE_BRANCH_MAX_SHIFT		/* non-ABI */
+>  };
+>  
+> @@ -235,6 +237,8 @@ enum perf_branch_sample_type {
+>  
+>  	PERF_SAMPLE_BRANCH_PRIV_SAVE	= 1U << PERF_SAMPLE_BRANCH_PRIV_SAVE_SHIFT,
+>  
+> +	PERF_SAMPLE_BRANCH_COUNTERS	= 1U << PERF_SAMPLE_BRANCH_COUNTERS_SHIFT,
+> +
+>  	PERF_SAMPLE_BRANCH_MAX		= 1U << PERF_SAMPLE_BRANCH_MAX_SHIFT,
+>  };
+>  
+> @@ -982,6 +986,12 @@ enum perf_event_type {
+>  	 *	{ u64                   nr;
+>  	 *	  { u64	hw_idx; } && PERF_SAMPLE_BRANCH_HW_INDEX
+>  	 *        { u64 from, to, flags } lbr[nr];
+> +	 *        #
+> +	 *        # The format of the counters is decided by the
+> +	 *        # "branch_counter_nr" and "branch_counter_width",
+> +	 *        # which are defined in the ABI.
+> +	 *        #
+> +	 *        { u64 counters; } cntr[nr] && PERF_SAMPLE_BRANCH_COUNTERS
+>  	 *      } && PERF_SAMPLE_BRANCH_STACK
+>  	 *
+>  	 * 	{ u64			abi; # enum perf_sample_regs_abi
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 41e28f64a4a9..56b08ffeed2f 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -7336,6 +7336,14 @@ void perf_output_sample(struct perf_output_handle *handle,
+>  			if (branch_sample_hw_index(event))
+>  				perf_output_put(handle, data->br_stack->hw_idx);
+>  			perf_output_copy(handle, data->br_stack->entries, size);
+> +			/*
+> +			 * Add the extension space which is appended
+> +			 * right after the struct perf_branch_stack.
+> +			 */
+> +			if (data->br_stack_cntr) {
+> +				size = data->br_stack->nr * sizeof(u64);
+> +				perf_output_copy(handle, data->br_stack_cntr, size);
+> +			}
+>  		} else {
+>  			/*
+>  			 * we always store at least the value of nr
