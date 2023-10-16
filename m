@@ -2,67 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B827CA41F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 368807CA420
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231126AbjJPJ2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 05:28:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55912 "EHLO
+        id S232460AbjJPJ2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 05:28:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjJPJ2h (ORCPT
+        with ESMTP id S229848AbjJPJ2o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 05:28:37 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFC6A95
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 02:28:36 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C881C433C7;
-        Mon, 16 Oct 2023 09:28:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697448516;
-        bh=6JVObMnC4svsaTvSG8K5uJD/aYfQg4KvX/i+ng9zLzI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tBpJm/4sfi9pjqlEPxEwfuMGj9VpZ8GCNsqNmZnLYM2MX9jk1qfXPaH5jsagRjnVv
-         d94EeUHhfTrZ4wYMGj3cYtHMf2gvjTFFkU4RsPZu47pwFDZUbv1dmw7HfiumUUO/vl
-         3CYNbn6Tl9U33BORhE3diJDkYm9fpKEL8xtrP4FTX+lz3hGft2E5xnhKkAljt8X8r7
-         UMEI/0DuleO/IrXXW0p28inkbFVW3WH9zlWjfpqctGjbVQT1qQZj7klW1YTOpHuaPV
-         r6ZNqjYs1YPWCRXc7l8IGy08MD6ghpDaGuuN3ibMZh+o8vSBLKTxdAndnlook3eklG
-         YMnHl9017y8EQ==
-Date:   Mon, 16 Oct 2023 11:28:32 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Liansen Zhai <zhailiansen@gmail.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yuwang@kuaishou.com,
-        wushukun@kuaishou.com, Liansen Zhai <zhailiansen@kuaishou.com>
-Subject: Re: [PATCH net-next,v2] cgroup, netclassid: on modifying netclassid
- in cgroup, only consider the main process.
-Message-ID: <20231016092832.GI1501712@kernel.org>
-References: <20231012090330.29636-1-zhailiansen@kuaishou.com>
+        Mon, 16 Oct 2023 05:28:44 -0400
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 073F4B4;
+        Mon, 16 Oct 2023 02:28:42 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 63B2E2000A;
+        Mon, 16 Oct 2023 09:28:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1697448521;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cB9YyJFPekauMqmT5IAfFQ+DrU/FcfXGDjW4V8YqQOQ=;
+        b=ZmUG2+xx/8stKeIvalFYCjLGa0Vx4XxQo+/vbnIEaF4Nzqkq22FzfVZmpnt+OrwOkiV1QJ
+        C24m9desM9hQpy+4l0VxMvxZjQFcmFO3tPOAQql+AOGWznNldzthNENtHf6aqUmn5lvTzl
+        l/Z8sgAlWza+RiV5TaqDdAtp8wBUreQ9hfgmv2TTT5NHtN3ASy4TFuAKLgODrAuaTAhoz0
+        eiStWnLxYCrGxKxyJ2HmbKNfA5UYOGLV+TxZ/40uWu+HtQLaiVBYtd5vR78BKpNkCGr4fI
+        QuapSCnWa7Zh2GE85q1Gka7v0rLX3F8gYCxK+GDo2iPcwJXmnp4FvL8pAmUJDg==
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Simon Glass <sjg@chromium.org>, devicetree@vger.kernel.org
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        linux-mtd@lists.infradead.org,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Rob Herring <robh@kernel.org>, Tom Rini <trini@konsulko.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Nick Terrell <terrelln@fb.com>,
+        =?utf-8?b?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Richard Weinberger <richard@nod.at>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] dt-bindings: mtd: fixed-partitions: Add compression property
+Date:   Mon, 16 Oct 2023 11:28:36 +0200
+Message-Id: <20231016092836.288939-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230927180545.3522628-1-sjg@chromium.org>
+References: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231012090330.29636-1-zhailiansen@kuaishou.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'8baba8d52ff5081e8c3c383132af269ba8e2f458'
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 05:03:30PM +0800, Liansen Zhai wrote:
-> When modifying netclassid, the command("echo 0x100001 > net_cls.classid")
-> will take more time on many threads of one process, because the process
-> create many fds.
-> for example, one process exists 28000 fds and 60000 threads, echo command
-> will task 45 seconds.
-> Now, we only consider the main process when exec "iterate_fd", and the
-> time is about 52 milliseconds.
+On Wed, 2023-09-27 at 18:05:43 UTC, Simon Glass wrote:
+> Sometimes the contents of a partition are compressed. Add a property to
+> express this and define the algorithm used.
 > 
-> Signed-off-by: Liansen Zhai <zhailiansen@kuaishou.com>
+> Signed-off-by: Simon Glass <sjg@chromium.org>
 
-Thanks for addressing my review of v1.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+Miquel
