@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85D547CB70B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 01:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFD8A7CB709
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 01:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234259AbjJPXcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 19:32:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53166 "EHLO
+        id S234270AbjJPXcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 19:32:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233854AbjJPXci (ORCPT
+        with ESMTP id S233280AbjJPXci (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 16 Oct 2023 19:32:38 -0400
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8AA3692
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:32:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 55D5F9F
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:32:37 -0700 (PDT)
 Received: from localhost.localdomain (unknown [47.186.13.91])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 628DF20B74C4;
-        Mon, 16 Oct 2023 16:32:35 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 628DF20B74C4
+        by linux.microsoft.com (Postfix) with ESMTPSA id 54D2020B74C0;
+        Mon, 16 Oct 2023 16:32:36 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 54D2020B74C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1697499156;
-        bh=7Kg0kDVRT4XUsyYitTfP8a+YwKQXAgc1KQikAOX3WAY=;
+        s=default; t=1697499157;
+        bh=gwqo8nAHuTkGlbsI56Q26dBaLLDjv6Rxrz98nYbOB2c=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=Yt8+5vTSKf0oAErSwOtHn6FQjCOGeLisGeuub6q/djLn2p+T5pP7eOxRYSGmL6t3n
-         rmGVIM80mpjIhbpqL9f/XXorAr0bZQkq3mlx1BLzOZNid96fWsO7hN5QGHtO+eT2SX
-         zBHgeRKFsB0wU1vyi0WE4hJoh3zRyfs5hhdvcEsQ=
+        b=NLMKufIPDMUJ67hSfmBMt8Y+H9/Q18Hpv2iX7h1kSbsIHVpljtfhVKCQi0chFUj8+
+         B4+t3BdWs0SqHbN80N54dh9tjP/K9kcWSckFawigYKvVPN2jF1yNfiXIX/qs9O0HSD
+         YVF0B6V8k6kHLVxkHXw7PJey2WV5075oz1FaXXbA=
 From:   madvenka@linux.microsoft.com
 To:     gregkh@linuxfoundation.org, pbonzini@redhat.com, rppt@kernel.org,
         jgowans@amazon.com, graf@amazon.de, arnd@arndb.de,
@@ -33,9 +33,9 @@ To:     gregkh@linuxfoundation.org, pbonzini@redhat.com, rppt@kernel.org,
         anthony.yznaga@oracle.com, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, madvenka@linux.microsoft.com,
         jamorris@linux.microsoft.com
-Subject: [RFC PATCH v1 04/10] mm/prmem: Implement a page allocator for persistent memory
-Date:   Mon, 16 Oct 2023 18:32:09 -0500
-Message-Id: <20231016233215.13090-5-madvenka@linux.microsoft.com>
+Subject: [RFC PATCH v1 05/10] mm/prmem: Implement a buffer allocator for persistent memory
+Date:   Mon, 16 Oct 2023 18:32:10 -0500
+Message-Id: <20231016233215.13090-6-madvenka@linux.microsoft.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231016233215.13090-1-madvenka@linux.microsoft.com>
 References: <1b1bc25eb87355b91fcde1de7c2f93f38abb2bf9>
@@ -54,157 +54,212 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
 
-Define the following convenience wrapper functions for allocating and
-freeing pages:
+Implement functions that can allocate and free memory smaller than a page
+size.
 
-	- prmem_alloc_pages()
-	- prmem_free_pages()
+	- prmem_alloc()
+	- prmem_free()
 
-The functions look similar to alloc_pages() and __free_pages(). However,
-the only GFP flag that is processed is __GFP_ZERO to zero out the
-allocated memory.
+These functions look like kmalloc() and kfree(). However, the only GFP flag
+that is processed is __GFP_ZERO to zero out the allocated memory.
+
+To make the implementation simpler, create allocation caches for different
+object sizes:
+
+	8, 16, 32, 64, ..., PAGE_SIZE
+
+For a given size, allocate from the appropriate cache. This idea has been
+plagiarized from the kmem allocator.
+
+To fill the cache of a specific size, allocate a page, break it up into
+equal sized objects and add the objects to the cache. This is just a very
+simple allocator. It does not attempt to do sophisticated things like
+cache coloring, coalescing objects that belong to the same page so the
+page can be freed, etc.
 
 Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
 ---
- include/linux/prmem.h          |  7 ++++
- kernel/prmem/Makefile          |  1 +
- kernel/prmem/prmem_allocator.c | 74 ++++++++++++++++++++++++++++++++++
- kernel/prmem/prmem_init.c      |  2 +
- 4 files changed, 84 insertions(+)
- create mode 100644 kernel/prmem/prmem_allocator.c
+ include/linux/prmem.h          |  12 ++++
+ kernel/prmem/prmem_allocator.c | 112 ++++++++++++++++++++++++++++++++-
+ 2 files changed, 123 insertions(+), 1 deletion(-)
 
 diff --git a/include/linux/prmem.h b/include/linux/prmem.h
-index f43f5b0d2b9c..108683933c82 100644
+index 108683933c82..1cb4660cf35e 100644
 --- a/include/linux/prmem.h
 +++ b/include/linux/prmem.h
-@@ -75,6 +75,7 @@ extern unsigned long		prmem_metadata;
- extern unsigned long		prmem_pa;
- extern size_t			prmem_size;
- extern bool			prmem_inited;
-+extern spinlock_t		prmem_lock;
+@@ -50,6 +50,8 @@ struct prmem_region {
+ 	struct gen_pool_chunk	*chunk;
+ };
  
- /* Kernel API. */
- void prmem_reserve_early(void);
-@@ -83,11 +84,17 @@ void prmem_init(void);
- void prmem_fini(void);
- int  prmem_cmdline_size(void);
- 
-+/* Allocator API. */
-+struct page *prmem_alloc_pages(unsigned int order, gfp_t gfp);
-+void prmem_free_pages(struct page *pages, unsigned int order);
++#define PRMEM_MAX_CACHES	14
 +
+ /*
+  * PRMEM metadata.
+  *
+@@ -60,6 +62,9 @@ struct prmem_region {
+  * size		Size of initial memory allocated to prmem.
+  *
+  * regions	List of memory regions.
++ *
++ * caches	Caches for different object sizes. For allocations smaller than
++ *		PAGE_SIZE, these caches are used.
+  */
+ struct prmem {
+ 	unsigned long		checksum;
+@@ -68,6 +73,9 @@ struct prmem {
+ 
+ 	/* Persistent Regions. */
+ 	struct list_head	regions;
++
++	/* Allocation caches. */
++	void			*caches[PRMEM_MAX_CACHES];
+ };
+ 
+ extern struct prmem		*prmem;
+@@ -87,6 +95,8 @@ int  prmem_cmdline_size(void);
+ /* Allocator API. */
+ struct page *prmem_alloc_pages(unsigned int order, gfp_t gfp);
+ void prmem_free_pages(struct page *pages, unsigned int order);
++void *prmem_alloc(size_t size, gfp_t gfp);
++void prmem_free(void *va, size_t size);
+ 
  /* Internal functions. */
  struct prmem_region *prmem_add_region(unsigned long pa, size_t size);
- bool prmem_create_pool(struct prmem_region *region, bool new_region);
- void *prmem_alloc_pool(struct prmem_region *region, size_t size, int align);
+@@ -95,6 +105,8 @@ void *prmem_alloc_pool(struct prmem_region *region, size_t size, int align);
  void prmem_free_pool(struct prmem_region *region, void *va, size_t size);
-+void *prmem_alloc_pages_locked(unsigned int order);
-+void prmem_free_pages_locked(void *va, unsigned int order);
+ void *prmem_alloc_pages_locked(unsigned int order);
+ void prmem_free_pages_locked(void *va, unsigned int order);
++void *prmem_alloc_locked(size_t size);
++void prmem_free_locked(void *va, size_t size);
  unsigned long prmem_checksum(void *start, size_t size);
  bool __init prmem_validate(void);
  void prmem_cmdline(char *cmdline);
-diff --git a/kernel/prmem/Makefile b/kernel/prmem/Makefile
-index 9b0a693bfee1..99bb19f0afd3 100644
---- a/kernel/prmem/Makefile
-+++ b/kernel/prmem/Makefile
-@@ -1,3 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
- 
- obj-y += prmem_parse.o prmem_reserve.o prmem_init.o prmem_region.o prmem_misc.o
-+obj-y += prmem_allocator.o
 diff --git a/kernel/prmem/prmem_allocator.c b/kernel/prmem/prmem_allocator.c
-new file mode 100644
-index 000000000000..07a5a430630c
---- /dev/null
+index 07a5a430630c..f12975bc6777 100644
+--- a/kernel/prmem/prmem_allocator.c
 +++ b/kernel/prmem/prmem_allocator.c
-@@ -0,0 +1,74 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Persistent-Across-Kexec memory feature (prmem) - Allocator.
-+ *
-+ * Copyright (C) 2023 Microsoft Corporation
-+ * Author: Madhavan T. Venkataraman (madvenka@linux.microsoft.com)
-+ */
-+#include <linux/prmem.h>
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /*
+- * Persistent-Across-Kexec memory feature (prmem) - Allocator.
++ * Persistent-Across-Kexec memory (prmem) - Allocator.
+  *
+  * Copyright (C) 2023 Microsoft Corporation
+  * Author: Madhavan T. Venkataraman (madvenka@linux.microsoft.com)
+@@ -72,3 +72,113 @@ void prmem_free_pages(struct page *pages, unsigned int order)
+ 	spin_unlock(&prmem_lock);
+ }
+ EXPORT_SYMBOL_GPL(prmem_free_pages);
 +
-+/* Page Allocation functions. */
++/* Buffer allocation functions. */
 +
-+void *prmem_alloc_pages_locked(unsigned int order)
++#if PAGE_SIZE > 65536
++#error "Page size is too big"
++#endif
++
++static size_t	prmem_cache_sizes[PRMEM_MAX_CACHES] = {
++	8, 16, 32, 64, 128, 256, 512,
++	1024, 2048, 4096, 8192, 16384, 32768, 65536,
++};
++
++static int prmem_cache_index(size_t size)
 +{
-+	struct prmem_region	*region;
-+	void			*va;
-+	size_t			size = (1UL << order) << PAGE_SHIFT;
++	int	i;
 +
-+	list_for_each_entry(region, &prmem->regions, node) {
-+		va = prmem_alloc_pool(region, size, size);
-+		if (va)
-+			return va;
++	for (i = 0; i < PRMEM_MAX_CACHES; i++) {
++		if (size <= prmem_cache_sizes[i])
++			return i;
 +	}
-+	return NULL;
++	BUG();
 +}
 +
-+struct page *prmem_alloc_pages(unsigned int order, gfp_t gfp)
++static void prmem_refill(void **cache, size_t size)
 +{
 +	void		*va;
-+	size_t		size = (1UL << order) << PAGE_SHIFT;
++	int		i, n = PAGE_SIZE / size;
++
++	/* Allocate a page. */
++	va = prmem_alloc_pages_locked(0);
++	if (!va)
++		return;
++
++	/* Break up the page into pieces and put them in the cache. */
++	for (i = 0; i < n; i++, va += size) {
++		*((void **) va) = *cache;
++		*cache = va;
++	}
++}
++
++void *prmem_alloc_locked(size_t size)
++{
++	void		*va;
++	int		index;
++	void		**cache;
++
++	index = prmem_cache_index(size);
++	size = prmem_cache_sizes[index];
++
++	cache = &prmem->caches[index];
++	if (!*cache) {
++		/* Refill the cache. */
++		prmem_refill(cache, size);
++	}
++
++	/* Allocate one from the cache. */
++	va = *cache;
++	if (va)
++		*cache = *((void **) va);
++	return va;
++}
++
++void *prmem_alloc(size_t size, gfp_t gfp)
++{
++	void		*va;
 +	bool		zero = !!(gfp & __GFP_ZERO);
 +
-+	if (!prmem_inited || order > MAX_ORDER)
++	if (!prmem_inited || !size)
++		return NULL;
++
++	/* This function is only for sizes up to a PAGE_SIZE. */
++	if (size > PAGE_SIZE)
 +		return NULL;
 +
 +	spin_lock(&prmem_lock);
-+	va = prmem_alloc_pages_locked(order);
++	va = prmem_alloc_locked(size);
 +	spin_unlock(&prmem_lock);
 +
-+	if (va) {
-+		if (zero)
-+			memset(va, 0, size);
-+		return virt_to_page(va);
-+	}
-+	return NULL;
++	if (va && zero)
++		memset(va, 0, size);
++	return va;
 +}
-+EXPORT_SYMBOL_GPL(prmem_alloc_pages);
++EXPORT_SYMBOL_GPL(prmem_alloc);
 +
-+void prmem_free_pages_locked(void *va, unsigned int order)
++void prmem_free_locked(void *va, size_t size)
 +{
-+	struct prmem_region	*region;
-+	size_t			size = (1UL << order) << PAGE_SHIFT;
-+	void			*eva = va + size;
-+	void			*region_va;
++	int		index;
++	void		**cache;
 +
-+	list_for_each_entry(region, &prmem->regions, node) {
-+		/* The region structure is at the base of the region memory. */
-+		region_va = region;
-+		if (va >= region_va && eva <= (region_va + region->size)) {
-+			prmem_free_pool(region, va, size);
-+			return;
-+		}
-+	}
++	/* Free the object into its cache. */
++	index = prmem_cache_index(size);
++	cache = &prmem->caches[index];
++	*((void **) va) = *cache;
++	*cache = va;
 +}
 +
-+void prmem_free_pages(struct page *pages, unsigned int order)
++void prmem_free(void *va, size_t size)
 +{
-+	if (!prmem_inited || order > MAX_ORDER)
++	if (!prmem_inited || !va || !size)
++		return;
++
++	/* This function is only for sizes up to a PAGE_SIZE. */
++	if (size > PAGE_SIZE)
 +		return;
 +
 +	spin_lock(&prmem_lock);
-+	prmem_free_pages_locked(page_to_virt(pages), order);
++	prmem_free_locked(va, size);
 +	spin_unlock(&prmem_lock);
 +}
-+EXPORT_SYMBOL_GPL(prmem_free_pages);
-diff --git a/kernel/prmem/prmem_init.c b/kernel/prmem/prmem_init.c
-index 56df1e6d3ebc..d23833d296fe 100644
---- a/kernel/prmem/prmem_init.c
-+++ b/kernel/prmem/prmem_init.c
-@@ -9,6 +9,8 @@
- 
- bool			prmem_inited;
- 
-+DEFINE_SPINLOCK(prmem_lock);
-+
- void __init prmem_init(void)
- {
- 	if (!prmem)
++EXPORT_SYMBOL_GPL(prmem_free);
 -- 
 2.25.1
 
