@@ -2,99 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C02F7CB526
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 23:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 506A27CB525
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 23:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233732AbjJPVP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 17:15:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37738 "EHLO
+        id S232046AbjJPVPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 17:15:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233282AbjJPVPy (ORCPT
+        with ESMTP id S229943AbjJPVPl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 17:15:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E941AAC
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 14:15:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697490910;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1U0tJBCh6QXkNDFsuE/5Z4GonEge9xZ6toufdY0dp58=;
-        b=LkMLLaJFUEBIg5+vwfXbMoFqBcTwYwtkKl063Y2EH3rdb3CCJOUdR/7OBUJklZbVupDO3w
-        02d7JCXyya8S7c02SHJ69c9p7+j6HROZB3GEzhxuQCXgHxmMN4hNuArFoJOdkOW/VFuBLb
-        gssNe2TFP/Bq4ZkIP+AQeuaykVypKiA=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-33-9SReimbpOVKLTBdsOmnlPA-1; Mon, 16 Oct 2023 17:15:06 -0400
-X-MC-Unique: 9SReimbpOVKLTBdsOmnlPA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D83863C17085;
-        Mon, 16 Oct 2023 21:15:04 +0000 (UTC)
-Received: from [192.168.37.1] (unknown [10.22.48.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 98DE320296DC;
-        Mon, 16 Oct 2023 21:15:02 +0000 (UTC)
-From:   Benjamin Coddington <bcodding@redhat.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH -next v3 1/2] sunrpc: Wrap read accesses to
- rpc_task.tk_pid
-Date:   Mon, 16 Oct 2023 17:15:01 -0400
-Message-ID: <25740B27-9C85-46D9-8ACF-17D45D56A014@redhat.com>
-In-Reply-To: <fb3bd4ed540bbe18f60bf1f700c110d662533503.1697460614.git.geert+renesas@glider.be>
-References: <cover.1697460614.git.geert+renesas@glider.be>
- <fb3bd4ed540bbe18f60bf1f700c110d662533503.1697460614.git.geert+renesas@glider.be>
+        Mon, 16 Oct 2023 17:15:41 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0733A2;
+        Mon, 16 Oct 2023 14:15:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+ t=1697490929; x=1698095729; i=deller@gmx.de;
+ bh=qt5SCacwR+qzi/Vd+l+sCphO9tmMZL/NjDwuWp8B9YM=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=Utk79TX2JS5EkQy03SN5tA37tS5cg5CNpwosz/HhQ9BuHyot7bW/uWyNrVcaoGNicqJ9SERC9uN
+ shXLjR+ocgg2yEQ9g0kaoblm660N17vuoQjCQEesEljRAz8mgH38256Jv8QZ2Ae3hKq3aDz+V+Rh0
+ hGmLMlkBjOMA8E3NXWrpIgWtrx54eDa8XSzgmayKBryZ5NLVWN37S0mBL0WJVEKFloJ7NbCzWf5Jc
+ QSch7l7n3dknCwPdixvzpLZRnQJFzlNZYP/2nRnEHFCqK0iHxZ1tqcDBkxsOFO2ksY/R6CPhW69wv
+ 9mGvSl/ZccVkJMGuguOay/wPkO9i76XJ18mA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.60] ([94.134.153.197]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MUXpK-1r1KbZ0uxs-00QWzk; Mon, 16
+ Oct 2023 23:15:29 +0200
+Message-ID: <34994a3f-e44d-4ef1-95ee-2b2a885b3732@gmx.de>
+Date:   Mon, 16 Oct 2023 23:15:28 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fbdev: fbmon: fix potential divide error in
+ fb_validate_mode
+Content-Language: en-US
+To:     Zhang Shurong <zhang_shurong@foxmail.com>, daniel@ffwll.ch
+Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <tencent_C816151C508524D86E346A69B706C0D03C09@qq.com>
+From:   Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ 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
+In-Reply-To: <tencent_C816151C508524D86E346A69B706C0D03C09@qq.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Provags-ID: V03:K1:CQ+YnTw6KdXAZpnpWmEclIUl/ZNN5/eRCNxAwN1Cz4SIGQdfZIO
+ PoqEIlPhXd5dmKSq2K7HWZ7z5128krfFFhY7vnYetJIRBlciNMtRq2QckMJ1QUqw6WGgdT5
+ CuY1KI6LzUrmot3c9ocBQ4NM0i7yf0UqshHk1CRC5Sh3Le+JSxAe7qn2pbZo8fJbA12gVWv
+ kPIj5hM7VbK8duOCGktxw==
+UI-OutboundReport: notjunk:1;M01:P0:5MsAZc9NPsg=;xO9SSUhlTYQmwY/NqfOsrLTwjuO
+ uk9eVyi4NRvEhUzwGhld6JovgQk2YbBQoM32OxORX5wpOGX9Jdt4OW+22+7cbvSi3tt2pyAPu
+ Ce4Kp30Dz/wQaekM4S7U4Cd9c3MmGtW0cgaG5TZK+kmcdNrQ9EwC/tdJdI88HVr6mWAPHb7UG
+ dh6V982ZqU/rbTlc086FauS9EQnzKH/3SmLw/1Z/RaqNa7aXfAvWB8cZ0Q7EjFG/Pf9EvBK1c
+ tuP3duMoY8a4KVNXx09Ou6nO1En28CwDK6UWFy8a8/W7xPLYhv0rNYL0r/qeNJ/v+VFiMVeco
+ rKwI+cGLULmA+5ZRcSidzyRtY5eWk6KTpsBWrrdbs8+UdshC0EfsHCIXpJi+G5mBEj5o8PGiF
+ CZp3LOJCDyO2FiQ7Dh8Bu0kBJET/KfhjQPK5pg9+8oGSmNI9GptAN/ls+H7VyTn6blYNX7h/B
+ m5Ikb0Q3i+Z7+OLkQvnmi6zlC0cQjyfuPwZwbogten9sJNZ0NdvmbvIi6t4lmUAaFDpTvpeuP
+ voJNhbAyMkoK//K8k/dv0xbhyCDEB7IngLVsW0w1vflGlmCeMVF8RpJQci9Bqv7yqLOCPL+gt
+ H6GdmF6QeQpmzHy3TrdbsGb/+BJQ+CFLW5XaAEBFIZhR+wrJFUi5eCOlJkwyrMKksEb8PlhVz
+ zMcx4iBAgzxpSaEica9kuzvUbwPePnkEgnblwghi3bSbapFcDe4lJxcOXDJ2N2p8FLUkOq2ID
+ FhELU6s0FD/e8wjfBw7o3AAdueFDXCm9rRzbx9A8x0Wv0lElZzHuYMUJ7c3quHBNgUC3t9bNL
+ yeH2wGG/j/wu5+c/eNoYTrwVj+X8KFjoE4O0pAhxjftOXqBi4zQeBQzN7BP3d3NqtubKaYAOT
+ 2NpMm7ulGDaYw4BSQDevcKjoJ+IPlRC9DmcR38+FyH2pXT15xM/JtWllRWi6/6j0Lqp7tZEHb
+ cOx1Rxm5sW/WthFQn/yVvg55NI4=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16 Oct 2023, at 9:09, Geert Uytterhoeven wrote:
-
-> The tk_pid member in the rpc_task structure exists conditionally on
-> debug or tracing being enabled.
+On 10/14/23 14:14, Zhang Shurong wrote:
+> We can easily use FBIOPUT_VSCREENINFO set fb_var_screeninfo, so
+> it's possible for a divide by zero error to occur.
 >
-> Introduce and use a wapper to read the value of this member, so users
-> outside tracing no longer have to care about these conditions.
+> Fix this by making sure the divisor is non-zero before the computation.
 >
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202310121759.0CF34DcN-lkp=
-@intel.com/
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
+> ---
+>   drivers/video/fbdev/core/fbmon.c | 3 +++
+>   1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/video/fbdev/core/fbmon.c b/drivers/video/fbdev/core=
+/fbmon.c
+> index 79e5bfbdd34c..bdd15b8e3a71 100644
+> --- a/drivers/video/fbdev/core/fbmon.c
+> +++ b/drivers/video/fbdev/core/fbmon.c
+> @@ -1470,6 +1470,9 @@ int fb_validate_mode(const struct fb_var_screeninf=
+o *var, struct fb_info *info)
+>   	if (var->vmode & FB_VMODE_DOUBLE)
+>   		vtotal *=3D 2;
+>
+> +	if (!htotal || !vtotal)
+> +		return -EINVAL;
 
-I never work on kernels that don't have tk_pid, but I can say its so usef=
-ul
-that for 2 out of the 224 bytes that rpc_task uses (on aarch64), I'd be
-inclined to just include it all the time.  That way its around for folks =
-to
-reference with realtime tools (like bpftrace, stap).
+This is above here:
+         htotal =3D var->xres + var->right_margin + var->hsync_len +
+                 var->left_margin;
+         vtotal =3D var->yres + var->lower_margin + var->vsync_len +
+                 var->upper_margin;
 
-Does anyone know if there is a good reason not to include it for all
-configurations?
+I don't see how htotal and vtotal can become zero...
 
-Ben
-
-=2E.also:
-Reviewed-by: Benjamin Coddington <bcodding@redhat.com>
-
+Helge
