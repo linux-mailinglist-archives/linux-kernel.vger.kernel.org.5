@@ -2,148 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24C367CB0AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9187E7CB115
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 19:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233999AbjJPQ5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 12:57:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44770 "EHLO
+        id S234062AbjJPRIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 13:08:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234238AbjJPQ4n (ORCPT
+        with ESMTP id S1343506AbjJPRHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 12:56:43 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDD203C25
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:54:17 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40535597f01so46842915e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:54:17 -0700 (PDT)
+        Mon, 16 Oct 2023 13:07:43 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E0D1995;
+        Mon, 16 Oct 2023 09:55:19 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b9c907bc68so57886781fa.2;
+        Mon, 16 Oct 2023 09:55:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697475256; x=1698080056; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z2KAQh5biIaDjy3JspEokfbAFpOptd05O572lVX96aY=;
-        b=b16gH0mUBocs5VLOa0oKJnzWyP2wr6PBOpMJgT0H0PPo+joXWMArPcZs8zkRWZrjqP
-         hlgpRPTum5bT+FO/P77WqYszXeXNIqZ/i2P5JIGakO8r2xsMw+ln7zsl2V/5XpRjtbjB
-         xFz5ULF98c/nQOqFxLdUVeRHCvWPVOBO13hSg0mO9Zrmom2DTpnnt8HkCGGLuiqqQwss
-         zVdMa8/WiPzc6ajsaNkfUlOY8UA+BfXOFnGVT4eSdtI7jLnshuWsf+3Um4XYQpzbgtyu
-         kTY9J8/td9YqwKK5vlUx3Qz7a8RtPg0eeA9VLAzMLCiHLL96cEaVQWqLn62uE1ci4uR0
-         q39w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697475256; x=1698080056;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=gmail.com; s=20230601; t=1697475318; x=1698080118; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Z2KAQh5biIaDjy3JspEokfbAFpOptd05O572lVX96aY=;
-        b=vFCmnoRm4FYnsxEiDFFzovTpjtCbmIFmwrNDjxI4QvTUsXz8Iu2gVok9CO6inRiDJz
-         Dpyt3sg74HcYIq9PVz06hVk8Bik/Q7jUz4NG/yO4F4WK9H61mROM6LHFciWs+ShgIL9G
-         WaeO3dqUP6M5b71NjL3cFpjuFe1QzR0fCb1tqbi8ikMno1k8EFVb98AvMvSxDKuhrsa9
-         ZxDQgvAemZrGUD4ixZ3fzGwR/x//dh/WaSUhmq3oZqqiqsSumqqORiKI6CafYA0GZT0o
-         NbrwzC29warGagNcwgWIsRWmkweqbNckWOoURB6TQrfl5OjmnDgIpIz/isPEjEYKoiXc
-         4RoA==
-X-Gm-Message-State: AOJu0Yyf2LUaii/sC2uXe/47KZV3Ujzgl8SdoZdT3R6ehk4SXihq6PFp
-        InG8OVvHwqPO3ua8AiZNHb64pw==
-X-Google-Smtp-Source: AGHT+IEqmnobiCsIMYAdCDeaCtj3AGb0jtlboDlqcQ+Atx1a8i0m4PfESVkAoxvu6F9wIJAh3Bb39A==
-X-Received: by 2002:a1c:7711:0:b0:405:959e:dc7c with SMTP id t17-20020a1c7711000000b00405959edc7cmr29757671wmi.30.1697475256293;
-        Mon, 16 Oct 2023 09:54:16 -0700 (PDT)
-Received: from eriador.lumag.spb.ru ([45.84.211.189])
-        by smtp.gmail.com with ESMTPSA id s19-20020a05600c45d300b0040648217f4fsm7638996wmo.39.2023.10.16.09.54.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 09:54:15 -0700 (PDT)
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>
-Cc:     Marek Vasut <marex@denx.de>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org
-Subject: [RFC PATCH 10/10] drm/msm/dsi: drop (again) the ps8640 workaround
-Date:   Mon, 16 Oct 2023 19:53:55 +0300
-Message-ID: <20231016165355.1327217-11-dmitry.baryshkov@linaro.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231016165355.1327217-1-dmitry.baryshkov@linaro.org>
-References: <20231016165355.1327217-1-dmitry.baryshkov@linaro.org>
+        bh=PDMSeVGI1lziENvZtg9gJFiDQXMa4W5b0OFqgA4HwwQ=;
+        b=HDRnNerpwc5nZqcWmt63YuY6eWeqvPAzcej/w7FsyGWcUJVgOVWZ15QMaVJx07IbIQ
+         aYzUjF1xGaribZ9vhJl9uS8P0cemg97PFqlXspHqGNu+JWJPdRm9FkbqCPynbU+RoMXM
+         Gm4bY0QRk8tfwTl5WzK57ukVRbkfsCuaG5tcQalneqUMkoYwtRFqnRAJXokFmpg8QMgH
+         QmKfha+l83b9mB2naE05OpCVZKlalQntOMoeOXy3OTeFKhXbP/rSdL+FMZY5aAlkboWz
+         x/SyPVnhfJsQuhKzV5Hs+K29gQC/ISxRrPWw5qsHYnOjXzcTHWhGFhQYLbHplgXpaLOy
+         sRgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697475318; x=1698080118;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PDMSeVGI1lziENvZtg9gJFiDQXMa4W5b0OFqgA4HwwQ=;
+        b=sEQ6odYbvbULzMhmTjBd6yLwfvtVKynDndt8tCqGmIKgu+/oWPzi0dy/8LujUQTjoB
+         JRYinkKxL8T0hY1P2+8ZdNgoBv/5WExOanrC4zvyizj/yLhK0PJ79IqVZ3uIWeix3umy
+         SQUvs0nQWUXejL3hta7vVZnCgtJ9ug4bN5aZp1yGxcjchhVhj5VWxMbwF7HuUlLy/TG+
+         Od+oSXe3/J2vInfX2wLaiKftYG+xPazB5JPN1eOpXhaAPzo1VvSXJ+QKcgmM0SHs4C1A
+         YdI+Dj4wlDE2rY2e7k5Ya5HEk/tXIc5ZfkS0wRHKZ3hHpXBG/QUllJ6NA2x+O2IM5vqe
+         kU3w==
+X-Gm-Message-State: AOJu0YwSxZgV9HhHrgLl/QRMcCW5tQLZKUtJKaOmWEegHfVimx5UA7g8
+        V3nH9VUT/byGXRmoaOnpUbw=
+X-Google-Smtp-Source: AGHT+IFXVpqtrHmMQjvHOYI8m6+j6fE8DcQswG9JSSSyKp7zf8eEdNH0MrpFoOX0aYmPTvR62QOOcw==
+X-Received: by 2002:a05:651c:211c:b0:2c4:fe0a:dc3e with SMTP id a28-20020a05651c211c00b002c4fe0adc3emr10626532ljq.36.1697475317654;
+        Mon, 16 Oct 2023 09:55:17 -0700 (PDT)
+Received: from [192.168.1.103] ([31.173.83.53])
+        by smtp.gmail.com with ESMTPSA id u6-20020a2e8546000000b002c27cd20711sm31675ljj.3.2023.10.16.09.55.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Oct 2023 09:55:17 -0700 (PDT)
+Subject: Re: [PATCH v2 05/10] xhci: dbc: Check for errors first in
+ xhci_dbc_stop()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20231016130934.1158504-1-andriy.shevchenko@linux.intel.com>
+ <20231016130934.1158504-6-andriy.shevchenko@linux.intel.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <8b3537e4-db84-7ba7-7c63-0a605631507e@gmail.com>
+Date:   Mon, 16 Oct 2023 19:55:15 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231016130934.1158504-6-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now as the Parade PS8640 driver sets the MIPI_DSI_MANUAL_POWERUP flag,
-drop the workaround enforcing the late DSI link powerup in the case the
-next bridge is ps8640.
+On 10/16/23 4:09 PM, Andy Shevchenko wrote:
 
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
- drivers/gpu/drm/msm/dsi/dsi_manager.c | 20 --------------------
- 1 file changed, 20 deletions(-)
+> The usual patter is to check for errors and then continue if none.
 
-diff --git a/drivers/gpu/drm/msm/dsi/dsi_manager.c b/drivers/gpu/drm/msm/dsi/dsi_manager.c
-index 2d7040d21239..b6b8171cf382 100644
---- a/drivers/gpu/drm/msm/dsi/dsi_manager.c
-+++ b/drivers/gpu/drm/msm/dsi/dsi_manager.c
-@@ -198,29 +198,12 @@ static int dsi_mgr_bridge_get_id(struct drm_bridge *bridge)
- 	return dsi_bridge->id;
- }
- 
--/*
-- * If the next bridge in the chain is the Parade ps8640 bridge chip then don't
-- * power on early since it seems to violate the expectations of the firmware
-- * that the bridge chip is running.
-- */
--static bool dsi_mgr_next_is_ps8640(struct drm_bridge *bridge)
--{
--	struct drm_bridge *next_bridge = drm_bridge_get_next_bridge(bridge);
--
--	return next_bridge &&
--		next_bridge->of_node &&
--		of_device_is_compatible(next_bridge->of_node, "parade,ps8640");
--}
--
- static bool dsi_mgr_auto_powerup(struct drm_bridge *bridge)
- {
- 	int id = dsi_mgr_bridge_get_id(bridge);
- 	struct msm_dsi *msm_dsi = dsi_mgr_get_dsi(id);
- 	struct mipi_dsi_host *host = msm_dsi->host;
- 
--	if (dsi_mgr_next_is_ps8640(bridge))
--		return true;
--
- 	return msm_dsi_host_auto_powerup(host);
- }
- 
-@@ -230,9 +213,6 @@ static bool dsi_mgr_early_powerup(struct drm_bridge *bridge)
- 	struct msm_dsi *msm_dsi = dsi_mgr_get_dsi(id);
- 	struct mipi_dsi_host *host = msm_dsi->host;
- 
--	if (dsi_mgr_next_is_ps8640(bridge))
--		return false;
--
- 	return msm_dsi_host_early_powerup(host);
- }
- 
--- 
-2.42.0
+   Pattern. :-)
 
+> Apply that pattern to xhci_dbc_stop() code.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+[...]
+
+MBR, Sergey
