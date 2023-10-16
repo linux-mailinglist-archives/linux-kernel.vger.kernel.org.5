@@ -2,157 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0393E7CA6A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 13:22:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFED57CA6AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 13:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232836AbjJPLWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 07:22:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37508 "EHLO
+        id S232090AbjJPL0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 07:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232986AbjJPLWq (ORCPT
+        with ESMTP id S230017AbjJPL0e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 07:22:46 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9561EE3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 04:22:41 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1qsLfu-0004ep-A3; Mon, 16 Oct 2023 13:22:18 +0200
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <sha@pengutronix.de>)
-        id 1qsLfs-0024Qn-Mq; Mon, 16 Oct 2023 13:22:16 +0200
-Received: from sha by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1qsLfs-00EjNr-Jp; Mon, 16 Oct 2023 13:22:16 +0200
-Date:   Mon, 16 Oct 2023 13:22:16 +0200
-From:   Sascha Hauer <s.hauer@pengutronix.de>
-To:     Chanwoo Choi <chanwoo@kernel.org>
-Cc:     linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, kernel@pengutronix.de,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Vincent Legoll <vincent.legoll@gmail.com>,
+        Mon, 16 Oct 2023 07:26:34 -0400
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F638E;
+        Mon, 16 Oct 2023 04:26:30 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5a7be88e9ccso55216587b3.2;
+        Mon, 16 Oct 2023 04:26:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697455590; x=1698060390; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/yQmSlsxbnMckjW63VAfUcoliPYUbmy3I2guqKRcrjg=;
+        b=WXYvfGGKVVAOfjX4uomvB7l9ylK+K37BrzcEegphhHBm6tfx7h1tCA9DIVn4Q+PEHB
+         yIHkDje1JWgCs9lSDyfMNonm/jgtCn0ntphSzcKpYM1GR2AEnWmZ4QLHVmcb/RdMV4lN
+         JOnp2aLwZ+xfytzCMcxzQpPK09UKrzPzdFkAQmrq28F1/HYuhmXhk8e7m9b3IEx1Llkn
+         br6iNve0F6mwdNqi1M7taTWuWpubSnO8knbRDN2zTuSr6CvufkyMlg1IL7vxOlvVeQX4
+         yQXn2Ko4oCqZHzKpKc4dGYp++8WnXYFK6mXzgxcUbVrVuojdRJzBd6IMc0iHyt7g3Kup
+         gzkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697455590; x=1698060390;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/yQmSlsxbnMckjW63VAfUcoliPYUbmy3I2guqKRcrjg=;
+        b=kc/cpeAgp47vPsGhriLckp1fYF1oMh6OSwU9iPRClm+3ggIkZg28FrI4du0RML7HvZ
+         XS8Y7yqFe/t3OrHiNnjnBIauiVAVvXEC9PSw9VnaEV1q+IC6VOPMRdLXzYNvBvWCwSCj
+         t06pr+YOW06CNksfm42lS7O3QVdWlkec1ZaYGfCcjJIuq5tCUeDaMrBd3y4urU624Xwc
+         lj/OsvK0rFMQ1+K5r0OpHQkAwZQSU374QHDkFqjw2r0n/jTNFPHgjsuWB1DIUS8bjE1z
+         x3znmdWmVy35ZH9aJXWDXPqhjKCvU6/qqH4Pu1QB24i5WsQTqhwCbQpBDkXeFOpEzpi8
+         4CdA==
+X-Gm-Message-State: AOJu0YxCHcgre+nhtqTmvsImxetRCzoDgDWftEJbzt+jzxNJ2avV7A72
+        aNPxMclliAzgtobZVdk71MkJypHQpWgXp7XVHls=
+X-Google-Smtp-Source: AGHT+IH1bcIS3tF3im0FBq83yq9oAgb+7dUHfMwOTu59VXIzcm4XrCfp5dma/A/3H4Z2CPsF/nk5vAHl8NcQA7AwAuk=
+X-Received: by 2002:a25:b94f:0:b0:d9b:1495:cfe5 with SMTP id
+ s15-20020a25b94f000000b00d9b1495cfe5mr7839940ybm.51.1697455589696; Mon, 16
+ Oct 2023 04:26:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230821061315.3416836-1-zhoubinbin@loongson.cn>
+ <e62185ca-cdf6-bde9-ad46-f4150db9ed6d@linaro.org> <CAMpQs4JhfuB4=s9VFc+xmw_+8h5u2EwPdM_0x2vO_=SYabAAxw@mail.gmail.com>
+ <6ba31912-6738-6156-d5f4-3c8d3a3ca7bc@linaro.org> <CAMpQs4+GiExt9uMmV1pf8gg8rFwWxbLkx9mdW7hY9xxXDOza3Q@mail.gmail.com>
+ <d11873a1-b552-71f5-1100-7464687f8bb4@linaro.org> <a084e6e9-46b0-42ef-b500-69c114ae11b2@flygoat.com>
+ <86wmxcejav.wl-maz@kernel.org> <c7898abf-34ca-d0b4-fd0c-935100dcd3f2@flygoat.com>
+ <86pm2ye2si.wl-maz@kernel.org>
+In-Reply-To: <86pm2ye2si.wl-maz@kernel.org>
+From:   Binbin Zhou <zhoubb.aaron@gmail.com>
+Date:   Mon, 16 Oct 2023 17:26:18 +0600
+Message-ID: <CAMpQs4LjePLy5RFMz2S=1sa9Zme_UrJmKKRog0LAg_ZhA07TMA@mail.gmail.com>
+Subject: Re: [PATCH v2] dt-bindings: interrupt-controller: loongson,liointc:
+ Fix warnings about liointc-2.0
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Binbin Zhou <zhoubinbin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: Re: [PATCH v7 07/26] PM / devfreq: rockchip-dfi: introduce channel
- mask
-Message-ID: <20231016112216.GY3359458@pengutronix.de>
-References: <20230704093242.583575-1-s.hauer@pengutronix.de>
- <20230704093242.583575-8-s.hauer@pengutronix.de>
- <859b0091-e361-6060-2977-4aba13af418a@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <859b0091-e361-6060-2977-4aba13af418a@kernel.org>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Conor Dooley <conor+dt@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, diasyzhang@tencent.com,
+        linux-kernel@vger.kernel.org, frowand.list@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 07, 2023 at 02:21:10AM +0900, Chanwoo Choi wrote:
-> Hi,
-> 
-> On 23. 7. 4. 18:32, Sascha Hauer wrote:
-> > Different Rockchip SoC variants have a different number of channels.
-> > Introduce a channel mask to make the number of channels configurable
-> > from SoC initialization code.
-> > 
-> > Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> > ---
-> >  drivers/devfreq/event/rockchip-dfi.c | 23 +++++++++++++++++------
-> >  1 file changed, 17 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/drivers/devfreq/event/rockchip-dfi.c b/drivers/devfreq/event/rockchip-dfi.c
-> > index 126bb744645b6..82de24a027579 100644
-> > --- a/drivers/devfreq/event/rockchip-dfi.c
-> > +++ b/drivers/devfreq/event/rockchip-dfi.c
-> > @@ -18,10 +18,11 @@
-> >  #include <linux/list.h>
-> >  #include <linux/of.h>
-> >  #include <linux/of_device.h>
-> > +#include <linux/bits.h>
-> >  
-> >  #include <soc/rockchip/rk3399_grf.h>
-> >  
-> > -#define RK3399_DMC_NUM_CH	2
-> > +#define DMC_MAX_CHANNELS	2
-> >  
-> >  /* DDRMON_CTRL */
-> >  #define DDRMON_CTRL	0x04
-> > @@ -44,7 +45,7 @@ struct dmc_count_channel {
-> >  };
-> >  
-> >  struct dmc_count {
-> > -	struct dmc_count_channel c[RK3399_DMC_NUM_CH];
-> > +	struct dmc_count_channel c[DMC_MAX_CHANNELS];
-> >  };
-> >  
-> >  /*
-> > @@ -61,6 +62,7 @@ struct rockchip_dfi {
-> >  	struct regmap *regmap_pmu;
-> >  	struct clk *clk;
-> >  	u32 ddr_type;
-> > +	unsigned int channel_mask;
-> >  };
-> >  
-> >  static void rockchip_dfi_start_hardware_counter(struct devfreq_event_dev *edev)
-> > @@ -95,7 +97,9 @@ static void rockchip_dfi_read_counters(struct devfreq_event_dev *edev, struct dm
-> >  	u32 i;
-> >  	void __iomem *dfi_regs = dfi->regs;
-> >  
-> > -	for (i = 0; i < RK3399_DMC_NUM_CH; i++) {
-> > +	for (i = 0; i < DMC_MAX_CHANNELS; i++) {
-> > +		if (!(dfi->channel_mask & BIT(i)))
-> > +			continue;
-> >  		count->c[i].access = readl_relaxed(dfi_regs +
-> >  				DDRMON_CH0_DFI_ACCESS_NUM + i * 20);
-> >  		count->c[i].total = readl_relaxed(dfi_regs +
-> > @@ -145,9 +149,14 @@ static int rockchip_dfi_get_event(struct devfreq_event_dev *edev,
-> >  	rockchip_dfi_read_counters(edev, &count);
-> >  
-> >  	/* We can only report one channel, so find the busiest one */
-> > -	for (i = 0; i < RK3399_DMC_NUM_CH; i++) {
-> > -		u32 a = count.c[i].access - last->c[i].access;
-> > -		u32 t = count.c[i].total - last->c[i].total;
-> > +	for (i = 0; i < DMC_MAX_CHANNELS; i++) {
-> 
-> Instead of DMC_MAX_CHANNELS defintion,
-> you can initialize the max channel in each rkXXXX_dfi_init() like 'dfi->channel_count'.
-> It reduces the unnecessary loop by initializing the proper max channel.
+Hi all:
 
-That is not easily possible. Some SoCs, eg the RK3588 have four
-channels, but not all channels are necessarily enabled it also
-might not be the first channels that are enabled. On a RK3588
-the channel mask might for example be 0b0101.
+Sorry, it's been a while since the last discussion.
 
-Sascha
+Previously, Krzysztof suggested using the standard "interrupt-map"
+attribute instead of the "loongson,parent_int_map" attribute, which I
+tried to implement, but the downside of this approach seems to be
+obvious.
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+First of all, let me explain again the interrupt routing of the
+loongson liointc.
+For example, the Loongson-2K1000 has 64 interrupt sources, each with
+the following 8-bit interrupt routing registers (main regs attribute
+in dts):
+
++----+-------------------------------------------------------------------+
+| bit  | description
+            |
++----+-------------------------------------------------------------------+
+| 3:0 | Processor core to route                                           |
+| 7:4 | Routed processor core interrupt pins (INT0--INT3) |
++-----+------------------------------------------------------------------+
+
+The "loongson,parent_int_map" attribute is to describe the routed
+interrupt pins to cpuintc.
+
+However, the "interrupt-map" attribute is not supposed to be used for
+interrupt controller in the normal case. Though since commit
+041284181226 ("of/irq: Allow matching of an interrupt-map local to an
+interrupt controller"), the "interrupt-map" attribute can be used in
+interrupt controller nodes. Some interrupt controllers were found not
+to work properly later, so in commit de4adddcbcc2 ("of/irq: Add a
+quirk for controllers with their own definition of interrupt-map"), a
+quirk was added for these interrupt controllers. As we can see from
+the commit message, this is a bad solution in itself.
+
+Similarly, if we choose to use the "interrupt-map" attribute in the
+interrupt controller, we have to use this unfriendly solution (quirk).
+Because we hope of_irq_parse_raw() stops at the liointc level rather
+than goto its parent level.
+
+So, I don't think it's a good choice to use a bad solution as a replacement=
+.
+
+Do you have any other ideas?
+
+Thanks.
+Binbin
+
+On Mon, Sep 4, 2023 at 2:54=E2=80=AFPM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Wed, 30 Aug 2023 16:25:48 +0100,
+> Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+> >
+> >
+> >
+> > =E5=9C=A8 2023/8/30 21:44, Marc Zyngier =E5=86=99=E9=81=93:
+> > [...]
+> > >> What's the best way, in your opinion, to overhaul this property? As =
+we don't
+> > >> really care backward compatibility of DTBs on those systems we can
+> > >> just redesign it.
+> > > You may not care about backward compatibility, but I do. We don't
+> > > break existing systems, full stop.
+> > Ah it won't break any existing system. Sorry for not giving enough insi=
+ght
+> > into the platform in previous reply. As for Loongson64 all DTBs are bui=
+lt
+> > into kernel binary. So as long as binding are changed together with all=
+ DTS
+> > in tree we won't break any system.
+>
+> This is factually wrong. QEMU produces a DT for Loongarch at runtime.
+> So no, you're not allowed to just drop bindings on the floor. They
+> stay forever.
+>
+> > > As for the offending property, it has no place here either. DT is not
+> > > the place where you put "performance knobs".
+> > Hmm, I can see various bindings with vendor prefix exposing device
+> > configurations. If we seen this interrupt routing as a device configura=
+tion
+> > I don't think it's against devicetree design philosophy.
+>
+> Just because we have tons of crap in the device trees doesn't give you
+> a license to be just as bad.
+>
+>         M.
+>
+> --
+> Without deviation from the norm, progress is not possible.
