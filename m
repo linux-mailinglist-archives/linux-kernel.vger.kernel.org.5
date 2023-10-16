@@ -2,115 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6179E7CB02D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE13F7CB034
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232578AbjJPQtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 12:49:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55748 "EHLO
+        id S234321AbjJPQtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 12:49:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343664AbjJPQtM (ORCPT
+        with ESMTP id S234286AbjJPQtU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 12:49:12 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A5510CC;
-        Mon, 16 Oct 2023 09:41:05 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 017C51FEC1;
-        Mon, 16 Oct 2023 16:41:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1697474464; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GEefq32sBpLzJx2lGNyuxGH/nqJxW/5t5zmBcj5F6Ac=;
-        b=l9WsDi6kmvu6IvcoWBYG976vX4FGtLkDTLqQzCItBRi/1ekOptrfqe2NByqKfSndcdsKl7
-        5Sb3g4KaZgOC5i/oLNKXKSc5i/lc4cT9pj2/2EYNM+bTX59iiXaQKhPaGAXnV8LssgqShL
-        fvpYgCyWJ4r+jtAci6jwRDmCzyKufpQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1697474464;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GEefq32sBpLzJx2lGNyuxGH/nqJxW/5t5zmBcj5F6Ac=;
-        b=IywH00l91MbjWq7du2aCvwlTuYrCsljv8qEifxJMZRpyDI36lSOQDXKGwVshOVggkqnMYs
-        PvImr/h4iRaXh/Bw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6D5BF133B7;
-        Mon, 16 Oct 2023 16:41:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id AyLMGZ9nLWXEKgAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Mon, 16 Oct 2023 16:41:03 +0000
-Message-ID: <5d4eda63-d479-bf4a-7bfb-98a7fb8f953d@suse.cz>
-Date:   Mon, 16 Oct 2023 18:41:02 +0200
+        Mon, 16 Oct 2023 12:49:20 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157A42128;
+        Mon, 16 Oct 2023 09:41:33 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39GGX4xj002792;
+        Mon, 16 Oct 2023 16:41:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=iUkNAEhmQcRALEI8TK0LzZjyN4+TVeYxiZy0KPk2Wh0=;
+ b=H8xjBa8gHPauBSHWpWfvEIU01ujnLO3WL4xP5uAL6ijCyPDbcv2YOz4I/uC5q7b5uNEW
+ /6Y7mWkblfrIDEolYQZWspyysgirYHx2kAncWwE/o41NcfLtCUhu0mxzdl9YbUMHPr4+
+ ak9kOEdxyNKXyITjJPtLjvPFK5Kf5d0rNLu7d8zpRlPUsENIKyjgXT9LOYYOfxBh6JPq
+ aLBjkuyfK3oCjUaKFhfTw72NHmlAtbN5CWV3GeTY2f1kMaEGz8021AFEAqycc/HVJ2tm
+ oWPs5myX5ocj9VkpNJg+wlClOmrAa70KoWSTY1XwXNQP963bwoRTp7Y+gK2wW9fB9kZF uQ== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tqm9f4mmj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Oct 2023 16:41:20 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39GGfJP2030527
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Oct 2023 16:41:19 GMT
+Received: from [10.48.240.22] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 16 Oct
+ 2023 09:41:18 -0700
+Message-ID: <cabb874c-7518-4565-a007-f466f1b69165@quicinc.com>
+Date:   Mon, 16 Oct 2023 09:41:18 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCHv2] efi/unaccepted: Fix soft lockups caused by parallel
- memory acceptance
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dario Faggioli <dfaggioli@suse.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        marcelo.cerri@canonical.com, tim.gardner@canonical.com,
-        philip.cox@canonical.com, aarcange@redhat.com, peterx@redhat.com,
-        x86@kernel.org, linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@kernel.org, Nikolay Borisov <nik.borisov@suse.com>
-References: <20231016163122.12855-1-kirill.shutemov@linux.intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] ath10k: mac: enable
+ WIPHY_FLAG_CHANNEL_CHANGE_ON_BEACON on ath10k
 Content-Language: en-US
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20231016163122.12855-1-kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Kalle Valo <kvalo@kernel.org>, Abhishek Kumar <kuabhs@chromium.org>
+CC:     <johannes.berg@intel.com>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <ath10k@lists.infradead.org>,
+        <linux-wireless@vger.kernel.org>
+References: <20230629035254.2.I23c5e51afcc6173299bb2806c8c38364ad15dd63@changeid>
+ <169634426707.121370.9448850980134728319.kvalo@kernel.org>
+ <87il793hmi.fsf@kernel.org>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <87il793hmi.fsf@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -3.65
-X-Spamd-Result: default: False [-3.65 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         BAYES_HAM(-0.00)[20.47%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-2.99)[-0.997];
-         MIME_GOOD(-0.10)[text/plain];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-0.56)[-0.563];
-         RCPT_COUNT_TWELVE(0.00)[32];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: j9hu2thAUudPAJfKw7Dq_SsN7Z2POx0C
+X-Proofpoint-ORIG-GUID: j9hu2thAUudPAJfKw7Dq_SsN7Z2POx0C
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-16_10,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 phishscore=0 mlxscore=0 adultscore=0 lowpriorityscore=0
+ suspectscore=0 clxscore=1011 bulkscore=0 mlxlogscore=738
+ priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2309180000 definitions=main-2310160145
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -118,87 +81,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16/23 18:31, Kirill A. Shutemov wrote:
-> Michael reported soft lockups on a system that has unaccepted memory.
-> This occurs when a user attempts to allocate and accept memory on
-> multiple CPUs simultaneously.
+On 10/13/2023 10:20 PM, Kalle Valo wrote:
+> Kalle Valo <kvalo@kernel.org> writes:
 > 
-> The root cause of the issue is that memory acceptance is serialized with
-> a spinlock, allowing only one CPU to accept memory at a time. The other
-> CPUs spin and wait for their turn, leading to starvation and soft lockup
-> reports.
+>> Abhishek Kumar <kuabhs@chromium.org> wrote:
+>>
+>>> Enabling this flag, ensures that reg_call_notifier is called
+>>> on beacon hints from handle_reg_beacon in cfg80211. This call
+>>> propagates the channel property changes to ath10k driver, thus
+>>> changing the channel property from passive scan to active scan
+>>> based on beacon hints.
+>>> Once the channels are rightly changed from passive to active,the
+>>> connection to hidden SSID does not fail.
+>>>
+>>> Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
+>>
+>> There's no Tested-on tag, on which hardware/firmware did you test this?
+>>
+>> This flag is now enabled on ALL ath10k supported hardware: SNOC, PCI, SDIO and
+>> maybe soon USB. I'm just wondering can we trust that this doesn't break
+>> anything.
 > 
-> To address this, the code has been modified to release the spinlock
-> while accepting memory. This allows for parallel memory acceptance on
-> multiple CPUs.
+> Jeff, what are your thoughts on this? I'm worried how different ath10k
+> firmwares can be and if this breaks something.
 > 
-> A newly introduced "accepting_list" keeps track of which memory is
-> currently being accepted. This is necessary to prevent parallel
-> acceptance of the same memory block. If a collision occurs, the lock is
-> released and the process is retried.
-> 
-> Such collisions should rarely occur. The main path for memory acceptance
-> is the page allocator, which accepts memory in MAX_ORDER chunks. As long
-> as MAX_ORDER is equal to or larger than the unit_size, collisions will
-> never occur because the caller fully owns the memory block being
-> accepted.
-> 
-> Aside from the page allocator, only memblock and deferered_free_range()
-> accept memory, but this only happens during boot.
-> 
-> The code has been tested with unit_size == 128MiB to trigger collisions
-> and validate the retry codepath.
-> 
-> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Reported-by: Michael Roth <michael.roth@amd.com
-> Fixes: 2053bc57f367 ("efi: Add unaccepted memory support")
-> Cc: <stable@kernel.org>
-> Reviewed-by: Nikolay Borisov <nik.borisov@suse.com>
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+Since the 1/2 patch is already in pull-request: wireless-next-2023-10-06 
+I went through the logic of that again. It would have been nice if that 
+actually described how it fixes the problem. What actually causes a 
+channel to change from passive to active?
 
-<snip>
+Note the existing logic prior to the 1/2 patch already updates the wiphy 
+and userspace with the updated channel flags, so it seems reasonable to 
+also update the driver
 
-> +	range_start = range.start;
->  	for_each_set_bitrange_from(range_start, range_end, unaccepted->bitmap,
-> -				   DIV_ROUND_UP(end, unit_size)) {
-> +				   range.end) {
->  		unsigned long phys_start, phys_end;
->  		unsigned long len = range_end - range_start;
->  
->  		phys_start = range_start * unit_size + unaccepted->phys_base;
->  		phys_end = range_end * unit_size + unaccepted->phys_base;
->  
-> +		/*
-> +		 * Keep interrupts disabled until the accept operation is
-> +		 * complete in order to prevent deadlocks.
-> +		 *
-> +		 * Enabling interrupts before calling arch_accept_memory()
-> +		 * creates an opportunity for an interrupt handler to request
-> +		 * acceptance for the same memory. The handler will continuously
-> +		 * spin with interrupts disabled, preventing other task from
-> +		 * making progress with the acceptance process.
-> +		 */
+However, this led me down the rabbit hole of trying to figure out what 
+happens if a beacon hint causes us to change a channel from passive to 
+active, but then that AP goes away. What, if anything, causes the 
+channel to revert back to passive? I'm not immediately seeing that logic 
+anywhere.
 
-AFAIU on PREEMPT_RT the spin_lock_irqsave() doesn't disable interrupts, so
-this does not leave them disabled. But it also shouldn't be a risk of
-deadlock because the interrupt handlers are themselves preemptible. The
-latency might be bad as the cpu_relax() retry loop will not cause the task
-everyone might be waiting for to be prioritised, but I guess it's not a big
-issue as anyone with RT requirements probably won't use unaccepted memory in
-the first place, and as you mention hitting the retry loop after boot in a
-normal configuration should be pretty much never.
+My concern is that we have an AP with a hidden SSID on a DFS channel, 
+and as a result of a beacon hint we switch that channel to active scan. 
+But then later that AP detects radar and vacates the channel. Then we 
+potentially have stations doing active scan on a DFS channel with an 
+active radar.
 
-> +		spin_unlock(&unaccepted_memory_lock);
-> +
->  		arch_accept_memory(phys_start, phys_end);
-> +
-> +		spin_lock(&unaccepted_memory_lock);
->  		bitmap_clear(unaccepted->bitmap, range_start, len);
->  	}
-> +
-> +	list_del(&range.list);
->  	spin_unlock_irqrestore(&unaccepted_memory_lock, flags);
->  }
->  
+Hopefully this is all handled, and it just isn't obvious in my 
+admittedly very quick 10 minute scan of the code.
+
+And as far as the 2/2 patch, note this logic is all dependent upon 
+reg_is_world_roaming(wiphy) returning true, so ath10k impact would 
+really depend upon the board regulatory settings, whether configured for 
+a fixed regulatory domain/country code or configured for world roaming.
+
+/jeff
+
 
