@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 976CF7CA975
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 15:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 549DD7CA979
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 15:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233600AbjJPNb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 09:31:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33152 "EHLO
+        id S233713AbjJPNcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 09:32:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233732AbjJPNbn (ORCPT
+        with ESMTP id S233685AbjJPNbt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 09:31:43 -0400
+        Mon, 16 Oct 2023 09:31:49 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D165130
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 06:31:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2617181
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 06:31:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697463101; x=1728999101;
+  t=1697463102; x=1728999102;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=4roMkrTkBxn5M4KrWiiG+UKPCzazaRQ4mwiu9FhhIQM=;
-  b=c4Obzebx+22ek0tTzWqTdZ6SDlbcc4z010e8tysMxRi3YLNXIXXGRqv4
-   gJL0bQAGdxB+RqzG78A0fM9M/NMz+YLscXvf2gjHXhoh2UZWk86bx/i9A
-   Mdp/zEZqGey2396OtzKkbrmlH6a+wmTMbu1y+jk7sVSW7CEMzik6SxJ/x
-   QtDzaTTet6Iwnfo1ac0J8YXwz+x4Z6nAIVNWr0fLPbevlja2ioLeN1ifN
-   4j4Pxg9L7rLQn/DUhb1tsrGz4inu+qGz6xvLeu+2TvhDFiUzbkcQR1n5n
-   SZulLF1eRGyL2EvN2cHu95BpinXrB7nQ0+bzkYfV5okYQy/+lzjvpqX+O
+  bh=cdkuTO8u3rbVQRk8x8e3eLaDQYXu7b3sptU0SE6tXHc=;
+  b=FICsEJgp9MRABfRfCapKVMFU7ahAwT4XPR+8WonqNzRaGtfDVZkzgsmc
+   I6uLsKJ6xn88RIfYqLP/e6HR0lUaoGqGkaKcPq8zARkn6p1ptI6Cjt0N9
+   Dgstcq2YqHcp5AB6OfIaYR0U0IMoymIxEot7TejeqUnQWXcUWVHC6/LCn
+   WEVvsWJcmKKSofYPpEVdyF3UNqPLulHeRmGI6vpM2p7V7djBpBeKtCkdZ
+   zzbCKAysFDhhvuVeayUQ+pYdT2uzZbozuXj0SaH2pRdyZ7u0dwbths89u
+   ++CAEWP4vZfa1MHDYUDEDJTKhkJUUYMhbexoYEy9lndiwubfS0+BdGJpJ
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="375892089"
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="375892095"
 X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="375892089"
+   d="scan'208";a="375892095"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
   by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 06:31:40 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="1002934884"
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="1002934885"
 X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="1002934884"
+   d="scan'208";a="1002934885"
 Received: from black.fi.intel.com ([10.237.72.28])
   by fmsmga006.fm.intel.com with ESMTP; 16 Oct 2023 06:31:38 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 566CE81C; Mon, 16 Oct 2023 16:31:37 +0300 (EEST)
+        id 5BF63385; Mon, 16 Oct 2023 16:31:37 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Luis Chamberlain <mcgrof@kernel.org>,
         Joel Granados <j.granados@samsung.com>,
@@ -48,9 +48,9 @@ To:     Luis Chamberlain <mcgrof@kernel.org>,
         linux-kernel@vger.kernel.org
 Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [resend, PATCH v1 2/3] parport: Use list_for_each() helper
-Date:   Mon, 16 Oct 2023 16:31:34 +0300
-Message-Id: <20231016133135.1203643-3-andriy.shevchenko@linux.intel.com>
+Subject: [resend, PATCH v1 3/3] parport: Drop unneeded NULL or 0 assignments
+Date:   Mon, 16 Oct 2023 16:31:35 +0300
+Message-Id: <20231016133135.1203643-4-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 In-Reply-To: <20231016133135.1203643-1-andriy.shevchenko@linux.intel.com>
 References: <20231016133135.1203643-1-andriy.shevchenko@linux.intel.com>
@@ -66,35 +66,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert hard to read custom code to list_for_each().
-No functional changes intended.
-
-Note, we may not use list_for_each_entry() as at the end of the list
-the iterator will point to an invalid entry and may not be dereferenced.
+kzalloc() gives us a zeroed memory, no need to explicitly assing 0 or
+NULL or similar to the members of the data structure that has been
+allocated with the above mentioned API.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/parport/share.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/parport/share.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
 diff --git a/drivers/parport/share.c b/drivers/parport/share.c
-index 8037bcd07bcf..38780f6a9119 100644
+index 38780f6a9119..a9a9cb0477ea 100644
 --- a/drivers/parport/share.c
 +++ b/drivers/parport/share.c
-@@ -469,9 +469,11 @@ struct parport *parport_register_port(unsigned long base, int irq, int dma,
- 	/* Search for the lowest free parport number. */
- 
- 	spin_lock(&full_list_lock);
--	for (l = all_ports.next, num = 0; l != &all_ports; l = l->next, num++) {
-+	num = 0;
-+	list_for_each(l, &all_ports) {
- 		struct parport *p = list_entry(l, struct parport, full_list);
--		if (p->number != num)
-+
-+		if (p->number != num++)
- 			break;
- 	}
- 	tmp->portnum = tmp->number = num;
+@@ -449,13 +449,9 @@ struct parport *parport_register_port(unsigned long base, int irq, int dma,
+ 	tmp->irq = irq;
+ 	tmp->dma = dma;
+ 	tmp->muxport = tmp->daisy = tmp->muxsel = -1;
+-	tmp->modes = 0;
+ 	INIT_LIST_HEAD(&tmp->list);
+-	tmp->devices = tmp->cad = NULL;
+-	tmp->flags = 0;
+ 	tmp->ops = ops;
+ 	tmp->physport = tmp;
+-	memset(tmp->probe_info, 0, 5 * sizeof(struct parport_device_info));
+ 	rwlock_init(&tmp->cad_lock);
+ 	spin_lock_init(&tmp->waitlist_lock);
+ 	spin_lock_init(&tmp->pardevice_lock);
 -- 
 2.40.0.1.gaa8946217a0b
 
