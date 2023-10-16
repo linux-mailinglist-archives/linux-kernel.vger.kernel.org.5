@@ -2,240 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F97A7C9F5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 08:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C367C9F67
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 08:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbjJPGRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 02:17:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57560 "EHLO
+        id S229727AbjJPGUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 02:20:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229834AbjJPGRB (ORCPT
+        with ESMTP id S229623AbjJPGUp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 02:17:01 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FBB995
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 23:16:59 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7E59F218E3;
-        Mon, 16 Oct 2023 06:16:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1697437017; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=/tugEqL7n6CP3WL2MKhvL19GGGnR+jSrO4Im9YGKHa4=;
-        b=BZqv32pt68xPbU/Jeo6IB/mqdMrNqtMMgbXdm0QQjVxF0QMvWhkuptn06RW246DNLcQtAs
-        TFbCi8ciEMvfFDEumgORcQk3l2ehHOoukXWXZeRkAjUvaff7ox/taZAL/E4yjtkKn59H/e
-        jLSdoV5k6ATc6tFrNISLQLlwsfm2teQ=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4BDE5138EF;
-        Mon, 16 Oct 2023 06:16:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id vTuuEFnVLGU3PAAAMHmgww
-        (envelope-from <jgross@suse.com>); Mon, 16 Oct 2023 06:16:57 +0000
-Message-ID: <788dd54d-04cf-4582-9ccd-adc33e96a043@suse.com>
-Date:   Mon, 16 Oct 2023 08:16:56 +0200
+        Mon, 16 Oct 2023 02:20:45 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5827E95
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 23:20:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697437243; x=1728973243;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version;
+  bh=6QV46esyzMbwV1pApkXxUKx74MXSyq2TMVxLFgLyDZs=;
+  b=lMMc9MQpgFD7Qu+cs1uzJaflS4KKTtKR0sykwVHVvzxempSK7fnfhD50
+   IP6nxMhhS2MT3d17DT1qRL7csoOYLTrbmDzr+ivP7IJ4UItOyTt2R2wjR
+   oDYndGL8vvQvyw04CTRxnt/HRuw369dfptdoOHjdXOtaz3aBDFTIfOsL7
+   BeS31622nSX9Y565ehMZftRyroqQ54sC/BVo12GnXxcDZqvYVJz78eI3s
+   FKqWgRJWkI/9wPsoJ6A5FEQ3Jm/ETimcFTBdqFDUo9cSgu/hBGvjRqMfl
+   lUivOCFfWBl9cHvVywYK6An0CepVJcxX7slYbuyaLHk+VREGveQGJifXg
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="416522614"
+X-IronPort-AV: E=Sophos;i="6.03,228,1694761200"; 
+   d="scan'208";a="416522614"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2023 23:20:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="755571761"
+X-IronPort-AV: E=Sophos;i="6.03,228,1694761200"; 
+   d="scan'208";a="755571761"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2023 23:20:11 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+Subject: Re: [RFC PATCH v1 2/2] mm: swap: Swap-out small-sized THP without
+ splitting
+References: <20231010142111.3997780-1-ryan.roberts@arm.com>
+        <20231010142111.3997780-3-ryan.roberts@arm.com>
+        <87r0m1ftvu.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <f1446ef6-3e29-4ce0-866e-c522931ae364@arm.com>
+        <1ccde143-18a7-483b-a9a4-fff07b0edc72@arm.com>
+Date:   Mon, 16 Oct 2023 14:17:43 +0800
+In-Reply-To: <1ccde143-18a7-483b-a9a4-fff07b0edc72@arm.com> (Ryan Roberts's
+        message of "Wed, 11 Oct 2023 18:14:37 +0100")
+Message-ID: <87ttqrm6pk.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] xen-pciback: Consider INTx disabled when MSI/MSI-X is
- enabled
-Content-Language: en-US
-To:     =?UTF-8?Q?Marek_Marczykowski-G=C3=B3recki?= 
-        <marmarek@invisiblethingslab.com>, linux-kernel@vger.kernel.org
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Jan Beulich <jbeulich@suse.com>,
-        "moderated list:XEN HYPERVISOR INTERFACE" 
-        <xen-devel@lists.xenproject.org>
-References: <20221118154931.1928298-1-marmarek@invisiblethingslab.com>
-From:   Juergen Gross <jgross@suse.com>
-Autocrypt: addr=jgross@suse.com; keydata=
- xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
- ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
- dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
- NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
- XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
- AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
- CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
- mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
- G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
- kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
- Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
- RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
- vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
- sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
- aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
- w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
- auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
- 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
- fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
- HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
- QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
- ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
-In-Reply-To: <20221118154931.1928298-1-marmarek@invisiblethingslab.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------0eSPdyus81nfvMmfKrqHFOLt"
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -8.96
-X-Spamd-Result: default: False [-8.96 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         XM_UA_NO_VERSION(0.01)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         BAYES_HAM(-2.97)[99.87%];
-         MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
-         HAS_ATTACHMENT(0.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         RCPT_COUNT_FIVE(0.00)[6];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         MIME_BASE64_TEXT(0.10)[];
-         SIGNED_PGP(-2.00)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+,1:+,2:+,3:+,4:~,5:~];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[];
-         MIME_UNKNOWN(0.10)[application/pgp-keys]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------0eSPdyus81nfvMmfKrqHFOLt
-Content-Type: multipart/mixed; boundary="------------G6mxZrg2c3Iku9uyxUGxAuN2";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: =?UTF-8?Q?Marek_Marczykowski-G=C3=B3recki?=
- <marmarek@invisiblethingslab.com>, linux-kernel@vger.kernel.org
-Cc: Stefano Stabellini <sstabellini@kernel.org>,
- Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
- Jan Beulich <jbeulich@suse.com>,
- "moderated list:XEN HYPERVISOR INTERFACE" <xen-devel@lists.xenproject.org>
-Message-ID: <788dd54d-04cf-4582-9ccd-adc33e96a043@suse.com>
-Subject: Re: [PATCH v3] xen-pciback: Consider INTx disabled when MSI/MSI-X is
- enabled
-References: <20221118154931.1928298-1-marmarek@invisiblethingslab.com>
-In-Reply-To: <20221118154931.1928298-1-marmarek@invisiblethingslab.com>
+Ryan Roberts <ryan.roberts@arm.com> writes:
 
---------------G6mxZrg2c3Iku9uyxUGxAuN2
-Content-Type: multipart/mixed; boundary="------------0TE5CC04j7W0hmrJmeAeU0Gq"
+> On 11/10/2023 11:36, Ryan Roberts wrote:
+>> On 11/10/2023 09:25, Huang, Ying wrote:
+>>> Ryan Roberts <ryan.roberts@arm.com> writes:
+>>>
+>>>> The upcoming anonymous small-sized THP feature enables performance
+>>>> improvements by allocating large folios for anonymous memory. However
+>>>> I've observed that on an arm64 system running a parallel workload (e.g.
+>>>> kernel compilation) across many cores, under high memory pressure, the
+>>>> speed regresses. This is due to bottlenecking on the increased number of
+>>>> TLBIs added due to all the extra folio splitting.
+>>>>
+>>>> Therefore, solve this regression by adding support for swapping out
+>>>> small-sized THP without needing to split the folio, just like is already
+>>>> done for PMD-sized THP. This change only applies when CONFIG_THP_SWAP is
+>>>> enabled, and when the swap backing store is a non-rotating block device
+>>>> - these are the same constraints as for the existing PMD-sized THP
+>>>> swap-out support.
+>>>>
+>>>> Note that no attempt is made to swap-in THP here - this is still done
+>>>> page-by-page, like for PMD-sized THP.
+>>>>
+>>>> The main change here is to improve the swap entry allocator so that it
+>>>> can allocate any power-of-2 number of contiguous entries between [4, (1
+>>>> << PMD_ORDER)]. This is done by allocating a cluster for each distinct
+>>>> order and allocating sequentially from it until the cluster is full.
+>>>> This ensures that we don't need to search the map and we get no
+>>>> fragmentation due to alignment padding for different orders in the
+>>>> cluster. If there is no current cluster for a given order, we attempt to
+>>>> allocate a free cluster from the list. If there are no free clusters, we
+>>>> fail the allocation and the caller falls back to splitting the folio and
+>>>> allocates individual entries (as per existing PMD-sized THP fallback).
+>>>>
+>>>> As far as I can tell, this should not cause any extra fragmentation
+>>>> concerns, given how similar it is to the existing PMD-sized THP
+>>>> allocation mechanism. There will be up to (PMD_ORDER-1) clusters in
+>>>> concurrent use though. In practice, the number of orders in use will be
+>>>> small though.
+>>>>
+>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>>> ---
+>>>>  include/linux/swap.h |  7 ++++++
+>>>>  mm/swapfile.c        | 60 +++++++++++++++++++++++++++++++++-----------
+>>>>  mm/vmscan.c          | 10 +++++---
+>>>>  3 files changed, 59 insertions(+), 18 deletions(-)
+>>>>
+>>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>>>> index a073366a227c..fc55b760aeff 100644
+>>>> --- a/include/linux/swap.h
+>>>> +++ b/include/linux/swap.h
+>>>> @@ -320,6 +320,13 @@ struct swap_info_struct {
+>>>>  					 */
+>>>>  	struct work_struct discard_work; /* discard worker */
+>>>>  	struct swap_cluster_list discard_clusters; /* discard clusters list */
+>>>> +	unsigned int large_next[PMD_ORDER]; /*
+>>>> +					     * next free offset within current
+>>>> +					     * allocation cluster for large
+>>>> +					     * folios, or UINT_MAX if no current
+>>>> +					     * cluster. Index is (order - 1).
+>>>> +					     * Only when cluster_info is used.
+>>>> +					     */
+>>>
+>>> I think that it is better to make this per-CPU.  That is, extend the
+>>> percpu_cluster mechanism.  Otherwise, we may have scalability issue.
+>> 
+>> Is your concern that the swap_info spinlock will get too contended as its
+>> currently written? From briefly looking at percpu_cluster, it looks like that
+>> spinlock is always held when accessing the per-cpu structures - presumably
+>> that's what's disabling preemption and making sure the thread is not migrated?
+>> So I'm not sure what the benefit is currently? Surely you want to just disable
+>> preemption but not hold the lock? I'm sure I've missed something crucial...
+>
+> I looked a bit further at how to implement what you are suggesting.
+> get_swap_pages() is currently taking the swap_info lock which it needs to check
+> and update some other parts of the swap_info - I'm not sure that part can be
+> removed. swap_alloc_large() (my new function) is not doing an awful lot of work,
+> so I'm not convinced that you would save too much by releasing the lock for that
+> part. In contrast there is a lot more going on in scan_swap_map_slots() so there
+> is more benefit to releasing the lock and using the percpu stuff - correct me if
+> I've missunderstood.
+>
+> As an alternative approach, perhaps it makes more sense to beef up the caching
+> layer in swap_slots.c to handle large folios too? Then you avoid taking the
+> swap_info lock at all most of the time, like you currently do for single entry
+> allocations.
+>
+> What do you think?
 
---------------0TE5CC04j7W0hmrJmeAeU0Gq
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+Sorry for late reply.
 
-T24gMTguMTEuMjIgMTY6NDksIE1hcmVrIE1hcmN6eWtvd3NraS1Hw7NyZWNraSB3cm90ZToN
-Cj4gTGludXggZW5hYmxlcyBNU0ktWCBiZWZvcmUgZGlzYWJsaW5nIElOVHgsIGJ1dCBrZWVw
-cyBNU0ktWCBtYXNrZWQgdW50aWwNCj4gdGhlIHRhYmxlIGlzIGZpbGxlZC4gVGhlbiBpdCBk
-aXNhYmxlcyBJTlR4IGp1c3QgYmVmb3JlIGNsZWFyaW5nIE1BU0tBTEwNCj4gYml0LiBDdXJy
-ZW50bHkgdGhpcyBhcHByb2FjaCBpcyByZWplY3RlZCBieSB4ZW4tcGNpYmFjay4NCj4gQWNj
-b3JkaW5nIHRvIHRoZSBQQ0llIHNwZWMsIGRldmljZSBjYW5ub3QgdXNlIElOVHggd2hlbiBN
-U0kvTVNJLVggaXMNCj4gZW5hYmxlZCAoaW4gb3RoZXIgd29yZHM6IGVuYWJsaW5nIE1TSS9N
-U0ktWCBpbXBsaWNpdGx5IGRpc2FibGVzIElOVHgpLg0KPiANCj4gQ2hhbmdlIHRoZSBsb2dp
-YyB0byBjb25zaWRlciBJTlR4IGRpc2FibGVkIGlmIE1TSS9NU0ktWCBpcyBlbmFibGVkLiBU
-aGlzDQo+IGFwcGxpZXMgdG8gdGhyZWUgcGxhY2VzOg0KPiAgIC0gY2hlY2tpbmcgY3VycmVu
-dGx5IGVuYWJsZWQgaW50ZXJydXB0cyB0eXBlLA0KPiAgIC0gdHJhbnNpdGlvbiB0byBNU0kv
-TVNJLVggLSB3aGVyZSBJTlR4IHdvdWxkIGJlIGltcGxpY2l0bHkgZGlzYWJsZWQsDQo+ICAg
-LSBjbGVhcmluZyBJTlR4IGRpc2FibGUgYml0IC0gd2hpY2ggY2FuIGJlIGFsbG93ZWQgZXZl
-biBpZiBNU0kvTVNJLVggaXMNCj4gICAgIGVuYWJsZWQsIGFzIGRldmljZSBzaG91bGQgY29u
-c2lkZXIgSU5UeCBkaXNhYmxlZCBhbnl3YXkgaW4gdGhhdCBjYXNlDQo+IA0KPiBGaXhlczog
-NWUyOTUwMGViYTJhICgieGVuLXBjaWJhY2s6IEFsbG93IHNldHRpbmcgUENJX01TSVhfRkxB
-R1NfTUFTS0FMTCB0b28iKQ0KPiBTaWduZWQtb2ZmLWJ5OiBNYXJlayBNYXJjenlrb3dza2kt
-R8OzcmVja2kgPG1hcm1hcmVrQGludmlzaWJsZXRoaW5nc2xhYi5jb20+DQoNCkFja2VkLWJ5
-OiBKdWVyZ2VuIEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+DQoNCg0KSnVlcmdlbg0KDQo=
---------------0TE5CC04j7W0hmrJmeAeU0Gq
-Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
+percpu_cluster is introduced in commit ebc2a1a69111 ("swap: make cluster
+allocation per-cpu").  Please check the changelog for why it's
+introduced.  Sorry about my incorrect memory about scalability.
+percpu_cluster is introduced for disk performance mainly instead of
+scalability.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+--
+Best Regards,
+Huang, Ying
 
-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
-jR/i1DG86lem3iBDXzXsZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------0TE5CC04j7W0hmrJmeAeU0Gq--
-
---------------G6mxZrg2c3Iku9uyxUGxAuN2--
-
---------------0eSPdyus81nfvMmfKrqHFOLt
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmUs1VgFAwAAAAAACgkQsN6d1ii/Ey/Y
-lwf8DZcvPZhfET8A7cnivC1M221hP1Tb9yT1+eZMelnp8zcj6K5gLJJb3xDvkK1pMEOw3qVJ0CpX
-ar+toZtiR5MoX+59+RzPnJRIA2KVd/rUVPjcY9VFfQcYTisgyZfd81PkDgBMm3xZ1Ssy/ezCcMP7
-VRU9/IEzH+6uOLhFZ9lrOIpiSTfjYwBYgrx1Ry1375BgCzALfaUyYcdOuzlXjmh9ZETCjba7PTl5
-huT/XLJuGKejHyjL8iG8aNIAeYxUHMaBRe3kVN/DYphX8/4bjjJfwRoujuGWf7Jb9Wvp3va4uxO0
-3fZ95eL0+e4ZUN/TbILYgPHwv1iY8j61yRXXfMsTKQ==
-=e621
------END PGP SIGNATURE-----
-
---------------0eSPdyus81nfvMmfKrqHFOLt--
+>> 
+>>>
+>>> And this should be enclosed in CONFIG_THP_SWAP.
+>> 
+>> Yes, I'll fix this in the next version.
+>> 
+>> Thanks for the review!
+>> 
+>>>
+>>>>  	struct plist_node avail_lists[]; /*
+>>>>  					   * entries in swap_avail_heads, one
+>>>>  					   * entry per node.
