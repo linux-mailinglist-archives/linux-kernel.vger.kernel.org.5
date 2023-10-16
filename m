@@ -2,97 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6217C7CA10E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 09:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 191727CA118
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 10:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbjJPHzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 03:55:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54354 "EHLO
+        id S229848AbjJPIAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 04:00:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbjJPHzL (ORCPT
+        with ESMTP id S229478AbjJPIAA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 03:55:11 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A559AD
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:55:09 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 7F7A56607285;
-        Mon, 16 Oct 2023 08:55:06 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697442907;
-        bh=Hw/1U1YBl+D02Eq2vlklAKGEowzhCs7qY+uoAbH7NQY=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=mGufDXs98MhuhzR+u3zf2PtniyqEwDciCV/Nzd2JHBNs/vsRNZrcECmmpYdiUoEk0
-         ml0xwaR2Y7J9Y5B90BokwGr4JxbJxZvc/cE6vkdcJ5Iuy/OsUvEUN/qzYyPpx4S9RD
-         W3716ERYdtNQ6iucVEyDbS1V62+/m2GAEMtPjMfdDS82aBz9WCrSpMYWXcbVTbMX96
-         PPqdS7Xz3gupbI0Tg8SoIc66Brbe6nmhrJQtDgCc3MBqtqOtPXHd53209EmTf3jJjl
-         VZO3wFrAoxcP+6t7eP1PwRCmulTmLhNp89j940cHO93H56J1+307T8s/JkmsG0NoZu
-         zaJzLdZQxL2QA==
-Message-ID: <5b843706-8ec3-6de6-de24-ddde5349db57@collabora.com>
-Date:   Mon, 16 Oct 2023 09:55:03 +0200
+        Mon, 16 Oct 2023 04:00:00 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACCBFA1;
+        Mon, 16 Oct 2023 00:59:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697443198; x=1728979198;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version;
+  bh=XYXbGQsgnjt7nQUqln8pZSvBdMQSiZ+wMR4h/e3odww=;
+  b=ZEY5Rk6KbsGMGQiKDLoq2+ZV/4A9PNpi9YU9Z7Wi6TcolaYbdzpb8w52
+   x7X0jFU04XPdm3rERh4brEKtJwJoVs84ent9jN4HvLjgMtN75V5Ox5f63
+   4SkJS1DAKvDfDPEhuwwj1vaoEdJFguki27gwlD52oJcnRaP3DH06A4Vyb
+   pHGMNUK0fcM1qgpsOhUllgrDcPWs2Vsa0Jm6fScgarkkDObrTFVKwmUfk
+   4NXb/LHNu7f3vDCVz1FKraDKI8CA7utSdvMWHrsvrtrxgignp3BBDj2jH
+   t7z1F3MG2wXWtqJfKM3Q3twIoWxVRR2fVNnYgYSMj2UCKFUUaPAIfvGCf
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="449677954"
+X-IronPort-AV: E=Sophos;i="6.03,228,1694761200"; 
+   d="scan'208";a="449677954"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 00:59:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="790721641"
+X-IronPort-AV: E=Sophos;i="6.03,228,1694761200"; 
+   d="scan'208";a="790721641"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 00:59:56 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Gregory Price <gourry.memverge@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-cxl@vger.kernel.org, akpm@linux-foundation.org,
+        sthanneeru@micron.com, gregory.price@memverge.com
+Subject: Re: [RFC PATCH v2 0/3] mm: mempolicy: Multi-tier weighted interleaving
+References: <20231009204259.875232-1-gregory.price@memverge.com>
+Date:   Mon, 16 Oct 2023 15:57:52 +0800
+In-Reply-To: <20231009204259.875232-1-gregory.price@memverge.com> (Gregory
+        Price's message of "Mon, 9 Oct 2023 16:42:56 -0400")
+Message-ID: <87o7gzm22n.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v11 06/16] drm/mediatek: gamma: Use bitfield macros
-Content-Language: en-US
-To:     =?UTF-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>,
-        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "wenst@chromium.org" <wenst@chromium.org>,
-        =?UTF-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= 
-        <Jason-JH.Lin@mediatek.com>,
-        "kernel@collabora.com" <kernel@collabora.com>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "amergnat@baylibre.com" <amergnat@baylibre.com>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "ehristev@collabora.com" <ehristev@collabora.com>,
-        "nfraprado@collabora.com" <nfraprado@collabora.com>
-References: <20231012095736.100784-1-angelogioacchino.delregno@collabora.com>
- <20231012095736.100784-7-angelogioacchino.delregno@collabora.com>
- <3399bf15a6e3d3d4ed5228c858b06c7b28b40aea.camel@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <3399bf15a6e3d3d4ed5228c858b06c7b28b40aea.camel@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 13/10/23 06:00, CK Hu (胡俊光) ha scritto:
-> Hi, Angelo:
-> 
-> On Thu, 2023-10-12 at 11:57 +0200, AngeloGioacchino Del Regno wrote:
->> Make the code more robust and improve readability by using bitfield
->> macros instead of open coding bit operations.
->> While at it, also add a definition for LUT_BITS_DEFAULT.
-> 
-> When I apply, I would remove the description of LUT_BITS_DEFAULT.
-> 
-> Reviewed-by: CK Hu <ck.hu@mediatek.com>
+Gregory Price <gourry.memverge@gmail.com> writes:
 
-Sorry for forgetting about removing that from the commit description after
-removing it from the code.
+> v2: change memtier mutex to semaphore
+>     add source-node relative weighting
+>     add remaining mempolicy integration code
+>
+> = v2 Notes
+>
+> Developed in colaboration with original authors to deconflict
+> similar efforts to extend mempolicy to take weights directly.
+>
+> == Mutex to Semaphore change:
+>
+> The memory tiering subsystem is extended in this patch set to have
+> externally available information (weights), and therefore additional
+> controls need to be added to ensure values are not changed (or tiers
+> changed/added/removed) during various calculations.
+>
+> Since it is expected that many threads will be accessing this data
+> during allocations, a mutex is not appropriate.
 
-Thanks for removing it while applying, that simplifies my workflow.
+IIUC, this is a change for performance.  If so, please show some
+performance data.
 
-Cheers,
-Angelo
+> Since write-updates (weight changes, hotplug events) are rare events,
+> a simple rw semaphore is sufficient.
+>
+> == Source-node relative weighting:
+>
+> Tiers can now be weighted differently based on the node requesting
+> the weight.  For example CPU-Nodes 0 and 1 may have different weights
+> for the same CXL memory tier, because topologically the number of
+> NUMA hops is greater (or any other physical topological difference
+> resulting in different effective latency or bandwidth values)
+>
+> 1. Set weights for DDR (tier4) and CXL(teir22) tiers.
+>    echo source_node:weight > /path/to/interleave_weight
 
+If source_node is considered, why not consider target_node too?  On a
+system with only 1 tier (DRAM), do you want weighted interleaving among
+NUMA nodes?  If so, why tie weighted interleaving with memory tiers?
+Why not just introduce weighted interleaving for NUMA nodes?
+
+> # Set tier4 weight from node 0 to 85
+> echo 0:85 > /sys/devices/virtual/memory_tiering/memory_tier4/interleave_weight
+> # Set tier4 weight from node 1 to 65
+> echo 1:65 > /sys/devices/virtual/memory_tiering/memory_tier4/interleave_weight
+> # Set tier22 weight from node 0 to 15
+> echo 0:15 > /sys/devices/virtual/memory_tiering/memory_tier22/interleave_weight
+> # Set tier22 weight from node 1 to 10
+> echo 1:10 > /sys/devices/virtual/memory_tiering/memory_tier22/interleave_weight
+
+--
+Best Regards,
+Huang, Ying
