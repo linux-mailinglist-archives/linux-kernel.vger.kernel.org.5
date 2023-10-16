@@ -2,146 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE8A7C9CBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 02:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5927C7C9CC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 03:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229642AbjJPAx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 20:53:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59834 "EHLO
+        id S230178AbjJPBP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 21:15:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJPAxy (ORCPT
+        with ESMTP id S229459AbjJPBPz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 20:53:54 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 194D7A9;
-        Sun, 15 Oct 2023 17:53:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 915ADC433CB;
-        Mon, 16 Oct 2023 00:53:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697417629;
-        bh=VeTuSjzLgu1D/2GmXzVUVNzj42rRGbeX4TpeoeB9DWc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JYIEdhEVxnPJ9Hs3FXb8Bd15jmHhV+5IDNYVU8UpFvA2wEj/Vaf9dqo5ufXovFWTY
-         etl7jEOLcvegWqeDGy3hLaEaXurQRs4q4qIj8AmL5F1SNHEXGQjcdKRvtzLVARrq0N
-         P0BdI35fi10XMh3Df81uSsnyoHz7ibFgEi5iYyScyD3Zr6f2vkxHseIAbKkx84x2dw
-         H2JpZTrx+LCjlgnKRTKfEKZzG/0RlLgyu07wpdwgiDitshs1GtVS+zU/tzp3TbY1ON
-         uUvn4t3n/p5sJ+MbkT/pKVSJlM23Q4imCIunkgH6LEPnyoxXTo5injoNeb6ZkmHWKY
-         wpqnjocnXTQhQ==
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-53d82bea507so6836308a12.2;
-        Sun, 15 Oct 2023 17:53:49 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxYYcRz+OxukAjlgVU8Pr/jslFA+DMlbHdWwal97g4ybuUTKzp9
-        5QPVD7QoMWaPNfGLGduh+/5ywSgPGrzhKHuJ8VQ=
-X-Google-Smtp-Source: AGHT+IFn1YmwevuDuFKbSltoS+RGS0zOlvKYNUs1cnS8sAP2f0LdCyyXYf5ncq4p6Suv65kjc2Nd9LRseNSmUTjaPjg=
-X-Received: by 2002:a05:6402:40d0:b0:53e:2af1:e966 with SMTP id
- z16-20020a05640240d000b0053e2af1e966mr9698411edb.1.1697417627935; Sun, 15 Oct
- 2023 17:53:47 -0700 (PDT)
+        Sun, 15 Oct 2023 21:15:55 -0400
+Received: from wxsgout04.xfusion.com (wxsgout03.xfusion.com [36.139.52.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE325A9;
+        Sun, 15 Oct 2023 18:15:50 -0700 (PDT)
+Received: from wuxshcsitd00600.xfusion.com (unknown [10.32.133.213])
+        by wxsgout04.xfusion.com (SkyGuard) with ESMTPS id 4S7zct4knwz9xn1n;
+        Mon, 16 Oct 2023 09:13:02 +0800 (CST)
+Received: from localhost (10.82.147.3) by wuxshcsitd00600.xfusion.com
+ (10.32.133.213) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Mon, 16 Oct
+ 2023 09:15:21 +0800
+Date:   Mon, 16 Oct 2023 09:15:21 +0800
+From:   WangJinchao <wangjinchao@xfusion.com>
+To:     Steffen Klassert <steffen.klassert@secunet.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <stone.xulei@xfusion.com>
+Subject: [PATCH v4] padata: Fix refcnt handling in padata_free_shell()
+Message-ID: <202310160854+0800-wangjinchao@xfusion.com>
 MIME-Version: 1.0
-References: <20231015150732.1991997-1-guoren@kernel.org> <ZSwovaEr5JLrZA6z@debian>
-In-Reply-To: <ZSwovaEr5JLrZA6z@debian>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Mon, 16 Oct 2023 08:53:36 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTRhJj7cTuoeQsb0WA6itR0eFLRoStLXQVCY-HQpu-2qFg@mail.gmail.com>
-Message-ID: <CAJF2gTRhJj7cTuoeQsb0WA6itR0eFLRoStLXQVCY-HQpu-2qFg@mail.gmail.com>
-Subject: Re: [PATCH] set_thread_area.2: Add C-SKY document
-To:     Alejandro Colomar <alx@kernel.org>
-Cc:     arnd@arndb.de, linux-man@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
-        Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-Originating-IP: [10.82.147.3]
+X-ClientProxiedBy: wuxshcsitd00600.xfusion.com (10.32.133.213) To
+ wuxshcsitd00600.xfusion.com (10.32.133.213)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 2:00=E2=80=AFAM Alejandro Colomar <alx@kernel.org> =
-wrote:
->
-> Hi Guo,
->
-> On Sun, Oct 15, 2023 at 11:07:32AM -0400, guoren@kernel.org wrote:
-> > From: Guo Ren <guoren@linux.alibaba.com>
-> >
-> > C-SKY only needs set_thread_area, no need for get_thread_area, the
-> > same as MIPS.
-> >
-> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > Signed-off-by: Guo Ren <guoren@kernel.org>
-> > ---
->
-> Patch applied.
-> <https://www.alejandro-colomar.es/src/alx/linux/man-pages/man-pages.git/c=
-ommit/?h=3Dcontrib&id=3D1c4464ae2c40318b77e125961e24710d1784df5d>
->
-> Thanks!
-> Alex
->
-> >  man2/set_thread_area.2 | 10 +++++-----
-> >  1 file changed, 5 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/man2/set_thread_area.2 b/man2/set_thread_area.2
-> > index 02f65e0418f2..c43a92eb447a 100644
-> > --- a/man2/set_thread_area.2
-> > +++ b/man2/set_thread_area.2
-> > @@ -26,7 +26,7 @@ Standard C library
-> >  .B "int syscall(SYS_get_thread_area);"
-> >  .BI "int syscall(SYS_set_thread_area, unsigned long " tp );
-> >  .PP
-> > -.B #elif defined __mips__
-> > +.B #elif defined(__mips__ || defined __csky__)
->
-> I removed the parentheses here.
-Oops, thanks.
+In a high-load arm64 environment, the pcrypt_aead01 test in LTP can lead
+to system UAF (Use-After-Free) issues. Due to the lengthy analysis of
+the pcrypt_aead01 function call, I'll describe the problem scenario
+using a simplified model:
 
->
-> >  .PP
-> >  .BI "int syscall(SYS_set_thread_area, unsigned long " addr );
-> >  .PP
-> > @@ -42,17 +42,17 @@ These calls provide architecture-specific support f=
-or a thread-local storage
-> >  implementation.
-> >  At the moment,
-> >  .BR set_thread_area ()
-> > -is available on m68k, MIPS, and x86 (both 32-bit and 64-bit variants);
-> > +is available on m68k, MIPS, C-SKY, and x86 (both 32-bit and 64-bit var=
-iants);
-> >  .BR get_thread_area ()
-> >  is available on m68k and x86.
-> >  .PP
-> > -On m68k and MIPS,
-> > +On m68k, MIPS and C-SKY,
-> >  .BR set_thread_area ()
-> >  allows storing an arbitrary pointer (provided in the
-> >  .B tp
-> >  argument on m68k and in the
-> >  .B addr
-> > -argument on MIPS)
-> > +argument on MIPS and C-SKY)
-> >  in the kernel data structure associated with the calling thread;
-> >  this pointer can later be retrieved using
-> >  .BR get_thread_area ()
-> > @@ -139,7 +139,7 @@ return 0 on success, and \-1 on failure, with
-> >  .I errno
-> >  set to indicate the error.
-> >  .PP
-> > -On MIPS and m68k,
-> > +On C-SKY, MIPS and m68k,
-> >  .BR set_thread_area ()
-> >  always returns 0.
-> >  On m68k,
-> > --
-> > 2.36.1
-> >
->
-> --
-> <https://www.alejandro-colomar.es/>
+Suppose there's a user of padata named `user_function` that adheres to
+the padata requirement of calling `padata_free_shell` after `serial()`
+has been invoked, as demonstrated in the following code:
 
+```c
+struct request {
+    struct padata_priv padata;
+    struct completion *done;
+};
 
+void parallel(struct padata_priv *padata) {
+    do_something();
+}
 
---=20
-Best Regards
- Guo Ren
+void serial(struct padata_priv *padata) {
+    struct request *request = container_of(padata,
+    				struct request,
+				padata);
+    complete(request->done);
+}
+
+void user_function() {
+    DECLARE_COMPLETION(done)
+    padata->parallel = parallel;
+    padata->serial = serial;
+    padata_do_parallel();
+    wait_for_completion(&done);
+    padata_free_shell();
+}
+```
+
+In the corresponding padata.c file, there's the following code:
+
+```c
+static void padata_serial_worker(struct work_struct *serial_work) {
+    ...
+    cnt = 0;
+
+    while (!list_empty(&local_list)) {
+        ...
+        padata->serial(padata);
+        cnt++;
+    }
+
+    local_bh_enable();
+
+    if (refcount_sub_and_test(cnt, &pd->refcnt))
+        padata_free_pd(pd);
+}
+```
+
+Because of the high system load and the accumulation of unexecuted
+softirq at this moment, `local_bh_enable()` in padata takes longer
+to execute than usual. Subsequently, when accessing `pd->refcnt`,
+`pd` has already been released by `padata_free_shell()`, resulting
+in a UAF issue with `pd->refcnt`.
+
+The fix is straightforward: add `refcount_dec_and_test` before calling
+`padata_free_pd` in `padata_free_shell`.
+
+Fixes: 07928d9bfc81 ("padata: Remove broken queue flushing")
+
+Signed-off-by: WangJinchao <wangjinchao@xfusion.com>
+Acked-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+---
+V4:
+    Included Daniel's ack
+    Included Herbert's ack
+V3: https://lore.kernel.org/all/ZSDWAcUxXcwD4YUZ@fedora/
+    Included Daniel's ack
+    introduced wrong patch 
+V2: https://lore.kernel.org/all/ZRTLHY5A+VqIKhA2@fedora/
+    To satisfy Sparse, use rcu_dereference_protected.
+    Reported-by: kernel test robot <lkp@intel.com>
+    Closes: https://lore.kernel.org/oe-kbuild-all/202309270829.xHgTOMKw-lkp@intel.com/
+
+V1: https://lore.kernel.org/all/ZRE4XvOOhz4HSOgR@fedora/
+ kernel/padata.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/padata.c b/kernel/padata.c
+index 222d60195de6..73108ac75f03 100644
+--- a/kernel/padata.c
++++ b/kernel/padata.c
+@@ -1102,12 +1102,15 @@ EXPORT_SYMBOL(padata_alloc_shell);
+  */
+ void padata_free_shell(struct padata_shell *ps)
+ {
++	struct parallel_data *pd;
+ 	if (!ps)
+ 		return;
+ 
+ 	mutex_lock(&ps->pinst->lock);
+ 	list_del(&ps->list);
+-	padata_free_pd(rcu_dereference_protected(ps->pd, 1));
++	pd = rcu_dereference_protected(ps->pd, 1);
++	if (refcount_dec_and_test(&pd->refcnt))
++		padata_free_pd(pd);
+ 	mutex_unlock(&ps->pinst->lock);
+ 
+ 	kfree(ps);
+-- 
+2.40.0
+
