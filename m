@@ -2,878 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C7127CAAF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 16:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B25B47CAAFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 16:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233445AbjJPOIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 10:08:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45208 "EHLO
+        id S233656AbjJPOJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 10:09:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229784AbjJPOIm (ORCPT
+        with ESMTP id S229784AbjJPOJK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 10:08:42 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B3CA83;
-        Mon, 16 Oct 2023 07:08:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CCEDC433C8;
-        Mon, 16 Oct 2023 14:08:36 +0000 (UTC)
-Message-ID: <42438ab3-f5c8-4086-9126-634fa079e042@xs4all.nl>
-Date:   Mon, 16 Oct 2023 16:08:34 +0200
+        Mon, 16 Oct 2023 10:09:10 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E1D9B;
+        Mon, 16 Oct 2023 07:09:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697465348; x=1729001348;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   mime-version;
+  bh=yZ3tLGrkukNVUITd3uenwl6hBT9KO+Rsb8aeId3JaVc=;
+  b=l1nExO7DjyXPgQ1cE/GuMQuWgvCG702M3dYq7DvjKArLyao/xJH3d3XI
+   Nl0xTkLQYLzcCgHIyO0RW1XJbIZp0CRv3mIyaRdmsGQY8tUUCQAKpzy7R
+   WpP5o/lpI/hi1F690pmKMRVi7qbb1W8N2j1yYECPpMKzMHy9aDWwLaHgM
+   WlN4II7Y8wkiBgiNlzPASq5TB912CjjPd9fbxtBf649x3ULgIFZKTfc4K
+   So5c9m0RcanaL0/mX9IEpARtlzQW2YRg1p/tTqqJX9pI5eF2T5f/vszKx
+   LejWWl4WA3KAOba6U7c1bJiZfC3uxYWiwBK99VQFjSJFK15vr/3x3uT59
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="370609029"
+X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
+   d="scan'208";a="370609029"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 07:09:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="755703930"
+X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
+   d="scan'208";a="755703930"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 16 Oct 2023 07:09:07 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Mon, 16 Oct 2023 07:09:07 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Mon, 16 Oct 2023 07:09:06 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Mon, 16 Oct 2023 07:09:06 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Mon, 16 Oct 2023 07:09:06 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gHyYNWDaNvEKxK3SxKez9vZZUY1k/JWKZX+e6JbxUJwZXTskLgt0BwsvckE2w/c7VUKLREityqYWcDNwcYrLBFhQOUhn/67aLcmmrXIRTBhR7dr11feOVIIf2qDs7MHRKlutlH9fzkLExg0mFOKpB0KH+w8QbRhydQaTf75nRtgIHtFky615C50LfnapD6rOQeWPABgur1CpCisIz3UoLxUhFE4q0LwLN+9Gp7FfKv47orKNrJl3RNPkSvs+KB2fuKKlKyBGF+lmZY9M5Ca55OnPc4kb5QWwyga9EzZ6qGBZTvHB1Rwg4YRBQNUdYOFRcN86f2jPPzd9tUrPm/QkGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=anIJhHluOVvrdPbMrfDWMAzc8UXSrYagbGM/aRQlVvQ=;
+ b=fyCYZzNOog+m6AOR2PBmUAEjIfmoYMpLkyUmmemEEkf992+V+beBA1IUXliKelSu6ueE0cjy7mL9IVl1WYqk8O8FRAWA85nszYrGL4W3tiB/06M1fZRIqjNIx998rHJCfjx5AMQdS0ujjK73d+jVIiRAiV+nuu3wHENag0zWu/EV7MPllmN2dWVnpH3tjLcqTOzcN2GWWbwukoOvni++ToljACLAqjCn3D/v6EyNgckUsXTBj5hECGoGikCH9LqxRNz7VLfs7y4yzMBmMUDCg0TQHzb0W1qQFifSdwpyIzf/wnRNig0dyC9EapENqrzQ3k3h0K8KPAfjX+lkeG8Wuw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB6779.namprd11.prod.outlook.com (2603:10b6:510:1ca::17)
+ by PH7PR11MB5819.namprd11.prod.outlook.com (2603:10b6:510:13b::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.34; Mon, 16 Oct
+ 2023 14:09:04 +0000
+Received: from PH8PR11MB6779.namprd11.prod.outlook.com
+ ([fe80::134a:412c:eb02:ae17]) by PH8PR11MB6779.namprd11.prod.outlook.com
+ ([fe80::134a:412c:eb02:ae17%5]) with mapi id 15.20.6863.046; Mon, 16 Oct 2023
+ 14:09:04 +0000
+Date:   Mon, 16 Oct 2023 22:08:52 +0800
+From:   kernel test robot <oliver.sang@intel.com>
+To:     Abhinav Singh <singhabhinav9051571833@gmail.com>
+CC:     <oe-lkp@lists.linux.dev>, <lkp@intel.com>,
+        <netdev@vger.kernel.org>, <davem@davemloft.net>,
+        <dsahern@kernel.org>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <linux-kernel-mentees@lists.linuxfoundation.org>,
+        Abhinav Singh <singhabhinav9051571833@gmail.com>,
+        <oliver.sang@intel.com>
+Subject: Re: [PATCH] Remove extra unlock for the mutex
+Message-ID: <202310162034.6677994c-oliver.sang@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231010224630.238254-1-singhabhinav9051571833@gmail.com>
+X-ClientProxiedBy: SI2PR02CA0027.apcprd02.prod.outlook.com
+ (2603:1096:4:195::14) To PH8PR11MB6779.namprd11.prod.outlook.com
+ (2603:10b6:510:1ca::17)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v6 11/11] media: viaudm2m: add virtual driver for
- audio memory to memory
-Content-Language: en-US, nl
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
-        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <1697185865-27528-1-git-send-email-shengjiu.wang@nxp.com>
- <1697185865-27528-12-git-send-email-shengjiu.wang@nxp.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <1697185865-27528-12-git-send-email-shengjiu.wang@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB6779:EE_|PH7PR11MB5819:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0774a151-bccc-4618-93b4-08dbce5173f3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nr5cBFDlWD8s7Uv+ycJwCu1OD6uXLbyFF8GdlpF4bRiamRQwxa1RStOENxcXTpq4Vb7t9GzptTnphCJkaSH7i0enM3Hgpwax/gpT1W6+C3M0pIyYV7nwJDb4IYoYUUZe7fx4nM5gKB3VYs+e8vCJK6p8g15G9ZMOWV0v1KZYUX8HwpnTJ8kxlH4dwotZM/7KeqQAYEzxKKX+stgAfCp2tnQOr1LQsu9WZav7g3WvfWeZQIGMO71GFU7WLuou7wnqpyjNxwGAiU0th8LuItSUO7ax9MKlDPF9A1YK+dAeiGRJ0IHLlSJiq0G0AY4ZpJJVqfjieWjIEukRqpvCx7ltxsGVfkz6cFSExfwd2RrxGKH0XBq7/Mi4iJO+gv43eNPpcOL9QTiemDZyCgTc/ezZp3lU9aiGBWsPsK/JiWa839HOXbOypMY57SvtjZmrVxBMIBgYZjur1V2zYeV9C7Zx5+kL1DauMP1w9URa5F6nzYfA0KLtwhY86zd0dOCBzcta0oWHHUDpdJxzMRhvsFVzBwsgkoFr3D1rIUyNOc/PVE40EW0vIk96LsaOnjqeXPxr+EznJronlud6UlIe4uN+4w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB6779.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(136003)(346002)(396003)(39860400002)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(8936002)(8676002)(4326008)(5660300002)(2906002)(7416002)(41300700001)(86362001)(36756003)(38100700002)(6506007)(82960400001)(107886003)(1076003)(2616005)(26005)(83380400001)(6512007)(478600001)(6666004)(966005)(6486002)(66946007)(66556008)(66476007)(316002)(6916009);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Rh5dG81MCoGB8fQne5JWqjOCn+ZEaf5Q8sxKhl3btpHffmHaoHtzXcTeqvD2?=
+ =?us-ascii?Q?HZrHC8Meu3eC33yQf/uRfbYg9++9c5D0G06zYaxHa7qOkFaBqXkFUADu1XVc?=
+ =?us-ascii?Q?MAoBQvg6JTsQQcSJl60yFX/Sxqa1aHCIP1RuzP+lurTRRsQ2/BJmRdwwdXdJ?=
+ =?us-ascii?Q?kzkzr8U3JkbNc7BpMroVWO9lB3iIDgTcA2mzj5k+YQSr8ZBN0foovY9dDjUz?=
+ =?us-ascii?Q?hr9mPRZiL5Om2aTkbCho02QESHCgJm9sFmdLz/8wxicvocmkpYhBTohcUlVo?=
+ =?us-ascii?Q?cSoeeKR1VKJ0XJt+S0XCpt2dkaxcvyy212XdbV3aSlo1bG/EcthbX+vbdBKp?=
+ =?us-ascii?Q?N/GnfNBx8+seQYjgH/e5vkgICWYljAPS5o8Y4uyXMmDkVaQJA+WVdM4uk0lX?=
+ =?us-ascii?Q?Qg678hnGEv3VFy/EtSdXCxNyhBLcKOXGNu58aTlaR+GX5TkZMfvMJ/buog4v?=
+ =?us-ascii?Q?TiOr0UGMnCeKYr9i3rw4nUiqmAzzrRSWbbzYpi9zJQoAPmlHbgmVecIw6PzC?=
+ =?us-ascii?Q?p+eoE9xe9k4dSbZl/P28cY7XoE9tjOEkvVk+w6xl1oj17NgZ/foNQaezvzrS?=
+ =?us-ascii?Q?8D6YKgoF6JIKTQQYcEBAlrwZVwhgFnlJ9x10gn7Q7X3fbiCKnmjHkbJw/U+H?=
+ =?us-ascii?Q?+jXjKGIa4y4CD+LkjWR1DG9/5+1cwwIz8nV2OAfvFaM0UlRaJvEySgCYVCja?=
+ =?us-ascii?Q?btu1LuQsfIgzI3joZHnfpEMrHIo+iJYfMNtPl2Youf341cCbdPPu4pXX5qyy?=
+ =?us-ascii?Q?IPGzkUAMC8j8qs+FTWBT0GopYGPLl7JhnEbC/jMz+Y+CRTn0uAzPyV8MkeNM?=
+ =?us-ascii?Q?bWThLc1C+/eKYqAI0fZF3Xgw/qV4I5bDeE3eZ+Zml7PYjk4rEd5Y/Po8R9kd?=
+ =?us-ascii?Q?00BD6zRwo24LEQqD0mrCXPwvxxd/QzLuNRPpTHvYexLMsJcYLv3bgMPQR+4G?=
+ =?us-ascii?Q?L84gSEfuhryrxsJfYBHpPjTFAHw8M58AdHkqiox3uOC7b9QfZVlZpoHly/Oy?=
+ =?us-ascii?Q?BYFVgTuBaSe3nomwjEAYLjei/0WwcdTHBABP8040f55oxHUpnZGlSvFDdgTA?=
+ =?us-ascii?Q?1GVTDsu4tKN01dhV5afl36QnCu2/3QWUTxFAhRKgPQan9bVJoyZ6eOgPH1un?=
+ =?us-ascii?Q?2Npcvzf/ijD/yj4IC110OLKjUiAdvVowc2QAGICol1JFEo5I637fxwT24N9h?=
+ =?us-ascii?Q?S9xnWH5kRWhqIPca3acFzhfcbRqYC+KhOt/Wzbsqm9FDZNsQck5qQALX2dyw?=
+ =?us-ascii?Q?hq6JOXKMDYKqTf/UoqVuwy/BJ2w5kp3YYH4erEozMZgUXR8SMCZ3G3iYCaP3?=
+ =?us-ascii?Q?DpOudB8qH8elzgV1j/lBJpOfTvWrN655lYesLmG5eWs/uk4YusRV2CUM/a3o?=
+ =?us-ascii?Q?QO5Vao1ELr9jlbcGAgdIgEe7ZvKJomP1crGEzHsftfA2Z7S8dDatDzjlDVbw?=
+ =?us-ascii?Q?fR3wBhb1MsFV7Gd2cWzLcq963ToWXOBN2OOxyrlX4WMDJLd5xpLFm+oWTpew?=
+ =?us-ascii?Q?UAWaTVgyBYyO6hFSjYLDX7zvp69KqG0hzg6laryQoPXilrxDjClp23rUuOSK?=
+ =?us-ascii?Q?2cZx6q8oZc1u01MQbAASXsLowUzrsDiiiJFrt+08?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0774a151-bccc-4618-93b4-08dbce5173f3
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB6779.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2023 14:09:04.0010
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: opgzIBNRRFha5t7j1UPTlktqCddVTu4IrIKEjI2oFpTsxkyVYVzaeijU3EYxX8DrAyMy64puSzOSEUWxP8T/Og==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB5819
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/2023 10:31, Shengjiu Wang wrote:
-> Audio memory to memory virtual driver use video memory to memory
-> virtual driver vim2m.c as example. The main difference is
-> device type is VFL_TYPE_AUDIO and device cap type is V4L2_CAP_AUDIO_M2M.
-> 
-> The device_run function is a dummy function, which is simply
-> copy the data from input buffer to output buffer.
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  drivers/media/test-drivers/Kconfig    |   9 +
->  drivers/media/test-drivers/Makefile   |   1 +
->  drivers/media/test-drivers/viaudm2m.c | 707 ++++++++++++++++++++++++++
->  3 files changed, 717 insertions(+)
->  create mode 100644 drivers/media/test-drivers/viaudm2m.c
-> 
-> diff --git a/drivers/media/test-drivers/Kconfig b/drivers/media/test-drivers/Kconfig
-> index 459b433e9fae..143d829e1b67 100644
-> --- a/drivers/media/test-drivers/Kconfig
-> +++ b/drivers/media/test-drivers/Kconfig
-> @@ -17,6 +17,15 @@ config VIDEO_VIM2M
->  	  This is a virtual test device for the memory-to-memory driver
->  	  framework.
->  
-> +config VIDEO_VIAUDM2M
-> +	tristate "Virtual Memory-to-Memory Driver For Audio"
 
-I think this is better:
 
-VIDEO_VIM2M_AUDIO
+Hello,
 
-and name the source: vim2m_audio.c.
+kernel test robot noticed "INFO:rcu_sched_self-detected_stall_on_CPU" on:
 
-> +	depends on VIDEO_DEV
-> +	select VIDEOBUF2_VMALLOC
-> +	select V4L2_MEM2MEM_DEV
-> +	help
-> +	  This is a virtual audio test device for the memory-to-memory driver
-> +	  framework.
-> +
->  source "drivers/media/test-drivers/vicodec/Kconfig"
->  source "drivers/media/test-drivers/vimc/Kconfig"
->  source "drivers/media/test-drivers/vivid/Kconfig"
-> diff --git a/drivers/media/test-drivers/Makefile b/drivers/media/test-drivers/Makefile
-> index 740714a4584d..a39d27eb53fa 100644
-> --- a/drivers/media/test-drivers/Makefile
-> +++ b/drivers/media/test-drivers/Makefile
-> @@ -10,6 +10,7 @@ obj-$(CONFIG_DVB_VIDTV) += vidtv/
->  
->  obj-$(CONFIG_VIDEO_VICODEC) += vicodec/
->  obj-$(CONFIG_VIDEO_VIM2M) += vim2m.o
-> +obj-$(CONFIG_VIDEO_VIAUDM2M) += viaudm2m.o
->  obj-$(CONFIG_VIDEO_VIMC) += vimc/
->  obj-$(CONFIG_VIDEO_VIVID) += vivid/
->  obj-$(CONFIG_VIDEO_VISL) += visl/
-> diff --git a/drivers/media/test-drivers/viaudm2m.c b/drivers/media/test-drivers/viaudm2m.c
-> new file mode 100644
-> index 000000000000..5fefd616b6c8
-> --- /dev/null
-> +++ b/drivers/media/test-drivers/viaudm2m.c
-> @@ -0,0 +1,707 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * A virtual v4l2-mem2mem example for audio device.
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/delay.h>
-> +#include <linux/fs.h>
-> +#include <linux/sched.h>
-> +#include <linux/slab.h>
-> +
-> +#include <linux/platform_device.h>
-> +#include <media/v4l2-mem2mem.h>
-> +#include <media/v4l2-device.h>
-> +#include <media/v4l2-ioctl.h>
-> +#include <media/v4l2-ctrls.h>
-> +#include <media/v4l2-event.h>
-> +#include <media/videobuf2-vmalloc.h>
-> +#include <sound/dmaengine_pcm.h>
-> +
-> +MODULE_DESCRIPTION("Virtual device for audio mem2mem testing");
-> +MODULE_LICENSE("GPL");
-> +MODULE_VERSION("0.1");
+commit: f0b98c2f83318c5b0668d160244c97a4c9b4f823 ("[PATCH] Remove extra unlock for the mutex")
+url: https://github.com/intel-lab-lkp/linux/commits/Abhinav-Singh/Remove-extra-unlock-for-the-mutex/20231011-064851
+base: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git 1c8b86a3799f7e5be903c3f49fcdaee29fd385b5
+patch link: https://lore.kernel.org/all/20231010224630.238254-1-singhabhinav9051571833@gmail.com/
+patch subject: [PATCH] Remove extra unlock for the mutex
 
-Drop this, rarely needed.
+in testcase: boot
 
-> +MODULE_ALIAS("audio_mem2mem_testdev");
+compiler: gcc-12
+test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
 
-Drop this as well. I'm not sure why it is in the original vim2m.c source.
+(please refer to attached dmesg/kmsg for entire log/backtrace)
 
-> +
-> +static unsigned int debug;
-> +module_param(debug, uint, 0644);
-> +MODULE_PARM_DESC(debug, "debug level");
-> +
-> +#define MEM2MEM_NAME "viaudm2m"
 
-"vim2m-audio"
 
-> +
-> +#define dprintk(dev, lvl, fmt, arg...) \
-> +	v4l2_dbg(lvl, debug, &(dev)->v4l2_dev, "%s: " fmt, __func__, ## arg)
-> +
-> +#define SAMPLE_NUM 4096
-> +
-> +static void audm2m_dev_release(struct device *dev)
-> +{}
-> +
-> +static struct platform_device audm2m_pdev = {
-> +	.name		= MEM2MEM_NAME,
-> +	.dev.release	= audm2m_dev_release,
-> +};
-> +
-> +struct audm2m_fmt {
-> +	u32	fourcc;
-> +	snd_pcm_format_t        format;
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <oliver.sang@intel.com>
+| Closes: https://lore.kernel.org/oe-lkp/202310162034.6677994c-oliver.sang@intel.com
 
-Same as for the previous driver: I think you can just drop this field and thus
-the whole struct.
 
-> +};
-> +
-> +static struct audm2m_fmt formats[] = {
+[  340.173373][    C0] rcu: INFO: rcu_sched self-detected stall on CPU
+[  340.174586][    C0] rcu: 	0-....: (1 GPs behind) idle=03dc/1/0x4000000000000000 softirq=3450/3451 fqs=24649
+[  340.175977][    C0] rcu: 	(t=100002 jiffies g=3977 q=51 ncpus=2)
+[  340.176937][    C0] CPU: 0 PID: 84 Comm: (sd-listen) Not tainted 6.6.0-rc5-00056-gf0b98c2f8331 #1
+[  340.178240][    C0] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+[ 340.179747][ C0] RIP: 0010:native_queued_spin_lock_slowpath (arch/x86/include/asm/vdso/processor.h:19 arch/x86/include/asm/qspinlock.h:99 kernel/locking/qspinlock.c:327) 
+[ 340.180789][ C0] Code: 55 41 54 55 53 48 89 fb 66 90 ba 01 00 00 00 8b 03 85 c0 75 13 f0 0f b1 13 85 c0 75 f2 5b 5d 41 5c 41 5d c3 cc cc cc cc f3 90 <eb> e3 81 fe 00 01 00 00 74 4a 81 fe ff 00 00 00 77 77 f0 0f ba 2b
+All code
+========
+   0:	55                   	push   %rbp
+   1:	41 54                	push   %r12
+   3:	55                   	push   %rbp
+   4:	53                   	push   %rbx
+   5:	48 89 fb             	mov    %rdi,%rbx
+   8:	66 90                	xchg   %ax,%ax
+   a:	ba 01 00 00 00       	mov    $0x1,%edx
+   f:	8b 03                	mov    (%rbx),%eax
+  11:	85 c0                	test   %eax,%eax
+  13:	75 13                	jne    0x28
+  15:	f0 0f b1 13          	lock cmpxchg %edx,(%rbx)
+  19:	85 c0                	test   %eax,%eax
+  1b:	75 f2                	jne    0xf
+  1d:	5b                   	pop    %rbx
+  1e:	5d                   	pop    %rbp
+  1f:	41 5c                	pop    %r12
+  21:	41 5d                	pop    %r13
+  23:	c3                   	retq   
+  24:	cc                   	int3   
+  25:	cc                   	int3   
+  26:	cc                   	int3   
+  27:	cc                   	int3   
+  28:	f3 90                	pause  
+  2a:*	eb e3                	jmp    0xf		<-- trapping instruction
+  2c:	81 fe 00 01 00 00    	cmp    $0x100,%esi
+  32:	74 4a                	je     0x7e
+  34:	81 fe ff 00 00 00    	cmp    $0xff,%esi
+  3a:	77 77                	ja     0xb3
+  3c:	f0                   	lock
+  3d:	0f                   	.byte 0xf
+  3e:	ba                   	.byte 0xba
+  3f:	2b                   	.byte 0x2b
 
-And this is just a u32 array.
+Code starting with the faulting instruction
+===========================================
+   0:	eb e3                	jmp    0xffffffffffffffe5
+   2:	81 fe 00 01 00 00    	cmp    $0x100,%esi
+   8:	74 4a                	je     0x54
+   a:	81 fe ff 00 00 00    	cmp    $0xff,%esi
+  10:	77 77                	ja     0x89
+  12:	f0                   	lock
+  13:	0f                   	.byte 0xf
+  14:	ba                   	.byte 0xba
+  15:	2b                   	.byte 0x2b
+[  340.183349][    C0] RSP: 0018:ffffb338c047fdc8 EFLAGS: 00000202
+[  340.184239][    C0] RAX: 0000000000000001 RBX: ffff9f0300e68d60 RCX: ffff9f03003b6bf8
+[  340.185380][    C0] RDX: 0000000000000001 RSI: 0000000000000001 RDI: ffff9f0300e68d60
+[  340.186574][    C0] RBP: 000000000000006f R08: 0000000000000000 R09: 0000000000000000
+[  340.187764][    C0] R10: 0000000000000000 R11: 0000000000000000 R12: ffffffff86d34d40
+[  340.188949][    C0] R13: 0000000000000000 R14: ffffffff86d37a80 R15: ffff9f0300e68d60
+[  340.190188][    C0] FS:  00007f34324f1900(0000) GS:ffff9f062fc00000(0000) knlGS:0000000000000000
+[  340.191487][    C0] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  340.192453][    C0] CR2: 000055e1849fc3fc CR3: 0000000100856000 CR4: 00000000000406f0
+[  340.193640][    C0] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[  340.194791][    C0] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[  340.195997][    C0] Call Trace:
+[  340.196616][    C0]  <IRQ>
+[ 340.197133][ C0] ? rcu_dump_cpu_stacks (kernel/rcu/tree_stall.h:372) 
+[ 340.197953][ C0] ? print_cpu_stall (kernel/rcu/tree_stall.h:692) 
+[ 340.198677][ C0] ? check_cpu_stall (kernel/rcu/tree_stall.h:775) 
+[ 340.199433][ C0] ? rcu_pending (kernel/rcu/tree_nocb.h:1018 kernel/rcu/tree.c:3865) 
+[ 340.200129][ C0] ? rcu_sched_clock_irq (kernel/rcu/tree.c:2240) 
+[ 340.200928][ C0] ? update_process_times (arch/x86/include/asm/preempt.h:27 kernel/time/timer.c:2073) 
+[ 340.201731][ C0] ? tick_sched_handle (kernel/time/tick-sched.c:255) 
+[ 340.202471][ C0] ? tick_sched_timer (kernel/time/tick-sched.c:1497) 
+[ 340.203215][ C0] ? __pfx_tick_sched_timer (kernel/time/tick-sched.c:1479) 
+[ 340.204056][ C0] ? __hrtimer_run_queues (kernel/time/hrtimer.c:1688 kernel/time/hrtimer.c:1752) 
+[ 340.204889][ C0] ? hrtimer_interrupt (kernel/time/hrtimer.c:1817) 
+[ 340.205654][ C0] ? __sysvec_apic_timer_interrupt (arch/x86/include/asm/jump_label.h:27 include/linux/jump_label.h:207 arch/x86/include/asm/trace/irq_vectors.h:41 arch/x86/kernel/apic/apic.c:1081) 
+[ 340.206540][ C0] ? sysvec_apic_timer_interrupt (arch/x86/kernel/apic/apic.c:1074 (discriminator 14)) 
+[  340.207374][    C0]  </IRQ>
+[  340.207877][    C0]  <TASK>
+[ 340.208388][ C0] ? asm_sysvec_apic_timer_interrupt (arch/x86/include/asm/idtentry.h:645) 
+[ 340.209329][ C0] ? native_queued_spin_lock_slowpath (arch/x86/include/asm/vdso/processor.h:19 arch/x86/include/asm/qspinlock.h:99 kernel/locking/qspinlock.c:327) 
+[ 340.210253][ C0] _raw_spin_lock_bh (arch/x86/include/asm/paravirt.h:586 arch/x86/include/asm/qspinlock.h:51 include/asm-generic/qspinlock.h:114 include/linux/spinlock.h:187 include/linux/spinlock_api_smp.h:127 kernel/locking/spinlock.c:178) 
+[ 340.210996][ C0] inet_csk_get_port (net/ipv4/inet_connection_sock.c:536) 
+[ 340.211757][ C0] inet_csk_listen_start (net/ipv4/inet_connection_sock.c:1255) 
+[ 340.212570][ C0] __inet_listen_sk (net/ipv4/af_inet.c:218) 
+[ 340.213320][ C0] ? __cond_resched (kernel/sched/core.c:8581) 
+[ 340.214041][ C0] ? aa_sk_perm (security/apparmor/include/cred.h:153 security/apparmor/net.c:176) 
+[ 340.214778][ C0] ? __cond_resched (kernel/sched/core.c:8581) 
+[ 340.215488][ C0] ? lock_sock_nested (net/core/sock.c:3509) 
+[ 340.216234][ C0] inet_listen (net/ipv4/af_inet.c:239) 
+[ 340.216950][ C0] __sys_listen (include/linux/file.h:32 net/socket.c:1885) 
+[ 340.217686][ C0] __x64_sys_listen (net/socket.c:1892 net/socket.c:1890 net/socket.c:1890) 
+[ 340.218414][ C0] do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80) 
+[ 340.219135][ C0] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:120) 
+[  340.220005][    C0] RIP: 0033:0x7f3432ccefa7
+[ 340.220771][ C0] Code: f0 ff ff 73 01 c3 48 8b 0d e6 ee 0b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 32 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d b9 ee 0b 00 f7 d8 64 89 01 48
+All code
+========
+   0:	f0 ff                	lock (bad) 
+   2:	ff 73 01             	pushq  0x1(%rbx)
+   5:	c3                   	retq   
+   6:	48 8b 0d e6 ee 0b 00 	mov    0xbeee6(%rip),%rcx        # 0xbeef3
+   d:	f7 d8                	neg    %eax
+   f:	64 89 01             	mov    %eax,%fs:(%rcx)
+  12:	48 83 c8 ff          	or     $0xffffffffffffffff,%rax
+  16:	c3                   	retq   
+  17:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
+  1e:	00 00 00 
+  21:	66 90                	xchg   %ax,%ax
+  23:	b8 32 00 00 00       	mov    $0x32,%eax
+  28:	0f 05                	syscall 
+  2a:*	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax		<-- trapping instruction
+  30:	73 01                	jae    0x33
+  32:	c3                   	retq   
+  33:	48 8b 0d b9 ee 0b 00 	mov    0xbeeb9(%rip),%rcx        # 0xbeef3
+  3a:	f7 d8                	neg    %eax
+  3c:	64 89 01             	mov    %eax,%fs:(%rcx)
+  3f:	48                   	rex.W
 
-> +	{
-> +		.fourcc = V4L2_AUDIO_FMT_S8,
-> +	},
-> +	{
-> +		.fourcc = V4L2_AUDIO_FMT_S16_LE,
-> +	},
-> +	{
-> +		.fourcc = V4L2_AUDIO_FMT_U16_LE,
-> +	},
-> +	{
-> +		.fourcc = V4L2_AUDIO_FMT_S24_LE,
-> +	},
-> +	{
-> +		.fourcc = V4L2_AUDIO_FMT_S24_3LE,
-> +	},
-> +	{
-> +		.fourcc = V4L2_AUDIO_FMT_U24_LE,
-> +	},
-> +	{
-> +		.fourcc = V4L2_AUDIO_FMT_U24_3LE,
-> +	},
-> +	{
-> +		.fourcc = V4L2_AUDIO_FMT_S32_LE,
-> +	},
-> +	{
-> +		.fourcc = V4L2_AUDIO_FMT_U32_LE,
-> +	},
-> +	{
-> +		.fourcc = V4L2_AUDIO_FMT_S20_3LE,
-> +	},
-> +	{
-> +		.fourcc = V4L2_AUDIO_FMT_U20_3LE,
-> +	},
-> +};
-> +
-> +#define NUM_FORMATS ARRAY_SIZE(formats)
-> +
-> +/* Per-queue, driver-specific private data */
-> +struct audm2m_q_data {
-> +	unsigned int		rate;
-> +	unsigned int		channels;
-> +	unsigned int		buffersize;
-> +	struct audm2m_fmt	*fmt;
-> +};
-> +
-> +enum {
-> +	V4L2_M2M_SRC = 0,
-> +	V4L2_M2M_DST = 1,
-> +};
-> +
-> +static struct audm2m_fmt *find_format(u32 fourcc)
-> +{
-> +	struct audm2m_fmt *fmt;
-> +	unsigned int k;
-> +
-> +	for (k = 0; k < NUM_FORMATS; k++) {
-> +		fmt = &formats[k];
-> +		if (fmt->fourcc == fourcc)
-> +			break;
-> +	}
-> +
-> +	if (k == NUM_FORMATS)
-> +		return NULL;
-> +
-> +	formats[k].format = (__force snd_pcm_format_t)v4l2_fourcc_to_audfmt(formats[k].fourcc);
-> +
-> +	return &formats[k];
-> +}
-> +
-> +struct audm2m_dev {
-> +	struct v4l2_device	v4l2_dev;
-> +	struct video_device	vfd;
-> +
-> +	struct mutex		dev_mutex;
-> +
-> +	struct v4l2_m2m_dev	*m2m_dev;
-> +};
-> +
-> +struct audm2m_ctx {
-> +	struct v4l2_fh		fh;
-> +	struct audm2m_dev	*dev;
-> +
-> +	struct mutex		vb_mutex;
-> +
-> +	/* Source and destination queue data */
-> +	struct audm2m_q_data   q_data[2];
-> +};
-> +
-> +static inline struct audm2m_ctx *file2ctx(struct file *file)
-> +{
-> +	return container_of(file->private_data, struct audm2m_ctx, fh);
-> +}
-> +
-> +static struct audm2m_q_data *get_q_data(struct audm2m_ctx *ctx,
-> +					enum v4l2_buf_type type)
-> +{
-> +	if (type == V4L2_BUF_TYPE_AUDIO_OUTPUT)
-> +		return &ctx->q_data[V4L2_M2M_SRC];
-> +	return &ctx->q_data[V4L2_M2M_DST];
-> +}
-> +
-> +static const char *type_name(enum v4l2_buf_type type)
-> +{
-> +	if (type == V4L2_BUF_TYPE_AUDIO_OUTPUT)
-> +		return "Output";
-> +	return "Capture";
-> +}
-> +
-> +/*
-> + * mem2mem callbacks
-> + */
-> +
-> +/*
-> + * device_run() - prepares and starts the device
-> + */
-> +static void device_run(void *priv)
-> +{
-> +	struct audm2m_ctx *ctx = priv;
-> +	struct audm2m_dev *audm2m_dev;
-> +	struct vb2_v4l2_buffer *src_buf, *dst_buf;
-> +	struct audm2m_q_data *q_data_src, *q_data_dst;
-> +	int src_size, dst_size;
-> +
-> +	audm2m_dev = ctx->dev;
-> +
-> +	q_data_src = get_q_data(ctx, V4L2_BUF_TYPE_AUDIO_OUTPUT);
-> +	if (!q_data_src)
-> +		return;
-> +
-> +	q_data_dst = get_q_data(ctx, V4L2_BUF_TYPE_AUDIO_CAPTURE);
-> +	if (!q_data_dst)
-> +		return;
-> +
-> +	src_buf = v4l2_m2m_next_src_buf(ctx->fh.m2m_ctx);
-> +	dst_buf = v4l2_m2m_next_dst_buf(ctx->fh.m2m_ctx);
-> +
-> +	/* Process the conversion */
-> +	src_size = vb2_get_plane_payload(&src_buf->vb2_buf, 0);
-> +
-> +	if (src_size > q_data_dst->buffersize)
-> +		dst_size = q_data_dst->buffersize;
-> +	else
-> +		dst_size = src_size;
-> +
-> +	memcpy(vb2_plane_vaddr(&dst_buf->vb2_buf, 0),
-> +	       vb2_plane_vaddr(&src_buf->vb2_buf, 0),
-> +	       dst_size);
-> +
-> +	vb2_set_plane_payload(&dst_buf->vb2_buf, 0, dst_size);
-> +
-> +	src_buf = v4l2_m2m_src_buf_remove(ctx->fh.m2m_ctx);
-> +	dst_buf = v4l2_m2m_dst_buf_remove(ctx->fh.m2m_ctx);
-> +
-> +	v4l2_m2m_buf_done(src_buf, VB2_BUF_STATE_DONE);
-> +	v4l2_m2m_buf_done(dst_buf, VB2_BUF_STATE_DONE);
-> +	v4l2_m2m_job_finish(audm2m_dev->m2m_dev, ctx->fh.m2m_ctx);
-> +}
-> +
-> +static int audm2m_querycap(struct file *file, void *priv,
-> +			   struct v4l2_capability *cap)
-> +{
-> +	strscpy(cap->driver, MEM2MEM_NAME, sizeof(cap->driver));
-> +	strscpy(cap->card, MEM2MEM_NAME, sizeof(cap->card));
-> +	snprintf(cap->bus_info, sizeof(cap->bus_info),
-> +		 "platform:%s", MEM2MEM_NAME);
-> +
-> +	return 0;
-> +}
-> +
-> +static int enum_fmt(struct v4l2_fmtdesc *f)
-> +{
-> +	int i, num;
-> +	struct audm2m_fmt *fmt;
-> +
-> +	num = 0;
-> +
-> +	for (i = 0; i < NUM_FORMATS; ++i) {
-> +		if (num == f->index)
-> +			break;
-> +		/*
-> +		 * Correct type but haven't reached our index yet,
-> +		 * just increment per-type index
-> +		 */
-> +		++num;
-> +	}
-> +
-> +	if (i < NUM_FORMATS) {
-> +		/* Format found */
-> +		fmt = &formats[i];
-> +		f->pixelformat = fmt->fourcc;
-> +		return 0;
-> +	}
-> +
-> +	/* Format not found */
-> +	return -EINVAL;
-> +}
-> +
-> +static int audm2m_enum_fmt_audio_cap(struct file *file, void *priv,
-> +				     struct v4l2_fmtdesc *f)
-> +{
-> +	return enum_fmt(f);
-> +}
-> +
-> +static int audm2m_enum_fmt_audio_out(struct file *file, void *priv,
-> +				     struct v4l2_fmtdesc *f)
-> +{
-> +	return enum_fmt(f);
-> +}
-> +
-> +static int audm2m_g_fmt(struct audm2m_ctx *ctx, struct v4l2_format *f)
-> +{
-> +	struct vb2_queue *vq;
-> +	struct audm2m_q_data *q_data;
-> +
-> +	vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx, f->type);
-> +	if (!vq)
-> +		return -EINVAL;
-> +
-> +	q_data = get_q_data(ctx, f->type);
-> +	if (!q_data)
-> +		return -EINVAL;
-> +
-> +	f->fmt.audio.audioformat = q_data->fmt->fourcc;
-> +	f->fmt.audio.channels	= q_data->channels;
-> +	f->fmt.audio.buffersize = q_data->buffersize;
-> +
-> +	return 0;
-> +}
-> +
-> +static int audm2m_g_fmt_audio_out(struct file *file, void *priv,
-> +				  struct v4l2_format *f)
-> +{
-> +	return audm2m_g_fmt(file2ctx(file), f);
-> +}
-> +
-> +static int audm2m_g_fmt_audio_cap(struct file *file, void *priv,
-> +				  struct v4l2_format *f)
-> +{
-> +	return audm2m_g_fmt(file2ctx(file), f);
-> +}
-> +
-> +static int audm2m_try_fmt(struct v4l2_format *f, struct audm2m_fmt *fmt)
-> +{
-> +	if (f->fmt.audio.channels < 1)
-> +		f->fmt.audio.channels = 1;
-> +	else if (f->fmt.audio.channels > 8)
-> +		f->fmt.audio.channels = 8;
-> +
-> +	f->fmt.audio.buffersize = f->fmt.audio.channels *
-> +				  snd_pcm_format_physical_width(fmt->format) *
-> +				  SAMPLE_NUM;
-> +	return 0;
-> +}
-> +
-> +static int audm2m_try_fmt_audio_cap(struct file *file, void *priv,
-> +				    struct v4l2_format *f)
-> +{
-> +	struct audm2m_fmt *fmt;
-> +
-> +	fmt = find_format(f->fmt.audio.audioformat);
-> +	if (!fmt) {
-> +		f->fmt.audio.audioformat = formats[0].fourcc;
-> +		fmt = find_format(f->fmt.audio.audioformat);
-> +	}
-> +
-> +	return audm2m_try_fmt(f, fmt);
-> +}
-> +
-> +static int audm2m_try_fmt_audio_out(struct file *file, void *priv,
-> +				    struct v4l2_format *f)
-> +{
-> +	struct audm2m_fmt *fmt;
-> +
-> +	fmt = find_format(f->fmt.audio.audioformat);
-> +	if (!fmt) {
-> +		f->fmt.audio.audioformat = formats[0].fourcc;
-> +		fmt = find_format(f->fmt.audio.audioformat);
-> +	}
-> +
-> +	return audm2m_try_fmt(f, fmt);
-> +}
-> +
-> +static int audm2m_s_fmt(struct audm2m_ctx *ctx, struct v4l2_format *f)
-> +{
-> +	struct audm2m_q_data *q_data;
-> +	struct vb2_queue *vq;
-> +
-> +	vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx, f->type);
-> +	if (!vq)
-> +		return -EINVAL;
-> +
-> +	q_data = get_q_data(ctx, f->type);
-> +	if (!q_data)
-> +		return -EINVAL;
-> +
-> +	if (vb2_is_busy(vq)) {
-> +		v4l2_err(&ctx->dev->v4l2_dev, "%s queue busy\n", __func__);
-> +		return -EBUSY;
-> +	}
-> +
-> +	q_data->fmt	= find_format(f->fmt.audio.audioformat);
-> +	q_data->channels = f->fmt.audio.channels;
-> +	q_data->buffersize = q_data->channels *
-> +			     snd_pcm_format_physical_width(q_data->fmt->format) *
-> +			     SAMPLE_NUM;
-> +
-> +	dprintk(ctx->dev, 1,
-> +		"Format for type %s: %d/%d, fmt: %c%c%c%c\n",
-> +		type_name(f->type), q_data->rate,
-> +		q_data->channels,
-> +		(q_data->fmt->fourcc & 0xff),
-> +		(q_data->fmt->fourcc >>  8) & 0xff,
-> +		(q_data->fmt->fourcc >> 16) & 0xff,
-> +		(q_data->fmt->fourcc >> 24) & 0xff);
-> +
-> +	return 0;
-> +}
-> +
-> +static int audm2m_s_fmt_audio_cap(struct file *file, void *priv,
-> +				  struct v4l2_format *f)
-> +{
-> +	int ret;
-> +
-> +	ret = audm2m_try_fmt_audio_cap(file, priv, f);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return audm2m_s_fmt(file2ctx(file), f);
-> +}
-> +
-> +static int audm2m_s_fmt_audio_out(struct file *file, void *priv,
-> +				  struct v4l2_format *f)
-> +{
-> +	int ret;
-> +
-> +	ret = audm2m_try_fmt_audio_out(file, priv, f);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return audm2m_s_fmt(file2ctx(file), f);
-> +}
-> +
-> +static const struct v4l2_ioctl_ops audm2m_ioctl_ops = {
-> +	.vidioc_querycap		= audm2m_querycap,
-> +
-> +	.vidioc_enum_fmt_audio_cap	= audm2m_enum_fmt_audio_cap,
-> +	.vidioc_g_fmt_audio_cap		= audm2m_g_fmt_audio_cap,
-> +	.vidioc_try_fmt_audio_cap	= audm2m_try_fmt_audio_cap,
-> +	.vidioc_s_fmt_audio_cap		= audm2m_s_fmt_audio_cap,
-> +
-> +	.vidioc_enum_fmt_audio_out	= audm2m_enum_fmt_audio_out,
-> +	.vidioc_g_fmt_audio_out		= audm2m_g_fmt_audio_out,
-> +	.vidioc_try_fmt_audio_out	= audm2m_try_fmt_audio_out,
-> +	.vidioc_s_fmt_audio_out		= audm2m_s_fmt_audio_out,
-> +
-> +	.vidioc_reqbufs			= v4l2_m2m_ioctl_reqbufs,
-> +	.vidioc_querybuf		= v4l2_m2m_ioctl_querybuf,
-> +	.vidioc_qbuf			= v4l2_m2m_ioctl_qbuf,
-> +	.vidioc_dqbuf			= v4l2_m2m_ioctl_dqbuf,
-> +	.vidioc_prepare_buf		= v4l2_m2m_ioctl_prepare_buf,
-> +	.vidioc_create_bufs		= v4l2_m2m_ioctl_create_bufs,
-> +	.vidioc_expbuf			= v4l2_m2m_ioctl_expbuf,
-> +
-> +	.vidioc_streamon		= v4l2_m2m_ioctl_streamon,
-> +	.vidioc_streamoff		= v4l2_m2m_ioctl_streamoff,
-> +
-> +	.vidioc_subscribe_event		= v4l2_ctrl_subscribe_event,
-> +	.vidioc_unsubscribe_event	= v4l2_event_unsubscribe,
-> +};
-> +
-> +/*
-> + * Queue operations
-> + */
-> +static int audm2m_queue_setup(struct vb2_queue *vq,
-> +			      unsigned int *nbuffers,
-> +			      unsigned int *nplanes,
-> +			      unsigned int sizes[],
-> +			      struct device *alloc_devs[])
-> +{
-> +	struct audm2m_ctx *ctx = vb2_get_drv_priv(vq);
-> +	struct audm2m_q_data *q_data;
-> +
-> +	q_data = get_q_data(ctx, vq->type);
-> +
-> +	if (*nplanes)
-> +		return sizes[0] < q_data->buffersize ? -EINVAL : 0;
-> +
-> +	*nplanes = 1;
-> +	sizes[0] = q_data->buffersize;
-> +
-> +	dprintk(ctx->dev, 1, "%s: get %d buffer(s) of size %d each.\n",
-> +		type_name(vq->type), *nplanes, sizes[0]);
-> +
-> +	return 0;
-> +}
-> +
-> +static void audm2m_buf_queue(struct vb2_buffer *vb)
-> +{
-> +	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
-> +	struct audm2m_ctx *ctx = vb2_get_drv_priv(vb->vb2_queue);
-> +
-> +	v4l2_m2m_buf_queue(ctx->fh.m2m_ctx, vbuf);
-> +}
-> +
-> +static void audm2m_stop_streaming(struct vb2_queue *q)
-> +{
-> +	struct audm2m_ctx *ctx = vb2_get_drv_priv(q);
-> +	struct vb2_v4l2_buffer *vbuf;
-> +
-> +	for (;;) {
-> +		if (V4L2_TYPE_IS_OUTPUT(q->type))
-> +			vbuf = v4l2_m2m_src_buf_remove(ctx->fh.m2m_ctx);
-> +		else
-> +			vbuf = v4l2_m2m_dst_buf_remove(ctx->fh.m2m_ctx);
-> +		if (!vbuf)
-> +			return;
-> +		v4l2_m2m_buf_done(vbuf, VB2_BUF_STATE_ERROR);
-> +	}
-> +}
-> +
-> +static const struct vb2_ops audm2m_qops = {
-> +	.queue_setup	 = audm2m_queue_setup,
-> +	.buf_queue	 = audm2m_buf_queue,
-> +	.stop_streaming  = audm2m_stop_streaming,
-> +	.wait_prepare	 = vb2_ops_wait_prepare,
-> +	.wait_finish	 = vb2_ops_wait_finish,
-> +};
-> +
-> +static int queue_init(void *priv, struct vb2_queue *src_vq,
-> +		      struct vb2_queue *dst_vq)
-> +{
-> +	struct audm2m_ctx *ctx = priv;
-> +	int ret;
-> +
-> +	src_vq->type = V4L2_BUF_TYPE_AUDIO_OUTPUT;
-> +	src_vq->io_modes = VB2_MMAP | VB2_DMABUF;
-> +	src_vq->drv_priv = ctx;
-> +	src_vq->buf_struct_size = sizeof(struct v4l2_m2m_buffer);
-> +	src_vq->ops = &audm2m_qops;
-> +	src_vq->mem_ops = &vb2_vmalloc_memops;
-> +	src_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
-> +	src_vq->lock = &ctx->vb_mutex;
-> +	src_vq->min_buffers_needed = 1;
-> +
-> +	ret = vb2_queue_init(src_vq);
-> +	if (ret)
-> +		return ret;
-> +
-> +	dst_vq->type = V4L2_BUF_TYPE_AUDIO_CAPTURE;
-> +	dst_vq->io_modes = VB2_MMAP | VB2_DMABUF;
-> +	dst_vq->drv_priv = ctx;
-> +	dst_vq->buf_struct_size = sizeof(struct v4l2_m2m_buffer);
-> +	dst_vq->ops = &audm2m_qops;
-> +	dst_vq->mem_ops = &vb2_vmalloc_memops;
-> +	dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
-> +	dst_vq->lock = &ctx->vb_mutex;
-> +	dst_vq->min_buffers_needed = 1;
-> +
-> +	return vb2_queue_init(dst_vq);
-> +}
-> +
-> +/*
-> + * File operations
-> + */
-> +static int audm2m_open(struct file *file)
-> +{
-> +	struct audm2m_dev *dev = video_drvdata(file);
-> +	struct audm2m_ctx *ctx = NULL;
-> +	int width;
-> +	int rc = 0;
-> +
-> +	if (mutex_lock_interruptible(&dev->dev_mutex))
-> +		return -ERESTARTSYS;
-> +	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
-> +	if (!ctx) {
-> +		rc = -ENOMEM;
-> +		goto open_unlock;
-> +	}
-> +
-> +	v4l2_fh_init(&ctx->fh, video_devdata(file));
-> +	file->private_data = &ctx->fh;
-> +	ctx->dev = dev;
-> +
-> +	ctx->q_data[V4L2_M2M_SRC].fmt = &formats[0];
-> +	ctx->q_data[V4L2_M2M_SRC].rate = 8000;
-> +	ctx->q_data[V4L2_M2M_SRC].channels = 2;
-> +
-> +	/* Fix to 4096 samples */
-> +	width = snd_pcm_format_physical_width(formats[0].format);
-> +	ctx->q_data[V4L2_M2M_SRC].buffersize = SAMPLE_NUM * 2 * width;
-> +	ctx->q_data[V4L2_M2M_DST] = ctx->q_data[V4L2_M2M_SRC];
-> +
-> +	ctx->fh.m2m_ctx = v4l2_m2m_ctx_init(dev->m2m_dev, ctx, &queue_init);
-> +
-> +	mutex_init(&ctx->vb_mutex);
-> +
-> +	if (IS_ERR(ctx->fh.m2m_ctx)) {
-> +		rc = PTR_ERR(ctx->fh.m2m_ctx);
-> +
-> +		v4l2_fh_exit(&ctx->fh);
-> +		kfree(ctx);
-> +		goto open_unlock;
-> +	}
-> +
-> +	v4l2_fh_add(&ctx->fh);
-> +
-> +	dprintk(dev, 1, "Created instance: %p, m2m_ctx: %p\n",
-> +		ctx, ctx->fh.m2m_ctx);
-> +
-> +open_unlock:
-> +	mutex_unlock(&dev->dev_mutex);
-> +	return rc;
-> +}
-> +
-> +static int audm2m_release(struct file *file)
-> +{
-> +	struct audm2m_dev *dev = video_drvdata(file);
-> +	struct audm2m_ctx *ctx = file2ctx(file);
-> +
-> +	dprintk(dev, 1, "Releasing instance %p\n", ctx);
-> +
-> +	v4l2_fh_del(&ctx->fh);
-> +	v4l2_fh_exit(&ctx->fh);
-> +	mutex_lock(&dev->dev_mutex);
-> +	v4l2_m2m_ctx_release(ctx->fh.m2m_ctx);
-> +	mutex_unlock(&dev->dev_mutex);
-> +	kfree(ctx);
-> +
-> +	return 0;
-> +}
-> +
-> +static void audm2m_device_release(struct video_device *vdev)
-> +{
-> +	struct audm2m_dev *dev = container_of(vdev, struct audm2m_dev, vfd);
-> +
-> +	v4l2_device_unregister(&dev->v4l2_dev);
-> +	v4l2_m2m_release(dev->m2m_dev);
-> +
-> +	kfree(dev);
-> +}
-> +
-> +static const struct v4l2_file_operations audm2m_fops = {
-> +	.owner		= THIS_MODULE,
-> +	.open		= audm2m_open,
-> +	.release	= audm2m_release,
-> +	.poll		= v4l2_m2m_fop_poll,
-> +	.unlocked_ioctl	= video_ioctl2,
-> +	.mmap		= v4l2_m2m_fop_mmap,
-> +};
-> +
-> +static const struct video_device audm2m_videodev = {
-> +	.name		= MEM2MEM_NAME,
-> +	.vfl_dir	= VFL_DIR_M2M,
-> +	.fops		= &audm2m_fops,
-> +	.ioctl_ops	= &audm2m_ioctl_ops,
-> +	.minor		= -1,
-> +	.release	= audm2m_device_release,
-> +	.device_caps	= V4L2_CAP_AUDIO_M2M | V4L2_CAP_STREAMING,
-> +};
-> +
-> +static const struct v4l2_m2m_ops m2m_ops = {
-> +	.device_run	= device_run,
-> +};
-> +
-> +static int audm2m_probe(struct platform_device *pdev)
-> +{
-> +	struct audm2m_dev *dev;
-> +	struct video_device *vfd;
-> +	int ret;
-> +
-> +	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
-> +	if (!dev)
-> +		return -ENOMEM;
-> +
-> +	ret = v4l2_device_register(&pdev->dev, &dev->v4l2_dev);
-> +	if (ret)
-> +		goto error_free;
-> +
-> +	mutex_init(&dev->dev_mutex);
-> +
-> +	dev->vfd = audm2m_videodev;
-> +	vfd = &dev->vfd;
-> +	vfd->lock = &dev->dev_mutex;
-> +	vfd->v4l2_dev = &dev->v4l2_dev;
-> +
-> +	video_set_drvdata(vfd, dev);
-> +	v4l2_info(&dev->v4l2_dev,
-> +		  "Device registered as /dev/v4l-audio%d\n", vfd->num);
-> +
-> +	platform_set_drvdata(pdev, dev);
-> +
-> +	dev->m2m_dev = v4l2_m2m_init(&m2m_ops);
-> +	if (IS_ERR(dev->m2m_dev)) {
-> +		v4l2_err(&dev->v4l2_dev, "Failed to init mem2mem device\n");
-> +		ret = PTR_ERR(dev->m2m_dev);
-> +		dev->m2m_dev = NULL;
-> +		goto error_dev;
-> +	}
-> +
-> +	ret = video_register_device(vfd, VFL_TYPE_AUDIO, 0);
-> +	if (ret) {
-> +		v4l2_err(&dev->v4l2_dev, "Failed to register video device\n");
-> +		goto error_m2m;
-> +	}
-> +
-> +	return 0;
-> +
-> +error_m2m:
-> +	v4l2_m2m_release(dev->m2m_dev);
-> +error_dev:
-> +	v4l2_device_unregister(&dev->v4l2_dev);
-> +error_free:
-> +	kfree(dev);
-> +
-> +	return ret;
-> +}
-> +
-> +static void audm2m_remove(struct platform_device *pdev)
-> +{
-> +	struct audm2m_dev *dev = platform_get_drvdata(pdev);
-> +
-> +	v4l2_info(&dev->v4l2_dev, "Removing " MEM2MEM_NAME);
-> +
-> +	video_unregister_device(&dev->vfd);
-> +}
-> +
-> +static struct platform_driver audm2m_pdrv = {
-> +	.probe		= audm2m_probe,
-> +	.remove_new	= audm2m_remove,
-> +	.driver		= {
-> +		.name	= MEM2MEM_NAME,
-> +	},
-> +};
-> +
-> +static void __exit audm2m_exit(void)
-> +{
-> +	platform_driver_unregister(&audm2m_pdrv);
-> +	platform_device_unregister(&audm2m_pdev);
-> +}
-> +
-> +static int __init audm2m_init(void)
-> +{
-> +	int ret;
-> +
-> +	ret = platform_device_register(&audm2m_pdev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = platform_driver_register(&audm2m_pdrv);
-> +	if (ret)
-> +		platform_device_unregister(&audm2m_pdev);
-> +
-> +	return ret;
-> +}
-> +
-> +module_init(audm2m_init);
-> +module_exit(audm2m_exit);
+Code starting with the faulting instruction
+===========================================
+   0:	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax
+   6:	73 01                	jae    0x9
+   8:	c3                   	retq   
+   9:	48 8b 0d b9 ee 0b 00 	mov    0xbeeb9(%rip),%rcx        # 0xbeec9
+  10:	f7 d8                	neg    %eax
+  12:	64 89 01             	mov    %eax,%fs:(%rcx)
+  15:	48                   	rex.W
 
-Regards,
 
-	Hans
+The kernel config and materials to reproduce are available at:
+https://download.01.org/0day-ci/archive/20231016/202310162034.6677994c-oliver.sang@intel.com
+
+
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
