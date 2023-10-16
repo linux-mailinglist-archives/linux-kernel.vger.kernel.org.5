@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD2C7C9E93
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 07:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0DA7C9E96
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 07:18:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbjJPFQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 01:16:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48092 "EHLO
+        id S229727AbjJPFSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 01:18:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjJPFQP (ORCPT
+        with ESMTP id S229478AbjJPFSK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 01:16:15 -0400
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA946E5;
-        Sun, 15 Oct 2023 22:16:13 -0700 (PDT)
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5384975e34cso7253860a12.0;
-        Sun, 15 Oct 2023 22:16:13 -0700 (PDT)
+        Mon, 16 Oct 2023 01:18:10 -0400
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A3E5A1;
+        Sun, 15 Oct 2023 22:18:09 -0700 (PDT)
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-53db1fbee70so6803726a12.2;
+        Sun, 15 Oct 2023 22:18:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697433372; x=1698038172;
+        d=1e100.net; s=20230601; t=1697433487; x=1698038287;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yyVPB9/At+TkspWxEVEfv/uWJjL6tKju7pLG3JHLZ0c=;
-        b=aQ630HJdVTUCcXpiEU03X7B+rl3gy6kjy+JK+rcaH3rqjnY9e1NnyrQmCYgXEHd7g3
-         bhFYzMoj0aAc3UZ1uSbdtw8uUuv/GErXnNFQN3+6ETaP4bbhhv2WBKGYp7JBHXe0Gu9u
-         dTa06nQ3Z1iufJRN0XJNqZW2sZJIJU9EPxU6luuTMNgiVbtQxkPKoj9CZFaCpookCX6G
-         +QSLVqX7jjtcbCYrtIpcAQoWguzxMAAvgfqGljghK/zRxH10+Sa0Uf7KJwRztr0gcxQ6
-         e9SepidzwMcoE06j3Io49mR/UiszZrAegOpeUi+cqCn55QiP6Z+BOw7TweW/CwpXmUPd
-         V/pQ==
-X-Gm-Message-State: AOJu0YzfWknORyS5cZtj87PJTovgedotsfHWBTA+rzzZ6wBQGTQVwU9z
-        Ot4jSa5FYcvjCVH0IBFRZVvz2se/NRg=
-X-Google-Smtp-Source: AGHT+IF/fph2E7GqGqllTyNPshhSlqT39SJHKfTWEMOUAbRcnDJNtFxXVU/lr1Lr0YDdT9Da8qO92w==
-X-Received: by 2002:a17:906:20c7:b0:9ae:5db5:13d with SMTP id c7-20020a17090620c700b009ae5db5013dmr29352782ejc.72.1697433372051;
-        Sun, 15 Oct 2023 22:16:12 -0700 (PDT)
+        bh=2ypeFKIlLAL2dVD85fyiZKOGmeug73nGXJ6tqAWt7V8=;
+        b=BZdDsKlm6Ls9RvLg9AvIMPs7YvZVFM2r0PCruygMEOMWJBpHHOnBC0Rt0DlcRwPvu3
+         SWrsajmrRsjJY7f0XtKknvTXo/qjp2tH8bcG/5n3Zw1NrBbfAGwEhcilEAo6K7GLjCdO
+         YHtQgZ5KZdU6eAd+32k6v88I/npjXCbUvRBVzZ1/HfElY89i8x7M/HK3/2L6JHBW+8Hz
+         GSo3xnWrzJsRBfTk92grex1+3RvntAwRaS/loYIlBSyqUfQXXOOjHU1RCcTKjMPUe76P
+         csRm9nhyEa1sPBSf7IRUfKuLomAOFAtv/Gtj3Kb9h9Ac/Wjggt4ura8S6hAk59gWvho2
+         gdvQ==
+X-Gm-Message-State: AOJu0Yz5FciP6ukH8LXjdRKvhgnbiCCszTTEM8p0I5sMf+pFJ9+tPBMh
+        NJxPJy2K5Wni0F+TsQXKJgOdQxR9CNs=
+X-Google-Smtp-Source: AGHT+IHO7nC5a/j8oeXwHmLzOp05GLfxdL8AfLLhWF3orfkFWEx0yAoOO/uZC04mOR+DazjPDKlKCQ==
+X-Received: by 2002:a05:6402:50c7:b0:53d:ed7a:11f2 with SMTP id h7-20020a05640250c700b0053ded7a11f2mr12470837edb.38.1697433487467;
+        Sun, 15 Oct 2023 22:18:07 -0700 (PDT)
 Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id q7-20020a1709060e4700b009b9a1714524sm3327721eji.12.2023.10.15.22.16.11
+        by smtp.gmail.com with ESMTPSA id v3-20020a056402174300b0053e3839fc79sm4375376edx.96.2023.10.15.22.18.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Oct 2023 22:16:11 -0700 (PDT)
-Message-ID: <fbf0e4bc-81e4-4bb7-adc5-b031bc34ef2d@kernel.org>
-Date:   Mon, 16 Oct 2023 07:16:11 +0200
+        Sun, 15 Oct 2023 22:18:07 -0700 (PDT)
+Message-ID: <19157d2e-aba2-48ed-bafa-ed5a9a2df5b7@kernel.org>
+Date:   Mon, 16 Oct 2023 07:18:06 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch v2 4/6] tty: serial: 8250: Add support for MOXA Mini PCIe
- boards
+Subject: Re: [Patch v2 5/6] tty: serial: 8250: Fix MOXA RS422/RS485 PCIe
+ boards not work by default
 Content-Language: en-US
 To:     Crescent CY Hsieh <crescentcy.hsieh@moxa.com>,
         gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
 References: <20231016033705.20669-1-crescentcy.hsieh@moxa.com>
- <20231016033705.20669-5-crescentcy.hsieh@moxa.com>
+ <20231016033705.20669-6-crescentcy.hsieh@moxa.com>
 From:   Jiri Slaby <jirislaby@kernel.org>
 Autocrypt: addr=jirislaby@kernel.org; keydata=
  xsFNBE6S54YBEACzzjLwDUbU5elY4GTg/NdotjA0jyyJtYI86wdKraekbNE0bC4zV+ryvH4j
@@ -93,7 +93,7 @@ Autocrypt: addr=jirislaby@kernel.org; keydata=
  f/bIWIr0cqQmqQ33FgRhrG1+Xml6UXyJ2jExmlO8JljuOGeXYh6ZkIEyzqzffzBLXZCujlYQ
  DFXpyMNVJ2ZwPmX2mWEoYuaBU0JN7wM+/zWgOf2zRwhEuD3A2cO2PxoiIfyUEfB9SSmffaK/
  S4xXoB6wvGENZ85Hg37C7WDNdaAt6Xh2uQIly5grkgvWppkNy4ZHxE+jeNsU7tg=
-In-Reply-To: <20231016033705.20669-5-crescentcy.hsieh@moxa.com>
+In-Reply-To: <20231016033705.20669-6-crescentcy.hsieh@moxa.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
@@ -107,14 +107,11 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 16. 10. 23, 5:37, Crescent CY Hsieh wrote:
-> Add support for MOXA Mini PCIe serial boards:
+> MOXA PCIe RS422/RS485 boards will not function by default because of the
+> initial default serial interface of all MOXA PCIe boards is set to RS232.
 > 
-> - CP102N: 2 ports | RS232
-> - CP104N: 4 ports | RS232
-> - CP112N: 2 ports | RS232/RS422/RS485
-> - CP114N: 4 ports | RS232/RS422/RS485
-> - CP132N: 2 ports | RS422/RS485
-> - CP134N: 4 ports | RS422/RS485
+> This patch fixes the problem above by setting the initial default serial
+> interface to RS422 for those MOXA RS422/RS485 PCIe boards.
 > 
 > Signed-off-by: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
 
