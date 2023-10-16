@@ -2,295 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8C0E7CB31C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 21:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 324727CB31B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 21:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232896AbjJPTCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 15:02:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58134 "EHLO
+        id S232345AbjJPTCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 15:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232473AbjJPTCv (ORCPT
+        with ESMTP id S229943AbjJPTCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 15:02:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 103F2EB
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 12:02:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697482924;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tDzZCyb92Saip8aINQgR+oW9LAyO1JS7tLsuKgtSvHQ=;
-        b=NwWfB2ed6PWpOzGT9G41LpHeGzEFce3y9LbNxWZSJFGnxKieFKZovqrgONuP7F+W+comDb
-        c92b+VRde5MGq4Ui6aeB4Bj9gmnHDrI68umAevx/ADaw1msgkn80VXVZpQlJu+IJVxHMxn
-        ZnPTYCMstauZu2hKYWTgJMq2cXhaqzY=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-195-ou6EA6rMMt-o6EjoCT1xpw-1; Mon, 16 Oct 2023 15:01:52 -0400
-X-MC-Unique: ou6EA6rMMt-o6EjoCT1xpw-1
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-66cfa898cfeso9347896d6.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 12:01:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697482912; x=1698087712;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        Mon, 16 Oct 2023 15:02:45 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E75A95
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 12:02:40 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c9b70b9671so31855ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 12:02:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697482959; x=1698087759; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tDzZCyb92Saip8aINQgR+oW9LAyO1JS7tLsuKgtSvHQ=;
-        b=Wm6pNSLwWcg7N0xwb1z5A5Yk6nj3Er0qxKofsPyG78jjEc9BUTL2i4VAMDIUS3F76X
-         uic1V8pCCbqFH+EGL2sAy9aL0YYUN7eetbGsrwnFnO5C8XREFRWeI5VclCVhCvsneH6k
-         ibipqrtYwM9JfVtEWs9Bp1iODm5E/UY9sWiYuHduvi/Vg+fl2FehiK52US1GbLC2zDLo
-         RDQ3NJ8DEEgf+bMumvEFQzoiLjb13+21+Jdg80n4OcQxxbd6mgFS8RouiAJZpnuz1Qgz
-         420QAfI6YJ6iNd27Xit46ws2t4qWMnBA7JmQRLt31IwBuHJf8m7HaKRhfAeCL5LxBnyL
-         HLHw==
-X-Gm-Message-State: AOJu0YyWmEmudeed8uahTsPQR16S/VM0jvrATEdcE6TtWaQHWuwIUmDp
-        r+inUwrKj7XaERTjq55Ra+hBCtYQZE0zCc7yApdZhGwRPlI+KTnMPgOUP4BynT57uZult1t4Jy/
-        0QGz7dVU3UNTSyU6hBnYKfsJW
-X-Received: by 2002:a05:6214:4402:b0:66d:169a:a661 with SMTP id oj2-20020a056214440200b0066d169aa661mr280945qvb.4.1697482912165;
-        Mon, 16 Oct 2023 12:01:52 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGaSTLfXG0qgNCf1woM/gq5yVis4/qLO5+vxP1c9wS8gvcjoEODN84qOJVNpOc27zPjV8adqQ==
-X-Received: by 2002:a05:6214:4402:b0:66d:169a:a661 with SMTP id oj2-20020a056214440200b0066d169aa661mr280918qvb.4.1697482911788;
-        Mon, 16 Oct 2023 12:01:51 -0700 (PDT)
-Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
-        by smtp.gmail.com with ESMTPSA id y19-20020a0cd993000000b0066cfd398ab5sm3594296qvj.146.2023.10.16.12.01.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 12:01:51 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 15:01:32 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Lokesh Gidra <lokeshgidra@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
-Message-ID: <ZS2IjEP479WtVdMi@x1n>
-References: <20231009064230.2952396-1-surenb@google.com>
- <20231009064230.2952396-3-surenb@google.com>
- <214b78ed-3842-5ba1-fa9c-9fa719fca129@redhat.com>
- <CAJuCfpHzSm+z9b6uxyYFeqr5b5=6LehE9O0g192DZdJnZqmQEw@mail.gmail.com>
- <478697aa-f55c-375a-6888-3abb343c6d9d@redhat.com>
- <CA+EESO5nvzka0KzFGzdGgiCWPLg7XD-8jA9=NTUOKFy-56orUg@mail.gmail.com>
- <ZShS3UT+cjJFmtEy@x1n>
- <205abf01-9699-ff1c-3e4e-621913ada64e@redhat.com>
- <ZSlragGjFEw9QS1Y@x1n>
- <12588295-2616-eb11-43d2-96a3c62bd181@redhat.com>
+        bh=eOzjlLla6gf/R2odr013SLR7czPeJxtYfJ4GpduX1qQ=;
+        b=aZlCyDRkQfvcKflCuPbSRvOdYXTqJCiW7XzJv5bkLwiCbMLbEn2H+w+kuEQuAZXAvW
+         VFmdc6CMnUYxcIJQVxyJh9hZqqKgUAOC3Je/hJwCxsa2QdM4gxCymyBadG2VuIQgJylt
+         Sd4ZRs9pvbKiuAMXd8SzDQvwZgpTNVeKqH8ftsfe8R1hW+ryzQ68UQTl2AKQB9+Wxqth
+         bv6QWaaX2ppG1kL9gtN+8O8gmIUch/SNRCrj3FhLJFHIk6bSaorRE6b7xxNXd/pqWiaq
+         zfCNO3eC7vjyCtPr3ZuRs+FoeBWta2GkWC3G8rFkGJu2WR8VjptzBFPQynIZhLj3Z3Ad
+         JblA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697482959; x=1698087759;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eOzjlLla6gf/R2odr013SLR7czPeJxtYfJ4GpduX1qQ=;
+        b=Z1JQZ20bUC1EaExT4ayZ7QrXqaQLRHUrBxC6W8fX/frjsrh4mDAS5DzPqh0yb8bPnQ
+         pzvk1YK7E1myn/NU6cLkuW/NeTeg/jwgB+nJbtVodxW4UkqftWwcquGzsviHPXb0ACF0
+         0cjnfTvTOfPsWqoUGVYsVe5oCCN5mzhkKTek5MC7D6MfHaNy5eJ6itvhM7o3Kxkl5vwm
+         hd4qwtTwvO44kaf+HfSvipRezlIaya34S8RG8ZKIcc0kNNKt2xwqWD/oIafrjBsy38aj
+         ABBQw1k6U3rG3biihpUfnET9Y8ShduHDMhP1WYcLCAo1uFNwTk3ZPegbKTgyF+fnvDBv
+         AA2g==
+X-Gm-Message-State: AOJu0Yy+A8t6Ki80L5Jn8hi1DTdfE+MgdJZ8LfVfsnpCLTFjfinlwgJu
+        d+ojHYLf7+VppV3UT3Vh0zWcPtOmz7qnGkX+4vNBfg==
+X-Google-Smtp-Source: AGHT+IHqX1FgDxN0Mas1wc4pev7LzweHD3IABO+VgwAeIVNA6y5WXfAi4taMg2wCM+3ptaDOC8hcAkvkOunXNYaEWVM=
+X-Received: by 2002:a17:903:1c1:b0:1c9:af6a:6d0d with SMTP id
+ e1-20020a17090301c100b001c9af6a6d0dmr25087plh.9.1697482959233; Mon, 16 Oct
+ 2023 12:02:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <12588295-2616-eb11-43d2-96a3c62bd181@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20231009230858.3444834-1-rananta@google.com> <20231009230858.3444834-8-rananta@google.com>
+ <b4739328-5dba-a3a6-54ef-2db2d34201d8@redhat.com>
+In-Reply-To: <b4739328-5dba-a3a6-54ef-2db2d34201d8@redhat.com>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Mon, 16 Oct 2023 12:02:27 -0700
+Message-ID: <CAJHc60zpH8Y8h72=jUbshGoqye20FaHRcsb+TFDxkk7rhJAUxQ@mail.gmail.com>
+Subject: Re: [PATCH v7 07/12] KVM: arm64: PMU: Set PMCR_EL0.N for vCPU based
+ on the associated PMU
+To:     Sebastian Ott <sebott@redhat.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David,
+On Mon, Oct 16, 2023 at 6:35=E2=80=AFAM Sebastian Ott <sebott@redhat.com> w=
+rote:
+>
+> On Mon, 9 Oct 2023, Raghavendra Rao Ananta wrote:
+> > u64 kvm_vcpu_read_pmcr(struct kvm_vcpu *vcpu)
+> > {
+> > -     return __vcpu_sys_reg(vcpu, PMCR_EL0);
+> > +     u64 pmcr =3D __vcpu_sys_reg(vcpu, PMCR_EL0) &
+> > +                     ~(ARMV8_PMU_PMCR_N_MASK << ARMV8_PMU_PMCR_N_SHIFT=
+);
+> > +
+> > +     return pmcr | ((u64)vcpu->kvm->arch.pmcr_n << ARMV8_PMU_PMCR_N_SH=
+IFT);
+> > }
+> > diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+> > index ff0f7095eaca..c750722fbe4a 100644
+> > --- a/arch/arm64/kvm/sys_regs.c
+> > +++ b/arch/arm64/kvm/sys_regs.c
+> > @@ -745,12 +745,8 @@ static u64 reset_pmcr(struct kvm_vcpu *vcpu, const=
+ struct sys_reg_desc *r)
+> > {
+> >       u64 pmcr;
+> >
+> > -     /* No PMU available, PMCR_EL0 may UNDEF... */
+> > -     if (!kvm_arm_support_pmu_v3())
+> > -             return 0;
+> > -
+> >       /* Only preserve PMCR_EL0.N, and reset the rest to 0 */
+> > -     pmcr =3D read_sysreg(pmcr_el0) & (ARMV8_PMU_PMCR_N_MASK << ARMV8_=
+PMU_PMCR_N_SHIFT);
+> > +     pmcr =3D kvm_vcpu_read_pmcr(vcpu) & (ARMV8_PMU_PMCR_N_MASK << ARM=
+V8_PMU_PMCR_N_SHIFT);
+>
+> pmcr =3D ((u64)vcpu->kvm->arch.pmcr_n << ARMV8_PMU_PMCR_N_SHIFT);
+> Would that maybe make it more clear what is done here?
+>
+Since we require the entire PMCR register, and not just the PMCR.N
+field, I think using kvm_vcpu_read_pmcr() would be technically
+correct, don't you think?
 
-On Mon, Oct 16, 2023 at 08:01:10PM +0200, David Hildenbrand wrote:
-> [...]
-> 
-> > > > Actually, even though I have no solid clue, but I had a feeling that there
-> > > > can be some interesting way to leverage this across-mm movement, while
-> > > > keeping things all safe (by e.g. elaborately requiring other proc to create
-> > > > uffd and deliver to this proc).
-> > > 
-> > > Okay, but no real use cases yet.
-> > 
-> > I can provide a "not solid" example.  I didn't mention it because it's
-> > really something that just popped into my mind when thinking cross-mm, so I
-> > never discussed with anyone yet nor shared it anywhere.
-> > 
-> > Consider VM live upgrade in a generic form (e.g., no VFIO), we can do that
-> > very efficiently with shmem or hugetlbfs, but not yet anonymous.  We can do
-> > extremely efficient postcopy live upgrade now with anonymous if with REMAP.
-> > 
-> > Basically I see it a potential way of moving memory efficiently especially
-> > with thp.
-> 
-> It's an interesting use case indeed. The questions would be if this is (a) a
-> use case we want to support; (b) why we need to make that decision now and
-> add that feature.
-
-I would like to support that if nothing stops it from happening, but that's
-what we're discussing though..
-
-For (b), I wanted to avoid UFFD_FEATURE_MOVE_CROSS_MM feature flag just for
-this, if they're already so close, not to mention current code already
-contains cross-mm support.
-
-If to support that live upgrade use case, I'd probably need to rework tlb
-flushing too to do the batching (actually tlb flush is not even needed for
-upgrade scenario..).  I'm not sure whether Lokesh's use case would move
-large chunks, it'll be perfect if Suren did it altogether.  But that one is
-much easier if transparent to userapps.  Cross-mm is not transparent and
-need another feature knob, which I want to avoid if possible.
-
-> 
-> One question is if this kind of "moving memory between processes" really
-> should be done, because intuitively SHMEM smells like the right thing to use
-> here (two processes wanting to access the same memory).
-
-That's the whole point, IMHO, where shmem cannot be used.  As you said, on
-when someone cannot use file memory for some reason like ksm.
-
-> 
-> The downsides of shmem are lack of the shared zeropage and KSM. The shared
-> zeropage is usually less of a concern for VMs, but KSM is. However, KSM will
-> also disallow moving pages here. But all non-deduplicated ones could be
-> moved.
-> 
-> [I wondered whether moving KSM pages (rmap items) could be done; probably in
-> some limited form with some more added complexity]
-
-Yeah we can leave that complexity for later when really needed.  Here
-cross-mm support, OTOH, isn't making it so complicated, IMHO.
-
-Btw, we don't even necessarily need to be able to migrate KSM pages for a
-VM live upgrade use case: we can unmerge the pages, upgrade, and wait for
-KSM to scan & merge again on the new binary / mmap.  Userspace can have
-that control easily, afaiu, via existing madvise().
-
-> 
-> > 
-> > > 
-> > > > 
-> > > > Considering Andrea's original version already contains those bits and all
-> > > > above, I'd vote that we go ahead with supporting two MMs.
-> > > 
-> > > You can do nasty things with that, as it stands, on the upstream codebase.
-> > > 
-> > > If you pin the page in src_mm and move it to dst_mm, you successfully broke
-> > > an invariant that "exclusive" means "no other references from other
-> > > processes". That page is marked exclusive but it is, in fact, not exclusive.
-> > 
-> > It is still exclusive to the dst mm?  I see your point, but I think you're
-> > taking exclusiveness altogether with pinning, and IMHO that may not be
-> > always necessary?
-> 
-> That's the definition of PAE. See do_wp_page() on when we reset PAE: when
-> there are no other references, which implies no other references from other
-> processes. Maybe you have "currently exclusively mapped" in mind, which is
-> what the mapcount can be used for.
-
-Okay.
-
-> 
-> > 
-> > > 
-> > > Once you achieved that, you can easily have src_mm not have MMF_HAS_PINNED,
-> > 
-> > (I suppose you meant dst_mm here)
-> 
-> Yes.
-> 
-> > 
-> > > so you can just COW-share that page. Now you successfully broke the
-> > > invariant that COW-shared pages must not be pinned. And you can even trigger
-> > > VM_BUG_ONs, like in sanity_check_pinned_pages().
-> > 
-> > Yeah, that's really unfortunate.  But frankly, I don't think it's the fault
-> > of this new feature, but the rest.
-> > 
-> > Let's imagine if the MMF_HAS_PINNED wasn't proposed as a per-mm flag, but
-> > per-vma, which I don't see why we can't because it's simply a hint so far.
-> > Then if we apply the same rule here, UFFDIO_REMAP won't even work for
-> > single-mm as long as cross-vma. Then UFFDIO_REMAP as a whole feature will
-> > be NACKed simply because of this..
-> 
-> Because of gup-fast we likely won't see that happening. And if we would, it
-> could be handled (src_mm has the flag set, set it on the destination if the
-> page maybe pinned after hiding it from gup-fast; or simply always copy the
-> flag if set on the src).
-> 
-> > 
-> > And I don't think anyone can guarantee a per-vma MMF_HAS_PINNED can never
-> > happen, or any further change to pinning solution that may affect this.  So
-> > far it just looks unsafe to remap a pin page to me.
-> 
-> It may be questionable to allow remapping pinned pages.
-> 
-> > 
-> > I don't have a good suggestion here if this is a risk.. I'd think it risky
-> > then to do REMAP over pinned pages no matter cross-mm or single-mm.  It
-> > means probably we just rule them out: folio_maybe_dma_pinned() may not even
-> > be enough to be safe with fast-gup.  We may need page_needs_cow_for_dma()
-> > with proper write_protect_seq no matter cross-mm or single-mm?
-> 
-> If you unmap and sync against GUP-fast, you can check after unmapping and
-> remap and fail if it maybe pinned afterwards. Plus an early check upfront.
-> 
-> > 
-> > > 
-> > > Can it all be fixed? Sure, with more complexity. For something without clear
-> > > motivation, I'll have to pass.
-> > 
-> > I think what you raised is a valid concern, but IMHO it's better fixed no
-> > matter cross-mm or single-mm.  What do you think?
-> 
-> single-mm should at least not cause harm, but the semantics are
-> questionable. cross-mm could, especially with malicious user space that
-> wants to find ways of harming the kernel.
-
-For kernel, I think we're discussing to see whether it's safe to do so from
-kernel pov, e.g., whether to exclude pinned pages is part of that.
-
-For the user app, the dest process has provided the uffd descriptor on its
-own willingness, or be a child of the UFFDIO_MOVE issuer when used with
-EVENT_FORK, I assume that's already some form of safety check because it
-cannot be any process, but ones that are proactively in close cooperative
-with the issuer process.
-
-> 
-> I'll note that mremap with pinned pages works.
-
-But that's not "by design", am I right?  IOW, do we have any real pin user
-that rely on mremap() allowing pages to be moved?
-
-I don't see any word guarantee at least from man page that mremap() will
-make sure the PFN won't change after the movement.. even though it seems to
-be what happening now.
-
-Neither do I think when designing MMF_HAS_PINNED we kept that in mind that
-it won't be affected by someone mremap() pinned pages and we want to keep
-it working..
-
-All of it just seems to be an accident..
-
-One step back, we're free to define UFFDIO_MOVE anyway, and we don't
-necessarily need to always follow mremap().  E.g., mremap() also supports
-ksm pages, but IIUC we already decide to not support that for now on
-UFFDIO_MOVE.  UFFDIO_MOVE seems all fine to make it clear on failing at
-pinned pages from the 1st day if that satisfies our goals, too.
-
-> 
-> > 
-> > In general, pinning lose its whole point here to me for an userspace either
-> > if it DONTNEEDs it or REMAP it.  What would be great to do here is we unpin
-> > it upon DONTNEED/REMAP/whatever drops the page, because it loses its
-> > coherency anyway, IMHO.
-> 
-> Further, moving a part of a THP would fail either way, because the pinned
-> THP cannot get split.
-> 
-> -- 
-> Cheers,
-> 
-> David / dhildenb
-> 
-
-Thanks,
-
--- 
-Peter Xu
-
+Thank you.
+Raghavendra
