@@ -2,225 +2,431 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F085F7CB147
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 19:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0EA7CB14B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 19:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233657AbjJPRXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 13:23:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34906 "EHLO
+        id S232310AbjJPR04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 13:26:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbjJPRXw (ORCPT
+        with ESMTP id S231675AbjJPR0z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 13:23:52 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4655B9F
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 10:23:50 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99c1c66876aso774161966b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 10:23:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1697477028; x=1698081828; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ziSfOVrFPUUVHeu10UoweKHdhwL95UR6sSsnqfpXK6Q=;
-        b=HvQ5YeEvctA8aifKS1VFX6xfbbx3IvuRPYON1jqKEBTH/bGZoyl+ixbQ0pO/NV8/qo
-         mmFUbag82baeh5YBFHMbS9NPswSRTxJHRdQzDT3KOuLGvJT/ax9grdYcH6LWLn6vA1+O
-         45Dpj4bm/uHXzQR0DF8WMsXZyfeJGo20EZUq0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697477028; x=1698081828;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ziSfOVrFPUUVHeu10UoweKHdhwL95UR6sSsnqfpXK6Q=;
-        b=ZoSpmlsJtChwNKgvgN1Q/mx/+tF8sIIQDdK9/Fb+rysQp+DscxmyCSyK8E2MEjLx/L
-         JjxbXmlUgFor6PccCUNaBkHJbyenHPGt/WE5En1e629f+2a2m2ZQXiozMmqm5IeMkP+L
-         vzpNvlESticL2yAQIBvrBxu61BEi2+7Zfy7JDyvxSq47XokNy7BIC9RrYx92XT7yD7/m
-         VsFEnL9vWxFNcUt1eesgwm1+Tvd4IzywE81wvTiWQTZx3OC+rR/SPSjaI1LCy/SqTBOG
-         n6aSLQvMFybhVYFNFUFAvJPiehN80PqrpWbSPPO4BfisqPt1DAujj9bjv/A2LdMNkJXA
-         FpHw==
-X-Gm-Message-State: AOJu0Yx24DIDOIsDTI0jX4eb1Hv/SieTo0qZ5fflR6p8UFzLMWMsCdzg
-        +IBdSUlBJFtWToqd+WhZWvNwQLiJLzU34W3biXlzUg==
-X-Google-Smtp-Source: AGHT+IEVSnfFlsK38AYeabEJvzmdOCzBWMKOUw0ZY4LUZt501NPLXYB8pOm4c4UGajThllza4oxjZw==
-X-Received: by 2002:a17:906:2da:b0:9b2:ccd8:2d2b with SMTP id 26-20020a17090602da00b009b2ccd82d2bmr28673936ejk.77.1697477028611;
-        Mon, 16 Oct 2023 10:23:48 -0700 (PDT)
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com. [209.85.218.43])
-        by smtp.gmail.com with ESMTPSA id y24-20020a170906071800b009c5c5c2c59csm10624ejb.149.2023.10.16.10.23.47
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 10:23:47 -0700 (PDT)
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-9ad8a822508so779347366b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 10:23:47 -0700 (PDT)
-X-Received: by 2002:a17:907:78a:b0:9bd:a662:c066 with SMTP id
- xd10-20020a170907078a00b009bda662c066mr9387285ejb.76.1697477026848; Mon, 16
- Oct 2023 10:23:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231016143828.647848-1-jeffxu@chromium.org>
-In-Reply-To: <20231016143828.647848-1-jeffxu@chromium.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 16 Oct 2023 10:23:29 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whFZoap+DBTYvJx6ohqPwn11Puzh7q4huFWDX9vBwXHgg@mail.gmail.com>
-Message-ID: <CAHk-=whFZoap+DBTYvJx6ohqPwn11Puzh7q4huFWDX9vBwXHgg@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 0/8] Introduce mseal() syscall
-To:     jeffxu@chromium.org
-Cc:     akpm@linux-foundation.org, keescook@chromium.org,
-        sroettger@google.com, jeffxu@google.com, jorgelo@chromium.org,
-        groeck@chromium.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        jannh@google.com, surenb@google.com, alex.sierra@amd.com,
-        apopple@nvidia.com, aneesh.kumar@linux.ibm.com,
-        axelrasmussen@google.com, ben@decadent.org.uk,
-        catalin.marinas@arm.com, david@redhat.com, dwmw@amazon.co.uk,
-        ying.huang@intel.com, hughd@google.com, joey.gouly@arm.com,
-        corbet@lwn.net, wangkefeng.wang@huawei.com,
-        Liam.Howlett@oracle.com, lstoakes@gmail.com, willy@infradead.org,
-        mawupeng1@huawei.com, linmiaohe@huawei.com, namit@vmware.com,
-        peterx@redhat.com, peterz@infradead.org, ryan.roberts@arm.com,
-        shr@devkernel.io, vbabka@suse.cz, xiujianfeng@huawei.com,
-        yu.ma@intel.com, zhangpeng362@huawei.com, dave.hansen@intel.com,
-        luto@kernel.org, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        Mon, 16 Oct 2023 13:26:55 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D45BA1;
+        Mon, 16 Oct 2023 10:26:53 -0700 (PDT)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39GHOpeB021184;
+        Mon, 16 Oct 2023 17:26:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to; s=pp1;
+ bh=o+Kw7AkFBUqu4G87+p/cOB0TKj3ONszE/dyGQkGlzzY=;
+ b=tulW20O4KeUMIchPGNgxHvRAVT8ME0/zTopfCCyLVFwh6GAKFYoT29iDWIDmTXmOTfoN
+ SrzMy9GrnQpYkhp6fGygLkSbYrC9OIoXO6GmIDl80YqqnoAKtACAj4uYVUcr9QuKUcdJ
+ 40SAD3+j5c5qj0V4cw30lvDFMKfeVvGO7/mYMNLulR1DtYYXdOyWb7mf5/roVeux900n
+ iTCIMirzaQvZWW8wcrtgD+SqnS6CBEUcvczQ3YZeSICVuI7vcyVGmdWnCU14U4aaohhu
+ miclL7PemjGghOfjqqzEHQqN5sgvvzfVezbzf7gXsOS5OnJ2ajg4uYUZuL9CYdLr5W4z jA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ts9j506f0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Oct 2023 17:26:43 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39GHOssd021393;
+        Mon, 16 Oct 2023 17:26:13 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ts9j504eq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Oct 2023 17:26:12 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39GFWkws020105;
+        Mon, 16 Oct 2023 17:25:38 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tr6amtcar-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Oct 2023 17:25:38 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39GHParY19595892
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 16 Oct 2023 17:25:36 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9F79F20049;
+        Mon, 16 Oct 2023 17:25:36 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C2EE820040;
+        Mon, 16 Oct 2023 17:25:34 +0000 (GMT)
+Received: from smtpclient.apple (unknown [9.43.114.201])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Mon, 16 Oct 2023 17:25:34 +0000 (GMT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.700.6\))
+Subject: Re: [PATCH v3] perf bench sched pipe: Add -G/--cgroups option
+From:   Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+In-Reply-To: <20231016044225.1125674-1-namhyung@kernel.org>
+Date:   Mon, 16 Oct 2023 22:55:22 +0530
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <EB151D91-2EC1-442F-BC48-40B9CEF3D660@linux.vnet.ibm.com>
+References: <20231016044225.1125674-1-namhyung@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+X-Mailer: Apple Mail (2.3731.700.6)
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: bpPIbSAjXmCWT5W0GLZ8TZF1Zw5HV2QN
+X-Proofpoint-GUID: hp-gTe_rwGwLniVpR7WYiJSUWGlkIPdC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-16_10,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1011
+ priorityscore=1501 mlxscore=0 malwarescore=0 suspectscore=0
+ mlxlogscore=999 bulkscore=0 adultscore=0 lowpriorityscore=0 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310160151
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Oct 2023 at 07:38, <jeffxu@chromium.org> wrote:
->
-> This patchset proposes a new mseal() syscall for the Linux kernel.
 
-So I have no objections to adding some kind of "lock down memory
-mappings" model, but this isn't it.
 
-First off, the simple stuff: the commit messages are worthless. Having
+> On 16-Oct-2023, at 10:12 AM, Namhyung Kim <namhyung@kernel.org> wrote:
+>=20
+> The -G/--cgroups option is to put sender and receiver in different
+> cgroups in order to measure cgroup context switch overheads.
+>=20
+> Users need to make sure the cgroups exist and accessible.
+>=20
+>  # perf stat -e context-switches,cgroup-switches \
+>> taskset -c 0 perf bench sched pipe -l 10000 > /dev/null
+>=20
+>   Performance counter stats for 'taskset -c 0 perf bench sched pipe -l =
+10000':
+>=20
+>              20,001      context-switches
+>                   2      cgroup-switches
+>=20
+>         0.053449651 seconds time elapsed
+>=20
+>         0.011286000 seconds user
+>         0.041869000 seconds sys
+>=20
+>  # perf stat -e context-switches,cgroup-switches \
+>> taskset -c 0 perf bench sched pipe -l 10000 -G AAA,BBB > /dev/null
+>=20
+>   Performance counter stats for 'taskset -c 0 perf bench sched pipe -l =
+10000 -G AAA,BBB':
+>=20
+>              20,001      context-switches
+>              20,001      cgroup-switches
+>=20
+>         0.052768627 seconds time elapsed
+>=20
+>         0.006284000 seconds user
+>         0.046266000 seconds sys
+>=20
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 
-   check seal for mmap(2)
+Hi Namhyung,
 
-as the commit message is not even remotely acceptable, to pick one
-random example from the series (7/8).
+I tried V3 on top of perf-tools-next=20
 
-But that doesn't matter much, since I think the more fundamental
-problems are much worse:
+# ./perf stat -e context-switches,cgroup-switches taskset -c 0 perf =
+bench sched pipe -l 10000 -G AAA,BBB > /dev/null
+no access to cgroup /sys/fs/cgroup/perf_event/AAA
+cannot open sender cgroup: AAA
+ Usage: perf bench sched pipe <options>
 
- - the whole "ON_BEHALF_OF_KERNEL" and "ON_BEHALF_OF_USERSPACE" is
-just complete noise and totally illogical. The whole concept needs to
-be redone.
+    -G, --cgroups <SEND,RECV>
+                          Put sender and receivers in given cgroups
 
-Example of complete nonsense (again, picking 7/8, but that's again
-just a random example):
+ Performance counter stats for 'taskset -c 0 perf bench sched pipe -l =
+10000 -G AAA,BBB':
 
-> @@ -3017,8 +3022,8 @@ SYSCALL_DEFINE5(remap_file_pages,
->                 flags |= MAP_LOCKED;
->
->         file = get_file(vma->vm_file);
-> -       ret = do_mmap(vma->vm_file, start, size,
-> -                       prot, flags, pgoff, &populate, NULL);
-> +       ret = do_mmap(vma->vm_file, start, size, prot, flags, pgoff,
-> +                       &populate, NULL, ON_BEHALF_OF_KERNEL);
->         fput(file);
->  out:
->         mmap_write_unlock(mm);
+                 2      context-switches                                 =
+                    =20
+                 0      cgroup-switches                                  =
+                    =20
 
-Christ. That's *literally* the remap_file_pages() system call
-definition. No way in hell does "ON_BEHALF_OF_KERNEL" make any sense
-in this context.
+       0.007291460 seconds time elapsed
 
-It's not the only situation. "mremap() as the same thing. vm_munmap()
-has the same thing. vm_brk_flags() has the same thing. None of them
-make any sense.
+       0.007438000 seconds user
+       0.000000000 seconds sys
 
-But even if those obvious kinds of complete mis-designs were to be
-individually fixed, the whole naming and concept is bogus. The
-"ON_BEHALF_OF_KERNEL" thing seems to actually just mean "don't check
-sealing". Naming should describe what the thing *means*, not some
-random policy thing that may or may not be at all relevant.
 
- - the whole MM_SEAL_xx vs VM_SEAL_xx artificial distinction needs to go away.
+I created AAA and BBB
+mkdir /sys/fs/cgroup/perf_event/AAA
+mkdir /sys/fs/cgroup/perf_event/BBB
 
-Not only is it unacceptable to pointlessly create two different name
-spaces for no obvious reason, code like this (from 1/8) should not
-exist:
+Got the results below:
 
-> +       if (types & MM_SEAL_MSEAL)
-> +               newtypes |= VM_SEAL_MSEAL;
+./perf stat -e context-switches,cgroup-switches taskset -c 0 perf bench =
+sched pipe -l 10000 -G AAA,BBB > /dev/null
+
+ Performance counter stats for 'taskset -c 0 perf bench sched pipe -l =
+10000 -G AAA,BBB':
+
+             20002      context-switches                                 =
+                    =20
+             19999      cgroup-switches                                  =
+                    =20
+
+       0.120063986 seconds time elapsed
+
+       0.001716000 seconds user
+       0.065995000 seconds sys
+
+
+Thanks
+Athira
+
+
+> ---
+> tools/perf/Documentation/perf-bench.txt |  19 ++++
+> tools/perf/bench/sched-pipe.c           | 118 +++++++++++++++++++++++-
+> 2 files changed, 134 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/tools/perf/Documentation/perf-bench.txt =
+b/tools/perf/Documentation/perf-bench.txt
+> index ca5789625cd2..8331bd28b10e 100644
+> --- a/tools/perf/Documentation/perf-bench.txt
+> +++ b/tools/perf/Documentation/perf-bench.txt
+> @@ -124,6 +124,14 @@ Options of *pipe*
+> --loop=3D::
+> Specify number of loops.
+>=20
+> +-G::
+> +--cgroups=3D::
+> +Names of cgroups for sender and receiver, separated by a comma.
+> +This is useful to check cgroup context switching overhead.
+> +Note that perf doesn't create nor delete the cgroups, so users should
+> +make sure that the cgroups exist and are accessible before use.
 > +
-> +       if (types & MM_SEAL_MPROTECT)
-> +               newtypes |= VM_SEAL_MPROTECT;
 > +
-> +       if (types & MM_SEAL_MUNMAP)
-> +               newtypes |= VM_SEAL_MUNMAP;
+> Example of *pipe*
+> ^^^^^^^^^^^^^^^^^
+>=20
+> @@ -141,6 +149,17 @@ Example of *pipe*
+>         Total time:0.016 sec
+>                 16.948000 usecs/op
+>                 59004 ops/sec
 > +
-> +       if (types & MM_SEAL_MMAP)
-> +               newtypes |= VM_SEAL_MMAP;
+> +% perf bench sched pipe -G AAA,BBB
+> +(executing 1000000 pipe operations between cgroups)
+> +# Running 'sched/pipe' benchmark:
+> +# Executed 1000000 pipe operations between two processes
 > +
-> +       if (types & MM_SEAL_MREMAP)
-> +               newtypes |= VM_SEAL_MREMAP;
+> +     Total time: 6.886 [sec]
+> +
+> +       6.886208 usecs/op
+> +         145217 ops/sec
+> +
+> ---------------------
+>=20
+> SUITES FOR 'syscall'
+> diff --git a/tools/perf/bench/sched-pipe.c =
+b/tools/perf/bench/sched-pipe.c
+> index a960e7a93aec..88d20a34adb2 100644
+> --- a/tools/perf/bench/sched-pipe.c
+> +++ b/tools/perf/bench/sched-pipe.c
+> @@ -10,7 +10,9 @@
+>  * Ported to perf by Hitoshi Mitake <mitake@dcl.info.waseda.ac.jp>
+>  */
+> #include <subcmd/parse-options.h>
+> +#include <api/fs/fs.h>
+> #include "bench.h"
+> +#include "util/cgroup.h"
+>=20
+> #include <unistd.h>
+> #include <stdio.h>
+> @@ -19,6 +21,7 @@
+> #include <sys/wait.h>
+> #include <string.h>
+> #include <errno.h>
+> +#include <fcntl.h>
+> #include <assert.h>
+> #include <sys/time.h>
+> #include <sys/types.h>
+> @@ -31,6 +34,7 @@ struct thread_data {
+> int nr;
+> int pipe_read;
+> int pipe_write;
+> + bool cgroup_failed;
+> pthread_t pthread;
+> };
+>=20
+> @@ -40,9 +44,55 @@ static int loops =3D LOOPS_DEFAULT;
+> /* Use processes by default: */
+> static bool threaded;
+>=20
+> +static struct cgroup *cgrp_send =3D NULL;
+> +static struct cgroup *cgrp_recv =3D NULL;
+> +
+> +static int parse_two_cgroups(const struct option *opt __maybe_unused,
+> +     const char *str, int unset __maybe_unused)
+> +{
+> + char *p =3D strdup(str);
+> + char *q;
+> + int ret =3D -1;
+> +
+> + if (p =3D=3D NULL) {
+> + fprintf(stderr, "memory allocation failure");
+> + return -1;
+> + }
+> +
+> + q =3D strchr(p, ',');
+> + if (q =3D=3D NULL) {
+> + fprintf(stderr, "it should have two cgroup names: %s", p);
+> + goto out;
+> + }
+> + *q =3D '\0';
+> +
+> + cgrp_send =3D cgroup__new(p, /*do_open=3D*/true);
+> + if (cgrp_send =3D=3D NULL) {
+> + fprintf(stderr, "cannot open sender cgroup: %s", p);
+> + goto out;
+> + }
+> +
+> + /* skip ',' */
+> + q++;
+> +
+> + cgrp_recv =3D cgroup__new(q, /*do_open=3D*/true);
+> + if (cgrp_recv =3D=3D NULL) {
+> + fprintf(stderr, "cannot open receiver cgroup: %s", q);
+> + goto out;
+> + }
+> + ret =3D 0;
+> +
+> +out:
+> + free(p);
+> + return ret;
+> +}
+> +
+> static const struct option options[] =3D {
+> OPT_INTEGER('l', "loop", &loops, "Specify number of loops"),
+> OPT_BOOLEAN('T', "threaded", &threaded, "Specify threads/process based =
+task setup"),
+> + OPT_CALLBACK('G', "cgroups", NULL, "SEND,RECV",
+> +     "Put sender and receivers in given cgroups",
+> +     parse_two_cgroups),
+> OPT_END()
+> };
+>=20
+> @@ -51,12 +101,71 @@ static const char * const =
+bench_sched_pipe_usage[] =3D {
+> NULL
+> };
+>=20
+> +static int enter_cgroup(struct cgroup *cgrp)
+> +{
+> + char buf[32];
+> + int fd, len, ret;
+> + pid_t pid;
+> +
+> + if (cgrp =3D=3D NULL)
+> + return 0;
+> +
+> + if (threaded)
+> + pid =3D syscall(__NR_gettid);
+> + else
+> + pid =3D getpid();
+> +
+> + snprintf(buf, sizeof(buf), "%d\n", pid);
+> + len =3D strlen(buf);
+> +
+> + /* try cgroup v2 interface first */
+> + if (threaded)
+> + fd =3D openat(cgrp->fd, "cgroup.threads", O_WRONLY);
+> + else
+> + fd =3D openat(cgrp->fd, "cgroup.procs", O_WRONLY);
+> +
+> + /* try cgroup v1 if failed */
+> + if (fd < 0)
+> + fd =3D openat(cgrp->fd, "tasks", O_WRONLY);
+> +
+> + if (fd < 0) {
+> + char mnt[PATH_MAX];
+> +
+> + printf("Failed to open cgroup file in %s\n", cgrp->name);
+> +
+> + if (cgroupfs_find_mountpoint(mnt, sizeof(mnt), "perf_event") =3D=3D =
+0)
+> + printf(" Hint: create the cgroup first, like 'mkdir %s/%s'\n",
+> +       mnt, cgrp->name);
+> + return -1;
+> + }
+> +
+> + ret =3D write(fd, buf, len);
+> + close(fd);
+> +
+> + if (ret !=3D len) {
+> + printf("Cannot enter to cgroup: %s\n", cgrp->name);
+> + return -1;
+> + }
+> + return 0;
+> +}
+> +
+> static void *worker_thread(void *__tdata)
+> {
+> struct thread_data *td =3D __tdata;
+> int m =3D 0, i;
+> int ret;
+>=20
+> + if (td->nr)
+> + ret =3D enter_cgroup(cgrp_send);
+> + else
+> + ret =3D enter_cgroup(cgrp_recv);
+> +
+> + if (ret < 0) {
+> + td->cgroup_failed =3D true;
+> + return NULL;
+> + }
+> + td->cgroup_failed =3D false;
+> +
+> for (i =3D 0; i < loops; i++) {
+> if (!td->nr) {
+> ret =3D read(td->pipe_read, &m, sizeof(int));
+> @@ -112,9 +221,7 @@ int bench_sched_pipe(int argc, const char **argv)
+> }
+> }
+>=20
+> -
+> if (threaded) {
+> -
+> for (t =3D 0; t < nr_threads; t++) {
+> td =3D threads + t;
+>=20
+> @@ -128,7 +235,6 @@ int bench_sched_pipe(int argc, const char **argv)
+> ret =3D pthread_join(td->pthread, NULL);
+> BUG_ON(ret);
+> }
+> -
+> } else {
+> pid =3D fork();
+> assert(pid >=3D 0);
+> @@ -147,6 +253,12 @@ int bench_sched_pipe(int argc, const char **argv)
+> gettimeofday(&stop, NULL);
+> timersub(&stop, &start, &diff);
+>=20
+> + cgroup__put(cgrp_send);
+> + cgroup__put(cgrp_recv);
+> +
+> + if (threads[0].cgroup_failed || threads[1].cgroup_failed)
+> + return 0;
+> +
+> switch (bench_format) {
+> case BENCH_FORMAT_DEFAULT:
+> printf("# Executed %d pipe operations between two %s\n\n",
+> --=20
+> 2.42.0.655.g421f12c284-goog
+>=20
 
-Sure, we have that in some cases when there was a *reason* for
-namespacing imposed on us from an API standpoint (ie the "open()"
-flags that get turned into FMODE_xyz flags, or the MS_xyz mount flags
-being turned into MNT_xyz flags), but those tend to be signs of
-problems in the system call API where some mixup made it impossible to
-use the flags directly (most commonly because there is some extended
-internal representation of said things).
-
-For example, the MS_xyz namespace is a combination of "these are flags
-for the new mount" (like MS_RDONLY) and "this is how you should mount
-it" (like MS_REMOUNT), and so the user interface has that odd mixing
-of different things, and the MNT_xyz namespace is a distillation of
-the former.
-
-But we certainly should not strive to introduce *new* interfaces that
-start out with this kind of mixup and pointless "translate from one
-bit to another" code.
-
- - And finally (for now), I hate that MM_ACTION_xyz thing too!
-
-Why do we have MM_ACTION_MREMAP, and pointless like this (from 3/8):
-
-> +       switch (action) {
-> +       case MM_ACTION_MPROTECT:
-> +               if (vma->vm_seals & VM_SEAL_MPROTECT)
-> +                       return false;
-> +               break;
-
-when the sane thing to do is to use the *same* MM_SEAL_xyz bitmask and
-sealing bitmask and just say
-
-        if (vma->vm_seal & vm_action)
-                return -EPERM;
-
-IOW, you have pointlessly introduced not *two* different namespaces,
-but *three*. All doing the exact same thing, and all just causing
-pointless and ugly code to "translate" the actions of one into the
-model of another.
-
-So get rid of the "MM_ACTION_xyz" thing. Get rid of ther "VM_SEAL_xyz"
-thing. Use *one* single "these are the sealing bits".
-
-And get rid of "enum caller_origin" entirely. I don't know what the
-right model for that thing is, but that isn't it.
-
-*Maybe* the right model is some MM_SEAL_OVERRIDE bit that user space
-cannot set, but that the kernel can use internally - and if that is
-the right model, then dammit, the *uses* should be very very obvious
-why the override is fine, because that remap_file_pages() use sure as
-hell was *not* obvious.
-
-In fact, it's not at all obvious why anything should override the
-sealing bits - EVER. So I'm not convinced that the right model is
-"replace ON_BEHALF_OF_KERNEL with MM_SEAL_OVERRIDE". Why would we
-*ever* want to override sealing? It sounds like complete garbage. Most
-of the users seem to be things like "execve()", which is nonsensical,
-since the VM wouldn't have been sealed at that point _anyway_, so
-having a "don't bother checking sealing bits" flag seems entirely
-useless.
-
-Anyway, this is all a resounding NAK on this series in this form. My
-complaints are not some kind of small "fix this up". These are
-fundamental issues.
-
-            Linus
