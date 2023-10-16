@@ -2,130 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A24C17CAD2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 690807CAD33
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233749AbjJPPSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 11:18:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45230 "EHLO
+        id S233685AbjJPPTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 11:19:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233706AbjJPPSp (ORCPT
+        with ESMTP id S231569AbjJPPTW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 11:18:45 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DDF1F1;
-        Mon, 16 Oct 2023 08:18:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=q1mk0edZzBzeqvaBvILL9fveNRk2O03GLgP3WO+MmcU=; b=EV9tZnQJGPjQ2XN7YaG1iFBGwU
-        CVhmKPs4rfB0vzIIjYWOAFfuD8Lclxxb3kH9GuUcHbzKvVXDibGUns84n44sJwba/b5OZXYMzpfgc
-        Dg3+GrFpKnF/FDc20y8fLmw/tWdZbWw7RZsmvQoWmOhZCj4gAoOA9oajpabnWYYOpQUagNYIbtKWU
-        sGfpICUov4sq+UCTadpy86PtxT8/LdcX+L9mItkitNc1hiT0ERHcMCKmrXX2UsbrO7bsGd6AbXmMX
-        AXNe8drk59YS8DwfBT4C8y+gASl7XiGxQ5RaNLDQisdytnXdQNpebca/HI2dFRVHE8UWOo+ePROth
-        daal4R4Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qsPMS-006lo3-BB; Mon, 16 Oct 2023 15:18:28 +0000
-Date:   Mon, 16 Oct 2023 16:18:28 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     jeffxu@chromium.org
-Cc:     akpm@linux-foundation.org, keescook@chromium.org,
-        sroettger@google.com, jeffxu@google.com, jorgelo@chromium.org,
-        groeck@chromium.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        jannh@google.com, surenb@google.com, alex.sierra@amd.com,
-        apopple@nvidia.com, aneesh.kumar@linux.ibm.com,
-        axelrasmussen@google.com, ben@decadent.org.uk,
-        catalin.marinas@arm.com, david@redhat.com, dwmw@amazon.co.uk,
-        ying.huang@intel.com, hughd@google.com, joey.gouly@arm.com,
-        corbet@lwn.net, wangkefeng.wang@huawei.com,
-        Liam.Howlett@oracle.com, torvalds@linux-foundation.org,
-        lstoakes@gmail.com, mawupeng1@huawei.com, linmiaohe@huawei.com,
-        namit@vmware.com, peterx@redhat.com, peterz@infradead.org,
-        ryan.roberts@arm.com, shr@devkernel.io, vbabka@suse.cz,
-        xiujianfeng@huawei.com, yu.ma@intel.com, zhangpeng362@huawei.com,
-        dave.hansen@intel.com, luto@kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [RFC PATCH v1 0/8] Introduce mseal() syscall
-Message-ID: <ZS1URCBgwGGj9JtM@casper.infradead.org>
-References: <20231016143828.647848-1-jeffxu@chromium.org>
+        Mon, 16 Oct 2023 11:19:22 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0B3AB;
+        Mon, 16 Oct 2023 08:19:19 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DEDEC433C7;
+        Mon, 16 Oct 2023 15:19:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1697469559;
+        bh=IUlcckn2HIZvQSPS1Pli5AoJlsFWzcK+s4pdEgsn3uA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IZxB+S+5f7TG2qX+o3J/cEJG0d4Mm5M/FeuKYss2zs0UgFfcz/wJaTx4+uNG3Djyf
+         5fGUnNNij/cz1JMpbR9gRBF0cOwhBWm3s4vmzOlp/EUQkA+JdogYu+8OxgmeIj4Myx
+         PVNaWxTBU9KNC84846XlsI2shQg3JBG73yeWwBXE=
+Date:   Mon, 16 Oct 2023 17:19:13 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     "Wu, Wentong" <wentong.wu@intel.com>
+Cc:     "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "oneukum@suse.com" <oneukum@suse.com>,
+        "wsa@kernel.org" <wsa@kernel.org>,
+        "andi.shyti@linux.intel.com" <andi.shyti@linux.intel.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "bartosz.golaszewski@linaro.org" <bartosz.golaszewski@linaro.org>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>,
+        "Wang, Zhifeng" <zhifeng.wang@intel.com>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v20 1/4] usb: Add support for Intel LJCA device
+Message-ID: <2023101653-shiftless-scorebook-19e3@gregkh>
+References: <1696833205-16716-2-git-send-email-wentong.wu@intel.com>
+ <ZSZ3IPgLk7uC5UGI@smile.fi.intel.com>
+ <6a87b43a-0648-28d4-6c69-e0f684e44eb6@redhat.com>
+ <DM6PR11MB4316BE44F53E276384FF06C88DCCA@DM6PR11MB4316.namprd11.prod.outlook.com>
+ <5d2e9eba-a941-ea9a-161a-5b97d09d5d35@redhat.com>
+ <ZSmjEKfYzFuAHXW+@smile.fi.intel.com>
+ <9a080d06-586d-686f-997e-674cb8d16099@redhat.com>
+ <DM6PR11MB43169A9ADDA7681DB7D9347C8DD7A@DM6PR11MB4316.namprd11.prod.outlook.com>
+ <ZSzogNhlX9njvOIU@smile.fi.intel.com>
+ <DM6PR11MB4316382324D15985A70E531C8DD7A@DM6PR11MB4316.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231016143828.647848-1-jeffxu@chromium.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <DM6PR11MB4316382324D15985A70E531C8DD7A@DM6PR11MB4316.namprd11.prod.outlook.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 02:38:19PM +0000, jeffxu@chromium.org wrote:
-> Modern CPUs support memory permissions such as RW and NX bits. Linux has
-> supported NX since the release of kernel version 2.6.8 in August 2004 [1].
-
-This seems like a confusing way to introduce the subject.  Here, you're
-talking about page permissions, whereas (as far as I can tell), mseal() is
-about making _virtual_ addresses immutable, for some value of immutable.
-
-> Memory sealing additionally protects the mapping itself against
-> modifications. This is useful to mitigate memory corruption issues where
-> a corrupted pointer is passed to a memory management syscall. For example,
-> such an attacker primitive can break control-flow integrity guarantees
-> since read-only memory that is supposed to be trusted can become writable
-> or .text pages can get remapped. Memory sealing can automatically be
-> applied by the runtime loader to seal .text and .rodata pages and
-> applications can additionally seal security critical data at runtime.
-> A similar feature already exists in the XNU kernel with the
-> VM_FLAGS_PERMANENT [3] flag and on OpenBSD with the mimmutable syscall [4].
-> Also, Chrome wants to adopt this feature for their CFI work [2] and this
-> patchset has been designed to be compatible with the Chrome use case.
-
-This [2] seems very generic and wide-ranging, not helpful.  [5] was more
-useful to understand what you're trying to do.
-
-> The new mseal() is an architecture independent syscall, and with
-> following signature:
+On Mon, Oct 16, 2023 at 03:05:09PM +0000, Wu, Wentong wrote:
+> > From: Shevchenko, Andriy
+> > On Mon, Oct 16, 2023 at 08:52:28AM +0300, Wu, Wentong wrote:
+> > > > On 10/13/23 22:05, Shevchenko, Andriy wrote:
+> > > > > On Thu, Oct 12, 2023 at 01:14:23PM +0200, Hans de Goede wrote:
+> > 
+> > <snip>
+> > 
+> > > > >> Ah ok, I see. So the code:
+> > > > >>
+> > > > >> 1. First tries to find the matching child acpi_device for the
+> > > > >> auxdev by ADR
+> > > > >>
+> > > > >> 2. If 1. fails then falls back to HID + UID matching
+> > > > >>
+> > > > >> And there are DSDTs which use either:
+> > > > >>
+> > > > >> 1. Only use _ADR to identify which child device is which, like the example
+> > > > >>    DSDT snippet from the commit msg.
+> > > > >>
+> > > > >> 2. Only use _HID + _UID like the 2 example DSDT snippets from me
+> > > > >> email
+> > > > >>
+> > > > >> But there never is a case where both _ADR and _HID are used at
+> > > > >> the same time (which would be an ACPI spec violation as Andy said).
+> > > > >>
+> > > > >> So AFAICT there is no issue here since  _ADR and _HID are never
+> > > > >> user at the same time and the commit message correctly describes
+> > > > >> scenario 1. from above, so the commit message is fine too.
+> > > > >>
+> > > > >> So I believe that we can continue with this patch series in its
+> > > > >> current v20 form, which has already been staged for going into
+> > > > >> -next by Greg.
+> > > > >>
+> > > > >> Andy can you confirm that moving ahead with the current version
+> > > > >> is ok ?
+> > > > >
+> > > > > Yes as we have a few weeks to fix corner cases.
+> > > > >
+> > > > > What I'm worrying is that opening door for _ADR that seems never
+> > > > > used is kinda an overkill here (resolving non-existing problem).
+> > > >
+> > > > I assume that there actually some DSDTs using the _ADR approach and
+> > > > that this support is not there just for fun.
+> > >
+> > > right, it's not for fun, we use _ADR here is to reduce the maintain
+> > > effort because currently it defines _HID for every new platform and
+> > > the drivers have to be updated accordingly, while _ADR doesn't have that
+> > problem.
+> > 
+> > But this does not confirm if you have such devices. Moreover, My question
+> > about _CID per function stays the same. Why firmware is not using it?
 > 
-> mseal(void addr, size_t len, unsigned int types, unsigned int flags)
+> Yes, both _ADR and _CID can stop growing list in the driver. And for _ADR, it also
+> only require one ID per function. I don't know why BIOS team doesn't select _CID,
+> but I have suggested use _ADR internally, and , to make things moving forward,
+> the driver adds support for _ADR here first. 
 > 
-> addr/len: memory range.  Must be continuous/allocated memory, or else
-> mseal() will fail and no VMA is updated. For details on acceptable
-> arguments, please refer to comments in mseal.c. Those are also fully
-> covered by the selftest.
+> But you're right, _CID is another solution as well, we will discuss it with firmware
+> team more.
 
-Mmm.  So when you say "continuous/allocated" what you really mean is
-"Must have contiguous VMAs" rather than "All pages in this range must
-be populated", yes?
+Should I revert this series now until this gets sorted out?
 
-> types: bit mask to specify which syscall to seal, currently they are:
-> MM_SEAL_MSEAL 0x1
-> MM_SEAL_MPROTECT 0x2
-> MM_SEAL_MUNMAP 0x4
-> MM_SEAL_MMAP 0x8
-> MM_SEAL_MREMAP 0x10
+thanks,
 
-I don't understand why we want this level of granularity.  The OpenBSD
-and XNU examples just say "This must be immutable*".  For values of
-immutable that allow downgrading access (eg RW to RO or RX to RO),
-but not upgrading access (RW->RX, RO->*, RX->RW).
-
-> Each bit represents sealing for one specific syscall type, e.g.
-> MM_SEAL_MPROTECT will deny mprotect syscall. The consideration of bitmask
-> is that the API is extendable, i.e. when needed, the sealing can be
-> extended to madvise, mlock, etc. Backward compatibility is also easy.
-
-Honestly, it feels too flexible.  Why not just two flags to mprotect()
--- PROT_IMMUTABLE and PROT_DOWNGRADABLE.  I can see a use for that --
-maybe for some things we want to be able to downgrade and for other
-things, we don't.
-
-I'd like to see some discussion of how this interacts with mprotect().
-As far as I can tell, the intent is to lock the protections/existance
-of the mapping, and not to force memory to stay in core.  So it's fine
-for the kernel to swap out the page and set up a PTE as a swap entry.
-It's also fine for the kernel to mark PTEs as RO to catch page faults;
-we're concerned with the LOGICAL permissions, and not the page tables.
+greg k-h
