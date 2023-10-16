@@ -2,112 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 281647CA6DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 13:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6756F7CA6DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 13:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232649AbjJPLlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 07:41:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45886 "EHLO
+        id S233095AbjJPLlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 07:41:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231819AbjJPLlD (ORCPT
+        with ESMTP id S231484AbjJPLk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 07:41:03 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14306E5
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 04:41:00 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-534694a9f26so11158a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 04:41:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697456458; x=1698061258; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2I6xiVgm8CDmOxobNPXJ5HYpt0gEXNwuNgT27rQ1pK8=;
-        b=2Q5uhr7KZnIOPozm+oy0vHWbp03Q1sFUZSwBPx0LsVQC/w/dnP/c3KuRsVKTGEu7kM
-         AROIj0DxDxL1/YKoSGX7rM5Lq1lTKGlp1lkaJWGbrOjLbVJXxdpyCT1WYWzb3vbWOBgk
-         anltbr9L+X2Hn1JBwCIzkQjRdEjjugweYDFB8mohX2nuHlw0wCfQMUy4FqZzgBkBaHdR
-         8SPVoFEJSGtEulLCD0j5oxaLuLvVE5dUJvuP0kmBS9RuKVQIuAeZGQ6X55Aqyj9Vn3md
-         s2mtdAxgTRbWRYgZ+LzvH0GL2oEeUQ6/l+nyB3P1/YMPXJaPilTrFc8I/841CfVH1Yba
-         CarQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697456458; x=1698061258;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2I6xiVgm8CDmOxobNPXJ5HYpt0gEXNwuNgT27rQ1pK8=;
-        b=KjgN5EhL2mrtvr6J8e4FhshtvD7f7KGBLnW77sWcE1ddy3HmZpvtsIM6wqiSMWgo7m
-         tnGG3uW6yf1KvnYp87WdsbQMY0zWcngxiMl1slmguoIGCQHUd1DVUmeW9aQsXIwlfLmN
-         4QEjb9+WgbO6YMtEh8QaaBHQ1USh4QXgqF7xlwhsFgSCmYjoQ1FLsEVEDZttlL3q/1h1
-         7hPZ1u5H4HHEfAJkIDFYHK7Ia7IEuUIpej0e+fDvNdJk1Ok93/GlfulckWVh3LuGK6OG
-         ee7QmHLikuOLjIDQpJNYCLlq0IJbWEE5Rc6Z3VzCfXbRoLAb9uLY3H5gkzK31nJnd+kB
-         ppsA==
-X-Gm-Message-State: AOJu0YwBw8BbBMz/0wRmyo6B40iuF5iJ4OTkKr9EqXUICWOth6KspD6S
-        SEvZkftBgNUNCmSk762uLg/BUQpFWuUIaGViYh2PGA==
-X-Google-Smtp-Source: AGHT+IEd7QsZDGvewhvSCOpW/J+FnpZ5jMRtoRoEZoPIfRkDvA7e50KC0N8Z+vcUAqp+1WNdbYbn6DP3CRW+eN2eV5Y=
-X-Received: by 2002:a50:cd16:0:b0:538:1d3a:d704 with SMTP id
- z22-20020a50cd16000000b005381d3ad704mr155111edi.1.1697456458241; Mon, 16 Oct
- 2023 04:40:58 -0700 (PDT)
+        Mon, 16 Oct 2023 07:40:58 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99AD4DC;
+        Mon, 16 Oct 2023 04:40:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57B50C433C8;
+        Mon, 16 Oct 2023 11:40:52 +0000 (UTC)
+Message-ID: <98297bfc-ab81-4bb5-acc3-619fdf879276@xs4all.nl>
+Date:   Mon, 16 Oct 2023 13:40:50 +0200
 MIME-Version: 1.0
-References: <1697056244-21888-1-git-send-email-haiyangz@microsoft.com>
-In-Reply-To: <1697056244-21888-1-git-send-email-haiyangz@microsoft.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Mon, 16 Oct 2023 13:40:43 +0200
-Message-ID: <CANn89iLth-thO7=V=b+3dbP=K-m+hbBk75FtM+7cFiUphGXwoA@mail.gmail.com>
-Subject: Re: [PATCH net-next,v3] tcp: Set pingpong threshold via sysctl
-To:     Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        kys@microsoft.com, davem@davemloft.net, kuba@kernel.org,
-        pabeni@redhat.com, corbet@lwn.net, dsahern@kernel.org,
-        ncardwell@google.com, ycheng@google.com, kuniyu@amazon.com,
-        morleyd@google.com, mfreemon@cloudflare.com, mubashirq@google.com,
-        linux-doc@vger.kernel.org, weiwan@google.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10 0/8] Add StarFive Camera Subsystem driver
+Content-Language: en-US, nl
+To:     Jack Zhu <jack.zhu@starfivetech.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Todor Tomov <todor.too@gmail.com>, bryan.odonoghue@linaro.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-staging@lists.linux.dev,
+        changhuang.liang@starfivetech.com
+References: <20231008085154.6757-1-jack.zhu@starfivetech.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20231008085154.6757-1-jack.zhu@starfivetech.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 10:31=E2=80=AFPM Haiyang Zhang <haiyangz@microsoft.=
-com> wrote:
->
-> TCP pingpong threshold is 1 by default. But some applications, like SQL D=
-B
-> may prefer a higher pingpong threshold to activate delayed acks in quick
-> ack mode for better performance.
->
+Hi Jack,
 
-...
+On 08/10/2023 10:51, Jack Zhu wrote:
+> Hi,
+> 
+> This series is the v10 series that attempts to support the Camera Subsystem
+> found on StarFive JH7110 SoC.
+> 
+> This series is based on top of the master branch of media_stage repository,
+> which is tested with a v4l2-compliance compiled from the git repo
+> (git://linuxtv.org/v4l-utils.git).
 
->
-> diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-> index f207712eece1..7d0fe76d56ef 100644
-> --- a/net/ipv4/tcp_output.c
-> +++ b/net/ipv4/tcp_output.c
-> @@ -170,10 +170,10 @@ static void tcp_event_data_sent(struct tcp_sock *tp=
-,
->         tp->lsndtime =3D now;
->
->         /* If it is a reply for ato after last received
-> -        * packet, enter pingpong mode.
-> +        * packet, increase pingpong count.
->          */
->         if ((u32)(now - icsk->icsk_ack.lrcvtime) < icsk->icsk_ack.ato)
-> -               inet_csk_enter_pingpong_mode(sk);
-> +               inet_csk_inc_pingpong_cnt(sk);
->  }
->
->  /* Account for an ACK we sent. */
+I get one smatch warning:
 
-OK, but I do not think we solved the fundamental problem of using
-jiffies for this heuristic,
-especially for HZ=3D100 or HZ=3D250 builds.
+drivers/staging/media/starfive/camss/stf-isp.c:122 isp_enum_mbus_code() warn: unsigned 'code->index' is never less than zero.
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+And I also notice that there is no TODO file: staging drivers should have a
+TODO file explaining what needs to be done to get them out of staging.
+
+I'm curious to know that as well :-)
+
+It looks like there is a lot of additional development that can be done, since
+most of the ISP parameters appear to be hardcoded.
+
+I also notice something weird in the compliance test output for v4l-subdev0 vs
+v4l-subdev1:
+
+> Compliance test for starfive-camss device /dev/v4l-subdev0:
+> 
+> Driver Info:
+> 	Driver version   : 6.6.0
+> 	Capabilities     : 0x00000000
+> Media Driver Info:
+> 	Driver name      : starfive-camss
+> 	Model            : Starfive Camera Subsystem
+> 	Serial           : 
+> 	Bus info         : platform:19840000.camss
+> 	Media version    : 6.6.0
+> 	Hardware revision: 0x00000000 (0)
+> 	Driver version   : 6.6.0
+> Interface Info:
+> 	ID               : 0x0300001c
+> 	Type             : V4L Sub-Device
+> Entity Info:
+> 	ID               : 0x00000001 (1)
+> 	Name             : stf_isp
+> 	Function         : Image Signal Processor
+> 	Pad 0x01000002   : 0: Sink
+> 	  Link 0x02000014: from remote pad 0x1000010 of entity 'cdns_csi2rx.19800000.csi-bridge' (Video Interface Bridge): Data, Enabled
+> 	Pad 0x01000003   : 1: Source
+> 	  Link 0x0200000c: to remote pad 0x1000009 of entity 'capture_yuv' (V4L2 I/O): Data, Enabled
+
+Here it shows the Media Driver Info for v4l-subdev0.
+
+<snip>
+
+> --------------------------------------------------------------------------------
+> Compliance test for device /dev/v4l-subdev1:
+> 
+> Driver Info:
+> 	Driver version   : 6.6.0
+> 	Capabilities     : 0x00000000
+
+But this does not appear for v4l-subdev1.
+
+I can't really tell why it doesn't show that. Can you debug a little bit?
+The code is in v4l2-compliance.cpp, line 1086:
+
+ent_id = mi_media_info_for_fd(media_fd, node.g_fd(), &is_invalid, &node.function);
+
+The mi_media_info_for_fd() function calls ioctl(media_fd, MEDIA_IOC_DEVICE_INFO, &mdinfo),
+and that fails for some reason. It could be that media_fd is invalid (would be weird).
+
+This could well be a v4l2-compliance bug that you hit with this driver.
+
+Regards,
+
+	Hans
