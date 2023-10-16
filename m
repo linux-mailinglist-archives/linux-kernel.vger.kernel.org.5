@@ -2,101 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B22B27CA48B
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8AD47CA48C
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231305AbjJPJwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 05:52:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54806 "EHLO
+        id S231364AbjJPJx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 05:53:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231364AbjJPJww (ORCPT
+        with ESMTP id S230219AbjJPJx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 05:52:52 -0400
-Received: from smtp-fw-6002.amazon.com (smtp-fw-6002.amazon.com [52.95.49.90])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB64EB;
-        Mon, 16 Oct 2023 02:52:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1697449971; x=1728985971;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=ButIDiCErNxytD4vraOH8UFxC3RVH0U5V+UvXPw1a7g=;
-  b=Ssiejja/hK38qWRE9SUEsp772LG8ICprq7eIsIphbjiqmYRc6eM7uGIg
-   fqcXkPLKHKOdm9hNoKOg1DfgKXEZG06Wj3Uz9+fbLsgnDU/IyW2uwHYf0
-   kw+tlTziA9nbb/bjX3sCs1bRdv1H51AsVYgVCoXDjvykENq2sQ6yRYovt
-   4=;
-X-IronPort-AV: E=Sophos;i="6.03,229,1694736000"; 
-   d="scan'208";a="362070535"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-529f0975.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-6002.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 09:52:37 +0000
-Received: from EX19D004EUC001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-iad-1e-m6i4x-529f0975.us-east-1.amazon.com (Postfix) with ESMTPS id 0DFED487FA;
-        Mon, 16 Oct 2023 09:52:33 +0000 (UTC)
-Received: from dev-dsk-nsaenz-1b-189b39ae.eu-west-1.amazon.com (10.13.235.138)
- by EX19D004EUC001.ant.amazon.com (10.252.51.190) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Mon, 16 Oct 2023 09:52:29 +0000
-From:   Nicolas Saenz Julienne <nsaenz@amazon.com>
-To:     <kvm@vger.kernel.org>
-CC:     <vkuznets@redhat.com>, <seanjc@google.com>, <pbonzini@redhat.com>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <dave.hansen@linux.intel.com>, <x86@kernel.org>, <hpa@zytor.com>,
-        <graf@amazon.de>, <rkagan@amazon.de>,
-        <linux-kernel@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@amazon.com>
-Subject: [PATCH] KVM: x86: hyper-v: Don't auto-enable stimer during deserialization
-Date:   Mon, 16 Oct 2023 09:52:17 +0000
-Message-ID: <20231016095217.37574-1-nsaenz@amazon.com>
-X-Mailer: git-send-email 2.40.1
+        Mon, 16 Oct 2023 05:53:27 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D69AD;
+        Mon, 16 Oct 2023 02:53:25 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 11:53:21 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1697450003;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8ZwQf1eErlCBg5WbOcq8pGfvcWHlytZnteUJdOl47Zg=;
+        b=iekvbj8nVBgBKHp54JDJ2zdV2IRrA92G5gtS46afyKZUREHU8rn/OLoYpqleDGokq+RxCH
+        6K3uRMFn2cxMzHOMARpqpWW4ZT0ggN9PbFzHZDz1BImwRdKTUTXlwqpQeAd5v0Ls/cBBTb
+        cOIX8e0ScosNFsXHkpdhjVZ2pxPVw9mgFA2xP+K7EMf2ryRUezN3EW+1edGwZ8wh0th4QP
+        cBi47q7LL3o/MeuIs9SzzEtfIsEQBDV9OqhKPMWsx1YqmvpXi3CmlGIpM1pLljm6lkG4uN
+        bzc7lZ9kVVnlqy+WjHEbFdSyk5WbOH015rhgyH4Hr7ld8gKklpf5VtHEP3bMYw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1697450003;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8ZwQf1eErlCBg5WbOcq8pGfvcWHlytZnteUJdOl47Zg=;
+        b=31v1lpj1/2JCjhus7e1WwxJik7R7Wh0QYy/24EY//Rdz6CtSoqh+TG7t2rP0cQjaZ2PEVT
+        rLodbOX8XIga3yBQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Wander Lairson Costa <hawk@kernel.org>
+Subject: Re: [PATCH net-next 0/2] net: Use SMP threads for backlog NAPI (or
+ optional).
+Message-ID: <20231016095321.4xzKQ5Cd@linutronix.de>
+References: <20230929162121.1822900-1-bigeasy@linutronix.de>
+ <20231004154609.6007f1a0@kernel.org>
+ <20231007155957.aPo0ImuG@linutronix.de>
+ <20231009180937.2afdc4c1@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.13.235.138]
-X-ClientProxiedBy: EX19D037UWC003.ant.amazon.com (10.13.139.231) To
- EX19D004EUC001.ant.amazon.com (10.252.51.190)
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20231009180937.2afdc4c1@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By not honoring the 'stimer->config.enable' state during stimer
-deserialization we might introduce spurious timer interrupts. For
-example through the following events:
- - The stimer is configured in auto-enable mode.
- - The stimer's count is set and the timer enabled.
- - The stimer expires, an interrupt is injected.
- - We live migrate the VM.
- - The stimer config and count are deserialized, auto-enable is ON, the
-   stimer is re-enabled.
- - The stimer expires right away, and injects an unwarranted interrupt.
+Sorry, getting back that late, I was traveling the last two weeks=E2=80=A6
 
-So let's not change the stimer's enable state if the MSR write comes
-from user-space.
+On 2023-10-09 18:09:37 [-0700], Jakub Kicinski wrote:
+> On Sat, 7 Oct 2023 17:59:57 +0200 Sebastian Andrzej Siewior wrote:
+> > Apologies if I misunderstood. You said to make it optional which I did
+> > with the static key in the second patch of this series. The first patch
+> > is indeed not what we talked about I just to show what it would look
+> > like now that there is no "delay" for backlog-NAPI on the local CPU.
+> >=20
+> > If the optional part is okay then I can repost only that patch against
+> > current net-next.
+>=20
+> Do we have reason to believe nobody uses RPS?
 
-Fixes: 1f4b34f825e8 ("kvm/x86: Hyper-V SynIC timers")
-Signed-off-by: Nicolas Saenz Julienne <nsaenz@amazon.com>
----
- arch/x86/kvm/hyperv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Not sure what you relate to. I would assume that RPS is used in general
+on actual devices and not on loopback where backlog is used. But it is
+just an assumption.
+The performance drop, which I observed with RPS and stress-ng --udp, is
+within the same range with threads and IPIs (based on memory). I can
+re-run the test and provide actual numbers if you want.
 
-diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-index 7c2dac6824e2..9f1deb6aa131 100644
---- a/arch/x86/kvm/hyperv.c
-+++ b/arch/x86/kvm/hyperv.c
-@@ -729,7 +729,7 @@ static int stimer_set_count(struct kvm_vcpu_hv_stimer *stimer, u64 count,
- 	stimer->count = count;
- 	if (stimer->count == 0)
- 		stimer->config.enable = 0;
--	else if (stimer->config.auto_enable)
-+	else if (stimer->config.auto_enable && !host)
- 		stimer->config.enable = 1;
- 
- 	if (stimer->config.enable)
--- 
-2.40.1
-
+Sebastian
