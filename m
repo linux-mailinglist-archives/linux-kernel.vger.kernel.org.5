@@ -2,88 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE5277CB6E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 01:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 936EF7CB6ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 01:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233567AbjJPXPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 19:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58898 "EHLO
+        id S232172AbjJPXSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 19:18:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232172AbjJPXPO (ORCPT
+        with ESMTP id S232457AbjJPXSb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 19:15:14 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B3DA9B
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:15:11 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2c501bd6ff1so54342711fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:15:11 -0700 (PDT)
+        Mon, 16 Oct 2023 19:18:31 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E2895
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:18:29 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-536ef8a7dcdso2816a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:18:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1697498109; x=1698102909; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1697498308; x=1698103108; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=jiFv6IoUrhFAKU+BWwxAbcjyc1kfZd+ZTtqjUkgLJsc=;
-        b=dkk6UIAXGZIwkpJ3EAKe+2sATuI1lMmkxhN5S3DM5dtgMHelHYDmIzhplv6VtsdDnK
-         2nx15oXlnaKq+r8XWztmB4n9TWX29yhvgeaLRKEoDaG/3ysNDrzucG3000XIOPAl07RS
-         jY1w046oLG7Fx3U8HCbsrNI49c1yrHJlsvToQ=
+        bh=iC/11YtDunCM076LJgjQ2zeYYGBdalGng9NijQt/KpE=;
+        b=IuuE9+tiI9vptKLBXW05Y/4G3HnoZV3ASU28YUzQc4rggL0sN3wAQj5HVO0sRRHU3X
+         OvmBFdLdnJai0D3Qh7VuehMfYiQn/CBNk30N7/TVaKhFX1iQ+BejLblYZlBLturiyhof
+         c776O8ILeo0y/umlWs/6xWVJhDQDvBVONT+SfZamJoBYoyv6rW0sHUkJVxUv6LiZ/HBx
+         A/xiba4kmXRfDBaUp0Cg/UT0Ig32he/kPloGmKeHL5TvMqL3LNsC3M2F5gEC11ulr9Fi
+         hpETNzBdnct66ahPELcrBcZamuXm+t3XPz4W0NSxDj5q4MHhR4+aKWSjwdKjOKcHQYj/
+         l+tA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697498109; x=1698102909;
+        d=1e100.net; s=20230601; t=1697498308; x=1698103108;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=jiFv6IoUrhFAKU+BWwxAbcjyc1kfZd+ZTtqjUkgLJsc=;
-        b=p9ZEwYj6wrwIhWIqxvMJLPxfpRTo55gHixPZ3dchqd57DhJMNPofaabePV+C8t1+PP
-         3pNwEjVfZbVFGt2a9gkYzkvXXXzlthxiylIHVpazlA0OLkoqqJKcmwtgsyWujHg3yt9c
-         n98mSt+eK7USxuamZPRFu27w+2wtG1sj9g0hE8ftTY15Qll2C/I/piATmWkFINZVmrVK
-         MxGMdvsPPYIRXac/7AKWaRYtBv+WzCTlR/rGrLjzemiq/VuTOTYyMrQbboayffQ+ASeA
-         HuYSzGPW24YFkC0q2P5AqOXE996rOtRJejwb15jCZeGDKeKoe/oiMXqYy3XMvW15lxu/
-         SJoA==
-X-Gm-Message-State: AOJu0YxqQl/f82+aDQtwGzx+f4ZNzXHhwT1FQtcP2DJ7QdFCytKq1oBH
-        dTL1elkX5MH4Ew1aKt1SIhzUTt0CrwDzoC1HASzThpjE
-X-Google-Smtp-Source: AGHT+IGBVFlyH2M2G1lmLi5On7bMe+V0CC6G2A19q0QMfwD6tYg4UMYEam9NqlKbHHcG/l5jpdjV2A==
-X-Received: by 2002:a05:651c:44f:b0:2bf:fa62:5d0e with SMTP id g15-20020a05651c044f00b002bffa625d0emr508860ljg.2.1697498109516;
-        Mon, 16 Oct 2023 16:15:09 -0700 (PDT)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id h17-20020a2e9011000000b002c12b823669sm17864ljg.32.2023.10.16.16.15.08
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 16:15:08 -0700 (PDT)
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-507a29c7eefso3110762e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:15:08 -0700 (PDT)
-X-Received: by 2002:a05:6512:3b85:b0:507:a04c:76eb with SMTP id
- g5-20020a0565123b8500b00507a04c76ebmr603611lfv.35.1697498108277; Mon, 16 Oct
- 2023 16:15:08 -0700 (PDT)
+        bh=iC/11YtDunCM076LJgjQ2zeYYGBdalGng9NijQt/KpE=;
+        b=lcz33Tm6VUrwDU6moyn8vnRAQ291CvsCeEnegUQzM+PalXfaH2JMv57p78wdbW4ybQ
+         zbRT2dAyGPIfkExe9fG+1KEJeiBKx8qyz2JdLyvNtgh8EFg21YYGRX8vEfEFFeZcXGum
+         dt3+/yuaW/1l3y8Hl6uZh0CpAfwDl8GcBGS9zX7Dy7wANZ9Ba0S3H2RRcMKLCQ1hEYcw
+         qzqZJIzpPUL6BLtc5CM+Az8Dz9A1eOugFeJ82a4/Rrzhzzjzl3QbvEVjM9TP7M5tAeYL
+         /yDH96P49MoaNso1nbakPNjBx3SE094mbrjddVtauQ0XKfULp+icZLuGM3kRcFUA/o92
+         lSVg==
+X-Gm-Message-State: AOJu0Yy3QjYjQ5S2DKIDrGWIQsZlonHP2GVy6L9wxAShXJVnDOTwwsWl
+        3NFraZ+N0K4bzxvP0shSIjzg2LgP9QCn9sH1JCywtQ==
+X-Google-Smtp-Source: AGHT+IHSDQVFWveLXyGf0tUPijXYrSYM2YYlGt8C3Vmqr3FgJBMJpfYl60pFDrziom8VotGlWJVPTuF/S05fQjy7/O0=
+X-Received: by 2002:a50:8ad6:0:b0:522:4741:d992 with SMTP id
+ k22-20020a508ad6000000b005224741d992mr50659edk.4.1697498308135; Mon, 16 Oct
+ 2023 16:18:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
- <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
- <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
- <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
- <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
- <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
- <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAFULd4Zjd6idrLXuF59cwKxyd1a--DsiJwGQAKai9Tph30dAow@mail.gmail.com>
- <CAHk-=wgSsfo89ESHcngvPCkQSh_YAJG-0g7fupb+Uv0E1d_EcQ@mail.gmail.com>
- <7D77A452-E61E-4B8B-B49C-949E1C8E257C@vmware.com> <CAHk-=wj1dLFkL9Qv2vtk0O8Q6WE-11Jq3KucZoz2Kkw59LAexw@mail.gmail.com>
-In-Reply-To: <CAHk-=wj1dLFkL9Qv2vtk0O8Q6WE-11Jq3KucZoz2Kkw59LAexw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 16 Oct 2023 16:14:50 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi0mF0sFGweuhGaLyKCT-itO_RgbEcmxkgkwYxEzbHyzQ@mail.gmail.com>
-Message-ID: <CAHk-=wi0mF0sFGweuhGaLyKCT-itO_RgbEcmxkgkwYxEzbHyzQ@mail.gmail.com>
-Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
-To:     Nadav Amit <namit@vmware.com>
-Cc:     Uros Bizjak <ubizjak@gmail.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
+References: <20231016132819.1002933-1-michael.roth@amd.com> <20231016132819.1002933-49-michael.roth@amd.com>
+In-Reply-To: <20231016132819.1002933-49-michael.roth@amd.com>
+From:   Dionna Amalie Glaze <dionnaglaze@google.com>
+Date:   Mon, 16 Oct 2023 16:18:16 -0700
+Message-ID: <CAAH4kHb=hNH88poYw-fj+ewYgt8F-hseZcRuLDdvbgpSQ5FDZQ@mail.gmail.com>
+Subject: Re: [PATCH v10 48/50] KVM: SEV: Provide support for SNP_GUEST_REQUEST
+ NAE event
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     kvm@vger.kernel.org, linux-coco@lists.linux.dev,
+        linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
+        bp@alien8.de, vbabka@suse.cz, kirill@shutemov.name,
+        ak@linux.intel.com, tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+        pankaj.gupta@amd.com, liam.merwick@oracle.com,
+        zhi.a.wang@intel.com, Brijesh Singh <brijesh.singh@amd.com>,
+        Alexey Kardashevskiy <aik@amd.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,15 +83,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Oct 2023 at 16:02, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> so I think this is the right thing to do. I checked that the 32-bit
-> code builds and looks sane too.
+> +
+> +       /*
+> +        * If a VMM-specific certificate blob hasn't been provided, grab the
+> +        * host-wide one.
+> +        */
+> +       snp_certs = sev_snp_certs_get(sev->snp_certs);
+> +       if (!snp_certs)
+> +               snp_certs = sev_snp_global_certs_get();
+> +
 
-Just to clarify: the 64-bit side I actually booted and am running.
+This is where the generation I suggested adding would get checked. If
+the instance certs' generation is not the global generation, then I
+think we need a way to return to the VMM to make that right before
+continuing to provide outdated certificates.
+This might be an unreasonable request, but the fact that the certs and
+reported_tcb can be set while a VM is running makes this an issue.
 
-The 32-bit side is pretty much identical, but I only checked that that
-'process_32.c' file still builds. I didn't do any other testing.
-
-             Linus
+-- 
+-Dionna Glaze, PhD (she/her)
