@@ -2,206 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B835A7CA0A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 09:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA3607CA071
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 09:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231853AbjJPHda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 03:33:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48488 "EHLO
+        id S231861AbjJPHYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 03:24:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjJPHd2 (ORCPT
+        with ESMTP id S229590AbjJPHYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 03:33:28 -0400
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B2CAD
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:33:26 -0700 (PDT)
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20231016073324epoutp04d590c7bf75b81eb0a15b9efb4a470d5b~OhiVTgA0v0198901989epoutp04y
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 07:33:24 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20231016073324epoutp04d590c7bf75b81eb0a15b9efb4a470d5b~OhiVTgA0v0198901989epoutp04y
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1697441604;
-        bh=/fmWexiW3XjDpbpbWnZTKvgi14z+ifFVkfg9xnLHvnU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=P81jSSjRqHddN8DwiTTUDm7TUtJ3ekLiLGMlbMDvM0gNHfd72akiTyGXeAeKGOSD9
-         HUvK5xItffVCzWJaaGk81Sqt4b0aPWpxfkadGms2T8qC2Poj7XlWpBOtMn3RwF/Iu8
-         2vrcQujYdZMHSPWEqEmBTt6ayj68TlVWfD0VjUDQ=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20231016073324epcas2p2470508d7c80bde0ead6e40ed26dac610~OhiVBD5Bf0987509875epcas2p2s;
-        Mon, 16 Oct 2023 07:33:24 +0000 (GMT)
-Received: from epsmges2p4.samsung.com (unknown [182.195.36.68]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4S883l3zCPz4x9Q2; Mon, 16 Oct
-        2023 07:33:23 +0000 (GMT)
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        C7.FD.09607.347EC256; Mon, 16 Oct 2023 16:33:23 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
-        20231016073323epcas2p215b7d7c872459cfc427b24fee8ff14a9~OhiUKkBeJ2756927569epcas2p2S;
-        Mon, 16 Oct 2023 07:33:23 +0000 (GMT)
-Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20231016073323epsmtrp11d601c6c642aa890c1bfad2f945c20cf~OhiUKEuQD0099400994epsmtrp1E;
-        Mon, 16 Oct 2023 07:33:23 +0000 (GMT)
-X-AuditID: b6c32a48-bcdfd70000002587-d6-652ce743281a
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A9.E1.18939.347EC256; Mon, 16 Oct 2023 16:33:23 +0900 (KST)
-Received: from tiffany (unknown [10.229.95.142]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231016073323epsmtip21e5a4b746388960075f13439e0fadc3e~OhiUCZDW00486504865epsmtip2b;
-        Mon, 16 Oct 2023 07:33:23 +0000 (GMT)
-Date:   Mon, 16 Oct 2023 16:23:05 +0900
-From:   Hyesoo Yu <hyesoo.yu@samsung.com>
-To:     Vishal Moola <vishal.moola@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: page_alloc: check the order of compound page event
- when the order is 0
-Message-ID: <20231016072305.GA2440288@tiffany>
+        Mon, 16 Oct 2023 03:24:21 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B23CBAD;
+        Mon, 16 Oct 2023 00:24:19 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-53dd3f169d8so6962938a12.3;
+        Mon, 16 Oct 2023 00:24:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697441058; x=1698045858; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=wSC7zHohO45xUvqiXG5UdWP7+MJE4ZAs27gchq8/dWs=;
+        b=BqCPm7peQAcvCNhiSP86dSk+6kWGR46/Zv+djxFT8hjXv6epSszeee5CttS6U6tIVQ
+         q+9ocP22/zFu3UbRD5daJptu9lNzWs2GbwRJ7JCODMzaTAwBW1r6ADIuJk77/bhoS8fo
+         Qw0YapQBLOhz9JKcsV/RVrYqLZN8G8y+e/SUT7vCkdPQ7qsn1rOgBvJyQL4pnFBY3MX4
+         rktGIeFI3W3sIQ+wgJROspNYOU/bn81ip7A7hl4Si1Be5k8+FpBy3XK/BwU5Ra2/X0Gv
+         5XriI2Lace4SWKTgEBNDowyjTJjFb+Dbd387ZkleQeSXFLMRhlAu/If84IrcWyoiRGJj
+         xyog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697441058; x=1698045858;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wSC7zHohO45xUvqiXG5UdWP7+MJE4ZAs27gchq8/dWs=;
+        b=bYPvzOZ+BrRs4V1W3iMUsVuGY2JKiDB83uRI3/nIRxIYU3Mnqx0rI//wOA3OqUgWBo
+         ZCeZyyspmOLLzAWHe0/yeGbOSxX91mYv8f1b8yM6PdwpnqVssoiOyJvcdUvIaY2x5ufd
+         Z3iweSNDLLFQPrrXqyHJhZvPzjclgyO3EB+8gqC+VoQa3z4RPev+yowzZImv7bXetyOE
+         YfMOz3DtxtOY3ua6lPgcKRdwDCZOHnQYPHvsj6353PSCg1oUfh5pYKQ/P7Fuk7lHaLQu
+         5zVuyMHFt94r0KOm9hzZIH5sQSD4K+gEDs4Z0S5X9oI+Wgivyaxz95zhd33uSbYnCw/M
+         5RFQ==
+X-Gm-Message-State: AOJu0YxpOyZ6vyHtJXybjPLX+aolv+SXU9+gb3c9DOHkWBsYmtcRYp3F
+        ncoYwQPdOI9L7Q5bIb3b0wc=
+X-Google-Smtp-Source: AGHT+IED8Uc7u9Q33Xz81tG2cG2G73FgkYddfWKAtR4yw2f/5FSQrcfJcCBNE+7KI+/dwjooz0qyFg==
+X-Received: by 2002:a17:907:1c9e:b0:9bd:f031:37b6 with SMTP id nb30-20020a1709071c9e00b009bdf03137b6mr6620155ejc.49.1697441057766;
+        Mon, 16 Oct 2023 00:24:17 -0700 (PDT)
+Received: from [147.251.42.107] (laomedon.fi.muni.cz. [147.251.42.107])
+        by smtp.gmail.com with ESMTPSA id 29-20020a170906209d00b0099bc038eb2bsm3399712ejq.58.2023.10.16.00.24.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Oct 2023 00:24:17 -0700 (PDT)
+Message-ID: <bf4d0580-62b1-4959-8fc4-a7ab86b7e980@gmail.com>
+Date:   Mon, 16 Oct 2023 09:24:16 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAOzc2pxGyZUGju07aid06FpSgFFA45tr0wU-yH4yUipKMPaP=Q@mail.gmail.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgk+LIzCtJLcpLzFFi42LZdljTXNf5uU6qwexPchZz1q9hs7i8aw6b
-        xb01/1kt1u+7werA4rFz1l12j02fJrF7nJjxm8Xj8ya5AJaobJuM1MSU1CKF1Lzk/JTMvHRb
-        Je/geOd4UzMDQ11DSwtzJYW8xNxUWyUXnwBdt8wcoJVKCmWJOaVAoYDE4mIlfTubovzSklSF
-        jPziElul1IKUnALzAr3ixNzi0rx0vbzUEitDAwMjU6DChOyMtQcWMRd8kqjY376WtYHxl1AX
-        IyeHhICJxI4Jt1m6GLk4hAR2MEo8uniKDcL5xCjR+H4NE5zz5c5pdpiWNb1bGCESOxklFrxa
-        wA7hPGWU2HDtOBNIFYuAqsTstyvBOtgE1CVObFkG1MHBISKgKbHybxJImFkgUeLv1PVgJcJA
-        9s7mDWwgNq+AnsTCWYfZIWxBiZMzn7CA2JwCgRJPZi5mhjjiFrvEulMeELaLxLXdNxkhbGGJ
-        V8e3QB0qJfGyvw3Kzpa4+3ECG4RdIrHuTANU3Fhi1rN2Roh70iW2Tf3PDnKmhICyxJFbLBBh
-        PomOw3+hwrwSHW3QkFOW2L9sHguELSnxaG07K0SJh0TXnnhIgGxmkjh6eBnzBEa5WUiemYVk
-        2SygFmZgmKzfpQ8Rlpdo3jqbGSIsLbH8HweSigWMbKsYxVILinPTU4uNCkzgMZ2cn7uJEZwU
-        tTx2MM5++0HvECMTB+MhRgkOZiUR3vRgnVQh3pTEyqrUovz4otKc1OJDjKbAOJrILCWanA9M
-        y3kl8YYmlgYmZmaG5kamBuZK4rz3WuemCAmkJ5akZqemFqQWwfQxcXBKNTAtYD0a/PsWW9u+
-        ac2RV75e+hdqp+HBZznpsUORa0Rl8Axffh5f/5pC44lrGa/W75325/G9qV+/vWi8M8F6MotB
-        Qqqe7X03Zd2cP1GHVjWqHV8/38z1J5f29OaYM/YB8ivOzU8pcf6u+TdNUDBuwt6jId0H6zfF
-        9JQKmG8/cPPnBY+oJnWWiLcmdpdKuya2l71wveBd/bN6jk1zVREPx0t9odlNy6U+yx/fXr1U
-        Utt1w4/5/9fd0GZRlvC7r8tZN/nNxkcXvgk+aZ9w+tXK904vJqzmPd3w7G8880v57vVt0+w/
-        OG4S2nuKZfL/J8zlOl8erztQPqXRb//fsBkR9S0r+84xKweUcsVdfrzgDc9GJZbijERDLeai
-        4kQAcxUtFBMEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrALMWRmVeSWpSXmKPExsWy7bCSvK7zc51Ugy9vOC3mrF/DZnF51xw2
-        i3tr/rNarN93g9WBxWPnrLvsHps+TWL3ODHjN4vH501yASxRXDYpqTmZZalF+nYJXBkXv95g
-        KpguVnHn+kW2BsbdAl2MnBwSAiYSa3q3MHYxcnEICWxnlHh47AMzREJSYtbnk0wQtrDE/ZYj
-        rCC2kMBjRokX/fEgNouAqsTstyvZQWw2AXWJE1uWAQ3i4BAR0JRY+TcJJMwskCjxd+p6sBJh
-        IHtn8wY2EJtXQE9i4azD7BB7NzNJnHiwmB0iIShxcuYTFohmdYk/8y4xg8xkFpCWWP6PAyIs
-        L9G8dTbYmZwCgRJPZi5mnsAoOAtJ9ywk3bMQumch6V7AyLKKUTS1oDg3PTe5wFCvODG3uDQv
-        XS85P3cTIzjQtYJ2MC5b/1fvECMTB+MhRgkOZiUR3vRgnVQh3pTEyqrUovz4otKc1OJDjNIc
-        LErivMo5nSlCAumJJanZqakFqUUwWSYOTqkGJslvNxnrzm40a3h4SurY9zc5S9tUdsROYp99
-        hf/BlNdWccufXUpg4Ap22Byv0rHAaIqLQHHorJwrx7Sbly8ufR4UFSixLfSAw5wXaS0etxnb
-        Yvf0v9x6PvlUVfDZXbOrFK63ylw7ENG2x+mi82Uj2dvTRV99e6r37hX7Ivu9x41//b0T/8jw
-        wMRIucN/VrfbW0zNDJ/OyMFtrVpj9SA1V1m0vCim7voa80WhOYs7vGRentw2M6o+S03E5uT0
-        W74PzXSa5pppOnmFCJzRn7x8Sur0SN/LRSvPb0g5qH59mYO0f5O1yjrPj4ZzG0Mzdk5KeHm+
-        OCjWL7kz6b/Uhi2F8edUXzLPsz2tuqZk5xSHzUosxRmJhlrMRcWJAHSI2urjAgAA
-X-CMS-MailID: 20231016073323epcas2p215b7d7c872459cfc427b24fee8ff14a9
-X-Msg-Generator: CA
-Content-Type: multipart/mixed;
-        boundary="----kpWfbNyO0dZ94JZMx8UaZzOLaVw4Eds-FlcQ7ND7-zj3ifPP=_d102_"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231012012153epcas2p34b8e9e8a898ace8d50411cadf937ef5d
-References: <CGME20231012012153epcas2p34b8e9e8a898ace8d50411cadf937ef5d@epcas2p3.samsung.com>
-        <20231012011106.2425309-1-hyesoo.yu@samsung.com>
-        <ZSmucNWBMj/mNVeE@dhcp-10-159-238-251.vpn.oracle.com>
-        <20231016003200.GA445850@tiffany>
-        <CAOzc2pxGyZUGju07aid06FpSgFFA45tr0wU-yH4yUipKMPaP=Q@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] scsi: use ATA-12 pass-thru for OPAL as fallback
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-scsi@vger.kernel.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-kernel@vger.kernel.org
+References: <20231016070211.39502-1-gmazyland@gmail.com>
+ <20231016070531.GA28537@lst.de>
+Content-Language: en-US
+From:   Milan Broz <gmazyland@gmail.com>
+Autocrypt: addr=gmazyland@gmail.com; keydata=
+ xsFNBE94p38BEADZRET8y1gVxlfDk44/XwBbFjC7eM6EanyCuivUPMmPwYDo9qRey0JdOGhW
+ hAZeutGGxsKliozmeTL25Z6wWICu2oeY+ZfbgJQYHFeQ01NVwoYy57hhytZw/6IMLFRcIaWS
+ Hd7oNdneQg6mVJcGdA/BOX68uo3RKSHj6Q8GoQ54F/NpCotzVcP1ORpVJ5ptyG0x6OZm5Esn
+ 61pKE979wcHsz7EzcDYl+3MS63gZm+O3D1u80bUMmBUlxyEiC5jo5ksTFheA8m/5CAPQtxzY
+ vgezYlLLS3nkxaq2ERK5DhvMv0NktXSutfWQsOI5WLjG7UWStwAnO2W+CVZLcnZV0K6OKDaF
+ bCj4ovg5HV0FyQZknN2O5QbxesNlNWkMOJAnnX6c/zowO7jq8GCpa3oJl3xxmwFbCZtH4z3f
+ EVw0wAFc2JlnufR4dhaax9fhNoUJ4OSVTi9zqstxhEyywkazakEvAYwOlC5+1FKoc9UIvApA
+ GvgcTJGTOp7MuHptHGwWvGZEaJqcsqoy7rsYPxtDQ7bJuJJblzGIUxWAl8qsUsF8M4ISxBkf
+ fcUYiR0wh1luUhXFo2rRTKT+Ic/nJDE66Ee4Ecn9+BPlNODhlEG1vk62rhiYSnyzy5MAUhUl
+ stDxuEjYK+NGd2aYH0VANZalqlUZFTEdOdA6NYROxkYZVsVtXQARAQABzSBNaWxhbiBCcm96
+ IDxnbWF6eWxhbmRAZ21haWwuY29tPsLBlQQTAQgAPwIbAwYLCQgHAwIGFQgCCQoLBBYCAwEC
+ HgECF4AWIQQqKRgkP95GZI0GhvnZsFd72T6Y/AUCYaUUZgUJJPhv5wAKCRDZsFd72T6Y/D5N
+ D/438pkYd5NyycQ2Gu8YAjF57Od2GfeiftCDBOMXzh1XxIx7gLosLHvzCZ0SaRYPVF/Nr/X9
+ sreJVrMkwd1ILNdCQB1rLBhhKzwYFztmOYvdCG9LRrBVJPgtaYqO/0493CzXwQ7FfkEc4OVB
+ uhBs4YwFu+kmhh0NngcP4jaaaIziHw/rQ9vLiAi28p1WeVTzOjtBt8QisTidS2VkZ+/iAgqB
+ 9zz2UPkE1UXBAPU4iEsGCVXGWRz99IULsTNjP4K3p8ZpdZ6ovy7X6EN3lYhbpmXYLzZ3RXst
+ PEojSvqpkSQsjUksR5VBE0GnaY4B8ZlM3Ng2o7vcxbToQOsOkbVGn+59rpBKgiRadRFuT+2D
+ x80VrwWBccaph+VOfll9/4FVv+SBQ1wSPOUHl11TWVpdMFKtQgA5/HHldVqrcEssWJb9/tew
+ 9pqxTDn6RHV/pfzKCspiiLVkI66BF802cpyboLBBSvcDuLHbOBHrpC+IXCZ7mgkCrgMlZMql
+ wFWBjAu8Zlc5tQJPgE9eeQAQrfZRcLgux88PtxhVihA1OsMNoqYapgMzMTubLUMYCCsjrHZe
+ nzw5uTcjig0RHz9ilMJlvVbhwVVLmmmf4p/R37QYaqm1RycLpvkUZUzSz2NCyTcZp9nM6ooR
+ GhpDQWmUdH1Jz9T6E9//KIhI6xt4//P15ZfiIs7BTQRPeKd/ARAA3oR1fJ/D3GvnoInVqydD
+ U9LGnMQaVSwQe+fjBy5/ILwo3pUZSVHdaKeVoa84gLO9g6JLToTo+ooMSBtsCkGHb//oiGTU
+ 7KdLTLiFh6kmL6my11eiK53o1BI1CVwWMJ8jxbMBPet6exUubBzceBFbmqq3lVz4RZ2D1zKV
+ njxB0/KjdbI53anIv7Ko1k+MwaKMTzO/O6vBmI71oGQkKO6WpcyzVjLIip9PEpDUYJRCrhKg
+ hBeMPwe+AntP9Om4N/3AWF6icarGImnFvTYswR2Q+C6AoiAbqI4WmXOuzJLKiImwZrSYnSfQ
+ 7qtdDGXWYr/N1+C+bgI8O6NuAg2cjFHE96xwJVhyaMzyROUZgm4qngaBvBvCQIhKzit61oBe
+ I/drZ/d5JolzlKdZZrcmofmiCQRa+57OM3Fbl8ykFazN1ASyCex2UrftX5oHmhaeeRlGVaTV
+ iEbAvU4PP4RnNKwaWQivsFhqQrfFFhvFV9CRSvsR6qu5eiFI6c8CjB49gBcKKAJ9a8gkyWs8
+ sg4PYY7L15XdRn8kOf/tg98UCM1vSBV2moEJA0f98/Z48LQXNb7dgvVRtH6owARspsV6nJyD
+ vktsLTyMW5BW9q4NC1rgQC8GQXjrQ+iyQLNwy5ESe2MzGKkHogxKg4Pvi1wZh9Snr+RyB0Rq
+ rIrzbXhyi47+7wcAEQEAAcLBfAQYAQgAJgIbDBYhBCopGCQ/3kZkjQaG+dmwV3vZPpj8BQJh
+ pRSXBQkk+HAYAAoJENmwV3vZPpj8BPMP/iZV+XROOhs/MsKd7ngQeFgETkmt8YVhb2Rg3Vgp
+ AQe9cn6aw9jk3CnB0ecNBdoyyt33t3vGNau6iCwlRfaTdXg9qtIyctuCQSewY2YMk5AS8Mmb
+ XoGvjH1Z/irrVsoSz+N7HFPKIlAy8D/aRwS1CHm9saPQiGoeR/zThciVYncRG/U9J6sV8XH9
+ OEPnQQR4w/V1bYI9Sk+suGcSFN7pMRMsSslOma429A3bEbZ7Ikt9WTJnUY9XfL5ZqQnjLeRl
+ 8243OTfuHSth26upjZIQ2esccZMYpQg0/MOlHvuFuFu6MFL/gZDNzH8jAcBrNd/6ABKsecYT
+ nBInKH2TONc0kC65oAhrSSBNLudTuPHce/YBCsUCAEMwgJTybdpMQh9NkS68WxQtXxU6neoQ
+ U7kEJGGFsc7/yXiQXuVvJUkK/Xs04X6j0l1f/6KLoNQ9ep/2In596B0BcvvaKv7gdDt1Trgg
+ vlB+GpT+iFRLvhCBe5kAERREfRfmWJq1bHod/ulrp/VLGAaZlOBTgsCzufWF5SOLbZkmV2b5
+ xy2F/AU3oQUZncCvFMTWpBC+gO/o3kZCyyGCaQdQe4jS/FUJqR1suVwNMzcOJOP/LMQwujE/
+ Ch7XLM35VICo9qqhih4OvLHUAWzC5dNSipL+rSGHvWBdfXDhbezJIl6sp7/1rJfS8qPs
+In-Reply-To: <20231016070531.GA28537@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-------kpWfbNyO0dZ94JZMx8UaZzOLaVw4Eds-FlcQ7ND7-zj3ifPP=_d102_
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: inline
-
-On Sun, Oct 15, 2023 at 08:28:18PM -0700, Vishal Moola wrote:
-> On Sun, Oct 15, 2023 at 5:42 PM Hyesoo Yu <hyesoo.yu@samsung.com> wrote:
-> >
-> > On Fri, Oct 13, 2023 at 01:54:08PM -0700, Vishal Moola wrote:
-> > > On Thu, Oct 12, 2023 at 10:11:06AM +0900, Hyesoo Yu wrote:
-> > > > For compound pages, the head sets the PG_head flag and
-> > > > the tail sets the compound_head to indicate the head page.
-> > > > If a user allocates a compound page and frees it with a different
-> > > > order, the compound page information will not be properly
-> > > > initialized. To detect this problem, compound_page(page) and
+On 10/16/23 09:05, Christoph Hellwig wrote:
+> On Mon, Oct 16, 2023 at 09:02:11AM +0200, Milan Broz wrote:
+>> All common USB/SATA or USB/NVMe adapters I tested need this patch.
+>>
+>> In short, these steps are run for OPAL support check:
+>>    1) Storage driver enables security driver flag (security_supported).
+>>       USB-attached storage drivers will enable it in a separate patchset.
+>>       SCSI and NNVMe drivers do it already. If the flag is not enabled,
+>>       no following steps are run, and OPAL remains disabled.
+>>    2) SCSI device enumerates SECURITY IN/OUT command support. If detected,
+>>       SECURITY ON/OUT wrapper is used (as in the current code).
+>>       If not, new ATA-12 pass-thru wrapper is used instead.
+>>    3) SED OPAL code tries OPAL discovery command for the device.
+>>       If it receives a correct reply, OPAL is enabled for the device.
+>>       If SCSI SECURITY or ATA-12 command with discovery command is rejected,
+>>       OPAL remains disabled.
+>>
+>> Note, USB attached storage needs an additional patchset sent separately
+>> as requested by USB driver maintainers (it contains required changes
+>> related to USB quirk processing).
 > 
-> s/compound_page/compound_order/
+> This just feels wrong.  These adapters are broken if they can't
+> translated, and we should not put ATA command submission into
+> sd.c.
+
+I think it is blocked in USB layer as not running command enumeration,
+SCSI SECURITY will be never sent to the adapter through USB.
+
+I understand the problem, but if you configure OPAL from userspace, ATA-12 is sent
+to these devices already - so why kernel cannot use it too?
+
 > 
-> > > > the order are compared, but it is not checked when the order is 0.
-> > > > That error should be checked regardless of the order.
+>> +	cdb[0] = ATA_12;
+>> +	cdb[1] = (send ? 5 /* ATA_PROTOCOL_PIO_DATA_IN */ : 4 /* ATA_PROTOCOL_PIO_DATA_OUT */) << 1;
+>> +	cdb[2] = 2 /* t_length */ | (1 << 2) /* byt_blok */ | ((send ?  0 : 1) << 3) /* t_dir */;
+>> +	cdb[3] = secp;
+>> +	put_unaligned_le16(len / 512, &cdb[4]);
+>> +	put_unaligned_le16(spsp, &cdb[6]);
+>> +	cdb[9] = send ? 0x5e /* ATA_CMD_TRUSTED_SND */: 0x5c /* ATA_CMD_TRUSTED_RCV */;
 > 
-> With this many mentions of "the order", it is easy to misinterpret "the
-> order"
-> to be referencing the page order rather than the order of pages we are
-> trying
-> to free. I recommend replacing "the order" with "the order argument" or
-> something similar for clarity.
 > 
+> Also avoid all these crazy long lines, and please use the actual
+> constants.  Using a good old if/else is actually a very good way to
+> structure the code in a somewhat readable way.
 
-What a good idea! I'll replace that. Thanks for your comments.
+Sure, I was trying to no add additional includes that will mess this up, I'll reformat it if needed.
 
-> > > I believe all compound pages are order >= 1, so this error can't occur
-> > > when the order is 0.
-> > >
-> >
-> > Yes. All compound pages are order >= 1.
-> > However if the user uses the API incorrectly, the order value could be
-> zero.
+Otherwise, this wrapper is exactly what is used is sedutils and also in our test utility
+that tries to work with OPAL commands directly
+https://github.com/mbroz/opal-toolset
+
 > 
-> I see, thanks for clarifying that.
+>> +		if (sdkp->security)
+>> +		    sdkp->opal_dev = init_opal_dev(sdkp, &sd_sec_submit);
+>> +		else
+>> +		    sdkp->opal_dev = init_opal_dev(sdkp, &sd_ata12_submit);
 > 
-> With the commit message changes above:
-> Reviewed-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
-> 
+> Messed up indentation here.
 
-Okay, Thanks for review.
+sorry, my bad, I hate such formatting myself and missed it here :-)
+  
+> besides the fact that the statement is fundamentally wrong and you'll
+> start sending ATA command to random devices.
 
-Regards.
-Hyesoo Yu.
+So what do you suggest? As I said, this exactly happen if you configure it from userspace.
 
-> > For example,
-> >
-> > addr = alloc_pages(GFP_COMP, 2);
-> > free_pages(addr, 0);
-> >
-> > (struct page[16])0xFFFFFFFE21715100 = (
-> > (flags = 0x4000000000000200, lru = (next = 0x0, prev =
-> 0xDEAD000000000122),//  Clear PG_head
-> > (flags = 0x4000000000000000, lru = (next = 0xFFFFFFFE21715101, prev =
-> 0xFFFFFFFF00000201),  // Remain compound head
-> >
-> > It is memory leak, and it also makes system stability problem.
-> > on isolation_single_pageblock, That case makes infinite loops.
-> >
-> > for (pfn = start_pfn; pfn < boundary_pfn; ) {
-> >         if (PageCompound(page)) { // page[1] is compound page
-> >                 struct page *head = compound_head(page); // page[0]
-> >                 unsigned long head_pfn = page_to_pfn(head);
-> >                 unsigned long nr_pages = compound_nr(head); // nr_pages
-> is 1 since page[0] is not compound page.
-> >
-> >                 if (head_pfn + nr_pages <= boundary_pfn) {
-> >                         pfn = head_pfn + nr_pages; // pfn is set as
-> page[1].
-> >                         continue;
-> >                 }
-> > }
-> >
-> > So, I guess, we have to check the incorrect use in free_pages_prepare.
-> >
-> > Thanks,
-> > Hyesoo Yu.
+Can this be somehow limited? I did not find and way how to do it.
 
-------kpWfbNyO0dZ94JZMx8UaZzOLaVw4Eds-FlcQ7ND7-zj3ifPP=_d102_
-Content-Type: text/plain; charset="utf-8"
-
-
-------kpWfbNyO0dZ94JZMx8UaZzOLaVw4Eds-FlcQ7ND7-zj3ifPP=_d102_--
+Milan
