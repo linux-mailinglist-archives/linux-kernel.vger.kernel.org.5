@@ -2,127 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F417CB012
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAEB87CB009
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234548AbjJPQmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 12:42:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38138 "EHLO
+        id S234623AbjJPQlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 12:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233912AbjJPQl6 (ORCPT
+        with ESMTP id S234589AbjJPQl1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 12:41:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB6611FFC
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:31:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697473881;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rbzg7U/87dJSaK89YmTgCyu23XfU1BhnpwaB496FV9g=;
-        b=VwwMwHsGJUTary7SWMI9EQfJU8TToDQ5Iu2EUoZjfbxWwzaB8kqO7Yvw+8IMqF9zB4rI1T
-        waVNl+edZfXQskxn1uZQkoicRtjcWWMv94dRakrAvq52s4SEBm3OSq+uB30HNk91+r68GC
-        EbtH3+a3IlZtOW92+eTmPpheMObSJgc=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-613-g1DVukGdOg29WJloZ1VP1g-1; Mon, 16 Oct 2023 12:31:16 -0400
-X-MC-Unique: g1DVukGdOg29WJloZ1VP1g-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 523CF81D9E2;
-        Mon, 16 Oct 2023 16:31:15 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.178])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B7B49492BEE;
-        Mon, 16 Oct 2023 16:31:12 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <11ec6f637698feb04963c6a7c39a5ca80af95464.camel@kernel.org>
-References: <11ec6f637698feb04963c6a7c39a5ca80af95464.camel@kernel.org> <20231013155727.2217781-1-dhowells@redhat.com> <20231013155727.2217781-3-dhowells@redhat.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     dhowells@redhat.com, Steve French <smfrench@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Christian Brauner <christian@brauner.io>,
-        linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-cachefs@redhat.com
-Subject: Re: [RFC PATCH 02/53] netfs: Track the fpos above which the server has no data
+        Mon, 16 Oct 2023 12:41:27 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 968562D71;
+        Mon, 16 Oct 2023 09:31:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697473902; x=1729009902;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=KArkgIRLDhwmtFvU9fISOShueMaeloHHrxiJqwNwLLU=;
+  b=ZZKdhCNQ/P4SHyYF/wWIHnCixs/uOKF2ApRFxmmv+T3kW9fmk2fdqvR6
+   LWdVP8BgNcrO1lt0c2bbZJtAHvOfyg46TzFQY40SU+QQFVTYDtR+RThan
+   JOju2liU7SBgz0oXyWZwwl33hpU9K4WFeyLSGDnEnf71ON0c8DV+6+SHq
+   uDf4RuiJYJ1MT8lnEd9+8rarDLiL/6u4CMBHpVUMzkJYiXuNaJ9A7I5E4
+   J//yWLeM/UTL8ffGMA2QV+tB8NkG7htKGh5n5Zyr9ktt57ZvueNvIQ0NN
+   /5JghnquVruYXRWVqAf4lDZUhFlBLCZQe3dhlz+htr4/dszO/pebrO/4Z
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="449785296"
+X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
+   d="scan'208";a="449785296"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 09:31:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="872177333"
+X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
+   d="scan'208";a="872177333"
+Received: from ranaelna-mobl.amr.corp.intel.com (HELO box.shutemov.name) ([10.251.208.247])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 09:31:29 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 21C6A10A1F3; Mon, 16 Oct 2023 19:31:27 +0300 (+03)
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dario Faggioli <dfaggioli@suse.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        marcelo.cerri@canonical.com, tim.gardner@canonical.com,
+        philip.cox@canonical.com, aarcange@redhat.com, peterx@redhat.com,
+        x86@kernel.org, linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        stable@kernel.org, Nikolay Borisov <nik.borisov@suse.com>
+Subject: [PATCHv2] efi/unaccepted: Fix soft lockups caused by parallel memory acceptance
+Date:   Mon, 16 Oct 2023 19:31:22 +0300
+Message-ID: <20231016163122.12855-1-kirill.shutemov@linux.intel.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2841425.1697473872.1@warthog.procyon.org.uk>
-Date:   Mon, 16 Oct 2023 17:31:12 +0100
-Message-ID: <2841426.1697473872@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jeff Layton <jlayton@kernel.org> wrote:
+Michael reported soft lockups on a system that has unaccepted memory.
+This occurs when a user attempts to allocate and accept memory on
+multiple CPUs simultaneously.
 
-> >  (7) If stored data is culled from the local cache, we must set zero_point
-> >      above that if the data also got written to the server.
-> 
-> When you say culled here, it sounds like you're just throwing out the
-> dirty cache without writing the data back. That shouldn't be allowed
-> though, so I must be misunderstanding what you mean here. Can you
-> explain?
+The root cause of the issue is that memory acceptance is serialized with
+a spinlock, allowing only one CPU to accept memory at a time. The other
+CPUs spin and wait for their turn, leading to starvation and soft lockup
+reports.
 
-I meant fscache specifically.  Too many caches - and some of them with the
-same names!
+To address this, the code has been modified to release the spinlock
+while accepting memory. This allows for parallel memory acceptance on
+multiple CPUs.
 
-> >  (8) If dirty data is written back to the server, but not the local cache,
-> >      we must set zero_point above that.
-> 
-> How do you write back without writing to the local cache? I'm guessing
-> this means you're doing a non-buffered write?
+A newly introduced "accepting_list" keeps track of which memory is
+currently being accepted. This is necessary to prevent parallel
+acceptance of the same memory block. If a collision occurs, the lock is
+released and the process is retried.
 
-I meant fscache.  fscache can decline to honour a request to store data.
+Such collisions should rarely occur. The main path for memory acceptance
+is the page allocator, which accepts memory in MAX_ORDER chunks. As long
+as MAX_ORDER is equal to or larger than the unit_size, collisions will
+never occur because the caller fully owns the memory block being
+accepted.
 
-> > +		if (size != i_size) {
-> > +			truncate_pagecache(&vnode->netfs.inode, size);
-> > +			netfs_resize_file(&vnode->netfs, size);
-> > +			fscache_resize_cookie(afs_vnode_cache(vnode), size);
-> > +		}
-> 
-> Isn't this an existing bug? AFS is not setting remote_i_size in the
-> setattr path currently? I think this probably ought to be done in a
-> preliminary AFS patch.
+Aside from the page allocator, only memblock and deferered_free_range()
+accept memory, but this only happens during boot.
 
-It is being set.  afs_apply_status() sets it.  This is called by
-afs_vnode_commit_status() which is called from afs_setattr_success().  The
-value isn't updated until we get the return status from the server that
-includes the new value.
+The code has been tested with unit_size == 128MiB to trigger collisions
+and validate the retry codepath.
 
-> > +	loff_t			zero_point;	/* Size after which we assume there's no data
-> > +						 * on the server */
-> 
-> While I understand the concept, I'm not yet sure I understand how this
-> new value will be used. It might be better to merge this patch in with
-> the patch that adds the first user of this data.
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reported-by: Michael Roth <michael.roth@amd.com
+Fixes: 2053bc57f367 ("efi: Add unaccepted memory support")
+Cc: <stable@kernel.org>
+Reviewed-by: Nikolay Borisov <nik.borisov@suse.com>
+---
 
-I'll consider it.  At least it might make sense to move them adjacent to each
-other in the series.
+  v2:
+   - Fix deadlock (Vlastimil);
+   - Fix comments (Vlastimil);
+   - s/cond_resched()/cpu_relax()/ -- cond_resched() cannot be called
+     from atomic context;
 
-David
+---
+ drivers/firmware/efi/unaccepted_memory.c | 71 ++++++++++++++++++++++--
+ 1 file changed, 67 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/firmware/efi/unaccepted_memory.c b/drivers/firmware/efi/unaccepted_memory.c
+index 853f7dc3c21d..fa3363889224 100644
+--- a/drivers/firmware/efi/unaccepted_memory.c
++++ b/drivers/firmware/efi/unaccepted_memory.c
+@@ -5,9 +5,17 @@
+ #include <linux/spinlock.h>
+ #include <asm/unaccepted_memory.h>
+ 
+-/* Protects unaccepted memory bitmap */
++/* Protects unaccepted memory bitmap and accepting_list */
+ static DEFINE_SPINLOCK(unaccepted_memory_lock);
+ 
++struct accept_range {
++	struct list_head list;
++	unsigned long start;
++	unsigned long end;
++};
++
++static LIST_HEAD(accepting_list);
++
+ /*
+  * accept_memory() -- Consult bitmap and accept the memory if needed.
+  *
+@@ -24,6 +32,7 @@ void accept_memory(phys_addr_t start, phys_addr_t end)
+ {
+ 	struct efi_unaccepted_memory *unaccepted;
+ 	unsigned long range_start, range_end;
++	struct accept_range range, *entry;
+ 	unsigned long flags;
+ 	u64 unit_size;
+ 
+@@ -78,20 +87,74 @@ void accept_memory(phys_addr_t start, phys_addr_t end)
+ 	if (end > unaccepted->size * unit_size * BITS_PER_BYTE)
+ 		end = unaccepted->size * unit_size * BITS_PER_BYTE;
+ 
+-	range_start = start / unit_size;
+-
++	range.start = start / unit_size;
++	range.end = DIV_ROUND_UP(end, unit_size);
++retry:
+ 	spin_lock_irqsave(&unaccepted_memory_lock, flags);
++
++	/*
++	 * Check if anybody works on accepting the same range of the memory.
++	 *
++	 * The check is done with unit_size granularity. It is crucial to catch
++	 * all accept requests to the same unit_size block, even if they don't
++	 * overlap on physical address level.
++	 */
++	list_for_each_entry(entry, &accepting_list, list) {
++		if (entry->end < range.start)
++			continue;
++		if (entry->start >= range.end)
++			continue;
++
++		/*
++		 * Somebody else accepting the range. Or at least part of it.
++		 *
++		 * Drop the lock and retry until it is complete.
++		 */
++		spin_unlock_irqrestore(&unaccepted_memory_lock, flags);
++
++		/*
++		 * The code is reachable from atomic context.
++		 * cond_resched() cannot be used.
++		 */
++		cpu_relax();
++
++		goto retry;
++	}
++
++	/*
++	 * Register that the range is about to be accepted.
++	 * Make sure nobody else will accept it.
++	 */
++	list_add(&range.list, &accepting_list);
++
++	range_start = range.start;
+ 	for_each_set_bitrange_from(range_start, range_end, unaccepted->bitmap,
+-				   DIV_ROUND_UP(end, unit_size)) {
++				   range.end) {
+ 		unsigned long phys_start, phys_end;
+ 		unsigned long len = range_end - range_start;
+ 
+ 		phys_start = range_start * unit_size + unaccepted->phys_base;
+ 		phys_end = range_end * unit_size + unaccepted->phys_base;
+ 
++		/*
++		 * Keep interrupts disabled until the accept operation is
++		 * complete in order to prevent deadlocks.
++		 *
++		 * Enabling interrupts before calling arch_accept_memory()
++		 * creates an opportunity for an interrupt handler to request
++		 * acceptance for the same memory. The handler will continuously
++		 * spin with interrupts disabled, preventing other task from
++		 * making progress with the acceptance process.
++		 */
++		spin_unlock(&unaccepted_memory_lock);
++
+ 		arch_accept_memory(phys_start, phys_end);
++
++		spin_lock(&unaccepted_memory_lock);
+ 		bitmap_clear(unaccepted->bitmap, range_start, len);
+ 	}
++
++	list_del(&range.list);
+ 	spin_unlock_irqrestore(&unaccepted_memory_lock, flags);
+ }
+ 
+-- 
+2.41.0
 
