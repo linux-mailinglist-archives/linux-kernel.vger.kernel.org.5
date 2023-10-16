@@ -2,171 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E20777CAFBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED737CAF96
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234118AbjJPQhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 12:37:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55776 "EHLO
+        id S234304AbjJPQf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 12:35:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234520AbjJPQhP (ORCPT
+        with ESMTP id S234083AbjJPQeQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 12:37:15 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A2483E7
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:24:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 356DEC433C7;
-        Mon, 16 Oct 2023 16:24:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697473460;
-        bh=tmS2WVsDC8a8uXLukYPlcrQc2u6u82VNkXvp5EUy8xg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=MqW1B05lebvow0fs9yOoO69OMLPgOKGaK8NY3MAQp7FVjzVyC0J3ocQ12mFF2jjzJ
-         yiuc0vi3WX1tpW5lGReg8gYluLJt3Ad1tmebsq8AYlE3J5GBTceQOvVtbgF648IOqE
-         RHrWEHojBRPaNXpjEpINOM+5/8Y3VQ/GR25YGXsT07i5DTGXERjyAN/UrayFycK/IM
-         CdFzNuZUOhvFiiKC4n9Cq60e5tO49BhJXNjpPFJYOd+oOc0DaMu4BIj9f54lSD9dxb
-         XTds0Ye/k76PGAUJeU+WqkG9f67ByYRFBuIClMzCXy4FvmBQzpf2w3Kbe1tjiu35gP
-         Ltw8YCY8I2qXw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C98F1CE0868; Mon, 16 Oct 2023 09:24:19 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 09:24:19 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc:     Willy Tarreau <w@1wt.eu>, Zhangjin Wu <falcon@tinylab.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/nolibc: add tests for multi-object linkage
-Message-ID: <246fe818-57a7-4cee-a11b-390df3eee101@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231012-nolibc-linkage-test-v1-1-315e682768b4@weissschuh.net>
- <ZSea+etQwlxbi+Ok@1wt.eu>
- <bfc17e76-fcbc-4ce6-97a8-c1ed72ed2a67@t-8ch.de>
- <33e9afcd-a1cd-4f67-829b-85c86500a93e@paulmck-laptop>
- <b278a643-3761-4699-bafc-df1b7245b8c2@t-8ch.de>
- <ca67eb2c-3918-4a1f-b3e6-2023fda5d6a3@paulmck-laptop>
- <6b66305f-8172-463e-a50d-324c0c33a6ea@t-8ch.de>
- <a5f1a910-dbac-44d8-b9f6-5725bea948b2@paulmck-laptop>
- <aa77a065-fcc9-4d3a-8531-fd994587c48f@t-8ch.de>
- <0c8446a7-473d-49bc-9413-d1b9176f13b1@paulmck-laptop>
+        Mon, 16 Oct 2023 12:34:16 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6588883F1;
+        Mon, 16 Oct 2023 09:25:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3h9ZG7EQdaNIpXvscHdQVx1aAF1LiBEOE4+vvMmYMi4=; b=vOYhrLeCEAOOBmxDZZRJsIYfxr
+        QaW7Pd9wuQdhh7qXX7lLzUo9MesWJ9tLxfP9Xi6HpPUAaQF3yL5TJhQ8tqr0b93uC+3maIqw3lAce
+        kwkh6XXLiR+tXoakeS8a5+Ut2gb80NI+pBsqV35KzXF63XZkOuDABQ+44zm+tLoUKoDoMxscUvT4I
+        AwUsIAMHh0nZfwosk4cKHq/ccYNgonkrJFi2ODid7kSdnneKNihgDR/RdifHgXLZijWpWbQcLzqDb
+        fzkH5CfPE/Lov+C+SfSY0FE74nkjeBiBKeLQkDNl8A71U8TFhnRP3CERQYK/0qhi+F57x1dLHSEuW
+        5+7P4fLg==;
+Received: from [2001:8b0:10b:5:3e6:2df8:f867:bc00] (helo=u3832b3a9db3152.ant.amazon.com)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qsQOs-0074pb-8I; Mon, 16 Oct 2023 16:25:02 +0000
+Message-ID: <03afed7eb3c1e5f4b2b8ecfd8616ae5c6f1819e9.camel@infradead.org>
+Subject: Re: [PATCH RFC 1/1] KVM: x86: add param to update master clock
+ periodically
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Dongli Zhang <dongli.zhang@oracle.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Joe Jin <joe.jin@oracle.com>, x86@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com
+Date:   Mon, 16 Oct 2023 17:25:01 +0100
+In-Reply-To: <993cc7f9-a134-8086-3410-b915fe5db7a5@oracle.com>
+References: <ZRtl94_rIif3GRpu@google.com>
+         <9975969725a64c2ba2b398244dba3437bff5154e.camel@infradead.org>
+         <ZRysGAgk6W1bpXdl@google.com>
+         <d6dc1242ff731cf0f2826760816081674ade9ff9.camel@infradead.org>
+         <ZR2pwdZtO3WLCwjj@google.com>
+         <34057852-f6c0-d6d5-261f-bbb5fa056425@oracle.com>
+         <ZSXqZOgLYkwLRWLO@google.com>
+         <8f3493ca4c0e726d5c3876bb7dd2cfc432d9deaa.camel@infradead.org>
+         <ZSmHcECyt5PdZyIZ@google.com>
+         <cf2b22fc-78f5-dfb9-f0e6-5c4059a970a2@oracle.com>
+         <ZSnSNVankCAlHIhI@google.com>
+         <BD4C4E71-C743-4B79-93CA-0F3AC5423412@infradead.org>
+         <993cc7f9-a134-8086-3410-b915fe5db7a5@oracle.com>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-KfaHPII2pNzSsNHxedNY"
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0c8446a7-473d-49bc-9413-d1b9176f13b1@paulmck-laptop>
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URG_BIZ autolearn=ham autolearn_force=no
-        version=3.4.6
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 01:18:18PM -0700, Paul E. McKenney wrote:
-> On Thu, Oct 12, 2023 at 09:34:53PM +0200, Thomas Weiﬂschuh wrote:
-> > On 2023-10-12 12:06:33-0700, Paul E. McKenney wrote:
-> > > On Thu, Oct 12, 2023 at 08:39:14PM +0200, Thomas Weiﬂschuh wrote:
-> > > > On 2023-10-12 11:25:02-0700, Paul E. McKenney wrote:
-> > > > > [..]
-> > 
-> > > > > I have a signed tag urgent/nolibc.2023.10.12a in the -rcu tree, so
-> > > > > please check the lead-in text for sanity.  (Everything after the digital
-> > > > > signature is automatically generated.)
-> > > > 
-> > > > Looks good. But it's only a listing of the commit subjects, correct?
-> > > 
-> > > Pretty close, just a few added words on the last one.
-> > > 
-> > > So the question is whether there is some larger issue that Linus should
-> > > be made aware of.  If these are just simple fixes for simple bugs,
-> > > we should be good, but yes, I do need to ask.  ;-)
-> > 
-> > These are simple fixes for simple bugs.
-> > 
-> > Do you always have to ask specifically or can I just mention it in the
-> > pull request in the future?
-> 
-> I would be extremely happy to simply copy text from the pull request
-> into the signed tags.  ;-)
-> 
-> We would just need to agree on the format.  For example, in this case,
-> there will eventually be two signed tags, one for the urgent pull
-> request early next week and another for the pull request for the upcoming
-> merge window.
-> 
-> Proposals for the format?
 
-Actually, proposals for the signed-tag text for the urgent commits?
-Left to myself, I would use the same text shown below that I proposed
-last week.
+--=-KfaHPII2pNzSsNHxedNY
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-							Thanx, Paul
+On Mon, 2023-10-16 at 08:47 -0700, Dongli Zhang wrote:
+> Hi David and Sean,
+>=20
+> On 10/14/23 02:49, David Woodhouse wrote:
+> >=20
+> >=20
+> > On 14 October 2023 00:26:45 BST, Sean Christopherson <seanjc@google.com=
+> wrote:
+> > > > 2. Suppose the KVM host has been running for long time, and the dri=
+ft between
+> > > > two domains would be accumulated to super large? (Even it may not i=
+ntroduce
+> > > > anything bad immediately)
+> > >=20
+> > > That already happens today, e.g. unless the host does vCPU hotplug or=
+ is using
+> > > XEN's shared info page, masterclock updates effectively never happen.=
+=C2=A0 And I'm
+> > > not aware of a single bug report of someone complaining that kvmclock=
+ has drifted
+> > > from the host clock.=C2=A0 The only bug reports we have are when KVM =
+triggers an update
+> > > and causes time to jump from the guest's perspective.
+> >=20
+> > I've got reports about the Xen clock going backwards, and also
+> > about it drifting over time w.r.t. the guest's TSC clocksource so
+> > the watchdog in the guest declares its TSC clocksource unstable.=20
+>=20
+> I assume you meant Xen on KVM (not Xen guest on Xen hypervisor). Accordin=
+g to my
+> brief review of xen hypervisor code, it looks using the same algorithm to
+> calculate the clock at hypervisor side, as in the xen guest.
 
-------------------------------------------------------------------------
+Right. It's *exactly* the same thing. Even the same pvclock ABI in the
+way it's exposed to the guest (in the KVM case via the MSR, in the Xen
+case it's in the vcpu_info or a separate vcpu_time_info set up by Xen
+hypercalls).
 
-tag urgent/nolibc.2023.10.12a
-Tagger: Paul E. McKenney <paulmck@kernel.org>
-Date:   Thu Oct 12 10:50:08 2023 -0700
+> Fortunately, the "tsc=3Dreliable" my disable the watchdog, but I have no =
+idea if
+> it impacts Xen on KVM.
 
-Urgent pull request for nolibc into v6.6
+Right. I think Linux as a KVM guest automatically disables the
+watchdog, or at least refuses to use the KVM clock as the watchdog for
+the TSC clocksource?
 
-This pull request contains the following fixes:
+Xen guests, on the other hand, aren't used to the Xen clock being as
+unreliable as the KVM clock is, so they *do* use it as a watchdog for
+the TSC clocksource.
 
-o	tools/nolibc: i386: Fix a stack misalign bug on _start
+> > I don't understand *why* we update the master lock when we populate
+> > the Xen shared info. Or add a vCPU, for that matter.
 
-o	MAINTAINERS: nolibc: update tree location
+Still don't...
 
-o	tools/nolibc: mark start_c as weak to avoid linker errors
+> > > > The idea is to never update master clock, if tsc is stable (and mas=
+terclock is
+> > > > already used).
+> > >=20
+> > > That's another option, but if there are no masterclock updates, then =
+it suffers
+> > > the exact same (theoretical) problem as #2.=C2=A0 And there are real =
+downsides, e.g.
+> > > defining when KVM would synchronize kvmclock with the host clock woul=
+d be
+> > > significantly harder...
+> >=20
+> > I thought the definition of such an approach would be that we
+> > *never* resync the kvmclock to anything. It's based purely on the
+> > TSC value when the guest started, and the TSC frequency. The
+> > pvclock we advertise to all vCPUs would be the same, and would
+> > *never* change except on migration.
+> >=20
+> > (I guess that for consistency we would scale first to the *guest*
+> > TSC and from that to nanoseconds.)
+> >=20
+> > If userspace does anything which makes that become invalid,
+> > userspace gets to keep both pieces. That includes userspace having
+> > to deal with host suspend like migration, etc.
+>=20
+> Suppose we are discussing a non-permanenet solution, I would suggest:
+>=20
+> 1. Document something to accept that kvm-clock (or pvclock on KVM, includ=
+ing Xen
+> on KVM) is not good enough in some cases, e.g., vCPU hotplug.
 
- MAINTAINERS                      | 2 +-
- tools/include/nolibc/arch-i386.h | 4 +++-
- tools/include/nolibc/crt.h       | 1 +
- 3 files changed, 5 insertions(+), 2 deletions(-)
------BEGIN PGP SIGNATURE-----
+I still don't understand the vCPU hotplug case.
 
-iQJHBAABCgAxFiEEbK7UrM+RBIrCoViJnr8S83LZ+4wFAmUoMqATHHBhdWxtY2tA
-a2VybmVsLm9yZwAKCRCevxLzctn7jAE9D/9aa/OzGPI9VFKcN1gIW8dYJnXvSI3n
-+gUMjRhlWnx2DBxBkpg7jmiPUXySlsOzHoo9sgtMuOVXhkdmODZ5RL7drKJXNqxs
-xmpb70mftOtj/+qx3CEj71K45t5pkwidRTwOuwcNGOGM4xb6sw7kVCWinsKGSPjh
-l8pcJxquY2ZcKKp1OciT37IYw6AcWUz4v/JCeKLOg9FFlxIrenR56u41f7OR0GM/
-D1kggSHuwAk+b0BmnUXEig2Ys0bORZ1sRQnTHjQEmba4kr41DzarwdIXMU2LUS3m
-dIxTtSs8kRSRZ21A9rGNEnezwZaYVdRraH3LQcDYQ4lsaccZc7xUICzHwj/DVri1
-PkHVrZzii/PZGIADLYEn1ob9PjbuPXbpf6p1xZsnOCaKv1n4DcG2fHsIsCTptHkr
-qT8+DDu2x74WiD+lAaEuOJV1UeCDjQrTyrK2Impvg1af/d0xS6hUvDeap09OhLpW
-odLgtpO5xRLsWFrKl/FGCZIsLXUkvpn3F2FfU3nLgFWMFiuw6Nkk+hLlr34WqTGs
-A+LRYktd8moFPJRzUhgOr1jZpy8SUhs3MRWlfJ3I3FHQvCYFDX95xHsl5brZ3Vkp
-UAfRPpJmJYfIzhfj7kQZQFJ+mCIfRI0jb+6VyF/u9/MaicfMes4YlUwKEUGBbx+f
-rrUmEilQCZd3Sw==
-=Wnux
------END PGP SIGNATURE-----
+In the case where the TSC is actually sane, why would we need to reset
+the masterclock on vCPU hotplug?=20
 
-commit 90864f0679fdbb3b2e1c3bdbe4b0a34df785cb0a
-Author: Thomas Weiﬂschuh <linux@weissschuh.net>
-Date:   Thu Oct 12 00:37:38 2023 +0200
+The new vCPU gets its TSC synchronised to the others, and its kvmclock
+parameters (mul/shift/offset based on the guest TSC) can be *precisely*
+the same as the other vCPUs too, can't they? Why reset anything?
 
-    tools/nolibc: mark start_c as weak
-    
-    Otherwise the different instances of _start_c from each compilation unit
-    will lead to linker errors:
-    
-    /usr/bin/ld: /tmp/ccSNvRqs.o: in function `_start_c':
-    nolibc-test-foo.c:(.text.nolibc_memset+0x9): multiple definition of `_start_c'; /tmp/ccG25101.o:nolibc-test.c:(.text+0x1ea3): first defined here
-    
-    Fixes: 17336755150b ("tools/nolibc: add new crt.h with _start_c")
-    Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
-    Link: https://lore.kernel.org/lkml/20231012-nolibc-start_c-multiple-v1-1-fbfc73e0283f@weissschuh.net/
-    Link: https://lore.kernel.org/lkml/20231012-nolibc-linkage-test-v1-1-315e682768b4@weissschuh.net/
-    Acked-by: Willy Tarreau <w@1wt.eu>
+> 2. Do not reply on any userspace change, so that the solution can be easi=
+er to
+> apply to existing environments running old KVM versions.
+>=20
+> That is, to limit the change within KVM.
+>=20
+> 3. The options would be to (1) stop updating masterclock in the ideal sce=
+nario
+> (e.g., stable tsc), or to (2) refresh periodically to minimize the drift.
 
-diff --git a/tools/include/nolibc/crt.h b/tools/include/nolibc/crt.h
-index a5f33fef1672..a05655b4ce1d 100644
---- a/tools/include/nolibc/crt.h
-+++ b/tools/include/nolibc/crt.h
-@@ -13,6 +13,7 @@ const unsigned long *_auxv __attribute__((weak));
- static void __stack_chk_init(void);
- static void exit(int);
- 
-+__attribute__((weak))
- void _start_c(long *sp)
- {
- 	long argc;
+If the host TSC is sane, just *never* update the KVM masterclock. It
+"drifts" w.r.t. the host CLOCK_MONOTONIC_RAW and nobody will ever care.
+
+The only opt-in we need from userspace for that is to promise that the
+host TSC will never get mangled, isn't it?
+
+(We probably want to be able to export the pvclock information to
+userspace (in terms of the mul/shift/offset from host TSC to guest TSC
+and then the mul/shift/offset to kvmclock). Userspace may want to make
+things like the PIT/HPET/PMtimer run on that clock.)
+
+
+--=-KfaHPII2pNzSsNHxedNY
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMxMDE2MTYyNTAxWjAvBgkqhkiG9w0BCQQxIgQgNOdADH8r
+M/KfhpmV9rAPiIVzlDH89+JIXihCDANUtaowgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgCyN/gxM/sYz9JNIA/Un2qjlne/FgDyGcnE
+3XCDHdrmYxw73aLirBWtGT8qYNevu/zF6TTW1R44CbQM7N8F24tXO8NLgSPxJVpgdKmjxYz2vyjW
+65Qsb3zQhKXg/9KRGxC5Z1dSFKj4Hj1aI2kchrf/frIt0uHEyO84lj81hZY2Pb83haASUaYC+XbP
+8RsGLzlvK5FzvycqCfbOMBkBEkwNEC5sUqKO9C9PVmc8yVhzyxDOhJT9tHT6COVbAnymsKLlz+ui
+J4s7MpeiWETIDyX8VOo9Qr85rQu7gCCPDYwO6ZiEtSJ864vvvaTFomwHRqoY3nseawfP+fVGFopB
+hB6/pF3jKsNJZ/RjVVVnL25oWE6M/F+0piXgtX9z2ujnWoiB6nXRxhXX3OedpqjWw2yl7MEU5Oqg
+XURvUzRTfNb6jYqMES6x+g5ywBPpPFV9GHTPgEERmk/0jKz5MjF8kRuopPMu1853Gih6sAb1477f
+fkT6YjABiqUA9zhA2bqgPm2rcHJPRPg7ilmcdwtD9XolQOAqPH9+ou+4UaS6YwI2d9ZatdTpDedb
+5oVv96oUGOmJ8zVCSqoV8198OGN40BzY5gBNR3gQPKj+n7cLKdvh33bIeu7exHYIvlxILjjHkb4P
+6YwPKwOdb9B5k8FJljdVq9tJ08lrzRQlkT7e3nExOQAAAAAAAA==
+
+
+--=-KfaHPII2pNzSsNHxedNY--
