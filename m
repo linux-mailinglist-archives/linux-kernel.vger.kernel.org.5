@@ -2,84 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9CD17CB55F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 23:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 336407CB567
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 23:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233567AbjJPVju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 17:39:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41488 "EHLO
+        id S233593AbjJPVoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 17:44:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjJPVjs (ORCPT
+        with ESMTP id S229666AbjJPVoF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 17:39:48 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29BEA1;
-        Mon, 16 Oct 2023 14:39:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697492387; x=1729028387;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ULxm3ALCvLWzeStCPJp9aHPIk/h52vXh0JSPle2l5F8=;
-  b=dwuFOObfkS5fjqi4eRkphnCRq2K8O++02SOUN+JYvK9rTA+NG3NxHrSd
-   DiEjChJY50ZJtQ+HAf11yEY3VVnVVlFa9dfGW6Il4o6xrosUIeO6zZv8Z
-   14WCHf8zow65TBpxqEDlIo+3EIh8PFSH+xJhGATsVbcmxqPMmBQGufYMx
-   QtUbAs63TIH0bTzC/wv66Voe99WKO7LcoBHNo35XdOR5s/+wT1yRF3z29
-   FLAvC+vkv34SrjgCFWmAXfNkvBM3h8QhMlZXZ5YNbTHTV8xYA+V2nf/H/
-   KBLpnrpcBQMcMiru9kaLOiqX6gop1Mr0TailuhXMs3YijO0ZEvIoBNCVh
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="382863479"
-X-IronPort-AV: E=Sophos;i="6.03,230,1694761200"; 
-   d="scan'208";a="382863479"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 14:39:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="749425295"
-X-IronPort-AV: E=Sophos;i="6.03,230,1694761200"; 
-   d="scan'208";a="749425295"
-Received: from ranaelna-mobl.amr.corp.intel.com (HELO box.shutemov.name) ([10.251.208.247])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 14:39:35 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id DE88C10A1F3; Tue, 17 Oct 2023 00:39:32 +0300 (+03)
-Date:   Tue, 17 Oct 2023 00:39:32 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
+        Mon, 16 Oct 2023 17:44:05 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9F90A1;
+        Mon, 16 Oct 2023 14:44:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HRz8nph8WnrDrrGRrnXeWuJaQDKFZ6Yp+LYMrq9QAyg=; b=PL+aoOGi3qjK/S8aZ3+ac1TqIF
+        Wo+V0SAIv0JXK0YFrYNukEBBC6zYrQtRe8vbeNXQ9KH8kCIOkdDNDOy8psYyGgUk0dzBlACVZm6Zk
+        2z+TRCkksTQT9kzVUUe6e0J0utAAlWW6uBg6sz32J19975SXutB0nnlkkWZuSk7WQ0o/0yDJQRxEk
+        Y4E3zA/B1VivBlWl3JsAzRiVYnFf5fJ6hDdOWtB510/2r5qcdyIpsAUnPSMDtUGYBchzQAVFUjHJJ
+        R538FhCa/5JoQ2AXFJF5F0LhVWoATvlcoaDwXZ5+uT0KzJITSn6JD5hnZvbiEnfHg11ydbQ+z7LVy
+        LXv31D4A==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qsVNG-008U1l-I7; Mon, 16 Oct 2023 21:43:42 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 39B73300513; Mon, 16 Oct 2023 23:43:42 +0200 (CEST)
+Date:   Mon, 16 Oct 2023 23:43:42 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
         Ingo Molnar <mingo@redhat.com>,
-        Dario Faggioli <dfaggioli@suse.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        marcelo.cerri@canonical.com, tim.gardner@canonical.com,
-        philip.cox@canonical.com, aarcange@redhat.com, peterx@redhat.com,
-        x86@kernel.org, linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@kernel.org, Nikolay Borisov <nik.borisov@suse.com>
-Subject: Re: [PATCHv2] efi/unaccepted: Fix soft lockups caused by parallel
- memory acceptance
-Message-ID: <20231016213932.6cscnn6tsnzsnvmf@box.shutemov.name>
-References: <20231016163122.12855-1-kirill.shutemov@linux.intel.com>
- <ZS15HZqK4hu5NjSh@casper.infradead.org>
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
+        Shuah Khan <shuah@kernel.org>, kernel@collabora.com,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2] selftests: futex: remove duplicate unneeded defines
+Message-ID: <20231016214342.GC36211@noisy.programming.kicks-ass.net>
+References: <20231006095539.1601385-1-usama.anjum@collabora.com>
+ <7f6380ca-7f4e-4080-a047-6f7d427c3501@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZS15HZqK4hu5NjSh@casper.infradead.org>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+In-Reply-To: <7f6380ca-7f4e-4080-a047-6f7d427c3501@linuxfoundation.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,18 +58,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 06:55:41PM +0100, Matthew Wilcox wrote:
-> On Mon, Oct 16, 2023 at 07:31:22PM +0300, Kirill A. Shutemov wrote:
-> >   v2:
-> >    - Fix deadlock (Vlastimil);
-> >    - Fix comments (Vlastimil);
-> >    - s/cond_resched()/cpu_relax()/ -- cond_resched() cannot be called
-> >      from atomic context;
+On Mon, Oct 16, 2023 at 01:21:20PM -0600, Shuah Khan wrote:
+> On 10/6/23 03:55, Muhammad Usama Anjum wrote:
+> > Kselftests are kernel tests and must be build with kernel headers from
+> > same source version. The kernel headers are already being included
+> > correctly in futex selftest Makefile with the help of KHDR_INCLUDE. In
+> > this patch, only the dead code is being removed. No functional change is
+> > intended.
+> > 
+> > Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> > ---
 > 
-> Isn't there an implicit cpu_relax() while we're spinning?  Does this
-> really accomplish anything?
+> Applied to linux-kselftest next for Linux 6.7-rc1.
 
-You are right. It is useless. I will drop it in v3.
-
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Please don't.
