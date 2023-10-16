@@ -2,63 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE5E7CA523
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D56F7CA526
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232989AbjJPKSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 06:18:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60796 "EHLO
+        id S230413AbjJPKSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 06:18:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233099AbjJPKSG (ORCPT
+        with ESMTP id S232828AbjJPKSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 06:18:06 -0400
-Received: from out-202.mta1.migadu.com (out-202.mta1.migadu.com [95.215.58.202])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19F9189
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 03:17:34 -0700 (PDT)
-Message-ID: <121772bf-4c1d-3d23-f266-60ce2e879193@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1697451452;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IPtMNZC738Ao/n0cWIsZR42e+XNPTKi4tThatun01tI=;
-        b=J4J6IRfAUnzCMQ6IGo3qSSlLyzujeuqcMI/me+pXlw8MI9NJsdz7Xh4dcLf1SOyQVJbv6/
-        JCnT6o6UwTdpfzYxDKUWZNmkeDibqcWGxrhCsuz9/UnMjdaYbZnxy8WL0mhfE9XWFqOni/
-        KYKmD15AhrLuIBfAiSOjycN5CZbi93A=
-Date:   Mon, 16 Oct 2023 18:17:23 +0800
+        Mon, 16 Oct 2023 06:18:15 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E37131;
+        Mon, 16 Oct 2023 03:18:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 896D5C433C8;
+        Mon, 16 Oct 2023 10:18:00 +0000 (UTC)
+Message-ID: <1b49bfc4-808a-48fe-97b3-b49067e5e18e@xs4all.nl>
+Date:   Mon, 16 Oct 2023 12:17:58 +0200
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 2/2] mm: Init page count in reserve_bootmem_region when
- MEMINIT_EARLY
-Content-Language: en-US
-To:     David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@kernel.org>
-Cc:     akpm@linux-foundation.org, mike.kravetz@oracle.com,
-        muchun.song@linux.dev, willy@infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20230928083302.386202-1-yajun.deng@linux.dev>
- <20230928083302.386202-3-yajun.deng@linux.dev>
- <20230929083018.GU3303@kernel.org>
- <f144b910-cd9f-a571-ce9b-a0a8b509c28a@redhat.com>
- <2f8c4741-5c7f-272d-9cef-9fda9fbc7ca6@linux.dev>
- <5382bf2d-5aa0-1498-8169-3248be4b5af3@linux.dev>
- <bf7143f4-9d50-cfc4-0ef6-d312a2cc896b@redhat.com>
- <38cd0cb9-efe9-b98a-2768-ccb48da8b812@linux.dev>
- <20231013084827.GT3303@kernel.org>
- <1c91dd62-886d-bb05-8aee-22191a8a2d8e@linux.dev>
- <20231016063357.GU3303@kernel.org>
- <a67fc1bf-64e8-ce6c-f68a-52fe8b942860@linux.dev>
- <abace691-e11f-ec08-a725-9e3b17935d8c@redhat.com>
- <0d890048-be58-5050-02fa-21768059aa0d@linux.dev>
- <23302f67-eb69-265a-ab2d-9c55715e2843@redhat.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yajun Deng <yajun.deng@linux.dev>
-In-Reply-To: <23302f67-eb69-265a-ab2d-9c55715e2843@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v11 40/56] sample: v4l: Stop direct calls to queue
+ num_buffers field
+Content-Language: en-US, nl
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com
+References: <20231012114642.19040-1-benjamin.gaignard@collabora.com>
+ <20231012114642.19040-41-benjamin.gaignard@collabora.com>
+ <21864437-bfdd-4d39-91fa-f24fc1c7cf97@xs4all.nl>
+In-Reply-To: <21864437-bfdd-4d39-91fa-f24fc1c7cf97@xs4all.nl>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,140 +50,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2023/10/16 16:36, David Hildenbrand wrote:
-> On 16.10.23 10:32, Yajun Deng wrote:
+On 16/10/2023 10:23, Hans Verkuil wrote:
+> On 12/10/2023 13:46, Benjamin Gaignard wrote:
+>> Use vb2_get_num_buffers() to avoid using queue num_buffers field directly.
 >>
->> On 2023/10/16 16:16, David Hildenbrand wrote:
->>> On 16.10.23 10:10, Yajun Deng wrote:
->>>>
->>>> On 2023/10/16 14:33, Mike Rapoport wrote:
->>>>> On Fri, Oct 13, 2023 at 05:29:19PM +0800, Yajun Deng wrote:
->>>>>> On 2023/10/13 16:48, Mike Rapoport wrote:
->>>>>>> On Thu, Oct 12, 2023 at 05:53:22PM +0800, Yajun Deng wrote:
->>>>>>>> On 2023/10/12 17:23, David Hildenbrand wrote:
->>>>>>>>> On 10.10.23 04:31, Yajun Deng wrote:
->>>>>>>>>> On 2023/10/8 16:57, Yajun Deng wrote:
->>>>>>>>>>>> That looks wrong. if the page count would by pure luck be 0
->>>>>>>>>>>> already for hotplugged memory, you wouldn't clear the reserved
->>>>>>>>>>>> flag.
->>>>>>>>>>>>
->>>>>>>>>>>> These changes make me a bit nervous.
->>>>>>>>>>> Is 'if (page_count(page) || PageReserved(page))' be safer? Or
->>>>>>>>>>> do I
->>>>>>>>>>> need to do something else?
->>>>>>>>>>>
->>>>>>>>>> How about the following if statement? But it needs to add more
->>>>>>>>>> patch
->>>>>>>>>> like v1 ([PATCH 2/4] mm: Introduce MEMINIT_LATE context).
->>>>>>>>>>
->>>>>>>>>> It'll be safer, but more complex. Please comment...
->>>>>>>>>>
->>>>>>>>>>         if (context != MEMINIT_EARLY || (page_count(page) ||
->>>>>>>>>> PageReserved(page)) {
->>>>>>>>>>
->>>>>>>>> Ideally we could make initialization only depend on the context,
->>>>>>>>> and not
->>>>>>>>> check for count or the reserved flag.
->>>>>>>>>
->>>>>>>> This link is v1,
->>>>>>>> https://lore.kernel.org/all/20230922070923.355656-1-yajun.deng@linux.dev/ 
->>>>>>>>
->>>>>>>>
->>>>>>>>
->>>>>>>> If we could make initialization only depend on the context, I'll
->>>>>>>> modify it
->>>>>>>> based on v1.
->>>>>>> Although ~20% improvement looks impressive, this is only
->>>>>>> optimization of a
->>>>>>> fraction of the boot time, and realistically, how much 56 msec
->>>>>>> saves from
->>>>>>> the total boot time when you boot a machine with 190G of RAM?
->>>>>> There are a lot of factors that can affect the total boot time. 56
->>>>>> msec
->>>>>> saves may be insignificant.
->>>>>>
->>>>>> But if we look at the boot log, we'll see there's a significant
->>>>>> time jump.
->>>>>>
->>>>>> before:
->>>>>>
->>>>>> [    0.250334] ACPI: PM-Timer IO Port: 0x508
->>>>>> [    0.618994] Memory: 173413056K/199884452K available (18440K
->>>>>> kernel code,
->>>>>>
->>>>>> after:
->>>>>>
->>>>>> [    0.260229] software IO TLB: area num 32.
->>>>>> [    0.563497] Memory: 173413056K/199884452K available (18440K
->>>>>> kernel code,
->>>>>> Memory:
->>>>>> Memory initialization is time consuming in the boot log.
->>>>> You just confirmed that 56 msec is insignificant and then you send
->>>>> again
->>>>> the improvement of ~60 msec in memory initialization.
->>>>>
->>>>> What does this improvement gain in percentage of total boot time?
->>>>
->>>>
->>>> before:
->>>>
->>>> [   10.692708] Run /init as init process
->>>>
->>>>
->>>> after:
->>>>
->>>> [   10.666290] Run /init as init process
->>>>
->>>>
->>>> About 0.25%. The total boot time is variable, depending on how many
->>>> drivers need to be initialized.
->>>>
->>>>
->>>>>>> I still think the improvement does not justify the churn, added
->>>>>>> complexity
->>>>>>> and special casing of different code paths of initialization of
->>>>>>> struct pages.
->>>>>>
->>>>>> Because there is a loop, if the order is MAX_ORDER, the loop will
->>>>>> run 1024
->>>>>> times. The following 'if' would be safer:
->>>>>>
->>>>>> 'if (context != MEMINIT_EARLY || (page_count(page) || >>
->>>>>> PageReserved(page))
->>>>>> {'
->>>>> No, it will not.
->>>>>
->>>>> As the matter of fact any condition here won't be 'safer' because it
->>>>> makes
->>>>> the code more complex and less maintainable.
->>>>> Any future change in __free_pages_core() or one of it's callers will
->>>>> have
->>>>> to reason what will happen with that condition after the change.
->>>>
->>>>
->>>> To avoid introducing MEMINIT_LATE context and make code simpler. This
->>>> might be a better option.
->>>>
->>>> if (page_count(page) || PageReserved(page))
->>>
->>> I'll have to side with Mike here; this change might not be worth it.
->>>
+>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>> ---
+>>  samples/v4l/v4l2-pci-skeleton.c | 5 +++--
+>>  1 file changed, 3 insertions(+), 2 deletions(-)
 >>
->> Okay, I got it. Thanks!
->
-> IMHO instead of adding more checks to that code we should try to unify 
-> that handling such that we can just remove it. As expressed, at least 
-> from the memory hotplug perspective there are still reasons why we 
-> need that; I can provide some guidance on how to eventually achieve 
-> that, but it might end up in a bit of work ...
+>> diff --git a/samples/v4l/v4l2-pci-skeleton.c b/samples/v4l/v4l2-pci-skeleton.c
+>> index a61f94db18d9..a65aa9d1e9da 100644
+>> --- a/samples/v4l/v4l2-pci-skeleton.c
+>> +++ b/samples/v4l/v4l2-pci-skeleton.c
+>> @@ -155,6 +155,7 @@ static int queue_setup(struct vb2_queue *vq,
+>>  		       unsigned int sizes[], struct device *alloc_devs[])
+>>  {
+>>  	struct skeleton *skel = vb2_get_drv_priv(vq);
+>> +	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
+>>  
+>>  	skel->field = skel->format.field;
+>>  	if (skel->field == V4L2_FIELD_ALTERNATE) {
+>> @@ -167,8 +168,8 @@ static int queue_setup(struct vb2_queue *vq,
+>>  		skel->field = V4L2_FIELD_TOP;
+>>  	}
+>>  
+>> -	if (vq->num_buffers + *nbuffers < 3)
+>> -		*nbuffers = 3 - vq->num_buffers;
+>> +	if (q_num_bufs + *nbuffers < 3)
+>> +		*nbuffers = 3 - q_num_bufs;
+> 
+> This should be dropped, and instead update q->min_buffers_needed from
+> 2 to 3.
 
+Actually, that's not quite true. I realized that there is a subtle bug in
+the vb2 core and a general misunderstanding of min_buffers_needed in a lot
+of drivers.
 
-Yes, we can't remove it right now. If we want to do that, we have to 
-clean up rely on page count and PageReserved first.
+The min_buffers_needed field describes the minimum number of buffers needed
+before the DMA engine can start. This is typically 0, 1 or 2. Once that many
+buffers have been queued, then start_streaming callback is called. With fewer
+buffers queued the DMA engine cannot start, so this represents a DMA engine
+limitation.
 
->
-> Anyhow, thanks for bringing up that topic; it reminded me that I still 
-> have pending cleanups to not rely on PageReserved on the memory 
-> hotplug path.
->
+Currently vb2 also uses this field as the minimum number of buffers to
+allocate. However, that should be one more, so min_buffers_needed+1:
+'min_buffers_needed' buffers are in-flight, and you need one more that is
+owned by userspace, otherwise you would never be able to dequeue a buffer
+if you only created 'min_buffers_needed' buffers.
+
+But I noticed a lot of drivers that misinterpret this value as 'the minimum
+number of buffers to allocate', unrelated to any DMA engine limitations.
+This is most likely a bug, since this would unnecessarily delay the call to
+start_streaming().
+
+In other words, it is a mess.
+
+I think my earlier advice to change min_buffers_needed and drop the check
+in queue_setup should be disregarded. If the min_buffers_needed value
+is >= the value checked in queue_setup, then you can drop the check. In all
+other cases it is safer to keep it.
+
+So in other words, this patch is fine. But e.g. patch 21 needs to keep the
+check (although with a fix: *nbuffers = 2 - q_num_bufs).
+
+When this work is done, then I think I need to take a close review at all the
+drivers that set min_buffers_needed and/or check the number of buffers in
+queue_setup and fix it properly.
+
+Likely we need two different fields: one for the minimum number of buffers
+that need to be allocated, and one for the minimum number of buffers that
+need to be queued before start_streaming can be called. But that raises
+the question how the 'minimum number of buffers that need to be allocated'
+would interact with deleting buffers. It's actually not all that easy.
+
+Regards,
+
+	Hans
+
+> 
+> Regards,
+> 
+> 	Hans
+> 
+>>  
+>>  	if (*nplanes)
+>>  		return sizes[0] < skel->format.sizeimage ? -EINVAL : 0;
+> 
+
