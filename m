@@ -2,100 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D87B7C9E1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 06:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1074D7C9E20
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 06:18:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbjJPEPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 00:15:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38992 "EHLO
+        id S229653AbjJPESh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 00:18:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjJPEP3 (ORCPT
+        with ESMTP id S229478AbjJPESd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 00:15:29 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62607D6;
-        Sun, 15 Oct 2023 21:15:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1697429725;
-        bh=J+VIgxPcXp+IeyiNxGp+yUxp5CmsYzRu05W8WdwVlwI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=tLRLPZ1htzR/JwZGPGLUvSiwNoQmuoZXcHFPuS8Xv54jWcZOTnBMQS9Ol5J/1IFvm
-         rg0E4dsR5ZrUvsIgwN5DaPoaPdJYCRs25cxD4MRXozg/mJ5pZY2H0Uh3fsqvG0vtPP
-         qUMu3RKp8/xpM93maiEFU8FR0E8Rc+WFZrOVjLX9fhfyS4o+o5e4Ims0lLphxwdKiv
-         dGgmi/dA2K7vMuXWErlfI/12YjMChv7VwXXsUCOoIJrTa6IakqgCRPLIKwSDTQjVYt
-         1sPfXavgEDu0H6j/CpR0sIjC7BiXi5K46RNH0VnROaz2gysceYegnLbTaeRcyLQwdD
-         IO7eOk2/EwsUQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S83gK1hzKz4wcN;
-        Mon, 16 Oct 2023 15:15:23 +1100 (AEDT)
-Date:   Mon, 16 Oct 2023 15:15:22 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the rtc tree
-Message-ID: <20231016151522.06839671@canb.auug.org.au>
+        Mon, 16 Oct 2023 00:18:33 -0400
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::222])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B10D6;
+        Sun, 15 Oct 2023 21:18:31 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C5DD440005;
+        Mon, 16 Oct 2023 04:18:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1697429910;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=x6Nt+lmoIZYSVOu6ZTlQjSZu1KbJRj9ixtTG2gZ2sqg=;
+        b=YC6sEOm62jCK773k2RKL/MqbmZJ0ktqxrjnpdXnEBrwg3alwv/F52dDYgbwWgdYu46d7qe
+        sWiFLZK9we8VfHTGPlkFkYSOm+8JKvyUaYIIiiDedQCISh9mV66HgNyD72IA9kTuYbD8jc
+        0goBpM9S0KTNrB7ax8p9Ylq/CkCT16MIHvHszGqTUkQbkxAJq2lgatcEIxMYwnZRDDiUNT
+        sSPBBsRKJbVJzlm4QlGHFT/rTlZu8aINo235VAjohBpVsE+W8goymtlevj0slPZ5/yBYj5
+        /0tD1t69Hvy02zDdlkL1CbzWKG4GW/gZ7TPmzp+ABRBDeeUT3/3xH8qKqoNVwA==
+From:   alexandre.belloni@bootlin.com
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>
+Cc:     kernel test robot <lkp@intel.com>, linux-rtc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rtc: at91rm9200: annotate at91_rtc_remove with __exit again
+Date:   Mon, 16 Oct 2023 06:18:16 +0200
+Message-ID: <20231016041816.246426-1-alexandre.belloni@bootlin.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/DTVqrZLOnSaCNJVgAhzTv2q";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: alexandre.belloni@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/DTVqrZLOnSaCNJVgAhzTv2q
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-Hi all,
+Without __exit, having the driver as a builtin after dropping the __exit
+annotation results in:
 
-After merging the rtc tree, today's linux-next build (powerpc
-allyesconfig) failed like this:
+>> drivers/rtc/rtc-at91rm9200.c:561:13: warning: 'at91_rtc_remove' defined but not used [-Wunused-function]
+     561 | static void at91_rtc_remove(struct platform_device *pdev)
+         |             ^~~~~~~~~~~~~~~
 
-drivers/rtc/rtc-at91rm9200.c:561:13: error: 'at91_rtc_remove' defined but n=
-ot used [-Werror=3Dunused-function]
-  561 | static void at91_rtc_remove(struct platform_device *pdev)
-      |             ^~~~~~~~~~~~~~~
-cc1: all warnings being treated as errors
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202310160705.vlElNOGb-lkp@intel.com/
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+---
+ drivers/rtc/rtc-at91rm9200.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Caused by commit
+diff --git a/drivers/rtc/rtc-at91rm9200.c b/drivers/rtc/rtc-at91rm9200.c
+index 3f5ff9867c02..c16fe711a0d9 100644
+--- a/drivers/rtc/rtc-at91rm9200.c
++++ b/drivers/rtc/rtc-at91rm9200.c
+@@ -558,7 +558,7 @@ static int __init at91_rtc_probe(struct platform_device *pdev)
+ /*
+  * Disable and remove the RTC driver
+  */
+-static void at91_rtc_remove(struct platform_device *pdev)
++static void __exit at91_rtc_remove(struct platform_device *pdev)
+ {
+ 	/* Disable all interrupts */
+ 	at91_rtc_write_idr(AT91_RTC_ACKUPD | AT91_RTC_ALARM |
+-- 
+2.41.0
 
-  48bc8830fbed ("rtc: at91rm9200: Convert to platform remove callback retur=
-ning void")
-
-This function lost its __exit attribute (which includes a "used"
-attribute) and exit_p(x) is NULL when not being built with
-CONFIG_MODULE set.  This build has CONFIG_RTC_DRV_AT91RM9200=3Dy
-
-I have reverted that commit for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/DTVqrZLOnSaCNJVgAhzTv2q
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUsuNoACgkQAVBC80lX
-0GyAMwf5AV0SDVx/24LlPhl5xrj4EjUklc6UrENUX+FRS65pfdKgVWXN1TqCVVDn
-17tNPv2eZYAZxtA1qb8sGFgkuQGtCv3yDt2D5F23ulLvyI+6CQ9u8El0ZFvTkeTQ
-+N6u8aRMOvT+77lQjsQhtftIkjpAPkz/EjnzTD3RMsIUVh0y6hRxISmBbpCMv1kE
-ycJexLF4rOSlLibYeCH65xGAZX+tXhHCq0juC5eo/7Bc90Me7lRWUszfJdwekICN
-BpSWtMTHdv3TtySmhmk8biVfc+GkRu0C4Ad5UYQcawCrdPoImAmPKuhip4exLRIn
-LilSHpil92CEQbbZW6fCYhBxY4taMQ==
-=vwxc
------END PGP SIGNATURE-----
-
---Sig_/DTVqrZLOnSaCNJVgAhzTv2q--
