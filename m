@@ -2,95 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0A537C9D11
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 03:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 344077C9D3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 03:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231168AbjJPBul convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 15 Oct 2023 21:50:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34932 "EHLO
+        id S231240AbjJPBzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 21:55:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJPBuk (ORCPT
+        with ESMTP id S230497AbjJPBzL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 21:50:40 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0DFA9;
-        Sun, 15 Oct 2023 18:50:36 -0700 (PDT)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 39G1nsa271867289, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.92/5.92) with ESMTPS id 39G1nsa271867289
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 16 Oct 2023 09:49:54 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Mon, 16 Oct 2023 09:49:54 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Mon, 16 Oct 2023 09:49:53 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
- RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
- 15.01.2375.007; Mon, 16 Oct 2023 09:49:53 +0800
-From:   Justin Lai <justinlai0215@realtek.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Larry Chiu <larry.chiu@realtek.com>
-Subject: RE: [PATCH net-next v9 08/13] net:ethernet:realtek:rtase: Implement net_device_ops
-Thread-Topic: [PATCH net-next v9 08/13] net:ethernet:realtek:rtase: Implement
- net_device_ops
-Thread-Index: AQHZ8fl5hDe6qB9qzkmKif0/hXC9sLAvvsaAgAxiTMCAACtGAIAPdWXA
-Date:   Mon, 16 Oct 2023 01:49:53 +0000
-Message-ID: <a3e8d48600984a70b23c72ce7edbc1d2@realtek.com>
-References: <20230928104920.113511-1-justinlai0215@realtek.com>
- <20230928104920.113511-9-justinlai0215@realtek.com>
- <b28a3ea6-d75e-45e0-8b87-0b062b5c3a64@lunn.ch>
- <99dfcd7363dc412f877730fab4a9f7dd@realtek.com>
- <f4bcf3e9-d059-4403-a2b7-508806da9631@lunn.ch>
-In-Reply-To: <f4bcf3e9-d059-4403-a2b7-508806da9631@lunn.ch>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.21.210.185]
-x-kse-serverinfo: RTEXMBS04.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Sun, 15 Oct 2023 21:55:11 -0400
+X-Greylist: delayed 310 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 15 Oct 2023 18:55:08 PDT
+Received: from cnc.isely.net (cnc.isely.net [192.69.181.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B124AA9;
+        Sun, 15 Oct 2023 18:55:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=isely.net; s=deb;
+        t=1697420997; bh=kS0RTd3CYTDBCJcqdUFcBC+zypJLcH4lZRAhcLFcZb8=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References;
+        b=BU2P7bfwss2/P+6aqWSIk9NJvJoB13SWtKIlBfGLT7svcwvSlZDnlIJUXIhcYjjUb
+         b2yTdAX8rOy6iZa101JPW+Bc+nwQbYEQKFp3f9+9B49/hOZ2SbHpO7cpq1+gWKSUJb
+         Rk7iL1Zq3+Cn2TaFXegiEyyVUkaKHoyDguYGqL/XaVeVnjnJupWJ7O9/dgH6O
+Original-Subject: Re: [PATCH] media: pvrusb2: fix use after free on context
+ disconnection
+Author: Mike Isely <isely@isely.net>
+Original-cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
+  linux-media@vger.kernel.org,
+  Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+  syzbot+621409285c4156a009b3@syzkaller.appspotmail.com,
+  linux-kernel-mentees@lists.linuxfoundation.org
+Received: from sheridan.isely.net (sheridan.isely.net [::ffff:192.168.24.5])
+  (AUTH: PLAIN isely, TLS: TLS1.3,256bits,ECDHE_RSA_AES_256_GCM_SHA384)
+  by cnc.isely.net with ESMTPSA
+  id 0000000000080091.00000000652C96C5.00000BA0; Sun, 15 Oct 2023 20:49:57 -0500
+Date:   Sun, 15 Oct 2023 20:49:57 -0500 (CDT)
+From:   Mike Isely <isely@isely.net>
+To:     "Ricardo B. Marliere" <ricardo@marliere.net>
+cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        syzbot+621409285c4156a009b3@syzkaller.appspotmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH] media: pvrusb2: fix use after free on context
+ disconnection
+In-Reply-To: <20231012230911.48113-2-ricardo@marliere.net>
+Message-ID: <5f652494-1e4f-4965-f9b7-0f2bf05f718f@isely.net>
+References: <20231012230911.48113-2-ricardo@marliere.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> 
-> > > > +static void rtase_tx_timeout(struct net_device *dev, unsigned int
-> > > > +txqueue) {
-> > > > +     rtase_sw_reset(dev);
-> > >
-> > > Do you actually see this happening? The timeout is set pretty high,
-> > > i think 5 seconds. If it does happen, it probably means you have a
-> > > hardware/firmware bug. So you want to be noisy here, so you get to
-> > > know about these problems, rather than silently work around them.
-> >
-> > I would like to ask if we can dump some information that will help us
-> > understand the cause of the problem before doing the reset? And should
-> > we use netdev_warn to print this information?
-> 
-> You might want to look at 'devlink health'.
-> 
->     Andrew
 
-Thank you for your suggestion.
+Acked-by: Mike Isely <isely@pobox.com>
+
+  -Mike
+
+On Thu, 12 Oct 2023, Ricardo B. Marliere wrote:
+
+> Upon module load, a kthread is created targeting the
+> pvr2_context_thread_func function, which may call pvr2_context_destroy
+> and thus call kfree() on the context object. However, that might happen
+> before the usb hub_event handler is able to notify the driver. This
+> patch adds a sanity check before the invalid read reported by syzbot,
+> within the context disconnection call stack.
+> 
+> Fixes: e5be15c63804 ("V4L/DVB (7711): pvrusb2: Fix race on module unload")
+> Reported-and-tested-by: syzbot+621409285c4156a009b3@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/all/000000000000a02a4205fff8eb92@google.com/
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> ---
+>  drivers/media/usb/pvrusb2/pvrusb2-context.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/usb/pvrusb2/pvrusb2-context.c b/drivers/media/usb/pvrusb2/pvrusb2-context.c
+> index 14170a5d72b3..1764674de98b 100644
+> --- a/drivers/media/usb/pvrusb2/pvrusb2-context.c
+> +++ b/drivers/media/usb/pvrusb2/pvrusb2-context.c
+> @@ -268,7 +268,8 @@ void pvr2_context_disconnect(struct pvr2_context *mp)
+>  {
+>  	pvr2_hdw_disconnect(mp->hdw);
+>  	mp->disconnect_flag = !0;
+> -	pvr2_context_notify(mp);
+> +	if (!pvr2_context_shutok())
+> +		pvr2_context_notify(mp);
+>  }
+>  
+>  
+> 
