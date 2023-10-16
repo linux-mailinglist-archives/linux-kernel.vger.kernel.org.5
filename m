@@ -2,89 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 785B67CAE79
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D858C7CAE90
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232700AbjJPQIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 12:08:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54714 "EHLO
+        id S233266AbjJPQKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 12:10:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjJPQIg (ORCPT
+        with ESMTP id S233732AbjJPQKa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 12:08:36 -0400
-Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D75383;
-        Mon, 16 Oct 2023 09:08:33 -0700 (PDT)
-Received: from wse.fritz.box (p5b164245.dip0.t-ipconnect.de [91.22.66.69])
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by mail.tuxedocomputers.com (Postfix) with ESMTPA id C8D652FC0050;
-        Mon, 16 Oct 2023 18:08:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
-        s=default; t=1697472511;
+        Mon, 16 Oct 2023 12:10:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF2EDEB
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:09:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697472581;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=9laGN8nx+5K/7owT3MoEsNTBX2h0faxTTb42nHSwAi4=;
-        b=qyJf0KUj/unaYyC5JVe1P8y1Y21HUrca0jilenDhMjPoBtJ5F1RxEwjz3ze4Knrc3ExOif
-        O4FM+wvNturJhRhkg/UHgn7c8FkuDezvsqs4uDTEUTKkHLUdt+RAzfH3lxSCk/Bt9CdpDU
-        ZYAjZXb9sgxZWwOKUe8Bd5Pw4L2E5Ck=
-Authentication-Results: mail.tuxedocomputers.com;
-        auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
-From:   Werner Sembach <wse@tuxedocomputers.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>
-Cc:     Werner Sembach <wse@tuxedocomputers.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ACPI: resource: Do IRQ override on TongFang GMxXGxx
-Date:   Mon, 16 Oct 2023 18:08:28 +0200
-Message-Id: <20231016160828.373599-1-wse@tuxedocomputers.com>
-X-Mailer: git-send-email 2.34.1
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iqaZ7DcM+18tUsVRQeG7YQZoHIt0T3tkZ81YQtekvTU=;
+        b=EwEppfmW8vs1I8RBlgCv6LVFUdCTKF0pOlTXZrPEvFja3kOWEcgvi6atD3Lpb/IsA3Z8+j
+        AkmZEdrSxxsfwE5+0rCMQ6USw/s6N3N3e4Uy11IHRM0PNzpLUhXGN9LcEs9kZ2RcfD1etH
+        F5p/FhZ4pbWED/5L/A8//wubw+7pRUA=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-299-XkDUqMmGO5qnLyDuWfP0Dw-1; Mon, 16 Oct 2023 12:09:34 -0400
+X-MC-Unique: XkDUqMmGO5qnLyDuWfP0Dw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D0A2E800969;
+        Mon, 16 Oct 2023 16:09:32 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.178])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2F03C111D3DC;
+        Mon, 16 Oct 2023 16:09:30 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <e1351696345351cb3d168fb41c54a1ef8ccf0b16.camel@kernel.org>
+References: <e1351696345351cb3d168fb41c54a1ef8ccf0b16.camel@kernel.org> <20231013160423.2218093-1-dhowells@redhat.com> <20231013160423.2218093-10-dhowells@redhat.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     dhowells@redhat.com, Steve French <smfrench@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Christian Brauner <christian@brauner.io>,
+        linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-cachefs@redhat.com
+Subject: Re: [RFC PATCH 09/53] netfs: Implement unbuffered/DIO vs buffered I/O locking
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2840728.1697472569.1@warthog.procyon.org.uk>
+Date:   Mon, 16 Oct 2023 17:09:29 +0100
+Message-ID: <2840729.1697472569@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The TongFang GMxXGxx/TUXEDO Stellaris/Pollaris Gen5 needs IRQ overriding
-for the keyboard to work. Adding an entry for this laptop to the
-override_table makes the internal keyboard functional.
+Jeff Layton <jlayton@kernel.org> wrote:
 
-v2: Rebase onto linux-next
+> It's nice to see this go into common code, but why not go ahead and
+> convert ceph (and possibly NFS) to use this? Is there any reason not to?
 
-Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-Cc: <stable@vger.kernel.org>
----
- drivers/acpi/resource.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+I'm converting ceph on a follow-on branch and for ceph this will be dealt with
+there.
 
-diff --git a/drivers/acpi/resource.c b/drivers/acpi/resource.c
-index 18f6353c142e..15a3bdbd0755 100644
---- a/drivers/acpi/resource.c
-+++ b/drivers/acpi/resource.c
-@@ -497,6 +497,18 @@ static const struct dmi_system_id irq1_edge_low_force_override[] = {
- 			DMI_MATCH(DMI_BOARD_NAME, "GMxRGxx"),
- 		},
- 	},
-+	{
-+		/* TongFang GMxXGxx/TUXEDO Polaris 15 Gen5 AMD */
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_NAME, "GMxXGxx"),
-+		},
-+	},
-+	{
-+		/* TongFang GM6XGxX/TUXEDO Stellaris 16 Gen5 AMD */
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_NAME, "GM6XGxX"),
-+		},
-+	},
- 	{
- 		/* MAINGEAR Vector Pro 2 15 */
- 		.matches = {
--- 
-2.34.1
+I could do NFS round about here, I suppose.
+
+David
 
