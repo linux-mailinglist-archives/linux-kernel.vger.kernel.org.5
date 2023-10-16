@@ -2,124 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDC337CB03A
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B9D97CB04A
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234639AbjJPQm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 12:42:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55608 "EHLO
+        id S234286AbjJPQuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 12:50:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234482AbjJPQmH (ORCPT
+        with ESMTP id S233006AbjJPQua (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 12:42:07 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72FC4685
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:32:04 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-32d834ec222so4492527f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:32:04 -0700 (PDT)
+        Mon, 16 Oct 2023 12:50:30 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63F9046CEA
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:40:47 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-66d134a019cso30842566d6.3
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:40:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697473922; x=1698078722; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZNCrnVPjlQ/OAERQDWaDWTtn8p4RIvUa6qZfUdX9yJU=;
-        b=LY1855fMMGfMp//uzi/XeTxO9M0ZSs3o60YnAtWn8AYj7wXi6IWGBr1VtfnY4bqH3n
-         TXD2ioj89UtQvyp5zfLrdGDegbSy7O5w56Bcexy7eR9/qlPXlKEdwf0nzMbeYG2//Y8e
-         Oc2fZ/SInxxfLqKPxc9dS7RIlb9mxF5/k0gz3RD283z8xz/QJ44hU74RqZITN/POzmYj
-         ehFhxrGde4+/XFvcb289KEGefpQOHsgHf7z1pkUnDQTDCgThMIMKfkQunh6IwnQ2xrvU
-         h0+aX2QdNXOi8LJffj/unuiRuOAiFwsG8FxEdAaGr2ipDaCvp3I+llYW50UsqUHDR6d8
-         tUpA==
+        d=linaro.org; s=google; t=1697474446; x=1698079246; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=QMErPVjbDQWKUZJi0yx3PHwgd44uCsmqExmEKyoGenQ=;
+        b=zWk9E7Ir6vxH76P5DZnzRjvYqmPfoyDwHBQv23F85KEgYCgx6VJHoVNxizddvlapxL
+         zEIt5kAkN1T8FVVHtzQzxo9O0JhXm52ZMQ0lxJ+b5e97huR2kGX6dQnmnszD91RcNK6d
+         x5/qVinEqtCVIhoiF4y9t1vHFnLzfagUdmL8AkIfNjSetz2OLcepJ4WINuKt8nK79Pyz
+         ipDZLfVbXpRwcQ+rXk6VEQP19HZG0YRLrBv7GP3zQJDnHctxmRKLuxnT46ReaUR6wRH7
+         k/BoCFfTPzYV7i9VPfd2xwzhwxsIj9h1qvZDcufx7GlPcaGuTqwk82Kw3JXA0n8omqID
+         vPhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697473922; x=1698078722;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZNCrnVPjlQ/OAERQDWaDWTtn8p4RIvUa6qZfUdX9yJU=;
-        b=eGD6yRTv2Igkxd82IBJjJ1YPiSnw2DyseDFi0JQSl2XheLvVA4tXonyNuNJM6BwTJF
-         S+zhDPYc/1ZgnkdTvzIEA7hguL+i70KKEYsPs6NG11L34trpdC3EgF1C/dG+wWWueMPv
-         ytsUd7A5L7t0EVSIznlfs6UBrkeyaxnffd8ZF3aw6bzA5M2T6OWcBJiP8Bg2Zv4iQuGn
-         g3PhDyHFGMC8oXJy928/TtywrXBV0OKUScMYkU9oxdkbM+yI6fQ5FgN8eIqW/xCN20q+
-         Z9Wm9mhewP1FRoFv4PJMkgakeZpZ24wtA2qnqZD3b96ei297FHVC/OL+PblTyC6WGdU5
-         u6OQ==
-X-Gm-Message-State: AOJu0YxbMkov0GtymIW/q18asQOEtBiVq1KVXpE6FaiWPiDzVhT2oWDg
-        bVk8D6p96fMPfmSFMmuWpik=
-X-Google-Smtp-Source: AGHT+IGW5RqgVaaDPN+L91IQW20noQdJbJlMuZeyBkPgOxf0so3sGl9SKJ1iLW5zRyilZYMEV4ZbSw==
-X-Received: by 2002:a05:6000:613:b0:329:6d09:61ff with SMTP id bn19-20020a056000061300b003296d0961ffmr30513002wrb.62.1697473922488;
-        Mon, 16 Oct 2023 09:32:02 -0700 (PDT)
-Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
-        by smtp.gmail.com with ESMTPSA id n9-20020adff089000000b0031ad2f9269dsm27451978wro.40.2023.10.16.09.32.00
+        d=1e100.net; s=20230601; t=1697474446; x=1698079246;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QMErPVjbDQWKUZJi0yx3PHwgd44uCsmqExmEKyoGenQ=;
+        b=r18C8RpDhiYIpyYP1dmztBXxHmIzWD0/AxmayDyiqZVJXTWUWCMm/3f94tb5ZMqEB8
+         pyaKcb6PwYdPslCimQJniP7Zq86rrEMBPLOP7TuTOQj1CAJKa1Moh0TWqnR310eqR0gf
+         3skVbORurD0uSZmIixpl7VvBOrd51PPLJPmq1TGuIlr9fpF/6uV1GrgceaAGPBG3gjL6
+         ZofCxa8lxOOKJ08ivZhbl6zaW+izbis/LP3OLKsqF2ZnUQnzGKJiAiRmjaET809Pfk7R
+         XpNMIg6ijLh0y3DhbwbYVO7xY/gVKC/XHV8doHgz7BvXRuRS2vkqhdWBsQtufc9Oju5G
+         vkhQ==
+X-Gm-Message-State: AOJu0YwEkFQT3IwTQegc53xZeY2mVp34P8JF1PiwVRT3yJaQqcbYSSQq
+        AaFACB1uoSOumcWkEGAmPk+e
+X-Google-Smtp-Source: AGHT+IEJrtLsab3W/titRBbEr+F6cON9aYDks19MkUWPWxcQNbAkkCh7gLRrSjOouWXUxCmZiVJgZQ==
+X-Received: by 2002:a05:6214:cae:b0:66d:28a5:d153 with SMTP id s14-20020a0562140cae00b0066d28a5d153mr11497866qvs.47.1697474445956;
+        Mon, 16 Oct 2023 09:40:45 -0700 (PDT)
+Received: from thinkpad ([117.207.31.199])
+        by smtp.gmail.com with ESMTPSA id dn8-20020a056214094800b0065b0e724f83sm3548177qvb.6.2023.10.16.09.40.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 09:32:01 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 17:32:00 +0100
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, lkft-triage@lists.linaro.org,
-        "Reviewed-by: Jan Kara" <jack@suse.cz>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Hugh Dickins <hughd@google.com>, willy@infradead.org,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: mm: Unable to handle kernel NULL pointer dereference at virtual
- address - mmap_region (include/linux/fs.h:580 mm/mmap.c:2946)
-Message-ID: <49bf8caa-e72e-406f-88d6-6d28aded078a@lucifer.local>
-References: <CA+G9fYtL7wK-dE-Tnz4t-GWmQb50EPYa=TWGjpgYU2Z=oeAO_w@mail.gmail.com>
- <48534660-d5f7-45b2-8f99-19c8fb3e51c8@lucifer.local>
+        Mon, 16 Oct 2023 09:40:45 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 22:10:36 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Frank Li <Frank.Li@nxp.com>
+Cc:     Minghuan Lian <minghuan.Lian@nxp.com>,
+        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
+        <linux-pci@vger.kernel.org>,
+        "moderated list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>, imx@lists.linux.dev
+Subject: Re: [PATCH 1/3] PCI: layerscape: add function pointer for
+ exit_from_l2()
+Message-ID: <20231016164036.GE39962@thinkpad>
+References: <20230915184306.2374670-1-Frank.Li@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <48534660-d5f7-45b2-8f99-19c8fb3e51c8@lucifer.local>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230915184306.2374670-1-Frank.Li@nxp.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 12:05:37PM +0100, Lorenzo Stoakes wrote:
-> On Mon, Oct 16, 2023 at 03:52:07PM +0530, Naresh Kamboju wrote:
-> > Following kernel crash noticed while running LTP hugetlb and selftests on
-> > qemu-x86_64 and qemu-arm64 running with Linux next 6.6.0-rc6-next-20231016.
-> >
-> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> >
-> > Test Logs:
-> > -----
->
-> [snip]
->
-> > <4>[   97.499871] Call trace:
-> > <4>[ 97.500288] mmap_region (include/linux/fs.h:580 mm/mmap.c:2946)
->
-> OK this is from a patch of mine, and an easy fix (incorrect assumption about
-> vm->vm_file == file).
->
-> I will put a fix forward tonight.
->
-> > <4>[ 97.500814] do_mmap (mm/mmap.c:1379)
-> > <4>[ 97.501243] vm_mmap_pgoff (mm/util.c:546)
-> > <4>[ 97.501711] ksys_mmap_pgoff (mm/mmap.c:1425)
-> > <4>[ 97.502166] __arm64_sys_mmap (arch/arm64/kernel/sys.c:21)
-> > <4>[ 97.502634] invoke_syscall (arch/arm64/include/asm/current.h:19
-> > arch/arm64/kernel/syscall.c:56)
-> > <4>[ 97.503175] el0_svc_common.constprop.0
-> > (include/linux/thread_info.h:127 (discriminator 2)
-> > arch/arm64/kernel/syscall.c:144 (discriminator 2))
-> > <4>[ 97.503763] do_el0_svc (arch/arm64/kernel/syscall.c:156)
-> > <4>[ 97.504191] el0_svc (arch/arm64/include/asm/daifflags.h:28
-> > arch/arm64/kernel/entry-common.c:133
-> > arch/arm64/kernel/entry-common.c:144
-> > arch/arm64/kernel/entry-common.c:679)
->
-> [snip]
+On Fri, Sep 15, 2023 at 02:43:04PM -0400, Frank Li wrote:
+> Difference layerscape chip have not difference exit_from_l2() method.
+> Using function pointer for ls1028. It prepare for other layerscape
+> suspend/resume support.
+> 
 
-Have cc-d people in this thread on it, but for the record, -fix patch is at
-https://lore.kernel.org/all/c9eb4cc6-7db4-4c2b-838d-43a0b319a4f0@lucifer.local/
+How about:
+
+Since difference SoCs require different sequence for exiting L2, let's add a
+separate "exit_from_l2()" callback. This callback can be used to execute SoC
+specific sequence.
+
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  drivers/pci/controller/dwc/pci-layerscape.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
+> index b931d597656f6..20c48c06e2248 100644
+> --- a/drivers/pci/controller/dwc/pci-layerscape.c
+> +++ b/drivers/pci/controller/dwc/pci-layerscape.c
+> @@ -39,6 +39,8 @@
+>  
+>  struct ls_pcie_drvdata {
+>  	const u32 pf_off;
+> +	const struct dw_pcie_host_ops *ops;
+
+Where is this ops used? If this is added as a preparatory for next patches, I'd
+suggest you to move it to the respective one instead to avoid confusion.
+
+> +	void (*exit_from_l2)(struct dw_pcie_rp *pp);
+>  	bool pm_support;
+>  };
+>  
+> @@ -180,6 +182,7 @@ static const struct ls_pcie_drvdata ls1021a_drvdata = {
+>  static const struct ls_pcie_drvdata layerscape_drvdata = {
+>  	.pf_off = 0xc0000,
+>  	.pm_support = true,
+> +	.exit_from_l2 = ls_pcie_exit_from_l2,
+>  };
+>  
+>  static const struct of_device_id ls_pcie_of_match[] = {
+> @@ -213,7 +216,7 @@ static int ls_pcie_probe(struct platform_device *pdev)
+>  	pcie->drvdata = of_device_get_match_data(dev);
+>  
+>  	pci->dev = dev;
+> -	pci->pp.ops = &ls_pcie_host_ops;
+> +	pci->pp.ops = pcie->drvdata->ops ? pcie->drvdata->ops : &ls_pcie_host_ops;
+
+This one also.
+
+>  
+>  	pcie->pci = pci;
+>  
+> @@ -251,7 +254,7 @@ static int ls_pcie_resume_noirq(struct device *dev)
+>  	if (!pcie->drvdata->pm_support)
+>  		return 0;
+>  
+> -	ls_pcie_exit_from_l2(&pcie->pci->pp);
+> +	pcie->drvdata->exit_from_l2(&pcie->pci->pp);
+
+You should always check for the existence of the callback first before invoking
+it.
+
+- Mani
+
+>  
+>  	return dw_pcie_resume_noirq(pcie->pci);
+>  }
+> -- 
+> 2.34.1
+> 
+
+-- 
+மணிவண்ணன் சதாசிவம்
