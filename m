@@ -2,38 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DFAB7CB323
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 21:06:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 335747CB325
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 21:07:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232682AbjJPTGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 15:06:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47554 "EHLO
+        id S233008AbjJPTHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 15:07:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjJPTGo (ORCPT
+        with ESMTP id S229943AbjJPTHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 15:06:44 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D33895
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 12:06:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1697483199;
-        bh=fNlg5y62WcNfr15jySJT29QgSFcJIWbexiG2Rqkr/ns=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CNTOxDwvpGeUGDDBAKOM4sS4vIfvjw7U9UTG5U3Pb37WgMH96kWPt0McQ2VRJGBDH
-         KIhgzsSTlrgOlgwqO9/BJoR+sFkkbmH+bbtnpa8SZqsZNp6KCVZBy7N36cXBqrYW5O
-         WCualWVWwxdcSIn0m8j+kjknpS0YE5DEHc1z/nGw=
-Date:   Mon, 16 Oct 2023 21:06:39 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: patch "misc/pvpanic: deduplicate comomn code" added to
- char-misc-testing
-Message-ID: <19f56fba-7ed5-4bc3-9ba5-37f4ab6e1857@t-8ch.de>
-References: <2023101657-charcoal-snowy-21be@gregkh>
+        Mon, 16 Oct 2023 15:07:52 -0400
+Received: from out-191.mta0.migadu.com (out-191.mta0.migadu.com [IPv6:2001:41d0:1004:224b::bf])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74D7DAB;
+        Mon, 16 Oct 2023 12:07:49 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 19:07:41 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1697483267;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pILx/2lrkDmB5qBrw02D6T3Y8qSsKRYkqLY+DvWzLoY=;
+        b=pRUczDuUT5JWBO3E5Y3ZUUZr1EtHR9nWgiI6KG2m2FY6oPHNB3nTbdBa4jUTmfv6hIMknz
+        WDnYZ3ydr4bKo6NcvV6DaBNob93UWogZ17Pt0MOFqGf6iQuOn2zG+bkVlNmMn8hWM8IHru
+        x3svYa2N2piyzNpiJpqexgNL2LG5qUY=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Oliver Upton <oliver.upton@linux.dev>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Sebastian Ott <sebott@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v7 10/12] KVM: selftests: aarch64: Introduce
+ vpmu_counter_access test
+Message-ID: <ZS2J_QbL0zYcsPhG@linux.dev>
+References: <20231009230858.3444834-1-rananta@google.com>
+ <20231009230858.3444834-11-rananta@google.com>
+ <44608d30-c97a-c725-e8b2-0c5a81440869@redhat.com>
+ <65b8bbdb-2187-3c85-0e5d-24befcf01333@redhat.com>
+ <CAJHc60zPc6eM+t7pOM19aKbf_9cMvj_LnPnG1EO35=EP0jG+Tg@mail.gmail.com>
+ <ZS2HTdhFO2aywPpe@linux.dev>
+ <CAJHc60xFwcDu6e6GTY3WYowBxnbkCWU-EgwEOVGd4Qu5F_h10A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2023101657-charcoal-snowy-21be@gregkh>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJHc60xFwcDu6e6GTY3WYowBxnbkCWU-EgwEOVGd4Qu5F_h10A@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
@@ -43,31 +66,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Mon, Oct 16, 2023 at 12:05:16PM -0700, Raghavendra Rao Ananta wrote:
+> On Mon, Oct 16, 2023 at 11:56 AM Oliver Upton <oliver.upton@linux.dev> wrote:
+> >
+> > On Fri, Oct 13, 2023 at 02:05:29PM -0700, Raghavendra Rao Ananta wrote:
+> > > Oliver,
+> > >
+> > > Aren't the selftest patches from the 'Enable writable ID regs' series
+> > > [1] merged into kvmarm/next? Looking at the log, I couldn't find them
+> > > and the last patch that went from the series was [2]. Am I missing
+> > > something?
+> > >
+> > > Thank you.
+> > > Raghavendra
+> > >
+> > > [1]: https://lore.kernel.org/all/169644154288.3677537.15121340860793882283.b4-ty@linux.dev/
+> > > [2]: https://lore.kernel.org/all/20231003230408.3405722-11-oliver.upton@linux.dev/
+> >
+> > This is intentional, updating the tools headers as it was done in the
+> > original series broke the perftool build. I backed out the selftest
+> > patches, but took the rest of the kernel changes into kvmarm/next so
+> > they could soak while we sort out the selftests mess. Hopefully we can
+> > get the fix reviewed in time [*]...
+> >
+> > [*] https://lore.kernel.org/kvmarm/20231011195740.3349631-1-oliver.upton@linux.dev/
+> >
+> > --
+> Ah, I see. In that case, since it impacts this series, do you want me
+> to rebase my series on top of your selftests series for v8?
 
-On 2023-10-16 20:57:57+0200, gregkh@linuxfoundation.org wrote:
-> 
-> This is a note to let you know that I've just added the patch titled
-> 
->     misc/pvpanic: deduplicate comomn code
+No, please keep the two independent for now. I can fix it up when
+applying the series.
 
-It seems I managed to inject a typo into the commit subject:
-
-s/comomn/common/
-
-In case it's still possible and worth it, could you fix it up?
-
-> to my char-misc git tree which can be found at
->     git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git
-> in the char-misc-testing branch.
-> 
-> The patch will show up in the next release of the linux-next tree
-> (usually sometime within the next 24 hours during the week.)
-> 
-> The patch will be merged to the char-misc-next branch sometime soon,
-> after it passes testing, and the merge window is open.
-> 
-> If you have any questions about this process, please let me know.
-
+-- 
 Thanks,
-Thomas
+Oliver
