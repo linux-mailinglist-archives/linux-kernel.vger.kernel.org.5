@@ -2,187 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25AD67CA104
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 09:53:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B7007CA107
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 09:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbjJPHxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 03:53:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35378 "EHLO
+        id S231634AbjJPHxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 03:53:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjJPHxd (ORCPT
+        with ESMTP id S229478AbjJPHxp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 03:53:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0EA5A1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:52:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697442766;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Gd31wjQltRaRKMtxCuA7b8PZltpyuznttFUDFi0zJmk=;
-        b=NdEEa627aUm2crOG4IpfNuHt6qZeIEY5Klre++zHtR3Xudn2jWwKffuuEM3m4hSkjBTnzp
-        EWAixpLrxEf4DDOgt4XY0SMRVvsQPEHnCEfiv7bm0dtMlJ6aCtclQMCgswfsztds86cbCi
-        yDwNjJuhBUq9xhzhHXcO/kV0KId6XQI=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-106-KsmrrJ4JNS66v2g89rXFgw-1; Mon, 16 Oct 2023 03:52:45 -0400
-X-MC-Unique: KsmrrJ4JNS66v2g89rXFgw-1
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-77574c5f713so497579685a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:52:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697442764; x=1698047564;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gd31wjQltRaRKMtxCuA7b8PZltpyuznttFUDFi0zJmk=;
-        b=qSpsqJ8cEStCxUSbfMZkqPrmtQObdY26T+hvHjYZjbxRaVLqbX3TESxXq3iF490RnL
-         omBY8OgsuHLyhZEPOeS13yngO7/2+YXTY+HJ/650bJzGv+Q13Pvmo/PVp6JfdZM+gVUS
-         kgWb9IIjuZSFdI1yhyJY/UIWoIHgka3N2ja0jx0v2keC50zFoMfmK3QRxIhD6WHHtUWZ
-         Qg5n6bHMMF+PCHT2liKT7ir4QX2fHLXGvoR+rN5ge2GK3QxJ8wrsVYntTz8KrjlnUevV
-         mPPz0xetXo4FOFfFLyllxPPNrWSKJBiNUuCpnE9LuabUr4fxoDymFgO1u1c+jGhx3mBj
-         iWKg==
-X-Gm-Message-State: AOJu0YytZpCrmMr8ACFxZ2wBzlPKKCRbdcqP3A1n0vPZ9S4HrgLdcOx7
-        0urygS6LnnjFsIhh4TE+sJ5lXpSiE5UhLJuHdESPxICdY3eCShzE7lNoLYJ8u3w599D53kYSdRI
-        1m5/+dgKaNIVugJddV4jYoKIz
-X-Received: by 2002:a05:620a:2848:b0:772:64cb:bc64 with SMTP id h8-20020a05620a284800b0077264cbbc64mr40238565qkp.12.1697442764626;
-        Mon, 16 Oct 2023 00:52:44 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEl2/SzdDDVZjUrbwr5gzZZOpok0RU8kRHbed8p9DMVTOZv/ans+kepJDDT4etaHuTttLD3kg==
-X-Received: by 2002:a05:620a:2848:b0:772:64cb:bc64 with SMTP id h8-20020a05620a284800b0077264cbbc64mr40238553qkp.12.1697442764336;
-        Mon, 16 Oct 2023 00:52:44 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:280:24f0:9db0:474c:ff43:9f5c? ([2a01:e0a:280:24f0:9db0:474c:ff43:9f5c])
-        by smtp.gmail.com with ESMTPSA id r30-20020a05620a03de00b0076ca9f79e1fsm2799111qkm.46.2023.10.16.00.52.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 00:52:43 -0700 (PDT)
-Message-ID: <04d9af1d-e459-4431-bea3-679ade88f7d5@redhat.com>
-Date:   Mon, 16 Oct 2023 09:52:41 +0200
+        Mon, 16 Oct 2023 03:53:45 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFF33AD;
+        Mon, 16 Oct 2023 00:53:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697442823; x=1728978823;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ixX0RLZqUvYdCViWR3QC9hB3nJJiOPVVdf0NCyC6K4w=;
+  b=UaQ3UF6tZkAdy8GjSn568XIgUttoPiobxb/anzT0RCEmhnGpl/YHT8Aq
+   xSd3Ial+nQn7nN94iT0vDsYgwbOfS4GFnjEOPamMIwofmz9RaBrxmZHdF
+   M0USy4cjdxp1z7qu6ky/elz3CG8KH9zNvgSfTNaSwLE8ruAlcfSsfzJUX
+   AGrimZho/9pmqTaej9CLmiu8a0n+kaKx5nWq8HHI5TJHVqakgK0uXWujn
+   VRHBLsEwD65ku0z2B4JtkiJ4irzXKFDta7gLOsCjwDFOXKlKhzB4WksuN
+   xahhZpcydK8iSiBAnJfYgk8NE0gxp1W5IMlBq90eo6EbbrZQkY52zBIha
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="370544795"
+X-IronPort-AV: E=Sophos;i="6.03,228,1694761200"; 
+   d="scan'208";a="370544795"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 00:53:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="929256670"
+X-IronPort-AV: E=Sophos;i="6.03,228,1694761200"; 
+   d="scan'208";a="929256670"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 00:53:41 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qsIPy-00000005x8u-2BI4;
+        Mon, 16 Oct 2023 10:53:38 +0300
+Date:   Mon, 16 Oct 2023 10:53:38 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Angel Iglesias <ang.iglesiasg@gmail.com>
+Cc:     linux-iio@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
+        linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH 4/5] iio: pressure: bmp280: Allow multiple chips id per
+ family of devices
+Message-ID: <ZSzsAnE38p7zwM2+@smile.fi.intel.com>
+References: <cover.1697381932.git.ang.iglesiasg@gmail.com>
+ <9f8489d82325b2dfb5c8c71c3d558d509b2b01bf.1697381932.git.ang.iglesiasg@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] vfio/mtty: Fix eventfd leak
-Content-Language: en-US
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231013195653.1222141-1-alex.williamson@redhat.com>
- <20231013195653.1222141-2-alex.williamson@redhat.com>
-From:   =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@redhat.com>
-In-Reply-To: <20231013195653.1222141-2-alex.williamson@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9f8489d82325b2dfb5c8c71c3d558d509b2b01bf.1697381932.git.ang.iglesiasg@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/23 21:56, Alex Williamson wrote:
-> Found via kmemleak, eventfd context is leaked if not explicitly torn
-> down by userspace.  Clear pointers to track released contexts.  Also
-> remove unused irq_fd field in mtty structure, set but never used.
+On Sun, Oct 15, 2023 at 05:16:26PM +0200, Angel Iglesias wrote:
+> Improve device detection in certain chip families known to have various
+> chip ids.
 
-This could be 2 different patches, one cleanup and one fix.
-  
-> Fixes: 9d1a546c53b4 ("docs: Sample driver to demonstrate how to use Mediated device framework.")
-> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-> ---
->   samples/vfio-mdev/mtty.c | 28 +++++++++++++++++++++++-----
->   1 file changed, 23 insertions(+), 5 deletions(-)
-> 
-> diff --git a/samples/vfio-mdev/mtty.c b/samples/vfio-mdev/mtty.c
-> index 5af00387c519..0a2760818e46 100644
-> --- a/samples/vfio-mdev/mtty.c
-> +++ b/samples/vfio-mdev/mtty.c
-> @@ -127,7 +127,6 @@ struct serial_port {
->   /* State of each mdev device */
->   struct mdev_state {
->   	struct vfio_device vdev;
-> -	int irq_fd;
->   	struct eventfd_ctx *intx_evtfd;
->   	struct eventfd_ctx *msi_evtfd;
->   	int irq_index;
-> @@ -938,8 +937,10 @@ static int mtty_set_irqs(struct mdev_state *mdev_state, uint32_t flags,
->   		{
->   			if (flags & VFIO_IRQ_SET_DATA_NONE) {
->   				pr_info("%s: disable INTx\n", __func__);
-> -				if (mdev_state->intx_evtfd)
-> +				if (mdev_state->intx_evtfd) {
->   					eventfd_ctx_put(mdev_state->intx_evtfd);
-> +					mdev_state->intx_evtfd = NULL;
-> +				}
->   				break;
->   			}
->   
-> @@ -955,7 +956,6 @@ static int mtty_set_irqs(struct mdev_state *mdev_state, uint32_t flags,
->   						break;
->   					}
+...
 
-Shouln't mdev_state->intx_evtfd value be tested before calling
-eventfd_ctx() ?
+> +#include <linux/overflow.h>
 
-Thanks,
+Probably you don't need this, see below.
 
-C.
+...
 
+>  	ret = regmap_read(regmap, data->chip_info->id_reg, &chip_id);
+>  	if (ret < 0)
+>  		return ret;
 
->   					mdev_state->intx_evtfd = evt;
-> -					mdev_state->irq_fd = fd;
->   					mdev_state->irq_index = index;
->   					break;
->   				}
-> @@ -971,8 +971,10 @@ static int mtty_set_irqs(struct mdev_state *mdev_state, uint32_t flags,
->   			break;
->   		case VFIO_IRQ_SET_ACTION_TRIGGER:
->   			if (flags & VFIO_IRQ_SET_DATA_NONE) {
-> -				if (mdev_state->msi_evtfd)
-> +				if (mdev_state->msi_evtfd) {
->   					eventfd_ctx_put(mdev_state->msi_evtfd);
-> +					mdev_state->msi_evtfd = NULL;
-> +				}
->   				pr_info("%s: disable MSI\n", __func__);
->   				mdev_state->irq_index = VFIO_PCI_INTX_IRQ_INDEX;
->   				break;
-> @@ -993,7 +995,6 @@ static int mtty_set_irqs(struct mdev_state *mdev_state, uint32_t flags,
->   					break;
->   				}
->   				mdev_state->msi_evtfd = evt;
-> -				mdev_state->irq_fd = fd;
->   				mdev_state->irq_index = index;
->   			}
->   			break;
-> @@ -1262,6 +1263,22 @@ static unsigned int mtty_get_available(struct mdev_type *mtype)
->   	return atomic_read(&mdev_avail_ports) / type->nr_ports;
->   }
->   
-> +static void mtty_close(struct vfio_device *vdev)
-> +{
-> +	struct mdev_state *mdev_state =
-> +		container_of(vdev, struct mdev_state, vdev);
+> +	if (i == data->chip_info->num_chip_id) {
+> +		size_t nbuf;
+> +		char *buf;
 > +
-> +	if (mdev_state->intx_evtfd) {
-> +		eventfd_ctx_put(mdev_state->intx_evtfd);
-> +		mdev_state->intx_evtfd = NULL;
-> +	}
-> +	if (mdev_state->msi_evtfd) {
-> +		eventfd_ctx_put(mdev_state->msi_evtfd);
-> +		mdev_state->msi_evtfd = NULL;
-> +	}
-> +	mdev_state->irq_index = -1;
-> +}
-> +
->   static const struct vfio_device_ops mtty_dev_ops = {
->   	.name = "vfio-mtty",
->   	.init = mtty_init_dev,
-> @@ -1273,6 +1290,7 @@ static const struct vfio_device_ops mtty_dev_ops = {
->   	.unbind_iommufd	= vfio_iommufd_emulated_unbind,
->   	.attach_ioas	= vfio_iommufd_emulated_attach_ioas,
->   	.detach_ioas	= vfio_iommufd_emulated_detach_ioas,
-> +	.close_device	= mtty_close,
->   };
->   
->   static struct mdev_driver mtty_driver = {
+> +		// 0x<id>, so four chars per number plus one space + ENDL
+> +		if (check_mul_overflow(data->chip_info->num_chip_id, 5, &nbuf))
+> +			return ret;
+
+First of all, it _implicitly_ returns 0 here...
+
+> +		buf = kmalloc_array(data->chip_info->num_chip_id, 5, GFP_KERNEL);
+> +		if (!buf)
+> +			return ret;
+
+...and here.
+
+Second, kmalloc_array() has that check inside.
+
+Third, define this magic 5 either as strlen(), or a constant (in latter case
+with the comment of its meaning).
+
+> +		for (i = 0; i < data->chip_info->num_chip_id; i++)
+> +			snprintf(&buf[i*5], nbuf - i*5, "0x%x ", data->chip_info->chip_id[i]);
+
+Fourth, use incremental position, i.e. use retuned value from snprintf().
+
+> +		dev_err(dev, "bad chip id: expected one of [ %s ] got 0x%x\n", buf, chip_id);
+> +		kfree(buf);
+
+> +		return ret;
+
+As per "first" and "second" above.
+
+>  	}
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
