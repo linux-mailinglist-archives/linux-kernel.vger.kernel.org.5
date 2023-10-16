@@ -2,102 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 335747CB325
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 21:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEEC97CB32C
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 21:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233008AbjJPTHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 15:07:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54596 "EHLO
+        id S233068AbjJPTIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 15:08:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbjJPTHw (ORCPT
+        with ESMTP id S229943AbjJPTIj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 15:07:52 -0400
-Received: from out-191.mta0.migadu.com (out-191.mta0.migadu.com [IPv6:2001:41d0:1004:224b::bf])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74D7DAB;
-        Mon, 16 Oct 2023 12:07:49 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 19:07:41 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1697483267;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pILx/2lrkDmB5qBrw02D6T3Y8qSsKRYkqLY+DvWzLoY=;
-        b=pRUczDuUT5JWBO3E5Y3ZUUZr1EtHR9nWgiI6KG2m2FY6oPHNB3nTbdBa4jUTmfv6hIMknz
-        WDnYZ3ydr4bKo6NcvV6DaBNob93UWogZ17Pt0MOFqGf6iQuOn2zG+bkVlNmMn8hWM8IHru
-        x3svYa2N2piyzNpiJpqexgNL2LG5qUY=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Oliver Upton <oliver.upton@linux.dev>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Sebastian Ott <sebott@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Shaoqin Huang <shahuang@redhat.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v7 10/12] KVM: selftests: aarch64: Introduce
- vpmu_counter_access test
-Message-ID: <ZS2J_QbL0zYcsPhG@linux.dev>
-References: <20231009230858.3444834-1-rananta@google.com>
- <20231009230858.3444834-11-rananta@google.com>
- <44608d30-c97a-c725-e8b2-0c5a81440869@redhat.com>
- <65b8bbdb-2187-3c85-0e5d-24befcf01333@redhat.com>
- <CAJHc60zPc6eM+t7pOM19aKbf_9cMvj_LnPnG1EO35=EP0jG+Tg@mail.gmail.com>
- <ZS2HTdhFO2aywPpe@linux.dev>
- <CAJHc60xFwcDu6e6GTY3WYowBxnbkCWU-EgwEOVGd4Qu5F_h10A@mail.gmail.com>
+        Mon, 16 Oct 2023 15:08:39 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0EA7B4
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 12:08:37 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-7a2874d2820so59376139f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 12:08:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1697483317; x=1698088117; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JcTH0VsoF1buUa3wYI5JOhUxSLxinwGPh2bn6jgrf1M=;
+        b=e9LhRIbvi72jdoM/sj1fB8VUKUya4Os1hXbTXmkbsDdRj4jpYqhhu5c/l5qS30Y7KE
+         TX85O4ZHF/B8wcuoqb588Socp4Y93e6GH3cbdLbC7B1q8v5oNXwfdN8lbIVqTkewcO05
+         LHTUYfxIxiiEliGf715YwOlb2pT0RXLXMPfrg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697483317; x=1698088117;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JcTH0VsoF1buUa3wYI5JOhUxSLxinwGPh2bn6jgrf1M=;
+        b=niLU7eIAutuqt9zHOYFauIxV89YTZHsKGkzwC42bJ8eP/XsTewUWyOM3FED0P6BHVP
+         j23KB+bgyMcNKoIeYbAWVw6vZ2/LhhHT1sPcTxumywCvlooCYmytP0b67g96kaWBpqGF
+         S4AUICD9mBoTeuAzVukZpiYSH1n/PaTVr+Jj2ArsbDGBSpBc6+WX6X731r3LHi1784GS
+         bZ4EnVojFSBbaC5ojDerBoAuSs3+nStPvXP2CtJgkDuivWgI9W3hXdgbF4wtsQKHzWDZ
+         xyC2nJs5Hrg/Xg9HCr/oCBxTGreV3NDsUBhEu182iuYaJU5py5YE+c8lyHOHoHRwdX6/
+         Hz2g==
+X-Gm-Message-State: AOJu0YyvqP825w6p3aID5PKxAJaEiChm3OjFECw6/NmlGUjHuF1OsCTk
+        +fg8tm2ehRk8T1zy75KoKYl8iQ==
+X-Google-Smtp-Source: AGHT+IFZqRn51Qhe9fFK9A7LVu2ok00fy6CncbigbJiZF2FCNIycDF+wcmggfs1hJxQbjwOnbSsJHg==
+X-Received: by 2002:a05:6602:1513:b0:79f:a8c2:290d with SMTP id g19-20020a056602151300b0079fa8c2290dmr199390iow.0.1697483316996;
+        Mon, 16 Oct 2023 12:08:36 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id r22-20020a028816000000b004301f422fbdsm6498947jai.178.2023.10.16.12.08.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Oct 2023 12:08:36 -0700 (PDT)
+Message-ID: <213fb592-de7d-405e-88bd-595a1cb33d48@linuxfoundation.org>
+Date:   Mon, 16 Oct 2023 13:08:35 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJHc60xFwcDu6e6GTY3WYowBxnbkCWU-EgwEOVGd4Qu5F_h10A@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 0/2] Fix issues observed in selftests/amd-pstate
+Content-Language: en-US
+To:     Swapnil Sapkal <swapnil.sapkal@amd.com>, ray.huang@amd.com,
+        shuah@kernel.org
+Cc:     sukrut.bellary@gmail.com, li.meng@amd.com, gautham.shenoy@amd.com,
+        wyes.karny@amd.com, Perry.Yuan@amd.com, Mario.Limonciello@amd.com,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20231012093225.2045109-1-swapnil.sapkal@amd.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20231012093225.2045109-1-swapnil.sapkal@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 12:05:16PM -0700, Raghavendra Rao Ananta wrote:
-> On Mon, Oct 16, 2023 at 11:56 AM Oliver Upton <oliver.upton@linux.dev> wrote:
-> >
-> > On Fri, Oct 13, 2023 at 02:05:29PM -0700, Raghavendra Rao Ananta wrote:
-> > > Oliver,
-> > >
-> > > Aren't the selftest patches from the 'Enable writable ID regs' series
-> > > [1] merged into kvmarm/next? Looking at the log, I couldn't find them
-> > > and the last patch that went from the series was [2]. Am I missing
-> > > something?
-> > >
-> > > Thank you.
-> > > Raghavendra
-> > >
-> > > [1]: https://lore.kernel.org/all/169644154288.3677537.15121340860793882283.b4-ty@linux.dev/
-> > > [2]: https://lore.kernel.org/all/20231003230408.3405722-11-oliver.upton@linux.dev/
-> >
-> > This is intentional, updating the tools headers as it was done in the
-> > original series broke the perftool build. I backed out the selftest
-> > patches, but took the rest of the kernel changes into kvmarm/next so
-> > they could soak while we sort out the selftests mess. Hopefully we can
-> > get the fix reviewed in time [*]...
-> >
-> > [*] https://lore.kernel.org/kvmarm/20231011195740.3349631-1-oliver.upton@linux.dev/
-> >
-> > --
-> Ah, I see. In that case, since it impacts this series, do you want me
-> to rebase my series on top of your selftests series for v8?
+On 10/12/23 03:32, Swapnil Sapkal wrote:
+> This series fixes issues observed with selftests/amd-pstate while
+> running performance comparison tests with different governors. First
+> patch changes relative paths with absolute paths and also change it
+> with correct paths wherever it is broken.
+> The second patch adds an option to provide perf binary path to
+> handle the case where distro perf does not work.
+> 
+> Changelog v3->v4:
+> 	* Addressed review comments from v3
+> 
+> Swapnil Sapkal (2):
+>    selftests/amd-pstate: Fix broken paths to run workloads in
+>      amd-pstate-ut
+>    selftests/amd-pstate: Added option to provide perf binary path
+> 
+>   .../x86/amd_pstate_tracer/amd_pstate_trace.py |  3 +--
+>   .../testing/selftests/amd-pstate/gitsource.sh | 17 +++++++++------
+>   tools/testing/selftests/amd-pstate/run.sh     | 21 +++++++++++++------
+>   tools/testing/selftests/amd-pstate/tbench.sh  |  4 ++--
+>   4 files changed, 29 insertions(+), 16 deletions(-)
+> 
 
-No, please keep the two independent for now. I can fix it up when
-applying the series.
+Both applied to linux-kselftest next for Linux 6.7-rc1
 
--- 
-Thanks,
-Oliver
+thanks,
+-- Shuah
