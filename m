@@ -2,143 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D05677CB6CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 01:00:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CCCC7CB6D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 01:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234112AbjJPXAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 19:00:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50646 "EHLO
+        id S234246AbjJPXBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 19:01:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232985AbjJPW77 (ORCPT
+        with ESMTP id S234178AbjJPXBD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 18:59:59 -0400
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95BBD9B
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 15:59:57 -0700 (PDT)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id F2EA8240029
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 00:59:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1697497196; bh=rnbADe6m90A07GERJn789AJyLmRj2m+LZ1+95wztGA4=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:
-         Content-Transfer-Encoding:From;
-        b=Jh5UDJJDwz543riptIZiaIlXKxwqO2SN1Q1V4cGEbYu1Agz/0ga4sKyIegpitZdnN
-         MQZXCjVcZans1EzSX9QLZ1MyhbX8wrfGn5qEUOI+BXTvthMCFdCEJVEPx6F0nH8J5z
-         udKowcI8GDPfQNUGyMw8jULBGKNijrF2IP6wvMFMKrBZpRjd9kDu8zYP9ZWPnhiMYi
-         TziYQT8sxADAQxTxE6Htmcn/+B6MKcwE9QUH/VNRJHyiczu0CD5ooOaSrryBvpz0PA
-         cQnJJq+VVGBlSM/r3sAKexhOHeoEE3QOSAA18pFDxz7i4CBJUiLW4WlH8xgJZDiHc5
-         HF4qQjPO3j60g==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4S8Xcp34TVz9rxK;
-        Tue, 17 Oct 2023 00:59:54 +0200 (CEST)
-From:   Mark O'Donovan <shiftee@posteo.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-nvme@lists.infradead.org, sagi@grimberg.me, hch@lst.de,
-        axboe@kernel.dk, kbusch@kernel.org, hare@suse.de,
-        Mark O'Donovan <shiftee@posteo.net>,
-        Akash Appaiah <Akash.Appaiah@dell.com>
-Subject: [PATCH v3 1/3] nvme-auth: alloc nvme_dhchap_key as single buffer
-Date:   Mon, 16 Oct 2023 22:58:55 +0000
-Message-Id: <20231016225857.3085234-2-shiftee@posteo.net>
-In-Reply-To: <20231016225857.3085234-1-shiftee@posteo.net>
-References: <20231016225857.3085234-1-shiftee@posteo.net>
+        Mon, 16 Oct 2023 19:01:03 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E42B0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:01:00 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5a877e0f0d8so13545297b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:01:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697497260; x=1698102060; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=izdWRaFanHQ8azSd91/9giaIXLaVsk5MY9ErGFWUe5M=;
+        b=itSkmgYO0LkkoyZhZxW5jzhjRs2G8SJjUwuWcI9VCedQGd+wUhpbeW5B+mVTBQDPPT
+         85mVTGyZja15ifCvnkk9KY961jWCkfTfdrNTEBrXNFRfEl/QtrHbwieDqZdQuzl03z0B
+         NR2Q6NRboW5WvsnnFbAnBzBl5qGG2pY3cOrzqti0VKZjPIMAKpWn+zHGfo927LIvBOGi
+         Q/PpvFRa//RkR3+poY/U5k+oD6uNauWh/6N5UlEf2kAlpEhT6BY3NMxLPYOynaOoCiTv
+         a5lHnrtOOqxPYiuc9AGRimM/4crBJrH+tdaIoLNd7cGxYYaPKXC+ZhZLHB5gmH8jm91C
+         D7+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697497260; x=1698102060;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=izdWRaFanHQ8azSd91/9giaIXLaVsk5MY9ErGFWUe5M=;
+        b=oH+boO9Uw45NpKq6bY46OcbqnbiNexxX5tNT2cmcdDzBofddFu3vcO/Z/AseY0OSns
+         EPyyhlEgtUgdKDu814uD+v1zTy4Ui0+m7dxDBl3DM+5rsSXXhLFrjsxNKX9AQST9KSlN
+         VhKuOLq4hU0/Ujc48oDyghimB5AjtxWclvD+0xFAMNh68H/CEqepXET1RaxWLvmU+K4V
+         9+B6+2MC6IeYX5lWIFi6psUYH0mISIB98uOkoIeCLGQizBV/yy2VASz6STTJNXIcoNjR
+         VCe7QxFf5dgaLeSqkUrXDm+TtoxEMCBF9/E1oR0EXrzsqUFGpUQ6q/ZC/UIpqadM5aR1
+         Tqxg==
+X-Gm-Message-State: AOJu0YxFyXQRFXwtnvTStTIjKRG4CUQIhMNVCdR6tKskuobSzeWlI4dU
+        JbFZJUrMTBn5EbCOZWBBxMs=
+X-Google-Smtp-Source: AGHT+IGrVAqh6QjbMlQ3vwhEyVA44SEHSnxHA6AsEjAtj9K68hmeeE0LdYwAZbDF0IhlVXgahW6Giw==
+X-Received: by 2002:a81:a00c:0:b0:5a7:fcad:e865 with SMTP id x12-20020a81a00c000000b005a7fcade865mr141193ywg.2.1697497259815;
+        Mon, 16 Oct 2023 16:00:59 -0700 (PDT)
+Received: from gilbert-PC ([105.112.31.148])
+        by smtp.gmail.com with ESMTPSA id m5-20020a81d245000000b005a815346d95sm91339ywl.71.2023.10.16.16.00.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 16:00:59 -0700 (PDT)
+From:   Gilbert Adikankwu <gilbertadikankwu@gmail.com>
+To:     forest@alittletooquiet.net, gregkh@linuxfoundation.org,
+        outreachy@lists.linux.dev
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Gilbert Adikankwu <gilbertadikankwu@gmail.com>
+Subject: [PATCH 2/4] staging: vt6655: Rename variable byCurrentCh
+Date:   Mon, 16 Oct 2023 23:58:55 +0100
+Message-Id: <cd4c073d0e67e2ce6ed9f38a7add9bbd2fe760ce.1697495598.git.gilbertadikankwu@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1697495597.git.gilbertadikankwu@gmail.com>
+References: <cover.1697495597.git.gilbertadikankwu@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Co-developed-by: Akash Appaiah <Akash.Appaiah@dell.com>
-Signed-off-by: Akash Appaiah <Akash.Appaiah@dell.com>
-Signed-off-by: Mark O'Donovan <shiftee@posteo.net>
----
- drivers/nvme/common/auth.c | 26 +++++++++++++++-----------
- include/linux/nvme-auth.h  |  3 ++-
- 2 files changed, 17 insertions(+), 12 deletions(-)
+Remove byte Type encoding "by" from variable name and replace camelcase
+with snakecase.
 
-diff --git a/drivers/nvme/common/auth.c b/drivers/nvme/common/auth.c
-index d90e4f0c08b7..225fc474e34a 100644
---- a/drivers/nvme/common/auth.c
-+++ b/drivers/nvme/common/auth.c
-@@ -163,14 +163,9 @@ struct nvme_dhchap_key *nvme_auth_extract_key(unsigned char *secret,
- 	p = strrchr(secret, ':');
- 	if (p)
- 		allocated_len = p - secret;
--	key = kzalloc(sizeof(*key), GFP_KERNEL);
-+	key = nvme_auth_alloc_key(allocated_len, 0);
- 	if (!key)
- 		return ERR_PTR(-ENOMEM);
--	key->key = kzalloc(allocated_len, GFP_KERNEL);
--	if (!key->key) {
--		ret = -ENOMEM;
--		goto out_free_key;
--	}
- 
- 	key_len = base64_decode(secret, allocated_len, key->key);
- 	if (key_len < 0) {
-@@ -213,19 +208,28 @@ struct nvme_dhchap_key *nvme_auth_extract_key(unsigned char *secret,
- 	key->hash = key_hash;
- 	return key;
- out_free_secret:
--	kfree_sensitive(key->key);
--out_free_key:
--	kfree(key);
-+	nvme_auth_free_key(key);
- 	return ERR_PTR(ret);
- }
- EXPORT_SYMBOL_GPL(nvme_auth_extract_key);
- 
-+struct nvme_dhchap_key *nvme_auth_alloc_key(u32 len, u8 hash)
-+{
-+	struct nvme_dhchap_key *key = kzalloc(len + sizeof(*key), GFP_KERNEL);
-+
-+	if (key) {
-+		key->len = len;
-+		key->hash = hash;
-+	}
-+	return key;
-+}
-+EXPORT_SYMBOL_GPL(nvme_auth_alloc_key);
-+
- void nvme_auth_free_key(struct nvme_dhchap_key *key)
+Mute checkpatch.pl error:
+
+CHECK: Avoid CamelCase: <byCurrentCh>
+
+Signed-off-by: Gilbert Adikankwu <gilbertadikankwu@gmail.com>
+---
+ drivers/staging/vt6655/channel.c | 12 ++++++------
+ drivers/staging/vt6655/device.h  |  2 +-
+ 2 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/staging/vt6655/channel.c b/drivers/staging/vt6655/channel.c
+index c11bc2dbc356..7b864136a0a8 100644
+--- a/drivers/staging/vt6655/channel.c
++++ b/drivers/staging/vt6655/channel.c
+@@ -82,7 +82,7 @@ bool set_channel(struct vnt_private *priv, struct ieee80211_channel *ch)
  {
- 	if (!key)
- 		return;
--	kfree_sensitive(key->key);
--	kfree(key);
-+	kfree_sensitive(key);
+ 	bool ret = true;
+ 
+-	if (priv->byCurrentCh == ch->hw_value)
++	if (priv->current_ch == ch->hw_value)
+ 		return ret;
+ 
+ 	/* Set VGA to max sensitivity */
+@@ -100,7 +100,7 @@ bool set_channel(struct vnt_private *priv, struct ieee80211_channel *ch)
+ 	 * it is for better TX throughput
+ 	 */
+ 
+-	priv->byCurrentCh = ch->hw_value;
++	priv->current_ch = ch->hw_value;
+ 	ret &= RFbSelectChannel(priv, priv->rf_type,
+ 				ch->hw_value);
+ 
+@@ -117,9 +117,9 @@ bool set_channel(struct vnt_private *priv, struct ieee80211_channel *ch)
+ 
+ 		/* set HW default power register */
+ 		VT6655_MAC_SELECT_PAGE1(priv->port_offset);
+-		RFbSetPower(priv, RATE_1M, priv->byCurrentCh);
++		RFbSetPower(priv, RATE_1M, priv->current_ch);
+ 		iowrite8(priv->byCurPwr, priv->port_offset + MAC_REG_PWRCCK);
+-		RFbSetPower(priv, RATE_6M, priv->byCurrentCh);
++		RFbSetPower(priv, RATE_6M, priv->current_ch);
+ 		iowrite8(priv->byCurPwr, priv->port_offset + MAC_REG_PWROFDM);
+ 		VT6655_MAC_SELECT_PAGE0(priv->port_offset);
+ 
+@@ -127,9 +127,9 @@ bool set_channel(struct vnt_private *priv, struct ieee80211_channel *ch)
+ 	}
+ 
+ 	if (priv->byBBType == BB_TYPE_11B)
+-		RFbSetPower(priv, RATE_1M, priv->byCurrentCh);
++		RFbSetPower(priv, RATE_1M, priv->current_ch);
+ 	else
+-		RFbSetPower(priv, RATE_6M, priv->byCurrentCh);
++		RFbSetPower(priv, RATE_6M, priv->current_ch);
+ 
+ 	return ret;
  }
- EXPORT_SYMBOL_GPL(nvme_auth_free_key);
+diff --git a/drivers/staging/vt6655/device.h b/drivers/staging/vt6655/device.h
+index b166d296b82d..b3ac6237010b 100644
+--- a/drivers/staging/vt6655/device.h
++++ b/drivers/staging/vt6655/device.h
+@@ -239,7 +239,7 @@ struct vnt_private {
+ 	bool bIsBeaconBufReadySet;
+ 	unsigned int	cbBeaconBufReadySetCnt;
+ 	bool bFixRate;
+-	u16 byCurrentCh;
++	u16 current_ch;
  
-diff --git a/include/linux/nvme-auth.h b/include/linux/nvme-auth.h
-index dcb8030062dd..df96940be930 100644
---- a/include/linux/nvme-auth.h
-+++ b/include/linux/nvme-auth.h
-@@ -9,9 +9,9 @@
- #include <crypto/kpp.h>
+ 	bool bAES;
  
- struct nvme_dhchap_key {
--	u8 *key;
- 	size_t len;
- 	u8 hash;
-+	u8 key[];
- };
- 
- u32 nvme_auth_get_seqnum(void);
-@@ -27,6 +27,7 @@ u8 nvme_auth_hmac_id(const char *hmac_name);
- struct nvme_dhchap_key *nvme_auth_extract_key(unsigned char *secret,
- 					      u8 key_hash);
- void nvme_auth_free_key(struct nvme_dhchap_key *key);
-+struct nvme_dhchap_key *nvme_auth_alloc_key(u32 len, u8 hash);
- u8 *nvme_auth_transform_key(struct nvme_dhchap_key *key, char *nqn);
- int nvme_auth_generate_key(u8 *secret, struct nvme_dhchap_key **ret_key);
- int nvme_auth_augmented_challenge(u8 hmac_id, u8 *skey, size_t skey_len,
 -- 
-2.39.2
+2.34.1
 
