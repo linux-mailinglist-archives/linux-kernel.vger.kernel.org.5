@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D107C9EF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 07:36:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B55D07C9EF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 07:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232276AbjJPFgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 01:36:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43380 "EHLO
+        id S231954AbjJPFgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 01:36:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231838AbjJPFgN (ORCPT
+        with ESMTP id S232101AbjJPFg2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 01:36:13 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B685510DB
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 22:35:53 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-406619b53caso41823575e9.1
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 22:35:53 -0700 (PDT)
+        Mon, 16 Oct 2023 01:36:28 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51787D40
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 22:36:08 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-4066241289bso42443405e9.0
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 22:36:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697434551; x=1698039351; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1697434567; x=1698039367; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=rO4RRKGFSisS6nP2T87BuXwXCuEHZxmiyFz9Bu8h24o=;
-        b=en7LUwaBdGKxyy3PxoUqtuD04oKydFcAZWKqrS0S/FGLlbt5Q3F/ZfdpTCmwija4mp
-         FCmZze2oj0dqiUzVBuo0pxdBFZzKfcMIFMNYBSA2Pa8SCCe7Ce3AJTdxfcjlxb8POzFJ
-         3Wm14MzbG2/UAkRL8CMNQm4wkyxsU8fMJkaV8T5uzCphRR5/1ouelT6QRXjUQ9AF78KY
-         o7P/S4SfvZLzkf7s/WeSMGVYwk75J27fpGG9j31XS6r4WZEn+Pv1VJtg0x411DMZU0kT
-         XC/qHMO8a/UJHLhVC8g02IR3CUSXV2SKJjJdc1hZIU/o9a5K51u593o5nzXhvnWZTQWf
-         EihA==
+        bh=BXw/oDaarshYGHMpn+qeNvALBBUUaTRSSPJ77H56dZk=;
+        b=gjpetzHJQObZzI3R87d2y5aDt/H1/vsXliDG8mrmwII91rqy23GH1RkOXyGpVu/WO4
+         2qzcpWoKgfMnmIXwwKfdfffn6xHAjgzF1Lc7JFM/lMdMqCM6sN152tHtFJfnO4RW+O4P
+         nrZtMdAjayS4Ii8lJ+zsejZiCwTkv1jqlVIRqV+WSypg6L16hxQA5wX93UZ83xhY3OGG
+         Zm6/Lk7fFlYY+PO0+CDzgjvEhgUn828SssCAiWSJa5UFbKQfwXg9m4nM4aTpYAJ+r6pa
+         HcK162DjInNqDByr3uIEelr5gDJqkf6xjcz1rD4djy9+Lzx4OLtbckv4fnSKqwLMkBC/
+         7+OA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697434551; x=1698039351;
+        d=1e100.net; s=20230601; t=1697434567; x=1698039367;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rO4RRKGFSisS6nP2T87BuXwXCuEHZxmiyFz9Bu8h24o=;
-        b=R2hs2IFBFZzsfZBV/m1o60Qxe8oP3EP/itwkgumvgj0KSkgoFaDgbM8dwGvWYl8u9C
-         ZVyNr2hfwavgsL6hyqScV5quqJsjjFSVvAZqBIfmRcoVJMIrG658/g1dd3Q7gnbJfyUd
-         xUX/xaeKwpFm7eCtje40L4ps+FnU/E7kgrSxWvnXkQjDjSSLp36greYk3FG5jjSKiln0
-         BnURCo6w+ck4vIfSWmoKO7I6uSsDi2FVT4wNsXlUE33eXU9+6uSmwO5dQeEKpSfQjO2p
-         GlDZc0d33vqur3/1sBxsxL6b55KCNKlwlpFoLFHKRoYE5OawO0ch6GQSecz+/bDvtkCJ
-         UV+Q==
-X-Gm-Message-State: AOJu0YznqXRipP5JtFlL5JF+5BV0uTn1YvEHIe5Wcca/jjjUlWPn3jmj
-        nu4V+57f0Pk2jKKg4dAWRH8zuQ==
-X-Google-Smtp-Source: AGHT+IGbCwZfcjMGitTdGailA5if/MX9PTZv88FsWIrFciAkD//BsTygG3fhZ8H2nLSfrTT0iNb3nQ==
-X-Received: by 2002:a05:600c:5120:b0:407:5b54:bb09 with SMTP id o32-20020a05600c512000b004075b54bb09mr12843868wms.7.1697434551412;
-        Sun, 15 Oct 2023 22:35:51 -0700 (PDT)
+        bh=BXw/oDaarshYGHMpn+qeNvALBBUUaTRSSPJ77H56dZk=;
+        b=onN7Wz/YpwgCuoX+u5UTYllIgnTYgoVyDE2WEgxenow7abyBkfDmXoB1J4QNK5GmHh
+         51lggAjLFq3X/1vnza+ILT87ya5x4vO/Mee+YAIOc+4q3pieGAjx2JJV87XI8vsB7GK0
+         kfileX8opX1Io7PSeyOGg6cGbvbW8c1DJATUYCEC+OHmDhg3/LV2HTDJj7eObs/a0HzD
+         dYDVSs2tnF6N4CvN7dXH13MH6B2L05K9yx4z7OWhnoGimmdp2YE/7CLL+5lDr75Auwif
+         Y1usJITadsWowoOJFT2O33jkbGvLloFowwnaSh+APoZG2AdTo2KD+a3VgF+D82EnqPeP
+         M59g==
+X-Gm-Message-State: AOJu0YwMtCxIqOETqHWnbEKEDFPqVA5fD5wkX2Lla75YNdKXJ8Di4JE0
+        ZNezo3CYUNGqrDTZcNg9W1pfGQ==
+X-Google-Smtp-Source: AGHT+IEhA2DijsDO+u9HE+Y6HSk44U2WeaHve8BQ8t0z3vIcPmejXE70lzmu5R7lupXxYRoA8fO9Dg==
+X-Received: by 2002:a5d:5101:0:b0:32d:8f0a:d2e7 with SMTP id s1-20020a5d5101000000b0032d8f0ad2e7mr8807425wrt.42.1697434566790;
+        Sun, 15 Oct 2023 22:36:06 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.219.154])
-        by smtp.gmail.com with ESMTPSA id p18-20020a05600c431200b0040642a1df1csm6114712wme.25.2023.10.15.22.35.49
+        by smtp.gmail.com with ESMTPSA id p18-20020a05600c431200b0040642a1df1csm6114712wme.25.2023.10.15.22.36.04
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Oct 2023 22:35:50 -0700 (PDT)
-Message-ID: <f342446c-7afb-414c-a4d5-1eff03fe397e@linaro.org>
-Date:   Mon, 16 Oct 2023 07:35:48 +0200
+        Sun, 15 Oct 2023 22:36:06 -0700 (PDT)
+Message-ID: <ce9fd7d6-2811-4dbc-9652-ccb7f5d9aa7c@linaro.org>
+Date:   Mon, 16 Oct 2023 07:36:04 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] remoteproc: qcom_wcnss: Add WCN3680B compatible
+Subject: Re: [PATCH 3/4] wifi: wcn36xx: Add check for WCN3680B
 Content-Language: en-US
 To:     Luca Weiss <luca@z3ntu.xyz>, ~postmarketos/upstreaming@lists.sr.ht,
         phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
@@ -72,7 +72,7 @@ Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         wcn36xx@lists.infradead.org, linux-wireless@vger.kernel.org
 References: <20231015-fp3-wcnss-v1-0-1b311335e931@z3ntu.xyz>
- <20231015-fp3-wcnss-v1-2-1b311335e931@z3ntu.xyz>
+ <20231015-fp3-wcnss-v1-3-1b311335e931@z3ntu.xyz>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -118,7 +118,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231015-fp3-wcnss-v1-2-1b311335e931@z3ntu.xyz>
+In-Reply-To: <20231015-fp3-wcnss-v1-3-1b311335e931@z3ntu.xyz>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -132,27 +132,26 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 15/10/2023 22:03, Luca Weiss wrote:
-> Add a compatible for the WCN3680B chip used with some Qualcomm SoCs.
-> 
-> It shares the same regulator setup as WCN3680, so we can reuse the
-> driver data for that.
+> Add a check for the WCN3680B compatible next to the WCN3680 compatible.
 > 
 > Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
 > ---
->  drivers/remoteproc/qcom_wcnss_iris.c | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/net/wireless/ath/wcn36xx/main.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/remoteproc/qcom_wcnss_iris.c b/drivers/remoteproc/qcom_wcnss_iris.c
-> index dd36fd077911..22acc609105f 100644
-> --- a/drivers/remoteproc/qcom_wcnss_iris.c
-> +++ b/drivers/remoteproc/qcom_wcnss_iris.c
-> @@ -99,6 +99,7 @@ static const struct of_device_id iris_of_match[] = {
->  	{ .compatible = "qcom,wcn3660", .data = &wcn3660_data },
->  	{ .compatible = "qcom,wcn3660b", .data = &wcn3680_data },
->  	{ .compatible = "qcom,wcn3680", .data = &wcn3680_data },
-> +	{ .compatible = "qcom,wcn3680b", .data = &wcn3680_data },
+> diff --git a/drivers/net/wireless/ath/wcn36xx/main.c b/drivers/net/wireless/ath/wcn36xx/main.c
+> index 2bd1163177f0..74b0b7074760 100644
+> --- a/drivers/net/wireless/ath/wcn36xx/main.c
+> +++ b/drivers/net/wireless/ath/wcn36xx/main.c
+> @@ -1535,7 +1535,8 @@ static int wcn36xx_platform_get_resources(struct wcn36xx *wcn,
+>  		if (of_device_is_compatible(iris_node, "qcom,wcn3660") ||
+>  		    of_device_is_compatible(iris_node, "qcom,wcn3660b"))
+>  			wcn->rf_id = RF_IRIS_WCN3660;
+> -		if (of_device_is_compatible(iris_node, "qcom,wcn3680"))
+> +		if (of_device_is_compatible(iris_node, "qcom,wcn3680") ||
+> +		    of_device_is_compatible(iris_node, "qcom,wcn3680b"))
 
-Just make devices compatible and no need for this driver change.
+Same comment
 
 Best regards,
 Krzysztof
