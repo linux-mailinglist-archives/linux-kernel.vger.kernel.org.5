@@ -2,45 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D6437CB3B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EDF67CB3B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232996AbjJPUJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 16:09:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46234 "EHLO
+        id S233280AbjJPUKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 16:10:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231221AbjJPUJe (ORCPT
+        with ESMTP id S231221AbjJPUKU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 16:09:34 -0400
+        Mon, 16 Oct 2023 16:10:20 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8643C83
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:09:33 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8126CC433C8;
-        Mon, 16 Oct 2023 20:09:30 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9AE9B0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:10:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 542AFC433C8;
+        Mon, 16 Oct 2023 20:10:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697486973;
-        bh=RpFwpEjjw4hJ7B1Z4cK20onhtIjTiNBnDbHOS4Sy1JE=;
+        s=k20201202; t=1697487018;
+        bh=IP5/MhvOpJ22HR71PavNc9y5Lf1zUiBmMsVX1ID6KQ8=;
         h=From:To:Cc:Subject:Date:From;
-        b=oWcP2frNFRtqkU/QYvUgGpWLjWYPq0lsoHhihsZ1pOUX6Cr16FU6g+uKDzgIlYX3V
-         09KzDJxwrhdlo3/I/9/JJJIiWp0XKjlIhY5auTT7g4PeKHjIZLAdhk51KN/1cvECG1
-         9iYjs4hxQCqNFZuAexRg/8dZHQEC1kJb+dDsLu2SYNTDOFjrQL+Sb+HkL4aHhv1+nG
-         0zvLGTIQ/Vi/PTqJ+C3tQzPlkxibOk9++gXWlCDt0wwFPau/aKF8SoZADD44RmQJBY
-         QuvTAn1Lk9lns/PNLOnjMDvakyGN4CebvOPL50wFy2Lx+6TeJ7LYRMAhJTK6f3G6yQ
-         H9Nj7nV8TJSAg==
+        b=SHWV1KIhS0Yb/wjRj3WQ40LVlhMleM5nkDCeZsHluZwuliokMnSM9uUwBHXjTZvF0
+         pmUYwySK4LPu0w5Dx5ic4Kbv3fejLNKmPi7LNvJM+BSkzuU/9G4oWUNwU2oqI2z8Aw
+         pSZ4fIx0PfSrNM7cdS8zbPzuj1fiUHLDmNYqcSC09BfoYgJWu3U31IEbDRu8423NvU
+         EDvPeNIbenW5x4qughRz//+E4TSzKr0RhFXphJbiO7sr6pfoMJBwmDSf+TZryOQtgw
+         jGVqKrGL3EuQ/Pu/I48WX2Ij5kITGsyNiluM5wwGYpcAl223Otnl2tyRcY8GKVH9S9
+         nkhKNxCu14y4A==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Haibo Li <haibo.li@mediatek.com>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Badal Nilawar <badal.nilawar@intel.com>,
+        Ashutosh Dixit <ashutosh.dixit@intel.com>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Kees Cook <keescook@chromium.org>, kasan-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH] kasan: disable kasan_non_canonical_hook() for HW tags
-Date:   Mon, 16 Oct 2023 22:08:38 +0200
-Message-Id: <20231016200925.984439-1-arnd@kernel.org>
+        Matt Roper <matthew.d.roper@intel.com>,
+        Vinay Belgaumkar <vinay.belgaumkar@intel.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/i915/mtl: avoid stringop-overflow warning
+Date:   Mon, 16 Oct 2023 22:10:04 +0200
+Message-Id: <20231016201012.1022812-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -55,75 +58,63 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-On arm64, building with CONFIG_KASAN_HW_TAGS now causes a compile-time
-error:
+The newly added memset() causes a warning for some reason I could not figure out:
 
-mm/kasan/report.c: In function 'kasan_non_canonical_hook':
-mm/kasan/report.c:637:20: error: 'KASAN_SHADOW_OFFSET' undeclared (first use in this function)
-  637 |         if (addr < KASAN_SHADOW_OFFSET)
-      |                    ^~~~~~~~~~~~~~~~~~~
-mm/kasan/report.c:637:20: note: each undeclared identifier is reported only once for each function it appears in
-mm/kasan/report.c:640:77: error: expected expression before ';' token
-  640 |         orig_addr = (addr - KASAN_SHADOW_OFFSET) << KASAN_SHADOW_SCALE_SHIFT;
+In file included from arch/x86/include/asm/string.h:3,
+                 from drivers/gpu/drm/i915/gt/intel_rc6.c:6:
+In function 'rc6_res_reg_init',
+    inlined from 'intel_rc6_init' at drivers/gpu/drm/i915/gt/intel_rc6.c:610:2:
+arch/x86/include/asm/string_32.h:195:29: error: '__builtin_memset' writing 16 bytes into a region of size 0 overflows the destination [-Werror=stringop-overflow=]
+  195 | #define memset(s, c, count) __builtin_memset(s, c, count)
+      |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/gpu/drm/i915/gt/intel_rc6.c:584:9: note: in expansion of macro 'memset'
+  584 |         memset(rc6->res_reg, INVALID_MMIO_REG.reg, sizeof(rc6->res_reg));
+      |         ^~~~~~
+In function 'intel_rc6_init':
 
-This was caused by removing the dependency on CONFIG_KASAN_INLINE that
-used to prevent this from happening. Use the more specific dependency
-on KASAN_SW_TAGS || KASAN_GENERIC to only ignore the function for hwasan
-mode.
+Change it to an normal initializer and an added memcpy() that does not have
+this problem.
 
-Fixes: 12ec6a919b0f ("kasan: print the original fault addr when access invalid shadow")
+Fixes: 4bb9ca7ee0745 ("drm/i915/mtl: C6 residency and C state type for MTL SAMedia")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-It looks like the comment above the function needs to be adjusted
-as well, and it's possible we should still provide it even for
-hwasan but fix it in a different way.
+ drivers/gpu/drm/i915/gt/intel_rc6.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-I saw this a few days ago but didn't actually send the patch right away, so there
-is a good chance that someone has already produced a better patch, just ignore
-my report in that case.
----
- include/linux/kasan.h | 6 +++---
- mm/kasan/report.c     | 4 +++-
- 2 files changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-index 485452e8cc0dc..72cb693b075b7 100644
---- a/include/linux/kasan.h
-+++ b/include/linux/kasan.h
-@@ -468,10 +468,10 @@ static inline void kasan_free_module_shadow(const struct vm_struct *vm) {}
+diff --git a/drivers/gpu/drm/i915/gt/intel_rc6.c b/drivers/gpu/drm/i915/gt/intel_rc6.c
+index 8b67abd720be8..7090e4be29cb6 100644
+--- a/drivers/gpu/drm/i915/gt/intel_rc6.c
++++ b/drivers/gpu/drm/i915/gt/intel_rc6.c
+@@ -581,19 +581,23 @@ static void __intel_rc6_disable(struct intel_rc6 *rc6)
  
- #endif /* (CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS) && !CONFIG_KASAN_VMALLOC */
+ static void rc6_res_reg_init(struct intel_rc6 *rc6)
+ {
+-	memset(rc6->res_reg, INVALID_MMIO_REG.reg, sizeof(rc6->res_reg));
++	i915_reg_t res_reg[INTEL_RC6_RES_MAX] = {
++		[0 ... INTEL_RC6_RES_MAX - 1] = INVALID_MMIO_REG,
++	};
  
--#ifdef CONFIG_KASAN
-+#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
- void kasan_non_canonical_hook(unsigned long addr);
--#else /* CONFIG_KASAN */
-+#else /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
- static inline void kasan_non_canonical_hook(unsigned long addr) { }
--#endif /* CONFIG_KASAN */
-+#endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
- 
- #endif /* LINUX_KASAN_H */
-diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-index b738be3b6e5cc..e77facb629007 100644
---- a/mm/kasan/report.c
-+++ b/mm/kasan/report.c
-@@ -621,8 +621,9 @@ void kasan_report_async(void)
+ 	switch (rc6_to_gt(rc6)->type) {
+ 	case GT_MEDIA:
+-		rc6->res_reg[INTEL_RC6_RES_RC6] = MTL_MEDIA_MC6;
++		res_reg[INTEL_RC6_RES_RC6] = MTL_MEDIA_MC6;
+ 		break;
+ 	default:
+-		rc6->res_reg[INTEL_RC6_RES_RC6_LOCKED] = GEN6_GT_GFX_RC6_LOCKED;
+-		rc6->res_reg[INTEL_RC6_RES_RC6] = GEN6_GT_GFX_RC6;
+-		rc6->res_reg[INTEL_RC6_RES_RC6p] = GEN6_GT_GFX_RC6p;
+-		rc6->res_reg[INTEL_RC6_RES_RC6pp] = GEN6_GT_GFX_RC6pp;
++		res_reg[INTEL_RC6_RES_RC6_LOCKED] = GEN6_GT_GFX_RC6_LOCKED;
++		res_reg[INTEL_RC6_RES_RC6] = GEN6_GT_GFX_RC6;
++		res_reg[INTEL_RC6_RES_RC6p] = GEN6_GT_GFX_RC6p;
++		res_reg[INTEL_RC6_RES_RC6pp] = GEN6_GT_GFX_RC6pp;
+ 		break;
+ 	}
++
++	memcpy(rc6->res_reg, res_reg, sizeof(res_reg));
  }
- #endif /* CONFIG_KASAN_HW_TAGS */
  
-+#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
- /*
-- * With CONFIG_KASAN, accesses to bogus pointers (outside the high
-+ * With CONFIG_KASAN_INLINE, accesses to bogus pointers (outside the high
-  * canonical half of the address space) cause out-of-bounds shadow memory reads
-  * before the actual access. For addresses in the low canonical half of the
-  * address space, as well as most non-canonical addresses, that out-of-bounds
-@@ -658,3 +659,4 @@ void kasan_non_canonical_hook(unsigned long addr)
- 	pr_alert("KASAN: %s in range [0x%016lx-0x%016lx]\n", bug_type,
- 		 orig_addr, orig_addr + KASAN_GRANULE_SIZE - 1);
- }
-+#endif
+ void intel_rc6_init(struct intel_rc6 *rc6)
 -- 
 2.39.2
 
