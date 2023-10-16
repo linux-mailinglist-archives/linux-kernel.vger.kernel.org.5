@@ -2,95 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 141CB7CA12A
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 10:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C3A97C9F4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 08:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231909AbjJPIC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 04:02:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57324 "EHLO
+        id S229974AbjJPGLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 02:11:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjJPICX (ORCPT
+        with ESMTP id S229574AbjJPGLA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 04:02:23 -0400
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36529DC;
-        Mon, 16 Oct 2023 01:02:19 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50435ad51bbso5317898e87.2;
-        Mon, 16 Oct 2023 01:02:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697443337; x=1698048137;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qtLS9Nj2nFZBWPhUvEtRP9PYRoru3Ywsw6HKjKsybKc=;
-        b=c0IZT4D8Nsxv62ZEZlgu2DEtSvWccOrCZFGl5xEN5f3Zf6/A3QZtj1WLO9HAQPcyn7
-         lVoy6gz6uyWT+wiWKYRkoEqtTy7r5sCJX3bd45pwpb2f9pZ3GoQkO5R89WMIplbM8KHz
-         KnyAh24OhQJ8/Qd7VI17JBaHRITSHl6kqjoHzlD6umbYj0/ewPlYHCOlWyHkh/DGUDtq
-         vArVJN00Q5RKyXIaLzI6VY/QTvH/HvHy7rX10KULcRzrG3fVN5EeqkkIHhmP9Q5GmfrN
-         WwO9qdiHr0jhPbpmtlXfh5XtSgi51z16aTYoBIU3LMsRgZMk7DZGJyYH5CcZGXFKcQiA
-         qJ7w==
-X-Gm-Message-State: AOJu0Yw/3APZs4kQoqub3dP3Q00Ve4ryvSdnyroZru67MC+CYlmocv6P
-        nnrZL7c8v92q9J4Q/MFXrYAFX6Pe+5cR1jLH
-X-Google-Smtp-Source: AGHT+IEJgVTIkDdKS8wbwl9GR9zgveQ3KCzOuWUyYvLzmOvka53rPoTXp7pcFySPS7cbYgXGyHt08g==
-X-Received: by 2002:a05:6512:33d0:b0:507:a1df:1408 with SMTP id d16-20020a05651233d000b00507a1df1408mr4684169lfg.55.1697443337286;
-        Mon, 16 Oct 2023 01:02:17 -0700 (PDT)
-Received: from cizrna.home (cst-prg-37-192.cust.vodafone.cz. [46.135.37.192])
-        by smtp.gmail.com with ESMTPSA id p22-20020a05600c419600b00407460234f9sm6395535wmh.21.2023.10.16.01.02.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 01:02:16 -0700 (PDT)
-From:   Tomeu Vizoso <tomeu@tomeuvizoso.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     Da Xue <da@libre.computer>, Tomeu Vizoso <tomeu@tomeuvizoso.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-pm@vger.kernel.org
-Subject: [PATCH 2/2] pmdomain: amlogic: Fix mask for the second NNA mem PD domain
-Date:   Mon, 16 Oct 2023 10:02:04 +0200
-Message-ID: <20231016080205.41982-2-tomeu@tomeuvizoso.net>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231016080205.41982-1-tomeu@tomeuvizoso.net>
-References: <20231016080205.41982-1-tomeu@tomeuvizoso.net>
+        Mon, 16 Oct 2023 02:11:00 -0400
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94CDAD9
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 23:10:52 -0700 (PDT)
+Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20231016061048epoutp03f6842584e80e985daec4a632d779d868~OgaN1EpUU3052530525epoutp03L
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 06:10:48 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20231016061048epoutp03f6842584e80e985daec4a632d779d868~OgaN1EpUU3052530525epoutp03L
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1697436648;
+        bh=FgxNYSSeGvlU+AaHBZbNV92eyyDkZgy9stIj+3PKOsE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=X4whoqlaABfCS9waM7H/+vSMVzeChK4xY5Qjk1/fUELc3vIsL8JQVrCI4zTOaPMla
+         YNm2jvJnMsi7sQhntH6INg5cu898iSSqp46Y08R/QjBo1rwfa8M0HcwAGf3xz2twZP
+         JUN6ZD0SkgLbGfm2GP7mfdDgBjUtpRBj+n+eLy98=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+        20231016061048epcas5p1d6c33706134827eed6e1e1284c6153f0~OgaNbFJGQ2961229612epcas5p1T;
+        Mon, 16 Oct 2023 06:10:48 +0000 (GMT)
+Received: from epsmges5p3new.samsung.com (unknown [182.195.38.179]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4S86DQ6mjYz4x9Q2; Mon, 16 Oct
+        2023 06:10:46 +0000 (GMT)
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        82.A9.09672.5E3DC256; Mon, 16 Oct 2023 15:10:45 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+        20231016060514epcas5p2ab38287c243a9539736453b4cb34e447~OgVWhTVjQ1821118211epcas5p21;
+        Mon, 16 Oct 2023 06:05:14 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20231016060514epsmtrp1f7b32ea1f5bc7a03f359f8575fcc9222~OgVWgjHMm1604916049epsmtrp1W;
+        Mon, 16 Oct 2023 06:05:14 +0000 (GMT)
+X-AuditID: b6c32a4b-39fff700000025c8-fb-652cd3e5dec7
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        9D.6C.08755.A92DC256; Mon, 16 Oct 2023 15:05:14 +0900 (KST)
+Received: from ubuntu.. (unknown [109.105.118.54]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20231016060513epsmtip2096c73e8a0eba6304e4f7bff8f2f8e56~OgVVTnw5k1727517275epsmtip2g;
+        Mon, 16 Oct 2023 06:05:12 +0000 (GMT)
+From:   Min Li <min15.li@samsung.com>
+To:     axboe@kernel.dk, hch@lst.de, dlemoal@kernel.org
+Cc:     gregkh@linuxfoundation.org, kch@nvidia.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        min15.li@samsung.com, stable@vger.kernel.org, willy@infradead.org
+Subject: Re: [PATCH v5] block: add check that partition length needs to be
+ aligned with block size
+Date:   Mon, 16 Oct 2023 14:03:11 +0000
+Message-Id: <20231016140311.32367-1-min15.li@samsung.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230629073322.GB19464@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHJsWRmVeSWpSXmKPExsWy7bCmuu7TyzqpBg9Oa1usvtvPZvFgv71F
+        8+L1bBZzX19isVi5+iiTxdOrs5gs9t7Stri8aw6bxfJVHUwWZyd8YLVYsPERo8XvH3PYHHg8
+        Nq/Q8rh8ttRj06pONo/9c9ewe+y+2cDm0dv8js2jb8sqRo/Pm+QCOKKybTJSE1NSixRS85Lz
+        UzLz0m2VvIPjneNNzQwMdQ0tLcyVFPISc1NtlVx8AnTdMnOATlVSKEvMKQUKBSQWFyvp29kU
+        5ZeWpCpk5BeX2CqlFqTkFJgU6BUn5haX5qXr5aWWWBkaGBiZAhUmZGdcP2ZbIFTRss+ngZG7
+        i5GTQ0LARGLp3U3sXYxcHEICuxklzr9/wAzhfGKUOPt6IxuE841R4sHc1cwwLddu/oOq2sso
+        senAMqj+54wSk24+BcpwcLAJKEtsW+oD0iAiYCzx/+0kVpAaZoENjBLz7vxnAkkIC6RIXP76
+        lRXEZhFQlWj7/4kRxOYVsJSYte8nI8Q2eYn9B8+CbeYU0JHo+X+PDaJGUOLkzCcsIDYzUE3z
+        1tlQ183kkDgzRxnCdpHYcvkfK4QtLPHq+BZ2CFtK4mV/GzvInRICxRIvf4RBhGskdn+7zQRh
+        W0tsW7+OCaSEWUBTYv0ufYiwrMTUU+uYILbySfT+fgJVziuxYx6MrSTx98I5qOslJBbvfwh1
+        gYfExf5esIuFBOol1v5oY5zAqDALyTOzkDwzC2HzAkbmVYySqQXFuempxaYFxnmp5fD4Tc7P
+        3cQITrha3jsYHz34oHeIkYmD8RCjBAezkghverBOqhBvSmJlVWpRfnxRaU5q8SFGU2BoT2SW
+        Ek3OB6b8vJJ4QxNLAxMzMzMTS2MzQyVx3tetc1OEBNITS1KzU1MLUotg+pg4OKUamPrN78zt
+        ubXjwQTWIpHdCfqbd8ndPmP7K+rjOYdrLP+5DFZHPQk3ef6nMuyB1tuJKccXsFb68Cbm+WiL
+        FG/cVHTr+MKDfO1/nHhO69syzWgrz/K/rXC9fE7hjMIz//ekandcMJ260WTb+jklxWzP9Er1
+        NTfcYG6tsprQ4nnoRMP1w2qOxz7k3Fp8MnHK9kvVEnxvLPX/fNM+wfJuj8aTR/NuMXOu7K34
+        0Py8esNZpzTr04fSfZ+vMVN/9Y+nJmQJh++k667W0yv37bzZ+83R37TibBznw7OvNQuWfGEx
+        4E9oW9b9K+971PXgv0ZJyhEV6Ql3ZnK8U9RoTT0fXy3Z4iW+XH3u502p66KKi5dwdSmxFGck
+        GmoxFxUnAgBYKN0fQQQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrOLMWRmVeSWpSXmKPExsWy7bCSvO6sSzqpBkve81msvtvPZvFgv71F
+        8+L1bBZzX19isVi5+iiTxdOrs5gs9t7Stri8aw6bxfJVHUwWZyd8YLVYsPERo8XvH3PYHHg8
+        Nq/Q8rh8ttRj06pONo/9c9ewe+y+2cDm0dv8js2jb8sqRo/Pm+QCOKK4bFJSczLLUov07RK4
+        Mq4fsy0QqmjZ59PAyN3FyMkhIWAice3mP+YuRi4OIYHdjBLfPk1khEhISJyf94sNwhaWWPnv
+        OTtE0VNGiYd/JzB1MXJwsAkoS2xb6gNSIyJgLnFl121GkBpmgR2MEm/WbWEBSQgLJEnM+dkK
+        NohFQFWi7f8nsAW8ApYSs/b9hFomL7H/4FlmEJtTQEei5/89sHohAW2J1/O7WSDqBSVOznwC
+        ZjMD1Tdvnc08gVFgFpLULCSpBYxMqxglUwuKc9Nziw0LDPNSy/WKE3OLS/PS9ZLzczcxguNC
+        S3MH4/ZVH/QOMTJxMB5ilOBgVhLhTQ/WSRXiTUmsrEotyo8vKs1JLT7EKM3BoiTOK/6iN0VI
+        ID2xJDU7NbUgtQgmy8TBKdXA5Jo59TTnI8kJE5Q5RTaIRM48r57fnLS8ksVospoOj25I+4qI
+        h9pLdljtnLb5y1pN8T/ODipqx57nX+01Snr89E3G1dP6N23FmBmnx6w0uj3p5QwTZvXnom03
+        ubLfP3Ke5h+rcmj69G0XNv0XPlgl4RjP2ac+de7WRabPo8/JHJ8m7Ri4bv+KmMx/3N9/d3zz
+        kHohlNbtsP/SvkkFKQb7Z+wrfKKm9n3PzpLpPbcXHI5Y0PJSkkN5y2W5Za8erPWKDtxd4RHg
+        k29wpGzWbf6YEsZD0TNMMtiSXU2u7n0cv3/u/wMdydElSl/K+pdan5+Szdi08VdGXt2sZ19v
+        3EwwfFL83mnjH7endUtka8IZFZVYijMSDbWYi4oTAfyIjkP6AgAA
+X-CMS-MailID: 20231016060514epcas5p2ab38287c243a9539736453b4cb34e447
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231016060514epcas5p2ab38287c243a9539736453b4cb34e447
+References: <20230629073322.GB19464@lst.de>
+        <CGME20231016060514epcas5p2ab38287c243a9539736453b4cb34e447@epcas5p2.samsung.com>
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Without this change, the NPU hangs when the 8th NN core is used.
+Thanks
 
-It matches what the out-of-tree driver does.
-
-Signed-off-by: Tomeu Vizoso <tomeu@tomeuvizoso.net>
----
- drivers/pmdomain/amlogic/meson-ee-pwrc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/pmdomain/amlogic/meson-ee-pwrc.c b/drivers/pmdomain/amlogic/meson-ee-pwrc.c
-index cfb796d40d9d..0dd71cd814c5 100644
---- a/drivers/pmdomain/amlogic/meson-ee-pwrc.c
-+++ b/drivers/pmdomain/amlogic/meson-ee-pwrc.c
-@@ -228,7 +228,7 @@ static struct meson_ee_pwrc_mem_domain sm1_pwrc_mem_audio[] = {
- 
- static struct meson_ee_pwrc_mem_domain g12a_pwrc_mem_nna[] = {
- 	{ G12A_HHI_NANOQ_MEM_PD_REG0, GENMASK(31, 0) },
--	{ G12A_HHI_NANOQ_MEM_PD_REG1, GENMASK(23, 0) },
-+	{ G12A_HHI_NANOQ_MEM_PD_REG1, GENMASK(31, 0) },
- };
- 
- #define VPU_PD(__name, __top_pd, __mem, __is_pwr_off, __resets, __clks)	\
--- 
-2.41.0
-
+Min li
