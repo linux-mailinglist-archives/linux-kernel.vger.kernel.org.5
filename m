@@ -2,80 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD24E7CAE3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D544A7CAE4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232582AbjJPPwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 11:52:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47516 "EHLO
+        id S233871AbjJPPyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 11:54:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233425AbjJPPwL (ORCPT
+        with ESMTP id S232758AbjJPPyt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 11:52:11 -0400
+        Mon, 16 Oct 2023 11:54:49 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBAADF1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:52:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06237C433C7;
-        Mon, 16 Oct 2023 15:52:07 +0000 (UTC)
-Date:   Mon, 16 Oct 2023 11:53:42 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Artem Savkov <asavkov@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-rt-users@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [RFC PATCH bpf-next] bpf: change syscall_nr type to int in
- struct syscall_tp_t
-Message-ID: <20231016115342.30b3d357@gandalf.local.home>
-In-Reply-To: <CAEf4Bza0ma+oRHYkHfQwmLPzJobRpq6-u2gog_uMNAHs0-KYiQ@mail.gmail.com>
-References: <20231005123413.GA488417@alecto.usersys.redhat.com>
-        <20231012114550.152846-1-asavkov@redhat.com>
-        <20231012094444.0967fa79@gandalf.local.home>
-        <CAEf4BzZKWkJjOjw8x_eL_hsU-QzFuSzd5bkBH2EHtirN2hnEgA@mail.gmail.com>
-        <ZSjdPqQiPdqa-UTs@wtfbox.lan>
-        <20231013100023.5b0943ec@rorschach.local.home>
-        <CAEf4Bza0ma+oRHYkHfQwmLPzJobRpq6-u2gog_uMNAHs0-KYiQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C63D9;
+        Mon, 16 Oct 2023 08:54:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 031F5C433C9;
+        Mon, 16 Oct 2023 15:54:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697471687;
+        bh=XF2Ub1+HsWjMHCZvPLicE8SrXCYQkNv2/+mVm86z2a4=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=o77yGTKEHFiOMbIKRpvPlQ2bZkbCx09x3z8mNkKZh1NsS3xrrdOLFFR2o7jfizo70
+         freHLcVbHxI57o4kN/a2L81UqoIFV0fMa9rbljNXC12+F4jOrFfwCA/0EMeVqPkzA0
+         E/KVuHc0ZuW/ySQ+93u31MlUeeldUYbIGOAwHf5+2ZraDUkmxXa/6JbBJgzkF+KHkV
+         lDGLHROOwMBeB85NoOmXpFEbSMnqwvOxXfsQUFiXwWwfNTrmpo982jeSl/Twi9wO8G
+         zEvV9KZ/l0e0LKmR7egS0uLwwoU91gvu6k+zTMJmpt4DWa7tPrONXdQLx/GPOsQk8q
+         d0jO2lIzcVirg==
+Message-ID: <be2434a2d51900b9e51d8bf0fe5a8b82e3f1a879.camel@kernel.org>
+Subject: Re: [RFC PATCH 08/53] netfs: Add rsize to netfs_io_request
+From:   Jeff Layton <jlayton@kernel.org>
+To:     David Howells <dhowells@redhat.com>,
+        Steve French <smfrench@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Christian Brauner <christian@brauner.io>,
+        linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-cachefs@redhat.com
+Date:   Mon, 16 Oct 2023 11:54:44 -0400
+In-Reply-To: <20231013160423.2218093-9-dhowells@redhat.com>
+References: <20231013160423.2218093-1-dhowells@redhat.com>
+         <20231013160423.2218093-9-dhowells@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Oct 2023 12:43:18 -0700
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+On Fri, 2023-10-13 at 17:03 +0100, David Howells wrote:
+> Add an rsize parameter to netfs_io_request to be filled in by the network
+> filesystem when the request is initialised.  This indicates the maximum
+> size of a read request that the netfs will honour in that region.
+>=20
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: Jeff Layton <jlayton@kernel.org>
+> cc: linux-cachefs@redhat.com
+> cc: linux-fsdevel@vger.kernel.org
+> cc: linux-mm@kvack.org
+> ---
+>  fs/afs/file.c         | 1 +
+>  fs/ceph/addr.c        | 2 ++
+>  include/linux/netfs.h | 1 +
+>  3 files changed, 4 insertions(+)
+>=20
+> diff --git a/fs/afs/file.c b/fs/afs/file.c
+> index 3fea5cd8ef13..3d2e1913ea27 100644
+> --- a/fs/afs/file.c
+> +++ b/fs/afs/file.c
+> @@ -360,6 +360,7 @@ static int afs_symlink_read_folio(struct file *file, =
+struct folio *folio)
+>  static int afs_init_request(struct netfs_io_request *rreq, struct file *=
+file)
+>  {
+>  	rreq->netfs_priv =3D key_get(afs_file_key(file));
+> +	rreq->rsize =3D 4 * 1024 * 1024;
+>  	return 0;
+>  }
+> =20
+> diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
+> index ced19ff08988..92a5ddcd9a76 100644
+> --- a/fs/ceph/addr.c
+> +++ b/fs/ceph/addr.c
+> @@ -419,6 +419,8 @@ static int ceph_init_request(struct netfs_io_request =
+*rreq, struct file *file)
+>  	struct ceph_netfs_request_data *priv;
+>  	int ret =3D 0;
+> =20
+> +	rreq->rsize =3D 1024 * 1024;
+> +
 
+Holy magic numbers, batman! I think this deserves a comment that
+explains how you came up with these values.
 
-> > Correct. My Ack is based on the current way things are done upstream.
-> > It was just that linux-rt showed the issue, where the code was not as
-> > robust as it should have been. To me this was a correctness issue, not
-> > an issue that had to do with how things are done in linux-rt.  
-> 
-> I think we should at least add some BUILD_BUG_ON() that validates
-> offsets in syscall_tp_t matches the ones in syscall_trace_enter and
-> syscall_trace_exit, to fail more loudly if there is any mismatch in
-> the future. WDYT?
+Also, do 9p and cifs not need this for some reason?
 
-If you want to, feel free to send a patch.
+>  	if (rreq->origin !=3D NETFS_READAHEAD)
+>  		return 0;
+> =20
+> diff --git a/include/linux/netfs.h b/include/linux/netfs.h
+> index daa431c4148d..02e888c170da 100644
+> --- a/include/linux/netfs.h
+> +++ b/include/linux/netfs.h
+> @@ -188,6 +188,7 @@ struct netfs_io_request {
+>  	struct list_head	subrequests;	/* Contributory I/O operations */
+>  	void			*netfs_priv;	/* Private data for the netfs */
+>  	unsigned int		debug_id;
+> +	unsigned int		rsize;		/* Maximum read size (0 for none) */
+>  	atomic_t		nr_outstanding;	/* Number of ops in progress */
+>  	atomic_t		nr_copy_ops;	/* Number of copy-to-cache ops in progress */
+>  	size_t			submitted;	/* Amount submitted for I/O so far */
+>=20
 
-> 
-> >
-> > As for the changes in linux-rt, they are not upstream yet. I'll have my
-> > comments on that code when that happens.  
-> 
-> Ah, ok, cool. I'd appreciate you cc'ing bpf@vger.kernel.org in that
-> discussion, thank you!
-
-If I remember ;-)
-
--- Steve
+--=20
+Jeff Layton <jlayton@kernel.org>
