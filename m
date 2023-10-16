@@ -2,143 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE2677CA004
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 08:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2207C7CA005
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 08:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbjJPG6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 02:58:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41352 "EHLO
+        id S231197AbjJPG6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 02:58:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjJPG6M (ORCPT
+        with ESMTP id S229523AbjJPG6M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 16 Oct 2023 02:58:12 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 649DB97;
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::222])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E2B4AD;
         Sun, 15 Oct 2023 23:58:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 03FAFC433C8;
-        Mon, 16 Oct 2023 06:58:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697439490;
-        bh=FHQfrAU/xjJpgKY08sCcFZAYGfGwFAR9AtGWyzajUJ8=;
-        h=From:Date:Subject:To:Cc:Reply-To:From;
-        b=DLLcfRYm2nzzK/Cwn+yscomAdyf1xnIIAKpRPA+rKP113kNuZ0A/qTkrX0k+GnWDz
-         YaOHdFmqZNmYARTRlF+DlcejcAYSTtVBR8nyWsB8d7pfm+aXBAvI057LMya1tznLdD
-         Fy2VRh6/7sHE1bUeqM5rgDBHwt68ywgMzypj83ywc52+I+xZNgIriHvn3C/GAlgOpR
-         Z/bA2Rww9sd2xxN1bHSZc8swL47trqGRqbwazmpiRXH0FcU8wxWNIoO18Pif0Fz6oU
-         lLX5DgHSbtmAyvqTUWmEahHQ2R9865gL+ZZx6Ud21j1V5voUWJ5VrVeWIY1bXI7zz1
-         ViljCIEqLuxfA==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id E2588CDB465;
-        Mon, 16 Oct 2023 06:58:09 +0000 (UTC)
-From:   Janne Grunau via B4 Relay <devnull+j.jannau.net@kernel.org>
-Date:   Mon, 16 Oct 2023 08:58:01 +0200
-Subject: [PATCH v2] watchdog: apple: Deactivate on suspend
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 52B6B40004;
+        Mon, 16 Oct 2023 06:58:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1697439489;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ko3cY+uTmqDMyruLPIoKaoj2Pg+fZKHzWwHqRwh37QU=;
+        b=PZa+WoE6X2TXCnR9wo3EW5OBC1iIkMoMKEokX9uScgUmx5WjuRSGqexC5ZRuEv+0CIkz3X
+        lbaiUMIsnZ9Oyt+RLha1PjRGQp7zk9O6TSaWF9IzW0Ze/QpJAxs1dSTTcautOwa4ADcy6d
+        4BEqJ9fYlt8xYesHL0gkfrqtfq+vBA4jzWHSSkb67MXongGUaRCJ/ilX6SjaABlO6/c/XT
+        ZU7xJHS7SkMUoI7yBG7VT5kpmFOzocT1obp0+nnuky5Ce7AAC+bzMyvLD1+t5M10sUWcJZ
+        S1LwJ1veq5U54LV5+q3R0/chSgfJbxuy6fsNR9Tm8RwuPWn2pIno66f3GrsCsQ==
+Message-ID: <969d7010-736f-46cb-98df-0a3ff6be867c@bootlin.com>
+Date:   Mon, 16 Oct 2023 08:59:22 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231016-apple-watchdog-suspend-v2-1-7ffff8042dbc@jannau.net>
-X-B4-Tracking: v=1; b=H4sIAPneLGUC/4WNQQ6DIBREr2L+ur8BWShd9R6NC4SP0DRIALWN8
- e6lXqCZ1Ztk3uyQKXnKcGt2SLT67OdQob00oJ0KE6E3laFlrWBSMFQxvgg3VbQz84R5yZGCwc5
- 2ohecC2ZHqOOYyPr3KX4MlZ3PZU6f82flv/avcuVYI2Wv2UjSmu7+VCGo5RqowHAcxxdCaA19v
- QAAAA==
-To:     Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2139; i=j@jannau.net;
- h=from:subject:message-id; bh=qR9R65p5QA5TUKQf3OVfeiREsktHYZDElKSYt9mdCaI=;
- b=owGbwMvMwCG2UNrmdq9+ahrjabUkhlSd+wx/NBy7ua6cvxDYVJ11IvDv3N0fMlL+PeG4sD5p7
- wrx1fNlO0pZGMQ4GGTFFFmStF92MKyuUYypfRAGM4eVCWQIAxenAEyk7jAjw+9qGZ/YyzM3vGxZ
- ph2y4NYj3sZ/wvf+q2w6eS+uyCMg6Rcjw2KGzTM/HKwSb0xVqO013fhUyrBh44fI2hccKvsZhPt
- ZeAA=
-X-Developer-Key: i=j@jannau.net; a=openpgp;
- fpr=8B336A6BE4E5695E89B8532B81E806F586338419
-X-Endpoint-Received: by B4 Relay for j@jannau.net/default with auth_id=62
-X-Original-From: Janne Grunau <j@jannau.net>
-Reply-To: <j@jannau.net>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] wifi: wilc1000: use vmm_table as array in wilc struct
+Content-Language: en-US
+To:     Michael Walle <mwalle@kernel.org>
+Cc:     Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Ajay Singh <ajay.kathat@microchip.com>, stable@vger.kernel.org,
+        heiko.thiery@gmail.com
+References: <20231013-wilc1000_tx_oops-v1-1-3761beb9524d@bootlin.com>
+ <f615b0895135489a2555d898afdcfbfa@kernel.org>
+From:   =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+In-Reply-To: <f615b0895135489a2555d898afdcfbfa@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: alexis.lothore@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Janne Grunau <j@jannau.net>
+Hello Michael,
 
-The watchdog remains active after putting the system into suspend. Add
-PM callbacks to deactivate the watchdog on suspend an re-activate it on
-resume.
+On 10/13/23 11:24, Michael Walle wrote:
+>> Fixes: 40b717bfcefa ("wifi: wilc1000: fix DMA on stack objects")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Ajay Singh <ajay.kathat@microchip.com>
+>> Signed-off-by: Alexis Lothoré <alexis.lothore@bootlin.com>
+> 
+> Looks good to me. But you'll change the alignment of the table, not sure
+> if that matters for some DMA controllers.
 
-Signed-off-by: Janne Grunau <j@jannau.net>
----
-Changes in v2:
-- use DEFINE_SIMPLE_DEV_PM_OPS
-- Link to v1: https://lore.kernel.org/r/20230930-apple-watchdog-suspend-v1-1-1998c0be9fd7@jannau.net
----
- drivers/watchdog/apple_wdt.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+Thanks for the review.
+Indeed, I may have overlooked that point. I am not sure either how much of an
+issue it could be, but checking back the driver history on lore, I see that it
+has already been mentioned, so let's be safe and keep a dedicated kzalloc for
+vmm_table to make sure its address is safe to use with DMA.
+I will send the corresponding v2.
 
-diff --git a/drivers/watchdog/apple_wdt.c b/drivers/watchdog/apple_wdt.c
-index eddeb0fede89..d4f739932f0b 100644
---- a/drivers/watchdog/apple_wdt.c
-+++ b/drivers/watchdog/apple_wdt.c
-@@ -173,6 +173,8 @@ static int apple_wdt_probe(struct platform_device *pdev)
- 	if (!wdt->clk_rate)
- 		return -EINVAL;
- 
-+	platform_set_drvdata(pdev, wdt);
-+
- 	wdt->wdd.ops = &apple_wdt_ops;
- 	wdt->wdd.info = &apple_wdt_info;
- 	wdt->wdd.max_timeout = U32_MAX / wdt->clk_rate;
-@@ -190,6 +192,28 @@ static int apple_wdt_probe(struct platform_device *pdev)
- 	return devm_watchdog_register_device(dev, &wdt->wdd);
- }
- 
-+static int apple_wdt_resume(struct device *dev)
-+{
-+	struct apple_wdt *wdt = dev_get_drvdata(dev);
-+
-+	if (watchdog_active(&wdt->wdd) || watchdog_hw_running(&wdt->wdd))
-+		apple_wdt_start(&wdt->wdd);
-+
-+	return 0;
-+}
-+
-+static int apple_wdt_suspend(struct device *dev)
-+{
-+	struct apple_wdt *wdt = dev_get_drvdata(dev);
-+
-+	if (watchdog_active(&wdt->wdd) || watchdog_hw_running(&wdt->wdd))
-+		apple_wdt_stop(&wdt->wdd);
-+
-+	return 0;
-+}
-+
-+static DEFINE_SIMPLE_DEV_PM_OPS(apple_wdt_pm_ops, apple_wdt_suspend, apple_wdt_resume);
-+
- static const struct of_device_id apple_wdt_of_match[] = {
- 	{ .compatible = "apple,wdt" },
- 	{},
-@@ -200,6 +224,7 @@ static struct platform_driver apple_wdt_driver = {
- 	.driver = {
- 		.name = "apple-watchdog",
- 		.of_match_table = apple_wdt_of_match,
-+		.pm = pm_sleep_ptr(&apple_wdt_pm_ops),
- 	},
- 	.probe = apple_wdt_probe,
- };
+Thanks,
+Alexis
 
----
-base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-change-id: 20230930-apple-watchdog-suspend-7f73831130fb
+> 
+> -michael
 
-Best regards,
 -- 
-Janne Grunau <j@jannau.net>
+Alexis Lothoré, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
