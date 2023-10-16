@@ -2,150 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB217CB2B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 20:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 656557CB2CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 20:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233528AbjJPSms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 14:42:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36458 "EHLO
+        id S231569AbjJPSoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 14:44:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231569AbjJPSmq (ORCPT
+        with ESMTP id S229459AbjJPSn7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 14:42:46 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E534FAC
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 11:42:43 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7bbe0a453so75149967b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 11:42:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697481763; x=1698086563; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ivRw9UOALg3+ZFDXu75FoDqQWG1hBKv7UDpo12vH7Vg=;
-        b=ovu4Ttrro/dxJHYw/mxQXqmiihXMWQ6OfaBHGjRttDM3U678UNLkXb7g2gO0MVlwio
-         llHQGR77CLZiYHkCxHq6nTyrICSbtL1zwNKbEO0Fd/OI2nVM3ibQaZb7lYSzdtrLzgks
-         FxGCS/JqMzU6TuMn69rkjse0wwLPqv8QsZaV28+R/bUXQ0q+FAM8mGz532pLkTRpRlTN
-         vt86DfwqSWqbU5EvvR4az+dirLcsJryhR3LC0++kd6wywNrORg83y5523ve+zXKdsuur
-         VEBHPT5R6d3haOUeH0flDoR4HyYqVE1buvy+q+5CKyZyADUEON4SWWI5MP7tsPrI+6Ws
-         Okvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697481763; x=1698086563;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ivRw9UOALg3+ZFDXu75FoDqQWG1hBKv7UDpo12vH7Vg=;
-        b=CEsrSNXziFupAlgLDdiIkKbo2/GkkWMUZkbFb83XbIOx7VsueeSGT6EfeIm1S5gZNq
-         ZF/4ZobhgovQgSVmtRFZqHIZLKnVm9kw48VrQCugoYzSrGX9YYMo9v4Q1jXnP5TlFG4J
-         Yz9hdzggHRatbb6uzZ/k0A2zH5dI90QkxWZPrjX2Q7VinOQRzQRwXbglSfw+/UFsR7sS
-         yPFqd4vT3DR1+jkMKDBkE6bfuJ0eaIs2kI1F3n6L7JL+t29/LLSeDQu+r/8XuoBwjggM
-         U0EevWr6kr8aHxLw7ASAFEOUzGmBAZ6LtDWaiiHGn3XFW8b4qeXWNnakLB0drzIBzwj2
-         tzEA==
-X-Gm-Message-State: AOJu0Yxtc9gSkwAMcKkQXlYsUTywJ0oo8or67lYJj6plHNuaWTJXBHVY
-        F+qU3KjIB7S7nQ5ubaNxzxsfJZK/q5WFxz6rPg==
-X-Google-Smtp-Source: AGHT+IFuTvb8CF14ArEw4X9jZT4hKRCTZvNAsD5jxo5CBCgw7rpVSQ1ttcs0rr39kBvX/wg1x6dg66NZdrU0PCNqaQ==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a0d:d8ce:0:b0:5a7:b15a:1a7d with SMTP
- id a197-20020a0dd8ce000000b005a7b15a1a7dmr165ywe.2.1697481763100; Mon, 16 Oct
- 2023 11:42:43 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 18:42:42 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIACGELWUC/52NQQ6CMBBFr0K6dgwtqODKexhiShlgEmmbKWkkp
- He3cgSX7+fnvV0EZMIg7sUuGCMFcjaDOhXCzNpOCDRkFqpUlSylgrCyNX6DgSkiB7C4wqwX1gM
- 56PVm3PJC78HAFaU0bd1UfTuK7POMI32O1rPLPFNYHW9HOsrf+k8lSpDQjHXZ3i5Vg1g/JuemN 57zRXQppS8DPjql4wAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697481762; l=2821;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=9OAsLt5xhpoq++LwUFSyGBM2eLJQZ3SSzZBtifp1JdY=; b=r2iDDmOZ06G4yQXq+rRj5nSlF16zH6RZUjIrABYMNgufZfNtz6QUD+vkxcP1bQip47HAJEkgd
- B9zyXnN4z0zCvXN0Y3xSGzg9yScCK9GWviqrj7moA4RtZvbBdZMP9WZ
-X-Mailer: b4 0.12.3
-Message-ID: <20231016-strncpy-drivers-net-hamradio-baycom_epp-c-v2-1-39f72a72de30@google.com>
-Subject: [PATCH v2] hamradio: replace deprecated strncpy with strscpy_pad
-From:   Justin Stitt <justinstitt@google.com>
-To:     Thomas Sailer <t.sailer@alumni.ethz.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     linux-hams@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Mon, 16 Oct 2023 14:43:59 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A667995;
+        Mon, 16 Oct 2023 11:43:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEBAEC433C8;
+        Mon, 16 Oct 2023 18:43:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1697481837;
+        bh=EXdxbvlR0cbgdx4LvLwELq1zkDK3jwhg8mze2b9ktT8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oAbWha35MgjQMlGt0UAk14DYTqoC6rn8fpoaNl0AAocdRaMdn5w34NsUJV93EgpTG
+         RSFw5i4Lt5Lp4xrS2MBztDeBRT4UUcu1NDJoTjG7XLVhKIarhZGXpK9vfoLPZEoUIs
+         ztF4yM1cgX7Oh5izJ+5QLCttqhOop+74txm6D+JA=
+Date:   Mon, 16 Oct 2023 20:43:54 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Rohit Agarwal <quic_rohiagar@quicinc.com>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, vkoul@kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the usb tree
+Message-ID: <2023101619-dumpster-vigorous-f9b4@gregkh>
+References: <20231004132247.01c3bfeb@canb.auug.org.au>
+ <2023100410-concave-explore-95bf@gregkh>
+ <e26b26ff-9e88-4455-9172-1afb520583e7@quicinc.com>
+ <2023100445-cymbal-glade-52c8@gregkh>
+ <044a2146-f859-44b3-bcf7-66b68d3e7787@quicinc.com>
+ <2023100912-tiara-pout-ba98@gregkh>
+ <CAA8EJpo-cvf3vkvBe+5nF1FpDMXzWJZkaL6n0BAjPvg7xHQ_+w@mail.gmail.com>
+ <502135a8-6e82-4361-b0fc-e683694ca2cd@quicinc.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <502135a8-6e82-4361-b0fc-e683694ca2cd@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+On Thu, Oct 12, 2023 at 10:33:28PM +0530, Rohit Agarwal wrote:
+> 
+> On 10/9/2023 3:19 PM, Dmitry Baryshkov wrote:
+> > On Mon, 9 Oct 2023 at 12:48, Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > On Mon, Oct 09, 2023 at 02:48:27PM +0530, Rohit Agarwal wrote:
+> > > > On 10/4/2023 6:16 PM, Greg KH wrote:
+> > > > > On Wed, Oct 04, 2023 at 12:17:27PM +0530, Rohit Agarwal wrote:
+> > > > > > On 10/4/2023 12:13 PM, Greg KH wrote:
+> > > > > > > On Wed, Oct 04, 2023 at 01:22:47PM +1100, Stephen Rothwell wrote:
+> > > > > > > > Hi all,
+> > > > > > > > 
+> > > > > > > > After merging the usb tree, today's linux-next build (x86_64 allmodconfig)
+> > > > > > > > failed like this:
+> > > > > > > > 
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:156:43: error: 'QPHY_V6_PCS_SW_RESET' undeclared here (not in a function); did you mean 'QPHY_V2_PCS_SW_RESET'?
+> > > > > > > >      156 |         [QPHY_SW_RESET]                 = QPHY_V6_PCS_SW_RESET,
+> > > > > > > >          |                                           ^~~~~~~~~~~~~~~~~~~~
+> > > > > > > >          |                                           QPHY_V2_PCS_SW_RESET
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:157:43: error: 'QPHY_V6_PCS_START_CONTROL' undeclared here (not in a function); did you mean 'QPHY_V3_PCS_START_CONTROL'?
+> > > > > > > >      157 |         [QPHY_START_CTRL]               = QPHY_V6_PCS_START_CONTROL,
+> > > > > > > >          |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > > > > >          |                                           QPHY_V3_PCS_START_CONTROL
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:158:43: error: 'QPHY_V6_PCS_PCS_STATUS1' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_PCS_STATUS1'?
+> > > > > > > >      158 |         [QPHY_PCS_STATUS]               = QPHY_V6_PCS_PCS_STATUS1,
+> > > > > > > >          |                                           ^~~~~~~~~~~~~~~~~~~~~~~
+> > > > > > > >          |                                           QPHY_V5_PCS_PCS_STATUS1
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:159:43: error: 'QPHY_V6_PCS_POWER_DOWN_CONTROL' undeclared here (not in a function); did you mean 'QPHY_V3_PCS_POWER_DOWN_CONTROL'?
+> > > > > > > >      159 |         [QPHY_PCS_POWER_DOWN_CONTROL]   = QPHY_V6_PCS_POWER_DOWN_CONTROL,
+> > > > > > > >          |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > > > > >          |                                           QPHY_V3_PCS_POWER_DOWN_CONTROL
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:162:43: error: 'QPHY_V6_PCS_USB3_AUTONOMOUS_MODE_CTRL' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_USB3_AUTONOMOUS_MODE_CTRL'?
+> > > > > > > >      162 |         [QPHY_PCS_AUTONOMOUS_MODE_CTRL] = QPHY_V6_PCS_USB3_AUTONOMOUS_MODE_CTRL,
+> > > > > > > >          |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > > > > >          |                                           QPHY_V5_PCS_USB3_AUTONOMOUS_MODE_CTRL
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:163:44: error: 'QPHY_V6_PCS_USB3_LFPS_RXTERM_IRQ_CLEAR' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_USB3_LFPS_RXTERM_IRQ_CLEAR'?
+> > > > > > > >      163 |         [QPHY_PCS_LFPS_RXTERM_IRQ_CLEAR] = QPHY_V6_PCS_USB3_LFPS_RXTERM_IRQ_CLEAR,
+> > > > > > > >          |                                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > > > > >          |                                            QPHY_V5_PCS_USB3_LFPS_RXTERM_IRQ_CLEAR
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:991:26: error: 'QPHY_V6_PCS_LOCK_DETECT_CONFIG1' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_LOCK_DETECT_CONFIG1'?
+> > > > > > > >      991 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_LOCK_DETECT_CONFIG1, 0xc4),
+> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
+> > > > > > > >       78 |                 .offset = o,            \
+> > > > > > > >          |                           ^
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:992:26: error: 'QPHY_V6_PCS_LOCK_DETECT_CONFIG2' undeclared here (not in a function); did you mean 'QPHY_V3_PCS_LOCK_DETECT_CONFIG2'?
+> > > > > > > >      992 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_LOCK_DETECT_CONFIG2, 0x89),
+> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
+> > > > > > > >       78 |                 .offset = o,            \
+> > > > > > > >          |                           ^
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:993:26: error: 'QPHY_V6_PCS_LOCK_DETECT_CONFIG3' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_LOCK_DETECT_CONFIG3'?
+> > > > > > > >      993 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_LOCK_DETECT_CONFIG3, 0x20),
+> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
+> > > > > > > >       78 |                 .offset = o,            \
+> > > > > > > >          |                           ^
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:994:26: error: 'QPHY_V6_PCS_LOCK_DETECT_CONFIG6' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_LOCK_DETECT_CONFIG6'?
+> > > > > > > >      994 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_LOCK_DETECT_CONFIG6, 0x13),
+> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
+> > > > > > > >       78 |                 .offset = o,            \
+> > > > > > > >          |                           ^
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:997:26: error: 'QPHY_V6_PCS_RCVR_DTCT_DLY_P1U2_L' undeclared here (not in a function); did you mean 'QPHY_V3_PCS_RCVR_DTCT_DLY_P1U2_L'?
+> > > > > > > >      997 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_RCVR_DTCT_DLY_P1U2_L, 0xe7),
+> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
+> > > > > > > >       78 |                 .offset = o,            \
+> > > > > > > >          |                           ^
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:998:26: error: 'QPHY_V6_PCS_RCVR_DTCT_DLY_P1U2_H' undeclared here (not in a function); did you mean 'QPHY_V3_PCS_RCVR_DTCT_DLY_P1U2_H'?
+> > > > > > > >      998 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_RCVR_DTCT_DLY_P1U2_H, 0x03),
+> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
+> > > > > > > >       78 |                 .offset = o,            \
+> > > > > > > >          |                           ^
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:999:26: error: 'QPHY_V6_PCS_CDR_RESET_TIME' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_CDR_RESET_TIME'?
+> > > > > > > >      999 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_CDR_RESET_TIME, 0x0a),
+> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
+> > > > > > > >       78 |                 .offset = o,            \
+> > > > > > > >          |                           ^
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1000:26: error: 'QPHY_V6_PCS_ALIGN_DETECT_CONFIG1' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_ALIGN_DETECT_CONFIG1'?
+> > > > > > > >     1000 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_ALIGN_DETECT_CONFIG1, 0x88),
+> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
+> > > > > > > >       78 |                 .offset = o,            \
+> > > > > > > >          |                           ^
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1001:26: error: 'QPHY_V6_PCS_ALIGN_DETECT_CONFIG2' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_ALIGN_DETECT_CONFIG2'?
+> > > > > > > >     1001 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_ALIGN_DETECT_CONFIG2, 0x13),
+> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
+> > > > > > > >       78 |                 .offset = o,            \
+> > > > > > > >          |                           ^
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1003:26: error: 'QPHY_V6_PCS_EQ_CONFIG1' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_EQ_CONFIG1'?
+> > > > > > > >     1003 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_EQ_CONFIG1, 0x4b),
+> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
+> > > > > > > >       78 |                 .offset = o,            \
+> > > > > > > >          |                           ^
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1004:26: error: 'QPHY_V6_PCS_EQ_CONFIG5' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_EQ_CONFIG5'?
+> > > > > > > >     1004 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_EQ_CONFIG5, 0x10),
+> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
+> > > > > > > >       78 |                 .offset = o,            \
+> > > > > > > >          |                           ^
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1008:26: error: 'QPHY_V6_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL'?
+> > > > > > > >     1008 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL, 0xf8),
+> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
+> > > > > > > >       78 |                 .offset = o,            \
+> > > > > > > >          |                           ^
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1009:26: error: 'QPHY_V6_PCS_USB3_RXEQTRAINING_DFE_TIME_S2' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_USB3_RXEQTRAINING_DFE_TIME_S2'?
+> > > > > > > >     1009 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_USB3_RXEQTRAINING_DFE_TIME_S2, 0x07),
+> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
+> > > > > > > >       78 |                 .offset = o,            \
+> > > > > > > >          |                           ^
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1010:26: error: 'QPHY_V6_PCS_USB3_RCVR_DTCT_DLY_U3_L' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_USB3_RCVR_DTCT_DLY_U3_L'?
+> > > > > > > >     1010 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_USB3_RCVR_DTCT_DLY_U3_L, 0x40),
+> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
+> > > > > > > >       78 |                 .offset = o,            \
+> > > > > > > >          |                           ^
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1011:26: error: 'QPHY_V6_PCS_USB3_RCVR_DTCT_DLY_U3_H' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_USB3_RCVR_DTCT_DLY_U3_H'?
+> > > > > > > >     1011 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_USB3_RCVR_DTCT_DLY_U3_H, 0x00),
+> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
+> > > > > > > >       78 |                 .offset = o,            \
+> > > > > > > >          |                           ^
+> > > > > > > > 
+> > > > > > > > Caused by commit
+> > > > > > > > 
+> > > > > > > >      685dbd1b2306 ("phy: qcom-qmp-usb: Add Qualcomm SDX75 USB3 PHY support")
+> > > > > > > > 
+> > > > > > > > I have used the usb tree from next-20231003 for today.
+> > > > > > > Thanks, I've now reverted this from my tree.
+> > > > > > As mentioned in the cover letter of these changes, the series was dependent
+> > > > > > on the other submitted series [1], [2].
+> > > > > Ah, I missed that, I almost never read cover letters :)
+> > > > > 
+> > > > > > Can you also pick these series [1], [2] to resolve this build failures.
+> > > > > > [1] https://lore.kernel.org/all/20230911203842.778411-1-dmitry.baryshkov@linaro.org/
+> > > > > > [2] https://lore.kernel.org/linux-phy/20230824211952.1397699-1-dmitry.baryshkov@linaro.org/
+> > > > > How about you just send this change with these others, or all of them as
+> > > > > one big series so they can be applied in the proper order?
+> > > > Adding Dmitry as well.
+> > > > 
+> > > > I see some of the dependent patches are already applied and the patches from
+> > > > [2] are not.
+> > > > Since all the rest dependent changes are already applied,
+> > > > you can pick series[2] and then this series that should also be fine.
+> > > > Please let me know if this is fine?
+> > > What is "this" series?  I don't have any of these in my inbox at all
+> > > anymore, sorry.  Please resend the pending patches that need to be
+> > > applied to my usb tree and I will be glad to do so.
+> > Actually, I wonder why the PHY patches were merged through the USB
+> > tree, maybe that is the issue here.
+> Yes Actually these patches needs to go via phy tree. Can you please drop
+> patch 1/5, 2/5 and 5/5
+> from the series [3] (keeping [1] and [2] same reference from above to avoid
+> confusion).
+> 
+> [3] https://lore.kernel.org/all/1695359525-4548-1-git-send-email-quic_rohiagar@quicinc.com/
+> 
+> At the same time requesting Vinod to please pick the patches 1/5, 2/5 and
+> 5/5 from series [3] and series [2].
 
-We expect both hi.data.modename and hi.data.drivername to be
-NUL-terminated based on its usage with sprintf:
-|       sprintf(hi.data.modename, "%sclk,%smodem,fclk=%d,bps=%d%s",
-|               bc->cfg.intclk ? "int" : "ext",
-|               bc->cfg.extmodem ? "ext" : "int", bc->cfg.fclk, bc->cfg.bps,
-|               bc->cfg.loopback ? ",loopback" : "");
+I'm sorry, I have no idea what you need/want from me here.  If there are
+patches that need to be reverted from my tree, please send reverts, I
+can't "drop" anything as my tree can not be rewritten.
 
-Note that this data is copied out to userspace with:
-|       if (copy_to_user(data, &hi, sizeof(hi)))
-... however, the data was also copied FROM the user here:
-|       if (copy_from_user(&hi, data, sizeof(hi)))
+thanks,
 
-Considering the above, a suitable replacement is strscpy_pad() as it
-guarantees NUL-termination on the destination buffer while also
-NUL-padding (which is good+wanted behavior when copying data to
-userspace).
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Changes in v2:
-- use strscpy_pad (thanks Kees)
-- bytes arrays are now considered "buffets" :) (thanks Kees)
-- Link to v1: https://lore.kernel.org/r/20231012-strncpy-drivers-net-hamradio-baycom_epp-c-v1-1-8f4097538ee4@google.com
----
-Note: build-tested only.
-
-Also, there are 33 instances of trailing whitespace in this file alone.
-I've opted to not remove them in this patch.
----
- drivers/net/hamradio/baycom_epp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/hamradio/baycom_epp.c b/drivers/net/hamradio/baycom_epp.c
-index 83ff882f5d97..ccfc83857c26 100644
---- a/drivers/net/hamradio/baycom_epp.c
-+++ b/drivers/net/hamradio/baycom_epp.c
-@@ -1074,7 +1074,7 @@ static int baycom_siocdevprivate(struct net_device *dev, struct ifreq *ifr,
- 		return 0;
- 
- 	case HDLCDRVCTL_DRIVERNAME:
--		strncpy(hi.data.drivername, "baycom_epp", sizeof(hi.data.drivername));
-+		strscpy_pad(hi.data.drivername, "baycom_epp", sizeof(hi.data.drivername));
- 		break;
- 		
- 	case HDLCDRVCTL_GETMODE:
-@@ -1091,7 +1091,7 @@ static int baycom_siocdevprivate(struct net_device *dev, struct ifreq *ifr,
- 		return baycom_setmode(bc, hi.data.modename);
- 
- 	case HDLCDRVCTL_MODELIST:
--		strncpy(hi.data.modename, "intclk,extclk,intmodem,extmodem,divider=x",
-+		strscpy_pad(hi.data.modename, "intclk,extclk,intmodem,extmodem,divider=x",
- 			sizeof(hi.data.modename));
- 		break;
- 
-
----
-base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
-change-id: 20231012-strncpy-drivers-net-hamradio-baycom_epp-c-6e11c9483b9f
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+greg k-h
