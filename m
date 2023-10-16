@@ -2,235 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 381DF7CA7EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:24:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 761787CA7F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229459AbjJPMYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 08:24:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44646 "EHLO
+        id S232059AbjJPMZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 08:25:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231478AbjJPMYL (ORCPT
+        with ESMTP id S230017AbjJPMZS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 08:24:11 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CABC29F;
-        Mon, 16 Oct 2023 05:24:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A62DC433C8;
-        Mon, 16 Oct 2023 12:24:06 +0000 (UTC)
-Message-ID: <d1ca2a68-3a1c-4fee-a284-9fd1c68066f8@xs4all.nl>
-Date:   Mon, 16 Oct 2023 14:24:05 +0200
+        Mon, 16 Oct 2023 08:25:18 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B42D09B
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 05:25:15 -0700 (PDT)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39GC9LJj032458;
+        Mon, 16 Oct 2023 12:25:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=fdcwLYfEwBvh7hI+Y9HX4exVIEYBwd62Voxgu8myEl4=;
+ b=mndzkDvGndyO/dSa1kqlUVw5seS6/PcD3FT83yl4Py78LZ5G+hxxl9F5l2rQTjzh8d4/
+ tE0xJqTuOrugDOhxsa2k2XgpR8VSv0/sYy0LAB+JoU0Wx9oXocyzTDzy64aY2O72ekhc
+ dPbfQQKLMdenZ4BN1XEw5onknNrbfh2jrY2eVYzy+NVTajKSr29fH6zRbYIpP0BRBewh
+ Gj5bYmB2YxVHwnc9Ls83jDfo85u2IQRqc7piBLrdfMvaoLBbR3amtEHe2mUTVvPLGB9O
+ ueTWGlHxjoTGta6LSa3PLUrg/yMLfNrgaTB5uTh8lsjZmhvqo2yH3eXVuN0Wba6BCHUC EA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ts4721xr5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Oct 2023 12:25:02 +0000
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39GCA8Yn006610;
+        Mon, 16 Oct 2023 12:25:02 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ts4721xqm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Oct 2023 12:25:02 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39GABk2O027177;
+        Mon, 16 Oct 2023 12:25:01 GMT
+Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tr6tk0hh8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Oct 2023 12:25:01 +0000
+Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
+        by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39GCP0s520447894
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 16 Oct 2023 12:25:00 GMT
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 629FA5805E;
+        Mon, 16 Oct 2023 12:25:00 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2733D58055;
+        Mon, 16 Oct 2023 12:25:00 +0000 (GMT)
+Received: from [9.61.111.173] (unknown [9.61.111.173])
+        by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Mon, 16 Oct 2023 12:25:00 +0000 (GMT)
+Message-ID: <df9cffef-ef00-4e52-9df1-8bed3605a014@linux.ibm.com>
+Date:   Mon, 16 Oct 2023 07:24:59 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v6 07/11] media: v4l2: Add audio capture and output
- support
-Content-Language: en-US, nl
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
-        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <1697185865-27528-1-git-send-email-shengjiu.wang@nxp.com>
- <1697185865-27528-8-git-send-email-shengjiu.wang@nxp.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <1697185865-27528-8-git-send-email-shengjiu.wang@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v1] regulator: core: Convert warning to debug print
+To:     Mark Brown <broonie@kernel.org>
+Cc:     joel@jms.id.au, eajames@linux.ibm.com, lgirdwood@gmail.com,
+        linux-kernel@vger.kernel.org, lakshmiy@us.ibm.com
+References: <20231012174235.2424670-1-ninad@linux.ibm.com>
+ <aa596890-d98a-41c2-bc10-8c1db58ea23a@sirena.org.uk>
+ <4ecd19e5-9dfa-4157-9384-92c722064b2e@linux.ibm.com>
+ <ZSlkWZvtEFfSkqNE@finisterre.sirena.org.uk>
+Content-Language: en-US
+From:   Ninad Palsule <ninad@linux.ibm.com>
+In-Reply-To: <ZSlkWZvtEFfSkqNE@finisterre.sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: fyK7-KQBRPzE2rUnlM_n_b6QH6SNrbHu
+X-Proofpoint-ORIG-GUID: Ez4TQhk1CPylMHcBuIdQG6ARH3fMYdwL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-16_05,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 adultscore=0 priorityscore=1501 impostorscore=0 mlxscore=0
+ mlxlogscore=928 suspectscore=0 spamscore=0 phishscore=0 bulkscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310160108
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/2023 10:31, Shengjiu Wang wrote:
-> Audio signal processing has the requirement for memory to
-> memory similar as Video.
-> 
-> This patch is to add this support in v4l2 framework, defined
-> new buffer type V4L2_BUF_TYPE_AUDIO_CAPTURE and
-> V4L2_BUF_TYPE_AUDIO_OUTPUT, defined new format v4l2_audio_format
-> for audio case usage.
-> 
-> The created audio device is named "/dev/v4l-audioX".
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  .../userspace-api/media/v4l/buffer.rst        |  6 ++
->  .../media/v4l/dev-audio-mem2mem.rst           | 71 +++++++++++++++++++
->  .../userspace-api/media/v4l/devices.rst       |  1 +
->  .../media/v4l/vidioc-enum-fmt.rst             |  2 +
->  .../userspace-api/media/v4l/vidioc-g-fmt.rst  |  4 ++
->  .../media/videodev2.h.rst.exceptions          |  2 +
->  .../media/common/videobuf2/videobuf2-v4l2.c   |  4 ++
->  drivers/media/v4l2-core/v4l2-dev.c            | 17 +++++
->  drivers/media/v4l2-core/v4l2-ioctl.c          | 53 ++++++++++++++
->  include/media/v4l2-dev.h                      |  2 +
->  include/media/v4l2-ioctl.h                    | 34 +++++++++
->  include/uapi/linux/videodev2.h                | 17 +++++
->  12 files changed, 213 insertions(+)
->  create mode 100644 Documentation/userspace-api/media/v4l/dev-audio-mem2mem.rst
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/buffer.rst b/Documentation/userspace-api/media/v4l/buffer.rst
-> index 04dec3e570ed..80cf2cb20dfe 100644
-> --- a/Documentation/userspace-api/media/v4l/buffer.rst
-> +++ b/Documentation/userspace-api/media/v4l/buffer.rst
-> @@ -438,6 +438,12 @@ enum v4l2_buf_type
->      * - ``V4L2_BUF_TYPE_META_OUTPUT``
->        - 14
->        - Buffer for metadata output, see :ref:`metadata`.
-> +    * - ``V4L2_BUF_TYPE_AUDIO_CAPTURE``
-> +      - 15
-> +      - Buffer for audio capture, see :ref:`audio`.
-> +    * - ``V4L2_BUF_TYPE_AUDIO_OUTPUT``
-> +      - 16
-> +      - Buffer for audio output, see :ref:`audio`.
->  
->  
->  .. _buffer-flags:
-> diff --git a/Documentation/userspace-api/media/v4l/dev-audio-mem2mem.rst b/Documentation/userspace-api/media/v4l/dev-audio-mem2mem.rst
-> new file mode 100644
-> index 000000000000..2ea493d0a73b
-> --- /dev/null
-> +++ b/Documentation/userspace-api/media/v4l/dev-audio-mem2mem.rst
-> @@ -0,0 +1,71 @@
-> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
-> +
-> +.. _audiomem2mem:
-> +
-> +********************************
-> +Audio Memory-To-Memory Interface
-> +********************************
-> +
-> +A audio memory-to-memory device can compress, decompress, transform, or
+Hello Mark,
 
-A -> An
+On 10/13/23 10:38, Mark Brown wrote:
+> On Thu, Oct 12, 2023 at 04:45:48PM -0500, Ninad Palsule wrote:
+>
+>> You are right there are regulators for these supplies but they are managed
+>> by the
+>> hardware hence not added in the device tree. I checked dts/aspeed directory
+>> and
+>> non of the machine has “vcc-supply” defined and lot of them use eeprom.
+> Fixed voltage regulators can be used for this.
+ok, So far we don't need it.
+>
+>> Also, I thought that this message is only useful in the lab to indicate
+>> developer
+>> whether they missed the device tree definition or not but its not useful in
+>> the
+>> field.  Hence proposed to put it under DEBUG.
+> The theory is that it shouldn't come up in the field since people see it
+> during development and fix things then, are people actually looking at
+> these logs?  I think my understanding was that they're mostly BMCs
+> people interacted with via a UI of some kind.
 
-> +otherwise convert audio data from one format into another format, in memory.
-> +Such memory-to-memory devices set the ``V4L2_CAP_AUDIO_M2M`` capability.
-> +Examples of memory-to-memory devices are codecs, audio preprocessing,
+During testing people look at this logs. We will ignore this warning for 
+now.
 
-codecs -> audio codecs
+Thanks!
 
-Reason: within V4L2 'codec' refers to a video codec by default, so for audio
-codecs it is better to be explicit and mention 'audio'.
+~Ninad
 
-> +audio postprocessing.
-> +
-> +A memory-to-memory audio node supports both output (sending frames from
-
-I think it is better to write 'audio frames' instead of just 'frames', for
-the same reason as why I prefer 'audio codec'. It makes it explicit that we
-are dealing with audio.
-
-> +memory to the hardware) and capture (receiving the processed frames
-
-audio frames
-
-> +from the hardware into memory) stream I/O. An application will have to
-> +setup the stream I/O for both sides and finally call
-> +:ref:`VIDIOC_STREAMON <VIDIOC_STREAMON>` for both capture and output to
-> +start the hardware.
-> +
-> +Memory-to-memory devices function as a shared resource: you can
-> +open the audio node multiple times, each application setting up their
-> +own properties that are local to the file handle, and each can use
-> +it independently from the others. The driver will arbitrate access to
-> +the hardware and reprogram it whenever another file handler gets access.
-> +
-> +Audio memory-to-memory devices are accessed through character device
-> +special files named ``/dev/v4l-audio``
-> +
-> +Querying Capabilities
-> +=====================
-> +
-> +Device nodes supporting the audio memory-to-memory interface set the
-> +``V4L2_CAP_AUDIO_M2M`` flag in the ``device_caps`` field of the
-> +:c:type:`v4l2_capability` structure returned by the :c:func:`VIDIOC_QUERYCAP`
-> +ioctl.
-> +
-> +Data Format Negotiation
-> +=======================
-> +
-> +The audio device uses the :ref:`format` ioctls to select the capture format.
-> +The audio buffer content format is bound to that selected format. In addition
-> +to the basic :ref:`format` ioctls, the :c:func:`VIDIOC_ENUM_FMT` ioctl must be
-> +supported as well.
-> +
-> +To use the :ref:`format` ioctls applications set the ``type`` field of the
-> +:c:type:`v4l2_format` structure to ``V4L2_BUF_TYPE_AUDIO_CAPTURE`` or to
-> +``V4L2_BUF_TYPE_AUDIO_OUTPUT``. Both drivers and applications must set the
-> +remainder of the :c:type:`v4l2_format` structure to 0.
-> +
-> +.. c:type:: v4l2_audio_format
-> +
-> +.. tabularcolumns:: |p{1.4cm}|p{2.4cm}|p{13.5cm}|
-> +
-> +.. flat-table:: struct v4l2_audio_format
-> +    :header-rows:  0
-> +    :stub-columns: 0
-> +    :widths:       1 1 2
-> +
-> +    * - __u32
-> +      - ``pixelformat``
-> +      - The sample format, set by the application. see :ref:`pixfmt-audio`
-> +    * - __u32
-> +      - ``channels``
-> +      - The channel number, set by the application. channel number range is
-> +        [1, 32].
-> +    * - __u32
-> +      - ``buffersize``
-> +      - Maximum buffer size in bytes required for data. The value is set by the
-> +        driver.
-
-<snip>
-
-Regards,
-
-	Hans
