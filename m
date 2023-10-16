@@ -2,177 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10BDA7CA478
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 560A47CA482
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbjJPJrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 05:47:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52398 "EHLO
+        id S230361AbjJPJuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 05:50:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJPJrE (ORCPT
+        with ESMTP id S230152AbjJPJuT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 05:47:04 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E52E2AB;
-        Mon, 16 Oct 2023 02:47:01 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c4fdf94666so42264651fa.2;
-        Mon, 16 Oct 2023 02:47:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697449620; x=1698054420; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=D0+r6taFyH+fgxvjyk1ODq9Nj67HjWUkYOptkmVa1t4=;
-        b=UIOpM/bY3wJWOeenNnBL9wnoT0xcq4nnlJW0KcGC/VgN7yyimOGIt2H9S/ICnuQplW
-         XZGGFN3E2LHkF4dCu4B633P8NOxeE9QAdLgY9+b2cwsamMrgo2zQHqo2mxeEegEXPHpN
-         eJ7SUczU2IFMYx9GnoyqOOYXG+JiSMCbtRlSUCc/sosgEC2g7W33sdujw62glofsdECo
-         s+18OqFgtJqizALGk2TptdpVAM2wiGmmVluFW5288E5lWmrqNj+NkEqO6QUfV/ZatR0+
-         WDZvCPs9oM9LIAbzUTjTljeRJkoN/ZlAox/2GOC+Psv5zSocJYOsfHGA1/YXpIRuqPxP
-         UNdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697449620; x=1698054420;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D0+r6taFyH+fgxvjyk1ODq9Nj67HjWUkYOptkmVa1t4=;
-        b=t3892Xl3hjnsq1d5S95/1weSdLQrMpJ0bH7p5N5gqXu4/4ooDQZIZIoeQ3+WvtpIq1
-         0QVeehEsPWCPkrtTXQa1uKEyRhmmoUBsIIF/sF0G/e5Q9eEWleKVA1iRe9w5k7XM/WbY
-         qpolpevOl1wYs/vLPgtgKdj+1+ZTq647eZGuaK6e5Ny7SG1PeTfJorfJL7tbqN/TeE9d
-         FE/o6ddZ2KsOelo5Km2NH3mLf1GBZGtID+48mVS8984hq9Pd9L0t/c60o/nNWtyaNhYm
-         9p+F53ot2u8wJS1NBPA6aSM7pM1doldiZfiL9xcJ2Z8Y1GpKg89aj5yCvNkCH0oNPfzm
-         485g==
-X-Gm-Message-State: AOJu0YwzN/ozVLJIxkQkted/JQpti1a3WkPu0gimGlJ2j6FOdpwo99Wi
-        cCvP59CfMmJUvrHx0L6VdXjMVaKg7TP6AA==
-X-Google-Smtp-Source: AGHT+IGUWewJtTOip/zoJBre50p+aWq1xey4im4GNNn6H0i0TTPoyw5b2q3Y9faL+TSdd58pBavGqg==
-X-Received: by 2002:a05:6512:138e:b0:503:7dd:7ebc with SMTP id fc14-20020a056512138e00b0050307dd7ebcmr35277012lfb.18.1697449619822;
-        Mon, 16 Oct 2023 02:46:59 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:16f8:1500::7? (dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::7])
-        by smtp.gmail.com with ESMTPSA id c14-20020ac2414e000000b0050309ea3a62sm4471555lfi.277.2023.10.16.02.46.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 02:46:59 -0700 (PDT)
-Message-ID: <d6cb909f-46fa-45b1-a65f-f5adf840d91c@gmail.com>
-Date:   Mon, 16 Oct 2023 12:46:58 +0300
+        Mon, 16 Oct 2023 05:50:19 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E93AB4;
+        Mon, 16 Oct 2023 02:50:16 -0700 (PDT)
+Received: from kwepemm000003.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S8C09669BzvPxM;
+        Mon, 16 Oct 2023 17:45:29 +0800 (CST)
+Received: from [10.67.111.205] (10.67.111.205) by
+ kwepemm000003.china.huawei.com (7.193.23.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 16 Oct 2023 17:50:11 +0800
+Subject: Re: [PATCH v2 6/7] perf pmu-events: Remember the perf_events_map for
+ a PMU
+To:     Ian Rogers <irogers@google.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Jing Zhang <renyu.zj@linux.alibaba.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        <coresight@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20231012175645.1849503-1-irogers@google.com>
+ <20231012175645.1849503-7-irogers@google.com>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <d25f9ef8-b9b7-d632-8ecf-d60f2b255c8b@huawei.com>
+Date:   Mon, 16 Oct 2023 17:50:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] iio: sanity check available_scan_masks array
-Content-Language: en-US, en-GB
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <ZRvjuZaQWdZw1U1I@dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi>
- <20231005163026.2c7707de@jic23-huawei>
- <751a87c9-a4aa-4e06-1d12-1e2b1a3487de@gmail.com>
- <20231010110419.00899e0e@jic23-huawei>
- <0d05bf24-caa6-0f86-b531-22dc08b9cadc@gmail.com>
- <20231010154734.7728fe2b@jic23-huawei>
-From:   Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <20231010154734.7728fe2b@jic23-huawei>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <20231012175645.1849503-7-irogers@google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.67.111.205]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm000003.china.huawei.com (7.193.23.66)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/23 17:47, Jonathan Cameron wrote:
-> On Tue, 10 Oct 2023 15:56:22 +0300
-> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
+Hello,
+
+On 2023/10/13 1:56, Ian Rogers wrote:
+> strcmp_cpuid_str performs regular expression comparisons and so per
+> CPUID linear searches over the perf_events_map are expensive. Add a
+> helper function called map_for_pmu that does the search but also
+> caches the map specific to a PMU. As the PMU may differ, also cache
+> the CPUID string so that PMUs with the same CPUID string don't require
+> the linear search and regular expression comparisons. This speeds
+> loading PMUs as the search is done once per PMU to find the
+> appropriate tables.
 > 
->> On 10/10/23 13:04, Jonathan Cameron wrote:
->>> On Fri, 6 Oct 2023 14:10:16 +0300
->>> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
->>>    
->>>> Hi Again Jonathan.
->>>>
->>>> On 10/5/23 18:30, Jonathan Cameron wrote:
->>>>> On Tue, 3 Oct 2023 12:49:45 +0300
->>>>> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
-
-...
-
->>>> Other option I see is to just error out if available_scan_masks array is
->>>> given with larger than one 'long' wide masks and worry things when this
->>>> breaks.
->>>
->>> That would kick the problem into the long grass.
->>
->> Well, not 100% sure I interpret the idiom correctly ;) In any case, I'd
->> say this would indeed postpone dealing with the problem to the future.
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>   tools/perf/pmu-events/jevents.py | 109 ++++++++++++++++++++-----------
+>   1 file changed, 70 insertions(+), 39 deletions(-)
 > 
-> It does indeed mean that!  Sorry bad habit to use idioms in discussions like
-> this.
-> 
->> To the point we actually seem to have a problem. The "long grass" as if
->> hiding the problem is something we can avoid by adding something like:
->>
->> if (masklength > 32 && idev->available_scan_masks) {
->> 	/*
->> 	 * Comment mowing the long grass.
->> 	 */
->> 	dev_err( ...);
->> 	return -EINVAL;
->> }
->>
->> to the device registration.
+> diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
+> index 96dc74c90b20..3c091ab75305 100755
+> --- a/tools/perf/pmu-events/jevents.py
+> +++ b/tools/perf/pmu-events/jevents.py
+> @@ -976,68 +976,99 @@ int pmu_metrics_table__for_each_metric(const struct pmu_metrics_table *table,
+>           return 0;
+>   }
+>   
+> -const struct pmu_events_table *perf_pmu__find_events_table(struct perf_pmu *pmu)
+> +static const struct pmu_events_map *map_for_pmu(struct perf_pmu *pmu)
+>   {
+> -        const struct pmu_events_table *table = NULL;
+> -        char *cpuid = perf_pmu__getcpuid(pmu);
+> +        static struct {
+> +                const struct pmu_events_map *map;
+> +                struct perf_pmu *pmu;
+> +        } last_result;
+> +        static struct {
+> +                const struct pmu_events_map *map;
+> +                char *cpuid;
+> +        } last_map_search;
+> +        static bool has_last_result, has_last_map_search;
+> +        const struct pmu_events_map *map = NULL;
+> +        char *cpuid = NULL;
+>           size_t i;
+>   
+> -        /* on some platforms which uses cpus map, cpuid can be NULL for
+> +        if (has_last_result && last_result.pmu == pmu)
+> +                return last_result.map;
+> +
+> +        cpuid = perf_pmu__getcpuid(pmu);
+For the software pmu, we do not need to look for the events table.
+It seems that the software pmu can be filtered out in perf_pmu__lookup() 
+to reduce unnecessary perf_pmu__find_events_table() calls.
 
-...
+I tried to submit a patch, please see if it helps:
+https://lore.kernel.org/all/20231016093309.726436-1-yangjihong1@huawei.com/
 
->>> 	iio_dev->available_scan_masks = (unsigned long *)available_masks;
->>>
->>> If we put such an example into the dummy / example driver then that might
->>> act to avoid us getting bugs in future + test the fix you have above and
->>> related.
->>
->> Well, at least it shouldn't hurt to have some example - although I'm
->> still tempted to use the "long grass" - option ;)
-> 
-> That is probably a good idea for now.  Though we are carrying other infrastructure
-> to support this eventually and it feels weird to error out on it whilst we have
-> code to support it (assuming that terminator is long enough).
-
-I agree. I think I won't use the bitmap_empty() - because I feel it is 
-unsafe. I'll leave the *av_masks check as it is implemented in 
-iio_scan_mask_match() for now. Eg:
-
-... const unsigned long *av_masks ...
-
-while (*av_masks) {
-	...
-	av_masks += BITS_TO_LONGS(masklength);
-}
-
-This will fail if mask is longer than unsigned long - and if we have 
-masks with zero bits worth a leading long. Still, this won't overflow 
-and it also works for masks which are wider than long but do not have 
-the leading bits zeroed. Balanced act of safety and functionality.
-
-This should allow us to safely do:
-
-if (masklength > 32 && idev->available_scan_masks) {
-	/*
-	 * Comment mowing the long grass.
-	 */
-	dev_warn( ...);
-}
-
-without returning the error.
-
-Not perfect, but should be safe and also adds a warning if someone 
-trusts the multi-long masks to work.
-
-Yours,
-	-- Matti
-
--- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
-
-~~ When things go utterly wrong vim users can always type :help! ~~
-
+Thanks,
+Yang
