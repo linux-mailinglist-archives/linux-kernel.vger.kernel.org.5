@@ -2,83 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6CD7CB179
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 19:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 727987CB1BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 19:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232474AbjJPRka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 13:40:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53946 "EHLO
+        id S232844AbjJPR6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 13:58:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjJPRk1 (ORCPT
+        with ESMTP id S232198AbjJPR6x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 13:40:27 -0400
+        Mon, 16 Oct 2023 13:58:53 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A15E49F;
-        Mon, 16 Oct 2023 10:40:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 223EBC433C9;
-        Mon, 16 Oct 2023 17:40:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697478024;
-        bh=YE8MV4L87LoXSPHfgHSpNYR3qUPuVdzDgJOEEjAyswk=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=PfGErQehjQbVq2zZa+DapTMGFT3uN7ex8slsbFQpJlOC/UFptAtmgzJW+sfcnIoTy
-         FMrMfpdWBGXq0phQOMA+T/41V7kJ8YeDlFyzticwP8EUpzOGZpBxlDt2eoIefY1PDj
-         1k3Piz522/8FA4Ys8L0UsU3zzw+vmG8nMkOK05jnuhe31yAAzQaP9ynlNwimA+WC/t
-         CRnrv2eKPc9wEh3lNLz5BhVBoTbQjKZJNe0ipfwUwtM4w8qQxs+7dlGnL9ryjQj9N2
-         piKpDJjX+YEriyN+wUa/m/RPXfj8GhFG/3J9hTUUnodmT3DNIetVulQW0SJ2nQ91C3
-         6WXC6ADKj6jlQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 05780C4316B;
-        Mon, 16 Oct 2023 17:40:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D2BE83
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 10:58:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52B8DC433C7;
+        Mon, 16 Oct 2023 17:58:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1697479131;
+        bh=AyK2SXcqdRnOrh1k76CSD8fTzBnhoJScCp2j+ldNjaY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=w98KksX3ig/2ARv3Elxv4giqqgt/EaFboKZhRg/4fbwkl+Sf3iqws6nUr4eZvlZG5
+         JioaV3HQppmUtn/V7vxxETIxkjur9jSBYySvG6BdzgKPtB9QQ1ivyymKyl8VDUohV/
+         RHOqVCuNC0NLcHksup7XHzjfZ9al2UoQ/7HorQgw=
+Date:   Mon, 16 Oct 2023 19:42:45 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Hongren Zheng <i@zenithal.me>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sfr@canb.auug.org.au
+Subject: Re: [PATCH v2 -next] usb/usbip: fix wrong data added to platform
+ device
+Message-ID: <2023101623-amaretto-sevenfold-6b5e@gregkh>
+References: <ZSpHPCaQ5DDA9Ysl@Sun>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] Bluetooth: hci_bcm4377: Mark bcm4378/bcm4387 as
- BROKEN_LE_CODED
-From:   patchwork-bot+bluetooth@kernel.org
-Message-Id: <169747802401.23804.5795808252113645471.git-patchwork-notify@kernel.org>
-Date:   Mon, 16 Oct 2023 17:40:24 +0000
-References: <20231016-bt-bcm4377-quirk-broken-le-coded-v1-1-52ea69d3c979@jannau.net>
-In-Reply-To: <20231016-bt-bcm4377-quirk-broken-le-coded-v1-1-52ea69d3c979@jannau.net>
-To:     Janne Grunau via B4 Relay <devnull+j.jannau.net@kernel.org>
-Cc:     marcan@marcan.st, sven@svenpeter.dev, alyssa@rosenzweig.io,
-        marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        luiz.von.dentz@intel.com, asahi@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        regressions@lists.linux.dev, stable@vger.kernel.org
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZSpHPCaQ5DDA9Ysl@Sun>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Sat, Oct 14, 2023 at 03:46:04PM +0800, Hongren Zheng wrote:
+> .data of platform_device_info will be copied into .platform_data of
+> struct device via platform_device_add_data.
 
-This patch was applied to bluetooth/bluetooth-next.git (master)
-by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
+That is crazy.
 
-On Mon, 16 Oct 2023 09:13:08 +0200 you wrote:
-> From: Janne Grunau <j@jannau.net>
+> However, vhcis[i] contains a spinlock, is dynamically allocated and
+> used by other code, so it is not meant to be copied. The workaround
+> was to use void *vhci as an agent, but it was removed in the commit
+> suggested below.
+
+Again, crazy, I'm amazed it works at all.
+
+> This patch adds back the workaround and changes the way of using
+> platform_data accordingly.
 > 
-> bcm4378 and bcm4387 claim to support LE Coded PHY but fail to pair
-> (reliably) with BLE devices if it is enabled.
-> On bcm4378 pairing usually succeeds after 2-3 tries. On bcm4387
-> pairing appears to be completely broken.
-> 
-> [...]
+> Reported-by: syzbot+e0dbc33630a092ccf033@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/r/00000000000029242706077f3145@google.com/
+> Reported-by: syzbot+6867a9777f4b8dc4e256@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/r/0000000000007634c1060793197c@google.com/
+> Fixes: b8aaf639b403 ("usbip: Use platform_device_register_full()")
+> Tested-by: syzbot+6867a9777f4b8dc4e256@syzkaller.appspotmail.com
+> Link: https://lore.kernel.org/r/0000000000007ac87d0607979b6b@google.com/
+> Signed-off-by: Hongren Zheng <i@zenithal.me>
+> ---
+>  drivers/usb/usbip/vhci_hcd.c | 15 ++++++++-------
+>  1 file changed, 8 insertions(+), 7 deletions(-)
 
-Here is the summary with links:
-  - Bluetooth: hci_bcm4377: Mark bcm4378/bcm4387 as BROKEN_LE_CODED
-    https://git.kernel.org/bluetooth/bluetooth-next/c/b00d44276894
+I'll take this now, as it fixes a reported issue, but really, the root
+problem should be fixed instead.  This is not how to treat platform data
+at all.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+thanks,
 
-
+greg k-h
