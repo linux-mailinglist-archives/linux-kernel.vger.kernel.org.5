@@ -2,110 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 594477CAFD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28D9B7CB0D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 19:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234428AbjJPQid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 12:38:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41228 "EHLO
+        id S234101AbjJPRAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 13:00:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234170AbjJPQgy (ORCPT
+        with ESMTP id S234616AbjJPQ7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 12:36:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9226A1FE7
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:20:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697473216;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=63Rq1KcfOTDhlc8whKkbAUCIQI+yHNiEHhPiU2TPE3M=;
-        b=J0XEwZCGaAiJMFf7xthvX5n2QLLi62bz4NI83VrpbWQ9rDZBxyRnCdvZrxmhBAIF29qGb+
-        XOArsl9brxjA9RLkL1cRAQoKtS2+zYapF7HDnXvsdn+iQLZnMRs5etKWsKf/13K/CU9xSw
-        MYqJtlGBijEDON3EMfLPyPhaI/g+Y2Y=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-27-bJAGqS1LPQevnpXDvvjhEQ-1; Mon, 16 Oct 2023 12:19:55 -0400
-X-MC-Unique: bJAGqS1LPQevnpXDvvjhEQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1E3DE862F4E;
-        Mon, 16 Oct 2023 16:19:54 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.178])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A802825C8;
-        Mon, 16 Oct 2023 16:19:51 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <be2434a2d51900b9e51d8bf0fe5a8b82e3f1a879.camel@kernel.org>
-References: <be2434a2d51900b9e51d8bf0fe5a8b82e3f1a879.camel@kernel.org> <20231013160423.2218093-1-dhowells@redhat.com> <20231013160423.2218093-9-dhowells@redhat.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     dhowells@redhat.com, Steve French <smfrench@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Christian Brauner <christian@brauner.io>,
-        linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-cachefs@redhat.com
-Subject: Re: [RFC PATCH 08/53] netfs: Add rsize to netfs_io_request
+        Mon, 16 Oct 2023 12:59:40 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4894786;
+        Mon, 16 Oct 2023 09:20:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A3DE6C433CA;
+        Mon, 16 Oct 2023 16:20:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697473227;
+        bh=OmDX71W8pnHJvXkCucPAjaUIHG3N468/aXGQVHPVYXQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=WuQYN0K2HpIwDAjzQiBVC5JrYoaVVtaLpuWb1pc+cdzeBkr+6x5S/jEu9XDMgt4rY
+         oKm+/HfdeAsovwP8ukPV9BWFziId+OCUwR1IlO/AYEn1kIMRPiaxszRwMciqUDl13n
+         HYdqJywsspuFeiLzrq82PQRmU/+WADdUUISr090Xg2J78wmFOGih6iA6y1ojqQmWDR
+         5nDzZIdcLht1DfVBZ3Phy9MLaFfMP2DkdDGOe822bB3s0dOmy8cbHMNMWd3jcFGrPK
+         OZzB8xOyIlTc9GRPcmlWBSaqtWVhQOdoBCt1HO6Xm7ll5CvrQLY7ApSFUWl0L3RTZX
+         8ZUoKpv9/JvRA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 89C14C04E32;
+        Mon, 16 Oct 2023 16:20:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2840973.1697473191.1@warthog.procyon.org.uk>
-Date:   Mon, 16 Oct 2023 17:19:51 +0100
-Message-ID: <2840974.1697473191@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 iproute2-next 0/2] rdma: Support dumping SRQ resource in
+ raw format
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169747322756.5359.10248022521412902967.git-patchwork-notify@kernel.org>
+Date:   Mon, 16 Oct 2023 16:20:27 +0000
+References: <20231010075526.3860869-1-huangjunxian6@hisilicon.com>
+In-Reply-To: <20231010075526.3860869-1-huangjunxian6@hisilicon.com>
+To:     Junxian Huang <huangjunxian6@hisilicon.com>
+Cc:     jgg@ziepe.ca, leon@kernel.org, dsahern@gmail.com,
+        stephen@networkplumber.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linuxarm@huawei.com,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jeff Layton <jlayton@kernel.org> wrote:
+Hello:
 
-> > +	rreq->rsize = 4 * 1024 * 1024;
-> >  	return 0;
-> ...
-> > +	rreq->rsize = 1024 * 1024;
-> > +
+This series was applied to iproute2/iproute2-next.git (main)
+by David Ahern <dsahern@kernel.org>:
+
+On Tue, 10 Oct 2023 15:55:24 +0800 you wrote:
+> This patchset adds support to dump SRQ resource in raw format with
+> rdmatool. The corresponding kernel commit is aebf8145e11a
+> ("RDMA/core: Add support to dump SRQ resource in RAW format")
 > 
-> Holy magic numbers, batman! I think this deserves a comment that
-> explains how you came up with these values.
+> v2 adds the missing change in res_srq_idx_parse_cb().
+> 
+> Junxian Huang (1):
+>   rdma: Update uapi headers
+> 
+> [...]
 
-Actually, that should be set to something like the object size for ceph.
+Here is the summary with links:
+  - [v2,iproute2-next,1/2] rdma: Update uapi headers
+    https://git.kernel.org/pub/scm/network/iproute2/iproute2-next.git/commit/?id=cd4315de422e
+  - [v2,iproute2-next,2/2] rdma: Add support to dump SRQ resource in raw format
+    https://git.kernel.org/pub/scm/network/iproute2/iproute2-next.git/commit/?id=07bfa4482d49
 
-> Also, do 9p and cifs not need this for some reason?
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-At this point, cifs doesn't use netfslib, so that's implemented in a later
-patch in this series.
-
-9p does need setting, but I haven't tested that yet.  It probably needs
-setting to 1MiB as I think that's the maximum the 9p transport can handle.
-
-But in the case of cifs, this is actually dynamic, depending on how many
-credits we can obtain.  The same may be true of ceph, though I'm not entirely
-clear on that as yet.
-
-For afs, the maximum [rw]size the protocol supports is actually something like
-281350422593565 (ie. (65535-28) * (2^32-1)) minus a few bytes, but that's
-probably not a good idea.  I might be best setting it at something like 256KiB
-as that's what OpenAFS uses.
-
-David
 
