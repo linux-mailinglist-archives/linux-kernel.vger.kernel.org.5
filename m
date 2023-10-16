@@ -2,119 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E68D7CB69A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 00:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDFD17CB69C
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 00:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233567AbjJPWeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 18:34:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55240 "EHLO
+        id S233775AbjJPWez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 18:34:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbjJPWeT (ORCPT
+        with ESMTP id S229943AbjJPWey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 18:34:19 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36109B
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 15:34:17 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c9c145bb5bso36475ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 15:34:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697495657; x=1698100457; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vNaafexrbu6pnn24PMIqsD4prSCGfjBYmlc/DxhvRmw=;
-        b=AyV9HAEABw91cHepsELFKrQRODIeMpGH+w6rkrPIokJ9sWTyLjSv0exqrYLMN0dqQ0
-         xWT7y9XQ/19a4Z/fomhWiorroSxsWN8Ro0OCCknmLc6LTt9FbYuijB1unNhTbB3LHB72
-         lFTzkFS6gb4I4bbI2b8RNU1ScEoEjZ7KeUGMpA68lXCv9VQMUC8gGE39hK7vABEgtmbk
-         jzk+b0iC1KcoxYDZq2zlkpQhK3ZELF29V3uL5X+/FKQ+PNGCoEtNRIgRMdKiHPpnM3UI
-         l380/Umjybt6PpueiGJX7o0fzJ/GQGLmK98a6cSZPkcMlcGvuJ649UpI5uFz8CUavpx6
-         QxFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697495657; x=1698100457;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vNaafexrbu6pnn24PMIqsD4prSCGfjBYmlc/DxhvRmw=;
-        b=P49dhApM82jZZV9B0SuYNpYpxCeAya9+tClydOtpwYGYfz/xp36emOfnBfiM5YCbvR
-         SlFVsJcUQ7NUi22PfRSsk6LLBizm0hdJ/1VR0d9i6ziUt0iWSKjI42Su9mXNt49oUqGv
-         aDoD2rfEdM0zKSaXj6OSor5t5cwHHxLObverjhXDi1JL4zgyTz8iyDya67WG7UZZ4qSq
-         7t995ai5KPpgPPZTzHCo3Zwb9NpKkX166RRSjgVl7X2tSD8GM+jAO3FuThjBWBXudAn9
-         +SpK9lwMF8QJM3IDUH9FgMvMmmR1dP/2XmVaq8gaG0rbAuYxqFADy3QAkzOOGGL1peMq
-         gjIg==
-X-Gm-Message-State: AOJu0YxRV7ZOvPA3/xa95K6f/tyCsOSXDwHnW4DPp6cUrdJQ0Vhmv6QY
-        Drn5bODs5m17Bu2zQZn3Kv+dm44SfGBJNSqMKej1MQ==
-X-Google-Smtp-Source: AGHT+IG3ySgH6r4NHrjsWGFuZm4kiRC1nt1ET06dFz1yUmkopUw3bQVUWWxa7YU+FO6MIW6+pjxeEFm6NmHAi5xJXkc=
-X-Received: by 2002:a17:903:2406:b0:1bb:2c7b:6d67 with SMTP id
- e6-20020a170903240600b001bb2c7b6d67mr35150plo.11.1697495657132; Mon, 16 Oct
- 2023 15:34:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231016221900.4031141-1-roman.gushchin@linux.dev> <20231016221900.4031141-3-roman.gushchin@linux.dev>
-In-Reply-To: <20231016221900.4031141-3-roman.gushchin@linux.dev>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 16 Oct 2023 15:34:05 -0700
-Message-ID: <CALvZod7yT4=RegYNJd+8Wcb4vcySLOdGZOTmDCrBL0mzKu=+GA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/5] mm: kmem: add direct objcg pointer to task_struct
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>,
-        Dennis Zhou <dennis@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 16 Oct 2023 18:34:54 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1507EA1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 15:34:53 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54BC3C433C7;
+        Mon, 16 Oct 2023 22:34:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1697495692;
+        bh=FZ9FRkz2iD/S2s21JwYAKU+5RDYOBoUlW8pmKTtVfBo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=xyXnGZd4VcZnn6u+N+V0mFtKNz3+M9q4gWHqqW76DgX/RfQ1UT1s49a3cKyEip/Zp
+         4KYRRS9gUrhhWi+os8H2Z6J0JyEfIpgljxyHRfepVyXsoL+qUJGFC1GPwit3V5Uqc4
+         cRZCStbG9cmgfBaDnVTnFLGQqYimrZS04FdJGxQQ=
+Date:   Mon, 16 Oct 2023 15:34:51 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Charan Teja Kalla <quic_charante@quicinc.com>
+Cc:     David Hildenbrand <david@redhat.com>, <osalvador@suse.de>,
+        <dan.j.williams@intel.com>, <vbabka@suse.cz>,
+        <mgorman@techsingularity.net>, <aneesh.kumar@linux.ibm.com>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mm/sparsemem: fix race in accessing
+ memory_section->usage
+Message-Id: <20231016153451.09f3677496bd6cc8b1f95daa@linux-foundation.org>
+In-Reply-To: <994410bb-89aa-d987-1f50-f514903c55aa@quicinc.com>
+References: <1697202267-23600-1-git-send-email-quic_charante@quicinc.com>
+        <20231014152532.5f3dca7838c2567a1a9ca9c6@linux-foundation.org>
+        <a46cf10b-d852-c671-ee20-40f39bdbceac@redhat.com>
+        <994410bb-89aa-d987-1f50-f514903c55aa@quicinc.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 3:19=E2=80=AFPM Roman Gushchin <roman.gushchin@linu=
-x.dev> wrote:
->
-> To charge a freshly allocated kernel object to a memory cgroup, the
-> kernel needs to obtain an objcg pointer. Currently it does it
-> indirectly by obtaining the memcg pointer first and then calling to
-> __get_obj_cgroup_from_memcg().
->
-> Usually tasks spend their entire life belonging to the same object
-> cgroup. So it makes sense to save the objcg pointer on task_struct
-> directly, so it can be obtained faster. It requires some work on fork,
-> exit and cgroup migrate paths, but these paths are way colder.
->
-> To avoid any costly synchronization the following rules are applied:
-> 1) A task sets it's objcg pointer itself.
->
-> 2) If a task is being migrated to another cgroup, the least
->    significant bit of the objcg pointer is set atomically.
->
-> 3) On the allocation path the objcg pointer is obtained locklessly
->    using the READ_ONCE() macro and the least significant bit is
->    checked. If it's set, the following procedure is used to update
->    it locklessly:
->        - task->objcg is zeroed using cmpxcg
->        - new objcg pointer is obtained
->        - task->objcg is updated using try_cmpxchg
->        - operation is repeated if try_cmpxcg fails
->    It guarantees that no updates will be lost if task migration
->    is racing against objcg pointer update. It also allows to keep
->    both read and write paths fully lockless.
->
-> Because the task is keeping a reference to the objcg, it can't go away
-> while the task is alive.
->
-> This commit doesn't change the way the remote memcg charging works.
->
-> Signed-off-by: Roman Gushchin (Cruise) <roman.gushchin@linux.dev>
-> Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+On Mon, 16 Oct 2023 19:08:00 +0530 Charan Teja Kalla <quic_charante@quicinc.com> wrote:
 
-Acked-by: Shakeel Butt <shakeelb@google.com>
+> > From the description, it's not quite clear to me if this was actually
+> > hit -- usually people include the dmesg bug/crash info.
+> 
+> On Snapdragon SoC,  with the mentioned memory configuration of PFN's as
+> [ZONE_NORMAL ZONE_DEVICE  ZONE_NORMAL],  we are able to see bunch of
+> issues daily while testing on a device farm.
+> 
+> I note that from next time on wards will send the demsg bug/crash info
+> for these type of issues. For this particular issue below is the log.
+> Though the below log is not directly pointing to the
+> pfn_section_valid(){ ms->usage;}, when we loaded this dump on T32
+> lauterbach tool, it is pointing.
+> 
+> [  540.578056] Unable to handle kernel NULL pointer dereference at
+> virtual address 0000000000000000
+> [  540.578068] Mem abort info:
+> [  540.578070]   ESR = 0x0000000096000005
+> [  540.578073]   EC = 0x25: DABT (current EL), IL = 32 bits
+> [  540.578077]   SET = 0, FnV = 0
+> [  540.578080]   EA = 0, S1PTW = 0
+> [  540.578082]   FSC = 0x05: level 1 translation fault
+> [  540.578085] Data abort info:
+> [  540.578086]   ISV = 0, ISS = 0x00000005
+> [  540.578088]   CM = 0, WnR = 0
+> [  540.579431] pstate: 82400005 (Nzcv daif +PAN -UAO +TCO -DIT -SSBS
+> BTYPE=--)
+> [  540.579436] pc : __pageblock_pfn_to_page+0x6c/0x14c
+> [  540.579454] lr : compact_zone+0x994/0x1058
+> [  540.579460] sp : ffffffc03579b510
+> [  540.579463] x29: ffffffc03579b510 x28: 0000000000235800 x27:
+> 000000000000000c
+> [  540.579470] x26: 0000000000235c00 x25: 0000000000000068 x24:
+> ffffffc03579b640
+> [  540.579477] x23: 0000000000000001 x22: ffffffc03579b660 x21:
+> 0000000000000000
+> [  540.579483] x20: 0000000000235bff x19: ffffffdebf7e3940 x18:
+> ffffffdebf66d140
+> [  540.579489] x17: 00000000739ba063 x16: 00000000739ba063 x15:
+> 00000000009f4bff
+> [  540.579495] x14: 0000008000000000 x13: 0000000000000000 x12:
+> 0000000000000001
+> [  540.579501] x11: 0000000000000000 x10: 0000000000000000 x9 :
+> ffffff897d2cd440
+> [  540.579507] x8 : 0000000000000000 x7 : 0000000000000000 x6 :
+> ffffffc03579b5b4
+> [  540.579512] x5 : 0000000000027f25 x4 : ffffffc03579b5b8 x3 :
+> 0000000000000001
+> [  540.579518] x2 : ffffffdebf7e3940 x1 : 0000000000235c00 x0 :
+> 0000000000235800
+> [  540.579524] Call trace:
+> [  540.579527]  __pageblock_pfn_to_page+0x6c/0x14c
+> [  540.579533]  compact_zone+0x994/0x1058
+> [  540.579536]  try_to_compact_pages+0x128/0x378
+> [  540.579540]  __alloc_pages_direct_compact+0x80/0x2b0
+> [  540.579544]  __alloc_pages_slowpath+0x5c0/0xe10
+> [  540.579547]  __alloc_pages+0x250/0x2d0
+> [  540.579550]  __iommu_dma_alloc_noncontiguous+0x13c/0x3fc
+> [  540.579561]  iommu_dma_alloc+0xa0/0x320
+> [  540.579565]  dma_alloc_attrs+0xd4/0x108
+
+Thanks.  I added the above info to the changelog, added a cc:stable and
+I added a note-to-myself that a new version of the fix may be
+forthcoming.
+
