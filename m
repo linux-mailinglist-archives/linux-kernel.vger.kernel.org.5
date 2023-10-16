@@ -2,179 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 752417C9DA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 05:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7764B7C9DAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 05:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231328AbjJPDRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 23:17:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34456 "EHLO
+        id S231462AbjJPDTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 23:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbjJPDRd (ORCPT
+        with ESMTP id S230451AbjJPDTB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 23:17:33 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D926DA
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 20:17:08 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c8a1541232so35263655ad.0
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 20:17:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697426228; x=1698031028; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+gcDF6obS9msoNGbrvp8VjI3eEmOOKndQkCumFLGk4Q=;
-        b=efevaxTDxwJGJGS0dUk31db53gixwaHeSqy55hTLRJd/aVWej4JZAd7FjlCe78XrUu
-         KFbc9UKoSoKfH/+rgsc/4sg5jS2BqBL1boHp5L9b7SnrNH/K8bUJ25R+5y2BKQjW2Mmu
-         5N83kD9Qxp5KzbvznX55REYGDQxRJKTzs28+EeGxqixG5yduhCmnGEZELYmhFoWpaUKJ
-         IXWjyDEqI9Umt/4MWUSK2muG/M4v3WDI3HvB4lQiLoqvNC67LXsQ3RM0pEbQSzAY3kyh
-         Q8rT53qDVNo/+HCx/me0NiOgSMGEib+ma27B9KxYXRC3wCrHT/+6liqO/WiPcH9JFex/
-         Ue4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697426228; x=1698031028;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+gcDF6obS9msoNGbrvp8VjI3eEmOOKndQkCumFLGk4Q=;
-        b=onFnQCnATUMbNtUIQ+zzY7rgas3WGwTexQwsTWyFrYh7O6ZfvpGzbK0cUur96mUsZY
-         gXrGiyA63iDm6ud4g7/rvvrX3t1QV05mwbpL3OZ8FFh1rq7lGbmeIpsvcyoUjgpsqjbm
-         Bp4qujhYdAeiaANCoXW5w7mBK386juDog7dh+CDXDhoJ18VnL20w+KJrCfyoFfi3nAN+
-         acUzAsDpyX0JDQyuZzcCLY4k/ccYPMEBkIBgBdiHUNFAjfGx+dIhXw4qTiOdN3bfjgTN
-         AS008Chz57g6VU2jMxnqCLyghRpd9F5DLzdiPGoOurNw1TWDnnhJ2X6epAtlG+SYgKBY
-         rMNw==
-X-Gm-Message-State: AOJu0YzblCRrsQZK95K2wB4Wkwv0GTfDOxPMZrtJnCIeaccW+dUYixWi
-        GLIy1Z8s7HrjZZXQPkdq1q+i9g==
-X-Google-Smtp-Source: AGHT+IG/AkDpyZ/tVSGq9dCcSfxYTyeru3TiqUeRhv2rK+sA9A8t/AMd1s2NWxUK8WU13xEjJOxsmw==
-X-Received: by 2002:a17:902:f14c:b0:1c9:e0f9:a668 with SMTP id d12-20020a170902f14c00b001c9e0f9a668mr8430661plb.18.1697426227817;
-        Sun, 15 Oct 2023 20:17:07 -0700 (PDT)
-Received: from C02FG34NMD6R.bytedance.net ([203.208.189.8])
-        by smtp.gmail.com with ESMTPSA id g12-20020a170902934c00b001b9da42cd7dsm7320172plp.279.2023.10.15.20.17.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Oct 2023 20:17:07 -0700 (PDT)
-From:   Albert Huang <huangjie.albert@bytedance.com>
-To:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>
-Cc:     Albert Huang <huangjie.albert@bytedance.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Sun, 15 Oct 2023 23:19:01 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1DA1C5;
+        Sun, 15 Oct 2023 20:19:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697426340; x=1728962340;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=fcUG58giWoEKU3oiVPmtUtFpvJmOfLyRlGKMLMYYUw0=;
+  b=EMtuULL9t2117FxPLXwjEhlKQ/p3+6nWEpHnPU3BQi9CUgKFc/K0Lomn
+   mNY3a64QiM15/dg8HaoR5BgrO2P5f7Z11Pnb4MMCdVpTM13Uy4nYI7yIo
+   +rlZ2Ep/jf2868yu3tXw02bdCnGvGT0ZWi4RYQdhljOJfLUP67qdk50jy
+   gJz1kDz5eEpFJDtL0VmMdRYBVnF24WRPZ0AHgTb3b+LROmpYUmvbHkXyj
+   e+6t7Qg3sSRNrglac+WvfgpxsmvIe67A4TMwX7hK1uuwxb8sUp0+Hi8Fj
+   HbC9wI8NA/iKpCq/CqLnDbC8KYiKpCaYVGx844FMjuRJ7jUDMDYVuuvWW
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="416504819"
+X-IronPort-AV: E=Sophos;i="6.03,228,1694761200"; 
+   d="scan'208";a="416504819"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2023 20:19:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="929209406"
+X-IronPort-AV: E=Sophos;i="6.03,228,1694761200"; 
+   d="scan'208";a="929209406"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by orsmga005.jf.intel.com with ESMTP; 15 Oct 2023 20:18:57 -0700
+Date:   Mon, 16 Oct 2023 11:17:55 +0800
+From:   Xu Yilun <yilun.xu@linux.intel.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
+        Michal Simek <michal.simek@amd.com>,
+        kernel test robot <lkp@intel.com>,
+        linux-fpga@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 net-next] xsk: Avoid starving xsk at the end of the list
-Date:   Mon, 16 Oct 2023 11:16:48 +0800
-Message-Id: <20231016031649.35088-1-huangjie.albert@bytedance.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
+Subject: Re: [PATCH] fpga: xilinx-pr-decoupler: Fix unused
+ xlnx_pr_decoupler_of_match warning for !CONFIG_OF
+Message-ID: <ZSyrY+hQvR3+fwP5@yilunxu-OptiPlex-7050>
+References: <20231012192149.1546368-1-robh@kernel.org>
+ <ZSkPjRp/xPfVQ/NB@yilunxu-OptiPlex-7050>
+ <CAL_JsqLHKTQi0i-V4C5UA6WJjnMeen0WR4jjcA4YSRXOYZOrZA@mail.gmail.com>
+ <CAL_JsqLuKF3Cnu38F9CY+_yeU8eCBpBBh82_8E6FcoAa_jU=sw@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <CAL_JsqLuKF3Cnu38F9CY+_yeU8eCBpBBh82_8E6FcoAa_jU=sw@mail.gmail.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the previous implementation, when multiple xsk sockets were
-associated with a single xsk_buff_pool, a situation could arise
-where the xsk_tx_list maintained data at the front for one xsk
-socket while starving the xsk sockets at the back of the list.
-This could result in issues such as the inability to transmit packets,
-increased latency, and jitter. To address this problem, we introduced
-a new variable called tx_budget_cache, which limits each xsk to transmit
-a maximum of MAX_XSK_TX_BUDGET tx descriptors. This allocation ensures
-equitable opportunities for subsequent xsk sockets to send tx descriptors.
-The value of MAX_XSK_TX_BUDGET is temporarily set to 16.
+On Fri, Oct 13, 2023 at 01:36:28PM -0500, Rob Herring wrote:
+> On Fri, Oct 13, 2023 at 8:15 AM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Fri, Oct 13, 2023 at 4:37 AM Xu Yilun <yilun.xu@linux.intel.com> wrote:
+> > >
+> > > On Thu, Oct 12, 2023 at 02:21:48PM -0500, Rob Herring wrote:
+> > > > Commit 8c966aadcc02 ("fpga: Use device_get_match_data()") dropped the
+> > >
+> > > Hi rob:
+> > >
+> > > Unfortunately I re-applied Commit 8c966aadcc02 and the previous commit
+> > > id is lost.
+> > >
+> > > Since the 2 patches are not upstreamed yet, could I just merge them into
+> > > one?
+> >
+> > Yes, that's fine.
+> 
+> Looks like altera-ps-spi.c also needs the same fix. Do you mind making
+> the same change there?
 
-Signed-off-by: Albert Huang <huangjie.albert@bytedance.com>
----
- include/net/xdp_sock.h |  6 ++++++
- net/xdp/xsk.c          | 18 ++++++++++++++++++
- 2 files changed, 24 insertions(+)
+Fixed & applied.
 
-diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-index 69b472604b86..f617ff54e38c 100644
---- a/include/net/xdp_sock.h
-+++ b/include/net/xdp_sock.h
-@@ -44,6 +44,7 @@ struct xsk_map {
- 	struct xdp_sock __rcu *xsk_map[];
- };
- 
-+#define MAX_XSK_TX_BUDGET 16
- struct xdp_sock {
- 	/* struct sock must be the first member of struct xdp_sock */
- 	struct sock sk;
-@@ -63,6 +64,11 @@ struct xdp_sock {
- 
- 	struct xsk_queue *tx ____cacheline_aligned_in_smp;
- 	struct list_head tx_list;
-+	/* Record the actual number of times xsk has transmitted a tx
-+	 * descriptor, with a maximum limit not exceeding MAX_XSK_TX_BUDGET
-+	 */
-+	u32 tx_budget_cache;
-+
- 	/* Protects generic receive. */
- 	spinlock_t rx_lock;
- 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index f5e96e0d6e01..087f2675333c 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -413,16 +413,25 @@ EXPORT_SYMBOL(xsk_tx_release);
- 
- bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc *desc)
- {
-+	u32 xsk_full_count = 0;
- 	struct xdp_sock *xs;
- 
- 	rcu_read_lock();
-+again:
- 	list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
-+		if (xs->tx_budget_cache >= MAX_XSK_TX_BUDGET) {
-+			xsk_full_count++;
-+			continue;
-+		}
-+
- 		if (!xskq_cons_peek_desc(xs->tx, desc, pool)) {
- 			if (xskq_has_descs(xs->tx))
- 				xskq_cons_release(xs->tx);
- 			continue;
- 		}
- 
-+		xs->tx_budget_cache++;
-+
- 		/* This is the backpressure mechanism for the Tx path.
- 		 * Reserve space in the completion queue and only proceed
- 		 * if there is space in it. This avoids having to implement
-@@ -436,6 +445,14 @@ bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc *desc)
- 		return true;
- 	}
- 
-+	if (unlikely(xsk_full_count > 0)) {
-+		list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
-+			xs->tx_budget_cache = 0;
-+		}
-+		xsk_full_count = 0;
-+		goto again;
-+	}
-+
- out:
- 	rcu_read_unlock();
- 	return false;
-@@ -1230,6 +1247,7 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
- 	xs->zc = xs->umem->zc;
- 	xs->sg = !!(xs->umem->flags & XDP_UMEM_SG_FLAG);
- 	xs->queue_id = qid;
-+	xs->tx_budget_cache = 0;
- 	xp_add_xsk(xs->pool, xs);
- 
- out_unlock:
--- 
-2.20.1
+Thanks,
+Yilun
 
+> 
+> Rob
