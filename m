@@ -2,1613 +2,828 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 013F17CA3E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 736017CA3EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232339AbjJPJTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 05:19:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41494 "EHLO
+        id S232447AbjJPJTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 05:19:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230406AbjJPJTN (ORCPT
+        with ESMTP id S232418AbjJPJTj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 05:19:13 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B23395;
-        Mon, 16 Oct 2023 02:19:09 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 81F1A66072B4;
-        Mon, 16 Oct 2023 10:19:07 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697447948;
-        bh=a8ExAXFUZCdl3Gw3edqROo1Z8ae4VIqKoHtveZ3JlFw=;
-        h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
-        b=ASObbna9fdXUS8XDC1p55qKLAgQf/E1C1z32U37Rpf6/MPFGR2O+mWjyeVxV0bLXl
-         YCYjvmBFzv4tm378ZN3z+475yxtEUy8cxP7e0sMrh2EG7y78dye2uirDGSaX2yFL73
-         zlNdAUR0ZO8mm8398aWLVkYfJ0jxPqd14NJl7lOeED8J+2+Q3ABbj/bYo3fF9uODYh
-         UMQxjctZeMlFLVTyWmmR8YEihw2Cm4O9KzhmvKnAIex3CUgxxFeJDx7YoRPSEcfkVE
-         8apFWUI4HjY0EkRN6cv5WQv2jhChK8B0csZ2K6g7gob6ER6M5s1kqESarjI0b95j3Z
-         MJzVdlMwsUefg==
-Message-ID: <07d89d63-0390-ae48-e4dd-9f6822f4d430@collabora.com>
-Date:   Mon, 16 Oct 2023 11:19:05 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH 6/9] arm64: dts: mediatek: Add MT8186 Krabby platform
- based Tentacruel / Tentacool
-To:     Chen-Yu Tsai <wenst@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231012230237.2676469-1-wenst@chromium.org>
- <20231012230237.2676469-7-wenst@chromium.org>
+        Mon, 16 Oct 2023 05:19:39 -0400
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2075.outbound.protection.outlook.com [40.107.13.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B45E8AB;
+        Mon, 16 Oct 2023 02:19:33 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I4GsT4zQI00dYebp7VTXgRi7LXJvrAlBr3us1OV5jQVcLOddwUs/x/LdZUpNgLIx+cJ3cUwCORj6pT0TtmF6mPHHXdx2CaVZk68zfq6lbvS8nYstkxSZS0B67/RGz2M1uVt1KeBEzq0Rsx4Km5QGN73PtxIvQhMfGMQ11E1cuzKh6/u7/W+NFM/w7gbDg5f8oMt8fz6y4xMjFbZizujrVCG2uXvhhg5o9vz6UEo18Wy2p3PqV7GNL2WUcOGQu5WuzhWGe4cUhQbnFMkDF6J+ADMbPXaYvtXf4ilQJ2SXMTOG8Df8bFjl2h7NEl145jn2TWjz/hrHTAJYOF0kJfZXWw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+AiuZH2mjaW9K6W4Dw2KWhj3VcRLiA54LrPCJBy6skU=;
+ b=YWZu3PpXE6xhvBVob0dR5HJOsJsPq+NnrRX2/24IqT6g/zo4yyce+/ws4MgIpkRcZovK8Njft6hUS0B/E1IYJbIJ5apDERruWFsCu8Rj7OCF/89lztyKKujlePgadvwlShnAFg+KxkkDHy4kosFgxcEawUoOlcMexHAPHA9L5rosWJiYHoVzdiem5j+kLM5f8g8hrXK49tImNCsdjwZYt6immoarhNs/t4Oh06PNc7xSni8o2Feo11T20jkAFwjjgUVlHa/EyKhILOtOfQIzD9LitGZpcANRR9FJGufz+iKRQugVAW9Nm/bfO7+40nnk0/6bPu9BVD8C4sTu4wbCVA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+AiuZH2mjaW9K6W4Dw2KWhj3VcRLiA54LrPCJBy6skU=;
+ b=iQGYzjNeUGM6MQHcHLNCfDuZRaK5SHw+lVSbHIAIacNsahGRmc6L+fSLEByxTUOgslCKMvjTfMY9tQcRCNJjMI2OMzTHPQrM53TUe38QekqhdKwp2TjMAaExCDwxxnnbnlkT4vRwkrUmy2h5U19Uerxza6lAFj3V8CxBmH7vxYM=
+Received: from PAXPR04MB9448.eurprd04.prod.outlook.com (2603:10a6:102:2b1::21)
+ by AS8PR04MB9048.eurprd04.prod.outlook.com (2603:10a6:20b:443::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36; Mon, 16 Oct
+ 2023 09:19:30 +0000
+Received: from PAXPR04MB9448.eurprd04.prod.outlook.com
+ ([fe80::3b23:7c3d:fd28:c3f2]) by PAXPR04MB9448.eurprd04.prod.outlook.com
+ ([fe80::3b23:7c3d:fd28:c3f2%7]) with mapi id 15.20.6863.043; Mon, 16 Oct 2023
+ 09:19:30 +0000
+From:   Sandor Yu <sandor.yu@nxp.com>
+To:     Alexander Stein <alexander.stein@ew.tq-group.com>,
+        "dmitry.baryshkov@linaro.org" <dmitry.baryshkov@linaro.org>,
+        "andrzej.hajda@intel.com" <andrzej.hajda@intel.com>,
+        "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
+        "Laurent.pinchart@ideasonboard.com" 
+        <Laurent.pinchart@ideasonboard.com>,
+        "jonas@kwiboo.se" <jonas@kwiboo.se>,
+        "jernej.skrabec@gmail.com" <jernej.skrabec@gmail.com>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-phy@lists .infradead.org" <linux-phy@lists.infradead.org>
+CC:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Oliver Brown <oliver.brown@nxp.com>,
+        "sam@ravnborg.org" <sam@ravnborg.org>
+Subject: RE: [EXT] Re: [PATCH v10 1/7] drm: bridge: Cadence: Creat mhdp helper
+ driver
+Thread-Topic: [EXT] Re: [PATCH v10 1/7] drm: bridge: Cadence: Creat mhdp
+ helper driver
+Thread-Index: AQHZ/YCho5kXVsQF4U27TlHQArLRzLBHUtUAgAA6AfCABI5JAIAACm4Q
+Date:   Mon, 16 Oct 2023 09:19:29 +0000
+Message-ID: <PAXPR04MB944895A03597446073AC0431F4D7A@PAXPR04MB9448.eurprd04.prod.outlook.com>
+References: <cover.1697162990.git.Sandor.yu@nxp.com>
+ <8621221.DvuYhMxLoT@steina-w>
+ <PAXPR04MB9448AC9D8090E1F5F7E39C0EF4D7A@PAXPR04MB9448.eurprd04.prod.outlook.com>
+ <3258050.aeNJFYEL58@steina-w>
+In-Reply-To: <3258050.aeNJFYEL58@steina-w>
+Accept-Language: en-US
 Content-Language: en-US
-In-Reply-To: <20231012230237.2676469-7-wenst@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PAXPR04MB9448:EE_|AS8PR04MB9048:EE_
+x-ms-office365-filtering-correlation-id: 0d20301f-a9b6-4955-026b-08dbce290078
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ulR+88flesNlkWIZ8q1w4Uoiaay8GlwUaY0KzjDcK2CBv+COvlDCTbh+3rd6624+hlU7AMmpItzzYzSL4tXmjrKiqtNdNZt8OK2Uubov6RnpjcKBSj9lHgKgwduNO4Iyos2pveiwYWSk3qsStehEdmw4LiA+75cXhrbieFoWz+9G84WwiCnqlN6nFcNroqzgI57+T9p8N+F+79msG1HEOb/pwvZRfgZ42Y+g3rnXjHUF9l67WuJrwG31glCkdchaaZwGmTuqBpaBr5B/uwUmPSte1yJ22muMogo/qA65EMtSRpdZqVhqRHrz5FKxU/gOfkA3SzN7TOZjVuxpzK7ABg92tilKEQvtP+2e8pEOviMWiZhpariw4Y21ieNqVwlof9jx8AP9pTyMJNDdM323H0b728gmuSCqmJjFVJaWdf3udFz+fj44XDq2hOH3ZolMZSuL791UMIzvcrOoMKD3dOacBFIEvwjyh7FsT3bK26LNsJ2eI7yg4B6ptWLVvw8JmsavT1vY7AkOzVSsUl01trEoHgiul7EcVBhjpUS9g8IgOVeFKMsyML9s2FTZ8SKwVEgpPzYpZMUoUD7MH1UIjxtLQz3iO8V55oF3uFwXYkF6dIOS8Ug3fS4IB335wXOn
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9448.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(396003)(136003)(366004)(376002)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(478600001)(966005)(71200400001)(45080400002)(76116006)(110136005)(66946007)(66556008)(54906003)(64756008)(66446008)(66476007)(26005)(66574015)(6506007)(7696005)(9686003)(316002)(4326008)(8676002)(8936002)(52536014)(30864003)(7416002)(2906002)(5660300002)(44832011)(41300700001)(33656002)(38070700005)(122000001)(86362001)(921005)(83380400001)(38100700002)(55016003)(579004);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?pJ98lM6kA3H5fOGM0zoalXrB6czyhw5TJxHpono1UsUh4WMGs+ui6O8r6F?=
+ =?iso-8859-1?Q?ecNGNNOc52r0s/S3sQbVUFPNvB+4TDm/E6yRC4yccTxq2tcZbgYY0YW7Tp?=
+ =?iso-8859-1?Q?irF4u0IUFNjTOlNPvVMHMhmKb8tehF9My7WfUgaMTHkOZwjl+Ck+73qA7q?=
+ =?iso-8859-1?Q?8A+fZwF63rsVodeU6naA5xiO/k4HoyejTb2kfhf++FkUAjspqZ1nC6Kwoz?=
+ =?iso-8859-1?Q?H2BBs/JxlGLXhQT2/H7+XZkvhK7yLLuAoEdCTBNkmIXpvQHqB5CNOrCV/r?=
+ =?iso-8859-1?Q?Rtaf6x8iLPeq3V3pSsozLJoOl7Q4DzkUiUO3opjI2B+D7mbUdCOTklQRFd?=
+ =?iso-8859-1?Q?cEdhD4PinRi/tcZVLDe3nsV6xXvP2pDIn4U75YUYGStiQTgAC9GuPyzzgU?=
+ =?iso-8859-1?Q?/cNes9mD+SoxeN/1JnrANkPXld0wX67BJ1ZbzpyE6dpfSFjXtyf1jkE3u4?=
+ =?iso-8859-1?Q?4/BY9luaiyuX00ml4r9Yo3MnlrMeTIfHEYPSngiVaMfh446ac47wRLr7qz?=
+ =?iso-8859-1?Q?XBQUhEbXaWGSamliOdho08qSc4uUM0bAe36UEbxl/VDlbM5pdvPWYCWC4Y?=
+ =?iso-8859-1?Q?r52qIY1SVHyLmJctSOBm8dIBCPr7BhvVhCUmspI7AHOx0FqTK4FBsaKo+h?=
+ =?iso-8859-1?Q?cvT0Fj2Zb6V/9mJfX43xvv8HHIAT33gg72I2DNbV1ExlK83OBHVTSbawYK?=
+ =?iso-8859-1?Q?XWRxF3AApNmpwC4wqmWHDS/hnMH7nlXro5WOo7FFpRcL4cyFFscEJylTvu?=
+ =?iso-8859-1?Q?MsyOdaeOJOh7aHDib2n47tGE/XRGRfyOdzYJsd1E4AvMqiKRcJyhbQyAxY?=
+ =?iso-8859-1?Q?UrX5R6U1dt69dEK4e/dIypqch88GpGu98RARRoP0KfqDQlVpaqgV9r8Odv?=
+ =?iso-8859-1?Q?dnhdocjIavvbD8CgCJmyhahxqMK8ezFWitj1XGfPbQNwrB0glr2eFMZmih?=
+ =?iso-8859-1?Q?HoC2yr4YcoN/uB8EwRBWs6x0+dN6wYOavMomSk3kSukIUOww9Q62S8BLxG?=
+ =?iso-8859-1?Q?VsCwVqTUzG9fJ783aMN3RNOT2Q8X+XD9DyxXZFYbpAiCp6lokI8IPIuiZ8?=
+ =?iso-8859-1?Q?RcuWB8Y99CGOxTNftpmuB3odkzMa9v/fsXkxivdQoyRGmYD0u3o3yflbyl?=
+ =?iso-8859-1?Q?LJLTwyjOdWKtxKEqLzBtlyGZpnP+xtrOw0bDT1fzrVxkA4eyHoR5IFreHR?=
+ =?iso-8859-1?Q?GoCCAtsRq250F0MCqphqeYhQt7fbv7FfXsFyU9bkCCwB/YOn3UFFSnZMBK?=
+ =?iso-8859-1?Q?yShYo6tFd3DBX21sEIVdWeOELPpxjXgeRXToBlg1ND8vdHT9IS7M/WKlmK?=
+ =?iso-8859-1?Q?VITooVTSKUpDqZSvBLYSpkjVe9az2kg9KPQvaTcGROma88nkM2JMQe4Bv1?=
+ =?iso-8859-1?Q?+QsVYHnIl78t3KDkLQmEwY7CeFEECoamsRJat5zKVomfkomLI2BUf1/6ZP?=
+ =?iso-8859-1?Q?aXFY0jMPbBjwmBBUJElk8f7YlbGm4Fw5CRqiG1Xp79n7xuYNghztAEGEz3?=
+ =?iso-8859-1?Q?wNfOZSWpMlSVJUcPM4jTNVUWZ+FFRygcxWC7fXIcc7EyWxhtrn9P04yCig?=
+ =?iso-8859-1?Q?TANMn0b/+tBzRHtCoo2erbGwnVCwcSxl2LfIJrbFTfi4WNEboJ5TMRBP6s?=
+ =?iso-8859-1?Q?Zr1pMEwNMOEnk=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9448.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0d20301f-a9b6-4955-026b-08dbce290078
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Oct 2023 09:19:29.9812
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: PxxDgkQIo1Llkg4oOuY75kNRjHbTdTCOjcIbAvT3O434ZK6glR1qV9B8szAEmhMxWSIMu2JV6hT+jvDSwmzj3A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB9048
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 13/10/23 01:02, Chen-Yu Tsai ha scritto:
-> Tentacruel and Tentacool are MT8186 based Chromebooks based on the
-> Krabby design.
-> 
-> Tentacruel, also known as the ASUS Chromebook CM14 Flip CM1402F, is a
-> convertible device with touchscreen and stylus.
-> 
-> Tentacool, also known as the ASUS Chromebook CM14 CM1402C, is a laptop
-> device. It does not have a touchscreen or stylus.
-> 
-> The two devices both have two variants. The difference is a second
-> source touchpad controller that shares the same address as the original,
-> but is incompatible.
-> 
-> The extra SKU IDs for the Tentacruel devices map to different sensor
-> components attached to the Embedded Controller. These are not visible
-> to the main processor.
-> 
+Hi Alexander,
+
+>
+> Hi Sandor,
+>
+> Am Montag, 16. Oktober 2023, 05:05:54 CEST schrieb Sandor Yu:
+> > Hi Alexander,
+> >
+> > Thanks your comments,
+> >
+> > > Hi Sandor,
+> > >
+> > > thanks for the updated series.
+> > >
+> > > Am Freitag, 13. Oktober 2023, 05:24:20 CEST schrieb Sandor Yu:
+> > > > MHDP8546 mailbox access functions will be share to other mhdp
+> > > > driver and Cadence HDP-TX HDMI/DP PHY drivers.
+> > > > Create a new mhdp helper driver and move all those functions into.
+> > > >
+> > > > cdns_mhdp_reg_write() is renamed to cdns_mhdp_dp_reg_write(),
+> > > > because it use the DPTX command ID DPTX_WRITE_REGISTER.
+> > > >
+> > > > New cdns_mhdp_reg_write() is created with the general command ID
+> > > > GENERAL_REGISTER_WRITE.
+> > > >
+> > > > Signed-off-by: Sandor Yu <Sandor.yu@nxp.com>
+> > > > ---
+> > > >
+> > > > v9->v10:
+> > > >  *use mhdp helper driver to replace macro functions,  move maibox
+> > > >
+> > > > access function and mhdp hdmi/dp common API  functions into the
+> > > > driver.
+> > > >
+> > > >  drivers/gpu/drm/bridge/cadence/Kconfig        |   4
+> > > >  drivers/gpu/drm/bridge/cadence/Makefile       |   1 +
+> > > >  .../gpu/drm/bridge/cadence/cdns-mhdp-helper.c | 306
+> ++++++++++++++
+> > > >  .../drm/bridge/cadence/cdns-mhdp8546-core.c   | 383
+> +++---------------
+> > > >  .../drm/bridge/cadence/cdns-mhdp8546-core.h   |  44 +-
+> > > >  include/drm/bridge/cdns-mhdp-helper.h         |  96 +++++
+> > > >  6 files changed, 473 insertions(+), 361 deletions(-)  create mode
+> > > >
+> > > > 100644 drivers/gpu/drm/bridge/cadence/cdns-mhdp-helper.c
+> > > >
+> > > >  create mode 100644 include/drm/bridge/cdns-mhdp-helper.h
+> > > >
+> > > > diff --git a/drivers/gpu/drm/bridge/cadence/Kconfig
+> > > > b/drivers/gpu/drm/bridge/cadence/Kconfig index
+> > > > ec35215a20034..0b7b4626a7af0
+> > > > 100644
+> > > > --- a/drivers/gpu/drm/bridge/cadence/Kconfig
+> > > > +++ b/drivers/gpu/drm/bridge/cadence/Kconfig
+> > > > @@ -20,6 +20,9 @@ config DRM_CDNS_DSI_J721E
+> > > >
+> > > >         the routing of the DSS DPI signal to the Cadence DSI.
+> > > >
+> > > >  endif
+> > > >
+> > > > +config CDNS_MHDP_HELPER
+> > > > +     tristate
+> > > > +
+> > > >
+> > > >  config DRM_CDNS_MHDP8546
+> > > >
+> > > >       tristate "Cadence DPI/DP bridge"
+> > > >       select DRM_DISPLAY_DP_HELPER
+> > > >
+> > > > @@ -27,6 +30,7 @@ config DRM_CDNS_MHDP8546
+> > > >
+> > > >       select DRM_DISPLAY_HELPER
+> > > >       select DRM_KMS_HELPER
+> > > >       select DRM_PANEL_BRIDGE
+> > > >
+> > > > +     select CDNS_MHDP_HELPER
+> > > >
+> > > >       depends on OF
+> > > >       help
+> > > >
+> > > >         Support Cadence DPI to DP bridge. This is an internal diff
+> > > >
+> > > > --git a/drivers/gpu/drm/bridge/cadence/Makefile
+> > > > b/drivers/gpu/drm/bridge/cadence/Makefile index
+> > > > c95fd5b81d137..087dc074820d7 100644
+> > > > --- a/drivers/gpu/drm/bridge/cadence/Makefile
+> > > > +++ b/drivers/gpu/drm/bridge/cadence/Makefile
+> > > > @@ -2,6 +2,7 @@
+> > > >
+> > > >  obj-$(CONFIG_DRM_CDNS_DSI) +=3D cdns-dsi.o  cdns-dsi-y :=3D
+> > > >
+> > > > cdns-dsi-core.o
+> > > >
+> > > >  cdns-dsi-$(CONFIG_DRM_CDNS_DSI_J721E) +=3D cdns-dsi-j721e.o
+> > > >
+> > > > +obj-$(CONFIG_CDNS_MHDP_HELPER) +=3D cdns-mhdp-helper.o
+> > > >
+> > > >  obj-$(CONFIG_DRM_CDNS_MHDP8546) +=3D cdns-mhdp8546.o
+> > >
+> > > cdns-mhdp8546-y
+> > >
+> > > > :=3D cdns-mhdp8546-core.o cdns-mhdp8546-hdcp.o
+> > > > :
+> > > >  cdns-mhdp8546-$(CONFIG_DRM_CDNS_MHDP8546_J721E) +=3D
+> > > >
+> > > > cdns-mhdp8546-j721e.o diff --git
+> > > > a/drivers/gpu/drm/bridge/cadence/cdns-mhdp-helper.c
+> > > > b/drivers/gpu/drm/bridge/cadence/cdns-mhdp-helper.c new file mode
+> > > > 100644 index 0000000000000..2e3eee40494f0
+> > > > --- /dev/null
+> > > > +++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp-helper.c
+> > > > @@ -0,0 +1,306 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0-only
+> > > > +/*
+> > > > + * Copyright (C) 2023 NXP Semiconductor, Inc.
+> > > > + *
+> > > > + */
+> > > > +#include <drm/bridge/cdns-mhdp-helper.h> #include
+> > > > +<linux/dev_printk.h> #include <linux/module.h>
+> > > > +
+> > > > +/* Mailbox helper functions */
+> > > > +int cdns_mhdp_mailbox_read(struct cdns_mhdp_base *base) {
+> > > > +     int ret, empty;
+> > > > +
+> > > > +     WARN_ON(!mutex_is_locked(base->mbox_mutex));
+> > > > +
+> > > > +     ret =3D readx_poll_timeout(readl, base->regs +
+> > >
+> > > CDNS_MAILBOX_EMPTY,
+> > >
+> > > > +                              empty, !empty,
+> MAILBOX_RETRY_US,
+> > > > +                              MAILBOX_TIMEOUT_US);
+> > > > +     if (ret < 0)
+> > > > +             return ret;
+> > > > +
+> > > > +     return readl(base->regs + CDNS_MAILBOX_RX_DATA) & 0xff; }
+> > > > +EXPORT_SYMBOL_GPL(cdns_mhdp_mailbox_read);
+> > >
+> > > No need to export this. You can make this function actually static.
+> >
+> > OK, I will change it to static in the next version.
+> >
+> > > > +
+> > > > +int cdns_mhdp_mailbox_write(struct cdns_mhdp_base *base, u8 val) {
+> > > > +     int ret, full;
+> > > > +
+> > > > +     WARN_ON(!mutex_is_locked(base->mbox_mutex));
+> > > > +
+> > > > +     ret =3D readx_poll_timeout(readl, base->regs +
+> CDNS_MAILBOX_FULL,
+> > > > +                              full, !full, MAILBOX_RETRY_US,
+> > > > +                              MAILBOX_TIMEOUT_US);
+> > > > +     if (ret < 0)
+> > > > +             return ret;
+> > > > +
+> > > > +     writel(val, base->regs + CDNS_MAILBOX_TX_DATA);
+> > > > +
+> > > > +     return 0;
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(cdns_mhdp_mailbox_write);
+> > >
+> > > No need to export that one as well. You can make this function
+> > > actually static as these two functions are only called from the helpe=
+r itself.
+> >
+> > mhdp8546 driver need this function.
+>
+> True, cdns_mhdp_set_firmware_active() needs this. But this call seems a b=
+it
+> fishy. Couldn't this be written as follow?
+>
+> ---8<--
+> diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+> b/drivers/ gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+> index 0582a5e42763f..c0364d05406cd 100644
+> --- a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+> +++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+> @@ -78,22 +78,16 @@ static void cdns_mhdp_bridge_hpd_disable(struct
+> drm_bridge
+> *bridge)
+>  static
+>  int cdns_mhdp_set_firmware_active(struct cdns_mhdp_device *mhdp, bool
+> enable)  {
+> -       u8 msg[5];
+> +       u8 msg[1];
+>         int ret, i;
+>
+> -       msg[0] =3D GENERAL_MAIN_CONTROL;
+> -       msg[1] =3D MB_MODULE_ID_GENERAL;
+> -       msg[2] =3D 0;
+> -       msg[3] =3D 1;
+> -       msg[4] =3D enable ? FW_ACTIVE : FW_STANDBY;
+> +       msg[0] =3D enable ? FW_ACTIVE : FW_STANDBY;
+>
+>         mutex_lock(&mhdp->mbox_mutex);
+>
+> -       for (i =3D 0; i < sizeof(msg); i++) {
+> -               ret =3D cdns_mhdp_mailbox_write(&mhdp->base, msg[i]);
+> -               if (ret)
+> -                       goto out;
+> -       }
+> +       ret =3D cdns_mhdp_mailbox_send(base, MB_MODULE_ID_GENERAL,
+> +                                    GENERAL_MAIN_CONTROL,
+> +                                    sizeof(msg), msg);
+>
+>         /* read the firmware state */
+>         ret =3D cdns_mhdp_mailbox_recv_data(&mhdp->base, msg,
+> sizeof(msg));
+> ---8<--
+>
+> AFAICS cdns_mhdp_mailbox_send() is only a sequence of writes, writing 4
+> byte header and 1 byte data in this case.
+>
+
+Yes, cdns_mhdp_mailbox_send() could be use to replace cdns_mhdp_mailbox_wri=
+te() in the function.
+OK, I will add the change into this patch in the next version, thanks.
+
+B.R
+Sandor
+
+> Best regards,
+> Alexander
+>
+> >
+> > > > +
+> > > > +int cdns_mhdp_mailbox_recv_header(struct cdns_mhdp_base *base,
+> > > > +                               u8 module_id, u8 opcode,
+> > > > +                               u16 req_size) {
+> > > > +     u32 mbox_size, i;
+> > > > +     u8 header[4];
+> > > > +     int ret;
+> > > > +
+> > > > +     /* read the header of the message */
+> > > > +     for (i =3D 0; i < sizeof(header); i++) {
+> > > > +             ret =3D cdns_mhdp_mailbox_read(base);
+> > > > +             if (ret < 0)
+> > > > +                     return ret;
+> > > > +
+> > > > +             header[i] =3D ret;
+> > > > +     }
+> > > > +
+> > > > +     mbox_size =3D get_unaligned_be16(header + 2);
+> > > > +
+> > > > +     if (opcode !=3D header[0] || module_id !=3D header[1] ||
+> > > > +         req_size !=3D mbox_size) {
+> > > > +             /*
+> > > > +              * If the message in mailbox is not what we want, we
+> > > > + need
+> > >
+> > > to
+> > >
+> > > > +              * clear the mailbox by reading its contents.
+> > > > +              */
+> > > > +             for (i =3D 0; i < mbox_size; i++)
+> > > > +                     if (cdns_mhdp_mailbox_read(base) < 0)
+> > > > +                             break;
+> > > > +
+> > > > +             return -EINVAL;
+> > > > +     }
+> > > > +
+> > > > +     return 0;
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(cdns_mhdp_mailbox_recv_header);
+> > > > +
+> > > > +int cdns_mhdp_mailbox_recv_data(struct cdns_mhdp_base *base,
+> > > > +                             u8 *buff, u16 buff_size) {
+> > > > +     u32 i;
+> > > > +     int ret;
+> > > > +
+> > > > +     for (i =3D 0; i < buff_size; i++) {
+> > > > +             ret =3D cdns_mhdp_mailbox_read(base);
+> > > > +             if (ret < 0)
+> > > > +                     return ret;
+> > > > +
+> > > > +             buff[i] =3D ret;
+> > > > +     }
+> > > > +
+> > > > +     return 0;
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(cdns_mhdp_mailbox_recv_data);
+> > > > +
+> > > > +int cdns_mhdp_mailbox_send(struct cdns_mhdp_base *base, u8
+> > >
+> > > module_id,
+> > >
+> > > > +                        u8 opcode, u16 size, u8 *message) {
+> > > > +     u8 header[4];
+> > > > +     int ret, i;
+> > > > +
+> > > > +     header[0] =3D opcode;
+> > > > +     header[1] =3D module_id;
+> > > > +     put_unaligned_be16(size, header + 2);
+> > > > +
+> > > > +     for (i =3D 0; i < sizeof(header); i++) {
+> > > > +             ret =3D cdns_mhdp_mailbox_write(base, header[i]);
+> > > > +             if (ret)
+> > > > +                     return ret;
+> > > > +     }
+> > > > +
+> > > > +     for (i =3D 0; i < size; i++) {
+> > > > +             ret =3D cdns_mhdp_mailbox_write(base, message[i]);
+> > > > +             if (ret)
+> > > > +                     return ret;
+> > > > +     }
+> > > > +
+> > > > +     return 0;
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(cdns_mhdp_mailbox_send);
+> > > > +
+> > > > +/* General helper functions */
+> > > > +int cdns_mhdp_reg_read(struct cdns_mhdp_base *base, u32 addr, u32
+> > > > +*value) {
+> > > > +     u8 msg[4], resp[8];
+> > > > +     int ret;
+> > > > +
+> > > > +     put_unaligned_be32(addr, msg);
+> > > > +
+> > > > +     mutex_lock(base->mbox_mutex);
+> > > > +
+> > > > +     ret =3D cdns_mhdp_mailbox_send(base,
+> MB_MODULE_ID_GENERAL,
+> > > > +                                  GENERAL_REGISTER_READ,
+> > > > +                                  sizeof(msg), msg);
+> > > > +     if (ret)
+> > > > +             goto out;
+> > > > +
+> > > > +     ret =3D cdns_mhdp_mailbox_recv_header(base,
+> > >
+> > > MB_MODULE_ID_GENERAL,
+> > >
+> > > > +
+> > >
+> > > GENERAL_REGISTER_READ,
+> > >
+> > > > +                                         sizeof(resp));
+> > > > +     if (ret)
+> > > > +             goto out;
+> > > > +
+> > > > +     ret =3D cdns_mhdp_mailbox_recv_data(base, resp, sizeof(resp))=
+;
+> > > > +     if (ret)
+> > > > +             goto out;
+> > > > +
+> > > > +     /* Returned address value should be the same as requested */
+> > > > +     if (memcmp(msg, resp, sizeof(msg))) {
+> > > > +             ret =3D -EINVAL;
+> > > > +             goto out;
+> > > > +     }
+> > > > +
+> > > > +     *value =3D get_unaligned_be32(resp + 4);
+> > > > +
+> > > > +out:
+> > > > +     mutex_unlock(base->mbox_mutex);
+> > > > +     if (ret) {
+> > > > +             dev_err(base->dev, "Failed to read register\n");
+> > > > +             *value =3D 0;
+> > > > +     }
+> > > > +
+> > > > +     return ret;
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(cdns_mhdp_reg_read);
+> > > > +
+> > > > +int cdns_mhdp_reg_write(struct cdns_mhdp_base *base, u32 addr,
+> > > > +u32
+> > > > +val) {
+> > > > +     u8 msg[8];
+> > > > +     int ret;
+> > > > +
+> > > > +     put_unaligned_be32(addr, msg);
+> > > > +     put_unaligned_be32(val, msg + 4);
+> > > > +
+> > > > +     mutex_lock(base->mbox_mutex);
+> > > > +
+> > > > +     ret =3D cdns_mhdp_mailbox_send(base,
+> MB_MODULE_ID_GENERAL,
+> > > > +
+> GENERAL_REGISTER_WRITE,
+> > > > +                                  sizeof(msg), msg);
+> > > > +
+> > > > +     mutex_unlock(base->mbox_mutex);
+> > > > +
+> > > > +     return ret;
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(cdns_mhdp_reg_write);
+> > > > +
+> > > > +/* DPTX helper functions */
+> > > > +int cdns_mhdp_dp_reg_write(struct cdns_mhdp_base *base, u16 addr,
+> > >
+> > > u32
+> > >
+> > > > +val) {
+> > > > +     u8 msg[6];
+> > > > +     int ret;
+> > > > +
+> > > > +     put_unaligned_be16(addr, msg);
+> > > > +     put_unaligned_be32(val, msg + 2);
+> > > > +
+> > > > +     mutex_lock(base->mbox_mutex);
+> > > > +
+> > > > +     ret =3D cdns_mhdp_mailbox_send(base, MB_MODULE_ID_DP_TX,
+> > > > +                                  DPTX_WRITE_REGISTER,
+> > >
+> > > sizeof(msg),
+> > > msg);
+> > >
+> > > > +
+> > > > +     mutex_unlock(base->mbox_mutex);
+> > > > +
+> > > > +     return ret;
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(cdns_mhdp_dp_reg_write);
+> > > > +
+> > > > +int cdns_mhdp_dp_reg_write_bit(struct cdns_mhdp_base *base, u16
+> addr,
+> > > > +                            u8 start_bit, u8 bits_no, u32 val) {
+> > > > +     u8 field[8];
+> > > > +     int ret;
+> > > > +
+> > > > +     put_unaligned_be16(addr, field);
+> > > > +     field[2] =3D start_bit;
+> > > > +     field[3] =3D bits_no;
+> > > > +     put_unaligned_be32(val, field + 4);
+> > > > +
+> > > > +     mutex_lock(base->mbox_mutex);
+> > > > +
+> > > > +     ret =3D cdns_mhdp_mailbox_send(base, MB_MODULE_ID_DP_TX,
+> > > > +                                  DPTX_WRITE_FIELD,
+> > >
+> > > sizeof(field),
+> > > field);
+> > >
+> > > > +
+> > > > +     mutex_unlock(base->mbox_mutex);
+> > > > +
+> > > > +     return ret;
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(cdns_mhdp_dp_reg_write_bit);
+> > > > +
+> > > > +int cdns_mhdp_dpcd_read(struct cdns_mhdp_base *base,
+> > > > +                     u32 addr, u8 *data, u16 len) {
+> > > > +     u8 msg[5], reg[5];
+> > > > +     int ret;
+> > > > +
+> > > > +     put_unaligned_be16(len, msg);
+> > > > +     put_unaligned_be24(addr, msg + 2);
+> > > > +
+> > > > +     mutex_lock(base->mbox_mutex);
+> > > > +
+> > > > +     ret =3D cdns_mhdp_mailbox_send(base, MB_MODULE_ID_DP_TX,
+> > > > +                                  DPTX_READ_DPCD,
+> sizeof(msg),
+> > >
+> > > msg);
+> > >
+> > > > +     if (ret)
+> > > > +             goto out;
+> > > > +
+> > > > +     ret =3D cdns_mhdp_mailbox_recv_header(base,
+> > >
+> > > MB_MODULE_ID_DP_TX,
+> > >
+> > > > +                                         DPTX_READ_DPCD,
+> > > > +                                         sizeof(reg) + len);
+> > > > +     if (ret)
+> > > > +             goto out;
+> > > > +
+> > > > +     ret =3D cdns_mhdp_mailbox_recv_data(base, reg, sizeof(reg));
+> > > > +     if (ret)
+> > > > +             goto out;
+> > > > +
+> > > > +     ret =3D cdns_mhdp_mailbox_recv_data(base, data, len);
+> > > > +
+> > > > +out:
+> > > > +     mutex_unlock(base->mbox_mutex);
+> > > > +
+> > > > +     return ret;
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(cdns_mhdp_dpcd_read);
+> > > > +
+> > > > +int cdns_mhdp_dpcd_write(struct cdns_mhdp_base *base, u32 addr,
+> > > > +u8
+> > > > +value) {
+> > > > +     u8 msg[6], reg[5];
+> > > > +     int ret;
+> > > > +
+> > > > +     put_unaligned_be16(1, msg);
+> > > > +     put_unaligned_be24(addr, msg + 2);
+> > > > +     msg[5] =3D value;
+> > > > +
+> > > > +     mutex_lock(base->mbox_mutex);
+> > > > +
+> > > > +     ret =3D cdns_mhdp_mailbox_send(base, MB_MODULE_ID_DP_TX,
+> > > > +                                  DPTX_WRITE_DPCD,
+> > >
+> > > sizeof(msg),
+> > > msg);
+> > >
+> > > > +     if (ret)
+> > > > +             goto out;
+> > > > +
+> > > > +     ret =3D cdns_mhdp_mailbox_recv_header(base,
+> > >
+> > > MB_MODULE_ID_DP_TX,
+> > >
+> > > > +
+> DPTX_WRITE_DPCD,
+> > >
+> > > sizeof(reg));
+> > >
+> > > > +     if (ret)
+> > > > +             goto out;
+> > > > +
+> > > > +     ret =3D cdns_mhdp_mailbox_recv_data(base, reg, sizeof(reg));
+> > > > +     if (ret)
+> > > > +             goto out;
+> > > > +
+> > > > +     if (addr !=3D get_unaligned_be24(reg + 2))
+> > > > +             ret =3D -EINVAL;
+> > > > +
+> > > > +out:
+> > > > +     mutex_unlock(base->mbox_mutex);
+> > > > +
+> > > > +     if (ret)
+> > > > +             dev_err(base->dev, "dpcd write failed: %d\n", ret);
+> > > > +     return ret;
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(cdns_mhdp_dpcd_write);
+> > > > +
+> > > > +MODULE_DESCRIPTION("Cadence MHDP Helper driver");
+> > > > +MODULE_AUTHOR("Sandor Yu <Sandor.yu@nxp.com>");
+> > > > +MODULE_LICENSE("GPL");
+> > > > [...]
+> > > > diff --git a/include/drm/bridge/cdns-mhdp-helper.h
+> > > > b/include/drm/bridge/cdns-mhdp-helper.h new file mode 100644 index
+> > > > 0000000000000..b89db9e842266
+> > > > --- /dev/null
+> > > > +++ b/include/drm/bridge/cdns-mhdp-helper.h
+> > > > @@ -0,0 +1,96 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0-only
+> > > > +/*
+> > > > + * Copyright (C) 2023 NXP Semiconductor, Inc.
+> > > > + */
+> > > > +#ifndef __CDNS_MHDP_HELPER_H__
+> > > > +#define __CDNS_MHDP_HELPER_H__
+> > > > +
+> > > > +#include <asm/unaligned.h>
+> > > > +#include <linux/iopoll.h>
+> > > > +
+> > > > +/* mailbox regs offset */
+> > > > +#define CDNS_MAILBOX_FULL                    0x00008
+> > > > +#define CDNS_MAILBOX_EMPTY                   0x0000c
+> > > > +#define CDNS_MAILBOX_TX_DATA                 0x00010
+> > > > +#define CDNS_MAILBOX_RX_DATA                 0x00014
+> > > > +
+> > > > +#define MAILBOX_RETRY_US                     1000
+> > > > +#define MAILBOX_TIMEOUT_US                   2000000
+> > > > +
+> > > > +/* Module ID Code */
+> > > > +#define MB_MODULE_ID_DP_TX                   0x01
+> > > > +#define MB_MODULE_ID_HDMI_TX                 0x03
+> > > > +#define MB_MODULE_ID_HDCP_TX                 0x07
+> > > > +#define MB_MODULE_ID_HDCP_RX                 0x08
+> > > > +#define MB_MODULE_ID_HDCP_GENERAL            0x09
+> > > > +#define MB_MODULE_ID_GENERAL                 0x0A
+> > > > +
+> > > > +/* General Commands */
+> > > > +#define GENERAL_MAIN_CONTROL                 0x01
+> > > > +#define GENERAL_TEST_ECHO                    0x02
+> > > > +#define GENERAL_BUS_SETTINGS                 0x03
+> > > > +#define GENERAL_TEST_ACCESS                  0x04
+> > > > +#define GENERAL_REGISTER_WRITE                       0x05
+> > > > +#define GENERAL_WRITE_FIELD                  0x06
+> > > > +#define GENERAL_REGISTER_READ                        0x07
+> > > > +#define GENERAL_GET_HPD_STATE                        0x11
+> > > > +
+> > > > +/* DPTX Commands */
+> > > > +#define DPTX_SET_POWER_MNG                   0x00
+> > > > +#define DPTX_SET_HOST_CAPABILITIES           0x01
+> > > > +#define DPTX_GET_EDID                                0x02
+> > > > +#define DPTX_READ_DPCD                               0x03
+> > > > +#define DPTX_WRITE_DPCD                              0x04
+> > > > +#define DPTX_ENABLE_EVENT                    0x05
+> > > > +#define DPTX_WRITE_REGISTER                  0x06
+> > > > +#define DPTX_READ_REGISTER                   0x07
+> > > > +#define DPTX_WRITE_FIELD                     0x08
+> > > > +#define DPTX_TRAINING_CONTROL                        0x09
+> > > > +#define DPTX_READ_EVENT                              0x0a
+> > > > +#define DPTX_READ_LINK_STAT                  0x0b
+> > > > +#define DPTX_SET_VIDEO                               0x0c
+> > > > +#define DPTX_SET_AUDIO                               0x0d
+> > > > +#define DPTX_GET_LAST_AUX_STAUS                      0x0e
+> > > > +#define DPTX_SET_LINK_BREAK_POINT            0x0f
+> > > > +#define DPTX_FORCE_LANES                     0x10
+> > > > +#define DPTX_HPD_STATE                               0x11
+> > > > +#define DPTX_ADJUST_LT                               0x12
+> > > > +
+> > > > +/* HDMI TX Commands */
+> > > > +#define HDMI_TX_READ                         0x00
+> > > > +#define HDMI_TX_WRITE                                0x01
+> > > > +#define HDMI_TX_UPDATE_READ                  0x02
+> > > > +#define HDMI_TX_EDID                         0x03
+> > > > +#define HDMI_TX_EVENTS                               0x04
+> > > > +#define HDMI_TX_HPD_STATUS                   0x05
+> > > > +
+> > > > +struct cdns_mhdp_base {
+> > > > +     struct device *dev;
+> > > > +     void __iomem *regs;
+> > > > +     /* protect mailbox communications with the firmware */
+> > > > +     struct mutex *mbox_mutex;
+> > > > +};
+> > > > +
+> > > > +/* Mailbox helper functions */
+> > > > +int cdns_mhdp_mailbox_read(struct cdns_mhdp_base *base); int
+> > > > +cdns_mhdp_mailbox_write(struct cdns_mhdp_base *base, u8 val);
+> > >
+> > > You can remove these two declarations.
+> >
+> > cdns_mhdp_mailbox_read will be removed. Thanks!
+> >
+> > B.R
+> > Sandor
+> >
+> > > Best regards,
+> > > Alexander
+> > >
+> > > Best regards,
+> > >
+> > > > +int cdns_mhdp_mailbox_recv_header(struct cdns_mhdp_base *base,
+> > > > +                               u8 module_id, u8 opcode, u16
+> > >
+> > > req_size);
+> > >
+> > > > +int cdns_mhdp_mailbox_recv_data(struct cdns_mhdp_base *base,
+> > > > +                             u8 *buff, u16 buff_size); int
+> > > > +cdns_mhdp_mailbox_send(struct cdns_mhdp_base *base, u8
+> module_id,
+> > > > +                        u8 opcode, u16 size, u8 *message);
+> > > > +
+> > > > +/* General commands helper functions */ int
+> > > > +cdns_mhdp_reg_read(struct cdns_mhdp_base *base, u32 addr, u32
+> > > > +*value); int cdns_mhdp_reg_write(struct cdns_mhdp_base *base, u32
+> > > > +addr, u32 val);
+> > > > +
+> > > > +/* DPTX commands helper functions */ int
+> > > > +cdns_mhdp_dp_reg_write(struct cdns_mhdp_base *base, u16 addr,
+> > >
+> > > u32
+> > >
+> > > > +val); int cdns_mhdp_dp_reg_write_bit(struct cdns_mhdp_base *base,
+> > > > +u16 addr, +
+> > > >
+> > > >       u8 start_bit, u8 bits_no, u32 val);
+> > > >
+> > > > +int cdns_mhdp_dpcd_read(struct cdns_mhdp_base *base,
+> > > > +                     u32 addr, u8 *data, u16 len); int
+> > > > +cdns_mhdp_dpcd_write(struct cdns_mhdp_base *base, u32 addr, u8
+> > > > +value);
+> > > > +
+> > > > +#endif /* __CDNS_MHDP_HELPER_H__ */
+> > >
+> > > TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germ=
+any
+> > > Amtsgericht M=FCnchen, HRB 105018
+> > > Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schnei=
+der
+>
+>
+> --
+> TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+> Amtsgericht M=FCnchen, HRB 105018
+> Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+> http://www.tq/
+> -group.com%2F&data=3D05%7C01%7Csandor.yu%40nxp.com%7C2cd8764806d
+> c476182da08dbce22347e%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7
+> C0%7C638330418532038510%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4
+> wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%
+> 7C%7C%7C&sdata=3D0d9o40bvznT6Ef1Ugg6m%2F6Ca8odJtl80js6X17rUWzA%3
+> D&reserved=3D0
+>
 
-Hello Chen-Yu,
-
-Thanks for the patch! However, there are a few things to improve...
-
-the general shape of this looks mostly fine, but there's some comment, check below.
-
-> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-> ---
->   arch/arm64/boot/dts/mediatek/Makefile         |    4 +
->   .../dts/mediatek/mt8186-corsola-krabby.dtsi   |  130 ++
->   .../mt8186-corsola-tentacool-sku327681.dts    |   49 +
->   .../mt8186-corsola-tentacool-sku327683.dts    |   26 +
->   .../mt8186-corsola-tentacruel-sku262144.dts   |   44 +
->   .../mt8186-corsola-tentacruel-sku262148.dts   |   28 +
->   .../boot/dts/mediatek/mt8186-corsola.dtsi     | 1704 +++++++++++++++++
->   7 files changed, 1985 insertions(+)
->   create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-krabby.dtsi
->   create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacool-sku327681.dts
->   create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacool-sku327683.dts
->   create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacruel-sku262144.dts
->   create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacruel-sku262148.dts
->   create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola.dtsi
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
-> index e6e7592a3645..442af61b1305 100644
-> --- a/arch/arm64/boot/dts/mediatek/Makefile
-> +++ b/arch/arm64/boot/dts/mediatek/Makefile
-> @@ -43,6 +43,10 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-kodama-sku32.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku0.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku176.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-pumpkin.dtb
-> +dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-tentacool-sku327681.dtb
-> +dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-tentacool-sku327683.dtb
-> +dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-tentacruel-sku262144.dtb
-> +dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-tentacruel-sku262148.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-evb.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8192-asurada-hayato-r1.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8192-asurada-hayato-r5-sku2.dtb
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8186-corsola-krabby.dtsi b/arch/arm64/boot/dts/mediatek/mt8186-corsola-krabby.dtsi
-> new file mode 100644
-> index 000000000000..0586c24f1e12
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/mediatek/mt8186-corsola-krabby.dtsi
-> @@ -0,0 +1,130 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Copyright 2023 Google LLC
-> + */
-> +
-> +/dts-v1/;
-> +#include "mt8186-corsola.dtsi"
-> +#include <dt-bindings/gpio/gpio.h>
-> +
-> +/ {
-> +	aliases {
-> +		i2c4 = &i2c4;
-> +	};
-> +};
-> +
-> +&dsi_out {
-> +	remote-endpoint = <&ps8640_in>;
-> +};
-> +
-> +&i2c0 {
-> +	clock-frequency = <400000>;
-> +
-> +	ps8640: edp-bridge@8 {
-> +		compatible = "parade,ps8640";
-> +		reg = <0x8>;
-> +		powerdown-gpios = <&pio 96 GPIO_ACTIVE_LOW>;
-> +		reset-gpios = <&pio 98 GPIO_ACTIVE_LOW>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&ps8640_pins>;
-> +		vdd12-supply = <&mt6366_vrf12_reg>;
-> +		vdd33-supply = <&mt6366_vcn33_reg>;
-> +
-> +		ports {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			port@0 {
-> +				reg = <0>;
-> +
-> +				ps8640_in: endpoint {
-> +					remote-endpoint = <&dsi_out>;
-> +				};
-> +			};
-> +
-> +			port@1 {
-> +				reg = <1>;
-> +
-> +				ps8640_out: endpoint {
-> +					remote-endpoint = <&panel_in>;
-> +				};
-> +			};
-> +		};
-> +
-> +		aux-bus {
-> +			panel {
-> +				compatible = "edp-panel";
-> +				power-supply = <&pp3300_disp_x>;
-> +				backlight = <&backlight_lcd0>;
-> +
-> +				port {
-> +					panel_in: endpoint {
-> +						remote-endpoint = <&ps8640_out>;
-> +					};
-> +				};
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&i2c1 {
-> +	i2c-scl-internal-delay-ns = <10000>;
-> +
-> +	touchscreen: touchscreen@10 {
-> +		compatible = "hid-over-i2c";
-> +		reg = <0x10>;
-> +		interrupts-extended = <&pio 12 IRQ_TYPE_LEVEL_LOW>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&touchscreen_pins>;
-> +		post-power-on-delay-ms = <10>;
-> +		hid-descr-addr = <0x0001>;
-> +		vdd-supply = <&pp3300_s3>;
-> +	};
-> +};
-> +
-> +&i2c4 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&i2c4_pins>;
-> +	clock-frequency = <400000>;
-> +	status = "okay";
-> +
-> +	proximity@28 {
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&sar_sensor_pins>;
-
-pinctrl nodes at the beginning? Noupe. :-)
-
-> +		compatible = "semtech,sx9324";
-> +		reg = <0x28>;
-> +		interrupt-parent = <&pio>;
-> +		interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
-> +		vdd-supply = <&mt6366_vio18_reg>;
-> +		svdd-supply = <&mt6366_vio18_reg>;
-> +		#io-channel-cells = <1>;
-> +	};
-> +};
-> +
-> +&pio {
-> +	i2c4_pins: i2c4-pins {
-> +		pins-bus {
-> +			pinmux = <PINMUX_GPIO136__FUNC_SDA4>,
-> +				 <PINMUX_GPIO135__FUNC_SCL4>;
-> +			bias-disable;
-> +			drive-strength = <4>;
-> +			input-enable;
-> +		};
-> +	};
-> +
-> +	ps8640_pins: ps8640-pins {
-> +		pins {
-
-pins-pwrdn-rst
-
-> +			pinmux = <PINMUX_GPIO96__FUNC_GPIO96>,
-> +				 <PINMUX_GPIO98__FUNC_GPIO98>;
-> +			output-low;
-> +		};
-> +	};
-> +
-> +	sar_sensor_pins: sar-sensor-pins {
-> +		pin-irq {
-> +			pinmux = <PINMUX_GPIO5__FUNC_GPIO5>;
-> +			input-enable;
-> +			bias-pull-up;
-> +		};
-> +	};
-> +};
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacool-sku327681.dts b/arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacool-sku327681.dts
-> new file mode 100644
-> index 000000000000..8dfc24afabea
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacool-sku327681.dts
-> @@ -0,0 +1,49 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Copyright 2023 Google LLC
-> + */
-> +
-> +/dts-v1/;
-> +#include "mt8186-corsola-krabby.dtsi"
-> +
-> +/ {
-> +	model = "Google Tentacool board";
-> +	compatible = "google,tentacruel-sku327681", "google,tentacruel", "mediatek,mt8186";
-> +	chassis-type = "laptop";
-> +};
-> +
-> +/delete-node/ &gpio_keys;
-> +/delete-node/ &touchscreen;
-
-You don't need to delete the touchscreen node if you're disabling i2c1 entirely.
-Besides, I'd rather see TS disabled by default, then enabled on a per-board-basis
-as I think that this clarifies that "board X" has touchscreen, but "board Y" does
-not, because it's "enabled" only on "board X".
-
-> +
-> +&i2c1 {
-> +	status = "disabled";
-> +};
-> +
-> +&keyboard_controller {
-> +	function-row-physmap = <
-> +		MATRIX_KEY(0x00, 0x02, 0)	/* T1 */
-> +		MATRIX_KEY(0x03, 0x02, 0)	/* T2 */
-> +		MATRIX_KEY(0x02, 0x02, 0)	/* T3 */
-> +		MATRIX_KEY(0x01, 0x02, 0)	/* T4 */
-> +		MATRIX_KEY(0x03, 0x04, 0)	/* T5 */
-> +		MATRIX_KEY(0x02, 0x04, 0)	/* T6 */
-> +		MATRIX_KEY(0x01, 0x04, 0)	/* T7 */
-> +		MATRIX_KEY(0x02, 0x09, 0)	/* T8 */
-> +		MATRIX_KEY(0x01, 0x09, 0)	/* T9 */
-> +		MATRIX_KEY(0x00, 0x04, 0)	/* T10 */
-> +	>;
-> +
-> +	linux,keymap = <
-> +		MATRIX_KEY(0x00, 0x02, KEY_BACK)
-> +		MATRIX_KEY(0x03, 0x02, KEY_REFRESH)
-> +		MATRIX_KEY(0x02, 0x02, KEY_ZOOM)
-> +		MATRIX_KEY(0x01, 0x02, KEY_SCALE)
-> +		MATRIX_KEY(0x03, 0x04, KEY_SYSRQ)
-> +		MATRIX_KEY(0x02, 0x04, KEY_BRIGHTNESSDOWN)
-> +		MATRIX_KEY(0x01, 0x04, KEY_BRIGHTNESSUP)
-> +		MATRIX_KEY(0x02, 0x09, KEY_MUTE)
-> +		MATRIX_KEY(0x01, 0x09, KEY_VOLUMEDOWN)
-> +		MATRIX_KEY(0x00, 0x04, KEY_VOLUMEUP)
-> +		CROS_STD_MAIN_KEYMAP
-> +	>;
-> +};
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacool-sku327683.dts b/arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacool-sku327683.dts
-> new file mode 100644
-> index 000000000000..9b10336ede06
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacool-sku327683.dts
-> @@ -0,0 +1,26 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Copyright 2023 Google LLC
-> + */
-> +
-> +#include "mt8186-corsola-tentacool-sku327681.dts"
-> +
-> +/ {
-> +	compatible = "google,tentacruel-sku327683", "google,tentacruel", "mediatek,mt8186";
-> +};
-> +
-> +/* This variant replaces only the touchpad controller. */
-> +&i2c2 {
-> +	/delete-node/ touchpad@15;
-> +
-> +	touchpad@15 {
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&trackpad_pin>;
-> +		compatible = "hid-over-i2c";
-> +		reg = <0x15>;
-> +		interrupts-extended = <&pio 11 IRQ_TYPE_LEVEL_LOW>;
-> +		hid-descr-addr = <0x0001>;
-> +		vcc-supply = <&pp3300_s3>;
-> +		wakeup-source;
-> +	};
-> +};
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacruel-sku262144.dts b/arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacruel-sku262144.dts
-> new file mode 100644
-> index 000000000000..26e9f19758cb
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacruel-sku262144.dts
-> @@ -0,0 +1,44 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Copyright 2022 Google LLC
-> + */
-> +
-> +/dts-v1/;
-> +#include "mt8186-corsola-krabby.dtsi"
-> +
-> +/ {
-> +	model = "Google Tentacruel board";
-> +	compatible = "google,tentacruel-sku262144", "google,tentacruel-sku262145",
-> +		     "google,tentacruel-sku262146", "google,tentacruel-sku262147",
-> +		     "google,tentacruel", "mediatek,mt8186";
-> +	chassis-type = "convertible";
-> +};
-> +
-> +&keyboard_controller {
-> +	function-row-physmap = <
-> +		MATRIX_KEY(0x00, 0x02, 0)	/* T1 */
-> +		MATRIX_KEY(0x03, 0x02, 0)	/* T2 */
-> +		MATRIX_KEY(0x02, 0x02, 0)	/* T3 */
-> +		MATRIX_KEY(0x01, 0x02, 0)	/* T4 */
-> +		MATRIX_KEY(0x03, 0x04, 0)	/* T5 */
-> +		MATRIX_KEY(0x02, 0x04, 0)	/* T6 */
-> +		MATRIX_KEY(0x01, 0x04, 0)	/* T7 */
-> +		MATRIX_KEY(0x02, 0x09, 0)	/* T8 */
-> +		MATRIX_KEY(0x01, 0x09, 0)	/* T9 */
-> +		MATRIX_KEY(0x00, 0x04, 0)	/* T10 */
-> +	>;
-> +
-> +	linux,keymap = <
-> +		MATRIX_KEY(0x00, 0x02, KEY_BACK)
-> +		MATRIX_KEY(0x03, 0x02, KEY_REFRESH)
-> +		MATRIX_KEY(0x02, 0x02, KEY_ZOOM)
-> +		MATRIX_KEY(0x01, 0x02, KEY_SCALE)
-> +		MATRIX_KEY(0x03, 0x04, KEY_SYSRQ)
-> +		MATRIX_KEY(0x02, 0x04, KEY_BRIGHTNESSDOWN)
-> +		MATRIX_KEY(0x01, 0x04, KEY_BRIGHTNESSUP)
-> +		MATRIX_KEY(0x02, 0x09, KEY_MUTE)
-> +		MATRIX_KEY(0x01, 0x09, KEY_VOLUMEDOWN)
-> +		MATRIX_KEY(0x00, 0x04, KEY_VOLUMEUP)
-> +		CROS_STD_MAIN_KEYMAP
-> +	>;
-> +};
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacruel-sku262148.dts b/arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacruel-sku262148.dts
-> new file mode 100644
-> index 000000000000..59d4d21fc7d3
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacruel-sku262148.dts
-> @@ -0,0 +1,28 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Copyright 2022 Google LLC
-> + */
-> +
-> +#include "mt8186-corsola-tentacruel-sku262144.dts"
-> +
-> +/ {
-> +	compatible = "google,tentacruel-sku262144", "google,tentacruel-sku262145",
-> +		     "google,tentacruel-sku262146", "google,tentacruel-sku262147",
-> +		     "google,tentacruel", "mediatek,mt8186";
-> +};
-> +
-> +/* This variant replaces only the touchpad controller. */
-> +&i2c2 {
-> +	/delete-node/ touchpad@15;
-> +
-> +	touchpad@15 {
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&trackpad_pin>;
-> +		compatible = "hid-over-i2c";
-> +		reg = <0x15>;
-> +		interrupts-extended = <&pio 11 IRQ_TYPE_LEVEL_LOW>;
-> +		hid-descr-addr = <0x0001>;
-> +		vcc-supply = <&pp3300_s3>;
-> +		wakeup-source;
-> +	};
-> +};
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8186-corsola.dtsi b/arch/arm64/boot/dts/mediatek/mt8186-corsola.dtsi
-> new file mode 100644
-> index 000000000000..42ebab1bafeb
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/mediatek/mt8186-corsola.dtsi
-> @@ -0,0 +1,1704 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Copyright (C) 2022 MediaTek Inc.
-> + */
-> +/dts-v1/;
-> +#include "mt8186.dtsi"
-> +#include <dt-bindings/pinctrl/mt8186-pinfunc.h>
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/input/input.h>
-> +#include <dt-bindings/input/gpio-keys.h>
-> +
-> +/ {
-> +	aliases {
-> +		i2c0 = &i2c0;
-> +		i2c1 = &i2c1;
-> +		i2c2 = &i2c2;
-> +		i2c3 = &i2c3;
-> +		i2c5 = &i2c5;
-> +		mmc0 = &mmc0;
-> +		mmc1 = &mmc1;
-> +		serial0 = &uart0;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +	};
-> +
-> +	memory@40000000 {
-> +		device_type = "memory";
-> +		/* The size should be filled in by the bootloader. */
-> +		reg = <0 0x40000000 0 0>;
-> +	};
-> +
-> +	backlight_lcd0: backlight-lcd0 {
-> +		compatible = "pwm-backlight";
-> +		pwms = <&pwm0 0 500000>;
-> +		power-supply = <&ppvar_sys>;
-> +		enable-gpios = <&pio 152 0>;
-> +		brightness-levels = <0 1023>;
-> +		num-interpolated-steps = <1023>;
-> +		default-brightness-level = <576>;
-> +	};
-> +
-> +	btsco: bt-sco {
-> +		compatible = "linux,bt-sco";
-> +		#sound-dai-cells = <0>;
-> +	};
-> +
-> +	dmic_codec: dmic-codec {
-> +		compatible = "dmic-codec";
-> +		num-channels = <2>;
-> +		wakeup-delay-ms = <50>;
-> +		#sound-dai-cells = <0>;
-> +	};
-> +
-> +	gpio_keys: gpio-keys {
-> +		compatible = "gpio-keys";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pen_eject>;
-> +
-> +		pen_insert: pen-insert-switch {
-> +			label = "Pen Insert";
-> +			/* Insert = low, eject = high */
-> +			gpios = <&pio 18 GPIO_ACTIVE_LOW>;
-> +			linux,code = <SW_PEN_INSERTED>;
-> +			linux,input-type = <EV_SW>;
-> +			wakeup-event-action = <EV_ACT_DEASSERTED>;
-> +			wakeup-source;
-> +		};
-> +	};
-> +
-> +	pp1800_dpbrdg_dx: regulator-pp1800-dpbrdg-dx {
-> +		compatible = "regulator-fixed";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&en_pp1800_dpbrdg>;
-> +		regulator-name = "pp1800_dpbrdg_dx";
-> +		enable-active-high;
-> +		gpio = <&pio 39 GPIO_ACTIVE_HIGH>;
-> +		vin-supply = <&mt6366_vio18_reg>;
-> +	};
-> +
-> +	pp3300_disp_x: regulator-pp3300-disp-x {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "pp3300_disp_x";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&edp_panel_fixed_pins>;
-> +		enable-active-high;
-> +		regulator-boot-on;
-> +		gpio = <&pio 153 GPIO_ACTIVE_HIGH>;
-> +		vin-supply = <&pp3300_z2>;
-> +	};
-> +
-> +	/* system wide LDO 3.3V power rail */
-> +	pp3300_z5: regulator-pp3300-ldo-z5 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "pp3300_ldo_z5";
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		vin-supply = <&ppvar_sys>;
-> +	};
-> +
-> +	/* separately switched 3.3V power rail */
-> +	pp3300_s3: regulator-pp3300-s3 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "pp3300_s3";
-> +		/* automatically sequenced by PMIC EXT_PMIC_EN2 */
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		vin-supply = <&pp3300_z2>;
-> +	};
-> +
-> +	/* system wide 3.3V power rail */
-> +	pp3300_z2: regulator-pp3300-z2 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "pp3300_z2";
-> +		/* EN pin tied to pp4200_z2, which is controlled by EC */
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		vin-supply = <&ppvar_sys>;
-> +	};
-> +
-> +	/* system wide 4.2V power rail */
-> +	pp4200_z2: regulator-pp4200-z2 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "pp4200_z2";
-> +		/* controlled by EC */
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		regulator-min-microvolt = <4200000>;
-> +		regulator-max-microvolt = <4200000>;
-> +		vin-supply = <&ppvar_sys>;
-> +	};
-> +
-> +	/* system wide switching 5.0V power rail */
-> +	pp5000_z2: regulator-pp5000-z2 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "pp5000_z2";
-> +		/* controlled by EC */
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		vin-supply = <&ppvar_sys>;
-> +	};
-> +
-> +	/* system wide semi-regulated power rail from battery or USB */
-> +	ppvar_sys: regulator-ppvar-sys {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "ppvar_sys";
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +	};
-> +
-> +	reserved_memory: reserved-memory {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		ranges;
-> +
-> +		adsp_dma_mem: memory@61000000 {
-> +			compatible = "shared-dma-pool";
-> +			reg = <0 0x61000000 0 0x100000>;
-> +			no-map;
-> +		};
-> +
-> +		adsp_mem: memory@60000000 {
-> +			compatible = "shared-dma-pool";
-> +			reg = <0 0x60000000 0 0xA00000>;
-> +			no-map;
-> +		};
-> +
-> +		scp_mem: memory@50000000 {
-> +			compatible = "shared-dma-pool";
-> +			reg = <0 0x50000000 0 0x10a0000>;
-> +			no-map;
-> +		};
-> +	};
-> +
-> +	sound: sound {
-> +		compatible = "mediatek,mt8186-mt6366-rt1019-rt5682s-sound";
-> +		pinctrl-names = "aud_clk_mosi_off",
-> +				"aud_clk_mosi_on",
-> +				"aud_clk_miso_off",
-> +				"aud_clk_miso_on",
-> +				"aud_dat_miso_off",
-> +				"aud_dat_miso_on",
-> +				"aud_dat_mosi_off",
-> +				"aud_dat_mosi_on",
-> +				"aud_gpio_i2s0_off",
-> +				"aud_gpio_i2s0_on",
-> +				"aud_gpio_i2s1_off",
-> +				"aud_gpio_i2s1_on",
-> +				"aud_gpio_i2s2_off",
-> +				"aud_gpio_i2s2_on",
-> +				"aud_gpio_i2s3_off",
-> +				"aud_gpio_i2s3_on",
-> +				"aud_gpio_tdm_off",
-> +				"aud_gpio_tdm_on",
-> +				"aud_gpio_pcm_off",
-> +				"aud_gpio_pcm_on",
-> +				"aud_gpio_dmic_sec";
-> +		pinctrl-0 = <&aud_clk_mosi_off>;
-> +		pinctrl-1 = <&aud_clk_mosi_on>;
-> +		pinctrl-2 = <&aud_clk_miso_off>;
-> +		pinctrl-3 = <&aud_clk_miso_on>;
-> +		pinctrl-4 = <&aud_dat_miso_off>;
-> +		pinctrl-5 = <&aud_dat_miso_on>;
-> +		pinctrl-6 = <&aud_dat_mosi_off>;
-> +		pinctrl-7 = <&aud_dat_mosi_on>;
-> +		pinctrl-8 = <&aud_gpio_i2s0_off>;
-> +		pinctrl-9 = <&aud_gpio_i2s0_on>;
-> +		pinctrl-10 = <&aud_gpio_i2s1_off>;
-> +		pinctrl-11 = <&aud_gpio_i2s1_on>;
-> +		pinctrl-12 = <&aud_gpio_i2s2_off>;
-> +		pinctrl-13 = <&aud_gpio_i2s2_on>;
-> +		pinctrl-14 = <&aud_gpio_i2s3_off>;
-> +		pinctrl-15 = <&aud_gpio_i2s3_on>;
-> +		pinctrl-16 = <&aud_gpio_tdm_off>;
-> +		pinctrl-17 = <&aud_gpio_tdm_on>;
-> +		pinctrl-18 = <&aud_gpio_pcm_off>;
-> +		pinctrl-19 = <&aud_gpio_pcm_on>;
-> +		pinctrl-20 = <&aud_gpio_dmic_sec>;
-> +		mediatek,adsp = <&adsp>;
-> +		mediatek,platform = <&afe>;
-> +
-> +		playback-codecs {
-> +			sound-dai = <&it6505dptx>, <&rt1019p>;
-> +		};
-> +
-> +		headset-codec {
-> +			sound-dai = <&rt5682s 0>;
-> +		};
-> +	};
-> +
-> +	rt1019p: speaker-codec {
-> +		compatible = "realtek,rt1019p";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&rt1019p_pins_default>;
-> +		sdb-gpios = <&pio 150 GPIO_ACTIVE_HIGH>;
-> +		#sound-dai-cells = <0>;
-> +	};
-> +
-> +	usb_p1_vbus: regulator-usb-p1-vbus {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vbus1";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		enable-active-high;
-> +		gpio = <&pio 148 GPIO_ACTIVE_HIGH>;
-> +		vin-supply = <&pp5000_z2>;
-> +	};
-> +
-> +	wifi_pwrseq: wifi-pwrseq {
-> +		compatible = "mmc-pwrseq-simple";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&wifi_enable_pin>;
-> +		post-power-on-delay-ms = <50>;
-> +		reset-gpios = <&pio 54 GPIO_ACTIVE_LOW>;
-> +	};
-> +
-> +	wifi_wakeup: wifi-wakeup {
-> +		compatible = "gpio-keys";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&wifi_wakeup_pin>;
-
-All of them do have a WoWLAN event pin, but not all of them have got a pen
-insertion pin... okay.
-
-So, you should either set status = "disabled" to both and then enable them
-in each board dts file, or you should merge them and delete the pen insertion
-node wherever not present.
-
-Using /delete-node/ is not wrong, of course, but I don't really like seeing
-that... it's probably just boiling down to a personal preference, so, unless
-you have strong opinions against that, I'd like to see the first suggestion
-applied (status = disabled on all, enable on a per-board basis).
-
-
-> +
-> +		wowlan-event {
-> +			label = "Wake on WiFi";
-> +			gpios = <&pio 7 GPIO_ACTIVE_LOW>;
-> +			linux,code = <KEY_WAKEUP>;
-> +			wakeup-source;
-> +		};
-> +	};
-> +};
-> +
-> +&adsp {
-> +	memory-region = <&adsp_dma_mem>, <&adsp_mem>;
-> +	status = "fail"; /* causes stall */
-
-The adsp is default disabled, you don't need to set it to "fail", as this is
-designed to work, not to fail, and this can be fixed.
-
-When things cannot be "really" fixed, then I agree on setting status = "fail",
-but again, this is not the case.
-
-> +};
-> +
-> +&afe {
-> +	i2s0-share = "I2S1";
-> +	i2s3-share = "I2S2";
-> +	status = "okay";
-> +};
-> +
-> +&cci {
-> +	proc-supply = <&mt6366_vproc12_reg>;
-> +};
-> +
-> +&cpu0 {
-> +	proc-supply = <&mt6366_vproc12_reg>;
-> +};
-> +
-> +&cpu1 {
-> +	proc-supply = <&mt6366_vproc12_reg>;
-> +};
-> +
-> +&cpu2 {
-> +	proc-supply = <&mt6366_vproc12_reg>;
-> +};
-> +
-> +&cpu3 {
-> +	proc-supply = <&mt6366_vproc12_reg>;
-> +};
-> +
-> +&cpu4 {
-> +	proc-supply = <&mt6366_vproc12_reg>;
-> +};
-> +
-> +&cpu5 {
-> +	proc-supply = <&mt6366_vproc12_reg>;
-> +};
-> +
-> +&cpu6 {
-> +	proc-supply = <&mt6366_vproc11_reg>;
-> +};
-> +
-> +&cpu7 {
-> +	proc-supply = <&mt6366_vproc11_reg>;
-> +};
-> +
-> +&dpi {
-> +	pinctrl-names = "default", "sleep";
-> +	pinctrl-0 = <&dpi_pins_default>;
-> +	pinctrl-1 = <&dpi_pins_sleep>;
-> +	status = "okay";
-> +};
-> +
-> +&dpi_out {
-> +	remote-endpoint = <&it6505_in>;
-> +};
-> +
-> +&dsi0 {
-> +	status = "okay";
-> +};
-> +
-> +&gic {
-> +	mediatek,broken-save-restore-fw;
-> +};
-> +
-> +&gpu {
-> +	mali-supply = <&mt6366_vgpu_reg>;
-> +	status = "okay";
-> +};
-> +
-> +&i2c0 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&i2c0_pins>;
-> +	status = "okay";
-> +};
-> +
-> +&i2c1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&i2c1_pins>;
-> +	clock-frequency = <400000>;
-> +	i2c-scl-internal-delay-ns = <8000>;
-> +	status = "okay";
-> +};
-> +
-> +&i2c2 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&i2c2_pins>;
-> +	clock-frequency = <400000>;
-> +	i2c-scl-internal-delay-ns = <10000>;
-> +	status = "okay";
-> +
-> +	touchpad@15 {
-
-A "touchpad" is not an input device, it is a product name... so, this
-is a "trackpad" instead :-)
-
-> +		compatible = "elan,ekth3000";
-
-Though, this compatible name is getting overridden in multiple cases, even if
-the majority of the properties are effectively the same, as in, the interrupts
-are the same, i2c addr is the same, power supplies are the same, pinctrl....
-...what I would do here (even though it's a bit strange to see somehow) is...
-
-trackpad: trackpad@15 {
-	/* Compatible string is be filled in board specific dts files */
-	reg = <0x15>;
-	interrupts-extended = <&pio 11 IRQ_TYPE_LEVEL_LOW>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&trackpad_pin>;
-	vcc-supply = <&pp3300_s3>;
-	wakeup-source;
-}
-
-
-In tentacruel-sku262144.dts:
-
-&trackpad {
-	compatible = "hid-over-i2c";
-	hid-descr-addr = <0x0001>;
-};
-
-
-In tentacool-sku327683.dts:
-
-&trackpad {
-	compatible = "elan,ekth3000";
-};
-
-
-> +		reg = <0x15>;
-> +		interrupts-extended = <&pio 11 IRQ_TYPE_LEVEL_LOW>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&trackpad_pin>;
-> +		vcc-supply = <&pp3300_s3>;
-> +		wakeup-source;
-> +	};
-> +};
-> +
-> +&i2c3 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&i2c3_pins>;
-> +	clock-frequency = <100000>;
-> +	status = "okay";
-> +
-> +	it6505dptx: dp-bridge@5c {
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&it6505_pins>;
-> +		compatible = "ite,it6505";
-> +		reg = <0x5c>;
-> +		interrupts-extended = <&pio 8 IRQ_TYPE_LEVEL_LOW>;
-> +		ovdd-supply = <&mt6366_vsim2_reg>;
-> +		pwr18-supply = <&pp1800_dpbrdg_dx>;
-> +		reset-gpios = <&pio 177 GPIO_ACTIVE_HIGH>;
-
-pinctrl-names, pinctrl-0 here
-
-> +		no-laneswap;
-
-The driver has this property, that's true, but I can't find that in the bindings.
-Also, are you sure that we really need this?
-
-Checking the it6505 driver, the lane swap could also be set/unset with
-EXTCON_PROP_USB_TYPEC_POLARITY, check it6505_get_extcon_property()...
-
-...but if we really need that property here, the bindings must have it.
-
-> +
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		#sound-dai-cells = <0>;
-> +
-> +		ports {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			port@0 {
-> +				reg = <0>;
-> +
-> +				it6505_in: endpoint {
-> +					link-frequencies = /bits/ 64 <150000000>;
-> +					remote-endpoint = <&dpi_out>;
-> +				};
-> +			};
-> +
-> +			port@1 {
-> +				reg = <1>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&i2c5 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&i2c5_pins>;
-> +	status = "okay";
-> +
-> +	rt5682s: codec@1a {
-> +		compatible = "realtek,rt5682s";
-> +		reg = <0x1a>;
-> +		interrupts-extended = <&pio 17 IRQ_TYPE_EDGE_BOTH>;
-> +		realtek,jd-src = <1>;
-
-I would move realtek,jd-src...
-
-> +		AVDD-supply = <&mt6366_vio18_reg>;
-> +		DBVDD-supply = <&mt6366_vio18_reg>;
-> +		LDO1-IN-supply = <&mt6366_vio18_reg>;
-> +		MICVDD-supply = <&pp3300_z2>;
-
-...here... but I don't really have strong opinions about that.
-
-> +		#sound-dai-cells = <1>;
-> +	};
-> +};
-> +
-
-..snip..
-
-> +
-> +	aud_clk_mosi_off: aud-clk-mosi-off-pins {
-> +		pins-cmd-dat {
-
-I'd say that those are pins-clk-sync instead.
-
-> +			pinmux = <PINMUX_GPIO166__FUNC_GPIO166>,
-> +				 <PINMUX_GPIO167__FUNC_GPIO167>;
-> +			input-enable;
-> +			bias-pull-down;
-> +		};
-> +	};
-> +
-> +	aud_clk_mosi_on: aud-clk-mosi-on-pins {
-> +		pins-cmd-dat {
-
-same
-
-> +			pinmux = <PINMUX_GPIO166__FUNC_AUD_CLK_MOSI>,
-> +				 <PINMUX_GPIO167__FUNC_AUD_SYNC_MOSI>;
-> +		};
-> +	};
-> +
-> +	aud_clk_miso_off: aud-clk-miso-off-pins {
-> +		pins-cmd-dat {
-
-and here, and for all pins referencing "FUNC_AUD_CLK" and "FUNC_AUD_SYNC".
-
-> +			pinmux = <PINMUX_GPIO170__FUNC_GPIO170>,
-> +				 <PINMUX_GPIO171__FUNC_GPIO171>;
-> +			input-enable;
-> +			bias-pull-down;
-> +		};
-> +	};
-> +
-> +	aud_clk_miso_on: aud-clk-miso-on-pins {
-> +		pins-cmd-dat {
-> +			pinmux = <PINMUX_GPIO170__FUNC_AUD_CLK_MISO>,
-> +				 <PINMUX_GPIO171__FUNC_AUD_SYNC_MISO>;
-> +		};
-> +	};
-> +
-> +	aud_dat_mosi_off: aud-dat-mosi-off-pins {
-> +		pins-cmd-dat {
-> +			pinmux = <PINMUX_GPIO168__FUNC_GPIO168>,
-> +				 <PINMUX_GPIO169__FUNC_GPIO169>;
-> +			input-enable;
-> +			bias-pull-down;
-> +		};
-> +	};
-> +
-> +	aud_dat_mosi_on: aud-dat-mosi-on-pins {
-> +		pins-cmd-dat {
-
-pins-dat or pins-bus
-
-> +			pinmux = <PINMUX_GPIO168__FUNC_AUD_DAT_MOSI0>,
-> +				 <PINMUX_GPIO169__FUNC_AUD_DAT_MOSI1>;
-> +		};
-> +	};
-> +
-> +	aud_dat_miso_off: aud-dat-miso-off-pins {
-> +		pins-cmd-dat {
-> +			pinmux = <PINMUX_GPIO172__FUNC_GPIO172>,
-> +				 <PINMUX_GPIO173__FUNC_GPIO173>;
-> +			input-enable;
-> +			bias-pull-down;
-> +		};
-> +	};
-> +
-> +	aud_dat_miso_on: aud-dat-miso-on-pins {
-> +		pins-cmd-dat {
-> +			pinmux = <PINMUX_GPIO172__FUNC_AUD_DAT_MISO0>,
-> +				 <PINMUX_GPIO173__FUNC_AUD_DAT_MISO1>;
-> +			input-schmitt-enable;
-> +			bias-disable;
-> +		};
-> +	};
-> +
-> +	aud_gpio_i2s0_off: aud-gpio-i2s0-off-pins {
-> +		pins-cmd-dat {
-> +			pinmux = <PINMUX_GPIO3__FUNC_GPIO3>;
-> +		};
-> +	};
-> +
-> +	aud_gpio_i2s0_on: aud-gpio-i2s0-on-pins {
-> +		pins-cmd-dat {
-
-pins-sdata
-
-> +			pinmux = <PINMUX_GPIO3__FUNC_I2S0_DI>;
-> +		};
-> +	};
-> +
-> +	aud_gpio_i2s1_off: aud-gpio-i2s-off-pins {
-> +		pins-cmd-dat {
-> +			pinmux = <PINMUX_GPIO56__FUNC_GPIO56>,
-> +				 <PINMUX_GPIO57__FUNC_GPIO57>,
-> +				 <PINMUX_GPIO58__FUNC_GPIO58>,
-> +				 <PINMUX_GPIO59__FUNC_GPIO59>;
-> +			output-low;
-> +		};
-> +	};
-> +
-> +	aud_gpio_i2s1_on: aud-gpio-i2s1-on-pins {
-> +		pins-cmd-dat {
-
-pins-clk-sdata
-
-> +			pinmux = <PINMUX_GPIO56__FUNC_I2S1_DO>,
-> +				 <PINMUX_GPIO57__FUNC_I2S1_BCK>,
-> +				 <PINMUX_GPIO58__FUNC_I2S1_LRCK>,
-> +				 <PINMUX_GPIO59__FUNC_I2S1_MCK>;
-> +		};
-> +	};
-> +
-> +	aud_gpio_i2s2_off: aud-gpio-i2s2-off-pins {
-> +		pins-cmd-dat {
-> +			pinmux = <PINMUX_GPIO26__FUNC_GPIO26>,
-> +				 <PINMUX_GPIO27__FUNC_GPIO27>;
-> +			output-low;
-> +		};
-> +	};
-> +
-> +	aud_gpio_i2s2_on: aud-gpio-i2s2-on-pins {
-> +		pins-cmd-dat {
-
-Those are bit and word clock pins: pins-clk
-
-> +			pinmux = <PINMUX_GPIO26__FUNC_I2S2_BCK>,
-> +				 <PINMUX_GPIO27__FUNC_I2S2_LRCK>;
-> +			drive-strength = <4>;
-> +		};
-> +	};
-> +
-> +	aud_gpio_i2s3_off: aud-gpio-i2s3-off-pins {
-> +		pins-cmd-dat {
-> +			pinmux = <PINMUX_GPIO4__FUNC_GPIO4>;
-> +			output-low;
-> +		};
-> +	};
-> +
-> +	aud_gpio_i2s3_on: aud-gpio-i2s3-on-pins {
-> +		pins-cmd-dat {
-
-pins-sdata
-
-> +			pinmux = <PINMUX_GPIO4__FUNC_I2S3_DO>;
-> +			drive-strength = <4>;
-> +		};
-> +	};
-> +
-> +	aud_gpio_tdm_off: aud-gpio-tdm-off-pins { };
-> +
-> +	aud_gpio_tdm_on: aud-gpio-tdm-on-pins { };
-> +
-> +	aud_gpio_pcm_off: aud-gpio-pcm-off-pins {
-> +		pins-cmd-dat {
-> +			pinmux = <PINMUX_GPIO115__FUNC_GPIO115>,
-> +				 <PINMUX_GPIO116__FUNC_GPIO116>,
-> +				 <PINMUX_GPIO117__FUNC_GPIO117>,
-> +				 <PINMUX_GPIO118__FUNC_GPIO118>;
-> +			output-low;
-> +		};
-> +	};
-> +
-> +	aud_gpio_pcm_on: aud-gpio-pcm-on-pins {
-> +		pins-cmd-dat {
-
-pins-clk-dat
-
-> +			pinmux = <PINMUX_GPIO115__FUNC_PCM_CLK>,
-> +				 <PINMUX_GPIO116__FUNC_PCM_SYNC>,
-> +				 <PINMUX_GPIO117__FUNC_PCM_DI>,
-> +				 <PINMUX_GPIO118__FUNC_PCM_DO>;
-> +		};
-> +	};
-> +
-> +	aud_gpio_dmic_sec: aud-gpio-dmic-sec-pins {
-> +		pins {
-> +			pinmux = <PINMUX_GPIO23__FUNC_GPIO23>;
-> +			output-low;
-> +		};
-> +	};
-> +
-> +	bt_pins_reset: bt-reset-pins {
-> +		pins-bt-reset {
-> +			pinmux = <PINMUX_GPIO155__FUNC_GPIO155>;
-> +			output-high;
-> +		};
-> +	};
-> +
-
-..snip..
-
-> +
-> +	ec_ap_int: cros-ec-int-pins {
-> +		pins1 {
-
-pins-ec-ap-int-odl
-
-> +			pinmux = <PINMUX_GPIO13__FUNC_GPIO13>;
-> +			input-enable;
-> +		};
-> +	};
-> +
-> +	edp_panel_fixed_pins: edp-panel-fixed-pins {
-> +		pins1 {
-
-pins-vreg-en
-
-> +			pinmux = <PINMUX_GPIO153__FUNC_GPIO153>;
-> +			output-high;
-> +		};
-> +	};
-> +
-> +	en_pp1800_dpbrdg: en-pp1800-dpbrdg-pins {
-> +		pins {
-
-pins-vreg-en....
-
-> +			pinmux = <PINMUX_GPIO39__FUNC_GPIO39>;
-> +			output-low;
-> +		};
-> +	};
-> +
-> +	gsc_ap_int_odl: gsc-ap-int-odl-pins {
-
-cr50_int: cr50-irq-default-pins {
-	pins-gsc-ap-int-odl {
-		...
-	}
-}
-
-> +		pins1 {
-> +			pinmux = <PINMUX_GPIO15__FUNC_GPIO15>;
-> +			input-enable;
-> +		};
-> +	};
-> +
-
-..snip..
-
-> +
-> +	mmc1_pins_eint: mmc1-eint-pins {
-> +		pins_dat1 {
-
-pins-dat1
-
-> +			pinmux = <PINMUX_GPIO87__FUNC_GPIO87>;
-> +			input-enable;
-> +			bias-pull-up = <MTK_PUPD_SET_R1R0_01>;
-> +		};
-> +	};
-> +
-> +	nor_pins_default: nor-default-pins {
-> +		pins0 {
-
-pins-clk-dat
-
-> +			pinmux = <PINMUX_GPIO63__FUNC_SPINOR_IO0>,
-> +				 <PINMUX_GPIO61__FUNC_SPINOR_CK>,
-> +				 <PINMUX_GPIO64__FUNC_SPINOR_IO1>;
-> +			drive-strength = <6>;
-> +			bias-pull-down;
-> +		};
-> +
-> +		pins1 {
-
-pins-cs-dat
-
-> +			pinmux = <PINMUX_GPIO62__FUNC_SPINOR_CS>,
-> +				 <PINMUX_GPIO65__FUNC_SPINOR_IO2>,
-> +				 <PINMUX_GPIO66__FUNC_SPINOR_IO3>;
-> +			drive-strength = <6>;
-> +			bias-pull-up;
-> +		};
-> +	};
-> +
-> +	pen_eject: pen-eject-pins {
-> +		pins {
-> +			pinmux = <PINMUX_GPIO18__FUNC_GPIO18>;
-> +			input-enable;
-> +			/* External pull-up. */
-> +			bias-disable;
-> +		};
-> +	};
-> +
-> +	pwm0_pin: pwm0-default-pins {
-
-pins-disp-pwm
-
-> +		pins {
-> +			pinmux = <PINMUX_GPIO97__FUNC_DISP_PWM>;
-> +			output-high;
-> +		};
-> +	};
-> +
-> +	rt1019p_pins_default: rt1019p-default-pins {
-> +		pins {
-
-pins-sdb
-
-> +			pinmux = <PINMUX_GPIO150__FUNC_GPIO150>;
-> +			output-low;
-> +		};
-> +	};
-> +
-> +	scp_pins: scp-default-pins {
-> +		pins-scp-uart {
-> +			pinmux = <PINMUX_GPIO48__FUNC_TP_URXD2_AO>,
-> +				 <PINMUX_GPIO49__FUNC_TP_UTXD2_AO>;
-> +		};
-> +	};
-> +
-> +	spi1_pins: spi1-pins {
-> +		pins-spi {
-> +			pinmux = <PINMUX_GPIO40__FUNC_SPI1_CLK_A>,
-> +				 <PINMUX_GPIO41__FUNC_SPI1_CSB_A>,
-> +				 <PINMUX_GPIO42__FUNC_SPI1_MO_A>,
-> +				 <PINMUX_GPIO43__FUNC_SPI1_MI_A>;
-
-Shouldn't MISO be pull-down?!
-
-clk, mo, csb: bias-disable
-mi: bias-pull-down
-
-> +			bias-disable;
-> +			input-enable;
-> +		};
-> +	};
-> +
-> +	spi2_pins: spi2-pins {
-> +		pins-spi {
-> +			pinmux = <PINMUX_GPIO44__FUNC_SPI2_CLK_A>,
-> +				 <PINMUX_GPIO45__FUNC_GPIO45>,
-> +				 <PINMUX_GPIO46__FUNC_SPI2_MO_A>,
-> +				 <PINMUX_GPIO47__FUNC_SPI2_MI_A>;
-
-Same question here.
-
-P.S.: if yes, pins-cs-mosi-clk, pins-miso; if not, pins-bus.
-
-> +			bias-disable;
-> +			input-enable;
-> +		};
-> +	};
-> +
-> +	spmi_pins: spmi-pins {
-> +		pins-spmi {
-
-pins-bus
-
-> +			pinmux = <PINMUX_GPIO183__FUNC_SPMI_SCL>,
-> +				 <PINMUX_GPIO184__FUNC_SPMI_SDA>;
-> +		};
-> +	};
-> +
-> +	touchscreen_pins: touchscreen-pins {
-> +		pins-irq {
-> +			pinmux = <PINMUX_GPIO12__FUNC_GPIO12>;
-> +			input-enable;
-> +			bias-pull-up;
-> +		};
-> +
-> +		pins-reset {
-> +			pinmux = <PINMUX_GPIO60__FUNC_GPIO60>;
-> +			output-high;
-> +		};
-> +
-> +		pins-report-sw {
-> +			pinmux = <PINMUX_GPIO37__FUNC_GPIO37>;
-> +			output-low;
-> +		};
-> +	};
-> +
-> +	trackpad_pin: trackpad-default-pins {
-> +		pins-int-n {
-> +			pinmux = <PINMUX_GPIO11__FUNC_GPIO11>;
-> +			input-enable;
-> +			bias-disable; /* pulled externally */
-> +		};
-> +	};
-> +
-> +	wifi_enable_pin: wifi-enable-pins {
-> +		pins-wifi-enable {
-> +			pinmux = <PINMUX_GPIO54__FUNC_GPIO54>;
-> +		};
-> +	};
-> +
-> +	wifi_wakeup_pin: wifi-wakeup-pins {
-> +		pins-wifi-wakeup {
-> +			pinmux = <PINMUX_GPIO7__FUNC_GPIO7>;
-> +			input-enable;
-> +		};
-> +	};
-> +};
-> +
-> +&pwm0 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pwm0_pin>;
-> +	status = "okay";
-> +};
-> +
-> +&pwrap {
-> +	pmic {
-> +		compatible = "mediatek,mt6366", "mediatek,mt6358";
-> +		interrupt-controller;
-> +		interrupts-extended = <&pio 201 IRQ_TYPE_LEVEL_HIGH>;
-> +		#interrupt-cells = <2>;
-> +
-> +		mt6366codec: codec {
-> +			compatible = "mediatek,mt6366-sound", "mediatek,mt6358-sound";
-> +			Avdd-supply = <&mt6366_vaud28_reg>;
-> +			mediatek,dmic-mode = <1>; /* one-wire */
-> +		};
-> +
-> +		mt6366_regulators: regulators {
-> +			compatible = "mediatek,mt6366-regulator", "mediatek,mt6358-regulator";
-> +			vsys-ldo1-supply = <&pp4200_z2>;
-> +			vsys-ldo2-supply = <&pp4200_z2>;
-> +			vsys-ldo3-supply = <&pp4200_z2>;
-> +			vsys-vcore-supply = <&pp4200_z2>;
-> +			vsys-vdram1-supply = <&pp4200_z2>;
-> +			vsys-vgpu-supply = <&pp4200_z2>;
-> +			vsys-vmodem-supply = <&pp4200_z2>;
-> +			vsys-vpa-supply = <&pp4200_z2>;
-> +			vsys-vproc11-supply = <&pp4200_z2>;
-> +			vsys-vproc12-supply = <&pp4200_z2>;
-> +			vsys-vs1-supply = <&pp4200_z2>;
-> +			vsys-vs2-supply = <&pp4200_z2>;
-> +			vs1-ldo1-supply = <&mt6366_vs1_reg>;
-> +			vs2-ldo1-supply = <&mt6366_vdram1_reg>;
-> +			vs2-ldo2-supply = <&mt6366_vs2_reg>;
-> +			vs2-ldo3-supply = <&mt6366_vs2_reg>;
-> +
-> +			vcore {
-> +				regulator-name = "pp0750_dvdd_core";
-> +				regulator-min-microvolt = <550000>;
-> +				regulator-max-microvolt = <800000>;
-> +				regulator-ramp-delay = <6250>;
-> +				regulator-enable-ramp-delay = <200>;
-> +				regulator-allowed-modes = <0 1>;
-> +				regulator-always-on;
-> +			};
-> +
-> +			mt6366_vdram1_reg: vdram1 {
-> +				regulator-name = "pp1125_emi_vdd2";
-> +				regulator-min-microvolt = <1125000>;
-> +				regulator-max-microvolt = <1125000>;
-> +				regulator-ramp-delay = <12500>;
-> +				regulator-enable-ramp-delay = <0>;
-> +				regulator-allowed-modes = <0 1>;
-> +				regulator-always-on;
-> +			};
-> +
-> +			mt6366_vgpu_reg: vgpu {
-> +				regulator-name = "ppvar_dvdd_gpu";
-
-Can we please rename this to "ppvar_dvdd_vgpu"?
-The regulator coupler driver parses "vgpu"... :-)
-
-> +				regulator-min-microvolt = <600000>;
-> +				regulator-max-microvolt = <950000>;
-> +				regulator-ramp-delay = <6250>;
-> +				regulator-enable-ramp-delay = <200>;
-> +				regulator-allowed-modes = <0 1>;
-
-Couple this regulator with VSRAM, max spread 100000.
-
-> +			};
-> +
-
-..snip..
-
-> +
-> +			mt6366_vsram_gpu_reg: vsram-gpu {
-> +				regulator-name = "pp0900_dvdd_sram_gpu";
-> +				regulator-min-microvolt = <850000>;
-> +				regulator-max-microvolt = <1050000>;
-> +				regulator-ramp-delay = <6250>;
-> +				regulator-enable-ramp-delay = <240>;
-
-Couple with VGPU, same max spread.
-
-> +			};
-> +
-> +			mt6366_vsram_others_reg: vsram-others {
-> +				regulator-name = "pp0900_dvdd_sram_core";
-> +				regulator-min-microvolt = <900000>;
-> +				regulator-max-microvolt = <900000>;
-> +				regulator-ramp-delay = <6250>;
-> +				regulator-enable-ramp-delay = <240>;
-> +				regulator-always-on;
-> +			};
-> +
-> +			mt6366_vsram_proc11_reg: vsram-proc11 {
-> +				regulator-name = "pp0900_dvdd_sram_bc";
-> +				regulator-min-microvolt = <850000>;
-> +				regulator-max-microvolt = <1120000>;
-> +				regulator-ramp-delay = <6250>;
-> +				regulator-enable-ramp-delay = <240>;
-> +				regulator-always-on;
-> +			};
-> +
-> +			mt6366_vsram_proc12_reg: vsram-proc12 {
-> +				regulator-name = "pp0900_dvdd_sram_lc";
-> +				regulator-min-microvolt = <850000>;
-> +				regulator-max-microvolt = <1120000>;
-> +				regulator-ramp-delay = <6250>;
-> +				regulator-enable-ramp-delay = <240>;
-> +				regulator-always-on;
-> +			};
-> +
-> +			vusb {
-> +				regulator-name = "pp3070_vusb";
-> +				regulator-min-microvolt = <3000000>;
-> +				regulator-max-microvolt = <3070000>;
-> +				regulator-enable-ramp-delay = <270>;
-> +				regulator-always-on;
-> +			};
-> +
-> +			vxo22 {
-> +				regulator-name = "pp2240_vxo22";
-> +				regulator-min-microvolt = <2200000>;
-> +				regulator-max-microvolt = <2240000>;
-> +				regulator-enable-ramp-delay = <120>;
-> +				/* Feeds DCXO internally */
-> +				regulator-always-on;
-> +			};
-> +		};
-> +
-> +		rtc {
-> +			compatible = "mediatek,mt6366-rtc", "mediatek,mt6358-rtc";
-> +		};
-> +	};
-> +};
-> +
-> +&scp {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&scp_pins>;
-> +	firmware-name = "mediatek/mt8186/scp.img";
-> +	memory-region = <&scp_mem>;
-> +	status = "okay";
-> +
-> +	cros-ec-rpmsg {
-> +		compatible = "google,cros-ec-rpmsg";
-> +		mediatek,rpmsg-name = "cros-ec-rpmsg";
-> +	};
-> +};
-> +
-> +&spi1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&spi1_pins>;
-> +	mediatek,pad-select = <0>;
-> +	status = "okay";
-> +
-> +	cros_ec: ec@0 {
-> +		compatible = "google,cros-ec-spi";
-> +		reg = <0>;
-> +		spi-max-frequency = <1000000>;
-> +		interrupt-parent = <&pio>;
-> +		interrupts = <13 IRQ_TYPE_LEVEL_LOW>;
-
-interrupts-extended please
-
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&ec_ap_int>;
-> +
-> +		i2c_tunnel: i2c-tunnel {
-> +			compatible = "google,cros-ec-i2c-tunnel";
-> +			google,remote-bus = <1>;
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +		};
-> +
-> +		typec {
-> +			compatible = "google,cros-ec-typec";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			usb_c0: connector@0 {
-> +				compatible = "usb-c-connector";
-> +				reg = <0>;
-> +				label = "left";
-> +				power-role = "dual";
-> +				data-role = "host";
-> +				try-power-role = "source";
-> +
-> +				ports {
-> +					#address-cells = <1>;
-> +					#size-cells = <0>;
-> +
-> +					port@1 {
-> +						reg = <1>;
-> +
-> +						typec_port0: endpoint { };
-> +					};
-> +				};
-> +			};
-> +
-> +			usb_c1: connector@1 {
-> +				compatible = "usb-c-connector";
-> +				reg = <1>;
-> +				label = "right";
-> +				power-role = "dual";
-> +				data-role = "host";
-> +				try-power-role = "source";
-> +
-> +				ports {
-> +					#address-cells = <1>;
-> +					#size-cells = <0>;
-> +
-> +					port@1 {
-> +						reg = <1>;
-> +
-> +						typec_port1: endpoint { };
-> +					};
-> +				};
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&spi2 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&spi2_pins>;
-> +	cs-gpios = <&pio 45 GPIO_ACTIVE_LOW>;
-> +	mediatek,pad-select = <0>;
-> +	status = "okay";
-> +
-> +	cr50: cr50@0 {
-
-Do we really need a phandle on cr50?
-
-Also, I'd say tpm@0 instead.
-
-> +		compatible = "google,cr50";
-> +		reg = <0>;
-> +		spi-max-frequency = <1000000>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&gsc_ap_int_odl>;
-> +		interrupt-parent = <&pio>;
-> +		interrupts = <15 IRQ_TYPE_EDGE_RISING>;
-> +	};
-> +};
-> +
-
-Cheers!
-Angelo
