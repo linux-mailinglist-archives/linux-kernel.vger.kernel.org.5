@@ -2,289 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B777CB2F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 20:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69E8C7CB2FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 20:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233037AbjJPStV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 14:49:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42530 "EHLO
+        id S232655AbjJPSux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 14:50:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJPStU (ORCPT
+        with ESMTP id S229952AbjJPSuu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 14:49:20 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2DE2A2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 11:49:17 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59b5a586da6so35960947b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 11:49:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697482157; x=1698086957; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OAcCmmrGQB8I/RvBQ4RW2J7O69twzM6FPTQwq9j0qgo=;
-        b=sQUXwWJB4uLiO8XNHOFB1l5FoizPEo+PZbBKASXQ6PvNmJgNQRz43U4wwj7Svj/WSO
-         jzSuKhlJhzRgk3AIDZGD9KaSNM/ow5w8TLMXkKrHbmveoKmm8ek8FupGZ56qG1bLx36s
-         Sn1oKWb0WDx/QYEGs+aEsAR3J0n9wf29zLsRM3YaKrnsbcyXMpZMFIVxk0USrJ6Ua3nR
-         y1H53b0VTdZbor9LVRCitechTNkhf3NSCWtw/Uxm0Di4AWfe6VKXJJ8o3Ow/QywmTX4s
-         xcr956MmQSPvfFTdXeD5NIXek4APw04zWSlLh0gVBRkdYn1tbhjHJLYPmRehOMWux/bh
-         PXsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697482157; x=1698086957;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OAcCmmrGQB8I/RvBQ4RW2J7O69twzM6FPTQwq9j0qgo=;
-        b=irXL/r7E0/9vBa3rQEA+iBrw/oWwCud9y8zJrIqQEdz9GK5OwPUaGAkXh1qRZIKlNE
-         vmbF5UQJENr/24Cx5oZg0qeJyh0pb1kNUkhGhmPlSuDc6e/mJ2OF7Ln8XVFJ6WMeSOuI
-         suXVLSn7Koe3NdKtz1SBW5HKqE0RzhB12cUCM+iEABDsTJTXSkJdr9BwT3CUwwfxmFt4
-         C7C5C7frLOp51BlG5xhwtTHNTxEkM0iFMBXKx9hTxbZ386hgYqv5rQMvmVMAHL92HgWP
-         0sxHzKAvh+9d1h3KXSZ24JBEpN5fytfwmmhYoJyqLmUaMxHOrqLylbQCVhMEErMCY+ZL
-         puoA==
-X-Gm-Message-State: AOJu0Yzdw7yhlFpk1jMDenLS5oYg3PV00VnTWbRNGaOaSDvegu3oMebi
-        hZAjlNirZy/iQixZ5xNWJGEkM1yKR24=
-X-Google-Smtp-Source: AGHT+IG9+k+RbsCROZVMJf5NZBS/xEIj+i8wumNbqzyCoFYfIMSmQua6kuhoqp8NAL+vNDBuwq8EBWv8n0s=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:c20e:0:b0:595:8166:7be with SMTP id
- z14-20020a81c20e000000b00595816607bemr12527ywc.0.1697482157142; Mon, 16 Oct
- 2023 11:49:17 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 11:49:15 -0700
-In-Reply-To: <03afed7eb3c1e5f4b2b8ecfd8616ae5c6f1819e9.camel@infradead.org>
-Mime-Version: 1.0
-References: <ZR2pwdZtO3WLCwjj@google.com> <34057852-f6c0-d6d5-261f-bbb5fa056425@oracle.com>
- <ZSXqZOgLYkwLRWLO@google.com> <8f3493ca4c0e726d5c3876bb7dd2cfc432d9deaa.camel@infradead.org>
- <ZSmHcECyt5PdZyIZ@google.com> <cf2b22fc-78f5-dfb9-f0e6-5c4059a970a2@oracle.com>
- <ZSnSNVankCAlHIhI@google.com> <BD4C4E71-C743-4B79-93CA-0F3AC5423412@infradead.org>
- <993cc7f9-a134-8086-3410-b915fe5db7a5@oracle.com> <03afed7eb3c1e5f4b2b8ecfd8616ae5c6f1819e9.camel@infradead.org>
-Message-ID: <ZS2Fq5dr2CeZaBok@google.com>
-Subject: Re: [PATCH RFC 1/1] KVM: x86: add param to update master clock periodically
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     Dongli Zhang <dongli.zhang@oracle.com>,
-        Joe Jin <joe.jin@oracle.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 16 Oct 2023 14:50:50 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E34D95;
+        Mon, 16 Oct 2023 11:50:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697482249; x=1729018249;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=Iulu54IDYUFpU+iC/guD05U9rT3+qcojMqimF0BvD7c=;
+  b=jhD4+rZJQNVsfSUT8UJbDT9HLUwyecBBVj4HRHrMfkfg1XVUwMobtE7g
+   BDbSxTsuduPB3ueu+4/gbXnRR7LiIlQBsM8Kk5DLQL/o+ZIiZ2UkNXJpH
+   E0lmz2GC/CmNWjuizonjcZQzsofBdAzzlVIKTOmsRXUYjaskdYlywWfKM
+   3a1uDfYzdcLPy3hDe4UrQahcYbCygR1spbZ9lOf6OgtTyyAubZUaJii4D
+   Gs8E0g+WbUYpm4AdTxDkxyxm+rS/I98xApjEg3FgqxCiYmCtlFQjrVM3B
+   42gcHaJxs4mJ9ejKau+ZO1M7qGULAUeyvN7/jI8evUwxRtu0hVsqDUH8P
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="7182384"
+X-IronPort-AV: E=Sophos;i="6.03,230,1694761200"; 
+   d="scan'208";a="7182384"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 11:50:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="826131454"
+X-IronPort-AV: E=Sophos;i="6.03,230,1694761200"; 
+   d="scan'208";a="826131454"
+Received: from spandruv-desk1.amr.corp.intel.com ([10.209.124.179])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 11:50:34 -0700
+Message-ID: <eeb77ec34d2002e507c09949aac9110d8b8eff4a.camel@linux.intel.com>
+Subject: Re: [RESEND PATCH V9 3/7] cpufreq: amd-pstate: Enable amd-pstate
+ preferred core supporting.
+From:   srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Meng, Li (Jassmine)" <Li.Meng@amd.com>
+Cc:     "Huang, Ray" <Ray.Huang@amd.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Fontenot, Nathan" <Nathan.Fontenot@amd.com>,
+        "Sharma, Deepak" <Deepak.Sharma@amd.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Limonciello, Mario" <Mario.Limonciello@amd.com>,
+        "Huang, Shimmer" <Shimmer.Huang@amd.com>,
+        "Yuan, Perry" <Perry.Yuan@amd.com>,
+        "Du, Xiaojian" <Xiaojian.Du@amd.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        "Karny, Wyes" <Wyes.Karny@amd.com>
+Date:   Mon, 16 Oct 2023 11:50:34 -0700
+In-Reply-To: <e82fc689-5cc3-d799-6e5f-a9e4ac98e26f@intel.com>
+References: <20231013033118.3759311-1-li.meng@amd.com>
+         <20231013033118.3759311-4-li.meng@amd.com>
+         <20231013160128.GB36211@noisy.programming.kicks-ass.net>
+         <DM4PR12MB6351E2E9504B57BD40DAE985F7D7A@DM4PR12MB6351.namprd12.prod.outlook.com>
+         <20231016105845.GA33217@noisy.programming.kicks-ass.net>
+         <e82fc689-5cc3-d799-6e5f-a9e4ac98e26f@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023, David Woodhouse wrote:
-> On Mon, 2023-10-16 at 08:47 -0700, Dongli Zhang wrote:
-> > Suppose we are discussing a non-permanenet solution, I would suggest:
-> > 
-> > 1. Document something to accept that kvm-clock (or pvclock on KVM, including Xen
-> > on KVM) is not good enough in some cases, e.g., vCPU hotplug.
-> 
-> I still don't understand the vCPU hotplug case.
-> 
-> In the case where the TSC is actually sane, why would we need to reset
-> the masterclock on vCPU hotplug? 
-> 
-> The new vCPU gets its TSC synchronised to the others, and its kvmclock
-> parameters (mul/shift/offset based on the guest TSC) can be *precisely*
-> the same as the other vCPUs too, can't they? Why reset anything?
+On Mon, 2023-10-16 at 19:27 +0200, Wysocki, Rafael J wrote:
+> On 10/16/2023 12:58 PM, Peter Zijlstra wrote:
+> > On Mon, Oct 16, 2023 at 06:20:53AM +0000, Meng, Li (Jassmine)
+> > wrote:
+> > > > > +static void amd_pstate_init_prefcore(struct amd_cpudata
+> > > > > *cpudata) {
+> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 int ret, prio;
+> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 u32 highest_perf;
+> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0 static u32 max_highest_perf =3D 0, min_=
+highest_perf =3D
+> > > > > U32_MAX;
+> > > > What serializes these things?
+> > > >=20
+> > > > Also, *why* are you using u32 here, what's wrong with something
+> > > > like:
+> > > >=20
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int max_hp =3D INT=
+_MIN, min_hp =3D INT_MAX;
+> > > >=20
+> > > [Meng, Li (Jassmine)]
+> > > We use ITMT architecture to utilize preferred core features.
+> > > Therefore, we need to try to be consistent with Intel's
+> > > implementation
+> > > as much as possible.=C2=A0 For details, please refer to the
+> > > intel_pstate_set_itmt_prio function in file intel_pstate.c. (Line
+> > > 355)
+> > >=20
+> > > I think using the data type of u32 is consistent with the data
+> > > structures of cppc_perf_ctrls and amd_cpudata etc.
+> > Rafael, should we fix intel_pstate too?
+>=20
+> Srinivas should be more familiar with this code than I am, so adding
+> him.
+>=20
+If we make
+	static u32 max_highest_perf =3D 0, min_highest_perf =3D U32_MAX;
+to
+	static int max_highest_perf =3D INT_MIN, min_highest_perf =3D
+INT_MAX;
 
-Aha!  I think I finally figured out why KVM behaves the way it does.
+Then in intel_pstate we will compare signed vs unsigned comparison as
+cppc_perf.highest_perf is u32.
 
-The unnecessary masterclock updates effectively came from:
 
-  commit 7f187922ddf6b67f2999a76dcb71663097b75497
-  Author: Marcelo Tosatti <mtosatti@redhat.com>
-  Date:   Tue Nov 4 21:30:44 2014 -0200
+In reality this will be fine to change to "int" as we will never reach
+u32 max as performance on any Intel platform.
 
-    KVM: x86: update masterclock values on TSC writes
-    
-    When the guest writes to the TSC, the masterclock TSC copy must be
-    updated as well along with the TSC_OFFSET update, otherwise a negative
-    tsc_timestamp is calculated at kvm_guest_time_update.
-    
-    Once "if (!vcpus_matched && ka->use_master_clock)" is simplified to
-    "if (ka->use_master_clock)", the corresponding "if (!ka->use_master_clock)"
-    becomes redundant, so remove the do_request boolean and collapse
-    everything into a single condition.
+>=20
+> > The point is, that sched_asym_prefer(), the final consumer of these
+> > values uses int and thus an explicitly signed compare.
+> >=20
+> > Using u32 and U32_MAX anywhere near the setting the priority makes
+> > absolutely no sense.
+> >=20
+> > If you were to have the high bit set, things do not behave as
+> > expected.
+>=20
+> Right, but in practice these values are always between 0 and 255=20
+> inclusive AFAICS.
+>=20
+> It would have been better to use u8 I suppose.
+Should be fine as over clocked parts will set to max 0xff.
 
-Before that, KVM only re-synced the masterclock if it was enabled or disabled,
-i.e. KVM behaved as we want it to behave.  Note, at the time of the above commit,
-VMX synchronized TSC on *guest* writes to MSR_IA32_TSC:
+>=20
+>=20
+> > Also, same question as to the amd folks; what serializes those
+> > static
+> > variables?
+>=20
+> That's a good one.
 
-	case MSR_IA32_TSC:
-        	kvm_write_tsc(vcpu, msr_info);
-	        break;
+This function which is checking static variables is called from cpufreq
+->init callback. Which in turn is called from a function which is
+passed as startup() function pointer to
+cpuhp_setup_state_nocalls_cpuslocked().
 
-That got changed by commit 0c899c25d754 ("KVM: x86: do not attempt TSC synchronization
-on guest writes"), but I don't think the guest angle is actually relevant to the
-fix.  AFAICT, a write from the host would suffer the same problem.  But knowing
-that KVM synced on guest writes is crucial to understanding the changelog.
+I see that startup() callbacks are called under a mutex
+cpuhp_state_mutex for each present CPUs. So if some tear down happen,
+that is also protected by the same mutex. The assumption is here is
+that cpuhp_invoke_callback() in hotplug state machine is not called in
+parallel on two CPUs by the hotplug state machine. But I see activity
+on parallel bringup, so this is questionable now.
 
-In kvm_write_tsc(), except for KVM's wonderful "less than 1 second" hack, KVM
-snapshotted the vCPU's current TSC *and* the current time in nanoseconds, where
-kvm->arch.cur_tsc_nsec is the current host kernel time in nanoseconds.
+Thanks,
+Srinivas
 
-	ns = get_kernel_ns();
+>=20
+>=20
 
-	...
-
-        if (usdiff < USEC_PER_SEC &&
-            vcpu->arch.virtual_tsc_khz == kvm->arch.last_tsc_khz) {
-		...
-        } else {
-                /*
-                 * We split periods of matched TSC writes into generations.
-                 * For each generation, we track the original measured
-                 * nanosecond time, offset, and write, so if TSCs are in
-                 * sync, we can match exact offset, and if not, we can match
-                 * exact software computation in compute_guest_tsc()
-                 *
-                 * These values are tracked in kvm->arch.cur_xxx variables.
-                 */
-                kvm->arch.cur_tsc_generation++;
-                kvm->arch.cur_tsc_nsec = ns;
-                kvm->arch.cur_tsc_write = data;
-                kvm->arch.cur_tsc_offset = offset;
-                matched = false;
-                pr_debug("kvm: new tsc generation %llu, clock %llu\n",
-                         kvm->arch.cur_tsc_generation, data);
-        }
-
-	...
-
-        /* Keep track of which generation this VCPU has synchronized to */
-        vcpu->arch.this_tsc_generation = kvm->arch.cur_tsc_generation;
-        vcpu->arch.this_tsc_nsec = kvm->arch.cur_tsc_nsec;
-        vcpu->arch.this_tsc_write = kvm->arch.cur_tsc_write;
-
-Note that the above sets matched to false!  But because kvm_track_tsc_matching()
-looks for matched+1, i.e. doesn't require the first vCPU to match itself, KVM
-would immediately compute vcpus_matched as true for VMs with a single vCPU.  As
-a result, KVM would skip the masterlock update, even though a new TSC generation
-was created.
-
-        vcpus_matched = (ka->nr_vcpus_matched_tsc + 1 ==
-                         atomic_read(&vcpu->kvm->online_vcpus));
-
-        if (vcpus_matched && gtod->clock.vclock_mode == VCLOCK_TSC)
-                if (!ka->use_master_clock)
-                        do_request = 1;
-
-        if (!vcpus_matched && ka->use_master_clock)
-                        do_request = 1;
-
-        if (do_request)
-                kvm_make_request(KVM_REQ_MASTERCLOCK_UPDATE, vcpu);
-
-On hardware without TSC scaling support, vcpu->tsc_catchup is set to true if the
-guest TSC frequency is faster than the host TSC frequency, even if the TSC is
-otherwise stable.  And for that mode, kvm_guest_time_update(), by way of
-compute_guest_tsc(), uses vcpu->arch.this_tsc_nsec, a.k.a. the kernel time at the
-last TSC write, to compute the guest TSC relative to kernel time:
-
-  static u64 compute_guest_tsc(struct kvm_vcpu *vcpu, s64 kernel_ns)
-  {
-	u64 tsc = pvclock_scale_delta(kernel_ns-vcpu->arch.this_tsc_nsec,
-				      vcpu->arch.virtual_tsc_mult,
-				      vcpu->arch.virtual_tsc_shift);
-	tsc += vcpu->arch.this_tsc_write;
-	return tsc;
-  }
-
-Except the @kernel_ns passed to compute_guest_tsc() isn't the current kernel time,
-it's the masterclock snapshot!
-
-        spin_lock(&ka->pvclock_gtod_sync_lock);
-        use_master_clock = ka->use_master_clock;
-        if (use_master_clock) {
-                host_tsc = ka->master_cycle_now;
-                kernel_ns = ka->master_kernel_ns;
-        }
-        spin_unlock(&ka->pvclock_gtod_sync_lock);
-
-	if (vcpu->tsc_catchup) {
-		u64 tsc = compute_guest_tsc(v, kernel_ns);
-		if (tsc > tsc_timestamp) {
-			adjust_tsc_offset_guest(v, tsc - tsc_timestamp);
-			tsc_timestamp = tsc;
-		}
-	}
-
-And so the "kernel_ns-vcpu->arch.this_tsc_nsec" is *guaranteed* to generate a
-negative value, because this_tsc_nsec was captured after ka->master_kernel_ns.
-
-Forcing a masterclock update essentially fudged around that problem, but in a
-heavy handed way that introduced undesirable side effects, i.e. unnecessarily
-forces a masterclock update when a new vCPU joins the party via hotplug.
-
-Compile tested only, but the below should fix the vCPU hotplug case.  Then
-someone (not me) just needs to figure out why kvm_xen_shared_info_init() forces
-a masterclock update.
-
-I still think we should clean up the periodic sync code, but I don't think we
-need to periodically sync the masterclock.
-
----
- arch/x86/kvm/x86.c | 29 ++++++++++++++++-------------
- 1 file changed, 16 insertions(+), 13 deletions(-)
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index c54e1133e0d3..f0a607b6fc31 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -2510,26 +2510,29 @@ static inline int gtod_is_based_on_tsc(int mode)
- }
- #endif
- 
--static void kvm_track_tsc_matching(struct kvm_vcpu *vcpu)
-+static void kvm_track_tsc_matching(struct kvm_vcpu *vcpu, bool new_generation)
- {
- #ifdef CONFIG_X86_64
--	bool vcpus_matched;
- 	struct kvm_arch *ka = &vcpu->kvm->arch;
- 	struct pvclock_gtod_data *gtod = &pvclock_gtod_data;
- 
--	vcpus_matched = (ka->nr_vcpus_matched_tsc + 1 ==
--			 atomic_read(&vcpu->kvm->online_vcpus));
-+	/*
-+	 * To use the masterclock, the host clocksource must be based on TSC
-+	 * and all vCPUs must have matching TSCs.  Note, the count for matching
-+	 * vCPUs doesn't include the reference vCPU, hence "+1".
-+	 */
-+	bool use_master_clock = (ka->nr_vcpus_matched_tsc + 1 ==
-+				 atomic_read(&vcpu->kvm->online_vcpus)) &&
-+				gtod_is_based_on_tsc(gtod->clock.vclock_mode);
- 
- 	/*
--	 * Once the masterclock is enabled, always perform request in
--	 * order to update it.
--	 *
--	 * In order to enable masterclock, the host clocksource must be TSC
--	 * and the vcpus need to have matched TSCs.  When that happens,
--	 * perform request to enable masterclock.
-+	 * Request a masterclock update if the masterclock needs to be toggled
-+	 * on/off, or when starting a new generation and the masterclock is
-+	 * enabled (compute_guest_tsc() requires the masterclock snaphot to be
-+	 * taken _after_ the new generation is created).
- 	 */
--	if (ka->use_master_clock ||
--	    (gtod_is_based_on_tsc(gtod->clock.vclock_mode) && vcpus_matched))
-+	if ((ka->use_master_clock && new_generation) ||
-+	    (ka->use_master_clock != use_master_clock))
- 		kvm_make_request(KVM_REQ_MASTERCLOCK_UPDATE, vcpu);
- 
- 	trace_kvm_track_tsc(vcpu->vcpu_id, ka->nr_vcpus_matched_tsc,
-@@ -2706,7 +2709,7 @@ static void __kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 offset, u64 tsc,
- 	vcpu->arch.this_tsc_nsec = kvm->arch.cur_tsc_nsec;
- 	vcpu->arch.this_tsc_write = kvm->arch.cur_tsc_write;
- 
--	kvm_track_tsc_matching(vcpu);
-+	kvm_track_tsc_matching(vcpu, !matched);
- }
- 
- static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 *user_value)
-
-base-commit: dfdc8b7884b50e3bfa635292973b530a97689f12
--- 
