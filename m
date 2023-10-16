@@ -2,136 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DFF07CB6DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 01:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FD797CB6DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 01:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234228AbjJPXDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 19:03:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58882 "EHLO
+        id S234235AbjJPXEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 19:04:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233775AbjJPXDt (ORCPT
+        with ESMTP id S232996AbjJPXED (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 19:03:49 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB309B
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:03:47 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77869C433C7;
-        Mon, 16 Oct 2023 23:03:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697497427;
-        bh=b8xKj753lfZd+cD8vncLLLlX6EQ1e8JPWBiJsHZJ/FU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=XiEoN46ehPaHXLfmpPJ1G5yNY90m/L1rUh5e2hPEfQwpGfOIoYRfwcEeaiOKBOOOg
-         mWKX7ws+oyW/2ETte+u66L33X/3XrX89FnwfwinYO2xazsqklmYeXoYY4CeVWYA+OS
-         /7XCBVP2ZGD2SaX3M3OFBa0KLSSQA5lABW5CGK84D5+N4dzXnTR4YmvyK+dByJvvZw
-         EJ7h5VEa9sa16fxj0F4dytsnXxejd2rVy+DrKCBkAstYO9OZEPyrTftkNLPW2n3rqc
-         3D43ZBWHQ7pdxoRktFiKx0zHvPpswuFk8Qd1G6xQW+yf949sbn8Gj6bJAv9oeCs5Co
-         d9zVOiN82VJdQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0EC32CE126C; Mon, 16 Oct 2023 16:03:47 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 16:03:47 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     John Stultz <jstultz@google.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Stephen Boyd <sboyd@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        x86@kernel.org
-Subject: Re: [PATCH] clocksource: disable irq when holding watchdog_lock.
-Message-ID: <ae4e5836-bc42-42fa-bd41-2a2fd483acb5@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <80ff5036-8449-44a6-ba2f-0130d3be6b57@I-love.SAKURA.ne.jp>
- <CANDhNCpw+hEHNbtdAZR01HsHW_L1C0BXjZq21eXouQGNnYuUNQ@mail.gmail.com>
- <878r826xys.ffs@tglx>
+        Mon, 16 Oct 2023 19:04:03 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 188B3EE;
+        Mon, 16 Oct 2023 16:04:01 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4FC031FB;
+        Mon, 16 Oct 2023 16:04:41 -0700 (PDT)
+Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 364D13F64C;
+        Mon, 16 Oct 2023 16:03:59 -0700 (PDT)
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>, Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>, coresight@lists.linaro.org,
+        James Clark <james.clark@arm.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V7 0/3] coresight: etm: Make cycle count threshold user configurable
+Date:   Tue, 17 Oct 2023 00:03:54 +0100
+Message-Id: <169749720983.709368.13661754156308362398.b4-ty@arm.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230921033631.1298723-1-anshuman.khandual@arm.com>
+References: <20230921033631.1298723-1-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <878r826xys.ffs@tglx>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 11:47:55PM +0200, Thomas Gleixner wrote:
-> On Mon, Oct 16 2023 at 10:46, John Stultz wrote:
-> > On Fri, Oct 13, 2023 at 7:51 AM Tetsuo Handa
-> > <penguin-kernel@i-love.sakura.ne.jp> wrote:
-> >>
-> >> Lockdep found that spin_lock(&watchdog_lock) from call_timer_fn()
-> >> is not safe. Use spin_lock_irqsave(&watchdog_lock, flags) instead.
-> >>
-> >> [    0.378387] TSC synchronization [CPU#0 -> CPU#1]:
-> >> [    0.378387] Measured 55060 cycles TSC warp between CPUs, turning off TSC clock.
-
-[ . . . ]
-
-> Something like the uncompiled/untested below should cure it for real. It
-> really does not matter whether the TSC unstable event happens a bit
-> later. The system is unhappy no matter what.
-
-This does pass my acceptance tests:
-
-Tested-by: Paul E. McKenney <paulmck@kernel.org>
-
-> That said, this whole clocksource watchdog mess wants a proper
-> overhaul. It has become a pile of warts and duct tape by now and after
-> staring at it long enough there is no real reason to run it in a timer
-> callback anymore. It just can move into delayed work and the whole
-> locking problem can be reduced to the clocksource_mutex and some well
-> thought out atomic operations to handle the mark unstable case. But
-> that's a different story and not relevant for curing the problem at
-> hand.
-
-Moving the code to delayed work seems quite reasonable.
-
-But Thomas, you do understand that the way things have been going for
-the clocksource watchdog, pushing it out to delayed work will no doubt
-add yet more hair on large busy systems, right?  Yeah, yeah, I know,
-delayed work shouldn't be any worse than ksoftirqd.  The key word of
-course being "shouldn't".  ;-)
-
-							Thanx, Paul
-
-> Thanks,
+On Thu, 21 Sep 2023 09:06:28 +0530, Anshuman Khandual wrote:
+> This series makes ETM TRCCCCTRL based 'cc_threshold' user configurable via
+> the perf event attribute. But first, this implements an errata work around
+> affecting ETM TRCIDR3.CCITMIN value on certain cpus, overriding the field.
 > 
->         tglx
-> ---
-> --- a/arch/x86/kernel/tsc_sync.c
-> +++ b/arch/x86/kernel/tsc_sync.c
-> @@ -15,6 +15,7 @@
->   * ( The serial nature of the boot logic and the CPU hotplug lock
->   *   protects against more than 2 CPUs entering this code. )
->   */
-> +#include <linux/workqueue.h>
->  #include <linux/topology.h>
->  #include <linux/spinlock.h>
->  #include <linux/kernel.h>
-> @@ -342,6 +343,13 @@ static inline unsigned int loop_timeout(
->  	return (cpumask_weight(topology_core_cpumask(cpu)) > 1) ? 2 : 20;
->  }
->  
-> +static void tsc_sync_mark_tsc_unstable(struct work_struct *work)
-> +{
-> +	mark_tsc_unstable("check_tsc_sync_source failed");
-> +}
-> +
-> +static DECLARE_WORK(tsc_sync_work, tsc_sync_mark_tsc_unstable);
-> +
->  /*
->   * The freshly booted CPU initiates this via an async SMP function call.
->   */
-> @@ -395,7 +403,7 @@ static void check_tsc_sync_source(void *
->  			"turning off TSC clock.\n", max_warp);
->  		if (random_warps)
->  			pr_warn("TSC warped randomly between CPUs\n");
-> -		mark_tsc_unstable("check_tsc_sync_source failed");
-> +		schedule_work(&tsc_sync_work);
->  	}
->  
->  	/*
+> This series applies on coresight/for-next/queue.
+> 
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: James Clark <james.clark@arm.com>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: linux-doc@vger.kernel.org
+> Cc: coresight@lists.linaro.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> 
+> [...]
+
+Applied, thanks!
+
+[1/3] coresight: etm: Override TRCIDR3.CCITMIN on errata affected cpus
+      https://git.kernel.org/coresight/c/0f55b43dedcd
+[2/3] coresight: etm: Make cycle count threshold user configurable
+      https://git.kernel.org/coresight/c/0cf805fec179
+[3/3] Documentation: coresight: Add cc_threshold tunable
+      https://git.kernel.org/coresight/c/2b690bebb569
+
+Best regards,
+-- 
+Suzuki K Poulose <suzuki.poulose@arm.com>
