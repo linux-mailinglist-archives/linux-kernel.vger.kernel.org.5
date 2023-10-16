@@ -2,182 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DA797C9F11
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 07:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2B437C9F13
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 07:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbjJPFoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 01:44:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37624 "EHLO
+        id S231671AbjJPFo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 01:44:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbjJPFoe (ORCPT
+        with ESMTP id S229888AbjJPFoy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 01:44:34 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2082.outbound.protection.outlook.com [40.107.237.82])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99603D9;
-        Sun, 15 Oct 2023 22:44:31 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BqkE5+Y0JUDWD3e5cPqGn8Vt+QvQWoXQbkX2S4jjOB5/976n5T/7BXD3bEkJIo1ARPIvfYBlvoh4fhdgYqpy9CO10spHgaSdJWormRCY3qM83gfZgydvzPerJSs59Xl/B39J5N7ppMnvLJomuGOE1FzjVltYDZTazITL1zXpr2EXEDqA47HxfASnM7r3IQKGcvgrC6AxSJERE/o16Lnp0k2Wsek4+SyOUVSfXyp7lZzIzkVFcZVjbww0/9GIZ4gzpFdd3ABbfq4VtXe4GGdS8Rbgb/E/3eS65NYb0/7AsUkdNxO1u4KEBA8Xn2MW1raxD4UlMl/+EUAjWvZ/m7sA+Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ruqjokg/FFKI7YjJ66M+KjzP14+7ETZwDK3MLMFWgE0=;
- b=gP/+qdaRAMIKTOQ04ocvQrkziWtGhfKRbgD7pm6ZftKBGXg08bb/eQhYPYJxJmRu3lJYJIrLnhLBqeXqz7WZSIwytAMgFYKOmVcUs6NgucJ5pgTx3hbnUKND7M22bUp6mWJEp7p1+22tXRjdiCXZ1qaJWa2gNk6pAngm5+72scwIUfHVUgJ5WuBjw/1eBFQeOyuC3eqRgRIS9w7NOouyJFCfbketMCvqkw4/wtbxhWePHKQxglHqf4ttdxJIDJDtWeppBJy+sk9y6i8RG2heRcBp0l9fdFamekDkamLmhCkjOd+aFu2NnRvcS6vMyj46Opzw0/ECvP7L3LKRFzQmkQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ruqjokg/FFKI7YjJ66M+KjzP14+7ETZwDK3MLMFWgE0=;
- b=25+pwCqC5bzledG69Kp4bfD2uF94qJoMYI25bto5dQWu8hfg5aXwkDXdtCqz8VX0s9eFDE9ZvsXam4gb7Xmp69lFV8HwFWIYwx/JYc334w7JABIHWJGX9ACs/o8wPvSGyVCjjD46vD6dEt50eJqEvBT7ZgAt299A4Ml10Mfg7pI=
-Received: from SN7PR12MB7201.namprd12.prod.outlook.com (2603:10b6:806:2a8::22)
- by DM4PR12MB8558.namprd12.prod.outlook.com (2603:10b6:8:187::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.35; Mon, 16 Oct
- 2023 05:44:28 +0000
-Received: from SN7PR12MB7201.namprd12.prod.outlook.com
- ([fe80::167:7f5a:82a1:e2b9]) by SN7PR12MB7201.namprd12.prod.outlook.com
- ([fe80::167:7f5a:82a1:e2b9%4]) with mapi id 15.20.6863.043; Mon, 16 Oct 2023
- 05:44:27 +0000
-From:   "Havalige, Thippeswamy" <thippeswamy.havalige@amd.com>
-To:     "Havalige, Thippeswamy" <thippeswamy.havalige@amd.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-CC:     "bhelgaas@google.com" <bhelgaas@google.com>,
-        "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
-        "kw@linux.com" <kw@linux.com>, "robh@kernel.org" <robh@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "Simek, Michal" <michal.simek@amd.com>,
-        "Gogada, Bharat Kumar" <bharat.kumar.gogada@amd.com>
-Subject: RE: [PATCH v7 RESEND 0/3] Add support for Xilinx XDMA Soft IP as Root
- Port.
-Thread-Topic: [PATCH v7 RESEND 0/3] Add support for Xilinx XDMA Soft IP as
- Root Port.
-Thread-Index: AQHZ9iAav8GpnnhtikuLDTUsy/E9P7BL+v3A
-Date:   Mon, 16 Oct 2023 05:44:27 +0000
-Message-ID: <SN7PR12MB7201035D9E8F21AB4E2B52038BD7A@SN7PR12MB7201.namprd12.prod.outlook.com>
-References: <20231003173453.938190-1-thippeswamy.havalige@amd.com>
-In-Reply-To: <20231003173453.938190-1-thippeswamy.havalige@amd.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN7PR12MB7201:EE_|DM4PR12MB8558:EE_
-x-ms-office365-filtering-correlation-id: 62987295-1e83-497f-fc80-08dbce0af60e
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: fiVi2BYUjECVHANivVTNO2B2oo6YpqwaWCFmbLMcxeGpxVWvmt0LjV8iMEHR8D+/og02uTuW8SONum1OBq6UZ907ecERh04yuOejZoUBkV9KdIK9aaRJmHCPsT14JFTLHAP2sGKguT3ky4do2muDwSnMeYrw9Rg7o5jPx+BsvCX/TkgQpFErd4Cs3a81i7oD7cXdjFLmQwDQhAogSlMfqcahprzT4HETXqdthM4uQqF51O4w6Roifk5plyIAtngRcwvsAmGF4I5VKLG7B2euZ3gMJEV+edwXpHMYgIsPzwGM9qFOJ1+SzMV5vkzPM8rHkWX5aeO8vUmS/DKsYQ2gqh2ZwH9qS+kDCRypdYCPuG8Jn+o9JqX5B0xhmegWAT3SFwHNj+jM84qLVnlF4gYerYn2u+LPR+ICLh7YGwMusjUVqHKwXmu37HphM1flRFuJDUT0fJzUedOSI9ROsL81HT7sJzWqajR02zqDgPcin/7LFU2SYq36T2ARo3hHBpiDrBEgr2q11w/lMYq11tizPpEeFB1UApNsPrXoacKvzOB13lXSPcLEDLQoQm/84teKHdXx/7V6PYTdRfBqed4HT3L0p+j6aqvOX0SLYShu3xoxhGtRHo/rGt/ZDO84DXlJ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB7201.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(136003)(376002)(346002)(39860400002)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(55016003)(478600001)(76116006)(66946007)(110136005)(66556008)(66476007)(64756008)(54906003)(316002)(66446008)(71200400001)(83380400001)(86362001)(38100700002)(9686003)(26005)(53546011)(7696005)(6506007)(33656002)(41300700001)(5660300002)(38070700005)(122000001)(8936002)(8676002)(4326008)(52536014)(7416002)(2906002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?+M8dAuv8ka8Lba+oyGkZgHSAvmcNr1bTXlEt+8TlaBEO2ooRGCsndzvW4QKf?=
- =?us-ascii?Q?KpgXYhaNvrli0BrRyWuYvp2vq9Swu1cpCWxrgg7ELKXPF5qmniPqnoH7JjEv?=
- =?us-ascii?Q?vQZuYfZBljxoIz6QQmtOO4s+XRp7Si3AOpP8/nydzdlEaGar4APl4i5DAFFc?=
- =?us-ascii?Q?hu4s36XnPtyhN8LvibmEggol7ZLgix32ZwD+UBQi41C30JEV2otZAIBc8IVX?=
- =?us-ascii?Q?IH6fmPpOmwLcZn+O1Ux95pyL+hrLpKXSDrbRM4q3nf0od9oCe+QhR6GDn9b2?=
- =?us-ascii?Q?4p5wmHRAfm9SJFFt0x68AkjwUU6lUsuVW4d6EbZTSZ5yC9Eo6JOumjzFyPYQ?=
- =?us-ascii?Q?2Y6w62YZn6zDk9VUnxwFWbfAZBpHfO6am3fO449BM54bn0vT2WV3E9XfFIQe?=
- =?us-ascii?Q?5GEGuDUEcKSwiNTYQaj463pl+wSNX4eSIpSh3oivqbmRg5QvEPmrAlpND1jG?=
- =?us-ascii?Q?dvFrCUSXkZpjfq1NzcnPzoc12QLqQC19M0F3zYtt9F8qPHf5WsB0SV2VfLn3?=
- =?us-ascii?Q?1cAPAJX21xsiUtOWOdU5szrN7LtXD0ELnBzidq7z9YP+YzTqxBf4uFtVr4jb?=
- =?us-ascii?Q?/ScxvjNDVUnEcRhGI3M3aaQTdeA+zdm/aAkssx0Uz4iQcqpVWo5cGxjcVuUd?=
- =?us-ascii?Q?WUZDVYt1zNnv30tebc2ZWdE860nYaasIJ3BIxEJX8djk8OtZFDMNUC66R4a8?=
- =?us-ascii?Q?1L9JXiwo4nbymcNszYC1VDWwq0Kv2cX7xa9y3HyqDWpwM36YkfE0jmAXi7fN?=
- =?us-ascii?Q?s25gG4kT6MlMbUICWxHKaE255jn8QjXLGMDN5JHYyy4RfomSVnKwUIsnxxkv?=
- =?us-ascii?Q?K1hf1acGVyd9naHr8tOulqUPmwSvFHEHzjwrN9Kvc+KfpZSOFKotlLeb4A5s?=
- =?us-ascii?Q?KKN091aNq/Jp6jWXtvgGmUrL/X5wJrcsb+dYVP+QajS2L4k1NY+ut0UAEjek?=
- =?us-ascii?Q?y19qVxahYgCMISlTw66K5hmnmKihQb/JeGR1ZAH5l5PtnNklRSvgB+8WqmOC?=
- =?us-ascii?Q?lFNuhAIAIBV5RdoVeLSjUhj7ggcHQwvHh+l0PyYzZWSHxbz9gSC3yIfg2CHY?=
- =?us-ascii?Q?mCLtgXAVK9xR+7NmZQdBXKsGt1VU2PXLKG55dSG9QckX1lpgf1NLMYcm1Jai?=
- =?us-ascii?Q?GT1CCfzNqQ+JHe5osWn184MECh82gSlHUxhPv+0CmpLb1sOd8gWBvDqysgd2?=
- =?us-ascii?Q?pHendDneJe5fzRmX+rwUD2d0Ed+W3lfmi2LwzWI3IYVQtBNlGzbETbSODmls?=
- =?us-ascii?Q?AKdDNDmcoEZT6mQ9AD35oVHlUBUCD7SJ1HK26rJktBCQBMSZF3iMbzUrP5dK?=
- =?us-ascii?Q?CNvkQLF93MFVts02yg3Zq7d0MC83AbUDwBiiP1dSS/DYIcu6EQ+imiOXdmA9?=
- =?us-ascii?Q?1cdvzLj6yb7Efa7TCKJSLzFP7t1/TCkC1CSSpPKXQ4pbl2dRH2MPhyU1FR8d?=
- =?us-ascii?Q?njhSnam8aZ39Ngff1wSp2sebdEyVNy6wSQvVi7J7aokoWLHewe16xNDaslcx?=
- =?us-ascii?Q?lFvYw1Z5K/poxjUgVst6+iSRKm/Misq4bOLEuGLH2KfDZ1NQ7aVI6tyoEILt?=
- =?us-ascii?Q?F18q7kniolnV1D2XG78=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 16 Oct 2023 01:44:54 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81EA9F5
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 22:44:52 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40776b1ff73so18921125e9.2
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 22:44:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697435091; x=1698039891; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mkWEIIkYYh6kK7b6r8XR0r+lXaNIK83y5EKUw/G8onE=;
+        b=Y5exdubUoLThgSmog8meKT7YU6yRHu7DoQkThMapQ3UKPoUzjyPn4PaNOcqp9lDoyV
+         VTCC9UiL8oBhbUU0fB37g91jqLCNK5pcOpM7RMHsQvlaXX8C7RQDTcteZQsSKjfUVrO+
+         cY/l1txPtb5zpWlF2Qd7H2uaroSFJ7Vyzimd4LdNcNAFOmPdnx+ywUVJGMn3MIO3/3c4
+         oopXEm3zTx2V8FvKLDNEvrldNapZF79O44FVuzqk7ixzMsgDnOgQqo051FrUWKuasktT
+         9htnXCX6iCpywJqf2TmgQG668iX9KCLlr5zef5+zeXddVGiczTVYn7iMDZ1GuQQnF+em
+         XQSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697435091; x=1698039891;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mkWEIIkYYh6kK7b6r8XR0r+lXaNIK83y5EKUw/G8onE=;
+        b=O/DPYmYYJccqYFpk3ouUt5TNugytE+tL3zmJ6lZcNltwgLbEwzjHuieYe6xIunvplk
+         YkzW3ojguiHpl7lvU5pwJSMLRRd+6nhT/twRUldsh9ua084m2dFoce75jtZ4clUIwxuc
+         EcMqCkHfZCYn6evv9sV35ZTEKug8x9u1Xo2O/ehFTHNKK+VObZFOvfyveFmK4uMPmhRa
+         EuTl7osQFmcO5Uqi2sDWDS1sbOpMrf+KilaUINb08TN2UNAOw5G+T50De543eXEx7gcO
+         8dGxHMcbTb7PS2fvE5c1u3mPu7FRj1IRWEPlUe+/dVFouEnni50Ux11+JS0B43nVfk8T
+         XeBg==
+X-Gm-Message-State: AOJu0Yy35l6oI6S2XHpnrxRmqRpTCdFXlskZUMPFuxKmSDRwjQ5gNEiv
+        owF3MrRRluL2ZeVri8mf+trfkg==
+X-Google-Smtp-Source: AGHT+IFudYotk2IRfX0ILFNPW5CCt+h9JJHQxieqqhUMqKXFEf/MhwPiMQsfeho+Lc4GufWbqiQAfg==
+X-Received: by 2002:a05:600c:3b14:b0:407:4944:76e5 with SMTP id m20-20020a05600c3b1400b00407494476e5mr17309244wms.22.1697435091027;
+        Sun, 15 Oct 2023 22:44:51 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.219.154])
+        by smtp.gmail.com with ESMTPSA id z15-20020a05600c220f00b0040684abb623sm6124155wml.24.2023.10.15.22.44.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 15 Oct 2023 22:44:50 -0700 (PDT)
+Message-ID: <0990c5fb-7e02-436d-8ebf-6e9565b324e3@linaro.org>
+Date:   Mon, 16 Oct 2023 07:44:48 +0200
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB7201.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 62987295-1e83-497f-fc80-08dbce0af60e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Oct 2023 05:44:27.5979
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pUuc6wjLoRXN1LkTHUugs6Nh9xQVXQtoTcY41ZCRjWLbu9dELpScFNQOsxJLrBqliOn/t5qbIvaiUNjxMEw5gA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB8558
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: usb: add NXP PTN36502 Type-C redriver
+ bindings
+Content-Language: en-US
+To:     Luca Weiss <luca.weiss@fairphone.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20231013-ptn36502-v1-0-98109a430efc@fairphone.com>
+ <20231013-ptn36502-v1-1-98109a430efc@fairphone.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231013-ptn36502-v1-1-98109a430efc@fairphone.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn/Lorenzo/ Krzysztof
+On 13/10/2023 16:24, Luca Weiss wrote:
+> Document bindings for this Type-C USB 3.1 Gen 1 and DisplayPort v1.2
+> combo redriver.
+> 
+> The PTN36502 can also run in GPIO mode where it is configured
+> differently, without any I2C connection, but this is not supported yet.
+> 
+> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
 
-Can you please provide update on this series.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Regards,
-Thippeswamy H
-
-> -----Original Message-----
-> From: Thippeswamy Havalige <thippeswamy.havalige@amd.com>
-> Sent: Tuesday, October 3, 2023 11:05 PM
-> To: linux-pci@vger.kernel.org; devicetree@vger.kernel.org; linux-
-> kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
-> Cc: bhelgaas@google.com; lpieralisi@kernel.org; kw@linux.com;
-> robh@kernel.org; krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
-> Havalige, Thippeswamy <thippeswamy.havalige@amd.com>; Simek, Michal
-> <michal.simek@amd.com>; Gogada, Bharat Kumar
-> <bharat.kumar.gogada@amd.com>
-> Subject: [PATCH v7 RESEND 0/3] Add support for Xilinx XDMA Soft IP as Roo=
-t
-> Port.
->=20
-> This series of patch add support for Xilinx XDMA Soft IP as Root Port.
->=20
-> The Xilinx XDMA Soft IP support's 32 bit and 64bit BAR's.
-> As Root Port it supports MSI and legacy interrupts.
->=20
-> For code reusability existing CPM4 error interrupt bits are moved to comm=
-on
-> header.
->=20
-> Signed-off-by: Thippeswamy Havalige <thippeswamy.havalige@amd.com>
-> Signed-off-by: Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>
-> ---
-> Thippeswamy Havalige (3):
->   PCI: xilinx-cpm: Move interrupt bit definitions to common header
->   dt-bindings: PCI: xilinx-xdma: Add YAML schemas for Xilinx XDMA PCIe
->     Root Port Bridge
->   PCI: xilinx-xdma: Add Xilinx XDMA Root Port driver
->=20
->  .../bindings/pci/xlnx,xdma-host.yaml          | 114 +++
->  drivers/pci/controller/Kconfig                |  11 +
->  drivers/pci/controller/Makefile               |   1 +
->  drivers/pci/controller/pcie-xilinx-common.h   |  31 +
->  drivers/pci/controller/pcie-xilinx-cpm.c      |  38 +-
->  drivers/pci/controller/pcie-xilinx-dma-pl.c   | 803 ++++++++++++++++++
->  6 files changed, 967 insertions(+), 31 deletions(-)  create mode 100644
-> Documentation/devicetree/bindings/pci/xlnx,xdma-host.yaml
->  create mode 100644 drivers/pci/controller/pcie-xilinx-common.h
->  create mode 100644 drivers/pci/controller/pcie-xilinx-dma-pl.c
->=20
-> --
-> 2.25.1
+Best regards,
+Krzysztof
 
