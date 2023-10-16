@@ -2,45 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C4787CAD07
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E25D07CAD0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:12:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232483AbjJPPLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 11:11:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46820 "EHLO
+        id S233582AbjJPPMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 11:12:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233634AbjJPPLN (ORCPT
+        with ESMTP id S229666AbjJPPMV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 11:11:13 -0400
+        Mon, 16 Oct 2023 11:12:21 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A04FE8;
-        Mon, 16 Oct 2023 08:11:11 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95E09C433C8;
-        Mon, 16 Oct 2023 15:11:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697469070;
-        bh=/227UfKX32JYe+eKrbqR7BK2JZtah+TQm9kqJBQ4C44=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=dM2yYtv1fDayz6soPEJaCmH4nND/2Wu7Xuy0abNb9rzJ9cJ9F0pa88lzUj3fHt1Gm
-         NWynLpYzt+kWfISgMhqflE6SDnYb2oz68XiLRu962YWbEeHgRSwHwOk5NGS+Qa2efz
-         +EZQFJd7R5CJvxrwcgu/LUYbVuYa3ywq/jNLKpqUPPoVcMP1MkMSs7+bjcDnIstlB2
-         53BKFmw/A4/GJjMg1XEO5OqemMRYxgUACLDl8nTITT6UAxOhRN2LW/w1qRReIIcC0v
-         bPF74PHnBz+Efd0dJX6PqvrpRAI5VuMQDYCOvGSwmltMBTB5sCZeXcrBBPGVuHpVlS
-         t1X6wPywFWKFw==
-From:   Mark Brown <broonie@kernel.org>
-To:     Haibo Chen <haibo.chen@nxp.com>,
-        Yogesh Gaur <yogeshgaur.83@gmail.com>,
-        Adam Ford <aford173@gmail.com>, Han Xu <han.xu@nxp.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231010201524.2021340-1-han.xu@nxp.com>
-References: <20231010201524.2021340-1-han.xu@nxp.com>
-Subject: Re: [PATCH] spi: nxp-fspi: use the correct ioremap function
-Message-Id: <169746906931.40704.1616418494806230701.b4-ty@kernel.org>
-Date:   Mon, 16 Oct 2023 16:11:09 +0100
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC81B4;
+        Mon, 16 Oct 2023 08:12:19 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59D4BC433C7;
+        Mon, 16 Oct 2023 15:12:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1697469138;
+        bh=g/bXGDF5OR5KCvzXVNH6/8DzHZo5VWjQwH7GIxQdFGQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LUjpChg+DY8uoKKxuO37VkQ3GE8rbf6ymwFIvFCkv8p745HE4Bjh9F8cbGoimqPAT
+         f0TIUWGiTDTPW11LBccodll0AkMU4Um0KsgxhnOpDeXPNmPy0Oe2FXMpguW19nkY28
+         hHtnug/xdUzQNhwERiwzB/grgOfc6G3Xoz1xoPP0=
+Date:   Mon, 16 Oct 2023 17:12:15 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     kvm@vger.kernel.org, linux-coco@lists.linux.dev,
+        linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
+        bp@alien8.de, vbabka@suse.cz, kirill@shutemov.name,
+        ak@linux.intel.com, tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+        pankaj.gupta@amd.com, liam.merwick@oracle.com,
+        zhi.a.wang@intel.com, stable@vger.kernel.org
+Subject: Re: [PATCH v10 01/50] KVM: SVM: INTERCEPT_RDTSCP is never
+ intercepted anyway
+Message-ID: <2023101627-species-unscrew-2730@gregkh>
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-2-michael.roth@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231016132819.1002933-2-michael.roth@amd.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -50,38 +60,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Oct 2023 15:15:24 -0500, Han Xu wrote:
-> AHB memory as MMIO should be mapped with ioremap rather than ioremap_wc,
-> which should have been used initially just to handle unaligned access as
-> a workaround.
+On Mon, Oct 16, 2023 at 08:27:30AM -0500, Michael Roth wrote:
+> From: Paolo Bonzini <pbonzini@redhat.com>
 > 
+> svm_recalc_instruction_intercepts() is always called at least once
+> before the vCPU is started, so the setting or clearing of the RDTSCP
+> intercept can be dropped from the TSC_AUX virtualization support.
 > 
+> Extracted from a patch by Tom Lendacky.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 296d5a17e793 ("KVM: SEV-ES: Use V_TSC_AUX if available instead of RDTSC/MSR_TSC_AUX intercepts")
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> (cherry picked from commit e8d93d5d93f85949e7299be289c6e7e1154b2f78)
+> Signed-off-by: Michael Roth <michael.roth@amd.com>
+> ---
+>  arch/x86/kvm/svm/sev.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
 
-Applied to
+What stable tree(s) are you wanting this applied to (same for the others
+in this series)?  It's already in the 6.1.56 release, and the Fixes tag
+is for 5.19, so I don't see where it could be missing from?
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+thanks,
 
-Thanks!
-
-[1/1] spi: nxp-fspi: use the correct ioremap function
-      commit: c3aa5cb264a38ae9bbcce32abca4c155af0456df
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+greg k-h
