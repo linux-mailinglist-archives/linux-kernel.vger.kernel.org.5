@@ -2,155 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8CC37CA61A
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23B547CA608
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232974AbjJPKzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 06:55:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49350 "EHLO
+        id S230343AbjJPKwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 06:52:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231508AbjJPKzd (ORCPT
+        with ESMTP id S229668AbjJPKwx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 06:55:33 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5D0383
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 03:55:29 -0700 (PDT)
-Received: from kwepemm000007.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4S8DTq0Bcxz15NS3;
-        Mon, 16 Oct 2023 18:52:47 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemm000007.china.huawei.com (7.193.23.189) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 16 Oct 2023 18:55:26 +0800
-From:   Jijie Shao <shaojijie@huawei.com>
-To:     <will@kernel.org>, <jonathan.cameron@huawei.com>,
-        <mark.rutland@arm.com>, <yangyicong@hisilicon.com>
-CC:     <shaojijie@huawei.com>, <chenhao418@huawei.com>,
-        <shenjian15@huawei.com>, <wangjie125@huawei.com>,
-        <liuyonglong@huawei.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH V2 drivers/perf: hisi:] drivers/perf: hisi: use cpuhp_state_remove_instance_nocalls() for hns3 pmu uninit process
-Date:   Mon, 16 Oct 2023 18:51:39 +0800
-Message-ID: <20231016105139.1436425-1-shaojijie@huawei.com>
-X-Mailer: git-send-email 2.30.0
+        Mon, 16 Oct 2023 06:52:53 -0400
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AAE495
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 03:52:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=EhiJa9EH24JyhTMQDgYLXmR2kDM/RJaPhmujtJdfRWM=; b=kHEUSKMnLFS7Zi/BPAGf45+91e
+        w9Xa6Zk1dl3NckTqMNoMtflp+51PMfUj9WFG3UlUZph7XwLcU70mFcCKm7ouvPcFKaFyUXXqH9A/5
+        zU3mEKjYBb5wzkrBOIKFqjpQXwZSlZToC0PJqLRmdV/g2pBV0Xo6u8sDq4Itb2i4reGNF0ce/AK6C
+        /hvFi57OKTCUIkWZ28pquvLGChkE71p1RRbu36ms1uRaB2JQFCj6ySyKS8QLYSby0I+MYQmvsnkFd
+        xj9Bz7NwIAioKhyt03GAgqENty2EsZ8uqjZtE4Gsl0mS/d+Iq8FqT7NsE6x5rw+h638We9KdVivGo
+        Wm/eD2nw==;
+Received: from [192.168.12.174]
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+        id 1qsLD7-0011nd-Cj; Mon, 16 Oct 2023 12:52:33 +0200
+Message-ID: <b48bd1fc-fcb0-481b-8413-9210d44d709b@igalia.com>
+Date:   Mon, 16 Oct 2023 12:52:32 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm000007.china.huawei.com (7.193.23.189)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 6/6] drm/doc: Define KMS atomic state set
+Content-Language: en-US
+To:     =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel.daenzer@mailbox.org>,
+        xaver.hugl@gmail.com
+Cc:     pierre-eric.pelloux-prayer@amd.com,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Daniel Stone <daniel@fooishbar.org>,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, hwentlan@amd.com,
+        Rob Clark <robdclark@gmail.com>, ville.syrjala@linux.intel.com,
+        kernel-dev@igalia.com, alexander.deucher@amd.com,
+        Dave Airlie <airlied@gmail.com>, christian.koenig@amd.com,
+        joshua@froggi.es, wayland-devel@lists.freedesktop.org
+References: <20230815185710.159779-1-andrealmeid@igalia.com>
+ <20230815185710.159779-7-andrealmeid@igalia.com>
+ <1b23576d-1649-ff5c-6273-b54729ea46d8@mailbox.org>
+From:   =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+In-Reply-To: <1b23576d-1649-ff5c-6273-b54729ea46d8@mailbox.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hao Chen <chenhao418@huawei.com>
+Hi Michel,
 
-For pmu uninit process, we unregister pmu and then call cpuhp_state_remove_instance()
-to call callback function to migrate pmu context. the logic is unreasonable and
-may result in NULL pointer call trace.
+On 8/17/23 12:37, Michel Dänzer wrote:
+> On 8/15/23 20:57, André Almeida wrote:
+>> From: Pekka Paalanen <pekka.paalanen@collabora.com>
+>>
+>> Specify how the atomic state is maintained between userspace and
+>> kernel, plus the special case for async flips.
+>>
+>> Signed-off-by: Pekka Paalanen <pekka.paalanen@collabora.com>
+>> Signed-off-by: André Almeida <andrealmeid@igalia.com>
+> [...]
+>
+>> +An atomic commit with the flag DRM_MODE_PAGE_FLIP_ASYNC is allowed to
+>> +effectively change only the FB_ID property on any planes. No-operation changes
+>> +are ignored as always. [...]
+> During the hackfest in Brno, it was mentioned that a commit which re-sets the same FB_ID could actually have an effect with VRR: It could trigger scanout of the next frame before vertical blank has reached its maximum duration. Some kind of mechanism is required for this in order to allow user space to perform low frame rate compensation.
+>
+Xaver tested this hypothesis in a flipping the same fb in a VRR monitor 
+and it worked as expected, so this shouldn't be a concern.
 
-Found NULL pointer call trace for kernel-5.13 at the first time, log shows as below:
-Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
-[27169.471153] Mem abort info:
-[27169.478859]   ESR = 0x96000006
-[27169.485117]   EC = 0x25: DABT (current EL), IL = 32 bits
-[27169.501386]   SET = 0, FnV = 0
-[27169.508038]   EA = 0, S1PTW = 0
-[27169.559839] Data abort info:
-[27169.567296]   ISV = 0, ISS = 0x00000006
-[27169.585332]   CM = 0, WnR = 0
-[27169.592627] user pgtable: 4k pages, 48-bit VAs, pgdp=00000820ac0c2000
-[27169.615618] [0000000000000000] pgd=00000820af2bf003, p4d=00000820af2bf003, pud=00000820af2bd003, pmd=0000000000000000
-[27169.641348] Internal error: Oops: 96000006 [#1] PREEMPT SMP
-[27169.649879] Modules linked in: hisi_hns3_pmu(-) hns3 hclge hclgevf hnae3 hns3_cae(O) vfio_iommu_type1 vfio_pci vfio_virqfd vfio pv680_mii(O) [last unloaded: hisi_hns3_pmu]
-[27169.675150] CPU: 0 PID: 15 Comm: cpuhp/0 Tainted: G        W  O      5.12.0-rc4+ #1
-[27169.686538] Hardware name:  , BIOS KpxxxFPGA 1P B600 V143 04/22/2021
-[27169.694884] pstate: 80400009 (Nzcv daif +PAN -UAO -TCO BTYPE=--)
-[27169.704199] pc : perf_pmu_migrate_context+0x98/0x38c
-[27169.713848] lr : perf_pmu_migrate_context+0x94/0x38c
-[27169.723069] sp : ffff80001020bc80
-[27169.727938] x29: ffff80001020bc80 x28: 0000000000000000
-[27169.737236] x27: 0000000000000001 x26: fffffbffeff951d8
-[27169.745245] x25: ffffb7ae1ce36fd0 x24: fffffbffeff95178
-[27169.753116] x23: ffff0821f6f82668 x22: 0000000000000001
-[27169.760949] x21: ffff80001020bd08 x20: fffffbffeffb5188
-[27169.768467] x19: fffffbffeffb5178 x18: 0000000000000020
-[27169.776699] x17: 0000000000000000 x16: 0000000000000000
-[27169.785042] x15: 0000000000000004 x14: ffff08208093d290
-[27169.793254] x13: 0000000000000000 x12: 0000497f0149bafe
-[27169.801390] x11: 01262d2f8bbfdccc x10: 3dc70ddec1e5f4f9
-[27169.808896] x9 : ffffb7ae1a7eb108 x8 : 0000000000000002
-[27169.817000] x7 : 0000000000000000 x6 : 000000000000000e
-[27169.824726] x5 : 0000000000000001 x4 : 0000000000000000
-[27169.832924] x3 : 0000000000000000 x2 : ffff082080a30e80
-[27169.841135] x1 : 0000000000000000 x0 : fffffbffeffb5188
-[27169.849059] Call trace:
-[27169.853177]  perf_pmu_migrate_context+0x98/0x38c
-[27169.862256]  hisi_hns3_pmu_offline_cpu+0x104/0x12c [hisi_hns3_pmu]
-[27169.873943]  cpuhp_invoke_callback+0x118/0x634
-[27169.882775]  cpuhp_thread_fun+0xe8/0x190
-[27169.890345]  smpboot_thread_fn+0x25c/0x290
-[27169.898241]  kthread+0x168/0x16c
-[27169.904178]  ret_from_fork+0x10/0x18
-[27169.911943] Code: 944beda1 aa1403e0 944bed9f f8460f5c (f9400394)
+Thanks,
+     André
 
-And tested some other uncore pmu driver such as hisi pcie pmu and hisi uncore i3c pmu,
-hisi pcie pmu driver can reproduce it also, and change hisi uncore i3c pmu hotplug
-function from cpuhp_state_remove_instance_nocalls() to cpuhp_state_remove_instance(),
-it has the same call trace.
-
-This patch change cpuhp_state_remove_instance() to cpuhp_state_remove_instance_nocalls()
-after pmu unregistered to fix the problem.
-
-This problem is fixed by commit bd2756811766 ("perf: Rewrite core context handling")
-for kernel-6.2.
-
-Hisi hns3 pmu driver is supported for kernel-5.19, so, use this patch as bugfix for
-stable 6.0 and 6.1 tag, and use this patch as cleanup for newest kernel version.
-
-Fixes: 66637ab137b4 ("drivers/perf: hisi: add driver for HNS3 PMU")
-Signed-off-by: Hao Chen <chenhao418@huawei.com>
-Signed-off-by: Jijie Shao <shaojijie@huawei.com>
----
-ChangeLog:
-	1. Add more details for NULL pointer call trace suggested by Yicong
-	V1: https://lore.kernel.org/all/20231009105038.126040-1-shaojijie@huawei.com/
----
- drivers/perf/hisilicon/hns3_pmu.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/perf/hisilicon/hns3_pmu.c b/drivers/perf/hisilicon/hns3_pmu.c
-index e0457d84af6b..16869bf5bf4c 100644
---- a/drivers/perf/hisilicon/hns3_pmu.c
-+++ b/drivers/perf/hisilicon/hns3_pmu.c
-@@ -1556,8 +1556,8 @@ static int hns3_pmu_init_pmu(struct pci_dev *pdev, struct hns3_pmu *hns3_pmu)
- 	ret = perf_pmu_register(&hns3_pmu->pmu, hns3_pmu->pmu.name, -1);
- 	if (ret) {
- 		pci_err(pdev, "failed to register perf PMU, ret = %d.\n", ret);
--		cpuhp_state_remove_instance(CPUHP_AP_PERF_ARM_HNS3_PMU_ONLINE,
--					    &hns3_pmu->node);
-+		cpuhp_state_remove_instance_nocalls(CPUHP_AP_PERF_ARM_HNS3_PMU_ONLINE,
-+						    &hns3_pmu->node);
- 	}
- 
- 	return ret;
-@@ -1568,8 +1568,8 @@ static void hns3_pmu_uninit_pmu(struct pci_dev *pdev)
- 	struct hns3_pmu *hns3_pmu = pci_get_drvdata(pdev);
- 
- 	perf_pmu_unregister(&hns3_pmu->pmu);
--	cpuhp_state_remove_instance(CPUHP_AP_PERF_ARM_HNS3_PMU_ONLINE,
--				    &hns3_pmu->node);
-+	cpuhp_state_remove_instance_nocalls(CPUHP_AP_PERF_ARM_HNS3_PMU_ONLINE,
-+					    &hns3_pmu->node);
- }
- 
- static int hns3_pmu_init_dev(struct pci_dev *pdev)
--- 
-2.30.0
 
