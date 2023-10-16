@@ -2,109 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC2E7CAD29
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A24C17CAD2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233464AbjJPPSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 11:18:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55698 "EHLO
+        id S233749AbjJPPSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 11:18:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233692AbjJPPSf (ORCPT
+        with ESMTP id S233706AbjJPPSp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 11:18:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 314E4EE;
-        Mon, 16 Oct 2023 08:18:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F046C433C8;
-        Mon, 16 Oct 2023 15:18:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697469511;
-        bh=boEy4hDOwZYIC6f1Ctc6vM+vlw2nq8iYhzUDSrBTrMA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bNtVx9A88qV/6tHstNr+1lRzQoQu+TTdFpNdGZbrVu8ss9R3BYXI8Ea/M7cVlHLjZ
-         CzevzxrDFLxf1Hwz12qUEZphl8XiTIIh/mJN2qm3/c6Dd3o2UCAOxtlUIh8u82HnwI
-         6aD4BgQTSsMMOyFEzRnrrg3IML7ffU4fnqnwUZIx5ca5+CxeyN0id3D2PxAjKdrxEG
-         5tSBhCN1jbGF1Szwe2OGufS9Qf7ea37IjHmk4yLtBEWD6ev9IhMhlgiGGaCwPxtPF5
-         WJxKrzMkZXHy7E5leTEl/g7ufzGVb+aE4j7/f5JORcHXM6BDA86JgmVd/fzYxteSPj
-         1sla1sj1QkDJA==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qsPMP-0005it-39;
-        Mon, 16 Oct 2023 17:18:26 +0200
-Date:   Mon, 16 Oct 2023 17:18:25 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, Dhruva Gole <d-gole@ti.com>,
-        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>
-Subject: Re: [PATCH] serial: core: Fix checks for tx runtime PM state
-Message-ID: <ZS1UQS4FQYq2ZeaC@hovoldconsulting.com>
-References: <20231005075644.25936-1-tony@atomide.com>
- <ZR6lc/F1Esxt5ChI@smile.fi.intel.com>
- <20231006072738.GI34982@atomide.com>
- <ZR-_TUSwvIs6Vl_v@hovoldconsulting.com>
- <20231006083712.GJ34982@atomide.com>
- <ZSAp0hUOPQNtOG_T@hovoldconsulting.com>
- <20231007054541.GL34982@atomide.com>
+        Mon, 16 Oct 2023 11:18:45 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DDF1F1;
+        Mon, 16 Oct 2023 08:18:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=q1mk0edZzBzeqvaBvILL9fveNRk2O03GLgP3WO+MmcU=; b=EV9tZnQJGPjQ2XN7YaG1iFBGwU
+        CVhmKPs4rfB0vzIIjYWOAFfuD8Lclxxb3kH9GuUcHbzKvVXDibGUns84n44sJwba/b5OZXYMzpfgc
+        Dg3+GrFpKnF/FDc20y8fLmw/tWdZbWw7RZsmvQoWmOhZCj4gAoOA9oajpabnWYYOpQUagNYIbtKWU
+        sGfpICUov4sq+UCTadpy86PtxT8/LdcX+L9mItkitNc1hiT0ERHcMCKmrXX2UsbrO7bsGd6AbXmMX
+        AXNe8drk59YS8DwfBT4C8y+gASl7XiGxQ5RaNLDQisdytnXdQNpebca/HI2dFRVHE8UWOo+ePROth
+        daal4R4Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qsPMS-006lo3-BB; Mon, 16 Oct 2023 15:18:28 +0000
+Date:   Mon, 16 Oct 2023 16:18:28 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     jeffxu@chromium.org
+Cc:     akpm@linux-foundation.org, keescook@chromium.org,
+        sroettger@google.com, jeffxu@google.com, jorgelo@chromium.org,
+        groeck@chromium.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        jannh@google.com, surenb@google.com, alex.sierra@amd.com,
+        apopple@nvidia.com, aneesh.kumar@linux.ibm.com,
+        axelrasmussen@google.com, ben@decadent.org.uk,
+        catalin.marinas@arm.com, david@redhat.com, dwmw@amazon.co.uk,
+        ying.huang@intel.com, hughd@google.com, joey.gouly@arm.com,
+        corbet@lwn.net, wangkefeng.wang@huawei.com,
+        Liam.Howlett@oracle.com, torvalds@linux-foundation.org,
+        lstoakes@gmail.com, mawupeng1@huawei.com, linmiaohe@huawei.com,
+        namit@vmware.com, peterx@redhat.com, peterz@infradead.org,
+        ryan.roberts@arm.com, shr@devkernel.io, vbabka@suse.cz,
+        xiujianfeng@huawei.com, yu.ma@intel.com, zhangpeng362@huawei.com,
+        dave.hansen@intel.com, luto@kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [RFC PATCH v1 0/8] Introduce mseal() syscall
+Message-ID: <ZS1URCBgwGGj9JtM@casper.infradead.org>
+References: <20231016143828.647848-1-jeffxu@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231007054541.GL34982@atomide.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231016143828.647848-1-jeffxu@chromium.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 07, 2023 at 08:45:41AM +0300, Tony Lindgren wrote:
-> * Johan Hovold <johan@kernel.org> [231006 15:37]:
-> > On Fri, Oct 06, 2023 at 11:37:12AM +0300, Tony Lindgren wrote:
+On Mon, Oct 16, 2023 at 02:38:19PM +0000, jeffxu@chromium.org wrote:
+> Modern CPUs support memory permissions such as RW and NX bits. Linux has
+> supported NX since the release of kernel version 2.6.8 in August 2004 [1].
 
-> > > Care to clarify a bit which parts are unclear? The hierarchy of port
-> > > devices, making serial core manage runtime PM in a generic way, or
-> > > flushing tx?
-> > 
-> > I still don't know why you added these two new abstractions (controller
-> > and port), and that isn't really explained by the commit message either.
+This seems like a confusing way to introduce the subject.  Here, you're
+talking about page permissions, whereas (as far as I can tell), mseal() is
+about making _virtual_ addresses immutable, for some value of immutable.
+
+> Memory sealing additionally protects the mapping itself against
+> modifications. This is useful to mitigate memory corruption issues where
+> a corrupted pointer is passed to a memory management syscall. For example,
+> such an attacker primitive can break control-flow integrity guarantees
+> since read-only memory that is supposed to be trusted can become writable
+> or .text pages can get remapped. Memory sealing can automatically be
+> applied by the runtime loader to seal .text and .rodata pages and
+> applications can additionally seal security critical data at runtime.
+> A similar feature already exists in the XNU kernel with the
+> VM_FLAGS_PERMANENT [3] flag and on OpenBSD with the mimmutable syscall [4].
+> Also, Chrome wants to adopt this feature for their CFI work [2] and this
+> patchset has been designed to be compatible with the Chrome use case.
+
+This [2] seems very generic and wide-ranging, not helpful.  [5] was more
+useful to understand what you're trying to do.
+
+> The new mseal() is an architecture independent syscall, and with
+> following signature:
 > 
-> We want serial core to do runtime PM in a generic way and have the usage
-> count propagate to the parent serial port hardware device. This way we
-> don't need to care much if the numerous serial port drivers implement
-> runtime PM or not. Well, except for now we need to check the parent state
-> for this fix :)
-
-That sounds like a lot of complexity to avoid checking if (the single
-instance of) pm_runtime_get() returns -EACCESS.
- 
-> We also want serial core to know the serial port to serial port hardware
-> mapping as we already have multiport devices. The serial core controller
-> is there to group the serial ports for each serial port hardware device.
-> We at least now have an option to support devices with multiple controllers
-> and ports in case we ever happen to see such things.
-
-Hypothetical multiple serial controllers should be modelled as separate
-controllers, but yeah, perhaps we want to describe the ports.
- 
-> > And if these are indeed needed, then why isn't the serdev controller now
-> > a child of the "port" device, for example?
+> mseal(void addr, size_t len, unsigned int types, unsigned int flags)
 > 
-> Yes I agree we should now move serdev controller to be a child of the
-> serial core port device. Then this $subject patch can be reverted.
-> 
-> Moving serdev controller should also help serdev to deal with multiport
-> devices I think?
+> addr/len: memory range.  Must be continuous/allocated memory, or else
+> mseal() will fail and no VMA is updated. For details on acceptable
+> arguments, please refer to comments in mseal.c. Those are also fully
+> covered by the selftest.
 
-It wouldn't help currently I think, since we already resume the
-controller and don't manage ports individually, but if we now have port
-devices then it probably should be moved.
+Mmm.  So when you say "continuous/allocated" what you really mean is
+"Must have contiguous VMAs" rather than "All pages in this range must
+be populated", yes?
 
-Johan
+> types: bit mask to specify which syscall to seal, currently they are:
+> MM_SEAL_MSEAL 0x1
+> MM_SEAL_MPROTECT 0x2
+> MM_SEAL_MUNMAP 0x4
+> MM_SEAL_MMAP 0x8
+> MM_SEAL_MREMAP 0x10
+
+I don't understand why we want this level of granularity.  The OpenBSD
+and XNU examples just say "This must be immutable*".  For values of
+immutable that allow downgrading access (eg RW to RO or RX to RO),
+but not upgrading access (RW->RX, RO->*, RX->RW).
+
+> Each bit represents sealing for one specific syscall type, e.g.
+> MM_SEAL_MPROTECT will deny mprotect syscall. The consideration of bitmask
+> is that the API is extendable, i.e. when needed, the sealing can be
+> extended to madvise, mlock, etc. Backward compatibility is also easy.
+
+Honestly, it feels too flexible.  Why not just two flags to mprotect()
+-- PROT_IMMUTABLE and PROT_DOWNGRADABLE.  I can see a use for that --
+maybe for some things we want to be able to downgrade and for other
+things, we don't.
+
+I'd like to see some discussion of how this interacts with mprotect().
+As far as I can tell, the intent is to lock the protections/existance
+of the mapping, and not to force memory to stay in core.  So it's fine
+for the kernel to swap out the page and set up a PTE as a swap entry.
+It's also fine for the kernel to mark PTEs as RO to catch page faults;
+we're concerned with the LOGICAL permissions, and not the page tables.
