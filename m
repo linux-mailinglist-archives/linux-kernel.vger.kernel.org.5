@@ -2,166 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE8B7CA667
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 13:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1A97CA688
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 13:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232488AbjJPLPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 07:15:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36694 "EHLO
+        id S233188AbjJPLSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 07:18:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231478AbjJPLPA (ORCPT
+        with ESMTP id S232693AbjJPLS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 07:15:00 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147B7B4
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 04:14:59 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9adb9fa7200so902052266b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 04:14:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697454897; x=1698059697; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SzUmRy//RDHdVSKv4lb0r/0JXORo2co7Q+ttFZAYJA0=;
-        b=CIO8cUG84T4KT0iiNBl4qcjHtxmcBEb0J90njykPVEqazPEcwEOpYJfFBTlSy1KrqV
-         dIcy6YVIWscDxLdl9e9mE6nL61wtbRwiX7wD+VoEI4IQaHUOs0lT4rDeq3+/KjBKpFIM
-         HtRhV8HDSG96r6zwr66zwatwf/Cs+fE5+/ZX6f/yBmGytQcRv0ZcMY93ETEHQ2VbIUjl
-         LK1UKeD9Igndei3aUdzidAXFa1cMB7LpKAKXJYeh5h5JLuFZo7nhs+kHnzkR5g2m4+af
-         D+hrYGY9kn/smG6u21+Rm+kKbE2Ki6FnRy20DE45p0KSnvLErqLQ4x+ZQq2FAIDNIY6d
-         xE/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697454897; x=1698059697;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SzUmRy//RDHdVSKv4lb0r/0JXORo2co7Q+ttFZAYJA0=;
-        b=dZAmyVODjorXW21X5ATspyKYIDQiN+PB2h4xceqUBjIUUcJV5w/a3OPyVvH3nNHHwV
-         dkSJzUF5YTGeG6r24/GTiLwhaErtgaPNml3linl7kmJ6X/vudRqongmcmHITylYLvea/
-         QkgT6fbydM4Kk01tJgrP790BecCh0aMxCA0bAL5As/E63joQBf+SQNaLn90m9CaCdO6T
-         inl/prwXxP+9LTzj/C/YiBpA9WkjCDYxytnOw3OEtUJHiAVmFALOF8SZBFjf/aP0XorD
-         yjJGzU5GeJxqU/DDUw/CcCUdz7MVXBsNrYA4ha72Wx3qigcpQRmvJ3OqrSjoEbPjdWiE
-         0eFg==
-X-Gm-Message-State: AOJu0Yw+Gc0oNl/ksgjl/LGlp8oBKYyPwswYSRqvXNDtA5lKY8wbBtq8
-        r1TZE/w3jI1J4DEYr0dPvvs=
-X-Google-Smtp-Source: AGHT+IEXeN9iWVFmnPQXSNXHhS9aGAWff1FHoFKp8Ovu4zJZDQyJfOHIOsuUuuhFAfdChU8Fqr8oOw==
-X-Received: by 2002:a17:906:c10c:b0:9bd:81c3:2a85 with SMTP id do12-20020a170906c10c00b009bd81c32a85mr5637689ejc.32.1697454897298;
-        Mon, 16 Oct 2023 04:14:57 -0700 (PDT)
-Received: from gmail.com (1F2EF7B2.nat.pool.telekom.hu. [31.46.247.178])
-        by smtp.gmail.com with ESMTPSA id 30-20020a170906009e00b009ae587ce135sm3842482ejc.223.2023.10.16.04.14.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 04:14:56 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 16 Oct 2023 13:14:54 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>,
-        Nadav Amit <namit@vmware.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Borislav Petkov <bp@alien8.de>
-Subject: Re: [PATCH -tip 3/3] x86/percpu: *NOT FOR MERGE* Implement
- arch_raw_cpu_ptr() with RDGSBASE
-Message-ID: <ZS0bLvcC46tHjM/G@gmail.com>
-References: <20231015202523.189168-1-ubizjak@gmail.com>
- <20231015202523.189168-3-ubizjak@gmail.com>
+        Mon, 16 Oct 2023 07:18:26 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE7BDE8
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 04:18:24 -0700 (PDT)
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39G6n1Hn020635;
+        Mon, 16 Oct 2023 11:17:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-03-30; bh=cYZPT0kSHMpbU6o+Gjv3y0QqFO0FSp+3oDPiMrpGdm0=;
+ b=Fe5p6hKcqIo+LTKxp6y/PDrOScAqipgVDKihlsCkZd+4/OsuJcVWk/mmqAiQZ0CPHV5a
+ jLtyzBZz31iWY+a9DCapN+bKNA+jtJAVAaK2nOH0lcII67mFdyyPQv+GIfyIHBkBGfT9
+ eCN0jnb3GMmab3XdOjLb0i8ZIt/oRzjD/fIV73oeGUhPUv81oD5rpzv5HLkrrhB+Ht6f
+ RwxQkTf+yNjcqXhEydI0R2ztd55ThLfLCmPUPG/NCrZjARgMZkhFyKjaObszZGAnd3yQ
+ pwUBnp3KLPWNh0YY8sBJ3tNIdNvxSyuNXd5i8IL4a29HzWx8CXb+UHwhI7Sr8oRV6+li MQ== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tqkhu2ejb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 16 Oct 2023 11:17:54 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39G9MUvh027313;
+        Mon, 16 Oct 2023 11:17:53 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3trg529h23-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 16 Oct 2023 11:17:53 +0000
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39GBHqS8040637;
+        Mon, 16 Oct 2023 11:17:52 GMT
+Received: from mlluis-mac.uk.oracle.com (dhcp-10-175-197-167.vpn.oracle.com [10.175.197.167])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3trg529gvb-1;
+        Mon, 16 Oct 2023 11:17:52 +0000
+From:   Miguel Luis <miguel.luis@oracle.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.linux.dev
+Cc:     miguel.luis@oracle.com
+Subject: [PATCH v4 0/3] arm64/kvm: Fine grain _EL2 system registers list that affect nested virtualization
+Date:   Mon, 16 Oct 2023 11:17:39 +0000
+Message-Id: <20231016111743.30331-1-miguel.luis@oracle.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231015202523.189168-3-ubizjak@gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-16_04,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 phishscore=0
+ malwarescore=0 suspectscore=0 mlxlogscore=898 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310160099
+X-Proofpoint-GUID: 5lxFsOScxNx3QQFg_J_v-MIGfog1Ov3H
+X-Proofpoint-ORIG-GUID: 5lxFsOScxNx3QQFg_J_v-MIGfog1Ov3H
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The current HCR_EL2 description defines ranges of system register encodings in
+which accesses should trap for NV. These ranges include encodings which aren't
+defined in the reference manual. In order avoid this, let's rather implement a
+more fine grained approach excluding those undefined.
 
-* Uros Bizjak <ubizjak@gmail.com> wrote:
+v3 -> v4
+ patch 2:
+	Add BRBCR_EL2.
+ patch 3:
+	Handle BRBCR_EL2.
+	Add Eric's R-b. Thanks!
 
-> Sean says:
-> 
-> "A significant percentage of data accesses in Intel's TDX-Module[*] use
-> this pattern, e.g. even global data is relative to GS.base in the module
-> due its rather odd and restricted environment.  Back in the early days
-> of TDX, the module used RD{FS,GS}BASE instead of prefixes to get
-> pointers to per-CPU and global data structures in the TDX-Module.  It's
-> been a few years so I forget the exact numbers, but at the time a single
-> transition between guest and host would have something like ~100 reads
-> of FS.base or GS.base.  Switching from RD{FS,GS}BASE to prefixed accesses
-> reduced the latency for a guest<->host transition through the TDX-Module
-> by several thousand cycles, as every RD{FS,GS}BASE had a latency of
-> ~18 cycles (again, going off 3+ year old memories).
-> 
-> The TDX-Module code is pretty much a pathological worth case scenario,
-> but I suspect its usage is very similar to most usage of raw_cpu_ptr(),
-> e.g. get a pointer to some data structure and then do multiple
-> reads/writes from/to that data structure.
-> 
-> The other wrinkle with RD{FS,FS}GSBASE is that they are trivially easy
+v3: https://lore.kernel.org/kvmarm/20231011180103.91774-1-miguel.luis@oracle.com/
+v2: https://lore.kernel.org/kvmarm/20230925162057.27548-1-miguel.luis@oracle.com/
+v1: https://lore.kernel.org/kvmarm/20230913185209.32282-1-miguel.luis@oracle.com/
 
-[ Obsessive-compulsive nitpicking:
+Miguel Luis (3):
+  arm64: Add missing _EL12 encodings
+  arm64: Add missing _EL2 encodings
+  arm64/kvm: Fine grain _EL2 system registers list that affect nested
+    virtualization
 
-     s/RD{FS,FS}GSBASE
-      /RD{FS,GS}BASE
-]
+ arch/arm64/include/asm/sysreg.h | 50 ++++++++++++++++++
+ arch/arm64/kvm/emulate-nested.c | 89 ++++++++++++++++++++++++++++++---
+ 2 files changed, 133 insertions(+), 6 deletions(-)
 
-> to emulate. If a hypervisor/VMM is advertising FSGSBASE even when it's
-> not supported by hardware, e.g. to migrate VMs to older hardware, then
-> every RDGSBASE will end up taking a few thousand cycles
-> (#UD -> VM-Exit -> emulate).  I would be surprised if any hypervisor
-> actually does this as it would be easier/smarter to simply not advertise
-> FSGSBASE if migrating to older hardware might be necessary, e.g. KVM
-> doesn't support emulating RD{FS,GS}BASE.  But at the same time, the whole
-> reason I stumbled on the TDX-Module's sub-optimal RD{FS,GS}BASE usage was
-> because I had hacked KVM to emulate RD{FS,GS}BASE so that I could do KVM
-> TDX development on older hardware.  I.e. it's not impossible that this
-> code could run on hardware where RDGSBASE is emulated in software.
-> 
-> {RD,WR}{FS,GS}BASE were added as faster alternatives to {RD,WR}MSR,
-> not to accelerate actual accesses to per-CPU data, TLS, etc.  E.g.
-> loading a 64-bit base via a MOV to FS/GS is impossible.  And presumably
-> saving a userspace controlled by actually accessing FS/GS is dangerous
-> for one reason or another.
-> 
-> The instructions are guarded by a CR4 bit, the ucode cost just to check
-> CR4.FSGSBASE is probably non-trivial."
+--
+2.39.2
 
-BTW., a side note regarding the very last paragraph and the CR4 bit ucode 
-cost, given that SMAP is CR4 controlled too:
-
- #define X86_CR4_FSGSBASE_BIT    16 /* enable RDWRFSGS support */
- #define X86_CR4_FSGSBASE        _BITUL(X86_CR4_FSGSBASE_BIT)
- ...
- #define X86_CR4_SMAP_BIT        21 /* enable SMAP support */
- #define X86_CR4_SMAP            _BITUL(X86_CR4_SMAP_BIT)
-
-And this modifies the behavior of STAC/CLAC, of which we have ~300 
-instances in a defconfig kernel image:
-
-  kepler:~/tip> objdump -wdr vmlinux | grep -w 'stac' x | wc  -l
-  119
-
-  kepler:~/tip> objdump -wdr vmlinux | grep -w 'clac' x | wc  -l
-  188
-
-Are we certain that ucode on modern x86 CPUs check CR4 for every affected 
-instruction?
-
-Could they perhaps use something faster, such as internal 
-microcode-patching (is that a thing?), to turn support for certain 
-instructions on/off when the relevant CR4 bit is modified, without
-having to genuinely access CR4 for every instruction executed?
-
-Thanks,
-
-	Ingo
