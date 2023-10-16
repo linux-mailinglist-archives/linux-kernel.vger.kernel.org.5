@@ -2,110 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6ADD7CA6ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 13:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6BD67CA6F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 13:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231868AbjJPLp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 07:45:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56240 "EHLO
+        id S230116AbjJPLvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 07:51:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbjJPLp0 (ORCPT
+        with ESMTP id S229459AbjJPLvt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 07:45:26 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E2758E;
-        Mon, 16 Oct 2023 04:45:23 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1ca816f868fso4173585ad.1;
-        Mon, 16 Oct 2023 04:45:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697456722; x=1698061522;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:dkim-signature:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=UoT4NOqpMewD3Bp2pnsgrCjMS+q2vQ2Hzj/Ou711y2c=;
-        b=J8+Te/vvESs2sxBm00IkYyVBkdikFE7J3GolzT1a/X1S/sxeN+47G+HQdE2KhVwcpy
-         uEPPesuv3swrP9fdqOiegFWKQc6dijsJLpzMC8NYSh2sXY+TYaMldc3Of4q77CrWdgDB
-         2uX6TrmTrwuyxJtlvuGgMA/d0oR/TgOwR7lLGL6A+Buw55Hd9aJa4Jc8BypwFY24Nnpb
-         uAOptBRpULNFqkR6/t/ZqwrFb9XmLmiNVT98pg+4qPi6jlPtNdmTqWmXBd2lQiuzcMtO
-         1nRnLkvbpfeeWgiij7DqKZ4WfhC3PpzmJuk8aShM0dedacQpTDdUEOcnr0kVvhX8oazU
-         6Mug==
-X-Gm-Message-State: AOJu0YyqkkDuO+UbddrxW3Zi3Uu7S+146sAm2yeRrP669i5YjwRK3QkU
-        uBFCWg84MvCW276z4xOPKvg=
-X-Google-Smtp-Source: AGHT+IFHrI8VVdtMkj7pA5nmdnL8rjl1TDUrUZVjzvpekRK4MRuSemYlJDn/576ewVMHYNUsFYzYZg==
-X-Received: by 2002:a17:903:2307:b0:1c6:21b4:30bb with SMTP id d7-20020a170903230700b001c621b430bbmr37339764plh.15.1697456722429;
-        Mon, 16 Oct 2023 04:45:22 -0700 (PDT)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id o12-20020a170902d4cc00b001c61073b076sm8248924plg.144.2023.10.16.04.45.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 04:45:21 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 08:45:15 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-        s=2023; t=1697456717;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UoT4NOqpMewD3Bp2pnsgrCjMS+q2vQ2Hzj/Ou711y2c=;
-        b=QhsFR8C/2gMeLq/r8q3c9SceRPT4GdxBQOXjgOLkeFZ7qQPhVkWJ3H0+z31fQ6NygHqKc+
-        RRnJIm0lPTk8znfxqxgepGcHJn/s5S7oaNdkDPMQJgd8LJ8BDbVB2Fi5Wj80Kt7FDVthi3
-        RYeR5j15wf0zVhBHSYNlLEHc3jx0brDTtxkt7FljD0WccpRTHkuiicmb2s2jE92ium5AZM
-        muNjrVtnVnqJGXU7WoWDKjHcpKhmI92z/8mJ+bWSMXLBy0IASataG2AvLFZ+ZVD9muob1D
-        JkhRtQuUIWy6KE35t0dfvRUdmuSk7FFRXhy9SNSDdZbqA8S25pWGRgsSirawdw==
-Authentication-Results: ORIGINATING;
-        auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-From:   "Ricardo B. Marliere" <ricardo@marliere.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Subject: Re: [PATCH 5.15 000/102] 5.15.136-rc1 review
-Message-ID: <ytm5emjxhdt3bzbcfv7e4ly67hj4vt3uxjea3rd3forus7dhmp@7v2ikm6q3caa>
-References: <20231016083953.689300946@linuxfoundation.org>
+        Mon, 16 Oct 2023 07:51:49 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2077.outbound.protection.outlook.com [40.107.243.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 637EA8E;
+        Mon, 16 Oct 2023 04:51:46 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=M6Mo6gtpAWSHb297iuFOIkhe4ZhUYn4BJqOwBgzMUVGgfT6Xkj29gmR0/7Vg/LAXnRcrze+EJk5ODIF7DtcksozIyA+Ur7fBfsK8MfrCgLrJUi2Tj4SFDF0ENZkFoWpxFOsNzx1p5O6XEZ5ftusFy2wMUQGJdHlyGxMARrEeg6+Ep82isl+8Zj67+iqDrzTIThBC9nY9s4wWMOp1DkGIcQyFkHbSuJ2K4nPQJ/KI11Lo0WEWGwgf3Tnaz0KyAmn8xOwW56jAe7oaFPccuaDpnagW4xSYYe74g6cshjCz0TlkOkSVTS9GpX88Ef1kANA60PJkehcyBAJjoxm9xL3fnQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=H6r+AaXiMfP6DqpU50t2O7OQBg0H2kuK2cPCbe+iqdk=;
+ b=Q5w8g3/cYNJF9zneXyYcmQ9dt8Qd99X8tvTRuUmXCyQkgyRS7wR20rnmozq0LcHhRfCg6fRfjafOhiSbZHHdnvcxd3ET/8d1HUxKEF1hWMWxTPxSx/NQNYPYiFi/coGnmcFbINk2NHUAI/awc1eFeSEtOn002gMNjoWoJG/9UgJuvRnqrovPDuuppyX43VUWMetJL6yAFwnRjZewmiYemvGr+F9/GVn4KRxRYyqPxf+vRKpl/RaCN5umSkKKgDa3bgVv3aU/49ZBydIRMweZiZwHQcJ51qGbZIXnqOGTHJYELB5RD+fOrFPMiYlh+oi/P7hAbnLzYNLNA1v9DQYpXA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H6r+AaXiMfP6DqpU50t2O7OQBg0H2kuK2cPCbe+iqdk=;
+ b=NshltZecGun76FF8SViCfMlPYMAHcIMboM+4VaWjCe558zKm7hiZWB/Ch20Bw65cSnrJoAbwtIGXRhAK9FTP9kjWfPTWsr99oaiwMztwKGoHzn3zSdX1p6UKD23YG3CIh406wK0mTEIymzGU/R4m0cNgeySp/BWC1aBOqr6lr1Q=
+Received: from SN6PR05CA0001.namprd05.prod.outlook.com (2603:10b6:805:de::14)
+ by DM3PR12MB9434.namprd12.prod.outlook.com (2603:10b6:0:4b::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36; Mon, 16 Oct
+ 2023 11:51:43 +0000
+Received: from SA2PEPF000015CD.namprd03.prod.outlook.com
+ (2603:10b6:805:de:cafe::8e) by SN6PR05CA0001.outlook.office365.com
+ (2603:10b6:805:de::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.18 via Frontend
+ Transport; Mon, 16 Oct 2023 11:51:43 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SA2PEPF000015CD.mail.protection.outlook.com (10.167.241.203) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6838.22 via Frontend Transport; Mon, 16 Oct 2023 11:51:42 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 16 Oct
+ 2023 06:51:42 -0500
+From:   Michael Roth <michael.roth@amd.com>
+To:     <kvm@vger.kernel.org>
+CC:     <linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
+        <linux-crypto@vger.kernel.org>, <x86@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <pbonzini@redhat.com>, <seanjc@google.com>,
+        <isaku.yamahata@intel.com>, <ackerleytng@google.com>,
+        <vbabka@suse.cz>, <ashish.kalra@amd.com>,
+        <nikunj.dadhania@amd.com>, <jroedel@suse.de>,
+        <pankaj.gupta@amd.com>
+Subject: [PATCH RFC gmem v1 0/8] KVM: gmem hooks/changes needed for x86 (other archs?)
+Date:   Mon, 16 Oct 2023 06:50:20 -0500
+Message-ID: <20231016115028.996656-1-michael.roth@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231016083953.689300946@linuxfoundation.org>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA2PEPF000015CD:EE_|DM3PR12MB9434:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6ca35c15-0f6d-4fe7-f8ef-08dbce3e442e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: T4US11wJ89oUft+hnZ1Jy/w+/NwzeyO//CRlDlAarxLuLcl0a+E5O2OyHYLPrIPMWzMGzR7euRKL0rdgwR3dBB7A8hutI56rjezoc486ESoyucE1P+QL9gO4rpolqQAPizXjOajBBS72svqtsbG/ZfmB5/03YsRqSy+YglkT7l43tIA2KcGLcqS23WjO9MRUKckte1rrBSOWypba0mHjf4mrGPf7KIQvG44TuyAF8MtmpDN5gLqu2QkjQre1pU3ALoalxuqAiLQ4xKQWK/ziZw9d/0wkP2W/YqLTWQtXVuWjNlyZyakjL+lMu8lTyjHMjRdTIUgRILzGMzfvtQZlFRw18Ai/Z7UD/jzr6e8AK3gnWoNv9PwEgol7Nfo28aawvjfWA/k+pD/oUQRUDH88/uJxgz/00qNP+8Z6qsE7ruyME/Ur44ycW+BVwmzxpc7A4r3A+B49ST1iP3pYidqM1CSmd0LxzjE04iRLXQotAS4oS8u/YP54NcAOno3VKHmh7xwucqDLrp34Ew3ucKWkH2/Ev4890RXCtRWQ8gXV1Wqz66ZixDfz0CpiX37g2ySejsW+koAdw1SWPYo9KIumsDtAEzLHk579CotVcKO05h2Zgpa2K2jcm0lkueQ3PrOk680ZTJ5v8Alim/k7IhSdra5vWm2wQm98Pk2O9LvLIJqynXSWwjN77XgfItpxzIv7reAZhwygrpLkozjVyimoQaASDGR4TgmLnbvXkgWG1Rx3Y1KFktbu4vpWCz4e6y5RHwxmFBbf06ujfPlzgL9e1butqkHWRzaDZWsCR8+58H4=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(39850400004)(346002)(376002)(136003)(230922051799003)(186009)(1800799009)(64100799003)(82310400011)(451199024)(36840700001)(46966006)(40470700004)(316002)(478600001)(966005)(54906003)(6916009)(70206006)(70586007)(6666004)(1076003)(26005)(336012)(426003)(16526019)(2616005)(7416002)(4326008)(8676002)(8936002)(2906002)(44832011)(5660300002)(41300700001)(36756003)(81166007)(86362001)(356005)(47076005)(36860700001)(83380400001)(82740400003)(40460700003)(40480700001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2023 11:51:42.9655
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ca35c15-0f6d-4fe7-f8ef-08dbce3e442e
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF000015CD.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PR12MB9434
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/10/16 10:39AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.136 release.
-> There are 102 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 18 Oct 2023 08:39:38 +0000.
-> Anything received after that time might be too late.
+This patchset is also available at:
 
-My system runs fine, with some minor warnings:
+  https://github.com/mdroth/linux/commits/gmem-x86-v1-rfc
 
-08:42:25 rbmarliere@debian ~
-$ dmesg | head -1
-[    0.000000] Linux version 5.15.136-rc1+ (rbmarliere@debian) (Debian clang version 16.0.6 (15), GNU ld (GNU Binutils for Debian) 2.41) #1 SMP Mon Oct 16 07:33:42 -03 2023
-08:42:27 rbmarliere@debian ~
-$ dmesg -lerr
-[    3.907484] nouveau 0000:09:00.0: DRM: core notifier timeout
-[    6.457694] nouveau 0000:09:00.0: DRM: core notifier timeout
-[   14.533137] nouveau 0000:09:00.0: DRM: core notifier timeout
-[   17.870791] nouveau 0000:09:00.0: DRM: core notifier timeout
-08:42:32 rbmarliere@debian ~
-$ grep warning /mnt/md0/linux/5.15.y/err.log 
-arch/x86/kernel/smp.o: warning: objtool: sysvec_reboot()+0x43: unreachable instruction
-net/ipv6/seg6_local.o: warning: objtool: seg6_local_fill_encap() falls through to next function seg6_local_get_encap_size()
-net/ipv6/seg6_local.o: warning: objtool: seg6_local_cmp_encap() falls through to next function input_action_end()
+and is based on top of the kvm-x86 gmem tree (e7af8d17224a):
+
+  https://github.com/kvm-x86/linux/commits/guest_memfd
 
 
-Tested-by: Ricardo B. Marliere <ricardo@marliere.net>
+== OVERVIEW ==
+
+This is a series of patches that are currently needed for implementing
+SEV-SNP hypervisor support on top of guest_memfd, but have a lot of
+potential to overlap with changes that may be also be needed for TDX.
+
+The goal of this series is to help reach a consensus on what
+functionality implemented here is indeed common between SNP/TDX, and
+try to finalize what these interfaces should look like so we can
+incorporate them into a common gmem/x86 tree to base on top of to
+reduce potential churn from the various SNP/TDX-specific patchsets.
+
+A couple of the patches here are newer versions of patches that were
+included in a similar series posted by Isaku here[1] that were revised
+to incorporate feedback from Sean and others.
+
+Some of the approaches implementated have deviated somewhat from what
+may have been discussed/suggested on the list. For these cases I've
+tried to provide my rationale below along with some relevant background
+so that we can continue these discussions from where we left off and
+reach a consensus on what these need to look like to be usable for both
+SNP and TDX, and acceptable for gmem in general.
 
 
-Thanks!
+== Hooks for preparing gmem pages (patch #3) ==
+
+The design here is mainly driven by this discussion with Sean[2]. In the
+prior version used by v9 SNP hypervisor patchset[3] and included in
+Isaku's patchset[1], this hook was triggered directly by KVM MMU just
+prior to mapping it into the guest NPT/EPT to handle things like putting
+it into the initial 'private' state as defined by the architecture (e.g.
+'guest-owned' state in the SNP RMP table).
+
+Sean was hoping to tie this update to allocation time rather than
+mapping time, so it has more symmetry with the 'invalidation' side that
+happens when the backing pages are freed back to the host, and allows
+for better run-time performance if userspace opts to pre-allocate pages
+in advance, since the cost of the 'preparation' hook could then also be
+paid up front.
+
+To accomodate this I changed this hook to trigger automatically when
+a folio is allocated either via kvm_gmem_get_pfn(), or via an
+fallocate() operation. There are a couple places in this implementation
+where things fall a bit short of the original design goals however:
+
+  1) For SNP, preparing a page as 'guest-owned' in the RMP table
+     requires the GPA, which can only be known after the guest_memfd
+     range that being allocated has been bound to a memslot, and there's
+     no guarantee userspace won't attempt to fallocate() in advance of
+     binding to a memslot unless we enforce that as part of the gmem
+     API.
+
+     Instead, this implementation simply attempts to call the prepare
+     hook every time a folio is accessed via the common
+     kvm_gmem_get_folio() path to ensure these 'deferred' preparation
+     hooks will happen before KVM MMU maps any pages into a guest.
+     Thus, it's up to the architecture/platform to keep track of
+     whether a page is already in the 'prepared' state. For SNP this
+     tracked via the RMP table itself, so we sort of already have this
+     for free.
+
+  2) AIUI the design proposed by Sean would involve gmem internally
+     keeping track of whether or not a page/folio has already been
+     prepared. As mentioned above, in the version we instead simply
+     punt that tracking to the architecture.
+
+     I experimented with tracking this inside gmem though, but it was a
+     bit of a mis-start. I tried using an xarray to keep track of 2
+     states: 'allocated'/'prepare', since both would be need if we
+     wanted to be able to do things like handle deferred preparation
+     hooks for situations like a memslot getting bound to a range that
+     has already been allocated.
+
+     The 'allocated' state was inferred based on whether an entry was
+     present for a particular gmem offset, and the entry itself was a
+     set of flags, 'prepared' being one of them. However, at the time
+     there was a TODO[4] to investigate dropping the use of filemap in
+     favor of doing that internally in gmem, and this seemed like it
+     could be an intermediate step toward that, so I started heading
+     down that road a bit by using higher-order/multi-index xarray
+     entries with the thought of eventually being able to just track
+     the folios themselves and drop reliance on filemap. This got messy
+     quickly however and I dropped it once Paolo's investigations
+     suggested that replacing filemap completely probably wouldn't be
+     very worthwhile.[3]
+
+     So maybe internally tracking 'allocated'/'prepared' states in gmem
+     is more doable if we take a simpler approach like 4K-granularity
+     xarrays or sparse bitmaps, or something else, but it's still
+     enough additional complexity that I think it would be good to
+     understand better what we really gain by doing this tracking in
+     gmem. The one thing I can think of is the ability to immediately
+     move already-allocated pages into the 'prepared' state if userspace
+     decides to pre-allocate them prior to binding the range to a
+     memslot, but I'm not sure how much that buys us performance-wise.
+     At least for SNP, the initial guest payload will necessarily be
+     put into 'prepared' state prior to boot, and anything other than
+     that will need to go through the hole shared->private+PVALIDATE
+     dance where saving on an RMPUPDATE in that path probably wouldn't
+     make a huge difference.
+
+
+== Hooks for invalidating gmem pages (patch #4) ==
+
+In the prior version used by v9 SNP hypervisor patchset[3] and included
+in Isaku's patchset[1], gmem calls these hooks directly during
+hole-punching operations or during kvm_gmem_release() to make gmem
+patches accessible to the host before freeing them.
+
+There was an open TODO[4] for looking at making using of
+.invalidate_folio, .evict_inode, and similar callbacks to handle this
+sort of cleanup.
+
+Toward that end I switched to using .free_folio to trigger these
+arch-specific hooks since it seemed to be the most direct choice. What's
+nice about that is even in the context of future support for things like
+intra-host migration to support live update[5], where multiple gmem
+instances might share an inode, there is less risk of one gmem instance
+clobbering the other when it is release, since the reference counting on
+the underlying inode will keep the inode alive.
+
+One downside to using .free_folio is there is no metadata to pass along
+with it: the callback gets PFN/order and that's it. For SNP this is
+fine, but maybe for other platforms that's not enough to handle the
+cleanup work.
+
+If some sort of metadata *is* needed, .invalidate_folio is an option
+since it can also pass along information associated with the folio via
+folio_attach_private() and otherwise behaves similarly to .free_folio.
+One major exception however it hole-punching, where splitting the folio
+results in the private data being lost. And unlike normal pagecache
+users, there aren't obvious points to re-attach it like read/write
+operations on some file. So we'd probably need to do something like
+scan for split folios in the hugepage-ranges that contain the range
+that got hole-punched and re-attach the private data immeditely after
+each hole-punch operation. That, or interesting some other flag to ask
+mm/truncate.c to handle this for us. Or just stick with the prior
+in Isaku's patchset[1].
+
+
+== Determining whether #NPFs were for private access (patch #5-8) ==
+
+This is mainly driven by these discussions[6][7], which suggest moving
+toward special-casing handling based on VM type where necessary, but
+consolidating around the use of the AMD-defined encryption bit to
+encode whether a guest #NPF / EPT violation was for a private page or
+not. Toward that end I defined the SNP vm type here and pulled in a
+patch from the SNP patchset that introduces PFERR_GUEST_ENC_MASK, and
+use those to initialize struct kvm_page_fault's .is_private field. My
+that with TDX sythesizing the same PFERR_GUEST_ENC_MASK that logic
+there would work the same for both TDX/SNP vm types.
+
+
+== References ==
+
+[1] https://lkml.kernel.org/kvm/CUU93XA8UKMG.X15YWDK533GB@suppilovahvero/t/
+[2] https://lore.kernel.org/lkml/ZLqVdvsF11Ddo7Dq@google.com/
+[3] https://lore.kernel.org/kvm/CABgObfZiS+e7oDbwuC1Uycsz8Mjsu-FSfSmu=3R0M71vUhpq_Q@mail.gmail.com/
+[4] https://lore.kernel.org/kvm/ZOjpIL0SFH+E3Dj4@google.com/
+[5] https://lore.kernel.org/lkml/ZN%2F81KNAWofRCaQK@google.com/t/
+[6] https://lkml.kernel.org/kvm/ZJnXObRHhn5Q1dX2@google.com/
+[7] https://lore.kernel.org/kvm/20230612042559.375660-1-michael.roth@amd.com/T/#me8a395cdf682068d8e5152c358016bf2fa4328e5
+
+
+Any suggestions and feedback are very much appreciated.
+
+-Mike
+
+----------------------------------------------------------------
+Brijesh Singh (1):
+      KVM: x86: Define RMP page fault error bits for #NPF
+
+Michael Roth (7):
+      mm: Introduce AS_INACCESSIBLE for encrypted/confidential memory
+      KVM: Use AS_INACCESSIBLE when creating guest_memfd inode
+      KVM: x86: Add gmem hook for initializing memory
+      KVM: x86: Add gmem hook for invalidating memory
+      KVM: x86/mmu: Pass around full 64-bit error code for KVM page faults
+      KVM: x86: Add KVM_X86_SNP_VM vm_type
+      KVM: x86: Determine shared/private faults based on vm_type
+
+ arch/x86/include/asm/kvm-x86-ops.h |  2 ++
+ arch/x86/include/asm/kvm_host.h    | 13 +++++++
+ arch/x86/include/uapi/asm/kvm.h    |  1 +
+ arch/x86/kvm/mmu/mmu.c             | 15 +++++---
+ arch/x86/kvm/mmu/mmu_internal.h    | 24 +++++++++++--
+ arch/x86/kvm/mmu/mmutrace.h        |  2 +-
+ arch/x86/kvm/mmu/paging_tmpl.h     |  2 +-
+ arch/x86/kvm/x86.c                 | 21 ++++++++++-
+ include/linux/kvm_host.h           | 18 ++++++++++
+ include/linux/pagemap.h            |  1 +
+ mm/truncate.c                      |  3 +-
+ virt/kvm/Kconfig                   |  8 +++++
+ virt/kvm/guest_memfd.c             | 71 +++++++++++++++++++++++++++++++++++---
+ 13 files changed, 165 insertions(+), 16 deletions(-)
+
+
