@@ -2,181 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 970CD7CB14F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 19:27:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28D4D7CB156
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 19:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233412AbjJPR1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 13:27:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55916 "EHLO
+        id S232080AbjJPRaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 13:30:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232295AbjJPR1S (ORCPT
+        with ESMTP id S229943AbjJPRaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 13:27:18 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ADD3A2;
-        Mon, 16 Oct 2023 10:27:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697477237; x=1729013237;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=FLb/iaBsDgmtPKRnNCTcAPNw9W60fhMt+PB23hULpi8=;
-  b=ifJCNV9sc7WAHA2pWJFUCpZ/Bz26wgbWBBHNAbaOA/hAip9A4Yk9rAdz
-   Yi7Rf9LxUwOcgxEDEv6ckOGB1cOSQAESAX3xSIX9tN/rwTiWQcr/dDpPV
-   NGpINEhvOivpVfPRcOnMzBOHmvMkkTnfn22w6KNC6eX76txSiFQxueNdc
-   noMkAbiINVuUkDEZeOJqI4JstVJ5JcLzKAcbJMJnnaTshD7DXmr4RbacZ
-   7a8jT1w4z1Hzmaj7HV8E6QtT2VxbSv0t2ReHZrg1naVBouagS1s2W3TND
-   PK9LZDbxLorhpYKueSsOwhAaGZDvXBgYDsNIaccg4rSesRMFThaXk9mDf
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="7163216"
-X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="7163216"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 10:27:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="821647830"
-X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="821647830"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 16 Oct 2023 10:27:16 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Mon, 16 Oct 2023 10:27:15 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Mon, 16 Oct 2023 10:27:15 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Mon, 16 Oct 2023 10:27:15 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Mon, 16 Oct 2023 10:27:13 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QfC3NNC6297nqqedtvpjKoTZCCe+K7a3HOO+lEr4/2UFVF2WyOKrZLqgopgKtpzHKWAhEq5j1X6WE/YD9gieLk6FftQ8IRfN29/iEtc1kksNuqFhfHWOjpuIsEp0bp8MggWoBTyucoLx0Yr3efiC/7SMEiZit7vBaElq7R5aJo96JAWaSocRH6T5bVx5G5sfipj5FFgdQUgkYUYflx5IoZ/Ce9FxZ7WaupstoV1U2N+eS7KAgvB1oyYA+Juwr8j6OADoD6NcNJKHpojM9qhrIzKEMD8wOV2wrQ5bm1jZWCi4MKNXopGQ2/BdZMJ90wUYoGw4uy7UkkPF3EbZst5zWg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SzkO46YvHGWdujnr43Gw5LuPBto2TBqZe84AnZwXrPo=;
- b=On+fGsvP4rMyDY3wMrf+tRtk5BuPzbrK5BffBU/UuF2xtkCT/JfcK48k5fq+oTnU2eYQes7kwM2uy0ExR+2UQ5JABrKp1nuX2zcTYlf3gxVct/lnKSa5ERiQCdQPXHFVf40yIofzUGsPcHLn7SFFrtxWMyX8RSIfBYrEQWhCHA13RpU7+q9JE0qiE/zqHnimyJQtj8evRj9TVU4k8/o2lDCghv9Eww8jDl4IMklwAy+nlpSrwSHo6V98XGCp69TFArQxwKjicvsIpLoVIv23RbEHUBjpGtt0QzqPNRoFKG/qSW+mJ35HRvRXVQYKOiw5rLmoCUmKmOj0RHWf7LsI8Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MW5PR11MB5810.namprd11.prod.outlook.com (2603:10b6:303:192::22)
- by BL1PR11MB6027.namprd11.prod.outlook.com (2603:10b6:208:392::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.45; Mon, 16 Oct
- 2023 17:27:11 +0000
-Received: from MW5PR11MB5810.namprd11.prod.outlook.com
- ([fe80::e420:d67c:ef82:cb64]) by MW5PR11MB5810.namprd11.prod.outlook.com
- ([fe80::e420:d67c:ef82:cb64%4]) with mapi id 15.20.6863.046; Mon, 16 Oct 2023
- 17:27:11 +0000
-Message-ID: <e82fc689-5cc3-d799-6e5f-a9e4ac98e26f@intel.com>
-Date:   Mon, 16 Oct 2023 19:27:03 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RESEND PATCH V9 3/7] cpufreq: amd-pstate: Enable amd-pstate
- preferred core supporting.
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>,
-        "Meng, Li (Jassmine)" <Li.Meng@amd.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-CC:     "Huang, Ray" <Ray.Huang@amd.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Fontenot, Nathan" <Nathan.Fontenot@amd.com>,
-        "Sharma, Deepak" <Deepak.Sharma@amd.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Limonciello, Mario" <Mario.Limonciello@amd.com>,
-        "Huang, Shimmer" <Shimmer.Huang@amd.com>,
-        "Yuan, Perry" <Perry.Yuan@amd.com>,
-        "Du, Xiaojian" <Xiaojian.Du@amd.com>,
-        "Viresh Kumar" <viresh.kumar@linaro.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "Oleksandr Natalenko" <oleksandr@natalenko.name>,
-        "Karny, Wyes" <Wyes.Karny@amd.com>
-References: <20231013033118.3759311-1-li.meng@amd.com>
- <20231013033118.3759311-4-li.meng@amd.com>
- <20231013160128.GB36211@noisy.programming.kicks-ass.net>
- <DM4PR12MB6351E2E9504B57BD40DAE985F7D7A@DM4PR12MB6351.namprd12.prod.outlook.com>
- <20231016105845.GA33217@noisy.programming.kicks-ass.net>
-From:   "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>
-In-Reply-To: <20231016105845.GA33217@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: WA0P291CA0001.POLP291.PROD.OUTLOOK.COM
- (2603:10a6:1d0:1::27) To MW5PR11MB5810.namprd11.prod.outlook.com
- (2603:10b6:303:192::22)
+        Mon, 16 Oct 2023 13:30:13 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18607A1;
+        Mon, 16 Oct 2023 10:30:09 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-507ac66a969so1672320e87.3;
+        Mon, 16 Oct 2023 10:30:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697477407; x=1698082207; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aSSjZFUO22NPPRJf6c7QAF9LKLgqky/qENFUHNk+Xsc=;
+        b=TlNs/BvuPopuSxozO8JJTsQMJyVQ1ww75AsUFAHU3HgCKGdlbRfitFUCpbSGxNlAGi
+         fOr8+jfVmoQj6RfelpRQ1rHpmy+jzmkQi6aWdctUMK978JuIy/aQpeEhe3+uu+jk3sLI
+         iCEFTOmv4SSC4Jto4uBEhbmPCNIQCIMTzsDzoiHjn+CbvYcSvS5+/KtDOTgqOsc/qfTL
+         4YmmDBjy68OVIt4/32ps+GIlyyAoddAX7PMcN+u6QZMuE7tKqn3gmZPBKCnELuogKL0+
+         3DJzeVyBtgGLjVp/AKFJ6i77n3c6NkWTQkQf+BsBG8+EQO6OnvwtxFv3Yx7dmGP4qHcD
+         7Udg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697477407; x=1698082207;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aSSjZFUO22NPPRJf6c7QAF9LKLgqky/qENFUHNk+Xsc=;
+        b=YkvuBQsgEva+JG5Q3ycjQe4gh08qizOBqRJPkIiGALe82/sYPxgM/y0O5XBN4l7IWy
+         K8qkkWoyMB9McYYCr2+klHC9EIVryobZHSEUs1NX5Tv406m0ZUv2KYDKX/3K/pz7BiVm
+         YK5c/u73EKX0Odvht7o1uf/EhAGBSgOV2ngl0M/7WQtu9Tcgti2ajg0LiBm7KlL2+KBa
+         Wdf/QhWItGOdOIMijAqZXE5XM7aUaqAPxk/9xCKfEUbbTBvC4cbTlP5y3yS2mD4iCcRP
+         YgojWpkFvIs3m7InexMI2LxUWap02KVLLo7gPSVY7iAbjdUVTiuHYJ7Hkphekqu0CLKv
+         lyEA==
+X-Gm-Message-State: AOJu0Yz10hxbPdaJHDpHaxsDwqWF6vZJ/q3qPZccF5l2rHJjVjcv9tMZ
+        thUONjXdSl+R3jkiJoSkJXw=
+X-Google-Smtp-Source: AGHT+IG46ec6mRlZLNqtgvzfdeheI5GZH2OxP4RbvR5OI2oc9DuX39mfeZW+xt/CPvnHYZVVMZcKoQ==
+X-Received: by 2002:a05:6512:4849:b0:507:a8ed:ee0b with SMTP id ep9-20020a056512484900b00507a8edee0bmr3870914lfb.65.1697477406821;
+        Mon, 16 Oct 2023 10:30:06 -0700 (PDT)
+Received: from pc638.lan ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id q8-20020ac25288000000b005079a2eb2dfsm41052lfm.271.2023.10.16.10.30.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 10:30:06 -0700 (PDT)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     RCU <rcu@vger.kernel.org>,
+        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: [PATCH v3 1/1] rcu: Reduce synchronize_rcu() waiting time
+Date:   Mon, 16 Oct 2023 19:30:04 +0200
+Message-Id: <20231016173004.14148-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW5PR11MB5810:EE_|BL1PR11MB6027:EE_
-X-MS-Office365-Filtering-Correlation-Id: 86243206-5069-4e18-7e11-08dbce6d2179
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hGbw8wvQvXOHLgqb58ufbsl4j2pxsxmCL8VS1lEV+DdTq6tlFqGd8rvihsctrGOsz3vKE7VYvJT4NBaVJjuEYcL30We1z5QsE1sVixs+/NgQzgrTOEESDLfk4ruTaNNFKEH6Phn446utGpwXva7j2EOpWzbGt/P+cOZqT7gz7j6EVV+/XAJOmz4r22RZe9wjb0Gq1fy1sLzuTa6sY0Wnzivaj8AK1TFXRrzbuYjzaim385HlpWhO1MG43ODEnw+T8CPmMYk+Cp0vqlB2Wg6rnaMxdoiBeP3Ebt7OynHOZXZJ3Eube9j1EO3Z9cEUvpx5NovLmEHFBwL2agRkZ4A3QC0XbBmKG/bhtuF+kjuzVhIBv0NZalfIAMh4LEtPjbDm2ve+TCqqFhe7YUOv04xDGFXYin/JX0FfrIi2HaANc3leCCcZE+lse7FhBhwhotJdAmS2YyimsI7WrkbfTQbN/ly9sTaAK19jUvehpXyITuo0ZVHaEZwTUv+WBUAQEGfucAnKrgsPQFn4MnQ38xmU56/byAnfBpLS3kcqRjCcxb51vsiGgrsC5nzz5nzc7bYBo0+D90/cWjmFGL8i1m0Zs/CwO8PEjSUKQS7xxkVRevSglrgEWI9PCg4AGyktqBF/CKJXmNv+e1Xv2O0iD5W7BA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW5PR11MB5810.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(136003)(346002)(366004)(376002)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(316002)(66476007)(66556008)(54906003)(110136005)(66946007)(2906002)(36756003)(38100700002)(7416002)(86362001)(31696002)(82960400001)(41300700001)(4326008)(8936002)(5660300002)(8676002)(6512007)(2616005)(6666004)(6506007)(53546011)(26005)(31686004)(478600001)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Qzl1VE00UzFKeXRtdU00L3J3MjduK0gvTTlpSm5aL1plL2VmTjY1U1lISHQ5?=
- =?utf-8?B?NjFadDN4aWRYQUNQQ3VwRzkycEVaS3lZWjExUHhrWmtIaTlLSjEyRzJRcjRi?=
- =?utf-8?B?akF2dkhNajc5aDVOM2pPdU5aN25kaGJPMGwvc0FqWTJZUjRIbG15Y3I0aTlE?=
- =?utf-8?B?bFd1Z0orcFB0d0UwTEVKdExJc1lBRVo2ZGJ6VFQySi9GRlJvZEN1ZUZYdS9P?=
- =?utf-8?B?cjlSUkg2WEsyWTBRNlZzUEZhWWxEa0dxRkZNSXhmcjd2TEQzdkJIWVJRVzA3?=
- =?utf-8?B?R3NSNno1NFJPVlgwNTcwaEF0ZVREeldVcktSL2xOSDNpMEdPQm9Cc2t5U0pZ?=
- =?utf-8?B?Rk5nczE4STJERm12N2YydDMrTWxKNzVzUlF6Wnh3Mk5iclEwc25La01oQ0Rj?=
- =?utf-8?B?cUJ1QktEb0NxM0E4ekh6dlhMMGczUkxvUkRBRTF6Z3VrYThMdkE0YW9WWWJm?=
- =?utf-8?B?dEV0K0ZaV3F4dHo1ZzFvU3VVblpUQmRBNEtzT2tweVRaQytWU09qZ1poak5t?=
- =?utf-8?B?aGNSczErOVI3elk2dmdiZzluQWtHb1hlelVhYTI5WXVTT25weEdrNThHTnhV?=
- =?utf-8?B?RjBoRE1oTCswZENiaW92aFkxRm1SdmtzejRXNjdRZCsyeXRFd1E5WktsS2dG?=
- =?utf-8?B?OFhoamFpenpwaTVKKzBmMi9iRUZRTzBvNlkxclkzejNLRm4wYi9QN2labldr?=
- =?utf-8?B?dE1WTEgyMWNlWUw0Z2prTzhZdnVXR0lFMnhGRXp4TFdadVltaitrZHJCVlBo?=
- =?utf-8?B?K1hoRzBwT0h4bGp5MUR5TVhNb205TVhxc0tTRWZUSHZYUUNtdVdwSzR4SUEx?=
- =?utf-8?B?blBCQk1tL3dtTDVaMk9CclhhRUdaN0x4OCt4em84d3ZnczREd2ZMYjE3SW9h?=
- =?utf-8?B?ZGdwMlZjdWF3TE5hQXlPYVVlR294b3Q2M0Q2Vm43WFF4bHl6YUVLWmY4K292?=
- =?utf-8?B?NllFWXRUR2F5OFJ1ZTg3OWo1RTF1YTkxQWFnbnNDOE1odEpuWHc2WHlpLzVr?=
- =?utf-8?B?bDdPQlNTS2hZVGdKdjNrZ3RVTVQ5bWxZUElCampydnAyWlVqRXlqUFpBM3hh?=
- =?utf-8?B?ODRPckN2NVdyazZDMlJ6T0QwUFhWRGpzelA0Q2h0WDRodndLemZXNHJQM2lK?=
- =?utf-8?B?Y1ptNW9BLytGZEplTHFqRmp4YTIwZXZoM1VzemNWa2NMdDdTenE2OWdDNFM1?=
- =?utf-8?B?eW5KWU9BbzRlYU1WL29JbUZPL1R4enVzN0dpSG4zYUF5VEpBM3JmeHBrc093?=
- =?utf-8?B?RTV6OFowTDRHZDE5NDNpOHpLZHUreHZIZkprU3Fsem9sWHM4QVJyZkVlUHZ4?=
- =?utf-8?B?SXFwMEVESWQrVmJ0ajg2VUt1ZDhWMjE5TDFzSDMyNm5sM0E1dVhaaDJvK3lG?=
- =?utf-8?B?a1d2dGx4NFdIUEdWc1Bwa3RHNFZrMmlWbEpVNWxIWHIvaG96Vm9BQ3hqenBP?=
- =?utf-8?B?QzNGYkRuc2w1QktNajN5M1B1Qjh1bjY4R0EraWwyY0liNklyQnpyWndHVG5k?=
- =?utf-8?B?MXdEeW5VUFo3Nm5hNndvMFZHT0ZWeUZPQm5kUzZSMTNUK2JBZlBCRjh1dnFC?=
- =?utf-8?B?ZFd4WC9hNTU2M09SMTVhdjVVM29WZDlMQlpkRGYxd3N2SlJSc1RYbnhWR1F4?=
- =?utf-8?B?Q0s1a3ZOL3IzVEZicUlMRjFQK05oMDBUQ3BZWlNNbE9CSFVUcHpXWHJPVGdW?=
- =?utf-8?B?QzZUc1RzMWY3K1RXS0Zmam1ySU4yQWpoU1NGTDFIcmwrRmxwZ3dOQzFzenIz?=
- =?utf-8?B?eVBFRy9FbUlVTUhKZnRxdWFuWlZhNHJtRW85RWFpVWpMUUgrL1h6eWtRVWZK?=
- =?utf-8?B?QWNtY3AxSkFvVGJyWlFLRXpndnlLZ1o5cnZhZzlNU1RrbE5ZUWJ5cjV0bUtD?=
- =?utf-8?B?SXlEVzhGYzFVLzJzcm04blFmMENHUk5FSUY1RWRGYkQ0K0p4NnpyQU5hRmZ6?=
- =?utf-8?B?cDhSaG90YitoY2xwdzFBTFJoTzFYMHFRaU1nVlo0VzFtZTZzd2ZhUzBpYUN3?=
- =?utf-8?B?d0dzdHZKOEhhN3VDOWVrOTg1UXYxQTVRUnhnQ052VnNZNlZOdmNITXJ4bDRl?=
- =?utf-8?B?TlVJWUNLdTVwd05uTmQzb0VUYmFJYlIvSnlZWXV5ckRMaWhJcDg0TWQxOFJs?=
- =?utf-8?B?NTYvc2plT3hHbnBDZWs1VkdZV0hlMUNCY3RhQmZDTkx6Y3dZMlNndEpDTHpU?=
- =?utf-8?B?aXc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 86243206-5069-4e18-7e11-08dbce6d2179
-X-MS-Exchange-CrossTenant-AuthSource: MW5PR11MB5810.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2023 17:27:11.4062
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3eTYn9fFAa7Ho1BShqUDYB/7sZLJANQzse8ADU1C/bDdw4+QUTTl3He4U17EyWxd+V+iGdqwUlsbyvoZplgtwG5wBkrkA33ocJn5UtcJaSo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR11MB6027
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -184,48 +75,304 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16/2023 12:58 PM, Peter Zijlstra wrote:
-> On Mon, Oct 16, 2023 at 06:20:53AM +0000, Meng, Li (Jassmine) wrote:
->>>> +static void amd_pstate_init_prefcore(struct amd_cpudata *cpudata) {
->>>> +     int ret, prio;
->>>> +     u32 highest_perf;
->>>> +     static u32 max_highest_perf = 0, min_highest_perf = U32_MAX;
->>> What serializes these things?
->>>
->>> Also, *why* are you using u32 here, what's wrong with something like:
->>>
->>>          int max_hp = INT_MIN, min_hp = INT_MAX;
->>>
->> [Meng, Li (Jassmine)]
->> We use ITMT architecture to utilize preferred core features.
->> Therefore, we need to try to be consistent with Intel's implementation
->> as much as possible.  For details, please refer to the
->> intel_pstate_set_itmt_prio function in file intel_pstate.c. (Line 355)
->>
->> I think using the data type of u32 is consistent with the data
->> structures of cppc_perf_ctrls and amd_cpudata etc.
-> Rafael, should we fix intel_pstate too?
+A call to a synchronize_rcu() can be optimized from time point of
+view. Different workloads can be affected by this especially the
+ones which use this API in its time critical sections.
 
-Srinivas should be more familiar with this code than I am, so adding him.
+For example if CONFIG_RCU_NOCB_CPU is set, the wakeme_after_rcu()
+callback can be delayed and such delay depends on where in a nocb
+list it is located.
 
+1. On our Android devices i can easily trigger the scenario when
+it is a last in the list out of ~3600 callbacks:
 
-> The point is, that sched_asym_prefer(), the final consumer of these
-> values uses int and thus an explicitly signed compare.
->
-> Using u32 and U32_MAX anywhere near the setting the priority makes
-> absolutely no sense.
->
-> If you were to have the high bit set, things do not behave as expected.
+<snip>
+  <...>-29      [001] d..1. 21950.145313: rcu_batch_start: rcu_preempt CBs=3613 bl=28
+...
+  <...>-29      [001] ..... 21950.152578: rcu_invoke_callback: rcu_preempt rhp=00000000b2d6dee8 func=__free_vm_area_struct.cfi_jt
+  <...>-29      [001] ..... 21950.152579: rcu_invoke_callback: rcu_preempt rhp=00000000a446f607 func=__free_vm_area_struct.cfi_jt
+  <...>-29      [001] ..... 21950.152580: rcu_invoke_callback: rcu_preempt rhp=00000000a5cab03b func=__free_vm_area_struct.cfi_jt
+  <...>-29      [001] ..... 21950.152581: rcu_invoke_callback: rcu_preempt rhp=0000000013b7e5ee func=__free_vm_area_struct.cfi_jt
+  <...>-29      [001] ..... 21950.152582: rcu_invoke_callback: rcu_preempt rhp=000000000a8ca6f9 func=__free_vm_area_struct.cfi_jt
+  <...>-29      [001] ..... 21950.152583: rcu_invoke_callback: rcu_preempt rhp=000000008f162ca8 func=wakeme_after_rcu.cfi_jt
+  <...>-29      [001] d..1. 21950.152625: rcu_batch_end: rcu_preempt CBs-invoked=3612 idle=....
+<snip>
 
-Right, but in practice these values are always between 0 and 255 
-inclusive AFAICS.
+2. We use cpuset/cgroup to classify tasks and assign them into
+different cgroups. For example "backgrond" group which binds tasks
+only to little CPUs or "foreground" which makes use of all CPUs.
+Tasks can be migrated between groups by a request if an acceleration
+is needed.
 
-It would have been better to use u8 I suppose.
+See below an example how "surfaceflinger" task gets migrated.
+Initially it is located in the "system-background" cgroup which
+allows to run only on little cores. In order to speed it up it
+can be temporary moved into "foreground" cgroup which allows
+to use big/all CPUs:
 
+cgroup_attach_task():
+ -> cgroup_migrate_execute()
+   -> cpuset_can_attach()
+     -> percpu_down_write()
+       -> rcu_sync_enter()
+         -> synchronize_rcu()
+   -> now move tasks to the new cgroup.
+ -> cgroup_migrate_finish()
 
-> Also, same question as to the amd folks; what serializes those static
-> variables?
+<snip>
+         rcuop/1-29      [000] .....  7030.528570: rcu_invoke_callback: rcu_preempt rhp=00000000461605e0 func=wakeme_after_rcu.cfi_jt
+    PERFD-SERVER-1855    [000] d..1.  7030.530293: cgroup_attach_task: dst_root=3 dst_id=22 dst_level=1 dst_path=/foreground pid=1900 comm=surfaceflinger
+    PERFD-SERVER-1855    [000] d..1.  7030.530383: cgroup_attach_task: dst_root=3 dst_id=22 dst_level=1 dst_path=/foreground pid=1900 comm=surfaceflinger
+   TimerDispatch-2768    [002] d..5.  7030.537542: sched_migrate_task: comm=surfaceflinger pid=1900 prio=98 orig_cpu=0 dest_cpu=4
+<snip>
 
-That's a good one.
+"A moving time" depends on how fast synchronize_rcu() completes. See
+the first trace line. The migration has not occurred until the sync
+was done first. Please note, number of different callbacks to be
+invoked can be thousands.
 
+3. To address this drawback, maintain a separate track that consists
+of synchronize_rcu() callers only. The GP-kthread, that drivers a GP
+either wake-ups a worker to drain all list or directly wakes-up end
+user if it is one in the drain list.
+
+4. This patch improves the performance of synchronize_rcu() approximately
+by 30% on synthetic tests. The real test case, camera launch time, shows
+below figures(time is in milliseconds):
+
+542 vs 489 diff: 9%
+540 vs 466 diff: 13%
+518 vs 468 diff: 9%
+531 vs 457 diff: 13%
+548 vs 475 diff: 13%
+509 vs 484 diff: 4%
+
+Synthetic test:
+
+Hardware: x86_64 64 CPUs, 64GB of memory
+
+- 60.000 tasks(simultaneous);
+- each task does(1000 loops)
+     synchronize_rcu();
+     kfree(p);
+
+default: CONFIG_RCU_NOCB_CPU: takes 306 seconds to complete all users;
+patch: CONFIG_RCU_NOCB_CPU: takes 201 seconds to complete all users.
+
+Please note, by default this functionality is OFF and the old way is
+still used instead, In order to activate it, please do:
+
+echo 1 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
+
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+---
+ kernel/rcu/tree.c     | 151 +++++++++++++++++++++++++++++++++++++++++-
+ kernel/rcu/tree_exp.h |   2 +-
+ 2 files changed, 151 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 78554e7181dd..42a36d09cf3a 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1384,6 +1384,122 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
+ 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ }
+ 
++/*
++ * There are three lists for handling synchronize_rcu() users.
++ * A first list corresponds to new coming users, second for users
++ * which wait for a grace period and third is for which a grace
++ * period is passed.
++ */
++static struct sr_normal_state {
++	struct llist_head curr;	/* request a GP users. */
++	struct llist_head wait;	/* wait for GP users. */
++	struct llist_head done;	/* ready for GP users. */
++	struct llist_node *curr_tail;
++	struct llist_node *wait_tail;
++	atomic_t active;
++} sr;
++
++/* Disable it by default. */
++static int rcu_normal_wake_from_gp = 0;
++module_param(rcu_normal_wake_from_gp, int, 0644);
++
++static void rcu_sr_normal_complete(struct llist_node *node)
++{
++	struct rcu_synchronize *rs = container_of(
++		(struct rcu_head *) node, struct rcu_synchronize, head);
++	unsigned long oldstate = (unsigned long) rs->head.func;
++
++	if (!poll_state_synchronize_rcu(oldstate))
++		WARN_ONCE(1, "A full grace period is not passed yet: %lu",
++			rcu_seq_diff(get_state_synchronize_rcu(), oldstate));
++
++	/* Finally. */
++	complete(&rs->completion);
++}
++
++static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
++{
++	struct llist_node *done, *rcu, *next;
++
++	done = llist_del_all(&sr.done);
++	if (!done)
++		return;
++
++	llist_for_each_safe(rcu, next, done)
++		rcu_sr_normal_complete(rcu);
++}
++static DECLARE_WORK(sr_normal_gp_cleanup, rcu_sr_normal_gp_cleanup_work);
++
++/*
++ * Helper function for rcu_gp_cleanup().
++ */
++static void rcu_sr_normal_gp_cleanup(void)
++{
++	struct llist_node *first, *tail;
++
++	tail = READ_ONCE(sr.wait_tail);
++	first = llist_del_all(&sr.wait);
++	if (!first)
++		return;
++
++	/* Only one user? */
++	if (!first->next) {
++		rcu_sr_normal_complete(first);
++		return;
++	}
++
++	/* Can be not empty. */
++	llist_add_batch(first, tail, &sr.done);
++	queue_work(system_highpri_wq, &sr_normal_gp_cleanup);
++}
++
++/*
++ * Helper function for rcu_gp_init().
++ */
++static void rcu_sr_normal_gp_init(void)
++{
++	struct llist_node *llnode, *rcu;
++	int ret;
++
++	if (llist_empty(&sr.curr))
++		return;
++
++	/*
++	 * A waiting list of GP should be empty on this step,
++	 * since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
++	 * rolls it over. If not, it is a BUG, warn a user.
++	 */
++	WARN_ON_ONCE(!llist_empty(&sr.wait));
++
++	/*
++	 * Obtain a tail of current active users. It is guaranteed
++	 * that if we are only one active user and the list is not
++	 * empty, the tail has already been updated.
++	 */
++	ret = atomic_inc_return(&sr.active);
++	WRITE_ONCE(sr.wait_tail, (ret == 1) ? READ_ONCE(sr.curr_tail):NULL);
++	llnode = llist_del_all(&sr.curr);
++	atomic_dec(&sr.active);
++
++	if (ret != 1) {
++		llist_for_each(rcu, llnode) {
++			if (!rcu->next)
++				WRITE_ONCE(sr.wait_tail, rcu);
++		}
++	}
++
++	llist_add_batch(llnode, READ_ONCE(sr.wait_tail), &sr.wait);
++}
++
++static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
++{
++	atomic_inc(&sr.active);
++	if (llist_add((struct llist_node *) &rs->head, &sr.curr))
++		/* Set the tail. Only first and one user can do that. */
++		WRITE_ONCE(sr.curr_tail, (struct llist_node *) &rs->head);
++	atomic_dec(&sr.active);
++}
++
+ /*
+  * Initialize a new grace period.  Return false if no grace period required.
+  */
+@@ -1418,6 +1534,7 @@ static noinline_for_stack bool rcu_gp_init(void)
+ 	/* Record GP times before starting GP, hence rcu_seq_start(). */
+ 	rcu_seq_start(&rcu_state.gp_seq);
+ 	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
++	rcu_sr_normal_gp_init();
+ 	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
+ 	rcu_poll_gp_seq_start(&rcu_state.gp_seq_polled_snap);
+ 	raw_spin_unlock_irq_rcu_node(rnp);
+@@ -1787,6 +1904,9 @@ static noinline void rcu_gp_cleanup(void)
+ 	}
+ 	raw_spin_unlock_irq_rcu_node(rnp);
+ 
++	// Make synchronize_rcu() users aware of the end of old grace period.
++	rcu_sr_normal_gp_cleanup();
++
+ 	// If strict, make all CPUs aware of the end of the old grace period.
+ 	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD))
+ 		on_each_cpu(rcu_strict_gp_boundary, NULL, 0);
+@@ -3500,6 +3620,35 @@ static int rcu_blocking_is_gp(void)
+ 	return true;
+ }
+ 
++/*
++ * Helper function for the synchronize_rcu() API.
++ */
++static void synchronize_rcu_normal(void)
++{
++	struct rcu_synchronize rs;
++
++	if (READ_ONCE(rcu_normal_wake_from_gp)) {
++		init_rcu_head_on_stack(&rs.head);
++		init_completion(&rs.completion);
++
++		/*
++		 * This code might be preempted, therefore take a GP
++		 * snapshot before adding a request.
++		 */
++		rs.head.func = (void *) get_state_synchronize_rcu();
++		rcu_sr_normal_add_req(&rs);
++
++		/* Kick a GP and start waiting. */
++		(void) start_poll_synchronize_rcu();
++
++		/* Now we can wait. */
++		wait_for_completion(&rs.completion);
++		destroy_rcu_head_on_stack(&rs.head);
++	} else {
++		wait_rcu_gp(call_rcu_hurry);
++	}
++}
++
+ /**
+  * synchronize_rcu - wait until a grace period has elapsed.
+  *
+@@ -3551,7 +3700,7 @@ void synchronize_rcu(void)
+ 		if (rcu_gp_is_expedited())
+ 			synchronize_rcu_expedited();
+ 		else
+-			wait_rcu_gp(call_rcu_hurry);
++			synchronize_rcu_normal();
+ 		return;
+ 	}
+ 
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index 6d7cea5d591f..279a37beb05a 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -987,7 +987,7 @@ void synchronize_rcu_expedited(void)
+ 
+ 	/* If expedited grace periods are prohibited, fall back to normal. */
+ 	if (rcu_gp_is_normal()) {
+-		wait_rcu_gp(call_rcu_hurry);
++		synchronize_rcu_normal();
+ 		return;
+ 	}
+ 
+-- 
+2.30.2
 
