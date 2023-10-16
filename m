@@ -2,112 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33B0C7CAA89
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 15:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 313987CAA95
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 15:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232259AbjJPNz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 09:55:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54734 "EHLO
+        id S232985AbjJPN6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 09:58:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232380AbjJPNzZ (ORCPT
+        with ESMTP id S232209AbjJPN6l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 09:55:25 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC363EB;
-        Mon, 16 Oct 2023 06:55:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51D34C433C7;
-        Mon, 16 Oct 2023 13:55:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697464523;
-        bh=0yiuMspPwLpIVtahu6CyE1/zM4ZcZrYi/mvg9LDr9ZU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A+9vFEXwiNmSlKNIO/JIfd+flMeyXnMoUltYCdk0YKitkj3KZ5F8CSephZk8PlZtz
-         UKCbGtdCwguKOHwH0nw6mmG0uKmhjiDQNy5I+9TJc92JRTHDn6f9ud9KCAoZa0u0FZ
-         po+IfCUBm7z+BLgEXPoSg/xhk1RBJLZ/KZJQpKSbsQaG44yHuE0N3j9IottZd/svjN
-         acfmmnEI/c2vu2W6TWuxG33o0E3W0VnDwxw8EndH5jYzxIA8ZLG+Qp4Bil6KBO7a18
-         Aryu9bzXCh0HD3Sn6y3ol7jYNMh4yuQdYg3o2SzmnGSSw2AIcT9YdJvCNIvLNonu+X
-         4dv5Wb2S/h+cA==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qsO3x-0004Ff-2S;
-        Mon, 16 Oct 2023 15:55:18 +0200
-Date:   Mon, 16 Oct 2023 15:55:17 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-renesas-soc@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] gnss: ubx: add support for the reset gpio
-Message-ID: <ZS1AxSRL4F5WBvnC@hovoldconsulting.com>
-References: <20230921133202.5828-1-wsa+renesas@sang-engineering.com>
- <20230921133202.5828-4-wsa+renesas@sang-engineering.com>
+        Mon, 16 Oct 2023 09:58:41 -0400
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4655F83;
+        Mon, 16 Oct 2023 06:58:39 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 299112000A;
+        Mon, 16 Oct 2023 13:58:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1697464717;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=LjC20cQKng/R+Q/l/dKpdLvOogebKCPRxhG1ikRdJtc=;
+        b=o6VabpAWz2+wg8d3dGWmOoqLvw/RUoeUGOa5rM94VAEgda6koJggczhmzjUziov0bN6vqP
+        eBbesdbpiIq+0cFhNrlCQ9DSgN+kC3Gf4Fc9WodC76yDcZnI8HbnRHNN5aNt1bZZXcOh63
+        SfEjQdIVuIwc91OuN6s16Ud4QzBug+NBHfzLNj/uXsBxIFmAlZ4sYqVTcNrRqeR1gvRsjp
+        Qe+R5IqI2KC3K5EYJteisxHCKV1Wii3HmzQu6Fv4r8mUSzfVTXIFadOBB5yNH1MFuePU+7
+        toUbEGXqMdKACHTJB8UZAK5wR7K/TG9cJpDWozJ8iwLovsTlu+C03TRZ1E1Dwg==
+From:   Mehdi Djait <mehdi.djait@bootlin.com>
+To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        conor+dt@kernel.org, laurent.pinchart@ideasonboard.com
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
+        alexandre.belloni@bootlin.com, maxime.chevallier@bootlin.com,
+        paul.kocialkowski@bootlin.com,
+        Mehdi Djait <mehdi.djait@bootlin.com>
+Subject: [PATCH v7 0/3] media: i2c: Introduce driver for the TW9900 video decoder
+Date:   Mon, 16 Oct 2023 15:58:30 +0200
+Message-ID: <cover.1697463708.git.mehdi.djait@bootlin.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230921133202.5828-4-wsa+renesas@sang-engineering.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: mehdi.djait@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 03:32:01PM +0200, Wolfram Sang wrote:
-> Tested with a Renesas KingFisher board. Because my GNSS device is hooked
-> up via UART and I2C simultaneously, I could verify functionality by
-> opening/closing the GNSS device using UART and see if the corresponding
-> I2C device was visible on the bus.
+Hello everyone,
 
-Again, please try to make the commit message self-contained (e.g.
-without implicitly referring to Subject).
+V7 of the series adding support for the Techwell TW9900 multi standard decoder.
+It's a pretty simple decoder compared to the TW9910, since it doesn't have a 
+built-in scaler/crop engine.
 
-Also say something about which u-blox module this is needed for since
-the modules I've seen do not have a reset line.
+The v6 is based on the fifth iteration of the series introducing the
+tw9900 driver: sent 01 Apr 2021 [1]
 
->  static int ubx_set_active(struct gnss_serial *gserial)
-> @@ -29,6 +31,8 @@ static int ubx_set_active(struct gnss_serial *gserial)
->  	if (ret)
->  		return ret;
->  
-> +	gpiod_set_value_cansleep(data->reset_gpio, 0);
-> +
->  	return 0;
->  }
->  
-> @@ -37,6 +41,8 @@ static int ubx_set_standby(struct gnss_serial *gserial)
->  	struct ubx_data *data = gnss_serial_get_drvdata(gserial);
->  	int ret;
->  
-> +	gpiod_set_value_cansleep(data->reset_gpio, 1);
-> +
->  	ret = regulator_disable(data->vcc);
->  	if (ret)
->  		return ret;
-> @@ -90,6 +96,13 @@ static int ubx_probe(struct serdev_device *serdev)
->  	if (ret < 0 && ret != -ENODEV)
->  		goto err_free_gserial;
->  
-> +	/* Start with reset asserted */
-> +	data->reset_gpio = devm_gpiod_get_optional(&serdev->dev, "reset", GPIOD_OUT_HIGH);
-> +	if (IS_ERR(data->reset_gpio)) {
-> +		ret = PTR_ERR(data->reset_gpio);
-> +		goto err_free_gserial;
-> +	}
+v6 => v7:
+- added powerdown-gpios and input ports to dt-bindings
+- added #include <linux/bitfield.h> to fix a Warning from the kernel
+  robot
+- removed a dev_info and replaced a dev_err by dev_err_probe
 
-So this means that the reset line will be asserted indefinitely in case
-the GNSS receiver is not used. Are you sure that's a good idea?
+v5 => v6:
+- dropped .skip_top and .field in the supported_modes
+- added error handling for the i2c writes/reads
+- added the colorimetry information to fill_fmt
+- removed pm_runtime
+- added the g_input_status callback
+- dropped SECAM
+- dropped the non-standard PAL/NTSC variants
 
-I don't know yet which module this is for, or how this signal is
-supposed to be used, but the above makes this look more like an
-active-high (regulator) enable signal. Perhaps that's what it is or
-should be modelled as (i.e. as a fixed regulator).
+Any feedback is appreciated,
 
-> +
->  	ret = gnss_serial_register(gserial);
->  	if (ret)
->  		goto err_free_gserial;
+Mehdi Djait
 
-Johan
+media_tree, base-commit: 2c1bae27df787c9535e48cc27bbd11c3c3e0a235
+
+[1] https://lore.kernel.org/linux-media/20210401070802.1685823-1-maxime.chevallier@bootlin.com/
+
+
+Mehdi Djait (3):
+  dt-bindings: vendor-prefixes: Add techwell vendor prefix
+  media: dt-bindings: media: i2c: Add bindings for TW9900
+  media: i2c: Introduce a driver for the Techwell TW9900 decoder
+
+ .../bindings/media/i2c/techwell,tw9900.yaml   |  82 +++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ MAINTAINERS                                   |   6 +
+ drivers/media/i2c/Kconfig                     |  12 +
+ drivers/media/i2c/Makefile                    |   1 +
+ drivers/media/i2c/tw9900.c                    | 648 ++++++++++++++++++
+ 6 files changed, 751 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/techwell,tw9900.yaml
+ create mode 100644 drivers/media/i2c/tw9900.c
+
+-- 
+2.41.0
+
