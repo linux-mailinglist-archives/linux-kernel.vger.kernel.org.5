@@ -2,522 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32A1A7CA040
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 09:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFEEA7CA046
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 09:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231974AbjJPHON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 03:14:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54856 "EHLO
+        id S231838AbjJPHPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 03:15:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232100AbjJPHOE (ORCPT
+        with ESMTP id S232161AbjJPHO4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 03:14:04 -0400
-Received: from mxout70.expurgate.net (mxout70.expurgate.net [194.37.255.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C71101;
-        Mon, 16 Oct 2023 00:13:52 -0700 (PDT)
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.92)
-        (envelope-from <prvs=966793e2c5=fe@dev.tdt.de>)
-        id 1qsHnJ-005biK-0g; Mon, 16 Oct 2023 09:13:41 +0200
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <fe@dev.tdt.de>)
-        id 1qsHnI-00A6Ja-4m; Mon, 16 Oct 2023 09:13:40 +0200
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id ACA7924004D;
-        Mon, 16 Oct 2023 09:13:39 +0200 (CEST)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 0C1C3240049;
-        Mon, 16 Oct 2023 09:13:39 +0200 (CEST)
-Received: from localhost.localdomain (unknown [10.2.3.40])
-        by mail.dev.tdt.de (Postfix) with ESMTPSA id 5E0272BD62;
-        Mon, 16 Oct 2023 09:13:38 +0200 (CEST)
-From:   Florian Eckert <fe@dev.tdt.de>
-To:     Eckert.Florian@googlemail.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, pavel@ucw.cz, lee@kernel.org,
-        kabel@kernel.org, u.kleine-koenig@pengutronix.de
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-leds@vger.kernel.org
-Subject: [PATCH v3 4/4] trigger: ledtrig-tty: add new line mode to triggers
-Date:   Mon, 16 Oct 2023 09:13:32 +0200
-Message-ID: <20231016071332.597654-5-fe@dev.tdt.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231016071332.597654-1-fe@dev.tdt.de>
-References: <20231016071332.597654-1-fe@dev.tdt.de>
+        Mon, 16 Oct 2023 03:14:56 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90FF3112
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:14:49 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9DC912189D;
+        Mon, 16 Oct 2023 07:14:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1697440487; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=9RV5EOYE82h5D1LodXaROCEgPixc3iudjmyw72L3/EU=;
+        b=ZVgdv41vCxEoBVhY71R2aYC4jXeWYlnq1Tc5UWgdKkyraeayWt8sch0pjIIZV74P/ooBv9
+        TOz99V+CcAEMOSuGi/fVK+HXbbIbqnNUn7uEuS4+SyW8m1rUTaTvMVlMfO4J0xQ8MzwtgV
+        Z5in2J0fy5xnsfQ5B5QL7N3haw3lZ0A=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 48E23138EF;
+        Mon, 16 Oct 2023 07:14:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id AFzkD+fiLGViWwAAMHmgww
+        (envelope-from <jgross@suse.com>); Mon, 16 Oct 2023 07:14:47 +0000
+Message-ID: <b129e6f5-ad9d-4267-b058-29a64f8f1d59@suse.com>
+Date:   Mon, 16 Oct 2023 09:14:46 +0200
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V4 2/4] xen: irqfd: Use _IOW instead of the internal
+ _IOC() macro
+Content-Language: en-US
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        =?UTF-8?Q?Alex_Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        stratos-dev@op-lists.linaro.org,
+        Erik Schilling <erik.schilling@linaro.org>,
+        Manos Pitsidianakis <manos.pitsidianakis@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+References: <cover.1697439990.git.viresh.kumar@linaro.org>
+ <599ca6f1b9dd2f0e6247ea37bee3ea6827404b6d.1697439990.git.viresh.kumar@linaro.org>
+From:   Juergen Gross <jgross@suse.com>
+Autocrypt: addr=jgross@suse.com; keydata=
+ xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
+ ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
+ dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
+ NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
+ XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
+ AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
+ CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
+ mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
+ G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
+ kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
+ Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
+ RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
+ vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
+ sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
+ aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
+ w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
+ auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
+ 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
+ fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
+ HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
+ QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
+ ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
+In-Reply-To: <599ca6f1b9dd2f0e6247ea37bee3ea6827404b6d.1697439990.git.viresh.kumar@linaro.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------n0sbYyoOiB064uMBvwL0o0bX"
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -5.53
+X-Spamd-Result: default: False [-5.53 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         XM_UA_NO_VERSION(0.01)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         BAYES_HAM(-2.54)[97.92%];
+         MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
+         HAS_ATTACHMENT(0.00)[];
+         REPLY(-4.00)[];
+         MIME_BASE64_TEXT_BOGUS(1.00)[];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         MIME_BASE64_TEXT(0.10)[];
+         RCPT_COUNT_TWELVE(0.00)[12];
+         NEURAL_SPAM_LONG(3.00)[1.000];
+         SIGNED_PGP(-2.00)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+,1:+,2:+,3:+,4:~,5:~];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[];
+         MIME_UNKNOWN(0.10)[application/pgp-keys]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-Content-Transfer-Encoding: quoted-printable
-X-purgate-type: clean
-X-purgate: clean
-X-purgate-ID: 151534::1697440420-D3E9C639-E5308D60/0/0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Until now, the LED blinks when data is sent via the tty (rx/tx).
-The serial tty interface also supports additional input signals, that can
-also be evaluated within this trigger. This commit is adding the followin=
-g
-additional input sources, which could be controlled via the
-'/sys/class/<leds>/' sysfs interface.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------n0sbYyoOiB064uMBvwL0o0bX
+Content-Type: multipart/mixed; boundary="------------3c4sbr2bWNEY8AMM31TgXWIA";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Viresh Kumar <viresh.kumar@linaro.org>,
+ Stefano Stabellini <sstabellini@kernel.org>,
+ Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>,
+ =?UTF-8?Q?Alex_Benn=C3=A9e?= <alex.bennee@linaro.org>,
+ stratos-dev@op-lists.linaro.org, Erik Schilling <erik.schilling@linaro.org>,
+ Manos Pitsidianakis <manos.pitsidianakis@linaro.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>, Arnd Bergmann
+ <arnd@kernel.org>, xen-devel@lists.xenproject.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <b129e6f5-ad9d-4267-b058-29a64f8f1d59@suse.com>
+Subject: Re: [PATCH V4 2/4] xen: irqfd: Use _IOW instead of the internal
+ _IOC() macro
+References: <cover.1697439990.git.viresh.kumar@linaro.org>
+ <599ca6f1b9dd2f0e6247ea37bee3ea6827404b6d.1697439990.git.viresh.kumar@linaro.org>
+In-Reply-To: <599ca6f1b9dd2f0e6247ea37bee3ea6827404b6d.1697439990.git.viresh.kumar@linaro.org>
 
-DCE =3D Data Communication Equipment (Modem)
-DTE =3D Data Terminal Equipment (Computer)
+--------------3c4sbr2bWNEY8AMM31TgXWIA
+Content-Type: multipart/mixed; boundary="------------u5hf43i9OIE4dk0EanBjly00"
 
-- line_cts:
-  DCE is ready to accept data from the DTE (CTS =3D Clear To Send). If th=
-e
-  line state is detected, the LED is switched on.
-  If set to 0 (default), the LED will not evaluate CTS.
-  If set to 1, the LED will evaluate CTS.
+--------------u5hf43i9OIE4dk0EanBjly00
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-- line_dsr:
-  DCE is ready to receive and send data (DSR =3D Data Set Ready). If the =
-line
-  state is detected, the LED is switched on.
-  If set to 0 (default), the LED will not evaluate DSR.
-  If set to 1, the LED will evaluate DSR.
+T24gMTYuMTAuMjMgMDk6MTEsIFZpcmVzaCBLdW1hciB3cm90ZToNCj4gX0lPQygpIGFuIGlu
+dGVybmFsIGhlbHBlciB0aGF0IHdlIHNob3VsZCBub3QgdXNlIGluIGRyaXZlciBjb2RlLiAg
+SW4NCj4gcGFydGljdWxhciwgd2UgZ290IHRoZSBkYXRhIGRpcmVjdGlvbiB3cm9uZyBoZXJl
+LCB3aGljaCBicmVha3MgYSBudW1iZXINCj4gb2YgdG9vbHMsIGFzIGhhdmluZyAiX0lPQ19O
+T05FIiBzaG91bGQgbmV2ZXIgYmUgcGFpcmVkIHdpdGggYSBub256ZXJvDQo+IHNpemUuDQo+
+IA0KPiBVc2UgX0lPVygpIGluc3RlYWQuDQo+IA0KPiBGaXhlczogZjg5NDFlNmM0YzcxICgi
+eGVuOiBwcml2Y21kOiBBZGQgc3VwcG9ydCBmb3IgaXJxZmQiKQ0KPiBSZXBvcnRlZC1ieTog
+QXJuZCBCZXJnbWFubiA8YXJuZEBrZXJuZWwub3JnPg0KPiBDbG9zZXM6IGh0dHBzOi8vbG9y
+ZS5rZXJuZWwub3JnL2FsbC8yNjhhMjAzMS02M2I4LTRjN2QtYjFlNS04YWI4M2NhODBiNGFA
+YXBwLmZhc3RtYWlsLmNvbS8NCj4gU2lnbmVkLW9mZi1ieTogVmlyZXNoIEt1bWFyIDx2aXJl
+c2gua3VtYXJAbGluYXJvLm9yZz4NCg0KUmV2aWV3ZWQtYnk6IEp1ZXJnZW4gR3Jvc3MgPGpn
+cm9zc0BzdXNlLmNvbT4NCg0KDQpKdWVyZ2VuDQoNCg==
+--------------u5hf43i9OIE4dk0EanBjly00
+Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
 
-- line_car:
-  DTE is receiving a carrier from the DCE (DCD =3D Data Carrier Detect). =
-If
-  the line state is detected, the LED is switched on.
-  If set to 0 (default), the LED will not evaluate CAR (DCD).
-  If set to 1, the LED will evaluate CAR (DCD).
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
-- line_rng:
-  DCE has detected an incoming ring signal on the telephone line
-  (RI =3D Ring Indicator). If the line state is detected, the LED is
-  switched on.
-  If set to 0 (default), the LED will not evaluate RNG (RI).
-  If set to 1, the LED will evaluate RNG (RI).
+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
+jR/i1DG86lem3iBDXzXsZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
 
-In addition to the new line_* entries in sysfs, the indication for the
-direction of the transmitted data is independently controllable via the
-new rx and tx sysfs entrie now too. These are on by default. Thus the
-trigger behaves as before this change.
+--------------u5hf43i9OIE4dk0EanBjly00--
 
-- rx:
-  Signal reception (rx) of data on the named tty device.
-  If set to 0, the LED will not blink on reception.
-  If set to 1 (default), the LED will blink on reception.
+--------------3c4sbr2bWNEY8AMM31TgXWIA--
 
-- tx:
-  Signal transmission (tx) of data on the named tty device.
-  If set to 0, the LED will not blink on transmission.
-  If set to 1 (default), the LED will blink on transmission.
+--------------n0sbYyoOiB064uMBvwL0o0bX
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
-Signed-off-by: Florian Eckert <fe@dev.tdt.de>
----
- .../ABI/testing/sysfs-class-led-trigger-tty   |  53 ++++
- drivers/leds/trigger/ledtrig-tty.c            | 279 +++++++++++++++++-
- 2 files changed, 322 insertions(+), 10 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/Documentation/ABI/testing/sysfs-class-led-trigger-tty b/Docu=
-mentation/ABI/testing/sysfs-class-led-trigger-tty
-index 2bf6b24e781b..e1f578ac8656 100644
---- a/Documentation/ABI/testing/sysfs-class-led-trigger-tty
-+++ b/Documentation/ABI/testing/sysfs-class-led-trigger-tty
-@@ -4,3 +4,56 @@ KernelVersion:	5.10
- Contact:	linux-leds@vger.kernel.org
- Description:
- 		Specifies the tty device name of the triggering tty
-+
-+What:		/sys/class/leds/<led>/rx
-+Date:		September 2023
-+KernelVersion:	6.7
-+Description:
-+		Signal reception (rx) of data on the named tty device.
-+		If set to 0, the LED will not blink on reception.
-+		If set to 1 (default), the LED will blink on reception.
-+
-+What:		/sys/class/leds/<led>/tx
-+Date:		September 2023
-+KernelVersion:	6.7
-+Description:
-+		Signal transmission (tx) of data on the named tty device.
-+		If set to 0, the LED will not blink on transmission.
-+		If set to 1 (default), the LED will blink on transmission.
-+
-+What:		/sys/class/leds/<led>/line_cts
-+Date:		September 2023
-+KernelVersion:	6.7
-+Description:
-+		DCE is ready to accept data from the DTE (Clear To Send). If
-+		the line state is detected, the LED is switched on.
-+		If set to 0 (default), the LED will not evaluate CTS.
-+		If set to 1, the LED will evaluate CTS.
-+
-+What:		/sys/class/leds/<led>/line_dsr
-+Date:		September 2023
-+KernelVersion:	6.7
-+Description:
-+		DCE is ready to receive and send data (Data Set Ready). If
-+		the line state is detected, the LED is switched on.
-+		If set to 0 (default), the LED will not evaluate DSR.
-+		If set to 1, the LED will evaluate DSR.
-+
-+What:		/sys/class/leds/<led>/line_car
-+Date:		September 2023
-+KernelVersion:	6.7
-+Description:
-+		DTE is receiving a carrier from the DCE (Data Carrier Detect).
-+		If the line state is detected, the LED is switched on.
-+		If set to 0 (default), the LED will not evaluate CAR (DCD).
-+		If set to 1, the LED will evaluate CAR (DCD).
-+
-+What:		/sys/class/leds/<led>/line_rng
-+Date:		September 2023
-+KernelVersion:	6.7
-+Description:
-+		DCE has detected an incoming ring signal on the telephone
-+		line (Ring Indicator). If the line state is detected, the
-+		LED is switched on.
-+		If set to 0 (default), the LED will not evaluate RNG (RI).
-+		If set to 1, the LED will evaluate RNG (RI).
-diff --git a/drivers/leds/trigger/ledtrig-tty.c b/drivers/leds/trigger/le=
-dtrig-tty.c
-index 1c6fadf0b856..50bef4c8f321 100644
---- a/drivers/leds/trigger/ledtrig-tty.c
-+++ b/drivers/leds/trigger/ledtrig-tty.c
-@@ -16,6 +16,28 @@ struct ledtrig_tty_data {
- 	const char *ttyname;
- 	struct tty_struct *tty;
- 	int rx, tx;
-+	unsigned long mode;
-+#define LEDTRIG_TTY_MODE_TX	0
-+#define LEDTRIG_TTY_MODE_RX	1
-+#define LEDTRIG_TTY_MODE_CTS	2
-+#define LEDTRIG_TTY_MODE_DSR	3
-+#define LEDTRIG_TTY_MODE_CAR	4
-+#define LEDTRIG_TTY_MODE_RNG	5
-+};
-+
-+enum tty_led_state {
-+	TTY_LED_BLINK,
-+	TTY_LED_ENABLE,
-+	TTY_LED_DISABLE,
-+};
-+
-+enum ledtrig_tty_attr {
-+	LEDTRIG_TTY_ATTR_TX,
-+	LEDTRIG_TTY_ATTR_RX,
-+	LEDTRIG_TTY_ATTR_CTS,
-+	LEDTRIG_TTY_ATTR_DSR,
-+	LEDTRIG_TTY_ATTR_CAR,
-+	LEDTRIG_TTY_ATTR_RNG,
- };
-=20
- static void ledtrig_tty_restart(struct ledtrig_tty_data *trigger_data)
-@@ -78,14 +100,186 @@ static ssize_t ttyname_store(struct device *dev,
- }
- static DEVICE_ATTR_RW(ttyname);
-=20
-+static ssize_t ledtrig_tty_attr_show(struct device *dev, char *buf,
-+	enum ledtrig_tty_attr attr)
-+{
-+	struct ledtrig_tty_data *trigger_data =3D led_trigger_get_drvdata(dev);
-+	int bit;
-+
-+	switch (attr) {
-+	case LEDTRIG_TTY_ATTR_TX:
-+		bit =3D LEDTRIG_TTY_MODE_TX;
-+		break;
-+	case LEDTRIG_TTY_ATTR_RX:
-+		bit =3D LEDTRIG_TTY_MODE_RX;
-+		break;
-+	case LEDTRIG_TTY_ATTR_CTS:
-+		bit =3D LEDTRIG_TTY_MODE_CTS;
-+		break;
-+	case LEDTRIG_TTY_ATTR_DSR:
-+		bit =3D LEDTRIG_TTY_MODE_DSR;
-+		break;
-+	case LEDTRIG_TTY_ATTR_CAR:
-+		bit =3D LEDTRIG_TTY_MODE_CAR;
-+		break;
-+	case LEDTRIG_TTY_ATTR_RNG:
-+		bit =3D LEDTRIG_TTY_MODE_RNG;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return sprintf(buf, "%u\n", test_bit(bit, &trigger_data->mode));
-+}
-+
-+static ssize_t ledtrig_tty_attr_store(struct device *dev, const char *bu=
-f,
-+	size_t size, enum ledtrig_tty_attr attr)
-+{
-+	struct ledtrig_tty_data *trigger_data =3D led_trigger_get_drvdata(dev);
-+	unsigned long state;
-+	int ret;
-+	int bit;
-+
-+	ret =3D kstrtoul(buf, 0, &state);
-+	if (ret)
-+		return ret;
-+
-+	switch (attr) {
-+	case LEDTRIG_TTY_ATTR_TX:
-+		bit =3D LEDTRIG_TTY_MODE_TX;
-+		break;
-+	case LEDTRIG_TTY_ATTR_RX:
-+		bit =3D LEDTRIG_TTY_MODE_RX;
-+		break;
-+	case LEDTRIG_TTY_ATTR_CTS:
-+		bit =3D LEDTRIG_TTY_MODE_CTS;
-+		break;
-+	case LEDTRIG_TTY_ATTR_DSR:
-+		bit =3D LEDTRIG_TTY_MODE_DSR;
-+		break;
-+	case LEDTRIG_TTY_ATTR_CAR:
-+		bit =3D LEDTRIG_TTY_MODE_CAR;
-+		break;
-+	case LEDTRIG_TTY_ATTR_RNG:
-+		bit =3D LEDTRIG_TTY_MODE_RNG;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	if (state)
-+		set_bit(bit, &trigger_data->mode);
-+	else
-+		clear_bit(bit, &trigger_data->mode);
-+
-+	return size;
-+}
-+
-+static ssize_t tx_show(struct device *dev,
-+	struct device_attribute *attr, char *buf)
-+{
-+	return ledtrig_tty_attr_show(dev, buf, LEDTRIG_TTY_ATTR_TX);
-+}
-+
-+static ssize_t tx_store(struct device *dev,
-+	struct device_attribute *attr, const char *buf, size_t size)
-+{
-+	return ledtrig_tty_attr_store(dev, buf, size, LEDTRIG_TTY_ATTR_TX);
-+}
-+static DEVICE_ATTR_RW(tx);
-+
-+static ssize_t rx_show(struct device *dev,
-+	struct device_attribute *attr, char *buf)
-+{
-+	return ledtrig_tty_attr_show(dev, buf, LEDTRIG_TTY_ATTR_RX);
-+}
-+
-+static ssize_t rx_store(struct device *dev,
-+	struct device_attribute *attr, const char *buf, size_t size)
-+{
-+	return ledtrig_tty_attr_store(dev, buf, size, LEDTRIG_TTY_ATTR_RX);
-+}
-+static DEVICE_ATTR_RW(rx);
-+
-+static ssize_t line_cts_show(struct device *dev,
-+	struct device_attribute *attr, char *buf)
-+{
-+	return ledtrig_tty_attr_show(dev, buf, LEDTRIG_TTY_ATTR_CTS);
-+}
-+
-+static ssize_t line_cts_store(struct device *dev,
-+	struct device_attribute *attr, const char *buf, size_t size)
-+{
-+	return ledtrig_tty_attr_store(dev, buf, size, LEDTRIG_TTY_ATTR_CTS);
-+}
-+static DEVICE_ATTR_RW(line_cts);
-+
-+static ssize_t line_dsr_show(struct device *dev,
-+	struct device_attribute *attr, char *buf)
-+{
-+	return ledtrig_tty_attr_show(dev, buf, LEDTRIG_TTY_ATTR_DSR);
-+}
-+
-+static ssize_t line_dsr_store(struct device *dev,
-+	struct device_attribute *attr, const char *buf, size_t size)
-+{
-+	return ledtrig_tty_attr_store(dev, buf, size, LEDTRIG_TTY_ATTR_DSR);
-+}
-+static DEVICE_ATTR_RW(line_dsr);
-+
-+static ssize_t line_car_show(struct device *dev,
-+	struct device_attribute *attr, char *buf)
-+{
-+	return ledtrig_tty_attr_show(dev, buf, LEDTRIG_TTY_ATTR_CAR);
-+}
-+
-+static ssize_t line_car_store(struct device *dev,
-+	struct device_attribute *attr, const char *buf, size_t size)
-+{
-+	return ledtrig_tty_attr_store(dev, buf, size, LEDTRIG_TTY_ATTR_CAR);
-+}
-+static DEVICE_ATTR_RW(line_car);
-+
-+static ssize_t line_rng_show(struct device *dev,
-+	struct device_attribute *attr, char *buf)
-+{
-+	return ledtrig_tty_attr_show(dev, buf, LEDTRIG_TTY_ATTR_RNG);
-+}
-+
-+static ssize_t line_rng_store(struct device *dev,
-+	struct device_attribute *attr, const char *buf, size_t size)
-+{
-+	return ledtrig_tty_attr_store(dev, buf, size, LEDTRIG_TTY_ATTR_RNG);
-+}
-+static DEVICE_ATTR_RW(line_rng);
-+
-+
-+static int ledtrig_tty_flag(struct ledtrig_tty_data *trigger_data, unsig=
-ned int flag)
-+{
-+	unsigned int status;
-+	int ret;
-+
-+	status =3D tty_get_tiocm(trigger_data->tty);
-+	if (status & flag)
-+		ret =3D 1;
-+	else
-+		ret =3D 0;
-+
-+	return ret;
-+}
-+
- static void ledtrig_tty_work(struct work_struct *work)
- {
- 	struct ledtrig_tty_data *trigger_data =3D
- 		container_of(work, struct ledtrig_tty_data, dwork.work);
-+	struct led_classdev *led_cdev =3D trigger_data->led_cdev;
- 	unsigned long interval =3D LEDTRIG_TTY_INTERVAL;
- 	struct serial_icounter_struct icount;
-+	enum tty_led_state state;
-+	int current_brightness;
- 	int ret;
-=20
-+	state =3D TTY_LED_DISABLE;
- 	mutex_lock(&trigger_data->mutex);
-=20
- 	if (!trigger_data->ttyname) {
-@@ -116,20 +310,75 @@ static void ledtrig_tty_work(struct work_struct *wo=
-rk)
- 		trigger_data->tty =3D tty;
- 	}
-=20
--	ret =3D tty_get_icount(trigger_data->tty, &icount);
--	if (ret) {
--		dev_info(trigger_data->tty->dev, "Failed to get icount, stopped pollin=
-g\n");
--		mutex_unlock(&trigger_data->mutex);
--		return;
-+	if (test_bit(LEDTRIG_TTY_MODE_CTS, &trigger_data->mode)) {
-+		ret =3D ledtrig_tty_flag(trigger_data, TIOCM_CTS);
-+		if (ret)
-+			state =3D TTY_LED_ENABLE;
- 	}
-=20
--	if (icount.rx !=3D trigger_data->rx ||
--	    icount.tx !=3D trigger_data->tx) {
-+	if (test_bit(LEDTRIG_TTY_MODE_DSR, &trigger_data->mode)) {
-+		ret =3D ledtrig_tty_flag(trigger_data, TIOCM_DSR);
-+		if (ret)
-+			state =3D TTY_LED_ENABLE;
-+	}
-+
-+	if (test_bit(LEDTRIG_TTY_MODE_CAR, &trigger_data->mode)) {
-+		ret =3D ledtrig_tty_flag(trigger_data, TIOCM_CAR);
-+		if (ret)
-+			state =3D TTY_LED_ENABLE;
-+	}
-+
-+	if (test_bit(LEDTRIG_TTY_MODE_RNG, &trigger_data->mode)) {
-+		ret =3D ledtrig_tty_flag(trigger_data, TIOCM_RNG);
-+		if (ret)
-+			state =3D TTY_LED_ENABLE;
-+	}
-+
-+	/* The rx/tx handling must come after the evaluation of TIOCM_*,
-+	 * since the display for rx/tx has priority
-+	 */
-+	if (test_bit(LEDTRIG_TTY_MODE_TX, &trigger_data->mode) ||
-+	    test_bit(LEDTRIG_TTY_MODE_RX, &trigger_data->mode)) {
-+		ret =3D tty_get_icount(trigger_data->tty, &icount);
-+		if (ret) {
-+			dev_info(trigger_data->tty->dev, "Failed to get icount, stopped polli=
-ng\n");
-+			mutex_unlock(&trigger_data->mutex);
-+			return;
-+		}
-+
-+		if (test_bit(LEDTRIG_TTY_MODE_TX, &trigger_data->mode) &&
-+		    (icount.tx !=3D trigger_data->tx)) {
-+			trigger_data->tx =3D icount.tx;
-+			state =3D TTY_LED_BLINK;
-+		}
-+
-+		if (test_bit(LEDTRIG_TTY_MODE_RX, &trigger_data->mode) &&
-+		    (icount.rx !=3D trigger_data->rx)) {
-+			trigger_data->rx =3D icount.rx;
-+			state =3D TTY_LED_BLINK;
-+		}
-+	}
-+
-+	current_brightness =3D led_cdev->brightness;
-+	if (current_brightness)
-+		led_cdev->blink_brightness =3D current_brightness;
-+
-+	if (!led_cdev->blink_brightness)
-+		led_cdev->blink_brightness =3D led_cdev->max_brightness;
-+
-+	switch (state) {
-+	case TTY_LED_BLINK:
- 		led_blink_set_oneshot(trigger_data->led_cdev, &interval,
- 				      &interval, 0);
--
--		trigger_data->rx =3D icount.rx;
--		trigger_data->tx =3D icount.tx;
-+		break;
-+	case TTY_LED_ENABLE:
-+		led_set_brightness(led_cdev, led_cdev->blink_brightness);
-+		break;
-+	case TTY_LED_DISABLE:
-+		fallthrough;
-+	default:
-+		led_set_brightness(led_cdev, LED_OFF);
-+		break;
- 	}
-=20
- out:
-@@ -140,6 +389,12 @@ static void ledtrig_tty_work(struct work_struct *wor=
-k)
-=20
- static struct attribute *ledtrig_tty_attrs[] =3D {
- 	&dev_attr_ttyname.attr,
-+	&dev_attr_rx.attr,
-+	&dev_attr_tx.attr,
-+	&dev_attr_line_cts.attr,
-+	&dev_attr_line_dsr.attr,
-+	&dev_attr_line_car.attr,
-+	&dev_attr_line_rng.attr,
- 	NULL
- };
- ATTRIBUTE_GROUPS(ledtrig_tty);
-@@ -152,6 +407,10 @@ static int ledtrig_tty_activate(struct led_classdev =
-*led_cdev)
- 	if (!trigger_data)
- 		return -ENOMEM;
-=20
-+	/* Enable default rx/tx LED blink */
-+	set_bit(LEDTRIG_TTY_MODE_TX, &trigger_data->mode);
-+	set_bit(LEDTRIG_TTY_MODE_RX, &trigger_data->mode);
-+
- 	led_set_trigger_data(led_cdev, trigger_data);
-=20
- 	INIT_DELAYED_WORK(&trigger_data->dwork, ledtrig_tty_work);
---=20
-2.30.2
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmUs4ucFAwAAAAAACgkQsN6d1ii/Ey9k
+1gf+INzKloKYASmfPT/8yL2yNeDVSIwawTnadF5jsAIxiaLc8Ve8J2Pdv50mIhDjSC82IkkkH18M
+AkM7xn12IYN8s0jPKBqncRu9YNOv7yw3OBTbLMiTUQ7C12WQ3l4tNGLIkAjc1TkAVWrnT/mvTMWN
+2XLP694ja6BX9wgJvhj0qQKlX1J8UJKYtYR8g0Mt0R0x08PmcmWOyG8ufqMOq0KAme2gSUHYdZeL
+vdbDe9YT8qM2QMHsVrDls333A6MoQzcC+ArCvoCFEdrxGldyUcdRUovwywI5otxtRsUAa4X1jimD
+Ykpx11I9KTT+UiHsUWwX8kt+1P2kamGU8Th8G0wCJQ==
+=WgOI
+-----END PGP SIGNATURE-----
 
+--------------n0sbYyoOiB064uMBvwL0o0bX--
