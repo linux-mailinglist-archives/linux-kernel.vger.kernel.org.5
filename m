@@ -2,194 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 207927CA748
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 13:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B5B7CA74B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 13:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232090AbjJPL5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 07:57:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57560 "EHLO
+        id S232995AbjJPL5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 07:57:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230514AbjJPL5m (ORCPT
+        with ESMTP id S232268AbjJPL5p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 07:57:42 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2089.outbound.protection.outlook.com [40.107.243.89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64B72EE;
-        Mon, 16 Oct 2023 04:57:40 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZS2ezBuLt69S/hk72IftAzpqcTurMU2d3DUwXjIOmBjtpOJEq6AxsuDLYQeA2nvZZtnRrGdhK+YBKEbPgNZuhTWRoDtWUAtW/0RP9AXLl3C/mVC0DmlbsuNWajliIntHAv31zuWwUA55ORQCky8vkdWjsANu0XBowQZLFIZXVU1Pzi/jYek+KTeKE1mPXTB0Z/rwVWTgxVcBRGZZbcOkb2gmLqL1ZgGc323q7DA6yw8Lt6hipzoJaxYmmQLxGGDFOlA1So40M+ZxDVP2QxwEQTaw+M28q3xBeHwf6SJ02JUSk7g4pzufgG7RVe9OZSVNQMBQTFWhp5icMruHpIUJqg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=v13PLWkXZ66wysx6qv0HBBTwj9vKz5xqJXtl+0KE4mU=;
- b=n6Cb35g5lmsJFsGjvtJe4MdGEginUnXDLEY7pBPPtN8CdPQzss56OAvLVRe4dkdhx2D0HF3MS6FPeJgybfHzuYwY/isMzY6eTuEPi/67iCBohPfUCOjj/5dXGmrCpb/VeM/LpqFE5XkUoOAR5B3jGqaPI7t8Ta8NeIXhJ3md1qH+ZSQcd0Jq5MoJ7U3nDWTO8AIaJAK3zmk6/phP0zSFGZAKBHBPfrEESaeEW7LnYkCcMSNhN8/K6ujl+7UGrzSe+LLuwO5EPqQ7VULI3U/d4HDzZ7X7MBP4bSMnibkVtI7XqL9G9G+p/+Vfjro0HEWrcLqWs5850nd5sX1bKJ+ZVw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v13PLWkXZ66wysx6qv0HBBTwj9vKz5xqJXtl+0KE4mU=;
- b=HACbzcz+3IEHwH91KumijGfznDZh/TXugP50rC5cE29Os6OtiqfKB6s8RCN+4pYCl4n4d5C0ZJz4Dsrc+2IbyoUoON2+xDs+2GQ1zRrI/a3yycI0Sageu32spc/WIgLquItLh4E8gjvDMKUhKXsS5ihdTcO5r9CxiuzBL4eTW8EI7DsxUpL8NsFlMO6qnArVRlP7h3ZAiPOwZcWvA+e9RBUKWJO+h4m7rToJ6F0WDAWpNaewC442RQ5bVjcZEZYKHSAeprN6Qo4dExqTRtBbGNH8jqLNR7gxGXW1hRk8ouvnKeYk2wenfPyElUtbGcjvTVZF8cqtWhEP9weJNGM6Ig==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by SA1PR12MB7368.namprd12.prod.outlook.com (2603:10b6:806:2b7::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.35; Mon, 16 Oct
- 2023 11:57:38 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2%6]) with mapi id 15.20.6863.046; Mon, 16 Oct 2023
- 11:57:38 +0000
-Date:   Mon, 16 Oct 2023 08:57:36 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Nicolin Chen <nicolinc@nvidia.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        "Martins, Joao" <joao.m.martins@oracle.com>
-Subject: Re: [PATCH v4 08/17] iommufd: Always setup MSI and anforce cc on
- kernel-managed domains
-Message-ID: <20231016115736.GP3952@nvidia.com>
-References: <20230921075138.124099-1-yi.l.liu@intel.com>
- <20230921075138.124099-9-yi.l.liu@intel.com>
- <BN9PR11MB527658EAF017FF3576667EEA8CC3A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZSnkiKoCspmG1+/j@Asurada-Nvidia>
- <BN9PR11MB52763227866603ED7795AA068CD7A@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB52763227866603ED7795AA068CD7A@BN9PR11MB5276.namprd11.prod.outlook.com>
-X-ClientProxiedBy: BL1P221CA0025.NAMP221.PROD.OUTLOOK.COM
- (2603:10b6:208:2c5::13) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Mon, 16 Oct 2023 07:57:45 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACA4CF1;
+        Mon, 16 Oct 2023 04:57:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 954E8C433C7;
+        Mon, 16 Oct 2023 11:57:38 +0000 (UTC)
+Message-ID: <c5e826a2-5bc6-4c49-9a6d-655d26a3b97f@xs4all.nl>
+Date:   Mon, 16 Oct 2023 13:57:37 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SA1PR12MB7368:EE_
-X-MS-Office365-Filtering-Correlation-Id: 61a481a6-1720-4908-598e-08dbce3f178f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: n6/xQ+PNfsNskXNgWQberyLLXx/Wm+MTLitZJGKWoZ8soi9VK3Eswyn0cMT32OtQSOKP06zSp6yfsbruBtag57gulLFjRjOr5LgQTOUD8zjPEbRMRRPjPYKjpDoFoP4Av/zkxXZqsLCu9xBGh1EX0uanReNu6HCxluUmtiRWBIM8ClEn+N4gWSnGAZSRo+IOiQJjDNgZIm0yy9Kz3LT5oPN+83+TQ5kcEESS1lrfb+ty6qeDyQMhrMyjp52QZarpPmEO0GoI67sYulGnRebk31zHMXoZqBSGiEQStx1J7WVU1OHzYJv+TCy5ZOcUaWxDXLkKouRRtvRugm9CTCT13cGyMdDEtzeOndo6wJQppgXANAmOzt1hMvEW2VjIEDD/jIMz1pb30dWZOqnY4MSqD/GacJy63WaanKksgz2zrRYNXroROOcYk6GwS/CeUrxAvvwnTHYQQ29FGBv7O6BjzufCItRqAhqYMW8YY/ye1ZuKa53nM5sbItBZAd9d0G16/j4TSHCPTon5ElrI7A45zGyWVMfPnOg6zxOVsjpAfbOYPaRyX9st95/DqK2pPpFt
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(376002)(346002)(366004)(39860400002)(230922051799003)(451199024)(1800799009)(64100799003)(186009)(478600001)(6486002)(66946007)(66476007)(54906003)(6916009)(66556008)(83380400001)(86362001)(38100700002)(6512007)(316002)(2616005)(26005)(1076003)(6506007)(41300700001)(33656002)(5660300002)(36756003)(4326008)(8936002)(8676002)(7416002)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FsrlPBU7f8zhWFz6B0SQm61A1F7df8ShQLCoWqk9OHmaa+dN/RKrbgVtvYLs?=
- =?us-ascii?Q?DkLyFFSYD8mtrue+7zmynnYXBoP08yIBWNYrCb/Fp0/0gpwEQjyzs8tqV8oV?=
- =?us-ascii?Q?Z474Fh11rPa9PLHrMxTK/NyH8XSacY34IfaktB5ZCDlXz0fTxlXlBNMFXgY/?=
- =?us-ascii?Q?JE6cG3T7bRq+aHY69o3kW7uYv/P2hqPSQ7lykRc+pEYNwLgjp0QduuihNvdM?=
- =?us-ascii?Q?DKaZxaj+UkgF7G9aOL8GQOFS7uFkJWH8o/Vz4/K2VTVxDBa/qzLTnhVckv21?=
- =?us-ascii?Q?omrETqK4y08RGSGYu61enGivQ6cOtlXxzhfuxzj+DoQul2twjCfyJvUD9Xl2?=
- =?us-ascii?Q?fRrvP0uruvSrP/BoJzOiieftnbDRxcDi1n+Q2BeK9f8oBiQohWQ4iRFK6mSI?=
- =?us-ascii?Q?TgJPy5QzibfLde1nXiqo2Bt/GuwCXEsP6Ib0J4k9CfWtwI042c1UhyVH/DdW?=
- =?us-ascii?Q?X2BmXQ3U4c6e/z2ezqSTmEsXF92/uK992GtREoRxmTecVgA0/9r2ilQVZb3s?=
- =?us-ascii?Q?RCl0WASiy8/87kfIz84d2OSoc+z1vBGRpq41H4xyqBlU56UF1+X+fP6irSIi?=
- =?us-ascii?Q?SzfD/9DaSSI/wdYvmaRRnYRWpw3WXOPeIW+DC6wXfWf+4UnAk4JH7eBG6KR7?=
- =?us-ascii?Q?uehEXeKXoXKTxiajMNcp5Nl81uTeuyuvtYtj85i702h1GMioNoAr+09UEMGE?=
- =?us-ascii?Q?/xbKE0hXbXj5WVjG85aAJ8oRZdVw7jrkb9wHuQDA54h8f9ZxP36Y98x/xsn9?=
- =?us-ascii?Q?L/Rj27irkCgOrSeiCaPgaKW2m3w0tlFvTAlWs7vStjvh9kR667KmN0gHUq1c?=
- =?us-ascii?Q?u3NKF28sNxyKbDNzLeXG8LFsjOpnH0NsOqLwbe9Y4+mZE4WlO53wWmUgSrnm?=
- =?us-ascii?Q?Th8oYhjWU0MmVE7P1ZlQqVgXAD56gxqxhlUeuvGJuIKUFdLZqSXAseZrmaB/?=
- =?us-ascii?Q?cqkz3D4NQPKrhN0R8vrS/GFJjaU1C84tX+qz6NF9RXpsyJT2LZC8rPuIWyKG?=
- =?us-ascii?Q?KHw7ZJ84l48Vxtn/FjgiTjr2qouE9SonRYI6/ITpkKup4fZ1amfPtkjAGfjE?=
- =?us-ascii?Q?PGMJPrqa6nFwWL5J00ToKDt6Nrk1KfzuNLWS67NoLUhY4AbXP2WDRvSPDeDh?=
- =?us-ascii?Q?srvPEjsVjJwyxC+wR9eW/Il+oVsfNobxHTP/cFiRktlybrIkPF88Txo6AbHj?=
- =?us-ascii?Q?d5xOqSUg5UX99ta5McbLTLdRDkGbRz3nA6R31TIt2jZWxa26Vf81e1fexI2k?=
- =?us-ascii?Q?0d4oAnQ9iR6Np50cLoHTO1slPJZKjuUE+Z7CuQwsVebGSJAV6v76gdLWQymx?=
- =?us-ascii?Q?uwspDTe6b/3xgJPjhgjqVNAHKlsTUOWeZ6//WRsheO+uwE5vjfLFIhVOQIXD?=
- =?us-ascii?Q?xOY75YXFjYORG/CEWf0U6Gch5Vt2xDtyNxpGBrlhvcNxxaRm1T5alNFHxeQ4?=
- =?us-ascii?Q?1NQuIbsZUvLc5XUbgnDseAvW4Uv4jIOynaH9vgydn6lFcDW0YtgTc6pKkOq5?=
- =?us-ascii?Q?VoYI+meDBLanJqW5a/tiP/aGbATiYMXQAuUvXaTBVeppwaLbv21o1+PXk+TC?=
- =?us-ascii?Q?fW22IIZyA73YmXAqMcE=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 61a481a6-1720-4908-598e-08dbce3f178f
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2023 11:57:38.1317
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YbtT0U1cuRZAuylEEWagtiiw3vNjfg9ikpj/DYeezdqTJgf0LG41PSPybhD8oAdD
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7368
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 5/8] media: chips-media: wave5: Add the v4l2 layer
+Content-Language: en-US, nl
+To:     Sebastian Fricke <sebastian.fricke@collabora.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jackson Lee <jackson.lee@chipsnmedia.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Nas Chung <nas.chung@chipsnmedia.com>,
+        Fabio Estevam <festevam@gmail.com>
+Cc:     linux-media@vger.kernel.org, Tomasz Figa <tfiga@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        kernel@collabora.com, Robert Beckett <bob.beckett@collabora.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Darren Etheridge <detheridge@ti.com>
+References: <20230929-wave5_v13_media_master-v13-0-5ac60ccbf2ce@collabora.com>
+ <20230929-wave5_v13_media_master-v13-5-5ac60ccbf2ce@collabora.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <20230929-wave5_v13_media_master-v13-5-5ac60ccbf2ce@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 08:48:03AM +0000, Tian, Kevin wrote:
-> > From: Nicolin Chen <nicolinc@nvidia.com>
-> > Sent: Saturday, October 14, 2023 8:45 AM
-> > 
-> > On Tue, Sep 26, 2023 at 01:16:35AM -0700, Tian, Kevin wrote:
-> > > > From: Liu, Yi L <yi.l.liu@intel.com>
-> > > > Sent: Thursday, September 21, 2023 3:51 PM
-> > > >
-> > > > From: Nicolin Chen <nicolinc@nvidia.com>
-> > > >
-> > > > Now enforce_cache_coherency and msi_cookie are kernel-managed hwpt
-> > > > things.
-> > > > So, they should be only setup on kernel-managed domains. If the
-> > attaching
-> > > > domain is a user-managed domain, redirect the hwpt to hwpt->parent to
-> > do
-> > > > it correctly.
-> > > >
-> > >
-> > > No redirection. The parent should already have the configuration done
-> > > when it's created. It shouldn't be triggered in the nesting path.
-> > 
-> > iommufd_hw_pagetable_enforce_cc() is not only called in alloc(),
-> > but also in hwpt_attach/replace() if cc is not enforced by the
-> > alloc() because the idev that initiates the hwpt_alloc() might
-> > not have idev->enforce_cache_coherency. Only when another idev
-> > that has idev->enforce_cache_coherency attaches to the shared
-> > hwpt, the cc configuration would be done.
+Hi Sebastian,
+
+On 12/10/2023 13:01, Sebastian Fricke wrote:
+> Add the decoder and encoder implementing the v4l2
+> API. This patch also adds the Makefile and the VIDEO_WAVE_VPU config
 > 
-> is this a bug already? If the 1st device doesn't have enforce_cc in its
-> iommu, setting the snp bit in the hwpt would lead to reserved
-> bit violation.
+> Signed-off-by: Sebastian Fricke <sebastian.fricke@collabora.com>
+> Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+> Signed-off-by: Deborah Brouwer <deborah.brouwer@collabora.com>
+> Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
+> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+> Signed-off-by: Nas Chung <nas.chung@chipsnmedia.com>
+> ---
+>  drivers/media/platform/chips-media/Kconfig         |    1 +
+>  drivers/media/platform/chips-media/Makefile        |    1 +
+>  drivers/media/platform/chips-media/wave5/Kconfig   |   12 +
+>  drivers/media/platform/chips-media/wave5/Makefile  |   10 +
+>  .../platform/chips-media/wave5/wave5-helper.c      |  213 +++
+>  .../platform/chips-media/wave5/wave5-helper.h      |   31 +
+>  .../platform/chips-media/wave5/wave5-vpu-dec.c     | 1953 ++++++++++++++++++++
+>  .../platform/chips-media/wave5/wave5-vpu-enc.c     | 1794 ++++++++++++++++++
+>  .../media/platform/chips-media/wave5/wave5-vpu.c   |  291 +++
+>  .../media/platform/chips-media/wave5/wave5-vpu.h   |   83 +
+>  .../platform/chips-media/wave5/wave5-vpuapi.h      |    2 -
+>  11 files changed, 4389 insertions(+), 2 deletions(-)
+> 
 
-I suspect there are technically some gaps in the intel driver, yes..
- 
-> another problem is that intel_iommu_enforce_cache_coherency()
-> doesn't update existing entries. It only sets a domain flag to affect
-> future mappings. so it means the 2nd idev is also broken.
+<snip>
 
-This is such a gap, intel driver should not permit that.
+> +static int wave5_vpu_dec_create_bufs(struct file *file, void *priv,
+> +				     struct v4l2_create_buffers *create)
+> +{
+> +	struct vpu_instance *inst = wave5_to_vpu_inst(priv);
+> +	struct v4l2_format *f = &create->format;
+> +
+> +	/* Firmware does not support CREATE_BUFS for CAPTURE queues. */
+> +	if (f->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
+> +		dev_dbg(inst->dev->dev,
+> +			"%s: VIDIOC_CREATE_BUFS not supported on CAPTURE queues.\n",
+> +			__func__);
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	return v4l2_m2m_ioctl_create_bufs(file, priv, create);
+> +}
 
-> The simplest option is to follow vfio type1 i.e. don't mix devices
-> with different enforce_cc in one domain.
+Regarding the EOPNOTSUPP discussion: I discussed this some more with
+Nicolas on irc, and we wonder if it isn't better to just drop create_bufs
+support for the wave5 decoder altogether. Is there any point in supporting
+it for OUTPUT but not CAPTURE?
 
-This is why I wanted to get rid of this bad mechanism going forward.
+<snip>
 
-Manually created hwpt should have a manual specification of cc and
-then we don't have so many problems.
+> +static const struct v4l2_ioctl_ops wave5_vpu_dec_ioctl_ops = {
+> +	.vidioc_querycap = wave5_vpu_dec_querycap,
+> +	.vidioc_enum_framesizes = wave5_vpu_dec_enum_framesizes,
+> +
+> +	.vidioc_enum_fmt_vid_cap	= wave5_vpu_dec_enum_fmt_cap,
+> +	.vidioc_s_fmt_vid_cap_mplane = wave5_vpu_dec_s_fmt_cap,
+> +	.vidioc_g_fmt_vid_cap_mplane = wave5_vpu_dec_g_fmt_cap,
+> +	.vidioc_try_fmt_vid_cap_mplane = wave5_vpu_dec_try_fmt_cap,
+> +
+> +	.vidioc_enum_fmt_vid_out	= wave5_vpu_dec_enum_fmt_out,
+> +	.vidioc_s_fmt_vid_out_mplane = wave5_vpu_dec_s_fmt_out,
+> +	.vidioc_g_fmt_vid_out_mplane = wave5_vpu_g_fmt_out,
+> +	.vidioc_try_fmt_vid_out_mplane = wave5_vpu_dec_try_fmt_out,
+> +
+> +	.vidioc_g_selection = wave5_vpu_dec_g_selection,
+> +	.vidioc_s_selection = wave5_vpu_dec_s_selection,
+> +
+> +	.vidioc_reqbufs = v4l2_m2m_ioctl_reqbufs,
+> +	.vidioc_querybuf = v4l2_m2m_ioctl_querybuf,
+> +	.vidioc_create_bufs = wave5_vpu_dec_create_bufs,
 
-It means userspace needs to compute if they want to use CC or not, but
-userspace already needs to figure this out since without autodomains
-it must create two hwpts manually anyhow.
+So this would just be dropped.
 
-Jason
+> +	.vidioc_prepare_buf = v4l2_m2m_ioctl_prepare_buf,
+> +	.vidioc_qbuf = v4l2_m2m_ioctl_qbuf,
+> +	.vidioc_expbuf = v4l2_m2m_ioctl_expbuf,
+> +	.vidioc_dqbuf = v4l2_m2m_ioctl_dqbuf,
+> +	.vidioc_streamon = v4l2_m2m_ioctl_streamon,
+> +	.vidioc_streamoff = v4l2_m2m_ioctl_streamoff,
+> +
+> +	.vidioc_try_decoder_cmd = v4l2_m2m_ioctl_try_decoder_cmd,
+> +	.vidioc_decoder_cmd = wave5_vpu_dec_decoder_cmd,
+> +
+> +	.vidioc_subscribe_event = wave5_vpu_subscribe_event,
+> +	.vidioc_unsubscribe_event = v4l2_event_unsubscribe,
+> +};
+
+This also means there is no need to document the new EOPNOTSUPP error
+code in VIDIOC_CREATE_BUFS, or to modify v4l2-compliance.
+
+You *do* need to add a comment somewhere explaining why you don't
+support this ioctl. I think it would be best to do that right after
+'.vidioc_reqbufs = v4l2_m2m_ioctl_reqbufs,'.
+
+Regards,
+
+	Hans
