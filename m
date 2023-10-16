@@ -2,158 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 639437CA557
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F1967CA562
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232090AbjJPK2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 06:28:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53680 "EHLO
+        id S230219AbjJPKbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 06:31:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231389AbjJPK2N (ORCPT
+        with ESMTP id S229459AbjJPKbP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 06:28:13 -0400
-Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A2D2AC;
-        Mon, 16 Oct 2023 03:28:11 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by a.mx.secunet.com (Postfix) with ESMTP id AA723207B0;
-        Mon, 16 Oct 2023 12:28:09 +0200 (CEST)
-X-Virus-Scanned: by secunet
-Received: from a.mx.secunet.com ([127.0.0.1])
-        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id KMRYe7fo4lTH; Mon, 16 Oct 2023 12:28:08 +0200 (CEST)
-Received: from mailout2.secunet.com (mailout2.secunet.com [62.96.220.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by a.mx.secunet.com (Postfix) with ESMTPS id DA4F8205DD;
-        Mon, 16 Oct 2023 12:28:08 +0200 (CEST)
-Received: from cas-essen-02.secunet.de (unknown [10.53.40.202])
-        by mailout2.secunet.com (Postfix) with ESMTP id D658480004A;
-        Mon, 16 Oct 2023 12:28:08 +0200 (CEST)
-Received: from mbx-essen-02.secunet.de (10.53.40.198) by
- cas-essen-02.secunet.de (10.53.40.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Mon, 16 Oct 2023 12:28:08 +0200
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-02.secunet.de
- (10.53.40.198) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Mon, 16 Oct
- 2023 12:28:08 +0200
-Received: by gauss2.secunet.de (Postfix, from userid 1000)
-        id CCD7F3182C75; Mon, 16 Oct 2023 12:28:07 +0200 (CEST)
-Date:   Mon, 16 Oct 2023 12:28:07 +0200
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     Wang Jinchao <wangjinchao@xfusion.com>
-CC:     Daniel Jordan <daniel.m.jordan@oracle.com>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <stone.xulei@xfusion.com>
-Subject: Re: [RFC/REFACT] Refactoring and significantly reducing code
- complexity
-Message-ID: <ZS0QNxbtXPgPH1j2@gauss3.secunet.de>
-References: <ZRU/EjubEH/5QLlG@fedora>
- <ZRZk6tC6j1FtW3uY@gauss3.secunet.de>
- <ZSCxxxMKoby6XWsg@fedora>
+        Mon, 16 Oct 2023 06:31:15 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C5A883
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 03:31:11 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-7a2a3fb0713so163047039f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 03:31:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697452270; x=1698057070; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RHWSQJKtMXCWVI/E5eOzEROfLgP71p7LecbnV+U6P7I=;
+        b=MfXhJK4JhdQ/5ofKovV4S+Z6n2mySVgneYP5Kgb7pj/eCdxHpeVxMLOH6MsUHgb0qQ
+         uPXLKmCcu6slh5dh2390zuFoKT3bEWga6+pY6KsqmbWf7UazCiXzyFiIHzsHw5yqUJPU
+         WovM5C0biVbC3PZj5AviRr3TcwzKHklTr1NUagJc20INV+fNg1fvktnFbuE92bebjvo/
+         7vK8acUJp92/WNZaF4rOLdvt05VXjQMVsxMJJu3Y1L/F/HVbY7KeM+fophytj4JfejjS
+         sehlq5UFi5RZO2TiXTWTyr5z26qb59IanC+TpLOG/GlzL7NXoe4fsv+J615BkvaIsiBW
+         ch2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697452270; x=1698057070;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RHWSQJKtMXCWVI/E5eOzEROfLgP71p7LecbnV+U6P7I=;
+        b=qwz2SSdRI3xcRy/qSa6DnrNxFY+dvmYBay+q10K1b6RQcPuBcFKvCT/gG25gGi2uYo
+         1KtRzzgo6shhfD9DJ+uLJSZmiobdT7X8fg/95Du29v7e/3jraW5jR9Nui4zyyj51tTcP
+         oS6EpEzdkenT/O6tSSqd7SxkOwo0M8VgNlr8HfwDXaNxwmmBe1DOCxJa5K7sO8ubQ3cQ
+         9S+6Fmewy1ghEms8eUSciLFqpd4wfF0b+kVhX+pQtbTL5mU4ikar9mLOcM/grDq16CnI
+         IVvTNEvH+yq4ijXZwv4t8eRTkv/hS0Wm3LCWVoxJM3wLKHlD318QTqi7j9rmvP+c8ZA+
+         Jf7A==
+X-Gm-Message-State: AOJu0Yxnac4KFpBK8nFK9jzYqwG8bdODgxhkDMUEb0RNo/UL0gxVDKBB
+        of7GNf2I3EQBgwvoNCe87Yv8Fg==
+X-Google-Smtp-Source: AGHT+IHWr7fM55d01cKjE928H1Akt2xUw5mdHfzkkoOM8Wkiffh/9SIMwKwbsA0gswo63rEq1vbl6Q==
+X-Received: by 2002:a5d:8713:0:b0:792:9a3e:2dd with SMTP id u19-20020a5d8713000000b007929a3e02ddmr34733470iom.3.1697452270730;
+        Mon, 16 Oct 2023 03:31:10 -0700 (PDT)
+Received: from localhost ([122.172.80.14])
+        by smtp.gmail.com with ESMTPSA id j18-20020aa79292000000b006875df4773fsm17789509pfa.163.2023.10.16.03.31.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 03:31:10 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 16:01:06 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Robert Marko <robimarko@gmail.com>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, rafael@kernel.org,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        ilia.lin@kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v6] cpufreq: qcom-nvmem: add support for IPQ8074
+Message-ID: <20231016103106.kyeritota2mnutcm@vireshk-i7>
+References: <20231013172033.3549476-1-robimarko@gmail.com>
+ <20231016033202.i54nequofzea6mfd@vireshk-i7>
+ <20231016082239.2onlrqp4bpcgxhbt@vireshk-i7>
+ <CAOX2RU5paPXyG-1Fbp+T9+Aycwno9DQ8ugMwUr_8iNhhc3HiHA@mail.gmail.com>
+ <CAA8EJpq9=dtemYLCeL8=+q1x_i8Gp2duMSAo90ZttgaejBXCdg@mail.gmail.com>
+ <CAOX2RU6K7h8Xc0SGK2CeOCaAaimKRf9eqhMYAaySXxQLZiUNtg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZSCxxxMKoby6XWsg@fedora>
-X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
- mbx-essen-02.secunet.de (10.53.40.198)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAOX2RU6K7h8Xc0SGK2CeOCaAaimKRf9eqhMYAaySXxQLZiUNtg@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 07, 2023 at 09:17:59AM +0800, Wang Jinchao wrote:
-> On Fri, Sep 29, 2023 at 07:47:22AM +0200, Steffen Klassert wrote:
-> > On Thu, Sep 28, 2023 at 04:53:38PM +0800, Wang Jinchao wrote:
-> > > This is a refactored version with the following main changes:
-> > > 
-> > > - The parallel workqueue no longer uses the WQ_UNBOUND attribute
-> > > - Removal of CPU-related logic, sysfs-related interfaces
-> > > - removal of structures like padata_cpumask, and deletion of parallel_data
-> > > - Using completion to maintain sequencing
-> > > - no longer using lists
-> > > - removing structures like padata_list and padata_serial_queue
-> > > - Removal of padata_do_serial()
-> > 
-> > This removes all the logic that is needed to ensure that
-> > the parallelized objects return in the same order as
-> > they were before the parallelization. This change makes
-> > padata unusable for networking.
+On 16-10-23, 10:43, Robert Marko wrote:
+> Ok, I understand now, the thing is that the ID-s were added for
+> socinfo initially but recently
+> I finally had somebody with access to the Oak HW so I added them to
+> cpufreq as well.
 > 
-> The RFC use the following three to ensure serial timing sequence:
-> 
-> 1.  Use alloc_ordered_workqueue() to create a serial worker queue where 
->     serial() function runs. This ensures that serial() function executes
->     as serial work was enqueued using queue_work().
-> 2.  Queue the serial work before enqueueing parallel work in padata_do_parallel().
->     This ensures the serial work follows the same order as the padata_do_parallel().
-> 3.  The serial work wait for completion of parallel_done, which will be 
->     complete()ed after the parallel() function within the parallel work.
+> What can I do to help this get resolved?
 
-I had a closer look to the padata codebase now. The logic to
-parallelize/serialize changed quite a bit since I wrote padata
-initially. I don't understand the new logic completely,
-so we need to rely on Daniels review for this.
+Rebased over Bjorn's commit (which he already sent in his Arm SoC pull
+request) and applied your patch again.
 
-> This is just a design idea, because I am not familiar with IPsec, I haven't 
-> tested it in a real network environment yet. 
-> Could you give me some clues on how to use pcrypt in an IPsec scenario?
-
-pcrypt has performance gains if the cost of the crypto
-oreration is higher than the cost of moving the crypto
-request to another cpu. That was the case back in the
-days, but the situation changed since then. We now have
-hardware support for crypto, like aes-ni etc.
-So for hardware supported algorithms, pcrypt will not
-help much. But it is still interesting for crypto
-algorithms that are implemented in software only.
-
-Here is how you can instantiate a pcrypted
-algorithm:
-
-----------------------------------------------------
-You need to instantiate pcrypt before you can use it.
-
-You need either crconf or the tcrypt module to instantiate pcrypt.
-
-With crconf:
-
-You can get crconf from https://sourceforge.net/projects/crconf/
-After installing crconf do e.g.
-
-crconf add driver "pcrypt(authenc(hmac(sha1-generic),cbc(aes-asm)))" type 3
-
-
-With tcrypt:
-
-modprobe tcrypt alg="pcrypt(authenc(hmac(sha1-generic),cbc(aes-asm)))" type=3
-
-The modprobe will return with an error, don't worry about it, that's ok.
-
-
-
-Once you've did one of the above, your /proc/crypto should show
-something like:
-
-name         : authenc(hmac(sha1),cbc(aes))
-driver       : pcrypt(authenc(hmac(sha1-generic),cbc(aes-asm)))
-module       : pcrypt
-priority     : 2100
-refcnt       : 1
-selftest     : passed
-type         : aead
-async        : yes
-blocksize    : 16
-ivsize       : 16
-maxauthsize  : 20
-geniv        : <built-in>
-
-
-Now pcrypt is instantiated, e.g. all new IPsec states (that do
-hmac-sha1, cbc-aes) will use it.
-
+-- 
+viresh
