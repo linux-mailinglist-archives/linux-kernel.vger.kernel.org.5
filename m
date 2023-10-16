@@ -2,43 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FF37CB4B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD247CB4B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234201AbjJPUf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 16:35:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45392 "EHLO
+        id S234245AbjJPUgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 16:36:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234165AbjJPUfr (ORCPT
+        with ESMTP id S234210AbjJPUf7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 16:35:47 -0400
+        Mon, 16 Oct 2023 16:35:59 -0400
 Received: from tarta.nabijaczleweli.xyz (tarta.nabijaczleweli.xyz [139.28.40.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A4FFF3;
-        Mon, 16 Oct 2023 13:35:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE35F9;
+        Mon, 16 Oct 2023 13:35:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nabijaczleweli.xyz;
-        s=202305; t=1697488542;
-        bh=NRbNKQIbqXwdFI6cLSPVAS/zA6d+h5GOKJtPRmfoW1I=;
+        s=202305; t=1697488545;
+        bh=M3/tVO1jPiOOO1Rw82ko0E0+3twLTEqXefGMw9ogJ9c=;
         h=Date:From:Cc:Subject:References:In-Reply-To:From;
-        b=FDxSK7+q7Lv09vsL8pwbGb9kZulXuWLSLcMHJqbOLfGi3sPDBv8k3fZEPTkVFjsnV
-         kg0uWcEDp+AS88dUZtq+5FB2Oo6s3r83e67FdycNGsOVssbG5ORlkHWf7Kr6s/1iKy
-         LJXB1Mi4I2HZpqKc+3SDmOUw7ppNORSGrCtraFoCus5ZBX1t5E74VPabdeJNP8prRZ
-         x5u/KxdG3/8pWLlJ4NiImWdEbZWl0qtAmGSWKP75IXEIyyVSCyOQZubiI2iukhk2yi
-         PwIiXZCHVvzuciffqB3bmWj2IKRHFB2FKFaPkwgEnimH4KV1FQPzLZ3yOlHr1qbFhr
-         bPASMjVSgsixg==
+        b=jYyfhEbJKEMbOcqostzxf+q73l4ZaJN6lOf9bdtVSWBOPf+msOlGFpNFJVUsC6+QG
+         4wJk7QZj/bAAHrNWwhLZuaEVwhM5Iau+GJ3ojMT0KmcjbZoVDP8Skr8cgtWqiuJHNN
+         pMZ7Lvlf8sfXBY000Uy1ucYtx/WVcKldmqPDCM1xc0Ewjiq3/kxnKcdUStKYsI5EZQ
+         g1tOMXu8arK3rnoQylY8ZPA5AvYphy71K/rwO1J1Qs3jVbucbNUusKHp5iPIlf3PZP
+         Ten/sO9sDaOD7Sh0aRYfwshmiwXykfQDyItYBVGMYi+QjMKL0/38X1D1bhgw/zCn5S
+         wXaLEXXF1FoVw==
 Received: from tarta.nabijaczleweli.xyz (unknown [192.168.1.250])
-        by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id 98D861040A;
-        Mon, 16 Oct 2023 22:35:42 +0200 (CEST)
-Date:   Mon, 16 Oct 2023 22:35:42 +0200
+        by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id 4B34D10410;
+        Mon, 16 Oct 2023 22:35:45 +0200 (CEST)
+Date:   Mon, 16 Oct 2023 22:35:45 +0200
 From:   Ahelenia =?utf-8?Q?Ziemia=C5=84ska?= 
         <nabijaczleweli@nabijaczleweli.xyz>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 03/11] fuse: fuse_dev_splice_read: use nonblocking I/O
-Message-ID: <b5c5b0a18a59ec31f098959e26530ff607a67379.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: [PATCH 04/11] tracing: tracing_buffers_splice_read: behave as-if
+ non-blocking I/O
+Message-ID: <1b84f2e4e5eaad501ff7b2bb03e2ad2f25ecdf14.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
 References: <cover.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="aje76f4rtpk7e2ye"
+        protocol="application/pgp-signature"; boundary="jnbdnpt6gizqlzrj"
 Content-Disposition: inline
 In-Reply-To: <cover.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
 User-Agent: NeoMutt/20231006
@@ -54,7 +56,7 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---aje76f4rtpk7e2ye
+--jnbdnpt6gizqlzrj
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
@@ -66,75 +68,85 @@ Link: https://lore.kernel.org/linux-fsdevel/qk6hjuam54khlaikf2ssom6custxf5i=
 s2ekkaequf4hvode3ls@zgf7j5j4ubvw/t/#u
 Signed-off-by: Ahelenia Ziemia=C5=84ska <nabijaczleweli@nabijaczleweli.xyz>
 ---
- fs/fuse/dev.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ kernel/trace/trace.c | 32 ++++----------------------------
+ 1 file changed, 4 insertions(+), 28 deletions(-)
 
-diff --git a/fs/fuse/dev.c b/fs/fuse/dev.c
-index 1a8f82f478cb..4e8caf66c01e 100644
---- a/fs/fuse/dev.c
-+++ b/fs/fuse/dev.c
-@@ -1202,7 +1202,8 @@ __releases(fiq->lock)
-  * the 'sent' flag.
-  */
- static ssize_t fuse_dev_do_read(struct fuse_dev *fud, struct file *file,
--				struct fuse_copy_state *cs, size_t nbytes)
-+				struct fuse_copy_state *cs, size_t nbytes,
-+				bool nonblock)
- {
- 	ssize_t err;
- 	struct fuse_conn *fc =3D fud->fc;
-@@ -1238,7 +1239,7 @@ static ssize_t fuse_dev_do_read(struct fuse_dev *fud,=
- struct file *file,
- 			break;
- 		spin_unlock(&fiq->lock);
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index abaaf516fcae..9be7a4c0a3ca 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -8477,7 +8477,6 @@ tracing_buffers_splice_read(struct file *file, loff_t=
+ *ppos,
+ 	if (splice_grow_spd(pipe, &spd))
+ 		return -ENOMEM;
 =20
--		if (file->f_flags & O_NONBLOCK)
-+		if (nonblock)
- 			return -EAGAIN;
- 		err =3D wait_event_interruptible_exclusive(fiq->waitq,
- 				!fiq->connected || request_pending(fiq));
-@@ -1364,7 +1365,8 @@ static ssize_t fuse_dev_read(struct kiocb *iocb, stru=
-ct iov_iter *to)
+- again:
+ 	trace_access_lock(iter->cpu_file);
+ 	entries =3D ring_buffer_entries_cpu(iter->array_buffer->buffer, iter->cpu=
+_file);
 =20
- 	fuse_copy_init(&cs, 1, to);
+@@ -8528,35 +8527,12 @@ tracing_buffers_splice_read(struct file *file, loff=
+_t *ppos,
 =20
--	return fuse_dev_do_read(fud, file, &cs, iov_iter_count(to));
-+	return fuse_dev_do_read(fud, file, &cs, iov_iter_count(to),
-+				file->f_flags & O_NONBLOCK);
- }
+ 	/* did we read anything? */
+ 	if (!spd.nr_pages) {
+-		long wait_index;
+-
+-		if (ret)
+-			goto out;
+-
+-		ret =3D -EAGAIN;
+-		if ((file->f_flags & O_NONBLOCK) || (flags & SPLICE_F_NONBLOCK))
+-			goto out;
+-
+-		wait_index =3D READ_ONCE(iter->wait_index);
+-
+-		ret =3D wait_on_pipe(iter, iter->tr->buffer_percent);
+-		if (ret)
+-			goto out;
+-
+-		/* No need to wait after waking up when tracing is off */
+-		if (!tracer_tracing_is_on(iter->tr))
+-			goto out;
+-
+-		/* Make sure we see the new wait_index */
+-		smp_rmb();
+-		if (wait_index !=3D iter->wait_index)
+-			goto out;
+-
+-		goto again;
++		if (!ret)
++			ret =3D -EAGAIN;
++	} else {
++		ret =3D splice_to_pipe(pipe, &spd);
+ 	}
 =20
- static ssize_t fuse_dev_splice_read(struct file *in, loff_t *ppos,
-@@ -1388,7 +1390,7 @@ static ssize_t fuse_dev_splice_read(struct file *in, =
-loff_t *ppos,
- 	fuse_copy_init(&cs, 1, NULL);
- 	cs.pipebufs =3D bufs;
- 	cs.pipe =3D pipe;
--	ret =3D fuse_dev_do_read(fud, in, &cs, len);
-+	ret =3D fuse_dev_do_read(fud, in, &cs, len, true);
- 	if (ret < 0)
- 		goto out;
+-	ret =3D splice_to_pipe(pipe, &spd);
+-out:
+ 	splice_shrink_spd(&spd);
 =20
+ 	return ret;
 --=20
 2.39.2
 
---aje76f4rtpk7e2ye
+--jnbdnpt6gizqlzrj
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmUtnp4ACgkQvP0LAY0m
-WPH6cQ//UrYGJe9MUjkJmtN07tf0Dvf+/gXlR/aNy+yHBUKqY7OPbWNZZsbLti7v
-8sNdGoz87UwPn0pj8hNPf+aKf1aKEKJv0PLk3sFEdPgpz19fuVZ7FRy6FC8OG3ll
-M1ylviQMxlujVv0EVUQVIdRXzx8CPpn4MbkHommZqHHRiK3mlUHO3ck+T2mYQ6Tg
-japJ/N5C3hcgaGz102WEYj2tnZkdd9ClC5PLGmmj0thUOCqSw6MFWOghvT3s0EI8
-k2JtPpvx+HCyDnZuaEpZOskVbvDXXUUiJB1VCuHtaDHhZmPKoU+/oH4K3ADcuYEf
-0047TnkemD+CBW+grdo4VPTAaScMHIVNZtf+YxioUN2lwOmcXu25Dgz87ZW56JhS
-GB14qYn7WEMv3Fpo7X5Ek8QcQoPtAjj6mb4CfWvpSrKBAqWixkQJHg5Ykl1WZc+A
-7ApvdxwfO7z6i8SEZIIiAFIBrgY2fezt+YTs4LiVyhWdp96IT/2zGR8LtBmB6euw
-Uc86pG6VzqsNEO4SIxxPd81c6ACRWWcoXoyxUS2L5rOFVHQKFFoPXBCB0uo+4mUT
-idBQyGui+CbIGHWtZbxUEwi+5P1M6sloNdy4dKPxVAljDwczhpiSdfJIfxLsOF/p
-pkx/ViEm3UEiEusGdJqwdU0uhi+CBpT3no24HNnHuKWMinOvA4s=
-=NRJP
+iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmUtnqAACgkQvP0LAY0m
+WPEmqw/9F+86jAT/+cOAKyJ5dowTlCTtI+SGP8lbyGOvjoWqxtxJDm3/GLDyPyP0
+5QGkE1/eUjJJ7TsN+qqQk2Ykgc+pi0cx/QYXVNEhh9lvmN6l7K0MfNqtDsQdAV8Y
+V0umad0M411VJHUMUxqKh6eTj+U6Q9Ie37xi+6WiBXdArobvqGtS5aVhPsu80zgO
+N6CP+px0KJ0atkrMcZCHfljwDM/x+xLWUs3OvV4yfnhlx3Y4OaKahlJ+U+T5mgXD
+jpQb830Emc97eQptnBk/LKoGC/jfHZQQrIM7ECXFSRog5OQXm9ly7N+iHOU7L0fq
+KBXD1A6g6dEMwEJktFTST+tcxUlLe4S/G4BayYvrVKec+9k6AAD9TGcErBO8u698
+OexL1N3Aok0s1GZTUe7bWe3550Zw/pKYY9ZX1MtvDsCJNXadqZKyPr0CVXUfINpr
+kJvVyEePVzxoSanJ8jR6/8cPHSSFnMioN+Ed7OYVQAOsOpnPQFc3hq1tSYjqgQJV
+1nakzp7vzt/gysy5kokfq7yYvTEcCmaJVXqvUgk77jUntoM52vQl5ztLolvXaQTO
+Q4YWomGl++BNEa0EIIGIMdA0feFKCby0d5+SMACBz0SjQWnTcl248O+1WP7+kBx1
+HUvkIZfScVZZPHfk30F63Aq2cLmLNV0Cw7DPpa4G9tGhuBWNoTo=
+=RqPS
 -----END PGP SIGNATURE-----
 
---aje76f4rtpk7e2ye--
+--jnbdnpt6gizqlzrj--
