@@ -2,80 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 351D37CAC8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 16:56:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A8497CAC94
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 16:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233821AbjJPO4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 10:56:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54608 "EHLO
+        id S233786AbjJPO4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 10:56:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233804AbjJPOzv (ORCPT
+        with ESMTP id S233773AbjJPO4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 10:55:51 -0400
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8F90AB;
-        Mon, 16 Oct 2023 07:55:48 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 14FD81C000A;
-        Mon, 16 Oct 2023 14:55:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1697468147;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=E4UCdwwM/vYHFGtnjXt/BfQr8+RHOz42nLlox8hDx7I=;
-        b=Jn+t4ambL8klBhufvO/6Mt4eVlnDDEzL3Wexe0PvgBhcWVFCcJRo1Qoyq07k0Jp1gZvSm0
-        FQevd84bliIV7mLtzCd4rZhpjapU9C/NA/Zj9Nqx7dSO4N18PwEdUWOMNkg4w64sQ9KGGe
-        fEh3G4Ay9qV5YpeJeEtvGRJCJesGoMJw6mEBHGwrr5hMs35d1f+5jb58Kws5+3nxoTBm5b
-        b8chmLbqj6wmQXUnU14+OHr0RABsVKRCsDe8bR67wcpWgs9KvuaNN94rSCV0zid36j7M3c
-        PbYXy1E8Tnwke+YcaOfybZxZIa9h0yUvGAF9IaGcde7wNaGVCbCpuuCTRoHx/w==
-Date:   Mon, 16 Oct 2023 16:55:45 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Romain Perier <romain.perier@gmail.com>
-Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 0/3] Add RTC for MStar SSD20xD SoCs
-Message-ID: <169746807623.26616.11393539981836060067.b4-ty@bootlin.com>
-References: <20230913151606.69494-1-romain.perier@gmail.com>
+        Mon, 16 Oct 2023 10:56:23 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3791EB4
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 07:56:21 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67E9BC433C7;
+        Mon, 16 Oct 2023 14:56:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697468180;
+        bh=WUnDHVUOqfcPj5bVg+fqz9I2iqfRHmXakB6J7g0FSl0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tBaHa4rN2f9ZyQl8PO3D969/xIInxobp0Agmgswj4NYeEzKJt+Yd7gKTjQ85y4/ps
+         vONoeTQn9sA1D7eJw0BeGNIDBFDXBgu+cuyXsm0PM88sEj5UgAictN722B3haxDhad
+         I8nV4q4exbAqN6Mf1a7NbrUxI+lkf7ptzG8ZcLVnkXBn+UcNjHyo7wQMy4+E8reMGR
+         oLr7pUPkemFg0Z9yIifcwLdr2ubw6+/6+4vQ10oomAedeksnDJYLfQRhLIGPWjrmHz
+         RKO7CgX/X464Ldl5bpLeK06sAMOI2ULsNx8CFVejQ6OH5HgMjjZE1lWyIMSt7+VHKy
+         4jbKvne1+vUEw==
+Date:   Mon, 16 Oct 2023 07:56:19 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Ivan Vecera <ivecera@redhat.com>
+Cc:     netdev@vger.kernel.org,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org
+Subject: Re: [PATCH net-next 3/5] i40e: Add handler for devlink .info_get
+Message-ID: <20231016075619.02d1dd27@kernel.org>
+In-Reply-To: <20231013170755.2367410-4-ivecera@redhat.com>
+References: <20231013170755.2367410-1-ivecera@redhat.com>
+        <20231013170755.2367410-4-ivecera@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230913151606.69494-1-romain.perier@gmail.com>
-X-GND-Sasl: alexandre.belloni@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 13 Oct 2023 19:07:53 +0200 Ivan Vecera wrote:
+>  "serial_number" -> The PCI DSN of the adapter
+>  "fw.mgmt" -> The version of the firmware
+>  "fw.mgmt.api" -> The API version of interface exposed over the AdminQ
+>  "fw.psid" -> The version of the NVM image
 
-On Wed, 13 Sep 2023 17:16:03 +0200, Romain Perier wrote:
-> This patches series adds a new driver for the RTC found in the Mstar
-> SSD202D SoCs. It adds a basic rtc driver, the corresponding devicetree
-> bindings.
-> 
-> The rtctest (from selftests) has been passed on this driver, with the
-> following output:
-> 
-> [...]
+Your board reports "fw.psid 9.30", this may not be right,
+PSID is more of a board+customer ID, IIUC. 9.30 looks like
+a version, not an ID.
 
-Applied, thanks!
+>  "fw.bundle_id" -> Unique identifier for the combined flash image
+>  "fw.undi" -> The combo image version
 
-[1/3] rtc: Add support for the SSD202D RTC
-      commit: ebf6255868e6141c737cacb8d62b0b347f344877
-[2/3] dt-bindings: rtc: Add Mstar SSD202D RTC
-      commit: cfb67623ce281e045ec11e3eddb1b68b879b53a1
-
-Best regards,
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+UNDI means PXE. Is that whave "combo image" means for Intel?
