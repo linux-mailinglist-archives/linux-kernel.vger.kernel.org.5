@@ -2,62 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB607CA51F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E907CA522
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbjJPKRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 06:17:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51804 "EHLO
+        id S233105AbjJPKSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 06:18:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233244AbjJPKQt (ORCPT
+        with ESMTP id S233075AbjJPKRv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 06:16:49 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D33D49
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 03:16:30 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39GAGJsZ119482;
-        Mon, 16 Oct 2023 05:16:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1697451379;
-        bh=mUEmS5X5FgjjtcAPHgw5AMBeixQExKA6lT4KW9jhDGw=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=mHOQTwW0HDMKQPfWRDS7Zkq4jjdvExdDqf7w3cy8eLS+l6lixh+XZDV9SSG/0P2ya
-         wjQbj5wRgBp5W+Q06C0wKWNr0D3rlAQHNsfGy6HqBgxgFmSJa+yVZ8Z8MqYKTAx2Zt
-         vqKmIhwCuybhccTxg9n4qzj9X+kt6E05RV9NxbTE=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39GAGJig020318
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 16 Oct 2023 05:16:19 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 16
- Oct 2023 05:16:19 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 16 Oct 2023 05:16:19 -0500
-Received: from a0497641-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39GAG90i033447;
-        Mon, 16 Oct 2023 05:16:17 -0500
-From:   Neha Malcom Francis <n-francis@ti.com>
-To:     <nm@ti.com>, <ssantosh@kernel.org>, <t-konduru@ti.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <n-francis@ti.com>,
-        <u-kumar1@ti.com>
-Subject: [PATCH v3 3/3] soc: ti: k3-socinfo: Revamp driver to accommodate different rev structs
-Date:   Mon, 16 Oct 2023 15:46:08 +0530
-Message-ID: <20231016101608.993921-4-n-francis@ti.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231016101608.993921-1-n-francis@ti.com>
-References: <20231016101608.993921-1-n-francis@ti.com>
+        Mon, 16 Oct 2023 06:17:51 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E258D10D5;
+        Mon, 16 Oct 2023 03:17:25 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9ba081173a3so710235766b.1;
+        Mon, 16 Oct 2023 03:17:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697451444; x=1698056244; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6ABIBqRVTS2T0tRVHTT9KAXeuy4mMkl/npHfHsfl4HI=;
+        b=hUB11ebL+3GCTJSUc67A2heti7QL91wl/LyG0r0P33/Yk2wiMgHuzTFZYHZo17eLnE
+         RQvNFp3dRt6Q9AqOBHO3vS+y/uZQuPkJfTG/slkYW8R2Qi+a3NNLppCCeShezOI2JKAW
+         uAKytM8TgDpTIbU41qaATcMX4Cmn7bw9paImOCZhbJGt8kbEOhBGvvJPbdcgqVrGSEmu
+         3oIhC7gL0xq8q/v9S4GirX2Zu/TrULz1ulNZtqTcuXyKwhsUcV9By5JXOsxygaX5os2X
+         o0pdbhGJwk19IGnziH6SPt/PShaW3NgKxifS+NOeaA0uUbkps9NHP5wk0tGkksNIE6Xo
+         KyrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697451444; x=1698056244;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6ABIBqRVTS2T0tRVHTT9KAXeuy4mMkl/npHfHsfl4HI=;
+        b=GE6VHggmq1CCeSTG4OCJWlm4JaQ6QS5/q5NzeP9hyHtHLW9znIwRPbwzSaFoizIjPD
+         9398lBi/71LB5VG86tOTUmomwjIfJ6C92LY2jM4s+USWRN6Ges2bTBTnycjruFWMgSU+
+         Pke3dzfgn83o2NBNfxgzzUA3klleiYyCtUbR/wxVQvkD78V5RBXs1RgQRV52NDGLaFGa
+         hri/lQrRbQAhpL64e4rPVgJPbDn+RnhLSVRl48YrnpGGCbWLHs5eNf46zC8oo6eqomYT
+         qFXTZTwR/O7peXYOvluOfuw+lMGNI63kd/tG0qUMENlj5mhFSurD21+WMskqAZzY28NZ
+         eSWA==
+X-Gm-Message-State: AOJu0YygtfBjNsryXXYnk806/gPjBVX9eQiIbWZf1zlpAzr3X15oZ8xG
+        RZ7fQaPEL5dv/gI6AuFQuRc=
+X-Google-Smtp-Source: AGHT+IHLskuU7E2U4B8DFF/3AUSD5n4mYeQu/HFu/etDgo35vkLCIanfxkLH0t5qDGRjitf6y+d4PA==
+X-Received: by 2002:a17:907:d02:b0:9be:1dbd:552e with SMTP id gn2-20020a1709070d0200b009be1dbd552emr7772284ejc.68.1697451444267;
+        Mon, 16 Oct 2023 03:17:24 -0700 (PDT)
+Received: from skbuf ([188.26.57.160])
+        by smtp.gmail.com with ESMTPSA id n25-20020a17090673d900b0099297782aa9sm3683857ejl.49.2023.10.16.03.17.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 03:17:24 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 13:17:21 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        UNGLinuxDriver@microchip.com,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH net-next v3 3/7] net: dsa: microchip: ksz9477: add Wake
+ on LAN support
+Message-ID: <20231016101721.ktc6mrpewrxsh7nv@skbuf>
+References: <20231013122405.3745475-1-o.rempel@pengutronix.de>
+ <20231013122405.3745475-1-o.rempel@pengutronix.de>
+ <20231013122405.3745475-4-o.rempel@pengutronix.de>
+ <20231013122405.3745475-4-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231013122405.3745475-4-o.rempel@pengutronix.de>
+ <20231013122405.3745475-4-o.rempel@pengutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,145 +89,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-k3-socinfo.c driver assumes silicon revisions for every platform are
-incremental and one-to-one, corresponding to JTAG_ID's variant field:
-1.0, 2.0 etc. This assumption is wrong for SoCs such as J721E, where the
-variant field to revision mapping is 1.0, 1.1. Further, there are SoCs
-such as AM65x where the sub-variant version requires custom decoding of
-other registers.
+On Fri, Oct 13, 2023 at 02:24:01PM +0200, Oleksij Rempel wrote:
+> diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
+> index db0ef4ad181e..bef1951fe6f2 100644
+> --- a/drivers/net/dsa/microchip/ksz_common.c
+> +++ b/drivers/net/dsa/microchip/ksz_common.c
+> @@ -319,6 +319,8 @@ static const struct ksz_dev_ops ksz9477_dev_ops = {
+>  	.mdb_del = ksz9477_mdb_del,
+>  	.change_mtu = ksz9477_change_mtu,
+>  	.phylink_mac_link_up = ksz9477_phylink_mac_link_up,
+> +	.wol_get = ksz9477_get_wol,
+> +	.wol_set = ksz9477_set_wol,
 
-Address this by using conditional handling per JTAG ID that requires an
-exception with J721E as the first example. To facilitate this
-conversion, use macros to identify the JTAG_ID part number and map them
-to predefined string array.
+Can the dev_ops function pointers also be named get_wol() and set_wol()
+for consistency with everything else?
 
-Signed-off-by: Neha Malcom Francis <n-francis@ti.com>
-Co-developed-by: Thejasvi Konduru <t-konduru@ti.com>
-Signed-off-by: Thejasvi Konduru <t-konduru@ti.com>
----
-Changes since v2:
-	- update commit message
-	- move from double Signed-off-by to Co-developed-by
-	- make j721e_rev_string_map[] a const char
-	- drop k3_rev_string_map[] and continue using old
-	  "variant++" logic for the typical cases
-	- appropriate error handling with no overrides distinguishing
-	  between ENODEV and ENOMEM
- 
- drivers/soc/ti/k3-socinfo.c | 71 ++++++++++++++++++++++++++++---------
- 1 file changed, 55 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/soc/ti/k3-socinfo.c b/drivers/soc/ti/k3-socinfo.c
-index 7fc3548e084c..7517a9c8c8fa 100644
---- a/drivers/soc/ti/k3-socinfo.c
-+++ b/drivers/soc/ti/k3-socinfo.c
-@@ -33,19 +33,33 @@
- 
- #define CTRLMMR_WKUP_JTAGID_MFG_TI		0x17
- 
-+#define JTAG_ID_PARTNO_AM65X		0xBB5A
-+#define JTAG_ID_PARTNO_J721E		0xBB64
-+#define JTAG_ID_PARTNO_J7200		0xBB6D
-+#define JTAG_ID_PARTNO_AM64X		0xBB38
-+#define JTAG_ID_PARTNO_J721S2		0xBB75
-+#define JTAG_ID_PARTNO_AM62X		0xBB7E
-+#define JTAG_ID_PARTNO_J784S4		0xBB80
-+#define JTAG_ID_PARTNO_AM62AX		0xBB8D
-+#define JTAG_ID_PARTNO_AM62PX		0xBB9D
-+
- static const struct k3_soc_id {
- 	unsigned int id;
- 	const char *family_name;
- } k3_soc_ids[] = {
--	{ 0xBB5A, "AM65X" },
--	{ 0xBB64, "J721E" },
--	{ 0xBB6D, "J7200" },
--	{ 0xBB38, "AM64X" },
--	{ 0xBB75, "J721S2"},
--	{ 0xBB7E, "AM62X" },
--	{ 0xBB80, "J784S4" },
--	{ 0xBB8D, "AM62AX" },
--	{ 0xBB9D, "AM62PX" },
-+	{ JTAG_ID_PARTNO_AM65X, "AM65X" },
-+	{ JTAG_ID_PARTNO_J721E, "J721E" },
-+	{ JTAG_ID_PARTNO_J7200, "J7200" },
-+	{ JTAG_ID_PARTNO_AM64X, "AM64X" },
-+	{ JTAG_ID_PARTNO_J721S2, "J721S2"},
-+	{ JTAG_ID_PARTNO_AM62X, "AM62X" },
-+	{ JTAG_ID_PARTNO_J784S4, "J784S4" },
-+	{ JTAG_ID_PARTNO_AM62AX, "AM62AX" },
-+	{ JTAG_ID_PARTNO_AM62PX, "AM62PX" },
-+};
-+
-+static const char * const j721e_rev_string_map[] = {
-+	"1.0", "1.1",
- };
- 
- static int
-@@ -63,6 +77,32 @@ k3_chipinfo_partno_to_names(unsigned int partno,
- 	return -ENODEV;
- }
- 
-+static int
-+k3_chipinfo_variant_to_sr(unsigned int partno, unsigned int variant,
-+			  struct soc_device_attribute *soc_dev_attr)
-+{
-+	switch (partno) {
-+	case JTAG_ID_PARTNO_J721E:
-+		if (variant >= ARRAY_SIZE(j721e_rev_string_map))
-+			goto err_unknown_variant;
-+		soc_dev_attr->revision = kasprintf(GFP_KERNEL, "SR%s",
-+						   j721e_rev_string_map[variant]);
-+		break;
-+	default:
-+		variant++;
-+		soc_dev_attr->revision = kasprintf(GFP_KERNEL, "SR%x.0",
-+						   variant);
-+	}
-+
-+	if (!soc_dev_attr->revision)
-+		return -ENOMEM;
-+
-+	return 0;
-+
-+err_unknown_variant:
-+	return -ENODEV;
-+}
-+
- static int k3_chipinfo_probe(struct platform_device *pdev)
- {
- 	struct device_node *node = pdev->dev.of_node;
-@@ -94,7 +134,6 @@ static int k3_chipinfo_probe(struct platform_device *pdev)
- 
- 	variant = (jtag_id & CTRLMMR_WKUP_JTAGID_VARIANT_MASK) >>
- 		  CTRLMMR_WKUP_JTAGID_VARIANT_SHIFT;
--	variant++;
- 
- 	partno_id = (jtag_id & CTRLMMR_WKUP_JTAGID_PARTNO_MASK) >>
- 		 CTRLMMR_WKUP_JTAGID_PARTNO_SHIFT;
-@@ -103,16 +142,16 @@ static int k3_chipinfo_probe(struct platform_device *pdev)
- 	if (!soc_dev_attr)
- 		return -ENOMEM;
- 
--	soc_dev_attr->revision = kasprintf(GFP_KERNEL, "SR%x.0", variant);
--	if (!soc_dev_attr->revision) {
--		ret = -ENOMEM;
-+	ret = k3_chipinfo_partno_to_names(partno_id, soc_dev_attr);
-+	if (ret) {
-+		dev_err(dev, "Unknown SoC JTAGID[0x%08X]: %d\n", jtag_id, ret);
- 		goto err;
- 	}
- 
--	ret = k3_chipinfo_partno_to_names(partno_id, soc_dev_attr);
-+	ret = k3_chipinfo_variant_to_sr(partno_id, variant, soc_dev_attr);
- 	if (ret) {
--		dev_err(dev, "Unknown SoC JTAGID[0x%08X]: %d\n", jtag_id, ret);
--		goto err_free_rev;
-+		dev_err(dev, "Unknown SoC SR[0x%08X]: %d\n", jtag_id, ret);
-+		goto err;
- 	}
- 
- 	node = of_find_node_by_path("/");
--- 
-2.34.1
-
+>  	.config_cpu_port = ksz9477_config_cpu_port,
+>  	.tc_cbs_set_cinc = ksz9477_tc_cbs_set_cinc,
+>  	.enable_stp_addr = ksz9477_enable_stp_addr,
+> @@ -2935,6 +2937,28 @@ static int ksz_set_mac_eee(struct dsa_switch *ds, int port,
+>  	return 0;
+>  }
