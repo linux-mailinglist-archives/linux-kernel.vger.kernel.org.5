@@ -2,164 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCEAE7CA305
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6ADB7CA311
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232985AbjJPJAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 05:00:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45592 "EHLO
+        id S233182AbjJPJAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 05:00:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbjJPJAF (ORCPT
+        with ESMTP id S233112AbjJPJAi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 05:00:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F31F95
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 01:59:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697446760;
+        Mon, 16 Oct 2023 05:00:38 -0400
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529E7F7;
+        Mon, 16 Oct 2023 02:00:35 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 77386FF821;
+        Mon, 16 Oct 2023 09:00:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1697446833;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2FeV+c5x33dv4l/xApcJjHfB6GACs9h2vGrZq3PHSdA=;
-        b=A+19SbMwdTIA90gljNO3JSI2qiUsQbtmTFil5c9hQQLt3A7iR1kvbOgMe+bKLcxU3vQhZT
-        WBaHjI8SDkBbXZYEbxUSynd/qRmUG7rl2gbmdWjjt28O+zHVgnlhKKf5J51tjJM5yh9pgn
-        usP3pwXd4lpsryusALQtoB63jBcJToQ=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-378-r9IqWhbCOVaTIW264F0-0g-1; Mon, 16 Oct 2023 04:59:02 -0400
-X-MC-Unique: r9IqWhbCOVaTIW264F0-0g-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 640C285531B;
-        Mon, 16 Oct 2023 08:59:01 +0000 (UTC)
-Received: from darkstar.users.ipa.redhat.com (unknown [10.72.112.177])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D5555492BFA;
-        Mon, 16 Oct 2023 08:58:54 +0000 (UTC)
-Date:   Mon, 16 Oct 2023 16:58:44 +0800
-From:   Dave Young <dyoung@redhat.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kexec@lists.infradead.org, bhe@redhat.com, prudo@redhat.com,
-        ebiederm@xmission.com, vgoyal@redhat.com
-Subject: Re: panic context: was: Re: [PATCH printk v2 04/11] printk: nbcon:
- Provide functions to mark atomic write sections
-Message-ID: <ZSz7RFqv994u/Vt+@darkstar.users.ipa.redhat.com>
-References: <ZRGvn4m2NGCn3Pef@alley>
- <87h6n5teos.fsf@jogness.linutronix.de>
- <ZSADUKp8oJ2Ws2vC@alley>
- <87il7hv2v2.fsf@jogness.linutronix.de>
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=R7Cz4gMkKtHSEbn9b4AaEiwai8L2LYY05rNv81sPeAU=;
+        b=C17z9Rr2WN4k6+gn1+GPlFPBLsKWBEQ9EcaWIB7lDUVaeIzBU1RC8SEEyzxyPE2/D5Qnpu
+        E7NCn8X7ALrMVgILvDtYu8syu1QDnbBQGNTxSoWJVGlGVgc92aO1+Vy6IwQg30R5ewJ0vA
+        SVlpDEitLpIJQyv578V+VVnvXJWYvyntyrCT0V5oUmsxzsyV3vqoNHiaL4Pkb0xO6uiO7v
+        FqhZh3ICd0wvCdKduZhGre9tsezq7UAmgi2wUSq3d8tjPNe+SdmCQaBwgLcm39Clb3Petd
+        YkxDIrb8DsKtTvbmyqSFzpatWJSWN1yg75KFEq//pbkmEfKJNqyVyER3gz+alg==
+From:   Mehdi Djait <mehdi.djait@bootlin.com>
+To:     mchehab@kernel.org, heiko@sntech.de, hverkuil-cisco@xs4all.nl,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        conor+dt@kernel.org, ezequiel@vanguardiasur.com.ar
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
+        alexandre.belloni@bootlin.com, maxime.chevallier@bootlin.com,
+        paul.kocialkowski@bootlin.com,
+        Mehdi Djait <mehdi.djait@bootlin.com>
+Subject: [PATCH v8 0/3] media: rockchip: Add a driver for Rockchip's camera interface
+Date:   Mon, 16 Oct 2023 11:00:02 +0200
+Message-ID: <cover.1697446303.git.mehdi.djait@bootlin.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87il7hv2v2.fsf@jogness.linutronix.de>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: mehdi.djait@bootlin.com
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_OTHER_BAD_TLD,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,URI_HEX autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Added more people in cc]
+Hello everyone,
 
-On 10/08/23 at 12:19pm, John Ogness wrote:
-> Hi Petr,
-> 
-> On 2023-10-06, Petr Mladek <pmladek@suse.com> wrote:
-> >> During the demo at LPC2022 we had the situation that there was a large
-> >> backlog when a WARN was hit. With current mainline the first line of the
-> >> WARN is put into the ringbuffer and then the entire backlog is flushed
-> >> before storing the rest of the WARN into the ringbuffer. At the time it
-> >> was obvious that we should finish storing the WARN message and then
-> >> start flushing the backlog.
-> >
-> > This talks about the "emergency" context (WARN/OOPS/watchdog).
-> > The system might be in big troubles but it would still try to continue.
-> >
-> > Do we really want to defer the flush also for panic() context?
-> 
-> We can start flushing right after the backtrace is in the
-> ringbuffer. But flushing the backlog _before_ putting the backtrace into
-> the ringbuffer was not desired because if there is a large backlog, the
-> machine may not survive to get the backtrace out. And in that case it
-> won't even be in the ringbuffer to be used by other debugging
-> tools.
-> 
-> > I ask because I was not on LPC 2022 in person and I do not remember
-> > all details.
-> 
-> The LPC2022 demo/talk was recorded:
-> 
-> https://www.youtube.com/watch?v=TVhNcKQvzxI
-> 
-> At 55:55 is where the situation occurred and triggered the conversation,
-> ultimately leading to this new feature.
-> 
-> You may also want to reread my summary:
-> 
-> https://lore.kernel.org/lkml/875yheqh6v.fsf@jogness.linutronix.de
-> 
-> as well as Linus' follow-up message:
-> 
-> https://lore.kernel.org/lkml/CAHk-=wieXPMGEm7E=Sz2utzZdW1d=9hJBwGYAaAipxnMXr0Hvg@mail.gmail.com
-> 
-> > But it is tricky in panic(), see 8th patch at
-> > https://lore.kernel.org/r/20230919230856.661435-9-john.ogness@linutronix.de
-> >
-> >    + nbcon_atomic_exit() is called only in one code path.
-> 
-> Correct. When panic() is complete and the machine goes into its infinite
-> loop. This is also the point where it will attempt an unsafe flush, if
-> it could not get the messages out yet.
-> 
-> >    + nbcon_atomic_flush_all() is used in other paths. It looks like
-> >      a "Whack a mole" game to me.
-> 
-> Several different outputs occur during panic(). The flush is everywhere
-> where something significant has been put into the ringbuffer and now it
-> would be OK to flush it.
-> 
-> >    + messages are never emitted by printk kthread either because
-> >      CPUs are stopped or the kthread is not allowed to get the lock
-> 
-> Correct.
-> 
-> > I see only one positive of the explicit flush. The consoles would
-> > not delay crash_exec() and the crash dump might be closer to
-> > the point where panic() was called.
-> 
-> It's only about getting the critical messages into the ringbuffer before
-> flushing. And since various things can go wrong during the many actions
-> within panic(), it makes sense to flush in between those actions.
-> 
-> > Otherwise I see only negatives => IMHO, we want to flush atomic
-> > consoles synchronously from printk() in panic().
-> >
-> > Does anyone really want explicit flushes in panic()?
-> 
-> So far you are the only one speaking against it. I expect as time goes
-> on it will get even more complex as it becomes tunable (also something
-> we talked about during the demo).
+V8 for basic support of the Video Input Processor found on the Rockchip PX30 SoC
 
-Flush consoles in panic kexec case sounds not good, but I have no
-deep understanding about the atomic printk series, added kexec list and
-reviewers in cc.
+The v6 is based on the fifth iteration of the series introducing the
+driver: sent 29 Dec 2020 [1]
 
-> 
-> John
-> 
+Most of this driver was written following the BSP driver from rockchip,
+removing the parts that either didn't fit correctly the guidelines, or
+that couldn't be tested.
 
-Thanks
-Dave
+In the BSP, this driver is known as the "cif" driver, but this was
+renamed to "vip" to better fit the controller denomination in the
+datasheet.
+
+This version of the driver supports ONLY the parallel interface BT656
+and was tested/implemented using an SDTV video decoder
+
+media_tree, base-commit: 2c1bae27df787c9535e48cc27bbd11c3c3e0a235
+
+V7 => V8:
+vip/capture.c:
+- fixed a warning: unused variable reported by the kernel test robot
+
+V6 => V7:
+vip/capture.c vip/dev.c vip/dev.h
+- renamed all struct rk_vip_dev dev => struct rk_vip_dev vip_dev
+- added some error when rk_vip_get_buffer() returns NULL
+- removed a WARN_ON
+- made the irq NOT shared
+- dropped of_match_ptr
+- added the rk_vip_get_resource() function
+
+rockchip,px30-vip.yaml:
+- changed filename to match the compatible
+- dropped the mention of the other rockchip SoC in the dt-binding
+  description and added a more detailed description of VIP
+- removed unused labels in the example
+
+
+V5 [1] => V6:
+vip/capture.c vip/dev.c vip/dev.h
+- added a video g_input_status subdev call, V4L2_IN_CAP_STD and the
+  supported stds in rk_vip_enum_input callback
+- added rk_vip_g_std, rk_vip_s_std and rk_vip_querystd callbacks
+- added the supported video_device->tvnorms
+- s_std will now update the format as this depends on the standard
+  NTSC/PAL (as suggested by Hans in [1])
+- removed STD_ATSC
+- moved the colorimetry information to come from the subdev
+- removed the core s_power subdev calls
+- dropped cropping in rk_vip_stream struct
+
+rockchip-vip.yaml:
+- fixed a mistake in the name of third clock plckin -> plck
+- changed the reg maxItems 2 -> 1
+
+[1] https://lore.kernel.org/linux-media/20201229161724.511102-1-maxime.chevallier@bootlin.com/
+
+I used v4l-utils with HEAD: commit 1ee258e5bb91a12df378e19eb255c5219d6bc36b
+
+# v4l2-compliance 
+v4l2-compliance 1.25.0, 64 bits, 64-bit time_t
+
+Compliance test for rk_vip device /dev/video0:
+
+Driver Info:
+        Driver name      : rk_vip
+        Card type        : rk_vip
+        Bus info         : platform:ff490000.vip
+        Driver version   : 6.6.0
+        Capabilities     : 0x84201000
+                Video Capture Multiplanar
+                Streaming
+                Extended Pix Format
+                Device Capabilities
+        Device Caps      : 0x04201000
+                Video Capture Multiplanar
+                Streaming
+                Extended Pix Format
+Media Driver Info:
+        Driver name      : rk_vip
+        Model            : rk_vip
+        Serial           : 
+        Bus info         : platform:ff490000.vip
+        Media version    : 6.6.0
+        Hardware revision: 0x00000000 (0)
+        Driver version   : 6.6.0
+Interface Info:
+        ID               : 0x03000002
+        Type             : V4L Video
+Entity Info:
+        ID               : 0x00000001 (1)
+        Name             : video_rkvip
+        Function         : V4L2 I/O
+        Pad 0x01000004   : 0: Sink
+          Link 0x02000009: from remote pad 0x1000006 of entity 'tw9900 2-0044' (Digital Video Decoder): Data, Enabled
+
+Required ioctls:
+        test MC information (see 'Media Driver Info' above): OK
+        test VIDIOC_QUERYCAP: OK
+        test invalid ioctls: OK
+
+Allow for multiple opens:
+        test second /dev/video0 open: OK
+        test VIDIOC_QUERYCAP: OK
+        test VIDIOC_G/S_PRIORITY: OK
+        test for unlimited opens: OK
+
+Debug ioctls:
+        test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
+        test VIDIOC_LOG_STATUS: OK (Not Supported)
+
+Input ioctls:
+        test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
+        test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+        test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
+        test VIDIOC_ENUMAUDIO: OK (Not Supported)
+        test VIDIOC_G/S/ENUMINPUT: OK
+        test VIDIOC_G/S_AUDIO: OK (Not Supported)
+        Inputs: 1 Audio Inputs: 0 Tuners: 0
+
+Output ioctls:
+        test VIDIOC_G/S_MODULATOR: OK (Not Supported)
+        test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+        test VIDIOC_ENUMAUDOUT: OK (Not Supported)
+        test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
+        test VIDIOC_G/S_AUDOUT: OK (Not Supported)
+        Outputs: 0 Audio Outputs: 0 Modulators: 0
+
+Input/Output configuration ioctls:
+        test VIDIOC_ENUM/G/S/QUERY_STD: OK
+        test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
+        test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
+        test VIDIOC_G/S_EDID: OK (Not Supported)
+
+Control ioctls (Input 0):
+        test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK (Not Supported)
+        test VIDIOC_QUERYCTRL: OK (Not Supported)
+        test VIDIOC_G/S_CTRL: OK (Not Supported)
+        test VIDIOC_G/S/TRY_EXT_CTRLS: OK (Not Supported)
+        test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK (Not Supported)
+        test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+        Standard Controls: 0 Private Controls: 0
+
+Format ioctls (Input 0):
+        test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
+        test VIDIOC_G/S_PARM: OK (Not Supported)
+        test VIDIOC_G_FBUF: OK (Not Supported)
+        test VIDIOC_G_FMT: OK
+        test VIDIOC_TRY_FMT: OK
+        test VIDIOC_S_FMT: OK
+        test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
+        test Cropping: OK (Not Supported)
+        test Composing: OK (Not Supported)
+        test Scaling: OK (Not Supported)
+
+Codec ioctls (Input 0):
+        test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
+        test VIDIOC_G_ENC_INDEX: OK (Not Supported)
+        test VIDIOC_(TRY_)DECODER_CMD: OK (Not Supported)
+
+Buffer ioctls (Input 0):
+        test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+        test VIDIOC_EXPBUF: OK
+        test Requests: OK (Not Supported)
+
+Total for rk_vip device /dev/video0: 46, Succeeded: 46, Failed: 0, Warnings: 0
+
+Mehdi Djait (3):
+  media: dt-bindings: media: add bindings for Rockchip VIP
+  media: rockchip: Add a driver for Rockhip's camera interface
+  arm64: dts: rockchip: Add the camera interface
+
+ .../bindings/media/rockchip,px30-vip.yaml     |   93 ++
+ arch/arm64/boot/dts/rockchip/px30.dtsi        |   12 +
+ drivers/media/platform/rockchip/Kconfig       |    1 +
+ drivers/media/platform/rockchip/Makefile      |    1 +
+ drivers/media/platform/rockchip/vip/Kconfig   |   14 +
+ drivers/media/platform/rockchip/vip/Makefile  |    3 +
+ drivers/media/platform/rockchip/vip/capture.c | 1210 +++++++++++++++++
+ drivers/media/platform/rockchip/vip/dev.c     |  346 +++++
+ drivers/media/platform/rockchip/vip/dev.h     |  163 +++
+ drivers/media/platform/rockchip/vip/regs.h    |  260 ++++
+ 10 files changed, 2103 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/rockchip,px30-vip.yaml
+ create mode 100644 drivers/media/platform/rockchip/vip/Kconfig
+ create mode 100644 drivers/media/platform/rockchip/vip/Makefile
+ create mode 100644 drivers/media/platform/rockchip/vip/capture.c
+ create mode 100644 drivers/media/platform/rockchip/vip/dev.c
+ create mode 100644 drivers/media/platform/rockchip/vip/dev.h
+ create mode 100644 drivers/media/platform/rockchip/vip/regs.h
+
+-- 
+2.41.0
 
