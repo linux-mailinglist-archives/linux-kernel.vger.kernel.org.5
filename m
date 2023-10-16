@@ -2,115 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23A8A7C9CFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 03:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0A537C9D11
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 03:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230527AbjJPBrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 21:47:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55226 "EHLO
+        id S231168AbjJPBul convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 15 Oct 2023 21:50:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJPBrH (ORCPT
+        with ESMTP id S229459AbjJPBuk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 21:47:07 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94601A9;
-        Sun, 15 Oct 2023 18:47:05 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4S80Mz6W1Gz4f3kp1;
-        Mon, 16 Oct 2023 09:46:55 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgD3jd0TlixlP1JPDA--.33169S3;
-        Mon, 16 Oct 2023 09:47:01 +0800 (CST)
-Subject: Re: [PATCH] blk-throttle: Calculate allowed value only when the
- throttle is enabled
-To:     Khazhy Kumykov <khazhy@chromium.org>,
-        Oleg Nesterov <oleg@redhat.com>
-Cc:     Yu Kuai <yukuai1@huaweicloud.com>,
-        Li Nan <linan666@huaweicloud.com>, tj@kernel.org,
-        josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, houtao1@huawei.com, yangerkun@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <20230928015858.1809934-1-linan666@huaweicloud.com>
- <CACGdZY+JV+PdiC_cspQiScm=SJ0kijdufeTrc8wkrQC3ZJx3qQ@mail.gmail.com>
- <4ace01e8-6815-29d0-70ce-4632818ca701@huaweicloud.com>
- <20231005162417.GA32420@redhat.com>
- <0a8f34aa-ced9-e613-3e5f-b5e53a3ef3d9@huaweicloud.com>
- <20231007151607.GA24726@redhat.com>
- <21843836-7265-f903-a7d5-e77b07dd5a71@huaweicloud.com>
- <20231008113602.GB24726@redhat.com>
- <CACGdZY+OOr4Q5ajM0za2babr34YztE7zjRyPXHgh_A64zvoBOw@mail.gmail.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <e9165cd0-9c9d-1d1a-1c5b-402556a1a31f@huaweicloud.com>
-Date:   Mon, 16 Oct 2023 09:46:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Sun, 15 Oct 2023 21:50:40 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0DFA9;
+        Sun, 15 Oct 2023 18:50:36 -0700 (PDT)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 39G1nsa271867289, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.92/5.92) with ESMTPS id 39G1nsa271867289
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 16 Oct 2023 09:49:54 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Mon, 16 Oct 2023 09:49:54 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Mon, 16 Oct 2023 09:49:53 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
+ RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
+ 15.01.2375.007; Mon, 16 Oct 2023 09:49:53 +0800
+From:   Justin Lai <justinlai0215@realtek.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Larry Chiu <larry.chiu@realtek.com>
+Subject: RE: [PATCH net-next v9 08/13] net:ethernet:realtek:rtase: Implement net_device_ops
+Thread-Topic: [PATCH net-next v9 08/13] net:ethernet:realtek:rtase: Implement
+ net_device_ops
+Thread-Index: AQHZ8fl5hDe6qB9qzkmKif0/hXC9sLAvvsaAgAxiTMCAACtGAIAPdWXA
+Date:   Mon, 16 Oct 2023 01:49:53 +0000
+Message-ID: <a3e8d48600984a70b23c72ce7edbc1d2@realtek.com>
+References: <20230928104920.113511-1-justinlai0215@realtek.com>
+ <20230928104920.113511-9-justinlai0215@realtek.com>
+ <b28a3ea6-d75e-45e0-8b87-0b062b5c3a64@lunn.ch>
+ <99dfcd7363dc412f877730fab4a9f7dd@realtek.com>
+ <f4bcf3e9-d059-4403-a2b7-508806da9631@lunn.ch>
+In-Reply-To: <f4bcf3e9-d059-4403-a2b7-508806da9631@lunn.ch>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+x-originating-ip: [172.21.210.185]
+x-kse-serverinfo: RTEXMBS04.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-In-Reply-To: <CACGdZY+OOr4Q5ajM0za2babr34YztE7zjRyPXHgh_A64zvoBOw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgD3jd0TlixlP1JPDA--.33169S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Wr4xAFWkWr1DZF17tF48Xrb_yoW8JrWxpF
-        WIgw12vrs0qas7JF1Iyw1jvF1UZFZrGFy5J3yDC34qvas5G3s7GF17CrZ0yr47X348Wa1r
-        JwnIyF9rArnFqaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
-        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
-        c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
-        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
-        17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
-        IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3
-        Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
-        sGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+> 
+> > > > +static void rtase_tx_timeout(struct net_device *dev, unsigned int
+> > > > +txqueue) {
+> > > > +     rtase_sw_reset(dev);
+> > >
+> > > Do you actually see this happening? The timeout is set pretty high,
+> > > i think 5 seconds. If it does happen, it probably means you have a
+> > > hardware/firmware bug. So you want to be noisy here, so you get to
+> > > know about these problems, rather than silently work around them.
+> >
+> > I would like to ask if we can dump some information that will help us
+> > understand the cause of the problem before doing the reset? And should
+> > we use netdev_warn to print this information?
+> 
+> You might want to look at 'devlink health'.
+> 
+>     Andrew
 
-在 2023/10/14 5:51, Khazhy Kumykov 写道:
-> Looking at the generic mul_u64_u64_div_u64 impl, it doesn't handle
-> overflow of the final result either, as far as I can tell. So while on
-> x86 we get a DE, on non-x86 we just get the wrong result.
-> 
-> (Aside: after 8d6bbaada2e0 ("blk-throttle: prevent overflow while
-> calculating wait time"), setting a very-high bps_limit would probably
-> also cause this crash, no?)
-> 
-> Would it be possible to have a "check_mul_u64_u64_div_u64_overflow()",
-> where if the result doesn't fit in u64, we indicate (and let the
-> caller choose what to do? Here we should just return U64_MAX)?
-> 
-> Absent that, maybe we can take inspiration from the generic
-> mul_u64_u64_div_u64? (Forgive the paste)
-> 
->   static u64 calculate_bytes_allowed(u64 bps_limit, unsigned long jiffy_elapsed)
->   {
-> +       /* Final result probably won't fit in u64 */
-> +       if (ilog2(bps_limit) + ilog2(jiffy_elapsed) - ilog2(HZ) > 62)
-
-I'm not sure, but this condition looks necessary, but doesn't look
-sufficient, for example, jiffy_elapsed cound be greater than HZ, while
-ilog2(jiffy_elapsed) is equal to ilog2(HZ).
-
-Thanks,
-Kuai
-
-> +               return U64_MAX;
->          return mul_u64_u64_div_u64(bps_limit, (u64)jiffy_elapsed, (u64)HZ);
->   }
-> 
-> .
-> 
-
+Thank you for your suggestion.
