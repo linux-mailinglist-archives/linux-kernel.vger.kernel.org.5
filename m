@@ -2,141 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D50C7CB34E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 21:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2C57CB352
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 21:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233140AbjJPTYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 15:24:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36388 "EHLO
+        id S233788AbjJPTZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 15:25:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232217AbjJPTYJ (ORCPT
+        with ESMTP id S233127AbjJPTY7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 15:24:09 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EABD8AB
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 12:24:07 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53e70b0a218so3823714a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 12:24:07 -0700 (PDT)
+        Mon, 16 Oct 2023 15:24:59 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9075EE
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 12:24:57 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9bf86b77a2aso299184566b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 12:24:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697484246; x=1698089046; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=FHvkz9coAqkoROM5dEbJZXW8Uluiu0n8FU/Vi4kbyPY=;
-        b=zUBlddBJmTimJI6EYakjEV0Aa48suIjZ47Ipp4MQ+dakl05qwjYJZW/cS6S8N6DqxM
-         eAN0NvF1zCPy+fIzdmCxsslADj9sJw04Ow/bajBTYAsTyzE9XmMpebWcFK7Ps3pVegG3
-         E51sWqRSROm2AeEhf6R4Hs6RjJeJKf5INEou83i3GPb6eahkxtRwoJgvENXuLu0PeaP9
-         DMC45WcO+TU1dPRldptMJioiyzwg6ijnPtfd2n8dCiXgOLYoAi7M1Tz6VuQqeUWarFS4
-         tFzM8LU0NBPFdSlZXl1TggS5nQcu9ce61s5mycOi6tcT3HFe3qw1aPEgpdlB1Ut1VWBp
-         UQYg==
+        d=linux-foundation.org; s=google; t=1697484296; x=1698089096; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=WsIjTeZOu9htqQEjgAreyLOIbAhG2K4ek2GrQ6G5Ftw=;
+        b=Pyn3bBwj9JqgyBk/SnZHHC8LYFZb3JHU6o45p8m5cGP2n6q2RfBojQk/k0tsHKrv5E
+         zuI0vSWg70h8Zkzl7MqASH7YrCcl54AQ+ar3G6nj0udGZEfI7qVP3fr6kOXahM5m8ub+
+         Mx6JhQi7xuX2IHJ4zNCG2meEHllxyTdimle8s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697484246; x=1698089046;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FHvkz9coAqkoROM5dEbJZXW8Uluiu0n8FU/Vi4kbyPY=;
-        b=U3042PyZYKMBu6BXHn4K643PDN6lOUUaydtkCRdkRS7Xf6Q6Qx+orpNgw97e4m9qjR
-         xzk4GM9SAxkCGE18uKYhTFiuq9q1ou7h5C59rwDB37cZpy1EqRqf2GlcirAToYPVqqgy
-         uBnI5tu0FfmnnJDiUz8WzxWjUNm6fZvM7l+PhAQEuKau+7sCb29p6QqTGhr1cremtFu4
-         bHOsW1KGrCwbGVQBLtfsjbIMmre9rvCoQHA05dJoVAw0JqGnhVPFs2JCEW++O7Sg/OnG
-         6i7Wo0jrOULMxV7uJVF7EqaumBJmNvTQcJrCz6nck2fgM/IVVV1vIbLwFOg+KTZyP05A
-         I/Ug==
-X-Gm-Message-State: AOJu0YzIxtsssJgaPSbb+lt5Up+HF9pQyHvzhk5lQo+p0BjghthVJXd0
-        EOedPKzV+KhLk0RXeIXERnIuKQ==
-X-Google-Smtp-Source: AGHT+IGQvg/j6pcxAIf51f+y0M2+kH5s4yLr89W/ublBzYndVrS/cPa9A2dA8NR7xsZoe3y57zPYcA==
-X-Received: by 2002:a05:6402:40ce:b0:53d:d8ad:4d46 with SMTP id z14-20020a05640240ce00b0053dd8ad4d46mr154524edb.36.1697484246461;
-        Mon, 16 Oct 2023 12:24:06 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.154])
-        by smtp.gmail.com with ESMTPSA id q23-20020a50aa97000000b0053eb9af1e15sm326573edc.77.2023.10.16.12.24.04
+        d=1e100.net; s=20230601; t=1697484296; x=1698089096;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WsIjTeZOu9htqQEjgAreyLOIbAhG2K4ek2GrQ6G5Ftw=;
+        b=ZGWq/24AeOCcwyEahfZa7/apbK8zhOQNUuu76GsmBg1z7PqcXEC9byO1errKnkh3nJ
+         aaq4cOE9M/M+XQoX1VovUFeVPGJrN7/UW0pwquulkcuc6zL0MKU7FkcLYmRbrW+OqwYs
+         ea6gKssvnlA7PqhBzSVbLprbNc4GJoBeESIXxJghw5ELBIpRgJtcG+Zr2XDT692UKP/7
+         iNahnfr1fA4XAzeu2bOaYW4tTJDH/to5SemfHvqCWXHOttAvEd05BmKOjLGkcAr59ELh
+         lLN2E9E3RTbK/zBNOsZ+XAYXGAkV0WTNIdrqcc0b/VonsN3HhN7xufyfyPNlhuozMfsF
+         2tDA==
+X-Gm-Message-State: AOJu0YxkUcuA0AHFgj6VSLZYab3p+C7CuRVyuwg6KspYDMN0YPmHNQHZ
+        ejIN9Z9pyEeikROSRcRHiJNvQBxNwpmwdB7pAUHVcP+7
+X-Google-Smtp-Source: AGHT+IHf3+ovhrTzUV6qYzWFIvviT4x6OwqnlLF0SH+NuCNvBn2BuhUsZhRlWH3tfBAH8mSJy3N6vw==
+X-Received: by 2002:a17:907:26c1:b0:9ae:4eb9:e09b with SMTP id bp1-20020a17090726c100b009ae4eb9e09bmr17050ejc.27.1697484295974;
+        Mon, 16 Oct 2023 12:24:55 -0700 (PDT)
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com. [209.85.218.44])
+        by smtp.gmail.com with ESMTPSA id u24-20020a170906069800b00997e99a662bsm4510690ejb.20.2023.10.16.12.24.55
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 12:24:05 -0700 (PDT)
-Message-ID: <fe6a1b0c-7771-48ef-8671-625ddf70fdf7@linaro.org>
-Date:   Mon, 16 Oct 2023 21:24:03 +0200
+        Mon, 16 Oct 2023 12:24:55 -0700 (PDT)
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-9bf86b77a2aso299179766b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 12:24:55 -0700 (PDT)
+X-Received: by 2002:a17:906:478b:b0:9ae:52fb:2202 with SMTP id
+ cw11-20020a170906478b00b009ae52fb2202mr12181ejc.40.1697484294731; Mon, 16 Oct
+ 2023 12:24:54 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: soundwire: Add reference to
- soundwire-controller.yaml schema
-To:     Rob Herring <robh@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Rao Mandadapu <quic_srivasam@quicinc.com>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231016155537.2973625-1-robh@kernel.org>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231016155537.2973625-1-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
+ <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
+ <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
+ <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
+ <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
+ <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
+ <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAFULd4Zjd6idrLXuF59cwKxyd1a--DsiJwGQAKai9Tph30dAow@mail.gmail.com>
+In-Reply-To: <CAFULd4Zjd6idrLXuF59cwKxyd1a--DsiJwGQAKai9Tph30dAow@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 16 Oct 2023 12:24:37 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgSsfo89ESHcngvPCkQSh_YAJG-0g7fupb+Uv0E1d_EcQ@mail.gmail.com>
+Message-ID: <CAHk-=wgSsfo89ESHcngvPCkQSh_YAJG-0g7fupb+Uv0E1d_EcQ@mail.gmail.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     Nadav Amit <namit@vmware.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/10/2023 17:55, Rob Herring wrote:
-> The soundwire-controller.yaml schema already defines the form for devices
-> in child nodes, so there's no need to do the same in the QCom controller
-> binding. Add a $ref to the soundwire-controller.yaml schema and drop the
-> child node schema.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
+On Mon, 16 Oct 2023 at 11:53, Uros Bizjak <ubizjak@gmail.com> wrote:
+>
+> Unfortunately, it does not work and dies early in the boot with:
 
+Side note: build the kernel with debug info (the limited form is
+sufficient), and then run oopses through
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+  ./scripts/decode_stacktrace.sh
 
-Best regards,
-Krzysztof
+to get much nicer oops information that has line numbers and inlining
+information in the backtrace.
 
+> [    4.939358] BUG: kernel NULL pointer dereference, address: 0000000000000000
+> [    4.940090] RIP: 0010:begin_new_exec+0x8f2/0xa30
+> [    4.940090] Code: 31 f6 e8 c1 49 f9 ff e9 3c fa ff ff 31 f6 4c 89
+> ef e8 b2 4a f9 ff e9 19 fa ff ff 31 f6 4c 89 ef e8 23 4a f9 ff e9 ea
+> fa ff ff <f0> 41 ff 0c 24 0f
+> 85 55 fb ff ff 4c 89 e7 e8 4b 02 df ff e9 48 fb
+
+That decodes to
+
+   0: 31 f6                xor    %esi,%esi
+   2: e8 c1 49 f9 ff        call   0xfffffffffff949c8
+   7: e9 3c fa ff ff        jmp    0xfffffffffffffa48
+   c: 31 f6                xor    %esi,%esi
+   e: 4c 89 ef              mov    %r13,%rdi
+  11: e8 b2 4a f9 ff        call   0xfffffffffff94ac8
+  16: e9 19 fa ff ff        jmp    0xfffffffffffffa34
+  1b: 31 f6                xor    %esi,%esi
+  1d: 4c 89 ef              mov    %r13,%rdi
+  20: e8 23 4a f9 ff        call   0xfffffffffff94a48
+  25: e9 ea fa ff ff        jmp    0xfffffffffffffb14
+  2a:* f0 41 ff 0c 24        lock decl (%r12) <-- trapping instruction
+  2f: 0f 85 55 fb ff ff    jne    0xfffffffffffffb8a
+  35: 4c 89 e7              mov    %r12,%rdi
+  38: e8 4b 02 df ff        call   0xffffffffffdf0288
+
+but without a nicer backtrace it's nasty to guess where this is.
+
+The "lock decl ; jne" is a good hint, though - that sequence is most
+definitely "atomic_dec_and_test()".
+
+And that in turn means that it's almost certainly mmdrop(), which is
+
+        if (unlikely(atomic_dec_and_test(&mm->mm_count)))
+                __mmdrop(mm);
+
+where that
+
+  35: 4c 89 e7              mov    %r12,%rdi
+  38: e8 4b 02 df ff        call   0xffffffffffdf0288
+
+is exactly the unlikely "__mmdrop(mm)" part (and gcc decided to make
+the likely branch a branch-out for some reason - presumably with the
+inlining the code around it meant that was the better layout - maybe
+this was all inside another "unlikely()" branch.
+
+And if I read that right, this has all been inlined from
+begin_new_exec() -> exec_mmap() -> mmdrop_lazy_tlb().
+
+Now, how and why 'mm' would be NULL in that path, and why any
+'current' reloading optimization would matter in this all I very much
+can't see. The call site in begin_new_exec() is
+
+        /*
+         * Release all of the old mmap stuff
+         */
+        acct_arg_size(bprm, 0);
+        retval = exec_mmap(bprm->mm);
+        if (retval)
+                goto out;
+
+        bprm->mm = NULL;
+
+and "bprm->mm" is most definitely non-NULL there because we earlier did
+
+So I suspect the problem happened much earlier, caused some nasty
+internal corruption, and the odd 'mm is NULL' is just a symptom.
+
+        retval = set_mm_exe_file(bprm->mm, bprm->file);
+
+using it, and that would have oopsed had bprm->mm been NULL then.
+
+So there's some serious corruption there, but from the oops itself I
+can't tell the source. I guess if we get 'current' wrong anywhere, all
+bets are off.
+
+             Linus
