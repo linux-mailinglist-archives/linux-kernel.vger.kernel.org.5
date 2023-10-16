@@ -2,153 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB18A7CAE9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 698557CAEA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233871AbjJPQLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 12:11:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43144 "EHLO
+        id S233952AbjJPQLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 12:11:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233837AbjJPQLB (ORCPT
+        with ESMTP id S233955AbjJPQLU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 12:11:01 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 120721B2;
-        Mon, 16 Oct 2023 09:10:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6700C433C9;
-        Mon, 16 Oct 2023 16:10:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697472652;
-        bh=gWHVm67UjtqFw6+7yv4rt62zVL2QbQsf6kz0OqfM+T4=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=oZSi9Cr46VJvDfJqXMvyt3WZMnh3kWQOGId5Ykf8NhRUkV1JLSq60ZEuW9aLkCetX
-         sil+IjGAZbvHruvhuOiI8djrgL/SiaanaZOLMiaQa1tSFyoNb5Nlkh0TjdFGAJiay5
-         SfJPKb8r8exJavmsBQGw4TiOA8LZFqvuinK7G3ADrnTpV7Idmg/KlDlaR5SYbA4LeI
-         X6h60yT/c0b1f+iN5XqRzmx03D1z5a9WHAS97cpg8XRftJnID1Kr4zsHf46LaSw39s
-         Sn6yblOrRc68OCh2l6paV3F2P/vXsQoBQ8A3E/1gLqYl8X+0LyMWIKHZUPKSFQWxv3
-         idwbIz0NRNM+g==
-Message-ID: <bb0b02b4241da7f486cde28bdc83bb9ce077ee0e.camel@kernel.org>
-Subject: Re: [RFC PATCH 11/53] netfs: Add support for DIO buffering
-From:   Jeff Layton <jlayton@kernel.org>
-To:     David Howells <dhowells@redhat.com>,
-        Steve French <smfrench@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Christian Brauner <christian@brauner.io>,
-        linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-cachefs@redhat.com
-Date:   Mon, 16 Oct 2023 12:10:49 -0400
-In-Reply-To: <20231013160423.2218093-12-dhowells@redhat.com>
-References: <20231013160423.2218093-1-dhowells@redhat.com>
-         <20231013160423.2218093-12-dhowells@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Mon, 16 Oct 2023 12:11:20 -0400
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2049.outbound.protection.outlook.com [40.107.8.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B037510E;
+        Mon, 16 Oct 2023 09:11:16 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HdPVsB2LDZ1kHVzGCxgDCVa4UUWsOOPPBr+AVrQD+R7ijdtl10AR0zavaye9K9C0agmr5VaM9E5HqWNDdbo+E19gUG4Z8ejAXODVo+fxLlwBm+npy9rZk31w6lKo48MtiDq7hvZuS/pz+Dcwb1TV8SRflW2TqD5cgCZ9xh0QuKbWmJCGdCGlP11jRaBJZFTqgriwzFlerjke2bPKyWw/RKDVrAHGjlOgoZ9MOMXb01pj7pwTt4eIUGbYoRR+igVjh0mktP0MCAPTXBjRlinJas3kRC+APNLDkSDO0GO2lw6aYc3OVNYL063NyI/OXkVxqbWzpjcqBH316182ABneXw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SGSEAiI0wn8Om4JXxTYJU/H+ysdlKP7h3jBF0DnpftE=;
+ b=VsoHGW1bx8w3RqY7bWsm5sdCn7AFqBeWMYTUJIAS3cF+8OynF8XTqAQnOMocWHhrWyKNXRdhRZtk+IghELNHAPwOKkF7WnxS8BoQLl03x1xM+A9CLCgmwFJiYTJe+eTqhtf2y4CqkCaSgRd3on8Cs5h+kDHL9gZsdE1a7WsN7gldATTk8Y31Sa5XRDFYgvgmrLpCzh4zO+XUgtpenWRznClkkXcbhMZLgKyjBcFhztH7P8347M/xJNCTBkriBufIHx4bc7hGrYJZmlNDxbay0G8Lr4XXy0875i+KCArf6esJT/3lCiYTghNM0Ap2Yn9njKdDRErmXVoQtB63g/QeQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SGSEAiI0wn8Om4JXxTYJU/H+ysdlKP7h3jBF0DnpftE=;
+ b=R7sJvleTg04XI3o3xJnPuvQcaEVK+wqAMVDg1D8WOjyaoSc94grHMlXUSU1Knmh/E/JAhinJitMeP/7HiMOJ/G/Or5vpVOueYf0NeUqMRgCammt21WBU1WbzVxcj3vp938iqvnKz8yD1ie8Oeh2iUWT5OzDffFVZdQq3Ub/EbEQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by VI1PR04MB9905.eurprd04.prod.outlook.com (2603:10a6:800:1df::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.46; Mon, 16 Oct
+ 2023 16:11:13 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6886.034; Mon, 16 Oct 2023
+ 16:11:13 +0000
+Date:   Mon, 16 Oct 2023 12:11:04 -0400
+From:   Frank Li <Frank.li@nxp.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Minghuan Lian <minghuan.Lian@nxp.com>,
+        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
+        <linux-pci@vger.kernel.org>,
+        "moderated list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>, imx@lists.linux.dev
+Subject: Re: [PATCH 2/3] PCI: layerscape: add suspend/resume for ls1021a
+Message-ID: <ZS1gmJiz8+PKIuwp@lizhi-Precision-Tower-5810>
+References: <ZS1Mhe9JOsY2JJER@lizhi-Precision-Tower-5810>
+ <20231016152211.GA1209639@bhelgaas>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231016152211.GA1209639@bhelgaas>
+X-ClientProxiedBy: SJ0PR13CA0026.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c0::31) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|VI1PR04MB9905:EE_
+X-MS-Office365-Filtering-Correlation-Id: 20adf9f4-9aeb-4684-6d9f-08dbce6284a6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lVB6nNC+lssT1WFxAP0rpeW9Yw7rq7mgzwcLfsijqREiJplnpluuCEdi4lHa/4bj8qWEFxErdL5PnwrZHFcFN+MR5XO4Sn48XJvwhSt4xiKfu6+nGXoJtN/N+20J1ZEzu4IXl5XQ5gtlRJ/CveHcNCDBPD8s3uOxo27dAfrCjUmEo11Gavf1TPyHn52Rs6CN5SIl9Z2CMstTYiMGNsmlHTJpOJM3EOsFQknEl/Y+RCxdAfO+KZYk8KelYQDhz6E+86kyk1XdcQpo2cKGmAZWEfcaEUSapChoY8PMQOwDLgCqfnDIqaaLYOTwryxD01Ze86t2Z6vT3FZB9cdJUfNgFGnJVzWmOLI/Xlai8AFJrycrGZP6BSWDVCPPrXG6IPLOcdgLKvnAjZHbbvq5V4KIlMOEENQR0CoNquxh44oGc9/hMf/wTAvZEim8aEk0epegM9cqMosKN1uo7a+m1+qxnxjQw5Swn3cjeGuWAIUsUKh4SSE5LsuG8kZs/FyNT4pQD98Or4aZU6nwrNXYFoI5NfZH8Hju7nLpKhhIcGG1tWCzIBrWtPMG/R43HX0nk3y5OejcY0qdS6miZas6rq5Rc6PYIoZK7JYYr72CYiMeyrMRQiBgMRNpvAlYYit0s109
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(396003)(366004)(346002)(136003)(39860400002)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(478600001)(6486002)(966005)(66946007)(6916009)(66556008)(6666004)(54906003)(66476007)(83380400001)(86362001)(38100700002)(9686003)(316002)(6512007)(26005)(6506007)(52116002)(5660300002)(41300700001)(4326008)(8936002)(38350700005)(8676002)(7416002)(33716001)(15650500001)(2906002)(67856001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Ct0HVMfqiOZy67CZu+c0EnNQ8xseoolAO2vgrp6h6lGw1SBcnwBfva1ExKZ9?=
+ =?us-ascii?Q?oLc6QwNIBMdt+cfJnxudSF5i09A/UPkUbTLTxuVlQPlZfyB2ror0rj2dbvcx?=
+ =?us-ascii?Q?v5xXSsAOm0jPpxH6sArSjy+EyyFDLlnVbAb0ZliVyDJ78118sM2bu4ZXR3Nj?=
+ =?us-ascii?Q?e+HB+1m0sb8mbChN8/yqxIpYYWJU4T2ms//UH+xz5KJSx1hf0wccaQ7R9Afd?=
+ =?us-ascii?Q?dZzZAoauoYZdhA6fIHrjU671n5OGav/VEO5aCcZl+UuANq2ppoOqe3ZmPwG7?=
+ =?us-ascii?Q?s98vVD5GBXfWrvMR5S86/Unh8afn/59k9pyLUJvZOGZJ4zm2nG2zjPTuRVeC?=
+ =?us-ascii?Q?tRUcqlNHy4dkAUaHJ8HO9VItoCzUmy4SNyaazEPQg94kZfAP08EHwyRSNcgd?=
+ =?us-ascii?Q?zH29e8A9hPsHlZ1kbpQCM3gLu2wpGYKncjweGGW6ATIOn6FrPLJniT0d/9bi?=
+ =?us-ascii?Q?4FiZ3RUvb3iKU5rWk6lZBNOxiulBTCtgIMIK01i4simDUBn6FLNogOmvZUju?=
+ =?us-ascii?Q?/U5Yia5GeZ8ZaDwiaWLqMCT4YUdsnjHfccQO0js6Mv9o2Zk+T2F4UJVoPp9E?=
+ =?us-ascii?Q?oalkdDBybwl8lNvT76bemfZpHlSFulZnOull/RE0RjeXb9YinFlPn4x5XWAP?=
+ =?us-ascii?Q?nT79nA+9KiF2eU6tElaDT1M0ALhks+TV9VSxp/AMYMziyQnfg4VQP4v+xomM?=
+ =?us-ascii?Q?obW7E4ZuzaVXgUtCISig8BXgI7qqXIeRthIOBdyPVDdJElliwYMdnOsDotmd?=
+ =?us-ascii?Q?iYQt6u8q1i6j2+SSWvsqw+Gy9eOpWG2QXRhBuX6KGkZOrQbTSsTZY5Y6gXfa?=
+ =?us-ascii?Q?Rgn5z63t3EfdHWQ8/wuqKPvNdxG3jaQNl8ZcFbZngIDxHGVStnhcifeC9c8m?=
+ =?us-ascii?Q?WR9fxzDksv8KmNR7HAsFIAttKoVHob7BhOX7QRQTmeQdEPTb/CptDdGb/Whp?=
+ =?us-ascii?Q?FYMsk0pKMwnxQgC7Nnom9OFGkZ3zVzGlVmucMJFNLaIzn98jBU8HQhGPSHVz?=
+ =?us-ascii?Q?L/BU9OAt4WqFd1CcYVpPMkg9d13IfC61Hf/3Io7iphMDufFl3OZHq+EvfWMK?=
+ =?us-ascii?Q?quUUV7rgPj7ZlXCf0YyTpzazlGh+k7Ya974gO7Qkz7UrRFaafxtuTo3bfW5H?=
+ =?us-ascii?Q?OkODZXDhYboqZ62H/8mPRBXet//oI1xo2Ga4u6l3mOzWGXg9NW5ZFazDu9wG?=
+ =?us-ascii?Q?cbSngxGp/J52iiiwqOMULG2sHbTNUQLh5DmJ257ZHDI+X7un3WLufXxxJPG4?=
+ =?us-ascii?Q?3O/4uIkH6tEWlVMAkeb3I/Mqg03CpWRlphz3UOSYN2y9BQyYRjXCeW5G0QDD?=
+ =?us-ascii?Q?0vMQy4TvwuyQiYB+XEEiZV9AKiz8IALZPmbJpYEZeuLFQPf+ZC2OP/9wtwdK?=
+ =?us-ascii?Q?ngj09PIap0/i1q+tmAbTj06O6759QaFayHPB5UA/stQNWjaRwDgFuB2Wrch1?=
+ =?us-ascii?Q?Or+X++g6TPUiqO+O5rHV4qU0cSk/7vouXXtkNV5aRS/Gcxh6szWiuudOsssb?=
+ =?us-ascii?Q?ssNrgTyhto779SMM9mJ4bcRAWh3oR8f8fWdXryGylF2xRm4M8ELiQ3Y6u0EQ?=
+ =?us-ascii?Q?+rc8Rq1L/pPZUoel8RDe/1TbjoV4IuKd8EPXWJIC?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 20adf9f4-9aeb-4684-6d9f-08dbce6284a6
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2023 16:11:13.2782
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ALOakVC0kLLoXrmFwLvNmF8wqqhJRwrU+1MEoMbGs+Id3CFQa+GmgQyeIKlJZQyuhslUTwi9+OOP6LkiTN98Xw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB9905
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-10-13 at 17:03 +0100, David Howells wrote:
-> Add a bvec array pointer and an iterator to netfs_io_request for either
-> holding a copy of a DIO iterator or a list of all the bits of buffer
-> pointed to by a DIO iterator.
->=20
-> There are two problems:  Firstly, if an iovec-class iov_iter is passed to
-> ->read_iter() or ->write_iter(), this cannot be passed directly to
-> kernel_sendmsg() or kernel_recvmsg() as that may cause locking recursion =
-if
-> a fault is generated, so we need to keep track of the pages involved
-> separately.
->=20
-> Secondly, if the I/O is asynchronous, we must copy the iov_iter describin=
-g
-> the buffer before returning to the caller as it may be immediately
-> deallocated.
->=20
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: Jeff Layton <jlayton@kernel.org>
-> cc: linux-cachefs@redhat.com
-> cc: linux-fsdevel@vger.kernel.org
-> cc: linux-mm@kvack.org
-> ---
->  fs/netfs/objects.c    | 10 ++++++++++
->  include/linux/netfs.h |  3 +++
->  2 files changed, 13 insertions(+)
->=20
-> diff --git a/fs/netfs/objects.c b/fs/netfs/objects.c
-> index 8e92b8401aaa..4396318081bf 100644
-> --- a/fs/netfs/objects.c
-> +++ b/fs/netfs/objects.c
-> @@ -78,6 +78,7 @@ static void netfs_free_request(struct work_struct *work=
-)
->  {
->  	struct netfs_io_request *rreq =3D
->  		container_of(work, struct netfs_io_request, work);
-> +	unsigned int i;
-> =20
->  	trace_netfs_rreq(rreq, netfs_rreq_trace_free);
->  	netfs_proc_del_rreq(rreq);
-> @@ -86,6 +87,15 @@ static void netfs_free_request(struct work_struct *wor=
-k)
->  		rreq->netfs_ops->free_request(rreq);
->  	if (rreq->cache_resources.ops)
->  		rreq->cache_resources.ops->end_operation(&rreq->cache_resources);
-> +	if (rreq->direct_bv) {
-> +		for (i =3D 0; i < rreq->direct_bv_count; i++) {
-> +			if (rreq->direct_bv[i].bv_page) {
-> +				if (rreq->direct_bv_unpin)
-> +					unpin_user_page(rreq->direct_bv[i].bv_page);
-> +			}
-> +		}
-> +		kvfree(rreq->direct_bv);
-> +	}
->  	kfree_rcu(rreq, rcu);
->  	netfs_stat_d(&netfs_n_rh_rreq);
->  }
-> diff --git a/include/linux/netfs.h b/include/linux/netfs.h
-> index bd0437088f0e..66479a61ad00 100644
-> --- a/include/linux/netfs.h
-> +++ b/include/linux/netfs.h
-> @@ -191,7 +191,9 @@ struct netfs_io_request {
->  	struct list_head	subrequests;	/* Contributory I/O operations */
->  	struct iov_iter		iter;		/* Unencrypted-side iterator */
->  	struct iov_iter		io_iter;	/* I/O (Encrypted-side) iterator */
-> +	struct bio_vec		*direct_bv;	/* DIO buffer list (when handling iovec-ite=
-r) */
->  	void			*netfs_priv;	/* Private data for the netfs */
-> +	unsigned int		direct_bv_count; /* Number of elements in bv[] */
+On Mon, Oct 16, 2023 at 10:22:11AM -0500, Bjorn Helgaas wrote:
+> On Mon, Oct 16, 2023 at 10:45:25AM -0400, Frank Li wrote:
+> > On Tue, Oct 10, 2023 at 06:02:36PM +0200, Lorenzo Pieralisi wrote:
+> > > On Tue, Oct 10, 2023 at 10:20:12AM -0400, Frank Li wrote:
+> 
+> > > > Ping
+> > > 
+> > > Read and follow please (and then ping us):
+> > > https://lore.kernel.org/linux-pci/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com
+> > 
+> > Could you please help point which specic one was not follow aboved guide?
+> > Then I can update my code. I think that's efficial communication method. I
+> > think I have read it serial times. But not sure which one violate the
+> > guide?
+> > 
+> > @Bjorn Helgaas. How do you think so? 
+> 
+> Since Lorenzo didn't point out anything specific in the patch itself,
+> I think he was probably referring to the subject line and this advice:
+> 
+>   - Follow the existing convention, i.e., run "git log --oneline
+>     <file>" and make yours match in format, capitalization, and
+>     sentence structure.  For example, native host bridge driver patch
+>     titles look like this:
+> 
+>       PCI: altera: Fix platform_get_irq() error handling
+>       PCI: vmd: Remove IRQ affinity so we can allocate more IRQs
+>       PCI: mediatek: Add MSI support for MT2712 and MT7622
+>       PCI: rockchip: Remove IRQ domain if probe fails
+> 
+> In this case, your subject line was:
+> 
+>   PCI: layerscape: add suspend/resume for ls1021a
+> 
+> The advice was to run this:
+> 
+>   $ git log --oneline drivers/pci/controller/dwc/pci-layerscape.c
+>   83c088148c8e PCI: Use PCI_HEADER_TYPE_* instead of literals
+>   9fda4d09905d PCI: layerscape: Add power management support for ls1028a
+>   277004d7a4a3 PCI: Remove unnecessary <linux/of_irq.h> includes
+>   60b3c27fb9b9 PCI: dwc: Rename struct pcie_port to dw_pcie_rp
+>   d23f0c11aca2 PCI: layerscape: Change to use the DWC common link-up check function
+>   7007b745a508 PCI: layerscape: Convert to builtin_platform_driver()
+>   60f5b73fa0f2 PCI: dwc: Remove unnecessary wrappers around dw_pcie_host_init()
+>   b9ac0f9dc8ea PCI: dwc: Move dw_pcie_setup_rc() to DWC common code
+>   f78f02638af5 PCI: dwc: Rework MSI initialization
+> 
+> Note that these summaries are all complete sentences that start with a
+> capital letter:
+> 
+>   Use PCI_HEADER_TYPE_* instead of literals
+>   Add power management support for ls1028a
+>   Remove unnecessary <linux/of_irq.h> includes
+>   ...
+> 
+> So yours could be this:
+> 
+>   PCI: layerscape: Add suspend/resume for ls1021a
+>                    ^
+> 
+> This is trivial, obviously.  But the uppercase/lowercase distinction
+> carries information, and it's an unnecessary distraction to notice
+> that "oh, this is different from the rest; is the difference
+> important or should I ignore it?"
 
-nit: "number of elements in direct_bv[]"
+Thanks. Not everyone think it is trivial. Especially for the one, who
+English are not native language.
 
-Also, just for better readability, can you swap direct_bv and
-netfs_priv? Then at least the array and count are together.
+> 
+> Obviously Lorenzo *could* edit all your subject lines on your behalf,
+> but it makes everybody's life easier if people look at the existing
+> code and follow the style when making changes.
 
->  	unsigned int		debug_id;
->  	unsigned int		rsize;		/* Maximum read size (0 for none) */
->  	atomic_t		nr_outstanding;	/* Number of ops in progress */
-> @@ -200,6 +202,7 @@ struct netfs_io_request {
->  	size_t			len;		/* Length of the request */
->  	short			error;		/* 0 or error that occurred */
->  	enum netfs_io_origin	origin;		/* Origin of the request */
-> +	bool			direct_bv_unpin; /* T if direct_bv[] must be unpinned */
->  	loff_t			i_size;		/* Size of the file */
->  	loff_t			start;		/* Start position */
->  	pgoff_t			no_unlock_folio; /* Don't unlock this folio after read */
->=20
+Understand, but simple mark 'a' and 'A' to me. I will update patches and
+take care for next time instead search whole docuemnt to guess which one
+violated. I know I make some mistakes at here. But I am working on many
+difference kernel subsystems, some require upper case, some require low
+case, someone doesn't care.
+ 
+I respected all reviewer's and maintaner's time, but I hope respected
+the contributor's time also.
 
---=20
-Jeff Layton <jlayton@kernel.org>
+Just simple words like , 'a' to 'A' or
+run git log --oneline to check subject. I will know what exact means. 
+
+Do you think it will better than below words
+
+"Read and follow please (and then ping us):                           
+https://lore.kernel.org/linux-pci/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com"
+
+Frank
+
+> 
+> E.g., write subject lines that are similar in style to previous ones,
+> name local variables similarly to other functions, use line lengths
+> consistent with the rest of the file, etc.  After applying a change,
+> the file should look like a coherent whole; we should not be able to
+> tell that this hunk was added later by somebody else.  This all helps
+> make the code (and the git history) more readable and maintainable.
+> 
+> Bjorn
