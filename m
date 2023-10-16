@@ -2,195 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3F87C9D93
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 05:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C00947C9D9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 05:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231422AbjJPDA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 23:00:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39884 "EHLO
+        id S231392AbjJPDIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 23:08:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231297AbjJPDAZ (ORCPT
+        with ESMTP id S229600AbjJPDIH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 23:00:25 -0400
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3A2E5;
-        Sun, 15 Oct 2023 20:00:20 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R611e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vu9JM3x_1697425214;
-Received: from 30.240.113.74(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vu9JM3x_1697425214)
-          by smtp.aliyun-inc.com;
-          Mon, 16 Oct 2023 11:00:15 +0800
-Message-ID: <4147832a-1f24-5993-dfb6-59f420a17481@linux.alibaba.com>
-Date:   Mon, 16 Oct 2023 11:00:13 +0800
+        Sun, 15 Oct 2023 23:08:07 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B4DFAD
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 20:08:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697425686; x=1728961686;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=p+48ZSPJM1piPoo3GP0Lvs5oUgCN8lXIKD63ICulS9c=;
+  b=dsKZcMjyFNoF+siOdS/ji7TwBRc8QB85+041j8LWA2v0r5vkhDbjP1zp
+   rvDnYM/d9Kc4bdps5tv5jl5DPA8MOKZC5cSeLWrTwcA9XcO1q7LvoICZJ
+   ntyBo3cPdlkGqlz27seE436DcRmPic3kKIIwLx4JU6+XxwVnuE2umnMd3
+   0/WImetRnKfKPHY4j/5Y0LRlFuc0iSw5IabMweuwO05bLhK9gvIOYLiuI
+   dOCtMsJV+xftXZblmdrbvWoB4qR75J3IlgmrnJ3MLs2R4N4P7y+Jp/ycb
+   XAocO+AR9e3I0XoqRR7INJ6CCCy8DUCP5p2CCgcX4jEpwG00f5lI6TfHS
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="385275226"
+X-IronPort-AV: E=Sophos;i="6.03,228,1694761200"; 
+   d="scan'208";a="385275226"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2023 20:08:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="784935655"
+X-IronPort-AV: E=Sophos;i="6.03,228,1694761200"; 
+   d="scan'208";a="784935655"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by orsmga008.jf.intel.com with ESMTP; 15 Oct 2023 20:08:02 -0700
+Message-ID: <fd56b69d-d9ea-411c-9eaa-454b3d64f51e@linux.intel.com>
+Date:   Mon, 16 Oct 2023 11:04:25 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH v7 3/4] drivers/perf: add DesignWare PCIe PMU driver
+User-Agent: Mozilla Thunderbird
+Cc:     baolu.lu@linux.intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATH v5 3/3] iommu/vt-d: debugfs: Support dumping a specified
+ page table
 Content-Language: en-US
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     chengyou@linux.alibaba.com, kaishen@linux.alibaba.com,
-        yangyicong@huawei.com, will@kernel.org,
-        Jonathan.Cameron@huawei.com, baolin.wang@linux.alibaba.com,
-        robin.murphy@arm.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        rdunlap@infradead.org, mark.rutland@arm.com,
-        zhuo.song@linux.alibaba.com, renyu.zj@linux.alibaba.com
-References: <20231013163025.GA1116248@bhelgaas>
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <20231013163025.GA1116248@bhelgaas>
-Content-Type: text/plain; charset=UTF-8
+To:     Jingqi Liu <Jingqi.liu@intel.com>, iommu@lists.linux.dev,
+        Tian Kevin <kevin.tian@intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>
+References: <20231013135811.73953-1-Jingqi.liu@intel.com>
+ <20231013135811.73953-4-Jingqi.liu@intel.com>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20231013135811.73953-4-Jingqi.liu@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-13.2 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/10/14 00:30, Bjorn Helgaas wrote:
-> On Fri, Oct 13, 2023 at 11:46:44AM +0800, Shuai Xue wrote:
->>
->>
->> On 2023/10/13 00:25, Bjorn Helgaas wrote:
->>> On Thu, Oct 12, 2023 at 11:28:55AM +0800, Shuai Xue wrote:
->>>> This commit adds the PCIe Performance Monitoring Unit (PMU) driver support
->>>> for T-Head Yitian SoC chip. Yitian is based on the Synopsys PCI Express
->>>> Core controller IP which provides statistics feature. The PMU is not a PCIe
->>>> Root Complex integrated End Point(RCiEP) device but only register counters
->>>> provided by each PCIe Root Port.
+On 10/13/23 9:58 PM, Jingqi Liu wrote:
+> The original debugfs only dumps all page tables without pasid. With
+> pasid supported, the page table with pasid also needs to be dumped.
 > 
-> IIUC, the PMU is directly integrated into the Root Port: it's
-> discovered and operated via the Root Port config space.  If so, I
-> wouldn't bother mentioning RCiEP because there's no need to list all
-> the things it's *not*.
-
-I see, will not mention RCiEP next version.
-
+> This patch supports dumping a specified page table in legacy mode or
+> scalable mode with or without a specified pasid.
 > 
->>>> To facilitate collection of statistics the controller provides the
->>>> following two features for each Root Port:
->>>>
->>>> - Time Based Analysis (RX/TX data throughput and time spent in each
->>>>   low-power LTSSM state)
->>>> - Event counters (Error and Non-Error for lanes)
->>>>
->>>> Note, only one counter for each type and does not overflow interrupt.
->>>
->>> Not sure what "does not overflow interrupt" means.  Does it mean
->>> there's no interrupt generated when the counter overflows?
->>
->> Yes, exactly. The rootport does NOT generate interrupt when the
->> couter overflows.  I think the assumption hidden in this design is
->> 64-bit counter will not overflow within observable time.
->>
->> PCIe 5.0 slots can now reach anywhere between ~4GB/sec for a x1 slot
->> up to ~64GB/sec for a x16 slot. The unit of counter is 16 byte.
->>
->> 	2^64/(64/16*10^9)/60/60/24/365=146 years
->>
->> so, the counter will not overflow within 146 years.
+> For legacy mode, according to bus number and DEVFN, traverse the root
+> table and context table to get the pointer of page table in the
+> context table entry, then dump the specified page table.
 > 
-> Certainly a reasonable assumption :)
+> For scalable mode, according to bus number, DEVFN and pasid, traverse
+> the root table, context table, pasid directory and pasid table to get
+> the pointer of page table in the pasid table entry, then dump the
+> specified page table..
 > 
-> But I'm confused about how many counters there are.  Clearly there are
-> two features ((1) time-based analysis and (2) event counters).
+> Examples are as follows:
+> 1) Dump the page table of device "0000:00:1f.0" that only supports
+>     legacy mode.
+>     $ sudo cat
+>     /sys/kernel/debug/iommu/intel/0000:00:1f.0/domain_translation_struct
 > 
-> "One counter for each type" suggests there's one counter for
-> time-based analysis and a second counter for event counting, 
-
-You are right, two counters, TIME_BASED_ANAL_DATA_REG for time-based
-analysis and EVENT_COUNTER_DATA_REG for event counting. And both of them
-do not support generate interrupt when the counter overflows.
-
-> but from
-> dwc_pcie_pmu_event_add(), it looks like each Root Port might have a
-> single counter, and you can decide whether that counter is used for
-> time-based analysis or event counting, but you can't do both at the
-> same time? 
-
-dwc_pcie_pmu_event_add() now limit the PMU usage to stat event for either
-time-based analysis or event counting.
-
-I will extend to support stat them at the same time.
-
-@@ -447,10 +447,10 @@ static int dwc_pcie_pmu_event_add(struct perf_event *event, int flags)
- 	u32 ctrl;
-
- 	/* Only one counter and it is in use */
--	if (pcie_pmu->event)
-+	if (pcie_pmu->event[type])
- 		return -ENOSPC;
-
--	pcie_pmu->event = event;
-+	pcie_pmu->event[type] = event;
- 	hwc->state = PERF_HES_STOPPED | PERF_HES_UPTODATE;
-
- 	if (type == DWC_PCIE_LANE_EVENT) {
-@@ -486,10 +486,11 @@ static int dwc_pcie_pmu_event_add(struct perf_event *event, int flags)
- static void dwc_pcie_pmu_event_del(struct perf_event *event, int flags)
- {
- 	struct dwc_pcie_pmu *pcie_pmu = to_dwc_pcie_pmu(event->pmu);
-+	enum dwc_pcie_event_type type = DWC_PCIE_EVENT_TYPE(event);
-
- 	dwc_pcie_pmu_event_stop(event, flags | PERF_EF_UPDATE);
- 	perf_event_update_userpage(event);
--	pcie_pmu->event = NULL;
-+	pcie_pmu->event[type] = NULL;
- }
-
-> And the event counting is for a single lane, not for the
-> link as a whole?
-
-Yes.
-
+> 2) Dump the page table of device "0000:00:0a.0" with PASID "1" that
+>     supports scalable mode.
+>     $ sudo cat
+>     /sys/kernel/debug/iommu/intel/0000:00:0a.0/1/domain_translation_struct
 > 
-> If so, I might word this as:
+> Suggested-by: Kevin Tian <kevin.tian@intel.com>
+> Signed-off-by: Jingqi Liu <Jingqi.liu@intel.com>
+> ---
+>   drivers/iommu/intel/debugfs.c | 154 ++++++++++++++++++++++++++--------
+>   1 file changed, 120 insertions(+), 34 deletions(-)
 > 
->   Each Root Port contains one counter that can be used for either:
-> 
->     - Time-Based Analysis (RX/TX data throughput and time spent in
->       each low-power LTSSM state) or
-> 
->     - Event counting (error and non-error events for a specified lane)
-> 
->   There is no interrupt for counter overflow.
+> diff --git a/drivers/iommu/intel/debugfs.c b/drivers/iommu/intel/debugfs.c
+> index 8a18a7be5215..239136727ac4 100644
+> --- a/drivers/iommu/intel/debugfs.c
+> +++ b/drivers/iommu/intel/debugfs.c
+> @@ -347,58 +347,141 @@ static void pgtable_walk_level(struct seq_file *m, struct dma_pte *pde,
+>   	}
+>   }
+>   
+> -static int __show_device_domain_translation(struct device *dev, void *data)
+> +static int domain_translation_struct_show(struct seq_file *m,
+> +					  struct device_domain_info *info,
+> +					  ioasid_t pasid)
+>   {
+> -	struct dmar_domain *domain;
+> -	struct seq_file *m = data;
+> -	u64 path[6] = { 0 };
+> -
+> -	domain = to_dmar_domain(iommu_get_domain_for_dev(dev));
+> -	if (!domain)
+> -		return 0;
+> +	bool scalable, found = false;
+> +	struct dmar_drhd_unit *drhd;
+> +	struct intel_iommu *iommu;
+> +	u16 devfn, bus, seg;
+>   
+> -	seq_printf(m, "Device %s @0x%llx\n", dev_name(dev),
+> -		   (u64)virt_to_phys(domain->pgd));
+> -	seq_puts(m, "IOVA_PFN\t\tPML5E\t\t\tPML4E\t\t\tPDPE\t\t\tPDE\t\t\tPTE\n");
+> +	bus = info->bus;
+> +	devfn = info->devfn;
+> +	seg = info->segment;
+>   
+> -	pgtable_walk_level(m, domain->pgd, domain->agaw + 2, 0, path);
+> -	seq_putc(m, '\n');
+> +	rcu_read_lock();
+> +	for_each_active_iommu(iommu, drhd) {
+> +		struct context_entry *context;
+> +		u64 pgd, path[6] = { 0 };
+> +		u32 sts, agaw;
+>   
+> -	/* Don't iterate */
+> -	return 1;
+> -}
+> +		if (seg != iommu->segment)
+> +			continue;
+>   
+> -static int show_device_domain_translation(struct device *dev, void *data)
+> -{
+> -	struct iommu_group *group;
+> +		sts = dmar_readl(iommu->reg + DMAR_GSTS_REG);
+> +		if (!(sts & DMA_GSTS_TES)) {
+> +			seq_printf(m, "DMA Remapping is not enabled on %s\n",
+> +				   iommu->name);
+> +			continue;
+> +		}
+> +		if (dmar_readq(iommu->reg + DMAR_RTADDR_REG) & DMA_RTADDR_SMT)
+> +			scalable = true;
+> +		else
+> +			scalable = false;
+>   
+> -	group = iommu_group_get(dev);
+> -	if (group) {
+>   		/*
+> -		 * The group->mutex is held across the callback, which will
+> -		 * block calls to iommu_attach/detach_group/device. Hence,
+> +		 * The iommu->lock is held across the callback, which will
+> +		 * block calls to domain_attach/domain_detach. Hence,
+>   		 * the domain of the device will not change during traversal.
+>   		 *
+> -		 * All devices in an iommu group share a single domain, hence
+> -		 * we only dump the domain of the first device. Even though,
+> -		 * this code still possibly races with the iommu_unmap()
+> +		 * Traversing page table possibly races with the iommu_unmap()
+>   		 * interface. This could be solved by RCU-freeing the page
+>   		 * table pages in the iommu_unmap() path.
+>   		 */
+> -		iommu_group_for_each_dev(group, data,
+> -					 __show_device_domain_translation);
+> -		iommu_group_put(group);
+> +		spin_lock(&iommu->lock);
+> +
+> +		context = iommu_context_addr(iommu, bus, devfn, 0);
+> +		if (!context || !context_present(context))
+> +			goto iommu_unlock;
+> +
+> +		if (scalable) {	/* scalable mode */
+> +			struct pasid_dir_entry *dir_tbl, *dir_entry;
+> +			struct pasid_entry *pasid_tbl, *pasid_tbl_entry;
+> +			u16 pasid_dir_size, dir_idx, tbl_idx, pgtt;
+> +			u64 pasid_dir_ptr;
 
-Based on above, I change the word to:
+0day robot complained:
 
-	To facilitate collection of statistics the controller provides the
-	following two features for each Root Port:
+    drivers/iommu/intel/debugfs.c: In function 
+'domain_translation_struct_show':
+ >> drivers/iommu/intel/debugfs.c:401:29: warning: variable 
+'pasid_dir_size' set but not used [-Wunused-but-set-variable]
+      401 |                         u16 pasid_dir_size, dir_idx, 
+tbl_idx, pgtt;
+          |                             ^~~~~~~~~~~~~~
 
-	- one 64-bit counter for Time Based Analysis (RX/TX data throughput and
-	  time spent in each low-power LTSSM state) and
-	- one 32-bit counter for Event counting (error and non-error events for
-	  a specified lane)
+I have removed pasid_dir_size and queue the whole series for v6.7.
 
-	Note: There is no interrupt for counter overflow.
+Thank you!
 
-
-> 
->>>> +	  Enable perf support for Synopsys DesignWare PCIe PMU Performance
->>>> +	  monitoring event on platform including the Yitian 710.
->>>
->>> Should this mention Alibaba or T-Head?  I don't know how
->>> Alibaba/T-Head/Yitian are all related.
->>
->> The server chips, named Yitian 710, are custom-built by Alibaba Group's chip
->> development business, T-Head.
->>
->> 	  Enable perf support for Synopsys DesignWare PCIe PMU Performance
->> 	  monitoring event on platform including the Alibaba Yitian 710.
->>
->> Is this okay?
-> 
-> Perfect :)
-
-
-Thank you for valuable comments.
-
-Best Regards,
-Shuai
+Best regards,
+baolu
