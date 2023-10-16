@@ -2,131 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6987CA732
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 13:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 798ED7CA776
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233418AbjJPLzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 07:55:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59442 "EHLO
+        id S232633AbjJPMBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 08:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233536AbjJPLzD (ORCPT
+        with ESMTP id S232836AbjJPMBD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 07:55:03 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A85103
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 04:54:49 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6c7b3adbeb6so3217621a34.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 04:54:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1697457287; x=1698062087; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hOYlO/MfeXwd+3dB86Cjskxh6wnG7K6s71k0LD+6Qk8=;
-        b=GQF/6n2tZ0iHsCQoi1uqpf+rKXH8ufHt5kfOV0kCictxL8zmBs/E86EdXphMyEABii
-         hzZqkqemlELnEKh/1ozn8uoyhVBoZNYd2SmNUv3u3gN85ASm/0hF1SGEwvxD+aRV0OFe
-         vWQurR0EY4giaqiWunjhg04wBmv+5G2QqfQDVukzAG8aFHYG3cV6bd+pFmXZfzOtXsnn
-         tbPMHoYIOOaTv8BRTvjQs9b6S7dp4TIr2/pR06T75o/lXQQnN+QxgGkTlVCCo1qO0MR1
-         qPl7nw0eCvjH7zmBbfzDF1a0r8Js8yfx1JFPrJKCrq1O3MnmXFUGve7ttzDvYQGfvOq3
-         rK6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697457287; x=1698062087;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hOYlO/MfeXwd+3dB86Cjskxh6wnG7K6s71k0LD+6Qk8=;
-        b=GYaqZD1OKYg5llSILQZyBaR3T2Y+kmdLVHzXmbapvg2VTgo9Raaku9njpW1a7mnrjo
-         BJE7LYNQlxVSaX5GfccGe1HB7h9nBWHAhnPs7lAH3J+dX83cVMo8zlOYb2WQcRJWI0NK
-         +5Oxlqy39jb5TwiSjYxbc0eC2hLK5eWMvRIH82CZnh0vrVNjr1RLj0Urt72aD98AAdb5
-         Cm64k1FwvGoRZmqerw63xR/gI4HbaVjL6kxJ9YN1Sq5ccuoYIc0+/hfSoHPUbXj+kxtQ
-         Nf9Q5+y2Z6saZqEHJ9nPGclZE92Q8EUCRpEYESJLgUS50s1ed9ugHvFWETA9VzPmU7Vj
-         qBrg==
-X-Gm-Message-State: AOJu0Yx6D+B4W9nlrnY+caafPbuz0y4Reba0xJaW7NkGWH5i9wvS3t5Q
-        /bZEWtHVYCLZqDk8mm6tAIjjhA==
-X-Google-Smtp-Source: AGHT+IHBQ4h7ouw5FAzOKR7F2qP+qzg01nvvlkiVieBZbDTEXE2Rq+xTl22Xj+T4OkfHnCQZmiNy1A==
-X-Received: by 2002:a9d:6194:0:b0:6b5:ee8f:73af with SMTP id g20-20020a9d6194000000b006b5ee8f73afmr39028878otk.5.1697457287664;
-        Mon, 16 Oct 2023 04:54:47 -0700 (PDT)
-Received: from localhost ([2400:4050:a840:1e00:78d2:b862:10a7:d486])
-        by smtp.gmail.com with UTF8SMTPSA id u12-20020aa7848c000000b0068883728c16sm18666931pfn.144.2023.10.16.04.54.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 04:54:47 -0700 (PDT)
-From:   Akihiko Odaki <akihiko.odaki@daynix.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, Nick Terrell <terrelln@fb.com>,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Akihiko Odaki <akihiko.odaki@daynix.com>
-Subject: [PATCH v2] selftests/bpf: Use pkg-config to determine ld flags
-Date:   Mon, 16 Oct 2023 20:54:37 +0900
-Message-ID: <20231016115438.21451-1-akihiko.odaki@daynix.com>
-X-Mailer: git-send-email 2.42.0
+        Mon, 16 Oct 2023 08:01:03 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2FA318D;
+        Mon, 16 Oct 2023 04:54:54 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 11:54:52 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1697457293;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E5AEwqyUaSQMprccmuBfMfzneA7Pcuh09art5K3UwP8=;
+        b=2sWpf2ukZGRl516wJQKne6b8QUEcIHTly1YlLtqhrmGpp71DSQtW7ynUY5Jx+v9P7OtH9o
+        +k/wZJB4fLYtMwSete9FlPEAfxVYvYXxSOE2krgVuZeLB6Lt0cU2MfoHqh8fb72Lf29pHc
+        xcGjNkdwOfZ4inUqxjXIrZPQLoiY+Yh58ZEnG3PlBYZKiC1GjzpeHKxplJpQc4OUWi06gj
+        RCtUGpTppycIm6FztTOjWO312O/e6rMxmq9d3kc8fOk4zFhK1yzV6RmbL7eUO2PR1qxMcE
+        OGT6PWNZ3l9BoAoOIG904inKcwBFcpisVo3+h7ih+8zW8Tz+mPtHsCf6zkuvTA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1697457293;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E5AEwqyUaSQMprccmuBfMfzneA7Pcuh09art5K3UwP8=;
+        b=Ih+QK2LXJdXmIfjsYySjHc/NU3QdTiresnrNdNvZEsqRJYbSQVvRq4VF10QNeTKNi2wTmG
+        Na9HgORk7+oFlMAg==
+From:   "tip-bot2 for Hou Wenlong" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/boot] x86/head/64: Add missing __head annotation to
+ startup_64_load_idt()
+Cc:     Hou Wenlong <houwenlong.hwl@antgroup.com>,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: =?utf-8?q?=3Cefcc5b5e18af880e415d884e072bf651c1fa7c34=2E16891?=
+ =?utf-8?q?30310=2Egit=2Ehouwenlong=2Ehwl=40antgroup=2Ecom=3E?=
+References: =?utf-8?q?=3Cefcc5b5e18af880e415d884e072bf651c1fa7c34=2E168913?=
+ =?utf-8?q?0310=2Egit=2Ehouwenlong=2Ehwl=40antgroup=2Ecom=3E?=
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Message-ID: <169745729291.3135.17224070349445193819.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When linking statically, libraries may require other dependencies to be
-included to ld flags. In particular, libelf may require libzstd. Use
-pkg-config to determine such dependencies.
+The following commit has been merged into the x86/boot branch of tip:
 
-Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
+Commit-ID:     7f6874eddd81cb2ed784642a7a4321671e158ffe
+Gitweb:        https://git.kernel.org/tip/7f6874eddd81cb2ed784642a7a4321671e158ffe
+Author:        Hou Wenlong <houwenlong.hwl@antgroup.com>
+AuthorDate:    Wed, 12 Jul 2023 11:30:06 +08:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Mon, 16 Oct 2023 13:38:24 +02:00
+
+x86/head/64: Add missing __head annotation to startup_64_load_idt()
+
+This function is currently only used in the head code and is only called
+from startup_64_setup_env(). Although it would be inlined by the
+compiler, it would be better to mark it as __head too in case it doesn't.
+
+Signed-off-by: Hou Wenlong <houwenlong.hwl@antgroup.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/efcc5b5e18af880e415d884e072bf651c1fa7c34.1689130310.git.houwenlong.hwl@antgroup.com
 ---
-V1 -> V2: Implemented fallback, referring to HOSTPKG_CONFIG.
+ arch/x86/kernel/head64.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- tools/testing/selftests/bpf/Makefile   | 3 ++-
- tools/testing/selftests/bpf/README.rst | 2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index caede9b574cb..4b947040d6d4 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -4,6 +4,7 @@ include ../../../scripts/Makefile.arch
- include ../../../scripts/Makefile.include
+diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
+index f41625d..f0efc22 100644
+--- a/arch/x86/kernel/head64.c
++++ b/arch/x86/kernel/head64.c
+@@ -588,7 +588,7 @@ static void set_bringup_idt_handler(gate_desc *idt, int n, void *handler)
+ }
  
- CXX ?= $(CROSS_COMPILE)g++
-+PKG_CONFIG ?= $(CROSS_COMPILE)pkg-config
- 
- CURDIR := $(abspath .)
- TOOLSDIR := $(abspath ../../..)
-@@ -31,7 +32,7 @@ CFLAGS += -g -O0 -rdynamic -Wall -Werror $(GENFLAGS) $(SAN_CFLAGS)	\
- 	  -I$(CURDIR) -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)		\
- 	  -I$(TOOLSINCDIR) -I$(APIDIR) -I$(OUTPUT)
- LDFLAGS += $(SAN_LDFLAGS)
--LDLIBS += -lelf -lz -lrt -lpthread
-+LDLIBS += $(shell $(PKG_CONFIG) --libs libelf zlib || -lelf -lz) -lrt -lpthread
- 
- ifneq ($(LLVM),)
- # Silence some warnings when compiled with clang
-diff --git a/tools/testing/selftests/bpf/README.rst b/tools/testing/selftests/bpf/README.rst
-index cb9b95702ac6..9af79c7a9b58 100644
---- a/tools/testing/selftests/bpf/README.rst
-+++ b/tools/testing/selftests/bpf/README.rst
-@@ -77,7 +77,7 @@ In case of linker errors when running selftests, try using static linking:
- 
- .. code-block:: console
- 
--  $ LDLIBS=-static vmtest.sh
-+  $ LDLIBS=-static PKG_CONFIG='pkg-config --static' vmtest.sh
- 
- .. note:: Some distros may not support static linking.
- 
--- 
-2.42.0
-
+ /* This runs while still in the direct mapping */
+-static void startup_64_load_idt(unsigned long physbase)
++static void __head startup_64_load_idt(unsigned long physbase)
+ {
+ 	struct desc_ptr *desc = fixup_pointer(&bringup_idt_descr, physbase);
+ 	gate_desc *idt = fixup_pointer(bringup_idt_table, physbase);
