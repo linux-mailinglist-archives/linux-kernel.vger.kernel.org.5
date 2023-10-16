@@ -2,70 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8893F7CB3B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A89A7CB3AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234064AbjJPUHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 16:07:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45894 "EHLO
+        id S232228AbjJPUGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 16:06:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233991AbjJPUHD (ORCPT
+        with ESMTP id S231221AbjJPUGu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 16:07:03 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F45EE
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:07:00 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-5a1d91a29a0so3670495a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:07:00 -0700 (PDT)
+        Mon, 16 Oct 2023 16:06:50 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F8CB4
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:06:48 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-66d0252578aso26321466d6.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:06:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697486820; x=1698091620; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1697486808; x=1698091608; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=x1jVF5fDDtB5E1xXw4u2h0Qq1/g1/HjZ8iamB/5OFoA=;
-        b=aERMXq8DV73yjLippLpiuRtwzFcFw/WYuvqnlRbHHHfjn25nRadm3YMgWO+1fvmLSx
-         148Kk/6Ks/w2NmbKpcJNf3srriXyzfQLBAzLns7MnPq1Gcgb8uM1G91NNv5+cx8nuu3g
-         Dy5pvdCTKsq9lMFuKCkrLohcsygvLqvKtvQ7FZdokG5AwRHw0YCGKQUXzp+eyrFZZf7Q
-         a0ToPBFaoEtnRFfBEKfsLoz/r80av0d3BWaxzzdIiC/ra2PdNovzBWGb1JxAwpwQCFlC
-         5fM03Fn3X+GAqPeV23BOZNKMWjipUIYNY4ryxydn7dC8+nebZDZhvUmwXLOwujZ2IWMz
-         JPLw==
+        bh=HaHWZ++raSb5lyMsNQf39E3EcgWl93LaF644FrH4GdU=;
+        b=BJqV1rUClDe+aofFvHAioq+//Y1fgchBk4LiaW5b75e+8tnrM7I3ZBQWQKVuOLiKUT
+         rEAe/kvC+ssEsRmKIP3lsBhZ+mkOqvH7/bKnrt6PfMlYe/wsFAlS4dmMlZbV62GExexw
+         u05H6nm8YSWDYhzfjrNKVpK1ALVV2Mapx1Lpg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697486820; x=1698091620;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1697486808; x=1698091608;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=x1jVF5fDDtB5E1xXw4u2h0Qq1/g1/HjZ8iamB/5OFoA=;
-        b=bgXX9plPnK4RB+j7RJaYl8LMevRm18WLMteDEDuZ0zY7/YGufd4SPEPDebvFmZRobC
-         rA5ysTg8bSAjAFb3LaW/2dX6avNQzu1JXSPWtBUjqo3hJSjf9aY6y786uQKacznbXAVW
-         wEMYLhIk7tlgLq0bp4PsWp7phYo1/zDRwWPpfswszQvn1+XXpDyb9qGhWLEaPfgEdWgB
-         ql8sDTOPJiOCkc/sqBGJP47jW3I1hLh9JC7WLkYUJKqIkur4iPkwhWFtTrx3FOaPpy9p
-         fzT2CzlQxouijmVsmgnjXATd6uRdlBvjGFIliZjL9XWes89qvu9Sft5h7N1ewG7j2Zyp
-         fDKg==
-X-Gm-Message-State: AOJu0YwW9NpTMRRZ4dQTgFrJLChYOQSoJAPPPWoa+WuXETbVZmZWGEWe
-        pnT/NPXYOWEUtuMtSL9/5qd+zJe/HPE=
-X-Google-Smtp-Source: AGHT+IFPrGp2LxyePxJ2SGP9Uv5jwNSK/jlVnwKjorWrK64yF1KjrffZTKbz4NdtbcNvcYG72+5GCQ==
-X-Received: by 2002:a17:90b:368d:b0:27d:f85:9505 with SMTP id mj13-20020a17090b368d00b0027d0f859505mr159453pjb.24.1697486820185;
-        Mon, 16 Oct 2023 13:07:00 -0700 (PDT)
-Received: from fedora.. (c-73-170-51-167.hsd1.ca.comcast.net. [73.170.51.167])
-        by smtp.googlemail.com with ESMTPSA id t16-20020a17090b019000b002772faee740sm5162367pjs.5.2023.10.16.13.06.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 13:06:59 -0700 (PDT)
-From:   "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-To:     linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        shy828301@gmail.com,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Subject: [PATCH 5/5] mm/khugepaged: Convert collapse_pte_mapped_thp() to use folios
-Date:   Mon, 16 Oct 2023 13:05:10 -0700
-Message-Id: <20231016200510.7387-6-vishal.moola@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231016200510.7387-1-vishal.moola@gmail.com>
-References: <20231016200510.7387-1-vishal.moola@gmail.com>
+        bh=HaHWZ++raSb5lyMsNQf39E3EcgWl93LaF644FrH4GdU=;
+        b=Cj8OTRVKHkkEepkwG16KHBu7PBRFkwfMUFXUpOpCFPPP/huOWOk6BjdBmIj82TztOU
+         OPw0U/tnFj41g1Ybdxh7sOYtTeVavM1/h/B7JxkJXXEfetaZ9+DiVNwO6QD5h6b+k+3g
+         bBNGemjYt7Rc9UG0u30rTjqEpmfsMyShRUmCEmZ3IoqPqvJ7AQphg/RHrwxB0hoTvX6S
+         al/e3cXl0e0IuNcE6hn/jQkPWdYfz42sRyn3zfxy75uqTKJgVQ3bjUf2GoSVHghLZWvT
+         hAU7a6xThJjdEQ6PikEdx2FFSaaufnXWWrfWHEWfc7FnicsRayG8Ym8xScY7YoGXTRla
+         7AGQ==
+X-Gm-Message-State: AOJu0Yy43B/vc0KAI3MempJdm89soX1vyuqKjWgoVFYpptluEzwQ0ERy
+        D7DAm9oHPeYKwEqnfSSbAwctAPhLvvgNouhAQ2A=
+X-Google-Smtp-Source: AGHT+IEF4PIw5R5nlDEGb2mmQr4KXVMHrcObmYM+yG1w2MvoDb//pSJ6yu07IUZOo83lK1Jqy5XtQg==
+X-Received: by 2002:ad4:5c63:0:b0:65b:21bf:8fc1 with SMTP id i3-20020ad45c63000000b0065b21bf8fc1mr535263qvh.42.1697486807701;
+        Mon, 16 Oct 2023 13:06:47 -0700 (PDT)
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com. [209.85.160.169])
+        by smtp.gmail.com with ESMTPSA id cu16-20020a05621417d000b0066cfe6b078csm3719086qvb.15.2023.10.16.13.06.45
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Oct 2023 13:06:46 -0700 (PDT)
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-4195fe5cf73so9381cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:06:45 -0700 (PDT)
+X-Received: by 2002:a05:622a:2c43:b0:418:1464:37bf with SMTP id
+ kl3-20020a05622a2c4300b00418146437bfmr55093qtb.16.1697486805442; Mon, 16 Oct
+ 2023 13:06:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230928015858.1809934-1-linan666@huaweicloud.com>
+ <CACGdZY+JV+PdiC_cspQiScm=SJ0kijdufeTrc8wkrQC3ZJx3qQ@mail.gmail.com>
+ <4ace01e8-6815-29d0-70ce-4632818ca701@huaweicloud.com> <20231005162417.GA32420@redhat.com>
+ <0a8f34aa-ced9-e613-3e5f-b5e53a3ef3d9@huaweicloud.com> <20231007151607.GA24726@redhat.com>
+ <21843836-7265-f903-a7d5-e77b07dd5a71@huaweicloud.com> <20231008113602.GB24726@redhat.com>
+ <CACGdZY+OOr4Q5ajM0za2babr34YztE7zjRyPXHgh_A64zvoBOw@mail.gmail.com> <e9165cd0-9c9d-1d1a-1c5b-402556a1a31f@huaweicloud.com>
+In-Reply-To: <e9165cd0-9c9d-1d1a-1c5b-402556a1a31f@huaweicloud.com>
+From:   Khazhy Kumykov <khazhy@chromium.org>
+Date:   Mon, 16 Oct 2023 13:06:31 -0700
+X-Gmail-Original-Message-ID: <CACGdZYLxnL91S4RxfvLmN8j3rcvbsqdkouj4Lgc05mnCo2fZSw@mail.gmail.com>
+Message-ID: <CACGdZYLxnL91S4RxfvLmN8j3rcvbsqdkouj4Lgc05mnCo2fZSw@mail.gmail.com>
+Subject: Re: [PATCH] blk-throttle: Calculate allowed value only when the
+ throttle is enabled
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     Oleg Nesterov <oleg@redhat.com>, Li Nan <linan666@huaweicloud.com>,
+        tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        houtao1@huawei.com, yangerkun@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,151 +86,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This removes 2 calls to compound_head() and helps convert khugepaged to
-use folios throughout.
+On Sun, Oct 15, 2023 at 6:47=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
+rote:
+>
+> Hi,
+>
+> =E5=9C=A8 2023/10/14 5:51, Khazhy Kumykov =E5=86=99=E9=81=93:
+> > Looking at the generic mul_u64_u64_div_u64 impl, it doesn't handle
+> > overflow of the final result either, as far as I can tell. So while on
+> > x86 we get a DE, on non-x86 we just get the wrong result.
+> >
+> > (Aside: after 8d6bbaada2e0 ("blk-throttle: prevent overflow while
+> > calculating wait time"), setting a very-high bps_limit would probably
+> > also cause this crash, no?)
+> >
+> > Would it be possible to have a "check_mul_u64_u64_div_u64_overflow()",
+> > where if the result doesn't fit in u64, we indicate (and let the
+> > caller choose what to do? Here we should just return U64_MAX)?
+> >
+> > Absent that, maybe we can take inspiration from the generic
+> > mul_u64_u64_div_u64? (Forgive the paste)
+> >
+> >   static u64 calculate_bytes_allowed(u64 bps_limit, unsigned long jiffy=
+_elapsed)
+> >   {
+> > +       /* Final result probably won't fit in u64 */
+> > +       if (ilog2(bps_limit) + ilog2(jiffy_elapsed) - ilog2(HZ) > 62)
+>
+> I'm not sure, but this condition looks necessary, but doesn't look
+> sufficient, for example, jiffy_elapsed cound be greater than HZ, while
+> ilog2(jiffy_elapsed) is equal to ilog2(HZ).
+I believe 62 is correct, although admittedly it's less "intuitive"
+than the check in mul_u64_u64_div_u64()....
 
-Previously, if the address passed to collapse_pte_mapped_thp()
-corresponded to a tail page, the scan would fail immediately. Using
-filemap_lock_folio() we can get the corresponding folio back and try to
-operate on the folio instead.
+The result overflows if log2(A * B / C) >=3D 64, so we want to ensure that:
+log2(A) + log2(B) - log2(C) < 64
 
-Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
----
- mm/khugepaged.c | 45 ++++++++++++++++++++-------------------------
- 1 file changed, 20 insertions(+), 25 deletions(-)
+Given that:
+ilog2(A) <=3D log2(A) < ilog2(A) + 1  // truncation defn
+It follows that:
+-log2(A) <=3D -ilog2(A)  // Inverse rule
+log2(A) - 1 < ilog2(A)
 
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 70bba8ddea13..99c437979848 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -1471,7 +1471,7 @@ int collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr,
- 	bool notified = false;
- 	unsigned long haddr = addr & HPAGE_PMD_MASK;
- 	struct vm_area_struct *vma = vma_lookup(mm, haddr);
--	struct page *hpage;
-+	struct folio *folio;
- 	pte_t *start_pte, *pte;
- 	pmd_t *pmd, pgt_pmd;
- 	spinlock_t *pml = NULL, *ptl;
-@@ -1504,19 +1504,14 @@ int collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr,
- 	if (userfaultfd_wp(vma))
- 		return SCAN_PTE_UFFD_WP;
- 
--	hpage = find_lock_page(vma->vm_file->f_mapping,
-+	folio = filemap_lock_folio(vma->vm_file->f_mapping,
- 			       linear_page_index(vma, haddr));
--	if (!hpage)
-+	if (!folio)
- 		return SCAN_PAGE_NULL;
- 
--	if (!PageHead(hpage)) {
--		result = SCAN_FAIL;
--		goto drop_hpage;
--	}
--
--	if (compound_order(hpage) != HPAGE_PMD_ORDER) {
-+	if (folio_order(folio) != HPAGE_PMD_ORDER) {
- 		result = SCAN_PAGE_COMPOUND;
--		goto drop_hpage;
-+		goto drop_folio;
- 	}
- 
- 	result = find_pmd_or_thp_or_none(mm, haddr, &pmd);
-@@ -1530,13 +1525,13 @@ int collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr,
- 		 */
- 		goto maybe_install_pmd;
- 	default:
--		goto drop_hpage;
-+		goto drop_folio;
- 	}
- 
- 	result = SCAN_FAIL;
- 	start_pte = pte_offset_map_lock(mm, pmd, haddr, &ptl);
- 	if (!start_pte)		/* mmap_lock + page lock should prevent this */
--		goto drop_hpage;
-+		goto drop_folio;
- 
- 	/* step 1: check all mapped PTEs are to the right huge page */
- 	for (i = 0, addr = haddr, pte = start_pte;
-@@ -1561,7 +1556,7 @@ int collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr,
- 		 * Note that uprobe, debugger, or MAP_PRIVATE may change the
- 		 * page table, but the new page will not be a subpage of hpage.
- 		 */
--		if (hpage + i != page)
-+		if (folio_page(folio, i) != page)
- 			goto abort;
- 	}
- 
-@@ -1576,7 +1571,7 @@ int collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr,
- 	 * page_table_lock) ptl nests inside pml. The less time we hold pml,
- 	 * the better; but userfaultfd's mfill_atomic_pte() on a private VMA
- 	 * inserts a valid as-if-COWed PTE without even looking up page cache.
--	 * So page lock of hpage does not protect from it, so we must not drop
-+	 * So page lock of folio does not protect from it, so we must not drop
- 	 * ptl before pgt_pmd is removed, so uffd private needs pml taken now.
- 	 */
- 	if (userfaultfd_armed(vma) && !(vma->vm_flags & VM_SHARED))
-@@ -1600,7 +1595,7 @@ int collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr,
- 			continue;
- 		/*
- 		 * We dropped ptl after the first scan, to do the mmu_notifier:
--		 * page lock stops more PTEs of the hpage being faulted in, but
-+		 * page lock stops more PTEs of the folio being faulted in, but
- 		 * does not stop write faults COWing anon copies from existing
- 		 * PTEs; and does not stop those being swapped out or migrated.
- 		 */
-@@ -1609,7 +1604,7 @@ int collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr,
- 			goto abort;
- 		}
- 		page = vm_normal_page(vma, addr, ptent);
--		if (hpage + i != page)
-+		if (folio_page(folio, i) != page)
- 			goto abort;
- 
- 		/*
-@@ -1628,8 +1623,8 @@ int collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr,
- 
- 	/* step 3: set proper refcount and mm_counters. */
- 	if (nr_ptes) {
--		page_ref_sub(hpage, nr_ptes);
--		add_mm_counter(mm, mm_counter_file(hpage), -nr_ptes);
-+		folio_ref_sub(folio, nr_ptes);
-+		add_mm_counter(mm, mm_counter_file(&folio->page), -nr_ptes);
- 	}
- 
- 	/* step 4: remove empty page table */
-@@ -1653,14 +1648,14 @@ int collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr,
- maybe_install_pmd:
- 	/* step 5: install pmd entry */
- 	result = install_pmd
--			? set_huge_pmd(vma, haddr, pmd, hpage)
-+			? set_huge_pmd(vma, haddr, pmd, &folio->page)
- 			: SCAN_SUCCEED;
--	goto drop_hpage;
-+	goto drop_folio;
- abort:
- 	if (nr_ptes) {
- 		flush_tlb_mm(mm);
--		page_ref_sub(hpage, nr_ptes);
--		add_mm_counter(mm, mm_counter_file(hpage), -nr_ptes);
-+		folio_ref_sub(folio, nr_ptes);
-+		add_mm_counter(mm, mm_counter_file(&folio->page), -nr_ptes);
- 	}
- 	if (start_pte)
- 		pte_unmap_unlock(start_pte, ptl);
-@@ -1668,9 +1663,9 @@ int collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr,
- 		spin_unlock(pml);
- 	if (notified)
- 		mmu_notifier_invalidate_range_end(&range);
--drop_hpage:
--	unlock_page(hpage);
--	put_page(hpage);
-+drop_folio:
-+	folio_unlock(folio);
-+	folio_put(folio);
- 	return result;
- }
- 
--- 
-2.40.1
+Starting from:
+ilog2(A) + ilog2(B) - ilog2(C) <=3D X
 
+We can show:
+(log2(A) - 1) + (log2(B) - 1) + (-log2(C)) < ilog2(A) + ilog2(B) +
+(-ilog2(C)) // strict inequality here since the substitutions for A
+and B terms are strictly less
+(log2(A) - 1) + (log2(B) - 1) + (-log2(C)) < X
+log2(A) + log2(B) - log2(C) < X + 2
+
+So for X =3D 62, log2(A) + log2(B) - log2(C) < 64 must be true, and we
+must be safe from overflow.
+
+So... by converse, if ilog2(A) + ilog2(B) - ilog2(C) > 62, we cannot
+guarantee that the result will not overflow - thus we bail out.
+
+// end math
+
+It /is/ less exact than your proposal (sufficient, but not necessary),
+but saves an extra 128bit mul.
+
+I mostly just want us to pick /something/, since 6.6-rc and the LTSs
+with the patch in question are busted currently. :)
+
+
+
+>
+> Thanks,
+> Kuai
+>
+> > +               return U64_MAX;
+> >          return mul_u64_u64_div_u64(bps_limit, (u64)jiffy_elapsed, (u64=
+)HZ);
+> >   }
+> >
+> > .
+> >
+>
