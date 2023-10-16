@@ -2,336 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 694277CA816
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93AE37CA823
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233134AbjJPMez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 08:34:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36506 "EHLO
+        id S232778AbjJPMjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 08:39:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231444AbjJPMex (ORCPT
+        with ESMTP id S229501AbjJPMjd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 08:34:53 -0400
-Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BAD1A2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 05:34:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=enH1ft/wvZkvblwLLKmG5GGnmfYvvr7ku6OEydqrNdw=;
-  b=lEz8DQH+SODDiRznX7ofAIvwa4C2i+SI7wIZUxIqag9IwYPJyAmhVkvh
-   9PBsZuNG9TuiEYM1cOuHMevqwraxSxL5FXfMvaBsNC5BDsTuMA8yztxR5
-   4zcAjNgSF9Qm+Aad9Fwq4rJyvtXo27eRl1dQt5EVL97dt1VltZZQ9kSGn
-   o=;
-Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.03,229,1694728800"; 
-   d="scan'208";a="68833400"
-Received: from dhcp-138-246-3-50.dynamic.eduroam.mwn.de (HELO hadrien) ([138.246.3.50])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 14:34:48 +0200
-Date:   Mon, 16 Oct 2023 14:34:48 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-To:     Gilbert Adikankwu <gilbertadikankwu@gmail.com>
-cc:     outreachy@lists.linux.dev, gregkh@linuxfoundation.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: your mail
-In-Reply-To: <ZS0tGLOJxUztxbKj@gilbert-PC>
-Message-ID: <3c8e9839-78f0-bb72-a195-ee4c54b68c7f@inria.fr>
-References: <ZS0tGLOJxUztxbKj@gilbert-PC>
+        Mon, 16 Oct 2023 08:39:33 -0400
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A0B9B;
+        Mon, 16 Oct 2023 05:39:31 -0700 (PDT)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4066241289bso45974305e9.0;
+        Mon, 16 Oct 2023 05:39:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697459970; x=1698064770;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fWn8OKKmgH1SLqX3IBNKtZAxHwSFanLzmHjQ4o8BFLI=;
+        b=kfrEQVDGXKbM0nezsHfuSwwffQqbR8cvh65MvElsnYrEoIDoZ3HkO5p7OTXlnL7QO7
+         vlnwV37E07UsQhldzwTdqveylwZ25mZHvy7UjM9VK3oMhDo7LN9qVsFcQAEpi6nHngVg
+         XRMD5S8Lvn2PLVRdyIaGTaPu+lwWHmjP5rUB4D9HlHSWUfeoFvv7i7YGxUO3gzhxjVfi
+         U4+l7yxiD6sfDD0pUb7hmPUH7neExpQMC6VjeZEdMppVycFg1divkdSF6nhqATD2clKz
+         j7Ejjx4W6p79RZS1GIWIDJFoVI/8RV6azBWhEQ5Cj3r1K2AGd3dvvsIzGr7+/DSyvi5S
+         fKnw==
+X-Gm-Message-State: AOJu0YyTbHpAZQ+kmY8yrNVlojvNDpVBHJeFkuaLj1c2Kj2/xy6D8XNv
+        /aU0HOnzs/8ujaxmr3ac0lJIDVVU0jFeiA==
+X-Google-Smtp-Source: AGHT+IFXjdSjOK6JR2Ain6tAFdG0oAEw3Sl7ExLj4KHQXnDZh4Js4y3DUPj0hTlMTEHBKwY5v+tMsA==
+X-Received: by 2002:a05:600c:230d:b0:407:5b54:bb13 with SMTP id 13-20020a05600c230d00b004075b54bb13mr14407628wmo.37.1697459969365;
+        Mon, 16 Oct 2023 05:39:29 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id o3-20020a05600c510300b004065d67c3c9sm7196660wms.8.2023.10.16.05.39.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Oct 2023 05:39:29 -0700 (PDT)
+Message-ID: <af95fcfc-0fb4-4915-9001-3ff6439e5384@kernel.org>
+Date:   Mon, 16 Oct 2023 14:39:28 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/4] trigger: ledtrig-tty: move variable definition to
+ the top
+Content-Language: en-US
+To:     Florian Eckert <fe@dev.tdt.de>, m.brock@vanmierlo.com
+Cc:     Eckert.Florian@googlemail.com, gregkh@linuxfoundation.org,
+        pavel@ucw.cz, lee@kernel.org, kabel@kernel.org,
+        u.kleine-koenig@pengutronix.de, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-leds@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+References: <20231016071332.597654-1-fe@dev.tdt.de>
+ <20231016071332.597654-4-fe@dev.tdt.de>
+ <93dcb9f6f218593084f834ba6b450999@vanmierlo.com>
+ <34e8fcd94b4a959fe2336485e4722c3b@dev.tdt.de>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <34e8fcd94b4a959fe2336485e4722c3b@dev.tdt.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 16. 10. 23, 11:12, Florian Eckert wrote:
+> 
+> 
+> On 2023-10-16 10:46, m.brock@vanmierlo.com wrote:
+>> Florian Eckert wrote on 2023-10-16 09:13:
+>>> Has complained about the following construct:
+>>
+>> Who is "Has" or who/what has complained?
+> 
+> The test robot who does not agree with my change in the v1 patchset.
 
+Well, you should have put subject to that sentence, so that we can 
+understand. And not to parse "Has" as a tool/person name ;).
 
-On Mon, 16 Oct 2023, Gilbert Adikankwu wrote:
+>>> drivers/leds/trigger/ledtrig-tty.c:362:3: error: a label can only be
+>>> part of a statement and a declaration is not a statement
+>>>
+>>> Hence move the variable definition to the beginning of the function.
+>>>
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>> Closes:
+>>> https://lore.kernel.org/oe-kbuild-all/202309270440.IJB24Xap-lkp@intel.com/
+>>> Signed-off-by: Florian Eckert <fe@dev.tdt.de>
+>>> ---
+>>> @@ -124,8 +125,6 @@ static void ledtrig_tty_work(struct work_struct 
+>>> *work)
+>>>
+>>>      if (icount.rx != trigger_data->rx ||
+>>>          icount.tx != trigger_data->tx) {
+>>> -        unsigned long interval = LEDTRIG_TTY_INTERVAL;
+>>> -
+>>
+>> Is this kernel test robot broken?
+> 
+> The test robot does nothing wrong.
+> 
+>> I see no label definition here.
 
-> linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-> Bcc:
-> Subject: Re: [PATCH] staging: emxx_udc: Remove unnecessary parentheses around
->  condition tests
-> Reply-To:
-> In-Reply-To: <6b60ed7-9d97-2071-44f8-83b173191ed@inria.fr>
->
-> On Mon, Oct 16, 2023 at 02:15:06PM +0200, Julia Lawall wrote:
-> >
-> >
-> > On Mon, 16 Oct 2023, Gilbert Adikankwu wrote:
-> >
-> > > Fix 47 warnings detected by checkpatch.pl about unnecessary parenthesis
-> > > around condition tests.
-> >
-> > If you need to make any changes to the patch, there is no need to give the
-> > count of the changes.  It doesn't matter if it's 47, 46, 35, etc.
-> >
-> > julia
-> >
-> Hi Julia,
->
-> I added the number because I saw I similar commit on the logs that did
-> so. (commit b83970f23f36f0e2968872140e69f68118d82fe3)
+case is a label.
 
-OK, I still think it's pointless...  The person who looks at the commit 5
-years from now won't care about this information.  They care about what
-you did and why.
+>> And this variable declaration is at the start of a new block which 
+>> does not
+>> even require C99 support.
 
-julia
+Nah. The block begins after the switch.
+So
+"""
+switch (X) {
+type var;
+case X:
+}
+would work. Moving the def after case is no longer at the block beginning.
 
+So just wrap put the case code in a block like we are used to:
+"""
+case X: {
+   type var;
+}
+""".
 
-> > >
-> > > Signed-off-by: Gilbert Adikankwu <gilbertadikankwu@gmail.com>
-> > > ---
-> > >  drivers/staging/emxx_udc/emxx_udc.c | 72 ++++++++++++++---------------
-> > >  1 file changed, 36 insertions(+), 36 deletions(-)
-> > >
-> > > diff --git a/drivers/staging/emxx_udc/emxx_udc.c b/drivers/staging/emxx_udc/emxx_udc.c
-> > > index eb63daaca702..e8ddd691b788 100644
-> > > --- a/drivers/staging/emxx_udc/emxx_udc.c
-> > > +++ b/drivers/staging/emxx_udc/emxx_udc.c
-> > > @@ -149,8 +149,8 @@ static void _nbu2ss_ep0_complete(struct usb_ep *_ep, struct usb_request *_req)
-> > >  			/* SET_FEATURE */
-> > >  			recipient = (u8)(p_ctrl->bRequestType & USB_RECIP_MASK);
-> > >  			selector  = le16_to_cpu(p_ctrl->wValue);
-> > > -			if ((recipient == USB_RECIP_DEVICE) &&
-> > > -			    (selector == USB_DEVICE_TEST_MODE)) {
-> > > +			if (recipient == USB_RECIP_DEVICE &&
-> > > +			    selector == USB_DEVICE_TEST_MODE) {
-> > >  				wIndex = le16_to_cpu(p_ctrl->wIndex);
-> > >  				test_mode = (u32)(wIndex >> 8);
-> > >  				_nbu2ss_set_test_mode(udc, test_mode);
-> > > @@ -287,7 +287,7 @@ static int _nbu2ss_epn_exit(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep)
-> > >  	u32		num;
-> > >  	u32		data;
-> > >
-> > > -	if ((ep->epnum == 0) || (udc->vbus_active == 0))
-> > > +	if (ep->epnum == 0 || udc->vbus_active == 0)
-> > >  		return	-EINVAL;
-> > >
-> > >  	num = ep->epnum - 1;
-> > > @@ -336,7 +336,7 @@ static void _nbu2ss_ep_dma_init(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep)
-> > >  	u32		data;
-> > >
-> > >  	data = _nbu2ss_readl(&udc->p_regs->USBSSCONF);
-> > > -	if (((ep->epnum == 0) || (data & (1 << ep->epnum)) == 0))
-> > > +	if (ep->epnum == 0 || (data & (1 << ep->epnum)) == 0)
-> > >  		return;		/* Not Support DMA */
-> > >
-> > >  	num = ep->epnum - 1;
-> > > @@ -380,7 +380,7 @@ static void _nbu2ss_ep_dma_exit(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep)
-> > >  		return;		/* VBUS OFF */
-> > >
-> > >  	data = _nbu2ss_readl(&preg->USBSSCONF);
-> > > -	if ((ep->epnum == 0) || ((data & (1 << ep->epnum)) == 0))
-> > > +	if (ep->epnum == 0 || (data & (1 << ep->epnum)) == 0)
-> > >  		return;		/* Not Support DMA */
-> > >
-> > >  	num = ep->epnum - 1;
-> > > @@ -560,7 +560,7 @@ static int ep0_out_overbytes(struct nbu2ss_udc *udc, u8 *p_buf, u32 length)
-> > >  	union usb_reg_access  temp_32;
-> > >  	union usb_reg_access  *p_buf_32 = (union usb_reg_access *)p_buf;
-> > >
-> > > -	if ((length > 0) && (length < sizeof(u32))) {
-> > > +	if (length > 0 && length < sizeof(u32)) {
-> > >  		temp_32.dw = _nbu2ss_readl(&udc->p_regs->EP0_READ);
-> > >  		for (i = 0 ; i < length ; i++)
-> > >  			p_buf_32->byte.DATA[i] = temp_32.byte.DATA[i];
-> > > @@ -608,7 +608,7 @@ static int ep0_in_overbytes(struct nbu2ss_udc *udc,
-> > >  	union usb_reg_access  temp_32;
-> > >  	union usb_reg_access  *p_buf_32 = (union usb_reg_access *)p_buf;
-> > >
-> > > -	if ((i_remain_size > 0) && (i_remain_size < sizeof(u32))) {
-> > > +	if (i_remain_size > 0 && i_remain_size < sizeof(u32)) {
-> > >  		for (i = 0 ; i < i_remain_size ; i++)
-> > >  			temp_32.byte.DATA[i] = p_buf_32->byte.DATA[i];
-> > >  		_nbu2ss_ep_in_end(udc, 0, temp_32.dw, i_remain_size);
-> > > @@ -701,7 +701,7 @@ static int _nbu2ss_ep0_in_transfer(struct nbu2ss_udc *udc,
-> > >  		return result;
-> > >  	}
-> > >
-> > > -	if ((i_remain_size < sizeof(u32)) && (result != EP0_PACKETSIZE)) {
-> > > +	if (i_remain_size < sizeof(u32) && result != EP0_PACKETSIZE) {
-> > >  		p_buffer += result;
-> > >  		result += ep0_in_overbytes(udc, p_buffer, i_remain_size);
-> > >  		req->div_len = result;
-> > > @@ -738,7 +738,7 @@ static int _nbu2ss_ep0_out_transfer(struct nbu2ss_udc *udc,
-> > >  		req->req.actual += result;
-> > >  		i_recv_length -= result;
-> > >
-> > > -		if ((i_recv_length > 0) && (i_recv_length < sizeof(u32))) {
-> > > +		if (i_recv_length > 0 && i_recv_length < sizeof(u32)) {
-> > >  			p_buffer += result;
-> > >  			i_remain_size -= result;
-> > >
-> > > @@ -891,8 +891,8 @@ static int _nbu2ss_epn_out_pio(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep,
-> > >
-> > >  	req->req.actual += result;
-> > >
-> > > -	if ((req->req.actual == req->req.length) ||
-> > > -	    ((req->req.actual % ep->ep.maxpacket) != 0)) {
-> > > +	if (req->req.actual == req->req.length ||
-> > > +	    (req->req.actual % ep->ep.maxpacket) != 0) {
-> > >  		result = 0;
-> > >  	}
-> > >
-> > > @@ -914,8 +914,8 @@ static int _nbu2ss_epn_out_data(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep,
-> > >
-> > >  	i_buf_size = min((req->req.length - req->req.actual), data_size);
-> > >
-> > > -	if ((ep->ep_type != USB_ENDPOINT_XFER_INT) && (req->req.dma != 0) &&
-> > > -	    (i_buf_size  >= sizeof(u32))) {
-> > > +	if (ep->ep_type != USB_ENDPOINT_XFER_INT && req->req.dma != 0 &&
-> > > +	    i_buf_size  >= sizeof(u32)) {
-> > >  		nret = _nbu2ss_out_dma(udc, req, num, i_buf_size);
-> > >  	} else {
-> > >  		i_buf_size = min_t(u32, i_buf_size, ep->ep.maxpacket);
-> > > @@ -954,8 +954,8 @@ static int _nbu2ss_epn_out_transfer(struct nbu2ss_udc *udc,
-> > >  			}
-> > >  		}
-> > >  	} else {
-> > > -		if ((req->req.actual == req->req.length) ||
-> > > -		    ((req->req.actual % ep->ep.maxpacket) != 0)) {
-> > > +		if (req->req.actual == req->req.length ||
-> > > +		    (req->req.actual % ep->ep.maxpacket) != 0) {
-> > >  			result = 0;
-> > >  		}
-> > >  	}
-> > > @@ -1106,8 +1106,8 @@ static int _nbu2ss_epn_in_data(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep,
-> > >
-> > >  	num = ep->epnum - 1;
-> > >
-> > > -	if ((ep->ep_type != USB_ENDPOINT_XFER_INT) && (req->req.dma != 0) &&
-> > > -	    (data_size >= sizeof(u32))) {
-> > > +	if (ep->ep_type != USB_ENDPOINT_XFER_INT && req->req.dma != 0 &&
-> > > +	    data_size >= sizeof(u32)) {
-> > >  		nret = _nbu2ss_in_dma(udc, ep, req, num, data_size);
-> > >  	} else {
-> > >  		data_size = min_t(u32, data_size, ep->ep.maxpacket);
-> > > @@ -1238,7 +1238,7 @@ static void _nbu2ss_endpoint_toggle_reset(struct nbu2ss_udc *udc, u8 ep_adrs)
-> > >  	u8		num;
-> > >  	u32		data;
-> > >
-> > > -	if ((ep_adrs == 0) || (ep_adrs == 0x80))
-> > > +	if (ep_adrs == 0 || ep_adrs == 0x80)
-> > >  		return;
-> > >
-> > >  	num = (ep_adrs & 0x7F) - 1;
-> > > @@ -1261,7 +1261,7 @@ static void _nbu2ss_set_endpoint_stall(struct nbu2ss_udc *udc,
-> > >  	struct nbu2ss_ep *ep;
-> > >  	struct fc_regs __iomem *preg = udc->p_regs;
-> > >
-> > > -	if ((ep_adrs == 0) || (ep_adrs == 0x80)) {
-> > > +	if (ep_adrs == 0 || ep_adrs == 0x80) {
-> > >  		if (bstall) {
-> > >  			/* Set STALL */
-> > >  			_nbu2ss_bitset(&preg->EP0_CONTROL, EP0_STL);
-> > > @@ -1392,8 +1392,8 @@ static inline int _nbu2ss_req_feature(struct nbu2ss_udc *udc, bool bset)
-> > >  	u8	ep_adrs;
-> > >  	int	result = -EOPNOTSUPP;
-> > >
-> > > -	if ((udc->ctrl.wLength != 0x0000) ||
-> > > -	    (direction != USB_DIR_OUT)) {
-> > > +	if (udc->ctrl.wLength != 0x0000 ||
-> > > +	    direction != USB_DIR_OUT) {
-> > >  		return -EINVAL;
-> > >  	}
-> > >
-> > > @@ -1480,7 +1480,7 @@ static int std_req_get_status(struct nbu2ss_udc *udc)
-> > >  	u8	ep_adrs;
-> > >  	int	result = -EINVAL;
-> > >
-> > > -	if ((udc->ctrl.wValue != 0x0000) || (direction != USB_DIR_IN))
-> > > +	if (udc->ctrl.wValue != 0x0000 || direction != USB_DIR_IN)
-> > >  		return result;
-> > >
-> > >  	length =
-> > > @@ -1542,9 +1542,9 @@ static int std_req_set_address(struct nbu2ss_udc *udc)
-> > >  	int		result = 0;
-> > >  	u32		wValue = le16_to_cpu(udc->ctrl.wValue);
-> > >
-> > > -	if ((udc->ctrl.bRequestType != 0x00)	||
-> > > -	    (udc->ctrl.wIndex != 0x0000)	||
-> > > -		(udc->ctrl.wLength != 0x0000)) {
-> > > +	if (udc->ctrl.bRequestType != 0x00	||
-> > > +	    udc->ctrl.wIndex != 0x0000		||
-> > > +		udc->ctrl.wLength != 0x0000) {
-> > >  		return -EINVAL;
-> > >  	}
-> > >
-> > > @@ -1564,9 +1564,9 @@ static int std_req_set_configuration(struct nbu2ss_udc *udc)
-> > >  {
-> > >  	u32 config_value = (u32)(le16_to_cpu(udc->ctrl.wValue) & 0x00ff);
-> > >
-> > > -	if ((udc->ctrl.wIndex != 0x0000)	||
-> > > -	    (udc->ctrl.wLength != 0x0000)	||
-> > > -		(udc->ctrl.bRequestType != 0x00)) {
-> > > +	if (udc->ctrl.wIndex != 0x0000	||
-> > > +	    udc->ctrl.wLength != 0x0000	||
-> > > +		udc->ctrl.bRequestType != 0x00) {
-> > >  		return -EINVAL;
-> > >  	}
-> > >
-> > > @@ -1838,8 +1838,8 @@ static void _nbu2ss_ep_done(struct nbu2ss_ep *ep,
-> > >  	}
-> > >
-> > >  #ifdef USE_DMA
-> > > -	if ((ep->direct == USB_DIR_OUT) && (ep->epnum > 0) &&
-> > > -	    (req->req.dma != 0))
-> > > +	if (ep->direct == USB_DIR_OUT && ep->epnum > 0 &&
-> > > +	    req->req.dma != 0)
-> > >  		_nbu2ss_dma_unmap_single(udc, ep, req, USB_DIR_OUT);
-> > >  #endif
-> > >
-> > > @@ -1931,7 +1931,7 @@ static inline void _nbu2ss_epn_in_dma_int(struct nbu2ss_udc *udc,
-> > >  		mpkt = ep->ep.maxpacket;
-> > >  		size = preq->actual % mpkt;
-> > >  		if (size > 0) {
-> > > -			if (((preq->actual & 0x03) == 0) && (size < mpkt))
-> > > +			if ((preq->actual & 0x03) == 0 && size < mpkt)
-> > >  				_nbu2ss_ep_in_end(udc, ep->epnum, 0, 0);
-> > >  		} else {
-> > >  			_nbu2ss_epn_in_int(udc, ep, req);
-> > > @@ -2428,8 +2428,8 @@ static int nbu2ss_ep_enable(struct usb_ep *_ep,
-> > >  	}
-> > >
-> > >  	ep_type = usb_endpoint_type(desc);
-> > > -	if ((ep_type == USB_ENDPOINT_XFER_CONTROL) ||
-> > > -	    (ep_type == USB_ENDPOINT_XFER_ISOC)) {
-> > > +	if (ep_type == USB_ENDPOINT_XFER_CONTROL ||
-> > > +	    ep_type == USB_ENDPOINT_XFER_ISOC) {
-> > >  		pr_err(" *** %s, bat bmAttributes\n", __func__);
-> > >  		return -EINVAL;
-> > >  	}
-> > > @@ -2438,7 +2438,7 @@ static int nbu2ss_ep_enable(struct usb_ep *_ep,
-> > >  	if (udc->vbus_active == 0)
-> > >  		return -ESHUTDOWN;
-> > >
-> > > -	if ((!udc->driver) || (udc->gadget.speed == USB_SPEED_UNKNOWN)) {
-> > > +	if (!udc->driver || udc->gadget.speed == USB_SPEED_UNKNOWN) {
-> > >  		dev_err(ep->udc->dev, " *** %s, udc !!\n", __func__);
-> > >  		return -ESHUTDOWN;
-> > >  	}
-> > > @@ -2603,8 +2603,8 @@ static int nbu2ss_ep_queue(struct usb_ep *_ep,
-> > >  		}
-> > >  	}
-> > >
-> > > -	if ((ep->epnum > 0) && (ep->direct == USB_DIR_OUT) &&
-> > > -	    (req->req.dma != 0))
-> > > +	if (ep->epnum > 0 && ep->direct == USB_DIR_OUT &&
-> > > +	    req->req.dma != 0)
-> > >  		_nbu2ss_dma_map_single(udc, ep, req, USB_DIR_OUT);
-> > >  #endif
-> > >
-> > > --
-> > > 2.34.1
-> > >
-> > >
-> > >
->
+regards,
+-- 
+js
+suse labs
+
