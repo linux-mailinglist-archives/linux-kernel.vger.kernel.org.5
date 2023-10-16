@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 909747CB259
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 20:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C307CB255
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 20:23:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233732AbjJPSWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 14:22:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44604 "EHLO
+        id S234168AbjJPSWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 14:22:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233713AbjJPSWK (ORCPT
+        with ESMTP id S233985AbjJPSWL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 14:22:10 -0400
+        Mon, 16 Oct 2023 14:22:11 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11876AC;
-        Mon, 16 Oct 2023 11:22:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E9A4C433CC;
-        Mon, 16 Oct 2023 18:22:07 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08EC5EB;
+        Mon, 16 Oct 2023 11:22:10 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2542C4339A;
+        Mon, 16 Oct 2023 18:22:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697480528;
-        bh=exthi0CNeGhJZAzUytlzkiBQzqs+H7o+txhy02NswR4=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=rZCSKSLxd6FMwLmL7fkW0cppT0eyC2rww3BMNSNg9uv20qnQHnfHYk2HxDhMVOZgo
-         RiVEg/EuKfdGlUSZa80vmrCM+l6kVF8uxxSvH5FAe+LfrXZzAZhayr9QeiZUXCxXg0
-         QPGLgLphqFGvtP4ptXm2erlQmK438lvpTkBh5qCOLQ7VzXZ03GBHORGCuI+BN+ZjU+
-         06wrs40OsGjU2VhnulMVo0apzgOzHuyB8GMsfvU+/3P/WluNw8UGBSdGqVrqGVnD8d
-         6US1kProb8LRq2bMEZjUiHjNDSzYMvYP3TQytKWxPh0qQmTYh5EcAsTW/aOlwWLa2c
-         5E+o5+VplMbDg==
+        s=k20201202; t=1697480529;
+        bh=D3lvxz34unyH65s2yVEAdU7RQleW7M+mejIznp0HEb4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=D7xuNzYPgCr1PXU7ctKhvWMbKSBHbx6rhvV3wdFjYUXYY7V5gpTtZHwCI0pXcLEds
+         P/Tv3RbHz55h81LpJUaeH8jaenvtmQ4WfQTx8HRf24nAVgSeTGQ7rGKPJZzfBTUHMv
+         W8TqcVW2JmQSYf7+mbmlBdRNC2ugQohTSdc/h27l1VfLncFcAaZhZQMuPJGj6BwCZY
+         3smPDpkhqQa6sGVVy/2QqaMz5aSadwCyaaQuixXb6EIkFPXLBMlLRRG70+CL8s+vXr
+         bYz68LAS3sLq8U37iVR63Bhkj1Ii8znOJ52oNipYdXIduJZU5xy9Y10XVta/qV58i4
+         HLmmu8JqoOIVg==
 From:   Bjorn Andersson <andersson@kernel.org>
-To:     agross@kernel.org, konrad.dybcio@linaro.org, vkoul@kernel.org,
-        kishon@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        gregkh@linuxfoundation.org, quic_srichara@quicinc.com,
-        quic_varada@quicinc.com, quic_wcheng@quicinc.com,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, Nitheesh Sekar <quic_nsekar@quicinc.com>
-Subject: Re: (subset) [PATCH V4 0/4] Enable IPQ5018 USB2 support
-Date:   Mon, 16 Oct 2023 11:25:50 -0700
-Message-ID: <169748074955.1245023.12861217493042461028.b4-ty@kernel.org>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Raghavendra Kakarla <quic_rkakarla@quicinc.com>
+Cc:     quic_mkshah@quicinc.com, quic_lsrao@quicinc.com,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v3] arm64: dts: qcom: sa8775p: Add RPMh sleep stats
+Date:   Mon, 16 Oct 2023 11:25:51 -0700
+Message-ID: <169748074961.1245023.10066294124757569075.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230904063635.24975-1-quic_nsekar@quicinc.com>
-References: <20230904063635.24975-1-quic_nsekar@quicinc.com>
+In-Reply-To: <20230929054805.27847-1-quic_rkakarla@quicinc.com>
+References: <20230929054805.27847-1-quic_rkakarla@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -55,24 +55,16 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Mon, 04 Sep 2023 12:06:31 +0530, Nitheesh Sekar wrote:
-> This patch series adds the relevant phy and controller
-> DT configurations for enabling USB2 host mode support
-> on IPQ5018.
+On Fri, 29 Sep 2023 11:18:05 +0530, Raghavendra Kakarla wrote:
+> Add device node for sleep stats driver which provides various
+> low power mode stats.
 > 
-> Tested with a USB Mass storage device.
 > 
-> Depends on:
-> Link: https://lore.kernel.org/linux-arm-msm/20230831030503.17100-1-quic_nsekar@quicinc.com/
-> 
-> [...]
 
 Applied, thanks!
 
-[3/4] arm64: dts: qcom: ipq5018: Add USB related nodes
-      commit: e7166f2774aafefd29ff26ffbbb7f6d40ac8ea1c
-[4/4] arm64: dts: qcom: ipq5018: Enable USB
-      commit: 80a438775aa398751229bcaed15459f3acdb645f
+[1/1] arm64: dts: qcom: sa8775p: Add RPMh sleep stats
+      commit: f19a9a341d6faaf8d04bb6d9fb1f6a367ca0ed3a
 
 Best regards,
 -- 
