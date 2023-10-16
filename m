@@ -2,112 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69A447C9F71
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 08:24:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83DD27C9F75
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 08:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229668AbjJPGYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 02:24:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41352 "EHLO
+        id S229686AbjJPG2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 02:28:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjJPGYy (ORCPT
+        with ESMTP id S229478AbjJPG2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 02:24:54 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A054295;
-        Sun, 15 Oct 2023 23:24:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697437492; x=1728973492;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=C5NvzvYf1xpiz/5DJdtYT8poj0czhsYWbhIHm4WHrhU=;
-  b=c/Sjd4nc8EXuUUO6FyTpjPDB773AFlh5Ly+kDyKnhQzJz3dRSQHi/7BZ
-   h6egQaToshFfNxkLIK/ihSzK0H9u1vAXnErrnaRFHjMVJkGZ6Ngwr6O4B
-   yDiHTJJ2Bkn/hfYoOmXPxdRh4aD/fK6oLrKpd30EDFJDSAnEVy0hUE2DG
-   UnGAnyP499F7XXfLJ8Sst9JRN0wZNCdShJMOHvIogfU4A5PXa4ZtKr/vC
-   xJl4GHotDRX1ZuspAP0VkRpKxRFUhjpTr73VPJ5gKxT06uBzZiJuoqIQV
-   3W3Z7PBl7LGKssOJmqBqoMjnCU20AsBBh0I/csAfJSG8PnEZ7HIgNbD8T
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="449661213"
-X-IronPort-AV: E=Sophos;i="6.03,228,1694761200"; 
-   d="scan'208";a="449661213"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2023 23:24:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="871968974"
-X-IronPort-AV: E=Sophos;i="6.03,228,1694761200"; 
-   d="scan'208";a="871968974"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO binbinwu-mobl.sh.intel.com) ([10.238.1.136])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2023 23:24:49 -0700
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-To:     dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        shuah@kernel.org
-Cc:     linux-kselftest@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kirill.shutemov@linux.intel.com,
-        binbin.wu@linux.intel.com
-Subject: [PATCH v2] selftests/x86/lam: Zero out buffer for readlink()
-Date:   Mon, 16 Oct 2023 14:24:46 +0800
-Message-Id: <20231016062446.695-1-binbin.wu@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 16 Oct 2023 02:28:38 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CFC1AD
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 23:28:36 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1FE3D21ADB;
+        Mon, 16 Oct 2023 06:28:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1697437715; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=3S4X3hdCR3jWGjnnYmala4Nsas/lYtTIdqglFRoFwTs=;
+        b=BXY2UEMNMmZbcu5VmPlkaN3XoDtUO+bHshdurIZmVdRxBXthi5XMSQ+Xm8Qo3a51IwZxG7
+        /bEbscpzxopICtv18k3fgreAOhWiwnV8BLH+xb7LlolAQSQV24heKvLm7CQIYqb4s0WOEZ
+        XFwjdTSR/YN7oHHjFQO0ZmcQQhGV6o0=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E1534138EF;
+        Mon, 16 Oct 2023 06:28:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id mYXBNRLYLGV9QQAAMHmgww
+        (envelope-from <jgross@suse.com>); Mon, 16 Oct 2023 06:28:34 +0000
+From:   Juergen Gross <jgross@suse.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        xen-devel@lists.xenproject.org
+Subject: [PATCH 0/7] xen/events: do some cleanups in events_base.c
+Date:   Mon, 16 Oct 2023 08:28:24 +0200
+Message-Id: <20231016062831.20630-1-jgross@suse.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: 0.90
+X-Spamd-Result: default: False [0.90 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_SPAM(0.00)[19.76%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         R_MISSING_CHARSET(2.50)[];
+         MIME_GOOD(-0.10)[text/plain];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         RCPT_COUNT_FIVE(0.00)[5];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         MID_CONTAINS_FROM(1.00)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Zero out the buffer for readlink() since readlink() does not append a
-terminating null byte to the buffer.  Also change the buffer length
-passed to readlink() to 'PATH_MAX - 1' to ensure the resulting string
-is always null terminated.
+As a followup to the XSA-441 patch this series is doing a minor bug fix
+and some cleanups of events_base.c (with some minor effects outside of
+it).
 
-Fixes: 833c12ce0f430 ("selftests/x86/lam: Add inherit test cases for linear-address masking")
+Juergen Gross (7):
+  xen/events: fix delayed eoi list handling
+  xen/events: remove unused functions
+  xen/events: reduce externally visible helper functions
+  xen/events: remove some simple helpers from events_base.c
+  xen/events: drop xen_allocate_irqs_dynamic()
+  xen/events: modify internal [un]bind interfaces
+  xen/events: remove some info_for_irq() calls in pirq handling
 
-Signed-off-by: Binbin Wu <binbin.wu@linux.intel.com>
----
-v1->v2:
-- Change the buffer length passed to readlink() to 'PATH_MAX - 1' to ensure the
-  resulting string is always null terminated. [Kirill]
+ drivers/xen/events/events_2l.c       |   8 +-
+ drivers/xen/events/events_base.c     | 557 +++++++++++++--------------
+ drivers/xen/events/events_internal.h |   1 -
+ include/xen/events.h                 |   8 +-
+ 4 files changed, 276 insertions(+), 298 deletions(-)
 
- tools/testing/selftests/x86/lam.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/tools/testing/selftests/x86/lam.c b/tools/testing/selftests/x86/lam.c
-index eb0e46905bf9..8f9b06d9ce03 100644
---- a/tools/testing/selftests/x86/lam.c
-+++ b/tools/testing/selftests/x86/lam.c
-@@ -573,7 +573,7 @@ int do_uring(unsigned long lam)
- 	char path[PATH_MAX] = {0};
- 
- 	/* get current process path */
--	if (readlink("/proc/self/exe", path, PATH_MAX) <= 0)
-+	if (readlink("/proc/self/exe", path, PATH_MAX - 1) <= 0)
- 		return 1;
- 
- 	int file_fd = open(path, O_RDONLY);
-@@ -680,14 +680,14 @@ static int handle_execve(struct testcases *test)
- 		perror("Fork failed.");
- 		ret = 1;
- 	} else if (pid == 0) {
--		char path[PATH_MAX];
-+		char path[PATH_MAX] = {0};
- 
- 		/* Set LAM mode in parent process */
- 		if (set_lam(lam) != 0)
- 			return 1;
- 
- 		/* Get current binary's path and the binary was run by execve */
--		if (readlink("/proc/self/exe", path, PATH_MAX) <= 0)
-+		if (readlink("/proc/self/exe", path, PATH_MAX - 1) <= 0)
- 			exit(-1);
- 
- 		/* run binary to get LAM mode and return to parent process */
-
-base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
 -- 
-2.25.1
+2.35.3
 
