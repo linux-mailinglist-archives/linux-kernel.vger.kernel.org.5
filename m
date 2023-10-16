@@ -2,122 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0DA7C9E96
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 07:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE7577C9E9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 07:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbjJPFSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 01:18:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48928 "EHLO
+        id S229523AbjJPFTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 01:19:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjJPFSK (ORCPT
+        with ESMTP id S229478AbjJPFTX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 01:18:10 -0400
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A3E5A1;
-        Sun, 15 Oct 2023 22:18:09 -0700 (PDT)
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-53db1fbee70so6803726a12.2;
-        Sun, 15 Oct 2023 22:18:09 -0700 (PDT)
+        Mon, 16 Oct 2023 01:19:23 -0400
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF927E8
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 22:19:21 -0700 (PDT)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5a7c93507d5so48794857b3.2
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 22:19:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697433559; x=1698038359; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=84IjWES4NlZNq0zAo2UaGKzhd/8FqYzYRf4g+hayiP4=;
+        b=Le0FQsGO828GcvmeiBCAo4NiB3IxL4HAvgwlJFEFS23RKWoHPi6S5vpc95ZXix6vhS
+         gFtyeGgG8ZrHeC8mMDM5KsmoKywM2JKPtJOJXnmJYmCcFKBb7ZBNO31uMORtyBEF5R8u
+         7qGHHx1vM63ARvOgVfKEowt2JuMdIer2cLCp2ru0pml8Vhf79kSSGfBS6/yQA2m+dZw6
+         QtJ9TFlfe4uoUdwhW8e7xvmmCnzKR6z0W6oBdg6nGW740URiOa0Kn6pgfVZDah759n6J
+         x3tiG3s+Ayqx5KEKE+Mvl8bfC/Xedy+rBOAmHZUss20pER0AOeUftz4BRfpf7tQxPzxR
+         F9lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697433487; x=1698038287;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2ypeFKIlLAL2dVD85fyiZKOGmeug73nGXJ6tqAWt7V8=;
-        b=BZdDsKlm6Ls9RvLg9AvIMPs7YvZVFM2r0PCruygMEOMWJBpHHOnBC0Rt0DlcRwPvu3
-         SWrsajmrRsjJY7f0XtKknvTXo/qjp2tH8bcG/5n3Zw1NrBbfAGwEhcilEAo6K7GLjCdO
-         YHtQgZ5KZdU6eAd+32k6v88I/npjXCbUvRBVzZ1/HfElY89i8x7M/HK3/2L6JHBW+8Hz
-         GSo3xnWrzJsRBfTk92grex1+3RvntAwRaS/loYIlBSyqUfQXXOOjHU1RCcTKjMPUe76P
-         csRm9nhyEa1sPBSf7IRUfKuLomAOFAtv/Gtj3Kb9h9Ac/Wjggt4ura8S6hAk59gWvho2
-         gdvQ==
-X-Gm-Message-State: AOJu0Yz5FciP6ukH8LXjdRKvhgnbiCCszTTEM8p0I5sMf+pFJ9+tPBMh
-        NJxPJy2K5Wni0F+TsQXKJgOdQxR9CNs=
-X-Google-Smtp-Source: AGHT+IHO7nC5a/j8oeXwHmLzOp05GLfxdL8AfLLhWF3orfkFWEx0yAoOO/uZC04mOR+DazjPDKlKCQ==
-X-Received: by 2002:a05:6402:50c7:b0:53d:ed7a:11f2 with SMTP id h7-20020a05640250c700b0053ded7a11f2mr12470837edb.38.1697433487467;
-        Sun, 15 Oct 2023 22:18:07 -0700 (PDT)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id v3-20020a056402174300b0053e3839fc79sm4375376edx.96.2023.10.15.22.18.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Oct 2023 22:18:07 -0700 (PDT)
-Message-ID: <19157d2e-aba2-48ed-bafa-ed5a9a2df5b7@kernel.org>
-Date:   Mon, 16 Oct 2023 07:18:06 +0200
+        d=1e100.net; s=20230601; t=1697433559; x=1698038359;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=84IjWES4NlZNq0zAo2UaGKzhd/8FqYzYRf4g+hayiP4=;
+        b=gKBG9uqgEcnWLo7DqJekku2JjKRCcuXCzc/95KzPaPnsVuIpHdDi3s1GjZH92bBoVm
+         T+9ARgfBVkhMAyMailFtnEU0qDXtcwdXUhDtUz7+2BnbKEXZRe7PUEv4m83MGA3kUkqR
+         01G2FOVMQGZLL28xMXDeK7z7WuqRsueUddEEzhirtYfGdymAwngytsPIT1AAqbzI0VxS
+         DeNINeWx2NPgFmX4iirBNczyKhOi513sqFlYBf3CFlZewkaHwKoqQe9QhfM9xl+fMWrv
+         DE9E1VG8iccUHWG7/BQl4GkIWlwcFPrk6GawjwJvDO44inRVYtgx1WJFr8VZArvg0htv
+         w7Kg==
+X-Gm-Message-State: AOJu0YwpH9t0vr51pYkqHJ5EhBGLaBdNy2RNxBwdVnb6r37sx5lqpxDy
+        y4Zix9rHl0vcn0EiJwG8C0fhHDdYT+F9a1sE5etRFQ==
+X-Google-Smtp-Source: AGHT+IE/vXkOLFuRYYMBg7ZvJNs5bHOB4hTJjGiuXZPuuYtQOwt1lltozcDD7mfPmsfdbCeYL+gkZLo7kSBUF3zo/ac=
+X-Received: by 2002:a05:690c:ec8:b0:5a8:19b0:513f with SMTP id
+ cs8-20020a05690c0ec800b005a819b0513fmr12200346ywb.14.1697433559519; Sun, 15
+ Oct 2023 22:19:19 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch v2 5/6] tty: serial: 8250: Fix MOXA RS422/RS485 PCIe
- boards not work by default
-Content-Language: en-US
-To:     Crescent CY Hsieh <crescentcy.hsieh@moxa.com>,
-        gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20231016033705.20669-1-crescentcy.hsieh@moxa.com>
- <20231016033705.20669-6-crescentcy.hsieh@moxa.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <20231016033705.20669-6-crescentcy.hsieh@moxa.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+References: <1695218113-31198-1-git-send-email-quic_msarkar@quicinc.com>
+ <1695218113-31198-2-git-send-email-quic_msarkar@quicinc.com>
+ <20230921183850.GA762694-robh@kernel.org> <28bf111f-b965-4d38-884b-bc3a0b68a6cc@quicinc.com>
+ <8effa7e5-a223-081b-75b8-7b94400d42e6@quicinc.com> <CAA8EJpp+3_A-9YXF1yOKdFweVKqrpTxvxKoJcUH6qiDHfCQ-dQ@mail.gmail.com>
+ <31e6aab6-73f9-a421-9dfa-292d9d0e9649@quicinc.com>
+In-Reply-To: <31e6aab6-73f9-a421-9dfa-292d9d0e9649@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Mon, 16 Oct 2023 08:19:08 +0300
+Message-ID: <CAA8EJpoapMmeAxj0GyHnJixEeObpSa5gjQWfkxuZKnVoLg4Awg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/5] dt-bindings: PCI: qcom-ep: Add support for SA8775P SoC
+To:     Mrinmay Sarkar <quic_msarkar@quicinc.com>
+Cc:     Shazad Hussain <quic_shazhuss@quicinc.com>,
+        Rob Herring <robh@kernel.org>, agross@kernel.org,
+        andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, konrad.dybcio@linaro.org, mani@kernel.org,
+        quic_nitegupt@quicinc.com, quic_ramkri@quicinc.com,
+        quic_nayiluri@quicinc.com, quic_krichai@quicinc.com,
+        quic_vbadigan@quicinc.com, quic_parass@quicinc.com,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, linux-pci@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
+        linux-phy@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16. 10. 23, 5:37, Crescent CY Hsieh wrote:
-> MOXA PCIe RS422/RS485 boards will not function by default because of the
-> initial default serial interface of all MOXA PCIe boards is set to RS232.
-> 
-> This patch fixes the problem above by setting the initial default serial
-> interface to RS422 for those MOXA RS422/RS485 PCIe boards.
-> 
-> Signed-off-by: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+On Fri, 13 Oct 2023 at 15:55, Mrinmay Sarkar <quic_msarkar@quicinc.com> wrote:
+>
+>
+> On 10/11/2023 5:13 PM, Dmitry Baryshkov wrote:
+> > On Wed, 11 Oct 2023 at 14:14, Mrinmay Sarkar <quic_msarkar@quicinc.com> wrote:
+> >>
+> >> On 10/6/2023 4:24 PM, Shazad Hussain wrote:
+> >>>
+> >>> On 9/22/2023 12:08 AM, Rob Herring wrote:
+> >>>> On Wed, Sep 20, 2023 at 07:25:08PM +0530, Mrinmay Sarkar wrote:
+> >>>>> Add devicetree bindings support for SA8775P SoC.
+> >>>>> Define reg and interrupt per platform.
+> >>>>>
+> >>>>> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+> >>>>> ---
+> >>>>>    .../devicetree/bindings/pci/qcom,pcie-ep.yaml      | 130
+> >>>>> +++++++++++++++++----
+> >>>>>    1 file changed, 108 insertions(+), 22 deletions(-)
+> >>>>>
+> >>>>> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
+> >>>>> b/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
+> >>>>> index a223ce0..e860e8f 100644
+> >>>>> --- a/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
+> >>>>> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
+> >>>>> @@ -13,6 +13,7 @@ properties:
+> >>>>>      compatible:
+> >>>>>        oneOf:
+> >>>>>          - enum:
+> >>>>> +          - qcom,sa8775p-pcie-ep
+> >>>>>              - qcom,sdx55-pcie-ep
+> >>>>>              - qcom,sm8450-pcie-ep
+> >>>>>          - items:
+> >>>>> @@ -20,29 +21,19 @@ properties:
+> >>>>>              - const: qcom,sdx55-pcie-ep
+> >>>>>        reg:
+> >>>>> -    items:
+> >>>>> -      - description: Qualcomm-specific PARF configuration registers
+> >>>>> -      - description: DesignWare PCIe registers
+> >>>>> -      - description: External local bus interface registers
+> >>>>> -      - description: Address Translation Unit (ATU) registers
+> >>>>> -      - description: Memory region used to map remote RC address space
+> >>>>> -      - description: BAR memory region
+> >>>>> +    minItems: 6
+> >>>>> +    maxItems: 7
+> >>>>>        reg-names:
+> >>>>> -    items:
+> >>>>> -      - const: parf
+> >>>>> -      - const: dbi
+> >>>>> -      - const: elbi
+> >>>>> -      - const: atu
+> >>>>> -      - const: addr_space
+> >>>>> -      - const: mmio
+> >>>>> +    minItems: 6
+> >>>>> +    maxItems: 7
+> >>>> Don't move these into if/then schemas. Then we are duplicating the
+> >>>> names, and there is no reason to keep them aligned for new compatibles.
+> >>>>
+> >>>> Rob
+> >>> Hi Rob,
+> >>> As we have one extra reg property (dma) required for sa8775p-pcie-ep,
+> >>> isn't it expected to be moved in if/then as per number of regs
+> >>> required. Anyways we would have duplication of some properties for new
+> >>> compatibles where the member numbers differs for a property.
+> >>>
+> >>> Are you suggesting to add the extra reg property (dma) in the existing
+> >>> reg and reg-names list, and add minItems/maxItems for all compatibles
+> >>> present in this file ?
+> > This is what we have been doing in other cases: if the list is an
+> > extension of the current list, there is no need to duplicate it. One
+> > can use min/maxItems instead.
+> Hi Dmitry
+>
+> we have tried using min/maxItems rather than duplicating but somehow
+> catch up with some warnings in dt_bindings check
+>
+> //local/mnt/workspace/Mrinmay/lemans/next-20230914/linux-next/out/Documentation/devicetree/bindings/pci/qcom,pcie-ep.example.dtb:
+> pcie-ep@1c00000: reg: [[29360128, 12288], [1073741824, 3869],
+> [1073745696, 200], [1073745920, 4096], [1073750016, 4096], [29372416,
+> 12288]] is too short//
+> //        from schema $id:
+> http://devicetree.org/schemas/pci/qcom,pcie-ep.yaml#//
+> ///local/mnt/workspace/Mrinmay/lemans/next-20230914/linux-next/out/Documentation/devicetree/bindings/pci/qcom,pcie-ep.example.dtb:
+> pcie-ep@1c00000: reg-names: ['parf', 'dbi', 'elbi', 'atu', 'addr_space',
+> 'mmio'] is too short//
+> //        from schema $id:
+> http://devicetree.org/schemas/pci/qcom,pcie-ep.yaml#//
+> ///local/mnt/workspace/Mrinmay/lemans/next-20230914/linux-next/out/Documentation/devicetree/bindings/pci/qcom,pcie-ep.example.dtb:
+> pcie-ep@1c00000: interrupts: [[0, 140, 4], [0, 145, 4]] is too short//
+> //        from schema $id:
+> http://devicetree.org/schemas/pci/qcom,pcie-ep.yaml#//
+> ///local/mnt/workspace/Mrinmay/lemans/next-20230914/linux-next/out/Documentation/devicetree/bindings/pci/qcom,pcie-ep.example.dtb:
+> pcie-ep@1c00000: interrupt-names: ['global', 'doorbell'] is too short//
+> //        from schema $id:
+> http://devicetree.org/schemas/pci/qcom,pcie-ep.yaml#//
+> /
+>
+> //local/mnt/workspace/Mrinmay/lemans/next-20230914/linux-next/out/Documentation/devicetree/bindings/pci/qcom,pcie-ep.example.dtb:
+> pcie-ep@1c00000: interrupt-names: ['global', 'doorbell'] is too short/
+>
+> added the patch in attachment.
 
-Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+Please, don't send patches as attachments. It is impossible to comment on it.
+
+So, few points I had to fix to make your patch to work:
+
+- Please, understand the difference between enum and items. You'd need
+to add your compat string to only one of them. Or to a new entry. But
+adding it to both entries is a definite mistake.
+
+- You have extended items for existing platforms (reg, reg-names,
+interrupts, interrupt-names). However you failed to add corresponding
+minItems, allowing existing platforms to use the list with less items
+in it.
+
+- You do not need to have maxItems:N, minItems:N with the same value.
+Please drop these minItems, it is the default.
+
+- You haven't reviewed the patch on your own. You have erroneously
+nested 'properties' clauses in two places.
+
+$ git diff --stat
+ Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml | 33
++++++++++++----------------------
+ 1 file changed, 11 insertions(+), 22 deletions(-)
+
+Hope this helps.
 
 -- 
-js
-suse labs
-
+With best wishes
+Dmitry
