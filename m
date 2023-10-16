@@ -2,81 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 950977C9D7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 04:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C8227C9D81
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 04:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbjJPCqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 22:46:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44164 "EHLO
+        id S231253AbjJPCr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 22:47:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbjJPCqD (ORCPT
+        with ESMTP id S229600AbjJPCr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 22:46:03 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D909CC1
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 19:45:39 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-27d4372322aso1150536a91.3
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 19:45:39 -0700 (PDT)
+        Sun, 15 Oct 2023 22:47:27 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2091.outbound.protection.outlook.com [40.107.244.91])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DAE1C1;
+        Sun, 15 Oct 2023 19:47:25 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NKbGdG8fJTNkWWcYgk2PTZF2w0YE8ExOUIzzhA+L1woSBxNKhBrMAG1FTkM4/DT7qBDmnUmaWH9scH8ih/r/2A1WUrwsUUOkQIs3mY8XkeZy+FfG2mZ4ZJSjdU0lElrGvU3H+B68MDb58lEi+pbwvyvtTpIcQ25+zMzhwcvDWCh42/q36oYk7PBEFkFgrjASmlXmv1W36QE54ppl1UTCjaK2Esz7GRZVcAOrI5/arxQSv5mB3qD1AwZ23mecXw6UrnNsWwFvHcUh9wJOLG+GcrGbk1sc2XKxW0xzru04tccY+bKmgLQllZXA+98rccZatt8bjglWymCj6ZtN02jXxg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7tTw07ARxSZoclzKDcLGk3EAoQO9BiW98gasCBsmTlg=;
+ b=YsKziYKTXJ7XGORGMSKZPVtVS2CTeXTfLB18+/d3osdOIcWpUe/aXMsNWub1VEV4oi0DywainQ6t1JUZbwb7EYprvd2hs+i/066zAzCJSfOEyhB+d/dSXoNEerZGjziDSYyZcSDKHVKeEN5NGS8LeguZ5/yT+fW8rnrx24GRncmynZLG9KyCrx+g9Bk1cGs7Wzsc5n5d+Z6Bwy1g/8XGXbO9u6BZOYOtOit4mWqCWE629lpd+oXS+P8G7fSCGcHBZOfDTkXjk6XMpx99vSGXO5j/bDTJRGSrssdruU/ATXj0lp5JM0g2FkCtTl2U/EMQxXgNA9gUSqxxPhLOzQpsWA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=amperemail.onmicrosoft.com; dkim=pass
+ header.d=amperemail.onmicrosoft.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697424339; x=1698029139; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EUPjQc944rg0QPHQCfcD1FefPlzKVPcqjXoFv5/puE4=;
-        b=VpksfpTjpScasDymaFyoVR+MgVfi4iKwEns3QNLBcm82simaW+ijEZXXr4Skab6hzh
-         QRvc7Y3MeI0hGGYIU5uk7g4J4lPLn7KBLnANBHG0ariniKASrkIrBH8myF6oIrf4ledb
-         wSjRrf+wSNMHotYPHj9HkdHp2rpNyIBqskb+y4jqmpGrG6iIT7Md3ccNdGXp2/LTWyl6
-         z2mIH1gJJpwQ9pIhqZLd+iLmkQ6aKwqfeEIlKgPVi1KjL0tPocggqDIV7IAflBg0Zc/l
-         wVbjBXQAWS8wfINYsQbqlcKnzecluzSCyow4A7ARPeZeDABKyW8NJAP8tnE5+M0IRB1z
-         hGsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697424339; x=1698029139;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EUPjQc944rg0QPHQCfcD1FefPlzKVPcqjXoFv5/puE4=;
-        b=Pfutr3y+wqVfXmjG1mb7K0Wmx96obc2TNoW72NGzZukQYevgYcaGySiHCSNoULN/6d
-         VLWD7fs1zbUcbDEtVt9SN0qpCE8s4pImNNoTXio9gxcVtXrfB+rCpkLKT0nboz1PmtZb
-         jClA/4Zf1n0JgZoa35eOfD2ds4QUQu8QHNMTQ7Zp+uTLH5rEp4sn5ISsjRQPgbBwK2q2
-         1yRaRYsSjB7n4TJxD+vwD3XSGIT7EFWeWfMn/5wgTrLWG833uqDr9zpRF6U1F7V1L0+y
-         SbBjeaArcpHXqDyjYym/zUkMRFNUAwkHZ5Srhk/HbPdeIY2BSdgOSZLt7YZDsrHoMdL7
-         MDOA==
-X-Gm-Message-State: AOJu0YxbwkOZfApaZECq2G00dhZIMiUEKVaeeIk2Q0PVHnLy8bW1R3LA
-        0YCLsh6SYgJDiwz6xAU8Lh0W5A==
-X-Google-Smtp-Source: AGHT+IFAgLEJDohWowu9IlPK+uGPd2lWz/VvgKsmCCbpnGrHdVOBnBzPKcgqGZ33NJB9ZvvNbOiMxw==
-X-Received: by 2002:a17:90a:196:b0:27d:3c11:3610 with SMTP id 22-20020a17090a019600b0027d3c113610mr5112371pjc.33.1697424339313;
-        Sun, 15 Oct 2023 19:45:39 -0700 (PDT)
-Received: from [192.168.6.6] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id d8-20020a17090ae28800b0027758c7f585sm3417978pjz.52.2023.10.15.19.45.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Oct 2023 19:45:38 -0700 (PDT)
-Message-ID: <7758687f-06c1-d9b2-077a-34e79925a339@bytedance.com>
-Date:   Mon, 16 Oct 2023 10:45:30 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH v10 1/5] lib: objpool added: ring-array based lockless
- MPMC
+ d=amperemail.onmicrosoft.com; s=selector1-amperemail-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7tTw07ARxSZoclzKDcLGk3EAoQO9BiW98gasCBsmTlg=;
+ b=wBQWke//9m8Cr43vEHODh5QDtLQlATPHlG3P0/KU79dgHXiSiS9OtBPvElREugC6RClCpP0lXqHtYD872taLSithv/umYjI94u9QAW8HHdjL7emduvZXaGs/CoBcc1YQ7UU5qMDq63YEA18eNtB2tiZcPCJYLIirzP9rln+G9yQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amperemail.onmicrosoft.com;
+Received: from SA1PR01MB8131.prod.exchangelabs.com (2603:10b6:806:325::8) by
+ IA0PR01MB8571.prod.exchangelabs.com (2603:10b6:208:482::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6886.34; Mon, 16 Oct 2023 02:47:21 +0000
+Received: from SA1PR01MB8131.prod.exchangelabs.com
+ ([fe80::5dd0:9039:f27d:884c]) by SA1PR01MB8131.prod.exchangelabs.com
+ ([fe80::5dd0:9039:f27d:884c%7]) with mapi id 15.20.6863.043; Mon, 16 Oct 2023
+ 02:47:20 +0000
+Message-ID: <f71fc275-5afd-5ce6-83e7-938fc2580fb0@amperemail.onmicrosoft.com>
+Date:   Mon, 16 Oct 2023 09:47:06 +0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v1] i2c: designware: Disable TX_EMPTY irq while waiting
+ for block length byte
+To:     Serge Semin <fancer.lancer@gmail.com>,
+        Tam Nguyen <tamnguyenchi@os.amperecomputing.com>
+Cc:     linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        patches@amperecomputing.com, jarkko.nikula@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
+        jsd@semihalf.com, chuong@os.amperecomputing.com,
+        darren@os.amperecomputing.com, stable@vger.kernel.org
+References: <20230929035356.6435-1-tamnguyenchi@os.amperecomputing.com>
+ <avd7jhwexehgbvi6euzdwvf5zvqqgjx4ozo6uxu2qpmlarvva3@sgkce3rvovwk>
 Content-Language: en-US
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     linux-trace-kernel@vger.kernel.org, davem@davemloft.net,
-        anil.s.keshavamurthy@intel.com, naveen.n.rao@linux.ibm.com,
-        rostedt@goodmis.org, peterz@infradead.org,
-        akpm@linux-foundation.org, sander@svanheule.net,
-        ebiggers@google.com, dan.j.williams@intel.com, jpoimboe@kernel.org,
-        linux-kernel@vger.kernel.org, lkp@intel.com, mattwu@163.com
-References: <20231015053251.707442-1-wuqiang.matt@bytedance.com>
- <20231015053251.707442-2-wuqiang.matt@bytedance.com>
- <20231016004356.b5f3f815cb8d7c0994934332@kernel.org>
- <1516f7d1-e11b-3244-76b9-e6ddafc29a32@bytedance.com>
- <20231016082659.6ca94a5dff368783698753f9@kernel.org>
-From:   "wuqiang.matt" <wuqiang.matt@bytedance.com>
-In-Reply-To: <20231016082659.6ca94a5dff368783698753f9@kernel.org>
+From:   Tam Chi Nguyen <tamnguyenchi@amperemail.onmicrosoft.com>
+In-Reply-To: <avd7jhwexehgbvi6euzdwvf5zvqqgjx4ozo6uxu2qpmlarvva3@sgkce3rvovwk>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-ClientProxiedBy: KU1PR03CA0032.apcprd03.prod.outlook.com
+ (2603:1096:802:19::20) To SA1PR01MB8131.prod.exchangelabs.com
+ (2603:10b6:806:325::8)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR01MB8131:EE_|IA0PR01MB8571:EE_
+X-MS-Office365-Filtering-Correlation-Id: be8b9337-c4bc-4e99-4d62-08dbcdf237e5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UyZ8vnZZApOmF01Cwstpfht6HRrRwzdEJp75nx6Lp5ZzVQnnlL96seootrvoDkzmTixc/oJy9T6JRKttAcardupmFh90huX3ykDKXkQdHgBCy/L+HZAUOMqVECbHoUqYeWuOPJV7sjaudDz0//ZQBnR70EEX7+B15ioAJWALEmajlqsksGz8CTfb6pxo4RDDNk0s3cE9f0eHSLinKtKd9nKP23eIPUkbCKK1f+uRwNb5/O7dIQnuBurfB3UqNvK9EYegejuvoaPQ2WjvhFcvaQ0mvkvbdlUbC+gyQFNnRIoSM3P8V/KLlXTMcv/eFI4CBajh3TdGMzZV2TuV41dOq6OnxhQmoyVvVyrQtWmWfay20PY87tpyxIF2cMssAGb6U+CM+/82F37LgWGbZRFBQUusYU1Tz3YV0X7UGhiO64ZEusipzYMJEPv3yayW5aQccKDFiF8bZ6PqMvk+A39eKr1JaylZQeE5GN8LCrhZekDCoqMeOE0hJ/vmQfthWL9sXZe4hauFw7X6fun/Pcit8XpQu+itHCPL5D13MfoKWN0rQ7y+YK6IqMboxl4p0uHo0Z8Qa2FGjxQYZNhjo+LltcYvQMIoDjhkrfk6bixjOpXn8MlOcnijXJMGJt2Ogwxz
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR01MB8131.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(39840400004)(376002)(366004)(136003)(346002)(396003)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(4326008)(8676002)(8936002)(5660300002)(2906002)(41300700001)(31696002)(38100700002)(6506007)(26005)(2616005)(83380400001)(83170400001)(6512007)(6666004)(42882007)(478600001)(6486002)(31686004)(110136005)(53546011)(66946007)(66556008)(66476007)(316002)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d1ROMDFMbkJwSHpDWGNRRzZFYU1GK0N2MjAzSzdpbFFsZk9qeXJScVdrOHlO?=
+ =?utf-8?B?UVNFamd1UENIc1puREtrQ0NpU29kK29TbjNqQ0FGMytYWlpmblkwbDFvRDlH?=
+ =?utf-8?B?bWZoWjVjeXh1WExrbG8rU01MNG95SWVIZjJpV0JiWm1aZEJwTDlzd2dxcGE5?=
+ =?utf-8?B?NVBKNXZ3Q21rM0grSEVmbjNtT1FDYWRFWFg2eWYvSGwyT1h0L3R5RGhuMThC?=
+ =?utf-8?B?TlpjYWNjYitXbkdDbEROcER6eG9ZaUViYXIyNXN5dXpjV2xLU3B2ODd5Yzla?=
+ =?utf-8?B?VXcvcjAvKzN5MEZIZldnUVJaeVhNdGxDeHJENUZ5UkpsOTFCSkNGcHVHZjY1?=
+ =?utf-8?B?Vjlwam5RUzByU2RPVEhTNlJkK0twejJnN1ZQSDVUb1dXY0NRaGV0alQrcERl?=
+ =?utf-8?B?RTE1Qmg5RVh5UlN5RjFmZ3F5dWsvU1VCVVJYTGlTR0xPend1eFJCUENQNTJQ?=
+ =?utf-8?B?TWg1eUozZXFEN1N0TG1xOXR3amIvV0pOWGpqK0hyQSs2TEJFR3AzblBkVmh2?=
+ =?utf-8?B?NVRKM3VEQUluU2RIZi9XREJDVEluMDArOWo4L0dQVXJvNHVwV0tjeU9LOWlY?=
+ =?utf-8?B?VFZNaFpPbGRrenE5TUE2RE5aYndPZHZJM0dhVTRNbTF5a1poT0I5Zm9RaUlT?=
+ =?utf-8?B?UDE5Z0R6ajBvNTVqNFVGd0tBOVRqR0huOXVvOE5HVDBtcm13VEtNTXUrWGZ4?=
+ =?utf-8?B?Yk1CZ3lUTDJLOUJtT3A2eU5OdkU3Y2ZmeFFvbmRYU0x4TWRUcnBtZzFWd2Vw?=
+ =?utf-8?B?R05YK2RMK1NJK3VGOFhFR0hwNU5Lc1B6ZkxmMUxXNThjcmhnMkcwTGtVUVNX?=
+ =?utf-8?B?WlFUWVB5aU03aEJsbTVpMUlPREYvc2x3VEowNEFRNjN1MGxiQWJiZ2IyRDdj?=
+ =?utf-8?B?akFjMVZPNnZsa2haekg3ZnhtQTE5QXFFYlBuVnYrYXJTMlpLWDNDc20waFFk?=
+ =?utf-8?B?UHpMT00zQk1NWmhZbVM0OFpEbXRqc2ZRMGwvbTBieE9TZFJQQWsxUTVpSWdN?=
+ =?utf-8?B?Qy8zM2Y3TDdCYTdBcjJCd3ROZExGanpvdWtzbjZtd1FJeGYzaURKdmNhMHlL?=
+ =?utf-8?B?dTdVMmtwekg2RFg0dkFISUExYjlTNFFFOUlBRnVqdnhpM3RWdUV6U0pRdDcv?=
+ =?utf-8?B?VVEvTWdvZStHMDU4Y0NDMk9ZQnlEK2tKS2ZpRnk3Z25keW41VWJhaVJ4TG5w?=
+ =?utf-8?B?Nm1FT3VwME85NUpUNS9wQ2JtZWVBVm5YckZ3blBsMmJkMEw1UHRMQ2FZQ2RP?=
+ =?utf-8?B?SURTM2JmTjNaYms5ajk4WWNtNmoxSjNlcjBuWkRFV3N2MGFmWE9FeXBIWWEr?=
+ =?utf-8?B?a1o0RVdhN1dtYzRVRzVSQ3B4ZnBDTEMyK2NhV29acko1WklPVzZpOEdKRkRs?=
+ =?utf-8?B?emw5TTRES2hNdWNyZlRmMS9JZU1QejV2SWw1VGV6cmQvMHpKbU4vdTBtc3E0?=
+ =?utf-8?B?V1NwbVNyS2JBMXZUWjg0cjRxMUtsKzhPTGVDbExoOXh3WGtOVjhRSm9KTGh0?=
+ =?utf-8?B?cm13TEhZN052Vy9qM0RZSlhRUUlFa3J5QWFObkU0ci96R3dhWFN0a0UySG54?=
+ =?utf-8?B?SlY2WlVBL2ZIYmIxcHRBOGVWZTdkWUduSXIwZTNuZ3N1Y0p4ZjZOSXRWM2VS?=
+ =?utf-8?B?bVJXZGpPNzFzRzVXMEpxMWUzZG1Jc0RCZlVCR3VPeTVIQUVXeW1obXdVeG81?=
+ =?utf-8?B?elVUM1NiM2lEclJCT2xnWEVFZ0VjUTNIaGRBdDR3ZzFXcnM0YXBOc2QxOGE2?=
+ =?utf-8?B?SmR2Nk16VTVYcE84QnRjQTZjc3BlZ0l4amJzUHJIRmtFc2k5RHpKeXQzaFZ1?=
+ =?utf-8?B?RTJEOXpqZDA1RlpYa1Y5ajdXdUhCb2hPSG9MUTY0NkVMZk1QTk1vSTgvRjdM?=
+ =?utf-8?B?SkhjMXI2aWdIdFB6WUJGY3dhanNCdkpWUkJrSHgxK3dhcGhWa2w3ZHFNY0ND?=
+ =?utf-8?B?b1pEMlFHSmlQQXRXM3VQNUJ0U0lRMDY0blJmRTZVd1hiMERlV2ZVQUlxSWZT?=
+ =?utf-8?B?cGFnSktXQ3pjNWFUdzZISTM3ZWR0Zm5KS2YrM2UrZ1hhVi9pZEVaN0RmOTM1?=
+ =?utf-8?B?Zjk5SmNBRHEvbzd1RTNXdGEvK1VCUUh5dXFsK05VZEEvcWlROEUwWFk0Zjhw?=
+ =?utf-8?B?NFFqQ1V2dk43WGpZZnZEN295VVlyU25lYTVvTEMwSUhJbmZqRFk4NEtmNndq?=
+ =?utf-8?Q?IFNiStFnLiavgtuO1GT51wrGeKt3LQXxO7gI3xYYmS1T?=
+X-OriginatorOrg: amperemail.onmicrosoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: be8b9337-c4bc-4e99-4d62-08dbcdf237e5
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR01MB8131.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2023 02:47:20.8180
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: erlWbtVBEFxg7V5jbX9+EKkc4ZXH3Lf+1j8JeFYKz3+ukTsw3t9L6g6LTvZazDS2Ujo+xUyMP30/0NXKxyFXSMZhnDxEoe08FS+dU3gQPWYxxaZ2dM/nrwjuLcS2Ox/B
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR01MB8571
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,146 +133,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/16 07:26, Masami Hiramatsu (Google) wrote:
-> On Mon, 16 Oct 2023 00:06:11 +0800
-> "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
-> 
->> On 2023/10/15 23:43, Masami Hiramatsu (Google) wrote:
->>> On Sun, 15 Oct 2023 13:32:47 +0800
->>> "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
->>>
->>>> objpool is a scalable implementation of high performance queue for
->>>> object allocation and reclamation, such as kretprobe instances.
->>>>
->>>> With leveraging percpu ring-array to mitigate hot spots of memory
->>>> contention, it delivers near-linear scalability for high parallel
->>>> scenarios. The objpool is best suited for the following cases:
->>>> 1) Memory allocation or reclamation are prohibited or too expensive
->>>> 2) Consumers are of different priorities, such as irqs and threads
->>>>
->>>> Limitations:
->>>> 1) Maximum objects (capacity) is fixed after objpool creation
->>>> 2) All pre-allocated objects are managed in percpu ring array,
->>>>      which consumes more memory than linked lists
->>>>
->>>
->>> Thanks for updating! This looks good to me except 2 points.
->>>
->>> [...]
->>>> +
->>>> +/* initialize object pool and pre-allocate objects */
->>>> +int objpool_init(struct objpool_head *pool, int nr_objs, int object_size,
->>>> +		gfp_t gfp, void *context, objpool_init_obj_cb objinit,
->>>> +		objpool_fini_cb release)
->>>> +{
->>>> +	int rc, capacity, slot_size;
->>>> +
->>>> +	/* check input parameters */
->>>> +	if (nr_objs <= 0 || nr_objs > OBJPOOL_NR_OBJECT_MAX ||
->>>> +	    object_size <= 0 || object_size > OBJPOOL_OBJECT_SIZE_MAX)
->>>> +		return -EINVAL;
->>>> +
->>>> +	/* align up to unsigned long size */
->>>> +	object_size = ALIGN(object_size, sizeof(long));
->>>> +
->>>> +	/* calculate capacity of percpu objpool_slot */
->>>> +	capacity = roundup_pow_of_two(nr_objs);
->>>
->>> This must be 'roundup_pow_of_two(nr_objs + 1)' because if nr_objs is power
->>> of 2 and all objects are pushed on the same slot, tail == head. This
->>> means empty and full is the same.
->>
->> That won't happen. Would tail and head wrap only when >= 2^32. When all
->> objects are pushed to the same slot, tail will be (head + capacity).
-> 
-> Ah, indeed. OK.
-> 
->>
->>>
->>>> +	if (!capacity)
->>>> +		return -EINVAL;
->>>> +
->>>> +	/* initialize objpool pool */
->>>> +	memset(pool, 0, sizeof(struct objpool_head));
->>>> +	pool->nr_cpus = nr_cpu_ids;
->>>> +	pool->obj_size = object_size;
->>>> +	pool->capacity = capacity;
->>>> +	pool->gfp = gfp & ~__GFP_ZERO;
->>>> +	pool->context = context;
->>>> +	pool->release = release;
->>>> +	slot_size = pool->nr_cpus * sizeof(struct objpool_slot);
->>>> +	pool->cpu_slots = kzalloc(slot_size, pool->gfp);
->>>> +	if (!pool->cpu_slots)
->>>> +		return -ENOMEM;
->>>> +
->>>> +	/* initialize per-cpu slots */
->>>> +	rc = objpool_init_percpu_slots(pool, nr_objs, context, objinit);
->>>> +	if (rc)
->>>> +		objpool_fini_percpu_slots(pool);
->>>> +	else
->>>> +		refcount_set(&pool->ref, pool->nr_objs + 1);
->>>> +
->>>> +	return rc;
->>>> +}
->>>> +EXPORT_SYMBOL_GPL(objpool_init);
->>>> +
->>>
->>> [...]
->>>
->>>> +
->>>> +/* drop unused objects and defref objpool for releasing */
->>>> +void objpool_fini(struct objpool_head *pool)
->>>> +{
->>>> +	void *obj;
->>>> +
->>>> +	do {
->>>> +		/* grab object from objpool and drop it */
->>>> +		obj = objpool_pop(pool);
->>>> +
->>>> +		/*
->>>> +		 * drop reference of objpool anyway even if
->>>> +		 * the obj is NULL, since one extra ref upon
->>>> +		 * objpool was already grabbed during pool
->>>> +		 * initialization in objpool_init()
->>>> +		 */
->>>> +		if (refcount_dec_and_test(&pool->ref))
->>>> +			objpool_free(pool);
->>>
->>> Nit: you can call objpool_drop() instead of repeating the same thing here.
->>
->> objpool_drop won't deref objpool if given obj is NULL. But here we need
->> drop objpool anyway even if obj is NULL.
-> 
-> I guess you decrement for the 'objpool' itself if obj=NULL, but I think
-> it is a bit hacky (so you added the comment).
-> e.g. rethook is doing something like below.
-> 
-> ---
-> /* extra count for this pool itself */
-> count = 1;
-> /* make the pool empty */
-> while (objpool_pop(pool))
-> 	count++;
-> 
-> if (refcount_sub_and_test(count, &pool->ref))
-> 	objpool_free(pool);
-> ---
 
-Right, that's reasonable. Better one single atomic operation than multiple.
+On 9/29/2023 23:08, Serge Semin wrote:
+> On Fri, Sep 29, 2023 at 10:53:56AM +0700, Tam Nguyen wrote:
+>> During SMBus block data read process, we have seen high interrupt rate
+>> because of TX_EMPTY irq status while waiting for block length byte (the
+>> first data byte after the address phase). The interrupt handler does not
+>> do anything because the internal state is kept as STATUS_WRITE_IN_PROGRESS.
+>> Hence, we should disable TX_EMPTY irq until I2C DW receives first data
+>> byte from I2C device, then re-enable it.
+>>
+>> It takes 0.789 ms for host to receive data length from slave.
+>> Without the patch, i2c_dw_isr is called 99 times by TX_EMPTY interrupt.
+>> And it is none after applying the patch.
+>>
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Chuong Tran <chuong@os.amperecomputing.com>
+>> Signed-off-by: Tam Nguyen <tamnguyenchi@os.amperecomputing.com>
+>> ---
+>>   drivers/i2c/busses/i2c-designware-master.c | 13 +++++++++++++
+>>   1 file changed, 13 insertions(+)
+>>
+>> diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
+>> index 55ea91a63382..2152b1f9b27c 100644
+>> --- a/drivers/i2c/busses/i2c-designware-master.c
+>> +++ b/drivers/i2c/busses/i2c-designware-master.c
+>> @@ -462,6 +462,13 @@ i2c_dw_xfer_msg(struct dw_i2c_dev *dev)
+>>   		if (buf_len > 0 || flags & I2C_M_RECV_LEN) {
+>>   			/* more bytes to be written */
+>>   			dev->status |= STATUS_WRITE_IN_PROGRESS;
+>> +			/*
+>> +			 * In I2C_FUNC_SMBUS_BLOCK_DATA case, there is no data
+>> +			 * to send before receiving data length from slave.
+>> +			 * Disable TX_EMPTY while waiting for data length byte
+>> +			 */
+>> +			if (flags & I2C_M_RECV_LEN)
+>> +				intr_mask &= ~DW_IC_INTR_TX_EMPTY;
+> Is it possible to reduce the indentations level? Like this:
+>
+> 		/*
+> 		 * Because we don't know the buffer length in the
+> 		 * I2C_FUNC_SMBUS_BLOCK_DATA case, we can't stop the
+> 		 * transaction here. Also disable the TX_EMPTY IRQ
+> 		 * while waiting for the data length byte to avoid the
+> 		 * bogus interrupts flood.
+> 		 */
+> 		if (flags & I2C_M_RECV_LEN) {
+>    			dev->status |= STATUS_WRITE_IN_PROGRESS;
+> 			intr_mask &= ~DW_IC_INTR_TX_EMPTY;
+> 			break;
+> 		} else if (buf_len > 0) {
+>    			/* more bytes to be written */
+>    			dev->status |= STATUS_WRITE_IN_PROGRESS;
+> 			break;
+> 		} else {
+> 			dev->status &= ~STATUS_WRITE_IN_PROGRESS;
+> 		}
+Thank you very much for your advice. I will update in V2.
+>>   			break;
+>>   		} else
+>>   			dev->status &= ~STATUS_WRITE_IN_PROGRESS;
+>> @@ -485,6 +492,7 @@ i2c_dw_recv_len(struct dw_i2c_dev *dev, u8 len)
+>>   {
+>>   	struct i2c_msg *msgs = dev->msgs;
+>>   	u32 flags = msgs[dev->msg_read_idx].flags;
+>> +	u32 intr_mask;
+>>   
+>>   	/*
+>>   	 * Adjust the buffer length and mask the flag
+>> @@ -495,6 +503,11 @@ i2c_dw_recv_len(struct dw_i2c_dev *dev, u8 len)
+>>   	msgs[dev->msg_read_idx].len = len;
+>>   	msgs[dev->msg_read_idx].flags &= ~I2C_M_RECV_LEN;
+>>   
+>> +	/* Re-enable TX_EMPTY interrupt. */
+>> +	regmap_read(dev->map, DW_IC_INTR_MASK, &intr_mask);
+>> +	intr_mask |= DW_IC_INTR_TX_EMPTY;
+>> +	regmap_write(dev->map, DW_IC_INTR_MASK, intr_mask);
+> 1. What about just:
+> 	regmap_update_bits(dev->map, DW_IC_INTR_MASK, DW_IC_INTR_TX_EMPTY,
+> 			   DW_IC_INTR_TX_EMPTY);
+Right, much better with this update. I'll update it in v2.
+> 2. The in-situ comment is pointless because the statement already
+> implies the IRQ re-enabling. I suggest to add more details of _why_
+> the IRQ needs to be re-enabled (what is supposed to be done after it's
+> re-enabled?).
 
->>
->>> Thank you,
->>>
->>>> +	} while (obj);
->>>> +}
->>>> +EXPORT_SYMBOL_GPL(objpool_fini);
->>>> -- 
->>>> 2.40.1
->>>>
->>
->> Thanks for your time
->>
->>
-> 
-> 
+Got that. I will add more context here. Thank for the advice.
 
+Best regards,
+Tam Nguyen
+
+> -Serge(y)
+>
+>> +
+>>   	return len;
+>>   }
+>>   
+>> -- 
+>> 2.25.1
+>>
