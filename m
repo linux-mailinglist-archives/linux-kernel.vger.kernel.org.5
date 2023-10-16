@@ -2,202 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9808F7CA4A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C917CA4AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232160AbjJPJ7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 05:59:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38062 "EHLO
+        id S230343AbjJPKCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 06:02:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJPJ7Q (ORCPT
+        with ESMTP id S229459AbjJPKCw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 05:59:16 -0400
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C4F59C;
-        Mon, 16 Oct 2023 02:59:14 -0700 (PDT)
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-d77ad095f13so4279981276.2;
-        Mon, 16 Oct 2023 02:59:14 -0700 (PDT)
+        Mon, 16 Oct 2023 06:02:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 098DCAC
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 03:02:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697450524;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7Rvdf5GF7NssmVrOVN5fIpBg7Q/eJJlAGQ4ASt6ni/o=;
+        b=e3Wq/Tvi7u5Vy23l+z1e4rkIqxunXrNPJz/oMpb7+h6Q+6HpKStmlavMYLCNqIzJWQk4ZQ
+        aw7XYcndx7irUO/hCOWoHmEeQnTHeSmNWsVT3lveiOLy9jdLeUuzfJQ7U5t+U/gWbu2R1i
+        OlkF0wpuiWPLLs5dsDkzJoX7mkqLjys=
+Received: from mail-vs1-f70.google.com (mail-vs1-f70.google.com
+ [209.85.217.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-230-0i_Ig--pPxWy0j2y1lK-pA-1; Mon, 16 Oct 2023 06:01:53 -0400
+X-MC-Unique: 0i_Ig--pPxWy0j2y1lK-pA-1
+Received: by mail-vs1-f70.google.com with SMTP id ada2fe7eead31-457d094c420so868403137.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 03:01:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697450353; x=1698055153;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=i9GLVUGKessKoslJIZpAI7+l//jryIRXWw3bJSWd/JU=;
-        b=YpDAPKeVaVk1om3qEAtzdITkpkguvsjgbnlLajX5IRwq2TkM9TxIcL1p0S0ZmmVckF
-         A0x+ofvsJMYjROMp2PtTgDf1CU1Fo0Ylz+dq+We7gyYjX4h8UQH8zeTVJqsmn2DRLTJ5
-         SswsTJEzJxsypsRZ2hORFL680Cc9wtTQeHWr9p40xJ5JY22csfxEAvUDsPUe6hQ4marD
-         iNcRBKzq5hJ2cPl5VotwkrC1h6tCsn0EKlz5saQ29r7B2rR43Q1DSmGo/9ifiCRFj4c/
-         xXIh3fEKUTDXPvJjrh3kynCkyZqINJ52l4fZcn3c+bTTZBXWPBq+EU7/rhPr3VnsPTA8
-         f5lA==
-X-Gm-Message-State: AOJu0Yzmn5aPl+3Sq+cW4aiMGD9x2AQwmBanQ5emqVFkWnZmXJZbenrm
-        v8diF7JUoDbSZYE/rWdWJ4idOe8NfGvpAQ==
-X-Google-Smtp-Source: AGHT+IHDifpYoVg377WaVlCQbyVtL075I/N8OSBwyoKSlQwbzsy4Q39TGatkdfof4lMFOPSU9W6aXg==
-X-Received: by 2002:a25:a044:0:b0:d32:cd49:2469 with SMTP id x62-20020a25a044000000b00d32cd492469mr30483446ybh.24.1697450353351;
-        Mon, 16 Oct 2023 02:59:13 -0700 (PDT)
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
-        by smtp.gmail.com with ESMTPSA id s10-20020a056902120a00b00d800eb5ac2asm2501003ybu.65.2023.10.16.02.59.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 02:59:12 -0700 (PDT)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-5a2536adaf3so58366447b3.2;
-        Mon, 16 Oct 2023 02:59:12 -0700 (PDT)
-X-Received: by 2002:a81:b661:0:b0:5a7:b9b1:c0bd with SMTP id
- h33-20020a81b661000000b005a7b9b1c0bdmr19215902ywk.11.1697450352391; Mon, 16
- Oct 2023 02:59:12 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697450512; x=1698055312;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7Rvdf5GF7NssmVrOVN5fIpBg7Q/eJJlAGQ4ASt6ni/o=;
+        b=jScUYjUQhs/ADNx3IW0CxcfEDy9jyxgzqs926Okd21bqyX+zSOCaEX1TeXrUck7+0p
+         p/f1kzuYg6txlOaFYX5ZyrXboteYUfLORzaQcSelphx9gK6hGPuNysQLTwXL1f4D7GKo
+         aVgOt6jemS7ZfkVP+eph9aFPqWPlfOyVXHm17mwJDtwdqHrp/t0y8gICDo3cbGO/J4De
+         vrd8AYJ8HfnFt/4e0KFlwFB9g78fp487shoV2u9qAQ4/OPVZfkvhbAWe0ZY9aVfjvZyh
+         npX/GYs8U3Yods5VUGomxiseE11o/OisLzojYYoxMFn/fJ6qiTd6i9WDq3z1Uy5LTmFj
+         uTSg==
+X-Gm-Message-State: AOJu0Yxw9Pc54sHy4IagOaE8I4kMD6Q+SukBZDGNl7oBFopRv4gbEKnU
+        Ld+3t9mv+MA4PE/lJKApmmUmhJjk/cbcWSA5Cq7RLIiE2ZEyiRtUO/odOvK41K2FYkh+oWDHGqY
+        5xLySut/H7dhn1ZEeqruAN7KE
+X-Received: by 2002:a05:6102:1250:b0:458:16ac:bcad with SMTP id p16-20020a056102125000b0045816acbcadmr77260vsg.32.1697450512557;
+        Mon, 16 Oct 2023 03:01:52 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH6harqCGifXrM0+4AN5WIM0FRUrWBf8RWML7HaIo1VltVJ/nTSF6hWksPJbMyBcx5ZRlWB+Q==
+X-Received: by 2002:a05:6102:1250:b0:458:16ac:bcad with SMTP id p16-20020a056102125000b0045816acbcadmr77235vsg.32.1697450512287;
+        Mon, 16 Oct 2023 03:01:52 -0700 (PDT)
+Received: from rh (p200300c93f0047001ec25c15da4a4a7b.dip0.t-ipconnect.de. [2003:c9:3f00:4700:1ec2:5c15:da4a:4a7b])
+        by smtp.gmail.com with ESMTPSA id h4-20020ac87444000000b004179e79069asm2890615qtr.21.2023.10.16.03.01.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 03:01:52 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 12:01:48 +0200 (CEST)
+From:   Sebastian Ott <sebott@redhat.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+cc:     Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v7 10/12] KVM: selftests: aarch64: Introduce vpmu_counter_access
+ test
+In-Reply-To: <CAJHc60zPc6eM+t7pOM19aKbf_9cMvj_LnPnG1EO35=EP0jG+Tg@mail.gmail.com>
+Message-ID: <2714abd6-40a4-17f8-e997-843bc69d9319@redhat.com>
+References: <20231009230858.3444834-1-rananta@google.com> <20231009230858.3444834-11-rananta@google.com> <44608d30-c97a-c725-e8b2-0c5a81440869@redhat.com> <65b8bbdb-2187-3c85-0e5d-24befcf01333@redhat.com>
+ <CAJHc60zPc6eM+t7pOM19aKbf_9cMvj_LnPnG1EO35=EP0jG+Tg@mail.gmail.com>
 MIME-Version: 1.0
-References: <cover.1694767208.git.geert+renesas@glider.be> <CAMuHMdWfBTKdXvZutg4LvWqBjuz-X=ZjzX0LKPqD=JxYuLoPRw@mail.gmail.com>
-In-Reply-To: <CAMuHMdWfBTKdXvZutg4LvWqBjuz-X=ZjzX0LKPqD=JxYuLoPRw@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 16 Oct 2023 11:59:01 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUF61V5qNyKbrTGxZfEJvCVuLO7q2R5MqZYkzRC_cNr0w@mail.gmail.com>
-Message-ID: <CAMuHMdUF61V5qNyKbrTGxZfEJvCVuLO7q2R5MqZYkzRC_cNr0w@mail.gmail.com>
-Subject: [GIT PULL v2] drm: renesas: shmobile: Atomic conversion + DT support
- (was: Re: [PATCH v4 00/41] drm: renesas: shmobile: Atomic conversion + DT support)
-To:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="-1463795790-956281928-1697450511=:6267"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-        Hi David, Daniel,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-The following changes since commit 389af786f92ecdff35883551d54bf4e507ffcccb:
+---1463795790-956281928-1697450511=:6267
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 
-  Merge tag 'drm-intel-next-2023-09-29' of
-git://anongit.freedesktop.org/drm/drm-intel into drm-next (2023-10-04
-13:55:19 +1000)
+On Fri, 13 Oct 2023, Raghavendra Rao Ananta wrote:
+> On Thu, Oct 12, 2023 at 8:02 AM Sebastian Ott <sebott@redhat.com> wrote:
+>>
+>> On Thu, 12 Oct 2023, Sebastian Ott wrote:
+>>> On Mon, 9 Oct 2023, Raghavendra Rao Ananta wrote:
+>>>>  +/* Create a VM that has one vCPU with PMUv3 configured. */
+>>>>  +static void create_vpmu_vm(void *guest_code)
+>>>>  +{
+>>>>  +   struct kvm_vcpu_init init;
+>>>>  +   uint8_t pmuver, ec;
+>>>>  +   uint64_t dfr0, irq = 23;
+>>>>  +   struct kvm_device_attr irq_attr = {
+>>>>  +           .group = KVM_ARM_VCPU_PMU_V3_CTRL,
+>>>>  +           .attr = KVM_ARM_VCPU_PMU_V3_IRQ,
+>>>>  +           .addr = (uint64_t)&irq,
+>>>>  +   };
+>>>>  +   struct kvm_device_attr init_attr = {
+>>>>  +           .group = KVM_ARM_VCPU_PMU_V3_CTRL,
+>>>>  +           .attr = KVM_ARM_VCPU_PMU_V3_INIT,
+>>>>  +   };
+>>>>  +
+>>>>  +   /* The test creates the vpmu_vm multiple times. Ensure a clean state
+>>>>  */
+>>>>  +   memset(&vpmu_vm, 0, sizeof(vpmu_vm));
+>>>>  +
+>>>>  +   vpmu_vm.vm = vm_create(1);
+>>>>  +   vm_init_descriptor_tables(vpmu_vm.vm);
+>>>>  +   for (ec = 0; ec < ESR_EC_NUM; ec++) {
+>>>>  +           vm_install_sync_handler(vpmu_vm.vm, VECTOR_SYNC_CURRENT, ec,
+>>>>  +                                   guest_sync_handler);
+>>>>  +   }
+>>>>  +
+>>>>  +   /* Create vCPU with PMUv3 */
+>>>>  +   vm_ioctl(vpmu_vm.vm, KVM_ARM_PREFERRED_TARGET, &init);
+>>>>  +   init.features[0] |= (1 << KVM_ARM_VCPU_PMU_V3);
+>>>>  +   vpmu_vm.vcpu = aarch64_vcpu_add(vpmu_vm.vm, 0, &init, guest_code);
+>>>>  +   vcpu_init_descriptor_tables(vpmu_vm.vcpu);
+>>>>  +   vpmu_vm.gic_fd = vgic_v3_setup(vpmu_vm.vm, 1, 64,
+>>>>  +                                   GICD_BASE_GPA, GICR_BASE_GPA);
+>>>>  +
+>>>>  +   /* Make sure that PMUv3 support is indicated in the ID register */
+>>>>  +   vcpu_get_reg(vpmu_vm.vcpu,
+>>>>  +                KVM_ARM64_SYS_REG(SYS_ID_AA64DFR0_EL1), &dfr0);
+>>>>  +   pmuver = FIELD_GET(ARM64_FEATURE_MASK(ID_AA64DFR0_PMUVER), dfr0);
+>>>>  +   TEST_ASSERT(pmuver != ID_AA64DFR0_PMUVER_IMP_DEF &&
+>>>>  +               pmuver >= ID_AA64DFR0_PMUVER_8_0,
+>>>>  +               "Unexpected PMUVER (0x%x) on the vCPU with PMUv3",
+>>>>  pmuver);
+>>>>  +
+>>>>  +   /* Initialize vPMU */
+>>>>  +   vcpu_ioctl(vpmu_vm.vcpu, KVM_SET_DEVICE_ATTR, &irq_attr);
+>>>>  +   vcpu_ioctl(vpmu_vm.vcpu, KVM_SET_DEVICE_ATTR, &init_attr);
+>>>>  +}
+>>>
+>>> This one fails to build for me:
+>>> aarch64/vpmu_counter_access.c: In function ‘create_vpmu_vm’:
+>>> aarch64/vpmu_counter_access.c:456:47: error: ‘ID_AA64DFR0_PMUVER_MASK’
+>>> undeclared (first use in this function); did you mean
+>>> ‘ID_AA64DFR0_EL1_PMUVer_MASK’?
+>>>   456 |         pmuver = FIELD_GET(ARM64_FEATURE_MASK(ID_AA64DFR0_PMUVER),
+>>>   dfr0);
+>>
+>> Looks like there's a clash with
+>> "KVM: arm64: selftests: Import automatic generation of sysreg defs"
+>> from:
+>>         https://lore.kernel.org/r/20231003230408.3405722-12-oliver.upton@linux.dev
+> Thanks for the pointer, Sebastian! Surprisingly, I don't see the patch
+> when I sync to kvmarm/next.
+>
 
-are available in the Git repository at:
+Yea, sry - I've had both of these series applied locally.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git
-tags/shmob-drm-atomic-dt-tag2
+Sebastian
+---1463795790-956281928-1697450511=:6267--
 
-for you to fetch changes up to 1399ebacbf590dfbac4fbba181dd1595b2fa10ba:
-
-  drm: renesas: shmobile: Add DT support (2023-10-16 11:47:48 +0200)
-
-----------------------------------------------------------------
-drm: renesas: shmobile: Atomic conversion + DT support
-
-Currently, there are two drivers for the LCD controller on Renesas
-SuperH-based and ARM-based SH-Mobile and R-Mobile SoCs:
-  1. sh_mobile_lcdcfb, using the fbdev framework,
-  2. shmob_drm, using the DRM framework.
-However, only the former driver is used, as all platform support
-integrates the former.  None of these drivers support DT-based systems.
-
-Convert the SH-Mobile DRM driver to atomic modesetting, and add DT
-support, complemented by the customary set of fixes and improvements.
-
-Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Link: https://lore.kernel.org/r/cover.1694767208.git.geert+renesas@glider.be/
-
-Changes compared to v1:
-  - Rebase to drm-next,
-  - Add Acked-by.
-
-Thanks for pulling!
-
-----------------------------------------------------------------
-Geert Uytterhoeven (36):
-      MAINTAINER: Create entry for Renesas SH-Mobile DRM drivers
-      dt-bindings: display: Add Renesas SH-Mobile LCDC bindings
-      media: uapi: Add MEDIA_BUS_FMT_RGB666_2X9_BE format
-      drm: renesas: shmobile: Fix overlay plane disable
-      drm: renesas: shmobile: Fix ARGB32 overlay format typo
-      drm: renesas: shmobile: Correct encoder/connector types
-      drm: renesas: shmobile: Add support for Runtime PM
-      drm: renesas: shmobile: Restore indentation of shmob_drm_setup_clocks()
-      drm: renesas: shmobile: Use %p4cc to print fourcc code
-      drm: renesas: shmobile: Add missing YCbCr formats
-      drm: renesas: shmobile: Improve shmob_drm_format_info table
-      drm: renesas: shmobile: Improve error handling
-      drm: renesas: shmobile: Convert to use devm_request_irq()
-      drm: renesas: shmobile: Remove custom plane destroy callback
-      drm: renesas: shmobile: Use drmm_universal_plane_alloc()
-      drm: renesas: shmobile: Embed drm_device in shmob_drm_device
-      drm: renesas: shmobile: Convert container helpers to static
-inline functions
-      drm: renesas: shmobile: Replace .dev_private with container_of()
-      drm: renesas: shmobile: Use media bus formats in platform data
-      drm: renesas: shmobile: Move interface handling to connector setup
-      drm: renesas: shmobile: Unify plane allocation
-      drm: renesas: shmobile: Rename shmob_drm_crtc.crtc
-      drm: renesas: shmobile: Rename shmob_drm_connector.connector
-      drm: renesas: shmobile: Rename shmob_drm_plane.plane
-      drm: renesas: shmobile: Use drm_crtc_handle_vblank()
-      drm: renesas: shmobile: Move shmob_drm_crtc_finish_page_flip()
-      drm: renesas: shmobile: Wait for page flip when turning CRTC off
-      drm: renesas: shmobile: Turn vblank on/off when enabling/disabling CRTC
-      drm: renesas: shmobile: Shutdown the display on remove
-      drm: renesas: shmobile: Cleanup encoder
-      drm: renesas: shmobile: Atomic conversion part 1
-      drm: renesas: shmobile: Atomic conversion part 2
-      drm: renesas: shmobile: Use suspend/resume helpers
-      drm: renesas: shmobile: Remove internal CRTC state tracking
-      drm: renesas: shmobile: Atomic conversion part 3
-      drm: renesas: shmobile: Add DT support
-
-Laurent Pinchart (5):
-      drm: renesas: shmobile: Remove backlight support
-      drm: renesas: shmobile: Don't set display info width and height twice
-      drm: renesas: shmobile: Rename input clocks
-      drm: renesas: shmobile: Remove support for SYS panels
-      drm: renesas: shmobile: Use struct videomode in platform data
-
- .../bindings/display/renesas,shmobile-lcdc.yaml    | 130 +++++
- .../userspace-api/media/v4l/subdev-formats.rst     |  72 +++
- MAINTAINERS                                        |  13 +-
- drivers/gpu/drm/renesas/shmobile/Kconfig           |   3 +-
- drivers/gpu/drm/renesas/shmobile/Makefile          |   3 +-
- .../gpu/drm/renesas/shmobile/shmob_drm_backlight.c |  82 ---
- .../gpu/drm/renesas/shmobile/shmob_drm_backlight.h |  19 -
- drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.c  | 650 +++++++++------------
- drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.h  |  27 +-
- drivers/gpu/drm/renesas/shmobile/shmob_drm_drv.c   | 179 +++---
- drivers/gpu/drm/renesas/shmobile/shmob_drm_drv.h   |  18 +-
- drivers/gpu/drm/renesas/shmobile/shmob_drm_kms.c   |  77 ++-
- drivers/gpu/drm/renesas/shmobile/shmob_drm_kms.h   |   9 +-
- drivers/gpu/drm/renesas/shmobile/shmob_drm_plane.c | 326 ++++++-----
- drivers/gpu/drm/renesas/shmobile/shmob_drm_plane.h |   5 +-
- include/linux/platform_data/shmob_drm.h            |  57 +-
- include/uapi/linux/media-bus-format.h              |   3 +-
- 17 files changed, 860 insertions(+), 813 deletions(-)
- create mode 100644
-Documentation/devicetree/bindings/display/renesas,shmobile-lcdc.yaml
- delete mode 100644 drivers/gpu/drm/renesas/shmobile/shmob_drm_backlight.c
- delete mode 100644 drivers/gpu/drm/renesas/shmobile/shmob_drm_backlight.h
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
