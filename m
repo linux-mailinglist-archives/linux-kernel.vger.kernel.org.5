@@ -2,180 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0941C7CABEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 16:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 019357CAC02
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 16:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232778AbjJPOrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 10:47:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42898 "EHLO
+        id S232478AbjJPOsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 10:48:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231569AbjJPOrT (ORCPT
+        with ESMTP id S233485AbjJPOsd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 10:47:19 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2047.outbound.protection.outlook.com [40.107.93.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36F3B9;
-        Mon, 16 Oct 2023 07:47:17 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JFxyzv+9XOBDUp5k/BvwdzOkMwiyrOYW7iMN0zPPjTVkPL42dVzliddKrjEr2qUppaAxNL7qYEjDvcGCLQAPi6nVr3xsTaf+ijlKzOYw+K1UjlaQBAIHo5Tk/oLRlGocpsfv9xMRobdWKXOtbWaIqfbFPni4hlLJLxFIS/Byis6Btag9rFDrQxXdhylZ9ym1+z2kGWkP4twDjGTLKJGxF/t5i2UyWaGdBD9VbS9cvWWjxTpIoywngYcajbvD7N5z88NjXITzqwAo/531ldYCVbHI7ryqDQm7weQC9Kx3ITjp3dDbxGh5rK3zjHRVoM2zTlfSLesCN9xEYuCcla9OvQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tji08nhN5uQ30eiwaAHUbOXqMzL/ARUXhtFwSMyeAmk=;
- b=Z0+KyOkyj+FJKZkrEkQ7M9tGD5nTB5mghCSoXNpnmMN0GRmC3zU/JF38fIyaHzsLVPCuJOfuzAlCgNbIj05UPuTU8j/O6NONHqY1xm3DGMNFpAiJVZ8UUsVzBVRImC92+/IeHREYs5s+1yVdTSJZnUtJRsyZ0yHlZPt6dGbAvk3zCDrqrVJ1vcHYG4IsBe5F9TBByQPf4/msbI/SNAOSqkMkGMkYiT8gkXgVIU7ga+3kEikXoqkebnQTLaGo1AqWvEtJJfBcLJSyNKNXfJVZhd7zkZPC6SDwwaUMme1zvN45ownqYCIOOsupLoKDYtfVyVCy3glmdoG35Axo01iLuQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tji08nhN5uQ30eiwaAHUbOXqMzL/ARUXhtFwSMyeAmk=;
- b=wpCVqwBhOvl0pJ6zovZXtEtgjOJanHfgMy8m1kR01uO4CSMtaJ/+/tcesWTgOp4i1sFXgP+rtQiHkfsc57eWf9bIDCDM/4tgFT3Xmadvmr0tFYz1I8Bv9effUS5dsDO/JXgaTU5hHRbmhKGxYg5XKNKEcCLIQHK9t1w3UEOVWwU=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
- by SJ2PR12MB8784.namprd12.prod.outlook.com (2603:10b6:a03:4d0::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.35; Mon, 16 Oct
- 2023 14:47:15 +0000
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::3043:e5d2:42f4:a231]) by BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::3043:e5d2:42f4:a231%7]) with mapi id 15.20.6886.034; Mon, 16 Oct 2023
- 14:47:15 +0000
-Message-ID: <dc57436b-8483-4c50-a7a9-0f895a494ada@amd.com>
-Date:   Mon, 16 Oct 2023 10:47:11 -0400
-User-Agent: Mozilla Thunderbird
-Cc:     yazen.ghannam@amd.com, "tony.luck@intel.com" <tony.luck@intel.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>
-Subject: Re: [PATCH] x86/mce: Increase the size of the MCE pool from 2 to 8
- pages
-Content-Language: en-US
-To:     Dave Hansen <dave.hansen@intel.com>,
-        "Sironi, Filippo" <sironi@amazon.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20231011163320.79732-1-sironi@amazon.de>
- <afaef377-25e0-49f6-a99f-3e5bd4b44f87@intel.com>
- <EDD08AA3-C404-4DB6-96BA-2B25519B2496@amazon.de>
- <6591377b-7911-444b-abf9-cfc978472d76@intel.com>
- <1c598798-5b28-4a17-bf86-042781808021@amd.com>
- <dd72296c-def6-4fb3-9984-348641cdb6a4@intel.com>
-From:   Yazen Ghannam <yazen.ghannam@amd.com>
-In-Reply-To: <dd72296c-def6-4fb3-9984-348641cdb6a4@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BN8PR04CA0042.namprd04.prod.outlook.com
- (2603:10b6:408:d4::16) To BN8PR12MB3108.namprd12.prod.outlook.com
- (2603:10b6:408:40::20)
+        Mon, 16 Oct 2023 10:48:33 -0400
+Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B462EB
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 07:48:30 -0700 (PDT)
+Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5a2536adaf3so62516327b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 07:48:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697467710; x=1698072510; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GxypX+GEfUXKbSOzwP0/C/E3Z4J92Eo/3dLzh/Ra8sE=;
+        b=MDcKJvjoXcB8n0XH+nX/HCQCvKEIcbKdUTyyPGZPqWQYYWTu7wkVAU2/7pEPcqs3Nc
+         KvqnTXDtFs+UnWTNce8o1MU6XVPrs1QvyhJ/T2yttZwblBLVXgce3l0RSeWmlM3d4lRm
+         jyUle3M7pw8GXjpZTJQWRIJ6FZx95OPf3kYCrbNM92KeZQOAM3zhlwBUuHJFAJOh+/sr
+         jT7uA9ZxTVP8Jm03/XqJr7X6H0hOu6WkpTOTfh429GbPI/qMaJCsO0M/sSbVBbZBts8l
+         G8pnLnpPP/7nrxWqPZwxEIWq5jmiM7UBK6ZEdmnfWP3dCBjVX1uKvqiD2vJ78FRffZrS
+         UKqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697467710; x=1698072510;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GxypX+GEfUXKbSOzwP0/C/E3Z4J92Eo/3dLzh/Ra8sE=;
+        b=eX9wn6dx7OIzlAP1htSX1qcpx40NurnYVqg0TYStOqvgx0mnOEyQ2KNzz9kNGQxIpm
+         lgB2lEQz0rXXy10JPHkJE0nI3D2LRtLPsPSX4aXpuJMfMr2U70ZQp/pJBCw9iSZk0ING
+         7/6B8Ln0E26j0FA0ormLa/wvsiD5Pbdgqa7tT3dCKlL8rhjKX1RV0a07Sj1tc6xCnr6T
+         JZ3VW+KgAV9Z3qhXJJvxmfpvrVf7xTiJ08yE01o57D81DIoq5E/mW7DXY6Uq6PHJGusb
+         2MR8qrLkQk3HMBNl8bv8Qr81WLBh31ItiFso8QUf55RFsLqt07CSielkiIhicWhDy//z
+         +yXA==
+X-Gm-Message-State: AOJu0YyCCm5Rnk174BMTT+buylObede0Vqc2u7TlCbOAeF2vEfxpjhX+
+        enrttnIbKBldjF5dwUqtwnbPF7cRPZn/QhVbML9dtg==
+X-Google-Smtp-Source: AGHT+IFydC4JiwFHumykEit+4bc15qpX+YfvV1l4iiaVG8PNsPGn4dovyuswKlpyIeP4zBTlngKF3aJXGed59EMhMvI=
+X-Received: by 2002:a25:2d15:0:b0:d9a:c4df:cd8e with SMTP id
+ t21-20020a252d15000000b00d9ac4dfcd8emr10401524ybt.33.1697467709642; Mon, 16
+ Oct 2023 07:48:29 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3108:EE_|SJ2PR12MB8784:EE_
-X-MS-Office365-Filtering-Correlation-Id: b90e4125-992d-4b26-a2b6-08dbce56c9c9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jZE6M2myen1BrRlbrpai34lONbV1jBvoQjesCErJkz/Wx66UtITc61v3Tkd5B32AyhwVQuZNPmWdbDOOApTmbdXq2SGpxlVg0SwFqAAjzTEVWFPadMGH8GPEqToLEE2Mepkghfvw1ue6qMUvIQpXVQAW8N1ZwGLM1Fo9msjYS/5T19unKr3wYofWsZx6uh2oLUbXD+CjULXrRSvN6thziiw+QH+ygR65R5J+Hdd5rIrgqkIhcfIZv6L/lsYUqSWkBmfMgA5iimBlEguKCyat/EmotyEODpRoi3smzVx7R5GxSpe7Ik7y0+uGDLXGDHUAUYp7YUcVfDs87gj9OiygnRvUFC9w91nPQCCXY68lYOtric98vtyqbsyYampJcSaFW8nnimmY0d3zdH+h2gDNdWBHj/Uz39g4eCr/e1gPfTfvQYVWzLilhkYaCzN7Ul8P79vUaX+a5v9RAadSTGW2BUQkfmZAAg+rd+B0Owl6yX/pufWaEdYQauK8EXzvL9qLw8aa6O64VRsxwY3g5K6tvRRgI3c7eiMvJnrM9WDVvr33FqGdRZD2ZtcW57S//1+vh4bY8y8wXaft2xb5c/NHAUdicSEQYLEW3TEmRgYiOSVPZprYYWJuhgMOWFTqDvo/pka90k1Oc8St5a9Tz7ckPA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(346002)(376002)(396003)(39860400002)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(6506007)(53546011)(5660300002)(44832011)(6666004)(2906002)(26005)(36756003)(2616005)(83380400001)(38100700002)(86362001)(31696002)(6512007)(7416002)(6486002)(478600001)(54906003)(66946007)(66476007)(66556008)(110136005)(41300700001)(316002)(8676002)(8936002)(4326008)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aGJNYkZOQ280UjZHdHdqbUY5cElRbE1yeFE3akRybVB2b1lYVU1iZzIrU0tO?=
- =?utf-8?B?ZEVjRWNkb05xUjJlRTlycjBvVE1sODZ6Ky9DazFNNTZYNEFXK2tDbFZycFpi?=
- =?utf-8?B?WFNqbExjUmhuYlczOEVhOFlxa003YXp2cVFNV3ZWMFdoSHA2QllmY1ZIUFht?=
- =?utf-8?B?ZUVXMURrUzlCQXJaR1d3YTRndnVVVGF2NktJY2FoZnZOaFRhSlVWSVdROSt0?=
- =?utf-8?B?M3FxOWhXNk5UcmE2QUVhTk94NWdTRVBEOTNIU01CTC9qRHk4R2NmdUF3UW5O?=
- =?utf-8?B?MTViTTNOYkVEbVR0UGJzZTJGRzFuM0hQRFZOZTlYSGMvU0I1UHVmSmJZc3Ew?=
- =?utf-8?B?L09rL2FxeWF2SHBndDZxYVFFOEtuOEpVYm8rem4rWXpKdXdrcjJXbGxCdmFk?=
- =?utf-8?B?bi9Lb0xWODhaR1RxMmNFNlhoNWdzbloybHdiRmtneUZ5N0Q3eHd5ZFdTbnh5?=
- =?utf-8?B?dWNsS082Qm9qYTZWNHJyQVR5c3FGNGxTSFVmcGxLU3ZJa0ZHbnJ4VVVBeElB?=
- =?utf-8?B?K2hZQkxHdUNLMElNcTdKcm90VjloUmFVcXFLWm5ibHJ0cTNudVJ3WUVUQjFx?=
- =?utf-8?B?TjVyN1k0S283OS9OTm9LUGxGOVN1SDcxVUpWRlBlOG9zbUhrdlhJVjY1aHV0?=
- =?utf-8?B?NXVyT001c2VlMy9pK3lEd2d4dWg5N1FYUmVVM2czd2hpZy9hVkhQMm01UEpN?=
- =?utf-8?B?cTl3b3JrTXl4Y2lTZ09xSGhEdnBOeHBpUWZMZldQYm5UT0ZXQlNPeDBYZ3F2?=
- =?utf-8?B?eU5VeUFGTmJMako3bTd4STBxWHlYdTJFdlh6Z0s2WkxncFZPQVFNdXo4LytL?=
- =?utf-8?B?RW0xd1lCbVBveFZGLzdkSHhwdDVNRmRnMUwvNGtKR05LaUpTRm9vRWhTM3RU?=
- =?utf-8?B?WWpxYUF1cHBqclQ5Rm83SU9lSDJ5RGFDWXJGTnR3eXBZdTZpYURrQllkY1Jo?=
- =?utf-8?B?TWJkUlJNTUg2eDNPa0psVlZwQXRjY2hkNitKNElDallQcWdaMUV2R3hweVRo?=
- =?utf-8?B?QjZObjQrT0Y2dlJNU0RDeThLZVZ1K3BiWVUrY2xaaGd3cnZxSWxsdUNVYTRy?=
- =?utf-8?B?a21yRE1pU1hUekhYRFAyYW01blg0R3FvNHB3VDRCczJIUSswNFpCK2d5UXpy?=
- =?utf-8?B?SjNnUnVOU0dsS2FuUUVZVGNxOWhNalRCSDIveGpxZUZVRGZSSVMyZ1Zya0Qv?=
- =?utf-8?B?dUU4TCsvb2xEaFVoVzF6N0N4aEYwYnNZR29CM0dEMjRFSm4yaDc1NzJZWnNq?=
- =?utf-8?B?OVE0UnpGUldPR3lRNy9nMWx3amFXWDM3blJmWlA5TVFxcEd2RFJiRWlSR2Jm?=
- =?utf-8?B?aUgybFRTd0RqRm5EZTNTOHdxL3JNNENSdlZ6Y1BRdWQ1dDFNQklyK1hRVWdY?=
- =?utf-8?B?eDhBd093Y1Z2bnJ2aGZqSW1pMG9EdXgrekZkNFI3dDc2ZzROcVpadG5WakRO?=
- =?utf-8?B?dTVPMXZkeUpnd0ZFcGQyKzVaY295b2xsVnJBYy9Gb2pURVY4eTRja0V3YkZI?=
- =?utf-8?B?ZVE5b2V6SU1LOVV4UFlBZzNLT1l6WHBUZllITThZdXRsNCtnVmJNYVpEZEM3?=
- =?utf-8?B?TDAwS1F1MG55OGlSU0d3cGVXenlyNVUzUHl1NExiblV5R2NkS1Z2Z2gzcTIz?=
- =?utf-8?B?K2Y4UG95bVVVVmR0V3haZlk4S2NiVGVUOXo2NzRyTU9MMDVZc214Nk1LZ29r?=
- =?utf-8?B?ZFUxTVV2Qm1kMDR1TGE3RE1SS0RLM0JKbnlWZ0ZqbUphUVdOWjJ6T25tZmJN?=
- =?utf-8?B?ZEU4c08vRXRsVytVYkJOVUNEbXZLenZzRk9GTDB5Qkc1YnY0RCtncmdtYUZm?=
- =?utf-8?B?NlZxK0tBaHZMcDZINERRL3FVMlZzeXFFWW4wNFZ1Q09QZUpTU0JaazEvRE5D?=
- =?utf-8?B?NXBkMFFBVHB4d0FQY1B6cEFFeFM4K3NuSjFrQ3NJUDJQalcwUy81dlE5OU1O?=
- =?utf-8?B?Y0ZIb0d1QzQvVUxyRHh4ekJ4RGJ1cGxXZHI4WUFaa0d3cW8wdERFdU1uVGZT?=
- =?utf-8?B?QzB5VEttMGplQzhpN3pjY09HemZ0bW5kb0pMbXlWVlM4V1YwTjUvb0E5R04z?=
- =?utf-8?B?dXJldlE5QWJEQm5DZGhYN3pmcmphaWhrODdBbDgvemFhT1V4bVNGam85bGkv?=
- =?utf-8?Q?GhV4A0Pkw74Kznn+ljvonPIi1?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b90e4125-992d-4b26-a2b6-08dbce56c9c9
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2023 14:47:15.2450
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rUfYBYwEKkTgDs80uWoyx+gKoU5mcFI+nrWsAJk8zdUkvIjrF/EEdodirjnU1NMHcTlwTlltq8lvjVu0VsUvkw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8784
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20230912-msm8909-cpufreq-v1-0-767ce66b544b@kernkonzept.com>
+ <20230912-msm8909-cpufreq-v1-1-767ce66b544b@kernkonzept.com>
+ <CAPDyKFq6U-MR4Bd+GmixYseRECDh142RhydtKbiPd3NHV2g6aw@mail.gmail.com>
+ <ZQGqfMigCFZP_HLA@gerhold.net> <CAPDyKFppdXe1AZo1jm2Bc_ZR18hw5Bmh1x+2P7Obhb_rJ2gc4Q@mail.gmail.com>
+ <ZRcC2IRRv6dtKY65@gerhold.net> <CAPDyKFoiup8KNv=1LFGKDdDLA1pHsdJUgTTWMdgxnikEmReXzg@mail.gmail.com>
+ <ZSg-XtwMxg3_fWxc@gerhold.net>
+In-Reply-To: <ZSg-XtwMxg3_fWxc@gerhold.net>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 16 Oct 2023 16:47:52 +0200
+Message-ID: <CAPDyKFoH5EOvRRKy-Bgp_B9B3rf=PUKK5N45s5PNgfBi55PaOQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] cpufreq: qcom-nvmem: Enable virtual power domain devices
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Ilia Lin <ilia.lin@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16/23 10:24 AM, Dave Hansen wrote:
-> On 10/16/23 07:14, Yazen Ghannam wrote:
->> 1) Keep the current config size for boot time. 
->> 2) Add a kernel parameter
->> and/or sysfs file to allow users to request additional genpool capacity.
->> 3) Use gen_pool_add(), or whichever, to add the capacity based on user
->> input. Maybe this can be expanded later to be automatic. But I think it
->> simpler to start with explicit user input.
-> 
-> I guarantee virtually nobody will ever use an explicit kernel interface
-> to bump the size up.  It'll be the same exact folks that recompile their
-> kernels.
+[...]
 
-Right, I agree. My intent was to help avoid a recompile if, for example,
-the config size was not enough. Meaning even if a fleet has a custom
-kernel with 8 pages of size, it may happen that more is needed. But "may
-happen" isn't a strong reason to make a change here. :)
-
-> 
-> An automatic resizing one doesn't have to be fancy and only has to
-> expand once:
+> > >
+> > > Here are the two commits with the my current DT changes (WIP):
+> > >   - MSM8909+PM8909 (RPMPD only):
+> > >     https://github.com/msm8916-mainline/linux/commit/791e0c5a3162372a0738bc7b0f4a5e87247923db
+> >
+> > Okay, so this looks pretty straight forward. One thing though, it
+> > looks like we need to update the DT bindings for cpus.
+> >
+> > I recently updated Documentation/devicetree/bindings/arm/cpus.yaml
+> > [1], to let "perf" be the common "power-domain-name" for a CPU's SCMI
+> > performance-domain. I look like we should extend the description to
+> > allow "perf" to be used for all types of performance domains.
+> >
 >
+> "perf" sounds fine for a single power domain, I just used "apc" here for
+> consistency with the MSM8916 changes (which scales this power domain and
+> several others, as you saw).
+>
+> (BTW, I would appreciate such a generic name for the cpuidle case as
+>  well, so "idle" instead of "psci" vs "sbi". I have another WIP cpuidle
+>  driver and didn't want to invent another name there...)
 
-Why once?
+Whether it's "idle" or "power" or something else, we should certainly
+avoid a provider specific (psci) name, as has been pointed out earlier
+by Rob too.
 
-> static bool expanded = false;
-> 
-> ...
-> 
-> 	if (full && !expanded) {
-> 		expand();
-> 		expanded = true;
-> 	}
-> 
-> It might be a _wee_ bit worse than that because you might have to queue
-> some work outside of #MC context but seriously we're talking 10-ish
-> lines of code.  It'd probably be even smaller than doing it when poked
-> by userspace and wouldn't involve new ABI.
+I will try to get some time to update the DT docs as soon as I can.
+Unless you get to it first, feel free to do it.
 
-Okay, I'm with you here.
+>
+> > >   - MSM8916 (CPR+RPMPD):
+> > >     https://github.com/msm8916-mainline/linux/commit/8880f39108206d7a60a0a8351c0373bddf58657c
+> >
+> > This looks a bit odd to me. Does a CPU really have four different
+> > power-domains, where three of them are performance-domains?
+> >
+>
+> Good question. I think we're largely entering "uncharted territory" with
+> these questions, I can just try to answer it the best I can from the
+> limited documentation and knowledge I have. :)
+>
+> The CPU does indeed use four different power domains. There also seem to
+> be additional power switches that gate power for some components without
+> having to turn off the entire supply.
+>
+> I'll list them twice from two points of view: Once mapping component ->
+> power domain, then again showing each power domain separately to make it
+> more clear. At the end I also want to make clear that MSM8909 (with the
+> "single" power domain) is actually exactly the same SoC design, just
+> with different regulators supplying the power domains.
+>
+> It's totally fine if you just skim over it. I'm listing it in detail
+> also as reference for myself. :D
+>
+> # Components
+>  - SoC
+>    - CPU subsystem ("APPS")
+>      - CPU cluster
+>        - 4x CPU core (logic and L1 cache) -> VDD_APC
+>        - Shared L2 cache
+>          - Logic -> VDD_APC
+>          - Memory -> VDD_MX
+>      - CPU clock controller (logic) -> VDD_CX
+>        - Provides CPU frequency from different clock sources
+>        - L2 cache runs at 1/2 of CPU frequency
+>        => Both VDD_APC and VDD_MX must be scaled based on frequency
+>      - CPU PLL clock source
+>        - Generates the higher (GHz) CPU frequencies
+>        - Logic (?, unsure) -> VDD_CX
+>        - ??? -> VDD_SR2_APPS_PLL
+>        => VDD_CX must be scaled based on PLL frequency
+>
+> # Power Domains
+> ## VDD_APC
+>  - dedicated for CPU
+>  - powered off completely in deepest cluster cpuidle state
+>
+>  - per-core power switch (per-core cpuidle)
+>    - CPU logic
+>    - L1 cache controller/logic and maybe memory(?, unsure)
+>  - shared L2 cache controller/logic
+>
+>  => must be scaled based on CPU frequency
+>
+> ## VDD_MX
+>  - global SoC power domain for "on-chip memories"
+>  - always on, reduced to minimal voltage when entire SoC is idle
+>
+>  - power switch (controlled by deepest cluster cpuidle state?, unsure)
+>    - L2 cache memory
+>
+>  => must be scaled based on L2 frequency (=> 1/2 CPU frequency)
+>
+> ## VDD_CX
+>  - global SoC power domain for "digital logic"
+>  - always on, reduced to minimal voltage when entire SoC is idle
+>  - voting for VDD_CX in the RPM firmware also affects VDD_MX performance
+>    state (firmware implicitly sets VDD_MX >= VDD_CX)
+>
+>  - CPU clock controller logic, CPU PLL logic(?, unsure)
+>
+>  => must be scaled based on CPU PLL frequency
+>
+> ## VDD_SR2_APPS_PLL
+>  - global SoC power domain for CPU clock PLLs
+>  - on MSM8916: always on with constant voltage
+>
+>  => ignored in Linux at the moment
+>
+> # Power Domain Regulators
+> These power domains are literally input pins on the SoC chip. In theory
+> one could connect any suitable regulator to each of those. In practice
+> there are just a couple of standard reference designs that everyone
+> uses:
+>
+> ## MSM8916 (SoC) + PM8916 (PMIC)
+> We need to scale 3 power domains together with cpufreq:
+>
+>  - VDD_APC (CPU logic) = &pm8916_spmi_s2 (via CPR)
+>  - VDD_MX  (L2 memory) = &pm8916_l3 (via RPMPD: MSM8916_VDDMX)
+>  - VDD_CX  (CPU PLL)   = &pm8916_s1 (via RPMPD: MSM8916_VDDCX)
+>
+> ## MSM8909 (SoC) + PM8909 (PMIC)
+> We need to scale 1 power domain together with cpufreq:
+>
+>  - VDD_APC = VDD_CX    = &pm8909_s1 (via RPMPD: MSM8909_VDDCX)
+>    (CPU logic, L2 logic and CPU PLL)
+> (- VDD_MX  (L2 memory) = &pm8909_l3 (RPM firmware enforces VDD_MX >= VDD_CX))
+>
+> There is implicit magic in the RPM firmware here that saves us from
+> scaling VDD_MX. VDD_CX/APC are the same power rail.
+>
+> ## MSM8909 (SoC) + PM8916 (PMIC)
+> When MSM8909 is paired with PM8916 instead of PM8909, the setup is
+> identical to MSM8916+PM8916. We need to scale 3 power domains.
+>
+> > In a way it sounds like an option could be to hook up the cpr to the
+> > rpmpd:s instead (possibly even set it as a child-domains to the
+> > rpmpd:s), assuming that is a better description of the HW, which it
+> > may not be, of course.
+>
+> Hm. It's definitely an option. I must admit I haven't really looked
+> much at child-domains so far, so spontaneously I'm not sure about
+> the implications, for both the abstract hardware description and
+> the implementation.
+>
+> There seems to be indeed some kind of relation between MX <=> CX/APC:
+>
+>  - When voting for CX in the RPM firmware, it will always implicitly
+>    adjust the MX performance state to be MX >= CX.
+>
+>  - When scaling APC up, we must increase MX before APC.
+>  - When scaling APC down, we must decrease MX after APC.
+>  => Clearly MX >= APC. Not in terms of raw voltage, but at least for the
+>     abstract performance state.
+>
+> Is this some kind of parent-child relationship between MX <=> CX and
+> MX <=> APC?
 
-Thanks,
-Yazen
+Thanks for sharing the above. Yes, to me, it looks like there is a
+parent/child-domain relationship that could be worth describing/using.
+
+>
+> If yes, maybe we could indeed bind MX to the CPR genpd somehow. They use
+> different performance state numbering, so we need some kind of
+> translation. I'm not entirely sure how that would be described.
+
+Both the power-domain and the required-opps DT bindings
+(Documentation/devicetree/bindings/opp/opp-v2-base.yaml) are already
+allowing us to describe these kinds of hierarchical
+dependencies/layouts.
+
+In other words, to scale performance for a child domain, the child may
+rely on that we scale performance for the parent domain too. This is
+already supported by genpd and through the opp library - so it should
+just work. :-)
+
+>
+> Scaling VDD_CX for the PLL is more complicated. APC <=> CX feel more
+> like siblings, so I don't think it makes sense to vote for CX as part of
+> the CPR genpd. Spontaneously I would argue scaling CX belongs into the
+> CPU PLL driver (since that's what the vote is for). However, for some
+> reason it was decided to handle such votes on the consumer side (here =
+> cpufreq) on mainline [1].
+>
+> [1]: https://lore.kernel.org/linux-arm-msm/20200910162610.GA7008@gerhold.net/
+
+Right. I assume the above works just fine, so probably best to stick
+to that for this case too.
+
+[...]
+
+> >
+> > *) The approach you have taken in the $subject patch with the call to
+> > pm_runtime_resume_and_get() works as a fix for QCS404, as there is
+> > only the CPR to attach to. The problem with it, is that it doesn't
+> > work for cases where the RPMPD is used for performance scaling, either
+> > separate or in combination with the CPR. It would keep the rpmpd:s
+> > powered-on, which would be wrong. In regards to the
+> > dev_pm_syscore_device() thingy, this should not be needed, as long as
+> > we keep the vdd-apc-supply enabled, right?
+> >
+> > **) A more generic solution, that would work for all cases (even
+> > when/if hooking up the CPR to the rpmpd:s), consists of tweaking genpd
+> > to avoid "caching" performance states for these kinds of devices. And
+> > again, I don't see that we need dev_pm_syscore_device(), assuming we
+> > manage the vdd-apc-supply correctly.
+> >
+> > Did I miss anything?
+> >
+>
+> We do need to keep the CPU-related RPMPDs always-on too.
+>
+> Keeping the CPU-related RPMPDs always-on is a bit counter-intuitive, but
+> it's because of this:
+>
+> > > > >  - RPMPD: This is the generic driver for all the SoC power domains
+> > > > >    managed by the RPM firmware. It's not CPU-specific. However, as
+> > > > >    special feature each power domain is exposed twice in Linux, e.g.
+> > > > >    "MSM8909_VDDCX" and "MSM8909_VDDCX_AO". The _AO ("active-only")
+> > > > >    variant tells the RPM firmware that the performance/enable vote only
+> > > > >    applies when the CPU is active (not in deep cpuidle state).
+>
+> The CPU only uses the "_AO"/active-only variants in RPMPD. Keeping these
+> always-on effectively means "keep the power domain on as long as the CPU
+> is active".
+>
+> I hope that clears up some of the confusion. :)
+
+Yes, it does, thanks! Is the below the correct conclusion for how we
+could move forward then?
+
+*) The pm_runtime_resume_and_get() works for QCS404 as a fix. It also
+works fine when there is only one RPMPD that manages the performance
+scaling.
+
+**) In cases where we have multiple PM domains to scale performance
+for, using pm_runtime_resume_and_get() would work fine too. Possibly
+we want to use device_link_add() to set up suppliers, to avoid calling
+pm_runtime_resume_and_get() for each and every device.
+
+***) Due to the above, we don't need a new mechanism to avoid
+"caching" performance states for genpd. At least for the time being.
+
+Kind regards
+Uffe
