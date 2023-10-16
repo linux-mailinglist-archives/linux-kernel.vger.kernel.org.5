@@ -2,103 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF8C27C9E8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 07:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78D67C9E79
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 07:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231766AbjJPFLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 01:11:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41902 "EHLO
+        id S229666AbjJPFLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 01:11:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231701AbjJPFLq (ORCPT
+        with ESMTP id S231140AbjJPFLG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 01:11:46 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2051.outbound.protection.outlook.com [40.107.93.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39A25E7;
-        Sun, 15 Oct 2023 22:11:43 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VFqELoRoCRW36wSBsZMgSRUR9tmzf5gvXNQiha0sXMj0PBlW4Ms8gRLJ6rwm21daK/4YZbz5OwYCwL3Nx4cM7B7Xo0O07gsU5y6YdabUyvW7d7NpxM77CAygCfoPmER6ZNrF1pjag1CItjVFF7z0QJqrlC4eS/YUO2Z47lU3OVFdvjvMzfhfPkHGh+Ij3kE+f4vIHHehEUwGk5fYNUTPayZKa9h3PRdXPDbxS3DlFD9SzulyhQwmIIHVMBsQuIBplYwl+7jk0B7ZaWEYnyDZdiwjrnHCLvyx7Ju12GSK2Alwk8T2z+O3VMyxRGAZO1vbSbdCwYmFm21i42Dq1BMoQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=aljHyMWt8R/QLn5d6xJ+f8RBv6t6/Cj1hmwBAKY8Yjw=;
- b=Ix96ZYmqx4GboqayLaPcSLvLoaIqz98VwF/bU3RY6uCfhGVRrsx40kbZP4QlcMkCBI706LNhBSTlTRYw77RqtiX6HeVvUCi8MB/WRgYqyqnN4zOpoR62r9DSXeIuCo8dauDmySXwGHTki2HQd93tNzmHd2X9Ut7WZaXJXiYtJpTxiYiJr6RE43h5s/iPjoHIAuzbSrr7Qg1jiNRgvbRy4DWZ0CEERcnTIKoOEC3L9ef4kkOTBqLVq5vWs5XaKagMT1hQtKk4g7+UVvCYcWvF0LFKLm+oLg+Wrq7sNm5QnrlE8A3zv3H0il0jY7RGDRU8EPGo/jSaY0bb3jyLaD+XfQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aljHyMWt8R/QLn5d6xJ+f8RBv6t6/Cj1hmwBAKY8Yjw=;
- b=ILF8PN4y25ToF2JReJ1IPbTQvj6rEvs+bFEgSRcuAqumBPE2qI5l1UYRUHO6ucBXnIloIvCiQYp9cggR5V3DJs3jT2w2pXEs/1mF1hVV5uezzgIcPKwerfwm1UL1rdV3Th+WUgykMWz/tdr9wfTUQ+cPTFyhgomSFl6FLp5j+6w=
-Received: from MW2PR16CA0012.namprd16.prod.outlook.com (2603:10b6:907::25) by
- LV2PR12MB5822.namprd12.prod.outlook.com (2603:10b6:408:179::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6863.46; Mon, 16 Oct 2023 05:11:41 +0000
-Received: from MWH0EPF000971E7.namprd02.prod.outlook.com
- (2603:10b6:907:0:cafe::9b) by MW2PR16CA0012.outlook.office365.com
- (2603:10b6:907::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.34 via Frontend
- Transport; Mon, 16 Oct 2023 05:11:40 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MWH0EPF000971E7.mail.protection.outlook.com (10.167.243.75) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.22 via Frontend Transport; Mon, 16 Oct 2023 05:11:40 +0000
-Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 16 Oct
- 2023 00:11:39 -0500
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB08.amd.com
- (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Sun, 15 Oct
- 2023 22:11:38 -0700
-Received: from xhdthippesw40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
- Transport; Mon, 16 Oct 2023 00:11:35 -0500
-From:   Thippeswamy Havalige <thippeswamy.havalige@amd.com>
-To:     <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <bhelgaas@google.com>, <lpieralisi@kernel.org>, <kw@linux.com>,
-        <robh@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <colnor+dt@kernel.org>, <thippeswamy.havalige@amd.com>,
-        <michal.simek@amd.com>, <bharat.kumar.gogada@amd.com>
-Subject: [PATCH v5 RESEND 2/4] dt-bindings: PCI: xilinx-nwl: Modify ECAM size in example
-Date:   Mon, 16 Oct 2023 10:41:00 +0530
-Message-ID: <20231016051102.1180432-3-thippeswamy.havalige@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231016051102.1180432-1-thippeswamy.havalige@amd.com>
-References: <20231016051102.1180432-1-thippeswamy.havalige@amd.com>
+        Mon, 16 Oct 2023 01:11:06 -0400
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED88F1;
+        Sun, 15 Oct 2023 22:11:04 -0700 (PDT)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-53d82bea507so7033696a12.2;
+        Sun, 15 Oct 2023 22:11:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697433063; x=1698037863;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UYiKLckHgXgU2yS2Ix0VvBQw7TUtIsOGfv4ve38Xaxk=;
+        b=dUQdQAVykV6lGomB+K42MPvI1P8KvvFJRYM3Ti4NUuszXLVPMLO5BWfUKXm+BwfGiJ
+         l/3t4IfxV7mcH7T0ewcD2onEb52/qMVOMxVV7WKKhSDicP3WPEhulk9C9/pVamyspNpy
+         cw2z9hntZ2CKs27alPgx4JA0Mfg0b2t4pyCkcjdaC0TLjWlzpS0wNMIUmBiilAXKxnbE
+         rU36vZZidLF6FbjAJsQtcvrBixiQvwgLBa4ywuByqh9+r/KpzQTMYdaZidl15rBa0+fK
+         vtlmCLLTogEfTRzsBkDgdb0yFpT0tuVP8tPHW2RSoRphhhk/SOyTtWbEMTI9yfivVVBj
+         QAJQ==
+X-Gm-Message-State: AOJu0YzctlGV2eHlCLdJnZi5wcNFPTSzFtZm0GvjQ5iwkFhfKrzAT2N8
+        cCkdlus1RhXdEXT3zrqmadSay6rr0oI=
+X-Google-Smtp-Source: AGHT+IFCxz4NFTu4OGHdYVRGhGzCka50GE40UBL0PBuiLUmsgPEyOy18KVRRHZTLwx1266s0eIqteg==
+X-Received: by 2002:a17:906:4fcd:b0:9bf:1477:ad8b with SMTP id i13-20020a1709064fcd00b009bf1477ad8bmr4787970ejw.51.1697433062918;
+        Sun, 15 Oct 2023 22:11:02 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id lu32-20020a170906fae000b0099b7276235esm3247365ejb.93.2023.10.15.22.11.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 15 Oct 2023 22:11:02 -0700 (PDT)
+Message-ID: <1f318d02-aceb-4262-854b-5e14c7c9a7f1@kernel.org>
+Date:   Mon, 16 Oct 2023 07:11:01 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000971E7:EE_|LV2PR12MB5822:EE_
-X-MS-Office365-Filtering-Correlation-Id: 59bbbbd7-e4d2-478b-14a8-08dbce066199
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4BahLIGcHfjzaD4rCH1nFzCA5eVJyhpSPLa3REcI1RJQYruzBuotnNa2oFNW7T1pO/lzkQXy4j8sjFR7yqaa5GAWoy/50BNrPGZN/xJ0fPGSbtzmjvs9vuVVkBk0n/PYrbShVugxExJvQYuaHOX2oBwlSokHW4eI6E98vyM2fENv8cRSUx29rWoAhbHtwDUkAGGO6q6182g3GZB94UEFwC6eSVum+fRjCMOzHsy0KvurcLyi4DuNe1Sve310lGjyO54lyJFThdOa04N5VmB+nA85ryVkIxfJRB6yBHZB4gfBebsJMrQJFJ906G2w/8gDLvhppehcuKejOPtBVRhv3WCXtgKvBdi+oytYa4q6pN3aJFzZX5n4bu56i66UCIZJimjJ1Yfu56zKyeX2WXhDLpVys3o/AZL0wEfSjX0wQRjWfrWuMsN9RyqLPgWJYqcHIKJxKrOUkKZEQAHbudDSqAhDCTF6GMhpaVeKip5+n6hXuYkCMYIWtfYqLYjXRQ/nfwxmdP4Tz51SMUrbjAj9FTfVj0mFaZH6ePUJWY08CpZSmdER5hV2dJK2LpE1B4JFihH3DVXjesPJpEe7UCJN6REeifCiKLSKitxDXPGe7OAGTjxY+WWXmHdwTsYddC/0O6z2/y3ivqNSe3sn5LjYy3HW21iT9TsRffXkljA8P8dSfvq/TWEw9QzZyZxn90mYkiNIkFDa9eOl4LrBmNY4/2id8VuwLF4pYmzCfPh3hur2Ktzcl7Sth44ZEABpRu4Yfv07gDrhokGqaWteP1m7q6d6vTUV+Ek+J7cUfTxdjS0=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(346002)(136003)(376002)(230922051799003)(64100799003)(451199024)(1800799009)(82310400011)(186009)(36840700001)(46966006)(40470700004)(40460700003)(1076003)(26005)(2616005)(336012)(6666004)(47076005)(83380400001)(8936002)(8676002)(426003)(36860700001)(44832011)(41300700001)(4326008)(5660300002)(2906002)(478600001)(7416002)(54906003)(316002)(70206006)(110136005)(81166007)(356005)(70586007)(82740400003)(86362001)(36756003)(40480700001)(36900700001)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2023 05:11:40.4042
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 59bbbbd7-e4d2-478b-14a8-08dbce066199
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000971E7.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5822
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Patch v2 1/6] tty: serial: 8250: Modify MOXA enum name within
+ 8250_pci.c
+Content-Language: en-US
+To:     Crescent CY Hsieh <crescentcy.hsieh@moxa.com>,
+        gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+References: <20231016033705.20669-1-crescentcy.hsieh@moxa.com>
+ <20231016033705.20669-2-crescentcy.hsieh@moxa.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <20231016033705.20669-2-crescentcy.hsieh@moxa.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
         autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -106,38 +106,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update ECAM size in example to discover up to 256 buses.
+On 16. 10. 23, 5:37, Crescent CY Hsieh wrote:
+> To improve clarity, modify the MOXA enum name within pci_board_num_t.
+> 
+> Signed-off-by: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
 
-Signed-off-by: Thippeswamy Havalige <thippeswamy.havalige@amd.com>
-Acked-by: Rob Herring <robh@kernel.org>
----
-changes in v5:
-None
-changes in v4:
-None
-changes in v3:
-Remove period at end of subject line
-changes in v2:
-None.
-changes in v1:
-None.
----
- Documentation/devicetree/bindings/pci/xlnx,nwl-pcie.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
 
-diff --git a/Documentation/devicetree/bindings/pci/xlnx,nwl-pcie.yaml b/Documentation/devicetree/bindings/pci/xlnx,nwl-pcie.yaml
-index 897602559b37..426f90a47f35 100644
---- a/Documentation/devicetree/bindings/pci/xlnx,nwl-pcie.yaml
-+++ b/Documentation/devicetree/bindings/pci/xlnx,nwl-pcie.yaml
-@@ -118,7 +118,7 @@ examples:
-             compatible = "xlnx,nwl-pcie-2.11";
-             reg = <0x0 0xfd0e0000 0x0 0x1000>,
-                   <0x0 0xfd480000 0x0 0x1000>,
--                  <0x80 0x00000000 0x0 0x1000000>;
-+                  <0x80 0x00000000 0x0 0x10000000>;
-             reg-names = "breg", "pcireg", "cfg";
-             ranges = <0x02000000 0x0 0xe0000000 0x0 0xe0000000 0x0 0x10000000>,
-                      <0x43000000 0x00000006 0x0 0x00000006 0x0 0x00000002 0x0>;
 -- 
-2.25.1
+js
+suse labs
 
