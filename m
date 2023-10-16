@@ -2,128 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98EE47CA88B
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:54:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1CCB7CA904
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 15:14:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233468AbjJPMx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 08:53:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34374 "EHLO
+        id S232154AbjJPNOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 09:14:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233036AbjJPMx6 (ORCPT
+        with ESMTP id S233600AbjJPMy2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 08:53:58 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B118AD;
-        Mon, 16 Oct 2023 05:53:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697460836; x=1728996836;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=QizaqdkpLig82mRKUnOc6l/0i6LVA1cx3IhaJACbuvk=;
-  b=IDaUypHhU2lUoQjUClJ1H8u5jlfgOUMk8iTNSRFqXXZu7kOsXnUJlvYw
-   lgYsd+Z9Ajihe5NfnbpUeW3iGWHvgTVdYaWM62md6pLmMzMx4r+o0eZHA
-   7BV7k3DB3kBgrLoVW9O40FiSqUGINcmrPdFW1TyagpN9+hJ4Sxx6MwTP7
-   sU6cQciUEVGy6ae/c8RICi4MI4S0T02COxUSdC9fV2KSt0oqtZyfo3IDA
-   I6UGrvAq3q3iJFKILqT7HTvdWOE+OmmM98hsWsV6mkuZ13/UQhPJFeipy
-   M41oPX5swMjKOxzBGBMcnuUVa+HSBbGSn2T67Jw9yhAgqGwzC1YuDnCuk
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="370592181"
-X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="370592181"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 05:53:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="821558186"
-X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="821558186"
-Received: from rhaeussl-mobl.ger.corp.intel.com ([10.252.59.103])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 05:53:13 -0700
-Date:   Mon, 16 Oct 2023 15:53:11 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] PCI/DPC: Use defines with register fields
-In-Reply-To: <20231013201934.GA1124734@bhelgaas>
-Message-ID: <3883226-f376-86e0-7790-77b1642d129@linux.intel.com>
-References: <20231013201934.GA1124734@bhelgaas>
+        Mon, 16 Oct 2023 08:54:28 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 630FDB4
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 05:54:25 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S8H4h32jxzvQ6D;
+        Mon, 16 Oct 2023 20:49:40 +0800 (CST)
+Received: from [10.67.121.177] (10.67.121.177) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 16 Oct 2023 20:54:22 +0800
+CC:     <yangyicong@hisilicon.com>, <peterz@infradead.org>,
+        <mingo@redhat.com>, <juri.lelli@redhat.com>,
+        <dietmar.eggemann@arm.com>, <tim.c.chen@linux.intel.com>,
+        <yu.c.chen@intel.com>, <gautham.shenoy@amd.com>, <mgorman@suse.de>,
+        <vschneid@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <rostedt@goodmis.org>,
+        <bsegall@google.com>, <bristot@redhat.com>,
+        <prime.zeng@huawei.com>, <jonathan.cameron@huawei.com>,
+        <ego@linux.vnet.ibm.com>, <srikar@linux.vnet.ibm.com>,
+        <linuxarm@huawei.com>, <21cnbao@gmail.com>,
+        <kprateek.nayak@amd.com>, <wuyun.abel@bytedance.com>
+Subject: Re: [PATCH v10 3/3] sched/fair: Use candidate prev/recent_used CPU if
+ scanning failed for cluster wakeup
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+References: <20231012121707.51368-1-yangyicong@huawei.com>
+ <20231012121707.51368-4-yangyicong@huawei.com>
+ <CAKfTPtAdtjZobtrf846kDzscAZTrFxw21SQJbbHU0Cw35vggEQ@mail.gmail.com>
+From:   Yicong Yang <yangyicong@huawei.com>
+Message-ID: <33d8d0c1-da40-278b-5b84-ecb983ee9d34@huawei.com>
+Date:   Mon, 16 Oct 2023 20:54:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323329-762852509-1697460567=:1986"
-Content-ID: <1cc4caad-ea5-e5f3-37b-e6ad91c62422@linux.intel.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAKfTPtAdtjZobtrf846kDzscAZTrFxw21SQJbbHU0Cw35vggEQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.121.177]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hi Vincent,
 
---8323329-762852509-1697460567=:1986
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-Content-ID: <cd9f38f-7062-ff94-829d-ac343d403659@linux.intel.com>
-
-On Fri, 13 Oct 2023, Bjorn Helgaas wrote:
-
-> On Fri, Oct 13, 2023 at 02:20:04PM +0300, Ilpo Järvinen wrote:
-> > Use defines instead of literals and replace custom masking and shifts
-> > with FIELD_GET() where it makes sense.
-> > ...
+On 2023/10/13 23:04, Vincent Guittot wrote:
+> On Thu, 12 Oct 2023 at 14:19, Yicong Yang <yangyicong@huawei.com> wrote:
+>>
+>> From: Yicong Yang <yangyicong@hisilicon.com>
+>>
+>> Chen Yu reports a hackbench regression of cluster wakeup when
+>> hackbench threads equal to the CPU number [1]. Analysis shows
+>> it's because we wake up more on the target CPU even if the
+>> prev_cpu is a good wakeup candidate and leads to the decrease
+>> of the CPU utilization.
+>>
+>> Generally if the task's prev_cpu is idle we'll wake up the task
+>> on it without scanning. On cluster machines we'll try to wake up
+>> the task in the same cluster of the target for better cache
+>> affinity, so if the prev_cpu is idle but not sharing the same
+>> cluster with the target we'll still try to find an idle CPU within
+>> the cluster. This will improve the performance at low loads on
+>> cluster machines. But in the issue above, if the prev_cpu is idle
+>> but not in the cluster with the target CPU, we'll try to scan an
+>> idle one in the cluster. But since the system is busy, we're
+>> likely to fail the scanning and use target instead, even if
+>> the prev_cpu is idle. Then leads to the regression.
+>>
+>> This patch solves this in 2 steps:
+>> o record the prev_cpu/recent_used_cpu if they're good wakeup
+>>   candidates but not sharing the cluster with the target.
+>> o on scanning failure use the prev_cpu/recent_used_cpu if
+>>   they're still idle
+>>
+>> [1] https://lore.kernel.org/all/ZGzDLuVaHR1PAYDt@chenyu5-mobl1/
+>> Reported-by: Chen Yu <yu.c.chen@intel.com>
+>> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+>> ---
+>>  kernel/sched/fair.c | 19 ++++++++++++++++++-
+>>  1 file changed, 18 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index 4039f9b348ec..f1d94668bd71 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -7392,7 +7392,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>>         bool has_idle_core = false;
+>>         struct sched_domain *sd;
+>>         unsigned long task_util, util_min, util_max;
+>> -       int i, recent_used_cpu;
+>> +       int i, recent_used_cpu, prev_aff = -1;
+>>
+>>         /*
+>>          * On asymmetric system, update task utilization because we will check
+>> @@ -7425,6 +7425,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>>
+>>                 if (cpus_share_resources(prev, target))
+>>                         return prev;
+>> +
+>> +               prev_aff = prev;
+>>         }
+>>
+>>         /*
+>> @@ -7457,6 +7459,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>>
+>>                 if (cpus_share_resources(recent_used_cpu, target))
+>>                         return recent_used_cpu;
+>> +       } else {
+>> +               recent_used_cpu = -1;
+>>         }
+>>
+>>         /*
+>> @@ -7497,6 +7501,19 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>>         if ((unsigned)i < nr_cpumask_bits)
+>>                 return i;
+>>
+>> +       /*
+>> +        * For cluster machines which have lower sharing cache like L2 or
+>> +        * LLC Tag, we tend to find an idle CPU in the target's cluster
+>> +        * first. But prev_cpu or recent_used_cpu may also be a good candidate,
+>> +        * use them if possible when no idle CPU found in select_idle_cpu().
+>> +        */
+>> +       if ((unsigned int)prev_aff < nr_cpumask_bits &&
+>> +           (available_idle_cpu(prev_aff) || sched_idle_cpu(prev_aff)))
 > 
-> >  	pci_read_config_word(pdev, pdev->dpc_cap + PCI_EXP_DPC_CAP, &cap);
-> > -	pci_read_config_word(pdev, pdev->dpc_cap + PCI_EXP_DPC_CTL, &ctl);
-> >  
-> > -	ctl = (ctl & 0xfff4) | PCI_EXP_DPC_CTL_EN_FATAL | PCI_EXP_DPC_CTL_INT_EN;
-> > +	pci_read_config_word(pdev, pdev->dpc_cap + PCI_EXP_DPC_CTL, &ctl);
-> > +	ctl |= PCI_EXP_DPC_CTL_EN_FATAL | PCI_EXP_DPC_CTL_INT_EN;
-> > +	ctl &= ~PCI_EXP_DPC_CTL_EN_NONFATAL;
+> Hasn't prev_aff (i.e. prev) been already tested as idle ?
 > 
-> This has been a little obtuse from the beginning.
+>> +               return prev_aff;
+>> +       if ((unsigned int)recent_used_cpu < nr_cpumask_bits &&
+>> +           (available_idle_cpu(recent_used_cpu) || sched_idle_cpu(recent_used_cpu)))
+>> +               return recent_used_cpu;
 > 
-> The original clears bits 0, 1, 3, then sets bits 0 and 3.
-> The new code sets bits 0, 3, then clears bit 1.
+> same here
 > 
-> These are equivalent, but it's definitely some work to verify it.
->
-> I think the point is to enable DPC on ERR_FATAL (but not ERR_NONFATAL)
-> and to enable DPC interrupts.  What about something like this?
->   #define PCI_EXP_DPC_CTL_EN_MASK  0x0003
+
+It was thought that there maybe a small potential race window here that the prev/recent_used
+CPU becoming non-idle after scanning, discussed in [1]. I think the check here won't be
+expensive so added it here. It should be redundant and can be removed.
+
+[1] https://lore.kernel.org/all/ZIams6s+qShFWhfQ@BLR-5CG11610CF.amd.com/
+
+Thanks.
+
 > 
->   ctl &= ~PCI_EXP_DPC_CTL_EN_MASK;
->   ctl |= PCI_EXP_DPC_CTL_EN_FATAL | PCI_EXP_DPC_CTL_INT_EN;
-
-Thanks for the suggestion, it looks cleaner, yes. I realized the bit 
-changes weren't as obvious as they could be but I failed to see I could 
-add such a combined mask to make the intent dead obvious.
-
-With a small change replacing the 0x0003 literal with the combined defines 
-of the actual bits it seems very clear what's going on. I'll go for that. 
-
-I'll place my non-FIELD_GET() changes on DPC top of your 
-FIELD_GET/PREP()-only change so each patch can be smaller and more 
-focused.
-
--- 
- i.
-
-
-> >  	pci_write_config_word(pdev, pdev->dpc_cap + PCI_EXP_DPC_CTL, ctl);
-> > -	pci_info(pdev, "enabled with IRQ %d\n", dev->irq);
-> >  
-> > +	pci_info(pdev, "enabled with IRQ %d\n", dev->irq);
-> >  	pci_info(pdev, "error containment capabilities: Int Msg #%d, RPExt%c PoisonedTLP%c SwTrigger%c RP PIO Log %d, DL_ActiveErr%c\n",
-> >  		 cap & PCI_EXP_DPC_IRQ, FLAG(cap, PCI_EXP_DPC_CAP_RP_EXT),
-> >  		 FLAG(cap, PCI_EXP_DPC_CAP_POISONED_TLP),
-> > -- 
-> > 2.30.2
-> > 
+>> +
+>>         return target;
+>>  }
+>>
+>> --
+>> 2.24.0
+>>
 > 
---8323329-762852509-1697460567=:1986--
