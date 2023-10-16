@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E013C7CAD9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:35:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF0C97CADA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:35:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233738AbjJPPfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 11:35:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57500 "EHLO
+        id S233542AbjJPPf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 11:35:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233464AbjJPPfF (ORCPT
+        with ESMTP id S232700AbjJPPfX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 11:35:05 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0800483;
-        Mon, 16 Oct 2023 08:35:04 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-41812c94eb5so21712531cf.0;
-        Mon, 16 Oct 2023 08:35:03 -0700 (PDT)
+        Mon, 16 Oct 2023 11:35:23 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAABD83;
+        Mon, 16 Oct 2023 08:35:20 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-4181462ebf0so33127391cf.3;
+        Mon, 16 Oct 2023 08:35:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697470503; x=1698075303; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697470520; x=1698075320; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=lHZW9IyRCkB2pognBzyva+37kLUyvsVF/p978eZCqOs=;
-        b=JfouhbZmFUKZMKrPBF26DUmzNB2f2E66F2neMrQcKHkaFs3N+1OBzsEJz9p5OfCHA4
-         AiomD3jN69pRchurpmdr7aZm2LSHBNHgRaNhu+a8o699zBTn3JfmVCKRoNBmlszCGxke
-         mtwhHk1JqZtL0n863tO+fyNXPQJA3UebdcHjsWBG3Qn/v8JQusFpxnGYCfEVI5l2Urev
-         tY4e1EKWHgTYO88KQnd+0/aE4jJ8l/epch5YpE9L9BMlqQqSsguZunyD8gn4WXeknc4j
-         JzrZLxgugBHfvno/wdfujQgZQ70dAqbdbP7gsjGiM4Y1I4RewE/1d1dI4MHAAQH8F2F1
-         PjfA==
+        bh=/8iWQdhdsbIjXfXAjbY1UOtDy3L9RcPIg9mUusmAaAU=;
+        b=OPlNsTjtm9+npbwzvTeB1HBCyoaUEl/Z4yGGi8HNJ/HHOwHIKJI+EI5uqcWsEYvzkq
+         B7uPiMBmRR92eLUMprMaKELD58c3Z9MpE0hPFM9I38SrITwLr7POvWmLVK1N75rByc9t
+         oweCkIQZE41gvV5BTm3IG0GRmiyubiJFl+YMc//o8LFbhEDuW0dDVIyCQLK3vGHCuVjq
+         tDbQdnuYQNkHecBG9DdvzOfam7UNfdQ+EF5Mn6QM3ncoO5TjI+4nTju2cT+KZvDv7akE
+         UCwnaouT13v6GjbRsOiizt0r07/L6HkIIo55yDS+5CvB0tBI+elR/5q7xdU+d4M3VwvT
+         ssqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697470503; x=1698075303;
+        d=1e100.net; s=20230601; t=1697470520; x=1698075320;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lHZW9IyRCkB2pognBzyva+37kLUyvsVF/p978eZCqOs=;
-        b=X5g3hN3tBN/gbLEywEZhrcljqWOZVkw4RbM3+5ycBQiV6WXWDRnlp4J7XMXP33E1Ng
-         6mugDvkW5ksXMwi7HaTrtbpTHAFLg3zWGmWQ7foU5EF7yBy//piPtxCvzLTKQHKWfyfQ
-         iU5kNBTq00uNwYsy3UtONmu9e+ju6hultSzhTbnMj6iGoOaXm+fkA/rfMo6fl7Os5K6c
-         vzpPji0GP8lr63iYChaiRhRgRaNk6ZyyOyN8dDuh1bIfYBj2MKpNW0SRsVQkdQC4Jf/4
-         UT5uEilk6kKCm8IpNzAAhFv2gj3Q2e8s0LX8xlykOcgwzy2LGkg+xxbzjnl2VfQDiwdo
-         bXQQ==
-X-Gm-Message-State: AOJu0YxHZLWgx9ABFsVik8dwBR1vIkg8+9prQaU4ILPef3a8kGNNgqz+
-        rSuSmMQL/fSkaLAl42la5UU=
-X-Google-Smtp-Source: AGHT+IFpAhSWiTbulUP9nRwbaWPP2gpaoPOdj7aUJoNggKOS+tmBSZ39HznC29iDkJm+eOH9qoFvrw==
-X-Received: by 2002:a05:622a:1ba4:b0:417:bd2c:2683 with SMTP id bp36-20020a05622a1ba400b00417bd2c2683mr35472376qtb.19.1697470502949;
-        Mon, 16 Oct 2023 08:35:02 -0700 (PDT)
+        bh=/8iWQdhdsbIjXfXAjbY1UOtDy3L9RcPIg9mUusmAaAU=;
+        b=Q49lA6nSaQCI0WrPy7yAmhnJPN8rNAYji3IFuFbuX32SO0aOGVomv6thT9CEC5LoYG
+         uJMlT2nkl3AT2p4gLFLzkKT24QQsXHrS18gZzceaQZOdar5wJY3apw9cXCKQNIr87YFI
+         i6YxaOxcR2fuWQGBniIpc0NjksiYAQrWTFG32sPWLowiYeQzepYBSOTB/TgFt59CU4yf
+         mIg80sVaKM2S6kd4d+fH+C04fINqNT4HWkA6oifjyzSlh1RJcK/4dRHQCG8hUtU8FPk8
+         Iqe1TL9yg/um0FHP6oLxlv/6iDpQD2zeSaynWoyvtYrEun6PP7oEt0qPIO+hMp+k7xZ6
+         y7Qg==
+X-Gm-Message-State: AOJu0YyFyC6CpWB0LY7LSqBTAjan5jWFRFDgHlL5wHWd1Jc1ZCxkCPBk
+        GunhpZ/b81Bmc15QBx9uY30=
+X-Google-Smtp-Source: AGHT+IGK2V6aTDyDd3C2KpfFLn/lJmSy26tRdlpI6rfD9G/B8Gzk89cp+BWTyiVG1W6Os5R0TJEECg==
+X-Received: by 2002:ac8:59c9:0:b0:413:825:8f33 with SMTP id f9-20020ac859c9000000b0041308258f33mr40595326qtf.9.1697470519877;
+        Mon, 16 Oct 2023 08:35:19 -0700 (PDT)
 Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
-        by smtp.gmail.com with ESMTPSA id v8-20020a05622a188800b00418142e802bsm3113484qtc.6.2023.10.16.08.35.00
+        by smtp.gmail.com with ESMTPSA id v8-20020a05622a188800b00418142e802bsm3113484qtc.6.2023.10.16.08.35.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 08:35:02 -0700 (PDT)
-Message-ID: <5136e57a-71e0-45f8-bc46-c4cce0df444c@gmail.com>
-Date:   Mon, 16 Oct 2023 08:34:59 -0700
+        Mon, 16 Oct 2023 08:35:19 -0700 (PDT)
+Message-ID: <b80fe176-e001-4fa1-a4ac-db5904e37852@gmail.com>
+Date:   Mon, 16 Oct 2023 08:35:17 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v4 2/9] dt-bindings: net: dsa: microchip: add
- wakeup-source property
+Subject: Re: [PATCH net-next v4 3/9] net: dsa: microchip: use wakeup-source DT
+ property to enable PME output
 Content-Language: en-US
 To:     Oleksij Rempel <o.rempel@pengutronix.de>,
         "David S. Miller" <davem@davemloft.net>,
@@ -69,13 +69,12 @@ To:     Oleksij Rempel <o.rempel@pengutronix.de>,
         Conor Dooley <conor+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Rob Herring <robh+dt@kernel.org>
-Cc:     Conor Dooley <conor.dooley@microchip.com>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        UNGLinuxDriver@microchip.com,
+Cc:     kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, UNGLinuxDriver@microchip.com,
         "Russell King (Oracle)" <linux@armlinux.org.uk>,
         devicetree@vger.kernel.org
 References: <20231016141256.2011861-1-o.rempel@pengutronix.de>
- <20231016141256.2011861-3-o.rempel@pengutronix.de>
+ <20231016141256.2011861-4-o.rempel@pengutronix.de>
 From:   Florian Fainelli <f.fainelli@gmail.com>
 Autocrypt: addr=f.fainelli@gmail.com; keydata=
  xsDiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
@@ -110,7 +109,7 @@ Autocrypt: addr=f.fainelli@gmail.com; keydata=
  y5arMQorqTFWlEOgRA8OP47L9knl9i4xuR0euV6DChDrguup2aJVU8JPBBgRAgAPAhsMBQJU
  X9LxBQkeXB3fAAoJEGFXmRW1Y3YOj4UAn3nrFLPZekMeqX5aD/aq/dsbXSfyAKC45Go0YyxV
  HGuUuzv+GKZ6nsysJw==
-In-Reply-To: <20231016141256.2011861-3-o.rempel@pengutronix.de>
+In-Reply-To: <20231016141256.2011861-4-o.rempel@pengutronix.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -126,14 +125,13 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 10/16/2023 7:12 AM, Oleksij Rempel wrote:
-> Add wakeup-source property to enable Wake on Lan functionality in the
-> switch.
-> 
-> Since PME wake pin is not always attached to the SoC, use wakeup-source
-> instead of wakeup-gpios
+> KSZ switches with WoL support signals wake event over PME pin. If this
+> pin is attached to some external PMIC or System Controller can't be
+> described as GPIO, the only way to describe it in the devicetree is to
+> use wakeup-source property. So, add support for this property and enable
+> PME switch output if this property is present.
 > 
 > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
 Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
 -- 
