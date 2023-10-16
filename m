@@ -2,106 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B89FC7CB4F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3008A7CB4F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231955AbjJPU6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 16:58:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45224 "EHLO
+        id S233282AbjJPU7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 16:59:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjJPU6y (ORCPT
+        with ESMTP id S229666AbjJPU7P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 16:58:54 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64C68A7;
-        Mon, 16 Oct 2023 13:58:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F26FC433CA;
-        Mon, 16 Oct 2023 20:58:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697489931;
-        bh=dG6ltN79kbyGWDglciCzr1VcAQsge3LhDKGwMHp5vHI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=eHzBwg4p0suzaWPxo7lFCGwAAe15zegAj/iPL8AvWhjQaXH5tyZ9Qza55p8o25OT/
-         VBFCgIMnndzrFWAuq/S72FGLecv5OarJHzYpa5wm0Lkjv2wMCU53p2rSoY9pKO3MCG
-         o/a9t+IjiTRnWsgal/zhUnnBLvpufK1QDp7Y5+qYvpYr6dTuuLCor//08g1TJ1S9us
-         D9KlRE8dRSpE6KsElyH6XjjHy2gSKduZ1ReW4mL8AbSiAJsoT+TJR40+y1pNU8kClG
-         w0F/FW88GBQZKeNn4Dn76HFDIfzZRGSJerQM1+FL46HzYCK9uNrUHBzMB5D5FYL8n2
-         q3dXwjr/0XCrQ==
-Date:   Mon, 16 Oct 2023 15:58:49 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     lpieralisi@kernel.org, kw@linux.com, bhelgaas@google.com,
-        robh@kernel.org, gustavo.pimentel@synopsys.com,
-        jingoohan1@gmail.com, andersson@kernel.org,
-        konrad.dybcio@linaro.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] PCI: dwc: Add host_post_init() callback
-Message-ID: <20231016205849.GA1225381@bhelgaas>
+        Mon, 16 Oct 2023 16:59:15 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6F9DA7;
+        Mon, 16 Oct 2023 13:59:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1697489948;
+        bh=EUUfQmbPuoJ6VpjZzB45ptApbzJjAxXVBjL4y2UG2sw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nI3SetMCOfOQGtg0b0JhtAdTokxCMXuW69W6WSrjYbF4ODEOMNxfTVTYy0HnXEPAz
+         KFC4khFlUNFELdSRqEUa0SX2Q/A5HOpDExC3izFzO4U+U9qESDQ6R+xeV7PGYlN6Yr
+         SELUckCnLpFeCar7/gDR+9c4kty+A+3hVBClLJDnRLeJO7S6lsXvCvU94DYU/tk0DJ
+         wp+NEUN+iN7WExtX72lTcbCDWcd8cjhO0tD7R0mMPJkNS3O7kxTm58zTxJulGFmeBr
+         /CPDOuDLfI5mk8a3zq+ZbFM0tGp9m4qH93btjTQLQS75mbIznbEu8q2ZWIn/rD5y+Y
+         jqctUeaKaa5Og==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S8TxS20PYz4wcM;
+        Tue, 17 Oct 2023 07:59:08 +1100 (AEDT)
+Date:   Tue, 17 Oct 2023 07:59:06 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Rodrigo Siqueira Jordao <Rodrigo.Siqueira@amd.com>
+Cc:     Alex Deucher <alexdeucher@gmail.com>,
+        "Wentland, Harry" <Harry.Wentland@amd.com>,
+        "Lei, Jun" <jun.lei@amd.com>,
+        "Dhere, Chaitanya" <Chaitanya.Dhere@amd.com>,
+        "Zhuo, Qingqing" <qingqing.zhuo@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Roman Li <roman.li@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the amdgpu tree
+Message-ID: <20231017075906.3906b823@canb.auug.org.au>
+In-Reply-To: <111ce50e-f445-4018-8d10-c1f7908b3198@amd.com>
+References: <20231010124357.5251e100@canb.auug.org.au>
+        <cc75c480-5359-465e-adab-46b418ec5d97@amd.com>
+        <20231016113946.698ac2da@canb.auug.org.au>
+        <111ce50e-f445-4018-8d10-c1f7908b3198@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231010155914.9516-2-manivannan.sadhasivam@linaro.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/c..NT1IpAS8APIXEeh_d=qJ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 09:29:13PM +0530, Manivannan Sadhasivam wrote:
-> This callback can be used by the platform drivers to do configuration once
-> all the devices are scanned. Like changing LNKCTL of all downstream devices
-> to enable ASPM etc...
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  drivers/pci/controller/dwc/pcie-designware-host.c | 3 +++
->  drivers/pci/controller/dwc/pcie-designware.h      | 1 +
->  2 files changed, 4 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-> index a7170fd0e847..7991f0e179b2 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-> @@ -502,6 +502,9 @@ int dw_pcie_host_init(struct dw_pcie_rp *pp)
->  	if (ret)
->  		goto err_stop_link;
->  
-> +	if (pp->ops->host_post_init)
-> +		pp->ops->host_post_init(pp);
+--Sig_/c..NT1IpAS8APIXEeh_d=qJ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I know we talked about this a little bit in the context of enabling
-ASPM for devices below qcom 1.9.0 controllers at
-https://lore.kernel.org/r/20231011050058.GC3508@thinkpad
+Hi Rodrigo,
 
-But I didn't realize at the time that this callback adds a fundamental
-difference between devices present at boot-time (these devices can be
-affected by this callback) and any devices hot-added later (we never
-run this callback again, so anything done by .host_post_init() never
-applies to them).
+On Mon, 16 Oct 2023 08:53:05 -0600 Rodrigo Siqueira Jordao <Rodrigo.Siqueir=
+a@amd.com> wrote:
+>
+> Could you try this patchset?
+>=20
+> https://lore.kernel.org/amd-gfx/20231016142031.241912-1-Rodrigo.Siqueira@=
+amd.com/T/#t
 
-We merged this for now, and it helps enable ASPM for builtin devices
-on qcom, but I don't feel good about this from a larger DWC
-perspective.  If other drivers use this and they support hot-add, I
-think we're going to have problems.
+I will apply that to the merge of the amdgpu tree today.
 
->  	return 0;
->  
->  err_stop_link:
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-> index ef0b2efa9f93..efb4d4754fc8 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.h
-> +++ b/drivers/pci/controller/dwc/pcie-designware.h
-> @@ -301,6 +301,7 @@ enum dw_pcie_ltssm {
->  struct dw_pcie_host_ops {
->  	int (*host_init)(struct dw_pcie_rp *pp);
->  	void (*host_deinit)(struct dw_pcie_rp *pp);
-> +	void (*host_post_init)(struct dw_pcie_rp *pp);
->  	int (*msi_host_init)(struct dw_pcie_rp *pp);
->  	void (*pme_turn_off)(struct dw_pcie_rp *pp);
->  };
-> -- 
-> 2.25.1
-> 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/c..NT1IpAS8APIXEeh_d=qJ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUtpBoACgkQAVBC80lX
+0Gz3qgf5AcXHlqzMLrzLoo5rrfH5XcRzNam5MAZQf3xUUhDUuHMZlYbMAqAPFXI2
+rKTU2mXURXUFIt2cJ0JU0f6cFBUQDVhywhB659XnLLxgMcwfxGGfSk9IPQvfHDuM
+m+iKna7TP8xfTbXNFQsiyQx4/9Ilc1U7z14O/noSulQlyzyYXQFOtopApEaKoD7S
+bnP1uVKPtYv2amPcvllFHSoLpro8M02efxTh9T+f2+fz4ItLo5ARzu3Bckhq5+ww
+Re7PfhBj9WTqHJsQVmw0NB9G2fPUnXFm8+O2H0CPFhWuNPsgfX2E4xd+KueyP14G
+Jea1ymXtx8XPEQJ+JUoSPlIVmVJ4Hw==
+=FCiR
+-----END PGP SIGNATURE-----
+
+--Sig_/c..NT1IpAS8APIXEeh_d=qJ--
