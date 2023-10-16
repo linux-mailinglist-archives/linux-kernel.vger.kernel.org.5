@@ -2,85 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E03E7CA2AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 10:53:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7FD47CA2B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 10:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233015AbjJPIxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 04:53:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37582 "EHLO
+        id S233030AbjJPIxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 04:53:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232989AbjJPIwy (ORCPT
+        with ESMTP id S232989AbjJPIxP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 04:52:54 -0400
-Received: from sonic319-34.consmr.mail.bf2.yahoo.com (sonic319-34.consmr.mail.bf2.yahoo.com [74.6.131.89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ED40DE
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 01:52:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1697446372; bh=jinnphZPwZ56tGk63LWNxoV3xg2MoudycaFzsfdtmKk=; h=Date:From:Reply-To:To:Subject:References:From:Subject:Reply-To; b=jeLP2P5OYBxjNZ9hxYtssKJAvh9mNT87Y30QwhIKexOGJBWOHxlOfLq9AnIvFqgS0PN5c7eF+R2KkR1j9MyFq1Jwx83YSBpZ3bRz+QPz9uvRy9VX9//ujdkSD8PN+9Q8ftqYeFJIl4b7NimONreGGGQOVdwroXvvuBY2nqcgSMpTIiDWx2xcKAg5xwli5g1DYyHsF8Cw6oX1kCGlpOwpqJGahwdiMQPhXLFPldYxBNiJGxFIcNeXvTrL58AqR6QuSliVJ/P/4QXfnk4n7HWYkVw0pbV63/VGjDlPzmSuOMcPLU6K4chAqWcMBVWtjbyd08PAm7KS2hw2500WNhLjag==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1697446372; bh=GTnCBt3yIBf3H7cK4Pi+RqqRDzi8O1yqaqlnJRqkI0X=; h=X-Sonic-MF:Date:From:To:Subject:From:Subject; b=p+2oQaclcj6u+xbFmUc3Fs9VJSKjXAOodRGxW8KzPW6kD1L64EuiRj7J9BGAAE5r2bqlDKcPzKRc4ivTyCQAqp60yzVcYIkqemN/n5OCT7rh/cnnqptgnGwh5JN4jeX57UQ3lMBGLYUSHPxJt1EMIiX45kjAUPpsD+Jn+j+3fyRXZCNwgiR075jECOVQb48pY7r3+9AdiUN7JXmLjZ5jY2ks405H79zT8eOLE4lJOIjkNOMJ9Q94r0HnAVYfEhG9XfmIsUljdWYJ/ZgTNXfTlPbS5GApv9gYLdzGhPmK1WF3zfRZZUj6jDr8RfsYzLve5dTAeoZDM/5cC7Y3oSgqtw==
-X-YMail-OSG: w2Lar.sVM1lWEerHcPYOYict_UbBYjfJg_u3_SSwsGEvti1Np2OwMUzieFIEQ_o
- dLTc9Ge1nXiO5L3PWp.Fm4FJy9cMQtoKiRjJfnzM5NhsSkt2VvKIY_2XrscqzTUQNvBRxhA.kNqs
- _0xBzMzOvPxHp50RlJUA1ucLqxfHeV1dB_79FXkvndnblU.xWfaYub9kKetEmcJN7ZRnbMUb9OSi
- Wen69DeT.hwTuZC9VNy.kKkEORHXePNwwCte4AP0eR9GOuVIGbeAe8gNO7vvVXfV1oVX3gQK_nHG
- t3eGBbmM8Olvw.QyWU9.mFzXadEjct3Um0zpQW0qGuaOADHyVrwhrXoUijUi62w6RM4Q3V.JNOLY
- n311QockbZBgVTURD2MTTmgfT8WsCCtub.IexBL4Jfm_6VQvO7hGBg_hbiSMgASikAbGnX0FWKtq
- l2XmXVHifQZIKXnNnv24xmoRgW1JwtqH22eAC52hI.x7C8QUK2rNt5XCg.bsVMOGW9OZqWhnCfjX
- wWT3hfxrf4hqUZK00dgzcO8OvmTzDqkIOy_IAk24rniW5mKr8j9.dJOW9R8lYqqCMUuCg5Fw.Ri.
- y9FuMclGMjUS_.oHBUyRXdbcmCeOXbFdtau4PtEF9trynpfeoydlTpDHszlyjWns8Gq.aRobyOvt
- ErAJpCXMmtpUsQvKiHwxL93cJO.GxzP2r.RDTNJI2tQIr9IzxCemHO4.PiP.xlITddqtYu5vvfDJ
- jwk_3ylsAgs_1bhBf1_VXRMBt4_K2pVve22rl63KSuvUhzfqlAfjDvWCmg4Pa7xC0N.n.uikHEAG
- Glep.z10CsvIsUdHiNT6V9iYh.a1VbbxzNvbOJsLiL1B651Zsfp0U2VpA_1.YzcSXSmUnGGzO76_
- vxpYfHtqBQXL9UvLREnnRaaO9mTgQ1UQw7bfJq4IgWeYOutN0KYxh7GhBSK1yNiraha8vjexRwW.
- AlDyCD3AqTm2LoRCil4A0IRyQJA7d69nlEcEd0uM3WOpg.Nzs27l9zmBP8EA7ff8PWS5wa.RlcCF
- jJHD5m51BNz_svG.lA46uuithVy2CC6fvh7ysL0RrIu7q4ehVfJtPIUJSWEVD8Cu4fcH4asV6ZKg
- smmzgV2PRjRdGbW.tJp1yhCdCkH44asAp3yQhdPhEp5t71Q6ayYrgjJw75KwiNOU1CfITEKQCV19
- VSuMTa5SWhyW81YFyMnTen.BLkY2xuMcxBElmI0mPV5DyPwhfz1vC_2h1pnPqioBGm5BjfhGGsZG
- _DCdqq0dQTTctLkVC3atWxj_HWeWDCUTT.3bdLMnBpqAOqtwNIA_oO85so0IM8UQW5bmAzztcW5s
- xQ1Pgnk581lUTrBDjDDrHoH56pjBeKZh_6qD8KXXKOG8cnms08aZJfxT_t4jvqmk.Xt05bVNboiD
- rsYMyOabKAJa2HliHBOELoXli.cQ484ID1Ok.y_qmVC8O5RyLa630tzhH2o2evqbmWuIK3bgGhDx
- gR6lk5ENW4wfMCmqcLZR.MpVoO66fr3gFyE8BL6kfNYJLq6rmbxPD0opb5Cv_4BRUZh6gV6V62Fc
- JC40vB03YA8k94SPKaFDnYRnJds5HuxLqDgbqU.0v2sKDrGlEK2sAcqXCzcS.NoEOe6XW4zy5yO7
- ejtVx0IlyHQtYVs_1ew.Cp3U4fot_kKkjjBBr3Jb8sTYZ8CGbBk1HRjmqQtx9Pd1zCWP091Fpexb
- aGKm2H64EfL863NMVJSChqfiGfJ50WwAeJrEf5eXQfURPdm5XZdjZBgJTaq7mjjMenU3xFkAy.2X
- u36z4TGd1U8R0EAwReljsWNgG_GhfoQtFQq4HEqhmNcH6g5iWNzcNqwcYEobPGJel7pZtZcVM_oq
- tm3gaog6zToYhP9Z8pBgwk.mURJUrMFGm8Oha7.grqaVGERuIOXRLinxIk0oszDe3YYKS26YwebG
- ItlbT9KvhsG.0ifJWqlZKhJV.sBaGuWSZvCz9hlqqWxymv8BvZGQOpuh1CVjhpznnqfdVv_ecL3k
- 5ti5VKvh4YmE_sL5VHKTg649Ez77PxkwRMwCkuDUTCnQ2FZ1xrxWBRxs_Q1TQ0GK5_mJgUP2QD6V
- salywTY1HROaAUPfLC_pz5hdvZeFc0T9TITRG6DT3lFZoGJLgo2S_IYyA.kLhrM5y3zJ8Bo4peDz
- 0ZoLKSKFun8Azfj6HW28llctazraa5FxRIFzHxf8FGKrWy8h6E8Q5hflqhdWs
-X-Sonic-MF: <dominiquevalon@pointpsas.com>
-X-Sonic-ID: d5abe34a-0818-42fd-9b41-b250a0cb5a4d
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic319.consmr.mail.bf2.yahoo.com with HTTP; Mon, 16 Oct 2023 08:52:52 +0000
-Date:   Mon, 16 Oct 2023 08:52:48 +0000 (UTC)
-From:   Point P SAS <dominiquevalon@pointpsas.com>
-Reply-To: dominiquevalon@pointpsas.com
-To:     linux-kernel@vger.kernel.org
-Message-ID: <1432142726.8532781.1697446368781@mail.yahoo.com>
-Subject: purchase inquiry
+        Mon, 16 Oct 2023 04:53:15 -0400
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0873EF3
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 01:53:14 -0700 (PDT)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5a7eef0b931so52762727b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 01:53:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697446393; x=1698051193; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0qjL7Jne2EuSY8hJrWaJD0Y2w0iLDuf6rVnD3m4Il5Y=;
+        b=xgc028NSAPx6kQQEGoEWI+YHMHnAt9mDVB0tPtr8ZMFeMqlw6AVj67SODYXbXfzCAK
+         sqZwyJAlpTIMzvOMG6RJz3qEENDQYm1jeNYLU5rhYHeLQ7MOFcubwZfhxNUhjfGCbjDG
+         CZfwbJeO6h6z+EziW0JkyCUv0PRCdCKmDS3s5/Rxb/4ILGfhusiTUGmCU/SVHx3DLj5y
+         VvZY1E6L2B9yeTpBIj6DadquAPsh72JWEVxlAKUd08scKGBIIzXOuyOjoPmw6mDV++Z9
+         zUqoUCFF5ocpYESHgp1vBGD9SC034vQX0scdYdx0+s8DjvkejI6dWeL/uBqZuerE0Aze
+         40aA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697446393; x=1698051193;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0qjL7Jne2EuSY8hJrWaJD0Y2w0iLDuf6rVnD3m4Il5Y=;
+        b=U9xz7/yVWtz/cpXW//XtZIzhXys5F36gr7K6Aq60NDqp51Ya+uEbZqxeSEWn4gmAoS
+         d19hZdDV+wL9hsur+1tsRojiB0WcPz/zVJzkXlULeYIcD5nAo6UWDDynPrbswI3xLnBK
+         KVUWdBYfdCfZ9JbViLLlPEaEYmnmP+7C2bq7Kz1WMsUKhPLPV+dNp/o4Nad3hXoo95ZM
+         3R9PK4LKV96gjcdgRciAnQr8MKDodZzN9KDWvBLFgo4Ugf0MNwUlpRl9jja7Y5fY2hEU
+         Dl0QFpOHMxLf5LyFZFVUNNh7GTY5DdWaSxlXcCWADhEMOsROLHoPK1R9ZVhBKcaqMg6L
+         jb1g==
+X-Gm-Message-State: AOJu0YwPBCx4bqSFcVFhmMDHUv7V9JqQII183trYgiqnZypj8Wtz9NzP
+        1UshyEJxIuTLt/y99b3ohIDShAAZ6W2cZHxlSGVDng==
+X-Google-Smtp-Source: AGHT+IH4xBr1KrgiLsfmacR6sZSOPfQzcHLoH+Lo+h6GkkMSCXJ0UKEHTksgQfzA2wSwtVAKncDAED18cfQIE+i3W6k=
+X-Received: by 2002:a81:4fd3:0:b0:5a7:dbd1:4889 with SMTP id
+ d202-20020a814fd3000000b005a7dbd14889mr17047139ywb.2.1697446393255; Mon, 16
+ Oct 2023 01:53:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <1432142726.8532781.1697446368781.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.21797 YMailNodin
-X-Spam-Status: No, score=2.8 required=5.0 tests=BAYES_50,DEAR_SOMETHING,
-        DKIM_SIGNED,DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+References: <20231016080658.6667-1-johan+linaro@kernel.org>
+In-Reply-To: <20231016080658.6667-1-johan+linaro@kernel.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Mon, 16 Oct 2023 11:53:02 +0300
+Message-ID: <CAA8EJpoPSHfRMgzs69Z-Zk0L8z8_8sveh22pj4ZOAwyAPvesHQ@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: sc8280xp-crd: fix eDP phy compatible
+To:     Johan Hovold <johan+linaro@kernel.org>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  
-Dear sir/Madam,
-We are interested in your products.
-Kindly send Your price list for Purchase order.
-Best Regards,
-Mr.Dominique Valon
+On Mon, 16 Oct 2023 at 11:07, Johan Hovold <johan+linaro@kernel.org> wrote:
+>
+> The sc8280xp Display Port PHYs can be used in either DP or eDP mode and
+> this is configured using the devicetree compatible string which defaults
+> to DP mode in the SoC dtsi.
+>
+> Override the default compatible string for the CRD eDP PHY node so that
+> the eDP settings are used.
+>
+> Fixes: 4a883a8d80b5 ("arm64: dts: qcom: sc8280xp-crd: Enable EDP")
+> Cc: stable@vger.kernel.org      # 6.3
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sc8280xp-crd.dts | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sc8280xp-crd.dts b/arch/arm64/boot/dts/qcom/sc8280xp-crd.dts
+> index 772953dc428e..31a2a2d27f4e 100644
+> --- a/arch/arm64/boot/dts/qcom/sc8280xp-crd.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc8280xp-crd.dts
+> @@ -458,6 +458,8 @@ mdss0_dp3_out: endpoint {
+>  };
+>
+>  &mdss0_dp3_phy {
+> +       compatible = "qcom,sc8280xp-edp-phy";
 
-Point P SAS
-Address:12 Place DE L IRIS
-92400 COURBEVOIE France
-Ph.755531567
-Siren:695680108
-VAT number: FR73695680108
+Same question here as the one I've sent for Konrad's patch. Is it the
+same PHY type, just being repurposed for eDP or is it a different PHY
+type?
+
+> +
+>         vdda-phy-supply = <&vreg_l6b>;
+>         vdda-pll-supply = <&vreg_l3b>;
+>
+> --
+> 2.41.0
+>
+
+
+-- 
+With best wishes
+Dmitry
