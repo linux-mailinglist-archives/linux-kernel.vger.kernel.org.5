@@ -2,227 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6711B7CA067
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 09:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B835A7CA0A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 09:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232204AbjJPHS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 03:18:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54214 "EHLO
+        id S231853AbjJPHda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 03:33:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232161AbjJPHSx (ORCPT
+        with ESMTP id S229478AbjJPHd2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 03:18:53 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF3CAE1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:18:49 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3226cc3e324so3983096f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:18:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697440728; x=1698045528; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=CAW6S3qn7GXw+atrFuieouqd53kTHVX/zKX5RgMnUOs=;
-        b=o6G/wNZqR4MiU8MbzUIuA09I5WqWQjo9u4loVo5zhzWdyqbC05GUw+0/K0Ycu9UDru
-         ucVM3oU7knE9yDovbei6pmlZnsgyMic6J11aFo7gf6TvbiubjB3/BOUvphKBMyf42Voc
-         WY1Ny/lEm8We1nTuGTam8qWxxOkwizPWCHEKP+GOr8ypArdkfLa03bS5kxGH3QyWfhd9
-         AQ+cHoxUPx2c0aTatCfQa306GBaqky6+9QB7B+0Kx+yIZaxMzitsy/0MFHfiGPJ3DqTN
-         UJSdcQdCn7FDG3Zl94EzRSMgLeT1p3MY17NhglbNIXB84BttLZ+HIy2zwzbzs1zoR023
-         ugmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697440728; x=1698045528;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CAW6S3qn7GXw+atrFuieouqd53kTHVX/zKX5RgMnUOs=;
-        b=X2ssCKFMlQ0y8JKZjKpU2EBDuuKD91PI1hl9DR0R4fS2zvjt0uIRbHhtgJgjQY5RNa
-         nf/y0LqVYkNp7lWK+rzVAqG/2pvJwf2JQx8CtoJECmVfhjQalSXH7mMEzU99+CI5kXxA
-         +OFN5FpzBVdM0gI5RqYw9p1ZH4nIGvHpz+hR//eOCKI7Vhzjw1hl8wE7FJBy2fBbK2jc
-         z09gtuH1+Ma4BjglDoiEw42bhDmmYM3PYISTLptUZyPwQDEl7wQ7D4Ad9au24T7VkR4d
-         MxjxSILWBbJw4ED5IRzNh+BCg4NJVhuO3bE1pbQKLlN05G7JAWsfdRn1v3oVFF1iXdXk
-         tpgQ==
-X-Gm-Message-State: AOJu0YzVa6u6mZJpSvhIRC3+CJdkGvHndWsahqg8Jvq4sc0lcPRbfvvV
-        /puIBeAQagKMCQ1G80avdZoxQA==
-X-Google-Smtp-Source: AGHT+IHVRyf/P9Fro8MC5JKJhp2zv1kxfKmKv6pNPH9m4nPvX1nIlQt6VtzOKrJIyMw0JW5OWstFbA==
-X-Received: by 2002:adf:9bc8:0:b0:32d:8220:8991 with SMTP id e8-20020adf9bc8000000b0032d82208991mr10663976wrc.8.1697440728259;
-        Mon, 16 Oct 2023 00:18:48 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.154])
-        by smtp.gmail.com with ESMTPSA id t11-20020a5d534b000000b003232380ffd5sm26608471wrv.106.2023.10.16.00.18.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 00:18:47 -0700 (PDT)
-Message-ID: <2ae8c910-3fa5-4835-9d2a-fbab64d3aabf@linaro.org>
-Date:   Mon, 16 Oct 2023 09:18:46 +0200
+        Mon, 16 Oct 2023 03:33:28 -0400
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B2CAD
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:33:26 -0700 (PDT)
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20231016073324epoutp04d590c7bf75b81eb0a15b9efb4a470d5b~OhiVTgA0v0198901989epoutp04y
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 07:33:24 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20231016073324epoutp04d590c7bf75b81eb0a15b9efb4a470d5b~OhiVTgA0v0198901989epoutp04y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1697441604;
+        bh=/fmWexiW3XjDpbpbWnZTKvgi14z+ifFVkfg9xnLHvnU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=P81jSSjRqHddN8DwiTTUDm7TUtJ3ekLiLGMlbMDvM0gNHfd72akiTyGXeAeKGOSD9
+         HUvK5xItffVCzWJaaGk81Sqt4b0aPWpxfkadGms2T8qC2Poj7XlWpBOtMn3RwF/Iu8
+         2vrcQujYdZMHSPWEqEmBTt6ayj68TlVWfD0VjUDQ=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
+        20231016073324epcas2p2470508d7c80bde0ead6e40ed26dac610~OhiVBD5Bf0987509875epcas2p2s;
+        Mon, 16 Oct 2023 07:33:24 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.36.68]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4S883l3zCPz4x9Q2; Mon, 16 Oct
+        2023 07:33:23 +0000 (GMT)
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        C7.FD.09607.347EC256; Mon, 16 Oct 2023 16:33:23 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
+        20231016073323epcas2p215b7d7c872459cfc427b24fee8ff14a9~OhiUKkBeJ2756927569epcas2p2S;
+        Mon, 16 Oct 2023 07:33:23 +0000 (GMT)
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20231016073323epsmtrp11d601c6c642aa890c1bfad2f945c20cf~OhiUKEuQD0099400994epsmtrp1E;
+        Mon, 16 Oct 2023 07:33:23 +0000 (GMT)
+X-AuditID: b6c32a48-bcdfd70000002587-d6-652ce743281a
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A9.E1.18939.347EC256; Mon, 16 Oct 2023 16:33:23 +0900 (KST)
+Received: from tiffany (unknown [10.229.95.142]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20231016073323epsmtip21e5a4b746388960075f13439e0fadc3e~OhiUCZDW00486504865epsmtip2b;
+        Mon, 16 Oct 2023 07:33:23 +0000 (GMT)
+Date:   Mon, 16 Oct 2023 16:23:05 +0900
+From:   Hyesoo Yu <hyesoo.yu@samsung.com>
+To:     Vishal Moola <vishal.moola@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: page_alloc: check the order of compound page event
+ when the order is 0
+Message-ID: <20231016072305.GA2440288@tiffany>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/2] dt-bindings: iio: adc: ti,ads7038: Add description
- for ADS7038
-To:     werneazc@gmail.com, jic23@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        lars@metafoo.de
-Cc:     devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andre Werner <andre.werner@systec-electronic.com>
-References: <20231016070318.28355-1-andre.werner@systec-electronic.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231016070318.28355-1-andre.werner@systec-electronic.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <CAOzc2pxGyZUGju07aid06FpSgFFA45tr0wU-yH4yUipKMPaP=Q@mail.gmail.com>
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgk+LIzCtJLcpLzFFi42LZdljTXNf5uU6qwexPchZz1q9hs7i8aw6b
+        xb01/1kt1u+7werA4rFz1l12j02fJrF7nJjxm8Xj8ya5AJaobJuM1MSU1CKF1Lzk/JTMvHRb
+        Je/geOd4UzMDQ11DSwtzJYW8xNxUWyUXnwBdt8wcoJVKCmWJOaVAoYDE4mIlfTubovzSklSF
+        jPziElul1IKUnALzAr3ixNzi0rx0vbzUEitDAwMjU6DChOyMtQcWMRd8kqjY376WtYHxl1AX
+        IyeHhICJxI4Jt1m6GLk4hAR2MEo8uniKDcL5xCjR+H4NE5zz5c5pdpiWNb1bGCESOxklFrxa
+        wA7hPGWU2HDtOBNIFYuAqsTstyvBOtgE1CVObFkG1MHBISKgKbHybxJImFkgUeLv1PVgJcJA
+        9s7mDWwgNq+AnsTCWYfZIWxBiZMzn7CA2JwCgRJPZi5mhjjiFrvEulMeELaLxLXdNxkhbGGJ
+        V8e3QB0qJfGyvw3Kzpa4+3ECG4RdIrHuTANU3Fhi1rN2Roh70iW2Tf3PDnKmhICyxJFbLBBh
+        PomOw3+hwrwSHW3QkFOW2L9sHguELSnxaG07K0SJh0TXnnhIgGxmkjh6eBnzBEa5WUiemYVk
+        2SygFmZgmKzfpQ8Rlpdo3jqbGSIsLbH8HweSigWMbKsYxVILinPTU4uNCkzgMZ2cn7uJEZwU
+        tTx2MM5++0HvECMTB+MhRgkOZiUR3vRgnVQh3pTEyqrUovz4otKc1OJDjKbAOJrILCWanA9M
+        y3kl8YYmlgYmZmaG5kamBuZK4rz3WuemCAmkJ5akZqemFqQWwfQxcXBKNTAtYD0a/PsWW9u+
+        ac2RV75e+hdqp+HBZznpsUORa0Rl8Axffh5f/5pC44lrGa/W75325/G9qV+/vWi8M8F6MotB
+        Qqqe7X03Zd2cP1GHVjWqHV8/38z1J5f29OaYM/YB8ivOzU8pcf6u+TdNUDBuwt6jId0H6zfF
+        9JQKmG8/cPPnBY+oJnWWiLcmdpdKuya2l71wveBd/bN6jk1zVREPx0t9odlNy6U+yx/fXr1U
+        Utt1w4/5/9fd0GZRlvC7r8tZN/nNxkcXvgk+aZ9w+tXK904vJqzmPd3w7G8880v57vVt0+w/
+        OG4S2nuKZfL/J8zlOl8erztQPqXRb//fsBkR9S0r+84xKweUcsVdfrzgDc9GJZbijERDLeai
+        4kQAcxUtFBMEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrALMWRmVeSWpSXmKPExsWy7bCSvK7zc51Ugy9vOC3mrF/DZnF51xw2
+        i3tr/rNarN93g9WBxWPnrLvsHps+TWL3ODHjN4vH501yASxRXDYpqTmZZalF+nYJXBkXv95g
+        KpguVnHn+kW2BsbdAl2MnBwSAiYSa3q3MHYxcnEICWxnlHh47AMzREJSYtbnk0wQtrDE/ZYj
+        rCC2kMBjRokX/fEgNouAqsTstyvZQWw2AXWJE1uWAQ3i4BAR0JRY+TcJJMwskCjxd+p6sBJh
+        IHtn8wY2EJtXQE9i4azD7BB7NzNJnHiwmB0iIShxcuYTFohmdYk/8y4xg8xkFpCWWP6PAyIs
+        L9G8dTbYmZwCgRJPZi5mnsAoOAtJ9ywk3bMQumch6V7AyLKKUTS1oDg3PTe5wFCvODG3uDQv
+        XS85P3cTIzjQtYJ2MC5b/1fvECMTB+MhRgkOZiUR3vRgnVQh3pTEyqrUovz4otKc1OJDjNIc
+        LErivMo5nSlCAumJJanZqakFqUUwWSYOTqkGJslvNxnrzm40a3h4SurY9zc5S9tUdsROYp99
+        hf/BlNdWccufXUpg4Ap22Byv0rHAaIqLQHHorJwrx7Sbly8ufR4UFSixLfSAw5wXaS0etxnb
+        Yvf0v9x6PvlUVfDZXbOrFK63ylw7ENG2x+mi82Uj2dvTRV99e6r37hX7Ivu9x41//b0T/8jw
+        wMRIucN/VrfbW0zNDJ/OyMFtrVpj9SA1V1m0vCim7voa80WhOYs7vGRentw2M6o+S03E5uT0
+        W74PzXSa5pppOnmFCJzRn7x8Sur0SN/LRSvPb0g5qH59mYO0f5O1yjrPj4ZzG0Mzdk5KeHm+
+        OCjWL7kz6b/Uhi2F8edUXzLPsz2tuqZk5xSHzUosxRmJhlrMRcWJAHSI2urjAgAA
+X-CMS-MailID: 20231016073323epcas2p215b7d7c872459cfc427b24fee8ff14a9
+X-Msg-Generator: CA
+Content-Type: multipart/mixed;
+        boundary="----kpWfbNyO0dZ94JZMx8UaZzOLaVw4Eds-FlcQ7ND7-zj3ifPP=_d102_"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231012012153epcas2p34b8e9e8a898ace8d50411cadf937ef5d
+References: <CGME20231012012153epcas2p34b8e9e8a898ace8d50411cadf937ef5d@epcas2p3.samsung.com>
+        <20231012011106.2425309-1-hyesoo.yu@samsung.com>
+        <ZSmucNWBMj/mNVeE@dhcp-10-159-238-251.vpn.oracle.com>
+        <20231016003200.GA445850@tiffany>
+        <CAOzc2pxGyZUGju07aid06FpSgFFA45tr0wU-yH4yUipKMPaP=Q@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/10/2023 09:02, werneazc@gmail.com wrote:
-> From: Andre Werner <andre.werner@systec-electronic.com>
+------kpWfbNyO0dZ94JZMx8UaZzOLaVw4Eds-FlcQ7ND7-zj3ifPP=_d102_
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+
+On Sun, Oct 15, 2023 at 08:28:18PM -0700, Vishal Moola wrote:
+> On Sun, Oct 15, 2023 at 5:42 PM Hyesoo Yu <hyesoo.yu@samsung.com> wrote:
+> >
+> > On Fri, Oct 13, 2023 at 01:54:08PM -0700, Vishal Moola wrote:
+> > > On Thu, Oct 12, 2023 at 10:11:06AM +0900, Hyesoo Yu wrote:
+> > > > For compound pages, the head sets the PG_head flag and
+> > > > the tail sets the compound_head to indicate the head page.
+> > > > If a user allocates a compound page and frees it with a different
+> > > > order, the compound page information will not be properly
+> > > > initialized. To detect this problem, compound_page(page) and
 > 
-> Add basic description for ADS7038 ADC devices.
-> The devicetree adds the following device specific options:
+> s/compound_page/compound_order/
 > 
-> - average-samples: Program device's programmable average filter.
-> - crc-enabled: Enable the CRC check for SPI transfers. Sadly, this
->   option has currently no effect in the driver.
-> - status-enabled: Enable the appending of the device's status on the
->   measure value transmission.
-> - gpio-controller: Sadly function not implemented yet in the driver.
+> > > > the order are compared, but it is not checked when the order is 0.
+> > > > That error should be checked regardless of the order.
 > 
-> Signed-off-by: Andre Werner <andre.werner@systec-electronic.com>
-> ---
-> v3
-> - Delete ADS7138 compatible and comments.
-> - Add options for CRC, status and average samples as well as
->   gpio-controller.
-> - Update example.
-> - add regulator for digital IO voltage.
-
-You received several build errors before. Did you really test it now,
-because looks like not.
-
-> ---
->  .../bindings/iio/adc/ti,ads7038.yaml          | 83 +++++++++++++++++++
->  1 file changed, 83 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,ads7038.yaml
+> With this many mentions of "the order", it is easy to misinterpret "the
+> order"
+> to be referencing the page order rather than the order of pages we are
+> trying
+> to free. I recommend replacing "the order" with "the order argument" or
+> something similar for clarity.
 > 
-> diff --git a/Documentation/devicetree/bindings/iio/adc/ti,ads7038.yaml b/Documentation/devicetree/bindings/iio/adc/ti,ads7038.yaml
-> new file mode 100644
-> index 000000000000..fc1054ca93f7
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/adc/ti,ads7038.yaml
-> @@ -0,0 +1,83 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/adc/ti,ads7038.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Texas Instruments ADS7038 and similar ADCs
-> +
-> +maintainers:
-> +  - Andre Werner <andre.werner@systec-electronic.com>
-> +
-> +description: |
-> +  Family of 7 channel, 12 bit ADCs with SPI interface.
-> +
-> +  Datasheet: https://www.ti.com/lit/gpn/ads7038
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - ti,ads7038
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  spi-max-frequency:
-> +    maximum: 60000000
-> +
-> +  avdd-supply:
-> +    description: Analog supply voltage, also used as the reference voltage to the ADC.
-> +
-> +  dvdd-supply:
-> +    description: Digital I/O supply voltage.
-> +
-> +  average-samples:
-> +    description: |
-> +      If specified ADC is configured for avaraging measurements (OSR_CFG Register).
-> +      This effects output format for measurement and sampling time.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [0, 1, 2, 3, 4, 5, 6, 7]
-> +
-> +  status-enabled:
-> +    description: |
 
-Do not need '|' unless you need to preserve formatting.
+What a good idea! I'll replace that. Thanks for your comments.
 
-> +      If specified ADC transmits chip status (DATA_CFG Register).
+> > > I believe all compound pages are order >= 1, so this error can't occur
+> > > when the order is 0.
+> > >
+> >
+> > Yes. All compound pages are order >= 1.
+> > However if the user uses the API incorrectly, the order value could be
+> zero.
+> 
+> I see, thanks for clarifying that.
+> 
+> With the commit message changes above:
+> Reviewed-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+> 
 
-Missing type.
+Okay, Thanks for review.
 
-You described the desired Linux feature or behavior, not the actual
-hardware. The bindings are about the latter, so instead you need to
-rephrase the property and its description to match actual hardware
-capabilities/features/configuration etc. Why this is a property of a board?
+Regards.
+Hyesoo Yu.
 
-> +
-> +  crc-enabled:
-> +    description: |
-> +      Checking the integrity of the data bits exchanged over
-> +      SPI interface (GENERAL_CFG Register).
+> > For example,
+> >
+> > addr = alloc_pages(GFP_COMP, 2);
+> > free_pages(addr, 0);
+> >
+> > (struct page[16])0xFFFFFFFE21715100 = (
+> > (flags = 0x4000000000000200, lru = (next = 0x0, prev =
+> 0xDEAD000000000122),//  Clear PG_head
+> > (flags = 0x4000000000000000, lru = (next = 0xFFFFFFFE21715101, prev =
+> 0xFFFFFFFF00000201),  // Remain compound head
+> >
+> > It is memory leak, and it also makes system stability problem.
+> > on isolation_single_pageblock, That case makes infinite loops.
+> >
+> > for (pfn = start_pfn; pfn < boundary_pfn; ) {
+> >         if (PageCompound(page)) { // page[1] is compound page
+> >                 struct page *head = compound_head(page); // page[0]
+> >                 unsigned long head_pfn = page_to_pfn(head);
+> >                 unsigned long nr_pages = compound_nr(head); // nr_pages
+> is 1 since page[0] is not compound page.
+> >
+> >                 if (head_pfn + nr_pages <= boundary_pfn) {
+> >                         pfn = head_pfn + nr_pages; // pfn is set as
+> page[1].
+> >                         continue;
+> >                 }
+> > }
+> >
+> > So, I guess, we have to check the incorrect use in free_pages_prepare.
+> >
+> > Thanks,
+> > Hyesoo Yu.
 
-Same comment.
+------kpWfbNyO0dZ94JZMx8UaZzOLaVw4Eds-FlcQ7ND7-zj3ifPP=_d102_
+Content-Type: text/plain; charset="utf-8"
 
 
-
-Best regards,
-Krzysztof
-
+------kpWfbNyO0dZ94JZMx8UaZzOLaVw4Eds-FlcQ7ND7-zj3ifPP=_d102_--
