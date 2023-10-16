@@ -2,149 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E167CAFC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:38:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 619277CAFE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234287AbjJPQiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 12:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41282 "EHLO
+        id S234290AbjJPQjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 12:39:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234337AbjJPQgJ (ORCPT
+        with ESMTP id S232873AbjJPQh5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 12:36:09 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9757C619E
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:21:45 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-503056c8195so6056608e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:21:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697473304; x=1698078104; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QbEwLv24nD3uUkOKHu8cF5O7V7n6JfgHXxT91pg/exM=;
-        b=HSS6T3/ar7UnkGJex/eYuuDIhwcjje8OWhzISUVWiEhiytcn4jpiZbzUfsK7+RTgmC
-         0ap6FTBkEa9yBAGwu6kRCBCVm/9AqF/R1bKf8M2Gzz8DotzZzvbXfd1bvHEwMVNXgO/C
-         f13xLKCOF5zKInPCoDpGim2GmKRY4KyvhlUnHgHY7ckf9CbuxJVEMvAE45r9JYLMOILA
-         hCt5br1RKs4aEIz+KTSv129sdh1pPDFXQPnu/lRhbQVaR+PUltLQ0TNCQf5yrqgxKFRg
-         H/4T8vsDWPWVqj1UN0Q2YrZCKtlZexr+DZaf3RuwCbW9JSH2r/QSBQ/++DF/BVVoVXtV
-         +Qlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697473304; x=1698078104;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QbEwLv24nD3uUkOKHu8cF5O7V7n6JfgHXxT91pg/exM=;
-        b=gUUN6iIJPl6+7NOjwuQxVEPxMcw/q98IC9HcLz+1s8VK4FTUVe81QBWzSg/gYcZhwv
-         fjxHZAjPdmvu/7+RoJ09nOV5pxkRuAwKOPxxqj0DCZ80bmm7PIF8By1OuGGShXnaypba
-         ZZkf5YeZwCBiLvhTgWYv6vu0siAAb6ol0W2MRD0Ku27RBTStpCwtxBg57coOphK49Xj9
-         djMmF4sIKS3iR9LQCh+lyEYSHcsRlBxSM0X1EAk++Yneobtgezy8B0eF2120okzpyOOh
-         ArcJENX2OaKwecZq5HFLnOB93rSlk+va3TTEl5zAQthE6gGaBQ5cFIGg7dXbmHMA8ZVL
-         XKWA==
-X-Gm-Message-State: AOJu0YxVsLil5PuvpiS0euWGR1mRn1iTNHhdbHZsxc/oF2rRK6vt1p20
-        D4TxR8eLdik2gV/00r7nQLZa6Q==
-X-Google-Smtp-Source: AGHT+IEqZQva0zNXaGCmQpdid2AhqCuoy55evuXJRL6J2L2Dxp9l2OSR6DK5ZN3TGaeMtlxtNu9UyQ==
-X-Received: by 2002:ac2:5238:0:b0:507:a703:886e with SMTP id i24-20020ac25238000000b00507a703886emr4048512lfl.53.1697473303647;
-        Mon, 16 Oct 2023 09:21:43 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.154])
-        by smtp.gmail.com with ESMTPSA id g7-20020a056402114700b0053da777f7d1sm107223edw.10.2023.10.16.09.21.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 09:21:43 -0700 (PDT)
-Message-ID: <a05a7fb0-2de8-4d59-af8b-41b5a19de927@linaro.org>
-Date:   Mon, 16 Oct 2023 18:21:40 +0200
+        Mon, 16 Oct 2023 12:37:57 -0400
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C158252;
+        Mon, 16 Oct 2023 09:23:15 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 378FBE0002;
+        Mon, 16 Oct 2023 16:23:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1697473394;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/XVHBW4OllJOkAPcU2owgNX1LO5d3o45pdtyP1brke4=;
+        b=hqgbZmKJTURFIiX5ft6fhvifc3JzLapjCqlmxEd8rPDZ+kcyaFLNEi2/2qzlOkr90NvDhm
+        lNLJkQHtfn4K17Pir/2CyMQW3WQ/+VcQC6x2SokKSko5WO/XwQZdOuBeEQHGgLKW9SOw5C
+        4dXiSjc0JlSHJUDRNg1vwQ6wJFUGgof64slmcaCYnt7j5DSqqFkibPvkD8+wwPRbvMq24T
+        Cr2tWqMbu42VlXFo7XGRB9QJ4p4RKqogyzwXraGpp2nEvGV74nVyomo3vJjobXdYS4NgAo
+        ucYUU9I+fR7bocPTlzY5q3Um7oFrD9ga9LQXbKBhRFZr01NCqry2O8jXRVK9TQ==
+Date:   Mon, 16 Oct 2023 18:23:07 +0200
+From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Michael Walle <michael@walle.cc>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH net-next v5 08/16] net: ethtool: Add a command to expose
+ current time stamping layer
+Message-ID: <20231016182307.18c5dcf1@kmaincent-XPS-13-7390>
+In-Reply-To: <20231016084346.10764b4a@kernel.org>
+References: <20231009155138.86458-1-kory.maincent@bootlin.com>
+        <20231009155138.86458-9-kory.maincent@bootlin.com>
+        <2fbde275-e60b-473d-8488-8f0aa637c294@broadcom.com>
+        <20231010102343.3529e4a7@kmaincent-XPS-13-7390>
+        <20231013090020.34e9f125@kernel.org>
+        <6ef6418d-6e63-49bd-bcc1-cdc6eb0da2d5@lunn.ch>
+        <20231016124134.6b271f07@kmaincent-XPS-13-7390>
+        <20231016072204.1cb41eab@kernel.org>
+        <20231016170027.42806cb7@kmaincent-XPS-13-7390>
+        <20231016084346.10764b4a@kernel.org>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 15/16] dt-bindings: display: mediatek: split: add
- compatible for MT8195
-Content-Language: en-US
-To:     Moudy Ho <moudy.ho@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20231012084037.19376-1-moudy.ho@mediatek.com>
- <20231012084037.19376-16-moudy.ho@mediatek.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231012084037.19376-16-moudy.ho@mediatek.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/2023 10:40, Moudy Ho wrote:
-> Add compatible string and GCE property for MT8195 SPLIT, of
-> which is operated by MDP3.
-> 
-> Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
-> ---
+On Mon, 16 Oct 2023 08:43:46 -0700
+Jakub Kicinski <kuba@kernel.org> wrote:
 
-After feedback from Angelo:
+> On Mon, 16 Oct 2023 17:00:27 +0200 K=C3=B6ry Maincent wrote:
+> > On Mon, 16 Oct 2023 07:22:04 -0700
+> > Jakub Kicinski <kuba@kernel.org> wrote: =20
+>
+> > Ok, but there might be quality difference in case of several timestamp
+> > configuration done in the MAC. Like the timestamping precision vs frequ=
+ency
+> > precision. In that case how ethtool would tell the driver to switch bet=
+ween
+> > them? =20
+>=20
+> What's the reason for timestamp precision differences?
+> My understanding so far was the the differences come from:
+>  1. different stamping device (i.e. separate "piece of silicon",
+>     accessed over a different bus, with different PHC etc.)
+>  2. different stamping point (MAC vs DMA)
+>=20
+> I don't think any "integrated" device would support stamps which
+> differ under category 1.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+It was a case reported by Maxime on v3:
+https://lore.kernel.org/netdev/20230324112541.0b3dd38a@pc-7.home/=20
 
-Best regards,
-Krzysztof
+
+> > My solution could work for this case by simply adding new values to the
+> > enum:
+> >=20
+> > enum {
+> > 	NETDEV_TIMESTAMPING =3D (1 << 0),
+> > 	PHYLIB_TIMESTAMPING =3D (1 << 1),
+> > 	MAC_TS_PRECISION =3D (1 << 2)|(1 << 0),
+> > 	MAC_FREQ_PRECISION =3D (2 << 2)|(1 << 0),
+> > }
+> >=20
+> > Automatically Linux will go through the netdev implementation and could=
+ pass
+> > the enum value to the netdev driver. =20
+>=20
+> We can add multiple fields to netlink. Why use the magic encoding?
+
+To simplify the Linux code to go under either netdev or phylib implementati=
+on
+without needing describing all the enum possibility in the condition:
+if (ts_layer & PHYLIB_TIMESTAMPING)
+...
+if (ts_layer & NETDEV_TIMESTAMPING)
+...
+
+We also could add "is_phylib" and "is_netdev" functions with a simple switch
+case in it, but we have to be careful to always update these functions when=
+ new
+enum values will appear.
+
+>=20
+> > > But there is a big difference between MAC/PHY and DMA which would
+> > > both fall under NETDEV?   =20
+> >=20
+> > Currently there is no DMA timestamping support right? =20
+>=20
+> Kinda. Some devices pass DMA stamps as "HW stamps", and pretend they
+> are "good enough". But yes, there's no distinction at API level.
+
+Ok. I did suppose this when writing my last reply.
+
+> > In that case we will have MAC and DMA under netdev and PHY under phylib=
+ and
+> > we won't have to do anything more than this timestamping management pat=
+ch:=20
+> > https://lore.kernel.org/netdev/20231009155138.86458-14-kory.maincent@bo=
+otlin.com/
+> > =20
+>=20
+> Maybe we should start with a doc describing what APIs are at play,
+> what questions they answer, and what hard use cases we have.
+>=20
+> I'm not opposed to the ethool API reporting just the differences
+> from my point 1. (in the first paragraph). But then we shouldn't
+> call that "layer", IMO, but device or source or such.
+
+I am open to change the naming to fit the best for our current and future u=
+sage.
+If we take into account the Maxime case of several timestamps on a device t=
+hen
+maybe source could work.
 
