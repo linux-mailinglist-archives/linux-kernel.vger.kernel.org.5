@@ -2,103 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 936EF7CB6ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 01:18:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A033F7CB6F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 01:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232172AbjJPXSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 19:18:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33248 "EHLO
+        id S234011AbjJPXU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 19:20:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232457AbjJPXSb (ORCPT
+        with ESMTP id S232457AbjJPXUX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 19:18:31 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E2895
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:18:29 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-536ef8a7dcdso2816a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:18:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697498308; x=1698103108; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=iC/11YtDunCM076LJgjQ2zeYYGBdalGng9NijQt/KpE=;
-        b=IuuE9+tiI9vptKLBXW05Y/4G3HnoZV3ASU28YUzQc4rggL0sN3wAQj5HVO0sRRHU3X
-         OvmBFdLdnJai0D3Qh7VuehMfYiQn/CBNk30N7/TVaKhFX1iQ+BejLblYZlBLturiyhof
-         c776O8ILeo0y/umlWs/6xWVJhDQDvBVONT+SfZamJoBYoyv6rW0sHUkJVxUv6LiZ/HBx
-         A/xiba4kmXRfDBaUp0Cg/UT0Ig32he/kPloGmKeHL5TvMqL3LNsC3M2F5gEC11ulr9Fi
-         hpETNzBdnct66ahPELcrBcZamuXm+t3XPz4W0NSxDj5q4MHhR4+aKWSjwdKjOKcHQYj/
-         l+tA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697498308; x=1698103108;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iC/11YtDunCM076LJgjQ2zeYYGBdalGng9NijQt/KpE=;
-        b=lcz33Tm6VUrwDU6moyn8vnRAQ291CvsCeEnegUQzM+PalXfaH2JMv57p78wdbW4ybQ
-         zbRT2dAyGPIfkExe9fG+1KEJeiBKx8qyz2JdLyvNtgh8EFg21YYGRX8vEfEFFeZcXGum
-         dt3+/yuaW/1l3y8Hl6uZh0CpAfwDl8GcBGS9zX7Dy7wANZ9Ba0S3H2RRcMKLCQ1hEYcw
-         qzqZJIzpPUL6BLtc5CM+Az8Dz9A1eOugFeJ82a4/Rrzhzzjzl3QbvEVjM9TP7M5tAeYL
-         /yDH96P49MoaNso1nbakPNjBx3SE094mbrjddVtauQ0XKfULp+icZLuGM3kRcFUA/o92
-         lSVg==
-X-Gm-Message-State: AOJu0Yy3QjYjQ5S2DKIDrGWIQsZlonHP2GVy6L9wxAShXJVnDOTwwsWl
-        3NFraZ+N0K4bzxvP0shSIjzg2LgP9QCn9sH1JCywtQ==
-X-Google-Smtp-Source: AGHT+IHSDQVFWveLXyGf0tUPijXYrSYM2YYlGt8C3Vmqr3FgJBMJpfYl60pFDrziom8VotGlWJVPTuF/S05fQjy7/O0=
-X-Received: by 2002:a50:8ad6:0:b0:522:4741:d992 with SMTP id
- k22-20020a508ad6000000b005224741d992mr50659edk.4.1697498308135; Mon, 16 Oct
- 2023 16:18:28 -0700 (PDT)
+        Mon, 16 Oct 2023 19:20:23 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CCC795
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:20:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E7281C433CA;
+        Mon, 16 Oct 2023 23:20:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697498422;
+        bh=SFVf1dut2cr8mYKcCmXD6aj+47GLfeCnx0HqaDEXnu0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=SVPML+mHlskrz/hcDe6t9755ktQU+hgAG2RiODOuou49uaHEw/7FeotV5ofrFEuoM
+         GmEuYREFSeg+YexJ1YC5kpD/V8Ynm4LBxkRhaA83ViNxq5RE6p7qjJHz0yjeSWomKH
+         b6yX8BDRHhT2bf0iGElPdNQRvYALnoy5rXK3+P+OF5Nw2HzHtXYC8rlETzjoOT6rV+
+         L/qQIt+ZJVgQ1S1Cem6Du7i7R0hsTDkXve1VrF1Ih0uRsGj+QnZqUVEOpjYhHKPKXk
+         6NkkzOlie8dToXSWmZMVTBoOtUTCwX9omTdq42Nr6bltDTNZpvZWQ6HxGhXSLdwLYC
+         rb8oxSsRLihng==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id CBA1FC43170;
+        Mon, 16 Oct 2023 23:20:21 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20231016132819.1002933-1-michael.roth@amd.com> <20231016132819.1002933-49-michael.roth@amd.com>
-In-Reply-To: <20231016132819.1002933-49-michael.roth@amd.com>
-From:   Dionna Amalie Glaze <dionnaglaze@google.com>
-Date:   Mon, 16 Oct 2023 16:18:16 -0700
-Message-ID: <CAAH4kHb=hNH88poYw-fj+ewYgt8F-hseZcRuLDdvbgpSQ5FDZQ@mail.gmail.com>
-Subject: Re: [PATCH v10 48/50] KVM: SEV: Provide support for SNP_GUEST_REQUEST
- NAE event
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     kvm@vger.kernel.org, linux-coco@lists.linux.dev,
-        linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
-        bp@alien8.de, vbabka@suse.cz, kirill@shutemov.name,
-        ak@linux.intel.com, tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-        jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
-        pankaj.gupta@amd.com, liam.merwick@oracle.com,
-        zhi.a.wang@intel.com, Brijesh Singh <brijesh.singh@amd.com>,
-        Alexey Kardashevskiy <aik@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: netcp: replace deprecated strncpy with strscpy
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169749842182.17995.788376629952172297.git-patchwork-notify@kernel.org>
+Date:   Mon, 16 Oct 2023 23:20:21 +0000
+References: <20231012-strncpy-drivers-net-ethernet-ti-netcp_ethss-c-v1-1-93142e620864@google.com>
+In-Reply-To: <20231012-strncpy-drivers-net-ethernet-ti-netcp_ethss-c-v1-1-93142e620864@google.com>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +
-> +       /*
-> +        * If a VMM-specific certificate blob hasn't been provided, grab the
-> +        * host-wide one.
-> +        */
-> +       snp_certs = sev_snp_certs_get(sev->snp_certs);
-> +       if (!snp_certs)
-> +               snp_certs = sev_snp_global_certs_get();
-> +
+Hello:
 
-This is where the generation I suggested adding would get checked. If
-the instance certs' generation is not the global generation, then I
-think we need a way to return to the VMM to make that right before
-continuing to provide outdated certificates.
-This might be an unreasonable request, but the fact that the certs and
-reported_tcb can be set while a VM is running makes this an issue.
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
+On Thu, 12 Oct 2023 21:05:40 +0000 you wrote:
+> strncpy() is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
+> 
+> Considering the above, a suitable replacement is `strscpy` [2] due to
+> the fact that it guarantees NUL-termination on the destination buffer
+> without unnecessarily NUL-padding.
+> 
+> [...]
+
+Here is the summary with links:
+  - net: netcp: replace deprecated strncpy with strscpy
+    https://git.kernel.org/netdev/net-next/c/eb7fa2eb9689
+
+You are awesome, thank you!
 -- 
--Dionna Glaze, PhD (she/her)
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
