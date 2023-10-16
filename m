@@ -2,228 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 656557CB2CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 20:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12BE37CB2CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 20:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231569AbjJPSoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 14:44:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45684 "EHLO
+        id S233975AbjJPSoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 14:44:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJPSn7 (ORCPT
+        with ESMTP id S229459AbjJPSoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 14:43:59 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A667995;
-        Mon, 16 Oct 2023 11:43:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEBAEC433C8;
-        Mon, 16 Oct 2023 18:43:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697481837;
-        bh=EXdxbvlR0cbgdx4LvLwELq1zkDK3jwhg8mze2b9ktT8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oAbWha35MgjQMlGt0UAk14DYTqoC6rn8fpoaNl0AAocdRaMdn5w34NsUJV93EgpTG
-         RSFw5i4Lt5Lp4xrS2MBztDeBRT4UUcu1NDJoTjG7XLVhKIarhZGXpK9vfoLPZEoUIs
-         ztF4yM1cgX7Oh5izJ+5QLCttqhOop+74txm6D+JA=
-Date:   Mon, 16 Oct 2023 20:43:54 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Rohit Agarwal <quic_rohiagar@quicinc.com>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, vkoul@kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the usb tree
-Message-ID: <2023101619-dumpster-vigorous-f9b4@gregkh>
-References: <20231004132247.01c3bfeb@canb.auug.org.au>
- <2023100410-concave-explore-95bf@gregkh>
- <e26b26ff-9e88-4455-9172-1afb520583e7@quicinc.com>
- <2023100445-cymbal-glade-52c8@gregkh>
- <044a2146-f859-44b3-bcf7-66b68d3e7787@quicinc.com>
- <2023100912-tiara-pout-ba98@gregkh>
- <CAA8EJpo-cvf3vkvBe+5nF1FpDMXzWJZkaL6n0BAjPvg7xHQ_+w@mail.gmail.com>
- <502135a8-6e82-4361-b0fc-e683694ca2cd@quicinc.com>
+        Mon, 16 Oct 2023 14:44:04 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19EE0A1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 11:44:02 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1ca816f868fso7652865ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 11:44:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1697481841; x=1698086641; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bWPwKWdwEDWr14soGfGjK+ZMfIWI4sV0shfvtifNth4=;
+        b=JoxsBoYCGtAKRr54+gjwXBghXQ4Z7IkReSrrYZ9HU6xdDOZb80KZQRAYQ+9zZW3TBC
+         f/S0eb5jn0nfRx9xHEeTZZ0C8Q8yknty3DWGmJJDoB3DiRdMtY2DuSn+dBqBv0TTDzv8
+         byaiS8QgtpqIODo5Wt+r70EhC+ES1pE9ks1zvTi7UqhOXTJ7gGuN4LAyzVGeVPKoG7zG
+         lFisHva7eigWn0t2g5Ykhk0tpiMZCZblF5wzAZg6GIGQ0BVQy0nIQ9nKvWk+XprzTT6J
+         DLJIfb2C4QITuiZcE8Ac0GeatQvLFdQ4ysWQ1C6Lr93HtOZTAZiPgx5zayXjhEZXOVVl
+         6hyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697481841; x=1698086641;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bWPwKWdwEDWr14soGfGjK+ZMfIWI4sV0shfvtifNth4=;
+        b=dyq3IpsIUVkGUr7DJkeccvRCG4raGrC1TiaG8fADuYkuPremEjuonFYTQs2rHLn1U2
+         OHTz7/ysfAcNt3tGE39jXkykmUX+yCMypBk9mD1gGjHUJBeEfOYTn+HbLY/PDvH/LORV
+         QuKe1BOPnlOoYkPWtfUWJu022SYGJgRMsn5P/P1X1ZeOKlL3WgUqo/MgQ4xgVe2Vx+vi
+         PSJpzPfb6C0wNde8ppYPvoEoCfsgX2FYumgqC5GEKsZ7hl3V9U/YC1S4ZjkbDSR7zbr/
+         7l04iJzcWCDHjIvb6zrjeL6CEmnF8DbN1OyBrycaqZdlmNF1bvIxFbNP/X7sIZ6MZdzY
+         6Eqg==
+X-Gm-Message-State: AOJu0YzDOxFqUbPv0MaJ3PF/md/yip14qvphC5rpI8I1EtCWkV6NHPLn
+        gODNNUF0vyN+TvabNpVpefemiA==
+X-Google-Smtp-Source: AGHT+IGucQoCZs8kTZnj0f3ie00/OA9unIXta+jTJIF0CrgPJLPUzjNG/AdQ/PNJ+6EGSQOwKZqksw==
+X-Received: by 2002:a17:902:ea0e:b0:1c5:befa:d81d with SMTP id s14-20020a170902ea0e00b001c5befad81dmr138756plg.10.1697481841470;
+        Mon, 16 Oct 2023 11:44:01 -0700 (PDT)
+Received: from hermes.local (204-195-126-68.wavecable.com. [204.195.126.68])
+        by smtp.gmail.com with ESMTPSA id z16-20020a170903019000b001c61acd5bd2sm8816708plg.112.2023.10.16.11.44.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 11:44:01 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 11:43:59 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Florian Fainelli <florian.fainelli@broadcom.com>
+Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        linux-kernel@vger.kernel.org (open list:ARM/Mediatek SoC support),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support)
+Subject: Re: [PATCH net-next v4 1/2] net: dsa: Use conduit and user terms
+Message-ID: <20231016114359.096728c3@hermes.local>
+In-Reply-To: <20231016164742.264613-2-florian.fainelli@broadcom.com>
+References: <20231016164742.264613-1-florian.fainelli@broadcom.com>
+        <20231016164742.264613-2-florian.fainelli@broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <502135a8-6e82-4361-b0fc-e683694ca2cd@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 10:33:28PM +0530, Rohit Agarwal wrote:
-> 
-> On 10/9/2023 3:19 PM, Dmitry Baryshkov wrote:
-> > On Mon, 9 Oct 2023 at 12:48, Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > On Mon, Oct 09, 2023 at 02:48:27PM +0530, Rohit Agarwal wrote:
-> > > > On 10/4/2023 6:16 PM, Greg KH wrote:
-> > > > > On Wed, Oct 04, 2023 at 12:17:27PM +0530, Rohit Agarwal wrote:
-> > > > > > On 10/4/2023 12:13 PM, Greg KH wrote:
-> > > > > > > On Wed, Oct 04, 2023 at 01:22:47PM +1100, Stephen Rothwell wrote:
-> > > > > > > > Hi all,
-> > > > > > > > 
-> > > > > > > > After merging the usb tree, today's linux-next build (x86_64 allmodconfig)
-> > > > > > > > failed like this:
-> > > > > > > > 
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:156:43: error: 'QPHY_V6_PCS_SW_RESET' undeclared here (not in a function); did you mean 'QPHY_V2_PCS_SW_RESET'?
-> > > > > > > >      156 |         [QPHY_SW_RESET]                 = QPHY_V6_PCS_SW_RESET,
-> > > > > > > >          |                                           ^~~~~~~~~~~~~~~~~~~~
-> > > > > > > >          |                                           QPHY_V2_PCS_SW_RESET
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:157:43: error: 'QPHY_V6_PCS_START_CONTROL' undeclared here (not in a function); did you mean 'QPHY_V3_PCS_START_CONTROL'?
-> > > > > > > >      157 |         [QPHY_START_CTRL]               = QPHY_V6_PCS_START_CONTROL,
-> > > > > > > >          |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > > > > >          |                                           QPHY_V3_PCS_START_CONTROL
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:158:43: error: 'QPHY_V6_PCS_PCS_STATUS1' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_PCS_STATUS1'?
-> > > > > > > >      158 |         [QPHY_PCS_STATUS]               = QPHY_V6_PCS_PCS_STATUS1,
-> > > > > > > >          |                                           ^~~~~~~~~~~~~~~~~~~~~~~
-> > > > > > > >          |                                           QPHY_V5_PCS_PCS_STATUS1
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:159:43: error: 'QPHY_V6_PCS_POWER_DOWN_CONTROL' undeclared here (not in a function); did you mean 'QPHY_V3_PCS_POWER_DOWN_CONTROL'?
-> > > > > > > >      159 |         [QPHY_PCS_POWER_DOWN_CONTROL]   = QPHY_V6_PCS_POWER_DOWN_CONTROL,
-> > > > > > > >          |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > > > > >          |                                           QPHY_V3_PCS_POWER_DOWN_CONTROL
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:162:43: error: 'QPHY_V6_PCS_USB3_AUTONOMOUS_MODE_CTRL' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_USB3_AUTONOMOUS_MODE_CTRL'?
-> > > > > > > >      162 |         [QPHY_PCS_AUTONOMOUS_MODE_CTRL] = QPHY_V6_PCS_USB3_AUTONOMOUS_MODE_CTRL,
-> > > > > > > >          |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > > > > >          |                                           QPHY_V5_PCS_USB3_AUTONOMOUS_MODE_CTRL
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:163:44: error: 'QPHY_V6_PCS_USB3_LFPS_RXTERM_IRQ_CLEAR' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_USB3_LFPS_RXTERM_IRQ_CLEAR'?
-> > > > > > > >      163 |         [QPHY_PCS_LFPS_RXTERM_IRQ_CLEAR] = QPHY_V6_PCS_USB3_LFPS_RXTERM_IRQ_CLEAR,
-> > > > > > > >          |                                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > > > > >          |                                            QPHY_V5_PCS_USB3_LFPS_RXTERM_IRQ_CLEAR
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:991:26: error: 'QPHY_V6_PCS_LOCK_DETECT_CONFIG1' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_LOCK_DETECT_CONFIG1'?
-> > > > > > > >      991 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_LOCK_DETECT_CONFIG1, 0xc4),
-> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
-> > > > > > > >       78 |                 .offset = o,            \
-> > > > > > > >          |                           ^
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:992:26: error: 'QPHY_V6_PCS_LOCK_DETECT_CONFIG2' undeclared here (not in a function); did you mean 'QPHY_V3_PCS_LOCK_DETECT_CONFIG2'?
-> > > > > > > >      992 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_LOCK_DETECT_CONFIG2, 0x89),
-> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
-> > > > > > > >       78 |                 .offset = o,            \
-> > > > > > > >          |                           ^
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:993:26: error: 'QPHY_V6_PCS_LOCK_DETECT_CONFIG3' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_LOCK_DETECT_CONFIG3'?
-> > > > > > > >      993 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_LOCK_DETECT_CONFIG3, 0x20),
-> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
-> > > > > > > >       78 |                 .offset = o,            \
-> > > > > > > >          |                           ^
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:994:26: error: 'QPHY_V6_PCS_LOCK_DETECT_CONFIG6' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_LOCK_DETECT_CONFIG6'?
-> > > > > > > >      994 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_LOCK_DETECT_CONFIG6, 0x13),
-> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
-> > > > > > > >       78 |                 .offset = o,            \
-> > > > > > > >          |                           ^
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:997:26: error: 'QPHY_V6_PCS_RCVR_DTCT_DLY_P1U2_L' undeclared here (not in a function); did you mean 'QPHY_V3_PCS_RCVR_DTCT_DLY_P1U2_L'?
-> > > > > > > >      997 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_RCVR_DTCT_DLY_P1U2_L, 0xe7),
-> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
-> > > > > > > >       78 |                 .offset = o,            \
-> > > > > > > >          |                           ^
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:998:26: error: 'QPHY_V6_PCS_RCVR_DTCT_DLY_P1U2_H' undeclared here (not in a function); did you mean 'QPHY_V3_PCS_RCVR_DTCT_DLY_P1U2_H'?
-> > > > > > > >      998 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_RCVR_DTCT_DLY_P1U2_H, 0x03),
-> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
-> > > > > > > >       78 |                 .offset = o,            \
-> > > > > > > >          |                           ^
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:999:26: error: 'QPHY_V6_PCS_CDR_RESET_TIME' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_CDR_RESET_TIME'?
-> > > > > > > >      999 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_CDR_RESET_TIME, 0x0a),
-> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
-> > > > > > > >       78 |                 .offset = o,            \
-> > > > > > > >          |                           ^
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1000:26: error: 'QPHY_V6_PCS_ALIGN_DETECT_CONFIG1' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_ALIGN_DETECT_CONFIG1'?
-> > > > > > > >     1000 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_ALIGN_DETECT_CONFIG1, 0x88),
-> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
-> > > > > > > >       78 |                 .offset = o,            \
-> > > > > > > >          |                           ^
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1001:26: error: 'QPHY_V6_PCS_ALIGN_DETECT_CONFIG2' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_ALIGN_DETECT_CONFIG2'?
-> > > > > > > >     1001 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_ALIGN_DETECT_CONFIG2, 0x13),
-> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
-> > > > > > > >       78 |                 .offset = o,            \
-> > > > > > > >          |                           ^
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1003:26: error: 'QPHY_V6_PCS_EQ_CONFIG1' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_EQ_CONFIG1'?
-> > > > > > > >     1003 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_EQ_CONFIG1, 0x4b),
-> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
-> > > > > > > >       78 |                 .offset = o,            \
-> > > > > > > >          |                           ^
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1004:26: error: 'QPHY_V6_PCS_EQ_CONFIG5' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_EQ_CONFIG5'?
-> > > > > > > >     1004 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_EQ_CONFIG5, 0x10),
-> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
-> > > > > > > >       78 |                 .offset = o,            \
-> > > > > > > >          |                           ^
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1008:26: error: 'QPHY_V6_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL'?
-> > > > > > > >     1008 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL, 0xf8),
-> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
-> > > > > > > >       78 |                 .offset = o,            \
-> > > > > > > >          |                           ^
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1009:26: error: 'QPHY_V6_PCS_USB3_RXEQTRAINING_DFE_TIME_S2' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_USB3_RXEQTRAINING_DFE_TIME_S2'?
-> > > > > > > >     1009 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_USB3_RXEQTRAINING_DFE_TIME_S2, 0x07),
-> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
-> > > > > > > >       78 |                 .offset = o,            \
-> > > > > > > >          |                           ^
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1010:26: error: 'QPHY_V6_PCS_USB3_RCVR_DTCT_DLY_U3_L' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_USB3_RCVR_DTCT_DLY_U3_L'?
-> > > > > > > >     1010 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_USB3_RCVR_DTCT_DLY_U3_L, 0x40),
-> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
-> > > > > > > >       78 |                 .offset = o,            \
-> > > > > > > >          |                           ^
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1011:26: error: 'QPHY_V6_PCS_USB3_RCVR_DTCT_DLY_U3_H' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_USB3_RCVR_DTCT_DLY_U3_H'?
-> > > > > > > >     1011 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_USB3_RCVR_DTCT_DLY_U3_H, 0x00),
-> > > > > > > >          |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > > > > > drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
-> > > > > > > >       78 |                 .offset = o,            \
-> > > > > > > >          |                           ^
-> > > > > > > > 
-> > > > > > > > Caused by commit
-> > > > > > > > 
-> > > > > > > >      685dbd1b2306 ("phy: qcom-qmp-usb: Add Qualcomm SDX75 USB3 PHY support")
-> > > > > > > > 
-> > > > > > > > I have used the usb tree from next-20231003 for today.
-> > > > > > > Thanks, I've now reverted this from my tree.
-> > > > > > As mentioned in the cover letter of these changes, the series was dependent
-> > > > > > on the other submitted series [1], [2].
-> > > > > Ah, I missed that, I almost never read cover letters :)
-> > > > > 
-> > > > > > Can you also pick these series [1], [2] to resolve this build failures.
-> > > > > > [1] https://lore.kernel.org/all/20230911203842.778411-1-dmitry.baryshkov@linaro.org/
-> > > > > > [2] https://lore.kernel.org/linux-phy/20230824211952.1397699-1-dmitry.baryshkov@linaro.org/
-> > > > > How about you just send this change with these others, or all of them as
-> > > > > one big series so they can be applied in the proper order?
-> > > > Adding Dmitry as well.
-> > > > 
-> > > > I see some of the dependent patches are already applied and the patches from
-> > > > [2] are not.
-> > > > Since all the rest dependent changes are already applied,
-> > > > you can pick series[2] and then this series that should also be fine.
-> > > > Please let me know if this is fine?
-> > > What is "this" series?  I don't have any of these in my inbox at all
-> > > anymore, sorry.  Please resend the pending patches that need to be
-> > > applied to my usb tree and I will be glad to do so.
-> > Actually, I wonder why the PHY patches were merged through the USB
-> > tree, maybe that is the issue here.
-> Yes Actually these patches needs to go via phy tree. Can you please drop
-> patch 1/5, 2/5 and 5/5
-> from the series [3] (keeping [1] and [2] same reference from above to avoid
-> confusion).
-> 
-> [3] https://lore.kernel.org/all/1695359525-4548-1-git-send-email-quic_rohiagar@quicinc.com/
-> 
-> At the same time requesting Vinod to please pick the patches 1/5, 2/5 and
-> 5/5 from series [3] and series [2].
+On Mon, 16 Oct 2023 09:47:41 -0700
+Florian Fainelli <florian.fainelli@broadcom.com> wrote:
 
-I'm sorry, I have no idea what you need/want from me here.  If there are
-patches that need to be reverted from my tree, please send reverts, I
-can't "drop" anything as my tree can not be rewritten.
+> Use more inclusive terms throughout the DSA subsystem by moving away
+> from "master" which is replaced by "conduit" and "slave" which is
+> replaced by "user". No functional changes.
+> 
+> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> ---
+>  .../bindings/net/dsa/mediatek,mt7530.yaml     |    2 +-
+>  Documentation/networking/dsa/b53.rst          |   14 +-
+>  Documentation/networking/dsa/bcm_sf2.rst      |    2 +-
+>  .../networking/dsa/configuration.rst          |  100 +-
+>  Documentation/networking/dsa/dsa.rst          |  162 +-
+>  Documentation/networking/dsa/lan9303.rst      |    2 +-
+>  Documentation/networking/dsa/sja1105.rst      |    6 +-
+>  .../dts/marvell/armada-3720-espressobin.dtsi  |    2 +-
+>  drivers/net/dsa/b53/b53_common.c              |    4 +-
+>  drivers/net/dsa/b53/b53_mdio.c                |    2 +-
+>  drivers/net/dsa/bcm_sf2.c                     |   36 +-
+>  drivers/net/dsa/bcm_sf2.h                     |    2 +-
+>  drivers/net/dsa/bcm_sf2_cfp.c                 |    4 +-
+>  drivers/net/dsa/lan9303-core.c                |    4 +-
+>  drivers/net/dsa/lantiq_gswip.c                |   34 +-
+>  drivers/net/dsa/microchip/ksz9477.c           |    6 +-
+>  drivers/net/dsa/microchip/ksz_common.c        |   20 +-
+>  drivers/net/dsa/microchip/ksz_ptp.c           |    2 +-
+>  drivers/net/dsa/mt7530.c                      |   16 +-
+>  drivers/net/dsa/mv88e6xxx/chip.c              |    2 +-
+>  drivers/net/dsa/ocelot/felix.c                |   68 +-
+>  drivers/net/dsa/ocelot/felix.h                |    6 +-
+>  drivers/net/dsa/qca/qca8k-8xxx.c              |   50 +-
+>  drivers/net/dsa/qca/qca8k-common.c            |    2 +-
+>  drivers/net/dsa/qca/qca8k-leds.c              |    6 +-
+>  drivers/net/dsa/qca/qca8k.h                   |    2 +-
+>  drivers/net/dsa/realtek/realtek-smi.c         |   28 +-
+>  drivers/net/dsa/realtek/realtek.h             |    2 +-
+>  drivers/net/dsa/sja1105/sja1105_main.c        |    4 +-
+>  drivers/net/dsa/xrs700x/xrs700x.c             |   12 +-
+>  drivers/net/ethernet/broadcom/bcmsysport.c    |    2 +-
+>  drivers/net/ethernet/mediatek/mtk_eth_soc.c   |    2 +-
+>  .../net/ethernet/mediatek/mtk_ppe_offload.c   |    2 +-
+>  include/linux/dsa/sja1105.h                   |    2 +-
+>  include/net/dsa.h                             |   56 +-
+>  include/net/dsa_stubs.h                       |   22 +-
+>  net/core/dev_ioctl.c                          |    2 +-
+>  net/dsa/Makefile                              |    6 +-
+>  net/dsa/{master.c => conduit.c}               |  118 +-
+>  net/dsa/conduit.h                             |   22 +
+>  net/dsa/dsa.c                                 |  224 +--
+>  net/dsa/dsa.h                                 |   12 +-
+>  net/dsa/master.h                              |   22 -
+>  net/dsa/netlink.c                             |   14 +-
+>  net/dsa/port.c                                |  124 +-
+>  net/dsa/port.h                                |    4 +-
+>  net/dsa/slave.h                               |   69 -
+>  net/dsa/switch.c                              |   20 +-
+>  net/dsa/switch.h                              |    8 +-
+>  net/dsa/tag.c                                 |   10 +-
+>  net/dsa/tag.h                                 |   26 +-
+>  net/dsa/tag_8021q.c                           |   22 +-
+>  net/dsa/tag_8021q.h                           |    2 +-
+>  net/dsa/tag_ar9331.c                          |    4 +-
+>  net/dsa/tag_brcm.c                            |   14 +-
+>  net/dsa/tag_dsa.c                             |    6 +-
+>  net/dsa/tag_gswip.c                           |    4 +-
+>  net/dsa/tag_hellcreek.c                       |    4 +-
+>  net/dsa/tag_ksz.c                             |   12 +-
+>  net/dsa/tag_lan9303.c                         |    4 +-
+>  net/dsa/tag_mtk.c                             |    4 +-
+>  net/dsa/tag_none.c                            |    6 +-
+>  net/dsa/tag_ocelot.c                          |   22 +-
+>  net/dsa/tag_ocelot_8021q.c                    |   12 +-
+>  net/dsa/tag_qca.c                             |    6 +-
+>  net/dsa/tag_rtl4_a.c                          |    6 +-
+>  net/dsa/tag_rtl8_4.c                          |    6 +-
+>  net/dsa/tag_rzn1_a5psw.c                      |    4 +-
+>  net/dsa/tag_sja1105.c                         |   30 +-
+>  net/dsa/tag_trailer.c                         |    4 +-
+>  net/dsa/tag_xrs700x.c                         |    4 +-
+>  net/dsa/{slave.c => user.c}                   | 1464 ++++++++---------
+>  net/dsa/user.h                                |   69 +
+>  73 files changed, 1541 insertions(+), 1537 deletions(-)
+>  rename net/dsa/{master.c => conduit.c} (76%)
+>  create mode 100644 net/dsa/conduit.h
+>  delete mode 100644 net/dsa/master.h
+>  delete mode 100644 net/dsa/slave.h
+>  rename net/dsa/{slave.c => user.c} (62%)
+>  create mode 100644 net/dsa/user.h
 
-thanks,
+Thanks for doing this.
 
-greg k-h
+Acked-by: Stephen Hemminger <stephen@networkplumber.org>
