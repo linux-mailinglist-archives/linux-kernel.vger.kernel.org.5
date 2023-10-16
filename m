@@ -2,171 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4C17C9CB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 02:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A1C87C9CB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 02:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230503AbjJPAm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 20:42:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33108 "EHLO
+        id S230456AbjJPAjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 20:39:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230490AbjJPAm0 (ORCPT
+        with ESMTP id S229459AbjJPAjy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 20:42:26 -0400
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34434A3
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 17:42:23 -0700 (PDT)
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20231016004219epoutp01c4ed45c5d52744660d31fbe97830d50c~Ob7amRv8r0099800998epoutp01e
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:42:19 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20231016004219epoutp01c4ed45c5d52744660d31fbe97830d50c~Ob7amRv8r0099800998epoutp01e
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1697416939;
-        bh=4thdf5vOiLjNrlhR2orFClc4haODcBFO8AN2JFM2cnA=;
+        Sun, 15 Oct 2023 20:39:54 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B57A3;
+        Sun, 15 Oct 2023 17:39:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1697416789;
+        bh=uMQbvIjuouaO5EGzgM4PNOQuYkMVGdAqBoduHHeSpCc=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PeDRdZNLcuLh7z5g9kFSW/wk51LkiJZyDZQ+6SUroc/HLojJ4caiDrbV3i3TaArFt
-         fy/JhrNOF5Q2QF/oRySNRxBPYUGH+ZRy7xf/pzmENqE2ftxHgIhxN3gOp6kcgpoUWN
-         xG0VMBYgrbNRAKo5KkZ6OBPDb5lgci4Tr9fM/z0w=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20231016004219epcas2p4cf1710a7794b601974475673c85d50e4~Ob7aTVSqS2621026210epcas2p4K;
-        Mon, 16 Oct 2023 00:42:19 +0000 (GMT)
-Received: from epsmgec2p1-new.samsung.com (unknown [182.195.36.70]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4S7yxQ6vHCz4x9QC; Mon, 16 Oct
-        2023 00:42:18 +0000 (GMT)
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmgec2p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        B6.1D.18994.AE68C256; Mon, 16 Oct 2023 09:42:18 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
-        20231016004218epcas2p19472bf83c7e69f73326a07141a021d98~Ob7ZZXoos1597115971epcas2p1-;
-        Mon, 16 Oct 2023 00:42:18 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231016004218epsmtrp2b0992bb1f664dfed8e0b16647463804c~Ob7ZYyDpF1181411814epsmtrp2n;
-        Mon, 16 Oct 2023 00:42:18 +0000 (GMT)
-X-AuditID: b6c32a4d-9f7ff70000004a32-e2-652c86ea40fc
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        19.57.08755.AE68C256; Mon, 16 Oct 2023 09:42:18 +0900 (KST)
-Received: from tiffany (unknown [10.229.95.142]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231016004218epsmtip2ce75f3cb6e92d4aa50e617a76f01c8aa~Ob7ZPUyhD2150521505epsmtip2z;
-        Mon, 16 Oct 2023 00:42:18 +0000 (GMT)
-Date:   Mon, 16 Oct 2023 09:32:00 +0900
-From:   Hyesoo Yu <hyesoo.yu@samsung.com>
-To:     Vishal Moola <vishal.moola@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: page_alloc: check the order of compound page event
- when the order is 0
-Message-ID: <20231016003200.GA445850@tiffany>
+        b=LDOq5fit+FwXQxnr44oeM+8ktjtNAzDLGjXRNdYRzr5JBNMcCEwGQcdgxo31yYYpy
+         Y0eWxdmyP//S8LfHUY+mFyXbVuxjGr2I4dP2FvBeAVFL4iuwVI4zFC5qO9ikhWQPCe
+         J+dOIVHO7DsL/0p5iI6ahm8Mt9j7LeIwbMvn+WjfYIv9vuFixHaIoQCauU5pkrg8nu
+         PgedOzlSgGejCNQrcEqN0N0H8Ng7kt5K+5VmNs1dZrEdxAswislPuBBaGAiRguL/rS
+         8uC89OsBOn5Bp1ALMzn4poYxyW5UcdKW9Jr+PBbngbYC7JKSLG8KbZQwmJd/jvUVz2
+         y4iZjcvkHzWbw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S7ytX5H0wz4wc0;
+        Mon, 16 Oct 2023 11:39:48 +1100 (AEDT)
+Date:   Mon, 16 Oct 2023 11:39:46 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Rodrigo Siqueira Jordao <Rodrigo.Siqueira@amd.com>
+Cc:     Alex Deucher <alexdeucher@gmail.com>,
+        "Wentland, Harry" <Harry.Wentland@amd.com>,
+        "Lei, Jun" <jun.lei@amd.com>,
+        "Dhere, Chaitanya" <Chaitanya.Dhere@amd.com>,
+        "Zhuo, Qingqing" <qingqing.zhuo@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Roman Li <roman.li@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the amdgpu tree
+Message-ID: <20231016113946.698ac2da@canb.auug.org.au>
+In-Reply-To: <cc75c480-5359-465e-adab-46b418ec5d97@amd.com>
+References: <20231010124357.5251e100@canb.auug.org.au>
+        <cc75c480-5359-465e-adab-46b418ec5d97@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <ZSmucNWBMj/mNVeE@dhcp-10-159-238-251.vpn.oracle.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrBKsWRmVeSWpSXmKPExsWy7bCmhe6rNp1Ug952C4s569ewWVzeNYfN
-        4t6a/6wW6/fdYHVg8dg56y67x6ZPk9g9Tsz4zeLxeZNcAEtUtk1GamJKapFCal5yfkpmXrqt
-        kndwvHO8qZmBoa6hpYW5kkJeYm6qrZKLT4CuW2YO0EolhbLEnFKgUEBicbGSvp1NUX5pSapC
-        Rn5xia1SakFKToF5gV5xYm5xaV66Xl5qiZWhgYGRKVBhQnbGqQfP2AoOCVQ0TZvJ3sC4k7eL
-        kZNDQsBEYk33HZYuRi4OIYE9jBK33u1ihXA+MUqcON7LDOF8Y5RoaVvNDtPStH8LVGIvo8TW
-        S6uYIJynjBL3t70Hcjg4WARUJa7+cAFpYBNQlzixZRkjSFhEQFNi5d8kkDCzQKLE36nrwWYK
-        A9k7mzewgdi8AroSK96cZIGwBSVOznwCZnMKOEkcW/SZCeKGS+wS1/sDIGwXiY5vt5khbGGJ
-        V8e3QN0pJfH53V42CDtb4u7HCVB2icS6Mw1QNcYSs561M0Lcky7xY98TNpAzJQSUJY7cYoEI
-        80l0HP7LDhHmlehoE4LoVJbYv2weC4QtKfFobTsrRImHRNeeeEh4nGCU+D5rCvsERrlZSJ6Z
-        hWQZhK0jsWD3JyCbA8iWllj+jwPC1JRYv0t/ASPrKkap1ILi3PTUZKMCQ9281HJ4DCfn525i
-        BCdBLd8djK/X/9U7xMjEwXiIUYKDWUmENz1YJ1WINyWxsiq1KD++qDQntfgQoykwbiYyS4km
-        5wPTcF5JvKGJpYGJmZmhuZGpgbmSOO+91rkpQgLpiSWp2ampBalFMH1MHJxSDUycXMqXGMJ1
-        ZxrNe896RXO1+MRzF9+GZOwtP7i39ZHfbMXqQyvufF1/XuCX6JOvNXbmc05s9016F7PzlY6n
-        ebeIqc3WDQoKU3OWpkrv+S8nJuVwvGaVv/0c35n7lq85N2PKsjWbXqh/1NGys1606uTarQUy
-        x8Ms2rc/uxH5WcZojk1A+bwzedX50wwKmiuvzq73fSbyWsfIzfuRCePCqhmfOxutzh69t6vP
-        6IjCxjXPNslNsn6/sMuW5SPT82UNVlP13/2JjGB3fSV8+kdhULKzw2FeNmPv/s3tpew7dN/W
-        fHnfdtNgbXnAh2v9m6+cte79t8V0544NPJwM+6ftmHQugPfcFcZFwuybtk3KuXDmmBJLcUai
-        oRZzUXEiAL5ewbELBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrNLMWRmVeSWpSXmKPExsWy7bCSvO6rNp1Ug0/3ZCzmrF/DZnF51xw2
-        i3tr/rNarN93g9WBxWPnrLvsHps+TWL3ODHjN4vH501yASxRXDYpqTmZZalF+nYJXBnPvhoU
-        tPJVHH7Yw9TAOJW7i5GTQ0LARKJp/xbmLkYuDiGB3YwSC26fY4FISErM+nySCcIWlrjfcoQV
-        ougxo8SOYxvZuhg5OFgEVCWu/nABqWETUJc4sWUZI0hYREBTYuXfJJAws0CixN+p69lBbGEg
-        e2fzBjYQm1dAV2LFm5MsECNPMEr8+7aLGSIhKHFy5hMWiGYtiRv/XjKBzGQWkJZY/o8DJMwp
-        4CRxbNFnpgmMArOQdMxC0jELoWMBI/MqRsnUguLc9NxiwwLDvNRyveLE3OLSvHS95PzcTYzg
-        8NXS3MG4fdUHvUOMTByMhxglOJiVRHjTg3VShXhTEiurUovy44tKc1KLDzFKc7AoifOKv+hN
-        ERJITyxJzU5NLUgtgskycXBKNTAll12TPOjc+nXa28MnyhI5tjzbbn187mS/oOZv17nuWnNt
-        +KHEYqR5+aOdidwK0z1Sh9+zR3083NB9XuWLknKfYJG02SPDbfcuNnlU3LfYdtRwes7tjV+L
-        vk3L4Pq14mSr6i9uNTbJBr0Lm4r4ruYZJV9ds/b15z1PD99Jl5BIE3ExPnHtsLVDgp73hd2X
-        C8Qf7vztwaZbcH3NehOzkEqj+X6xuqqhMX6V/7JmOdq+lHFynvJbrcHypPlptu3RJt90FLP8
-        7q2emHx2/eSjCk5T42MaWeweLPmUfGD/ISEuh1kpm5wbr05l2v268fuFyn+RH9n4BKS9ZBbK
-        Rdwt+GzSkO0k+6risOfU8oNXFU8osRRnJBpqMRcVJwIA4uZzW84CAAA=
-X-CMS-MailID: 20231016004218epcas2p19472bf83c7e69f73326a07141a021d98
-X-Msg-Generator: CA
-Content-Type: multipart/mixed;
-        boundary="----.DGRwfvtDKQaTon4q7jBZTz_rY-uYfv-SaOoriR32EfX1D_r=_7c95_"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231012012153epcas2p34b8e9e8a898ace8d50411cadf937ef5d
-References: <CGME20231012012153epcas2p34b8e9e8a898ace8d50411cadf937ef5d@epcas2p3.samsung.com>
-        <20231012011106.2425309-1-hyesoo.yu@samsung.com>
-        <ZSmucNWBMj/mNVeE@dhcp-10-159-238-251.vpn.oracle.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/7nrd7C_Dkl+S6cV.1qwjW5z";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-------.DGRwfvtDKQaTon4q7jBZTz_rY-uYfv-SaOoriR32EfX1D_r=_7c95_
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
+--Sig_/7nrd7C_Dkl+S6cV.1qwjW5z
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 13, 2023 at 01:54:08PM -0700, Vishal Moola wrote:
-> On Thu, Oct 12, 2023 at 10:11:06AM +0900, Hyesoo Yu wrote:
-> > For compound pages, the head sets the PG_head flag and
-> > the tail sets the compound_head to indicate the head page.
-> > If a user allocates a compound page and frees it with a different
-> > order, the compound page information will not be properly
-> > initialized. To detect this problem, compound_page(page) and
-> > the order are compared, but it is not checked when the order is 0.
-> > That error should be checked regardless of the order.
-> 
-> I believe all compound pages are order >= 1, so this error can't occur
-> when the order is 0.
-> 
+Hi Rodrigo,
 
-Yes. All compound pages are order >= 1.
-However if the user uses the API incorrectly, the order value could be zero.
+On Tue, 10 Oct 2023 15:14:46 -0600 Rodrigo Siqueira Jordao <Rodrigo.Siqueir=
+a@amd.com> wrote:
+>
+> I think I have a fix for that, but some things are unclear to me. I'm
+> only able to see this issue when using allmodconfig. Additionally,
+> when I inspected the function, it had a few local variables, not
+> enough to explode the stack size fwiu. Is there any option in the
+> allmodconfig that makes it easy to see this issue? Maybe something
+> that I'm missing in my custom config file? Is it possible that
+> allmodconfig enables some option that might increase the stack size?
+> Perhaps the FPU flags from GCC include something else in the stack?
+>=20
+> Also, for investigating this issue, I'm considering the local
+> variables, but as you can see from dml_core_mode_support, it has a
+> few pointers. Am I missing something?
 
-For example,
+This could possibly be caused by inlining of other functions that are
+static within the same file.
 
-addr = alloc_pages(GFP_COMP, 2);
-free_pages(addr, 0);
+Other than that, I am also at a loss.
+--=20
+Cheers,
+Stephen Rothwell
 
-(struct page[16])0xFFFFFFFE21715100 = (
-(flags = 0x4000000000000200, lru = (next = 0x0, prev = 0xDEAD000000000122),//  Clear PG_head
-(flags = 0x4000000000000000, lru = (next = 0xFFFFFFFE21715101, prev = 0xFFFFFFFF00000201),  // Remain compound head
+--Sig_/7nrd7C_Dkl+S6cV.1qwjW5z
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-It is memory leak, and it also makes system stability problem.
-on isolation_single_pageblock, That case makes infinite loops.
+-----BEGIN PGP SIGNATURE-----
 
-for (pfn = start_pfn; pfn < boundary_pfn; ) {
-	if (PageCompound(page)) { // page[1] is compound page
-		struct page *head = compound_head(page); // page[0]
-		unsigned long head_pfn = page_to_pfn(head);
-		unsigned long nr_pages = compound_nr(head); // nr_pages is 1 since page[0] is not compound page.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUshlIACgkQAVBC80lX
+0GzEcAf7Brd4wjIjt7a98lqXoWjzZquWlVyJt8kE+RCpj36GhluBDDlWkPnGlJPH
+aW1Sz7enwR+5UmSoiyCUdPT47TXZl28Y6hnLtZEnxBKGKyCNcl/H/XWlYZBxzLMk
+ZK3SpSAEyx3YvBIdmaJk6M3bDZy73bjtqPoxX1vWXIVy23SQxfEkaBcVb2AD2znR
+j/OqBHVpqxg3GXMs+2+YZ3mEFOvumzhXbCloWkyP3YMV3JuOFgApgavU3I9At811
+Z5Gl8oIkT08F8N1ZMCP9HgyFvnRRS/YdTISHMafMqhjb0uC1nqy2pohf0+eBjeEy
+5MYiTUwfYSIyA69IOe3I8YnMX8kdDA==
+=1KBH
+-----END PGP SIGNATURE-----
 
- 		if (head_pfn + nr_pages <= boundary_pfn) {
-			pfn = head_pfn + nr_pages; // pfn is set as page[1].
-			continue;
-		}
-}
-
-So, I guess, we have to check the incorrect use in free_pages_prepare.
-
-Thanks,
-Hyesoo Yu.
-
-------.DGRwfvtDKQaTon4q7jBZTz_rY-uYfv-SaOoriR32EfX1D_r=_7c95_
-Content-Type: text/plain; charset="utf-8"
-
-
-------.DGRwfvtDKQaTon4q7jBZTz_rY-uYfv-SaOoriR32EfX1D_r=_7c95_--
+--Sig_/7nrd7C_Dkl+S6cV.1qwjW5z--
