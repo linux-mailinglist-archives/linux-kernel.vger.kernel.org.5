@@ -2,215 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7577C9E9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 07:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15DFF7C9E9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 07:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229523AbjJPFTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 01:19:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60098 "EHLO
+        id S230442AbjJPFVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 01:21:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjJPFTX (ORCPT
+        with ESMTP id S229590AbjJPFVN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 01:19:23 -0400
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF927E8
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 22:19:21 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5a7c93507d5so48794857b3.2
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 22:19:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697433559; x=1698038359; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=84IjWES4NlZNq0zAo2UaGKzhd/8FqYzYRf4g+hayiP4=;
-        b=Le0FQsGO828GcvmeiBCAo4NiB3IxL4HAvgwlJFEFS23RKWoHPi6S5vpc95ZXix6vhS
-         gFtyeGgG8ZrHeC8mMDM5KsmoKywM2JKPtJOJXnmJYmCcFKBb7ZBNO31uMORtyBEF5R8u
-         7qGHHx1vM63ARvOgVfKEowt2JuMdIer2cLCp2ru0pml8Vhf79kSSGfBS6/yQA2m+dZw6
-         QtJ9TFlfe4uoUdwhW8e7xvmmCnzKR6z0W6oBdg6nGW740URiOa0Kn6pgfVZDah759n6J
-         x3tiG3s+Ayqx5KEKE+Mvl8bfC/Xedy+rBOAmHZUss20pER0AOeUftz4BRfpf7tQxPzxR
-         F9lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697433559; x=1698038359;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=84IjWES4NlZNq0zAo2UaGKzhd/8FqYzYRf4g+hayiP4=;
-        b=gKBG9uqgEcnWLo7DqJekku2JjKRCcuXCzc/95KzPaPnsVuIpHdDi3s1GjZH92bBoVm
-         T+9ARgfBVkhMAyMailFtnEU0qDXtcwdXUhDtUz7+2BnbKEXZRe7PUEv4m83MGA3kUkqR
-         01G2FOVMQGZLL28xMXDeK7z7WuqRsueUddEEzhirtYfGdymAwngytsPIT1AAqbzI0VxS
-         DeNINeWx2NPgFmX4iirBNczyKhOi513sqFlYBf3CFlZewkaHwKoqQe9QhfM9xl+fMWrv
-         DE9E1VG8iccUHWG7/BQl4GkIWlwcFPrk6GawjwJvDO44inRVYtgx1WJFr8VZArvg0htv
-         w7Kg==
-X-Gm-Message-State: AOJu0YwpH9t0vr51pYkqHJ5EhBGLaBdNy2RNxBwdVnb6r37sx5lqpxDy
-        y4Zix9rHl0vcn0EiJwG8C0fhHDdYT+F9a1sE5etRFQ==
-X-Google-Smtp-Source: AGHT+IE/vXkOLFuRYYMBg7ZvJNs5bHOB4hTJjGiuXZPuuYtQOwt1lltozcDD7mfPmsfdbCeYL+gkZLo7kSBUF3zo/ac=
-X-Received: by 2002:a05:690c:ec8:b0:5a8:19b0:513f with SMTP id
- cs8-20020a05690c0ec800b005a819b0513fmr12200346ywb.14.1697433559519; Sun, 15
- Oct 2023 22:19:19 -0700 (PDT)
+        Mon, 16 Oct 2023 01:21:13 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBC12E6
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 22:21:08 -0700 (PDT)
+X-QQ-mid: bizesmtp87t1697433589tx4gfdzg
+Received: from [10.4.6.71] ( [58.240.82.166])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Mon, 16 Oct 2023 13:19:43 +0800 (CST)
+X-QQ-SSF: 00200000000000B0B000000A0000000
+X-QQ-FEAT: SFhf6fKhx/+cQf3Bc2Md3WlYO5TTKy1f/I9WLT6j16OeN0+KBekOHETHU+d2N
+        NwA2qKVGXik6ih/4rei/Oo2P+yZWz/sUTZbpVIiMQCEB7CUPCZIgNQHpWxv1UwPmZ4n/M0U
+        7HYhE4pNqJu61I+IfxJ9YLu/5iky8hBtpA90IXCgOOG/IibkzSs2HV1PJF77djxIeupXwOz
+        oJZNs9Q1jyh12NRvKTTEi0CvdVSzvstYgpfjVzQBWzXjF7rCy4XD8ZhfmHJ7A1Q/6z63Xm3
+        z7KDckpfXEuTxTWgFPwdMsIa/z7kkCwVMXZYI4TRr4pLBnARA2G8W6AG/8EVqErxcYBLyGh
+        wNqCPeABnmU/xNGemVlVLgrK4cwzFuuDOLjz8gt
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 4873291152828516974
+Message-ID: <0BE7AF7DDB61C4D3+44252858-c2e6-07e6-e9eb-dec8d3990956@tinylab.org>
+Date:   Mon, 16 Oct 2023 13:19:42 +0800
 MIME-Version: 1.0
-References: <1695218113-31198-1-git-send-email-quic_msarkar@quicinc.com>
- <1695218113-31198-2-git-send-email-quic_msarkar@quicinc.com>
- <20230921183850.GA762694-robh@kernel.org> <28bf111f-b965-4d38-884b-bc3a0b68a6cc@quicinc.com>
- <8effa7e5-a223-081b-75b8-7b94400d42e6@quicinc.com> <CAA8EJpp+3_A-9YXF1yOKdFweVKqrpTxvxKoJcUH6qiDHfCQ-dQ@mail.gmail.com>
- <31e6aab6-73f9-a421-9dfa-292d9d0e9649@quicinc.com>
-In-Reply-To: <31e6aab6-73f9-a421-9dfa-292d9d0e9649@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Mon, 16 Oct 2023 08:19:08 +0300
-Message-ID: <CAA8EJpoapMmeAxj0GyHnJixEeObpSa5gjQWfkxuZKnVoLg4Awg@mail.gmail.com>
-Subject: Re: [PATCH v1 1/5] dt-bindings: PCI: qcom-ep: Add support for SA8775P SoC
-To:     Mrinmay Sarkar <quic_msarkar@quicinc.com>
-Cc:     Shazad Hussain <quic_shazhuss@quicinc.com>,
-        Rob Herring <robh@kernel.org>, agross@kernel.org,
-        andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, konrad.dybcio@linaro.org, mani@kernel.org,
-        quic_nitegupt@quicinc.com, quic_ramkri@quicinc.com,
-        quic_nayiluri@quicinc.com, quic_krichai@quicinc.com,
-        quic_vbadigan@quicinc.com, quic_parass@quicinc.com,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, linux-pci@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
-        linux-phy@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.0
+Subject: Re: [PATCH 2/2] riscv: kexec_file: Support loading Image binary file
+To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, lihuafei1@huawei.com,
+        conor.dooley@microchip.com, liaochang1@huawei.com,
+        ajones@ventanamicro.com, alexghiti@rivosinc.com, evan@rivosinc.com,
+        sunilvl@ventanamicro.com, xianting.tian@linux.alibaba.com,
+        samitolvanen@google.com, masahiroy@kernel.org,
+        apatel@ventanamicro.com, jszhang@kernel.org, duwe@suse.de,
+        eric.devolder@oracle.com
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230914020044.1397356-1-songshuaishuai@tinylab.org>
+ <20230914020044.1397356-3-songshuaishuai@tinylab.org>
+ <CAJM55Z8D3yJREg0+UtecW3wpgrGKxZYP73Pvbi2oaQfsZf4Gfw@mail.gmail.com>
+ <22EFF2C197DC5C5A+f82966f5-90cf-09a5-214e-4b0e87bc6064@tinylab.org>
+ <CAJM55Z8OebLJHg3mxk7y7Dw0z=JLgi4j17tQPf4-Mdd0BCQbaw@mail.gmail.com>
+From:   Song Shuai <songshuaishuai@tinylab.org>
+In-Reply-To: <CAJM55Z8OebLJHg3mxk7y7Dw0z=JLgi4j17tQPf4-Mdd0BCQbaw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrsz:qybglogicsvrsz4a-0
+X-Spam-Status: No, score=4.1 required=5.0 tests=BAYES_00,FORGED_MUA_MOZILLA,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_PBL,RCVD_IN_SBL_CSS,
+        RCVD_IN_XBL,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
         version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Oct 2023 at 15:55, Mrinmay Sarkar <quic_msarkar@quicinc.com> wrote:
->
->
-> On 10/11/2023 5:13 PM, Dmitry Baryshkov wrote:
-> > On Wed, 11 Oct 2023 at 14:14, Mrinmay Sarkar <quic_msarkar@quicinc.com> wrote:
-> >>
-> >> On 10/6/2023 4:24 PM, Shazad Hussain wrote:
-> >>>
-> >>> On 9/22/2023 12:08 AM, Rob Herring wrote:
-> >>>> On Wed, Sep 20, 2023 at 07:25:08PM +0530, Mrinmay Sarkar wrote:
-> >>>>> Add devicetree bindings support for SA8775P SoC.
-> >>>>> Define reg and interrupt per platform.
-> >>>>>
-> >>>>> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-> >>>>> ---
-> >>>>>    .../devicetree/bindings/pci/qcom,pcie-ep.yaml      | 130
-> >>>>> +++++++++++++++++----
-> >>>>>    1 file changed, 108 insertions(+), 22 deletions(-)
-> >>>>>
-> >>>>> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
-> >>>>> b/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
-> >>>>> index a223ce0..e860e8f 100644
-> >>>>> --- a/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
-> >>>>> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
-> >>>>> @@ -13,6 +13,7 @@ properties:
-> >>>>>      compatible:
-> >>>>>        oneOf:
-> >>>>>          - enum:
-> >>>>> +          - qcom,sa8775p-pcie-ep
-> >>>>>              - qcom,sdx55-pcie-ep
-> >>>>>              - qcom,sm8450-pcie-ep
-> >>>>>          - items:
-> >>>>> @@ -20,29 +21,19 @@ properties:
-> >>>>>              - const: qcom,sdx55-pcie-ep
-> >>>>>        reg:
-> >>>>> -    items:
-> >>>>> -      - description: Qualcomm-specific PARF configuration registers
-> >>>>> -      - description: DesignWare PCIe registers
-> >>>>> -      - description: External local bus interface registers
-> >>>>> -      - description: Address Translation Unit (ATU) registers
-> >>>>> -      - description: Memory region used to map remote RC address space
-> >>>>> -      - description: BAR memory region
-> >>>>> +    minItems: 6
-> >>>>> +    maxItems: 7
-> >>>>>        reg-names:
-> >>>>> -    items:
-> >>>>> -      - const: parf
-> >>>>> -      - const: dbi
-> >>>>> -      - const: elbi
-> >>>>> -      - const: atu
-> >>>>> -      - const: addr_space
-> >>>>> -      - const: mmio
-> >>>>> +    minItems: 6
-> >>>>> +    maxItems: 7
-> >>>> Don't move these into if/then schemas. Then we are duplicating the
-> >>>> names, and there is no reason to keep them aligned for new compatibles.
-> >>>>
-> >>>> Rob
-> >>> Hi Rob,
-> >>> As we have one extra reg property (dma) required for sa8775p-pcie-ep,
-> >>> isn't it expected to be moved in if/then as per number of regs
-> >>> required. Anyways we would have duplication of some properties for new
-> >>> compatibles where the member numbers differs for a property.
-> >>>
-> >>> Are you suggesting to add the extra reg property (dma) in the existing
-> >>> reg and reg-names list, and add minItems/maxItems for all compatibles
-> >>> present in this file ?
-> > This is what we have been doing in other cases: if the list is an
-> > extension of the current list, there is no need to duplicate it. One
-> > can use min/maxItems instead.
-> Hi Dmitry
->
-> we have tried using min/maxItems rather than duplicating but somehow
-> catch up with some warnings in dt_bindings check
->
-> //local/mnt/workspace/Mrinmay/lemans/next-20230914/linux-next/out/Documentation/devicetree/bindings/pci/qcom,pcie-ep.example.dtb:
-> pcie-ep@1c00000: reg: [[29360128, 12288], [1073741824, 3869],
-> [1073745696, 200], [1073745920, 4096], [1073750016, 4096], [29372416,
-> 12288]] is too short//
-> //        from schema $id:
-> http://devicetree.org/schemas/pci/qcom,pcie-ep.yaml#//
-> ///local/mnt/workspace/Mrinmay/lemans/next-20230914/linux-next/out/Documentation/devicetree/bindings/pci/qcom,pcie-ep.example.dtb:
-> pcie-ep@1c00000: reg-names: ['parf', 'dbi', 'elbi', 'atu', 'addr_space',
-> 'mmio'] is too short//
-> //        from schema $id:
-> http://devicetree.org/schemas/pci/qcom,pcie-ep.yaml#//
-> ///local/mnt/workspace/Mrinmay/lemans/next-20230914/linux-next/out/Documentation/devicetree/bindings/pci/qcom,pcie-ep.example.dtb:
-> pcie-ep@1c00000: interrupts: [[0, 140, 4], [0, 145, 4]] is too short//
-> //        from schema $id:
-> http://devicetree.org/schemas/pci/qcom,pcie-ep.yaml#//
-> ///local/mnt/workspace/Mrinmay/lemans/next-20230914/linux-next/out/Documentation/devicetree/bindings/pci/qcom,pcie-ep.example.dtb:
-> pcie-ep@1c00000: interrupt-names: ['global', 'doorbell'] is too short//
-> //        from schema $id:
-> http://devicetree.org/schemas/pci/qcom,pcie-ep.yaml#//
-> /
->
-> //local/mnt/workspace/Mrinmay/lemans/next-20230914/linux-next/out/Documentation/devicetree/bindings/pci/qcom,pcie-ep.example.dtb:
-> pcie-ep@1c00000: interrupt-names: ['global', 'doorbell'] is too short/
->
-> added the patch in attachment.
 
-Please, don't send patches as attachments. It is impossible to comment on it.
 
-So, few points I had to fix to make your patch to work:
+在 2023/10/11 18:48, Emil Renner Berthing 写道:
+> Song Shuai wrote:
+>>
+>>
+>> 在 2023/9/14 16:37, Emil Renner Berthing 写道:
+>>> Song Shuai wrote:
+>>>> This patch creates image_kexec_ops to load Image binary file
+>>>> for kexec_file_load() syscall.
+>>>>
+>>>> Signed-off-by: Song Shuai <songshuaishuai@tinylab.org>
+>>>> ---
+>>>>    arch/riscv/include/asm/image.h         |  2 +
+>>>>    arch/riscv/include/asm/kexec.h         |  1 +
+>>>>    arch/riscv/kernel/Makefile             |  2 +-
+>>>>    arch/riscv/kernel/kexec_image.c        | 97 ++++++++++++++++++++++++++
+>>>>    arch/riscv/kernel/machine_kexec_file.c |  1 +
+>>>>    5 files changed, 102 insertions(+), 1 deletion(-)
+>>>>    create mode 100644 arch/riscv/kernel/kexec_image.c
+>>>>
+>>>> diff --git a/arch/riscv/include/asm/image.h b/arch/riscv/include/asm/image.h
+>>>> index e0b319af3681..8927a6ea1127 100644
+>>>> --- a/arch/riscv/include/asm/image.h
+>>>> +++ b/arch/riscv/include/asm/image.h
+>>>> @@ -30,6 +30,8 @@
+>>>>    			      RISCV_HEADER_VERSION_MINOR)
+>>>>
+>>>>    #ifndef __ASSEMBLY__
+>>>> +#define riscv_image_flag_field(flags, field)\
+>>>> +			       (((flags) >> field##_SHIFT) & field##_MASK)
+>>>
+>>> Hi Song,
+>>>
+>>> This macro is almost FIELD_GET from linux/bitfield.h ..
+>>>
+>>>>    /**
+>>>>     * struct riscv_image_header - riscv kernel image header
+>>>>     * @code0:		Executable code
+>>>> diff --git a/arch/riscv/include/asm/kexec.h b/arch/riscv/include/asm/kexec.h
+>>>> index 518825fe4160..b9ee8346cc8c 100644
+>>>> --- a/arch/riscv/include/asm/kexec.h
+>>>> +++ b/arch/riscv/include/asm/kexec.h
+>>>> @@ -56,6 +56,7 @@ extern riscv_kexec_method riscv_kexec_norelocate;
+>>>>
+>>>>    #ifdef CONFIG_KEXEC_FILE
+>>>>    extern const struct kexec_file_ops elf_kexec_ops;
+>>>> +extern const struct kexec_file_ops image_kexec_ops;
+>>>>
+>>>>    struct purgatory_info;
+>>>>    int arch_kexec_apply_relocations_add(struct purgatory_info *pi,
+>>>> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+>>>> index 1c62c639e875..9ecba3231a36 100644
+>>>> --- a/arch/riscv/kernel/Makefile
+>>>> +++ b/arch/riscv/kernel/Makefile
+>>>> @@ -86,7 +86,7 @@ endif
+>>>>    obj-$(CONFIG_HOTPLUG_CPU)	+= cpu-hotplug.o
+>>>>    obj-$(CONFIG_KGDB)		+= kgdb.o
+>>>>    obj-$(CONFIG_KEXEC_CORE)	+= kexec_relocate.o crash_save_regs.o machine_kexec.o
+>>>> -obj-$(CONFIG_KEXEC_FILE)	+= kexec_elf.o machine_kexec_file.o
+>>>> +obj-$(CONFIG_KEXEC_FILE)	+= kexec_elf.o kexec_image.o machine_kexec_file.o
+>>>>    obj-$(CONFIG_CRASH_DUMP)	+= crash_dump.o
+>>>>    obj-$(CONFIG_CRASH_CORE)	+= crash_core.o
+>>>>
+>>>> diff --git a/arch/riscv/kernel/kexec_image.c b/arch/riscv/kernel/kexec_image.c
+>>>> new file mode 100644
+>>>> index 000000000000..b6aa7f59bd53
+>>>> --- /dev/null
+>>>> +++ b/arch/riscv/kernel/kexec_image.c
+>>>> @@ -0,0 +1,97 @@
+>>>> +// SPDX-License-Identifier: GPL-2.0
+>>>> +/*
+>>>> + * RISC-V Kexec image loader
+>>>> + *
+>>>> + */
+>>>> +
+>>>> +#define pr_fmt(fmt)	"kexec_file(Image): " fmt
+>>>> +
+>>>> +#include <linux/err.h>
+>>>> +#include <linux/errno.h>
+>>>> +#include <linux/kernel.h>
+>>>> +#include <linux/kexec.h>
+>>>> +#include <linux/pe.h>
+>>>> +#include <linux/string.h>
+>>>> +#include <asm/byteorder.h>
+>>>> +#include <asm/image.h>
+>>>> +
+>>>> +static int image_probe(const char *kernel_buf, unsigned long kernel_len)
+>>>> +{
+>>>> +	const struct riscv_image_header *h =
+>>>> +		(const struct riscv_image_header *)(kernel_buf);
+>>>> +
+>>>> +	if (!h || (kernel_len < sizeof(*h)))
+>>>> +		return -EINVAL;
+>>>> +
+>>>> +	/* According to Documentation/riscv/boot-image-header.rst,
+>>>> +	 * use "magic2" field to check when version >= 0.2.
+>>>> +	 */
+>>>> +
+>>>> +	if (h->version >= RISCV_HEADER_VERSION &&
+>>>> +	    memcmp(&h->magic2, RISCV_IMAGE_MAGIC2, sizeof(h->magic2)))
+>>>> +		return -EINVAL;
+>>>> +
+>>>> +	return 0;
+>>>> +}
+>>>> +
+>>>> +static void *image_load(struct kimage *image,
+>>>> +				char *kernel, unsigned long kernel_len,
+>>>> +				char *initrd, unsigned long initrd_len,
+>>>> +				char *cmdline, unsigned long cmdline_len)
+>>>> +{
+>>>> +	struct riscv_image_header *h;
+>>>> +	u64 flags;
+>>>> +	bool be_image, be_kernel;
+>>>> +	struct kexec_buf kbuf;
+>>>> +	int ret;
+>>>> +
+>>>> +	/* Check Image header */
+>>>> +	h = (struct riscv_image_header *)kernel;
+>>>> +	if (!h->image_size) {
+>>>> +		ret = -EINVAL;
+>>>> +		goto out;
+>>>> +	}
+>>>> +
+>>>> +	/* Check endianness */
+>>>> +	flags = le64_to_cpu(h->flags);
+>>>> +	be_image = riscv_image_flag_field(flags, RISCV_IMAGE_FLAG_BE);
+>>>
+>>> ..but here you're just testing a single bit, so since be_image is a bool it
+>>> could just be
+>>> 	be_image = flags & RISCV_IMAGE_FLAG_BE_MASK;
+>>>
+>>> /Emil
+>> Hi Emil,
+>>
+>> Sorry for the delayed response,
+>>
+>> The `flags` field currently only has bit-0 to indicate the kenrel
+>> endianness, your comment looks good in this case.
+>>
+>> While considering the future extension of the `flags` feild, the
+>> riscv_image_flag_field() is neccessiry to make callers to require the
+>> bits they want.
+> 
+> Right, but please don't invent your own FIELD_GET then.
 
-- Please, understand the difference between enum and items. You'd need
-to add your compat string to only one of them. Or to a new entry. But
-adding it to both entries is a definite mistake.
+Hi Emil,
 
-- You have extended items for existing platforms (reg, reg-names,
-interrupts, interrupt-names). However you failed to add corresponding
-minItems, allowing existing platforms to use the list with less items
-in it.
+I tried to use FIELD_PREP/FIELD_GET to set/get the RISCV_IMAGE_FLAG_BE,
+but using FIELD_PREP to define the __HEAD_FLAGS (used in head.S) emitted 
+AS build error and the final .s file looked like:
 
-- You do not need to have maxItems:N, minItems:N with the same value.
-Please drop these minItems, it is the default.
+  883  .dword _end - _start
+  884  .dword (({ ({ do { } while (0); do { } while (0); do { } while 
+(0); do { } while (0); do { } while (0); }); ((typeof((((1)) << 
+(0))))(0) << (__builtin_ffsll((((1)) << (0))) - 1)) & ((((1)) << (0))); }))
 
-- You haven't reviewed the patch on your own. You have erroneously
-nested 'properties' clauses in two places.
+IIUC the FIELD_PREP can't work well in this asm context, and using 
+FILED_GET without FIELD_PREP paired looks not good to me.
 
-$ git diff --stat
- Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml | 33
-+++++++++++----------------------
- 1 file changed, 11 insertions(+), 22 deletions(-)
+The original riscv/*/image.h and the riscv_image_flag_filed() of this 
+patch just do what arm64 does, so I still like to keep them.
 
-Hope this helps.
+I also found that Patch1 has a build issue due to my previous uncareful 
+cherry-picking,
+V2 will be sent to fix it if you're ok this patch without bitfield armed.
+
+I would like to listen to your advice.
+
+> 
+>>
+>> So I prefer to keep this snippet.
+>>>
+>>>> +	be_kernel = IS_ENABLED(CONFIG_CPU_BIG_ENDIAN);
+>>>> +	if (be_image != be_kernel) {
+>>>> +		ret = -EINVAL;
+>>>> +		goto out;
+>>>> +	}
+>>>> +
+>>>> +	/* Load the kernel image */
+>>>> +	kbuf.image = image;
+>>>> +	kbuf.buf_min = 0;
+>>>> +	kbuf.buf_max = ULONG_MAX;
+>>>> +	kbuf.top_down = false;
+>>>> +
+>>>> +	kbuf.buffer = kernel;
+>>>> +	kbuf.bufsz = kernel_len;
+>>>> +	kbuf.mem = KEXEC_BUF_MEM_UNKNOWN;
+>>>> +	kbuf.memsz = le64_to_cpu(h->image_size);
+>>>> +	kbuf.buf_align = le64_to_cpu(h->text_offset);
+>>>> +
+>>>> +	ret = kexec_add_buffer(&kbuf);
+>>>> +	if (ret) {
+>>>> +		pr_err("Error add kernel image ret=%d\n", ret);
+>>>> +		goto out;
+>>>> +	}
+>>>> +
+>>>> +	image->start = kbuf.mem;
+>>>> +
+>>>> +	pr_info("Loaded kernel at 0x%lx bufsz=0x%lx memsz=0x%lx\n",
+>>>> +				kbuf.mem, kbuf.bufsz, kbuf.memsz);
+>>>> +
+>>>> +	ret = load_extra_segments(image, kbuf.mem, kbuf.memsz,
+>>>> +				  initrd, initrd_len, cmdline, cmdline_len);
+>>>> +
+>>>> +out:
+>>>> +	return ret ? ERR_PTR(ret) : NULL;
+>>>> +}
+>>>> +
+>>>> +const struct kexec_file_ops image_kexec_ops = {
+>>>> +	.probe = image_probe,
+>>>> +	.load = image_load,
+>>>> +};
+>>>> diff --git a/arch/riscv/kernel/machine_kexec_file.c b/arch/riscv/kernel/machine_kexec_file.c
+>>>> index aedb8c16a283..5dc700834f1e 100644
+>>>> --- a/arch/riscv/kernel/machine_kexec_file.c
+>>>> +++ b/arch/riscv/kernel/machine_kexec_file.c
+>>>> @@ -17,6 +17,7 @@
+>>>>
+>>>>    const struct kexec_file_ops * const kexec_file_loaders[] = {
+>>>>    	&elf_kexec_ops,
+>>>> +	&image_kexec_ops,
+>>>>    	NULL
+>>>>    };
+>>>>
+>>>> --
+>>>> 2.20.1
+>>>>
+>>>>
+>>>> _______________________________________________
+>>>> linux-riscv mailing list
+>>>> linux-riscv@lists.infradead.org
+>>>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+>>>
+>>
+>> --
+>> Thanks
+>> Song Shuai
+>>
+>>
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
 
 -- 
-With best wishes
-Dmitry
+Thanks
+Song Shuai
+
