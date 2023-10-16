@@ -2,281 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26AF77CABCC
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 16:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AE2D7CABCF
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 16:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232244AbjJPOob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 10:44:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43424 "EHLO
+        id S232483AbjJPOpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 10:45:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJPOo3 (ORCPT
+        with ESMTP id S229459AbjJPOpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 10:44:29 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8017A2;
-        Mon, 16 Oct 2023 07:44:27 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65C62C433C7;
-        Mon, 16 Oct 2023 14:44:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697467467;
-        bh=EosIPRQRkZS/m8fRSYLf1GF9E5dQpYw/H0GO2FrhMzU=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=pbL0JENlz5RnGYP4I9kBXyy7y5PAbYeNgIvdEtdEfV+6JtSnYAgZxXfj6QS0OTvnq
-         7EQLcIfg5sdun4AKj6ILT0f9Sn+Lj6uvsAiodPVGiYDgFZBItlIo32ZAZ94e+7xhcC
-         EzgeCAxFRNF1lIZMxpTdwOblh/UZLmbq4cioT65oxIZDzZFXQX7uvm9EQBD1jalFt1
-         7JjsKBkOkgur951+Esn3xom0VBOBX9uF/8bVz6kjKcDLzBtDl8aS9RlYKjQ/3DdqNd
-         U2gH58YxGzyynaLl9ZTOovVYCLIQjHNnnlfnqltpw7WhZQlr1WcoivXsWgUIsn7mNI
-         RHCnJAlJeYfQA==
-Message-ID: <bd10b3e5a826d8658a2ee6bba510d25b27c35b50.camel@kernel.org>
-Subject: Re: [RFC PATCH 01/53] netfs: Add a procfile to list in-progress
- requests
-From:   Jeff Layton <jlayton@kernel.org>
-To:     David Howells <dhowells@redhat.com>,
-        Steve French <smfrench@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Christian Brauner <christian@brauner.io>,
-        linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-cachefs@redhat.com
-Date:   Mon, 16 Oct 2023 10:44:24 -0400
-In-Reply-To: <20231013155727.2217781-2-dhowells@redhat.com>
-References: <20231013155727.2217781-1-dhowells@redhat.com>
-         <20231013155727.2217781-2-dhowells@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Mon, 16 Oct 2023 10:45:05 -0400
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 571D8AB;
+        Mon, 16 Oct 2023 07:45:00 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1697467480; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=VQJg1RsTctPWMnunyunfLHy2rLs7zNB/CNL3uh76kEa1fZsXzKvAIpoB8tkgfT2RNu
+    2rKoWE5OPZRMM+BCSsYTpW6khc3tI1nH5N/1qJvDzfiYK5GlaTi3KbQDrkyeKDVWVMet
+    1A1bt/1meFjCYzuxWdYQsfyFAp9nQzs0T0qZM/x0FXBuhDfVWajh7E4FKGpP9uMECv4W
+    pH58fRwShTyIYR2EyKDqYwcy2HpGDlymYkPPDw1nmu2fhIAsnjXpQGKzZKO94ZNvNJKO
+    fhFeTMVj1meRxgiTyIgbwlDTjaiOswOuukT4Wc/XkYJFpqDhiQrrmpvh4S/2EAVFvBfv
+    REow==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1697467480;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=xX5hBwIyyt+mobzNXbEEyEPguKjaJlDcotBwI7v0tiw=;
+    b=n+Mfk6c1CeBShSjZ88173Z2R7ZIK1RjEdPw3nYDGYcW1wK28Gt5wqklMEffbVD8iV6
+    vkvS7zxhGbuoPoAMPbESIGocsGxi+axSxo35rbLCka5+DEJFF18Xd+u0t6QCLVkZvrrP
+    gcwp26JgNliUepXjbaDE8CEUI+8yF6e+sZ7c140P8ZvM5ztoWB5t6qma0hERztyvDMHR
+    0tdEUBIP/RCR/hx2iOYUnNFGWWSMGx+FAbyNvbmvOrK6kjGrHx7DI4yjdIbWBqxcLq/x
+    JpWL4ayjasaa4YLb1lIcnpJ2VFYTBRrMxtFsGtcA3ENaBTcGij1fb4H9Iv60gY0JgjLM
+    ic7A==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1697467480;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=xX5hBwIyyt+mobzNXbEEyEPguKjaJlDcotBwI7v0tiw=;
+    b=G+2o7R0QMJJBT+YXg8vDQQQxGzsXPhWuM22xgxnzxP2fhmYCupPM4yKQPOdo0U5/Up
+    MhRXevKhGuT76C/ItYHomUyvnv9EWLUe2MK3Bj4kJ4xWCzRV0H0w6Z6iXXMUokyHGaHQ
+    w0GLCb15rSUmK6bQ8BG9LeDYy3dv+ftDmBdLsz/sQ/9hxS9yMKJiVvLbS5u6Al4ttAkf
+    nuZsNP0hcx2KQjItQL7vm763usWbbpKa8F/hoIIjRr5nbDk65f/vR8OMz5Hrb6T1Eiu8
+    QMp+UHCm8n1iy0tPNJvRI4UlQKaXhMwwt5HEjoqtPCQqw/oIvP0NOYLotbfj9+ZdK0AB
+    I8yg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1697467480;
+    s=strato-dkim-0003; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=xX5hBwIyyt+mobzNXbEEyEPguKjaJlDcotBwI7v0tiw=;
+    b=69+eKkTf5LWsB5y5p8U21qGYEfe9j1pEpjC8AFafAYiu3jM8pCAKLCE28qCC2LfAbd
+    s/WryFLK3a7YggE0SUCw==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA+p3h"
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 49.9.0 DYNA|AUTH)
+    with ESMTPSA id j34a49z9GEid25O
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Mon, 16 Oct 2023 16:44:39 +0200 (CEST)
+Date:   Mon, 16 Oct 2023 16:44:28 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Loic Poulain <loic.poulain@linaro.org>
+Cc:     Luca Weiss <luca@z3ntu.xyz>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kalle Valo <kvalo@kernel.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wcn36xx@lists.infradead.org, linux-wireless@vger.kernel.org
+Subject: Re: [PATCH 1/4] dt-bindings: remoteproc: qcom: wcnss: Add WCN3680B
+ compatible
+Message-ID: <ZS1MTAHq6GLW6RAK@gerhold.net>
+References: <20231015-fp3-wcnss-v1-0-1b311335e931@z3ntu.xyz>
+ <20231015-fp3-wcnss-v1-1-1b311335e931@z3ntu.xyz>
+ <ffca099a-bf05-4973-885d-b049a45d466f@linaro.org>
+ <CAMZdPi-S2_UQO-rD38-thwta-YgH3W78Ecd1Du7Q_US=J7k0ew@mail.gmail.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZdPi-S2_UQO-rD38-thwta-YgH3W78Ecd1Du7Q_US=J7k0ew@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-10-13 at 16:56 +0100, David Howells wrote:
-> Add a procfile, /proc/fs/netfs/requests, to list in-progress netfslib I/O
-> requests.
->=20
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: Jeff Layton <jlayton@kernel.org>
-> cc: linux-cachefs@redhat.com
-> cc: linux-fsdevel@vger.kernel.org
-> cc: linux-mm@kvack.org
-> ---
->  fs/netfs/internal.h   | 22 +++++++++++
->  fs/netfs/main.c       | 91 +++++++++++++++++++++++++++++++++++++++++++
->  fs/netfs/objects.c    |  4 +-
->  include/linux/netfs.h |  6 ++-
->  4 files changed, 121 insertions(+), 2 deletions(-)
->=20
-> diff --git a/fs/netfs/internal.h b/fs/netfs/internal.h
-> index 43fac1b14e40..1f067aa96c50 100644
-> --- a/fs/netfs/internal.h
-> +++ b/fs/netfs/internal.h
-> @@ -29,6 +29,28 @@ int netfs_begin_read(struct netfs_io_request *rreq, bo=
-ol sync);
->   * main.c
->   */
->  extern unsigned int netfs_debug;
-> +extern struct list_head netfs_io_requests;
-> +extern spinlock_t netfs_proc_lock;
-> +
-> +#ifdef CONFIG_PROC_FS
-> +static inline void netfs_proc_add_rreq(struct netfs_io_request *rreq)
-> +{
-> +	spin_lock(&netfs_proc_lock);
-> +	list_add_tail_rcu(&rreq->proc_link, &netfs_io_requests);
-> +	spin_unlock(&netfs_proc_lock);
-> +}
-> +static inline void netfs_proc_del_rreq(struct netfs_io_request *rreq)
-> +{
-> +	if (!list_empty(&rreq->proc_link)) {
-> +		spin_lock(&netfs_proc_lock);
-> +		list_del_rcu(&rreq->proc_link);
-> +		spin_unlock(&netfs_proc_lock);
-> +	}
-> +}
-> +#else
-> +static inline void netfs_proc_add_rreq(struct netfs_io_request *rreq) {}
-> +static inline void netfs_proc_del_rreq(struct netfs_io_request *rreq) {}
-> +#endif
-> =20
->  /*
->   * objects.c
-> diff --git a/fs/netfs/main.c b/fs/netfs/main.c
-> index 068568702957..21f814eee6af 100644
-> --- a/fs/netfs/main.c
-> +++ b/fs/netfs/main.c
-> @@ -7,6 +7,8 @@
-> =20
->  #include <linux/module.h>
->  #include <linux/export.h>
-> +#include <linux/proc_fs.h>
-> +#include <linux/seq_file.h>
->  #include "internal.h"
->  #define CREATE_TRACE_POINTS
->  #include <trace/events/netfs.h>
-> @@ -18,3 +20,92 @@ MODULE_LICENSE("GPL");
->  unsigned netfs_debug;
->  module_param_named(debug, netfs_debug, uint, S_IWUSR | S_IRUGO);
->  MODULE_PARM_DESC(netfs_debug, "Netfs support debugging mask");
-> +
-> +#ifdef CONFIG_PROC_FS
-> +LIST_HEAD(netfs_io_requests);
-> +DEFINE_SPINLOCK(netfs_proc_lock);
-> +
-> +static const char *netfs_origins[] =3D {
-> +	[NETFS_READAHEAD]	=3D "RA",
-> +	[NETFS_READPAGE]	=3D "RP",
-> +	[NETFS_READ_FOR_WRITE]	=3D "RW",
-> +};
-> +
-> +/*
-> + * Generate a list of I/O requests in /proc/fs/netfs/requests
-> + */
-> +static int netfs_requests_seq_show(struct seq_file *m, void *v)
-> +{
-> +	struct netfs_io_request *rreq;
-> +
-> +	if (v =3D=3D &netfs_io_requests) {
-> +		seq_puts(m,
-> +			 "REQUEST  OR REF FL ERR  OPS COVERAGE\n"
-> +			 "=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D =3D=3D=3D =3D=3D =3D=3D=3D=3D =3D=
-=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D\n"
-> +			 );
-> +		return 0;
-> +	}
-> +
-> +	rreq =3D list_entry(v, struct netfs_io_request, proc_link);
-> +	seq_printf(m,
-> +		   "%08x %s %3d %2lx %4d %3d @%04llx %zx/%zx",
-> +		   rreq->debug_id,
-> +		   netfs_origins[rreq->origin],
-> +		   refcount_read(&rreq->ref),
-> +		   rreq->flags,
-> +		   rreq->error,
-> +		   atomic_read(&rreq->nr_outstanding),
-> +		   rreq->start, rreq->submitted, rreq->len);
-> +	seq_putc(m, '\n');
-> +	return 0;
-> +}
-> +
-> +static void *netfs_requests_seq_start(struct seq_file *m, loff_t *_pos)
-> +	__acquires(rcu)
-> +{
-> +	rcu_read_lock();
-> +	return seq_list_start_head(&netfs_io_requests, *_pos);
-> +}
-> +
-> +static void *netfs_requests_seq_next(struct seq_file *m, void *v, loff_t=
- *_pos)
-> +{
-> +	return seq_list_next(v, &netfs_io_requests, _pos);
-> +}
-> +
-> +static void netfs_requests_seq_stop(struct seq_file *m, void *v)
-> +	__releases(rcu)
-> +{
-> +	rcu_read_unlock();
-> +}
-> +
-> +static const struct seq_operations netfs_requests_seq_ops =3D {
-> +	.start  =3D netfs_requests_seq_start,
-> +	.next   =3D netfs_requests_seq_next,
-> +	.stop   =3D netfs_requests_seq_stop,
-> +	.show   =3D netfs_requests_seq_show,
-> +};
-> +#endif /* CONFIG_PROC_FS */
-> +
-> +static int __init netfs_init(void)
-> +{
-> +	if (!proc_mkdir("fs/netfs", NULL))
-> +		goto error;
-> +
+On Mon, Oct 16, 2023 at 03:16:14PM +0200, Loic Poulain wrote:
+> On Mon, 16 Oct 2023 at 07:35, Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+> >
+> > On 15/10/2023 22:03, Luca Weiss wrote:
+> > > Add a compatible for the iris subnode in the WCNSS PIL.
+> > >
+> > > Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+> > > ---
+> > >  Documentation/devicetree/bindings/remoteproc/qcom,wcnss-pil.yaml | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,wcnss-pil.yaml b/Documentation/devicetree/bindings/remoteproc/qcom,wcnss-pil.yaml
+> > > index 45eb42bd3c2c..0e5e0b7a0610 100644
+> > > --- a/Documentation/devicetree/bindings/remoteproc/qcom,wcnss-pil.yaml
+> > > +++ b/Documentation/devicetree/bindings/remoteproc/qcom,wcnss-pil.yaml
+> > > @@ -111,6 +111,7 @@ properties:
+> > >            - qcom,wcn3660
+> > >            - qcom,wcn3660b
+> > >            - qcom,wcn3680
+> > > +          - qcom,wcn3680b
+> >
+> > Looks like this should be made as compatible with qcom,wcn3680 (so with
+> > fallback).
+> 
+> Yes, agree, let's do a regular fallback as there is nothing 'b'
+> specific in the driver:
+> `compatible = "qcom,wcn3680b", "qcom,wcn3680";`
+> 
+> And yes, we should also have done that for qcom,wcn3660b...
+> 
 
-It seems like this should go under debugfs instead.
+I don't think this would have worked properly for qcom,wcn3660b:
 
-> +	if (!proc_create_seq("fs/netfs/requests", S_IFREG | 0444, NULL,
-> +			     &netfs_requests_seq_ops))
-> +		goto error_proc;
-> +
-> +	return 0;
-> +
-> +error_proc:
-> +	remove_proc_entry("fs/netfs", NULL);
-> +error:
-> +	return -ENOMEM;
-> +}
-> +fs_initcall(netfs_init);
-> +
-> +static void __exit netfs_exit(void)
-> +{
-> +	remove_proc_entry("fs/netfs", NULL);
-> +}
-> +module_exit(netfs_exit);
-> diff --git a/fs/netfs/objects.c b/fs/netfs/objects.c
-> index e17cdf53f6a7..85f428fc52e6 100644
-> --- a/fs/netfs/objects.c
-> +++ b/fs/netfs/objects.c
-> @@ -45,6 +45,7 @@ struct netfs_io_request *netfs_alloc_request(struct add=
-ress_space *mapping,
->  		}
->  	}
-> =20
-> +	netfs_proc_add_rreq(rreq);
->  	netfs_stat(&netfs_n_rh_rreq);
->  	return rreq;
->  }
-> @@ -76,12 +77,13 @@ static void netfs_free_request(struct work_struct *wo=
-rk)
->  		container_of(work, struct netfs_io_request, work);
-> =20
->  	trace_netfs_rreq(rreq, netfs_rreq_trace_free);
-> +	netfs_proc_del_rreq(rreq);
->  	netfs_clear_subrequests(rreq, false);
->  	if (rreq->netfs_ops->free_request)
->  		rreq->netfs_ops->free_request(rreq);
->  	if (rreq->cache_resources.ops)
->  		rreq->cache_resources.ops->end_operation(&rreq->cache_resources);
-> -	kfree(rreq);
-> +	kfree_rcu(rreq, rcu);
->  	netfs_stat_d(&netfs_n_rh_rreq);
->  }
-> =20
-> diff --git a/include/linux/netfs.h b/include/linux/netfs.h
-> index b11a84f6c32b..b447cb67f599 100644
-> --- a/include/linux/netfs.h
-> +++ b/include/linux/netfs.h
-> @@ -175,10 +175,14 @@ enum netfs_io_origin {
->   * operations to a variety of data stores and then stitch the result tog=
-ether.
->   */
->  struct netfs_io_request {
-> -	struct work_struct	work;
-> +	union {
-> +		struct work_struct work;
-> +		struct rcu_head rcu;
-> +	};
->  	struct inode		*inode;		/* The file being accessed */
->  	struct address_space	*mapping;	/* The mapping being accessed */
->  	struct netfs_cache_resources cache_resources;
-> +	struct list_head	proc_link;	/* Link in netfs_iorequests */
->  	struct list_head	subrequests;	/* Contributory I/O operations */
->  	void			*netfs_priv;	/* Private data for the netfs */
->  	unsigned int		debug_id;
->=20
+ - It's not compatible with "qcom,wcn3660", because they have different
+   regulator voltage requirements. wcn3660(a?) needs vddpa with
+   2.9-3.0V, but wcn3660b needs 3.3V. That's why wcn3660b uses the
+   wcn3680_data in qcom_wcnss.iris.c. Otherwise if you would run an
+   older kernel that knows "qcom,wcn3660" but not "qcom,wcn3660b" it
+   would apply the wrong voltage.
 
-ACK on the general concept however. This is useful debugging info.
---=20
-Jeff Layton <jlayton@kernel.org>
+ - It's not compatible with "qcom,wcn3680" either because that is used
+   as indication if 802.11ac is supported (wcn3660b doesn't).
+
+The main question here is: What does the current "qcom,wcn3680"
+compatible actually represent? It's defined with vddpa = 3.3V in the
+driver, which would suggest that:
+
+ 1. It's actually meant to represent WCN3680B, which needs 3.3V vddpa
+    like WCN3660B, or
+
+ 2. WCN3680(A?) has different requirements than WCN3660(A?) and also
+    needs 3.3V vddpa. But then what is the difference between
+    WCN3680(A?) and WCN3680B? Is there even a variant without ...B?
+
+There is public documentation for WCN3660B and WCN3680B but the non-B
+variants are shrouded in mystery.
+
+Thanks,
+Stephan
