@@ -2,143 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 580887CA09F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 09:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73BD07CA0A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 09:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231671AbjJPHcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 03:32:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37758 "EHLO
+        id S231803AbjJPHes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 03:34:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjJPHcU (ORCPT
+        with ESMTP id S229478AbjJPHeq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 03:32:20 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0647AD
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:32:18 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-66d11fec9a5so24090666d6.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:32:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697441538; x=1698046338; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PKqGW1ZxrYglYW7fBJYmvRdjCTAJDcJrIqOEfv9H1uk=;
-        b=Om+U9oU+hO3iHwKRJymKmpUVs6wFpOs8Wm0M3jP+5PrrgWtssWt2wC5igZk9KnDZTJ
-         X5n+LoGGQSXYHvp1XiZdCTJn5YTZRcnRsPDoKsIJB5JUKr473efy1bVe96cQ6DQkfuhh
-         X1zkNe4TQ8ydUp5hx3+UY+EO1LGhdPSOTmqaiT2qPQxnJLMsbZeKL95Gmvhc8Ni78zCK
-         qqO9dOCf4aI0ZHnntDT5h2Fb/Yo0wI6o2mP6+5T9SzjU2csFPsCJ7IVPUWJg17wAFfus
-         l/c1UasC/oquata9klvg/EGCZAWH2p5IFRocpOqb1kwGa4pPuHFxGk7Hr5hB6FM5P/ob
-         NnQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697441538; x=1698046338;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PKqGW1ZxrYglYW7fBJYmvRdjCTAJDcJrIqOEfv9H1uk=;
-        b=FIhJlSFl3x1+nAspMtZtIejlsUtYZlGpDBp/+zW5YfVjVNlLs5Zm4Z3DKI2FdhrAf7
-         a9qXZEo5S4FPTBDbp7l5lGVf07t0jGdCR4IMQuefdEu+MLkMxKWf5bR8GhgZyW9u6WWr
-         8/UJHzolh0v1vhE4jtrH0851gPRUpvd352nPYc8GbZmXsyNAY2RvLfkHA+DAM+Skohlo
-         hwlusI0Rj8TjSvDTmgA/tYtUIVqcgBlccxCVVMt0sfB7zIyCrzDtfcnJSH6d8ORiV+13
-         3XZALzUTRqn3dSPQiKWgFw796yR/ZeWNOksYooA900bJJdYu+mz+ffk4KR2oDRHUZzzC
-         9WxQ==
-X-Gm-Message-State: AOJu0YxQlV81ZcuYjhl6ontzGW7IalCpttdf0jgKawFj+Zas0Tvdj6X4
-        0eB9zXgDvCeloCnOs7vNaUBwd02zncrMLGsMsOMWrHMlCseA5f6o
-X-Google-Smtp-Source: AGHT+IGDJGLk2sPYyF9/0p3UrPzmhWrwGi14izmtEbaQT4hL8piWfr7a/FqEXkrbLzvx+9V/HGXb34g2yeloHaBGTsc=
-X-Received: by 2002:a05:6214:246e:b0:66d:4fdb:5e36 with SMTP id
- im14-20020a056214246e00b0066d4fdb5e36mr3439994qvb.36.1697441537773; Mon, 16
- Oct 2023 00:32:17 -0700 (PDT)
+        Mon, 16 Oct 2023 03:34:46 -0400
+Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02olkn2105.outbound.protection.outlook.com [40.92.49.105])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA59DE1;
+        Mon, 16 Oct 2023 00:34:41 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Em/6nFLasVCMWpVPNkqHTh9dkg0yNP5hWxgEs99XoGGcQiEOCw/2mv7dAgT7F4QYlIIgc6cdbiTK3tRUFMo6WHn/ibU+/bFzZ5KvHrREZobymuBXSkQ6Ui5m+wJj5+OpPmg08FPr8PK1e0tPRNbTWYnM+T/i1oG35pCBoNezHng5Z2BNTcDwEr0tmPxcblF+yx65ilBUxExINaJUIkH+05BfYb0dMEjfEEQsVxPA2bfP16ZXUQpG3KhBhSXB1FyRAZzUnhREjVnJMsqs/Kv95b/qTOlVXDW/DxhyGU3STSmTvIxRgQXcdpvtWUiNInPbKoYGomMbN2Db9PMCOFwnsg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/MgkxcJFUznFEF4gAEI8nFTa/O9PcNV3MvLuDMCiGYY=;
+ b=RFmhzru0tk9zyMuSbbsOtbsUDOWiaxQBn79ucFQnlEI+ddOQGQJdVe4sBYA+J+Ji1P+RDcWsjcqOWOidLBpfD5CCR3W3Xl7LQKan0/x3OX/3ZwCmFH4Gj+3pcWnT4JZc+tG3fCgmLDfce2+wptMs0zmBctVSTfF2po5sdDTEqZDnSguDDip3cS+NO3pylQBQNe6ICLDbHJwwSREx7TaKE8RtofjPqSELGxwFYO/pW7W6yrLdR1ttoBQLpfv5JCUtVmGnjH3l5Nebvl6VzSXYALFWhc+85EPe9wyXe+vkCn0pPdcnPZJPvveo7IhgKOONuiAWCw+1XEKgEjLEeAl6Gw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from DU0PR02MB7899.eurprd02.prod.outlook.com (2603:10a6:10:347::11)
+ by DB9PR02MB10017.eurprd02.prod.outlook.com (2603:10a6:10:45c::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.47; Mon, 16 Oct
+ 2023 07:34:39 +0000
+Received: from DU0PR02MB7899.eurprd02.prod.outlook.com
+ ([fe80::b753:178a:394e:af8e]) by DU0PR02MB7899.eurprd02.prod.outlook.com
+ ([fe80::b753:178a:394e:af8e%7]) with mapi id 15.20.6886.034; Mon, 16 Oct 2023
+ 07:34:39 +0000
+Date:   Mon, 16 Oct 2023 08:34:36 +0100
+From:   Cameron Williams <cang1@live.co.uk>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org
+Subject: Re: [PATCH v3 2/7] tty: 8250: Add support for additional Brainboxes
+ UC cards
+Message-ID: <DU0PR02MB7899461DC8DD0CBD02EAABDAC4D7A@DU0PR02MB7899.eurprd02.prod.outlook.com>
+References: <BBPatchesV3>
+ <20231015171141.3309-1-cang1@live.co.uk>
+ <DU0PR02MB7899EF5899BB15DAF3DB580DC4D0A@DU0PR02MB7899.eurprd02.prod.outlook.com>
+ <5054cda2-f618-4d84-ba7a-84c442235353@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5054cda2-f618-4d84-ba7a-84c442235353@kernel.org>
+X-TMN:  [HFdrxRDyOq1pBK/7IH55ZDOWvNupp0i7]
+X-ClientProxiedBy: LO2P265CA0264.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:8a::36) To DU0PR02MB7899.eurprd02.prod.outlook.com
+ (2603:10a6:10:347::11)
+X-Microsoft-Original-Message-ID: <ZSznjCbs51wN0PHJ@archlinux>
 MIME-Version: 1.0
-References: <20230728134832.326467-1-sumit.garg@linaro.org>
- <CAFA6WYP7hgRWS_gp2AFEWDs27aOeUndB6+1dh95TtW2s1N+5Ag@mail.gmail.com>
- <a9515560-32bc-4f3b-a36c-87f7242081a9@siemens.com> <CAFA6WYOZPD+y0SOQTCih8qf5_FjX6DWtPTki13MM8J8V8LaHMQ@mail.gmail.com>
-In-Reply-To: <CAFA6WYOZPD+y0SOQTCih8qf5_FjX6DWtPTki13MM8J8V8LaHMQ@mail.gmail.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Mon, 16 Oct 2023 09:32:06 +0200
-Message-ID: <CAHUa44Gyzv23c+L7dKQXh0oVgbJ_96guOZwTb7o87f2Gy9b9Dg@mail.gmail.com>
-Subject: Re: [PATCH v2] tee: optee: Fix supplicant based device enumeration
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Jan Kiszka <jan.kiszka@siemens.com>,
-        op-tee@lists.trustedfirmware.org, arnd@linaro.org, ardb@kernel.org,
-        jerome.forissier@linaro.org, ilias.apalodimas@linaro.org,
-        masahisa.kojima@linaro.org, maxim.uvarov@linaro.org,
-        jarkko.sakkinen@linux.intel.com, linux-kernel@vger.kernel.org,
-        "Lopes Ivo, Diogo Miguel (T CED IFD-PT)" <diogo.ivo@siemens.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU0PR02MB7899:EE_|DB9PR02MB10017:EE_
+X-MS-Office365-Filtering-Correlation-Id: f9f1330a-2e12-431c-ba3a-08dbce1a5acb
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aGq9/L4Py1qlSyw/Tjkr9kWUdwuRbK7MvEKZ0M8cMkZoXZQ1+pjfeFamYuodmQUMYfANQhLw3UqB2UE3CV22ZY7s+aFMTM5xmYOonJmlxQkU5zvY7x7l3cyRJTk4bGdGkJN2Qd6afiAWa6wAWw4HQ7nNL33VTAUqyvud63YsCsaOb5whIl+5dqU0B8OMrYDvBAefmudg3uN9xe80g0rCgQsZQPmYN1+0WqCOUrZsKnuyqAJo8wUeOUc4u96ZyxYY4+WVDIZX75j8Qt9PzaPmjLPh1iVOQcX9UIj7hCpCC+yfhPYB6gJn7QMXJGXBLKRw7TOP6baVM4BwXAP7+mxbtW68AHreEK1PVdcJhpX5VTSr3tWoKywlAqSRp4TOxGMckeyQwUCk7yHfmL2aluWhRrlr8PTuzjNMzCwwTH9iZQjb02ceUk91nFfszBtbIMzxUW1wxq7Sy69xA92zR5osmaTSgR/CjHtvU+JQ4DBfd6iiFrxK2RWRiaB6ZTqRV/1B1B5h68YqC1yNy+2ZBkkvVkcpY0cL4p2VTPCxAC3wsOMcN1HnswwHw2xnsyb1QA3l
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ebcgxHfHxk1B7mzSeP/Gu4SO1tt1kLLJUqpCetk9WdKJvx5nsWuJLS/hGsu0?=
+ =?us-ascii?Q?WEwsl1CSIo0bAUrSiKB9692i/okVJfTSItjT4uCGiT9KrxKQbKr8WeKEPhtI?=
+ =?us-ascii?Q?KDoR/zDAQrQ3ES6OBPZnbmKLuCQgU/wcS8/9ZcBGc5J45eg+Tfuf0tG6q/EI?=
+ =?us-ascii?Q?2SXZ7vk7X0bufK7Gq1Y0LAWTt83UpdZPzeN7Yzl4Du15kaNKNDXWbBbAT8QN?=
+ =?us-ascii?Q?OfnYiLgnUFrEdo7OMmFZwg/XtSNG3mZmLqfbwKmHEVjzhtxc2e8SW/XyVj8q?=
+ =?us-ascii?Q?WP8Cw7Q0vBil13xdZSnPffnscqYX9XDenOL/BkS7fKRG+yrW6Vz3JU86yjOt?=
+ =?us-ascii?Q?6aiZ2EwxKeoCP92jS10ovh2k4pm5/5DafYAzYAget8Oxup5ILY+i35MhT1UR?=
+ =?us-ascii?Q?OiZNekaOV3lKubWS/VgLmNcMaGJRTjp1YtGS1j+vnfT8DOyc6BAcI4Nl7H/k?=
+ =?us-ascii?Q?V2H4BmqQ2z5wWjIsXRkBivR4y6Aewu5SKCBB4YwkwemCYIKf1C5Klpsv8KpI?=
+ =?us-ascii?Q?MnkYp/IpFjZyQWenOd9lR98WVDXJBMh7STHyCk1ssxNuWWr9tP/qTLBhCHWA?=
+ =?us-ascii?Q?ujj7ybZ6gUXBs9ZsaMz4wKCXyDeaqNf9H68JE8ka/3mmTbu/TV9fpCLUvUV+?=
+ =?us-ascii?Q?JE9oKy/fz5kES410prE3FBa/erdU4qIsa5ReCwQrYprG+1GJELnh2lKAmv7p?=
+ =?us-ascii?Q?rTIKwwpypV2h4zPy+CRNja8NvjEjBEa2w8uBuPH+poGWYCEORlzgNEeUuKLP?=
+ =?us-ascii?Q?aOAlsDjCOLpbiUAmfO5APAM6+bql1/IHXaWqhW3BIFeoZXn3GnNsfNMBUsQV?=
+ =?us-ascii?Q?kKFmCUcNHNfEB7VdcGeLLlmM3osNV+0Em+idKFiPysuSeuNCVQPcrv7US/wt?=
+ =?us-ascii?Q?KYZT6jxsHLrfp4hijWUff/wajt3oFvWeS0zXZPA0h8R+6rShapx4oUdOuqWF?=
+ =?us-ascii?Q?h8ZsvWX29D+Hm4AqKGNYU9w8iW69DN2jDOp1NLWt5O4ao5ZSTKGQZeOlRi19?=
+ =?us-ascii?Q?KnD6Up5UcPU6VbQzSd9sZsI7kwSd9yQoabPb8P7Q9p3ilSpsVmS/U+Tyq4yR?=
+ =?us-ascii?Q?3BNUElqZ7POTN01AfNs2HI5uBUr9ma9BYRlVlbvuQ7AZsonU/yu0qVjIanOd?=
+ =?us-ascii?Q?anBgy7pKRN/DcUSiv3F41yVOBOKPOBWQfHEm6fOCyc2paROa6F9/vQ+m9zHE?=
+ =?us-ascii?Q?idkl4nEGTZBPklFijjy1R/uTjwzQxutXZ+WQWA=3D=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-ab7de.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: f9f1330a-2e12-431c-ba3a-08dbce1a5acb
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR02MB7899.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2023 07:34:39.4850
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR02MB10017
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sumit,
-
-On Thu, Oct 12, 2023 at 2:40=E2=80=AFPM Sumit Garg <sumit.garg@linaro.org> =
-wrote:
+On Mon, Oct 16, 2023 at 07:40:03AM +0200, Jiri Slaby wrote:
+> On 15. 10. 23, 19:10, Cameron Williams wrote:
+> > Add support for additional revisions/IDs of the Brainboxes UC
+> > range of serial cards.
+> > 
+> > Add: Additional UC-235/UC-246, UC-302, UC-313, UC-346, UC-357 card IDs
+> > Add: UC-253/UC-734 , UC-607, UC-836 cards
+> > Fix: UC-431 variant note removed as it is a 3-port card, and there is
+> > no generic 3-port configuration available.
+> 
+> So can it be fixed instead of removed?
 >
-> On Wed, 11 Oct 2023 at 20:15, Jan Kiszka <jan.kiszka@siemens.com> wrote:
-> >
-> > On 29.08.23 13:03, Sumit Garg wrote:
-> > > Hi Jan,
-> > >
-> > > On Fri, 28 Jul 2023 at 19:18, Sumit Garg <sumit.garg@linaro.org> wrot=
-e:
-> > >>
-> > >> Currently supplicant dependent optee device enumeration only registe=
-rs
-> > >> devices whenever tee-supplicant is invoked for the first time. But i=
-t
-> > >> forgets to remove devices when tee-supplicant daemon stops running a=
-nd
-> > >> closes its context gracefully. This leads to following error for fTP=
-M
-> > >> driver during reboot/shutdown:
-> > >>
-> > >> [   73.466791] tpm tpm0: ftpm_tee_tpm_op_send: SUBMIT_COMMAND invoke=
- error: 0xffff3024
-> > >>
-> > >> Fix this by separating supplicant dependent devices so that the
-> > >> user-space service can detach supplicant devices before closing the
-> > >> supplicant. While at it use the global system workqueue for OP-TEE b=
-us
-> > >> scanning work rather than our own custom one.
-> > >>
-> > >> Reported-by: Jan Kiszka <jan.kiszka@siemens.com>
-> > >> Link: https://github.com/OP-TEE/optee_os/issues/6094
-> > >
-> > > I see you have marked this issue as resolved. It would be good to hav=
-e
-> > > your tested-by tag if it works for you.
-> > >
-> >
-> > Sorry for this very late reply. We finally validated that this works
-> > fine for us, though only over 6.1, our current test target. I hope we
-> > can enable tip of tree soon as well. But I think I can still add my
-> >
-> > Tested-by: Jan Kiszka <jan.kiszka@siemens.com>
-> >
->
-> Thanks.
->
-> Jens,
->
-> Can you queue up this fix?
-
-Sure, please supply this as two patches. One for the work queue
-changes and one for the device name change.
-
-Thanks,
-Jens
-
->
-> -Sumit
->
-> > Jan
-> >
-> > --
-> > Siemens AG, Technology
-> > Linux Expert Center
-> >
+By fixed, do you mean implement a generic 3-port configuration?
+I could look into it, it would be nice to have all of the cards in the
+range supported, but I wanted to avoid adding a specific configuration
+only used by one niche card.
+If you mean fixed as in change the wording a little bit and add a Fixes:
+tag, then I can do that too.
+> > Fix: UC-257 moved to parport_serial as it is a serial/LPT card.
+> 
+> So this patch deserves a Fixes tag and should go to stable as well?
+> 
+> Anyway, could you split this into fixes and additions (ie. 2 patches)?
+> 
+Noted.
+> thanks,
+> -- 
+> js
+> suse labs
+> 
