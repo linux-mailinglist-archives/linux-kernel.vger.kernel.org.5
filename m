@@ -2,146 +2,382 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB7DB7CB4E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2A657CB4E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:48:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233732AbjJPUsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 16:48:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43138 "EHLO
+        id S234152AbjJPUsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 16:48:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232701AbjJPUsk (ORCPT
+        with ESMTP id S232701AbjJPUst (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 16:48:40 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9625A7
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:48:36 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7c97d5d5aso76618647b3.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:48:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697489316; x=1698094116; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=CfQG/UNYofASRrDwMjYhdG73TtrOn2QoLvMk2HP0VXc=;
-        b=qw8HAanKN9J0CnkvOmauyxICekf1JNGafGHP89BpW0CRYA0k93PgmnEWgxBBSiNDRR
-         txQk8XVhpHwnN9sW9oX6RGj4npBxp189Gsa2wl1Lcm42+CkkNJXpo8AjL94JjzEt5B4p
-         IedMJohD99oKnEXqm5Ml/AEhI/prnXJGwKAdH5cRl4ob4hOGMHj2SkW4bJNLvMliSNMz
-         aPKtk1XyWs1MmGTSUk7g5GAQw3RXJXRxAJ56mOvTr1nYf+7nGpfhhWtqu/DlIDF/emy8
-         pbIO9PbChvrh+lgwqueCPueVcwpOZeCcWtqs6/ATBigopa/2czlc+seJvWdWXpmPP8Rq
-         kEOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697489316; x=1698094116;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CfQG/UNYofASRrDwMjYhdG73TtrOn2QoLvMk2HP0VXc=;
-        b=FKk+NjZy7XtioiRSw8gPvnGNiaBSp4g5/qO7OoKLTfKhgYj62UOoqOIo25r6X4sHq+
-         9kchcz5tse4XZkg+6s0N10RllNgxsf4NgDA20TcmqU75x5JwIuiwKmbpMmozbb1AlL0Z
-         h/qLHp3JYdvWPOP6ujIzNwRVy4PyRrWsTYb1FEsA/NuoD68RInz9VEnAn4NbsEdN8KZg
-         uaexAteHDv7D5yYecB68olKB3Qpxoi/4vWNN8SzHRink+XfHbb1DvMRBnfaEco0alCFv
-         LANi7Z/PYa36+qxayea2qCo8+w44fyyqD9XSuNrxzajLjZE/Oc3J3bNGx2eMyUjTVery
-         R+8g==
-X-Gm-Message-State: AOJu0Yyyz7+8ao6sTAl4XaHBOa/kFnrrGUb0ejd7genXCsLTfjham8Yz
-        e2R7Uixo66hz5TIdLSlnRxoPDv5GcV0DW98D1Q==
-X-Google-Smtp-Source: AGHT+IH2PJXIzD1777emyZ8QgxBof1e9+NC8sANBlMDPZVkPlBXOSucoAmRsX92WHt/bfBbuNjB2JXxsXNlAElOfCw==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:bfc3:0:b0:d9a:d233:b2a3 with SMTP
- id q3-20020a25bfc3000000b00d9ad233b2a3mr4826ybm.1.1697489316076; Mon, 16 Oct
- 2023 13:48:36 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 20:48:35 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAKKhLWUC/yWOQQ6CMBBFr0K6dpJOVdJ4FeOiDgNOYguZIaAh3
- N0Gd+/9zfubM1Zhc7dmc8qLmIylCp4aR69UBgbpqrvgwxk9tmCzFpq+0KksrAaFZ1hF+c1m8NQ xdTTmCpSjD4gH9TkRUD/8F4IUPPp4CdjGq6ulSbmXz/Hi/tj3Hzo06JCVAAAA
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697489315; l=2480;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=WWAYi+x4Dx7aKKvUgODBQGUZ3smVI6qfsI47zTN1ZUE=; b=0BH3zclS0YNxwd3Ilm6W6FhkdILNUqiYw4eIUHdosTMZ1W5xRLPQOCCPOGNQ/ocIalDesk+Jw
- BLI/L+ZPzwBAlD97aqRK/+kSE3oaxQemrHOIxxpWToj436kRGiVDq2h
-X-Mailer: b4 0.12.3
-Message-ID: <20231016-strncpy-drivers-net-wireless-broadcom-brcm80211-brcmfmac-cfg80211-c-v1-1-4234807ca07e@google.com>
-Subject: [PATCH] brcmfmac: replace deprecated strncpy with strscpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Kalle Valo <kvalo@kernel.org>
-Cc:     linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Mon, 16 Oct 2023 16:48:49 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2074.outbound.protection.outlook.com [40.107.243.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5687EE1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:48:46 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TDv4Y/0JKFWY5hi7DJSclRUe4CQGSQ8qsjiPtpbootMHbvj+/fRJuFtSYa7+m6wKKLzD9EnXypNrDNlNvHCdkS5TgkMOh3fGSO0gCpZu6rGmF0tc5WED8XMpqZgR6SKfgKBRlhGH6UtEmjDxVrT/GALcNCmfUokecrZEKXm4Fd0nwXY2MK1PkxMQ3gXKcWur0vXHC7mXRRgVvF0Y+eY2LL04FM0eUMnChsg3EWUvkKEaovd0ZJER64LFjxftIhvNiBhp5wGaobf5Cj7iWpn68Yvq3ltoS75oLSfuIB8JLTp9L4wHvEmWlweybB+4Wyqn3XY3wJbuslwOr+2hlUkTaw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DbMFXUclETGkHjziGXcJygLwmqJnAsspOspKKCXnxh8=;
+ b=Z0+EPE4thKYSsCDBRQ2xBcWpkn9rv1QqyPhavXEVU1m1ssbZm5I0VLOCWBLucoUG1NG/Ao+M3N9zwxNrOPfDjGRda8XB6j/adx1q4yeWjFKWx+tUEJeF8/sHl3Ku7/fL+FaZxhnEUmb/FrLVIf1SSw9r/3W1jEcaG3VRcaO4pU/rH0/GMk4XuRPEbTqzugv3doQTJzLPPukic8DGyHNY1X6++geCW5+g/8Bh5WzoMUFt2P4MUqYYLI4zHY1L5Nj60TP0OLQpKp1fHLmsZ/EqdWuQlFTt0ZfUTqlfcR1fDk7CtaHTHMgWwORqRyk7G6BmolaTfphW06lirrIksgf0rg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DbMFXUclETGkHjziGXcJygLwmqJnAsspOspKKCXnxh8=;
+ b=JNsxn45kqk2McXH6A0v/+hjjXQv/18GUXaoTZkmLWPZHOrHjIIvfOSa1g/9EOqyf2HPsbddRdA/aWFrld4I0t2kMnn+Es3sd312el6xTG5dLv1Wnqs6ifGnxyOsTwhQ8tCE7ohM9qikN7oQk/80gaSxlz49bHVIYDoqdlle1OhuMdudbPsfZPL3TvQPaD8POp0zAaEiOfkhwJWaAXemc5D9s6/bp4eiOWveHRDqcJw8iV2rpoVC5HVaLhEDr18Bb43cmqV55WHGrOyMDeBRSihGqCgUP87QsddO9qw2cR7q3F6tBWv+j0+xvlgHoMYJMxWOpxVxVycqQkqhQiseRow==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
+ CY5PR12MB6383.namprd12.prod.outlook.com (2603:10b6:930:3d::12) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6886.34; Mon, 16 Oct 2023 20:48:43 +0000
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::4b09:197c:609a:1013]) by DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::4b09:197c:609a:1013%7]) with mapi id 15.20.6886.034; Mon, 16 Oct 2023
+ 20:48:43 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 0/6] mm: page_alloc: freelist migratetype hygiene
+Date:   Mon, 16 Oct 2023 16:48:41 -0400
+X-Mailer: MailMate (1.14r5994)
+Message-ID: <236FF93B-FDBC-4168-AD9F-28F53CC1B6C0@nvidia.com>
+In-Reply-To: <20231016203935.GB1042487@cmpxchg.org>
+References: <329AB331-DDC1-4074-A85E-AB5CF866CE84@nvidia.com>
+ <20231010211200.GA129823@cmpxchg.org>
+ <D6A142AB-08F6-4335-8D08-1743DFAAD10C@nvidia.com>
+ <43350F6E-E56D-41C8-8441-A96D83B7D7C1@nvidia.com>
+ <ED43DACB-C77F-40D3-8806-D3F26AD95E8D@nvidia.com>
+ <20231016143717.GH470544@cmpxchg.org>
+ <5B61B70F-E85D-4E6F-8856-17A90B899F98@nvidia.com>
+ <20231016185113.GI470544@cmpxchg.org>
+ <6F2C52B6-2031-4694-A124-0DFDE9F88E88@nvidia.com>
+ <20231016202629.GA1042487@cmpxchg.org> <20231016203935.GB1042487@cmpxchg.org>
+Content-Type: multipart/signed;
+ boundary="=_MailMate_E0A22BE6-DC02-49A9-A978-5B75737F4F7A_=";
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+X-ClientProxiedBy: MN2PR13CA0027.namprd13.prod.outlook.com
+ (2603:10b6:208:160::40) To DS7PR12MB5744.namprd12.prod.outlook.com
+ (2603:10b6:8:73::18)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|CY5PR12MB6383:EE_
+X-MS-Office365-Filtering-Correlation-Id: ae4b9abc-9215-4675-935a-08dbce8948f7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tECs8O++TjIUF/h6wx4hnwekg7LckZ6ueJeFb5Uf2UX+hBIWbMq/tdmESvor5K32ITp7ssX1YLIcle9cyz8kviTsCqyDN7XCTOigxAiFrumbdOLaEZ0hY9z4oxKPZzC5wHRKVU8mMf0ZIQSpP81QauqmF/yXB1Uznnj07mjbUL55CSmq8eVjsZE7thoHvJdlAGjo6S6QGanGUjwsnKg+qJHrA0GSLOBebsOwR6Sryx6tbyrCvr6nxpdgwyo+h7JkPGKAL+rkZ25n1yfeua3CkaZnfzYknfoABUPZP1kLHMmCfbWayuNlzQXUg8/2MZt1+L14GYdCr8Nn92d3JIu98ZOkSjHKK3suHOr9+zq1Ai43szwl0S7aHo6ufaeDYC2A4+asmlQobg2eo8qfpYkC6og8T6Eiaz18vwc2Trc9HMP+czQb6Of/zimU2qjvaXnQF0sXdzLowRQiKC7B2AKOSh1XCA6HQu8zfe99tNT8kmGYhX3jJ7zF5NFxCtX/bS+uvcYKRE+Cer+JBGU6CYHO9Np9SpVuvgy3vjtVdpZmctx10vhKQ5dndgpKu33sXSOuyoCT1Csl4c89EwrrqyWj7KrMnsPSum745tAi/5tAUjSDRaKO5LKFxcqHlV/+Rkqq
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(366004)(346002)(396003)(376002)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(5660300002)(235185007)(2616005)(7416002)(83380400001)(54906003)(66476007)(66556008)(66946007)(6916009)(8936002)(4326008)(8676002)(316002)(6512007)(41300700001)(53546011)(6506007)(2906002)(478600001)(6486002)(38100700002)(33656002)(86362001)(36756003)(26005)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?E8WbG9vP23ZmFL560jMlXI4kmsDLRoO7fdCdX9106TbAA4lt8jwrtwS3br0C?=
+ =?us-ascii?Q?OAeIPICN4CVMciRoUPVWJ+Z3J6Od/hNi/ACGtjzITX9dpI2OnltGyDqKicsq?=
+ =?us-ascii?Q?TzOYvmkdEFL3cdkUPn5okShkNGODJAh41WtlhTuCYyqHOB+gRxpFOyBwEvdk?=
+ =?us-ascii?Q?lHSm24Qwfz3wqwVMYwDtwmuv9zx8qSGv5N/W07NHgN9pMAknaPBgetB3dA+r?=
+ =?us-ascii?Q?nHSm6aGw5EnV9Dw4sT+MwRfWKlNUkLPAUq4sRq5TPGN2qLQQG7245YDIA9nX?=
+ =?us-ascii?Q?IfqcTzQN79jeIGlzQZSUXBdEOvlZJL3jKuGh5MOcnBQV+wsXw1tMQ92vHe6V?=
+ =?us-ascii?Q?OQ2LQ+uF3EFRYFkEIjgUVc9PoIApdYHt/DqXi/ACHVsSt/90m3O1I9efSeo3?=
+ =?us-ascii?Q?fjIEZYXtuNyQs+AszB2MVGGtTkuRql0oT1i1gTAq5rBBmQQDKoSFmF3Ec+Vp?=
+ =?us-ascii?Q?5uiz6s0799fVWzxsWMpofBgsxjvHP7i7UtJu1X0LR4Qe6vTSNkX0k/Mem7rx?=
+ =?us-ascii?Q?eXiQWdFDQZyVvyyU0WUF2FKZtcxTfwsKZVVkAitNEDUmNzf2T4f+8rW4km/K?=
+ =?us-ascii?Q?dWHzsP9e2lPxJZfX3MEYUdGgQkd+NMjG8lp3ww88ZPZnZdQNdo6qUPBMpbQb?=
+ =?us-ascii?Q?H3/jfzcsXv80zWDw0gTnidokiXJkMhWbITCsJ7ob+NyCGcYscQ0ZkU4umbig?=
+ =?us-ascii?Q?Ij4svAYX4l3HXy/C71aWt2pOwnGINbsVZH9PiHdBhY5xviZxntffFr6QXF4k?=
+ =?us-ascii?Q?WwYZncZ5Hky11ULqJXY7H3Ib746jyPa0w+lij3IG2ncthfWr7Z5vlWzo4jAg?=
+ =?us-ascii?Q?R21ytO807b/DJN5NwnqSmniGaS9pKf3FBCwdU+5mFzxY1kGhbrqa1UFWrLbj?=
+ =?us-ascii?Q?tcNkLIIBE0etQuQ3nbkFux7HQcu87v3IImrvWG3fA0n/0EiPH+zWXYdmebfM?=
+ =?us-ascii?Q?85T/fDpY4HYWveRo77UWSvuLhZ4Tebtns4dcUZS6ImgmNQccERzo4q4l6DRO?=
+ =?us-ascii?Q?1po2H+mkdRZXrNztsv6yTd4QdW5SHoDqRtp9JjXGdNRFzafGVMwsfRYAy7GM?=
+ =?us-ascii?Q?SJAyOF/Zo/Cq+WRwcGP0oLZzk1fiCDNcqRlmFfWgrZfHTbg5O+RvijygLiML?=
+ =?us-ascii?Q?Vw4LcU8XJ04bVKsvqqm/0wNocBRAZPHXp42e/9gIhllY5FvWGnGZJwXIV6D8?=
+ =?us-ascii?Q?WQT5TtrQVZ6Vhv7u8WfmaH09fW35+FZAM4wXkE74dyIXKOsQcT/c23LKKYSc?=
+ =?us-ascii?Q?D3w2HK/k8RMoTZNN4LTnEEfl5tuTl1gNHhlga9+5w/m+Y+sK83MbTX0NJQhg?=
+ =?us-ascii?Q?dNULTMSNWVRhGy95NeDK/HI8OGIO9gXD7M3W44sz73BX7lDn78diqTz1iflX?=
+ =?us-ascii?Q?5cV2Av5ou7w03kdYTXqgkbsL2bHY5lhFAEQfP0BIaRRyQLtDxB9shA1Yk4SK?=
+ =?us-ascii?Q?TafRAY7VsaSpTNnH5W17Fxw5vZ8prbx7OemZwchM7Ep8ZFtOR70qtf+/qYe8?=
+ =?us-ascii?Q?yY4H52UGvIYZr0hJRSKHOMjizgs1LEuV/LufVMNksIu0D3U7vJ4FNu3CW1rg?=
+ =?us-ascii?Q?rG/Sf/58JQLSQXs+J9Q=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ae4b9abc-9215-4675-935a-08dbce8948f7
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2023 20:48:43.4108
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cldVyUmhlYmXh/v+6xrG3R4Ds1HBGuM7FO0dhzfHP0Mw6su1CV437FUGwymCSpxn
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6383
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+--=_MailMate_E0A22BE6-DC02-49A9-A978-5B75737F4F7A_=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-We expect ifp->ndev->name to be NUL-terminated based on its use in
-format strings within core.c:
-via brcmf_ifname() ->
-67 |       char *brcmf_ifname(struct brcmf_if *ifp)
-68 |       {
-69 |       	if (!ifp)
-70 |       		return "<if_null>";
-71 |
-72 |       	if (ifp->ndev)
-73 |       		return ifp->ndev->name;
-74 |
-75 |       	return "<if_none>";
-76 |       }
-...
-288 |       static netdev_tx_t brcmf_netdev_start_xmit(struct sk_buff *skb,
-289 |       					   struct net_device *ndev) {
-...
-330 |       brcmf_dbg(INFO, "%s: insufficient headroom (%d)\n",
-331 |                 brcmf_ifname(ifp), head_delta);
-...
-336 |       bphy_err(drvr, "%s: failed to expand headroom\n",
-337 |                brcmf_ifname(ifp));
+On 16 Oct 2023, at 16:39, Johannes Weiner wrote:
 
-Considering the above, a suitable replacement is `strscpy` [2] due to
-the fact that it guarantees NUL-termination on the destination buffer
-without unnecessarily NUL-padding.
+> On Mon, Oct 16, 2023 at 04:26:30PM -0400, Johannes Weiner wrote:
+>> On Mon, Oct 16, 2023 at 03:49:49PM -0400, Zi Yan wrote:
+>>> On 16 Oct 2023, at 14:51, Johannes Weiner wrote:
+>>>
+>>>> On Mon, Oct 16, 2023 at 11:00:33AM -0400, Zi Yan wrote:
+>>>>> On 16 Oct 2023, at 10:37, Johannes Weiner wrote:
+>>>>>
+>>>>>> On Mon, Oct 16, 2023 at 09:35:34AM -0400, Zi Yan wrote:
+>>>>>>>> The attached patch has all the suggested changes, let me know ho=
+w it
+>>>>>>>> looks to you. Thanks.
+>>>>>>>
+>>>>>>> The one I sent has free page accounting issues. The attached one =
+fixes them.
+>>>>>>
+>>>>>> Do you still have the warnings? I wonder what went wrong.
+>>>>>
+>>>>> No warnings. But something with the code:
+>>>>>
+>>>>> 1. in your version, split_free_page() is called without changing an=
+y pageblock
+>>>>> migratetypes, then split_free_page() is just a no-op, since the pag=
+e is
+>>>>> just deleted from the free list, then freed via different orders. B=
+uddy allocator
+>>>>> will merge them back.
+>>>>
+>>>> Hm not quite.
+>>>>
+>>>> If it's the tail block of a buddy, I update its type before
+>>>> splitting. The splitting loop looks up the type of each block for
+>>>> sorting it onto freelists.
+>>>>
+>>>> If it's the head block, yes I split it first according to its old
+>>>> type. But then I let it fall through to scanning the block, which wi=
+ll
+>>>> find that buddy, update its type and move it.
+>>>
+>>> That is the issue, since split_free_page() assumes the pageblocks of
+>>> that free page have different types. It basically just free the page
+>>> with different small orders summed up to the original free page order=
+=2E
+>>> If all pageblocks of the free page have the same migratetype, __free_=
+one_page()
+>>> will merge these small order pages back to the original order free pa=
+ge.
+>>
+>> duh, of course, you're right. Thanks for patiently explaining this.
+>>
+>>>>> 2. in my version, I set pageblock migratetype to new_mt before spli=
+t_free_page(),
+>>>>> but it causes free page accounting issues, since in the case of hea=
+d, free pages
+>>>>> are deleted from new_mt when they are in old_mt free list and the a=
+ccounting
+>>>>> decreases new_mt free page number instead of old_mt one.
+>>>>
+>>>> Right, that makes sense.
+>>>>
+>>>>> Basically, split_free_page() is awkward as it relies on preset migr=
+atetypes,
+>>>>> which changes migratetypes without deleting the free pages from the=
+ list first.
+>>>>> That is why I came up with the new split_free_page() below.
+>>>>
+>>>> Yeah, the in-between thing is bad. Either it fixes the migratetype
+>>>> before deletion, or it doesn't do the deletion. I'm thinking it woul=
+d
+>>>> be simpler to move the deletion out instead.
+>>>
+>>> Yes and no. After deletion, a free page no longer has PageBuddy set a=
+nd
+>>> has buddy_order information cleared. Either we reset PageBuddy and or=
+der
+>>> to the deleted free page, or split_free_page() needs to be changed to=
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
+>>> accept pages without the information (basically remove the PageBuddy
+>>> and order check code).
+>>
+>> Good point, that requires extra care.
+>>
+>> It's correct in the code now, but it deserves a comment, especially
+>> because of the "buddy" naming in the new split function.
+>>
+>>>>> Hmm, if CONFIG_ARCH_FORCE_MAX_ORDER can make a buddy have more than=
+ one
+>>>>> pageblock and in turn makes an in-use page have more than one pageb=
+lock,
+>>>>> we will have problems. Since in isolate_single_pageblock(), an in-u=
+se page
+>>>>> can have part of its pageblock set to a different migratetype and b=
+e freed,
+>>>>> causing the free page with unmatched migratetypes. We might need to=
 
-Found with: $ rg "strncpy\("
----
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>> free pages at pageblock_order if their orders are bigger than pageb=
+lock_order.
+>>>>
+>>>> Is this a practical issue? You mentioned that right now only giganti=
+c
+>>>> pages can be larger than a pageblock, and those are freed in order-0=
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-index 2a90bb24ba77..7daa418df877 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-@@ -866,7 +866,7 @@ struct wireless_dev *brcmf_apsta_add_vif(struct wiphy *wiphy, const char *name,
- 		goto fail;
- 	}
- 
--	strncpy(ifp->ndev->name, name, sizeof(ifp->ndev->name) - 1);
-+	strscpy(ifp->ndev->name, name, sizeof(ifp->ndev->name));
- 	err = brcmf_net_attach(ifp, true);
- 	if (err) {
- 		bphy_err(drvr, "Registering netdevice failed\n");
+>>>> chunks.
+>>>
+>>> Only if the system allocates a page (non hugetlb pages) with >pageblo=
+ck_order
+>>> and frees it with the same order. I just do not know if such pages ex=
+ist on
+>>> other arch than x86. Maybe I just think too much.
+>>
+>> Hm, I removed LRU pages from the handling (and added the warning) but
+>> I left in PageMovable(). The only users are z3fold, zsmalloc and
+>> memory ballooning. AFAICS none of them can be bigger than a pageblock.=
 
----
-base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
-change-id: 20231016-strncpy-drivers-net-wireless-broadcom-brcm80211-brcmfmac-cfg80211-c-a20108421685
+>> Let me remove that and add a warning for that case as well.
+>>
+>> This way, we only attempt to migrate hugetlb, where we know the free
+>> path - and get warnings for anything else that's larger than expected.=
 
-Best regards,
+>>
+>> This seems like the safest option. On the off chance that there is a
+>> regression, it won't jeopardize anybody's systems, while the warning
+>> provides all the information we need to debug what's going on.
+>
+> This delta on top?
+>
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index b5292ad9860c..0da7c61af37e 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -1628,7 +1628,7 @@ static int move_freepages_block(struct zone *zone=
+, struct page *page,
+>  }
+>
+>  #ifdef CONFIG_MEMORY_ISOLATION
+> -/* Look for a multi-block buddy that straddles start_pfn */
+> +/* Look for a buddy that straddles start_pfn */
+>  static unsigned long find_large_buddy(unsigned long start_pfn)
+>  {
+>  	int order =3D 0;
+> @@ -1652,7 +1652,7 @@ static unsigned long find_large_buddy(unsigned lo=
+ng start_pfn)
+>  	return start_pfn;
+>  }
+>
+> -/* Split a multi-block buddy into its individual pageblocks */
+> +/* Split a multi-block free page into its individual pageblocks */
+>  static void split_large_buddy(struct zone *zone, struct page *page,
+>  			      unsigned long pfn, int order)
+>  {
+> @@ -1661,6 +1661,9 @@ static void split_large_buddy(struct zone *zone, =
+struct page *page,
+>  	VM_WARN_ON_ONCE(order < pageblock_order);
+>  	VM_WARN_ON_ONCE(pfn & (pageblock_nr_pages - 1));
+>
+> +	/* Caller removed page from freelist, buddy info cleared! */
+> +	VM_WARN_ON_ONCE(PageBuddy(page));
+> +
+>  	while (pfn !=3D end_pfn) {
+>  		int mt =3D get_pfnblock_migratetype(page, pfn);
+>
+> diff --git a/mm/page_isolation.c b/mm/page_isolation.c
+> index b4d53545496d..c8b3c0699683 100644
+> --- a/mm/page_isolation.c
+> +++ b/mm/page_isolation.c
+> @@ -399,14 +399,8 @@ static int isolate_single_pageblock(unsigned long =
+boundary_pfn, int flags,
+>  				continue;
+>  			}
+>
+> -			VM_WARN_ON_ONCE_PAGE(PageLRU(page), page);
+> -
+>  #if defined CONFIG_COMPACTION || defined CONFIG_CMA
+> -			/*
+> -			 * hugetlb, and movable compound pages can be
+> -			 * migrated. Otherwise, fail the isolation.
+> -			 */
+> -			if (PageHuge(page) || __PageMovable(page)) {
+> +			if (PageHuge(page)) {
+>  				struct compact_control cc =3D {
+>  					.nr_migratepages =3D 0,
+>  					.order =3D -1,
+> @@ -426,9 +420,19 @@ static int isolate_single_pageblock(unsigned long =
+boundary_pfn, int flags,
+>
+>  				pfn =3D head_pfn + nr_pages;
+>  				continue;
+> -			} else
+> +			}
+> +
+> +			/*
+> +			 * These pages are movable too, but they're
+> +			 * not expected to exceed pageblock_order.
+> +			 *
+> +			 * Let us know when they do, so we can add
+> +			 * proper free and split handling for them.
+> +			 */
+> +			VM_WARN_ON_ONCE_PAGE(PageLRU(page), page);
+> +			VM_WARN_ON_ONCE_PAGE(__PageMovable(page), page);
+>  #endif
+> -				goto failed;
+> +			goto failed;
+>  		}
+>
+>  		pfn++;
+
+LGTM.
+
+I was thinking about adding
+
+VM_WARN_ON_ONCE(order > pageblock_order, page);
+
+in __free_pages() to catch all possible cases, but that is a really hot p=
+ath.
+
+And just for the record, we probably can easily fix the above warnings,
+if they ever show up, by freeing >pageblock_order pages in unit of
+pageblock_order.
+
 --
-Justin Stitt <justinstitt@google.com>
+Best Regards,
+Yan, Zi
 
+--=_MailMate_E0A22BE6-DC02-49A9-A978-5B75737F4F7A_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename=signature.asc
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmUtoakPHHppeUBudmlk
+aWEuY29tAAoJEOJ/noEUByhUBqAQAJTmuB2otfTbttP2z1GnenhCfGOOA0oGCVIw
+VUmyN8nX8As/ZT76fDsq9YzDBMI3h1yPPtF0HUyaq+ztNBOt3HbpFwy/9GZegLv9
+fkUUswGsYmZcr5LtfV41tpbMulOvwjkE69zN+0a7r1v/D4feqyQv/NxZmQTxc3Lw
+TpPpbfVSYTKKXWY68XSiefCHRJ3w64JnSt1xlKma14QgsE5c+2J2eXk9Cbayx14M
+gM0NNOUtgF1/5E7fLt46Hp+I2MNutqHejIHhi2998vlg7WMs73pgTdVN1TJXSAiC
+k8IP5NtkUU/HCqp/wx6GpAQ0oCZ2cZx+Tc+VLREUBgT0VIhOFwOhQ+FywjnhdAxY
+2m8NBVbPSjkjcrE70kkCEeCt/sFAydBbj0FSqJibEvg4LclWJBQakTxllMrDaHQJ
+58EsTnQ67BgpuhSi2vVzB31hXzx/GWZ674H04aSLhK2yKyb5PiC+AAAUYbe5ThbJ
+UCUC4PJfQHW+dNtcDKle3Wum56Jqy+qoDDkL5o7SEWZSExiY6gEwpOKtkX75a+3e
+aQo3gZsTPfXYPHjC1h96nYQiNxv6CpLQJi4q2qKtApwthd566rmnMqHVywRlYv6V
+H4iCGz80H7TaDeOokDTAyVCug6svv9YJ1CwLea9Q3R67dvXMmBGZJb4e16pa2LQg
+9nf4+Uz8
+=c1fN
+-----END PGP SIGNATURE-----
+
+--=_MailMate_E0A22BE6-DC02-49A9-A978-5B75737F4F7A_=--
