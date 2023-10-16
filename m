@@ -2,197 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E70A57CA535
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B18B7CA539
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232240AbjJPKW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 06:22:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59320 "EHLO
+        id S232649AbjJPKXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 06:23:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230152AbjJPKWY (ORCPT
+        with ESMTP id S232495AbjJPKXA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 06:22:24 -0400
-Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA342B4
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 03:22:19 -0700 (PDT)
-Received: by mail-ua1-x936.google.com with SMTP id a1e0cc1a2514c-7ae19da7b79so1610464241.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 03:22:19 -0700 (PDT)
+        Mon, 16 Oct 2023 06:23:00 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3537CEE;
+        Mon, 16 Oct 2023 03:22:59 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9b1ebc80d0aso672913366b.0;
+        Mon, 16 Oct 2023 03:22:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697451738; x=1698056538; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=urvghqCQ914cVQFQkt+KKjUgox1ewzOXZ5Rj9OJC01U=;
-        b=s9MSovafxCBcbIkynFKw6Pwt4DlzYDKF87HfYqV0YmF9wLntls9Irpra0GdEvIjT8X
-         Jl5bS3tN6vJYwNcJJMrquiZQ6ILIa8NriXOBTbEbMrvVXFHYlrW3o3j/mZHCPLVthCfZ
-         Op4RCcaIHHRoImhRtgiH/n9+4ywrIenjBL230arD5+SxBl5DNM6E4bavifEXTbO3JTrl
-         4txmVcUp/dIQGnhfruwRi901i0Pwhub65iKf3lz206hDkXsD6P1ZHnmd8UEwKJLVdQtA
-         6DAnXrCuztq9vdC5g42ZsnynfUR9AN40ymIX2CHNGX6ENtZjiOdIrN2h31uxzGzR3hUS
-         ANuw==
+        d=gmail.com; s=20230601; t=1697451777; x=1698056577; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xfJWdslS3Yal/mqU3hhH87VKZdvRShl/Pe/cybkKHWg=;
+        b=TmcEhI906+Az0MSXct6z8ZR0aZPeGZfNxbs4iJARuzoErFLIpLJ9XLYHMDZ6XvhYD0
+         PBCSK/MAFUqHfmJWVnlSDGkNyM0St+6S95Bh/AsHJVd0FQaENIghm5zP4M1CmSc7XMZn
+         19Jp1Tob/ZQUkaF1nuwJiMXQlT2czT0+hmL5qWhX9dgjzAup77i+BK8OsZfi7UDI1wf7
+         9iTSYrUsD+ugvqBLblEQBUHJ95/RU412QaQdJaawB9tkSCPoOSvtRJhkGzA2xY7xW876
+         /T4QCJKN7wbXHL3KOpGPeuZA+FkhiBt2+DRKGAcIdCd7lN3JnAYSMRxZvhPDShfbJWZi
+         6YJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697451738; x=1698056538;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=urvghqCQ914cVQFQkt+KKjUgox1ewzOXZ5Rj9OJC01U=;
-        b=dh/3Hy1r9itF0jZ0J3JtOeFTceyXeTRas+OBMI9w4gTwOaqsFip2Qm+bMAGDENxGOR
-         HEPuYxzD4SZh/pwbdqc7McSRHFGvaYXVPIJU4b9znrYyk5C7/DLwcUmIMaKVvkcwuzgo
-         3yqouC7MHca24rwzN+WtOylJ/6NgrjXPyG1L7rFWzZ/zQyR6ihNW7yUuUGRWsF1GdUiA
-         mHL59aVdyWKSsNXmcYmlcM2P1Ck6xqML5ERqnSj6vmjBq2ce4SMuKtsAxCfZi3K539th
-         nWJrliXSDGFBZPaogk+vvu71Y8s1wo7bBlyOyi/nFysZhzSVK1jjeGonhCd90NLsAEc+
-         pzzQ==
-X-Gm-Message-State: AOJu0Yy/+I4WUVaoxmLWq1Zj3/DOSXMzWs1UaeIOZYjkLVsKsQzyKWVt
-        FRC2cGO824RYNVeZeQBwERk9EC5mHyDERvg5kSamuDVSx+GKJv4Gyt04mw==
-X-Google-Smtp-Source: AGHT+IEp0OQTbCULbibExS5sdPX6P4Bq/yeriFxOoz57HGDdHFQ9cqMAG7ybViIMfRsh3LJR6phUxTlV2mvHAPJxTkk=
-X-Received: by 2002:a05:6102:204e:b0:457:dfe0:ee6e with SMTP id
- q14-20020a056102204e00b00457dfe0ee6emr2306436vsr.22.1697451738489; Mon, 16
- Oct 2023 03:22:18 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697451777; x=1698056577;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xfJWdslS3Yal/mqU3hhH87VKZdvRShl/Pe/cybkKHWg=;
+        b=LKQNn9iqE/9d2YYTzsKmj39EnTfKAdK8Sj/ereNEGOhBKJRL5B48ajEoiSczF0NRlr
+         6sm/Pt5eD8yMzAzzxKRPEO1LKT0bZHrNO+Apg+rMbN63xXS42lUCjT3skRLAg0CVrzmu
+         UmKKpE3X4DolnBHfVUTTPwcQlOgyYaJtTGgBboSbSVLuPfRp3fxaoxsBHEQomUJYMGxU
+         TI3ixmkzhm4IcSQ44rZKJME6vN5w/0D1Ql3x0rvGeFWf4JXe9Y2aJKldHYfDP1VUQfDf
+         KexZSlR5PS1etwU1VnZC+ppkO3HDlx2QJ2SedMPEeRAsufHRJ2OLkHRHxLANH6EUqaHo
+         0Uqg==
+X-Gm-Message-State: AOJu0Yx83xByEi2Zg28gXQS87DCkoVb+Yhs3IvWYUtiraYXmVUBjEsjJ
+        wo/NQhnzYjEr1lVZflKc0LE=
+X-Google-Smtp-Source: AGHT+IEKRQpew27HjOeGyjWHZXAUVaNqJuiqAmK9LZWwGrJlIJ3XHpuuO/jNnXt9DgwB+aS7MqbtNQ==
+X-Received: by 2002:a17:907:7ba1:b0:9c4:4b20:44b2 with SMTP id ne33-20020a1709077ba100b009c44b2044b2mr1761032ejc.23.1697451777533;
+        Mon, 16 Oct 2023 03:22:57 -0700 (PDT)
+Received: from skbuf ([188.26.57.160])
+        by smtp.gmail.com with ESMTPSA id og41-20020a1709071de900b009adce1c97ccsm3701040ejc.53.2023.10.16.03.22.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 03:22:57 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 13:22:54 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        UNGLinuxDriver@microchip.com,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH net-next v3 7/7] net: dsa: microchip: do not shut down
+ the switch if WoL is active
+Message-ID: <20231016102254.f7u7vrk52siqoihd@skbuf>
+References: <20231013122405.3745475-1-o.rempel@pengutronix.de>
+ <20231013122405.3745475-8-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 16 Oct 2023 15:52:07 +0530
-Message-ID: <CA+G9fYtL7wK-dE-Tnz4t-GWmQb50EPYa=TWGjpgYU2Z=oeAO_w@mail.gmail.com>
-Subject: mm: Unable to handle kernel NULL pointer dereference at virtual
- address - mmap_region (include/linux/fs.h:580 mm/mmap.c:2946)
-To:     open list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, lkft-triage@lists.linaro.org
-Cc:     Lorenzo Stoakes <lstoakes@gmail.com>,
-        "Reviewed-by: Jan Kara" <jack@suse.cz>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Hugh Dickins <hughd@google.com>, willy@infradead.org,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231013122405.3745475-8-o.rempel@pengutronix.de>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Following kernel crash noticed while running LTP hugetlb and selftests on
-qemu-x86_64 and qemu-arm64 running with Linux next 6.6.0-rc6-next-20231016.
+On Fri, Oct 13, 2023 at 02:24:05PM +0200, Oleksij Rempel wrote:
+> For Wake on Lan we should not reconfigure, reset or power down the
+> switch on shut down sequence.
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  drivers/net/dsa/microchip/ksz9477_i2c.c |  3 +++
+>  drivers/net/dsa/microchip/ksz_common.c  | 18 ++++++++++++++++++
+>  drivers/net/dsa/microchip/ksz_common.h  |  2 ++
+>  drivers/net/dsa/microchip/ksz_spi.c     |  3 +++
+>  4 files changed, 26 insertions(+)
+> 
+> diff --git a/drivers/net/dsa/microchip/ksz9477_i2c.c b/drivers/net/dsa/microchip/ksz9477_i2c.c
+> index 2710afad4f3a..fe818742051c 100644
+> --- a/drivers/net/dsa/microchip/ksz9477_i2c.c
+> +++ b/drivers/net/dsa/microchip/ksz9477_i2c.c
+> @@ -66,6 +66,9 @@ static void ksz9477_i2c_shutdown(struct i2c_client *i2c)
+>  	if (!dev)
+>  		return;
+>  
+> +	if (ksz_wol_is_active(dev))
+> +		return;
+> +
+>  	if (dev->dev_ops->reset)
+>  		dev->dev_ops->reset(dev);
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+The rest of the code used to read:
 
-Test Logs:
------
-<1>[   97.466617] Unable to handle kernel NULL pointer dereference at
-virtual address 00000000000000d8
-<1>[   97.469156] Mem abort info:
-<1>[   97.469619]   ESR = 0x0000000097c08005
-<1>[   97.470362]   EC = 0x25: DABT (current EL), IL = 32 bits
-<1>[   97.471288]   SET = 0, FnV = 0
-<1>[   97.472061]   EA = 0, S1PTW = 0
-<1>[   97.473341]   FSC = 0x05: level 1 translation fault
-<1>[   97.473935] Data abort info:
-<1>[   97.474630]   Access size = 8 byte(s)
-<1>[   97.475400]   SSE = 0, SRT = 0
-<1>[   97.476583]   SF = 1, AR = 0
-<1>[   97.477038]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-<1>[   97.477975]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-<1>[   97.478939] user pgtable: 4k pages, 48-bit VAs, pgdp=0000000101c17000
-<1>[   97.479949] [00000000000000d8] pgd=0800000101d5c003,
-p4d=0800000101d5c003, pud=0000000000000000
-<0>[   97.482922] Internal error: Oops: 0000000097c08005 [#1] PREEMPT SMP
-<4>[   97.484136] Modules linked in: fuse drm backlight dm_mod
-ip_tables x_tables
-<4>[   97.486054] CPU: 0 PID: 342 Comm: hugemmap13 Not tainted
-6.6.0-rc6-next-20231016 #1
-<4>[   97.487075] Hardware name: linux,dummy-virt (DT)
-<4>[   97.487955] pstate: 03400009 (nzcv daif +PAN -UAO +TCO +DIT
--SSBS BTYPE=--)
-<4>[ 97.488901] pc : mmap_region (include/linux/fs.h:580 mm/mmap.c:2946)
-<4>[ 97.490228] lr : mmap_region (mm/mmap.c:2945)
-<4>[   97.490733] sp : ffff80008069bba0
-<4>[   97.491176] x29: ffff80008069bbb0 x28: ffff0000c5d5e4d0 x27:
-fffffffffffffff4
-<4>[   97.492062] x26: 0000000000000000 x25: 0000000000000002 x24:
-0000000000000001
-<4>[   97.492989] x23: 0000000000000001 x22: 0000000000000000 x21:
-ffff0000c20fcf00
-<4>[   97.493771] x20: 00000002000000fb x19: 00000000fffff000 x18:
-ffff80008069bc38
-<4>[   97.494568] x17: 0000aaaae6247fff x16: 0000aaaade59cfff x15:
-0000aaaade580fff
-<4>[   97.495367] x14: 0000aaaade57ffff x13: 0000000000000000 x12:
-00000000fffff000
-<4>[   97.496172] x11: 0000000100000000 x10: 00000000000fffff x9 :
-0000000000000000
-<4>[   97.497004] x8 : 0000000000000001 x7 : 00000002000000fb x6 :
-ffff0000c20fcf00
-<4>[   97.497810] x5 : ffff0000c5d5e4d0 x4 : 00000000000001c4 x3 :
-ffffb50d82f264f8
-<4>[   97.498577] x2 : 0000000000000000 x1 : 00000000ffe00000 x0 :
-0000000000000000
-<4>[   97.499871] Call trace:
-<4>[ 97.500288] mmap_region (include/linux/fs.h:580 mm/mmap.c:2946)
-<4>[ 97.500814] do_mmap (mm/mmap.c:1379)
-<4>[ 97.501243] vm_mmap_pgoff (mm/util.c:546)
-<4>[ 97.501711] ksys_mmap_pgoff (mm/mmap.c:1425)
-<4>[ 97.502166] __arm64_sys_mmap (arch/arm64/kernel/sys.c:21)
-<4>[ 97.502634] invoke_syscall (arch/arm64/include/asm/current.h:19
-arch/arm64/kernel/syscall.c:56)
-<4>[ 97.503175] el0_svc_common.constprop.0
-(include/linux/thread_info.h:127 (discriminator 2)
-arch/arm64/kernel/syscall.c:144 (discriminator 2))
-<4>[ 97.503763] do_el0_svc (arch/arm64/kernel/syscall.c:156)
-<4>[ 97.504191] el0_svc (arch/arm64/include/asm/daifflags.h:28
-arch/arm64/kernel/entry-common.c:133
-arch/arm64/kernel/entry-common.c:144
-arch/arm64/kernel/entry-common.c:679)
-<4>[ 97.504640] el0t_64_sync_handler (arch/arm64/kernel/entry-common.c:697)
-<4>[ 97.505159] el0t_64_sync (arch/arm64/kernel/entry.S:595)
-<0>[ 97.505635] Code: 52800037 17fffe9f 93407c1b 17fffed1 (f9406ec0)
-All code
-========
-   0: 52800037 mov w23, #0x1                    // #1
-   4: 17fffe9f b 0xfffffffffffffa80
-   8: 93407c1b sxtw x27, w0
-   c: 17fffed1 b 0xfffffffffffffb50
-  10:* f9406ec0 ldr x0, [x22, #216] <-- trapping instruction
+	dsa_switch_shutdown(dev->ds);
 
-Code starting with the faulting instruction
-===========================================
-   0: f9406ec0 ldr x0, [x22, #216]
-<4>[   97.506697] ---[ end trace 0000000000000000 ]---
+	i2c_set_clientdata(i2c, NULL);
+}
 
+and that part is non-optional. Please only skip the dev->dev_ops->reset()
+call if ksz_wol_is_active().
 
-Links:
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20231016/testrun/20616666/suite/log-parser-test/test/check-kernel-oops/log
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20231016/testrun/20616666/suite/log-parser-test/tests/
+>  static void ksz_set_xmii(struct ksz_device *dev, int port,
+>  			 phy_interface_t interface)
+>  {
+> diff --git a/drivers/net/dsa/microchip/ksz_common.h b/drivers/net/dsa/microchip/ksz_common.h
+> index 80679f38ee12..84b1eed8cd2a 100644
+> --- a/drivers/net/dsa/microchip/ksz_common.h
+> +++ b/drivers/net/dsa/microchip/ksz_common.h
+> @@ -397,6 +397,8 @@ bool ksz_get_gbit(struct ksz_device *dev, int port);
+>  phy_interface_t ksz_get_xmii(struct ksz_device *dev, int port, bool gbit);
+>  extern const struct ksz_chip_data ksz_switch_chips[];
+>  
+> +bool ksz_wol_is_active(struct ksz_device *dev);
+> +
+>  /* Common register access functions */
+>  static inline struct regmap *ksz_regmap_8(struct ksz_device *dev)
+>  {
+> diff --git a/drivers/net/dsa/microchip/ksz_spi.c b/drivers/net/dsa/microchip/ksz_spi.c
+> index 279338451621..c5d9c3d86ddb 100644
+> --- a/drivers/net/dsa/microchip/ksz_spi.c
+> +++ b/drivers/net/dsa/microchip/ksz_spi.c
+> @@ -114,6 +114,9 @@ static void ksz_spi_shutdown(struct spi_device *spi)
+>  	if (!dev)
+>  		return;
+>  
+> +	if (ksz_wol_is_active(dev))
+> +		return;
+> +
+>  	if (dev->dev_ops->reset)
+>  		dev->dev_ops->reset(dev);
 
-Build:
-- https://storage.tuxsuite.com/public/linaro/lkft/builds/2Wpo3Fqa5DhxsWQjZYBnbqMmD8X/vmlinux.xz
-- https://storage.tuxsuite.com/public/linaro/lkft/builds/2Wpo3Fqa5DhxsWQjZYBnbqMmD8X/System.map
-- https://storage.tuxsuite.com/public/linaro/lkft/builds/2Wpo3Fqa5DhxsWQjZYBnbqMmD8X/
-
-Step to reproduce:
- - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2Wpo5DC7b6y3ZyDnxzj6rn5ZNlX/reproducer
-
- # To install tuxrun to your home directory at ~/.local/bin:
-# pip3 install -U --user tuxrun==0.49.2
-#
-# Or install a deb/rpm depending on the running distribution
-# See https://tuxmake.org/install-deb/ or
-# https://tuxmake.org/install-rpm/
-#
-# See https://tuxrun.org/ for complete documentation.
-
-tuxrun --runtime podman --device qemu-arm64 --boot-args rw --kernel
-https://storage.tuxsuite.com/public/linaro/lkft/builds/2Wpo3Fqa5DhxsWQjZYBnbqMmD8X/Image.gz
---modules https://storage.tuxsuite.com/public/linaro/lkft/builds/2Wpo3Fqa5DhxsWQjZYBnbqMmD8X/modules.tar.xz
---rootfs https://storage.tuxboot.com/debian/bookworm/arm64/rootfs.ext4.xz
---parameters SKIPFILE=skipfile-lkft.yaml --image
-docker.io/linaro/tuxrun-dispatcher:v0.49.2 --tests ltp-hugetlb
---timeouts boot=30 ltp-hugetlb=20 --overlay
-https://storage.tuxboot.com/overlays/debian/bookworm/arm64/ltp/20230516/ltp.tar.xz
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Same here. Maybe introducing a common ksz_switch_shutdown() would be
+appropriate.
