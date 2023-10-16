@@ -2,319 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 542667CACC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77AEA7CACC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233967AbjJPPBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 11:01:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42298 "EHLO
+        id S233854AbjJPPAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 11:00:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233877AbjJPPA4 (ORCPT
+        with ESMTP id S233860AbjJPPAm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 11:00:56 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C6A7106
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:00:47 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c9b7c234a7so39586065ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:00:47 -0700 (PDT)
+        Mon, 16 Oct 2023 11:00:42 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD02B9
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:00:40 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id 46e09a7af769-6c61d955161so2771824a34.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:00:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697468447; x=1698073247; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QffYa8f47+Hk7lnd37D6vR0fhcrZUpT4hXtPg8meDQQ=;
-        b=OPd9R4BAjFy/Hf7BsPucUo8+gq140S9EJxMPAQhI5IhMX0tLwpdUN8VBJ76ym2DYxP
-         S03DD+MEIt5fWzuKORDOjtPa7Fi7og+CLesqi/8P28EvdJ+UdjKXEg/FkbWZw0WJ2yFt
-         LBpcrNm1sHSVqg925m4tRJc2XlNTZH0Uq7YAgyuDoxKJ2+hrx5Y98P1jh3ZpVCxAGqQV
-         sVCIUH7/j+XLW7dcT3Soa64QPHO6Ht+NaUWjtDRLVk5nEQK6igUY0iPzn0Kc05zZyQbm
-         uwqGoiJ1wmHOJ87Xq/yFanIgwF2PB0xd8FQEOf3dL8Hq9zIemks+L8wIxkU5mGodpCpP
-         3rYg==
+        d=gmail.com; s=20230601; t=1697468439; x=1698073239; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fE5UoW9vdKH2feO+bDEwIT8Ft2NGameqkjIHnMibMyQ=;
+        b=aYTKT7MvJlPtDeqeCy5An16Y2ZWjwAp6bdsGfkfdsRN3KfxX6yTWavrITFPruxf2Dj
+         w+HtXohKrTIhuA8h2lteOGIeCREGVduPpnrK4ht9ieBVSANbBiD/4znC+SPUYSdJM+Fy
+         WXT+BH4XQn0UbdNklsDlxNYpMC21TYerEYPLRChCG0gHPiHBxFhyqXERdviaAlwGW1YX
+         coBEF48pLN/2kU80yykXwcgnaiafVDuwyCkyrDexkWgG/ZsJnJXExcD5d4NmYITkxGLt
+         R7J5hkrSohUOYs0VsCjWFXKZnxaMr02Yf5n6Hsw2AxKYTrUSH3AGQ32Hp5cE3FLUz7Oh
+         fkEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697468447; x=1698073247;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1697468439; x=1698073239;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QffYa8f47+Hk7lnd37D6vR0fhcrZUpT4hXtPg8meDQQ=;
-        b=RMAAqXSHopOJI0k4nUv+Fa9zYrEvBPac88MbsEyMxF6eoXm+Qo9k69SOUUmy0NankB
-         QgcrdGHpc5CtCsrKH2wKruKMAF6/xBDH71m+Eq4cqV/pG329ZCf51xRJ2e237PR73B7B
-         YCFUHxRGUQnLAC+Vh3g2RXG/lkm9VHpr+ENqkY8ycUY3T3TlwgVHO39cwaMpmbr3QbGx
-         Rspget4rw0rxbUiiNnmMMG1BvSmXm6OLcMTxQRsPaLI9MOfYc+mSPv1JN79BeAyDYmmV
-         2+UONYdUoQkRgeXgzcK3U/pxoS5lw8VmBp0LfUovlf0Zu1MZWc/iSHTA9zZ0sqiwED7H
-         s2+g==
-X-Gm-Message-State: AOJu0YzBtjrDDoGsPz/aI7NSgMLRRHzNIkEpcLDrYAfquP6DtPZgGJO3
-        uBmXozCsJkTWFIp2IAotnTEDWw==
-X-Google-Smtp-Source: AGHT+IHKxPEZ5jm64Sthy6b0eJMKd1mmMO0rwHmS7V7YdwjOzZCUdt9CYFnWzLHLLsgbqmcyOqYUQA==
-X-Received: by 2002:a17:903:248:b0:1c7:495c:87e0 with SMTP id j8-20020a170903024800b001c7495c87e0mr41801337plh.37.1697468447051;
-        Mon, 16 Oct 2023 08:00:47 -0700 (PDT)
-Received: from [192.168.3.101] ([104.28.240.135])
-        by smtp.gmail.com with ESMTPSA id 21-20020a170902c21500b001c771740da4sm7382844pll.195.2023.10.16.08.00.36
+        bh=fE5UoW9vdKH2feO+bDEwIT8Ft2NGameqkjIHnMibMyQ=;
+        b=H320NKFklZR6lK06JhgwgaNLfoZuYRh5hSI0ilq3GVMvbD89pk0Z7Z8zGL5xo3v9wY
+         pwf+2a//206ZpdYnU9qAAh4yVcVbus2o3xs/cLMCzA7pWUi1ooMSQvPtCON6fkPb6mDg
+         6FEvQbDcpGOyLBP5e8eTwtSn/HX0HL0ZaHH0X0taPMvU86fnsZ+bdCcLlWmxXoXBAvBi
+         NiZLlLQixYYj7WwYg/O6EX433fTX7hI/ENrNSN+j3Ey/UiJz939V7GkHmhUw94b2XU23
+         6cLCklNGVSrKS39mcqjKpy3sA+mS2QTajE8i9ULkXc3KlFDESYEAxKM+JkWrAT9duWN/
+         PgPw==
+X-Gm-Message-State: AOJu0Yyq9F1BTpPOEWBqnBh/m8Pxm7lUtN0YfE/m9bJ+rXeB/dXvxbak
+        WYxHoqcE4htwknY6Uhq9Zz8=
+X-Google-Smtp-Source: AGHT+IG+nSpv7E/GZMd53ppQO+XRAkVwTQ5NdDnDdqv/DnwRvoEQjEn3reBSiU5yAuUwdF5DsqdadQ==
+X-Received: by 2002:a05:6870:2c99:b0:1e9:a5f2:aab3 with SMTP id oh25-20020a0568702c9900b001e9a5f2aab3mr13474131oab.57.1697468439317;
+        Mon, 16 Oct 2023 08:00:39 -0700 (PDT)
+Received: from [10.0.2.15] ([103.37.201.178])
+        by smtp.gmail.com with ESMTPSA id k9-20020aa79729000000b006bd6a0a4678sm3037911pfg.80.2023.10.16.08.00.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 08:00:45 -0700 (PDT)
-Message-ID: <ebccb78c-df24-ea74-c0ee-c5f8d195290e@bytedance.com>
-Date:   Mon, 16 Oct 2023 23:00:31 +0800
+        Mon, 16 Oct 2023 08:00:38 -0700 (PDT)
+Message-ID: <50a32ba6-0051-6b70-aa8a-f565f8119a69@gmail.com>
+Date:   Mon, 16 Oct 2023 20:30:32 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] jfs: fix shift-out-of-bounds in dbJoin
+To:     dave.kleikamp@oracle.com, shaggy@kernel.org
+Cc:     Linux-kernel-mentees@lists.linuxfoundation.org,
+        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        syzbot+411debe54d318eaed386@syzkaller.appspotmail.com
+References: <20231011143937.31996-1-ghandatmanas@gmail.com>
 Content-Language: en-US
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     linux-trace-kernel@vger.kernel.org, davem@davemloft.net,
-        anil.s.keshavamurthy@intel.com, naveen.n.rao@linux.ibm.com,
-        rostedt@goodmis.org, peterz@infradead.org,
-        akpm@linux-foundation.org, sander@svanheule.net,
-        ebiggers@google.com, dan.j.williams@intel.com, jpoimboe@kernel.org,
-        linux-kernel@vger.kernel.org, lkp@intel.com, mattwu@163.com
-References: <20231015053251.707442-1-wuqiang.matt@bytedance.com>
- <20231015053251.707442-2-wuqiang.matt@bytedance.com>
- <20231016004356.b5f3f815cb8d7c0994934332@kernel.org>
- <1516f7d1-e11b-3244-76b9-e6ddafc29a32@bytedance.com>
- <20231016082659.6ca94a5dff368783698753f9@kernel.org>
- <7758687f-06c1-d9b2-077a-34e79925a339@bytedance.com>
- <20231016211837.b6d425d8ed760bb3306910ae@kernel.org>
-From:   "wuqiang.matt" <wuqiang.matt@bytedance.com>
-Subject: Re: [PATCH v10 1/5] lib: objpool added: ring-array based lockless
- MPMC
-In-Reply-To: <20231016211837.b6d425d8ed760bb3306910ae@kernel.org>
+From:   Manas Ghandat <ghandatmanas@gmail.com>
+In-Reply-To: <20231011143937.31996-1-ghandatmanas@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/16 20:18, Masami Hiramatsu (Google) wrote:
-> Hi Wuqiang,
-> 
-> On Mon, 16 Oct 2023 10:45:30 +0800
-> "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
-> 
->> On 2023/10/16 07:26, Masami Hiramatsu (Google) wrote:
->>> On Mon, 16 Oct 2023 00:06:11 +0800
->>> "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
->>>
->>>> On 2023/10/15 23:43, Masami Hiramatsu (Google) wrote:
->>>>> On Sun, 15 Oct 2023 13:32:47 +0800
->>>>> "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
->>>>>
->>>>>> objpool is a scalable implementation of high performance queue for
->>>>>> object allocation and reclamation, such as kretprobe instances.
->>>>>>
->>>>>> With leveraging percpu ring-array to mitigate hot spots of memory
->>>>>> contention, it delivers near-linear scalability for high parallel
->>>>>> scenarios. The objpool is best suited for the following cases:
->>>>>> 1) Memory allocation or reclamation are prohibited or too expensive
->>>>>> 2) Consumers are of different priorities, such as irqs and threads
->>>>>>
->>>>>> Limitations:
->>>>>> 1) Maximum objects (capacity) is fixed after objpool creation
->>>>>> 2) All pre-allocated objects are managed in percpu ring array,
->>>>>>       which consumes more memory than linked lists
->>>>>>
->>>>>
->>>>> Thanks for updating! This looks good to me except 2 points.
->>>>>
->>>>> [...]
->>>>>> +
->>>>>> +/* initialize object pool and pre-allocate objects */
->>>>>> +int objpool_init(struct objpool_head *pool, int nr_objs, int object_size,
->>>>>> +		gfp_t gfp, void *context, objpool_init_obj_cb objinit,
->>>>>> +		objpool_fini_cb release)
->>>>>> +{
->>>>>> +	int rc, capacity, slot_size;
->>>>>> +
->>>>>> +	/* check input parameters */
->>>>>> +	if (nr_objs <= 0 || nr_objs > OBJPOOL_NR_OBJECT_MAX ||
->>>>>> +	    object_size <= 0 || object_size > OBJPOOL_OBJECT_SIZE_MAX)
->>>>>> +		return -EINVAL;
->>>>>> +
->>>>>> +	/* align up to unsigned long size */
->>>>>> +	object_size = ALIGN(object_size, sizeof(long));
->>>>>> +
->>>>>> +	/* calculate capacity of percpu objpool_slot */
->>>>>> +	capacity = roundup_pow_of_two(nr_objs);
->>>>>
->>>>> This must be 'roundup_pow_of_two(nr_objs + 1)' because if nr_objs is power
->>>>> of 2 and all objects are pushed on the same slot, tail == head. This
->>>>> means empty and full is the same.
->>>>
->>>> That won't happen. Would tail and head wrap only when >= 2^32. When all
->>>> objects are pushed to the same slot, tail will be (head + capacity).
->>>
->>> Ah, indeed. OK.
->>>
->>>>
->>>>>
->>>>>> +	if (!capacity)
->>>>>> +		return -EINVAL;
->>>>>> +
->>>>>> +	/* initialize objpool pool */
->>>>>> +	memset(pool, 0, sizeof(struct objpool_head));
->>>>>> +	pool->nr_cpus = nr_cpu_ids;
->>>>>> +	pool->obj_size = object_size;
->>>>>> +	pool->capacity = capacity;
->>>>>> +	pool->gfp = gfp & ~__GFP_ZERO;
->>>>>> +	pool->context = context;
->>>>>> +	pool->release = release;
->>>>>> +	slot_size = pool->nr_cpus * sizeof(struct objpool_slot);
->>>>>> +	pool->cpu_slots = kzalloc(slot_size, pool->gfp);
->>>>>> +	if (!pool->cpu_slots)
->>>>>> +		return -ENOMEM;
->>>>>> +
->>>>>> +	/* initialize per-cpu slots */
->>>>>> +	rc = objpool_init_percpu_slots(pool, nr_objs, context, objinit);
->>>>>> +	if (rc)
->>>>>> +		objpool_fini_percpu_slots(pool);
->>>>>> +	else
->>>>>> +		refcount_set(&pool->ref, pool->nr_objs + 1);
->>>>>> +
->>>>>> +	return rc;
->>>>>> +}
->>>>>> +EXPORT_SYMBOL_GPL(objpool_init);
->>>>>> +
->>>>>
->>>>> [...]
->>>>>
->>>>>> +
->>>>>> +/* drop unused objects and defref objpool for releasing */
->>>>>> +void objpool_fini(struct objpool_head *pool)
->>>>>> +{
->>>>>> +	void *obj;
->>>>>> +
->>>>>> +	do {
->>>>>> +		/* grab object from objpool and drop it */
->>>>>> +		obj = objpool_pop(pool);
->>>>>> +
->>>>>> +		/*
->>>>>> +		 * drop reference of objpool anyway even if
->>>>>> +		 * the obj is NULL, since one extra ref upon
->>>>>> +		 * objpool was already grabbed during pool
->>>>>> +		 * initialization in objpool_init()
->>>>>> +		 */
->>>>>> +		if (refcount_dec_and_test(&pool->ref))
->>>>>> +			objpool_free(pool);
->>>>>
->>>>> Nit: you can call objpool_drop() instead of repeating the same thing here.
->>>>
->>>> objpool_drop won't deref objpool if given obj is NULL. But here we need
->>>> drop objpool anyway even if obj is NULL.
->>>
->>> I guess you decrement for the 'objpool' itself if obj=NULL, but I think
->>> it is a bit hacky (so you added the comment).
->>> e.g. rethook is doing something like below.
->>>
->>> ---
->>> /* extra count for this pool itself */
->>> count = 1;
->>> /* make the pool empty */
->>> while (objpool_pop(pool))
->>> 	count++;
->>>
->>> if (refcount_sub_and_test(count, &pool->ref))
->>> 	objpool_free(pool);
->>> ---
->>
->> Right, that's reasonable. Better one single atomic operation than multiple.
-> 
-> I found another comment issue about a small window which this may not work.
-> This is not a real issue for this series because this doesn't happen on
-> rethook/kretprobe, but if you apply this to other use-case, it must be
-> cared.
-> 
-> Since we use reserve-commit on 'push' operation, this 'pop' loop will miss
-> an object which is under 'push' op. I mean
-> 
-> CPU0                    CPU1
-> 
-> objpool_fini() {
-> do {
->                           objpool_push() {
->                              update slot->tail; // reserve
->    obj = objpool_pop();
->                              update slot->last;  // commit
-> } while (obj);
-> 
-> In this case, the refcount can not be 0 and we can not release objpool.
-> To avoid this, we make sure all ongoing 'push()' must be finished.
-> 
-> Actually in the rethook/kretprobe, it already sync the rcu so this doesn't
-> happen. So you should document it the user must use RCU sync after stop
-> using the objpool, then call objpool_fini().
-> 
-> E.g.
-> 
-> start_using() {
-> objpool_init();
-> active = true;
-> }
-> 
-> obj_alloc() {
-> rcu_read_lock();
-> if (active)
-> 	obj = objpool_pop();
-> else
-> 	obj = NULL;
-> rcu_read_unlock();
-> }
-> 
-> /* use obj for something, it is OK to change the context */
-> 
-> obj_return() {
-> rcu_read_lock();
-> if (active)
-> 	objpool_push(obj);
-> else
-> 	objpool_drop(obj);
-> rcu_read_unlock();
-> }
-> 
-> /* kretprobe style */
-> stop_using() {
-> active = false;
-> synchronize_rcu();
-> objpool_fini();
-> }
-> 
-> /* rethook style */
-> stop_using() {
-> active = false;
-> call_rcu(objpool_fini);
-> }
-> 
-> Hmm, yeah, if we can add this 'active' flag to objpool, it is good. But
-> since kretprobe has different design of the interface, it is hard.
-> Anyway, can you add a comment that user must ensure that any 'push' including
-> ongoing one does not happen while 'fini'? objpool does not care that so user
-> must take care of that. For example using rcu_read_lock() for the 'push/pop'
-> operation and rcu-sync before 'fini' operation.
+Just a friendly ping :)
 
-Sure, I'll refine the comments. I prefer that it's user's duty to make sure
-there are no outstanding objpool_push on the fly when calling objpool_fini.
-All usecases like kretprobe/rethook/test_objpool are using rcu to handle the
-asynchronous releasing of objpool. For synchronous cases, user can just call
-object_free to release the whole objpool, which is also acceptable.
-
-> Thanks,
-> 
->>
->>>>
->>>>> Thank you,
->>>>>
->>>>>> +	} while (obj);
->>>>>> +}
->>>>>> +EXPORT_SYMBOL_GPL(objpool_fini);
->>>>>> -- 
->>>>>> 2.40.1
->>>>>>
->>>>
->>>> Thanks for your time
->>>>
->>>>
->>>
->>>
->>
-> 
-> 
-
+On 11/10/23 20:09, Manas Ghandat wrote:
+> Currently while joining the leaf in a buddy system there is shift out
+> of bound error in calculation of BUDSIZE. Added the required check
+> to the BUDSIZE and fixed the documentation as well.
+>
+> Reported-by: syzbot+411debe54d318eaed386@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=411debe54d318eaed386
+> Signed-off-by: Manas Ghandat <ghandatmanas@gmail.com>
+> ---
+>   fs/jfs/jfs_dmap.c | 8 +++++++-
+>   1 file changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
+> index 6b838d3ae7c2..baa97bda1c7a 100644
+> --- a/fs/jfs/jfs_dmap.c
+> +++ b/fs/jfs/jfs_dmap.c
+> @@ -2730,7 +2730,9 @@ static int dbBackSplit(dmtree_t * tp, int leafno)
+>    *	leafno	- the number of the leaf to be updated.
+>    *	newval	- the new value for the leaf.
+>    *
+> - * RETURN VALUES: none
+> + * RETURN VALUES:
+> + *  0		- success
+> + *	-EIO	- i/o error
+>    */
+>   static int dbJoin(dmtree_t * tp, int leafno, int newval)
+>   {
+> @@ -2757,6 +2759,10 @@ static int dbJoin(dmtree_t * tp, int leafno, int newval)
+>   		 * get the buddy size (number of words covered) of
+>   		 * the new value.
+>   		 */
+> +
+> +		if ((newval - tp->dmt_budmin) > BUDMIN)
+> +			return -EIO;
+> +
+>   		budsz = BUDSIZE(newval, tp->dmt_budmin);
+>   
+>   		/* try to join.
