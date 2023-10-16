@@ -2,109 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 485DD7C9CB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 02:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A9F37C9CB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 02:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229748AbjJPASS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 20:18:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33770 "EHLO
+        id S230283AbjJPAUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 20:20:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJPASR (ORCPT
+        with ESMTP id S229459AbjJPAUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 20:18:17 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C87E95;
-        Sun, 15 Oct 2023 17:18:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1697415490;
-        bh=X+yjzqQ/M8r2t7sAenrVpODtLZMQgz7CZQ9WIa84mw0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Xtx20EM5E7C+DxJZesUmNzEVq2KUoxQnt9jpmsd3Nz4q9YT5BPMw0Ie6IMW7AIVF7
-         CvBmetjhd7jRaJfCv1p0ICpp1orqq9+zRFbgKKIP6bpay40x6Di5jndrDu5QcIyq4w
-         kY/bJzcCoj8hwueIAv6jVMQ7mhpxXMO3qdHx0I/WIIGE6sHu8cCslOA2zIPKeXC8EZ
-         NwqbaOqJ4FFTxF6QAjQtppCYxKHqhyqCBw/mTP3xGIG6sMlgmfkn3sVJFeLhq+etsA
-         9qSpz2XRtXWvnELAiEC4HPAMAYbPLdeMAjBNTNMkYJNhVJCjmv1P7MWoagnbHq6ZIO
-         /c3WCeRuXE3fw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S7yPZ0Yj9z4wcJ;
-        Mon, 16 Oct 2023 11:18:10 +1100 (AEDT)
-Date:   Mon, 16 Oct 2023 11:18:08 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Qingqing Zhuo <Qingqing.Zhuo@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Roman Li <roman.li@amd.com>,
+        Sun, 15 Oct 2023 20:20:14 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E957E95;
+        Sun, 15 Oct 2023 17:20:12 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-564b6276941so2913880a12.3;
+        Sun, 15 Oct 2023 17:20:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697415612; x=1698020412; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=J7+oJHozaJp3ARwDpXhkbVM/mB5nFnC7YhE1nMQs+T4=;
+        b=H5Lioq5qmpGifqA6SvWPci0idUCzLn1sTwxXBI44W7s7aACMgPxsIx9a/ZfaMdxJqq
+         /gPD9xwnTamQLP/WUxu/D8hkV++dFwuRTLJoGRyrayzjMNXgxsRtS3AA7kjXAAgSidLR
+         0z09wb4m6u038ZHU+uRICQZ6f8BGdRkWqx++ffMAUn75feSQmW7kTcN6yRAZ1bjcjTeW
+         13VdwJG1vKrBDfOjdVnBEyD684YWvf+9G1CW5s7OEFKT+hZJUkXv4r+pNbWZYEphBHLS
+         3VVP9IjDI8RLdBXSZkMP+ch8D2PWF9DrYNhLOrpG/8z8BurFT7P9jNoafqajv+swiJtO
+         wXhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697415612; x=1698020412;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J7+oJHozaJp3ARwDpXhkbVM/mB5nFnC7YhE1nMQs+T4=;
+        b=kAuvRCrKLCVbErky284Rq36AmGHLIZbhGVLOn1yiB8zBXIX5y7jFOaFyV0LNPVa/RC
+         C4j3yWvzIQkJKux/hx8QLcth2ECMOy9I+xjKV/aruy2SOFRu/N2Pg2n6tkXoaVvnmOLP
+         yLoFdegkLDX6OCjuIDWjMTCyjT9QW3lsc91pQ/ys0ctH9f+am1Yw9su8475kr2Jqp2qx
+         jDQMBFCDXfqxQI7N95fh5cXgy7jmgxsAN2yMb2ny5vJMnnDpvjtb6EkPqmXChPGuxyKO
+         gg81pqFJ3ydLiGpk05E0R2erQ11SnkLn5nKA8fJ384BDPLG0A1qOmXhtaDfXbAWchQ1X
+         2sQQ==
+X-Gm-Message-State: AOJu0Yyjp6UVBYhjzWiZygBCiyJmHQ18i6ydKlhXlPOHERqcQNCPPeQ1
+        5sXtLHh4otjJYft3v8OkNx0=
+X-Google-Smtp-Source: AGHT+IH2laczeXL+VN9BrWY3NVZ8iTr+4c1jER2bvqsu4716PkKX0BkrL3EJtryJWJwyVs5iZp4OAg==
+X-Received: by 2002:a05:6a20:7f95:b0:140:3aa:e2ce with SMTP id d21-20020a056a207f9500b0014003aae2cemr43344864pzj.42.1697415612184;
+        Sun, 15 Oct 2023 17:20:12 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id x6-20020a170902ec8600b001c44c8d857esm7208939plg.120.2023.10.15.17.20.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Oct 2023 17:20:11 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 3520A801B59F; Mon, 16 Oct 2023 07:20:07 +0700 (WIB)
+Date:   Mon, 16 Oct 2023 07:20:06 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Vladimir Smelhaus <vl.sm@email.cz>,
+        Linux Netfilter <netfilter@vger.kernel.org>,
+        coreteam@netfilter.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the amdgpu tree
-Message-ID: <20231016111808.6e5f59e7@canb.auug.org.au>
-In-Reply-To: <20231010124357.5251e100@canb.auug.org.au>
-References: <20231010124357.5251e100@canb.auug.org.au>
+        Linux Regressions <regressions@lists.linux.dev>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>
+Subject: Re: Flowtables ignore timeout settings in recent kernels
+Message-ID: <ZSyBtn8cplLWoNn-@debian.me>
+References: <ughg4v$130b$1@ciao.gmane.io>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/bZXCSpXsG4YUtU9oyrPX_nj";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="N2rAuLPZGqdFV0iZ"
+Content-Disposition: inline
+In-Reply-To: <ughg4v$130b$1@ciao.gmane.io>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/bZXCSpXsG4YUtU9oyrPX_nj
-Content-Type: text/plain; charset=US-ASCII
+
+--N2rAuLPZGqdFV0iZ
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Sun, Oct 15, 2023 at 09:56:14PM +0200, Vladimir Smelhaus wrote:
+> Netfilter ignores the timeout settings for a flowtable
+>=20
+> # sysctl -a -r flowtable
+> net.netfilter.nf_flowtable_tcp_timeout =3D 30
+> net.netfilter.nf_flowtable_udp_timeout =3D 30
+>=20
+> Situation. A long udp connection (tunnel) with some data flowing through a
+> router. The connection is sent to a flowtable on the router. It's a few
+> packets per second, more here and there, a pause here and there, and so on
+> over and over. The pauses are minimal and are also limited by the tunnel
+> settings to be no longer than 25 seconds. Everything is satisfying to make
+> the connection last continuously in the flowtable and not reappear in
+> forward. However, the connection keeps dropping out of the flowtable. It
+> stays in the flowtable (offloaded) for a second at most and then it is
+> kicked out, back to forward.
+>=20
+> In an attached test script you can see counters that should be zero but a=
+re not. If I watch the normal packet flow on a particular router, I can see=
+ packets in the conntrack table that should be OFFLOAD as ASSURED.
+>=20
+> Tested in kernel 6.5.6. In an old(er) kernel 5.10 it works as expected.
+>=20
 
-On Tue, 10 Oct 2023 12:43:57 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> After merging the amdgpu tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
->=20
-> drivers/gpu/drm/amd/amdgpu/../display/dc/dml2/display_mode_core.c: In fun=
-ction 'dml_core_mode_support':
-> drivers/gpu/drm/amd/amdgpu/../display/dc/dml2/display_mode_core.c:8229:1:=
- error: the frame size of 2736 bytes is larger than 2048 bytes [-Werror=3Df=
-rame-larger-than=3D]
->  8229 | } // dml_core_mode_support
->       | ^
-> cc1: all warnings being treated as errors
->=20
-> Caused by commit
->=20
->   7966f319c66d ("drm/amd/display: Introduce DML2")
->=20
-> (or maybe something later that changed storage size).
->=20
-> I have used the amdgpu tree from next-20231009 for today.
+Then please perform bisection to find a culprit that introduces your
+regression (see Documentation/admin-guide/bug-bisect.rst in the kernel
+sources for reference). Also, it'd been great if you also post the
+reproducer script inline (within your email) instead, as some MUAs
+(like mutt that I'm using now) may ignore the attachment.
 
-I am still getting this failure.
+Anyway, thanks for the regression report. I'm adding it to regzbot:
+
+#regzbot ^introduced: v5.10..v6.5
 
 --=20
-Cheers,
-Stephen Rothwell
+An old man doll... just what I always wanted! - Clara
 
---Sig_/bZXCSpXsG4YUtU9oyrPX_nj
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--N2rAuLPZGqdFV0iZ
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUsgUAACgkQAVBC80lX
-0GwK2AgAhuLmW/8R6gMNZzJHi+4BzhZy7T7JunG2/muaGvjyFxp5Kqyf9kE3Jnue
-XopZtUuVGLzQ5wMAzezO6VS/LcsVwmOpEUlFl/Q2AhRO6Sy8+PjS/rG+Yknx+lwf
-lhOKdC7e6JsQ71nF3TKBXqe6x+yIx73W9y5RX4LeADeVK6GV1R5P1fOMfTP5Fqi0
-+k0FdIb/iV2Dt6kAo34kyqi5cdD0/1DTrQxSTC5fUHLJlPdLVxKD2enrrk7x4yi5
-8gG1hTSaSJyjcec5tsvb0LhIIzU/yWH3VX4N0/Bhf0aaXZwLU79T56bmP2hhsghx
-F7Gk3laUeczAHBvo2n06ZYhLUg0D/w==
-=SCv8
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZSyBsAAKCRD2uYlJVVFO
+oxD9AQDAp/pXr+d44wTxEyg9copCJnaEVKIixfFsamXwbWpI/QD/W2ZAb9J8yPcv
+V/en2pgBB1CgZDhm7JzlxcWUrsKROwM=
+=u4d8
 -----END PGP SIGNATURE-----
 
---Sig_/bZXCSpXsG4YUtU9oyrPX_nj--
+--N2rAuLPZGqdFV0iZ--
