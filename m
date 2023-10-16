@@ -2,134 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 690807CAD33
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:19:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B247CAD51
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233685AbjJPPTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 11:19:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33332 "EHLO
+        id S233855AbjJPPUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 11:20:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231569AbjJPPTW (ORCPT
+        with ESMTP id S232365AbjJPPUt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 11:19:22 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0B3AB;
-        Mon, 16 Oct 2023 08:19:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DEDEC433C7;
-        Mon, 16 Oct 2023 15:19:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697469559;
-        bh=IUlcckn2HIZvQSPS1Pli5AoJlsFWzcK+s4pdEgsn3uA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IZxB+S+5f7TG2qX+o3J/cEJG0d4Mm5M/FeuKYss2zs0UgFfcz/wJaTx4+uNG3Djyf
-         5fGUnNNij/cz1JMpbR9gRBF0cOwhBWm3s4vmzOlp/EUQkA+JdogYu+8OxgmeIj4Myx
-         PVNaWxTBU9KNC84846XlsI2shQg3JBG73yeWwBXE=
-Date:   Mon, 16 Oct 2023 17:19:13 +0200
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     "Wu, Wentong" <wentong.wu@intel.com>
-Cc:     "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "oneukum@suse.com" <oneukum@suse.com>,
-        "wsa@kernel.org" <wsa@kernel.org>,
-        "andi.shyti@linux.intel.com" <andi.shyti@linux.intel.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "bartosz.golaszewski@linaro.org" <bartosz.golaszewski@linaro.org>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>,
-        "Wang, Zhifeng" <zhifeng.wang@intel.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v20 1/4] usb: Add support for Intel LJCA device
-Message-ID: <2023101653-shiftless-scorebook-19e3@gregkh>
-References: <1696833205-16716-2-git-send-email-wentong.wu@intel.com>
- <ZSZ3IPgLk7uC5UGI@smile.fi.intel.com>
- <6a87b43a-0648-28d4-6c69-e0f684e44eb6@redhat.com>
- <DM6PR11MB4316BE44F53E276384FF06C88DCCA@DM6PR11MB4316.namprd11.prod.outlook.com>
- <5d2e9eba-a941-ea9a-161a-5b97d09d5d35@redhat.com>
- <ZSmjEKfYzFuAHXW+@smile.fi.intel.com>
- <9a080d06-586d-686f-997e-674cb8d16099@redhat.com>
- <DM6PR11MB43169A9ADDA7681DB7D9347C8DD7A@DM6PR11MB4316.namprd11.prod.outlook.com>
- <ZSzogNhlX9njvOIU@smile.fi.intel.com>
- <DM6PR11MB4316382324D15985A70E531C8DD7A@DM6PR11MB4316.namprd11.prod.outlook.com>
+        Mon, 16 Oct 2023 11:20:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D51F9
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:20:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697469606;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=AEix8IoCjFYipbhyqgKL2qJL2YZHCFj9VqmEx2SLGiw=;
+        b=SpPhvC8TmWVrm6zy97d3BY/Umc8wwkcRv+Z3VVTSz207GNwayu2FANcUQYHsIJuaDVdhKk
+        5pufUMsi22pR8hFCos6WSubruc88AghGZpSwYptVPZk8uhEQnOYJIr6mlDk3yI0Opvl9m0
+        mH4hhuS53EDUEfSBkEvxufz1EFhHNsI=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-67-Wv8BcjgINayr-1e0CL4JNA-1; Mon, 16 Oct 2023 11:19:59 -0400
+X-MC-Unique: Wv8BcjgINayr-1e0CL4JNA-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9b2cf504e3aso320978366b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:19:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697469599; x=1698074399;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AEix8IoCjFYipbhyqgKL2qJL2YZHCFj9VqmEx2SLGiw=;
+        b=t4RvDNvYP7Q9+Dg5aOsoGvH7/H+lqdht180N6DpCHzVswT5bknu897TV2CdSCPAJhl
+         hABkuIycURYyvgqhaae4BTwrKNqaGmR9eGjCaidw1fGO1hLoZ5+cwQle9rI44sFQGGuo
+         XNeLmVYGPpmLGsoVJSYgtz+MzIpd0pUrqnS9LaX8gdKmXwPQk5xaC+ayGacVBi/YY6wB
+         VHWGbgDVTGOr11gHcwwHymJ9eTgO4xnsBpbb+kXKdg4Z0shEQgSIHhYrfGt98rpl3dlu
+         r3P4OpPH8VFXlZTVftK+qvxGZmvyGZOHns43pqOqO98gqRHFjS4NyB/0Xt8FkTmeYl1t
+         DXMw==
+X-Gm-Message-State: AOJu0YySba2DS4Ueuu6kC0mPwIVh4aAjIs0V1wqGQ5eeAHtINMmso+0H
+        Sr0za/4Nfx/jObsEOzPUEakkgoOy7+ZLr+xb5+NTNpO650YSl/OYc4iY+1cuXbspf4ofWkw28rU
+        NIz88NJuoLcLdDiQhMDx1s+HE
+X-Received: by 2002:a17:906:2109:b0:9ba:65e:750e with SMTP id 9-20020a170906210900b009ba065e750emr20293558ejt.32.1697469598880;
+        Mon, 16 Oct 2023 08:19:58 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEb9fPiHlPImABzViiZVbA7Y0gtuhzGOpmK/RHwaaH407PNB9TewIyWSMoP3jZFn9L9XkN9ig==
+X-Received: by 2002:a17:906:2109:b0:9ba:65e:750e with SMTP id 9-20020a170906210900b009ba065e750emr20293542ejt.32.1697469598512;
+        Mon, 16 Oct 2023 08:19:58 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.googlemail.com with ESMTPSA id z4-20020a1709064e0400b00982a352f078sm4274087eju.124.2023.10.16.08.19.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Oct 2023 08:19:57 -0700 (PDT)
+Message-ID: <c46606c8-fb6d-4e81-843c-47a0443bebc1@redhat.com>
+Date:   Mon, 16 Oct 2023 17:19:56 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR11MB4316382324D15985A70E531C8DD7A@DM6PR11MB4316.namprd11.prod.outlook.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH gmem FIXUP] kvm: guestmem: do not use a file system
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+References: <ZSQO4fHaAxDkbGyz@google.com> <20231009200608.GJ800259@ZenIV>
+ <ZSRgdgQe3fseEQpf@google.com> <20231009204037.GK800259@ZenIV>
+ <ZSRwDItBbsn2IfWl@google.com> <20231010000910.GM800259@ZenIV>
+ <ZSSaWPc5wjU9k1Kw@google.com> <20231010003746.GN800259@ZenIV>
+ <ZSXeipdJcWZjLx8k@google.com>
+ <7c4b1c78-de74-5fff-7327-0863f403eb7e@redhat.com>
+ <ZSl2hdfF8XSXss3h@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Autocrypt: addr=pbonzini@redhat.com; keydata=
+ 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
+In-Reply-To: <ZSl2hdfF8XSXss3h@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 03:05:09PM +0000, Wu, Wentong wrote:
-> > From: Shevchenko, Andriy
-> > On Mon, Oct 16, 2023 at 08:52:28AM +0300, Wu, Wentong wrote:
-> > > > On 10/13/23 22:05, Shevchenko, Andriy wrote:
-> > > > > On Thu, Oct 12, 2023 at 01:14:23PM +0200, Hans de Goede wrote:
-> > 
-> > <snip>
-> > 
-> > > > >> Ah ok, I see. So the code:
-> > > > >>
-> > > > >> 1. First tries to find the matching child acpi_device for the
-> > > > >> auxdev by ADR
-> > > > >>
-> > > > >> 2. If 1. fails then falls back to HID + UID matching
-> > > > >>
-> > > > >> And there are DSDTs which use either:
-> > > > >>
-> > > > >> 1. Only use _ADR to identify which child device is which, like the example
-> > > > >>    DSDT snippet from the commit msg.
-> > > > >>
-> > > > >> 2. Only use _HID + _UID like the 2 example DSDT snippets from me
-> > > > >> email
-> > > > >>
-> > > > >> But there never is a case where both _ADR and _HID are used at
-> > > > >> the same time (which would be an ACPI spec violation as Andy said).
-> > > > >>
-> > > > >> So AFAICT there is no issue here since  _ADR and _HID are never
-> > > > >> user at the same time and the commit message correctly describes
-> > > > >> scenario 1. from above, so the commit message is fine too.
-> > > > >>
-> > > > >> So I believe that we can continue with this patch series in its
-> > > > >> current v20 form, which has already been staged for going into
-> > > > >> -next by Greg.
-> > > > >>
-> > > > >> Andy can you confirm that moving ahead with the current version
-> > > > >> is ok ?
-> > > > >
-> > > > > Yes as we have a few weeks to fix corner cases.
-> > > > >
-> > > > > What I'm worrying is that opening door for _ADR that seems never
-> > > > > used is kinda an overkill here (resolving non-existing problem).
-> > > >
-> > > > I assume that there actually some DSDTs using the _ADR approach and
-> > > > that this support is not there just for fun.
-> > >
-> > > right, it's not for fun, we use _ADR here is to reduce the maintain
-> > > effort because currently it defines _HID for every new platform and
-> > > the drivers have to be updated accordingly, while _ADR doesn't have that
-> > problem.
-> > 
-> > But this does not confirm if you have such devices. Moreover, My question
-> > about _CID per function stays the same. Why firmware is not using it?
+On 10/13/23 18:55, Sean Christopherson wrote:
+> On Wed, Oct 11, 2023, Paolo Bonzini wrote:
+>> Your patch 2 looks good, but perhaps instead of setting the owner we could
+>> stash the struct module* in a global, and try_get/put it from open and
+>> release respectively?  That is, .owner keeps the kvm module alive and the
+>> kvm module keeps kvm-intel/kvm-amd alive.  That would subsume patches 1 and 3.
 > 
-> Yes, both _ADR and _CID can stop growing list in the driver. And for _ADR, it also
-> only require one ID per function. I don't know why BIOS team doesn't select _CID,
-> but I have suggested use _ADR internally, and , to make things moving forward,
-> the driver adds support for _ADR here first. 
-> 
-> But you're right, _CID is another solution as well, we will discuss it with firmware
-> team more.
+> I don't think that would be a net positive.  We'd have to implement .open() for
+> several file types just to get a reference to the sub-module.  At that point, the
+> odds of forgetting to implement .open() are about the same as forgetting to set
+> .owner when adding a new file type, e.g. guest_memfd.
 
-Should I revert this series now until this gets sorted out?
+Fair enough, it's true that many fops don't have a .open callback already.
 
-thanks,
+Paolo
 
-greg k-h
