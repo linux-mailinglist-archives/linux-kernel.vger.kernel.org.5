@@ -2,140 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 804177C9D6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 04:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9D07C9D76
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 04:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231314AbjJPCfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 22:35:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42972 "EHLO
+        id S231281AbjJPCiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 22:38:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbjJPCfN (ORCPT
+        with ESMTP id S229611AbjJPCiL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 22:35:13 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8359D6
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 19:35:10 -0700 (PDT)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id E47942C0381;
-        Mon, 16 Oct 2023 15:35:07 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1697423707;
-        bh=aCgNbznu5ctmkUYc5AaiEvFzQOMDXqXtMYjFRvtkLjM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b5pXqZugtz0gQkC57FTOCbYsBpMB+TKmdU3EKS91m0zJl4LclBDOUZZwnE/k1l0ml
-         9WgB2UcNNWPsN+8w3HFjRb/O+wtxmTWncJsVpk47mKmioYM0cKJKCI6EE1e9yUWadL
-         fC9j5p98yjA4hFkoaijR3KyWVrL8lyyUR+iMLyZd+K3umqLYlDpyby0lGLUOW3140k
-         wAxLJbF3hfhDENZk3jNcQm50wseILsgjrc4GlnJpzkEAZ3+BSwRRLeZ/06WdRWX7ba
-         jeZnGkxwXcITPnuubE4LErIncETWjQVcZ0YYxqyakWdjeaoG5x+EnExH6jCYnzhcdw
-         cJ9Iz/wuMGHsA==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B652ca15b0002>; Mon, 16 Oct 2023 15:35:07 +1300
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
-        by pat.atlnz.lc (Postfix) with ESMTP id AFFF513EE9B;
-        Mon, 16 Oct 2023 15:35:07 +1300 (NZDT)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-        id AE1D028140C; Mon, 16 Oct 2023 15:35:07 +1300 (NZDT)
-From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
-To:     gregory.clement@bootlin.com, andi.shyti@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org
-Cc:     linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH v2 2/2] i2c: mv64xxx: add an optional reset-gpios property
-Date:   Mon, 16 Oct 2023 15:35:04 +1300
-Message-ID: <20231016023504.3976746-3-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231016023504.3976746-1-chris.packham@alliedtelesis.co.nz>
-References: <20231016023504.3976746-1-chris.packham@alliedtelesis.co.nz>
+        Sun, 15 Oct 2023 22:38:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302F6AB;
+        Sun, 15 Oct 2023 19:38:10 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAD4EC433C8;
+        Mon, 16 Oct 2023 02:38:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697423889;
+        bh=T5WnSXdJB4MfvIyXC6DMczWEEeOsQwjAqV+LW90t/N0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dtn3KESJWI9dONtkVY8FlFqQ4tdVJUCm+gflh+pExFPd/eVSqVo6wf9rJlDxftjm9
+         DHGVv4e5rBdK7FK+5dbQTMiJ0If/VqefgwPvsok1xbtLJuunQf2fN8t+zhFzkCd731
+         kg4WcM9iVPw5+6QVaryHWu7R/iiFi7BUG5tia14c1dCHsaX1ds7+FBUPHeuWdvulMq
+         nBWmdju1cV8PbKxDBrdSLpYCUA2AICJnyVrtjHYcQ3puuLd2Sr1urw4RM5U+9/uP4S
+         JG46vNM4YLBY8qIHeXs4vOdiIa/oI6zSMp1Lgi337sVXTiqmL6/SdAE8S9y1kG67Mt
+         cM6662M0URl9A==
+Date:   Sun, 15 Oct 2023 19:41:57 -0700
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Om Prakash Singh <quic_omprsing@quicinc.com>
+Cc:     neil.armstrong@linaro.org, konrad.dybcio@linaro.org,
+        agross@kernel.org, conor+dt@kernel.org, davem@davemloft.net,
+        devicetree@vger.kernel.org, herbert@gondor.apana.org.au,
+        krzysztof.kozlowski+dt@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        marijn.suijten@somainline.org, robh+dt@kernel.org, vkoul@kernel.org
+Subject: Re: [PATCH V1 1/4] dt-bindings: crypto: qcom,prng: document SA8775P
+Message-ID: <hgtbdvbhoxwib4ywkd6pdxpcywgudb2b23tvlmaxaggeqgsghg@s6qetpw755rw>
+References: <20231015193901.2344590-1-quic_omprsing@quicinc.com>
+ <20231015193901.2344590-2-quic_omprsing@quicinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=L6ZjvNb8 c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=bhdUkHdE2iEA:10 a=VsZq4EHS3crWG1I_hwYA:9
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231015193901.2344590-2-quic_omprsing@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some hardware designs have a GPIO used to control the reset of all the
-devices on and I2C bus. It's not possible for every child node to
-declare a reset-gpios property as only the first device probed would be
-able to successfully request it (the others will get -EBUSY). Represent
-this kind of hardware design by associating the reset-gpios with the
-parent I2C bus. The reset line will be released prior to the child I2C
-devices being probed.
+On Mon, Oct 16, 2023 at 01:08:58AM +0530, Om Prakash Singh wrote:
+> Document SA8775P compatible for the True Random Number Generator.
+> 
+> Signed-off-by: Om Prakash Singh <quic_omprsing@quicinc.com>
+> ---
+>  Documentation/devicetree/bindings/crypto/qcom,prng.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/crypto/qcom,prng.yaml b/Documentation/devicetree/bindings/crypto/qcom,prng.yaml
+> index 633993f801c6..85e6b1c199f5 100644
+> --- a/Documentation/devicetree/bindings/crypto/qcom,prng.yaml
+> +++ b/Documentation/devicetree/bindings/crypto/qcom,prng.yaml
+> @@ -19,6 +19,7 @@ properties:
+>            - enum:
+>                - qcom,sm8450-trng
+>                - qcom,sm8550-trng
+> +              - qcom,sa8775p-trng
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
+Please maintain the alphabetical sort order of entries like this.
 
-Notes:
-    Changes in v2:
-    - Add a property to cover the length of delay after releasing the res=
-et
-      GPIO
-    - Use dev_err_probe() when requesing the GPIO fails
 
- drivers/i2c/busses/i2c-mv64xxx.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+On the two DeviceTree patches, we keep nodes sorted by address, followed
+by node name, and then label. And we keep the address padded to 8 digits
+to make it easier to keep them sorted. I've corrected that and picked
+the 2 (i.e. all 4) DeviceTree patches.
 
-diff --git a/drivers/i2c/busses/i2c-mv64xxx.c b/drivers/i2c/busses/i2c-mv=
-64xxx.c
-index efd28bbecf61..50c470e5c4be 100644
---- a/drivers/i2c/busses/i2c-mv64xxx.c
-+++ b/drivers/i2c/busses/i2c-mv64xxx.c
-@@ -160,6 +160,7 @@ struct mv64xxx_i2c_data {
- 	bool			clk_n_base_0;
- 	struct i2c_bus_recovery_info	rinfo;
- 	bool			atomic;
-+	struct gpio_desc	*reset_gpio;
- };
-=20
- static struct mv64xxx_i2c_regs mv64xxx_i2c_regs_mv64xxx =3D {
-@@ -1036,6 +1037,7 @@ mv64xxx_i2c_probe(struct platform_device *pd)
- 	struct mv64xxx_i2c_data		*drv_data;
- 	struct mv64xxx_i2c_pdata	*pdata =3D dev_get_platdata(&pd->dev);
- 	struct resource *res;
-+	u32	reset_udelay;
- 	int	rc;
-=20
- 	if ((!pdata && !pd->dev.of_node))
-@@ -1083,6 +1085,14 @@ mv64xxx_i2c_probe(struct platform_device *pd)
- 	if (drv_data->irq < 0)
- 		return drv_data->irq;
-=20
-+	drv_data->reset_gpio =3D devm_gpiod_get_optional(&pd->dev, "reset", GPI=
-OD_OUT_HIGH);
-+	if (IS_ERR(drv_data->reset_gpio))
-+		return dev_err_probe(&pd->dev, PTR_ERR(drv_data->reset_gpio),
-+				     "Cannot get reset gpio\n");
-+	rc =3D device_property_read_u32(&pd->dev, "reset-delay-us", &reset_udel=
-ay);
-+	if (rc)
-+		reset_udelay =3D 1;
-+
- 	if (pdata) {
- 		drv_data->freq_m =3D pdata->freq_m;
- 		drv_data->freq_n =3D pdata->freq_n;
-@@ -1121,6 +1131,11 @@ mv64xxx_i2c_probe(struct platform_device *pd)
- 			goto exit_disable_pm;
- 	}
-=20
-+	if (drv_data->reset_gpio) {
-+		gpiod_set_value_cansleep(drv_data->reset_gpio, 0);
-+		usleep_range(reset_udelay, reset_udelay + 10);
-+	}
-+
- 	rc =3D request_irq(drv_data->irq, mv64xxx_i2c_intr, 0,
- 			 MV64XXX_I2C_CTLR_NAME, drv_data);
- 	if (rc) {
---=20
-2.42.0
+So please fix above, and resubmit the two binding updates from this
+series (and you can submit that as one change, no need to keep as
+separate patches).
 
+Regards,
+Bjorn
+
+>            - const: qcom,trng
+>  
+>    reg:
+> -- 
+> 2.25.1
+> 
