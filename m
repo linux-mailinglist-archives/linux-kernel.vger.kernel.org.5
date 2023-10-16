@@ -2,135 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A9F37C9CB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 02:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC4C17C9CB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 02:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbjJPAUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 20:20:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49064 "EHLO
+        id S230503AbjJPAm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 20:42:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJPAUO (ORCPT
+        with ESMTP id S230490AbjJPAm0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 20:20:14 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E957E95;
-        Sun, 15 Oct 2023 17:20:12 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-564b6276941so2913880a12.3;
-        Sun, 15 Oct 2023 17:20:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697415612; x=1698020412; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=J7+oJHozaJp3ARwDpXhkbVM/mB5nFnC7YhE1nMQs+T4=;
-        b=H5Lioq5qmpGifqA6SvWPci0idUCzLn1sTwxXBI44W7s7aACMgPxsIx9a/ZfaMdxJqq
-         /gPD9xwnTamQLP/WUxu/D8hkV++dFwuRTLJoGRyrayzjMNXgxsRtS3AA7kjXAAgSidLR
-         0z09wb4m6u038ZHU+uRICQZ6f8BGdRkWqx++ffMAUn75feSQmW7kTcN6yRAZ1bjcjTeW
-         13VdwJG1vKrBDfOjdVnBEyD684YWvf+9G1CW5s7OEFKT+hZJUkXv4r+pNbWZYEphBHLS
-         3VVP9IjDI8RLdBXSZkMP+ch8D2PWF9DrYNhLOrpG/8z8BurFT7P9jNoafqajv+swiJtO
-         wXhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697415612; x=1698020412;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=J7+oJHozaJp3ARwDpXhkbVM/mB5nFnC7YhE1nMQs+T4=;
-        b=kAuvRCrKLCVbErky284Rq36AmGHLIZbhGVLOn1yiB8zBXIX5y7jFOaFyV0LNPVa/RC
-         C4j3yWvzIQkJKux/hx8QLcth2ECMOy9I+xjKV/aruy2SOFRu/N2Pg2n6tkXoaVvnmOLP
-         yLoFdegkLDX6OCjuIDWjMTCyjT9QW3lsc91pQ/ys0ctH9f+am1Yw9su8475kr2Jqp2qx
-         jDQMBFCDXfqxQI7N95fh5cXgy7jmgxsAN2yMb2ny5vJMnnDpvjtb6EkPqmXChPGuxyKO
-         gg81pqFJ3ydLiGpk05E0R2erQ11SnkLn5nKA8fJ384BDPLG0A1qOmXhtaDfXbAWchQ1X
-         2sQQ==
-X-Gm-Message-State: AOJu0Yyjp6UVBYhjzWiZygBCiyJmHQ18i6ydKlhXlPOHERqcQNCPPeQ1
-        5sXtLHh4otjJYft3v8OkNx0=
-X-Google-Smtp-Source: AGHT+IH2laczeXL+VN9BrWY3NVZ8iTr+4c1jER2bvqsu4716PkKX0BkrL3EJtryJWJwyVs5iZp4OAg==
-X-Received: by 2002:a05:6a20:7f95:b0:140:3aa:e2ce with SMTP id d21-20020a056a207f9500b0014003aae2cemr43344864pzj.42.1697415612184;
-        Sun, 15 Oct 2023 17:20:12 -0700 (PDT)
-Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id x6-20020a170902ec8600b001c44c8d857esm7208939plg.120.2023.10.15.17.20.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Oct 2023 17:20:11 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 3520A801B59F; Mon, 16 Oct 2023 07:20:07 +0700 (WIB)
-Date:   Mon, 16 Oct 2023 07:20:06 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Vladimir Smelhaus <vl.sm@email.cz>,
-        Linux Netfilter <netfilter@vger.kernel.org>,
-        coreteam@netfilter.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>
-Subject: Re: Flowtables ignore timeout settings in recent kernels
-Message-ID: <ZSyBtn8cplLWoNn-@debian.me>
-References: <ughg4v$130b$1@ciao.gmane.io>
+        Sun, 15 Oct 2023 20:42:26 -0400
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34434A3
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 17:42:23 -0700 (PDT)
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20231016004219epoutp01c4ed45c5d52744660d31fbe97830d50c~Ob7amRv8r0099800998epoutp01e
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:42:19 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20231016004219epoutp01c4ed45c5d52744660d31fbe97830d50c~Ob7amRv8r0099800998epoutp01e
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1697416939;
+        bh=4thdf5vOiLjNrlhR2orFClc4haODcBFO8AN2JFM2cnA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PeDRdZNLcuLh7z5g9kFSW/wk51LkiJZyDZQ+6SUroc/HLojJ4caiDrbV3i3TaArFt
+         fy/JhrNOF5Q2QF/oRySNRxBPYUGH+ZRy7xf/pzmENqE2ftxHgIhxN3gOp6kcgpoUWN
+         xG0VMBYgrbNRAKo5KkZ6OBPDb5lgci4Tr9fM/z0w=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20231016004219epcas2p4cf1710a7794b601974475673c85d50e4~Ob7aTVSqS2621026210epcas2p4K;
+        Mon, 16 Oct 2023 00:42:19 +0000 (GMT)
+Received: from epsmgec2p1-new.samsung.com (unknown [182.195.36.70]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4S7yxQ6vHCz4x9QC; Mon, 16 Oct
+        2023 00:42:18 +0000 (GMT)
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmgec2p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B6.1D.18994.AE68C256; Mon, 16 Oct 2023 09:42:18 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
+        20231016004218epcas2p19472bf83c7e69f73326a07141a021d98~Ob7ZZXoos1597115971epcas2p1-;
+        Mon, 16 Oct 2023 00:42:18 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20231016004218epsmtrp2b0992bb1f664dfed8e0b16647463804c~Ob7ZYyDpF1181411814epsmtrp2n;
+        Mon, 16 Oct 2023 00:42:18 +0000 (GMT)
+X-AuditID: b6c32a4d-9f7ff70000004a32-e2-652c86ea40fc
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        19.57.08755.AE68C256; Mon, 16 Oct 2023 09:42:18 +0900 (KST)
+Received: from tiffany (unknown [10.229.95.142]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20231016004218epsmtip2ce75f3cb6e92d4aa50e617a76f01c8aa~Ob7ZPUyhD2150521505epsmtip2z;
+        Mon, 16 Oct 2023 00:42:18 +0000 (GMT)
+Date:   Mon, 16 Oct 2023 09:32:00 +0900
+From:   Hyesoo Yu <hyesoo.yu@samsung.com>
+To:     Vishal Moola <vishal.moola@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: page_alloc: check the order of compound page event
+ when the order is 0
+Message-ID: <20231016003200.GA445850@tiffany>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="N2rAuLPZGqdFV0iZ"
-Content-Disposition: inline
-In-Reply-To: <ughg4v$130b$1@ciao.gmane.io>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZSmucNWBMj/mNVeE@dhcp-10-159-238-251.vpn.oracle.com>
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrBKsWRmVeSWpSXmKPExsWy7bCmhe6rNp1Ug952C4s569ewWVzeNYfN
+        4t6a/6wW6/fdYHVg8dg56y67x6ZPk9g9Tsz4zeLxeZNcAEtUtk1GamJKapFCal5yfkpmXrqt
+        kndwvHO8qZmBoa6hpYW5kkJeYm6qrZKLT4CuW2YO0EolhbLEnFKgUEBicbGSvp1NUX5pSapC
+        Rn5xia1SakFKToF5gV5xYm5xaV66Xl5qiZWhgYGRKVBhQnbGqQfP2AoOCVQ0TZvJ3sC4k7eL
+        kZNDQsBEYk33HZYuRi4OIYE9jBK33u1ihXA+MUqcON7LDOF8Y5RoaVvNDtPStH8LVGIvo8TW
+        S6uYIJynjBL3t70Hcjg4WARUJa7+cAFpYBNQlzixZRkjSFhEQFNi5d8kkDCzQKLE36nrwWYK
+        A9k7mzewgdi8AroSK96cZIGwBSVOznwCZnMKOEkcW/SZCeKGS+wS1/sDIGwXiY5vt5khbGGJ
+        V8e3QN0pJfH53V42CDtb4u7HCVB2icS6Mw1QNcYSs561M0Lcky7xY98TNpAzJQSUJY7cYoEI
+        80l0HP7LDhHmlehoE4LoVJbYv2weC4QtKfFobTsrRImHRNeeeEh4nGCU+D5rCvsERrlZSJ6Z
+        hWQZhK0jsWD3JyCbA8iWllj+jwPC1JRYv0t/ASPrKkap1ILi3PTUZKMCQ9281HJ4DCfn525i
+        BCdBLd8djK/X/9U7xMjEwXiIUYKDWUmENz1YJ1WINyWxsiq1KD++qDQntfgQoykwbiYyS4km
+        5wPTcF5JvKGJpYGJmZmhuZGpgbmSOO+91rkpQgLpiSWp2ampBalFMH1MHJxSDUycXMqXGMJ1
+        ZxrNe896RXO1+MRzF9+GZOwtP7i39ZHfbMXqQyvufF1/XuCX6JOvNXbmc05s9016F7PzlY6n
+        ebeIqc3WDQoKU3OWpkrv+S8nJuVwvGaVv/0c35n7lq85N2PKsjWbXqh/1NGys1606uTarQUy
+        x8Ms2rc/uxH5WcZojk1A+bwzedX50wwKmiuvzq73fSbyWsfIzfuRCePCqhmfOxutzh69t6vP
+        6IjCxjXPNslNsn6/sMuW5SPT82UNVlP13/2JjGB3fSV8+kdhULKzw2FeNmPv/s3tpew7dN/W
+        fHnfdtNgbXnAh2v9m6+cte79t8V0544NPJwM+6ftmHQugPfcFcZFwuybtk3KuXDmmBJLcUai
+        oRZzUXEiAL5ewbELBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrNLMWRmVeSWpSXmKPExsWy7bCSvO6rNp1Ug0/3ZCzmrF/DZnF51xw2
+        i3tr/rNarN93g9WBxWPnrLvsHps+TWL3ODHjN4vH501yASxRXDYpqTmZZalF+nYJXBnPvhoU
+        tPJVHH7Yw9TAOJW7i5GTQ0LARKJp/xbmLkYuDiGB3YwSC26fY4FISErM+nySCcIWlrjfcoQV
+        ougxo8SOYxvZuhg5OFgEVCWu/nABqWETUJc4sWUZI0hYREBTYuXfJJAws0CixN+p69lBbGEg
+        e2fzBjYQm1dAV2LFm5MsECNPMEr8+7aLGSIhKHFy5hMWiGYtiRv/XjKBzGQWkJZY/o8DJMwp
+        4CRxbNFnpgmMArOQdMxC0jELoWMBI/MqRsnUguLc9NxiwwLDvNRyveLE3OLSvHS95PzcTYzg
+        8NXS3MG4fdUHvUOMTByMhxglOJiVRHjTg3VShXhTEiurUovy44tKc1KLDzFKc7AoifOKv+hN
+        ERJITyxJzU5NLUgtgskycXBKNTAll12TPOjc+nXa28MnyhI5tjzbbn187mS/oOZv17nuWnNt
+        +KHEYqR5+aOdidwK0z1Sh9+zR3083NB9XuWLknKfYJG02SPDbfcuNnlU3LfYdtRwes7tjV+L
+        vk3L4Pq14mSr6i9uNTbJBr0Lm4r4ruYZJV9ds/b15z1PD99Jl5BIE3ExPnHtsLVDgp73hd2X
+        C8Qf7vztwaZbcH3NehOzkEqj+X6xuqqhMX6V/7JmOdq+lHFynvJbrcHypPlptu3RJt90FLP8
+        7q2emHx2/eSjCk5T42MaWeweLPmUfGD/ISEuh1kpm5wbr05l2v268fuFyn+RH9n4BKS9ZBbK
+        Rdwt+GzSkO0k+6risOfU8oNXFU8osRRnJBpqMRcVJwIA4uZzW84CAAA=
+X-CMS-MailID: 20231016004218epcas2p19472bf83c7e69f73326a07141a021d98
+X-Msg-Generator: CA
+Content-Type: multipart/mixed;
+        boundary="----.DGRwfvtDKQaTon4q7jBZTz_rY-uYfv-SaOoriR32EfX1D_r=_7c95_"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231012012153epcas2p34b8e9e8a898ace8d50411cadf937ef5d
+References: <CGME20231012012153epcas2p34b8e9e8a898ace8d50411cadf937ef5d@epcas2p3.samsung.com>
+        <20231012011106.2425309-1-hyesoo.yu@samsung.com>
+        <ZSmucNWBMj/mNVeE@dhcp-10-159-238-251.vpn.oracle.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---N2rAuLPZGqdFV0iZ
-Content-Type: text/plain; charset=utf-8
+------.DGRwfvtDKQaTon4q7jBZTz_rY-uYfv-SaOoriR32EfX1D_r=_7c95_
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Oct 15, 2023 at 09:56:14PM +0200, Vladimir Smelhaus wrote:
-> Netfilter ignores the timeout settings for a flowtable
->=20
-> # sysctl -a -r flowtable
-> net.netfilter.nf_flowtable_tcp_timeout =3D 30
-> net.netfilter.nf_flowtable_udp_timeout =3D 30
->=20
-> Situation. A long udp connection (tunnel) with some data flowing through a
-> router. The connection is sent to a flowtable on the router. It's a few
-> packets per second, more here and there, a pause here and there, and so on
-> over and over. The pauses are minimal and are also limited by the tunnel
-> settings to be no longer than 25 seconds. Everything is satisfying to make
-> the connection last continuously in the flowtable and not reappear in
-> forward. However, the connection keeps dropping out of the flowtable. It
-> stays in the flowtable (offloaded) for a second at most and then it is
-> kicked out, back to forward.
->=20
-> In an attached test script you can see counters that should be zero but a=
-re not. If I watch the normal packet flow on a particular router, I can see=
- packets in the conntrack table that should be OFFLOAD as ASSURED.
->=20
-> Tested in kernel 6.5.6. In an old(er) kernel 5.10 it works as expected.
->=20
+On Fri, Oct 13, 2023 at 01:54:08PM -0700, Vishal Moola wrote:
+> On Thu, Oct 12, 2023 at 10:11:06AM +0900, Hyesoo Yu wrote:
+> > For compound pages, the head sets the PG_head flag and
+> > the tail sets the compound_head to indicate the head page.
+> > If a user allocates a compound page and frees it with a different
+> > order, the compound page information will not be properly
+> > initialized. To detect this problem, compound_page(page) and
+> > the order are compared, but it is not checked when the order is 0.
+> > That error should be checked regardless of the order.
+> 
+> I believe all compound pages are order >= 1, so this error can't occur
+> when the order is 0.
+> 
 
-Then please perform bisection to find a culprit that introduces your
-regression (see Documentation/admin-guide/bug-bisect.rst in the kernel
-sources for reference). Also, it'd been great if you also post the
-reproducer script inline (within your email) instead, as some MUAs
-(like mutt that I'm using now) may ignore the attachment.
+Yes. All compound pages are order >= 1.
+However if the user uses the API incorrectly, the order value could be zero.
 
-Anyway, thanks for the regression report. I'm adding it to regzbot:
+For example,
 
-#regzbot ^introduced: v5.10..v6.5
+addr = alloc_pages(GFP_COMP, 2);
+free_pages(addr, 0);
 
---=20
-An old man doll... just what I always wanted! - Clara
+(struct page[16])0xFFFFFFFE21715100 = (
+(flags = 0x4000000000000200, lru = (next = 0x0, prev = 0xDEAD000000000122),//  Clear PG_head
+(flags = 0x4000000000000000, lru = (next = 0xFFFFFFFE21715101, prev = 0xFFFFFFFF00000201),  // Remain compound head
 
---N2rAuLPZGqdFV0iZ
-Content-Type: application/pgp-signature; name="signature.asc"
+It is memory leak, and it also makes system stability problem.
+on isolation_single_pageblock, That case makes infinite loops.
 
------BEGIN PGP SIGNATURE-----
+for (pfn = start_pfn; pfn < boundary_pfn; ) {
+	if (PageCompound(page)) { // page[1] is compound page
+		struct page *head = compound_head(page); // page[0]
+		unsigned long head_pfn = page_to_pfn(head);
+		unsigned long nr_pages = compound_nr(head); // nr_pages is 1 since page[0] is not compound page.
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZSyBsAAKCRD2uYlJVVFO
-oxD9AQDAp/pXr+d44wTxEyg9copCJnaEVKIixfFsamXwbWpI/QD/W2ZAb9J8yPcv
-V/en2pgBB1CgZDhm7JzlxcWUrsKROwM=
-=u4d8
------END PGP SIGNATURE-----
+ 		if (head_pfn + nr_pages <= boundary_pfn) {
+			pfn = head_pfn + nr_pages; // pfn is set as page[1].
+			continue;
+		}
+}
 
---N2rAuLPZGqdFV0iZ--
+So, I guess, we have to check the incorrect use in free_pages_prepare.
+
+Thanks,
+Hyesoo Yu.
+
+------.DGRwfvtDKQaTon4q7jBZTz_rY-uYfv-SaOoriR32EfX1D_r=_7c95_
+Content-Type: text/plain; charset="utf-8"
+
+
+------.DGRwfvtDKQaTon4q7jBZTz_rY-uYfv-SaOoriR32EfX1D_r=_7c95_--
