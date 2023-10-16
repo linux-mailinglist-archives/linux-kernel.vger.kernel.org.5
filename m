@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 324727CB31B
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 21:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD4AD7CB31E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 21:05:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232345AbjJPTCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 15:02:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47108 "EHLO
+        id S232228AbjJPTFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 15:05:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbjJPTCp (ORCPT
+        with ESMTP id S229848AbjJPTFa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 15:02:45 -0400
+        Mon, 16 Oct 2023 15:05:30 -0400
 Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E75A95
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 12:02:40 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c9b70b9671so31855ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 12:02:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A3695
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 12:05:28 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c9c496c114so37585ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 12:05:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697482959; x=1698087759; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1697483128; x=1698087928; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eOzjlLla6gf/R2odr013SLR7czPeJxtYfJ4GpduX1qQ=;
-        b=aZlCyDRkQfvcKflCuPbSRvOdYXTqJCiW7XzJv5bkLwiCbMLbEn2H+w+kuEQuAZXAvW
-         VFmdc6CMnUYxcIJQVxyJh9hZqqKgUAOC3Je/hJwCxsa2QdM4gxCymyBadG2VuIQgJylt
-         Sd4ZRs9pvbKiuAMXd8SzDQvwZgpTNVeKqH8ftsfe8R1hW+ryzQ68UQTl2AKQB9+Wxqth
-         bv6QWaaX2ppG1kL9gtN+8O8gmIUch/SNRCrj3FhLJFHIk6bSaorRE6b7xxNXd/pqWiaq
-         zfCNO3eC7vjyCtPr3ZuRs+FoeBWta2GkWC3G8rFkGJu2WR8VjptzBFPQynIZhLj3Z3Ad
-         JblA==
+        bh=b1VlSEnGZgno+VCZ2CMhUaRzE+QVLRzzBhFEmOew2zU=;
+        b=jlDvdCTnJn/IfWByCKyn9hTTeKWzQQo7e7i5hSrwROUKyJ4kvba5VcRhSrhbDbIPdv
+         t8F/PRha/FZIENUWauQOrs1j5wigO46AczN2WbtK37Bz/g7AjXJxMJ5sv0fFn0TjIi3q
+         vtI5NFvmjH5QA1l1sT0PS8KJSGKydPoEkR+Lrs5TVlhICMMocYIPruyeTQV8WnyjGK0P
+         9woDrDZRgStRnN9PxetS373oWcS2fDeQqjG/S2mSckNQUnSp50peh2KCIf+PqhKYUifH
+         3vSB96yjQNUnGwkKv0PTKyAdulFZbk+Gh1PcL1YzckQ5xsYuLLOazyGpXKzRYZchUdUG
+         yPgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697482959; x=1698087759;
+        d=1e100.net; s=20230601; t=1697483128; x=1698087928;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=eOzjlLla6gf/R2odr013SLR7czPeJxtYfJ4GpduX1qQ=;
-        b=Z1JQZ20bUC1EaExT4ayZ7QrXqaQLRHUrBxC6W8fX/frjsrh4mDAS5DzPqh0yb8bPnQ
-         pzvk1YK7E1myn/NU6cLkuW/NeTeg/jwgB+nJbtVodxW4UkqftWwcquGzsviHPXb0ACF0
-         0cjnfTvTOfPsWqoUGVYsVe5oCCN5mzhkKTek5MC7D6MfHaNy5eJ6itvhM7o3Kxkl5vwm
-         hd4qwtTwvO44kaf+HfSvipRezlIaya34S8RG8ZKIcc0kNNKt2xwqWD/oIafrjBsy38aj
-         ABBQw1k6U3rG3biihpUfnET9Y8ShduHDMhP1WYcLCAo1uFNwTk3ZPegbKTgyF+fnvDBv
-         AA2g==
-X-Gm-Message-State: AOJu0Yy+A8t6Ki80L5Jn8hi1DTdfE+MgdJZ8LfVfsnpCLTFjfinlwgJu
-        d+ojHYLf7+VppV3UT3Vh0zWcPtOmz7qnGkX+4vNBfg==
-X-Google-Smtp-Source: AGHT+IHqX1FgDxN0Mas1wc4pev7LzweHD3IABO+VgwAeIVNA6y5WXfAi4taMg2wCM+3ptaDOC8hcAkvkOunXNYaEWVM=
+        bh=b1VlSEnGZgno+VCZ2CMhUaRzE+QVLRzzBhFEmOew2zU=;
+        b=Sz5t9GnEi40IV8kYqKYPuF18EnhSVBJNfZev/e9hP/CxyXphbkDq3bVLVSvnX167IA
+         coLBriKAeXfcUaqdTfpvaeGqishx19TWQknzmTsDCLoouFLYjTpeN+49PvHtKhvUm2ac
+         vAcq2M5eAblB/23mXKpfpGM0X21xpep9L/zPyxJnxbVMKoAuWBlJHSiMYwpNaopVvoSp
+         icw/QOp3RWAj8J/5QgGCtCOB9Uc/zmI//IHT59XXHPkvhhgiQcxMKS54lMYyx7QJCe7b
+         VAlfdiO7W9EFXB/b8beq7TcRlRLOsYIWHkbNgbDDaLxayjeNr7L/+05Y1mmG/TgSbMuG
+         D/OA==
+X-Gm-Message-State: AOJu0YwL38do4WRyI2AFZzI37BqAb9SolVI+6KmAQC8GTaW9feVzEQsl
+        liqEL16kA2yuofC0I+jk/W+2AQmOdMeUHzHm9FF8rw==
+X-Google-Smtp-Source: AGHT+IGzqX6lfM4KPQZaOFHNso4U2b11m5YXW3DWX1mnMS9JBJdU3dcZ2THIjxAivTgEAatvr6FAe6c5mnJrC2Caufk=
 X-Received: by 2002:a17:903:1c1:b0:1c9:af6a:6d0d with SMTP id
- e1-20020a17090301c100b001c9af6a6d0dmr25087plh.9.1697482959233; Mon, 16 Oct
- 2023 12:02:39 -0700 (PDT)
+ e1-20020a17090301c100b001c9af6a6d0dmr25965plh.9.1697483128045; Mon, 16 Oct
+ 2023 12:05:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231009230858.3444834-1-rananta@google.com> <20231009230858.3444834-8-rananta@google.com>
- <b4739328-5dba-a3a6-54ef-2db2d34201d8@redhat.com>
-In-Reply-To: <b4739328-5dba-a3a6-54ef-2db2d34201d8@redhat.com>
+References: <20231009230858.3444834-1-rananta@google.com> <20231009230858.3444834-11-rananta@google.com>
+ <44608d30-c97a-c725-e8b2-0c5a81440869@redhat.com> <65b8bbdb-2187-3c85-0e5d-24befcf01333@redhat.com>
+ <CAJHc60zPc6eM+t7pOM19aKbf_9cMvj_LnPnG1EO35=EP0jG+Tg@mail.gmail.com> <ZS2HTdhFO2aywPpe@linux.dev>
+In-Reply-To: <ZS2HTdhFO2aywPpe@linux.dev>
 From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Mon, 16 Oct 2023 12:02:27 -0700
-Message-ID: <CAJHc60zpH8Y8h72=jUbshGoqye20FaHRcsb+TFDxkk7rhJAUxQ@mail.gmail.com>
-Subject: Re: [PATCH v7 07/12] KVM: arm64: PMU: Set PMCR_EL0.N for vCPU based
- on the associated PMU
-To:     Sebastian Ott <sebott@redhat.com>
-Cc:     Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
+Date:   Mon, 16 Oct 2023 12:05:16 -0700
+Message-ID: <CAJHc60xFwcDu6e6GTY3WYowBxnbkCWU-EgwEOVGd4Qu5F_h10A@mail.gmail.com>
+Subject: Re: [PATCH v7 10/12] KVM: selftests: aarch64: Introduce
+ vpmu_counter_access test
+To:     Oliver Upton <oliver.upton@linux.dev>
+Cc:     Sebastian Ott <sebott@redhat.com>, Marc Zyngier <maz@kernel.org>,
         Alexandru Elisei <alexandru.elisei@arm.com>,
         James Morse <james.morse@arm.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
@@ -83,45 +83,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 6:35=E2=80=AFAM Sebastian Ott <sebott@redhat.com> w=
-rote:
+On Mon, Oct 16, 2023 at 11:56=E2=80=AFAM Oliver Upton <oliver.upton@linux.d=
+ev> wrote:
 >
-> On Mon, 9 Oct 2023, Raghavendra Rao Ananta wrote:
-> > u64 kvm_vcpu_read_pmcr(struct kvm_vcpu *vcpu)
-> > {
-> > -     return __vcpu_sys_reg(vcpu, PMCR_EL0);
-> > +     u64 pmcr =3D __vcpu_sys_reg(vcpu, PMCR_EL0) &
-> > +                     ~(ARMV8_PMU_PMCR_N_MASK << ARMV8_PMU_PMCR_N_SHIFT=
-);
-> > +
-> > +     return pmcr | ((u64)vcpu->kvm->arch.pmcr_n << ARMV8_PMU_PMCR_N_SH=
-IFT);
-> > }
-> > diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-> > index ff0f7095eaca..c750722fbe4a 100644
-> > --- a/arch/arm64/kvm/sys_regs.c
-> > +++ b/arch/arm64/kvm/sys_regs.c
-> > @@ -745,12 +745,8 @@ static u64 reset_pmcr(struct kvm_vcpu *vcpu, const=
- struct sys_reg_desc *r)
-> > {
-> >       u64 pmcr;
+> On Fri, Oct 13, 2023 at 02:05:29PM -0700, Raghavendra Rao Ananta wrote:
+> > Oliver,
 > >
-> > -     /* No PMU available, PMCR_EL0 may UNDEF... */
-> > -     if (!kvm_arm_support_pmu_v3())
-> > -             return 0;
-> > -
-> >       /* Only preserve PMCR_EL0.N, and reset the rest to 0 */
-> > -     pmcr =3D read_sysreg(pmcr_el0) & (ARMV8_PMU_PMCR_N_MASK << ARMV8_=
-PMU_PMCR_N_SHIFT);
-> > +     pmcr =3D kvm_vcpu_read_pmcr(vcpu) & (ARMV8_PMU_PMCR_N_MASK << ARM=
-V8_PMU_PMCR_N_SHIFT);
+> > Aren't the selftest patches from the 'Enable writable ID regs' series
+> > [1] merged into kvmarm/next? Looking at the log, I couldn't find them
+> > and the last patch that went from the series was [2]. Am I missing
+> > something?
+> >
+> > Thank you.
+> > Raghavendra
+> >
+> > [1]: https://lore.kernel.org/all/169644154288.3677537.15121340860793882=
+283.b4-ty@linux.dev/
+> > [2]: https://lore.kernel.org/all/20231003230408.3405722-11-oliver.upton=
+@linux.dev/
 >
-> pmcr =3D ((u64)vcpu->kvm->arch.pmcr_n << ARMV8_PMU_PMCR_N_SHIFT);
-> Would that maybe make it more clear what is done here?
+> This is intentional, updating the tools headers as it was done in the
+> original series broke the perftool build. I backed out the selftest
+> patches, but took the rest of the kernel changes into kvmarm/next so
+> they could soak while we sort out the selftests mess. Hopefully we can
+> get the fix reviewed in time [*]...
 >
-Since we require the entire PMCR register, and not just the PMCR.N
-field, I think using kvm_vcpu_read_pmcr() would be technically
-correct, don't you think?
+> [*] https://lore.kernel.org/kvmarm/20231011195740.3349631-1-oliver.upton@=
+linux.dev/
+>
+> --
+Ah, I see. In that case, since it impacts this series, do you want me
+to rebase my series on top of your selftests series for v8?
 
 Thank you.
 Raghavendra
+> Thanks,
+> Oliver
