@@ -2,299 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2BB7CA7DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 945577CA7DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232155AbjJPMQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 08:16:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60014 "EHLO
+        id S231676AbjJPMSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 08:18:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231990AbjJPMQw (ORCPT
+        with ESMTP id S229621AbjJPMSq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 08:16:52 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 938708E
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 05:16:50 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1qsMWO-0006gq-PE; Mon, 16 Oct 2023 14:16:32 +0200
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <sha@pengutronix.de>)
-        id 1qsMWN-00252d-4x; Mon, 16 Oct 2023 14:16:31 +0200
-Received: from sha by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1qsMWN-00EjlH-1v; Mon, 16 Oct 2023 14:16:31 +0200
-Date:   Mon, 16 Oct 2023 14:16:31 +0200
-From:   Sascha Hauer <s.hauer@pengutronix.de>
-To:     Chanwoo Choi <chanwoo@kernel.org>
-Cc:     linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, kernel@pengutronix.de,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Vincent Legoll <vincent.legoll@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: Re: [PATCH v7 16/26] PM / devfreq: rockchip-dfi: Add perf support
-Message-ID: <20231016121631.GB3359458@pengutronix.de>
-References: <20230704093242.583575-1-s.hauer@pengutronix.de>
- <20230704093242.583575-17-s.hauer@pengutronix.de>
- <73ed646a-f20b-8050-2a45-c6faa5539193@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <73ed646a-f20b-8050-2a45-c6faa5539193@kernel.org>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 16 Oct 2023 08:18:46 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82D618E
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 05:18:44 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E5B1C433C8;
+        Mon, 16 Oct 2023 12:18:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697458724;
+        bh=z2XfNOibBFSJtXEMDbx7XhCPr9P+qBhf7ceO2ycDk9U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pmh9r6GppRfqE5/WV1pdO64cwQR5wOAnCH5o6733A1zKXIO8z2l+IqZYvRy33Yz11
+         frmNb3pt4hRipI7OpNE50xQzgHk87PQcqMWZ/3+oYfE8abxZxr9Amor6qPVbzLwPHo
+         rQ7uLGwN7H9SU3jzl7FaiwjjbKdwyW+LwUV0Et52UHEE+TdB3rSCqK6UM7pyeFaZ/3
+         8ua9bODJSl2gVLZW6FP52DoAnf1YnJ1Io0I9N4FtY+8TT5mP4LrElhfBSE7RlDo+tP
+         DeqZn7HYJQmagSgjvecWPJ8ZqfT/XMmMgHdPOculEjguitUsFJ1vt0o6oQK6cZVBSR
+         Bi5AUlWMNYG1w==
+Date:   Mon, 16 Oct 2023 21:18:37 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     "wuqiang.matt" <wuqiang.matt@bytedance.com>
+Cc:     linux-trace-kernel@vger.kernel.org, davem@davemloft.net,
+        anil.s.keshavamurthy@intel.com, naveen.n.rao@linux.ibm.com,
+        rostedt@goodmis.org, peterz@infradead.org,
+        akpm@linux-foundation.org, sander@svanheule.net,
+        ebiggers@google.com, dan.j.williams@intel.com, jpoimboe@kernel.org,
+        linux-kernel@vger.kernel.org, lkp@intel.com, mattwu@163.com
+Subject: Re: [PATCH v10 1/5] lib: objpool added: ring-array based lockless
+ MPMC
+Message-Id: <20231016211837.b6d425d8ed760bb3306910ae@kernel.org>
+In-Reply-To: <7758687f-06c1-d9b2-077a-34e79925a339@bytedance.com>
+References: <20231015053251.707442-1-wuqiang.matt@bytedance.com>
+        <20231015053251.707442-2-wuqiang.matt@bytedance.com>
+        <20231016004356.b5f3f815cb8d7c0994934332@kernel.org>
+        <1516f7d1-e11b-3244-76b9-e6ddafc29a32@bytedance.com>
+        <20231016082659.6ca94a5dff368783698753f9@kernel.org>
+        <7758687f-06c1-d9b2-077a-34e79925a339@bytedance.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 06:48:43AM +0900, Chanwoo Choi wrote:
-> On 23. 7. 4. 18:32, Sascha Hauer wrote:
-> > The DFI is a unit which is suitable for measuring DDR utilization, but
-> > so far it could only be used as an event driver for the DDR frequency
-> > scaling driver. This adds perf support to the DFI driver.
+Hi Wuqiang,
+
+On Mon, 16 Oct 2023 10:45:30 +0800
+"wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
+
+> On 2023/10/16 07:26, Masami Hiramatsu (Google) wrote:
+> > On Mon, 16 Oct 2023 00:06:11 +0800
+> > "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
 > > 
-> > Usage with the 'perf' tool can look like:
+> >> On 2023/10/15 23:43, Masami Hiramatsu (Google) wrote:
+> >>> On Sun, 15 Oct 2023 13:32:47 +0800
+> >>> "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
+> >>>
+> >>>> objpool is a scalable implementation of high performance queue for
+> >>>> object allocation and reclamation, such as kretprobe instances.
+> >>>>
+> >>>> With leveraging percpu ring-array to mitigate hot spots of memory
+> >>>> contention, it delivers near-linear scalability for high parallel
+> >>>> scenarios. The objpool is best suited for the following cases:
+> >>>> 1) Memory allocation or reclamation are prohibited or too expensive
+> >>>> 2) Consumers are of different priorities, such as irqs and threads
+> >>>>
+> >>>> Limitations:
+> >>>> 1) Maximum objects (capacity) is fixed after objpool creation
+> >>>> 2) All pre-allocated objects are managed in percpu ring array,
+> >>>>      which consumes more memory than linked lists
+> >>>>
+> >>>
+> >>> Thanks for updating! This looks good to me except 2 points.
+> >>>
+> >>> [...]
+> >>>> +
+> >>>> +/* initialize object pool and pre-allocate objects */
+> >>>> +int objpool_init(struct objpool_head *pool, int nr_objs, int object_size,
+> >>>> +		gfp_t gfp, void *context, objpool_init_obj_cb objinit,
+> >>>> +		objpool_fini_cb release)
+> >>>> +{
+> >>>> +	int rc, capacity, slot_size;
+> >>>> +
+> >>>> +	/* check input parameters */
+> >>>> +	if (nr_objs <= 0 || nr_objs > OBJPOOL_NR_OBJECT_MAX ||
+> >>>> +	    object_size <= 0 || object_size > OBJPOOL_OBJECT_SIZE_MAX)
+> >>>> +		return -EINVAL;
+> >>>> +
+> >>>> +	/* align up to unsigned long size */
+> >>>> +	object_size = ALIGN(object_size, sizeof(long));
+> >>>> +
+> >>>> +	/* calculate capacity of percpu objpool_slot */
+> >>>> +	capacity = roundup_pow_of_two(nr_objs);
+> >>>
+> >>> This must be 'roundup_pow_of_two(nr_objs + 1)' because if nr_objs is power
+> >>> of 2 and all objects are pushed on the same slot, tail == head. This
+> >>> means empty and full is the same.
+> >>
+> >> That won't happen. Would tail and head wrap only when >= 2^32. When all
+> >> objects are pushed to the same slot, tail will be (head + capacity).
 > > 
-> > perf stat -a -e rockchip_ddr/cycles/,\
-> > 		rockchip_ddr/read-bytes/,\
-> > 		rockchip_ddr/write-bytes/,\
-> > 		rockchip_ddr/bytes/ sleep 1
+> > Ah, indeed. OK.
 > > 
-> >  Performance counter stats for 'system wide':
+> >>
+> >>>
+> >>>> +	if (!capacity)
+> >>>> +		return -EINVAL;
+> >>>> +
+> >>>> +	/* initialize objpool pool */
+> >>>> +	memset(pool, 0, sizeof(struct objpool_head));
+> >>>> +	pool->nr_cpus = nr_cpu_ids;
+> >>>> +	pool->obj_size = object_size;
+> >>>> +	pool->capacity = capacity;
+> >>>> +	pool->gfp = gfp & ~__GFP_ZERO;
+> >>>> +	pool->context = context;
+> >>>> +	pool->release = release;
+> >>>> +	slot_size = pool->nr_cpus * sizeof(struct objpool_slot);
+> >>>> +	pool->cpu_slots = kzalloc(slot_size, pool->gfp);
+> >>>> +	if (!pool->cpu_slots)
+> >>>> +		return -ENOMEM;
+> >>>> +
+> >>>> +	/* initialize per-cpu slots */
+> >>>> +	rc = objpool_init_percpu_slots(pool, nr_objs, context, objinit);
+> >>>> +	if (rc)
+> >>>> +		objpool_fini_percpu_slots(pool);
+> >>>> +	else
+> >>>> +		refcount_set(&pool->ref, pool->nr_objs + 1);
+> >>>> +
+> >>>> +	return rc;
+> >>>> +}
+> >>>> +EXPORT_SYMBOL_GPL(objpool_init);
+> >>>> +
+> >>>
+> >>> [...]
+> >>>
+> >>>> +
+> >>>> +/* drop unused objects and defref objpool for releasing */
+> >>>> +void objpool_fini(struct objpool_head *pool)
+> >>>> +{
+> >>>> +	void *obj;
+> >>>> +
+> >>>> +	do {
+> >>>> +		/* grab object from objpool and drop it */
+> >>>> +		obj = objpool_pop(pool);
+> >>>> +
+> >>>> +		/*
+> >>>> +		 * drop reference of objpool anyway even if
+> >>>> +		 * the obj is NULL, since one extra ref upon
+> >>>> +		 * objpool was already grabbed during pool
+> >>>> +		 * initialization in objpool_init()
+> >>>> +		 */
+> >>>> +		if (refcount_dec_and_test(&pool->ref))
+> >>>> +			objpool_free(pool);
+> >>>
+> >>> Nit: you can call objpool_drop() instead of repeating the same thing here.
+> >>
+> >> objpool_drop won't deref objpool if given obj is NULL. But here we need
+> >> drop objpool anyway even if obj is NULL.
 > > 
-> >         1582524826      rockchip_ddr/cycles/
-> >            1802.25 MB   rockchip_ddr/read-bytes/
-> >            1793.72 MB   rockchip_ddr/write-bytes/
-> >            3595.90 MB   rockchip_ddr/bytes/
+> > I guess you decrement for the 'objpool' itself if obj=NULL, but I think
+> > it is a bit hacky (so you added the comment).
+> > e.g. rethook is doing something like below.
 > > 
-> >        1.014369709 seconds time elapsed
-> > 
-> > perf support has been tested on a RK3568 and a RK3399, the latter with
-> > dual channel DDR.
-> > 
-> > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> > Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 > > ---
+> > /* extra count for this pool itself */
+> > count = 1;
+> > /* make the pool empty */
+> > while (objpool_pop(pool))
+> > 	count++;
 > > 
-> > Notes:
-> >     Changes since v5:
-> >     - Add missing initialization of &dfi->last_perf_count
-> >     
-> >     Changes since v4:
-> >     
-> >     - use __stringify to ensure event type definitions and event numbers in sysfs are consistent
-> >     - only use 64bit values in structs holding counters
-> >     - support monitoring individual DDR channels
-> >     - fix return value in rockchip_ddr_perf_event_init(): -EOPNOTSUPP -> -EINVAL
-> >     - check for invalid event->attr.config values
-> >     - start hrtimer to trigger in one second, not immediately
-> >     - use devm_add_action_or_reset()
-> >     - add suppress_bind_attrs
-> >     - enable DDRMON during probe when perf is enabled
-> >     - use a seqlock to protect perf reading the counters from the hrtimer callback modifying them
+> > if (refcount_sub_and_test(count, &pool->ref))
+> > 	objpool_free(pool);
+> > ---
+> 
+> Right, that's reasonable. Better one single atomic operation than multiple.
+
+I found another comment issue about a small window which this may not work.
+This is not a real issue for this series because this doesn't happen on
+rethook/kretprobe, but if you apply this to other use-case, it must be
+cared.
+
+Since we use reserve-commit on 'push' operation, this 'pop' loop will miss
+an object which is under 'push' op. I mean
+
+CPU0                    CPU1
+
+objpool_fini() {
+do {
+                         objpool_push() {
+                            update slot->tail; // reserve
+  obj = objpool_pop();   
+                            update slot->last;  // commit
+} while (obj);
+
+In this case, the refcount can not be 0 and we can not release objpool.
+To avoid this, we make sure all ongoing 'push()' must be finished.
+
+Actually in the rethook/kretprobe, it already sync the rcu so this doesn't
+happen. So you should document it the user must use RCU sync after stop
+using the objpool, then call objpool_fini().
+
+E.g.
+
+start_using() {
+objpool_init();
+active = true;
+}
+
+obj_alloc() {
+rcu_read_lock();
+if (active)
+	obj = objpool_pop();
+else
+	obj = NULL;
+rcu_read_unlock();
+}
+
+/* use obj for something, it is OK to change the context */
+
+obj_return() {
+rcu_read_lock();
+if (active)
+	objpool_push(obj);
+else
+	objpool_drop(obj);
+rcu_read_unlock();
+}
+
+/* kretprobe style */
+stop_using() {
+active = false;
+synchronize_rcu();
+objpool_fini();
+}
+
+/* rethook style */
+stop_using() {
+active = false;
+call_rcu(objpool_fini);
+}
+
+Hmm, yeah, if we can add this 'active' flag to objpool, it is good. But
+since kretprobe has different design of the interface, it is hard.
+Anyway, can you add a comment that user must ensure that any 'push' including
+ongoing one does not happen while 'fini'? objpool does not care that so user
+must take care of that. For example using rcu_read_lock() for the 'push/pop'
+operation and rcu-sync before 'fini' operation.
+
+Thanks,
+
+> 
+> >>
+> >>> Thank you,
+> >>>
+> >>>> +	} while (obj);
+> >>>> +}
+> >>>> +EXPORT_SYMBOL_GPL(objpool_fini);
+> >>>> -- 
+> >>>> 2.40.1
+> >>>>
+> >>
+> >> Thanks for your time
+> >>
+> >>
 > > 
-> >  drivers/devfreq/event/rockchip-dfi.c | 442 ++++++++++++++++++++++++++-
-> >  include/soc/rockchip/rk3399_grf.h    |   2 +
-> >  include/soc/rockchip/rk3568_grf.h    |   1 +
-> >  3 files changed, 440 insertions(+), 5 deletions(-)
 > > 
-> > diff --git a/drivers/devfreq/event/rockchip-dfi.c b/drivers/devfreq/event/rockchip-dfi.c
-> > index 50e497455dc69..969b62f071b83 100644
-> > --- a/drivers/devfreq/event/rockchip-dfi.c
-> > +++ b/drivers/devfreq/event/rockchip-dfi.c
-> > @@ -16,10 +16,12 @@
-> >  #include <linux/regmap.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/list.h>
-> > +#include <linux/seqlock.h>
-> >  #include <linux/of.h>
-> >  #include <linux/of_device.h>
-> >  #include <linux/bitfield.h>
-> >  #include <linux/bits.h>
-> > +#include <linux/perf_event.h>
-> >  
-> >  #include <soc/rockchip/rockchip_grf.h>
-> >  #include <soc/rockchip/rk3399_grf.h>
-> > @@ -41,19 +43,39 @@
-> >  					 DDRMON_CTRL_LPDDR4 | \
-> >  					 DDRMON_CTRL_LPDDR23)
-> >  
-> > +#define DDRMON_CH0_WR_NUM		0x20
-> > +#define DDRMON_CH0_RD_NUM		0x24
-> >  #define DDRMON_CH0_COUNT_NUM		0x28
-> >  #define DDRMON_CH0_DFI_ACCESS_NUM	0x2c
-> >  #define DDRMON_CH1_COUNT_NUM		0x3c
-> >  #define DDRMON_CH1_DFI_ACCESS_NUM	0x40
-> >  
-> > +#define PERF_EVENT_CYCLES		0x0
-> > +#define PERF_EVENT_READ_BYTES		0x1
-> > +#define PERF_EVENT_WRITE_BYTES		0x2
-> > +#define PERF_EVENT_READ_BYTES0		0x3
-> > +#define PERF_EVENT_WRITE_BYTES0		0x4
-> > +#define PERF_EVENT_READ_BYTES1		0x5
-> > +#define PERF_EVENT_WRITE_BYTES1		0x6
-> > +#define PERF_EVENT_READ_BYTES2		0x7
-> > +#define PERF_EVENT_WRITE_BYTES2		0x8
-> > +#define PERF_EVENT_READ_BYTES3		0x9
-> > +#define PERF_EVENT_WRITE_BYTES3		0xa
-> > +#define PERF_EVENT_BYTES		0xb
-> > +#define PERF_ACCESS_TYPE_MAX		0xc
-> > +
-> >  /**
-> >   * struct dmc_count_channel - structure to hold counter values from the DDR controller
-> >   * @access:       Number of read and write accesses
-> >   * @clock_cycles: DDR clock cycles
-> > + * @read_access:  number of read accesses
-> > + * @write_acccess: number of write accesses
-> >   */
-> >  struct dmc_count_channel {
-> > -	u32 access;
-> > -	u32 clock_cycles;
-> > +	u64 access;
-> > +	u64 clock_cycles;
-> > +	u64 read_access;
-> > +	u64 write_access;
-> >  };
-> >  
-> >  struct dmc_count {
-> > @@ -69,6 +91,11 @@ struct rockchip_dfi {
-> >  	struct devfreq_event_dev *edev;
-> >  	struct devfreq_event_desc desc;
-> >  	struct dmc_count last_event_count;
-> > +
-> > +	struct dmc_count last_perf_count;
-> > +	struct dmc_count total_count;
-> > +	seqlock_t count_seqlock; /* protects last_perf_count and total_count */
-> > +
-> >  	struct device *dev;
-> >  	void __iomem *regs;
-> >  	struct regmap *regmap_pmu;
-> > @@ -77,6 +104,14 @@ struct rockchip_dfi {
-> >  	struct mutex mutex;
-> >  	u32 ddr_type;
-> >  	unsigned int channel_mask;
-> > +	enum cpuhp_state cpuhp_state;
-> > +	struct hlist_node node;
-> > +	struct pmu pmu;
-> > +	struct hrtimer timer;
-> > +	unsigned int cpu;
-> > +	int active_events;
-> > +	int burst_len;
-> > +	int buswidth[DMC_MAX_CHANNELS];
-> >  };
-> >  
-> >  static int rockchip_dfi_enable(struct rockchip_dfi *dfi)
-> > @@ -145,7 +180,7 @@ static void rockchip_dfi_disable(struct rockchip_dfi *dfi)
-> >  	mutex_unlock(&dfi->mutex);
-> >  }
-> >  
-> > -static void rockchip_dfi_read_counters(struct rockchip_dfi *dfi, struct dmc_count *count)
-> > +static void rockchip_dfi_read_counters(struct rockchip_dfi *dfi, struct dmc_count *c)
 > 
-> Actually, this change is not related to the patch's role which supports perf.
-> Also, it is better to use 'res' argument name because rockchip_ddr_perf_counters_add()
-> used the 'struct dmc_count *res' argument name.
 
-Indeed the variable rename is not required here and for consistency
-with rockchip_ddr_perf_counters_add() 'res' would be a better name.
-
-Are you fine with renaming 'c' to 'res' in this patch or do you want me
-to make a separate patch from the renaming?
-
-> 
-> 
-> >  {
-> >  	u32 i;
-> >  	void __iomem *dfi_regs = dfi->regs;
-> > @@ -153,13 +188,36 @@ static void rockchip_dfi_read_counters(struct rockchip_dfi *dfi, struct dmc_coun
-> >  	for (i = 0; i < DMC_MAX_CHANNELS; i++) {
-> >  		if (!(dfi->channel_mask & BIT(i)))
-> >  			continue;
-> > -		count->c[i].access = readl_relaxed(dfi_regs +
-> > +		c->c[i].read_access = readl_relaxed(dfi_regs +
-> > +				DDRMON_CH0_RD_NUM + i * 20);
-> > +		c->c[i].write_access = readl_relaxed(dfi_regs +
-> > +				DDRMON_CH0_WR_NUM + i * 20);
-> > +		c->c[i].access = readl_relaxed(dfi_regs +
-> >  				DDRMON_CH0_DFI_ACCESS_NUM + i * 20);
-> > -		count->c[i].clock_cycles = readl_relaxed(dfi_regs +
-> > +		c->c[i].clock_cycles = readl_relaxed(dfi_regs +
-> >  				DDRMON_CH0_COUNT_NUM + i * 20);
-> >  	}
-> >  }
-> >  
-> > +static void rockchip_ddr_perf_counters_add(struct rockchip_dfi *dfi,
-> > +					   const struct dmc_count *now,
-> > +					   struct dmc_count *res)
-> > +{
-> > +	const struct dmc_count *last = &dfi->last_perf_count;
-> > +	int i;
-> > +
-> > +	for (i = 0; i < DMC_MAX_CHANNELS; i++) {
-> > +		res->c[i].read_access = dfi->total_count.c[i].read_access +
-> > +			(u32)(now->c[i].read_access - last->c[i].read_access);
-> > +		res->c[i].write_access = dfi->total_count.c[i].write_access +
-> > +			(u32)(now->c[i].write_access - last->c[i].write_access);
-> > +		res->c[i].access = dfi->total_count.c[i].access +
-> > +			(u32)(now->c[i].access - last->c[i].access);
-> > +		res->c[i].clock_cycles = dfi->total_count.c[i].clock_cycles +
-> > +			(u32)(now->c[i].clock_cycles - last->c[i].clock_cycles);
-> > +	}
-> > +}
-> > +
-> >  static int rockchip_dfi_event_disable(struct devfreq_event_dev *edev)
-> >  {
-> >  	struct rockchip_dfi *dfi = devfreq_event_get_drvdata(edev);
-> > @@ -223,6 +281,370 @@ static const struct devfreq_event_ops rockchip_dfi_ops = {
-> >  	.set_event = rockchip_dfi_set_event,
-> >  };
-> >  
-
-[...]
-
-> > +static u64 rockchip_ddr_perf_event_get_count(struct perf_event *event)
-> > +{
-> > +	struct rockchip_dfi *dfi = container_of(event->pmu, struct rockchip_dfi, pmu);
-> > +	int blen = dfi->burst_len;
-> > +	struct dmc_count total, now;
-> > +	unsigned int seq;
-> > +	u64 c = 0;
-> 
-> Actually, it is difficult to understand the meaning of 'c' local variable name.
-> Need to use the more clear vairable name instead of 'c'.
-
-'c' is short for 'count' as in the function name xxx_get_count(). It is
-initialized to 0, filled with values throughout the function and
-returned at the end. Which other name do you suggest?
-
-Sascha
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
