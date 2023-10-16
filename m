@@ -2,121 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FAD7CB3B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6437CB3B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233419AbjJPUIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 16:08:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39284 "EHLO
+        id S232996AbjJPUJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 16:09:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232217AbjJPUII (ORCPT
+        with ESMTP id S231221AbjJPUJe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 16:08:08 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0578D83
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:08:06 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-53de0d1dc46so8615850a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:08:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697486884; x=1698091684; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3//5wXEK6wkrq5JXyoehSNgqGXcQbC5VyDpkqHpeQLs=;
-        b=O2MZwPvfMJ+NKUX+knSxLhGnaHJAg36Q7r42AnzBIEfBiLp6THJtG4RDDM4NwTJjvq
-         z+ieQm5MjHnySv6YBsmZtEJB9IZYxJuDy5IQMhQZtXKeXC2jLWhMxi086yKAAkxtBBhV
-         XXnBXnAvqrKdporJmxpxxwHJs1X0f7jkh/rbCG7INpj8bZmYDUlNO8wqDSPuQeShxQZ6
-         Eb8ELlun6pSzMB8lLWORmg5uxOfcoZ5Rq8Y+myd3JSoOsy/7XrLCQHe1NZUWl6yDW8BW
-         oKanAy9Ue3fLB+fCndzszNM67ByWqtcCvGrV8r32zqHku0gQjE3Roc8OUOz0haE+q+b/
-         mNLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697486884; x=1698091684;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3//5wXEK6wkrq5JXyoehSNgqGXcQbC5VyDpkqHpeQLs=;
-        b=FIC72tYXASOMfzq90d/8NZ0g82+pY6mzqD2ztrLcOIwVVKv8N1+LeLv98rRS2H7noQ
-         B7p5bMaFlQFeTWWyfKGRNv6JkwXV4Wu2dJE4Ta29xfCI2myY/5SQ2x5nrnmjKuGgL4d3
-         D67hWAGLiTjiOfW1Vn/bKJR05s2DSwNnC685zUTZ03WSIeipP81QKU3cQpH56pOm3kjL
-         BNJ7LBusDM5pFdgcHSpXOCZMLdx4FxWWWKak76ajuooi94YqonRO82veSjePUXMFuLr8
-         t3Tfhp82FbaKoaFf/rV3M+iNtzHDa/7CDjtB4SUOIyRV1t5rkH8ilCHQ1Ld/CdbLPXVW
-         0SoQ==
-X-Gm-Message-State: AOJu0YyJXVcqriYvdYXZ1e/F1DSWXetlDE4O7EcMTNb6T5aon55NIeWR
-        gMUNPTzWabGAqJHbMwjlL9s=
-X-Google-Smtp-Source: AGHT+IE8K34aCkvuZc2wZVBO1jlEOeeJlH1dL2AAL+gpO2L4ndUet/4bry1ybEZvebM9xXEUPSe9wQ==
-X-Received: by 2002:a17:907:31cd:b0:9ae:6ad0:f6db with SMTP id xf13-20020a17090731cd00b009ae6ad0f6dbmr69308ejb.71.1697486884051;
-        Mon, 16 Oct 2023 13:08:04 -0700 (PDT)
-Received: from localhost.localdomain ([46.248.82.114])
-        by smtp.gmail.com with ESMTPSA id a13-20020a170906368d00b0099cf9bf4c98sm4571040ejc.8.2023.10.16.13.08.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 13:08:03 -0700 (PDT)
-From:   Uros Bizjak <ubizjak@gmail.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     Uros Bizjak <ubizjak@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH] x86/percpu: Use correct asm operand modifier in percpu_stable_op
-Date:   Mon, 16 Oct 2023 22:07:30 +0200
-Message-ID: <20231016200755.287403-1-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Mon, 16 Oct 2023 16:09:34 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8643C83
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:09:33 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8126CC433C8;
+        Mon, 16 Oct 2023 20:09:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697486973;
+        bh=RpFwpEjjw4hJ7B1Z4cK20onhtIjTiNBnDbHOS4Sy1JE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=oWcP2frNFRtqkU/QYvUgGpWLjWYPq0lsoHhihsZ1pOUX6Cr16FU6g+uKDzgIlYX3V
+         09KzDJxwrhdlo3/I/9/JJJIiWp0XKjlIhY5auTT7g4PeKHjIZLAdhk51KN/1cvECG1
+         9iYjs4hxQCqNFZuAexRg/8dZHQEC1kJb+dDsLu2SYNTDOFjrQL+Sb+HkL4aHhv1+nG
+         0zvLGTIQ/Vi/PTqJ+C3tQzPlkxibOk9++gXWlCDt0wwFPau/aKF8SoZADD44RmQJBY
+         QuvTAn1Lk9lns/PNLOnjMDvakyGN4CebvOPL50wFy2Lx+6TeJ7LYRMAhJTK6f3G6yQ
+         H9Nj7nV8TJSAg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Haibo Li <haibo.li@mediatek.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Kees Cook <keescook@chromium.org>, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH] kasan: disable kasan_non_canonical_hook() for HW tags
+Date:   Mon, 16 Oct 2023 22:08:38 +0200
+Message-Id: <20231016200925.984439-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"P" asm operand modifier is a x86 target-specific modifier. When used
-for a constant, it drops all syntax-specific prefixes and issues the
-bare constant. This modifier is not correct for address handling,
-in this case a generic "a" operand modifier should be used.
+From: Arnd Bergmann <arnd@arndb.de>
 
-"a" asm operand modifier substitutes a nemory reference, with the
-actual operand treated as address.  For x86_64, when a symbol is
-provided, the "a" modifier emits "sym(%rip)" instead of "sym",
-enabling shorter %rip-relative addressing.
+On arm64, building with CONFIG_KASAN_HW_TAGS now causes a compile-time
+error:
 
-Clang allows only "i" and "r" opreand constraints with "a" modifier,
-so the patch normalizes the modifier/constraint pair to "a"/"i"
-which is consistent between both compilers.
+mm/kasan/report.c: In function 'kasan_non_canonical_hook':
+mm/kasan/report.c:637:20: error: 'KASAN_SHADOW_OFFSET' undeclared (first use in this function)
+  637 |         if (addr < KASAN_SHADOW_OFFSET)
+      |                    ^~~~~~~~~~~~~~~~~~~
+mm/kasan/report.c:637:20: note: each undeclared identifier is reported only once for each function it appears in
+mm/kasan/report.c:640:77: error: expected expression before ';' token
+  640 |         orig_addr = (addr - KASAN_SHADOW_OFFSET) << KASAN_SHADOW_SCALE_SHIFT;
 
-The patch reduces code size of a test build for 4072 bytes:
+This was caused by removing the dependency on CONFIG_KASAN_INLINE that
+used to prevent this from happening. Use the more specific dependency
+on KASAN_SW_TAGS || KASAN_GENERIC to only ignore the function for hwasan
+mode.
 
-25519196        4388300  808452 30715948        1d4b02c vmlinux-new.o
-25523268        4388300  808452 30720020        1d4c014 vmlinux-old.o
-
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Fixes: 12ec6a919b0f ("kasan: print the original fault addr when access invalid shadow")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/x86/include/asm/percpu.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+It looks like the comment above the function needs to be adjusted
+as well, and it's possible we should still provide it even for
+hwasan but fix it in a different way.
 
-diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
-index 54746903b8c3..ac3220aeb779 100644
---- a/arch/x86/include/asm/percpu.h
-+++ b/arch/x86/include/asm/percpu.h
-@@ -194,9 +194,9 @@ do {									\
- #define percpu_stable_op(size, op, _var)				\
- ({									\
- 	__pcpu_type_##size pfo_val__;					\
--	asm(__pcpu_op2_##size(op, __force_percpu_arg(P[var]), "%[val]")	\
-+	asm(__pcpu_op2_##size(op, __force_percpu_arg(a[var]), "%[val]")	\
- 	    : [val] __pcpu_reg_##size("=", pfo_val__)			\
--	    : [var] "p" (&(_var)));					\
-+	    : [var] "i" (&(_var)));					\
- 	(typeof(_var))(unsigned long) pfo_val__;			\
- })
+I saw this a few days ago but didn't actually send the patch right away, so there
+is a good chance that someone has already produced a better patch, just ignore
+my report in that case.
+---
+ include/linux/kasan.h | 6 +++---
+ mm/kasan/report.c     | 4 +++-
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index 485452e8cc0dc..72cb693b075b7 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -468,10 +468,10 @@ static inline void kasan_free_module_shadow(const struct vm_struct *vm) {}
  
+ #endif /* (CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS) && !CONFIG_KASAN_VMALLOC */
+ 
+-#ifdef CONFIG_KASAN
++#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+ void kasan_non_canonical_hook(unsigned long addr);
+-#else /* CONFIG_KASAN */
++#else /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
+ static inline void kasan_non_canonical_hook(unsigned long addr) { }
+-#endif /* CONFIG_KASAN */
++#endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
+ 
+ #endif /* LINUX_KASAN_H */
+diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+index b738be3b6e5cc..e77facb629007 100644
+--- a/mm/kasan/report.c
++++ b/mm/kasan/report.c
+@@ -621,8 +621,9 @@ void kasan_report_async(void)
+ }
+ #endif /* CONFIG_KASAN_HW_TAGS */
+ 
++#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+ /*
+- * With CONFIG_KASAN, accesses to bogus pointers (outside the high
++ * With CONFIG_KASAN_INLINE, accesses to bogus pointers (outside the high
+  * canonical half of the address space) cause out-of-bounds shadow memory reads
+  * before the actual access. For addresses in the low canonical half of the
+  * address space, as well as most non-canonical addresses, that out-of-bounds
+@@ -658,3 +659,4 @@ void kasan_non_canonical_hook(unsigned long addr)
+ 	pr_alert("KASAN: %s in range [0x%016lx-0x%016lx]\n", bug_type,
+ 		 orig_addr, orig_addr + KASAN_GRANULE_SIZE - 1);
+ }
++#endif
 -- 
-2.41.0
+2.39.2
 
