@@ -2,68 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8C9E7CA63D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 13:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F01C27CA63E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 13:05:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232994AbjJPLFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 07:05:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46420 "EHLO
+        id S232447AbjJPLFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 07:05:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232974AbjJPLFD (ORCPT
+        with ESMTP id S231442AbjJPLFr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 07:05:03 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B22BEB4;
-        Mon, 16 Oct 2023 04:05:01 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c501bd6ff1so45180711fa.3;
-        Mon, 16 Oct 2023 04:05:01 -0700 (PDT)
+        Mon, 16 Oct 2023 07:05:47 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A7AB4
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 04:05:41 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-32da4ffd7e5so1015257f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 04:05:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697454300; x=1698059100; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697454340; x=1698059140; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=N6dSXg+vWqlViQZ7pvaQOjS16WN6O2z0EqZFtWA/VVw=;
-        b=X2KZusCIS/61L3auZBDPnqazMPYQlgWOr4h3RnvEFF0rjHiDH0gKK49E06eWLAsJI7
-         fvyqjn42ZJczR7lHxlxJvMeRTzA6YRuqldAhMOeAbn9sQu5zKa7vMsgbeCwtYx4HbYY+
-         uGY6JrxfkUSIxPIndoqekbQjiREHUxBuohH661vfKQgsM6hEw1y1/dzeCD2Ak6+Qj57Q
-         X92y0tGjxhe+rM6Yq9FWgu2hoJCxhK4ORqyUula07zQZ0ZTxMgcdV5meXyZCWRjz+aE/
-         nBifCFEer+6m/Y4BBEk28CFpy5g0LazYr7sF2T1not3aYw9jcUpIcjkIbWEAK37dbG4Z
-         yprQ==
+        bh=3Syi+h4/GlkdC/FXeBhfgw8IzyShvR4nN+L5IxDsfCY=;
+        b=UivXsDRDu+ORh5PR8x39RRQ+rItPpN9AwqnGdHJUz33bT0RQ0T4ZCSWDWnpDlyIKwb
+         CslmEkTkMNwq8HxQoyZNzY4m7xj02VH9r7Szi0L3uiKMZdE86t/2+wfG1G/lDWqgzUfh
+         iAYdVrAqRRvbtUwQFnRt5xJKD64c7GVZRvNIuJ1oA6tiMMf+oKnplNWQryEi21Yw6TBG
+         okFw2raOJTeA1lHDWK0lG+GqUEqqhhuTp6XJTA0l5G034RehAIhL4jm4nb+IgWSl+QKz
+         NHTd73Dt5hkgV8lBTwEdK5evSlpESJbZ6WsQCzF407ix4KwCAQMwVSe5zfmarR2LTj3E
+         1sTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697454300; x=1698059100;
+        d=1e100.net; s=20230601; t=1697454340; x=1698059140;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=N6dSXg+vWqlViQZ7pvaQOjS16WN6O2z0EqZFtWA/VVw=;
-        b=E9hbj05H8ImFtdT/3J6NN2uuMxN1Chnm/bSQ50D91Q/poiANUrAZ2kYVfmMh1RGdqc
-         wfLGGLu6AYFD3Z2QuIn597fRruXLxikM7icr2O1p4bBqAVZasZEcMXb4Z1+ADbfW+k7M
-         SGOLIiVJCvwuuFBEvP2ZW5NQnTLoX7fcKDEQreHoRA/i0LJlDNoSkZPD/s8CDMJOuMkw
-         XqKrjUf8WRDWAwELNt8uNpgfCffuT2+TH2/7tKZVSj+RCCcF48/v9gN1B8itQ1xpHBHt
-         OHXii11twrV2Iihb2H8X4LmW16XHist7rUCL1/MxuU3ITtNCVo3G/DUU/Q5FZue8N5CU
-         sADQ==
-X-Gm-Message-State: AOJu0YxAyayV+f/RTXLNFngBx66Rboccp+FncrOaBeOL5REpcUGLJQky
-        lIb/v7e1pMIuDpJV9zO9Ye2rRSHJBiIDEQ==
-X-Google-Smtp-Source: AGHT+IE5WXbg3xeYYdwJOB/JSElE8Ux/VtDghmt9oxK+zws1wRbx2GGjHCCFwAt4t8qFpcOxxDIIiQ==
-X-Received: by 2002:ac2:4247:0:b0:507:ab66:f118 with SMTP id m7-20020ac24247000000b00507ab66f118mr2549170lfl.68.1697454299865;
-        Mon, 16 Oct 2023 04:04:59 -0700 (PDT)
-Received: from dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi (dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::7])
-        by smtp.gmail.com with ESMTPSA id b22-20020ac247f6000000b0050363f87c64sm4519363lfp.36.2023.10.16.04.04.58
+        bh=3Syi+h4/GlkdC/FXeBhfgw8IzyShvR4nN+L5IxDsfCY=;
+        b=JJogYGlPwjxeqZsmivVvSJxdaUIIG2+/XJ1JLeizJLqTAbXHcrfg3xv0PwmWjG/W9D
+         57cHvZ4Cui1ZUidEXHpSs058WHX3EY4ZEWd/Izuyh1kWs4I7ubvcSF6ESciIPrU+HC9M
+         G5nnSc05TxSxvk+KY6CkQxzwOM4MQsG4U4CYMDmLHRxS6ZZQcglwOJt110ewP1S7Wy+m
+         BDiJx47uLGzTV1lwIdJcL9iVuOLzNF4ANy2kwA25FFdeqJjJ5pG+ZLyAO1LdPshNX66i
+         DnxBjvYdbMNG4gjTPRLRBAvxki1qJZEoDBofAY+vqyPTDUlA39jDKiUv3KBOAOuh2G+M
+         BJ8Q==
+X-Gm-Message-State: AOJu0Yy2Iw3Kk4om7H8I68RkrcN5tPepGfvJ4B3Z9ogn5whz5hCrTYLg
+        /ZvH8uNj+V6S8gvlRs/SKjg=
+X-Google-Smtp-Source: AGHT+IHcWQxGKBWB6Ru+kU1QqtsJt1pKDdeOgjo/JB9S2wBXG17gJDZ7JSgMTrjK4LS91xjoJXU6Uw==
+X-Received: by 2002:a05:6000:24c:b0:32d:be70:3779 with SMTP id m12-20020a056000024c00b0032dbe703779mr205799wrz.9.1697454339449;
+        Mon, 16 Oct 2023 04:05:39 -0700 (PDT)
+Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
+        by smtp.gmail.com with ESMTPSA id p18-20020a05600c431200b0040642a1df1csm6801770wme.25.2023.10.16.04.05.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 04:04:58 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 14:04:55 +0300
-From:   Matti Vaittinen <mazziesaccount@gmail.com>
-To:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] iio: buffer: document known issue
-Message-ID: <ef61c2c1e9a1c5e9f713f656871fdcb1652afdc2.1697452986.git.mazziesaccount@gmail.com>
-References: <cover.1697452986.git.mazziesaccount@gmail.com>
+        Mon, 16 Oct 2023 04:05:38 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 12:05:37 +0100
+From:   Lorenzo Stoakes <lstoakes@gmail.com>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, lkft-triage@lists.linaro.org,
+        "Reviewed-by: Jan Kara" <jack@suse.cz>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Hugh Dickins <hughd@google.com>, willy@infradead.org,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: mm: Unable to handle kernel NULL pointer dereference at virtual
+ address - mmap_region (include/linux/fs.h:580 mm/mmap.c:2946)
+Message-ID: <48534660-d5f7-45b2-8f99-19c8fb3e51c8@lucifer.local>
+References: <CA+G9fYtL7wK-dE-Tnz4t-GWmQb50EPYa=TWGjpgYU2Z=oeAO_w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="AmYoofSM0ro6sMkn"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1697452986.git.mazziesaccount@gmail.com>
+In-Reply-To: <CA+G9fYtL7wK-dE-Tnz4t-GWmQb50EPYa=TWGjpgYU2Z=oeAO_w@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -74,79 +82,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 16, 2023 at 03:52:07PM +0530, Naresh Kamboju wrote:
+> Following kernel crash noticed while running LTP hugetlb and selftests on
+> qemu-x86_64 and qemu-arm64 running with Linux next 6.6.0-rc6-next-20231016.
+>
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+>
+> Test Logs:
+> -----
 
---AmYoofSM0ro6sMkn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[snip]
 
-Add documentation explaining why the code which scans all available scan
-masks is checking only a single long worth of bits even though the code
-was intended to be supporting masks wider than single long.
+> <4>[   97.499871] Call trace:
+> <4>[ 97.500288] mmap_region (include/linux/fs.h:580 mm/mmap.c:2946)
 
-Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
----
- drivers/iio/industrialio-buffer.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+OK this is from a patch of mine, and an easy fix (incorrect assumption about
+vm->vm_file == file).
 
-diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-b=
-uffer.c
-index 176d31d9f9d8..09c41e9ccf87 100644
---- a/drivers/iio/industrialio-buffer.c
-+++ b/drivers/iio/industrialio-buffer.c
-@@ -413,6 +413,22 @@ static const unsigned long *iio_scan_mask_match(const =
-unsigned long *av_masks,
- {
- 	if (bitmap_empty(mask, masklength))
- 		return NULL;
-+	/*
-+	 * The condition here do not handle multi-long masks correctly.
-+	 * It only checks the first long to be zero, and will use such mask
-+	 * as a terminator even if there was bits set after the first long.
-+	 *
-+	 * Correct check would require using:
-+	 * while (!bitmap_empty(av_masks, masklength))
-+	 * instead. This is potentially hazardous because the
-+	 * avaliable_scan_masks is a zero terminated array of longs - and
-+	 * using the proper bitmap_empty() check for multi-long wide masks
-+	 * would require the array to be terminated with multiple zero longs -
-+	 * which is not such an usual pattern.
-+	 *
-+	 * As writing of this no multi-long wide masks were found in-tree, so
-+	 * the simple while (*av_masks) check is working.
-+	 */
- 	while (*av_masks) {
- 		if (strict) {
- 			if (bitmap_equal(mask, av_masks, masklength))
---=20
-2.41.0
+I will put a fix forward tonight.
 
+> <4>[ 97.500814] do_mmap (mm/mmap.c:1379)
+> <4>[ 97.501243] vm_mmap_pgoff (mm/util.c:546)
+> <4>[ 97.501711] ksys_mmap_pgoff (mm/mmap.c:1425)
+> <4>[ 97.502166] __arm64_sys_mmap (arch/arm64/kernel/sys.c:21)
+> <4>[ 97.502634] invoke_syscall (arch/arm64/include/asm/current.h:19
+> arch/arm64/kernel/syscall.c:56)
+> <4>[ 97.503175] el0_svc_common.constprop.0
+> (include/linux/thread_info.h:127 (discriminator 2)
+> arch/arm64/kernel/syscall.c:144 (discriminator 2))
+> <4>[ 97.503763] do_el0_svc (arch/arm64/kernel/syscall.c:156)
+> <4>[ 97.504191] el0_svc (arch/arm64/include/asm/daifflags.h:28
+> arch/arm64/kernel/entry-common.c:133
+> arch/arm64/kernel/entry-common.c:144
+> arch/arm64/kernel/entry-common.c:679)
 
---=20
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =3D]=20
-
---AmYoofSM0ro6sMkn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmUtGNcACgkQeFA3/03a
-ocWMqggAh3OkVyVf1/GokE7MDORJJyRrq+HheDQj17woZx7SToxe3ne6m13rPfvj
-5/RFOdTzCd3l8LwqKKd5Dg/1LHqLNwkmSMnxuriGRDRRmA0woHJeJfI8C2jd2DtL
-pdx0cQ+k6zfgjFczu8vvrnwad1i6qZwv/5zH8XYuHDps0LfMoU7N4DasTmevLA56
-3rRj0+f/AMq1npJ+cS5Uak59dgVHFm6brqCptoIMC1ZRRcWL2ym6K9dXS0Yx3BGz
-I4GbC2B7rWIEs/XFVM9wWZDSi+bTAzgk2A4AUIuW9QfJ8eyEADQB2J7b87u3d+/9
-TVMRW9XSRs8DE4QzzCxGzNajyPG1Hg==
-=2yU6
------END PGP SIGNATURE-----
-
---AmYoofSM0ro6sMkn--
+[snip]
