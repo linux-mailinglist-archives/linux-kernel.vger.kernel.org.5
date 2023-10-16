@@ -2,73 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82FFB7CB134
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 19:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B52E57CB139
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 19:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232516AbjJPRTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 13:19:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39290 "EHLO
+        id S232936AbjJPRU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 13:20:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjJPRTr (ORCPT
+        with ESMTP id S232080AbjJPRUY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 13:19:47 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0899B9F
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 10:19:44 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-7a24c86aae3so57918439f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 10:19:44 -0700 (PDT)
+        Mon, 16 Oct 2023 13:20:24 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B53A1;
+        Mon, 16 Oct 2023 10:20:23 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c50d1b9f22so32782701fa.0;
+        Mon, 16 Oct 2023 10:20:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1697476783; x=1698081583; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QgUa+mKvmsmGKgSXxgXS6XuuY5vQ/8sgjMNQWn66qJU=;
-        b=ZAgpocJEXXYkm5caiZ4CN5fHG0ZSWLSXEMEztK+uOTyjLaleHYlZv7xdtNvdSCwCg2
-         iMKfbhtopRFsabF0LDQ3GFWRBNaV9YtqfI2g1olPMxEWp7WcmkdE4iGYlDzFYRJ0zqwL
-         APMZM31DZMdAKAt6KFELS5NVdlvfsWWftF75E=
+        d=gmail.com; s=20230601; t=1697476821; x=1698081621; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lWfEcOW2L2k+xynXBCBlj/nQZn7LeFqtR6Gjd7zepfs=;
+        b=VpGn/ARFON8bf7cvF72LX81UPmIOQUSVDZp8NPb4R4CbjqYfEmaiyY4930XaqR0d4R
+         ee9ZIHQ/0mqenoeM5gqOvvfl0rVogJ9/8vDE70EbEF2s5sjxzpPy9g3y3fT91Qm93fIp
+         ThfQnFpKABxKw+sJtT59wj/hdFkk2y5w9/NJRWZsCfX85SeAUSlVwRDgIDlhchn1zX+0
+         6J9cnLmY8LCuiTxUyCB3sB4fTy3sCj8xT9oApPZLwie5KFvdpaLXjHu/CK/HTJGVoFXp
+         xKk0vGa8zeaCkDQQ43+wYHZkzNGiPrjcG6E8EpJ2e6B516JtMoJznxn1L/C2sobKzDH8
+         VFHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697476783; x=1698081583;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QgUa+mKvmsmGKgSXxgXS6XuuY5vQ/8sgjMNQWn66qJU=;
-        b=bJ4m71Git9nEaYNrlncM4NNICwqehtx6gnWVv0qQ1m61055yFlbSWOFCm7f1XwmsIS
-         cJ7/CuLta6TErZ4/AcJWnj7CPk3K1NbpqGYPz40o/8wuG4ssC9E8DuAE5LddlzUMyswp
-         krvjNMIObHjg96g51u6QUsv4WdlYYwSoF+buyHyLUY9KGq6H4jPY+jxo+kN1+j25GGAC
-         w+EX6XV3TZWfx5Hosxo6lDB0iSoMimcD/tB9ijO50TCowHH+oaeRa7ViORz1S0ChTpsy
-         J+sp8ZEoSyaN+1k/Cs5O9bF8/1Jd4IHha06CK1t/BRPpbF636/sEKfClxEcqwY4dXM6+
-         qAXg==
-X-Gm-Message-State: AOJu0YyzU1wmngiamFklnUlgb0O1bQU4wwdG0hPfqeGm08lCngmr4zPw
-        PyxwT6TFilpNl6H1uQs4NFCVp/9UqDOD1AIS2ts=
-X-Google-Smtp-Source: AGHT+IH01KOJB7womZ3bhd3IAY5anUtTZrEzFuuJ1qqL/RrjkhKbEMdf0j89Pwsvv9woipq/08kmpQ==
-X-Received: by 2002:a92:cac7:0:b0:351:54db:c1bc with SMTP id m7-20020a92cac7000000b0035154dbc1bcmr98759ilq.0.1697476783349;
-        Mon, 16 Oct 2023 10:19:43 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id r2-20020a92c502000000b00350b7a9f0c1sm3498858ilg.62.2023.10.16.10.19.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 10:19:42 -0700 (PDT)
-Message-ID: <8328df87-67d0-43a8-aa6a-4b9587089e3a@linuxfoundation.org>
-Date:   Mon, 16 Oct 2023 11:19:41 -0600
+        d=1e100.net; s=20230601; t=1697476821; x=1698081621;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lWfEcOW2L2k+xynXBCBlj/nQZn7LeFqtR6Gjd7zepfs=;
+        b=D+36TOm+ljgXuIJnNCnkE8SAJSL8Aw+LqEhqsoBLZFdbMOFeNy+fHWvHi2HEaBKD6E
+         e/CDAAT0Sts/01RD/SyEcSC2Q9TCVQwswQ4excQhbqdZmDIgSGM33Zyx/wtmfB4KqLZs
+         97Or+jyrGlt56UZmURdk5mGcM6h0TY/XgyfG1DtkPehYvY+QY+Sqny8+EoKOwhmypiDH
+         8ru0otVETpBOlqAIiw8S1SiMw1dbgNMHk322MXOTHG6/P/dWevBMC3FCEw/V4rO1UpYO
+         rad9ExNCxV9Xd0J1CFyT5h6ooB/ZAcqYE7B7gLgkdN5dfPelu11ts0g2ZTnFjOxvwQMZ
+         eMqA==
+X-Gm-Message-State: AOJu0YzzBXH6lfahwf1ZZNRTOVYoL3rm28LmoRpdwQogSblqHdp0aklL
+        fhPZ1pMq5qV3rmdD/PpIO9w8FpXH2yDy+hQBYuqWtmFZdKzIP6SvriM=
+X-Google-Smtp-Source: AGHT+IF2KK3u6oHn5v2ieTIixFskEeBndJgyefW265kYtHWhHf+XSTJUCHXRnfFojA+kwjzqISEjSDw2QnvSo3UlVdw=
+X-Received: by 2002:a2e:b8c5:0:b0:2c5:1122:9712 with SMTP id
+ s5-20020a2eb8c5000000b002c511229712mr6532429ljp.46.1697476820513; Mon, 16 Oct
+ 2023 10:20:20 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 -next] usb/usbip: fix wrong data added to platform
- device
-Content-Language: en-US
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hongren Zheng <i@zenithal.me>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sfr@canb.auug.org.au, Shuah Khan <skhan@linuxfoundation.org>
-References: <ZSpHPCaQ5DDA9Ysl@Sun> <ZSzo816RQEP1ha/l@smile.fi.intel.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <ZSzo816RQEP1ha/l@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+References: <20231006024707.413349-1-max.chou@realtek.com> <169664042379.23949.8315443049400174883.git-patchwork-notify@kernel.org>
+ <0ee79296-a404-4d0d-b8ed-42578a77692c@leemhuis.info>
+In-Reply-To: <0ee79296-a404-4d0d-b8ed-42578a77692c@leemhuis.info>
+From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date:   Mon, 16 Oct 2023 10:20:07 -0700
+Message-ID: <CABBYNZ+DcF=q3tH9ZYTEhsrPgygU+hsYwYNEZf-3VwuiyzHXog@mail.gmail.com>
+Subject: Re: [PATCH] Bluetooth: btrtl: Ignore error return for hci_devcd_register()
+To:     Linux regressions mailing list <regressions@lists.linux.dev>
+Cc:     patchwork-bot+bluetooth@kernel.org,
+        Max Chou <max.chou@realtek.com>, marcel@holtmann.org,
+        johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alex_lu@realsil.com.cn,
+        hildawu@realtek.com, kirill@shutemov.name, bagasdotme@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,28 +73,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16/23 01:40, Andy Shevchenko wrote:
-> On Sat, Oct 14, 2023 at 03:46:04PM +0800, Hongren Zheng wrote:
->> .data of platform_device_info will be copied into .platform_data of
->> struct device via platform_device_add_data.
-> 
-> platform_device_add_data()
-> 
->> However, vhcis[i] contains a spinlock, is dynamically allocated and
->> used by other code, so it is not meant to be copied. The workaround
->> was to use void *vhci as an agent, but it was removed in the commit
->> suggested below.
->>
->> This patch adds back the workaround and changes the way of using
->> platform_data accordingly.
-> 
-> Good learning to me, thank you for the fix!
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
+Hi,
 
-Thank you both.
+On Mon, Oct 16, 2023 at 1:07=E2=80=AFAM Linux regression tracking (Thorsten
+Leemhuis) <regressions@leemhuis.info> wrote:
+>
+> On 07.10.23 03:00, patchwork-bot+bluetooth@kernel.org wrote:
+> >
+> > This patch was applied to bluetooth/bluetooth-next.git (master)
+> > by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
+>
+> Hi Luiz. Many thx for picking this up. From the branch name is sounds
+> like you plan to submit this change in the next merge window (If I
+> misread the signs feel free to ignore this mail!). Wouldn't it be better
+> to merge this in this cycle, as the commit afaics fixes a regression
+> that was only introduced this cycle?
 
-Acked-by: Shuah Khan <skhan@linuxfoundation.org>
+It is part of the for-net pull-request:
 
-thanks,
--- Shuah
+https://git.kernel.org/pub/scm/linux/kernel/git/bluetooth/bluetooth.git/tag=
+/?h=3Dfor-net-2023-10-13
+
+
+--=20
+Luiz Augusto von Dentz
