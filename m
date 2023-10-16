@@ -2,87 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E59D7CA3A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64D677CA3AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232460AbjJPJL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 05:11:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52320 "EHLO
+        id S232442AbjJPJMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 05:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230406AbjJPJL4 (ORCPT
+        with ESMTP id S232593AbjJPJMe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 05:11:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D55AD
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 02:11:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697447514; x=1728983514;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=DynLogKPBnBQr3sg56bzst9ewar26xYjx3QE+KnxVhk=;
-  b=mIYw+jKLrYCd1cJlEeejqxfHs4xAU7RTyEzEEFuAB0U0yOCDqGgEhBRS
-   UFE40/TsQUg58emeemG4/Xe99S8DVvpdBgiDgDvRURvmYxVLvLh4IBseQ
-   CGjYhlHnfaGnPrXM7K5HTF+WHa2sHdHKLk5PgKSAyEa7mIA5tGqn0FNGi
-   h0h2+Dc6Mjx6rVk41swOL/7a955qtTMAMcfeaEOtgtsUe9b90uS+C4jio
-   izDbUXODBgWBdZihum18Sy8cyFO76ldaHyKjmJmm0Qwh3lJeDDVMWdhGV
-   1pYHGtipgF6IorxTXfGuxJHN9vrVYrEEfSbmN3+3M5gfsp4bLRA2xD5Fa
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="7047293"
-X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="7047293"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 02:11:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="899425823"
-X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="899425823"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 02:09:54 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qsJde-00000005xqK-0fsU;
-        Mon, 16 Oct 2023 12:11:50 +0300
-Date:   Mon, 16 Oct 2023 12:11:49 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     lakshmi.sowjanya.d@intel.com
-Cc:     linux-kernel@vger.kernel.org, giometti@enneenne.com,
-        pandith.n@intel.com
-Subject: Re: [PATCH v1] Documentation: driver-api: pps: Update PPS generator
- documentation
-Message-ID: <ZSz+VfmpejJbZdb+@smile.fi.intel.com>
-References: <20231006121531.22450-1-lakshmi.sowjanya.d@intel.com>
+        Mon, 16 Oct 2023 05:12:34 -0400
+Received: from mxout70.expurgate.net (mxout70.expurgate.net [91.198.224.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E7BFF0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 02:12:29 -0700 (PDT)
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.92)
+        (envelope-from <prvs=966793e2c5=fe@dev.tdt.de>)
+        id 1qsJe8-003dDl-Ay; Mon, 16 Oct 2023 11:12:20 +0200
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <fe@dev.tdt.de>)
+        id 1qsJe7-006tet-9U; Mon, 16 Oct 2023 11:12:19 +0200
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id D4BEC240050;
+        Mon, 16 Oct 2023 11:12:18 +0200 (CEST)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id 300BB240049;
+        Mon, 16 Oct 2023 11:12:18 +0200 (CEST)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id 0603A2BD22;
+        Mon, 16 Oct 2023 11:12:16 +0200 (CEST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231006121531.22450-1-lakshmi.sowjanya.d@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 16 Oct 2023 11:12:15 +0200
+From:   Florian Eckert <fe@dev.tdt.de>
+To:     m.brock@vanmierlo.com
+Cc:     Eckert.Florian@googlemail.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, pavel@ucw.cz, lee@kernel.org,
+        kabel@kernel.org, u.kleine-koenig@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-leds@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v3 3/4] trigger: ledtrig-tty: move variable definition to
+ the top
+In-Reply-To: <93dcb9f6f218593084f834ba6b450999@vanmierlo.com>
+References: <20231016071332.597654-1-fe@dev.tdt.de>
+ <20231016071332.597654-4-fe@dev.tdt.de>
+ <93dcb9f6f218593084f834ba6b450999@vanmierlo.com>
+Message-ID: <34e8fcd94b4a959fe2336485e4722c3b@dev.tdt.de>
+X-Sender: fe@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.17
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-purgate-type: clean
+X-purgate-ID: 151534::1697447540-65079C7C-307F4F24/0/0
+X-purgate: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 05:45:31PM +0530, lakshmi.sowjanya.d@intel.com wrote:
-> From: Pandith N <pandith.n@intel.com>
+
+
+On 2023-10-16 10:46, m.brock@vanmierlo.com wrote:
+> Florian Eckert wrote on 2023-10-16 09:13:
+>> Has complained about the following construct:
 > 
-> PPS documentation has a generalized section for generators. Update the
-> section so any new generator documentation can be appended.
+> Who is "Has" or who/what has complained?
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+The test robot who does not agree with my change in the v1 patchset.
 
-You forgot to include the Documentation maintainer...
+>> drivers/leds/trigger/ledtrig-tty.c:362:3: error: a label can only be
+>> part of a statement and a declaration is not a statement
+>> 
+>> Hence move the variable definition to the beginning of the function.
+>> 
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Closes:
+>> https://lore.kernel.org/oe-kbuild-all/202309270440.IJB24Xap-lkp@intel.com/
+>> Signed-off-by: Florian Eckert <fe@dev.tdt.de>
+>> ---
+>> @@ -124,8 +125,6 @@ static void ledtrig_tty_work(struct work_struct 
+>> *work)
+>> 
+>>  	if (icount.rx != trigger_data->rx ||
+>>  	    icount.tx != trigger_data->tx) {
+>> -		unsigned long interval = LEDTRIG_TTY_INTERVAL;
+>> -
+> 
+> Is this kernel test robot broken?
 
-I suggest to try my "smart" script [1] that has a heuristics on whom
-to send the changes.
+The test robot does nothing wrong.
 
-[1]: https://github.com/andy-shev/home-bin-tools/blob/master/ge2maintainer.sh
+> I see no label definition here.
+> And this variable declaration is at the start of a new block which does 
+> not
+> even require C99 support.
 
--- 
-With Best Regards,
-Andy Shevchenko
+I made change in patch set v1, that moves the definition of the variable
+`interval` into the switch case statement.
+https://lore.kernel.org/linux-leds/20230926093607.59536-3-fe@dev.tdt.de/
+The robot complained about this.
+
+So I decided to move the definition of the variable 'interval' to 
+function
+head to make the test robot happy in the commit. So this commit prepares
+the code for my change.
+
+If it is more common, I can merge this patch [1] into the next patch [2]
+of this set.
+
+[1] 
+https://lore.kernel.org/linux-leds/20231016071332.597654-4-fe@dev.tdt.de/
+[2] 
+https://lore.kernel.org/linux-leds/20231016071332.597654-5-fe@dev.tdt.de/
 
 
+Florian
