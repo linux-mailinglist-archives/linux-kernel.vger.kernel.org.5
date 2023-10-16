@@ -2,92 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 761787CA7F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2DCB7CA7F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232059AbjJPMZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 08:25:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37910 "EHLO
+        id S232764AbjJPM02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 08:26:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230017AbjJPMZS (ORCPT
+        with ESMTP id S230017AbjJPM00 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 08:25:18 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B42D09B
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 05:25:15 -0700 (PDT)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39GC9LJj032458;
-        Mon, 16 Oct 2023 12:25:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=fdcwLYfEwBvh7hI+Y9HX4exVIEYBwd62Voxgu8myEl4=;
- b=mndzkDvGndyO/dSa1kqlUVw5seS6/PcD3FT83yl4Py78LZ5G+hxxl9F5l2rQTjzh8d4/
- tE0xJqTuOrugDOhxsa2k2XgpR8VSv0/sYy0LAB+JoU0Wx9oXocyzTDzy64aY2O72ekhc
- dPbfQQKLMdenZ4BN1XEw5onknNrbfh2jrY2eVYzy+NVTajKSr29fH6zRbYIpP0BRBewh
- Gj5bYmB2YxVHwnc9Ls83jDfo85u2IQRqc7piBLrdfMvaoLBbR3amtEHe2mUTVvPLGB9O
- ueTWGlHxjoTGta6LSa3PLUrg/yMLfNrgaTB5uTh8lsjZmhvqo2yH3eXVuN0Wba6BCHUC EA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ts4721xr5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 16 Oct 2023 12:25:02 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39GCA8Yn006610;
-        Mon, 16 Oct 2023 12:25:02 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ts4721xqm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 16 Oct 2023 12:25:02 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39GABk2O027177;
-        Mon, 16 Oct 2023 12:25:01 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tr6tk0hh8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 16 Oct 2023 12:25:01 +0000
-Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
-        by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39GCP0s520447894
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 16 Oct 2023 12:25:00 GMT
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 629FA5805E;
-        Mon, 16 Oct 2023 12:25:00 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2733D58055;
-        Mon, 16 Oct 2023 12:25:00 +0000 (GMT)
-Received: from [9.61.111.173] (unknown [9.61.111.173])
-        by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 16 Oct 2023 12:25:00 +0000 (GMT)
-Message-ID: <df9cffef-ef00-4e52-9df1-8bed3605a014@linux.ibm.com>
-Date:   Mon, 16 Oct 2023 07:24:59 -0500
+        Mon, 16 Oct 2023 08:26:26 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD09AB
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 05:26:24 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-27cf7ef0ef4so3671208a91.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 05:26:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697459184; x=1698063984; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kmn6/sIgRo7SY0ymPqgTtwfMgrfA0Y3BP4S+nWa7vE0=;
+        b=P0/RpHBTxIy91mHQ6+UqC1YBBX6ZKtla+4FqL0LAOU2vRTAM3oLIv6bMQuOQmMuaWf
+         wX9pcR86OUuHVWIq8v4tZRwl/AdeK+A8aC9MzfVYxfcI1I2mGNDj7mkCMTwiXye++/Nr
+         7yaeo0WOGLLtMjrUjVEhL9v44f4sEKIDBkwLXZJjZw3/okbrHoh6Bjq6pCXVyC3Su8kS
+         LplqiCzO3AKl7l5QvQUq+BrKDEM+gQOTqjXWkTut38S9Swc/joJ2OK1v2NT/niFvZGh4
+         4yJQAlMIrTx1krUrnAfkku5Lo9K4u/C44C/4qLKiLAHM/IK5wi6Ud9Do5HhxM1pqk8lv
+         s6eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697459184; x=1698063984;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kmn6/sIgRo7SY0ymPqgTtwfMgrfA0Y3BP4S+nWa7vE0=;
+        b=TI8PuABmjGCS7A3My3e61e5v7UJZT5wyFF2tBFl+zWruA58ReQtvO0O1s7/HCRDZby
+         b546FfA9uzfNCzu5/apaZSW10SuCfBTchTZDOKkprKPmVlKr0PmdA4iqqz2TckrQAW5b
+         S/hdmDR5olUsP14S5ndmsRJPYKVENDe9OqusBX+G3VPx0VyQll85XWEJtluaWeFqGnU5
+         aB7JR4p9Bib9+gDC7xHljxY05edjXK/W8f6OcUNuWnPTK3IRrKmRpbqPbDJ/lMblLfEr
+         hDKpOsYiFim6e1YaYmiA6SMGudtHdHC1FjS6j2NVNRBm874HFYkks0fvl/3LgdLnEXSF
+         q76A==
+X-Gm-Message-State: AOJu0YxdR8ONdA0Woon8oceMo5OyJcHw1g2WiGkUiAPsGaGN07qn/NDY
+        su1xQXjwrXw9hdv4wGEhe2wiKQ==
+X-Google-Smtp-Source: AGHT+IGTpZt5mh7PLLa+PXm7c+3dddBndmP/Iy/6mV9lRWJMNC172sZoHymfQsIRPUQVZ+MW6n45MA==
+X-Received: by 2002:a17:90b:1289:b0:27d:694f:195d with SMTP id fw9-20020a17090b128900b0027d694f195dmr4527726pjb.6.1697459184104;
+        Mon, 16 Oct 2023 05:26:24 -0700 (PDT)
+Received: from leoy-huanghe.lan ([98.98.49.160])
+        by smtp.gmail.com with ESMTPSA id 6-20020a630806000000b0056c2f1a2f6bsm5673189pgi.41.2023.10.16.05.26.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 05:26:22 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 20:26:15 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Jing Zhang <renyu.zj@linux.alibaba.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/7] perf arm-spe: Move PMU initialization from
+ default config code
+Message-ID: <20231016122615.GG928468@leoy-huanghe.lan>
+References: <20231012175645.1849503-1-irogers@google.com>
+ <20231012175645.1849503-4-irogers@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] regulator: core: Convert warning to debug print
-To:     Mark Brown <broonie@kernel.org>
-Cc:     joel@jms.id.au, eajames@linux.ibm.com, lgirdwood@gmail.com,
-        linux-kernel@vger.kernel.org, lakshmiy@us.ibm.com
-References: <20231012174235.2424670-1-ninad@linux.ibm.com>
- <aa596890-d98a-41c2-bc10-8c1db58ea23a@sirena.org.uk>
- <4ecd19e5-9dfa-4157-9384-92c722064b2e@linux.ibm.com>
- <ZSlkWZvtEFfSkqNE@finisterre.sirena.org.uk>
-Content-Language: en-US
-From:   Ninad Palsule <ninad@linux.ibm.com>
-In-Reply-To: <ZSlkWZvtEFfSkqNE@finisterre.sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: fyK7-KQBRPzE2rUnlM_n_b6QH6SNrbHu
-X-Proofpoint-ORIG-GUID: Ez4TQhk1CPylMHcBuIdQG6ARH3fMYdwL
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-16_05,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 adultscore=0 priorityscore=1501 impostorscore=0 mlxscore=0
- mlxlogscore=928 suspectscore=0 spamscore=0 phishscore=0 bulkscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310160108
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231012175645.1849503-4-irogers@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -95,33 +91,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Mark,
+On Thu, Oct 12, 2023 at 10:56:41AM -0700, Ian Rogers wrote:
+> Avoid setting PMU values in arm_spe_pmu_default_config, move to
+> perf_pmu__arch_init.
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
+> ---
+>  tools/perf/arch/arm/util/pmu.c       | 2 ++
+>  tools/perf/arch/arm64/util/arm-spe.c | 3 ---
+>  2 files changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/perf/arch/arm/util/pmu.c b/tools/perf/arch/arm/util/pmu.c
+> index d55d2b15f2e6..f25f68f84a94 100644
+> --- a/tools/perf/arch/arm/util/pmu.c
+> +++ b/tools/perf/arch/arm/util/pmu.c
+> @@ -23,6 +23,8 @@ void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
+>  		pmu->default_config = cs_etm_get_default_config(pmu);
+>  #if defined(__aarch64__)
+>  	} else if (strstarts(pmu->name, ARM_SPE_PMU_NAME)) {
+> +		pmu->selectable = true;
+> +		pmu->is_uncore = false;
 
-On 10/13/23 10:38, Mark Brown wrote:
-> On Thu, Oct 12, 2023 at 04:45:48PM -0500, Ninad Palsule wrote:
->
->> You are right there are regulators for these supplies but they are managed
->> by the
->> hardware hence not added in the device tree. I checked dts/aspeed directory
->> and
->> non of the machine has “vcc-supply” defined and lot of them use eeprom.
-> Fixed voltage regulators can be used for this.
-ok, So far we don't need it.
->
->> Also, I thought that this message is only useful in the lab to indicate
->> developer
->> whether they missed the device tree definition or not but its not useful in
->> the
->> field.  Hence proposed to put it under DEBUG.
-> The theory is that it shouldn't come up in the field since people see it
-> during development and fix things then, are people actually looking at
-> these logs?  I think my understanding was that they're mostly BMCs
-> people interacted with via a UI of some kind.
+Arm SPE is not an uncore PMU event.  Arm SPE driver registers sysfs node
+'cpumask', thus it misleads the pmu_is_uncore() function and it returns
+'true' for Arm SPE event.
 
-During testing people look at this logs. We will ignore this warning for 
-now.
+Here we need to explictly set false to correct the 'is_uncore' flag.
 
-Thanks!
+I did test on my machine, the changes work well for Arm SPE event.
 
-~Ninad
-
+Tested-by: Leo Yan <leo.yan@linaro.org>
