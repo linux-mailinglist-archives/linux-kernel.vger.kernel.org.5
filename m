@@ -2,104 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 527DE7CA6D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 13:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 826D67CA6D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 13:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231508AbjJPLjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 07:39:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50650 "EHLO
+        id S232745AbjJPLkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 07:40:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230017AbjJPLja (ORCPT
+        with ESMTP id S230343AbjJPLkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 07:39:30 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BDBED9;
-        Mon, 16 Oct 2023 04:39:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697456369; x=1728992369;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=lDcyUcRHd6gIh/r9WZ7PJipz1qSJMSm4ZlUlo62jqA8=;
-  b=DZLB8C9RceCbKF2wb2VyhVJWZsdW4b94jnsEeqsDKuXnOGAgs5XHiPgE
-   lGdTa2CJKXJXb3SA1p0HpNg4JyWA2TiehepZr3jSI5tnWmF5ptfLk3sqm
-   cANQKDI3O0lJFU1YW1/0fyvdPZOuYTY1K/HmVfNugbr1jrSPOorqNBdEO
-   6j2OYHsBEHNLDYnrBUbdenwp9GHOg8uTgKQr/8hxxZbCj0X6S90RS+ayw
-   uxwTvqvpJl7923btMcMslJhpyehX3sXCQY700wLuPmpIJckrSR46zBobr
-   Ue51zN0YXhdnZJ+3Z03ffPIxoWGUv1MDybXvBRnCEPcVQSPbLNheKhj3Z
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="7070323"
-X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="7070323"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 04:39:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="879402460"
-X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="879402460"
-Received: from rhaeussl-mobl.ger.corp.intel.com (HELO bhoerz-mobl1.ger.corp.intel.com) ([10.252.59.103])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 04:39:25 -0700
-Date:   Mon, 16 Oct 2023 14:39:23 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Vamshi Gajjela <vamshigajjela@google.com>
-cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, manugautam@google.com,
-        Subhash Jadavani <sjadavani@google.com>,
-        Channa Kadabi <kadabi@google.com>
-Subject: Re: [PATCH 2/3] serial: core: Make local variable size to u64
-In-Reply-To: <20231014104942.856152-3-vamshigajjela@google.com>
-Message-ID: <b0ec67b1-24a2-d67d-d7c1-9c3fdafdb570@linux.intel.com>
-References: <20231014104942.856152-1-vamshigajjela@google.com> <20231014104942.856152-3-vamshigajjela@google.com>
+        Mon, 16 Oct 2023 07:40:10 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA0FE1;
+        Mon, 16 Oct 2023 04:40:09 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id 5614622812f47-3af5b5d7f16so2690949b6e.0;
+        Mon, 16 Oct 2023 04:40:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697456408; x=1698061208;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:dkim-signature:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=tE3/kt7VPkaFdquQYklg8hmYnVUnseOhnUoih4hEER0=;
+        b=niR7CETXWTyqnpbNTQM9R9+3O+nRq6tX0tsjHqc2tVbuAFnQi+cOo9rrR2OLF/pQ46
+         TJUuRlGdyNA3XTF2M+IVi/VGLj6Z8YO3sMCaUpiI0zTW1YoYj9z/BcsICKblFfN05X5H
+         AjpJiWb3Iv28bNQk/wS3Zs6x/YqEsLfNFHiBWDW6fTxG07ddinrh5kSnCJU7V0X40/w0
+         21MhQkYkmnudyJMsAI6TsTnQYr10QelHYtWE/JgQvgy9inaCzwK5sY+Twlhyoc8b5A+1
+         VYyzDlZRSiWT/7auq/hyn/i66KxiIQkIXa1ypWBVyW4z0cu3tDC4mRFShE3q8yoxmSts
+         4lpw==
+X-Gm-Message-State: AOJu0YwFc7pb36RIyBJcIwaA9nspD8RUVxMQ/xYZJISiuLanKn8GDcW0
+        ZpS+FgQ38Q3QDMheovVEjbU=
+X-Google-Smtp-Source: AGHT+IHxDYPzvNS3lWU1QsDc586Js06uUe+5oigcPknJIMbnR2FqVnBRnij03C711FQbvHhcLy3Xug==
+X-Received: by 2002:a05:6808:1582:b0:3af:7db8:21ad with SMTP id t2-20020a056808158200b003af7db821admr43196719oiw.33.1697456408615;
+        Mon, 16 Oct 2023 04:40:08 -0700 (PDT)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id f18-20020aa79d92000000b006bc3e8f58besm3726935pfq.56.2023.10.16.04.40.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 04:40:08 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 08:40:00 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+        s=2023; t=1697456403;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tE3/kt7VPkaFdquQYklg8hmYnVUnseOhnUoih4hEER0=;
+        b=Tly0eZsWl0PYDKWvqPHKOAbv1/wJr0yDXEHYhkZ22t59XEtf39mUTX2rsE3I8NMi/l8Imm
+        DxJB6uyPhef6JqSNZkl2HldM1Pc0VLw9mdmCFqUjI7PLcHw9RmuN6szKNdpLAlHzbK+SlR
+        k6fNy9Q1OOmMHt13hU4tozESfZFEfYt1SuaivIwbZ8IRu68vUvoDVxB3FaEqZVNy1vhEJk
+        OjWnBbKUsoyps9G66fCr+VsusMr4lBdsvuOSVBA4nZMjKzCrzd4jwosP9ZCYr8y/wFctcG
+        OWKN6CpEfRsmrYu6+0uzOpVfIEXeeTQmzVpYx5BEth+yddX/k7RiYRU+0Xe+Pw==
+Authentication-Results: ORIGINATING;
+        auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+From:   "Ricardo B. Marliere" <ricardo@marliere.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Subject: Re: [PATCH 6.1 000/131] 6.1.59-rc1 review
+Message-ID: <pocozopagkwaphxqyupnpuntzxsb47ws6s7nzmawhnqa5brzph@ku2y2aucxs3l>
+References: <20231016084000.050926073@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231016084000.050926073@linuxfoundation.org>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 14 Oct 2023, Vamshi Gajjela wrote:
-
-> From: VAMSHI GAJJELA <vamshigajjela@google.com>
+On 23/10/16 10:39AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.59 release.
+> There are 131 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> The variable size has been changed from u32 to u64 to accommodate a
-> larger range of values without the need for explicit typecasting.
+> Responses should be made by Wed, 18 Oct 2023 08:39:40 +0000.
+> Anything received after that time might be too late.
 
-Don't use too broad/generic terminology in shortlog (on [PATCH] line in 
-subject) or changelog but explicitly mention the variable names please.
+No regressions on my system:
 
-> Signed-off-by: VAMSHI GAJJELA <vamshigajjela@google.com>
-> ---
->  drivers/tty/serial/serial_core.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
-> index 7bdc21d5e13b..fb4696d17a8b 100644
-> --- a/drivers/tty/serial/serial_core.c
-> +++ b/drivers/tty/serial/serial_core.c
-> @@ -410,10 +410,10 @@ void
->  uart_update_timeout(struct uart_port *port, unsigned int cflag,
->  		    unsigned int baud)
->  {
-> -	unsigned int size = tty_get_frame_size(cflag);
-> +	u64 size = tty_get_frame_size(cflag);
->  	u64 frame_time;
->  
-> -	frame_time = (u64)size * NSEC_PER_SEC;
-> +	frame_time = size * NSEC_PER_SEC;
->  	port->frame_time = DIV64_U64_ROUND_UP(frame_time, baud);
->  }
->  EXPORT_SYMBOL(uart_update_timeout);
+08:35:39 rbmarliere@debian ~
+$ dmesg -lerr
+08:35:42 rbmarliere@debian ~
+$ uname -a
+Linux debian 6.1.59-rc1+ #1 SMP PREEMPT_DYNAMIC Mon Oct 16 07:46:20 -03 2023 x86_64 GNU/Linux
 
-This is actually a good cleanup all by itself unrelated to the other 
-change but you need to adapt the changelog to reflect why this is helpful 
-instead wording it based on the other change.
+1 build warning:
+vmlinux.o: warning: objtool: set_ftrace_ops_ro+0x23: relocation to !ENDBR: kexec_mark_crashkres+0xe7
 
--- 
- i.
 
+Tested-by: Ricardo B. Marliere <ricardo@marliere.net>
