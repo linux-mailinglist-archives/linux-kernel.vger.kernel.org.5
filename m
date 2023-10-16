@@ -2,107 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B86F7CA0C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 09:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F4957CA0CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 09:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232233AbjJPHhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 03:37:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55328 "EHLO
+        id S231881AbjJPHiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 03:38:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232330AbjJPHhQ (ORCPT
+        with ESMTP id S232442AbjJPHiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 03:37:16 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71AE5E8
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:37:14 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-99de884ad25so672405266b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:37:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697441833; x=1698046633; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HTyUQuoAbVjluxgr+h6sTqmqhDJGxpZB2IhyvmjXi6k=;
-        b=Yzgt5ikvcI8rVGKsXsasXHUtt43axDil0nItBbVimWPB1Ca3fCEaryHvEfZPjA+/Lc
-         WqrR6wBpLLwAWHlqgN/9ei9q/7bEhBIC3GOekxc4ulqFtKCqQHuaVfeW2gBgYEDUPG2l
-         nfKZpne1xfFadylRS92yaMctL3JEN6JcuTolv7aY/6u7Vcdish7AXZ6vcZ+Mz+Q7lZTj
-         8G6bt3E8/GxUdiM/oxuVMaQPtskzrfRlbYXFISayn4PzWq0yIw98wa7e+VQBQp+RnRXL
-         v98zR/uIFcv47BCrVwhP+08iv2iSR4UCU2H/6i3x7tgkEpfjGCQ2a4+q4dobOCV0Zytz
-         RAGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697441833; x=1698046633;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HTyUQuoAbVjluxgr+h6sTqmqhDJGxpZB2IhyvmjXi6k=;
-        b=MyWgTBNQ0k5wqrYtQbsez/PYlLr+9WVT4kglZOPq6ewSiEYOwNTSXlb9/+MmLcNPEM
-         kIygrk+gGDhbYk8jbNi3UiDgq9X3XsPk3ZIHuHZyzig8snCklNqu6zAy7JOKFxcLbNc2
-         8AHTVimKxfk2iqW8htb/RJgrIstKP48xEGrJLBYEk1KDFUIvLNULPkswJWspJ0ECv8mB
-         k3038GmaK38wu1q4zQ7QwmOPMr/5JMCThUlCzBeOKcG+C3XZ6YwOTBdNzCLydiHdi/Kb
-         30FI8w3vQxk96iN4Jrg4y4Sz36L4hy4/E6IPC451r/Ua5IlAvYk+WpD7fFynUHbfO3X4
-         wKww==
-X-Gm-Message-State: AOJu0Yy50xLUawRP5qiRw6d1Cz+PMW1RjHMIM/2ehzlPwBFUoiKozh6G
-        rWsTnfHlpydg+3blXfTzOtRgpA==
-X-Google-Smtp-Source: AGHT+IEv0uejqa5NJBXNL8LEnWXrDwz7b76fiOOhyJGmmtCK0e7+o9cqfbI1hF43wqrFAkSUSjwscw==
-X-Received: by 2002:a17:906:538a:b0:9b2:b269:d563 with SMTP id g10-20020a170906538a00b009b2b269d563mr29105305ejo.63.1697441832837;
-        Mon, 16 Oct 2023 00:37:12 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.219.154])
-        by smtp.gmail.com with ESMTPSA id w17-20020a170907271100b009a5f1d15642sm3468031ejk.158.2023.10.16.00.37.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 00:37:12 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [GIT PULL] pinctrl: samsung: drivers for v6.7
-Date:   Mon, 16 Oct 2023 09:37:09 +0200
-Message-Id: <20231016073709.27851-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Mon, 16 Oct 2023 03:38:01 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F1BCEB
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:37:58 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39G7bRpq047994;
+        Mon, 16 Oct 2023 02:37:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1697441847;
+        bh=b9VEo3tm6uaO/tVCmnrM+QGxJBsi0zQVdUbCKVA0zSA=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=P0/YLcembAhETIOSgkDGXoHNVOHOlwJABxYl2zlfZIO0/6s3wMF1iVjodpiDM2WjR
+         +tO6onlzugS9iTSpX+2OeFRReBOajydP9UgKhOtXOJcN1uXF3pkNUavcXun1KYWQwu
+         VFRebS9oK4Cyp+j/WpX1KZ+lVhS8fTsDQs6rbN10=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39G7bRm0069417
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 16 Oct 2023 02:37:27 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 16
+ Oct 2023 02:37:26 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 16 Oct 2023 02:37:26 -0500
+Received: from [172.24.227.6] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39G7bLOK009293;
+        Mon, 16 Oct 2023 02:37:22 -0500
+Message-ID: <04a6eefa-235c-c973-8c74-eb8a8982abf4@ti.com>
+Date:   Mon, 16 Oct 2023 13:07:21 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] drm/tidss: Power up attached PM domains on probe
+Content-Language: en-US
+To:     Maxime Ripard <mripard@kernel.org>
+CC:     <jyri.sarha@iki.fi>, <tomi.valkeinen@ideasonboard.com>,
+        <airlied@gmail.com>, <daniel@ffwll.ch>,
+        <maarten.lankhorst@linux.intel.com>, <tzimmermann@suse.de>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <praneeth@ti.com>, <nm@ti.com>, <vigneshr@ti.com>,
+        <a-bhatia1@ti.com>, <j-luthra@ti.com>, <r-ravikumar@ti.com>,
+        <j-choudhary@ti.com>
+References: <20231009075018.2836020-1-devarsht@ti.com>
+ <c9f17f9e-b9b5-9685-30ca-6a7d041dd8aa@ti.com>
+ <libnfyaftywmfr2gmkdjsv6cptzjyrrx2tkxczusifnwthyh36@olzd2e5hagtr>
+From:   Devarsh Thakkar <devarsht@ti.com>
+In-Reply-To: <libnfyaftywmfr2gmkdjsv6cptzjyrrx2tkxczusifnwthyh36@olzd2e5hagtr>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
+Hi Maxime,
 
-  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
+On 12/10/23 18:10, Maxime Ripard wrote:
+> Hi,
+> 
+> On Thu, Oct 12, 2023 at 05:10:06PM +0530, Devarsh Thakkar wrote:
+>> On 09/10/23 13:20, Devarsh Thakkar wrote:
+>>> Some SoC's such as AM62P have dedicated power domains
+>>> for OLDI which need to be powered on separetely along
+>>> with display controller.
+>>>
+>>> So during driver probe, power up all attached PM domains
+>>> enumerated in devicetree node for DSS.
+>>>
+>>> This also prepares base to add display support for AM62P.
+>>>
+>>
+>> NAK, for this patch, as discussed with team there are already plans
+>> to have separate OLDI bridge driver which should eventually handle
+>> the additional power domains.
+> 
+> Just for the record in case your current plan doesn't work out and we
+> need to revisit this patch: my point was that it's something that
+> deviates by a margin from what drivers are usually expected to do, so we
+> should document why that deviation is there.
+> 
 
-are available in the Git repository at:
+Sure, thanks for suggesting, I agree that if going with this logic, we should
+definitely put a comment in driver regarding same.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/pinctrl/samsung.git tags/samsung-pinctrl-6.7
+> The patch itself looks reasonable to me otherwise.
 
-for you to fetch changes up to 8aec97decfd0f444a69a765b2f00d64b42752824:
+Yes, it's just that we are planning a separate driver for OLDI. We will see if
+we need similar logic in that driver too.
 
-  pinctrl: samsung: do not offset pinctrl numberspaces (2023-10-09 12:37:21 +0200)
+Regards
+Devarsh
 
-----------------------------------------------------------------
-Samsung pinctrl drivers changes for v6.7
-
-Few cleanups, improvements (use __counted_by annotation) and finally
-switch to dynamic allocation of GPIO numberspace.
-
-----------------------------------------------------------------
-Kees Cook (1):
-      pinctrl: samsung: Annotate struct exynos_muxed_weint_data with __counted_by
-
-Mateusz Majewski (4):
-      pinctrl: samsung: defer pinctrl_enable
-      pinctrl: samsung: use add_pin_ranges method to add pinctrl ranges
-      pinctrl: samsung: choose GPIO numberspace base dynamically
-      pinctrl: samsung: do not offset pinctrl numberspaces
-
- drivers/pinctrl/samsung/pinctrl-exynos.c  |  2 +-
- drivers/pinctrl/samsung/pinctrl-exynos.h  |  2 +-
- drivers/pinctrl/samsung/pinctrl-samsung.c | 56 ++++++++++++++++---------------
- drivers/pinctrl/samsung/pinctrl-samsung.h |  4 +--
- 4 files changed, 33 insertions(+), 31 deletions(-)
+> 
+> Maxime
