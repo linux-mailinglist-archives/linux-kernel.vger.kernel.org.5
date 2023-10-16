@@ -2,245 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8CD7CB120
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 19:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5FCB7CB11E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 19:11:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232921AbjJPRLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 13:11:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57608 "EHLO
+        id S234248AbjJPRLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 13:11:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234029AbjJPRLS (ORCPT
+        with ESMTP id S234161AbjJPRLC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 13:11:18 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74DB07D88
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:58:36 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d9a6b21d1daso5594501276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:58:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697475515; x=1698080315; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Afu5xdjrM60kr5jPKowmDpQRJUH3WWvLNXM6VlnD7Ds=;
-        b=QDov4nC+hO+nOtBcHDVmvsWmEutKhsflY7g9rDfMTejzzv8QHILa+jckYF+1D6SUeE
-         P9OOGfiXc0Mc8eaIcrhKe8CGSKZ30WVDAV1pPZNHWZoPVqSz8ogsdYyc3/XAzu7l8Ran
-         YC8JEZRYmUl7lkC9Q7JuD1dw+Pi2XNiyjmeqcScWbiCX7psdvT9jhCXfvZMfeO0aqZOs
-         lV4Gz31zyPYwC4ASISQtTlfO/TeNIOKMAPg9tslCqWYwbPWBYx0y9ogolydNhE3wC16t
-         UqwP8zsJelKA9G1XulXLrD4StS8fV97yQOQktIYoAlHrtMaKQO8Mxf9hCjRJ64++lKEt
-         ghGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697475515; x=1698080315;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Afu5xdjrM60kr5jPKowmDpQRJUH3WWvLNXM6VlnD7Ds=;
-        b=PIIUbPy/RBs3xiOWjj9+kydpnhq9tiWgDa7fRi3tj6ZL3Fz3rtZ0pN5nGvfOUAUS/n
-         EsB2BE7CwLHzg8Nu8gYE4ZN3evjkAtAOf04eZu5IuMD1Q9N8gse4Xqa5QO7aBFAQulNv
-         q/zqBpw7Ywv3poU4a9tSZaJG09CHIkGc/dZ8pk5muEGmYhJ4xncMXRUCf03SLvFCGRIK
-         B1h09ZkutPAxbEOThxI/XhsziUCXR+m48Gk2We6bXBbgH1s8viy+V2yMXmiFZHCFsEA9
-         PDYNMi3v9hi+fZfddr0H025Ka+qFcKqZh4XiNzVArhfp4OZMMjPTwczNzBh1yRr+Fe7I
-         6VTg==
-X-Gm-Message-State: AOJu0YyyAeZyILHqc65V8paWdO1SRUvTS+Oqi9OMnnjY+GDxcNY+xz4B
-        QibiUCUDoZODmIEoOl4O0bYm
-X-Google-Smtp-Source: AGHT+IEFaxm77O8Qvj9+hGJ9O76en3aHbv05oX+Ne6kwKs5h2XLGTM7ESsLfBmjCk7ynOa6kMoTGzw==
-X-Received: by 2002:a25:ae85:0:b0:d9a:4362:67ac with SMTP id b5-20020a25ae85000000b00d9a436267acmr18122044ybj.15.1697475515480;
-        Mon, 16 Oct 2023 09:58:35 -0700 (PDT)
-Received: from thinkpad ([117.207.31.199])
-        by smtp.gmail.com with ESMTPSA id s8-20020ad45008000000b0065afd35c762sm3564494qvo.91.2023.10.16.09.58.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 09:58:35 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 22:28:24 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Frank Li <Frank.Li@nxp.com>
-Cc:     Minghuan Lian <minghuan.Lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linux-pci@vger.kernel.org>,
-        "moderated list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>, imx@lists.linux.dev
-Subject: Re: [PATCH 2/3] PCI: layerscape: add suspend/resume for ls1021a
-Message-ID: <20231016165824.GF39962@thinkpad>
-References: <20230915184306.2374670-1-Frank.Li@nxp.com>
- <20230915184306.2374670-2-Frank.Li@nxp.com>
+        Mon, 16 Oct 2023 13:11:02 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E36D7D83;
+        Mon, 16 Oct 2023 09:58:36 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42050C433C7;
+        Mon, 16 Oct 2023 16:58:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1697475515;
+        bh=3qHXcmJIKLhL1W+OzhIxa9DzVfCA8XVPdgV3E0lUH1Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p6Ft+uqNVHPf8a49PWFkg4hO3X8LT7hexKWo+emfUE+t/5pRB9wk2mJbVXZrG5P0h
+         hGE3vw6Yx/7RJQ7G76vZPpy72s5VmB1T5PNi5wuA8/8Kiu9t3jSwhnFuNvVE6DYk6Y
+         c8c7LBT8eng0YZHDSDkpGHRIn4adPh34MIUf82vI=
+Date:   Mon, 16 Oct 2023 18:58:32 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Cc:     stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>,
+        Vegard Nossum <vegard.nossum@oracle.com>,
+        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 5.15 000/102] 5.15.136-rc1 review
+Message-ID: <2023101655-throng-rickety-ff79@gregkh>
+References: <20231016083953.689300946@linuxfoundation.org>
+ <a01256b5-6082-4d17-bf4d-310e7b4f7a47@oracle.com>
+ <2023101641-resource-scalding-3e1d@gregkh>
+ <43ad9708-47d4-4113-ab05-6012cb7c4d6c@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230915184306.2374670-2-Frank.Li@nxp.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <43ad9708-47d4-4113-ab05-6012cb7c4d6c@oracle.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 02:43:05PM -0400, Frank Li wrote:
-> ls1021a add suspend/resume support.
+On Mon, Oct 16, 2023 at 09:23:36PM +0530, Harshit Mogalapalli wrote:
+> Hi Greg,
 > 
-
-Please add what the driver is doing during suspend/resume.
-
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
->  drivers/pci/controller/dwc/pci-layerscape.c | 88 ++++++++++++++++++++-
->  1 file changed, 87 insertions(+), 1 deletion(-)
+> On 16/10/23 8:44 pm, Greg Kroah-Hartman wrote:
+> > On Mon, Oct 16, 2023 at 07:06:20PM +0530, Harshit Mogalapalli wrote:
+> > > Hi Greg,
+> > > 
+> > > On 16/10/23 2:09 pm, Greg Kroah-Hartman wrote:
+> > > > This is the start of the stable review cycle for the 5.15.136 release.
+> > > > There are 102 patches in this series, all will be posted as a response
+> > > > to this one.  If anyone has any issues with these being applied, please
+> > > > let me know.
+> > > > 
+> > > > Responses should be made by Wed, 18 Oct 2023 08:39:38 +0000.
+> > > > Anything received after that time might be too late.
+> > > > 
+> > > 
+> > > I am seeing a build failure while compiling tools/perf/
+> > > 
+> > > In file included from tests/genelf.c:14:
+> > > tests/../util/genelf.h:5:10: fatal error: linux/math.h: No such file or
+> > > directory
+> > >   5 | #include <linux/math.h>
+> > >   | ^~~~~~~~~~~~~~
+> > > compilation terminated.
+> > > 
+> > > Patch 43 in this series is causing this.
+> > 
 > 
-> diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
-> index 20c48c06e2248..bc5a8ff1a26ce 100644
-> --- a/drivers/pci/controller/dwc/pci-layerscape.c
-> +++ b/drivers/pci/controller/dwc/pci-layerscape.c
-> @@ -35,6 +35,12 @@
->  #define PF_MCR_PTOMR		BIT(0)
->  #define PF_MCR_EXL2S		BIT(1)
->  
-> +/* LS1021A PEXn PM Write Control Register */
-> +#define SCFG_PEXPMWRCR(idx)	(0x5c + (idx) * 0x64)
-> +#define PMXMTTURNOFF		BIT(31)
-> +#define SCFG_PEXSFTRSTCR	0x190
-> +#define PEXSR(idx)		BIT(idx)
-> +
->  #define PCIE_IATU_NUM		6
->  
->  struct ls_pcie_drvdata {
-> @@ -48,6 +54,8 @@ struct ls_pcie {
->  	struct dw_pcie *pci;
->  	const struct ls_pcie_drvdata *drvdata;
->  	void __iomem *pf_base;
-> +	struct regmap *scfg;
-> +	int index;
->  	bool big_endian;
->  };
->  
-> @@ -170,13 +178,91 @@ static int ls_pcie_host_init(struct dw_pcie_rp *pp)
->  	return 0;
->  }
->  
-> +static void ls1021a_pcie_send_turnoff_msg(struct dw_pcie_rp *pp)
-> +{
-> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> +	struct ls_pcie *pcie = to_ls_pcie(pci);
-> +	u32 val;
-> +
-> +	if (!pcie->scfg) {
-
-Can this ever happen?
-
-> +		dev_dbg(pcie->pci->dev, "SYSCFG is NULL\n");
-> +		return;
-> +	}
-> +
-> +	/* Send Turn_off message */
-
-"Send PME_Turn_Off message"
-
-> +	regmap_read(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), &val);
-> +	val |= PMXMTTURNOFF;
-> +	regmap_write(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), val);
-> +
-> +	/* There are not register to check ACK, so wait PCIE_PME_TO_L2_TIMEOUT_US */
-
-"There is no specific register to check for PME_To_Ack from endpoint. So on the
-safe side, wait for PCIE_PME_TO_L2_TIMEOUT_US."
-
-> +	mdelay(PCIE_PME_TO_L2_TIMEOUT_US/1000);
-> +
-> +	/* Clear Turn_off message */
-
-"PME_Turn_off". But I'm not sure if this is really required. Are you doing it
-because the layerspace hw implements the PME_Turn_Off bit as "level triggered"?
-
-> +	regmap_read(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), &val);
-> +	val &= ~PMXMTTURNOFF;
-> +	regmap_write(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), val);
-> +}
-> +
-> +static void ls1021a_pcie_exit_from_l2(struct dw_pcie_rp *pp)
-> +{
-> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> +	struct ls_pcie *pcie = to_ls_pcie(pci);
-> +	u32 val;
-> +
-
-A comment here would be good.
-
-> +	regmap_read(pcie->scfg, SCFG_PEXSFTRSTCR, &val);
-> +	val |= PEXSR(pcie->index);
-> +	regmap_write(pcie->scfg, SCFG_PEXSFTRSTCR, val);
-> +
-> +	regmap_read(pcie->scfg, SCFG_PEXSFTRSTCR, &val);
-> +	val &= ~PEXSR(pcie->index);
-> +	regmap_write(pcie->scfg, SCFG_PEXSFTRSTCR, val);
-> +}
-> +
-> +static int ls1021a_pcie_host_init(struct dw_pcie_rp *pp)
-> +{
-> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> +	struct ls_pcie *pcie = to_ls_pcie(pci);
-> +	struct device *dev = pcie->pci->dev;
-> +	u32 index[2];
-> +	int ret;
-> +
-> +	ret = ls_pcie_host_init(pp);
-> +	if (ret)
-> +		return ret;
-> +
-> +	pcie->scfg = syscon_regmap_lookup_by_phandle(dev->of_node, "fsl,pcie-scfg");
-> +	if (IS_ERR(pcie->scfg)) {
-> +		ret = PTR_ERR(pcie->scfg);
-> +		dev_err(dev, "No syscfg phandle specified\n");
-> +		pcie->scfg = NULL;
-> +		return ret;
-> +	}
-> +
-> +	ret = of_property_read_u32_array(dev->of_node, "fsl,pcie-scfg", index, 2);
-> +	if (ret) {
-> +		pcie->scfg = NULL;
-> +		return ret;
-> +	}
-> +
-> +	pcie->index = index[1];
-> +
-
-The above syscon parsing could be done conditionally during probe itself. There
-is no need to do it during host_init() time.
-
-- Mani
-
-> +	return ret;
-> +}
-> +
->  static const struct dw_pcie_host_ops ls_pcie_host_ops = {
->  	.host_init = ls_pcie_host_init,
->  	.pme_turn_off = ls_pcie_send_turnoff_msg,
->  };
->  
-> +static const struct dw_pcie_host_ops ls1021a_pcie_host_ops = {
-> +	.host_init = ls1021a_pcie_host_init,
-> +	.pme_turn_off = ls1021a_pcie_send_turnoff_msg,
-> +};
-> +
->  static const struct ls_pcie_drvdata ls1021a_drvdata = {
-> -	.pm_support = false,
-> +	.pm_support = true,
-> +	.ops = &ls1021a_pcie_host_ops,
-> +	.exit_from_l2 = ls1021a_pcie_exit_from_l2,
->  };
->  
->  static const struct ls_pcie_drvdata layerscape_drvdata = {
-> -- 
-> 2.34.1
+> Sorry for the confusion.
 > 
+> > What is patch 43?
+> 
+> It is patch 42/102 in this series
+> 
+> https://lore.kernel.org/stable/2023101641-resource-scalding-3e1d@gregkh/T/#m70a2a03b6204085af187184af911570681e744f5
+> 
+> Commit: e2bf685d7e311 ("perf inject: Fix GEN_ELF_TEXT_OFFSET for jit")
+> 
+> 
+> > 
+> > > Why is this not reproducible upstream ?
+> > > 
+> > > Vegard bisected the commit which makes it not reproducible upstream and this
+> > > commit is missing in 5.15.y:
+> > > Commit: d6e6a27d960f ("tools: Fix math.h breakage")
+> > > 
+> > > Backport request for this was made here:
+> > > https://lore.kernel.org/all/CAMVNhxS-6qNfxy8jHrY5EtZASTL9gAvZi=BdTkUA5_5CSQ2Cmg@mail.gmail.com/
+> > 
+> > And that commit is in this patch series, so are you sure that was
+> > correct?
+> > 
+> 
+> Cause for this build issue:
+> Commit: e2bf685d7e311 ("perf inject: Fix GEN_ELF_TEXT_OFFSET for jit")
+> 
+> And this issue is not in upstream due to presence of commit d6e6a27d960f
+> ("tools: Fix math.h breakage") in upstream but not in 5.15.y
 
--- 
-மணிவண்ணன் சதாசிவம்
+Ok, I'll go drop the patch entirely, I can't even get perf to build at
+all for me on 5.15, which is why I've given up on it even mattering
+anymore :(
+
+thanks,
+
+greg k-h
