@@ -2,208 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1415F7C9FC0
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 08:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DF3C7C9FD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 08:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230525AbjJPGlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 02:41:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46134 "EHLO
+        id S231856AbjJPGoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 02:44:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjJPGlc (ORCPT
+        with ESMTP id S231617AbjJPGoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 02:41:32 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22BD897;
-        Sun, 15 Oct 2023 23:41:30 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id 6a1803df08f44-66d501d3ffbso1920166d6.1;
-        Sun, 15 Oct 2023 23:41:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697438489; x=1698043289; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=U2AgiFgpa6O47pkmBK6yizLzUM3j74/+Btppzhh7DTg=;
-        b=bhFTjkBsaH04PGaiBkmzQe/A+T5jKzXD6kjZSvuh4bOTJB6PPR2v/dz2b96UnoueB3
-         p+hjc1/8v1Lm4Vg+UmdHwlyNujaYu8NyKCFlRywK74SXZhyHXP6hz4xWj/f7Ir1X9kdh
-         UuMEALuue/R4si2E4Uuls688KPGOWbrgKna0050vbiHRBZbmrlVS+Oeu+lxK0TM9zupT
-         /SExgKzW8WJuYyB69ChApcrnqjdLmtg96qwYJtqumctwZ9sLuMPcYlmxzGX9UhIFhzwm
-         34NTCZwOTux9lyDXvCvn6fyr1esNuONarHo1/MnZhH8oyimFzxpSNPmiJkvMeXPJx1Vw
-         X3mQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697438489; x=1698043289;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=U2AgiFgpa6O47pkmBK6yizLzUM3j74/+Btppzhh7DTg=;
-        b=aoIPmq+iq3oKxmk3ydDvUNQ/5GD3tutw82tD5BAJ61SnXZ+JEteR+IA2GPriykqZEf
-         uD0TvXwq9MHok/jbI5RdCi34+dDWwLGb7sN2IAbmF69BsSsa7AmAzrvzw+JnChFYJNvh
-         FerfVrsf0I6stAHsdJiOhUsU3ectPeRY54ezOkuTR6ToqHhYXicrSYugJ7pBcT2luA+d
-         PdlBh3ZOastDiuGeegO1B37OQP90/SzelC1UffhCd7wV/cEKveqQ7Ynf42IlKylTlmAH
-         w8PZRx13NR+fpUfXijIgWa/ig9/xlC83EiEJKgh5IgLCKxcTfEf7QLQtDhEdOHBLhSWJ
-         y4Og==
-X-Gm-Message-State: AOJu0YzrGyFeer6cgcxXfK9Jl/tVNY4dTcBW+sL8Q3lsTzpi3v5X3C/D
-        CrFQ/9hKEI1aPau5EXz2WjfYNAAc0QVuSOd63qk=
-X-Google-Smtp-Source: AGHT+IGOu5dCy5DsNJpTp0AkS3qCm43hqcvFo/YwF82YWmIpdeQwZY5gHOF2HV1zq1FBJiQdEfPmvpwyhBwF2SF+SxQ=
-X-Received: by 2002:ad4:5a13:0:b0:66d:5d31:999b with SMTP id
- ei19-20020ad45a13000000b0066d5d31999bmr1038478qvb.3.1697438489105; Sun, 15
- Oct 2023 23:41:29 -0700 (PDT)
+        Mon, 16 Oct 2023 02:44:04 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471C8A2;
+        Sun, 15 Oct 2023 23:43:58 -0700 (PDT)
+X-UUID: 5cd146686bef11eea33bb35ae8d461a2-20231016
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=IwOkqyzoE6mDo8cw/0FXt9hr2/pYnq8pP5H1PTNxgrA=;
+        b=Ux+xXG6tCKjNd3ZhZIWFWjMfL5nll0+qPr93fqvmHWuGmnzC5mfXFV/4Iu4r+Skq/QWReUKZn594iYFKlcJfeLEJUzUiF1K936wcnw6ozn7oaPFP6qhdmN4pQcYjge4dclq2L6sGHIpG1HOzpUeCpkjjK3v7Nofvl2d2Ww6xCVY=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:447a1c49-019b-469f-9bb5-bafd0594ea89,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:5f78ec9,CLOUDID:4ccdf9bf-14cc-44ca-b657-2d2783296e72,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 5cd146686bef11eea33bb35ae8d461a2-20231016
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw01.mediatek.com
+        (envelope-from <yunfei.dong@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 420164673; Mon, 16 Oct 2023 14:43:49 +0800
+Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
+ mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Mon, 16 Oct 2023 14:43:47 +0800
+Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
+ mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Mon, 16 Oct 2023 14:43:47 +0800
+From:   Yunfei Dong <yunfei.dong@mediatek.com>
+To:     =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= 
+        <nfraprado@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Nathan Hebert <nhebert@chromium.org>
+CC:     Chen-Yu Tsai <wenst@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Steve Cho <stevecho@chromium.org>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: [PATCH 1/7] media: mediatek: vcodec: Getting the chip name of each platform
+Date:   Mon, 16 Oct 2023 14:43:40 +0800
+Message-ID: <20231016064346.31451-1-yunfei.dong@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20231016031649.35088-1-huangjie.albert@bytedance.com>
-In-Reply-To: <20231016031649.35088-1-huangjie.albert@bytedance.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Mon, 16 Oct 2023 08:41:17 +0200
-Message-ID: <CAJ8uoz2DUe3xySTKuLbA5=QDAGuTzPdGu3P_=ZvJmna25VtHCQ@mail.gmail.com>
-Subject: Re: [PATCH v2 net-next] xsk: Avoid starving xsk at the end of the list
-To:     Albert Huang <huangjie.albert@bytedance.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Oct 2023 at 05:17, Albert Huang
-<huangjie.albert@bytedance.com> wrote:
->
-> In the previous implementation, when multiple xsk sockets were
-> associated with a single xsk_buff_pool, a situation could arise
-> where the xsk_tx_list maintained data at the front for one xsk
-> socket while starving the xsk sockets at the back of the list.
-> This could result in issues such as the inability to transmit packets,
-> increased latency, and jitter. To address this problem, we introduced
-> a new variable called tx_budget_cache, which limits each xsk to transmit
-> a maximum of MAX_XSK_TX_BUDGET tx descriptors. This allocation ensures
-> equitable opportunities for subsequent xsk sockets to send tx descriptors.
-> The value of MAX_XSK_TX_BUDGET is temporarily set to 16.
+Getting the chip name of each platform according to the device
+compatible to set different parameter.
 
-Hi Albert. Yes you are correct that there is nothing hindering this to
-happen in the code at the moment, so let us fix it.
+Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+---
+ .../mediatek/vcodec/decoder/mtk_vcodec_dec.c  | 24 +----------------
+ .../vcodec/decoder/mtk_vcodec_dec_drv.c       | 26 +++++++++++++++++++
+ .../vcodec/decoder/mtk_vcodec_dec_drv.h       | 17 ++++++++++++
+ 3 files changed, 44 insertions(+), 23 deletions(-)
 
-> Signed-off-by: Albert Huang <huangjie.albert@bytedance.com>
-> ---
->  include/net/xdp_sock.h |  6 ++++++
->  net/xdp/xsk.c          | 18 ++++++++++++++++++
->  2 files changed, 24 insertions(+)
->
-> diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-> index 69b472604b86..f617ff54e38c 100644
-> --- a/include/net/xdp_sock.h
-> +++ b/include/net/xdp_sock.h
-> @@ -44,6 +44,7 @@ struct xsk_map {
->         struct xdp_sock __rcu *xsk_map[];
->  };
->
-> +#define MAX_XSK_TX_BUDGET 16
+diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
+index 91ed576d6821..ba742f0e391d 100644
+--- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
++++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
+@@ -208,36 +208,14 @@ static int vidioc_vdec_dqbuf(struct file *file, void *priv,
+ 	return v4l2_m2m_dqbuf(file, ctx->m2m_ctx, buf);
+ }
+ 
+-static int mtk_vcodec_dec_get_chip_name(void *priv)
+-{
+-	struct mtk_vcodec_dec_ctx *ctx = fh_to_dec_ctx(priv);
+-	struct device *dev = &ctx->dev->plat_dev->dev;
+-
+-	if (of_device_is_compatible(dev->of_node, "mediatek,mt8173-vcodec-dec"))
+-		return 8173;
+-	else if (of_device_is_compatible(dev->of_node, "mediatek,mt8183-vcodec-dec"))
+-		return 8183;
+-	else if (of_device_is_compatible(dev->of_node, "mediatek,mt8192-vcodec-dec"))
+-		return 8192;
+-	else if (of_device_is_compatible(dev->of_node, "mediatek,mt8195-vcodec-dec"))
+-		return 8195;
+-	else if (of_device_is_compatible(dev->of_node, "mediatek,mt8186-vcodec-dec"))
+-		return 8186;
+-	else if (of_device_is_compatible(dev->of_node, "mediatek,mt8188-vcodec-dec"))
+-		return 8188;
+-	else
+-		return 8173;
+-}
+-
+ static int vidioc_vdec_querycap(struct file *file, void *priv,
+ 				struct v4l2_capability *cap)
+ {
+ 	struct mtk_vcodec_dec_ctx *ctx = fh_to_dec_ctx(priv);
+ 	struct device *dev = &ctx->dev->plat_dev->dev;
+-	int platform_name = mtk_vcodec_dec_get_chip_name(priv);
+ 
+ 	strscpy(cap->driver, dev->driver->name, sizeof(cap->driver));
+-	snprintf(cap->card, sizeof(cap->card), "MT%d video decoder", platform_name);
++	snprintf(cap->card, sizeof(cap->card), "MT%d video decoder", ctx->dev->chip_name);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c
+index 0a89ce452ac3..f47c98faf068 100644
+--- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c
++++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c
+@@ -326,6 +326,26 @@ static const struct v4l2_file_operations mtk_vcodec_fops = {
+ 	.mmap		= v4l2_m2m_fop_mmap,
+ };
+ 
++static void mtk_vcodec_dec_get_chip_name(struct mtk_vcodec_dec_dev *vdec_dev)
++{
++	struct device *dev = &vdec_dev->plat_dev->dev;
++
++	if (of_device_is_compatible(dev->of_node, "mediatek,mt8173-vcodec-dec"))
++		vdec_dev->chip_name = MTK_VDEC_MT8173;
++	else if (of_device_is_compatible(dev->of_node, "mediatek,mt8183-vcodec-dec"))
++		vdec_dev->chip_name = MTK_VDEC_MT8183;
++	else if (of_device_is_compatible(dev->of_node, "mediatek,mt8192-vcodec-dec"))
++		vdec_dev->chip_name = MTK_VDEC_MT8192;
++	else if (of_device_is_compatible(dev->of_node, "mediatek,mt8195-vcodec-dec"))
++		vdec_dev->chip_name = MTK_VDEC_MT8195;
++	else if (of_device_is_compatible(dev->of_node, "mediatek,mt8186-vcodec-dec"))
++		vdec_dev->chip_name = MTK_VDEC_MT8186;
++	else if (of_device_is_compatible(dev->of_node, "mediatek,mt8188-vcodec-dec"))
++		vdec_dev->chip_name = MTK_VDEC_MT8188;
++	else
++		vdec_dev->chip_name = MTK_VDEC_INVAL;
++}
++
+ static int mtk_vcodec_probe(struct platform_device *pdev)
+ {
+ 	struct mtk_vcodec_dec_dev *dev;
+@@ -341,6 +361,12 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
+ 	INIT_LIST_HEAD(&dev->ctx_list);
+ 	dev->plat_dev = pdev;
+ 
++	mtk_vcodec_dec_get_chip_name(dev);
++	if (dev->chip_name == MTK_VDEC_INVAL) {
++		dev_err(&pdev->dev, "Failed to get decoder chip name");
++		return -EINVAL;
++	}
++
+ 	dev->vdec_pdata = of_device_get_match_data(&pdev->dev);
+ 	if (!of_property_read_u32(pdev->dev.of_node, "mediatek,vpu",
+ 				  &rproc_phandle)) {
+diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.h b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.h
+index 7e36b2c69b7d..8f228ba9aa47 100644
+--- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.h
++++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.h
+@@ -18,6 +18,19 @@
+ #define IS_VDEC_LAT_ARCH(hw_arch) ((hw_arch) >= MTK_VDEC_LAT_SINGLE_CORE)
+ #define IS_VDEC_INNER_RACING(capability) ((capability) & MTK_VCODEC_INNER_RACING)
+ 
++/*
++ * enum mtk_vcodec_dec_chip_name - Structure used to separate different platform
++ */
++enum mtk_vcodec_dec_chip_name {
++	MTK_VDEC_INVAL = 0,
++	MTK_VDEC_MT8173 = 8173,
++	MTK_VDEC_MT8183 = 8183,
++	MTK_VDEC_MT8186 = 8186,
++	MTK_VDEC_MT8188 = 8188,
++	MTK_VDEC_MT8192 = 8192,
++	MTK_VDEC_MT8195 = 8195,
++};
++
+ /*
+  * enum mtk_vdec_format_types - Structure used to get supported
+  *		  format types according to decoder capability
+@@ -249,6 +262,8 @@ struct mtk_vcodec_dec_ctx {
+  * @vdec_racing_info: record register value
+  * @dec_racing_info_mutex: mutex lock used for inner racing mode
+  * @dbgfs: debug log related information
++ *
++ * @chip_name: the chip name used to separate different platform
+  */
+ struct mtk_vcodec_dec_dev {
+ 	struct v4l2_device v4l2_dev;
+@@ -289,6 +304,8 @@ struct mtk_vcodec_dec_dev {
+ 	/* Protects access to vdec_racing_info data */
+ 	struct mutex dec_racing_info_mutex;
+ 	struct mtk_vcodec_dbgfs dbgfs;
++
++	enum mtk_vcodec_dec_chip_name chip_name;
+ };
+ 
+ static inline struct mtk_vcodec_dec_ctx *fh_to_dec_ctx(struct v4l2_fh *fh)
+-- 
+2.18.0
 
-I think something like MAX_PER_SOCKET_BUDGET would be clearer.
-
->  struct xdp_sock {
->         /* struct sock must be the first member of struct xdp_sock */
->         struct sock sk;
-> @@ -63,6 +64,11 @@ struct xdp_sock {
->
->         struct xsk_queue *tx ____cacheline_aligned_in_smp;
->         struct list_head tx_list;
-> +       /* Record the actual number of times xsk has transmitted a tx
-> +        * descriptor, with a maximum limit not exceeding MAX_XSK_TX_BUDGET
-> +        */
-> +       u32 tx_budget_cache;
-> +
->         /* Protects generic receive. */
->         spinlock_t rx_lock;
->
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index f5e96e0d6e01..087f2675333c 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -413,16 +413,25 @@ EXPORT_SYMBOL(xsk_tx_release);
->
->  bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc *desc)
->  {
-> +       u32 xsk_full_count = 0;
-
-Enough with a bool;
-
->         struct xdp_sock *xs;
->
->         rcu_read_lock();
-> +again:
->         list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
-> +               if (xs->tx_budget_cache >= MAX_XSK_TX_BUDGET) {
-> +                       xsk_full_count++;
-> +                       continue;
-> +               }
-
-The problem here is that the fixed MAX_XSK_TX_BUDGET is only useful
-for the <= 2 socket case. If I have 3 sockets sharing a
-netdev/queue_id, the two first sockets can still starve the third one
-since the total budget per send is 32. You need to go through the list
-of sockets in the beginning to compute the MAX_XSK_TX_BUDGET to
-compute this dynamically before each call. Or cache this value
-somehow, in the pool for example. Actually, the refcount in the
-buf_pool will tell you how many sockets are sharing the same buf_pool.
-Try using that to form MAX_XSK_TX_BUDGET on the fly.
-
-Another simpler way of accomplishing this would be to just reorder the
-list every time. Put the first socket last in the list every time. The
-drawback of this is that you need to hold the xsk_tx_list_lock while
-doing this so might be slower. The per socket batch size would also be
-32 and you would not receive "fairness" over a single call to
-sendto(). Would that be a problem for you?
-
-> +
->                 if (!xskq_cons_peek_desc(xs->tx, desc, pool)) {
->                         if (xskq_has_descs(xs->tx))
->                                 xskq_cons_release(xs->tx);
->                         continue;
->                 }
->
-> +               xs->tx_budget_cache++;
-> +
->                 /* This is the backpressure mechanism for the Tx path.
->                  * Reserve space in the completion queue and only proceed
->                  * if there is space in it. This avoids having to implement
-> @@ -436,6 +445,14 @@ bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc *desc)
->                 return true;
->         }
->
-> +       if (unlikely(xsk_full_count > 0)) {
-> +               list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
-> +                       xs->tx_budget_cache = 0;
-> +               }
-> +               xsk_full_count = 0;
-> +               goto again;
-> +       }
-> +
->  out:
->         rcu_read_unlock();
->         return false;
-> @@ -1230,6 +1247,7 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
->         xs->zc = xs->umem->zc;
->         xs->sg = !!(xs->umem->flags & XDP_UMEM_SG_FLAG);
->         xs->queue_id = qid;
-> +       xs->tx_budget_cache = 0;
->         xp_add_xsk(xs->pool, xs);
->
->  out_unlock:
-> --
-> 2.20.1
->
->
