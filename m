@@ -2,187 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E40557CA9D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 15:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC0A7CA9DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 15:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233830AbjJPNjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 09:39:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36902 "EHLO
+        id S234009AbjJPNkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 09:40:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233919AbjJPNie (ORCPT
+        with ESMTP id S234018AbjJPNjx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 09:38:34 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F9C10DB
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 06:38:28 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39GBUGb8021402;
-        Mon, 16 Oct 2023 13:38:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=4dUZoaXroPnIYe+E5tKQv90XkTcgsEWMUCoq+h51ths=;
- b=jCNGBrfeK2efbqEQ80cDsLzc7GKJv+TrtP0Y3w7dyrUZwwk0hyPQ8NM4ChTrh9T9hNKE
- S7rfW2QLj71I8p56eTjNIihc4x43LRyuFJ0W6xiBQnpADYfpWZaeoLBRzDDdi+3faDFw
- M/W+/CMApoJ38xAFEYYheGn/obFQqOMhv4hVSyWX6NtYeq/SHRFcJR2jkpsiyMpEf5cV
- Zn9b95ez2qeTJfnFlMWUX+GCyhofdpWwqjpLHfDUOdzX04jwMU4M5cOiK4QzEEhH2cOo
- DbfcyKsm1lMGG8U7iMCR9/mzqjaz6RaR0STwAdkz2xy6JDY56AjgG1vuJJgxzdYzjQaB 5g== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tqk2yv6pq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 16 Oct 2023 13:38:07 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39GDc6DX031568
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 16 Oct 2023 13:38:06 GMT
-Received: from [10.214.66.119] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 16 Oct
- 2023 06:38:03 -0700
-Message-ID: <994410bb-89aa-d987-1f50-f514903c55aa@quicinc.com>
-Date:   Mon, 16 Oct 2023 19:08:00 +0530
+        Mon, 16 Oct 2023 09:39:53 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B24410E5;
+        Mon, 16 Oct 2023 06:39:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26E39C433C8;
+        Mon, 16 Oct 2023 13:39:45 +0000 (UTC)
+Message-ID: <1c6c0c10-8d00-4a52-ae2f-f481c87faf54@xs4all.nl>
+Date:   Mon, 16 Oct 2023 15:39:44 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] mm/sparsemem: fix race in accessing memory_section->usage
-To:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     <osalvador@suse.de>, <dan.j.williams@intel.com>, <vbabka@suse.cz>,
-        <mgorman@techsingularity.net>, <aneesh.kumar@linux.ibm.com>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-References: <1697202267-23600-1-git-send-email-quic_charante@quicinc.com>
- <20231014152532.5f3dca7838c2567a1a9ca9c6@linux-foundation.org>
- <a46cf10b-d852-c671-ee20-40f39bdbceac@redhat.com>
-Content-Language: en-US
-From:   Charan Teja Kalla <quic_charante@quicinc.com>
-In-Reply-To: <a46cf10b-d852-c671-ee20-40f39bdbceac@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 5/8] media: chips-media: wave5: Add the v4l2 layer
+Content-Language: en-US, nl
+To:     Sebastian Fricke <sebastian.fricke@collabora.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jackson Lee <jackson.lee@chipsnmedia.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Nas Chung <nas.chung@chipsnmedia.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-media@vger.kernel.org, Tomasz Figa <tfiga@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        kernel@collabora.com, Robert Beckett <bob.beckett@collabora.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Darren Etheridge <detheridge@ti.com>
+References: <20230929-wave5_v13_media_master-v13-0-5ac60ccbf2ce@collabora.com>
+ <20230929-wave5_v13_media_master-v13-5-5ac60ccbf2ce@collabora.com>
+ <c5e826a2-5bc6-4c49-9a6d-655d26a3b97f@xs4all.nl>
+ <20231016133539.m3i5crlsknoidim3@basti-XPS-13-9310>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <20231016133539.m3i5crlsknoidim3@basti-XPS-13-9310>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 6PTa4NeRHXIA0iEtJNhQuIt2EdxzNnSz
-X-Proofpoint-ORIG-GUID: 6PTa4NeRHXIA0iEtJNhQuIt2EdxzNnSz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-16_06,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=999 mlxscore=0 clxscore=1015 phishscore=0 bulkscore=0
- impostorscore=0 adultscore=0 malwarescore=0 lowpriorityscore=0
- priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2309180000 definitions=main-2310160118
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Andrew/David,
-
-On 10/16/2023 1:53 PM, David Hildenbrand wrote:
->>> The below race is observed on a PFN which falls into the device memory
->>> region with the system memory configuration where PFN's are such that
->>> [ZONE_NORMAL ZONE_DEVICE  ZONE_NORMAL]. Since normal zone start and
->>> end pfn contains the device memory PFN's as well, the compaction
->>> triggered will try on the device memory PFN's too though they end up in
->>> NOP(because pfn_to_online_page() returns NULL for ZONE_DEVICE memory
->>> sections). When from other core, the section mappings are being removed
->>> for the ZONE_DEVICE region, that the PFN in question belongs to,
->>> on which compaction is currently being operated is resulting into the
->>> kernel crash with CONFIG_SPASEMEM_VMEMAP enabled.
+On 16/10/2023 15:35, Sebastian Fricke wrote:
+> Hey Hans,
+> 
+> On 16.10.2023 13:57, Hans Verkuil wrote:
+>> Hi Sebastian,
 >>
->> Seems this bug is four years old, yes?  It must be quite hard to hit.
+>> On 12/10/2023 13:01, Sebastian Fricke wrote:
+>>> Add the decoder and encoder implementing the v4l2
+>>> API. This patch also adds the Makefile and the VIDEO_WAVE_VPU config
+>>>
+>>> Signed-off-by: Sebastian Fricke <sebastian.fricke@collabora.com>
+>>> Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+>>> Signed-off-by: Deborah Brouwer <deborah.brouwer@collabora.com>
+>>> Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
+>>> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+>>> Signed-off-by: Nas Chung <nas.chung@chipsnmedia.com>
+>>> ---
+>>>  drivers/media/platform/chips-media/Kconfig         |    1 +
+>>>  drivers/media/platform/chips-media/Makefile        |    1 +
+>>>  drivers/media/platform/chips-media/wave5/Kconfig   |   12 +
+>>>  drivers/media/platform/chips-media/wave5/Makefile  |   10 +
+>>>  .../platform/chips-media/wave5/wave5-helper.c      |  213 +++
+>>>  .../platform/chips-media/wave5/wave5-helper.h      |   31 +
+>>>  .../platform/chips-media/wave5/wave5-vpu-dec.c     | 1953 ++++++++++++++++++++
+>>>  .../platform/chips-media/wave5/wave5-vpu-enc.c     | 1794 ++++++++++++++++++
+>>>  .../media/platform/chips-media/wave5/wave5-vpu.c   |  291 +++
+>>>  .../media/platform/chips-media/wave5/wave5-vpu.h   |   83 +
+>>>  .../platform/chips-media/wave5/wave5-vpuapi.h      |    2 -
+>>>  11 files changed, 4389 insertions(+), 2 deletions(-)
+>>>
+>>
+>> <snip>
+>>
+>>> +static int wave5_vpu_dec_create_bufs(struct file *file, void *priv,
+>>> +                     struct v4l2_create_buffers *create)
+>>> +{
+>>> +    struct vpu_instance *inst = wave5_to_vpu_inst(priv);
+>>> +    struct v4l2_format *f = &create->format;
+>>> +
+>>> +    /* Firmware does not support CREATE_BUFS for CAPTURE queues. */
+>>> +    if (f->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
+>>> +        dev_dbg(inst->dev->dev,
+>>> +            "%s: VIDIOC_CREATE_BUFS not supported on CAPTURE queues.\n",
+>>> +            __func__);
+>>> +        return -EOPNOTSUPP;
+>>> +    }
+>>> +
+>>> +    return v4l2_m2m_ioctl_create_bufs(file, priv, create);
+>>> +}
+>>
+>> Regarding the EOPNOTSUPP discussion: I discussed this some more with
+>> Nicolas on irc, and we wonder if it isn't better to just drop create_bufs
+>> support for the wave5 decoder altogether. Is there any point in supporting
+>> it for OUTPUT but not CAPTURE?
+>>
+>> <snip>
+>>
+>>> +static const struct v4l2_ioctl_ops wave5_vpu_dec_ioctl_ops = {
+>>> +    .vidioc_querycap = wave5_vpu_dec_querycap,
+>>> +    .vidioc_enum_framesizes = wave5_vpu_dec_enum_framesizes,
+>>> +
+>>> +    .vidioc_enum_fmt_vid_cap    = wave5_vpu_dec_enum_fmt_cap,
+>>> +    .vidioc_s_fmt_vid_cap_mplane = wave5_vpu_dec_s_fmt_cap,
+>>> +    .vidioc_g_fmt_vid_cap_mplane = wave5_vpu_dec_g_fmt_cap,
+>>> +    .vidioc_try_fmt_vid_cap_mplane = wave5_vpu_dec_try_fmt_cap,
+>>> +
+>>> +    .vidioc_enum_fmt_vid_out    = wave5_vpu_dec_enum_fmt_out,
+>>> +    .vidioc_s_fmt_vid_out_mplane = wave5_vpu_dec_s_fmt_out,
+>>> +    .vidioc_g_fmt_vid_out_mplane = wave5_vpu_g_fmt_out,
+>>> +    .vidioc_try_fmt_vid_out_mplane = wave5_vpu_dec_try_fmt_out,
+>>> +
+>>> +    .vidioc_g_selection = wave5_vpu_dec_g_selection,
+>>> +    .vidioc_s_selection = wave5_vpu_dec_s_selection,
+>>> +
+>>> +    .vidioc_reqbufs = v4l2_m2m_ioctl_reqbufs,
+>>> +    .vidioc_querybuf = v4l2_m2m_ioctl_querybuf,
+>>> +    .vidioc_create_bufs = wave5_vpu_dec_create_bufs,
+>>
+>> So this would just be dropped.
+>>
+>>> +    .vidioc_prepare_buf = v4l2_m2m_ioctl_prepare_buf,
+>>> +    .vidioc_qbuf = v4l2_m2m_ioctl_qbuf,
+>>> +    .vidioc_expbuf = v4l2_m2m_ioctl_expbuf,
+>>> +    .vidioc_dqbuf = v4l2_m2m_ioctl_dqbuf,
+>>> +    .vidioc_streamon = v4l2_m2m_ioctl_streamon,
+>>> +    .vidioc_streamoff = v4l2_m2m_ioctl_streamoff,
+>>> +
+>>> +    .vidioc_try_decoder_cmd = v4l2_m2m_ioctl_try_decoder_cmd,
+>>> +    .vidioc_decoder_cmd = wave5_vpu_dec_decoder_cmd,
+>>> +
+>>> +    .vidioc_subscribe_event = wave5_vpu_subscribe_event,
+>>> +    .vidioc_unsubscribe_event = v4l2_event_unsubscribe,
+>>> +};
+>>
+>> This also means there is no need to document the new EOPNOTSUPP error
+>> code in VIDIOC_CREATE_BUFS, or to modify v4l2-compliance.
+>>
+>> You *do* need to add a comment somewhere explaining why you don't
+>> support this ioctl. I think it would be best to do that right after
+>> '.vidioc_reqbufs = v4l2_m2m_ioctl_reqbufs,'.
 > 
-> From the description, it's not quite clear to me if this was actually
-> hit -- usually people include the dmesg bug/crash info.
+> So, besides this issue would you judge the v4l2 layer of the driver to
+> be ready? Do you want a reviewed by tag for it or would you take it like
+> this as well?
 
-On Snapdragon SoC,  with the mentioned memory configuration of PFN's as
-[ZONE_NORMAL ZONE_DEVICE  ZONE_NORMAL],  we are able to see bunch of
-issues daily while testing on a device farm.
+No, it looks good. Please note though that patch 6/8 (dt-bindings) still
+needs an Acked/Reviewed-by from the device tree maintainers.
 
-I note that from next time on wards will send the demsg bug/crash info
-for these type of issues. For this particular issue below is the log.
-Though the below log is not directly pointing to the
-pfn_section_valid(){ ms->usage;}, when we loaded this dump on T32
-lauterbach tool, it is pointing.
+There was a comment on it from Krzysztof.
 
-[  540.578056] Unable to handle kernel NULL pointer dereference at
-virtual address 0000000000000000
-[  540.578068] Mem abort info:
-[  540.578070]   ESR = 0x0000000096000005
-[  540.578073]   EC = 0x25: DABT (current EL), IL = 32 bits
-[  540.578077]   SET = 0, FnV = 0
-[  540.578080]   EA = 0, S1PTW = 0
-[  540.578082]   FSC = 0x05: level 1 translation fault
-[  540.578085] Data abort info:
-[  540.578086]   ISV = 0, ISS = 0x00000005
-[  540.578088]   CM = 0, WnR = 0
-[  540.579431] pstate: 82400005 (Nzcv daif +PAN -UAO +TCO -DIT -SSBS
-BTYPE=--)
-[  540.579436] pc : __pageblock_pfn_to_page+0x6c/0x14c
-[  540.579454] lr : compact_zone+0x994/0x1058
-[  540.579460] sp : ffffffc03579b510
-[  540.579463] x29: ffffffc03579b510 x28: 0000000000235800 x27:
-000000000000000c
-[  540.579470] x26: 0000000000235c00 x25: 0000000000000068 x24:
-ffffffc03579b640
-[  540.579477] x23: 0000000000000001 x22: ffffffc03579b660 x21:
-0000000000000000
-[  540.579483] x20: 0000000000235bff x19: ffffffdebf7e3940 x18:
-ffffffdebf66d140
-[  540.579489] x17: 00000000739ba063 x16: 00000000739ba063 x15:
-00000000009f4bff
-[  540.579495] x14: 0000008000000000 x13: 0000000000000000 x12:
-0000000000000001
-[  540.579501] x11: 0000000000000000 x10: 0000000000000000 x9 :
-ffffff897d2cd440
-[  540.579507] x8 : 0000000000000000 x7 : 0000000000000000 x6 :
-ffffffc03579b5b4
-[  540.579512] x5 : 0000000000027f25 x4 : ffffffc03579b5b8 x3 :
-0000000000000001
-[  540.579518] x2 : ffffffdebf7e3940 x1 : 0000000000235c00 x0 :
-0000000000235800
-[  540.579524] Call trace:
-[  540.579527]  __pageblock_pfn_to_page+0x6c/0x14c
-[  540.579533]  compact_zone+0x994/0x1058
-[  540.579536]  try_to_compact_pages+0x128/0x378
-[  540.579540]  __alloc_pages_direct_compact+0x80/0x2b0
-[  540.579544]  __alloc_pages_slowpath+0x5c0/0xe10
-[  540.579547]  __alloc_pages+0x250/0x2d0
-[  540.579550]  __iommu_dma_alloc_noncontiguous+0x13c/0x3fc
-[  540.579561]  iommu_dma_alloc+0xa0/0x320
-[  540.579565]  dma_alloc_attrs+0xd4/0x108
+Regards,
 
->>> Fix this issue by the below steps:
->>> a) Clear SECTION_HAS_MEM_MAP before freeing the ->usage.
->>> b) RCU protected read side critical section will either return NULL when
->>> SECTION_HAS_MEM_MAP is cleared or can successfully access ->usage.
->>> c) Synchronize the rcu on the write side and free the ->usage. No
->>> attempt will be made to access ->usage after this as the
->>> SECTION_HAS_MEM_MAP is cleared thus valid_section() return false.
+	Hans
+
 > 
+>>
+>> Regards,
+>>
+>>     Hans
 > 
-> This affects any kind of memory hotunplug. When hotunplugging memory we
-> will end up calling synchronize_rcu() for each and every memory section,
-> which sounds extremely wasteful.
-> 
-> Can't we find a way to kfree_rcu() that thing and read/write the pointer
-> using READ?ONCE?WRITE_ONCE instead?
+> Sincerly,
+> Sebastian
+>> _______________________________________________
+>> Kernel mailing list -- kernel@mailman.collabora.com
+>> To unsubscribe send an email to kernel-leave@mailman.collabora.com
 
-I am inspired to use the synchronize_rcu() because of [1] where we did
-use it in offline_page_ext(). And my limited understanding is that, a
-user can trigger the offline operation more often than the unplug operation.
-
-I agree here that there is a scope to use kfree_rcu() unlike in [1]. Let
-me check for a way to use it.
-
-[1]
-https://lore.kernel.org/all/1661496993-11473-1-git-send-email-quic_charante@quicinc.com/
-
-Thanks,
-Charan
