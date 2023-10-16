@@ -2,53 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF8127C9F08
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 07:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC33A7C9F0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 07:42:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231759AbjJPFlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 01:41:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49892 "EHLO
+        id S231745AbjJPFmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 01:42:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231745AbjJPFli (ORCPT
+        with ESMTP id S231617AbjJPFmR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 01:41:38 -0400
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8916F10D;
-        Sun, 15 Oct 2023 22:41:36 -0700 (PDT)
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-32d9cb5e0fcso2375308f8f.0;
-        Sun, 15 Oct 2023 22:41:36 -0700 (PDT)
+        Mon, 16 Oct 2023 01:42:17 -0400
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB7ED6;
+        Sun, 15 Oct 2023 22:42:15 -0700 (PDT)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40572aeb673so40345965e9.0;
+        Sun, 15 Oct 2023 22:42:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697434895; x=1698039695;
+        d=1e100.net; s=20230601; t=1697434934; x=1698039734;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tzH9u5+IyHUbPiCtTzRLtsqMu5JDkmc0BDHNcGapbL4=;
-        b=g2YAQQdaz5qv7xs+upo1nHeWHZKOwLl6CBKjQug3pZ1gqKEm9Frb3mZXwuI65dac8L
-         QoIYgwAEzNN53CxzyB5rsjRVL6g3lRBxVc5xT2VWuwLQsJnPNEGDZ4nA2PKYj0Os5//F
-         tMKlxJ4jICaL8T2QRqKr/C1k94wQEsEOmB154BQZwnl3FtGUWG82UOMwu9b+et2BH+3Y
-         9opdKJXcEH+ReduzaL19+gWbHrM6RheNPdEzgIrfCY1PJFI20SkmqVZKR+TbsfPEogge
-         DBOBoSMJosyaVmQPcbbSvL3LZC2wMyHLp3eMC5srxdUSTKZBeqfIo0HCGcfU0yJwDyza
-         zixQ==
-X-Gm-Message-State: AOJu0YydRvgpafv3xWcUPkp4zHlohg/hDkU4T39LCNV/I8EnvcXCoC+l
-        IyBPdhUn6iJimsLD6NSZVVo=
-X-Google-Smtp-Source: AGHT+IHTiPlrLNSL/c5LNd2zbeVemwaHCAqNRfRxFH7xso99+0ro1NyXL0/Gg5/BCp10T9Y4dWahag==
-X-Received: by 2002:a5d:4e8b:0:b0:32d:a688:8813 with SMTP id e11-20020a5d4e8b000000b0032da6888813mr3458485wru.32.1697434894793;
-        Sun, 15 Oct 2023 22:41:34 -0700 (PDT)
+        bh=tw+UgsfFVJizsD3pEyZUdWVMjd2ETPU/wun3BiQWz7c=;
+        b=FJnka9CVLTiWLtu8Z95kVO6K8+XObbZ6YOS/WYC7ZNQQdCrmx6KOuiZb5KDYcH0B/J
+         +V4en9+/pRgQCvtvHyMm/0eiLqmor1UEHNNd88GpTNTwcqfllDq64bI6+TS2MkHzEDE+
+         OWB0nDwZNHhdNrTv7Gzk5tqCuIwRmWGioBC6lNWiYBvzCdisx4K6NAexXGr3OdTdXwBR
+         0h+XwYB7OVCnmc+QUOTpVZ6RHG2HEwuwZ+Wp7d+8futdl/n2tx4+hvYa2NrvxmcRTjtL
+         FEXxnQbFFLev4LdCvClzlUyfZVT4D6zJhvvZyVlLAjgPbZlboC5Tmt3bDd6OoF+eTBhA
+         437A==
+X-Gm-Message-State: AOJu0YxvTvWM5t7nLqSZzHB+OLZUAazMmba/ix9oVobVAlEhqPGu55CE
+        g4SK+Wd/Xb11Jzzddn7I4+k=
+X-Google-Smtp-Source: AGHT+IGjMCEpc+eqaeqB0/HDWBuJTAQVNElL64vecdoa3sTFo0NqzI2Q5CTGteLvqgg4LwoYD223Zw==
+X-Received: by 2002:a05:600c:2317:b0:406:6964:7e96 with SMTP id 23-20020a05600c231700b0040669647e96mr27625930wmo.13.1697434933908;
+        Sun, 15 Oct 2023 22:42:13 -0700 (PDT)
 Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id c10-20020a05600c0a4a00b0040770ec2c19sm6178269wmq.10.2023.10.15.22.41.34
+        by smtp.gmail.com with ESMTPSA id c10-20020a05600c0a4a00b0040770ec2c19sm6178269wmq.10.2023.10.15.22.42.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Oct 2023 22:41:34 -0700 (PDT)
-Message-ID: <a1641a33-b485-4b89-ad76-19b520d213c5@kernel.org>
-Date:   Mon, 16 Oct 2023 07:41:34 +0200
+        Sun, 15 Oct 2023 22:42:13 -0700 (PDT)
+Message-ID: <1476ad05-59a6-4591-80e7-1b4b8f3df916@kernel.org>
+Date:   Mon, 16 Oct 2023 07:42:13 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 5/7] tty: 8250: Add support for and fix up additional
- Brainboxes PX cards
+Subject: Re: [PATCH v3 6/7] tty: 8250: Add support for Intashield IX cards
 Content-Language: en-US
 To:     Cameron Williams <cang1@live.co.uk>, gregkh@linuxfoundation.org,
         linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
 References: <BBPatchesV3> <20231015171141.3309-1-cang1@live.co.uk>
- <DU0PR02MB78996091ADEB6B3C952386D2C4D0A@DU0PR02MB7899.eurprd02.prod.outlook.com>
+ <DU0PR02MB789917A8AB71BE91225DB3F0C4D0A@DU0PR02MB7899.eurprd02.prod.outlook.com>
 From:   Jiri Slaby <jirislaby@kernel.org>
 Autocrypt: addr=jirislaby@kernel.org; keydata=
  xsFNBE6S54YBEACzzjLwDUbU5elY4GTg/NdotjA0jyyJtYI86wdKraekbNE0bC4zV+ryvH4j
@@ -92,7 +91,7 @@ Autocrypt: addr=jirislaby@kernel.org; keydata=
  f/bIWIr0cqQmqQ33FgRhrG1+Xml6UXyJ2jExmlO8JljuOGeXYh6ZkIEyzqzffzBLXZCujlYQ
  DFXpyMNVJ2ZwPmX2mWEoYuaBU0JN7wM+/zWgOf2zRwhEuD3A2cO2PxoiIfyUEfB9SSmffaK/
  S4xXoB6wvGENZ85Hg37C7WDNdaAt6Xh2uQIly5grkgvWppkNy4ZHxE+jeNsU7tg=
-In-Reply-To: <DU0PR02MB78996091ADEB6B3C952386D2C4D0A@DU0PR02MB7899.eurprd02.prod.outlook.com>
+In-Reply-To: <DU0PR02MB789917A8AB71BE91225DB3F0C4D0A@DU0PR02MB7899.eurprd02.prod.outlook.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
@@ -106,17 +105,11 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 15. 10. 23, 19:10, Cameron Williams wrote:
-> Fix up some issues with the PX range of cards and add missing IDs.
+> Add support for the IX-100, IX-200 and IX-400 serial cards.
 > 
-> Fix: PX-257 Revision 3 has 2 ports, not 4.
-> Added: PX-275/279, PX-475 serial port (LPT is in parport_pc), PX-820 cards
-> Added/Fix: PX-857 is a variant of PX-803, add note. Add additional card revision
-> and fix port counts to 2.
-> Fix: PX-835 is a variant of PX-846, add note
-
-Again, fixes separately, please. And with Fixes tag perhaps and cc stable?
-
 > Signed-off-by: Cameron Williams <cang1@live.co.uk>
+
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
 
 
 -- 
