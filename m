@@ -2,88 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0937CB65E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 00:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A14AE7CB65F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 00:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233787AbjJPWNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 18:13:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44758 "EHLO
+        id S234201AbjJPWNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 18:13:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232985AbjJPWNn (ORCPT
+        with ESMTP id S233661AbjJPWNp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 18:13:43 -0400
-Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B2D10F
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 15:13:30 -0700 (PDT)
-Received: from eig-obgw-6001a.ext.cloudfilter.net ([10.0.30.140])
-        by cmsmtp with ESMTP
-        id sSN7qCo4kQUgRsVq5qhjvI; Mon, 16 Oct 2023 22:13:29 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id sVq4qKYh2UNrysVq5qPel2; Mon, 16 Oct 2023 22:13:29 +0000
-X-Authority-Analysis: v=2.4 cv=FY4keby6 c=1 sm=1 tr=0 ts=652db589
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=wYkD_t78qR0A:10 a=20KFwNOVAAAA:8
- a=VwQbUJbxAAAA:8 a=QyXUC8HyAAAA:8 a=cm27Pg_UAAAA:8 a=-c74vyQ1mCLTWBcySUcA:9
- a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22 a=xmb-EsYY8bH0VWELuYED:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=aJ1PK8xOvx4yW7JZZyOpcHR2UxudiTCxLhMj/j7umts=; b=UBTkgnG6qeWrEZbBkllwXK4QY5
-        s+NDcBjTU45+h8V1PkYi5qzFSWLyLPrOujrttkM7yPtvTTgS2Q+G0DbCALWaBv/ZemjHS820gWUzi
-        3naqR1v32X0dnUuO7UklTgmirToPufNDw48Lw7yUD6QS7YuZ5Yc3qFXbR5pUC4LlwZcB2V4xCJUI+
-        pt0vNl+ejdgWONK/xJ/EXpJkERrvFwx9MXQF9Z5pbKQ+/eevehcOgm1it3RjhCHDK8lwbQv5Hvqbo
-        JRYhoPW11VOHm7rpmShDc2cTj16L1niSTkqf3zYSki6Whok60CpCqWiMUr/fPNqkWQJ83cgaXljVl
-        +I7LV3iw==;
-Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:39060 helo=[192.168.15.7])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96.1)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qsVq4-003D8a-0o;
-        Mon, 16 Oct 2023 17:13:28 -0500
-Message-ID: <cc4831d4-e0c7-418f-9fd3-b6c215d2633e@embeddedor.com>
-Date:   Mon, 16 Oct 2023 16:13:17 -0600
+        Mon, 16 Oct 2023 18:13:45 -0400
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19BEFA2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 15:13:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+ t=1697494412; x=1698099212; i=l.guzenko@web.de;
+ bh=9d2dbXiVZg4W6WYNSBv3s3mJZPt58PfKg/l2GDOEKjY=;
+ h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+ b=DAuekgAZYxSjuyw8a23NurwX38n/tgADPiVhD1VsAtf5xtF/YkL9nKd0BWvT0heDtC+uxmB5tKu
+ 0kd2lxtJ48i/mY7stFipyx7wTqT9BBC1fsLZpFa4IQaJqjJX0QM3rfEaxRtbEUnacZYPMaRASSqRA
+ xFlkDvPQWV1vYGH5EaHYUIj93ESnSoLn1ay+NwAuKU2JjcnHSJI3Ohdh2rod0WdbeNVgz0N0o1dNF
+ qG1XRbWEVNNd1SlcY0xd5ZO3GuPqA064+fZ+iX1SgYcdWn36FoxEdv6NtYO8Mb0RN6zDeSijm4wTM
+ LLjOVO8KyHEep22AMU50vcZvlX98aHfS7lqA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from luka-spectre.fritz.box ([82.220.110.137]) by smtp.web.de
+ (mrweb105 [213.165.67.124]) with ESMTPSA (Nemesis) id
+ 1Mw9xG-1ri8UK0xO8-00rxnr; Tue, 17 Oct 2023 00:13:32 +0200
+From:   Luka Guzenko <l.guzenko@web.de>
+To:     tiwai@suse.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Luka Guzenko <l.guzenko@web.de>
+Subject: [PATCH] ALSA: hda/relatek: Enable Mute LED on HP Laptop 15s-fq5xxx
+Date:   Tue, 17 Oct 2023 00:13:28 +0200
+Message-ID: <20231016221328.1521674-1-l.guzenko@web.de>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] bcachefs: Refactor bkey_i to use a flexible array
-To:     Kees Cook <keescook@chromium.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20231016212735.it.314-kees@kernel.org>
-Content-Language: en-US
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20231016212735.it.314-kees@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.21.192
-X-Source-L: No
-X-Exim-ID: 1qsVq4-003D8a-0o
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.7]) [187.162.21.192]:39060
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 2
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfCty6Q9F9ttZvftZ0B4nO8fAIi1stM9htzdblnLw4QwYh2Kq53qPlIN9+FyoYfHgl0shHAcd5wZWNwFgWnyotdxTnG0Gu8sQaoDQI/xl9QP9ZpJ+4ytQ
- Ym/R2JwlGFZO+mrhxN8iJhYQ8bUfvF35riiXVMPSwTEWhqawhfjUbcBF7+eQjwLHon3P/eZzaKucewnjqTotpXLPuqscaPjLMdxU6S6NJZ2RUI2xT5xZuIHL
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:m2Xut+5J8jWeT6Q0+Mz260CHBg2YtKnc/3PQTdhmDpLfQw/Ps6w
+ qEXtM93Hw6xxy9M3/IGT3KNFG/xr2v2jzxhBuDM330s+T4tNmU/oMprumbEPPmoFo46D8nV
+ hVgRCcCi1IrhUWSaCDbDw+Kzta77QTbtaOL5M/4VRfUNL1SR/sEh9TDg78ZF3moupCur4/A
+ +INeqjrFxnA2YMUIeOm+g==
+UI-OutboundReport: notjunk:1;M01:P0:q3Jcwj0BHyg=;mqTzrWDxOBCqUUTERR/u2HQVRCg
+ weByuyYcJEVxZOw2uYVjJwTxrCOgF6HzM3V0XHrjsHEGFT5Zm4AkQmh56kOFQoOafFcZBihAy
+ K6IKPhiygAzKRknqWK7VH/cpcQ2QpLTqlUPoFrB72bmUrcZc6xTxWak2NixQvlVwP5cA1UJus
+ 0JMgzHrXHsUA/ofwWzU6kmsLhfCREqRUfKLTMvvbsF29mIJgJlfNzqUq5VP5bSV4cqHvdAX86
+ BylgACFev1EXFtlYWUjhFbm8qYCOoCHS4bHGXbTQJ9PQHlMYJuWOxNQCjC7Qq31vwImeXyYOg
+ o5OpyV001meKNTjS/e+SuPUefSDe+wzfINER+UL7sI1DeBUOeq/HfkZ7jSapgW0NmnCvuT5Dr
+ Mq8SlBpIWUNWRyJiZjjc8N5wGkEmsqxwZEZzPmHJYzpEx0dTgkx1e3n8t3vn2k4kYdFhCPll2
+ f4pEhGX6mMybQTEpGFwh1UYNhUDRFzTzDZSo8NABP/n0zPtEj1RLdYp939bGgLMZn0vlcKsQ5
+ 49pYmNDBON/Xp3BQCecCO3G9yL4Pob2UdaAh1D15pR3NjM4f0RyPygrVzH0QMikmmKMuWU4Eb
+ 2nSb6gr3Ba91cJ8G3zSx/DQrKl7voXxqFDsDcJPjxeQYKt6irZeco0Q43ZSkEywkBMi1bydkb
+ cSsF5C0RX7Wxv9uhmzuU0GM9TAkH/D85gH/HM1Roq6BgJpg0Ap8VPIdyPqPdd/FG1fHOnELtV
+ PVQEkVuZpefjOQXDWl0tIuNf98rdnGOD8m2xQSWd5EO27JwMv347C4YcSWdIcw6P/Lygfd1wM
+ UCtHzwVCPRjYjGJT2Cv2eioRK61dLqE/oZp6gJrO1FqYuXBF6zUfx3+DBmDkzsn7kpD9E9I/L
+ aGVALb0+cpxxSzqqT1EJxNmIMiMJ6+KRj4L30BnrpJO+qJ+3j0Cn27CUF7ikv+YRXDsSFXL5L
+ 0gDKuw==
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,88 +67,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This HP Laptop uses ALC236 codec with COEF 0x07 controlling the
+mute LED. Enable existing quirk for this device.
 
+Signed-off-by: Luka Guzenko <l.guzenko@web.de>
+=2D--
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On 10/16/23 15:27, Kees Cook wrote:
-> The memcpy() in bch2_bkey_append_ptr() is operating on an embedded
-> fake flexible array. Instead, make it explicit, and convert the memcpy
-> to target the flexible array instead. Fixes the W=1 warning seen for
-> -Wstringop-overflow:
-> 
->     In file included from include/linux/string.h:254,
->                      from include/linux/bitmap.h:11,
->                      from include/linux/cpumask.h:12,
->                      from include/linux/smp.h:13,
->                      from include/linux/lockdep.h:14,
->                      from include/linux/radix-tree.h:14,
->                      from include/linux/backing-dev-defs.h:6,
->                      from fs/bcachefs/bcachefs.h:182:
->     fs/bcachefs/extents.c: In function 'bch2_bkey_append_ptr':
->     include/linux/fortify-string.h:57:33: warning: writing 8 bytes into a region of size 0 [-Wstringop-overflow=]
->        57 | #define __underlying_memcpy     __builtin_memcpy
->           |                                 ^
->     include/linux/fortify-string.h:648:9: note: in expansion of macro '__underlying_memcpy'
->       648 |         __underlying_##op(p, q, __fortify_size);                        \
->           |         ^~~~~~~~~~~~~
->     include/linux/fortify-string.h:693:26: note: in expansion of macro '__fortify_memcpy_chk'
->       693 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,                  \
->           |                          ^~~~~~~~~~~~~~~~~~~~
->     fs/bcachefs/extents.c:235:17: note: in expansion of macro 'memcpy'
->       235 |                 memcpy((void *) &k->v + bkey_val_bytes(&k->k),
->           |                 ^~~~~~
->     fs/bcachefs/bcachefs_format.h:287:33: note: destination object 'v' of size 0
->       287 |                 struct bch_val  v;
->           |                                 ^
-> 
-> Cc: Kent Overstreet <kent.overstreet@linux.dev>
-> Cc: Brian Foster <bfoster@redhat.com>
-> Cc: linux-bcachefs@vger.kernel.org
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202309192314.VBsjiIm5-lkp@intel.com/
-> Signed-off-by: Kees Cook <keescook@chromium.org>'
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 3eeecf67c17b..4b68d3df9473 100644
+=2D-- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9722,6 +9722,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[]=
+ =3D {
+ 	SND_PCI_QUIRK(0x103c, 0x89c6, "Zbook Fury 17 G9", ALC245_FIXUP_CS35L41_S=
+PI_2_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x89ca, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VRE=
+F),
+ 	SND_PCI_QUIRK(0x103c, 0x89d3, "HP EliteBook 645 G9 (MB 89D2)", ALC236_FI=
+XUP_HP_MUTE_LED_MICMUTE_VREF),
++	SND_PCI_QUIRK(0x103c, 0x8a20, "HP Laptop 15s-fq5xxx", ALC236_FIXUP_HP_MU=
+TE_LED_COEFBIT2),
+ 	SND_PCI_QUIRK(0x103c, 0x8a25, "HP Victus 16-d1xxx (MB 8A25)", ALC245_FIX=
+UP_HP_MUTE_LED_COEFBIT),
+ 	SND_PCI_QUIRK(0x103c, 0x8a78, "HP Dev One", ALC285_FIXUP_HP_LIMIT_INT_MI=
+C_BOOST),
+ 	SND_PCI_QUIRK(0x103c, 0x8aa0, "HP ProBook 440 G9 (MB 8A9E)", ALC236_FIXU=
+P_HP_GPIO_LED),
+=2D-
+2.42.0
 
-Yes. This looks good.
-
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-
-Thanks!
---
-Gustavo
-
-> ---
-> v2 - Change flex array name to "v_bytes" (bfoster)
-> v1 - https://lore.kernel.org/r/20231010235609.work.594-kees@kernel.org
-> ---
->   fs/bcachefs/bcachefs_format.h | 5 ++++-
->   fs/bcachefs/extents.h         | 2 +-
->   2 files changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
-> index f0d130440baa..cb1af3799b59 100644
-> --- a/fs/bcachefs/bcachefs_format.h
-> +++ b/fs/bcachefs/bcachefs_format.h
-> @@ -300,7 +300,10 @@ struct bkey_i {
->   	__u64			_data[0];
->   
->   	struct bkey	k;
-> -	struct bch_val	v;
-> +	union {
-> +		struct bch_val	v;
-> +		DECLARE_FLEX_ARRAY(__u8, v_bytes);
-> +	};
->   };
->   
->   #define KEY(_inode, _offset, _size)					\
-> diff --git a/fs/bcachefs/extents.h b/fs/bcachefs/extents.h
-> index 7ee8d031bb6c..896fcfca4f21 100644
-> --- a/fs/bcachefs/extents.h
-> +++ b/fs/bcachefs/extents.h
-> @@ -642,7 +642,7 @@ static inline void bch2_bkey_append_ptr(struct bkey_i *k, struct bch_extent_ptr
->   
->   		ptr.type = 1 << BCH_EXTENT_ENTRY_ptr;
->   
-> -		memcpy((void *) &k->v + bkey_val_bytes(&k->k),
-> +		memcpy(&k->v_bytes[bkey_val_bytes(&k->k)],
->   		       &ptr,
->   		       sizeof(ptr));
->   		k->k.u64s++;
