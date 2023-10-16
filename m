@@ -2,200 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E4107CB283
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 20:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 544167CB284
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 20:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233032AbjJPS15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 14:27:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50836 "EHLO
+        id S231569AbjJPS2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 14:28:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231569AbjJPS1y (ORCPT
+        with ESMTP id S233820AbjJPS2G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 14:27:54 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F58A2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 11:27:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B546CC433C7;
-        Mon, 16 Oct 2023 18:27:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697480871;
-        bh=KVzc+DtZ0K5HtCSUZgGI0+UechUc26ZCSqZWkVTBSAY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=dAYGg8p5ZyWRLCP+QEOdE2PYQTejbW5ZX0mGT+ZwEYC+3wFM2q2KHPsATrdaFsJWW
-         IhlXeiOuaNivr7/Q5DkL69M7LWpGET7ya4jgk0VqR6IHX/Y+weoXvrp+KmTZFzgjQm
-         CTZg5kP7qEHRdegIWIe0s7EKZ4TLv1Ty8uLBtTnjVMvQOddDQibiPt7mmgf2sBspPD
-         Zt3d2m3srwHB9yIg+HHvuat4o81hiYTiSvGaqLFHkvYLcAYw5bOAbQ31t5cj2cRD/a
-         ruwUcC3qZU26M+qOMR37o7tVeRBM/oy9Lp3iy+m43oqfnZ5+GX7HT0HaVYDZRN3gdP
-         2g4Tq5jXbGp9Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 35A4ACE09BE; Mon, 16 Oct 2023 11:27:51 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 11:27:51 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Leonardo Bras <leobras@redhat.com>
-Cc:     Imran Khan <imran.f.khan@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH smp,csd] Throw an error if a CSD lock is stuck for too
- long
-Message-ID: <fb3f6a95-5c54-460c-8581-276bc359a1de@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <bc7cc8b0-f587-4451-8bcd-0daae627bcc7@paulmck-laptop>
- <c87d7939-a88c-ad2d-82f2-866e04692882@oracle.com>
- <a77da319-3161-4e42-894e-521d29fa8348@paulmck-laptop>
- <ZSlhnu0n9eOfkN-U@redhat.com>
+        Mon, 16 Oct 2023 14:28:06 -0400
+Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1950AF0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 11:28:04 -0700 (PDT)
+Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-1ea4a3d0a44so783225fac.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 11:28:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1697480883; x=1698085683; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=bm51Bwy2SpdgE6SyKdoP36JXJJ8T1AHayysY044xqt4=;
+        b=FLIplMzcfLk8EUEDpYJJGXVzt83IfMpgjDqPezVP74Ml0ni5HtU9m160CngcNFShrY
+         TpopDP5PlplCI44xhq2vOiZsgZavZg0A/1DY7YZm0Pz73PppG/OjY4haCky/NdWdvzr6
+         z2gXWt8RWyXI80KvRsnF2edxa21FpGlwwGGEiIoUlZJqw0G6+JpPVrbGG6mSxFlsQ/J5
+         ijLOaVGmQb/rTYL4GxSoogIOQzgmHUOSl0B+uLs8lHTfk1ZwUi79tt9vT/xE9a6Ow5Pi
+         cIgPD/F20y3KnkNbtQd9Ul0RkWX918UmbPhKJi972YjKMlVOwsyk2U03lHfHPg6dpb0y
+         Pjaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697480883; x=1698085683;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bm51Bwy2SpdgE6SyKdoP36JXJJ8T1AHayysY044xqt4=;
+        b=aVP7a6k78CobX6BVIfkvBGzo+6mdABzUaM/DG1MWteYbd9xAj2uIcrbwzP+UXyp6xR
+         KlsVaTiw+Dki/o2ZJrgFn04qwwID++uildSd/zIBfXgzrObvU3NL+iOcp37IsHDac5Dj
+         kh5V4ZxontAnsylMB8Y/QQPg2P93L2/1HmSnU5bmemICRX9W0/CKVPZJYOIFhXLzvgGC
+         AfJlE0BZm2CzxBSTuxSdbgbtIlTItKkwwv4dr0GKUHPxrzwBV5oZwREjK6vuYYzkpyea
+         VwpHPv25MHoouoEvLKmNalNVPk56JOPdB5nfaHCpf4z6fSF2r4rTWX/rafx+Y9PysMyg
+         7tBg==
+X-Gm-Message-State: AOJu0Yx3zoA+nFV1NhvKraDh+cjCqIyVN0Q/eFDBGkAoONAW/Jjdz1pH
+        ifeNhbxRUp9iR/rj75aTK/bkH8ts6taezzX9TFX10g==
+X-Google-Smtp-Source: AGHT+IH0b3UYP/NwvVPYsP+quIm8KcdipLbFwgA4UjJRziEIlf48UD0ptL99BDxxzAPpnZ9uEYY5I75/pTi4/zQi4DQ=
+X-Received: by 2002:a05:6871:e46:b0:1e9:90ec:140 with SMTP id
+ vk6-20020a0568710e4600b001e990ec0140mr13011252oab.58.1697480883424; Mon, 16
+ Oct 2023 11:28:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZSlhnu0n9eOfkN-U@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <mhng-b720eb90-633f-498b-a487-0cfdc9f00ddd@palmer-ri-x1c9> <65e98129-0617-49ca-9802-8e3a46d58d29@efficios.com>
+In-Reply-To: <65e98129-0617-49ca-9802-8e3a46d58d29@efficios.com>
+From:   Robbin Ehn <rehn@rivosinc.com>
+Date:   Mon, 16 Oct 2023 20:27:52 +0200
+Message-ID: <CAEEvPLAoznHHq9A5CLQgRkqVhtiuyMDYxig1fgWGK0HsxpoQDg@mail.gmail.com>
+Subject: Re: [RFC PATCH] membarrier: riscv: Provide core serializing command
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>, parri.andrea@gmail.com,
+        charlie@rivosinc.com, paulmck@kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, mmaas@google.com, hboehm@google.com,
+        striker@us.ibm.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 12:26:22PM -0300, Leonardo Bras wrote:
-> On Mon, Oct 09, 2023 at 09:39:38AM -0700, Paul E. McKenney wrote:
-> > On Fri, Oct 06, 2023 at 10:32:07AM +1100, Imran Khan wrote:
-> > > Hello Paul,
-> > > 
-> > > On 6/10/2023 3:48 am, Paul E. McKenney wrote:
-> > > > The CSD lock seems to get stuck in 2 "modes". When it gets stuck
-> > > > temporarily, it usually gets released in a few seconds, and sometimes
-> > > > up to one or two minutes.
-> > > > 
-> > > > If the CSD lock stays stuck for more than several minutes, it never
-> > > > seems to get unstuck, and gradually more and more things in the system
-> > > > end up also getting stuck.
-> > > > 
-> > > > In the latter case, we should just give up, so the system can dump out
-> > > > a little more information about what went wrong, and, with panic_on_oops
-> > > > and a kdump kernel loaded, dump a whole bunch more information about
-> > > > what might have gone wrong.
-> > > > 
-> > > > Question: should this have its own panic_on_ipistall switch in
-> > > > /proc/sys/kernel, or maybe piggyback on panic_on_oops in a different
-> > > > way than via BUG_ON?
-> > > > 
-> > > panic_on_ipistall (set to 1 by default) looks better option to me. For systems
-> > > where such delay is acceptable and system can eventually get back to sane state,
-> > > this option (set to 0 after boot) would prevent crashing the system for
-> > > apparently benign CSD hangs of long duration.
-> > 
-> > Good point!  How about like the following?
-> > 
-> > 							Thanx, Paul
-> > 
-> > ------------------------------------------------------------------------
-> > 
-> > commit 6bcf3786291b86f13b3e13d51e998737a8009ec3
-> > Author: Rik van Riel <riel@surriel.com>
-> > Date:   Mon Aug 21 16:04:09 2023 -0400
-> > 
-> >     smp,csd: Throw an error if a CSD lock is stuck for too long
-> >     
-> >     The CSD lock seems to get stuck in 2 "modes". When it gets stuck
-> >     temporarily, it usually gets released in a few seconds, and sometimes
-> >     up to one or two minutes.
-> >     
-> >     If the CSD lock stays stuck for more than several minutes, it never
-> >     seems to get unstuck, and gradually more and more things in the system
-> >     end up also getting stuck.
-> >     
-> >     In the latter case, we should just give up, so the system can dump out
-> >     a little more information about what went wrong, and, with panic_on_oops
-> >     and a kdump kernel loaded, dump a whole bunch more information about what
-> >     might have gone wrong.  In addition, there is an smp.panic_on_ipistall
-> >     kernel boot parameter that by default retains the old behavior, but when
-> >     set enables the panic after the CSD lock has been stuck for more than
-> >     five minutes.
-> >     
-> >     [ paulmck: Apply Imran Khan feedback. ]
-> >     
-> >     Link: https://lore.kernel.org/lkml/bc7cc8b0-f587-4451-8bcd-0daae627bcc7@paulmck-laptop/
-> >     Signed-off-by: Rik van Riel <riel@surriel.com>
-> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> >     Cc: Peter Zijlstra <peterz@infradead.org>
-> >     Cc: Valentin Schneider <vschneid@redhat.com>
-> >     Cc: Juergen Gross <jgross@suse.com>
-> >     Cc: Jonathan Corbet <corbet@lwn.net>
-> >     Cc: Randy Dunlap <rdunlap@infradead.org>
-> > 
-> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> > index 0a1731a0f0ef..592935267ce2 100644
-> > --- a/Documentation/admin-guide/kernel-parameters.txt
-> > +++ b/Documentation/admin-guide/kernel-parameters.txt
-> > @@ -5858,6 +5858,11 @@
-> >  			This feature may be more efficiently disabled
-> >  			using the csdlock_debug- kernel parameter.
-> >  
-> > +	smp.panic_on_ipistall= [KNL]
-> > +			If a csd_lock_timeout extends for more than
-> > +			five minutes, panic the system.  By default, let
-> > +			CSD-lock acquisition take as long as they take.
-> > +
-> 
-> It could be interesting to have it as an s64 parameter (in {mili,}seconds) 
-> instead of bool, this way the user could pick the time to wait before the 
-> panic happens. 0 or -1 could mean disabled.
-> 
-> What do you think?
-> 
-> Other than that,
-> Reviewed-by: Leonardo Bras <leobras@redhat.com>
+> But fence.i would only have effects on the hart it is being called from, right ?
+> What is the use-case for allowing user-space to issue this instruction ?
 
-Thank you for looking this over!
+Right now openjdk uses flush_icache for every cmodx write. And it does
+a lot of cmodx.
+If the hardware does not require an IPI/icache flushing we still need
+to serialize the reader.
+(locally stopping out-of-order execution/speculation at least)
+And in some cases the reader knows the code stream has been changed
+and can emit fence.i itself instead.
+So we want the option to emit fence.i directly into the code stream.
 
-How about with the diff shown below, to be folded into the original?
-I went with int instead of s64 because I am having some difficulty
-imagining anyone specifying more than a 24-day timeout.  ;-)
+As fence.i is an unpriv instruction there is no issue with emitting it.
+But we need the assurance that context switching to a new hart does
+not eliminate the effects of the fence.i.
 
-							Thanx, Paul
+/Robbin
 
-------------------------------------------------------------------------
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index ccb7621eff79..ea5ae9deb753 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5931,8 +5931,10 @@
- 
- 	smp.panic_on_ipistall= [KNL]
- 			If a csd_lock_timeout extends for more than
--			five minutes, panic the system.  By default, let
--			CSD-lock acquisition take as long as they take.
-+			the specified number of milliseconds, panic the
-+			system.  By default, let CSD-lock acquisition
-+			take as long as they take.  Specifying 300,000
-+			for this value provides a 10-minute timeout.
- 
- 	smsc-ircc2.nopnp	[HW] Don't use PNP to discover SMC devices
- 	smsc-ircc2.ircc_cfg=	[HW] Device configuration I/O port
-diff --git a/kernel/smp.c b/kernel/smp.c
-index b6a0773a7015..d3ca47f32f38 100644
---- a/kernel/smp.c
-+++ b/kernel/smp.c
-@@ -170,8 +170,8 @@ static DEFINE_PER_CPU(void *, cur_csd_info);
- 
- static ulong csd_lock_timeout = 5000;  /* CSD lock timeout in milliseconds. */
- module_param(csd_lock_timeout, ulong, 0444);
--static bool panic_on_ipistall;
--module_param(panic_on_ipistall, bool, 0444);
-+static int panic_on_ipistall;  /* CSD panic timeout in milliseconds, 300000 for ten minutes. */
-+module_param(panic_on_ipistall, int, 0444);
- 
- static atomic_t csd_bug_count = ATOMIC_INIT(0);
- 
-@@ -256,7 +256,7 @@ static bool csd_lock_wait_toolong(struct __call_single_data *csd, u64 ts0, u64 *
- 	 * to become unstuck. Use a signed comparison to avoid triggering
- 	 * on underflows when the TSC is out of sync between sockets.
- 	 */
--	BUG_ON(panic_on_ipistall && (s64)ts_delta > 300000000000LL);
-+	BUG_ON(panic_on_ipistall > 0 && (s64)ts_delta > ((s64)panic_on_ipistall * NSEC_PER_MSEC));
- 	if (cpu_cur_csd && csd != cpu_cur_csd) {
- 		pr_alert("\tcsd: CSD lock (#%d) handling prior %pS(%ps) request.\n",
- 			 *bug_id, READ_ONCE(per_cpu(cur_csd_func, cpux)),
+>
+> One more thing: membarrier(2) sync_core only issues things like "fence.i" on
+> the various cores in the system running threads belonging to the process, but
+> does not intend to take care of doing any kind of cache invalidation per se
+> (e.g. invalidating an address range worth of cache). On ARM, this is done by a
+> separate system call (e.g. cacheflush(2)), or can be done by instructions
+> available from userspace in some cases.
+>
+> Do you expect to have a need for flushing only specific icache lines, or is
+> the intent to always flush the entire icache ?
+>
+> >
+> > Charlie is volunteering to do the work here, so hopefully we'll have
+> > something moving forward.
+>
+> That's great! I hope my feedback will help.
+>
+> Thanks,
+>
+> Mathieu
+>
+> >
+> >>
+> >>   Andrea
+>
+> --
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> https://www.efficios.com
+>
