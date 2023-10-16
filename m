@@ -2,292 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F025B7CADD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6CCC7CADE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:43:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233627AbjJPPnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 11:43:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55512 "EHLO
+        id S233263AbjJPPnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 11:43:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231508AbjJPPnK (ORCPT
+        with ESMTP id S232135AbjJPPn2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 11:43:10 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90CCAE6;
-        Mon, 16 Oct 2023 08:43:08 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70438C433C9;
-        Mon, 16 Oct 2023 15:43:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697470988;
-        bh=YQSftXDjlX2jFmFmLwmBjWy0+Qa2LejmfwOCODfHmbA=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=UD94NMhbAF0Hn1+u54/EiSInIpU2roomIDJ5upRsOMwiD4gpbndghYR0Y3z/fv+4c
-         n4RR0XUcaGCV89ZTPYhcNgqO1pzHheP28GSQknY0DyiLSf2evkv3sUV85BJr1YFviP
-         MWbvFXCBei0EDjy7na4F6lkyEd6BpjIflzijk2BSo5n64vyvFUKUaywLeMgxM6c7Rt
-         Z7UZn8+coDOKKDanrSAqOmPEgCwOuy9Y2hJJXS82+jQlA/Zvf9E31UGGdpKBiyMzhj
-         WhpkDThHBqGqaCh9truLhLS1Yn9oJHo701osnpf3pIFjG/1CAVk74vRPJx13IigKTT
-         GrIkgpaY8NKdw==
-Message-ID: <11ec6f637698feb04963c6a7c39a5ca80af95464.camel@kernel.org>
-Subject: Re: [RFC PATCH 02/53] netfs: Track the fpos above which the server
- has no data
-From:   Jeff Layton <jlayton@kernel.org>
-To:     David Howells <dhowells@redhat.com>,
-        Steve French <smfrench@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Christian Brauner <christian@brauner.io>,
-        linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-cachefs@redhat.com
-Date:   Mon, 16 Oct 2023 11:43:05 -0400
-In-Reply-To: <20231013155727.2217781-3-dhowells@redhat.com>
-References: <20231013155727.2217781-1-dhowells@redhat.com>
-         <20231013155727.2217781-3-dhowells@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Mon, 16 Oct 2023 11:43:28 -0400
+Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87BE4F3
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:43:26 -0700 (PDT)
+Received: by mail-oo1-xc36.google.com with SMTP id 006d021491bc7-57ba5f05395so2872931eaf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:43:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1697471006; x=1698075806; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MlKED5cDX4/M6RtMRhnbbTpnZitsZnGbgslw3+b0ID8=;
+        b=XU6B6WGnnCr97JXcgd85B4yek2KrTx6NX62lt8duS2SfwRKSWvK1yADhalunxrUYrf
+         aelpDPzWibRDhdqo7Ul8+QzKv2c65aEbw1brhulyRTP4eBKYVauZ9AvwbUCKa7V80ier
+         gIO5CjkGJlKvXpTsVrE33cQvLDbkrS30qOFjwSnUyGwf5Bc2L7nz6YT8GKHQSVOG0Dv1
+         9qM4wCpXCgV9LN5uiamgqrNYekLdHxrX3xGyoZRVKyzBK0yhxjvDrKU6uz2PBtVXWjOl
+         8VtYqKZMaTdJl41LnaHiZ5u3lknO4K1i+aYhWcJEqO4Bbq0l7g3v1V+sy6QDZ08wlg9W
+         3hAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697471006; x=1698075806;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MlKED5cDX4/M6RtMRhnbbTpnZitsZnGbgslw3+b0ID8=;
+        b=VWGZhGT/7t+K0ngDDvnZ4PACLCcOFSGwslh1GbRo8uV2VpktqD3/8LB7RZl2bXlE4G
+         Ui+xUFmBFlgl//wsKtuCEmEx4QPueM6JZy9JplpsiObwd4yzdhRcBsjHq9RVAcxUm1m9
+         EALP11WBuCh+foAU1EfI2JO3B9Z3mgkTy1XNhDveo3J8ftGeh3jdtsWZza3z98FLalas
+         yMEN+rCHc0ta+6YQ3MsWWhJvTqQFgckZd+jag0zKQoKRyy0UYvxMiaeUa6Jzup9RC1Q/
+         gPoLPVhu3aq3RdCXWzs/VrmfXHtSYSMonMWPIuUKs08PLZ+CMrjjerxl7F8S+diCA9U2
+         9VHw==
+X-Gm-Message-State: AOJu0Yw1LVGza+uZIxoQ50smMZYNOXHo89ZiFAE9u6VnoFm4lQ8OYGUl
+        voaKzElv7I2V93uumgc6cPLZr1PQDAFl0l2UN71ogw==
+X-Google-Smtp-Source: AGHT+IHgf0crmnnbH2S+hBlp+z4v3au1y/pafgssxZtwQGZp3PMuDIsa+dColbvineFADD3dOo2nXA==
+X-Received: by 2002:a4a:3009:0:b0:57b:92f2:1f64 with SMTP id q9-20020a4a3009000000b0057b92f21f64mr36167216oof.8.1697471005822;
+        Mon, 16 Oct 2023 08:43:25 -0700 (PDT)
+Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
+        by smtp.gmail.com with ESMTPSA id w18-20020a4ad032000000b0057327cecdd8sm1122632oor.10.2023.10.16.08.43.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 08:43:25 -0700 (PDT)
+From:   David Lechner <dlechner@baylibre.com>
+To:     linux-iio@vger.kernel.org
+Cc:     David Lechner <dlechner@baylibre.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        nuno.sa@analog.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] iio: resolver: ad2s1210: add reset gpio support
+Date:   Mon, 16 Oct 2023 10:43:09 -0500
+Message-ID: <20231016154311.38547-1-dlechner@baylibre.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-10-13 at 16:56 +0100, David Howells wrote:
-> Track the file position above which the server is not expected to have an=
-y
-> data and preemptively assume that we can simply fill blocks with zeroes
-> locally rather than attempting to download them - even if we've written
-> data back to the server.  Assume that any data that was written back abov=
-e
-> that position is held in the local cache.  Call this the "zero point".
->=20
-> Make use of this to optimise away some reads from the server.  We need to
-> set the zero point in the following circumstances:
->=20
->  (1) When we see an extant remote inode and have no cache for it, we set
->      the zero_point to i_size.
->=20
->  (2) On local inode creation, we set zero_point to 0.
->=20
->  (3) On local truncation down, we reduce zero_point to the new i_size if
->      the new i_size is lower.
->=20
->  (4) On local truncation up, we don't change zero_point.
->=20
->  (5) On local modification, we don't change zero_point.
->=20
->  (6) On remote invalidation, we set zero_point to the new i_size.
->=20
->  (7) If stored data is culled from the local cache, we must set zero_poin=
-t
->      above that if the data also got written to the server.
->=20
+This adds support for the optional reset gpio to the ad2s1210 resolver
+driver. If the gpio is present in the device tree, it is toggled during
+driver probe before the reset of the device initialization. As per the
+devicetree bindings, it is expected for the gpio to configured as active
+low.
 
-When you say culled here, it sounds like you're just throwing out the
-dirty cache without writing the data back. That shouldn't be allowed
-though, so I must be misunderstanding what you mean here. Can you
-explain?
+Suggested-by: Michael Hennerich <Michael.Hennerich@analog.com>
+Signed-off-by: David Lechner <dlechner@baylibre.com>
+---
+ drivers/iio/resolver/ad2s1210.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
->  (8) If dirty data is written back to the server, but not the local cache=
-,
->      we must set zero_point above that.
->=20
+diff --git a/drivers/iio/resolver/ad2s1210.c b/drivers/iio/resolver/ad2s1210.c
+index 8646389ec88d..a414eef12e5e 100644
+--- a/drivers/iio/resolver/ad2s1210.c
++++ b/drivers/iio/resolver/ad2s1210.c
+@@ -1426,6 +1426,7 @@ static int ad2s1210_setup_gpios(struct ad2s1210_state *st)
+ {
+ 	struct device *dev = &st->sdev->dev;
+ 	struct gpio_descs *resolution_gpios;
++	struct gpio_desc *reset_gpio;
+ 	DECLARE_BITMAP(bitmap, 2);
+ 	int ret;
+ 
+@@ -1481,6 +1482,17 @@ static int ad2s1210_setup_gpios(struct ad2s1210_state *st)
+ 					     "failed to set resolution gpios\n");
+ 	}
+ 
++	/* If the optional reset GPIO is present, toggle it to do a hard reset. */
++	reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
++	if (IS_ERR(reset_gpio))
++		return dev_err_probe(dev, PTR_ERR(reset_gpio),
++				     "failed to request reset GPIO\n");
++
++	if (reset_gpio) {
++		udelay(10);
++		gpiod_set_value(reset_gpio, 0);
++	}
++
+ 	return 0;
+ }
+ 
+-- 
+2.42.0
 
-How do you write back without writing to the local cache? I'm guessing
-this means you're doing a non-buffered write?
-
-> Assuming the above, any read from the server at or above the zero_point
-> position will return all zeroes.
->=20
-> The zero_point value can be stored in the cache, provided the above rules
-> are applied to it by any code that culls part of the local cache.
->=20
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: Jeff Layton <jlayton@kernel.org>
-> cc: linux-cachefs@redhat.com
-> cc: linux-fsdevel@vger.kernel.org
-> cc: linux-mm@kvack.org
-> ---
->  fs/afs/inode.c           | 13 +++++++------
->  fs/netfs/buffered_read.c | 40 +++++++++++++++++++++++++---------------
->  include/linux/netfs.h    |  5 +++++
->  3 files changed, 37 insertions(+), 21 deletions(-)
->=20
-> diff --git a/fs/afs/inode.c b/fs/afs/inode.c
-> index 1c794a1896aa..46bc5574d6f5 100644
-> --- a/fs/afs/inode.c
-> +++ b/fs/afs/inode.c
-> @@ -252,6 +252,7 @@ static void afs_apply_status(struct afs_operation *op=
-,
->  		vnode->netfs.remote_i_size =3D status->size;
->  		if (change_size) {
->  			afs_set_i_size(vnode, status->size);
-> +			vnode->netfs.zero_point =3D status->size;
->  			inode_set_ctime_to_ts(inode, t);
->  			inode->i_atime =3D t;
->  		}
-> @@ -865,17 +866,17 @@ static void afs_setattr_success(struct afs_operatio=
-n *op)
->  static void afs_setattr_edit_file(struct afs_operation *op)
->  {
->  	struct afs_vnode_param *vp =3D &op->file[0];
-> -	struct inode *inode =3D &vp->vnode->netfs.inode;
-> +	struct afs_vnode *vnode =3D vp->vnode;
-> =20
->  	if (op->setattr.attr->ia_valid & ATTR_SIZE) {
->  		loff_t size =3D op->setattr.attr->ia_size;
->  		loff_t i_size =3D op->setattr.old_i_size;
-> =20
-> -		if (size < i_size)
-> -			truncate_pagecache(inode, size);
-> -		if (size !=3D i_size)
-> -			fscache_resize_cookie(afs_vnode_cache(vp->vnode),
-> -					      vp->scb.status.size);
-> +		if (size !=3D i_size) {
-> +			truncate_pagecache(&vnode->netfs.inode, size);
-> +			netfs_resize_file(&vnode->netfs, size);
-> +			fscache_resize_cookie(afs_vnode_cache(vnode), size);
-> +		}
-
-Isn't this an existing bug? AFS is not setting remote_i_size in the
-setattr path currently? I think this probably ought to be done in a
-preliminary AFS patch.
-
->
->  	}
->  }
-> =20
-> diff --git a/fs/netfs/buffered_read.c b/fs/netfs/buffered_read.c
-> index 2cd3ccf4c439..a2852fa64ad0 100644
-> --- a/fs/netfs/buffered_read.c
-> +++ b/fs/netfs/buffered_read.c
-> @@ -147,6 +147,22 @@ static void netfs_rreq_expand(struct netfs_io_reques=
-t *rreq,
->  	}
->  }
-> =20
-> +/*
-> + * Begin an operation, and fetch the stored zero point value from the co=
-okie if
-> + * available.
-> + */
-> +static int netfs_begin_cache_operation(struct netfs_io_request *rreq,
-> +				       struct netfs_inode *ctx)
-> +{
-> +	int ret =3D -ENOBUFS;
-> +
-> +	if (ctx->ops->begin_cache_operation) {
-> +		ret =3D ctx->ops->begin_cache_operation(rreq);
-> +		/* TODO: Get the zero point value from the cache */
-> +	}
-> +	return ret;
-> +}
-> +
->  /**
->   * netfs_readahead - Helper to manage a read request
->   * @ractl: The description of the readahead request
-> @@ -180,11 +196,9 @@ void netfs_readahead(struct readahead_control *ractl=
-)
->  	if (IS_ERR(rreq))
->  		return;
-> =20
-> -	if (ctx->ops->begin_cache_operation) {
-> -		ret =3D ctx->ops->begin_cache_operation(rreq);
-> -		if (ret =3D=3D -ENOMEM || ret =3D=3D -EINTR || ret =3D=3D -ERESTARTSYS=
-)
-> -			goto cleanup_free;
-> -	}
-> +	ret =3D netfs_begin_cache_operation(rreq, ctx);
-> +	if (ret =3D=3D -ENOMEM || ret =3D=3D -EINTR || ret =3D=3D -ERESTARTSYS)
-> +		goto cleanup_free;
-> =20
->  	netfs_stat(&netfs_n_rh_readahead);
->  	trace_netfs_read(rreq, readahead_pos(ractl), readahead_length(ractl),
-> @@ -238,11 +252,9 @@ int netfs_read_folio(struct file *file, struct folio=
- *folio)
->  		goto alloc_error;
->  	}
-> =20
-> -	if (ctx->ops->begin_cache_operation) {
-> -		ret =3D ctx->ops->begin_cache_operation(rreq);
-> -		if (ret =3D=3D -ENOMEM || ret =3D=3D -EINTR || ret =3D=3D -ERESTARTSYS=
-)
-> -			goto discard;
-> -	}
-> +	ret =3D netfs_begin_cache_operation(rreq, ctx);
-> +	if (ret =3D=3D -ENOMEM || ret =3D=3D -EINTR || ret =3D=3D -ERESTARTSYS)
-> +		goto discard;
-> =20
->  	netfs_stat(&netfs_n_rh_readpage);
->  	trace_netfs_read(rreq, rreq->start, rreq->len, netfs_read_trace_readpag=
-e);
-> @@ -390,11 +402,9 @@ int netfs_write_begin(struct netfs_inode *ctx,
->  	rreq->no_unlock_folio	=3D folio_index(folio);
->  	__set_bit(NETFS_RREQ_NO_UNLOCK_FOLIO, &rreq->flags);
-> =20
-> -	if (ctx->ops->begin_cache_operation) {
-> -		ret =3D ctx->ops->begin_cache_operation(rreq);
-> -		if (ret =3D=3D -ENOMEM || ret =3D=3D -EINTR || ret =3D=3D -ERESTARTSYS=
-)
-> -			goto error_put;
-> -	}
-> +	ret =3D netfs_begin_cache_operation(rreq, ctx);
-> +	if (ret =3D=3D -ENOMEM || ret =3D=3D -EINTR || ret =3D=3D -ERESTARTSYS)
-> +		goto error_put;
-> =20
->  	netfs_stat(&netfs_n_rh_write_begin);
->  	trace_netfs_read(rreq, pos, len, netfs_read_trace_write_begin);
-> diff --git a/include/linux/netfs.h b/include/linux/netfs.h
-> index b447cb67f599..282511090ead 100644
-> --- a/include/linux/netfs.h
-> +++ b/include/linux/netfs.h
-> @@ -129,6 +129,8 @@ struct netfs_inode {
->  	struct fscache_cookie	*cache;
->  #endif
->  	loff_t			remote_i_size;	/* Size of the remote file */
-> +	loff_t			zero_point;	/* Size after which we assume there's no data
-> +						 * on the server */
-
-While I understand the concept, I'm not yet sure I understand how this
-new value will be used. It might be better to merge this patch in with
-the patch that adds the first user of this data.
-
->  };
-> =20
->  /*
-> @@ -330,6 +332,7 @@ static inline void netfs_inode_init(struct netfs_inod=
-e *ctx,
->  {
->  	ctx->ops =3D ops;
->  	ctx->remote_i_size =3D i_size_read(&ctx->inode);
-> +	ctx->zero_point =3D ctx->remote_i_size;
->  #if IS_ENABLED(CONFIG_FSCACHE)
->  	ctx->cache =3D NULL;
->  #endif
-> @@ -345,6 +348,8 @@ static inline void netfs_inode_init(struct netfs_inod=
-e *ctx,
->  static inline void netfs_resize_file(struct netfs_inode *ctx, loff_t new=
-_i_size)
->  {
->  	ctx->remote_i_size =3D new_i_size;
-> +	if (new_i_size < ctx->zero_point)
-> +		ctx->zero_point =3D new_i_size;
->  }
-> =20
->  /**
->=20
-
---=20
-Jeff Layton <jlayton@kernel.org>
