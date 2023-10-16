@@ -2,186 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C3B17C9EC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 07:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E67B07C9ED1
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 07:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231843AbjJPFbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 01:31:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38560 "EHLO
+        id S231585AbjJPFcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 01:32:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231757AbjJPFbT (ORCPT
+        with ESMTP id S231561AbjJPFct (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 01:31:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C9D9E6
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 22:30:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697434226;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1C2WXsdOvEFkNHl/IhfFcAYtP0vCH8zsN+6evhNM07I=;
-        b=YzQQr/6pPyugtQqVNxhhoD2ByU9LObvTDMWozoUg+31bF1FxHqJLmF/9AHvBEgGf5a8QHu
-        il6cXAwey8d5+YaXp/ileTsVOxPOrkMAMWhiMQyJMrVGdW+uhk/bVG38QGzoFcK8iTDdl8
-        1l0ifecnfk9NchPOebHASzEyDpEOl18=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-190-RnPVrS36PAaNQ34Wv-2Hmw-1; Mon, 16 Oct 2023 01:30:20 -0400
-X-MC-Unique: RnPVrS36PAaNQ34Wv-2Hmw-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2c520e0a9a7so5847591fa.3
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 22:30:19 -0700 (PDT)
+        Mon, 16 Oct 2023 01:32:49 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 093F2F3
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 22:32:47 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-32d895584f1so3572155f8f.1
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 22:32:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697434365; x=1698039165; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cahZBYlxb+nHcg00wtQSR4/273TLxW5YHWH0Zq0a+9k=;
+        b=bC45lCxGEG9ymuPX2oiVUgCiTtGHuyYawQeLZOmWZ0OiQh2s5y0pYFenfTo/R84MLd
+         TqwZYJbFmkDyt8gZeMG7lSsZJY/TYWEO+bwYmXFMVXFB9pEf96cPUpmxQ8ZlSipdEy/u
+         zpb/WUWtZGSRjiP6lCNi1xs6LVgYA1iWec7kAb4emMakKD/sAIHBbxQkkevHyQ0Ygbzk
+         CwXBw/0Pb5+OecvV/0tTffalfhs9fKgSFlS6N4gWGV0nH1GhFwmdv/BtvYIB0DB+DlhE
+         9OpcZXThtnIm4hJBMCSPPwZ6Gk57yTo7CZzoUlXo/txhWIzuNrNY+JrSWDb5c5sT+cQZ
+         ZHTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697434218; x=1698039018;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1C2WXsdOvEFkNHl/IhfFcAYtP0vCH8zsN+6evhNM07I=;
-        b=XfQ1Sy4Y6isTKm5LJLXYFaelhPIKxToKqmQL97aN+F2LN4GcM13UVD3h4HoUGCPgLE
-         EO9XmKqQXyXJPJxC+l96lVeUufhHlIVOUCCC4FcXTB9plthhO1R0kDck9Xl0BlyrtAvN
-         EnXw4ZP5fnGhEcfQDqVzocyofAAKvp+CgOo2OzCcALz3+oaxLaBBshn4lFQzeT6GSoJX
-         hmIp2IXmVae3AXVOgLxmB/jby99qXy2CMqM9I6ZPw0vUkiWDPk5IVn18wDP+dTnELZEo
-         gUDlWCUPT2sn5cWKlnucmOI8CSJ54pBI1I83Ub50KXCEswd26uY/Wbrfu8oToFwaBrjJ
-         ocGQ==
-X-Gm-Message-State: AOJu0YyyI6WiAedkELqGqbeLN+7rXC+XGS91E72cOzpJf2pOAvbUgjQ5
-        boMcQuU8MTW/Cd2YiB1aV68JOM4c0rjQZ/hwfYTAUbAa5urB1N0dqZB53IrB3FQjcMQoU45sk/r
-        CcvYeRRmdeFaPPWPZdtorluWu8bx5RN8BrtAelyDH
-X-Received: by 2002:a2e:850f:0:b0:2c5:2103:604b with SMTP id j15-20020a2e850f000000b002c52103604bmr1773605lji.2.1697434218617;
-        Sun, 15 Oct 2023 22:30:18 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFRBikMoE5QFf7VlNg+iTYDUs31qOow+BkmsjVhIQbfuhtzvOIE+ECRPPPCCN0d/sXlFyh85ZZGVE/CxzHrr/E=
-X-Received: by 2002:a2e:850f:0:b0:2c5:2103:604b with SMTP id
- j15-20020a2e850f000000b002c52103604bmr1773588lji.2.1697434218254; Sun, 15 Oct
- 2023 22:30:18 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697434365; x=1698039165;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cahZBYlxb+nHcg00wtQSR4/273TLxW5YHWH0Zq0a+9k=;
+        b=nSiGkA137p8gHLJKeulfUWbbKO+s8EUSavLr3Mw23SJGqsf/pWiBLVIwrQBhDXEgBf
+         SQzt6pamYobuDsqvgU6R0tN8R66PDfs0hr94hkZ7aSFJ7fbvluPzPo7i6aug1tGTl9bm
+         l6VXkovRY+GtNwKngw0GHpzAyoMQ5KYcIQrfPUpjJ0bs/aEuUm5UdnbvEHrSv25ufvIK
+         hyAAfb1WaoWDaQPEqtdzIKjymFQQp5gFfEYM9ECSXjVxyDUfebB2jB0PAfd6OyFv2fGH
+         6LbkQJtE8WszJFtjAddP/fnl7P500wuLmrMrPf3UIyzP+hS1b0MyAlwGLRiRx/xMPGHc
+         joag==
+X-Gm-Message-State: AOJu0YyJZjjh9Thf187dphGWp5C2keCycAkqDyinpOlwSteTzjxxBQKJ
+        Ie3l6eisHgjmxklkZZc4hKQzAQ==
+X-Google-Smtp-Source: AGHT+IHT1DShnEauSsz6zKTV4Fd2wxmSLcXOWS+sIvsgHJ56bQ8Kjh/Cj77fjZJi0qpCVhhj/l+e/g==
+X-Received: by 2002:adf:f404:0:b0:31c:3136:60af with SMTP id g4-20020adff404000000b0031c313660afmr25541534wro.61.1697434365472;
+        Sun, 15 Oct 2023 22:32:45 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.219.154])
+        by smtp.gmail.com with ESMTPSA id w12-20020a05600c474c00b003fee6e170f9sm6128233wmo.45.2023.10.15.22.32.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 15 Oct 2023 22:32:45 -0700 (PDT)
+Message-ID: <4ad7cea6-806b-44cb-80ad-73d2f459936a@linaro.org>
+Date:   Mon, 16 Oct 2023 07:32:44 +0200
 MIME-Version: 1.0
-References: <1696928580-7520-1-git-send-email-si-wei.liu@oracle.com>
- <1696928580-7520-2-git-send-email-si-wei.liu@oracle.com> <CACGkMEt2vohDVG=BOpvn=7QgPiADgB93KoZ6xWwrO4T=Wgj6Pw@mail.gmail.com>
- <3dbc36b7-28c2-4b62-97dc-a8280f10dc36@oracle.com>
-In-Reply-To: <3dbc36b7-28c2-4b62-97dc-a8280f10dc36@oracle.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Mon, 16 Oct 2023 13:30:07 +0800
-Message-ID: <CACGkMEvC3BsApy1XR0mVAOmy4sdon=Mk02=pkgm4BPs_98NP3g@mail.gmail.com>
-Subject: Re: [PATCH 1/4] vdpa: introduce .reset_map operation callback
-To:     Si-Wei Liu <si-wei.liu@oracle.com>
-Cc:     mst@redhat.com, eperezma@redhat.com, xuanzhuo@linux.alibaba.com,
-        dtatulea@nvidia.com, virtualization@lists.linux-foundation.org,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: msm8953: Use non-deprecated
+ qcom,domain in LPASS
+Content-Language: en-US
+To:     Luca Weiss <luca@z3ntu.xyz>, ~postmarketos/upstreaming@lists.sr.ht,
+        phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231015-msm8953-misc-fixes-v1-0-b800deca9e46@z3ntu.xyz>
+ <20231015-msm8953-misc-fixes-v1-2-b800deca9e46@z3ntu.xyz>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231015-msm8953-misc-fixes-v1-2-b800deca9e46@z3ntu.xyz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 3:36=E2=80=AFPM Si-Wei Liu <si-wei.liu@oracle.com> =
-wrote:
->
->
->
-> On 10/12/2023 7:49 PM, Jason Wang wrote:
-> > On Tue, Oct 10, 2023 at 5:05=E2=80=AFPM Si-Wei Liu <si-wei.liu@oracle.c=
-om> wrote:
-> >> Device specific IOMMU parent driver who wishes to see mapping to be
-> >> decoupled from virtio or vdpa device life cycle (device reset) can use
-> >> it to restore memory mapping in the device IOMMU to the initial or
-> >> default state. The reset of mapping is done per address space basis.
-> >>
-> >> The reason why a separate .reset_map op is introduced is because this
-> >> allows a simple on-chip IOMMU model without exposing too much device
-> >> implementation details to the upper vdpa layer. The .dma_map/unmap or
-> >> .set_map driver API is meant to be used to manipulate the IOTLB mappin=
-gs,
-> >> and has been abstracted in a way similar to how a real IOMMU device ma=
-ps
-> >> or unmaps pages for certain memory ranges. However, apart from this th=
-ere
-> >> also exists other mapping needs, in which case 1:1 passthrough mapping
-> >> has to be used by other users (read virtio-vdpa). To ease parent/vendo=
-r
-> >> driver implementation and to avoid abusing DMA ops in an unexpacted wa=
-y,
-> >> these on-chip IOMMU devices can start with 1:1 passthrough mapping mod=
-e
-> >> initially at the he time of creation. Then the .reset_map op can be us=
-ed
-> >> to switch iotlb back to this initial state without having to expose a
-> >> complex two-dimensional IOMMU device model.
-> >>
-> >> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
-> >> ---
-> >>   include/linux/vdpa.h | 10 ++++++++++
-> >>   1 file changed, 10 insertions(+)
-> >>
-> >> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
-> >> index d376309..26ae6ae 100644
-> >> --- a/include/linux/vdpa.h
-> >> +++ b/include/linux/vdpa.h
-> >> @@ -327,6 +327,15 @@ struct vdpa_map_file {
-> >>    *                             @iova: iova to be unmapped
-> >>    *                             @size: size of the area
-> >>    *                             Returns integer: success (0) or error=
- (< 0)
-> >> + * @reset_map:                 Reset device memory mapping to the def=
-ault
-> >> + *                             state (optional)
-> > I think we need to mention that this is a must for parents that use set=
-_map()?
-> It's not a must IMO, some .set_map() user for e.g. VDUSE or vdpa-sim-blk
-> can deliberately choose to implement .reset_map() depending on its own
-> need. Those user_va software devices mostly don't care about mapping
-> cost during reset, as they don't have to pin kernel memory in general.
-> It's just whether or not they care about mapping being decoupled from
-> device reset at all.
+On 15/10/2023 22:26, Luca Weiss wrote:
+> Use the qcom,domain property instead of the deprecated qcom,apr-domain,
+> which in turn also fixes a bunch of dtbs_checks warnings.
+> 
+> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
 
-Ok, let's document this in the changelog at least.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Thanks
-
->
-> And the exact implementation requirement of this interface has been
-> documented right below.
->
-> -Siwei
-> >
-> > Other than this:
-> >
-> > Acked-by: Jason Wang <jasowang@redhat.com>
-> >
-> > Thanks
-> >
-> >> + *                             Needed for devices that are using devi=
-ce
-> >> + *                             specific DMA translation and prefer ma=
-pping
-> >> + *                             to be decoupled from the virtio life c=
-ycle,
-> >> + *                             i.e. device .reset op does not reset m=
-apping
-> >> + *                             @vdev: vdpa device
-> >> + *                             @asid: address space identifier
-> >> + *                             Returns integer: success (0) or error =
-(< 0)
-> >>    * @get_vq_dma_dev:            Get the dma device for a specific
-> >>    *                             virtqueue (optional)
-> >>    *                             @vdev: vdpa device
-> >> @@ -405,6 +414,7 @@ struct vdpa_config_ops {
-> >>                         u64 iova, u64 size, u64 pa, u32 perm, void *op=
-aque);
-> >>          int (*dma_unmap)(struct vdpa_device *vdev, unsigned int asid,
-> >>                           u64 iova, u64 size);
-> >> +       int (*reset_map)(struct vdpa_device *vdev, unsigned int asid);
-> >>          int (*set_group_asid)(struct vdpa_device *vdev, unsigned int =
-group,
-> >>                                unsigned int asid);
-> >>          struct device *(*get_vq_dma_dev)(struct vdpa_device *vdev, u1=
-6 idx);
-> >> --
-> >> 1.8.3.1
-> >>
->
+Best regards,
+Krzysztof
 
