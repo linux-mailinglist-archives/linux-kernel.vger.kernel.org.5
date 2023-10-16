@@ -2,48 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAA917CA30E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E87697CA330
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbjJPJA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 05:00:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52212 "EHLO
+        id S233345AbjJPJCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 05:02:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232532AbjJPJA1 (ORCPT
+        with ESMTP id S233542AbjJPJCA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 05:00:27 -0400
+        Mon, 16 Oct 2023 05:02:00 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85274E8
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 02:00:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2B7C0C433CC;
-        Mon, 16 Oct 2023 09:00:25 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3978BF5;
+        Mon, 16 Oct 2023 02:01:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9659DC433C9;
+        Mon, 16 Oct 2023 09:01:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697446825;
-        bh=NW9DlooEk/8D5F8mBI9PtB9cSzq23dm5wLvyptIwSks=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=gYebKGr1jBoJa6pNw0PHBvY6lh+NfkAjJH/uQlBtFHxNIZgTzpf2sv9AEJxVEdpIZ
-         ILu2nP7ScRlbrwaEHzJEwl34EMpelvxX0+VJDP7SLYxzUSibIQ6x0TXJYOeMS4DC7T
-         siXR7HBxu4Ipdw1ozRSxo0QBpsg8FpLIX1upWSrxUMb4JVG3O2mOdCM/nM38INZzkO
-         p98Xdcrq3yyMl8sxGuI0NS+/0QgpsqIDjTVzboG75u39bga9jamq2acRu42vTPRKV1
-         gaW2dWSysVQ6nx6wV8qOb+tTcCp8WqmeTzRdz0Juc2DkrxCzHc2SFMypYyrm0qKB8a
-         Ml1UfMM7FKnXg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1636EC41671;
-        Mon, 16 Oct 2023 09:00:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2 0/7] net: consolidate IPv4 route lookup for UDP
- tunnels
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169744682508.7474.11859818002132979363.git-patchwork-notify@kernel.org>
-Date:   Mon, 16 Oct 2023 09:00:25 +0000
-References: <20231016071526.2958108-1-b.galvani@gmail.com>
-In-Reply-To: <20231016071526.2958108-1-b.galvani@gmail.com>
-To:     Beniamino Galvani <b.galvani@gmail.com>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        pabeni@redhat.com, dsahern@kernel.org, gnault@redhat.com,
+        s=k20201202; t=1697446913;
+        bh=JZNNaADJ7qXp5c7KPri0lQGSkXdeIiUrGbMneibduME=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hfgiJ3nDm7L3V3BpuWNtUIG5krVrjH+PPTEDJhjnJDheRY9aSMQxJUlPb/qUZfL/F
+         lKsICe/w+/QkVGM5ELqY4M0cNzR/92JmL2TA/elK47c+dttq1gHoTQoT084jI5mSK9
+         WVNTvq+funx+ttOFZpOrrwm3RlJzfNuky+7OzejlscYqL2rEO4cOofqzyLZ/joPZZE
+         zyrJm5G55hmcL0BRkYgoFrzvipGwrNAvVnVYLXdah8UwTeg8hLTWA8nQ4/LbPHRskP
+         QA6is7dNt4nxt5d04bwCIybhl16tg2u2T0Z4cpXC95aqFtKgOInF+uMVxCxXuCkAZV
+         RTFa0y6PZtwsA==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan@kernel.org>)
+        id 1qsJTv-0003TF-31;
+        Mon, 16 Oct 2023 11:01:47 +0200
+Date:   Mon, 16 Oct 2023 11:01:47 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: sc8280xp-x13s: Use the correct DP PHY
+ compatible
+Message-ID: <ZSz7---IW_7Oj2Zr@hovoldconsulting.com>
+References: <20230929-topic-x13s_edpphy-v1-1-ce59f9eb4226@linaro.org>
+ <CAA8EJprXCzVyaU49qgVcVfF0-FJ3QqAfTMZj5CEZm187hoi4=g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA8EJprXCzVyaU49qgVcVfF0-FJ3QqAfTMZj5CEZm187hoi4=g@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -54,42 +62,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
-
-On Mon, 16 Oct 2023 09:15:19 +0200 you wrote:
-> At the moment different UDP tunnels rely on different functions for
-> IPv4 route lookup, and those functions all implement the same
-> logic. Only bareudp uses the generic ip_route_output_tunnel(), while
-> geneve and vxlan basically duplicate it slightly differently.
+On Mon, Oct 16, 2023 at 11:51:33AM +0300, Dmitry Baryshkov wrote:
+> On Fri, 29 Sept 2023 at 19:03, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+> >
+> > The DP PHY needs different settings when an eDP display is used.
+> > Make sure these apply on the X13s.
 > 
-> This series first extends the generic lookup function so that it is
-> suitable for all UDP tunnel implementations. Then, bareudp, geneve and
-> vxlan are adapted to use them.
-> 
-> [...]
+> Could you please clarify, is it the same PHY type, just being
+> repurposed for eDP or is it a different PHY type?
 
-Here is the summary with links:
-  - [net-next,v2,1/7] ipv4: rename and move ip_route_output_tunnel()
-    https://git.kernel.org/netdev/net-next/c/bf3fcbf7e7a0
-  - [net-next,v2,2/7] ipv4: remove "proto" argument from udp_tunnel_dst_lookup()
-    https://git.kernel.org/netdev/net-next/c/78f3655adcb5
-  - [net-next,v2,3/7] ipv4: add new arguments to udp_tunnel_dst_lookup()
-    https://git.kernel.org/netdev/net-next/c/72fc68c6356b
-  - [net-next,v2,4/7] ipv4: use tunnel flow flags for tunnel route lookups
-    https://git.kernel.org/netdev/net-next/c/3ae983a603a4
-  - [net-next,v2,5/7] geneve: add dsfield helper function
-    https://git.kernel.org/netdev/net-next/c/60a77d11cd5d
-  - [net-next,v2,6/7] geneve: use generic function for tunnel IPv4 route lookup
-    https://git.kernel.org/netdev/net-next/c/daa2ba7ed1d1
-  - [net-next,v2,7/7] vxlan: use generic function for tunnel IPv4 route lookup
-    https://git.kernel.org/netdev/net-next/c/6f19b2c136d9
+Same PHY, just different settings AFAIK.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> If the former is the case (and the same PHY can be used for both DP
+> and eDP), it should carry the same compatible string and use software
+> mechanisms (e.g. phy_set_mode_ext()) to be programmed for the correct
+> operation mode.
 
+Possibly, but that's not how the current binding and implementation
+works:
 
+	6993c079cd58 ("dt-bindings: phy: qcom-edp: Add SC8280XP PHY compatibles")
+	2300d1cb24b3 ("phy: qcom: edp: Introduce support for DisplayPort")
+	3b7267dec445 ("phy: qcom: edp: Add SC8280XP eDP and DP PHYs")
+
+	https://lore.kernel.org/lkml/20220810040745.3582985-1-bjorn.andersson@linaro.org/
+
+And you'd still need to infer the mode from DT somehow.
+
+Johan
