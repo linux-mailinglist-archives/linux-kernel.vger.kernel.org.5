@@ -2,173 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9997CB65A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 00:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB0937CB65E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 00:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234296AbjJPWMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 18:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40708 "EHLO
+        id S233787AbjJPWNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 18:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234185AbjJPWMK (ORCPT
+        with ESMTP id S232985AbjJPWNn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 18:12:10 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9E69FAC;
-        Mon, 16 Oct 2023 15:12:08 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1174)
-        id 3E00220B74C5; Mon, 16 Oct 2023 15:12:08 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3E00220B74C5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-        s=default; t=1697494328;
-        bh=TGsvvgWpwhxqiST3JXUN8KZ0za3/WKQ/h15qpNdLHjA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r6v1QnxdFDWroju7tiyPWnIv6e5qsGg8TpfEGLUGBT1zUrsdie6TXy71KH3SL5kVu
-         zB4FugAW17ux/G1MML55xmJWsd7JVaSNYdT60Vz27UfvjyCVGacfvyi5KSQMphHz5H
-         TECriKidM4tDWtUtflnq4hWIP+9+TT0yc1Pfwa2Y=
-From:   sharmaajay@linuxonhyperv.com
-To:     Long Li <longli@microsoft.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ajay Sharma <sharmaajay@microsoft.com>
-Subject: [Patch v7 5/5] RDMA/mana_ib: Send event to qp
-Date:   Mon, 16 Oct 2023 15:12:02 -0700
-Message-Id: <1697494322-26814-6-git-send-email-sharmaajay@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1697494322-26814-1-git-send-email-sharmaajay@linuxonhyperv.com>
-References: <1697494322-26814-1-git-send-email-sharmaajay@linuxonhyperv.com>
-X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_SPF_WL
-        autolearn=no autolearn_force=no version=3.4.6
+        Mon, 16 Oct 2023 18:13:43 -0400
+Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B2D10F
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 15:13:30 -0700 (PDT)
+Received: from eig-obgw-6001a.ext.cloudfilter.net ([10.0.30.140])
+        by cmsmtp with ESMTP
+        id sSN7qCo4kQUgRsVq5qhjvI; Mon, 16 Oct 2023 22:13:29 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id sVq4qKYh2UNrysVq5qPel2; Mon, 16 Oct 2023 22:13:29 +0000
+X-Authority-Analysis: v=2.4 cv=FY4keby6 c=1 sm=1 tr=0 ts=652db589
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=wYkD_t78qR0A:10 a=20KFwNOVAAAA:8
+ a=VwQbUJbxAAAA:8 a=QyXUC8HyAAAA:8 a=cm27Pg_UAAAA:8 a=-c74vyQ1mCLTWBcySUcA:9
+ a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22 a=xmb-EsYY8bH0VWELuYED:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=aJ1PK8xOvx4yW7JZZyOpcHR2UxudiTCxLhMj/j7umts=; b=UBTkgnG6qeWrEZbBkllwXK4QY5
+        s+NDcBjTU45+h8V1PkYi5qzFSWLyLPrOujrttkM7yPtvTTgS2Q+G0DbCALWaBv/ZemjHS820gWUzi
+        3naqR1v32X0dnUuO7UklTgmirToPufNDw48Lw7yUD6QS7YuZ5Yc3qFXbR5pUC4LlwZcB2V4xCJUI+
+        pt0vNl+ejdgWONK/xJ/EXpJkERrvFwx9MXQF9Z5pbKQ+/eevehcOgm1it3RjhCHDK8lwbQv5Hvqbo
+        JRYhoPW11VOHm7rpmShDc2cTj16L1niSTkqf3zYSki6Whok60CpCqWiMUr/fPNqkWQJ83cgaXljVl
+        +I7LV3iw==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:39060 helo=[192.168.15.7])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96.1)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qsVq4-003D8a-0o;
+        Mon, 16 Oct 2023 17:13:28 -0500
+Message-ID: <cc4831d4-e0c7-418f-9fd3-b6c215d2633e@embeddedor.com>
+Date:   Mon, 16 Oct 2023 16:13:17 -0600
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] bcachefs: Refactor bkey_i to use a flexible array
+To:     Kees Cook <keescook@chromium.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
+        kernel test robot <lkp@intel.com>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20231016212735.it.314-kees@kernel.org>
+Content-Language: en-US
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20231016212735.it.314-kees@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1qsVq4-003D8a-0o
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.7]) [187.162.21.192]:39060
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 2
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfCty6Q9F9ttZvftZ0B4nO8fAIi1stM9htzdblnLw4QwYh2Kq53qPlIN9+FyoYfHgl0shHAcd5wZWNwFgWnyotdxTnG0Gu8sQaoDQI/xl9QP9ZpJ+4ytQ
+ Ym/R2JwlGFZO+mrhxN8iJhYQ8bUfvF35riiXVMPSwTEWhqawhfjUbcBF7+eQjwLHon3P/eZzaKucewnjqTotpXLPuqscaPjLMdxU6S6NJZ2RUI2xT5xZuIHL
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ajay Sharma <sharmaajay@microsoft.com>
 
-Send the QP fatal error event to only the
-context that created the qp.
 
-Signed-off-by: Ajay Sharma <sharmaajay@microsoft.com>
----
- drivers/infiniband/hw/mana/device.c  |  4 ++++
- drivers/infiniband/hw/mana/main.c    | 11 ++++++++---
- drivers/infiniband/hw/mana/mana_ib.h | 18 +++++++++---------
- drivers/infiniband/hw/mana/qp.c      |  2 ++
- 4 files changed, 23 insertions(+), 12 deletions(-)
+On 10/16/23 15:27, Kees Cook wrote:
+> The memcpy() in bch2_bkey_append_ptr() is operating on an embedded
+> fake flexible array. Instead, make it explicit, and convert the memcpy
+> to target the flexible array instead. Fixes the W=1 warning seen for
+> -Wstringop-overflow:
+> 
+>     In file included from include/linux/string.h:254,
+>                      from include/linux/bitmap.h:11,
+>                      from include/linux/cpumask.h:12,
+>                      from include/linux/smp.h:13,
+>                      from include/linux/lockdep.h:14,
+>                      from include/linux/radix-tree.h:14,
+>                      from include/linux/backing-dev-defs.h:6,
+>                      from fs/bcachefs/bcachefs.h:182:
+>     fs/bcachefs/extents.c: In function 'bch2_bkey_append_ptr':
+>     include/linux/fortify-string.h:57:33: warning: writing 8 bytes into a region of size 0 [-Wstringop-overflow=]
+>        57 | #define __underlying_memcpy     __builtin_memcpy
+>           |                                 ^
+>     include/linux/fortify-string.h:648:9: note: in expansion of macro '__underlying_memcpy'
+>       648 |         __underlying_##op(p, q, __fortify_size);                        \
+>           |         ^~~~~~~~~~~~~
+>     include/linux/fortify-string.h:693:26: note: in expansion of macro '__fortify_memcpy_chk'
+>       693 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,                  \
+>           |                          ^~~~~~~~~~~~~~~~~~~~
+>     fs/bcachefs/extents.c:235:17: note: in expansion of macro 'memcpy'
+>       235 |                 memcpy((void *) &k->v + bkey_val_bytes(&k->k),
+>           |                 ^~~~~~
+>     fs/bcachefs/bcachefs_format.h:287:33: note: destination object 'v' of size 0
+>       287 |                 struct bch_val  v;
+>           |                                 ^
+> 
+> Cc: Kent Overstreet <kent.overstreet@linux.dev>
+> Cc: Brian Foster <bfoster@redhat.com>
+> Cc: linux-bcachefs@vger.kernel.org
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202309192314.VBsjiIm5-lkp@intel.com/
+> Signed-off-by: Kees Cook <keescook@chromium.org>'
 
-diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
-index e15da43c73a0..fcc8083e2783 100644
---- a/drivers/infiniband/hw/mana/device.c
-+++ b/drivers/infiniband/hw/mana/device.c
-@@ -101,6 +101,8 @@ static int mana_ib_probe(struct auxiliary_device *adev,
- 	if (ret)
- 		ibdev_dbg(&mib_dev->ib_dev, "Failed to get caps, use defaults");
- 
-+	xa_init(&mib_dev->rq_to_qp_lookup_table);
-+
- 	ret = ib_register_device(&mib_dev->ib_dev, "mana_%d",
- 				 mdev->gdma_context->dev);
- 	if (ret)
-@@ -112,6 +114,7 @@ static int mana_ib_probe(struct auxiliary_device *adev,
- 
- destroy_adapter:
- 	mana_ib_destroy_adapter(mib_dev);
-+	xa_destroy(&mib_dev->rq_to_qp_lookup_table);
- free_error_eq:
- 	mana_gd_destroy_queue(mib_dev->gc, mib_dev->fatal_err_eq);
- deregister_device:
-@@ -129,6 +132,7 @@ static void mana_ib_remove(struct auxiliary_device *adev)
- 	mana_ib_destroy_adapter(mib_dev);
- 	mana_gd_deregister_device(&mib_dev->gc->mana_ib);
- 	ib_unregister_device(&mib_dev->ib_dev);
-+	xa_destroy(&mib_dev->rq_to_qp_lookup_table);
- 	ib_dealloc_device(&mib_dev->ib_dev);
- }
- 
-diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-index 82923475267d..29be8fd1ec7f 100644
---- a/drivers/infiniband/hw/mana/main.c
-+++ b/drivers/infiniband/hw/mana/main.c
-@@ -556,13 +556,18 @@ static void mana_ib_critical_event_handler(void *ctx, struct gdma_queue *queue,
- {
- 	struct mana_ib_dev *mib_dev = (struct mana_ib_dev *)ctx;
- 	struct ib_event mib_event;
-+	struct mana_ib_qp *qp;
-+	u64 rq_id;
- 	switch (event->type) {
- 	case GDMA_EQE_SOC_EVENT_NOTIFICATION:
-+		rq_id = event->details[0] & 0xFFFFFF;
-+		qp = xa_load(&mib_dev->rq_to_qp_lookup_table, rq_id);
- 		mib_event.event = IB_EVENT_QP_FATAL;
- 		mib_event.device = &mib_dev->ib_dev;
--		mib_event.element.qp =
--				(struct ib_qp*)(event->details[0] & 0xFFFFFF);
--		ib_dispatch_event(&mib_event);
-+		if (qp && qp->ibqp.event_handler)
-+			qp->ibqp.event_handler(&mib_event, qp->ibqp.qp_context);
-+		else
-+			ibdev_dbg(&mib_dev->ib_dev, "found no qp or event handler");
- 		ibdev_dbg(&mib_dev->ib_dev, "Received critical notification");
- 		break;
- 	default:
-diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-index 6b9406738cb2..243572b52336 100644
---- a/drivers/infiniband/hw/mana/mana_ib.h
-+++ b/drivers/infiniband/hw/mana/mana_ib.h
-@@ -48,15 +48,6 @@ struct mana_ib_adapter_caps {
- 	u32 max_inline_data_size;
- };
- 
--struct mana_ib_dev {
--	struct ib_device ib_dev;
--	struct gdma_dev *gdma_dev;
--	struct gdma_context *gc;
--	struct gdma_queue *fatal_err_eq;
--	mana_handle_t adapter_handle;
--	struct mana_ib_adapter_caps adapter_caps;
--};
--
- struct mana_ib_wq {
- 	struct ib_wq ibwq;
- 	struct ib_umem *umem;
-@@ -113,6 +104,15 @@ struct mana_ib_ucontext {
- 	u32 doorbell;
- };
- 
-+struct mana_ib_dev {
-+	struct ib_device ib_dev;
-+	struct gdma_dev *gdma_dev;
-+	struct gdma_context *gc;
-+	struct gdma_queue *fatal_err_eq;
-+	mana_handle_t adapter_handle;
-+	struct mana_ib_adapter_caps adapter_caps;
-+	struct xarray rq_to_qp_lookup_table;
-+};
- struct mana_ib_rwq_ind_table {
- 	struct ib_rwq_ind_table ib_ind_table;
- };
-diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-index ef3275ac92a0..19fae28985c3 100644
---- a/drivers/infiniband/hw/mana/qp.c
-+++ b/drivers/infiniband/hw/mana/qp.c
-@@ -210,6 +210,8 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
- 		wq->id = wq_spec.queue_index;
- 		cq->id = cq_spec.queue_index;
- 
-+		xa_store(&mib_dev->rq_to_qp_lookup_table, wq->id, qp, GFP_KERNEL);
-+
- 		ibdev_dbg(&mib_dev->ib_dev,
- 			  "ret %d rx_object 0x%llx wq id %llu cq id %llu\n",
- 			  ret, wq->rx_object, wq->id, cq->id);
--- 
-2.25.1
+Yes. This looks good.
 
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Thanks!
+--
+Gustavo
+
+> ---
+> v2 - Change flex array name to "v_bytes" (bfoster)
+> v1 - https://lore.kernel.org/r/20231010235609.work.594-kees@kernel.org
+> ---
+>   fs/bcachefs/bcachefs_format.h | 5 ++++-
+>   fs/bcachefs/extents.h         | 2 +-
+>   2 files changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
+> index f0d130440baa..cb1af3799b59 100644
+> --- a/fs/bcachefs/bcachefs_format.h
+> +++ b/fs/bcachefs/bcachefs_format.h
+> @@ -300,7 +300,10 @@ struct bkey_i {
+>   	__u64			_data[0];
+>   
+>   	struct bkey	k;
+> -	struct bch_val	v;
+> +	union {
+> +		struct bch_val	v;
+> +		DECLARE_FLEX_ARRAY(__u8, v_bytes);
+> +	};
+>   };
+>   
+>   #define KEY(_inode, _offset, _size)					\
+> diff --git a/fs/bcachefs/extents.h b/fs/bcachefs/extents.h
+> index 7ee8d031bb6c..896fcfca4f21 100644
+> --- a/fs/bcachefs/extents.h
+> +++ b/fs/bcachefs/extents.h
+> @@ -642,7 +642,7 @@ static inline void bch2_bkey_append_ptr(struct bkey_i *k, struct bch_extent_ptr
+>   
+>   		ptr.type = 1 << BCH_EXTENT_ENTRY_ptr;
+>   
+> -		memcpy((void *) &k->v + bkey_val_bytes(&k->k),
+> +		memcpy(&k->v_bytes[bkey_val_bytes(&k->k)],
+>   		       &ptr,
+>   		       sizeof(ptr));
+>   		k->k.u64s++;
