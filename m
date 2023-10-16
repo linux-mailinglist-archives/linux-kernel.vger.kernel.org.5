@@ -2,83 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A89A7CB3AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27FAD7CB3B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232228AbjJPUGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 16:06:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54552 "EHLO
+        id S233419AbjJPUIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 16:08:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231221AbjJPUGu (ORCPT
+        with ESMTP id S232217AbjJPUII (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 16:06:50 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F8CB4
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:06:48 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-66d0252578aso26321466d6.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:06:48 -0700 (PDT)
+        Mon, 16 Oct 2023 16:08:08 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0578D83
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:08:06 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-53de0d1dc46so8615850a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:08:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697486808; x=1698091608; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HaHWZ++raSb5lyMsNQf39E3EcgWl93LaF644FrH4GdU=;
-        b=BJqV1rUClDe+aofFvHAioq+//Y1fgchBk4LiaW5b75e+8tnrM7I3ZBQWQKVuOLiKUT
-         rEAe/kvC+ssEsRmKIP3lsBhZ+mkOqvH7/bKnrt6PfMlYe/wsFAlS4dmMlZbV62GExexw
-         u05H6nm8YSWDYhzfjrNKVpK1ALVV2Mapx1Lpg=
+        d=gmail.com; s=20230601; t=1697486884; x=1698091684; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3//5wXEK6wkrq5JXyoehSNgqGXcQbC5VyDpkqHpeQLs=;
+        b=O2MZwPvfMJ+NKUX+knSxLhGnaHJAg36Q7r42AnzBIEfBiLp6THJtG4RDDM4NwTJjvq
+         z+ieQm5MjHnySv6YBsmZtEJB9IZYxJuDy5IQMhQZtXKeXC2jLWhMxi086yKAAkxtBBhV
+         XXnBXnAvqrKdporJmxpxxwHJs1X0f7jkh/rbCG7INpj8bZmYDUlNO8wqDSPuQeShxQZ6
+         Eb8ELlun6pSzMB8lLWORmg5uxOfcoZ5Rq8Y+myd3JSoOsy/7XrLCQHe1NZUWl6yDW8BW
+         oKanAy9Ue3fLB+fCndzszNM67ByWqtcCvGrV8r32zqHku0gQjE3Roc8OUOz0haE+q+b/
+         mNLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697486808; x=1698091608;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HaHWZ++raSb5lyMsNQf39E3EcgWl93LaF644FrH4GdU=;
-        b=Cj8OTRVKHkkEepkwG16KHBu7PBRFkwfMUFXUpOpCFPPP/huOWOk6BjdBmIj82TztOU
-         OPw0U/tnFj41g1Ybdxh7sOYtTeVavM1/h/B7JxkJXXEfetaZ9+DiVNwO6QD5h6b+k+3g
-         bBNGemjYt7Rc9UG0u30rTjqEpmfsMyShRUmCEmZ3IoqPqvJ7AQphg/RHrwxB0hoTvX6S
-         al/e3cXl0e0IuNcE6hn/jQkPWdYfz42sRyn3zfxy75uqTKJgVQ3bjUf2GoSVHghLZWvT
-         hAU7a6xThJjdEQ6PikEdx2FFSaaufnXWWrfWHEWfc7FnicsRayG8Ym8xScY7YoGXTRla
-         7AGQ==
-X-Gm-Message-State: AOJu0Yy43B/vc0KAI3MempJdm89soX1vyuqKjWgoVFYpptluEzwQ0ERy
-        D7DAm9oHPeYKwEqnfSSbAwctAPhLvvgNouhAQ2A=
-X-Google-Smtp-Source: AGHT+IEF4PIw5R5nlDEGb2mmQr4KXVMHrcObmYM+yG1w2MvoDb//pSJ6yu07IUZOo83lK1Jqy5XtQg==
-X-Received: by 2002:ad4:5c63:0:b0:65b:21bf:8fc1 with SMTP id i3-20020ad45c63000000b0065b21bf8fc1mr535263qvh.42.1697486807701;
-        Mon, 16 Oct 2023 13:06:47 -0700 (PDT)
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com. [209.85.160.169])
-        by smtp.gmail.com with ESMTPSA id cu16-20020a05621417d000b0066cfe6b078csm3719086qvb.15.2023.10.16.13.06.45
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 13:06:46 -0700 (PDT)
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-4195fe5cf73so9381cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:06:45 -0700 (PDT)
-X-Received: by 2002:a05:622a:2c43:b0:418:1464:37bf with SMTP id
- kl3-20020a05622a2c4300b00418146437bfmr55093qtb.16.1697486805442; Mon, 16 Oct
- 2023 13:06:45 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697486884; x=1698091684;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3//5wXEK6wkrq5JXyoehSNgqGXcQbC5VyDpkqHpeQLs=;
+        b=FIC72tYXASOMfzq90d/8NZ0g82+pY6mzqD2ztrLcOIwVVKv8N1+LeLv98rRS2H7noQ
+         B7p5bMaFlQFeTWWyfKGRNv6JkwXV4Wu2dJE4Ta29xfCI2myY/5SQ2x5nrnmjKuGgL4d3
+         D67hWAGLiTjiOfW1Vn/bKJR05s2DSwNnC685zUTZ03WSIeipP81QKU3cQpH56pOm3kjL
+         BNJ7LBusDM5pFdgcHSpXOCZMLdx4FxWWWKak76ajuooi94YqonRO82veSjePUXMFuLr8
+         t3Tfhp82FbaKoaFf/rV3M+iNtzHDa/7CDjtB4SUOIyRV1t5rkH8ilCHQ1Ld/CdbLPXVW
+         0SoQ==
+X-Gm-Message-State: AOJu0YyJXVcqriYvdYXZ1e/F1DSWXetlDE4O7EcMTNb6T5aon55NIeWR
+        gMUNPTzWabGAqJHbMwjlL9s=
+X-Google-Smtp-Source: AGHT+IE8K34aCkvuZc2wZVBO1jlEOeeJlH1dL2AAL+gpO2L4ndUet/4bry1ybEZvebM9xXEUPSe9wQ==
+X-Received: by 2002:a17:907:31cd:b0:9ae:6ad0:f6db with SMTP id xf13-20020a17090731cd00b009ae6ad0f6dbmr69308ejb.71.1697486884051;
+        Mon, 16 Oct 2023 13:08:04 -0700 (PDT)
+Received: from localhost.localdomain ([46.248.82.114])
+        by smtp.gmail.com with ESMTPSA id a13-20020a170906368d00b0099cf9bf4c98sm4571040ejc.8.2023.10.16.13.08.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 13:08:03 -0700 (PDT)
+From:   Uros Bizjak <ubizjak@gmail.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     Uros Bizjak <ubizjak@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH] x86/percpu: Use correct asm operand modifier in percpu_stable_op
+Date:   Mon, 16 Oct 2023 22:07:30 +0200
+Message-ID: <20231016200755.287403-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20230928015858.1809934-1-linan666@huaweicloud.com>
- <CACGdZY+JV+PdiC_cspQiScm=SJ0kijdufeTrc8wkrQC3ZJx3qQ@mail.gmail.com>
- <4ace01e8-6815-29d0-70ce-4632818ca701@huaweicloud.com> <20231005162417.GA32420@redhat.com>
- <0a8f34aa-ced9-e613-3e5f-b5e53a3ef3d9@huaweicloud.com> <20231007151607.GA24726@redhat.com>
- <21843836-7265-f903-a7d5-e77b07dd5a71@huaweicloud.com> <20231008113602.GB24726@redhat.com>
- <CACGdZY+OOr4Q5ajM0za2babr34YztE7zjRyPXHgh_A64zvoBOw@mail.gmail.com> <e9165cd0-9c9d-1d1a-1c5b-402556a1a31f@huaweicloud.com>
-In-Reply-To: <e9165cd0-9c9d-1d1a-1c5b-402556a1a31f@huaweicloud.com>
-From:   Khazhy Kumykov <khazhy@chromium.org>
-Date:   Mon, 16 Oct 2023 13:06:31 -0700
-X-Gmail-Original-Message-ID: <CACGdZYLxnL91S4RxfvLmN8j3rcvbsqdkouj4Lgc05mnCo2fZSw@mail.gmail.com>
-Message-ID: <CACGdZYLxnL91S4RxfvLmN8j3rcvbsqdkouj4Lgc05mnCo2fZSw@mail.gmail.com>
-Subject: Re: [PATCH] blk-throttle: Calculate allowed value only when the
- throttle is enabled
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     Oleg Nesterov <oleg@redhat.com>, Li Nan <linan666@huaweicloud.com>,
-        tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        houtao1@huawei.com, yangerkun@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,83 +72,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 15, 2023 at 6:47=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
-rote:
->
-> Hi,
->
-> =E5=9C=A8 2023/10/14 5:51, Khazhy Kumykov =E5=86=99=E9=81=93:
-> > Looking at the generic mul_u64_u64_div_u64 impl, it doesn't handle
-> > overflow of the final result either, as far as I can tell. So while on
-> > x86 we get a DE, on non-x86 we just get the wrong result.
-> >
-> > (Aside: after 8d6bbaada2e0 ("blk-throttle: prevent overflow while
-> > calculating wait time"), setting a very-high bps_limit would probably
-> > also cause this crash, no?)
-> >
-> > Would it be possible to have a "check_mul_u64_u64_div_u64_overflow()",
-> > where if the result doesn't fit in u64, we indicate (and let the
-> > caller choose what to do? Here we should just return U64_MAX)?
-> >
-> > Absent that, maybe we can take inspiration from the generic
-> > mul_u64_u64_div_u64? (Forgive the paste)
-> >
-> >   static u64 calculate_bytes_allowed(u64 bps_limit, unsigned long jiffy=
-_elapsed)
-> >   {
-> > +       /* Final result probably won't fit in u64 */
-> > +       if (ilog2(bps_limit) + ilog2(jiffy_elapsed) - ilog2(HZ) > 62)
->
-> I'm not sure, but this condition looks necessary, but doesn't look
-> sufficient, for example, jiffy_elapsed cound be greater than HZ, while
-> ilog2(jiffy_elapsed) is equal to ilog2(HZ).
-I believe 62 is correct, although admittedly it's less "intuitive"
-than the check in mul_u64_u64_div_u64()....
+"P" asm operand modifier is a x86 target-specific modifier. When used
+for a constant, it drops all syntax-specific prefixes and issues the
+bare constant. This modifier is not correct for address handling,
+in this case a generic "a" operand modifier should be used.
 
-The result overflows if log2(A * B / C) >=3D 64, so we want to ensure that:
-log2(A) + log2(B) - log2(C) < 64
+"a" asm operand modifier substitutes a nemory reference, with the
+actual operand treated as address.  For x86_64, when a symbol is
+provided, the "a" modifier emits "sym(%rip)" instead of "sym",
+enabling shorter %rip-relative addressing.
 
-Given that:
-ilog2(A) <=3D log2(A) < ilog2(A) + 1  // truncation defn
-It follows that:
--log2(A) <=3D -ilog2(A)  // Inverse rule
-log2(A) - 1 < ilog2(A)
+Clang allows only "i" and "r" opreand constraints with "a" modifier,
+so the patch normalizes the modifier/constraint pair to "a"/"i"
+which is consistent between both compilers.
 
-Starting from:
-ilog2(A) + ilog2(B) - ilog2(C) <=3D X
+The patch reduces code size of a test build for 4072 bytes:
 
-We can show:
-(log2(A) - 1) + (log2(B) - 1) + (-log2(C)) < ilog2(A) + ilog2(B) +
-(-ilog2(C)) // strict inequality here since the substitutions for A
-and B terms are strictly less
-(log2(A) - 1) + (log2(B) - 1) + (-log2(C)) < X
-log2(A) + log2(B) - log2(C) < X + 2
+25519196        4388300  808452 30715948        1d4b02c vmlinux-new.o
+25523268        4388300  808452 30720020        1d4c014 vmlinux-old.o
 
-So for X =3D 62, log2(A) + log2(B) - log2(C) < 64 must be true, and we
-must be safe from overflow.
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+---
+ arch/x86/include/asm/percpu.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-So... by converse, if ilog2(A) + ilog2(B) - ilog2(C) > 62, we cannot
-guarantee that the result will not overflow - thus we bail out.
+diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
+index 54746903b8c3..ac3220aeb779 100644
+--- a/arch/x86/include/asm/percpu.h
++++ b/arch/x86/include/asm/percpu.h
+@@ -194,9 +194,9 @@ do {									\
+ #define percpu_stable_op(size, op, _var)				\
+ ({									\
+ 	__pcpu_type_##size pfo_val__;					\
+-	asm(__pcpu_op2_##size(op, __force_percpu_arg(P[var]), "%[val]")	\
++	asm(__pcpu_op2_##size(op, __force_percpu_arg(a[var]), "%[val]")	\
+ 	    : [val] __pcpu_reg_##size("=", pfo_val__)			\
+-	    : [var] "p" (&(_var)));					\
++	    : [var] "i" (&(_var)));					\
+ 	(typeof(_var))(unsigned long) pfo_val__;			\
+ })
+ 
+-- 
+2.41.0
 
-// end math
-
-It /is/ less exact than your proposal (sufficient, but not necessary),
-but saves an extra 128bit mul.
-
-I mostly just want us to pick /something/, since 6.6-rc and the LTSs
-with the patch in question are busted currently. :)
-
-
-
->
-> Thanks,
-> Kuai
->
-> > +               return U64_MAX;
-> >          return mul_u64_u64_div_u64(bps_limit, (u64)jiffy_elapsed, (u64=
-)HZ);
-> >   }
-> >
-> > .
-> >
->
