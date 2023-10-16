@@ -2,111 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E907CA522
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE5E7CA523
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233105AbjJPKSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 06:18:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51844 "EHLO
+        id S232989AbjJPKSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 06:18:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233075AbjJPKRv (ORCPT
+        with ESMTP id S233099AbjJPKSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 06:17:51 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E258D10D5;
-        Mon, 16 Oct 2023 03:17:25 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9ba081173a3so710235766b.1;
-        Mon, 16 Oct 2023 03:17:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697451444; x=1698056244; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6ABIBqRVTS2T0tRVHTT9KAXeuy4mMkl/npHfHsfl4HI=;
-        b=hUB11ebL+3GCTJSUc67A2heti7QL91wl/LyG0r0P33/Yk2wiMgHuzTFZYHZo17eLnE
-         RQvNFp3dRt6Q9AqOBHO3vS+y/uZQuPkJfTG/slkYW8R2Qi+a3NNLppCCeShezOI2JKAW
-         uAKytM8TgDpTIbU41qaATcMX4Cmn7bw9paImOCZhbJGt8kbEOhBGvvJPbdcgqVrGSEmu
-         3oIhC7gL0xq8q/v9S4GirX2Zu/TrULz1ulNZtqTcuXyKwhsUcV9By5JXOsxygaX5os2X
-         o0pdbhGJwk19IGnziH6SPt/PShaW3NgKxifS+NOeaA0uUbkps9NHP5wk0tGkksNIE6Xo
-         KyrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697451444; x=1698056244;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6ABIBqRVTS2T0tRVHTT9KAXeuy4mMkl/npHfHsfl4HI=;
-        b=GE6VHggmq1CCeSTG4OCJWlm4JaQ6QS5/q5NzeP9hyHtHLW9znIwRPbwzSaFoizIjPD
-         9398lBi/71LB5VG86tOTUmomwjIfJ6C92LY2jM4s+USWRN6Ges2bTBTnycjruFWMgSU+
-         Pke3dzfgn83o2NBNfxgzzUA3klleiYyCtUbR/wxVQvkD78V5RBXs1RgQRV52NDGLaFGa
-         hri/lQrRbQAhpL64e4rPVgJPbDn+RnhLSVRl48YrnpGGCbWLHs5eNf46zC8oo6eqomYT
-         qFXTZTwR/O7peXYOvluOfuw+lMGNI63kd/tG0qUMENlj5mhFSurD21+WMskqAZzY28NZ
-         eSWA==
-X-Gm-Message-State: AOJu0YygtfBjNsryXXYnk806/gPjBVX9eQiIbWZf1zlpAzr3X15oZ8xG
-        RZ7fQaPEL5dv/gI6AuFQuRc=
-X-Google-Smtp-Source: AGHT+IHLskuU7E2U4B8DFF/3AUSD5n4mYeQu/HFu/etDgo35vkLCIanfxkLH0t5qDGRjitf6y+d4PA==
-X-Received: by 2002:a17:907:d02:b0:9be:1dbd:552e with SMTP id gn2-20020a1709070d0200b009be1dbd552emr7772284ejc.68.1697451444267;
-        Mon, 16 Oct 2023 03:17:24 -0700 (PDT)
-Received: from skbuf ([188.26.57.160])
-        by smtp.gmail.com with ESMTPSA id n25-20020a17090673d900b0099297782aa9sm3683857ejl.49.2023.10.16.03.17.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 03:17:24 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 13:17:21 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        UNGLinuxDriver@microchip.com,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next v3 3/7] net: dsa: microchip: ksz9477: add Wake
- on LAN support
-Message-ID: <20231016101721.ktc6mrpewrxsh7nv@skbuf>
-References: <20231013122405.3745475-1-o.rempel@pengutronix.de>
- <20231013122405.3745475-1-o.rempel@pengutronix.de>
- <20231013122405.3745475-4-o.rempel@pengutronix.de>
- <20231013122405.3745475-4-o.rempel@pengutronix.de>
+        Mon, 16 Oct 2023 06:18:06 -0400
+Received: from out-202.mta1.migadu.com (out-202.mta1.migadu.com [95.215.58.202])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19F9189
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 03:17:34 -0700 (PDT)
+Message-ID: <121772bf-4c1d-3d23-f266-60ce2e879193@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1697451452;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IPtMNZC738Ao/n0cWIsZR42e+XNPTKi4tThatun01tI=;
+        b=J4J6IRfAUnzCMQ6IGo3qSSlLyzujeuqcMI/me+pXlw8MI9NJsdz7Xh4dcLf1SOyQVJbv6/
+        JCnT6o6UwTdpfzYxDKUWZNmkeDibqcWGxrhCsuz9/UnMjdaYbZnxy8WL0mhfE9XWFqOni/
+        KYKmD15AhrLuIBfAiSOjycN5CZbi93A=
+Date:   Mon, 16 Oct 2023 18:17:23 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231013122405.3745475-4-o.rempel@pengutronix.de>
- <20231013122405.3745475-4-o.rempel@pengutronix.de>
+Subject: Re: [PATCH v4 2/2] mm: Init page count in reserve_bootmem_region when
+ MEMINIT_EARLY
+Content-Language: en-US
+To:     David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@kernel.org>
+Cc:     akpm@linux-foundation.org, mike.kravetz@oracle.com,
+        muchun.song@linux.dev, willy@infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20230928083302.386202-1-yajun.deng@linux.dev>
+ <20230928083302.386202-3-yajun.deng@linux.dev>
+ <20230929083018.GU3303@kernel.org>
+ <f144b910-cd9f-a571-ce9b-a0a8b509c28a@redhat.com>
+ <2f8c4741-5c7f-272d-9cef-9fda9fbc7ca6@linux.dev>
+ <5382bf2d-5aa0-1498-8169-3248be4b5af3@linux.dev>
+ <bf7143f4-9d50-cfc4-0ef6-d312a2cc896b@redhat.com>
+ <38cd0cb9-efe9-b98a-2768-ccb48da8b812@linux.dev>
+ <20231013084827.GT3303@kernel.org>
+ <1c91dd62-886d-bb05-8aee-22191a8a2d8e@linux.dev>
+ <20231016063357.GU3303@kernel.org>
+ <a67fc1bf-64e8-ce6c-f68a-52fe8b942860@linux.dev>
+ <abace691-e11f-ec08-a725-9e3b17935d8c@redhat.com>
+ <0d890048-be58-5050-02fa-21768059aa0d@linux.dev>
+ <23302f67-eb69-265a-ab2d-9c55715e2843@redhat.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yajun Deng <yajun.deng@linux.dev>
+In-Reply-To: <23302f67-eb69-265a-ab2d-9c55715e2843@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 02:24:01PM +0200, Oleksij Rempel wrote:
-> diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
-> index db0ef4ad181e..bef1951fe6f2 100644
-> --- a/drivers/net/dsa/microchip/ksz_common.c
-> +++ b/drivers/net/dsa/microchip/ksz_common.c
-> @@ -319,6 +319,8 @@ static const struct ksz_dev_ops ksz9477_dev_ops = {
->  	.mdb_del = ksz9477_mdb_del,
->  	.change_mtu = ksz9477_change_mtu,
->  	.phylink_mac_link_up = ksz9477_phylink_mac_link_up,
-> +	.wol_get = ksz9477_get_wol,
-> +	.wol_set = ksz9477_set_wol,
 
-Can the dev_ops function pointers also be named get_wol() and set_wol()
-for consistency with everything else?
+On 2023/10/16 16:36, David Hildenbrand wrote:
+> On 16.10.23 10:32, Yajun Deng wrote:
+>>
+>> On 2023/10/16 16:16, David Hildenbrand wrote:
+>>> On 16.10.23 10:10, Yajun Deng wrote:
+>>>>
+>>>> On 2023/10/16 14:33, Mike Rapoport wrote:
+>>>>> On Fri, Oct 13, 2023 at 05:29:19PM +0800, Yajun Deng wrote:
+>>>>>> On 2023/10/13 16:48, Mike Rapoport wrote:
+>>>>>>> On Thu, Oct 12, 2023 at 05:53:22PM +0800, Yajun Deng wrote:
+>>>>>>>> On 2023/10/12 17:23, David Hildenbrand wrote:
+>>>>>>>>> On 10.10.23 04:31, Yajun Deng wrote:
+>>>>>>>>>> On 2023/10/8 16:57, Yajun Deng wrote:
+>>>>>>>>>>>> That looks wrong. if the page count would by pure luck be 0
+>>>>>>>>>>>> already for hotplugged memory, you wouldn't clear the reserved
+>>>>>>>>>>>> flag.
+>>>>>>>>>>>>
+>>>>>>>>>>>> These changes make me a bit nervous.
+>>>>>>>>>>> Is 'if (page_count(page) || PageReserved(page))' be safer? Or
+>>>>>>>>>>> do I
+>>>>>>>>>>> need to do something else?
+>>>>>>>>>>>
+>>>>>>>>>> How about the following if statement? But it needs to add more
+>>>>>>>>>> patch
+>>>>>>>>>> like v1 ([PATCH 2/4] mm: Introduce MEMINIT_LATE context).
+>>>>>>>>>>
+>>>>>>>>>> It'll be safer, but more complex. Please comment...
+>>>>>>>>>>
+>>>>>>>>>>         if (context != MEMINIT_EARLY || (page_count(page) ||
+>>>>>>>>>> PageReserved(page)) {
+>>>>>>>>>>
+>>>>>>>>> Ideally we could make initialization only depend on the context,
+>>>>>>>>> and not
+>>>>>>>>> check for count or the reserved flag.
+>>>>>>>>>
+>>>>>>>> This link is v1,
+>>>>>>>> https://lore.kernel.org/all/20230922070923.355656-1-yajun.deng@linux.dev/ 
+>>>>>>>>
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> If we could make initialization only depend on the context, I'll
+>>>>>>>> modify it
+>>>>>>>> based on v1.
+>>>>>>> Although ~20% improvement looks impressive, this is only
+>>>>>>> optimization of a
+>>>>>>> fraction of the boot time, and realistically, how much 56 msec
+>>>>>>> saves from
+>>>>>>> the total boot time when you boot a machine with 190G of RAM?
+>>>>>> There are a lot of factors that can affect the total boot time. 56
+>>>>>> msec
+>>>>>> saves may be insignificant.
+>>>>>>
+>>>>>> But if we look at the boot log, we'll see there's a significant
+>>>>>> time jump.
+>>>>>>
+>>>>>> before:
+>>>>>>
+>>>>>> [    0.250334] ACPI: PM-Timer IO Port: 0x508
+>>>>>> [    0.618994] Memory: 173413056K/199884452K available (18440K
+>>>>>> kernel code,
+>>>>>>
+>>>>>> after:
+>>>>>>
+>>>>>> [    0.260229] software IO TLB: area num 32.
+>>>>>> [    0.563497] Memory: 173413056K/199884452K available (18440K
+>>>>>> kernel code,
+>>>>>> Memory:
+>>>>>> Memory initialization is time consuming in the boot log.
+>>>>> You just confirmed that 56 msec is insignificant and then you send
+>>>>> again
+>>>>> the improvement of ~60 msec in memory initialization.
+>>>>>
+>>>>> What does this improvement gain in percentage of total boot time?
+>>>>
+>>>>
+>>>> before:
+>>>>
+>>>> [   10.692708] Run /init as init process
+>>>>
+>>>>
+>>>> after:
+>>>>
+>>>> [   10.666290] Run /init as init process
+>>>>
+>>>>
+>>>> About 0.25%. The total boot time is variable, depending on how many
+>>>> drivers need to be initialized.
+>>>>
+>>>>
+>>>>>>> I still think the improvement does not justify the churn, added
+>>>>>>> complexity
+>>>>>>> and special casing of different code paths of initialization of
+>>>>>>> struct pages.
+>>>>>>
+>>>>>> Because there is a loop, if the order is MAX_ORDER, the loop will
+>>>>>> run 1024
+>>>>>> times. The following 'if' would be safer:
+>>>>>>
+>>>>>> 'if (context != MEMINIT_EARLY || (page_count(page) || >>
+>>>>>> PageReserved(page))
+>>>>>> {'
+>>>>> No, it will not.
+>>>>>
+>>>>> As the matter of fact any condition here won't be 'safer' because it
+>>>>> makes
+>>>>> the code more complex and less maintainable.
+>>>>> Any future change in __free_pages_core() or one of it's callers will
+>>>>> have
+>>>>> to reason what will happen with that condition after the change.
+>>>>
+>>>>
+>>>> To avoid introducing MEMINIT_LATE context and make code simpler. This
+>>>> might be a better option.
+>>>>
+>>>> if (page_count(page) || PageReserved(page))
+>>>
+>>> I'll have to side with Mike here; this change might not be worth it.
+>>>
+>>
+>> Okay, I got it. Thanks!
+>
+> IMHO instead of adding more checks to that code we should try to unify 
+> that handling such that we can just remove it. As expressed, at least 
+> from the memory hotplug perspective there are still reasons why we 
+> need that; I can provide some guidance on how to eventually achieve 
+> that, but it might end up in a bit of work ...
 
->  	.config_cpu_port = ksz9477_config_cpu_port,
->  	.tc_cbs_set_cinc = ksz9477_tc_cbs_set_cinc,
->  	.enable_stp_addr = ksz9477_enable_stp_addr,
-> @@ -2935,6 +2937,28 @@ static int ksz_set_mac_eee(struct dsa_switch *ds, int port,
->  	return 0;
->  }
+
+Yes, we can't remove it right now. If we want to do that, we have to 
+clean up rely on page count and PageReserved first.
+
+>
+> Anyhow, thanks for bringing up that topic; it reminded me that I still 
+> have pending cleanups to not rely on PageReserved on the memory 
+> hotplug path.
+>
