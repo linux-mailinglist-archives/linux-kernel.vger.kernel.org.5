@@ -2,47 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 146D97CB4C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:36:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA53D7CB4C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234376AbjJPUgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 16:36:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52934 "EHLO
+        id S234327AbjJPUgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 16:36:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234235AbjJPUgK (ORCPT
+        with ESMTP id S234286AbjJPUgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 16:36:10 -0400
+        Mon, 16 Oct 2023 16:36:11 -0400
 Received: from tarta.nabijaczleweli.xyz (tarta.nabijaczleweli.xyz [139.28.40.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A20A181;
-        Mon, 16 Oct 2023 13:35:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03DC6F5;
+        Mon, 16 Oct 2023 13:36:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nabijaczleweli.xyz;
-        s=202305; t=1697488557;
-        bh=9/Rch1NNnuQcxUUP1sdNlrNNgx7qX1hxKSFQK/3R+Pg=;
+        s=202305; t=1697488559;
+        bh=AbhKjmGcFK7a0VSiC3Uyp/FqZCpYv3ilKDudDv/H+vg=;
         h=Date:From:Cc:Subject:References:In-Reply-To:From;
-        b=UmpOEYPJlFLiL4ag5qI+r8wZnOjdoxGBe9TfIsmDRZajgouiqNxZIFuEPmq0+t0dQ
-         XjWhFPb64jAe3/1/E7WKRc3Ygdb9pGYU9if2p7IqdndK6KJ8GrBb53XK4WCsLpu78l
-         GkAyuT4vdjDak/FatVvwXqPcKN4WjZDqSOHGvfLI7AR6N5xvSSbf53N0/Iji9xRtnR
-         YZyvcwA2KvsCuVaMmxmXgyCAVFZg/LCrx6pFjfeVTSfwIr2c6FcaMOiFhJXsYe/5rk
-         pfiDdyRNRKP+LR0YKcUBN668YPC9vsuIw7Sipc9Wiq9fw+t6hPM/0XI05F9OErBe36
-         1sb5wxpR2oNXg==
+        b=JVhaOxgfx7Mls92DNPEIWl9LDiGpLsqnYzvsIikxwThGSQkKph//v1LaOuQww4Jxs
+         834qWDOxzlJZ+w3TVxkD/3tpeLhRRRkdC5t+fKPiLNbdpSakUTP/vVweidpMvXV/4j
+         0dgVhKfiNO0loNffmpqR1pBfze63D4UcGtKLRhaXHvIaleLWumdMi26LAipBDTplCd
+         KoGZKJHXcsIS2oJ0sWeV3HjJFTTxZWaAUV7oKOnQzlIvejR/hrjok+SxPcRKCeZ5B9
+         6Q8ng29ppdCpc3MKP0JtRI6fKZVE+e7u4Q4ptnz/0LakLzVpNjA+kvLC1ImClyMSR4
+         RsIlD/R+AywNw==
 Received: from tarta.nabijaczleweli.xyz (unknown [192.168.1.250])
-        by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id 043D71041C;
-        Mon, 16 Oct 2023 22:35:57 +0200 (CEST)
-Date:   Mon, 16 Oct 2023 22:35:56 +0200
+        by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id 1CEFD10502;
+        Mon, 16 Oct 2023 22:35:59 +0200 (CEST)
+Date:   Mon, 16 Oct 2023 22:35:59 +0200
 From:   Ahelenia =?utf-8?Q?Ziemia=C5=84ska?= 
         <nabijaczleweli@nabijaczleweli.xyz>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 09/11] net/tcp: tcp_splice_read: always do non-blocking reads
-Message-ID: <d44f2f64c18151d103ee045d1e3ce7a7d5534273.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 10/11] splice: file->pipe: -EINVAL for non-regular files w/o
+ FMODE_NOWAIT
+Message-ID: <5974c79b84c0b3aad566ff7c33b082f90ac5f17e.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
 References: <cover.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="fzr4ntv4xizfeqvz"
+        protocol="application/pgp-signature"; boundary="2kmqog55wiriurlb"
 Content-Disposition: inline
 In-Reply-To: <cover.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
 User-Agent: NeoMutt/20231006
@@ -58,108 +56,69 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---fzr4ntv4xizfeqvz
+--2kmqog55wiriurlb
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Otherwise we risk sleeping with the pipe locked for indeterminate
-lengths of time.
+We request non-blocking I/O in the generic implementation, but some
+files =E2=80=92 ttys =E2=80=92 only check O_NONBLOCK. Refuse them here, les=
+t we
+risk sleeping with the pipe locked for indeterminate lengths of
+time.
 
-sock_rcvtimeo() returns 0 if the second argument is true, so the
-explicit re-try loop for empty read conditions can be removed
-entirely.
+This also masks inconsistent wake-ups (usually every second line)
+when splicing from ttys in icanon mode.
+
+Regular files don't /have/ a distinct O_NONBLOCK mode,
+because they always behave non-blockingly, and for them FMODE_NOWAIT is
+used in the purest sense of
+  /* File is capable of returning -EAGAIN if I/O will block */
+which is not set by the vast majority of filesystems,
+and it's not the semantic we want here.
 
 Link: https://lore.kernel.org/linux-fsdevel/qk6hjuam54khlaikf2ssom6custxf5i=
 s2ekkaequf4hvode3ls@zgf7j5j4ubvw/t/#u
 Signed-off-by: Ahelenia Ziemia=C5=84ska <nabijaczleweli@nabijaczleweli.xyz>
 ---
- net/ipv4/tcp.c | 30 +++---------------------------
- 1 file changed, 3 insertions(+), 27 deletions(-)
+ fs/splice.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index 3f66cdeef7de..09b562e2c1bf 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -782,7 +782,6 @@ ssize_t tcp_splice_read(struct socket *sock, loff_t *pp=
-os,
- 		.len =3D len,
- 		.flags =3D flags,
- 	};
--	long timeo;
- 	ssize_t spliced;
- 	int ret;
-=20
-@@ -797,7 +796,6 @@ ssize_t tcp_splice_read(struct socket *sock, loff_t *pp=
-os,
-=20
- 	lock_sock(sk);
-=20
--	timeo =3D sock_rcvtimeo(sk, sock->file->f_flags & O_NONBLOCK);
- 	while (tss.len) {
- 		ret =3D __tcp_splice_read(sk, &tss);
- 		if (ret < 0)
-@@ -821,35 +819,13 @@ ssize_t tcp_splice_read(struct socket *sock, loff_t *=
-ppos,
- 				ret =3D -ENOTCONN;
- 				break;
- 			}
--			if (!timeo) {
--				ret =3D -EAGAIN;
--				break;
--			}
--			/* if __tcp_splice_read() got nothing while we have
--			 * an skb in receive queue, we do not want to loop.
--			 * This might happen with URG data.
--			 */
--			if (!skb_queue_empty(&sk->sk_receive_queue))
--				break;
--			sk_wait_data(sk, &timeo, NULL);
--			if (signal_pending(current)) {
--				ret =3D sock_intr_errno(timeo);
--				break;
--			}
--			continue;
-+			ret =3D -EAGAIN;
-+			break;
- 		}
- 		tss.len -=3D ret;
- 		spliced +=3D ret;
-=20
--		if (!tss.len || !timeo)
--			break;
--		release_sock(sk);
--		lock_sock(sk);
--
--		if (sk->sk_err || sk->sk_state =3D=3D TCP_CLOSE ||
--		    (sk->sk_shutdown & RCV_SHUTDOWN) ||
--		    signal_pending(current))
--			break;
-+		break;
- 	}
-=20
- 	release_sock(sk);
+diff --git a/fs/splice.c b/fs/splice.c
+index 9d29664f23ee..81788bf7daa1 100644
+--- a/fs/splice.c
++++ b/fs/splice.c
+@@ -1300,6 +1300,8 @@ long do_splice(struct file *in, loff_t *off_in, struc=
+t file *out,
+ 	} else if (opipe) {
+ 		if (off_out)
+ 			return -ESPIPE;
++		if (!((in->f_mode & FMODE_NOWAIT) || S_ISREG(in->f_inode->i_mode)))
++			return -EINVAL;
+ 		if (off_in) {
+ 			if (!(in->f_mode & FMODE_PREAD))
+ 				return -EINVAL;
 --=20
 2.39.2
 
---fzr4ntv4xizfeqvz
+--2kmqog55wiriurlb
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmUtnqwACgkQvP0LAY0m
-WPFjbRAApjaF2MmOlUN/7/0y1McNSrda5MBqzAFcQ3NKrJBC3+bbPLoxIayoT27x
-JBVR4DxibstsZkxjjoeM2yMsxprbP6F6K0RzdKGp1PyjlioTxUJfgkhLyBckOEt7
-KrSBEwTGDDtdnwCFWJBWHtjtdFyCjLu6PaDu1xQs6mS7JZbOkGrrEFIIuq2rUp6F
-oBBzmc9CQut830eAB/UoJeVmU4WnFAT9Aqq5LcDQltkTp4XJYNsjyuzW2KCzhpuY
-Y3tQrDDrxHvhaEfdMw9K8M30EycM0XEk2r119k51F/Hzgh//nKe1d6M9qYxo9P3e
-n9OXOaq1VMVSHrkwgPe7z4jZpY/ot2ybHiw/EzZLtJ1Tyd8kSsnSAuSvBsEIo8nN
-FwSRJvWPDx0pTixy/otgGaQ6aFlEUw5PMvrU6cKQeuGjtVHUKdzICoIFkBSuPZW8
-9Jo7Ijlcy7r97AHFAYffvQm2WjazLhllHga1cxgLDKuFYsMxIGsSMLK5xilDGQr3
-gQS3iDEf3mIeVoqayBlXgNmyiZFzRgeyShN29FCBVatfm+WU9z2syDzzGgChBvYd
-A7vNgyuWzO99NF2E41J9iKP8HIPFronfsov+HM2SyZnWsFabdlGqTYlUDlIk+Vv+
-+mwy+pPB4/Y+ihlEjTMU2hwbRs6mS0JM9Xm71w7V++uZfNNkPy0=
-=KTUg
+iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmUtnq4ACgkQvP0LAY0m
+WPEpAg/7BUL4idkMMgsWTcDBR1zcXKEzx7VaIGw4cMmWVQsbi6ni0c3xtMf87Pcp
+f2qkU4hKon41qzlJQy2xpQx9XzW4FpyCpLM4bf01vm3w7uoW/5NeF+bWUpljo0I7
+OT5UbgEEiWedBkiB2k2zNugZyz5arEmCb1pLOqXCfkjeQ6W0SfSOM1wFIe+FMes0
+B6GO6TOGW799SSLRO8bLXj8A40cHomCJAF7lbt1KLB1QwmSVHe/AgpdTBnx6SWek
+1JupLtJ1AQMBRzqs1WoFfPWK19oYPH+IQxS+AcHxamcF2HG9eoX9hVlThYyY2rUj
+0zbcyoFnl9yN7q7d3XD1f1TE74uYGY0Z3EgXRaPzT9YHLx24Ts5c34iWhUe3mTqM
+naBJkhDJYJebRvTbLHUX4CGyA4EsOYB2ibc3JzmG5MyCphU6jasEDnGqGqLAmb83
+f2Yl2M004ytC5unxrZ2zaQjp4WaF2v7NnShUtxWXjuDgzgi3MiN6VCp5YazjvhzX
+9psziTqbubn4OCrVp0misOQUQL7Q5+/m/YIcfDkBDAtaFfj3d/IHtyBbUla+5lYO
+9Jwk5RBsZtiFn0dQRhpAMMGpAdKkmNlBvfuDGqNsN0BD4ZEAt2/c2lOlIa/uzS6s
+E8R958JUoWmdYWprxxKIhN8UjvuB4SnV4glRyZTc+ngPYa57pKI=
+=39/H
 -----END PGP SIGNATURE-----
 
---fzr4ntv4xizfeqvz--
+--2kmqog55wiriurlb--
