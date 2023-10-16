@@ -2,51 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E2B7CA2EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 10:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCEAE7CA305
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233135AbjJPI5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 04:57:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46326 "EHLO
+        id S232985AbjJPJAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 05:00:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233114AbjJPI53 (ORCPT
+        with ESMTP id S229621AbjJPJAF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 04:57:29 -0400
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C939B95
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 01:57:27 -0700 (PDT)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id 6F1CF240104
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 10:57:26 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1697446646; bh=brODLvvYvkikrtNYqrnX6Dobqx5VOdIf75/P3TBpnxg=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:
-         Content-Transfer-Encoding:From;
-        b=rz2yLfYBh0V5kX5rXYaSPuirzbRNh3TlARKEGFpk83Z1fEDqOkk8uoQwvUZ2x2R2p
-         7qhvUaxbbH8yOVvpm/7NqoMuQNdbF7qlPkPPB5dJultfzwkHORlLOfC7uRcNmzcOPU
-         gH0JZykB4FMxUM9dLD1RhEW1ThK80mIHB/yNX15jfxTFFXyRoFeCP4v/YIEduB/y1b
-         CE4a5IYhGK8guUXD+Db0sLNpS//yv2MnCyZtNGmrrFr7jD2PoLfQBHJBDrSsHTsUXY
-         cbAIl/2u7voMpgBUyE2AMdH9wwbrLx4NEogU379p2bVQKrLLBamF3JbjrKpjG6D1Fd
-         iJhgi/ZQPfdDw==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4S89wh1bVBz9rxj;
-        Mon, 16 Oct 2023 10:57:24 +0200 (CEST)
-From:   Mark O'Donovan <shiftee@posteo.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-nvme@lists.infradead.org, sagi@grimberg.me, hch@lst.de,
-        axboe@kernel.dk, kbusch@kernel.org, hare@suse.de,
-        Mark O'Donovan <shiftee@posteo.net>,
-        Akash Appaiah <Akash.Appaiah@dell.com>
-Subject: [PATCH v2 2/2] nvme-auth: allow mixing of secret and hash lengths
-Date:   Mon, 16 Oct 2023 08:57:15 +0000
-Message-Id: <20231016085715.3068974-3-shiftee@posteo.net>
-In-Reply-To: <20231016085715.3068974-1-shiftee@posteo.net>
-References: <20231016085715.3068974-1-shiftee@posteo.net>
+        Mon, 16 Oct 2023 05:00:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F31F95
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 01:59:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697446760;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2FeV+c5x33dv4l/xApcJjHfB6GACs9h2vGrZq3PHSdA=;
+        b=A+19SbMwdTIA90gljNO3JSI2qiUsQbtmTFil5c9hQQLt3A7iR1kvbOgMe+bKLcxU3vQhZT
+        WBaHjI8SDkBbXZYEbxUSynd/qRmUG7rl2gbmdWjjt28O+zHVgnlhKKf5J51tjJM5yh9pgn
+        usP3pwXd4lpsryusALQtoB63jBcJToQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-378-r9IqWhbCOVaTIW264F0-0g-1; Mon, 16 Oct 2023 04:59:02 -0400
+X-MC-Unique: r9IqWhbCOVaTIW264F0-0g-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 640C285531B;
+        Mon, 16 Oct 2023 08:59:01 +0000 (UTC)
+Received: from darkstar.users.ipa.redhat.com (unknown [10.72.112.177])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D5555492BFA;
+        Mon, 16 Oct 2023 08:58:54 +0000 (UTC)
+Date:   Mon, 16 Oct 2023 16:58:44 +0800
+From:   Dave Young <dyoung@redhat.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kexec@lists.infradead.org, bhe@redhat.com, prudo@redhat.com,
+        ebiederm@xmission.com, vgoyal@redhat.com
+Subject: Re: panic context: was: Re: [PATCH printk v2 04/11] printk: nbcon:
+ Provide functions to mark atomic write sections
+Message-ID: <ZSz7RFqv994u/Vt+@darkstar.users.ipa.redhat.com>
+References: <ZRGvn4m2NGCn3Pef@alley>
+ <87h6n5teos.fsf@jogness.linutronix.de>
+ <ZSADUKp8oJ2Ws2vC@alley>
+ <87il7hv2v2.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87il7hv2v2.fsf@jogness.linutronix.de>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,46 +71,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can now use any of the secret transformation hashes with a
-secret, regardless of the secret size.
-e.g. a 32 byte key with the SHA-512(64 byte) hash.
+[Added more people in cc]
 
-The example secret from the spec should now be permitted with
-any of the following:
-DHHC-1:00:ia6zGodOr4SEG0Zzaw398rpY0wqipUWj4jWjUh4HWUz6aQ2n:
-DHHC-1:01:ia6zGodOr4SEG0Zzaw398rpY0wqipUWj4jWjUh4HWUz6aQ2n:
-DHHC-1:02:ia6zGodOr4SEG0Zzaw398rpY0wqipUWj4jWjUh4HWUz6aQ2n:
-DHHC-1:03:ia6zGodOr4SEG0Zzaw398rpY0wqipUWj4jWjUh4HWUz6aQ2n:
+On 10/08/23 at 12:19pm, John Ogness wrote:
+> Hi Petr,
+> 
+> On 2023-10-06, Petr Mladek <pmladek@suse.com> wrote:
+> >> During the demo at LPC2022 we had the situation that there was a large
+> >> backlog when a WARN was hit. With current mainline the first line of the
+> >> WARN is put into the ringbuffer and then the entire backlog is flushed
+> >> before storing the rest of the WARN into the ringbuffer. At the time it
+> >> was obvious that we should finish storing the WARN message and then
+> >> start flushing the backlog.
+> >
+> > This talks about the "emergency" context (WARN/OOPS/watchdog).
+> > The system might be in big troubles but it would still try to continue.
+> >
+> > Do we really want to defer the flush also for panic() context?
+> 
+> We can start flushing right after the backtrace is in the
+> ringbuffer. But flushing the backlog _before_ putting the backtrace into
+> the ringbuffer was not desired because if there is a large backlog, the
+> machine may not survive to get the backtrace out. And in that case it
+> won't even be in the ringbuffer to be used by other debugging
+> tools.
+> 
+> > I ask because I was not on LPC 2022 in person and I do not remember
+> > all details.
+> 
+> The LPC2022 demo/talk was recorded:
+> 
+> https://www.youtube.com/watch?v=TVhNcKQvzxI
+> 
+> At 55:55 is where the situation occurred and triggered the conversation,
+> ultimately leading to this new feature.
+> 
+> You may also want to reread my summary:
+> 
+> https://lore.kernel.org/lkml/875yheqh6v.fsf@jogness.linutronix.de
+> 
+> as well as Linus' follow-up message:
+> 
+> https://lore.kernel.org/lkml/CAHk-=wieXPMGEm7E=Sz2utzZdW1d=9hJBwGYAaAipxnMXr0Hvg@mail.gmail.com
+> 
+> > But it is tricky in panic(), see 8th patch at
+> > https://lore.kernel.org/r/20230919230856.661435-9-john.ogness@linutronix.de
+> >
+> >    + nbcon_atomic_exit() is called only in one code path.
+> 
+> Correct. When panic() is complete and the machine goes into its infinite
+> loop. This is also the point where it will attempt an unsafe flush, if
+> it could not get the messages out yet.
+> 
+> >    + nbcon_atomic_flush_all() is used in other paths. It looks like
+> >      a "Whack a mole" game to me.
+> 
+> Several different outputs occur during panic(). The flush is everywhere
+> where something significant has been put into the ringbuffer and now it
+> would be OK to flush it.
+> 
+> >    + messages are never emitted by printk kthread either because
+> >      CPUs are stopped or the kthread is not allowed to get the lock
+> 
+> Correct.
+> 
+> > I see only one positive of the explicit flush. The consoles would
+> > not delay crash_exec() and the crash dump might be closer to
+> > the point where panic() was called.
+> 
+> It's only about getting the critical messages into the ringbuffer before
+> flushing. And since various things can go wrong during the many actions
+> within panic(), it makes sense to flush in between those actions.
+> 
+> > Otherwise I see only negatives => IMHO, we want to flush atomic
+> > consoles synchronously from printk() in panic().
+> >
+> > Does anyone really want explicit flushes in panic()?
+> 
+> So far you are the only one speaking against it. I expect as time goes
+> on it will get even more complex as it becomes tunable (also something
+> we talked about during the demo).
 
-Note: Secrets are still restricted to 32,48 or 64 bits.
+Flush consoles in panic kexec case sounds not good, but I have no
+deep understanding about the atomic printk series, added kexec list and
+reviewers in cc.
 
-Co-developed-by: Akash Appaiah <Akash.Appaiah@dell.com>
-Signed-off-by: Akash Appaiah <Akash.Appaiah@dell.com>
-Signed-off-by: Mark O'Donovan <shiftee@posteo.net>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
----
- drivers/nvme/common/auth.c | 8 --------
- 1 file changed, 8 deletions(-)
+> 
+> John
+> 
 
-diff --git a/drivers/nvme/common/auth.c b/drivers/nvme/common/auth.c
-index 26a7fbdf4d55..712178e1fb02 100644
---- a/drivers/nvme/common/auth.c
-+++ b/drivers/nvme/common/auth.c
-@@ -187,14 +187,6 @@ struct nvme_dhchap_key *nvme_auth_extract_key(unsigned char *secret,
- 		goto out_free_secret;
- 	}
- 
--	if (key_hash > 0 &&
--	    (key_len - 4) != nvme_auth_hmac_hash_len(key_hash)) {
--		pr_err("Mismatched key len %d for %s\n", key_len,
--		       nvme_auth_hmac_name(key_hash));
--		ret = -EINVAL;
--		goto out_free_secret;
--	}
--
- 	/* The last four bytes is the CRC in little-endian format */
- 	key_len -= 4;
- 	/*
--- 
-2.39.2
+Thanks
+Dave
 
