@@ -2,109 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6055B7CB54B
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 23:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1FFC7CB54F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 23:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232582AbjJPVaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 17:30:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33882 "EHLO
+        id S233068AbjJPVbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 17:31:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233329AbjJPVaE (ORCPT
+        with ESMTP id S229666AbjJPVbo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 17:30:04 -0400
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E167E1;
-        Mon, 16 Oct 2023 14:30:03 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 157B840E01AA;
-        Mon, 16 Oct 2023 21:30:01 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id JSpJBMDPt_aK; Mon, 16 Oct 2023 21:29:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1697491799; bh=S8Vd38o9HbunYA/2a9M5acr0sRPqT1bux7SnTWZ2pLs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dc98afUWsuzI92wBlBM99irPrfDFRKziq5Z+a+IdeXOwFg1QxNbxnS8MHBqdFWqFD
-         sB6b3g+hnAegNGuNTuq1pULqaOpudJL41qQiS2DJ1aKwRzSIh94RbKyp4yieBFSJZb
-         Uec5ZMtKe6tXdAbxgY2GXNSJNjtLhd7PM/nixBgeuVNsvV1M6VEMzuHcf3jR8Ya+Q3
-         ypiqnu8Laht3u5/+5S4sJN4FpNtfFuqZBvtCdK/Ky2d3qj9LiSNuCJVan2ArWORV6e
-         IzauhoFxuxExgn7IJ0fp/S9JHBpSQeQjPJedTcoq8A48L41XfR7tLmKk2GkedfnMsy
-         8EmoLi/IQv71UvW3nlRilKZg8jR5SF30Er9kz4q2eCdxH1Xd3d6rHRekzx7uxHxssb
-         c79Ayfg7qAYHrgczmKYx7eKyyh729jKFEGL7UHmoO9kemqR+aAsqNmsrtBEzzhTj+v
-         +58IOPXJMcB+R2EyzTpOstrTWE0ZLvEymN/2D6MnvXv4QfTbbsdwchv8gXUBprNrNU
-         6F6Il/QIfmS6gam1gzKXOZSGEA6BgqZLgKBRTLDr4czZoyjTPL3QbrIT7N/5Y8eZRZ
-         lS8gYRvTodMP1By9eLXMHpTdoK1CUiX6EbZMBru/DbrSgb7085RSeQ/KXG0Jc/kbQ4
-         XaOvpzHkBmghGOgBB2M1s9ow=
-Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E877440E014B;
-        Mon, 16 Oct 2023 21:29:49 +0000 (UTC)
-Date:   Mon, 16 Oct 2023 23:29:44 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        David Kaplan <david.kaplan@amd.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [tip: x86/bugs] x86/retpoline: Ensure default return thunk isn't
- used at runtime
-Message-ID: <20231016212944.GGZS2rSCbIsViqZBDe@fat_crate.local>
-References: <20231012141031.GHZSf+V1NjjUJTc9a9@fat_crate.local>
- <169713303534.3135.10558074245117750218.tip-bot2@tip-bot2>
- <20231016211040.GA3789555@dev-arch.thelio-3990X>
+        Mon, 16 Oct 2023 17:31:44 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF063A1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 14:31:42 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id e9e14a558f8ab-3574c225c14so7092025ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 14:31:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1697491902; x=1698096702; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2eq+Kx/9S8V0Cs7DZC5sSlCaT+pWk5Hx1QeNjsJae14=;
+        b=doQXQAwl+Qn9OY3why2FZQTiBKEyeRX3hXJ9ibNoPUoTkltnOAHHFNVhswuxZ9OT1q
+         ZRr9OT4DOuoEfWEXIDjIkzIk/9gLQ0QjXoMngk1x0kBIgpnfTgfi1vDxT1xdJtDWFrxp
+         DxIg3hHw8MVmdtx8TNCACCx1uFw1m9QD+w8Wo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697491902; x=1698096702;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2eq+Kx/9S8V0Cs7DZC5sSlCaT+pWk5Hx1QeNjsJae14=;
+        b=p5QEMlcQPmcAEXNRCCUUs+wz7gpVDSaqyyKiCamoaXYS3riDlnF/7gn1pilnJ3bRif
+         b8+W3V4K1FyMZuzjQjztzDdghGciiDy2gOL0VWz4OhJ7n8aGwv3bXGB93pNWp1Dkr4K0
+         H/NF43yFCDdLzDBK4codx3rerrFdyQu49bGJoMjf1AM26CbtYrg5W26rNVKfWooMYSUv
+         R/+bl3mmwkDNw0BVg+vyztMmOu5ihA/hi2ojZDbYzklYKu0iSsS2NQnXyN1Kll+vXp2c
+         uWvHFDlRnr+44KGGuQXDrRI+zmDs9YJKm06vC9TbkBF79m9JiEbAFcF/RIrr4xKFdzuW
+         mdhg==
+X-Gm-Message-State: AOJu0YyauG7FM4xFr86AEsw2Ck2hjWMYRTHnvOflqrBnEtFu7/c5LtKf
+        0tRKsEK7CdEQPJBf+/3glng8sw==
+X-Google-Smtp-Source: AGHT+IGxeDhQmu1poxt/H4JzwTKErzZyffEgpadqK/wYb/Vt7pGxxTsvG0HukykYVzG+YtLpU/OsYg==
+X-Received: by 2002:a5e:9404:0:b0:792:8011:22f with SMTP id q4-20020a5e9404000000b007928011022fmr472192ioj.0.1697491902309;
+        Mon, 16 Oct 2023 14:31:42 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id k8-20020a056638370800b0045c25ef9a56sm58767jav.21.2023.10.16.14.31.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Oct 2023 14:31:42 -0700 (PDT)
+Message-ID: <374b97e6-05e0-48b4-9cb8-6b371f5c7f5b@linuxfoundation.org>
+Date:   Mon, 16 Oct 2023 15:31:40 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231016211040.GA3789555@dev-arch.thelio-3990X>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.1 000/131] 6.1.59-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20231016084000.050926073@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20231016084000.050926073@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 02:10:40PM -0700, Nathan Chancellor wrote:
-> I just bisected a boot failure that our continuous integration sees [1]
-> with x86_64_defconfig + CONFIG_KCSAN=y to this change in -tip/-next. It
-> does not appear to be clang specific, as I can reproduce it with GCC
-> 13.2.0 from kernel.org [2] (the rootfs is available at [3], if it is
-> necessary for reproducing).
+On 10/16/23 02:39, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.59 release.
+> There are 131 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> $ make -skj"$(nproc)" ARCH=x86_64 CROSS_COMPILE=x86_64-linux- defconfig
-> $ scripts/config -e KCSAN
-> $ make -skj"$(nproc)" ARCH=x86_64 CROSS_COMPILE=x86_64-linux- olddefconfig bzImage
-> $ qemu-system-x86_64 \
->     -display none \
->     -nodefaults \
->     -d unimp,guest_errors \
->     -append 'console=ttyS0 earlycon=uart8250,io,0x3f8' \
->     -kernel arch/x86/boot/bzImage \
->     -initrd x86_64-rootfs.cpio \
->     -cpu host \
+> Responses should be made by Wed, 18 Oct 2023 08:39:40 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.59-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-What's the host?
+Compiled and booted on my test system. No dmesg regressions.
 
-> If there is any other information I can provide or patches I can test, I
-> am more than happy to do so.
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-Yes, pls send your .config too because depending on the compiler, KCSAN
-does get disabled with older ones. So I guess it has to be gcc 13 or so.
-
-And full guest dmesg so that I can compare.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+thanks,
+-- Shuah
