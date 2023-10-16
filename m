@@ -2,132 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA0F7CACBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 542667CACC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233607AbjJPPAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 11:00:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43712 "EHLO
+        id S233967AbjJPPBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 11:01:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232675AbjJPPAi (ORCPT
+        with ESMTP id S233877AbjJPPA4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 11:00:38 -0400
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD0A6AB;
-        Mon, 16 Oct 2023 08:00:35 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 24F11C000F;
-        Mon, 16 Oct 2023 15:00:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1697468434;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ppkDtMZrQStND01nwr+Zoe8BhS+PL2DK/7cIl9/gVis=;
-        b=Tunkb17v62OZltx/uVcuSmnnpvWaf7eWs14cCjQdXud+YiNmf9b8dfoPyPsytcqbQeQA7L
-        VjDS1Pg9jpuQnAnijOqM3DGaanf6fTb5Cf8aMTzJjn1GojBFJ7s0YsVS6fIQ9bzpn/+Qfs
-        Jf4Nu8NbRMdud4fuJhsLVQEHgho6QWEEf6bbp6SkDP8UqjCabpuvecGIHcNQzgQG4kp0nG
-        qjwaADz2RPE6f+A1hOT/B0vSjFEZK8mHoBAoCnRLg3U5QtwvNedz2MOi0j/V/BKC0HSURL
-        eg3XISnf5MiyIMfl1O/nq/5YUUH6KZb4EHOffsD4rvWbrLqA7e6bvD2XMcSuhg==
-Date:   Mon, 16 Oct 2023 17:00:27 +0200
-From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Michael Walle <michael@walle.cc>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH net-next v5 08/16] net: ethtool: Add a command to expose
- current time stamping layer
-Message-ID: <20231016170027.42806cb7@kmaincent-XPS-13-7390>
-In-Reply-To: <20231016072204.1cb41eab@kernel.org>
-References: <20231009155138.86458-1-kory.maincent@bootlin.com>
-        <20231009155138.86458-9-kory.maincent@bootlin.com>
-        <2fbde275-e60b-473d-8488-8f0aa637c294@broadcom.com>
-        <20231010102343.3529e4a7@kmaincent-XPS-13-7390>
-        <20231013090020.34e9f125@kernel.org>
-        <6ef6418d-6e63-49bd-bcc1-cdc6eb0da2d5@lunn.ch>
-        <20231016124134.6b271f07@kmaincent-XPS-13-7390>
-        <20231016072204.1cb41eab@kernel.org>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 16 Oct 2023 11:00:56 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C6A7106
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:00:47 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c9b7c234a7so39586065ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:00:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1697468447; x=1698073247; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QffYa8f47+Hk7lnd37D6vR0fhcrZUpT4hXtPg8meDQQ=;
+        b=OPd9R4BAjFy/Hf7BsPucUo8+gq140S9EJxMPAQhI5IhMX0tLwpdUN8VBJ76ym2DYxP
+         S03DD+MEIt5fWzuKORDOjtPa7Fi7og+CLesqi/8P28EvdJ+UdjKXEg/FkbWZw0WJ2yFt
+         LBpcrNm1sHSVqg925m4tRJc2XlNTZH0Uq7YAgyuDoxKJ2+hrx5Y98P1jh3ZpVCxAGqQV
+         sVCIUH7/j+XLW7dcT3Soa64QPHO6Ht+NaUWjtDRLVk5nEQK6igUY0iPzn0Kc05zZyQbm
+         uwqGoiJ1wmHOJ87Xq/yFanIgwF2PB0xd8FQEOf3dL8Hq9zIemks+L8wIxkU5mGodpCpP
+         3rYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697468447; x=1698073247;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QffYa8f47+Hk7lnd37D6vR0fhcrZUpT4hXtPg8meDQQ=;
+        b=RMAAqXSHopOJI0k4nUv+Fa9zYrEvBPac88MbsEyMxF6eoXm+Qo9k69SOUUmy0NankB
+         QgcrdGHpc5CtCsrKH2wKruKMAF6/xBDH71m+Eq4cqV/pG329ZCf51xRJ2e237PR73B7B
+         YCFUHxRGUQnLAC+Vh3g2RXG/lkm9VHpr+ENqkY8ycUY3T3TlwgVHO39cwaMpmbr3QbGx
+         Rspget4rw0rxbUiiNnmMMG1BvSmXm6OLcMTxQRsPaLI9MOfYc+mSPv1JN79BeAyDYmmV
+         2+UONYdUoQkRgeXgzcK3U/pxoS5lw8VmBp0LfUovlf0Zu1MZWc/iSHTA9zZ0sqiwED7H
+         s2+g==
+X-Gm-Message-State: AOJu0YzBtjrDDoGsPz/aI7NSgMLRRHzNIkEpcLDrYAfquP6DtPZgGJO3
+        uBmXozCsJkTWFIp2IAotnTEDWw==
+X-Google-Smtp-Source: AGHT+IHKxPEZ5jm64Sthy6b0eJMKd1mmMO0rwHmS7V7YdwjOzZCUdt9CYFnWzLHLLsgbqmcyOqYUQA==
+X-Received: by 2002:a17:903:248:b0:1c7:495c:87e0 with SMTP id j8-20020a170903024800b001c7495c87e0mr41801337plh.37.1697468447051;
+        Mon, 16 Oct 2023 08:00:47 -0700 (PDT)
+Received: from [192.168.3.101] ([104.28.240.135])
+        by smtp.gmail.com with ESMTPSA id 21-20020a170902c21500b001c771740da4sm7382844pll.195.2023.10.16.08.00.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Oct 2023 08:00:45 -0700 (PDT)
+Message-ID: <ebccb78c-df24-ea74-c0ee-c5f8d195290e@bytedance.com>
+Date:   Mon, 16 Oct 2023 23:00:31 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Content-Language: en-US
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     linux-trace-kernel@vger.kernel.org, davem@davemloft.net,
+        anil.s.keshavamurthy@intel.com, naveen.n.rao@linux.ibm.com,
+        rostedt@goodmis.org, peterz@infradead.org,
+        akpm@linux-foundation.org, sander@svanheule.net,
+        ebiggers@google.com, dan.j.williams@intel.com, jpoimboe@kernel.org,
+        linux-kernel@vger.kernel.org, lkp@intel.com, mattwu@163.com
+References: <20231015053251.707442-1-wuqiang.matt@bytedance.com>
+ <20231015053251.707442-2-wuqiang.matt@bytedance.com>
+ <20231016004356.b5f3f815cb8d7c0994934332@kernel.org>
+ <1516f7d1-e11b-3244-76b9-e6ddafc29a32@bytedance.com>
+ <20231016082659.6ca94a5dff368783698753f9@kernel.org>
+ <7758687f-06c1-d9b2-077a-34e79925a339@bytedance.com>
+ <20231016211837.b6d425d8ed760bb3306910ae@kernel.org>
+From:   "wuqiang.matt" <wuqiang.matt@bytedance.com>
+Subject: Re: [PATCH v10 1/5] lib: objpool added: ring-array based lockless
+ MPMC
+In-Reply-To: <20231016211837.b6d425d8ed760bb3306910ae@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Oct 2023 07:22:04 -0700
-Jakub Kicinski <kuba@kernel.org> wrote:
+On 2023/10/16 20:18, Masami Hiramatsu (Google) wrote:
+> Hi Wuqiang,
+> 
+> On Mon, 16 Oct 2023 10:45:30 +0800
+> "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
+> 
+>> On 2023/10/16 07:26, Masami Hiramatsu (Google) wrote:
+>>> On Mon, 16 Oct 2023 00:06:11 +0800
+>>> "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
+>>>
+>>>> On 2023/10/15 23:43, Masami Hiramatsu (Google) wrote:
+>>>>> On Sun, 15 Oct 2023 13:32:47 +0800
+>>>>> "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
+>>>>>
+>>>>>> objpool is a scalable implementation of high performance queue for
+>>>>>> object allocation and reclamation, such as kretprobe instances.
+>>>>>>
+>>>>>> With leveraging percpu ring-array to mitigate hot spots of memory
+>>>>>> contention, it delivers near-linear scalability for high parallel
+>>>>>> scenarios. The objpool is best suited for the following cases:
+>>>>>> 1) Memory allocation or reclamation are prohibited or too expensive
+>>>>>> 2) Consumers are of different priorities, such as irqs and threads
+>>>>>>
+>>>>>> Limitations:
+>>>>>> 1) Maximum objects (capacity) is fixed after objpool creation
+>>>>>> 2) All pre-allocated objects are managed in percpu ring array,
+>>>>>>       which consumes more memory than linked lists
+>>>>>>
+>>>>>
+>>>>> Thanks for updating! This looks good to me except 2 points.
+>>>>>
+>>>>> [...]
+>>>>>> +
+>>>>>> +/* initialize object pool and pre-allocate objects */
+>>>>>> +int objpool_init(struct objpool_head *pool, int nr_objs, int object_size,
+>>>>>> +		gfp_t gfp, void *context, objpool_init_obj_cb objinit,
+>>>>>> +		objpool_fini_cb release)
+>>>>>> +{
+>>>>>> +	int rc, capacity, slot_size;
+>>>>>> +
+>>>>>> +	/* check input parameters */
+>>>>>> +	if (nr_objs <= 0 || nr_objs > OBJPOOL_NR_OBJECT_MAX ||
+>>>>>> +	    object_size <= 0 || object_size > OBJPOOL_OBJECT_SIZE_MAX)
+>>>>>> +		return -EINVAL;
+>>>>>> +
+>>>>>> +	/* align up to unsigned long size */
+>>>>>> +	object_size = ALIGN(object_size, sizeof(long));
+>>>>>> +
+>>>>>> +	/* calculate capacity of percpu objpool_slot */
+>>>>>> +	capacity = roundup_pow_of_two(nr_objs);
+>>>>>
+>>>>> This must be 'roundup_pow_of_two(nr_objs + 1)' because if nr_objs is power
+>>>>> of 2 and all objects are pushed on the same slot, tail == head. This
+>>>>> means empty and full is the same.
+>>>>
+>>>> That won't happen. Would tail and head wrap only when >= 2^32. When all
+>>>> objects are pushed to the same slot, tail will be (head + capacity).
+>>>
+>>> Ah, indeed. OK.
+>>>
+>>>>
+>>>>>
+>>>>>> +	if (!capacity)
+>>>>>> +		return -EINVAL;
+>>>>>> +
+>>>>>> +	/* initialize objpool pool */
+>>>>>> +	memset(pool, 0, sizeof(struct objpool_head));
+>>>>>> +	pool->nr_cpus = nr_cpu_ids;
+>>>>>> +	pool->obj_size = object_size;
+>>>>>> +	pool->capacity = capacity;
+>>>>>> +	pool->gfp = gfp & ~__GFP_ZERO;
+>>>>>> +	pool->context = context;
+>>>>>> +	pool->release = release;
+>>>>>> +	slot_size = pool->nr_cpus * sizeof(struct objpool_slot);
+>>>>>> +	pool->cpu_slots = kzalloc(slot_size, pool->gfp);
+>>>>>> +	if (!pool->cpu_slots)
+>>>>>> +		return -ENOMEM;
+>>>>>> +
+>>>>>> +	/* initialize per-cpu slots */
+>>>>>> +	rc = objpool_init_percpu_slots(pool, nr_objs, context, objinit);
+>>>>>> +	if (rc)
+>>>>>> +		objpool_fini_percpu_slots(pool);
+>>>>>> +	else
+>>>>>> +		refcount_set(&pool->ref, pool->nr_objs + 1);
+>>>>>> +
+>>>>>> +	return rc;
+>>>>>> +}
+>>>>>> +EXPORT_SYMBOL_GPL(objpool_init);
+>>>>>> +
+>>>>>
+>>>>> [...]
+>>>>>
+>>>>>> +
+>>>>>> +/* drop unused objects and defref objpool for releasing */
+>>>>>> +void objpool_fini(struct objpool_head *pool)
+>>>>>> +{
+>>>>>> +	void *obj;
+>>>>>> +
+>>>>>> +	do {
+>>>>>> +		/* grab object from objpool and drop it */
+>>>>>> +		obj = objpool_pop(pool);
+>>>>>> +
+>>>>>> +		/*
+>>>>>> +		 * drop reference of objpool anyway even if
+>>>>>> +		 * the obj is NULL, since one extra ref upon
+>>>>>> +		 * objpool was already grabbed during pool
+>>>>>> +		 * initialization in objpool_init()
+>>>>>> +		 */
+>>>>>> +		if (refcount_dec_and_test(&pool->ref))
+>>>>>> +			objpool_free(pool);
+>>>>>
+>>>>> Nit: you can call objpool_drop() instead of repeating the same thing here.
+>>>>
+>>>> objpool_drop won't deref objpool if given obj is NULL. But here we need
+>>>> drop objpool anyway even if obj is NULL.
+>>>
+>>> I guess you decrement for the 'objpool' itself if obj=NULL, but I think
+>>> it is a bit hacky (so you added the comment).
+>>> e.g. rethook is doing something like below.
+>>>
+>>> ---
+>>> /* extra count for this pool itself */
+>>> count = 1;
+>>> /* make the pool empty */
+>>> while (objpool_pop(pool))
+>>> 	count++;
+>>>
+>>> if (refcount_sub_and_test(count, &pool->ref))
+>>> 	objpool_free(pool);
+>>> ---
+>>
+>> Right, that's reasonable. Better one single atomic operation than multiple.
+> 
+> I found another comment issue about a small window which this may not work.
+> This is not a real issue for this series because this doesn't happen on
+> rethook/kretprobe, but if you apply this to other use-case, it must be
+> cared.
+> 
+> Since we use reserve-commit on 'push' operation, this 'pop' loop will miss
+> an object which is under 'push' op. I mean
+> 
+> CPU0                    CPU1
+> 
+> objpool_fini() {
+> do {
+>                           objpool_push() {
+>                              update slot->tail; // reserve
+>    obj = objpool_pop();
+>                              update slot->last;  // commit
+> } while (obj);
+> 
+> In this case, the refcount can not be 0 and we can not release objpool.
+> To avoid this, we make sure all ongoing 'push()' must be finished.
+> 
+> Actually in the rethook/kretprobe, it already sync the rcu so this doesn't
+> happen. So you should document it the user must use RCU sync after stop
+> using the objpool, then call objpool_fini().
+> 
+> E.g.
+> 
+> start_using() {
+> objpool_init();
+> active = true;
+> }
+> 
+> obj_alloc() {
+> rcu_read_lock();
+> if (active)
+> 	obj = objpool_pop();
+> else
+> 	obj = NULL;
+> rcu_read_unlock();
+> }
+> 
+> /* use obj for something, it is OK to change the context */
+> 
+> obj_return() {
+> rcu_read_lock();
+> if (active)
+> 	objpool_push(obj);
+> else
+> 	objpool_drop(obj);
+> rcu_read_unlock();
+> }
+> 
+> /* kretprobe style */
+> stop_using() {
+> active = false;
+> synchronize_rcu();
+> objpool_fini();
+> }
+> 
+> /* rethook style */
+> stop_using() {
+> active = false;
+> call_rcu(objpool_fini);
+> }
+> 
+> Hmm, yeah, if we can add this 'active' flag to objpool, it is good. But
+> since kretprobe has different design of the interface, it is hard.
+> Anyway, can you add a comment that user must ensure that any 'push' including
+> ongoing one does not happen while 'fini'? objpool does not care that so user
+> must take care of that. For example using rcu_read_lock() for the 'push/pop'
+> operation and rcu-sync before 'fini' operation.
 
-> On Mon, 16 Oct 2023 12:41:34 +0200 K=C3=B6ry Maincent wrote:
-> > > Netdev vs phylib is an implementation detail of Linux.
-> > > I'm also surprised that you changed this.   =20
-> >=20
-> > This is the main reason I changed this. This is Linux implementation
-> > purpose to know whether it should go through netdev or phylib, and then
-> > each of these drivers could use other timestamps which are hardware
-> > related. =20
->=20
-> For an integrated design there's 90% chance the stamping is done=20
-> by the MAC. Even if it isn't there's no difference between PHY
-> and MAC in terms of quality.
+Sure, I'll refine the comments. I prefer that it's user's duty to make sure
+there are no outstanding objpool_push on the fly when calling objpool_fini.
+All usecases like kretprobe/rethook/test_objpool are using rcu to handle the
+asynchronous releasing of objpool. For synchronous cases, user can just call
+object_free to release the whole objpool, which is also acceptable.
 
-Ok, but there might be quality difference in case of several timestamp
-configuration done in the MAC. Like the timestamping precision vs frequency
-precision. In that case how ethtool would tell the driver to switch between
-them?
+> Thanks,
+> 
+>>
+>>>>
+>>>>> Thank you,
+>>>>>
+>>>>>> +	} while (obj);
+>>>>>> +}
+>>>>>> +EXPORT_SYMBOL_GPL(objpool_fini);
+>>>>>> -- 
+>>>>>> 2.40.1
+>>>>>>
+>>>>
+>>>> Thanks for your time
+>>>>
+>>>>
+>>>
+>>>
+>>
+> 
+> 
 
-My solution could work for this case by simply adding new values to the enu=
-m:
-
-enum {
-	NETDEV_TIMESTAMPING =3D (1 << 0),
-	PHYLIB_TIMESTAMPING =3D (1 << 1),
-	MAC_TS_PRECISION =3D (1 << 2)|(1 << 0),
-	MAC_FREQ_PRECISION =3D (2 << 2)|(1 << 0),
-}
-
-Automatically Linux will go through the netdev implementation and could pass
-the enum value to the netdev driver.
-
-> But there is a big difference between MAC/PHY and DMA which would
-> both fall under NETDEV?
-
-Currently there is no DMA timestamping support right? And I suppose it fill=
- fall
-under the net device management?
-
-In that case we will have MAC and DMA under netdev and PHY under phylib and
-we won't have to do anything more than this timestamping management patch:=
-=20
-https://lore.kernel.org/netdev/20231009155138.86458-14-kory.maincent@bootli=
-n.com/
