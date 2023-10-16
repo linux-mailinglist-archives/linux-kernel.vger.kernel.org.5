@@ -2,155 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 032ED7CAD5D
+	by mail.lfdr.de (Postfix) with ESMTP id 5BAA47CAD5E
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:22:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233584AbjJPPWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 11:22:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51926 "EHLO
+        id S233713AbjJPPW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 11:22:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJPPWO (ORCPT
+        with ESMTP id S233582AbjJPPWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 11:22:14 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2073.outbound.protection.outlook.com [40.107.237.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9446AC;
-        Mon, 16 Oct 2023 08:22:12 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SH8Fr6nG1NXcXesPkoqsB4dkwA/Ns8Thy+iK+565/EWsiT1GX+gG7f67wkcLq5K0uJOs/GK1MdCE7iYQVZgs/ac/hsSDi/NamuSgr5WilN4hjrNqw/+5vMHJymswFB44Q6ke4umuF2zTtFtx8k8pB3ot1JuUoGVd0zPXKbuE3pnzSlmWTBwOOQLI6psXTBwNbruCfx1ET+mKGiwhNJ9a0GnNwa8TT/z+AuqTKmo9c4xMgzO/xkxO6MOy7Xq0CdtSjgIxLiWuWPrSfGuCCjTdUtKwpi5XLDjrTM/pMooNvj8fIBejp2OpCgG0IVD9RKecdr8QIo7yDAZBcZ7aq9nAJg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CnOgOgc/xF/znhbhik3tEbOGfsPAveHaNExXmuj1Jmo=;
- b=jcPmj4FKYo2SD6JYJo936UZm9TbOlO7uXQk9uC4jTXgxw1QwYmrLOa2woHHvYrre5pN3JGGCoEm0kwvfJNuDmbLTFdJn3WdjmEOuuGXpq/pGuq6AvUt6XbyMN3au6kAi69iP/Vs0J8WqY9qtbSMAJ7R4qBXSWSdbyGO0BfRd5RTByraag5Rsz2gZtOWWlAB/nlmeMdXEmgAZAuh10dIJNfD3H1YY77Bkyrz2t9oyJXrWbmBCLP0bGq9Qdo3YwG29cflnknKh+2P+GhhyEMn1e7Hw83yxnCFaDcnCU2+W0ONAliuU44XYYFUSZP3dbRSa6grdFga62u+8K2Dn5DMiCQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CnOgOgc/xF/znhbhik3tEbOGfsPAveHaNExXmuj1Jmo=;
- b=GvgUPKWPXx9rg7Oinm3/BGmrMipaIMD5RauhBrS/iaxRnR+6QFoI1J11fQvgxsJ4AGgBXhmd/0snVNsw1SWjtN/gjNXSxHcdBH/Ohfvo9gMQhJwVMDNc226E8ahjwOy8mGLqsJAZ3oZrd1o6ZbP6KFUILTpUxNAye8rIMctlOZk=
-Received: from DM6PR03CA0100.namprd03.prod.outlook.com (2603:10b6:5:333::33)
- by CH3PR12MB7524.namprd12.prod.outlook.com (2603:10b6:610:146::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.34; Mon, 16 Oct
- 2023 15:22:10 +0000
-Received: from DS3PEPF000099DE.namprd04.prod.outlook.com
- (2603:10b6:5:333:cafe::6e) by DM6PR03CA0100.outlook.office365.com
- (2603:10b6:5:333::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.35 via Frontend
- Transport; Mon, 16 Oct 2023 15:22:10 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS3PEPF000099DE.mail.protection.outlook.com (10.167.17.200) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.22 via Frontend Transport; Mon, 16 Oct 2023 15:22:10 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 16 Oct
- 2023 10:22:09 -0500
-Date:   Mon, 16 Oct 2023 10:21:48 -0500
-From:   Michael Roth <michael.roth@amd.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-CC:     Greg KH <gregkh@linuxfoundation.org>, <kvm@vger.kernel.org>,
-        <linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
-        <linux-crypto@vger.kernel.org>, <x86@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <jroedel@suse.de>, <thomas.lendacky@amd.com>,
-        <hpa@zytor.com>, <ardb@kernel.org>, <seanjc@google.com>,
-        <vkuznets@redhat.com>, <jmattson@google.com>, <luto@kernel.org>,
-        <dave.hansen@linux.intel.com>, <slp@redhat.com>,
-        <pgonda@google.com>, <peterz@infradead.org>,
-        <srinivas.pandruvada@linux.intel.com>, <rientjes@google.com>,
-        <dovmurik@linux.ibm.com>, <tobin@ibm.com>, <bp@alien8.de>,
-        <vbabka@suse.cz>, <kirill@shutemov.name>, <ak@linux.intel.com>,
-        <tony.luck@intel.com>,
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        <alpergun@google.com>, <jarkko@kernel.org>, <ashish.kalra@amd.com>,
-        <nikunj.dadhania@amd.com>, <pankaj.gupta@amd.com>,
-        <liam.merwick@oracle.com>, <zhi.a.wang@intel.com>,
-        <stable@vger.kernel.org>
-Subject: Re: [PATCH v10 01/50] KVM: SVM: INTERCEPT_RDTSCP is never
- intercepted anyway
-Message-ID: <20231016152148.4atqpxd3wnyfp7ri@amd.com>
-References: <20231016132819.1002933-1-michael.roth@amd.com>
- <20231016132819.1002933-2-michael.roth@amd.com>
- <2023101627-species-unscrew-2730@gregkh>
- <359d7c57-2a71-419d-b63f-4c5610f48b0f@redhat.com>
+        Mon, 16 Oct 2023 11:22:16 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21D48B4;
+        Mon, 16 Oct 2023 08:22:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79232C433C9;
+        Mon, 16 Oct 2023 15:22:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697469733;
+        bh=DowPxR62zPnMI4kLLinoy26En/26UZyXsXLcIQU2wuc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=IT+fImRQPlOYJhujnsfj2sgXczN1y/eLhEkCdVka5yvLsmoLpXAFOeLZA323k82r4
+         LKjE7pUNRXRN3PNlWylJClZv6rdXLo2KKMyfWU20LEQW1Yz/KNNKKZyJFxNZJo5nnC
+         7OlqaVZbNAyEXsd7/p5NMe69Z+N2SJ4erubRNTz/gX9hBiO0QgQz0LQ6KHo6r0PbcS
+         F2nj1ESGbj+JNTDtgRGqQva8Dgnp46ZWHOzayojG4VvUslIxI735LUwwovy5nQdYJw
+         t2s79YhK/Z8o31cA1qEnKUvSnfx/LHRucRQFMQzxEUdk3RsMCFhbM/kVbtmITguiJD
+         TwAanPPal3P/g==
+Date:   Mon, 16 Oct 2023 10:22:11 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Frank Li <Frank.li@nxp.com>
+Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Minghuan Lian <minghuan.Lian@nxp.com>,
+        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
+        <linux-pci@vger.kernel.org>,
+        "moderated list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>, imx@lists.linux.dev
+Subject: Re: [PATCH 2/3] PCI: layerscape: add suspend/resume for ls1021a
+Message-ID: <20231016152211.GA1209639@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <359d7c57-2a71-419d-b63f-4c5610f48b0f@redhat.com>
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099DE:EE_|CH3PR12MB7524:EE_
-X-MS-Office365-Filtering-Correlation-Id: 85fd791b-2960-4e09-dfcc-08dbce5baa83
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3+sJEFckqSoXgwRWjkt+1dxMUc65pQjuXZM3fafq1oWYhxYpFDxjIgjyxWhrkyKvOBt0/kASqfwJgZT5cWlhrCvlcHesHmxS3CRXTW3Kbfmt4DoQi88eXlPKnl/ECDhIz0X1F6cIcQm4QAVntM9X0+a1/+rQFMyLLX6CrwqrjcxzS5p4jKJBkrA8UKnd7nSvOYla8Wh2s8XCw5Y4ZI9ibmQGeZQwRPFO5laffkx4rAwKUEwox6JaGPHhN6d41fhQqTbVA/DXJo+UtU3ftabOyu10hI7MtqNGfyC7H18GO5pvPvrF1OhwzEir+W30e0fomerW4+M5nVbf0sLUHkb77RRUkMl5DKrZ76oTMJHEJge/YYmCidojbf0ojSXysm3weJ024OzFy30R8zB79ACULKWVFSVAvlRIepzxn4/F33HXhNX43ANJDQ2Gr+bSAJtoU7FrpmNoEVN0E2qSEHCUbXsJZ9xYJ7O1kY87s9KXu2wokoii/Q3jeGEgqZ2ph0MrI0rszSPxSH/0hkkzFTRzIKRKJibs3TaH6s7te10uvnLgDhUv7TzjDysPX3HgQvGpb9+Z5gXefOeCoiapfkXu/f0U0VXp+djJV92JFj5+TYLxWsTO5Sz57awtF93+qfs8HD0EFWALLdwq0PA3tJeGSJHGzDWrn13gBOT9Qb54OQClc08AudutMC6B22W3OdAZ/5feU8xSqHAdpcAXJ/CNjOgPMsYWQ6pXxwEhzsTL3vLKXY8NpR1igxrtee5YtT5L/cCyykXKtC48sNKyVkAHbg==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(136003)(376002)(346002)(230922051799003)(64100799003)(1800799009)(186009)(82310400011)(451199024)(46966006)(36840700001)(40470700004)(40460700003)(16526019)(336012)(1076003)(26005)(2616005)(426003)(6666004)(53546011)(36860700001)(47076005)(83380400001)(7406005)(44832011)(7416002)(41300700001)(5660300002)(8676002)(4326008)(2906002)(478600001)(8936002)(70586007)(54906003)(70206006)(6916009)(316002)(82740400003)(356005)(81166007)(86362001)(36756003)(40480700001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2023 15:22:10.0390
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 85fd791b-2960-4e09-dfcc-08dbce5baa83
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS3PEPF000099DE.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7524
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <ZS1Mhe9JOsY2JJER@lizhi-Precision-Tower-5810>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 05:14:38PM +0200, Paolo Bonzini wrote:
-> On 10/16/23 17:12, Greg KH wrote:
-> > On Mon, Oct 16, 2023 at 08:27:30AM -0500, Michael Roth wrote:
-> > > From: Paolo Bonzini <pbonzini@redhat.com>
-> > > 
-> > > svm_recalc_instruction_intercepts() is always called at least once
-> > > before the vCPU is started, so the setting or clearing of the RDTSCP
-> > > intercept can be dropped from the TSC_AUX virtualization support.
-> > > 
-> > > Extracted from a patch by Tom Lendacky.
-> > > 
-> > > Cc: stable@vger.kernel.org
-> > > Fixes: 296d5a17e793 ("KVM: SEV-ES: Use V_TSC_AUX if available instead of RDTSC/MSR_TSC_AUX intercepts")
-> > > Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> > > (cherry picked from commit e8d93d5d93f85949e7299be289c6e7e1154b2f78)
-> > > Signed-off-by: Michael Roth <michael.roth@amd.com>
-> > > ---
-> > >   arch/x86/kvm/svm/sev.c | 5 +----
-> > >   1 file changed, 1 insertion(+), 4 deletions(-)
+On Mon, Oct 16, 2023 at 10:45:25AM -0400, Frank Li wrote:
+> On Tue, Oct 10, 2023 at 06:02:36PM +0200, Lorenzo Pieralisi wrote:
+> > On Tue, Oct 10, 2023 at 10:20:12AM -0400, Frank Li wrote:
+
+> > > Ping
 > > 
-> > What stable tree(s) are you wanting this applied to (same for the others
-> > in this series)?  It's already in the 6.1.56 release, and the Fixes tag
-> > is for 5.19, so I don't see where it could be missing from?
+> > Read and follow please (and then ping us):
+> > https://lore.kernel.org/linux-pci/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com
 > 
-> I tink it's missing in the (destined for 6.7) tree that Michael is basing
-> this series on, so he's cherry picking it from Linus's tree.
-
-Yes, this and PATCH #2 are both prereqs that have already been applied
-upstream, and are only being included in this series because they are
-preqs for PATCH #3 which is new. Sorry for any confusion.
-
--Mike
-
+> Could you please help point which specic one was not follow aboved guide?
+> Then I can update my code. I think that's efficial communication method. I
+> think I have read it serial times. But not sure which one violate the
+> guide?
 > 
-> Paolo
-> 
+> @Bjorn Helgaas. How do you think so? 
+
+Since Lorenzo didn't point out anything specific in the patch itself,
+I think he was probably referring to the subject line and this advice:
+
+  - Follow the existing convention, i.e., run "git log --oneline
+    <file>" and make yours match in format, capitalization, and
+    sentence structure.  For example, native host bridge driver patch
+    titles look like this:
+
+      PCI: altera: Fix platform_get_irq() error handling
+      PCI: vmd: Remove IRQ affinity so we can allocate more IRQs
+      PCI: mediatek: Add MSI support for MT2712 and MT7622
+      PCI: rockchip: Remove IRQ domain if probe fails
+
+In this case, your subject line was:
+
+  PCI: layerscape: add suspend/resume for ls1021a
+
+The advice was to run this:
+
+  $ git log --oneline drivers/pci/controller/dwc/pci-layerscape.c
+  83c088148c8e PCI: Use PCI_HEADER_TYPE_* instead of literals
+  9fda4d09905d PCI: layerscape: Add power management support for ls1028a
+  277004d7a4a3 PCI: Remove unnecessary <linux/of_irq.h> includes
+  60b3c27fb9b9 PCI: dwc: Rename struct pcie_port to dw_pcie_rp
+  d23f0c11aca2 PCI: layerscape: Change to use the DWC common link-up check function
+  7007b745a508 PCI: layerscape: Convert to builtin_platform_driver()
+  60f5b73fa0f2 PCI: dwc: Remove unnecessary wrappers around dw_pcie_host_init()
+  b9ac0f9dc8ea PCI: dwc: Move dw_pcie_setup_rc() to DWC common code
+  f78f02638af5 PCI: dwc: Rework MSI initialization
+
+Note that these summaries are all complete sentences that start with a
+capital letter:
+
+  Use PCI_HEADER_TYPE_* instead of literals
+  Add power management support for ls1028a
+  Remove unnecessary <linux/of_irq.h> includes
+  ...
+
+So yours could be this:
+
+  PCI: layerscape: Add suspend/resume for ls1021a
+                   ^
+
+This is trivial, obviously.  But the uppercase/lowercase distinction
+carries information, and it's an unnecessary distraction to notice
+that "oh, this is different from the rest; is the difference
+important or should I ignore it?"
+
+Obviously Lorenzo *could* edit all your subject lines on your behalf,
+but it makes everybody's life easier if people look at the existing
+code and follow the style when making changes.
+
+E.g., write subject lines that are similar in style to previous ones,
+name local variables similarly to other functions, use line lengths
+consistent with the rest of the file, etc.  After applying a change,
+the file should look like a coherent whole; we should not be able to
+tell that this hunk was added later by somebody else.  This all helps
+make the code (and the git history) more readable and maintainable.
+
+Bjorn
