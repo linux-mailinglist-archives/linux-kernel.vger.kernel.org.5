@@ -2,155 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B18B7CA539
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 648E37CA555
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232649AbjJPKXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 06:23:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57838 "EHLO
+        id S230455AbjJPK2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 06:28:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232495AbjJPKXA (ORCPT
+        with ESMTP id S229666AbjJPK2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 06:23:00 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3537CEE;
-        Mon, 16 Oct 2023 03:22:59 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9b1ebc80d0aso672913366b.0;
-        Mon, 16 Oct 2023 03:22:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697451777; x=1698056577; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xfJWdslS3Yal/mqU3hhH87VKZdvRShl/Pe/cybkKHWg=;
-        b=TmcEhI906+Az0MSXct6z8ZR0aZPeGZfNxbs4iJARuzoErFLIpLJ9XLYHMDZ6XvhYD0
-         PBCSK/MAFUqHfmJWVnlSDGkNyM0St+6S95Bh/AsHJVd0FQaENIghm5zP4M1CmSc7XMZn
-         19Jp1Tob/ZQUkaF1nuwJiMXQlT2czT0+hmL5qWhX9dgjzAup77i+BK8OsZfi7UDI1wf7
-         9iTSYrUsD+ugvqBLblEQBUHJ95/RU412QaQdJaawB9tkSCPoOSvtRJhkGzA2xY7xW876
-         /T4QCJKN7wbXHL3KOpGPeuZA+FkhiBt2+DRKGAcIdCd7lN3JnAYSMRxZvhPDShfbJWZi
-         6YJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697451777; x=1698056577;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xfJWdslS3Yal/mqU3hhH87VKZdvRShl/Pe/cybkKHWg=;
-        b=LKQNn9iqE/9d2YYTzsKmj39EnTfKAdK8Sj/ereNEGOhBKJRL5B48ajEoiSczF0NRlr
-         6sm/Pt5eD8yMzAzzxKRPEO1LKT0bZHrNO+Apg+rMbN63xXS42lUCjT3skRLAg0CVrzmu
-         UmKKpE3X4DolnBHfVUTTPwcQlOgyYaJtTGgBboSbSVLuPfRp3fxaoxsBHEQomUJYMGxU
-         TI3ixmkzhm4IcSQ44rZKJME6vN5w/0D1Ql3x0rvGeFWf4JXe9Y2aJKldHYfDP1VUQfDf
-         KexZSlR5PS1etwU1VnZC+ppkO3HDlx2QJ2SedMPEeRAsufHRJ2OLkHRHxLANH6EUqaHo
-         0Uqg==
-X-Gm-Message-State: AOJu0Yx83xByEi2Zg28gXQS87DCkoVb+Yhs3IvWYUtiraYXmVUBjEsjJ
-        wo/NQhnzYjEr1lVZflKc0LE=
-X-Google-Smtp-Source: AGHT+IEKRQpew27HjOeGyjWHZXAUVaNqJuiqAmK9LZWwGrJlIJ3XHpuuO/jNnXt9DgwB+aS7MqbtNQ==
-X-Received: by 2002:a17:907:7ba1:b0:9c4:4b20:44b2 with SMTP id ne33-20020a1709077ba100b009c44b2044b2mr1761032ejc.23.1697451777533;
-        Mon, 16 Oct 2023 03:22:57 -0700 (PDT)
-Received: from skbuf ([188.26.57.160])
-        by smtp.gmail.com with ESMTPSA id og41-20020a1709071de900b009adce1c97ccsm3701040ejc.53.2023.10.16.03.22.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 03:22:57 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 13:22:54 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        UNGLinuxDriver@microchip.com,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next v3 7/7] net: dsa: microchip: do not shut down
- the switch if WoL is active
-Message-ID: <20231016102254.f7u7vrk52siqoihd@skbuf>
-References: <20231013122405.3745475-1-o.rempel@pengutronix.de>
- <20231013122405.3745475-8-o.rempel@pengutronix.de>
+        Mon, 16 Oct 2023 06:28:00 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD78A83;
+        Mon, 16 Oct 2023 03:27:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56797C433C8;
+        Mon, 16 Oct 2023 10:27:55 +0000 (UTC)
+Message-ID: <0b47f43b-1eba-48f3-b3a2-7b5ef441311a@xs4all.nl>
+Date:   Mon, 16 Oct 2023 12:27:53 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231013122405.3745475-8-o.rempel@pengutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v11 44/56] media: core: Report the maximum possible number
+ of buffers for the queue
+Content-Language: en-US, nl
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com
+References: <20231012114642.19040-1-benjamin.gaignard@collabora.com>
+ <20231012114642.19040-45-benjamin.gaignard@collabora.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20231012114642.19040-45-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 02:24:05PM +0200, Oleksij Rempel wrote:
-> For Wake on Lan we should not reconfigure, reset or power down the
-> switch on shut down sequence.
+On 12/10/2023 13:46, Benjamin Gaignard wrote:
+> Use one of the struct v4l2_create_buffers reserved bytes to report
+> the maximum possible number of buffers for the queue.
+> V4l2 framework set V4L2_BUF_CAP_SUPPORTS_SET_MAX_BUFS flags in queue
+
+Ah, that's not a correct cap name. That suggests that userspace can
+set the max number of buffers. Instead it should be:
+
+V4L2_BUF_CAP_SUPPORTS_MAX_NUM_BUFFERS
+
+indicating that userspace can use the max_num_buffers field.
+
+> capabilities so userland can know when the field is valid.
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> 
+> # Conflicts:
+> #	drivers/media/common/videobuf2/videobuf2-v4l2.c
 > ---
->  drivers/net/dsa/microchip/ksz9477_i2c.c |  3 +++
->  drivers/net/dsa/microchip/ksz_common.c  | 18 ++++++++++++++++++
->  drivers/net/dsa/microchip/ksz_common.h  |  2 ++
->  drivers/net/dsa/microchip/ksz_spi.c     |  3 +++
->  4 files changed, 26 insertions(+)
+>  .../userspace-api/media/v4l/vidioc-create-bufs.rst        | 8 ++++++--
+>  Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst  | 1 +
+>  drivers/media/common/videobuf2/videobuf2-v4l2.c           | 2 ++
+>  drivers/media/v4l2-core/v4l2-ioctl.c                      | 4 ++--
+>  include/uapi/linux/videodev2.h                            | 7 ++++++-
+>  5 files changed, 17 insertions(+), 5 deletions(-)
 > 
-> diff --git a/drivers/net/dsa/microchip/ksz9477_i2c.c b/drivers/net/dsa/microchip/ksz9477_i2c.c
-> index 2710afad4f3a..fe818742051c 100644
-> --- a/drivers/net/dsa/microchip/ksz9477_i2c.c
-> +++ b/drivers/net/dsa/microchip/ksz9477_i2c.c
-> @@ -66,6 +66,9 @@ static void ksz9477_i2c_shutdown(struct i2c_client *i2c)
->  	if (!dev)
->  		return;
+> diff --git a/Documentation/userspace-api/media/v4l/vidioc-create-bufs.rst b/Documentation/userspace-api/media/v4l/vidioc-create-bufs.rst
+> index a048a9f6b7b6..1a46549e7462 100644
+> --- a/Documentation/userspace-api/media/v4l/vidioc-create-bufs.rst
+> +++ b/Documentation/userspace-api/media/v4l/vidioc-create-bufs.rst
+> @@ -116,9 +116,13 @@ than the number requested.
+>        - ``flags``
+>        - Specifies additional buffer management attributes.
+>  	See :ref:`memory-flags`.
+> -
+>      * - __u32
+> -      - ``reserved``\ [6]
+> +      - ``max_buffers``
+
+Call it max_num_buffers. It clearly indicates that it is about the maximum
+number of buffers, and not e.g. maximum buffer size or some other buffer
+property. It is also consistent with the internal field name.
+
+> +      - If V4L2_BUF_CAP_SUPPORTS_SET_MAX_BUFS capability flag is set
+> +        this field indicate the maximum possible number of buffers
+> +        for this queue.
+> +    * - __u32
+> +      - ``reserved``\ [5]
+>        - A place holder for future extensions. Drivers and applications
+>  	must set the array to zero.
 >  
-> +	if (ksz_wol_is_active(dev))
-> +		return;
-> +
->  	if (dev->dev_ops->reset)
->  		dev->dev_ops->reset(dev);
-
-The rest of the code used to read:
-
-	dsa_switch_shutdown(dev->ds);
-
-	i2c_set_clientdata(i2c, NULL);
-}
-
-and that part is non-optional. Please only skip the dev->dev_ops->reset()
-call if ksz_wol_is_active().
-
->  static void ksz_set_xmii(struct ksz_device *dev, int port,
->  			 phy_interface_t interface)
+> diff --git a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
+> index 099fa6695167..0395187e1a5a 100644
+> --- a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
+> +++ b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
+> @@ -120,6 +120,7 @@ aborting or finishing any DMA in progress, an implicit
+>  .. _V4L2-BUF-CAP-SUPPORTS-ORPHANED-BUFS:
+>  .. _V4L2-BUF-CAP-SUPPORTS-M2M-HOLD-CAPTURE-BUF:
+>  .. _V4L2-BUF-CAP-SUPPORTS-MMAP-CACHE-HINTS:
+> +.. _V4L2-BUF-CAP-SUPPORTS-SET-MAX-BUFS:
+>  
+>  .. raw:: latex
+>  
+> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> index 799dd43b4aa9..5f4ea4485223 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> @@ -681,6 +681,7 @@ EXPORT_SYMBOL(vb2_querybuf);
+>  static void fill_buf_caps(struct vb2_queue *q, u32 *caps)
 >  {
-> diff --git a/drivers/net/dsa/microchip/ksz_common.h b/drivers/net/dsa/microchip/ksz_common.h
-> index 80679f38ee12..84b1eed8cd2a 100644
-> --- a/drivers/net/dsa/microchip/ksz_common.h
-> +++ b/drivers/net/dsa/microchip/ksz_common.h
-> @@ -397,6 +397,8 @@ bool ksz_get_gbit(struct ksz_device *dev, int port);
->  phy_interface_t ksz_get_xmii(struct ksz_device *dev, int port, bool gbit);
->  extern const struct ksz_chip_data ksz_switch_chips[];
+>  	*caps = V4L2_BUF_CAP_SUPPORTS_ORPHANED_BUFS;
+> +	*caps |= V4L2_BUF_CAP_SUPPORTS_SET_MAX_BUFS;
+>  	if (q->io_modes & VB2_MMAP)
+>  		*caps |= V4L2_BUF_CAP_SUPPORTS_MMAP;
+>  	if (q->io_modes & VB2_USERPTR)
+> @@ -763,6 +764,7 @@ int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create)
+>  	fill_buf_caps(q, &create->capabilities);
+>  	validate_memory_flags(q, create->memory, &create->flags);
+>  	create->index = vb2_get_num_buffers(q);
+> +	create->max_buffers = q->max_num_buffers;
+>  	if (create->count == 0)
+>  		return ret != -EBUSY ? ret : 0;
 >  
-> +bool ksz_wol_is_active(struct ksz_device *dev);
-> +
->  /* Common register access functions */
->  static inline struct regmap *ksz_regmap_8(struct ksz_device *dev)
+> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+> index 9b1de54ce379..da355355a869 100644
+> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
+> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+> @@ -483,9 +483,9 @@ static void v4l_print_create_buffers(const void *arg, bool write_only)
 >  {
-> diff --git a/drivers/net/dsa/microchip/ksz_spi.c b/drivers/net/dsa/microchip/ksz_spi.c
-> index 279338451621..c5d9c3d86ddb 100644
-> --- a/drivers/net/dsa/microchip/ksz_spi.c
-> +++ b/drivers/net/dsa/microchip/ksz_spi.c
-> @@ -114,6 +114,9 @@ static void ksz_spi_shutdown(struct spi_device *spi)
->  	if (!dev)
->  		return;
+>  	const struct v4l2_create_buffers *p = arg;
 >  
-> +	if (ksz_wol_is_active(dev))
-> +		return;
-> +
->  	if (dev->dev_ops->reset)
->  		dev->dev_ops->reset(dev);
+> -	pr_cont("index=%d, count=%d, memory=%s, capabilities=0x%08x, ",
+> +	pr_cont("index=%d, count=%d, memory=%s, capabilities=0x%08x, max buffers=%u",
+>  		p->index, p->count, prt_names(p->memory, v4l2_memory_names),
+> -		p->capabilities);
+> +		p->capabilities, p->max_buffers);
+>  	v4l_print_format(&p->format, write_only);
+>  }
+>  
+> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+> index c3d4e490ce7c..ef1402537395 100644
+> --- a/include/uapi/linux/videodev2.h
+> +++ b/include/uapi/linux/videodev2.h
+> @@ -1035,6 +1035,7 @@ struct v4l2_requestbuffers {
+>  #define V4L2_BUF_CAP_SUPPORTS_ORPHANED_BUFS		(1 << 4)
+>  #define V4L2_BUF_CAP_SUPPORTS_M2M_HOLD_CAPTURE_BUF	(1 << 5)
+>  #define V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS		(1 << 6)
+> +#define V4L2_BUF_CAP_SUPPORTS_SET_MAX_BUFS		(1 << 7)
+>  
+>  /**
+>   * struct v4l2_plane - plane info for multi-planar buffers
+> @@ -2605,6 +2606,9 @@ struct v4l2_dbg_chip_info {
+>   * @flags:	additional buffer management attributes (ignored unless the
+>   *		queue has V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS capability
+>   *		and configured for MMAP streaming I/O).
+> + * @max_buffers: if V4L2_BUF_CAP_SUPPORTS_SET_MAX_BUFS capability flag is set
+> + *		 this field indicate the maximum possible number of buffers
+> + *		 for this queue.
+>   * @reserved:	future extensions
+>   */
+>  struct v4l2_create_buffers {
+> @@ -2614,7 +2618,8 @@ struct v4l2_create_buffers {
+>  	struct v4l2_format	format;
+>  	__u32			capabilities;
+>  	__u32			flags;
+> -	__u32			reserved[6];
+> +	__u32			max_buffers;
+> +	__u32			reserved[5];
+>  };
+>  
+>  /*
 
-Same here. Maybe introducing a common ksz_switch_shutdown() would be
-appropriate.
+Regards,
+
+	Hans
