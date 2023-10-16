@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A377C9F03
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 07:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E3147C9F05
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 07:41:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231538AbjJPFkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 01:40:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33904 "EHLO
+        id S231638AbjJPFk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 01:40:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231584AbjJPFki (ORCPT
+        with ESMTP id S231584AbjJPFkx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 01:40:38 -0400
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D52DC;
-        Sun, 15 Oct 2023 22:40:36 -0700 (PDT)
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40776b20031so18727575e9.0;
-        Sun, 15 Oct 2023 22:40:36 -0700 (PDT)
+        Mon, 16 Oct 2023 01:40:53 -0400
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B2A310B;
+        Sun, 15 Oct 2023 22:40:52 -0700 (PDT)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40572aeb673so40339135e9.0;
+        Sun, 15 Oct 2023 22:40:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697434835; x=1698039635;
+        d=1e100.net; s=20230601; t=1697434851; x=1698039651;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Lvxh7blPpQl8Ls2FrZ+ZEh2PAmNfpQnToRW67eYrbgk=;
-        b=Ruf5lm6ugkQ+uXNIcxc/NrNdxy1DMAzY5vDkihuj4IE6WiA6NLaVuvQOR/3/DnyNEv
-         /i6Xcm9vO9xsGLZSI7+2wQZWaMPnJyi6lJ2VbKaLefRBbu7jvp9WkUl/3IV3iV1N/8qm
-         /mq+bHJtfoyMzQmf+dWNFhTVFKYie2pnS0w/gCDmi+c7XA39op0sVB7OE5lQ6QKqVo13
-         0fR7jYmvpRYhyuQp7MW4blv+9+/AaSk5Ru/MqDoGtBULbiiqOnKpGFTz8ZeMxrtSx1/j
-         MS2RdSp1P9lIAW+A2Njk2+WN2yaA+vEActSelhvjyEIh/1Ttbp6f8NcFXy0FYgUNwL/R
-         b5fg==
-X-Gm-Message-State: AOJu0YwhWhIdR+3MxMcSWJgW7q9SHC6g30M+lfz0yCx2hnsr8ZfC+Chr
-        VKJ6poYNyWGpEVRU0sLk/OU2Co91mGk=
-X-Google-Smtp-Source: AGHT+IGaWzt9QDXUKrchwXoWZxmfyRKZGPxwr3zyVpCR/43OBV6WTmniZr/2YdxWpgbz+aj55HFhBA==
-X-Received: by 2002:a1c:720a:0:b0:401:b6f6:d90c with SMTP id n10-20020a1c720a000000b00401b6f6d90cmr30365919wmc.35.1697434835127;
-        Sun, 15 Oct 2023 22:40:35 -0700 (PDT)
+        bh=0J8kWB5z3KoPxesmn7tJMNdv8c4QgBjH7p7U5syxR/M=;
+        b=RNo5h9zKkuc1tz8wDB5Vdxywzjs7RpaJjU7yKIwLRG5jXBTn2Uq8aehibhpUfdBhsG
+         y126pJ01SZoL+lVnNZ5Ypq87NW+P2ZiO3qhikNuqfMqjRX+cloZFF2qxACY9ivPipVbJ
+         PYKB8tTmYhtAHW+M+QNYl8StFcXt9gN9frDN84V3llOfYyFQG4a7f2LpPweKQkCjqa1Q
+         jcg6hBBwe3Q7PCIDunD2h6X1AuKr1XiO0FN5AjmTVoQiPKXS/AkmcIB/+NgsRqzobWd6
+         A4Kf9ABucpxgifRY8Fx7cLYH1mNbD89iSuHjMFMezSLcxJ7UwxBJK6j3T49aD9Xh6fi5
+         RDOg==
+X-Gm-Message-State: AOJu0Yz8D8MBYAVBlhLK5A9yGdLiUj6rV064DZHR/HeKy/2aYOLKjlzf
+        7HyKHHS/KA5Ubu/pBJ/fSCo=
+X-Google-Smtp-Source: AGHT+IEZOfM/k6eD8ezY8NBdkl/cWj5/rYUZreZKD5n6uDGD2d0eUU8m0dGQvYKyQPOJdaKNCgtBgA==
+X-Received: by 2002:a05:600c:1d9c:b0:406:8494:f684 with SMTP id p28-20020a05600c1d9c00b004068494f684mr27466013wms.23.1697434850817;
+        Sun, 15 Oct 2023 22:40:50 -0700 (PDT)
 Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id c10-20020a05600c0a4a00b0040770ec2c19sm6178269wmq.10.2023.10.15.22.40.34
+        by smtp.gmail.com with ESMTPSA id c10-20020a05600c0a4a00b0040770ec2c19sm6178269wmq.10.2023.10.15.22.40.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Oct 2023 22:40:34 -0700 (PDT)
-Message-ID: <54ded82d-b5ce-4fe8-9e16-efb4cf1b5478@kernel.org>
-Date:   Mon, 16 Oct 2023 07:40:34 +0200
+        Sun, 15 Oct 2023 22:40:50 -0700 (PDT)
+Message-ID: <4a1aedbb-0acf-4894-b48b-20eb54d4786f@kernel.org>
+Date:   Mon, 16 Oct 2023 07:40:50 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/7] tty: 8250: Add support for Brainboxes UP cards
+Subject: Re: [PATCH v3 4/7] tty: 8250: Add support for Intashield IS-100
 Content-Language: en-US
 To:     Cameron Williams <cang1@live.co.uk>, gregkh@linuxfoundation.org,
         linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
 References: <BBPatchesV3> <20231015171141.3309-1-cang1@live.co.uk>
- <DU0PR02MB7899E6443241E95DCF2D6535C4D0A@DU0PR02MB7899.eurprd02.prod.outlook.com>
+ <DU0PR02MB7899A8E98A24B0748FA74D59C4D0A@DU0PR02MB7899.eurprd02.prod.outlook.com>
 From:   Jiri Slaby <jirislaby@kernel.org>
 Autocrypt: addr=jirislaby@kernel.org; keydata=
  xsFNBE6S54YBEACzzjLwDUbU5elY4GTg/NdotjA0jyyJtYI86wdKraekbNE0bC4zV+ryvH4j
@@ -91,7 +91,7 @@ Autocrypt: addr=jirislaby@kernel.org; keydata=
  f/bIWIr0cqQmqQ33FgRhrG1+Xml6UXyJ2jExmlO8JljuOGeXYh6ZkIEyzqzffzBLXZCujlYQ
  DFXpyMNVJ2ZwPmX2mWEoYuaBU0JN7wM+/zWgOf2zRwhEuD3A2cO2PxoiIfyUEfB9SSmffaK/
  S4xXoB6wvGENZ85Hg37C7WDNdaAt6Xh2uQIly5grkgvWppkNy4ZHxE+jeNsU7tg=
-In-Reply-To: <DU0PR02MB7899E6443241E95DCF2D6535C4D0A@DU0PR02MB7899.eurprd02.prod.outlook.com>
+In-Reply-To: <DU0PR02MB7899A8E98A24B0748FA74D59C4D0A@DU0PR02MB7899.eurprd02.prod.outlook.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
@@ -105,12 +105,13 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 15. 10. 23, 19:10, Cameron Williams wrote:
-> Add support for the UP (powered PCI) range of
-> Brainboxes serial cards
+> Add support for the Intashield IS-100 1 port serial card.
 > 
 > Signed-off-by: Cameron Williams <cang1@live.co.uk>
 
 Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+
+
 
 
 -- 
