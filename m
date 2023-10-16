@@ -2,133 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 017767CA845
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D06A7CA848
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233412AbjJPMnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 08:43:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47874 "EHLO
+        id S233341AbjJPMon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 08:44:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233472AbjJPMnX (ORCPT
+        with ESMTP id S232094AbjJPMom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 08:43:23 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B684FED
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 05:43:21 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6b26a3163acso2205938b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 05:43:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1697460201; x=1698065001; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JipE9whaUpQHHx7Hfz3apWysXcawzThQ/KfBXZfjFOY=;
-        b=QuygNWtEEqSjM6S4JIcBdEpsT2cEk88ms5w2LnkqjO+EmaIl+6uTrtyHmKEi/imfbA
-         L9xIo8xBg9ossubCrFHVAtHEew+9aVAwaZUxOvnwj2QWosCe5CrEhWP/I7cxf7vEwRCK
-         3ZrKCXod1VAKIE7Dl/QEU3ZHHQNd2H1EQUMSQiwbKSH4kYU97Nd3hHeYWtet3BqQ+pdN
-         3HpFLIa+XnUpz3mfzCHc1GJNf34yM9u8DS/6bMSy1K3uKSbvaehSVIbembQ50IVda6Td
-         qj60RJrlnWg4+FxUGN4+Q+Mo3zrNvmUGeBAvzZrlqiEHwQE3ScxCyAi5sOMNjSIrdPj6
-         t3Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697460201; x=1698065001;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JipE9whaUpQHHx7Hfz3apWysXcawzThQ/KfBXZfjFOY=;
-        b=qB9KT5XJmTWTz6rYZp1zHysCCIVDmvYvj3zS59Yeo46DM80kFMCdb8F/M4nq3cfQZh
-         TgAtXWmC8mDDHE0IdqpTWq34+Oaqtau0lDypsyiuLXxBvzgCMxGHLueoPshPK+v47y8/
-         W/8swjbZzVoag20eD1v5RdyCUhLT6vBzPxLF2gjTcmhE8Z/I8a4vDxmOn975sZprJpTW
-         32YiVZvoGLCdn9Nkz6pRht8A28kEh/vAJIgK9sRklrxIRFq1eBHm48NPnKXLXzFzBbVg
-         Qc8Lbmtfc7jTZebdlpUB+LA2SS26Fn5x8PhvkaakI2CKU+uFfWklry36YvmtVekfQZTp
-         rVdQ==
-X-Gm-Message-State: AOJu0Yy585BuPmdvTuLK0ulNUBIjRiwytdVLSxmIusmk/m9lT9LRA78k
-        YMch2jQHHML4E6+mFiouohJ2kA==
-X-Google-Smtp-Source: AGHT+IFeq6Akf/V4v3w1mbuCkqoYrYeZ0+bp+1svHzm84NBLFinKNR6+SVrALJNs/7AMHkZJPWYJsw==
-X-Received: by 2002:a05:6a00:855:b0:6b4:c21c:8b56 with SMTP id q21-20020a056a00085500b006b4c21c8b56mr6606933pfk.23.1697460201060;
-        Mon, 16 Oct 2023 05:43:21 -0700 (PDT)
-Received: from localhost ([2400:4050:a840:1e00:78d2:b862:10a7:d486])
-        by smtp.gmail.com with UTF8SMTPSA id a18-20020aa78e92000000b006be5af77f06sm77763pfr.2.2023.10.16.05.43.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 05:43:20 -0700 (PDT)
-From:   Akihiko Odaki <akihiko.odaki@daynix.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, Nick Terrell <terrelln@fb.com>,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Akihiko Odaki <akihiko.odaki@daynix.com>
-Subject: [PATCH bpf-next v3] selftests/bpf: Use pkg-config to determine ld flags
-Date:   Mon, 16 Oct 2023 21:43:12 +0900
-Message-ID: <20231016124313.60220-1-akihiko.odaki@daynix.com>
-X-Mailer: git-send-email 2.42.0
+        Mon, 16 Oct 2023 08:44:42 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E22E4AB;
+        Mon, 16 Oct 2023 05:44:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=WGfVF4rKa9tphXNg08WHl8fCUau1DVCHJsK8Oj5k5Cw=; b=Br/5tNncm5hsnxILANemk280ic
+        hhv92KfIORb5qhhSP9UZ2OUibfaUYN0M8nr61NDGPRNSZD2JubYfdE0FTxOT4lLLSv5wurry11es7
+        sugANMtNpmIY6kLOKvCzk+IrhpWPxEHF3WXGWC1vHYMjmw1iFo+XANzMcAB0q45mLCWRYVymGaJhP
+        97zt8xx+4GTlFCAJJmYcdJal54UpPxP6xJh0uREer6D/rzme7yBc9HdAIbeIowoy+Jd4se5xkvh2e
+        mO2nddN5dhrDIKuN7KpbxSIRH/+TJwf6Qz2f4dAgZtpIIM9US5xsXPQnQpr/Atj0aNdYsQcjLT/RW
+        7oN4ehHA==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qsMxW-000EUb-RD; Mon, 16 Oct 2023 14:44:34 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qsMxW-0003Y3-FW; Mon, 16 Oct 2023 14:44:34 +0200
+Subject: Re: [PATCH v2 2/5] seccomp, bpf: Introduce SECCOMP_LOAD_FILTER
+ operation
+To:     Hengqi Chen <hengqi.chen@gmail.com>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     keescook@chromium.org, ast@kernel.org, andrii@kernel.org,
+        luto@amacapital.net, wad@chromium.org, alexyonghe@tencent.com
+References: <20231015232953.84836-1-hengqi.chen@gmail.com>
+ <20231015232953.84836-3-hengqi.chen@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <0df30939-1ba1-5703-58cc-54058fbb1df5@iogearbox.net>
+Date:   Mon, 16 Oct 2023 14:44:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20231015232953.84836-3-hengqi.chen@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27063/Mon Oct 16 10:02:17 2023)
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When linking statically, libraries may require other dependencies to be
-included to ld flags. In particular, libelf may require libzstd. Use
-pkg-config to determine such dependencies.
+On 10/16/23 1:29 AM, Hengqi Chen wrote:
+> This patch adds a new operation named SECCOMP_LOAD_FILTER.
+> It accepts a sock_fprog the same as SECCOMP_SET_MODE_FILTER
+> but only performs the loading process. If succeed, return a
+> new fd associated with the JITed BPF program (the filter).
+> The filter can then be pinned to bpffs using the returned
+> fd and reused for different processes. To distinguish the
+> filter from other BPF progs, BPF_PROG_TYPE_SECCOMP is added.
+> 
+> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+> ---
+>   include/uapi/linux/bpf.h       |  1 +
+>   include/uapi/linux/seccomp.h   |  1 +
+>   kernel/seccomp.c               | 43 ++++++++++++++++++++++++++++++++++
+>   tools/include/uapi/linux/bpf.h |  1 +
+>   4 files changed, 46 insertions(+)
+> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 7ba61b75bc0e..61c80ffb1724 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -995,6 +995,7 @@ enum bpf_prog_type {
+>   	BPF_PROG_TYPE_SK_LOOKUP,
+>   	BPF_PROG_TYPE_SYSCALL, /* a program that can execute syscalls */
+>   	BPF_PROG_TYPE_NETFILTER,
+> +	BPF_PROG_TYPE_SECCOMP,
 
-Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
----
-V2 -> V3: Added missing "echo".
-V1 -> V2: Implemented fallback, referring to HOSTPKG_CONFIG.
+Please don't extend UAPI surface if this is not reachable/usable from user
+space anyway.
 
- tools/testing/selftests/bpf/Makefile   | 4 +++-
- tools/testing/selftests/bpf/README.rst | 2 +-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+>   enum bpf_attach_type {
+> diff --git a/include/uapi/linux/seccomp.h b/include/uapi/linux/seccomp.h
+> index dbfc9b37fcae..ee2c83697810 100644
+> --- a/include/uapi/linux/seccomp.h
+> +++ b/include/uapi/linux/seccomp.h
+> @@ -16,6 +16,7 @@
+>   #define SECCOMP_SET_MODE_FILTER		1
+>   #define SECCOMP_GET_ACTION_AVAIL	2
+>   #define SECCOMP_GET_NOTIF_SIZES		3
+> +#define SECCOMP_LOAD_FILTER		4
+>   
+>   /* Valid flags for SECCOMP_SET_MODE_FILTER */
+>   #define SECCOMP_FILTER_FLAG_TSYNC		(1UL << 0)
+> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> index faf84fc892eb..c9f6a19f7a4e 100644
+> --- a/kernel/seccomp.c
+> +++ b/kernel/seccomp.c
+> @@ -17,6 +17,7 @@
+>   
+>   #include <linux/refcount.h>
+>   #include <linux/audit.h>
+> +#include <linux/bpf.h>
+>   #include <linux/compat.h>
+>   #include <linux/coredump.h>
+>   #include <linux/kmemleak.h>
+> @@ -25,6 +26,7 @@
+>   #include <linux/sched.h>
+>   #include <linux/sched/task_stack.h>
+>   #include <linux/seccomp.h>
+> +#include <linux/security.h>
+>   #include <linux/slab.h>
+>   #include <linux/syscalls.h>
+>   #include <linux/sysctl.h>
+> @@ -2032,12 +2034,48 @@ static long seccomp_set_mode_filter(unsigned int flags,
+>   	seccomp_filter_free(prepared);
+>   	return ret;
+>   }
+> +
+> +static long seccomp_load_filter(const char __user *filter)
+> +{
+> +	struct sock_fprog fprog;
+> +	struct bpf_prog *prog;
+> +	int ret;
+> +
+> +	ret = seccomp_copy_user_filter(filter, &fprog);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = seccomp_prepare_prog(&prog, &fprog);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = security_bpf_prog_alloc(prog->aux);
+> +	if (ret) {
+> +		bpf_prog_free(prog);
+> +		return ret;
+> +	}
+> +
+> +	prog->aux->user = get_current_user();
+> +	atomic64_set(&prog->aux->refcnt, 1);
+> +	prog->type = BPF_PROG_TYPE_SECCOMP;
+> +
+> +	ret = bpf_prog_new_fd(prog);
+> +	if (ret < 0)
+> +		bpf_prog_put(prog);
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index caede9b574cb..0b4ce6266bfc 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -4,6 +4,7 @@ include ../../../scripts/Makefile.arch
- include ../../../scripts/Makefile.include
- 
- CXX ?= $(CROSS_COMPILE)g++
-+PKG_CONFIG ?= $(CROSS_COMPILE)pkg-config
- 
- CURDIR := $(abspath .)
- TOOLSDIR := $(abspath ../../..)
-@@ -31,7 +32,8 @@ CFLAGS += -g -O0 -rdynamic -Wall -Werror $(GENFLAGS) $(SAN_CFLAGS)	\
- 	  -I$(CURDIR) -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)		\
- 	  -I$(TOOLSINCDIR) -I$(APIDIR) -I$(OUTPUT)
- LDFLAGS += $(SAN_LDFLAGS)
--LDLIBS += -lelf -lz -lrt -lpthread
-+LDLIBS += $(shell $(PKG_CONFIG) --libs libelf zlib || echo -lelf -lz)	\
-+	  -lrt -lpthread
- 
- ifneq ($(LLVM),)
- # Silence some warnings when compiled with clang
-diff --git a/tools/testing/selftests/bpf/README.rst b/tools/testing/selftests/bpf/README.rst
-index cb9b95702ac6..9af79c7a9b58 100644
---- a/tools/testing/selftests/bpf/README.rst
-+++ b/tools/testing/selftests/bpf/README.rst
-@@ -77,7 +77,7 @@ In case of linker errors when running selftests, try using static linking:
- 
- .. code-block:: console
- 
--  $ LDLIBS=-static vmtest.sh
-+  $ LDLIBS=-static PKG_CONFIG='pkg-config --static' vmtest.sh
- 
- .. note:: Some distros may not support static linking.
- 
--- 
-2.42.0
+My bigger concern here is that bpf_prog_new_fd() is only used by eBPF (not cBPF).
+
+Then you get an 'eBPF'-like fd back to user space which you can pass to various
+other bpf(2) commands like BPF_OBJ_GET_INFO_BY_FD etc which all have the assumption
+that this is a proper looking eBPF prog fd.
+
+There may be breakage/undefined behavior in subtle ways.
+
+I would suggest two potential alternatives :
+
+1) Build a seccomp-specific fd via anon_inode_getfd() so that BPF side does not
+    confuse it with bpf_prog_fops and therefore does not recognize it in bpf(2)
+    as a prog fd.
+
+2) Extend seccomp where proper eBPF could be supported.
+
+If option 2) is not realistic (where you would get this out of the box), then I
+think 1) could be however.
+
+> +	return ret;
+> +}
+>   #else
+>   static inline long seccomp_set_mode_filter(unsigned int flags,
+>   					   const char __user *filter)
+>   {
+>   	return -EINVAL;
+>   }
+> +
+> +static inline long seccomp_load_filter(const char __user *filter)
+> +{
+> +	return -EINVAL;
+> +}
+>   #endif
+>   
+>   static long seccomp_get_action_avail(const char __user *uaction)
+> @@ -2099,6 +2137,11 @@ static long do_seccomp(unsigned int op, unsigned int flags,
+>   			return -EINVAL;
+>   
+>   		return seccomp_get_notif_sizes(uargs);
+> +	case SECCOMP_LOAD_FILTER:
+> +		if (flags != 0)
+> +			return -EINVAL;
+> +
+> +		return seccomp_load_filter(uargs);
+>   	default:
+>   		return -EINVAL;
+>   	}
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index 7ba61b75bc0e..61c80ffb1724 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -995,6 +995,7 @@ enum bpf_prog_type {
+>   	BPF_PROG_TYPE_SK_LOOKUP,
+>   	BPF_PROG_TYPE_SYSCALL, /* a program that can execute syscalls */
+>   	BPF_PROG_TYPE_NETFILTER,
+> +	BPF_PROG_TYPE_SECCOMP,
+>   };
+>   
+>   enum bpf_attach_type {
+> 
 
