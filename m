@@ -2,45 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA53D7CB4C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C147E7CB4C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234327AbjJPUgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 16:36:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42080 "EHLO
+        id S234395AbjJPUgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 16:36:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234286AbjJPUgL (ORCPT
+        with ESMTP id S234308AbjJPUgS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 16:36:11 -0400
+        Mon, 16 Oct 2023 16:36:18 -0400
 Received: from tarta.nabijaczleweli.xyz (tarta.nabijaczleweli.xyz [139.28.40.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03DC6F5;
-        Mon, 16 Oct 2023 13:36:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D7119B;
+        Mon, 16 Oct 2023 13:36:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nabijaczleweli.xyz;
-        s=202305; t=1697488559;
-        bh=AbhKjmGcFK7a0VSiC3Uyp/FqZCpYv3ilKDudDv/H+vg=;
+        s=202305; t=1697488561;
+        bh=GkcnvUcVpOCe5CAn1FqxU2g9Mal7SpC32VFF9WWd900=;
         h=Date:From:Cc:Subject:References:In-Reply-To:From;
-        b=JVhaOxgfx7Mls92DNPEIWl9LDiGpLsqnYzvsIikxwThGSQkKph//v1LaOuQww4Jxs
-         834qWDOxzlJZ+w3TVxkD/3tpeLhRRRkdC5t+fKPiLNbdpSakUTP/vVweidpMvXV/4j
-         0dgVhKfiNO0loNffmpqR1pBfze63D4UcGtKLRhaXHvIaleLWumdMi26LAipBDTplCd
-         KoGZKJHXcsIS2oJ0sWeV3HjJFTTxZWaAUV7oKOnQzlIvejR/hrjok+SxPcRKCeZ5B9
-         6Q8ng29ppdCpc3MKP0JtRI6fKZVE+e7u4Q4ptnz/0LakLzVpNjA+kvLC1ImClyMSR4
-         RsIlD/R+AywNw==
+        b=C1tqd1IUfTUwcsTencFYK4ZinxRZ0QuZ2dZaoE4ARNPRyq9gW9vWpdT8w5ibyI9IO
+         r/FM5jS6XvZd94ewaBp3MmdkRCL01YlZZssVYT41RzBlOUuSwQmqV+o25Ai1oqf73g
+         whBgvc+ZQIe1ix40Z7jL4XY9W38v3Z3RqOdHieeMFPqJmKEnGktgj7gqgPU8eFoxmn
+         IucbGc2OFlHummOanDb/K4JlQDjB2Lrog6jG0eHqeDRjXWJq25q7gLNGnW7fC69FOK
+         cZaaNZmMMW+ARrhcgZtdy2gtZEiAZ/iNRHUwVcZRPlnB2HWc4b5sja3KX4egmRmtL5
+         DhT5tHfmd/Wsg==
 Received: from tarta.nabijaczleweli.xyz (unknown [192.168.1.250])
-        by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id 1CEFD10502;
-        Mon, 16 Oct 2023 22:35:59 +0200 (CEST)
-Date:   Mon, 16 Oct 2023 22:35:59 +0200
+        by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id 6EDA4FAF2;
+        Mon, 16 Oct 2023 22:36:01 +0200 (CEST)
+Date:   Mon, 16 Oct 2023 22:36:01 +0200
 From:   Ahelenia =?utf-8?Q?Ziemia=C5=84ska?= 
         <nabijaczleweli@nabijaczleweli.xyz>
 Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
         Christian Brauner <brauner@kernel.org>,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 10/11] splice: file->pipe: -EINVAL for non-regular files w/o
- FMODE_NOWAIT
-Message-ID: <5974c79b84c0b3aad566ff7c33b082f90ac5f17e.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
+Subject: [PATCH 11/11] splice: splice_to_socket: always request MSG_DONTWAIT
+Message-ID: <813e1805aa942862d300bec4d0563c5a466dce78.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
 References: <cover.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2kmqog55wiriurlb"
+        protocol="application/pgp-signature"; boundary="4tuu7g3cnuobllgt"
 Content-Disposition: inline
 In-Reply-To: <cover.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
 User-Agent: NeoMutt/20231006
@@ -56,69 +55,60 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---2kmqog55wiriurlb
+--4tuu7g3cnuobllgt
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-We request non-blocking I/O in the generic implementation, but some
-files =E2=80=92 ttys =E2=80=92 only check O_NONBLOCK. Refuse them here, les=
-t we
-risk sleeping with the pipe locked for indeterminate lengths of
-time.
+Otherwise we risk sleeping with the pipe locked for indeterminate
+lengths of time.
 
-This also masks inconsistent wake-ups (usually every second line)
-when splicing from ttys in icanon mode.
-
-Regular files don't /have/ a distinct O_NONBLOCK mode,
-because they always behave non-blockingly, and for them FMODE_NOWAIT is
-used in the purest sense of
-  /* File is capable of returning -EAGAIN if I/O will block */
-which is not set by the vast majority of filesystems,
-and it's not the semantic we want here.
-
-Link: https://lore.kernel.org/linux-fsdevel/qk6hjuam54khlaikf2ssom6custxf5i=
-s2ekkaequf4hvode3ls@zgf7j5j4ubvw/t/#u
 Signed-off-by: Ahelenia Ziemia=C5=84ska <nabijaczleweli@nabijaczleweli.xyz>
 ---
- fs/splice.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/splice.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/fs/splice.c b/fs/splice.c
-index 9d29664f23ee..81788bf7daa1 100644
+index 81788bf7daa1..d5885032f9a8 100644
 --- a/fs/splice.c
 +++ b/fs/splice.c
-@@ -1300,6 +1300,8 @@ long do_splice(struct file *in, loff_t *off_in, struc=
-t file *out,
- 	} else if (opipe) {
- 		if (off_out)
- 			return -ESPIPE;
-+		if (!((in->f_mode & FMODE_NOWAIT) || S_ISREG(in->f_inode->i_mode)))
-+			return -EINVAL;
- 		if (off_in) {
- 			if (!(in->f_mode & FMODE_PREAD))
- 				return -EINVAL;
+@@ -869,13 +869,11 @@ ssize_t splice_to_socket(struct pipe_inode_info *pipe=
+, struct file *out,
+ 		if (!bc)
+ 			break;
+=20
+-		msg.msg_flags =3D MSG_SPLICE_PAGES;
++		msg.msg_flags =3D MSG_SPLICE_PAGES | MSG_DONTWAIT;
+ 		if (flags & SPLICE_F_MORE)
+ 			msg.msg_flags |=3D MSG_MORE;
+ 		if (remain && pipe_occupancy(pipe->head, tail) > 0)
+ 			msg.msg_flags |=3D MSG_MORE;
+-		if (out->f_flags & O_NONBLOCK)
+-			msg.msg_flags |=3D MSG_DONTWAIT;
+=20
+ 		iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, bvec, bc,
+ 			      len - remain);
 --=20
 2.39.2
 
---2kmqog55wiriurlb
+--4tuu7g3cnuobllgt
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmUtnq4ACgkQvP0LAY0m
-WPEpAg/7BUL4idkMMgsWTcDBR1zcXKEzx7VaIGw4cMmWVQsbi6ni0c3xtMf87Pcp
-f2qkU4hKon41qzlJQy2xpQx9XzW4FpyCpLM4bf01vm3w7uoW/5NeF+bWUpljo0I7
-OT5UbgEEiWedBkiB2k2zNugZyz5arEmCb1pLOqXCfkjeQ6W0SfSOM1wFIe+FMes0
-B6GO6TOGW799SSLRO8bLXj8A40cHomCJAF7lbt1KLB1QwmSVHe/AgpdTBnx6SWek
-1JupLtJ1AQMBRzqs1WoFfPWK19oYPH+IQxS+AcHxamcF2HG9eoX9hVlThYyY2rUj
-0zbcyoFnl9yN7q7d3XD1f1TE74uYGY0Z3EgXRaPzT9YHLx24Ts5c34iWhUe3mTqM
-naBJkhDJYJebRvTbLHUX4CGyA4EsOYB2ibc3JzmG5MyCphU6jasEDnGqGqLAmb83
-f2Yl2M004ytC5unxrZ2zaQjp4WaF2v7NnShUtxWXjuDgzgi3MiN6VCp5YazjvhzX
-9psziTqbubn4OCrVp0misOQUQL7Q5+/m/YIcfDkBDAtaFfj3d/IHtyBbUla+5lYO
-9Jwk5RBsZtiFn0dQRhpAMMGpAdKkmNlBvfuDGqNsN0BD4ZEAt2/c2lOlIa/uzS6s
-E8R958JUoWmdYWprxxKIhN8UjvuB4SnV4glRyZTc+ngPYa57pKI=
-=39/H
+iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmUtnrEACgkQvP0LAY0m
+WPFaiw/+PYxS4XTUis48aaacFF5+UetcG8qMihZRg51JtDxWGPZp4BjlVL6pODGg
+tCRTmD6NsG5XDSeKHSKx0TRSmY+aBTtEmxlg0HvQ2etwqGBgbiZ7JR5PI8oxtr7G
+LbMaqhTeLfE8u62NfGYM37mCRLbQcVam0pjcKH/JlUzJhdh8lnzvrqTfzF4T1Mhb
+jM42T3cy0Qq0kG0BWI2mSH0cBuklkb+2I6SiEIRSjZsqQxawCxavVve5JAQYfCDZ
+eulH5r115uagSiKcZIec2qfywUv9ATUZ9Lr71j8U4YBsfIh4uo/kSjtZcrHCxmFc
+weUWiweg3VTHfdHmIUOMWZ3Yt4zwNzf6v3gK7e3glYBiFLYuAU/NqKlkWBJVGLJy
+wBEf0L/vf0z/DQJPOWgLpqSbVelNjgiA0U6kTggLy6QImCHaCKqti+0mj/JPGsWn
+P63QY/wyxtI/bmaMOhp8mNovo1tZnr9L9liXcLhkBA70eROu8OIyxlFT1Cm8ueKM
+NNL3vixRal7Lz+Le4YcbXzSbfkf9OGf5qVFzGL0UY4YmmlbaBB4WEeE8RwmPT3QA
+Zf+WFnYoCH7x+QKSUWmAXNgrHPADtk1qG5RCrMOuBcqEEq24vPC14vje+ZFxXLDq
+3xJPtVnNQrzwrTsDr5Syw3mg8tV2/yGAtg4DTkX+jxsgDmuFDVg=
+=alCd
 -----END PGP SIGNATURE-----
 
---2kmqog55wiriurlb--
+--4tuu7g3cnuobllgt--
