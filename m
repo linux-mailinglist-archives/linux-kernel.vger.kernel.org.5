@@ -2,364 +2,817 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9D97CB114
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 19:08:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6F87CB10A
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 19:07:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233978AbjJPRIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 13:08:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41408 "EHLO
+        id S234529AbjJPRHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 13:07:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234311AbjJPRHI (ORCPT
+        with ESMTP id S234803AbjJPRHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 13:07:08 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB1A1723;
-        Mon, 16 Oct 2023 10:05:09 -0700 (PDT)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39GGwvUq010391;
-        Mon, 16 Oct 2023 17:04:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=eYNtPpAXIv3+ePowRwk0pyx/dgViBAv7EAu9XTHAw3Q=;
- b=pA7vsxySJZPe2bBuP0DxVrNyut6FV9kp0rsDdfcTi3FAJnNTVaEpnIkA8hN0CF55dBc0
- mE5kwV2IzCpBVreMUuk8tyzowZtYztZN1a9t1stjqPkrzf2QXcl7p1WjcIF2cf/5Fq1u
- WcjQjznyXenEheXYihroA4QPC9T7U9aFFwy77xIb9nVQk2caH4Z99R5DKJuVugvHv847
- gJZ33opH5piibkglSC2u1K/VJMNSJLuL5T2YOywTQM14dDjqdrEm3CddJ4I5HL+huWa/
- O6aIteuiPbCo4M7i5S9fakV/1TYFefikjYtEl3Ktacwb5nI7puMO8f9MNrNKA3hfllFJ LA== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tqjynba3s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 16 Oct 2023 17:04:47 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39GGHGue015439;
-        Mon, 16 Oct 2023 17:04:46 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2169.outbound.protection.outlook.com [104.47.57.169])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3trg1dwf87-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 16 Oct 2023 17:04:46 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VlZ9Xs29YTVqnnCnAM+bjYmhdPHtHDUG6TJpI3eqgO/dWqrgzcQ17cHuPXWrqvUjhCF0pZVSWQjoqYXJFAZldC2NvbiMwXRMsQ5AfetZkGk/PIFzSUaPD1YZ0n+Obzg0tnsS77nTg7722zFi2ovCShR9iyFuZQlpWqDr7QWSA8+BM6g0mfYCP1ZQXME97vbIZ3ZdvBsqWP0bSMEYdj1sEjAuvx0bJKmHB7ZfkF1sRoQA12DK7TVStilVgJbArkUjNuqnuNQTAYy7V1ft4duScePBvDqWFIRFDQvgWA/F1N+qRHHO+tKt8/jgooi53gp1fwoutdPnawfri5t+UQy7Wg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eYNtPpAXIv3+ePowRwk0pyx/dgViBAv7EAu9XTHAw3Q=;
- b=E5W4K6EjgdLlbuEvIax5hL81C1TSUbFPEL5lriiradSRVx9XfxZ/XauLC3SG0NJv2fuf/2Wy+5RhiSzzpFP/IeUZnGZXVQQMMcn5b0apvrfzpMJRBcmVnK+166nYcOho4OZ1NpKHblQ1dj7UbT5V6dFfAYRWM72f+F+UR4OcKx+LeJjSJrzNWAJ0fEwLHFIKhHsCIlSom4+Vuf6URW4HAh7w00Decsnp8uHIsGyaDX7vjvikJUiKydbjTV3dA2MSCWw+5OkUELvqwcEd3HViU+L/B4Xml9DAXalvYA2fpFf7bugK+byr1Of5jyVSC9zOg2iKk0IL0DzffRiFl8uP3Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Mon, 16 Oct 2023 13:07:34 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2533610A0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 10:05:31 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-578d791dd91so3342227a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 10:05:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eYNtPpAXIv3+ePowRwk0pyx/dgViBAv7EAu9XTHAw3Q=;
- b=qcb8piaXVjxd7ql/PwerQGPidb4cNxBa6YkYFM8N28oABoNpRTmSokpUHUPxC8eBiwDCSgoMomfJdQ1Cn6Y/aESdvemyzhZZNeVBEBgn03bvXwhfd3ynlUjBJgO+eYPNC8GPe+lDf+0/5f942vRLWX8Oj9bkm1gi4HzrDkuTwQU=
-Received: from BYAPR10MB2663.namprd10.prod.outlook.com (2603:10b6:a02:a9::20)
- by CO1PR10MB4692.namprd10.prod.outlook.com (2603:10b6:303:99::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.35; Mon, 16 Oct
- 2023 17:04:43 +0000
-Received: from BYAPR10MB2663.namprd10.prod.outlook.com
- ([fe80::8e27:f49:9cc3:b5af]) by BYAPR10MB2663.namprd10.prod.outlook.com
- ([fe80::8e27:f49:9cc3:b5af%7]) with mapi id 15.20.6886.034; Mon, 16 Oct 2023
- 17:04:43 +0000
-Message-ID: <e9e41bc1-952a-bbf7-0228-e580defbdc3f@oracle.com>
-Date:   Mon, 16 Oct 2023 10:04:40 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH RFC 1/1] KVM: x86: add param to update master clock
- periodically
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Joe Jin <joe.jin@oracle.com>, x86@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com
-References: <ZRtl94_rIif3GRpu@google.com>
- <9975969725a64c2ba2b398244dba3437bff5154e.camel@infradead.org>
- <ZRysGAgk6W1bpXdl@google.com>
- <d6dc1242ff731cf0f2826760816081674ade9ff9.camel@infradead.org>
- <ZR2pwdZtO3WLCwjj@google.com>
- <34057852-f6c0-d6d5-261f-bbb5fa056425@oracle.com>
- <ZSXqZOgLYkwLRWLO@google.com>
- <8f3493ca4c0e726d5c3876bb7dd2cfc432d9deaa.camel@infradead.org>
- <ZSmHcECyt5PdZyIZ@google.com>
- <cf2b22fc-78f5-dfb9-f0e6-5c4059a970a2@oracle.com>
- <ZSnSNVankCAlHIhI@google.com>
- <BD4C4E71-C743-4B79-93CA-0F3AC5423412@infradead.org>
- <993cc7f9-a134-8086-3410-b915fe5db7a5@oracle.com>
- <03afed7eb3c1e5f4b2b8ecfd8616ae5c6f1819e9.camel@infradead.org>
-Content-Language: en-US
-From:   Dongli Zhang <dongli.zhang@oracle.com>
-In-Reply-To: <03afed7eb3c1e5f4b2b8ecfd8616ae5c6f1819e9.camel@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SJ0PR05CA0085.namprd05.prod.outlook.com
- (2603:10b6:a03:332::30) To BYAPR10MB2663.namprd10.prod.outlook.com
- (2603:10b6:a02:a9::20)
+        d=bytedance.com; s=google; t=1697475930; x=1698080730; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GLPJou0UKpESnyoBZ4ZyJI+W3F/ksYCrrjG6WJpf1iI=;
+        b=MYzC9altM+Va9PaY59Jz1T/dc+ZriazAQMBgDhGtgpXmGPokqkJ0TFGUHfjkGdbkf5
+         KhLi+p3Tq6OeRscJw2al9F+zqaKquQUOS8gojkgQAx8KV40t/Q78uiQheZ0/Ax2kWafj
+         MfyKAHbXN1byO2yVi2bJIguP6SujODkxiOQUug7sklrRdmbCLm2VxFNyOb8koypZ+9ws
+         Rq3/kdAHbEdksX8NjAOtbbymKFGQEM8r0akVMAyWhKBHkDqouGFVAn4HJUCbN/MQpn2F
+         B4HL04SRxBNnpNunnFDNBdYpsvyzIEAhd7/Xc3vdgX4wgKEVq+o5odmL+dBXX80ix+8y
+         tkTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697475930; x=1698080730;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GLPJou0UKpESnyoBZ4ZyJI+W3F/ksYCrrjG6WJpf1iI=;
+        b=ehf00mzjlFiFZzL1Zav5BO+k6KprUjQ63Cq/Vl5N2ahxz0+rhMwMB6opyzgwjWnZRp
+         h0v0SZCHBhxW4Yfu6Eie5JVNo3E+hjrwx2QyUSDe73gB3a1100PAJw0R52OSRgaUTvDy
+         iO8kyX1TJx2sdm1AVVB/4dot2Xwm1/jEp2bWf7XYO+dON1ehF+6uc4EZTLjPIIg78mjb
+         0BnNLMkDj8d92vxdXYWqZPVWMPkZ6+Uq5tnRDT4MByzs5WOeOC3rZqgNzEX1XGlCW+Dj
+         O5S0xUApq23Xc7HD10OeRTioVnqQCHRu6xF9S/nOHnfBtimzYkIDuEKUSiA711Fu5fkz
+         gnhg==
+X-Gm-Message-State: AOJu0YwlDfg0eF/fVyOTNwyRYLqiQCYFTGxQO3By9V9iIyB976Srplcm
+        H7yLW3WTxJyr3leG+t6DUWUOog==
+X-Google-Smtp-Source: AGHT+IEsSyBdgGPhSwBnjqp0UlS+NbE3PrUUGyN0/FO8H7pfuanIgV3vgb2y2VPtIpSgDKvnPJmo/g==
+X-Received: by 2002:a05:6a21:197:b0:15e:f2a1:dae with SMTP id le23-20020a056a21019700b0015ef2a10daemr12169143pzb.27.1697475930381;
+        Mon, 16 Oct 2023 10:05:30 -0700 (PDT)
+Received: from [10.254.87.163] ([139.177.225.253])
+        by smtp.gmail.com with ESMTPSA id x12-20020aa78f0c000000b006906aaf1e4dsm129365pfr.150.2023.10.16.10.05.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Oct 2023 10:05:29 -0700 (PDT)
+Message-ID: <3d0136b8-5d7d-d017-9f59-546d8464d82a@bytedance.com>
+Date:   Tue, 17 Oct 2023 01:05:21 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR10MB2663:EE_|CO1PR10MB4692:EE_
-X-MS-Office365-Filtering-Correlation-Id: 788a4b04-1474-4b6d-3a14-08dbce69fe1b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /G5LqcmcGZY6n3dAEgeUmgQ8NUn7IAdxoe7YrgsgEDCDaekNjQ1chtHnKYgXx+rWUgy9/4DGoyFokxoORxrEQOamnzz5wkPF1ehYXXkylhFoF8VFOMyzjZs29CaYUjbXNc55tYxabPzqmNGCt0kacmWDQv9lotouUwa/f9Cbxv/oAF1jhzmOyS2mtJR/Zlw3eAoUgcqNkjpi7I66DlZbd4uNBlNz9hNZVfwaHWPGWWCd7+xP7NC6qIG7M/hElHeFUuYQAZ+L8U9MOi4+S0hy6Uaoz1BUZXWPFK7TT3fWdezaZE9Zx2Bubnv//2ef/7+/gN5zri2faUUpwoBufkpPk0OZNgu6EUNQUFZF0xQD7foVqJZJYXeX6XR3VeXi4xYcXd8KwoaSndqrCHwRTzhkey79f43KLExVJg7wQDrWSUPWxogjIdyDruKiv6LG3jEDggLJ8Gry0+4leA3PgF0Wy7/tUxrIHhXP8Sa5xQRTRaV7PZP5LO3n1zyF2WqzS6bzp8GtCqHsxZ6PSiUGoR516qHK/jN82M4OQUfYbrOe5Fem/mZ9D/WWbY9lUzrX6X7F7gycptAYs47mY2mCPE9G8cVhUh6k45IGCPdCKXnnGcqWqwr5IIp3/vhAmQx0p8qUMhYtz1AWT1C4jMsOUF1XJiQjHwPpRBFtsmmsy9Up1nGAeW/HV3HhdFDW9ckncZgj
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2663.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(366004)(376002)(39860400002)(396003)(230922051799003)(451199024)(1800799009)(64100799003)(186009)(6506007)(53546011)(5660300002)(44832011)(66899024)(2906002)(26005)(36756003)(4001150100001)(2616005)(83380400001)(15650500001)(38100700002)(86362001)(31696002)(6512007)(7416002)(6486002)(966005)(31686004)(41300700001)(8936002)(66476007)(316002)(110136005)(66946007)(66556008)(8676002)(4326008)(478600001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cXk3RVh6d3daZzByNGZQL2xLMzhYdW5QazMxZENGRlZqU2N1Q1d5a244S3Vq?=
- =?utf-8?B?SFp4bGtMRVV3VGxncFBseEo2R2FodDJqWWZMK3JLd3JSa20xRlJJaTg1T2I5?=
- =?utf-8?B?MHFnUm5hcW8wM3VOTE5tL0NvUXhNUW5LemdXRFhUOUlrbys3Q21TWFZtRVQ1?=
- =?utf-8?B?NFJ5SHJ5SDB3L3V0UDhCWGJTSVRzNEZZRGtENHR1VGltVU0vd251OU4xSjFM?=
- =?utf-8?B?WmdPRWtzZU5kMHFiK0t0cy9aeGFZRlVMZHo2MCtJaVBiVVpYbkhJanhhMDJ3?=
- =?utf-8?B?QWRGc090WDM3dVVhQ09wdjdjaGp4bHAycEtQaWpZK2Q3Ylk1bHJEMzI4Snc3?=
- =?utf-8?B?VCtua2t2b3BaYTBpWS8yd1VCQk5pekozRWdZdURUVnBwMFlsaVVmellzWFBE?=
- =?utf-8?B?S2xueG1UMUJPZVdtWWMrcCs0cE9sS1FvVDNmdm5pZk94c0QyMmUzWjhmdFkv?=
- =?utf-8?B?OUtRdVZ5WTNiZkNoTUNYYWUyVlhPYjFxaDl4UVlWS2RKTWUyQlJrSFF5ODRo?=
- =?utf-8?B?bEx2T2xyNk13akwzN04wcWtBc0twajZPa0YvMS81aHEvdnFrcHVmQ0xrYUY5?=
- =?utf-8?B?QzJLV3RBdWg1SG1LV1FTTDIrRGhoWDJjbFFOVGtBOHlERDk3VGZWMXNreDVY?=
- =?utf-8?B?UUZaRmtXMStyUzgvVytqVU9PWko4bmtFOTU0ckNmdlZpN3lvbEdnREpOM2pO?=
- =?utf-8?B?VTdOaUhhUFRaL1BWcFh2UUhoZHYwRUxtbG9TcEE4T3RHNGFFWjBFWkQ4U0dP?=
- =?utf-8?B?Z2h3RW9oOXNtbjFIVHlScWVjZmt6SkZ4d3Q4a1JjWlhObmdIVnpGTEM2WEha?=
- =?utf-8?B?Tk1kM1p3U1g0WXpKZlAvbXA0eTR1ZXNTakRBS25Ka3hYb0hvOE5pSmdWdWUv?=
- =?utf-8?B?OHU3YkxTaWZYbU5UQ3lEcWMrK1FWVFZXV3Q0Zm5HeXN6Rm1MTG44WTlLRC9K?=
- =?utf-8?B?djZSRDNzenR1dEw5MGw4OE5YWTFSMkdVUnNqSHlEcnQ0OExzN1Z1YStPdndQ?=
- =?utf-8?B?QXB3Ylo1Qi90WDVKMmVBamNiSVNnRWwvTW03a3ZOaHpUeUtRZDFSZGJiaVpM?=
- =?utf-8?B?eGl2cUJuL2xkM213bUxEUUtFWjR2OVJKN2xLTER1TE03UEdBU093WHpvbEQ5?=
- =?utf-8?B?d3hlMGZObDdhanpQcHd5VFA1MUg0UUZ5Tk4wbnpuM3UyUXp1U3UxZGlETkw3?=
- =?utf-8?B?WVFvK29xR3FRb1BPRnhIREI3QXVMKzFvaW5tdTNkN2FiSldLY01kK2dXZU5i?=
- =?utf-8?B?SHFMMlpZeGZDT3prMnF5YTNzU3JUeXdLaWVYbWY4ZzVBS3I1dzFMd28yNEQ3?=
- =?utf-8?B?T2RzWjdpbWlKSGRyNmhacFVXRU5XamdjWms4eU05UnRzYzkvbG8yYzFWeXFs?=
- =?utf-8?B?R25YRW5CMENpQkNDOWVTR2NBMDBzaVcyMWlmRGVTRldyaDNxajFod0JQUW5R?=
- =?utf-8?B?Ym40ZGhsaWxEZnJUVWdRbVMzUnN1VTgyUlMzcTI2NVJEUm9ock5GTHUybHJu?=
- =?utf-8?B?U1Y3WDJSVkdNMDBUSEpnY2xidTdFbjNnSHR5MHRqWDFZZzZKdnMvR1NFbzh6?=
- =?utf-8?B?NHpoSE4rOTNzMGkzSkhpMlA2V016QXlrbGQzclZWMDJqalU2eWIrS1dwZy9Z?=
- =?utf-8?B?YjBIbit6REZ0TXdLZFJmNTBTd2dRdkpYNTNBb3N3SkJFb21Qd2loWnc0WlRp?=
- =?utf-8?B?WUcvdTQxOExSRHZGb0cwT0E0ZmxjRkQvR28zSGZ1aXJCWGZCTk5yODVlekpl?=
- =?utf-8?B?NkI0NlA5aVpjL3FSaHNSSEpuQ1ArQUZ6NnJxQkhjK0hHaWdoZFJtWnBuZlli?=
- =?utf-8?B?ZXF6TFZRZTRDWmErV3FqUmdWOE1BUnFtLzVJM0RNWGdUdW9PQjhaZTZjdmdM?=
- =?utf-8?B?VnJ6Y0p0am1aNS85bXVyaUszVjU5RXRINjh2Zm40VHlkNS9rRmtEQVQ4cEdT?=
- =?utf-8?B?NlJHTWRpUDFhVHpSTG5qbzdtWVN2Vko4R096QTB5MG1QeGQ0K2YvSVFWUHRq?=
- =?utf-8?B?VzhUdlAyZXJSMXZkcWpqbzBiVzlUamR6RE9KeDJNK29HY1lTbTZmbVFqMDNR?=
- =?utf-8?B?ckNIczJZcGJaTHUxSnVCU3FxaTBZT1ZuY3FCSVNQOFJWclhBNVJYUmpodHc0?=
- =?utf-8?Q?0d9Ao7XuO5vRZWABYiVJLr8uj?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?OTZ2ODI0SGxQVmxzdkhkYU94VGkwZWJCaXRSanB5N00xTGRsbi9WUURJUUFm?=
- =?utf-8?B?MHl0aDJGeDlLWEl4eUJ3VTEybno4VjcvVkVaQS84bjlJSk4rUEZEV1dpYUtQ?=
- =?utf-8?B?dWdpcCtLcXVkK1VQcjU3REZNSjE1dnh2S2tCMDlMR2pJNUIrcWNoTVVXZTBH?=
- =?utf-8?B?WVVSSmduWFZQOFJJY2VFc2dsSi82WkxKUlFSODhCdmNvTVdhcU5WWTlza0Zn?=
- =?utf-8?B?QzNKaml5YnFrRkxiRS93bEFISmFkaldNRlVDWWdQVytRSGhobk0zbXFCZWJG?=
- =?utf-8?B?RXcwY0JyVmVjb3V5MWFEWXdITEI1MGZmQ1A2THVtRVFwYzhJUU4rVTVLc0RZ?=
- =?utf-8?B?cTdaeW1aUGF1bkVtckdMMTlSeUsxN0lrUFBkME0vamRxd1lac2VmTU1UYXov?=
- =?utf-8?B?YmRsNkVxUkVkVXpwUWQydWVsN0h0clZhYld4OGRNWDJReGtHTTIvVm14U3VX?=
- =?utf-8?B?UGYwWWptYXVJWUFiekV5RnpLVUw0N3VMR2EvRVBwVHIwQmladCt6S2JSOFg2?=
- =?utf-8?B?NkNpK1lwczUybjRwdTNsNWlEQzM0SEZmUFJSZCtyV2hBdUZrMEdVUkY3MURQ?=
- =?utf-8?B?WEQwV2c3Z0xIb1gvczhQR1B6eGNVanRmRXJ1MHpzbFVpdW9qeUN3WWp6ZXpH?=
- =?utf-8?B?U1pPT1hEZy9HMGZoYXg3Y2tyMTJsUGEzYkZ6OGd3amFwUjMxSU4yUlNKNHlk?=
- =?utf-8?B?QUZpRXlRMHZpaWMxZUN4a3JVU2NDdExqNGtHS3cwUkViMnQ5VUZSNE1zUHhE?=
- =?utf-8?B?OURVcFBIYTZzUHBnMzhhdGFoSmpoOC8xaE8rNjJqbGtvaXVUczR2dDROU3Z4?=
- =?utf-8?B?bzc1cnIzejg2VFZSSjRXTGZpckEyYnNtVTVTV2VqTFNaYzlCZGp3Mk5Uam91?=
- =?utf-8?B?c3ZpakNFdlpPeWlPUHlQcWFNaFdzV2tWWmVrc2ZaTFdBNU43VzBZWmZ3MnFC?=
- =?utf-8?B?THhJT2l2U0lBb3RFcmU3SkNSQlQ5YTJtZnRiSzlEc1JCanBESDBJOTYzUzFj?=
- =?utf-8?B?YlFjL2tiZVpNelBEbitRZmtaQ01QMnlJZEF3ajNDcGVxRTJqSDFPaVRPWm44?=
- =?utf-8?B?K3F6Mm9wMnE1WVlCbFZGenN6M3Z6TTl2Mk1rSlRHTVNqRHg5ZkhEbjhxVGxL?=
- =?utf-8?B?SFFUY0J4d3NjQjhGQmxJZkRManBLam12amlsNnNVekZCZTJQK09hUTVPZFB4?=
- =?utf-8?B?cVB2K05rejhzckFSS0J0bkhJd0lrS1RHSjZvYW1zV1pKQ2k2UCs5RHoxcFVi?=
- =?utf-8?B?VE9aQ1JHamkvNjczUzNPYVBnZTJJYTVlZ1ZUVm45QXpYRzVhdjNCcC9Pb0Zu?=
- =?utf-8?Q?Ix16g2PA98gucVG8cUC2CiloYJQoIpkgQ6?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 788a4b04-1474-4b6d-3a14-08dbce69fe1b
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2663.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2023 17:04:43.4390
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: v8wZ7z54N3zci6PYWklQ/6D3DRIbuoBgAJaiqFvbK9LubnKDRVOZ0nTgWJW/0Q3ojgE+66QbJ9Ce5ltnNdP2hw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4692
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-16_10,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 suspectscore=0
- mlxscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310160148
-X-Proofpoint-GUID: PORrjgcc_okSK_5cKPV7ikuebeADxiup
-X-Proofpoint-ORIG-GUID: PORrjgcc_okSK_5cKPV7ikuebeADxiup
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v10 1/5] lib: objpool added: ring-array based lockless
+ MPMC
+Content-Language: en-US
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     linux-trace-kernel@vger.kernel.org, davem@davemloft.net,
+        anil.s.keshavamurthy@intel.com, naveen.n.rao@linux.ibm.com,
+        rostedt@goodmis.org, peterz@infradead.org,
+        akpm@linux-foundation.org, sander@svanheule.net,
+        ebiggers@google.com, dan.j.williams@intel.com, jpoimboe@kernel.org,
+        linux-kernel@vger.kernel.org, lkp@intel.com, mattwu@163.com
+References: <20231015053251.707442-1-wuqiang.matt@bytedance.com>
+ <20231015053251.707442-2-wuqiang.matt@bytedance.com>
+ <20231016004356.b5f3f815cb8d7c0994934332@kernel.org>
+ <1516f7d1-e11b-3244-76b9-e6ddafc29a32@bytedance.com>
+ <20231016082659.6ca94a5dff368783698753f9@kernel.org>
+ <7758687f-06c1-d9b2-077a-34e79925a339@bytedance.com>
+ <20231016211837.b6d425d8ed760bb3306910ae@kernel.org>
+From:   "wuqiang.matt" <wuqiang.matt@bytedance.com>
+In-Reply-To: <20231016211837.b6d425d8ed760bb3306910ae@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+Hello Masami,
 
-On 10/16/23 09:25, David Woodhouse wrote:
-> On Mon, 2023-10-16 at 08:47 -0700, Dongli Zhang wrote:
->> Hi David and Sean,
->>
->> On 10/14/23 02:49, David Woodhouse wrote:
+Here's the updated version for your review.
+
+---
+  include/linux/objpool.h | 176 +++++++++++++++++++++++++
+  lib/Makefile            |   2 +-
+  lib/objpool.c           | 286 ++++++++++++++++++++++++++++++++++++++++
+  3 files changed, 463 insertions(+), 1 deletion(-)
+  create mode 100644 include/linux/objpool.h
+  create mode 100644 lib/objpool.c
+
+diff --git a/include/linux/objpool.h b/include/linux/objpool.h
+new file mode 100644
+index 000000000000..4df18405420a
+--- /dev/null
++++ b/include/linux/objpool.h
+@@ -0,0 +1,181 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef _LINUX_OBJPOOL_H
++#define _LINUX_OBJPOOL_H
++
++#include <linux/types.h>
++#include <linux/refcount.h>
++
++/*
++ * objpool: ring-array based lockless MPMC queue
++ *
++ * Copyright: wuqiang.matt@bytedance.com,mhiramat@kernel.org
++ *
++ * objpool is a scalable implementation of high performance queue for
++ * object allocation and reclamation, such as kretprobe instances.
++ *
++ * With leveraging percpu ring-array to mitigate hot spots of memory
++ * contention, it delivers near-linear scalability for high parallel
++ * scenarios. The objpool is best suited for the following cases:
++ * 1) Memory allocation or reclamation are prohibited or too expensive
++ * 2) Consumers are of different priorities, such as irqs and threads
++ *
++ * Limitations:
++ * 1) Maximum objects (capacity) is fixed after objpool creation
++ * 2) All pre-allocated objects are managed in percpu ring array,
++ *    which consumes more memory than linked lists
++ */
++
++/**
++ * struct objpool_slot - percpu ring array of objpool
++ * @head: head sequence of the local ring array (to retrieve at)
++ * @tail: tail sequence of the local ring array (to append at)
++ * @last: the last sequence number marked as ready for retrieve
++ * @mask: bits mask for modulo capacity to compute array indexes
++ * @entries: object entries on this slot
++ *
++ * Represents a cpu-local array-based ring buffer, its size is specialized
++ * during initialization of object pool. The percpu objpool node is to be
++ * allocated from local memory for NUMA system, and to be kept compact in
++ * continuous memory: CPU assigned number of objects are stored just after
++ * the body of objpool_node.
++ *
++ * Real size of the ring array is far too smaller than the value range of
++ * head and tail, typed as uint32_t: [0, 2^32), so only lower bits (mask)
++ * of head and tail are used as the actual position in the ring array. In
++ * general the ring array is acting like a small sliding window, which is
++ * always moving forward in the loop of [0, 2^32).
++ */
++struct objpool_slot {
++	uint32_t            head;
++	uint32_t            tail;
++	uint32_t            last;
++	uint32_t            mask;
++	void               *entries[];
++} __packed;
++
++struct objpool_head;
++
++/*
++ * caller-specified callback for object initial setup, it's only called
++ * once for each object (just after the memory allocation of the object)
++ */
++typedef int (*objpool_init_obj_cb)(void *obj, void *context);
++
++/* caller-specified cleanup callback for objpool destruction */
++typedef int (*objpool_fini_cb)(struct objpool_head *head, void *context);
++
++/**
++ * struct objpool_head - object pooling metadata
++ * @obj_size:   object size, aligned to sizeof(void *)
++ * @nr_objs:    total objs (to be pre-allocated with objpool)
++ * @nr_cpus:    local copy of nr_cpu_ids
++ * @capacity:   max objs can be managed by one objpool_slot
++ * @gfp:        gfp flags for kmalloc & vmalloc
++ * @ref:        refcount of objpool
++ * @flags:      flags for objpool management
++ * @cpu_slots:  pointer to the array of objpool_slot
++ * @release:    resource cleanup callback
++ * @context:    caller-provided context
++ */
++struct objpool_head {
++	int                     obj_size;
++	int                     nr_objs;
++	int                     nr_cpus;
++	int                     capacity;
++	gfp_t                   gfp;
++	refcount_t              ref;
++	unsigned long           flags;
++	struct objpool_slot   **cpu_slots;
++	objpool_fini_cb         release;
++	void                   *context;
++};
++
++#define OBJPOOL_NR_OBJECT_MAX	(1UL << 24) /* maximum numbers of total objects */
++#define OBJPOOL_OBJECT_SIZE_MAX	(1UL << 16) /* maximum size of an object */
++
++/**
++ * objpool_init() - initialize objpool and pre-allocated objects
++ * @pool:    the object pool to be initialized, declared by caller
++ * @nr_objs: total objects to be pre-allocated by this object pool
++ * @object_size: size of an object (should be > 0)
++ * @gfp:     flags for memory allocation (via kmalloc or vmalloc)
++ * @context: user context for object initialization callback
++ * @objinit: object initialization callback for extra setup
++ * @release: cleanup callback for extra cleanup task
++ *
++ * return value: 0 for success, otherwise error code
++ *
++ * All pre-allocated objects are to be zeroed after memory allocation.
++ * Caller could do extra initialization in objinit callback. objinit()
++ * will be called just after slot allocation and called only once for
++ * each object. After that the objpool won't touch any content of the
++ * objects. It's caller's duty to perform reinitialization after each
++ * pop (object allocation) or do clearance before each push (object
++ * reclamation).
++ */
++int objpool_init(struct objpool_head *pool, int nr_objs, int object_size,
++		 gfp_t gfp, void *context, objpool_init_obj_cb objinit,
++		 objpool_fini_cb release);
++
++/**
++ * objpool_pop() - allocate an object from objpool
++ * @pool: object pool
++ *
++ * return value: object ptr or NULL if failed
++ */
++void *objpool_pop(struct objpool_head *pool);
++
++/**
++ * objpool_push() - reclaim the object and return back to objpool
++ * @obj:  object ptr to be pushed to objpool
++ * @pool: object pool
++ *
++ * return: 0 or error code (it fails only when user tries to push
++ * the same object multiple times or wrong "objects" into objpool)
++ */
++int objpool_push(void *obj, struct objpool_head *pool);
++
++/**
++ * objpool_drop() - discard the object and deref objpool
++ * @obj:  object ptr to be discarded
++ * @pool: object pool
++ *
++ * return: 0 if objpool was released; -EAGAIN if there are still
++ *         outstanding objects
++ *
++ * objpool_drop is normally for the release of outstanding objects
++ * after objpool cleanup (objpool_fini). Thinking of this example:
++ * kretprobe is unregistered and objpool_fini() is called to release
++ * all remained objects, but there are still objects being used by
++ * unfinished kretprobes (like blockable function: sys_accept). So
++ * only when the last outstanding object is dropped could the whole
++ * objpool be released along with the call of objpool_drop()
++ */
++int objpool_drop(void *obj, struct objpool_head *pool);
++
++/**
++ * objpool_free() - release objpool forcely (all objects to be freed)
++ * @pool: object pool to be released
++ */
++void objpool_free(struct objpool_head *pool);
++
++/**
++ * objpool_fini() - deref object pool (also releasing unused objects)
++ * @pool: object pool to be dereferenced
++ *
++ * objpool_fini() will try to release all remained free objects and
++ * then drop an extra reference of the objpool. If all objects are
++ * already returned to objpool (so called synchronous use cases),
++ * the objpool itself will be freed together. But if there are still
++ * outstanding objects (so called asynchronous use cases, such like
++ * blockable kretprobe), the objpool won't be released until all
++ * the outstanding objects are dropped, but the caller must assure
++ * there are no concurrent objpool_push() on the fly. Normally RCU
++ * is being required to make sure all ongoing objpool_push() must
++ * be finished before calling objpool_fini(), so does kretprobes,
++ * rethook or test_objpool
++ */
++void objpool_fini(struct objpool_head *pool);
++
++#endif /* _LINUX_OBJPOOL_H */
+diff --git a/lib/Makefile b/lib/Makefile
+index 1ffae65bb7ee..7a84c922d9ff 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -34,7 +34,7 @@ lib-y := ctype.o string.o vsprintf.o cmdline.o \
+  	 is_single_threaded.o plist.o decompress.o kobject_uevent.o \
+  	 earlycpio.o seq_buf.o siphash.o dec_and_lock.o \
+  	 nmi_backtrace.o win_minmax.o memcat_p.o \
+-	 buildid.o
++	 buildid.o objpool.o
+
+  lib-$(CONFIG_PRINTK) += dump_stack.o
+  lib-$(CONFIG_SMP) += cpumask.o
+diff --git a/lib/objpool.c b/lib/objpool.c
+new file mode 100644
+index 000000000000..37a71e063f18
+--- /dev/null
++++ b/lib/objpool.c
+@@ -0,0 +1,280 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/objpool.h>
++#include <linux/slab.h>
++#include <linux/vmalloc.h>
++#include <linux/atomic.h>
++#include <linux/irqflags.h>
++#include <linux/cpumask.h>
++#include <linux/log2.h>
++
++/*
++ * objpool: ring-array based lockless MPMC/FIFO queues
++ *
++ * Copyright: wuqiang.matt@bytedance.com,mhiramat@kernel.org
++ */
++
++/* initialize percpu objpool_slot */
++static int
++objpool_init_percpu_slot(struct objpool_head *pool,
++			 struct objpool_slot *slot,
++			 int nodes, void *context,
++			 objpool_init_obj_cb objinit)
++{
++	void *obj = (void *)&slot->entries[pool->capacity];
++	int i;
++
++	/* initialize elements of percpu objpool_slot */
++	slot->mask = pool->capacity - 1;
++
++	for (i = 0; i < nodes; i++) {
++		if (objinit) {
++			int rc = objinit(obj, context);
++			if (rc)
++				return rc;
++		}
++		slot->entries[slot->tail & slot->mask] = obj;
++		obj = obj + pool->obj_size;
++		slot->tail++;
++		slot->last = slot->tail;
++		pool->nr_objs++;
++	}
++
++	return 0;
++}
++
++/* allocate and initialize percpu slots */
++static int
++objpool_init_percpu_slots(struct objpool_head *pool, int nr_objs,
++			  void *context, objpool_init_obj_cb objinit)
++{
++	int i, cpu_count = 0;
++
++	for (i = 0; i < pool->nr_cpus; i++) {
++
++		struct objpool_slot *slot;
++		int nodes, size, rc;
++
++		/* skip the cpu node which could never be present */
++		if (!cpu_possible(i))
++			continue;
++
++		/* compute how many objects to be allocated with this slot */
++		nodes = nr_objs / num_possible_cpus();
++		if (cpu_count < (nr_objs % num_possible_cpus()))
++			nodes++;
++		cpu_count++;
++
++		size = struct_size(slot, entries, pool->capacity) +
++			pool->obj_size * nodes;
++
++		/*
++		 * here we allocate percpu-slot & objs together in a single
++		 * allocation to make it more compact, taking advantage of
++		 * warm caches and TLB hits. in default vmalloc is used to
++		 * reduce the pressure of kernel slab system. as we know,
++		 * mimimal size of vmalloc is one page since vmalloc would
++		 * always align the requested size to page size
++		 */
++		if (pool->gfp & GFP_ATOMIC)
++			slot = kmalloc_node(size, pool->gfp, cpu_to_node(i));
++		else
++			slot = __vmalloc_node(size, sizeof(void *), pool->gfp,
++				cpu_to_node(i), __builtin_return_address(0));
++		if (!slot)
++			return -ENOMEM;
++		memset(slot, 0, size);
++		pool->cpu_slots[i] = slot;
++
++		/* initialize the objpool_slot of cpu node i */
++		rc = objpool_init_percpu_slot(pool, slot, nodes, context, objinit);
++		if (rc)
++			return rc;
++	}
++
++	return 0;
++}
++
++/* cleanup all percpu slots of the object pool */
++static void objpool_fini_percpu_slots(struct objpool_head *pool)
++{
++	int i;
++
++	if (!pool->cpu_slots)
++		return;
++
++	for (i = 0; i < pool->nr_cpus; i++)
++		kvfree(pool->cpu_slots[i]);
++	kfree(pool->cpu_slots);
++}
++
++/* initialize object pool and pre-allocate objects */
++int objpool_init(struct objpool_head *pool, int nr_objs, int object_size,
++		gfp_t gfp, void *context, objpool_init_obj_cb objinit,
++		objpool_fini_cb release)
++{
++	int rc, capacity, slot_size;
++
++	/* check input parameters */
++	if (nr_objs <= 0 || nr_objs > OBJPOOL_NR_OBJECT_MAX ||
++	    object_size <= 0 || object_size > OBJPOOL_OBJECT_SIZE_MAX)
++		return -EINVAL;
++
++	/* align up to unsigned long size */
++	object_size = ALIGN(object_size, sizeof(long));
++
++	/* calculate capacity of percpu objpool_slot */
++	capacity = roundup_pow_of_two(nr_objs);
++	if (!capacity)
++		return -EINVAL;
++
++	/* initialize objpool pool */
++	memset(pool, 0, sizeof(struct objpool_head));
++	pool->nr_cpus = nr_cpu_ids;
++	pool->obj_size = object_size;
++	pool->capacity = capacity;
++	pool->gfp = gfp & ~__GFP_ZERO;
++	pool->context = context;
++	pool->release = release;
++	slot_size = pool->nr_cpus * sizeof(struct objpool_slot);
++	pool->cpu_slots = kzalloc(slot_size, pool->gfp);
++	if (!pool->cpu_slots)
++		return -ENOMEM;
++
++	/* initialize per-cpu slots */
++	rc = objpool_init_percpu_slots(pool, nr_objs, context, objinit);
++	if (rc)
++		objpool_fini_percpu_slots(pool);
++	else
++		refcount_set(&pool->ref, pool->nr_objs + 1);
++
++	return rc;
++}
++EXPORT_SYMBOL_GPL(objpool_init);
++
++/* adding object to slot, abort if the slot was already full */
++static inline int
++objpool_try_add_slot(void *obj, struct objpool_head *pool, int cpu)
++{
++	struct objpool_slot *slot = pool->cpu_slots[cpu];
++	uint32_t head, tail;
++
++	/* loading tail and head as a local snapshot, tail first */
++	tail = READ_ONCE(slot->tail);
++
++	do {
++		head = READ_ONCE(slot->head);
++		/* fault caught: something must be wrong */
++		WARN_ON_ONCE(tail - head > pool->nr_objs);
++	} while (!try_cmpxchg_acquire(&slot->tail, &tail, tail + 1));
++
++	/* now the tail position is reserved for the given obj */
++	WRITE_ONCE(slot->entries[tail & slot->mask], obj);
++	/* update sequence to make this obj available for pop() */
++	smp_store_release(&slot->last, tail + 1);
++
++	return 0;
++}
++
++/* reclaim an object to object pool */
++int objpool_push(void *obj, struct objpool_head *pool)
++{
++	unsigned long flags;
++	int rc;
++
++	/* disable local irq to avoid preemption & interruption */
++	raw_local_irq_save(flags);
++	rc = objpool_try_add_slot(obj, pool, raw_smp_processor_id());
++	raw_local_irq_restore(flags);
++
++	return rc;
++}
++EXPORT_SYMBOL_GPL(objpool_push);
++
++/* try to retrieve object from slot */
++static inline void *objpool_try_get_slot(struct objpool_head *pool, int cpu)
++{
++	struct objpool_slot *slot = pool->cpu_slots[cpu];
++	/* load head snapshot, other cpus may change it */
++	uint32_t head = smp_load_acquire(&slot->head);
++
++	while (head != READ_ONCE(slot->last)) {
++		void *obj;
++
++		/* obj must be retrieved before moving forward head */
++		obj = READ_ONCE(slot->entries[head & slot->mask]);
++
++		/* move head forward to mark it's consumption */
++		if (try_cmpxchg_release(&slot->head, &head, head + 1))
++			return obj;
++	}
++
++	return NULL;
++}
++
++/* allocate an object from object pool */
++void *objpool_pop(struct objpool_head *pool)
++{
++	void *obj = NULL;
++	unsigned long flags;
++	int i, cpu;
++
++	/* disable local irq to avoid preemption & interruption */
++	raw_local_irq_save(flags);
++
++	cpu = raw_smp_processor_id();
++	for (i = 0; i < num_possible_cpus(); i++) {
++		obj = objpool_try_get_slot(pool, cpu);
++		if (obj)
++			break;
++		cpu = cpumask_next_wrap(cpu, cpu_possible_mask, -1, 1);
++	}
++	raw_local_irq_restore(flags);
++
++	return obj;
++}
++EXPORT_SYMBOL_GPL(objpool_pop);
++
++/* release whole objpool forcely */
++void objpool_free(struct objpool_head *pool)
++{
++	if (!pool->cpu_slots)
++		return;
++
++	/* release percpu slots */
++	objpool_fini_percpu_slots(pool);
++
++	/* call user's cleanup callback if provided */
++	if (pool->release)
++		pool->release(pool, pool->context);
++}
++EXPORT_SYMBOL_GPL(objpool_free);
++
++/* drop the allocated object, rather reclaim it to objpool */
++int objpool_drop(void *obj, struct objpool_head *pool)
++{
++	if (!obj || !pool)
++		return -EINVAL;
++
++	if (refcount_dec_and_test(&pool->ref)) {
++		objpool_free(pool);
++		return 0;
++	}
++
++	return -EAGAIN;
++}
++EXPORT_SYMBOL_GPL(objpool_drop);
++
++/* drop unused objects and defref objpool for releasing */
++void objpool_fini(struct objpool_head *pool)
++{
++	int count = 1; /* extra ref for objpool itself */
++
++	/* drop all remained objects from objpool */
++	while (objpool_pop(pool))
++		count++;
++
++	if (refcount_sub_and_test(count, &pool->ref))
++		objpool_free(pool);
++}
++EXPORT_SYMBOL_GPL(objpool_fini);
+-- 
+
+Regards,
+Wuqiang
+
+On 2023/10/16 20:18, Masami Hiramatsu (Google) wrote:
+> Hi Wuqiang,
+> 
+> On Mon, 16 Oct 2023 10:45:30 +0800
+> "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
+> 
+>> On 2023/10/16 07:26, Masami Hiramatsu (Google) wrote:
+>>> On Mon, 16 Oct 2023 00:06:11 +0800
+>>> "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
 >>>
->>>
->>> On 14 October 2023 00:26:45 BST, Sean Christopherson <seanjc@google.com> wrote:
->>>>> 2. Suppose the KVM host has been running for long time, and the drift between
->>>>> two domains would be accumulated to super large? (Even it may not introduce
->>>>> anything bad immediately)
+>>>> On 2023/10/15 23:43, Masami Hiramatsu (Google) wrote:
+>>>>> On Sun, 15 Oct 2023 13:32:47 +0800
+>>>>> "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
+>>>>>
+>>>>>> objpool is a scalable implementation of high performance queue for
+>>>>>> object allocation and reclamation, such as kretprobe instances.
+>>>>>>
+>>>>>> With leveraging percpu ring-array to mitigate hot spots of memory
+>>>>>> contention, it delivers near-linear scalability for high parallel
+>>>>>> scenarios. The objpool is best suited for the following cases:
+>>>>>> 1) Memory allocation or reclamation are prohibited or too expensive
+>>>>>> 2) Consumers are of different priorities, such as irqs and threads
+>>>>>>
+>>>>>> Limitations:
+>>>>>> 1) Maximum objects (capacity) is fixed after objpool creation
+>>>>>> 2) All pre-allocated objects are managed in percpu ring array,
+>>>>>>       which consumes more memory than linked lists
+>>>>>>
+>>>>>
+>>>>> Thanks for updating! This looks good to me except 2 points.
+>>>>>
+>>>>> [...]
+>>>>>> +
+>>>>>> +/* initialize object pool and pre-allocate objects */
+>>>>>> +int objpool_init(struct objpool_head *pool, int nr_objs, int object_size,
+>>>>>> +		gfp_t gfp, void *context, objpool_init_obj_cb objinit,
+>>>>>> +		objpool_fini_cb release)
+>>>>>> +{
+>>>>>> +	int rc, capacity, slot_size;
+>>>>>> +
+>>>>>> +	/* check input parameters */
+>>>>>> +	if (nr_objs <= 0 || nr_objs > OBJPOOL_NR_OBJECT_MAX ||
+>>>>>> +	    object_size <= 0 || object_size > OBJPOOL_OBJECT_SIZE_MAX)
+>>>>>> +		return -EINVAL;
+>>>>>> +
+>>>>>> +	/* align up to unsigned long size */
+>>>>>> +	object_size = ALIGN(object_size, sizeof(long));
+>>>>>> +
+>>>>>> +	/* calculate capacity of percpu objpool_slot */
+>>>>>> +	capacity = roundup_pow_of_two(nr_objs);
+>>>>>
+>>>>> This must be 'roundup_pow_of_two(nr_objs + 1)' because if nr_objs is power
+>>>>> of 2 and all objects are pushed on the same slot, tail == head. This
+>>>>> means empty and full is the same.
 >>>>
->>>> That already happens today, e.g. unless the host does vCPU hotplug or is using
->>>> XEN's shared info page, masterclock updates effectively never happen.  And I'm
->>>> not aware of a single bug report of someone complaining that kvmclock has drifted
->>>> from the host clock.  The only bug reports we have are when KVM triggers an update
->>>> and causes time to jump from the guest's perspective.
+>>>> That won't happen. Would tail and head wrap only when >= 2^32. When all
+>>>> objects are pushed to the same slot, tail will be (head + capacity).
 >>>
->>> I've got reports about the Xen clock going backwards, and also
->>> about it drifting over time w.r.t. the guest's TSC clocksource so
->>> the watchdog in the guest declares its TSC clocksource unstable. 
->>
->> I assume you meant Xen on KVM (not Xen guest on Xen hypervisor). According to my
->> brief review of xen hypervisor code, it looks using the same algorithm to
->> calculate the clock at hypervisor side, as in the xen guest.
-> 
-> Right. It's *exactly* the same thing. Even the same pvclock ABI in the
-> way it's exposed to the guest (in the KVM case via the MSR, in the Xen
-> case it's in the vcpu_info or a separate vcpu_time_info set up by Xen
-> hypercalls).
-> 
->> Fortunately, the "tsc=reliable" my disable the watchdog, but I have no idea if
->> it impacts Xen on KVM.
-> 
-> Right. I think Linux as a KVM guest automatically disables the
-> watchdog, or at least refuses to use the KVM clock as the watchdog for
-> the TSC clocksource?
-
-You may refer to the below commit, which disables watchdog for tsc when it is
-reliable.
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b50db7095fe002fa3e16605546cba66bf1b68a3e
-
-> 
-> Xen guests, on the other hand, aren't used to the Xen clock being as
-> unreliable as the KVM clock is, so they *do* use it as a watchdog for
-> the TSC clocksource.
-> 
->>> I don't understand *why* we update the master lock when we populate
->>> the Xen shared info. Or add a vCPU, for that matter.
-> 
-> Still don't...
-
-I do not have much knowledge on Xen-on-KVM. I assume both that and kvmclock are
-the similar things.
-
-The question is: why to update master clock when adding new vCPU (e.g., via QEMU)?
-
-It is already in the source code, and TBH, I do not know why it is in the source
-code like that.
-
-
-Just to explain the source code, taking QEMU + KVM as an example:
-
-1. QEMU adds new vCPU to the running guest.
-
-2. QEMU userspace triggers KVM kvm_synchronize_tsc() via ioctl.
-
-kvm_synchronize_tsc()-->__kvm_synchronize_tsc()-->kvm_track_tsc_matching()
-
-The above tries to sync TSC, and finally sets KVM_REQ_MASTERCLOCK_UPDATE pending
-for the new vCPU.
-
-
-3. The guest side onlines the new vCPU via either udev rule (automatically), or
-sysfs (echo and manually).
-
-4. When the vCPU is onlined, it will be starting running at KVM side.
-
-The KVM sides processes KVM_REQ_MASTERCLOCK_UPDATE before entering into the
-guest mode.
-
-5. The handler of KVM_REQ_MASTERCLOCK_UPDATE updates the master clock.
-
-> 
->>>>> The idea is to never update master clock, if tsc is stable (and masterclock is
->>>>> already used).
+>>> Ah, indeed. OK.
+>>>
 >>>>
->>>> That's another option, but if there are no masterclock updates, then it suffers
->>>> the exact same (theoretical) problem as #2.  And there are real downsides, e.g.
->>>> defining when KVM would synchronize kvmclock with the host clock would be
->>>> significantly harder...
+>>>>>
+>>>>>> +	if (!capacity)
+>>>>>> +		return -EINVAL;
+>>>>>> +
+>>>>>> +	/* initialize objpool pool */
+>>>>>> +	memset(pool, 0, sizeof(struct objpool_head));
+>>>>>> +	pool->nr_cpus = nr_cpu_ids;
+>>>>>> +	pool->obj_size = object_size;
+>>>>>> +	pool->capacity = capacity;
+>>>>>> +	pool->gfp = gfp & ~__GFP_ZERO;
+>>>>>> +	pool->context = context;
+>>>>>> +	pool->release = release;
+>>>>>> +	slot_size = pool->nr_cpus * sizeof(struct objpool_slot);
+>>>>>> +	pool->cpu_slots = kzalloc(slot_size, pool->gfp);
+>>>>>> +	if (!pool->cpu_slots)
+>>>>>> +		return -ENOMEM;
+>>>>>> +
+>>>>>> +	/* initialize per-cpu slots */
+>>>>>> +	rc = objpool_init_percpu_slots(pool, nr_objs, context, objinit);
+>>>>>> +	if (rc)
+>>>>>> +		objpool_fini_percpu_slots(pool);
+>>>>>> +	else
+>>>>>> +		refcount_set(&pool->ref, pool->nr_objs + 1);
+>>>>>> +
+>>>>>> +	return rc;
+>>>>>> +}
+>>>>>> +EXPORT_SYMBOL_GPL(objpool_init);
+>>>>>> +
+>>>>>
+>>>>> [...]
+>>>>>
+>>>>>> +
+>>>>>> +/* drop unused objects and defref objpool for releasing */
+>>>>>> +void objpool_fini(struct objpool_head *pool)
+>>>>>> +{
+>>>>>> +	void *obj;
+>>>>>> +
+>>>>>> +	do {
+>>>>>> +		/* grab object from objpool and drop it */
+>>>>>> +		obj = objpool_pop(pool);
+>>>>>> +
+>>>>>> +		/*
+>>>>>> +		 * drop reference of objpool anyway even if
+>>>>>> +		 * the obj is NULL, since one extra ref upon
+>>>>>> +		 * objpool was already grabbed during pool
+>>>>>> +		 * initialization in objpool_init()
+>>>>>> +		 */
+>>>>>> +		if (refcount_dec_and_test(&pool->ref))
+>>>>>> +			objpool_free(pool);
+>>>>>
+>>>>> Nit: you can call objpool_drop() instead of repeating the same thing here.
+>>>>
+>>>> objpool_drop won't deref objpool if given obj is NULL. But here we need
+>>>> drop objpool anyway even if obj is NULL.
 >>>
->>> I thought the definition of such an approach would be that we
->>> *never* resync the kvmclock to anything. It's based purely on the
->>> TSC value when the guest started, and the TSC frequency. The
->>> pvclock we advertise to all vCPUs would be the same, and would
->>> *never* change except on migration.
+>>> I guess you decrement for the 'objpool' itself if obj=NULL, but I think
+>>> it is a bit hacky (so you added the comment).
+>>> e.g. rethook is doing something like below.
 >>>
->>> (I guess that for consistency we would scale first to the *guest*
->>> TSC and from that to nanoseconds.)
+>>> ---
+>>> /* extra count for this pool itself */
+>>> count = 1;
+>>> /* make the pool empty */
+>>> while (objpool_pop(pool))
+>>> 	count++;
 >>>
->>> If userspace does anything which makes that become invalid,
->>> userspace gets to keep both pieces. That includes userspace having
->>> to deal with host suspend like migration, etc.
+>>> if (refcount_sub_and_test(count, &pool->ref))
+>>> 	objpool_free(pool);
+>>> ---
 >>
->> Suppose we are discussing a non-permanenet solution, I would suggest:
+>> Right, that's reasonable. Better one single atomic operation than multiple.
+> 
+> I found another comment issue about a small window which this may not work.
+> This is not a real issue for this series because this doesn't happen on
+> rethook/kretprobe, but if you apply this to other use-case, it must be
+> cared.
+> 
+> Since we use reserve-commit on 'push' operation, this 'pop' loop will miss
+> an object which is under 'push' op. I mean
+> 
+> CPU0                    CPU1
+> 
+> objpool_fini() {
+> do {
+>                           objpool_push() {
+>                              update slot->tail; // reserve
+>    obj = objpool_pop();
+>                              update slot->last;  // commit
+> } while (obj);
+> 
+> In this case, the refcount can not be 0 and we can not release objpool.
+> To avoid this, we make sure all ongoing 'push()' must be finished.
+> 
+> Actually in the rethook/kretprobe, it already sync the rcu so this doesn't
+> happen. So you should document it the user must use RCU sync after stop
+> using the objpool, then call objpool_fini().
+> 
+> E.g.
+> 
+> start_using() {
+> objpool_init();
+> active = true;
+> }
+> 
+> obj_alloc() {
+> rcu_read_lock();
+> if (active)
+> 	obj = objpool_pop();
+> else
+> 	obj = NULL;
+> rcu_read_unlock();
+> }
+> 
+> /* use obj for something, it is OK to change the context */
+> 
+> obj_return() {
+> rcu_read_lock();
+> if (active)
+> 	objpool_push(obj);
+> else
+> 	objpool_drop(obj);
+> rcu_read_unlock();
+> }
+> 
+> /* kretprobe style */
+> stop_using() {
+> active = false;
+> synchronize_rcu();
+> objpool_fini();
+> }
+> 
+> /* rethook style */
+> stop_using() {
+> active = false;
+> call_rcu(objpool_fini);
+> }
+> 
+> Hmm, yeah, if we can add this 'active' flag to objpool, it is good. But
+> since kretprobe has different design of the interface, it is hard.
+> Anyway, can you add a comment that user must ensure that any 'push' including
+> ongoing one does not happen while 'fini'? objpool does not care that so user
+> must take care of that. For example using rcu_read_lock() for the 'push/pop'
+> operation and rcu-sync before 'fini' operation.
+> 
+> Thanks,
+> 
 >>
->> 1. Document something to accept that kvm-clock (or pvclock on KVM, including Xen
->> on KVM) is not good enough in some cases, e.g., vCPU hotplug.
-> 
-> I still don't understand the vCPU hotplug case.
-> 
-> In the case where the TSC is actually sane, why would we need to reset
-> the masterclock on vCPU hotplug? 
-> 
-> The new vCPU gets its TSC synchronised to the others, and its kvmclock
-> parameters (mul/shift/offset based on the guest TSC) can be *precisely*
-> the same as the other vCPUs too, can't they? Why reset anything?
-
-While I understand how source code works, I do not know why.
-
-I shared the below patch from my prior diagnostic kernel, and it avoids updating
-the master clock, if it is already used and stable.
-
-https://lore.kernel.org/kvm/cf2b22fc-78f5-dfb9-f0e6-5c4059a970a2@oracle.com/
-
-> 
->> 2. Do not reply on any userspace change, so that the solution can be easier to
->> apply to existing environments running old KVM versions.
+>>>>
+>>>>> Thank you,
+>>>>>
+>>>>>> +	} while (obj);
+>>>>>> +}
+>>>>>> +EXPORT_SYMBOL_GPL(objpool_fini);
+>>>>>> -- 
+>>>>>> 2.40.1
+>>>>>>
+>>>>
+>>>> Thanks for your time
+>>>>
+>>>>
+>>>
+>>>
 >>
->> That is, to limit the change within KVM.
->>
->> 3. The options would be to (1) stop updating masterclock in the ideal scenario
->> (e.g., stable tsc), or to (2) refresh periodically to minimize the drift.
 > 
-> If the host TSC is sane, just *never* update the KVM masterclock. It
-> "drifts" w.r.t. the host CLOCK_MONOTONIC_RAW and nobody will ever care.
-
-I think it is one of the two options, although I prefer the 2 than the 1.
-
-1. Do not update master clock.
-
-2. Refresh master clock periodically.
-
-> 
-> The only opt-in we need from userspace for that is to promise that the
-> host TSC will never get mangled, isn't it?
-
-Regarding QEMU, I assume you meant either:
-
-(1) -cpu host,+invtsc (at QEMU command line), or
-(2) tsc=reliable (at guest kernel command line)
-
-> 
-> (We probably want to be able to export the pvclock information to
-> userspace (in terms of the mul/shift/offset from host TSC to guest TSC
-> and then the mul/shift/offset to kvmclock). Userspace may want to make
-> things like the PIT/HPET/PMtimer run on that clock.)
 > 
 
-
-Thank you very much!
-
-Dongli Zhang
