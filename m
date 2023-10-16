@@ -2,119 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B3387CAB3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 16:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B4807CAB49
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 16:22:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233537AbjJPOVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 10:21:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58952 "EHLO
+        id S233756AbjJPOWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 10:22:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232381AbjJPOU6 (ORCPT
+        with ESMTP id S233706AbjJPOWI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 10:20:58 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA95F0;
-        Mon, 16 Oct 2023 07:20:55 -0700 (PDT)
-Received: from [IPV6:2a01:e0a:120:3210:e07f:e79d:cb73:481b] (unknown [IPv6:2a01:e0a:120:3210:e07f:e79d:cb73:481b])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 7B8AB66071C7;
-        Mon, 16 Oct 2023 15:20:53 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697466053;
-        bh=c/L8dFl388l4YQCDz27EHWC74G2f0t+CGWGDGeHXxIA=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=TAuSs6sYKBn1pNWDBY8a/rjZSeEKDhnhW0jJDLB5hhIl4bEgokQoe/H7qHSkEuHnZ
-         d11Ftw1Icbpqx3LmTZTNS73YUWg3Ut4+nZz0laSrd/sfMHp8qRtRXBXax8TxNnnX8D
-         s0fvJ40lAvvX9ub9o70tTXBmnQdrOkaamT5vyScngNztRGde7fWfO1X5aGMEWc9ezA
-         JX8WWyQ0yXffPc8mhrO8+XDrruoNVMw6MUn7Ms13ZfVnj99mPu+1U7bxBhezz5vn96
-         vd7ucQAnxX17sG4Jzkxe1TAr6T66A4JUEtf3Pz5oVG83gpWUgWvVkJAL5IYUz0W0Vt
-         DLPOJJK9DhrAw==
-Message-ID: <b689e7d2-ff87-499e-a165-d227b1865488@collabora.com>
-Date:   Mon, 16 Oct 2023 16:20:51 +0200
+        Mon, 16 Oct 2023 10:22:08 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 923489B
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 07:22:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC45AC433CA;
+        Mon, 16 Oct 2023 14:22:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697466127;
+        bh=7ut8R7I0LgKdNiZkpraTHOG9TpuCMcSaL//bQFLc0+U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=P/dLmVoN+A5AiY1dRBROyri1XWhaV/Hcm+Z04t5juYnZZzo2EdMz5yGoR/+rwwx0U
+         TeJl8eC84R5YV9yv6hPFVuTqkkpzCBmXNWzFGsngFLwtZbaQa/4kcSG+7gjhwU5rp3
+         38/vvsqRLyjeOc/SyNuR1s08buoz6TH2BkBEpbvER09fIFdJYWTLVLZNPCFUvYsHxe
+         MHYXQt2Rc2hk6v9UAlA/g2VYNtIkfMaX800ZqPzHYuXQ7YAxr2kVe5EYnzPUgQCmLa
+         fQClp9+LXcqZfb/ooCAKhyE9yapeGu0aTSvp7mcL3OMpyuLy5kBKz2+g5cmAgI7Gmd
+         iLjpua0OQCEQg==
+Date:   Mon, 16 Oct 2023 07:22:04 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Michael Walle <michael@walle.cc>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH net-next v5 08/16] net: ethtool: Add a command to expose
+ current time stamping layer
+Message-ID: <20231016072204.1cb41eab@kernel.org>
+In-Reply-To: <20231016124134.6b271f07@kmaincent-XPS-13-7390>
+References: <20231009155138.86458-1-kory.maincent@bootlin.com>
+        <20231009155138.86458-9-kory.maincent@bootlin.com>
+        <2fbde275-e60b-473d-8488-8f0aa637c294@broadcom.com>
+        <20231010102343.3529e4a7@kmaincent-XPS-13-7390>
+        <20231013090020.34e9f125@kernel.org>
+        <6ef6418d-6e63-49bd-bcc1-cdc6eb0da2d5@lunn.ch>
+        <20231016124134.6b271f07@kmaincent-XPS-13-7390>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 45/56] media: test-drivers: vivid: Increase max
- supported buffers for capture queues
-Content-Language: en-US
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>, mchehab@kernel.org,
-        tfiga@chromium.org, m.szyprowski@samsung.com, ming.qian@nxp.com,
-        ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de,
-        gregkh@linuxfoundation.org, nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com
-References: <20231012114642.19040-1-benjamin.gaignard@collabora.com>
- <20231012114642.19040-46-benjamin.gaignard@collabora.com>
- <0ca82921-b71a-4d87-a1f1-6a6158f07c8c@xs4all.nl>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-In-Reply-To: <0ca82921-b71a-4d87-a1f1-6a6158f07c8c@xs4all.nl>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 16 Oct 2023 12:41:34 +0200 K=C3=B6ry Maincent wrote:
+> > Netdev vs phylib is an implementation detail of Linux.
+> > I'm also surprised that you changed this. =20
+>=20
+> This is the main reason I changed this. This is Linux implementation purp=
+ose to
+> know whether it should go through netdev or phylib, and then each of these
+> drivers could use other timestamps which are hardware related.
 
-Le 16/10/2023 à 12:32, Hans Verkuil a écrit :
-> On 12/10/2023 13:46, Benjamin Gaignard wrote:
->> Change the maximum number of buffers of some capture queues in order
->> to test max_num_buffers field.
->>
->> Allow to allocate up to:
->> - 64 buffers for video capture queue.
->> - 1024 buffers for sdr capture queue.
->> - 32768 buffers for vbi capture queue.
->>
->> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->> ---
->>   drivers/media/test-drivers/vivid/vivid-core.c | 7 +++++++
->>   1 file changed, 7 insertions(+)
->>
->> diff --git a/drivers/media/test-drivers/vivid/vivid-core.c b/drivers/media/test-drivers/vivid/vivid-core.c
->> index 394c9f81ea72..b5656330578d 100644
->> --- a/drivers/media/test-drivers/vivid/vivid-core.c
->> +++ b/drivers/media/test-drivers/vivid/vivid-core.c
->> @@ -876,6 +876,13 @@ static int vivid_create_queue(struct vivid_dev *dev,
->>   	q->type = buf_type;
->>   	q->io_modes = VB2_MMAP | VB2_DMABUF;
->>   	q->io_modes |= V4L2_TYPE_IS_OUTPUT(buf_type) ?  VB2_WRITE : VB2_READ;
->> +	if (buf_type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
->> +		q->max_num_buffers = 64;
->> +	if (buf_type == V4L2_BUF_TYPE_SDR_CAPTURE)
->> +		q->max_num_buffers = 1024;
->> +	if (buf_type == V4L2_BUF_TYPE_VBI_CAPTURE)
->> +		q->max_num_buffers = 32768;
-> This should use the same calculation as MAX_BUFFER_INDEX.
->
-> I wonder if those defines should move to videobuf2-core.h instead.
+For an integrated design there's 90% chance the stamping is done=20
+by the MAC. Even if it isn't there's no difference between PHY
+and MAC in terms of quality.
 
-I'm not sure about what you want here, q->max_num_buffers is clamped in vb2_core_queue_init():
-
-/* The maximum is limited by offset cookie encoding pattern */
-q->max_num_buffers = min_t(unsigned int, q->max_num_buffers, MAX_BUFFER_INDEX);
-
-Do you want to reuse MAX_BUFFER_INDEX for these drivers ?
-
-Regards,
-Benjamin
-
->
-> Regards,
->
-> 	Hans
->
->> +
->>   	if (allocators[dev->inst] != 1)
->>   		q->io_modes |= VB2_USERPTR;
->>   	q->drv_priv = dev;
->
+But there is a big difference between MAC/PHY and DMA which would
+both fall under NETDEV?
