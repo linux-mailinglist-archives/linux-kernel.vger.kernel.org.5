@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8FEB7C9EC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 07:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0634E7C9ECB
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 07:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231717AbjJPFax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 01:30:53 -0400
+        id S231142AbjJPFbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 01:31:08 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231778AbjJPFam (ORCPT
+        with ESMTP id S231805AbjJPFaq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 01:30:42 -0400
+        Mon, 16 Oct 2023 01:30:46 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F337B115
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 22:30:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1AB134
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 22:30:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697434239; x=1728970239;
+  t=1697434242; x=1728970242;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=2DHjUu90tq7FGOt8u63umE+5KVYee9+PKxuiyDDeGjc=;
-  b=LTe2YsPJIWcng/GwbQhgXxtHJu6CJE0iIjRMoiJsZLLtyb0G7uSvYS6c
-   yED5M0vm/O6t1lIh//kDwzqEZH0jE3lohkhIX430/auLuFbUbM+xIqZEL
-   XJc4hWYANkPgv3XZwc1LuGeDpDW+riyk4b17Wj9SE9SW9MXik6SMt841t
-   9K9NtcJcG7etODiFzdPc/SB8r5d830jKkIDzRpXt4beBFT4llrCZLh50i
-   s0Ocfc9jdZlBmPDuJ3K12TSdpeFsAM6yxuNAgqExP+Xjaze7RXzuY9GYM
-   Gfjy3XupZesIVxbkygazydc3jKOobjoFq/MRdoJuBsItxOSrlRU/I3INf
+  bh=DB51T+n1GD7jCWJPVbTjdF4dWPaoZxyz7GoPTpVRQSU=;
+  b=lvl+XjhyJ/oIOPe556a6OwexJ55TAWy1cxw+x3ATTqk1OJ3ASdDSFIqa
+   Kv8PxJkAEPmUrlkbW1pqeTMcV8Diq+nlR44fBJQlmBJIVr64rKimxiHys
+   ZUGVKwUPIug1TfoKf5rev5tKGhrno+VZXIU6F1pgVp611KXvYVDl7e2uC
+   /6UWQIYKRlaUB7V1R4+WJOnaoiuO1eppG/bB5W/QuS38YeR0sciNbN1WT
+   Ftq/BeH4qlpPcn1RzvDN9c+6wqUMKMcFjpiOhgG1rfALfkN3S3EFuuzY/
+   DinFpB8VU1b5ULW0dqluZ9d8zIY59SRZ1NIOvu3ooyKIFl0fU+uSFU92S
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="389308038"
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="389308057"
 X-IronPort-AV: E=Sophos;i="6.03,228,1694761200"; 
-   d="scan'208";a="389308038"
+   d="scan'208";a="389308057"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2023 22:30:37 -0700
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2023 22:30:41 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="899356707"
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="899356724"
 X-IronPort-AV: E=Sophos;i="6.03,228,1694761200"; 
-   d="scan'208";a="899356707"
+   d="scan'208";a="899356724"
 Received: from yhuang6-mobl2.sh.intel.com ([10.238.6.133])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2023 22:28:36 -0700
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2023 22:28:40 -0700
 From:   Huang Ying <ying.huang@intel.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
@@ -53,9 +53,9 @@ Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Pavel Tatashin <pasha.tatashin@soleen.com>,
         Matthew Wilcox <willy@infradead.org>,
         Christoph Lameter <cl@linux.com>
-Subject: [PATCH -V3 5/9] mm, page_alloc: scale the number of pages that are batch allocated
-Date:   Mon, 16 Oct 2023 13:29:58 +0800
-Message-Id: <20231016053002.756205-6-ying.huang@intel.com>
+Subject: [PATCH -V3 6/9] mm: add framework for PCP high auto-tuning
+Date:   Mon, 16 Oct 2023 13:29:59 +0800
+Message-Id: <20231016053002.756205-7-ying.huang@intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231016053002.756205-1-ying.huang@intel.com>
 References: <20231016053002.756205-1-ying.huang@intel.com>
@@ -70,23 +70,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a task is allocating a large number of order-0 pages, it may
-acquire the zone->lock multiple times allocating pages in batches.
-This may unnecessarily contend on the zone lock when allocating very
-large number of pages.  This patch adapts the size of the batch based
-on the recent pattern to scale the batch size for subsequent
-allocations.
+The page allocation performance requirements of different workloads
+are usually different.  So, we need to tune PCP (per-CPU pageset) high
+to optimize the workload page allocation performance.  Now, we have a
+system wide sysctl knob (percpu_pagelist_high_fraction) to tune PCP
+high by hand.  But, it's hard to find out the best value by hand.  And
+one global configuration may not work best for the different workloads
+that run on the same system.  One solution to these issues is to tune
+PCP high of each CPU automatically.
 
-On a 2-socket Intel server with 224 logical CPU, we run 8 kbuild
-instances in parallel (each with `make -j 28`) in 8 cgroup.  This
-simulates the kbuild server that is used by 0-Day kbuild service.
-With the patch, the cycles% of the spinlock contention (mostly for
-zone lock) decreases from 12.6% to 11.0% (with PCP size == 367).
+This patch adds the framework for PCP high auto-tuning.  With it,
+pcp->high of each CPU will be changed automatically by tuning
+algorithm at runtime.  The minimal high (pcp->high_min) is the
+original PCP high value calculated based on the low watermark pages.
+While the maximal high (pcp->high_max) is the PCP high value when
+percpu_pagelist_high_fraction sysctl knob is set to
+MIN_PERCPU_PAGELIST_HIGH_FRACTION.  That is, the maximal pcp->high
+that can be set via sysctl knob by hand.
+
+It's possible that PCP high auto-tuning doesn't work well for some
+workloads.  So, when PCP high is tuned by hand via the sysctl knob,
+the auto-tuning will be disabled.  The PCP high set by hand will be
+used instead.
+
+This patch only adds the framework, so pcp->high will be set to
+pcp->high_min (original default) always.  We will add actual
+auto-tuning algorithm in the following patches in the series.
 
 Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-Suggested-by: Mel Gorman <mgorman@techsingularity.net>
-Acked-by: Mel Gorman <mgorman@techsingularity.net>
 Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Mel Gorman <mgorman@techsingularity.net>
 Cc: Vlastimil Babka <vbabka@suse.cz>
 Cc: David Hildenbrand <david@redhat.com>
 Cc: Johannes Weiner <jweiner@redhat.com>
@@ -96,106 +109,213 @@ Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
 Cc: Matthew Wilcox <willy@infradead.org>
 Cc: Christoph Lameter <cl@linux.com>
 ---
- include/linux/mmzone.h |  3 ++-
- mm/page_alloc.c        | 53 ++++++++++++++++++++++++++++++++++--------
- 2 files changed, 45 insertions(+), 11 deletions(-)
+ include/linux/mmzone.h |  5 ++-
+ mm/page_alloc.c        | 71 +++++++++++++++++++++++++++---------------
+ 2 files changed, 50 insertions(+), 26 deletions(-)
 
 diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index cdff247e8c6f..ba548ae20686 100644
+index ba548ae20686..ec3f7daedcc7 100644
 --- a/include/linux/mmzone.h
 +++ b/include/linux/mmzone.h
-@@ -697,9 +697,10 @@ struct per_cpu_pages {
+@@ -695,6 +695,8 @@ struct per_cpu_pages {
+ 	spinlock_t lock;	/* Protects lists field */
+ 	int count;		/* number of pages in the list */
  	int high;		/* high watermark, emptying needed */
++	int high_min;		/* min high watermark */
++	int high_max;		/* max high watermark */
  	int batch;		/* chunk size for buddy add/remove */
  	u8 flags;		/* protected by pcp->lock */
-+	u8 alloc_factor;	/* batch scaling factor during allocate */
- 	u8 free_factor;		/* batch scaling factor during free */
- #ifdef CONFIG_NUMA
--	short expire;		/* When 0, remote pagesets are drained */
-+	u8 expire;		/* When 0, remote pagesets are drained */
- #endif
+ 	u8 alloc_factor;	/* batch scaling factor during allocate */
+@@ -854,7 +856,8 @@ struct zone {
+ 	 * the high and batch values are copied to individual pagesets for
+ 	 * faster access
+ 	 */
+-	int pageset_high;
++	int pageset_high_min;
++	int pageset_high_max;
+ 	int pageset_batch;
  
- 	/* Lists of pages, one per migrate type stored on the pcp-lists */
+ #ifndef CONFIG_SPARSEMEM
 diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index a5a5a4c3cd2b..eeef0ead1c2a 100644
+index eeef0ead1c2a..1fb2c6ebde9c 100644
 --- a/mm/page_alloc.c
 +++ b/mm/page_alloc.c
-@@ -2373,6 +2373,12 @@ static void free_unref_page_commit(struct zone *zone, struct per_cpu_pages *pcp,
- 	int pindex;
- 	bool free_high = false;
+@@ -2350,7 +2350,7 @@ static int nr_pcp_free(struct per_cpu_pages *pcp, int high, bool free_high)
+ static int nr_pcp_high(struct per_cpu_pages *pcp, struct zone *zone,
+ 		       bool free_high)
+ {
+-	int high = READ_ONCE(pcp->high);
++	int high = READ_ONCE(pcp->high_min);
  
-+	/*
-+	 * On freeing, reduce the number of pages that are batch allocated.
-+	 * See nr_pcp_alloc() where alloc_factor is increased for subsequent
-+	 * allocations.
-+	 */
-+	pcp->alloc_factor >>= 1;
- 	__count_vm_events(PGFREE, 1 << order);
- 	pindex = order_to_pindex(migratetype, order);
- 	list_add(&page->pcp_list, &pcp->lists[pindex]);
-@@ -2679,6 +2685,42 @@ struct page *rmqueue_buddy(struct zone *preferred_zone, struct zone *zone,
- 	return page;
+ 	if (unlikely(!high || free_high))
+ 		return 0;
+@@ -2689,7 +2689,7 @@ static int nr_pcp_alloc(struct per_cpu_pages *pcp, int order)
+ {
+ 	int high, batch, max_nr_alloc;
+ 
+-	high = READ_ONCE(pcp->high);
++	high = READ_ONCE(pcp->high_min);
+ 	batch = READ_ONCE(pcp->batch);
+ 
+ 	/* Check for PCP disabled or boot pageset */
+@@ -5296,14 +5296,15 @@ static int zone_batchsize(struct zone *zone)
  }
  
-+static int nr_pcp_alloc(struct per_cpu_pages *pcp, int order)
-+{
-+	int high, batch, max_nr_alloc;
-+
-+	high = READ_ONCE(pcp->high);
-+	batch = READ_ONCE(pcp->batch);
-+
-+	/* Check for PCP disabled or boot pageset */
-+	if (unlikely(high < batch))
-+		return 1;
-+
-+	/*
-+	 * Double the number of pages allocated each time there is subsequent
-+	 * allocation of order-0 pages without any freeing.
-+	 */
-+	if (!order) {
-+		max_nr_alloc = max(high - pcp->count - batch, batch);
-+		batch <<= pcp->alloc_factor;
-+		if (batch <= max_nr_alloc &&
-+		    pcp->alloc_factor < CONFIG_PCP_BATCH_SCALE_MAX)
-+			pcp->alloc_factor++;
-+		batch = min(batch, max_nr_alloc);
+ static int percpu_pagelist_high_fraction;
+-static int zone_highsize(struct zone *zone, int batch, int cpu_online)
++static int zone_highsize(struct zone *zone, int batch, int cpu_online,
++			 int high_fraction)
+ {
+ #ifdef CONFIG_MMU
+ 	int high;
+ 	int nr_split_cpus;
+ 	unsigned long total_pages;
+ 
+-	if (!percpu_pagelist_high_fraction) {
++	if (!high_fraction) {
+ 		/*
+ 		 * By default, the high value of the pcp is based on the zone
+ 		 * low watermark so that if they are full then background
+@@ -5316,15 +5317,15 @@ static int zone_highsize(struct zone *zone, int batch, int cpu_online)
+ 		 * value is based on a fraction of the managed pages in the
+ 		 * zone.
+ 		 */
+-		total_pages = zone_managed_pages(zone) / percpu_pagelist_high_fraction;
++		total_pages = zone_managed_pages(zone) / high_fraction;
+ 	}
+ 
+ 	/*
+ 	 * Split the high value across all online CPUs local to the zone. Note
+ 	 * that early in boot that CPUs may not be online yet and that during
+ 	 * CPU hotplug that the cpumask is not yet updated when a CPU is being
+-	 * onlined. For memory nodes that have no CPUs, split pcp->high across
+-	 * all online CPUs to mitigate the risk that reclaim is triggered
++	 * onlined. For memory nodes that have no CPUs, split the high value
++	 * across all online CPUs to mitigate the risk that reclaim is triggered
+ 	 * prematurely due to pages stored on pcp lists.
+ 	 */
+ 	nr_split_cpus = cpumask_weight(cpumask_of_node(zone_to_nid(zone))) + cpu_online;
+@@ -5352,19 +5353,21 @@ static int zone_highsize(struct zone *zone, int batch, int cpu_online)
+  * However, guaranteeing these relations at all times would require e.g. write
+  * barriers here but also careful usage of read barriers at the read side, and
+  * thus be prone to error and bad for performance. Thus the update only prevents
+- * store tearing. Any new users of pcp->batch and pcp->high should ensure they
+- * can cope with those fields changing asynchronously, and fully trust only the
+- * pcp->count field on the local CPU with interrupts disabled.
++ * store tearing. Any new users of pcp->batch, pcp->high_min and pcp->high_max
++ * should ensure they can cope with those fields changing asynchronously, and
++ * fully trust only the pcp->count field on the local CPU with interrupts
++ * disabled.
+  *
+  * mutex_is_locked(&pcp_batch_high_lock) required when calling this function
+  * outside of boot time (or some other assurance that no concurrent updaters
+  * exist).
+  */
+-static void pageset_update(struct per_cpu_pages *pcp, unsigned long high,
+-		unsigned long batch)
++static void pageset_update(struct per_cpu_pages *pcp, unsigned long high_min,
++			   unsigned long high_max, unsigned long batch)
+ {
+ 	WRITE_ONCE(pcp->batch, batch);
+-	WRITE_ONCE(pcp->high, high);
++	WRITE_ONCE(pcp->high_min, high_min);
++	WRITE_ONCE(pcp->high_max, high_max);
+ }
+ 
+ static void per_cpu_pages_init(struct per_cpu_pages *pcp, struct per_cpu_zonestat *pzstats)
+@@ -5384,20 +5387,21 @@ static void per_cpu_pages_init(struct per_cpu_pages *pcp, struct per_cpu_zonesta
+ 	 * need to be as careful as pageset_update() as nobody can access the
+ 	 * pageset yet.
+ 	 */
+-	pcp->high = BOOT_PAGESET_HIGH;
++	pcp->high_min = BOOT_PAGESET_HIGH;
++	pcp->high_max = BOOT_PAGESET_HIGH;
+ 	pcp->batch = BOOT_PAGESET_BATCH;
+ 	pcp->free_factor = 0;
+ }
+ 
+-static void __zone_set_pageset_high_and_batch(struct zone *zone, unsigned long high,
+-		unsigned long batch)
++static void __zone_set_pageset_high_and_batch(struct zone *zone, unsigned long high_min,
++					      unsigned long high_max, unsigned long batch)
+ {
+ 	struct per_cpu_pages *pcp;
+ 	int cpu;
+ 
+ 	for_each_possible_cpu(cpu) {
+ 		pcp = per_cpu_ptr(zone->per_cpu_pageset, cpu);
+-		pageset_update(pcp, high, batch);
++		pageset_update(pcp, high_min, high_max, batch);
+ 	}
+ }
+ 
+@@ -5407,19 +5411,34 @@ static void __zone_set_pageset_high_and_batch(struct zone *zone, unsigned long h
+  */
+ static void zone_set_pageset_high_and_batch(struct zone *zone, int cpu_online)
+ {
+-	int new_high, new_batch;
++	int new_high_min, new_high_max, new_batch;
+ 
+ 	new_batch = max(1, zone_batchsize(zone));
+-	new_high = zone_highsize(zone, new_batch, cpu_online);
++	if (percpu_pagelist_high_fraction) {
++		new_high_min = zone_highsize(zone, new_batch, cpu_online,
++					     percpu_pagelist_high_fraction);
++		/*
++		 * PCP high is tuned manually, disable auto-tuning via
++		 * setting high_min and high_max to the manual value.
++		 */
++		new_high_max = new_high_min;
++	} else {
++		new_high_min = zone_highsize(zone, new_batch, cpu_online, 0);
++		new_high_max = zone_highsize(zone, new_batch, cpu_online,
++					     MIN_PERCPU_PAGELIST_HIGH_FRACTION);
 +	}
-+
-+	/*
-+	 * Scale batch relative to order if batch implies free pages
-+	 * can be stored on the PCP. Batch can be 1 for small zones or
-+	 * for boot pagesets which should never store free pages as
-+	 * the pages may belong to arbitrary zones.
-+	 */
-+	if (batch > 1)
-+		batch = max(batch >> order, 2);
-+
-+	return batch;
-+}
-+
- /* Remove page from the per-cpu list, caller must protect the list */
- static inline
- struct page *__rmqueue_pcplist(struct zone *zone, unsigned int order,
-@@ -2691,18 +2733,9 @@ struct page *__rmqueue_pcplist(struct zone *zone, unsigned int order,
  
- 	do {
- 		if (list_empty(list)) {
--			int batch = READ_ONCE(pcp->batch);
-+			int batch = nr_pcp_alloc(pcp, order);
- 			int alloced;
+-	if (zone->pageset_high == new_high &&
++	if (zone->pageset_high_min == new_high_min &&
++	    zone->pageset_high_max == new_high_max &&
+ 	    zone->pageset_batch == new_batch)
+ 		return;
  
--			/*
--			 * Scale batch relative to order if batch implies
--			 * free pages can be stored on the PCP. Batch can
--			 * be 1 for small zones or for boot pagesets which
--			 * should never store free pages as the pages may
--			 * belong to arbitrary zones.
--			 */
--			if (batch > 1)
--				batch = max(batch >> order, 2);
- 			alloced = rmqueue_bulk(zone, order,
- 					batch, list,
- 					migratetype, alloc_flags);
+-	zone->pageset_high = new_high;
++	zone->pageset_high_min = new_high_min;
++	zone->pageset_high_max = new_high_max;
+ 	zone->pageset_batch = new_batch;
+ 
+-	__zone_set_pageset_high_and_batch(zone, new_high, new_batch);
++	__zone_set_pageset_high_and_batch(zone, new_high_min, new_high_max,
++					  new_batch);
+ }
+ 
+ void __meminit setup_zone_pageset(struct zone *zone)
+@@ -5528,7 +5547,8 @@ __meminit void zone_pcp_init(struct zone *zone)
+ 	 */
+ 	zone->per_cpu_pageset = &boot_pageset;
+ 	zone->per_cpu_zonestats = &boot_zonestats;
+-	zone->pageset_high = BOOT_PAGESET_HIGH;
++	zone->pageset_high_min = BOOT_PAGESET_HIGH;
++	zone->pageset_high_max = BOOT_PAGESET_HIGH;
+ 	zone->pageset_batch = BOOT_PAGESET_BATCH;
+ 
+ 	if (populated_zone(zone))
+@@ -6430,13 +6450,14 @@ EXPORT_SYMBOL(free_contig_range);
+ void zone_pcp_disable(struct zone *zone)
+ {
+ 	mutex_lock(&pcp_batch_high_lock);
+-	__zone_set_pageset_high_and_batch(zone, 0, 1);
++	__zone_set_pageset_high_and_batch(zone, 0, 0, 1);
+ 	__drain_all_pages(zone, true);
+ }
+ 
+ void zone_pcp_enable(struct zone *zone)
+ {
+-	__zone_set_pageset_high_and_batch(zone, zone->pageset_high, zone->pageset_batch);
++	__zone_set_pageset_high_and_batch(zone, zone->pageset_high_min,
++		zone->pageset_high_max, zone->pageset_batch);
+ 	mutex_unlock(&pcp_batch_high_lock);
+ }
+ 
 -- 
 2.39.2
 
