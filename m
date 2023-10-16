@@ -2,100 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3008A7CB4F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6E77CB4FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 23:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233282AbjJPU7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 16:59:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50404 "EHLO
+        id S233949AbjJPVAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 17:00:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjJPU7P (ORCPT
+        with ESMTP id S229848AbjJPVAH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 16:59:15 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6F9DA7;
-        Mon, 16 Oct 2023 13:59:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1697489948;
-        bh=EUUfQmbPuoJ6VpjZzB45ptApbzJjAxXVBjL4y2UG2sw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nI3SetMCOfOQGtg0b0JhtAdTokxCMXuW69W6WSrjYbF4ODEOMNxfTVTYy0HnXEPAz
-         KFC4khFlUNFELdSRqEUa0SX2Q/A5HOpDExC3izFzO4U+U9qESDQ6R+xeV7PGYlN6Yr
-         SELUckCnLpFeCar7/gDR+9c4kty+A+3hVBClLJDnRLeJO7S6lsXvCvU94DYU/tk0DJ
-         wp+NEUN+iN7WExtX72lTcbCDWcd8cjhO0tD7R0mMPJkNS3O7kxTm58zTxJulGFmeBr
-         /CPDOuDLfI5mk8a3zq+ZbFM0tGp9m4qH93btjTQLQS75mbIznbEu8q2ZWIn/rD5y+Y
-         jqctUeaKaa5Og==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S8TxS20PYz4wcM;
-        Tue, 17 Oct 2023 07:59:08 +1100 (AEDT)
-Date:   Tue, 17 Oct 2023 07:59:06 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Rodrigo Siqueira Jordao <Rodrigo.Siqueira@amd.com>
-Cc:     Alex Deucher <alexdeucher@gmail.com>,
-        "Wentland, Harry" <Harry.Wentland@amd.com>,
-        "Lei, Jun" <jun.lei@amd.com>,
-        "Dhere, Chaitanya" <Chaitanya.Dhere@amd.com>,
-        "Zhuo, Qingqing" <qingqing.zhuo@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Roman Li <roman.li@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the amdgpu tree
-Message-ID: <20231017075906.3906b823@canb.auug.org.au>
-In-Reply-To: <111ce50e-f445-4018-8d10-c1f7908b3198@amd.com>
-References: <20231010124357.5251e100@canb.auug.org.au>
-        <cc75c480-5359-465e-adab-46b418ec5d97@amd.com>
-        <20231016113946.698ac2da@canb.auug.org.au>
-        <111ce50e-f445-4018-8d10-c1f7908b3198@amd.com>
+        Mon, 16 Oct 2023 17:00:07 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B25F1B0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 14:00:04 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9c53e8b7cf4so126369166b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 14:00:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1697490003; x=1698094803; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zoMScRfK8cWUdYKqO6aPdGhvxLOi2B22QQaZqfT/07A=;
+        b=IcaGIYIefiuGySjjUruDRr9FBID8JBRT2VKYN0Y9Dzh72VOuyVHja5tx0Gi0cTcTer
+         JxKD9W/QsbOse7xhVOiOQGiB9VQv0PCE1hTEX9WhsgKvnCiNgRqN/C8XQLkYGABGsW1f
+         XspgLaa40PEJy6uwf18d6f4IuCdRKXlMJtUHY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697490003; x=1698094803;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zoMScRfK8cWUdYKqO6aPdGhvxLOi2B22QQaZqfT/07A=;
+        b=W9mbhDoZ7T1dfvkBnhUwom49Kx/TKZE4JTOX9d8a2IBohKy7yhJOn+JBm5UHt/4mKO
+         9gLEvh3NWN24TJy5L6nCnSQZCa91FNgi6kuusGcMDqKp5sajea590REXFEjnxQTUfB++
+         lDzJiyKe4rIWumXR8xhZhfMQ3X8w4TGHLrxAvKXRGARpyNY0rq/v3DYirgOP0uC/N9PV
+         25y34Ng/PF7Xu5FCZnWW38lmBjx4jMA1s8JyjujwmPzEiGl0n3zJzQhuPR6lOUJm5z04
+         6tJ4asCp76jOGOtmsk7UORzSdXS4K6g5z3v/VLowuoBkHTMI7W04ODK1kBABtcSqjWIS
+         RQ2A==
+X-Gm-Message-State: AOJu0Yyqpd3ZQLJ1X4dyFCk9ggAKIIeUhzCvSREaatUEGKWsbWH4gzE6
+        4iID4pjZxGkBckYR0t0ePiR79b3tWdD/1uQSvWpDBmyr
+X-Google-Smtp-Source: AGHT+IFUek/F0mZmYw6dR7jnQWRoPKBkfi6gJRmoGaiI6hRIIyF9xIljI0IKvFEM1lpHIr0R076dhw==
+X-Received: by 2002:a17:907:a08:b0:9a2:ecd:d963 with SMTP id bb8-20020a1709070a0800b009a20ecdd963mr141972ejc.44.1697490002985;
+        Mon, 16 Oct 2023 14:00:02 -0700 (PDT)
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com. [209.85.208.49])
+        by smtp.gmail.com with ESMTPSA id mm12-20020a170906cc4c00b0098951bb4dc3sm4672301ejb.184.2023.10.16.14.00.01
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Oct 2023 14:00:01 -0700 (PDT)
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-53e3b8f906fso6315497a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 14:00:01 -0700 (PDT)
+X-Received: by 2002:a17:907:706:b0:9b2:b95e:3825 with SMTP id
+ xb6-20020a170907070600b009b2b95e3825mr155914ejb.39.1697490001479; Mon, 16 Oct
+ 2023 14:00:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/c..NT1IpAS8APIXEeh_d=qJ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
+ <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
+ <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
+ <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
+ <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
+ <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
+ <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAFULd4Zjd6idrLXuF59cwKxyd1a--DsiJwGQAKai9Tph30dAow@mail.gmail.com>
+ <CAHk-=wgSsfo89ESHcngvPCkQSh_YAJG-0g7fupb+Uv0E1d_EcQ@mail.gmail.com> <7D77A452-E61E-4B8B-B49C-949E1C8E257C@vmware.com>
+In-Reply-To: <7D77A452-E61E-4B8B-B49C-949E1C8E257C@vmware.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 16 Oct 2023 13:59:44 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj=wC_QWn+mTB5KozH6QaCtG2P8oWSTmhum_JR9NVh+=A@mail.gmail.com>
+Message-ID: <CAHk-=wj=wC_QWn+mTB5KozH6QaCtG2P8oWSTmhum_JR9NVh+=A@mail.gmail.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+To:     Nadav Amit <namit@vmware.com>
+Cc:     Uros Bizjak <ubizjak@gmail.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/c..NT1IpAS8APIXEeh_d=qJ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi Rodrigo,
-
-On Mon, 16 Oct 2023 08:53:05 -0600 Rodrigo Siqueira Jordao <Rodrigo.Siqueir=
-a@amd.com> wrote:
+On Mon, 16 Oct 2023 at 13:35, Nadav Amit <namit@vmware.com> wrote:
 >
-> Could you try this patchset?
->=20
-> https://lore.kernel.org/amd-gfx/20231016142031.241912-1-Rodrigo.Siqueira@=
-amd.com/T/#t
+> I don=E2=80=99t think it means that it the aliasing does not work; I thin=
+k it all means that
+> it actually works *too well*.
 
-I will apply that to the merge of the amdgpu tree today.
+Hmm. The *only* case I can think of is __switch_to() itself when doing that
 
---=20
-Cheers,
-Stephen Rothwell
+        raw_cpu_write(pcpu_hot.current_task, next_p);
 
---Sig_/c..NT1IpAS8APIXEeh_d=qJ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+and arguably that part should never have been done in C at all, but here we=
+ are.
 
------BEGIN PGP SIGNATURE-----
+I do think that from a sanity standpoint, it would be good to split
+"__switch_to()" into two: a "before stack switch" and "after stack
+switch", and change 'current' from within the asm section (ie do that
+part in __switch_to_asm").
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUtpBoACgkQAVBC80lX
-0Gz3qgf5AcXHlqzMLrzLoo5rrfH5XcRzNam5MAZQf3xUUhDUuHMZlYbMAqAPFXI2
-rKTU2mXURXUFIt2cJ0JU0f6cFBUQDVhywhB659XnLLxgMcwfxGGfSk9IPQvfHDuM
-m+iKna7TP8xfTbXNFQsiyQx4/9Ilc1U7z14O/noSulQlyzyYXQFOtopApEaKoD7S
-bnP1uVKPtYv2amPcvllFHSoLpro8M02efxTh9T+f2+fz4ItLo5ARzu3Bckhq5+ww
-Re7PfhBj9WTqHJsQVmw0NB9G2fPUnXFm8+O2H0CPFhWuNPsgfX2E4xd+KueyP14G
-Jea1ymXtx8XPEQJ+JUoSPlIVmVJ4Hw==
-=FCiR
------END PGP SIGNATURE-----
+Or maybe we should just keep the single "__switch_to()" function, but
+make it clear that it happens *after* current has been changed (and
+maybe rename it to 'funish_switch_to()" or something like that to make
+it clearer).
 
---Sig_/c..NT1IpAS8APIXEeh_d=qJ--
+Because the situation with __switch_to() right now is outright
+confusing, where it has 'prevp' and 'nextp', but then implicitly uses
+'current' in two different ways.
+
+Ugh.
+
+               Linus
