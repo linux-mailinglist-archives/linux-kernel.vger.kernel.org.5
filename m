@@ -2,118 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 191727CA118
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 10:00:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED927CA11D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 10:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbjJPIAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 04:00:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36972 "EHLO
+        id S231360AbjJPIAT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Oct 2023 04:00:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjJPIAA (ORCPT
+        with ESMTP id S229478AbjJPIAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 04:00:00 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACCBFA1;
-        Mon, 16 Oct 2023 00:59:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697443198; x=1728979198;
-  h=from:to:cc:subject:references:date:in-reply-to:
-   message-id:mime-version;
-  bh=XYXbGQsgnjt7nQUqln8pZSvBdMQSiZ+wMR4h/e3odww=;
-  b=ZEY5Rk6KbsGMGQiKDLoq2+ZV/4A9PNpi9YU9Z7Wi6TcolaYbdzpb8w52
-   x7X0jFU04XPdm3rERh4brEKtJwJoVs84ent9jN4HvLjgMtN75V5Ox5f63
-   4SkJS1DAKvDfDPEhuwwj1vaoEdJFguki27gwlD52oJcnRaP3DH06A4Vyb
-   pHGMNUK0fcM1qgpsOhUllgrDcPWs2Vsa0Jm6fScgarkkDObrTFVKwmUfk
-   4NXb/LHNu7f3vDCVz1FKraDKI8CA7utSdvMWHrsvrtrxgignp3BBDj2jH
-   t7z1F3MG2wXWtqJfKM3Q3twIoWxVRR2fVNnYgYSMj2UCKFUUaPAIfvGCf
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="449677954"
-X-IronPort-AV: E=Sophos;i="6.03,228,1694761200"; 
-   d="scan'208";a="449677954"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 00:59:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="790721641"
-X-IronPort-AV: E=Sophos;i="6.03,228,1694761200"; 
-   d="scan'208";a="790721641"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 00:59:56 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Gregory Price <gourry.memverge@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-cxl@vger.kernel.org, akpm@linux-foundation.org,
-        sthanneeru@micron.com, gregory.price@memverge.com
-Subject: Re: [RFC PATCH v2 0/3] mm: mempolicy: Multi-tier weighted interleaving
-References: <20231009204259.875232-1-gregory.price@memverge.com>
-Date:   Mon, 16 Oct 2023 15:57:52 +0800
-In-Reply-To: <20231009204259.875232-1-gregory.price@memverge.com> (Gregory
-        Price's message of "Mon, 9 Oct 2023 16:42:56 -0400")
-Message-ID: <87o7gzm22n.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Mon, 16 Oct 2023 04:00:16 -0400
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D0D0A1;
+        Mon, 16 Oct 2023 01:00:14 -0700 (PDT)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-59e88a28b98so35301167b3.1;
+        Mon, 16 Oct 2023 01:00:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697443214; x=1698048014;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=btMRsKTHsZdLmcavs42DtOcp7fEFbpSLSg3f+uNZoIE=;
+        b=RCd3kHlgl9Xa7yngThkrI2YHKWGUrRD6X/Y08fnCb49bqDoNigngLO1wlL7Y1OI9Px
+         MdLI41aYSOGPKNbYl7G73mJmPEgvVoJd6ygpSy/HuVRnt4FqVMQuvpZExXY6BfEnE4fi
+         B7jxTKcIMhKKM8CXuKBdDLiixbZKifgrUAfgR1PA3zvQA1U+BnSY8Qc6LFmI6azctqd6
+         c5WT1IcC3XL5Al0R+SW21CLWpArKE3lCX8y+c3ehpVTM4OM1Zg6hRNMDKhJDNo6h/w50
+         evrQJKASFF1lJu5Xg9k4oSrluL6baPkw8yaHeRrKpwRuskvJ6HlmRrBnp7esyAzYRF+w
+         fMrQ==
+X-Gm-Message-State: AOJu0Yy0aNV0DnxgDCjU2ipCmNZsqWQXsrJffJTPCrwM45nDP8vEEnSc
+        eDdhQDQXeNAucBsqsp9qqfPk9dPELUKhxA==
+X-Google-Smtp-Source: AGHT+IGOmGWdItEcsIGoknY6yH3hoT6EX0h75yIHP6ToRIdeeRnRucIb+qzcCXu/ckiPdFd9NymnwA==
+X-Received: by 2002:a0d:df43:0:b0:5a7:fb66:61ff with SMTP id i64-20020a0ddf43000000b005a7fb6661ffmr3571836ywe.21.1697443213827;
+        Mon, 16 Oct 2023 01:00:13 -0700 (PDT)
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com. [209.85.128.179])
+        by smtp.gmail.com with ESMTPSA id n7-20020a0dfd07000000b005a7c829dda2sm2006671ywf.84.2023.10.16.01.00.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Oct 2023 01:00:13 -0700 (PDT)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-59e88a28b98so35301107b3.1;
+        Mon, 16 Oct 2023 01:00:13 -0700 (PDT)
+X-Received: by 2002:a0d:df43:0:b0:5a7:fb66:61ff with SMTP id
+ i64-20020a0ddf43000000b005a7fb6661ffmr3571828ywe.21.1697443213449; Mon, 16
+ Oct 2023 01:00:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231016061654.22267-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20231016061654.22267-1-krzysztof.kozlowski@linaro.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 16 Oct 2023 10:00:01 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVTFpqbXc0L--Kz3URrfpSm9NX8th9zAp+th1Tv1+027g@mail.gmail.com>
+Message-ID: <CAMuHMdVTFpqbXc0L--Kz3URrfpSm9NX8th9zAp+th1Tv1+027g@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: serial: re-order entries to match coding convention
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gregory Price <gourry.memverge@gmail.com> writes:
+On Mon, Oct 16, 2023 at 8:17 AM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+> The DT schema coding convetion express in
 
-> v2: change memtier mutex to semaphore
->     add source-node relative weighting
->     add remaining mempolicy integration code
->
-> = v2 Notes
->
-> Developed in colaboration with original authors to deconflict
-> similar efforts to extend mempolicy to take weights directly.
->
-> == Mutex to Semaphore change:
->
-> The memory tiering subsystem is extended in this patch set to have
-> externally available information (weights), and therefore additional
-> controls need to be added to ensure values are not changed (or tiers
-> changed/added/removed) during various calculations.
->
-> Since it is expected that many threads will be accessing this data
-> during allocations, a mutex is not appropriate.
+convention expressed
 
-IIUC, this is a change for performance.  If so, please show some
-performance data.
-
-> Since write-updates (weight changes, hotplug events) are rare events,
-> a simple rw semaphore is sufficient.
+> Documentation/devicetree/bindings/example-schema.yaml expects entries in
+> following order:
+>  - properties, patternProperties
+>  - required
+>  - if blocks, allOf with if-blocks
+>  - additionalProperties/unevaluatedProperties
 >
-> == Source-node relative weighting:
+> Re-order few schemas to match the convention to avoid repeating reviews
+
+review comments
+
+> for new patches using existing code as template.  No functional changes.
 >
-> Tiers can now be weighted differently based on the node requesting
-> the weight.  For example CPU-Nodes 0 and 1 may have different weights
-> for the same CXL memory tier, because topologically the number of
-> NUMA hops is greater (or any other physical topological difference
-> resulting in different effective latency or bandwidth values)
->
-> 1. Set weights for DDR (tier4) and CXL(teir22) tiers.
->    echo source_node:weight > /path/to/interleave_weight
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-If source_node is considered, why not consider target_node too?  On a
-system with only 1 tier (DRAM), do you want weighted interleaving among
-NUMA nodes?  If so, why tie weighted interleaving with memory tiers?
-Why not just introduce weighted interleaving for NUMA nodes?
 
-> # Set tier4 weight from node 0 to 85
-> echo 0:85 > /sys/devices/virtual/memory_tiering/memory_tier4/interleave_weight
-> # Set tier4 weight from node 1 to 65
-> echo 1:65 > /sys/devices/virtual/memory_tiering/memory_tier4/interleave_weight
-> # Set tier22 weight from node 0 to 15
-> echo 0:15 > /sys/devices/virtual/memory_tiering/memory_tier22/interleave_weight
-> # Set tier22 weight from node 1 to 10
-> echo 1:10 > /sys/devices/virtual/memory_tiering/memory_tier22/interleave_weight
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
---
-Best Regards,
-Huang, Ying
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
