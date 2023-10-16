@@ -2,294 +2,593 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17EAB7CA3F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EACF7CA3FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbjJPJXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 05:23:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60266 "EHLO
+        id S232459AbjJPJYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 05:24:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbjJPJXD (ORCPT
+        with ESMTP id S230045AbjJPJX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 05:23:03 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 270B0B4;
-        Mon, 16 Oct 2023 02:23:01 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Mon, 16 Oct 2023 05:23:58 -0400
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D93A9B4
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 02:23:54 -0700 (PDT)
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com [209.85.160.198])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id BFBA01F8C1;
-        Mon, 16 Oct 2023 09:22:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1697448179; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ncEmaJpGCEkUvSIDaJyvviOSOQUcVNocJwvIFZralxs=;
-        b=Jy0d75XxHX0wz6UMRr6WwZ3ATAiOBsPEcBvB6Hg2vJMoQl40TjoDDwvutlrOhW6Vc9NP0z
-        1FGS9YVdZAV2e6YJaNG0Vif1ii7Hj5jpUFcxBPwwP236fNuXPZN26fYxagu3wng8QKv40u
-        YpnAwjqaCb0SYUWYcRxg0cwKKrrDMQY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1697448179;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ncEmaJpGCEkUvSIDaJyvviOSOQUcVNocJwvIFZralxs=;
-        b=qLM9PAUHUeiMgdewTO8M250jYv8exh9MKMhgrvQL0Jl3j4Vaf5TuaeuEau7OGrB+M9T3b1
-        v/1MGu7eCCt1OhCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AFC9C138EF;
-        Mon, 16 Oct 2023 09:22:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id APrkKvMALWUFMAAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 16 Oct 2023 09:22:59 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 34460A0657; Mon, 16 Oct 2023 11:22:59 +0200 (CEST)
-Date:   Mon, 16 Oct 2023 11:22:59 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] lib/find: Make functions safe on changing bitmaps
-Message-ID: <20231016092259.h4ny5slr4v5hcmpy@quack3>
-References: <20231011144320.29201-1-jack@suse.cz>
- <20231011150252.32737-1-jack@suse.cz>
- <ZSbo1aAjteepdmcz@yury-ThinkPad>
- <20231012122110.zii5pg3ohpragpi7@quack3>
- <ZSndoNcA7YWHXeUi@yury-ThinkPad>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZSndoNcA7YWHXeUi@yury-ThinkPad>
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: 0.90
-X-Spamd-Result: default: False [0.90 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         BAYES_HAM(-3.00)[100.00%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         NEURAL_SPAM_LONG(3.00)[1.000];
-         RCPT_COUNT_SEVEN(0.00)[8];
-         FREEMAIL_TO(0.00)[gmail.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 55C1A3F722
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:23:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1697448229;
+        bh=v3YFl+x7yg4n/kp4vO7SuLNmHzZBUUpfwrZDn1IxT5s=;
+        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=Yuya4EkVamFYFICdRSQFvehgYz0lasB89LU6Njm9c6gEvswuKJ8nx/peIuAZQeW1U
+         hvfBI2muObcnv1eurSjJUPN9u8enZ7t7EtISiQjNLFFJLPVn0KI4TWfacGGI7RBy8E
+         S5guZcEZtEKbWxgEl5qK0jTsKnM2nKc6mZ3aDpoKOWw2TFXI/e4zjVq1E8I/wykM8n
+         Ou8Fb9r8veK+N36w7uX5wph10i0cUXlOJ87rTWAp9YAPcG5uq8YZqrLA7L/YccTXM6
+         atX+BF2dgpQlXOGJqv95gRGDu4UmUhMhFWJewlXuMigm23QKwPVwHXnkt2xgyos2xr
+         YcAAfZDwTKfXA==
+Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-4191ef94106so50458411cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 02:23:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697448228; x=1698053028;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=v3YFl+x7yg4n/kp4vO7SuLNmHzZBUUpfwrZDn1IxT5s=;
+        b=M7RRcuzpW93jW671fzx5YEAcZHR9PjCJZRA37kLcV7jmbQdRIbgWdeP5v2wxwwAjPc
+         a088FKW3f90/P7RmhyVrmtD6+gGV8komiZfkuo+7q0raO/4qjFCsVxMtp0qZ7+gMkuLF
+         u+m58y2Ag746BwmySl+QD/Pi9vY79sR8oHDn89444TfCDO1rX4oEqo8qrA1DIM6EJWgu
+         wis2fG7bJV4/aDKUnBQo8G5pR1SoGvEfguSbHdZXYdEgSlIzBSPjdTQ+4vTbXwtvoUki
+         B488CKI6juroIeFlZiIs/3vmnixULd9tvpeHEMl2/t/POJ7Bvw2SNDyd23uQ681QEbq9
+         4bRQ==
+X-Gm-Message-State: AOJu0YzeCTbZOvL8D5Tr89/uhAUoJMIRHa839XNC4tLmHMahGY2xtbI7
+        o6mYQpo9YvK8TG+w3K8xQJ9jTUnztsYk65OWHzJavWbdZTZx6Ej86PSygTCazWDGC6ywIRKktXj
+        VjmXQIF2R+V7USM8Gj71iSitmFSDGanHwBvMpD5K/2oCyNhWC2ZcGuAJLEg==
+X-Received: by 2002:ac8:5852:0:b0:417:9cae:b43 with SMTP id h18-20020ac85852000000b004179cae0b43mr43007820qth.35.1697448228157;
+        Mon, 16 Oct 2023 02:23:48 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG/Hs1bGLl92JtJPWt7UYPG+4YDFSY6l+gj6QXRvMEZNoriWAwnSeqYKNJIwyAMBiiVov6xe9im8UA4QctDETo=
+X-Received: by 2002:ac8:5852:0:b0:417:9cae:b43 with SMTP id
+ h18-20020ac85852000000b004179cae0b43mr43007801qth.35.1697448227804; Mon, 16
+ Oct 2023 02:23:47 -0700 (PDT)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 16 Oct 2023 02:23:47 -0700
+From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <ec78d27e-8cc4-484e-aac9-e253498aa946@starfivetech.com>
+References: <20231012081015.33121-1-xingyu.wu@starfivetech.com>
+ <20231012081015.33121-3-xingyu.wu@starfivetech.com> <CAJM55Z8_AwYdgBLcAs=C9W2UtZ0CVecGMS_D198A8j4DYFFxBw@mail.gmail.com>
+ <ec78d27e-8cc4-484e-aac9-e253498aa946@starfivetech.com>
+Mime-Version: 1.0
+Date:   Mon, 16 Oct 2023 02:23:47 -0700
+Message-ID: <CAJM55Z9HCLWAB0G-froC1bEDk=DERQhKvSD7w+eQ_6a3J+74wg@mail.gmail.com>
+Subject: Re: [PATCH v6 2/3] clocksource: Add JH7110 timer driver
+To:     Xingyu Wu <xingyu.wu@starfivetech.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Walker Chen <walker.chen@starfivetech.com>
+Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Samin Guo <samin.guo@starfivetech.com>,
+        linux-kernel@vger.kernel.org, Conor Dooley <conor@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 13-10-23 17:15:28, Yury Norov wrote:
-> On Thu, Oct 12, 2023 at 02:21:10PM +0200, Jan Kara wrote:
-> > On Wed 11-10-23 11:26:29, Yury Norov wrote:
-> > > Long story short: KCSAN found some potential issues related to how
-> > > people use bitmap API. And instead of working through that issues,
-> > > the following code shuts down KCSAN by applying READ_ONCE() here
-> > > and there.
-> > 
-> > I'm sorry but this is not what the patch does. I'm not sure how to get the
-> > message across so maybe let me start from a different angle:
-> > 
-> > Bitmaps are perfectly fine to be used without any external locking if
-> > only atomic bit ops (set_bit, clear_bit, test_and_{set/clear}_bit) are
-> > used. This is a significant performance gain compared to using a spinlock
-> > or other locking and people do this for a long time. I hope we agree on
-> > that.
-> > 
-> > Now it is also common that you need to find a set / clear bit in a bitmap.
-> > To maintain lockless protocol and deal with races people employ schemes
-> > like (the dumbest form):
-> > 
-> > 	do {
-> > 		bit = find_first_bit(bitmap, n);
-> > 		if (bit >= n)
-> > 			abort...
-> > 	} while (!test_and_clear_bit(bit, bitmap));
-> > 
-> > So the code loops until it finds a set bit that is successfully cleared by
-> > it. This is perfectly fine and safe lockless code and such use should be
-> > supported. Agreed?
-> 
-> Great example. When you're running non-atomic functions concurrently,
-> the result may easily become incorrect, and this is what you're
-> demonstrating here.
-> 
-> Regarding find_first_bit() it means that:
->  - it may erroneously return unset bit;
->  - it may erroneously return non-first set bit;
->  - it may erroneously return no bits for non-empty bitmap.
+Xingyu Wu wrote:
+> On 2023/10/13 19:34, Emil Renner Berthing wrote:
+> > Xingyu Wu wrote:
+> >> Add timer driver for the StarFive JH7110 SoC.
+> >>
+> >> Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
+> >> ---
+> >>  MAINTAINERS                        |   7 +
+> >>  drivers/clocksource/Kconfig        |  11 +
+> >>  drivers/clocksource/Makefile       |   1 +
+> >>  drivers/clocksource/timer-jh7110.c | 387 +++++++++++++++++++++++++++++
+> >>  4 files changed, 406 insertions(+)
+> >>  create mode 100644 drivers/clocksource/timer-jh7110.c
+> >>
+> >> diff --git a/MAINTAINERS b/MAINTAINERS
+> >> index 6c4cce45a09d..1525f031d4a2 100644
+> >> --- a/MAINTAINERS
+> >> +++ b/MAINTAINERS
+> >> @@ -20472,6 +20472,13 @@ S:	Maintained
+> >>  F:	Documentation/devicetree/bindings/sound/starfive,jh7110-tdm.yaml
+> >>  F:	sound/soc/starfive/jh7110_tdm.c
+> >>
+> >> +STARFIVE JH7110 TIMER DRIVER
+> >> +M:	Samin Guo <samin.guo@starfivetech.com>
+> >> +M:	Xingyu Wu <xingyu.wu@starfivetech.com>
+> >> +S:	Supported
+> >> +F:	Documentation/devicetree/bindings/timer/starfive,jh7110-timer.yaml
+> >> +F:	drivers/clocksource/timer-jh7110.c
+> >> +
+> >>  STARFIVE JH71X0 CLOCK DRIVERS
+> >>  M:	Emil Renner Berthing <kernel@esmil.dk>
+> >>  M:	Hal Feng <hal.feng@starfivetech.com>
+> >> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+> >> index 0ba0dc4ecf06..821abcc1e517 100644
+> >> --- a/drivers/clocksource/Kconfig
+> >> +++ b/drivers/clocksource/Kconfig
+> >> @@ -641,6 +641,17 @@ config RISCV_TIMER
+> >>  	  is accessed via both the SBI and the rdcycle instruction.  This is
+> >>  	  required for all RISC-V systems.
+> >>
+> >> +config STARFIVE_JH7110_TIMER
+> >> +	bool "Timer for the STARFIVE JH7110 SoC"
+> >> +	depends on ARCH_STARFIVE || COMPILE_TEST
+> >> +	select TIMER_OF
+> >> +	select CLKSRC_MMIO
+> >> +	default ARCH_STARFIVE
+> >> +	help
+> >> +	  This enables the timer for StarFive JH7110 SoC. On RISC-V platform,
+> >> +	  the system has started RISCV_TIMER, but you can also use this timer
+> >> +	  which can provide four channels to do a lot more things on JH7110 SoC.
+> >> +
+> >>  config CLINT_TIMER
+> >>  	bool "CLINT Timer for the RISC-V platform" if COMPILE_TEST
+> >>  	depends on GENERIC_SCHED_CLOCK && RISCV
+> >> diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
+> >> index 368c3461dab8..b66ac05ec086 100644
+> >> --- a/drivers/clocksource/Makefile
+> >> +++ b/drivers/clocksource/Makefile
+> >> @@ -80,6 +80,7 @@ obj-$(CONFIG_INGENIC_TIMER)		+= ingenic-timer.o
+> >>  obj-$(CONFIG_CLKSRC_ST_LPC)		+= clksrc_st_lpc.o
+> >>  obj-$(CONFIG_X86_NUMACHIP)		+= numachip.o
+> >>  obj-$(CONFIG_RISCV_TIMER)		+= timer-riscv.o
+> >> +obj-$(CONFIG_STARFIVE_JH7110_TIMER)	+= timer-jh7110.o
+> >>  obj-$(CONFIG_CLINT_TIMER)		+= timer-clint.o
+> >>  obj-$(CONFIG_CSKY_MP_TIMER)		+= timer-mp-csky.o
+> >>  obj-$(CONFIG_GX6605S_TIMER)		+= timer-gx6605s.o
+> >> diff --git a/drivers/clocksource/timer-jh7110.c b/drivers/clocksource/timer-jh7110.c
+> >> new file mode 100644
+> >> index 000000000000..914424368290
+> >> --- /dev/null
+> >> +++ b/drivers/clocksource/timer-jh7110.c
+> >> @@ -0,0 +1,387 @@
+> >> +// SPDX-License-Identifier: GPL-2.0
+> >> +/*
+> >> + * Starfive JH7110 Timer driver
+> >> + *
+> >> + * Copyright (C) 2022-2023 StarFive Technology Co., Ltd.
+> >> + *
+> >> + * Author:
+> >> + * Xingyu Wu <xingyu.wu@starfivetech.com>
+> >> + * Samin Guo <samin.guo@starfivetech.com>
+> >> + */
+> >> +
+> >> +#include <linux/clk.h>
+> >> +#include <linux/clockchips.h>
+> >> +#include <linux/clocksource.h>
+> >> +#include <linux/err.h>
+> >> +#include <linux/interrupt.h>
+> >> +#include <linux/io.h>
+> >> +#include <linux/iopoll.h>
+> >> +#include <linux/irq.h>
+> >> +#include <linux/kernel.h>
+> >> +#include <linux/module.h>
+> >> +#include <linux/of.h>
+> >> +#include <linux/of_device.h>
+> >> +#include <linux/platform_device.h>
+> >> +#include <linux/reset.h>
+> >> +#include <linux/sched_clock.h>
+> >> +
+> >> +/* Bias: Ch0-0x0, Ch1-0x40, Ch2-0x80, and so on. */
+> >> +#define JH7110_TIMER_CH_LEN		0x40
+> >> +#define JH7110_TIMER_CH_BASE(x)		((x) * JH7110_TIMER_CH_LEN)
+> >> +#define JH7110_TIMER_CH_MAX		4
+> >> +
+> >> +#define JH7110_CLOCK_SOURCE_RATING	200
+> >> +#define JH7110_VALID_BITS		32
+> >> +#define JH7110_DELAY_US			0
+> >> +#define JH7110_TIMEOUT_US		10000
+> >> +#define JH7110_CLOCKEVENT_RATING	300
+> >> +#define JH7110_TIMER_MAX_TICKS		0xffffffff
+> >> +#define JH7110_TIMER_MIN_TICKS		0xf
+> >> +#define JH7110_TIMER_NAME_NUM		19
+> >> +
+> >> +#define JH7110_TIMER_INT_STATUS		0x00 /* RO[0:4]: Interrupt Status for channel0~4 */
+> >> +#define JH7110_TIMER_CTL		0x04 /* RW[0]: 0-continuous run, 1-single run */
+> >> +#define JH7110_TIMER_LOAD		0x08 /* RW: load value to counter */
+> >> +#define JH7110_TIMER_ENABLE		0x10 /* RW[0]: timer enable register */
+> >> +#define JH7110_TIMER_RELOAD		0x14 /* RW: write 1 or 0 both reload counter */
+> >> +#define JH7110_TIMER_VALUE		0x18 /* RO: timer value register */
+> >> +#define JH7110_TIMER_INT_CLR		0x20 /* RW: timer interrupt clear register */
+> >> +#define JH7110_TIMER_INT_MASK		0x24 /* RW[0]: timer interrupt mask register */
+> >> +#define JH7110_TIMER_INT_CLR_AVA_MASK	BIT(1)
+> >> +
+> >> +struct jh7110_clkevt {
+> >> +	struct clock_event_device evt;
+> >> +	struct clocksource cs;
+> >> +	struct clk *clk;
+> >> +	char name[JH7110_TIMER_NAME_NUM];
+> >
+> > Instead of this define maybe just use something like
+> >
+> > 	char name[sizeof("jh7110-timer.chX")];
+> >
+>
+> Will fix.
+>
+> >> +	int irq;
+> >
+> > You wrote that you "dropped the extra copy of irq", but here you didn't.
+>
+> What I mean is to drop the local variable of irq in the probe. Do you mean to use a local variable instead this in the probe?
 
-Correct.
+No, what I mean is that this field is no longer used, so you can delete it.
 
-> Effectively it means that find_first bit may just return a random number.
-
-I prefer to think that it can return a result that is no longer valid by
-the time we further use it :)
-
-> Let's take another example:
-> 
-> 	do {
-> 		bit = get_random_number();
-> 		if (bit >= n)
-> 			abort...
-> 	} while (!test_and_clear_bit(bit, bitmap));
-> 
-> When running concurrently, the difference between this and your code
-> is only in probability of getting set bit somewhere from around the
-> beginning of bitmap.
-
-Well, as you say the difference is in the probability - i.e., average
-number of loops taken is higher with using truly random number and that is
-the whole point. We bother with complexity of lockless access exactly
-because of performance :). As long as find_first_bit() returns set bit in
-case there's no collision with other bitmap modification, we are fine with
-its results (usually we don't expect the collision to happen, often the
-bitmap users also employ schemes to spread different processes modifying
-the bitmap to different parts of the bitmap to further reduce likelyhood of
-a collision).
-
-> The key point is that find_bit() may return undef even if READ_ONCE() is
-> used. If bitmap gets changed anytime in the process, the result becomes
-> invalid. It may happen even after returning from find_first_bit().
-> 
-> And if my understanding correct, your code is designed in the
-> assumption that find_first_bit() may return garbage, so handles it
-> correctly.
-
-Yes, that is true.
-
-> > *Except* that the above actually is not safe due to find_first_bit()
-> > implementation and KCSAN warns about that. The problem is that:
-> > 
-> > Assume *addr == 1
-> > CPU1			CPU2
-> > find_first_bit(addr, 64)
-> >   val = *addr;
-> >   if (val) -> true
-> > 			clear_bit(0, addr)
-> >     val = *addr -> compiler decided to refetch addr contents for whatever
-> > 		   reason in the generated assembly
-> >     __ffs(val) -> now executed for value 0 which has undefined results.
-> 
-> Yes, __ffs(0) is undef. But the whole function is undef when accessing
-> bitmap concurrently.
-
-So here I think we get at the core of our misunderstanding :): Yes,
-find_first_bit() may return a bit number that is not set any longer. But it
-is guaranteed to return some number between 0 and n where n is the bitmap
-size. What __ffs() does when passed 0 value is unclear and likely will be
-architecture dependent. If we are guaranteed it returns some number between
-0 and 8*sizeof(unsigned long), then we are fine. But I'm concerned it may
-throw exception (similarly to division by 0) or return number greater than
-8*sizeof(unsigned long) for some architecture and that would be a problem.
-E.g. reading the x86 bsf instruction documentation, the destination
-register is untouched if there is no set bit so the result can indeed be >
-8*sizeof(unsigned long). So __ffs(0) can result in returning a number
-beyond the end of the bitmap (e.g. 0xffffffff). And that is IMO
-unacceptable output for find_first_bit().
-
-> > And the READ_ONCE() this patch adds prevents the compiler from adding the
-> > refetching of addr into the assembly.
-> 
-> That's true. But it doesn't improve on the situation. It was an undef
-> before, and it's undef after, but a 2% slower undef.
-> 
-> Now on that KCSAN warning. If I understand things correctly, for the
-> example above, KCSAN warning is false-positive, because you're
-> intentionally running lockless.
-
-As I wrote above, there are different levels of "undefinedness" and that
-matters in this case. KCSAN is complaining that the value passed to __ffs()
-function may be different one from the one tested in the condition before
-it. Depending on exact __ffs() behavior this may be fine or it may be not.
-
-> But for some other people it may be a true error, and now they'll have
-> no chance to catch it if KCSAN is forced to ignore find_bit() entirely.
-
-I agree some people may accidentally use bitmap function unlocked without
-properly handling the races. However in this case KCSAN does not warn about
-unsafe use of the result from find_bit() (which is what should happen for
-those unsafe uses). It complains about unsafe internal implementation of
-find_bit() when it is used without external synchronization. These two are
-different things so I don't think this is a good argument for leaving the
-race in find_bit().
-
-Furthermore I'd note that READ_ONCE() does not make KCSAN ignore find_bit()
-completely. READ_ONCE() forces the compiler to use the same value for the
-test and __ffs() argument (by telling it it cannot assume the standard C
-memory model using "volatile" keyword for this fetch). That's all.  That
-makes it impossible for KCSAN to inject a modification of the bitmap &
-refetch from memory inbetween the two uses of the local variable and thus
-it doesn't generate the warning anymore.
-
-> We've got the whole class of lockless algorithms that allow safe concurrent
-> access to the memory. And now that there's a tool that searches for them
-> (concurrent accesses), we need to have an option to somehow teach it
-> to suppress irrelevant warnings. Maybe something like this?
-> 
->         lockless_algorithm_begin(bitmap, bitmap_size(nbits));
-> 	do {
-> 		bit = find_first_bit(bitmap, nbits);
-> 		if (bit >= nbits)
-> 			break;
-> 	} while (!test_and_clear_bit(bit, bitmap));
->         lockless_algorithm_end(bitmap, bitmap_size(nbits));
-> 
-> And, of course, as I suggested a couple iterations ago, you can invent
-> a thread-safe version of find_bit(), that would be perfectly correct
-> for lockless use:
-> 
->  unsigned long _find_and_clear_bit(volatile unsigned long *addr, unsigned long size)
->  {
->         unsigned long bit = 0;
->  
->         while (!test_and_clear_bit(bit, bitmap) {
->                 bit = FIND_FIRST_BIT(addr[idx], /* nop */, size);
->                 if (bit >= size)
->                         return size;
->         }
-> 
->         return bit;
->  }
-> 
-> Didn't test that, but I hope 'volatile' specifier should be enough
-> for compiler to realize that it shouldn't optimize memory access, and
-> for KCSAN that everything's OK here. 
-
-Based on my research regarding __ffs() we indeed do need find_*_bit()
-functions that are guaranteed to return number in 0-n range even in
-presence of concurrent bitmap modifications. Do I get it right you'd
-rather prefer cloning all the find_*_bit() implementations to create
-such variants? IMO that's worse both in terms of maintainability (more
-code) and usability (users have to be aware special functions are needed
-for lockless code) so the 2% of performance overhead until gcc is fixed
-isn't IMO worth it but you are the maintainer...
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>
+> >
+> >> +	u32 rate;
+> >> +	u32 reload_val;
+> >> +	void __iomem *base;
+> >> +};
+> >> +
+> >> +static inline struct jh7110_clkevt *to_jh7110_clkevt(struct clock_event_device *evt)
+> >> +{
+> >> +	return container_of(evt, struct jh7110_clkevt, evt);
+> >> +}
+> >> +
+> >> +/* 0:continuous-run mode, 1:single-run mode */
+> >> +static inline void jh7110_timer_set_continuous_mod(struct jh7110_clkevt *clkevt)
+> >> +{
+> >> +	writel(0, clkevt->base + JH7110_TIMER_CTL);
+> >> +}
+> >> +
+> >> +static inline void jh7110_timer_set_single_mod(struct jh7110_clkevt *clkevt)
+> >> +{
+> >> +	writel(1, clkevt->base + JH7110_TIMER_CTL);
+> >> +}
+> >> +
+> >> +/* Interrupt Mask Register, 0:Unmask, 1:Mask */
+> >> +static inline void jh7110_timer_int_enable(struct jh7110_clkevt *clkevt)
+> >> +{
+> >> +	writel(0, clkevt->base + JH7110_TIMER_INT_MASK);
+> >> +}
+> >> +
+> >> +static inline void jh7110_timer_int_disable(struct jh7110_clkevt *clkevt)
+> >> +{
+> >> +	writel(1, clkevt->base + JH7110_TIMER_INT_MASK);
+> >> +}
+> >
+> > I really don't think all these wrappers make the code any clearer. Please just
+> > inline the writel() calls. What you can do to make it a bit clearer is
+> > something like
+> >
+> > enum {
+> > 	JH7110_TIMER_MODE_CONTINUOUS,
+> > 	JH7110_TIMER_MODE_SINGLE,
+> > };
+> >
+> > so you can write
+> >
+> > 	writel(JH7110_TIMER_MODE_CONTINUOUS, clkevt->base + JH7110_TIMER_CTL);
+> >
+>
+> Will fix.
+>
+> >> +
+> >> +/*
+> >> + * BIT(0): Read value represent channel intr status.
+> >> + * Write 1 to this bit to clear interrupt. Write 0 has no effects.
+> >> + * BIT(1): "1" means that it is clearing interrupt. BIT(0) can not be written.
+> >> + */
+> >> +static inline int jh7110_timer_int_clear(struct jh7110_clkevt *clkevt)
+> >> +{
+> >> +	u32 value;
+> >> +	int ret;
+> >> +
+> >> +	/* waiting interrupt can be to clearing */
+> >> +	ret = readl_poll_timeout_atomic(clkevt->base + JH7110_TIMER_INT_CLR, value,
+> >> +					!(value & JH7110_TIMER_INT_CLR_AVA_MASK),
+> >> +					JH7110_DELAY_US, JH7110_TIMEOUT_US);
+> >> +	if (!ret)
+> >> +		writel(0x1, clkevt->base + JH7110_TIMER_INT_CLR);
+> >> +
+> >> +	return ret;
+> >> +}
+> >> +
+> >> +/*
+> >> + * The initial value to be loaded into the
+> >> + * counter and is also used as the reload value.
+> >> + * val = clock rate --> 1s
+> >> + */
+> >> +static inline void jh7110_timer_set_load(struct jh7110_clkevt *clkevt, u32 val)
+> >> +{
+> >> +	writel(val, clkevt->base + JH7110_TIMER_LOAD);
+> >> +}
+> >> +
+> >> +static inline u32 jh7110_timer_get_val(struct jh7110_clkevt *clkevt)
+> >> +{
+> >> +	return readl(clkevt->base + JH7110_TIMER_VALUE);
+> >> +}
+> >> +
+> >> +/*
+> >> + * Write RELOAD register to reload preset value to counter.
+> >> + * Write 0 and write 1 are both ok.
+> >> + */
+> >> +static inline void jh7110_timer_set_reload(struct jh7110_clkevt *clkevt)
+> >> +{
+> >> +	writel(0, clkevt->base + JH7110_TIMER_RELOAD);
+> >> +}
+> >> +
+> >> +static inline void jh7110_timer_enable(struct jh7110_clkevt *clkevt)
+> >> +{
+> >> +	writel(1, clkevt->base + JH7110_TIMER_ENABLE);
+> >> +}
+> >> +
+> >> +static inline void jh7110_timer_disable(struct jh7110_clkevt *clkevt)
+> >> +{
+> >> +	writel(0, clkevt->base + JH7110_TIMER_ENABLE);
+> >> +}
+> >
+> > The same thing goes for all these wrappers. If you do insist on having these
+> > wrappers then at least group them all together so you can quickly scroll past
+> > them to get to the "real" code.
+>
+> Will fix.
+>
+> >
+> >> +
+> >> +static int jh7110_timer_int_init_enable(struct jh7110_clkevt *clkevt)
+> >> +{
+> >> +	int ret;
+> >> +
+> >> +	jh7110_timer_int_disable(clkevt);
+> >> +	ret = jh7110_timer_int_clear(clkevt);
+> >> +	if (ret)
+> >> +		return ret;
+> >> +
+> >> +	jh7110_timer_int_enable(clkevt);
+> >> +	jh7110_timer_enable(clkevt);
+> >> +
+> >> +	return 0;
+> >> +}
+> >> +
+> >> +static int jh7110_timer_shutdown(struct clock_event_device *evt)
+> >> +{
+> >> +	struct jh7110_clkevt *clkevt = to_jh7110_clkevt(evt);
+> >> +
+> >> +	jh7110_timer_disable(clkevt);
+> >> +	return jh7110_timer_int_clear(clkevt);
+> >> +}
+> >> +
+> >> +static void jh7110_timer_suspend(struct clock_event_device *evt)
+> >> +{
+> >> +	struct jh7110_clkevt *clkevt = to_jh7110_clkevt(evt);
+> >> +
+> >> +	clkevt->reload_val = jh7110_timer_get_val(clkevt);
+> >> +	jh7110_timer_shutdown(evt);
+> >> +}
+> >> +
+> >> +static void jh7110_timer_resume(struct clock_event_device *evt)
+> >> +{
+> >> +	struct jh7110_clkevt *clkevt = to_jh7110_clkevt(evt);
+> >> +
+> >> +	jh7110_timer_set_load(clkevt, clkevt->reload_val);
+> >> +	jh7110_timer_set_reload(clkevt);
+> >> +	jh7110_timer_int_enable(clkevt);
+> >> +	jh7110_timer_enable(clkevt);
+> >> +}
+> >> +
+> >> +static int jh7110_timer_tick_resume(struct clock_event_device *evt)
+> >> +{
+> >> +	jh7110_timer_resume(evt);
+> >> +
+> >> +	return 0;
+> >> +}
+> >> +
+> >> +/* IRQ handler for the timer */
+> >> +static irqreturn_t jh7110_timer_interrupt(int irq, void *priv)
+> >> +{
+> >> +	struct clock_event_device *evt = (struct clock_event_device *)priv;
+> >> +	struct jh7110_clkevt *clkevt = to_jh7110_clkevt(evt);
+> >> +
+> >> +	if (jh7110_timer_int_clear(clkevt))
+> >> +		return IRQ_NONE;
+> >> +
+> >> +	if (evt->event_handler)
+> >> +		evt->event_handler(evt);
+> >> +
+> >> +	return IRQ_HANDLED;
+> >> +}
+> >> +
+> >> +static int jh7110_timer_set_periodic(struct clock_event_device *evt)
+> >> +{
+> >> +	struct jh7110_clkevt *clkevt = to_jh7110_clkevt(evt);
+> >> +	u32 periodic = DIV_ROUND_CLOSEST(clkevt->rate, HZ);
+> >> +
+> >> +	jh7110_timer_disable(clkevt);
+> >> +	jh7110_timer_set_continuous_mod(clkevt);
+> >> +	jh7110_timer_set_load(clkevt, periodic);
+> >> +
+> >> +	return jh7110_timer_int_init_enable(clkevt);
+> >> +}
+> >> +
+> >> +static int jh7110_timer_set_oneshot(struct clock_event_device *evt)
+> >> +{
+> >> +	struct jh7110_clkevt *clkevt = to_jh7110_clkevt(evt);
+> >> +
+> >> +	jh7110_timer_disable(clkevt);
+> >> +	jh7110_timer_set_single_mod(clkevt);
+> >> +	jh7110_timer_set_load(clkevt, JH7110_TIMER_MAX_TICKS);
+> >> +
+> >> +	return jh7110_timer_int_init_enable(clkevt);
+> >> +}
+> >> +
+> >> +static int jh7110_timer_set_next_event(unsigned long next,
+> >> +				       struct clock_event_device *evt)
+> >> +{
+> >> +	struct jh7110_clkevt *clkevt = to_jh7110_clkevt(evt);
+> >> +
+> >> +	jh7110_timer_disable(clkevt);
+> >> +	jh7110_timer_set_single_mod(clkevt);
+> >> +	jh7110_timer_set_load(clkevt, next);
+> >> +	jh7110_timer_enable(clkevt);
+> >> +
+> >> +	return 0;
+> >> +}
+> >> +
+> >> +static void jh7110_set_clockevent(struct clock_event_device *evt)
+> >> +{
+> >> +	evt->features = CLOCK_EVT_FEAT_PERIODIC |
+> >> +			CLOCK_EVT_FEAT_ONESHOT |
+> >> +			CLOCK_EVT_FEAT_DYNIRQ;
+> >> +	evt->set_state_shutdown = jh7110_timer_shutdown;
+> >> +	evt->set_state_periodic = jh7110_timer_set_periodic;
+> >> +	evt->set_state_oneshot = jh7110_timer_set_oneshot;
+> >> +	evt->set_state_oneshot_stopped = jh7110_timer_shutdown;
+> >> +	evt->tick_resume = jh7110_timer_tick_resume;
+> >> +	evt->set_next_event = jh7110_timer_set_next_event;
+> >> +	evt->suspend = jh7110_timer_suspend;
+> >> +	evt->resume = jh7110_timer_resume;
+> >> +	evt->rating = JH7110_CLOCKEVENT_RATING;
+> >> +}
+> >> +
+> >> +static u64 jh7110_timer_clocksource_read(struct clocksource *cs)
+> >> +{
+> >> +	struct jh7110_clkevt *clkevt = container_of(cs, struct jh7110_clkevt, cs);
+> >> +
+> >> +	return (u64)jh7110_timer_get_val(clkevt);
+> >> +}
+> >> +
+> >> +static int jh7110_clocksource_init(struct jh7110_clkevt *clkevt)
+> >> +{
+> >> +	int ret;
+> >> +
+> >> +	jh7110_timer_set_continuous_mod(clkevt);
+> >> +	jh7110_timer_set_load(clkevt, JH7110_TIMER_MAX_TICKS);
+> >> +
+> >> +	ret = jh7110_timer_int_init_enable(clkevt);
+> >> +	if (ret)
+> >> +		return ret;
+> >> +
+> >> +	clkevt->cs.name = clkevt->name;
+> >> +	clkevt->cs.rating = JH7110_CLOCK_SOURCE_RATING;
+> >> +	clkevt->cs.read = jh7110_timer_clocksource_read;
+> >> +	clkevt->cs.mask = CLOCKSOURCE_MASK(JH7110_VALID_BITS);
+> >> +	clkevt->cs.flags = CLOCK_SOURCE_IS_CONTINUOUS;
+> >> +
+> >> +	return clocksource_register_hz(&clkevt->cs, clkevt->rate);
+> >> +}
+> >> +
+> >> +static void jh7110_clockevents_register(struct jh7110_clkevt *clkevt)
+> >> +{
+> >> +	clkevt->rate = clk_get_rate(clkevt->clk);
+> >> +
+> >> +	jh7110_set_clockevent(&clkevt->evt);
+> >> +	clkevt->evt.name = clkevt->name;
+> >> +	clkevt->evt.cpumask = cpu_possible_mask;
+> >> +
+> >> +	clockevents_config_and_register(&clkevt->evt, clkevt->rate,
+> >> +					JH7110_TIMER_MIN_TICKS, JH7110_TIMER_MAX_TICKS);
+> >> +}
+> >> +
+> >> +static int jh7110_timer_probe(struct platform_device *pdev)
+> >> +{
+> >> +	struct jh7110_clkevt *clkevt[JH7110_TIMER_CH_MAX];
+> >> +	char name[4];
+> >> +	struct clk *pclk;
+> >> +	struct reset_control *rst;
+> >> +	int ch;
+> >> +	int ret;
+> >> +	void __iomem *base;
+> >> +
+> >> +	base = devm_platform_ioremap_resource(pdev, 0);
+> >> +	if (IS_ERR(base))
+> >> +		return dev_err_probe(&pdev->dev, PTR_ERR(base),
+> >> +				     "failed to map registers\n");
+> >> +
+> >> +	rst = devm_reset_control_get_exclusive(&pdev->dev, "apb");
+> >> +	if (IS_ERR(rst))
+> >> +		return dev_err_probe(&pdev->dev, PTR_ERR(rst), "failed to get apb reset\n");
+> >> +
+> >> +	pclk = devm_clk_get_enabled(&pdev->dev, "apb");
+> >> +	if (IS_ERR(pclk))
+> >> +		return dev_err_probe(&pdev->dev, PTR_ERR(pclk),
+> >> +				     "failed to get & enable apb clock\n");
+> >> +
+> >> +	ret = reset_control_deassert(rst);
+> >> +	if (ret)
+> >> +		return dev_err_probe(&pdev->dev, ret, "failed to deassert apb reset\n");
+> >> +
+> >> +	for (ch = 0; ch < JH7110_TIMER_CH_MAX; ch++) {
+> >> +		clkevt[ch] = devm_kzalloc(&pdev->dev, sizeof(*clkevt[ch]), GFP_KERNEL);
+> >> +		if (!clkevt[ch])
+> >> +			return -ENOMEM;
+> >> +
+> >> +		snprintf(name, sizeof(name), "ch%d", ch);
+> >> +
+> >> +		clkevt[ch]->base = base + JH7110_TIMER_CH_BASE(ch);
+> >> +		/* Ensure timer is disabled */
+> >> +		jh7110_timer_disable(clkevt[ch]);
+> >> +
+> >> +		rst = devm_reset_control_get_exclusive(&pdev->dev, name);
+> >> +		if (IS_ERR(rst))
+> >> +			return PTR_ERR(rst);
+> >> +
+> >> +		clkevt[ch]->clk = devm_clk_get_enabled(&pdev->dev, name);
+> >> +		if (IS_ERR(clkevt[ch]->clk))
+> >> +			return PTR_ERR(clkevt[ch]->clk);
+> >> +
+> >> +		ret = reset_control_deassert(rst);
+> >> +		if (ret)
+> >> +			return ret;
+> >> +
+> >> +		clkevt[ch]->evt.irq = platform_get_irq(pdev, ch);
+> >> +		if (clkevt[ch]->evt.irq < 0)
+> >> +			return clkevt[ch]->evt.irq;
+> >> +
+> >> +		snprintf(clkevt[ch]->name, sizeof(clkevt[ch]->name), "%s.ch%d", pdev->name, ch);
+> >> +		jh7110_clockevents_register(clkevt[ch]);
+> >> +
+> >> +		ret = devm_request_irq(&pdev->dev, clkevt[ch]->evt.irq, jh7110_timer_interrupt,
+> >> +				       IRQF_TIMER | IRQF_IRQPOLL,
+> >> +				       clkevt[ch]->name, &clkevt[ch]->evt);
+> >> +		if (ret)
+> >> +			return ret;
+> >> +
+> >> +		ret = jh7110_clocksource_init(clkevt[ch]);
+> >> +		if (ret)
+> >> +			return ret;
+> >> +	}
+> >> +
+> >> +	return 0;
+> >> +}
+> >> +
+> >> +static const struct of_device_id jh7110_timer_match[] = {
+> >> +	{ .compatible = "starfive,jh7110-timer", },
+> >> +	{ /* sentinel */ }
+> >> +};
+> >> +MODULE_DEVICE_TABLE(of, jh7110_timer_match);
+> >> +
+> >> +static struct platform_driver jh7110_timer_driver = {
+> >> +	.probe = jh7110_timer_probe,
+> >> +	.driver = {
+> >> +		.name = "jh7110-timer",
+> >> +		.of_match_table = jh7110_timer_match,
+> >> +	},
+> >> +};
+> >> +module_platform_driver(jh7110_timer_driver);
+> >> +
+> >> +MODULE_AUTHOR("Xingyu Wu <xingyu.wu@starfivetech.com>");
+> >> +MODULE_DESCRIPTION("StarFive JH7110 timer driver");
+> >> +MODULE_LICENSE("GPL");
+> >> --
+> >> 2.25.1
