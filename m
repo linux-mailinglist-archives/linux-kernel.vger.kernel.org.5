@@ -2,65 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A3EA7CA6CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 13:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B337F7CA6CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 13:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232370AbjJPLfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 07:35:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33898 "EHLO
+        id S233069AbjJPLg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 07:36:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233069AbjJPLfh (ORCPT
+        with ESMTP id S230219AbjJPLg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 07:35:37 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7E28D9
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 04:35:34 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-507a98517f3so1431694e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 04:35:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697456133; x=1698060933; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lyKxdiQOm+Lo3Lu3u7Gs3LczlTMbQv2V0jRPZ5mmpFE=;
-        b=UQK8+c4giW58084LCeT7KYux3hPO62BWJPMxO6tMzQ5IcoI3kG1D6nvBp5V1kZsuMa
-         L5ltQg6hj8/FXgu+8VFVUQ/jTTM27Wm/5v6/+x9ZF+rzIHDO39FgBmNAbzQnbzvr9SvX
-         3fgFXHzZEKSHyTdS7RCiubFKS8k3tvAptiNjX2jFbQroUYeHngmLMUCk9YzNR18gLGUl
-         Rs9MCIDblRAxczb7zwhvEAHYvxzcGnCmIOEYIqo+eR/TitQa3kbL7YHRVNvzopk8g2zW
-         muAF9dntFOSh1JcdYCQRsMD+v9g5zGwHFXvhU/PWEjkqHT3gh5t7OoBGLYcoDyCQ7FPt
-         fiWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697456133; x=1698060933;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lyKxdiQOm+Lo3Lu3u7Gs3LczlTMbQv2V0jRPZ5mmpFE=;
-        b=LnsUoH65ABctf9rf6A8V8BLm9GykC4dcnV1yMJCDnAdI7T2TTcEf3lUX2Oxqg4nqLx
-         RYgrUD/Rnhkvd3wVMzIshUAcH0fC3pMe7ck/Q5hIv6c80HemEBEaOYFzwwldih7woQCT
-         MKNwPiQ8y5LeS3FSooCEzqkT9Wm21aMIDL3emq5edHKzP2TSn4oStTG47Mc+juclAEeb
-         v7c9xbF1fyYrG+xqv5vH1GnMCE6+hytDLgACCHZ0ATesxQzy79sWywWRU8LLPV9XDPmW
-         1tIDXaRSZpAnSMnhvEHsUty6jj4Tl4umLGyBSbaewI87EPb4nkksRM7NReKUB55NTwwf
-         CBkA==
-X-Gm-Message-State: AOJu0YzSx03Y9yAPd+oggLL6qCVDhv9CkxWLG0BBDVt16TDIimo0JIj9
-        pGL+ipXuSc3pp6qVnFcdn2XqLbyr2pshyi2w
-X-Google-Smtp-Source: AGHT+IHdjPYzzec8MZJc/6vlrrQFDHieTJMBAVwF6D9Iv2GbZTRlswDySA/B0DW4Q4MajnF/SOA5KQ==
-X-Received: by 2002:a05:6512:3604:b0:503:9a4:26f7 with SMTP id f4-20020a056512360400b0050309a426f7mr24368265lfs.40.1697456132702;
-        Mon, 16 Oct 2023 04:35:32 -0700 (PDT)
-Received: from gilbert-PC ([105.112.31.148])
-        by smtp.gmail.com with ESMTPSA id ay15-20020a05600c1e0f00b004063977eccesm6975714wmb.42.2023.10.16.04.35.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 04:35:30 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 12:35:23 +0100
-From:   Gilbert Adikankwu <gilbertadikankwu@gmail.com>
-To:     outreachy@lists.linux.dev, gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: emxx_udc: Remove unnecessary parentheses around
- condition tests
-Message-ID: <ZS0f+xaaLmLpKv2a@gilbert-PC>
+        Mon, 16 Oct 2023 07:36:27 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 778548E
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 04:36:25 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B8F362F4;
+        Mon, 16 Oct 2023 04:37:05 -0700 (PDT)
+Received: from [10.57.66.151] (unknown [10.57.66.151])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 795373F5A1;
+        Mon, 16 Oct 2023 04:36:23 -0700 (PDT)
+Message-ID: <daa423be-6db6-46bc-98a7-0c37ede04a8e@arm.com>
+Date:   Mon, 16 Oct 2023 12:36:22 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 0/5] mm, kpageflags: support folio and fix output for
+ compound pages
+Content-Language: en-GB
+To:     David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Naoya Horiguchi <naoya.horiguchi@linux.dev>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-kernel@vger.kernel.org, Hugh Dickins <hughd@google.com>
+References: <20231010142801.3780917-1-naoya.horiguchi@linux.dev>
+ <63d119f7-5adb-861a-00c2-69a92b19ef9b@redhat.com>
+ <20231012150226.GA473412@u2004>
+ <86170ebf-cbe3-1cda-dcb4-87e18695f9cd@redhat.com>
+ <ZSlcJWvTNi3rEcPf@casper.infradead.org>
+ <65dbdf2a-9281-a3c3-b7e3-a79c5b60b357@redhat.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <65dbdf2a-9281-a3c3-b7e3-a79c5b60b357@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,251 +58,179 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix 47 warnings detected by checkpatch.pl about unnecessary parenthesis
-around condition tests.
+On 16/10/2023 11:13, David Hildenbrand wrote:
+>>>>> It does sound inconsistent. What exactly do you want to tell user space with
+>>>>> the new flag?
+>>>>
+>>>> The current most problematic behavior is to report folio as thp (order-2
+>>>> pagecache page is definitely a folio but not a thp), and this is what the
+>>>> new flag is intended to tell.
+>>>
+>>> We are currently considering calling these sub-PMD sized THPs "small-sized
+>>> THP". [1] Arguably, we're starting with the anon part where we won't get
+>>> around exposing them to the user in sysfs.
+>>>
+>>> So I wouldn't immediately say that these things are not THPs. They are not
+>>> PMD-sized THP. A slab/hugetlb is certainly not a thp but a folio. Whereby
+>>> slabs can also be order-0 folios, but hugetlb can't.
+>>
+>> I think this is a mistake.  Users expect THPs to be PMD sized.  We already
+>> have the term "large folio" in use for file-backed memory; why do we
+>> need to invent a new term for anon large folios?
+> 
+> I changed my opinion two times, but I stabilized at "these are just huge pages
+> of different size" when it comes to user-visible features.
+> 
+> Handling/calling them folios internally -- especially to abstract the page vs.
+> compound page and how we manage/handle the metadata -- is a reasonable thing to
+> do, because that's what we decided to pass around.
+> 
+> 
+> For future reference, here is a writeup about my findings and the reason for my
+> opinion:
+> 
+> 
+> (1) OS-independent concept
+> 
+> Ignoring how the OS manages metadata (e.g., "struct page", "struct folio",
+> compound head/tail, memdesc, ...), the common term to describe a "the smallest
+> fixed-length contiguous block of physical memory into which memory pages are
+> mapped by the operating system.["[1] is a page frame -- people usually simplify
+> by dropping the "frame" part, so do I.
+> 
+> Larger pages (which we call "huge pages", FreeBSD "superpages", Windows "large
+> pages") can come in different sizes and were traditionally based on architecture
+> support, whereby architectures can support multiple ones [1]; I think what we
+> see is that the OS might use intermediate sizes to manage memory more
+> efficiently, abstracting/evolving that concept from the actual hardware page
+> table mapping granularity.
+> 
+> But the foundation is that we are dealing with "blocks of physical memory" in a
+> unit that is larger than the smallest page sizes. Larger pages.
+> 
+> [the comment about SGI IRIX on [1] is an interesting read; so are "scattered
+> superpages"[3]]
+> 
+> Users learned the difference between a "page" and a "huge page". I'm confident
+> that they can learn the difference between a "traditional huge page" and a
+> "small-sized huge page", just like they did with hugetlb (below).
+> 
+> We just have to be careful with memory statistics and to default to the
+> traditional huge pages for now. Slowly, the term "THP" will become more generic.
+> Apart from that, I fail to see the big source of confusion.
+> 
+> Note: FreeBSD currently similarly calls these things on arm64 "medium-sized
+> superpages", and did not invent new terms for that so far [2].
+> 
+> 
+> (2) hugetlb
+> 
+> Traditional huge pages started out to be PMD-sized. Before 2008, we only
+> supported a single huge page size. Ever since, we added support for sizes larger
+> (gigantic) and smaller than that (cont-pte / cont-pmd).
+> 
+> So (a) users did not panic because we also supported huge pages that were not
+> PMD-sized; (b) we managed to integrate it into the existing environment,
+> defaulting to the old PMD-sized huge pages towards the user but still providing
+> configuration knobs and (c) it is natural today to have multiple huge page sizes
+> supported in hugetlb.
+> 
+> Nowadays, when somebody says that they are using hugetlb huge pages, the first
+> question frequently is "which huge page size?". The same will happen with
+> transparent huge pages I believe.
+> 
+> 
+> (3) THP preparation for multiple sizes
+> 
+> With
+>     /sys/kernel/mm/transparent_hugepage/hpage_pmd_size
+> added in 2016, we already provided a way for users to query the PMD size for
+> THP, implying that there might be multiple sizes in the future.
+> 
+> Therefore, in commit 49920d28781d, Hugh already envisioned " some transparent
+> support for pud and pgd pages" and ended up calling it "_pmd_size". Turns out,
+> we want smaller THPs first, not larger ones.
+> 
+> 
+> (4) Metadata management
+> 
+> How the OS manages metadata for its memory -- and how it calls the involved
+> datastructures -- is IMHO an implementation detail (an important one regarding
+> performance, robustness and metadata overhead as we learned, though ;) ).
+> 
+> We were able to introduce folios without user-visible changes. We should be able
+> to implement memdesc (or memory type hierarchies) without user-visible changes
+> -- except for some interfaces that provide access to bare "struct page"
+> information (classifies as debugging interfaces IMHO).
+> 
+> 
+> Last but not least, we ended up consistently calling these "larger than a page"
+> things that we map into user space "(transparent) huge page" towards the user in
+> toggles, stats and documentation. Fortunately we didn't use the term "compound
+> page" back then; it would have been a mistake.
+> 
+> 
+> Regarding the pagecache, we managed to not expose any toggles towards the user,
+> because memory waste can be better controlled. So the term "folio" does not pop
+> up as a toggle in /sys and /proc.
+> 
+>     t14s: ~  $ find /sys -name "*folio*" 2> /dev/null
+>     t14s: ~  $ find /proc -name "*folio*" 2> /dev/null
+> 
+> Once we want to remove the (sub)page mapcount, we'll likely have to remove
+> _nr_pages_mapped. To make some workloads that are sensitive to memory
+> consumption [4] play along when not accounting only the actually mapped parts,
+> we might have to introduce other ways to control that, when
+> "/sys/kernel/debug/fault_around_bytes" no longer does the trick. I'm hoping we
+> can still find ways to avoid exposing any toggles for that; we'll see.
+> 
+> 
+> [1] https://en.wikipedia.org/wiki/Page_(computer_memory)
+> [2] https://www.freebsd.org/status/report-2022-04-2022-06/superpages/
+> [3] https://ieeexplore.ieee.org/document/6657040/similar#similar
+> [4] https://www.suse.com/support/kb/doc/?id=000019017
 
-Signed-off-by: Gilbert Adikankwu <gilbertadikankwu@gmail.com>
----
- drivers/staging/emxx_udc/emxx_udc.c | 72 ++++++++++++++---------------
- 1 file changed, 36 insertions(+), 36 deletions(-)
++1 for David's reasoning.
 
-diff --git a/drivers/staging/emxx_udc/emxx_udc.c b/drivers/staging/emxx_udc/emxx_udc.c
-index eb63daaca702..e8ddd691b788 100644
---- a/drivers/staging/emxx_udc/emxx_udc.c
-+++ b/drivers/staging/emxx_udc/emxx_udc.c
-@@ -149,8 +149,8 @@ static void _nbu2ss_ep0_complete(struct usb_ep *_ep, struct usb_request *_req)
- 			/* SET_FEATURE */
- 			recipient = (u8)(p_ctrl->bRequestType & USB_RECIP_MASK);
- 			selector  = le16_to_cpu(p_ctrl->wValue);
--			if ((recipient == USB_RECIP_DEVICE) &&
--			    (selector == USB_DEVICE_TEST_MODE)) {
-+			if (recipient == USB_RECIP_DEVICE &&
-+			    selector == USB_DEVICE_TEST_MODE) {
- 				wIndex = le16_to_cpu(p_ctrl->wIndex);
- 				test_mode = (u32)(wIndex >> 8);
- 				_nbu2ss_set_test_mode(udc, test_mode);
-@@ -287,7 +287,7 @@ static int _nbu2ss_epn_exit(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep)
- 	u32		num;
- 	u32		data;
- 
--	if ((ep->epnum == 0) || (udc->vbus_active == 0))
-+	if (ep->epnum == 0 || udc->vbus_active == 0)
- 		return	-EINVAL;
- 
- 	num = ep->epnum - 1;
-@@ -336,7 +336,7 @@ static void _nbu2ss_ep_dma_init(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep)
- 	u32		data;
- 
- 	data = _nbu2ss_readl(&udc->p_regs->USBSSCONF);
--	if (((ep->epnum == 0) || (data & (1 << ep->epnum)) == 0))
-+	if (ep->epnum == 0 || (data & (1 << ep->epnum)) == 0)
- 		return;		/* Not Support DMA */
- 
- 	num = ep->epnum - 1;
-@@ -380,7 +380,7 @@ static void _nbu2ss_ep_dma_exit(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep)
- 		return;		/* VBUS OFF */
- 
- 	data = _nbu2ss_readl(&preg->USBSSCONF);
--	if ((ep->epnum == 0) || ((data & (1 << ep->epnum)) == 0))
-+	if (ep->epnum == 0 || (data & (1 << ep->epnum)) == 0)
- 		return;		/* Not Support DMA */
- 
- 	num = ep->epnum - 1;
-@@ -560,7 +560,7 @@ static int ep0_out_overbytes(struct nbu2ss_udc *udc, u8 *p_buf, u32 length)
- 	union usb_reg_access  temp_32;
- 	union usb_reg_access  *p_buf_32 = (union usb_reg_access *)p_buf;
- 
--	if ((length > 0) && (length < sizeof(u32))) {
-+	if (length > 0 && length < sizeof(u32)) {
- 		temp_32.dw = _nbu2ss_readl(&udc->p_regs->EP0_READ);
- 		for (i = 0 ; i < length ; i++)
- 			p_buf_32->byte.DATA[i] = temp_32.byte.DATA[i];
-@@ -608,7 +608,7 @@ static int ep0_in_overbytes(struct nbu2ss_udc *udc,
- 	union usb_reg_access  temp_32;
- 	union usb_reg_access  *p_buf_32 = (union usb_reg_access *)p_buf;
- 
--	if ((i_remain_size > 0) && (i_remain_size < sizeof(u32))) {
-+	if (i_remain_size > 0 && i_remain_size < sizeof(u32)) {
- 		for (i = 0 ; i < i_remain_size ; i++)
- 			temp_32.byte.DATA[i] = p_buf_32->byte.DATA[i];
- 		_nbu2ss_ep_in_end(udc, 0, temp_32.dw, i_remain_size);
-@@ -701,7 +701,7 @@ static int _nbu2ss_ep0_in_transfer(struct nbu2ss_udc *udc,
- 		return result;
- 	}
- 
--	if ((i_remain_size < sizeof(u32)) && (result != EP0_PACKETSIZE)) {
-+	if (i_remain_size < sizeof(u32) && result != EP0_PACKETSIZE) {
- 		p_buffer += result;
- 		result += ep0_in_overbytes(udc, p_buffer, i_remain_size);
- 		req->div_len = result;
-@@ -738,7 +738,7 @@ static int _nbu2ss_ep0_out_transfer(struct nbu2ss_udc *udc,
- 		req->req.actual += result;
- 		i_recv_length -= result;
- 
--		if ((i_recv_length > 0) && (i_recv_length < sizeof(u32))) {
-+		if (i_recv_length > 0 && i_recv_length < sizeof(u32)) {
- 			p_buffer += result;
- 			i_remain_size -= result;
- 
-@@ -891,8 +891,8 @@ static int _nbu2ss_epn_out_pio(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep,
- 
- 	req->req.actual += result;
- 
--	if ((req->req.actual == req->req.length) ||
--	    ((req->req.actual % ep->ep.maxpacket) != 0)) {
-+	if (req->req.actual == req->req.length ||
-+	    (req->req.actual % ep->ep.maxpacket) != 0) {
- 		result = 0;
- 	}
- 
-@@ -914,8 +914,8 @@ static int _nbu2ss_epn_out_data(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep,
- 
- 	i_buf_size = min((req->req.length - req->req.actual), data_size);
- 
--	if ((ep->ep_type != USB_ENDPOINT_XFER_INT) && (req->req.dma != 0) &&
--	    (i_buf_size  >= sizeof(u32))) {
-+	if (ep->ep_type != USB_ENDPOINT_XFER_INT && req->req.dma != 0 &&
-+	    i_buf_size  >= sizeof(u32)) {
- 		nret = _nbu2ss_out_dma(udc, req, num, i_buf_size);
- 	} else {
- 		i_buf_size = min_t(u32, i_buf_size, ep->ep.maxpacket);
-@@ -954,8 +954,8 @@ static int _nbu2ss_epn_out_transfer(struct nbu2ss_udc *udc,
- 			}
- 		}
- 	} else {
--		if ((req->req.actual == req->req.length) ||
--		    ((req->req.actual % ep->ep.maxpacket) != 0)) {
-+		if (req->req.actual == req->req.length ||
-+		    (req->req.actual % ep->ep.maxpacket) != 0) {
- 			result = 0;
- 		}
- 	}
-@@ -1106,8 +1106,8 @@ static int _nbu2ss_epn_in_data(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep,
- 
- 	num = ep->epnum - 1;
- 
--	if ((ep->ep_type != USB_ENDPOINT_XFER_INT) && (req->req.dma != 0) &&
--	    (data_size >= sizeof(u32))) {
-+	if (ep->ep_type != USB_ENDPOINT_XFER_INT && req->req.dma != 0 &&
-+	    data_size >= sizeof(u32)) {
- 		nret = _nbu2ss_in_dma(udc, ep, req, num, data_size);
- 	} else {
- 		data_size = min_t(u32, data_size, ep->ep.maxpacket);
-@@ -1238,7 +1238,7 @@ static void _nbu2ss_endpoint_toggle_reset(struct nbu2ss_udc *udc, u8 ep_adrs)
- 	u8		num;
- 	u32		data;
- 
--	if ((ep_adrs == 0) || (ep_adrs == 0x80))
-+	if (ep_adrs == 0 || ep_adrs == 0x80)
- 		return;
- 
- 	num = (ep_adrs & 0x7F) - 1;
-@@ -1261,7 +1261,7 @@ static void _nbu2ss_set_endpoint_stall(struct nbu2ss_udc *udc,
- 	struct nbu2ss_ep *ep;
- 	struct fc_regs __iomem *preg = udc->p_regs;
- 
--	if ((ep_adrs == 0) || (ep_adrs == 0x80)) {
-+	if (ep_adrs == 0 || ep_adrs == 0x80) {
- 		if (bstall) {
- 			/* Set STALL */
- 			_nbu2ss_bitset(&preg->EP0_CONTROL, EP0_STL);
-@@ -1392,8 +1392,8 @@ static inline int _nbu2ss_req_feature(struct nbu2ss_udc *udc, bool bset)
- 	u8	ep_adrs;
- 	int	result = -EOPNOTSUPP;
- 
--	if ((udc->ctrl.wLength != 0x0000) ||
--	    (direction != USB_DIR_OUT)) {
-+	if (udc->ctrl.wLength != 0x0000 ||
-+	    direction != USB_DIR_OUT) {
- 		return -EINVAL;
- 	}
- 
-@@ -1480,7 +1480,7 @@ static int std_req_get_status(struct nbu2ss_udc *udc)
- 	u8	ep_adrs;
- 	int	result = -EINVAL;
- 
--	if ((udc->ctrl.wValue != 0x0000) || (direction != USB_DIR_IN))
-+	if (udc->ctrl.wValue != 0x0000 || direction != USB_DIR_IN)
- 		return result;
- 
- 	length =
-@@ -1542,9 +1542,9 @@ static int std_req_set_address(struct nbu2ss_udc *udc)
- 	int		result = 0;
- 	u32		wValue = le16_to_cpu(udc->ctrl.wValue);
- 
--	if ((udc->ctrl.bRequestType != 0x00)	||
--	    (udc->ctrl.wIndex != 0x0000)	||
--		(udc->ctrl.wLength != 0x0000)) {
-+	if (udc->ctrl.bRequestType != 0x00	||
-+	    udc->ctrl.wIndex != 0x0000		||
-+		udc->ctrl.wLength != 0x0000) {
- 		return -EINVAL;
- 	}
- 
-@@ -1564,9 +1564,9 @@ static int std_req_set_configuration(struct nbu2ss_udc *udc)
- {
- 	u32 config_value = (u32)(le16_to_cpu(udc->ctrl.wValue) & 0x00ff);
- 
--	if ((udc->ctrl.wIndex != 0x0000)	||
--	    (udc->ctrl.wLength != 0x0000)	||
--		(udc->ctrl.bRequestType != 0x00)) {
-+	if (udc->ctrl.wIndex != 0x0000	||
-+	    udc->ctrl.wLength != 0x0000	||
-+		udc->ctrl.bRequestType != 0x00) {
- 		return -EINVAL;
- 	}
- 
-@@ -1838,8 +1838,8 @@ static void _nbu2ss_ep_done(struct nbu2ss_ep *ep,
- 	}
- 
- #ifdef USE_DMA
--	if ((ep->direct == USB_DIR_OUT) && (ep->epnum > 0) &&
--	    (req->req.dma != 0))
-+	if (ep->direct == USB_DIR_OUT && ep->epnum > 0 &&
-+	    req->req.dma != 0)
- 		_nbu2ss_dma_unmap_single(udc, ep, req, USB_DIR_OUT);
- #endif
- 
-@@ -1931,7 +1931,7 @@ static inline void _nbu2ss_epn_in_dma_int(struct nbu2ss_udc *udc,
- 		mpkt = ep->ep.maxpacket;
- 		size = preq->actual % mpkt;
- 		if (size > 0) {
--			if (((preq->actual & 0x03) == 0) && (size < mpkt))
-+			if ((preq->actual & 0x03) == 0 && size < mpkt)
- 				_nbu2ss_ep_in_end(udc, ep->epnum, 0, 0);
- 		} else {
- 			_nbu2ss_epn_in_int(udc, ep, req);
-@@ -2428,8 +2428,8 @@ static int nbu2ss_ep_enable(struct usb_ep *_ep,
- 	}
- 
- 	ep_type = usb_endpoint_type(desc);
--	if ((ep_type == USB_ENDPOINT_XFER_CONTROL) ||
--	    (ep_type == USB_ENDPOINT_XFER_ISOC)) {
-+	if (ep_type == USB_ENDPOINT_XFER_CONTROL ||
-+	    ep_type == USB_ENDPOINT_XFER_ISOC) {
- 		pr_err(" *** %s, bat bmAttributes\n", __func__);
- 		return -EINVAL;
- 	}
-@@ -2438,7 +2438,7 @@ static int nbu2ss_ep_enable(struct usb_ep *_ep,
- 	if (udc->vbus_active == 0)
- 		return -ESHUTDOWN;
- 
--	if ((!udc->driver) || (udc->gadget.speed == USB_SPEED_UNKNOWN)) {
-+	if (!udc->driver || udc->gadget.speed == USB_SPEED_UNKNOWN) {
- 		dev_err(ep->udc->dev, " *** %s, udc !!\n", __func__);
- 		return -ESHUTDOWN;
- 	}
-@@ -2603,8 +2603,8 @@ static int nbu2ss_ep_queue(struct usb_ep *_ep,
- 		}
- 	}
- 
--	if ((ep->epnum > 0) && (ep->direct == USB_DIR_OUT) &&
--	    (req->req.dma != 0))
-+	if (ep->epnum > 0 && ep->direct == USB_DIR_OUT &&
-+	    req->req.dma != 0)
- 		_nbu2ss_dma_map_single(udc, ep, req, USB_DIR_OUT);
- #endif
- 
--- 
-2.34.1
+FWIW, the way I see it, everything is a folio; a folio is an implementation
+detail that neatly abstracts a physically contiguous, power-of-2 number of pages
+(including the single page case). So I'm not sure how useful it is to add the
+proposed KPF_FOLIO flag. The only real thing I can imagine user space using it
+for would be to tell if some extent of virtual memory is physically contiguous,
+and you can already do that from the PFN.
+
+Bigger picture interface-wise, I think it is simpler and more understandable to
+the user to extend an existing concept (THP) rather than invent a new one
+(folios) that substantially overlaps with the existing (PMD-sized) THP concept.
+
+That said, if you have plans in the folio roadmap that I'm not aware of, then
+perhaps those would change my mind. There is a thread here [1] where we are
+discussing the best way to expose "small-sized THP" (anon large folios) to user
+space - Metthew if you you stong feelings, please do reply!
+
+[1]
+https://lore.kernel.org/linux-mm/6d89fdc9-ef55-d44e-bf12-fafff318aef8@redhat.com/
+
+Thanks,
+Ryan
+
+
+> 
+> 
+>>
+>>> Looking at other interfaces, we do expose:
+>>>
+>>> include/uapi/linux/kernel-page-flags.h:#define KPF_COMPOUND_HEAD        15
+>>> include/uapi/linux/kernel-page-flags.h:#define KPF_COMPOUND_TAIL        16
+>>>
+>>> So maybe we should just continue talking about compound pages or do we have
+>>> to use both terms here in this interface?
+>>
+>> I don;t know how easy it's going to be to distinguish between a head
+>> and tail page in the Glorious Future once pages and folios are separated.
+> 
+> Probably a page-based interface would be the wrong interface for that;
+> fortunately, this interface has a "debugging" smell to it, so we might be able
+> to replace it.
+> 
 
