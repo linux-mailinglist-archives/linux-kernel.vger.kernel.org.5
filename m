@@ -2,133 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC3E7CA530
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:20:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F4B7CA537
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:22:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232839AbjJPKUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 06:20:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38258 "EHLO
+        id S232370AbjJPKWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 06:22:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232090AbjJPKUa (ORCPT
+        with ESMTP id S230152AbjJPKWx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 06:20:30 -0400
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68BDBF1;
-        Mon, 16 Oct 2023 03:20:27 -0700 (PDT)
-Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3af609c3e74so2926178b6e.2;
-        Mon, 16 Oct 2023 03:20:27 -0700 (PDT)
+        Mon, 16 Oct 2023 06:22:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6615C5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 03:22:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697451725;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xGjF9yN2JU4rsRBxh81TQLA4dxrIk2DTJW01EJMcc44=;
+        b=Qi7Gy3YJ7DQLtPLan31j0bEpvj14yeOwJhXL4yZx4DApqCx8REUPnvyiVNPJNTUrpESFBq
+        jdXZHsHBwwO6QUmTAFsullt1+eXdsLaPcPRP1oJi/hwYKtfjaUBMZt2Z2wuLE+wx7rO98y
+        9qfT5vh/dlcpw1If0aH0fiSvSXl0eYw=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-547-cHWN6UUvMEO6N8mNiU_viA-1; Mon, 16 Oct 2023 06:21:53 -0400
+X-MC-Unique: cHWN6UUvMEO6N8mNiU_viA-1
+Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5784ef4be4fso4168296a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 03:21:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697451627; x=1698056427;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=o5sJhsQNmbOT7c6Hbk0+8RLMXJFosGmigyC5c1uzxD4=;
-        b=Syj2/dbbjCoh2r3c3UkvnCFpgAlxN29/G38gnTHSY4vEGUaMJENmaYohMgSTA16JHI
-         DB09txz5fmMUx8jvdagD/y239AF8X+KP0neeH6YjZdcFVlJeXGEkqTDGs0BbsGddjfcN
-         vQTqtxnRavFCq2rwSoNZimAMuquGFbxoYXSZ2W+1XV2YqePn7jxwmSq5nBuvJfgHS706
-         Im+hR6TU5QlN0WrGcYlQeXZ+C1fjnoARN52EvsRaqyelILTmtzcdu3cJe1HMbovYa0sK
-         UcAzM49/5OsdwiBuhKMYKu69H8VTezNkEgFSZL6n/TOeafVLlr1PoNSbYsknboIdcQbb
-         O7QA==
-X-Gm-Message-State: AOJu0YynBJx0/UCHBV+GfIlUe1OKpXf0cd2yHbD61EAl2Mac23V3vs3E
-        k71bRq71ZrTokoLA5galYw==
-X-Google-Smtp-Source: AGHT+IEjmQ0QASWHv7d6KTWGX0k09e+bhKHEwBWKvhHcW+bG5yE9xwN0Kcutuvxhg937DJ6Z0G18EA==
-X-Received: by 2002:a05:6808:b23:b0:3b2:9c2f:50f1 with SMTP id t3-20020a0568080b2300b003b29c2f50f1mr15499375oij.8.1697451627039;
-        Mon, 16 Oct 2023 03:20:27 -0700 (PDT)
-Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id 5-20020aca0d05000000b003ae3056a58csm1782009oin.49.2023.10.16.03.20.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 03:20:26 -0700 (PDT)
-Received: (nullmailer pid 2077745 invoked by uid 1000);
-        Mon, 16 Oct 2023 10:20:25 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        d=1e100.net; s=20230601; t=1697451712; x=1698056512;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xGjF9yN2JU4rsRBxh81TQLA4dxrIk2DTJW01EJMcc44=;
+        b=bh6LVjl3yfDv5z2QgKvkftPWXtZ8xvV/lnQK57B4pVLY8Cpce91dNeuOnT+S6xyAgm
+         u8DAUsBeX07+2WRgRig7oTOMIE34tbmR5QfKXtYHxm6GHBLLe/siDqBHID99lpPC/16k
+         fYhFM/Ac6lElpxpoqLkV7lDDHwlvVywJOzRV+9+FSQBO6u+eN07sxg/+Erdf7f/0rBwd
+         RgZgxcsyg5zmzpY9Cvq6fwGNqoGqPFrPpqesrejZ1W5bkRMQFzgm3Mzi8VFj4Gmk317o
+         a1mAcl/I1XOlB3S4UvtS1nFZ3ZkwunSZAmDy/gPGM/ji1BtxdFx64pgd46Ur+QWyaStx
+         pNeg==
+X-Gm-Message-State: AOJu0YxL/qwJpdmgHwc7PQAuUkFc8bcLaL9pi42Dki1U+titUVeTLzCX
+        09x3AphuB4OdhdC3giiRoqe1lY1Kqe+XJ6OkDt+xdAlJ2ttFRpZSuJKw/uc5sbJCqLWTPLv2rUj
+        8US2ie7z6AG1Gtqtz3LkCUKFHLjAu4mWAWBJOgkqXXN/fz8xh9qhavA==
+X-Received: by 2002:a17:90b:1bcf:b0:27d:5568:e867 with SMTP id oa15-20020a17090b1bcf00b0027d5568e867mr9777229pjb.9.1697451712626;
+        Mon, 16 Oct 2023 03:21:52 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHh4w2kfgA6irj9S5H8CD7jiE2fT+aEXo0NBodAdw0sHrdeKFRvizHig84xpQz0v52lUAoqIUCPBOCW+1adeO8=
+X-Received: by 2002:a17:90b:1bcf:b0:27d:5568:e867 with SMTP id
+ oa15-20020a17090b1bcf00b0027d5568e867mr9777213pjb.9.1697451712327; Mon, 16
+ Oct 2023 03:21:52 -0700 (PDT)
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
+References: <20231016-apple-watchdog-suspend-v2-1-7ffff8042dbc@jannau.net>
+In-Reply-To: <20231016-apple-watchdog-suspend-v2-1-7ffff8042dbc@jannau.net>
+From:   Eric Curtin <ecurtin@redhat.com>
+Date:   Mon, 16 Oct 2023 11:21:16 +0100
+Message-ID: <CAOgh=Fy-=wJGcLOp1kn+Zd0H0+KysCQK3a7CwFyZLLvZ5W2Ekw@mail.gmail.com>
+Subject: Re: [PATCH v2] watchdog: apple: Deactivate on suspend
+To:     j@jannau.net
+Cc:     Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>, asahi@lists.linux.dev,
         linux-arm-kernel@lists.infradead.org,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        Eric Dumazet <edumazet@google.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>
-In-Reply-To: <20231016-marvell-88e6152-wan-led-v3-1-38cd449dfb15@linaro.org>
-References: <20231016-marvell-88e6152-wan-led-v3-0-38cd449dfb15@linaro.org>
- <20231016-marvell-88e6152-wan-led-v3-1-38cd449dfb15@linaro.org>
-Message-Id: <169745162509.2077728.8681177846583363222.robh@kernel.org>
-Subject: Re: [PATCH net-next v3 1/6] dt-bindings: marvell: Rewrite
- MV88E6xxx in schema
-Date:   Mon, 16 Oct 2023 05:20:25 -0500
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 16 Oct 2023 at 08:05, Janne Grunau via B4 Relay
+<devnull+j.jannau.net@kernel.org> wrote:
+>
+> From: Janne Grunau <j@jannau.net>
+>
+> The watchdog remains active after putting the system into suspend. Add
+> PM callbacks to deactivate the watchdog on suspend an re-activate it on
+> resume.
+>
+> Signed-off-by: Janne Grunau <j@jannau.net>
 
-On Mon, 16 Oct 2023 11:12:54 +0200, Linus Walleij wrote:
-> This is an attempt to rewrite the Marvell MV88E6xxx switch bindings
-> in YAML schema.
-> 
-> The current text binding says:
->   WARNING: This binding is currently unstable. Do not program it into a
->   FLASH never to be changed again. Once this binding is stable, this
->   warning will be removed.
-> 
-> Well that never happened before we switched to YAML markup,
-> we can't have it like this, what about fixing the mess?
-> 
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Reviewed-by: Eric Curtin <ecurtin@redhat.com>
+
+Is mise le meas/Regards,
+
+Eric Curtin
+
 > ---
->  .../bindings/net/dsa/marvell,mv88e6xxx.yaml        | 243 +++++++++++++++++++++
->  .../devicetree/bindings/net/dsa/marvell.txt        | 109 ---------
->  MAINTAINERS                                        |   2 +-
->  3 files changed, 244 insertions(+), 110 deletions(-)
-> 
-
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/net/dsa/marvell,mv88e6xxx.yaml:78:5: [error] syntax error: could not find expected ':' (syntax)
-
-dtschema/dtc warnings/errors:
-make[2]: *** Deleting file 'Documentation/devicetree/bindings/net/dsa/marvell,mv88e6xxx.example.dts'
-Documentation/devicetree/bindings/net/dsa/marvell,mv88e6xxx.yaml:78:5: could not find expected ':'
-make[2]: *** [Documentation/devicetree/bindings/Makefile:26: Documentation/devicetree/bindings/net/dsa/marvell,mv88e6xxx.example.dts] Error 1
-make[2]: *** Waiting for unfinished jobs....
-./Documentation/devicetree/bindings/net/dsa/marvell,mv88e6xxx.yaml:78:5: could not find expected ':'
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/dsa/marvell,mv88e6xxx.yaml: ignoring, error parsing file
-make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1427: dt_binding_check] Error 2
-make: *** [Makefile:234: __sub-make] Error 2
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231016-marvell-88e6152-wan-led-v3-1-38cd449dfb15@linaro.org
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+> Changes in v2:
+> - use DEFINE_SIMPLE_DEV_PM_OPS
+> - Link to v1: https://lore.kernel.org/r/20230930-apple-watchdog-suspend-v1-1-1998c0be9fd7@jannau.net
+> ---
+>  drivers/watchdog/apple_wdt.c | 25 +++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+>
+> diff --git a/drivers/watchdog/apple_wdt.c b/drivers/watchdog/apple_wdt.c
+> index eddeb0fede89..d4f739932f0b 100644
+> --- a/drivers/watchdog/apple_wdt.c
+> +++ b/drivers/watchdog/apple_wdt.c
+> @@ -173,6 +173,8 @@ static int apple_wdt_probe(struct platform_device *pdev)
+>         if (!wdt->clk_rate)
+>                 return -EINVAL;
+>
+> +       platform_set_drvdata(pdev, wdt);
+> +
+>         wdt->wdd.ops = &apple_wdt_ops;
+>         wdt->wdd.info = &apple_wdt_info;
+>         wdt->wdd.max_timeout = U32_MAX / wdt->clk_rate;
+> @@ -190,6 +192,28 @@ static int apple_wdt_probe(struct platform_device *pdev)
+>         return devm_watchdog_register_device(dev, &wdt->wdd);
+>  }
+>
+> +static int apple_wdt_resume(struct device *dev)
+> +{
+> +       struct apple_wdt *wdt = dev_get_drvdata(dev);
+> +
+> +       if (watchdog_active(&wdt->wdd) || watchdog_hw_running(&wdt->wdd))
+> +               apple_wdt_start(&wdt->wdd);
+> +
+> +       return 0;
+> +}
+> +
+> +static int apple_wdt_suspend(struct device *dev)
+> +{
+> +       struct apple_wdt *wdt = dev_get_drvdata(dev);
+> +
+> +       if (watchdog_active(&wdt->wdd) || watchdog_hw_running(&wdt->wdd))
+> +               apple_wdt_stop(&wdt->wdd);
+> +
+> +       return 0;
+> +}
+> +
+> +static DEFINE_SIMPLE_DEV_PM_OPS(apple_wdt_pm_ops, apple_wdt_suspend, apple_wdt_resume);
+> +
+>  static const struct of_device_id apple_wdt_of_match[] = {
+>         { .compatible = "apple,wdt" },
+>         {},
+> @@ -200,6 +224,7 @@ static struct platform_driver apple_wdt_driver = {
+>         .driver = {
+>                 .name = "apple-watchdog",
+>                 .of_match_table = apple_wdt_of_match,
+> +               .pm = pm_sleep_ptr(&apple_wdt_pm_ops),
+>         },
+>         .probe = apple_wdt_probe,
+>  };
+>
+> ---
+> base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+> change-id: 20230930-apple-watchdog-suspend-7f73831130fb
+>
+> Best regards,
+> --
+> Janne Grunau <j@jannau.net>
+>
+>
 
