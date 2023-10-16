@@ -2,112 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F23CF7CB504
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 23:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1290D7CB507
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 23:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232345AbjJPVEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 17:04:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53854 "EHLO
+        id S233396AbjJPVHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 17:07:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjJPVEp (ORCPT
+        with ESMTP id S229848AbjJPVHD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 17:04:45 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43855A2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 14:04:44 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-405459d9a96so8105e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 14:04:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697490282; x=1698095082; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aZ2HoL3h5D1fsP53Du9yOoTclZQj1sU4/TX9UV/0uiM=;
-        b=EBjzy5K9zEVybireG+puBsS0HVjlviTV8Uo7gpSwlFKT6VMQZKmMHlroae8P4y0EEP
-         n2agOrOiz2KH5Iain92YxG9TxmqmLEo5Lt9jmeBB26lwIGtIPfBDk07vInZ81py/zDX5
-         6CynVNafVBfZt32SE8WsXavsP2ldzALWxOJnvmePk3uriARGCeXZj4q9VXuT7MyMshS3
-         dVcNS1bVL3cMO/0nj1+9xs4f87/ORO+ErQs6plZKMgyKQ+I3DtdOFbUr8eOxWbL9xR55
-         Z0k4RltY7GvtpqS+ItR3sSVMRSDO0H0YA6ZL57OM1QCTtIFBT7L50wLxLia1Pd8cbKiS
-         cDsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697490282; x=1698095082;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aZ2HoL3h5D1fsP53Du9yOoTclZQj1sU4/TX9UV/0uiM=;
-        b=BkqE/RxqUlhjKU6WzvIHs42zHx3yYETisTfC64uiJLHgkOEzzhpmGMHXKtH3oD0vBM
-         8OgdNk0jIk+xvn1yW6fkjWdmpEogoShimmMGIJCHDETWeCmd/SOCIsAdFrW6K+j5wdZ+
-         1Tb///l1L6wOJovKz1IKcmBMCQKRecq4YDRjAKl0SiLdU8O35i3tzkg7Vsa1vRrxYelM
-         M62hZ9+SBjcXL8lsI7oH+Eb4f50IKxoAcNNwFpd7eckCW0eNXd7NEDK/dudF05hYMDZH
-         ITRzRA4xHEqBgdQDmhcMidRwFCnFfmvT4C6R7OTd5pP6ZSVOZILENKMR+VFZPBE28SXI
-         xFpw==
-X-Gm-Message-State: AOJu0Yw8BhOUBjBmfUAZxzic2bCFzO6ygMpCSRLakGi/7Uv7Eja19zSE
-        v6OK3554WUz+7uq25coIAGzLxa4WAHEaQ/8l1FL+wg==
-X-Google-Smtp-Source: AGHT+IEBxQ/b6PbtK2nIbjqx4pGQocOWRqq0DEFmL/qxeQmkxd35BDeJvXUnlduXXhQtlBJccIr9+Xd3OAiFo+k5lzE=
-X-Received: by 2002:a05:600c:35c9:b0:400:46db:1bf2 with SMTP id
- r9-20020a05600c35c900b0040046db1bf2mr40379wmq.2.1697490282514; Mon, 16 Oct
- 2023 14:04:42 -0700 (PDT)
+        Mon, 16 Oct 2023 17:07:03 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E31A7;
+        Mon, 16 Oct 2023 14:07:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+ t=1697490408; x=1698095208; i=deller@gmx.de;
+ bh=d6tjiijzqQhQKa4d9B5bi64BIn8+37P4rH09K0TNgCk=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=fW880YgfFGiPWR6gnyAu9yN8aKybPvsczrXXi3oKHWDCXOshb5ThdkCvB+m2F9qZ45ZSNlaTS5F
+ USfUQvnj73mxGhkeT4IJfFsy/jZvvDIDEcGXJt411XIRe1d/jJqqNcckQR/HSHTR094bo72yQWn0y
+ f/0G7/+Jhe/fDKnwbfTY/QSJLYxJPkSB3BxHTRLkXFFezJ4ZRmuHQrRgm2RHbGBEpb+PnK2ZgCJQQ
+ OU7RIfsVBa/mpsn0PL4nzYNdw+vm5IKrtujiYAluw8+SkMTWeXLZQNe3V+0JVWhduK0oeqXVpLbTZ
+ Z+GVYuIPjTEnLjca+N+pyWj4KxyfZbEg8HTw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.60] ([94.134.153.197]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MPokD-1rEr8t1oIt-00MuL8; Mon, 16
+ Oct 2023 23:06:48 +0200
+Message-ID: <3ad85b24-4f7d-4031-ab27-d5c6516dff8b@gmx.de>
+Date:   Mon, 16 Oct 2023 23:06:47 +0200
 MIME-Version: 1.0
-References: <20231016093309.726436-1-yangjihong1@huawei.com>
-In-Reply-To: <20231016093309.726436-1-yangjihong1@huawei.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 16 Oct 2023 14:04:30 -0700
-Message-ID: <CAP-5=fXwAbaqqYVE_9y6JbkQ8rkU-f38ZB0gbpZdg10HLtyYzQ@mail.gmail.com>
-Subject: Re: [PATCH] perf pmu: Filter out search events table of software pmu
- in perf_pmu__lookup()
-To:     Yang Jihong <yangjihong1@huawei.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, namhyung@kernel.org, adrian.hunter@intel.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fbdev: sa1100fb: mark sa1100fb_init() static
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Lee Jones <lee@kernel.org>, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20231016200450.826502-1-arnd@kernel.org>
+From:   Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ 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
+In-Reply-To: <20231016200450.826502-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Provags-ID: V03:K1:oww78UoT3556zyxNmfdLNIun6dvYXk9jadrobaQVz4Ke3P4xxcO
+ 5RcgOMbOl9NAdoDa55i132ZOvOqAZL5iEt+JOLGvJW9eB2l7PKfcDScXSt+17+JUpyJm5Yy
+ Kqrk27CMl/ArKvcxBlRJk4Fc11B3R+1J0nPDmu0HZ7mlOCO0ZPZAiE9JT5LvpY2dzejnGlL
+ 0Qu5OMhDPh/VK02ibFRGw==
+UI-OutboundReport: notjunk:1;M01:P0:NXFGhKVB1Ss=;t5w+h5GczZzzMmIu5idSOSmAJQU
+ CPUt4xslxFC6MVMCH9aF90nkkhWCzff0sYrjWJwLBKbSHT/u/hONVVbxvl3s8EwK3UPUnuBHK
+ dlJzgt3mGp5mfm90KqQKHu24AFzOnE5O61aO8RJrhQHjPDjq+j+BnqA/+EMdC9K3trMR03vPm
+ 3hd1E8gao+EhTERXmdjqAdMTpvqopTOr7U26T4M4eZQL+CRnCf2KLkzI6lZ82pkIOkbBcvNQO
+ EcGZKoERagWuFWqRaVH7QeRYdy7owkpCSlt58KaaUYzNuCT/ID5u+F/7bgFDXBDMbMg8ZG4rK
+ 7cY3jThtJkxQdPM5L4ukBehVrJQQFyTGZFczeaSdeAf+6gIB67xxiaoBhSTKW+7mAnDeT6uh1
+ Tjm9m1f02I677taUegWVUm9+JqfT6+UWrLTEeDjokYWkSB4PNQreZ7/0CnxhbChV4YNZXE96I
+ dhsI6j6J0wwh42nZoHamBGsAaCjhDK+V+FCXyxqUxYEDiQg4X/aZDmxixNqt0/Op0pJQmKRF3
+ AcB9PtCt1ePbpVKdpk6ihgKFXaVAWH7WgIroUeVdS/E/7kwDd2NK7mXNSYQJyC+ApCuENDQiS
+ qeRjPtk5T+lXRVa4GBZ4BhA52+I/S0MyCG9kLuiPqbTwm/bvAIWSSZq4g1tAq0MXtjr5sBASn
+ eh34AT2bbYaSvOFqJnSXyalKlERVuF7EUP9y+jupTuZd1BhgT8C0CPDnQ7gyiACJE6g0o99r+
+ gRXBPpmeoMEgarLOuoG05VgXpviDBMW9pHHOYCAwbkSfqQeXBlvts3ZUkxtTf5yW8Yfrveu0c
+ lGrWQxq384w/EsuHlJwLrVuVc5c2HgfSMgVe8Ou19xT1FJ3zdF95xNd4P2Gip6BvHBfClPCld
+ zFDw7zDNBXNf8JGb2bn5uk7Ks+Vnq6UVV6eST24fJ9gx9gR7JvhFUx5N0m1lyBiTFpClCWyqJ
+ MIBnVxKmliDvl9EuQjKjKteNzJw=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 2:35=E2=80=AFAM Yang Jihong <yangjihong1@huawei.com=
-> wrote:
+On 10/16/23 22:04, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 >
-> For software pmu, the events_table is empty, reducing unnecessary search.
+> This is a global function that is only referenced as an initcall. This c=
+auses
+> a warning:
 >
-> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+> drivers/video/fbdev/sa1100fb.c:1218:12: error: no previous prototype for=
+ 'sa1100fb_init' [-Werror=3Dmissing-prototypes]
+>
+> Make it static instead.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-I'd rather that all PMUs behaved in the same manner without ifs that
-will catch people/me out later on. perf_pmu__is_software tells whether
-the kernel context is software and therefore whether events can be
-grouped with a hardware event. As a test for whether json exists or
-not I'd rather stick to values derived from the json.
+applied.
 
-Thanks,
-Ian
+Thanks!
+Helge
 
 > ---
->  tools/perf/util/pmu.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>   drivers/video/fbdev/sa1100fb.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> index 6428e2648289..59c8394a4efa 100644
-> --- a/tools/perf/util/pmu.c
-> +++ b/tools/perf/util/pmu.c
-> @@ -1033,7 +1033,8 @@ struct perf_pmu *perf_pmu__lookup(struct list_head =
-*pmus, int dirfd, const char
->                 pmu->id =3D pmu_id(name);
->         pmu->max_precise =3D pmu_max_precise(dirfd, pmu);
->         pmu->alias_name =3D pmu_find_alias_name(pmu, dirfd);
-> -       pmu->events_table =3D perf_pmu__find_events_table(pmu);
-> +       if (!perf_pmu__is_software(pmu))
-> +               pmu->events_table =3D perf_pmu__find_events_table(pmu);
->         pmu_add_sys_aliases(pmu);
->         list_add_tail(&pmu->list, pmus);
+> diff --git a/drivers/video/fbdev/sa1100fb.c b/drivers/video/fbdev/sa1100=
+fb.c
+> index 63e12a7c1100e..e14eb634cb944 100644
+> --- a/drivers/video/fbdev/sa1100fb.c
+> +++ b/drivers/video/fbdev/sa1100fb.c
+> @@ -1215,7 +1215,7 @@ static struct platform_driver sa1100fb_driver =3D =
+{
+>   	},
+>   };
 >
-> --
-> 2.34.1
->
+> -int __init sa1100fb_init(void)
+> +static int __init sa1100fb_init(void)
+>   {
+>   	if (fb_get_options("sa1100fb", NULL))
+>   		return -ENODEV;
+
