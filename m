@@ -2,120 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF017CB122
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 19:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4739A7CB12C
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 19:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231508AbjJPRMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 13:12:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57678 "EHLO
+        id S232812AbjJPRQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 13:16:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234136AbjJPRMi (ORCPT
+        with ESMTP id S232778AbjJPRQt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 13:12:38 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78F54F7
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 10:12:31 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2c514cbbe7eso28040321fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 10:12:31 -0700 (PDT)
+        Mon, 16 Oct 2023 13:16:49 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D04AE6
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 10:16:47 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c9d407bb15so39969135ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 10:16:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697476349; x=1698081149; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fR2mIVGSF7TnFNx625C974mkPtvhKRG+fj3NHxRdBic=;
-        b=IQ38Sl4IxMh8inhRGCJyf7OgdWua/+R5OeFSIVDWGhTAZbx4CU25k9GArKVc/GH2ZA
-         Tn/T3jruJAyDN/dm0i59a4VDQ7LK+evi2tKwNKbyiFHZmwXokmgI7O+5cMlnjggIuv+n
-         rlItrHdA636ABz3btjFRLLCRTHlYQWKmap5+A=
+        d=linaro.org; s=google; t=1697476607; x=1698081407; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=oOnkKW9E33HHzsaH2XgU+G+2xfhOZYjGYZoXUL8UE40=;
+        b=NHse2qeSscYLnKCIUo3VpbyNi3s7KSQ1S8wxpCHq/Z2uQR/TaSeepBWB7j5seoGVEU
+         YwJiWfq/FRUaiLJugaefFL+kOhJQgZL1l23Nxcp7OIjy1h9F4NT/bS+w1DSOIMOOLlqL
+         yV58njO7nP5Ng1kHOaZgSu713puXjDNtug9gOB5QlTkEYBKuGYGWW1z7H2VMe9SQpj7N
+         k2HAGJqEgrlXHM72GbCcfodl0L/+BVdfj+zwIT7EbT+IuFxQvtlYaEWAZgjS6BPcyS2V
+         59tKaORNt0esW1vYBOXFToJ1P09lN4axQLUkNy/cRAqC427G9pb3OqAFWf0x1R7bYkxp
+         wbsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697476349; x=1698081149;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fR2mIVGSF7TnFNx625C974mkPtvhKRG+fj3NHxRdBic=;
-        b=tvnV3AvIQHlamYQvdB7AeEDmkNwSR2tgnUAH5XpJoTB/qzNSLH4PbwcteLHPoEzKVr
-         cd2R1i4Mkk+3/2Zq7STR63Cr0b7wxbGOcVsWCKo4m16Ooq78oo+GrBT380mU6wtQM66B
-         alf7H7PP/CkhSrkRbKRyfFrXj64zUJjxgez11w4zmFont98Estxc1ENTOsP3f/dsa/XC
-         s0Qb7mQ62BVz3k5+xGnrHgE38jDsSYurna6I0ubIcW+aBHJhJjwzc1BXOz/TrULd8udS
-         7ykCxlTnyYckgNn5gZNxoSBhESfVzP8KN0iczUy6jSsCpVRQtaM+i5GTamvZzFOuYEIi
-         mUcg==
-X-Gm-Message-State: AOJu0YzErggvWZR6Ik2F8LO7yLTDTEuo67Zvhl2w7eQ0lonploinN7Xp
-        ClDlR91VnlwpdartO8S1HxleSLpIPECodM7GwIR1CQ==
-X-Google-Smtp-Source: AGHT+IFYEwS3GmFPfDnVyPpFl2TGjAr5jpeeRbFDZPrVa7iXPThSJ5Gw1GMmajv1hPud7RpmMQRMCt7PWljX+01yQ3A=
-X-Received: by 2002:a2e:a98e:0:b0:2c5:1c4:9005 with SMTP id
- x14-20020a2ea98e000000b002c501c49005mr8458352ljq.32.1697476349608; Mon, 16
- Oct 2023 10:12:29 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697476607; x=1698081407;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oOnkKW9E33HHzsaH2XgU+G+2xfhOZYjGYZoXUL8UE40=;
+        b=P8mQHzAfRL96iotIxjggyDL9cLzKTp2kU13kdTUFdvKVK75jKhAmZxxC02RQpFrUCn
+         DgNnc/mqLHo0oYdzmeFIKxKSthjAcLIVypgG4DeRVFhm0gGmEX11Tph6RYIhXHe/Cr4T
+         BoT6uMO9eVINmSordc9QwNEhxsT8494eQkQNszFxY5Duww1RZZkIz7mz7Cj5ysvOawV1
+         H+cCSS1oKToyq+qa4waQB1HAMUZCr+us7z3+ne0S4nNo2IOhkaurqataCL5CQpLcTG4a
+         6mWT6ZYAO0gnkqSpVOBqQcwOIxuAi9+yMlMwv99S55DpX6FXJhXqpg/L5vvhBCS15wwC
+         p58Q==
+X-Gm-Message-State: AOJu0YzOYWD8z02dxcJg0TXamK2J0AOXlbBZ2w3NOFrBGRoMHlPq4Muw
+        A1D6gelOnAKpv3OTV7NIg6VE
+X-Google-Smtp-Source: AGHT+IFho1tjm5iK0/PdZpwOJVLlzh60B+Z1CzCZJ5QivVrZEGbF5FhDL6PPek4KbSf6TWQbtLGYZw==
+X-Received: by 2002:a17:903:22c9:b0:1ca:8b74:17ff with SMTP id y9-20020a17090322c900b001ca8b7417ffmr1919597plg.26.1697476606907;
+        Mon, 16 Oct 2023 10:16:46 -0700 (PDT)
+Received: from thinkpad ([117.207.31.199])
+        by smtp.gmail.com with ESMTPSA id c15-20020a170903234f00b001c62b9a51c0sm8698818plh.103.2023.10.16.10.16.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 10:16:46 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 22:46:37 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Frank Li <Frank.li@nxp.com>
+Cc:     aisheng.dong@nxp.com, bhelgaas@google.com,
+        devicetree@vger.kernel.org, festevam@gmail.com,
+        imx@lists.linux.dev, jdmason@kudzu.us, kernel@pengutronix.de,
+        kishon@kernel.org, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, lpieralisi@kernel.org, maz@kernel.org,
+        s.hauer@pengutronix.de, shawnguo@kernel.org, tglx@linutronix.de
+Subject: Re: [PATCH v2 0/5] Add RC-to-EP doorbell with platform MSI controller
+Message-ID: <20231016171637.GJ39962@thinkpad>
+References: <20230911220920.1817033-1-Frank.Li@nxp.com>
+ <ZQtmpL2vCMgR+Upu@lizhi-Precision-Tower-5810>
+ <20230930090249.GB3564@thinkpad>
+ <ZSVd5GN7lJUfdF8L@lizhi-Precision-Tower-5810>
+ <ZS1N0jgGYfmMsgrJ@lizhi-Precision-Tower-5810>
 MIME-Version: 1.0
-References: <20231012230237.2676469-1-wenst@chromium.org> <20231012230237.2676469-7-wenst@chromium.org>
- <318016c7-8ceb-4c96-8784-597fac8d194b@collabora.com>
-In-Reply-To: <318016c7-8ceb-4c96-8784-597fac8d194b@collabora.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Mon, 16 Oct 2023 10:12:18 -0700
-Message-ID: <CAGXv+5EY_vfX+cNZ4QH++fH0uRBJ_hEK5mQpRAJbbsisXWBaNQ@mail.gmail.com>
-Subject: Re: [PATCH 6/9] arm64: dts: mediatek: Add MT8186 Krabby platform
- based Tentacruel / Tentacool
-To:     Eugen Hristev <eugen.hristev@collabora.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZS1N0jgGYfmMsgrJ@lizhi-Precision-Tower-5810>
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 2:21=E2=80=AFAM Eugen Hristev
-<eugen.hristev@collabora.com> wrote:
->
-> On 10/13/23 02:02, Chen-Yu Tsai wrote:
-> > Tentacruel and Tentacool are MT8186 based Chromebooks based on the
-> > Krabby design.
-> >
-> > Tentacruel, also known as the ASUS Chromebook CM14 Flip CM1402F, is a
-> > convertible device with touchscreen and stylus.
-> >
-> > Tentacool, also known as the ASUS Chromebook CM14 CM1402C, is a laptop
-> > device. It does not have a touchscreen or stylus.
-> >
->
-> Hi Chen-Yu,
->
-> The Krabby design has the touchscreen ? if the touchscreen is for
-> Tentacruel ,then the touchscreen should be described in the tentacruel
-> dtsi, not in the Krabby and then deleted for tentacool.
+On Mon, Oct 16, 2023 at 10:50:58AM -0400, Frank Li wrote:
+> On Tue, Oct 10, 2023 at 10:21:24AM -0400, Frank Li wrote:
+> > On Sat, Sep 30, 2023 at 11:02:49AM +0200, Manivannan Sadhasivam wrote:
+> > > On Wed, Sep 20, 2023 at 05:39:48PM -0400, Frank Li wrote:
+> > > > On Mon, Sep 11, 2023 at 06:09:15PM -0400, Frank Li wrote:
+> > > > > ┌────────────┐   ┌───────────────────────────────────┐   ┌────────────────┐
+> > > > > │            │   │                                   │   │                │
+> > > > > │            │   │ PCI Endpoint                      │   │ PCI Host       │
+> > > > > │            │   │                                   │   │                │
+> > > > > │            │◄──┤ 1.platform_msi_domain_alloc_irqs()│   │                │
+> > > > > │            │   │                                   │   │                │
+> > > > > │ MSI        ├──►│ 2.write_msi_msg()                 ├──►├─BAR<n>         │
+> > > > > │ Controller │   │   update doorbell register address│   │                │
+> > > > > │            │   │   for BAR                         │   │                │
+> > > > > │            │   │                                   │   │ 3. Write BAR<n>│
+> > > > > │            │◄──┼───────────────────────────────────┼───┤                │
+> > > > > │            │   │                                   │   │                │
+> > > > > │            ├──►│ 4.Irq Handle                      │   │                │
+> > > > > │            │   │                                   │   │                │
+> > > > > │            │   │                                   │   │                │
+> > > > > └────────────┘   └───────────────────────────────────┘   └────────────────┘
+> > > > 
+> > > > @mani:
+> > > > 	Do you have chance to review this patch again?
+> > > 
+> > > I was on vacation for past few weeks. Will take a look in the coming week.
+> > 
+> > Ping?
+> > 
+> > Frank
+> 
+> @mani: did you have chance to look at this?
+> 
 
-Yes. The Krabby design is the reference design and has all the bells and
-whistles. Vendors can choose to drop features for their market segmenting
-purposes.
+Sorry for the long delay. I will take a look tomorrow.
 
-In essence the vendors are taking a Google design and tweaking it to suite
-their needs. Sometimes things get deleted. Deleting the node seems like
-a proper way to describe it.
+- Mani
 
-ChenYu
+> > 
+> > > 
+> > > - Mani
+> > > 
+> > > > 
+> > > > Frank
+> > > > 
+> > > > > 
+> > > > > This patches based on old https://lore.kernel.org/imx/20221124055036.1630573-1-Frank.Li@nxp.com/
+> > > > > 
+> > > > > Original patch only target to vntb driver. But actually it is common
+> > > > > method.
+> > > > > 
+> > > > > This patches add new API to pci-epf-core, so any EP driver can use it.
+> > > > > 
+> > > > > The key point is comments from Thomas Gleixner, who suggest use new
+> > > > > PCI/IMS. But arm platform change still not be merged yet.
+> > > > > 
+> > > > > git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git devmsi-v2-arm
+> > > > > 
+> > > > > So I still use existed method implement RC to EP doorbell.
+> > > > > 
+> > > > > If Thomas Gleixner want to continue work on devmsi-v2-arm, I can help test
+> > > > > and update this patch.
+> > > > > 
+> > > > > Change from v1 to v2
+> > > > > - Add missed patch for endpont/pci-epf-test.c
+> > > > > - Move alloc and free to epc driver from epf.
+> > > > > - Provide general help function for EPC driver to alloc platform msi irq.
+> > > > > - Fixed manivannan's comments.
+> > > > > 
+> > > > > Frank Li (5):
+> > > > >   PCI: endpoint: Add RC-to-EP doorbell support using platform MSI
+> > > > >     controller
+> > > > >   PCI: dwc: add doorbell support by use MSI controller
+> > > > >   PCI: endpoint: pci-epf-test: add doorbell test
+> > > > >   misc: pci_endpoint_test: Add doorbell test case
+> > > > >   tools: PCI: Add 'B' option for test doorbell
+> > > > > 
+> > > > >  drivers/misc/pci_endpoint_test.c              |  48 +++++
+> > > > >  .../pci/controller/dwc/pcie-designware-ep.c   |   2 +
+> > > > >  drivers/pci/endpoint/functions/pci-epf-test.c |  59 +++++-
+> > > > >  drivers/pci/endpoint/pci-epc-core.c           | 192 ++++++++++++++++++
+> > > > >  drivers/pci/endpoint/pci-epf-core.c           |  44 ++++
+> > > > >  include/linux/pci-epc.h                       |   6 +
+> > > > >  include/linux/pci-epf.h                       |   7 +
+> > > > >  include/uapi/linux/pcitest.h                  |   1 +
+> > > > >  tools/pci/pcitest.c                           |  16 +-
+> > > > >  9 files changed, 373 insertions(+), 2 deletions(-)
+> > > > > 
+> > > > > -- 
+> > > > > 2.34.1
+> > > > > 
+> > > 
+> > > -- 
+> > > மணிவண்ணன் சதாசிவம்
 
-> Or is there any reason for describing the touchscreen for Krabby ?
-> One additional way to solve this is to have the touchsreen as separate
-> dtsi and only include it for the boards that have it, e.g. tentacruel .
-> Eugen
-> > The two devices both have two variants. The difference is a second
-> > source touchpad controller that shares the same address as the original=
-,
-> > but is incompatible.
-> >
-> > The extra SKU IDs for the Tentacruel devices map to different sensor
-> > components attached to the Embedded Controller. These are not visible
-> > to the main processor.
-> >
-> [...]
->
+-- 
+மணிவண்ணன் சதாசிவம்
