@@ -2,126 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C08B7C9CC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 03:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 192AE7C9CD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 03:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbjJPB0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 21:26:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58334 "EHLO
+        id S230283AbjJPBc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 21:32:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJPB0Z (ORCPT
+        with ESMTP id S229567AbjJPBc5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 21:26:25 -0400
-Received: from wxsgout04.xfusion.com (wxsgout03.xfusion.com [36.139.52.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E490A9;
-        Sun, 15 Oct 2023 18:26:20 -0700 (PDT)
-Received: from wuxshcsitd00600.xfusion.com (unknown [10.32.133.213])
-        by wxsgout04.xfusion.com (SkyGuard) with ESMTPS id 4S7zs85ws4z9xg13;
-        Mon, 16 Oct 2023 09:23:40 +0800 (CST)
-Received: from localhost (10.82.147.3) by wuxshcsitd00600.xfusion.com
- (10.32.133.213) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Mon, 16 Oct
- 2023 09:25:59 +0800
-Date:   Mon, 16 Oct 2023 09:25:59 +0800
-From:   Wang Jinchao <wangjinchao@xfusion.com>
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>
-CC:     Steffen Klassert <steffen.klassert@secunet.com>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <stone.xulei@xfusion.com>
-Subject: Re: [PATCH v3] Fixes: 07928d9bfc81 ("padata: Remove broken queue
- flushing")
-Message-ID: <ZSyRJx/5b8PufWwA@fedora>
-References: <ZSDWAcUxXcwD4YUZ@fedora>
- <tgveetqzkm4if3kkq5mzhgfetbm4nqe5coegphdtyye3xul6r4@5cr6uvfrinow>
+        Sun, 15 Oct 2023 21:32:57 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51FA0A9
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 18:32:55 -0700 (PDT)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id A68382C02B1;
+        Mon, 16 Oct 2023 14:32:51 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1697419971;
+        bh=J6M5IsynnoswtQm5mi5V72Srk6LXjCtjo18yO5zsd8w=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SHI7P0gyE/ZTmFmQGrr1kjmDW9BPFteWcgCceiXUdBVJj/qLtyzPS8MjAnPAUF2bh
+         rNn7a+bkSE2ViMZs1VizUnNSWBiVCYmYIRLuH0XxL9V5QLWCbV3arPnW8+qhVJZr+2
+         hESeyTxeB+Aj3MFPTs47Rm4BWDacOYMC9XIoFDkZE2T7A4coMwsod/Wg97NWoP0qEx
+         WAL8Jrew3TqXepLGgm6+pqTf5U7EU2D35LtyYBgNiGtTig9GsRpCoqeyAJZetzdonh
+         MQ3W1sSr0aSy+LR7psmiBM55RCXcuSTSlTJO6UXP5oBh0pIxklP8IPP1RMiyi+01Ri
+         ZLQNm5JriScUQ==
+Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B652c92c30000>; Mon, 16 Oct 2023 14:32:51 +1300
+Received: from richardl-dl.ws.atlnz.lc (richardl-dl.ws.atlnz.lc [10.33.23.23])
+        by pat.atlnz.lc (Postfix) with ESMTP id 8126A13EDA9;
+        Mon, 16 Oct 2023 14:32:51 +1300 (NZDT)
+Received: by richardl-dl.ws.atlnz.lc (Postfix, from userid 1481)
+        id 7CF5B520158; Mon, 16 Oct 2023 14:32:51 +1300 (NZDT)
+From:   Richard Laing <richard.laing@alliedtelesis.co.nz>
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, ilpo.jarvinen@linux.intel.com,
+        andriy.shevchenko@linux.intel.com
+Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Richard Laing <richard.laing@alliedtelesis.co.nz>
+Subject: [PATCH] dt-bindings: serial: snps-dw-apb-uart: Add property to drain TX FIFO
+Date:   Mon, 16 Oct 2023 14:32:05 +1300
+Message-ID: <20231016013207.2249946-1-richard.laing@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <tgveetqzkm4if3kkq5mzhgfetbm4nqe5coegphdtyye3xul6r4@5cr6uvfrinow>
-X-Originating-IP: [10.82.147.3]
-X-ClientProxiedBy: wuxshcsitd00600.xfusion.com (10.32.133.213) To
- wuxshcsitd00600.xfusion.com (10.32.133.213)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=L6ZjvNb8 c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=bhdUkHdE2iEA:10 a=4-VxxmyDogjG6lCeASgA:9
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 11:22:03AM -0400, Daniel Jordan wrote:
-> Hi,
-> 
-> On Sat, Oct 07, 2023 at 11:52:33AM +0800, Wang Jinchao wrote:
-> > Signed-off-by: Wang Jinchao <wangjinchao@xfusion.com>
-> 
-> The Fixes: tag should be near your Signed-off-by:, and the subject of
-> the patch should be something descriptive like
-> 
->     padata: Fix refcnt handling in padata_free_shell()
-> 
-> Here's some documentation about this:
-> 
->     https://docs.kernel.org/process/5.Posting.html#patch-formatting-and-changelogs
-> 
-Updated in patch v4.
+During development of a new hardware an issue was seen where writes to
+UART_LCR can result in characters that are currently held in the TX FIFO
+being lost rather than sent, even if the userspace process has attempted =
+to
+flush them.
 
-> > Acked-by: Daniel Jordan <daniel.m.jordan@oracle.com>
-> > ---
-> > V3: 
-> >     Include Daniel's ack
-> >
-> > V2: https://lore.kernel.org/all/ZRTLHY5A+VqIKhA2@fedora/
-> >     To satisfy Sparse, use rcu_dereference_protected.
-> >     Reported-by: kernel test robot <lkp@intel.com>
-> >     Closes: https://lore.kernel.org/oe-kbuild-all/202309270829.xHgTOMKw-lkp@intel.com/
-> 
-> These two tags can also go near your SoB.
-> 
-From intel kernel test robot:
-    If you fix the issue in a separate patch/commit (i.e. not just a new version of
-    the same patch/commit), kindly add following tags
-    | Reported-by: kernel test robot <lkp@intel.com>
-    | Closes: https://lore.kernel.org/oe-kbuild-all/202309270829.xHgTOMKw-lkp@intel.com/
-So I updated the patch without these tags.
+This is most visible when using the "resize" command (tested on Busybox),
+where we have observed the escape code for restoring cursor position
+becoming mangled.
 
-> > V1: https://lore.kernel.org/all/ZRE4XvOOhz4HSOgR@fedora/
-> > 
-> >  kernel/padata.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/padata.c b/kernel/padata.c
-> > index 222d60195de6..79d04a97ded6 100644
-> > --- a/kernel/padata.c
-> > +++ b/kernel/padata.c
-> > @@ -1102,12 +1102,16 @@ EXPORT_SYMBOL(padata_alloc_shell);
-> >   */
-> >  void padata_free_shell(struct padata_shell *ps)
-> >  {
-> > +	struct parallel_data *pd;
-> > +
-> >  	if (!ps)
-> >  		return;
-> >  
-> >  	mutex_lock(&ps->pinst->lock);
-> >  	list_del(&ps->list);
-> > -	padata_free_pd(rcu_dereference_protected(ps->pd, 1));
-> > +	pd = rcu_dereference_protected(ps->pd, 1);
-> > +	if (refcount_dec_and_test(&pd->refcnt))
-> > +		padata_free_pd(rcu_dereference_protected(ps->pd, 1));
-> 
-> As Herbert points out, this version changes the code by
-> rcu-dereferencing pd twice.  Usually previous acks are dropped when
-> introducing new changes, but you can have it back by only
-> rcu-dereferencing once and addressing the other comments above.
-Thanks for your and Herbert's acks, which were included in patch v4.
+This is the same issue as addressed in=20
+commit 914eaf935ec7 ("serial: 8250_dw: Allow TX FIFO to drain before
+writing to UART_LCR")=20
 
-I know Herbert has acked my patch from your email; however, I have 
-not received Herbert's acknowledgment email, and I do not know why.
-> 
-> >  	mutex_unlock(&ps->pinst->lock);
-> >  
-> >  	kfree(ps);
-> > -- 
-> > 2.40.0
-> > 
+for the Armada 38x serial port. This patch makes the fix more generic
+allowing it to be applied on any similar UART.
+
+Richard Laing (2):
+  serial: 8250_dw: Allow TX FIFO to drain before writing to UART_LCR An
+    issue has been observed on the Broadcom BCM56160 serial port which
+    appears closely related to a similar issue on the Marvell Armada 38x
+    serial port.
+  dt-bindings: serial: snps-dw-apb-uart: Add property to drain TX FIFO
+
+ .../bindings/serial/snps-dw-apb-uart.yaml      |  6 ++++++
+ drivers/tty/serial/8250/8250_dw.c              | 18 ++++++++++++++++++
+ drivers/tty/serial/8250/8250_dwlib.h           |  1 +
+ 3 files changed, 25 insertions(+)
+
+--=20
+2.42.0
+
