@@ -2,136 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 953B37CB53B
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 23:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56ABC7CB539
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 23:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233831AbjJPVWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 17:22:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38282 "EHLO
+        id S233461AbjJPVWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 17:22:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233570AbjJPVWi (ORCPT
+        with ESMTP id S229666AbjJPVW3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 17:22:38 -0400
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4583AB;
-        Mon, 16 Oct 2023 14:22:34 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id A569D100002;
-        Tue, 17 Oct 2023 00:22:30 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru A569D100002
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1697491350;
-        bh=tE5YoBnt+11PUnXEmb2Dc+agDamwbenbeeGvKIFi5A4=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=a4PBneFVUNr4GSufpFhR9VLKkcuA+Qd49KGJBxmmsLvzRBVyFjFJnnZr4N7z1AmgX
-         glGrFBHF95BAk563w3x7sv+w7CowE0vxneqq0v3M2ISOKgmFjjD1w9a26lmbWx0djb
-         P+MtN60OEmr4cvPDn47Aox3TjSi/GNEsSSAeLmqfCuYdKgJFRzPtqNujCkXS1czQpN
-         rsKClAh+XTv/8a7iIJXY2L63qP7vVJR2viJt3nVJHi/v3HG4tB5WLLkfn3DWZBxsiV
-         H6EqOOrpqEtIGfGpbTH3ZKAiaMumekIjparEqVrgqewxBWf2TjhI64vU4J6ERBIFpT
-         CheH9ZAcD9hYA==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Tue, 17 Oct 2023 00:22:30 +0300 (MSK)
-Received: from [192.168.1.127] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Tue, 17 Oct 2023 00:22:30 +0300
-Message-ID: <49b1d68c-2f16-2efd-ae24-2e2bd95a094b@salutedevices.com>
-Date:   Tue, 17 Oct 2023 00:22:51 +0300
+        Mon, 16 Oct 2023 17:22:29 -0400
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 370CEA7;
+        Mon, 16 Oct 2023 14:22:27 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 88B70FF806;
+        Mon, 16 Oct 2023 21:22:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1697491345;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0mmINDpTwCAmUV8dD8J0BfvK4SwBpCRLkJ0C+AEu8wI=;
+        b=RL0vrCkIKGAZwxV6uYhZHAVRTQmO9ReaEW3Vl4Ru5LwwV8Edezze6IutuIfGIOOeBxi3bK
+        /qwysA4DD0gJgGAO0REtTdFzqHmsu49/TyKTSmzehh4sViV30BanApvE144lIKq6IEFuGi
+        WNi4Hiif+q9Jrj/mxwfPP90Adsvao1/wkJ76JfPbN9Gj0gDe2hLeymq5aRRWOw+VJIqQ6p
+        x5w4IHIjDPjIEiXxv52NeU62tLIEaqJij+JPdTxGrzSvqoyENSf8ZpTbU56UWKydMZV4hu
+        0S0sb72ZYD1bghF+NAAB6znGXCXkrpCvB9i8p7QmsB6WpwMKAHdczac095Znug==
+Message-ID: <74eac5f2-228b-4775-a101-53b2fdd5bf86@bootlin.com>
+Date:   Mon, 16 Oct 2023 23:23:39 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v1 09/11] leds: aw200xx: improve autodim calculation
- method
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] wifi: wilc1000: use vmm_table as array in wilc struct
+To:     Jeff Johnson <quic_jjohnson@quicinc.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Kalle Valo <kvalo@kernel.org>,
+        Michael Walle <mwalle@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Ajay Singh <ajay.kathat@microchip.com>, stable@vger.kernel.org
+References: <20231016-wilc1000_tx_oops-v2-1-8d1982a29ef1@bootlin.com>
+ <bb95048f-2540-4d42-abb2-3132d33cd6c3@quicinc.com>
 Content-Language: en-US
-To:     Dmitry Rokosov <ddrokosov@salutedevices.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     <lee@kernel.org>, <pavel@ucw.cz>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <kernel@sberdevices.ru>, <rockosov@gmail.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-leds@vger.kernel.org>
-References: <20231006160437.15627-1-ddrokosov@salutedevices.com>
- <20231006160437.15627-10-ddrokosov@salutedevices.com>
- <CAHp75VcntHXe31H8C9GcGhc+HRA-gZjtD=uibMMYN-FS254RJw@mail.gmail.com>
- <20231009131808.lzri7z2nvcmkfuu3@CAB-WSD-L081021>
- <20231009140225.gj7vkmmio5xfvtnk@CAB-WSD-L081021>
-From:   George Stark <gnstark@salutedevices.com>
-In-Reply-To: <20231009140225.gj7vkmmio5xfvtnk@CAB-WSD-L081021>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+From:   =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+In-Reply-To: <bb95048f-2540-4d42-abb2-3132d33cd6c3@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 180654 [Oct 16 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: gnstark@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 540 540 2509a3fe0f7fdc802e7154a32be7c2dd394ab987, p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;salutedevices.com:7.1.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/10/16 20:05:00 #22203970
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-GND-Sasl: alexis.lothore@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Jeff,
 
-
-On 10/9/23 17:02, Dmitry Rokosov wrote:
-> On Mon, Oct 09, 2023 at 04:18:08PM +0300, Dmitry Rokosov wrote:
->> On Fri, Oct 06, 2023 at 09:03:47PM +0300, Andy Shevchenko wrote:
->>> On Fri, Oct 6, 2023 at 7:05 PM Dmitry Rokosov
->>> <ddrokosov@salutedevices.com> wrote:
->>>>
->>>> From: George Stark <gnstark@salutedevices.com>
->>>>
->>>> use DIV_ROUND_UP instead of coarse div
->>>
->>> Please, respect English grammar and punctuation.
->>> Refer to macros and functions as func() (note the parentheses).
->>>
->>> ...
->>>
->>>>   #define AW200XX_REG_DIM2FADE(x) ((x) + 1)
->>>> +#define AW200XX_REG_FADE2DIM(fade) \
->>>> +       DIV_ROUND_UP((fade) * AW200XX_DIM_MAX, AW200XX_FADE_MAX)
->>>
->>> Have you checked if the overflow is _now_ possible (compiling on
->>> 32-bit platforms as well)?
->>
->> I suppose we shouldn't carry on about overflow here because the value of
->> fade cannot exceed 255, and DIM_MAX is set at 63
->>
->> You can find maximum values of fade and dim in the aw200xx driver
->> header:
->>
->> #define AW200XX_DIM_MAX                  (BIT(6) - 1)
->> #define AW200XX_FADE_MAX                 (BIT(8) - 1)
+On 10/16/23 17:26, Jeff Johnson wrote:
+> On 10/16/2023 1:29 AM, Alexis Lothoré wrote:
+>> diff --git a/drivers/net/wireless/microchip/wilc1000/wlan.c
+>> b/drivers/net/wireless/microchip/wilc1000/wlan.c
+>> index 58bbf50081e4..e4113f2dfadf 100644
+>> --- a/drivers/net/wireless/microchip/wilc1000/wlan.c
+>> +++ b/drivers/net/wireless/microchip/wilc1000/wlan.c
+>> @@ -1492,7 +1492,7 @@ int wilc_wlan_init(struct net_device *dev)
+>>       }
+>>         if (!wilc->vmm_table)
+>> -        wilc->vmm_table = kzalloc(WILC_VMM_TBL_SIZE, GFP_KERNEL);
+>> +        wilc->vmm_table = kzalloc(WILC_VMM_TBL_SIZE * sizeof(u32), GFP_KERNEL);
 > 
-> I agree that checking if the fade is not greater than FADE_MAX will not
-> be excessive. The LED subsystem is capable of sending brightness levels
-> higher than 255
-> 
+> this is probably OK since the values are constant, but kcalloc() is generally
+> preferred
 
-Probably we should set max_brightness to AW200XX_FADE_MAX in 
-led_classdev when adding leds.
+Ok, I can submit a new version with kcalloc. One thing that I do not understand
+however is why checkpatch.pl remains silent on this one. I guess it should raise
+the ALLOC_WITH_MULTIPLY warning here. I tried to dive into the script to
+understand why, but I drowned in regexes (and Perl, with which I am not familiar
+with). Could it be because of both sides being constant ?
+
+Thanks,
+Alexis
 
 -- 
-Best regards
-George
+Alexis Lothoré, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
