@@ -2,125 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF3417CA5E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FB297CA5F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233520AbjJPKle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 06:41:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39678 "EHLO
+        id S233328AbjJPKnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 06:43:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232618AbjJPKka (ORCPT
+        with ESMTP id S233374AbjJPKnX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 06:40:30 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08982FE;
-        Mon, 16 Oct 2023 03:40:27 -0700 (PDT)
-X-UUID: 65fcafae6c1011eea33bb35ae8d461a2-20231016
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=7C1sDzO4W4A9cu2M5CMOj2+5Gzk6upR7EYFW5XCk6Jg=;
-        b=qzx8RtCaPIL9ZiKRkJXxLUAbfv9IwvHfIHJlN9mbvSD7RhpI6gSUXpZuFOMrCEpNEVB/MekOd5GT8+e4+e+8qY9zlMyjl4n9YKE4Yi4/dPYvfQb08aiAfOeod1wKjPHGxkIWGNwzndSi8/p11ykImjQk0Pw7bOm4YFk2B6SbPhA=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:172d79aa-f815-49d1-b6f8-663bd00bc832,IP:0,U
-        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:-5
-X-CID-META: VersionHash:5f78ec9,CLOUDID:1891fcbf-14cc-44ca-b657-2d2783296e72,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-        NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: 65fcafae6c1011eea33bb35ae8d461a2-20231016
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <shawn.sung@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1554905661; Mon, 16 Oct 2023 18:40:18 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 16 Oct 2023 18:40:16 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 16 Oct 2023 18:40:16 +0800
-From:   Hsiao Chien Sung <shawn.sung@mediatek.com>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        CK Hu <ck.hu@mediatek.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Fei Shao <fshao@chromium.org>,
-        Sean Paul <sean@poorly.run>,
-        Johnson Wang <johnson.wang@mediatek.corp-partner.google.com>,
-        "Nancy . Lin" <nancy.lin@mediatek.com>,
-        Moudy Ho <moudy.ho@mediatek.com>,
-        "Jason-JH . Lin" <jason-jh.lin@mediatek.com>,
-        Nathan Lu <nathan.lu@mediatek.com>,
-        Hsiao Chien Sung <shawn.sung@mediatek.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v8 23/23] drm/mediatek: Support MT8188 VDOSYS1 in display driver
-Date:   Mon, 16 Oct 2023 18:40:10 +0800
-Message-ID: <20231016104010.3270-24-shawn.sung@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20231016104010.3270-1-shawn.sung@mediatek.com>
-References: <20231016104010.3270-1-shawn.sung@mediatek.com>
+        Mon, 16 Oct 2023 06:43:23 -0400
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 066E7210B;
+        Mon, 16 Oct 2023 03:41:46 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id F0A181C0009;
+        Mon, 16 Oct 2023 10:41:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1697452902;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vT9G5NQZZ2eFijBoTns5foUBCOXcsCpnGULg2LBKId4=;
+        b=mNYix7oANrLWcPA45+MCZhVDWozUj6f8PfqSzJqKysm1KuHJKww2ZZKGHzyDTEA2pFZ89M
+        GQL7cVUygSHhtDqKDGhuWpIDjZHMs+X/thryopJPYiizCwuNlElaLc2SZ92J9f/7dgg3Sn
+        OyUMUelmsPPYlkOdzCI9ZLHzzUmJdI2aCw31stMkro65apZFzdGCXKqoxlfVxZnx5d8Mgg
+        1ks4wZl5bCVkhEQmLYZlI7exvP7f9Lc+5fRA/wvVZk404CeBuzJf8RQAtoRNZhiLFyzweM
+        Dw13OEMhp7QgdQx6bh2TMIWFL90IIUzrnqHVsGKBKTNmKUI9XkDqOZUh5Je4TA==
+Date:   Mon, 16 Oct 2023 12:41:34 +0200
+From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Michael Walle <michael@walle.cc>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH net-next v5 08/16] net: ethtool: Add a command to expose
+ current time stamping layer
+Message-ID: <20231016124134.6b271f07@kmaincent-XPS-13-7390>
+In-Reply-To: <6ef6418d-6e63-49bd-bcc1-cdc6eb0da2d5@lunn.ch>
+References: <20231009155138.86458-1-kory.maincent@bootlin.com>
+        <20231009155138.86458-9-kory.maincent@bootlin.com>
+        <2fbde275-e60b-473d-8488-8f0aa637c294@broadcom.com>
+        <20231010102343.3529e4a7@kmaincent-XPS-13-7390>
+        <20231013090020.34e9f125@kernel.org>
+        <6ef6418d-6e63-49bd-bcc1-cdc6eb0da2d5@lunn.ch>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: kory.maincent@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- The mmsys_dev_num in MT8188 VDOSYS0 was set to 1 since
-  VDOSYS1 was not available before. Increase it to support
-  VDOSYS1 in display driver.
-- Add compatible name for MT8188 VDOSYS1
-  (shares the same driver data with MT8195 VDOSYS1)
+On Fri, 13 Oct 2023 18:11:19 +0200
+Andrew Lunn <andrew@lunn.ch> wrote:
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Reviewed-by: CK Hu <ck.hu@mediatek.com>
-Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
----
- drivers/gpu/drm/mediatek/mtk_drm_drv.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+> > > All these possibles timestamps go through exclusively the netdev API or
+> > > the phylib API. Even the software timestamping is done in the netdev
+> > > driver, therefore it goes through the netdev API and then should have the
+> > > NETDEV_TIMESTAMPING bit set.  
+> > 
+> > Netdev vs phylib is an implementation detail of Linux.
+> > I'm also surprised that you changed this.
+> >   
+> > > > > + */
+> > > > > +enum {
+> > > > > +	NO_TIMESTAMPING = 0,
+> > > > > +	NETDEV_TIMESTAMPING = (1 << 0),
+> > > > > +	PHYLIB_TIMESTAMPING = (1 << 1),
+> > > > > +	SOFTWARE_TIMESTAMPING = (1 << 2) | (1 << 0),      
+> 
+> Just emphasising Jakubs point here. phylib is an implementation
+> detail, in that the MAC driver might be using firmware to drive its
+> PHY, and that firmware can do a timestamp in the PHY. The API being
+> defined here should be independent of the implementation details. So
+> it probably should be MAC_TIMESTAMPING and PHY_TIMESTAMPING, and leave
+> it to the driver to decide if its PHYLIB doing the actual work, or
+> firmware.
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-index 62e6e9785443..eecfeb8fbde1 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-@@ -303,7 +303,7 @@ static const struct mtk_mmsys_driver_data mt8188_vdosys0_driver_data = {
- 	.main_len = ARRAY_SIZE(mt8188_mtk_ddp_main),
- 	.conn_routes = mt8188_mtk_ddp_main_routes,
- 	.conn_routes_num = ARRAY_SIZE(mt8188_mtk_ddp_main_routes),
--	.mmsys_dev_num = 1,
-+	.mmsys_dev_num = 2,
- };
- 
- static const struct mtk_mmsys_driver_data mt8192_mmsys_driver_data = {
-@@ -344,6 +344,8 @@ static const struct of_device_id mtk_drm_of_ids[] = {
- 	  .data = &mt8186_mmsys_driver_data},
- 	{ .compatible = "mediatek,mt8188-vdosys0",
- 	  .data = &mt8188_vdosys0_driver_data},
-+	{ .compatible = "mediatek,mt8188-vdosys1",
-+	  .data = &mt8195_vdosys1_driver_data},
- 	{ .compatible = "mediatek,mt8192-mmsys",
- 	  .data = &mt8192_mmsys_driver_data},
- 	{ .compatible = "mediatek,mt8195-mmsys",
--- 
-2.18.0
+That is one reason why I moved to NETDEV_TIMESTAMPING, we don't know if it will
+really be the MAC that does the timestamping, as the firmware could ask the PHY
+to does it, but it surely goes though the netdev driver.
 
+> Netdev vs phylib is an implementation detail of Linux.
+> I'm also surprised that you changed this.
+
+This is the main reason I changed this. This is Linux implementation purpose to
+know whether it should go through netdev or phylib, and then each of these
+drivers could use other timestamps which are hardware related.
+
+As I have answered to Florian maybe you prefer to separate the Linux
+implementation detail and the hardware timestamping like this:
+
+> Or maybe do you prefer to use defines like this:
+> # define NETDEV_TIMESTAMPING (1 << 0)
+> # define PHYLIB_TIMESTAMPING (1 << 1)
+> 
+> enum {
+> 	NO_TIMESTAMPING = 0,
+> 	MAC_TIMESTAMPING = NETDEV_TIMESTAMPING,
+> 	PHY_TIMESTAMPING = PHYLIB_TIMESTAMPING,
+> 	SOFTWARE_TIMESTAMPING = (1 << 2) | NETDEV_TIMESTAMPING,
+> 	...
+> 	MAC_DMA_TIMESTAMPING = (2 << 2) | NETDEV_TIMESTAMPING,
+> 	MAC_PRECISION_TIMESTAMPING = (3 << 2) | NETDEV_TIMESTAMPING,
+> };
+
+
+> > The gist of what I'm proposing is for the core ethtool netlink message
+> > handler to get just the phc_index as an attribute. No other information
+> > as to what it represents. Not that it's netdev, DMA, phylib PHY or whatnot.
+> > 
+> > The ethtool kernel code would iterate through the stuff registered in
+> > the system for the netdev, calling get_ts_info() or phy_ts_info() on it,
+> > until it finds something which populates struct ethtool_ts_info ::
+> > phc_index with the phc_index retrieved from netlink.
+> > 
+> > Then, ethtool just talks with the timestamper that matched that phc_index.
+> > 
+> > Same idea would be applied for the command that lists all timestamping
+> > layers for a netdev. Check get_ts_info(), phy_ts_info(dev->phydev), and
+> > can be extended in the future.  
+> 
+> I see, that could work. The user would then dig around sysfs to figure
+> out which PHC has what characteristics?
+
+I am not an expert but there are net drivers that enable
+SOF_TIMESTAMPING_TX/RX/RAW_HARDWARE without phc. In that case we won't ever be
+able to enter the get_ts_info() with you proposition.
+Still I am wondering why hardware timestamping capabilities can be enabled
+without phc.
