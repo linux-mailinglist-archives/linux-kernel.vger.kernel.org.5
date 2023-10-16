@@ -2,97 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D407CB687
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 00:23:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82C777CB688
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 00:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233282AbjJPWXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 18:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59560 "EHLO
+        id S233461AbjJPWXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 18:23:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbjJPWW6 (ORCPT
+        with ESMTP id S229943AbjJPWXq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 18:22:58 -0400
-Received: from mail-oa1-x30.google.com (mail-oa1-x30.google.com [IPv6:2001:4860:4864:20::30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF9D895
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 15:22:55 -0700 (PDT)
-Received: by mail-oa1-x30.google.com with SMTP id 586e51a60fabf-1e9b6f39f9eso3358230fac.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 15:22:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1697494975; x=1698099775; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ep3okjgpPqs/SuawFmrOIwNlvj2vgI/0SEsxtO/LHEg=;
-        b=YzO20fTPeIEIOoiadiKJ2lvh1WJVgswU8BmIqKxFRagjEhAyoNU9pNC35D3M4iCxBK
-         UTPv2ni9aHboxpwAYAROgIdKE2PH53XLMa22ZLKKlXCkJcGnABAiW/2cIhPpKOl6iEoq
-         ORQ98t9aWSbkGzRFfIKFGKWZW++az+Ft7ctjUl5IW2ASoe3QSVBbG2sUO9S1X/L16ejZ
-         oWubZxwZDwdU/xmVCb7FR20FaujLvfF7hNQyUb/lhJ3voyMpZ0Qk3tB0Q/9w7qExYDV7
-         QHW8jm4Fb+ls/3kFONPwFOZPswMfa4jTvlkVjU2bkDTiD/9PEfKugkGjObaOKTOwLATe
-         7bEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697494975; x=1698099775;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ep3okjgpPqs/SuawFmrOIwNlvj2vgI/0SEsxtO/LHEg=;
-        b=hx66lpGV5LX3vwRixQ8DZw1EjklweCiQQXqwmnEqXVJW1sCuKDau+693LLfHe1Jxws
-         XGSUJrT83oQiOyfZxIkC46avnfLevJaaGlRDfYdwwNh6xUYxxnIxYezy10EyLsQDZIdG
-         1wSI2vtW8WZ0KIbyEg9v1FP6MpaCN4I8vDZZQm70U03S16y0ZVLfI6lSxQfBNcCRQ6yr
-         x7AzUhqf1lZYxkzspPIimuoHbqRuoAQv1ouNlMHYZKwi1HLUisYus4X+fjDHE7pKOEWs
-         z9PQ4yYh/sVGSyBRonlmt9ybKSyqZPvcebMoSfgSwQZEHuNsJW18ptewbkz9C24UDyU7
-         7fog==
-X-Gm-Message-State: AOJu0YzZkOMd+A83RKcQUZKHshy7mCWu8NbZT5YvwuSrPRAFxH8ovq69
-        BkpuSf2fCLguYXBysWKKgiPVeQ==
-X-Google-Smtp-Source: AGHT+IHiEWD6MRJd+TaZ6w0hpRhBtF+BvSza1fmbGFOxARxyVi2XYgFgQfHLOFHJi74OH4nTUE5Qgg==
-X-Received: by 2002:a05:6870:1157:b0:1ea:aa9:9b00 with SMTP id 23-20020a056870115700b001ea0aa99b00mr413599oag.57.1697494975207;
-        Mon, 16 Oct 2023 15:22:55 -0700 (PDT)
-Received: from ghost ([208.116.208.98])
-        by smtp.gmail.com with ESMTPSA id j25-20020a056870169900b001cd1a628c40sm17676oae.52.2023.10.16.15.22.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 15:22:54 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 15:22:51 -0700
-From:   Charlie Jenkins <charlie@rivosinc.com>
-To:     Andreas Schwab <schwab@linux-m68k.org>
-Cc:     linux-riscv@lists.infradead.org, linux-mm@kvack.org,
+        Mon, 16 Oct 2023 18:23:46 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5762C95
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 15:23:45 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50618C433C7;
+        Mon, 16 Oct 2023 22:23:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697495024;
+        bh=bRrY6z8Qu3DHxdJ9AWDgW2EEHgMVRnN3AxmhHve8YT0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=vDG8J87nBqFt4L6UK9UD0UURS6rn2Zw5xR5YguOBewzOHIpPmFmU7m2BWITb6nKtP
+         1bUMsnYgmBJ4ihkMfm+CKSQdB3svbnsafQLeqhOFOT8aktvznQeOxoMXxDgMEtluL7
+         /ItwqYCfITwZEq0Uie/0PtTtmP9FVsNExso+35t63ihM5YqgcXBMy5DV+4xCo7+VDv
+         TPMkgErh0SFf1NgbrzXJ+Ix4F2S+8Vj/+cEVZJ8gJvDyeHUSUfZ2MG8WTaTulWAS4S
+         EnMQJ/67pYltlKrmgWTsmdVmhsC1YnbjYbAx6+rDe3WByYmkhpCkwcVyU596eWuhgB
+         UfsfQyYAwwdZA==
+Date:   Mon, 16 Oct 2023 15:23:43 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Takeru Hayasaka <hayatake396@gmail.com>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Subject: Re: [PATCH v3 1/2] riscv: Add remaining module relocations
-Message-ID: <ZS23u+NvzU6RmFbj@ghost>
-References: <20231016-module_relocations-v3-0-a667fd6071e9@rivosinc.com>
- <20231016-module_relocations-v3-1-a667fd6071e9@rivosinc.com>
- <87h6mqo2r3.fsf@igel.home>
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Harald Welte <laforge@gnumonks.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        osmocom-net-gprs@lists.osmocom.org
+Subject: Re: [PATCH net-next v2] ethtool: ice: Support for RSS settings to
+ GTP from ethtool
+Message-ID: <20231016152343.1fc7c7be@kernel.org>
+In-Reply-To: <20231012060115.107183-1-hayatake396@gmail.com>
+References: <20231012060115.107183-1-hayatake396@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87h6mqo2r3.fsf@igel.home>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 08:12:32PM +0200, Andreas Schwab wrote:
-> On Okt 16 2023, Charlie Jenkins wrote:
-> 
-> > @@ -81,7 +82,7 @@ typedef union __riscv_fp_state elf_fpregset_t;
-> >  #define R_RISCV_ALIGN		43
-> >  #define R_RISCV_RVC_BRANCH	44
-> >  #define R_RISCV_RVC_JUMP	45
-> > -#define R_RISCV_LUI		46
-> > +#define R_RISCV_RVC_LUI		46
-> 
-> The latest ELF psABI defines 46 as reserved.
-I will remove that in the next version. Thank you.
+Thanks for the v2!
 
-- Charlie
-> 
-> -- 
-> Andreas Schwab, schwab@linux-m68k.org
-> GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-> "And now for something completely different."
+Adding Willem, Pablo, and Harald to CC (please CC them on future
+versions).
+
+On Thu, 12 Oct 2023 06:01:15 +0000 Takeru Hayasaka wrote:
+> diff --git a/include/uapi/linux/ethtool.h b/include/uapi/linux/ethtool.h
+> index f7fba0dc87e5..a2d4f2081cf3 100644
+> --- a/include/uapi/linux/ethtool.h
+> +++ b/include/uapi/linux/ethtool.h
+> @@ -2011,6 +2011,18 @@ static inline int ethtool_validate_duplex(__u8 duplex)
+>  #define	IPV4_FLOW	0x10	/* hash only */
+>  #define	IPV6_FLOW	0x11	/* hash only */
+>  #define	ETHER_FLOW	0x12	/* spec only (ether_spec) */
+> +#define GTPU_V4_FLOW 0x13	/* hash only */
+> +#define GTPU_V6_FLOW 0x14	/* hash only */
+> +#define GTPC_V4_FLOW 0x15	/* hash only */
+> +#define GTPC_V6_FLOW 0x16	/* hash only */
+> +#define GTPC_TEID_V4_FLOW 0x17	/* hash only */
+> +#define GTPC_TEID_V6_FLOW 0x18	/* hash only */
+> +#define GTPU_EH_V4_FLOW 0x19	/* hash only */
+> +#define GTPU_EH_V6_FLOW 0x20	/* hash only */
+
+nit: please note that these are hex numbers,
+     next value after 0x19 is 0x1a, not 0x20.
+
+> +#define GTPU_UL_V4_FLOW 0x21	/* hash only */
+> +#define GTPU_UL_V6_FLOW 0x22	/* hash only */
+> +#define GTPU_DL_V4_FLOW 0x23	/* hash only */
+> +#define GTPU_DL_V6_FLOW 0x24	/* hash only */
+>  /* Flag to enable additional fields in struct ethtool_rx_flow_spec */
+>  #define	FLOW_EXT	0x80000000
+>  #define	FLOW_MAC_EXT	0x40000000
+
+What gives me pause here is the number of flow sub-types we define
+for GTP hashing.
+
+My understanding of GTP is limited to what I just read on Wikipedia.
+
+IIUC the GTPC vs GTPU distinction comes down to the UDP port on
+which the protocol runs? Are the frames also different?
+
+I'm guessing UL/DL are uplink/downlink but what's EH?
+
+How do GTPU_V4_FLOW, GTPU_EH_V4_FLOW, GTPU_UL_V4_FLOW, and
+GTPU_DL_V4_FLOW differ?
+
+Key question is - are there reasonable use cases that you can think of
+for enabling GTP hashing for each one of those bits individually or can
+we combine some of them?
+
+> @@ -2025,6 +2037,7 @@ static inline int ethtool_validate_duplex(__u8 duplex)
+>  #define	RXH_IP_DST	(1 << 5)
+>  #define	RXH_L4_B_0_1	(1 << 6) /* src port in case of TCP/UDP/SCTP */
+>  #define	RXH_L4_B_2_3	(1 << 7) /* dst port in case of TCP/UDP/SCTP */
+> +#define	RXH_GTP_TEID	(1 << 8) /* teid in case of GTP */
+>  #define	RXH_DISCARD	(1 << 31)
