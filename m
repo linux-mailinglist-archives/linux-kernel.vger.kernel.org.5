@@ -2,80 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD4AD7CB31E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 21:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F30BD7CB321
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 21:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232228AbjJPTFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 15:05:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40288 "EHLO
+        id S232709AbjJPTGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 15:06:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjJPTFa (ORCPT
+        with ESMTP id S231508AbjJPTGB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 15:05:30 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A3695
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 12:05:28 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c9c496c114so37585ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 12:05:28 -0700 (PDT)
+        Mon, 16 Oct 2023 15:06:01 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5D7195;
+        Mon, 16 Oct 2023 12:05:59 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53de8fc1ad8so8499919a12.0;
+        Mon, 16 Oct 2023 12:05:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697483128; x=1698087928; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b1VlSEnGZgno+VCZ2CMhUaRzE+QVLRzzBhFEmOew2zU=;
-        b=jlDvdCTnJn/IfWByCKyn9hTTeKWzQQo7e7i5hSrwROUKyJ4kvba5VcRhSrhbDbIPdv
-         t8F/PRha/FZIENUWauQOrs1j5wigO46AczN2WbtK37Bz/g7AjXJxMJ5sv0fFn0TjIi3q
-         vtI5NFvmjH5QA1l1sT0PS8KJSGKydPoEkR+Lrs5TVlhICMMocYIPruyeTQV8WnyjGK0P
-         9woDrDZRgStRnN9PxetS373oWcS2fDeQqjG/S2mSckNQUnSp50peh2KCIf+PqhKYUifH
-         3vSB96yjQNUnGwkKv0PTKyAdulFZbk+Gh1PcL1YzckQ5xsYuLLOazyGpXKzRYZchUdUG
-         yPgQ==
+        d=gmail.com; s=20230601; t=1697483158; x=1698087958; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=aUBC0dv+bnXuW2GkrUwjanS9UomsolAQvc5I7gaJS3M=;
+        b=XuAlRFnF4eX6ZAZMHiS9b8x0BM85XEs2ZQNkO1em5P7WCLVDd4fDArEdqdCo0g6Ego
+         lJIzx6D2eFRg+pPfCWqIi6JFsVZwvKbdfGpM6QrB1DIFa81hY734xr5iLrZOqSHrlQHr
+         akZEw3o2UacoqDyDAI7nCamGOzPlkTAtsgvN5Oauy4CwQ61Fk28l871iEaC8vVr/gaRg
+         5C0VmPz0+9SVB3fkyvh3Tbb9uJoWfe+Zbx/W3z8n7Vlt+G/v1XjeQLBauvO9E0+LE+WW
+         1XC7wCscZKsN/dmN2K9HF0WwsU1eGW7vQ/z/K4rf0NJdz1kVybewtMungXesbHY7UAx0
+         U4sA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697483128; x=1698087928;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=b1VlSEnGZgno+VCZ2CMhUaRzE+QVLRzzBhFEmOew2zU=;
-        b=Sz5t9GnEi40IV8kYqKYPuF18EnhSVBJNfZev/e9hP/CxyXphbkDq3bVLVSvnX167IA
-         coLBriKAeXfcUaqdTfpvaeGqishx19TWQknzmTsDCLoouFLYjTpeN+49PvHtKhvUm2ac
-         vAcq2M5eAblB/23mXKpfpGM0X21xpep9L/zPyxJnxbVMKoAuWBlJHSiMYwpNaopVvoSp
-         icw/QOp3RWAj8J/5QgGCtCOB9Uc/zmI//IHT59XXHPkvhhgiQcxMKS54lMYyx7QJCe7b
-         VAlfdiO7W9EFXB/b8beq7TcRlRLOsYIWHkbNgbDDaLxayjeNr7L/+05Y1mmG/TgSbMuG
-         D/OA==
-X-Gm-Message-State: AOJu0YwL38do4WRyI2AFZzI37BqAb9SolVI+6KmAQC8GTaW9feVzEQsl
-        liqEL16kA2yuofC0I+jk/W+2AQmOdMeUHzHm9FF8rw==
-X-Google-Smtp-Source: AGHT+IGzqX6lfM4KPQZaOFHNso4U2b11m5YXW3DWX1mnMS9JBJdU3dcZ2THIjxAivTgEAatvr6FAe6c5mnJrC2Caufk=
-X-Received: by 2002:a17:903:1c1:b0:1c9:af6a:6d0d with SMTP id
- e1-20020a17090301c100b001c9af6a6d0dmr25965plh.9.1697483128045; Mon, 16 Oct
- 2023 12:05:28 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697483158; x=1698087958;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aUBC0dv+bnXuW2GkrUwjanS9UomsolAQvc5I7gaJS3M=;
+        b=OY8ix1h4ZZDMlFOIe/o2RzEhUQOnxwUTf5SnRZ5AIN2fSPpRO6RlDhUnt6r4h21zc2
+         53SieWle5Z1rNm8qgrA2mX+fzPB74VrZp/iol3wuk5QCHruEVJlPH6E7nW6jBZVpRuZq
+         XK/Q/jYg46skk2Ih5lEmMaIlfuiX8mkJZocFevw29lAkNf6GlhSV121KXJ3ftZMrTbJq
+         vCp/rscBgFcyH/m+6nRrbb3LCJrqgK6L/lvTwOLZw0GDZ5bzaSSRHtoyzbM/d1Jt7A4c
+         qOul43L8xoDr5QiPPw4sDt/sDlz2kJ2YDnmJVlZLgJth8PSKHvcXe9tsj4QVUyoP60yH
+         n40A==
+X-Gm-Message-State: AOJu0YyDERvLz8kumhI5z7AVFU2HvcdBFoS1D5PUl3i8mcxfAck+8mev
+        bHCkHxxw7M+36Dnk3bO4K5Y=
+X-Google-Smtp-Source: AGHT+IHkW401GgKF7H4m0E/5ZjjRdITV6zhu1jdrb+6+Rb7hzzVQnvJ7lUbneThjcnpoTHKIA4irKw==
+X-Received: by 2002:a50:8a9b:0:b0:532:cae2:8dfc with SMTP id j27-20020a508a9b000000b00532cae28dfcmr140418edj.5.1697483157884;
+        Mon, 16 Oct 2023 12:05:57 -0700 (PDT)
+Received: from skbuf ([188.26.57.160])
+        by smtp.gmail.com with ESMTPSA id i29-20020a50871d000000b0053de19620b9sm314436edb.2.2023.10.16.12.05.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 12:05:57 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 22:05:55 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
+        netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "open list:ARM/Mediatek SoC support" <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH net-next v3 1/2] net: dsa: Use conduit and user terms
+Message-ID: <20231016190555.svp5rjtheogxlkzv@skbuf>
+References: <20231013215251.152912-1-florian.fainelli@broadcom.com>
+ <20231013215251.152912-1-florian.fainelli@broadcom.com>
+ <20231013215251.152912-2-florian.fainelli@broadcom.com>
+ <20231013215251.152912-2-florian.fainelli@broadcom.com>
+ <20231016132334.b5pz7kw5oitk32z2@skbuf>
+ <ea6918d3-7e8c-4e31-9efb-cb9f3360962a@gmail.com>
 MIME-Version: 1.0
-References: <20231009230858.3444834-1-rananta@google.com> <20231009230858.3444834-11-rananta@google.com>
- <44608d30-c97a-c725-e8b2-0c5a81440869@redhat.com> <65b8bbdb-2187-3c85-0e5d-24befcf01333@redhat.com>
- <CAJHc60zPc6eM+t7pOM19aKbf_9cMvj_LnPnG1EO35=EP0jG+Tg@mail.gmail.com> <ZS2HTdhFO2aywPpe@linux.dev>
-In-Reply-To: <ZS2HTdhFO2aywPpe@linux.dev>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Mon, 16 Oct 2023 12:05:16 -0700
-Message-ID: <CAJHc60xFwcDu6e6GTY3WYowBxnbkCWU-EgwEOVGd4Qu5F_h10A@mail.gmail.com>
-Subject: Re: [PATCH v7 10/12] KVM: selftests: aarch64: Introduce
- vpmu_counter_access test
-To:     Oliver Upton <oliver.upton@linux.dev>
-Cc:     Sebastian Ott <sebott@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Shaoqin Huang <shahuang@redhat.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ea6918d3-7e8c-4e31-9efb-cb9f3360962a@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,39 +85,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 11:56=E2=80=AFAM Oliver Upton <oliver.upton@linux.d=
-ev> wrote:
->
-> On Fri, Oct 13, 2023 at 02:05:29PM -0700, Raghavendra Rao Ananta wrote:
-> > Oliver,
-> >
-> > Aren't the selftest patches from the 'Enable writable ID regs' series
-> > [1] merged into kvmarm/next? Looking at the log, I couldn't find them
-> > and the last patch that went from the series was [2]. Am I missing
-> > something?
-> >
-> > Thank you.
-> > Raghavendra
-> >
-> > [1]: https://lore.kernel.org/all/169644154288.3677537.15121340860793882=
-283.b4-ty@linux.dev/
-> > [2]: https://lore.kernel.org/all/20231003230408.3405722-11-oliver.upton=
-@linux.dev/
->
-> This is intentional, updating the tools headers as it was done in the
-> original series broke the perftool build. I backed out the selftest
-> patches, but took the rest of the kernel changes into kvmarm/next so
-> they could soak while we sort out the selftests mess. Hopefully we can
-> get the fix reviewed in time [*]...
->
-> [*] https://lore.kernel.org/kvmarm/20231011195740.3349631-1-oliver.upton@=
-linux.dev/
->
-> --
-Ah, I see. In that case, since it impacts this series, do you want me
-to rebase my series on top of your selftests series for v8?
+On Mon, Oct 16, 2023 at 09:41:35AM -0700, Florian Fainelli wrote:
+> > > @@ -29,7 +29,7 @@ static inline int dsa_tag_protocol_overhead(const struct dsa_device_ops *ops)
+> > >   	return ops->needed_headroom + ops->needed_tailroom;
+> > >   }
+> > > -static inline struct net_device *dsa_master_find_slave(struct net_device *dev,
+> > > +static inline struct net_device *dsa_conduit_find_user(struct net_device *dev,
+> > >   						       int device, int port)
+> > 
+> > Please adjust alignment.
+> 
+> checkpatch did not complain and my editor shows me the alignment appears to
+> be proper, what am I missing?
 
-Thank you.
-Raghavendra
-> Thanks,
-> Oliver
+I didn't realize that the length of "master-slave" is the same as that of "conduit-user",
+sorry.
+
+> > > diff --git a/net/dsa/tag_8021q.c b/net/dsa/tag_8021q.c
+> > > index cbdfc392f7e0..71b26ae6db39 100644
+> > > --- a/net/dsa/tag_8021q.c
+> > > +++ b/net/dsa/tag_8021q.c
+> > > @@ -468,10 +468,10 @@ struct sk_buff *dsa_8021q_xmit(struct sk_buff *skb, struct net_device *netdev,
+> > >   }
+> > >   EXPORT_SYMBOL_GPL(dsa_8021q_xmit);
+> > > -struct net_device *dsa_tag_8021q_find_port_by_vbid(struct net_device *master,
+> > > +struct net_device *dsa_tag_8021q_find_port_by_vbid(struct net_device *conduit,
+> > >   						   int vbid)
+> > 
+> > Alignment.
+> 
+> Likewise.
+
+My mistake, sorry.
