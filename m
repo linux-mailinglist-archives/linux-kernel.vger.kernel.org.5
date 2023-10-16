@@ -2,49 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8497CAC94
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 16:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C905A7CACC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233786AbjJPO4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 10:56:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58128 "EHLO
+        id S233938AbjJPPBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 11:01:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233773AbjJPO4X (ORCPT
+        with ESMTP id S233772AbjJPPA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 10:56:23 -0400
+        Mon, 16 Oct 2023 11:00:59 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3791EB4
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 07:56:21 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67E9BC433C7;
-        Mon, 16 Oct 2023 14:56:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697468180;
-        bh=WUnDHVUOqfcPj5bVg+fqz9I2iqfRHmXakB6J7g0FSl0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tBaHa4rN2f9ZyQl8PO3D969/xIInxobp0Agmgswj4NYeEzKJt+Yd7gKTjQ85y4/ps
-         vONoeTQn9sA1D7eJw0BeGNIDBFDXBgu+cuyXsm0PM88sEj5UgAictN722B3haxDhad
-         I8nV4q4exbAqN6Mf1a7NbrUxI+lkf7ptzG8ZcLVnkXBn+UcNjHyo7wQMy4+E8reMGR
-         oLr7pUPkemFg0Z9yIifcwLdr2ubw6+/6+4vQ10oomAedeksnDJYLfQRhLIGPWjrmHz
-         RKO7CgX/X464Ldl5bpLeK06sAMOI2ULsNx8CFVejQ6OH5HgMjjZE1lWyIMSt7+VHKy
-         4jbKvne1+vUEw==
-Date:   Mon, 16 Oct 2023 07:56:19 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Ivan Vecera <ivecera@redhat.com>
-Cc:     netdev@vger.kernel.org,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org
-Subject: Re: [PATCH net-next 3/5] i40e: Add handler for devlink .info_get
-Message-ID: <20231016075619.02d1dd27@kernel.org>
-In-Reply-To: <20231013170755.2367410-4-ivecera@redhat.com>
-References: <20231013170755.2367410-1-ivecera@redhat.com>
-        <20231013170755.2367410-4-ivecera@redhat.com>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3639012B
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:00:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55C2CC433C7;
+        Mon, 16 Oct 2023 15:00:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1697468453;
+        bh=0GLvmKMndiyVt2ULVPwCbqdYlF8TzgXDxAHUw0Tml34=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rS2G571HfKSELOJ65cQHDl05C83C7XrPtjD2iGcnZJQiCCAXXmXVv4RLjJ3Dj2XV/
+         FHHkasnnjelj+h0Muc4UED112XsdR8cbC7dOdmur6L4smOq8s3WK1+g5o3qn8o5aX0
+         XfP59iKl99MUMv/3XQmvYIBLxwSu80CphnkBzbUY=
+Date:   Mon, 16 Oct 2023 16:57:16 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Gilbert Adikankwu <gilbertadikankwu@gmail.com>
+Cc:     outreachy@lists.linux.dev, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: emxx_udc: Remove unnecessary parentheses around
+ condition tests
+Message-ID: <2023101658-unmoral-survival-25cf@gregkh>
+References: <ZS0f+xaaLmLpKv2a@gilbert-PC>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZS0f+xaaLmLpKv2a@gilbert-PC>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -54,17 +46,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Oct 2023 19:07:53 +0200 Ivan Vecera wrote:
->  "serial_number" -> The PCI DSN of the adapter
->  "fw.mgmt" -> The version of the firmware
->  "fw.mgmt.api" -> The API version of interface exposed over the AdminQ
->  "fw.psid" -> The version of the NVM image
+On Mon, Oct 16, 2023 at 12:35:23PM +0100, Gilbert Adikankwu wrote:
+> Fix 47 warnings detected by checkpatch.pl about unnecessary parenthesis
+> around condition tests.
 
-Your board reports "fw.psid 9.30", this may not be right,
-PSID is more of a board+customer ID, IIUC. 9.30 looks like
-a version, not an ID.
+And as I have stated numerous times in the past, they are not
+"unnecessary" at all, and provide a valuable hint to the developer as to
+what is the ordering involved.
 
->  "fw.bundle_id" -> Unique identifier for the combined flash image
->  "fw.undi" -> The combo image version
+So you can ignore this checkpatch warning please, it's not valid as far
+as I'm concerned for the subsystems that I maintain in the kernel.
 
-UNDI means PXE. Is that whave "combo image" means for Intel?
+sorry,
+
+greg k-h
