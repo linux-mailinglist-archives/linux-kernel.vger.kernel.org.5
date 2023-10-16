@@ -2,217 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3580E7CA3FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C07717CA3F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232524AbjJPJYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 05:24:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35606 "EHLO
+        id S232459AbjJPJUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 05:20:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230045AbjJPJYK (ORCPT
+        with ESMTP id S230406AbjJPJUr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 05:24:10 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA7AEB
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 02:24:08 -0700 (PDT)
-X-QQ-mid: bizesmtp66t1697448184tg0dkeep
-Received: from localhost.localdomain ( [58.240.82.166])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Mon, 16 Oct 2023 17:23:01 +0800 (CST)
-X-QQ-SSF: 01200000000000B0B000000A0000000
-X-QQ-FEAT: Yef1XHldkvjrhRnpCxOeXAiJrC69qh9pmEbO5oIIHtAhJcoX5G5ce0K8dupTL
-        hs/tEJkwBRt+23hpBdBy+KCOFAbHyEcsSEJnYeHWiam2edCFdOhrCiHdh9wnaGvTy2sMV8t
-        K/JuJbNeGT3Gz0fRk7xYr/XKGW96pEQOUbVH3rGwxy6LnR1KEEoT9OvjvsSYt8MuTNNjszY
-        AdG1HyFJcE0ySLW6I6zHA7J5CIn5FHYBIiQ8V8jUOXI7hwt+EHp1ikBSyDeTQKG0MTSMIlh
-        xJI/kxcqHyaEB3Y8dDswJC+jO8AHCP4IU7JZub9rImoHbrQDlDKrv4zyDR180sJPg4W5BT6
-        tsg2SUTeOST8rVQ9q13GAYEaSQaChiXiuOWhkHPX8e4bufmLmIHMc223+kDEL4opMIYfmnw
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 18377875801720570736
-From:   Song Shuai <songshuaishuai@tinylab.org>
-To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, lihuafei1@huawei.com,
-        conor.dooley@microchip.com, liaochang1@huawei.com,
-        guoren@kernel.org, ajones@ventanamicro.com, alexghiti@rivosinc.com,
-        evan@rivosinc.com, sunilvl@ventanamicro.com,
-        xianting.tian@linux.alibaba.com, samitolvanen@google.com,
-        masahiroy@kernel.org, apatel@ventanamicro.com, jszhang@kernel.org,
-        duwe@suse.de, eric.devolder@oracle.com,
-        emil.renner.berthing@canonical.com
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Song Shuai <songshuaishuai@tinylab.org>
-Subject: [PATCH V2 2/2] riscv: kexec_file: Support loading Image binary file
-Date:   Mon, 16 Oct 2023 17:20:06 +0800
-Message-Id: <20231016092006.3347632-3-songshuaishuai@tinylab.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20231016092006.3347632-1-songshuaishuai@tinylab.org>
-References: <20231016092006.3347632-1-songshuaishuai@tinylab.org>
+        Mon, 16 Oct 2023 05:20:47 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ECADB4
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 02:20:42 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40684f53ef3so46199615e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 02:20:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697448040; x=1698052840; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rJfBRp5VD6FpfPviX6UT8LSGqMMMF7yFcNY8gKLmCHs=;
+        b=KU+JIrafauGh0xleZcyryREmUSiYVY/ZCjTLfyv/pyEG6vTlsliHgxeYKoYw39pFgK
+         SQm0aj1e+DfXSSdeUqEV2yIUn1RgsN+FHa8sW7ueCYtFkGz4qSsrNep/RCGQKY2hZiVs
+         PcaxyR7piQNfawELyy347h4fvBcQIVhJ47POCzr2EfYby5ODsGtpD9ji9AZjyMw51fy0
+         O02AqzdqAX3fMQnl06IpK1Z0hF1c5PZr/6+u1U8s32eIL5oiwoqdfQV7i4O6/nWL8aMK
+         CAuJ8H1NHSkc9AeHuSpC9k2qsaAr8xhlvjQmHDYvr1F6OmqHEtECfvvMlipUPg/91bb1
+         iX/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697448040; x=1698052840;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rJfBRp5VD6FpfPviX6UT8LSGqMMMF7yFcNY8gKLmCHs=;
+        b=F+5HtNT21HgtKs1Ihn8F3QENPoBSQKf+fVLcl1TNbpsyPUhyY6O6c3EuZf9R500780
+         NlcdVreBYBJziKl0NQEz3BgcgwxOay6syCUhCLI5tVGVs2SeJC6pi5YYCFCHJhjavh11
+         /Ltomzpke/b7Z6i2G7bS1jcNNBXTNwCtxXJD3tEA+AS9NNZOPt3RfIrt66Qy/k79GcTy
+         zxWsmy4JLnw1M/ATrQpHrpGk7nLyRUTi530uau4UeMT+kG6eSkMUb2IcaJdbWcX0Cwtp
+         2pIziVZYmIY9pxORW63UvHQ1SLDjFioJ2UzosAniEwqTiKJPdoGO/SvvgKxFO6VJyi0/
+         5K1Q==
+X-Gm-Message-State: AOJu0Yx8RNLY7EU9jZzZIXYcvM5WwhRKTKpMNbpwxYqnw3kK25kM01IT
+        In/u0AmuWrEozrLE9uTJJns=
+X-Google-Smtp-Source: AGHT+IEzEWonZB1xm24SGr71/E3ez9Wnn2Ifz8W/kECAf52uERj4/tTjaZw6skTUUAGecguYZCnOXA==
+X-Received: by 2002:a7b:c5c9:0:b0:405:40ab:7693 with SMTP id n9-20020a7bc5c9000000b0040540ab7693mr27898824wmk.31.1697448040274;
+        Mon, 16 Oct 2023 02:20:40 -0700 (PDT)
+Received: from lab-ubuntu ([41.90.67.11])
+        by smtp.gmail.com with ESMTPSA id i12-20020a05600c290c00b0040588d85b3asm6573166wmd.15.2023.10.16.02.20.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 02:20:39 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 12:20:37 +0300
+From:   Calvince Otieno <calvncce@gmail.com>
+To:     gustavo@embeddedor.com, outreachy@lists.linux.dev
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Calvince Otieno <calvncce@gmail.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>
+Subject: [PATCH] staging: wlan-ng: replace pr_debug() with netdev_dbg()
+Message-ID: <ZS0AZahhusLoN4b/@lab-ubuntu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrsz:qybglogicsvrsz4a-0
-X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch creates image_kexec_ops to load Image binary file
-for kexec_file_load() syscall.
+This patch replaces the usage of pr_debug() with netdev_dbg().
+The change is made to enhance context-aware debugging,
+improve code clarity, and maintain compatibility with established
+network debugging practices. There were no functional code changes.
 
-Signed-off-by: Song Shuai <songshuaishuai@tinylab.org>
+Signed-off-by: Calvince Otieno <calvncce@gmail.com>
 ---
- arch/riscv/include/asm/kexec.h         |  1 +
- arch/riscv/kernel/Makefile             |  2 +-
- arch/riscv/kernel/kexec_image.c        | 98 ++++++++++++++++++++++++++
- arch/riscv/kernel/machine_kexec_file.c |  1 +
- 4 files changed, 101 insertions(+), 1 deletion(-)
- create mode 100644 arch/riscv/kernel/kexec_image.c
+ drivers/staging/wlan-ng/p80211conv.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/riscv/include/asm/kexec.h b/arch/riscv/include/asm/kexec.h
-index 518825fe4160..b9ee8346cc8c 100644
---- a/arch/riscv/include/asm/kexec.h
-+++ b/arch/riscv/include/asm/kexec.h
-@@ -56,6 +56,7 @@ extern riscv_kexec_method riscv_kexec_norelocate;
+diff --git a/drivers/staging/wlan-ng/p80211conv.c b/drivers/staging/wlan-ng/p80211conv.c
+index 048e1c3fe19b..8336435eccc2 100644
+--- a/drivers/staging/wlan-ng/p80211conv.c
++++ b/drivers/staging/wlan-ng/p80211conv.c
+@@ -312,8 +312,8 @@ int skb_p80211_to_ether(struct wlandevice *wlandev, u32 ethconv,
+ 				  payload_length - 4);
+ 		if (foo) {
+ 			/* de-wep failed, drop skb. */
+-			pr_debug("Host de-WEP failed, dropping frame (%d).\n",
+-				 foo);
++			netdev_dbg(netdev, "Host de-WEP failed, dropping frame (%d).\n",
++				   foo);
+ 			wlandev->rx.decrypt_err++;
+ 			return 2;
+ 		}
+@@ -340,7 +340,7 @@ int skb_p80211_to_ether(struct wlandevice *wlandev, u32 ethconv,
+ 	    (e_llc->dsap != 0xaa || e_llc->ssap != 0xaa) &&
+ 	    ((!ether_addr_equal_unaligned(daddr, e_hdr->daddr)) ||
+ 	     (!ether_addr_equal_unaligned(saddr, e_hdr->saddr)))) {
+-		pr_debug("802.3 ENCAP len: %d\n", payload_length);
++		netdev_dbg(netdev, "802.3 ENCAP len: %d\n", payload_length);
+ 		/* 802.3 Encapsulated */
+ 		/* Test for an overlength frame */
+ 		if (payload_length > (netdev->mtu + ETH_HLEN)) {
+@@ -367,7 +367,7 @@ int skb_p80211_to_ether(struct wlandevice *wlandev, u32 ethconv,
+ 		   (p80211_stt_findproto(be16_to_cpu(e_snap->type)))) ||
+ 		   (memcmp(e_snap->oui, oui_rfc1042, WLAN_IEEE_OUI_LEN) !=
+ 			0))) {
+-		pr_debug("SNAP+RFC1042 len: %d\n", payload_length);
++		netdev_dbg(netdev, "SNAP+RFC1042 len: %d\n", payload_length);
+ 		/* it's a SNAP + RFC1042 frame && protocol is in STT */
+ 		/* build 802.3 + RFC1042 */
  
- #ifdef CONFIG_KEXEC_FILE
- extern const struct kexec_file_ops elf_kexec_ops;
-+extern const struct kexec_file_ops image_kexec_ops;
- 
- struct purgatory_info;
- int arch_kexec_apply_relocations_add(struct purgatory_info *pi,
-diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-index 1c62c639e875..9ecba3231a36 100644
---- a/arch/riscv/kernel/Makefile
-+++ b/arch/riscv/kernel/Makefile
-@@ -86,7 +86,7 @@ endif
- obj-$(CONFIG_HOTPLUG_CPU)	+= cpu-hotplug.o
- obj-$(CONFIG_KGDB)		+= kgdb.o
- obj-$(CONFIG_KEXEC_CORE)	+= kexec_relocate.o crash_save_regs.o machine_kexec.o
--obj-$(CONFIG_KEXEC_FILE)	+= kexec_elf.o machine_kexec_file.o
-+obj-$(CONFIG_KEXEC_FILE)	+= kexec_elf.o kexec_image.o machine_kexec_file.o
- obj-$(CONFIG_CRASH_DUMP)	+= crash_dump.o
- obj-$(CONFIG_CRASH_CORE)	+= crash_core.o
- 
-diff --git a/arch/riscv/kernel/kexec_image.c b/arch/riscv/kernel/kexec_image.c
-new file mode 100644
-index 000000000000..5339c4f33ff6
---- /dev/null
-+++ b/arch/riscv/kernel/kexec_image.c
-@@ -0,0 +1,98 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * RISC-V Kexec image loader
-+ *
-+ */
-+
-+#define pr_fmt(fmt)	"kexec_file(Image): " fmt
-+
-+#include <linux/err.h>
-+#include <linux/errno.h>
-+#include <linux/kernel.h>
-+#include <linux/kexec.h>
-+#include <linux/pe.h>
-+#include <linux/string.h>
-+#include <asm/byteorder.h>
-+#include <asm/image.h>
-+#include <linux/bitfield.h>
-+
-+static int image_probe(const char *kernel_buf, unsigned long kernel_len)
-+{
-+	const struct riscv_image_header *h =
-+		(const struct riscv_image_header *)(kernel_buf);
-+
-+	if (!h || (kernel_len < sizeof(*h)))
-+		return -EINVAL;
-+
-+	/* According to Documentation/riscv/boot-image-header.rst,
-+	 * use "magic2" field to check when version >= 0.2.
-+	 */
-+
-+	if (h->version >= RISCV_HEADER_VERSION &&
-+	    memcmp(&h->magic2, RISCV_IMAGE_MAGIC2, sizeof(h->magic2)))
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+static void *image_load(struct kimage *image,
-+				char *kernel, unsigned long kernel_len,
-+				char *initrd, unsigned long initrd_len,
-+				char *cmdline, unsigned long cmdline_len)
-+{
-+	struct riscv_image_header *h;
-+	u64 flags;
-+	bool be_image, be_kernel;
-+	struct kexec_buf kbuf;
-+	int ret;
-+
-+	/* Check Image header */
-+	h = (struct riscv_image_header *)kernel;
-+	if (!h->image_size) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	/* Check endianness */
-+	flags = le64_to_cpu(h->flags);
-+	be_image = FIELD_GET(RISCV_IMAGE_FLAG_BE_MASK, flags);
-+	be_kernel = IS_ENABLED(CONFIG_CPU_BIG_ENDIAN);
-+	if (be_image != be_kernel) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	/* Load the kernel image */
-+	kbuf.image = image;
-+	kbuf.buf_min = 0;
-+	kbuf.buf_max = ULONG_MAX;
-+	kbuf.top_down = false;
-+
-+	kbuf.buffer = kernel;
-+	kbuf.bufsz = kernel_len;
-+	kbuf.mem = KEXEC_BUF_MEM_UNKNOWN;
-+	kbuf.memsz = le64_to_cpu(h->image_size);
-+	kbuf.buf_align = le64_to_cpu(h->text_offset);
-+
-+	ret = kexec_add_buffer(&kbuf);
-+	if (ret) {
-+		pr_err("Error add kernel image ret=%d\n", ret);
-+		goto out;
-+	}
-+
-+	image->start = kbuf.mem;
-+
-+	pr_info("Loaded kernel at 0x%lx bufsz=0x%lx memsz=0x%lx\n",
-+				kbuf.mem, kbuf.bufsz, kbuf.memsz);
-+
-+	ret = load_extra_segments(image, kbuf.mem, kbuf.memsz,
-+				  initrd, initrd_len, cmdline, cmdline_len);
-+
-+out:
-+	return ret ? ERR_PTR(ret) : NULL;
-+}
-+
-+const struct kexec_file_ops image_kexec_ops = {
-+	.probe = image_probe,
-+	.load = image_load,
-+};
-diff --git a/arch/riscv/kernel/machine_kexec_file.c b/arch/riscv/kernel/machine_kexec_file.c
-index aedb8c16a283..5dc700834f1e 100644
---- a/arch/riscv/kernel/machine_kexec_file.c
-+++ b/arch/riscv/kernel/machine_kexec_file.c
-@@ -17,6 +17,7 @@
- 
- const struct kexec_file_ops * const kexec_file_loaders[] = {
- 	&elf_kexec_ops,
-+	&image_kexec_ops,
- 	NULL
- };
- 
+@@ -397,7 +397,7 @@ int skb_p80211_to_ether(struct wlandevice *wlandev, u32 ethconv,
+ 		(e_llc->dsap == 0xaa) &&
+ 		(e_llc->ssap == 0xaa) &&
+ 		(e_llc->ctl == 0x03)) {
+-		pr_debug("802.1h/RFC1042 len: %d\n", payload_length);
++		netdev_dbg(netdev, "802.1h/RFC1042 len: %d\n", payload_length);
+ 		/* it's an 802.1h frame || (an RFC1042 && protocol not in STT)
+ 		 * build a DIXII + RFC894
+ 		 */
+@@ -433,7 +433,7 @@ int skb_p80211_to_ether(struct wlandevice *wlandev, u32 ethconv,
+ 		/* chop off the 802.11 CRC */
+ 		skb_trim(skb, skb->len - WLAN_CRC_LEN);
+ 	} else {
+-		pr_debug("NON-ENCAP len: %d\n", payload_length);
++		netdev_dbg(netdev, "NON-ENCAP len: %d\n", payload_length);
+ 		/* any NON-ENCAP */
+ 		/* it's a generic 80211+LLC or IPX 'Raw 802.3' */
+ 		/*  build an 802.3 frame */
 -- 
-2.20.1
+2.34.1
 
