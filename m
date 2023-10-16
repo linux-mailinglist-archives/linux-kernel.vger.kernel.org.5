@@ -2,66 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC67C7CB5A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 23:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2C347CB5AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 23:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233997AbjJPVuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 17:50:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53438 "EHLO
+        id S234133AbjJPVwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 17:52:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233481AbjJPVuI (ORCPT
+        with ESMTP id S233650AbjJPVv6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 17:50:08 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB5F5AB
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 14:50:06 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6b1ef786b7fso3337494b3a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 14:50:06 -0700 (PDT)
+        Mon, 16 Oct 2023 17:51:58 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 176FAEB
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 14:51:54 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-53db3811d8fso10383153a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 14:51:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697493006; x=1698097806; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JSyp/Bip5iNls5WLJYDt4GXcuxprjReCLiVejQ3FJcM=;
-        b=K/AHbuQ51AirGRKcddjJ4UHjO1yUhNCXWNQj+iHSaNMThGyxkpPya1BmNEgFiy1hpa
-         ILBC44Jmb7N0R9VMjwBS3hZCk++eeZKd0FQLJu+xT4VdvKhDszLBw0qBsi37rvLTsyKX
-         9sHop3rEmRV8bHn7kUak0YpJBKqRzT/H1tSGs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697493006; x=1698097806;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=cloudflare.com; s=google09082023; t=1697493112; x=1698097912; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JSyp/Bip5iNls5WLJYDt4GXcuxprjReCLiVejQ3FJcM=;
-        b=LkAI2GkWHqt6gJwd3m5WX+Qxx9VY6XBxN1jZJl0A/YbLmTXbEGuLUi5JLfteOjxxGv
-         fpn53HEUhJsVpU3Gc7Sn9GUkThvbjhr6M4VLGxTHUVstsfNU46oBmtBok8RuieMUahsv
-         O0+pLbU1UfSVHsaT64515FfsfigujCoZ066KkxoOS0V0vlMDivYrzxFmpSiT3xts3WhW
-         CbQg8Firhfh74Y5nErlsNoBLslxcBzKmnEpF2JeikcV6YxIj00Gtecruw8WX9HKDBWYV
-         kAe6qkxCgirnGqnMXEuWDyEQbmU5WYBbStWGW5LWjdLjPid99pat+icq8JHr9mPGX3hI
-         AtBw==
-X-Gm-Message-State: AOJu0YzsoeBsonb2vzKqZvZjVMP/Sy5O+cs7PZ4Rux9FJ2A+sKNnUsHz
-        I8FwetM33Hy8ZkfshTu3ZTbJc8nYiyGgQrLzjX8=
-X-Google-Smtp-Source: AGHT+IGejCV830CbXRzDCi2Z5qW1DlJaLYLYYKh04MVkP5xwcYrBuRosZiSq0L/FyPCidbDEycVFtw==
-X-Received: by 2002:a05:6a00:22d0:b0:6be:5e64:babb with SMTP id f16-20020a056a0022d000b006be5e64babbmr504934pfj.18.1697493006180;
-        Mon, 16 Oct 2023 14:50:06 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id m16-20020a6562d0000000b005b1bf3a200fsm88589pgv.1.2023.10.16.14.50.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 14:50:05 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 14:50:05 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Sergei Trofimovich <slyich@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Eric Biederman <ebiederm@xmission.com>, linux-mm@kvack.org
-Subject: Re: [RESEND PATCH] uapi: increase MAX_ARG_STRLEN from 128K to 6M
-Message-ID: <202310161439.BEA904AEE8@keescook>
-References: <20231016212507.131902-1-slyich@gmail.com>
+        bh=qDfJSs5OzGXgc3TokAo6lqqr7PnjzUUqy1FZuPSGgB4=;
+        b=X1RxFHq2ve6JEwV8ZhI34+bEmwPF3Ofat12z6Qm2Ti853HxecH4dR1DhIJEN8qvOsl
+         CSvB/h7FUkj+rzKdETOF2YkpIayzoo10OHZx5+uDXsh/pGhA7sausoYTDK0i3ZAp3p3G
+         /RGC+RB/AaP/fzDoyCFZVfOYU9ai/53I+a6DaqO54O1ieKyrsRZ87ffOoafrbr5VGHMJ
+         GGfHlXpdwmbtP/TU6atEicURzkb6umq4OxBAjtnDpPWgveKIkZPTRrKuYm+WBNFjidKu
+         2wBliQqcr1Z3mqPObXZmGWvb37zMZQprog8WWMpTSx4QsI0JoRkRRCjSIxD4BLmb3ot1
+         1LqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697493112; x=1698097912;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qDfJSs5OzGXgc3TokAo6lqqr7PnjzUUqy1FZuPSGgB4=;
+        b=LgqfFHOYpdCBVjfJpJQsACRvtXAnVzkHqDdeF5lUSduxr5vOMItNaQOEJMPIzKu62a
+         9j+bAwl+AMhmYD53XIvmC1SfYtVhBcAyy2CYvqzDG2OEJF1YV4dYZ9T2TbYwNzMGV+hT
+         ekryaphSDOSFv0p0SuMW8OLjhNPUE3BuGopV1FdkIugSmRUafBLIaf/zZKQNf8nDVLDY
+         HzWJdOZ2C/OEjkJeD25OL1/MULZSgz2ALbvsMLvpfxNOnVbMQI4dzPRLuPWt2hAYZBSp
+         ECkkmfEB0wQorvVPTzaVdmdvMk1PPoCmqq03gc+9Zure7AVNxMmJnmczq2Nkpn/rZxxr
+         o15A==
+X-Gm-Message-State: AOJu0YzCOK17gwS8lXtoYfbWLgWo1SNsLKrMhr0MdbhW7kibyQ/dACXI
+        TmZv/8BsldImR3pi7bP2pKVL1Y3dP6nqngZJKbK4Ng==
+X-Google-Smtp-Source: AGHT+IEERpWYV2vvHcCnO5+y33naH5Yx+loYIItAIaXNa0Ly8dUTDTTte1O+ITWOJ2yMMclBJqz5TFZylUajwBV8p0g=
+X-Received: by 2002:a50:c301:0:b0:53d:fa08:bd2e with SMTP id
+ a1-20020a50c301000000b0053dfa08bd2emr32625edb.20.1697493112467; Mon, 16 Oct
+ 2023 14:51:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231016212507.131902-1-slyich@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <ZS1/qtr0dZJ35VII@debian.debian> <4c524eba575992cc1adfc41b2b230835946b126c.camel@gmail.com>
+In-Reply-To: <4c524eba575992cc1adfc41b2b230835946b126c.camel@gmail.com>
+From:   Yan Zhai <yan@cloudflare.com>
+Date:   Mon, 16 Oct 2023 16:51:41 -0500
+Message-ID: <CAO3-PbrhdDrFdjzkCFM9EvDTK2HA2_JCkYLBZiHka4WAMRtm4w@mail.gmail.com>
+Subject: Re: [PATCH v2 net-next] ipv6: avoid atomic fragment on GSO packets
+To:     Alexander H Duyck <alexander.duyck@gmail.com>
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Aya Levin <ayal@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>, linux-kernel@vger.kernel.org,
+        kernel-team@cloudflare.com, Florian Westphal <fw@strlen.de>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,120 +75,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 10:25:07PM +0100, Sergei Trofimovich wrote:
-> Before the change linux allowed individual execve() arguments or
-> environment variable entries to be only as big as 32 pages.
-> 
-> Histroically before b6a2fea3931 "mm: variable length argument support"
-> MAX_ARG_STRLEN used to be full allowed size `argv[] + envp[]`.
-> 
-> When full limit was abandoned individual parameters were still limited
-> by a safe limit of 128K.
-> 
-> Nowadays' linux allows `argv[]+envp[]` to be as laerge as 6MB (3/4
-> `_STK_LIM`).
+On Mon, Oct 16, 2023 at 4:00=E2=80=AFPM Alexander H Duyck
+<alexander.duyck@gmail.com> wrote:
+>
+> On Mon, 2023-10-16 at 11:23 -0700, Yan Zhai wrote:
+> > GSO packets can contain a trailing segment that is smaller than
+> > gso_size. When examining the dst MTU for such packet, if its gso_size i=
+s
+> > too large, then all segments would be fragmented. However, there is a
+> > good chance the trailing segment has smaller actual size than both
+> > gso_size as well as the MTU, which leads to an "atomic fragment". It is
+> > considered harmful in RFC-8021. An Existing report from APNIC also show=
+s
+> > that atomic fragments are more likely to be dropped even it is
+> > equivalent to a no-op [1].
+> >
+> > Refactor __ip6_finish_output code to separate GSO and non-GSO packet
+> > processing. It mirrors __ip_finish_output logic now. Add an extra check
+> > in GSO handling to avoid atomic fragments. Lastly, drop dst_allfrag
+> > check, which is no longer true since commit 9d289715eb5c ("ipv6: stop
+> > sending PTB packets for MTU < 1280").
+> >
+> > Link: https://www.potaroo.net/presentations/2022-03-01-ipv6-frag.pdf [1=
+]
+> > Fixes: b210de4f8c97 ("net: ipv6: Validate GSO SKB before finish IPv6 pr=
+ocessing")
+> > Suggested-by: Florian Westphal <fw@strlen.de>
+> > Reported-by: David Wragg <dwragg@cloudflare.com>
+> > Signed-off-by: Yan Zhai <yan@cloudflare.com>
+> > ---
+> >  net/ipv6/ip6_output.c | 33 +++++++++++++++++++++++----------
+> >  1 file changed, 23 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
+> > index a471c7e91761..1de6f3c11655 100644
+> > --- a/net/ipv6/ip6_output.c
+> > +++ b/net/ipv6/ip6_output.c
+> > @@ -162,7 +162,14 @@ ip6_finish_output_gso_slowpath_drop(struct net *ne=
+t, struct sock *sk,
+> >               int err;
+> >
+> >               skb_mark_not_on_list(segs);
+> > -             err =3D ip6_fragment(net, sk, segs, ip6_finish_output2);
+> > +             /* Last gso segment might be smaller than actual MTU. Add=
+ing
+> > +              * a fragment header to it would produce an "atomic fragm=
+ent",
+> > +              * which is considered harmful (RFC-8021)
+> > +              */
+> > +             err =3D segs->len > mtu ?
+> > +                     ip6_fragment(net, sk, segs, ip6_finish_output2) :
+> > +                     ip6_finish_output2(net, sk, segs);
+> > +
+> >               if (err && ret =3D=3D 0)
+> >                       ret =3D err;
+> >       }
+> > @@ -170,10 +177,19 @@ ip6_finish_output_gso_slowpath_drop(struct net *n=
+et, struct sock *sk,
+> >       return ret;
+> >  }
+> >
+> > +static int ip6_finish_output_gso(struct net *net, struct sock *sk,
+> > +                              struct sk_buff *skb, unsigned int mtu)
+> > +{
+> > +     if (!(IP6CB(skb)->flags & IP6SKB_FAKEJUMBO) &&
+> > +         !skb_gso_validate_network_len(skb, mtu))
+> > +             return ip6_finish_output_gso_slowpath_drop(net, sk, skb, =
+mtu);
+>
+> If we are sending fakejumbo or have a frame that doesn't pass the
+> muster it is just going immediately to ip6_finish_output. I think the
+> checks that you removed are needed to keep the socket from getting
+> stuck sending frames that will probably be discarded.
+>
 
-See bprm_stack_limits() for the details, but yes, 3/4 _STK_LIM tends to
-be the max, unless the rlim_stack is set smaller.
+Hi Alexander,
 
-> Some build systems like `autoconf` use a single environment variable
-> to pass `CFLAGS` environment variable around. It's not a bug problem
-> if the argument list is short.
-> 
-> But some packaging systems prefer installing each package into
-> individual directory. As a result that requires quite long string of
-> parameters like:
-> 
->     CFLAGS="-I/path/to/pkg1 -I/path/to/pkg2 ..."
-> 
-> This can easily overflow 128K and does happen for `NixOS` and `nixpkgs`
-> repositories on a regular basis.
+Thanks for the feedback! But I am not sure I follow the situation you
+mentioned here. If it is a fake jumbo but non GSO packet, it won't
+enter ip6_finish_output_gso. What I am really skipping are the
+dst_allfrag and frag_max_size checks on GSO packets, and dst_allfrag
+on non-GSO packets.
 
-That's ... alarming. What are you doing currently to work around this?
+As to dst_allfrag, I looked back at the case when this was added:
 
-> 
-> Similar pattern is exhibited by `gcc` which converts it's input command
-> line into a single environment variable (https://gcc.gnu.org/PR111527):
-> 
->   $ big_100k_var=$(printf "%0*d" 100000 0)
-> 
->   # this works: 200KB of options for `printf` external command
->   $ $(which printf) "%s %s" $big_100k_var $big_100k_var >/dev/null; echo $?
->   0
-> 
->   # this fails: 200KB of options for `gcc`, fails in `cc1`
->   $ touch a.c; gcc -c a.c -DA=$big_100k_var -DB=$big_100k_var
->   gcc: fatal error: cannot execute 'cc1': execv: Argument list too long
->   compilation terminated.
-> 
-> I would say this 128KB limitation is arbitrary.
-> The change raises the limit of `MAX_ARG_STRLEN` from 32 pakes (128K
-> n `x86_64`) to the maximum limit of stack allowed by Linux today.
-> 
-> It has a minor chance of overflowing userspace programs that use
-> `MAX_ARG_STRLEN` to allocate the strings on stack. It should not be a
-> big problem as such programs are already are at risk of overflowing
-> stack.
-> 
-> Tested as:
->     $ V=$(printf "%*d" 1000000 0) ls
-> 
-> Before the change it failed with `ls: Argument list too long`. After the
-> change `ls` executes as expected.
-> 
-> WDYT of abandoning the limit and allow user to fill entire environment
-> with a single command or a single variable?
+https://www.mail-archive.com/bk-commits-head@vger.kernel.org/msg03399.html
 
-Changing this value shouldn't risk any vma collisions, since exec is
-still checking the utilization before starting the actual process
-replacement steps (see bprm->argmin).
+The actual feature was set only when a PMTU message carries a value
+smaller than 1280 byte. But the main line kernel just drops such
+messages now since the commit I pointed to in the change log (which
+makes sense because the feature was set based on old RFC-2460
+guidelines, and those have been deprecated in RFC-8200). Iproute2 also
+doesn't expose this option as well. Is there any case that I am not
+aware of here that still relies on it?
 
-It does seem pathological to set this to the full 6MB, though, since
-that would _immediately_ get rejected by execve() with an -E2BIG, but
-ultimately, there isn't really any specific limit to the length of
-individual strings as long as the entire space is less than
-bprm->argmin.
+For frag_max_size, I might be wrong but to my best knowledge it only
+applies when netfilter defrags packets. However, when dealing with
+fragments, both local output and GRO code won't produce GSO packets in
+the first place. Similarly, if we look at IPv4 implementation, it also
+does not consider frag_max_size in GSO handling. So I intentionally
+skip this for GSO packets in the change. WDYT?
 
-Perhaps MAX_ARG_STRLEN should be removed entirely and the kernel can
-just use bprm->argmin? I haven't really looked at that to see if it's
-sane, though. It just feels like MAX_ARG_STRLEN isn't a meaningful
-limit.
 
--Kees
+> > +
+> > +     return ip6_finish_output2(net, sk, skb);
+> > +}
+> > +
+> >  static int __ip6_finish_output(struct net *net, struct sock *sk, struc=
+t sk_buff *skb)
+> >  {
+> >       unsigned int mtu;
+> > -
+>
+> This blank line can probably be left there to separate variable
+> declarations from code.
+>
+my bad, should not have included it. I'll revise this.
 
-> 
-> CC: Andrew Morton <akpm@linux-foundation.org>
-> CC: Eric Biederman <ebiederm@xmission.com>
-> CC: Kees Cook <keescook@chromium.org>
-> CC: linux-mm@kvack.org
-> CC: linux-kernel@vger.kernel.org
-> Signed-off-by: Sergei Trofimovich <slyich@gmail.com>
-> ---
->  include/uapi/linux/binfmts.h | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/uapi/linux/binfmts.h b/include/uapi/linux/binfmts.h
-> index c6f9450efc12..4e828515a22e 100644
-> --- a/include/uapi/linux/binfmts.h
-> +++ b/include/uapi/linux/binfmts.h
-> @@ -8,11 +8,11 @@ struct pt_regs;
->  
->  /*
->   * These are the maximum length and maximum number of strings passed to the
-> - * execve() system call.  MAX_ARG_STRLEN is essentially random but serves to
-> - * prevent the kernel from being unduly impacted by misaddressed pointers.
-> + * execve() system call.  MAX_ARG_STRLEN is as large as Linux allows new
-> + * stack to grow.  Currently it's `_STK_LIM / 4 * 3 = 6MB` (see fs/exec.c).
->   * MAX_ARG_STRINGS is chosen to fit in a signed 32-bit integer.
->   */
-> -#define MAX_ARG_STRLEN (PAGE_SIZE * 32)
-> +#define MAX_ARG_STRLEN (6 * 1024 * 1024)
->  #define MAX_ARG_STRINGS 0x7FFFFFFF
->  
->  /* sizeof(linux_binprm->buf) */
-> -- 
-> 2.42.0
-> 
+thanks
+Yan
 
--- 
-Kees Cook
+> >  #if defined(CONFIG_NETFILTER) && defined(CONFIG_XFRM)
+> >       /* Policy lookup after SNAT yielded a new policy */
+> >       if (skb_dst(skb)->xfrm) {
+> > @@ -183,17 +199,14 @@ static int __ip6_finish_output(struct net *net, s=
+truct sock *sk, struct sk_buff
+> >  #endif
+> >
+> >       mtu =3D ip6_skb_dst_mtu(skb);
+> > -     if (skb_is_gso(skb) &&
+> > -         !(IP6CB(skb)->flags & IP6SKB_FAKEJUMBO) &&
+> > -         !skb_gso_validate_network_len(skb, mtu))
+> > -             return ip6_finish_output_gso_slowpath_drop(net, sk, skb, =
+mtu);
+> > +     if (skb_is_gso(skb))
+> > +             return ip6_finish_output_gso(net, sk, skb, mtu);
+> >
+> > -     if ((skb->len > mtu && !skb_is_gso(skb)) ||
+> > -         dst_allfrag(skb_dst(skb)) ||
+> > +     if (skb->len > mtu ||
+>
+> This change looks a bit too aggressive to me. Basically if the frame is
+> gso you now bypass the ip6_fragment entirely and are ignoring the
+> dst_allfrag and frag_max_size case below. See the fail_toobig code in
+> ip6_fragment.
+>
+> >           (IP6CB(skb)->frag_max_size && skb->len > IP6CB(skb)->frag_max=
+_size))
+> >               return ip6_fragment(net, sk, skb, ip6_finish_output2);
+> > -     else
+> > -             return ip6_finish_output2(net, sk, skb);
+> > +
+> > +     return ip6_finish_output2(net, sk, skb);
+> >  }
+> >
+> >  static int ip6_finish_output(struct net *net, struct sock *sk, struct =
+sk_buff *skb)
+>
