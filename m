@@ -2,580 +2,412 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA7177CAD24
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47FBB7CAD27
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232310AbjJPPQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 11:16:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43586 "EHLO
+        id S232195AbjJPPSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 11:18:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233606AbjJPPQH (ORCPT
+        with ESMTP id S231569AbjJPPR7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 11:16:07 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E978810F;
-        Mon, 16 Oct 2023 08:16:01 -0700 (PDT)
-Received: from eugen-station.. (unknown [82.79.223.243])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: ehristev)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0E4A666071F8;
-        Mon, 16 Oct 2023 16:15:59 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697469359;
-        bh=Pu/3soksmJfWy3BDEhI1GY7FSgZEoUE7skqNjCOLk2w=;
-        h=From:To:Cc:Subject:Date:From;
-        b=SQcmYsV7JPLxR2sueH+/+ND/+YfQ5GYZOsh5WgnCNhIbDQFViDixvR/YogU4OY3mA
-         HaubX9S4fNmoLoITOJLM0uyhzOh24ZaHYN09yOh/cMKsfvEvnzQrjAOkzXAgHllbUw
-         dr63BhRLm+ZgUGkojbStyzSkKgHwavZMvTgBSSP2SSY7EA72rGfQRnY/hqmLqRDKZK
-         CI3p89iLqxZ30oAdKg+a3A9g2vjp/0DwZEeK1zQKSdEnK1ic1y0jzVkfXuITVjyom1
-         xLs/2hDsp6ZFDbyTV808qEUMm1fpRow956j2PhiWtxVrIiHbkmtNpYRdVcop5H5p9c
-         chWOvRllW64VQ==
-From:   Eugen Hristev <eugen.hristev@collabora.com>
-To:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org
-Cc:     conor+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
-        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, kernel@collabora.com,
-        Eugen Hristev <eugen.hristev@collabora.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v6] dt-bindings: arm: mediatek: convert audsys and mt2701-afe-pcm to yaml
-Date:   Mon, 16 Oct 2023 18:15:53 +0300
-Message-Id: <20231016151553.5336-1-eugen.hristev@collabora.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 16 Oct 2023 11:17:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7BBFE1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:17:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697469434;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=y4eWOrGel0AHpPuDoogCLtYn6AWGTJZhIutExsyeeH0=;
+        b=JAc904qri5pgyxF3CtEJWPgOtwGcDtcRzlXfnNnRc8N4o0ObivQ3N84bLY79yamTzwSAef
+        m6VAgag3Zhoqzkt/w23ts+oN6y3gk/Mp3vFaNpc3ENECiWTYpxN30K21PPFxji6r9q+6w5
+        IRNCXz00NpYi75XhXIYTPfScMWf4NRs=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-208-Tu3zBwQxPhClSVZ97BtggQ-1; Mon, 16 Oct 2023 11:17:12 -0400
+X-MC-Unique: Tu3zBwQxPhClSVZ97BtggQ-1
+Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-419624b11c1so39853791cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:17:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697469432; x=1698074232;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=y4eWOrGel0AHpPuDoogCLtYn6AWGTJZhIutExsyeeH0=;
+        b=VNPR2Td373732LYymvtv4lNb2kWrX0l8TisAXp3NyOItyVk3uq0zsiRWyV2FxV5+xI
+         a2eIiGgY/ER7NyuX5kW9u4aHIJ4tv2+nXFejLFVFaapkrwq9Admy+wEAdv9aX7j00K8J
+         +zsSQP+uyRPP1O6ewycEo+9PmL7/XvLv7J8+5XDrlLJCbPVholSEotTMQo9HzDHpp1YD
+         Rv83C4xsRK9Cr3KsxUBvdvuFzIIUsDdY8SJfth+bc6y5WFPWvg4rR5Bfb8iP3BnBsNtn
+         DU+ar+/o/DIi7S7LxDVs2atHFvKYVBttCpWbW/cqMO6UrCL+EA1C6tPch+nd/JRbwN1p
+         VQ/g==
+X-Gm-Message-State: AOJu0Yx05+HdaypF9GX9tzNJolB3OaY4Arejzz0aC6xkZ5sVzQk0+qko
+        qAH3VIkcC7tkilsaH4WX3tFLXE0nwI/QBFPdpYyWgkyGJ0EodmRFlN9S1m3tk3QxzyVq5OIZA1Q
+        5wjw78vmMe739qEm30Uhet/4W
+X-Received: by 2002:ac8:5b8e:0:b0:418:1002:cfd8 with SMTP id a14-20020ac85b8e000000b004181002cfd8mr35378660qta.67.1697469431497;
+        Mon, 16 Oct 2023 08:17:11 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHfouO36OI09/bnPKrrFbEXKQZyqqDdVFztdSpdKFFQRJ0n70/L5ty7l/F9dJ4HHUwBGdGjhw==
+X-Received: by 2002:ac8:5b8e:0:b0:418:1002:cfd8 with SMTP id a14-20020ac85b8e000000b004181002cfd8mr35378641qta.67.1697469431041;
+        Mon, 16 Oct 2023 08:17:11 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:280:24f0:9db0:474c:ff43:9f5c? ([2a01:e0a:280:24f0:9db0:474c:ff43:9f5c])
+        by smtp.gmail.com with ESMTPSA id r16-20020ac867d0000000b004199c98f87dsm3100752qtp.74.2023.10.16.08.17.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Oct 2023 08:17:10 -0700 (PDT)
+Message-ID: <dee481c3-f6bd-4ba9-a2d4-528dfb668159@redhat.com>
+Date:   Mon, 16 Oct 2023 17:17:08 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v17 1/2] vfio/migration: Add debugfs to live migration
+ driver
+To:     Longfang Liu <liulongfang@huawei.com>, alex.williamson@redhat.com,
+        jgg@nvidia.com, shameerali.kolothum.thodi@huawei.com,
+        jonathan.cameron@huawei.com
+Cc:     bcreeley@amd.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxarm@openeuler.org
+References: <20231013090441.36417-1-liulongfang@huawei.com>
+ <20231013090441.36417-2-liulongfang@huawei.com>
+From:   =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clegoate@redhat.com>
+Content-Language: en-US
+In-Reply-To: <20231013090441.36417-2-liulongfang@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the mediatek,audsys binding to YAML, together with the associated
-binding bindings/sound/mt2701-afe-pcm.yaml .
+Hello Longfang,
 
-Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
-Changes in v6:
-- renamed mt2701-audio.yaml to mediatek,mt2701-audio.yaml
-- add Rb Rob Herring
+On 10/13/23 11:04, Longfang Liu wrote:
+> There are multiple devices, software and operational steps involved
+> in the process of live migration. An error occurred on any node may
+> cause the live migration operation to fail.
+> This complex process makes it very difficult to locate and analyze
+> the cause when the function fails.
+> 
+> In order to quickly locate the cause of the problem when the
+> live migration fails, I added a set of debugfs to the vfio
+> live migration driver.
+> 
+>      +-------------------------------------------+
+>      |                                           |
+>      |                                           |
+>      |                  QEMU                     |
+>      |                                           |
+>      |                                           |
+>      +---+----------------------------+----------+
+>          |      ^                     |      ^
+>          |      |                     |      |
+>          |      |                     |      |
+>          v      |                     v      |
+>       +---------+--+               +---------+--+
+>       |src vfio_dev|               |dst vfio_dev|
+>       +--+---------+               +--+---------+
+>          |      ^                     |      ^
+>          |      |                     |      |
+>          v      |                     |      |
+>     +-----------+----+           +-----------+----+
+>     |src dev debugfs |           |dst dev debugfs |
+>     +----------------+           +----------------+
+> 
+> The entire debugfs directory will be based on the definition of
+> the CONFIG_DEBUG_FS macro. If this macro is not enabled, the
+> interfaces in vfio.h will be empty definitions, and the creation
+> and initialization of the debugfs directory will not be executed.
+> 
+>     vfio
+>      |
+>      +---<dev_name1>
+>      |    +---migration
+>      |        +--state
+>      |
+>      +---<dev_name2>
+>           +---migration
+>               +--state
+> 
+> debugfs will create a public root directory "vfio" file.
+> then create a dev_name() file for each live migration device.
+> First, create a unified state acquisition file of "migration"
+> in this device directory.
+> Then, create a public live migration state lookup file "state".
+> 
+> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+> ---
+>   drivers/vfio/Kconfig      | 10 +++++
+>   drivers/vfio/Makefile     |  1 +
+>   drivers/vfio/debugfs.c    | 90 +++++++++++++++++++++++++++++++++++++++
+>   drivers/vfio/vfio.h       | 14 ++++++
+>   drivers/vfio/vfio_main.c  | 14 +++++-
+>   include/linux/vfio.h      |  7 +++
+>   include/uapi/linux/vfio.h |  1 +
+>   7 files changed, 135 insertions(+), 2 deletions(-)
+>   create mode 100644 drivers/vfio/debugfs.c
+> 
+> diff --git a/drivers/vfio/Kconfig b/drivers/vfio/Kconfig
+> index 6bda6dbb4878..ceae52fd7586 100644
+> --- a/drivers/vfio/Kconfig
+> +++ b/drivers/vfio/Kconfig
+> @@ -80,6 +80,16 @@ config VFIO_VIRQFD
+>   	select EVENTFD
+>   	default n
+>   
+> +config VFIO_DEBUGFS
+> +	bool "Export VFIO internals in DebugFS"
+> +	depends on DEBUG_FS
+> +	help
+> +	  Allows exposure of VFIO device internals. This option enables
+> +	  the use of debugfs by VFIO drivers as required. The device can
+> +	  cause the VFIO code create a top-level debug/vfio directory
+> +	  during initialization, and then populate a subdirectory with
+> +	  entries as required.
+> +
+>   source "drivers/vfio/pci/Kconfig"
+>   source "drivers/vfio/platform/Kconfig"
+>   source "drivers/vfio/mdev/Kconfig"
+> diff --git a/drivers/vfio/Makefile b/drivers/vfio/Makefile
+> index c82ea032d352..d43a699d55b1 100644
+> --- a/drivers/vfio/Makefile
+> +++ b/drivers/vfio/Makefile
+> @@ -8,6 +8,7 @@ vfio-$(CONFIG_VFIO_GROUP) += group.o
+>   vfio-$(CONFIG_IOMMUFD) += iommufd.o
+>   vfio-$(CONFIG_VFIO_CONTAINER) += container.o
+>   vfio-$(CONFIG_VFIO_VIRQFD) += virqfd.o
+> +vfio-$(CONFIG_VFIO_DEBUGFS) += debugfs.o
+>   
+>   obj-$(CONFIG_VFIO_IOMMU_TYPE1) += vfio_iommu_type1.o
+>   obj-$(CONFIG_VFIO_IOMMU_SPAPR_TCE) += vfio_iommu_spapr_tce.o
+> diff --git a/drivers/vfio/debugfs.c b/drivers/vfio/debugfs.c
+> new file mode 100644
+> index 000000000000..ae53d6110f47
+> --- /dev/null
+> +++ b/drivers/vfio/debugfs.c
+> @@ -0,0 +1,90 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2023, HiSilicon Ltd.
+> + */
+> +
+> +#include <linux/device.h>
+> +#include <linux/debugfs.h>
+> +#include <linux/seq_file.h>
+> +#include <linux/vfio.h>
+> +#include "vfio.h"
+> +
+> +static struct dentry *vfio_debugfs_root;
+> +
+> +static int vfio_device_state_read(struct seq_file *seq, void *data)
+> +{
+> +	struct device *vf_dev = seq->private;
+> +	struct vfio_device *vdev = container_of(vf_dev, struct vfio_device, device);
+> +	enum vfio_device_mig_state state;
+> +	int ret;
+> +
+> +	BUILD_BUG_ON(VFIO_DEVICE_STATE_NR !=
+> +		VFIO_DEVICE_STATE_PRE_COPY_P2P + 1);
+> +
+> +	ret = vdev->mig_ops->migration_get_state(vdev, &state);
+> +	if (ret)
+> +		return -EINVAL;
+> +
+> +	switch (state) {
+> +	case VFIO_DEVICE_STATE_ERROR:
+> +		seq_printf(seq, "%s\n", "ERROR");
+> +		break;
+> +	case VFIO_DEVICE_STATE_STOP:
+> +		seq_printf(seq, "%s\n", "STOP");
+> +		break;
+> +	case VFIO_DEVICE_STATE_RUNNING:
+> +		seq_printf(seq, "%s\n", "RUNNING");
+> +		break;
+> +	case VFIO_DEVICE_STATE_STOP_COPY:
+> +		seq_printf(seq, "%s\n", "STOP_COPY");
+> +		break;
+> +	case VFIO_DEVICE_STATE_RESUMING:
+> +		seq_printf(seq, "%s\n", "RESUMING");
+> +		break;
+> +	case VFIO_DEVICE_STATE_RUNNING_P2P:
+> +		seq_printf(seq, "%s\n", "RUNNING_P2P");
+> +		break;
+> +	case VFIO_DEVICE_STATE_PRE_COPY:
+> +		seq_printf(seq, "%s\n", "PRE_COPY");
+> +		break;
+> +	case VFIO_DEVICE_STATE_PRE_COPY_P2P:
+> +		seq_printf(seq, "%s\n", "PRE_COPY_P2P");
+> +		break;
+> +	default:
+> +		seq_printf(seq, "%s\n", "Invalid");
 
-Changes in v5:
-- removed example for mt2701-audio
-- renamed mt2701-afe-pcm to mt2701-audio
-- added clock cells as required, removed reg from required, in audsys binding
-- removed reference comment in mt2701-audio
-- removed assigned clocks from mt2701-audio
+seq_puts() is more appropriate than seq_printf() above.
 
-Changes in v4:
-- fix error reported by Rob's bot : 
-./Documentation/devicetree/bindings/sound/mt2701-afe-pcm.yaml:11:4: [error] missing starting space in comment (comments)
-
-Changes in v3:
-- not added Rb Conor Dooley since the patch was changed in a big essence
-- As per review by Krzysztof, also convert the mt2701-afe-pcm and reference
-the correct schema in the audsys binding.
-
-Changes in v2:
-- remove comment reference to inexistent binding
+I would suggest to add an array or some helper, that the VFIO drivers
+could use to debug the migration flow with pr_* primitives. It can be
+done later.
 
 
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +void vfio_device_debugfs_init(struct vfio_device *vdev)
+> +{
+> +	struct device *dev = &vdev->device;
+> +
+> +	vdev->debug_root = debugfs_create_dir(dev_name(vdev->dev), vfio_debugfs_root);
+> +
+> +	if (vdev->mig_ops) {
+> +		struct dentry *vfio_dev_migration = NULL;
 
- .../bindings/arm/mediatek/mediatek,audsys.txt |  39 -----
- .../arm/mediatek/mediatek,audsys.yaml         | 153 ++++++++++++++++++
- .../bindings/sound/mediatek,mt2701-audio.yaml | 117 ++++++++++++++
- .../bindings/sound/mt2701-afe-pcm.txt         | 146 -----------------
- 4 files changed, 270 insertions(+), 185 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,audsys.txt
- create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,audsys.yaml
- create mode 100644 Documentation/devicetree/bindings/sound/mediatek,mt2701-audio.yaml
- delete mode 100644 Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
+mig_dir maybe ?
 
-diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,audsys.txt b/Documentation/devicetree/bindings/arm/mediatek/mediatek,audsys.txt
-deleted file mode 100644
-index 699776be1dd3..000000000000
---- a/Documentation/devicetree/bindings/arm/mediatek/mediatek,audsys.txt
-+++ /dev/null
-@@ -1,39 +0,0 @@
--MediaTek AUDSYS controller
--============================
--
--The MediaTek AUDSYS controller provides various clocks to the system.
--
--Required Properties:
--
--- compatible: Should be one of:
--	- "mediatek,mt2701-audsys", "syscon"
--	- "mediatek,mt6765-audsys", "syscon"
--	- "mediatek,mt6779-audio", "syscon"
--	- "mediatek,mt7622-audsys", "syscon"
--	- "mediatek,mt7623-audsys", "mediatek,mt2701-audsys", "syscon"
--	- "mediatek,mt8167-audiosys", "syscon"
--	- "mediatek,mt8183-audiosys", "syscon"
--	- "mediatek,mt8192-audsys", "syscon"
--	- "mediatek,mt8516-audsys", "syscon"
--- #clock-cells: Must be 1
--
--The AUDSYS controller uses the common clk binding from
--Documentation/devicetree/bindings/clock/clock-bindings.txt
--The available clocks are defined in dt-bindings/clock/mt*-clk.h.
--
--Required sub-nodes:
---------
--For common binding part and usage, refer to
--../sonud/mt2701-afe-pcm.txt.
--
--Example:
--
--	audsys: clock-controller@11220000 {
--		compatible = "mediatek,mt7622-audsys", "syscon";
--		reg = <0 0x11220000 0 0x2000>;
--		#clock-cells = <1>;
--
--		afe: audio-controller {
--			...
--		};
--	};
-diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,audsys.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,audsys.yaml
-new file mode 100644
-index 000000000000..eb0266c4b0bc
---- /dev/null
-+++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,audsys.yaml
-@@ -0,0 +1,153 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/arm/mediatek/mediatek,audsys.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: MediaTek AUDSYS controller
-+
-+maintainers:
-+  - Eugen Hristev <eugen.hristev@collabora.com>
-+
-+description:
-+  The MediaTek AUDSYS controller provides various clocks to the system.
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - enum:
-+              - mediatek,mt2701-audsys
-+              - mediatek,mt6765-audsys
-+              - mediatek,mt6779-audsys
-+              - mediatek,mt7622-audsys
-+              - mediatek,mt8167-audsys
-+              - mediatek,mt8173-audsys
-+              - mediatek,mt8183-audsys
-+              - mediatek,mt8186-audsys
-+              - mediatek,mt8192-audsys
-+              - mediatek,mt8516-audsys
-+          - const: syscon
-+      - items:
-+          # Special case for mt7623 for backward compatibility
-+          - const: mediatek,mt7623-audsys
-+          - const: mediatek,mt2701-audsys
-+          - const: syscon
-+
-+  reg:
-+    maxItems: 1
-+
-+  '#clock-cells':
-+    const: 1
-+
-+  audio-controller:
-+    $ref: /schemas/sound/mt2701-audio.yaml#
-+    type: object
-+
-+required:
-+  - compatible
-+  - '#clock-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    #include <dt-bindings/power/mt2701-power.h>
-+    #include <dt-bindings/clock/mt2701-clk.h>
-+    soc {
-+        #address-cells = <2>;
-+        #size-cells = <2>;
-+        audsys: clock-controller@11220000 {
-+            compatible = "mediatek,mt7622-audsys", "syscon";
-+            reg = <0 0x11220000 0 0x2000>;
-+            #clock-cells = <1>;
-+
-+            afe: audio-controller {
-+                compatible = "mediatek,mt2701-audio";
-+                interrupts = <GIC_SPI 104 IRQ_TYPE_LEVEL_LOW>,
-+                             <GIC_SPI 132 IRQ_TYPE_LEVEL_LOW>;
-+                interrupt-names = "afe", "asys";
-+                power-domains = <&scpsys MT2701_POWER_DOMAIN_IFR_MSC>;
-+
-+                clocks = <&infracfg CLK_INFRA_AUDIO>,
-+                         <&topckgen CLK_TOP_AUD_MUX1_SEL>,
-+                         <&topckgen CLK_TOP_AUD_MUX2_SEL>,
-+                         <&topckgen CLK_TOP_AUD_48K_TIMING>,
-+                         <&topckgen CLK_TOP_AUD_44K_TIMING>,
-+                         <&topckgen CLK_TOP_AUD_K1_SRC_SEL>,
-+                         <&topckgen CLK_TOP_AUD_K2_SRC_SEL>,
-+                         <&topckgen CLK_TOP_AUD_K3_SRC_SEL>,
-+                         <&topckgen CLK_TOP_AUD_K4_SRC_SEL>,
-+                         <&topckgen CLK_TOP_AUD_K1_SRC_DIV>,
-+                         <&topckgen CLK_TOP_AUD_K2_SRC_DIV>,
-+                         <&topckgen CLK_TOP_AUD_K3_SRC_DIV>,
-+                         <&topckgen CLK_TOP_AUD_K4_SRC_DIV>,
-+                         <&topckgen CLK_TOP_AUD_I2S1_MCLK>,
-+                         <&topckgen CLK_TOP_AUD_I2S2_MCLK>,
-+                         <&topckgen CLK_TOP_AUD_I2S3_MCLK>,
-+                         <&topckgen CLK_TOP_AUD_I2S4_MCLK>,
-+                         <&audsys CLK_AUD_I2SO1>,
-+                         <&audsys CLK_AUD_I2SO2>,
-+                         <&audsys CLK_AUD_I2SO3>,
-+                         <&audsys CLK_AUD_I2SO4>,
-+                         <&audsys CLK_AUD_I2SIN1>,
-+                         <&audsys CLK_AUD_I2SIN2>,
-+                         <&audsys CLK_AUD_I2SIN3>,
-+                         <&audsys CLK_AUD_I2SIN4>,
-+                         <&audsys CLK_AUD_ASRCO1>,
-+                         <&audsys CLK_AUD_ASRCO2>,
-+                         <&audsys CLK_AUD_ASRCO3>,
-+                         <&audsys CLK_AUD_ASRCO4>,
-+                         <&audsys CLK_AUD_AFE>,
-+                         <&audsys CLK_AUD_AFE_CONN>,
-+                         <&audsys CLK_AUD_A1SYS>,
-+                         <&audsys CLK_AUD_A2SYS>,
-+                         <&audsys CLK_AUD_AFE_MRGIF>;
-+
-+                clock-names = "infra_sys_audio_clk",
-+                              "top_audio_mux1_sel",
-+                              "top_audio_mux2_sel",
-+                              "top_audio_a1sys_hp",
-+                              "top_audio_a2sys_hp",
-+                              "i2s0_src_sel",
-+                              "i2s1_src_sel",
-+                              "i2s2_src_sel",
-+                              "i2s3_src_sel",
-+                              "i2s0_src_div",
-+                              "i2s1_src_div",
-+                              "i2s2_src_div",
-+                              "i2s3_src_div",
-+                              "i2s0_mclk_en",
-+                              "i2s1_mclk_en",
-+                              "i2s2_mclk_en",
-+                              "i2s3_mclk_en",
-+                              "i2so0_hop_ck",
-+                              "i2so1_hop_ck",
-+                              "i2so2_hop_ck",
-+                              "i2so3_hop_ck",
-+                              "i2si0_hop_ck",
-+                              "i2si1_hop_ck",
-+                              "i2si2_hop_ck",
-+                              "i2si3_hop_ck",
-+                              "asrc0_out_ck",
-+                              "asrc1_out_ck",
-+                              "asrc2_out_ck",
-+                              "asrc3_out_ck",
-+                              "audio_afe_pd",
-+                              "audio_afe_conn_pd",
-+                              "audio_a1sys_pd",
-+                              "audio_a2sys_pd",
-+                              "audio_mrgif_pd";
-+
-+                assigned-clocks = <&topckgen CLK_TOP_AUD_MUX1_SEL>,
-+                                  <&topckgen CLK_TOP_AUD_MUX2_SEL>,
-+                                  <&topckgen CLK_TOP_AUD_MUX1_DIV>,
-+                                  <&topckgen CLK_TOP_AUD_MUX2_DIV>;
-+                assigned-clock-parents = <&topckgen CLK_TOP_AUD1PLL_98M>,
-+                                         <&topckgen CLK_TOP_AUD2PLL_90M>;
-+                assigned-clock-rates = <0>, <0>, <49152000>, <45158400>;
-+            };
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/sound/mediatek,mt2701-audio.yaml b/Documentation/devicetree/bindings/sound/mediatek,mt2701-audio.yaml
-new file mode 100644
-index 000000000000..5d6263be4ce8
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/mediatek,mt2701-audio.yaml
-@@ -0,0 +1,117 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/mt2701-audio.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: MediaTek Audio Front End (AFE) PCM controller for mt2701
-+
-+description:
-+  The AFE PCM node must be a subnode of the MediaTek audsys device tree node.
-+
-+maintainers:
-+  - Eugen Hristev <eugen.hristev@collabora.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - mediatek,mt2701-audio
-+      - mediatek,mt7622-audio
-+
-+  interrupts:
-+    items:
-+      - description: AFE interrupt
-+      - description: ASYS interrupt
-+
-+  interrupt-names:
-+    items:
-+      - const: afe
-+      - const: asys
-+
-+  power-domains:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: audio infra sys clock
-+      - description: top audio mux 1
-+      - description: top audio mux 2
-+      - description: top audio sys a1 clock
-+      - description: top audio sys a2 clock
-+      - description: i2s0 source selection
-+      - description: i2s1 source selection
-+      - description: i2s2 source selection
-+      - description: i2s3 source selection
-+      - description: i2s0 source divider
-+      - description: i2s1 source divider
-+      - description: i2s2 source divider
-+      - description: i2s3 source divider
-+      - description: i2s0 master clock
-+      - description: i2s1 master clock
-+      - description: i2s2 master clock
-+      - description: i2s3 master clock
-+      - description: i2so0 hopping clock
-+      - description: i2so1 hopping clock
-+      - description: i2so2 hopping clock
-+      - description: i2so3 hopping clock
-+      - description: i2si0 hopping clock
-+      - description: i2si1 hopping clock
-+      - description: i2si2 hopping clock
-+      - description: i2si3 hopping clock
-+      - description: asrc0 output clock
-+      - description: asrc1 output clock
-+      - description: asrc2 output clock
-+      - description: asrc3 output clock
-+      - description: audio front end pd clock
-+      - description: audio front end conn pd clock
-+      - description: top audio a1 sys pd
-+      - description: top audio a2 sys pd
-+      - description: audio merge interface pd
-+
-+  clock-names:
-+    items:
-+      - const: infra_sys_audio_clk
-+      - const: top_audio_mux1_sel
-+      - const: top_audio_mux2_sel
-+      - const: top_audio_a1sys_hp
-+      - const: top_audio_a2sys_hp
-+      - const: i2s0_src_sel
-+      - const: i2s1_src_sel
-+      - const: i2s2_src_sel
-+      - const: i2s3_src_sel
-+      - const: i2s0_src_div
-+      - const: i2s1_src_div
-+      - const: i2s2_src_div
-+      - const: i2s3_src_div
-+      - const: i2s0_mclk_en
-+      - const: i2s1_mclk_en
-+      - const: i2s2_mclk_en
-+      - const: i2s3_mclk_en
-+      - const: i2so0_hop_ck
-+      - const: i2so1_hop_ck
-+      - const: i2so2_hop_ck
-+      - const: i2so3_hop_ck
-+      - const: i2si0_hop_ck
-+      - const: i2si1_hop_ck
-+      - const: i2si2_hop_ck
-+      - const: i2si3_hop_ck
-+      - const: asrc0_out_ck
-+      - const: asrc1_out_ck
-+      - const: asrc2_out_ck
-+      - const: asrc3_out_ck
-+      - const: audio_afe_pd
-+      - const: audio_afe_conn_pd
-+      - const: audio_a1sys_pd
-+      - const: audio_a2sys_pd
-+      - const: audio_mrgif_pd
-+
-+required:
-+  - compatible
-+  - interrupts
-+  - interrupt-names
-+  - power-domains
-+  - clocks
-+  - clock-names
-+
-+additionalProperties: false
-+
-diff --git a/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt b/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
-deleted file mode 100644
-index f548e6a58240..000000000000
---- a/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
-+++ /dev/null
-@@ -1,146 +0,0 @@
--Mediatek AFE PCM controller for mt2701
--
--Required properties:
--- compatible: should be one of the following.
--	      - "mediatek,mt2701-audio"
--	      - "mediatek,mt7622-audio"
--- interrupts: should contain AFE and ASYS interrupts
--- interrupt-names: should be "afe" and "asys"
--- power-domains: should define the power domain
--- clocks: Must contain an entry for each entry in clock-names
--  See ../clocks/clock-bindings.txt for details
--- clock-names: should have these clock names:
--		"infra_sys_audio_clk",
--		"top_audio_mux1_sel",
--		"top_audio_mux2_sel",
--		"top_audio_a1sys_hp",
--		"top_audio_a2sys_hp",
--		"i2s0_src_sel",
--		"i2s1_src_sel",
--		"i2s2_src_sel",
--		"i2s3_src_sel",
--		"i2s0_src_div",
--		"i2s1_src_div",
--		"i2s2_src_div",
--		"i2s3_src_div",
--		"i2s0_mclk_en",
--		"i2s1_mclk_en",
--		"i2s2_mclk_en",
--		"i2s3_mclk_en",
--		"i2so0_hop_ck",
--		"i2so1_hop_ck",
--		"i2so2_hop_ck",
--		"i2so3_hop_ck",
--		"i2si0_hop_ck",
--		"i2si1_hop_ck",
--		"i2si2_hop_ck",
--		"i2si3_hop_ck",
--		"asrc0_out_ck",
--		"asrc1_out_ck",
--		"asrc2_out_ck",
--		"asrc3_out_ck",
--		"audio_afe_pd",
--		"audio_afe_conn_pd",
--		"audio_a1sys_pd",
--		"audio_a2sys_pd",
--		"audio_mrgif_pd";
--- assigned-clocks: list of input clocks and dividers for the audio system.
--		   See ../clocks/clock-bindings.txt for details.
--- assigned-clocks-parents: parent of input clocks of assigned clocks.
--- assigned-clock-rates: list of clock frequencies of assigned clocks.
--
--Must be a subnode of MediaTek audsys device tree node.
--See ../arm/mediatek/mediatek,audsys.txt for details about the parent node.
--
--Example:
--
--	audsys: audio-subsystem@11220000 {
--		compatible = "mediatek,mt2701-audsys", "syscon";
--		...
--
--		afe: audio-controller {
--			compatible = "mediatek,mt2701-audio";
--			interrupts =  <GIC_SPI 104 IRQ_TYPE_LEVEL_LOW>,
--				      <GIC_SPI 132 IRQ_TYPE_LEVEL_LOW>;
--			interrupt-names	= "afe", "asys";
--			power-domains = <&scpsys MT2701_POWER_DOMAIN_IFR_MSC>;
--
--			clocks = <&infracfg CLK_INFRA_AUDIO>,
--				 <&topckgen CLK_TOP_AUD_MUX1_SEL>,
--				 <&topckgen CLK_TOP_AUD_MUX2_SEL>,
--				 <&topckgen CLK_TOP_AUD_48K_TIMING>,
--				 <&topckgen CLK_TOP_AUD_44K_TIMING>,
--				 <&topckgen CLK_TOP_AUD_K1_SRC_SEL>,
--				 <&topckgen CLK_TOP_AUD_K2_SRC_SEL>,
--				 <&topckgen CLK_TOP_AUD_K3_SRC_SEL>,
--				 <&topckgen CLK_TOP_AUD_K4_SRC_SEL>,
--				 <&topckgen CLK_TOP_AUD_K1_SRC_DIV>,
--				 <&topckgen CLK_TOP_AUD_K2_SRC_DIV>,
--				 <&topckgen CLK_TOP_AUD_K3_SRC_DIV>,
--				 <&topckgen CLK_TOP_AUD_K4_SRC_DIV>,
--				 <&topckgen CLK_TOP_AUD_I2S1_MCLK>,
--				 <&topckgen CLK_TOP_AUD_I2S2_MCLK>,
--				 <&topckgen CLK_TOP_AUD_I2S3_MCLK>,
--				 <&topckgen CLK_TOP_AUD_I2S4_MCLK>,
--				 <&audsys CLK_AUD_I2SO1>,
--				 <&audsys CLK_AUD_I2SO2>,
--				 <&audsys CLK_AUD_I2SO3>,
--				 <&audsys CLK_AUD_I2SO4>,
--				 <&audsys CLK_AUD_I2SIN1>,
--				 <&audsys CLK_AUD_I2SIN2>,
--				 <&audsys CLK_AUD_I2SIN3>,
--				 <&audsys CLK_AUD_I2SIN4>,
--				 <&audsys CLK_AUD_ASRCO1>,
--				 <&audsys CLK_AUD_ASRCO2>,
--				 <&audsys CLK_AUD_ASRCO3>,
--				 <&audsys CLK_AUD_ASRCO4>,
--				 <&audsys CLK_AUD_AFE>,
--				 <&audsys CLK_AUD_AFE_CONN>,
--				 <&audsys CLK_AUD_A1SYS>,
--				 <&audsys CLK_AUD_A2SYS>,
--				 <&audsys CLK_AUD_AFE_MRGIF>;
--
--			clock-names = "infra_sys_audio_clk",
--				      "top_audio_mux1_sel",
--				      "top_audio_mux2_sel",
--				      "top_audio_a1sys_hp",
--				      "top_audio_a2sys_hp",
--				      "i2s0_src_sel",
--				      "i2s1_src_sel",
--				      "i2s2_src_sel",
--				      "i2s3_src_sel",
--				      "i2s0_src_div",
--				      "i2s1_src_div",
--				      "i2s2_src_div",
--				      "i2s3_src_div",
--				      "i2s0_mclk_en",
--				      "i2s1_mclk_en",
--				      "i2s2_mclk_en",
--				      "i2s3_mclk_en",
--				      "i2so0_hop_ck",
--				      "i2so1_hop_ck",
--				      "i2so2_hop_ck",
--				      "i2so3_hop_ck",
--				      "i2si0_hop_ck",
--				      "i2si1_hop_ck",
--				      "i2si2_hop_ck",
--				      "i2si3_hop_ck",
--				      "asrc0_out_ck",
--				      "asrc1_out_ck",
--				      "asrc2_out_ck",
--				      "asrc3_out_ck",
--				      "audio_afe_pd",
--				      "audio_afe_conn_pd",
--				      "audio_a1sys_pd",
--				      "audio_a2sys_pd",
--				      "audio_mrgif_pd";
--
--			assigned-clocks = <&topckgen CLK_TOP_AUD_MUX1_SEL>,
--					  <&topckgen CLK_TOP_AUD_MUX2_SEL>,
--					  <&topckgen CLK_TOP_AUD_MUX1_DIV>,
--					  <&topckgen CLK_TOP_AUD_MUX2_DIV>;
--			assigned-clock-parents = <&topckgen CLK_TOP_AUD1PLL_98M>,
--						 <&topckgen CLK_TOP_AUD2PLL_90M>;
--			assigned-clock-rates = <0>, <0>, <49152000>, <45158400>;
--		};
--	};
--- 
-2.34.1
+It would be easier to understand the nature of the variable IMHO.
+
+> +
+> +		vfio_dev_migration = debugfs_create_dir("migration", vdev->debug_root);
+> +		debugfs_create_devm_seqfile(dev, "state", vfio_dev_migration,
+> +					  vfio_device_state_read);
+> +	}
+> +}
+> +
+> +void vfio_device_debugfs_exit(struct vfio_device *vdev)
+> +{
+> +	debugfs_remove_recursive(vdev->debug_root);
+> +}
+> +
+> +void vfio_debugfs_create_root(void)
+> +{
+> +	vfio_debugfs_root = debugfs_create_dir("vfio", NULL);
+> +}
+> +
+> +void vfio_debugfs_remove_root(void)
+> +{
+> +	debugfs_remove_recursive(vfio_debugfs_root);
+> +	vfio_debugfs_root = NULL;
+> +}
+> +
+> diff --git a/drivers/vfio/vfio.h b/drivers/vfio/vfio.h
+> index 307e3f29b527..bde84ad344e5 100644
+> --- a/drivers/vfio/vfio.h
+> +++ b/drivers/vfio/vfio.h
+> @@ -448,4 +448,18 @@ static inline void vfio_device_put_kvm(struct vfio_device *device)
+>   }
+>   #endif
+>   
+> +#ifdef CONFIG_VFIO_DEBUGFS
+> +void vfio_debugfs_create_root(void);
+> +void vfio_debugfs_remove_root(void);
+> +
+> +void vfio_device_debugfs_init(struct vfio_device *vdev);
+> +void vfio_device_debugfs_exit(struct vfio_device *vdev);
+> +#else
+> +static inline void vfio_debugfs_create_root(void) { }
+> +static inline void vfio_debugfs_remove_root(void) { }
+> +
+> +static inline void vfio_device_debugfs_init(struct vfio_device *vdev) { }
+> +static inline void vfio_device_debugfs_exit(struct vfio_device *vdev) { }
+> +#endif /* CONFIG_VFIO_DEBUGFS */
+> +
+>   #endif
+> diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
+> index e31e1952d7b8..9aec4c22f051 100644
+> --- a/drivers/vfio/vfio_main.c
+> +++ b/drivers/vfio/vfio_main.c
+> @@ -309,7 +309,6 @@ static int __vfio_register_dev(struct vfio_device *device,
+>   
+>   	/* Refcounting can't start until the driver calls register */
+>   	refcount_set(&device->refcount, 1);
+> -
+
+superfluous change.
+
+>   	vfio_device_group_register(device);
+>   
+>   	return 0;
+> @@ -320,7 +319,15 @@ static int __vfio_register_dev(struct vfio_device *device,
+>   
+>   int vfio_register_group_dev(struct vfio_device *device)
+>   {
+> -	return __vfio_register_dev(device, VFIO_IOMMU);
+> +	int ret;
+> +
+> +	ret = __vfio_register_dev(device, VFIO_IOMMU);
+> +	if (ret)
+> +		return ret;
+> +
+> +	vfio_device_debugfs_init(device);
+
+Can it be called from __vfio_register_dev() instead ? and mdev devices
+would get debugfs support also.
+
+Thanks,
+
+C.
+
+> +
+> +	return 0;
+>   }
+>   EXPORT_SYMBOL_GPL(vfio_register_group_dev);
+>   
+> @@ -378,6 +385,7 @@ void vfio_unregister_group_dev(struct vfio_device *device)
+>   		}
+>   	}
+>   
+> +	vfio_device_debugfs_exit(device);
+>   	/* Balances vfio_device_set_group in register path */
+>   	vfio_device_remove_group(device);
+>   }
+> @@ -1676,6 +1684,7 @@ static int __init vfio_init(void)
+>   	if (ret)
+>   		goto err_alloc_dev_chrdev;
+>   
+> +	vfio_debugfs_create_root();
+>   	pr_info(DRIVER_DESC " version: " DRIVER_VERSION "\n");
+>   	return 0;
+>   
+> @@ -1691,6 +1700,7 @@ static int __init vfio_init(void)
+>   
+>   static void __exit vfio_cleanup(void)
+>   {
+> +	vfio_debugfs_remove_root();
+>   	ida_destroy(&vfio.device_ida);
+>   	vfio_cdev_cleanup();
+>   	class_destroy(vfio.device_class);
+> diff --git a/include/linux/vfio.h b/include/linux/vfio.h
+> index 454e9295970c..769d7af86225 100644
+> --- a/include/linux/vfio.h
+> +++ b/include/linux/vfio.h
+> @@ -69,6 +69,13 @@ struct vfio_device {
+>   	u8 iommufd_attached:1;
+>   #endif
+>   	u8 cdev_opened:1;
+> +#ifdef CONFIG_DEBUG_FS
+> +	/*
+> +	 * debug_root is a static property of the vfio_device
+> +	 * which must be set prior to registering the vfio_device.
+> +	 */
+> +	struct dentry *debug_root;
+> +#endif
+>   };
+>   
+>   /**
+> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
+> index 7f5fb010226d..2b68e6cdf190 100644
+> --- a/include/uapi/linux/vfio.h
+> +++ b/include/uapi/linux/vfio.h
+> @@ -1219,6 +1219,7 @@ enum vfio_device_mig_state {
+>   	VFIO_DEVICE_STATE_RUNNING_P2P = 5,
+>   	VFIO_DEVICE_STATE_PRE_COPY = 6,
+>   	VFIO_DEVICE_STATE_PRE_COPY_P2P = 7,
+> +	VFIO_DEVICE_STATE_NR,
+>   };
+>   
+>   /**
 
