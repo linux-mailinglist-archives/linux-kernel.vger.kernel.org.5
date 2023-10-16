@@ -2,90 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D858C7CAE90
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A361F7CAE8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233266AbjJPQKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 12:10:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37346 "EHLO
+        id S232817AbjJPQKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 12:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233732AbjJPQKa (ORCPT
+        with ESMTP id S229501AbjJPQKO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 12:10:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF2EDEB
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:09:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697472581;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iqaZ7DcM+18tUsVRQeG7YQZoHIt0T3tkZ81YQtekvTU=;
-        b=EwEppfmW8vs1I8RBlgCv6LVFUdCTKF0pOlTXZrPEvFja3kOWEcgvi6atD3Lpb/IsA3Z8+j
-        AkmZEdrSxxsfwE5+0rCMQ6USw/s6N3N3e4Uy11IHRM0PNzpLUhXGN9LcEs9kZ2RcfD1etH
-        F5p/FhZ4pbWED/5L/A8//wubw+7pRUA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-299-XkDUqMmGO5qnLyDuWfP0Dw-1; Mon, 16 Oct 2023 12:09:34 -0400
-X-MC-Unique: XkDUqMmGO5qnLyDuWfP0Dw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D0A2E800969;
-        Mon, 16 Oct 2023 16:09:32 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.178])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2F03C111D3DC;
-        Mon, 16 Oct 2023 16:09:30 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <e1351696345351cb3d168fb41c54a1ef8ccf0b16.camel@kernel.org>
-References: <e1351696345351cb3d168fb41c54a1ef8ccf0b16.camel@kernel.org> <20231013160423.2218093-1-dhowells@redhat.com> <20231013160423.2218093-10-dhowells@redhat.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     dhowells@redhat.com, Steve French <smfrench@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Christian Brauner <christian@brauner.io>,
-        linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-cachefs@redhat.com
-Subject: Re: [RFC PATCH 09/53] netfs: Implement unbuffered/DIO vs buffered I/O locking
+        Mon, 16 Oct 2023 12:10:14 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C2BAB;
+        Mon, 16 Oct 2023 09:10:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697472612; x=1729008612;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=yOQZfIm040lvmUe2O+DKvT56T78+nm6brIphWp/oItE=;
+  b=cUW8pk80y+3RVyF2reTjUK0cZQ/eEVQZx9bpLrGm4HCPjQq4ACx9QHyx
+   1u1GXvX7FqRpRnO1cVkZ9ieaUW5KnOdK+ymVRROhfFPBgVIfvRXRpcKEl
+   lhzo5K2D6fHgh8U/JafKsydheZr86jKw0/eAEAIn83bbTBarrc7T+qRro
+   JsB1vS1VvbhojUHkLs9p5FmSwMxBaYDXhrUs1lSFMDCOTtQooWNgSAHV6
+   ZUg24PvcsgJrdWO0JY5IwWOJRf3cpsp0HnFEPxrkP+T9ZSJD7160sTLwB
+   KWrWECe2OERkRYSBh31xGEoFClDeo8yjt7GmM1kDg3wTuI0hDMeQTsSMG
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="4175721"
+X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
+   d="scan'208";a="4175721"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 09:10:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="1087124866"
+X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
+   d="scan'208";a="1087124866"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga005.fm.intel.com with ESMTP; 16 Oct 2023 09:10:09 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id EA49781C; Mon, 16 Oct 2023 19:10:08 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>
+Subject: [PATCH v1 1/6] leds: gpio: Keep driver firmware interface agnostic
+Date:   Mon, 16 Oct 2023 19:10:00 +0300
+Message-Id: <20231016161005.1471768-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2840728.1697472569.1@warthog.procyon.org.uk>
-Date:   Mon, 16 Oct 2023 17:09:29 +0100
-Message-ID: <2840729.1697472569@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jeff Layton <jlayton@kernel.org> wrote:
+The of.h is used as a proxy to mod_devicetable, replace former by
+latter.
 
-> It's nice to see this go into common code, but why not go ahead and
-> convert ceph (and possibly NFS) to use this? Is there any reason not to?
+The commit 2d6180147e92 ("leds: gpio: Configure per-LED pin control")
+added yet another unneeded OF APIs. Replace with direct use of fwnode.
 
-I'm converting ceph on a follow-on branch and for ceph this will be dealt with
-there.
+Altogether this makes driver agnostic to the firmware interface in use.
 
-I could do NFS round about here, I suppose.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/leds/leds-gpio.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-David
+diff --git a/drivers/leds/leds-gpio.c b/drivers/leds/leds-gpio.c
+index a6597f0f3eb4..debadb48ceda 100644
+--- a/drivers/leds/leds-gpio.c
++++ b/drivers/leds/leds-gpio.c
+@@ -11,8 +11,8 @@
+ #include <linux/gpio/consumer.h>
+ #include <linux/kernel.h>
+ #include <linux/leds.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+-#include <linux/of.h>
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/platform_device.h>
+ #include <linux/property.h>
+@@ -129,8 +129,8 @@ static int create_gpio_led(const struct gpio_led *template,
+ 		ret = PTR_ERR(pinctrl);
+ 		if (ret != -ENODEV) {
+ 			dev_warn(led_dat->cdev.dev,
+-				 "Failed to select %pOF pinctrl: %d\n",
+-				 to_of_node(fwnode), ret);
++				 "Failed to select %pfw pinctrl: %d\n",
++				 fwnode, ret);
+ 		} else {
+ 			/* pinctrl-%d not present, not an error */
+ 			ret = 0;
+-- 
+2.40.0.1.gaa8946217a0b
 
