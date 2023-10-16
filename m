@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B7F7CADBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9435D7CADC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233743AbjJPPjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 11:39:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40430 "EHLO
+        id S233630AbjJPPjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 11:39:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232375AbjJPPjV (ORCPT
+        with ESMTP id S233751AbjJPPji (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 11:39:21 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 060D9F0;
-        Mon, 16 Oct 2023 08:39:20 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-777252c396bso281526885a.2;
-        Mon, 16 Oct 2023 08:39:19 -0700 (PDT)
+        Mon, 16 Oct 2023 11:39:38 -0400
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97179AC;
+        Mon, 16 Oct 2023 08:39:36 -0700 (PDT)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5a7af20c488so57697047b3.1;
+        Mon, 16 Oct 2023 08:39:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697470759; x=1698075559; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697470776; x=1698075576; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=gxDwBp9eLW2ZizpV0gYU08qk9UlwEBNpEGkIRNWQbPc=;
-        b=iqQX+7sXI9kgY5F+4XoeInvMlrKCD7yphkarHUcCfzJrTb1TD1AUg2heflWOo2LHOz
-         ARKXE2178eBqRhQM2coIip6YOdVppkSHsf9gBlR4s6ouPT1yWnkF1ggxBBs6dYq4tHp3
-         bAp0AZkW6m6eQvBhzWb4OKaaUEkAHy5j0twlp9QUVTH2rSTJm/oKXkHQljAvqffxEkfz
-         TnUBB11eTmmXC5ADWUFZDm0S2HoiFM6Q4YAeN7kTzLY5Fphho/MW69Qqr+Q9ts1VMi2W
-         856J1nFFXhgS3ie5Qaw+mQ2QyrZ0Cs9S1Tw/pOcNy9N2NBvjkLKVQorzI8vl2R412x6n
-         tI2A==
+        bh=i71WqBTF0Gd9XLapkEYhFiADewwOIyPH5hrL9rl36R8=;
+        b=NpqRwS0lVvDKfKfU/lg/tajmyYVsZm4AUE5JrEWx+TkPdc1xabyT0hNYqS0eVntfAI
+         g8YSHlslhDvOz0KXqCA0es65aGbQcHOBXguZku1FUTDYWwvGRmsBXJOSCthRswBnn3Ps
+         SId8ctI90YPHbU4sGqXimoLt3pVcSDfdONg9eWmyCLW7UgRJDbSUSDfRb4tlpARIWRm7
+         3IF44kW1TvBN279B/XJIiIiwSqksvlzzAadjaHxHt/dL+tQ37oOAT/795MkdA9uxMgOz
+         XW9Ogg1njB33HBe0fVyu3fQB6XWcGUzfoRTc0gTNk/8wP74lqKc3qzKbc3zHbeA2SbLD
+         zEjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697470759; x=1698075559;
+        d=1e100.net; s=20230601; t=1697470776; x=1698075576;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gxDwBp9eLW2ZizpV0gYU08qk9UlwEBNpEGkIRNWQbPc=;
-        b=PyacJgcM91XEzFc0FQ1gc+/Z9vnbBmudRA0yamBzzgCVs9whitsPuCcpldcB6n6Zxe
-         OHzoCATxEfbq+2fU1KKbK1XI8q4QWo2nQnFujgEQVOKuMFAnkRBLWgUp+9vQ3oYXRV6z
-         +hjI09kXsaZyxeuD1dBGVPub4yTICQ590gbOSDv6Zrbnxe8mu5xuAwT03AI/88KEmSTQ
-         jrOI4sfrU2XHTtuHj3zcvYnPXB9HLa32UaQgRHUxC1iM/sxitLsDK7FkIMtM4WPEo1Ud
-         EouwjGFYakTvG5eUy4yW+L6mEKi9Ym2GcowsdNAiwHOOYlhHQCs3bNN4grvYoeGzArZX
-         7POA==
-X-Gm-Message-State: AOJu0YzwwBjt7sonCLxNOlrgc1LdVWRQkpFRq+Vehozt7BcWn9RXDUjk
-        02zqmSD/IOZnFkyTDCHc+9g=
-X-Google-Smtp-Source: AGHT+IFLThut/XN6qO/W8f/lbgS62AdLqn+BJSmemWAgE7bDNozDdX31uUZ8RUe/KQBgFx42S58LSw==
-X-Received: by 2002:a05:620a:2493:b0:774:334d:74bd with SMTP id i19-20020a05620a249300b00774334d74bdmr38476586qkn.57.1697470758973;
-        Mon, 16 Oct 2023 08:39:18 -0700 (PDT)
+        bh=i71WqBTF0Gd9XLapkEYhFiADewwOIyPH5hrL9rl36R8=;
+        b=LeN6X8k5uF77/+4y4nQhGy8hyyFLx2bhBLTb1gJHKSBc79tVc2f1ZL5JtHJXa5mavs
+         FdLifo1T1kiRtezCyN7HZJIElB9ZrOVQJaTGrRPQ3epTJlYjtckHsH9NIX7ctA1va+BJ
+         c5JKunPq7EJz4lHGq2A9mDs5zL/uHFtfFwtH6srOEfZsrXV5ioLa88A9FuQnTNDSe0lO
+         Myeb45fUIM2T7pJabnQLVosU2pW3TqUgkDf56zbGRRfnypJy3Avtcn6IKRPrfjNh+MUt
+         ycsDjyc44mbwcdNhshHXsbZdoUZSOenmGjXZf7izVoViPGwhObskE3wB2eHqGngYoUx3
+         wgZA==
+X-Gm-Message-State: AOJu0Yzc30vTACb5d08BHX/xUhUJnH06aTSHvzbco0U0yJjQW/NTSGwR
+        EDg5Yhli7QCMUWf5x0iyWuQ=
+X-Google-Smtp-Source: AGHT+IHmla4wNNq5FnCFvtQ/XzV+pwwTjMIHmZc5Wlttbc0Af2qynVzjx4Mx4NUMMONGJGMmVIH+QA==
+X-Received: by 2002:a81:a193:0:b0:5a8:1812:a7ee with SMTP id y141-20020a81a193000000b005a81812a7eemr10080984ywg.3.1697470775566;
+        Mon, 16 Oct 2023 08:39:35 -0700 (PDT)
 Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
-        by smtp.gmail.com with ESMTPSA id x21-20020a05620a14b500b00773f008da40sm3061221qkj.125.2023.10.16.08.39.16
+        by smtp.gmail.com with ESMTPSA id x21-20020a05620a14b500b00773f008da40sm3061221qkj.125.2023.10.16.08.39.33
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 08:39:18 -0700 (PDT)
-Message-ID: <028579e5-07f0-48cc-a128-dc5b5490a78a@gmail.com>
-Date:   Mon, 16 Oct 2023 08:39:16 -0700
+        Mon, 16 Oct 2023 08:39:35 -0700 (PDT)
+Message-ID: <24ffddd0-3497-4888-9f0f-29e20281360c@gmail.com>
+Date:   Mon, 16 Oct 2023 08:39:33 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v4 8/9] net: dsa: microchip: Refactor switch
- shutdown routine for WoL preparation
+Subject: Re: [PATCH net-next v4 9/9] net: dsa: microchip: do not reset the
+ switch on shutdown if WoL is active
 Content-Language: en-US
 To:     Oleksij Rempel <o.rempel@pengutronix.de>,
         "David S. Miller" <davem@davemloft.net>,
@@ -74,7 +74,7 @@ Cc:     kernel@pengutronix.de, linux-kernel@vger.kernel.org,
         "Russell King (Oracle)" <linux@armlinux.org.uk>,
         devicetree@vger.kernel.org
 References: <20231016141256.2011861-1-o.rempel@pengutronix.de>
- <20231016141256.2011861-9-o.rempel@pengutronix.de>
+ <20231016141256.2011861-10-o.rempel@pengutronix.de>
 From:   Florian Fainelli <f.fainelli@gmail.com>
 Autocrypt: addr=f.fainelli@gmail.com; keydata=
  xsDiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
@@ -109,7 +109,7 @@ Autocrypt: addr=f.fainelli@gmail.com; keydata=
  y5arMQorqTFWlEOgRA8OP47L9knl9i4xuR0euV6DChDrguup2aJVU8JPBBgRAgAPAhsMBQJU
  X9LxBQkeXB3fAAoJEGFXmRW1Y3YOj4UAn3nrFLPZekMeqX5aD/aq/dsbXSfyAKC45Go0YyxV
  HGuUuzv+GKZ6nsysJw==
-In-Reply-To: <20231016141256.2011861-9-o.rempel@pengutronix.de>
+In-Reply-To: <20231016141256.2011861-10-o.rempel@pengutronix.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -125,13 +125,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 10/16/2023 7:12 AM, Oleksij Rempel wrote:
-> Centralize the switch shutdown routine in a dedicated function,
-> ksz_switch_shutdown(), to enhance code maintainability and reduce
-> redundancy. This change abstracts the common shutdown operations
-> previously duplicated in ksz9477_i2c_shutdown() and ksz_spi_shutdown().
-> 
-> This refactoring is a preparatory step for an upcoming patch to avoid
-> reset on shutdown if Wake-on-LAN (WoL) is enabled.
+> For Wake on Lan we should not reconfigure, reset or power down the
+> switch on shut down sequence.
 > 
 > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
