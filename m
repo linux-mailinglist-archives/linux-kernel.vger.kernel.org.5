@@ -2,119 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 765167CB63B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 00:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 570E67CB62C
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 00:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234112AbjJPWIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 18:08:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45348 "EHLO
+        id S232577AbjJPWEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 18:04:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233707AbjJPWIE (ORCPT
+        with ESMTP id S229666AbjJPWEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 18:08:04 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E226A2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 15:08:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1697494079;
-        bh=BNnauGvB3NMUSz9CcxKTyRjSwWgxTLcHlHf9pGpnUsA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hAj/T+6TsTqUwTEPSZ1GphY1HJZ3m4/97j4ohSlkf0GemfE4dcxnHCJejFmokIEj9
-         Z7zWF8Fr7J4LoOJ6V2JHR8E4ltFSd4nTNYJb7IS2GQWzBhvI8Bo5aa7/8mzMLOqymx
-         7b3CsGACNG16T5o4VAGltakk+FWXed6/bhUwu+YU=
-Date:   Tue, 17 Oct 2023 00:03:41 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Willy Tarreau <w@1wt.eu>, Zhangjin Wu <falcon@tinylab.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/nolibc: add tests for multi-object linkage
-Message-ID: <edd7c9f6-32cb-4f5d-920d-7bd6bdb7eea0@t-8ch.de>
-References: <ZSea+etQwlxbi+Ok@1wt.eu>
- <bfc17e76-fcbc-4ce6-97a8-c1ed72ed2a67@t-8ch.de>
- <33e9afcd-a1cd-4f67-829b-85c86500a93e@paulmck-laptop>
- <b278a643-3761-4699-bafc-df1b7245b8c2@t-8ch.de>
- <ca67eb2c-3918-4a1f-b3e6-2023fda5d6a3@paulmck-laptop>
- <6b66305f-8172-463e-a50d-324c0c33a6ea@t-8ch.de>
- <a5f1a910-dbac-44d8-b9f6-5725bea948b2@paulmck-laptop>
- <aa77a065-fcc9-4d3a-8531-fd994587c48f@t-8ch.de>
- <0c8446a7-473d-49bc-9413-d1b9176f13b1@paulmck-laptop>
- <246fe818-57a7-4cee-a11b-390df3eee101@paulmck-laptop>
+        Mon, 16 Oct 2023 18:04:50 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E8C9B;
+        Mon, 16 Oct 2023 15:04:49 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82E17C433C7;
+        Mon, 16 Oct 2023 22:04:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697493888;
+        bh=Zu8r+UFNm3vd5emenr5/jPt+Q2RIuOTafj17uJohU+Y=;
+        h=Date:From:To:Cc:Subject:From;
+        b=SDJ3m32h5Fq72f4xV1Mgs/ZVsIsG4MjIHRKKj/QV8CAZ77CUIzbBiFEqi2QnZz0yR
+         NspIuMLPXzPeHhLFILOZ/UehXr7pIloHyDcr42gnrgPlmqSJDZkDIjy2Q7yeU23lDM
+         vqH8+YmU4V0GTZPZKHMl5Ti64omHBT0tydfkyFNp5vjbevwRvEhPT1agkRuiY55d7l
+         y0UoOCnk0XhVXZJy82x+htxUg081xzhEJPlEAGCzgYRlnXfyQm9BoOrCR45U9lcOAI
+         75huKhqZ9nLcNvR4a1FUSkcT7U1IPqlSbU5087htRSiXfsgTVEPPljFoEJQYuUWq7d
+         6RI2mMc7nuG9w==
+Date:   Mon, 16 Oct 2023 16:04:44 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Cc:     Kees Cook <keescook@chromium.org>, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH v2 0/2][next] clk: visconti: Fix undefined behavior bug and
+ add bounds-checking coverage
+Message-ID: <cover.1697492890.git.gustavoars@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <246fe818-57a7-4cee-a11b-390df3eee101@paulmck-laptop>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URG_BIZ autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-16 09:24:19-0700, Paul E. McKenney wrote:
-> On Thu, Oct 12, 2023 at 01:18:18PM -0700, Paul E. McKenney wrote:
-> > On Thu, Oct 12, 2023 at 09:34:53PM +0200, Thomas Weißschuh wrote:
-> > > On 2023-10-12 12:06:33-0700, Paul E. McKenney wrote:
-> > > > On Thu, Oct 12, 2023 at 08:39:14PM +0200, Thomas Weißschuh wrote:
-> > > > > On 2023-10-12 11:25:02-0700, Paul E. McKenney wrote:
-> > > > > > [..]
-> > > 
-> > > > > > I have a signed tag urgent/nolibc.2023.10.12a in the -rcu tree, so
-> > > > > > please check the lead-in text for sanity.  (Everything after the digital
-> > > > > > signature is automatically generated.)
-> > > > > 
-> > > > > Looks good. But it's only a listing of the commit subjects, correct?
-> > > > 
-> > > > Pretty close, just a few added words on the last one.
-> > > > 
-> > > > So the question is whether there is some larger issue that Linus should
-> > > > be made aware of.  If these are just simple fixes for simple bugs,
-> > > > we should be good, but yes, I do need to ask.  ;-)
-> > > 
-> > > These are simple fixes for simple bugs.
-> > > 
-> > > Do you always have to ask specifically or can I just mention it in the
-> > > pull request in the future?
-> > 
-> > I would be extremely happy to simply copy text from the pull request
-> > into the signed tags.  ;-)
-> > 
-> > We would just need to agree on the format.  For example, in this case,
-> > there will eventually be two signed tags, one for the urgent pull
-> > request early next week and another for the pull request for the upcoming
-> > merge window.
-> > 
-> > Proposals for the format?
-> 
-> Actually, proposals for the signed-tag text for the urgent commits?
-> Left to myself, I would use the same text shown below that I proposed
-> last week.
+This small series aims to fix an undefined behavior bug in
+`struct visconti_pll_provider` and add bounds-checking
+coverage at run-time for flexible-array member `hws`
+in `struct clk_hw_onecell_data` when accessed throught
+`struct visconti_pll_provider`.
 
-Looks good.
+Changes in v2:
+ - Mention -Wflex-array-member-not-at-end in the changelog text.
 
-The tags for urgent PRs seem good with one item per patch.
-I guess for normal PRs one item per series would be fine.
+v1:
+ - Link: https://lore.kernel.org/linux-hardening/cover.1697076650.git.gustavoars@kernel.org/
 
-> 
-> 							Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> tag urgent/nolibc.2023.10.12a
-> Tagger: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Thu Oct 12 10:50:08 2023 -0700
-> 
-> Urgent pull request for nolibc into v6.6
-> 
-> This pull request contains the following fixes:
-> 
-> o	tools/nolibc: i386: Fix a stack misalign bug on _start
-> 
-> o	MAINTAINERS: nolibc: update tree location
-> 
-> o	tools/nolibc: mark start_c as weak to avoid linker errors
+Gustavo A. R. Silva (2):
+  clk: visconti: Fix undefined behavior bug in struct
+    visconti_pll_provider
+  clk: visconti: Add bounds-checking coverage for struct
+    visconti_pll_provider
 
-> [..]
+ drivers/clk/visconti/pll.c | 6 +++---
+ drivers/clk/visconti/pll.h | 4 +++-
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
+-- 
+2.34.1
+
