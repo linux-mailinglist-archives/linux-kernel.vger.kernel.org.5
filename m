@@ -2,68 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1917CA426
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 426C47CA428
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233411AbjJPJ3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 05:29:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49446 "EHLO
+        id S232199AbjJPJ3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 05:29:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232986AbjJPJ3M (ORCPT
+        with ESMTP id S233343AbjJPJ3R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 05:29:12 -0400
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFD02E8;
-        Mon, 16 Oct 2023 02:29:10 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 564D2240004;
-        Mon, 16 Oct 2023 09:29:06 +0000 (UTC)
+        Mon, 16 Oct 2023 05:29:17 -0400
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B5C8F9
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 02:29:14 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8DAA340004;
+        Mon, 16 Oct 2023 09:29:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1697448549;
+        t=1697448553;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ngr+iz1YVj9BWtuExbnfDz262UFwUCPSb0IR05QCKS8=;
-        b=Cy7Y/sCPJXzkyyeeZQVLat5A94AXUXVlF6PKjPZZKMbivzP92RWeq+AYXG86uZYngtbNqE
-        f6oT/r+l0gb3qt9z9PAbip7tldFQoLsvMg8IVhA3Mdn/B/Jnq/UyGLoLlZzfV52vrw1cW/
-        yQavfU9QB4Ic7gmLgUggmC0l1FdGE/4sOi7Pc60pyrRLUnBcwPhvi3qfNDxIP0+FBJwqO9
-        knmluKxiUEdKNbZWGHMP8dd4BDg42GHgTIckHlQinEoBMeyaYvBkW9gdp2box9/82t9gqO
-        E0IW67tb043EyoH95NiYPkDwRgnDuc8t+YfnExYUxPVOYZJVrtjvqLz5AavsjA==
+        bh=roto2Ms7aae9Nrn/EG4m5v2+AAmE4JeuXUIB3zViURE=;
+        b=HbNexEedPtyTC7NOct2pfHl6gYY28pnQsEyF+HtbB0qfUwxPdrDe2W3aF1V5WN/xmR2s2j
+        F1K6F/sMbcvvbv85k3dyk0YpPVzWP8BlNCdGESM4EToEK2aw22JfiMHZTict3hcfMUkkMg
+        KPIjFojVikiwg9ysV77+EQq1W5QCGW0b+le0jy+VzaccvW02/GcIgaK7Z2WC4R4sdAg6j4
+        UiRSMYKJFYFnD9bunkaHb35VRbEE1GYWkWIt/eV9W0XNRLKvPPYiGbnPPCCz+2mIYHpJza
+        2VHuPtePVMpgBubd25uMZkedPcNzIj3pvjZ1crLdpKBfDJe1p9u93zvcHjjjbQ==
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Kees Cook <keescook@chromium.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Richard Weinberger <richard@nod.at>,
+To:     Martin Kurbanov <mmkurbanov@salutedevices.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
         Vignesh Raghavendra <vigneshr@ti.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Roger Quadros <rogerq@kernel.org>,
-        =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Cai Huoqing <cai.huoqing@linux.dev>,
+        Mario Kicherer <dev@kicherer.org>,
         Chuanhong Guo <gch981213@gmail.com>,
-        Rob Herring <robh@kernel.org>, Li Zetao <lizetao1@huawei.com>,
-        linux-mtd@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        linux-hardening@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH] mtd: rawnand: Annotate struct mtk_nfc_nand_chip with __counted_by
-Date:   Mon, 16 Oct 2023 11:29:05 +0200
-Message-Id: <20231016092905.289116-1-miquel.raynal@bootlin.com>
+        Dhruva Gole <d-gole@ti.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        kernel@sberdevices.ru
+Subject: Re: [PATCH v2] mtd: spinand: add support for FORESEE F35SQA002G
+Date:   Mon, 16 Oct 2023 11:29:11 +0200
+Message-Id: <20231016092911.289145-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231006201728.work.750-kees@kernel.org>
+In-Reply-To: <20231002140458.147605-1-mmkurbanov@salutedevices.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'13241a5ee367dfa929268a0ac484323a37ea7290'
-Content-Type: text/plain; charset=UTF-8
+X-linux-mtd-patch-commit: b'f447318fb1d156b4b6da79266724c7ee347d1b59'
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -76,38 +60,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-10-06 at 20:17:28 UTC, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
-> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
+On Mon, 2023-10-02 at 14:04:58 UTC, Martin Kurbanov wrote:
+> Add support for FORESEE F35SQA002G SPI NAND.
+> Datasheet:
+>   https://www.longsys.com/uploads/LM-00006FORESEEF35SQA002GDatasheet_1650183701.pdf
 > 
-> As found with Coccinelle[1], add __counted_by for struct
-> mtk_nfc_nand_chip.
-> 
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Vignesh Raghavendra <vigneshr@ti.com>
-> Cc: Matthias Brugger <matthias.bgg@gmail.com>
-> Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> Cc: Heiko Stuebner <heiko@sntech.de>
-> Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> Cc: Thierry Reding <treding@nvidia.com>
-> Cc: Roger Quadros <rogerq@kernel.org>
-> Cc: "Uwe Kleine-König" <u.kleine-koenig@pengutronix.de>
-> Cc: Cai Huoqing <cai.huoqing@linux.dev>
-> Cc: Chuanhong Guo <gch981213@gmail.com>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: Li Zetao <lizetao1@huawei.com>
-> Cc: linux-mtd@lists.infradead.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-mediatek@lists.infradead.org
-> Cc: linux-hardening@vger.kernel.org
-> Link: https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci [1]
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Signed-off-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
