@@ -2,143 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 322F47CB488
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 414247CB48D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233329AbjJPUWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 16:22:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41526 "EHLO
+        id S233781AbjJPUWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 16:22:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231955AbjJPUWF (ORCPT
+        with ESMTP id S232345AbjJPUWf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 16:22:05 -0400
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5789083;
-        Mon, 16 Oct 2023 13:22:03 -0700 (PDT)
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-57b811a6ce8so2771381eaf.3;
-        Mon, 16 Oct 2023 13:22:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697487722; x=1698092522;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=n8Ejd5Pa0+899H+ST1facS1EVWLpMPKF/gO5qmwkR4w=;
-        b=hEsRXUpe8RNhoecgcfDj41iAUv2IDu3+valzY1GC13wjaAWGCtjaMYz7ps3R4K4DGN
-         3Hx/OiM8xgWZ7K/LCQJBUkSoN5tss6g1yzoPvVdX2S92b1fJ0YnHsdkn7kNGILYvyMzq
-         Fn+mcb2S8aMETAQkzkLUgyA6F/4tWjmY4+ZvQXTWkdFsEg54qvla7WIkRh5cgrzk2qhk
-         G7Vy6bnQMW2N4OuqgeAEWKgED3PFfRT64vhcQZfCdMFVlqFVfMQBJldcahKzMYXWuIUg
-         7CCAWAy0Z4WBMSEKslMk7tO1XYHQ/7pJgPnHitbnP9yTQ4zc/Ncnc3HM1eqautIW9G/+
-         FlRg==
-X-Gm-Message-State: AOJu0YxTryU30HC8P1m3hb8tj8SFDP9yvENK7cklUMAzbOepTPbIfYmr
-        cyYoirlPPgPQyofSGZ3NKXSVHwZvWg==
-X-Google-Smtp-Source: AGHT+IGEYagCHsUBCuyxmcGOPHRUwWB7THaDN4+NC/pbptGn33Manj5wy9VEGgn9ovwHhqVg4gR47g==
-X-Received: by 2002:a4a:4245:0:b0:57b:469d:8af6 with SMTP id i5-20020a4a4245000000b0057b469d8af6mr112518ooj.4.1697487722620;
-        Mon, 16 Oct 2023 13:22:02 -0700 (PDT)
-Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id o10-20020a9d718a000000b006c4e71a022bsm1199otj.52.2023.10.16.13.22.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 13:22:01 -0700 (PDT)
-Received: (nullmailer pid 3615546 invoked by uid 1000);
-        Mon, 16 Oct 2023 20:22:01 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Mon, 16 Oct 2023 16:22:35 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA9AE8;
+        Mon, 16 Oct 2023 13:22:34 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39GJBxV9007547;
+        Mon, 16 Oct 2023 20:22:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=yo/VcCytQZLCczrUcswAkWVFFEaQqipMLKsFZgqy1+k=;
+ b=NDK+9ruQu38DXNu7ZWh0QZMfPInQzaAF5dRPFM7UEL3dCQx1ZIpVIYKNRLQ1ouxioZPh
+ hMRYJvX6WUhz05mpOrhQrxm1JC6u8ODMofSSx0O1e8tbXxXCs54h35tD+EqylNk3veG8
+ KYAO4jy1DXP+jxxphRwgECEltsJaZs4wd1MxcvjajXhl0rGohiUokaUHpYb5ZOaF4RLo
+ aPorMaUB8CV927bn5hinZCQa4dwYJ4pDSJldkSCfL9cWHgYllPga2qyAJrGPih9UZQy9
+ Aavw1k4P9hmjK4L/q/WntJLmMt5XE2grNQcN8XxTtJITW4mL6McvLEJkAHuxHzDRhDgh GQ== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tsb3xr5d6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Oct 2023 20:22:16 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39GKMFlH021327
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Oct 2023 20:22:15 GMT
+Received: from akhilpo-linux.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Mon, 16 Oct 2023 13:22:08 -0700
+Date:   Tue, 17 Oct 2023 01:52:05 +0530
+From:   Akhil P Oommen <quic_akhilpo@quicinc.com>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+CC:     Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        <cros-qcom-dts-watchers@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Luca Weiss <luca.weiss@fairphone.com>,
+        "Rob Clark" <robdclark@chromium.org>,
+        <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH 5/7] arm64: dts: qcom: sc7280: Fix up GPU SIDs
+Message-ID: <opqdrmyj3y64nqqqmakjydn5rkspizufyeavm7ec7c7ufqz4wk@ey2a7bq3shfj>
+References: <20230926-topic-a643-v1-0-7af6937ac0a3@linaro.org>
+ <20230926-topic-a643-v1-5-7af6937ac0a3@linaro.org>
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Eugen Hristev <eugen.hristev@collabora.com>
-Cc:     broonie@kernel.org, lgirdwood@gmail.com,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        conor+dt@kernel.org, matthias.bgg@gmail.com,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        angelogioacchino.delregno@collabora.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org
-In-Reply-To: <20231016151553.5336-1-eugen.hristev@collabora.com>
-References: <20231016151553.5336-1-eugen.hristev@collabora.com>
-Message-Id: <169748772099.3615502.6790888257320558610.robh@kernel.org>
-Subject: Re: [PATCH v6] dt-bindings: arm: mediatek: convert audsys and
- mt2701-afe-pcm to yaml
-Date:   Mon, 16 Oct 2023 15:22:01 -0500
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230926-topic-a643-v1-5-7af6937ac0a3@linaro.org>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: be6AiHNEdKzb1op1gFhqcd2WyzM30CHP
+X-Proofpoint-ORIG-GUID: be6AiHNEdKzb1op1gFhqcd2WyzM30CHP
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-16_10,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 phishscore=0 mlxlogscore=999 malwarescore=0
+ priorityscore=1501 mlxscore=0 adultscore=0 bulkscore=0 clxscore=1015
+ lowpriorityscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2309180000 definitions=main-2310160177
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Mon, 16 Oct 2023 18:15:53 +0300, Eugen Hristev wrote:
-> Convert the mediatek,audsys binding to YAML, together with the associated
-> binding bindings/sound/mt2701-afe-pcm.yaml .
+On Tue, Sep 26, 2023 at 08:24:40PM +0200, Konrad Dybcio wrote:
 > 
-> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
+> GPU_SMMU SID 1 is meant for Adreno LPAC (Low Priority Async Compute).
+> On platforms that support it (in firmware), it is necessary to
+> describe that link, or Adreno register access will hang the board.
+> 
+> Add that and fix up the SMR mask of SID 0, which seems to have been
+> copypasted from another SoC.
+> 
+> Fixes: 96c471970b7b ("arm64: dts: qcom: sc7280: Add gpu support")
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 > ---
-> Changes in v6:
-> - renamed mt2701-audio.yaml to mediatek,mt2701-audio.yaml
-> - add Rb Rob Herring
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> Changes in v5:
-> - removed example for mt2701-audio
-> - renamed mt2701-afe-pcm to mt2701-audio
-> - added clock cells as required, removed reg from required, in audsys binding
-> - removed reference comment in mt2701-audio
-> - removed assigned clocks from mt2701-audio
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index c38ddf267ef5..0d96d1454c49 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -2603,7 +2603,8 @@ gpu: gpu@3d00000 {
+>  				    "cx_mem",
+>  				    "cx_dbgc";
+>  			interrupts = <GIC_SPI 300 IRQ_TYPE_LEVEL_HIGH>;
+> -			iommus = <&adreno_smmu 0 0x401>;
+> +			iommus = <&adreno_smmu 0 0x400>,
+> +				 <&adreno_smmu 1 0x400>;
+Aren't both functionally same? 401 works fine on sc7280. You might be
+having issue due to Qcom TZ policies on your platform. I am okay with the change, but can
+you please reword the commit text?
+
+-Akhil.
+
+>  			operating-points-v2 = <&gpu_opp_table>;
+>  			qcom,gmu = <&gmu>;
+>  			interconnects = <&gem_noc MASTER_GFX3D 0 &mc_virt SLAVE_EBI1 0>;
 > 
-> Changes in v4:
-> - fix error reported by Rob's bot :
-> ./Documentation/devicetree/bindings/sound/mt2701-afe-pcm.yaml:11:4: [error] missing starting space in comment (comments)
+> -- 
+> 2.42.0
 > 
-> Changes in v3:
-> - not added Rb Conor Dooley since the patch was changed in a big essence
-> - As per review by Krzysztof, also convert the mt2701-afe-pcm and reference
-> the correct schema in the audsys binding.
-> 
-> Changes in v2:
-> - remove comment reference to inexistent binding
-> 
-> 
-> 
->  .../bindings/arm/mediatek/mediatek,audsys.txt |  39 -----
->  .../arm/mediatek/mediatek,audsys.yaml         | 153 ++++++++++++++++++
->  .../bindings/sound/mediatek,mt2701-audio.yaml | 117 ++++++++++++++
->  .../bindings/sound/mt2701-afe-pcm.txt         | 146 -----------------
->  4 files changed, 270 insertions(+), 185 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,audsys.txt
->  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,audsys.yaml
->  create mode 100644 Documentation/devicetree/bindings/sound/mediatek,mt2701-audio.yaml
->  delete mode 100644 Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
-> 
-
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/arm/mediatek/mediatek,audsys.yaml:
-Error in referenced schema matching $id: http://devicetree.org/schemas/sound/mt2701-audio.yaml
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/mediatek,mt2701-audio.yaml: $id: Cannot determine base path from $id, relative path/filename doesn't match actual path or filename
- 	 $id: http://devicetree.org/schemas/sound/mt2701-audio.yaml
- 	file: /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/mediatek,mt2701-audio.yaml
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231016151553.5336-1-eugen.hristev@collabora.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
