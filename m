@@ -2,116 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D027CA9AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 15:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B3C37CA9A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 15:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233929AbjJPNgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 09:36:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60786 "EHLO
+        id S233562AbjJPNgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 09:36:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233631AbjJPNg3 (ORCPT
+        with ESMTP id S233913AbjJPNfq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 09:36:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8636B185
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 06:35:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697463345;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yy1/cgxKgJiMUa1SJT7ozjNtxww425JfDJ39NondDok=;
-        b=dk4+hS/3xSdctIFKgEHUQ4cKStkU/tpgtD4Cv7pckuwCeXicbxRvTFuWZFDGxo7Uc8y9xm
-        lXMayQ7e8qkawp7f9pjIqkfBPl6FDCM4wXGgo4CtfnzjlmWCVkXZtoTTQREJf4TaV7SEwk
-        KWfoRys7rh6wu5dyelsc0TwoK1eR37k=
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
- [209.85.167.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-374-ryZbvV79PfWt_3kBDAWadA-1; Mon, 16 Oct 2023 09:35:44 -0400
-X-MC-Unique: ryZbvV79PfWt_3kBDAWadA-1
-Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3af602b6512so7857824b6e.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 06:35:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697463343; x=1698068143;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yy1/cgxKgJiMUa1SJT7ozjNtxww425JfDJ39NondDok=;
-        b=dQxEHlKeBbisLG8RdUEl+K/5RKW5RzggJIRJUOgjdIAPlYVwDGjq1PT5NBxHHueRWH
-         s71AssBxS5QJxsXds+6fOF9psy+S6ZJt7qV9gfrWftI+dTIOhw4h6gxfvPC0wqMTM8o2
-         7QWiKGIp3TdPNfU5WevvJLT9dIge3pFMR8bueUFn2X2g5zovdKfOXBXs6okarbUU82Jv
-         uoFvi06E7xTk5wnwTaeokRPwh4XwUhH1N2ifJAV2+AIIG+5/kNXoLd0a5ptrNgRa3FbV
-         I4bBCgW96v0u3lSH4ppIuH84C98coyh+Op4OT7sTb7uXh726mr05YWA/n6Ri+I38nz4M
-         P35w==
-X-Gm-Message-State: AOJu0YwIa2r5KiAp+7kNNSreP9Dcy7zSI1Ob5Hl8lOO4yE6tcjHvJk+j
-        0yO6IUFSZGUHsOavAB/i6xM+vSucz4O6PdgYYmSsyCXOPU274mN+dYuPLgBHufLP0Byu/3+yYN1
-        +oD0VtV8uTrEgmXR8S6IjzR/2
-X-Received: by 2002:a05:6808:2112:b0:3af:6634:49b9 with SMTP id r18-20020a056808211200b003af663449b9mr45234742oiw.30.1697463343625;
-        Mon, 16 Oct 2023 06:35:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE77paMQjv1E0tWECLik6rtZ5xsUdcoZNEFSPtcpxvsM02M0fanwTqgfdfIspb/jqxNklUPGQ==
-X-Received: by 2002:a05:6808:2112:b0:3af:6634:49b9 with SMTP id r18-20020a056808211200b003af663449b9mr45234711oiw.30.1697463343313;
-        Mon, 16 Oct 2023 06:35:43 -0700 (PDT)
-Received: from rh (p200300c93f0047001ec25c15da4a4a7b.dip0.t-ipconnect.de. [2003:c9:3f00:4700:1ec2:5c15:da4a:4a7b])
-        by smtp.gmail.com with ESMTPSA id dl15-20020ad44e0f000000b0066d1540f9ecsm3437870qvb.77.2023.10.16.06.35.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 06:35:43 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 15:35:38 +0200 (CEST)
-From:   Sebastian Ott <sebott@redhat.com>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-cc:     Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Shaoqin Huang <shahuang@redhat.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v7 07/12] KVM: arm64: PMU: Set PMCR_EL0.N for vCPU based
- on the associated PMU
-In-Reply-To: <20231009230858.3444834-8-rananta@google.com>
-Message-ID: <b4739328-5dba-a3a6-54ef-2db2d34201d8@redhat.com>
-References: <20231009230858.3444834-1-rananta@google.com> <20231009230858.3444834-8-rananta@google.com>
+        Mon, 16 Oct 2023 09:35:46 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A245136;
+        Mon, 16 Oct 2023 06:35:44 -0700 (PDT)
+Received: from localhost (89-26-75-29.dyn.cablelink.at [89.26.75.29])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sebastianfricke)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 56E4766071EF;
+        Mon, 16 Oct 2023 14:35:42 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1697463342;
+        bh=TznfC4TF12W8ScIql5iv7WR3cxstbuq3pTRFxtuJ+jA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FrxoHnYktcz29ytK0yQxtJuylDb1WXgY2mbz2qhy/TUqunmGrD6m4jl9VgBPYnX4t
+         ZYa9He71mfD2osZUfoN1o1dVHRGA+1g2us4NoWitlWsYB5O5k30oHPE5qhfJQpEz/1
+         Ig79kvBC1oXtddtrkoPMwqleom/HGGyM85O3eTgdmy/LtDl+vVRKZdbGtykktKOvC8
+         Gt0ZreKiCzJ5E02DVDOFavAM9KircMhEcOGP5MQDbp09bAysFP/C2KCxlmTB0lSU7W
+         VaztqmNIS8pD3nBHoMowTmHEo1op3bal1x5/TLK9y8oGq1dl22YnLiBfAWBv6raNDo
+         P7BxVe1l5OzEw==
+Date:   Mon, 16 Oct 2023 15:35:39 +0200
+From:   Sebastian Fricke <sebastian.fricke@collabora.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jackson Lee <jackson.lee@chipsnmedia.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Nas Chung <nas.chung@chipsnmedia.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-media@vger.kernel.org, Tomasz Figa <tfiga@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        kernel@collabora.com, Robert Beckett <bob.beckett@collabora.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Darren Etheridge <detheridge@ti.com>
+Subject: Re: [PATCH v13 5/8] media: chips-media: wave5: Add the v4l2 layer
+Message-ID: <20231016133539.m3i5crlsknoidim3@basti-XPS-13-9310>
+References: <20230929-wave5_v13_media_master-v13-0-5ac60ccbf2ce@collabora.com>
+ <20230929-wave5_v13_media_master-v13-5-5ac60ccbf2ce@collabora.com>
+ <c5e826a2-5bc6-4c49-9a6d-655d26a3b97f@xs4all.nl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+In-Reply-To: <c5e826a2-5bc6-4c49-9a6d-655d26a3b97f@xs4all.nl>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Oct 2023, Raghavendra Rao Ananta wrote:
-> u64 kvm_vcpu_read_pmcr(struct kvm_vcpu *vcpu)
-> {
-> -	return __vcpu_sys_reg(vcpu, PMCR_EL0);
-> +	u64 pmcr = __vcpu_sys_reg(vcpu, PMCR_EL0) &
-> +			~(ARMV8_PMU_PMCR_N_MASK << ARMV8_PMU_PMCR_N_SHIFT);
-> +
-> +	return pmcr | ((u64)vcpu->kvm->arch.pmcr_n << ARMV8_PMU_PMCR_N_SHIFT);
-> }
-> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-> index ff0f7095eaca..c750722fbe4a 100644
-> --- a/arch/arm64/kvm/sys_regs.c
-> +++ b/arch/arm64/kvm/sys_regs.c
-> @@ -745,12 +745,8 @@ static u64 reset_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r)
-> {
-> 	u64 pmcr;
+Hey Hans,
+
+On 16.10.2023 13:57, Hans Verkuil wrote:
+>Hi Sebastian,
 >
-> -	/* No PMU available, PMCR_EL0 may UNDEF... */
-> -	if (!kvm_arm_support_pmu_v3())
-> -		return 0;
-> -
-> 	/* Only preserve PMCR_EL0.N, and reset the rest to 0 */
-> -	pmcr = read_sysreg(pmcr_el0) & (ARMV8_PMU_PMCR_N_MASK << ARMV8_PMU_PMCR_N_SHIFT);
-> +	pmcr = kvm_vcpu_read_pmcr(vcpu) & (ARMV8_PMU_PMCR_N_MASK << ARMV8_PMU_PMCR_N_SHIFT);
+>On 12/10/2023 13:01, Sebastian Fricke wrote:
+>> Add the decoder and encoder implementing the v4l2
+>> API. This patch also adds the Makefile and the VIDEO_WAVE_VPU config
+>>
+>> Signed-off-by: Sebastian Fricke <sebastian.fricke@collabora.com>
+>> Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+>> Signed-off-by: Deborah Brouwer <deborah.brouwer@collabora.com>
+>> Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
+>> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+>> Signed-off-by: Nas Chung <nas.chung@chipsnmedia.com>
+>> ---
+>>  drivers/media/platform/chips-media/Kconfig         |    1 +
+>>  drivers/media/platform/chips-media/Makefile        |    1 +
+>>  drivers/media/platform/chips-media/wave5/Kconfig   |   12 +
+>>  drivers/media/platform/chips-media/wave5/Makefile  |   10 +
+>>  .../platform/chips-media/wave5/wave5-helper.c      |  213 +++
+>>  .../platform/chips-media/wave5/wave5-helper.h      |   31 +
+>>  .../platform/chips-media/wave5/wave5-vpu-dec.c     | 1953 ++++++++++++++++++++
+>>  .../platform/chips-media/wave5/wave5-vpu-enc.c     | 1794 ++++++++++++++++++
+>>  .../media/platform/chips-media/wave5/wave5-vpu.c   |  291 +++
+>>  .../media/platform/chips-media/wave5/wave5-vpu.h   |   83 +
+>>  .../platform/chips-media/wave5/wave5-vpuapi.h      |    2 -
+>>  11 files changed, 4389 insertions(+), 2 deletions(-)
+>>
+>
+><snip>
+>
+>> +static int wave5_vpu_dec_create_bufs(struct file *file, void *priv,
+>> +				     struct v4l2_create_buffers *create)
+>> +{
+>> +	struct vpu_instance *inst = wave5_to_vpu_inst(priv);
+>> +	struct v4l2_format *f = &create->format;
+>> +
+>> +	/* Firmware does not support CREATE_BUFS for CAPTURE queues. */
+>> +	if (f->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
+>> +		dev_dbg(inst->dev->dev,
+>> +			"%s: VIDIOC_CREATE_BUFS not supported on CAPTURE queues.\n",
+>> +			__func__);
+>> +		return -EOPNOTSUPP;
+>> +	}
+>> +
+>> +	return v4l2_m2m_ioctl_create_bufs(file, priv, create);
+>> +}
+>
+>Regarding the EOPNOTSUPP discussion: I discussed this some more with
+>Nicolas on irc, and we wonder if it isn't better to just drop create_bufs
+>support for the wave5 decoder altogether. Is there any point in supporting
+>it for OUTPUT but not CAPTURE?
+>
+><snip>
+>
+>> +static const struct v4l2_ioctl_ops wave5_vpu_dec_ioctl_ops = {
+>> +	.vidioc_querycap = wave5_vpu_dec_querycap,
+>> +	.vidioc_enum_framesizes = wave5_vpu_dec_enum_framesizes,
+>> +
+>> +	.vidioc_enum_fmt_vid_cap	= wave5_vpu_dec_enum_fmt_cap,
+>> +	.vidioc_s_fmt_vid_cap_mplane = wave5_vpu_dec_s_fmt_cap,
+>> +	.vidioc_g_fmt_vid_cap_mplane = wave5_vpu_dec_g_fmt_cap,
+>> +	.vidioc_try_fmt_vid_cap_mplane = wave5_vpu_dec_try_fmt_cap,
+>> +
+>> +	.vidioc_enum_fmt_vid_out	= wave5_vpu_dec_enum_fmt_out,
+>> +	.vidioc_s_fmt_vid_out_mplane = wave5_vpu_dec_s_fmt_out,
+>> +	.vidioc_g_fmt_vid_out_mplane = wave5_vpu_g_fmt_out,
+>> +	.vidioc_try_fmt_vid_out_mplane = wave5_vpu_dec_try_fmt_out,
+>> +
+>> +	.vidioc_g_selection = wave5_vpu_dec_g_selection,
+>> +	.vidioc_s_selection = wave5_vpu_dec_s_selection,
+>> +
+>> +	.vidioc_reqbufs = v4l2_m2m_ioctl_reqbufs,
+>> +	.vidioc_querybuf = v4l2_m2m_ioctl_querybuf,
+>> +	.vidioc_create_bufs = wave5_vpu_dec_create_bufs,
+>
+>So this would just be dropped.
+>
+>> +	.vidioc_prepare_buf = v4l2_m2m_ioctl_prepare_buf,
+>> +	.vidioc_qbuf = v4l2_m2m_ioctl_qbuf,
+>> +	.vidioc_expbuf = v4l2_m2m_ioctl_expbuf,
+>> +	.vidioc_dqbuf = v4l2_m2m_ioctl_dqbuf,
+>> +	.vidioc_streamon = v4l2_m2m_ioctl_streamon,
+>> +	.vidioc_streamoff = v4l2_m2m_ioctl_streamoff,
+>> +
+>> +	.vidioc_try_decoder_cmd = v4l2_m2m_ioctl_try_decoder_cmd,
+>> +	.vidioc_decoder_cmd = wave5_vpu_dec_decoder_cmd,
+>> +
+>> +	.vidioc_subscribe_event = wave5_vpu_subscribe_event,
+>> +	.vidioc_unsubscribe_event = v4l2_event_unsubscribe,
+>> +};
+>
+>This also means there is no need to document the new EOPNOTSUPP error
+>code in VIDIOC_CREATE_BUFS, or to modify v4l2-compliance.
+>
+>You *do* need to add a comment somewhere explaining why you don't
+>support this ioctl. I think it would be best to do that right after
+>'.vidioc_reqbufs = v4l2_m2m_ioctl_reqbufs,'.
 
-pmcr = ((u64)vcpu->kvm->arch.pmcr_n << ARMV8_PMU_PMCR_N_SHIFT);
-Would that maybe make it more clear what is done here?
+So, besides this issue would you judge the v4l2 layer of the driver to
+be ready? Do you want a reviewed by tag for it or would you take it like
+this as well?
 
+>
+>Regards,
+>
+>	Hans
+
+Sincerly,
+Sebastian
+>_______________________________________________
+>Kernel mailing list -- kernel@mailman.collabora.com
+>To unsubscribe send an email to kernel-leave@mailman.collabora.com
