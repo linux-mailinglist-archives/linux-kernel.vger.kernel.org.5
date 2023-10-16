@@ -2,75 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EBB17CA3E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05AB17CA3DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232414AbjJPJRd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Oct 2023 05:17:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52136 "EHLO
+        id S232401AbjJPJQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 05:16:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbjJPJRb (ORCPT
+        with ESMTP id S232455AbjJPJQd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 05:17:31 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A158EB4;
-        Mon, 16 Oct 2023 02:17:28 -0700 (PDT)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 39G9GN3R02428077, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.93/5.92) with ESMTPS id 39G9GN3R02428077
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 16 Oct 2023 17:16:24 +0800
-Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Mon, 16 Oct 2023 17:15:52 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Mon, 16 Oct 2023 17:15:51 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
- RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
- 15.01.2375.007; Mon, 16 Oct 2023 17:15:51 +0800
-From:   Hayes Wang <hayeswang@realtek.com>
-To:     Douglas Anderson <dianders@chromium.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
-CC:     Alan Stern <stern@rowland.harvard.edu>,
-        Simon Horman <horms@kernel.org>,
-        Edward Hill <ecgh@chromium.org>,
-        Laura Nao <laura.nao@collabora.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Grant Grundler <grundler@chromium.org>,
-        =?iso-8859-1?Q?Bj=F8rn_Mork?= <bjorn@mork.no>,
-        "Eric Dumazet" <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: RE: [PATCH v3 5/5] r8152: Block future register access if register access fails
-Thread-Topic: [PATCH v3 5/5] r8152: Block future register access if register
- access fails
-Thread-Index: AQHZ/UKPr2uppqw2y0WH24Vf4SC1orBMGX/A
-Date:   Mon, 16 Oct 2023 09:15:51 +0000
-Message-ID: <29f9a2ff1979406489213909b940184f@realtek.com>
-References: <20231012192552.3900360-1-dianders@chromium.org>
- <20231012122458.v3.5.Ib2affdbfdc2527aaeef9b46d4f23f7c04147faeb@changeid>
-In-Reply-To: <20231012122458.v3.5.Ib2affdbfdc2527aaeef9b46d4f23f7c04147faeb@changeid>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.22.228.6]
-x-kse-serverinfo: RTEXDAG01.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+        Mon, 16 Oct 2023 05:16:33 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEE88AB
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 02:16:31 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-53db3811d8fso8795934a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 02:16:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697447790; x=1698052590; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3FwdJg2ESwHU12LbRl+SXH4clXzUSlhz/qOQqxgChOg=;
+        b=Udg3+Ne+n4eqVERo5Kpy/FKQ5xkvI65GKvlMnLyfK3QdJE5G0cjP4pwaGEse+nQGaU
+         5cgJTs8TPRjuSPY5a3iyVbmfiWUaIOTGveQ0kSsBIargMzYyAEiIptR38AD5CkJEwjPs
+         wug2DEBb9K6qwLpnq6D5mTk954Tg8vbJfRby28bcdB3LsDDW7ju5c1eqY9yH7E0O7NIU
+         GuX5YTxW+UGkYJ3Vra9azTB9G3E9E0DCVbKBGCXZqtYfv4NEF6sfxytEDB5hgTmwkW/J
+         jg/Hqjh07hwf47rc1I8o82PgpdQx2cWu0Jy7gG35AGHiqZw1rT2Sm23IsL6tJrOBJBwG
+         uEFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697447790; x=1698052590;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3FwdJg2ESwHU12LbRl+SXH4clXzUSlhz/qOQqxgChOg=;
+        b=LScSHoFjs8jGqyyqUI/PqxKSeYQOI4yWQmsSjaNPZX8AV2bHQM07sf22uP/2Fthzym
+         5IXOSzON/AIp1cdvkMq4QrvYKJYvNpyVlteLePSZxFuLom4vc3PasRmpo9nnlFEQxt7I
+         +6AWiodkOagRC5HN4GUJzBrLd199XNfAIt3m5qjpr4Xpovv6uFGExuwosvzOvBj4Kt49
+         fA8tKqMa8Hey7ok0uGQIWHaf9IL3PoP9x5jzgR7AGDKzJEHDgT7ExpvActD501+hSDV2
+         qMqgtOts4r0oqe9R7PeG8lFXsEBntovigv2eOrhlptFd8aWLDbI34ccEwCULkZss9RdW
+         Orzg==
+X-Gm-Message-State: AOJu0Ywwcye5gkNrONotQigaw+Lhcq3TnZNGsgwbXhwEp5dCDGesu40f
+        7UWjTshPa+E+SOHFMOnbmjHcvWBxymiP9kFmx4o=
+X-Google-Smtp-Source: AGHT+IGNn3pHZquWoipKZMsvzUIeEiiGCnuz0jXKSt5Nx+h+AzFQEQGqfh7s6XMtl5w3ZkbiDQwx4RQfnnv2hns5G0s=
+X-Received: by 2002:a50:c8ca:0:b0:530:ec02:babd with SMTP id
+ k10-20020a50c8ca000000b00530ec02babdmr5868072edh.9.1697447790261; Mon, 16 Oct
+ 2023 02:16:30 -0700 (PDT)
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <1697194703-21371-1-git-send-email-zhiguo.niu@unisoc.com>
+ <1880a7c4-9ab9-8e6d-f1d4-c2172a99685c@kernel.org> <CAHJ8P3J+Rnx4dUDGesdrtajDdP_SxDaM6yyYbHRt4ij_wVGhsg@mail.gmail.com>
+ <4409f648-40f6-c28a-ebe0-d2c69ecd11fc@kernel.org>
+In-Reply-To: <4409f648-40f6-c28a-ebe0-d2c69ecd11fc@kernel.org>
+From:   Zhiguo Niu <niuzhiguo84@gmail.com>
+Date:   Mon, 16 Oct 2023 17:16:18 +0800
+Message-ID: <CAHJ8P3KK+C-4HJxnJYLH4v20QQt_Ki0_6f2exPJQFCUmPACXPg@mail.gmail.com>
+Subject: Re: [PATCH] f2fs: fix error path of __f2fs_build_free_nids
+To:     Chao Yu <chao@kernel.org>
+Cc:     Zhiguo Niu <zhiguo.niu@unisoc.com>, jaegeuk@kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,67 +72,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Douglas Anderson <dianders@chromium.org>
-> Sent: Friday, October 13, 2023 3:25 AM
-[...]
->  static int generic_ocp_read(struct r8152 *tp, u16 index, u16 size,
-> @@ -8265,6 +8353,19 @@ static int rtl8152_pre_reset(struct usb_interface
-> *intf)
->         if (!tp)
->                 return 0;
-> 
-> +       /* We can only use the optimized reset if we made it to the end of
-> +        * probe without any register access fails, which sets
-> +        * `PROBED_WITH_NO_ERRORS` to true. If we didn't have that then return
-> +        * an error here which tells the USB framework to fully unbind/rebind
-> +        * our driver.
+Dear Chao,
 
-Would you stay in a loop of unbind and rebind,
-if the control transfers in the probe() are not always successful?
-I just think about the worst case that at least one control always fails in probe().
-
-> +        */
-> +       mutex_lock(&tp->control);
-
-I don't think you need the mutex for testing the bit.
-
-> +       if (!test_bit(PROBED_WITH_NO_ERRORS, &tp->flags)) {
-> +               mutex_unlock(&tp->control);
-> +               return -EIO;
-> +       }
-> +       mutex_unlock(&tp->control);
-> +
->         netdev = tp->netdev;
->         if (!netif_running(netdev))
->                 return 0;
-> @@ -8277,7 +8378,9 @@ static int rtl8152_pre_reset(struct usb_interface
-> *intf)
->         napi_disable(&tp->napi);
->         if (netif_carrier_ok(netdev)) {
->                 mutex_lock(&tp->control);
-> +               set_bit(IN_PRE_RESET, &tp->flags);
->                 tp->rtl_ops.disable(tp);
-> +               clear_bit(IN_PRE_RESET, &tp->flags);
->                 mutex_unlock(&tp->control);
->         }
-> 
-> @@ -8293,6 +8396,10 @@ static int rtl8152_post_reset(struct usb_interface
-> *intf)
->         if (!tp)
->                 return 0;
-> 
-> +       mutex_lock(&tp->control);
-
-I don't think clear_bit() needs the protection of mutex.
-I think you could call rtl_set_accessible() directly.
-
-> +       rtl_set_accessible(tp);
-> +       mutex_unlock(&tp->control);
-> +
->         /* reset the MAC address in case of policy change */
->         if (determine_ethernet_addr(tp, &sa) >= 0) {
->                 rtnl_lock();
-
-Best Regards,
-Hayes
-
+On Mon, Oct 16, 2023 at 5:07=E2=80=AFPM Chao Yu <chao@kernel.org> wrote:
+>
+> Zhiguo,
+>
+> On 2023/10/16 17:02, Zhiguo Niu wrote:
+> > Dear Chao,
+> >
+> > On Mon, Oct 16, 2023 at 3:37=E2=80=AFPM Chao Yu <chao@kernel.org> wrote=
+:
+> >>
+> >> On 2023/10/13 18:58, Zhiguo Niu wrote:
+> >>> SBI_NEED_FSCK should be set for fsck has a chance to
+> >>> repair in case of scan_nat_page fail in run time.
+> >>>
+> >>> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+> >>
+> >> Hi Zhiguo,
+> >>
+> >> Can you please check below update?
+> >>
+> >>   From 9a3459d2d62a12f8708d72aa7808a1def9f9d92f Mon Sep 17 00:00:00 20=
+01
+> >> From: Zhiguo Niu <zhiguo.niu@unisoc.com>
+> >> Date: Fri, 13 Oct 2023 18:58:23 +0800
+> >> Subject: [PATCH] f2fs: fix error path of __f2fs_build_free_nids
+> >>
+> >> If NAT is corrupted, let scan_nat_page() return EFSCORRUPTED, so that,
+> >> caller can set SBI_NEED_FSCK flag into checkpoint for later repair by
+> >> fsck.
+> >>
+> >> Also, this patch introduces a new fscorrupted error flag, and in above
+> >> scenario, it will persist the error flag into superblock synchronously
+> >> to avoid it has no luck to trigger a checkpoint to record SBI_NEED_FSC=
+K.
+> >>
+> >> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+> >> Signed-off-by: Chao Yu <chao@kernel.org>
+> >> ---
+> >>    fs/f2fs/node.c          | 11 +++++++++--
+> >>    include/linux/f2fs_fs.h |  1 +
+> >>    2 files changed, 10 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+> >> index a2b2c6c7f66d..57d9dd3a43bc 100644
+> >> --- a/fs/f2fs/node.c
+> >> +++ b/fs/f2fs/node.c
+> >> @@ -2389,7 +2389,7 @@ static int scan_nat_page(struct f2fs_sb_info *sb=
+i,
+> >>                  blk_addr =3D le32_to_cpu(nat_blk->entries[i].block_ad=
+dr);
+> >>
+> >>                  if (blk_addr =3D=3D NEW_ADDR)
+> >> -                       return -EINVAL;
+> >> +                       return -EFSCORRUPTED;
+> >>
+> >>                  if (blk_addr =3D=3D NULL_ADDR) {
+> >>                          add_free_nid(sbi, start_nid, true, true);
+> >> @@ -2504,7 +2504,14 @@ static int __f2fs_build_free_nids(struct f2fs_s=
+b_info *sbi,
+> >>
+> >>                          if (ret) {
+> >>                                  f2fs_up_read(&nm_i->nat_tree_lock);
+> >> -                               f2fs_err(sbi, "NAT is corrupt, run fsc=
+k to fix it");
+> >> +
+> >> +                               if (ret =3D=3D -EFSCORRUPTED) {
+> >> +                                       f2fs_err(sbi, "NAT is corrupt,=
+ run fsck to fix it");
+> >> +                                       set_sbi_flag(sbi, SBI_NEED_FSC=
+K);
+> >> +                                       f2fs_handle_error(sbi,
+> >> +                                                       ERROR_INCONSIS=
+TENT_NAT);
+> >> +                               }
+> >> +
+> >>                                  return ret;
+> >>                          }
+> >>                  }
+> >> diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
+> >> index 07ed69c2840d..039fe0ce8d83 100644
+> >> --- a/include/linux/f2fs_fs.h
+> >> +++ b/include/linux/f2fs_fs.h
+> >> @@ -104,6 +104,7 @@ enum f2fs_error {
+> >>          ERROR_CORRUPTED_VERITY_XATTR,
+> >>          ERROR_CORRUPTED_XATTR,
+> >>          ERROR_INVALID_NODE_REFERENCE,
+> >> +       ERROR_INCONSISTENT_NAT,
+> >>          ERROR_MAX,
+> >>    };
+> >>
+> >> --
+> >> 2.40.1
+> >
+> > Thank you for your updates and these updates are more reasonable based
+> > on the latest code.
+> > In addition,  I also modified the following code after I checked the
+> > related flow of f2fs_handle_error.
+> > ERROR_INCONSISTENT_FOOTER is reused here,   any suggestions for this?
+> > diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+> > index d9e6087..94f5c7f 100644
+> > --- a/fs/f2fs/node.c
+> > +++ b/fs/f2fs/node.c
+> > @@ -1467,6 +1467,7 @@ static struct page *__get_node_page(struct
+> > f2fs_sb_info *sbi, pgoff_t nid,
+> >                            ofs_of_node(page), cpver_of_node(page),
+> >                            next_blkaddr_of_node(page));
+> >          set_sbi_flag(sbi, SBI_NEED_FSCK);
+> > +       f2fs_handle_error(sbi, ERROR_INCONSISTENT_FOOTER);
+> >          err =3D -EINVAL;
+>
+> err =3D -EFSCORRUPTED;
+>
+> >   out_err:
+> >          ClearPageUptodate(page);
+> >
+> > If you have no other suggestions, I will update the "PATCH V2"
+>
+> How about changing above code in separated patch?
+OK, I will do this as your suggestions.
+Thanks!
+>
+> Thanks,
+>
+>  > Thanks!
