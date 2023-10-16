@@ -2,78 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23DDA7CACB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 16:59:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA0F7CACBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233848AbjJPO7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 10:59:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47784 "EHLO
+        id S233607AbjJPPAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 11:00:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232675AbjJPO7h (ORCPT
+        with ESMTP id S232675AbjJPPAi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 10:59:37 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2714FD9;
-        Mon, 16 Oct 2023 07:59:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=gFkyCE/j/0e60Ku5yaM3jpzV/F/AliraLulOb+V5xGM=; b=0IU62ziG5rmbcHYvQNBXR4+5w3
-        eO35Slox2MlPmqT4idJQZEKEIcbLe5yENIBmvkueQAijLh/NvKWhyynjLi8yh+bwqi1bJ+r1R5teh
-        InQcEAqCY2vKKkV+KtnEMrQLxlyJB6Fwn0l2XT0PsDNrmRdQzPGJJUseK8M5MIXJyXzU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qsP40-002Lxl-PK; Mon, 16 Oct 2023 16:59:24 +0200
-Date:   Mon, 16 Oct 2023 16:59:24 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+        Mon, 16 Oct 2023 11:00:38 -0400
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::226])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD0A6AB;
+        Mon, 16 Oct 2023 08:00:35 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 24F11C000F;
+        Mon, 16 Oct 2023 15:00:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1697468434;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ppkDtMZrQStND01nwr+Zoe8BhS+PL2DK/7cIl9/gVis=;
+        b=Tunkb17v62OZltx/uVcuSmnnpvWaf7eWs14cCjQdXud+YiNmf9b8dfoPyPsytcqbQeQA7L
+        VjDS1Pg9jpuQnAnijOqM3DGaanf6fTb5Cf8aMTzJjn1GojBFJ7s0YsVS6fIQ9bzpn/+Qfs
+        Jf4Nu8NbRMdud4fuJhsLVQEHgho6QWEEf6bbp6SkDP8UqjCabpuvecGIHcNQzgQG4kp0nG
+        qjwaADz2RPE6f+A1hOT/B0vSjFEZK8mHoBAoCnRLg3U5QtwvNedz2MOi0j/V/BKC0HSURL
+        eg3XISnf5MiyIMfl1O/nq/5YUUH6KZb4EHOffsD4rvWbrLqA7e6bvD2XMcSuhg==
+Date:   Mon, 16 Oct 2023 17:00:27 +0200
+From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "David S . Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
         UNGLinuxDriver@microchip.com,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next v4 4/9] net: dsa: microchip: ksz9477: add Wake
- on LAN support
-Message-ID: <18c20ed3-c117-4124-af3c-33df562b7f02@lunn.ch>
-References: <20231016141256.2011861-1-o.rempel@pengutronix.de>
- <20231016141256.2011861-5-o.rempel@pengutronix.de>
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Michael Walle <michael@walle.cc>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH net-next v5 08/16] net: ethtool: Add a command to expose
+ current time stamping layer
+Message-ID: <20231016170027.42806cb7@kmaincent-XPS-13-7390>
+In-Reply-To: <20231016072204.1cb41eab@kernel.org>
+References: <20231009155138.86458-1-kory.maincent@bootlin.com>
+        <20231009155138.86458-9-kory.maincent@bootlin.com>
+        <2fbde275-e60b-473d-8488-8f0aa637c294@broadcom.com>
+        <20231010102343.3529e4a7@kmaincent-XPS-13-7390>
+        <20231013090020.34e9f125@kernel.org>
+        <6ef6418d-6e63-49bd-bcc1-cdc6eb0da2d5@lunn.ch>
+        <20231016124134.6b271f07@kmaincent-XPS-13-7390>
+        <20231016072204.1cb41eab@kernel.org>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231016141256.2011861-5-o.rempel@pengutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +int ksz9477_set_wol(struct ksz_device *dev, int port,
-> +		    struct ethtool_wolinfo *wol)
-> +{
-> +	u8 pme_conf, pme_ctrl = 0;
-> +	int ret;
-> +
-> +	if (wol->wolopts & ~WAKE_PHY)
-> +		return -EINVAL;
+On Mon, 16 Oct 2023 07:22:04 -0700
+Jakub Kicinski <kuba@kernel.org> wrote:
 
-EOPNOTSUPP might be better here. I'm assuming there is no other way
-WoL can be supported, since this is a combined MAC/PHY device. 
+> On Mon, 16 Oct 2023 12:41:34 +0200 K=C3=B6ry Maincent wrote:
+> > > Netdev vs phylib is an implementation detail of Linux.
+> > > I'm also surprised that you changed this.   =20
+> >=20
+> > This is the main reason I changed this. This is Linux implementation
+> > purpose to know whether it should go through netdev or phylib, and then
+> > each of these drivers could use other timestamps which are hardware
+> > related. =20
+>=20
+> For an integrated design there's 90% chance the stamping is done=20
+> by the MAC. Even if it isn't there's no difference between PHY
+> and MAC in terms of quality.
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Ok, but there might be quality difference in case of several timestamp
+configuration done in the MAC. Like the timestamping precision vs frequency
+precision. In that case how ethtool would tell the driver to switch between
+them?
 
-    Andrew
+My solution could work for this case by simply adding new values to the enu=
+m:
+
+enum {
+	NETDEV_TIMESTAMPING =3D (1 << 0),
+	PHYLIB_TIMESTAMPING =3D (1 << 1),
+	MAC_TS_PRECISION =3D (1 << 2)|(1 << 0),
+	MAC_FREQ_PRECISION =3D (2 << 2)|(1 << 0),
+}
+
+Automatically Linux will go through the netdev implementation and could pass
+the enum value to the netdev driver.
+
+> But there is a big difference between MAC/PHY and DMA which would
+> both fall under NETDEV?
+
+Currently there is no DMA timestamping support right? And I suppose it fill=
+ fall
+under the net device management?
+
+In that case we will have MAC and DMA under netdev and PHY under phylib and
+we won't have to do anything more than this timestamping management patch:=
+=20
+https://lore.kernel.org/netdev/20231009155138.86458-14-kory.maincent@bootli=
+n.com/
