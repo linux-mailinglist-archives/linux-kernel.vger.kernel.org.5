@@ -2,130 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 560A47CA482
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69AC17CA484
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbjJPJuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 05:50:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41158 "EHLO
+        id S231177AbjJPJu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 05:50:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230152AbjJPJuT (ORCPT
+        with ESMTP id S230418AbjJPJuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 05:50:19 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E93AB4;
-        Mon, 16 Oct 2023 02:50:16 -0700 (PDT)
-Received: from kwepemm000003.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S8C09669BzvPxM;
-        Mon, 16 Oct 2023 17:45:29 +0800 (CST)
-Received: from [10.67.111.205] (10.67.111.205) by
- kwepemm000003.china.huawei.com (7.193.23.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 16 Oct 2023 17:50:11 +0800
-Subject: Re: [PATCH v2 6/7] perf pmu-events: Remember the perf_events_map for
- a PMU
-To:     Ian Rogers <irogers@google.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Jing Zhang <renyu.zj@linux.alibaba.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        <coresight@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20231012175645.1849503-1-irogers@google.com>
- <20231012175645.1849503-7-irogers@google.com>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <d25f9ef8-b9b7-d632-8ecf-d60f2b255c8b@huawei.com>
-Date:   Mon, 16 Oct 2023 17:50:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Mon, 16 Oct 2023 05:50:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DE26AD
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 02:50:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1929C433C9;
+        Mon, 16 Oct 2023 09:50:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697449819;
+        bh=3qu5yONyWa09qHBA5krufIoFjAXIFT/JnmHaxFdNKbI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NRflpb9iTrQMM1roVvBLDaaRC/btPdgwE+P5YkY0ui/HfGIgWe422OSHysA8DAeAY
+         XbLUi+vCbF1lVsHHtr+bUFY11iQXK9sJiTjNuHX9jL5P8Lm54roOwSkHCB1HUqQAyY
+         A7DZ3lGgY8HTvtlHq8hhPkhD+X9px3M4k3HcLZPxehfS4z+bQqWj4+iinJPl+QZixF
+         2NoNSGs1CDFItkr8+X9xqwu5CQ/OhYvEM1Fnh7u1Z9BhZUOvJR1ChRSQgLHupg0Y03
+         sNMQp9mpUfuPSGvpWcjn/CbhPDY2Q1UemvacMhWvS6kggtPqwuTXSqfYG5/F/XYK49
+         sG3yOKByvNj+Q==
+Date:   Mon, 16 Oct 2023 11:50:15 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Juntong Deng <juntong.deng@outlook.com>
+Cc:     borisp@nvidia.com, john.fastabend@gmail.com, kuba@kernel.org,
+        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+29c22ea2d6b2c5fd2eae@syzkaller.appspotmail.com
+Subject: Re: [PATCH] net/tls: Fix slab-use-after-free in tls_encrypt_done
+Message-ID: <20231016095015.GJ1501712@kernel.org>
+References: <VI1P193MB0752428D259D066379242BD099D3A@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-In-Reply-To: <20231012175645.1849503-7-irogers@google.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.111.205]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm000003.china.huawei.com (7.193.23.66)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <VI1P193MB0752428D259D066379242BD099D3A@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Oct 12, 2023 at 07:02:51PM +0800, Juntong Deng wrote:
+> In the current implementation, ctx->async_wait.completion is completed
+> after spin_lock_bh, which causes tls_sw_release_resources_tx to
+> continue executing and return to tls_sk_proto_cleanup, then return
 
-On 2023/10/13 1:56, Ian Rogers wrote:
-> strcmp_cpuid_str performs regular expression comparisons and so per
-> CPUID linear searches over the perf_events_map are expensive. Add a
-> helper function called map_for_pmu that does the search but also
-> caches the map specific to a PMU. As the PMU may differ, also cache
-> the CPUID string so that PMUs with the same CPUID string don't require
-> the linear search and regular expression comparisons. This speeds
-> loading PMUs as the search is done once per PMU to find the
-> appropriate tables.
+Hi Juntong Deng,
+
+I'm slightly confused by "causes tls_sw_release_resources_tx to  continue
+executing".
+
+What I see in tls_sw_release_resources_tx() is:
+
+        /* Wait for any pending async encryptions to complete */   
+        spin_lock_bh(&ctx->encrypt_compl_lock);
+        ctx->async_notify = true;
+        pending = atomic_read(&ctx->encrypt_pending);
+        spin_unlock_bh(&ctx->encrypt_compl_lock);  
+
+Am I wrong in thinking the above will block because
+(the same) ctx->encrypt_compl_lock is held in tls_encrypt_done?
+
+> to tls_sk_proto_close, and after that enter tls_sw_free_ctx_tx to kfree
+> the entire struct tls_context (including ctx->encrypt_compl_lock).
 > 
-> Signed-off-by: Ian Rogers <irogers@google.com>
+> Since ctx->encrypt_compl_lock has been freed, subsequent spin_unlock_bh
+> will result in slab-use-after-free error. Due to SMP, even using
+> spin_lock_bh does not prevent tls_sw_release_resources_tx from continuing
+> on other CPUs. After tls_sw_release_resources_tx is woken up, there is no
+> attempt to hold ctx->encrypt_compl_lock again, therefore everything
+> described above is possible.
+> 
+> The fix is to put complete(&ctx->async_wait.completion) after
+> spin_unlock_bh, making the release after the unlock. Since complete is
+> only executed if pending is 0, which means this is the last record, there
+> is no need to worry about race condition causing duplicate completes.
+> 
+> Reported-by: syzbot+29c22ea2d6b2c5fd2eae@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=29c22ea2d6b2c5fd2eae
+> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
 > ---
->   tools/perf/pmu-events/jevents.py | 109 ++++++++++++++++++++-----------
->   1 file changed, 70 insertions(+), 39 deletions(-)
+>  net/tls/tls_sw.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
-> diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
-> index 96dc74c90b20..3c091ab75305 100755
-> --- a/tools/perf/pmu-events/jevents.py
-> +++ b/tools/perf/pmu-events/jevents.py
-> @@ -976,68 +976,99 @@ int pmu_metrics_table__for_each_metric(const struct pmu_metrics_table *table,
->           return 0;
->   }
->   
-> -const struct pmu_events_table *perf_pmu__find_events_table(struct perf_pmu *pmu)
-> +static const struct pmu_events_map *map_for_pmu(struct perf_pmu *pmu)
->   {
-> -        const struct pmu_events_table *table = NULL;
-> -        char *cpuid = perf_pmu__getcpuid(pmu);
-> +        static struct {
-> +                const struct pmu_events_map *map;
-> +                struct perf_pmu *pmu;
-> +        } last_result;
-> +        static struct {
-> +                const struct pmu_events_map *map;
-> +                char *cpuid;
-> +        } last_map_search;
-> +        static bool has_last_result, has_last_map_search;
-> +        const struct pmu_events_map *map = NULL;
-> +        char *cpuid = NULL;
->           size_t i;
->   
-> -        /* on some platforms which uses cpus map, cpuid can be NULL for
-> +        if (has_last_result && last_result.pmu == pmu)
-> +                return last_result.map;
-> +
-> +        cpuid = perf_pmu__getcpuid(pmu);
-For the software pmu, we do not need to look for the events table.
-It seems that the software pmu can be filtered out in perf_pmu__lookup() 
-to reduce unnecessary perf_pmu__find_events_table() calls.
-
-I tried to submit a patch, please see if it helps:
-https://lore.kernel.org/all/20231016093309.726436-1-yangjihong1@huawei.com/
-
-Thanks,
-Yang
+> diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
+> index 270712b8d391..7abe5a6aa989 100644
+> --- a/net/tls/tls_sw.c
+> +++ b/net/tls/tls_sw.c
+> @@ -441,6 +441,7 @@ static void tls_encrypt_done(void *data, int err)
+>  	struct sk_msg *msg_en;
+>  	bool ready = false;
+>  	struct sock *sk;
+> +	int async_notify;
+>  	int pending;
+>  
+>  	msg_en = &rec->msg_encrypted;
+> @@ -482,10 +483,11 @@ static void tls_encrypt_done(void *data, int err)
+>  
+>  	spin_lock_bh(&ctx->encrypt_compl_lock);
+>  	pending = atomic_dec_return(&ctx->encrypt_pending);
+> +	async_notify = ctx->async_notify;
+> +	spin_unlock_bh(&ctx->encrypt_compl_lock);
+>  
+> -	if (!pending && ctx->async_notify)
+> +	if (!pending && async_notify)
+>  		complete(&ctx->async_wait.completion);
+> -	spin_unlock_bh(&ctx->encrypt_compl_lock);
+>  
+>  	if (!ready)
+>  		return;
+> -- 
+> 2.39.2
+> 
+> 
