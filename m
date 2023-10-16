@@ -2,278 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC8307CB662
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 00:14:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8304A7CB668
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 00:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232959AbjJPWOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 18:14:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40002 "EHLO
+        id S234108AbjJPWP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 18:15:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbjJPWOe (ORCPT
+        with ESMTP id S229943AbjJPWPX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 18:14:34 -0400
-Received: from mail-oa1-x4a.google.com (mail-oa1-x4a.google.com [IPv6:2001:4860:4864:20::4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA34AC
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 15:14:32 -0700 (PDT)
-Received: by mail-oa1-x4a.google.com with SMTP id 586e51a60fabf-1bf00f8cf77so7057979fac.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 15:14:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697494471; x=1698099271; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ALxTMHKSX9vk9LInFGXIsQlmMV2+SYhgETcxWL9x/EE=;
-        b=V5Apc0xzqaOQbvtUB53YlnDjhvDY+irp2i3O+b04eR8IZOS9xyE4uVUESYiDCcdewA
-         jqTlMiWlAJ/P37vr3A5hAKFRZYE7Vvf58meZc/vwts5IIrlg42/gH2W2Am4uYwwzX+Jd
-         WmEV2bIyj1pjylMeJjx9BhmnUbPv75HzfgNjrTBS9DUcYmdzIXjtlGvHtFy0xxTT5XNV
-         aC0C+XH1xaguL+5kFUIeJen/2hIDAQfrSmWbnvIoeVIY0cJG+MvdYmVJAF4m4Fco/pEW
-         XCdcKqJaW/mrPxq7EvCmXF6aDEEXaT7o/tt8untE+1amPtoMbUj2x2SejkKdobaOOiq1
-         RokQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697494471; x=1698099271;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ALxTMHKSX9vk9LInFGXIsQlmMV2+SYhgETcxWL9x/EE=;
-        b=YeoGF+k7x3M4EXOF8kHJgbakHCfmOe7FuJaHnnc/E9bW3Q+x2LURPsviky9Jzz97G+
-         LcsxV61d2NxmcTZdgQpLqky0sV8qeFWZsVZy8dIvUiUcgHYYUp36eSm/+TP6Oyxqqdvz
-         pQRr3BHpua1PvN7ranZTUj0NB+w5hXQu/vhhzdMdkcJjBKGnt42UPZLsXCv9PD7S/ovN
-         eGvRjfgffEB3YIY5+YTMlEUiS2inIOrW2s262gYWYLq6zOEt2mARQIj7sbpEAkyG5b8B
-         auPexm7VtJ9mdznhC1iDBLEzj2KKJOyu3jKIqeix8rIoyk+qDBWmJIwdGQHPMPDTXa8i
-         hsrg==
-X-Gm-Message-State: AOJu0YwPJF7FCcTTPDD4IFj2GYfayOe35tP/vKSIlXSdgxVIkFH2NRK1
-        /36C+QyJBUV8eF5j6WhfBrXhyRfk4BTblFeMyg==
-X-Google-Smtp-Source: AGHT+IGTkjig8ugPvK85JlzEG2yFhqIXubRd7Jd2JB/wxjUE5zKQN2nA8oXT08qQRlvT5ondf1fmt/E24ve9DaydGQ==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6870:f14d:b0:1e9:ee3f:4c7c with
- SMTP id l13-20020a056870f14d00b001e9ee3f4c7cmr191133oac.2.1697494471600; Mon,
- 16 Oct 2023 15:14:31 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 22:14:30 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAMW1LWUC/62OQQ6CMBBFr2K6dkynIDSuvIdhUctQmgAlU1Ilh
- Ltb8Qru3vvJz/+biMSeoridNsGUfPRhyqLOJ2F7MzkC32YXSqoCJVYQF57svELLPhFHmGiBl2c
- aKEZ4cjCtDWMGO2qpEA/qRmPBdu6XWDBKotSlwkpfRV6amTr/Pl48muy9j0vg9TiV8Jv+dz8hI JSqKLWsrZE13V0IbqBLropm3/cP8FA8kxcBAAA=
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697494469; l=8326;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=x6UyWSnThuXH9c2MRuctGdlyru9O2YWpxiOjh3U5t6w=; b=4kTogY9/mozkZBn6aXlySV3d0PM4HHnjkJ/jTCsj9agkf5mWF14vf29nvu4sLRN4Xnke/uhp/
- twkvb6GcJ6jBM/Mw5TVhgo5SUrlzyEKSXh8YBUccPuIb5WVew1aGpO4
-X-Mailer: b4 0.12.3
-Message-ID: <20231016-strncpy-drivers-net-wireless-broadcom-brcm80211-brcmfmac-cfg80211-c-v2-1-6c7567e1d3b8@google.com>
-Subject: [PATCH v2] brcmfmac: replace deprecated strncpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Kalle Valo <kvalo@kernel.org>
-Cc:     linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
+        Mon, 16 Oct 2023 18:15:23 -0400
+Received: from BN3PR00CU001.outbound.protection.outlook.com (mail-eastus2azon11020002.outbound.protection.outlook.com [52.101.56.2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26E4A2;
+        Mon, 16 Oct 2023 15:15:21 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LadLmPxpnatzF9kUQy9N+e4VFgGq1Du5lhEE+2qHoGTwvjdtRks6nd5oJgMghVjc5iBrvzddCqkzsBvOI0sy6YggDZDfvE300yI/4amDiss5oNm59T1t8DfLG7V3yhjSx0gKfAt2bQdryKuivvaAFwsytqb4YrXqAhUC74Hn9kEx1johHqCC3Wlxr/9v19Cwjlr9Am8zXNZtemtP7z6LkEOyE37w6USMPOs9i7urFoGsIi5Ez6A4itdEvo7tO9hNMVPO9RFUhmBsy3ZwTsraVMjGU8/L3cCU0dSf0LNsxA1rv8axWjjqMiQRRwSlyJGngDDA8OAVkTMSNZUn4mzV4g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ip7n+95UzoDUnRcOjWrhe72PlcCv8H6YiBzonA8zdbc=;
+ b=EFpBQbCoUK6zaWnGWK5MkrFOjEOd5kdQBFqaOp4YAADFgnZfbnmZrjcsDv8yLBG6YtTkA5lvLzPEqMcggWv7xKGvV7Ol19lwGLkVT0CTn3fxkTbYvQtBOAeXxIs+TMy1QaZcnR0cooFgUcoETDzzlaBxkrtEsZmuqAnxUb+qTLYeM3bGqHRV0Hd4DCt0KMMTa7rr5cxcMbr5lhvf0+Sbf82lQxg59vE7+Kcx5GKEPwtCbfHC9wvQ6jITZxlvXpjK/f9Zs5HBalA/znXxPyIxnYRSxkxLdhpShWwsfhRvKXcmkppuFOAZtuRRRBQF974CbiUnh2dlvjv4kDw2oROH/w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ip7n+95UzoDUnRcOjWrhe72PlcCv8H6YiBzonA8zdbc=;
+ b=c6b3blgnF/Kb8lPZk+FifGNzU6Otr1M8y+oE1GHuhpF1Sb+LaCV715nU/J1lJnU6+K9wLu/5xPEh80HA/tTr/rvTdO9JVfghnKSmRZ1XDmFKAARxYrKA+4kdonM9h+PyQnh25ViOyKqAVAg7/a+NmTAfNYD+jOd3n+iMiNHcL0g=
+Received: from MN0PR21MB3606.namprd21.prod.outlook.com (2603:10b6:208:3d1::17)
+ by MN0PR21MB3532.namprd21.prod.outlook.com (2603:10b6:208:3d3::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.3; Mon, 16 Oct
+ 2023 22:15:18 +0000
+Received: from MN0PR21MB3606.namprd21.prod.outlook.com
+ ([fe80::a2b3:122e:e242:3d3]) by MN0PR21MB3606.namprd21.prod.outlook.com
+ ([fe80::a2b3:122e:e242:3d3%4]) with mapi id 15.20.6933.003; Mon, 16 Oct 2023
+ 22:15:18 +0000
+From:   Ajay Sharma <sharmaajay@microsoft.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     "sharmaajay@linuxonhyperv.com" <sharmaajay@linuxonhyperv.com>,
+        Long Li <longli@microsoft.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ajay Sharma <sharmaajay@microsoft.com>
+Subject: RE: [EXTERNAL] Re: [Patch v5 0/5] RDMA/mana_ib
+Thread-Topic: [EXTERNAL] Re: [Patch v5 0/5] RDMA/mana_ib
+Thread-Index: AQHZ5KwOjzbv5vFcSU2j0jIgYOlpn7AV+Q7QgApR9oCALOdL8A==
+Date:   Mon, 16 Oct 2023 22:15:18 +0000
+Message-ID: <MN0PR21MB3606BE5B57AF1FEE85915F3AD6D7A@MN0PR21MB3606.namprd21.prod.outlook.com>
+References: <1694105559-9465-1-git-send-email-sharmaajay@linuxonhyperv.com>
+ <20230911123231.GB19469@unreal>
+ <BY5PR21MB1394F62601FEFE734181FFF7D6F2A@BY5PR21MB1394.namprd21.prod.outlook.com>
+ <20230918082903.GC13757@unreal>
+In-Reply-To: <20230918082903.GC13757@unreal>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=ab46e44e-b795-4f92-bf6c-b3e64e313885;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-10-16T22:12:18Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MN0PR21MB3606:EE_|MN0PR21MB3532:EE_
+x-ms-office365-filtering-correlation-id: 23da5cd2-4368-4194-b4b4-08dbce9561af
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 91qiIhbGtiNzv0+A9+fbCqb4FTwxORdm6TMLlCx17rs10F/Y5X20aS9WPIBipTpcRFolhoMPBsCbNABY86Hk7oQb6pyxnqoOeTEtkFEla+lwsBQhYeyZkA6MIZ8XEbmZj0Us7ZmAIit3GuasPVYmEIFfzOfVnBh2/+GiRUO83sREVX0TMeicdPIvZt7nGzqiQAmljxXgUpBDYpTWUOgxQC/GJ9m4gBUhBnim0p+VKM9fOp7aGiBaCZUgwl9G43L2XCuDi3upbtKjFshd+bhmoGowBbpn8V+sUctGUXeEPpfX66TFnGlQf7uiCV8GL4ya5GqlaLWR3Vv3WTF67YQEdJw3e9UBhOY0ACdHPP5rzkRa7sRjlNpteUAN9lMpjf1eL2z76yyD2IngrfGfaUBe9KWYiSSzJTWQmaEMIRJrjBtkt7oX63n9/nLaxVWPJbUlVtIw+kq4diG5/Ls2mlkdfLCwBBaXnkgmW4P+kgnzwdP20XAYk0SCOlYqUYV0k5Tchxt52bNQnCSNI2AZud9TfyKDdGtTv7IMLxXFR6hCqsVH++hTAjTxlcAKsPg+FLQhwA/bgwp39fdJujSM9vr/iGzT204rmAGyT3odW+FVxLtEj46du0Se2QSdJ+h0JaSud6wnymm6EFC57VAN+q6H2kgQBnQ4/mvRReDPsn54+Xc=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR21MB3606.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(366004)(396003)(346002)(376002)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(7416002)(2906002)(316002)(8936002)(54906003)(64756008)(41300700001)(8676002)(66446008)(66476007)(6916009)(52536014)(66556008)(66946007)(5660300002)(76116006)(4326008)(55016003)(8990500004)(86362001)(38100700002)(83380400001)(33656002)(82950400001)(38070700005)(122000001)(82960400001)(71200400001)(7696005)(53546011)(6506007)(10290500003)(9686003)(478600001)(107886003)(26005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?cWdrSENBUDhBOHJ5V0lFdFQyQUFtbDA4NkV6MnJZQXhxSVZwS2VhUVJqVytv?=
+ =?utf-8?B?L0Y2RVJSWkcyR1JvV09LT3RwQXFOdVh3aC8zencrSFJHV2xaMjZFM1FzRUV2?=
+ =?utf-8?B?dGhaTlloVVozelowSGZ3bWl0MlU1MDRQN3JLUzl3YTMyMWNKWE5SOXZsVXAy?=
+ =?utf-8?B?Vm04WTM5cDFMYTFVblBNc3ROWDF5elNpa0wyMlgzTk1pc1ZEY0RXQUZnTWtn?=
+ =?utf-8?B?VTEyb3JzSzRHcGo5RUc2RjhPQVpYcDlvV1M0c2l1a0c1UkhBWmFQRklLWDZP?=
+ =?utf-8?B?dFhWYm8yRlJkRXRDR3ZzcllvVUUyWUhKemFmSktZeDNldnhCUWU5andQRXV5?=
+ =?utf-8?B?aW5kL003eGhVbkU3enQ3Z2RIZnQwYk9hVW44TkdpaU9taWJydWV2aGlkbG53?=
+ =?utf-8?B?OVF1VlVmOGdTSlRPbmNaNXRMM0lWOUtxVkdZcmVseWZ2ZHVicnF1ZkJadEk0?=
+ =?utf-8?B?Ui9yaFAzUCtqYUhJeDZYMFZNUDNzbkpkbFpWUi9SWmdFMU10dlhmSTNyNVNr?=
+ =?utf-8?B?bkN5dEFoSHdpMUx5UDlmcE9yT1BLamhIRVJYUk5ZRkVvRmo1ekJJU01tUU9C?=
+ =?utf-8?B?a0ZmUUFDdjA4cVN5YStKblg0UGIrY1JReHEva2pVM2NoOWh3NTQzL1Jyejdz?=
+ =?utf-8?B?YUtmajNOcVNDSG8zRi9VRXNVZEZjZDA0UXBYUDdGSmhoUzMySld0aUtTR2Nu?=
+ =?utf-8?B?eVlKUW5CWklYZVZNUWx1Qy9oMTk4ZHd6d2txOG04emU1KzVDSWNpamM5dEVm?=
+ =?utf-8?B?QTRycHJ2dGJhRGV6QURRQ0J5NFRYdExWMmpXKzlYajRzOWdHcTNvb3B0a1B6?=
+ =?utf-8?B?Njd2QlBWeGhpNFlra1VCTW8xRDdweEJTeEcwc2lUU1RseWNGdXhIcHdvYVQ1?=
+ =?utf-8?B?NTIwV3o2bW1GUHJwU2NXRVZ0RGZ3aHBxRkpqNG15Y1ZYTkdtMlVDN0xNb2Jr?=
+ =?utf-8?B?Zjl3YzVVa1YrclplbzVhMUNTRmVkSlBhcExDMVQrcHlHVHM3WGU5bnhjNVBi?=
+ =?utf-8?B?eUo3bjdIQ0U1VmsvMWhyQU5ydTJnQytTTmdXMWJqTjBQTG5GOWNWamcxdnpp?=
+ =?utf-8?B?YmRNY25GSkFHUEc0ZEVVWnhMK1BpT0tsMG50M05ic3dQbExIZXFzQXF2VFFN?=
+ =?utf-8?B?VlZjT0czV3cweUlLWTVSWnJSZmFoSGVnb0FQNG12QjFyMkwrUFFHdVV4Q3Z5?=
+ =?utf-8?B?dEFDMUF0MC9aZFdpUGx5OWNaL0NmalVDdTVCNFd3MnpjL3dVZTRWVlZ2clg4?=
+ =?utf-8?B?a1FqcGRHSzVHVmFJeERiaTBodnlRTklUZUc1OVl5bG5Pa2NoUklxckZMbm5T?=
+ =?utf-8?B?aGhxRkRzYnB1a0orc05IcXNxUU9MSG1PMlNkOUZOZU1OVHNTSlBaSmhMSHpj?=
+ =?utf-8?B?Yy9VMndobVc3MGxEUExvZ0tveXFQaWNBa0JocU9nZUdSTjd0S1ZVNFlKby9a?=
+ =?utf-8?B?WVB2M1R1OXRML2hob0NXMVh5dXRwY1dUMW9UZ3hRR3F3elhRTFlmUjEzYjVG?=
+ =?utf-8?B?bisxa3pFTG9BZWFHd1kySkdzZkllMjJ0UWM4MWZvVUJQaDVacjNMRE9vZWtN?=
+ =?utf-8?B?NjJXQzM3WmFuWmIxQ2FOVGNiNHBieWRPUWhVZWNlem5hZktHbUx1ZFZIbGFO?=
+ =?utf-8?B?SWpBcWdURlNvcHJxd2xXcUNJMGZDY1YrSlhDNnJrek9tM05MdnpjenZkeTBV?=
+ =?utf-8?B?UWNGYnZyYWRXWXJqRDlheWNGMEo4M3JwOUhZaithVGtuWm1pa29MTWRtanJE?=
+ =?utf-8?B?MWNYcW9oVi9ubDUwc0F5UnBUdTErenB0Z3V4WlQ5NDlmeVpUeS9wZ2JNVXE1?=
+ =?utf-8?B?ZVVnV1JOMEIxb0ZkVXU3RkJnL3NvajJPUkNjbUw2MFlEbW1seERZVXNYU1l5?=
+ =?utf-8?B?c09VNnFzRFpTWkRVRHVSeVhUdnV2eHB4YkViL2tiWlJZMFA1eWJHRVNwMDU3?=
+ =?utf-8?B?QjRvTU1sdjdVS1BMRFlVMER1ejNiejh1bWo4NU5hcExacFV4UE4yNlFwYXNI?=
+ =?utf-8?B?N0c1blVvWjBlMWxWc21HZGF0bWZZb2pRdHArZ00ycUhVWnJxRTNUcUw1QTdG?=
+ =?utf-8?Q?qBEFKo?=
 Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR21MB3606.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 23da5cd2-4368-4194-b4b4-08dbce9561af
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Oct 2023 22:15:18.7091
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: oysbtvEgLFkCpPb/QE7QqLKWRaG/mxuc578dVJqrtSH/yb+SuTVAOqom5P0UMkF5zid7wBNTSkNGVQ6BMQfLwexZ4KkN1bgxPwAOl+H5Xcc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR21MB3532
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
-
-This patch replaces multiple strncpy uses. For easier reading, I'll list
-each destination buffer and mention whether it requires either
-NUL-termination or NUL-padding.
-
-1) ifp->ndev->name
-
-We expect ifp->ndev->name to be NUL-terminated based on its use in
-format strings within core.c:
-67 |       char *brcmf_ifname(struct brcmf_if *ifp)
-68 |       {
-69 |       	if (!ifp)
-70 |       		return "<if_null>";
-71 |
-72 |       	if (ifp->ndev)
-73 |       		return ifp->ndev->name;
-74 |
-75 |       	return "<if_none>";
-76 |       }
-...
-288 |       static netdev_tx_t brcmf_netdev_start_xmit(struct sk_buff *skb,
-289 |       					   struct net_device *ndev) {
-...
-330 |       brcmf_dbg(INFO, "%s: insufficient headroom (%d)\n",
-331 |                 brcmf_ifname(ifp), head_delta);
-...
-336 |       bphy_err(drvr, "%s: failed to expand headroom\n",
-337 |                brcmf_ifname(ifp));
-
-In this context, a suitable replacement is `strscpy` [2] due to the fact
-that it guarantees NUL-termination on the destination buffer without
-unnecessarily NUL-padding.
-
-2) wlc->pub->srom_ccode
-
-We're just copying two bytes from ccode into wlc->pub->srom_ccode with
-no expectation that srom_ccode be NUL-terminated.
-wlc->pub->srom_ccode is only used in regulatory_hint():
-1193 |       if (wl->pub->srom_ccode[0] &&
-1194 |           regulatory_hint(wl->wiphy, wl->pub->srom_ccode))
-1195 |               wiphy_err(wl->wiphy, "%s: regulatory hint failed\n", __func__);
-
-We can see that only index 0 and index 1 are accessed.
-3307 |       int regulatory_hint(struct wiphy *wiphy, const char *alpha2)
-3308 |       {
-...  |          ...
-3322 |       	request->alpha2[0] = alpha2[0];
-3323 |       	request->alpha2[1] = alpha2[1];
-...  |          ...
-3332 |       }
-
-Since this is just a simple byte copy with correct lengths, let's use
-memcpy(). There should be no functional change.
-
-3) wlc->country_default, 4) wlc->autocountry_default
-
-FWICT, these two aren't used anywhere. At any rate, let's apply the same
-reasoning as above and just use memcpy().
-
-5) di->name
-
-We expect di->name to be NUL-terminated based on its usage with format
-strings:
-|       brcms_dbg_dma(di->core,
-|                     "%s: DMA64 tx doesn't have AE set\n",
-|                     di->name);
-
-Looking at its allocation we can see that it is already zero-allocated
-which means NUL-padding is not required:
-|       di = kzalloc(sizeof(struct dma_info), GFP_ATOMIC);
-
-6) wlc->modulecb[i].name
-
-We expect each name in wlc->modulecb to be NUL-terminated based on their
-usage with strcmp():
-|       if (!strcmp(wlc->modulecb[i].name, name) &&
-
-NUL-padding is not required as wlc is zero-allocated in:
-brcms_c_attach_malloc() ->
-|       wlc = kzalloc(sizeof(struct brcms_c_info), GFP_ATOMIC);
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Changes in v2:
-- add other strncpy replacements
-- Link to v1: https://lore.kernel.org/r/20231016-strncpy-drivers-net-wireless-broadcom-brcm80211-brcmfmac-cfg80211-c-v1-1-4234807ca07e@google.com
----
-Note: build-tested only.
-
-I've grouped these all into a single patch instead of a series as many
-of the replacements are related to others and rely on context from one
-another to justify changes.
----
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c | 2 +-
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/p2p.c      | 2 +-
- drivers/net/wireless/broadcom/brcm80211/brcmsmac/channel.c  | 6 +++---
- drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c      | 3 +--
- drivers/net/wireless/broadcom/brcm80211/brcmsmac/main.c     | 4 ++--
- 5 files changed, 8 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-index 2a90bb24ba77..7daa418df877 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-@@ -866,7 +866,7 @@ struct wireless_dev *brcmf_apsta_add_vif(struct wiphy *wiphy, const char *name,
- 		goto fail;
- 	}
- 
--	strncpy(ifp->ndev->name, name, sizeof(ifp->ndev->name) - 1);
-+	strscpy(ifp->ndev->name, name, sizeof(ifp->ndev->name));
- 	err = brcmf_net_attach(ifp, true);
- 	if (err) {
- 		bphy_err(drvr, "Registering netdevice failed\n");
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/p2p.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/p2p.c
-index d4492d02e4ea..6e0c90f4718b 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/p2p.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/p2p.c
-@@ -2334,7 +2334,7 @@ struct wireless_dev *brcmf_p2p_add_vif(struct wiphy *wiphy, const char *name,
- 		goto fail;
- 	}
- 
--	strncpy(ifp->ndev->name, name, sizeof(ifp->ndev->name) - 1);
-+	strscpy(ifp->ndev->name, name, sizeof(ifp->ndev->name));
- 	ifp->ndev->name_assign_type = name_assign_type;
- 	err = brcmf_net_attach(ifp, true);
- 	if (err) {
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/channel.c b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/channel.c
-index 5a6d9c86552a..f6962e558d7c 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/channel.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/channel.c
-@@ -341,7 +341,7 @@ struct brcms_cm_info *brcms_c_channel_mgr_attach(struct brcms_c_info *wlc)
- 	/* store the country code for passing up as a regulatory hint */
- 	wlc_cm->world_regd = brcms_world_regd(ccode, ccode_len);
- 	if (brcms_c_country_valid(ccode))
--		strncpy(wlc->pub->srom_ccode, ccode, ccode_len);
-+		memcpy(wlc->pub->srom_ccode, ccode, ccode_len);
- 
- 	/*
- 	 * If no custom world domain is found in the SROM, use the
-@@ -354,10 +354,10 @@ struct brcms_cm_info *brcms_c_channel_mgr_attach(struct brcms_c_info *wlc)
- 	}
- 
- 	/* save default country for exiting 11d regulatory mode */
--	strncpy(wlc->country_default, ccode, ccode_len);
-+	memcpy(wlc->country_default, ccode, ccode_len);
- 
- 	/* initialize autocountry_default to driver default */
--	strncpy(wlc->autocountry_default, ccode, ccode_len);
-+	memcpy(wlc->autocountry_default, ccode, ccode_len);
- 
- 	brcms_c_set_country(wlc_cm, wlc_cm->world_regd);
- 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c
-index b7df576bb84d..3d5c1ef8f7f2 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c
-@@ -584,8 +584,7 @@ struct dma_pub *dma_attach(char *name, struct brcms_c_info *wlc,
- 		      rxextheadroom, nrxpost, rxoffset, txregbase, rxregbase);
- 
- 	/* make a private copy of our callers name */
--	strncpy(di->name, name, MAXNAMEL);
--	di->name[MAXNAMEL - 1] = '\0';
-+	strscpy(di->name, name, sizeof(di->name));
- 
- 	di->dmadev = core->dma_dev;
- 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/main.c b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/main.c
-index b3663c5ef382..34460b5815d0 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/main.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/main.c
-@@ -5551,8 +5551,8 @@ int brcms_c_module_register(struct brcms_pub *pub,
- 	/* find an empty entry and just add, no duplication check! */
- 	for (i = 0; i < BRCMS_MAXMODULES; i++) {
- 		if (wlc->modulecb[i].name[0] == '\0') {
--			strncpy(wlc->modulecb[i].name, name,
--				sizeof(wlc->modulecb[i].name) - 1);
-+			strscpy(wlc->modulecb[i].name, name,
-+				sizeof(wlc->modulecb[i].name));
- 			wlc->modulecb[i].hdl = hdl;
- 			wlc->modulecb[i].down_fn = d_fn;
- 			return 0;
-
----
-base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
-change-id: 20231016-strncpy-drivers-net-wireless-broadcom-brcm80211-brcmfmac-cfg80211-c-a20108421685
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+SSBoYXZlIHNlbnQgdjcgcGF0Y2ggc2VyaWVzIHdpdGggdGhlIHNwYWNlIHJlbW92ZWQgDQoNCj4g
+LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTGVvbiBSb21hbm92c2t5IDxsZW9u
+QGtlcm5lbC5vcmc+DQo+IFNlbnQ6IE1vbmRheSwgU2VwdGVtYmVyIDE4LCAyMDIzIDE6MjkgQU0N
+Cj4gVG86IEFqYXkgU2hhcm1hIDxzaGFybWFhamF5QG1pY3Jvc29mdC5jb20+DQo+IENjOiBzaGFy
+bWFhamF5QGxpbnV4b25oeXBlcnYuY29tOyBMb25nIExpIDxsb25nbGlAbWljcm9zb2Z0LmNvbT47
+IEphc29uDQo+IEd1bnRob3JwZSA8amdnQHppZXBlLmNhPjsgRGV4dWFuIEN1aSA8ZGVjdWlAbWlj
+cm9zb2Z0LmNvbT47IFdlaSBMaXUNCj4gPHdlaS5saXVAa2VybmVsLm9yZz47IERhdmlkIFMuIE1p
+bGxlciA8ZGF2ZW1AZGF2ZW1sb2Z0Lm5ldD47IEVyaWMgRHVtYXpldA0KPiA8ZWR1bWF6ZXRAZ29v
+Z2xlLmNvbT47IEpha3ViIEtpY2luc2tpIDxrdWJhQGtlcm5lbC5vcmc+OyBQYW9sbyBBYmVuaQ0K
+PiA8cGFiZW5pQHJlZGhhdC5jb20+OyBsaW51eC1yZG1hQHZnZXIua2VybmVsLm9yZzsgbGludXgt
+DQo+IGh5cGVydkB2Z2VyLmtlcm5lbC5vcmc7IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4
+LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFtFWFRFUk5BTF0gUmU6IFtQ
+YXRjaCB2NSAwLzVdIFJETUEvbWFuYV9pYg0KPiANCj4gT24gTW9uLCBTZXAgMTEsIDIwMjMgYXQg
+MDY6NTc6MjFQTSArMDAwMCwgQWpheSBTaGFybWEgd3JvdGU6DQo+ID4gSSBoYXZlIHVwZGF0ZWQg
+dGhlIGxhc3QgcGF0Y2ggdG8gdXNlIHhhcnJheSwgd2lsbCBwb3N0IHRoZSB1cGRhdGUgcGF0Y2gu
+IFdlDQo+IGN1cnJlbnRseSB1c2UgYXV4IGJ1cyBmb3IgaWIgZGV2aWNlLiBHZF9yZWdpc3Rlcl9k
+ZXZpY2UgaXMgZmlybXdhcmUgc3BlY2lmaWMuIEFsbA0KPiB0aGUgcGF0Y2hlcyB1c2UgUkRNQS9t
+YW5hX2liIGZvcm1hdCB3aGljaCBpcyBhbGlnbmVkIHdpdGgNCj4gZHJpdmVycy9pbmZpbmliYW5k
+L2h3L21hbmEvIC4NCj4gDQo+IOKenCAga2VybmVsIGdpdDood2lwL2xlb24tZm9yLXJjKSBnaXQg
+bCAtLW5vLW1lcmdlcyBkcml2ZXJzL2luZmluaWJhbmQvaHcvbWFuYS8NCj4gMjE0NTMyODUxNWM4
+IFJETUEvbWFuYV9pYjogVXNlIHYyIHZlcnNpb24gb2YgY2ZnX3J4X3N0ZWVyX3JlcSB0byBlbmFi
+bGUNCj4gUlggY29hbGVzY2luZw0KPiA4OWQ0MmI4Yzg1YjQgUkRNQS9tYW5hX2liOiBGaXggYSBi
+dWcgd2hlbiB0aGUgUEYgaW5kaWNhdGVzIG1vcmUgZW50cmllcw0KPiBmb3IgcmVnaXN0ZXJpbmcg
+bWVtb3J5IG9uIGZpcnN0IHBhY2tldA0KPiA1NjNjYTBlOWVhYjggUkRNQS9tYW5hX2liOiBQcmV2
+ZW50IGFycmF5IHVuZGVyZmxvdyBpbg0KPiBtYW5hX2liX2NyZWF0ZV9xcF9yYXcoKQ0KPiAzNTc0
+Y2ZkY2EyODUgUkRNQS9tYW5hOiBSZW1vdmUgcmVkZWZpbml0aW9uIG9mIGJhc2ljIHU2NCB0eXBl
+DQo+IDAyNjZhMTc3NjMxZCBSRE1BL21hbmFfaWI6IEFkZCBhIGRyaXZlciBmb3IgTWljcm9zb2Z0
+IEF6dXJlIE5ldHdvcmsNCj4gQWRhcHRlcg0KPiANCj4gSXQgaXMgZGlmZmVyZW50IGZvcm1hdCBm
+cm9tIHByZXNlbnRlZCBoZXJlLiBZb3UgYWRkZWQgZXh0cmEgc3BhY2UgYmVmb3JlICI6Ig0KPiBh
+bmQgdGhlcmUgaXMgZG91YmxlIHNwYWNlIGluIG9uZSBvZiB0aGUgdGl0bGVzLg0KPiANCkkgaGF2
+ZSByZW1vdmVkIHRoZSBzcGFjZQ0KDQo+IFJlZ2FyZGluZyBhdXgsIEkgc2VlIGl0LCBidXQgd2hh
+dCBjb25mdXNlcyBtZSBpcyBwcm9saWZlcmF0aW9uIG9mIHRlcm1zIGFuZA0KPiB2YXJpb3VzIGNh
+bGxzOiBkZXZpY2UsIGNsaWVudCwgYWRhcHRlci4gTXkgZXhwZWN0YXRpb24gaXMgdG8gc2VlIG1v
+cmUgdW5pZm9ybQ0KPiBtZXRob2RvbG9neSB3aGVyZSBJQiBpcyByZXByZXNlbnRlZCBhcyBkZXZp
+Y2UuDQo+IA0KDQpUaGUgYWRhcHRlciBpcyBhIHNvZnR3YXJlIGNvbnN0cnVjdC4gSXQgaXMgdXNl
+ZCBhcyBhIGNvbnRhaW5lciBmb3IgcmVzb3VyY2VzLiBDbGllbnQgaXMgdXNlZCB0byBkaXN0aW5n
+dWlzaCBiZXR3ZWVuIGV0aCBhbmQgaWIuICBQbGVhc2Ugbm90ZSB0aGF0IHRoZXNlIGFyZSB0ZXJt
+cyB1c2VkIGZvciBkaWZmZXJlbnQgcHVycG9zZXMgb24gdGhlIG1hbmFnZW1lbnQgc2lkZS4gDQoN
+Cj4gVGhhbmtzDQo+IA0KPiA+DQo+ID4gVGhhbmtzDQo+ID4NCj4gPiA+IC0tLS0tT3JpZ2luYWwg
+TWVzc2FnZS0tLS0tDQo+ID4gPiBGcm9tOiBMZW9uIFJvbWFub3Zza3kgPGxlb25Aa2VybmVsLm9y
+Zz4NCj4gPiA+IFNlbnQ6IE1vbmRheSwgU2VwdGVtYmVyIDExLCAyMDIzIDc6MzMgQU0NCj4gPiA+
+IFRvOiBzaGFybWFhamF5QGxpbnV4b25oeXBlcnYuY29tDQo+ID4gPiBDYzogTG9uZyBMaSA8bG9u
+Z2xpQG1pY3Jvc29mdC5jb20+OyBKYXNvbiBHdW50aG9ycGUgPGpnZ0B6aWVwZS5jYT47DQo+ID4g
+PiBEZXh1YW4gQ3VpIDxkZWN1aUBtaWNyb3NvZnQuY29tPjsgV2VpIExpdSA8d2VpLmxpdUBrZXJu
+ZWwub3JnPjsNCj4gPiA+IERhdmlkIFMuIE1pbGxlciA8ZGF2ZW1AZGF2ZW1sb2Z0Lm5ldD47IEVy
+aWMgRHVtYXpldA0KPiA+ID4gPGVkdW1hemV0QGdvb2dsZS5jb20+OyBKYWt1YiBLaWNpbnNraSA8
+a3ViYUBrZXJuZWwub3JnPjsgUGFvbG8gQWJlbmkNCj4gPiA+IDxwYWJlbmlAcmVkaGF0LmNvbT47
+IGxpbnV4LSByZG1hQHZnZXIua2VybmVsLm9yZzsNCj4gPiA+IGxpbnV4LWh5cGVydkB2Z2VyLmtl
+cm5lbC5vcmc7IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7DQo+ID4gPiBsaW51eC1rZXJuZWxAdmdl
+ci5rZXJuZWwub3JnOyBBamF5IFNoYXJtYSA8c2hhcm1hYWpheUBtaWNyb3NvZnQuY29tPg0KPiA+
+ID4gU3ViamVjdDogW0VYVEVSTkFMXSBSZTogW1BhdGNoIHY1IDAvNV0gUkRNQS9tYW5hX2liDQo+
+ID4gPg0KPiA+ID4gT24gVGh1LCBTZXAgMDcsIDIwMjMgYXQgMDk6NTI6MzRBTSAtMDcwMCwNCj4g
+PiA+IHNoYXJtYWFqYXlAbGludXhvbmh5cGVydi5jb20NCj4gPiA+IHdyb3RlOg0KPiA+ID4gPiBG
+cm9tOiBBamF5IFNoYXJtYSA8c2hhcm1hYWpheUBtaWNyb3NvZnQuY29tPg0KPiA+ID4gPg0KPiA+
+ID4gPiBDaGFuZ2UgZnJvbSB2NDoNCj4gPiA+ID4gU2VuZCBxcCBmYXRhbCBlcnJvciBldmVudCB0
+byB0aGUgY29udGV4dCB0aGF0IGNyZWF0ZWQgdGhlIHFwLiBBZGQNCj4gPiA+ID4gbG9va3VwIHRh
+YmxlIGZvciBxcC4NCj4gPiA+ID4NCj4gPiA+ID4gQWpheSBTaGFybWEgKDUpOg0KPiA+ID4gPiAg
+IFJETUEvbWFuYV9pYiA6IFJlbmFtZSBhbGwgbWFuYV9pYl9kZXYgdHlwZSB2YXJpYWJsZXMgdG8g
+bWliX2Rldg0KPiA+ID4gPiAgIFJETUEvbWFuYV9pYiA6IFJlZ2lzdGVyIE1hbmEgSUIgIGRldmlj
+ZSB3aXRoIE1hbmFnZW1lbnQgU1cNCj4gPiA+ID4gICBSRE1BL21hbmFfaWIgOiBDcmVhdGUgYWRh
+cHRlciBhbmQgQWRkIGVycm9yIGVxDQo+ID4gPiA+ICAgUkRNQS9tYW5hX2liIDogUXVlcnkgYWRh
+cHRlciBjYXBhYmlsaXRpZXMNCj4gPiA+ID4gICBSRE1BL21hbmFfaWIgOiBTZW5kIGV2ZW50IHRv
+IHFwDQo+ID4gPg0KPiA+ID4gSSBkaWRuJ3QgbG9vayB2ZXJ5IGRlZXAgaW50byB0aGUgc2VyaWVz
+IGFuZCBoYXMgdGhyZWUgdmVyeSBpbml0aWFsIGNvbW1lbnRzLg0KPiA+ID4gMS4gUGxlYXNlIGRv
+IGdpdCBsb2cgZHJpdmVycy9pbmZpbmliYW5kL2h3L21hbmEvIGFuZCB1c2Ugc2FtZSBmb3JtYXQN
+Cj4gPiA+IGZvciBjb21taXQgbWVzc2FnZXMuDQo+ID4gPiAyLiBEb24ndCBpbnZlbnQgeW91ciBv
+d24gaW5kZXgtdG8tcXAgcXVlcnkgbWVjaGFuaXNtIGluIGxhc3QgcGF0Y2gNCj4gPiA+IGFuZCB1
+c2UgeGFycmF5Lg0KPiA+ID4gMy4gT25jZSB5b3UgZGVjaWRlZCB0byBleHBvcnQgbWFuYV9nZF9y
+ZWdpc3Rlcl9kZXZpY2UsIGl0IGhpbnRlZCBtZQ0KPiA+ID4gdGhhdCBpdCBpcyB0aW1lIHRvIG1v
+dmUgdG8gYXV4YnVzIGluZnJhc3RydWN0dXJlLg0KPiA+ID4NCj4gPiA+IFRoYW5rcw0KPiA+ID4N
+Cj4gPiA+ID4NCj4gPiA+ID4gIGRyaXZlcnMvaW5maW5pYmFuZC9ody9tYW5hL2NxLmMgICAgICAg
+ICAgICAgICB8ICAxMiArLQ0KPiA+ID4gPiAgZHJpdmVycy9pbmZpbmliYW5kL2h3L21hbmEvZGV2
+aWNlLmMgICAgICAgICAgIHwgIDgxICsrKy0tDQo+ID4gPiA+ICBkcml2ZXJzL2luZmluaWJhbmQv
+aHcvbWFuYS9tYWluLmMgICAgICAgICAgICAgfCAyODggKysrKysrKysrKysrKy0tLS0tDQo+ID4g
+PiA+ICBkcml2ZXJzL2luZmluaWJhbmQvaHcvbWFuYS9tYW5hX2liLmggICAgICAgICAgfCAxMDIg
+KysrKysrLQ0KPiA+ID4gPiAgZHJpdmVycy9pbmZpbmliYW5kL2h3L21hbmEvbXIuYyAgICAgICAg
+ICAgICAgIHwgIDQyICsrLQ0KPiA+ID4gPiAgZHJpdmVycy9pbmZpbmliYW5kL2h3L21hbmEvcXAu
+YyAgICAgICAgICAgICAgIHwgIDg2ICsrKy0tLQ0KPiA+ID4gPiAgZHJpdmVycy9pbmZpbmliYW5k
+L2h3L21hbmEvd3EuYyAgICAgICAgICAgICAgIHwgIDIxICstDQo+ID4gPiA+ICAuLi4vbmV0L2V0
+aGVybmV0L21pY3Jvc29mdC9tYW5hL2dkbWFfbWFpbi5jICAgfCAxNTIgKysrKystLS0tDQo+ID4g
+PiA+ICBkcml2ZXJzL25ldC9ldGhlcm5ldC9taWNyb3NvZnQvbWFuYS9tYW5hX2VuLmMgfCAgIDMg
+Kw0KPiA+ID4gPiAgaW5jbHVkZS9uZXQvbWFuYS9nZG1hLmggICAgICAgICAgICAgICAgICAgICAg
+IHwgIDE2ICstDQo+ID4gPiA+ICAxMCBmaWxlcyBjaGFuZ2VkLCA1NDUgaW5zZXJ0aW9ucygrKSwg
+MjU4IGRlbGV0aW9ucygtKQ0KPiA+ID4gPg0KPiA+ID4gPiAtLQ0KPiA+ID4gPiAyLjI1LjENCj4g
+PiA+ID4NCg==
