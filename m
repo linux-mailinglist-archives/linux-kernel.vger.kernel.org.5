@@ -2,86 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 559957CB1ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 20:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A1C07CB221
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 20:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234076AbjJPSD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 14:03:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60916 "EHLO
+        id S232516AbjJPSMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 14:12:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233956AbjJPSD1 (ORCPT
+        with ESMTP id S231611AbjJPSMm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 14:03:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 481A4EB
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 11:03:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CE11C433C9;
-        Mon, 16 Oct 2023 18:03:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697479405;
-        bh=cDqOHBDA5sbY8y5If7BevRuuz2CJcTopzlG8CQRr2AE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jcY1Mg2aUxBHZjp+t2axFYVkPigBmbnkMqlmGGzpE7BagcZmgjaVOPsQdyXhSLPgj
-         8MJOGK07bmGeYKXvVWGxW9sPe7m1H1cyZHKRE50A+5DhQxCyhi5SJIf0LdSpbqXaCZ
-         xJH5Qhom2DGL9r8fJX0YeNJSoe1IPqGacKpdTG+0=
-Date:   Mon, 16 Oct 2023 20:03:23 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: usb: ti,tps6598x: Disallow undefined
- properties
-Message-ID: <2023101616-fantastic-spearman-b1e4@gregkh>
-References: <20231016155527.2973385-1-robh@kernel.org>
+        Mon, 16 Oct 2023 14:12:42 -0400
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0018BA2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 11:12:38 -0700 (PDT)
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4S8QFF6Mk6z1r1s0;
+        Mon, 16 Oct 2023 20:12:33 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.68])
+        by mail.m-online.net (Postfix) with ESMTP id 4S8QFF4hgYz1qqlS;
+        Mon, 16 Oct 2023 20:12:33 +0200 (CEST)
+X-Virus-Scanned: amavis at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+ by localhost (dynscan1.mail.m-online.net [192.168.6.68]) (amavis, port 10024)
+ with ESMTP id nOUV3jjqwywP; Mon, 16 Oct 2023 20:12:32 +0200 (CEST)
+X-Auth-Info: de1F22Tx1RaWX4XjxP2PcfNuAuKKz9mapevqvNXhi42KR85gJB1zx+tHFwze0kZO
+Received: from igel.home (aftr-62-216-205-237.dynamic.mnet-online.de [62.216.205.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Mon, 16 Oct 2023 20:12:32 +0200 (CEST)
+Received: by igel.home (Postfix, from userid 1000)
+        id 591EA2C1370; Mon, 16 Oct 2023 20:12:32 +0200 (CEST)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     Charlie Jenkins <charlie@rivosinc.com>
+Cc:     linux-riscv@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Subject: Re: [PATCH v3 1/2] riscv: Add remaining module relocations
+In-Reply-To: <20231016-module_relocations-v3-1-a667fd6071e9@rivosinc.com>
+        (Charlie Jenkins's message of "Mon, 16 Oct 2023 10:36:09 -0700")
+References: <20231016-module_relocations-v3-0-a667fd6071e9@rivosinc.com>
+        <20231016-module_relocations-v3-1-a667fd6071e9@rivosinc.com>
+X-Yow:  I'm ZIPPY the PINHEAD and I'm totally committed to the festive mode.
+Date:   Mon, 16 Oct 2023 20:12:32 +0200
+Message-ID: <87h6mqo2r3.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231016155527.2973385-1-robh@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 10:55:27AM -0500, Rob Herring wrote:
-> Device specific bindings should not allow undefined properties. This is
-> accomplished in json-schema with 'additionalProperties: false'. With this,
-> the 'connector' child node needs to be defined to prevent warnings.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  Documentation/devicetree/bindings/usb/ti,tps6598x.yaml | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml b/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
-> index 5497a60cddbc..6ab674dea4c6 100644
-> --- a/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
-> +++ b/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
-> @@ -32,11 +32,14 @@ properties:
->      items:
->        - const: irq
->  
-> +  connector:
-> +    $ref: /schemas/connector/usb-connector.yaml#
-> +
->  required:
->    - compatible
->    - reg
->  
-> -additionalProperties: true
-> +additionalProperties: false
->  
->  examples:
->    - |
-> -- 
-> 2.42.0
-> 
-> 
+On Okt 16 2023, Charlie Jenkins wrote:
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> @@ -81,7 +82,7 @@ typedef union __riscv_fp_state elf_fpregset_t;
+>  #define R_RISCV_ALIGN		43
+>  #define R_RISCV_RVC_BRANCH	44
+>  #define R_RISCV_RVC_JUMP	45
+> -#define R_RISCV_LUI		46
+> +#define R_RISCV_RVC_LUI		46
+
+The latest ELF psABI defines 46 as reserved.
+
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
