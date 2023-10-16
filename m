@@ -2,137 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E03C07CAA5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 15:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28FD67CAA68
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 15:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234433AbjJPNtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 09:49:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53370 "EHLO
+        id S233539AbjJPNt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 09:49:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233986AbjJPNsU (ORCPT
+        with ESMTP id S234084AbjJPNsk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 09:48:20 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCCC51A4;
-        Mon, 16 Oct 2023 06:48:00 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3EDE6814;
-        Mon, 16 Oct 2023 15:47:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1697464072;
-        bh=f97DIqnul/BgQzKIc92p98PsvcgheZXYtkIIEDSitQg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hkY+O935WG4/lTsCXW1DTzUuFu9IGE3NfAAO9f/R3DH9d5HVLKMgqrksba/GoNZJl
-         o8uyAVyyFfy2K12+hJE6TTvTwTcbdFwkut0zmC6fPsWhysSNXy3BR2KZGwr0SR/Ove
-         aDTYRSjgpOamg/llJuUJZQt0BJ6FnLkhgMJ0z20E=
-Date:   Mon, 16 Oct 2023 16:48:04 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Bernhard =?utf-8?Q?Rosenkr=C3=A4nzer?= <bero@baylibre.com>
-Cc:     linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        angelogioacchino.delregno@collabora.com, matthias.bgg@gmail.com,
-        gregkh@linuxfoundation.org, krzysztof.kozlowski+dt@linaro.org,
-        robh+dt@kernel.org, maz@kernel.org, tglx@linutronix.de
-Subject: Re: [PATCH v11 3/3] arm64: dts: mediatek: Initial mt8365-evk support
-Message-ID: <20231016134804.GA15778@pendragon.ideasonboard.com>
-References: <20230309213501.794764-1-bero@baylibre.com>
- <20230309213501.794764-4-bero@baylibre.com>
+        Mon, 16 Oct 2023 09:48:40 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABC5E8;
+        Mon, 16 Oct 2023 06:48:14 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 13:48:12 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1697464093;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=szJCQ1qcus8xfbAR7kQCZre3aSLpl0Tn4hJkHD45Xek=;
+        b=vnQiGgu2GWXy/G9m9W0I9lZyiqVMvwVl2fnH9FtXamtA8ZVmfdHIZ1kOjP7PEIP8j0bJr2
+        /DKYWMQ5TKOxdVMdFtZ3AImd3mL5JY6TU+IMTHMD2waB+slNSPIyTsJtVsEHG9Qknc+YUo
+        lPijJAHVoZgt2jOEiIUhcm1lg2A3aESM68pPp4fFSx4OVRaoF7ZvwtjITiWiHOVrmdpn9B
+        /1ZJpbuFKx+maZAA6LUTRPNAv8O6sgZkUn8rc7itPYXlkgddbC7Ewac96f1QrU4OXQ5vLd
+        pKETAxsQPMS4fgSO5pv+iMsF0E7+2tUGC6OBMzniyFF4OG2YHrn1LU2wOCaiSA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1697464093;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=szJCQ1qcus8xfbAR7kQCZre3aSLpl0Tn4hJkHD45Xek=;
+        b=NqV4+y7B7c+jjFfCkRXdvCq9m8tCoatlEjsK3eiHyhSOAVSCT+rkpnYwDp9/WTO2uRTxMk
+        Ti9I8AvAy5XgmGCA==
+From:   "tip-bot2 for Yazen Ghannam" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: ras/core] x86/mce: Cleanup mce_usable_address()
+Cc:     Yazen Ghannam <yazen.ghannam@amd.com>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230613141142.36801-4-yazen.ghannam@amd.com>
+References: <20230613141142.36801-4-yazen.ghannam@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230309213501.794764-4-bero@baylibre.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <169746409209.3135.13727023873339327084.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The following commit has been merged into the ras/core branch of tip:
 
-A bit of a late reply, but I've just noticed an issue related to this
-patch.
+Commit-ID:     1bae0cfe4a171ccc5f731426296e45beafa096b8
+Gitweb:        https://git.kernel.org/tip/1bae0cfe4a171ccc5f731426296e45beafa096b8
+Author:        Yazen Ghannam <yazen.ghannam@amd.com>
+AuthorDate:    Tue, 13 Jun 2023 09:11:42 -05:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Mon, 16 Oct 2023 15:37:01 +02:00
 
-On Thu, Mar 09, 2023 at 10:35:01PM +0100, Bernhard Rosenkränzer wrote:
-> From: Fabien Parent <fparent@baylibre.com>
-> 
-> This adds minimal support for the Mediatek 8365 SOC and the EVK reference
-> board, allowing the board to boot to initramfs with serial port I/O.
-> 
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
-> [bero@baylibre.com: Removed parts depending on drivers that aren't upstream yet, cleanups, add CPU cache layout, add systimer, fix GIC]
-> Signed-off-by: Bernhard Rosenkränzer <bero@baylibre.com>
-> [aouledameur@baylibre.com: Fix systimer properties]
-> Signed-off-by: Amjad Ouled-Ameur <aouledameur@baylibre.com>
-> Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
-> Tested-by: Kevin Hilman <khilman@baylibre.com>
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> ---
->  arch/arm64/boot/dts/mediatek/Makefile       |   1 +
->  arch/arm64/boot/dts/mediatek/mt8365-evk.dts | 168 +++++++++
->  arch/arm64/boot/dts/mediatek/mt8365.dtsi    | 377 ++++++++++++++++++++
->  3 files changed, 546 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8365-evk.dts
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8365.dtsi
+x86/mce: Cleanup mce_usable_address()
 
-[snip]
+Move Intel-specific checks into a helper function.
 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8365.dtsi b/arch/arm64/boot/dts/mediatek/mt8365.dtsi
-> new file mode 100644
-> index 0000000000000..351197c453c91
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/mediatek/mt8365.dtsi
-> @@ -0,0 +1,377 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * (C) 2018 MediaTek Inc.
-> + * Copyright (C) 2022 BayLibre SAS
-> + * Fabien Parent <fparent@baylibre.com>
-> + * Bernhard Rosenkränzer <bero@baylibre.com>
-> + */
-> +#include <dt-bindings/clock/mediatek,mt8365-clk.h>
-> +#include <dt-bindings/interrupt-controller/arm-gic.h>
-> +#include <dt-bindings/interrupt-controller/irq.h>
-> +#include <dt-bindings/phy/phy.h>
-> +
-> +/ {
+Explicitly use "bool" for return type.
 
-[snip]
+No functional change intended.
 
-> +	soc {
+Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20230613141142.36801-4-yazen.ghannam@amd.com
+---
+ arch/x86/include/asm/mce.h         |  2 +-
+ arch/x86/kernel/cpu/mce/core.c     | 33 ++++++++---------------------
+ arch/x86/kernel/cpu/mce/intel.c    | 20 ++++++++++++++++++-
+ arch/x86/kernel/cpu/mce/internal.h |  2 ++-
+ 4 files changed, 33 insertions(+), 24 deletions(-)
 
-[snip]
-
-> +		infracfg: syscon@10001000 {
-> +			compatible = "mediatek,mt8365-infracfg", "syscon";
-> +			reg = <0 0x10001000 0 0x1000>;
-> +			#clock-cells = <1>;
-> +		};
-
-[snip]
-
-> +		infracfg_nao: infracfg@1020e000 {
-> +			compatible = "mediatek,mt8365-infracfg", "syscon";
-> +			reg = <0 0x1020e000 0 0x1000>;
-> +			#clock-cells = <1>;
-> +		};
-
-These two nodes cause the infracfg clocks to be registered twice, with
-the second probe of the clk-mt8365 driver failing with -EEXIST.
-
-[snip]
-
-> +	};
-
-[snip]
-
-> +};
-
--- 
-Regards,
-
-Laurent Pinchart
+diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
+index 180b1cb..6de6e1d 100644
+--- a/arch/x86/include/asm/mce.h
++++ b/arch/x86/include/asm/mce.h
+@@ -245,7 +245,7 @@ static inline void cmci_recheck(void) {}
+ int mce_available(struct cpuinfo_x86 *c);
+ bool mce_is_memory_error(struct mce *m);
+ bool mce_is_correctable(struct mce *m);
+-int mce_usable_address(struct mce *m);
++bool mce_usable_address(struct mce *m);
+ 
+ DECLARE_PER_CPU(unsigned, mce_exception_count);
+ DECLARE_PER_CPU(unsigned, mce_poll_count);
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 06c21f5..0214d42 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -453,35 +453,22 @@ static void mce_irq_work_cb(struct irq_work *entry)
+ 	mce_schedule_work();
+ }
+ 
+-/*
+- * Check if the address reported by the CPU is in a format we can parse.
+- * It would be possible to add code for most other cases, but all would
+- * be somewhat complicated (e.g. segment offset would require an instruction
+- * parser). So only support physical addresses up to page granularity for now.
+- */
+-int mce_usable_address(struct mce *m)
++bool mce_usable_address(struct mce *m)
+ {
+ 	if (!(m->status & MCI_STATUS_ADDRV))
+-		return 0;
++		return false;
+ 
+-	if (m->cpuvendor == X86_VENDOR_AMD)
++	switch (m->cpuvendor) {
++	case X86_VENDOR_AMD:
+ 		return amd_mce_usable_address(m);
+ 
+-	/* Checks after this one are Intel/Zhaoxin-specific: */
+-	if (boot_cpu_data.x86_vendor != X86_VENDOR_INTEL &&
+-	    boot_cpu_data.x86_vendor != X86_VENDOR_ZHAOXIN)
+-		return 1;
+-
+-	if (!(m->status & MCI_STATUS_MISCV))
+-		return 0;
+-
+-	if (MCI_MISC_ADDR_LSB(m->misc) > PAGE_SHIFT)
+-		return 0;
+-
+-	if (MCI_MISC_ADDR_MODE(m->misc) != MCI_MISC_ADDR_PHYS)
+-		return 0;
++	case X86_VENDOR_INTEL:
++	case X86_VENDOR_ZHAOXIN:
++		return intel_mce_usable_address(m);
+ 
+-	return 1;
++	default:
++		return true;
++	}
+ }
+ EXPORT_SYMBOL_GPL(mce_usable_address);
+ 
+diff --git a/arch/x86/kernel/cpu/mce/intel.c b/arch/x86/kernel/cpu/mce/intel.c
+index f532355..52bce53 100644
+--- a/arch/x86/kernel/cpu/mce/intel.c
++++ b/arch/x86/kernel/cpu/mce/intel.c
+@@ -536,3 +536,23 @@ bool intel_filter_mce(struct mce *m)
+ 
+ 	return false;
+ }
++
++/*
++ * Check if the address reported by the CPU is in a format we can parse.
++ * It would be possible to add code for most other cases, but all would
++ * be somewhat complicated (e.g. segment offset would require an instruction
++ * parser). So only support physical addresses up to page granularity for now.
++ */
++bool intel_mce_usable_address(struct mce *m)
++{
++	if (!(m->status & MCI_STATUS_MISCV))
++		return false;
++
++	if (MCI_MISC_ADDR_LSB(m->misc) > PAGE_SHIFT)
++		return false;
++
++	if (MCI_MISC_ADDR_MODE(m->misc) != MCI_MISC_ADDR_PHYS)
++		return false;
++
++	return true;
++}
+diff --git a/arch/x86/kernel/cpu/mce/internal.h b/arch/x86/kernel/cpu/mce/internal.h
+index a191554..e13a26c 100644
+--- a/arch/x86/kernel/cpu/mce/internal.h
++++ b/arch/x86/kernel/cpu/mce/internal.h
+@@ -49,6 +49,7 @@ void intel_init_cmci(void);
+ void intel_init_lmce(void);
+ void intel_clear_lmce(void);
+ bool intel_filter_mce(struct mce *m);
++bool intel_mce_usable_address(struct mce *m);
+ #else
+ # define cmci_intel_adjust_timer mce_adjust_timer_default
+ static inline bool mce_intel_cmci_poll(void) { return false; }
+@@ -58,6 +59,7 @@ static inline void intel_init_cmci(void) { }
+ static inline void intel_init_lmce(void) { }
+ static inline void intel_clear_lmce(void) { }
+ static inline bool intel_filter_mce(struct mce *m) { return false; }
++static inline bool intel_mce_usable_address(struct mce *m) { return false; }
+ #endif
+ 
+ void mce_timer_kick(unsigned long interval);
