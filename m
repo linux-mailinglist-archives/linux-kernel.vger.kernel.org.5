@@ -2,42 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6217F7CB3A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 665F57CB3A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233874AbjJPUDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 16:03:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48394 "EHLO
+        id S232985AbjJPUE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 16:04:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232792AbjJPUDe (ORCPT
+        with ESMTP id S233788AbjJPUEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 16:03:34 -0400
+        Mon, 16 Oct 2023 16:04:25 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E06AEA;
-        Mon, 16 Oct 2023 13:03:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E978C433C7;
-        Mon, 16 Oct 2023 20:03:30 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F5CB83;
+        Mon, 16 Oct 2023 13:04:24 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76274C433C7;
+        Mon, 16 Oct 2023 20:04:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697486612;
-        bh=vuVQ78sxmBFgv5vVcwICGwoG+DfomOY79aR9/3vI29A=;
+        s=k20201202; t=1697486664;
+        bh=LicEPcKoL9Sru0ZtpvzVU3YUUcuxZ6s7vspnx7TkER4=;
         h=From:To:Cc:Subject:Date:From;
-        b=cwO1bGAOBBaJWckr/g3z6ld9vHdkYM/GFpFtTYy1BXz9nDUc3j7gCMXtTBd4QGUbc
-         Nbs0+gL08VAudYHFrLgSY8Ljlz4VyW/Atrx3KFVVfi0aV6vHaiVsFO2E9dpyhjwS3A
-         xtD1LoMvpr1/jW1ovt2JsbTHSM6V9dkFs3jQDkfRRO0/03T3BbBzeUAEPyn1+wEeJo
-         7Rmhqt6nY/1ZcMoE4nnQecdQGtOinG6F46Zvi3OpXL1iLpcEtqovsiqicdlifLb+RG
-         oY12HqEkcylvqhSO/2tdvHqJ3Udk5q5YgMAhoiWkPufBFbknBuRUykMIbVWS/CFcrz
-         hphfzPzr6WXqg==
+        b=NF3cSB3najqsbPo3qib9+Dzj+MAvqLUUgu9V+CzC61e/PcC/3U8wuBF+GWcuNlajs
+         9PjV3EQnpMyo7CnVqq+v3ODtP8TTKE9CRBmXL5kvpIXalUTeT2UuUTIHPWM8IWXCM7
+         wpRkICK80B8j51mS3KMD2R/hsBQ2LoaBMEBFnE32fbJ5l3DOvJm/qxVqJMGXFUCy2W
+         UOgVv6nBwGvaTP4yA/h6hvSC+bg37y5ofArWrp75AYj0tDVeT+N/WdFNS0dPgqLVLC
+         TBbuYYR6lNGcw95F+epv8LeK9MXgh7bMTweBSxqzd9Ix6379AeQN9e163/BkVcuxf7
+         nymLpxS0Ju75A==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Om Prakash Singh <quic_omprsing@quicinc.com>,
+To:     Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
         Neil Armstrong <neil.armstrong@linaro.org>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] crypto: qcom: add HW_RANDOM dependency
-Date:   Mon, 16 Oct 2023 22:02:57 +0200
-Message-Id: <20231016200324.757455-1-arnd@kernel.org>
+        Akhil P Oommen <quic_akhilpo@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/msm/a6xx: add QMP dependency
+Date:   Mon, 16 Oct 2023 22:04:03 +0200
+Message-Id: <20231016200415.791090-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -52,35 +60,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The driver now calls into the hwrng subsystem and causes a link failure if that
-is not reachable:
+When QMP is in a loadable module, the A6xx GPU driver fails to link
+as built-in:
 
-x86_64-linux-ld: vmlinux.o: in function `qcom_rng_probe':
-qcom-rng.c:(.text+0xfefc7e): undefined reference to `devm_hwrng_register'
+x86_64-linux-ld: drivers/gpu/drm/msm/adreno/a6xx_gmu.o: in function `a6xx_gmu_resume':
+a6xx_gmu.c:(.text+0xd62): undefined reference to `qmp_send'
 
-Add a Kconfig dependency as we have for the pure hw_random drivers. I see
-that there are some other crypto drivers that instead use 'select HW_RANDOM',
-but those seem to be mistakes as that may lead to circular dependencies,
-and a simple driver should not force-enable an entire subsytem.
+Add the usual dependency that still allows compiling without QMP but
+otherwise avoids the broken combination of options.
 
-Fixes: f29cd5bb64c25 ("crypto: qcom-rng - Add hw_random interface support")
+Fixes: 88a0997f2f949 ("drm/msm/a6xx: Send ACD state to QMP at GMU resume")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/crypto/Kconfig | 1 +
+ drivers/gpu/drm/msm/Kconfig | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
-index c761952f0dc6d..79c3bb9c99c3b 100644
---- a/drivers/crypto/Kconfig
-+++ b/drivers/crypto/Kconfig
-@@ -601,6 +601,7 @@ config CRYPTO_DEV_QCE_SW_MAX_LEN
- config CRYPTO_DEV_QCOM_RNG
- 	tristate "Qualcomm Random Number Generator Driver"
- 	depends on ARCH_QCOM || COMPILE_TEST
-+	depends on HW_RANDOM
- 	select CRYPTO_RNG
- 	help
- 	  This driver provides support for the Random Number
+diff --git a/drivers/gpu/drm/msm/Kconfig b/drivers/gpu/drm/msm/Kconfig
+index 6309a857ca312..ad70b611b44f0 100644
+--- a/drivers/gpu/drm/msm/Kconfig
++++ b/drivers/gpu/drm/msm/Kconfig
+@@ -6,6 +6,7 @@ config DRM_MSM
+ 	depends on ARCH_QCOM || SOC_IMX5 || COMPILE_TEST
+ 	depends on COMMON_CLK
+ 	depends on IOMMU_SUPPORT
++	depends on QCOM_AOSS_QMP || QCOM_AOSS_QMP=n
+ 	depends on QCOM_OCMEM || QCOM_OCMEM=n
+ 	depends on QCOM_LLCC || QCOM_LLCC=n
+ 	depends on QCOM_COMMAND_DB || QCOM_COMMAND_DB=n
 -- 
 2.39.2
 
