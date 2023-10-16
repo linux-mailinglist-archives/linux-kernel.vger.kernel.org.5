@@ -2,145 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE597CA937
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 15:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EABFA7CA93E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 15:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233454AbjJPNRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 09:17:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39778 "EHLO
+        id S233240AbjJPNTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 09:19:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233445AbjJPNR2 (ORCPT
+        with ESMTP id S231896AbjJPNTg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 09:17:28 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B6B102
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 06:17:26 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-57b83ff7654so349404eaf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 06:17:26 -0700 (PDT)
+        Mon, 16 Oct 2023 09:19:36 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10938A2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 06:19:35 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9b2cee40de8so923149066b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 06:19:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1697462246; x=1698067046; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Bh3+AgzPel++Li3i4cnaSQ7/7AOtdWQs4MXrIboRuuI=;
-        b=FIDM8/5kZdjdRNyaOYo7ZqsYXQM9Fb0Iq85/g5ZEU5EeiPOiPFR3JoMQ1x5rIQ+0of
-         4r2m7qV+OUjEeiSjv/gtJKuLeyVxu9bU4dFMjguIKRVsednR3BiQh3RuVqSfhcwRARu/
-         lGYIJcROM+KTMzRsrDfNA4zFVOXUHG0OTbnmiNCmwf9u/lgC2f/yFUeSk62m3nNNclte
-         gIJFOUeszgFhf0KUnT4DJGf6IyZPy5b5MURYg0QMhmJrd+SxXLvk6yfZiT/F3p9zHS/x
-         IK19USNGJK5Kt9+nSH0ODthKiK0blcz2oRvFGergFqXxsdCDgCNEUpX/MT9Eg1WYTqJO
-         TB+Q==
+        d=linaro.org; s=google; t=1697462373; x=1698067173; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ofsX2ld2Y35hldDs43R40eV9lYWcpyBA4x3tj2sdNUM=;
+        b=Fo5wLOpfEpziYpTAd/VKyBQPkgXnEhmQ9X2NW8SbRkjzaowKOINivrVjt0DPqpk8uh
+         Nn0XlCzQeh5p1pL0HjbU9n3CfJI86eK8jE+TX7SAdY8sHc5X2MFL+tDU8wD16c4CTIng
+         aba+Pfs7wpfnpSVyqWH5bUXu7iLb/jrmc/BAwnu1GBecQe2hvtB6GsjrMiN54aXMxe4o
+         766zlzB+zSgux+p950OFktfPuvIoS7R8+j1jJA6B/qlxkL/Omecumjv3nj+Yvd8eRWbc
+         T4HbblWAk9h9LtOMUByQWxbJVL/SGmNcmXZCfNTuYak6VZ1S0BwGQjFo1FZ7DLBWzcSu
+         j/Dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697462246; x=1698067046;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bh3+AgzPel++Li3i4cnaSQ7/7AOtdWQs4MXrIboRuuI=;
-        b=gd8vgMwZKIzco7OIAZv5Ha/JmGYyYn3crqNJdcHlPFT8bjG4oJb156xBVVUTr3PjlO
-         IwV31wuWIWRlatlhXrozjAUbiPuMvTWTxamBM0N0TXVDNLgb+zORN1J7qFiQIpxZLwi3
-         Ep29VcpuxFMZtY2SUQ/SJs6mUuK6dnO5FDDdL3dLvQDK4ZzDyyGcQp2opQSth1TwkTYV
-         bdmvl1CAydn1cRbkczvygc27N4zFGKHJ/fX2wN+mBMp97U2KjNxUhs4xayH8kET/lmJ6
-         RXbdX7PucYftdFSoL18QHLNuk2lRfu7/qpmdW0ON3ETQfjHUMGRjUsXHWOMf16qj3US7
-         Cquw==
-X-Gm-Message-State: AOJu0YwrhLuuuwfJYZ/Zc+cCsKR1utICkYBKRsXq7GUPmTQa1jioJZWQ
-        tpZpzhiWSXthoPY/a704cq0ajg==
-X-Google-Smtp-Source: AGHT+IGrbEqS8GB9c2OLyOHVDopIm4PpEGTpzwlL5dIZqSUY0IIG2s6mgrgGOmiIWAxRmhO0G6UG0Q==
-X-Received: by 2002:a05:6358:e908:b0:147:47f2:2d54 with SMTP id gk8-20020a056358e90800b0014747f22d54mr28008523rwb.0.1697462245823;
-        Mon, 16 Oct 2023 06:17:25 -0700 (PDT)
-Received: from [192.168.1.136] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id x24-20020aa79ad8000000b006b341144ad0sm5760746pfp.102.2023.10.16.06.17.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 06:17:24 -0700 (PDT)
-Message-ID: <50310b5e-7642-4ca1-a9e1-6d817d472131@kernel.dk>
-Date:   Mon, 16 Oct 2023 07:17:23 -0600
+        d=1e100.net; s=20230601; t=1697462373; x=1698067173;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ofsX2ld2Y35hldDs43R40eV9lYWcpyBA4x3tj2sdNUM=;
+        b=NFL4GHP3GrPJ6owRpFO99SeTPyKXLSOobqNB9bX6KEw+zM+a8Z4hOGt9AYRh3y0PtY
+         dt+LYB5DcNbs1kDB2qYMQdB2VBRU5XfNLYX4rUVFNRXD5dUSzgxBT6OldffsGb7PN0hO
+         YU5MYhd/HUe6yo7uYznw4Ud7UGeRhpFk3GHHRl0nMYZ0mfR6RfM4/XAQDX4q+ZXl6DK4
+         xbmLs2IBWx81XeHWrUa70aML2xgsXHleJHaijnlWec425bqKtNic+MYkInqVk5AAUHjX
+         i7I/nEjmJ1nX4XmMIDA19Aa44IGPjU48QONVnDQPEsGZYLMyG/MdXybfhJnz11t6ZNft
+         yxMA==
+X-Gm-Message-State: AOJu0Yw7BdUre+cablhAfsl9/+0y4S3xWKDDoIUgtZmC0s/p+QXOIDOA
+        W0fDq3kVJai4yJCR9K+DO8yqaoPHqCTvlkqKmnVFOQ==
+X-Google-Smtp-Source: AGHT+IFuH/XgysB7Sxky39MfcG4hkkSZ6xm21/9jC7buhA0x7DsWtKnFalffqQ9KEVpl9pkg+JUIfKq8xTStyGVkKkM=
+X-Received: by 2002:a17:907:5ca:b0:9ae:6648:9b53 with SMTP id
+ wg10-20020a17090705ca00b009ae66489b53mr6876194ejb.23.1697462373491; Mon, 16
+ Oct 2023 06:19:33 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Problem with io_uring splice and KTLS
-Content-Language: en-US
-To:     Sascha Hauer <sha@pengutronix.de>
-Cc:     Boris Pismenny <borisp@nvidia.com>, netdev@vger.kernel.org,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        kernel@pengutronix.de, Jakub Kicinski <kuba@kernel.org>,
-        Pavel Begunkov <asml.silence@gmail.com>
-References: <20231010141932.GD3114228@pengutronix.de>
- <d729781a-3d12-423b-973e-c16fdbcbb60b@kernel.dk>
- <20231012133407.GA3359458@pengutronix.de>
- <f39ef992-4789-4c30-92ef-e3114a31d5c7@kernel.dk>
- <20231013054716.GG3359458@pengutronix.de>
- <a9dd11d9-b5b8-456d-b8b6-12257e2924ab@kernel.dk>
- <20231016072646.GV3359458@pengutronix.de>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20231016072646.GV3359458@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <267abf02-4b60-4a2e-92cd-709e3da6f7d3@gmail.com>
+ <CAMZdPi9RDSAsA8bCwN1f-4v3Ahqh8+eFLTArdyE5qZeocAMhtQ@mail.gmail.com> <ZSiJdxjokD0P9wRc@debian.me>
+In-Reply-To: <ZSiJdxjokD0P9wRc@debian.me>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Mon, 16 Oct 2023 15:18:56 +0200
+Message-ID: <CAMZdPi8qmc4aKPsm3J60Fb+wa0ixVCV+KK11TDsvqFJk81Gfrw@mail.gmail.com>
+Subject: Re: Intel 7560 LTE Modem stops working after resuming from standby
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Networking <netdev@vger.kernel.org>,
+        Linux Intel Wireless WAN <linuxwwan@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16/23 1:26 AM, Sascha Hauer wrote:
-> On Fri, Oct 13, 2023 at 07:45:55AM -0600, Jens Axboe wrote:
->> On 10/12/23 11:47 PM, Sascha Hauer wrote:
->>> On Thu, Oct 12, 2023 at 07:45:07PM -0600, Jens Axboe wrote:
->>>> On 10/12/23 7:34 AM, Sascha Hauer wrote:
->>>>> In case you don't have encryption hardware you can create an
->>>>> asynchronous encryption module using cryptd. Compile a kernel with
->>>>> CONFIG_CRYPTO_USER_API_AEAD and CONFIG_CRYPTO_CRYPTD and start the
->>>>> webserver with the '-c' option. /proc/crypto should then contain an
->>>>> entry with:
->>>>>
->>>>>  name         : gcm(aes)
->>>>>  driver       : cryptd(gcm_base(ctr(aes-generic),ghash-generic))
->>>>>  module       : kernel
->>>>>  priority     : 150
->>>>
->>>> I did a bit of prep work to ensure I had everything working for when
->>>> there's time to dive into it, but starting it with -c doesn't register
->>>> this entry. Turns out the bind() in there returns -1/ENOENT.
->>>
->>> Yes, that happens here as well, that's why I don't check for the error
->>> in the bind call. Nevertheless it has the desired effect that the new
->>> algorithm is registered and used from there on. BTW you only need to
->>> start the webserver once with -c. If you start it repeatedly with -c a
->>> new gcm(aes) instance is registered each time.
->>
->> Gotcha - I wasn't able to trigger the condition, which is why I thought
->> perhaps I was missing something.
->>
->> Can you try the below patch and see if that makes a difference? I'm not
->> quite sure why it would since you said it triggers with DEFER_TASKRUN as
->> well, and for that kind of notification, you should never hit the paths
->> you have detailed in the debug patch.
-> 
-> I can confirm that this patch makes it work for me. I tested with both
-> software cryptd and also with my original CAAM encryption workload.
-> IORING_SETUP_SINGLE_ISSUER | IORING_SETUP_DEFER_TASKRUN is not needed.
-> Both my simple webserver and the original C++ Webserver from our
-> customer are now working without problems.
+Hi Bagas,
 
-OK, good to hear. I'm assuming you only change for
-sk_stream_wait_memory()? If you can reproduce, would be good to test.
-But i general none of them should hurt.
+On Fri, 13 Oct 2023 at 02:04, Bagas Sanjaya <bagasdotme@gmail.com> wrote:
+>
+> On Thu, Oct 12, 2023 at 06:54:11PM +0200, Loic Poulain wrote:
+> > Hi Chetan,
+> >
+> > On Thu, 12 Oct 2023 at 11:52, Bagas Sanjaya <bagasdotme@gmail.com> wrote:
+> > > I notice a regression report on Bugzilla [1]. Quoting from it:
+> > >
+> > > > I noticed a few days ago, after Fedora moved to Kernel 6.5, that my Intel LTE Modem was not working anymore after resuming from standby.
+> > > >
+> > > > The journal listed this error message multiple times:
+> > > > kernel: iosm 0000:01:00.0: msg timeout
+> > > >
+> > > > It took me a while to determine the root cause of the problem, since the modem did not work either in the following warm reboots.
+> > > > Only a shutdown revived the modem.
+> > > >
+> > > > I did a bisection of the error and I was able to find the culprit:
+> > > >
+> > > > [e4f5073d53be6cec0c654fac98372047efb66947] net: wwan: iosm: enable runtime pm support for 7560
+> >
+> > Any quick fix for this issue? alternatively we will probably revert e4f5073d53.
+>
+> Chetan can't be contacted as sending to his address bounces (error 550)
+> (had he left Intel?). Last message on LKML is this culprit patch [1].
+> Hence, revert for now.
 
-FWIW, the reason why DEFER_TASKRUN wasn't fully solving it is because
-we'd also use TIF_NOTIFY_SIGNAL for creating new io-wq workers. So while
-task_work would not be the trigger for setting that condition, we'd
-still end up doing it via io-wq worker creation.
+Could you please submit the revert fix?
 
-> Do you think there is a chance getting this change upstream? I'm a bit
-> afraid the code originally uses signal_pending() instead of
-> task_sigpending() for a good reason.
-
-The distinction between signal_pending() and task_sigpending() was
-introduced with TIF_NOTIFY_SIGNAL. This isn't a case of networking
-needing to use signal_pending(), just that this is was originally the
-only aborting condition and now it's a bit too broad for some cases
-(like this one).
-
--- 
-Jens Axboe
-
+Regards,
+Loic
