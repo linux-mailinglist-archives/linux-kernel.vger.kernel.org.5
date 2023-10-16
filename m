@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F43F7CA01F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 09:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A13E7CA020
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 09:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231135AbjJPHLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 03:11:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51368 "EHLO
+        id S231803AbjJPHLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 03:11:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231474AbjJPHLp (ORCPT
+        with ESMTP id S229953AbjJPHLq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 03:11:45 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F0BDF3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:11:42 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6ba172c5f3dso1049640b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:11:42 -0700 (PDT)
+        Mon, 16 Oct 2023 03:11:46 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41CF4DC
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:11:45 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bdf4752c3cso22695835ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:11:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697440301; x=1698045101; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=d9BgW3N7fBm3L3q4onC3IgvyssbSs3COoJlmjYvy67c=;
-        b=bT3qysYzQd5hmcVvZhTsiZwIB/iZooHSpkXl/sAJurRrCZWG81NR4I+NwA9uRUsnCD
-         880bWXswVCZQSmV79CRs0OGxXBD1ZHc169Ni0HhnOW68D9V9JIS120QBUWvvvHmM09lJ
-         D6E4HwsJyFA0xAHeYjPyJR8TLbgiu+DE9iGUmTieOF1zVCQJcdB38XpffSKCKcH5ZpKP
-         JOy1MjgcrSL6wYf4eCp8+kQrJdvOQtO8AnjkPCTQKTGWI0ced8SLRmAboSsCiYa/AKfo
-         /Ag9fkxQcATaU7vm7Gtt6mMXPpB8Z8FSZfAqOPXcdr/gUfjAtWaC6PVlBt6cpgco7BpJ
-         Nthg==
+        d=linaro.org; s=google; t=1697440305; x=1698045105; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1YLGlADbqxnWAYarOFVSTI3AQVPhPYl3xWfz7Wse3mA=;
+        b=tC4LY86rkiKKI7EWqWKJsM+GwVlT0koeey0qgnh+rLEx0ghY2KWqiaoXsmuQlR7Cer
+         /w4edLT7YNscZrKIYirqOHJYjeeAjXU8pgeJGctnszKI5dmYBQ8alBTgjvVTf5rT2aAa
+         FereKhnBmdGh5Bxl8Kr0re/2owSQrYwOHapsx0LMMwXzeoX/vdYNhmO3TvirB2OP7ZM1
+         thudmuzodLd010dITKY/2ldyztJ0cE/HzNmPD4URCDLleVVVG128nk+EXfhrS4kOAh1u
+         OaM/LgHUnq/Oq38lFbTDwk1IO4CjscHjZicfjatgj+jC+b6bseDWUqHCSfMqhluQzmNH
+         AACg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697440301; x=1698045101;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=d9BgW3N7fBm3L3q4onC3IgvyssbSs3COoJlmjYvy67c=;
-        b=LvpNmL9VwsVNxQDrXpdMSBTn80561THUt30dB3bRx5F1Cd/IME+XnrkDe7X/LmjCnD
-         rjGnG6nbodp0ux3ys1q51m22gq7MUwmlVtrFUgCIqv4Ey3fDdqxGI1WidNEwG6P+k3mF
-         z19vsRrUzB3ujrE9fhv1rfA0VrsTd9i9aiVqydBCH/DDumWofwUT8t1EwxCXh4GwfyIu
-         VWuSOiOaye4AfqXnEUd//tS0ymi5R04Vpny0X44YbfLzpgNn5Bnmos1kDZZ+cSe4fYEk
-         TmzaiInTOpOt5SgMhXrVC6N6wMwCp/Zh+rDnCMEowAAOV2TTk+tvrJyCwzYbdx6mePPo
-         GENg==
-X-Gm-Message-State: AOJu0YwePdrpCVn66YwG2HJ1+Fqw+NeMilGsz1F/bPj6lx8+2Uwrs9V8
-        TYmrU+dsMXdzbvv34tp6oQ/NDQ==
-X-Google-Smtp-Source: AGHT+IEIs6XIz4BcgrL6UjHqZ7eccrdQBeHu6/iJs/nkUOuVV60OXfEgZzK/h9q3JanneEdJ0Z+E/A==
-X-Received: by 2002:a05:6a20:244f:b0:152:be08:b013 with SMTP id t15-20020a056a20244f00b00152be08b013mr34042875pzc.42.1697440301401;
-        Mon, 16 Oct 2023 00:11:41 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697440305; x=1698045105;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1YLGlADbqxnWAYarOFVSTI3AQVPhPYl3xWfz7Wse3mA=;
+        b=uZD5xOn1MmgIl/sq+tk1Tr1SReVjOppHL5Cs7BDJtisIS+qoriHTdVHJY5njXxthEc
+         i062f/ytUkkDjgZEktojl5xNLXUhSYMGChX06GTVDi/P2msXcdmvGAcRE0waQlU2Mou1
+         +gkysxOyAZ5gHrMTuD4Xjwxi0haiT6M8F3l08zE0e1+3jdIIFN28MWUfptD6SKxVu/HN
+         Hfx0BOeHf2ep9WUseeSh3VmfoHuB9rGZMmdUSQdI8J9c0TIGV00hVWFo1bK/GtRJU3t3
+         Sq6klhWq95b/gWsdGAET18wR0w84J+zDmyy6olgxwSJ/ZWLHHPdWUd9P/dpa3tczCTk9
+         be9w==
+X-Gm-Message-State: AOJu0YwFoA0SgIF9JBAnp3tD3VZaeQLG4XiXQMEP8M6PbyT43D4X5W3l
+        oXhdrNCobTXYchKpl9axhaopLg==
+X-Google-Smtp-Source: AGHT+IFiZfXVWLAwWVoc8OY1PxB2vC251spWed6E+sNY8zWNiPL3CrOKRidkLrTNfWcwaUPdKETYTg==
+X-Received: by 2002:a17:902:ec8c:b0:1c9:b187:4d84 with SMTP id x12-20020a170902ec8c00b001c9b1874d84mr18099691plg.14.1697440304700;
+        Mon, 16 Oct 2023 00:11:44 -0700 (PDT)
 Received: from localhost ([122.172.80.14])
-        by smtp.gmail.com with ESMTPSA id lb18-20020a17090b4a5200b002636dfcc6f5sm4069757pjb.3.2023.10.16.00.11.40
+        by smtp.gmail.com with ESMTPSA id o11-20020a170902778b00b001b9dab0397bsm7770391pll.29.2023.10.16.00.11.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 00:11:40 -0700 (PDT)
+        Mon, 16 Oct 2023 00:11:44 -0700 (PDT)
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Juergen Gross <jgross@suse.com>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
         Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
         Viresh Kumar <viresh.kumar@linaro.org>
 Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
         =?UTF-8?q?Alex=20Benn=C3=A9e?= <alex.bennee@linaro.org>,
@@ -60,12 +61,14 @@ Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
         Erik Schilling <erik.schilling@linaro.org>,
         Manos Pitsidianakis <manos.pitsidianakis@linaro.org>,
         Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org
-Subject: [PATCH V4 0/4] xen: privcmd: Add ioeventfd and fix irqfd support
-Date:   Mon, 16 Oct 2023 12:41:23 +0530
-Message-Id: <cover.1697439990.git.viresh.kumar@linaro.org>
+        Arnd Bergmann <arnd@kernel.org>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V4 1/4] xen: Make struct privcmd_irqfd's layout architecture independent
+Date:   Mon, 16 Oct 2023 12:41:24 +0530
+Message-Id: <a4ef0d4a68fc858b34a81fd3f9877d9b6898eb77.1697439990.git.viresh.kumar@linaro.org>
 X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
+In-Reply-To: <cover.1697439990.git.viresh.kumar@linaro.org>
+References: <cover.1697439990.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -77,56 +80,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Using indirect pointers in an ioctl command argument means that the
+layout is architecture specific, in particular we can't use the same one
+from 32-bit compat tasks. The general recommendation is to have __u64
+members and use u64_to_user_ptr() to access it from the kernel if we are
+unable to avoid the pointers altogether.
 
-Now that irqfd support (backend to guest interrupt) is already merged, this
-series solves the other part of the problem, i.e. ioeventfd (guest to
-backend interrupt).
+Fixes: f8941e6c4c71 ("xen: privcmd: Add support for irqfd")
+Reported-by: Arnd Bergmann <arnd@kernel.org>
+Closes: https://lore.kernel.org/all/268a2031-63b8-4c7d-b1e5-8ab83ca80b4a@app.fastmail.com/
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ drivers/xen/privcmd.c      | 2 +-
+ include/uapi/xen/privcmd.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-More details inside the commits.
-
-Arnd reported few issues with the ioctl macro usage and argument's layout, fixed
-them for irqfd too, which was added recently.
-
---
-Viresh
-
-V3->V4:
-- Use __u64 for indirect pointers in an ioctl command's arguments.
-- Use u64_to_user_ptr() in kernel driver to access the same.
-- Use _IOW() macro instead of the internal one: _IOC().
-
-V2->V3:
-- Remove explicit barriers and depend on spin lock instead to take care of it.
-- Move check for empty ioeventfds list to privcmd_ioeventfd_deassign(), which
-  could earlier call ioreq_free() even when the list wasn't empty and so we
-  returned without printing a warning in v1 earlier. V2 implemented it
-  incorrectly.
-
-V1->V2:
-- Increment irq_info refcnt only for valid info.
-- Use u64 type for addr.
-- Add comments for use of barriers.
-- Use spin lock instead of mutex as we need to use them in irq handler.
-- Add a warning when kioreq is getting freed and ioeventfds list isn't empty.
-- Use struct_size().
-- Validate number of vcpus as well.
-
-Viresh Kumar (4):
-  xen: Make struct privcmd_irqfd's layout architecture independent
-  xen: irqfd: Use _IOW instead of the internal _IOC() macro
-  xen: evtchn: Allow shared registration of IRQ handers
-  xen: privcmd: Add support for ioeventfd
-
- drivers/xen/Kconfig               |   8 +-
- drivers/xen/events/events_base.c  |   3 +-
- drivers/xen/evtchn.c              |   2 +-
- drivers/xen/privcmd.c             | 407 +++++++++++++++++++++++++++++-
- include/uapi/xen/privcmd.h        |  22 +-
- include/xen/interface/hvm/ioreq.h |  51 ++++
- 6 files changed, 482 insertions(+), 11 deletions(-)
- create mode 100644 include/xen/interface/hvm/ioreq.h
-
+diff --git a/drivers/xen/privcmd.c b/drivers/xen/privcmd.c
+index 120af57999fc..5095bd1abea5 100644
+--- a/drivers/xen/privcmd.c
++++ b/drivers/xen/privcmd.c
+@@ -935,7 +935,7 @@ static int privcmd_irqfd_assign(struct privcmd_irqfd *irqfd)
+ 		return -ENOMEM;
+ 	dm_op = kirqfd + 1;
+ 
+-	if (copy_from_user(dm_op, irqfd->dm_op, irqfd->size)) {
++	if (copy_from_user(dm_op, u64_to_user_ptr(irqfd->dm_op), irqfd->size)) {
+ 		ret = -EFAULT;
+ 		goto error_kfree;
+ 	}
+diff --git a/include/uapi/xen/privcmd.h b/include/uapi/xen/privcmd.h
+index 375718ba4ab6..b143fafce84d 100644
+--- a/include/uapi/xen/privcmd.h
++++ b/include/uapi/xen/privcmd.h
+@@ -102,7 +102,7 @@ struct privcmd_mmap_resource {
+ #define PRIVCMD_IRQFD_FLAG_DEASSIGN (1 << 0)
+ 
+ struct privcmd_irqfd {
+-	void __user *dm_op;
++	__u64 dm_op;
+ 	__u32 size; /* Size of structure pointed by dm_op */
+ 	__u32 fd;
+ 	__u32 flags;
 -- 
 2.31.1.272.g89b43f80a514
 
