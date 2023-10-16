@@ -2,245 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFEEA7CA046
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 09:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C459B7CA048
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 09:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231838AbjJPHPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 03:15:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49950 "EHLO
+        id S231995AbjJPHPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 03:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232161AbjJPHO4 (ORCPT
+        with ESMTP id S231861AbjJPHPh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 03:14:56 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90FF3112
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:14:49 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 9DC912189D;
-        Mon, 16 Oct 2023 07:14:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1697440487; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=9RV5EOYE82h5D1LodXaROCEgPixc3iudjmyw72L3/EU=;
-        b=ZVgdv41vCxEoBVhY71R2aYC4jXeWYlnq1Tc5UWgdKkyraeayWt8sch0pjIIZV74P/ooBv9
-        TOz99V+CcAEMOSuGi/fVK+HXbbIbqnNUn7uEuS4+SyW8m1rUTaTvMVlMfO4J0xQ8MzwtgV
-        Z5in2J0fy5xnsfQ5B5QL7N3haw3lZ0A=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 48E23138EF;
-        Mon, 16 Oct 2023 07:14:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id AFzkD+fiLGViWwAAMHmgww
-        (envelope-from <jgross@suse.com>); Mon, 16 Oct 2023 07:14:47 +0000
-Message-ID: <b129e6f5-ad9d-4267-b058-29a64f8f1d59@suse.com>
-Date:   Mon, 16 Oct 2023 09:14:46 +0200
+        Mon, 16 Oct 2023 03:15:37 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72724E1;
+        Mon, 16 Oct 2023 00:15:35 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99c1c66876aso660524566b.2;
+        Mon, 16 Oct 2023 00:15:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697440534; x=1698045334; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GnspnY3pZEO6i/dH60zbPIvYwdd2LawPTbo1lOoWa5o=;
+        b=IMT8bLEtdX55mmmrEpDOflhDpfNaZ0bPG/3QluDwt6voZCKWyUJ58nxj9wXavKcu9J
+         L2m4qFCqpfGSQ3EVVjiMUCKmaLQThEB4h6hMynFVfQ+RBSy0pSIP6v52n3GY9jQQ/2fy
+         RsYPzpKBQKZQnQe3onw2/W3Nx9T0RMHEzPW1Gmix985b6ISisLIGImtpp6fkb8b+5PAz
+         70Nqn8gETYvXjbCObXK/ZsVw0IovWr76YEJCEIn1YakzInEQwglSDwBsnYrcmmyLkUbd
+         2Ar6FHSRe19Os1EupEpfQUq87leUIQSD5QS2/3bYGTDXT3ouF1SfZln1wjZWZVSE8EDE
+         +n6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697440534; x=1698045334;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GnspnY3pZEO6i/dH60zbPIvYwdd2LawPTbo1lOoWa5o=;
+        b=qzm8wPrKtUc86fBx36IUx7uINx2F5yT7ON4A0LxylMZfwQSKQaGwM+5eIYACFEBbqL
+         RxlfhthJWerE09r1SfvCeOQYXr1SMWCzp7GtCLgkWpzXNrXOEyN5dwv9ZJzjH4sG7w9j
+         BNak+fHDBuwC7xjCzXeWH6Wr4+6YwsLRb+dmLjd6/594Sjgp0+N/M7RQnwvDfwbKlDKM
+         DIjerSutYTgvh66irlqjUuz6Nas8Syo5QdL0AfR0cx3pPoZJr2PmoV60RvD8dn/8aMSP
+         EH6jHLuGGk8gnbYBszzfKDz8vGmwEmbhhP0LfTzN85Aj2x/q/QNzkfFEpSIYz80MxVJA
+         YzeQ==
+X-Gm-Message-State: AOJu0YxR4Y27Dx89LTIDhAdKPmTuMqGAgBbe4I4kqSnL0RSOQjTEVdyU
+        t9fWgROw0TH2eUAbVArbp+PT34Q28Kg=
+X-Google-Smtp-Source: AGHT+IHh/2fTe96VjmVT1RXtUYqpVdnuiYgHrXWjKsoyPr1OVgnx6Qhq1UuPbWCAyhvC/seF5IR08w==
+X-Received: by 2002:a17:906:7310:b0:9c1:9bc5:c263 with SMTP id di16-20020a170906731000b009c19bc5c263mr2924319ejc.50.1697440533667;
+        Mon, 16 Oct 2023 00:15:33 -0700 (PDT)
+Received: from tp.home.arpa (host-79-55-64-40.retail.telecomitalia.it. [79.55.64.40])
+        by smtp.gmail.com with ESMTPSA id jl25-20020a17090775d900b00992e265495csm3419471ejc.212.2023.10.16.00.15.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 00:15:33 -0700 (PDT)
+From:   Beniamino Galvani <b.galvani@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        David Ahern <dsahern@kernel.org>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v2 0/7] net: consolidate IPv4 route lookup for UDP tunnels
+Date:   Mon, 16 Oct 2023 09:15:19 +0200
+Message-Id: <20231016071526.2958108-1-b.galvani@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V4 2/4] xen: irqfd: Use _IOW instead of the internal
- _IOC() macro
-Content-Language: en-US
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        =?UTF-8?Q?Alex_Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        stratos-dev@op-lists.linaro.org,
-        Erik Schilling <erik.schilling@linaro.org>,
-        Manos Pitsidianakis <manos.pitsidianakis@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-References: <cover.1697439990.git.viresh.kumar@linaro.org>
- <599ca6f1b9dd2f0e6247ea37bee3ea6827404b6d.1697439990.git.viresh.kumar@linaro.org>
-From:   Juergen Gross <jgross@suse.com>
-Autocrypt: addr=jgross@suse.com; keydata=
- xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
- ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
- dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
- NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
- XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
- AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
- CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
- mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
- G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
- kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
- Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
- RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
- vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
- sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
- aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
- w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
- auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
- 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
- fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
- HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
- QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
- ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
-In-Reply-To: <599ca6f1b9dd2f0e6247ea37bee3ea6827404b6d.1697439990.git.viresh.kumar@linaro.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------n0sbYyoOiB064uMBvwL0o0bX"
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -5.53
-X-Spamd-Result: default: False [-5.53 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         XM_UA_NO_VERSION(0.01)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         BAYES_HAM(-2.54)[97.92%];
-         MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
-         HAS_ATTACHMENT(0.00)[];
-         REPLY(-4.00)[];
-         MIME_BASE64_TEXT_BOGUS(1.00)[];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         MIME_BASE64_TEXT(0.10)[];
-         RCPT_COUNT_TWELVE(0.00)[12];
-         NEURAL_SPAM_LONG(3.00)[1.000];
-         SIGNED_PGP(-2.00)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+,1:+,2:+,3:+,4:~,5:~];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[];
-         MIME_UNKNOWN(0.10)[application/pgp-keys]
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------n0sbYyoOiB064uMBvwL0o0bX
-Content-Type: multipart/mixed; boundary="------------3c4sbr2bWNEY8AMM31TgXWIA";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Viresh Kumar <viresh.kumar@linaro.org>,
- Stefano Stabellini <sstabellini@kernel.org>,
- Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>,
- =?UTF-8?Q?Alex_Benn=C3=A9e?= <alex.bennee@linaro.org>,
- stratos-dev@op-lists.linaro.org, Erik Schilling <erik.schilling@linaro.org>,
- Manos Pitsidianakis <manos.pitsidianakis@linaro.org>,
- Mathieu Poirier <mathieu.poirier@linaro.org>, Arnd Bergmann
- <arnd@kernel.org>, xen-devel@lists.xenproject.org,
- linux-kernel@vger.kernel.org
-Message-ID: <b129e6f5-ad9d-4267-b058-29a64f8f1d59@suse.com>
-Subject: Re: [PATCH V4 2/4] xen: irqfd: Use _IOW instead of the internal
- _IOC() macro
-References: <cover.1697439990.git.viresh.kumar@linaro.org>
- <599ca6f1b9dd2f0e6247ea37bee3ea6827404b6d.1697439990.git.viresh.kumar@linaro.org>
-In-Reply-To: <599ca6f1b9dd2f0e6247ea37bee3ea6827404b6d.1697439990.git.viresh.kumar@linaro.org>
+At the moment different UDP tunnels rely on different functions for
+IPv4 route lookup, and those functions all implement the same
+logic. Only bareudp uses the generic ip_route_output_tunnel(), while
+geneve and vxlan basically duplicate it slightly differently.
 
---------------3c4sbr2bWNEY8AMM31TgXWIA
-Content-Type: multipart/mixed; boundary="------------u5hf43i9OIE4dk0EanBjly00"
+This series first extends the generic lookup function so that it is
+suitable for all UDP tunnel implementations. Then, bareudp, geneve and
+vxlan are adapted to use them.
 
---------------u5hf43i9OIE4dk0EanBjly00
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+This results in code with less duplication and hopefully better
+maintainability.
 
-T24gMTYuMTAuMjMgMDk6MTEsIFZpcmVzaCBLdW1hciB3cm90ZToNCj4gX0lPQygpIGFuIGlu
-dGVybmFsIGhlbHBlciB0aGF0IHdlIHNob3VsZCBub3QgdXNlIGluIGRyaXZlciBjb2RlLiAg
-SW4NCj4gcGFydGljdWxhciwgd2UgZ290IHRoZSBkYXRhIGRpcmVjdGlvbiB3cm9uZyBoZXJl
-LCB3aGljaCBicmVha3MgYSBudW1iZXINCj4gb2YgdG9vbHMsIGFzIGhhdmluZyAiX0lPQ19O
-T05FIiBzaG91bGQgbmV2ZXIgYmUgcGFpcmVkIHdpdGggYSBub256ZXJvDQo+IHNpemUuDQo+
-IA0KPiBVc2UgX0lPVygpIGluc3RlYWQuDQo+IA0KPiBGaXhlczogZjg5NDFlNmM0YzcxICgi
-eGVuOiBwcml2Y21kOiBBZGQgc3VwcG9ydCBmb3IgaXJxZmQiKQ0KPiBSZXBvcnRlZC1ieTog
-QXJuZCBCZXJnbWFubiA8YXJuZEBrZXJuZWwub3JnPg0KPiBDbG9zZXM6IGh0dHBzOi8vbG9y
-ZS5rZXJuZWwub3JnL2FsbC8yNjhhMjAzMS02M2I4LTRjN2QtYjFlNS04YWI4M2NhODBiNGFA
-YXBwLmZhc3RtYWlsLmNvbS8NCj4gU2lnbmVkLW9mZi1ieTogVmlyZXNoIEt1bWFyIDx2aXJl
-c2gua3VtYXJAbGluYXJvLm9yZz4NCg0KUmV2aWV3ZWQtYnk6IEp1ZXJnZW4gR3Jvc3MgPGpn
-cm9zc0BzdXNlLmNvbT4NCg0KDQpKdWVyZ2VuDQoNCg==
---------------u5hf43i9OIE4dk0EanBjly00
-Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
+After this series is merged, IPv6 will be converted in a similar way.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+Changelog:
+v2
+ - fix compilation with IPv6 disabled
 
-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
-jR/i1DG86lem3iBDXzXsZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+Beniamino Galvani (7):
+  ipv4: rename and move ip_route_output_tunnel()
+  ipv4: remove "proto" argument from udp_tunnel_dst_lookup()
+  ipv4: add new arguments to udp_tunnel_dst_lookup()
+  ipv4: use tunnel flow flags for tunnel route lookups
+  geneve: add dsfield helper function
+  geneve: use generic function for tunnel IPv4 route lookup
+  vxlan: use generic function for tunnel IPv4 route lookup
 
---------------u5hf43i9OIE4dk0EanBjly00--
+ drivers/net/bareudp.c          |  11 ++--
+ drivers/net/geneve.c           | 111 ++++++++++++--------------------
+ drivers/net/vxlan/vxlan_core.c | 114 ++++++++++++---------------------
+ include/net/route.h            |   6 --
+ include/net/udp_tunnel.h       |   8 +++
+ net/ipv4/route.c               |  48 --------------
+ net/ipv4/udp_tunnel_core.c     |  49 ++++++++++++++
+ 7 files changed, 147 insertions(+), 200 deletions(-)
 
---------------3c4sbr2bWNEY8AMM31TgXWIA--
+-- 
+2.40.1
 
---------------n0sbYyoOiB064uMBvwL0o0bX
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmUs4ucFAwAAAAAACgkQsN6d1ii/Ey9k
-1gf+INzKloKYASmfPT/8yL2yNeDVSIwawTnadF5jsAIxiaLc8Ve8J2Pdv50mIhDjSC82IkkkH18M
-AkM7xn12IYN8s0jPKBqncRu9YNOv7yw3OBTbLMiTUQ7C12WQ3l4tNGLIkAjc1TkAVWrnT/mvTMWN
-2XLP694ja6BX9wgJvhj0qQKlX1J8UJKYtYR8g0Mt0R0x08PmcmWOyG8ufqMOq0KAme2gSUHYdZeL
-vdbDe9YT8qM2QMHsVrDls333A6MoQzcC+ArCvoCFEdrxGldyUcdRUovwywI5otxtRsUAa4X1jimD
-Ykpx11I9KTT+UiHsUWwX8kt+1P2kamGU8Th8G0wCJQ==
-=WgOI
------END PGP SIGNATURE-----
-
---------------n0sbYyoOiB064uMBvwL0o0bX--
