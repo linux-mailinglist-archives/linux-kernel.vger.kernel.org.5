@@ -2,123 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2DCB7CA7F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B5A7CA7FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232764AbjJPM02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 08:26:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38724 "EHLO
+        id S232143AbjJPM3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 08:29:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230017AbjJPM00 (ORCPT
+        with ESMTP id S229459AbjJPM3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 08:26:26 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD09AB
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 05:26:24 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-27cf7ef0ef4so3671208a91.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 05:26:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697459184; x=1698063984; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kmn6/sIgRo7SY0ymPqgTtwfMgrfA0Y3BP4S+nWa7vE0=;
-        b=P0/RpHBTxIy91mHQ6+UqC1YBBX6ZKtla+4FqL0LAOU2vRTAM3oLIv6bMQuOQmMuaWf
-         wX9pcR86OUuHVWIq8v4tZRwl/AdeK+A8aC9MzfVYxfcI1I2mGNDj7mkCMTwiXye++/Nr
-         7yaeo0WOGLLtMjrUjVEhL9v44f4sEKIDBkwLXZJjZw3/okbrHoh6Bjq6pCXVyC3Su8kS
-         LplqiCzO3AKl7l5QvQUq+BrKDEM+gQOTqjXWkTut38S9Swc/joJ2OK1v2NT/niFvZGh4
-         4yJQAlMIrTx1krUrnAfkku5Lo9K4u/C44C/4qLKiLAHM/IK5wi6Ud9Do5HhxM1pqk8lv
-         s6eQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697459184; x=1698063984;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kmn6/sIgRo7SY0ymPqgTtwfMgrfA0Y3BP4S+nWa7vE0=;
-        b=TI8PuABmjGCS7A3My3e61e5v7UJZT5wyFF2tBFl+zWruA58ReQtvO0O1s7/HCRDZby
-         b546FfA9uzfNCzu5/apaZSW10SuCfBTchTZDOKkprKPmVlKr0PmdA4iqqz2TckrQAW5b
-         S/hdmDR5olUsP14S5ndmsRJPYKVENDe9OqusBX+G3VPx0VyQll85XWEJtluaWeFqGnU5
-         aB7JR4p9Bib9+gDC7xHljxY05edjXK/W8f6OcUNuWnPTK3IRrKmRpbqPbDJ/lMblLfEr
-         hDKpOsYiFim6e1YaYmiA6SMGudtHdHC1FjS6j2NVNRBm874HFYkks0fvl/3LgdLnEXSF
-         q76A==
-X-Gm-Message-State: AOJu0YxdR8ONdA0Woon8oceMo5OyJcHw1g2WiGkUiAPsGaGN07qn/NDY
-        su1xQXjwrXw9hdv4wGEhe2wiKQ==
-X-Google-Smtp-Source: AGHT+IGTpZt5mh7PLLa+PXm7c+3dddBndmP/Iy/6mV9lRWJMNC172sZoHymfQsIRPUQVZ+MW6n45MA==
-X-Received: by 2002:a17:90b:1289:b0:27d:694f:195d with SMTP id fw9-20020a17090b128900b0027d694f195dmr4527726pjb.6.1697459184104;
-        Mon, 16 Oct 2023 05:26:24 -0700 (PDT)
-Received: from leoy-huanghe.lan ([98.98.49.160])
-        by smtp.gmail.com with ESMTPSA id 6-20020a630806000000b0056c2f1a2f6bsm5673189pgi.41.2023.10.16.05.26.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 05:26:22 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 20:26:15 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Jing Zhang <renyu.zj@linux.alibaba.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/7] perf arm-spe: Move PMU initialization from
- default config code
-Message-ID: <20231016122615.GG928468@leoy-huanghe.lan>
-References: <20231012175645.1849503-1-irogers@google.com>
- <20231012175645.1849503-4-irogers@google.com>
+        Mon, 16 Oct 2023 08:29:49 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CCCC9B;
+        Mon, 16 Oct 2023 05:29:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697459387; x=1728995387;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=X4iLosxWswCCbHcun/ld8yUky/U5sw9Wi6q5ArDk6cI=;
+  b=VIoB6LrHdLAW3gCGPLss7zUVMrsMmFyy0BldQAzi6tmGbv5kHK3N7ihI
+   eX4aSAyz1R/W83vhdXWuMAzh0Lco9KeK8b+3CdEian2EX95i2LFGRrSVr
+   MkEsEoDTm7KEI0/D8P0OzOA31YBFvN1B+XviiZMFx+0lZi9j51Ozz8JSk
+   JUwaRH/fdD5gzHbo/9QE0rD73T+XOuc1N47ZRoPZk3Cpz9AOfjYWowPw8
+   XW0ZIkd7STyATvsEu2NWORvg8KbIrzQbKkcVJdxJ5QHjG40HLcB7X5KZe
+   FEpzK+Y3gTPOQwDgJohwz7zOM1eRgxc0F83DVDtmOi2LvUnwc8Ag0Y9fN
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="385352625"
+X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
+   d="scan'208";a="385352625"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 05:29:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="785071563"
+X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
+   d="scan'208";a="785071563"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 16 Oct 2023 05:29:44 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qsMiu-0008Mp-30;
+        Mon, 16 Oct 2023 12:29:33 +0000
+Date:   Mon, 16 Oct 2023 20:28:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Yazen Ghannam <yazen.ghannam@amd.com>, bp@alien8.de,
+        linux-edac@vger.kernel.org, tony.luck@intel.com
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        avadhut.naik@amd.com, john.allen@amd.com, william.roche@oracle.com,
+        Yazen Ghannam <yazen.ghannam@amd.com>
+Subject: Re: [PATCH v2 1/2] RAS: Introduce AMD Address Translation Library
+Message-ID: <202310162015.fuitGuiJ-lkp@intel.com>
+References: <20231005173526.42831-2-yazen.ghannam@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231012175645.1849503-4-irogers@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231005173526.42831-2-yazen.ghannam@amd.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 10:56:41AM -0700, Ian Rogers wrote:
-> Avoid setting PMU values in arm_spe_pmu_default_config, move to
-> perf_pmu__arch_init.
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
-> ---
->  tools/perf/arch/arm/util/pmu.c       | 2 ++
->  tools/perf/arch/arm64/util/arm-spe.c | 3 ---
->  2 files changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/perf/arch/arm/util/pmu.c b/tools/perf/arch/arm/util/pmu.c
-> index d55d2b15f2e6..f25f68f84a94 100644
-> --- a/tools/perf/arch/arm/util/pmu.c
-> +++ b/tools/perf/arch/arm/util/pmu.c
-> @@ -23,6 +23,8 @@ void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
->  		pmu->default_config = cs_etm_get_default_config(pmu);
->  #if defined(__aarch64__)
->  	} else if (strstarts(pmu->name, ARM_SPE_PMU_NAME)) {
-> +		pmu->selectable = true;
-> +		pmu->is_uncore = false;
+Hi Yazen,
 
-Arm SPE is not an uncore PMU event.  Arm SPE driver registers sysfs node
-'cpumask', thus it misleads the pmu_is_uncore() function and it returns
-'true' for Arm SPE event.
+kernel test robot noticed the following build errors:
 
-Here we need to explictly set false to correct the 'is_uncore' flag.
+[auto build test ERROR on ras/edac-for-next]
+[also build test ERROR on linus/master v6.6-rc6 next-20231016]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-I did test on my machine, the changes work well for Arm SPE event.
+url:    https://github.com/intel-lab-lkp/linux/commits/Yazen-Ghannam/RAS-Introduce-AMD-Address-Translation-Library/20231006-014458
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git edac-for-next
+patch link:    https://lore.kernel.org/r/20231005173526.42831-2-yazen.ghannam%40amd.com
+patch subject: [PATCH v2 1/2] RAS: Introduce AMD Address Translation Library
+config: i386-buildonly-randconfig-002-20231016 (https://download.01.org/0day-ci/archive/20231016/202310162015.fuitGuiJ-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231016/202310162015.fuitGuiJ-lkp@intel.com/reproduce)
 
-Tested-by: Leo Yan <leo.yan@linaro.org>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310162015.fuitGuiJ-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   ld: drivers/ras/amd/atl/denormalize.o: in function `denormalize_address':
+>> denormalize.c:(.text+0x84f): undefined reference to `__umoddi3'
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
