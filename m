@@ -2,49 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6466C7CA7C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D83A7CA7C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231478AbjJPMK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 08:10:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44862 "EHLO
+        id S231685AbjJPMNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 08:13:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbjJPMK0 (ORCPT
+        with ESMTP id S229621AbjJPMNC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 08:10:26 -0400
+        Mon, 16 Oct 2023 08:13:02 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 220C1E1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 05:10:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C7CB0AC;
+        Mon, 16 Oct 2023 05:13:00 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 661C81FB;
-        Mon, 16 Oct 2023 05:11:04 -0700 (PDT)
-Received: from [10.57.66.151] (unknown [10.57.66.151])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 813763F5A1;
-        Mon, 16 Oct 2023 05:10:22 -0700 (PDT)
-Message-ID: <f9265349-3199-44b7-81b1-802c50e95713@arm.com>
-Date:   Mon, 16 Oct 2023 13:10:21 +0100
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0070E1FB;
+        Mon, 16 Oct 2023 05:13:41 -0700 (PDT)
+Received: from localhost (ionvoi01-desktop.cambridge.arm.com [10.2.78.69])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 18F683F5A1;
+        Mon, 16 Oct 2023 05:13:00 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 13:12:58 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Pierre Gondois <pierre.gondois@arm.com>, linux@armlinux.org.uk,
+        catalin.marinas@arm.com, will@kernel.org, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, sudeep.holla@arm.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        viresh.kumar@linaro.org, lukasz.luba@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-pm@vger.kernel.org,
+        conor.dooley@microchip.com, suagrfillet@gmail.com,
+        ajones@ventanamicro.com, lftan@kernel.org
+Subject: Re: [PATCH v2 6/6] cpufreq/cppc: set the frequency used for capacity
+ computation
+Message-ID: <ZS0oyhbVDtXO1p5b@arm.com>
+References: <20231009103621.374412-7-vincent.guittot@linaro.org>
+ <ac8968b9-8463-4aa2-a38d-fc2b9137460d@arm.com>
+ <CAKfTPtBhXRk_Y-xiHn9_jQ1C_ALzbr3-KdwzcTCyupzJ4Gru5g@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1 2/2] mm: swap: Swap-out small-sized THP without
- splitting
-Content-Language: en-GB
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20231010142111.3997780-1-ryan.roberts@arm.com>
- <20231010142111.3997780-3-ryan.roberts@arm.com>
- <87r0m1ftvu.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <f1446ef6-3e29-4ce0-866e-c522931ae364@arm.com>
- <1ccde143-18a7-483b-a9a4-fff07b0edc72@arm.com>
- <87ttqrm6pk.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <87ttqrm6pk.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtBhXRk_Y-xiHn9_jQ1C_ALzbr3-KdwzcTCyupzJ4Gru5g@mail.gmail.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
@@ -54,136 +55,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/10/2023 07:17, Huang, Ying wrote:
-> Ryan Roberts <ryan.roberts@arm.com> writes:
-> 
->> On 11/10/2023 11:36, Ryan Roberts wrote:
->>> On 11/10/2023 09:25, Huang, Ying wrote:
->>>> Ryan Roberts <ryan.roberts@arm.com> writes:
->>>>
->>>>> The upcoming anonymous small-sized THP feature enables performance
->>>>> improvements by allocating large folios for anonymous memory. However
->>>>> I've observed that on an arm64 system running a parallel workload (e.g.
->>>>> kernel compilation) across many cores, under high memory pressure, the
->>>>> speed regresses. This is due to bottlenecking on the increased number of
->>>>> TLBIs added due to all the extra folio splitting.
->>>>>
->>>>> Therefore, solve this regression by adding support for swapping out
->>>>> small-sized THP without needing to split the folio, just like is already
->>>>> done for PMD-sized THP. This change only applies when CONFIG_THP_SWAP is
->>>>> enabled, and when the swap backing store is a non-rotating block device
->>>>> - these are the same constraints as for the existing PMD-sized THP
->>>>> swap-out support.
->>>>>
->>>>> Note that no attempt is made to swap-in THP here - this is still done
->>>>> page-by-page, like for PMD-sized THP.
->>>>>
->>>>> The main change here is to improve the swap entry allocator so that it
->>>>> can allocate any power-of-2 number of contiguous entries between [4, (1
->>>>> << PMD_ORDER)]. This is done by allocating a cluster for each distinct
->>>>> order and allocating sequentially from it until the cluster is full.
->>>>> This ensures that we don't need to search the map and we get no
->>>>> fragmentation due to alignment padding for different orders in the
->>>>> cluster. If there is no current cluster for a given order, we attempt to
->>>>> allocate a free cluster from the list. If there are no free clusters, we
->>>>> fail the allocation and the caller falls back to splitting the folio and
->>>>> allocates individual entries (as per existing PMD-sized THP fallback).
->>>>>
->>>>> As far as I can tell, this should not cause any extra fragmentation
->>>>> concerns, given how similar it is to the existing PMD-sized THP
->>>>> allocation mechanism. There will be up to (PMD_ORDER-1) clusters in
->>>>> concurrent use though. In practice, the number of orders in use will be
->>>>> small though.
->>>>>
->>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>>>> ---
->>>>>  include/linux/swap.h |  7 ++++++
->>>>>  mm/swapfile.c        | 60 +++++++++++++++++++++++++++++++++-----------
->>>>>  mm/vmscan.c          | 10 +++++---
->>>>>  3 files changed, 59 insertions(+), 18 deletions(-)
->>>>>
->>>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
->>>>> index a073366a227c..fc55b760aeff 100644
->>>>> --- a/include/linux/swap.h
->>>>> +++ b/include/linux/swap.h
->>>>> @@ -320,6 +320,13 @@ struct swap_info_struct {
->>>>>  					 */
->>>>>  	struct work_struct discard_work; /* discard worker */
->>>>>  	struct swap_cluster_list discard_clusters; /* discard clusters list */
->>>>> +	unsigned int large_next[PMD_ORDER]; /*
->>>>> +					     * next free offset within current
->>>>> +					     * allocation cluster for large
->>>>> +					     * folios, or UINT_MAX if no current
->>>>> +					     * cluster. Index is (order - 1).
->>>>> +					     * Only when cluster_info is used.
->>>>> +					     */
->>>>
->>>> I think that it is better to make this per-CPU.  That is, extend the
->>>> percpu_cluster mechanism.  Otherwise, we may have scalability issue.
->>>
->>> Is your concern that the swap_info spinlock will get too contended as its
->>> currently written? From briefly looking at percpu_cluster, it looks like that
->>> spinlock is always held when accessing the per-cpu structures - presumably
->>> that's what's disabling preemption and making sure the thread is not migrated?
->>> So I'm not sure what the benefit is currently? Surely you want to just disable
->>> preemption but not hold the lock? I'm sure I've missed something crucial...
->>
->> I looked a bit further at how to implement what you are suggesting.
->> get_swap_pages() is currently taking the swap_info lock which it needs to check
->> and update some other parts of the swap_info - I'm not sure that part can be
->> removed. swap_alloc_large() (my new function) is not doing an awful lot of work,
->> so I'm not convinced that you would save too much by releasing the lock for that
->> part. In contrast there is a lot more going on in scan_swap_map_slots() so there
->> is more benefit to releasing the lock and using the percpu stuff - correct me if
->> I've missunderstood.
->>
->> As an alternative approach, perhaps it makes more sense to beef up the caching
->> layer in swap_slots.c to handle large folios too? Then you avoid taking the
->> swap_info lock at all most of the time, like you currently do for single entry
->> allocations.
->>
->> What do you think?
-> 
-> Sorry for late reply.
-> 
-> percpu_cluster is introduced in commit ebc2a1a69111 ("swap: make cluster
-> allocation per-cpu").  Please check the changelog for why it's
-> introduced.  Sorry about my incorrect memory about scalability.
-> percpu_cluster is introduced for disk performance mainly instead of
-> scalability.
+Hi both,
 
-Thanks for the pointer. I'm not sure if you are still suggesting that I make my
-small-sized THP allocation mechanism per-cpu though?
+On Wednesday 11 Oct 2023 at 16:25:46 (+0200), Vincent Guittot wrote:
+> On Wed, 11 Oct 2023 at 12:27, Pierre Gondois <pierre.gondois@arm.com> wrote:
+> >
+> > Hello Vincent,
+> >
+> > On 10/9/23 12:36, Vincent Guittot wrote:
+> > > cppc cpufreq driver can register an artificial energy model. In such case,
+> > > it also have to register the frequency that is used to define the CPU
+> > > capacity
+> > >
+> > > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> > > ---
+> > >   drivers/cpufreq/cppc_cpufreq.c | 18 ++++++++++++++++++
+> > >   1 file changed, 18 insertions(+)
+> > >
+> > > diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
+> > > index fe08ca419b3d..24c6ba349f01 100644
+> > > --- a/drivers/cpufreq/cppc_cpufreq.c
+> > > +++ b/drivers/cpufreq/cppc_cpufreq.c
+> > > @@ -636,6 +636,21 @@ static int populate_efficiency_class(void)
+> > >       return 0;
+> > >   }
+> > >
+> > > +
+> > > +static void cppc_cpufreq_set_capacity_ref_freq(struct cpufreq_policy *policy)
+> > > +{
+> > > +     struct cppc_perf_caps *perf_caps;
+> > > +     struct cppc_cpudata *cpu_data;
+> > > +     unsigned int ref_freq;
+> > > +
+> > > +     cpu_data = policy->driver_data;
+> > > +     perf_caps = &cpu_data->perf_caps;
+> > > +
+> > > +     ref_freq = cppc_cpufreq_perf_to_khz(cpu_data, perf_caps->highest_perf);
+> > > +
+> > > +     per_cpu(capacity_ref_freq, policy->cpu) = ref_freq;
+> >
+> > 'capacity_ref_freq' seems to be updated only if CONFIG_ENERGY_MODEL is set. However in
+> > [1], get_capacity_ref_freq() relies on 'capacity_ref_freq'. The cpufreq_schedutil governor
+> > should have a valid 'capacity_ref_freq' value set if the CPPC cpufreq driver is used
+> > without energy model I believe.
+> 
+> we can disable it by setting capacity_ref_freq to 0 so it will
+> fallback on cpuinfo like intel and amd which uses default
+> SCHED_CAPACITY_SCALE capacity
+> 
+> Could you provide me with more details about your platform ? I still
+> try to understand how the cpu compute capacity is set up on your
+> system. How do you set per_cpu cpu_scale variable ? we should set the
+> ref freq at the same time
+> 
 
-I anticipate that by virtue of allocating multiple contiguous swap entries for a
-small-sized THP we already get a lot of the benefits that percpu_cluster gives
-order-0 allocations. (Although obviously it will only give contiguity matching
-the size of the THP rather than a full cluster). The downside of making this
-percpu would be keeping more free clusters tied up in the percpu caches,
-potentially causing a need to scan for free entries more often.
+Yes, the best place to set it would be in:
+drivers/base/arch_topology.c: topology_init_cpu_capacity_cppc()
 
-What's your view?
+But:
+ - That function reuses topology_normalize_cpu_scale() and when called
+   it needs to have capacity_ref_freq = 1. So either capacity_ref_freq
+   needs to be set for each CPU after topology_normalize_cpu_scale() is
+   called or we should not call topology_normalize_cpu_scale() here and
+   just unpack a CPPC specific version of it in
+   topology_init_cpu_capacity_cppc(). The latter is probably better as
+   we avoid iterating through all CPUs a couple of times.
+
+ - When set, capacity_ref_freq needs to be a "frequency" (at least
+   in reference to the reference frequencies provided by CPPC). So 
+   cppc_cpufreq_khz_to_perf() and cppc_cpufreq_perf_to_khz() would need
+   to move to drivers/acpi/cppc_acpi.c. They don't have any dependency
+   on cpufreq (policies) so that should be alright.
+
+topology_init_cpu_capacity_cppc() is a better place to set
+capacity_ref_freq because one can do it for each CPU, and it not only
+caters for the EAS case but also for frequency invariance, when
+arch_set_freq_scale() is called, if no counters are supported.
+
+When counters are supported, there are still two loose threads:
+ - amu_fie_setup(): Vincent, would you mind completely removing
+   cpufreq_get_hw_max_freq() and reusing arch_scale_freq_ref() here?
+
+ - It would be nice if cppc_scale_freq_workfn() would use
+   arch_scale_freq_ref() as well, for consistency. But it would need
+   to be converted back to performance before use, so that would mean
+   extra work on the tick, which is not ideal.
+
+Basically it would be good if what gets used for capacity
+(arch_scale_freq_ref()) gets used for frequency invariance as well,
+in all locations.
 
 Thanks,
-Ryan
+Ionela.
 
-
-
+> >
+> > Also 'capacity_ref_freq' seems to be set only for 'policy->cpu'. I believe it should
+> > be set for the whole perf domain in case this 'policy->cpu' goes offline.
+> >
+> > Another thing, related my comment to [1] and to [2], for CPPC the max capacity matches
+> > the boosting frequency. We have:
+> >    'non-boosted max capacity' < 'boosted max capacity'.
+> > -
+> > If boosting is not enabled, the CPU utilization can still go above the 'non-boosted max
+> > capacity'. The overutilization of the system seems to be triggered by comparing the CPU
+> > util to the 'boosted max capacity'. So systems might not be detected as overutilized.
 > 
-> --
-> Best Regards,
-> Huang, Ying
+> As Peter mentioned, we have to decide what is the original compute
+> capacity of your CPUs which is usually the sustainable max compute
+> capacity, especially when using EAS and EM
 > 
->>>
->>>>
->>>> And this should be enclosed in CONFIG_THP_SWAP.
->>>
->>> Yes, I'll fix this in the next version.
->>>
->>> Thanks for the review!
->>>
->>>>
->>>>>  	struct plist_node avail_lists[]; /*
->>>>>  					   * entries in swap_avail_heads, one
->>>>>  					   * entry per node.
-
+> >
+> > For the EAS energy computation, em_cpu_energy() tries to predict the frequency that will
+> > be used. It is currently unknown to the function that the frequency request will be
+> > clamped by __resolve_freq():
+> > get_next_freq()
+> > \-cpufreq_driver_resolve_freq()
+> >    \-__resolve_freq()
+> > This means that the energy computation might use boosting frequencies, which are not
+> > available.
+> >
+> > Regards,
+> > Pierre
+> >
+> > [1]: [PATCH v2 4/6] cpufreq/schedutil: use a fixed reference frequency
+> > [2]: https://lore.kernel.org/lkml/20230905113308.GF28319@noisy.programming.kicks-ass.net/
+> >
+> > > +}
+> > > +
+> > >   static void cppc_cpufreq_register_em(struct cpufreq_policy *policy)
+> > >   {
+> > >       struct cppc_cpudata *cpu_data;
+> > > @@ -643,6 +658,9 @@ static void cppc_cpufreq_register_em(struct cpufreq_policy *policy)
+> > >               EM_ADV_DATA_CB(cppc_get_cpu_power, cppc_get_cpu_cost);
+> > >
+> > >       cpu_data = policy->driver_data;
+> > > +
+> > > +     cppc_cpufreq_set_capacity_ref_freq(policy);
+> > > +
+> > >       em_dev_register_perf_domain(get_cpu_device(policy->cpu),
+> > >                       get_perf_level_count(policy), &em_cb,
+> > >                       cpu_data->shared_cpu_map, 0);
