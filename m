@@ -2,114 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 101587CAF22
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6C27CAEDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233913AbjJPQ06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 12:26:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35004 "EHLO
+        id S233889AbjJPQTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 12:19:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233904AbjJPQ0f (ORCPT
+        with ESMTP id S234201AbjJPQSy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 12:26:35 -0400
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2060.outbound.protection.outlook.com [40.107.21.60])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEBF3173A;
-        Mon, 16 Oct 2023 09:18:33 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Mm/7XOQtmLbE2t1S4zT09aNL+T/JQdDjs2GS6hSDb7P/bDd+VIfyAGZ2LpewkOTEPhVJVl2aAgEn6sEUyOXY0aHryM0odufhQgQqxqW+NSQk6CZexvB3criqz6YtJ2gF070Dq4/WLf8he+k1q/IXz/35eS+4Tg0262eeEng1J5Hc4bg7yHjRk7ZeGimh17nRzRhPnSMysPa+zA2CJNsZtL3ZHCg0S5wf6xQ/rMneabse1EVXLIaPX3kBmWfQcEXUCo8iOGfEp60VyamnOCbR4C2gKa6sxd3iQ5gxhTrgIbzT21ASlaI9X84nbROCB0tdxaQXJSbL+GeXyKgPfbMAaw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IOR1gcPXA5TFwOrIuNws68vaKmjJdzXEgvOYYEXiSLk=;
- b=DEbvDkUQZIam9BgJ53qDrStNKWu99Sby1TUU4xXM0QNxGHB6N8onj58i3LuT0CLhza88KblOHgHZU5jUjbrvNnG1hY2jf5UiE3xs1BV0vplUuRcoqY+wJnyE2Chp8YrSRcdAnLkrnSGXr1KkARyfQ70zb/jrou5ag+t8OuDyetL95McRmxahGVEbxstQeNRMMjyn5Hkl8ZS2JluE/UYHWSPDX3+csEssZ7EErdAmtkB6FAX79uvTvaav6L0i3Ubwzw72GJENc4qufBpAFqvDj06yJuL94RzWcOAkDP8asKHRefgWb2MBoC1tEEn3o771gTBNX2BryqFukzFKhFBdKg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IOR1gcPXA5TFwOrIuNws68vaKmjJdzXEgvOYYEXiSLk=;
- b=hyP5aQX4qhoLwp4tMPEM0AVmDhDKOHMcsM6QlcfNbCaEgr686mTAXINKJp8rycgwX0FrQyJ1pZZkolx+QRUzzE/W5v0ME26rpJYtkxpYO75yrcTOxJsRsfJ1uULCw9cbmgpi26VapE5dnBT8VyhXHGLucpC6Xz5DOEIew2C8UMA=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by AM9PR04MB7489.eurprd04.prod.outlook.com (2603:10a6:20b:281::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36; Mon, 16 Oct
- 2023 16:18:00 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6886.034; Mon, 16 Oct 2023
- 16:18:00 +0000
-From:   Frank Li <Frank.Li@nxp.com>
-To:     lpieralisi@kernel.org
-Cc:     Frank.li@nxp.com, bhelgaas@google.com, helgaas@kernel.org,
-        imx@lists.linux.dev, kw@linux.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        minghuan.Lian@nxp.com, mingkai.hu@nxp.com, robh@kernel.org,
-        roy.zang@nxp.com
-Subject: [PATCH v2 2/3] PCI: layerscape: Add suspend/resume for ls1021a
-Date:   Mon, 16 Oct 2023 12:17:37 -0400
-Message-Id: <20231016161738.2854352-2-Frank.Li@nxp.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231016161738.2854352-1-Frank.Li@nxp.com>
-References: <20231016161738.2854352-1-Frank.Li@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR11CA0085.namprd11.prod.outlook.com
- (2603:10b6:a03:f4::26) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+        Mon, 16 Oct 2023 12:18:54 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A713B11D
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:17:57 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id ada2fe7eead31-457c19ebb3aso1401439137.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:17:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697473075; x=1698077875; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qPeTD07qqs/9WMRTaqwTdVF4qIMjIWgtLzI+6IjZFGA=;
+        b=0Dr8mNYNh3M6VFqimX2BbwYwxL7+zyI0gxgSvvEQVGv/MXC9NTsRaETlKJzt92xUIK
+         cLs1n2aWXpIU4qpXtlUpv3/Q6CzBgK7qdWyj+siHEfFcCU+9xdcwXaCML0JEThGoZ59U
+         Syi9uw0MAX0uIEfxOEjzysJ+GYh7F34KxuDeR0mlA9yg5IkT2gcx8C+crOUG+kfa401M
+         B/+i63OalbFmxaTCMhYh5bgosbCQisKTK7/7FZUV2josXeyr6paPMCSv3XxKU79dc9dF
+         lrUKvLVP/q2Jw4r+15ff+bCG0ir25J5GOKn0OImg0hIhzEOY0o4WTUU8ekmx14f53Lc+
+         U/oQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697473075; x=1698077875;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qPeTD07qqs/9WMRTaqwTdVF4qIMjIWgtLzI+6IjZFGA=;
+        b=CULOTXsOLrll7g3149DPGxUvOw2SpOMRdADzw1P9VOyO952ajZzoyv4wzXrGskxxEQ
+         SJc6j3em1Llzo4QNdly9Sc4rVeckKPTg0SZYRDWqBRIpgbCLCM9TK2SOwf9sglzJ40Df
+         8Wfs5MeXx5xfNtN7lHsp4wBUIWhgaLZBnRyDPxmqQ9UBUMYlnRI1BEJ8iKctP5FluKR6
+         0fKhJsvn+sil1gjwOhxdu83lbUdwoCyrxlDN3mbGelMGN+JGQ1w92ZekovYDg1ggFdkG
+         xvxyx46Am2erAhw+/XUgXbXuwVQIDCDEH/XkflVg0pn48JRgR582Wthe522MwKBfwdbQ
+         2leQ==
+X-Gm-Message-State: AOJu0Yx10/Ff+/5x409QpfacQVF9Ay69HsPLyGDPupa4yBZJLFPEUIr4
+        FCHyDDnFf22pPJJDajMOBYhurau3o4BdNZhguCydvA==
+X-Google-Smtp-Source: AGHT+IGpDaubxMSCRiY/o1FMVr9viD4yKvVnPizkIQyndGhX6cy8BTdwjYsqpKr0nKCwwYyjb2otqgm5nXNHzR0UFaM=
+X-Received: by 2002:a05:6102:20de:b0:457:ba95:6271 with SMTP id
+ i30-20020a05610220de00b00457ba956271mr7104809vsr.31.1697473075037; Mon, 16
+ Oct 2023 09:17:55 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AM9PR04MB7489:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6e701675-722c-46e6-ec70-08dbce637752
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nW3/1lfACoXRwxhEY2Y+dK9JzAv3IwJWJZWO9oYzHxZyw/PAdO3Cdfxtoqg2jnGQFSsUrfMTLIXKiQm61ns1iJYvHtY2Vn2fkdjK+p6QPNopuVI0E3k+YV4+JCTnpfHFfGNlrL6aWjxcQSJpdzNfcARiUHYr2uzqRKYSo4imqXdDDLTEZa1+vSSt9Yzd4C6c4m+KRJMYFOo5+H8sFV/ssmVFvZFbpFCQXbLW33E7zoFD2qgi8TRzWeh1zNtQXGRqIdn0AJo4Dm9IrX9syZ2v7o5hadyLjCyCpT9LmwRRfuNPIfZv9IZsxW9Uo9NXPfrRTb9jWxL5WTnL/u/y0TWGPqdog0bnX3YiibmL6IscDrslO4kbKzAhHMbgaJxeUUxntYiAUqwp7TOo/NtUBCemypm5eRGCkmvx6NvM6EKxmcmhMXjsTJswkyLWEzqtZjhdyEh/NjsIqbiN5EzD7iBX+5u1iOX5goX5Q/YzhbKiUyEeCHph62ZUiG0R4qvqEm0ag8Fa2LuVKZqb1RHifcw7IY+V/qcu6Azjlgeqlyj5pacT9+sb6RA9xeep6mcsXuOVqot7lZ9JyS1K75gfaNly7VEqxveYDecHEpf1Yxd84QWOLmCNNKKM2Pfo0cUgnOli
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(376002)(136003)(396003)(39860400002)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(86362001)(38350700005)(36756003)(478600001)(6486002)(41300700001)(52116002)(5660300002)(2906002)(6666004)(6506007)(38100700002)(2616005)(1076003)(26005)(66476007)(66946007)(8936002)(6916009)(316002)(66556008)(8676002)(4326008)(83380400001)(15650500001)(6512007)(7416002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9OcQmUVjxC9JrhHrHqTXUeR/jVxK7ZSky8S0zULVDYfexT49hyb4TodJ9vAX?=
- =?us-ascii?Q?5J5FCcfJoq9RQBc424UeJflPot2j4DykwWr8PQzRchQH36wH3otRGYi6GrLy?=
- =?us-ascii?Q?4vjN3QI0lhXrO41g4cnxAbf95H5Zb9xLggGCDQ9e1NgqBie3ZcU6mJZCprMp?=
- =?us-ascii?Q?8hpKyJWyyhm2NlSsiXH8EOnh0Fj4VK1qFslVOjJ8LYq7RAW5nzR4rqaFaJCk?=
- =?us-ascii?Q?zyc2YZpbkeXPiQ3hPSBDwJ1RhCgVfBJrojxMWndXvXXJ7Ca62/sdR+n1ZFU7?=
- =?us-ascii?Q?OI47LsScWRmvQy8e+7IOhDNurnUgB+zdaym0f8SvUyto3rE11sMrKr5dlc3m?=
- =?us-ascii?Q?pUCkP3GENPRbq7+TflEQSlgyUZw3M0iDgU6QTwZbmD48LzdgWLZnAgc5quvA?=
- =?us-ascii?Q?PggZUIK7bzVVIHgKhvPcvw8Cy5jTxV7FRFhyxIakU7fb5G52ZFDutTZzvDN4?=
- =?us-ascii?Q?SrD5AKwwdAliCtW18kRxMAWnQ+kXDikYnZ9x8JtnVYhcRVtu3MKDxb7SNhjZ?=
- =?us-ascii?Q?PLnoVUWn/VUOlRC6ImrM5hEtC7euNJ7mMnB029/0l+DgvoiXrb6iu4DfW1RL?=
- =?us-ascii?Q?JEv8iHIdVhC1c+jIDTkgW94lVHyh75Vqtj4Eq1GaGaPvP0jvq2IBfjBO/44L?=
- =?us-ascii?Q?Be3Wp8rYpxEgdstUqpi312yT/pUQANRnEFyXIPYzj3PdNDqlLf2zaLPYUo0+?=
- =?us-ascii?Q?/6xMhzD/PLzM9uAGBav3xVVlO+lMdZ1MFLW30C1ybQY1XFjLUPm8unrpTBxv?=
- =?us-ascii?Q?RF9HQVhtgF5eDPqau9oOrcF3WXTrqjfsCEm1zNAw96Hl94GdlSXxhbaVCRi5?=
- =?us-ascii?Q?L9rsU7ReCX4OkATCY7kT/tGJbl4XuJAcGh5coCBVSe7kKK4Yju5FxMoLYowb?=
- =?us-ascii?Q?X6n15Pwzjiec3wtV5mUkrREmkdf2gKX2mdfJXJA4dHyLMAMdY5O2jA17It++?=
- =?us-ascii?Q?eil9GLVzVi/5DYE0DNwEVZLD5wy7qi0xiezc1oVlODw6KKbZ5dWpedhAAYHS?=
- =?us-ascii?Q?tb8z5LMb2feOv7REuVDAz/nHJojtrGFFOSTVK74xZmL6k1/8kJX0iQIRuAX2?=
- =?us-ascii?Q?Ks1S+nSK/q7/j5IWx9HBIXdDI3cmZeQpIwMeSLXUSBh5QN5isCnpWYzMgrkb?=
- =?us-ascii?Q?TjTmAC4bPuH0rXmjX7vtgeSnpTJ0olx5RrQ3acot+aui0HHwa73VfrOTzN+9?=
- =?us-ascii?Q?NrEOOhN+V6q85WhFwm67268Cw9B67g8P/Cwl/hPyLHFjFHF3fq+G8XGm9ip6?=
- =?us-ascii?Q?MOR5c+aITRVWfSPPr+iSNpzLhinhbTqOsa/xBM6JFLwaCAWPKp1Opd0Q+zll?=
- =?us-ascii?Q?u8KDXjEB0Pj9NP/4CPf+3bCTFgJqD5TqztEDJjHx/HRwSPIK3VQQfRTFiO4G?=
- =?us-ascii?Q?ILtNbJqE7zXCV3B0KVFTyGm0mXs5/vV6ndcW8fhLCcBOONOhHUYeiLYxq3gF?=
- =?us-ascii?Q?N+dJ/g9lLftACjDKmEI5mpTSQSwZ98bi2hGS8CeZVfeXGZHIJtkr31aQN6KQ?=
- =?us-ascii?Q?2bQSv0yNC48x3+xo7J1WBhZCI1E56smm6q32CWhlWZIWizzONG6sb+0p3MEE?=
- =?us-ascii?Q?q0IK6N6pnuWksMrkLDTa8etf+Pvh49+mash8UicI?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6e701675-722c-46e6-ec70-08dbce637752
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2023 16:18:00.3686
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 24afOsP9vrI8nizjKOB3ySN2tHIJDFI/ktk7YUclTO8CtBph1EfKD6RzWIptyOfcJxD87Jc3PPnc/jBqfbd4GQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB7489
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+References: <1697056244-21888-1-git-send-email-haiyangz@microsoft.com>
+In-Reply-To: <1697056244-21888-1-git-send-email-haiyangz@microsoft.com>
+From:   Neal Cardwell <ncardwell@google.com>
+Date:   Mon, 16 Oct 2023 12:17:37 -0400
+Message-ID: <CADVnQy=iZf10mpeG0=BseAapd0LKPRnKdD=M-3AEs5VApiS=CA@mail.gmail.com>
+Subject: Re: [PATCH net-next,v3] tcp: Set pingpong threshold via sysctl
+To:     Haiyang Zhang <haiyangz@microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+        kys@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, corbet@lwn.net,
+        dsahern@kernel.org, ycheng@google.com, kuniyu@amazon.com,
+        morleyd@google.com, mfreemon@cloudflare.com, mubashirq@google.com,
+        linux-doc@vger.kernel.org, weiwan@google.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -117,137 +75,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ls1021a add suspend/resume support.
+On Wed, Oct 11, 2023 at 4:31=E2=80=AFPM Haiyang Zhang <haiyangz@microsoft.c=
+om> wrote:
+>
+> TCP pingpong threshold is 1 by default. But some applications, like SQL D=
+B
+> may prefer a higher pingpong threshold to activate delayed acks in quick
+> ack mode for better performance.
+>
+> The pingpong threshold and related code were changed to 3 in the year
+> 2019 in:
+>   commit 4a41f453bedf ("tcp: change pingpong threshold to 3")
+> And reverted to 1 in the year 2022 in:
+>   commit 4d8f24eeedc5 ("Revert "tcp: change pingpong threshold to 3"")
+>
+> There is no single value that fits all applications.
+> Add net.ipv4.tcp_pingpong_thresh sysctl tunable, so it can be tuned for
+> optimal performance based on the application needs.
+>
+> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+> ---
+> v3: Updated doc as suggested by Neal Cardwell.
+>     Updated variable location in struct netns_ipv4 as suggested by Kuniyu=
+ki
+>     Iwashima.
+>
+> v2: Make it per-namesapce setting, and other updates suggested by Neal Ca=
+rdwell,
+> and Kuniyuki Iwashima.
+> ---
+>  Documentation/networking/ip-sysctl.rst | 13 +++++++++++++
+>  include/net/inet_connection_sock.h     | 16 ++++++++++++----
+>  include/net/netns/ipv4.h               |  2 ++
+>  net/ipv4/sysctl_net_ipv4.c             |  8 ++++++++
+>  net/ipv4/tcp_ipv4.c                    |  2 ++
+>  net/ipv4/tcp_output.c                  |  4 ++--
+>  6 files changed, 39 insertions(+), 6 deletions(-)
 
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
----
+Acked-by: Neal Cardwell <ncardwell@google.com>
 
-Notes:
-    change from v1 to v2
-    - change subject 'a' to 'A'
+Thanks!
 
- drivers/pci/controller/dwc/pci-layerscape.c | 88 ++++++++++++++++++++-
- 1 file changed, 87 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
-index 20c48c06e224..bc5a8ff1a26c 100644
---- a/drivers/pci/controller/dwc/pci-layerscape.c
-+++ b/drivers/pci/controller/dwc/pci-layerscape.c
-@@ -35,6 +35,12 @@
- #define PF_MCR_PTOMR		BIT(0)
- #define PF_MCR_EXL2S		BIT(1)
- 
-+/* LS1021A PEXn PM Write Control Register */
-+#define SCFG_PEXPMWRCR(idx)	(0x5c + (idx) * 0x64)
-+#define PMXMTTURNOFF		BIT(31)
-+#define SCFG_PEXSFTRSTCR	0x190
-+#define PEXSR(idx)		BIT(idx)
-+
- #define PCIE_IATU_NUM		6
- 
- struct ls_pcie_drvdata {
-@@ -48,6 +54,8 @@ struct ls_pcie {
- 	struct dw_pcie *pci;
- 	const struct ls_pcie_drvdata *drvdata;
- 	void __iomem *pf_base;
-+	struct regmap *scfg;
-+	int index;
- 	bool big_endian;
- };
- 
-@@ -170,13 +178,91 @@ static int ls_pcie_host_init(struct dw_pcie_rp *pp)
- 	return 0;
- }
- 
-+static void ls1021a_pcie_send_turnoff_msg(struct dw_pcie_rp *pp)
-+{
-+	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-+	struct ls_pcie *pcie = to_ls_pcie(pci);
-+	u32 val;
-+
-+	if (!pcie->scfg) {
-+		dev_dbg(pcie->pci->dev, "SYSCFG is NULL\n");
-+		return;
-+	}
-+
-+	/* Send Turn_off message */
-+	regmap_read(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), &val);
-+	val |= PMXMTTURNOFF;
-+	regmap_write(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), val);
-+
-+	/* There are not register to check ACK, so wait PCIE_PME_TO_L2_TIMEOUT_US */
-+	mdelay(PCIE_PME_TO_L2_TIMEOUT_US/1000);
-+
-+	/* Clear Turn_off message */
-+	regmap_read(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), &val);
-+	val &= ~PMXMTTURNOFF;
-+	regmap_write(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), val);
-+}
-+
-+static void ls1021a_pcie_exit_from_l2(struct dw_pcie_rp *pp)
-+{
-+	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-+	struct ls_pcie *pcie = to_ls_pcie(pci);
-+	u32 val;
-+
-+	regmap_read(pcie->scfg, SCFG_PEXSFTRSTCR, &val);
-+	val |= PEXSR(pcie->index);
-+	regmap_write(pcie->scfg, SCFG_PEXSFTRSTCR, val);
-+
-+	regmap_read(pcie->scfg, SCFG_PEXSFTRSTCR, &val);
-+	val &= ~PEXSR(pcie->index);
-+	regmap_write(pcie->scfg, SCFG_PEXSFTRSTCR, val);
-+}
-+
-+static int ls1021a_pcie_host_init(struct dw_pcie_rp *pp)
-+{
-+	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-+	struct ls_pcie *pcie = to_ls_pcie(pci);
-+	struct device *dev = pcie->pci->dev;
-+	u32 index[2];
-+	int ret;
-+
-+	ret = ls_pcie_host_init(pp);
-+	if (ret)
-+		return ret;
-+
-+	pcie->scfg = syscon_regmap_lookup_by_phandle(dev->of_node, "fsl,pcie-scfg");
-+	if (IS_ERR(pcie->scfg)) {
-+		ret = PTR_ERR(pcie->scfg);
-+		dev_err(dev, "No syscfg phandle specified\n");
-+		pcie->scfg = NULL;
-+		return ret;
-+	}
-+
-+	ret = of_property_read_u32_array(dev->of_node, "fsl,pcie-scfg", index, 2);
-+	if (ret) {
-+		pcie->scfg = NULL;
-+		return ret;
-+	}
-+
-+	pcie->index = index[1];
-+
-+	return ret;
-+}
-+
- static const struct dw_pcie_host_ops ls_pcie_host_ops = {
- 	.host_init = ls_pcie_host_init,
- 	.pme_turn_off = ls_pcie_send_turnoff_msg,
- };
- 
-+static const struct dw_pcie_host_ops ls1021a_pcie_host_ops = {
-+	.host_init = ls1021a_pcie_host_init,
-+	.pme_turn_off = ls1021a_pcie_send_turnoff_msg,
-+};
-+
- static const struct ls_pcie_drvdata ls1021a_drvdata = {
--	.pm_support = false,
-+	.pm_support = true,
-+	.ops = &ls1021a_pcie_host_ops,
-+	.exit_from_l2 = ls1021a_pcie_exit_from_l2,
- };
- 
- static const struct ls_pcie_drvdata layerscape_drvdata = {
--- 
-2.34.1
-
+neal
