@@ -2,226 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 698557CAEA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEE8A7CAEA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233952AbjJPQLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 12:11:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59892 "EHLO
+        id S233621AbjJPQML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 12:12:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233955AbjJPQLU (ORCPT
+        with ESMTP id S232833AbjJPQMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 12:11:20 -0400
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2049.outbound.protection.outlook.com [40.107.8.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B037510E;
-        Mon, 16 Oct 2023 09:11:16 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HdPVsB2LDZ1kHVzGCxgDCVa4UUWsOOPPBr+AVrQD+R7ijdtl10AR0zavaye9K9C0agmr5VaM9E5HqWNDdbo+E19gUG4Z8ejAXODVo+fxLlwBm+npy9rZk31w6lKo48MtiDq7hvZuS/pz+Dcwb1TV8SRflW2TqD5cgCZ9xh0QuKbWmJCGdCGlP11jRaBJZFTqgriwzFlerjke2bPKyWw/RKDVrAHGjlOgoZ9MOMXb01pj7pwTt4eIUGbYoRR+igVjh0mktP0MCAPTXBjRlinJas3kRC+APNLDkSDO0GO2lw6aYc3OVNYL063NyI/OXkVxqbWzpjcqBH316182ABneXw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SGSEAiI0wn8Om4JXxTYJU/H+ysdlKP7h3jBF0DnpftE=;
- b=VsoHGW1bx8w3RqY7bWsm5sdCn7AFqBeWMYTUJIAS3cF+8OynF8XTqAQnOMocWHhrWyKNXRdhRZtk+IghELNHAPwOKkF7WnxS8BoQLl03x1xM+A9CLCgmwFJiYTJe+eTqhtf2y4CqkCaSgRd3on8Cs5h+kDHL9gZsdE1a7WsN7gldATTk8Y31Sa5XRDFYgvgmrLpCzh4zO+XUgtpenWRznClkkXcbhMZLgKyjBcFhztH7P8347M/xJNCTBkriBufIHx4bc7hGrYJZmlNDxbay0G8Lr4XXy0875i+KCArf6esJT/3lCiYTghNM0Ap2Yn9njKdDRErmXVoQtB63g/QeQg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SGSEAiI0wn8Om4JXxTYJU/H+ysdlKP7h3jBF0DnpftE=;
- b=R7sJvleTg04XI3o3xJnPuvQcaEVK+wqAMVDg1D8WOjyaoSc94grHMlXUSU1Knmh/E/JAhinJitMeP/7HiMOJ/G/Or5vpVOueYf0NeUqMRgCammt21WBU1WbzVxcj3vp938iqvnKz8yD1ie8Oeh2iUWT5OzDffFVZdQq3Ub/EbEQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by VI1PR04MB9905.eurprd04.prod.outlook.com (2603:10a6:800:1df::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.46; Mon, 16 Oct
- 2023 16:11:13 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6886.034; Mon, 16 Oct 2023
- 16:11:13 +0000
-Date:   Mon, 16 Oct 2023 12:11:04 -0400
-From:   Frank Li <Frank.li@nxp.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Minghuan Lian <minghuan.Lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linux-pci@vger.kernel.org>,
-        "moderated list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>, imx@lists.linux.dev
-Subject: Re: [PATCH 2/3] PCI: layerscape: add suspend/resume for ls1021a
-Message-ID: <ZS1gmJiz8+PKIuwp@lizhi-Precision-Tower-5810>
-References: <ZS1Mhe9JOsY2JJER@lizhi-Precision-Tower-5810>
- <20231016152211.GA1209639@bhelgaas>
+        Mon, 16 Oct 2023 12:12:06 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D69BFA;
+        Mon, 16 Oct 2023 09:12:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697472723; x=1729008723;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=th4TeJcqs9Lsg7FgXl8/atfXmZLKWJrhml83JQ6RL6w=;
+  b=LkCgIGQRLBZjhsBKjMrsUWrzbV/mKLfuPH4syN3n9iFZts9TVp5WWJN7
+   pXM4rykrcOS5XREEQx+KLCKNfyx251y1vxVWMcSjttApPh89+kI144mr9
+   bO8r+3fdlTkDX4ozyvZ/pXhW3/7IZadqwlHlsDb3zMK8IKCK6MUdKh/vh
+   tfX+thE5geY+lSw13sEAcrwAUxzYZf0vprWYiNgsj4dmwuZP8NBYgXOUi
+   yoFrJU4FhAu1wE8tzTVTtuFFFNM8R+tGVVwKiu5z/7k4jO69SuXqNDKSs
+   HC91giSjv+j+q1P7C/MyKzTpy3y2DqZJiY7E0kddoWqb0sZQR8OO45Xix
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="4176289"
+X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
+   d="scan'208";a="4176289"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 09:12:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="1087125336"
+X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
+   d="scan'208";a="1087125336"
+Received: from ranaelna-mobl.amr.corp.intel.com (HELO box.shutemov.name) ([10.251.208.247])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 09:11:48 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 423FC10A1EC; Mon, 16 Oct 2023 19:11:46 +0300 (+03)
+Date:   Mon, 16 Oct 2023 19:11:46 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nikolay Borisov <nik.borisov@suse.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dario Faggioli <dfaggioli@suse.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        marcelo.cerri@canonical.com, tim.gardner@canonical.com,
+        khalid.elmously@canonical.com, philip.cox@canonical.com,
+        aarcange@redhat.com, peterx@redhat.com, x86@kernel.org,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@kernel.org
+Subject: Re: [PATCH] efi/unaccepted: Fix soft lockups caused by parallel
+ memory acceptance
+Message-ID: <20231016161146.4j24jprkeaanflpf@box.shutemov.name>
+References: <20231014204040.28765-1-kirill.shutemov@linux.intel.com>
+ <088593ea-e001-fa87-909f-a196b1373ca4@suse.cz>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231016152211.GA1209639@bhelgaas>
-X-ClientProxiedBy: SJ0PR13CA0026.namprd13.prod.outlook.com
- (2603:10b6:a03:2c0::31) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|VI1PR04MB9905:EE_
-X-MS-Office365-Filtering-Correlation-Id: 20adf9f4-9aeb-4684-6d9f-08dbce6284a6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lVB6nNC+lssT1WFxAP0rpeW9Yw7rq7mgzwcLfsijqREiJplnpluuCEdi4lHa/4bj8qWEFxErdL5PnwrZHFcFN+MR5XO4Sn48XJvwhSt4xiKfu6+nGXoJtN/N+20J1ZEzu4IXl5XQ5gtlRJ/CveHcNCDBPD8s3uOxo27dAfrCjUmEo11Gavf1TPyHn52Rs6CN5SIl9Z2CMstTYiMGNsmlHTJpOJM3EOsFQknEl/Y+RCxdAfO+KZYk8KelYQDhz6E+86kyk1XdcQpo2cKGmAZWEfcaEUSapChoY8PMQOwDLgCqfnDIqaaLYOTwryxD01Ze86t2Z6vT3FZB9cdJUfNgFGnJVzWmOLI/Xlai8AFJrycrGZP6BSWDVCPPrXG6IPLOcdgLKvnAjZHbbvq5V4KIlMOEENQR0CoNquxh44oGc9/hMf/wTAvZEim8aEk0epegM9cqMosKN1uo7a+m1+qxnxjQw5Swn3cjeGuWAIUsUKh4SSE5LsuG8kZs/FyNT4pQD98Or4aZU6nwrNXYFoI5NfZH8Hju7nLpKhhIcGG1tWCzIBrWtPMG/R43HX0nk3y5OejcY0qdS6miZas6rq5Rc6PYIoZK7JYYr72CYiMeyrMRQiBgMRNpvAlYYit0s109
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(396003)(366004)(346002)(136003)(39860400002)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(478600001)(6486002)(966005)(66946007)(6916009)(66556008)(6666004)(54906003)(66476007)(83380400001)(86362001)(38100700002)(9686003)(316002)(6512007)(26005)(6506007)(52116002)(5660300002)(41300700001)(4326008)(8936002)(38350700005)(8676002)(7416002)(33716001)(15650500001)(2906002)(67856001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Ct0HVMfqiOZy67CZu+c0EnNQ8xseoolAO2vgrp6h6lGw1SBcnwBfva1ExKZ9?=
- =?us-ascii?Q?oLc6QwNIBMdt+cfJnxudSF5i09A/UPkUbTLTxuVlQPlZfyB2ror0rj2dbvcx?=
- =?us-ascii?Q?v5xXSsAOm0jPpxH6sArSjy+EyyFDLlnVbAb0ZliVyDJ78118sM2bu4ZXR3Nj?=
- =?us-ascii?Q?e+HB+1m0sb8mbChN8/yqxIpYYWJU4T2ms//UH+xz5KJSx1hf0wccaQ7R9Afd?=
- =?us-ascii?Q?dZzZAoauoYZdhA6fIHrjU671n5OGav/VEO5aCcZl+UuANq2ppoOqe3ZmPwG7?=
- =?us-ascii?Q?s98vVD5GBXfWrvMR5S86/Unh8afn/59k9pyLUJvZOGZJ4zm2nG2zjPTuRVeC?=
- =?us-ascii?Q?tRUcqlNHy4dkAUaHJ8HO9VItoCzUmy4SNyaazEPQg94kZfAP08EHwyRSNcgd?=
- =?us-ascii?Q?zH29e8A9hPsHlZ1kbpQCM3gLu2wpGYKncjweGGW6ATIOn6FrPLJniT0d/9bi?=
- =?us-ascii?Q?4FiZ3RUvb3iKU5rWk6lZBNOxiulBTCtgIMIK01i4simDUBn6FLNogOmvZUju?=
- =?us-ascii?Q?/U5Yia5GeZ8ZaDwiaWLqMCT4YUdsnjHfccQO0js6Mv9o2Zk+T2F4UJVoPp9E?=
- =?us-ascii?Q?oalkdDBybwl8lNvT76bemfZpHlSFulZnOull/RE0RjeXb9YinFlPn4x5XWAP?=
- =?us-ascii?Q?nT79nA+9KiF2eU6tElaDT1M0ALhks+TV9VSxp/AMYMziyQnfg4VQP4v+xomM?=
- =?us-ascii?Q?obW7E4ZuzaVXgUtCISig8BXgI7qqXIeRthIOBdyPVDdJElliwYMdnOsDotmd?=
- =?us-ascii?Q?iYQt6u8q1i6j2+SSWvsqw+Gy9eOpWG2QXRhBuX6KGkZOrQbTSsTZY5Y6gXfa?=
- =?us-ascii?Q?Rgn5z63t3EfdHWQ8/wuqKPvNdxG3jaQNl8ZcFbZngIDxHGVStnhcifeC9c8m?=
- =?us-ascii?Q?WR9fxzDksv8KmNR7HAsFIAttKoVHob7BhOX7QRQTmeQdEPTb/CptDdGb/Whp?=
- =?us-ascii?Q?FYMsk0pKMwnxQgC7Nnom9OFGkZ3zVzGlVmucMJFNLaIzn98jBU8HQhGPSHVz?=
- =?us-ascii?Q?L/BU9OAt4WqFd1CcYVpPMkg9d13IfC61Hf/3Io7iphMDufFl3OZHq+EvfWMK?=
- =?us-ascii?Q?quUUV7rgPj7ZlXCf0YyTpzazlGh+k7Ya974gO7Qkz7UrRFaafxtuTo3bfW5H?=
- =?us-ascii?Q?OkODZXDhYboqZ62H/8mPRBXet//oI1xo2Ga4u6l3mOzWGXg9NW5ZFazDu9wG?=
- =?us-ascii?Q?cbSngxGp/J52iiiwqOMULG2sHbTNUQLh5DmJ257ZHDI+X7un3WLufXxxJPG4?=
- =?us-ascii?Q?3O/4uIkH6tEWlVMAkeb3I/Mqg03CpWRlphz3UOSYN2y9BQyYRjXCeW5G0QDD?=
- =?us-ascii?Q?0vMQy4TvwuyQiYB+XEEiZV9AKiz8IALZPmbJpYEZeuLFQPf+ZC2OP/9wtwdK?=
- =?us-ascii?Q?ngj09PIap0/i1q+tmAbTj06O6759QaFayHPB5UA/stQNWjaRwDgFuB2Wrch1?=
- =?us-ascii?Q?Or+X++g6TPUiqO+O5rHV4qU0cSk/7vouXXtkNV5aRS/Gcxh6szWiuudOsssb?=
- =?us-ascii?Q?ssNrgTyhto779SMM9mJ4bcRAWh3oR8f8fWdXryGylF2xRm4M8ELiQ3Y6u0EQ?=
- =?us-ascii?Q?+rc8Rq1L/pPZUoel8RDe/1TbjoV4IuKd8EPXWJIC?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 20adf9f4-9aeb-4684-6d9f-08dbce6284a6
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2023 16:11:13.2782
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ALOakVC0kLLoXrmFwLvNmF8wqqhJRwrU+1MEoMbGs+Id3CFQa+GmgQyeIKlJZQyuhslUTwi9+OOP6LkiTN98Xw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB9905
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <088593ea-e001-fa87-909f-a196b1373ca4@suse.cz>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 10:22:11AM -0500, Bjorn Helgaas wrote:
-> On Mon, Oct 16, 2023 at 10:45:25AM -0400, Frank Li wrote:
-> > On Tue, Oct 10, 2023 at 06:02:36PM +0200, Lorenzo Pieralisi wrote:
-> > > On Tue, Oct 10, 2023 at 10:20:12AM -0400, Frank Li wrote:
-> 
-> > > > Ping
-> > > 
-> > > Read and follow please (and then ping us):
-> > > https://lore.kernel.org/linux-pci/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com
+On Mon, Oct 16, 2023 at 12:58:34PM +0200, Vlastimil Babka wrote:
+> On 10/14/23 22:40, Kirill A. Shutemov wrote:
+> > Michael reported soft lockups on a system that has unaccepted memory.
+> > This occurs when a user attempts to allocate and accept memory on
+> > multiple CPUs simultaneously.
 > > 
-> > Could you please help point which specic one was not follow aboved guide?
-> > Then I can update my code. I think that's efficial communication method. I
-> > think I have read it serial times. But not sure which one violate the
-> > guide?
+> > The root cause of the issue is that memory acceptance is serialized with
+> > a spinlock, allowing only one CPU to accept memory at a time. The other
+> > CPUs spin and wait for their turn, leading to starvation and soft lockup
+> > reports.
 > > 
-> > @Bjorn Helgaas. How do you think so? 
+> > To address this, the code has been modified to release the spinlock
+> > while accepting memory. This allows for parallel memory acceptance on
+> > multiple CPUs.
+> > 
+> > A newly introduced "accepting_list" keeps track of which memory is
+> > currently being accepted. This is necessary to prevent parallel
+> > acceptance of the same memory block. If a collision occurs, the lock is
+> > released and the process is retried.
+> > 
+> > Such collisions should rarely occur. The main path for memory acceptance
+> > is the page allocator, which accepts memory in MAX_ORDER chunks. As long
+> > as MAX_ORDER is equal to or larger than the unit_size, collisions will
+> > never occur because the caller fully owns the memory block being
+> > accepted.
+> > 
+> > Aside from the page allocator, only memblock and deferered_free_range()
+> > accept memory, but this only happens during boot.
+> > 
+> > The code has been tested with unit_size == 128MiB to trigger collisions
+> > and validate the retry codepath.
+> > 
+> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > Reported-by: Michael Roth <michael.roth@amd.com
+> > Fixes: 2053bc57f367 ("efi: Add unaccepted memory support")
+> > Cc: <stable@kernel.org>
+> > ---
+> >  drivers/firmware/efi/unaccepted_memory.c | 55 ++++++++++++++++++++++--
+> >  1 file changed, 51 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/firmware/efi/unaccepted_memory.c b/drivers/firmware/efi/unaccepted_memory.c
+> > index 853f7dc3c21d..8af0306c8e5c 100644
+> > --- a/drivers/firmware/efi/unaccepted_memory.c
+> > +++ b/drivers/firmware/efi/unaccepted_memory.c
+> > @@ -5,9 +5,17 @@
+> >  #include <linux/spinlock.h>
+> >  #include <asm/unaccepted_memory.h>
+> >  
+> > -/* Protects unaccepted memory bitmap */
+> > +/* Protects unaccepted memory bitmap and accepting_list */
+> >  static DEFINE_SPINLOCK(unaccepted_memory_lock);
+> >  
+> > +struct accept_range {
+> > +	struct list_head list;
+> > +	unsigned long start;
+> > +	unsigned long end;
+> > +};
+> > +
+> > +static LIST_HEAD(accepting_list);
+> > +
+> >  /*
+> >   * accept_memory() -- Consult bitmap and accept the memory if needed.
+> >   *
+> > @@ -24,6 +32,7 @@ void accept_memory(phys_addr_t start, phys_addr_t end)
+> >  {
+> >  	struct efi_unaccepted_memory *unaccepted;
+> >  	unsigned long range_start, range_end;
+> > +	struct accept_range range, *entry;
+> >  	unsigned long flags;
+> >  	u64 unit_size;
+> >  
+> > @@ -78,20 +87,58 @@ void accept_memory(phys_addr_t start, phys_addr_t end)
+> >  	if (end > unaccepted->size * unit_size * BITS_PER_BYTE)
+> >  		end = unaccepted->size * unit_size * BITS_PER_BYTE;
+> >  
+> > -	range_start = start / unit_size;
+> > -
+> > +	range.start = start / unit_size;
+> > +	range.end = DIV_ROUND_UP(end, unit_size);
+> > +retry:
+> >  	spin_lock_irqsave(&unaccepted_memory_lock, flags);
+> > +
+> > +	/*
+> > +	 * Check if anybody works on accepting the same range of the memory.
+> > +	 *
+> > +	 * The check with unit_size granularity. It is crucial to catch all
 > 
-> Since Lorenzo didn't point out anything specific in the patch itself,
-> I think he was probably referring to the subject line and this advice:
-> 
->   - Follow the existing convention, i.e., run "git log --oneline
->     <file>" and make yours match in format, capitalization, and
->     sentence structure.  For example, native host bridge driver patch
->     titles look like this:
-> 
->       PCI: altera: Fix platform_get_irq() error handling
->       PCI: vmd: Remove IRQ affinity so we can allocate more IRQs
->       PCI: mediatek: Add MSI support for MT2712 and MT7622
->       PCI: rockchip: Remove IRQ domain if probe fails
-> 
-> In this case, your subject line was:
-> 
->   PCI: layerscape: add suspend/resume for ls1021a
-> 
-> The advice was to run this:
-> 
->   $ git log --oneline drivers/pci/controller/dwc/pci-layerscape.c
->   83c088148c8e PCI: Use PCI_HEADER_TYPE_* instead of literals
->   9fda4d09905d PCI: layerscape: Add power management support for ls1028a
->   277004d7a4a3 PCI: Remove unnecessary <linux/of_irq.h> includes
->   60b3c27fb9b9 PCI: dwc: Rename struct pcie_port to dw_pcie_rp
->   d23f0c11aca2 PCI: layerscape: Change to use the DWC common link-up check function
->   7007b745a508 PCI: layerscape: Convert to builtin_platform_driver()
->   60f5b73fa0f2 PCI: dwc: Remove unnecessary wrappers around dw_pcie_host_init()
->   b9ac0f9dc8ea PCI: dwc: Move dw_pcie_setup_rc() to DWC common code
->   f78f02638af5 PCI: dwc: Rework MSI initialization
-> 
-> Note that these summaries are all complete sentences that start with a
-> capital letter:
-> 
->   Use PCI_HEADER_TYPE_* instead of literals
->   Add power management support for ls1028a
->   Remove unnecessary <linux/of_irq.h> includes
->   ...
-> 
-> So yours could be this:
-> 
->   PCI: layerscape: Add suspend/resume for ls1021a
->                    ^
-> 
-> This is trivial, obviously.  But the uppercase/lowercase distinction
-> carries information, and it's an unnecessary distraction to notice
-> that "oh, this is different from the rest; is the difference
-> important or should I ignore it?"
+> "The check is done ..." ?
 
-Thanks. Not everyone think it is trivial. Especially for the one, who
-English are not native language.
+Yep.
 
+> > +	 * accept requests to the same unit_size block, even if they don't
+> > +	 * overlap on physical address level.
+> > +	 */
+> > +	list_for_each_entry(entry, &accepting_list, list) {
+> > +		if (entry->end < range.start)
+> > +			continue;
+> > +		if (entry->start >= range.end)
+> > +			continue;
 > 
-> Obviously Lorenzo *could* edit all your subject lines on your behalf,
-> but it makes everybody's life easier if people look at the existing
-> code and follow the style when making changes.
+> Hmm we really don't have a macro for ranges_intersect()? Given how easy is
+> to make a mistake. I found only zone_intersects().
 
-Understand, but simple mark 'a' and 'A' to me. I will update patches and
-take care for next time instead search whole docuemnt to guess which one
-violated. I know I make some mistakes at here. But I am working on many
-difference kernel subsystems, some require upper case, some require low
-case, someone doesn't care.
- 
-I respected all reviewer's and maintaner's time, but I hope respected
-the contributor's time also.
+I don't know any.
 
-Just simple words like , 'a' to 'A' or
-run git log --oneline to check subject. I will know what exact means. 
-
-Do you think it will better than below words
-
-"Read and follow please (and then ping us):                           
-https://lore.kernel.org/linux-pci/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com"
-
-Frank
-
+> > +
+> > +		/*
+> > +		 * Somebody else accepting the range. Or at least part of it.
+> > +		 *
+> > +		 * Drop the lock and retry until it is complete.
+> > +		 */
+> > +		spin_unlock_irqrestore(&unaccepted_memory_lock, flags);
+> > +		cond_resched();
+> > +		goto retry;
+> > +	}
+> > +
+> > +	/*
+> > +	 * Register that the range is about to be accepted.
+> > +	 * Make sure nobody else will accept it.
+> > +	 */
+> > +	list_add(&range.list, &accepting_list);
+> > +
+> > +	range_start = range.start;
+> >  	for_each_set_bitrange_from(range_start, range_end, unaccepted->bitmap,
+> > -				   DIV_ROUND_UP(end, unit_size)) {
+> > +				   range.end) {
+> >  		unsigned long phys_start, phys_end;
+> >  		unsigned long len = range_end - range_start;
+> >  
+> >  		phys_start = range_start * unit_size + unaccepted->phys_base;
+> >  		phys_end = range_end * unit_size + unaccepted->phys_base;
+> >  
+> > +		spin_unlock_irqrestore(&unaccepted_memory_lock, flags);
 > 
-> E.g., write subject lines that are similar in style to previous ones,
-> name local variables similarly to other functions, use line lengths
-> consistent with the rest of the file, etc.  After applying a change,
-> the file should look like a coherent whole; we should not be able to
-> tell that this hunk was added later by somebody else.  This all helps
-> make the code (and the git history) more readable and maintainable.
-> 
-> Bjorn
+> Hm so this is bad, AFAICS. We enable IRQs, then an IRQ can come and try to
+> accept in the same unit_size block, so it will keep the retrying by the goto
+> above and itself have irqs disabled so the cond_resched() will never let us
+> finish?
+
+Good catch. Will fix in the next version.
+
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
