@@ -2,52 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC1C87CA8D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 15:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC5057CA8E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 15:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233466AbjJPNJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 09:09:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54604 "EHLO
+        id S233709AbjJPNKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 09:10:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230017AbjJPNJ0 (ORCPT
+        with ESMTP id S233634AbjJPNJv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 09:09:26 -0400
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 148209B
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 06:09:24 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:ce84:d8c0:f79a:fa0])
-        by xavier.telenet-ops.be with bizsmtp
-        id yd9M2A0010pDX7N01d9Mei; Mon, 16 Oct 2023 15:09:23 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qsNLR-006jYw-EV;
-        Mon, 16 Oct 2023 15:09:20 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qsNLU-00A9nZ-SG;
-        Mon, 16 Oct 2023 15:09:20 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>
-Cc:     linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH -next v3 2/2] sunrpc: Use no_printk() in dfprintk*() dummies
-Date:   Mon, 16 Oct 2023 15:09:19 +0200
-Message-Id: <180fd042261dcd4243fad90660b114b8f0a78dcd.1697460614.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1697460614.git.geert+renesas@glider.be>
-References: <cover.1697460614.git.geert+renesas@glider.be>
+        Mon, 16 Oct 2023 09:09:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF050E8;
+        Mon, 16 Oct 2023 06:09:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697461790; x=1728997790;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=FpyMkWTaSMiOJg/zrSh3Kkfek6DFC2dej1hPH9Rx2iI=;
+  b=iti1+qk5lLoIzKFMKfK9pGJ5Yv8dq8063BbTdUPgcRor8F6cef0JEGqW
+   xvgElhXeErzxXAaLXW0Yy4CMdzka19oO51AGa3DQOuWfqBKg0YRxDvkmD
+   3gLwROnzSVvK3SRu2+lQvc1lvy74G401TvAJyuCY9L1rurOZ5/q1VXsTI
+   zdclEqF4aXxXLMT1H+u1EdoMjb+6ekV5ovdTv5/XnDGVgCR1qGTDHdVSE
+   ysJgkhoxKtEygCcfG36Hwo+vygqegbk1MxYcv9KjmOudcWeq+axuBQWB8
+   3R6edTTdMnYmwKLgI3jxCJG0mZ3rLWm1JG9sgBmZsLBYWfMCQddplocPo
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="4133291"
+X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
+   d="scan'208";a="4133291"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 06:09:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="1087067135"
+X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
+   d="scan'208";a="1087067135"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga005.fm.intel.com with ESMTP; 16 Oct 2023 06:09:41 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id EB53B385; Mon, 16 Oct 2023 16:09:41 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v2 00/10] xhci: dbc: Update driver to use modern APIs
+Date:   Mon, 16 Oct 2023 16:09:24 +0300
+Message-Id: <20231016130934.1158504-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,93 +62,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building NFS with W=1 and CONFIG_WERROR=y, but
-CONFIG_SUNRPC_DEBUG=n:
+Update driver to use some of modern APIs. It's not a full clean up
+series, just a set of ad-hoc changes.
 
-    fs/nfs/nfs4proc.c: In function ‘nfs4_proc_create_session’:
-    fs/nfs/nfs4proc.c:9276:19: error: variable ‘ptr’ set but not used [-Werror=unused-but-set-variable]
-     9276 |         unsigned *ptr;
-	  |                   ^~~
-      CC      fs/nfs/callback.o
-    fs/nfs/callback.c: In function ‘nfs41_callback_svc’:
-    fs/nfs/callback.c:98:13: error: variable ‘error’ set but not used [-Werror=unused-but-set-variable]
-       98 |         int error;
-	  |             ^~~~~
-      CC      fs/nfs/flexfilelayout/flexfilelayout.o
-    fs/nfs/flexfilelayout/flexfilelayout.c: In function ‘ff_layout_io_track_ds_error’:
-    fs/nfs/flexfilelayout/flexfilelayout.c:1230:13: error: variable ‘err’ set but not used [-Werror=unused-but-set-variable]
-     1230 |         int err;
-	  |             ^~~
-      CC      fs/nfs/flexfilelayout/flexfilelayoutdev.o
-    fs/nfs/flexfilelayout/flexfilelayoutdev.c: In function ‘nfs4_ff_alloc_deviceid_node’:
-    fs/nfs/flexfilelayout/flexfilelayoutdev.c:55:16: error: variable ‘ret’ set but not used [-Werror=unused-but-set-variable]
-       55 |         int i, ret = -ENOMEM;
-	  |                ^~~
+In v2:
+- fixed mistakes pointed by Mathias and LKP
+- sent with a cover letter
 
-All these are due to variables that are set unconditionally, but are
-used only when debugging is enabled.
+Andy Shevchenko (10):
+  xhci: dbc: Drop duplicate checks for dma_free_coherent()
+  xhci: dbc: Convert to use sysfs_streq()
+  xhci: dbc: Use sysfs_emit() to instead of scnprintf()
+  xhci: dbc: Use ATTRIBUTE_GROUPS()
+  xhci: dbc: Check for errors first in xhci_dbc_stop()
+  xhci: dbc: Don't shadow error codes in store() functions
+  xhci: dbc: Replace custom return value with proper Linux error code
+  xhci: dbc: Use sizeof_field() where it makes sense
+  xhci: dbc: Use sizeof(*pointer) instead of sizeof(type)
+  xhci: dbc: Add missing headers
 
-Fix this by changing the dfprintk*() dummy macros from empty loops to
-calls to the no_printk() helper.  This informs the compiler that the
-passed debug parameters are actually used, and enables format specifier
-checking as a bonus.
+ drivers/usb/host/xhci-dbgcap.c | 132 +++++++++++++++++----------------
+ drivers/usb/host/xhci-dbgcap.h |   1 +
+ 2 files changed, 70 insertions(+), 63 deletions(-)
 
-This requires removing the protection by CONFIG_SUNRPC_DEBUG of the
-declaration of nlmdbg_cookie2a() in fs/lockd/svclock.c, as its reference
-is now visible to the compiler, but optimized away.
-
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Jeff Layton <jlayton@kernel.org>
----
-v3:
-  - Add Acked-by,
-
-v2:
-  - s/uncontionally/unconditionally/,
-  - Drop CONFIG_SUNRPC_DEBUG check in fs/lockd/svclock.c to fix build
-    failure.
----
- fs/lockd/svclock.c           | 2 --
- include/linux/sunrpc/debug.h | 6 +++---
- 2 files changed, 3 insertions(+), 5 deletions(-)
-
-diff --git a/fs/lockd/svclock.c b/fs/lockd/svclock.c
-index 43aeba9de55cbbc5..b80e0e143c5db16a 100644
---- a/fs/lockd/svclock.c
-+++ b/fs/lockd/svclock.c
-@@ -55,7 +55,6 @@ static const struct rpc_call_ops nlmsvc_grant_ops;
- static LIST_HEAD(nlm_blocked);
- static DEFINE_SPINLOCK(nlm_blocked_lock);
- 
--#if IS_ENABLED(CONFIG_SUNRPC_DEBUG)
- static const char *nlmdbg_cookie2a(const struct nlm_cookie *cookie)
- {
- 	/*
-@@ -82,7 +81,6 @@ static const char *nlmdbg_cookie2a(const struct nlm_cookie *cookie)
- 
- 	return buf;
- }
--#endif
- 
- /*
-  * Insert a blocked lock into the global list
-diff --git a/include/linux/sunrpc/debug.h b/include/linux/sunrpc/debug.h
-index f6aeed07fe04e3d5..76539c6673f2fb15 100644
---- a/include/linux/sunrpc/debug.h
-+++ b/include/linux/sunrpc/debug.h
-@@ -67,9 +67,9 @@ do {									\
- # define RPC_IFDEBUG(x)		x
- #else
- # define ifdebug(fac)		if (0)
--# define dfprintk(fac, fmt, ...)	do {} while (0)
--# define dfprintk_cont(fac, fmt, ...)	do {} while (0)
--# define dfprintk_rcu(fac, fmt, ...)	do {} while (0)
-+# define dfprintk(fac, fmt, ...)	no_printk(fmt, ##__VA_ARGS__)
-+# define dfprintk_cont(fac, fmt, ...)	no_printk(fmt, ##__VA_ARGS__)
-+# define dfprintk_rcu(fac, fmt, ...)	no_printk(fmt, ##__VA_ARGS__)
- # define RPC_IFDEBUG(x)
- #endif
- 
 -- 
-2.34.1
+2.40.0.1.gaa8946217a0b
 
