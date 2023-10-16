@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 611377CB589
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 23:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB2B7CB571
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 23:44:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234161AbjJPVp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 17:45:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42958 "EHLO
+        id S234188AbjJPVos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 17:44:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234309AbjJPVpF (ORCPT
+        with ESMTP id S234132AbjJPVoo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 17:45:05 -0400
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C61F189;
-        Mon, 16 Oct 2023 14:44:58 -0700 (PDT)
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-581cb88f645so180407eaf.1;
-        Mon, 16 Oct 2023 14:44:58 -0700 (PDT)
+        Mon, 16 Oct 2023 17:44:44 -0400
+Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B572D9;
+        Mon, 16 Oct 2023 14:44:42 -0700 (PDT)
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-1e562706d29so2799871fac.2;
+        Mon, 16 Oct 2023 14:44:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697492697; x=1698097497;
+        d=1e100.net; s=20230601; t=1697492681; x=1698097481;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oSTNCx96ijN7xDd+L1blp4PP7h+p+AqB5mCYZJB4VZ8=;
-        b=vf6m29PJYME4P7l3Q2JgZ1iajOF//5aOpP3BLnjp+ar4iWZAIgYzEV0AtbRDUkUuPf
-         mbf1gPbBtXMyaC435p1V18hMeCBdgkeB7guCWuaMvlgEM5HhXPAXebcXgboNveE8UbxV
-         0pKQkkd0oBu4RIToQkHCnjf15QiAObpD1riV/yt+LcrcU3dKxfJtp+bWmYuqC3c0+gig
-         N5pdiX1TEqE+YWlyr7YVxjhrdWCeLwcLc+2H7x21qXiTKLDzz2f6ZT8C9LmVM/eMNwBv
-         ruqS7cG7YwR78eP1IKYzig5TT4LuwpAG/FpcNc6rRLdWBmxaOADXUKqh/719Y2Q5QN/P
-         9uIg==
-X-Gm-Message-State: AOJu0Yz5sBuDgOHFwXe4i71Hefj7jAaeBHq57vItjBxtSb3oylatr/XU
-        B03ZRhHBpQJnJvakAOuCWA==
-X-Google-Smtp-Source: AGHT+IEVE6nFcat2AUCk/HtDxiQnH8SCWVk1YkotfqbKD8WxuVGs5L+W66rn7BVzGf/8xA7s3Ce/Cw==
-X-Received: by 2002:a4a:d757:0:b0:57b:6a40:8a9e with SMTP id h23-20020a4ad757000000b0057b6a408a9emr284863oot.7.1697492697094;
-        Mon, 16 Oct 2023 14:44:57 -0700 (PDT)
+        bh=4BhNqPjC35KssOVWym22Xm+PXqXG2BALMex6wzlPMLg=;
+        b=gDR5nFrJmrH85E5yZSZz4MrBw3FnA2s0KBvDtwfHHeab/VRkGsQPSB81XemjBqyPoR
+         mQfLJ1DbIJB3fbuC/aunfSC2lY6kGyFEE+7Cgp+v2FfRk8vKteRN+pNLVNkOHIOsDVKW
+         UFqx5nJK703bwPfSG7/cRMOh6BzrPw/hW4OG1RFV1LVXNOAjBcj9Sc6VsWPiCKGFXHnU
+         TfuAvDTeUv37bbMpiHi5XmNmP0gXmuFi/M6/Dbb9dllEDSynOjB9I2BuNEspLt23KY8i
+         TWw7qkf4GIX41reGabcs2sP0DD86rS7Bea+kOIp8LRkjS8l/IjpVZcA0vAo1qbQRhVG1
+         6ijA==
+X-Gm-Message-State: AOJu0YwUqp7VHc2uFVW3GYW7FkR3i1vt2CWkSUtHRSeMdZAEE+uZeZ5B
+        DnfEpCiWoYGNu4hLXAnIPw==
+X-Google-Smtp-Source: AGHT+IHELa3QHrlqv0npdH8PwKmFcvXksdJa9jP/xfBiEmi6ssht9Ijd5bifDAScNBAJ1b9VgjfDuQ==
+X-Received: by 2002:a05:6870:110f:b0:1e9:a248:b1b3 with SMTP id 15-20020a056870110f00b001e9a248b1b3mr277337oaf.49.1697492681546;
+        Mon, 16 Oct 2023 14:44:41 -0700 (PDT)
 Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id r3-20020a4ab503000000b0057ae5a8e9bcsm16111ooo.28.2023.10.16.14.44.55
+        by smtp.gmail.com with ESMTPSA id cb20-20020a056871e11400b001ea17894928sm8906oac.21.2023.10.16.14.44.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 14:44:56 -0700 (PDT)
-Received: (nullmailer pid 3823212 invoked by uid 1000);
+        Mon, 16 Oct 2023 14:44:40 -0700 (PDT)
+Received: (nullmailer pid 3823214 invoked by uid 1000);
         Mon, 16 Oct 2023 21:44:35 -0000
 From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 16 Oct 2023 16:44:21 -0500
-Subject: [PATCH net-next 2/8] dt-bindings: net: renesas: Drop ethernet-phy
- node schema
+Date:   Mon, 16 Oct 2023 16:44:22 -0500
+Subject: [PATCH net-next 3/8] dt-bindings: net: dsa/switch: Make
+ 'ethernet-port' node addresses hex
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231016-dt-net-cleanups-v1-2-a525a090b444@kernel.org>
+Message-Id: <20231016-dt-net-cleanups-v1-3-a525a090b444@kernel.org>
 References: <20231016-dt-net-cleanups-v1-0-a525a090b444@kernel.org>
 In-Reply-To: <20231016-dt-net-cleanups-v1-0-a525a090b444@kernel.org>
 To:     "David S. Miller" <davem@davemloft.net>,
@@ -107,46 +107,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-What's connected on the MDIO bus is outside the scope of the binding for
-ethernet controller's MDIO bus unless it's a fixed internal device, so
-drop the node name and reference to ethernet-phy.yaml.
+'ethernet-port' node unit-addresses should be in hexadecimal. Some
+instances have it correct, but fix the ones that don't.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- Documentation/devicetree/bindings/net/renesas,ether.yaml    | 3 +--
- Documentation/devicetree/bindings/net/renesas,etheravb.yaml | 3 +--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ Documentation/devicetree/bindings/net/brcm,asp-v2.0.yaml         | 2 +-
+ Documentation/devicetree/bindings/net/dsa/dsa.yaml               | 2 +-
+ Documentation/devicetree/bindings/net/dsa/mediatek,mt7530.yaml   | 6 +++---
+ Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml | 2 +-
+ Documentation/devicetree/bindings/net/dsa/nxp,sja1105.yaml       | 2 +-
+ Documentation/devicetree/bindings/net/ethernet-switch.yaml       | 4 ++--
+ Documentation/devicetree/bindings/net/ti,cpsw-switch.yaml        | 2 +-
+ 7 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/renesas,ether.yaml b/Documentation/devicetree/bindings/net/renesas,ether.yaml
-index 06b38c9bc6ec..29355ab98569 100644
---- a/Documentation/devicetree/bindings/net/renesas,ether.yaml
-+++ b/Documentation/devicetree/bindings/net/renesas,ether.yaml
-@@ -81,9 +81,8 @@ properties:
-       active-high
+diff --git a/Documentation/devicetree/bindings/net/brcm,asp-v2.0.yaml b/Documentation/devicetree/bindings/net/brcm,asp-v2.0.yaml
+index aa3162c74833..75d8138298fb 100644
+--- a/Documentation/devicetree/bindings/net/brcm,asp-v2.0.yaml
++++ b/Documentation/devicetree/bindings/net/brcm,asp-v2.0.yaml
+@@ -53,7 +53,7 @@ properties:
+         const: 0
  
- patternProperties:
--  "^ethernet-phy@[0-9a-f]$":
-+  "@[0-9a-f]$":
-     type: object
--    $ref: ethernet-phy.yaml#
+     patternProperties:
+-      "^port@[0-9]+$":
++      "^port@[0-9a-f]+$":
+         type: object
  
- required:
-   - compatible
-diff --git a/Documentation/devicetree/bindings/net/renesas,etheravb.yaml b/Documentation/devicetree/bindings/net/renesas,etheravb.yaml
-index 3f41294f5997..5d074f27d462 100644
---- a/Documentation/devicetree/bindings/net/renesas,etheravb.yaml
-+++ b/Documentation/devicetree/bindings/net/renesas,etheravb.yaml
-@@ -109,9 +109,8 @@ properties:
-     enum: [0, 2000]
+         $ref: ethernet-controller.yaml#
+diff --git a/Documentation/devicetree/bindings/net/dsa/dsa.yaml b/Documentation/devicetree/bindings/net/dsa/dsa.yaml
+index ec74a660beda..e6010821f86f 100644
+--- a/Documentation/devicetree/bindings/net/dsa/dsa.yaml
++++ b/Documentation/devicetree/bindings/net/dsa/dsa.yaml
+@@ -50,7 +50,7 @@ $defs:
+             const: 0
  
- patternProperties:
--  "^ethernet-phy@[0-9a-f]$":
-+  "@[0-9a-f]$":
-     type: object
--    $ref: ethernet-phy.yaml#
+         patternProperties:
+-          "^(ethernet-)?port@[0-9]+$":
++          "^(ethernet-)?port@[0-9a-f]+$":
+             description: Ethernet switch ports
+             $ref: dsa-port.yaml#
+             unevaluatedProperties: false
+diff --git a/Documentation/devicetree/bindings/net/dsa/mediatek,mt7530.yaml b/Documentation/devicetree/bindings/net/dsa/mediatek,mt7530.yaml
+index 20f7ba4e2203..5038818e9f2e 100644
+--- a/Documentation/devicetree/bindings/net/dsa/mediatek,mt7530.yaml
++++ b/Documentation/devicetree/bindings/net/dsa/mediatek,mt7530.yaml
+@@ -157,7 +157,7 @@ patternProperties:
+     additionalProperties: true
  
- required:
-   - compatible
+     patternProperties:
+-      "^(ethernet-)?port@[0-9]+$":
++      "^(ethernet-)?port@[0-6]$":
+         type: object
+         additionalProperties: true
+ 
+@@ -186,7 +186,7 @@ $defs:
+     patternProperties:
+       "^(ethernet-)?ports$":
+         patternProperties:
+-          "^(ethernet-)?port@[0-9]+$":
++          "^(ethernet-)?port@[0-6]$":
+             if:
+               required: [ ethernet ]
+             then:
+@@ -212,7 +212,7 @@ $defs:
+     patternProperties:
+       "^(ethernet-)?ports$":
+         patternProperties:
+-          "^(ethernet-)?port@[0-9]+$":
++          "^(ethernet-)?port@[0-6]$":
+             if:
+               required: [ ethernet ]
+             then:
+diff --git a/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml b/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
+index 6a4d90d550b6..9973d64f15a7 100644
+--- a/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
++++ b/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
+@@ -39,7 +39,7 @@ patternProperties:
+   "^(ethernet-)?ports$":
+     additionalProperties: true
+     patternProperties:
+-      "^(ethernet-)?port@[0-9]+$":
++      "^(ethernet-)?port@[0-7]$":
+         allOf:
+           - if:
+               properties:
+diff --git a/Documentation/devicetree/bindings/net/dsa/nxp,sja1105.yaml b/Documentation/devicetree/bindings/net/dsa/nxp,sja1105.yaml
+index d179c6971193..9432565f4f5d 100644
+--- a/Documentation/devicetree/bindings/net/dsa/nxp,sja1105.yaml
++++ b/Documentation/devicetree/bindings/net/dsa/nxp,sja1105.yaml
+@@ -77,7 +77,7 @@ patternProperties:
+   "^(ethernet-)?ports$":
+     additionalProperties: true
+     patternProperties:
+-      "^(ethernet-)?port@[0-9]+$":
++      "^(ethernet-)?port@[0-9]$":
+         allOf:
+           - if:
+               properties:
+diff --git a/Documentation/devicetree/bindings/net/ethernet-switch.yaml b/Documentation/devicetree/bindings/net/ethernet-switch.yaml
+index f1b9075dc7fb..dcbffe19d71a 100644
+--- a/Documentation/devicetree/bindings/net/ethernet-switch.yaml
++++ b/Documentation/devicetree/bindings/net/ethernet-switch.yaml
+@@ -36,7 +36,7 @@ patternProperties:
+         const: 0
+ 
+     patternProperties:
+-      "^(ethernet-)?port@[0-9]+$":
++      "^(ethernet-)?port@[0-9a-f]+$":
+         type: object
+         description: Ethernet switch ports
+ 
+@@ -58,7 +58,7 @@ $defs:
+     $ref: '#'
+ 
+     patternProperties:
+-      "^(ethernet-)?port@[0-9]+$":
++      "^(ethernet-)?port@[0-9a-f]+$":
+         description: Ethernet switch ports
+         $ref: ethernet-switch-port.yaml#
+         unevaluatedProperties: false
+diff --git a/Documentation/devicetree/bindings/net/ti,cpsw-switch.yaml b/Documentation/devicetree/bindings/net/ti,cpsw-switch.yaml
+index b04ac4966608..f07ae3173b03 100644
+--- a/Documentation/devicetree/bindings/net/ti,cpsw-switch.yaml
++++ b/Documentation/devicetree/bindings/net/ti,cpsw-switch.yaml
+@@ -86,7 +86,7 @@ properties:
+         const: 0
+ 
+     patternProperties:
+-      "^port@[0-9]+$":
++      "^port@[12]$":
+         type: object
+         description: CPSW external ports
+ 
 
 -- 
 2.42.0
