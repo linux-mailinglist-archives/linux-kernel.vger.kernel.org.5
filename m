@@ -2,444 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4604B7CAD28
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDC2E7CAD29
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233614AbjJPPS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 11:18:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55634 "EHLO
+        id S233464AbjJPPSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 11:18:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233464AbjJPPS1 (ORCPT
+        with ESMTP id S233692AbjJPPSf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 11:18:27 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AEF38E
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:18:25 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c9fa869a63so15662265ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:18:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697469504; x=1698074304; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=depUh3oM3g0ijxpHdZrdans7ncvwWGgqIj2UdaIj8jw=;
-        b=H+4o5wI6MH9vGkmbs3GVOXKNQJ9OlyogJxVUjOFZKPybx5O6l29e7mBmehLRpsXLLb
-         ZI0PrZOEBJHNJlPchOPWFuChALDc2bsc8ODL94ARu+UQ/b/Lb+oGa1QJynzajPNdlidx
-         zSksrvtdqj29jPDOpoICpn/jFS31kjgH8qClcImbfhsK4I68B0OCUhaCGStpfCz9Xgyr
-         Op+VG5EvqGUuvA5fLDrP7hoWo6gDlCG7A5hIO3zR3prImUvlF97cNG3TqVRMHXFTtAoN
-         ffdikMKfkVNP4zg3paAfOtOY577iXSu1AJBdXSO3WQ9jD6KTmAb0zzwrGcIsxvT+0T2e
-         69Gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697469504; x=1698074304;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=depUh3oM3g0ijxpHdZrdans7ncvwWGgqIj2UdaIj8jw=;
-        b=b4f8AQQCMiuyPEd69wjKTnRFLqF8RYkASgAAqUvF5H9d9GKFIrUmHP3Nhuwli+7igw
-         ZqmJKcbXJK5Vo4UGc/aXMpNELHOOgYvuGIzIrz0rd2++YLNgn/ZEYAiaIbctgvhavrW6
-         SVNNwOgFB2Gf0HlUm6kHkiPmbek5gxC524BsZeNQ8drjjdNihmfElB1RxCdxVWuDtMZG
-         t7qSuu4t5p/uliHKsZyNCYhFZpZ+NCq+AT2Q/HZyWteMHfCROo2WQVh/xZPF7mUDiqsL
-         7ao6AUht2IGHhybNeOCTJdyeXUsRF0+R0QM1abePToWka79EQG8dRQCz25u5gagub/1a
-         8F6A==
-X-Gm-Message-State: AOJu0Yz8JV/Mme1RUocBnjeiRnAiS0KhmBR0KkP2hvchmvcSFRm260XE
-        OcsxlLqgR/V1gOO8qCporonSVw==
-X-Google-Smtp-Source: AGHT+IHHjIWxP/DT9llfsBGiHKdyEI2xPjxNs50pDf+Bxab1ZFzcD5iKc9qi1ICHz7XPfliqod6SLw==
-X-Received: by 2002:a17:902:fb08:b0:1c9:e5e3:c25 with SMTP id le8-20020a170902fb0800b001c9e5e30c25mr7206761plb.43.1697469504445;
-        Mon, 16 Oct 2023 08:18:24 -0700 (PDT)
-Received: from [192.168.3.101] ([104.28.240.135])
-        by smtp.gmail.com with ESMTPSA id je4-20020a170903264400b001c61901ed37sm8628106plb.191.2023.10.16.08.18.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 08:18:23 -0700 (PDT)
-Message-ID: <ce712a66-1b13-c9ad-52c2-c98b6c540962@bytedance.com>
-Date:   Mon, 16 Oct 2023 23:18:09 +0800
+        Mon, 16 Oct 2023 11:18:35 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 314E4EE;
+        Mon, 16 Oct 2023 08:18:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F046C433C8;
+        Mon, 16 Oct 2023 15:18:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697469511;
+        bh=boEy4hDOwZYIC6f1Ctc6vM+vlw2nq8iYhzUDSrBTrMA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bNtVx9A88qV/6tHstNr+1lRzQoQu+TTdFpNdGZbrVu8ss9R3BYXI8Ea/M7cVlHLjZ
+         CzevzxrDFLxf1Hwz12qUEZphl8XiTIIh/mJN2qm3/c6Dd3o2UCAOxtlUIh8u82HnwI
+         6aD4BgQTSsMMOyFEzRnrrg3IML7ffU4fnqnwUZIx5ca5+CxeyN0id3D2PxAjKdrxEG
+         5tSBhCN1jbGF1Szwe2OGufS9Qf7ea37IjHmk4yLtBEWD6ev9IhMhlgiGGaCwPxtPF5
+         WJxKrzMkZXHy7E5leTEl/g7ufzGVb+aE4j7/f5JORcHXM6BDA86JgmVd/fzYxteSPj
+         1sla1sj1QkDJA==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan@kernel.org>)
+        id 1qsPMP-0005it-39;
+        Mon, 16 Oct 2023 17:18:26 +0200
+Date:   Mon, 16 Oct 2023 17:18:25 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, Dhruva Gole <d-gole@ti.com>,
+        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>
+Subject: Re: [PATCH] serial: core: Fix checks for tx runtime PM state
+Message-ID: <ZS1UQS4FQYq2ZeaC@hovoldconsulting.com>
+References: <20231005075644.25936-1-tony@atomide.com>
+ <ZR6lc/F1Esxt5ChI@smile.fi.intel.com>
+ <20231006072738.GI34982@atomide.com>
+ <ZR-_TUSwvIs6Vl_v@hovoldconsulting.com>
+ <20231006083712.GJ34982@atomide.com>
+ <ZSAp0hUOPQNtOG_T@hovoldconsulting.com>
+ <20231007054541.GL34982@atomide.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH v10 3/5] kprobes: kretprobe scalability improvement with
- objpool
-Content-Language: en-US
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     linux-trace-kernel@vger.kernel.org, davem@davemloft.net,
-        anil.s.keshavamurthy@intel.com, naveen.n.rao@linux.ibm.com,
-        rostedt@goodmis.org, peterz@infradead.org,
-        akpm@linux-foundation.org, sander@svanheule.net,
-        ebiggers@google.com, dan.j.williams@intel.com, jpoimboe@kernel.org,
-        linux-kernel@vger.kernel.org, lkp@intel.com, mattwu@163.com
-References: <20231015053251.707442-1-wuqiang.matt@bytedance.com>
- <20231015053251.707442-4-wuqiang.matt@bytedance.com>
- <20231016222103.cb9f426edc60220eabd8aa6a@kernel.org>
-From:   "wuqiang.matt" <wuqiang.matt@bytedance.com>
-In-Reply-To: <20231016222103.cb9f426edc60220eabd8aa6a@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231007054541.GL34982@atomide.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/16 21:21, Masami Hiramatsu (Google) wrote:
-> On Sun, 15 Oct 2023 13:32:49 +0800
-> "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
-> 
->> kretprobe is using freelist to manage return-instances, but freelist,
->> as LIFO queue based on singly linked list, scales badly and reduces
->> the overall throughput of kretprobed routines, especially for high
->> contention scenarios.
->>
->> Here's a typical throughput test of sys_prctl (counts in 10 seconds,
->> measured with perf stat -a -I 10000 -e syscalls:sys_enter_prctl):
->>
->> OS: Debian 10 X86_64, Linux 6.5rc7 with freelist
->> HW: XEON 8336C x 2, 64 cores/128 threads, DDR4 3200MT/s
->>
->>           1T       2T       4T       8T      16T      24T
->>     24150045 29317964 15446741 12494489 18287272 17708768
->>          32T      48T      64T      72T      96T     128T
->>     16200682 13737658 11645677 11269858 10470118  9931051
->>
->> This patch introduces objpool to replace freelist. objpool is a
->> high performance queue, which can bring near-linear scalability
->> to kretprobed routines. Tests of kretprobe throughput show the
->> biggest ratio as 159x of original freelist. Here's the result:
->>
->>                    1T         2T         4T         8T        16T
->> native:     41186213   82336866  164250978  328662645  658810299
->> freelist:   24150045   29317964   15446741   12494489   18287272
->> objpool:    23926730   48010314   96125218  191782984  385091769
->>                   32T        48T        64T        96T       128T
->> native:   1330338351 1969957941 2512291791 1514690434 2671040914
->> freelist:   16200682   13737658   11645677   10470118    9931051
->> objpool:   764481096 1147149781 1456220214 1502109662 1579015050
->>
->> Testings on 96-core ARM64 output similarly, but with the biggest
->> ratio up to 336x:
->>
->> OS: Debian 10 AARCH64, Linux 6.5rc7
->> HW: Kunpeng-920 96 cores/2 sockets/4 NUMA nodes, DDR4 2933 MT/s
->>
->>                    1T         2T         4T         8T        16T
->> native: .   30066096   63569843  126194076  257447289  505800181
->> freelist:   16152090   11064397   11124068    7215768    5663013
->> objpool:    13997541   28032100   55726624  110099926  221498787
->>                   24T        32T        48T        64T        96T
->> native:    763305277 1015925192 1521075123 2033009392 3021013752
->> freelist:    5015810    4602893    3766792    3382478    2945292
->> objpool:   328192025  439439564  668534502  887401381  990067903
->>
->> Signed-off-by: wuqiang.matt <wuqiang.matt@bytedance.com>
->> ---
->>   include/linux/kprobes.h | 11 ++---
->>   include/linux/rethook.h | 16 ++-----
->>   kernel/kprobes.c        | 93 +++++++++++++++++------------------------
->>   kernel/trace/fprobe.c   | 32 ++++++--------
->>   kernel/trace/rethook.c  | 90 ++++++++++++++++++---------------------
->>   5 files changed, 98 insertions(+), 144 deletions(-)
->>
->> diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
->> index 85a64cb95d75..365eb092e9c4 100644
->> --- a/include/linux/kprobes.h
->> +++ b/include/linux/kprobes.h
->> @@ -26,8 +26,7 @@
->>   #include <linux/rcupdate.h>
->>   #include <linux/mutex.h>
->>   #include <linux/ftrace.h>
->> -#include <linux/refcount.h>
->> -#include <linux/freelist.h>
->> +#include <linux/objpool.h>
->>   #include <linux/rethook.h>
->>   #include <asm/kprobes.h>
->>   
->> @@ -141,7 +140,7 @@ static inline bool kprobe_ftrace(struct kprobe *p)
->>    */
->>   struct kretprobe_holder {
->>   	struct kretprobe	*rp;
->> -	refcount_t		ref;
->> +	struct objpool_head	pool;
->>   };
->>   
->>   struct kretprobe {
->> @@ -154,7 +153,6 @@ struct kretprobe {
->>   #ifdef CONFIG_KRETPROBE_ON_RETHOOK
->>   	struct rethook *rh;
->>   #else
->> -	struct freelist_head freelist;
->>   	struct kretprobe_holder *rph;
->>   #endif
->>   };
->> @@ -165,10 +163,7 @@ struct kretprobe_instance {
->>   #ifdef CONFIG_KRETPROBE_ON_RETHOOK
->>   	struct rethook_node node;
->>   #else
->> -	union {
->> -		struct freelist_node freelist;
->> -		struct rcu_head rcu;
->> -	};
->> +	struct rcu_head rcu;
->>   	struct llist_node llist;
->>   	struct kretprobe_holder *rph;
->>   	kprobe_opcode_t *ret_addr;
->> diff --git a/include/linux/rethook.h b/include/linux/rethook.h
->> index 26b6f3c81a76..ce69b2b7bc35 100644
->> --- a/include/linux/rethook.h
->> +++ b/include/linux/rethook.h
->> @@ -6,11 +6,10 @@
->>   #define _LINUX_RETHOOK_H
->>   
->>   #include <linux/compiler.h>
->> -#include <linux/freelist.h>
->> +#include <linux/objpool.h>
->>   #include <linux/kallsyms.h>
->>   #include <linux/llist.h>
->>   #include <linux/rcupdate.h>
->> -#include <linux/refcount.h>
->>   
->>   struct rethook_node;
->>   
->> @@ -30,14 +29,12 @@ typedef void (*rethook_handler_t) (struct rethook_node *, void *, unsigned long,
->>   struct rethook {
->>   	void			*data;
->>   	rethook_handler_t	handler;
->> -	struct freelist_head	pool;
->> -	refcount_t		ref;
->> +	struct objpool_head	pool;
->>   	struct rcu_head		rcu;
->>   };
->>   
->>   /**
->>    * struct rethook_node - The rethook shadow-stack entry node.
->> - * @freelist: The freelist, linked to struct rethook::pool.
->>    * @rcu: The rcu_head for deferred freeing.
->>    * @llist: The llist, linked to a struct task_struct::rethooks.
->>    * @rethook: The pointer to the struct rethook.
->> @@ -48,20 +45,16 @@ struct rethook {
->>    * on each entry of the shadow stack.
->>    */
->>   struct rethook_node {
->> -	union {
->> -		struct freelist_node freelist;
->> -		struct rcu_head      rcu;
->> -	};
->> +	struct rcu_head		rcu;
->>   	struct llist_node	llist;
->>   	struct rethook		*rethook;
->>   	unsigned long		ret_addr;
->>   	unsigned long		frame;
->>   };
->>   
->> -struct rethook *rethook_alloc(void *data, rethook_handler_t handler);
->> +struct rethook *rethook_alloc(void *data, rethook_handler_t handler, int size, int num);
->>   void rethook_stop(struct rethook *rh);
->>   void rethook_free(struct rethook *rh);
->> -void rethook_add_node(struct rethook *rh, struct rethook_node *node);
->>   struct rethook_node *rethook_try_get(struct rethook *rh);
->>   void rethook_recycle(struct rethook_node *node);
->>   void rethook_hook(struct rethook_node *node, struct pt_regs *regs, bool mcount);
->> @@ -98,4 +91,3 @@ void rethook_flush_task(struct task_struct *tk);
->>   #endif
->>   
->>   #endif
->> -
->> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
->> index ca385b61d546..075a632e6c7c 100644
->> --- a/kernel/kprobes.c
->> +++ b/kernel/kprobes.c
->> @@ -1877,13 +1877,27 @@ static struct notifier_block kprobe_exceptions_nb = {
->>   #ifdef CONFIG_KRETPROBES
->>   
->>   #if !defined(CONFIG_KRETPROBE_ON_RETHOOK)
->> +
->> +/* callbacks for objpool of kretprobe instances */
->> +static int kretprobe_init_inst(void *nod, void *context)
->> +{
->> +	struct kretprobe_instance *ri = nod;
->> +
->> +	ri->rph = context;
->> +	return 0;
->> +}
->> +static int kretprobe_fini_pool(struct objpool_head *head, void *context)
->> +{
->> +	kfree(context);
->> +	return 0;
->> +}
->> +
->>   static void free_rp_inst_rcu(struct rcu_head *head)
->>   {
->>   	struct kretprobe_instance *ri = container_of(head, struct kretprobe_instance, rcu);
->> +	struct kretprobe_holder *rph = ri->rph;
->>   
->> -	if (refcount_dec_and_test(&ri->rph->ref))
->> -		kfree(ri->rph);
->> -	kfree(ri);
->> +	objpool_drop(ri, &rph->pool);
->>   }
->>   NOKPROBE_SYMBOL(free_rp_inst_rcu);
->>   
->> @@ -1892,7 +1906,7 @@ static void recycle_rp_inst(struct kretprobe_instance *ri)
->>   	struct kretprobe *rp = get_kretprobe(ri);
->>   
->>   	if (likely(rp))
->> -		freelist_add(&ri->freelist, &rp->freelist);
->> +		objpool_push(ri, &rp->rph->pool);
->>   	else
->>   		call_rcu(&ri->rcu, free_rp_inst_rcu);
->>   }
->> @@ -1929,23 +1943,12 @@ NOKPROBE_SYMBOL(kprobe_flush_task);
->>   
->>   static inline void free_rp_inst(struct kretprobe *rp)
->>   {
->> -	struct kretprobe_instance *ri;
->> -	struct freelist_node *node;
->> -	int count = 0;
->> -
->> -	node = rp->freelist.head;
->> -	while (node) {
->> -		ri = container_of(node, struct kretprobe_instance, freelist);
->> -		node = node->next;
->> -
->> -		kfree(ri);
->> -		count++;
->> -	}
->> +	struct kretprobe_holder *rph = rp->rph;
->>   
->> -	if (refcount_sub_and_test(count, &rp->rph->ref)) {
->> -		kfree(rp->rph);
->> -		rp->rph = NULL;
->> -	}
->> +	if (!rph)
->> +		return;
->> +	rp->rph = NULL;
->> +	objpool_fini(&rph->pool);
->>   }
->>   
->>   /* This assumes the 'tsk' is the current task or the is not running. */
->> @@ -2087,19 +2090,17 @@ NOKPROBE_SYMBOL(__kretprobe_trampoline_handler)
->>   static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
->>   {
->>   	struct kretprobe *rp = container_of(p, struct kretprobe, kp);
->> +	struct kretprobe_holder *rph = rp->rph;
->>   	struct kretprobe_instance *ri;
->> -	struct freelist_node *fn;
->>   
->> -	fn = freelist_try_get(&rp->freelist);
->> -	if (!fn) {
->> +	ri = objpool_pop(&rph->pool);
->> +	if (!ri) {
->>   		rp->nmissed++;
->>   		return 0;
->>   	}
->>   
->> -	ri = container_of(fn, struct kretprobe_instance, freelist);
->> -
->>   	if (rp->entry_handler && rp->entry_handler(ri, regs)) {
->> -		freelist_add(&ri->freelist, &rp->freelist);
->> +		objpool_push(ri, &rph->pool);
->>   		return 0;
->>   	}
->>   
->> @@ -2193,7 +2194,6 @@ int kprobe_on_func_entry(kprobe_opcode_t *addr, const char *sym, unsigned long o
->>   int register_kretprobe(struct kretprobe *rp)
->>   {
->>   	int ret;
->> -	struct kretprobe_instance *inst;
->>   	int i;
->>   	void *addr;
->>   
->> @@ -2227,19 +2227,12 @@ int register_kretprobe(struct kretprobe *rp)
->>   		rp->maxactive = max_t(unsigned int, 10, 2*num_possible_cpus());
->>   
->>   #ifdef CONFIG_KRETPROBE_ON_RETHOOK
->> -	rp->rh = rethook_alloc((void *)rp, kretprobe_rethook_handler);
->> -	if (!rp->rh)
->> -		return -ENOMEM;
->> +	rp->rh = rethook_alloc((void *)rp, kretprobe_rethook_handler,
->> +				sizeof(struct kretprobe_instance) +
->> +				rp->data_size, rp->maxactive);
->> +	if (IS_ERR(rp->rh))
->> +		return PTR_ERR(rp->rh);
->>   
->> -	for (i = 0; i < rp->maxactive; i++) {
->> -		inst = kzalloc(struct_size(inst, data, rp->data_size), GFP_KERNEL);
->> -		if (inst == NULL) {
->> -			rethook_free(rp->rh);
->> -			rp->rh = NULL;
->> -			return -ENOMEM;
->> -		}
->> -		rethook_add_node(rp->rh, &inst->node);
->> -	}
->>   	rp->nmissed = 0;
->>   	/* Establish function entry probe point */
->>   	ret = register_kprobe(&rp->kp);
->> @@ -2249,24 +2241,18 @@ int register_kretprobe(struct kretprobe *rp)
->>   		rp->rh = NULL;
->>   	}
->>   #else	/* !CONFIG_KRETPROBE_ON_RETHOOK */
->> -	rp->freelist.head = NULL;
->>   	rp->rph = kzalloc(sizeof(struct kretprobe_holder), GFP_KERNEL);
->>   	if (!rp->rph)
->>   		return -ENOMEM;
->>   
->> -	rp->rph->rp = rp;
->> -	for (i = 0; i < rp->maxactive; i++) {
->> -		inst = kzalloc(struct_size(inst, data, rp->data_size), GFP_KERNEL);
->> -		if (inst == NULL) {
->> -			refcount_set(&rp->rph->ref, i);
->> -			free_rp_inst(rp);
->> -			return -ENOMEM;
->> -		}
->> -		inst->rph = rp->rph;
->> -		freelist_add(&inst->freelist, &rp->freelist);
->> +	if (objpool_init(&rp->rph->pool, rp->maxactive, rp->data_size +
->> +			sizeof(struct kretprobe_instance), GFP_KERNEL,
->> +			rp->rph, kretprobe_init_inst, kretprobe_fini_pool)) {
->> +		kfree(rp->rph);
->> +		rp->rph = NULL;
->> +		return -ENOMEM;
->>   	}
->> -	refcount_set(&rp->rph->ref, i);
->> -
->> +	rp->rph->rp = rp;
->>   	rp->nmissed = 0;
->>   	/* Establish function entry probe point */
->>   	ret = register_kprobe(&rp->kp);
->> diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
->> index 3b21f4063258..f5bf98e6b2ac 100644
->> --- a/kernel/trace/fprobe.c
->> +++ b/kernel/trace/fprobe.c
->> @@ -187,9 +187,9 @@ static void fprobe_init(struct fprobe *fp)
->>   
->>   static int fprobe_init_rethook(struct fprobe *fp, int num)
->>   {
->> -	int i, size;
->> +	int size;
->>   
->> -	if (num < 0)
->> +	if (num <= 0)
->>   		return -EINVAL;
-> 
-> Oops, this must be a bugfix. Let me fix it.
-> 
->>   
->>   	if (!fp->exit_handler) {
->> @@ -202,29 +202,21 @@ static int fprobe_init_rethook(struct fprobe *fp, int num)
->>   		size = fp->nr_maxactive;
->>   	else
->>   		size = num * num_possible_cpus() * 2;
->> -	if (size < 0)
->> +	if (size <= 0)
->>   		return -E2BIG;
-> 
-> Here too.
-> 
-> Except for this point, it looks good to me.
+On Sat, Oct 07, 2023 at 08:45:41AM +0300, Tony Lindgren wrote:
+> * Johan Hovold <johan@kernel.org> [231006 15:37]:
+> > On Fri, Oct 06, 2023 at 11:37:12AM +0300, Tony Lindgren wrote:
 
-Got it.  Would these 2 fixes catch the release window of v6.6 ?
-
+> > > Care to clarify a bit which parts are unclear? The hierarchy of port
+> > > devices, making serial core manage runtime PM in a generic way, or
+> > > flushing tx?
+> > 
+> > I still don't know why you added these two new abstractions (controller
+> > and port), and that isn't really explained by the commit message either.
 > 
-> Thanks!
-> 
+> We want serial core to do runtime PM in a generic way and have the usage
+> count propagate to the parent serial port hardware device. This way we
+> don't need to care much if the numerous serial port drivers implement
+> runtime PM or not. Well, except for now we need to check the parent state
+> for this fix :)
 
+That sounds like a lot of complexity to avoid checking if (the single
+instance of) pm_runtime_get() returns -EACCESS.
+ 
+> We also want serial core to know the serial port to serial port hardware
+> mapping as we already have multiport devices. The serial core controller
+> is there to group the serial ports for each serial port hardware device.
+> We at least now have an option to support devices with multiple controllers
+> and ports in case we ever happen to see such things.
+
+Hypothetical multiple serial controllers should be modelled as separate
+controllers, but yeah, perhaps we want to describe the ports.
+ 
+> > And if these are indeed needed, then why isn't the serdev controller now
+> > a child of the "port" device, for example?
+> 
+> Yes I agree we should now move serdev controller to be a child of the
+> serial core port device. Then this $subject patch can be reverted.
+> 
+> Moving serdev controller should also help serdev to deal with multiport
+> devices I think?
+
+It wouldn't help currently I think, since we already resume the
+controller and don't manage ports individually, but if we now have port
+devices then it probably should be moved.
+
+Johan
