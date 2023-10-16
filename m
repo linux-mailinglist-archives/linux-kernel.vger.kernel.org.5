@@ -2,200 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 172177CB143
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 19:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F085F7CB147
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 19:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232985AbjJPRVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 13:21:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39944 "EHLO
+        id S233657AbjJPRXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 13:23:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233412AbjJPRVE (ORCPT
+        with ESMTP id S229943AbjJPRXw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 13:21:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F516D9
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 10:20:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697476822;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IB8ijEdDwJemoPTssoo1rbFdLIyoQawFS03Tg5RD9fQ=;
-        b=HZc/JTankE+lWC8WPpMmNGtvpnI5USQJZ5JLRSZ/X5LEYnuhQy39GjlpBmPxw3EZ6eLZAd
-        lGpR/OrCfWT0DXftNrVxnMvRWh5u88wNyXZNeHEaPeeed9J+oAn9hKI2qNlMUowW9gzXvW
-        p6mhZgGBLQvj8KO5760q+wtjJc8/MnU=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-636-ASUrYn5MPN25NnmaONN8XA-1; Mon, 16 Oct 2023 13:20:20 -0400
-X-MC-Unique: ASUrYn5MPN25NnmaONN8XA-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9b65c46bca8so64876466b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 10:20:20 -0700 (PDT)
+        Mon, 16 Oct 2023 13:23:52 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4655B9F
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 10:23:50 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99c1c66876aso774161966b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 10:23:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1697477028; x=1698081828; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ziSfOVrFPUUVHeu10UoweKHdhwL95UR6sSsnqfpXK6Q=;
+        b=HvQ5YeEvctA8aifKS1VFX6xfbbx3IvuRPYON1jqKEBTH/bGZoyl+ixbQ0pO/NV8/qo
+         mmFUbag82baeh5YBFHMbS9NPswSRTxJHRdQzDT3KOuLGvJT/ax9grdYcH6LWLn6vA1+O
+         45Dpj4bm/uHXzQR0DF8WMsXZyfeJGo20EZUq0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697476819; x=1698081619;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IB8ijEdDwJemoPTssoo1rbFdLIyoQawFS03Tg5RD9fQ=;
-        b=i0GJAqnigmv0EzTYjGYcrofjF96MfbpbfsEDTAJ/6CcGl25TRgIWFJsB0ah1R+e4MX
-         Zo2HclKedh3bKaOrDw3YhmwkXtFPNcw3z9ODx3mNNHN/An76tQcBeKPHXBP/1SbHdQAz
-         d/3QCR2OGEJI3tCzNlq3/Jsq06CgcTRBU1a48PpuPiIB7o8OjQInNCCR9DBKiqI6GvO+
-         8stxycub1sKXSlKRnKhpaNmqbHKxwsDUFrFnvgR6Zlw2W6ZM61Lc6qJQON0fl+f6jCmy
-         h7Msll/rbObYMyJLiUh7Bqrq/1lMwgdRNEAd16Fpr1+NwzVirqTw5v+liP7C/kS8ed0l
-         N6JQ==
-X-Gm-Message-State: AOJu0Yyfw6IbE+g8/2H/SL0xFyl7WYVEo3XX+vXn+iozjScQg58q/FBw
-        ZDaS3NFca0PUBlNBEPRaNMDFzVvEqFUm8/aetf+NLoCkYXmUH9uU4ecj1R9BWokGj7sjQQvFXZL
-        iR0YFZYJ4xvgpLpPVYTDz7Jxg
-X-Received: by 2002:a17:906:4fc7:b0:9be:dce3:6e07 with SMTP id i7-20020a1709064fc700b009bedce36e07mr5538506ejw.32.1697476819507;
-        Mon, 16 Oct 2023 10:20:19 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFyQXWWwAP/eW5eefiiR9ndnCb91EORwxQ3opyiCWlj496ZaVbyT5HGgZWO9aC83VCWTOXj4A==
-X-Received: by 2002:a17:906:4fc7:b0:9be:dce3:6e07 with SMTP id i7-20020a1709064fc700b009bedce36e07mr5538478ejw.32.1697476819117;
-        Mon, 16 Oct 2023 10:20:19 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id r20-20020a1709062cd400b009ad8084e08asm4363084ejr.0.2023.10.16.10.20.18
+        d=1e100.net; s=20230601; t=1697477028; x=1698081828;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ziSfOVrFPUUVHeu10UoweKHdhwL95UR6sSsnqfpXK6Q=;
+        b=ZoSpmlsJtChwNKgvgN1Q/mx/+tF8sIIQDdK9/Fb+rysQp+DscxmyCSyK8E2MEjLx/L
+         JjxbXmlUgFor6PccCUNaBkHJbyenHPGt/WE5En1e629f+2a2m2ZQXiozMmqm5IeMkP+L
+         vzpNvlESticL2yAQIBvrBxu61BEi2+7Zfy7JDyvxSq47XokNy7BIC9RrYx92XT7yD7/m
+         VsFEnL9vWxFNcUt1eesgwm1+Tvd4IzywE81wvTiWQTZx3OC+rR/SPSjaI1LCy/SqTBOG
+         n6aSLQvMFybhVYFNFUFAvJPiehN80PqrpWbSPPO4BfisqPt1DAujj9bjv/A2LdMNkJXA
+         FpHw==
+X-Gm-Message-State: AOJu0Yx24DIDOIsDTI0jX4eb1Hv/SieTo0qZ5fflR6p8UFzLMWMsCdzg
+        +IBdSUlBJFtWToqd+WhZWvNwQLiJLzU34W3biXlzUg==
+X-Google-Smtp-Source: AGHT+IEVSnfFlsK38AYeabEJvzmdOCzBWMKOUw0ZY4LUZt501NPLXYB8pOm4c4UGajThllza4oxjZw==
+X-Received: by 2002:a17:906:2da:b0:9b2:ccd8:2d2b with SMTP id 26-20020a17090602da00b009b2ccd82d2bmr28673936ejk.77.1697477028611;
+        Mon, 16 Oct 2023 10:23:48 -0700 (PDT)
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com. [209.85.218.43])
+        by smtp.gmail.com with ESMTPSA id y24-20020a170906071800b009c5c5c2c59csm10624ejb.149.2023.10.16.10.23.47
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 10:20:18 -0700 (PDT)
-Message-ID: <5747b78e-1956-8249-8f5e-85426b3efd01@redhat.com>
-Date:   Mon, 16 Oct 2023 19:20:17 +0200
+        Mon, 16 Oct 2023 10:23:47 -0700 (PDT)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-9ad8a822508so779347366b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 10:23:47 -0700 (PDT)
+X-Received: by 2002:a17:907:78a:b0:9bd:a662:c066 with SMTP id
+ xd10-20020a170907078a00b009bda662c066mr9387285ejb.76.1697477026848; Mon, 16
+ Oct 2023 10:23:46 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v20 1/4] usb: Add support for Intel LJCA device
-To:     "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
-        "Wu, Wentong" <wentong.wu@intel.com>
-Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "oneukum@suse.com" <oneukum@suse.com>,
-        "wsa@kernel.org" <wsa@kernel.org>,
-        "andi.shyti@linux.intel.com" <andi.shyti@linux.intel.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "bartosz.golaszewski@linaro.org" <bartosz.golaszewski@linaro.org>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>,
-        "Wang, Zhifeng" <zhifeng.wang@intel.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <6a87b43a-0648-28d4-6c69-e0f684e44eb6@redhat.com>
- <DM6PR11MB4316BE44F53E276384FF06C88DCCA@DM6PR11MB4316.namprd11.prod.outlook.com>
- <5d2e9eba-a941-ea9a-161a-5b97d09d5d35@redhat.com>
- <ZSmjEKfYzFuAHXW+@smile.fi.intel.com>
- <9a080d06-586d-686f-997e-674cb8d16099@redhat.com>
- <DM6PR11MB43169A9ADDA7681DB7D9347C8DD7A@DM6PR11MB4316.namprd11.prod.outlook.com>
- <ZSzogNhlX9njvOIU@smile.fi.intel.com>
- <DM6PR11MB4316382324D15985A70E531C8DD7A@DM6PR11MB4316.namprd11.prod.outlook.com>
- <2023101653-shiftless-scorebook-19e3@gregkh>
- <DM6PR11MB4316711C71937AE3C0516C7B8DD7A@DM6PR11MB4316.namprd11.prod.outlook.com>
- <ZS1fSPhfREVlELLD@smile.fi.intel.com>
-Content-Language: en-US, nl
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <ZS1fSPhfREVlELLD@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20231016143828.647848-1-jeffxu@chromium.org>
+In-Reply-To: <20231016143828.647848-1-jeffxu@chromium.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 16 Oct 2023 10:23:29 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whFZoap+DBTYvJx6ohqPwn11Puzh7q4huFWDX9vBwXHgg@mail.gmail.com>
+Message-ID: <CAHk-=whFZoap+DBTYvJx6ohqPwn11Puzh7q4huFWDX9vBwXHgg@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 0/8] Introduce mseal() syscall
+To:     jeffxu@chromium.org
+Cc:     akpm@linux-foundation.org, keescook@chromium.org,
+        sroettger@google.com, jeffxu@google.com, jorgelo@chromium.org,
+        groeck@chromium.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        jannh@google.com, surenb@google.com, alex.sierra@amd.com,
+        apopple@nvidia.com, aneesh.kumar@linux.ibm.com,
+        axelrasmussen@google.com, ben@decadent.org.uk,
+        catalin.marinas@arm.com, david@redhat.com, dwmw@amazon.co.uk,
+        ying.huang@intel.com, hughd@google.com, joey.gouly@arm.com,
+        corbet@lwn.net, wangkefeng.wang@huawei.com,
+        Liam.Howlett@oracle.com, lstoakes@gmail.com, willy@infradead.org,
+        mawupeng1@huawei.com, linmiaohe@huawei.com, namit@vmware.com,
+        peterx@redhat.com, peterz@infradead.org, ryan.roberts@arm.com,
+        shr@devkernel.io, vbabka@suse.cz, xiujianfeng@huawei.com,
+        yu.ma@intel.com, zhangpeng362@huawei.com, dave.hansen@intel.com,
+        luto@kernel.org, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, 16 Oct 2023 at 07:38, <jeffxu@chromium.org> wrote:
+>
+> This patchset proposes a new mseal() syscall for the Linux kernel.
 
-On 10/16/23 18:05, Shevchenko, Andriy wrote:
-> On Mon, Oct 16, 2023 at 06:44:21PM +0300, Wu, Wentong wrote:
->>> From: gregkh@linuxfoundation.org
->>> On Mon, Oct 16, 2023 at 03:05:09PM +0000, Wu, Wentong wrote:
->>>>> From: Shevchenko, Andriy
->>>>> On Mon, Oct 16, 2023 at 08:52:28AM +0300, Wu, Wentong wrote:
-> 
-> ...
-> 
->>>>> But this does not confirm if you have such devices. Moreover, My
->>>>> question about _CID per function stays the same. Why firmware is not using
->>> it?
->>>>
->>>> Yes, both _ADR and _CID can stop growing list in the driver. And for
->>>> _ADR, it also only require one ID per function. I don't know why BIOS
->>>> team doesn't select _CID, but I have suggested use _ADR internally,
->>>> and , to make things moving forward, the driver adds support for _ADR here
->>> first.
->>>>
->>>> But you're right, _CID is another solution as well, we will discuss it
->>>> with firmware team more.
->>>
->>> Should I revert this series now until this gets sorted out?
->>
->> Current _ADR support is a solution, I don't think _CID is better than _ADR to both
->> stop growing list in driver and support the shipped hardware at the same time.
->>
->> Andy, what's your idea? 
-> 
-> In my opinion if _CID can be made, it's better than _ADR. As using _ADR like
-> you do is a bit of grey area in the ACPI specification. I.o.w. can you get
-> a confirmation, let's say, from Microsoft, that they will go your way for other
-> similar devices?
-> 
-> Btw, Microsoft has their own solution actually using _ADR for the so called
-> "wired" USB devices. Is it your case? If so, I'm not sure why _HID has been
-> used from day 1...
-> 
-> Also I suggest to wait for Hans' opinion on the topic.
+So I have no objections to adding some kind of "lock down memory
+mappings" model, but this isn't it.
 
-I definitely don't think we should revert the entire series since this
-supports actual hw which has already been shipping for years.
+First off, the simple stuff: the commit messages are worthless. Having
 
-But if the _ADR support is only there to support future hw and
-it is not even certain yet that that future hw is actually going
-to be using _ADR support then I believe that a follow-up patch
-to drop _ADR support for now is in order. We can then re-introduce
-it (revert the follow up patch) if future hw actually starts
-using _ADR support.
+   check seal for mmap(2)
 
-Specifically what I'm suggesting is something like the following:
+as the commit message is not even remotely acceptable, to pick one
+random example from the series (7/8).
 
-diff --git a/drivers/usb/misc/usb-ljca.c b/drivers/usb/misc/usb-ljca.c
-index c9decd0396d4..e1bbaf964786 100644
---- a/drivers/usb/misc/usb-ljca.c
-+++ b/drivers/usb/misc/usb-ljca.c
-@@ -457,8 +457,8 @@ static void ljca_auxdev_acpi_bind(struct ljca_adapter *adap,
- 				  u64 adr, u8 id)
- {
- 	struct ljca_match_ids_walk_data wd = { 0 };
--	struct acpi_device *parent, *adev;
- 	struct device *dev = adap->dev;
-+	struct acpi_device *parent;
- 	char uid[4];
- 
- 	parent = ACPI_COMPANION(dev);
-@@ -466,17 +466,7 @@ static void ljca_auxdev_acpi_bind(struct ljca_adapter *adap,
- 		return;
- 
- 	/*
--	 * get auxdev ACPI handle from the ACPI device directly
--	 * under the parent that matches _ADR.
--	 */
--	adev = acpi_find_child_device(parent, adr, false);
--	if (adev) {
--		ACPI_COMPANION_SET(&auxdev->dev, adev);
--		return;
--	}
--
--	/*
--	 * _ADR is a grey area in the ACPI specification, some
-+	 * Currently LJCA hw does not use _ADR instead current
- 	 * platforms use _HID to distinguish children devices.
- 	 */
- 	switch (adr) {
+But that doesn't matter much, since I think the more fundamental
+problems are much worse:
 
-As a follow-up patch to the existing series.
+ - the whole "ON_BEHALF_OF_KERNEL" and "ON_BEHALF_OF_USERSPACE" is
+just complete noise and totally illogical. The whole concept needs to
+be redone.
 
-Regards,
+Example of complete nonsense (again, picking 7/8, but that's again
+just a random example):
 
-Hans
+> @@ -3017,8 +3022,8 @@ SYSCALL_DEFINE5(remap_file_pages,
+>                 flags |= MAP_LOCKED;
+>
+>         file = get_file(vma->vm_file);
+> -       ret = do_mmap(vma->vm_file, start, size,
+> -                       prot, flags, pgoff, &populate, NULL);
+> +       ret = do_mmap(vma->vm_file, start, size, prot, flags, pgoff,
+> +                       &populate, NULL, ON_BEHALF_OF_KERNEL);
+>         fput(file);
+>  out:
+>         mmap_write_unlock(mm);
 
+Christ. That's *literally* the remap_file_pages() system call
+definition. No way in hell does "ON_BEHALF_OF_KERNEL" make any sense
+in this context.
 
+It's not the only situation. "mremap() as the same thing. vm_munmap()
+has the same thing. vm_brk_flags() has the same thing. None of them
+make any sense.
+
+But even if those obvious kinds of complete mis-designs were to be
+individually fixed, the whole naming and concept is bogus. The
+"ON_BEHALF_OF_KERNEL" thing seems to actually just mean "don't check
+sealing". Naming should describe what the thing *means*, not some
+random policy thing that may or may not be at all relevant.
+
+ - the whole MM_SEAL_xx vs VM_SEAL_xx artificial distinction needs to go away.
+
+Not only is it unacceptable to pointlessly create two different name
+spaces for no obvious reason, code like this (from 1/8) should not
+exist:
+
+> +       if (types & MM_SEAL_MSEAL)
+> +               newtypes |= VM_SEAL_MSEAL;
+> +
+> +       if (types & MM_SEAL_MPROTECT)
+> +               newtypes |= VM_SEAL_MPROTECT;
+> +
+> +       if (types & MM_SEAL_MUNMAP)
+> +               newtypes |= VM_SEAL_MUNMAP;
+> +
+> +       if (types & MM_SEAL_MMAP)
+> +               newtypes |= VM_SEAL_MMAP;
+> +
+> +       if (types & MM_SEAL_MREMAP)
+> +               newtypes |= VM_SEAL_MREMAP;
+
+Sure, we have that in some cases when there was a *reason* for
+namespacing imposed on us from an API standpoint (ie the "open()"
+flags that get turned into FMODE_xyz flags, or the MS_xyz mount flags
+being turned into MNT_xyz flags), but those tend to be signs of
+problems in the system call API where some mixup made it impossible to
+use the flags directly (most commonly because there is some extended
+internal representation of said things).
+
+For example, the MS_xyz namespace is a combination of "these are flags
+for the new mount" (like MS_RDONLY) and "this is how you should mount
+it" (like MS_REMOUNT), and so the user interface has that odd mixing
+of different things, and the MNT_xyz namespace is a distillation of
+the former.
+
+But we certainly should not strive to introduce *new* interfaces that
+start out with this kind of mixup and pointless "translate from one
+bit to another" code.
+
+ - And finally (for now), I hate that MM_ACTION_xyz thing too!
+
+Why do we have MM_ACTION_MREMAP, and pointless like this (from 3/8):
+
+> +       switch (action) {
+> +       case MM_ACTION_MPROTECT:
+> +               if (vma->vm_seals & VM_SEAL_MPROTECT)
+> +                       return false;
+> +               break;
+
+when the sane thing to do is to use the *same* MM_SEAL_xyz bitmask and
+sealing bitmask and just say
+
+        if (vma->vm_seal & vm_action)
+                return -EPERM;
+
+IOW, you have pointlessly introduced not *two* different namespaces,
+but *three*. All doing the exact same thing, and all just causing
+pointless and ugly code to "translate" the actions of one into the
+model of another.
+
+So get rid of the "MM_ACTION_xyz" thing. Get rid of ther "VM_SEAL_xyz"
+thing. Use *one* single "these are the sealing bits".
+
+And get rid of "enum caller_origin" entirely. I don't know what the
+right model for that thing is, but that isn't it.
+
+*Maybe* the right model is some MM_SEAL_OVERRIDE bit that user space
+cannot set, but that the kernel can use internally - and if that is
+the right model, then dammit, the *uses* should be very very obvious
+why the override is fine, because that remap_file_pages() use sure as
+hell was *not* obvious.
+
+In fact, it's not at all obvious why anything should override the
+sealing bits - EVER. So I'm not convinced that the right model is
+"replace ON_BEHALF_OF_KERNEL with MM_SEAL_OVERRIDE". Why would we
+*ever* want to override sealing? It sounds like complete garbage. Most
+of the users seem to be things like "execve()", which is nonsensical,
+since the VM wouldn't have been sealed at that point _anyway_, so
+having a "don't bother checking sealing bits" flag seems entirely
+useless.
+
+Anyway, this is all a resounding NAK on this series in this form. My
+complaints are not some kind of small "fix this up". These are
+fundamental issues.
+
+            Linus
