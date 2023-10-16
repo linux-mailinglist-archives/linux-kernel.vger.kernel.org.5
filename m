@@ -2,230 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B3C37C9EB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 07:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21AB97C9EBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 07:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231526AbjJPF1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 01:27:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55340 "EHLO
+        id S231487AbjJPF27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 01:28:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjJPF1a (ORCPT
+        with ESMTP id S229611AbjJPF25 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 01:27:30 -0400
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03BA8E6;
-        Sun, 15 Oct 2023 22:27:29 -0700 (PDT)
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40684f53ef3so44568875e9.3;
-        Sun, 15 Oct 2023 22:27:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697434047; x=1698038847;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zqVI/Zj6gDUN/fhSkPe4D6BU2OUIPZzVnbqR1FLt//4=;
-        b=piTB6dxJDRWPecwimm9MkwqwgY+arWcxWKRA3prNi9AuQ+8jz04W9fsdAozAvsXcWI
-         Yg22MwFmXU2+RxtjrhsEn2iPNav77jFMmBMur3tPoAxUuCs5DAd5PXdyoFKWFPwGescX
-         f6iK8vcBCAckGOd107IFyDPpFH56JEU2xTFpRq81/ha8Da/KdzM2ekWMM/HYUKAjmzJ/
-         fEnL9/q4Bm/pGyhyGDRoKFnEh4CtMeMZrNDYTwaxKjxmQ0xFT/IVogGDYH8mBea8b/HH
-         KzvgESOkxHVbmJScjOz+0H40EpXV2xkkIg8T5yFFusej47+I02oRCcOtAQyPO/oxolT9
-         12IA==
-X-Gm-Message-State: AOJu0YyvhoBOFQ9ecW5U5lRkd1F1XtI0PsDnPs8qlf+Wa2PDH6Nfg+ZY
-        ejYW2q+LUvquAtZgW+61YGE=
-X-Google-Smtp-Source: AGHT+IFcNsQ1Lo4i/XkaFaNrbO9d/6gOzRZpq7weQMS4O2gkcghfvBOR0B7Z72VOK5Igksb0sV7eug==
-X-Received: by 2002:a05:600c:2150:b0:402:8c7e:ba5 with SMTP id v16-20020a05600c215000b004028c7e0ba5mr27611779wml.18.1697434047281;
-        Sun, 15 Oct 2023 22:27:27 -0700 (PDT)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id n23-20020a7bcbd7000000b0040536dcec17sm6101035wmi.27.2023.10.15.22.27.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Oct 2023 22:27:26 -0700 (PDT)
-Message-ID: <79a2006b-abca-4e06-b8a3-58411318b9d7@kernel.org>
-Date:   Mon, 16 Oct 2023 07:27:26 +0200
+        Mon, 16 Oct 2023 01:28:57 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB107DC;
+        Sun, 15 Oct 2023 22:28:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697434136; x=1728970136;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=3HbN/fkDj4tXmG+zWOVCT3Xu+4DiX6ZKaYLrMeHvf/0=;
+  b=LQ/TXn7n0cYKFVBsVT8jL+S3+bqe23N0vaUnqUccLwSdsjvzcoB8/ycW
+   oblgykiJw6B1Ksz5vEVVTpcaDfaHr+BNj9nmvJqtueWmG+LHjTL3u0hls
+   yiKHQK+7np3v4kj689hArvIRdHXspdgsqjEDsEM8CUn7rOLp2XqO6dY1W
+   3x7sZLr4rzYapLHUqhCR0iZbwi6xdhs85PAzTEeQFg6y2yd2Lynxd/IhA
+   kxAWEypCxzn/vBQxgcsgHV0/WmjmkgBRxcWCy8mJfU97EIvxL/9X9ZeCu
+   Fa3PNgy7fqETULL017OYPO7QEED+3HeyBA1DYRcjQpCYqdXF8ebVhmK4T
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="389307700"
+X-IronPort-AV: E=Sophos;i="6.03,228,1694761200"; 
+   d="scan'208";a="389307700"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2023 22:28:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="784969729"
+X-IronPort-AV: E=Sophos;i="6.03,228,1694761200"; 
+   d="scan'208";a="784969729"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Oct 2023 22:28:53 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Sun, 15 Oct 2023 22:28:52 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Sun, 15 Oct 2023 22:28:52 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Sun, 15 Oct 2023 22:28:52 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l8eXSyxSuvVp0KHM2E3o/X4jrbKiP19d9A8sSLfYiUXeFJ4LIMrR2FIFDXdiOOmdfH25lNjn65RoBOH1vSTk4zaKH/6JJx4IP0LkOPb7Wwbg4eY79Lbd/L9CmVdP42erAR8danSy9Ioyba3NgU7e4yT5ducbYRWT7DgVvptxL5jjR5yRt09UO6Dt5Ujlkdb6CKraOq2SBuYBGiuk/hRE901Rcha9WHTGbnwWOVG5wiE8kDgzf5UxFcoWV8hEoVjNEyGFPuoN3wFI/zUWpiyl6wj7ImzpN9pSLGRZrnXfSv+7nKiPT+7wyReY6z/Ch+btImlTE/RSip0es9AfBDuNvA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=arJ/CAYlaXGZnptd6jeqcQNwr+B8KHmbFqXGV2bx/R4=;
+ b=cIZACD9qJWRWZs1pHPNd52a+EbJ3ekgoM9+AzDKGEffOTdzbINdwkMwlxmQgeld4MMKdMvQ8CzDmq4wsstAZCwdB/t45xeOh2XbcdyvkMrg+5khx8sBUmKHhxbKvaenJGx/1bw6VFyDdD0dREWJ+W6GS1K2Q/RCMyc6cLuNs7WR9SmRrgK3byDtIV8PiRDaVOv/wJd8ItzvvqAAuen+RXrCWCnmI2RL9U8wctz9Z2AUiAr/AZ4c9pcD/psle5XMrnjvGVvfywBufCYXz5q1n2nGozWEP5vLPufKu1GZJfPXmmFapD/AWAq4a0ACU7SdEkzxnSHHpuZcmWBJbWsBzwQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN0PR11MB6231.namprd11.prod.outlook.com (2603:10b6:208:3c4::15)
+ by IA0PR11MB7792.namprd11.prod.outlook.com (2603:10b6:208:409::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.34; Mon, 16 Oct
+ 2023 05:28:50 +0000
+Received: from MN0PR11MB6231.namprd11.prod.outlook.com
+ ([fe80::fd1b:a3b7:11a6:4bc3]) by MN0PR11MB6231.namprd11.prod.outlook.com
+ ([fe80::fd1b:a3b7:11a6:4bc3%6]) with mapi id 15.20.6886.034; Mon, 16 Oct 2023
+ 05:28:50 +0000
+Date:   Mon, 16 Oct 2023 07:28:44 +0200
+From:   Maciej =?utf-8?Q?Wiecz=C3=B3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>
+To:     Shuah <shuah@kernel.org>
+CC:     <akpm@linux-foundation.org>, <christian@kellner.me>,
+        <fenghua.yu@intel.com>, <keescook@chromium.org>,
+        <ndesaulniers@google.com>, <coltonlewis@google.com>,
+        <dmatlack@google.com>, <vipinsh@google.com>, <seanjc@google.com>,
+        <brauner@kernel.org>, <pbonzini@redhat.com>, <hannes@cmpxchg.org>,
+        <nphamcs@gmail.com>, <reinette.chatre@intel.com>,
+        <ilpo.jarvinen@linux.intel.com>, <linux-kselftest@vger.kernel.org>,
+        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH v6 0/8] Add printf attribute to kselftest functions
+Message-ID: <s3wj75zwkwwmvllobuevhf7nbkhyn2a2kwis7oyt3nwsnl5j36@ju5xzn6pw5p5>
+References: <cover.1697196663.git.maciej.wieczor-retman@intel.com>
+ <0efe3ba3-b62f-4447-a195-2447e1152a22@kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0efe3ba3-b62f-4447-a195-2447e1152a22@kernel.org>
+X-ClientProxiedBy: VI1PR04CA0068.eurprd04.prod.outlook.com
+ (2603:10a6:802:2::39) To MN0PR11MB6231.namprd11.prod.outlook.com
+ (2603:10b6:208:3c4::15)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch v2 6/6] tty: serial: 8250: Add support for MOXA PCIe
- boards to switch interface between RS422/RS485
-Content-Language: en-US
-To:     Crescent CY Hsieh <crescentcy.hsieh@moxa.com>,
-        gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20231016033705.20669-1-crescentcy.hsieh@moxa.com>
- <20231016033705.20669-7-crescentcy.hsieh@moxa.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <20231016033705.20669-7-crescentcy.hsieh@moxa.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR11MB6231:EE_|IA0PR11MB7792:EE_
+X-MS-Office365-Filtering-Correlation-Id: 162bbef3-ee24-4a2a-cfa0-08dbce08c738
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nlzNYtMMZbvA+EQVvfTFtP1LuJit8jEHAOExcUlHL1cKs/Ra63dz1xN/1Q0H72zm3sDjV3E0chcl/sB4k1iQH81ks/GZLJYwYQQmX9T2yV5yKm0TwcE4RCP3XUcCMusuP3CUfVzP4SzxP0GoagoNttkNG4NW2wDLvogbZBORYYWXX8el3TgEZt9kZrBGl5P4yLpI4EFU3MXpyteA2SWtwTws7dgQ/Gr8gOHhkodlj6H9PkPpGY/DexCMPtlqLZ4Ilr/CggTAnFehyEYhXoP4iaVpw0PlMSFcV9WDwOO1gCn4SU8ff3XQUsO87EY4C+VWMynfrUwGmilzU4KFpIA64XUiAV5B3OzkFqsYxMU2PajwAK4CpzJ+nkHooFusVjtKKhhUIGSX6KiNW8x4jNyCvLhMwFvrENO1h5Ys3bFh1XA1Hs8xCjYJh9O5Yo3ZYS4IxP5ytjrCNoKbErxSklPtgfbPscg2j+BLrzc/o179F0E0i/ubDWA8o4wgGHoRP82ZPYeN1E0+r39eoHZjBuBRfbOUXDMp7fojHw9A1Zo/0xMnIyHx3RBXFnX/tON/9ViHM8So6ejtgf6iKC6iD5kc8A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6231.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(376002)(39860400002)(396003)(136003)(346002)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(7416002)(4001150100001)(2906002)(5660300002)(41300700001)(8936002)(4326008)(8676002)(6916009)(316002)(66946007)(33716001)(478600001)(966005)(6486002)(6506007)(6666004)(83380400001)(53546011)(66556008)(66476007)(66574015)(26005)(86362001)(82960400001)(6512007)(9686003)(38100700002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?hyIJdKOvU+OFrneiR80DQuiFXRzagUv4SWP/JC0xkqt/p+g3LI+tDJPfhq?=
+ =?iso-8859-1?Q?yZp94L+MW4TfIONkP8hODmxzKi9cbAk+16nw1MSs+YkP6+KYv0eLRj8B9e?=
+ =?iso-8859-1?Q?bw6Un2AGW7goIgZsyarPQsC9EFLikTN7ytay58cUoeV1RwC9FuO/b1iqs7?=
+ =?iso-8859-1?Q?ZNMJ+7WjoO/Mbyqn0mn6h8mSVbxfkuU2AmkG57Mh4/OujxHC5q7QYkSLnZ?=
+ =?iso-8859-1?Q?HiMUEUqrKMVdP4UvTjSGIsABEn2szmPsoFuG7vTKPWngft2WLyYOXZeLwJ?=
+ =?iso-8859-1?Q?fXpC50iEjDupfwsR3noPeeEsYDqbSiz+mMAPtl23sOg4mKEr9MsZshTHKu?=
+ =?iso-8859-1?Q?NbBH0HgwLG5Kn7T2oapjCqdYPVNK7PGam20NawF+8dT51+z3NXu0IzvY9N?=
+ =?iso-8859-1?Q?Xd+6th2UCgJ3lERCdmhqYVCLAL5LdMxoRs8ZPUyTh8WgXPKx7UlM0JUGXZ?=
+ =?iso-8859-1?Q?7MBmui5ZGT+UOBlS8MJAZteHfj1Cy02YK+BbYpmOEL7O67bp/iS3CwWZmV?=
+ =?iso-8859-1?Q?IDhp54SWP7IL5Hzu5Q8Yrb4jv592PktBeWLOhL6GDKWHPuZH9QLgW3x3xG?=
+ =?iso-8859-1?Q?NMEDtlFUsVIZZ3pLaCd+PkBl/cb2zICq7rRjJKCQoGS0q88PwMt3dh1Nvk?=
+ =?iso-8859-1?Q?Cy7SuHVs3WmCxPJGpriV5x0il5Zbpy4KVhRAjPpJFnfriSQXmzc/TK7qjP?=
+ =?iso-8859-1?Q?N1HBjIr5qfLi+igF/y9Eo3umf1TD+AwaVPGy8mtMzFWUNeBtWaNfdd6gOX?=
+ =?iso-8859-1?Q?UlvngY4SuEMRW0NEsg/3bZnQ8COwnRIW4wekQyg/Emqd3ETSsod5mAXolG?=
+ =?iso-8859-1?Q?BM7LlOHdaEgHhtgnskXIWSwAmS8xHA647BRx6+0YeX1XbZ4IB/8BJq2tNo?=
+ =?iso-8859-1?Q?1ypAuol8gvMcqOJQAKOvE8FJajZbUVfESD6g7pV2M/XASZ6lfbpMjoZ5T5?=
+ =?iso-8859-1?Q?DZK2oiHYkc8JV47+ZIH4vgYOuLCfqGbgmHawgmU0ukDYHiDH/428B0qh1D?=
+ =?iso-8859-1?Q?pilDjxOPMvknWG/eSLmnVa3vEZE3AiQHjsnG+/xSaBTSOzjXtG7omVy0jE?=
+ =?iso-8859-1?Q?wgi7SXeSgNdBpISEhQhUGc33vZlEOwOnVHnfNq79enfrGrYiURWm06OpDP?=
+ =?iso-8859-1?Q?r6IrI4TxYFgwAafN96C2Ulvy6eXQRyJTm7OxHjgzHf1jGawz1ueVvz+Fio?=
+ =?iso-8859-1?Q?zdOkqhRSf0SaNSEwmVxpyaeaZU7/X339CvDf7YaP07yN+Z2MWIbLjGf0tD?=
+ =?iso-8859-1?Q?mfLFk89FEdXhKaGBR0SHNxYOreQzaob2MINCOrKBl8EXVGpbFq77Q5oG4L?=
+ =?iso-8859-1?Q?Uq1i9C2XBcqmliSA5EtYFUvybxUHw+KEFXYJYrxADoA9wOjj1lgme0sGeU?=
+ =?iso-8859-1?Q?4awgf07YDVjvMkzbcfNVwBt5/BPJsCQTV4oqjDKi//RFVK3L3+MZ4jgQlJ?=
+ =?iso-8859-1?Q?7CbBSMAkp7qzBfvbQXz+dSXfnuPvQhAI7ABLgE9AMbfF1goIGj8g7w+5Kk?=
+ =?iso-8859-1?Q?UaFsF5kmXnkmZ8ESvkSM53w5ynVdMomBo/UaK0JUtyGCQlXxh7CLduCFDR?=
+ =?iso-8859-1?Q?6pmqeRFiFEMTqRybduWqSwvG4e/VvB8e9v3fmKzvchCpUNHYrx6+ShImAm?=
+ =?iso-8859-1?Q?qcvf5vxxOsjy5sR4bTSWCoD44eC49kmIQnarG9Jx2QbzGFh38WpMz7WFPq?=
+ =?iso-8859-1?Q?Mj+/PIMwdWbjyVcQrA8=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 162bbef3-ee24-4a2a-cfa0-08dbce08c738
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6231.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2023 05:28:50.2254
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: kE1/4gHUp7rnKRIrp9TZLldNX2vMv+3fk+2janYi0C46itN5rXV3vv1+l0/UKwWfRTatLo9bRKCHph4pqawSpCNQZFvRt4bdh2+cqS4JzLo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR11MB7792
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16. 10. 23, 5:37, Crescent CY Hsieh wrote:
-> MOXA PCIe boards have 4 serial interfaces and don't require additional
-> stuff to switch between interfaces:
-> 
-> - RS232
-> - RS422
-> - RS485_2W (half-duplex)
-> - RS485_4W (full-duplex)
-> 
-> By using ioctl command "TIOCRS485", it can switch between default
-> interface and RS485 if supported.
-> 
-> That means, for RS422/RS485 board, it can switch between RS422 and
-> RS485 by setting the flags within struct serial_rs485.
-> 
-> However, for the RS232/RS422/RS485 board, it can only switch between
-> RS232 and RS485, there's no flag for switching interface into RS422.
-> 
-> This patch uses "SER_RS485_TERMINATE_BUS" to represent RS422 as a
-> workaround solution.
-> 
-> Signed-off-by: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
-> ---
->   drivers/tty/serial/8250/8250_pci.c | 52 ++++++++++++++++++++++++++++++
->   1 file changed, 52 insertions(+)
-> 
-> diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
-> index 72dd27141801..e2e8a28242bc 100644
-> --- a/drivers/tty/serial/8250/8250_pci.c
-> +++ b/drivers/tty/serial/8250/8250_pci.c
-> @@ -1976,6 +1976,10 @@ pci_sunix_setup(struct serial_private *priv,
->   #define MOXA_RS485_2W	0x0F
->   #define MOXA_UIR_OFFSET	0x04
->   
-> +static const struct serial_rs485 pci_moxa_rs485_supported = {
-> +	.flags = SER_RS485_ENABLED | SER_RS485_RX_DURING_TX | SER_RS485_TERMINATE_BUS,
-> +};
-> +
->   static bool pci_moxa_is_mini_pcie(unsigned short device)
->   {
->   	if (device == PCI_DEVICE_ID_MOXA_CP102N	||
-> @@ -1989,6 +1993,11 @@ static bool pci_moxa_is_mini_pcie(unsigned short device)
->   	return false;
->   }
->   
-> +static bool pci_moxa_match_x1xx(unsigned short device)
-> +{
-> +	return (device & 0x0F00) == 0x0100;
-> +}
-> +
->   static bool pci_moxa_match_x3xx(unsigned short device)
+On 2023-10-13 at 15:03:11 -0600, Shuah wrote:
+>On 10/13/23 05:36, Maciej Wieczor-Retman wrote:
+>> kselftest.h declares many variadic functions that can print some
+>> formatted message while also executing selftest logic. These
+>> declarations don't have any compiler mechanism to verify if passed
+>> arguments are valid in comparison with format specifiers used in
+>> printf() calls.
+>> 
+>> Attribute addition can make debugging easier, the code more consistent
+>> and prevent mismatched or missing variables.
+>> 
+>> The first patch adds __printf() macro and applies it to all functions
+>> in kselftest.h that use printf format specifiers. After compiling all
+>> selftests using:
+>> 	make -C tools/testing/selftests
+>> many instances of format specifier mismatching are exposed in the form
+>> of -Wformat warnings.
+>> 
+>> Fix the mismatched format specifiers caught by __printf() attribute in
+>> multiple tests.
+>> 
+>> Series is based on kselftests next branch.
+>> 
+>> Changelog v6:
+>> - Add methodology notes to all patches.
+>> - No functional changes in the patches.
+>> 
+>
+>Applied this series and the following three - all 25 patches are
+>in linux-kselftest next for Linux 6.7-rc1.
+>
+>[1] https://lore.kernel.org/all/cover.1696932728.git.maciej.wieczor-retman@intel.com/
+>[2] https://lore.kernel.org/all/20231002094813.6633-1-ilpo.jarvinen@linux.intel.com/
+>[3] https://lore.kernel.org/all/20230904095339.11321-1-ilpo.jarvinen@linux.intel.com/
+>
+>thanks,
+>-- Shuah
+>
 
-I wonder if it made more sense to have only a single function like:
+Thank you!
 
-static bool pci_moxa_match(unsigned short device, unsigned short matching)
-{
-	return (device & 0x0F00) == matching;
-}
-
-and call:
-pci_moxa_match(device, 0x0100)
-pci_moxa_match(device, 0x0300)
-?
-
-Perhaps name the function better. According to what the second digit in 
-the device ID in fact means.
-
->   {
->   	return (device & 0x0F00) == 0x0300;
-> @@ -2016,6 +2025,36 @@ static int pci_moxa_set_interface(const struct pci_dev *dev,
->   	return 0;
->   }
->   
-> +static int pci_moxa_rs485_config(struct uart_port *port,
-> +				 struct ktermios *termios,
-> +				 struct serial_rs485 *rs485)
-> +{
-> +	struct pci_dev *dev = to_pci_dev(port->dev);
-> +	unsigned short device = dev->device;
-> +	u8 mode = MOXA_RS232;
-> +
-> +	if (rs485->flags & SER_RS485_ENABLED) {
-> +		/* Use SER_RS485_TERMINATE_BUS to represent RS422 as a workaround. */
-> +		if (rs485->flags & SER_RS485_TERMINATE_BUS) {
-> +			mode = MOXA_RS422;
-> +		} else {
-> +			if (rs485->flags & SER_RS485_RX_DURING_TX)
-> +				mode = MOXA_RS485_4W;
-> +			else
-> +				mode = MOXA_RS485_2W;
-> +		}
-> +	} else {
-> +		/*
-> +		 * RS232 is not supported for those device IDs of
-> +		 * MOXA PCIe boards match the pattern 0x*3**.
-
-I am not native, but I can hardly parse this.
-
-Maybe:
-RS232 is not supported on MOXA PCIe boards with device IDs matching the 
-pattern 0x*3**.
-?
-
-> +		 */
-> +		if (pci_moxa_match_x3xx(device))
-> +			return -EINVAL;
-
-Perhaps EOPNOTSUPP?
-
-> +	}
-> +
-> +	return pci_moxa_set_interface(dev, port->port_id, mode);
-> +}
-> +
->   static int pci_moxa_init(struct pci_dev *dev)
->   {
->   	unsigned short device = dev->device;
-
-thanks,
 -- 
-js
-suse labs
-
+Kind regards
+Maciej Wieczór-Retman
