@@ -2,141 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77DDE7CA879
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 833B77CA883
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233561AbjJPMtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 08:49:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35050 "EHLO
+        id S233414AbjJPMwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 08:52:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233468AbjJPMtM (ORCPT
+        with ESMTP id S232929AbjJPMwd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 08:49:12 -0400
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B40F3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 05:49:08 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:ce84:d8c0:f79a:fa0])
-        by xavier.telenet-ops.be with bizsmtp
-        id ycp52A00G0pDX7N01cp5bl; Mon, 16 Oct 2023 14:49:06 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qsN1q-006jX4-28;
-        Mon, 16 Oct 2023 14:49:05 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qsN1t-00A3uN-Ck;
-        Mon, 16 Oct 2023 14:49:05 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@gmail.com>
-Cc:     linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] neighbor: tracing: Move pin6 inside CONFIG_IPV6=y section
-Date:   Mon, 16 Oct 2023 14:49:04 +0200
-Message-Id: <60cb0b0c6266881e225160f80a83884607617921.1697460418.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.34.1
+        Mon, 16 Oct 2023 08:52:33 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A14409B;
+        Mon, 16 Oct 2023 05:52:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=wcFHxm8RwKRLAuH1sMyOcKVZR+GHenlfYb7eHpJCTrk=; b=Ag2+EbacgQmh9hUZ+NSTmGSEoB
+        rFk6SXzAdhRlAsihgt4G2rxr8ZlinEYjVdIR4xPkTxuaxGlD7dwUfeO5fnzrr5nA1BbzhWFhn1Ek2
+        evX6/iBnYcIiwib5ER5TYXjWU/BvBLQb7YARG4Nl2Yy319A3TtTofezc+t72FIy7/7W4w3sDdqGNW
+        3ldcKqlFY1o+U+NwoBLAQMAJMwGyrNOGZyOMkvoA3/Xzc84UQzgIv2nabUnY4dJofAAj7+zXuBqSn
+        29bRsmwpgoMm1nrDUyVPuyQHLK1NSELeb0tX89WIMXal2rDwzNxbUhML8oJmzcXn40IAW+wUC+vY7
+        QxEk1DTQ==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qsN53-000FBm-Eh; Mon, 16 Oct 2023 14:52:21 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qsN52-000FYT-SS; Mon, 16 Oct 2023 14:52:20 +0200
+Subject: Re: [PATCH bpf-next v3] selftests/bpf: Use pkg-config to determine ld
+ flags
+To:     Akihiko Odaki <akihiko.odaki@daynix.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, Nick Terrell <terrelln@fb.com>,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231016124313.60220-1-akihiko.odaki@daynix.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <f44993c9-1934-746f-aa3a-a1005459320a@iogearbox.net>
+Date:   Mon, 16 Oct 2023 14:52:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231016124313.60220-1-akihiko.odaki@daynix.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27063/Mon Oct 16 10:02:17 2023)
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_IPV6=n, and building with W=1:
+On 10/16/23 2:43 PM, Akihiko Odaki wrote:
+> When linking statically, libraries may require other dependencies to be
+> included to ld flags. In particular, libelf may require libzstd. Use
+> pkg-config to determine such dependencies.
+> 
+> Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
+> ---
+> V2 -> V3: Added missing "echo".
+> V1 -> V2: Implemented fallback, referring to HOSTPKG_CONFIG.
 
-    In file included from include/trace/define_trace.h:102,
-		     from include/trace/events/neigh.h:255,
-		     from net/core/net-traces.c:51:
-    include/trace/events/neigh.h: In function ‘trace_event_raw_event_neigh_create’:
-    include/trace/events/neigh.h:42:34: error: variable ‘pin6’ set but not used [-Werror=unused-but-set-variable]
-       42 |                 struct in6_addr *pin6;
-	  |                                  ^~~~
-    include/trace/trace_events.h:402:11: note: in definition of macro ‘DECLARE_EVENT_CLASS’
-      402 |         { assign; }                                                     \
-	  |           ^~~~~~
-    include/trace/trace_events.h:44:30: note: in expansion of macro ‘PARAMS’
-       44 |                              PARAMS(assign),                   \
-	  |                              ^~~~~~
-    include/trace/events/neigh.h:23:1: note: in expansion of macro ‘TRACE_EVENT’
-       23 | TRACE_EVENT(neigh_create,
-	  | ^~~~~~~~~~~
-    include/trace/events/neigh.h:41:9: note: in expansion of macro ‘TP_fast_assign’
-       41 |         TP_fast_assign(
-	  |         ^~~~~~~~~~~~~~
-    In file included from include/trace/define_trace.h:103,
-		     from include/trace/events/neigh.h:255,
-		     from net/core/net-traces.c:51:
-    include/trace/events/neigh.h: In function ‘perf_trace_neigh_create’:
-    include/trace/events/neigh.h:42:34: error: variable ‘pin6’ set but not used [-Werror=unused-but-set-variable]
-       42 |                 struct in6_addr *pin6;
-	  |                                  ^~~~
-    include/trace/perf.h:51:11: note: in definition of macro ‘DECLARE_EVENT_CLASS’
-       51 |         { assign; }                                                     \
-	  |           ^~~~~~
-    include/trace/trace_events.h:44:30: note: in expansion of macro ‘PARAMS’
-       44 |                              PARAMS(assign),                   \
-	  |                              ^~~~~~
-    include/trace/events/neigh.h:23:1: note: in expansion of macro ‘TRACE_EVENT’
-       23 | TRACE_EVENT(neigh_create,
-	  | ^~~~~~~~~~~
-    include/trace/events/neigh.h:41:9: note: in expansion of macro ‘TP_fast_assign’
-       41 |         TP_fast_assign(
-	  |         ^~~~~~~~~~~~~~
+Same issue in v3. Please don't resend your patches too quickly, but properly set up an
+environment where you can test that this fallback works first :
 
-Indeed, the variable pin6 is declared and initialized unconditionally,
-while it is only used and needlessly re-initialized when support for
-IPv6 is enabled.
+https://github.com/kernel-patches/bpf/actions/runs/6533309175/job/17738285759
 
-Fix this by dropping the unused variable initialization, and moving the
-variable declaration inside the existing section protected by a check
-for CONFIG_IPV6.
-
-Fixes: fc651001d2c5ca4f ("neighbor: Add tracepoint to __neigh_create")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-No changes in generated code.
-
- include/trace/events/neigh.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/trace/events/neigh.h b/include/trace/events/neigh.h
-index 5eaa1fa9917153f6..833143d0992e063b 100644
---- a/include/trace/events/neigh.h
-+++ b/include/trace/events/neigh.h
-@@ -39,7 +39,6 @@ TRACE_EVENT(neigh_create,
- 	),
- 
- 	TP_fast_assign(
--		struct in6_addr *pin6;
- 		__be32 *p32;
- 
- 		__entry->family = tbl->family;
-@@ -47,7 +46,6 @@ TRACE_EVENT(neigh_create,
- 		__entry->entries = atomic_read(&tbl->gc_entries);
- 		__entry->created = n != NULL;
- 		__entry->gc_exempt = exempt_from_gc;
--		pin6 = (struct in6_addr *)__entry->primary_key6;
- 		p32 = (__be32 *)__entry->primary_key4;
- 
- 		if (tbl->family == AF_INET)
-@@ -57,6 +55,8 @@ TRACE_EVENT(neigh_create,
- 
- #if IS_ENABLED(CONFIG_IPV6)
- 		if (tbl->family == AF_INET6) {
-+			struct in6_addr *pin6;
-+
- 			pin6 = (struct in6_addr *)__entry->primary_key6;
- 			*pin6 = *(struct in6_addr *)pkey;
- 		}
--- 
-2.34.1
-
+   [...]
+   /bin/sh: 1: pkg-config: not found
+   /bin/sh: 1: -lelf: not found
+     BINARY   test_sysctl
+   /usr/bin/x86_64-linux-gnu-ld: /usr/bin/x86_64-linux-gnu-ld: DWARF error: invalid or unhandled FORM value: 0x25
+   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.a(libbpf-in.o): in function `bpf_object_open':
+   libbpf.c:(.text+0x2871): undefined reference to `elf_version'
+   /usr/bin/x86_64-linux-gnu-ld: /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.a(libbpf-in.o): in function `bpf_object__elf_finish':
+   libbpf.c:(.text+0x4ccf): undefined reference to `elf_end'
+   /usr/bin/x86_64-linux-gnu-ld: /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.a(libbpf-in.o): in function `elf_find_func_offset_from_archive':
+   libbpf.c:(.text+0xb419): undefined reference to `elf_memory'
+   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0xb447): undefined reference to `elf_errmsg'
+   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0xb4e2): undefined reference to `elf_end'
+   /usr/bin/x86_64-linux-gnu-ld: /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.a(libbpf-in.o): in function `bpf_object__elf_init':
+   libbpf.c:(.text+0x10b02): undefined reference to `elf_memory'
+   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0x10bae): undefined reference to `elf_begin'
+   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0x10bdd): undefined reference to `elf_errmsg'
+   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0x10c1b): undefined reference to `elf_kind'
+   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0x10c54): undefined reference to `gelf_getclass'
+   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0x10c8d): undefined reference to `elf64_getehdr'
+   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0x10cd1): undefined reference to `elf_errmsg'
+   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0x10d0f): undefined reference to `elf_getshdrstrndx'
+   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0x10d38): undefined reference to `elf_errmsg'
+   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0x10d72): undefined reference to `elf_getscn'
+   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0x10d7e): undefined reference to `elf_rawdata'
+   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0x10da8): undefined reference to `elf_errmsg'
