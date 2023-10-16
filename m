@@ -2,81 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9D97CB04A
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6179E7CB02D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234286AbjJPQuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 12:50:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59554 "EHLO
+        id S232578AbjJPQtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 12:49:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233006AbjJPQua (ORCPT
+        with ESMTP id S1343664AbjJPQtM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 12:50:30 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63F9046CEA
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:40:47 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-66d134a019cso30842566d6.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:40:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697474446; x=1698079246; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=QMErPVjbDQWKUZJi0yx3PHwgd44uCsmqExmEKyoGenQ=;
-        b=zWk9E7Ir6vxH76P5DZnzRjvYqmPfoyDwHBQv23F85KEgYCgx6VJHoVNxizddvlapxL
-         zEIt5kAkN1T8FVVHtzQzxo9O0JhXm52ZMQ0lxJ+b5e97huR2kGX6dQnmnszD91RcNK6d
-         x5/qVinEqtCVIhoiF4y9t1vHFnLzfagUdmL8AkIfNjSetz2OLcepJ4WINuKt8nK79Pyz
-         ipDZLfVbXpRwcQ+rXk6VEQP19HZG0YRLrBv7GP3zQJDnHctxmRKLuxnT46ReaUR6wRH7
-         k/BoCFfTPzYV7i9VPfd2xwzhwxsIj9h1qvZDcufx7GlPcaGuTqwk82Kw3JXA0n8omqID
-         vPhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697474446; x=1698079246;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QMErPVjbDQWKUZJi0yx3PHwgd44uCsmqExmEKyoGenQ=;
-        b=r18C8RpDhiYIpyYP1dmztBXxHmIzWD0/AxmayDyiqZVJXTWUWCMm/3f94tb5ZMqEB8
-         pyaKcb6PwYdPslCimQJniP7Zq86rrEMBPLOP7TuTOQj1CAJKa1Moh0TWqnR310eqR0gf
-         3skVbORurD0uSZmIixpl7VvBOrd51PPLJPmq1TGuIlr9fpF/6uV1GrgceaAGPBG3gjL6
-         ZofCxa8lxOOKJ08ivZhbl6zaW+izbis/LP3OLKsqF2ZnUQnzGKJiAiRmjaET809Pfk7R
-         XpNMIg6ijLh0y3DhbwbYVO7xY/gVKC/XHV8doHgz7BvXRuRS2vkqhdWBsQtufc9Oju5G
-         vkhQ==
-X-Gm-Message-State: AOJu0YwEkFQT3IwTQegc53xZeY2mVp34P8JF1PiwVRT3yJaQqcbYSSQq
-        AaFACB1uoSOumcWkEGAmPk+e
-X-Google-Smtp-Source: AGHT+IEJrtLsab3W/titRBbEr+F6cON9aYDks19MkUWPWxcQNbAkkCh7gLRrSjOouWXUxCmZiVJgZQ==
-X-Received: by 2002:a05:6214:cae:b0:66d:28a5:d153 with SMTP id s14-20020a0562140cae00b0066d28a5d153mr11497866qvs.47.1697474445956;
-        Mon, 16 Oct 2023 09:40:45 -0700 (PDT)
-Received: from thinkpad ([117.207.31.199])
-        by smtp.gmail.com with ESMTPSA id dn8-20020a056214094800b0065b0e724f83sm3548177qvb.6.2023.10.16.09.40.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 09:40:45 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 22:10:36 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Frank Li <Frank.Li@nxp.com>
-Cc:     Minghuan Lian <minghuan.Lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linux-pci@vger.kernel.org>,
-        "moderated list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>, imx@lists.linux.dev
-Subject: Re: [PATCH 1/3] PCI: layerscape: add function pointer for
- exit_from_l2()
-Message-ID: <20231016164036.GE39962@thinkpad>
-References: <20230915184306.2374670-1-Frank.Li@nxp.com>
+        Mon, 16 Oct 2023 12:49:12 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A5510CC;
+        Mon, 16 Oct 2023 09:41:05 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 017C51FEC1;
+        Mon, 16 Oct 2023 16:41:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1697474464; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GEefq32sBpLzJx2lGNyuxGH/nqJxW/5t5zmBcj5F6Ac=;
+        b=l9WsDi6kmvu6IvcoWBYG976vX4FGtLkDTLqQzCItBRi/1ekOptrfqe2NByqKfSndcdsKl7
+        5Sb3g4KaZgOC5i/oLNKXKSc5i/lc4cT9pj2/2EYNM+bTX59iiXaQKhPaGAXnV8LssgqShL
+        fvpYgCyWJ4r+jtAci6jwRDmCzyKufpQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1697474464;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GEefq32sBpLzJx2lGNyuxGH/nqJxW/5t5zmBcj5F6Ac=;
+        b=IywH00l91MbjWq7du2aCvwlTuYrCsljv8qEifxJMZRpyDI36lSOQDXKGwVshOVggkqnMYs
+        PvImr/h4iRaXh/Bw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6D5BF133B7;
+        Mon, 16 Oct 2023 16:41:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id AyLMGZ9nLWXEKgAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Mon, 16 Oct 2023 16:41:03 +0000
+Message-ID: <5d4eda63-d479-bf4a-7bfb-98a7fb8f953d@suse.cz>
+Date:   Mon, 16 Oct 2023 18:41:02 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230915184306.2374670-1-Frank.Li@nxp.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCHv2] efi/unaccepted: Fix soft lockups caused by parallel
+ memory acceptance
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dario Faggioli <dfaggioli@suse.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        marcelo.cerri@canonical.com, tim.gardner@canonical.com,
+        philip.cox@canonical.com, aarcange@redhat.com, peterx@redhat.com,
+        x86@kernel.org, linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@kernel.org, Nikolay Borisov <nik.borisov@suse.com>
+References: <20231016163122.12855-1-kirill.shutemov@linux.intel.com>
+Content-Language: en-US
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20231016163122.12855-1-kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -3.65
+X-Spamd-Result: default: False [-3.65 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_HAM(-0.00)[20.47%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-2.99)[-0.997];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-0.56)[-0.563];
+         RCPT_COUNT_TWELVE(0.00)[32];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,78 +118,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 02:43:04PM -0400, Frank Li wrote:
-> Difference layerscape chip have not difference exit_from_l2() method.
-> Using function pointer for ls1028. It prepare for other layerscape
-> suspend/resume support.
+On 10/16/23 18:31, Kirill A. Shutemov wrote:
+> Michael reported soft lockups on a system that has unaccepted memory.
+> This occurs when a user attempts to allocate and accept memory on
+> multiple CPUs simultaneously.
 > 
-
-How about:
-
-Since difference SoCs require different sequence for exiting L2, let's add a
-separate "exit_from_l2()" callback. This callback can be used to execute SoC
-specific sequence.
-
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
->  drivers/pci/controller/dwc/pci-layerscape.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+> The root cause of the issue is that memory acceptance is serialized with
+> a spinlock, allowing only one CPU to accept memory at a time. The other
+> CPUs spin and wait for their turn, leading to starvation and soft lockup
+> reports.
 > 
-> diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
-> index b931d597656f6..20c48c06e2248 100644
-> --- a/drivers/pci/controller/dwc/pci-layerscape.c
-> +++ b/drivers/pci/controller/dwc/pci-layerscape.c
-> @@ -39,6 +39,8 @@
->  
->  struct ls_pcie_drvdata {
->  	const u32 pf_off;
-> +	const struct dw_pcie_host_ops *ops;
+> To address this, the code has been modified to release the spinlock
+> while accepting memory. This allows for parallel memory acceptance on
+> multiple CPUs.
+> 
+> A newly introduced "accepting_list" keeps track of which memory is
+> currently being accepted. This is necessary to prevent parallel
+> acceptance of the same memory block. If a collision occurs, the lock is
+> released and the process is retried.
+> 
+> Such collisions should rarely occur. The main path for memory acceptance
+> is the page allocator, which accepts memory in MAX_ORDER chunks. As long
+> as MAX_ORDER is equal to or larger than the unit_size, collisions will
+> never occur because the caller fully owns the memory block being
+> accepted.
+> 
+> Aside from the page allocator, only memblock and deferered_free_range()
+> accept memory, but this only happens during boot.
+> 
+> The code has been tested with unit_size == 128MiB to trigger collisions
+> and validate the retry codepath.
+> 
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Reported-by: Michael Roth <michael.roth@amd.com
+> Fixes: 2053bc57f367 ("efi: Add unaccepted memory support")
+> Cc: <stable@kernel.org>
+> Reviewed-by: Nikolay Borisov <nik.borisov@suse.com>
 
-Where is this ops used? If this is added as a preparatory for next patches, I'd
-suggest you to move it to the respective one instead to avoid confusion.
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
-> +	void (*exit_from_l2)(struct dw_pcie_rp *pp);
->  	bool pm_support;
->  };
->  
-> @@ -180,6 +182,7 @@ static const struct ls_pcie_drvdata ls1021a_drvdata = {
->  static const struct ls_pcie_drvdata layerscape_drvdata = {
->  	.pf_off = 0xc0000,
->  	.pm_support = true,
-> +	.exit_from_l2 = ls_pcie_exit_from_l2,
->  };
->  
->  static const struct of_device_id ls_pcie_of_match[] = {
-> @@ -213,7 +216,7 @@ static int ls_pcie_probe(struct platform_device *pdev)
->  	pcie->drvdata = of_device_get_match_data(dev);
->  
->  	pci->dev = dev;
-> -	pci->pp.ops = &ls_pcie_host_ops;
-> +	pci->pp.ops = pcie->drvdata->ops ? pcie->drvdata->ops : &ls_pcie_host_ops;
+<snip>
 
-This one also.
-
+> +	range_start = range.start;
+>  	for_each_set_bitrange_from(range_start, range_end, unaccepted->bitmap,
+> -				   DIV_ROUND_UP(end, unit_size)) {
+> +				   range.end) {
+>  		unsigned long phys_start, phys_end;
+>  		unsigned long len = range_end - range_start;
 >  
->  	pcie->pci = pci;
+>  		phys_start = range_start * unit_size + unaccepted->phys_base;
+>  		phys_end = range_end * unit_size + unaccepted->phys_base;
 >  
-> @@ -251,7 +254,7 @@ static int ls_pcie_resume_noirq(struct device *dev)
->  	if (!pcie->drvdata->pm_support)
->  		return 0;
->  
-> -	ls_pcie_exit_from_l2(&pcie->pci->pp);
-> +	pcie->drvdata->exit_from_l2(&pcie->pci->pp);
+> +		/*
+> +		 * Keep interrupts disabled until the accept operation is
+> +		 * complete in order to prevent deadlocks.
+> +		 *
+> +		 * Enabling interrupts before calling arch_accept_memory()
+> +		 * creates an opportunity for an interrupt handler to request
+> +		 * acceptance for the same memory. The handler will continuously
+> +		 * spin with interrupts disabled, preventing other task from
+> +		 * making progress with the acceptance process.
+> +		 */
 
-You should always check for the existence of the callback first before invoking
-it.
+AFAIU on PREEMPT_RT the spin_lock_irqsave() doesn't disable interrupts, so
+this does not leave them disabled. But it also shouldn't be a risk of
+deadlock because the interrupt handlers are themselves preemptible. The
+latency might be bad as the cpu_relax() retry loop will not cause the task
+everyone might be waiting for to be prioritised, but I guess it's not a big
+issue as anyone with RT requirements probably won't use unaccepted memory in
+the first place, and as you mention hitting the retry loop after boot in a
+normal configuration should be pretty much never.
 
-- Mani
-
->  
->  	return dw_pcie_resume_noirq(pcie->pci);
+> +		spin_unlock(&unaccepted_memory_lock);
+> +
+>  		arch_accept_memory(phys_start, phys_end);
+> +
+> +		spin_lock(&unaccepted_memory_lock);
+>  		bitmap_clear(unaccepted->bitmap, range_start, len);
+>  	}
+> +
+> +	list_del(&range.list);
+>  	spin_unlock_irqrestore(&unaccepted_memory_lock, flags);
 >  }
-> -- 
-> 2.34.1
-> 
+>  
 
--- 
-மணிவண்ணன் சதாசிவம்
