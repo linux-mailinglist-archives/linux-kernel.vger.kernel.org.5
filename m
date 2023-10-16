@@ -2,576 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3767CA041
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 09:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 581107CA02C
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 09:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbjJPHOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 03:14:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54836 "EHLO
+        id S231526AbjJPHNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 03:13:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232095AbjJPHOE (ORCPT
+        with ESMTP id S229590AbjJPHNe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 03:14:04 -0400
-Received: from mxout70.expurgate.net (mxout70.expurgate.net [194.37.255.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7EA7D9;
-        Mon, 16 Oct 2023 00:13:51 -0700 (PDT)
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.92)
-        (envelope-from <prvs=966793e2c5=fe@dev.tdt.de>)
-        id 1qsHnH-00A6Jb-Qn; Mon, 16 Oct 2023 09:13:39 +0200
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <fe@dev.tdt.de>)
-        id 1qsHnG-00A6J6-Vn; Mon, 16 Oct 2023 09:13:39 +0200
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id 8F197240052;
-        Mon, 16 Oct 2023 09:13:38 +0200 (CEST)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id DE170240050;
-        Mon, 16 Oct 2023 09:13:37 +0200 (CEST)
-Received: from localhost.localdomain (unknown [10.2.3.40])
-        by mail.dev.tdt.de (Postfix) with ESMTPSA id 2D2C72BE05;
-        Mon, 16 Oct 2023 09:13:37 +0200 (CEST)
-From:   Florian Eckert <fe@dev.tdt.de>
-To:     Eckert.Florian@googlemail.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, pavel@ucw.cz, lee@kernel.org,
-        kabel@kernel.org, u.kleine-koenig@pengutronix.de
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-leds@vger.kernel.org
-Subject: [PATCH v3 1/4] tty: whitespaces in descriptions corrected by replacing tabs with spaces.
+        Mon, 16 Oct 2023 03:13:34 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA1DAD
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:13:32 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id ED0F921BDA;
+        Mon, 16 Oct 2023 07:13:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1697440410; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=jcr2pDzYHZNy1Dda0U8UKlceiaygu42ICVwNg5qTdP4=;
+        b=HkoSc49ltxf8lbg2XOBGuFdQttxATY7y6c5S9nwDNSGGNwyHrceLUR1NLN1Swm1OtEBUsy
+        +obXwR7iM7tCx5/UFxB33ouYMFHJw53hJ4JsyPKBLLgFt6WzxcaAzvx9viHA/MCeyTT5IB
+        iKHibz8YrlQhtqpoKgMZtHlCOcJdXzw=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8F32E138EF;
+        Mon, 16 Oct 2023 07:13:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id oyaNIZriLGViWwAAMHmgww
+        (envelope-from <jgross@suse.com>); Mon, 16 Oct 2023 07:13:30 +0000
+Message-ID: <ca0690eb-1f3b-4508-9cf2-079b5ad12e26@suse.com>
 Date:   Mon, 16 Oct 2023 09:13:29 +0200
-Message-ID: <20231016071332.597654-2-fe@dev.tdt.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231016071332.597654-1-fe@dev.tdt.de>
-References: <20231016071332.597654-1-fe@dev.tdt.de>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V4 1/4] xen: Make struct privcmd_irqfd's layout
+ architecture independent
+Content-Language: en-US
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        =?UTF-8?Q?Alex_Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        stratos-dev@op-lists.linaro.org,
+        Erik Schilling <erik.schilling@linaro.org>,
+        Manos Pitsidianakis <manos.pitsidianakis@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+References: <cover.1697439990.git.viresh.kumar@linaro.org>
+ <a4ef0d4a68fc858b34a81fd3f9877d9b6898eb77.1697439990.git.viresh.kumar@linaro.org>
+From:   Juergen Gross <jgross@suse.com>
+Autocrypt: addr=jgross@suse.com; keydata=
+ xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
+ ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
+ dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
+ NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
+ XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
+ AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
+ CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
+ mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
+ G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
+ kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
+ Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
+ RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
+ vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
+ sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
+ aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
+ w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
+ auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
+ 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
+ fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
+ HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
+ QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
+ ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
+In-Reply-To: <a4ef0d4a68fc858b34a81fd3f9877d9b6898eb77.1697439990.git.viresh.kumar@linaro.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------7bLopMXjoU08ZRDMZp9FmC0c"
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -5.43
+X-Spamd-Result: default: False [-5.43 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         XM_UA_NO_VERSION(0.01)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         BAYES_HAM(-2.44)[97.42%];
+         MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
+         HAS_ATTACHMENT(0.00)[];
+         REPLY(-4.00)[];
+         MIME_BASE64_TEXT_BOGUS(1.00)[];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         MIME_BASE64_TEXT(0.10)[];
+         RCPT_COUNT_TWELVE(0.00)[12];
+         NEURAL_SPAM_LONG(3.00)[1.000];
+         SIGNED_PGP(-2.00)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+,1:+,2:+,3:+,4:~,5:~];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[];
+         MIME_UNKNOWN(0.10)[application/pgp-keys]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-Content-Transfer-Encoding: quoted-printable
-X-purgate-type: clean
-X-purgate: clean
-X-purgate-ID: 151534::1697440419-9DBC47EA-CB5623A2/0/0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tabs were used in the function description, to make this look more
-uniform, the tabs were replaced by spaces where necessary.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------7bLopMXjoU08ZRDMZp9FmC0c
+Content-Type: multipart/mixed; boundary="------------umSM8HtNLj3BsM5giQwzqchk";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Viresh Kumar <viresh.kumar@linaro.org>,
+ Stefano Stabellini <sstabellini@kernel.org>,
+ Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>,
+ =?UTF-8?Q?Alex_Benn=C3=A9e?= <alex.bennee@linaro.org>,
+ stratos-dev@op-lists.linaro.org, Erik Schilling <erik.schilling@linaro.org>,
+ Manos Pitsidianakis <manos.pitsidianakis@linaro.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>, Arnd Bergmann
+ <arnd@kernel.org>, xen-devel@lists.xenproject.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <ca0690eb-1f3b-4508-9cf2-079b5ad12e26@suse.com>
+Subject: Re: [PATCH V4 1/4] xen: Make struct privcmd_irqfd's layout
+ architecture independent
+References: <cover.1697439990.git.viresh.kumar@linaro.org>
+ <a4ef0d4a68fc858b34a81fd3f9877d9b6898eb77.1697439990.git.viresh.kumar@linaro.org>
+In-Reply-To: <a4ef0d4a68fc858b34a81fd3f9877d9b6898eb77.1697439990.git.viresh.kumar@linaro.org>
 
-Signed-off-by: Florian Eckert <fe@dev.tdt.de>
----
- drivers/tty/tty_io.c | 102 +++++++++++++++++++++----------------------
- 1 file changed, 51 insertions(+), 51 deletions(-)
+--------------umSM8HtNLj3BsM5giQwzqchk
+Content-Type: multipart/mixed; boundary="------------hUjQwV6LWjai1LUbmHHPvEqX"
 
-diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
-index 8a94e5a43c6d..3299a5d50727 100644
---- a/drivers/tty/tty_io.c
-+++ b/drivers/tty/tty_io.c
-@@ -159,7 +159,7 @@ static int tty_fasync(int fd, struct file *filp, int =
-on);
- static void release_tty(struct tty_struct *tty, int idx);
-=20
- /**
-- * free_tty_struct	-	free a disused tty
-+ * free_tty_struct - free a disused tty
-  * @tty: tty struct to free
-  *
-  * Free the write buffers, tty queue and tty memory itself.
-@@ -233,7 +233,7 @@ static void tty_del_file(struct file *file)
- }
-=20
- /**
-- * tty_name	-	return tty naming
-+ * tty_name - return tty naming
-  * @tty: tty structure
-  *
-  * Convert a tty structure into a name. The name reflects the kernel nam=
-ing
-@@ -295,7 +295,7 @@ static void check_tty_count(struct tty_struct *tty, c=
-onst char *routine)
- }
-=20
- /**
-- * get_tty_driver		-	find device of a tty
-+ * get_tty_driver - find device of a tty
-  * @device: device identifier
-  * @index: returns the index of the tty
-  *
-@@ -320,7 +320,7 @@ static struct tty_driver *get_tty_driver(dev_t device=
-, int *index)
- }
-=20
- /**
-- * tty_dev_name_to_number	-	return dev_t for device name
-+ * tty_dev_name_to_number - return dev_t for device name
-  * @name: user space name of device under /dev
-  * @number: pointer to dev_t that this function will populate
-  *
-@@ -372,7 +372,7 @@ EXPORT_SYMBOL_GPL(tty_dev_name_to_number);
- #ifdef CONFIG_CONSOLE_POLL
-=20
- /**
-- * tty_find_polling_driver	-	find device of a polled tty
-+ * tty_find_polling_driver - find device of a polled tty
-  * @name: name string to match
-  * @line: pointer to resulting tty line nr
-  *
-@@ -505,7 +505,7 @@ static DEFINE_SPINLOCK(redirect_lock);
- static struct file *redirect;
-=20
- /**
-- * tty_wakeup	-	request more data
-+ * tty_wakeup - request more data
-  * @tty: terminal
-  *
-  * Internal and external helper for wakeups of tty. This function inform=
-s the
-@@ -529,7 +529,7 @@ void tty_wakeup(struct tty_struct *tty)
- EXPORT_SYMBOL_GPL(tty_wakeup);
-=20
- /**
-- * tty_release_redirect	-	Release a redirect on a pty if present
-+ * tty_release_redirect - Release a redirect on a pty if present
-  * @tty: tty device
-  *
-  * This is available to the pty code so if the master closes, if the sla=
-ve is a
-@@ -550,7 +550,7 @@ static struct file *tty_release_redirect(struct tty_s=
-truct *tty)
- }
-=20
- /**
-- * __tty_hangup		-	actual handler for hangup events
-+ * __tty_hangup - actual handler for hangup events
-  * @tty: tty device
-  * @exit_session: if non-zero, signal all foreground group processes
-  *
-@@ -673,7 +673,7 @@ static void do_tty_hangup(struct work_struct *work)
- }
-=20
- /**
-- * tty_hangup		-	trigger a hangup event
-+ * tty_hangup - trigger a hangup event
-  * @tty: tty to hangup
-  *
-  * A carrier loss (virtual or otherwise) has occurred on @tty. Schedule =
-a
-@@ -687,7 +687,7 @@ void tty_hangup(struct tty_struct *tty)
- EXPORT_SYMBOL(tty_hangup);
-=20
- /**
-- * tty_vhangup		-	process vhangup
-+ * tty_vhangup - process vhangup
-  * @tty: tty to hangup
-  *
-  * The user has asked via system call for the terminal to be hung up. We=
- do
-@@ -703,7 +703,7 @@ EXPORT_SYMBOL(tty_vhangup);
-=20
-=20
- /**
-- * tty_vhangup_self	-	process vhangup for own ctty
-+ * tty_vhangup_self - process vhangup for own ctty
-  *
-  * Perform a vhangup on the current controlling tty
-  */
-@@ -719,7 +719,7 @@ void tty_vhangup_self(void)
- }
-=20
- /**
-- * tty_vhangup_session	-	hangup session leader exit
-+ * tty_vhangup_session - hangup session leader exit
-  * @tty: tty to hangup
-  *
-  * The session leader is exiting and hanging up its controlling terminal=
-.
-@@ -735,7 +735,7 @@ void tty_vhangup_session(struct tty_struct *tty)
- }
-=20
- /**
-- * tty_hung_up_p	-	was tty hung up
-+ * tty_hung_up_p - was tty hung up
-  * @filp: file pointer of tty
-  *
-  * Return: true if the tty has been subject to a vhangup or a carrier lo=
-ss
-@@ -756,7 +756,7 @@ void __stop_tty(struct tty_struct *tty)
- }
-=20
- /**
-- * stop_tty	-	propagate flow control
-+ * stop_tty - propagate flow control
-  * @tty: tty to stop
-  *
-  * Perform flow control to the driver. May be called on an already stopp=
-ed
-@@ -790,7 +790,7 @@ void __start_tty(struct tty_struct *tty)
- }
-=20
- /**
-- * start_tty	-	propagate flow control
-+ * start_tty - propagate flow control
-  * @tty: tty to start
-  *
-  * Start a tty that has been stopped if at all possible. If @tty was pre=
-viously
-@@ -898,7 +898,7 @@ static ssize_t iterate_tty_read(struct tty_ldisc *ld,=
- struct tty_struct *tty,
-=20
-=20
- /**
-- * tty_read	-	read method for tty device files
-+ * tty_read - read method for tty device files
-  * @iocb: kernel I/O control block
-  * @to: destination for the data read
-  *
-@@ -1091,7 +1091,7 @@ static ssize_t file_tty_write(struct file *file, st=
-ruct kiocb *iocb, struct iov_
- }
-=20
- /**
-- * tty_write		-	write method for tty device file
-+ * tty_write - write method for tty device file
-  * @iocb: kernel I/O control block
-  * @from: iov_iter with data to write
-  *
-@@ -1133,7 +1133,7 @@ ssize_t redirected_tty_write(struct kiocb *iocb, st=
-ruct iov_iter *iter)
- }
-=20
- /**
-- * tty_send_xchar	-	send priority character
-+ * tty_send_xchar - send priority character
-  * @tty: the tty to send to
-  * @ch: xchar to send
-  *
-@@ -1167,7 +1167,7 @@ int tty_send_xchar(struct tty_struct *tty, char ch)
- }
-=20
- /**
-- * pty_line_name	-	generate name for a pty
-+ * pty_line_name - generate name for a pty
-  * @driver: the tty driver in use
-  * @index: the minor number
-  * @p: output buffer of at least 6 bytes
-@@ -1188,7 +1188,7 @@ static void pty_line_name(struct tty_driver *driver=
-, int index, char *p)
- }
-=20
- /**
-- * tty_line_name	-	generate name for a tty
-+ * tty_line_name - generate name for a tty
-  * @driver: the tty driver in use
-  * @index: the minor number
-  * @p: output buffer of at least 7 bytes
-@@ -1239,7 +1239,7 @@ static struct tty_struct *tty_driver_lookup_tty(str=
-uct tty_driver *driver,
- }
-=20
- /**
-- * tty_init_termios	-  helper for termios setup
-+ * tty_init_termios - helper for termios setup
-  * @tty: the tty to set up
-  *
-  * Initialise the termios structure for this tty. This runs under the
-@@ -1322,7 +1322,7 @@ static void tty_driver_remove_tty(struct tty_driver=
- *driver, struct tty_struct *
- }
-=20
- /**
-- * tty_reopen()	- fast re-open of an open tty
-+ * tty_reopen() - fast re-open of an open tty
-  * @tty: the tty to open
-  *
-  * Re-opens on master ptys are not allowed and return -%EIO.
-@@ -1366,7 +1366,7 @@ static int tty_reopen(struct tty_struct *tty)
- }
-=20
- /**
-- * tty_init_dev		-	initialise a tty device
-+ * tty_init_dev - initialise a tty device
-  * @driver: tty driver we are opening a device on
-  * @idx: device index
-  *
-@@ -1488,7 +1488,7 @@ void tty_save_termios(struct tty_struct *tty)
- EXPORT_SYMBOL_GPL(tty_save_termios);
-=20
- /**
-- * tty_flush_works	-	flush all works of a tty/pty pair
-+ * tty_flush_works - flush all works of a tty/pty pair
-  * @tty: tty device to flush works for (or either end of a pty pair)
-  *
-  * Sync flush all works belonging to @tty (and the 'other' tty).
-@@ -1504,7 +1504,7 @@ static void tty_flush_works(struct tty_struct *tty)
- }
-=20
- /**
-- * release_one_tty	-	release tty structure memory
-+ * release_one_tty - release tty structure memory
-  * @work: work of tty we are obliterating
-  *
-  * Releases memory associated with a tty structure, and clears out the
-@@ -1552,7 +1552,7 @@ static void queue_release_one_tty(struct kref *kref=
-)
- }
-=20
- /**
-- * tty_kref_put		-	release a tty kref
-+ * tty_kref_put - release a tty kref
-  * @tty: tty device
-  *
-  * Release a reference to the @tty device and if need be let the kref la=
-yer
-@@ -1566,7 +1566,7 @@ void tty_kref_put(struct tty_struct *tty)
- EXPORT_SYMBOL(tty_kref_put);
-=20
- /**
-- * release_tty		-	release tty structure memory
-+ * release_tty - release tty structure memory
-  * @tty: tty device release
-  * @idx: index of the tty device release
-  *
-@@ -1643,7 +1643,7 @@ static int tty_release_checks(struct tty_struct *tt=
-y, int idx)
- }
-=20
- /**
-- * tty_kclose      -       closes tty opened by tty_kopen
-+ * tty_kclose - closes tty opened by tty_kopen
-  * @tty: tty device
-  *
-  * Performs the final steps to release and free a tty device. It is the =
-same as
-@@ -1673,7 +1673,7 @@ void tty_kclose(struct tty_struct *tty)
- EXPORT_SYMBOL_GPL(tty_kclose);
-=20
- /**
-- * tty_release_struct	-	release a tty struct
-+ * tty_release_struct - release a tty struct
-  * @tty: tty device
-  * @idx: index of the tty
-  *
-@@ -1702,7 +1702,7 @@ void tty_release_struct(struct tty_struct *tty, int=
- idx)
- EXPORT_SYMBOL_GPL(tty_release_struct);
-=20
- /**
-- * tty_release		-	vfs callback for close
-+ * tty_release - vfs callback for close
-  * @inode: inode of tty
-  * @filp: file pointer for handle to tty
-  *
-@@ -1983,7 +1983,7 @@ static struct tty_struct *tty_kopen(dev_t device, i=
-nt shared)
- }
-=20
- /**
-- * tty_kopen_exclusive	-	open a tty device for kernel
-+ * tty_kopen_exclusive - open a tty device for kernel
-  * @device: dev_t of device to open
-  *
-  * Opens tty exclusively for kernel. Performs the driver lookup, makes s=
-ure
-@@ -2003,7 +2003,7 @@ struct tty_struct *tty_kopen_exclusive(dev_t device=
-)
- EXPORT_SYMBOL_GPL(tty_kopen_exclusive);
-=20
- /**
-- * tty_kopen_shared	-	open a tty device for shared in-kernel use
-+ * tty_kopen_shared - open a tty device for shared in-kernel use
-  * @device: dev_t of device to open
-  *
-  * Opens an already existing tty for in-kernel use. Compared to
-@@ -2018,7 +2018,7 @@ struct tty_struct *tty_kopen_shared(dev_t device)
- EXPORT_SYMBOL_GPL(tty_kopen_shared);
-=20
- /**
-- * tty_open_by_driver	-	open a tty device
-+ * tty_open_by_driver - open a tty device
-  * @device: dev_t of device to open
-  * @filp: file pointer to tty
-  *
-@@ -2086,7 +2086,7 @@ static struct tty_struct *tty_open_by_driver(dev_t =
-device,
- }
-=20
- /**
-- * tty_open	-	open a tty device
-+ * tty_open - open a tty device
-  * @inode: inode of device file
-  * @filp: file pointer to tty
-  *
-@@ -2180,7 +2180,7 @@ static int tty_open(struct inode *inode, struct fil=
-e *filp)
-=20
-=20
- /**
-- * tty_poll	-	check tty status
-+ * tty_poll - check tty status
-  * @filp: file being polled
-  * @wait: poll wait structures to update
-  *
-@@ -2258,7 +2258,7 @@ static int tty_fasync(int fd, struct file *filp, in=
-t on)
-=20
- static bool tty_legacy_tiocsti __read_mostly =3D IS_ENABLED(CONFIG_LEGAC=
-Y_TIOCSTI);
- /**
-- * tiocsti		-	fake input character
-+ * tiocsti - fake input character
-  * @tty: tty to fake input into
-  * @p: pointer to character
-  *
-@@ -2295,7 +2295,7 @@ static int tiocsti(struct tty_struct *tty, char __u=
-ser *p)
- }
-=20
- /**
-- * tiocgwinsz		-	implement window query ioctl
-+ * tiocgwinsz - implement window query ioctl
-  * @tty: tty
-  * @arg: user buffer for result
-  *
-@@ -2316,7 +2316,7 @@ static int tiocgwinsz(struct tty_struct *tty, struc=
-t winsize __user *arg)
- }
-=20
- /**
-- * tty_do_resize	-	resize event
-+ * tty_do_resize - resize event
-  * @tty: tty being resized
-  * @ws: new dimensions
-  *
-@@ -2346,7 +2346,7 @@ int tty_do_resize(struct tty_struct *tty, struct wi=
-nsize *ws)
- EXPORT_SYMBOL(tty_do_resize);
-=20
- /**
-- * tiocswinsz		-	implement window size set ioctl
-+ * tiocswinsz - implement window size set ioctl
-  * @tty: tty side of tty
-  * @arg: user buffer for result
-  *
-@@ -2373,7 +2373,7 @@ static int tiocswinsz(struct tty_struct *tty, struc=
-t winsize __user *arg)
- }
-=20
- /**
-- * tioccons	-	allow admin to move logical console
-+ * tioccons - allow admin to move logical console
-  * @file: the file to become console
-  *
-  * Allow the administrator to move the redirected console device.
-@@ -2412,7 +2412,7 @@ static int tioccons(struct file *file)
- }
-=20
- /**
-- * tiocsetd	-	set line discipline
-+ * tiocsetd - set line discipline
-  * @tty: tty device
-  * @p: pointer to user data
-  *
-@@ -2434,7 +2434,7 @@ static int tiocsetd(struct tty_struct *tty, int __u=
-ser *p)
- }
-=20
- /**
-- * tiocgetd	-	get line discipline
-+ * tiocgetd - get line discipline
-  * @tty: tty device
-  * @p: pointer to user data
-  *
-@@ -2457,7 +2457,7 @@ static int tiocgetd(struct tty_struct *tty, int __u=
-ser *p)
- }
-=20
- /**
-- * send_break	-	performed time break
-+ * send_break - performed time break
-  * @tty: device to break on
-  * @duration: timeout in mS
-  *
-@@ -2495,7 +2495,7 @@ static int send_break(struct tty_struct *tty, unsig=
-ned int duration)
- }
-=20
- /**
-- * tty_tiocmget		-	get modem status
-+ * tty_tiocmget - get modem status
-  * @tty: tty device
-  * @p: pointer to result
-  *
-@@ -2518,7 +2518,7 @@ static int tty_tiocmget(struct tty_struct *tty, int=
- __user *p)
- }
-=20
- /**
-- * tty_tiocmset		-	set modem status
-+ * tty_tiocmset - set modem status
-  * @tty: tty device
-  * @cmd: command - clear bits, set bits or set all
-  * @p: pointer to desired bits
-@@ -2559,7 +2559,7 @@ static int tty_tiocmset(struct tty_struct *tty, uns=
-igned int cmd,
- }
-=20
- /**
-- * tty_get_icount	-	get tty statistics
-+ * tty_get_icount - get tty statistics
-  * @tty: tty device
-  * @icount: output parameter
-  *
-@@ -3122,7 +3122,7 @@ struct tty_struct *alloc_tty_struct(struct tty_driv=
-er *driver, int idx)
- }
-=20
- /**
-- * tty_put_char	- write one character to a tty
-+ * tty_put_char - write one character to a tty
-  * @tty: tty
-  * @ch: character to write
-  *
-@@ -3300,7 +3300,7 @@ void tty_unregister_device(struct tty_driver *drive=
-r, unsigned index)
- EXPORT_SYMBOL(tty_unregister_device);
-=20
- /**
-- * __tty_alloc_driver -- allocate tty driver
-+ * __tty_alloc_driver - allocate tty driver
-  * @lines: count of lines this driver can handle at most
-  * @owner: module which is responsible for this driver
-  * @flags: some of %TTY_DRIVER_ flags, will be set in driver->flags
-@@ -3393,7 +3393,7 @@ static void destruct_tty_driver(struct kref *kref)
- }
-=20
- /**
-- * tty_driver_kref_put -- drop a reference to a tty driver
-+ * tty_driver_kref_put - drop a reference to a tty driver
-  * @driver: driver of which to drop the reference
-  *
-  * The final put will destroy and free up the driver.
-@@ -3405,7 +3405,7 @@ void tty_driver_kref_put(struct tty_driver *driver)
- EXPORT_SYMBOL(tty_driver_kref_put);
-=20
- /**
-- * tty_register_driver -- register a tty driver
-+ * tty_register_driver - register a tty driver
-  * @driver: driver to register
-  *
-  * Called by a tty driver to register itself.
-@@ -3470,7 +3470,7 @@ int tty_register_driver(struct tty_driver *driver)
- EXPORT_SYMBOL(tty_register_driver);
-=20
- /**
-- * tty_unregister_driver -- unregister a tty driver
-+ * tty_unregister_driver - unregister a tty driver
-  * @driver: driver to unregister
-  *
-  * Called by a tty driver to unregister itself.
---=20
-2.30.2
+--------------hUjQwV6LWjai1LUbmHHPvEqX
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
+T24gMTYuMTAuMjMgMDk6MTEsIFZpcmVzaCBLdW1hciB3cm90ZToNCj4gVXNpbmcgaW5kaXJl
+Y3QgcG9pbnRlcnMgaW4gYW4gaW9jdGwgY29tbWFuZCBhcmd1bWVudCBtZWFucyB0aGF0IHRo
+ZQ0KPiBsYXlvdXQgaXMgYXJjaGl0ZWN0dXJlIHNwZWNpZmljLCBpbiBwYXJ0aWN1bGFyIHdl
+IGNhbid0IHVzZSB0aGUgc2FtZSBvbmUNCj4gZnJvbSAzMi1iaXQgY29tcGF0IHRhc2tzLiBU
+aGUgZ2VuZXJhbCByZWNvbW1lbmRhdGlvbiBpcyB0byBoYXZlIF9fdTY0DQo+IG1lbWJlcnMg
+YW5kIHVzZSB1NjRfdG9fdXNlcl9wdHIoKSB0byBhY2Nlc3MgaXQgZnJvbSB0aGUga2VybmVs
+IGlmIHdlIGFyZQ0KPiB1bmFibGUgdG8gYXZvaWQgdGhlIHBvaW50ZXJzIGFsdG9nZXRoZXIu
+DQo+IA0KPiBGaXhlczogZjg5NDFlNmM0YzcxICgieGVuOiBwcml2Y21kOiBBZGQgc3VwcG9y
+dCBmb3IgaXJxZmQiKQ0KPiBSZXBvcnRlZC1ieTogQXJuZCBCZXJnbWFubiA8YXJuZEBrZXJu
+ZWwub3JnPg0KPiBDbG9zZXM6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC8yNjhhMjAz
+MS02M2I4LTRjN2QtYjFlNS04YWI4M2NhODBiNGFAYXBwLmZhc3RtYWlsLmNvbS8NCj4gU2ln
+bmVkLW9mZi1ieTogVmlyZXNoIEt1bWFyIDx2aXJlc2gua3VtYXJAbGluYXJvLm9yZz4NCg0K
+UmV2aWV3ZWQtYnk6IEp1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT4NCg0KDQpKdWVy
+Z2VuDQoNCg==
+--------------hUjQwV6LWjai1LUbmHHPvEqX
+Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+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
+jR/i1DG86lem3iBDXzXsZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------hUjQwV6LWjai1LUbmHHPvEqX--
+
+--------------umSM8HtNLj3BsM5giQwzqchk--
+
+--------------7bLopMXjoU08ZRDMZp9FmC0c
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmUs4poFAwAAAAAACgkQsN6d1ii/Ey9K
+wgf/TbpWKyNtveS6quHg7N2m6zlLWaudPfTwKyHTKSNBnwL6drVyRBWCy4nCqHkVG47Mwki8jgdV
+XfNGx4EEfGM+tSxjJJRMt4ZqVSD1GV5cnXO0n97jzqx+4PkdK5iscLDkSOJK6MvxjXQ0toxITqzq
+U65b0zVBY7ZUY65Je4PKBCjzqh5swFN245ZD5lWkV8skCXn/U6YKT29zDtO1AP7HavNg9uTglVC/
+zxU8ncWxtduLJzfnV3ebVJ5/tTRTeFr6mE99ciKlWf888xJPLDzY3HKh/LwEFahxSFNOU2J7VEfi
+twLH75i/6Y6L1mYpzCq65Z7AkW7IeEj30xE290p8rQ==
+=zwoM
+-----END PGP SIGNATURE-----
+
+--------------7bLopMXjoU08ZRDMZp9FmC0c--
