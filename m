@@ -2,133 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2747CA7C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6466C7CA7C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230493AbjJPMJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 08:09:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33538 "EHLO
+        id S231478AbjJPMK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 08:10:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbjJPMJB (ORCPT
+        with ESMTP id S229621AbjJPMK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 08:09:01 -0400
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2052.outbound.protection.outlook.com [40.107.6.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B598E;
-        Mon, 16 Oct 2023 05:08:59 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dsyUQrFonYvuNgRcgZV85ItNP6IMtQUZ2zLW+A5npgWw5YQBXpuNEp94cdscrQYPipVc0soAZMXCtNkb0L8GJjjmWLJQ/CFhhYBuC3oms+hgNuGXJnQRDvTTApOhrDhLvnc2eOl/vjhrnl9TrGq3NAK4ceAoj4wYBiF8wyLJYcM2iD6T54JIYaRpiOZpSILIJs+RmUPjrITJancOYD/q151aZnfdCm+SsNjzd8d5ZIlDMOoY6Bj8kg+KL4NQmkjiO2yDd+TP6EVnX6fSEFBZv4ehy61Ya5711GDMthvqnAipapWfpXEjjmNsQxpHILz4HxOJ5Lts9E69RlJu1ALMwA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yjaNb794B5WdEQV6oO0OJ1tASt26o2uz5whqXeaaP6g=;
- b=HAkPGf7FoYr5XAyFO2homGEaV0dSZsbW7e6bqyAww5fypyOIGfSIHP0DA92q98C7c5xqgINpLOpbstTH+kRhpdnOCQtqlZkTLmnvNXFZVjZBALfZkeum3+uQF3b9/NmbVslsrKFnylmrSGafQeBAx4kDGqhIyrfE9ppphzduW8GUpu169Dm/hOcnYfeyJBJj56+PfHeL92leTWrAMTadd5qjQTJfr5dnvjdU3pf0vRRMkXi6w+BzXwyVptXh0D6t6jfnAoVSGOCkd71CiqbNGb/GQWq8s9+Mkd3gO6x9G4R+LK0Qqw+MLwsz2oAGrjtKO0csj+b1Q4HKs3sSKUyWxA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yjaNb794B5WdEQV6oO0OJ1tASt26o2uz5whqXeaaP6g=;
- b=j/xP9xUqu3PTqmi5mrdSPgV3FQgU5ebCmo8/Yj7ItG9nQzCm342uTIK9FMil1LwKtosJBT0vw7Qy9I9shB+7Y4b44/ozul5NuEpYW299MiVk/B3KnQMjF4XAy+Q0ZmqTonBVQ7cSGz6jv8JsCZXWwyL181oOrZx+98/fK8IZ1bs=
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
- by DU2PR04MB9523.eurprd04.prod.outlook.com (2603:10a6:10:2f6::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.34; Mon, 16 Oct
- 2023 12:08:57 +0000
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::51f9:b8d2:7ddd:c74f]) by DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::51f9:b8d2:7ddd:c74f%6]) with mapi id 15.20.6886.034; Mon, 16 Oct 2023
- 12:08:56 +0000
-From:   Chancel Liu <chancel.liu@nxp.com>
-To:     Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>
-CC:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "shengjiu.wang@gmail.com" <shengjiu.wang@gmail.com>,
-        "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>,
-        "perex@perex.cz" <perex@perex.cz>,
-        "tiwai@suse.com" <tiwai@suse.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: RE: Re: [PATCH v3 1/2] ASoC: dt-bindings: sound-card-common: List
- DAPM endpoints ignoring system suspend
-Thread-Topic: Re: [PATCH v3 1/2] ASoC: dt-bindings: sound-card-common: List
- DAPM endpoints ignoring system suspend
-Thread-Index: AQHaACmJsu5Q9I39WkaHWuyFJN2nYQ==
-Date:   Mon, 16 Oct 2023 12:08:56 +0000
-Message-ID: <DB9PR04MB94987AD33756548323D8D101E3D7A@DB9PR04MB9498.eurprd04.prod.outlook.com>
-References: <20231011114759.1073757-1-chancel.liu@nxp.com>
- <f639c88d-371a-4c72-a906-47d643b24ca8@sirena.org.uk>
- <20231012204739.GA1706264-robh@kernel.org>
-In-Reply-To: <20231012204739.GA1706264-robh@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DB9PR04MB9498:EE_|DU2PR04MB9523:EE_
-x-ms-office365-filtering-correlation-id: 9262a0b7-ed0e-4318-e93d-08dbce40ac72
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: rLZ2UzHzMTDGo7ILn/bQgE1kkF39hIAeL2LAgfxnycI2x+c5L2nAWHP6RXb7X4mczPwwh0Pzl/QyU8lHFWLX9aVDkH/IWvA09/dTAvKJQQbo3vcoLm1YmsU0TwZCwLgJzq0hS6ROnCK37Uxg5HfIZkQM2vG4gKraHucDQO5AbfIqriYHid3cONSyd9E1IGM4oLkTQ8RH7fwBYbidVheHjlmm+wcJUqDafaa7WoE0XKLrTQtDB2E5FwruNmJA2z7sFfwzXMWOzsiZTapwsbFwjFb0HSexMV0M9Rz2Pdo1BxrtX2DwXuyyjzLaDi3OZGjYqFABOCGUaEoTAZnGAs1z0VBfCWIaoqg0edBzTjoVGVqXye3cqwA7WX5oW0bCb3s/iZE2RP7isIzRdDhu8LWuzO5qbNV/lPGd/2jMLo3ZvxsxTTlTAFgng8o/1T7uHOvJKC6uCCSOdmKhN38HRkcKBgtZRJuP2A9dtuCKNUxGPq79g7/805KH9z29EUdgk3TdMq5f1DjNd05jF/pupbgainE3QCEzwqmkukEeT3ZbnZH3+JdFATnPtEtr/Jhxh6+Th2TyknfeJ5quuATPoAa1e27/II51Tvm1lN0fTuTilwlOUmDUV0ioy/xysRT7o2wQ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(39860400002)(376002)(346002)(396003)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(7416002)(478600001)(9686003)(26005)(6506007)(7696005)(4326008)(8936002)(8676002)(83380400001)(5660300002)(41300700001)(66556008)(52536014)(44832011)(66476007)(15650500001)(316002)(76116006)(66946007)(64756008)(54906003)(66446008)(2906002)(38100700002)(38070700005)(110136005)(71200400001)(122000001)(33656002)(86362001)(55016003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?I3k/3HVDkdAoN/0nplMYPFQSsK/frP+KD8EJx1Bdyj25RW4psatvL2vdcKDh?=
- =?us-ascii?Q?g/+YUOG/7xGUb9MGwY3fjA3YunbpO4A5rESLH6Ly9ywpTcoso8mh8+huZEuN?=
- =?us-ascii?Q?1w4liHK2yoPhKckewLaoAAsB19mF/nA8GifQ/H5DDQ2FKJh/PrtfSQdcsrBo?=
- =?us-ascii?Q?aVrUBcKOSuFZD/KaaVKeqXd2T6gYmZi10UOvhpl988HWgICjEeV1QbgKyQ+n?=
- =?us-ascii?Q?5rihHf8dH6eTNumLj0YJcXQss6CoT+71n5JQtfm2k2/WPTlDeOW21k/aBK/D?=
- =?us-ascii?Q?n4vt6m3sfhEf9B+Ng9raxkfRHeXtrUyo3H/1gcau774t472JNlZpEQ3RRkgP?=
- =?us-ascii?Q?miogBmdImBVCbNEApLayaGXz3xNA0QMMtEs5qDox4Jkj6FAWfHk19PDSobX7?=
- =?us-ascii?Q?vX3jaMSvFxYJZges2oKmVqR7bQcVN/wNxm96bR9OrEsIfupM/AmRsgHaDFWX?=
- =?us-ascii?Q?A9xkFLzE+6ut0OLs/HGio/seKlBDk/fkajH3IGZ+n2/FIg8vUjBSmgFeHbrX?=
- =?us-ascii?Q?IW1y4MgwhyfLhhj7bRR0QXywNuj/rrQx7G92UlHBqsaCIDLZrWS6ydTvGlP/?=
- =?us-ascii?Q?wPWvexIE8xdcBG5lYJwozO2AQn22YpH8yqILOokXqeUzeVqFHvDyo7tjOoQo?=
- =?us-ascii?Q?LNcPDd5wguWIKAFZ33FggJZUv75eZXnidFr3hTG0hWwzvyhBysKIueGxhqq/?=
- =?us-ascii?Q?lwNxoUF6tXsyqNQ/OVoT9u2eNd9ECLGACPDvlKA4AIaqrkaC2TOP1u9jyjnj?=
- =?us-ascii?Q?UKF3mrhBqwwcmGFKm2OLbDhAa+UmmoHgyWdarYyyE1iZUMNQLAcMnNlRIlks?=
- =?us-ascii?Q?t8ZjNNJPUPRyfiBkHRNNif4DxtRF2Tp/TayerJthSiX51GOCGPn7L+aWvkgw?=
- =?us-ascii?Q?Znbmp/BpVJj5HYOBdiLd8HSqIgdryv8l379YJyBYlTRXg87tQSdR+Y/ltgZZ?=
- =?us-ascii?Q?Wq2x8SjxdmlvAMOQp/qVuGCcH6KIuN0tTamFKpRFrqpyWxWrrGPXFID3fYdm?=
- =?us-ascii?Q?F63Iqnk9WW5J9v7tOGTxbyCESIxO3sluo3rOgZ9K55IxlgsO4N3pJV1szDrK?=
- =?us-ascii?Q?Jh9HVY7g+1uGYTq8KbAKzhCgIsc8Cd+tcCNNwifcNhBGhmRafnQpCmNA/vfv?=
- =?us-ascii?Q?GfNe45I3L6Hcz8lv5y55e2cCAakmsI446d0LfjorBOsExD30lcye8pl4T1bO?=
- =?us-ascii?Q?juulH+kq/mz83IXqoopGk1Oeh3vsSHN4hf+LYQaxSIuU8e+C1x0Af7hzoZYg?=
- =?us-ascii?Q?QEcwD0NkezjqJYEI5+MrvPL2XMPKugTWjbubdpSxlfohWRypFQ34TkqL5cSb?=
- =?us-ascii?Q?NjsiH01rUZTa32sYpeQfi9cEzEHs5cnDac7NvM8xZba6ckbhrK5NplHI+mv/?=
- =?us-ascii?Q?s5UnDbOQmVxLv5fgy829swwMeQ4s7hbWJ/iyRxiNv20gONrICI9iWff9zftJ?=
- =?us-ascii?Q?7/UdhRDCPDKu1cz+/qWSh8g6FTtcRWzVA7VU9k+bfbNnKEHERDtlNCh7ZqGs?=
- =?us-ascii?Q?4Ei4b3dlR/LkrWGAEM6qfkOMUHP14rXbNtwHsmA0fOjt3g30vqpjBB1kJeED?=
- =?us-ascii?Q?aJYNg3ggvshLOfo/Bdw=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 16 Oct 2023 08:10:26 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 220C1E1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 05:10:24 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 661C81FB;
+        Mon, 16 Oct 2023 05:11:04 -0700 (PDT)
+Received: from [10.57.66.151] (unknown [10.57.66.151])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 813763F5A1;
+        Mon, 16 Oct 2023 05:10:22 -0700 (PDT)
+Message-ID: <f9265349-3199-44b7-81b1-802c50e95713@arm.com>
+Date:   Mon, 16 Oct 2023 13:10:21 +0100
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9498.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9262a0b7-ed0e-4318-e93d-08dbce40ac72
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Oct 2023 12:08:56.8982
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: qFSSUTw1DKn+fj1G4B4JB5meILLkUTBTlB1IYhhm6pVhL2iO7ms2dcukgM11itE2Chl4DX+24mAOGs42oN2uOQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB9523
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v1 2/2] mm: swap: Swap-out small-sized THP without
+ splitting
+Content-Language: en-GB
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20231010142111.3997780-1-ryan.roberts@arm.com>
+ <20231010142111.3997780-3-ryan.roberts@arm.com>
+ <87r0m1ftvu.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <f1446ef6-3e29-4ce0-866e-c522931ae364@arm.com>
+ <1ccde143-18a7-483b-a9a4-fff07b0edc72@arm.com>
+ <87ttqrm6pk.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <87ttqrm6pk.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -136,40 +54,136 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> >  I think the key thing
-> > here is that these are endpoints that can be active over suspend of
-> > the main application processor that the current operating system is
-> > running (system DT stuff is an interesting corner case here...), and
-> > the example is probably a bit specific.  Other bindings use "audio soun=
-d
-> widgets"
-> > rather than "DAPM widgets".
-> >
-> > We also shouldn't see that these endpoints "should not be disabled"
-> > since that implies that they should be left on even if they aren't
-> > active which isn't quite the case, instead it's that we can continue
-> > playing an audio stream through them in suspend.
->=20
-> This seems like one of those things that everyone has/does, and everyone
-> handles it a bit differently. I applaud trying to do something common, bu=
-t it
-> isn't really common until we have multiple users.
->=20
-> Rob
+On 16/10/2023 07:17, Huang, Ying wrote:
+> Ryan Roberts <ryan.roberts@arm.com> writes:
+> 
+>> On 11/10/2023 11:36, Ryan Roberts wrote:
+>>> On 11/10/2023 09:25, Huang, Ying wrote:
+>>>> Ryan Roberts <ryan.roberts@arm.com> writes:
+>>>>
+>>>>> The upcoming anonymous small-sized THP feature enables performance
+>>>>> improvements by allocating large folios for anonymous memory. However
+>>>>> I've observed that on an arm64 system running a parallel workload (e.g.
+>>>>> kernel compilation) across many cores, under high memory pressure, the
+>>>>> speed regresses. This is due to bottlenecking on the increased number of
+>>>>> TLBIs added due to all the extra folio splitting.
+>>>>>
+>>>>> Therefore, solve this regression by adding support for swapping out
+>>>>> small-sized THP without needing to split the folio, just like is already
+>>>>> done for PMD-sized THP. This change only applies when CONFIG_THP_SWAP is
+>>>>> enabled, and when the swap backing store is a non-rotating block device
+>>>>> - these are the same constraints as for the existing PMD-sized THP
+>>>>> swap-out support.
+>>>>>
+>>>>> Note that no attempt is made to swap-in THP here - this is still done
+>>>>> page-by-page, like for PMD-sized THP.
+>>>>>
+>>>>> The main change here is to improve the swap entry allocator so that it
+>>>>> can allocate any power-of-2 number of contiguous entries between [4, (1
+>>>>> << PMD_ORDER)]. This is done by allocating a cluster for each distinct
+>>>>> order and allocating sequentially from it until the cluster is full.
+>>>>> This ensures that we don't need to search the map and we get no
+>>>>> fragmentation due to alignment padding for different orders in the
+>>>>> cluster. If there is no current cluster for a given order, we attempt to
+>>>>> allocate a free cluster from the list. If there are no free clusters, we
+>>>>> fail the allocation and the caller falls back to splitting the folio and
+>>>>> allocates individual entries (as per existing PMD-sized THP fallback).
+>>>>>
+>>>>> As far as I can tell, this should not cause any extra fragmentation
+>>>>> concerns, given how similar it is to the existing PMD-sized THP
+>>>>> allocation mechanism. There will be up to (PMD_ORDER-1) clusters in
+>>>>> concurrent use though. In practice, the number of orders in use will be
+>>>>> small though.
+>>>>>
+>>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>>>> ---
+>>>>>  include/linux/swap.h |  7 ++++++
+>>>>>  mm/swapfile.c        | 60 +++++++++++++++++++++++++++++++++-----------
+>>>>>  mm/vmscan.c          | 10 +++++---
+>>>>>  3 files changed, 59 insertions(+), 18 deletions(-)
+>>>>>
+>>>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>>>>> index a073366a227c..fc55b760aeff 100644
+>>>>> --- a/include/linux/swap.h
+>>>>> +++ b/include/linux/swap.h
+>>>>> @@ -320,6 +320,13 @@ struct swap_info_struct {
+>>>>>  					 */
+>>>>>  	struct work_struct discard_work; /* discard worker */
+>>>>>  	struct swap_cluster_list discard_clusters; /* discard clusters list */
+>>>>> +	unsigned int large_next[PMD_ORDER]; /*
+>>>>> +					     * next free offset within current
+>>>>> +					     * allocation cluster for large
+>>>>> +					     * folios, or UINT_MAX if no current
+>>>>> +					     * cluster. Index is (order - 1).
+>>>>> +					     * Only when cluster_info is used.
+>>>>> +					     */
+>>>>
+>>>> I think that it is better to make this per-CPU.  That is, extend the
+>>>> percpu_cluster mechanism.  Otherwise, we may have scalability issue.
+>>>
+>>> Is your concern that the swap_info spinlock will get too contended as its
+>>> currently written? From briefly looking at percpu_cluster, it looks like that
+>>> spinlock is always held when accessing the per-cpu structures - presumably
+>>> that's what's disabling preemption and making sure the thread is not migrated?
+>>> So I'm not sure what the benefit is currently? Surely you want to just disable
+>>> preemption but not hold the lock? I'm sure I've missed something crucial...
+>>
+>> I looked a bit further at how to implement what you are suggesting.
+>> get_swap_pages() is currently taking the swap_info lock which it needs to check
+>> and update some other parts of the swap_info - I'm not sure that part can be
+>> removed. swap_alloc_large() (my new function) is not doing an awful lot of work,
+>> so I'm not convinced that you would save too much by releasing the lock for that
+>> part. In contrast there is a lot more going on in scan_swap_map_slots() so there
+>> is more benefit to releasing the lock and using the percpu stuff - correct me if
+>> I've missunderstood.
+>>
+>> As an alternative approach, perhaps it makes more sense to beef up the caching
+>> layer in swap_slots.c to handle large folios too? Then you avoid taking the
+>> swap_info lock at all most of the time, like you currently do for single entry
+>> allocations.
+>>
+>> What do you think?
+> 
+> Sorry for late reply.
+> 
+> percpu_cluster is introduced in commit ebc2a1a69111 ("swap: make cluster
+> allocation per-cpu").  Please check the changelog for why it's
+> introduced.  Sorry about my incorrect memory about scalability.
+> percpu_cluster is introduced for disk performance mainly instead of
+> scalability.
 
-Thanks Mark and Rob for your advice. In fact, it's common use case. We can =
-see
-many drivers set widgets ignoring suspend. I will remove the linux specific=
-s
-and focus on the key concept. How about the modification on the property na=
-me
-and description as following:
-  ignore-suspend-widgets:
-    description: |
-      A list of audio sound widgets which are marked ignoring system suspen=
-d.
-	  Paths between these endpoints are still active over suspend of the main
-	  application processor that the current operating system is running.
+Thanks for the pointer. I'm not sure if you are still suggesting that I make my
+small-sized THP allocation mechanism per-cpu though?
 
-Regards,=20
-Chancel Liu
+I anticipate that by virtue of allocating multiple contiguous swap entries for a
+small-sized THP we already get a lot of the benefits that percpu_cluster gives
+order-0 allocations. (Although obviously it will only give contiguity matching
+the size of the THP rather than a full cluster). The downside of making this
+percpu would be keeping more free clusters tied up in the percpu caches,
+potentially causing a need to scan for free entries more often.
+
+What's your view?
+
+Thanks,
+Ryan
+
+
+
+> 
+> --
+> Best Regards,
+> Huang, Ying
+> 
+>>>
+>>>>
+>>>> And this should be enclosed in CONFIG_THP_SWAP.
+>>>
+>>> Yes, I'll fix this in the next version.
+>>>
+>>> Thanks for the review!
+>>>
+>>>>
+>>>>>  	struct plist_node avail_lists[]; /*
+>>>>>  					   * entries in swap_avail_heads, one
+>>>>>  					   * entry per node.
+
