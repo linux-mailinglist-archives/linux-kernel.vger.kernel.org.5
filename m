@@ -2,162 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 070167CB4EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB7C17CB4ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233490AbjJPUwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 16:52:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46886 "EHLO
+        id S233330AbjJPUyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 16:54:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjJPUwh (ORCPT
+        with ESMTP id S229848AbjJPUyF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 16:52:37 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46685B0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:52:35 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-53d82bea507so8689844a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:52:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697489554; x=1698094354; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+HU6cA1bWRfvIfBDvXUL6UUn9mAyVrw+2kF9P2luauc=;
-        b=KnnpNBuRS3Z6pzATlCxujnLGRaSu9lV4XhxQfLgAwBghl6D37pQuOmKoh4LTAOyLi5
-         tW/hXxzQtS2v9XHXBFdwlokEsBXt2eLnEaPH6w8SKbie3t7oTVGJqOcjSkswlSvYQDPp
-         pW6B01HOZo6xhhraZBiBvE1lY1spjlDA3AZELF0cAX9qVXrE45wsJqyJm5ndI2ClPL6X
-         E+hQIkq+RL7YGGI8lSDoR3WaDcRg3cGSIYr/cSo/wjMOb2dBK3vRry13dBXPYoXSGQX0
-         zcaBNL2dkl3iy8WQi+c3l/Q46e3T0LJeWTZyBV9pPeIyLkuq20CQSQG+2Uaw9r3cgz0t
-         rjDw==
+        Mon, 16 Oct 2023 16:54:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D6C7A7
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:53:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697489595;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=g1e45M2CFb0DX+vR6lusMk2FrSGTdJ+BocRDKkmMhcE=;
+        b=MXH56TKMmhI432I0SF3V0UMiDakSy7mMxVEWuG31KbdmMQt8eCJNXDxGI5lW9epkfOJBSv
+        tHzw5XwSF/fcx2BwuRx4yEVyYemKBQtBz10olJ/6lA55AwGoFtZoV+Bax45hk9k9OBnsNF
+        UCUb8A6KdYOQaM84y9ExkAFt+A30KGk=
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
+ [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-52-xMB71X5-P924GItuQIOJ5Q-1; Mon, 16 Oct 2023 16:53:04 -0400
+X-MC-Unique: xMB71X5-P924GItuQIOJ5Q-1
+Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5b7fb057153so160594a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:53:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697489554; x=1698094354;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+HU6cA1bWRfvIfBDvXUL6UUn9mAyVrw+2kF9P2luauc=;
-        b=qIQwJkUm4OAkRbSd7tgehyo4JjHT6OelLFGfwnGuW/BdRu/DsCU8HPL2dUliQU9/cF
-         jO3rHLghS0pkWB7CDNeVzAUa2woiZIF7g6soxgorSER/iKheAtLWvNpTc/XaqX2doRGc
-         A9vGn/mvMAUkCs2lHwx32jGjifBlXOFdL5YlC9NEG+eypYuOOH/SrOLU7W/Ge3CRU1Ml
-         nSN3bFPzAD9tqqCyIKoSjaGpkqooy2hLtEG7rRVKWovS7YMTzoAo5SGzl/zYJhXbPU8P
-         6MGyyGEjdpHmQPdC9rytQZgs8vaAhmDUGlRM8nMs3rI9Ubh95oJiibOBjfM0LeRhbbda
-         URRg==
-X-Gm-Message-State: AOJu0YyVZL7RSqPF+WkdR+G6yoiWwzvawKXObtPfse1Idtya7D5vC4qJ
-        fGeg0xEwyc/7Ry9wQQavVfo1NF5VrRBGgDbf4gvcTA==
-X-Google-Smtp-Source: AGHT+IHvX+5Vp4Dd/E0t8YnJrM0ptZlI0kjlD4REJBJcFs5dOkKpETV4nVqhxEFchg0ggpy2mpKxg0DuvklQztNybd0=
-X-Received: by 2002:a05:6402:5252:b0:53e:21f6:d784 with SMTP id
- t18-20020a056402525200b0053e21f6d784mr337922edd.8.1697489553657; Mon, 16 Oct
- 2023 13:52:33 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697489583; x=1698094383;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g1e45M2CFb0DX+vR6lusMk2FrSGTdJ+BocRDKkmMhcE=;
+        b=lb6mXQ0PjrbctAdgWEHyn+bTJHPtqoPwyE81Pam13ZvuQeNqSfSs/pBcDPiKCzHkz0
+         gWclP1GwnyeXtLgMj/igrjCQ9YsllII4PCza16HXDx+wHRIkY+Just4c2QsJthRPxxBf
+         Xc4jKQEuTrj90IvGVXJP1fIs1OgGJ10WwvE/YhZOwbM4QSGnv0d0oEAE2XBnLNf5tkve
+         wRoQbh3bNxE1dR/UlKUAKSxabqigh+uJbDvrHPRIStUzJ8X9rB6u/mF3kMAI7SiNWAo7
+         1fkgtGdR6HN0e42eIX1tZXZUK8FyLPdYAO6yxr/blJ0/HlRNfX68SAZ55kfNm1OmoU0L
+         3RMg==
+X-Gm-Message-State: AOJu0YwXaogJh9S1QJ7AzkNwttC+nD6aO8GdnB9wN5HRzT8gvWYAL7MR
+        Nh4xmgBPaHDZPKuetT3G5sWq/b6904ieZS7k+13xfegtEzm/+Q45oj4kRzMYmqUI9FN3CIGT76W
+        LjFBrPMyRfJ0x3GDf+G5vkupn
+X-Received: by 2002:a05:6a20:da8f:b0:14e:3daf:fdb9 with SMTP id iy15-20020a056a20da8f00b0014e3daffdb9mr258059pzb.22.1697489583131;
+        Mon, 16 Oct 2023 13:53:03 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE9E9Gx7bhNwoZS7OQ1mOsDR3QH+AXASqad0Z1dT0w7fTBaPQaixDCBv6qLaD4pcIjUpevxLw==
+X-Received: by 2002:a05:6a20:da8f:b0:14e:3daf:fdb9 with SMTP id iy15-20020a056a20da8f00b0014e3daffdb9mr258038pzb.22.1697489582822;
+        Mon, 16 Oct 2023 13:53:02 -0700 (PDT)
+Received: from redhat.com ([2804:431:c7ec:9c76:b19a:d6e9:6ff5:e6ec])
+        by smtp.gmail.com with ESMTPSA id b11-20020a170902bd4b00b001c55db80b14sm50309plx.221.2023.10.16.13.52.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 13:53:02 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 17:52:57 -0300
+From:   Leonardo Bras <leobras@redhat.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Imran Khan <imran.f.khan@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH smp,csd] Throw an error if a CSD lock is stuck for too
+ long
+Message-ID: <ZS2iqck0tWDWEVMZ@redhat.com>
+References: <bc7cc8b0-f587-4451-8bcd-0daae627bcc7@paulmck-laptop>
+ <c87d7939-a88c-ad2d-82f2-866e04692882@oracle.com>
+ <a77da319-3161-4e42-894e-521d29fa8348@paulmck-laptop>
+ <ZSlhnu0n9eOfkN-U@redhat.com>
+ <fb3f6a95-5c54-460c-8581-276bc359a1de@paulmck-laptop>
 MIME-Version: 1.0
-References: <20231016-strncpy-drivers-net-wireless-broadcom-brcm80211-brcmfmac-cfg80211-c-v1-1-4234807ca07e@google.com>
-In-Reply-To: <20231016-strncpy-drivers-net-wireless-broadcom-brcm80211-brcmfmac-cfg80211-c-v1-1-4234807ca07e@google.com>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Mon, 16 Oct 2023 13:52:21 -0700
-Message-ID: <CAFhGd8rm=KJyinG-aqFj75JqQnC0=_+6NSbcdr=wG7SqXCsppQ@mail.gmail.com>
-Subject: Re: [PATCH] brcmfmac: replace deprecated strncpy with strscpy
-To:     Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Kalle Valo <kvalo@kernel.org>
-Cc:     linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fb3f6a95-5c54-460c-8581-276bc359a1de@paulmck-laptop>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 1:48=E2=80=AFPM Justin Stitt <justinstitt@google.co=
-m> wrote:
->
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
->
-> We expect ifp->ndev->name to be NUL-terminated based on its use in
-> format strings within core.c:
-> via brcmf_ifname() ->
-> 67 |       char *brcmf_ifname(struct brcmf_if *ifp)
-> 68 |       {
-> 69 |            if (!ifp)
-> 70 |                    return "<if_null>";
-> 71 |
-> 72 |            if (ifp->ndev)
-> 73 |                    return ifp->ndev->name;
-> 74 |
-> 75 |            return "<if_none>";
-> 76 |       }
-> ...
-> 288 |       static netdev_tx_t brcmf_netdev_start_xmit(struct sk_buff *sk=
-b,
-> 289 |                                              struct net_device *nde=
-v) {
-> ...
-> 330 |       brcmf_dbg(INFO, "%s: insufficient headroom (%d)\n",
-> 331 |                 brcmf_ifname(ifp), head_delta);
-> ...
-> 336 |       bphy_err(drvr, "%s: failed to expand headroom\n",
-> 337 |                brcmf_ifname(ifp));
->
-> Considering the above, a suitable replacement is `strscpy` [2] due to
-> the fact that it guarantees NUL-termination on the destination buffer
-> without unnecessarily NUL-padding.
->
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strn=
-cpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.h=
-tml [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Note: build-tested only.
->
-> Found with: $ rg "strncpy\("
-> ---
->  drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c =
-b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-> index 2a90bb24ba77..7daa418df877 100644
-> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-> @@ -866,7 +866,7 @@ struct wireless_dev *brcmf_apsta_add_vif(struct wiphy=
- *wiphy, const char *name,
->                 goto fail;
->         }
->
-> -       strncpy(ifp->ndev->name, name, sizeof(ifp->ndev->name) - 1);
-> +       strscpy(ifp->ndev->name, name, sizeof(ifp->ndev->name));
->         err =3D brcmf_net_attach(ifp, true);
->         if (err) {
->                 bphy_err(drvr, "Registering netdevice failed\n");
->
-> ---
-> base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
-> change-id: 20231016-strncpy-drivers-net-wireless-broadcom-brcm80211-brcmf=
-mac-cfg80211-c-a20108421685
->
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
->
+On Mon, Oct 16, 2023 at 11:27:51AM -0700, Paul E. McKenney wrote:
+> On Fri, Oct 13, 2023 at 12:26:22PM -0300, Leonardo Bras wrote:
+> > On Mon, Oct 09, 2023 at 09:39:38AM -0700, Paul E. McKenney wrote:
+> > > On Fri, Oct 06, 2023 at 10:32:07AM +1100, Imran Khan wrote:
+> > > > Hello Paul,
+> > > > 
+> > > > On 6/10/2023 3:48 am, Paul E. McKenney wrote:
+> > > > > The CSD lock seems to get stuck in 2 "modes". When it gets stuck
+> > > > > temporarily, it usually gets released in a few seconds, and sometimes
+> > > > > up to one or two minutes.
+> > > > > 
+> > > > > If the CSD lock stays stuck for more than several minutes, it never
+> > > > > seems to get unstuck, and gradually more and more things in the system
+> > > > > end up also getting stuck.
+> > > > > 
+> > > > > In the latter case, we should just give up, so the system can dump out
+> > > > > a little more information about what went wrong, and, with panic_on_oops
+> > > > > and a kdump kernel loaded, dump a whole bunch more information about
+> > > > > what might have gone wrong.
+> > > > > 
+> > > > > Question: should this have its own panic_on_ipistall switch in
+> > > > > /proc/sys/kernel, or maybe piggyback on panic_on_oops in a different
+> > > > > way than via BUG_ON?
+> > > > > 
+> > > > panic_on_ipistall (set to 1 by default) looks better option to me. For systems
+> > > > where such delay is acceptable and system can eventually get back to sane state,
+> > > > this option (set to 0 after boot) would prevent crashing the system for
+> > > > apparently benign CSD hangs of long duration.
+> > > 
+> > > Good point!  How about like the following?
+> > > 
+> > > 							Thanx, Paul
+> > > 
+> > > ------------------------------------------------------------------------
+> > > 
+> > > commit 6bcf3786291b86f13b3e13d51e998737a8009ec3
+> > > Author: Rik van Riel <riel@surriel.com>
+> > > Date:   Mon Aug 21 16:04:09 2023 -0400
+> > > 
+> > >     smp,csd: Throw an error if a CSD lock is stuck for too long
+> > >     
+> > >     The CSD lock seems to get stuck in 2 "modes". When it gets stuck
+> > >     temporarily, it usually gets released in a few seconds, and sometimes
+> > >     up to one or two minutes.
+> > >     
+> > >     If the CSD lock stays stuck for more than several minutes, it never
+> > >     seems to get unstuck, and gradually more and more things in the system
+> > >     end up also getting stuck.
+> > >     
+> > >     In the latter case, we should just give up, so the system can dump out
+> > >     a little more information about what went wrong, and, with panic_on_oops
+> > >     and a kdump kernel loaded, dump a whole bunch more information about what
+> > >     might have gone wrong.  In addition, there is an smp.panic_on_ipistall
+> > >     kernel boot parameter that by default retains the old behavior, but when
+> > >     set enables the panic after the CSD lock has been stuck for more than
+> > >     five minutes.
+> > >     
+> > >     [ paulmck: Apply Imran Khan feedback. ]
+> > >     
+> > >     Link: https://lore.kernel.org/lkml/bc7cc8b0-f587-4451-8bcd-0daae627bcc7@paulmck-laptop/
+> > >     Signed-off-by: Rik van Riel <riel@surriel.com>
+> > >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > >     Cc: Peter Zijlstra <peterz@infradead.org>
+> > >     Cc: Valentin Schneider <vschneid@redhat.com>
+> > >     Cc: Juergen Gross <jgross@suse.com>
+> > >     Cc: Jonathan Corbet <corbet@lwn.net>
+> > >     Cc: Randy Dunlap <rdunlap@infradead.org>
+> > > 
+> > > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> > > index 0a1731a0f0ef..592935267ce2 100644
+> > > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > > @@ -5858,6 +5858,11 @@
+> > >  			This feature may be more efficiently disabled
+> > >  			using the csdlock_debug- kernel parameter.
+> > >  
+> > > +	smp.panic_on_ipistall= [KNL]
+> > > +			If a csd_lock_timeout extends for more than
+> > > +			five minutes, panic the system.  By default, let
+> > > +			CSD-lock acquisition take as long as they take.
+> > > +
+> > 
+> > It could be interesting to have it as an s64 parameter (in {mili,}seconds) 
+> > instead of bool, this way the user could pick the time to wait before the 
+> > panic happens. 0 or -1 could mean disabled.
+> > 
+> > What do you think?
+> > 
+> > Other than that,
+> > Reviewed-by: Leonardo Bras <leobras@redhat.com>
+> 
+> Thank you for looking this over!
+> 
+> How about with the diff shown below, to be folded into the original?
+> I went with int instead of s64 because I am having some difficulty
+> imagining anyone specifying more than a 24-day timeout.  ;-)
 
-Ignore this patch. It will be rolled into a series with others.
+I suggested s64 just because it was the type being used in
+BUG_ON(panic_on_ipistall && (s64)ts_delta > 300000000000LL);
 
-Just found some more strncpy uses in broadcom/brcm80211 so I will make a se=
-ries
-fixing them all at once.
+But anyway, int should be fine.
 
 
-Thanks
-Justin
+> 
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index ccb7621eff79..ea5ae9deb753 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -5931,8 +5931,10 @@
+>  
+>  	smp.panic_on_ipistall= [KNL]
+>  			If a csd_lock_timeout extends for more than
+> -			five minutes, panic the system.  By default, let
+> -			CSD-lock acquisition take as long as they take.
+> +			the specified number of milliseconds, panic the
+> +			system.  By default, let CSD-lock acquisition
+> +			take as long as they take.  Specifying 300,000
+> +			for this value provides a 10-minute timeout.
+
+300,000 ms is 300s, which is 5 minutes, right?
+
+>  
+>  	smsc-ircc2.nopnp	[HW] Don't use PNP to discover SMC devices
+>  	smsc-ircc2.ircc_cfg=	[HW] Device configuration I/O port
+> diff --git a/kernel/smp.c b/kernel/smp.c
+> index b6a0773a7015..d3ca47f32f38 100644
+> --- a/kernel/smp.c
+> +++ b/kernel/smp.c
+> @@ -170,8 +170,8 @@ static DEFINE_PER_CPU(void *, cur_csd_info);
+>  
+>  static ulong csd_lock_timeout = 5000;  /* CSD lock timeout in milliseconds. */
+>  module_param(csd_lock_timeout, ulong, 0444);
+> -static bool panic_on_ipistall;
+> -module_param(panic_on_ipistall, bool, 0444);
+> +static int panic_on_ipistall;  /* CSD panic timeout in milliseconds, 300000 for ten minutes. */
+
+s/ten/five
+
+> +module_param(panic_on_ipistall, int, 0444);
+>  
+>  static atomic_t csd_bug_count = ATOMIC_INIT(0);
+>  
+> @@ -256,7 +256,7 @@ static bool csd_lock_wait_toolong(struct __call_single_data *csd, u64 ts0, u64 *
+>  	 * to become unstuck. Use a signed comparison to avoid triggering
+>  	 * on underflows when the TSC is out of sync between sockets.
+>  	 */
+> -	BUG_ON(panic_on_ipistall && (s64)ts_delta > 300000000000LL);
+> +	BUG_ON(panic_on_ipistall > 0 && (s64)ts_delta > ((s64)panic_on_ipistall * NSEC_PER_MSEC));
+
+s64 here would avoid casting (s64)panic_on_ipistall, but I think it does 
+not really impact readability.  
+
+IIUC ts_delta is an u64 being casted as s64, which could be an issue but no 
+computer system will actually take over 2^31 ns (292 years) to run 1 
+iteration, so it's safe.
+
+I think it's a nice feaure :)
+
+Thanks!
+Leo
+
+
+>  	if (cpu_cur_csd && csd != cpu_cur_csd) {
+>  		pr_alert("\tcsd: CSD lock (#%d) handling prior %pS(%ps) request.\n",
+>  			 *bug_id, READ_ONCE(per_cpu(cur_csd_func, cpux)),
+> 
+
