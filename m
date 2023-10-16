@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EEF27CB4BB
+	by mail.lfdr.de (Postfix) with ESMTP id 934227CB4BC
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:36:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233280AbjJPUgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 16:36:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52842 "EHLO
+        id S234292AbjJPUgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 16:36:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234158AbjJPUf7 (ORCPT
+        with ESMTP id S234232AbjJPUgE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 16:35:59 -0400
+        Mon, 16 Oct 2023 16:36:04 -0400
 Received: from tarta.nabijaczleweli.xyz (tarta.nabijaczleweli.xyz [139.28.40.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D2EFB
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:35:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05108A2;
+        Mon, 16 Oct 2023 13:35:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nabijaczleweli.xyz;
-        s=202305; t=1697488547;
-        bh=BL2nvvqmXUiLD1k/WJxDJuoKF37Dds8amZSyjDvQggY=;
+        s=202305; t=1697488550;
+        bh=U1WgWCtmO/bEZ1AED24mCSnyrNXJpL+Y8jZtS7Uiqmw=;
         h=Date:From:Cc:Subject:References:In-Reply-To:From;
-        b=IPYJ/UOZHMjmTbBk0B4ucR9ykxebZ6gj9hCrlA67sv//yW+ch5OYd8tuQ5AEyygEo
-         8ccEpfpkL6BvcJrN8JKDbIlKu7kf7nQG0QPh38XhGQOYvMCgQmYyd+bh7O17U+alGT
-         2q53FEEmpgaqR2tOMi8sjPYvQP+UlY+zDvbCd2AYMiylE9pMej5ynHLGFfFcjp5sxH
-         lKGc0BIOJDCHDgtOgGuhDrPMp/pLuNGE6yN3D3ktY2lmnQVvov4Zi+MQ202wvSjIs2
-         H1d8bgllteTwDIxS7vaGLAUjPabkkz2HqQ40DRTPrdI9HsNE2Zqcdo1UIKoJ9MZXAX
-         aR3O0jsM3QQCQ==
+        b=NnbBuKeKpbCRZiKTZ0ErYxqllKdbeGYbOkrq7PCgezUnRSCKITL04C3B52B4ezIC2
+         qbWjx5knHEvFjx/c5qAQDFXWn4Gq1xy00JsQOD5qStbtjJ0JXZQP9eFmH4w+6qbKrk
+         i++jePBXe+2YsLtyp8j/DCzzc/CrE87I4JuWKRcHLIaXzAL4BCGCTL7OLrEmTcZTlf
+         /a4FJ6fSFhuU3Ow4xYUbIFIPmBMbTyDa/pzGfpK+kgNvBjOvcVPaYhy0A4hOmfl538
+         kFfoa8qrYOXCvCsZmeSve3t+x5tf85mAbx5H0jX9qIkYpcnSvoeHTkh4jbUMMJpHQR
+         4u9r4mx4oGR5g==
 Received: from tarta.nabijaczleweli.xyz (unknown [192.168.1.250])
-        by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id CAC2310412;
-        Mon, 16 Oct 2023 22:35:47 +0200 (CEST)
-Date:   Mon, 16 Oct 2023 22:35:47 +0200
+        by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id 298CE10414;
+        Mon, 16 Oct 2023 22:35:50 +0200 (CEST)
+Date:   Mon, 16 Oct 2023 22:35:50 +0200
 From:   Ahelenia =?utf-8?Q?Ziemia=C5=84ska?= 
         <nabijaczleweli@nabijaczleweli.xyz>
-Cc:     Andrew Morton <akpm@linux-foudation.org>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Pengcheng Yang <yangpc@wangsu.com>,
-        Zhang Zhengming <zhang.zhengming@h3c.com>,
-        Xu Panda <xu.panda@zte.com.cn>, Li kunyu <kunyu@nfschina.com>,
-        Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>,
-        Suren Baghdasaryan <surenb@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 05/11] relayfs: relay_file_splice_read: always return -EAGAIN
- for no data
-Message-ID: <329ea2aecb56e982f16aea7c637fd0e8a7985506.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
+Cc:     Karsten Graul <kgraul@linux.ibm.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Jan Karcher <jaka@linux.ibm.com>,
+        "D. Wythe" <alibuda@linux.alibaba.com>,
+        Tony Lu <tonylu@linux.alibaba.com>,
+        Wen Gu <guwen@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 06/11] net/smc: smc_splice_read: always request MSG_DONTWAIT
+Message-ID: <45da5ab094bcc7d3331385e8813074922c2a13c6.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
 References: <cover.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xgzyovxow36knrrr"
+        protocol="application/pgp-signature"; boundary="47tcgm2g6sbkxgtd"
 Content-Disposition: inline
 In-Reply-To: <cover.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
 User-Agent: NeoMutt/20231006
@@ -62,53 +63,61 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---xgzyovxow36knrrr
+--47tcgm2g6sbkxgtd
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-For consistency with the new "file->pipe reads non-blockingly" semantic.
+Otherwise we risk sleeping with the pipe locked for indeterminate
+lengths of time.
 
+Link: https://lore.kernel.org/linux-fsdevel/qk6hjuam54khlaikf2ssom6custxf5i=
+s2ekkaequf4hvode3ls@zgf7j5j4ubvw/t/#u
 Signed-off-by: Ahelenia Ziemia=C5=84ska <nabijaczleweli@nabijaczleweli.xyz>
 ---
- kernel/relay.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ net/smc/af_smc.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/kernel/relay.c b/kernel/relay.c
-index 83fe0325cde1..3d381e94a204 100644
---- a/kernel/relay.c
-+++ b/kernel/relay.c
-@@ -1215,8 +1215,7 @@ static ssize_t relay_file_splice_read(struct file *in,
- 		if (ret < 0)
- 			break;
- 		else if (!ret) {
--			if (flags & SPLICE_F_NONBLOCK)
--				ret =3D -EAGAIN;
-+			ret =3D -EAGAIN;
- 			break;
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index bacdd971615e..89473305f629 100644
+--- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -3243,12 +3243,8 @@ static ssize_t smc_splice_read(struct socket *sock, =
+loff_t *ppos,
+ 			rc =3D -ESPIPE;
+ 			goto out;
  		}
-=20
+-		if (flags & SPLICE_F_NONBLOCK)
+-			flags =3D MSG_DONTWAIT;
+-		else
+-			flags =3D 0;
+ 		SMC_STAT_INC(smc, splice_cnt);
+-		rc =3D smc_rx_recvmsg(smc, NULL, pipe, len, flags);
++		rc =3D smc_rx_recvmsg(smc, NULL, pipe, len, MSG_DONTWAIT);
+ 	}
+ out:
+ 	release_sock(sk);
 --=20
 2.39.2
 
---xgzyovxow36knrrr
+--47tcgm2g6sbkxgtd
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmUtnqMACgkQvP0LAY0m
-WPELZA//fmLRKbL79Rgf3cwooEXyDV23JKNm0RG3vI8mKBL1P1xRezpHzfnXUf4v
-39SzF1bZ7pzlPwI6043qGlI7zS8Eu2nRRkM9SEGH9q0VTNQTNkn4Nh9ytjjrAwLj
-kL5v69VH0oR7fOHeQc/OHQFZLOpbmVVNgUMN4ClvlEyYCpTPEeIbvBZsQv0Y6ng2
-NRX202BF3X1e6DU/RzpScvJhrpiaOhtev1h/IDNiHgzTq7I/hdZ+oDZH7KbCUuta
-8f0GRgI453Ux16htD0JVHsgREMTe0CrTsokDY9t+sU2vJDJDiJYuVPw+7wznVUSY
-51w31rAauLwpULOOoOhknYSHJcZ3FtPBH4mCvHAj8U5lSTCuXXiAVCAuXmVSn+DV
-HQxRL6o9yLvGF5lpuHDYBbG6k+bewGZiZ1bUZUdEfT1/jVYO/8jK2p9CJF++j0Uf
-q8EQdj45/pETs0oyzTftPh1er+bvTJSS8515f9GsNXih4LM7OYiGQcBKL1f0VlZk
-3EU0vEG0LzXxGJwJq4AxS5ebTU1G2j9K7G6avtP0VmnJyCVaExzDeOoDTrO/lCkU
-7PJxJ+3VPHrd++/QJECAzmHH8CzTz7xTRa9/z/ug8CAkyaXHSuJRemYwLiZWz0wz
-JTlBUd+xHngIFI048C0rP7Ya+91fU3oN+vHvcfi/8utubswVhNg=
-=WOMB
+iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmUtnqUACgkQvP0LAY0m
+WPFUKxAAtTKaJX/sYGTuVM8QUutGSWhA+NIlyw7Q1JsrTd4NMyNOH5/q0d+w2cO1
+cJ97addBcqUihdkjrxN4J4OCdcgi2ZZOspVFvEKxRVdcuE63+ua1l/xdZ9Yn08Tm
+KZMgk6khtM8Sh0cvOZKpkC2kNyLlavNBXmmd8efd+yCOJOaUIingaqaj7pOJOvf2
+PPU3a1ErK8TCFIEugu/XDPvbvShTSJzOyw91E11NBB19TS72oxUdUoCW07OtZGoP
+8nXUiQpKaG+LyKdam4qazu4oLBP5gBIy/cnYbwRrOtj8xdiOhxYBLSp7pYETWQQm
+YqWe+IAnHzkzJUmdC+RcohBlFNAhIV4hPaGXS77VU3XKZgtGxvI4lrNIYwN3580K
+JAVhAda2mbmqo5F7VWQt/mygvRtRy8AhWhffsPEdbQFvy9kIJj69cXmWtw6rrn+1
+pQRc30hv1lDhsDug304WZMaub5XJujUzX3J8+7eGnBASw9bOb1K1pEpYaFlC6l2f
+B5HmhckumNimxxG6To2FjxLLQytKZ2dr34g1B1xWVexdOVOkr2mc1WL/GabKh/53
+/BPXGZ8jcvf4Ly1x41sO2xO2914R+jnjVVWwio32Eig5EemORZarxFbwB/KIo4G5
+P29UVPy+jes7Icui9Zg1lxgYherj24YqXwfzbxKa+XQbO1Vho0Q=
+=jEe8
 -----END PGP SIGNATURE-----
 
---xgzyovxow36knrrr--
+--47tcgm2g6sbkxgtd--
