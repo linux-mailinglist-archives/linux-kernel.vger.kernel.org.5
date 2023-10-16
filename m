@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A39F7CB0AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C367CB0AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234254AbjJPQ5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 12:57:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44774 "EHLO
+        id S233999AbjJPQ5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 12:57:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234169AbjJPQ4m (ORCPT
+        with ESMTP id S234238AbjJPQ4n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 12:56:42 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9183210A
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:54:15 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3248ac76acbso3918233f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:54:15 -0700 (PDT)
+        Mon, 16 Oct 2023 12:56:43 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDD203C25
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:54:17 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40535597f01so46842915e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:54:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697475254; x=1698080054; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1697475256; x=1698080056; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zpGIiUMbok8vBwc13/k0XLEAhZoDX5uqz8AGagQ5Hmc=;
-        b=rQ8QLDL2UJWSvpTZwfiKnAkE5JK5NclU0ZhgMbI0lPQgGYqrOb5yMq7qpHQbAJg3W5
-         tPyAcAqt44cuUfYIshdzRx8wbXK7HUE0oHuYw2LNG2FUeVSsyEetN/BAQIniZgKzu6ra
-         fd+K+8LA9WKO47E9jxCVH724El3S/D5V1Ma23p3u9jKjBZCghWNo9wyUgXypWXPjpIxB
-         xyMSG+BiSWBqk1fka1/Qop67koEA2wgiVZTMMiUkKJStXxkyyn5FtPMe1mGuG4CsReUg
-         +5jZRWE6zbQSujcX+qIm7gA/ZF6oDWUqanKnbx6awvfjWESy7sUPdlXNdgEp4yHxRQ6U
-         rQlA==
+        bh=Z2KAQh5biIaDjy3JspEokfbAFpOptd05O572lVX96aY=;
+        b=b16gH0mUBocs5VLOa0oKJnzWyP2wr6PBOpMJgT0H0PPo+joXWMArPcZs8zkRWZrjqP
+         hlgpRPTum5bT+FO/P77WqYszXeXNIqZ/i2P5JIGakO8r2xsMw+ln7zsl2V/5XpRjtbjB
+         xFz5ULF98c/nQOqFxLdUVeRHCvWPVOBO13hSg0mO9Zrmom2DTpnnt8HkCGGLuiqqQwss
+         zVdMa8/WiPzc6ajsaNkfUlOY8UA+BfXOFnGVT4eSdtI7jLnshuWsf+3Um4XYQpzbgtyu
+         kTY9J8/td9YqwKK5vlUx3Qz7a8RtPg0eeA9VLAzMLCiHLL96cEaVQWqLn62uE1ci4uR0
+         q39w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697475254; x=1698080054;
+        d=1e100.net; s=20230601; t=1697475256; x=1698080056;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zpGIiUMbok8vBwc13/k0XLEAhZoDX5uqz8AGagQ5Hmc=;
-        b=Ga8O25oRZN7VyD2DAGqp0nVLiiy864+7MlYNDBETVEiH1Yb4Dzlr+2FWTwJt86pcMm
-         cdgZJtDfAh88tai5UdoDh0CYFW6K27G2gQUUvEtMdCvI3Rm+v8nXEGCNet7qmmgLikDu
-         ieOOnhDQwFxO5bhdKxVYWl9lsN2MQ3ML2DIv1jlu7OAJoLKlnkgM3Hxo68Ket4InCxTx
-         CLrN/Rz5sAyowWmb7T958aiGGGwD7uzktBXOdouzwXhFHCLIplhp2Rv0v06J+OU7RodT
-         bGp3HO3wkHhVE/dyUhLm43zC2uHMiRxoS2jao6KFLatvKFHKZRvQmzizJhogJKsmVz2p
-         BKuw==
-X-Gm-Message-State: AOJu0YzTQy5OUYcrCBdZFjklMZTahDoOmoQf1vSpRKl+5DP28U+NyOBo
-        Kmx/Yg4x5bS7OOF4khoF+jLIhA==
-X-Google-Smtp-Source: AGHT+IGv6IJmbuk/e/mZEXSBzwHspez+g7aAQkIvi456hEyHQKQI7pI4oTBdD/5E0EVsTbEEtp3zKw==
-X-Received: by 2002:a05:6000:80a:b0:32d:857c:d51c with SMTP id bt10-20020a056000080a00b0032d857cd51cmr16399678wrb.43.1697475254257;
-        Mon, 16 Oct 2023 09:54:14 -0700 (PDT)
+        bh=Z2KAQh5biIaDjy3JspEokfbAFpOptd05O572lVX96aY=;
+        b=vFCmnoRm4FYnsxEiDFFzovTpjtCbmIFmwrNDjxI4QvTUsXz8Iu2gVok9CO6inRiDJz
+         Dpyt3sg74HcYIq9PVz06hVk8Bik/Q7jUz4NG/yO4F4WK9H61mROM6LHFciWs+ShgIL9G
+         WaeO3dqUP6M5b71NjL3cFpjuFe1QzR0fCb1tqbi8ikMno1k8EFVb98AvMvSxDKuhrsa9
+         ZxDQgvAemZrGUD4ixZ3fzGwR/x//dh/WaSUhmq3oZqqiqsSumqqORiKI6CafYA0GZT0o
+         NbrwzC29warGagNcwgWIsRWmkweqbNckWOoURB6TQrfl5OjmnDgIpIz/isPEjEYKoiXc
+         4RoA==
+X-Gm-Message-State: AOJu0Yyf2LUaii/sC2uXe/47KZV3Ujzgl8SdoZdT3R6ehk4SXihq6PFp
+        InG8OVvHwqPO3ua8AiZNHb64pw==
+X-Google-Smtp-Source: AGHT+IEqmnobiCsIMYAdCDeaCtj3AGb0jtlboDlqcQ+Atx1a8i0m4PfESVkAoxvu6F9wIJAh3Bb39A==
+X-Received: by 2002:a1c:7711:0:b0:405:959e:dc7c with SMTP id t17-20020a1c7711000000b00405959edc7cmr29757671wmi.30.1697475256293;
+        Mon, 16 Oct 2023 09:54:16 -0700 (PDT)
 Received: from eriador.lumag.spb.ru ([45.84.211.189])
-        by smtp.gmail.com with ESMTPSA id s19-20020a05600c45d300b0040648217f4fsm7638996wmo.39.2023.10.16.09.54.12
+        by smtp.gmail.com with ESMTPSA id s19-20020a05600c45d300b0040648217f4fsm7638996wmo.39.2023.10.16.09.54.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 09:54:13 -0700 (PDT)
+        Mon, 16 Oct 2023 09:54:15 -0700 (PDT)
 From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 To:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
         Andrzej Hajda <andrzej.hajda@intel.com>,
@@ -74,9 +74,9 @@ To:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
 Cc:     Marek Vasut <marex@denx.de>, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         freedreno@lists.freedesktop.org
-Subject: [RFC PATCH 09/10] drm/bridge: lt9611uxc: implement automatic DSI power control
-Date:   Mon, 16 Oct 2023 19:53:54 +0300
-Message-ID: <20231016165355.1327217-10-dmitry.baryshkov@linaro.org>
+Subject: [RFC PATCH 10/10] drm/msm/dsi: drop (again) the ps8640 workaround
+Date:   Mon, 16 Oct 2023 19:53:55 +0300
+Message-ID: <20231016165355.1327217-11-dmitry.baryshkov@linaro.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231016165355.1327217-1-dmitry.baryshkov@linaro.org>
 References: <20231016165355.1327217-1-dmitry.baryshkov@linaro.org>
@@ -91,27 +91,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Lontium LT9611UXC driver doesn't need to control DSI power
-lines manually. Mark it for automatic power control.
+Now as the Parade PS8640 driver sets the MIPI_DSI_MANUAL_POWERUP flag,
+drop the workaround enforcing the late DSI link powerup in the case the
+next bridge is ps8640.
 
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 ---
- drivers/gpu/drm/bridge/lontium-lt9611uxc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/msm/dsi/dsi_manager.c | 20 --------------------
+ 1 file changed, 20 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/lontium-lt9611uxc.c b/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
-index 7835738a532e..ace7a6ee890b 100644
---- a/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
-+++ b/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
-@@ -279,7 +279,7 @@ static struct mipi_dsi_device *lt9611uxc_attach_dsi(struct lt9611uxc *lt9611uxc,
- 	dsi->lanes = 4;
- 	dsi->format = MIPI_DSI_FMT_RGB888;
- 	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_SYNC_PULSE |
--			  MIPI_DSI_MODE_VIDEO_HSE;
-+			  MIPI_DSI_MODE_VIDEO_HSE | MIPI_DSI_AUTO_POWERUP;
+diff --git a/drivers/gpu/drm/msm/dsi/dsi_manager.c b/drivers/gpu/drm/msm/dsi/dsi_manager.c
+index 2d7040d21239..b6b8171cf382 100644
+--- a/drivers/gpu/drm/msm/dsi/dsi_manager.c
++++ b/drivers/gpu/drm/msm/dsi/dsi_manager.c
+@@ -198,29 +198,12 @@ static int dsi_mgr_bridge_get_id(struct drm_bridge *bridge)
+ 	return dsi_bridge->id;
+ }
  
- 	ret = devm_mipi_dsi_attach(dev, dsi);
- 	if (ret < 0) {
+-/*
+- * If the next bridge in the chain is the Parade ps8640 bridge chip then don't
+- * power on early since it seems to violate the expectations of the firmware
+- * that the bridge chip is running.
+- */
+-static bool dsi_mgr_next_is_ps8640(struct drm_bridge *bridge)
+-{
+-	struct drm_bridge *next_bridge = drm_bridge_get_next_bridge(bridge);
+-
+-	return next_bridge &&
+-		next_bridge->of_node &&
+-		of_device_is_compatible(next_bridge->of_node, "parade,ps8640");
+-}
+-
+ static bool dsi_mgr_auto_powerup(struct drm_bridge *bridge)
+ {
+ 	int id = dsi_mgr_bridge_get_id(bridge);
+ 	struct msm_dsi *msm_dsi = dsi_mgr_get_dsi(id);
+ 	struct mipi_dsi_host *host = msm_dsi->host;
+ 
+-	if (dsi_mgr_next_is_ps8640(bridge))
+-		return true;
+-
+ 	return msm_dsi_host_auto_powerup(host);
+ }
+ 
+@@ -230,9 +213,6 @@ static bool dsi_mgr_early_powerup(struct drm_bridge *bridge)
+ 	struct msm_dsi *msm_dsi = dsi_mgr_get_dsi(id);
+ 	struct mipi_dsi_host *host = msm_dsi->host;
+ 
+-	if (dsi_mgr_next_is_ps8640(bridge))
+-		return false;
+-
+ 	return msm_dsi_host_early_powerup(host);
+ }
+ 
 -- 
 2.42.0
 
