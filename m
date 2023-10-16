@@ -2,253 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2983D7CA8B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F667CA8BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 15:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230493AbjJPM7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 08:59:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34436 "EHLO
+        id S231478AbjJPNAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 09:00:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232133AbjJPM7f (ORCPT
+        with ESMTP id S231569AbjJPNAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 08:59:35 -0400
-Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 405BAAB;
-        Mon, 16 Oct 2023 05:59:33 -0700 (PDT)
-Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-1e9bb3a0bfeso2482707fac.3;
-        Mon, 16 Oct 2023 05:59:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697461172; x=1698065972;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T5qotJcOY/78cW/Hq8ly2JZYukLGnIIJLqd88Irrixs=;
-        b=i6cRYJxmSHhfm12r/H+j9ZJZIikXacSIirHZx3plmBek/EK5zvlBkckcTSNEVRIHva
-         N3h6jxYRLMBJaUojAqKyxEJFON3g+XqRUCdjQsMZM+RYo6MOhmk/F/LLiiilSYo4EZa6
-         TtNcDRMTX6TAUPSu9Gank3g7v6JtqubpEKI0J1dRwzC/FOuI2Zr4WVTu45cNqqh5RSdZ
-         A/N5s5jOtGmpBkOpEzN2E+xILliJ9DaAAjWSUyl3MvQFf1K5/uhFbeZ4bjRfb06zG/ec
-         +5SMI0Z7F+1HUGAWdafGdbHJa2EsctmyZPAXC/FwFj6TUXR35SXMORvUqxqruVUUNt/+
-         Kd9A==
-X-Gm-Message-State: AOJu0YwEu8jl18kiU1QZE46kk9Q5AN5g9qsdiP1JjnRA3TnSBnf26fyN
-        kz3PLv48TcLtTDMud3wnGQ==
-X-Google-Smtp-Source: AGHT+IEf7behtCPf6kQIdc79YQsrkjp7NVEEN3y26qF/FI1LSb60UvAR/VwMDiXcoiEg1g9CuCZFlw==
-X-Received: by 2002:a05:6870:128f:b0:1ea:69f6:fe13 with SMTP id 15-20020a056870128f00b001ea69f6fe13mr724547oal.44.1697461172185;
-        Mon, 16 Oct 2023 05:59:32 -0700 (PDT)
-Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id s6-20020a05687087c600b001dd17c5356dsm985623oam.11.2023.10.16.05.59.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 05:59:31 -0700 (PDT)
-Received: (nullmailer pid 2593748 invoked by uid 1000);
-        Mon, 16 Oct 2023 12:59:29 -0000
-Date:   Mon, 16 Oct 2023 07:59:29 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Mon, 16 Oct 2023 09:00:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1160E8
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 06:00:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697461201;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=9sDjD0PnFUNgV0X5f9SsRv9HtvY4pPJgeF96t1o0gDk=;
+        b=bmWKo7Ise4DztepQCpPNXRK8dl404TeAQy0KKceeki5R0RjcH/aPEG7pQ/4/5I7p70LGl9
+        KG2xvKhiviqzNikgqSm5n51sS942TNWvfO239uk5taDZ/qr3VRdC3tK8X984s8uxmjsyQc
+        G+JFui3+TVJiVr/M/Jzl9pFiaItEg/k=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-113-c3kl-JliNt2P5acWWO9h5g-1; Mon, 16 Oct 2023 08:59:48 -0400
+X-MC-Unique: c3kl-JliNt2P5acWWO9h5g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AA9083C1CC26;
+        Mon, 16 Oct 2023 12:59:47 +0000 (UTC)
+Received: from vschneid.remote.csb (unknown [10.39.194.52])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 89E191102E14;
+        Mon, 16 Oct 2023 12:59:45 +0000 (UTC)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     dccp@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next v3 1/6] dt-bindings: marvell: Rewrite MV88E6xxx
- in schema
-Message-ID: <20231016125929.GB2578576-robh@kernel.org>
-References: <20231016-marvell-88e6152-wan-led-v3-0-38cd449dfb15@linaro.org>
- <20231016-marvell-88e6152-wan-led-v3-0-38cd449dfb15@linaro.org>
- <20231016-marvell-88e6152-wan-led-v3-1-38cd449dfb15@linaro.org>
- <20231016-marvell-88e6152-wan-led-v3-1-38cd449dfb15@linaro.org>
- <20231016110858.ljvjssqujuesu7kd@skbuf>
+        David Ahern <dsahern@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Tomas Glozar <tglozar@redhat.com>
+Subject: [RFC PATCH] tcp/dcpp: Un-pin tw_timer
+Date:   Mon, 16 Oct 2023 14:59:34 +0200
+Message-Id: <20231016125934.1970789-1-vschneid@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231016110858.ljvjssqujuesu7kd@skbuf>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 02:08:58PM +0300, Vladimir Oltean wrote:
-> On Mon, Oct 16, 2023 at 11:12:54AM +0200, Linus Walleij wrote:
-> > This is an attempt to rewrite the Marvell MV88E6xxx switch bindings
-> > in YAML schema.
-> > 
-> > The current text binding says:
-> >   WARNING: This binding is currently unstable. Do not program it into a
-> >   FLASH never to be changed again. Once this binding is stable, this
-> >   warning will be removed.
-> > 
-> > Well that never happened before we switched to YAML markup,
-> > we can't have it like this, what about fixing the mess?
-> 
-> Removing that remark seems in order.
-> 
-> > 
-> > Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> > ---
-> >  .../bindings/net/dsa/marvell,mv88e6xxx.yaml        | 243 +++++++++++++++++++++
-> >  .../devicetree/bindings/net/dsa/marvell.txt        | 109 ---------
-> >  MAINTAINERS                                        |   2 +-
-> >  3 files changed, 244 insertions(+), 110 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/net/dsa/marvell,mv88e6xxx.yaml b/Documentation/devicetree/bindings/net/dsa/marvell,mv88e6xxx.yaml
-> > new file mode 100644
-> > index 000000000000..954db04147f8
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/net/dsa/marvell,mv88e6xxx.yaml
-> > @@ -0,0 +1,243 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/net/dsa/marvell,mv88e6xxx.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Marvell MV88E6xxx DSA switch family
-> > +
-> > +maintainers:
-> > +  - Andrew Lunn <andrew@lunn.ch>
-> > +
-> > +description:
-> > +  The Marvell MV88E6xxx switch series has been produced and sold
-> > +  by Marvell since at least 2010. The switch has a few compatibles which
-> > +  just indicate the base address of the switch, then operating systems
-> > +  can investigate switch ID registers to find out which actual version
-> > +  of the switch it is dealing with.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    oneOf:
-> > +      - enum:
-> > +          - marvell,mv88e6085
-> > +          - marvell,mv88e6190
-> > +          - marvell,mv88e6250
-> > +    description: |
-> > +      marvell,mv88e6085: This switch uses base address 0x10.
-> > +        This switch and its siblings will be autodetected from
-> > +        ID registers found in the switch, so only "marvell,mv88e6085" should be
-> > +        specified. This includes the following list of MV88Exxxx switches:
-> > +        6085, 6095, 6097, 6123, 6131, 6141, 6161, 6165, 6171, 6172, 6175, 6176,
-> > +        6185, 6240, 6320, 6321, 6341, 6350, 6351, 6352
-> > +      marvell,mv88e6190: This switch uses base address 0x00.
-> > +        This switch and its siblings will be autodetected from
-> > +        ID registers found in the switch, so only "marvell,mv88e6190" should be
-> > +        specified. This includes the following list of MV88Exxxx switches:
-> > +        6190, 6190X, 6191, 6290, 6361, 6390, 6390X
-> > +      marvell,mv88e6250: This switch uses base address 0x08 or 0x18.
-> > +        This switch and its siblings will be autodetected from
-> > +        ID registers found in the switch, so only "marvell,mv88e6250" should be
-> > +        specified. This includes the following list of MV88Exxxx switches:
-> > +        6220, 6250
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  eeprom-length:
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +    description: Set to the length of an EEPROM connected to the switch. Must be
-> > +      set if the switch can not detect the presence and/or size of a connected
-> > +      EEPROM, otherwise optional.
-> > +
-> > +  reset-gpios:
-> > +    description:
-> > +      GPIO to be used to reset the whole device
-> > +    maxItems: 1
-> > +
-> > +  interrupts:
-> > +    description: The switch provides an external interrupt line, but it is
-> > +      not always used by target systems.
-> > +    maxItems: 1
-> > +
-> > +  interrupt-controller:
-> > +    description: The switch has an internal interrupt controller used by
-> > +      the different sub-blocks.
-> > +
-> > +  '#interrupt-cells':
-> > +    description: The internal interrupt controller only supports triggering
-> > +      on active high level interrupts so the second cell must alway be set to
-> > +      IRQ_TYPE_LEVEL_HIGH.
-> > +    const: 2
-> > +
-> > +  mdio:
-> > +    $ref: /schemas/net/mdio.yaml#
-> > +    unevaluatedProperties: false
-> > +    description: Marvell MV88E6xxx switches have an varying combination of
-> > +    internal and external MDIO buses, in some cases a combined bus that
-> > +    can be used both internally and externally. This node is for the
-> > +    primary bus, used internally and sometimes also externally.
-> > +
-> > +  mdio-external:
-> > +    $ref: /schemas/net/mdio.yaml#
-> > +    unevaluatedProperties: false
-> > +    description: Marvell MV88E6xxx switches that have a separate external
-> > +      MDIO bus use this port to access external components on the MDIO bus.
-> > +
-> > +    properties:
-> > +      compatible:
-> > +        const: marvell,mv88e6xxx-mdio-external
-> > +
-> > +    required:
-> > +      - compatible
-> > +
-> > +$ref: dsa.yaml#
-> > +
-> > +patternProperties:
-> > +  "^(ethernet-)?ports$":
-> > +    type: object
-> > +    patternProperties:
-> > +      "^(ethernet-)?port@[0-9]+$":
-> > +        type: object
-> > +        description: Ethernet switch ports
-> > +
-> > +        $ref: dsa-port.yaml#
-> > +
-> > +        unevaluatedProperties: false
-> > +
-> > +oneOf:
-> > +  - required:
-> > +      - ports
-> > +  - required:
-> > +      - ethernet-ports
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +
-> > +unevaluatedProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/gpio/gpio.h>
-> > +    #include <dt-bindings/interrupt-controller/irq.h>
-> > +    mdio {
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +
-> > +        switch0: switch@0 {
-> 
-> ethernet-switch is preferred
-> 
-> > +            compatible = "marvell,mv88e6085";
-> > +            reg = <0>;
-> > +            reset-gpios = <&gpio5 1 GPIO_ACTIVE_LOW>;
-> > +            interrupt-parent = <&gpio0>;
-> 
-> I don't see interrupt-parent as an accepted property in the schema.
-> Should interrupts-extended also be accepted?
+The TCP timewait timer is proving to be problematic for setups where scheduler
+CPU isolation is achieved at runtime via cpusets (as opposed to statically via
+isolcpus=domains).
 
-Both are implicitly accepted since 'interrupts' is.
+What happens there is a CPU goes through tcp_time_wait(), arming the time_wait
+timer, then gets isolated. TCP_TIMEWAIT_LEN later, the timer fires, causing
+interference for the now-isolated CPU. This is conceptually similar to the issue
+described in
+  e02b93124855 ("workqueue: Unbind kworkers before sending them to exit()")
 
-Rob
+Making the timer un-pinned would resolve this, as it would be queued onto
+HK_FLAG_TIMER CPUs. It would Unfortunately go against
+  ed2e92394589 ("tcp/dccp: fix timewait races in timer handling")
+as we'd need to arm the timer after the *hashdance() to not have it fire before
+we've finished setting up the timewait_socket.
+
+However, looking into this, I cannot grok what race is fixed by having the timer
+*armed* before the hashdance.
+
+[this next segment is brought to you by Cunningham's Law]
+
+Using [1] as an example, inet_twsk_schedule() only arms the timer and increments
+the deathrow refcount, which by itself does not affect
+__inet_lookup_established(). AFAICT it only comes in handy if:
+1) A CPU ends up livelocking in __inet_lookup_established() (cf. [1], though per
+   inet_twsk_alloc() I don't see how a timewait socket can hit the
+   forever-looping conditions with how the sk_hash and addr/port pairs are copied)
+2) the initialization context can be interrupted by NET_RX (it can, cf.
+   cfac7f836a71 ("tcp/dccp: block bh before arming time_wait timer"))
+
+In this scenario, we need the timer to fire to go through
+  inet_twsk_kill()
+    sk_nulls_del_node_init_rcu()
+and break out of the loop.
+
+Keep softirqs disabled, but make the timer un-pinned and arm it after the
+hashdance. Remote CPUs may start using the timewait socket before the timer is
+armed, but their execution of __inet_lookup_established() won't prevent the
+arming of the timer.
+
+This partially reverts
+  ed2e92394589 ("tcp/dccp: fix timewait races in timer handling")
+and
+  ec94c2696f0b ("tcp/dccp: avoid one atomic operation for timewait hashdance")
+
+Link: [1] https://lore.kernel.org/lkml/56941035.9040000@fastly.com/
+Link: https://lore.kernel.org/all/ZPhpfMjSiHVjQkTk@localhost.localdomain/
+Signed-off-by: Valentin Schneider <vschneid@redhat.com>
+---
+ net/dccp/minisocks.c          | 18 ++++++++++--------
+ net/ipv4/inet_timewait_sock.c |  9 ++++-----
+ net/ipv4/tcp_minisocks.c      | 18 ++++++++++--------
+ 3 files changed, 24 insertions(+), 21 deletions(-)
+
+diff --git a/net/dccp/minisocks.c b/net/dccp/minisocks.c
+index 64d805b27adde..188a29a1aef49 100644
+--- a/net/dccp/minisocks.c
++++ b/net/dccp/minisocks.c
+@@ -53,16 +53,18 @@ void dccp_time_wait(struct sock *sk, int state, int timeo)
+ 		if (state == DCCP_TIME_WAIT)
+ 			timeo = DCCP_TIMEWAIT_LEN;
+ 
+-		/* tw_timer is pinned, so we need to make sure BH are disabled
+-		 * in following section, otherwise timer handler could run before
+-		 * we complete the initialization.
+-		 */
+-		local_bh_disable();
+-		inet_twsk_schedule(tw, timeo);
+-		/* Linkage updates.
+-		 * Note that access to tw after this point is illegal.
++		/* tw_timer is armed after the hashdance and recount update, so
++		 * we need to make sure BH are disabled in following section to
++		 * ensure the timer is armed before we handle any further skb's.
+ 		 */
++	       local_bh_disable();
++
++		// Linkage updates
+ 		inet_twsk_hashdance(tw, sk, &dccp_hashinfo);
++		inet_twsk_schedule(tw, timeo);
++		// Access to tw after this point is illegal.
++		inet_twsk_put(tw);
++
+ 		local_bh_enable();
+ 	} else {
+ 		/* Sorry, if we're out of memory, just CLOSE this
+diff --git a/net/ipv4/inet_timewait_sock.c b/net/ipv4/inet_timewait_sock.c
+index dd37a5bf68811..ba59c2c6ef4a2 100644
+--- a/net/ipv4/inet_timewait_sock.c
++++ b/net/ipv4/inet_timewait_sock.c
+@@ -152,16 +152,15 @@ void inet_twsk_hashdance(struct inet_timewait_sock *tw, struct sock *sk,
+ 
+ 	spin_unlock(lock);
+ 
+-	/* tw_refcnt is set to 3 because we have :
++	/* tw_refcnt is set to 4 because we have :
+ 	 * - one reference for bhash chain.
+ 	 * - one reference for ehash chain.
+ 	 * - one reference for timer.
++	 * - One reference for ourself (our caller will release it).
+ 	 * We can use atomic_set() because prior spin_lock()/spin_unlock()
+ 	 * committed into memory all tw fields.
+-	 * Also note that after this point, we lost our implicit reference
+-	 * so we are not allowed to use tw anymore.
+ 	 */
+-	refcount_set(&tw->tw_refcnt, 3);
++	refcount_set(&tw->tw_refcnt, 4);
+ }
+ EXPORT_SYMBOL_GPL(inet_twsk_hashdance);
+ 
+@@ -207,7 +206,7 @@ struct inet_timewait_sock *inet_twsk_alloc(const struct sock *sk,
+ 		tw->tw_prot	    = sk->sk_prot_creator;
+ 		atomic64_set(&tw->tw_cookie, atomic64_read(&sk->sk_cookie));
+ 		twsk_net_set(tw, sock_net(sk));
+-		timer_setup(&tw->tw_timer, tw_timer_handler, TIMER_PINNED);
++		timer_setup(&tw->tw_timer, tw_timer_handler, 0);
+ 		/*
+ 		 * Because we use RCU lookups, we should not set tw_refcnt
+ 		 * to a non null value before everything is setup for this
+diff --git a/net/ipv4/tcp_minisocks.c b/net/ipv4/tcp_minisocks.c
+index b98d476f1594b..269d4aa14a49e 100644
+--- a/net/ipv4/tcp_minisocks.c
++++ b/net/ipv4/tcp_minisocks.c
+@@ -324,16 +324,18 @@ void tcp_time_wait(struct sock *sk, int state, int timeo)
+ 		if (state == TCP_TIME_WAIT)
+ 			timeo = TCP_TIMEWAIT_LEN;
+ 
+-		/* tw_timer is pinned, so we need to make sure BH are disabled
+-		 * in following section, otherwise timer handler could run before
+-		 * we complete the initialization.
+-		 */
+-		local_bh_disable();
+-		inet_twsk_schedule(tw, timeo);
+-		/* Linkage updates.
+-		 * Note that access to tw after this point is illegal.
++		/* tw_timer is armed after the hashdance and recount update, so
++		 * we need to make sure BH are disabled in following section to
++		 * ensure the timer is armed before we handle any further skb's.
+ 		 */
++	       local_bh_disable();
++
++		// Linkage updates.
+ 		inet_twsk_hashdance(tw, sk, net->ipv4.tcp_death_row.hashinfo);
++		inet_twsk_schedule(tw, timeo);
++		// Access to tw after this point is illegal.
++		inet_twsk_put(tw);
++
+ 		local_bh_enable();
+ 	} else {
+ 		/* Sorry, if we're out of memory, just CLOSE this
+-- 
+2.39.3
+
