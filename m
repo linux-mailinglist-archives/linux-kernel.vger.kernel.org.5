@@ -2,105 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42CF97CAB01
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 16:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C18F07CAB09
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 16:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233528AbjJPOLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 10:11:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46744 "EHLO
+        id S233586AbjJPONX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 10:13:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229784AbjJPOLP (ORCPT
+        with ESMTP id S229784AbjJPONW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 10:11:15 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175A29B;
-        Mon, 16 Oct 2023 07:11:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=czV84VhOyQlJV3boH+4QfGzVmblLtaU2dw7F3ceDF1A=; b=AdtBRvrY0I7rDxLM3v6Xhb14vK
-        pgYuVcXg9Fc97jR6r0nofizvmWPF7ePoe3c518Uiix2HWu8YOKh9+jkLQaO/SLHahQf9hf1ZKSo4Z
-        QuYvPyeMoXlz130uNdkiG9okgrwfKPybajkRTryFhfDHVlpw3dKqhXBxpDtY3dTajR640O/16fDG3
-        aLJonvWi/fNtdnYvbFHdHtt4UYGEZJtOJqsy8ySp5XydZXV4xycLu6wCZbsDaNolEcr1flKH9wbSB
-        XuPeRhrD7TVuwT8XQo+8UEurGWyZSjnyj1siPNHt3Zd0d6YBjt1bPsDkY3leLRpkJ1zwGeAOmqiaZ
-        mJdmezOQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qsOIT-006Str-8h; Mon, 16 Oct 2023 14:10:17 +0000
-Date:   Mon, 16 Oct 2023 15:10:17 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Peng Zhang <zhangpeng.00@bytedance.com>
-Cc:     Liam.Howlett@oracle.com, corbet@lwn.net, akpm@linux-foundation.org,
-        brauner@kernel.org, surenb@google.com, michael.christie@oracle.com,
-        mjguzik@gmail.com, mathieu.desnoyers@efficios.com,
-        npiggin@gmail.com, peterz@infradead.org, oliver.sang@intel.com,
-        mst@redhat.com, maple-tree@lists.infradead.org, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v5 03/10] maple_tree: Introduce interfaces __mt_dup() and
- mtree_dup()
-Message-ID: <ZS1ESVpQ+vY0yDt4@casper.infradead.org>
-References: <20231016032226.59199-1-zhangpeng.00@bytedance.com>
- <20231016032226.59199-4-zhangpeng.00@bytedance.com>
+        Mon, 16 Oct 2023 10:13:22 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93B4F83
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 07:13:20 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qsOL4-0002pB-HV; Mon, 16 Oct 2023 16:12:58 +0200
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qsOL3-0026aC-8g; Mon, 16 Oct 2023 16:12:57 +0200
+Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qsOL3-008RNy-0e;
+        Mon, 16 Oct 2023 16:12:57 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        UNGLinuxDriver@microchip.com,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        devicetree@vger.kernel.org
+Subject: [PATCH net-next v4 0/9] net: dsa: microchip: provide Wake on LAN support
+Date:   Mon, 16 Oct 2023 16:12:47 +0200
+Message-Id: <20231016141256.2011861-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231016032226.59199-4-zhangpeng.00@bytedance.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 11:22:19AM +0800, Peng Zhang wrote:
-> +++ b/lib/maple_tree.c
-> @@ -4,6 +4,10 @@
->   * Copyright (c) 2018-2022 Oracle Corporation
->   * Authors: Liam R. Howlett <Liam.Howlett@oracle.com>
->   *	    Matthew Wilcox <willy@infradead.org>
-> + *
-> + * Algorithm for duplicating Maple Tree
-> + * Copyright (c) 2023 ByteDance
-> + * Author: Peng Zhang <zhangpeng.00@bytedance.com>
+This patch series introduces extensive Wake on LAN (WoL) support for the
+Microchip KSZ9477 family of switches, coupled with some code refactoring
+and error handling enhancements. The principal aim is to enable and
+manage Wake on Magic Packet and other PHY event triggers for waking up
+the system, whilst ensuring that the switch isn't reset during a
+shutdown if WoL is active.
 
-You can't copyright an algorithm.  You can copyright the
-_implementation_ of an algorithm.  You have a significant chunk of code
-in this file, so adding your copyright is reasonable (although not
-legally required, AIUI).  Just leave out this line:
+The Wake on LAN functionality is optional and is particularly beneficial
+if the PME pins are connected to the SoC as a wake source or to a PMIC
+that can enable or wake the SoC.
 
-+ * Algorithm for duplicating Maple Tree
+changes v4:
+- add ksz_switch_shutdown() and do not skip dsa_switch_shutdown() and
+  etc.
+- try to configure MAC address on WAKE_MAGIC. If not possible, prevent
+  WAKE_MAGIC configuration
+- use ksz_switch_macaddr_get() for WAKE_MAGIC.
+- prevent ksz_port_set_mac_address if WAKE_MAGIC is active
+- do some more refactoring and patch reordering
 
-> +/**
-> + * __mt_dup(): Duplicate an entire maple tree
-> + * @mt: The source maple tree
-> + * @new: The new maple tree
-> + * @gfp: The GFP_FLAGS to use for allocations
-> + *
-> + * This function duplicates a maple tree in Depth-First Search (DFS) pre-order
-> + * traversal. It uses memcopy() to copy nodes in the source tree and allocate
+changes v3:
+- use ethernet address of DSA master instead from devicetree
+- use dev_ops->wol* instead of list of supported switch
+- don't shotdown the switch if WoL is enabled
+- rework on top of latest HSR changes
 
-memcpy()?
+changes v2:
+- rebase against latest next
 
-> +int __mt_dup(struct maple_tree *mt, struct maple_tree *new, gfp_t gfp)
-> +{
-> +	int ret = 0;
-> +	MA_STATE(mas, mt, 0, 0);
-> +	MA_STATE(new_mas, new, 0, 0);
-> +
-> +	mas_dup_build(&mas, &new_mas, gfp);
-> +
-> +	if (unlikely(mas_is_err(&mas))) {
-> +		ret = xa_err(mas.node);
-> +		if (ret == -ENOMEM)
-> +			mas_dup_free(&new_mas);
-> +	}
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(__mt_dup);
+Oleksij Rempel (9):
+  net: dsa: microchip: Add missing MAC address register offset for
+    ksz8863
+  dt-bindings: net: dsa: microchip: add wakeup-source property
+  net: dsa: microchip: use wakeup-source DT property to enable PME
+    output
+  net: dsa: microchip: ksz9477: add Wake on LAN support
+  net: dsa: microchip: ksz9477: Add Wake on Magic Packet support
+  net: dsa: microchip: Refactor comment for ksz_switch_macaddr_get()
+    function
+  net: dsa: microchip: Add error handling for ksz_switch_macaddr_get()
+  net: dsa: microchip: Refactor switch shutdown routine for WoL
+    preparation
+  net: dsa: microchip: do not reset the switch on shutdown if WoL is
+    active
 
-Why does it need to be exported?
+ .../bindings/net/dsa/microchip,ksz.yaml       |   2 +
+ drivers/net/dsa/microchip/ksz9477.c           | 122 ++++++++++++++++++
+ drivers/net/dsa/microchip/ksz9477.h           |   4 +
+ drivers/net/dsa/microchip/ksz9477_i2c.c       |   5 +-
+ drivers/net/dsa/microchip/ksz_common.c        | 115 +++++++++++++++--
+ drivers/net/dsa/microchip/ksz_common.h        |   8 ++
+ drivers/net/dsa/microchip/ksz_spi.c           |   5 +-
+ 7 files changed, 242 insertions(+), 19 deletions(-)
+
+-- 
+2.39.2
 
