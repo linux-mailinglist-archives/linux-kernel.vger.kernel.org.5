@@ -2,159 +2,359 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A77747CAD13
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D62A7CAD11
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233109AbjJPPNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 11:13:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52028 "EHLO
+        id S233464AbjJPPMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 11:12:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232003AbjJPPNb (ORCPT
+        with ESMTP id S233615AbjJPPM3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 11:13:31 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2553AB4
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:13:30 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-53db3811d8fso9591748a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:13:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf.com; s=google; t=1697469208; x=1698074008; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1eR5ud+X4G99kqXhYup2CajHlyncDkkFQVZGmFycYE4=;
-        b=aBOxAnP8RYmytbkIQU/05delHEWjWFIC5SsD9GIXFO5yFEs+5rd6yTHkVgsF5AZtx+
-         bT0csrs84IHH5EScvN8ByTMz9p+Dc7mz7/Pscu3pFj3aW5nNI/WjeUupx4X7TF3etw3e
-         tpUy64NnMt+K8cFnH5sJYNW3dDvW16ixx0+Sh2fI+OgAXpTQ0tLH6zs0xZ3WUijO58Ne
-         N0bJ99HMIzztUwCam8crOzeApjMayv0ZscUUn7drpqVBFxnyk3JkAWBPJdqu99KBJi9S
-         CFUCSRVrdDa+wNImsrgaZgqLgw8DBYUL/PdHSerXkB4pgzXgShb9Ab/qLesKuU82KKI1
-         0WXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697469208; x=1698074008;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1eR5ud+X4G99kqXhYup2CajHlyncDkkFQVZGmFycYE4=;
-        b=FALqEFU29DQUBcaGbsJecCLEqyEeFP5G+W7MvFpVuIzrqX7lsT4XN6sp5nSNLuzzU6
-         hWIz2EKvcsfyBOjddPpPRRXYBmxa64Evk3Q7uksf2YGQ3JlPBE122Y3wj/fK/+bVdSUr
-         Hj4o0JdOLVZVbmtFnOm9rijPzJfkdBjk1T/B6S/XqtZdYbHq4q+fDWdYKZHVKhXKhaNn
-         jjYTkDvn3zQVPB2rl5gHELpQF8T+xS2dC9/NMULmlhdnjP0qHEJ4KK87mmt6NtlCFotD
-         x/aVqjZ4IISnLUlhnNHEE6b732C9u23TsaVIjJ03Y8TjjWamJieoOI5kmTCnlQYxO2bl
-         FyqA==
-X-Gm-Message-State: AOJu0Yw3+0xzfmWQJ1cBWh6njpELWOoYY4rVR8s6xbz/Q13tPSY1nuB3
-        eg/18KkeHOSjewhCZxGQIl+/zZGhvWFhYvYWIbGl
-X-Google-Smtp-Source: AGHT+IFg3/KAz6Mip/C3DXnI335HIk46uxk8vrysOfN9E7iyF67oOzOnHex+ShwEAuJmJYfekwilB0L9GS9E/6rpGz0=
-X-Received: by 2002:a05:6402:354c:b0:53d:b59c:8f8d with SMTP id
- f12-20020a056402354c00b0053db59c8f8dmr7999575edd.8.1697469208569; Mon, 16 Oct
- 2023 08:13:28 -0700 (PDT)
+        Mon, 16 Oct 2023 11:12:29 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B2BE1;
+        Mon, 16 Oct 2023 08:12:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16235C433CD;
+        Mon, 16 Oct 2023 15:12:23 +0000 (UTC)
+Date:   Mon, 16 Oct 2023 11:13:57 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Cc:     Manivannan Sadhasivam <mani@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <mhi@lists.linux.dev>,
+        <linux-arm-msm@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
+        <quic_ramkri@quicinc.com>, <quic_nitegupt@quicinc.com>,
+        <quic_skananth@quicinc.com>, <quic_parass@quicinc.com>
+Subject: Re: [PATCH v2] bus: mhi: host: Add tracing support
+Message-ID: <20231016111357.74b991d4@gandalf.local.home>
+In-Reply-To: <20231013-ftrace_support-v2-1-6e893ce010b5@quicinc.com>
+References: <20231013-ftrace_support-v2-1-6e893ce010b5@quicinc.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <CAK8ByeJBrPEQSgUc91LQO9Krzjh2pauhMTjEC82M8ozayE76Yg@mail.gmail.com>
- <CAJfuBxxmL-GtBgt=033F9UNeLCreFbJh3HrQQN2nYKwR_0uTbg@mail.gmail.com>
- <20231003155810.6df9de16@gandalf.local.home> <CAJfuBxyJyFbFEhRxrtxJ_RazaTODV6Gg64b1aiNEzt6_iE4=Og@mail.gmail.com>
- <CAK8ByeLNc9UbTNG4x=40AxYqjjRCsvBNtNFai0PMveM2X4XCow@mail.gmail.com>
- <CAJfuBxyRF4q_T8LmHwR=-PKKDDpiFg2nO03uLnL8aGpRyBByKw@mail.gmail.com>
- <CAK8ByeLpkSV6o6gPw8eJVqq5+ynQrSDjemY7mXkO1ZmA0rYKfQ@mail.gmail.com>
- <CAJfuBxw+ANLwssAGWpkn5PeJb8ZKn4LXQkk2Gfv3aGsSN=S55Q@mail.gmail.com>
- <CAJfuBxy9qn-4i3SteTL1LBbBxPrFM52KkBd=1UhcKV3S_KdQvw@mail.gmail.com>
- <20231011114816.19d79f43@eldfell> <ZSZuACLwt5_XAL2n@phenom.ffwll.local> <CAJfuBxytOcUDmPBO7uQ9mMRvpNvzA3tgg_-pSGmdXpjDPe5sNQ@mail.gmail.com>
-In-Reply-To: <CAJfuBxytOcUDmPBO7uQ9mMRvpNvzA3tgg_-pSGmdXpjDPe5sNQ@mail.gmail.com>
-From:   =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
-Date:   Mon, 16 Oct 2023 17:13:16 +0200
-Message-ID: <CAK8Bye+v+fYsN-716vQKJCoTmDQWmTw_Z1ZGD2A=HvuuAApwig@mail.gmail.com>
-Subject: Re: [PATCH v1] dynamic_debug: add support for logs destination
-To:     jim.cromie@gmail.com
-Cc:     Pekka Paalanen <ppaalanen@gmail.com>, linux-kernel@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "wayland-devel@lists.freedesktop.org" 
-        <wayland-devel@lists.freedesktop.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-czw., 12 pa=C5=BA 2023 o 20:48 <jim.cromie@gmail.com> napisa=C5=82(a):
->
-> > If you want the kernel to keep separate flight recorders I guess we cou=
-ld
-> > add that, but I don't think it currently exists for the dyndbg stuff at
-> > least. Maybe a flight recorder v2 feature, once the basics are in.
-> >
->
-> dyndbg has   +p    writes to syslog
-> +T  would separately independently write the same to global trace
->
-> This would allow  graceful switchover to tracefs,
-> without removing logging from dmesg, where most folks
-> (and any monitor tools) would expect it.
->
-> Lukas (iiuc) wants to steer each site to just 1 destination.
-> Or maybe (in addition to +p > syslog) one trace destination,
-> either global via events, or a separate tracebuf
->
-> Im ambivalent, but thinking the smooth rollover from syslog to trace
-> might be worth having to ease migration / weaning off syslog.
->
-> And we have a 4 byte hole in struct _ddebug we could just use.
+On Fri, 13 Oct 2023 15:22:19 +0530
+Krishna chaitanya chundru <quic_krichai@quicinc.com> wrote:
 
-I'm glad you brought that up. This means we can leave class_id field
-untouched, have separate +T in flags (for consistency)
-and dst_id can be easily 8 bits wide.
+> +++ b/include/trace/events/mhi_host.h
+> @@ -0,0 +1,287 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+> + */
+> +
+> +#undef TRACE_SYSTEM
+> +#define TRACE_SYSTEM mhi_host
+> +
+> +#if !defined(_TRACE_EVENT_MHI_HOST_H) || defined(TRACE_HEADER_MULTI_READ)
+> +#define _TRACE_EVENT_MHI_HOST_H
+> +
+> +#include <linux/tracepoint.h>
+> +#define MHI_STATE						\
+> +	EM(MHI_STATE_RESET,	"RESET")			\
+> +	EM(MHI_STATE_READY,	"READY")			\
+> +	EM(MHI_STATE_M0,	"M0")				\
+> +	EM(MHI_STATE_M1,	"M1")				\
+> +	EM(MHI_STATE_M2,	"M2")				\
+> +	EM(MHI_STATE_M3,	"M3")				\
+> +	EM(MHI_STATE_M3_FAST,	"M3 FAST")			\
+> +	EM(MHI_STATE_BHI,	"BHI")				\
+> +	EMe(MHI_STATE_SYS_ERR,	"SYS ERROR")
+> +
+> +#define MHI_EE							\
+> +	EM(MHI_EE_PBL,		"PRIMARY BOOTLOADER")		\
+> +	EM(MHI_EE_SBL,		"SECONDARY BOOTLOADER")		\
+> +	EM(MHI_EE_AMSS,		"MISSION MODE")			\
+> +	EM(MHI_EE_RDDM,		"RAMDUMP DOWNLOAD MODE")	\
+> +	EM(MHI_EE_WFW,		"WLAN FIRMWARE")		\
+> +	EM(MHI_EE_PTHRU,	"PASS THROUGH")			\
+> +	EM(MHI_EE_EDL,		"EMERGENCY DOWNLOAD")		\
+> +	EM(MHI_EE_FP,		"FLASH PROGRAMMER")		\
+> +	EM(MHI_EE_DISABLE_TRANSITION,	"DISABLE")		\
+> +	EMe(MHI_EE_NOT_SUPPORTED,	"NOT SUPPORTED")
+> +
+> +#define MHI_PM_STATE							\
+> +	EM(MHI_PM_STATE_DISABLE,	"DISABLE")			\
+> +	EM(MHI_PM_STATE_POR,		"POWER ON RESET")		\
+> +	EM(MHI_PM_STATE_M0,		"M0")				\
+> +	EM(MHI_PM_STATE_M2,		"M2")				\
+> +	EM(MHI_PM_STATE_M3_ENTER,	"M?->M3")			\
+> +	EM(MHI_PM_STATE_M3,		"M3")				\
+> +	EM(MHI_PM_STATE_M3_EXIT,	"M3->M0")			\
+> +	EM(MHI_PM_STATE_FW_DL_ERR,	"Firmware Download Error")	\
+> +	EM(MHI_PM_STATE_SYS_ERR_DETECT,		"SYS ERROR Detect")	\
+> +	EM(MHI_PM_STATE_SYS_ERR_PROCESS,	"SYS ERROR Process")	\
+> +	EM(MHI_PM_STATE_SHUTDOWN_PROCESS,	"SHUTDOWN Process")	\
+> +	EMe(MHI_PM_STATE_LD_ERR_FATAL_DETECT,	"Linkdown or Error Fatal Detect")
+> +
+> +#define MHI_CH_STATE						\
+> +	EM(MHI_CH_STATE_TYPE_RESET, "RESET")			\
+> +	EM(MHI_CH_STATE_TYPE_STOP, "STOP")			\
+> +	EMe(MHI_CH_STATE_TYPE_START, "START")
+> +
+> +#define MHI_DEV_ST_TRANSITION						\
+> +	EM(DEV_ST_TRANSITION_PBL,	"PBL")				\
+> +	EM(DEV_ST_TRANSITION_READY,	"READY")			\
+> +	EM(DEV_ST_TRANSITION_SBL,	"SBL")				\
+> +	EM(DEV_ST_TRANSITION_MISSION_MODE,	"MISSION MODE")		\
+> +	EM(DEV_ST_TRANSITION_FP,		"FLASH PROGRAMMER")	\
+> +	EM(DEV_ST_TRANSITION_SYS_ERR,		"SYS ERROR")		\
+> +	EMe(DEV_ST_TRANSITION_DISABLE,		"DISABLE")
+> +
+> +/* Enums require being exported to userspace, for user tool parsing */
+> +#undef	EM
+> +#undef	EMe
+> +#define	EM(a, b)	TRACE_DEFINE_ENUM(a);
+> +#define	EMe(a, b)	TRACE_DEFINE_ENUM(a);
+> +
+> +MHI_STATE
+> +MHI_EE
+> +MHI_PM_STATE
+> +MHI_CH_STATE
+> +MHI_DEV_ST_TRANSITION
+> +
+> +/*
+> + * Now redefine the EM() and EMe() macros to map the enums to the strings
+> + * that will be printed in the output.
+> + */
+> +#undef EM
+> +#undef EMe
+> +#define EM(a, b)	{a, b},
+> +#define EMe(a, b)	{a, b}
+> +
+> +TRACE_EVENT(mhi_gen_tre,
+> +
+> +	TP_PROTO(const char *name, int ch_num, u64 wp, __le64 tre_ptr,
+> +		 __le32 dword0, __le32 dword1),
+> +
+> +	TP_ARGS(name, ch_num, wp, tre_ptr, dword0, dword1),
+> +
+> +	TP_STRUCT__entry(
+> +		__string(name, name)
+> +		__field(int, ch_num)
 
-Also can you point me to the latest version of writing debug logs to
-trace events (+T option).
-I would like to base trace instances work on that because both are
-closely related.
+This is fine as __string() is four bytes in the event (2 bytes for offset
+where the string exists, and 2 bytes for its length).
 
-> Unless the align 8 is optional on 32-bits,
+> +		__field(u64, wp)
+> +		__field(__le64, tre_ptr)
 
-I verified with "gcc -g -m32 ..." that the align(8) is honored on 32 bits.
+Which makes the two 8 byte fields aligned. Good!
 
-> I think we're never gonna close the hole anywhere.
->
+> +		__field(__le32, dword0)
+> +		__field(__le32, dword1)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__assign_str(name, name);
+> +		__entry->ch_num = ch_num;
+> +		__entry->wp = wp;
+> +		__entry->tre_ptr = tre_ptr;
+> +		__entry->dword0 = dword0;
+> +		__entry->dword1 = dword1;
+> +	),
+> +
+> +	TP_printk("%s: Chan: %d WP: 0x%llx TRE: 0x%llx 0x%08x 0x%08x\n",
+> +		  __get_str(name), __entry->ch_num, __entry->wp, __entry->tre_ptr,
+> +		  __entry->dword0, __entry->dword1)
+> +);
+> +
+> +TRACE_EVENT(mhi_intvec_threaded_handler,
+> +
+> +	TP_PROTO(const char *name, int local_ee, int state, int dev_ee, int dev_state),
+> +
+> +	TP_ARGS(name, local_ee, state, dev_ee, dev_state),
+> +
+> +	TP_STRUCT__entry(
+> +		__string(name, name)
+> +		__field(int, local_ee)
+> +		__field(int, state)
+> +		__field(int, dev_ee)
+> +		__field(int, dev_state)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__assign_str(name, name);
+> +		__entry->local_ee = local_ee;
+> +		__entry->state = state;
+> +		__entry->dev_ee = dev_ee;
+> +		__entry->dev_state = dev_state;
+> +	),
+> +
+> +	TP_printk("%s: local ee: %s state: %s device ee: %s state: %s\n",
+> +		  __get_str(name),
+> +		  __print_symbolic(__entry->local_ee, MHI_EE),
+> +		  __print_symbolic(__entry->state, MHI_STATE),
+> +		  __print_symbolic(__entry->dev_ee, MHI_EE),
+> +		  __print_symbolic(__entry->dev_state, MHI_STATE))
+> +);
+> +
+> +TRACE_EVENT(mhi_tryset_pm_state,
+> +
+> +	TP_PROTO(const char *name, int pm_state),
+> +
+> +	TP_ARGS(name, pm_state),
+> +
+> +	TP_STRUCT__entry(
+> +		__string(name, name)
+> +		__field(int, pm_state)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__assign_str(name, name);
+> +		if (pm_state)
+> +			pm_state = __fls(pm_state);
+> +		__entry->pm_state = pm_state;
+> +	),
+> +
+> +	TP_printk("%s: PM state: %s\n", __get_str(name),
+> +		  __print_symbolic(__entry->pm_state, MHI_PM_STATE))
+> +);
+> +
+> +TRACE_EVENT(mhi_process_data_event_ring,
+> +
+> +	TP_PROTO(const char *name, __le64 ptr, __le32 dword0, __le32 dword1),
+> +
+> +	TP_ARGS(name, ptr, dword0, dword1),
+> +
+> +	TP_STRUCT__entry(
+> +		__string(name, name)
+> +		__field(__le64, ptr)
 
-:)
+Here, I would switch the __field(__le64, ptr) with the __string().
 
-> is align 8 a generic expression of an architectural simplifying constrain=
-t ?
-> or a need for 1-7 ptr offsets ?
->
->
->
->
-> > > That's my idea of it. It is interesting to see how far the requiremen=
-ts
-> > > can be reasonably realised.
-> >
-> > I think aside from the "make it available directly to unpriviledged
-> > userspace" everything sounds reasonable and doable.
-> >
-> > More on the process side of things, I think Jim is very much looking fo=
-r
-> > acks and tested-by by people who are interested in better drm logging
-> > infra. That should help that things are moving in a direction that's
-> > actually useful, even when it's not yet entirely complete.
-> >
->
-> yes, please.  Now posted at
->
-> https://lore.kernel.org/lkml/20231012172137.3286566-1-jim.cromie@gmail.co=
-m/T/#t
->
-> Lukas, I managed to miss your email in the send phase.
-> please consider yourself a direct recipient :-)
->
-> thanks everyone
->
-> > Cheers, Sima
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
+		__field(__le64, ptr)
+		__string(name, name)
+
+otherwise you just created a 4 byte hole in the ring buffer, wasting
+precious ring buffer space.
+
+> +		__field(__le32, dword0)
+> +		__field(__le32, dword1)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__assign_str(name, name);
+> +		__entry->ptr = ptr;
+> +		__entry->dword0 = dword0;
+> +		__entry->dword1 = dword1;
+> +	),
+> +
+> +	TP_printk("%s: Processing Event:0x%llx 0x%08x 0x%08x\n",
+> +		  __get_str(name), __entry->ptr, __entry->dword0, __entry->dword1)
+> +);
+> +
+> +TRACE_EVENT(mhi_process_ctrl_ev_ring,
+> +
+> +	TP_PROTO(const char *name, u64 rp, __le64 ptr, __le32 dword0, __le32 dword1, int state),
+> +
+> +	TP_ARGS(name, rp, ptr, dword0, dword1, state),
+> +
+> +	TP_STRUCT__entry(
+> +		__string(name, name)
+> +		__field(u64, rp)
+> +		__field(__le64, ptr)
+
+I would move __string(name, name) here (after the two 8 byte fields).
+
+-- Steve
+
+> +		__field(__le32, dword0)
+> +		__field(__le32, dword1)
+> +		__field(int, state)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__assign_str(name, name);
+> +		__entry->rp = rp;
+> +		__entry->ptr = ptr;
+> +		__entry->dword0 = dword0;
+> +		__entry->dword1 = dword1;
+> +		__entry->state = state;
+> +	),
+> +
+> +	TP_printk("%s: RP:0x%llx Processing Event:0x%llx 0x%08x 0x%08x state:%s\n",
+> +		  __get_str(name), __entry->rp, __entry->ptr, __entry->dword0,
+> +		  __entry->dword1, __print_symbolic(__entry->state, MHI_STATE))
+> +);
+> +
+> +TRACE_EVENT(mhi_update_channel_state_start,
+> +
+> +	TP_PROTO(const char *name, int ch_num, int state),
+> +
+> +	TP_ARGS(name, ch_num, state),
+> +
+> +	TP_STRUCT__entry(
+> +		__string(name, name)
+> +		__field(int, ch_num)
+> +		__field(int, state)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__assign_str(name, name);
+> +		__entry->ch_num = ch_num;
+> +		__entry->state = state;
+> +	),
+> +
+> +	TP_printk("%s: ch%d: Updating state to: %s\n",
+> +		  __get_str(name), __entry->ch_num,
+> +		  __print_symbolic(__entry->state, MHI_CH_STATE))
+> +);
+> +
+> +TRACE_EVENT(mhi_update_channel_state_end,
+> +
+> +	TP_PROTO(const char *name, int ch_num, int state),
+> +
+> +	TP_ARGS(name, ch_num, state),
+> +
+> +	TP_STRUCT__entry(
+> +		__string(name, name)
+> +		__field(int, ch_num)
+> +		__field(int, state)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__assign_str(name, name);
+> +		__entry->ch_num = ch_num;
+> +		__entry->state = state;
+> +	),
+> +
+> +	TP_printk("%s: ch%d: Updated state to: %s\n",
+> +		  __get_str(name), __entry->ch_num,
+> +		  __print_symbolic(__entry->state, MHI_CH_STATE))
+> +);
+> +
+> +TRACE_EVENT(mhi_pm_st_transition,
+> +
+> +	TP_PROTO(const char *name, int state),
+> +
+> +	TP_ARGS(name, state),
+> +
+> +	TP_STRUCT__entry(
+> +		__string(name, name)
+> +		__field(int, state)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__assign_str(name, name);
+> +		__entry->state = state;
+> +	),
+> +
+> +	TP_printk("%s: Handling state transition: %s\n", __get_str(name),
+> +		  __print_symbolic(__entry->state, MHI_DEV_ST_TRANSITION))
+> +);
+> +
+> +#endif
+> +#include <trace/define_trace.h>
+
