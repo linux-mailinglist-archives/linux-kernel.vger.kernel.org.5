@@ -2,81 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 770D97CAF30
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68F417CB012
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233699AbjJPQ2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 12:28:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60934 "EHLO
+        id S234548AbjJPQmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 12:42:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233829AbjJPQ22 (ORCPT
+        with ESMTP id S233912AbjJPQl6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 12:28:28 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4789111B;
-        Mon, 16 Oct 2023 09:28:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=Qn8pjkyvMjlHnGF7bvQJKDrfyyM9Efa1/JCaDoN/WGs=; b=0H5vCEwnQj/P2x0kDiHQc87Ppv
-        2+L/CGodNbhCTiYpl7byMQr4Ilz5dRxiH2pCw++3q3SYJbhBRL56w5XM+0gwndVoepmS7acekr4U9
-        KG6gEON5so1BqUJQWPG8jGHRsxDwRgOORhVa+8yKQC6w90fOh2QNRWd69IdCSFsnodxc=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qsQRz-002Mgn-VL; Mon, 16 Oct 2023 18:28:15 +0200
-Date:   Mon, 16 Oct 2023 18:28:15 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     MD Danish Anwar <danishanwar@ti.com>
-Cc:     Jacob Keller <jacob.e.keller@intel.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org, srk@ti.com,
-        Vignesh Raghavendra <vigneshr@ti.com>, r-gunasekaran@ti.com,
-        Roger Quadros <rogerq@kernel.org>
-Subject: Re: [PATCH net v2] net: ti: icssg-prueth: Fix r30 CMDs bitmasks
-Message-ID: <11109e7d-139b-4c8c-beaa-e1e89e355b1b@lunn.ch>
-References: <20231016161525.1695795-1-danishanwar@ti.com>
+        Mon, 16 Oct 2023 12:41:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB6611FFC
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:31:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697473881;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rbzg7U/87dJSaK89YmTgCyu23XfU1BhnpwaB496FV9g=;
+        b=VwwMwHsGJUTary7SWMI9EQfJU8TToDQ5Iu2EUoZjfbxWwzaB8kqO7Yvw+8IMqF9zB4rI1T
+        waVNl+edZfXQskxn1uZQkoicRtjcWWMv94dRakrAvq52s4SEBm3OSq+uB30HNk91+r68GC
+        EbtH3+a3IlZtOW92+eTmPpheMObSJgc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-613-g1DVukGdOg29WJloZ1VP1g-1; Mon, 16 Oct 2023 12:31:16 -0400
+X-MC-Unique: g1DVukGdOg29WJloZ1VP1g-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 523CF81D9E2;
+        Mon, 16 Oct 2023 16:31:15 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.178])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B7B49492BEE;
+        Mon, 16 Oct 2023 16:31:12 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <11ec6f637698feb04963c6a7c39a5ca80af95464.camel@kernel.org>
+References: <11ec6f637698feb04963c6a7c39a5ca80af95464.camel@kernel.org> <20231013155727.2217781-1-dhowells@redhat.com> <20231013155727.2217781-3-dhowells@redhat.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     dhowells@redhat.com, Steve French <smfrench@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Christian Brauner <christian@brauner.io>,
+        linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-cachefs@redhat.com
+Subject: Re: [RFC PATCH 02/53] netfs: Track the fpos above which the server has no data
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231016161525.1695795-1-danishanwar@ti.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2841425.1697473872.1@warthog.procyon.org.uk>
+Date:   Mon, 16 Oct 2023 17:31:12 +0100
+Message-ID: <2841426.1697473872@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 09:45:25PM +0530, MD Danish Anwar wrote:
-> The bitmask for EMAC_PORT_DISABLE and EMAC_PORT_FORWARD has been changed
-> in the ICSSG firmware REL.PRU-ICSS-ETHERNET-SWITCH_02.02.12.05.
+Jeff Layton <jlayton@kernel.org> wrote:
+
+> >  (7) If stored data is culled from the local cache, we must set zero_point
+> >      above that if the data also got written to the server.
 > 
-> The current bitmasks are wrong and as a result EMAC_PORT_DISABLE and
-> EMAC_PORT_FORWARD commands doesn not work.
-> Update r30 commands to use the same bitmask as used by the ICSSG firmware
-> REL.PRU-ICSS-ETHERNET-SWITCH_02.02.12.05.
+> When you say culled here, it sounds like you're just throwing out the
+> dirty cache without writing the data back. That shouldn't be allowed
+> though, so I must be misunderstanding what you mean here. Can you
+> explain?
+
+I meant fscache specifically.  Too many caches - and some of them with the
+same names!
+
+> >  (8) If dirty data is written back to the server, but not the local cache,
+> >      we must set zero_point above that.
 > 
-> These bitmasks are not backwards compatible. This will work with
-> firmware version REL.PRU-ICSS-ETHERNET-SWITCH_02.02.12.05 and above but
-> not with lower firmware versions.
+> How do you write back without writing to the local cache? I'm guessing
+> this means you're doing a non-buffered write?
 
-Breaking backwards compatibility is generally not allowed.
+I meant fscache.  fscache can decline to honour a request to store data.
 
-As far as i understand the driver, it loads whatever version of
-firmware is available. It does not ask for a specific version. So you
-should ask the firmware what version it is, and then handle the
-bitmask as appropriate.
+> > +		if (size != i_size) {
+> > +			truncate_pagecache(&vnode->netfs.inode, size);
+> > +			netfs_resize_file(&vnode->netfs, size);
+> > +			fscache_resize_cookie(afs_vnode_cache(vnode), size);
+> > +		}
+> 
+> Isn't this an existing bug? AFS is not setting remote_i_size in the
+> setattr path currently? I think this probably ought to be done in a
+> preliminary AFS patch.
 
-How many different versions of REL.PRU-ICSS-ETHERNET-SWITCH have been
-released? They don't appear to be part of linux-firmware.git :-(
+It is being set.  afs_apply_status() sets it.  This is called by
+afs_vnode_commit_status() which is called from afs_setattr_success().  The
+value isn't updated until we get the return status from the server that
+includes the new value.
 
-    Andrew
+> > +	loff_t			zero_point;	/* Size after which we assume there's no data
+> > +						 * on the server */
+> 
+> While I understand the concept, I'm not yet sure I understand how this
+> new value will be used. It might be better to merge this patch in with
+> the patch that adds the first user of this data.
 
----
-pw-bot: cr
+I'll consider it.  At least it might make sense to move them adjacent to each
+other in the series.
+
+David
+
