@@ -2,186 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3EE7CB280
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 20:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E4107CB283
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 20:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233024AbjJPS1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 14:27:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35858 "EHLO
+        id S233032AbjJPS15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 14:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232198AbjJPS1W (ORCPT
+        with ESMTP id S231569AbjJPS1y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 14:27:22 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07115E1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 11:27:19 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-522bd411679so8177191a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 11:27:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1697480837; x=1698085637; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kb9SubRaEoUIylL4DNY5Xv/ATtzdMT7B3T3lbsOCFSw=;
-        b=Fxh3OEPpVrhXN/xHJQ6g07KTtmFfijds/o6sb6nz/xErJWTBQ26ILQE7zBfs7SK9zV
-         /VFvha3f9h6fLbWHC7eXcIm9m0YbA3NseM6tKfb+2H1zjio5aBkCom6TbwzBOvdRPTuk
-         ST/xrK2i+fiNk9DSi+MEU+Unvxr8V9pUqrzxLvIxjO2Ktr5dtxUaizw8roKgCWghVjq9
-         YwGcH0sXO2QjGLxcTEpXTknx2ikwV5yux1PbGc9LhExfu9zS9VU/RyGFr8D9myVtrEMb
-         Q19hb8aNM37zIQT6Av4cSSZlU6yZyMkDbWOB18bu6vNHCZwCEKtNg4WjHC18Pktb8x29
-         CErA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697480837; x=1698085637;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kb9SubRaEoUIylL4DNY5Xv/ATtzdMT7B3T3lbsOCFSw=;
-        b=wBCSdAH/WeNH+DmQNB9AK3h8MJnTjihrpX27MeIVX6ncL02HICIJngxSQzIDIIpDgp
-         zGKz80Vtg/v5cGCB8fNmUJifPnCCcI9TalYQOQXZgpRN4o15rKh5xy99nXb35UCDP5Li
-         wYewK0ZEGlnXDMMjrV7Od/pRNUzp+r9qPTkzHTfskCqRMkKPnNaZqFR4RSlsa3B7pY2k
-         feuwuJnFuEppLujwUMAfOUmlNniH56h+X7iHA4b5reOHudwcDfaSOnA7qA+sZGofVcom
-         PoiiiKlNWxe50h+PC6mezF33+/0aLFmFg9Uo66xIK0Q1qmi3kx/fuDgDTKQ2dtXKvY7h
-         AiMw==
-X-Gm-Message-State: AOJu0YzuaYP9+lRHrP1MkpzvI97WQ95SFGw5e1lkhgxSHAXEa7JOh9N9
-        5U0jjMo4AF+c++byMnCc3bIh6fyuMNeGyl3ZYY3Npw==
-X-Google-Smtp-Source: AGHT+IEQdYe/xZgPwgaTIyxFlobq2ZBO2NiSQKBCo2frWb0kJdJPZWrx8DCkc8xcZgoUSinrqhgQ9BPCNACc81tkAuo=
-X-Received: by 2002:a05:6402:51d4:b0:53d:eca8:8775 with SMTP id
- r20-20020a05640251d400b0053deca88775mr34017edd.26.1697480837407; Mon, 16 Oct
- 2023 11:27:17 -0700 (PDT)
+        Mon, 16 Oct 2023 14:27:54 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F58A2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 11:27:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B546CC433C7;
+        Mon, 16 Oct 2023 18:27:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697480871;
+        bh=KVzc+DtZ0K5HtCSUZgGI0+UechUc26ZCSqZWkVTBSAY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=dAYGg8p5ZyWRLCP+QEOdE2PYQTejbW5ZX0mGT+ZwEYC+3wFM2q2KHPsATrdaFsJWW
+         IhlXeiOuaNivr7/Q5DkL69M7LWpGET7ya4jgk0VqR6IHX/Y+weoXvrp+KmTZFzgjQm
+         CTZg5kP7qEHRdegIWIe0s7EKZ4TLv1Ty8uLBtTnjVMvQOddDQibiPt7mmgf2sBspPD
+         Zt3d2m3srwHB9yIg+HHvuat4o81hiYTiSvGaqLFHkvYLcAYw5bOAbQ31t5cj2cRD/a
+         ruwUcC3qZU26M+qOMR37o7tVeRBM/oy9Lp3iy+m43oqfnZ5+GX7HT0HaVYDZRN3gdP
+         2g4Tq5jXbGp9Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 35A4ACE09BE; Mon, 16 Oct 2023 11:27:51 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 11:27:51 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Leonardo Bras <leobras@redhat.com>
+Cc:     Imran Khan <imran.f.khan@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH smp,csd] Throw an error if a CSD lock is stuck for too
+ long
+Message-ID: <fb3f6a95-5c54-460c-8581-276bc359a1de@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <bc7cc8b0-f587-4451-8bcd-0daae627bcc7@paulmck-laptop>
+ <c87d7939-a88c-ad2d-82f2-866e04692882@oracle.com>
+ <a77da319-3161-4e42-894e-521d29fa8348@paulmck-laptop>
+ <ZSlhnu0n9eOfkN-U@redhat.com>
 MIME-Version: 1.0
-References: <ZS1/qtr0dZJ35VII@debian.debian>
-In-Reply-To: <ZS1/qtr0dZJ35VII@debian.debian>
-From:   Yan Zhai <yan@cloudflare.com>
-Date:   Mon, 16 Oct 2023 13:27:06 -0500
-Message-ID: <CAO3-PboE=a_Z03bo10nmgdm3aHstxA_t4rtpAGekFzQAM+JOyA@mail.gmail.com>
-Subject: Re: [PATCH v2 net-next] ipv6: avoid atomic fragment on GSO packets
-To:     netdev@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Aya Levin <ayal@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>, linux-kernel@vger.kernel.org,
-        kernel-team@cloudflare.com, Florian Westphal <fw@strlen.de>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZSlhnu0n9eOfkN-U@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 1:23=E2=80=AFPM Yan Zhai <yan@cloudflare.com> wrote=
-:
->
-> GSO packets can contain a trailing segment that is smaller than
-> gso_size. When examining the dst MTU for such packet, if its gso_size is
-> too large, then all segments would be fragmented. However, there is a
-> good chance the trailing segment has smaller actual size than both
-> gso_size as well as the MTU, which leads to an "atomic fragment". It is
-> considered harmful in RFC-8021. An Existing report from APNIC also shows
-> that atomic fragments are more likely to be dropped even it is
-> equivalent to a no-op [1].
->
-> Refactor __ip6_finish_output code to separate GSO and non-GSO packet
-> processing. It mirrors __ip_finish_output logic now. Add an extra check
-> in GSO handling to avoid atomic fragments. Lastly, drop dst_allfrag
-> check, which is no longer true since commit 9d289715eb5c ("ipv6: stop
-> sending PTB packets for MTU < 1280").
->
-> Link: https://www.potaroo.net/presentations/2022-03-01-ipv6-frag.pdf [1]
-> Fixes: b210de4f8c97 ("net: ipv6: Validate GSO SKB before finish IPv6 proc=
-essing")
-> Suggested-by: Florian Westphal <fw@strlen.de>
-> Reported-by: David Wragg <dwragg@cloudflare.com>
-> Signed-off-by: Yan Zhai <yan@cloudflare.com>
-> ---
-Forgot to add v1 thread:
-https://lore.kernel.org/lkml/20231002171146.GB9274@breakpoint.cc/. It
-was wrongly implemented though without considering max_frag_size for
-non-GSO packets though, so not really useful in fact.
+On Fri, Oct 13, 2023 at 12:26:22PM -0300, Leonardo Bras wrote:
+> On Mon, Oct 09, 2023 at 09:39:38AM -0700, Paul E. McKenney wrote:
+> > On Fri, Oct 06, 2023 at 10:32:07AM +1100, Imran Khan wrote:
+> > > Hello Paul,
+> > > 
+> > > On 6/10/2023 3:48 am, Paul E. McKenney wrote:
+> > > > The CSD lock seems to get stuck in 2 "modes". When it gets stuck
+> > > > temporarily, it usually gets released in a few seconds, and sometimes
+> > > > up to one or two minutes.
+> > > > 
+> > > > If the CSD lock stays stuck for more than several minutes, it never
+> > > > seems to get unstuck, and gradually more and more things in the system
+> > > > end up also getting stuck.
+> > > > 
+> > > > In the latter case, we should just give up, so the system can dump out
+> > > > a little more information about what went wrong, and, with panic_on_oops
+> > > > and a kdump kernel loaded, dump a whole bunch more information about
+> > > > what might have gone wrong.
+> > > > 
+> > > > Question: should this have its own panic_on_ipistall switch in
+> > > > /proc/sys/kernel, or maybe piggyback on panic_on_oops in a different
+> > > > way than via BUG_ON?
+> > > > 
+> > > panic_on_ipistall (set to 1 by default) looks better option to me. For systems
+> > > where such delay is acceptable and system can eventually get back to sane state,
+> > > this option (set to 0 after boot) would prevent crashing the system for
+> > > apparently benign CSD hangs of long duration.
+> > 
+> > Good point!  How about like the following?
+> > 
+> > 							Thanx, Paul
+> > 
+> > ------------------------------------------------------------------------
+> > 
+> > commit 6bcf3786291b86f13b3e13d51e998737a8009ec3
+> > Author: Rik van Riel <riel@surriel.com>
+> > Date:   Mon Aug 21 16:04:09 2023 -0400
+> > 
+> >     smp,csd: Throw an error if a CSD lock is stuck for too long
+> >     
+> >     The CSD lock seems to get stuck in 2 "modes". When it gets stuck
+> >     temporarily, it usually gets released in a few seconds, and sometimes
+> >     up to one or two minutes.
+> >     
+> >     If the CSD lock stays stuck for more than several minutes, it never
+> >     seems to get unstuck, and gradually more and more things in the system
+> >     end up also getting stuck.
+> >     
+> >     In the latter case, we should just give up, so the system can dump out
+> >     a little more information about what went wrong, and, with panic_on_oops
+> >     and a kdump kernel loaded, dump a whole bunch more information about what
+> >     might have gone wrong.  In addition, there is an smp.panic_on_ipistall
+> >     kernel boot parameter that by default retains the old behavior, but when
+> >     set enables the panic after the CSD lock has been stuck for more than
+> >     five minutes.
+> >     
+> >     [ paulmck: Apply Imran Khan feedback. ]
+> >     
+> >     Link: https://lore.kernel.org/lkml/bc7cc8b0-f587-4451-8bcd-0daae627bcc7@paulmck-laptop/
+> >     Signed-off-by: Rik van Riel <riel@surriel.com>
+> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> >     Cc: Peter Zijlstra <peterz@infradead.org>
+> >     Cc: Valentin Schneider <vschneid@redhat.com>
+> >     Cc: Juergen Gross <jgross@suse.com>
+> >     Cc: Jonathan Corbet <corbet@lwn.net>
+> >     Cc: Randy Dunlap <rdunlap@infradead.org>
+> > 
+> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> > index 0a1731a0f0ef..592935267ce2 100644
+> > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > @@ -5858,6 +5858,11 @@
+> >  			This feature may be more efficiently disabled
+> >  			using the csdlock_debug- kernel parameter.
+> >  
+> > +	smp.panic_on_ipistall= [KNL]
+> > +			If a csd_lock_timeout extends for more than
+> > +			five minutes, panic the system.  By default, let
+> > +			CSD-lock acquisition take as long as they take.
+> > +
+> 
+> It could be interesting to have it as an s64 parameter (in {mili,}seconds) 
+> instead of bool, this way the user could pick the time to wait before the 
+> panic happens. 0 or -1 could mean disabled.
+> 
+> What do you think?
+> 
+> Other than that,
+> Reviewed-by: Leonardo Bras <leobras@redhat.com>
 
->  net/ipv6/ip6_output.c | 33 +++++++++++++++++++++++----------
->  1 file changed, 23 insertions(+), 10 deletions(-)
->
-> diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-> index a471c7e91761..1de6f3c11655 100644
-> --- a/net/ipv6/ip6_output.c
-> +++ b/net/ipv6/ip6_output.c
-> @@ -162,7 +162,14 @@ ip6_finish_output_gso_slowpath_drop(struct net *net,=
- struct sock *sk,
->                 int err;
->
->                 skb_mark_not_on_list(segs);
-> -               err =3D ip6_fragment(net, sk, segs, ip6_finish_output2);
-> +               /* Last gso segment might be smaller than actual MTU. Add=
-ing
-> +                * a fragment header to it would produce an "atomic fragm=
-ent",
-> +                * which is considered harmful (RFC-8021)
-> +                */
-> +               err =3D segs->len > mtu ?
-> +                       ip6_fragment(net, sk, segs, ip6_finish_output2) :
-> +                       ip6_finish_output2(net, sk, segs);
-> +
->                 if (err && ret =3D=3D 0)
->                         ret =3D err;
->         }
-> @@ -170,10 +177,19 @@ ip6_finish_output_gso_slowpath_drop(struct net *net=
-, struct sock *sk,
->         return ret;
->  }
->
-> +static int ip6_finish_output_gso(struct net *net, struct sock *sk,
-> +                                struct sk_buff *skb, unsigned int mtu)
-> +{
-> +       if (!(IP6CB(skb)->flags & IP6SKB_FAKEJUMBO) &&
-> +           !skb_gso_validate_network_len(skb, mtu))
-> +               return ip6_finish_output_gso_slowpath_drop(net, sk, skb, =
-mtu);
-> +
-> +       return ip6_finish_output2(net, sk, skb);
-> +}
-> +
->  static int __ip6_finish_output(struct net *net, struct sock *sk, struct =
-sk_buff *skb)
->  {
->         unsigned int mtu;
-> -
->  #if defined(CONFIG_NETFILTER) && defined(CONFIG_XFRM)
->         /* Policy lookup after SNAT yielded a new policy */
->         if (skb_dst(skb)->xfrm) {
-> @@ -183,17 +199,14 @@ static int __ip6_finish_output(struct net *net, str=
-uct sock *sk, struct sk_buff
->  #endif
->
->         mtu =3D ip6_skb_dst_mtu(skb);
-> -       if (skb_is_gso(skb) &&
-> -           !(IP6CB(skb)->flags & IP6SKB_FAKEJUMBO) &&
-> -           !skb_gso_validate_network_len(skb, mtu))
-> -               return ip6_finish_output_gso_slowpath_drop(net, sk, skb, =
-mtu);
-> +       if (skb_is_gso(skb))
-> +               return ip6_finish_output_gso(net, sk, skb, mtu);
->
-> -       if ((skb->len > mtu && !skb_is_gso(skb)) ||
-> -           dst_allfrag(skb_dst(skb)) ||
-> +       if (skb->len > mtu ||
->             (IP6CB(skb)->frag_max_size && skb->len > IP6CB(skb)->frag_max=
-_size))
->                 return ip6_fragment(net, sk, skb, ip6_finish_output2);
-> -       else
-> -               return ip6_finish_output2(net, sk, skb);
-> +
-> +       return ip6_finish_output2(net, sk, skb);
->  }
->
->  static int ip6_finish_output(struct net *net, struct sock *sk, struct sk=
-_buff *skb)
-> --
-> 2.30.2
->
+Thank you for looking this over!
+
+How about with the diff shown below, to be folded into the original?
+I went with int instead of s64 because I am having some difficulty
+imagining anyone specifying more than a 24-day timeout.  ;-)
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index ccb7621eff79..ea5ae9deb753 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -5931,8 +5931,10 @@
+ 
+ 	smp.panic_on_ipistall= [KNL]
+ 			If a csd_lock_timeout extends for more than
+-			five minutes, panic the system.  By default, let
+-			CSD-lock acquisition take as long as they take.
++			the specified number of milliseconds, panic the
++			system.  By default, let CSD-lock acquisition
++			take as long as they take.  Specifying 300,000
++			for this value provides a 10-minute timeout.
+ 
+ 	smsc-ircc2.nopnp	[HW] Don't use PNP to discover SMC devices
+ 	smsc-ircc2.ircc_cfg=	[HW] Device configuration I/O port
+diff --git a/kernel/smp.c b/kernel/smp.c
+index b6a0773a7015..d3ca47f32f38 100644
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -170,8 +170,8 @@ static DEFINE_PER_CPU(void *, cur_csd_info);
+ 
+ static ulong csd_lock_timeout = 5000;  /* CSD lock timeout in milliseconds. */
+ module_param(csd_lock_timeout, ulong, 0444);
+-static bool panic_on_ipistall;
+-module_param(panic_on_ipistall, bool, 0444);
++static int panic_on_ipistall;  /* CSD panic timeout in milliseconds, 300000 for ten minutes. */
++module_param(panic_on_ipistall, int, 0444);
+ 
+ static atomic_t csd_bug_count = ATOMIC_INIT(0);
+ 
+@@ -256,7 +256,7 @@ static bool csd_lock_wait_toolong(struct __call_single_data *csd, u64 ts0, u64 *
+ 	 * to become unstuck. Use a signed comparison to avoid triggering
+ 	 * on underflows when the TSC is out of sync between sockets.
+ 	 */
+-	BUG_ON(panic_on_ipistall && (s64)ts_delta > 300000000000LL);
++	BUG_ON(panic_on_ipistall > 0 && (s64)ts_delta > ((s64)panic_on_ipistall * NSEC_PER_MSEC));
+ 	if (cpu_cur_csd && csd != cpu_cur_csd) {
+ 		pr_alert("\tcsd: CSD lock (#%d) handling prior %pS(%ps) request.\n",
+ 			 *bug_id, READ_ONCE(per_cpu(cur_csd_func, cpux)),
