@@ -2,90 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96DFD7CA17D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 10:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F96C7CA17E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 10:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230209AbjJPIXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 04:23:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39666 "EHLO
+        id S231803AbjJPIX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 04:23:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229636AbjJPIXp (ORCPT
+        with ESMTP id S230218AbjJPIX4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 04:23:45 -0400
+        Mon, 16 Oct 2023 04:23:56 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73744A1;
-        Mon, 16 Oct 2023 01:23:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3440CC433C8;
-        Mon, 16 Oct 2023 08:23:40 +0000 (UTC)
-Message-ID: <21864437-bfdd-4d39-91fa-f24fc1c7cf97@xs4all.nl>
-Date:   Mon, 16 Oct 2023 10:23:39 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D668EB
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 01:23:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B0D5C433C8;
+        Mon, 16 Oct 2023 08:23:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697444635;
+        bh=fWQiGBvgRpsRaTQ5ejv5AbcJbuEEhftS4vCnBsTePG4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PU6sygjzBYRaRhHy+epfx0NhmHaN01XdPLN2P2lrscOsZ0oihxRoOLbuVS/nU3OP1
+         +zZkdBfPzpqpSuOW0D5HCST3NNfWGtgOsvhKOHkCIKDxio/8jRtN4v6BOfxvtNtSMa
+         24wn1D3fMR5liJmBrg0RkZhZvm67+82jasW0wiR9v+j4R8jKPLkrSqBxlcdsLkwDIF
+         xS+l43x66Xidgz1SJCZycMsN8IqEAHmgasLUJEYFnvCAnXRUtpDxASqSmsJfWgoHus
+         sQgbXqIqFVYFdiKuJW0Wcf0c2QNwv5Fj1KcSF/lfw9Vy5se/00NJA/BrWBaaFznR2e
+         Ic4gjUGBr4K3Q==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan@kernel.org>)
+        id 1qsItC-0001rU-03;
+        Mon, 16 Oct 2023 10:23:50 +0200
+Date:   Mon, 16 Oct 2023 10:23:50 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     =?utf-8?B?TC3psoHnkp7kuq4=?= <puliang.lu@fibocom.com>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] USB: serial: option: add Fibocom to DELL custom modem
+ FM101R-GL
+Message-ID: <ZSzzFvmATauo_6aH@hovoldconsulting.com>
+References: <20231016073616.519051-1-puliang.lu@fibocom.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 40/56] sample: v4l: Stop direct calls to queue
- num_buffers field
-Content-Language: en-US, nl
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com
-References: <20231012114642.19040-1-benjamin.gaignard@collabora.com>
- <20231012114642.19040-41-benjamin.gaignard@collabora.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20231012114642.19040-41-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231016073616.519051-1-puliang.lu@fibocom.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/2023 13:46, Benjamin Gaignard wrote:
-> Use vb2_get_num_buffers() to avoid using queue num_buffers field directly.
+On Mon, Oct 16, 2023 at 03:36:16PM +0800, L-鲁璞亮 wrote:
+> From: Puliang Lu <puliang.lu@fibocom.com>
 > 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> ---
->  samples/v4l/v4l2-pci-skeleton.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/samples/v4l/v4l2-pci-skeleton.c b/samples/v4l/v4l2-pci-skeleton.c
-> index a61f94db18d9..a65aa9d1e9da 100644
-> --- a/samples/v4l/v4l2-pci-skeleton.c
-> +++ b/samples/v4l/v4l2-pci-skeleton.c
-> @@ -155,6 +155,7 @@ static int queue_setup(struct vb2_queue *vq,
->  		       unsigned int sizes[], struct device *alloc_devs[])
->  {
->  	struct skeleton *skel = vb2_get_drv_priv(vq);
-> +	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
->  
->  	skel->field = skel->format.field;
->  	if (skel->field == V4L2_FIELD_ALTERNATE) {
-> @@ -167,8 +168,8 @@ static int queue_setup(struct vb2_queue *vq,
->  		skel->field = V4L2_FIELD_TOP;
->  	}
->  
-> -	if (vq->num_buffers + *nbuffers < 3)
-> -		*nbuffers = 3 - vq->num_buffers;
-> +	if (q_num_bufs + *nbuffers < 3)
-> +		*nbuffers = 3 - q_num_bufs;
+> Update the USB serial option driver support for the Fibocom
+> FM101R-GL
 
-This should be dropped, and instead update q->min_buffers_needed from
-2 to 3.
+> T:  Bus=04 Lev=01 Prnt=01 Port=01 Cnt=01 Dev#=  2 Spd=5000 MxCh= 0
+> D:  Ver= 3.20 Cls=00(>ifc ) Sub=00 Prot=00 MxPS= 9 #Cfgs=  1
+> P:  Vendor=413c ProdID=8213 Rev= 5.04
+> S:  Manufacturer=Fibocom Wireless Inc.
+> S:  Product=Fibocom FM101-GL Module
+> S:  SerialNumber=a3b7cbf0
+> C:* #Ifs= 3 Cfg#= 1 Atr=a0 MxPwr=896mA
+> A:  FirstIf#= 0 IfCount= 2 Cls=02(comm.) Sub=0e Prot=00
+> I:* If#= 0 Alt= 0 #EPs= 1 Cls=02(comm.) Sub=0e Prot=00 Driver=cdc_mbim
+> E:  Ad=81(I) Atr=03(Int.) MxPS=  64 Ivl=32ms
+> I:  If#= 1 Alt= 0 #EPs= 0 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
+> I:* If#= 1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
+> E:  Ad=8e(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+> E:  Ad=0f(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+> I:* If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=40 Driver=(none)
+> E:  Ad=83(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
+> E:  Ad=82(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+> E:  Ad=01(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
 
-Regards,
+Thanks for resending with the author address fixed.
 
-	Hans
+You did however not answer my question whether there could ever be more
+vendor class interfaces (e.g. for adb) so that you should be using a
+more specific match for the entries (i.e. USB_DEVICE_AND_INTERFACE_INFO())?
 
->  
->  	if (*nplanes)
->  		return sizes[0] < skel->format.sizeimage ? -EINVAL : 0;
+> +	{ USB_DEVICE_INTERFACE_CLASS(DELL_VENDOR_ID, DELL_PRODUCT_FM101R, 0xff) },
+> +	{ USB_DEVICE_INTERFACE_CLASS(DELL_VENDOR_ID, DELL_PRODUCT_FM101R_ESIM, 0xff) },
 
+Johan
