@@ -2,224 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D06A7CA848
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9566D7CA84F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:46:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233341AbjJPMon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 08:44:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36864 "EHLO
+        id S233252AbjJPMqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 08:46:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232094AbjJPMom (ORCPT
+        with ESMTP id S233205AbjJPMqX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 08:44:42 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E22E4AB;
-        Mon, 16 Oct 2023 05:44:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=WGfVF4rKa9tphXNg08WHl8fCUau1DVCHJsK8Oj5k5Cw=; b=Br/5tNncm5hsnxILANemk280ic
-        hhv92KfIORb5qhhSP9UZ2OUibfaUYN0M8nr61NDGPRNSZD2JubYfdE0FTxOT4lLLSv5wurry11es7
-        sugANMtNpmIY6kLOKvCzk+IrhpWPxEHF3WXGWC1vHYMjmw1iFo+XANzMcAB0q45mLCWRYVymGaJhP
-        97zt8xx+4GTlFCAJJmYcdJal54UpPxP6xJh0uREer6D/rzme7yBc9HdAIbeIowoy+Jd4se5xkvh2e
-        mO2nddN5dhrDIKuN7KpbxSIRH/+TJwf6Qz2f4dAgZtpIIM9US5xsXPQnQpr/Atj0aNdYsQcjLT/RW
-        7oN4ehHA==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qsMxW-000EUb-RD; Mon, 16 Oct 2023 14:44:34 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qsMxW-0003Y3-FW; Mon, 16 Oct 2023 14:44:34 +0200
-Subject: Re: [PATCH v2 2/5] seccomp, bpf: Introduce SECCOMP_LOAD_FILTER
- operation
-To:     Hengqi Chen <hengqi.chen@gmail.com>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     keescook@chromium.org, ast@kernel.org, andrii@kernel.org,
-        luto@amacapital.net, wad@chromium.org, alexyonghe@tencent.com
-References: <20231015232953.84836-1-hengqi.chen@gmail.com>
- <20231015232953.84836-3-hengqi.chen@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <0df30939-1ba1-5703-58cc-54058fbb1df5@iogearbox.net>
-Date:   Mon, 16 Oct 2023 14:44:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Mon, 16 Oct 2023 08:46:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8122B4
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 05:45:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697460331;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/bBsNaJ9O8PNaJExTqYeHPJN2khegR4L0yu5ItrKyyA=;
+        b=Ve7sguxqBH8G3TZLg89QLhjwPvl0j4KGt7SffXjUnz3gLX5JDtYA9jQ4L9REjLiCfSxtni
+        MaU9gDF3pXXgJmuShLraTKTh27FieWxGkTFIjA9/yQbay8U5nlo1dEQEkrzAM7wgP4svve
+        5nzl9RYmoTUEJE43oL0ZIjsWDyac0Ko=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-150-VNkr5CwROnG4Ana8tnSeug-1; Mon, 16 Oct 2023 08:45:30 -0400
+X-MC-Unique: VNkr5CwROnG4Ana8tnSeug-1
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-4197d7e66ddso51876631cf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 05:45:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697460329; x=1698065129;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/bBsNaJ9O8PNaJExTqYeHPJN2khegR4L0yu5ItrKyyA=;
+        b=RWruToi6NBHGQ61pZmiACMNtPRZAJJL2Nw1+B97cUyRXuGuRhTQnlW6vGnlzx1Cjs1
+         ZSVetbjtmjGN2S3Q5rf07KxwDfxxMa/Q0dLj3zesEK7FHHjRHq7DmT7RgtK74fC1pNY/
+         WvRL+0Ra5T4rHP/2mBkGTFBG7tUbrsOh3tziewpFgza3p+NJngYZcA2cQjVUp9EluNyi
+         FDQE9swQl6WjVcSfXaKQCNO2UeWnZXBbfzi4ymNFulcihW8hGFCO6y5udiZSGMpAQXoJ
+         9TmF9z77ZeGQ1Mpc1VagAUlX8tPjbehsrZV0mdEicViqec21SzFqXXy7d6SCW4JtjFLP
+         7OJw==
+X-Gm-Message-State: AOJu0YxnN8Ica3ZJ8Gbsanfif+7JjOT17Z4387W5naH1B6/7YagyH9v8
+        uzJyCatcQZJ6tZuwR4FSCjGHXHa/BVnL3If39FEztwFNhKMC/HZHYBJAruKT+nD58BKPAMXy+A3
+        66WHSaDQjWxhu4F2HNVpe5kRV
+X-Received: by 2002:a05:622a:1444:b0:418:b8c:1a0a with SMTP id v4-20020a05622a144400b004180b8c1a0amr39156184qtx.25.1697460329363;
+        Mon, 16 Oct 2023 05:45:29 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEcvhEuiLQg3+7xqK8MpUxkIgUpJIsGGXxtA5CaUuCUSDKLyGL8R6chz4MMi468RPBwxyzJlA==
+X-Received: by 2002:a05:622a:1444:b0:418:b8c:1a0a with SMTP id v4-20020a05622a144400b004180b8c1a0amr39156164qtx.25.1697460329076;
+        Mon, 16 Oct 2023 05:45:29 -0700 (PDT)
+Received: from fedora (g2.ign.cz. [91.219.240.8])
+        by smtp.gmail.com with ESMTPSA id jz4-20020a05622a81c400b00417b9f5b883sm3036661qtb.2.2023.10.16.05.45.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 05:45:28 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: Re: [PATCH RFC 02/11] KVM: x86: hyper-v: Move Hyper-V partition
+ assist page out of Hyper-V emulation context
+In-Reply-To: <4c2b8ddc3b87818f0d752a91963e3895781902d8.camel@redhat.com>
+References: <20231010160300.1136799-1-vkuznets@redhat.com>
+ <20231010160300.1136799-3-vkuznets@redhat.com>
+ <4c2b8ddc3b87818f0d752a91963e3895781902d8.camel@redhat.com>
+Date:   Mon, 16 Oct 2023 14:45:26 +0200
+Message-ID: <87mswi91nd.fsf@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20231015232953.84836-3-hengqi.chen@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27063/Mon Oct 16 10:02:17 2023)
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16/23 1:29 AM, Hengqi Chen wrote:
-> This patch adds a new operation named SECCOMP_LOAD_FILTER.
-> It accepts a sock_fprog the same as SECCOMP_SET_MODE_FILTER
-> but only performs the loading process. If succeed, return a
-> new fd associated with the JITed BPF program (the filter).
-> The filter can then be pinned to bpffs using the returned
-> fd and reused for different processes. To distinguish the
-> filter from other BPF progs, BPF_PROG_TYPE_SECCOMP is added.
-> 
-> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
-> ---
->   include/uapi/linux/bpf.h       |  1 +
->   include/uapi/linux/seccomp.h   |  1 +
->   kernel/seccomp.c               | 43 ++++++++++++++++++++++++++++++++++
->   tools/include/uapi/linux/bpf.h |  1 +
->   4 files changed, 46 insertions(+)
-> 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 7ba61b75bc0e..61c80ffb1724 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -995,6 +995,7 @@ enum bpf_prog_type {
->   	BPF_PROG_TYPE_SK_LOOKUP,
->   	BPF_PROG_TYPE_SYSCALL, /* a program that can execute syscalls */
->   	BPF_PROG_TYPE_NETFILTER,
-> +	BPF_PROG_TYPE_SECCOMP,
+Maxim Levitsky <mlevitsk@redhat.com> writes:
 
-Please don't extend UAPI surface if this is not reachable/usable from user
-space anyway.
+> =D0=A3 =D0=B2=D1=82, 2023-10-10 =D1=83 18:02 +0200, Vitaly Kuznetsov =D0=
+=BF=D0=B8=D1=88=D0=B5:
+>> Hyper-V partition assist page is used when KVM runs on top of Hyper-V and
+>> is not used for Windows/Hyper-V guests on KVM, this means that 'hv_pa_pg'
+>> placement in 'struct kvm_hv' is unfortunate. As a preparation to making
+>> Hyper-V emulation optional, move 'hv_pa_pg' to 'struct kvm_arch' and put=
+ it
+>> under CONFIG_HYPERV.
+>
+> It took me a while to realize that this parition assist page is indeed so=
+mething that L0,
+> running above KVM consumes.
+> (what a confusing name Microsoft picked...)
+>
+> As far as I know currently the partition assist page has only=20
+> one shared memory variable which allows L1 to be notified of direct TLB f=
+lushes that L0 does for L2,=20
+> but since KVM doesn't need it, it
+> never touches this variable/page,
+> but specs still demand that L1 does allocate that page.
+>
 
->   enum bpf_attach_type {
-> diff --git a/include/uapi/linux/seccomp.h b/include/uapi/linux/seccomp.h
-> index dbfc9b37fcae..ee2c83697810 100644
-> --- a/include/uapi/linux/seccomp.h
-> +++ b/include/uapi/linux/seccomp.h
-> @@ -16,6 +16,7 @@
->   #define SECCOMP_SET_MODE_FILTER		1
->   #define SECCOMP_GET_ACTION_AVAIL	2
->   #define SECCOMP_GET_NOTIF_SIZES		3
-> +#define SECCOMP_LOAD_FILTER		4
->   
->   /* Valid flags for SECCOMP_SET_MODE_FILTER */
->   #define SECCOMP_FILTER_FLAG_TSYNC		(1UL << 0)
-> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> index faf84fc892eb..c9f6a19f7a4e 100644
-> --- a/kernel/seccomp.c
-> +++ b/kernel/seccomp.c
-> @@ -17,6 +17,7 @@
->   
->   #include <linux/refcount.h>
->   #include <linux/audit.h>
-> +#include <linux/bpf.h>
->   #include <linux/compat.h>
->   #include <linux/coredump.h>
->   #include <linux/kmemleak.h>
-> @@ -25,6 +26,7 @@
->   #include <linux/sched.h>
->   #include <linux/sched/task_stack.h>
->   #include <linux/seccomp.h>
-> +#include <linux/security.h>
->   #include <linux/slab.h>
->   #include <linux/syscalls.h>
->   #include <linux/sysctl.h>
-> @@ -2032,12 +2034,48 @@ static long seccomp_set_mode_filter(unsigned int flags,
->   	seccomp_filter_free(prepared);
->   	return ret;
->   }
-> +
-> +static long seccomp_load_filter(const char __user *filter)
-> +{
-> +	struct sock_fprog fprog;
-> +	struct bpf_prog *prog;
-> +	int ret;
-> +
-> +	ret = seccomp_copy_user_filter(filter, &fprog);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = seccomp_prepare_prog(&prog, &fprog);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = security_bpf_prog_alloc(prog->aux);
-> +	if (ret) {
-> +		bpf_prog_free(prog);
-> +		return ret;
-> +	}
-> +
-> +	prog->aux->user = get_current_user();
-> +	atomic64_set(&prog->aux->refcnt, 1);
-> +	prog->type = BPF_PROG_TYPE_SECCOMP;
-> +
-> +	ret = bpf_prog_new_fd(prog);
-> +	if (ret < 0)
-> +		bpf_prog_put(prog);
+Yes,
 
-My bigger concern here is that bpf_prog_new_fd() is only used by eBPF (not cBPF).
+KVM doesn't ask L0 (Hyper-V) to deliver synthetic vmexits but the page
+needs to be allocated. I'm not sure whether this is done to follow the
+spec ("The partition assist page is a page-size aligned page-size region
+of memory that the L1 hypervisor must allocate and zero before direct
+flush hypercalls can be used.") or if anyone has ever tried writing '0'
+to the corresponding field to see what happens with various Hyper-V
+versions but even if it happens to work today, there's no guarantee for
+the future.
 
-Then you get an 'eBPF'-like fd back to user space which you can pass to various
-other bpf(2) commands like BPF_OBJ_GET_INFO_BY_FD etc which all have the assumption
-that this is a proper looking eBPF prog fd.
+>
+> If you agree, it would be great to add a large comment to the code,
+> explaining the above,=20
 
-There may be breakage/undefined behavior in subtle ways.
+There' this in vmx.c:
 
-I would suggest two potential alternatives :
+        /*
+         * Synthetic VM-Exit is not enabled in current code and so All
+         * evmcs in singe VM shares same assist page.
+         */
 
-1) Build a seccomp-specific fd via anon_inode_getfd() so that BPF side does not
-    confuse it with bpf_prog_fops and therefore does not recognize it in bpf(2)
-    as a prog fd.
+but this can certainly get extended. Moreover, it seems that
+hv_enable_l2_tlb_flush() should go vmx_onhyperv.c to make that fact that
+it's for KVM-on-Hyper-V 'more obvious'.
 
-2) Extend seccomp where proper eBPF could be supported.
+> and fact that the partition assist page=20
+> is something L1 exposes to L0.
+>
+> I don't know though where to put the comment=20
+> because hv_enable_l2_tlb_flush is duplicated between SVM and VMX.
+>
+> It might be a good idea to have a helper function to allocate the partiti=
+on assist page,
+> which will both reduce the code duplication slightly and allow us to
+> put this comment there.
 
-If option 2) is not realistic (where you would get this out of the box), then I
-think 1) could be however.
+OK.
 
-> +	return ret;
-> +}
->   #else
->   static inline long seccomp_set_mode_filter(unsigned int flags,
->   					   const char __user *filter)
->   {
->   	return -EINVAL;
->   }
-> +
-> +static inline long seccomp_load_filter(const char __user *filter)
-> +{
-> +	return -EINVAL;
-> +}
->   #endif
->   
->   static long seccomp_get_action_avail(const char __user *uaction)
-> @@ -2099,6 +2137,11 @@ static long do_seccomp(unsigned int op, unsigned int flags,
->   			return -EINVAL;
->   
->   		return seccomp_get_notif_sizes(uargs);
-> +	case SECCOMP_LOAD_FILTER:
-> +		if (flags != 0)
-> +			return -EINVAL;
-> +
-> +		return seccomp_load_filter(uargs);
->   	default:
->   		return -EINVAL;
->   	}
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> index 7ba61b75bc0e..61c80ffb1724 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -995,6 +995,7 @@ enum bpf_prog_type {
->   	BPF_PROG_TYPE_SK_LOOKUP,
->   	BPF_PROG_TYPE_SYSCALL, /* a program that can execute syscalls */
->   	BPF_PROG_TYPE_NETFILTER,
-> +	BPF_PROG_TYPE_SECCOMP,
->   };
->   
->   enum bpf_attach_type {
-> 
+>
+>
+> Best regards,
+> 	Maxim Levitsky
+>
+>>=20
+>> No functional change intended.
+>>=20
+>> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>> ---
+>>  arch/x86/include/asm/kvm_host.h | 2 +-
+>>  arch/x86/kvm/svm/svm_onhyperv.c | 2 +-
+>>  arch/x86/kvm/vmx/vmx.c          | 2 +-
+>>  arch/x86/kvm/x86.c              | 4 +++-
+>>  4 files changed, 6 insertions(+), 4 deletions(-)
+>>=20
+>> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_=
+host.h
+>> index e5d4b8a44630..711dc880a9f0 100644
+>> --- a/arch/x86/include/asm/kvm_host.h
+>> +++ b/arch/x86/include/asm/kvm_host.h
+>> @@ -1115,7 +1115,6 @@ struct kvm_hv {
+>>  	 */
+>>  	unsigned int synic_auto_eoi_used;
+>>=20=20
+>> -	struct hv_partition_assist_pg *hv_pa_pg;
+>>  	struct kvm_hv_syndbg hv_syndbg;
+>>  };
+>>=20=20
+>> @@ -1436,6 +1435,7 @@ struct kvm_arch {
+>>  #if IS_ENABLED(CONFIG_HYPERV)
+>>  	hpa_t	hv_root_tdp;
+>>  	spinlock_t hv_root_tdp_lock;
+>> +	struct hv_partition_assist_pg *hv_pa_pg;
+>>  #endif
+>>  	/*
+>>  	 * VM-scope maximum vCPU ID. Used to determine the size of structures
+>> diff --git a/arch/x86/kvm/svm/svm_onhyperv.c b/arch/x86/kvm/svm/svm_onhy=
+perv.c
+>> index 7af8422d3382..d19666f9b9ac 100644
+>> --- a/arch/x86/kvm/svm/svm_onhyperv.c
+>> +++ b/arch/x86/kvm/svm/svm_onhyperv.c
+>> @@ -19,7 +19,7 @@ int svm_hv_enable_l2_tlb_flush(struct kvm_vcpu *vcpu)
+>>  {
+>>  	struct hv_vmcb_enlightenments *hve;
+>>  	struct hv_partition_assist_pg **p_hv_pa_pg =3D
+>> -			&to_kvm_hv(vcpu->kvm)->hv_pa_pg;
+>> +		&vcpu->kvm->arch.hv_pa_pg;
+>>=20=20
+>>  	if (!*p_hv_pa_pg)
+>>  		*p_hv_pa_pg =3D kzalloc(PAGE_SIZE, GFP_KERNEL);
+>> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+>> index 72e3943f3693..b7dc7acf14be 100644
+>> --- a/arch/x86/kvm/vmx/vmx.c
+>> +++ b/arch/x86/kvm/vmx/vmx.c
+>> @@ -524,7 +524,7 @@ static int hv_enable_l2_tlb_flush(struct kvm_vcpu *v=
+cpu)
+>>  {
+>>  	struct hv_enlightened_vmcs *evmcs;
+>>  	struct hv_partition_assist_pg **p_hv_pa_pg =3D
+>> -			&to_kvm_hv(vcpu->kvm)->hv_pa_pg;
+>> +		&vcpu->kvm->arch.hv_pa_pg;
+>>  	/*
+>>  	 * Synthetic VM-Exit is not enabled in current code and so All
+>>  	 * evmcs in singe VM shares same assist page.
+>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> index 9f18b06bbda6..e273ce8e0b3f 100644
+>> --- a/arch/x86/kvm/x86.c
+>> +++ b/arch/x86/kvm/x86.c
+>> @@ -12291,7 +12291,9 @@ void kvm_arch_sched_in(struct kvm_vcpu *vcpu, in=
+t cpu)
+>>=20=20
+>>  void kvm_arch_free_vm(struct kvm *kvm)
+>>  {
+>> -	kfree(to_kvm_hv(kvm)->hv_pa_pg);
+>> +#if IS_ENABLED(CONFIG_HYPERV)
+>> +	kfree(kvm->arch.hv_pa_pg);
+>> +#endif
+>>  	__kvm_arch_free_vm(kvm);
+>>  }
+>>=20=20
+>
+>
+>
+>
+
+--=20
+Vitaly
 
