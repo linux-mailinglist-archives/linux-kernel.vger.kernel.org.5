@@ -2,151 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 835337CA786
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:02:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BF117CA789
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230219AbjJPMCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 08:02:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44768 "EHLO
+        id S232564AbjJPMCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 08:02:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJPMCq (ORCPT
+        with ESMTP id S229459AbjJPMCs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 08:02:46 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38FA38E;
-        Mon, 16 Oct 2023 05:02:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697457765; x=1728993765;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=9wBAwblOcESjCmTbr8Caj3TkfpSkEK5pDQLiHfV30+E=;
-  b=kFwyKI9Mefy7jyWh+w4/J9nkV7n0ZPeygvOaHsLaaeT/3YK2m27EJQc1
-   cUY7u0bYIkJ0qyAiKR6YgqbyQM71nyc2ga+0Zp6Fl06OyKtZwqillWOY3
-   3gbQn2T2oMkwxkBW0Odm4ZL++B2K4bIZp1QSCRVMN6SSnw9tuCMU9Wk5O
-   ZotLsx2pyGqcCGARgCfDNj5E2fZVI+7BRX497s+BE1cdoT5G2OH9cp2ID
-   t9/YNnbiZTrcaiswfZ7qZF117NBMksvYt/NOGX7ODnmCW0Kf6wJ0G/+Rd
-   fELeigEGUFp4DjbPB60n+r5bUkE41uZv9pkaVYxy769Q0bNwjMSE9fDSC
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="384380103"
-X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="384380103"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 05:02:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="705592080"
-X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="705592080"
-Received: from rhaeussl-mobl.ger.corp.intel.com (HELO bhoerz-mobl1.ger.corp.intel.com) ([10.252.59.103])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 05:02:26 -0700
-Date:   Mon, 16 Oct 2023 15:02:24 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-cc:     LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com
-Subject: Re: [PATCH V3 03/16] platform/x86/intel/vsec: Use cleanup.h
-In-Reply-To: <ec4ba6b6d05c2b6ca34009f40e84f65801a8104b.camel@linux.intel.com>
-Message-ID: <2bf861c9-456a-cf42-9777-1641f6ab87b5@linux.intel.com>
-References: <20231012023840.3845703-1-david.e.box@linux.intel.com>   <20231012023840.3845703-4-david.e.box@linux.intel.com>   <114e1cc4-f129-b6cd-a83b-7d822cde178@linux.intel.com>  <fcd4ae3492b8bf08ec637a3405228efd2913921d.camel@linux.intel.com> 
- <4315a8db-16fe-7421-c482-5aede4d5cdd@linux.intel.com> <ec4ba6b6d05c2b6ca34009f40e84f65801a8104b.camel@linux.intel.com>
+        Mon, 16 Oct 2023 08:02:48 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2041.outbound.protection.outlook.com [40.107.237.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 013048E;
+        Mon, 16 Oct 2023 05:02:46 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XxCA18iaRMWvNPUSxTkA4lvTVJfwBkC39cXR4HTabdGeTZIZ5JDgI9MKZ/QyyG66QkRKIJUDIX4vSoHFNYSUOxDZT5/fH63GMH7E4VI5WFJhWkopV1aezAnLzj9G+5TPOUdCuQ8sNq932qEPryvE96DwHTKkpdoQmfZookXS/H0IWZBpBVy32USccBtU7gVDAg/hGzaqA4uNvKJVfOznBUtZCl+qIssvZaV60Vxp/hZMvx+I9E2UF6yy3IAZyeu4W2x3KRDA1XnrvFMDblhUG30oebPM/wDM+smjQ+llVEG3DG0gIH335dGceiCxjADqzlFETQfpmuDXyJdSlYTAGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lPlmH67rV19jUm8U2YJULc01LuZPEC3t7jDkr4CjIIg=;
+ b=dTMOduqCt5L5vNahWaKLK+DsYxKv8YM3cpJNsPEJEpiqgBGY+GdBkZtfOWCV5/XYMvgnpf+h8RD5jpF6cIcYeFXa2UvhzmIHjwTPppv/Hvq9sUij5s7TPMS5yWAOIfNheqsfOkWjzCr+dIMgZUKjx7t2K7xe+EpH9QAhdBIxz372KkwgfqJt2JI+AvV4+TN8LeIXIEXr+p1LRohMm8EThQhvssj2NhuIawyC778+bdoruF7O3TUWr/T5DSshoGnrfoDjLFiYLUS9UqSUVSkQcm6QrZVV3mfhirBw5GtI+si5sI03JKAeZmegWuW4kblvkKbYTRTfuU6hiFbDbQ7WXw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lPlmH67rV19jUm8U2YJULc01LuZPEC3t7jDkr4CjIIg=;
+ b=KvZ46uJxmqWhPYpdcFrIicVMZf+RKt/Nj1FJHJL0lUdLScjZsROrXzdIEBBPpICnmjNiy0Z8cjCPAgH/OUEbICpG636d+Qy95ZABvR6qBlEsHyWeIqxlylDUL6ce7PzsvZJgNULvBEYFvC+1bafEHzaisxL1lmN6kqRRXdj7VlQDpYvBoVJ9GoKQ6XG9Ln+/R8NLup+tjwSUolCd/RID+VVj2HtBKJaV7c1A+GtxirAZlkUR9vSIaGG5bcJX/1UitpVkGOma0htJBiZS65iNnnc4eVy3+ufuazY9eEpQI/pHN1ZfCF7QxGBHvUQ7R0mE4QBsbU7INIWhwYa28rcT+w==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by IA0PR12MB8424.namprd12.prod.outlook.com (2603:10b6:208:40c::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.46; Mon, 16 Oct
+ 2023 12:02:43 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3f66:c2b6:59eb:78c2]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3f66:c2b6:59eb:78c2%6]) with mapi id 15.20.6863.046; Mon, 16 Oct 2023
+ 12:02:42 +0000
+Date:   Mon, 16 Oct 2023 09:02:41 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
+        "Martins, Joao" <joao.m.martins@oracle.com>
+Subject: Re: [PATCH v4 05/17] iommufd: Separate kernel-managed HWPT
+ alloc/destroy/abort functions
+Message-ID: <20231016120241.GR3952@nvidia.com>
+References: <20230921075138.124099-1-yi.l.liu@intel.com>
+ <20230921075138.124099-6-yi.l.liu@intel.com>
+ <20231010184932.GT3952@nvidia.com>
+ <20231012190931.GO3952@nvidia.com>
+ <BN9PR11MB5276A55B59EAE44DE058DDF58CD2A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <20231013140538.GS3952@nvidia.com>
+ <BN9PR11MB52763F73D66CBBF6BEBA9B968CD7A@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BN9PR11MB52763F73D66CBBF6BEBA9B968CD7A@BN9PR11MB5276.namprd11.prod.outlook.com>
+X-ClientProxiedBy: MN2PR16CA0027.namprd16.prod.outlook.com
+ (2603:10b6:208:134::40) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1110351866-1697457747=:1986"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|IA0PR12MB8424:EE_
+X-MS-Office365-Filtering-Correlation-Id: 497b47c8-f57c-49e0-7b65-08dbce3fcd70
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zfjlAEgs4ZuFBvIiN8X5FhdnaPIAdvYIskxydBLR1Hl8HYH0nyAgOo7314s+4NLCycDS+vBYXmwFgHk+wto9GWZW3fjzwbHfY13R0K9xzWWXzgdWcvciLv+FUD1/yEstObgeqEIvSv6EzUeLocVp2Ffsvxx9UOvBcfFcmKcTs/cAHzxFaLCgQxaXkRNjj7LqmRXQtfyiVDdsVr25pF77WXrn36YTyYPWTRUw0C15FLHNCVGwBET0yxrhLncJDcQL2a0yJyp6f32/V9BfYl41FE8TP0L9YURLnQJPaMFJI4dB4kaCEvkBcEl8eeFNgcN2Z/DcJddNq02sTOHS/ujsR00XdcWwgydmA7ZDEA3VRdeZjiturrpmIVXFVKc8vPxy9YHEplKt/P8TjNFar9i66FiJ3tise1wTfOhR3fuFCXgzVmeqFAHVTaI2jNJ6sscLBy+swiPCrXSqEeY+xL6oC4r+EYJoIX1dO6hHzrRmdPmCDvScYJWaYceEd2TI/p8K8WWse7jv9AVzDq8BegQSo58fpyVafAWBS6Y3LT+Jqda5ddtfc/5PCmfykFh7kt8b
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(366004)(376002)(346002)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(36756003)(8936002)(4326008)(8676002)(2906002)(5660300002)(6916009)(66946007)(66476007)(66556008)(41300700001)(54906003)(316002)(7416002)(66899024)(86362001)(1076003)(2616005)(83380400001)(6512007)(6506007)(26005)(38100700002)(478600001)(33656002)(6486002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RhNU93Praco8QhmHyAAzClKvQbFgK/mrzrL/m7DUd5jBTKW3PQIkiEleireB?=
+ =?us-ascii?Q?+RFdGZhXhqRx26mJVxWTmLqQiFI+yDTOsAv0E5y5JA9sJjbFQvUlJPxcaJzx?=
+ =?us-ascii?Q?J70C+iYYcUVoroMap3lCHdHtNM/day7q3U7UgNeZR6mvBhX/N9VP68TnkFvI?=
+ =?us-ascii?Q?QBVQxhI+3gfKkfc6W7JP86KY8dSAH6MJnQBGN/6EPQO5fmQUchCNcDid+D2i?=
+ =?us-ascii?Q?CgHZOXNafLc1dRq/qvMWE/5b78ePz9B94JkMy+qKuwcgLbN0ApSnCgyLo3HJ?=
+ =?us-ascii?Q?0sv9AC+Nzuw9gWsMaAcgucdahgB7PPgJPMZxqyJo5kZe5z604nd4VbzpMY1w?=
+ =?us-ascii?Q?AgJptzwHQRNFV7sCgj7OWq0WwT6CJJEgM3DUQSM+CGEt+J0eoqmbugx6fa74?=
+ =?us-ascii?Q?MhwdJbziyb1AXlF3cs0ybcSQMr7SYf18Llo17yDzApYygiQ5lc4DvNuWqzoj?=
+ =?us-ascii?Q?AJxZmNd3WYKXbkRkm26L+k3iJc135NkGlU2WIqVVxRzYEYZi1+CDIIAhUCdU?=
+ =?us-ascii?Q?ScvAQKg/QznYDke2s0x8VAYVoraIJyfdyY8aTTALVMUOYQuM7Iy2v6LWmM65?=
+ =?us-ascii?Q?djUo0o/SEjSEUomlKyoPT8IQDSM2WEnskQLGiUbHMRrjj08hVavXeQYRTbjx?=
+ =?us-ascii?Q?hos5YOtXPGfShE5qWVnFrKN02fnLr+ZY3zNqwIJc6RFdHVrZd2YTIA+0OUyk?=
+ =?us-ascii?Q?1wKHPb35ERw8Kiea4fBLf/P7blvRBmYOi7qTq2dB+NyOlCNTcKGvK+rRzSM9?=
+ =?us-ascii?Q?DB8Fbh1pGWN16FOj1chhwAuJCjwl7nf95yASU+1iJT3sVUtzwpmoSfxQiikC?=
+ =?us-ascii?Q?nEcbTtSfJYAlHYK07hl2AKzdUb2fTll8zH+5OTX+7TO2ZzedpSYmoIaW+tZZ?=
+ =?us-ascii?Q?hx/j/q4D833HbvNeOjreEPzLFXPwUc9eTBXSK1ftl0OckyBNyWSYE/nRFLO6?=
+ =?us-ascii?Q?TfUUwCe3GC00Osfr10fW1W3ttrtXlSuRFjydCLjyoV1Ou3UYhaxho1vJNllV?=
+ =?us-ascii?Q?yVJcA+B1WpA9jAUd78n1x2uQSrz3H80Q704WgCFMNzJYZJR4IB8d9GQOEFY8?=
+ =?us-ascii?Q?XW5AfoGJTNsqSsrGgllLCmovz0dgxhT5FFTin/mH4B2jLKYVxn4tpHuGVMxP?=
+ =?us-ascii?Q?AxBIxTvMUgh4jchCPAW6FfTadh2/0yDpWL/Okhsqm98gf+/cffCwQmbGtyeR?=
+ =?us-ascii?Q?MSLIr3JsTvP0UpGK900GcVgkvhfd96Vp2jZ21o5k+GTRWnmcQISzmLb7Lw+w?=
+ =?us-ascii?Q?od+BKJiFWmotu6jgvkjhkiOjEBsXzkUqss0OdXYxPIkcB6BFlI6q/TkrZUrg?=
+ =?us-ascii?Q?RkPBy6dOhzFrlYGsXH3TE3Bo0yWwmodZD9lTtWOUgF3xcb7pk4taSqO/xszX?=
+ =?us-ascii?Q?8R3FFfY3BSOyh82PaNCyuqv7gEtnwKHn76cUp9acueKawhv4UavshnRBsCQ0?=
+ =?us-ascii?Q?VzZXQjtadG3MZzTQReKNO6eRh/TPV1USO9J2R6z2YiNBVgTfTX50zZve+Byf?=
+ =?us-ascii?Q?OMNieoBUZt+xW4bTWZwf3gtB9wpmCL0lizL8PFIj4AoDz30YrTdHW1jlhSX0?=
+ =?us-ascii?Q?11+r8JEXV1bzzo7oCkw=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 497b47c8-f57c-49e0-7b65-08dbce3fcd70
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2023 12:02:42.8888
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gvFt/HxygWakYi2eguxKZYdsXvyujzAcWORMsEiNzsDkv3W/u/pkJPH2s7snds4k
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8424
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-1110351866-1697457747=:1986
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-
-On Fri, 13 Oct 2023, David E. Box wrote:
-
-> On Fri, 2023-10-13 at 13:54 +0300, Ilpo Järvinen wrote:
-> > On Thu, 12 Oct 2023, David E. Box wrote:
+On Mon, Oct 16, 2023 at 08:26:25AM +0000, Tian, Kevin wrote:
+> > From: Jason Gunthorpe <jgg@nvidia.com>
+> > Sent: Friday, October 13, 2023 10:06 PM
 > > 
-> > > On Thu, 2023-10-12 at 17:46 +0300, Ilpo Järvinen wrote:
-> > > > On Wed, 11 Oct 2023, David E. Box wrote:
-> > > > 
-> > > > > Use cleanup.h helpers to handle cleanup of resources in
-> > > > > intel_vsec_add_dev() after failures.
-> > > > > 
-> > > > > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> > > > > ---
-
-
-> > > > > @@ -208,8 +207,12 @@ static int intel_vsec_add_dev(struct pci_dev *pdev,
-> > > > > struct intel_vsec_header *he
-> > > > >         else
-> > > > >                 intel_vsec_dev->ida = &intel_vsec_ida;
-> > > > >  
-> > > > > -       return intel_vsec_add_aux(pdev, NULL, intel_vsec_dev,
-> > > > > -                                 intel_vsec_name(header->id));
-> > > > > +       ret = intel_vsec_add_aux(pdev, NULL, intel_vsec_dev,
-> > > > > +                                intel_vsec_name(header->id));
-> > > > > +
-> > > > > +       no_free_ptr(intel_vsec_dev);
-> > > > > +
-> > > > > +       return ret;
-> > > > 
-> > > > So if intel_vsec_add_aux() returned an error, intel_vsec_dev won't be 
-> > > > freed because of the call call to no_free_ptr() before return. I that's 
-> > > > not what you intended?
-> > > 
-> > > It will have been freed if intel_vsec_add_aux() fails. It's a little messy.
-> > > That
-> > > function creates the auxdev and assigns the release function which will free
-> > > intel_vsec_dev when the device is removed. But there are failure points that
-> > > will also invoke the release function. Because of this, for all the failure
-> > > points in that function we free intel_vsec_dev so that it's state doesn't
-> > > need
-> > > to be questioned here. This happens explicitly if the failure is before
-> > > auxiliary_device_init(), or through the release function invoked by
-> > > auxiliary_device_uninit() if after.
+> > On Fri, Oct 13, 2023 at 07:13:34AM +0000, Tian, Kevin wrote:
+> > > > From: Jason Gunthorpe <jgg@nvidia.com>
+> > > > Sent: Friday, October 13, 2023 3:10 AM
+> > > >
+> > > > Also, we probably should feed enforce_cache_coherency through the
+> > > > alloc_hwpt uapi and not try to autodetect it..
+> > > >
+> > >
+> > > In the past we had a long discussion about this with the conclusion
+> > > that user opt is the ideal model but it's fine to stay with autodetect
+> > > and existing vfio/kvm contract for coherency detection until we
+> > > see a real demand for user opt.
+> > >
+> > > Is there anything new which changes your mind to have user opt now?
 > > 
-> > Oh, that's really convoluted and no wonder I missed it completely. It 
-> > might even be that using cleanup.h here isn't really worth it. I know 
-> > I pushed you into that direction but I didn't realize all the complexity
-> > at that point.
-
-...
-> >  are before the intel_vsec_add_aux() call (and I'd also add a comment 
-> > to explain that freeing them is now responsability of 
-> > intel_vsec_add_aux()). That way, we don't leave a trap into there where 
-> > somebody happily adds another no_free_ptr() to the same group and it 
-> > causes a mem leak.
+> > I guess, I was just looking at the complexity it brings to keep that
+> > working.
+> > 
 > 
-> Sure. After the comment I'd just do this then still the value is still needed,
+> vfio_file_enforced_coherent() currently just looks at device_iommu_capable()
+> and can be called before attach, assuming an autodetect model. 
 > 
-> 	ret = intel_vsec_add_aux(pdev, NULL, no_free_ptr(intel_vsec_dev),
->                                  intel_vsec_name(header->id));
+> moving away from autodetect would need a new contract which I hesitate
+> to bother with at this point.
 
-True, I realized later that the variable gets NULLed because of how 
-no_free_ptr() works so no_free_ptr() has to be within the call itself, but 
-that's actually much better than my initial suggestion!
+I think that is fine, we are not enabling new behaviors where qemu can
+directly control the wbinvd support. If we want to do that it can be
+done more directly.
 
-So I think the best we can get out of this is along the lines of (with the 
-subsequent change with res too):
+If the vmm sees a coherent device and does not turn on enforced
+coherency then it will get a broken wbinvd and be sad. Since this is
+all in the userspace vt-d iommu driver, it can just do the right thing
+anyhow.
 
-	/* Pass the ownership of intel_vsec_dev and resource within it to intel_vsec_add_aux() */
-	no_free_ptr(res);
-	return intel_vsec_add_aux(pdev, info->parent, no_free_ptr(intel_vsec_dev), 
-				  intel_vsec_name(header->id));
-
-That seems the least trappiest and actually nicely documents who is 
-responsible for what. To contrast the earlier, this feels very elegant,
-the perceived complexity related to intel_vsec_add_aux() no longer feels 
-tricky at all so we end up solving also that problem better than the 
-original.
-
--- 
- i.
-
---8323329-1110351866-1697457747=:1986--
+Jason
