@@ -2,93 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A9D07C9D76
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 04:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9787C9D7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 04:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231281AbjJPCiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 22:38:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53810 "EHLO
+        id S231216AbjJPCmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 22:42:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjJPCiL (ORCPT
+        with ESMTP id S229611AbjJPCmI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 22:38:11 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302F6AB;
-        Sun, 15 Oct 2023 19:38:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAD4EC433C8;
-        Mon, 16 Oct 2023 02:38:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697423889;
-        bh=T5WnSXdJB4MfvIyXC6DMczWEEeOsQwjAqV+LW90t/N0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dtn3KESJWI9dONtkVY8FlFqQ4tdVJUCm+gflh+pExFPd/eVSqVo6wf9rJlDxftjm9
-         DHGVv4e5rBdK7FK+5dbQTMiJ0If/VqefgwPvsok1xbtLJuunQf2fN8t+zhFzkCd731
-         kg4WcM9iVPw5+6QVaryHWu7R/iiFi7BUG5tia14c1dCHsaX1ds7+FBUPHeuWdvulMq
-         nBWmdju1cV8PbKxDBrdSLpYCUA2AICJnyVrtjHYcQ3puuLd2Sr1urw4RM5U+9/uP4S
-         JG46vNM4YLBY8qIHeXs4vOdiIa/oI6zSMp1Lgi337sVXTiqmL6/SdAE8S9y1kG67Mt
-         cM6662M0URl9A==
-Date:   Sun, 15 Oct 2023 19:41:57 -0700
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     Om Prakash Singh <quic_omprsing@quicinc.com>
-Cc:     neil.armstrong@linaro.org, konrad.dybcio@linaro.org,
-        agross@kernel.org, conor+dt@kernel.org, davem@davemloft.net,
-        devicetree@vger.kernel.org, herbert@gondor.apana.org.au,
-        krzysztof.kozlowski+dt@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        marijn.suijten@somainline.org, robh+dt@kernel.org, vkoul@kernel.org
-Subject: Re: [PATCH V1 1/4] dt-bindings: crypto: qcom,prng: document SA8775P
-Message-ID: <hgtbdvbhoxwib4ywkd6pdxpcywgudb2b23tvlmaxaggeqgsghg@s6qetpw755rw>
-References: <20231015193901.2344590-1-quic_omprsing@quicinc.com>
- <20231015193901.2344590-2-quic_omprsing@quicinc.com>
+        Sun, 15 Oct 2023 22:42:08 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30EC0AB;
+        Sun, 15 Oct 2023 19:42:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1697424123;
+        bh=88r6X3PDk50GyXQgZtd9PuXNokzEl+ItNURNOh41nBE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=i+RJLSGNU6tvtokGRy6TFLRwhi5KG2x5iCfPtNqj3TWuHrriJVR3Gl4dVHOXXFj24
+         6nzOK8AN+WfhLqoUm3BMzNjDh31ULU5WzJ81jovT9V2st8E+3VHGn/GVVGmGroORvN
+         y+vXLwNOen/fRYHjNvQ5oHrd7+lRpzDDj+HvHHKo6/AmEy1WdOgIoWO0LW5byr1YkB
+         Mf8IC3h2lgPhf2PkL1iGOE6Wh3aLXddHgMowUhi5WNQrGn/XKhlK/Ysr8ibiMGG5kg
+         BOBuTcA/JV3117gYllZQjGhGFOdB6Cw6YbdonwC4oPSuAviZylYj0rnYRijyIRWuCx
+         Yv0HMpuxcMiDg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S81bZ24X1z4wcK;
+        Mon, 16 Oct 2023 13:42:01 +1100 (AEDT)
+Date:   Mon, 16 Oct 2023 13:41:59 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>, Greg KH <greg@kroah.com>
+Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= 
+        <u.kleine-koenig@pengutronix.de>, Wentong Wu <wentong.wu@intel.com>
+Subject: linux-next: manual merge of the gpio-brgl tree with the usb tree
+Message-ID: <20231016134159.11d8f849@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231015193901.2344590-2-quic_omprsing@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/29hwr.bLS4F.SScvmFOrI4.";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 01:08:58AM +0530, Om Prakash Singh wrote:
-> Document SA8775P compatible for the True Random Number Generator.
-> 
-> Signed-off-by: Om Prakash Singh <quic_omprsing@quicinc.com>
-> ---
->  Documentation/devicetree/bindings/crypto/qcom,prng.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/crypto/qcom,prng.yaml b/Documentation/devicetree/bindings/crypto/qcom,prng.yaml
-> index 633993f801c6..85e6b1c199f5 100644
-> --- a/Documentation/devicetree/bindings/crypto/qcom,prng.yaml
-> +++ b/Documentation/devicetree/bindings/crypto/qcom,prng.yaml
-> @@ -19,6 +19,7 @@ properties:
->            - enum:
->                - qcom,sm8450-trng
->                - qcom,sm8550-trng
-> +              - qcom,sa8775p-trng
+--Sig_/29hwr.bLS4F.SScvmFOrI4.
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Please maintain the alphabetical sort order of entries like this.
+Hi all,
 
+Today's linux-next merge of the gpio-brgl tree got a conflict in:
 
-On the two DeviceTree patches, we keep nodes sorted by address, followed
-by node name, and then label. And we keep the address padded to 8 digits
-to make it easier to keep them sorted. I've corrected that and picked
-the 2 (i.e. all 4) DeviceTree patches.
+  drivers/gpio/gpio-ljca.c
 
-So please fix above, and resubmit the two binding updates from this
-series (and you can submit that as one change, no need to keep as
-separate patches).
+between commit:
 
-Regards,
-Bjorn
+  1034cc423f1b ("gpio: update Intel LJCA USB GPIO driver")
 
->            - const: qcom,trng
->  
->    reg:
-> -- 
-> 2.25.1
-> 
+from the usb tree and commit:
+
+  da2ad5fe2292 ("gpio: ljca: Convert to platform remove callback returning =
+void")
+
+from the gpio-brgl tree.
+
+I fixed it up (I just used the former version) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/29hwr.bLS4F.SScvmFOrI4.
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUsovcACgkQAVBC80lX
+0Gxrrwf+ONTK4m5eTlr5sxpiSwCMAN1+Q5x/jwgNG071VDejv+Y7yyOn49Q3eK/u
+wBwimZBQFn6M8fg3j2S+vDWuQjCrlHvb1ewwuX9RuknGUKlMQYqtR5bWJtP7tl1R
+Htr5jB8HDGsY9sZXQ10QAD+mpWOmhTbd4uynrAsLDBSA0I1dknogWAKeTPhwz276
+hvstMAUg2B/ZeHWbe2fl4BQtp7oDz1cqYlP1N4mWzJsAfg8Z4riTAmJRk/k6awOi
+8hagOzjgeSqRtxH0/PNazpXJ8W+m8gqFM2JQiEJrNH+npYUqF0cYJqapDFXRd1iV
+7cxgDkRsMI1vkYgu7fNXPOlG0MTWoQ==
+=/gHM
+-----END PGP SIGNATURE-----
+
+--Sig_/29hwr.bLS4F.SScvmFOrI4.--
