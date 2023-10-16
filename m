@@ -2,67 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D997C9D0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 03:48:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D0E7C9CAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 02:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231366AbjJPBsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 21:48:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50724 "EHLO
+        id S229642AbjJPAFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 20:05:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231324AbjJPBrx (ORCPT
+        with ESMTP id S229500AbjJPAFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 21:47:53 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B51EE9;
-        Sun, 15 Oct 2023 18:47:52 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-27d3ede72f6so2136314a91.1;
-        Sun, 15 Oct 2023 18:47:52 -0700 (PDT)
+        Sun, 15 Oct 2023 20:05:40 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2406FAD;
+        Sun, 15 Oct 2023 17:05:38 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id e9e14a558f8ab-35743e88193so16078405ab.3;
+        Sun, 15 Oct 2023 17:05:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697420871; x=1698025671; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mi5UmAT05d3969V2jLDH5OfDsDaXCi2SPvi05677hA4=;
-        b=C5kTRMBFanemv7wO8grEXFn8sCR7wXzJ4Lv+wA9TIl+kJNxDaUi0T+cdqbrV4/WQcE
-         e6F2HK2t3D9j4PF8akTTbHWfquiP2luxfy0FuXMpLYyKRNQw7htfyIDWETv2VzGZ/uM1
-         zWGTWJmXMRZNapAWdlXoeQCz60YUOCRuikPSrsjjWJ1EuJHVBbF/VASOPKR9Mlvc3vYi
-         L8Qdlc4i2+oDzudw6IMjnz875Kl+ovhi81Im8qBNz0Ig+JY89z9SpV5BKnpak2BjPn1a
-         XSPTvWAOQetAjXosjUw/nl4hQ+oKNjUEBKGnrFO1wdCn3weZr20AzE+BqM5KB1Z86Ud/
-         6JNA==
+        d=gmail.com; s=20230601; t=1697414737; x=1698019537; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=taL7RPzKlYgh9tFywV2JSrqs1p7sXQbwE3+YuDDOXmI=;
+        b=b7C7EVGbq/V4YsQW68uaEqXvUlOyg/4T/bYTL+RdKeV35p197JYYhscfcc6LZk8RKU
+         7Xix21Cyxr5NEOKX9iZBYpAWkqN1WXeHgZi0oPZ6Q8xxZdlTNV8cGLAztRmA+PX5/bUW
+         iht3tScapoU9oR04kPFD5xvRNV1HcbOWRYvVAvMW/r48PulASWm2HFIC3AMa+s4/Xs2N
+         cvQAL7zgECN+xF19wqe+EziS91aqiyU03tL5ImbanrTa01PQFpG3+L9VZHTHJIJkvKWU
+         GVaptnb2jkgAgn3ClU/g7tnd25hu/iU8QnHw9fF4zk5ImCt3KgCHhL7rHw1LlfZabdbT
+         RjhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697420871; x=1698025671;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mi5UmAT05d3969V2jLDH5OfDsDaXCi2SPvi05677hA4=;
-        b=gNPspkZBG17h0ZNCiPpguqAPC/ugSzB9Z+cutjaOTnNDCAjYZ+BkI/KPCO1Cv+T+U7
-         pV2nlqzwWhkbl2VtNqXezE+tEv0eNyOhfVGAjPR+zIwhyPH6A8zfUsrozpHbGYPEDWJo
-         mV/I3a1VH81rLWRhYkJe+GViQ8tht+07elQKHBk6fD8nyX+7xI/mKjLhJbGHvDlHgJ5s
-         UjR14/4yZ7/Hu3xNhqgQE4tJTE9RhOlgGq6aUu3jhwBYM1Q0UOjnw8Ublw36rF/5lEC7
-         /P+qv7t/Uhdu+wzyECG3IElbpG0DbiHteyBNNkTKIWvUM/TZ5dqbF7mi6u2cqKwleWCz
-         V70g==
-X-Gm-Message-State: AOJu0YyKjJnBzdLJA08QAMOfCM94A2igroSbyfhFgEGZ/tMJf5XPEr3p
-        iDlnpe8KJp33fFr0AJdCAw3llFP16FC4Vw==
-X-Google-Smtp-Source: AGHT+IGH7TfUPliSmFctNHTFYoEc5e4R1mypniXEZZGepACzWiThk28fihmceiKF2saXXMrxHt+VWQ==
-X-Received: by 2002:a17:90b:8e:b0:27c:fc2a:a178 with SMTP id bb14-20020a17090b008e00b0027cfc2aa178mr14832393pjb.9.1697420870865;
-        Sun, 15 Oct 2023 18:47:50 -0700 (PDT)
-Received: from ubuntu.. ([203.205.141.13])
-        by smtp.googlemail.com with ESMTPSA id pd17-20020a17090b1dd100b0027cfb5f010dsm3574377pjb.4.2023.10.15.18.47.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Oct 2023 18:47:49 -0700 (PDT)
-From:   Hengqi Chen <hengqi.chen@gmail.com>
-To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc:     keescook@chromium.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, luto@amacapital.net, wad@chromium.org,
-        alexyonghe@tencent.com, hengqi.chen@gmail.com
-Subject: [PATCH v2 5/5] selftests/bpf: Skip BPF_PROG_TYPE_SECCOMP-related tests
-Date:   Sun, 15 Oct 2023 23:29:53 +0000
-Message-Id: <20231015232953.84836-6-hengqi.chen@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231015232953.84836-1-hengqi.chen@gmail.com>
-References: <20231015232953.84836-1-hengqi.chen@gmail.com>
+        d=1e100.net; s=20230601; t=1697414737; x=1698019537;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=taL7RPzKlYgh9tFywV2JSrqs1p7sXQbwE3+YuDDOXmI=;
+        b=lr8rOevNny//e31fzZ10hNUO9JW5m25AFZNusDVK5R1GPKN7I8O7paMDqoeQleryHT
+         DUNKguN15sDFGaPRk6j9D5JUOhPFnzrodAra+0aUsT0zF4bQHoQiVswF4kQHjxGBb2oH
+         LnUSH09fy6qzp8FjRPw0rO9NlUZ0nCHKN05uDLwqhlvJ25gYgDyS/q0u0NFvXw9eMfHo
+         dTPg3XUBf4qPw9Ja+8pn0ij5jtfyAs3146J4jFPzMZD7jbs6jD9tH9ww0cpD1lUutWB5
+         YorqfjaPn0pB4t/7u33JiCA5TanaAzKjgo3qmq1Ht3YhBm9ov/+w5q7wPHjncqp0x5tE
+         Lriw==
+X-Gm-Message-State: AOJu0YxteepENBPtyb3DRxQafFoYqIkDge2fXK3lQhbGbQlZ6d4MtByp
+        bFCmk2XVKZHZkHmFSPvocD++mXgqP8w=
+X-Google-Smtp-Source: AGHT+IHKzJRoxBsHpaDyGVn5V6QkiXFqQwLP9PFj2Y+rSUuwf7RfhiU89NI6I9sVRWp8sZgjV3yttQ==
+X-Received: by 2002:a05:6e02:1354:b0:351:1311:c282 with SMTP id k20-20020a056e02135400b003511311c282mr29854195ilr.9.1697414737351;
+        Sun, 15 Oct 2023 17:05:37 -0700 (PDT)
+Received: from [192.168.0.106] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id i130-20020a639d88000000b00578b8fab907sm2570541pgd.73.2023.10.15.17.05.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 15 Oct 2023 17:05:36 -0700 (PDT)
+Message-ID: <17f76abc-e247-4dda-894e-1caa28411fe6@gmail.com>
+Date:   Mon, 16 Oct 2023 07:05:29 +0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net 1/2] MAINTAINERS: Move M Chetan Kumar to CREDITS
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Networking <netdev@vger.kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Mat Martineau <martineau@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        "Srivatsa S. Bhat (VMware)" <srivatsa@csail.mit.edu>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Jesper Juhl <jesperjuhl76@gmail.com>
+References: <20231013014010.18338-1-bagasdotme@gmail.com>
+ <20231013014010.18338-2-bagasdotme@gmail.com>
+ <20231013174813.5ccc3744@kernel.org>
+Content-Language: en-US
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <20231013174813.5ccc3744@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -73,43 +88,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We only allow BPF_PROG_TYPE_SECCOMP progs to be loaded via
-seccomp syscall. Skip related test on BPF side.
+On 14/10/2023 07:48, Jakub Kicinski wrote:
+> On Fri, 13 Oct 2023 08:40:08 +0700 Bagas Sanjaya wrote:
+>> Emails to him bounce with 550 error code:
+>>
+>> ```
+>> 5.1.0 - Unknown address error 550-'5.1.1 <m.chetan.kumar@linux.intel.com>: Recipient address rejected: User unknown in virtual mailbox table'
+>> ```
+>>
+>> It looks like he had left Intel, so move him to CREDITS.
+> 
+> The driver was very likely written by an entire team of people.
+> I wouldn't bother with CREDITS. Also I think you have the entry
+> in the wrong place. It's alphabetical by surname.
 
-Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
----
- tools/testing/selftests/bpf/prog_tests/libbpf_probes.c | 3 ++-
- tools/testing/selftests/bpf/prog_tests/libbpf_str.c    | 3 +++
- 2 files changed, 5 insertions(+), 1 deletion(-)
+Will fix up in the v2, thanks!
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c b/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c
-index 9f766ddd946a..134ae042c4da 100644
---- a/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c
-+++ b/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c
-@@ -28,7 +28,8 @@ void test_libbpf_probe_prog_types(void)
- 		enum bpf_prog_type prog_type = (enum bpf_prog_type)e->val;
- 		int res;
- 
--		if (prog_type == BPF_PROG_TYPE_UNSPEC)
-+		if (prog_type == BPF_PROG_TYPE_UNSPEC ||
-+		    prog_type == BPF_PROG_TYPE_SECCOMP)
- 			continue;
- 
- 		if (!test__start_subtest(prog_type_name))
-diff --git a/tools/testing/selftests/bpf/prog_tests/libbpf_str.c b/tools/testing/selftests/bpf/prog_tests/libbpf_str.c
-index c440ea3311ed..35365500c326 100644
---- a/tools/testing/selftests/bpf/prog_tests/libbpf_str.c
-+++ b/tools/testing/selftests/bpf/prog_tests/libbpf_str.c
-@@ -186,6 +186,9 @@ static void test_libbpf_bpf_prog_type_str(void)
- 		const char *prog_type_str;
- 		char buf[256];
- 
-+		if (prog_type == BPF_PROG_TYPE_SECCOMP)
-+			continue;
-+
- 		prog_type_name = btf__str_by_offset(btf, e->name_off);
- 		prog_type_str = libbpf_bpf_prog_type_str(prog_type);
- 		ASSERT_OK_PTR(prog_type_str, prog_type_name);
 -- 
-2.34.1
+An old man doll... just what I always wanted! - Clara
 
