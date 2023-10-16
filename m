@@ -2,43 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 938E57C9D48
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 04:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C85A7C9D54
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 04:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231343AbjJPCDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 22:03:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51714 "EHLO
+        id S231343AbjJPCJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 22:09:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbjJPCDj (ORCPT
+        with ESMTP id S230478AbjJPCJG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 22:03:39 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C2ADC5;
-        Sun, 15 Oct 2023 19:03:37 -0700 (PDT)
+        Sun, 15 Oct 2023 22:09:06 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E216C1;
+        Sun, 15 Oct 2023 19:09:04 -0700 (PDT)
 Received: from kwepemm000012.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S80g231KSzVlcN;
-        Mon, 16 Oct 2023 09:59:58 +0800 (CST)
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S80m20RQdzvQ2W;
+        Mon, 16 Oct 2023 10:04:18 +0800 (CST)
 Received: from build.huawei.com (10.175.101.6) by
  kwepemm000012.china.huawei.com (7.193.23.142) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 16 Oct 2023 10:03:34 +0800
+ 15.1.2507.31; Mon, 16 Oct 2023 10:08:59 +0800
 From:   Wenchao Hao <haowenchao2@huawei.com>
 To:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
         "Martin K . Petersen" <martin.petersen@oracle.com>,
         <linux-scsi@vger.kernel.org>
 CC:     <linux-kernel@vger.kernel.org>, <louhongxiang@huawei.com>,
         Wenchao Hao <haowenchao2@huawei.com>
-Subject: [PATCH v3 4/4] scsi: scsi_core: Fix IO hang when device removing
-Date:   Mon, 16 Oct 2023 10:03:14 +0800
-Message-ID: <20231016020314.1269636-5-haowenchao2@huawei.com>
+Subject: [PATCH v2 0/2] cleanup patch
+Date:   Mon, 16 Oct 2023 10:08:45 +0800
+Message-ID: <20231016020847.1270258-1-haowenchao2@huawei.com>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20231016020314.1269636-1-haowenchao2@huawei.com>
-References: <20231016020314.1269636-1-haowenchao2@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
 X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  kwepemm000012.china.huawei.com (7.193.23.142)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
@@ -50,55 +48,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-shost_for_each_device() would skip devices which is in progress of
-removing, so scsi_run_queue() for these devices would be skipped in
-scsi_run_host_queues() after blocking hosts' IO.
+This is a cleanup patchset, no logic changed.
 
-IO hang would be caused if return true when state is SDEV_CANCEL with
-following order:
+The first patch just cleanup scsi_dev_queue_ready();
+The second patch add comment for target_destroy callback of
+scsi_host_template to tell it is called in atomic context.
 
-T1:					    T2:scsi_error_handler
-__scsi_remove_device()
-  scsi_device_set_state(sdev, SDEV_CANCEL)
-  ...
-  sd_remove()
-  del_gendisk()
-  blk_mq_freeze_queue_wait()
-  					    scsi_eh_flush_done_q()
-					      scsi_queue_insert(scmd,...)
+V2:
+  - Tell which spinlock is held in comment of target_destroy
 
-scsi_queue_insert() would not kick device's queue since commit
-8b566edbdbfb ("scsi: core: Only kick the requeue list if necessary")
+Wenchao Hao (2):
+  scsi: core: cleanup scsi_dev_queue_ready()
+  scsi: Add comment of target_destroy in scsi_host_template
 
-After scsi_unjam_host(), the scsi error handler would call
-scsi_run_host_queues() to trigger run queue for devices, while it
-would not run queue for devices which is in progress of removing
-because shost_for_each_device() would skip them.
+ drivers/scsi/scsi_lib.c  | 35 ++++++++++++++++++-----------------
+ include/scsi/scsi_host.h |  3 +++
+ 2 files changed, 21 insertions(+), 17 deletions(-)
 
-So the requests added to these queues would not be handled any more,
-and the removing device process would hang too.
-
-Fix this issue by using shost_for_each_device_include_deleted() in
-scsi_run_host_queues() to trigger a run queue for devices in removing.
-
-Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
----
- drivers/scsi/scsi_lib.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
-index 195ca80667d0..40f407ffd26f 100644
---- a/drivers/scsi/scsi_lib.c
-+++ b/drivers/scsi/scsi_lib.c
-@@ -466,7 +466,7 @@ void scsi_run_host_queues(struct Scsi_Host *shost)
- {
- 	struct scsi_device *sdev;
- 
--	shost_for_each_device(sdev, shost)
-+	shost_for_each_device_include_deleted(sdev, shost)
- 		scsi_run_queue(sdev->request_queue);
- }
- 
 -- 
 2.32.0
 
