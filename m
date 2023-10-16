@@ -2,198 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9300F7CB6B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 00:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 075657CB6BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 00:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233787AbjJPWv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 18:51:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51024 "EHLO
+        id S234137AbjJPWwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 18:52:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232615AbjJPWvZ (ORCPT
+        with ESMTP id S232896AbjJPWwK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 18:51:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7144ED
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 15:50:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697496642;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=VENdWJ/1K/LhZn05aMbcDMWsUZa2DzjCrYdCwNyN6Jk=;
-        b=SU4wQx3DbHg4e55vfjVAf4+3ERquFHtkjeRHeGhTP7g5wzV4HU/Mct9iR4T1tButjeLWni
-        j15h15wFZDjCoz5FOK9rc3NT60lO/rRURvr0eZZ/Sx08/s7UzQu6OKFogEJfZhldNQU/s2
-        uS61MAz2JCBDHChoJ1TT9m30vPmy/3o=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-218-DeF4ZF5lOd6b04SejMqsSA-1; Mon, 16 Oct 2023 18:50:39 -0400
-X-MC-Unique: DeF4ZF5lOd6b04SejMqsSA-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BC9478E8C64;
-        Mon, 16 Oct 2023 22:50:38 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9DEC1492BFA;
-        Mon, 16 Oct 2023 22:50:38 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [GIT PULL] KVM fixes for Linux 6.6-rc7
-Date:   Mon, 16 Oct 2023 18:50:38 -0400
-Message-Id: <20231016225038.2829334-1-pbonzini@redhat.com>
+        Mon, 16 Oct 2023 18:52:10 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8919095;
+        Mon, 16 Oct 2023 15:52:08 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39GLH7hi016583;
+        Mon, 16 Oct 2023 22:51:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=aTf3anfLH8/yKr6bETOnY4WCnCGyzbit9cJjSDMWkw0=;
+ b=nwLgnPAttkUiCNQTVJraOAOXNEaU3VI5na8RhOUuB0J704jXlifrRKlSzw2ZOs+MjJSR
+ /3fptKrT1KHj+TqPbLp1k7Q3QOz+MAL9OOmQ2orY7zjOwaW7Ihv+jjMHmHgliebNGEmi
+ ktOkrc8PcKcpgCcDUAyPt5NydFmQ8WVLzZArGjUhAmwf1IvAG+94MqZHCQ/oQcAeMfm6
+ SchpP8+oGDLQtvcd7yQpcDgFmsD3cnUzp5TLbp6yWvGz6kve8jGvjQ3LU+ez7ukykvFg
+ mmJFy1HsZLdkl0cVFPL0zlLGpwmOqap75o/0FgNauHrMXuoBzaxhYDuhBmDjTZN6ElER Hg== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ts0xkt649-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Oct 2023 22:51:58 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39GMplUK012901
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Oct 2023 22:51:47 GMT
+Received: from [10.48.240.22] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 16 Oct
+ 2023 15:51:47 -0700
+Message-ID: <32ab8646-d41d-4dd2-a8c8-93845f198462@quicinc.com>
+Date:   Mon, 16 Oct 2023 15:51:46 -0700
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] wifi: wilc1000: use vmm_table as array in wilc struct
+Content-Language: en-US
+To:     =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Kalle Valo <kvalo@kernel.org>,
+        Michael Walle <mwalle@kernel.org>
+CC:     <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Ajay Singh <ajay.kathat@microchip.com>,
+        <stable@vger.kernel.org>
+References: <20231016-wilc1000_tx_oops-v2-1-8d1982a29ef1@bootlin.com>
+ <bb95048f-2540-4d42-abb2-3132d33cd6c3@quicinc.com>
+ <74eac5f2-228b-4775-a101-53b2fdd5bf86@bootlin.com>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <74eac5f2-228b-4775-a101-53b2fdd5bf86@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: MGT4cR8Hr7M8hEnoqiQSu19wzUAKNlZz
+X-Proofpoint-ORIG-GUID: MGT4cR8Hr7M8hEnoqiQSu19wzUAKNlZz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-16_12,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
+ spamscore=0 priorityscore=1501 mlxlogscore=679 impostorscore=0
+ malwarescore=0 suspectscore=0 phishscore=0 lowpriorityscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310160199
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 401644852d0b2a278811de38081be23f74b5bb04:
+On 10/16/2023 2:23 PM, Alexis Lothoré wrote:
+> Hello Jeff,
+> 
+> On 10/16/23 17:26, Jeff Johnson wrote:
+>> On 10/16/2023 1:29 AM, Alexis Lothoré wrote:
+>>> diff --git a/drivers/net/wireless/microchip/wilc1000/wlan.c
+>>> b/drivers/net/wireless/microchip/wilc1000/wlan.c
+>>> index 58bbf50081e4..e4113f2dfadf 100644
+>>> --- a/drivers/net/wireless/microchip/wilc1000/wlan.c
+>>> +++ b/drivers/net/wireless/microchip/wilc1000/wlan.c
+>>> @@ -1492,7 +1492,7 @@ int wilc_wlan_init(struct net_device *dev)
+>>>        }
+>>>          if (!wilc->vmm_table)
+>>> -        wilc->vmm_table = kzalloc(WILC_VMM_TBL_SIZE, GFP_KERNEL);
+>>> +        wilc->vmm_table = kzalloc(WILC_VMM_TBL_SIZE * sizeof(u32), GFP_KERNEL);
+>>
+>> this is probably OK since the values are constant, but kcalloc() is generally
+>> preferred
+> 
+> Ok, I can submit a new version with kcalloc. One thing that I do not understand
+> however is why checkpatch.pl remains silent on this one. I guess it should raise
+> the ALLOC_WITH_MULTIPLY warning here. I tried to dive into the script to
+> understand why, but I drowned in regexes (and Perl, with which I am not familiar
+> with). Could it be because of both sides being constant ?
 
-  Merge tag 'fs_for_v6.6-rc6' of git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs (2023-10-11 14:21:15 -0700)
+I also drown when looking at checkpatch.pl -- so many "write-only" 
+regexes! But I think the following is what excludes your patch:
+$r1 =~ /^[A-Z_][A-Z0-9_]*$
 
-are available in the Git repository at:
+It is a compile-time constant so the compiler can flag on overflow, so 
+it's your call to modify or not.
 
-  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
-
-for you to fetch changes up to 2b3f2325e71f09098723727d665e2e8003d455dc:
-
-  Merge tag 'kvm-x86-selftests-6.6-fixes' of https://github.com/kvm-x86/linux into HEAD (2023-10-15 08:25:18 -0400)
-
-----------------------------------------------------------------
-ARM:
-
-- Fix the handling of the phycal timer offset when FEAT_ECV
-  and CNTPOFF_EL2 are implemented.
-
-- Restore the functionnality of Permission Indirection that
-  was broken by the Fine Grained Trapping rework
-
-- Cleanup some PMU event sharing code
-
-MIPS:
-
-- Fix W=1 build.
-
-s390:
-
-- One small fix for gisa to avoid stalls.
-
-x86:
-
-- Truncate writes to PMU counters to the counter's width to avoid spurious
-  overflows when emulating counter events in software.
-
-- Set the LVTPC entry mask bit when handling a PMI (to match Intel-defined
-  architectural behavior).
-
-- Treat KVM_REQ_PMI as a wake event instead of queueing host IRQ work to
-  kick the guest out of emulated halt.
-
-- Fix for loading XSAVE state from an old kernel into a new one.
-
-- Fixes for AMD AVIC
-
-selftests:
-
-- Play nice with %llx when formatting guest printf and assert statements.
-
-- Clean up stale test metadata.
-
-- Zero-initialize structures in memslot perf test to workaround a suspected
-  "may be used uninitialized" false positives from GCC.
-
-----------------------------------------------------------------
-Anshuman Khandual (1):
-      KVM: arm64: pmu: Drop redundant check for non-NULL kvm_pmu_events
-
-Jim Mattson (2):
-      KVM: x86: Mask LVTPC when handling a PMI
-      KVM: x86/pmu: Synthesize at most one PMI per VM-exit
-
-Joey Gouly (2):
-      KVM: arm64: Add nPIR{E0}_EL1 to HFG traps
-      KVM: arm64: POR{E0}_EL1 do not need trap handlers
-
-Like Xu (1):
-      KVM: selftests: Remove obsolete and incorrect test case metadata
-
-Marc Zyngier (1):
-      KVM: arm64: timers: Correctly handle TGE flip with CNTPOFF_EL2
-
-Maxim Levitsky (3):
-      x86: KVM: SVM: always update the x2avic msr interception
-      x86: KVM: SVM: add support for Invalid IPI Vector interception
-      x86: KVM: SVM: refresh AVIC inhibition in svm_leave_nested()
-
-Michael Mueller (1):
-      KVM: s390: fix gisa destroy operation might lead to cpu stalls
-
-Paolo Bonzini (5):
-      Merge tag 'kvm-s390-master-6.6-1' of git://git.kernel.org/pub/scm/linux/kernel/git/kvms390/linux into HEAD
-      KVM: MIPS: fix -Wunused-but-set-variable warning
-      Merge tag 'kvmarm-fixes-6.6-2' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into HEAD
-      Merge tag 'kvm-x86-pmu-6.6-fixes' of https://github.com/kvm-x86/linux into HEAD
-      Merge tag 'kvm-x86-selftests-6.6-fixes' of https://github.com/kvm-x86/linux into HEAD
-
-Roman Kagan (1):
-      KVM: x86/pmu: Truncate counter value to allowed width on write
-
-Sean Christopherson (7):
-      KVM: selftests: Treat %llx like %lx when formatting guest printf
-      KVM: selftests: Zero-initialize entire test_result in memslot perf test
-      x86/fpu: Allow caller to constrain xfeatures when copying to uabi buffer
-      KVM: x86: Constrain guest-supported xfeatures only at KVM_GET_XSAVE{2}
-      KVM: selftests: Touch relevant XSAVE state in guest for state test
-      KVM: selftests: Load XSAVE state into untouched vCPU during state test
-      KVM: selftests: Force load all supported XSAVE state in state test
-
-Tom Lendacky (1):
-      KVM: SVM: Fix build error when using -Werror=unused-but-set-variable
-
- arch/arm64/include/asm/kvm_arm.h                   |   4 +-
- arch/arm64/kvm/arch_timer.c                        |  13 +--
- arch/arm64/kvm/emulate-nested.c                    |   2 +
- arch/arm64/kvm/hyp/vhe/switch.c                    |  44 +++++++++
- arch/arm64/kvm/pmu.c                               |   4 +-
- arch/arm64/kvm/sys_regs.c                          |   4 +-
- arch/mips/kvm/mmu.c                                |   3 +-
- arch/s390/kvm/interrupt.c                          |  16 ++-
- arch/x86/include/asm/fpu/api.h                     |   3 +-
- arch/x86/include/asm/kvm_host.h                    |   1 -
- arch/x86/include/asm/svm.h                         |   1 +
- arch/x86/kernel/fpu/core.c                         |   5 +-
- arch/x86/kernel/fpu/xstate.c                       |  12 +--
- arch/x86/kernel/fpu/xstate.h                       |   3 +-
- arch/x86/kvm/cpuid.c                               |   8 --
- arch/x86/kvm/lapic.c                               |   8 +-
- arch/x86/kvm/pmu.c                                 |  27 +----
- arch/x86/kvm/pmu.h                                 |   6 ++
- arch/x86/kvm/svm/avic.c                            |   5 +-
- arch/x86/kvm/svm/nested.c                          |   3 +
- arch/x86/kvm/svm/pmu.c                             |   2 +-
- arch/x86/kvm/svm/svm.c                             |   5 +-
- arch/x86/kvm/vmx/pmu_intel.c                       |   4 +-
- arch/x86/kvm/x86.c                                 |  40 +++++---
- include/kvm/arm_arch_timer.h                       |   7 ++
- tools/testing/selftests/kvm/include/ucall_common.h |   2 -
- .../selftests/kvm/include/x86_64/processor.h       |  23 +++++
- tools/testing/selftests/kvm/lib/guest_sprintf.c    |   7 ++
- tools/testing/selftests/kvm/lib/x86_64/apic.c      |   2 -
- tools/testing/selftests/kvm/memslot_perf_test.c    |   9 +-
- .../testing/selftests/kvm/x86_64/hyperv_svm_test.c |   2 -
- .../selftests/kvm/x86_64/nx_huge_pages_test.c      |   2 -
- .../selftests/kvm/x86_64/nx_huge_pages_test.sh     |   1 -
- tools/testing/selftests/kvm/x86_64/state_test.c    | 110 ++++++++++++++++++++-
- .../selftests/kvm/x86_64/tsc_scaling_sync.c        |   4 -
- .../testing/selftests/kvm/x86_64/xen_shinfo_test.c |   4 -
- 36 files changed, 276 insertions(+), 120 deletions(-)
-
+/jeff
