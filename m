@@ -2,116 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A347CA7E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55AAA7CA7E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232564AbjJPMTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 08:19:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47790 "EHLO
+        id S232143AbjJPMU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 08:20:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231444AbjJPMTh (ORCPT
+        with ESMTP id S231508AbjJPMUx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 08:19:37 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B2998E;
-        Mon, 16 Oct 2023 05:19:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=lDfRRZ9rooLhp2i64X1QjX0M0UaOFPuIcMueyOyPbWc=; b=RQz7U5vhUtWp1YS4tElE5UIbdk
-        Ve4kHO5tvGNm7ysaBdvdA0mz853Hhi/kmFHlmGARab9PxDY3QrgUVDe4UWFRNhqbGzoeT/S47uyYc
-        DX/pKqvyydpjfjQb1xe2shb6StCFta+ypBUxvILvXn7XtnQpCTDRJn7wiSr8Bw0pk5uKuukfaqPr/
-        Of3DY/5f5X8eIV1/4nRjrJDig8XmZdqoogykuM0gRYnYkYQz8KcO7rt6HbvChEG1+25ZQIWyOGXgq
-        8JmHjV+mCbA9WJODhOT6Z9YsNym6byRUnjcc9Dj9+wfBAOZMkFnBFVMeUY9lwWz9b2WmlLx4FmltB
-        9N8hVG+A==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qsMZ7-000C6W-Qf; Mon, 16 Oct 2023 14:19:21 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qsMZ7-000Pqr-7S; Mon, 16 Oct 2023 14:19:21 +0200
-Subject: Re: [PATCH v2] selftests/bpf: Use pkg-config to determine ld flags
-To:     Akihiko Odaki <akihiko.odaki@daynix.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, Nick Terrell <terrelln@fb.com>,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231016115438.21451-1-akihiko.odaki@daynix.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <f2af3626-deb5-2830-9e41-4f6b7537baa6@iogearbox.net>
-Date:   Mon, 16 Oct 2023 14:19:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Mon, 16 Oct 2023 08:20:53 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC4F88E;
+        Mon, 16 Oct 2023 05:20:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697458850; x=1728994850;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=ju6GSa3Te5xfMivOhV89l8PydA1byI2D3QT5q1MaBTk=;
+  b=jQLFpGoHrgvv22l5pYgV3OOGvaQ2DRHsZyoMQ5zJ8PSGPX/AZofYHRLg
+   g5mtShEOtSdzx8gwfUMAHobKMhVl6w2o88oDZfyLTYTWPPpAMJ+IB0h04
+   FFvfJtx47+Go2LR85ldxwgtzAHREEtLzxtnSuSPs4qeNNslu8oHWwd1RH
+   4wbxrlgUk3HlFvvnoUq2+FeoDBJec1GRNDHzMZWi0lOfdA0lmfhlskqlO
+   kAk6ZlyUw0LmMwuJddGd7MlGaaGaDMPSG6dt7rnn7mRiKje+hzfF1lCOD
+   PcocEJ5dapJR+auw4wQjENsuybskJj9mJ2GjzsXHwkuppA4Zlij+osRty
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="416582456"
+X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
+   d="scan'208";a="416582456"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 05:20:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="879410152"
+X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
+   d="scan'208";a="879410152"
+Received: from rhaeussl-mobl.ger.corp.intel.com ([10.252.59.103])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 05:20:47 -0700
+Date:   Mon, 16 Oct 2023 15:20:45 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Richard Laing <richard.laing@alliedtelesis.co.nz>
+cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH] serial: 8250_dw: Allow TX FIFO to drain before writing
+ to UART_LCR An issue has been observed on the Broadcom BCM56160 serial port
+ which appears closely related to a similar issue on the Marvell Armada 38x
+ serial port.
+In-Reply-To: <fb92ed83-478-4d71-2bd-ab3a37b1352@linux.intel.com>
+Message-ID: <a7e2f6ee-ea44-5fed-1a-274863a5613@linux.intel.com>
+References: <20231016013207.2249946-1-richard.laing@alliedtelesis.co.nz> <20231016013207.2249946-2-richard.laing@alliedtelesis.co.nz> <fb92ed83-478-4d71-2bd-ab3a37b1352@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20231016115438.21451-1-akihiko.odaki@daynix.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27063/Mon Oct 16 10:02:17 2023)
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-344325805-1697458849=:1986"
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16/23 1:54 PM, Akihiko Odaki wrote:
-> When linking statically, libraries may require other dependencies to be
-> included to ld flags. In particular, libelf may require libzstd. Use
-> pkg-config to determine such dependencies.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-344325805-1697458849=:1986
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+
+On Mon, 16 Oct 2023, Ilpo Järvinen wrote:
+
+> On Mon, 16 Oct 2023, Richard Laing wrote:
 > 
-> Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
-> ---
-> V1 -> V2: Implemented fallback, referring to HOSTPKG_CONFIG.
+> Your subject line is way too long. If you refer to some other issue, 
+> please link to it properly with commit id and/or with Link: tags.
+> 
+> > Writes to UART_LCR can result in characters that are currently held in the
+> > TX FIFO being lost rather than sent, even if the userspace process has
+> > attempted to flush them.
+> > 
+> > This is most visible when using the "resize" command (tested on Busybox),
+> > where we have observed the escape code for restoring cursor position
+> > becoming mangled.
+> > 
+> > Since this appears to be a more common problem add a new driver option
+> > to flush the TX FIFO before writing to the UART_LCR.
+> 
+> This looks like a problem we already have solution for, the userspace can 
+> use TCSADRAIN/FLUSH to indicate what kind of flushing it wants for Tx 
+> when it makes the tcsetattr() call. Thus, userspace can avoid the Tx side 
+> corruption as long as its behavior is sane and doesn't e.g. try to race 
+> writes with tcsetattr() call as mentioned in commit 094fb49a2d0d ("tty: 
+> Prevent writing chars during tcsetattr TCSADRAIN/FLUSH").
 
-This still does not work with BPF CI, BPF selftest build fails again :
+I'm sorry, it was actually mentioned in commit 146a37e05d62 ("serial: 
+8250: Fix serial8250_tx_empty() race with DMA Tx") although that 
+094fb49a2d0d is also related to the draining.
 
-https://github.com/kernel-patches/bpf/actions/runs/6524480596/job/17716169959 :
+> Have you tried to use the userspace solution? Isn't it working for some 
+> reason?
 
-[...]
-   make: pkg-config: Command not found
-     BINARY   xdping
-     HOSTLD  /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/build/resolve_btfids/fixdep-in.o
-   /usr/bin/x86_64-linux-gnu-ld: /usr/bin/x86_64-linux-gnu-ld: DWARF error: invalid or unhandled FORM value: 0x25
-   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.a(libbpf-in.o): in function `bpf_object_open':
-   libbpf.c:(.text+0x2871): undefined reference to `elf_version'
-   /usr/bin/x86_64-linux-gnu-ld: /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.a(libbpf-in.o): in function `bpf_object__elf_finish':
-   libbpf.c:(.text+0x4ccf): undefined reference to `elf_end'
-   /usr/bin/x86_64-linux-gnu-ld: /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.a(libbpf-in.o): in function `elf_find_func_offset_from_archive':
-   libbpf.c:(.text+0xb419): undefined reference to `elf_memory'
-   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0xb447): undefined reference to `elf_errmsg'
-   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0xb4e2): undefined reference to `elf_end'
-   /usr/bin/x86_64-linux-gnu-ld: /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.a(libbpf-in.o): in function `bpf_object__elf_init':
-   libbpf.c:(.text+0x10b02): undefined reference to `elf_memory'
-   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0x10bae): undefined reference to `elf_begin'
-   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0x10bdd): undefined reference to `elf_errmsg'
-   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0x10c1b): undefined reference to `elf_kind'
-   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0x10c54): undefined reference to `gelf_getclass'
-   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0x10c8d): undefined reference to `elf64_getehdr'
-   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0x10cd1): undefined reference to `elf_errmsg'
-   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0x10d0f): undefined reference to `elf_getshdrstrndx'
-   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0x10d38): undefined reference to `elf_errmsg'
-   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0x10d72): undefined reference to `elf_getscn'
-   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0x10d7e): undefined reference to `elf_rawdata'
-   /usr/bin/x86_64-linux-gnu-ld: libbpf.c:(.text+0x10da8): undefined reference to `elf_errmsg'
-   /usr/bin/x86_64-linux-gnu-ld: /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.a(libbpf-in.o): in function `bpf_object__elf_collect':
-   libbpf.c:(.text+0x10f17): undefined reference to `elf_getshdrnum'
+-- 
+ i.
+
+--8323329-344325805-1697458849=:1986--
