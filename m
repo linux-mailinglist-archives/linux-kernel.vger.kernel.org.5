@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5428A7CB0A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E50B17CB0A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:57:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233931AbjJPQ47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 12:56:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56396 "EHLO
+        id S234100AbjJPQ5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 12:57:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234374AbjJPQ4l (ORCPT
+        with ESMTP id S234388AbjJPQ4l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 16 Oct 2023 12:56:41 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91065324A
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:54:10 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40776b200e5so26431565e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:54:10 -0700 (PDT)
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18DB53841
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:54:12 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-4075c58ac39so48876275e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:54:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697475249; x=1698080049; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1697475250; x=1698080050; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AhGTCeJTgvu597dzkwlQwgzYcEyeuUmDXvIZAq5l/4I=;
-        b=KIXmQqYeNZ+MQKazc4bVk01kpUUKf4aansqE25G3Y9+IaGJtwLEzmrQ91UzNhb5hA2
-         lO0u1A4BpsFA7AgwdgF6R1TJ1HSGfTs02FCtsIJElbx27a+d9pz0QM1Ilmlp/X4ZanX9
-         eDnDqDSr/P4mJF1cKtNwxKQKtGvtjfw/cUxp6FpowDpuI/ecljtUkS4s3JnFZ+DAIXKN
-         RTypNew6bXAgjGBkLqIJQ/uWH4IZbMnRmOC0HTO70rfZAq/80oNFur/EiydrpmCIxkfI
-         VNp1mGX5Rr9BjajfjS25mMA20jdKRxUaQ2t35YUGLmK/q61gK/RKlgUtIU4/3AFfLC5a
-         2QFA==
+        bh=tDlsbj0O4m938XJJJjIOKHw+A0HfBTEQDaR3qGbI7EM=;
+        b=ebRdFCkTp69mnesA4vlUP9qPwXgAjbDp4ttEGNZADsJK35BzSGJpjHDA6dB6/IbUl8
+         3B7tBYYoe3uS+wQIHeyXN0EcdR2sFJU1cxV7sX21nhk+riZphRYMr200XHEkeeu3Axzx
+         iDFVhkIm0Uh3t9bbBnWA4B+shgKFsONE1jjTmn2k2L5m7N37dSOej+B94a1noOPIEoNG
+         PnoG3QjLrsw5OPp7qdnMGQGgmgelvKtvYAohwU3ggc2wsCTh11IsDutMQQJBFHXM42kL
+         0rMDZ4yF5V23jfH4u+pLiaNGgIvbZZC9uWDtk31IenfRM8rqhR7j1cyc2gsA22XKqQOp
+         OCLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697475249; x=1698080049;
+        d=1e100.net; s=20230601; t=1697475250; x=1698080050;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=AhGTCeJTgvu597dzkwlQwgzYcEyeuUmDXvIZAq5l/4I=;
-        b=bTwqkcOddndNJNzhAw9FSKhNcNgoPxCwODPYzTFoccsTLfCKi9b601uScIMaNnIvtC
-         CviYKB4IbBDy2zJ1yQr5dKSJBzmkSrhwvJeBM4lhSNiSitUpxH7fYyc1darKkK8mG0rq
-         31wzf5Jlqeu+EoVAew5kwsS5wCYAcfsxzcosM4BD6fDe3cbJT+AmCZj8lITtPeBHJQha
-         ZFnksL8wMzp63cjU57J6OFsOrVTYMKG970qSbzya2PbBBDqBcCE4lYUBb+aqF9dqUbM5
-         fdVNtnTSrNeuRh4nsnOX0B25mvgJ+GSz7U8D6QzaHGkZEq7Ewr4z8CXBNkn/lRYE3zMK
-         bHYw==
-X-Gm-Message-State: AOJu0YyvMBbYoSkHEFusB4MuP05p1hhO5yM6Sgktt2AbDihiWaydsRLy
-        8jRzbvaOqM978T6Y6NPw6DC7cA==
-X-Google-Smtp-Source: AGHT+IFMc1ydiV35u/i4xaIUD7bB3YsAkS433GNNfx1qmd94WFx7VWq0imHb4rjYzorutlJy9cRnjA==
-X-Received: by 2002:a05:600c:4f49:b0:407:8b61:da70 with SMTP id m9-20020a05600c4f4900b004078b61da70mr784351wmq.9.1697475248812;
-        Mon, 16 Oct 2023 09:54:08 -0700 (PDT)
+        bh=tDlsbj0O4m938XJJJjIOKHw+A0HfBTEQDaR3qGbI7EM=;
+        b=IPpfZ2M3Xx+Tl4c4C8iZ/9C6YA3k5uGGEFtDTmVAmuh9gSPg1/v9b1qhQCeMBaNc/L
+         L9sskabj/Gq1hlhpQDZLvDYVFdR8YfmVMGrol4uQjsjiVRwA/EWCwoYDYudaXqvjHguY
+         pmWD3yw2wmBbQRiX12lixCmO8bKApXKJGOjq12KIpmNp2voCN4Q1tXW7SfpJAivOFFM3
+         zryQ6hp+Q4ZFB5Qs3w6kAFF9HccCRz1EAQsBKddPDho1XnWcMXMzwaMvAEJI3ePJjdN1
+         ijp7TqC1jAr3TYxgQrZr5mCi+ExtISXwq4bjMJza4HfBG8EeApxwuMJ150CL7CsxSqhJ
+         B4Gg==
+X-Gm-Message-State: AOJu0YwWQzKKIBt/fY5mqlYRA9kbG6Le3mSQF23DW2ayeEDM9+uwvgXu
+        bHjNamAo6Bh3ZkItCazaflP4sA==
+X-Google-Smtp-Source: AGHT+IHo4VTLj6QFSkMq4vzDZuAnsr0A18LuIJLePvTKSU99Hb1c9SVuY4KiSXHIr1fuYLLcUJPY5Q==
+X-Received: by 2002:a7b:c7d7:0:b0:3fd:2e89:31bd with SMTP id z23-20020a7bc7d7000000b003fd2e8931bdmr30618680wmk.14.1697475250508;
+        Mon, 16 Oct 2023 09:54:10 -0700 (PDT)
 Received: from eriador.lumag.spb.ru ([45.84.211.189])
-        by smtp.gmail.com with ESMTPSA id s19-20020a05600c45d300b0040648217f4fsm7638996wmo.39.2023.10.16.09.54.07
+        by smtp.gmail.com with ESMTPSA id s19-20020a05600c45d300b0040648217f4fsm7638996wmo.39.2023.10.16.09.54.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 09:54:08 -0700 (PDT)
+        Mon, 16 Oct 2023 09:54:10 -0700 (PDT)
 From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 To:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
         Andrzej Hajda <andrzej.hajda@intel.com>,
@@ -74,9 +74,9 @@ To:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
 Cc:     Marek Vasut <marex@denx.de>, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         freedreno@lists.freedesktop.org
-Subject: [RFC PATCH 06/10] drm/bridge: tc358762: add support for manual DSI power control
-Date:   Mon, 16 Oct 2023 19:53:51 +0300
-Message-ID: <20231016165355.1327217-7-dmitry.baryshkov@linaro.org>
+Subject: [RFC PATCH 07/10] drm/bridge: ps8640: require manual DSI power control
+Date:   Mon, 16 Oct 2023 19:53:52 +0300
+Message-ID: <20231016165355.1327217-8-dmitry.baryshkov@linaro.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231016165355.1327217-1-dmitry.baryshkov@linaro.org>
 References: <20231016165355.1327217-1-dmitry.baryshkov@linaro.org>
@@ -92,64 +92,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Start migrating tc358762 bridge to new manual DSI power control API. If
-the tight power control is not available, default to the existing
-pre_enable_prev_first flag.
+The Parade PS8640 bridge will fail to start if the DSI link is enabled
+when the bridge is being reset / powered up (even to the LP-11 state).
+To ensure that the DSI link is powered down, require manual control over
+the DSI link state.
 
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 ---
- drivers/gpu/drm/bridge/tc358762.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/bridge/parade-ps8640.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/bridge/tc358762.c b/drivers/gpu/drm/bridge/tc358762.c
-index 7b9f05f95fd1..efb1da4487c9 100644
---- a/drivers/gpu/drm/bridge/tc358762.c
-+++ b/drivers/gpu/drm/bridge/tc358762.c
-@@ -72,6 +72,7 @@ struct tc358762 {
- 	struct device *dev;
- 	struct drm_bridge bridge;
- 	struct regulator *regulator;
-+	struct mipi_dsi_host *dsi_host;
- 	struct drm_bridge *panel_bridge;
- 	struct gpio_desc *reset_gpio;
- 	struct drm_display_mode mode;
-@@ -163,6 +164,8 @@ static void tc358762_post_disable(struct drm_bridge *bridge, struct drm_bridge_s
+diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
+index 8161b1a1a4b1..6c5daaa70cb7 100644
+--- a/drivers/gpu/drm/bridge/parade-ps8640.c
++++ b/drivers/gpu/drm/bridge/parade-ps8640.c
+@@ -458,6 +458,10 @@ static void ps8640_atomic_pre_enable(struct drm_bridge *bridge,
  
- 	ctx->pre_enabled = false;
+ 	ps8640_bridge_vdo_control(ps_bridge, ENABLE);
  
-+	mipi_dsi_host_power_down(ctx->dsi_host);
-+
- 	if (ctx->reset_gpio)
- 		gpiod_set_value_cansleep(ctx->reset_gpio, 0);
- 
-@@ -185,6 +188,10 @@ static void tc358762_pre_enable(struct drm_bridge *bridge, struct drm_bridge_sta
- 		usleep_range(5000, 10000);
- 	}
- 
-+	ret = mipi_dsi_host_power_up(ctx->dsi_host);
++	ret = mipi_dsi_host_power_up(ps_bridge->dsi->host);
 +	if (ret < 0)
-+		dev_err(ctx->dev, "error powering up the DSI host (%d)\n", ret);
++		dev_warn(dev, "failed to power up DSI host: %d\n", ret);
 +
- 	ret = tc358762_init(ctx);
- 	if (ret < 0)
- 		dev_err(ctx->dev, "error initializing bridge (%d)\n", ret);
-@@ -277,10 +284,16 @@ static int tc358762_probe(struct mipi_dsi_device *dsi)
- 	if (ret < 0)
- 		return ret;
+ 	ps_bridge->pre_enabled = true;
+ }
  
-+	ctx->dsi_host = dsi->host;
-+
- 	ctx->bridge.funcs = &tc358762_bridge_funcs;
- 	ctx->bridge.type = DRM_MODE_CONNECTOR_DPI;
- 	ctx->bridge.of_node = dev->of_node;
--	ctx->bridge.pre_enable_prev_first = true;
-+
-+	if (mipi_dsi_host_power_control_available(dsi->host))
-+		dsi->mode_flags |= MIPI_DSI_MANUAL_POWERUP;
-+	else
-+		ctx->bridge.pre_enable_prev_first = true;
+@@ -468,6 +472,8 @@ static void ps8640_atomic_post_disable(struct drm_bridge *bridge,
  
- 	drm_bridge_add(&ctx->bridge);
+ 	ps_bridge->pre_enabled = false;
+ 
++	mipi_dsi_host_power_down(ps_bridge->dsi->host);
++
+ 	ps8640_bridge_vdo_control(ps_bridge, DISABLE);
+ 	pm_runtime_put_sync_suspend(&ps_bridge->page[PAGE0_DP_CNTL]->dev);
+ }
+@@ -562,6 +568,11 @@ static int ps8640_bridge_get_dsi_resources(struct device *dev, struct ps8640 *ps
+ 	if (!host)
+ 		return -EPROBE_DEFER;
+ 
++	if (!mipi_dsi_host_power_control_available(host)) {
++		dev_err(dev, "MIPI DSI host doesn't provide tight power control\n");
++		return -ENODEV;
++	}
++
+ 	dsi = devm_mipi_dsi_device_register_full(dev, host, &info);
+ 	if (IS_ERR(dsi)) {
+ 		dev_err(dev, "failed to create dsi device\n");
+@@ -572,7 +583,8 @@ static int ps8640_bridge_get_dsi_resources(struct device *dev, struct ps8640 *ps
+ 
+ 	dsi->host = host;
+ 	dsi->mode_flags = MIPI_DSI_MODE_VIDEO |
+-			  MIPI_DSI_MODE_VIDEO_SYNC_PULSE;
++			  MIPI_DSI_MODE_VIDEO_SYNC_PULSE |
++			  MIPI_DSI_MANUAL_POWERUP;
+ 	dsi->format = MIPI_DSI_FMT_RGB888;
+ 	dsi->lanes = NUM_MIPI_LANES;
  
 -- 
 2.42.0
