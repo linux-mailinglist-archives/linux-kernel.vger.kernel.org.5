@@ -2,49 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9358E7CA13C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 10:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 254587CA13F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 10:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231803AbjJPIG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 04:06:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49100 "EHLO
+        id S231890AbjJPIHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 04:07:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbjJPIGz (ORCPT
+        with ESMTP id S229621AbjJPIHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 04:06:55 -0400
+        Mon, 16 Oct 2023 04:07:34 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2770DE;
-        Mon, 16 Oct 2023 01:06:53 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72FABC433C8;
-        Mon, 16 Oct 2023 08:06:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697443613;
-        bh=H2UJnjnsQ05QQo/guMGEnLx/+oDV2MPXthqNff1/rik=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C7N4LfnlwZR1xK+R/oDA+fjTFeRR9oKuAmoCF6LLY8wI7H7jydIIL/UV7HZgxw7Wj
-         T8cjOwI+FfAEL6g0Ld/Q5DXTGXcMr+sKR7Ai+EbfZ4XBlZsipy42iN5OxkX5ffbksL
-         2WIDz4GcsR9sR8pNCjj/1ZqMU1zrgY+49YR/pI9c=
-Date:   Mon, 16 Oct 2023 10:06:48 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Subject: Re: [PATCH 5.15 000/183] 5.15.134-rc1 review
-Message-ID: <2023101641-judiciary-custody-d56e@gregkh>
-References: <20231004175203.943277832@linuxfoundation.org>
- <CAEXW_YT6bH70M1TF2TttB-_kP=RUv_1nsy_sHYi6_0oCrX3mVQ@mail.gmail.com>
- <2023101110-resurface-nuclear-bfee@gregkh>
- <CAEXW_YRf0e6V6PcGJ-LWiS=ERgy4yxHoSG4d+DHLjXZ8Ah7kJA@mail.gmail.com>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6076FA2;
+        Mon, 16 Oct 2023 01:07:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F239CC433C8;
+        Mon, 16 Oct 2023 08:07:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697443652;
+        bh=hYLC+mwYLnZ4vpffFztxerV7foo5jfEqUULmB2RLBUw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Xgom35CuN6NXm+bacJjRbuSpEbq5tjwudHKVzxFyZm9H0goqvQl+utOfWV0fqx5So
+         58KhidxIcnc0/mMyc8JgmO47lUQTosZ25Jf0edZ5our55U8oqCPpQeXFE2YNvXkg9c
+         JohP9vfQPxhppWxGF2LJ/faXb6tmxWBcid6bNXP7rRp5zFeaXH6BEsBDP7kDYXdpAO
+         NtDjezbmM7+qc8sii7oqqMOFXlMwcXOUXzB/G7YPAym7kZ7Sxg9U1MyQYOVj+5trp3
+         MZOjI0y706dT44QOKKnLKaIOO7GTal+PmCQ9U6c3Xp0u80yDLFxuoWvricoyvmGF8F
+         ypsGUHJLKOEoQ==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan+linaro@kernel.org>)
+        id 1qsIdK-0001jk-0I;
+        Mon, 16 Oct 2023 10:07:26 +0200
+From:   Johan Hovold <johan+linaro@kernel.org>
+To:     Bjorn Andersson <andersson@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Johan Hovold <johan+linaro@kernel.org>, stable@vger.kernel.org
+Subject: [PATCH] arm64: dts: qcom: sc8280xp-crd: fix eDP phy compatible
+Date:   Mon, 16 Oct 2023 10:06:58 +0200
+Message-ID: <20231016080658.6667-1-johan+linaro@kernel.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YRf0e6V6PcGJ-LWiS=ERgy4yxHoSG4d+DHLjXZ8Ah7kJA@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -55,47 +57,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 15, 2023 at 10:25:40PM -0400, Joel Fernandes wrote:
-> On Wed, Oct 11, 2023 at 1:44 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Wed, Oct 11, 2023 at 11:58:49AM -0400, Joel Fernandes wrote:
-> > > Hello Greg,
-> > >
-> > > On Sat, Oct 7, 2023 at 9:00 PM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > This is the start of the stable review cycle for the 5.15.134 release.
-> > > > There are 183 patches in this series, all will be posted as a response
-> > > > to this one.  If anyone has any issues with these being applied, please
-> > > > let me know.
-> > > >
-> > > > Responses should be made by Fri, 06 Oct 2023 17:51:12 +0000.
-> > > > Anything received after that time might be too late.
-> > > >
-> > > > The whole patch series can be found in one patch at:
-> > > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.134-rc1.gz
-> > > > or in the git tree and branch at:
-> > > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> > > > and the diffstat can be found below.
-> > > [...]
-> > > > Liam R. Howlett <Liam.Howlett@oracle.com>
-> > > >     kernel/sched: Modify initial boot task idle setup
-> > > >
-> > >
-> > > Let us drop this patch because it caused new tasks-RCU warnings (both
-> > > normal and rude tasks RCU) in my stable test rig. We are discussing
-> > > the "right fix" and at that time a backport can be done.
-> > >
-> > > Hope Liam is also Ok with that. I am happy to do that future backport if needed.
-> >
-> > This is already in a released kernel, a bunch of them:
-> >         5.15.134 6.1.56 6.5.6 6.6-rc3
-> > should it be reverted from all of the stable releases, or just for
-> > 5.15.y?
-> 
-> Just 5.15.y. The others don't have an issue with the patch per my tests.
+The sc8280xp Display Port PHYs can be used in either DP or eDP mode and
+this is configured using the devicetree compatible string which defaults
+to DP mode in the SoC dtsi.
 
-Ok, now reverted, thanks.
+Override the default compatible string for the CRD eDP PHY node so that
+the eDP settings are used.
 
-greg k-h
+Fixes: 4a883a8d80b5 ("arm64: dts: qcom: sc8280xp-crd: Enable EDP")
+Cc: stable@vger.kernel.org      # 6.3
+Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+---
+ arch/arm64/boot/dts/qcom/sc8280xp-crd.dts | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/qcom/sc8280xp-crd.dts b/arch/arm64/boot/dts/qcom/sc8280xp-crd.dts
+index 772953dc428e..31a2a2d27f4e 100644
+--- a/arch/arm64/boot/dts/qcom/sc8280xp-crd.dts
++++ b/arch/arm64/boot/dts/qcom/sc8280xp-crd.dts
+@@ -458,6 +458,8 @@ mdss0_dp3_out: endpoint {
+ };
+ 
+ &mdss0_dp3_phy {
++	compatible = "qcom,sc8280xp-edp-phy";
++
+ 	vdda-phy-supply = <&vreg_l6b>;
+ 	vdda-pll-supply = <&vreg_l3b>;
+ 
+-- 
+2.41.0
+
