@@ -2,128 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2B1E7CAC3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 16:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4C817CAC4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 16:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233641AbjJPOvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 10:51:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33022 "EHLO
+        id S233675AbjJPOwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 10:52:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233645AbjJPOvQ (ORCPT
+        with ESMTP id S233586AbjJPOwp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 10:51:16 -0400
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2059.outbound.protection.outlook.com [40.107.22.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E618FA;
-        Mon, 16 Oct 2023 07:51:11 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OLV99L2ZUbb9on3+785Cx3RAPLuwFOr8AtCR+Dh6BCXb5DRq9TPej3ghs+8A40I3LJP5zq/xSY2lSM46kHkuSKwb5C4N1G9ckMixCgX6Kydy711Z6kFM037Tle0xClo4hCkuPC+u9QQJSVFn5MI3su7s7vpCrNy5rRve8yefxqzZJtPYvdcT5sAQ9Vwb6X6coU9XN2fF9JR+cpGuh2Dj28ms+WO4NSP4B8/T2csXyCzKHdg3tqXVYN0ZaQjxuEppztgJIKZjVMUoCOw7iPeTs9tNPa1BpVIpFqHLCvqqEfzS1dTvXkKWcVU6bupZ5mRiT0XZfM/3rPyxbsEcghryVQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VUKYQ7FMpF1VMgPFZFpCJdlZckGLoBEqjgcocEcG0vk=;
- b=ioZv5ywWoYLoGrPgowLHNUfPPs8xAQb7jNSsgxUqgDqQDsj+2CgoCXalGLnpYnH1exhcyRy/FVvWNOXv1JlhT8Bt96xVPfDjj+hk60Hk263AKzp0mjwCQTi5FWCY13CQo2cYobC8iSNRrim1Y5E7NxHKbxN+LfGB5+jUQ2PryFI3zMO+BLqEC/3QIc1Dz17tdnMoc83F30f/63k/UylVuIooWN+cO1i+bUZCtw1jTz7Bk23A2sQQ71gCPvftWu4fE5JVK4agrgjiEIR6v/byBvMsX3hFQcyCrzw3fYm3kfWN5gidW7znQbnQYOXCGxbd7JVJnNZUBmsTrkm4SYkStw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VUKYQ7FMpF1VMgPFZFpCJdlZckGLoBEqjgcocEcG0vk=;
- b=WtY9iA6Yc1OBwmHxoy+hNEwxNEvka5ezfaSI5lvGMi3VxVVpYqcW2Ib2neieoVJ/pElq/dFBKdYTlNMJIgYkiSWz8T76dx8D4XxvO0s+kZOeiYorobex6yJBMYmFD1MA3M0CdTbX5AU4pLfbN2spbUKEg8Oth6R85PvbWVXkrvw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by PAXPR04MB9570.eurprd04.prod.outlook.com (2603:10a6:102:24d::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.35; Mon, 16 Oct
- 2023 14:51:09 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6886.034; Mon, 16 Oct 2023
- 14:51:09 +0000
-Date:   Mon, 16 Oct 2023 10:50:58 -0400
-From:   Frank Li <Frank.li@nxp.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     aisheng.dong@nxp.com, bhelgaas@google.com,
-        devicetree@vger.kernel.org, festevam@gmail.com,
-        imx@lists.linux.dev, jdmason@kudzu.us, kernel@pengutronix.de,
-        kishon@kernel.org, kw@linux.com,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, lpieralisi@kernel.org, maz@kernel.org,
-        s.hauer@pengutronix.de, shawnguo@kernel.org, tglx@linutronix.de
-Subject: Re: [PATCH v2 0/5] Add RC-to-EP doorbell with platform MSI controller
-Message-ID: <ZS1N0jgGYfmMsgrJ@lizhi-Precision-Tower-5810>
-References: <20230911220920.1817033-1-Frank.Li@nxp.com>
- <ZQtmpL2vCMgR+Upu@lizhi-Precision-Tower-5810>
- <20230930090249.GB3564@thinkpad>
- <ZSVd5GN7lJUfdF8L@lizhi-Precision-Tower-5810>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZSVd5GN7lJUfdF8L@lizhi-Precision-Tower-5810>
-X-ClientProxiedBy: BYAPR06CA0005.namprd06.prod.outlook.com
- (2603:10b6:a03:d4::18) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+        Mon, 16 Oct 2023 10:52:45 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87392E1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 07:52:40 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-5079f9ec8d9so3086548e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 07:52:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697467959; x=1698072759; darn=vger.kernel.org;
+        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mfaMwAxMjRfwOpinKHvcClwhMqvNGEGJeqo+8rgwK64=;
+        b=f2eCGu1aVE04lQujJpkQyR7HAjTPhFkc5EphOC9htqrAFOvdbUWU2uQg1g1uVn78yn
+         mx/EY6sCFdxt3QlIIWfu61eny23bFHCeE/9iinYMQTj2NCh3RIgZ+HWtulQqbnNsJeiQ
+         e44W5eiHkd+dtXOIYns/jGtcJz1zdWRX7Y+nS1iCLS+IupkuP+EZ5cO7ITkdAN8/AZnA
+         OQO5YLV8oVnUogxamfQkCTEsXBlKG5+XJarl8DoCWNJgIpOkKbJtwYXUqwhCZ+4S5itk
+         pmfeZE9lJVRpNyeRbuQGcgDk0dNN+7oiMykZJEn8t8kMFdOIa/tluVz4XAkmNI3S+qnL
+         bHCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697467959; x=1698072759;
+        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mfaMwAxMjRfwOpinKHvcClwhMqvNGEGJeqo+8rgwK64=;
+        b=V/KcS1jG7oPXR4wxHXZ3sy51zLX2ZlGzvkl2Y/ilnljl8+mtaWSgFpLGCP/gzJEHJO
+         MwwkI2U8iCCT1fC+gmPVDZ1/cGbAOfwUrFvfVTnp51tIdtDogr3SgEAfhY9izlCeM2Er
+         8VbjF25JGim9X7xJuyYLzvE3b4t9Vn1iFnDtzl+pI4I8gjZaePGo+LmXoge9PsR3p5FV
+         Sperc6sZX7Mj1YpE1xFjwEvjqlKViFOWogN7liHJiiUAMgVu115eM12A5HsJ3S5X3pZd
+         IoA1uFJVB+vlDtX3HmxrQri/GRspxlwjq5UoDflatI86w2keEZ4BrybmNLUq3phCpeze
+         tEKg==
+X-Gm-Message-State: AOJu0Yz/N9W3AyVvqwlsAa2XFCqAslnDqWuwvXcZPI9yRE10tLpicYMM
+        zqVdzzwOwQqll1k6j5FW7Mo=
+X-Google-Smtp-Source: AGHT+IHPXRreqpJIfRixdtagW7epVNulxi7pgxOISUFw6x+ARuUNOEchm+6itcoT3ESNmcoYtuyp5Q==
+X-Received: by 2002:a05:6512:3ca0:b0:507:a8f9:d67f with SMTP id h32-20020a0565123ca000b00507a8f9d67fmr3388315lfv.24.1697467958208;
+        Mon, 16 Oct 2023 07:52:38 -0700 (PDT)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id i14-20020ac25d2e000000b0050422588213sm4571218lfb.209.2023.10.16.07.52.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 07:52:37 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 17:52:22 +0300
+From:   Pekka Paalanen <ppaalanen@gmail.com>
+To:     =?UTF-8?B?QW5kcsOp?= Almeida <andrealmeid@igalia.com>
+Cc:     Michel =?UTF-8?B?RMOkbnplcg==?= <michel.daenzer@mailbox.org>,
+        xaver.hugl@gmail.com, pierre-eric.pelloux-prayer@amd.com,
+        Daniel Vetter <daniel@ffwll.ch>,
+        'Marek =?UTF-8?B?T2zFocOhayc=?= <maraeo@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Daniel Stone <daniel@fooishbar.org>,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, hwentlan@amd.com,
+        Rob Clark <robdclark@gmail.com>, ville.syrjala@linux.intel.com,
+        kernel-dev@igalia.com, alexander.deucher@amd.com,
+        Dave Airlie <airlied@gmail.com>, christian.koenig@amd.com,
+        joshua@froggi.es, wayland-devel@lists.freedesktop.org
+Subject: Re: [PATCH v6 6/6] drm/doc: Define KMS atomic state set
+Message-ID: <20231016175222.7a89e6ab@eldfell>
+In-Reply-To: <aa424bf8-5652-4a44-9b93-bdc0a31d835a@igalia.com>
+References: <20230815185710.159779-1-andrealmeid@igalia.com>
+        <20230815185710.159779-7-andrealmeid@igalia.com>
+        <1b23576d-1649-ff5c-6273-b54729ea46d8@mailbox.org>
+        <b48bd1fc-fcb0-481b-8413-9210d44d709b@igalia.com>
+        <20231016151856.74af9305@eldfell>
+        <aa424bf8-5652-4a44-9b93-bdc0a31d835a@igalia.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|PAXPR04MB9570:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6e0c0bcc-03ad-4018-7f22-08dbce575530
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UHDWD6KFZ/xaGAitQyao6sFFBFqhNgiFoxEyki8tATD1H5J9dEbDAx72seE/987BbXssyXB3UxpaOUhR2BZBIrPqgNfphg6GVytI4JnodhBdPduIqrSOGDWK2tA3IBwIWvlQD8FiX5X8/eyM29++C9D8q04BKtjesUgcK/CQ1JasBQk6sI8q4tsDA2ZWRiW44VxXVIYN0o8UeXQADVnP3pNq4RQxYOwnFF7f7aJrj7vp1gF4J0SIlg0rRtNwwpADz8SPGhb43iR8eBJv77Fh4s+zvHyTp8Z3Qo3APDm386Q8+Pl608TzNDDzPTwxAtqHGqGchJqwyKmMHjNSyR/B7neylKfBh+er8lqQaddUo8vuyEYsQXYmxpnWLWDOj/CWipt52C7R/W4iDjXgq9YL7vTratD9ZzUyVbSmC0ugUh8dcrBB/UuYP7zt0+9MWNbUccLdFlkiXFOMIxcQYqa8zYEQ3hAOAi6r2Eo0vQGcW3c3BQ69o8AN5FO2bX1YF+a2nfTCBJUvI06JyJ7036mgc/jRsACMQsGQqzDOcnyrk9aKQHRYpMzmxmgsFobOHhJbXTnJWdQqjJ7yFcta8kRZCPARMaqzJgPgoFnI2FPNwwc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(376002)(366004)(136003)(346002)(396003)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(966005)(6486002)(6916009)(66476007)(66556008)(66946007)(478600001)(316002)(26005)(52116002)(6512007)(6506007)(5660300002)(33716001)(8676002)(8936002)(4326008)(9686003)(2906002)(7416002)(41300700001)(86362001)(6666004)(38350700005)(38100700002)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?amdiQlVZcCsrT3puak9lbnJBUTJ5cjN1TXNNdjZhck5qMzkvVjRtZlVVdGZN?=
- =?utf-8?B?RXhkemg3ejA1bnVGU2NyT2Y1ZUY5SU5QYmdUWkpIS3ZIdy9iOW12bmNIK000?=
- =?utf-8?B?bzFIM29mcm5oOG41cnlWeVpjUVZBbUJJRmZRazkzZWlVcklwNkhOVUJMN2JX?=
- =?utf-8?B?SHFJWDI0d2x1U2FaZlkvWXdmdEE5RnkvMmEzSUdIYlA2cGJUYnNpTU5LZUd2?=
- =?utf-8?B?eVZHUzd6dG5HblZzdmMyRjBNQS9paU5KTXFsQkNIY1hwZmJFcWdaK3hMeHZW?=
- =?utf-8?B?Q1paZE1lbHdaVkdGV2pwcGVHZ0tTOXhUOTQyMXdhZEFvVGFIUEUxUW1DdVcz?=
- =?utf-8?B?d3pQeWthVjQ2WWRyVkRuajNUS2FkOWRYcnNicTh5MDlSYU5TWVBValBIUnZn?=
- =?utf-8?B?S3M0czY1QnRxTnljTzI3eDF4Snhna3dOYUtEejVhSjJzbWlBYUdNUFlwWnpE?=
- =?utf-8?B?UCtvcnlNYno2TWJya3ZtY1ZBSVV2Y3R6bWpDYUFuTlFLT1MxT0NjSWV5ZG8v?=
- =?utf-8?B?b1h1SHBvSkdBSUx0K3cvRHJrOWdGQVBvNFNqTTBEb3FJcmRnN21ET1FKQWFH?=
- =?utf-8?B?dWFsdExJOEVsWG0vN1ZiU1BzVTBYUm5RdldEYmVRSjJGdG10RnhZaTZzRE82?=
- =?utf-8?B?MTlhcGU4MjloUDRGSTJlZndGYkI0UjBVZDB3MzhMUmNGbWFSRm1xUFB1L0JT?=
- =?utf-8?B?VkQxZ3dqa0laTU1zdGlPeVZoNk5zMlQvTERhcWlEUGlaNVUvQ0g3ajZUc1Fs?=
- =?utf-8?B?OVVaV2xCTDdrbU5wd2JINHdybXgxbDI3VzhYVFc5NUlCV3ErV2U4dm05cFdo?=
- =?utf-8?B?cmFhQ21aMVBheE96SHlWQ2x2bUNyK0prOUZTYXliQ3FIOXpjL1dxSnVaclpT?=
- =?utf-8?B?dkpLWTRuRFhDOGZEazJHaWhHY0RJem9VRzVMczY0ajR2aHE2VXFsVmR3emxM?=
- =?utf-8?B?cnFCS2lIbGdGVXhYb0piY29JU2xodytqZFFhK3BiK1ZxYkt1VW0xMTBDQXc0?=
- =?utf-8?B?bVlNQ2J5ZUN5Znc0YkhiRFhLTGI4YmJYSVhyVDlza1I4UFVWNHl5UFVJcXZ0?=
- =?utf-8?B?Z282RXZPamtYRmNXZTl2akhsUnZyck5SOGYvaVpEWitaYTVpbmh3UzBsZ2V2?=
- =?utf-8?B?YThFUGs1UERoZ0JDTndIWDZXcFZrRGVMYjF3RkJHT1dTQ3p0dEN2SWs5cXVE?=
- =?utf-8?B?cExpMEVVNFZxNTJzN1dFTG1kbFhnRWd1aklnOWk3ZFBEWnN6Z0ZPQ1g2ZTFB?=
- =?utf-8?B?U2FUc1hQRko3OE1mamNLU2JNYUdmWkVrb3NqRGNndldtd3pneWpvZU5wNG14?=
- =?utf-8?B?QnE2OG9vS2J1VkY3Ry9kSkpLM2FUTDNLM3ltOGFrWDExVU5UanFDaGhiZmZ1?=
- =?utf-8?B?QjFUTUdIOWFIdDZVWnV1bmxvbzA1c3Q0WEdndFJCSk1SUFU0MWQ1cVhLR1ZH?=
- =?utf-8?B?UUlkYzZxR2VZRURpejVXbHlXd3VxNW5GSUVyckFwZzZhNDRiVTRPbGV5UUZ1?=
- =?utf-8?B?VUJzdVhraFJMNW5uc0dGRFFzeklPbVBDZFUyNld6NXhBdURnRXl5WFBpOGhM?=
- =?utf-8?B?cDE5S3ZwNHFrbUFhWDgxRlNaSXQ5WDFkK3FFUEYwUk1jZHRtbGptcWtPdWQv?=
- =?utf-8?B?UW1SQzJpeVFteGMrUmp0Unk3MnBhSDcyaUplZUxjdFo1cW1SRWNqUnVPWS84?=
- =?utf-8?B?RHdSM05kL2wrU014UUpIc2hTUXhGamtibk5YdVprdGcxUDJBSTdJNkVNSXBu?=
- =?utf-8?B?NUhUbUJmVUYxTnVLUlRTUGV3V1dCMGVSRnZ0VGxpWE12MEpnWVBOUXYzTTJJ?=
- =?utf-8?B?eWJ0OXI1NHoyZlhkS01LOEg0TFFOS2EvNTRQVkIzL3hWU3N3M2UzTS9IUllq?=
- =?utf-8?B?eHcyWkV2NSszNExZZUxNN0RxYldqajVJQ2lTRzBENXkraC9OQ091aEsyTnFo?=
- =?utf-8?B?VXFGaWFEYWZPNlNqckJkNWpBZTN6YjB0ZHlHV0lqcFhrVUI3ZlR0YnVpS0pH?=
- =?utf-8?B?MVFtRnUrTThua3Q1anNMejZZZmRXdE1BMjJtLzEwalk3aThaelozaTJjbGh5?=
- =?utf-8?B?TndhQ3lCaHQrdWIxa3VPNzJULy9GdWRNa0c2NUJ0SlhkTVMvZDNVK015UGVu?=
- =?utf-8?Q?arh4=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6e0c0bcc-03ad-4018-7f22-08dbce575530
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2023 14:51:09.1036
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gFPgsZHfnfR8uNiCRXhnDp7woaAad6cmi41cLvGCdqFIjYbtd2rXv0R/w42obJOi2+dJjeQj69Zo0rDPtbF7og==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9570
+Content-Type: multipart/signed; boundary="Sig_/Bz+Yx.C6psyZpVX2eLu8wAL";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -131,91 +86,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 10:21:24AM -0400, Frank Li wrote:
-> On Sat, Sep 30, 2023 at 11:02:49AM +0200, Manivannan Sadhasivam wrote:
-> > On Wed, Sep 20, 2023 at 05:39:48PM -0400, Frank Li wrote:
-> > > On Mon, Sep 11, 2023 at 06:09:15PM -0400, Frank Li wrote:
-> > > > ┌────────────┐   ┌───────────────────────────────────┐   ┌────────────────┐
-> > > > │            │   │                                   │   │                │
-> > > > │            │   │ PCI Endpoint                      │   │ PCI Host       │
-> > > > │            │   │                                   │   │                │
-> > > > │            │◄──┤ 1.platform_msi_domain_alloc_irqs()│   │                │
-> > > > │            │   │                                   │   │                │
-> > > > │ MSI        ├──►│ 2.write_msi_msg()                 ├──►├─BAR<n>         │
-> > > > │ Controller │   │   update doorbell register address│   │                │
-> > > > │            │   │   for BAR                         │   │                │
-> > > > │            │   │                                   │   │ 3. Write BAR<n>│
-> > > > │            │◄──┼───────────────────────────────────┼───┤                │
-> > > > │            │   │                                   │   │                │
-> > > > │            ├──►│ 4.Irq Handle                      │   │                │
-> > > > │            │   │                                   │   │                │
-> > > > │            │   │                                   │   │                │
-> > > > └────────────┘   └───────────────────────────────────┘   └────────────────┘
-> > > 
-> > > @mani:
-> > > 	Do you have chance to review this patch again?
-> > 
-> > I was on vacation for past few weeks. Will take a look in the coming week.
-> 
-> Ping?
-> 
-> Frank
+--Sig_/Bz+Yx.C6psyZpVX2eLu8wAL
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-@mani: did you have chance to look at this?
+On Mon, 16 Oct 2023 15:42:16 +0200
+Andr=C3=A9 Almeida <andrealmeid@igalia.com> wrote:
 
-> 
-> > 
-> > - Mani
-> > 
-> > > 
-> > > Frank
-> > > 
-> > > > 
-> > > > This patches based on old https://lore.kernel.org/imx/20221124055036.1630573-1-Frank.Li@nxp.com/
-> > > > 
-> > > > Original patch only target to vntb driver. But actually it is common
-> > > > method.
-> > > > 
-> > > > This patches add new API to pci-epf-core, so any EP driver can use it.
-> > > > 
-> > > > The key point is comments from Thomas Gleixner, who suggest use new
-> > > > PCI/IMS. But arm platform change still not be merged yet.
-> > > > 
-> > > > git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git devmsi-v2-arm
-> > > > 
-> > > > So I still use existed method implement RC to EP doorbell.
-> > > > 
-> > > > If Thomas Gleixner want to continue work on devmsi-v2-arm, I can help test
-> > > > and update this patch.
-> > > > 
-> > > > Change from v1 to v2
-> > > > - Add missed patch for endpont/pci-epf-test.c
-> > > > - Move alloc and free to epc driver from epf.
-> > > > - Provide general help function for EPC driver to alloc platform msi irq.
-> > > > - Fixed manivannan's comments.
-> > > > 
-> > > > Frank Li (5):
-> > > >   PCI: endpoint: Add RC-to-EP doorbell support using platform MSI
-> > > >     controller
-> > > >   PCI: dwc: add doorbell support by use MSI controller
-> > > >   PCI: endpoint: pci-epf-test: add doorbell test
-> > > >   misc: pci_endpoint_test: Add doorbell test case
-> > > >   tools: PCI: Add 'B' option for test doorbell
-> > > > 
-> > > >  drivers/misc/pci_endpoint_test.c              |  48 +++++
-> > > >  .../pci/controller/dwc/pcie-designware-ep.c   |   2 +
-> > > >  drivers/pci/endpoint/functions/pci-epf-test.c |  59 +++++-
-> > > >  drivers/pci/endpoint/pci-epc-core.c           | 192 ++++++++++++++++++
-> > > >  drivers/pci/endpoint/pci-epf-core.c           |  44 ++++
-> > > >  include/linux/pci-epc.h                       |   6 +
-> > > >  include/linux/pci-epf.h                       |   7 +
-> > > >  include/uapi/linux/pcitest.h                  |   1 +
-> > > >  tools/pci/pcitest.c                           |  16 +-
-> > > >  9 files changed, 373 insertions(+), 2 deletions(-)
-> > > > 
-> > > > -- 
-> > > > 2.34.1
-> > > > 
-> > 
-> > -- 
-> > மணிவண்ணன் சதாசிவம்
+> Hi Pekka,
+>=20
+> On 10/16/23 14:18, Pekka Paalanen wrote:
+> > On Mon, 16 Oct 2023 12:52:32 +0200
+> > Andr=C3=A9 Almeida <andrealmeid@igalia.com> wrote:
+> > =20
+> >> Hi Michel,
+> >>
+> >> On 8/17/23 12:37, Michel D=C3=A4nzer wrote: =20
+> >>> On 8/15/23 20:57, Andr=C3=A9 Almeida wrote: =20
+> >>>> From: Pekka Paalanen <pekka.paalanen@collabora.com>
+> >>>>
+> >>>> Specify how the atomic state is maintained between userspace and
+> >>>> kernel, plus the special case for async flips.
+> >>>>
+> >>>> Signed-off-by: Pekka Paalanen <pekka.paalanen@collabora.com>
+> >>>> Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@igalia.com> =20
+> >>> [...]
+> >>>    =20
+> >>>> +An atomic commit with the flag DRM_MODE_PAGE_FLIP_ASYNC is allowed =
+to
+> >>>> +effectively change only the FB_ID property on any planes. No-operat=
+ion changes
+> >>>> +are ignored as always. [...] =20
+> >>> During the hackfest in Brno, it was mentioned that a commit which re-=
+sets the same FB_ID could actually have an effect with VRR: It could trigge=
+r scanout of the next frame before vertical blank has reached its maximum d=
+uration. Some kind of mechanism is required for this in order to allow user=
+ space to perform low frame rate compensation.
+> >>>    =20
+> >> Xaver tested this hypothesis in a flipping the same fb in a VRR monitor
+> >> and it worked as expected, so this shouldn't be a concern. =20
+> > Right, so it must have some effect. It cannot be simply ignored like in
+> > the proposed doc wording. Do we special-case re-setting the same FB_ID
+> > as "not a no-op" or "not ignored" or some other way? =20
+> There's an effect in the refresh rate, the image won't change but it=20
+> will report that a flip had happened asynchronously so the reported=20
+> framerate will be increased. Maybe an additional wording could be like:
+>=20
+> Flipping to the same FB_ID will result in a immediate flip as if it was=20
+> changing to a different one, with no effect on the image but effecting=20
+> the reported frame rate.
+
+Re-setting FB_ID to its current value is a special case regardless of
+PAGE_FLIP_ASYNC, is it not?
+
+So it should be called out somewhere that applies regardless of
+PAGE_FLIP_ASYNC. Maybe to the end of the earlier paragraph:
+
+> +The changes recorded in an atomic commit apply on top the current KMS st=
+ate in
+> +the kernel. Hence, the complete new KMS state is the complete old KMS st=
+ate with
+> +the committed property settings done on top. The kernel will try to avoid
+> +no-operation changes, so it is safe for userspace to send redundant prop=
+erty
+> +settings.  However, not every situation allows for no-op changes, due to=
+ the
+> +need to acquire locks for some attributes. Userspace needs to be aware t=
+hat some
+> +redundant information might result in oversynchronization issues.  No-op=
+eration
+> +changes do not count towards actually needed changes, e.g.  setting MODE=
+_ID to a
+> +different blob with identical contents as the current KMS state shall no=
+t be a
+> +modeset on its own.
+
++As a special exception for VRR needs, explicitly setting FB_ID to its
++current value is not a no-op.
+
+Would that work?
+
+I'd like to try to avoid being more specific about what it does
+exactly, because that's not the topic here. Such things can be
+documented with the property itself. This is a summary of what is or is
+not a no-op or a modeset.
+
+
+Thanks,
+pq
+
+--Sig_/Bz+Yx.C6psyZpVX2eLu8wAL
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmUtTiYACgkQI1/ltBGq
+qqcogA/5AUHpaJpLiNY5OmjFAMgtNyE0I2iqQTMRxdD7HxoY+S8MIHB6jq/Ac2cD
+bgbV2k2AHbm+toVzZeTOgDK4PZqQe+2Mfi53Fe+MhJz364YkFvhUJ1+wvk0rzs6f
+SQ+HKfVVsUfXGz5lLjAcG5xSxRHdTBNiS3GtfTBSDZewdvBfrntZwA5B22MxiSua
+/iEdu8aYjO1WAvdz0/SzV2pNfcyfo71gHKCY1aHBD1Hkf6aqJMLHsbgQng8tkKir
+MVmARPURGZCXgJpYsNMJYU/0p4ByN/jXrsbDAXu37IAEECqLxwIWeIQgoahTGIXu
+dVIuxgRyuEOdnxB6rkt8u5iTkLY4jJAx26nx3Zi8MkbimPvWHjQt1cyfrS3Q4ZyG
+7kj028Q2ekwvbsPRqlD+Msqg/1v2WQgYm5HIHicSGP0tKkg4IXZj+z84T8Bcl8Gw
+7xZTHqLgLrFdXq1HTG0Co5r1pRCFD1EgaGJqrMI/AN/RzZ6TjGZ/kVeM3roZw0zK
+tUbhu9Ndh4AfYmrTPx74IVHTNqsYl8OCrjaYvFkCkAHy3gzLrlmjQwMuof9Q/l+1
+FxcDrPC3v0xKnGsrAW2Doyi3idzOdtyquUzJgN4pqlnAn1zV1hXMQZt8LxVUBXuK
+UDk+hGMxCYb0Z2L1t/Sg6HaLlMxFH5br5OtJhUl1K0cYLavNrjE=
+=Lyhk
+-----END PGP SIGNATURE-----
+
+--Sig_/Bz+Yx.C6psyZpVX2eLu8wAL--
