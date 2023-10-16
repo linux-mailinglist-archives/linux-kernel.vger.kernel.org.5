@@ -2,239 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B037CB473
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF5C7CB47F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234118AbjJPURD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 16:17:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56984 "EHLO
+        id S234101AbjJPUSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 16:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232345AbjJPURB (ORCPT
+        with ESMTP id S231221AbjJPUSV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 16:17:01 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A46AD9
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:16:58 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-d9a518d66a1so5863944276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:16:58 -0700 (PDT)
+        Mon, 16 Oct 2023 16:18:21 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E7783;
+        Mon, 16 Oct 2023 13:18:19 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-53da72739c3so8304941a12.3;
+        Mon, 16 Oct 2023 13:18:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1697487418; x=1698092218; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697487498; x=1698092298; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pRkuXD5R9s8GqVXIff9E+DcOiCuJck3NIMNloThI9eU=;
-        b=VepErQtqSJUpTI4Bo7v/zDu0GpxSE2dH0yvlDfG3UWqD1k1t1JtnoiB63c1rZHBfr7
-         awmrqmXtgKShfGUC9DYBmk/yqbOZHqPRYeS4VEAGEPCQmblLIAydp1JIdLrY2OqOUx1y
-         nEpB0HDmNA7yhhfB0H92WxyXg3TOl3oIn7GQ5aKWBUqDLC58h6Do1Pu75VuEKa+0GhG5
-         +gYGfEc2NlZYz6dqnWMeH+r3X0JaGuhNBnUaQVi/riuhdHBAW0Kv+GlL6xowks88BD0d
-         23dlUyMkBD1TLiUdNRkCb/XIv+LaAmQquEnN/rUZAxwnhH7B20gbwEr4bsoL02nZIr7a
-         1YpA==
+        bh=1txcMyKL02YN3XqfczPDpjjenESIRV6GuXIGUGvRcWE=;
+        b=ceXwOir3f//tCJpb1EV44TC41oVA1eV/oUMO6TpM6tHeLXypmN/scdxmnI8PAQsNeN
+         V9HYNCjXOI0Btp34MmzEGQaCamQwjNY/hYneIF1LlKrrMASAsLiTsijfNVNrY0zp/c7v
+         FXUGcCk0cYxi6pUMPNU+Vv0fIaCnpLKTdtVstCZD1rL78HaTXthY614D7fi9kGMHo9U6
+         N/nUKa2HnxxYXHND5lnd/Wqsbj1xCPPzca2a3zm4EJbb/nSZ1inRRrbkufCRMj3XYddo
+         a+NTsxe2cTGBjVDDGIu0NbUJwtnRbUgzSAMi4S4um9OppNCc6KnHR+HIQPzwc+PEJn4u
+         OHgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697487418; x=1698092218;
+        d=1e100.net; s=20230601; t=1697487498; x=1698092298;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pRkuXD5R9s8GqVXIff9E+DcOiCuJck3NIMNloThI9eU=;
-        b=eI/awGiVEojy05jwYqzhRt+LYBqZ35hydM8u1WMSolp3t4S37kEKgRaS9lymXGCuy0
-         cHoGILxyoDOCS19m2kznYy0V/9toH9vSa3Q+7+h288nRnonESb3vdOlILJBzUnoCLBYy
-         BKFbXwEdZy2XtkPyO1LDx1QAkGd8Pt8HMJlb8DvKAlahG0xAUun3QnAl1InDxCTMgLsb
-         qfoGIVv/Rf392sTvz5tf1e6bJWfCgr5kzS4b4J+46yPfPaNcx5JP/fz8EcLvTkycHBX7
-         c8HL9UZR+chUgVfR8pzdIa+H5LNevTIEUoTbDgkEEIwgOYvlLbbeRzFi+jFisggbk0pm
-         rg5Q==
-X-Gm-Message-State: AOJu0Yz112wacax3PKPXLRz8IaNtl4rKZWYE/U1vhMekFmkmZ0pEm2Jc
-        Q+9kOujdvGOdRBHD1umoAwn9HMjb59G3q6SBs4Wv
-X-Google-Smtp-Source: AGHT+IF7JWSRslIBMvEAYeTbSVc7zaoKCJJopAV1HSYdXjgciJjvn8gbxAZ+GxW1kgtTp2RK24/dHOtHKomjJ4UpX10=
-X-Received: by 2002:a25:2393:0:b0:d9b:ff50:b100 with SMTP id
- j141-20020a252393000000b00d9bff50b100mr103956ybj.28.1697487417608; Mon, 16
- Oct 2023 13:16:57 -0700 (PDT)
+        bh=1txcMyKL02YN3XqfczPDpjjenESIRV6GuXIGUGvRcWE=;
+        b=jSIzSFIw7cGJM2njocQttfcv9uva6pfokeLikq62AauoVdDCDRbdJ1lIaFBdWsNAuH
+         F4txofvJ2wqOH5mPdosiTRunMuDnnLpriPAZmUxQDUeEmxBR00qL6JA2m+t9prD/6We2
+         ZrFz+WMUN1mWxhmbAwK8/RfCrvVO/olxlc+5lXHC6kcrv1gNHUUK3Z/Xb535ha9KJRU5
+         nJ/cm0JmKnMsnMRPg4osR3Kafa03IuGs1nBAsiPsoH+3VyC0/3HK/ZHSSODGilYZTyo+
+         sVrZp+SdBj8DWzQUM/iCqt7pek3PFzbcLxQPksv7I8Nwn1qL7+80uDtshUMOE590w+Z7
+         BtDw==
+X-Gm-Message-State: AOJu0Yx/3z1PIzy9AymwtiVuvfo8iQIiqIekrK+UVm91oGzp1IBZAvdp
+        T/kH4uHL/38kkCIQ4RAG23x/a0IFPj7YPO+EUcs=
+X-Google-Smtp-Source: AGHT+IFCFbYRZdexPU4CuY4lsonmCR/F7QA0D2RCZhh0hDza1DObf79NoTjKfTW0LUCUyb3+hlif16gGa+lK53A53T0=
+X-Received: by 2002:a50:a6d8:0:b0:53e:37b0:232e with SMTP id
+ f24-20020a50a6d8000000b0053e37b0232emr295780edc.13.1697487497748; Mon, 16 Oct
+ 2023 13:18:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230922152749.244197-1-chris.riches@nutanix.com>
- <CAHC9VhTEUybqU3Bv51oLgCWLOjsFQBwzXONwXERPuM1U+vhmFQ@mail.gmail.com> <33830e43-00e6-4be1-855e-339d3e74a8bc@nutanix.com>
-In-Reply-To: <33830e43-00e6-4be1-855e-339d3e74a8bc@nutanix.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 16 Oct 2023 16:16:46 -0400
-Message-ID: <CAHC9VhSbfCKxJM=+mKGCQJNjtL8JuwZ5-mSCLCSvkkUEJywOkQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] audit: Send netlink ACK before setting connection in auditd_set
-To:     Chris Riches <chris.riches@nutanix.com>
-Cc:     audit@vger.kernel.org, Eric Paris <eparis@redhat.com>,
-        jonathan.davies@nutanix.com, linux-kernel@vger.kernel.org
+References: <20231011120857.251943-1-zhouchuyi@bytedance.com>
+ <20231011120857.251943-4-zhouchuyi@bytedance.com> <CAEf4BzYGZiTUHPkjuF81vWZWPH-x4rxz1s9+T0rh-dsrO5ZwDg@mail.gmail.com>
+ <0dc492a8-7fc8-4cb4-a770-95906b1f311f@bytedance.com>
+In-Reply-To: <0dc492a8-7fc8-4cb4-a770-95906b1f311f@bytedance.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 16 Oct 2023 13:18:04 -0700
+Message-ID: <CAEf4BzaQe7hRmP9w9+=j-H24M8zoN2VT255A5kge+qk-nZT7eQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 3/8] bpf: Introduce task open coded iterator kfuncs
+To:     Chuyi Zhou <zhouchuyi@bytedance.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 1:12=E2=80=AFPM Chris Riches <chris.riches@nutanix.=
-com> wrote:
+On Fri, Oct 13, 2023 at 7:02=E2=80=AFPM Chuyi Zhou <zhouchuyi@bytedance.com=
+> wrote:
+>
+> Hello,
+>
+> =E5=9C=A8 2023/10/14 05:27, Andrii Nakryiko =E5=86=99=E9=81=93:
+> > On Wed, Oct 11, 2023 at 5:09=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance=
+.com> wrote:
+> >>
+> >> This patch adds kfuncs bpf_iter_task_{new,next,destroy} which allow
+> >> creation and manipulation of struct bpf_iter_task in open-coded iterat=
+or
+> >> style. BPF programs can use these kfuncs or through bpf_for_each macro=
+ to
+> >> iterate all processes in the system.
+> >>
+> >> The API design keep consistent with SEC("iter/task"). bpf_iter_task_ne=
+w()
+> >> accepts a specific task and iterating type which allows:
+> >>
+> >> 1. iterating all process in the system(BPF_TASK_ITER_ALL_PROCS)
+> >>
+> >> 2. iterating all threads in the system(BPF_TASK_ITER_ALL_THREADS)
+> >>
+> >> 3. iterating all threads of a specific task(BPF_TASK_ITER_PROC_THREADS=
+)
+> >>
+> >> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
+> >> ---
+> >>   kernel/bpf/helpers.c                          |  3 +
+> >>   kernel/bpf/task_iter.c                        | 82 +++++++++++++++++=
+++
+> >>   .../testing/selftests/bpf/bpf_experimental.h  |  5 ++
+> >>   3 files changed, 90 insertions(+)
+> >>
+> >> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> >> index cb24c4a916df..690763751f6e 100644
+> >> --- a/kernel/bpf/helpers.c
+> >> +++ b/kernel/bpf/helpers.c
+> >> @@ -2555,6 +2555,9 @@ BTF_ID_FLAGS(func, bpf_iter_num_destroy, KF_ITER=
+_DESTROY)
+> >>   BTF_ID_FLAGS(func, bpf_iter_css_task_new, KF_ITER_NEW | KF_TRUSTED_A=
+RGS)
+> >>   BTF_ID_FLAGS(func, bpf_iter_css_task_next, KF_ITER_NEXT | KF_RET_NUL=
+L)
+> >>   BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, KF_ITER_DESTROY)
+> >> +BTF_ID_FLAGS(func, bpf_iter_task_new, KF_ITER_NEW | KF_TRUSTED_ARGS)
+> >> +BTF_ID_FLAGS(func, bpf_iter_task_next, KF_ITER_NEXT | KF_RET_NULL)
+> >> +BTF_ID_FLAGS(func, bpf_iter_task_destroy, KF_ITER_DESTROY)
+> >>   BTF_ID_FLAGS(func, bpf_dynptr_adjust)
+> >>   BTF_ID_FLAGS(func, bpf_dynptr_is_null)
+> >>   BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
+> >> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+> >> index 2cfcb4dd8a37..caeddad3d2f1 100644
+> >> --- a/kernel/bpf/task_iter.c
+> >> +++ b/kernel/bpf/task_iter.c
+> >> @@ -856,6 +856,88 @@ __bpf_kfunc void bpf_iter_css_task_destroy(struct=
+ bpf_iter_css_task *it)
+> >>          bpf_mem_free(&bpf_global_ma, kit->css_it);
+> >>   }
+> >>
+> >> +struct bpf_iter_task {
+> >> +       __u64 __opaque[3];
+> >> +} __attribute__((aligned(8)));
+> >> +
+> >> +struct bpf_iter_task_kern {
+> >> +       struct task_struct *task;
+> >> +       struct task_struct *pos;
+> >> +       unsigned int flags;
+> >> +} __attribute__((aligned(8)));
+> >> +
+> >> +enum {
+> >> +       BPF_TASK_ITER_ALL_PROCS,
+> >> +       BPF_TASK_ITER_ALL_THREADS,
+> >> +       BPF_TASK_ITER_PROC_THREADS
+> >> +};
+> >> +
+> >> +__bpf_kfunc int bpf_iter_task_new(struct bpf_iter_task *it,
+> >> +               struct task_struct *task, unsigned int flags)
+> >> +{
+> >> +       struct bpf_iter_task_kern *kit =3D (void *)it;
+> >> +
+> >> +       BUILD_BUG_ON(sizeof(struct bpf_iter_task_kern) > sizeof(struct=
+ bpf_iter_task));
+> >> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_task_kern) !=3D
+> >> +                                       __alignof__(struct bpf_iter_ta=
+sk));
+> >> +
+> >> +       kit->task =3D kit->pos =3D NULL;
+> >> +       switch (flags) {
+> >> +       case BPF_TASK_ITER_ALL_THREADS:
+> >> +       case BPF_TASK_ITER_ALL_PROCS:
+> >> +       case BPF_TASK_ITER_PROC_THREADS:
+> >> +               break;
+> >> +       default:
+> >> +               return -EINVAL;
+> >> +       }
+> >> +
+> >> +       if (flags =3D=3D BPF_TASK_ITER_PROC_THREADS)
+> >> +               kit->task =3D task;
+> >> +       else
+> >> +               kit->task =3D &init_task;
+> >> +       kit->pos =3D kit->task;
+> >> +       kit->flags =3D flags;
+> >> +       return 0;
+> >> +}
+> >> +
+> >> +__bpf_kfunc struct task_struct *bpf_iter_task_next(struct bpf_iter_ta=
+sk *it)
+> >> +{
+> >> +       struct bpf_iter_task_kern *kit =3D (void *)it;
+> >> +       struct task_struct *pos;
+> >> +       unsigned int flags;
+> >> +
+> >> +       flags =3D kit->flags;
+> >> +       pos =3D kit->pos;
+> >> +
+> >> +       if (!pos)
+> >> +               goto out;
+> >> +
+> >> +       if (flags =3D=3D BPF_TASK_ITER_ALL_PROCS)
+> >> +               goto get_next_task;
+> >> +
+> >> +       kit->pos =3D next_thread(kit->pos);
+> >> +       if (kit->pos =3D=3D kit->task) {
+> >> +               if (flags =3D=3D BPF_TASK_ITER_PROC_THREADS) {
+> >> +                       kit->pos =3D NULL;
+> >> +                       goto out;
+> >> +               }
+> >> +       } else
+> >> +               goto out;
+> >
+> > nit: this should have {} around it to match the other if branch
+> >
+> > but actually, why goto out instead of return pos? same above, return
+> > pos instead of goto out?
+> >
+>
+> Thanks for the review.
+>
+>
+> IIUC, do you mean:
 >
 
-Thanks for trimming the email in your reply, however, it is helpful to
-preserve those "On Mon, Oct ..." headers for those emails which you
-include in your reply, it helps keep things straight when reading the
-email.  Not a big deal, just something to keep in mind for next time.
+yes, goto only makes sense when there is some common clean up or error
+handling logic, in this case it's a plain return result, so no point.
 
->  > I think the basic approach is good, but I think we can simply things
->  > slightly by using a resettable boolean as opposed to an integer flag
->  > for the ACK.  I've pasted in a quick, untested patch (below) to better
->  > demonstrate the idea, let me know what you think.
+
+> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+> index 0772545568f1..b35debf19edb 100644
+> --- a/kernel/bpf/task_iter.c
+> +++ b/kernel/bpf/task_iter.c
+> @@ -913,7 +913,7 @@ __bpf_kfunc struct task_struct
+> *bpf_iter_task_next(struct bpf_iter_task *it)
+>          pos =3D kit->pos;
 >
-> The simplified patch doesn't look quite right. I had some trouble
-> getting it to apply (seems tabs were changed into spaces, even when I
-> downloaded the raw email).
-
-I should have been more clear, that's what just a quick hack that I
-cut-n-pasted into the email body, whitespace damage was a given.
-Typically if I include a patch with the qualification that it is
-untested, you can expect problems :) but I'll try to make the pitfalls
-more explicit in the future.
-
-I usually include these hacky patches simply as a way to help clear up
-any misunderstandings that might happen when trying to explain an
-approach using English descriptions.  Much in the same way we say that
-a picture is worth a thousand words, I believe a patch, even a
-relatively crude one, is worth at least as many words as a picture :)
-
-> While typing it out manually, I noticed that
-> the condition for sending the ACK isn't correct - if NLM_F_ACK is 0 to
-> begin with, then ack will be false to begin with, and so no ACK will be
-> sent even if there is an error.
-
-Good point.  I'll just casually remind you that I did say "untested" ;)
-
-I believe the following should work as intended (untested, cut-n-paste, etc=
-.):
-
-@@ -1538,9 +1551,10 @@ static int audit_receive_msg(struct sk_buff *skb, st=
-ruct
-nlmsghdr *nlh)
- * Parse the provided skb and deal with any messages that may be present,
- * malformed skbs are discarded.
- */
--static void audit_receive(struct sk_buff  *skb)
-+static void audit_receive(struct sk_buff *skb)
-{
-       struct nlmsghdr *nlh;
-+       bool ack;
-       /*
-        * len MUST be signed for nlmsg_next to be able to dec it below 0
-        * if the nlmsg_len was not aligned
-@@ -1553,9 +1567,13 @@ static void audit_receive(struct sk_buff  *skb)
-
-       audit_ctl_lock();
-       while (nlmsg_ok(nlh, len)) {
--               err =3D audit_receive_msg(skb, nlh);
--               /* if err or if this message says it wants a response */
--               if (err || (nlh->nlmsg_flags & NLM_F_ACK))
-+               ack =3D true;
-+               err =3D audit_receive_msg(skb, nlh, &ack);
-+
-+               /* if audit_receive_msg() clears @ack then we never want to
-+                * send an ack here, otherwise send an ack on error or if
-+                * requested */
-+               if (ack && (err || (nlh->nlmsg_flags & NLM_F_ACK)))
-                       netlink_ack(skb, nlh, err, NULL);
-
-> Handling this case is why I used the
-> three-state system to begin with. I think we could still use a boolean
-> with a condition of just (err || ack), with the caveat that we wouldn't
-> easily be able to send an early ACK on an error (not that the current
-> patch needs this - just thinking of reusability).
-
-While there may be three states (never ACK, ACK on error, always ACK),
-the audit_receive_msg() function only needs to report back one of two
-states: never ACK or ACK if desired.
-
->  > Regardless of any other issues, I think you brought up a good point
->  > about there being socket buffer contention when the queues are
->  > full(ish) and an audit daemon connects to the kernel and while I'm not
->  > sure that this patch will fully resolve that issue, I do think it
->  > would be good to have (I'm doubtful if it can be fully resolved
->  > without some really awful hacks).
+>          if (!pos)
+> -               goto out;
+> +               return pos;
 >
-> That roughly lines up with what I was seeing - could you elaborate any
-> further on what "awful hacks" would be needed to fully resolve this?
-
-I'm not sure I can recall everything from when I was thinking about
-this previously (that was about a week ago), but my quick thoughts
-right now are that you would need a lot more information and/or
-handshakes between the kernel and the daemon.
-
-Unfortunately, both the current audit design and implementation is
-seriously flawed in a number of areas.  One of these areas is the fact
-that data and control messages are sent using the same data flow.
-
->  > The ENOBUFS errors are coming from the netlink layer and are likely a
->  > sign of extreme load.  I'm not very familiar with the audit userspace
->  > code, but it might be helpful to see if you can increase the socket
->  > buffer size for the audit daemon.
+>          if (flags =3D=3D BPF_TASK_ITER_ALL_PROCS)
+>                  goto get_next_task;
+> @@ -922,18 +922,22 @@ __bpf_kfunc struct task_struct
+> *bpf_iter_task_next(struct bpf_iter_task *it)
+>          if (kit->pos =3D=3D kit->task) {
+>                  if (flags =3D=3D BPF_TASK_ITER_PROC_THREADS) {
+>                          kit->pos =3D NULL;
+> -                       goto out;
+> +                       return pos;
+>                  }
+>          } else
+> -               goto out;
+> +               return pos;
 >
-> I believe we tried increasing the buffer size in the toy repro and it
-> didn't make much difference - perhaps doing it in the real audit daemon
-> might help.
-
-The reproducer is an artificial worst case since you are disconnecting
-and reconnecting without a process shutdown and startup in between.
-The reproducer just hammers the connection status as fast as the CPU
-can generate netlink messages; I'm not certain there is a
-netlink/socket buffer size that would fully resolve this for the
-reproducer.
-
->  > I'm also not surprised to hear that as you increase the number of CPUs
->  > the problem goes away.  With more CPUs the system is able to schedule
->  > more threads simultaneously to maintain the kernel's audit queues and
->  > execute the audit daemon to drain both the netlink socket buffer and
->  > audit queues.
+> +       /*
+> +        * goto get_next_task means:
+> +        * case 1: flags =3D=3D BPF_TASK_ITER_ALL_PROCS
+> +        * case 2: kit->pos =3D=3D kit->task && flags =3D=3D
+> BPF_TASK_ITER_ALL_THREADS
+> +        */
+>   get_next_task:
+>          kit->pos =3D next_task(kit->pos);
+>          kit->task =3D kit->pos;
+>          if (kit->pos =3D=3D &init_task)
+>                  kit->pos =3D NULL;
 >
-> My intuition told me the opposite - that more parallel activity would
-> increase the chance of the socket buffer being crammed full before the
-> one thread could return to the audit daemon and allow it to start
-> processing events.
-
-The audit subsystem can handle a full buffer, that has been stressed a
-lot over the years, and while it may slow the system down it will
-continue to operate.  As a fun exercise, configure the audit subsystem
-to audit *every* syscall and then try to shut the system down.  It
-will complete, but it's ugly and you'll see the audit subsystem
-complain a *lot* about dropped records due to queue/backlog overflows.
-
-The issue isn't so much about the queues overflowing inside the
-kernel, it's about being able to schedule the audit daemon and/or
-kernel thread to service the flood of connection
-disconnects/reconnects coming from the reproducer.
-
-> Does the size/number of audit queues perhaps scale
-> with the number of CPUs?
-
-The number of queues is static, and their size is determined at
-runtime by the configuration.  Making per-CPU queues would be a bit of
-a mess due to our desire to ensure an accurate ordering of events
-relative to a wall clock.
-
->  > I suggest bringing this up with the audit userspace developer if you
->  > haven't already.  While we can, and should, improve things on the
->  > kernel side (e.g. the patch we are discussing), it also sounds like
->  > the userspace side has room for improvement as well.
+> -out:
+>          return pos;
 >
-> That sounds like a good idea - can you point me to who that is? I was
-> under the impression that this was the mailing list for both the kernel
-> and userspace sides.
+>
+>
+> BTW, do you have some comments on patch-8 ? or I should send next
+> version and pass all the CI first ?
+>
 
-That used to be the case, but unfortunately the audit userspace
-developer who manages the original audit mailing list was unwilling to
-make the list configuration changes we needed to play nice with
-existing Linux kernel mailing list conventions so we needed to move
-the kernel development discussions to a separate list.
+I didn't think too hard about changes you are proposing, but yes, CI
+should be green on submission, of course
 
-The old audit mailing list, where the userspace development is still
-discussed, can be found here:
-
-* http://www.redhat.com/mailman/listinfo/linux-audit
-
---=20
-paul-moore.com
+> Thanks.
+>
+> >
+> >> +
+> >> +get_next_task:
+> >> +       kit->pos =3D next_task(kit->pos);
+> >> +       kit->task =3D kit->pos;
+> >> +       if (kit->pos =3D=3D &init_task)
+> >> +               kit->pos =3D NULL;
+> >> +
+> >> +out:
+> >> +       return pos;
+> >> +}
+> >> +
+> >> +__bpf_kfunc void bpf_iter_task_destroy(struct bpf_iter_task *it)
+> >> +{
+> >> +}
+> >> +
+> >>   DEFINE_PER_CPU(struct mmap_unlock_irq_work, mmap_unlock_work);
+> >>
+> >>   static void do_mmap_read_unlock(struct irq_work *entry)
+> >> diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/te=
+sting/selftests/bpf/bpf_experimental.h
+> >> index 8b53537e0f27..1ec82997cce7 100644
+> >> --- a/tools/testing/selftests/bpf/bpf_experimental.h
+> >> +++ b/tools/testing/selftests/bpf/bpf_experimental.h
+> >> @@ -457,5 +457,10 @@ extern int bpf_iter_css_task_new(struct bpf_iter_=
+css_task *it,
+> >>   extern struct task_struct *bpf_iter_css_task_next(struct bpf_iter_cs=
+s_task *it) __weak __ksym;
+> >>   extern void bpf_iter_css_task_destroy(struct bpf_iter_css_task *it) =
+__weak __ksym;
+> >>
+> >> +struct bpf_iter_task;
+> >> +extern int bpf_iter_task_new(struct bpf_iter_task *it,
+> >> +               struct task_struct *task, unsigned int flags) __weak _=
+_ksym;
+> >> +extern struct task_struct *bpf_iter_task_next(struct bpf_iter_task *i=
+t) __weak __ksym;
+> >> +extern void bpf_iter_task_destroy(struct bpf_iter_task *it) __weak __=
+ksym;
+> >>
+> >>   #endif
+> >> --
+> >> 2.20.1
+> >>
