@@ -2,129 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D544A7CAE4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9B117CAE50
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233871AbjJPPyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 11:54:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40996 "EHLO
+        id S233876AbjJPPzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 11:55:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232758AbjJPPyt (ORCPT
+        with ESMTP id S232758AbjJPPzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 11:54:49 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C63D9;
-        Mon, 16 Oct 2023 08:54:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 031F5C433C9;
-        Mon, 16 Oct 2023 15:54:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697471687;
-        bh=XF2Ub1+HsWjMHCZvPLicE8SrXCYQkNv2/+mVm86z2a4=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=o77yGTKEHFiOMbIKRpvPlQ2bZkbCx09x3z8mNkKZh1NsS3xrrdOLFFR2o7jfizo70
-         freHLcVbHxI57o4kN/a2L81UqoIFV0fMa9rbljNXC12+F4jOrFfwCA/0EMeVqPkzA0
-         E/KVuHc0ZuW/ySQ+93u31MlUeeldUYbIGOAwHf5+2ZraDUkmxXa/6JbBJgzkF+KHkV
-         lDGLHROOwMBeB85NoOmXpFEbSMnqwvOxXfsQUFiXwWwfNTrmpo982jeSl/Twi9wO8G
-         zEvV9KZ/l0e0LKmR7egS0uLwwoU91gvu6k+zTMJmpt4DWa7tPrONXdQLx/GPOsQk8q
-         d0jO2lIzcVirg==
-Message-ID: <be2434a2d51900b9e51d8bf0fe5a8b82e3f1a879.camel@kernel.org>
-Subject: Re: [RFC PATCH 08/53] netfs: Add rsize to netfs_io_request
-From:   Jeff Layton <jlayton@kernel.org>
-To:     David Howells <dhowells@redhat.com>,
-        Steve French <smfrench@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Christian Brauner <christian@brauner.io>,
-        linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-cachefs@redhat.com
-Date:   Mon, 16 Oct 2023 11:54:44 -0400
-In-Reply-To: <20231013160423.2218093-9-dhowells@redhat.com>
-References: <20231013160423.2218093-1-dhowells@redhat.com>
-         <20231013160423.2218093-9-dhowells@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Mon, 16 Oct 2023 11:55:35 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F34B1B4
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:55:32 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c9a1762b43so37725625ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:55:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697471732; x=1698076532; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fLBVM4RWGGrzmJKsFRzk8wkU3z95jkXd7ukKT1dlnz0=;
+        b=gJXtmdMB2ya5nyxgnLRDeKTYayA6LcD4ZArzRyA3jIVy2egcakLOx2nlAPHN3MPHRB
+         7tSyZU32VUi8e+wh+FPQPRmCQYEmj+dU1Bq5XIAvZUjU9EhOEqDcLIMr+JMAdVEfqu0j
+         +lakdBNkX8mDsNC63o+/5yBlPt4NYtH8j5mVxC+RLTx1rrjnp/kPV17bIXWGQRQmMx/P
+         V/juxBKnhyb68FAfY8N5zA3snT7Wqncn1AONeJGJUZHXcCbB+F0UEPYknSo/iGDiEA9P
+         X8FLe12WCpz/0km4onhdIVrZzAn9YlVZcT0qsp7xfJUP5fw6u7Tj9fa1ATJGJNcuaS2d
+         vAXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697471732; x=1698076532;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fLBVM4RWGGrzmJKsFRzk8wkU3z95jkXd7ukKT1dlnz0=;
+        b=hdO39ZGVAc7D9Sgsr+ZfllqlOkTOptRM4WrtLOx/gwl++I21qWaxHzSm6aX1VjHbuJ
+         6BYrh3q8CkoG3a85AsqhUkq2UZN43Fsksx6YfwWoyD6Jy7BuYUfhQ2z4IKDXPlmZGRAu
+         37O4FE7X0vVgZhPSjxsrjDGllGs/zTSDsyqgYJ0pSzyKNGMDRcU2lH7EvbcAb1IgqxEE
+         P+vtsAtGDs7gBYUzanTAVZdO4RtvGB2DE1MjIO+WgHMJU0Qywru0U2yRvrJeb1Etd2L2
+         XS2ejGEsgT95dwJmYeUc8h07OygNOjwqZjRz0ubmHjOUjlvD4L2U/We5r2HYdc0U2kEU
+         Dt1w==
+X-Gm-Message-State: AOJu0Yx4W7nJi7Bb/ePjiQSbXn7iyf+APnR+97UIZSaH5DY4TapQItJ5
+        3baFETXvpN8NlKXyRcj9H6mhtQl6VXeUMdkN
+X-Google-Smtp-Source: AGHT+IG3/ps/pwG6hfneGQTTv6uees6/0qluU+reezGbrPeo29f58hY6vUoQqPNbwbZKYUj85rqrAg==
+X-Received: by 2002:a17:902:c94e:b0:1c7:245a:7fea with SMTP id i14-20020a170902c94e00b001c7245a7feamr46280761pla.58.1697471732270;
+        Mon, 16 Oct 2023 08:55:32 -0700 (PDT)
+Received: from rin-ROG-STRIX-G10CES-G10CES.. (218-164-142-9.dynamic-ip.hinet.net. [218.164.142.9])
+        by smtp.gmail.com with ESMTPSA id l13-20020a170902eb0d00b001b890009634sm8634304plb.139.2023.10.16.08.55.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 08:55:31 -0700 (PDT)
+From:   s921975628@gmail.com
+To:     s921975628@gmail.com, walken@google.com, peterz@infradead.org
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org
+Subject: [PATCH] rbtree: Examine rb_add* helpers in rbtree_test
+Date:   Mon, 16 Oct 2023 23:55:19 +0800
+Message-Id: <20231016155519.41374-1-s921975628@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-10-13 at 17:03 +0100, David Howells wrote:
-> Add an rsize parameter to netfs_io_request to be filled in by the network
-> filesystem when the request is initialised.  This indicates the maximum
-> size of a read request that the netfs will honour in that region.
->=20
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: Jeff Layton <jlayton@kernel.org>
-> cc: linux-cachefs@redhat.com
-> cc: linux-fsdevel@vger.kernel.org
-> cc: linux-mm@kvack.org
-> ---
->  fs/afs/file.c         | 1 +
->  fs/ceph/addr.c        | 2 ++
->  include/linux/netfs.h | 1 +
->  3 files changed, 4 insertions(+)
->=20
-> diff --git a/fs/afs/file.c b/fs/afs/file.c
-> index 3fea5cd8ef13..3d2e1913ea27 100644
-> --- a/fs/afs/file.c
-> +++ b/fs/afs/file.c
-> @@ -360,6 +360,7 @@ static int afs_symlink_read_folio(struct file *file, =
-struct folio *folio)
->  static int afs_init_request(struct netfs_io_request *rreq, struct file *=
-file)
->  {
->  	rreq->netfs_priv =3D key_get(afs_file_key(file));
-> +	rreq->rsize =3D 4 * 1024 * 1024;
->  	return 0;
->  }
-> =20
-> diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-> index ced19ff08988..92a5ddcd9a76 100644
-> --- a/fs/ceph/addr.c
-> +++ b/fs/ceph/addr.c
-> @@ -419,6 +419,8 @@ static int ceph_init_request(struct netfs_io_request =
-*rreq, struct file *file)
->  	struct ceph_netfs_request_data *priv;
->  	int ret =3D 0;
-> =20
-> +	rreq->rsize =3D 1024 * 1024;
-> +
+From: RinHizakura <s921975628@gmail.com>
 
-Holy magic numbers, batman! I think this deserves a comment that
-explains how you came up with these values.
+We had introduced rb_add() and rb_add_cached() helper for the
+partial-order based rbtree, which may be the most commonly way
+to use rbtree. We also have rb_add_augmented_cached() for EEVDF now.
+Since these helpers are actually the same as what rbtree_test examines
+for, we can reuse these helpers to test them under rbtree_test directly.
 
-Also, do 9p and cifs not need this for some reason?
+This also introduces some correctness test and benchmarking for these
+generic interface, which means the correctness and performance can be
+minimally guarantee under the tests. User can choose to use these
+great rb_add* helpers without extra effort to implement their own
+one considering the test results.
 
->  	if (rreq->origin !=3D NETFS_READAHEAD)
->  		return 0;
-> =20
-> diff --git a/include/linux/netfs.h b/include/linux/netfs.h
-> index daa431c4148d..02e888c170da 100644
-> --- a/include/linux/netfs.h
-> +++ b/include/linux/netfs.h
-> @@ -188,6 +188,7 @@ struct netfs_io_request {
->  	struct list_head	subrequests;	/* Contributory I/O operations */
->  	void			*netfs_priv;	/* Private data for the netfs */
->  	unsigned int		debug_id;
-> +	unsigned int		rsize;		/* Maximum read size (0 for none) */
->  	atomic_t		nr_outstanding;	/* Number of ops in progress */
->  	atomic_t		nr_copy_ops;	/* Number of copy-to-cache ops in progress */
->  	size_t			submitted;	/* Amount submitted for I/O so far */
->=20
+Signed-off-by: Yiwei Lin <s921975628@gmail.com>
+---
+ include/linux/rbtree_augmented.h | 21 ++++++++
+ lib/rbtree_test.c                | 82 +++++---------------------------
+ 2 files changed, 32 insertions(+), 71 deletions(-)
 
---=20
-Jeff Layton <jlayton@kernel.org>
+diff --git a/include/linux/rbtree_augmented.h b/include/linux/rbtree_augmented.h
+index 6dbc5a1bf..e4d2d74ba 100644
+--- a/include/linux/rbtree_augmented.h
++++ b/include/linux/rbtree_augmented.h
+@@ -86,6 +86,27 @@ rb_add_augmented_cached(struct rb_node *node, struct rb_root_cached *tree,
+ 	return leftmost ? node : NULL;
+ }
+ 
++static __always_inline void
++rb_add_augmented(struct rb_node *node, struct rb_root *tree,
++			bool (*less)(struct rb_node *, const struct rb_node *),
++			const struct rb_augment_callbacks *augment)
++{
++	struct rb_node **link = &tree->rb_node;
++	struct rb_node *parent = NULL;
++
++	while (*link) {
++		parent = *link;
++		if (less(node, parent))
++			link = &parent->rb_left;
++		else
++			link = &parent->rb_right;
++	}
++
++	rb_link_node(node, parent, link);
++	augment->propagate(parent, NULL);
++	rb_insert_augmented(node, tree, augment);
++}
++
+ /*
+  * Template for declaring augmented rbtree callbacks (generic case)
+  *
+diff --git a/lib/rbtree_test.c b/lib/rbtree_test.c
+index 41ae3c757..5768512f3 100644
+--- a/lib/rbtree_test.c
++++ b/lib/rbtree_test.c
+@@ -29,41 +29,19 @@ static struct test_node *nodes = NULL;
+ 
+ static struct rnd_state rnd;
+ 
+-static void insert(struct test_node *node, struct rb_root_cached *root)
++static inline bool less(struct rb_node *a, const struct rb_node *b)
+ {
+-	struct rb_node **new = &root->rb_root.rb_node, *parent = NULL;
+-	u32 key = node->key;
+-
+-	while (*new) {
+-		parent = *new;
+-		if (key < rb_entry(parent, struct test_node, rb)->key)
+-			new = &parent->rb_left;
+-		else
+-			new = &parent->rb_right;
+-	}
++	return rb_entry(a, struct test_node, rb)->key < rb_entry(b, struct test_node, rb)->key;
++}
+ 
+-	rb_link_node(&node->rb, parent, new);
+-	rb_insert_color(&node->rb, &root->rb_root);
++static void insert(struct test_node *node, struct rb_root_cached *root)
++{
++	rb_add(&node->rb, &root->rb_root, less);
+ }
+ 
+ static void insert_cached(struct test_node *node, struct rb_root_cached *root)
+ {
+-	struct rb_node **new = &root->rb_root.rb_node, *parent = NULL;
+-	u32 key = node->key;
+-	bool leftmost = true;
+-
+-	while (*new) {
+-		parent = *new;
+-		if (key < rb_entry(parent, struct test_node, rb)->key)
+-			new = &parent->rb_left;
+-		else {
+-			new = &parent->rb_right;
+-			leftmost = false;
+-		}
+-	}
+-
+-	rb_link_node(&node->rb, parent, new);
+-	rb_insert_color_cached(&node->rb, root, leftmost);
++	rb_add_cached(&node->rb, root, less);
+ }
+ 
+ static inline void erase(struct test_node *node, struct rb_root_cached *root)
+@@ -85,53 +63,15 @@ RB_DECLARE_CALLBACKS_MAX(static, augment_callbacks,
+ static void insert_augmented(struct test_node *node,
+ 			     struct rb_root_cached *root)
+ {
+-	struct rb_node **new = &root->rb_root.rb_node, *rb_parent = NULL;
+-	u32 key = node->key;
+-	u32 val = node->val;
+-	struct test_node *parent;
+-
+-	while (*new) {
+-		rb_parent = *new;
+-		parent = rb_entry(rb_parent, struct test_node, rb);
+-		if (parent->augmented < val)
+-			parent->augmented = val;
+-		if (key < parent->key)
+-			new = &parent->rb.rb_left;
+-		else
+-			new = &parent->rb.rb_right;
+-	}
+-
+-	node->augmented = val;
+-	rb_link_node(&node->rb, rb_parent, new);
+-	rb_insert_augmented(&node->rb, &root->rb_root, &augment_callbacks);
++	node->augmented = node->val;
++	rb_add_augmented(&node->rb, &root->rb_root, less, &augment_callbacks);
+ }
+ 
+ static void insert_augmented_cached(struct test_node *node,
+ 				    struct rb_root_cached *root)
+ {
+-	struct rb_node **new = &root->rb_root.rb_node, *rb_parent = NULL;
+-	u32 key = node->key;
+-	u32 val = node->val;
+-	struct test_node *parent;
+-	bool leftmost = true;
+-
+-	while (*new) {
+-		rb_parent = *new;
+-		parent = rb_entry(rb_parent, struct test_node, rb);
+-		if (parent->augmented < val)
+-			parent->augmented = val;
+-		if (key < parent->key)
+-			new = &parent->rb.rb_left;
+-		else {
+-			new = &parent->rb.rb_right;
+-			leftmost = false;
+-		}
+-	}
+-
+-	node->augmented = val;
+-	rb_link_node(&node->rb, rb_parent, new);
+-	rb_insert_augmented_cached(&node->rb, root,
+-				   leftmost, &augment_callbacks);
++	node->augmented = node->val;
++	rb_add_augmented_cached(&node->rb, root, less, &augment_callbacks);
+ }
+ 
+ 
+-- 
+2.34.1
+
