@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 820827CB637
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 00:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3568C7CB639
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 00:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233664AbjJPWHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 18:07:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42310 "EHLO
+        id S233554AbjJPWH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 18:07:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231221AbjJPWHd (ORCPT
+        with ESMTP id S233661AbjJPWH6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 18:07:33 -0400
+        Mon, 16 Oct 2023 18:07:58 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 184A69B
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 15:07:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1711C433C8;
-        Mon, 16 Oct 2023 22:07:30 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C419B
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 15:07:56 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38C52C433C7;
+        Mon, 16 Oct 2023 22:07:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697494051;
-        bh=QVLofbHbw5E8A25XjU4ezmzNLLgw1rylbmVWRoqHvnE=;
+        s=k20201202; t=1697494076;
+        bh=TW3IndpO2zBuBRlfI7R6Lfn0TK8diqp9tO2D/L4BKPs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QSCsDgNApKM4YLJtgg+406eD70FVfy1irOAo/p8HSqPbpurM1F6r84UfpvG9bNy2U
-         PrK/Cevy4eXn5EJIgqtq2m8x2nkuW+mBsKNH5Xm4taTcnYoh12eF3Ui2hftfuUbWJ4
-         r1slPg3SjxoDk1RM4vdqLhZU1iCDGSCRSxYHuBWQrSkwKbuTG0J9qOwDD6FbasiOkQ
-         txgy5OzL7LxEzAuOUwjVseBribN6XOOR7gG3xA3wgNMeDqs2aBchxdtp4xtJ480QBN
-         QfzqlUx5FZvfEcbzZyzERCQpEk+PJVenVJeDgV7cJ2oYNSe2+zJpkjQjE5WvS9t+2R
-         Yo1AObcopsoWw==
-Date:   Mon, 16 Oct 2023 16:07:28 -0600
+        b=iulmUHubMW2dW1FIERm2jLQStEyM4rbu4ppCVqE7kAhhg0L9qIWrI1mEVmoF+j0iz
+         YlBH8SYs4++4CQ2ZoJuQYfejRUuS7kYKBkkms38l/AY0Ki0cgXe+iTn9tn6/AiDS98
+         /vp0RYVN/fNRXEEEmpuwm2BJTGO/31RmRPnnTC9wyeLS675dg60PuBAdaF1E0kSCJU
+         B4n9moXIe+xpzZkvIfNhgm86tX/QQCLIokQdbq2OmO54pytW9Y07x24x8bYvqnoCRJ
+         KKhebXPwiotrbX+nGURsnWG/fSBEmS90yIUjF4RDovUVBoCrtfPOUZydgMtk/kYjWo
+         QT+RDxLr7lZDg==
+Date:   Mon, 16 Oct 2023 16:07:52 -0600
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
 To:     Dinh Nguyen <dinguyen@kernel.org>,
         Michael Turquette <mturquette@baylibre.com>,
@@ -35,9 +35,9 @@ To:     Dinh Nguyen <dinguyen@kernel.org>,
 Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
         "Gustavo A. R. Silva" <gustavoars@kernel.org>,
         linux-hardening@vger.kernel.org
-Subject: [PATCH v2 1/2][next] clk: socfpga: Fix undefined behavior bug in
- struct stratix10_clock_data
-Message-ID: <bb2ae50abf622d4b6fda1a326ce830627356ab7c.1697493574.git.gustavoars@kernel.org>
+Subject: [PATCH v2 2/2][next] clk: socfpga: agilex: Add bounds-checking
+ coverage for struct stratix10_clock_data
+Message-ID: <f531ae35ef434b62f48534c67ad3b1013bff0536.1697493574.git.gustavoars@kernel.org>
 References: <cover.1697493574.git.gustavoars@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -52,9 +52,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`struct clk_hw_onecell_data` is a flexible structure, which means that
-it contains flexible-array member at the bottom, in this case array
-`hws`:
+In order to gain the bounds-checking coverage that __counted_by provides
+to flexible-array members at run-time via CONFIG_UBSAN_BOUNDS (for array
+indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family functions),
+we must make sure that the counter member, in this case `num`, is updated
+before the first access to the flex-array member, in this case array `hws`.
+
+commit f316cdff8d67 ("clk: Annotate struct clk_hw_onecell_data with
+__counted_by") introduced `__counted_by` for `struct clk_hw_onecell_data`
+together with changes to relocate some of assignments of counter `num`
+before `hws` is accessed:
 
 include/linux/clk-provider.h:
 1380 struct clk_hw_onecell_data {
@@ -62,101 +69,92 @@ include/linux/clk-provider.h:
 1382         struct clk_hw *hws[] __counted_by(num);
 1383 };
 
-This could potentially lead to an overwrite of the objects following
-`clk_data` in `struct stratix10_clock_data`, in this case
-`void __iomem *base;` at run-time:
+However, this structure is used as a member in other structs, in this
+case in `struct sstratix10_clock_data`:
 
 drivers/clk/socfpga/stratix10-clk.h:
   9 struct stratix10_clock_data {
- 10         struct clk_hw_onecell_data      clk_data;
- 11         void __iomem            *base;
- 12 };
+ 10         void __iomem            *base;
+ 11
+ 12         /* Must be last */
+ 13         struct clk_hw_onecell_data      clk_data;
+ 14 };
 
-There are currently three different places where memory is allocated for
-`struct stratix10_clock_data`, including the flex-array `hws` in
-`struct clk_hw_onecell_data`:
+Hence, we need to move the assignments to `clk_data->clk_data.num` after
+allocations for `struct stratix10_clock_data` and before accessing the
+flexible array `clk_data->clk_data.hws`. And, as assignments for both
+`clk_data->clk_data.num` and `clk_data->base` are originally adjacent to
+each other, relocate both assignments together.
 
-drivers/clk/socfpga/clk-agilex.c:
-469         clk_data = devm_kzalloc(dev, struct_size(clk_data, clk_data.hws,
-470                                 num_clks), GFP_KERNEL);
-
-drivers/clk/socfpga/clk-agilex.c:
-509         clk_data = devm_kzalloc(dev, struct_size(clk_data, clk_data.hws,
-510                                 num_clks), GFP_KERNEL);
-
-drivers/clk/socfpga/clk-s10.c:
-400         clk_data = devm_kzalloc(dev, struct_size(clk_data, clk_data.hws,
-401                                                  num_clks), GFP_KERNEL);
-
-I'll use just one of them to describe the issue. See below.
-
-Notice that a total of 440 bytes are allocated for flexible-array member
-`hws` at line 469:
-
-include/dt-bindings/clock/agilex-clock.h:
- 70 #define AGILEX_NUM_CLKS	55
-
-drivers/clk/socfpga/clk-agilex.c:
-459         struct stratix10_clock_data *clk_data;
-460         void __iomem *base;
-...
-466
-467         num_clks = AGILEX_NUM_CLKS;
-468
-469         clk_data = devm_kzalloc(dev, struct_size(clk_data, clk_data.hws,
-470                                 num_clks), GFP_KERNEL);
-
-`struct_size(clk_data, clk_data.hws, num_clks)`	above translates to
-sizeof(struct stratix10_clock_data) + sizeof(struct clk_hw *) * 55 ==
-16 + 8 * 55 == 16 + 440
-		    ^^^
-		     |
-	allocated bytes for flex-array `hws`
-
-474         for (i = 0; i < num_clks; i++)
-475                 clk_data->clk_data.hws[i] = ERR_PTR(-ENOENT);
-476
-477         clk_data->base = base;
-
-and then some data is written into both `hws` and `base` objects.
-
-Fix this by placing the declaration of object `clk_data` at the end of
-`struct stratix10_clock_data`. Also, add a comment to make it clear
-that this object must always be last in the structure.
-
--Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
-ready to enable it globally.
-
-Fixes: ba7e258425ac ("clk: socfpga: Convert to s10/agilex/n5x to use clk_hw")
-Cc: stable@vger.kernel.org
 Reviewed-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
 Changes in v2:
- - Mention -Wflex-array-member-not-at-end in the changelog text.
+ - None. 
 
 v1:
- - Link: https://lore.kernel.org/linux-hardening/5dd8483177dc8cd91d021170b6717f2e570bab03.1697059539.git.gustavoars@kernel.org/
+ - Link: https://lore.kernel.org/linux-hardening/fd4cd8503316d536e1a84fa2ae5bdefdd4b24afe.1697059539.git.gustavoars@kernel.org/
 
- drivers/clk/socfpga/stratix10-clk.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/clk/socfpga/clk-agilex.c | 12 ++++++------
+ drivers/clk/socfpga/clk-s10.c    |  6 +++---
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/clk/socfpga/stratix10-clk.h b/drivers/clk/socfpga/stratix10-clk.h
-index 75234e0783e1..83fe4eb3133c 100644
---- a/drivers/clk/socfpga/stratix10-clk.h
-+++ b/drivers/clk/socfpga/stratix10-clk.h
-@@ -7,8 +7,10 @@
- #define	__STRATIX10_CLK_H
+diff --git a/drivers/clk/socfpga/clk-agilex.c b/drivers/clk/socfpga/clk-agilex.c
+index 6b65a74aefa6..8dd94f64756b 100644
+--- a/drivers/clk/socfpga/clk-agilex.c
++++ b/drivers/clk/socfpga/clk-agilex.c
+@@ -471,12 +471,12 @@ static int agilex_clkmgr_init(struct platform_device *pdev)
+ 	if (!clk_data)
+ 		return -ENOMEM;
  
- struct stratix10_clock_data {
--	struct clk_hw_onecell_data	clk_data;
- 	void __iomem		*base;
++	clk_data->clk_data.num = num_clks;
++	clk_data->base = base;
 +
-+	/* Must be last */
-+	struct clk_hw_onecell_data	clk_data;
- };
+ 	for (i = 0; i < num_clks; i++)
+ 		clk_data->clk_data.hws[i] = ERR_PTR(-ENOENT);
  
- struct stratix10_pll_clock {
+-	clk_data->base = base;
+-	clk_data->clk_data.num = num_clks;
+-
+ 	agilex_clk_register_pll(agilex_pll_clks, ARRAY_SIZE(agilex_pll_clks), clk_data);
+ 
+ 	agilex_clk_register_c_perip(agilex_main_perip_c_clks,
+@@ -511,12 +511,12 @@ static int n5x_clkmgr_init(struct platform_device *pdev)
+ 	if (!clk_data)
+ 		return -ENOMEM;
+ 
+-	for (i = 0; i < num_clks; i++)
+-		clk_data->clk_data.hws[i] = ERR_PTR(-ENOENT);
+-
+ 	clk_data->base = base;
+ 	clk_data->clk_data.num = num_clks;
+ 
++	for (i = 0; i < num_clks; i++)
++		clk_data->clk_data.hws[i] = ERR_PTR(-ENOENT);
++
+ 	n5x_clk_register_pll(agilex_pll_clks, ARRAY_SIZE(agilex_pll_clks), clk_data);
+ 
+ 	n5x_clk_register_c_perip(n5x_main_perip_c_clks,
+diff --git a/drivers/clk/socfpga/clk-s10.c b/drivers/clk/socfpga/clk-s10.c
+index 3752bd9c103c..b4bf4e2d38e1 100644
+--- a/drivers/clk/socfpga/clk-s10.c
++++ b/drivers/clk/socfpga/clk-s10.c
+@@ -402,12 +402,12 @@ static int s10_clkmgr_init(struct platform_device *pdev)
+ 	if (!clk_data)
+ 		return -ENOMEM;
+ 
+-	for (i = 0; i < num_clks; i++)
+-		clk_data->clk_data.hws[i] = ERR_PTR(-ENOENT);
+-
+ 	clk_data->base = base;
+ 	clk_data->clk_data.num = num_clks;
+ 
++	for (i = 0; i < num_clks; i++)
++		clk_data->clk_data.hws[i] = ERR_PTR(-ENOENT);
++
+ 	s10_clk_register_pll(s10_pll_clks, ARRAY_SIZE(s10_pll_clks), clk_data);
+ 
+ 	s10_clk_register_c_perip(s10_main_perip_c_clks,
 -- 
 2.34.1
 
