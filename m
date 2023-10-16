@@ -2,169 +2,374 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 176137CB4AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3466C7CB4AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233528AbjJPUfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 16:35:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41398 "EHLO
+        id S233975AbjJPUfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 16:35:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232934AbjJPUf3 (ORCPT
+        with ESMTP id S234158AbjJPUfm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 16:35:29 -0400
-Received: from MW2PR02CU002.outbound.protection.outlook.com (mail-westus2azon11013006.outbound.protection.outlook.com [52.101.49.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C947C9B
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:35:27 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j9mpUGpiKkZ5BRutT50kYsIPabNLZVddD323xgWziv3eyBxCWUWNap11T76AgYT8Jd0NBO/wvBvbzd7s+zUPIwDE0j0F8yw3nEY/N/hjMAv4ROZnInLGqjkSt7H/aFaQAPE6S2epAo1RXgkZpWaYk+mUkeWhtdIc2UVeavHBOlShgsMzZZA9OPUozIP+yOi9/gbWL9euzh9Hc4WbtvIC2SkE9ifxrr8eqjTxL1QagT2eWs0aILZNdeiF5VtdYJIiq4iJlU/09voPCl+n0mCIbZMompBdDjrGcIQr6iwKWhJH9MfjLX5HrEmSHGv86D0aU2OmkGwzKlp79Z6StbmUMg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=i2+tMxL85FskxQwQK//umSfJm4xVtQKcYGA5+Jl+qJc=;
- b=biftrHa3rL6WM8F8MdQItI2ZOGX06+rom9HVyNl5QISg2V2v5aqGHguee8FNBxskuCU4R+RfFqlcEoC+igRGRBNh0YIJkKpQWVmYjRracGWfh1IQUsAiwHS5jNC9QQyfI4qZgUfhEIpDm7/g7irN9NGMo1q9ziW06nUS81cQORWVRkHLLU9+WrVx0kbccSl95vkSE6u8faYfDIEk+a4r9fW3w1VabvEOeJOFP+4rpOXU0MJ44HyG1xE+fN6+NYtKbjll0JQvq8OPUEZ5pc6dW0SPzMjn8veC4QObV9j4pwgSw+OxHvh+2e18hNSy/KBr3GuZOe5XcjVH72+TFtZmZA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i2+tMxL85FskxQwQK//umSfJm4xVtQKcYGA5+Jl+qJc=;
- b=U+AaLuR3fUAi4b0DQesJAI3w9W3Z3oCFx+wshg171AperrJtXac39m7ewQ6tMsDFpbGpFowfCnDlKhR72kf45KmUhSl6KJn0MJfit3Fg1m7MwMB9wtILOAWLp2LKxCsFj6df5YLMO2u1+/XvdMJ0szkQO2sKmWimE8oQsftAfd0=
-Received: from BY3PR05MB8531.namprd05.prod.outlook.com (2603:10b6:a03:3ce::6)
- by CO6PR05MB7649.namprd05.prod.outlook.com (2603:10b6:5:347::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.35; Mon, 16 Oct
- 2023 20:35:24 +0000
-Received: from BY3PR05MB8531.namprd05.prod.outlook.com
- ([fe80::e6fb:726:9aa2:fa13]) by BY3PR05MB8531.namprd05.prod.outlook.com
- ([fe80::e6fb:726:9aa2:fa13%6]) with mapi id 15.20.6886.034; Mon, 16 Oct 2023
- 20:35:24 +0000
-From:   Nadav Amit <namit@vmware.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Uros Bizjak <ubizjak@gmail.com>
-CC:     the arch/x86 maintainers <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
-Thread-Topic: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
-Thread-Index: AQHZ+5jZGZywpkB5zE2yxvhqDFo/FrBDSECAgAAOE4CAAAQxgIABoxnfgAAgI4CAAAYlgIAHqOMRgAAI04CAABO2AA==
-Date:   Mon, 16 Oct 2023 20:35:24 +0000
-Message-ID: <7D77A452-E61E-4B8B-B49C-949E1C8E257C@vmware.com>
-References: <20231010164234.140750-1-ubizjak@gmail.com>
- <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
- <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
- <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
- <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com>
- <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
- <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
- <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
- <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com>
- <CAFULd4Zjd6idrLXuF59cwKxyd1a--DsiJwGQAKai9Tph30dAow@mail.gmail.com>
- <CAHk-=wgSsfo89ESHcngvPCkQSh_YAJG-0g7fupb+Uv0E1d_EcQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wgSsfo89ESHcngvPCkQSh_YAJG-0g7fupb+Uv0E1d_EcQ@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3731.700.6)
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vmware.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BY3PR05MB8531:EE_|CO6PR05MB7649:EE_
-x-ms-office365-filtering-correlation-id: b6e5fe26-9a75-42f1-9ca5-08dbce876ccc
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: xGo8Yl6JfGooxFTwt31m6vSUIf1KrCkoRI5SqKCcq4R5ngA4rYglJsIAO9jRxjD4aLnkgtEBPSHcWciuBf5s/jfvqKDD6Fc3IoXXrH5KaMA7/5mvtz9Hn84RwmLGUQfgsX1+DXFSEIl2IHbOtobTW9MU3z/Yn7M+LD9Ck9irhtwPYrXLAGvGQ8wzFtXy8uxXwJfDTSJeE6UAAZ2GVUfZreJNJAdqX1S35Mb6Ehz6HYnTiSfM9dpqdgToM3BtIlxA7OVjHxQ0Q6byuhROkItUmtHgqLSrzda99mSBXmGzOJNJgFq5yVoJncsc+7sb0sS1NygwKaDJMnsCRtKISrE+ZpUdxIH8n0mYDWj2HO6mxLWaC11Oao5nDB+UO1q+GtQR60w2UwQXRM81XABmLRDXmy2Sfp9Gg2tOLwzKD73fN6/TmGKhah7NGWq8DUzZm/RcsX+zxt88kxebIlIUEz6lVbRz9NvYT7rdxbvoIXQ8MVXGqG/4PnRHJ8rSnBzBYjflU50deZh1udzZAhVohnFPM+yckxMP07K9kh5YPMbHCQdqkhlDpqzvZ1lkTkm8L2iOXSTWacs/9O6jWiS3DC+g1s2boiOiJSedHQBhJmKmtuMsxtf5iA5X4OHRT/RxXN6QgJHB4XgYidV4r97bFC3Z+XVoOn9UCkXSqlq5Rcpqb1LbD8ufbxDiNiRHcOSN5HUmOt5wMqthivQltJZrwugItK9wJg6tC/l7wnVzk6ToBfk=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY3PR05MB8531.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(366004)(376002)(136003)(396003)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(53546011)(6486002)(966005)(122000001)(36756003)(38070700005)(83380400001)(38100700002)(71200400001)(6512007)(26005)(6506007)(2906002)(64756008)(54906003)(66476007)(66446008)(316002)(2616005)(478600001)(76116006)(66946007)(91956017)(110136005)(66556008)(7416002)(86362001)(33656002)(8676002)(41300700001)(5660300002)(8936002)(4326008)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bTdLY2dMSklXVDhlS2xBK1NDNTlGS2hSTENVdjFLcGpLUU1ZbDJ0cEtxMTB5?=
- =?utf-8?B?QTZtQnhQZml5TGJKMGNGMHhxNlpRUDZsSEFxSG1sV1dzcEhqN1ZzakpNK3BM?=
- =?utf-8?B?MTllUzVzQUZDdTdwMHBmTWo2UnJ3Y1p5L0VUbjlzWTRBYXgvdm1sdStieXQ5?=
- =?utf-8?B?c21iSkZPV3JHS2kySzNxK0JJZ0N1SWxieFBrODNCMStER09BNGVKbTF6RG4x?=
- =?utf-8?B?Y0RkV0V1b3hLZzFrSi80bGFzdVlaM0gyTy9WOTdIV3dUU2RRUTBVRnJONXIr?=
- =?utf-8?B?Y3ZnU2ZpcEgzemxLNytBQVh3UDRXRURnNm8zYjJpMHAwY0NtUk1oSndCZm1x?=
- =?utf-8?B?OEpsZWdtRDNaVnByUEZiUUtDMEQ2MXJVdCtrV0RsU3dxNjdBYnh0T2IvRXhm?=
- =?utf-8?B?SjZNRTlyd0VzdEJUMnhuNUEyOG12NnpvSHE2VkhnZENNV3VPUk1uNGhvblkz?=
- =?utf-8?B?bnJaTTJ0SzdUeStKK245aEd1WkRvZnBKeExzT1I3RHJLSjFOWFQyVTdEb2pl?=
- =?utf-8?B?b3oxNUhLSklqeTBkdEhnMG5SL0paVzVnY1g1bndSZmc2TU1zemY1UllPeHlS?=
- =?utf-8?B?ZGtYcXd4d1liNmVtcG5FbDQxanJjeDN4aVpkRzJQekYrSmZYUWtJc3JVbS9H?=
- =?utf-8?B?eG5mMjBSRkNiZEVlanBXcEViYjFJVmljd3BmYVVQYkFETVorSlRFdzRJUlRB?=
- =?utf-8?B?bU9XbG9ValBRQUpWb1EwTXE3T0dENlljcjVmOXFtR1ZsdEg1RGttZnhJalBK?=
- =?utf-8?B?QnYyWUhJc2NWZ3dRekx0cW9VMmtaN3BVRVhBZ0VtdHAyTldUWC9JQW12ZVZ0?=
- =?utf-8?B?QkpYeVUwbzhCaHZHMXUwNnQwUmZBKzNDQ0FWV013Y2tQbVhWcFdtSUp6R3p1?=
- =?utf-8?B?dy9QK1hnNTZYeERDQktEVzBqTSttRHc4K3grTlhKVGJGU0d0ZkJDaC9RVkZR?=
- =?utf-8?B?bi9SRDhWSUtvYTV5NXFlUTJJbTZTcVZ4djZaWG0xbnY0YVczb2tiNVd0YXJp?=
- =?utf-8?B?WGIyaFB2TUNPakFrKzFVNFVpZUxZMy8rUkh4eDRncjlmbVNBdkptTi94anhJ?=
- =?utf-8?B?cUhsTmIxM2JaSFVwS1lzZUhWRFVXNTJsK21HMFg0dW9EQ1hnd0xPVzJKK1pq?=
- =?utf-8?B?aS9YSFkxTGRER3hFdEpsRWxZQUFDaU9NNktuVHg4K3AyZTR3SkFvZ1hHUjRv?=
- =?utf-8?B?bGF2U0FQYW9aZ0pvbDZWeVRGbnlUVC9BUVIrRXl5anF1cUEwRWRIN1V3UzI3?=
- =?utf-8?B?MVd5a3FMYmZGdWZ1K0RDV2g1WGtickRsSHVzems2NWFMYzV5ZVk0WHltaXdn?=
- =?utf-8?B?TVNaNjN5YVo4U29RQ2xLSjl0MS9rRVllQkNtbkVXNVBpM3crZjV5YytNOFVG?=
- =?utf-8?B?bDhkS3F3VWM0Ykozb3RrSnJDMm5vU2pjN3dBWmt0ZUNwdkpSbTQySHNKSjVK?=
- =?utf-8?B?OFQrT1YrMzN4SmlsYjNCTUhNNW40ZzcyVStlVWs0bTAzQTJVeEhpZThNM2lP?=
- =?utf-8?B?NVArUUU1VElrY0tRMzJhQUV2OGtzMVc5LzYwaGU3MWx4VkZLUzFsRmcxTUlz?=
- =?utf-8?B?c1hiQmNOUEYzeEcwOHR5Wm9HRFRVeGk2Wml4L25sYk9UUjFjOWw1LzNVVGJ5?=
- =?utf-8?B?ajJKNG5udEEweEg5b25MeW0rMnBRbnJTV0dqRUlEZW9qMzNqN3NlOHByaGta?=
- =?utf-8?B?OE03aUtTS0RLMzdaZGVscngvY1NKdmZ1VUpKTjhjYld2WE9LK0xibkVmNXVH?=
- =?utf-8?B?V2QzWWs3VGhwT05WdGprTWVQZkFZT1VBVGdWclRERTV1aWhaZWl0aDR0d3ZX?=
- =?utf-8?B?dkxRaUYrN3JVVm91dG9ieGVzaWMwSUcvVlNUYjhReTdZdUJFVHZXS3ROU3RN?=
- =?utf-8?B?dkpRV0MyUDFGK0lRQTN3cWl5S2NjSUpNR3VVNGpETFoyYjN1NDhLM0NFR3N2?=
- =?utf-8?B?VGZXOEc1eUk4NHlidlk5RGFia3M1b0FaTVlIMnZzaG5Ld0NhZ3IxR2lOQU40?=
- =?utf-8?B?YmExVVNJVkpEcE0vODl4WmlUdmxSVk9mZmJKSlhMUno3VTVjSUpaWXg1Z3l4?=
- =?utf-8?B?dDhxY1Z4TENxUFRXaEQ1Zm93Q3l2bDBabEFZL2NaNEtuSkNjVWwzOEdGeml4?=
- =?utf-8?Q?eahiivf9xN+3uHlu2eVMwmtn4?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <1A338DC94C66DD4DBBF3EEE5EA0CBA90@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Mon, 16 Oct 2023 16:35:42 -0400
+Received: from tarta.nabijaczleweli.xyz (tarta.nabijaczleweli.xyz [139.28.40.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61876D9;
+        Mon, 16 Oct 2023 13:35:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nabijaczleweli.xyz;
+        s=202305; t=1697488528;
+        bh=hE6P+UeSTjBDi8P6I4RDjWfKNFfmgZelAHcwkGv1j+w=;
+        h=Date:From:Cc:Subject:From;
+        b=Ez7/hijKau5Lfmad7NlihjquU9cwrP/ej/6VcMJq2WKr3BF7vOHThZrRf+f4ze2fE
+         0UJxRSd3M3xfSEEFT1sNJ81b1VeXwXk3W7iaB57CKI+9k2XvDHD+yhfsJIxqUPMYk8
+         X2MPSEPebSOnE4OPysXFmnNTHPORUAWvXghxmidVE3DyXB6+Q8dTi0+xw6qNjAXEB5
+         QXmz+uaXnJ6bqOXXW4dfwoufuHdIJGbf76wsZ6I7ECUE+HOHbjpduO7yRlZa5yjANm
+         +Tqu13HfPBZLLGiZfdcQebVeCj2G6yg/DLgXMZLjIt+PsxkKiBrs0qhHbYYBCKkmvF
+         +lqeTQoelE1lQ==
+Received: from tarta.nabijaczleweli.xyz (unknown [192.168.1.250])
+        by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id 66926FC72;
+        Mon, 16 Oct 2023 22:35:28 +0200 (CEST)
+Date:   Mon, 16 Oct 2023 22:35:28 +0200
+From:   Ahelenia =?utf-8?Q?Ziemia=C5=84ska?= 
+        <nabijaczleweli@nabijaczleweli.xyz>
+Cc:     "D. Wythe" <alibuda@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foudation.org>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Cong Wang <cong.wang@bytedance.com>,
+        David Ahern <dsahern@kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jan Karcher <jaka@linux.ibm.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Kirill Tkhai <tkhai@ya.ru>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>,
+        Li kunyu <kunyu@nfschina.com>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>, netdev@vger.kernel.org,
+        Paolo Abeni <pabeni@redhat.com>,
+        Pengcheng Yang <yangpc@wangsu.com>,
+        Shigeru Yoshida <syoshida@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Tony Lu <tonylu@linux.alibaba.com>,
+        Wen Gu <guwen@linux.alibaba.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Xu Panda <xu.panda@zte.com.cn>,
+        Zhang Zhengming <zhang.zhengming@h3c.com>
+Subject: [PATCH 00/11] splice(file<>pipe) I/O on file as-if O_NONBLOCK
+Message-ID: <cover.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY3PR05MB8531.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b6e5fe26-9a75-42f1-9ca5-08dbce876ccc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Oct 2023 20:35:24.3908
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BYLksZf+Ifp3Kp1zUNoP2rT17EDnrxEnZUvtRUVKbpZw/nlA7TSQ6FIHScbXijZl/frbYaIaDkYNsnR4Mxhs9w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR05MB7649
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pqm5boxqnux3b3rj"
+Content-Disposition: inline
+User-Agent: NeoMutt/20231006
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MISSING_HEADERS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+IE9uIE9jdCAxNiwgMjAyMywgYXQgMTA6MjQgUE0sIExpbnVzIFRvcnZhbGRzIDx0b3J2YWxk
-c0BsaW51eC1mb3VuZGF0aW9uLm9yZz4gd3JvdGU6DQo+IA0KPiBTbyB0aGVyZSdzIHNvbWUgc2Vy
-aW91cyBjb3JydXB0aW9uIHRoZXJlLCBidXQgZnJvbSB0aGUgb29wcyBpdHNlbGYgSQ0KPiBjYW4n
-dCB0ZWxsIHRoZSBzb3VyY2UuIEkgZ3Vlc3MgaWYgd2UgZ2V0ICdjdXJyZW50JyB3cm9uZyBhbnl3
-aGVyZSwgYWxsDQo+IGJldHMgYXJlIG9mZi4NCg0KSSBkb27igJl0IHRoaW5rIGl0IG1lYW5zIHRo
-YXQgaXQgdGhlIGFsaWFzaW5nIGRvZXMgbm90IHdvcms7IEkgdGhpbmsgaXQgYWxsIG1lYW5zIHRo
-YXQNCml0IGFjdHVhbGx5IHdvcmtzICp0b28gd2VsbCouDQoNCkkgaGF2ZSBlbmNvdW50ZXJlZCBz
-ZXZlcmFsIHN1Y2ggaXNzdWVzIGJlZm9yZSBbMV0sIGFuZCB3aGlsZSBzb21lIGhhdmUgYmVlbiBm
-aXhlZCwNCnNvbWUgaGF2ZSBub3QgKEkgbG9va2VkIGF0IHN3aXRjaF9mcHVfZmluaXNoKCkpLCBh
-bmQgbWlnaHQgdW5kZXIgdGhlIHJpZ2h0L3dyb25nDQpjaXJjdW1zdGFuY2VzIHVzZSB0aGUgd3Jv
-bmdseS3igJxjYWNoZWTigJ0gY3VycmVudC4gTW9yZW92ZXIsIHBlcmhhcHMgbmV3IHByb2JsZW1z
-DQpoYXZlIGJlZW4gYWRkZWQgc2luY2UgbXkgb2xkIHBhdGNoLg0KDQpQZXJoYXBzIHRoZSB3aGFj
-ay1hLW1vbGUgYXBwcm9hY2ggdGhhdCBJIHRvb2sgaW4gWzFdIGlzIHdyb25nLiBJbnN0ZWFkLCBw
-ZXJoYXBzIGl0DQppcyBiZXR0ZXIgdG8gdXNlIGFuIHVuY2FjaGVkIHZlcnNpb24gb2YgY3VycmVu
-dCB3aGVuIGNvbXBpbGluZw0KYXJjaC94ODYva2VybmVsL3Byb2Nlc3NfNjQuYyBhbmQgYXJjaC94
-ODYva2VybmVsL3Byb2Nlc3NfMzIuYyAsIHNvIHRoZXkgd291bGQgbm90DQp1c2UgdGhlIGNvbnN0
-IGFsaWFzLCBidXQgaW5zdGVhZCB1c2UgdGhlIG9yaWdpbmFsIChub24tY29uc3QpIG9uZS4gU29t
-ZSBtYWNybw0KbWFnaWMgYW5kIGFuIGFkZGl0aW9uYWwgIi1E4oCdIGJ1aWxkIGZsYWcgY2FuIGRv
-IHRoYXQuDQoNCkJ1dCBmaXJzdCwgdGhlcmUgaXMgYSBuZWVkIHRvIGNvbmZpcm0gdGhhdOKAmXMg
-YWN0dWFsbHkgdGhlIHByb2JsZW0uIEnigJlsbCB0cnkgdG8gZG8NCml0IHRvbW9ycm93Lg0KDQpS
-ZWdhcmRzLA0KTmFkYXYNCg0KDQpbMV0gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsLzIwMTkw
-ODIzMjI0NDI0LjE1Mjk2LTUtbmFtaXRAdm13YXJlLmNvbS8=
+
+--pqm5boxqnux3b3rj
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+As it stands, splice(file -> pipe):
+1. locks the pipe,
+2. does a read from the file,
+3. unlocks the pipe.
+
+For reading from regular files and blcokdevs this makes no difference.
+But if the file is a tty or a socket, for example, this means that until
+data appears, which it may never do, every process trying to read from
+or open the pipe enters an uninterruptible sleep,
+and will only exit it if the splicing process is killed.
+
+This trivially denies service to:
+* any hypothetical pipe-based log collexion system
+* all nullmailer installations
+* me, personally, when I'm pasting stuff into qemu -serial chardev:pipe
+
+This follows:
+1. https://lore.kernel.org/linux-fsdevel/qk6hjuam54khlaikf2ssom6custxf5is2e=
+kkaequf4hvode3ls@zgf7j5j4ubvw/t/#u
+2. a security@ thread rooted in
+   <irrrblivicfc7o3lfq7yjm2lrxq35iyya4gyozlohw24gdzyg7@azmluufpdfvu>
+3. https://nabijaczleweli.xyz/content/blogn_t/011-linux-splice-exclusion.ht=
+ml
+
+Patches were posted and then discarded on principle or funxionality,
+all in all terminating in Linus posting
+> But it is possible that we need to just bite the bullet and say
+> "copy_splice_read() needs to use a non-blocking kiocb for the IO".
+
+This does that, effectively making splice(file -> pipe)
+request (and require) O_NONBLOCK on reads fron the file:
+this doesn't affect splicing from regular files and blockdevs,
+since they're always non-blocking
+(and requesting the stronger "no kernel sleep" IOCB_NOWAIT is non-sensical),
+but always returns -EINVAL for ttys.
+Sockets behave as expected from O_NONBLOCK reads:
+splice if there's data available else -EAGAIN.
+
+This should all pretty much behave as-expected.
+
+Mostly a re-based version of the summary diff from
+<gnj4drf7llod4voaaasoh5jdlq545gduishrbc3ql3665pw7qy@ytd5ykxc4gsr>.
+
+Bisexion yields commit 8924feff66f35fe22ce77aafe3f21eb8e5cff881
+("splice: lift pipe_lock out of splice_to_pipe()") as first bad.
+
+
+The patchset is made quite wide due to the many implementations
+of the splice_read callback, and was based entirely on results from
+  $ git grep '\.splice_read.*=3D' | cut -d=3D -f2 |
+      tr -s ',;[:space:]' '\n' | sort -u
+
+I'm assuming this is exhaustive, but it's 27 distinct implementations.
+Of these, I've classified these as trivial delegating wrappers:
+  nfs_file_splice_read               filemap_splice_read
+  afs_file_splice_read               filemap_splice_read
+  ceph_splice_read                   filemap_splice_read
+  ecryptfs_splice_read_update_atime  filemap_splice_read
+  ext4_file_splice_read              filemap_splice_read
+  f2fs_file_splice_read              filemap_splice_read
+  ntfs_file_splice_read              filemap_splice_read
+  ocfs2_file_splice_read             filemap_splice_read
+  orangefs_file_splice_read          filemap_splice_read
+  v9fs_file_splice_read              filemap_splice_read
+  xfs_file_splice_read               filemap_splice_read
+  zonefs_file_splice_read            filemap_splice_read
+  sock_splice_read                   copy_splice_read or a socket-specific =
+one
+  coda_file_splice_read              vfs_splice_read
+  ovl_splice_read                    vfs_splice_read
+
+
+filemap_splice_read() is used for regular files and blockdevs,
+and thus needs no changes, and is thus unchanged.
+
+vfs_splice_read() delegates to copy_splice_read() or f_op->splice_read().
+
+
+The rest are fixed, in patch order:
+01. copy_splice_read() by simply doing the I/O with IOCB_NOWAIT;
+    diff from Linus:
+      https://lore.kernel.org/lkml/5osglsw36dla3mubtpsmdwdid4fsdacplyd6acx2=
+igo4atogdg@yur3idyim3cc/t/#ee67de5a9ec18886c434113637d7eff6cd7acac4b
+02. unix_stream_splice_read() by unconditionally passing MSG_DONTWAIT
+03. fuse_dev_splice_read() by behaving as-if O_NONBLOCK
+04. tracing_buffers_splice_read() by behaving as-if O_NONBLOCK
+    (this also removes the retry loop)
+05. relay_file_splice_read() by behaving as-if SPLICE_F_NONBLOCK
+    (this just means EAGAINing unconditionally for an empty transfer)
+06. smc_splice_read() by unconditionally passing MSG_DONTWAIT
+07. kcm_splice_read() by unconditionally passing MSG_DONTWAIT
+08. tls_sw_splice_read() by behaving as-if SPLICE_F_NONBLOCK
+09. tcp_splice_read() by behaving as-if O_NONBLOCK
+    (this also removes the retry loop)
+
+10. EINVALs on files that neither have FMODE_NOWAIT nor are S_ISREG
+
+    We don't want this to be just FMODE_NOWAIT since most regular files
+    don't have it set and that's not the right semantic anyway,
+    as noted at the top of this mail,
+
+    But this allows blockdevs "by accident", effectively,
+    since they have FMODE_NOWAIT (at least the ones I tried),
+    even though they're just like regular files:
+    handled by filemap_splice_read(),
+    thus not dispatched with IOCB_NOWAIT. since always non-blocking.
+
+    Should this be a check for FMODE_NOWAIT && (S_ISREG || S_ISBLK)?
+    Should it remain FMODE_NOWAIT && S_ISREG?
+    Is there an even better way of spelling this?
+
+
+In net/kcm, this also fixes kcm_splice_read() passing SPLICE_F_*-style
+flags to skb_recv_datagram(), which takes MSG_*-style flags.
+I don't think they did anything anyway? But.
+
+
+
+I would of course be remiss to not analyse splice(pipe -> file) as well:
+  gfs2_file_splice_write  iter_file_splice_write
+  ovl_splice_write        iter_file_splice_write
+  splice_write_null       splice_from_pipe(pipe_to_null), does nothing
+
+fuse_dev_splice_write() locks, copies the iovs, unlocks, does I/O,
+                        locks, frees the pipe's iovs, unlocks
+port_fops_splice_write() locks, steals or copies pages, unlocks, does I/O
+
+
+11. splice_to_socket():
+    has sock_sendmsg() inside the pipe lock;
+    filling the socket buffer sleeps in splice with the pipe locked,
+    and this is trivial to trigger with
+      ./af_unix_ptf ./splicing-cat < fifo &
+      cat > fifo &
+      cp 64k fifo a couple times
+    patch does unconditional MSG_DONTWAIT, tests sensibly
+
+
+iter_file_splice_write():
+  has vfs_iter_write() inside the pipe lock,
+  but appears to be attached to regular files and blockdevs,
+  but also random_fops & urandom_fops (looks like not an issue)
+  and tty_fops & console_fops
+  (this only means non-pty ttys so no issue with a full buffer?
+   idk if there's a situation where a tty or the discipline can block forev=
+er
+   or if it's guaranteed forward progress, however slow?
+   still kinda ass to have the pipe lock hard-held for, say,
+   (64*1024)/(300/8)s=3D30min if the pipe has 64k in the buffer?
+   this predixion aligns precisely with what I measured:
+    1# stty 300 < /dev/ttyS0
+    1# ./splicing-cat < fifo > /dev/ttyS0
+
+    2$ cat > fifo    # and typing works
+    3$ cp 64k fifo   # uninterrupitbly sleeps in write(4, "SzmprOmdIIkciMwb=
+pxhsEyFVORaPGbRQ"..., 66560
+    1: now sleeping in splice
+    2: typing more into the cat uninterruptibly sleeps in write
+    4$ : > /tmp/fifo # uninterruptibly hangs in open
+
+   similarly, "cp 10k fifo" uninterruptibly sleeps in close,
+   with the same effects on other (potential) writers,
+   and woke up after around five minutes, which matches my maths
+
+   so presumably something should be done about this as well?
+   just idk what)
+
+So. AFAIK, just iter_file_splice_write() on ttys remains.
+
+
+This needs a man-pages patch as well,
+but I'd go rabid if I were to write it rn.
+
+
+For the samples above, af_unix_ptf.c:
+-- >8 --
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <sys/un.h>
+#include <unistd.h>
+
+int main(int argc, char ** argv) {
+  int fds[2];
+  if(socketpair(AF_UNIX, SOCK_STREAM | SOCK_CLOEXEC, 0, fds))
+    abort();
+
+  if(!vfork()) {
+    dup2(fds[1], 1);
+    _exit(execvp(argv[1], argv + 1));
+  }
+  dup2(fds[0], 0);
+  for(;;) {
+    char buf[16];
+    int r =3D read(0, buf, 16);
+    fprintf(stderr, "read %d\n", r);
+    sleep(10);
+  }
+}
+-- >8 --
+
+splicing-cat.c:
+-- >8 --
+#define _GNU_SOURCE
+#include <fcntl.h>
+#include <stdio.h>
+#include <errno.h>
+int main() {
+  int lasterr =3D -1;
+  unsigned ctr =3D 0;
+  for(;;) {
+    errno =3D 0;
+    ssize_t ret =3D splice(0, 0, 1, 0, 128 * 1024 * 1024, 0);
+    if(ret >=3D 0 || errno !=3D lasterr) {
+      fprintf(stderr, "\n\t%m" + (lasterr =3D=3D -1));
+      lasterr =3D errno;
+      ctr =3D 0;
+    }
+    if(ret =3D=3D -1) {
+      ++ctr;
+      fprintf(stderr, "\r%u", ctr);
+    } else
+      fprintf(stderr, "\r%zu", ret);
+    if(!ret)
+      break;
+  }
+  fprintf(stderr, "\n");
+}
+-- >8 --
+
+Ahelenia Ziemia=C5=84ska (11):
+  splice: copy_splice_read: do the I/O with IOCB_NOWAIT
+  af_unix: unix_stream_splice_read: always request MSG_DONTWAIT
+  fuse: fuse_dev_splice_read: use nonblocking I/O
+  tracing: tracing_buffers_splice_read: behave as-if non-blocking I/O
+  relayfs: relay_file_splice_read: always return -EAGAIN for no data
+  net/smc: smc_splice_read: always request MSG_DONTWAIT
+  kcm: kcm_splice_read: always request MSG_DONTWAIT
+  tls/sw: tls_sw_splice_read: always request non-blocking I/O
+  net/tcp: tcp_splice_read: always do non-blocking reads
+  splice: file->pipe: -EINVAL for non-regular files w/o FMODE_NOWAIT
+  splice: splice_to_socket: always request MSG_DONTWAIT
+
+ fs/fuse/dev.c        | 10 ++++++----
+ fs/splice.c          |  7 ++++---
+ kernel/relay.c       |  3 +--
+ kernel/trace/trace.c | 32 ++++----------------------------
+ net/ipv4/tcp.c       | 30 +++---------------------------
+ net/kcm/kcmsock.c    |  2 +-
+ net/smc/af_smc.c     |  6 +-----
+ net/tls/tls_sw.c     |  5 ++---
+ net/unix/af_unix.c   |  5 +----
+ 9 files changed, 23 insertions(+), 77 deletions(-)
+
+
+base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
+--
+2.39.2
+
+--pqm5boxqnux3b3rj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmUtno0ACgkQvP0LAY0m
+WPGuvA/8CDMCC3Jqrxzh67RnsX6AnDvMlmOFnNMSx1ufj+0S7i5vzt4MtSXpzAOo
+zHshxG2VAylYZYhG0ifhkUpRWvwKLmxjhfz9F1mGVWa0xJsXYQX221huSygD4L49
+bgYsH+XOzXfScqDRwJoXTgCXfhM8cXts2fCRYs6MS26wIY/qdqXm1NaqaNtASATv
+eT0Iktoc4TkrvqbLYsvCOhpwXLU3xcdYQxj3w2nVfrzGDkeZmGNJmzz8kjCjxfvD
+sAbrnnYQwZG8FpKceXBNqrtKosvonPqydFKdbA9+OJnEzma7l3NzeQ/BoUKUX9vj
+rTFNZsh7jPe5fMboaL5LkMCrs4UgIXTJ04dZfgSXML4YiRs/kqbycu8jL2IyylIV
+xOhjaD6/YOzfgCRkY/E/4QsVN5LkPkNnCuzleBr7OyZJxmKg39hmd69Rm8tR+bTV
+cmPHxfXi2/faJ+4BW5jIsMkZwqwzJXDze9Ulr8+ZfefPSGxA5z06N2y/E/sFLWte
+9PrrHPZC3A0V3oDQCm0BK1d3armLoUR7eyjVqmo+52AQue3F1rsgZHapTvtHZuAp
+FsLnyjWv+JvP3smu3iA3ZnW8f8PXepWGNcPZ3zDQJGEFfUOXRsVgFOTS7/0oYyrx
+YMd0ql5nhNwc+g3jsGFt1rlJK/P1FcQh0DO+XBeaYfcOLDGd6RA=
+=49HP
+-----END PGP SIGNATURE-----
+
+--pqm5boxqnux3b3rj--
