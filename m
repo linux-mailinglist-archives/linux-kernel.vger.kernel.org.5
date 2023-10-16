@@ -2,45 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2D27CB307
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 20:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6FFB7CB30E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 20:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232055AbjJPSzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 14:55:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49070 "EHLO
+        id S233829AbjJPS4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 14:56:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbjJPSy6 (ORCPT
+        with ESMTP id S231569AbjJPS4G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 14:54:58 -0400
+        Mon, 16 Oct 2023 14:56:06 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0090D95;
-        Mon, 16 Oct 2023 11:54:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8D51C433C7;
-        Mon, 16 Oct 2023 18:54:55 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C3D95;
+        Mon, 16 Oct 2023 11:56:05 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 621C1C433C8;
+        Mon, 16 Oct 2023 18:56:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697482496;
-        bh=vnpuG6oJGzk3oI7/3eK+xoXxYSfxQmaYjHfWNJ6kGbk=;
+        s=k20201202; t=1697482565;
+        bh=QcyXCskRPbOnWPMhi0EFFGjPvt4mFSLqbM7WXj8RRTk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t9r2kdvshd6iY6IW+giqum/YnWI5uOQBJvCbnTe4xaBNsbUaDnathoKktNFsQH0vs
-         V/ruciEdbvU9rBB4Fxv3qaW+K8DjR0+FtiZnfLhw7myfmjR6hCB7599DJLOv30PJwU
-         uuMX6hEt3rFIQVwJoV+EwGdbyZULjExk8BIdKVxLicg/5dMx0jGaQZ3dLxRARFcOrw
-         LNMcqo6bua3X2ehb9ik/lAFEhNj183ZhI78Y4L7ev51fJ4/e+hjeqo6+e4NUlPNdAD
-         bpWFMyDgfOcIE3pZiR/5C674Pi9SfwgcSRR4NxCOc0CvpAhGGf+GTukZqun49ytDDc
-         8RiRS8jKx5CdQ==
-Date:   Mon, 16 Oct 2023 11:58:44 -0700
+        b=uq+dK+u9sQe6i12LxkLFZefC/LT+F/9isgSSyVWofETmERrXFkhy+LsslGY1SPxQV
+         aNRQG0xZYpZ5jC6v9GY7QL8u18a2CRGqIQeCyx/x5cfK82FJAT/K4vFTT6ykOqVrHj
+         BTmOtqrkGGTIw/ICGxhPbbQEM0fD7lZJ1BBaGjpsN1bCnC5HQq6DbRLUtRo1ZYux0I
+         ZFSJ69pSRxIexDVunyOx81Qn45YSlFJ25gPmSVu2bpvMCU7WOoKBI4Uv1sqWVE0zIL
+         oicyw/lhvaWlRK9akRu/yLwe5GlYv1URMtVBfGARefOiL3KaPRvTHfWfUqsOBfK4bb
+         JKL4Bgp1crJmg==
+Date:   Mon, 16 Oct 2023 11:59:52 -0700
 From:   Bjorn Andersson <andersson@kernel.org>
-To:     Robert Marko <robimarko@gmail.com>
-Cc:     agross@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: qcom: ipq5018: add QUP1 SPI controller
-Message-ID: <jxvpt2xo3fc2k7kflfsdov6uxpjpgqpomgmfvfgxwytejvkcgu@xwnfrg7be6qi>
-References: <20231004191303.331055-1-robimarko@gmail.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] soc: qcom: apr: Add __counted_by for struct
+ apr_rx_buf and use struct_size()
+Message-ID: <arc5clw7z2avnt2tbw5mw6lvrj3kjebmuarju4uqc2hxtuv7ow@htiko7yh3oyf>
+References: <ZSRw6RNi3Crhd32H@work>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231004191303.331055-1-robimarko@gmail.com>
+In-Reply-To: <ZSRw6RNi3Crhd32H@work>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -50,62 +53,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 09:12:30PM +0200, Robert Marko wrote:
-> Add the required BAM and QUP nodes for the QUP1 SPI controller on IPQ5018.
+On Mon, Oct 09, 2023 at 03:30:17PM -0600, Gustavo A. R. Silva wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
+> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
 > 
-> Signed-off-by: Robert Marko <robimarko@gmail.com>
+> While there, use struct_size() helper, instead of the open-coded
+> version, to calculate the size for the allocation of the whole
+> flexible structure, including of course, the flexible-array member.
+> 
+> This code was found with the help of Coccinelle, and audited and
+> fixed manually.
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-I padded the spi node to 8 digits, and applied the patch.
-
-Thanks,
-Bjorn
+Applied, thanks.
 
 > ---
->  arch/arm64/boot/dts/qcom/ipq5018.dtsi | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
+>  drivers/soc/qcom/apr.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/ipq5018.dtsi b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-> index 38ffdc3cbdcd..484034e65f4f 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-> @@ -146,6 +146,16 @@ sdhc_1: mmc@7804000 {
->  			status = "disabled";
->  		};
+> diff --git a/drivers/soc/qcom/apr.c b/drivers/soc/qcom/apr.c
+> index 30f81d6d9d9d..1f8b315576a4 100644
+> --- a/drivers/soc/qcom/apr.c
+> +++ b/drivers/soc/qcom/apr.c
+> @@ -41,7 +41,7 @@ struct packet_router {
+>  struct apr_rx_buf {
+>  	struct list_head node;
+>  	int len;
+> -	uint8_t buf[];
+> +	uint8_t buf[] __counted_by(len);
+>  };
 >  
-> +		blsp_dma: dma-controller@7884000 {
-> +			compatible = "qcom,bam-v1.7.0";
-> +			reg = <0x07884000 0x1d000>;
-> +			interrupts = <GIC_SPI 238 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&gcc GCC_BLSP1_AHB_CLK>;
-> +			clock-names = "bam_clk";
-> +			#dma-cells = <1>;
-> +			qcom,ee = <0>;
-> +		};
-> +
->  		blsp1_uart1: serial@78af000 {
->  			compatible = "qcom,msm-uartdm-v1.4", "qcom,msm-uartdm";
->  			reg = <0x078af000 0x200>;
-> @@ -156,6 +166,20 @@ blsp1_uart1: serial@78af000 {
->  			status = "disabled";
->  		};
+>  /**
+> @@ -171,7 +171,7 @@ static int apr_callback(struct rpmsg_device *rpdev, void *buf,
+>  		return -EINVAL;
+>  	}
 >  
-> +		blsp1_spi1: spi@78b5000 {
-> +			compatible = "qcom,spi-qup-v2.2.1";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			reg = <0x78b5000 0x600>;
-> +			interrupts = <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&gcc GCC_BLSP1_QUP1_SPI_APPS_CLK>,
-> +				 <&gcc GCC_BLSP1_AHB_CLK>;
-> +			clock-names = "core", "iface";
-> +			dmas = <&blsp_dma 4>, <&blsp_dma 5>;
-> +			dma-names = "tx", "rx";
-> +			status = "disabled";
-> +		};
-> +
->  		intc: interrupt-controller@b000000 {
->  			compatible = "qcom,msm-qgic2";
->  			reg = <0x0b000000 0x1000>,  /* GICD */
+> -	abuf = kzalloc(sizeof(*abuf) + len, GFP_ATOMIC);
+> +	abuf = kzalloc(struct_size(abuf, buf, len), GFP_ATOMIC);
+>  	if (!abuf)
+>  		return -ENOMEM;
+>  
 > -- 
-> 2.41.0
+> 2.34.1
 > 
