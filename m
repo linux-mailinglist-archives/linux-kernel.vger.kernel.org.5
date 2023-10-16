@@ -2,347 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C627CB530
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 23:18:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6EE7CB531
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 23:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233510AbjJPVSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 17:18:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43686 "EHLO
+        id S233463AbjJPVTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 17:19:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjJPVSW (ORCPT
+        with ESMTP id S229666AbjJPVTP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 17:18:22 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B12AB
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 14:18:20 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6b36e1fcee9so2614087b3a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 14:18:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697491100; x=1698095900; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dadSSBc4th7Oq3HrYctNHxDRHsr2TvRZmUPJ29Jh97s=;
-        b=WeuRguorXF4GlUT15IuXIR8oumwTP3cQFpKsjP8mTjT/1fBzrzentsmfL2yYMkqYHQ
-         yA98qTyTsN24InwfCAP/3jSh8BKg8pdXEsiV5qRQurFzJLRo7W1eIO3gcYAJuvzaYGnR
-         QCSRSDq6y6hKALnf6KDyvXOlYqs+pn6qOrJuA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697491100; x=1698095900;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dadSSBc4th7Oq3HrYctNHxDRHsr2TvRZmUPJ29Jh97s=;
-        b=sp21peJE3vMp2UsdeK+iqYBKtbtZ3BszIo2+Iw16KRpzGHRbqPW/b60EiwksFinuPi
-         +3FHxZlr9+jz7T9Nw7ffwG7yg4iVCveB+BbYP7khEbvij1ON/ByMY+rdvkoGTSxI4Qnw
-         nQLTcHrRsbaxVIW4Hr9Q15oyi3WAnjckFDgeuV3poDpvR3TvhvHKigTXlfIcJHkuDnws
-         b0X7YUChesuzNj8EM95g2ZWJLesrStUkBKlx51uQdeAwv+pnVk1jHLbaEFA4VAJcIRe/
-         bBsSSJziTiZ4bKExc7rUvyXRTnEI1JLCNeTqUD9CIiJyJ6SQWVriJugFHGwmcmuhLkP1
-         ws5Q==
-X-Gm-Message-State: AOJu0YzQZM3koqrAGNe6hehftFanem2QaenJoHXJ/rEjUhGxHHqh882d
-        NSJ6hMKgqs7cq+sIUWGYS81XfQ==
-X-Google-Smtp-Source: AGHT+IHX1JuAZP7QjOOnXjPpL0JNyaDoeed5AbFBNbQHP3sAultOKIbHZ4eoTJA93ArTK4NBzJHzew==
-X-Received: by 2002:a05:6a00:1887:b0:691:2d4:23a2 with SMTP id x7-20020a056a00188700b0069102d423a2mr324434pfh.31.1697491100331;
-        Mon, 16 Oct 2023 14:18:20 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id n10-20020a63590a000000b0057a868900a9sm73977pgb.67.2023.10.16.14.18.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 14:18:19 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 14:18:19 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Brian Foster <bfoster@redhat.com>
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
-        linux-bcachefs@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] bcachefs: Refactor bkey_i to use a flexible array
-Message-ID: <202310161249.43FB42A6@keescook>
-References: <20231010235609.work.594-kees@kernel.org>
- <ZSkpU0vdrCTfTxuZ@bfoster>
- <202310131637.D0C66BFBA@keescook>
- <ZS0vlpSwH1+/+EVM@bfoster>
+        Mon, 16 Oct 2023 17:19:15 -0400
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2076.outbound.protection.outlook.com [40.107.21.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D74AB;
+        Mon, 16 Oct 2023 14:19:13 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lqLGBvK4OCFt3lLsYIgVuqGUgJTWIqweqf/AYmqWywz3lUY5tn60wHey1jpiucobRkaD0Y5GCCqx+Bb1I2tLWX8osDKHkhxE65TqRwWUEyN3/1nIf/cDG4pR/CMFMj2wKr60vv+4YBQtsmkweTfXCRB2TbFWbusr0jqemfIyrtgBj/amfBLY6YbRnrReVXUYrCdPQ6tX2WGJulQqfminZ0F2Bpvi3brocOdQdAy/CQVvRtp9nSn47hIJxyn5ebpBuXW/5GE/deh8Ug9yanku1Ek2rPJY5dC9o/mscn6c8SnVvviMcUIDqENkG+Z8r2ns56nAWE42wC2Wqhg3MC0Daw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FGLg85lrmJAK1G9LTYz64lUcqVLxFXWlm5K8jHJaC6U=;
+ b=EIuJbssJjg6NcfQ5jnwNPk51eREZxLFfpPkp59aTpmS1I0ZVb2LMt16RUH6slyLurjyNtIeQuJ0gNTirCkSHWdr2KlmRV/80QlxqmwYgQ1hzs/n0QtgdMDOqs1CAvuWYYZrPgSwJarBFZ8tlrKDBtTi25GUtuvlya5yTxEMm/jzcJzGtFDd74KvAl6bp/EE+1vPh/JuUrBu+Me81qlcyopN2E5N+MqsO2gGEBg4/vzS1wm2dZYJJVL7p+Jal65gV7lpDEg3UJLflZTkmWbzzrmc6zfeCcsKzip6pktZS0jcMSyjSQj82WS8Qh8+sAAqar3f2sKqCXeo7ID70/nM/8w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FGLg85lrmJAK1G9LTYz64lUcqVLxFXWlm5K8jHJaC6U=;
+ b=MDmoDBuytY2pcdfr40uPEBciGyae7eDlZYrARZf2hob9T/LA5EGKF/Dbr4a3sDB/PpFjXdIT6yYQcGQw1lptp7jtmuTr2n/+8+GAFIXCUIEQjCIjJ+skJvjCRTIrMY+E4fqExToKQrRs6muUd9PuDGsUIerOE9OghHPbGNBvo5o=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by PR3PR04MB7417.eurprd04.prod.outlook.com (2603:10a6:102:8e::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36; Mon, 16 Oct
+ 2023 21:19:10 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6886.034; Mon, 16 Oct 2023
+ 21:19:09 +0000
+From:   Frank Li <Frank.Li@nxp.com>
+To:     krzysztof.kozlowski@linaro.org
+Cc:     Frank.li@nxp.com, alexander.stein@ew.tq-group.com,
+        alexandre.belloni@bootlin.com, conor+dt@kernel.org,
+        conor.culhane@silvaco.com, conor@kernel.org,
+        devicetree@vger.kernel.org, festevam@gmail.com, haibo.chen@nxp.com,
+        imx@lists.linux.dev, joe@perches.com, kernel@pengutronix.de,
+        krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-i3c@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, miquel.raynal@bootlin.com,
+        peng.fan@nxp.com, ping.bai@nxp.com, robh+dt@kernel.org,
+        s.hauer@pengutronix.de, shawnguo@kernel.org, sherry.sun@nxp.com,
+        xiaoning.wang@nxp.com
+Subject: [PATCH 1/2] i3c: master: svc: fix compatibility string mismatch with binding doc
+Date:   Mon, 16 Oct 2023 17:18:53 -0400
+Message-Id: <20231016211854.2901427-1-Frank.Li@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: PH8PR20CA0019.namprd20.prod.outlook.com
+ (2603:10b6:510:23c::25) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZS0vlpSwH1+/+EVM@bfoster>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|PR3PR04MB7417:EE_
+X-MS-Office365-Filtering-Correlation-Id: 67b74a61-a64f-4acb-1c2a-08dbce8d88b0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wgsnpfh1fQ+bo4fyS6SEMr+5aEhn0Tt4SVcySAkcpE7/lztbICLKkCKvtHkrNDEA6cqd+2D5xZLw2o/vc8OKV57fTtOBQ0XIIzI3bqKModzCcbzodc8WLqxPBxvn9zOona1t1/+lTMNSk/K5Segz7euHeJuND/eiF6a0g32CUm5LJ/pKQfcXwwF8XaivO9NSHPtmzYXCWHhH2dz9z1eMCuMA7cl0fj172LgEqrEj/8SZ+5RsOntndAzialI/JZIMqop+BTOC/VoNWQRi0K+05jUI5CHfGzRnGK+WKsJuXMdDmJAVoVnfEzjxXx4J7zu/MTOChIRlpgz2Ng+q2+joYKbRq2drKYYVtUSQPEmuaEFvIDHubKXf21NMeFErStINVHuHga1ERXNXycNmH+TbGf5Pk2Uelsva0xqmUgaYSby4V57fogEgta6jHMgID7z0pr+TMrK5tvjpjL/PKuwW8svZx/2c3N7LPRJWwpaiZhCQbzK1Cbv+8rk8mSxMfRlYkQL+o+ILyXhJFIXyJZTxcpQXz2AvCCovYiY3bYtWp6K+C4e/X8a9kgT3g05eqlFDlWv1sDrt95r91m4Lup7Brsnc8OTs5RxCbRHgX+cRVs8rm/aCryk50zDOEHnM83O2
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(376002)(136003)(346002)(396003)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(38350700005)(52116002)(26005)(2616005)(1076003)(86362001)(38100700002)(36756003)(83380400001)(7416002)(4326008)(2906002)(6512007)(6506007)(6666004)(478600001)(316002)(41300700001)(6916009)(5660300002)(8936002)(6486002)(8676002)(66476007)(66946007)(66556008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?tbzV8AqaFpMiD7apdC1X2NDjuEX0F39Dpr+oVWSO2KkLtmewNMTT7jATnd+U?=
+ =?us-ascii?Q?YT3ojqmZrCXo/bxRMOm/RzBY0Ph1pIqJ6GkFF91aHRWrM9DT8/pwy0JvCL0/?=
+ =?us-ascii?Q?v+6Ee+i/7mpu/IU/mkkPMflRXVMeey3ULcXw5mR8lB9HquyA9xFAUmBFy9Xg?=
+ =?us-ascii?Q?Iev3nwy2ZBF6xJXwXUKzmZIqjllgO4zgxuKie71e1z7zZbupmPXZE1/lL48b?=
+ =?us-ascii?Q?Q2XooYe6KneyY8mRKDPheZ/NK8yam4uKK8oJ29Auhoi5kDsfEgmS4c7dezgG?=
+ =?us-ascii?Q?TDJuEEZpI9Eq9NQaUP4QprnQISuw1nz/EvjKsyom46r7spWrDXLhgkIB/cbA?=
+ =?us-ascii?Q?3D5ehauID/oJifb2Dp2eLI+oiTjW8fVMv5uyIRYIOcGPZgrnxZxyE0bcRofu?=
+ =?us-ascii?Q?phyMv4HrHJCaL9V36hXWGrC9/VBQB5KOi4LHPRjNaqCdbLM9XDUcTqaSAA5i?=
+ =?us-ascii?Q?9iqN+ltqFtWSL6fNNtyVOiaQCnTZz6ULZjbKgi/8dhgCyCmUPbtwxtKxev3R?=
+ =?us-ascii?Q?JQvNDFxrrKmLHzpoF/y0Txoe3q+TKQEf5zOu659n5UEil6cL/74dRBCghsgk?=
+ =?us-ascii?Q?SLyJXcC74wuxCstNGKZZ3u7rcBpT24K9f4Lth4njX2EGQPkbgV0fLPes457L?=
+ =?us-ascii?Q?/IiGC1WmKF+x/4qHBZyUELXQ4MNkR4EgO4F6K7EgWP6oPM8vBVJSqRUVx/Fq?=
+ =?us-ascii?Q?rJJmN+rSwuArl0j321fq5x8WierotfAeEd2+BtUhelZHI183/LQRRh4mH427?=
+ =?us-ascii?Q?awqKlNA75p3pexFzkd7D7lZnxSK4KzcF/oafzS2GAmVC9hxtbUQktwavRrZ4?=
+ =?us-ascii?Q?m80FSUNCnFMBwWBtVIZFviK3DJmb5HBCtrv+Uinz8ii9+1G8iI3fqJkCn3Fs?=
+ =?us-ascii?Q?wrWqCg6JpMASsVt40nilGVo/pEL/u9LP4HbEQDDpDsnby7spvXeK/iDCLJoZ?=
+ =?us-ascii?Q?TijAvc9l8XaIdJ4o0j97bHVqpVpP1diGSOOWUuNPp0pJIsljmPyty8KaAK/p?=
+ =?us-ascii?Q?u7j9/P+EqzHdTk5ybquHSbTKJuNQzMLrAT67hYYBgsOLQV1pH+zlx8coOBqu?=
+ =?us-ascii?Q?0NH8iSCLt9BFQY2uXg5yXqfRAL8FlSVc0/LLLPfywz/WJUYQV/qeFyvq4RKG?=
+ =?us-ascii?Q?XQahGxpMTG/RR0cjDKjgZCdYSP2AvKrUl7l5Ql5cJWrSjeEs3voPW9RUln6k?=
+ =?us-ascii?Q?9OsEI1EVDO9PU4kfThRrUli7kP9wBYOQg2BGl+0Dvf1HjqcLlELHjY5stZxE?=
+ =?us-ascii?Q?JDk9s/1P9/Yevlkx5qyj/vEpvr7XW22hhs+AwXTGjwr2YAlbgJp48jxbAfpQ?=
+ =?us-ascii?Q?49QsaD0w9TUX9/eCvB55JNV1NP0ubXIjLuproFjJYta6d5afaOmA0Ek/NuPF?=
+ =?us-ascii?Q?m0xfwGuceJ+Pu8BvBRnf98PDlLyr+qnlOI3ZFwavMECDAFaAmdVzu8h2tQuW?=
+ =?us-ascii?Q?5rY77nteHfDZ3pZj/ztC2fmd4rMCE6L4fvcFp1a3bl1hy1VJny9YNHM5HipD?=
+ =?us-ascii?Q?+SaP57qZ4TzZrO6YsMFiZnXyIP7Xl8d0sxhKml3i9R/o2EKzJy/L86mRDY56?=
+ =?us-ascii?Q?iWhpToPI3ea0NCPbkXJCWKgt1LpsfzgpE5sScl/v?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 67b74a61-a64f-4acb-1c2a-08dbce8d88b0
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2023 21:19:09.6873
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: pU4lZf2jOFYcq/Pr3iFgKxZJXZ+ulT+dVx8puJJmtdtteuM45gGNgk8ilm1lZizBgBDs39p7T06OaqCPjZLZMw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR04MB7417
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 08:41:58AM -0400, Brian Foster wrote:
-> On Fri, Oct 13, 2023 at 04:44:21PM -0700, Kees Cook wrote:
-> > On Fri, Oct 13, 2023 at 07:26:11AM -0400, Brian Foster wrote:
-> > > On Tue, Oct 10, 2023 at 04:56:12PM -0700, Kees Cook wrote:
-> > > > The memcpy() in bch2_bkey_append_ptr() is operating on an embedded
-> > > > fake flexible array. Instead, make it explicit, and convert the memcpy
-> > > > to target the flexible array instead. Fixes the W=1 warning seen for
-> > > > -Wstringop-overflow:
-> > > > 
-> > > >    In file included from include/linux/string.h:254,
-> > > >                     from include/linux/bitmap.h:11,
-> > > >                     from include/linux/cpumask.h:12,
-> > > >                     from include/linux/smp.h:13,
-> > > >                     from include/linux/lockdep.h:14,
-> > > >                     from include/linux/radix-tree.h:14,
-> > > >                     from include/linux/backing-dev-defs.h:6,
-> > > >                     from fs/bcachefs/bcachefs.h:182:
-> > > >    fs/bcachefs/extents.c: In function 'bch2_bkey_append_ptr':
-> > > >    include/linux/fortify-string.h:57:33: warning: writing 8 bytes into a region of size 0 [-Wstringop-overflow=]
-> > > >       57 | #define __underlying_memcpy     __builtin_memcpy
-> > > >          |                                 ^
-> > > >    include/linux/fortify-string.h:648:9: note: in expansion of macro '__underlying_memcpy'
-> > > >      648 |         __underlying_##op(p, q, __fortify_size);                        \
-> > > >          |         ^~~~~~~~~~~~~
-> > > >    include/linux/fortify-string.h:693:26: note: in expansion of macro '__fortify_memcpy_chk'
-> > > >      693 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,                  \
-> > > >          |                          ^~~~~~~~~~~~~~~~~~~~
-> > > >    fs/bcachefs/extents.c:235:17: note: in expansion of macro 'memcpy'
-> > > >      235 |                 memcpy((void *) &k->v + bkey_val_bytes(&k->k),
-> > > >          |                 ^~~~~~
-> > > >    fs/bcachefs/bcachefs_format.h:287:33: note: destination object 'v' of size 0
-> > > >      287 |                 struct bch_val  v;
-> > > >          |                                 ^
-> > > > 
-> > > > Cc: Kent Overstreet <kent.overstreet@linux.dev>
-> > > > Cc: Brian Foster <bfoster@redhat.com>
-> > > > Cc: linux-bcachefs@vger.kernel.org
-> > > > Reported-by: kernel test robot <lkp@intel.com>
-> > > > Closes: https://lore.kernel.org/oe-kbuild-all/202309192314.VBsjiIm5-lkp@intel.com/
-> > > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > > ---
-> > > >  fs/bcachefs/bcachefs_format.h | 5 ++++-
-> > > >  fs/bcachefs/extents.h         | 2 +-
-> > > >  2 files changed, 5 insertions(+), 2 deletions(-)
-> > > > 
-> > > > diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
-> > > > index f0d130440baa..f5e8cb43697b 100644
-> > > > --- a/fs/bcachefs/bcachefs_format.h
-> > > > +++ b/fs/bcachefs/bcachefs_format.h
-> > > > @@ -300,7 +300,10 @@ struct bkey_i {
-> > > >  	__u64			_data[0];
-> > > >  
-> > > >  	struct bkey	k;
-> > > > -	struct bch_val	v;
-> > > > +	union {
-> > > > +		struct bch_val	v;
-> > > > +		DECLARE_FLEX_ARRAY(__u8, bytes);
-> > > > +	};
-> > > >  };
-> > > 
-> > > Hi Kees,
-> > > 
-> > > I'm curious if this is something that could be buried in bch_val given
-> > > it's already kind of a fake structure..? If not, my only nitty comment
-> > 
-> > I was thinking it would be best to keep the flexible array has "high" in
-> > the struct as possible, as in the future more refactoring will be needed
-> > to avoid having flex arrays overlap with other members in composite
-> > structures. So instead of pushing into bch_val, I left it at the highest
-> > level possible, bch_i, as that's the struct being used by the memcpy().
-> > 
-> > Eventually proper unions will be needed instead of overlapping bch_i
-> > with other types, as in:
-> > 
-> > struct btree_root {
-> >         struct btree            *b;
-> > 
-> >         /* On disk root - see async splits: */
-> >         __BKEY_PADDED(key, BKEY_BTREE_PTR_VAL_U64s_MAX);
-> >         u8                      level;
-> >         u8                      alive;
-> >         s8                      error;
-> > };
-> > 
-> > But that's all for the future. Right now I wanted to deal with the more
-> > pressing matter of a 0-sized array not being zero sized. :)
-> > 
-> 
-> Ok, but I'm not really following how one approach vs. the other relates
-> to this particular example of an embedded bkey_i. I'm probably just not
-> familiar enough with the current issues with 0-sized arrays and the
-> anticipated path forward. Can you elaborate for somebody who is more
-> focused on trying to manage the design/complexity of these various key
-> data structures? For example, what's the practical difference here (for
-> future work) if the flex array lives in bch_val vs. bkey_i?
+In the binding documentation, the compatible string is specified as
+'silvaco,i3c-master-v1', but in the driver, it is defined as
+'silvaco,i3c-master'.
 
-I was looking strictly at the layer it was happening: the function that
-calls memcpy() is working on a bkey_i, so I figured that was the place
-for it currently.
+Add 'silvaco,i3c-master-v1' to the driver and deprecates
+'silvaco,i3c-master' to ensure compatibility with the documentation.
 
-> Note that I don't necessarily have a strong opinion on this atm, but if
-> there's a "for future reasons" aspect to this approach I'd like to at
-> least understand it a little better. ;)
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+---
 
-The future work here is about making sure flexible arrays don't overlap
-with non-flexible array members[1], and that will require giving some
-thought to how the structures are arranged.
+Notes:
+    Change from v1 to v2
+    - update driver by using compatible string silvaco,i3c-master-v1
 
-The specific "problem" being solved is the ambiguity in the C language
-for dealing with flexible arrays. For example, this will already throw a
-warning:
+ drivers/i3c/master/svc-i3c-master.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-struct whoops {
-	u32 stuff;
-	u8 how_many_shorts;
-	u16 shorts[];
-	u64 flags;
-};
-
-Doing struct_size()-style allocations will end up with a clobbered
-"flags" member when accessing the first 4 "shorts", etc. This neighboring
-overwrite corruption code pattern has happened (and been fixed) a bunch[2]
-in the kernel when someone adds a new member to a struct at the end
-without noticing the flexible array. (In the past, it was usually via
-the 0-sized arrays, e.g. "u16 shorts[0]".) One of the many benefits of
-using C99 flex arrays is that the compiler will warn now (when it's in
-the same struct), and "flags" can be moved to the right place, etc.
-
-*However*, the compiler wasn't warning about composite structures, like
-this:
-
-struct inner {
-	u32 stuff;
-	u8 how_many_shorts;
-	u16 shorts[];
-};
-
-struct whoops {
-	struct inner instance;
-	u64 flags;
-};
-
-This ends up being an ambiguous situation: is "flags" an interpretation
-of the first 4 "shorts", or is it an accidental overlap that will lead
-to memory corruption? So, in our ongoing battle to eliminate ambiguities
-in the codebase, we've moving away from this code pattern (with the
-help of the future -Wflex-array-member-not-at-end compiler option),
-by switching to unambiguous structure layouts.
-
-The common "intentional overlap" use-case is very similar to the bcachefs
-code. For example:
-
-struct header {
-	u32 long flags;
-	struct other things;
-	size_t byte_count;
-	u8 bytes[];
-};
-
-struct cmd_one {
-	struct header hdr;
-	u64 detail;
-	u8 bits;
-};
-
-struct cmd_two {
-	struct header hdr;
-	u32 foo, bar;
-	u64 baz;
-};
-
-The use of "struct header" effectively says "we have some number of bytes,
-but we don't know *what* it is yet". Is it cmd_one, or cmd_two? Instead
-of combining the flex array with the header, we can either split it off:
-
-struct header {
-	u32 long flags;
-	struct other things;
-	size_t byte_count;
-};
-
-struct cmd_unknown {
-	struct header;
-	u8 bytes[];
-};
-
-Or we can merge all the structs together:
-
-struct everything {
-	u32 long flags;
-	struct other things;
-	size_t byte_count;
-	union {
-		struct cmd_one {
-			u64 detail;
-			u8 bits;
-		};
-		struct cmd_two {
-			u32 foo, bar;
-			u64 baz;
-		};
-		struct unknown {
-			u8 bytes[];
-		};
-	};
-};
-
-In the first style, the flexible array is distinctly separate. In the
-second style the overlap is explicitly shown via the union.
-
-I expect it will take a long time to make the kernel "flex array overlap
-clean", so while I don't feel any rush, I've been generally trying to
-avoid seeing new instances of ambiguous overlap _added_ to the kernel. :)
-
-bcachefs is in a unique places where because it's been out of tree
-its code patterns aren't "new", but it's just been "added" upstream.
-*shrug* So we'll deal with the existing warnings we've already got,
-and prepare for the future warnings as we can.
-
-Hopefully that helps!
-
--Kees
-
-[1] See "-Wflex-array-member-not-at-end":
-    https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-[2] Going all the way back to 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-
-> 
-> > > is that memcpy(k->bytes[], ...) makes it kind of read like we're copying
-> > > in opaque key data rather than value data, so perhaps a slightly more
-> > > descriptive field name would be helpful. But regardless I'd wait until
-> > > Kent has a chance to comment before changing anything..
-> > 
-> > How about "v_bytes" instead of "bytes"? Or if it really is preferred,
-> > I can move the flex array into bch_val -- it just seems like the wrong
-> > layer...
-> > 
-> 
-> Yeah.. v_bytes, value_bytes, etc. etc. Anything that avoids misleading
-> code when using the field is good with me. Thanks.
-> 
-> Brian
-> 
-> > -Kees
-> > 
-> > > 
-> > > Brian
-> > > 
-> > > >  
-> > > >  #define KEY(_inode, _offset, _size)					\
-> > > > diff --git a/fs/bcachefs/extents.h b/fs/bcachefs/extents.h
-> > > > index 7ee8d031bb6c..6248e17bbac5 100644
-> > > > --- a/fs/bcachefs/extents.h
-> > > > +++ b/fs/bcachefs/extents.h
-> > > > @@ -642,7 +642,7 @@ static inline void bch2_bkey_append_ptr(struct bkey_i *k, struct bch_extent_ptr
-> > > >  
-> > > >  		ptr.type = 1 << BCH_EXTENT_ENTRY_ptr;
-> > > >  
-> > > > -		memcpy((void *) &k->v + bkey_val_bytes(&k->k),
-> > > > +		memcpy(&k->bytes[bkey_val_bytes(&k->k)],
-> > > >  		       &ptr,
-> > > >  		       sizeof(ptr));
-> > > >  		k->k.u64s++;
-> > > > -- 
-> > > > 2.34.1
-> > > > 
-> > > 
-> > 
-> > -- 
-> > Kees Cook
-> > 
-> 
-
+diff --git a/drivers/i3c/master/svc-i3c-master.c b/drivers/i3c/master/svc-i3c-master.c
+index cf932ee056ef..4c74b11b13c6 100644
+--- a/drivers/i3c/master/svc-i3c-master.c
++++ b/drivers/i3c/master/svc-i3c-master.c
+@@ -1650,7 +1650,8 @@ static const struct dev_pm_ops svc_i3c_pm_ops = {
+ };
+ 
+ static const struct of_device_id svc_i3c_master_of_match_tbl[] = {
+-	{ .compatible = "silvaco,i3c-master" },
++	{ .compatible = "silvaco,i3c-master" }, /* deprecated */
++	{ .compatible = "silvaco,i3c-master-v1"},
+ 	{ /* sentinel */ },
+ };
+ MODULE_DEVICE_TABLE(of, svc_i3c_master_of_match_tbl);
 -- 
-Kees Cook
+2.34.1
+
