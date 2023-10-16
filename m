@@ -2,194 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0BBE7C9E17
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 06:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E535E7C9D4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 04:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231249AbjJPEC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 00:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35914 "EHLO
+        id S231325AbjJPCGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 22:06:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjJPEC0 (ORCPT
+        with ESMTP id S230490AbjJPCGn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 00:02:26 -0400
-Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D93AD;
-        Sun, 15 Oct 2023 21:02:24 -0700 (PDT)
-Received: from localhost.localdomain (unknown [10.101.196.174])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 43BAB3F0C6;
-        Mon, 16 Oct 2023 04:02:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1697428940;
-        bh=vkafOmpdBRmco3tsD/n12uXh8EE6SvdVyF3TIx5/KiY=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=LfIysylXk+F/ROUKC4Q2wqhQ4OOd9ajiuEdPBqVJGauGHJvWmlqKOeZmm65H1SF/j
-         vIMAB7Gy1QXMiqXzVw9WUTS+6YYX1LUkUvfsuTgXYaH9e5NhbCvLfifOw9lgfpw5r5
-         GtRNW0QyiXlngsXfBskskWvZ7zPGr+ftxfSKO9l75QBT7NR5opLaTvYqAWwkgfo/uO
-         bAU+ks79D38JYUaLBLfePH5ruoU5teDcpLHvebA8pX6XvqmbBmZNda7bMVOUOYNiWe
-         AaDVs0IUhO/k2VBEh3qpNdn+8jXX16DE4hOb8ozay72KmpyBM7+4fVosGKGRlqWt+H
-         CC8dVJiH3EWOw==
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     bhelgaas@google.com
-Cc:     linux-pm@vger.kernel.org, linux-mmc@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Ricky Wu <ricky_wu@realtek.com>,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        Lukas Wunner <lukas@wunner.de>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH] PCI: pciehp: Prevent child devices from doing RPM on PCIe Link Down
-Date:   Mon, 16 Oct 2023 12:01:31 +0800
-Message-Id: <20231016040132.23824-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.34.1
+        Sun, 15 Oct 2023 22:06:43 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1564C1;
+        Sun, 15 Oct 2023 19:06:40 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4S80pb4YXgz4f3l7r;
+        Mon, 16 Oct 2023 10:06:31 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP4 (Coremail) with SMTP id gCh0CgAnt9armixlh4dQDA--.48728S4;
+        Mon, 16 Oct 2023 10:06:37 +0800 (CST)
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+To:     song@kernel.org
+Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
+        yangerkun@huawei.com
+Subject: [PATCH v2] md: cleanup pers->prepare_suspend()
+Date:   Mon, 16 Oct 2023 18:02:40 +0800
+Message-Id: <20231016100240.540474-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgAnt9armixlh4dQDA--.48728S4
+X-Coremail-Antispam: 1UD129KBjvJXoW3JryrKF15AF1kWF1xtr4fZrb_yoWxAr4rpa
+        93tF9xZr40qF9xKF4DJr4kWa4Y9rnrKrZrta9rJw1xA3W3tr4rC3W5Way5Zr95Aa48ArWD
+        Xa1UJa4Dur4093JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2ocxC64kIII
+        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
+        wVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7
+        xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
+        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr
+        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8v
+        x2IErcIFxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1l
+        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+        AFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v2
+        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0p
+        RQo7tUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When inserting an SD7.0 card to Realtek card reader, it can trigger PCI
-slot Link down and causes the following error:
-[   63.898861] pcieport 0000:00:1c.0: pciehp: Slot(8): Link Down
-[   63.912118] BUG: unable to handle page fault for address: ffffb24d403e50=
-10
-[   63.912122] #PF: supervisor read access in kernel mode
-[   63.912125] #PF: error_code(0x0000) - not-present page
-[   63.912126] PGD 100000067 P4D 100000067 PUD 1001fe067 PMD 100d97067 PTE 0
-[   63.912131] Oops: 0000 [#1] PREEMPT SMP PTI
-[   63.912134] CPU: 3 PID: 534 Comm: kworker/3:10 Not tainted 6.4.0 #6
-[   63.912137] Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M.=
-/H370M Pro4, BIOS P3.40 10/25/2018
-[   63.912138] Workqueue: pm pm_runtime_work
-[   63.912144] RIP: 0010:ioread32+0x2e/0x70
-[   63.912148] Code: ff 03 00 77 25 48 81 ff 00 00 01 00 77 14 8b 15 08 d9 =
-54 01 b8 ff ff ff ff 85 d2 75 14 c3 cc cc cc cc 89 fa ed c3 cc cc cc cc <8b=
-> 07 c3 cc cc cc cc 55 83 ea 01 48 89 fe 48 c7 c7 98 6f 15 99 48
-[   63.912150] RSP: 0018:ffffb24d40a5bd78 EFLAGS: 00010296
-[   63.912152] RAX: ffffb24d403e5000 RBX: 0000000000000152 RCX: 00000000000=
-0007f
-[   63.912153] RDX: 000000000000ff00 RSI: ffffb24d403e5010 RDI: ffffb24d403=
-e5010
-[   63.912155] RBP: ffffb24d40a5bd98 R08: ffffb24d403e5010 R09: 00000000000=
-00000
-[   63.912156] R10: ffff9074cd95e7f4 R11: 0000000000000003 R12: 00000000000=
-0007f
-[   63.912158] R13: ffff9074e1a68c00 R14: ffff9074e1a68d00 R15: 00000000000=
-09003
-[   63.912159] FS:  0000000000000000(0000) GS:ffff90752a180000(0000) knlGS:=
-0000000000000000
-[   63.912161] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   63.912162] CR2: ffffb24d403e5010 CR3: 0000000152832006 CR4: 00000000003=
-706e0
-[   63.912164] Call Trace:
-[   63.912165]  <TASK>
-[   63.912167]  ? show_regs+0x68/0x70
-[   63.912171]  ? __die_body+0x20/0x70
-[   63.912173]  ? __die+0x2b/0x40
-[   63.912175]  ? page_fault_oops+0x160/0x480
-[   63.912177]  ? search_bpf_extables+0x63/0x90
-[   63.912180]  ? ioread32+0x2e/0x70
-[   63.912183]  ? search_exception_tables+0x5f/0x70
-[   63.912186]  ? kernelmode_fixup_or_oops+0xa2/0x120
-[   63.912189]  ? __bad_area_nosemaphore+0x179/0x230
-[   63.912191]  ? bad_area_nosemaphore+0x16/0x20
-[   63.912193]  ? do_kern_addr_fault+0x8b/0xa0
-[   63.912195]  ? exc_page_fault+0xe5/0x180
-[   63.912198]  ? asm_exc_page_fault+0x27/0x30
-[   63.912203]  ? ioread32+0x2e/0x70
-[   63.912206]  ? rtsx_pci_write_register+0x5b/0x90 [rtsx_pci]
-[   63.912217]  rtsx_set_l1off_sub+0x1c/0x30 [rtsx_pci]
-[   63.912226]  rts5261_set_l1off_cfg_sub_d0+0x36/0x40 [rtsx_pci]
-[   63.912234]  rtsx_pci_runtime_idle+0xc7/0x160 [rtsx_pci]
-[   63.912243]  ? __pfx_pci_pm_runtime_idle+0x10/0x10
-[   63.912246]  pci_pm_runtime_idle+0x34/0x70
-[   63.912248]  rpm_idle+0xc4/0x2b0
-[   63.912251]  pm_runtime_work+0x93/0xc0
-[   63.912254]  process_one_work+0x21a/0x430
-[   63.912258]  worker_thread+0x4a/0x3c0
-[   63.912261]  ? __pfx_worker_thread+0x10/0x10
-[   63.912263]  kthread+0x106/0x140
-[   63.912266]  ? __pfx_kthread+0x10/0x10
-[   63.912268]  ret_from_fork+0x29/0x50
-[   63.912273]  </TASK>
-[   63.912274] Modules linked in: nvme nvme_core snd_hda_codec_hdmi snd_sof=
-_pci_intel_cnl snd_sof_intel_hda_common snd_hda_codec_realtek snd_hda_codec=
-_generic snd_soc_hdac_hda soundwire_intel ledtrig_audio nls_iso8859_1 sound=
-wire_generic_allocation soundwire_cadence snd_sof_intel_hda_mlink snd_sof_i=
-ntel_hda snd_sof_pci snd_sof_xtensa_dsp snd_sof snd_sof_utils snd_hda_ext_c=
-ore snd_soc_acpi_intel_match snd_soc_acpi soundwire_bus snd_soc_core snd_co=
-mpress ac97_bus snd_pcm_dmaengine snd_hda_intel i915 snd_intel_dspcfg snd_i=
-ntel_sdw_acpi intel_rapl_msr snd_hda_codec intel_rapl_common snd_hda_core x=
-86_pkg_temp_thermal intel_powerclamp snd_hwdep coretemp snd_pcm kvm_intel d=
-rm_buddy ttm mei_hdcp kvm drm_display_helper snd_seq_midi snd_seq_midi_even=
-t cec crct10dif_pclmul ghash_clmulni_intel sha512_ssse3 aesni_intel crypto_=
-simd rc_core cryptd rapl snd_rawmidi drm_kms_helper binfmt_misc intel_cstat=
-e i2c_algo_bit joydev snd_seq snd_seq_device syscopyarea wmi_bmof snd_timer=
- sysfillrect input_leds snd ee1004 sysimgblt mei_me soundcore
-[   63.912324]  mei intel_pch_thermal mac_hid acpi_tad acpi_pad sch_fq_code=
-l msr parport_pc ppdev lp ramoops drm parport reed_solomon efi_pstore ip_ta=
-bles x_tables autofs4 hid_generic usbhid hid rtsx_pci_sdmmc crc32_pclmul ah=
-ci e1000e i2c_i801 i2c_smbus rtsx_pci xhci_pci libahci xhci_pci_renesas vid=
-eo wmi
-[   63.912346] CR2: ffffb24d403e5010
-[   63.912348] ---[ end trace 0000000000000000 ]---
+From: Yu Kuai <yukuai3@huawei.com>
 
-This happens because scheduled pm_runtime_idle() is not cancelled.
+pers->prepare_suspend() is not used anymore and can be removed.
 
-So use pm_runtime_barrier() to ensure all devices on the bus stops
-runtime power management actions.
+Reverts following three commit:
 
-Link: https://lore.kernel.org/all/2ce258f371234b1f8a1a470d5488d00e@realtek.=
-com/
-Tested-by: Ricky Wu <ricky_wu@realtek.com>
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+ - commit 431e61257d63 ("md: export md_is_rdwr() and is_md_suspended()")
+ - commit 3e00777d5157 ("md: add a new api prepare_suspend() in
+md_personality")
+ - commit 868bba54a3bc ("md/raid5: fix a deadlock in the case that reshape
+is interrupted")
+
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/pci/hotplug/pciehp_pci.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+Changes in v2:
+ - fix a conflict that is caused from my local branch.
 
-diff --git a/drivers/pci/hotplug/pciehp_pci.c b/drivers/pci/hotplug/pciehp_=
-pci.c
-index ad12515a4a12..9ae4fa95c8c1 100644
---- a/drivers/pci/hotplug/pciehp_pci.c
-+++ b/drivers/pci/hotplug/pciehp_pci.c
-@@ -18,9 +18,18 @@
- #include <linux/kernel.h>
- #include <linux/types.h>
- #include <linux/pci.h>
-+#include <linux/pm_runtime.h>
- #include "../pci.h"
- #include "pciehp.h"
-=20
-+int pci_dev_disconnect(struct pci_dev *pdev, void *unused)
-+{
-+	pm_runtime_barrier(&pdev->dev);
-+	pci_dev_set_disconnected(pdev, NULL);
+ drivers/md/md.c    | 17 ++++++++++++++++-
+ drivers/md/md.h    | 18 ------------------
+ drivers/md/raid5.c | 44 +-------------------------------------------
+ 3 files changed, 17 insertions(+), 62 deletions(-)
+
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index fa6fe1664e78..68f3bb6e89cb 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -91,6 +91,18 @@ static void mddev_detach(struct mddev *mddev);
+ static void export_rdev(struct md_rdev *rdev, struct mddev *mddev);
+ static void md_wakeup_thread_directly(struct md_thread __rcu *thread);
+ 
++enum md_ro_state {
++	MD_RDWR,
++	MD_RDONLY,
++	MD_AUTO_READ,
++	MD_MAX_STATE
++};
 +
-+	return 0;
++static bool md_is_rdwr(struct mddev *mddev)
++{
++	return (mddev->ro == MD_RDWR);
 +}
 +
- /**
-  * pciehp_configure_device() - enumerate PCI devices below a hotplug bridge
-  * @ctrl: PCIe hotplug controller
-@@ -98,7 +107,7 @@ void pciehp_unconfigure_device(struct controller *ctrl, =
-bool presence)
- 		 __func__, pci_domain_nr(parent), parent->number);
-=20
- 	if (!presence)
--		pci_walk_bus(parent, pci_dev_set_disconnected, NULL);
-+		pci_walk_bus(parent, pci_dev_disconnect, NULL);
-=20
- 	pci_lock_rescan_remove();
-=20
---=20
-2.34.1
+ /*
+  * Default number of read corrections we'll attempt on an rdev
+  * before ejecting it from the array. We divide the read error
+@@ -333,6 +345,10 @@ EXPORT_SYMBOL_GPL(md_new_event);
+ static LIST_HEAD(all_mddevs);
+ static DEFINE_SPINLOCK(all_mddevs_lock);
+ 
++static bool is_md_suspended(struct mddev *mddev)
++{
++	return percpu_ref_is_dying(&mddev->active_io);
++}
+ /* Rather than calling directly into the personality make_request function,
+  * IO requests come here first so that we can check if the device is
+  * being suspended pending a reconfiguration.
+@@ -9144,7 +9160,6 @@ void md_do_sync(struct md_thread *thread)
+ 	spin_unlock(&mddev->lock);
+ 
+ 	wake_up(&resync_wait);
+-	wake_up(&mddev->sb_wait);
+ 	md_wakeup_thread(mddev->thread);
+ 	return;
+ }
+diff --git a/drivers/md/md.h b/drivers/md/md.h
+index 55d01d431418..20f3f96cf4c1 100644
+--- a/drivers/md/md.h
++++ b/drivers/md/md.h
+@@ -565,23 +565,6 @@ enum recovery_flags {
+ 	MD_RESYNCING_REMOTE,	/* remote node is running resync thread */
+ };
+ 
+-enum md_ro_state {
+-	MD_RDWR,
+-	MD_RDONLY,
+-	MD_AUTO_READ,
+-	MD_MAX_STATE
+-};
+-
+-static inline bool md_is_rdwr(struct mddev *mddev)
+-{
+-	return (mddev->ro == MD_RDWR);
+-}
+-
+-static inline bool is_md_suspended(struct mddev *mddev)
+-{
+-	return percpu_ref_is_dying(&mddev->active_io);
+-}
+-
+ static inline int __must_check mddev_lock(struct mddev *mddev)
+ {
+ 	return mutex_lock_interruptible(&mddev->reconfig_mutex);
+@@ -641,7 +624,6 @@ struct md_personality
+ 	int (*start_reshape) (struct mddev *mddev);
+ 	void (*finish_reshape) (struct mddev *mddev);
+ 	void (*update_reshape_pos) (struct mddev *mddev);
+-	void (*prepare_suspend) (struct mddev *mddev);
+ 	/* quiesce suspends or resumes internal processing.
+ 	 * 1 - stop new actions and wait for action io to complete
+ 	 * 0 - return to normal behaviour
+diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
+index 36ca6db37153..ad6d5138a6bd 100644
+--- a/drivers/md/raid5.c
++++ b/drivers/md/raid5.c
+@@ -5907,19 +5907,6 @@ static int add_all_stripe_bios(struct r5conf *conf,
+ 	return ret;
+ }
+ 
+-static bool reshape_inprogress(struct mddev *mddev)
+-{
+-	return test_bit(MD_RECOVERY_RESHAPE, &mddev->recovery) &&
+-	       test_bit(MD_RECOVERY_RUNNING, &mddev->recovery) &&
+-	       !test_bit(MD_RECOVERY_DONE, &mddev->recovery) &&
+-	       !test_bit(MD_RECOVERY_INTR, &mddev->recovery);
+-}
+-
+-static bool reshape_disabled(struct mddev *mddev)
+-{
+-	return is_md_suspended(mddev) || !md_is_rdwr(mddev);
+-}
+-
+ static enum stripe_result make_stripe_request(struct mddev *mddev,
+ 		struct r5conf *conf, struct stripe_request_ctx *ctx,
+ 		sector_t logical_sector, struct bio *bi)
+@@ -5951,8 +5938,7 @@ static enum stripe_result make_stripe_request(struct mddev *mddev,
+ 			if (ahead_of_reshape(mddev, logical_sector,
+ 					     conf->reshape_safe)) {
+ 				spin_unlock_irq(&conf->device_lock);
+-				ret = STRIPE_SCHEDULE_AND_RETRY;
+-				goto out;
++				return STRIPE_SCHEDULE_AND_RETRY;
+ 			}
+ 		}
+ 		spin_unlock_irq(&conf->device_lock);
+@@ -6031,15 +6017,6 @@ static enum stripe_result make_stripe_request(struct mddev *mddev,
+ 
+ out_release:
+ 	raid5_release_stripe(sh);
+-out:
+-	if (ret == STRIPE_SCHEDULE_AND_RETRY && !reshape_inprogress(mddev) &&
+-	    reshape_disabled(mddev)) {
+-		bi->bi_status = BLK_STS_IOERR;
+-		ret = STRIPE_FAIL;
+-		pr_err("md/raid456:%s: io failed across reshape position while reshape can't make progress.\n",
+-		       mdname(mddev));
+-	}
+-
+ 	return ret;
+ }
+ 
+@@ -8924,22 +8901,6 @@ static int raid5_start(struct mddev *mddev)
+ 	return r5l_start(conf->log);
+ }
+ 
+-static void raid5_prepare_suspend(struct mddev *mddev)
+-{
+-	struct r5conf *conf = mddev->private;
+-
+-	wait_event(mddev->sb_wait, !reshape_inprogress(mddev) ||
+-				    percpu_ref_is_zero(&mddev->active_io));
+-	if (percpu_ref_is_zero(&mddev->active_io))
+-		return;
+-
+-	/*
+-	 * Reshape is not in progress, and array is suspended, io that is
+-	 * waiting for reshpape can never be done.
+-	 */
+-	wake_up(&conf->wait_for_overlap);
+-}
+-
+ static struct md_personality raid6_personality =
+ {
+ 	.name		= "raid6",
+@@ -8960,7 +8921,6 @@ static struct md_personality raid6_personality =
+ 	.check_reshape	= raid6_check_reshape,
+ 	.start_reshape  = raid5_start_reshape,
+ 	.finish_reshape = raid5_finish_reshape,
+-	.prepare_suspend = raid5_prepare_suspend,
+ 	.quiesce	= raid5_quiesce,
+ 	.takeover	= raid6_takeover,
+ 	.change_consistency_policy = raid5_change_consistency_policy,
+@@ -8985,7 +8945,6 @@ static struct md_personality raid5_personality =
+ 	.check_reshape	= raid5_check_reshape,
+ 	.start_reshape  = raid5_start_reshape,
+ 	.finish_reshape = raid5_finish_reshape,
+-	.prepare_suspend = raid5_prepare_suspend,
+ 	.quiesce	= raid5_quiesce,
+ 	.takeover	= raid5_takeover,
+ 	.change_consistency_policy = raid5_change_consistency_policy,
+@@ -9011,7 +8970,6 @@ static struct md_personality raid4_personality =
+ 	.check_reshape	= raid5_check_reshape,
+ 	.start_reshape  = raid5_start_reshape,
+ 	.finish_reshape = raid5_finish_reshape,
+-	.prepare_suspend = raid5_prepare_suspend,
+ 	.quiesce	= raid5_quiesce,
+ 	.takeover	= raid4_takeover,
+ 	.change_consistency_policy = raid5_change_consistency_policy,
+-- 
+2.39.2
 
