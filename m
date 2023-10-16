@@ -2,164 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8740B7CAB76
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 16:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 436E87CACAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 16:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233772AbjJPO1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 10:27:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42206 "EHLO
+        id S233851AbjJPO6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 10:58:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232381AbjJPO1v (ORCPT
+        with ESMTP id S233838AbjJPO6S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 10:27:51 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFA8683;
-        Mon, 16 Oct 2023 07:27:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697466468; x=1729002468;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=WAHtEU+QRIIV0hjjctV4dFUOMA87lFSZZckv/e6FmbI=;
-  b=MLdYaMUrX5YccmQcg2hEP63YIkH+x1b3KeRgjLxsRYMcuSx99wFnnN6R
-   IzN66rHPFhvJKLQ5WOEcR5hT9yNZ5cybG6UUjUvmz6wtAPXVToW0V62OQ
-   KWIsNyrR/rnjiWcpfFHWYHYRzurXPtROJnnmoOY/gJUYmC/SAREcjIa8G
-   dr+7jGx5XGCIU974YKCV8goveF9t0DYWMxLia3zr31EIN2VMir1eVyQXc
-   ghvlcbrHLr8zwmKLE1HtgSvqd+Mc+eQ/s0YnbLieqOoVgsSWB/76qp6TV
-   AS10mjor5216OwX7Lpd9ZCG58YtCpoikRazXWSM0i+nYQqeeyZuCo2kwW
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="388396812"
-X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="388396812"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 07:27:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="759416190"
-X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="759416190"
-Received: from rhaeussl-mobl.ger.corp.intel.com ([10.252.59.103])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 07:27:40 -0700
-Date:   Mon, 16 Oct 2023 17:27:37 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-cc:     linux-pci@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        ath10k@lists.infradead.org, ath11k@lists.infradead.org,
-        ath12k@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-bluetooth@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-rdma@vger.kernel.org,
-        linux-wireless@vger.kernel.org, Netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH v2 03/13] PCI/ASPM: Disable ASPM when driver requests
- it
-In-Reply-To: <20231013164228.GA1117889@bhelgaas>
-Message-ID: <a434d9f-48ec-cfe5-900-8923361798a9@linux.intel.com>
-References: <20231013164228.GA1117889@bhelgaas>
+        Mon, 16 Oct 2023 10:58:18 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C104AB;
+        Mon, 16 Oct 2023 07:58:17 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B3D2C433C7;
+        Mon, 16 Oct 2023 14:58:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1697468296;
+        bh=zmZs3cT99Ur9yvFFGEPGXCP9E85IltaNJadsTOusyko=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kClicbi0FEtJOIS2/IWCagp0cUksl6C6Tf/QrfEX9GfBmW89XU5uFV+l8/jAe1vip
+         OUsWpbUhVyGgMeY5w0k7kgVEEBIXsol7uxKBM5x225a19aIZenh4CSO1Hg9+7gJG9f
+         E4XKQBULQatlAAkf6qALInjQh9D6MqaaaZ4xRUcQ=
+Date:   Mon, 16 Oct 2023 16:28:15 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
+Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Teddy Wang <teddy.wang@siliconmotion.com>,
+        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: sm750fb: remove unnecessary parentheses
+Message-ID: <2023101643-nemesis-residence-89a6@gregkh>
+References: <20231016130053.GA9696@ubuntu>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323329-158890400-1697462044=:1986"
-Content-ID: <58c8d854-b57c-582-1ba0-efeb857febe@linux.intel.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231016130053.GA9696@ubuntu>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-158890400-1697462044=:1986
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-Content-ID: <a321263b-cac2-11d0-6cb1-43cc78d1c6d1@linux.intel.com>
-
-On Fri, 13 Oct 2023, Bjorn Helgaas wrote:
-> On Thu, Oct 12, 2023 at 01:56:16PM +0300, Ilpo Järvinen wrote:
-> > On Wed, 11 Oct 2023, Bjorn Helgaas wrote:
-> > > On Mon, Sep 18, 2023 at 04:10:53PM +0300, Ilpo Järvinen wrote:
-> > > > PCI core/ASPM service driver allows controlling ASPM state through
-> > > > pci_disable_link_state() and pci_enable_link_state() API. It was
-> > > > decided earlier (see the Link below), to not allow ASPM changes when OS
-> > > > does not have control over it but only log a warning about the problem
-> > > > (commit 2add0ec14c25 ("PCI/ASPM: Warn when driver asks to disable ASPM,
-> > > > but we can't do it")). Similarly, if ASPM is not enabled through
-> > > > config, ASPM cannot be disabled.
-> > ...
+On Mon, Oct 16, 2023 at 06:00:53AM -0700, Nandha Kumar Singaram wrote:
+> Adhere to linux coding style. Reported by checkpatch:
+> CHECK: Unnecessary parentheses
 > 
-> > > This disables *all* ASPM states, unlike the version when
-> > > CONFIG_PCIEASPM is enabled.  I suppose there's a reason, and maybe a
-> > > comment could elaborate on it?
-> > >
-> > > When CONFIG_PCIEASPM is not enabled, I don't think we actively
-> > > *disable* ASPM in the hardware; we just leave it as-is, so firmware
-> > > might have left it enabled.
-> > 
-> > This whole trickery is intended for drivers that do not want to have ASPM 
-> > because the devices are broken with it. So leaving it as-is is not really 
-> > an option (as demonstrated by the custom workarounds).
+> Signed-off-by: Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
+> ---
+>  drivers/staging/sm750fb/ddk750_swi2c.c | 2 +-
+>  drivers/staging/sm750fb/sm750_accel.c  | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> Right.
+> diff --git a/drivers/staging/sm750fb/ddk750_swi2c.c b/drivers/staging/sm750fb/ddk750_swi2c.c
+> index 0ef8d4ff2ef9..50e51d730d86 100644
+> --- a/drivers/staging/sm750fb/ddk750_swi2c.c
+> +++ b/drivers/staging/sm750fb/ddk750_swi2c.c
+> @@ -393,7 +393,7 @@ long sm750_sw_i2c_init(unsigned char clk_gpio, unsigned char data_gpio)
+>  	 * Return 0 if the GPIO pins to be used is out of range. The
+>  	 * range is only from [0..63]
+>  	 */
+> -	if ((clk_gpio > 31) || (data_gpio > 31))
+> +	if (clk_gpio > 31 || data_gpio > 31)
+>  		return -1;
+>  
+>  	if (sm750_get_chip_type() == SM750LE)
+> diff --git a/drivers/staging/sm750fb/sm750_accel.c b/drivers/staging/sm750fb/sm750_accel.c
+> index 44b9e3fe3a41..bbef19a39f81 100644
+> --- a/drivers/staging/sm750fb/sm750_accel.c
+> +++ b/drivers/staging/sm750fb/sm750_accel.c
+> @@ -215,7 +215,7 @@ int sm750_hw_copyarea(struct lynx_accel *accel,
+>  		}
+>  	}
+>  
+> -	if ((nDirection == BOTTOM_TO_TOP) || (nDirection == RIGHT_TO_LEFT)) {
+> +	if (nDirection == BOTTOM_TO_TOP || nDirection == RIGHT_TO_LEFT) {
+>  		sx += width - 1;
+>  		sy += height - 1;
+>  		dx += width - 1;
+> -- 
+> 2.25.1
 > 
-> > > Conceptually it seems like the LNKCTL updates here should be the same
-> > > whether CONFIG_PCIEASPM is enabled or not (subject to the question
-> > > above).
-> > > 
-> > > When CONFIG_PCIEASPM is enabled, we might need to do more stuff, but
-> > > it seems like the core should be the same.
-> > 
-> > So you think it's safer to partially disable ASPM (as per driver's 
-> > request) rather than disable it completely? I got the impression that the 
-> > latter might be safer from what Rafael said earlier but I suppose I might 
-> > have misinterpreted him since he didn't exactly say that it might be safer 
-> > to _completely_ disable it.
 > 
-> My question is whether the state of the device should depend on
-> CONFIG_PCIEASPM.  If the driver does this:
-> 
->   pci_disable_link_state(PCIE_LINK_STATE_L0S)
-> 
-> do we want to leave L1 enabled when CONFIG_PCIEASPM=y but disable L1
-> when CONFIG_PCIEASPM is unset?
-> 
-> I can see arguments both ways.  My thought was that it would be nice
-> to end up with a single implementation of pci_disable_link_state()
-> with an #ifdef around the CONFIG_PCIEASPM-enabled stuff because it
-> makes the code easier to read.
 
-Hi Bjorn,
+Hi,
 
-Thanks a lot for all your feedback so far, it has been very helpful.
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-I think there's still one important thing to discuss and none of the 
-comments have covered that area so far.
+You are receiving this message because of the following common error(s)
+as indicated below:
 
-The drivers that have workaround are not going to turn more dangerous than 
-they're already without this change, so we're mostly within charted waters 
-there even with what you propose. However, I think the bigger catch and 
-potential source of problems, with both this v2 and your alternative, are 
-the drivers that do not have the workarounds around CONFIG_PCIEASPM=n 
-and/or _OSC permissions. Those code paths just call 
-pci_disable_link_state() and do nothing else.
+- You sent a patch that has been sent multiple times in the past and is
+  identical to ones that have been rrejected.  Please always look at the
+  mailing list traffic to determine if you are duplicating other
+  people's work.
 
-Do you think it's okay to alter the behavior for those drivers too 
-(disable ASPM where it previously was a no-op)?
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
 
-I'm okay with going the direction you indicated but I just wanted to ask
-this in advance before reworking the behavior so I can take that detail 
-also into account.
+thanks,
 
-
--- 
- i.
---8323329-158890400-1697462044=:1986--
+greg k-h's patch email bot
