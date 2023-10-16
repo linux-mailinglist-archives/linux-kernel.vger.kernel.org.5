@@ -2,248 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 500DE7CABC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 16:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E2E7CABC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 16:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229501AbjJPOkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 10:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48552 "EHLO
+        id S232143AbjJPOlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 10:41:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbjJPOkr (ORCPT
+        with ESMTP id S229633AbjJPOlW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 10:40:47 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9FBEAB
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 07:40:44 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Mon, 16 Oct 2023 10:41:22 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58915A2;
+        Mon, 16 Oct 2023 07:41:21 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 626A440E0196;
+        Mon, 16 Oct 2023 14:41:19 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 66KAabpmNXcA; Mon, 16 Oct 2023 14:41:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1697467277; bh=2b52cJ4/yBgzE5Vy2ztFqnYa/B1bYnqKYLZyqDKPKi0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IYO4++zZaPNkg4Kq1xQwnH7UDctXiOQcufCVfftW2ur1T91b0Og0oygE/gyQ/VWkM
+         Sec1Zw6Vid8I3jFJnL/gKwCV0Jxyg/liPVA81I5BIhSOI7MjifoOIE8i+AwgGNY9Pi
+         w1Bmz0MCeniaXz+Vpy6vM+uORosKhi0Qyl3MBkMPufUlCZYc6nnQ4yUmRUgDTosWvT
+         Xm+JmNVpP2h+jCF6jbKUAGD4jlPBmbJjTq36KlLlsnenAL4jaxUVq+0avfdoB//J4d
+         yh6zY/Zxfvp3HFy77BVO590lB+LkpaY9b5N1T+l+tqKxiDK/L581Dc4GCnpv8eLpiL
+         bDCY1cfRnc97QSPTAkWbopUMXsu42RJ7JDN+RiScA5BEjwF9e40Rx3N3BonFJ066ci
+         cg/pFyRKHlFBciGFF/Zci0FdSFbdFehDT9f8sbw9XKlKAYMR1ltbQmHe0Tt89kinwI
+         rpOP1ldclvVkEcQ4t4vOveQpt+lF8D3gFIjDPtU2xDRaW2v78keXhFNJcRkSHrQssl
+         3Z3ccHrCIUnZdO8wDfSwhH7kmqQE/SMKhu7uiJp4SJb2DgWwPnu+VKpTOIWsc8HN7u
+         sRnxnMYIhStgiHoY9/xm3WwArp5CROlo5BpY0yqMK0U5WyzWBrPMgLGrsDTWvPAwoO
+         9c+XZi2c+jrkKeKeAQg3X+7I=
+Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3194E21C6F;
-        Mon, 16 Oct 2023 14:40:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1697467243; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=4GxbuPFdnS2bHY8t6WMon+A/BJklROqIcVqlB4NuvFE=;
-        b=E4okqReLrkbINsLLQPW7WjfqGQCnrOw9z9KeiGDB35Qklnwc0hXkp+Nlay9uu86iLocjrk
-        uUez9GOI6w3ltHElMG9G7raRUk9zk2DtM+r13BwrOHXtEDNdjrLmPkNqJDaoHZ2sMDAUqZ
-        t4dIJKhIoyvRvPtrXPad9JfiW17w6Rs=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C72CD133B7;
-        Mon, 16 Oct 2023 14:40:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id nuj2LmpLLWWOZgAAMHmgww
-        (envelope-from <jgross@suse.com>); Mon, 16 Oct 2023 14:40:42 +0000
-Message-ID: <4f5cc965-36da-43f0-aaaa-082a2235ec1e@suse.com>
-Date:   Mon, 16 Oct 2023 16:40:42 +0200
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8C89840E01AA;
+        Mon, 16 Oct 2023 14:41:06 +0000 (UTC)
+Date:   Mon, 16 Oct 2023 16:40:58 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Yazen Ghannam <yazen.ghannam@amd.com>,
+        "Sironi, Filippo" <sironi@amazon.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>
+Subject: Re: [PATCH] x86/mce: Increase the size of the MCE pool from 2 to 8
+ pages
+Message-ID: <20231016144058.GEZS1LemcrhZvVrC15@fat_crate.local>
+References: <20231011163320.79732-1-sironi@amazon.de>
+ <afaef377-25e0-49f6-a99f-3e5bd4b44f87@intel.com>
+ <EDD08AA3-C404-4DB6-96BA-2B25519B2496@amazon.de>
+ <6591377b-7911-444b-abf9-cfc978472d76@intel.com>
+ <1c598798-5b28-4a17-bf86-042781808021@amd.com>
+ <dd72296c-def6-4fb3-9984-348641cdb6a4@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/4] x86/paravirt: switch mixed paravirt/alternative
- calls to alternative_2
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ajay Kaher <akaher@vmware.com>,
-        Alexey Makhalov <amakhalov@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
-References: <20231016123933.17284-1-jgross@suse.com>
- <20231016123933.17284-4-jgross@suse.com>
- <20231016142930.GE33217@noisy.programming.kicks-ass.net>
-From:   Juergen Gross <jgross@suse.com>
-Autocrypt: addr=jgross@suse.com; keydata=
- xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
- ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
- dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
- NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
- XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
- AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
- CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
- mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
- G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
- kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
- Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
- RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
- vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
- sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
- aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
- w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
- auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
- 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
- fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
- HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
- QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
- ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
-In-Reply-To: <20231016142930.GE33217@noisy.programming.kicks-ass.net>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------0YXmt3krs5Pqj0w0r15TurxH"
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -5.86
-X-Spamd-Result: default: False [-5.86 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         XM_UA_NO_VERSION(0.01)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         BAYES_HAM(-3.00)[99.99%];
-         MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
-         HAS_ATTACHMENT(0.00)[];
-         REPLY(-4.00)[];
-         MIME_BASE64_TEXT_BOGUS(1.00)[];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         NEURAL_HAM_SHORT(-0.87)[-0.867];
-         MIME_BASE64_TEXT(0.10)[];
-         RCPT_COUNT_TWELVE(0.00)[12];
-         NEURAL_SPAM_LONG(3.00)[1.000];
-         SIGNED_PGP(-2.00)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+,1:+,2:+,3:+,4:~,5:~];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[];
-         MIME_UNKNOWN(0.10)[application/pgp-keys]
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <dd72296c-def6-4fb3-9984-348641cdb6a4@intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------0YXmt3krs5Pqj0w0r15TurxH
-Content-Type: multipart/mixed; boundary="------------iEY9SbSHUkC03wcSXc89OLO0";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
- virtualization@lists.linux-foundation.org,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, Ajay Kaher <akaher@vmware.com>,
- Alexey Makhalov <amakhalov@vmware.com>,
- VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
-Message-ID: <4f5cc965-36da-43f0-aaaa-082a2235ec1e@suse.com>
-Subject: Re: [PATCH v2 3/4] x86/paravirt: switch mixed paravirt/alternative
- calls to alternative_2
-References: <20231016123933.17284-1-jgross@suse.com>
- <20231016123933.17284-4-jgross@suse.com>
- <20231016142930.GE33217@noisy.programming.kicks-ass.net>
-In-Reply-To: <20231016142930.GE33217@noisy.programming.kicks-ass.net>
+On Mon, Oct 16, 2023 at 07:24:34AM -0700, Dave Hansen wrote:
+> On 10/16/23 07:14, Yazen Ghannam wrote:
+> > 1) Keep the current config size for boot time. 
+> > 2) Add a kernel parameter
+> > and/or sysfs file to allow users to request additional genpool capacity.
+> > 3) Use gen_pool_add(), or whichever, to add the capacity based on user
+> > input. Maybe this can be expanded later to be automatic. But I think it
+> > simpler to start with explicit user input.
+> 
+> I guarantee virtually nobody will ever use an explicit kernel interface
+> to bump the size up.  It'll be the same exact folks that recompile their
+> kernels.
+> 
+> An automatic resizing one doesn't have to be fancy and only has to
+> expand once:
 
---------------iEY9SbSHUkC03wcSXc89OLO0
-Content-Type: multipart/mixed; boundary="------------a0nkHLugV9z025wxjhxd0ixK"
+Can we slow down here pls?
 
---------------a0nkHLugV9z025wxjhxd0ixK
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+You expand once and then that stuck bit error increases its rate of MCEs
+reported and all of a sudden that raised size is overflowed again.
 
-T24gMTYuMTAuMjMgMTY6MjksIFBldGVyIFppamxzdHJhIHdyb3RlOg0KPiBPbiBNb24sIE9j
-dCAxNiwgMjAyMyBhdCAwMjozOTozMlBNICswMjAwLCBKdWVyZ2VuIEdyb3NzIHdyb3RlOg0K
-Pj4gSW5zdGVhZCBvZiBzdGFja2luZyBhbHRlcm5hdGl2ZSBhbmQgcGFyYXZpcnQgcGF0Y2hp
-bmcsIHVzZSB0aGUgbmV3DQo+PiBBTFRfRkxBR19DQUxMIGZsYWcgdG8gc3dpdGNoIHRob3Nl
-IG1peGVkIGNhbGxzIHRvIHB1cmUgYWx0ZXJuYXRpdmUNCj4+IGhhbmRsaW5nLg0KPj4NCj4+
-IFRoaXMgZWxpbWluYXRlcyB0aGUgbmVlZCB0byBiZSBjYXJlZnVsIHJlZ2FyZGluZyB0aGUg
-c2VxdWVuY2Ugb2YNCj4+IGFsdGVybmF0aXZlIGFuZCBwYXJhdmlydCBwYXRjaGluZy4NCj4+
-DQo+PiBGb3IgY2FsbCBkZXB0aCB0cmFja2luZyBjYWxsdGh1bmtzX3NldHVwKCkgbmVlZHMg
-dG8gYmUgYWRhcHRlZCB0byBwYXRjaA0KPj4gY2FsbHMgYXQgYWx0ZXJuYXRpdmUgcGF0Y2hp
-bmcgc2l0ZXMgaW5zdGVhZCBvZiBwYXJhdmlydCBjYWxscy4NCj4+DQo+PiBTaWduZWQtb2Zm
-LWJ5OiBKdWVyZ2VuIEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+DQo+IA0KPiBJIGNhbm5vdCBo
-ZWxwIGJ1dCBmZWVsIHRoaXMgd291bGQndmUgYmVlbiBiZXR0ZXIgYXMgdHdvIHBhdGNoZXMs
-IG9uZQ0KPiBpbnRyb2R1Y2luZyBBTFRfTk9UX1hFTiBhbmQgdGhlbiBhIHNlY29uZCB3aXRo
-IHRoZSByZXN0Lg0KDQpJbiBjYXNlIEkgbmVlZCB0byByZXNwaW4gSSdsbCBzcGxpdCBpdCB1
-cC4NCg0KPiANCj4gUmVnYXJkbGVzcywNCj4gDQo+IEFja2VkLWJ5OiBQZXRlciBaaWpsc3Ry
-YSAoSW50ZWwpIDxwZXRlcnpAaW5mcmFkZWFkLm9yZz4NCg0KVGhhbmtzLA0KDQoNCkp1ZXJn
-ZW4NCg==
---------------a0nkHLugV9z025wxjhxd0ixK
-Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
+Or, you add logic which thresholds duplicate errors similar to the cmci
+storm logic we have.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+*If* that is the case at all.
 
-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
-jR/i1DG86lem3iBDXzXsZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+So can we analyze first what type of errors are reported and why they're
+overflowing the pool before we do ad-hoc hackery?
 
---------------a0nkHLugV9z025wxjhxd0ixK--
+Thx.
 
---------------iEY9SbSHUkC03wcSXc89OLO0--
+-- 
+Regards/Gruss,
+    Boris.
 
---------------0YXmt3krs5Pqj0w0r15TurxH
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmUtS2oFAwAAAAAACgkQsN6d1ii/Ey97
-sAf/YA37GQJyfKXbDgRZui49fQ7g7LFhG1+Ir5O1jby/4YEr6QfHjZ01LItVirijbiqkV9a67RZu
-YSZJDe8MRkMimAAoeEdxEnoLHWh0hugZuzAMnMUYcw5fD5ysbvWeyU1XKPq3eRifLkVFQhRXNHjb
-xQSaQ4wQRAvTGl05WM48wQGf/1P3JqVaL3AJl/E2SIGdTEACFNl/wNghxV0VYvIi6N/mAPzu4sLb
-XCLUTYdI7bj+WVUN1wG1piBmss5zfAoVusLxjd+hnz1wMBGcGfKDQ9KaS2c88jFHmyh02XVHnoQo
-hT3OuE98kDHPNabbosOmQerOmKEOnYN0uCcsqgPbEA==
-=DPiF
------END PGP SIGNATURE-----
-
---------------0YXmt3krs5Pqj0w0r15TurxH--
+https://people.kernel.org/tglx/notes-about-netiquette
