@@ -2,88 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 254587CA13F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 10:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B94D7CA142
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 10:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231890AbjJPIHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 04:07:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55694 "EHLO
+        id S232514AbjJPIHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 04:07:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbjJPIHe (ORCPT
+        with ESMTP id S231921AbjJPIHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 04:07:34 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6076FA2;
-        Mon, 16 Oct 2023 01:07:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F239CC433C8;
-        Mon, 16 Oct 2023 08:07:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697443652;
-        bh=hYLC+mwYLnZ4vpffFztxerV7foo5jfEqUULmB2RLBUw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Xgom35CuN6NXm+bacJjRbuSpEbq5tjwudHKVzxFyZm9H0goqvQl+utOfWV0fqx5So
-         58KhidxIcnc0/mMyc8JgmO47lUQTosZ25Jf0edZ5our55U8oqCPpQeXFE2YNvXkg9c
-         JohP9vfQPxhppWxGF2LJ/faXb6tmxWBcid6bNXP7rRp5zFeaXH6BEsBDP7kDYXdpAO
-         NtDjezbmM7+qc8sii7oqqMOFXlMwcXOUXzB/G7YPAym7kZ7Sxg9U1MyQYOVj+5trp3
-         MZOjI0y706dT44QOKKnLKaIOO7GTal+PmCQ9U6c3Xp0u80yDLFxuoWvricoyvmGF8F
-         ypsGUHJLKOEoQ==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan+linaro@kernel.org>)
-        id 1qsIdK-0001jk-0I;
-        Mon, 16 Oct 2023 10:07:26 +0200
-From:   Johan Hovold <johan+linaro@kernel.org>
-To:     Bjorn Andersson <andersson@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Johan Hovold <johan+linaro@kernel.org>, stable@vger.kernel.org
-Subject: [PATCH] arm64: dts: qcom: sc8280xp-crd: fix eDP phy compatible
-Date:   Mon, 16 Oct 2023 10:06:58 +0200
-Message-ID: <20231016080658.6667-1-johan+linaro@kernel.org>
-X-Mailer: git-send-email 2.41.0
+        Mon, 16 Oct 2023 04:07:43 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9E9CDE;
+        Mon, 16 Oct 2023 01:07:40 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qsIdV-0000s6-09; Mon, 16 Oct 2023 10:07:37 +0200
+Message-ID: <0ee79296-a404-4d0d-b8ed-42578a77692c@leemhuis.info>
+Date:   Mon, 16 Oct 2023 10:07:35 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Re: [PATCH] Bluetooth: btrtl: Ignore error return for
+ hci_devcd_register()
+To:     patchwork-bot+bluetooth@kernel.org, Max Chou <max.chou@realtek.com>
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alex_lu@realsil.com.cn, hildawu@realtek.com,
+        regressions@lists.linux.dev, kirill@shutemov.name,
+        bagasdotme@gmail.com,
+        Linux kernel regressions list <regressions@lists.linux.dev>
+References: <20231006024707.413349-1-max.chou@realtek.com>
+ <169664042379.23949.8315443049400174883.git-patchwork-notify@kernel.org>
+Content-Language: en-US, de-DE
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+In-Reply-To: <169664042379.23949.8315443049400174883.git-patchwork-notify@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1697443660;7f753178;
+X-HE-SMSGID: 1qsIdV-0000s6-09
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sc8280xp Display Port PHYs can be used in either DP or eDP mode and
-this is configured using the devicetree compatible string which defaults
-to DP mode in the SoC dtsi.
+On 07.10.23 03:00, patchwork-bot+bluetooth@kernel.org wrote:
+> 
+> This patch was applied to bluetooth/bluetooth-next.git (master)
+> by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
 
-Override the default compatible string for the CRD eDP PHY node so that
-the eDP settings are used.
+Hi Luiz. Many thx for picking this up. From the branch name is sounds
+like you plan to submit this change in the next merge window (If I
+misread the signs feel free to ignore this mail!). Wouldn't it be better
+to merge this in this cycle, as the commit afaics fixes a regression
+that was only introduced this cycle?
 
-Fixes: 4a883a8d80b5 ("arm64: dts: qcom: sc8280xp-crd: Enable EDP")
-Cc: stable@vger.kernel.org      # 6.3
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
----
- arch/arm64/boot/dts/qcom/sc8280xp-crd.dts | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc8280xp-crd.dts b/arch/arm64/boot/dts/qcom/sc8280xp-crd.dts
-index 772953dc428e..31a2a2d27f4e 100644
---- a/arch/arm64/boot/dts/qcom/sc8280xp-crd.dts
-+++ b/arch/arm64/boot/dts/qcom/sc8280xp-crd.dts
-@@ -458,6 +458,8 @@ mdss0_dp3_out: endpoint {
- };
- 
- &mdss0_dp3_phy {
-+	compatible = "qcom,sc8280xp-edp-phy";
-+
- 	vdda-phy-supply = <&vreg_l6b>;
- 	vdda-pll-supply = <&vreg_l3b>;
- 
--- 
-2.41.0
-
+Ciao, Thorsten
