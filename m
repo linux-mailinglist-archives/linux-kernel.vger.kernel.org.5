@@ -2,149 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CCCC7CB6D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 01:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B6417CB6CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 01:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234246AbjJPXBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 19:01:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47012 "EHLO
+        id S234182AbjJPXAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 19:00:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234178AbjJPXBD (ORCPT
+        with ESMTP id S232172AbjJPXAA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 19:01:03 -0400
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E42B0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:01:00 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5a877e0f0d8so13545297b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:01:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697497260; x=1698102060; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=izdWRaFanHQ8azSd91/9giaIXLaVsk5MY9ErGFWUe5M=;
-        b=itSkmgYO0LkkoyZhZxW5jzhjRs2G8SJjUwuWcI9VCedQGd+wUhpbeW5B+mVTBQDPPT
-         85mVTGyZja15ifCvnkk9KY961jWCkfTfdrNTEBrXNFRfEl/QtrHbwieDqZdQuzl03z0B
-         NR2Q6NRboW5WvsnnFbAnBzBl5qGG2pY3cOrzqti0VKZjPIMAKpWn+zHGfo927LIvBOGi
-         Q/PpvFRa//RkR3+poY/U5k+oD6uNauWh/6N5UlEf2kAlpEhT6BY3NMxLPYOynaOoCiTv
-         a5lHnrtOOqxPYiuc9AGRimM/4crBJrH+tdaIoLNd7cGxYYaPKXC+ZhZLHB5gmH8jm91C
-         D7+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697497260; x=1698102060;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=izdWRaFanHQ8azSd91/9giaIXLaVsk5MY9ErGFWUe5M=;
-        b=oH+boO9Uw45NpKq6bY46OcbqnbiNexxX5tNT2cmcdDzBofddFu3vcO/Z/AseY0OSns
-         EPyyhlEgtUgdKDu814uD+v1zTy4Ui0+m7dxDBl3DM+5rsSXXhLFrjsxNKX9AQST9KSlN
-         VhKuOLq4hU0/Ujc48oDyghimB5AjtxWclvD+0xFAMNh68H/CEqepXET1RaxWLvmU+K4V
-         9+B6+2MC6IeYX5lWIFi6psUYH0mISIB98uOkoIeCLGQizBV/yy2VASz6STTJNXIcoNjR
-         VCe7QxFf5dgaLeSqkUrXDm+TtoxEMCBF9/E1oR0EXrzsqUFGpUQ6q/ZC/UIpqadM5aR1
-         Tqxg==
-X-Gm-Message-State: AOJu0YxFyXQRFXwtnvTStTIjKRG4CUQIhMNVCdR6tKskuobSzeWlI4dU
-        JbFZJUrMTBn5EbCOZWBBxMs=
-X-Google-Smtp-Source: AGHT+IGrVAqh6QjbMlQ3vwhEyVA44SEHSnxHA6AsEjAtj9K68hmeeE0LdYwAZbDF0IhlVXgahW6Giw==
-X-Received: by 2002:a81:a00c:0:b0:5a7:fcad:e865 with SMTP id x12-20020a81a00c000000b005a7fcade865mr141193ywg.2.1697497259815;
-        Mon, 16 Oct 2023 16:00:59 -0700 (PDT)
-Received: from gilbert-PC ([105.112.31.148])
-        by smtp.gmail.com with ESMTPSA id m5-20020a81d245000000b005a815346d95sm91339ywl.71.2023.10.16.16.00.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 16:00:59 -0700 (PDT)
-From:   Gilbert Adikankwu <gilbertadikankwu@gmail.com>
-To:     forest@alittletooquiet.net, gregkh@linuxfoundation.org,
-        outreachy@lists.linux.dev
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Gilbert Adikankwu <gilbertadikankwu@gmail.com>
-Subject: [PATCH 2/4] staging: vt6655: Rename variable byCurrentCh
-Date:   Mon, 16 Oct 2023 23:58:55 +0100
-Message-Id: <cd4c073d0e67e2ce6ed9f38a7add9bbd2fe760ce.1697495598.git.gilbertadikankwu@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1697495597.git.gilbertadikankwu@gmail.com>
-References: <cover.1697495597.git.gilbertadikankwu@gmail.com>
+        Mon, 16 Oct 2023 19:00:00 -0400
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5D2BAC
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 15:59:58 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 358BE240105
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 00:59:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1697497197; bh=HAdzU0up7R6jFB/6QiUAp2Zvie9qM6pmoMBSC5nkdz0=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:
+         Content-Transfer-Encoding:From;
+        b=XOzt2uybwjqRufkhDrjRkVhq3FXIKouvhv5h3DR/SE36569YBsI8DLr0EP1NrE3re
+         z6QC5tWaAIJmr1XSFSOBvUhM6jrvy6uUpw80OM1E2xS76EajXyw0LuG6NEnnarmj4v
+         Ln+vTFb4LXpzeuDzklYOAxrvu5G4KmkMWeHDeR5u5NrmxitAHzs/cqpeNYwBAde8Yr
+         j5eSV2mXi3XxyZ4OxHqgdbJymFk6YXxAqlfiP748XXC9RXR1is/M+P0LyG8oMF4Rnr
+         d5wIx8TXriE/6kXRgktxug34T67i6hDbECbm5a8f2fgA05N1gNMq7GCXtmBMxn2vn6
+         Rk0etAiWUyksA==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4S8Xcq5CBlz9rxH;
+        Tue, 17 Oct 2023 00:59:55 +0200 (CEST)
+From:   Mark O'Donovan <shiftee@posteo.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-nvme@lists.infradead.org, sagi@grimberg.me, hch@lst.de,
+        axboe@kernel.dk, kbusch@kernel.org, hare@suse.de,
+        Mark O'Donovan <shiftee@posteo.net>,
+        Akash Appaiah <Akash.Appaiah@dell.com>
+Subject: [PATCH v3 2/3] nvme-auth: use transformed key size to create resp
+Date:   Mon, 16 Oct 2023 22:58:56 +0000
+Message-Id: <20231016225857.3085234-3-shiftee@posteo.net>
+In-Reply-To: <20231016225857.3085234-1-shiftee@posteo.net>
+References: <20231016225857.3085234-1-shiftee@posteo.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove byte Type encoding "by" from variable name and replace camelcase
-with snakecase.
+This does not change current behaviour as the driver currently
+verifies that the secret size is the same size as the length of
+the transformation hash.
 
-Mute checkpatch.pl error:
-
-CHECK: Avoid CamelCase: <byCurrentCh>
-
-Signed-off-by: Gilbert Adikankwu <gilbertadikankwu@gmail.com>
+Co-developed-by: Akash Appaiah <Akash.Appaiah@dell.com>
+Signed-off-by: Akash Appaiah <Akash.Appaiah@dell.com>
+Signed-off-by: Mark O'Donovan <shiftee@posteo.net>
 ---
- drivers/staging/vt6655/channel.c | 12 ++++++------
- drivers/staging/vt6655/device.h  |  2 +-
- 2 files changed, 7 insertions(+), 7 deletions(-)
+V1 -> V2: support target implementation and controller secrets also
+V2 -> V3: return key from nvme_auth_transform_key
 
-diff --git a/drivers/staging/vt6655/channel.c b/drivers/staging/vt6655/channel.c
-index c11bc2dbc356..7b864136a0a8 100644
---- a/drivers/staging/vt6655/channel.c
-+++ b/drivers/staging/vt6655/channel.c
-@@ -82,7 +82,7 @@ bool set_channel(struct vnt_private *priv, struct ieee80211_channel *ch)
+ drivers/nvme/common/auth.c | 18 ++++++++++--------
+ drivers/nvme/host/auth.c   | 30 +++++++++++++++---------------
+ drivers/nvme/target/auth.c | 30 ++++++++++++++++--------------
+ include/linux/nvme-auth.h  |  2 +-
+ 4 files changed, 42 insertions(+), 38 deletions(-)
+
+diff --git a/drivers/nvme/common/auth.c b/drivers/nvme/common/auth.c
+index 225fc474e34a..647931acc1ba 100644
+--- a/drivers/nvme/common/auth.c
++++ b/drivers/nvme/common/auth.c
+@@ -233,20 +233,21 @@ void nvme_auth_free_key(struct nvme_dhchap_key *key)
+ }
+ EXPORT_SYMBOL_GPL(nvme_auth_free_key);
+ 
+-u8 *nvme_auth_transform_key(struct nvme_dhchap_key *key, char *nqn)
++struct nvme_dhchap_key *nvme_auth_transform_key(struct nvme_dhchap_key *key, char *nqn)
  {
- 	bool ret = true;
+ 	const char *hmac_name;
+ 	struct crypto_shash *key_tfm;
+ 	struct shash_desc *shash;
+-	u8 *transformed_key;
+-	int ret;
++	struct nvme_dhchap_key *transformed_key;
++	int ret, key_len;
  
--	if (priv->byCurrentCh == ch->hw_value)
-+	if (priv->current_ch == ch->hw_value)
- 		return ret;
+ 	if (!key || !key->key) {
+ 		pr_warn("No key specified\n");
+ 		return ERR_PTR(-ENOKEY);
+ 	}
+ 	if (key->hash == 0) {
+-		transformed_key = kmemdup(key->key, key->len, GFP_KERNEL);
++		key_len = sizeof(*key) + key->len;
++		transformed_key = kmemdup(key, key_len, GFP_KERNEL);
+ 		return transformed_key ? transformed_key : ERR_PTR(-ENOMEM);
+ 	}
+ 	hmac_name = nvme_auth_hmac_name(key->hash);
+@@ -257,7 +258,7 @@ u8 *nvme_auth_transform_key(struct nvme_dhchap_key *key, char *nqn)
  
- 	/* Set VGA to max sensitivity */
-@@ -100,7 +100,7 @@ bool set_channel(struct vnt_private *priv, struct ieee80211_channel *ch)
- 	 * it is for better TX throughput
- 	 */
+ 	key_tfm = crypto_alloc_shash(hmac_name, 0, 0);
+ 	if (IS_ERR(key_tfm))
+-		return (u8 *)key_tfm;
++		return (void *)key_tfm;
  
--	priv->byCurrentCh = ch->hw_value;
-+	priv->current_ch = ch->hw_value;
- 	ret &= RFbSelectChannel(priv, priv->rf_type,
- 				ch->hw_value);
- 
-@@ -117,9 +117,9 @@ bool set_channel(struct vnt_private *priv, struct ieee80211_channel *ch)
- 
- 		/* set HW default power register */
- 		VT6655_MAC_SELECT_PAGE1(priv->port_offset);
--		RFbSetPower(priv, RATE_1M, priv->byCurrentCh);
-+		RFbSetPower(priv, RATE_1M, priv->current_ch);
- 		iowrite8(priv->byCurPwr, priv->port_offset + MAC_REG_PWRCCK);
--		RFbSetPower(priv, RATE_6M, priv->byCurrentCh);
-+		RFbSetPower(priv, RATE_6M, priv->current_ch);
- 		iowrite8(priv->byCurPwr, priv->port_offset + MAC_REG_PWROFDM);
- 		VT6655_MAC_SELECT_PAGE0(priv->port_offset);
- 
-@@ -127,9 +127,9 @@ bool set_channel(struct vnt_private *priv, struct ieee80211_channel *ch)
+ 	shash = kmalloc(sizeof(struct shash_desc) +
+ 			crypto_shash_descsize(key_tfm),
+@@ -267,7 +268,8 @@ u8 *nvme_auth_transform_key(struct nvme_dhchap_key *key, char *nqn)
+ 		goto out_free_key;
  	}
  
- 	if (priv->byBBType == BB_TYPE_11B)
--		RFbSetPower(priv, RATE_1M, priv->byCurrentCh);
-+		RFbSetPower(priv, RATE_1M, priv->current_ch);
- 	else
--		RFbSetPower(priv, RATE_6M, priv->byCurrentCh);
-+		RFbSetPower(priv, RATE_6M, priv->current_ch);
+-	transformed_key = kzalloc(crypto_shash_digestsize(key_tfm), GFP_KERNEL);
++	key_len = crypto_shash_digestsize(key_tfm);
++	transformed_key = nvme_auth_alloc_key(key_len, key->hash);
+ 	if (!transformed_key) {
+ 		ret = -ENOMEM;
+ 		goto out_free_shash;
+@@ -286,7 +288,7 @@ u8 *nvme_auth_transform_key(struct nvme_dhchap_key *key, char *nqn)
+ 	ret = crypto_shash_update(shash, "NVMe-over-Fabrics", 17);
+ 	if (ret < 0)
+ 		goto out_free_transformed_key;
+-	ret = crypto_shash_final(shash, transformed_key);
++	ret = crypto_shash_final(shash, transformed_key->key);
+ 	if (ret < 0)
+ 		goto out_free_transformed_key;
  
+@@ -296,7 +298,7 @@ u8 *nvme_auth_transform_key(struct nvme_dhchap_key *key, char *nqn)
+ 	return transformed_key;
+ 
+ out_free_transformed_key:
+-	kfree_sensitive(transformed_key);
++	nvme_auth_free_key(transformed_key);
+ out_free_shash:
+ 	kfree(shash);
+ out_free_key:
+diff --git a/drivers/nvme/host/auth.c b/drivers/nvme/host/auth.c
+index daf5d144a8ea..de1390d705dc 100644
+--- a/drivers/nvme/host/auth.c
++++ b/drivers/nvme/host/auth.c
+@@ -23,6 +23,7 @@ struct nvme_dhchap_queue_context {
+ 	struct nvme_ctrl *ctrl;
+ 	struct crypto_shash *shash_tfm;
+ 	struct crypto_kpp *dh_tfm;
++	struct nvme_dhchap_key *transformed_key;
+ 	void *buf;
+ 	int qid;
+ 	int error;
+@@ -36,7 +37,6 @@ struct nvme_dhchap_queue_context {
+ 	u8 c1[64];
+ 	u8 c2[64];
+ 	u8 response[64];
+-	u8 *host_response;
+ 	u8 *ctrl_key;
+ 	u8 *host_key;
+ 	u8 *sess_key;
+@@ -428,12 +428,12 @@ static int nvme_auth_dhchap_setup_host_response(struct nvme_ctrl *ctrl,
+ 	dev_dbg(ctrl->device, "%s: qid %d host response seq %u transaction %d\n",
+ 		__func__, chap->qid, chap->s1, chap->transaction);
+ 
+-	if (!chap->host_response) {
+-		chap->host_response = nvme_auth_transform_key(ctrl->host_key,
++	if (!chap->transformed_key) {
++		chap->transformed_key = nvme_auth_transform_key(ctrl->host_key,
+ 						ctrl->opts->host->nqn);
+-		if (IS_ERR(chap->host_response)) {
+-			ret = PTR_ERR(chap->host_response);
+-			chap->host_response = NULL;
++		if (IS_ERR(chap->transformed_key)) {
++			ret = PTR_ERR(chap->transformed_key);
++			chap->transformed_key = NULL;
+ 			return ret;
+ 		}
+ 	} else {
+@@ -442,7 +442,7 @@ static int nvme_auth_dhchap_setup_host_response(struct nvme_ctrl *ctrl,
+ 	}
+ 
+ 	ret = crypto_shash_setkey(chap->shash_tfm,
+-			chap->host_response, ctrl->host_key->len);
++			chap->transformed_key->key, chap->transformed_key->len);
+ 	if (ret) {
+ 		dev_warn(ctrl->device, "qid %d: failed to set key, error %d\n",
+ 			 chap->qid, ret);
+@@ -508,19 +508,19 @@ static int nvme_auth_dhchap_setup_ctrl_response(struct nvme_ctrl *ctrl,
+ 		struct nvme_dhchap_queue_context *chap)
+ {
+ 	SHASH_DESC_ON_STACK(shash, chap->shash_tfm);
+-	u8 *ctrl_response;
++	struct nvme_dhchap_key *transformed_key;
+ 	u8 buf[4], *challenge = chap->c2;
+ 	int ret;
+ 
+-	ctrl_response = nvme_auth_transform_key(ctrl->ctrl_key,
++	transformed_key = nvme_auth_transform_key(ctrl->ctrl_key,
+ 				ctrl->opts->subsysnqn);
+-	if (IS_ERR(ctrl_response)) {
+-		ret = PTR_ERR(ctrl_response);
++	if (IS_ERR(transformed_key)) {
++		ret = PTR_ERR(transformed_key);
+ 		return ret;
+ 	}
+ 
+ 	ret = crypto_shash_setkey(chap->shash_tfm,
+-			ctrl_response, ctrl->ctrl_key->len);
++			transformed_key->key, transformed_key->len);
+ 	if (ret) {
+ 		dev_warn(ctrl->device, "qid %d: failed to set key, error %d\n",
+ 			 chap->qid, ret);
+@@ -586,7 +586,7 @@ static int nvme_auth_dhchap_setup_ctrl_response(struct nvme_ctrl *ctrl,
+ out:
+ 	if (challenge != chap->c2)
+ 		kfree(challenge);
+-	kfree(ctrl_response);
++	nvme_auth_free_key(transformed_key);
  	return ret;
  }
-diff --git a/drivers/staging/vt6655/device.h b/drivers/staging/vt6655/device.h
-index b166d296b82d..b3ac6237010b 100644
---- a/drivers/staging/vt6655/device.h
-+++ b/drivers/staging/vt6655/device.h
-@@ -239,7 +239,7 @@ struct vnt_private {
- 	bool bIsBeaconBufReadySet;
- 	unsigned int	cbBeaconBufReadySetCnt;
- 	bool bFixRate;
--	u16 byCurrentCh;
-+	u16 current_ch;
  
- 	bool bAES;
+@@ -648,8 +648,8 @@ static int nvme_auth_dhchap_exponential(struct nvme_ctrl *ctrl,
  
+ static void nvme_auth_reset_dhchap(struct nvme_dhchap_queue_context *chap)
+ {
+-	kfree_sensitive(chap->host_response);
+-	chap->host_response = NULL;
++	nvme_auth_free_key(chap->transformed_key);
++	chap->transformed_key = NULL;
+ 	kfree_sensitive(chap->host_key);
+ 	chap->host_key = NULL;
+ 	chap->host_key_len = 0;
+diff --git a/drivers/nvme/target/auth.c b/drivers/nvme/target/auth.c
+index 4dcddcf95279..84f3ab1f9d02 100644
+--- a/drivers/nvme/target/auth.c
++++ b/drivers/nvme/target/auth.c
+@@ -267,7 +267,8 @@ int nvmet_auth_host_hash(struct nvmet_req *req, u8 *response,
+ 	struct shash_desc *shash;
+ 	struct nvmet_ctrl *ctrl = req->sq->ctrl;
+ 	const char *hash_name;
+-	u8 *challenge = req->sq->dhchap_c1, *host_response;
++	u8 *challenge = req->sq->dhchap_c1;
++	struct nvme_dhchap_key *transformed_key;
+ 	u8 buf[4];
+ 	int ret;
+ 
+@@ -291,14 +292,14 @@ int nvmet_auth_host_hash(struct nvmet_req *req, u8 *response,
+ 		goto out_free_tfm;
+ 	}
+ 
+-	host_response = nvme_auth_transform_key(ctrl->host_key, ctrl->hostnqn);
+-	if (IS_ERR(host_response)) {
+-		ret = PTR_ERR(host_response);
++	transformed_key = nvme_auth_transform_key(ctrl->host_key, ctrl->hostnqn);
++	if (IS_ERR(transformed_key)) {
++		ret = PTR_ERR(transformed_key);
+ 		goto out_free_tfm;
+ 	}
+ 
+-	ret = crypto_shash_setkey(shash_tfm, host_response,
+-				  ctrl->host_key->len);
++	ret = crypto_shash_setkey(shash_tfm, transformed_key->key,
++				  transformed_key->len);
+ 	if (ret)
+ 		goto out_free_response;
+ 
+@@ -365,7 +366,7 @@ int nvmet_auth_host_hash(struct nvmet_req *req, u8 *response,
+ 		kfree(challenge);
+ 	kfree(shash);
+ out_free_response:
+-	kfree_sensitive(host_response);
++	nvme_auth_free_key(transformed_key);
+ out_free_tfm:
+ 	crypto_free_shash(shash_tfm);
+ 	return 0;
+@@ -378,7 +379,8 @@ int nvmet_auth_ctrl_hash(struct nvmet_req *req, u8 *response,
+ 	struct shash_desc *shash;
+ 	struct nvmet_ctrl *ctrl = req->sq->ctrl;
+ 	const char *hash_name;
+-	u8 *challenge = req->sq->dhchap_c2, *ctrl_response;
++	u8 *challenge = req->sq->dhchap_c2;
++	struct nvme_dhchap_key *transformed_key;
+ 	u8 buf[4];
+ 	int ret;
+ 
+@@ -402,15 +404,15 @@ int nvmet_auth_ctrl_hash(struct nvmet_req *req, u8 *response,
+ 		goto out_free_tfm;
+ 	}
+ 
+-	ctrl_response = nvme_auth_transform_key(ctrl->ctrl_key,
++	transformed_key = nvme_auth_transform_key(ctrl->ctrl_key,
+ 						ctrl->subsysnqn);
+-	if (IS_ERR(ctrl_response)) {
+-		ret = PTR_ERR(ctrl_response);
++	if (IS_ERR(transformed_key)) {
++		ret = PTR_ERR(transformed_key);
+ 		goto out_free_tfm;
+ 	}
+ 
+-	ret = crypto_shash_setkey(shash_tfm, ctrl_response,
+-				  ctrl->ctrl_key->len);
++	ret = crypto_shash_setkey(shash_tfm, transformed_key->key,
++				  transformed_key->len);
+ 	if (ret)
+ 		goto out_free_response;
+ 
+@@ -474,7 +476,7 @@ int nvmet_auth_ctrl_hash(struct nvmet_req *req, u8 *response,
+ 		kfree(challenge);
+ 	kfree(shash);
+ out_free_response:
+-	kfree_sensitive(ctrl_response);
++	nvme_auth_free_key(transformed_key);
+ out_free_tfm:
+ 	crypto_free_shash(shash_tfm);
+ 	return 0;
+diff --git a/include/linux/nvme-auth.h b/include/linux/nvme-auth.h
+index df96940be930..fd8f69183d55 100644
+--- a/include/linux/nvme-auth.h
++++ b/include/linux/nvme-auth.h
+@@ -28,7 +28,7 @@ struct nvme_dhchap_key *nvme_auth_extract_key(unsigned char *secret,
+ 					      u8 key_hash);
+ void nvme_auth_free_key(struct nvme_dhchap_key *key);
+ struct nvme_dhchap_key *nvme_auth_alloc_key(u32 len, u8 hash);
+-u8 *nvme_auth_transform_key(struct nvme_dhchap_key *key, char *nqn);
++struct nvme_dhchap_key *nvme_auth_transform_key(struct nvme_dhchap_key *key, char *nqn);
+ int nvme_auth_generate_key(u8 *secret, struct nvme_dhchap_key **ret_key);
+ int nvme_auth_augmented_challenge(u8 hmac_id, u8 *skey, size_t skey_len,
+ 				  u8 *challenge, u8 *aug, size_t hlen);
 -- 
-2.34.1
+2.39.2
 
