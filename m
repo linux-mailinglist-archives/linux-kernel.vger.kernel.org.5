@@ -2,116 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 595F27CB6D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 01:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D91887CB6CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 01:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234304AbjJPXBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 19:01:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33034 "EHLO
+        id S234212AbjJPXAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 19:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232896AbjJPXBN (ORCPT
+        with ESMTP id S233949AbjJPXAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 19:01:13 -0400
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70AD6109
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:01:08 -0700 (PDT)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5a7d9d357faso64365857b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:01:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697497267; x=1698102067; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BM4Q1Vnc/0W8axRuOl3n1yPV7eDUAdwd9TGgc08N9CQ=;
-        b=nA09UmMA8NxRixh9HHVDlGk+Vvr+3ClVidWXzg3hqMGJXELFQInlSDx1GM+l7n9NDE
-         6eZtpXKPaNYnFN8DxQpImgQgAIXonEhdNC6cH+zt44VfKqYSyketTIqDC2XHn1sCRaGz
-         Wm9lQR73XdgXV7OYWxQEDvK6ZekJY3/+7I1dFH715b2MUmuaXyViz+XhweGzVPEY9cqD
-         oxuvu9MEqRGZMed79zWDmYn+mcPx71PMmI1FQ4AcDQRFBHeruTk9VIuProcunZnfVChS
-         ceNIlnCWbhCEymn/F01WxwuHQGTKasiZJyZC2NmNCpi9UFWUsnEiRcOfqLA2yEvVIciZ
-         fRzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697497267; x=1698102067;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BM4Q1Vnc/0W8axRuOl3n1yPV7eDUAdwd9TGgc08N9CQ=;
-        b=ZZogMPjqzjn6DP6kp7gmcVU8gojJo8Zt3SmeovAZVGtbmvvdwG56H+m82zSWssT8UB
-         Hxmif5d8edkmtO0YbhuVcRVjFFWDC6pIh1+CEOTF65+EU9cqAIFJ6EYscO0zfqtmgUrC
-         bIM2OPGBOd21m/jc60R4SP7H6/yP40j1pUPqbuI4jOhn4/rP3Dc2TYe4dZl2GMahgTuW
-         RQptgT/XsbyT/ERpvIkntwBzbA1zvOuMD4Ea616kveB4Z97TdrLysbAP5I95wK56eHWJ
-         XatjMYc+V4kov97XT113gjpsgrZvjjda8t5RSJqoQNnuMcytbqXRJGVruRYSumQMqy/p
-         8Q/A==
-X-Gm-Message-State: AOJu0YylheP0utqB6NT4KZx63VyocnaIvGO+CE59L8GUGOtejyUFEyZm
-        obfhw9kNUEgmBk5H2+3Q60s=
-X-Google-Smtp-Source: AGHT+IHx5ZNSxjJc69qNKXiA+XlymW5cp6SvHC1eWLaSckCOeDlHLcJo7Li/Hc9AwtbuFR+56SLodw==
-X-Received: by 2002:a81:8341:0:b0:59b:65d4:4d73 with SMTP id t62-20020a818341000000b0059b65d44d73mr558954ywf.27.1697497267371;
-        Mon, 16 Oct 2023 16:01:07 -0700 (PDT)
-Received: from gilbert-PC ([105.112.31.148])
-        by smtp.gmail.com with ESMTPSA id s124-20020a817782000000b00565271801b6sm94387ywc.59.2023.10.16.16.01.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 16:01:06 -0700 (PDT)
-From:   Gilbert Adikankwu <gilbertadikankwu@gmail.com>
-To:     forest@alittletooquiet.net, gregkh@linuxfoundation.org,
-        outreachy@lists.linux.dev
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Gilbert Adikankwu <gilbertadikankwu@gmail.com>
-Subject: [PATCH 4/4] staging: vt6655: Rename variable byBBPreEDRSSI
-Date:   Mon, 16 Oct 2023 23:58:57 +0100
-Message-Id: <d525f5837bb343001447646fe17746370256694f.1697495598.git.gilbertadikankwu@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1697495597.git.gilbertadikankwu@gmail.com>
-References: <cover.1697495597.git.gilbertadikankwu@gmail.com>
+        Mon, 16 Oct 2023 19:00:01 -0400
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE3D495
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 15:59:59 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id 7A71D240028
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 00:59:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1697497198; bh=e/5Tq8mpMYFzV9iwEEcLoCLz0k+o4VrsmcZ/cYdtLww=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:
+         Content-Transfer-Encoding:From;
+        b=mFwnzH/dCSbg254F+1fJ/qnNuV9LnSM9dAXfq4u+EzeUtGgSte60xd6Pp0ArZ9Fk+
+         kc+DoD7qHcW6vQXObYxgEIJIKcBhkw+F74AJ10Ubrcr3I5T6ZJv7+EGS2sESsBd4q0
+         vPESqkUkInNmBOuFUamKVnp4iAfVdgt8tGdRuxHuzHiomI9LJqbW7QcqqIwG6VjErw
+         JXj3OPW0VIttmEusrAnzxLYKuPeC30Bqe1segyOb/xp41bTQBigoEV9avfPm2c3m9z
+         xJsc+fz7R4NFN4H0Ml/t/NiDkZtU8LOd07RneZ5eNR3yNgRKSIzhq+41C8iGZW1+7T
+         07Ydq+M9ydyJw==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4S8Xcs0mk7z9rxR;
+        Tue, 17 Oct 2023 00:59:57 +0200 (CEST)
+From:   Mark O'Donovan <shiftee@posteo.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-nvme@lists.infradead.org, sagi@grimberg.me, hch@lst.de,
+        axboe@kernel.dk, kbusch@kernel.org, hare@suse.de,
+        Mark O'Donovan <shiftee@posteo.net>,
+        Akash Appaiah <Akash.Appaiah@dell.com>
+Subject: [PATCH v3 3/3] nvme-auth: allow mixing of secret and hash lengths
+Date:   Mon, 16 Oct 2023 22:58:57 +0000
+Message-Id: <20231016225857.3085234-4-shiftee@posteo.net>
+In-Reply-To: <20231016225857.3085234-1-shiftee@posteo.net>
+References: <20231016225857.3085234-1-shiftee@posteo.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove byte Type encoding "by" from variable name and replace camelcase
-with snakecase.
+We can now use any of the secret transformation hashes with a
+secret, regardless of the secret size.
+e.g. a 32 byte key with the SHA-512(64 byte) hash.
 
-Mute checkpatch error:
+The example secret from the spec should now be permitted with
+any of the following:
+DHHC-1:00:ia6zGodOr4SEG0Zzaw398rpY0wqipUWj4jWjUh4HWUz6aQ2n:
+DHHC-1:01:ia6zGodOr4SEG0Zzaw398rpY0wqipUWj4jWjUh4HWUz6aQ2n:
+DHHC-1:02:ia6zGodOr4SEG0Zzaw398rpY0wqipUWj4jWjUh4HWUz6aQ2n:
+DHHC-1:03:ia6zGodOr4SEG0Zzaw398rpY0wqipUWj4jWjUh4HWUz6aQ2n:
 
-CHECK: Avoid CamelCase: <byBBPreEDRSSI>
+Note: Secrets are still restricted to 32,48 or 64 bits.
 
-Signed-off-by: Gilbert Adikankwu <gilbertadikankwu@gmail.com>
+Co-developed-by: Akash Appaiah <Akash.Appaiah@dell.com>
+Signed-off-by: Akash Appaiah <Akash.Appaiah@dell.com>
+Signed-off-by: Mark O'Donovan <shiftee@posteo.net>
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 ---
- drivers/staging/vt6655/device.h | 2 +-
- drivers/staging/vt6655/dpc.c    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/nvme/common/auth.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/drivers/staging/vt6655/device.h b/drivers/staging/vt6655/device.h
-index 6df1694d556b..2b5f9bf6aa5d 100644
---- a/drivers/staging/vt6655/device.h
-+++ b/drivers/staging/vt6655/device.h
-@@ -253,7 +253,7 @@ struct vnt_private {
- 	unsigned char bbvga[BB_VGA_LEVEL];
- 	long                    dbm_threshold[BB_VGA_LEVEL];
+diff --git a/drivers/nvme/common/auth.c b/drivers/nvme/common/auth.c
+index 647931acc1ba..c2273bc0fa56 100644
+--- a/drivers/nvme/common/auth.c
++++ b/drivers/nvme/common/auth.c
+@@ -182,14 +182,6 @@ struct nvme_dhchap_key *nvme_auth_extract_key(unsigned char *secret,
+ 		goto out_free_secret;
+ 	}
  
--	unsigned char byBBPreEDRSSI;
-+	unsigned char bb_pre_edrssi;
- 	unsigned char byBBPreEDIndex;
- 
- 	unsigned long dwDiagRefCount;
-diff --git a/drivers/staging/vt6655/dpc.c b/drivers/staging/vt6655/dpc.c
-index c6ed3537f439..7ada188e2048 100644
---- a/drivers/staging/vt6655/dpc.c
-+++ b/drivers/staging/vt6655/dpc.c
-@@ -79,7 +79,7 @@ static bool vnt_rx_data(struct vnt_private *priv, struct sk_buff *skb,
- 
- 	RFvRSSITodBm(priv, *rssi, &rx_dbm);
- 
--	priv->byBBPreEDRSSI = (u8)rx_dbm + 1;
-+	priv->bb_pre_edrssi = (u8)rx_dbm + 1;
- 	priv->current_rssi = *rssi;
- 
- 	skb_pull(skb, 4);
+-	if (key_hash > 0 &&
+-	    (key_len - 4) != nvme_auth_hmac_hash_len(key_hash)) {
+-		pr_err("Mismatched key len %d for %s\n", key_len,
+-		       nvme_auth_hmac_name(key_hash));
+-		ret = -EINVAL;
+-		goto out_free_secret;
+-	}
+-
+ 	/* The last four bytes is the CRC in little-endian format */
+ 	key_len -= 4;
+ 	/*
 -- 
-2.34.1
+2.39.2
 
