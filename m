@@ -2,120 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC2417C9D57
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 04:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F567C9D5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 04:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231332AbjJPCJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 22:09:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43288 "EHLO
+        id S231168AbjJPCTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 22:19:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231135AbjJPCJt (ORCPT
+        with ESMTP id S229600AbjJPCTg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 22:09:49 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88123AB;
-        Sun, 15 Oct 2023 19:09:47 -0700 (PDT)
-Received: from kwepemm000012.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4S80qF33b0z15NRk;
-        Mon, 16 Oct 2023 10:07:05 +0800 (CST)
-Received: from [10.174.178.220] (10.174.178.220) by
- kwepemm000012.china.huawei.com (7.193.23.142) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 16 Oct 2023 10:09:44 +0800
-Message-ID: <b1a236de-3ee5-b854-5e94-05bd09e00b9b@huawei.com>
-Date:   Mon, 16 Oct 2023 10:09:43 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH v6 00/10] scsi:scsi_debug: Add error injection for single
- device
-Content-Language: en-US
-To:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Douglas Gilbert <dgilbert@interlog.com>
-CC:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <louhongxiang@huawei.com>
-References: <20231010092051.608007-1-haowenchao2@huawei.com>
-From:   Wenchao Hao <haowenchao2@huawei.com>
-In-Reply-To: <20231010092051.608007-1-haowenchao2@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+        Sun, 15 Oct 2023 22:19:36 -0400
+Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B523AB;
+        Sun, 15 Oct 2023 19:19:35 -0700 (PDT)
+Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-1dcfb2a3282so2677234fac.2;
+        Sun, 15 Oct 2023 19:19:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697422774; x=1698027574;
+        h=date:subject:message-id:references:in-reply-to:cc:to:from
+         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=RAvM3mQHGLzSjyaaj6W6Mr1yy9NF7LUqNnpuELskbso=;
+        b=NpoDwoCdAKLjLgyg0Gu8KPTtdhg/Ol14qQ5aMbf/0ZrOJStRPsEqhc8C1buXsKVjt7
+         CIm4ViZplWcp5Pt/vJ4Fej+iGXis7B1mKbPUxcROaQqe5ik0KxD3vWGKTKHrKvp6HedR
+         Y5qeBprLipxjxxur8XXGGInQCvwfYprBSs/1Onnm89t4QabuOwqf4RDmCvMthjJKB1U5
+         L01ZP4BkxgnYssiUTJVzZzpnGm8JflC4gZci4d/DMk4O52ZMFOeT3y0PiWQH7cK+OqAT
+         GluW0rjhGewTvutK6esjZnWI3ddqiWHMi0YAp8TvBn0WuYXJaH/OFMFGCiWZQPJCxoAa
+         r89Q==
+X-Gm-Message-State: AOJu0Yxlwz1MteUqzQDqL0zDkegMV6rJXsVm/SPoIcjBFhKl0eNTHtQ4
+        V+JLXyX5fMO2axO2jIOtuA==
+X-Google-Smtp-Source: AGHT+IH10D1f35QWfj0fOe8YbpXwuo3ctZLbjgSChkKoMRBuhe5qjCb80199s1iwjt42yEU931BCrg==
+X-Received: by 2002:a05:6870:1056:b0:1e9:b82e:ba29 with SMTP id 22-20020a056870105600b001e9b82eba29mr11937626oaj.24.1697422774342;
+        Sun, 15 Oct 2023 19:19:34 -0700 (PDT)
+Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id e2-20020a056870c34200b001dd533c4bd1sm884321oak.1.2023.10.15.19.19.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Oct 2023 19:19:33 -0700 (PDT)
+Received: (nullmailer pid 1179447 invoked by uid 1000);
+        Mon, 16 Oct 2023 02:19:23 -0000
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.220]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm000012.china.huawei.com (7.193.23.142)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+From:   Rob Herring <robh@kernel.org>
+To:     Richard Laing <richard.laing@alliedtelesis.co.nz>
+Cc:     robh+dt@kernel.org, jirislaby@kernel.org,
+        andriy.shevchenko@linux.intel.com, ilpo.jarvinen@linux.intel.com,
+        gregkh@linuxfoundation.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-serial@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20231016013207.2249946-3-richard.laing@alliedtelesis.co.nz>
+References: <20231016013207.2249946-1-richard.laing@alliedtelesis.co.nz>
+ <20231016013207.2249946-3-richard.laing@alliedtelesis.co.nz>
+Message-Id: <169742276359.1179325.14095701588793602461.robh@kernel.org>
+Subject: Re: [PATCH] dt-bindings: serial: snps-dw-apb-uart: Add property to
+ drain TX FIFO
+Date:   Sun, 15 Oct 2023 21:19:23 -0500
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/10 17:20, Wenchao Hao wrote:
-> The original error injection mechanism was based on scsi_host which
-> could not inject fault for a single SCSI device.
+
+On Mon, 16 Oct 2023 14:32:07 +1300, Richard Laing wrote:
+> An issue has been observed on the Broadcom BCM56160 serial port which
+> appears closely related to a similar issue on the Marvell Armada 38x
+> serial port.
 > 
-> This patchset provides the ability to inject errors for a single
-> SCSI device. Now we support inject timeout errors, queuecommand
-> errors, and hostbyte, driverbyte, statusbyte, and sense data for
-> specific SCSI Command. Two new error injection is defined to make
-> abort command or reset LUN failed.
+> Add a new property to force the TX FIFO to be drained before
+> changing the UART_LCR.
 > 
-> Besides error injection for single device, this patchset add a
-> new interface to make reset target failed for each scsi_target.
-> 
-> The first two patch add a debugfs interface to add and inquiry single
-> device's error injection info; the third patch defined how to remove
-> an injection which has been added. The following 5 patches use the
-> injection info and generate the related error type. The last two just
-> add a new interface to make reset target failed and control
-> scsi_device's allow_restart flag.
+> Signed-off-by: Richard Laing <richard.laing@alliedtelesis.co.nz>
+> ---
+>  .../devicetree/bindings/serial/snps-dw-apb-uart.yaml        | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
 
-Friendly ping...
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-> V6:
->    - Check return value of debugfs_create_xxx() and print error log
->      if debugfs_create_xxx() return error
->    - Fix typo in description of patch7 and patch8
->    - Update the description of patch10
-> 
-> V5:
->    - Using rcu list to sync between error inject add, remove and check
->    - Add module parameter "allow_restart" to control scsi_device's
->      allow_restart flag
-> 
-> V4:
->    - Fix BUG_ON triggered by schedule in atomic context when rmmod scsi_debug
->      Closes: https://lore.kernel.org/oe-lkp/202308031027.5941ce5f-oliver.sang@intel.com
-> 
-> V3:
->    - Add two more error types to fail abort command and lun reset
->    - Fix memleak when rmmod scsi_debug without clearing errors injected
->    - Fix memkeak because did not implement release in sdebug_error_fops
->    - Fix possible NULL point access in scsi_debug_slave_destroy
->    - Move specific error type's description to each single patch which
->      implement this error type
->    - Add interface to make target reset fail
-> 
-> V2:
->    - Using debugfs rather than sysfs attribute interface to manage error
-> 
-> Wenchao Hao (10):
->    scsi: scsi_debug: create scsi_debug directory in the debugfs filesystem
->    scsi: scsi_debug: Add interface to manage single device's error inject
->    scsi: scsi_debug: Define grammar to remove added error injection
->    scsi: scsi_debug: timeout command if the error is injected
->    scsi: scsi_debug: Return failed value if the error is injected
->    scsi: scsi_debug: set command's result and sense data if the error is injected
->    scsi: scsi_debug: Add new error injection abort failed
->    scsi: scsi_debug: Add new error injection reset lun failed
->    scsi: scsi_debug: Add debugfs interface to fail target reset
->    scsi: scsi_debug: Add param to control sdev's allow_restart
-> 
->   drivers/scsi/scsi_debug.c | 575 +++++++++++++++++++++++++++++++++++++-
->   1 file changed, 570 insertions(+), 5 deletions(-)
-> 
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml:120:5: [error] syntax error: could not find expected ':' (syntax)
+
+dtschema/dtc warnings/errors:
+make[2]: *** Deleting file 'Documentation/devicetree/bindings/serial/snps-dw-apb-uart.example.dts'
+Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml:120:5: could not find expected ':'
+make[2]: *** [Documentation/devicetree/bindings/Makefile:26: Documentation/devicetree/bindings/serial/snps-dw-apb-uart.example.dts] Error 1
+make[2]: *** Waiting for unfinished jobs....
+./Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml:120:5: could not find expected ':'
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml: ignoring, error parsing file
+make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1427: dt_binding_check] Error 2
+make: *** [Makefile:234: __sub-make] Error 2
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231016013207.2249946-3-richard.laing@alliedtelesis.co.nz
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
