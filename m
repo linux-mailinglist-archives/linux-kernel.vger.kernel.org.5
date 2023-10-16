@@ -2,100 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CFC57CA5F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3BCA7CA5FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231508AbjJPKqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 06:46:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47286 "EHLO
+        id S232447AbjJPKrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 06:47:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230017AbjJPKqK (ORCPT
+        with ESMTP id S232206AbjJPKrW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 06:46:10 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25A1BE3;
-        Mon, 16 Oct 2023 03:46:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
- t=1697453142; x=1698057942; i=linosanfilippo@gmx.de;
- bh=bW0faYX3QFZggYABRVO+bJd6LjbT8ErxZBv0s39WbyE=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=P/Ecl0YZnT5i/1gZ6YSGxbJLVYrwdSMOgLYH9JnVvWdS0XcMExcp93y60mIVj3uXwRkRZAV25ba
- pcef1/+8z2ao2ZHjp81tvuwhtUaVR8kBKedfHST39UA1OyyRsRKT42D3a5SGcJKrrEHPFLg6OE7pC
- 3E7DTMMJznQXZF/kCbl8CUI/ejhbirSi/+m6I/N21xRPwxpdoSqIDUyx5ezO2JK+FRPsC5QZTLstk
- hvYaEdf0PJkPStxJqdGlygJm4rIM6cpayy+ne1wJtvi7tVEROcHhjAwpXOjAsBcnXGS9j/O/gl3Zk
- Kukd9fFN18iagibrHCnt4HQes1xfptgdpOxw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [10.212.134.121] ([80.237.181.220]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1ML9uK-1rAYi402sc-00IG5V; Mon, 16
- Oct 2023 12:45:42 +0200
-Message-ID: <6f91245d-931a-401d-a4d4-f089bb13aa36@gmx.de>
-Date:   Mon, 16 Oct 2023 12:45:40 +0200
+        Mon, 16 Oct 2023 06:47:22 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F07595
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 03:47:19 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9b2cee55056so762254066b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 03:47:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fooishbar-org.20230601.gappssmtp.com; s=20230601; t=1697453238; x=1698058038; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FSOsW3lqyVDGEO7YV9jDSsXKfAhrZdV4NxhIXBreaCc=;
+        b=pBi8gtjST3EKU/hV1WHT0yPo59DA4sE3QIMnCRay8JZ8w7YaxCiHoWQCtyqfnBmXrz
+         xrAvzRazTpIsEJt7qpzrgxjd5tzqabBaWEaIXhNrpwBBEzecbh4kMQPYencvjr9bAeAf
+         sGSSxvOSFay1QRgmq6lW8cCs8a8jqT3f0z/6ISVEwpHqDt299Dgz07fMWgI3SLG59Faz
+         V0S5IijJbFwM8L8DobokPi+TnvNvlnCSbEsCyJSKy6/DNeBCSZY67CnrBnuGfVy1Yjmn
+         kw/ejxV3dRr++rzSNZolZwJih3ZGQGs1FyJU1Y6GJ+xPSrEXiMjv6P7RMY3FHzrjZN0i
+         j2GA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697453238; x=1698058038;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FSOsW3lqyVDGEO7YV9jDSsXKfAhrZdV4NxhIXBreaCc=;
+        b=JzXwpD+VqRq4p/VsGE70z4e90BRG4hv3DPvpO2VQdOLRb4DPTBRQPBZUEUuLOkc04C
+         d45ymxuT8V3SjOMSFu/7lRkE60yIofEF6pfSq1XKsSp4srBUB+VMpZdihsxEueQz/Sli
+         6lftMoVaJOvfVOE9KlgM3plh8xoQc7ZWn1W+dvtS12ORYBtpNFWD2NMxtwD/dWj/TLge
+         LRsem2SckIGMyC99aVKmEeRZBahlhvZMdkXuwzliZ0rVtn3G5kv04vwGEYg4wHhSgNlI
+         VUCqMHXYybLAanrM0H9lJbCPvFm14xo0Ql1zV2KwSruxXlKhmAi83KkyZse+uzvucG76
+         RjyQ==
+X-Gm-Message-State: AOJu0YxUALUmVY90KCWep9t/BK6o5UfnmVmUpdtqhwjhLSZnDqkAWJZl
+        t1sHWzyrWIVDU99mTNFDL9SRSOnTToyH6vRlkH+3s4bozE/bPZlTASc1nw==
+X-Google-Smtp-Source: AGHT+IE4rTDIFGCtxkHDTxmHZHJipHKSAGuGG/X+qZH0l607g2QnU10hsXIs4iTRUVFldU+NJUeLfr6IQgVhXcx+8ds=
+X-Received: by 2002:a17:907:2cef:b0:9ba:1d08:ad43 with SMTP id
+ hz15-20020a1709072cef00b009ba1d08ad43mr19381711ejc.70.1697453237825; Mon, 16
+ Oct 2023 03:47:17 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/6] Fixes and improvements for RS485
-Content-Language: en-US
-To:     =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Lino Sanfilippo <l.sanfilippo@kunbus.com>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        ilpo.jarvinen@linux.intel.com, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com, cniedermaier@dh-electronics.com,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        lukas@wunner.de, p.rosenberger@kunbus.com
-References: <20231011181544.7893-1-l.sanfilippo@kunbus.com>
- <0ca84efc-c999-4077-85aa-e13fd0984182@kunbus.com>
- <20231016103856.d2i2nk5ubaeqpd6a@pengutronix.de>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-In-Reply-To: <20231016103856.d2i2nk5ubaeqpd6a@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
+References: <20231006073831.10402-1-shawn.sung@mediatek.com>
+ <20231006073831.10402-5-shawn.sung@mediatek.com> <CAPj87rMUbP12uwzyhV=94wR7LkQK4JfTB4kEMGADq2YJOk8Vrw@mail.gmail.com>
+ <c3fff5bcc3a7cfeffcd86d6e2c199963a720871a.camel@mediatek.com>
+In-Reply-To: <c3fff5bcc3a7cfeffcd86d6e2c199963a720871a.camel@mediatek.com>
+From:   Daniel Stone <daniel@fooishbar.org>
+Date:   Mon, 16 Oct 2023 12:47:05 +0200
+Message-ID: <CAPj87rMc=3tX8Fbk4LjXmqgPfp=YX3GS64V4Sb5y84xwf3wDBw@mail.gmail.com>
+Subject: Re: [PATCH v7 04/23] dt-bindings: display: mediatek: padding: Add MT8188
+To:     =?UTF-8?B?U2hhd24gU3VuZyAo5a6L5a2d6KyZKQ==?= 
+        <Shawn.Sung@mediatek.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        =?UTF-8?B?U2luZ28gQ2hhbmcgKOW8teiIiOWciyk=?= 
+        <Singo.Chang@mediatek.com>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
+        =?UTF-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= 
+        <Jason-JH.Lin@mediatek.com>,
+        =?UTF-8?B?TmFuY3kgTGluICjmnpfmrKPonqIp?= <Nancy.Lin@mediatek.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        =?UTF-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Pq4tWZ+0oj2jUTKx3+Ah/wV23KOHP/1+W9fUa9WTWpeYeRdAkcN
- hhkxw5Neq9TlJc5+Ndf6b1jorgJEr2VfCfPQ/JehqAyuVj2rYJ1h0cIXX1ZU5+iwjFGq6V+
- pJ5amQHnd6kbmZgJBdRgccQYJj0Pvc7yH7vbjG7QtpODBdRSKsIqMaJXI05/1iMv/kEuwf/
- 2Ayh2uHW6xyMRtYJaOGPg==
-UI-OutboundReport: notjunk:1;M01:P0:e3qdEQztT/w=;WtQTk5K55gFq1GBfeujkYQ3Voue
- LE40GiexmkzGEmkIkv2iKq4+GhGKqL9Xn8lm3KAzf/oblnTmyNgRC2TE4m8cz1hovyOqUIhpj
- jJBIdfUznwGC7FqFi31MBMKjggKF1PIoSYyjGpR7WIfToI1elaC/yh6F+XA8ragtuZYwEJbb+
- pQoPbv6atnosFYJ5qtktuFIaiC0SufCinm5IAl+D292GO80bRLf0NQBeEW3y3DIVgI9+84lOk
- mDAgXcoQPCuTWhILqkVSEyO8NsIsP2BW5eKWSKS3Vs51lQTBrNkrLr0bGsvwEIaW8gF6c2HvN
- Vb2V/rVyIC9EsTPK03DzFCvbusAL5KVCLzcF+aWsexmTrUr6+kNRQG8Tx0JSOqxnGWgwBQpBE
- f2xGIL45hYghUUmjQKF60OBQNUBFap7q0xvqdg/LtUEXKqioVPGU2wR/S+F+OhOqSeGjReT4a
- w7QBxyXUZRVvhjP5yPl3VV4AwiPnnYNU9txvO2E69mzZLb4GugvlgGteV7qxYdRc2JeDVlz2H
- DvraywSdn17OOHWF1qZ9DnlLGa3hd3gzDlzBUoemNtSGQZRTpsqT+wo5TN8An772VY7zshkt3
- xlmQP93Wdo/Hc4hbN4CepECpNZo8DiUcaECjygdZxxNquKkqyJc2+EwabcWtfoaCeKzkFWxOf
- hb7lMior0v/IAXtrRdoTPOHVfNFDeEP19GFdwdMYBXsU8kqAZwSKrDIo4nKn9sckaAYUhSasc
- X8nu+uI6h2Tn+8iKU+Sr+gvWmr6vH1fO8vL6biV16GHl0f6E8Hfsozw1XlYogABnbTjcyoQlk
- WYp8uUSShHbI9HEG3Ia7n0KrPEVBnM42mneWAKtBMT1VuMmkZUy/r80YXlwhZLeWpeSCY12Xn
- 3FeSNaYn+hBPKspardw1QQdnVeH1NB3X5FZnVGA8DQ8v8cn0f5P9YC1LFAGa/GjQJLP4eufDh
- ZFCUOg==
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Shawn,
 
-On 16.10.23 12:38, Uwe Kleine-K=C3=B6nig wrote:
-> Hello Lino,
+On Mon, 16 Oct 2023 at 06:23, Shawn Sung (=E5=AE=8B=E5=AD=9D=E8=AC=99) <Sha=
+wn.Sung@mediatek.com> wrote:
+> On Fri, 2023-10-13 at 17:26 +0100, Daniel Stone wrote:
+> > If I understand the driver correctly, padding is automatically
+> > applied
+> > to compensate for unaligned dimensions. The first/last rows/columns
+> > of
+> > the overlay area will be filled with a specified colour (black?) to
+> > preserve the area. This is unfortunately not OK to do transparently.
+> > Userspace must be aware of this policy decision and specifically
+> > request it. If not, the atomic request check should fail and tell
+> > userspace that the requested configuration is not possible to
+> > achieve.
 >
-> On Sun, Oct 15, 2023 at 03:03:20PM +0200, Lino Sanfilippo wrote:
->> Sorry Uwe, you gave valuable input for the former version of this serie=
-s and I
->> just noticed now that I forgot to Cc you for this version.
->
-> My mail setup works good enough that this series already landed in my
-> inbox without the explict Cc, but I'm currently doing too much other
-> stuff to find the time for an appropriate look here, sorry.
->
+> Yes, Padding works as you described, users can assign background colors
+> for the filled area in 10bit RGB format, however, the rows and columns
+> that are filled by Padding will be cropped by the hardware components
+> after it to avoid situations as you mentioned, so users should not
+> notice any difference.
 
-No problem, I can fully understand that.
+Thanks for the explanation, I hadn't realised that the added padding
+later gets cropped.
 
-BR,
-Lino
-
-
+Cheers,
+Daniel
