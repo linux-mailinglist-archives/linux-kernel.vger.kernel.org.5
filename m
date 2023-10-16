@@ -2,87 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B927CB6D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 01:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B5F57CB6D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 01:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233802AbjJPXCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 19:02:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34558 "EHLO
+        id S233854AbjJPXDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 19:03:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232577AbjJPXCm (ORCPT
+        with ESMTP id S232996AbjJPXDV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 19:02:42 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F9D783
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:02:40 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9be7e3fa1daso430855266b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:02:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1697497359; x=1698102159; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=RIXn6t7PHANRTcgs4g0e2rVgnFrT4twoJ2oYr1hfY00=;
-        b=WDS95oKeG0PeTwEc3E34/qZ56J0nRIYFTTiV1jJYJf/rqhpodWaGfbk5zU9lPn2fhS
-         H57ZwMzYtOtgXf5USpQQySk0BOYm6YWv/Awd0MjNVuo2Pa1tjR/fWaROxjQC3IoNAu8M
-         +sD4O0Gl2Pz4am0mHmWfQmEBHO7Vk/I7kcpGc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697497359; x=1698102159;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RIXn6t7PHANRTcgs4g0e2rVgnFrT4twoJ2oYr1hfY00=;
-        b=c2ukbNA7u3Paekz2tgNtlHtwn6tXWibZjqoKHiDkz43gMdnMMq8vp9yftoxpm34GBV
-         dQqNbuZ8DUfQT53LZopasnyRvp8/kkUkQneMABnFVNIGEGpt0Ip1Nul51rhnJDg4T2eE
-         6zcw5l+QKugxHWehnrokUzY/d8OLJ16dWJP1qbuh+E41GXQ0/bx99xriPYu71HjeRR/9
-         43pIHsdP7gTEVjpL4xsE09X69sz58XmJl8HsWkrwTNPFdhXy1zWbu0AdcnGXRvtbECUz
-         pMKaQTZTPbEoZrN+XaQF/acXuoH9w/3PWOM8QSFEHMAa7qjivaU66QtduY93eQOM1RpV
-         UN5g==
-X-Gm-Message-State: AOJu0Yyg/hbOwQQsIITNQzNP2fLV01eIHrnzRaaSxdoPYMChoAFmUNjW
-        BDYyCUGIlTeu3o37dr14WMjiB1+7x+vZ7rX9mpgdcFmo
-X-Google-Smtp-Source: AGHT+IEwIU74A1DYtKjUHWa5XHjESkLpoyisFAb4V5ZQTt8OOSg9E+Xk+zB+bVONSXlrLyTZBzCAgg==
-X-Received: by 2002:a17:907:9306:b0:9c4:e660:a38c with SMTP id bu6-20020a170907930600b009c4e660a38cmr557686ejc.17.1697497358825;
-        Mon, 16 Oct 2023 16:02:38 -0700 (PDT)
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
-        by smtp.gmail.com with ESMTPSA id mm23-20020a170906cc5700b0099bcdfff7cbsm104848ejb.160.2023.10.16.16.02.37
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 16:02:38 -0700 (PDT)
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-9be7e3fa1daso430852666b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:02:37 -0700 (PDT)
-X-Received: by 2002:a17:907:7f1b:b0:9b2:fa55:5794 with SMTP id
- qf27-20020a1709077f1b00b009b2fa555794mr404476ejc.58.1697497357536; Mon, 16
- Oct 2023 16:02:37 -0700 (PDT)
+        Mon, 16 Oct 2023 19:03:21 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D266795;
+        Mon, 16 Oct 2023 16:03:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697497399; x=1729033399;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=6KNJDMzfhi1Tpljz9ZKPR/SIDauzAfj5AlHqi0krMqk=;
+  b=UM5Yz5FLneDrt8FgZD7jU/ya69ChTv9Qy8rIyuxKvJCQgEchJLfWywAI
+   J72M1oG/FR6xAkXCCaXOHQUCwPPh2lcUcHraD3eQfVBUFF+YKZveSUCDQ
+   yRnk8WXIHI2+dN6+WsVRuAdyZYRCYG0u7RONGGl99qa6QJaloC6Xk2h1j
+   CnTsEQ+UUSVZJ886/x9ZbXwKsULfKMqLGsbxIrygmPSrJI5P0KthTFwln
+   rlgVh0ossGCOgQNmQIjyv7mm0zOc9eoWkVWLz0IAKPsUTXYRLwOPT4CRG
+   OTOAVdMSjx7Uma+J+CciJvVCyHkHldhlnEI1A1zL8W1JO5dBUL8Luuu05
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="471877644"
+X-IronPort-AV: E=Sophos;i="6.03,230,1694761200"; 
+   d="scan'208";a="471877644"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 16:03:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="749449163"
+X-IronPort-AV: E=Sophos;i="6.03,230,1694761200"; 
+   d="scan'208";a="749449163"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 16 Oct 2023 16:03:18 -0700
+Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Mon, 16 Oct 2023 16:03:18 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Mon, 16 Oct 2023 16:03:18 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Mon, 16 Oct 2023 16:03:18 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AClep56Gue3jSovStCRsjGWveXtjq6QgRY/iumikLAlfcNuHUwEJknKU1r4Kn4BrPkj3hQ5UpNRQ+vLVY70Nd95sgTNoM0uwbMVmXzOYGtvtlO5KNBzddVLk9EiORKmUnBids2iC4IoyZgWLUlAZHS2WXTzdhxTP9TNR01C/WPsIZ88bHenXpXyz8IUcr+HNOX0RM1q4VYfAN7WA/6wkhCfZDlt6b2nt6SLVGQT5Aq8SOW3v+9AWJ16YLfXlgoQXklo3Pk/KaN+yvAlq3vWuUbuwrwMlE6tq0RyY4KSAziUTbgGDWghSXgc6SvFpAEvHoF1zVXTw/+dPSzz5u6Rtug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nbLzs7SgPALjSsC+KDXcLe2bAd34T0CPK3/pCgAJ0Gw=;
+ b=nuEh2mDotcEkaxyOquHqm8VIK09OIU2C4Q7p8KWwvCgoA8RSDzWVj7ZPiHc2sJiLMoSbCs2GwIIjhGwgTIZGqPuBjHzWwasKD7taD85HghS5DyACX6Gl3PHUtILDIEp7iLMPi1cm+xIskf2OKsQw67ai7BKL3rNn7+2e6WmSe3TT+zsV7u/LdKR0t9d1AgmiQJ9WFwFSVdEpNcAIE32/63/yWUix4/pA3ACq4l0O+sQVMRXYsVejGOJ94QeORIk0teXeGMB2QsSHCKPuyPRmkXXV+yMdewGUi6R1M96KhaJ5R6CGIV8JwfikQhj1Ib58RYimIbmh/9GbnKgpYGyeDw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
+ by SN7PR11MB6560.namprd11.prod.outlook.com (2603:10b6:806:26c::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.34; Mon, 16 Oct
+ 2023 23:03:16 +0000
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::34a7:52c3:3b8b:75f4]) by CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::34a7:52c3:3b8b:75f4%4]) with mapi id 15.20.6863.046; Mon, 16 Oct 2023
+ 23:03:16 +0000
+Message-ID: <bae82fe3-56da-49df-94b6-1e2998f86503@intel.com>
+Date:   Mon, 16 Oct 2023 16:03:13 -0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v5 08/16] net: ethtool: Add a command to expose
+ current time stamping layer
+Content-Language: en-US
+To:     Jakub Kicinski <kuba@kernel.org>,
+        =?UTF-8?Q?K=C3=B6ry_Maincent?= <kory.maincent@bootlin.com>
+CC:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        "Claudiu Beznea" <claudiu.beznea@tuxon.dev>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        <UNGLinuxDriver@microchip.com>,
+        "Broadcom internal kernel review list" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "Heiner Kallweit" <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Michael Walle <michael@walle.cc>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>
+References: <20231009155138.86458-1-kory.maincent@bootlin.com>
+ <20231009155138.86458-9-kory.maincent@bootlin.com>
+ <2fbde275-e60b-473d-8488-8f0aa637c294@broadcom.com>
+ <20231010102343.3529e4a7@kmaincent-XPS-13-7390>
+ <20231013090020.34e9f125@kernel.org>
+ <6ef6418d-6e63-49bd-bcc1-cdc6eb0da2d5@lunn.ch>
+ <20231016124134.6b271f07@kmaincent-XPS-13-7390>
+ <20231016072204.1cb41eab@kernel.org>
+ <20231016170027.42806cb7@kmaincent-XPS-13-7390>
+ <20231016084346.10764b4a@kernel.org>
+ <20231016182307.18c5dcf1@kmaincent-XPS-13-7390>
+ <20231016100313.36d4eab9@kernel.org>
+From:   Jacob Keller <jacob.e.keller@intel.com>
+In-Reply-To: <20231016100313.36d4eab9@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MW4PR04CA0148.namprd04.prod.outlook.com
+ (2603:10b6:303:84::33) To CO1PR11MB5089.namprd11.prod.outlook.com
+ (2603:10b6:303:9b::16)
 MIME-Version: 1.0
-References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
- <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
- <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
- <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
- <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
- <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
- <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAFULd4Zjd6idrLXuF59cwKxyd1a--DsiJwGQAKai9Tph30dAow@mail.gmail.com>
- <CAHk-=wgSsfo89ESHcngvPCkQSh_YAJG-0g7fupb+Uv0E1d_EcQ@mail.gmail.com> <7D77A452-E61E-4B8B-B49C-949E1C8E257C@vmware.com>
-In-Reply-To: <7D77A452-E61E-4B8B-B49C-949E1C8E257C@vmware.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 16 Oct 2023 16:02:20 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj1dLFkL9Qv2vtk0O8Q6WE-11Jq3KucZoz2Kkw59LAexw@mail.gmail.com>
-Message-ID: <CAHk-=wj1dLFkL9Qv2vtk0O8Q6WE-11Jq3KucZoz2Kkw59LAexw@mail.gmail.com>
-Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
-To:     Nadav Amit <namit@vmware.com>
-Cc:     Uros Bizjak <ubizjak@gmail.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: multipart/mixed; boundary="000000000000012ddb0607dd67f5"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PR11MB5089:EE_|SN7PR11MB6560:EE_
+X-MS-Office365-Filtering-Correlation-Id: 410052f6-12dd-4826-2701-08dbce9c14f7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qd+zbg91vdI1HpupCk8CtJ530VbWr1ry4gLwspV9G8ueSQlE/cJ3z0z7oQ2MuvQNA2ejXWxt75c1JqKnzncgrDtSnw8Pi+WoGUBD4O0jfGh84Rh5SW5etqXNYy1U8uMdDdFtlWEgim4oCDcx376TWOqaGgjujvDXIEPaCeijAf8bi4J0tKeycrlmEkhXTd5ST0ITSXDA0z3IVdOEpFxfPVqmP1K3x4M/zFC33iZliNwoIzlf8nM+OEw0P940I4L56rOgNT+GP+LoHx40esuRQlTm8UqXx6XBOgaw3zHkkpHsVKNXNbUjj7oamBnVK8hUd/drfzTzjqlBC2T68SlhnBOHYxuXj30Sc6fP39FuxWGUAdQzcAKTqLoBJro37DszRXp7Q4AdQLG8e6jqBswpZL2WxrC8HP1qB+KPoDc7iO2e/pPWhBqRivEks+S1nPW37R/QKmqr7NTfzn5Oj3QqPnb42kvO6SM+XQiPd2Hx3otFcclT6i3WxMuQgGZyQzOPlo4SYpum+izK/8Q4CSJANoj7e2UgHNyCGCS4GHe3pzpDEmF2CgHQYQICflpOF8AcVAciGxdmNxof7PysTPB/NrJyFBvC5PRsjHhCVdArN0FgRlX2Q/81Zh2dN1U2a6mPwMuMQmGViufBebRP9Bhnug==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(346002)(396003)(39860400002)(136003)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(2906002)(7416002)(31686004)(5660300002)(41300700001)(8936002)(8676002)(4326008)(66946007)(316002)(110136005)(478600001)(6486002)(966005)(6506007)(6666004)(66476007)(53546011)(36756003)(83380400001)(54906003)(66556008)(26005)(86362001)(31696002)(2616005)(82960400001)(38100700002)(6512007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZFExejNUaW1RbDZHVGpwR1pkVktYK0o2ZlVkcXhkRGk2U1ozZ25xRzhacUps?=
+ =?utf-8?B?SzV3UkdOMzlERGxUZTRHbDl5WnhBelpObDdpQis2cHZGWlVqR2pOTUk5Tm9s?=
+ =?utf-8?B?enhqWUFjR2ZOLzFQNWtKWElWbUV4WFd6ZlJINStZR0V6ZXArOUJmNlYxakJX?=
+ =?utf-8?B?MzlxWjRpOGRrOXliNjRFTnBydHAxeHR3eWI0VWxGN2UxYkx4c1dIbzdObHVI?=
+ =?utf-8?B?UTNWb0hLY054d0E5YnZ5Y2NhY1hCYXQ4bmVUWmZJdVJaakxKN2FhWWdXSTVu?=
+ =?utf-8?B?dnNWZEJNVGw5a2d6R0JQeUUySUN3YjRpQ0dGcWpzR3Jab0lrWVYxbzg3R3ls?=
+ =?utf-8?B?b3VLanNoLzc3NWJLK055UjZKNERxUnQ0RFd6UG52RktKdHl6R1FjWlZGUUt5?=
+ =?utf-8?B?Z3dWQ2hoOFgxdEhyQUdERmM1Y3liZi90TVpEaS9Pc0QydGt0bHR4WkZ0OEg2?=
+ =?utf-8?B?alhqbkVqNm5IT0JMd0xkWTZsQXVCZnRYT21NRkNVMzA1eWpMYTZrMmNFai96?=
+ =?utf-8?B?bDZ3QnFZWUZyTUZQKzAwZENncDNVY3NmcWlLUm9tWjRMMmVOUG5oS0FtdFRN?=
+ =?utf-8?B?aXUvMi9GTS9YS1JMaXhmcWhxR1JtaW16cDdua1VnWkhCYitkOGttK3dkdURw?=
+ =?utf-8?B?UjJVOHIvdXlpY0xYeStjMVVDaXVSSE93UmJ1NDh3QzdndEdoVHUvQXRZWGxJ?=
+ =?utf-8?B?MnVRUXBvYlAzenVqOHFyTm02U28yOE5jN0EwU1VGMHcvdFBGOGpicStnL0p2?=
+ =?utf-8?B?NGlVcWRjbUR5am55cXB0RCtxOGhPNEpXVjRtVjlyVWRuY3RPa2RCeW1PcGpi?=
+ =?utf-8?B?MStkNHdpTzU1NVUwN0JTN1RYSktyVmhHZmd3K3JuMHQzNC9jKzFMTzh6QTlL?=
+ =?utf-8?B?d2pJOXBaSnh5dFhYOHJHVVFZZnpOc1p2cjNpYkJNUlVjek94Rk0vWWlqdU5p?=
+ =?utf-8?B?czExcUNOY3VVcDNYSFZhckRzKzg0YUtaVi9SK01GdUYzVmo4UCs4VWNvVUZj?=
+ =?utf-8?B?QW5QOEF4cHRubzlyRVlGNTFaTElidjlpZnpoUmRGM2t1bVAvWFVGcHU1NkxF?=
+ =?utf-8?B?WlQ2U2Z3akpmUlp1cFJQV3JTNElzdXROVWJMeWtaQjRSVUdpYlN4aG9XYlFv?=
+ =?utf-8?B?Y2EzWWxVUVpWNkhXdk9USnBDa292bC95MDArVkNBT2NNTHdrdkZQTnoyM2Ju?=
+ =?utf-8?B?QWxNSUgyVEZZMDNrRUtickRIME1kZXF5a2ZSWHpGMDQxUW9ySUg0QisvWHI1?=
+ =?utf-8?B?NUExZUVOdzFmSkhjeXJYSXc2YnZZeklUV01EVHgzUFJNd1pIUjBxWGZIZ3lR?=
+ =?utf-8?B?Qm9qM2NFS3RCdUdMdWRzdTZVV1FaY2JjcEpaeHoxREN5ZWpsMHVvbDNpZFF0?=
+ =?utf-8?B?cDZuUzMvQm9nczZieVJTQ0dJNmFEK04yUXJKRllOTWx3ekoyUjRyblRwTGQ0?=
+ =?utf-8?B?MFBPdlNEZDBmSzE1Y24ycXVHV2tjVDl0aENCRGM1UWlqeDFjTlYyc1U4T0Fx?=
+ =?utf-8?B?eFJYQzRHYS9OellGdnBLbC94dUYyTENaeEV4TktaSFIzWmliVDJSK3ZCUDZa?=
+ =?utf-8?B?RmhMMmZKMUxGUm94M0ZhZFNPaG9UUEoxWXR1SEttZTdKYzcyOWFKem02eWRJ?=
+ =?utf-8?B?c3VlaHMwbytOdEsyZWRxWWxDcThoL3hVdDlQYnFxbjdHS0NnWStPc0lpTVFp?=
+ =?utf-8?B?L0xham5QWmhCZ0JuOHVVVllwcUlYZkNoQU84NkFYbGpEM3drQ2JDVGdhNzRE?=
+ =?utf-8?B?bTQweVRtK0FTZ0I3S3drM3F2SFRWa1cyWUJNRnhBSDV1RUNOL2ZyamhlbXg2?=
+ =?utf-8?B?dndIVkM2K2l2cVhKelJZMzcrTVYrYVRyUE1yNG9nV2Y0TXdzaU5CZ2VlYVFV?=
+ =?utf-8?B?NFVPcnhkdjUzejN2OVM4RFZMMENFMW0vVWtERG93a0hsbUZ6RFJHY3VCeWc4?=
+ =?utf-8?B?bTBYZEpyVmNkaklaeVR1V0p4K0V2MTY2WmhhQWlHenhqV3pOZ3JwdnM2WEIr?=
+ =?utf-8?B?SzJFTTlZazVvSTNjMll0MHB6LzRiR2piRlhmRWo3VVpRbm42b1ZqdzBMZHUw?=
+ =?utf-8?B?NHQ1QmlQeElGTzBIL2N3Z3JsYkYySUdEdlhvUUpEbndjbVlJZmZPbG1jTUhx?=
+ =?utf-8?B?dXZ5eWVwZUEwU0NPdktObUlHanYwcVhjK1NUV2JTSkNIV1ZHbnFUL1ZOTDJI?=
+ =?utf-8?B?bUE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 410052f6-12dd-4826-2701-08dbce9c14f7
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2023 23:03:16.5881
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9E7X6zR+Yh0lqx0P671PrqnqzcN89ZOovFffCnIobYTlr/yJrqoHrNn8YmDzP3mKaQwkNKJCoTMJXHJwBMvbSoWNOxBnQN9TAsZGWDHTbT0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB6560
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,153 +192,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000012ddb0607dd67f5
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, 16 Oct 2023 at 13:35, Nadav Amit <namit@vmware.com> wrote:
->
-> I have encountered several such issues before [1], and while some have be=
-en fixed,
-> some have not (I looked at switch_fpu_finish()), and might under the righ=
-t/wrong
-> circumstances use the wrongly-=E2=80=9Ccached=E2=80=9D current. Moreover,=
- perhaps new problems
-> have been added since my old patch.
 
-Yeah, that fpu switching is disgusting and borderline buggy. And yes,
-it would trigger problems when caching the value of 'current'.
+On 10/16/2023 10:03 AM, Jakub Kicinski wrote:
+> On Mon, 16 Oct 2023 18:23:07 +0200 Köry Maincent wrote:
+>>> What's the reason for timestamp precision differences?
+>>> My understanding so far was the the differences come from:
+>>>  1. different stamping device (i.e. separate "piece of silicon",
+>>>     accessed over a different bus, with different PHC etc.)
+>>>  2. different stamping point (MAC vs DMA)
+>>>
+>>> I don't think any "integrated" device would support stamps which
+>>> differ under category 1.  
+>>
+>> It was a case reported by Maxime on v3:
+>> https://lore.kernel.org/netdev/20230324112541.0b3dd38a@pc-7.home/ 
+> 
+> IMHO this talks about how clock control/disciplining works which
+> is a somewhat independent topic of timestamping.
 
-I don't particularly love the patch you pointed at, because it seems
-to have only fixed the switch_fpu_finish() case, which is the one that
-presumably triggered issues, but that's not a very pretty fix.
+The thread in question mentions that the device has two modes, one which
+has higher precision for the timestamps, and one which has better
+precision on frequency adjustments. I don't know the details for why the
+hardware has this behavior, but being able to switch between the two
+timestamp modes has value as described by the thread.
 
-switch_fpu_prepare() has the exact same problem, and in fact is likely
-the *source* of the issue, because that's the original "load current"
-that then ends up being cached incorrectly later in __switch_to().
-
-The whole
-
-        struct fpu *prev_fpu =3D &prev->fpu;
-
-thing in __switch_to() is pretty ugly. There's no reason why we should
-look at that 'prev_fpu' pointer there, or pass it down.
-
-And it only generates worse code, in how it loads 'current' when
-t__switch_to() has the right task pointers.
-
-So the attached patch is, I think, the right thing to do. It may not
-be the *complete* fix, but at least for the config I tested, this
-makes all loads of 'current' go away in the resulting generated
-assembly, and the only access to '%gs:pcpu_hot(%rip)' is the write to
-update it:
-
-        movq %rbx, %gs:pcpu_hot(%rip)
-
-from that
-
-        raw_cpu_write(pcpu_hot.current_task, next_p);
-
-code.
-
-Thomas, I think you've touched this code last, but even that isn't
-very recent. The attached patch not only cleans this up, it actually
-generates better code too:
-
- (a) it removes one push/pop pair at entry/exit because there's one
-less register used (no 'current')
-
- (b) it removes that pointless load of 'current' because it just uses
-the right argument:
-
--       #APP
--       movq    %gs:pcpu_hot(%rip), %r12
--       #NO_APP
--       testq   $16384, (%r12)
-+       testq   $16384, (%rdi)
-
-so I think this is the right thing to do. I checked that the 32-bit
-code builds and looks sane too.
-
-I do think the 'old/new' naming in the FPU code should probably be
-'prev/next' to match the switch_to() naming, but I didn't do that.
-
-Comments?
-
-                Linus
-
-                  Linus
-
---000000000000012ddb0607dd67f5
-Content-Type: text/x-patch; charset="US-ASCII"; name="patch.diff"
-Content-Disposition: attachment; filename="patch.diff"
-Content-Transfer-Encoding: base64
-Content-ID: <f_lnti30uj0>
-X-Attachment-Id: f_lnti30uj0
-
-IGFyY2gveDg2L2luY2x1ZGUvYXNtL2ZwdS9zY2hlZC5oIHwgMTAgKysrKysrLS0tLQogYXJjaC94
-ODYva2VybmVsL3Byb2Nlc3NfMzIuYyAgICAgfCAgNyArKystLS0tCiBhcmNoL3g4Ni9rZXJuZWwv
-cHJvY2Vzc182NC5jICAgICB8ICA3ICsrKy0tLS0KIDMgZmlsZXMgY2hhbmdlZCwgMTIgaW5zZXJ0
-aW9ucygrKSwgMTIgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvYXJjaC94ODYvaW5jbHVkZS9h
-c20vZnB1L3NjaGVkLmggYi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9mcHUvc2NoZWQuaAppbmRleCBj
-YTZlNWU1ZjE2YjIuLmM0ODVmMTk0NGM1ZiAxMDA2NDQKLS0tIGEvYXJjaC94ODYvaW5jbHVkZS9h
-c20vZnB1L3NjaGVkLmgKKysrIGIvYXJjaC94ODYvaW5jbHVkZS9hc20vZnB1L3NjaGVkLmgKQEAg
-LTM3LDEwICszNywxMiBAQCBleHRlcm4gdm9pZCBmcHVfZmx1c2hfdGhyZWFkKHZvaWQpOwogICog
-VGhlIEZQVSBjb250ZXh0IGlzIG9ubHkgc3RvcmVkL3Jlc3RvcmVkIGZvciBhIHVzZXIgdGFzayBh
-bmQKICAqIFBGX0tUSFJFQUQgaXMgdXNlZCB0byBkaXN0aW5ndWlzaCBiZXR3ZWVuIGtlcm5lbCBh
-bmQgdXNlciB0aHJlYWRzLgogICovCi1zdGF0aWMgaW5saW5lIHZvaWQgc3dpdGNoX2ZwdV9wcmVw
-YXJlKHN0cnVjdCBmcHUgKm9sZF9mcHUsIGludCBjcHUpCitzdGF0aWMgaW5saW5lIHZvaWQgc3dp
-dGNoX2ZwdV9wcmVwYXJlKHN0cnVjdCB0YXNrX3N0cnVjdCAqb2xkLCBpbnQgY3B1KQogewogCWlm
-IChjcHVfZmVhdHVyZV9lbmFibGVkKFg4Nl9GRUFUVVJFX0ZQVSkgJiYKLQkgICAgIShjdXJyZW50
-LT5mbGFncyAmIChQRl9LVEhSRUFEIHwgUEZfVVNFUl9XT1JLRVIpKSkgeworCSAgICAhKG9sZC0+
-ZmxhZ3MgJiAoUEZfS1RIUkVBRCB8IFBGX1VTRVJfV09SS0VSKSkpIHsKKwkJc3RydWN0IGZwdSAq
-b2xkX2ZwdSA9ICZvbGQtPnRocmVhZC5mcHU7CisKIAkJc2F2ZV9mcHJlZ3NfdG9fZnBzdGF0ZShv
-bGRfZnB1KTsKIAkJLyoKIAkJICogVGhlIHNhdmUgb3BlcmF0aW9uIHByZXNlcnZlZCByZWdpc3Rl
-ciBzdGF0ZSwgc28gdGhlCkBAIC02MCwxMCArNjIsMTAgQEAgc3RhdGljIGlubGluZSB2b2lkIHN3
-aXRjaF9mcHVfcHJlcGFyZShzdHJ1Y3QgZnB1ICpvbGRfZnB1LCBpbnQgY3B1KQogICogRGVsYXkg
-bG9hZGluZyBvZiB0aGUgY29tcGxldGUgRlBVIHN0YXRlIHVudGlsIHRoZSByZXR1cm4gdG8gdXNl
-cmxhbmQuCiAgKiBQS1JVIGlzIGhhbmRsZWQgc2VwYXJhdGVseS4KICAqLwotc3RhdGljIGlubGlu
-ZSB2b2lkIHN3aXRjaF9mcHVfZmluaXNoKHZvaWQpCitzdGF0aWMgaW5saW5lIHZvaWQgc3dpdGNo
-X2ZwdV9maW5pc2goc3RydWN0IHRhc2tfc3RydWN0ICpuZXcpCiB7CiAJaWYgKGNwdV9mZWF0dXJl
-X2VuYWJsZWQoWDg2X0ZFQVRVUkVfRlBVKSkKLQkJc2V0X3RocmVhZF9mbGFnKFRJRl9ORUVEX0ZQ
-VV9MT0FEKTsKKwkJc2V0X3Rza190aHJlYWRfZmxhZyhuZXcsIFRJRl9ORUVEX0ZQVV9MT0FEKTsK
-IH0KIAogI2VuZGlmIC8qIF9BU01fWDg2X0ZQVV9TQ0hFRF9IICovCmRpZmYgLS1naXQgYS9hcmNo
-L3g4Ni9rZXJuZWwvcHJvY2Vzc18zMi5jIGIvYXJjaC94ODYva2VybmVsL3Byb2Nlc3NfMzIuYwpp
-bmRleCA3MDhjODdiODhjYzEuLjA5MTdjN2YyNTcyMCAxMDA2NDQKLS0tIGEvYXJjaC94ODYva2Vy
-bmVsL3Byb2Nlc3NfMzIuYworKysgYi9hcmNoL3g4Ni9rZXJuZWwvcHJvY2Vzc18zMi5jCkBAIC0x
-NTYsMTMgKzE1NiwxMiBAQCBfX3N3aXRjaF90byhzdHJ1Y3QgdGFza19zdHJ1Y3QgKnByZXZfcCwg
-c3RydWN0IHRhc2tfc3RydWN0ICpuZXh0X3ApCiB7CiAJc3RydWN0IHRocmVhZF9zdHJ1Y3QgKnBy
-ZXYgPSAmcHJldl9wLT50aHJlYWQsCiAJCQkgICAgICpuZXh0ID0gJm5leHRfcC0+dGhyZWFkOwot
-CXN0cnVjdCBmcHUgKnByZXZfZnB1ID0gJnByZXYtPmZwdTsKIAlpbnQgY3B1ID0gc21wX3Byb2Nl
-c3Nvcl9pZCgpOwogCiAJLyogbmV2ZXIgcHV0IGEgcHJpbnRrIGluIF9fc3dpdGNoX3RvLi4uIHBy
-aW50aygpIGNhbGxzIHdha2VfdXAqKCkgaW5kaXJlY3RseSAqLwogCi0JaWYgKCF0ZXN0X3RocmVh
-ZF9mbGFnKFRJRl9ORUVEX0ZQVV9MT0FEKSkKLQkJc3dpdGNoX2ZwdV9wcmVwYXJlKHByZXZfZnB1
-LCBjcHUpOworCWlmICghdGVzdF90c2tfdGhyZWFkX2ZsYWcocHJldl9wLCBUSUZfTkVFRF9GUFVf
-TE9BRCkpCisJCXN3aXRjaF9mcHVfcHJlcGFyZShwcmV2X3AsIGNwdSk7CiAKIAkvKgogCSAqIFNh
-dmUgYXdheSAlZ3MuIE5vIG5lZWQgdG8gc2F2ZSAlZnMsIGFzIGl0IHdhcyBzYXZlZCBvbiB0aGUK
-QEAgLTIwOSw3ICsyMDgsNyBAQCBfX3N3aXRjaF90byhzdHJ1Y3QgdGFza19zdHJ1Y3QgKnByZXZf
-cCwgc3RydWN0IHRhc2tfc3RydWN0ICpuZXh0X3ApCiAKIAlyYXdfY3B1X3dyaXRlKHBjcHVfaG90
-LmN1cnJlbnRfdGFzaywgbmV4dF9wKTsKIAotCXN3aXRjaF9mcHVfZmluaXNoKCk7CisJc3dpdGNo
-X2ZwdV9maW5pc2gobmV4dF9wKTsKIAogCS8qIExvYWQgdGhlIEludGVsIGNhY2hlIGFsbG9jYXRp
-b24gUFFSIE1TUi4gKi8KIAlyZXNjdHJsX3NjaGVkX2luKG5leHRfcCk7CmRpZmYgLS1naXQgYS9h
-cmNoL3g4Ni9rZXJuZWwvcHJvY2Vzc182NC5jIGIvYXJjaC94ODYva2VybmVsL3Byb2Nlc3NfNjQu
-YwppbmRleCAzM2IyNjg3NDdiYjcuLjE1NTNlMTk5MDRlMCAxMDA2NDQKLS0tIGEvYXJjaC94ODYv
-a2VybmVsL3Byb2Nlc3NfNjQuYworKysgYi9hcmNoL3g4Ni9rZXJuZWwvcHJvY2Vzc182NC5jCkBA
-IC01NjIsMTQgKzU2MiwxMyBAQCBfX3N3aXRjaF90byhzdHJ1Y3QgdGFza19zdHJ1Y3QgKnByZXZf
-cCwgc3RydWN0IHRhc2tfc3RydWN0ICpuZXh0X3ApCiB7CiAJc3RydWN0IHRocmVhZF9zdHJ1Y3Qg
-KnByZXYgPSAmcHJldl9wLT50aHJlYWQ7CiAJc3RydWN0IHRocmVhZF9zdHJ1Y3QgKm5leHQgPSAm
-bmV4dF9wLT50aHJlYWQ7Ci0Jc3RydWN0IGZwdSAqcHJldl9mcHUgPSAmcHJldi0+ZnB1OwogCWlu
-dCBjcHUgPSBzbXBfcHJvY2Vzc29yX2lkKCk7CiAKIAlXQVJOX09OX09OQ0UoSVNfRU5BQkxFRChD
-T05GSUdfREVCVUdfRU5UUlkpICYmCiAJCSAgICAgdGhpc19jcHVfcmVhZChwY3B1X2hvdC5oYXJk
-aXJxX3N0YWNrX2ludXNlKSk7CiAKLQlpZiAoIXRlc3RfdGhyZWFkX2ZsYWcoVElGX05FRURfRlBV
-X0xPQUQpKQotCQlzd2l0Y2hfZnB1X3ByZXBhcmUocHJldl9mcHUsIGNwdSk7CisJaWYgKCF0ZXN0
-X3Rza190aHJlYWRfZmxhZyhwcmV2X3AsIFRJRl9ORUVEX0ZQVV9MT0FEKSkKKwkJc3dpdGNoX2Zw
-dV9wcmVwYXJlKHByZXZfcCwgY3B1KTsKIAogCS8qIFdlIG11c3Qgc2F2ZSAlZnMgYW5kICVncyBi
-ZWZvcmUgbG9hZF9UTFMoKSBiZWNhdXNlCiAJICogJWZzIGFuZCAlZ3MgbWF5IGJlIGNsZWFyZWQg
-YnkgbG9hZF9UTFMoKS4KQEAgLTYyMyw3ICs2MjIsNyBAQCBfX3N3aXRjaF90byhzdHJ1Y3QgdGFz
-a19zdHJ1Y3QgKnByZXZfcCwgc3RydWN0IHRhc2tfc3RydWN0ICpuZXh0X3ApCiAJcmF3X2NwdV93
-cml0ZShwY3B1X2hvdC5jdXJyZW50X3Rhc2ssIG5leHRfcCk7CiAJcmF3X2NwdV93cml0ZShwY3B1
-X2hvdC50b3Bfb2Zfc3RhY2ssIHRhc2tfdG9wX29mX3N0YWNrKG5leHRfcCkpOwogCi0Jc3dpdGNo
-X2ZwdV9maW5pc2goKTsKKwlzd2l0Y2hfZnB1X2ZpbmlzaChuZXh0X3ApOwogCiAJLyogUmVsb2Fk
-IHNwMC4gKi8KIAl1cGRhdGVfdGFza19zdGFjayhuZXh0X3ApOwo=
---000000000000012ddb0607dd67f5--
+I'm not sure how to represent that in such an API because both modes
+seem to capture the timestamp at the MAC.
