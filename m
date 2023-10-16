@@ -2,96 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D657CA3F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 431D17CA457
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230330AbjJPJWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 05:22:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44474 "EHLO
+        id S232160AbjJPJi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 05:38:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbjJPJWC (ORCPT
+        with ESMTP id S230104AbjJPJi0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 05:22:02 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1FADAB;
-        Mon, 16 Oct 2023 02:22:00 -0700 (PDT)
-Received: from [172.20.10.2] (unknown [185.53.196.201])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: ehristev)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 53EC066072AF;
-        Mon, 16 Oct 2023 10:21:58 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697448119;
-        bh=/HyiQc3Pfw/ocS0/hyAvyF5PeWrpiR7koV+Tb8YIRYE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=J0t4X0l+BraT0SLc66RgbRJ31VYEk95rSLsdr49kIY4Srk6sHiA7W7oQSlgSHhYkB
-         +RS/HMUeE+toZ1RSR0oLKP01a/m1sY/49A+eP2/asudK6lK+eTGCRWN5w/Y9olFZvu
-         SuZquLurSfwT9RM2Btxgj068QfKe6PD1BrJKLWeHKmO1/OZTZHDLNOe6A+z7RW2pLu
-         tQjSLyfBwSqoTs35/nkp8F9sw25FYiIlihmOt21ADG8kYH9l3ZYJvTy6A8yyqsGM2i
-         hfxx1EovXEiDA1kRZ5Ij5q1RhWlWN92eR2ftONV79CvtCtyHVxvb4z0s8WMuzyhAYH
-         3MjDfHbjUIrhg==
-Message-ID: <318016c7-8ceb-4c96-8784-597fac8d194b@collabora.com>
-Date:   Mon, 16 Oct 2023 12:21:55 +0300
+        Mon, 16 Oct 2023 05:38:26 -0400
+X-Greylist: delayed 910 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 16 Oct 2023 02:38:23 PDT
+Received: from m1325.mail.163.com (m1325.mail.163.com [220.181.13.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4FEB4AB;
+        Mon, 16 Oct 2023 02:38:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
+        Message-ID; bh=IHf1ZEy9uQ92Bpj/YslkjkDb4QSvVvjC97Qn/wYsbGk=; b=F
+        1dIr8+hFx0Agv1LGde5HXT4efc4LstQhNHyvHeUC49yz46ij1iVruvi/C5ZNnX7J
+        iDD1lpFwIj6Bq1/yuZH0P8t5/IWWk3d7ixEW0DkAse+65xh9Tf6VBX0o4qKv/J2V
+        pZAYul7wp/XggzA8/MINweUIo50BryeNEhjOZ6Y1DM=
+Received: from 00107082$163.com ( [111.35.185.232] ) by ajax-webmail-wmsvr25
+ (Coremail) ; Mon, 16 Oct 2023 17:22:36 +0800 (CST)
+X-Originating-IP: [111.35.185.232]
+Date:   Mon, 16 Oct 2023 17:22:36 +0800 (CST)
+From:   "David Wang" <00107082@163.com>
+To:     "Florian Westphal" <fw@strlen.de>
+Cc:     "Daniel Xu" <dxu@dxuuu.xyz>,
+        "Pablo Neira Ayuso" <pablo@netfilter.org>,
+        "Jozsef Kadlecsik" <kadlec@netfilter.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re:Re: [PATCH] uapi/netfilter: Change netfilter hook verdict code
+ definition from macro to enum
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
+ Copyright (c) 2002-2023 www.mailtech.cn 163com
+In-Reply-To: <20230928115359.GB27208@breakpoint.cc>
+References: <20230904130201.14632-1-00107082@163.com>
+ <cc6e3tukgqhi5y4uhepntrpf272o652pytuynj4nijsf5bkgjq@rgnbhckr3p4w>
+ <19d2362f.5c85.18a6647817b.Coremail.00107082@163.com>
+ <20230928115359.GB27208@breakpoint.cc>
+X-NTES-SC: AL_QuySBfift0ku4CGRYukXn0oTju85XMCzuv8j3YJeN500kinOwzsydmZPLETk1v6PBB+iqQGLQBJK2utLW6NHVpsjqcGzyTwrHW7h1YZ4nFyx
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GBK
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6/9] arm64: dts: mediatek: Add MT8186 Krabby platform
- based Tentacruel / Tentacool
-Content-Language: en-US
-To:     Chen-Yu Tsai <wenst@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231012230237.2676469-1-wenst@chromium.org>
- <20231012230237.2676469-7-wenst@chromium.org>
-From:   Eugen Hristev <eugen.hristev@collabora.com>
-In-Reply-To: <20231012230237.2676469-7-wenst@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <269646ef.6122.18b37cb5c27.Coremail.00107082@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: GcGowAD3_3biAC1lmbISAA--.6595W
+X-CM-SenderInfo: qqqrilqqysqiywtou0bp/1tbiEBoLql8YLwmJiwACsK
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/23 02:02, Chen-Yu Tsai wrote:
-> Tentacruel and Tentacool are MT8186 based Chromebooks based on the
-> Krabby design.
-> 
-> Tentacruel, also known as the ASUS Chromebook CM14 Flip CM1402F, is a
-> convertible device with touchscreen and stylus.
-> 
-> Tentacool, also known as the ASUS Chromebook CM14 CM1402C, is a laptop
-> device. It does not have a touchscreen or stylus.
-> 
-
-Hi Chen-Yu,
-
-The Krabby design has the touchscreen ? if the touchscreen is for 
-Tentacruel ,then the touchscreen should be described in the tentacruel 
-dtsi, not in the Krabby and then deleted for tentacool.
-
-Or is there any reason for describing the touchscreen for Krabby ?
-One additional way to solve this is to have the touchsreen as separate 
-dtsi and only include it for the boards that have it, e.g. tentacruel .
-
-Eugen
-> The two devices both have two variants. The difference is a second
-> source touchpad controller that shares the same address as the original,
-> but is incompatible.
-> 
-> The extra SKU IDs for the Tentacruel devices map to different sensor
-> components attached to the Embedded Controller. These are not visible
-> to the main processor.
-> 
-[...]
-
+CgoKQXQgMjAyMy0wOS0yOCAxOTo1Mzo1OSwgIkZsb3JpYW4gV2VzdHBoYWwiIDxmd0BzdHJsZW4u
+ZGU+IHdyb3RlOgoKPgo+SSB3YXMgYWJvdXQgdG8gYXBwbHkgdGhpcyBhcy1pcywgYnV0IFBhYmxv
+IE5laXJhIHdvdWxkIHByZWZlciB0bwo+a2VlcCB0aGUgZGVmaW5lcyBhcyB3ZWxsLgo+Cj5Tbywg
+YXMgYSBjb21wcm9taXNlLCBJIHdvdWxkIHN1Z2dlc3QgdG8ganVzdCAqYWRkKgo+Cj4vKiB2ZXJk
+aWN0cyBhdmFpbGFibGUgdG8gQlBGIGFyZSBleHBvcnRlZCB2aWEgdm1saW51eC5oICovCj5lbnVt
+IHsKPglORl9EUk9QID0gMCwKPglORl9BQ0NFUFQgPSAxLAo+fTsKPgo+I2RlZmluZSBORl9EUk9Q
+IDAKPi4uLgo+Cj5UaGlzIHdheSBCVEYgd29uJ3QgaGF2ZSB0aGUgb3RoZXIgdmVyZGljdHMsIGJ1
+dCBBVE0gdGhvc2UKPmNhbm5vdCBiZSB1c2VkIGluIEJQRiBwcm9ncmFtcyBhbnl3YXkuCj4KPldv
+dWxkIHlvdSBtaW5kIG1ha2luZyBhIG5ldyB2ZXJzaW9uIG9mIHRoZSBwYXRjaD8KPk90aGVyd2lz
+ZSBJIGNhbiBtYW5nbGUgaXQgbG9jYWxseSBoZXJlIGFzIG5lZWRlZC4KCgpTb3JyeSBmb3IgdGhp
+cyBsYXRlIHJlc3BvbnNlLCBJIGdvdCBjYXVnaHQgdXAgYnkgYW4gdW5leHBlY3RlZCBwZXJzb25h
+bCAiY3Jpc2lzIiBmb3IgcXVpdGUgYSBsb25nIHdoaWxlLi4KSG9wZSB5b3UgaGF2ZSBhbHJlYWR5
+IG1hZGUgdGhlIGNoYW5nZSwgYW5kIGl0IGlzIE9LLgoKRGF2aWQK
