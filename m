@@ -2,115 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C24627CA736
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 13:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3441B7CA73F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 13:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230493AbjJPL4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 07:56:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51270 "EHLO
+        id S231685AbjJPL5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 07:57:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJPL4V (ORCPT
+        with ESMTP id S230078AbjJPL5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 07:56:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6445129
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 04:55:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697457324;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LMLuJaoV57Wcr8aZZNrwu7qwYblvpG+Vtuy3ujdjNsA=;
-        b=RLdt0Cd5MjWgKPPU5ZtRX2sxMmIrB8RYUmSndAjv114/InkxdTPMWUpWx6FQGZChFBrgle
-        CC/pGEFDa5kYqv3B3xT8P6Cmq29kh7XL+/hbxL1EWvkhJqRE4QHbwMKINO17jluGx4XYcd
-        u6SFaZ5wZYcgjL9OkZeGComlZjyd73g=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-288-9UCyG2oSNf2_0_zcLJ07KQ-1; Mon, 16 Oct 2023 07:55:22 -0400
-X-MC-Unique: 9UCyG2oSNf2_0_zcLJ07KQ-1
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-41b1f81f3f1so51042641cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 04:55:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697457322; x=1698062122;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LMLuJaoV57Wcr8aZZNrwu7qwYblvpG+Vtuy3ujdjNsA=;
-        b=mqLUV+DqcS27Y491wQXi5xWTJYWdxfh1rLzOcwnDstvkyc3rqh7nDSF6g0RR1syBxj
-         /72PRgLVdHYKswMZbIWj/K5578a5CuPFhN1rSBeWSYOpinG3r3FRnDwNAPLWktbhN7Yh
-         xOQJxjaHMphyHc/sBQoc1gwMzkr/DCyU+Bj21my4t2lR9wLE1qcLGyp+hUcm3/SctIVJ
-         FcjW55uOoovrT52/chBuJ+QE1zRBahsSdZK2GpqUltDVPVaoGnqdhUN5R3W2Qm69l/A+
-         HkaT00/JVo3nTOFHR03B1FI3ef4SmshleUmKBOlxIZumA2sg3NQ5DM/KkUq2YOJ11Xjy
-         ajpQ==
-X-Gm-Message-State: AOJu0YwkHG3og0UHkJPnB7BWxGjQnyP2lP1E1wWY1P26hC+pBvW8Rkgj
-        u+BjmTMowmp+TPqr1c50tJDEXq5ZHOPGPg8WqRFGcKlPw+j6ZQL3O+AkX9hCFOGJ6G5aqYJ1n10
-        UhAW7Svj/cU/i4ZIQSuUUbeO+
-X-Received: by 2002:ac8:5fc1:0:b0:418:162e:6a5d with SMTP id k1-20020ac85fc1000000b00418162e6a5dmr40355019qta.67.1697457321730;
-        Mon, 16 Oct 2023 04:55:21 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH7bKAHQAoDbs/ePFybLjdjR4Sjj0jshB3lRwoxAg6H5eTLRu5GFAyFYQWGQ2J3u86nt8HUmQ==
-X-Received: by 2002:ac8:5fc1:0:b0:418:162e:6a5d with SMTP id k1-20020ac85fc1000000b00418162e6a5dmr40355007qta.67.1697457321437;
-        Mon, 16 Oct 2023 04:55:21 -0700 (PDT)
-Received: from optiplex-fbsd (c-73-249-122-233.hsd1.nh.comcast.net. [73.249.122.233])
-        by smtp.gmail.com with ESMTPSA id w42-20020a05622a192a00b004181a8a3e2dsm2979923qtc.41.2023.10.16.04.55.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 04:55:21 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 07:55:18 -0400
-From:   Rafael Aquini <aquini@redhat.com>
-To:     Audra Mitchell <audra@redhat.com>
-Cc:     linux-mm@kvack.org, raquini@redhat.com, akpm@linux-foundation.org,
-        djakov@kernel.org, vbabka@suse.cz, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] Fix page_owner's use of free timestamps
-Message-ID: <ZS0kpkHkmaAQStV7@optiplex-fbsd>
-References: <20231013190350.579407-1-audra@redhat.com>
+        Mon, 16 Oct 2023 07:57:08 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E063F8E
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 04:57:06 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98143C433C7;
+        Mon, 16 Oct 2023 11:57:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697457426;
+        bh=JKkLHlefXiDiDYienAtz7iVlJtzOe0TV1BHQ6sC3knc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=fSjFpCroKZzXKWNLZ3y23G+1iDO5EBsKyVgQdD9075LzXBANtCgoBMGKm8Ld3c2+8
+         iyGu0uo6VgmOPK/K7sOdofJ2niJQF/KqN6oo1lTgu2e2v204zvTCCycet2m+wCPrd9
+         HlaJibRqAvD8HeiRjgCxgtbHJQ89uUWbi0v4qmkL3s267pQal+xwk95cSECN3um0LA
+         9Qyy+LA+0r6qlr5wN6tDGkdqeoIICcoaOwabbTPefF+7f0swA/UeMyX2wccwX6UraU
+         sG4yHrcbXAoZBAcg1wD0g2Uogigyb5m298xDsCC+TECQ4nhmsTDVsITEQKOB+EdsMs
+         ppp92EQCn8Aqg==
+Message-ID: <b20bba75-e646-4c16-a4aa-7085291cfb1f@kernel.org>
+Date:   Mon, 16 Oct 2023 13:56:58 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231013190350.579407-1-audra@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10 4/7] drm: bridge: Cadence: Add MHDP8501 DP/HDMI driver
+Content-Language: en-US
+To:     Sandor Yu <Sandor.yu@nxp.com>, dmitry.baryshkov@linaro.org,
+        andrzej.hajda@intel.com, neil.armstrong@linaro.org,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@gmail.com, airlied@gmail.com, daniel@ffwll.ch,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        vkoul@kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com, oliver.brown@nxp.com,
+        alexander.stein@ew.tq-group.com, sam@ravnborg.org
+References: <cover.1697162990.git.Sandor.yu@nxp.com>
+ <037c61d582df78a3309a5672ac66b9e74b396ddd.1697162990.git.Sandor.yu@nxp.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <037c61d582df78a3309a5672ac66b9e74b396ddd.1697162990.git.Sandor.yu@nxp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 03:03:44PM -0400, Audra Mitchell wrote:
-> While page ower output is used to investigate memory utilization, typically
-> the allocation pathway, the introduction of timestamps to the page owner 
-> records caused each record to become unique due to the granularity of the
-> nanosecond timestamp (for example):
-> 
->   Page allocated via order 0 ... ts 5206196026 ns, free_ts 5187156703 ns
->   Page allocated via order 0 ... ts 5206198540 ns, free_ts 5187162702 ns
-> 
-> Furthermore, the page_owner output only dumps the currently allocated 
-> records, so having the free timestamps is nonsensical for the typical use 
-> case.
-> 
-> In addition, the introduction of timestamps was not properly handled in
-> the page_owner_sort tool causing most use cases to be broken. This series
-> is meant to remove the free timestamps from the page_owner output and
-> fix the page_owner_sort tool so proper collation can occur.
-> 
-> Audra Mitchell (5):
->   mm/page_owner: Remove free_ts from page_owner output
->   tools/mm: Remove references to free_ts from page_owner_sort
->   tools/mm: Filter out timestamps for correct collation
->   tools/mm: Fix the default case for page_owner_sort
->   tools/mm: Update the usage output to be more organized
-> 
->  mm/page_owner.c            |   4 +-
->  tools/mm/page_owner_sort.c | 212 +++++++++++++++++--------------------
->  2 files changed, 100 insertions(+), 116 deletions(-)
-> 
-> -- 
-> 2.41.0
-> 
+On 13/10/2023 05:24, Sandor Yu wrote:
+> Add a new DRM DisplayPort and HDMI bridge driver for Candence MHDP8501
+> used in i.MX8MQ SOC. MHDP8501 could support HDMI or DisplayPort
+> standards according embedded Firmware running in the uCPU.
 
-Thank you, Audra.
+...
 
-Acked-by: Rafael Aquini <aquini@redhat.com>
+> +
+> +static struct platform_driver cdns_mhdp8501_driver = {
+> +	.probe = cdns_mhdp8501_probe,
+> +	.remove = cdns_mhdp8501_remove,
+> +	.driver = {
+> +		.name = "cdns-mhdp8501",
+> +		.of_match_table = cdns_mhdp8501_dt_ids,
+> +	},
+> +};
+> +
+> +module_platform_driver(cdns_mhdp8501_driver);
+> +
+> +MODULE_AUTHOR("Sandor Yu <sandor.yu@nxp.com>");
+> +MODULE_DESCRIPTION("Cadence MHDP8501 bridge driver");
+> +MODULE_LICENSE("GPL");
+> +MODULE_ALIAS("platform:cdns-mhdp8501");
+
+You should not need MODULE_ALIAS() in normal cases. If you need it,
+usually it means your device ID table is wrong.
+
+This applies everywhere, to all your patches.
+
+Best regards,
+Krzysztof
 
