@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8F67CB70D
+	by mail.lfdr.de (Postfix) with ESMTP id EA7AD7CB70F
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 01:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234284AbjJPXcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 19:32:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53172 "EHLO
+        id S232873AbjJPXc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 19:32:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233444AbjJPXck (ORCPT
+        with ESMTP id S234169AbjJPXcl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 19:32:40 -0400
+        Mon, 16 Oct 2023 19:32:41 -0400
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 46B3592
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:32:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 434339F
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:32:39 -0700 (PDT)
 Received: from localhost.localdomain (unknown [47.186.13.91])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 4722E20B74C2;
-        Mon, 16 Oct 2023 16:32:37 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4722E20B74C2
+        by linux.microsoft.com (Postfix) with ESMTPSA id 3AB4920B74C5;
+        Mon, 16 Oct 2023 16:32:38 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3AB4920B74C5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1697499158;
-        bh=gCRZvrUNaVTWzlYfg8ajlsIhID+99pYUDz5EwuiJdrY=;
+        s=default; t=1697499159;
+        bh=SfHUHeC+bsZlpMjAFeDGrDjrFJ/Saq7zYvmmmQIZG2o=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=Va2MWzBJiE+5QFXQOBeuFDPwG6UohLuTEtvYDdV1NU1S3AnzkcN+lpAsCfnZSws9X
-         02z8spSvLHk4Rdm+4c5vfn6ld/jFgelZAb8HX8i+sv93KLN8lk6IDZnxa5J7ijOEyU
-         3+o6EI6+W1t+HNOZbuWl1E6wulnRO3ectF4nwI3E=
+        b=JBDgiG0Iw0V/I83sKz/7TLqCH1WGNHbaqiN/L1djBYTo9C+2lSnwInQ+rPUbadLrK
+         bfb/8Qfc1IRoTuk6K7U+UDcnHXhAQtM1nxDLrlcYMUkQBuvdcgG+KaRapIhBAl0hqB
+         2GotHRQuOMWqC7nGeuz9y1TDF2EDEuFvRaRAj9tU=
 From:   madvenka@linux.microsoft.com
 To:     gregkh@linuxfoundation.org, pbonzini@redhat.com, rppt@kernel.org,
         jgowans@amazon.com, graf@amazon.de, arnd@arndb.de,
@@ -33,9 +33,9 @@ To:     gregkh@linuxfoundation.org, pbonzini@redhat.com, rppt@kernel.org,
         anthony.yznaga@oracle.com, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, madvenka@linux.microsoft.com,
         jamorris@linux.microsoft.com
-Subject: [RFC PATCH v1 06/10] mm/prmem: Implement persistent XArray (and Radix Tree)
-Date:   Mon, 16 Oct 2023 18:32:11 -0500
-Message-Id: <20231016233215.13090-7-madvenka@linux.microsoft.com>
+Subject: [RFC PATCH v1 07/10] mm/prmem: Implement named Persistent Instances.
+Date:   Mon, 16 Oct 2023 18:32:12 -0500
+Message-Id: <20231016233215.13090-8-madvenka@linux.microsoft.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231016233215.13090-1-madvenka@linux.microsoft.com>
 References: <1b1bc25eb87355b91fcde1de7c2f93f38abb2bf9>
@@ -54,281 +54,305 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
 
-Consumers can persist their data structures by allocating persistent
-memory for them.
+To persist any data, a consumer needs to do the following:
 
-Now, data structures are connected to one another using pointers, arrays,
-linked lists, RB nodes, etc. These can all be persisted by allocating
-memory for them from persistent memory. E.g., a linked list is persisted
-if the data structures that embed the list head and the list nodes are
-allocated from persistent memory. Ditto for RB trees.
+	- create a persistent instance for it. The instance gets recorded
+	  in the metadata.
 
-One important exception is the XArray. The XArray itself can be embedded in
-a persistent data structure. However, the XA nodes are allocated using the
-kmem allocator.
+	- Name the instance.
 
-Implement a persistent XArray. Introduce a new field, xa_persistent, in the
-XArray. Implement an accessor function to set the field. If xa_persistent
-is true, allocate XA nodes using the prmem allocator instead of the kmem
-allocator. This makes the whole XArray persistent.
+	- Record the instance data in the instance.
 
-Since Radix Trees (lib/radix-tree.c) are implemented based on the XArray,
-we also get persistent Radix Trees. The only difference is that pre-loading
-is not supported for persistent Radix Tree nodes.
+	- Retrieve the instance by name after kexec.
+
+	- Retrieve instance data.
+
+Implement the following API for consumers:
+
+prmem_get(subsystem, name, create)
+
+	Get/Create a persistent instance. The consumer provides the name
+	of the subsystem and the name of the instance within the subsystem.
+	E.g., for a persistent ramdisk block device:
+		subsystem = "ramdisk"
+		instance  = "pram0"
+
+prmem_set_data()
+
+	Record a data pointer and a size for the instance. An instance may
+	contain many data structures connected to each other using pointers,
+	etc. A consumer is expected to record the top level data structure
+	in the instance. All other data structures must be reachable from
+	the top level data structure.
+
+prmem_get_data()
+
+	Retrieve the data pointer and the size for the instance.
+
+prmem_put()
+
+	Destroy a persistent instance. The instance data must be NULL at
+	this point. So, the consumer is responsible for freeing the
+	instance data and setting it to NULL in the instance prior to
+	destroying.
+
+prmem_list()
+
+	Walk the instances of a subsystem and call a callback for each.
+	This allows a consumer to enumerate all of the instances associated
+	with a subsystem.
 
 Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
 ---
- include/linux/radix-tree.h |  4 ++++
- include/linux/xarray.h     | 15 ++++++++++++
- lib/radix-tree.c           | 49 +++++++++++++++++++++++++++++++-------
- lib/xarray.c               | 11 +++++----
- 4 files changed, 66 insertions(+), 13 deletions(-)
+ include/linux/prmem.h         |  36 +++++++++
+ kernel/prmem/Makefile         |   2 +-
+ kernel/prmem/prmem_init.c     |   1 +
+ kernel/prmem/prmem_instance.c | 139 ++++++++++++++++++++++++++++++++++
+ 4 files changed, 177 insertions(+), 1 deletion(-)
+ create mode 100644 kernel/prmem/prmem_instance.c
 
-diff --git a/include/linux/radix-tree.h b/include/linux/radix-tree.h
-index eae67015ce51..74f0bdc60bea 100644
---- a/include/linux/radix-tree.h
-+++ b/include/linux/radix-tree.h
-@@ -82,6 +82,7 @@ static inline bool radix_tree_is_internal_node(void *ptr)
- 	struct radix_tree_root name = RADIX_TREE_INIT(name, mask)
+diff --git a/include/linux/prmem.h b/include/linux/prmem.h
+index 1cb4660cf35e..c7034690f7cb 100644
+--- a/include/linux/prmem.h
++++ b/include/linux/prmem.h
+@@ -50,6 +50,28 @@ struct prmem_region {
+ 	struct gen_pool_chunk	*chunk;
+ };
  
- #define INIT_RADIX_TREE(root, mask) xa_init_flags(root, mask)
-+#define PERSIST_RADIX_TREE(root) xa_persistent(root)
- 
- static inline bool radix_tree_empty(const struct radix_tree_root *root)
- {
-@@ -254,6 +255,9 @@ unsigned int radix_tree_gang_lookup_tag_slot(const struct radix_tree_root *,
- 		void __rcu ***results, unsigned long first_index,
- 		unsigned int max_items, unsigned int tag);
- int radix_tree_tagged(const struct radix_tree_root *, unsigned int tag);
-+struct radix_tree_node *radix_node_alloc(struct radix_tree_root *root,
-+		struct list_lru *lru, gfp_t gfp);
-+void radix_node_free(struct radix_tree_node *node);
- 
- static inline void radix_tree_preload_end(void)
- {
-diff --git a/include/linux/xarray.h b/include/linux/xarray.h
-index 741703b45f61..3176a5f62caf 100644
---- a/include/linux/xarray.h
-+++ b/include/linux/xarray.h
-@@ -295,6 +295,7 @@ enum xa_lock_type {
-  */
- struct xarray {
- 	spinlock_t	xa_lock;
-+	bool		xa_persistent;
- /* private: The rest of the data structure is not to be used directly. */
- 	gfp_t		xa_flags;
- 	void __rcu *	xa_head;
-@@ -302,6 +303,7 @@ struct xarray {
- 
- #define XARRAY_INIT(name, flags) {				\
- 	.xa_lock = __SPIN_LOCK_UNLOCKED(name.xa_lock),		\
-+	.xa_persistent = false,					\
- 	.xa_flags = flags,					\
- 	.xa_head = NULL,					\
- }
-@@ -378,6 +380,7 @@ void xa_destroy(struct xarray *);
- static inline void xa_init_flags(struct xarray *xa, gfp_t flags)
- {
- 	spin_lock_init(&xa->xa_lock);
-+	xa->xa_persistent = false;
- 	xa->xa_flags = flags;
- 	xa->xa_head = NULL;
- }
-@@ -395,6 +398,17 @@ static inline void xa_init(struct xarray *xa)
- 	xa_init_flags(xa, 0);
- }
- 
-+/**
-+ * xa_peristent() - xa_root and xa_node allocated from persistent memory.
-+ * @xa: XArray.
++#define PRMEM_MAX_NAME		32
++
++/*
++ * To persist any data, a persistent instance is created for it and the data is
++ * "remembered" in the instance.
 + *
-+ * Context: Any context.
++ * node		List node
++ * subsystem	Subsystem/driver/module that created the instance. E.g.,
++ *		"ramdisk" for the ramdisk driver.
++ * name		Instance name within the subsystem/driver/module. E.g., "pram0"
++ *		for a persistent ramdisk instance.
++ * data		Pointer to data. E.g., the radix tree of pages in a ram disk.
++ * size		Size of data.
 + */
-+static inline void xa_persistent(struct xarray *xa)
-+{
-+	xa->xa_persistent = true;
-+}
++struct prmem_instance {
++	struct list_head	node;
++	char			subsystem[PRMEM_MAX_NAME];
++	char			name[PRMEM_MAX_NAME];
++	void			*data;
++	size_t			size;
++};
 +
- /**
-  * xa_empty() - Determine if an array has any present entries.
-  * @xa: XArray.
-@@ -1142,6 +1156,7 @@ struct xa_node {
- 	unsigned char	offset;		/* Slot offset in parent */
- 	unsigned char	count;		/* Total entry count */
- 	unsigned char	nr_values;	/* Value entry count */
-+	bool		persistent;	/* Allocated from persistent memory. */
- 	struct xa_node __rcu *parent;	/* NULL at top of tree */
- 	struct xarray	*array;		/* The array we belong to */
- 	union {
-diff --git a/lib/radix-tree.c b/lib/radix-tree.c
-index 976b9bd02a1b..d3af6ff6c625 100644
---- a/lib/radix-tree.c
-+++ b/lib/radix-tree.c
-@@ -21,6 +21,7 @@
- #include <linux/kmemleak.h>
- #include <linux/percpu.h>
- #include <linux/preempt.h>		/* in_interrupt() */
-+#include <linux/prmem.h>
- #include <linux/radix-tree.h>
- #include <linux/rcupdate.h>
- #include <linux/slab.h>
-@@ -225,6 +226,36 @@ static unsigned long next_index(unsigned long index,
- 	return (index & ~node_maxindex(node)) + (offset << node->shift);
- }
+ #define PRMEM_MAX_CACHES	14
  
-+static void radix_tree_node_ctor(void *arg);
-+
-+struct radix_tree_node *
-+radix_node_alloc(struct radix_tree_root *root, struct list_lru *lru, gfp_t gfp)
-+{
-+	struct radix_tree_node *node;
-+
-+	if (root && root->xa_persistent) {
-+		node = prmem_alloc(sizeof(struct radix_tree_node), gfp);
-+		if (node) {
-+			radix_tree_node_ctor(node);
-+			node->persistent = true;
-+		}
-+	} else {
-+		node = kmem_cache_alloc_lru(radix_tree_node_cachep, lru, gfp);
-+		if (node)
-+			node->persistent = false;
-+	}
-+	return node;
-+}
-+
-+void radix_node_free(struct radix_tree_node *node)
-+{
-+	if (node->persistent) {
-+		prmem_free(node, sizeof(*node));
-+		return;
-+	}
-+	kmem_cache_free(radix_tree_node_cachep, node);
-+}
-+
  /*
-  * This assumes that the caller has performed appropriate preallocation, and
-  * that the caller has pinned this thread of control to the current CPU.
-@@ -241,8 +272,11 @@ radix_tree_node_alloc(gfp_t gfp_mask, struct radix_tree_node *parent,
- 	 * Preload code isn't irq safe and it doesn't make sense to use
- 	 * preloading during an interrupt anyway as all the allocations have
- 	 * to be atomic. So just do normal allocation when in interrupt.
-+	 *
-+	 * Also, there is no preloading for persistent trees.
- 	 */
--	if (!gfpflags_allow_blocking(gfp_mask) && !in_interrupt()) {
-+	if (!gfpflags_allow_blocking(gfp_mask) && !in_interrupt() &&
-+	    !root->xa_persistent) {
- 		struct radix_tree_preload *rtp;
+@@ -63,6 +85,8 @@ struct prmem_region {
+  *
+  * regions	List of memory regions.
+  *
++ * instances	Persistent instances.
++ *
+  * caches	Caches for different object sizes. For allocations smaller than
+  *		PAGE_SIZE, these caches are used.
+  */
+@@ -74,6 +98,9 @@ struct prmem {
+ 	/* Persistent Regions. */
+ 	struct list_head	regions;
  
- 		/*
-@@ -250,8 +284,7 @@ radix_tree_node_alloc(gfp_t gfp_mask, struct radix_tree_node *parent,
- 		 * cache first for the new node to get accounted to the memory
- 		 * cgroup.
- 		 */
--		ret = kmem_cache_alloc(radix_tree_node_cachep,
--				       gfp_mask | __GFP_NOWARN);
-+		ret = radix_node_alloc(root, NULL, gfp_mask | __GFP_NOWARN);
- 		if (ret)
- 			goto out;
++	/* Persistent Instances. */
++	struct list_head	instances;
++
+ 	/* Allocation caches. */
+ 	void			*caches[PRMEM_MAX_CACHES];
+ };
+@@ -85,6 +112,8 @@ extern size_t			prmem_size;
+ extern bool			prmem_inited;
+ extern spinlock_t		prmem_lock;
  
-@@ -273,7 +306,7 @@ radix_tree_node_alloc(gfp_t gfp_mask, struct radix_tree_node *parent,
- 		kmemleak_update_trace(ret);
- 		goto out;
- 	}
--	ret = kmem_cache_alloc(radix_tree_node_cachep, gfp_mask);
-+	ret = radix_node_alloc(root, NULL, gfp_mask);
- out:
- 	BUG_ON(radix_tree_is_internal_node(ret));
- 	if (ret) {
-@@ -301,7 +334,7 @@ void radix_tree_node_rcu_free(struct rcu_head *head)
- 	memset(node->tags, 0, sizeof(node->tags));
- 	INIT_LIST_HEAD(&node->private_list);
++typedef int (*prmem_list_func_t)(struct prmem_instance *instance, void *arg);
++
+ /* Kernel API. */
+ void prmem_reserve_early(void);
+ void prmem_reserve(void);
+@@ -98,6 +127,13 @@ void prmem_free_pages(struct page *pages, unsigned int order);
+ void *prmem_alloc(size_t size, gfp_t gfp);
+ void prmem_free(void *va, size_t size);
  
--	kmem_cache_free(radix_tree_node_cachep, node);
-+	radix_node_free(node);
- }
++/* Persistent Instance API. */
++void *prmem_get(char *subsystem, char *name, bool create);
++void prmem_set_data(struct prmem_instance *instance, void *data, size_t size);
++void prmem_get_data(struct prmem_instance *instance, void **data, size_t *size);
++bool prmem_put(struct prmem_instance *instance);
++int prmem_list(char *subsystem, prmem_list_func_t func, void *arg);
++
+ /* Internal functions. */
+ struct prmem_region *prmem_add_region(unsigned long pa, size_t size);
+ bool prmem_create_pool(struct prmem_region *region, bool new_region);
+diff --git a/kernel/prmem/Makefile b/kernel/prmem/Makefile
+index 99bb19f0afd3..0ed7976580d6 100644
+--- a/kernel/prmem/Makefile
++++ b/kernel/prmem/Makefile
+@@ -1,4 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
  
- static inline void
-@@ -335,7 +368,7 @@ static __must_check int __radix_tree_preload(gfp_t gfp_mask, unsigned nr)
- 	rtp = this_cpu_ptr(&radix_tree_preloads);
- 	while (rtp->nr < nr) {
- 		local_unlock(&radix_tree_preloads.lock);
--		node = kmem_cache_alloc(radix_tree_node_cachep, gfp_mask);
-+		node = radix_node_alloc(NULL, NULL, gfp_mask);
- 		if (node == NULL)
- 			goto out;
- 		local_lock(&radix_tree_preloads.lock);
-@@ -345,7 +378,7 @@ static __must_check int __radix_tree_preload(gfp_t gfp_mask, unsigned nr)
- 			rtp->nodes = node;
- 			rtp->nr++;
- 		} else {
--			kmem_cache_free(radix_tree_node_cachep, node);
-+			radix_node_free(node);
- 		}
- 	}
- 	ret = 0;
-@@ -1585,7 +1618,7 @@ static int radix_tree_cpu_dead(unsigned int cpu)
- 	while (rtp->nr) {
- 		node = rtp->nodes;
- 		rtp->nodes = node->parent;
--		kmem_cache_free(radix_tree_node_cachep, node);
-+		radix_node_free(node);
- 		rtp->nr--;
- 	}
- 	return 0;
-diff --git a/lib/xarray.c b/lib/xarray.c
-index 2071a3718f4e..33a74b713e6a 100644
---- a/lib/xarray.c
-+++ b/lib/xarray.c
-@@ -9,6 +9,7 @@
- #include <linux/bitmap.h>
- #include <linux/export.h>
- #include <linux/list.h>
+ obj-y += prmem_parse.o prmem_reserve.o prmem_init.o prmem_region.o prmem_misc.o
+-obj-y += prmem_allocator.o
++obj-y += prmem_allocator.o prmem_instance.o
+diff --git a/kernel/prmem/prmem_init.c b/kernel/prmem/prmem_init.c
+index d23833d296fe..166fca688ab3 100644
+--- a/kernel/prmem/prmem_init.c
++++ b/kernel/prmem/prmem_init.c
+@@ -21,6 +21,7 @@ void __init prmem_init(void)
+ 		prmem->metadata = prmem_metadata;
+ 		prmem->size = prmem_size;
+ 		INIT_LIST_HEAD(&prmem->regions);
++		INIT_LIST_HEAD(&prmem->instances);
+ 
+ 		if (!prmem_add_region(prmem_pa, prmem_size))
+ 			return;
+diff --git a/kernel/prmem/prmem_instance.c b/kernel/prmem/prmem_instance.c
+new file mode 100644
+index 000000000000..ee3554d0ab8b
+--- /dev/null
++++ b/kernel/prmem/prmem_instance.c
+@@ -0,0 +1,139 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Persistent-Across-Kexec memory (prmem) - Persistent instances.
++ *
++ * Copyright (C) 2023 Microsoft Corporation
++ * Author: Madhavan T. Venkataraman (madvenka@linux.microsoft.com)
++ */
 +#include <linux/prmem.h>
- #include <linux/slab.h>
- #include <linux/xarray.h>
- 
-@@ -303,7 +304,7 @@ bool xas_nomem(struct xa_state *xas, gfp_t gfp)
- 	}
- 	if (xas->xa->xa_flags & XA_FLAGS_ACCOUNT)
- 		gfp |= __GFP_ACCOUNT;
--	xas->xa_alloc = kmem_cache_alloc_lru(radix_tree_node_cachep, xas->xa_lru, gfp);
-+	xas->xa_alloc = radix_node_alloc(xas->xa, xas->xa_lru, gfp);
- 	if (!xas->xa_alloc)
- 		return false;
- 	xas->xa_alloc->parent = NULL;
-@@ -335,10 +336,10 @@ static bool __xas_nomem(struct xa_state *xas, gfp_t gfp)
- 		gfp |= __GFP_ACCOUNT;
- 	if (gfpflags_allow_blocking(gfp)) {
- 		xas_unlock_type(xas, lock_type);
--		xas->xa_alloc = kmem_cache_alloc_lru(radix_tree_node_cachep, xas->xa_lru, gfp);
-+		xas->xa_alloc = radix_node_alloc(xas->xa, xas->xa_lru, gfp);
- 		xas_lock_type(xas, lock_type);
- 	} else {
--		xas->xa_alloc = kmem_cache_alloc_lru(radix_tree_node_cachep, xas->xa_lru, gfp);
-+		xas->xa_alloc = radix_node_alloc(xas->xa, xas->xa_lru, gfp);
- 	}
- 	if (!xas->xa_alloc)
- 		return false;
-@@ -372,7 +373,7 @@ static void *xas_alloc(struct xa_state *xas, unsigned int shift)
- 		if (xas->xa->xa_flags & XA_FLAGS_ACCOUNT)
- 			gfp |= __GFP_ACCOUNT;
- 
--		node = kmem_cache_alloc_lru(radix_tree_node_cachep, xas->xa_lru, gfp);
-+		node = radix_node_alloc(xas->xa, xas->xa_lru, gfp);
- 		if (!node) {
- 			xas_set_err(xas, -ENOMEM);
- 			return NULL;
-@@ -1017,7 +1018,7 @@ void xas_split_alloc(struct xa_state *xas, void *entry, unsigned int order,
- 		void *sibling = NULL;
- 		struct xa_node *node;
- 
--		node = kmem_cache_alloc_lru(radix_tree_node_cachep, xas->xa_lru, gfp);
-+		node = radix_node_alloc(xas->xa, xas->xa_lru, gfp);
- 		if (!node)
- 			goto nomem;
- 		node->array = xas->xa;
++
++static struct prmem_instance *prmem_find(char *subsystem, char *name)
++{
++	struct prmem_instance	*instance;
++
++	list_for_each_entry(instance, &prmem->instances, node) {
++		if (!strcmp(instance->subsystem, subsystem) &&
++		    !strcmp(instance->name, name)) {
++			return instance;
++		}
++	}
++	return NULL;
++}
++
++void *prmem_get(char *subsystem, char *name, bool create)
++{
++	int			subsystem_len = strlen(subsystem);
++	int			name_len = strlen(name);
++	struct prmem_instance	*instance;
++
++	/*
++	 * In early boot, you are allowed to get an existing instance. But
++	 * you are not allowed to create one until prmem is fully initialized.
++	 */
++	if (!prmem || (!prmem_inited && create))
++		return NULL;
++
++	if (!subsystem_len || subsystem_len >= PRMEM_MAX_NAME ||
++	    !name_len || name_len >= PRMEM_MAX_NAME) {
++		return NULL;
++	}
++
++	spin_lock(&prmem_lock);
++
++	/* Check if it already exists. */
++	instance = prmem_find(subsystem, name);
++	if (instance || !create)
++		goto unlock;
++
++	instance = prmem_alloc_locked(sizeof(*instance));
++	if (!instance)
++		goto unlock;
++
++	strcpy(instance->subsystem, subsystem);
++	strcpy(instance->name, name);
++	instance->data = NULL;
++	instance->size = 0;
++
++	list_add_tail(&instance->node, &prmem->instances);
++unlock:
++	spin_unlock(&prmem_lock);
++	return instance;
++}
++EXPORT_SYMBOL_GPL(prmem_get);
++
++void prmem_set_data(struct prmem_instance *instance, void *data, size_t size)
++{
++	if (!prmem_inited)
++		return;
++
++	spin_lock(&prmem_lock);
++	instance->data = data;
++	instance->size = size;
++	spin_unlock(&prmem_lock);
++}
++EXPORT_SYMBOL_GPL(prmem_set_data);
++
++void prmem_get_data(struct prmem_instance *instance, void **data, size_t *size)
++{
++	if (!prmem)
++		return;
++
++	spin_lock(&prmem_lock);
++	*data = instance->data;
++	*size = instance->size;
++	spin_unlock(&prmem_lock);
++}
++EXPORT_SYMBOL_GPL(prmem_get_data);
++
++bool prmem_put(struct prmem_instance *instance)
++{
++	if (!prmem_inited)
++		return true;
++
++	spin_lock(&prmem_lock);
++
++	if (instance->data) {
++		/*
++		 * Caller is responsible for freeing instance data and setting
++		 * it to NULL.
++		 */
++		spin_unlock(&prmem_lock);
++		return false;
++	}
++
++	/* Free instance. */
++	list_del(&instance->node);
++	prmem_free_locked(instance, sizeof(*instance));
++
++	spin_unlock(&prmem_lock);
++	return true;
++}
++EXPORT_SYMBOL_GPL(prmem_put);
++
++int prmem_list(char *subsystem, prmem_list_func_t func, void *arg)
++{
++	int			subsystem_len = strlen(subsystem);
++	struct prmem_instance	*instance;
++	int			ret;
++
++	if (!prmem)
++		return 0;
++
++	if (!subsystem_len || subsystem_len >= PRMEM_MAX_NAME)
++		return -EINVAL;
++
++	spin_lock(&prmem_lock);
++
++	list_for_each_entry(instance, &prmem->instances, node) {
++		if (strcmp(instance->subsystem, subsystem))
++			continue;
++
++		ret = func(instance, arg);
++		if (ret)
++			break;
++	}
++
++	spin_unlock(&prmem_lock);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(prmem_list);
 -- 
 2.25.1
 
