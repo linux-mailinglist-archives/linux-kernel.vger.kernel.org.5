@@ -2,151 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6CE87CAF2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 362177CAF2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234000AbjJPQ17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 12:27:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34596 "EHLO
+        id S233724AbjJPQ2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 12:28:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234188AbjJPQ1n (ORCPT
+        with ESMTP id S232345AbjJPQ2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 12:27:43 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D05862702;
-        Mon, 16 Oct 2023 09:27:08 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-32da4ffd7e5so1271860f8f.0;
-        Mon, 16 Oct 2023 09:27:08 -0700 (PDT)
+        Mon, 16 Oct 2023 12:28:09 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C693385E
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:27:31 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1c9e0b9b96cso32145595ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:27:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697473627; x=1698078427; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IMYUQ2LS/1q5+Qfwe+X4lk99RPotlvjWnMGp/QgUzgQ=;
-        b=bI3ZRLWyiIbeCWzm9aIJlt5qFGaHQu2iSHs817EErRgYQeM7oUW6UxHkAZMqX5BtRR
-         qqgjnBruifgjl77WNDNjwjrNbMCNLxyTlN0C4Z5yP3AxLS8snUG0DLIUV29XIimqYz8a
-         dOndkALntceUqHv8AWMzpVbrp/NycAbfKAYfUDFsdSFcTxkI/PfvSOj6IDuJGscqWJ/J
-         uZISZzNLRrOTZfvATSt/P7CLHvLpCdooKAEg2CsJdivbtVQge7SphpCP4KARfJ/maoPG
-         6nYlBecBriPWDXBRYjbDK/5m7Y64e5v2g9z7em5pPEs2y6OUz7XyMU/WIeuRql1FwYOi
-         yjpw==
+        d=google.com; s=20230601; t=1697473651; x=1698078451; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7SHGWla937Gcko2x/41+5jRftwU3dSxNbVqbwIDpdSk=;
+        b=Y4Ng5Jx8MLjdA5jGRNSM3q9dvcZWfuJaTvYFqgh3Y6vJVgUdzf0db0T7UUq6U2tkuB
+         0RGv93/Q3ZP4JzcsjHEYU5BZWOPuRcwrnnnc4lPqZ9hTvP4PBtpsrUPYH2bQdRgxVGFJ
+         JYANEP3ckwDiYrvZPLmUJDmnZXdd3rmJl6GgTZBJiYNodpJHLJBGKDrH+drwm1JU3JR9
+         a1SmYadVy4SsuJXQd3P8rEeAB4pbRDKqtboPNPA1Y2ti804kv+D+DiwuHJGTm9ZM9F2u
+         ltRCEx92TcFN6UlhCVLvL7MjVw55U9/I3hXm9xvRn1Xp7k0lQLGZS6TJCnC+1DpW3Hj+
+         +nBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697473627; x=1698078427;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IMYUQ2LS/1q5+Qfwe+X4lk99RPotlvjWnMGp/QgUzgQ=;
-        b=sJZoKc/cZEd39LDLQx63t45NmA21rehE04JxaregzMEow1jz7PtjheWa4cNw/4rRd+
-         JwVppUjX8vRwOyuzafwdkofn8AIOwQcikRmdawBQFKRrsdRNRqeRVjGZ/+pXzPyw6vMl
-         eb4wH06C62/6Z/QH3EVIaA4SlF7IhFfDPE/2Nq1coleEuphmIg8RP9MUCGYlT+YIs6oE
-         LxSUXX5XN/bndiYLwBl0jFBpswlwBm338y3PplP5rM/hTD+sSD/ufgK9jlh9WCzEq0SP
-         Q6FcJ0yAHkC373300w24usTPt0PhEOA874NveUlXFnkmOiXMgro5dV5FNVix7XjJbNA8
-         7VdQ==
-X-Gm-Message-State: AOJu0YysZWoU2veiGmng9d5earCjfXVJ9wBH5r4rhdZ64VjFa/kqzZwd
-        4a9nNbzDoeZBC8wtDXUsqkA=
-X-Google-Smtp-Source: AGHT+IGZbYa0CCoiFXxwCOjLMGFV+q0rjVMSOl7t/xlR4Yh18QMRi2gEGD/dpfEILIzP2v7wvi5ucw==
-X-Received: by 2002:adf:f1c5:0:b0:32d:bf1c:ce65 with SMTP id z5-20020adff1c5000000b0032dbf1cce65mr724254wro.22.1697473626397;
-        Mon, 16 Oct 2023 09:27:06 -0700 (PDT)
-Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
-        by smtp.gmail.com with ESMTPSA id v11-20020a5d6b0b000000b00324853fc8adsm27415367wrw.104.2023.10.16.09.27.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 09:27:05 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 17:27:04 +0100
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andy Lutomirski <luto@kernel.org>, Jan Kara <jack@suse.cz>,
-        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        lkft-triage@lists.linaro.org
-Subject: Re: [PATCH v4 3/3] mm: perform the mapping_map_writable() check
- after call_mmap()
-Message-ID: <c9eb4cc6-7db4-4c2b-838d-43a0b319a4f0@lucifer.local>
-References: <cover.1697116581.git.lstoakes@gmail.com>
- <55e413d20678a1bb4c7cce889062bbb07b0df892.1697116581.git.lstoakes@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <55e413d20678a1bb4c7cce889062bbb07b0df892.1697116581.git.lstoakes@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1697473651; x=1698078451;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7SHGWla937Gcko2x/41+5jRftwU3dSxNbVqbwIDpdSk=;
+        b=U675UWn/yVT0Jq1z98cI+uerHjRgx9SCgRb+/sYIOsdUNjX3KGxdXL17OrPtmPdLKG
+         23u2cYPJUrlD8DenKKFoieUnkDQsJPMmZWQOT/QVYw4akc0rKRQYdxZkOAVtd6AFKPO+
+         qv7VvhTl9zJuijrP44wOwuTaaYgs/T9bXGiPa7C6c7LSgrBhHwiwxmsyeXm9pqe8S2TI
+         Nd3CpWZyRVH8/YyN/hm29wOlrWZEZEh0QIk52PdIyBnHtFKkF/DnLmR/q4OrfJSibduW
+         5N0uMJ3CSwCOatCKOHz52WHkk3n1n8xk1BQAVC06HB6Xu2Gq4ZVUddRDf8hzIPoLuaJs
+         87OQ==
+X-Gm-Message-State: AOJu0Ywua0Bq6JkA39+CfM5HmZlUQbjiuo80gwmyMxUi9b0EUVPkvTjH
+        TNo+tP5w0qDWvaATipm6Z3EyaNBUUq4=
+X-Google-Smtp-Source: AGHT+IF7mH1dtOpFOpDv49wIOH8cgkPw8jWX+jo+fS29M2x6+4uh7pQe2x6ZGLJbUWaT5EVlxXzdc7NJUww=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:ce89:b0:1c9:bee2:e20b with SMTP id
+ f9-20020a170902ce8900b001c9bee2e20bmr392224plg.11.1697473650686; Mon, 16 Oct
+ 2023 09:27:30 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 09:27:29 -0700
+In-Reply-To: <CW9VEIPFLJJA.3OI6RJQVQU7ZN@amazon.com>
+Mime-Version: 1.0
+References: <20231016095217.37574-1-nsaenz@amazon.com> <87sf6a9335.fsf@redhat.com>
+ <CW9VEIPFLJJA.3OI6RJQVQU7ZN@amazon.com>
+Message-ID: <ZS1kcXuGqO3O7yAq@google.com>
+Subject: Re: [PATCH] KVM: x86: hyper-v: Don't auto-enable stimer during deserialization
+From:   Sean Christopherson <seanjc@google.com>
+To:     Nicolas Saenz Julienne <nsaenz@amazon.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, graf@amazon.de, rkagan@amazon.de,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 06:04:30PM +0100, Lorenzo Stoakes wrote:
-> In order for a F_SEAL_WRITE sealed memfd mapping to have an opportunity to
-> clear VM_MAYWRITE, we must be able to invoke the appropriate vm_ops->mmap()
-> handler to do so. We would otherwise fail the mapping_map_writable() check
-> before we had the opportunity to avoid it.
->
-> This patch moves this check after the call_mmap() invocation. Only memfd
-> actively denies write access causing a potential failure here (in
-> memfd_add_seals()), so there should be no impact on non-memfd cases.
->
-> This patch makes the userland-visible change that MAP_SHARED, PROT_READ
-> mappings of an F_SEAL_WRITE sealed memfd mapping will now succeed.
->
-> There is a delicate situation with cleanup paths assuming that a writable
-> mapping must have occurred in circumstances where it may now not have. In
-> order to ensure we do not accidentally mark a writable file unwritable by
-> mistake, we explicitly track whether we have a writable mapping and
-> unmap only if we do.
->
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=217238
-> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
-> ---
->  mm/mmap.c | 23 ++++++++++++++---------
->  1 file changed, 14 insertions(+), 9 deletions(-)
->
-[snip]
+I'd prefer the shortlog be more explicit about the write coming from userspace, e.g.
 
-Andrew, could you apply the following -fix patch to this? As a bug was
-detected in the implementation [0] - I was being over-zealous in setting
-the writable_file_mapping flag and had falsely assumed vma->vm_file == file
-in all instances of the cleanup. The fix is to only set it in one place.
+  KVM: x86: hyper-v: Don't auto-enable stimer on write from userspace
 
-[0]: https://lore.kernel.org/all/CA+G9fYtL7wK-dE-Tnz4t-GWmQb50EPYa=TWGjpgYU2Z=oeAO_w@mail.gmail.com/
+A non-zero number of KVM's "deserialization" ioctls are used to stuff state
+without a paired "serialization".  I doubt anyone is doing that with the Hyper-V
+ioctls, but keeping things consistent is helpful for readers.
 
-----8<----
-From 7feea6faada5b10a872c24755cc630220cba619a Mon Sep 17 00:00:00 2001
-From: Lorenzo Stoakes <lstoakes@gmail.com>
-Date: Mon, 16 Oct 2023 17:17:13 +0100
-Subject: [PATCH] mm: perform the mapping_map_writable() check after
- call_mmap()
+On Mon, Oct 16, 2023, Nicolas Saenz Julienne wrote:
+> Hi Vitaly,
+> 
+> On Mon Oct 16, 2023 at 12:14 PM UTC, Vitaly Kuznetsov wrote:
+> > Nicolas Saenz Julienne <nsaenz@amazon.com> writes:
+> >
+> > > By not honoring the 'stimer->config.enable' state during stimer
+> > > deserialization we might introduce spurious timer interrupts. For
 
-Do not set writable_file_mapping in an instance where it is not appropriate
-to do so.
+Avoid pronouns please.
 
-Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
----
- mm/mmap.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+> > > example through the following events:
+> > >  - The stimer is configured in auto-enable mode.
+> > >  - The stimer's count is set and the timer enabled.
+> > >  - The stimer expires, an interrupt is injected.
+> > >  - We live migrate the VM.
 
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 7f45a08e7973..8b57e42fd980 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -2923,10 +2923,8 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
- 	mm->map_count++;
- 	if (vma->vm_file) {
- 		i_mmap_lock_write(vma->vm_file->f_mapping);
--		if (vma_is_shared_maywrite(vma)) {
-+		if (vma_is_shared_maywrite(vma))
- 			mapping_allow_writable(vma->vm_file->f_mapping);
--			writable_file_mapping = true;
--		}
- 
- 		flush_dcache_mmap_lock(vma->vm_file->f_mapping);
- 		vma_interval_tree_insert(vma, &vma->vm_file->f_mapping->i_mmap);
--- 
-2.42.0
+Same here.  "We" is already ambiguous, because the first usage is largely about
+KVM, and the second usage here is much more about userspace and/or the actual
+user.
 
+> > >  - The stimer config and count are deserialized, auto-enable is ON, the
+> > >    stimer is re-enabled.
+> > >  - The stimer expires right away, and injects an unwarranted interrupt.
+> > >
+> > > So let's not change the stimer's enable state if the MSR write comes
+> > > from user-space.
+
+Don't hedge, firmly state what the patch does and why the change is necessary
+and correct.  If it turns out the change is wrong, then the follow-up patch can
+explain the situation.  But in the happy case where the change is correct, using
+language that isn't assertive can result in 
+
+> > > Fixes: 1f4b34f825e8 ("kvm/x86: Hyper-V SynIC timers")
+
+Does this need a?
+
+  Cc: stable@vger.kernel
+
+> > > Signed-off-by: Nicolas Saenz Julienne <nsaenz@amazon.com>
+> > > ---
+> > >  arch/x86/kvm/hyperv.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+> > > index 7c2dac6824e2..9f1deb6aa131 100644
+> > > --- a/arch/x86/kvm/hyperv.c
+> > > +++ b/arch/x86/kvm/hyperv.c
+> > > @@ -729,7 +729,7 @@ static int stimer_set_count(struct kvm_vcpu_hv_stimer *stimer, u64 count,
+> > >       stimer->count = count;
+> > >       if (stimer->count == 0)
+> > >               stimer->config.enable = 0;
+> >
+> > Can this branch be problematic too? E.g. if STIMER[X]_CONFIG is
+> > deserialized after STIMER[X]_COUNT we may erroneously reset 'enable' to
+> > 0, right? In fact, when MSRs are ordered like this:
+> >
+> > #define HV_X64_MSR_STIMER0_CONFIG               0x400000B0
+> > #define HV_X64_MSR_STIMER0_COUNT                0x400000B1
+> >
+> > I would guess that we always de-serialize 'config' first. With
+> > auto-enable, the timer will get enabled when writing 'count' but what
+> > happens in other cases?
+> >
+> > Maybe the whole block needs to go under 'if (!host)' instead?
+> 
+> In either case, with 'enable == 1' && 'count == 0' we'll reset the timer
+> in 'kvm_hv_process_stimers()'. So it's unlikely to cause any weirdness.
+> That said, I think covering both cases is more correct. Will send a v2.
+
+Agreed, I think it needs to be all or nothing, i.e. either process all side effects
+of writing the count, or don't process any.
