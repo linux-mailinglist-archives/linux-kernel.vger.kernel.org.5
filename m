@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30E4F7CB70A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 01:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 951A37CB70E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 01:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234223AbjJPXcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 19:32:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53132 "EHLO
+        id S234246AbjJPXcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 19:32:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233590AbjJPXch (ORCPT
+        with ESMTP id S233800AbjJPXch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 16 Oct 2023 19:32:37 -0400
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B40E9AC
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:32:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A0DE1D9
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:32:35 -0700 (PDT)
 Received: from localhost.localdomain (unknown [47.186.13.91])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 7CD9020B74C2;
-        Mon, 16 Oct 2023 16:32:33 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7CD9020B74C2
+        by linux.microsoft.com (Postfix) with ESMTPSA id 6F27A20B74C3;
+        Mon, 16 Oct 2023 16:32:34 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6F27A20B74C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1697499154;
-        bh=MdSra1KJVnjMDs0z9VTV6dK5Bib2ved+sk8K2wmqT7s=;
+        s=default; t=1697499155;
+        bh=1++eNyqRswp3oGNUuCWUHGrpRdktVHyUltKwKhyqiRU=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=LYBhRqvCQrkNqpEuRVU6G0Y3n/i0Dd1UvHXi9+DX9aBYvpoNdHGuk1TK3qjgQXmgj
-         knwdmu6h5YR7HMOaI/pEWZRZT0yTwrZdvGyjMqNQso97FEKp0666XOJ/Mdlov3+ftm
-         iP3W/XMnpB1icKl5T65yFmb9L7VfMalBia7UNNPE=
+        b=iNqCEpEjzTE8WovCw4f+pbtGA2H9fPOLKS/lmVB0QpDyYHLhb+OX2CgYw4laOjE1w
+         nwliO/996zaOQ0eCLQ2mMU8cAPWRbBQRZ4rLPouM0t7i6SwcvYpf8IGHjlQcVT1v0y
+         XcdWcIxwROlouzNUs2skG0w/can9dYak3PkQg52M=
 From:   madvenka@linux.microsoft.com
 To:     gregkh@linuxfoundation.org, pbonzini@redhat.com, rppt@kernel.org,
         jgowans@amazon.com, graf@amazon.de, arnd@arndb.de,
@@ -33,9 +33,9 @@ To:     gregkh@linuxfoundation.org, pbonzini@redhat.com, rppt@kernel.org,
         anthony.yznaga@oracle.com, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, madvenka@linux.microsoft.com,
         jamorris@linux.microsoft.com
-Subject: [RFC PATCH v1 02/10] mm/prmem: Reserve metadata and persistent regions in early boot after kexec
-Date:   Mon, 16 Oct 2023 18:32:07 -0500
-Message-Id: <20231016233215.13090-3-madvenka@linux.microsoft.com>
+Subject: [RFC PATCH v1 03/10] mm/prmem: Manage persistent memory with the gen pool allocator.
+Date:   Mon, 16 Oct 2023 18:32:08 -0500
+Message-Id: <20231016233215.13090-4-madvenka@linux.microsoft.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231016233215.13090-1-madvenka@linux.microsoft.com>
 References: <1b1bc25eb87355b91fcde1de7c2f93f38abb2bf9>
@@ -54,430 +54,283 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
 
-Currently, only one memory region is given to prmem to store persistent
-data. In the future, regions may be added dynamically.
+The memory in a prmem region must be managed by an allocator. Use
+the Gen Pool allocator (lib/genalloc.c) for that purpose. This is so we
+don't have to write a new allocator.
 
-The prmem metadata and the regions need to be reserved during early boot
-after a kexec. For this to happen, the kernel must know where the metadata
-is. To allow this, introduce a kernel command line parameter:
+Now, the Gen Pool allocator uses a "struct gen_pool_chunk" to manage a
+contiguous range of memory. The chunk is normally allocated using the kmem
+allocator. However, for prmem, the chunk must be persisted across a
+kexec reboot so that the allocations can be "remembered". To allow this,
+allocate the chunk from the region itself and initialize it. Then, pass
+the chunk to the Gen Pool allocator. In other words, persist the chunk.
 
-	prmem_meta=metadata_address
+Inside the Gen Pool allocator, distinguish between a chunk that is
+allocated internally from kmem and a chunk that is passed by the caller
+and handle it properly when the pool is destroyed.
 
-When a kexec image is loaded into the kernel, add this parameter to the
-kexec cmdline. Upon a kexec boot, get the metadata page from the cmdline
-and reserve it. Then, walk the list of regions in the metadata and reserve
-the regions.
+Provide wrapper functions around the Gen Pool allocator functions so we
+can change the allocator in the future if we wanted to.
 
-Note that the cmdline modification is done automatically within the kernel.
-Userland does not have to do anything.
-
-The metadata needs to be validated before it can be used. To allow this,
-compute a checksum on the metadata and store it in the metadata at the end
-of shutdown. During early boot, validate the metadata with the checksum.
-
-If the validation fails, discard the metadata. Treat it as a cold boot.
-That is, allocate a new metadata page and initial region and start over.
-Similarly, if the reservation of the regions fails, treat it as a cold
-boot and start over.
-
-This means that all persistent data will be lost on any of these failures.
-Note that there will be no memory leak when this happens.
+	prmem_create_pool()
+	prmem_alloc_pool()
+	prmem_free_pool()
 
 Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
 ---
- arch/x86/kernel/kexec-bzimage64.c |  5 +-
- arch/x86/kernel/setup.c           |  2 +
- include/linux/memblock.h          |  2 +
- include/linux/prmem.h             | 11 ++++
- kernel/prmem/Makefile             |  2 +-
- kernel/prmem/prmem_init.c         |  9 ++++
- kernel/prmem/prmem_misc.c         | 85 +++++++++++++++++++++++++++++++
- kernel/prmem/prmem_parse.c        | 29 +++++++++++
- kernel/prmem/prmem_reserve.c      | 70 ++++++++++++++++++++++++-
- kernel/reboot.c                   |  2 +
- mm/memblock.c                     | 12 +++++
- 11 files changed, 226 insertions(+), 3 deletions(-)
- create mode 100644 kernel/prmem/prmem_misc.c
+ include/linux/genalloc.h    |  6 ++++
+ include/linux/prmem.h       |  8 +++++
+ kernel/prmem/prmem_init.c   |  8 +++++
+ kernel/prmem/prmem_region.c | 67 ++++++++++++++++++++++++++++++++++++-
+ lib/genalloc.c              | 45 ++++++++++++++++++-------
+ 5 files changed, 121 insertions(+), 13 deletions(-)
 
-diff --git a/arch/x86/kernel/kexec-bzimage64.c b/arch/x86/kernel/kexec-bzimage64.c
-index a61c12c01270..a19f172be410 100644
---- a/arch/x86/kernel/kexec-bzimage64.c
-+++ b/arch/x86/kernel/kexec-bzimage64.c
-@@ -18,6 +18,7 @@
- #include <linux/mm.h>
- #include <linux/efi.h>
- #include <linux/random.h>
-+#include <linux/prmem.h>
- 
- #include <asm/bootparam.h>
- #include <asm/setup.h>
-@@ -82,6 +83,8 @@ static int setup_cmdline(struct kimage *image, struct boot_params *params,
- 
- 	cmdline_ptr[cmdline_len - 1] = '\0';
- 
-+	prmem_cmdline(cmdline_ptr);
-+
- 	pr_debug("Final command line is: %s\n", cmdline_ptr);
- 	cmdline_ptr_phys = bootparams_load_addr + cmdline_offset;
- 	cmdline_low_32 = cmdline_ptr_phys & 0xffffffffUL;
-@@ -458,7 +461,7 @@ static void *bzImage64_load(struct kimage *image, char *kernel,
- 	 */
- 	efi_map_sz = efi_get_runtime_map_size();
- 	params_cmdline_sz = sizeof(struct boot_params) + cmdline_len +
--				MAX_ELFCOREHDR_STR_LEN;
-+				MAX_ELFCOREHDR_STR_LEN + prmem_cmdline_size();
- 	params_cmdline_sz = ALIGN(params_cmdline_sz, 16);
- 	kbuf.bufsz = params_cmdline_sz + ALIGN(efi_map_sz, 16) +
- 				sizeof(struct setup_data) +
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index f2b13b3d3ead..22f5cd494291 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -1137,6 +1137,8 @@ void __init setup_arch(char **cmdline_p)
- 	 */
- 	efi_reserve_boot_services();
- 
-+	prmem_reserve_early();
-+
- 	/* preallocate 4k for mptable mpc */
- 	e820__memblock_alloc_reserved_mpc_new();
- 
-diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-index f71ff9f0ec81..584bbb884c8e 100644
---- a/include/linux/memblock.h
-+++ b/include/linux/memblock.h
-@@ -114,6 +114,8 @@ int memblock_add(phys_addr_t base, phys_addr_t size);
- int memblock_remove(phys_addr_t base, phys_addr_t size);
- int memblock_phys_free(phys_addr_t base, phys_addr_t size);
- int memblock_reserve(phys_addr_t base, phys_addr_t size);
-+void memblock_unreserve(phys_addr_t base, phys_addr_t size);
-+
- #ifdef CONFIG_HAVE_MEMBLOCK_PHYS_MAP
- int memblock_physmem_add(phys_addr_t base, phys_addr_t size);
- #endif
+diff --git a/include/linux/genalloc.h b/include/linux/genalloc.h
+index 0bd581003cd5..186757b0aec7 100644
+--- a/include/linux/genalloc.h
++++ b/include/linux/genalloc.h
+@@ -73,6 +73,7 @@ struct gen_pool_chunk {
+ 	struct list_head next_chunk;	/* next chunk in pool */
+ 	atomic_long_t avail;
+ 	phys_addr_t phys_addr;		/* physical starting address of memory chunk */
++	bool external;			/* Chunk is passed by caller. */
+ 	void *owner;			/* private data to retrieve at alloc time */
+ 	unsigned long start_addr;	/* start address of memory chunk */
+ 	unsigned long end_addr;		/* end address of memory chunk (inclusive) */
+@@ -121,6 +122,11 @@ static inline int gen_pool_add(struct gen_pool *pool, unsigned long addr,
+ {
+ 	return gen_pool_add_virt(pool, addr, -1, size, nid);
+ }
++extern unsigned long gen_pool_chunk_size(size_t size, int min_alloc_order);
++extern void gen_pool_init_chunk(struct gen_pool_chunk *chunk,
++				unsigned long addr, phys_addr_t phys,
++				size_t size, bool external, void *owner);
++void gen_pool_add_chunk(struct gen_pool *pool, struct gen_pool_chunk *chunk);
+ extern void gen_pool_destroy(struct gen_pool *);
+ unsigned long gen_pool_alloc_algo_owner(struct gen_pool *pool, size_t size,
+ 		genpool_algo_t algo, void *data, void **owner);
 diff --git a/include/linux/prmem.h b/include/linux/prmem.h
-index 7f22016c4ad2..bc8054a86f49 100644
+index bc8054a86f49..f43f5b0d2b9c 100644
 --- a/include/linux/prmem.h
 +++ b/include/linux/prmem.h
-@@ -48,12 +48,16 @@ struct prmem_region {
- /*
-  * PRMEM metadata.
-  *
-+ * checksum	Just before reboot, a checksum is computed on the metadata. On
-+ *		the next kexec reboot, the metadata is validated with the
-+ *		checksum to make sure that the metadata has not been corrupted.
-  * metadata	Physical address of the metadata page.
-  * size		Size of initial memory allocated to prmem.
-  *
-  * regions	List of memory regions.
+@@ -24,6 +24,7 @@
+  * non-volatile storage is too slow.
   */
- struct prmem {
-+	unsigned long		checksum;
- 	unsigned long		metadata;
+ #include <linux/types.h>
++#include <linux/genalloc.h>
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+ #include <linux/memblock.h>
+@@ -38,11 +39,15 @@
+  * node		List node.
+  * pa		Physical address of the region.
+  * size		Size of the region in bytes.
++ * pool		Gen Pool to manage region memory.
++ * chunk	Persistent Gen Pool chunk.
+  */
+ struct prmem_region {
+ 	struct list_head	node;
+ 	unsigned long		pa;
  	size_t			size;
++	struct gen_pool		*pool;
++	struct gen_pool_chunk	*chunk;
+ };
  
-@@ -65,12 +69,19 @@ extern struct prmem		*prmem;
- extern unsigned long		prmem_metadata;
- extern unsigned long		prmem_pa;
- extern size_t			prmem_size;
-+extern bool			prmem_inited;
- 
- /* Kernel API. */
-+void prmem_reserve_early(void);
- void prmem_reserve(void);
- void prmem_init(void);
-+void prmem_fini(void);
-+int  prmem_cmdline_size(void);
+ /*
+@@ -80,6 +85,9 @@ int  prmem_cmdline_size(void);
  
  /* Internal functions. */
  struct prmem_region *prmem_add_region(unsigned long pa, size_t size);
-+unsigned long prmem_checksum(void *start, size_t size);
-+bool __init prmem_validate(void);
-+void prmem_cmdline(char *cmdline);
- 
- #endif /* _LINUX_PRMEM_H */
-diff --git a/kernel/prmem/Makefile b/kernel/prmem/Makefile
-index 11a53d49312a..9b0a693bfee1 100644
---- a/kernel/prmem/Makefile
-+++ b/kernel/prmem/Makefile
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0
- 
--obj-y += prmem_parse.o prmem_reserve.o prmem_init.o prmem_region.o
-+obj-y += prmem_parse.o prmem_reserve.o prmem_init.o prmem_region.o prmem_misc.o
++bool prmem_create_pool(struct prmem_region *region, bool new_region);
++void *prmem_alloc_pool(struct prmem_region *region, size_t size, int align);
++void prmem_free_pool(struct prmem_region *region, void *va, size_t size);
+ unsigned long prmem_checksum(void *start, size_t size);
+ bool __init prmem_validate(void);
+ void prmem_cmdline(char *cmdline);
 diff --git a/kernel/prmem/prmem_init.c b/kernel/prmem/prmem_init.c
-index 97b550252028..9cea1cd3b6a5 100644
+index 9cea1cd3b6a5..56df1e6d3ebc 100644
 --- a/kernel/prmem/prmem_init.c
 +++ b/kernel/prmem/prmem_init.c
-@@ -25,3 +25,12 @@ void __init prmem_init(void)
+@@ -22,6 +22,14 @@ void __init prmem_init(void)
+ 
+ 		if (!prmem_add_region(prmem_pa, prmem_size))
+ 			return;
++	} else {
++		/* Warm boot. */
++		struct prmem_region	*region;
++
++		list_for_each_entry(region, &prmem->regions, node) {
++			if (!prmem_create_pool(region, false))
++				return;
++		}
  	}
  	prmem_inited = true;
  }
-+
-+void prmem_fini(void)
+diff --git a/kernel/prmem/prmem_region.c b/kernel/prmem/prmem_region.c
+index 8254dafcee13..6dc88c74d9c8 100644
+--- a/kernel/prmem/prmem_region.c
++++ b/kernel/prmem/prmem_region.c
+@@ -1,12 +1,74 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+- * Persistent-Across-Kexec memory (prmem) - Regions.
++ * Persistent-Across-Kexec memory (prmem) - Regions and Region Pools.
+  *
+  * Copyright (C) 2023 Microsoft Corporation
+  * Author: Madhavan T. Venkataraman (madvenka@linux.microsoft.com)
+  */
+ #include <linux/prmem.h>
+ 
++bool prmem_create_pool(struct prmem_region *region, bool new_region)
 +{
-+	if (!prmem_inited)
-+		return;
++	size_t		chunk_size, total_size;
 +
-+	/* Compute checksum over the metadata. */
-+	prmem->checksum = prmem_checksum(prmem, sizeof(*prmem));
-+}
-diff --git a/kernel/prmem/prmem_misc.c b/kernel/prmem/prmem_misc.c
-new file mode 100644
-index 000000000000..49b6a7232c1a
---- /dev/null
-+++ b/kernel/prmem/prmem_misc.c
-@@ -0,0 +1,85 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Persistent-Across-Kexec memory (prmem) - Miscellaneous functions.
-+ *
-+ * Copyright (C) 2023 Microsoft Corporation
-+ * Author: Madhavan T. Venkataraman (madvenka@linux.microsoft.com)
-+ */
-+#include <linux/prmem.h>
++	chunk_size = gen_pool_chunk_size(region->size, PAGE_SHIFT);
++	total_size = sizeof(*region) + chunk_size;
++	total_size = ALIGN(total_size, PAGE_SIZE);
 +
-+#define MAX_META_LENGTH	31
-+
-+/*
-+ * On a kexec, modify the kernel command line to include the boot parameter
-+ * "prmem_meta=" so that the metadata can be found on the next boot. If the
-+ * parameter is already present in cmdline, overwrite it. Else, add it.
-+ */
-+void prmem_cmdline(char *cmdline)
-+{
-+	char		meta[MAX_META_LENGTH], *str;
-+	unsigned long	metadata;
-+
-+	metadata = prmem_inited ? prmem->metadata : 0;
-+	snprintf(meta, MAX_META_LENGTH, " prmem_meta=0x%.16lx", metadata);
-+
-+	str = strstr(cmdline, " prmem_meta");
-+	if (str) {
++	if (new_region) {
 +		/*
-+		 * Boot parameter already exists. Overwrite it. We deliberately
-+		 * use strncpy() and rely on the fact that it will not NULL
-+		 * terminate the copy.
++		 * We place the region structure at the base of the region
++		 * itself. Part of the region is a genpool chunk that is used
++		 * to manage the region memory.
++		 *
++		 * Normally, the chunk is allocated from regular memory by
++		 * genpool. But in the case of prmem, the chunk must be
++		 * persisted across kexecs so allocations can be remembered.
++		 * That is why it is allocated from the region memory itself
++		 * and passed to genpool.
++		 *
++		 * Make sure there is enough space for the region and the chunk.
 +		 */
-+		strncpy(str, meta, MAX_META_LENGTH - 1);
-+		return;
++		if (total_size >= region->size) {
++			pr_warn("%s: region size too small\n", __func__);
++			return false;
++		}
++
++		/* Initialize the persistent genpool chunk. */
++		region->chunk = (void *) (region + 1);
++		memset(region->chunk, 0, chunk_size);
++		gen_pool_init_chunk(region->chunk, (unsigned long) region,
++				    region->pa, region->size, true, NULL);
 +	}
-+	if (prmem_inited) {
-+		/* Boot parameter does not exist. Add it. */
-+		strcat(cmdline, meta);
-+	}
-+}
 +
-+/*
-+ * Make sure that the kexec command line can accommodate the prmem_meta
-+ * command line parameter.
-+ */
-+int prmem_cmdline_size(void)
-+{
-+	return MAX_META_LENGTH;
-+}
-+
-+unsigned long prmem_checksum(void *start, size_t size)
-+{
-+	unsigned long	checksum = 0;
-+	unsigned long	*ptr;
-+	void		*end;
-+
-+	end = start + size;
-+	for (ptr = start; (void *) ptr < end; ptr++)
-+		checksum += *ptr;
-+	return checksum;
-+}
-+
-+/*
-+ * Check if the metadata is sane. It would not be sane on a cold boot or if the
-+ * metadata has been corrupted. In the latter case, we treat it as a cold boot.
-+ */
-+bool __init prmem_validate(void)
-+{
-+	unsigned long		checksum;
-+
-+	/* Sanity check the boot parameter. */
-+	if (prmem_metadata != prmem->metadata || prmem_size != prmem->size) {
-+		pr_warn("%s: Boot parameter mismatch\n", __func__);
++	region->pool = gen_pool_create(PAGE_SHIFT, NUMA_NO_NODE);
++	if (!region->pool) {
++		pr_warn("%s: Could not create genpool\n", __func__);
 +		return false;
 +	}
 +
-+	/* Compute and check the checksum of the metadata. */
-+	checksum = prmem->checksum;
-+	prmem->checksum = 0;
++	gen_pool_add_chunk(region->pool, region->chunk);
 +
-+	if (checksum != prmem_checksum(prmem, sizeof(*prmem))) {
-+		pr_warn("%s: Checksum mismatch\n", __func__);
-+		return false;
++	if (new_region) {
++		/* Reserve the region and chunk. */
++		gen_pool_alloc(region->pool, total_size);
 +	}
 +	return true;
 +}
-diff --git a/kernel/prmem/prmem_parse.c b/kernel/prmem/prmem_parse.c
-index 191655b53545..6c1a23c6b84e 100644
---- a/kernel/prmem/prmem_parse.c
-+++ b/kernel/prmem/prmem_parse.c
-@@ -31,3 +31,32 @@ static int __init prmem_size_parse(char *cmdline)
++
++void *prmem_alloc_pool(struct prmem_region *region, size_t size, int align)
++{
++	struct genpool_data_align	data = { .align = align, };
++
++	return (void *) gen_pool_alloc_algo(region->pool, size,
++					    gen_pool_first_fit_align, &data);
++}
++
++void prmem_free_pool(struct prmem_region *region, void *va, size_t size)
++{
++	gen_pool_free(region->pool, (unsigned long) va, size);
++}
++
+ struct prmem_region *prmem_add_region(unsigned long pa, size_t size)
+ {
+ 	struct prmem_region	*region;
+@@ -16,6 +78,9 @@ struct prmem_region *prmem_add_region(unsigned long pa, size_t size)
+ 	region->pa = pa;
+ 	region->size = size;
+ 
++	if (!prmem_create_pool(region, true))
++		return NULL;
++
+ 	list_add_tail(&region->node, &prmem->regions);
+ 	return region;
+ }
+diff --git a/lib/genalloc.c b/lib/genalloc.c
+index 6c644f954bc5..655db7b47ea9 100644
+--- a/lib/genalloc.c
++++ b/lib/genalloc.c
+@@ -165,6 +165,33 @@ struct gen_pool *gen_pool_create(int min_alloc_order, int nid)
+ }
+ EXPORT_SYMBOL(gen_pool_create);
+ 
++size_t gen_pool_chunk_size(size_t size, int min_alloc_order)
++{
++	unsigned long nbits = size >> min_alloc_order;
++	unsigned long nbytes = sizeof(struct gen_pool_chunk) +
++				BITS_TO_LONGS(nbits) * sizeof(long);
++	return nbytes;
++}
++
++void gen_pool_init_chunk(struct gen_pool_chunk *chunk, unsigned long virt,
++			 phys_addr_t phys, size_t size, bool external,
++			 void *owner)
++{
++	chunk->phys_addr = phys;
++	chunk->start_addr = virt;
++	chunk->end_addr = virt + size - 1;
++	chunk->external = external;
++	chunk->owner = owner;
++	atomic_long_set(&chunk->avail, size);
++}
++
++void gen_pool_add_chunk(struct gen_pool *pool, struct gen_pool_chunk *chunk)
++{
++	spin_lock(&pool->lock);
++	list_add_rcu(&chunk->next_chunk, &pool->chunks);
++	spin_unlock(&pool->lock);
++}
++
+ /**
+  * gen_pool_add_owner- add a new chunk of special memory to the pool
+  * @pool: pool to add new memory chunk to
+@@ -183,23 +210,14 @@ int gen_pool_add_owner(struct gen_pool *pool, unsigned long virt, phys_addr_t ph
+ 		 size_t size, int nid, void *owner)
+ {
+ 	struct gen_pool_chunk *chunk;
+-	unsigned long nbits = size >> pool->min_alloc_order;
+-	unsigned long nbytes = sizeof(struct gen_pool_chunk) +
+-				BITS_TO_LONGS(nbits) * sizeof(long);
++	unsigned long nbytes = gen_pool_chunk_size(size, pool->min_alloc_order);
+ 
+ 	chunk = vzalloc_node(nbytes, nid);
+ 	if (unlikely(chunk == NULL))
+ 		return -ENOMEM;
+ 
+-	chunk->phys_addr = phys;
+-	chunk->start_addr = virt;
+-	chunk->end_addr = virt + size - 1;
+-	chunk->owner = owner;
+-	atomic_long_set(&chunk->avail, size);
+-
+-	spin_lock(&pool->lock);
+-	list_add_rcu(&chunk->next_chunk, &pool->chunks);
+-	spin_unlock(&pool->lock);
++	gen_pool_init_chunk(chunk, virt, phys, size, false, owner);
++	gen_pool_add_chunk(pool, chunk);
+ 
  	return 0;
  }
- early_param("prmem", prmem_size_parse);
-+
-+/*
-+ * Syntax: prmem_meta=metadata_address
-+ *
-+ *	Specifies the address of a single page where the prmem metadata resides.
-+ *
-+ * On a kexec, the following will be appended to the kernel command line -
-+ * "prmem_meta=metadata_address". This is so that the metadata can be located
-+ * easily on kexec reboots.
-+ */
-+static int __init prmem_meta_parse(char *cmdline)
-+{
-+	char			*tmp, *cur = cmdline;
-+	unsigned long		addr;
-+
-+	if (!cur)
-+		return -EINVAL;
-+
-+	/* Get metadata address. */
-+	addr = memparse(cur, &tmp);
-+	if (cur == tmp || addr & (PAGE_SIZE - 1)) {
-+		pr_warn("%s: Incorrect address %lx\n", __func__, addr);
-+		return -EINVAL;
-+	}
-+
-+	prmem_metadata = addr;
-+	return 0;
-+}
-+early_param("prmem_meta", prmem_meta_parse);
-diff --git a/kernel/prmem/prmem_reserve.c b/kernel/prmem/prmem_reserve.c
-index e20e31a61d12..8000fff05402 100644
---- a/kernel/prmem/prmem_reserve.c
-+++ b/kernel/prmem/prmem_reserve.c
-@@ -12,11 +12,79 @@ unsigned long		prmem_metadata;
- unsigned long		prmem_pa;
- unsigned long		prmem_size;
+@@ -248,6 +266,9 @@ void gen_pool_destroy(struct gen_pool *pool)
+ 		chunk = list_entry(_chunk, struct gen_pool_chunk, next_chunk);
+ 		list_del(&chunk->next_chunk);
  
-+void __init prmem_reserve_early(void)
-+{
-+	struct prmem_region	*region;
-+	unsigned long		nregions;
++		if (chunk->external)
++			continue;
 +
-+	/* Need to specify an initial size to enable prmem. */
-+	if (!prmem_size)
-+		return;
-+
-+	/* Nothing to be done if it is a cold boot. */
-+	if (!prmem_metadata)
-+		return;
-+
-+	/*
-+	 * prmem uses direct map addresses. If PAGE_OFFSET is randomized,
-+	 * these addresses will change across kexecs. Persistence cannot
-+	 * be supported.
-+	 */
-+	if (kaslr_memory_enabled()) {
-+		pr_warn("%s: Cannot support persistence because of KASLR.\n",
-+			__func__);
-+		return;
-+	}
-+
-+	/*
-+	 * This is a kexec reboot. If any step fails here, treat this like a
-+	 * cold boot. That is, forget all persistent data and start over.
-+	 */
-+
-+	/* Reserve metadata page. */
-+	if (memblock_reserve(prmem_metadata, PAGE_SIZE)) {
-+		pr_warn("%s: Unable to reserve metadata at %lx\n", __func__,
-+			prmem_metadata);
-+		return;
-+	}
-+	prmem = __va(prmem_metadata);
-+
-+	/* Make sure that the metadata is sane. */
-+	if (!prmem_validate())
-+		goto unreserve_metadata;
-+
-+	/* Reserve regions that were added to prmem. */
-+	nregions = 0;
-+	list_for_each_entry(region, &prmem->regions, node) {
-+		if (memblock_reserve(region->pa, region->size)) {
-+			pr_warn("%s: Unable to reserve %lx, %lx\n", __func__,
-+				region->pa, region->size);
-+			goto unreserve_regions;
-+		}
-+		nregions++;
-+	}
-+	return;
-+
-+unreserve_regions:
-+	/* Unreserve regions. */
-+	list_for_each_entry(region, &prmem->regions, node) {
-+		if (!nregions)
-+			break;
-+		memblock_unreserve(region->pa, region->size);
-+		nregions--;
-+	}
-+
-+unreserve_metadata:
-+	/* Unreserve the metadata page. */
-+	memblock_unreserve(prmem_metadata, PAGE_SIZE);
-+	prmem = NULL;
-+}
-+
- void __init prmem_reserve(void)
- {
- 	BUILD_BUG_ON(sizeof(*prmem) > PAGE_SIZE);
- 
--	if (!prmem_size)
-+	if (!prmem_size || prmem)
- 		return;
- 
- 	/*
-diff --git a/kernel/reboot.c b/kernel/reboot.c
-index 3bba88c7ffc6..b4595b7e77f3 100644
---- a/kernel/reboot.c
-+++ b/kernel/reboot.c
-@@ -13,6 +13,7 @@
- #include <linux/kexec.h>
- #include <linux/kmod.h>
- #include <linux/kmsg_dump.h>
-+#include <linux/prmem.h>
- #include <linux/reboot.h>
- #include <linux/suspend.h>
- #include <linux/syscalls.h>
-@@ -84,6 +85,7 @@ void kernel_restart_prepare(char *cmd)
- 	system_state = SYSTEM_RESTART;
- 	usermodehelper_disable();
- 	device_shutdown();
-+	prmem_fini();
- }
- 
- /**
-diff --git a/mm/memblock.c b/mm/memblock.c
-index f9e61e565a53..1f5070f7b5bc 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -873,6 +873,18 @@ int __init_memblock memblock_reserve(phys_addr_t base, phys_addr_t size)
- 	return memblock_add_range(&memblock.reserved, base, size, MAX_NUMNODES, 0);
- }
- 
-+void __init_memblock memblock_unreserve(phys_addr_t base, phys_addr_t size)
-+{
-+	phys_addr_t end = base + size - 1;
-+
-+	memblock_dbg("%s: [%pa-%pa] %pS\n", __func__,
-+		     &base, &end, (void *)_RET_IP_);
-+
-+	if (memblock_remove_range(&memblock.reserved, base, size))
-+		return;
-+	memblock_add_range(&memblock.memory, base, size, MAX_NUMNODES, 0);
-+}
-+
- #ifdef CONFIG_HAVE_MEMBLOCK_PHYS_MAP
- int __init_memblock memblock_physmem_add(phys_addr_t base, phys_addr_t size)
- {
+ 		end_bit = chunk_size(chunk) >> order;
+ 		bit = find_first_bit(chunk->bits, end_bit);
+ 		BUG_ON(bit < end_bit);
 -- 
 2.25.1
 
