@@ -2,101 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B477CA4D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C39A7CA4CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231233AbjJPKJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 06:09:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231177AbjJPKJx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231540AbjJPKJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 16 Oct 2023 06:09:53 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1692AC
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 03:09:51 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697450990;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Lm/sCgLXyQJvjntNocjGInAVDmxpu8y10P7sSSOLEcw=;
-        b=d0QLvGGBXR++0sfI7hBvbcjV/d5k1+J2F3u4glhEarSgkt9vMpcM0girfCj/uscrReqWUQ
-        ieulS50IoYNvAOxpmp6Buns768cVVAfFn+Eytmfs5DuOTghok0KPkC0mfvn8llhVsd/XWj
-        kQeSfZZkIV398R4FYmmnm2xz1G7e5RJC9JwFEBOQkbF/cgDSPiYsRegVkibN1UNlZww0J6
-        qts9DZAaIvarXGutSrBW/NZBBcl14FaWuE8dslPDbZ1Q1i1LI1kvrcP/P0Hgv/KcVqEzB7
-        USAYvXdq/nIs8PfzHRWWEbzOb07nrtrRO/Qd7dqIQgoUJlGLgtAL9lNuQ03KXg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697450990;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Lm/sCgLXyQJvjntNocjGInAVDmxpu8y10P7sSSOLEcw=;
-        b=GqfycxaU1UC4UL17ePNW65pxcyj+LcCCc2oVXIXsfgRoFs1E67VckHwCp+X+akV3Kr9ovc
-        XQzi0bUxm8wP+EDA==
-To:     Dave Young <dyoung@redhat.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kexec@lists.infradead.org, bhe@redhat.com, prudo@redhat.com,
-        ebiederm@xmission.com, vgoyal@redhat.com
-Subject: Re: panic context: was: Re: [PATCH printk v2 04/11] printk: nbcon:
- Provide functions to mark atomic write sections
-In-Reply-To: <ZSz7RFqv994u/Vt+@darkstar.users.ipa.redhat.com>
-References: <ZRGvn4m2NGCn3Pef@alley> <87h6n5teos.fsf@jogness.linutronix.de>
- <ZSADUKp8oJ2Ws2vC@alley> <87il7hv2v2.fsf@jogness.linutronix.de>
- <ZSz7RFqv994u/Vt+@darkstar.users.ipa.redhat.com>
-Date:   Mon, 16 Oct 2023 12:15:42 +0206
-Message-ID: <87il76ho9l.fsf@jogness.linutronix.de>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229668AbjJPKJw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Oct 2023 06:09:52 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DA4783;
+        Mon, 16 Oct 2023 03:09:49 -0700 (PDT)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id 873F824E301;
+        Mon, 16 Oct 2023 18:09:47 +0800 (CST)
+Received: from EXMBX073.cuchost.com (172.16.6.83) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 16 Oct
+ 2023 18:09:47 +0800
+Received: from [192.168.1.218] (180.164.60.184) by EXMBX073.cuchost.com
+ (172.16.6.83) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 16 Oct
+ 2023 18:09:47 +0800
+Message-ID: <22617348-e2dc-9d1e-85ed-eaed9f09f610@starfivetech.com>
+Date:   Mon, 16 Oct 2023 18:09:46 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v10 0/8] Add StarFive Camera Subsystem driver
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        <bryan.odonoghue@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+CC:     <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-staging@lists.linux.dev>,
+        <changhuang.liang@starfivetech.com>
+References: <20231008085154.6757-1-jack.zhu@starfivetech.com>
+Content-Language: en-US
+From:   Jack Zhu <jack.zhu@starfivetech.com>
+In-Reply-To: <20231008085154.6757-1-jack.zhu@starfivetech.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [180.164.60.184]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX073.cuchost.com
+ (172.16.6.83)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
 
-On 2023-10-16, Dave Young <dyoung@redhat.com> wrote:
->> > Does anyone really want explicit flushes in panic()?
->> 
->> So far you are the only one speaking against it. I expect as time
->> goes on it will get even more complex as it becomes tunable (also
->> something we talked about during the demo).
->
-> Flush consoles in panic kexec case sounds not good, but I have no deep
-> understanding about the atomic printk series, added kexec list and
-> reviewers in cc.
 
-Currently every printk() message tries to flush immediately.
+On 2023/10/8 16:51, Jack Zhu wrote:
+> Hi,
+> 
+> This series is the v10 series that attempts to support the Camera Subsystem
+> found on StarFive JH7110 SoC.
+> 
 
-This series introduced a new method of first allowing a set of printk()
-messages to be stored to the ringbuffer and then flushing the full
-set. That is what this discussion was about.
+Hi Hans,
 
-The issue with allowing a set of printk() messages to be stored is that
-you need to explicitly mark in code where the actual flushing should
-occur. Petr's argument is that we do not want to insert "flush points"
-into the panic() function and instead we should do as we do now: flush
-each printk() message immediately.
+Could you please help to review and give your comments? 
+Thanks a lot!
 
-In the end (for my upcoming v3 series) I agreed with Petr. We will
-continue to keep things as they are now: flush each printk() message
-immediately.
+-- 
+Regards,
 
-Currently consoles try to flush unsafely before kexec. With the atomic
-printk series our goal is to only perform _safe_ flushing until all
-other panic operations are complete. Only at the very end of panic()
-would unsafe flushing be attempted.
-
-John
+Jack Zhu
