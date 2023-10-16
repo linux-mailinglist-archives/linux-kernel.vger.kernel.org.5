@@ -2,98 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F077CA350
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43C387CA360
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 11:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233225AbjJPJER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 05:04:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37304 "EHLO
+        id S233439AbjJPJFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 05:05:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233135AbjJPJEO (ORCPT
+        with ESMTP id S233328AbjJPJEw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 05:04:14 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 554A6DE;
-        Mon, 16 Oct 2023 02:04:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED7C2C433C8;
-        Mon, 16 Oct 2023 09:04:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697447053;
-        bh=dExRp4ue+HwGoPfiYWXRdNthCDI/2BlliyqJLiwYqaQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vDQoeLyxrYag18/YbNgFMAWyg8UqsTIvw7KCXILbbNfXF/Ma5XbAHyj4asibNORTn
-         1NEJukqBWKtpSVRYkbwCjWXSFlCNFTUoODkgWHp1XS555Bi4NByLjSuy78TkKFxhBd
-         QWHK/P769cawiLoJYS56XzdQMlCakkMmK2AX2vKJiYfGoZAmWUCbCBt5KMvU2B2MrA
-         IbBpllmHCXQhFby3CYsctybZ7mPtT774fX5GPq/tj+bqzvGggIGCuGiTVBoGAR+JuD
-         zMK4cKhZhHw/kVO1N2viNzveDxzYSXK4CfK91L8RdayLd3Sovwr/dIse6JyjYV6zUO
-         xNH1xsbnCL0jg==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qsJWB-0003UZ-1A;
-        Mon, 16 Oct 2023 11:04:07 +0200
-Date:   Mon, 16 Oct 2023 11:04:07 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Johan Hovold <johan+linaro@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: qcom: sc8280xp-crd: fix eDP phy compatible
-Message-ID: <ZSz8h6fc7R3CiioE@hovoldconsulting.com>
-References: <20231016080658.6667-1-johan+linaro@kernel.org>
- <CAA8EJpoPSHfRMgzs69Z-Zk0L8z8_8sveh22pj4ZOAwyAPvesHQ@mail.gmail.com>
+        Mon, 16 Oct 2023 05:04:52 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C75E1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 02:04:50 -0700 (PDT)
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39G7phQ3017535;
+        Mon, 16 Oct 2023 11:04:33 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=selector1; bh=+KwoOYk
+        zj5H40O26JJtXUk+e+fUkDGx8/XQV9xP6wMQ=; b=Ld8tDPOJUx/PdAwqC83sDwF
+        hOEpOVz72illBdLRDATN6RcyFLmvxC1pX5z6MYJixiNn5eD7lTlkaaIRRMy6Tpze
+        IcSod+O4XpZWbmG+8HkfuXo7NXhVzmRW+ZXvdKSlC/wZ5HDAF6mhrzQbSFDnlYSF
+        jrQOKWjU8N1ez4faEUFRMQ4cgllDpWGd8ua/iNAcRUE319+g6yNtZ9ku7uXOCUna
+        b4awdUmBPLwmPd0GJuxiDfCXgs1sJZj0TwwcI3ffsRxieuf/0OkyePWy6sdWGgmg
+        Gmi+Ksm1/iSVpMSrVObVMBzL6RX3NOhB72m5XrX2cMXZDS3QtlMx1DtrwF9e0Jg=
+        =
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3tr4hym8x7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Oct 2023 11:04:33 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0B6BE10005C;
+        Mon, 16 Oct 2023 11:04:30 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id ED43D218610;
+        Mon, 16 Oct 2023 11:04:30 +0200 (CEST)
+Received: from localhost (10.201.20.20) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 16 Oct
+ 2023 11:04:30 +0200
+From:   Etienne Carriere <etienne.carriere@foss.st.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Jens Wiklander <jens.wiklander@linaro.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <op-tee@lists.trustedfirmware.org>,
+        Jerome Forissier <jerome.forissier@linaro.org>,
+        Etienne Carriere <etienne.carriere@foss.st.com>
+Subject: [PATCH v11 0/4] tee: introduce TEE system sssion
+Date:   Mon, 16 Oct 2023 11:04:24 +0200
+Message-ID: <20231016090428.1369071-1-etienne.carriere@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA8EJpoPSHfRMgzs69Z-Zk0L8z8_8sveh22pj4ZOAwyAPvesHQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.201.20.20]
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-16_02,2023-10-12_01,2023-05-22_02
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 11:53:02AM +0300, Dmitry Baryshkov wrote:
-> On Mon, 16 Oct 2023 at 11:07, Johan Hovold <johan+linaro@kernel.org> wrote:
-> >
-> > The sc8280xp Display Port PHYs can be used in either DP or eDP mode and
-> > this is configured using the devicetree compatible string which defaults
-> > to DP mode in the SoC dtsi.
-> >
-> > Override the default compatible string for the CRD eDP PHY node so that
-> > the eDP settings are used.
-> >
-> > Fixes: 4a883a8d80b5 ("arm64: dts: qcom: sc8280xp-crd: Enable EDP")
-> > Cc: stable@vger.kernel.org      # 6.3
-> > Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-> > ---
-> >  arch/arm64/boot/dts/qcom/sc8280xp-crd.dts | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/qcom/sc8280xp-crd.dts b/arch/arm64/boot/dts/qcom/sc8280xp-crd.dts
-> > index 772953dc428e..31a2a2d27f4e 100644
-> > --- a/arch/arm64/boot/dts/qcom/sc8280xp-crd.dts
-> > +++ b/arch/arm64/boot/dts/qcom/sc8280xp-crd.dts
-> > @@ -458,6 +458,8 @@ mdss0_dp3_out: endpoint {
-> >  };
-> >
-> >  &mdss0_dp3_phy {
-> > +       compatible = "qcom,sc8280xp-edp-phy";
-> 
-> Same question here as the one I've sent for Konrad's patch. Is it the
-> same PHY type, just being repurposed for eDP or is it a different PHY
-> type?
+This series introduces TEE system sessions for TEE service sessions that
+require TEE to provision resources to prevent deadlock when clients call
+the TEE.
 
-Just replied in the other thread:
+This deadlock situation can happen when a TEE service is used by low
+level system resources as for example when Linux kernel uses SCMI
+service embedded in TEE for clock, reset, regulator, etc... controls.
+This case is detailled in patch 2/4:
 
-	https://lore.kernel.org/lkml/ZSz7---IW_7Oj2Zr@hovoldconsulting.com/
+> This feature is needed to prevent a system deadlock when several TEE
+> client applications invoke TEE, consuming all TEE thread contexts
+> available in the secure world. The deadlock can happen in the OP-TEE
+> driver for example if all these TEE threads issue an RPC call from TEE
+> to Linux OS to access an eMMC RPMB partition (TEE secure storage) which
+> device clock or regulator controller is accessed through an OP-TEE SCMI
+> services. In that case, Linux SCMI driver must reach OP-TEE SCMI
+> service without waiting until one of the consumed TEE threads is freed.
 
-Johan
+Etienne Carriere (4):
+  tee: optee: system call property
+  tee: system session
+  tee: optee: support tracking system threads
+  firmware: arm_scmi: optee: use optee system invocation
+
+ drivers/firmware/arm_scmi/optee.c |   4 +
+ drivers/tee/optee/call.c          | 130 ++++++++++++++++++++++++++++--
+ drivers/tee/optee/core.c          |   5 +-
+ drivers/tee/optee/ffa_abi.c       |  13 +--
+ drivers/tee/optee/optee_private.h |  29 ++++++-
+ drivers/tee/optee/smc_abi.c       |  31 ++++---
+ drivers/tee/tee_core.c            |   8 ++
+ include/linux/tee_drv.h           |  16 ++++
+ 8 files changed, 209 insertions(+), 27 deletions(-)
+---
+Changes since v11:
+- Changes patch 3/4, other are unchanged.
+-- 
+2.25.1
+
