@@ -2,99 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7764B7C9DAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 05:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE6E7C9DAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 05:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231462AbjJPDTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 23:19:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51686 "EHLO
+        id S231422AbjJPDSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 23:18:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbjJPDTB (ORCPT
+        with ESMTP id S230451AbjJPDSW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 23:19:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1DA1C5;
+        Sun, 15 Oct 2023 23:18:22 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5A2F3AD
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 20:18:20 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9FD961FB;
         Sun, 15 Oct 2023 20:19:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697426340; x=1728962340;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=fcUG58giWoEKU3oiVPmtUtFpvJmOfLyRlGKMLMYYUw0=;
-  b=EMtuULL9t2117FxPLXwjEhlKQ/p3+6nWEpHnPU3BQi9CUgKFc/K0Lomn
-   mNY3a64QiM15/dg8HaoR5BgrO2P5f7Z11Pnb4MMCdVpTM13Uy4nYI7yIo
-   +rlZ2Ep/jf2868yu3tXw02bdCnGvGT0ZWi4RYQdhljOJfLUP67qdk50jy
-   gJz1kDz5eEpFJDtL0VmMdRYBVnF24WRPZ0AHgTb3b+LROmpYUmvbHkXyj
-   e+6t7Qg3sSRNrglac+WvfgpxsmvIe67A4TMwX7hK1uuwxb8sUp0+Hi8Fj
-   HbC9wI8NA/iKpCq/CqLnDbC8KYiKpCaYVGx844FMjuRJ7jUDMDYVuuvWW
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="416504819"
-X-IronPort-AV: E=Sophos;i="6.03,228,1694761200"; 
-   d="scan'208";a="416504819"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2023 20:19:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="929209406"
-X-IronPort-AV: E=Sophos;i="6.03,228,1694761200"; 
-   d="scan'208";a="929209406"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orsmga005.jf.intel.com with ESMTP; 15 Oct 2023 20:18:57 -0700
-Date:   Mon, 16 Oct 2023 11:17:55 +0800
-From:   Xu Yilun <yilun.xu@linux.intel.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
-        Michal Simek <michal.simek@amd.com>,
-        kernel test robot <lkp@intel.com>,
-        linux-fpga@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fpga: xilinx-pr-decoupler: Fix unused
- xlnx_pr_decoupler_of_match warning for !CONFIG_OF
-Message-ID: <ZSyrY+hQvR3+fwP5@yilunxu-OptiPlex-7050>
-References: <20231012192149.1546368-1-robh@kernel.org>
- <ZSkPjRp/xPfVQ/NB@yilunxu-OptiPlex-7050>
- <CAL_JsqLHKTQi0i-V4C5UA6WJjnMeen0WR4jjcA4YSRXOYZOrZA@mail.gmail.com>
- <CAL_JsqLuKF3Cnu38F9CY+_yeU8eCBpBBh82_8E6FcoAa_jU=sw@mail.gmail.com>
+Received: from [10.162.41.8] (a077893.blr.arm.com [10.162.41.8])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A6A7C3F64C;
+        Sun, 15 Oct 2023 20:18:18 -0700 (PDT)
+Message-ID: <7306df46-82e3-4fb8-ac76-1cb2f26783d9@arm.com>
+Date:   Mon, 16 Oct 2023 08:48:15 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL_JsqLuKF3Cnu38F9CY+_yeU8eCBpBBh82_8E6FcoAa_jU=sw@mail.gmail.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] driver: perf: arm_pmuv3: Identify 'event->attr.config1'
+ based attributes
+Content-Language: en-US
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
+References: <20231009051753.179355-1-anshuman.khandual@arm.com>
+ <ZSlKgGtrhsoWCDGT@FVFF77S0Q05N.cambridge.arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <ZSlKgGtrhsoWCDGT@FVFF77S0Q05N.cambridge.arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 01:36:28PM -0500, Rob Herring wrote:
-> On Fri, Oct 13, 2023 at 8:15 AM Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Fri, Oct 13, 2023 at 4:37 AM Xu Yilun <yilun.xu@linux.intel.com> wrote:
-> > >
-> > > On Thu, Oct 12, 2023 at 02:21:48PM -0500, Rob Herring wrote:
-> > > > Commit 8c966aadcc02 ("fpga: Use device_get_match_data()") dropped the
-> > >
-> > > Hi rob:
-> > >
-> > > Unfortunately I re-applied Commit 8c966aadcc02 and the previous commit
-> > > id is lost.
-> > >
-> > > Since the 2 patches are not upstreamed yet, could I just merge them into
-> > > one?
-> >
-> > Yes, that's fine.
-> 
-> Looks like altera-ps-spi.c also needs the same fix. Do you mind making
-> the same change there?
 
-Fixed & applied.
 
-Thanks,
-Yilun
+On 10/13/23 19:17, Mark Rutland wrote:
+> On Mon, Oct 09, 2023 at 10:47:53AM +0530, Anshuman Khandual wrote:
+>> This defines macros to identify long and rdpmc attributes which get carried
+>> inside 'event->attr.config1', thus making the code explicit and clear.
+>>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Mark Rutland <mark.rutland@arm.com>
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>> This applies on v6.6-rc5.
+>>
+>>  drivers/perf/arm_pmuv3.c | 7 +++++--
+>>  1 file changed, 5 insertions(+), 2 deletions(-)
+
+I am not sure, if I understand your concerns and/or suggestions properly.
 
 > 
-> Rob
+> I think this would make sense to do if we also used a common definition of
+> these bits in the helper functions *and* their format attributes, but as-is
+
+Common definitions of sysfs formats ? Which helper - linux/perf/arm_pmuv3.h ?
+
+> this does nothing to relate the two, and I don't think that it improves
+> legibility on its own.
+
+Currently armv8pmu_event_is_64bit() and armv8pmu_event_want_user_access()
+extracts required values from 'event->attr.config1' with hard coded masks
+without any explicit co-relation with PMU_FORMAT_ATTR() described formats
+above, unless some one really looks into the config1 bits layout.
+
+Could you please provide some more details on how to go about making this
+change better.
+
+> 
+> Mark.
+> 
+>> diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
+>> index 94723d00548e..797ffd5a8fed 100644
+>> --- a/drivers/perf/arm_pmuv3.c
+>> +++ b/drivers/perf/arm_pmuv3.c
+>> @@ -298,16 +298,19 @@ PMU_FORMAT_ATTR(event, "config:0-15");
+>>  PMU_FORMAT_ATTR(long, "config1:0");
+>>  PMU_FORMAT_ATTR(rdpmc, "config1:1");
+>>  
+>> +#define ARM_PMUV3_ATTR_LONG	0x01
+>> +#define ARM_PMUV3_ATTR_RDPMC	0x02
+>> +
+>>  static int sysctl_perf_user_access __read_mostly;
+>>  
+>>  static inline bool armv8pmu_event_is_64bit(struct perf_event *event)
+>>  {
+>> -	return event->attr.config1 & 0x1;
+>> +	return event->attr.config1 & ARM_PMUV3_ATTR_LONG;
+>>  }
+>>  
+>>  static inline bool armv8pmu_event_want_user_access(struct perf_event *event)
+>>  {
+>> -	return event->attr.config1 & 0x2;
+>> +	return event->attr.config1 & ARM_PMUV3_ATTR_RDPMC;
+>>  }
+>>  
+>>  static struct attribute *armv8_pmuv3_format_attrs[] = {
+>> -- 
+>> 2.25.1
+>>
