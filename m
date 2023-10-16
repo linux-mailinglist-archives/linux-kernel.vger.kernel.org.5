@@ -2,43 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 499357CA2E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 10:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4D27CA2E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 10:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233105AbjJPI51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 04:57:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33404 "EHLO
+        id S233134AbjJPI5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 04:57:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232541AbjJPI5Z (ORCPT
+        with ESMTP id S233109AbjJPI51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 04:57:25 -0400
+        Mon, 16 Oct 2023 04:57:27 -0400
 Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E2E195
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 01:57:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D2795
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 01:57:25 -0700 (PDT)
 Received: from submission (posteo.de [185.67.36.169]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id A9983240107
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 10:57:22 +0200 (CEST)
+        by mout02.posteo.de (Postfix) with ESMTPS id 39042240105
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 10:57:24 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1697446642; bh=VvG7lAdIJ52HfYW9RRUqb2VWt1HKenPkukM7Qd9aHuI=;
+        t=1697446644; bh=kv0HETudyLnK7zerm9neLvpDVJtlAcnFf3yrw1VeEJU=;
         h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:
          Content-Transfer-Encoding:From;
-        b=fuXHi9TWnOVTasbiPlH2+mb9Ikb8rlg+ukZHvAtXwPbkIKZNIltoGysnuzuXjGVj1
-         sX2IzQoh5Gcna+tWZ44R4k1HZqhMSCtRdmdISUXGRQDM2oCYlnRI1XDzyMbTOxDizJ
-         fFHs7RtDSy44dnG/NGTcDXlOUJeD37IpQU3kzQ1J694f9t89Igq0RL+TATjAPoZkr3
-         WkbVxDd3m1pAONr1k28nmW8FuvqetmVBXHzDY8TpyFtgb3SVE1dgZEuxlJud89OY/g
-         71AZtiQa5TciPzPJj5OYhbWyvQkYxR1+pDQS+klyeZ32JzYuT8lWyMx8SdcOsAuvdo
-         ZCSntEC+T1HNA==
+        b=fl7cKXtKqgMoo+wm4CW5MibIn+9AP5TAEM+bUCfIFsikcsqq0zlIpFLLEMwrkkGU7
+         MqvGf107aMkBI3j4y7GOthQmbkYuntjHWmaHHZJnMezHHR5Da7ZJIQvlufzzJZJNn0
+         4irEZBPwawFDf29amh26/1rekW71at6oFz9wkszJtGJZHkxAqOnaHkNKOlT2POSLpC
+         nm3B99HsSTmzoubvKH2l+bTAbi1RoelQDSHIhAU1x7xsUza2EU2mM5wFQlVSK0+E7n
+         4CB6Vasig2VvGnYIodopcXpxCUqh9fvYiwczGez/vgPV7pWhd9lGkb+XU+All+BhzM
+         YDy61XdIgSfzg==
 Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4S89wc6Cx8z9rxR;
-        Mon, 16 Oct 2023 10:57:20 +0200 (CEST)
+        by submission (posteo.de) with ESMTPSA id 4S89wf3nYFz9rxd;
+        Mon, 16 Oct 2023 10:57:22 +0200 (CEST)
 From:   Mark O'Donovan <shiftee@posteo.net>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-nvme@lists.infradead.org, sagi@grimberg.me, hch@lst.de,
         axboe@kernel.dk, kbusch@kernel.org, hare@suse.de,
-        Mark O'Donovan <shiftee@posteo.net>
-Subject: [PATCH v2 0/2] Remove secret-size restrictions for hashes
-Date:   Mon, 16 Oct 2023 08:57:13 +0000
-Message-Id: <20231016085715.3068974-1-shiftee@posteo.net>
+        Mark O'Donovan <shiftee@posteo.net>,
+        Akash Appaiah <Akash.Appaiah@dell.com>
+Subject: [PATCH v2 1/2] nvme-auth: use transformed key size to create resp
+Date:   Mon, 16 Oct 2023 08:57:14 +0000
+Message-Id: <20231016085715.3068974-2-shiftee@posteo.net>
+In-Reply-To: <20231016085715.3068974-1-shiftee@posteo.net>
+References: <20231016085715.3068974-1-shiftee@posteo.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -51,34 +54,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This relates to the hash functions used to transform the secret.
-The kernel currently restricts us to using secrets equal in size
-to the transformation hash function they use.
-e.g. 32 byte secrets with the SHA-256(32 byte) hash function.
+This does not change current behaviour as the driver currently
+verifies that the secret size is the same size as the length of
+the transformation hash.
 
-This restriction is not required by the spec and means
-incompatibility with more permissive implementations.
+Co-developed-by: Akash Appaiah <Akash.Appaiah@dell.com>
+Signed-off-by: Akash Appaiah <Akash.Appaiah@dell.com>
+Signed-off-by: Mark O'Donovan <shiftee@posteo.net>
+---
+V1 -> V2: support target implementation and controller secrets also
 
-With these patches the example secret from the spec should now
-be permitted with any of the following:
-DHHC-1:00:ia6zGodOr4SEG0Zzaw398rpY0wqipUWj4jWjUh4HWUz6aQ2n:
-DHHC-1:01:ia6zGodOr4SEG0Zzaw398rpY0wqipUWj4jWjUh4HWUz6aQ2n:
-DHHC-1:02:ia6zGodOr4SEG0Zzaw398rpY0wqipUWj4jWjUh4HWUz6aQ2n:
-DHHC-1:03:ia6zGodOr4SEG0Zzaw398rpY0wqipUWj4jWjUh4HWUz6aQ2n:
+ drivers/nvme/common/auth.c | 6 +++++-
+ drivers/nvme/host/auth.c   | 4 ++--
+ drivers/nvme/target/auth.c | 4 ++--
+ include/linux/nvme-auth.h  | 3 ++-
+ 4 files changed, 11 insertions(+), 6 deletions(-)
 
-Note: Secrets are still restricted to 32,48 or 64 bits.
-
-
-Mark O'Donovan (2):
-  nvme-auth: use transformed key size to create resp
-  nvme-auth: allow mixing of secret and hash lengths
-
- drivers/nvme/common/auth.c | 14 +++++---------
- drivers/nvme/host/auth.c   |  4 ++--
- drivers/nvme/target/auth.c |  4 ++--
- include/linux/nvme-auth.h  |  3 ++-
- 4 files changed, 11 insertions(+), 14 deletions(-)
-
+diff --git a/drivers/nvme/common/auth.c b/drivers/nvme/common/auth.c
+index d90e4f0c08b7..26a7fbdf4d55 100644
+--- a/drivers/nvme/common/auth.c
++++ b/drivers/nvme/common/auth.c
+@@ -243,6 +243,8 @@ u8 *nvme_auth_transform_key(struct nvme_dhchap_key *key, char *nqn)
+ 	}
+ 	if (key->hash == 0) {
+ 		transformed_key = kmemdup(key->key, key->len, GFP_KERNEL);
++		if (transformed_key)
++			key->transformed_len = key->len;
+ 		return transformed_key ? transformed_key : ERR_PTR(-ENOMEM);
+ 	}
+ 	hmac_name = nvme_auth_hmac_name(key->hash);
+@@ -263,7 +265,8 @@ u8 *nvme_auth_transform_key(struct nvme_dhchap_key *key, char *nqn)
+ 		goto out_free_key;
+ 	}
+ 
+-	transformed_key = kzalloc(crypto_shash_digestsize(key_tfm), GFP_KERNEL);
++	key->transformed_len = crypto_shash_digestsize(key_tfm);
++	transformed_key = kzalloc(key->transformed_len, GFP_KERNEL);
+ 	if (!transformed_key) {
+ 		ret = -ENOMEM;
+ 		goto out_free_shash;
+@@ -297,6 +300,7 @@ u8 *nvme_auth_transform_key(struct nvme_dhchap_key *key, char *nqn)
+ 	kfree(shash);
+ out_free_key:
+ 	crypto_free_shash(key_tfm);
++	key->transformed_len = 0;
+ 
+ 	return ERR_PTR(ret);
+ }
+diff --git a/drivers/nvme/host/auth.c b/drivers/nvme/host/auth.c
+index daf5d144a8ea..89293da3210e 100644
+--- a/drivers/nvme/host/auth.c
++++ b/drivers/nvme/host/auth.c
+@@ -442,7 +442,7 @@ static int nvme_auth_dhchap_setup_host_response(struct nvme_ctrl *ctrl,
+ 	}
+ 
+ 	ret = crypto_shash_setkey(chap->shash_tfm,
+-			chap->host_response, ctrl->host_key->len);
++			chap->host_response, ctrl->host_key->transformed_len);
+ 	if (ret) {
+ 		dev_warn(ctrl->device, "qid %d: failed to set key, error %d\n",
+ 			 chap->qid, ret);
+@@ -520,7 +520,7 @@ static int nvme_auth_dhchap_setup_ctrl_response(struct nvme_ctrl *ctrl,
+ 	}
+ 
+ 	ret = crypto_shash_setkey(chap->shash_tfm,
+-			ctrl_response, ctrl->ctrl_key->len);
++			ctrl_response, ctrl->ctrl_key->transformed_len);
+ 	if (ret) {
+ 		dev_warn(ctrl->device, "qid %d: failed to set key, error %d\n",
+ 			 chap->qid, ret);
+diff --git a/drivers/nvme/target/auth.c b/drivers/nvme/target/auth.c
+index 4dcddcf95279..c46473b383b1 100644
+--- a/drivers/nvme/target/auth.c
++++ b/drivers/nvme/target/auth.c
+@@ -298,7 +298,7 @@ int nvmet_auth_host_hash(struct nvmet_req *req, u8 *response,
+ 	}
+ 
+ 	ret = crypto_shash_setkey(shash_tfm, host_response,
+-				  ctrl->host_key->len);
++				  ctrl->host_key->transformed_len);
+ 	if (ret)
+ 		goto out_free_response;
+ 
+@@ -410,7 +410,7 @@ int nvmet_auth_ctrl_hash(struct nvmet_req *req, u8 *response,
+ 	}
+ 
+ 	ret = crypto_shash_setkey(shash_tfm, ctrl_response,
+-				  ctrl->ctrl_key->len);
++				  ctrl->ctrl_key->transformed_len);
+ 	if (ret)
+ 		goto out_free_response;
+ 
+diff --git a/include/linux/nvme-auth.h b/include/linux/nvme-auth.h
+index dcb8030062dd..cf24d885dfd9 100644
+--- a/include/linux/nvme-auth.h
++++ b/include/linux/nvme-auth.h
+@@ -10,8 +10,9 @@
+ 
+ struct nvme_dhchap_key {
+ 	u8 *key;
+-	size_t len;
+ 	u8 hash;
++	size_t len;
++	size_t transformed_len;
+ };
+ 
+ u32 nvme_auth_get_seqnum(void);
 -- 
 2.39.2
 
