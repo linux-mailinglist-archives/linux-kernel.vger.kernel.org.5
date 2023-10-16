@@ -2,412 +2,444 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47FBB7CAD27
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4604B7CAD28
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232195AbjJPPSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 11:18:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45622 "EHLO
+        id S233614AbjJPPS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 11:18:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231569AbjJPPR7 (ORCPT
+        with ESMTP id S233464AbjJPPS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 11:17:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7BBFE1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:17:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697469434;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y4eWOrGel0AHpPuDoogCLtYn6AWGTJZhIutExsyeeH0=;
-        b=JAc904qri5pgyxF3CtEJWPgOtwGcDtcRzlXfnNnRc8N4o0ObivQ3N84bLY79yamTzwSAef
-        m6VAgag3Zhoqzkt/w23ts+oN6y3gk/Mp3vFaNpc3ENECiWTYpxN30K21PPFxji6r9q+6w5
-        IRNCXz00NpYi75XhXIYTPfScMWf4NRs=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-208-Tu3zBwQxPhClSVZ97BtggQ-1; Mon, 16 Oct 2023 11:17:12 -0400
-X-MC-Unique: Tu3zBwQxPhClSVZ97BtggQ-1
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-419624b11c1so39853791cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:17:12 -0700 (PDT)
+        Mon, 16 Oct 2023 11:18:27 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AEF38E
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:18:25 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c9fa869a63so15662265ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:18:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1697469504; x=1698074304; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=depUh3oM3g0ijxpHdZrdans7ncvwWGgqIj2UdaIj8jw=;
+        b=H+4o5wI6MH9vGkmbs3GVOXKNQJ9OlyogJxVUjOFZKPybx5O6l29e7mBmehLRpsXLLb
+         ZI0PrZOEBJHNJlPchOPWFuChALDc2bsc8ODL94ARu+UQ/b/Lb+oGa1QJynzajPNdlidx
+         zSksrvtdqj29jPDOpoICpn/jFS31kjgH8qClcImbfhsK4I68B0OCUhaCGStpfCz9Xgyr
+         Op+VG5EvqGUuvA5fLDrP7hoWo6gDlCG7A5hIO3zR3prImUvlF97cNG3TqVRMHXFTtAoN
+         ffdikMKfkVNP4zg3paAfOtOY577iXSu1AJBdXSO3WQ9jD6KTmAb0zzwrGcIsxvT+0T2e
+         69Gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697469432; x=1698074232;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1697469504; x=1698074304;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=y4eWOrGel0AHpPuDoogCLtYn6AWGTJZhIutExsyeeH0=;
-        b=VNPR2Td373732LYymvtv4lNb2kWrX0l8TisAXp3NyOItyVk3uq0zsiRWyV2FxV5+xI
-         a2eIiGgY/ER7NyuX5kW9u4aHIJ4tv2+nXFejLFVFaapkrwq9Admy+wEAdv9aX7j00K8J
-         +zsSQP+uyRPP1O6ewycEo+9PmL7/XvLv7J8+5XDrlLJCbPVholSEotTMQo9HzDHpp1YD
-         Rv83C4xsRK9Cr3KsxUBvdvuFzIIUsDdY8SJfth+bc6y5WFPWvg4rR5Bfb8iP3BnBsNtn
-         DU+ar+/o/DIi7S7LxDVs2atHFvKYVBttCpWbW/cqMO6UrCL+EA1C6tPch+nd/JRbwN1p
-         VQ/g==
-X-Gm-Message-State: AOJu0Yx05+HdaypF9GX9tzNJolB3OaY4Arejzz0aC6xkZ5sVzQk0+qko
-        qAH3VIkcC7tkilsaH4WX3tFLXE0nwI/QBFPdpYyWgkyGJ0EodmRFlN9S1m3tk3QxzyVq5OIZA1Q
-        5wjw78vmMe739qEm30Uhet/4W
-X-Received: by 2002:ac8:5b8e:0:b0:418:1002:cfd8 with SMTP id a14-20020ac85b8e000000b004181002cfd8mr35378660qta.67.1697469431497;
-        Mon, 16 Oct 2023 08:17:11 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHfouO36OI09/bnPKrrFbEXKQZyqqDdVFztdSpdKFFQRJ0n70/L5ty7l/F9dJ4HHUwBGdGjhw==
-X-Received: by 2002:ac8:5b8e:0:b0:418:1002:cfd8 with SMTP id a14-20020ac85b8e000000b004181002cfd8mr35378641qta.67.1697469431041;
-        Mon, 16 Oct 2023 08:17:11 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:280:24f0:9db0:474c:ff43:9f5c? ([2a01:e0a:280:24f0:9db0:474c:ff43:9f5c])
-        by smtp.gmail.com with ESMTPSA id r16-20020ac867d0000000b004199c98f87dsm3100752qtp.74.2023.10.16.08.17.09
+        bh=depUh3oM3g0ijxpHdZrdans7ncvwWGgqIj2UdaIj8jw=;
+        b=b4f8AQQCMiuyPEd69wjKTnRFLqF8RYkASgAAqUvF5H9d9GKFIrUmHP3Nhuwli+7igw
+         ZqmJKcbXJK5Vo4UGc/aXMpNELHOOgYvuGIzIrz0rd2++YLNgn/ZEYAiaIbctgvhavrW6
+         SVNNwOgFB2Gf0HlUm6kHkiPmbek5gxC524BsZeNQ8drjjdNihmfElB1RxCdxVWuDtMZG
+         t7qSuu4t5p/uliHKsZyNCYhFZpZ+NCq+AT2Q/HZyWteMHfCROo2WQVh/xZPF7mUDiqsL
+         7ao6AUht2IGHhybNeOCTJdyeXUsRF0+R0QM1abePToWka79EQG8dRQCz25u5gagub/1a
+         8F6A==
+X-Gm-Message-State: AOJu0Yz8JV/Mme1RUocBnjeiRnAiS0KhmBR0KkP2hvchmvcSFRm260XE
+        OcsxlLqgR/V1gOO8qCporonSVw==
+X-Google-Smtp-Source: AGHT+IHHjIWxP/DT9llfsBGiHKdyEI2xPjxNs50pDf+Bxab1ZFzcD5iKc9qi1ICHz7XPfliqod6SLw==
+X-Received: by 2002:a17:902:fb08:b0:1c9:e5e3:c25 with SMTP id le8-20020a170902fb0800b001c9e5e30c25mr7206761plb.43.1697469504445;
+        Mon, 16 Oct 2023 08:18:24 -0700 (PDT)
+Received: from [192.168.3.101] ([104.28.240.135])
+        by smtp.gmail.com with ESMTPSA id je4-20020a170903264400b001c61901ed37sm8628106plb.191.2023.10.16.08.18.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 08:17:10 -0700 (PDT)
-Message-ID: <dee481c3-f6bd-4ba9-a2d4-528dfb668159@redhat.com>
-Date:   Mon, 16 Oct 2023 17:17:08 +0200
+        Mon, 16 Oct 2023 08:18:23 -0700 (PDT)
+Message-ID: <ce712a66-1b13-c9ad-52c2-c98b6c540962@bytedance.com>
+Date:   Mon, 16 Oct 2023 23:18:09 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v17 1/2] vfio/migration: Add debugfs to live migration
- driver
-To:     Longfang Liu <liulongfang@huawei.com>, alex.williamson@redhat.com,
-        jgg@nvidia.com, shameerali.kolothum.thodi@huawei.com,
-        jonathan.cameron@huawei.com
-Cc:     bcreeley@amd.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@openeuler.org
-References: <20231013090441.36417-1-liulongfang@huawei.com>
- <20231013090441.36417-2-liulongfang@huawei.com>
-From:   =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clegoate@redhat.com>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v10 3/5] kprobes: kretprobe scalability improvement with
+ objpool
 Content-Language: en-US
-In-Reply-To: <20231013090441.36417-2-liulongfang@huawei.com>
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     linux-trace-kernel@vger.kernel.org, davem@davemloft.net,
+        anil.s.keshavamurthy@intel.com, naveen.n.rao@linux.ibm.com,
+        rostedt@goodmis.org, peterz@infradead.org,
+        akpm@linux-foundation.org, sander@svanheule.net,
+        ebiggers@google.com, dan.j.williams@intel.com, jpoimboe@kernel.org,
+        linux-kernel@vger.kernel.org, lkp@intel.com, mattwu@163.com
+References: <20231015053251.707442-1-wuqiang.matt@bytedance.com>
+ <20231015053251.707442-4-wuqiang.matt@bytedance.com>
+ <20231016222103.cb9f426edc60220eabd8aa6a@kernel.org>
+From:   "wuqiang.matt" <wuqiang.matt@bytedance.com>
+In-Reply-To: <20231016222103.cb9f426edc60220eabd8aa6a@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Longfang,
-
-On 10/13/23 11:04, Longfang Liu wrote:
-> There are multiple devices, software and operational steps involved
-> in the process of live migration. An error occurred on any node may
-> cause the live migration operation to fail.
-> This complex process makes it very difficult to locate and analyze
-> the cause when the function fails.
+On 2023/10/16 21:21, Masami Hiramatsu (Google) wrote:
+> On Sun, 15 Oct 2023 13:32:49 +0800
+> "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
 > 
-> In order to quickly locate the cause of the problem when the
-> live migration fails, I added a set of debugfs to the vfio
-> live migration driver.
+>> kretprobe is using freelist to manage return-instances, but freelist,
+>> as LIFO queue based on singly linked list, scales badly and reduces
+>> the overall throughput of kretprobed routines, especially for high
+>> contention scenarios.
+>>
+>> Here's a typical throughput test of sys_prctl (counts in 10 seconds,
+>> measured with perf stat -a -I 10000 -e syscalls:sys_enter_prctl):
+>>
+>> OS: Debian 10 X86_64, Linux 6.5rc7 with freelist
+>> HW: XEON 8336C x 2, 64 cores/128 threads, DDR4 3200MT/s
+>>
+>>           1T       2T       4T       8T      16T      24T
+>>     24150045 29317964 15446741 12494489 18287272 17708768
+>>          32T      48T      64T      72T      96T     128T
+>>     16200682 13737658 11645677 11269858 10470118  9931051
+>>
+>> This patch introduces objpool to replace freelist. objpool is a
+>> high performance queue, which can bring near-linear scalability
+>> to kretprobed routines. Tests of kretprobe throughput show the
+>> biggest ratio as 159x of original freelist. Here's the result:
+>>
+>>                    1T         2T         4T         8T        16T
+>> native:     41186213   82336866  164250978  328662645  658810299
+>> freelist:   24150045   29317964   15446741   12494489   18287272
+>> objpool:    23926730   48010314   96125218  191782984  385091769
+>>                   32T        48T        64T        96T       128T
+>> native:   1330338351 1969957941 2512291791 1514690434 2671040914
+>> freelist:   16200682   13737658   11645677   10470118    9931051
+>> objpool:   764481096 1147149781 1456220214 1502109662 1579015050
+>>
+>> Testings on 96-core ARM64 output similarly, but with the biggest
+>> ratio up to 336x:
+>>
+>> OS: Debian 10 AARCH64, Linux 6.5rc7
+>> HW: Kunpeng-920 96 cores/2 sockets/4 NUMA nodes, DDR4 2933 MT/s
+>>
+>>                    1T         2T         4T         8T        16T
+>> native: .   30066096   63569843  126194076  257447289  505800181
+>> freelist:   16152090   11064397   11124068    7215768    5663013
+>> objpool:    13997541   28032100   55726624  110099926  221498787
+>>                   24T        32T        48T        64T        96T
+>> native:    763305277 1015925192 1521075123 2033009392 3021013752
+>> freelist:    5015810    4602893    3766792    3382478    2945292
+>> objpool:   328192025  439439564  668534502  887401381  990067903
+>>
+>> Signed-off-by: wuqiang.matt <wuqiang.matt@bytedance.com>
+>> ---
+>>   include/linux/kprobes.h | 11 ++---
+>>   include/linux/rethook.h | 16 ++-----
+>>   kernel/kprobes.c        | 93 +++++++++++++++++------------------------
+>>   kernel/trace/fprobe.c   | 32 ++++++--------
+>>   kernel/trace/rethook.c  | 90 ++++++++++++++++++---------------------
+>>   5 files changed, 98 insertions(+), 144 deletions(-)
+>>
+>> diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+>> index 85a64cb95d75..365eb092e9c4 100644
+>> --- a/include/linux/kprobes.h
+>> +++ b/include/linux/kprobes.h
+>> @@ -26,8 +26,7 @@
+>>   #include <linux/rcupdate.h>
+>>   #include <linux/mutex.h>
+>>   #include <linux/ftrace.h>
+>> -#include <linux/refcount.h>
+>> -#include <linux/freelist.h>
+>> +#include <linux/objpool.h>
+>>   #include <linux/rethook.h>
+>>   #include <asm/kprobes.h>
+>>   
+>> @@ -141,7 +140,7 @@ static inline bool kprobe_ftrace(struct kprobe *p)
+>>    */
+>>   struct kretprobe_holder {
+>>   	struct kretprobe	*rp;
+>> -	refcount_t		ref;
+>> +	struct objpool_head	pool;
+>>   };
+>>   
+>>   struct kretprobe {
+>> @@ -154,7 +153,6 @@ struct kretprobe {
+>>   #ifdef CONFIG_KRETPROBE_ON_RETHOOK
+>>   	struct rethook *rh;
+>>   #else
+>> -	struct freelist_head freelist;
+>>   	struct kretprobe_holder *rph;
+>>   #endif
+>>   };
+>> @@ -165,10 +163,7 @@ struct kretprobe_instance {
+>>   #ifdef CONFIG_KRETPROBE_ON_RETHOOK
+>>   	struct rethook_node node;
+>>   #else
+>> -	union {
+>> -		struct freelist_node freelist;
+>> -		struct rcu_head rcu;
+>> -	};
+>> +	struct rcu_head rcu;
+>>   	struct llist_node llist;
+>>   	struct kretprobe_holder *rph;
+>>   	kprobe_opcode_t *ret_addr;
+>> diff --git a/include/linux/rethook.h b/include/linux/rethook.h
+>> index 26b6f3c81a76..ce69b2b7bc35 100644
+>> --- a/include/linux/rethook.h
+>> +++ b/include/linux/rethook.h
+>> @@ -6,11 +6,10 @@
+>>   #define _LINUX_RETHOOK_H
+>>   
+>>   #include <linux/compiler.h>
+>> -#include <linux/freelist.h>
+>> +#include <linux/objpool.h>
+>>   #include <linux/kallsyms.h>
+>>   #include <linux/llist.h>
+>>   #include <linux/rcupdate.h>
+>> -#include <linux/refcount.h>
+>>   
+>>   struct rethook_node;
+>>   
+>> @@ -30,14 +29,12 @@ typedef void (*rethook_handler_t) (struct rethook_node *, void *, unsigned long,
+>>   struct rethook {
+>>   	void			*data;
+>>   	rethook_handler_t	handler;
+>> -	struct freelist_head	pool;
+>> -	refcount_t		ref;
+>> +	struct objpool_head	pool;
+>>   	struct rcu_head		rcu;
+>>   };
+>>   
+>>   /**
+>>    * struct rethook_node - The rethook shadow-stack entry node.
+>> - * @freelist: The freelist, linked to struct rethook::pool.
+>>    * @rcu: The rcu_head for deferred freeing.
+>>    * @llist: The llist, linked to a struct task_struct::rethooks.
+>>    * @rethook: The pointer to the struct rethook.
+>> @@ -48,20 +45,16 @@ struct rethook {
+>>    * on each entry of the shadow stack.
+>>    */
+>>   struct rethook_node {
+>> -	union {
+>> -		struct freelist_node freelist;
+>> -		struct rcu_head      rcu;
+>> -	};
+>> +	struct rcu_head		rcu;
+>>   	struct llist_node	llist;
+>>   	struct rethook		*rethook;
+>>   	unsigned long		ret_addr;
+>>   	unsigned long		frame;
+>>   };
+>>   
+>> -struct rethook *rethook_alloc(void *data, rethook_handler_t handler);
+>> +struct rethook *rethook_alloc(void *data, rethook_handler_t handler, int size, int num);
+>>   void rethook_stop(struct rethook *rh);
+>>   void rethook_free(struct rethook *rh);
+>> -void rethook_add_node(struct rethook *rh, struct rethook_node *node);
+>>   struct rethook_node *rethook_try_get(struct rethook *rh);
+>>   void rethook_recycle(struct rethook_node *node);
+>>   void rethook_hook(struct rethook_node *node, struct pt_regs *regs, bool mcount);
+>> @@ -98,4 +91,3 @@ void rethook_flush_task(struct task_struct *tk);
+>>   #endif
+>>   
+>>   #endif
+>> -
+>> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+>> index ca385b61d546..075a632e6c7c 100644
+>> --- a/kernel/kprobes.c
+>> +++ b/kernel/kprobes.c
+>> @@ -1877,13 +1877,27 @@ static struct notifier_block kprobe_exceptions_nb = {
+>>   #ifdef CONFIG_KRETPROBES
+>>   
+>>   #if !defined(CONFIG_KRETPROBE_ON_RETHOOK)
+>> +
+>> +/* callbacks for objpool of kretprobe instances */
+>> +static int kretprobe_init_inst(void *nod, void *context)
+>> +{
+>> +	struct kretprobe_instance *ri = nod;
+>> +
+>> +	ri->rph = context;
+>> +	return 0;
+>> +}
+>> +static int kretprobe_fini_pool(struct objpool_head *head, void *context)
+>> +{
+>> +	kfree(context);
+>> +	return 0;
+>> +}
+>> +
+>>   static void free_rp_inst_rcu(struct rcu_head *head)
+>>   {
+>>   	struct kretprobe_instance *ri = container_of(head, struct kretprobe_instance, rcu);
+>> +	struct kretprobe_holder *rph = ri->rph;
+>>   
+>> -	if (refcount_dec_and_test(&ri->rph->ref))
+>> -		kfree(ri->rph);
+>> -	kfree(ri);
+>> +	objpool_drop(ri, &rph->pool);
+>>   }
+>>   NOKPROBE_SYMBOL(free_rp_inst_rcu);
+>>   
+>> @@ -1892,7 +1906,7 @@ static void recycle_rp_inst(struct kretprobe_instance *ri)
+>>   	struct kretprobe *rp = get_kretprobe(ri);
+>>   
+>>   	if (likely(rp))
+>> -		freelist_add(&ri->freelist, &rp->freelist);
+>> +		objpool_push(ri, &rp->rph->pool);
+>>   	else
+>>   		call_rcu(&ri->rcu, free_rp_inst_rcu);
+>>   }
+>> @@ -1929,23 +1943,12 @@ NOKPROBE_SYMBOL(kprobe_flush_task);
+>>   
+>>   static inline void free_rp_inst(struct kretprobe *rp)
+>>   {
+>> -	struct kretprobe_instance *ri;
+>> -	struct freelist_node *node;
+>> -	int count = 0;
+>> -
+>> -	node = rp->freelist.head;
+>> -	while (node) {
+>> -		ri = container_of(node, struct kretprobe_instance, freelist);
+>> -		node = node->next;
+>> -
+>> -		kfree(ri);
+>> -		count++;
+>> -	}
+>> +	struct kretprobe_holder *rph = rp->rph;
+>>   
+>> -	if (refcount_sub_and_test(count, &rp->rph->ref)) {
+>> -		kfree(rp->rph);
+>> -		rp->rph = NULL;
+>> -	}
+>> +	if (!rph)
+>> +		return;
+>> +	rp->rph = NULL;
+>> +	objpool_fini(&rph->pool);
+>>   }
+>>   
+>>   /* This assumes the 'tsk' is the current task or the is not running. */
+>> @@ -2087,19 +2090,17 @@ NOKPROBE_SYMBOL(__kretprobe_trampoline_handler)
+>>   static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
+>>   {
+>>   	struct kretprobe *rp = container_of(p, struct kretprobe, kp);
+>> +	struct kretprobe_holder *rph = rp->rph;
+>>   	struct kretprobe_instance *ri;
+>> -	struct freelist_node *fn;
+>>   
+>> -	fn = freelist_try_get(&rp->freelist);
+>> -	if (!fn) {
+>> +	ri = objpool_pop(&rph->pool);
+>> +	if (!ri) {
+>>   		rp->nmissed++;
+>>   		return 0;
+>>   	}
+>>   
+>> -	ri = container_of(fn, struct kretprobe_instance, freelist);
+>> -
+>>   	if (rp->entry_handler && rp->entry_handler(ri, regs)) {
+>> -		freelist_add(&ri->freelist, &rp->freelist);
+>> +		objpool_push(ri, &rph->pool);
+>>   		return 0;
+>>   	}
+>>   
+>> @@ -2193,7 +2194,6 @@ int kprobe_on_func_entry(kprobe_opcode_t *addr, const char *sym, unsigned long o
+>>   int register_kretprobe(struct kretprobe *rp)
+>>   {
+>>   	int ret;
+>> -	struct kretprobe_instance *inst;
+>>   	int i;
+>>   	void *addr;
+>>   
+>> @@ -2227,19 +2227,12 @@ int register_kretprobe(struct kretprobe *rp)
+>>   		rp->maxactive = max_t(unsigned int, 10, 2*num_possible_cpus());
+>>   
+>>   #ifdef CONFIG_KRETPROBE_ON_RETHOOK
+>> -	rp->rh = rethook_alloc((void *)rp, kretprobe_rethook_handler);
+>> -	if (!rp->rh)
+>> -		return -ENOMEM;
+>> +	rp->rh = rethook_alloc((void *)rp, kretprobe_rethook_handler,
+>> +				sizeof(struct kretprobe_instance) +
+>> +				rp->data_size, rp->maxactive);
+>> +	if (IS_ERR(rp->rh))
+>> +		return PTR_ERR(rp->rh);
+>>   
+>> -	for (i = 0; i < rp->maxactive; i++) {
+>> -		inst = kzalloc(struct_size(inst, data, rp->data_size), GFP_KERNEL);
+>> -		if (inst == NULL) {
+>> -			rethook_free(rp->rh);
+>> -			rp->rh = NULL;
+>> -			return -ENOMEM;
+>> -		}
+>> -		rethook_add_node(rp->rh, &inst->node);
+>> -	}
+>>   	rp->nmissed = 0;
+>>   	/* Establish function entry probe point */
+>>   	ret = register_kprobe(&rp->kp);
+>> @@ -2249,24 +2241,18 @@ int register_kretprobe(struct kretprobe *rp)
+>>   		rp->rh = NULL;
+>>   	}
+>>   #else	/* !CONFIG_KRETPROBE_ON_RETHOOK */
+>> -	rp->freelist.head = NULL;
+>>   	rp->rph = kzalloc(sizeof(struct kretprobe_holder), GFP_KERNEL);
+>>   	if (!rp->rph)
+>>   		return -ENOMEM;
+>>   
+>> -	rp->rph->rp = rp;
+>> -	for (i = 0; i < rp->maxactive; i++) {
+>> -		inst = kzalloc(struct_size(inst, data, rp->data_size), GFP_KERNEL);
+>> -		if (inst == NULL) {
+>> -			refcount_set(&rp->rph->ref, i);
+>> -			free_rp_inst(rp);
+>> -			return -ENOMEM;
+>> -		}
+>> -		inst->rph = rp->rph;
+>> -		freelist_add(&inst->freelist, &rp->freelist);
+>> +	if (objpool_init(&rp->rph->pool, rp->maxactive, rp->data_size +
+>> +			sizeof(struct kretprobe_instance), GFP_KERNEL,
+>> +			rp->rph, kretprobe_init_inst, kretprobe_fini_pool)) {
+>> +		kfree(rp->rph);
+>> +		rp->rph = NULL;
+>> +		return -ENOMEM;
+>>   	}
+>> -	refcount_set(&rp->rph->ref, i);
+>> -
+>> +	rp->rph->rp = rp;
+>>   	rp->nmissed = 0;
+>>   	/* Establish function entry probe point */
+>>   	ret = register_kprobe(&rp->kp);
+>> diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
+>> index 3b21f4063258..f5bf98e6b2ac 100644
+>> --- a/kernel/trace/fprobe.c
+>> +++ b/kernel/trace/fprobe.c
+>> @@ -187,9 +187,9 @@ static void fprobe_init(struct fprobe *fp)
+>>   
+>>   static int fprobe_init_rethook(struct fprobe *fp, int num)
+>>   {
+>> -	int i, size;
+>> +	int size;
+>>   
+>> -	if (num < 0)
+>> +	if (num <= 0)
+>>   		return -EINVAL;
 > 
->      +-------------------------------------------+
->      |                                           |
->      |                                           |
->      |                  QEMU                     |
->      |                                           |
->      |                                           |
->      +---+----------------------------+----------+
->          |      ^                     |      ^
->          |      |                     |      |
->          |      |                     |      |
->          v      |                     v      |
->       +---------+--+               +---------+--+
->       |src vfio_dev|               |dst vfio_dev|
->       +--+---------+               +--+---------+
->          |      ^                     |      ^
->          |      |                     |      |
->          v      |                     |      |
->     +-----------+----+           +-----------+----+
->     |src dev debugfs |           |dst dev debugfs |
->     +----------------+           +----------------+
+> Oops, this must be a bugfix. Let me fix it.
 > 
-> The entire debugfs directory will be based on the definition of
-> the CONFIG_DEBUG_FS macro. If this macro is not enabled, the
-> interfaces in vfio.h will be empty definitions, and the creation
-> and initialization of the debugfs directory will not be executed.
+>>   
+>>   	if (!fp->exit_handler) {
+>> @@ -202,29 +202,21 @@ static int fprobe_init_rethook(struct fprobe *fp, int num)
+>>   		size = fp->nr_maxactive;
+>>   	else
+>>   		size = num * num_possible_cpus() * 2;
+>> -	if (size < 0)
+>> +	if (size <= 0)
+>>   		return -E2BIG;
 > 
->     vfio
->      |
->      +---<dev_name1>
->      |    +---migration
->      |        +--state
->      |
->      +---<dev_name2>
->           +---migration
->               +--state
+> Here too.
 > 
-> debugfs will create a public root directory "vfio" file.
-> then create a dev_name() file for each live migration device.
-> First, create a unified state acquisition file of "migration"
-> in this device directory.
-> Then, create a public live migration state lookup file "state".
+> Except for this point, it looks good to me.
+
+Got it.  Would these 2 fixes catch the release window of v6.6 ?
+
 > 
-> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
-> ---
->   drivers/vfio/Kconfig      | 10 +++++
->   drivers/vfio/Makefile     |  1 +
->   drivers/vfio/debugfs.c    | 90 +++++++++++++++++++++++++++++++++++++++
->   drivers/vfio/vfio.h       | 14 ++++++
->   drivers/vfio/vfio_main.c  | 14 +++++-
->   include/linux/vfio.h      |  7 +++
->   include/uapi/linux/vfio.h |  1 +
->   7 files changed, 135 insertions(+), 2 deletions(-)
->   create mode 100644 drivers/vfio/debugfs.c
+> Thanks!
 > 
-> diff --git a/drivers/vfio/Kconfig b/drivers/vfio/Kconfig
-> index 6bda6dbb4878..ceae52fd7586 100644
-> --- a/drivers/vfio/Kconfig
-> +++ b/drivers/vfio/Kconfig
-> @@ -80,6 +80,16 @@ config VFIO_VIRQFD
->   	select EVENTFD
->   	default n
->   
-> +config VFIO_DEBUGFS
-> +	bool "Export VFIO internals in DebugFS"
-> +	depends on DEBUG_FS
-> +	help
-> +	  Allows exposure of VFIO device internals. This option enables
-> +	  the use of debugfs by VFIO drivers as required. The device can
-> +	  cause the VFIO code create a top-level debug/vfio directory
-> +	  during initialization, and then populate a subdirectory with
-> +	  entries as required.
-> +
->   source "drivers/vfio/pci/Kconfig"
->   source "drivers/vfio/platform/Kconfig"
->   source "drivers/vfio/mdev/Kconfig"
-> diff --git a/drivers/vfio/Makefile b/drivers/vfio/Makefile
-> index c82ea032d352..d43a699d55b1 100644
-> --- a/drivers/vfio/Makefile
-> +++ b/drivers/vfio/Makefile
-> @@ -8,6 +8,7 @@ vfio-$(CONFIG_VFIO_GROUP) += group.o
->   vfio-$(CONFIG_IOMMUFD) += iommufd.o
->   vfio-$(CONFIG_VFIO_CONTAINER) += container.o
->   vfio-$(CONFIG_VFIO_VIRQFD) += virqfd.o
-> +vfio-$(CONFIG_VFIO_DEBUGFS) += debugfs.o
->   
->   obj-$(CONFIG_VFIO_IOMMU_TYPE1) += vfio_iommu_type1.o
->   obj-$(CONFIG_VFIO_IOMMU_SPAPR_TCE) += vfio_iommu_spapr_tce.o
-> diff --git a/drivers/vfio/debugfs.c b/drivers/vfio/debugfs.c
-> new file mode 100644
-> index 000000000000..ae53d6110f47
-> --- /dev/null
-> +++ b/drivers/vfio/debugfs.c
-> @@ -0,0 +1,90 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2023, HiSilicon Ltd.
-> + */
-> +
-> +#include <linux/device.h>
-> +#include <linux/debugfs.h>
-> +#include <linux/seq_file.h>
-> +#include <linux/vfio.h>
-> +#include "vfio.h"
-> +
-> +static struct dentry *vfio_debugfs_root;
-> +
-> +static int vfio_device_state_read(struct seq_file *seq, void *data)
-> +{
-> +	struct device *vf_dev = seq->private;
-> +	struct vfio_device *vdev = container_of(vf_dev, struct vfio_device, device);
-> +	enum vfio_device_mig_state state;
-> +	int ret;
-> +
-> +	BUILD_BUG_ON(VFIO_DEVICE_STATE_NR !=
-> +		VFIO_DEVICE_STATE_PRE_COPY_P2P + 1);
-> +
-> +	ret = vdev->mig_ops->migration_get_state(vdev, &state);
-> +	if (ret)
-> +		return -EINVAL;
-> +
-> +	switch (state) {
-> +	case VFIO_DEVICE_STATE_ERROR:
-> +		seq_printf(seq, "%s\n", "ERROR");
-> +		break;
-> +	case VFIO_DEVICE_STATE_STOP:
-> +		seq_printf(seq, "%s\n", "STOP");
-> +		break;
-> +	case VFIO_DEVICE_STATE_RUNNING:
-> +		seq_printf(seq, "%s\n", "RUNNING");
-> +		break;
-> +	case VFIO_DEVICE_STATE_STOP_COPY:
-> +		seq_printf(seq, "%s\n", "STOP_COPY");
-> +		break;
-> +	case VFIO_DEVICE_STATE_RESUMING:
-> +		seq_printf(seq, "%s\n", "RESUMING");
-> +		break;
-> +	case VFIO_DEVICE_STATE_RUNNING_P2P:
-> +		seq_printf(seq, "%s\n", "RUNNING_P2P");
-> +		break;
-> +	case VFIO_DEVICE_STATE_PRE_COPY:
-> +		seq_printf(seq, "%s\n", "PRE_COPY");
-> +		break;
-> +	case VFIO_DEVICE_STATE_PRE_COPY_P2P:
-> +		seq_printf(seq, "%s\n", "PRE_COPY_P2P");
-> +		break;
-> +	default:
-> +		seq_printf(seq, "%s\n", "Invalid");
-
-seq_puts() is more appropriate than seq_printf() above.
-
-I would suggest to add an array or some helper, that the VFIO drivers
-could use to debug the migration flow with pr_* primitives. It can be
-done later.
-
-
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +void vfio_device_debugfs_init(struct vfio_device *vdev)
-> +{
-> +	struct device *dev = &vdev->device;
-> +
-> +	vdev->debug_root = debugfs_create_dir(dev_name(vdev->dev), vfio_debugfs_root);
-> +
-> +	if (vdev->mig_ops) {
-> +		struct dentry *vfio_dev_migration = NULL;
-
-mig_dir maybe ?
-
-It would be easier to understand the nature of the variable IMHO.
-
-> +
-> +		vfio_dev_migration = debugfs_create_dir("migration", vdev->debug_root);
-> +		debugfs_create_devm_seqfile(dev, "state", vfio_dev_migration,
-> +					  vfio_device_state_read);
-> +	}
-> +}
-> +
-> +void vfio_device_debugfs_exit(struct vfio_device *vdev)
-> +{
-> +	debugfs_remove_recursive(vdev->debug_root);
-> +}
-> +
-> +void vfio_debugfs_create_root(void)
-> +{
-> +	vfio_debugfs_root = debugfs_create_dir("vfio", NULL);
-> +}
-> +
-> +void vfio_debugfs_remove_root(void)
-> +{
-> +	debugfs_remove_recursive(vfio_debugfs_root);
-> +	vfio_debugfs_root = NULL;
-> +}
-> +
-> diff --git a/drivers/vfio/vfio.h b/drivers/vfio/vfio.h
-> index 307e3f29b527..bde84ad344e5 100644
-> --- a/drivers/vfio/vfio.h
-> +++ b/drivers/vfio/vfio.h
-> @@ -448,4 +448,18 @@ static inline void vfio_device_put_kvm(struct vfio_device *device)
->   }
->   #endif
->   
-> +#ifdef CONFIG_VFIO_DEBUGFS
-> +void vfio_debugfs_create_root(void);
-> +void vfio_debugfs_remove_root(void);
-> +
-> +void vfio_device_debugfs_init(struct vfio_device *vdev);
-> +void vfio_device_debugfs_exit(struct vfio_device *vdev);
-> +#else
-> +static inline void vfio_debugfs_create_root(void) { }
-> +static inline void vfio_debugfs_remove_root(void) { }
-> +
-> +static inline void vfio_device_debugfs_init(struct vfio_device *vdev) { }
-> +static inline void vfio_device_debugfs_exit(struct vfio_device *vdev) { }
-> +#endif /* CONFIG_VFIO_DEBUGFS */
-> +
->   #endif
-> diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
-> index e31e1952d7b8..9aec4c22f051 100644
-> --- a/drivers/vfio/vfio_main.c
-> +++ b/drivers/vfio/vfio_main.c
-> @@ -309,7 +309,6 @@ static int __vfio_register_dev(struct vfio_device *device,
->   
->   	/* Refcounting can't start until the driver calls register */
->   	refcount_set(&device->refcount, 1);
-> -
-
-superfluous change.
-
->   	vfio_device_group_register(device);
->   
->   	return 0;
-> @@ -320,7 +319,15 @@ static int __vfio_register_dev(struct vfio_device *device,
->   
->   int vfio_register_group_dev(struct vfio_device *device)
->   {
-> -	return __vfio_register_dev(device, VFIO_IOMMU);
-> +	int ret;
-> +
-> +	ret = __vfio_register_dev(device, VFIO_IOMMU);
-> +	if (ret)
-> +		return ret;
-> +
-> +	vfio_device_debugfs_init(device);
-
-Can it be called from __vfio_register_dev() instead ? and mdev devices
-would get debugfs support also.
-
-Thanks,
-
-C.
-
-> +
-> +	return 0;
->   }
->   EXPORT_SYMBOL_GPL(vfio_register_group_dev);
->   
-> @@ -378,6 +385,7 @@ void vfio_unregister_group_dev(struct vfio_device *device)
->   		}
->   	}
->   
-> +	vfio_device_debugfs_exit(device);
->   	/* Balances vfio_device_set_group in register path */
->   	vfio_device_remove_group(device);
->   }
-> @@ -1676,6 +1684,7 @@ static int __init vfio_init(void)
->   	if (ret)
->   		goto err_alloc_dev_chrdev;
->   
-> +	vfio_debugfs_create_root();
->   	pr_info(DRIVER_DESC " version: " DRIVER_VERSION "\n");
->   	return 0;
->   
-> @@ -1691,6 +1700,7 @@ static int __init vfio_init(void)
->   
->   static void __exit vfio_cleanup(void)
->   {
-> +	vfio_debugfs_remove_root();
->   	ida_destroy(&vfio.device_ida);
->   	vfio_cdev_cleanup();
->   	class_destroy(vfio.device_class);
-> diff --git a/include/linux/vfio.h b/include/linux/vfio.h
-> index 454e9295970c..769d7af86225 100644
-> --- a/include/linux/vfio.h
-> +++ b/include/linux/vfio.h
-> @@ -69,6 +69,13 @@ struct vfio_device {
->   	u8 iommufd_attached:1;
->   #endif
->   	u8 cdev_opened:1;
-> +#ifdef CONFIG_DEBUG_FS
-> +	/*
-> +	 * debug_root is a static property of the vfio_device
-> +	 * which must be set prior to registering the vfio_device.
-> +	 */
-> +	struct dentry *debug_root;
-> +#endif
->   };
->   
->   /**
-> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-> index 7f5fb010226d..2b68e6cdf190 100644
-> --- a/include/uapi/linux/vfio.h
-> +++ b/include/uapi/linux/vfio.h
-> @@ -1219,6 +1219,7 @@ enum vfio_device_mig_state {
->   	VFIO_DEVICE_STATE_RUNNING_P2P = 5,
->   	VFIO_DEVICE_STATE_PRE_COPY = 6,
->   	VFIO_DEVICE_STATE_PRE_COPY_P2P = 7,
-> +	VFIO_DEVICE_STATE_NR,
->   };
->   
->   /**
 
