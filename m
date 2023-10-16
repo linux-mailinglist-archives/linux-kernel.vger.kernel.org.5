@@ -2,340 +2,447 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30AFC7CA7FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 049177CA806
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233100AbjJPMbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 08:31:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56698 "EHLO
+        id S233240AbjJPMcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 08:32:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJPMbl (ORCPT
+        with ESMTP id S233162AbjJPMcb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 08:31:41 -0400
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBC089F
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 05:31:39 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5a8628e54d4so10681437b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 05:31:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697459499; x=1698064299; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Ol9AcKb3GX58mmT6rVA5SYZFPR6grqwmzcycicwyPPk=;
-        b=Lq/PzcVN3q0xi8JIGC530Y+cSe5NDqDXG33X0gNTLpU8OzXkJ7atL9lWWu7a/WgdIb
-         ttQQpmv0nrmYp7fo/AEq0aJIBztkhiIl78pu5UlXSNRq/oPhVUirYKNlIGT+7+S+HHZ9
-         pzHb1JYJ9v6YnMyxj8mpN9ocLcF2+jY5PGex/0LYHv5ipjG9XPE2S+wW6qe92lAOODuq
-         XcwdDprPFC4HJFM8GLR7L3Yre9Qqp/FcfDEB16pTskvL4rnXYWZP1chp4Kkb2SUfPWb0
-         4xtkOICpzleFrgmvLIeONXQvn5KJHgJtJFluWXKNIxFKHsBAfeQ4N6SPBbyKa4iKaQx+
-         L0pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697459499; x=1698064299;
-        h=content-disposition:mime-version:message-id:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ol9AcKb3GX58mmT6rVA5SYZFPR6grqwmzcycicwyPPk=;
-        b=czTQb05IHrAgWxYglEpn6R1NPAun3zshREWtFGP1gDM/6CdPbm0zDtP8IT2BYO8K6V
-         afhp4i/4kCgv/YIOkrv1bmJFmEYlpvCKu3Pdrsfzg+hu/txDJVabuE+X7P4mjwwxTiar
-         E9qBHbq4w/OKHJWcH4pa2HaOGC4PCK9uY5yOdar5ZHd8Z/mnX330vmAau2FZi/KDX1Mx
-         EMIeRl058XzZcnmRSW69zSEwv4kBNT1A65zxkYc5NtQXBVvvcDb470SMJ5xn9tMJ23bu
-         cghyRxGBiFn1VcrXBU9wA22s3nA+DsDQYMjMem/lKAhpc9TWM24dxXgoV65cSKpdwL57
-         nhHQ==
-X-Gm-Message-State: AOJu0YwMFyqHRD0lFSjaatPTYm07tGnbEq7lflqAAxvOzJrPCTy7z6lV
-        +u914qKXcF7zhqeG4wowB84=
-X-Google-Smtp-Source: AGHT+IHAkIvH6aLmMXJ9DfqSroIpzcvIYfAOGHv3Z62aYL0umgenB9+wlH7CqZMya6P4M8PWIGcRvg==
-X-Received: by 2002:a05:690c:dd5:b0:5a7:dad3:cd21 with SMTP id db21-20020a05690c0dd500b005a7dad3cd21mr5252395ywb.10.1697459498905;
-        Mon, 16 Oct 2023 05:31:38 -0700 (PDT)
-Received: from gilbert-PC ([105.112.31.148])
-        by smtp.gmail.com with ESMTPSA id l184-20020a0dc9c1000000b005707fb5110bsm2202348ywd.58.2023.10.16.05.31.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 05:31:31 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 13:31:20 +0100
-From:   Gilbert Adikankwu <gilbertadikankwu@gmail.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     outreachy@lists.linux.dev, gregkh@linuxfoundation.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Message-ID: <ZS0tGLOJxUztxbKj@gilbert-PC>
+        Mon, 16 Oct 2023 08:32:31 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D92AB;
+        Mon, 16 Oct 2023 05:32:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24174C433C8;
+        Mon, 16 Oct 2023 12:32:25 +0000 (UTC)
+Message-ID: <79491697-9851-42eb-aedc-0c36ab5d3c69@xs4all.nl>
+Date:   Mon, 16 Oct 2023 14:32:24 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,MISSING_SUBJECT,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v6 08/11] media: uapi: define audio sample format
+ fourcc type
+Content-Language: en-US, nl
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
+        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org
+References: <1697185865-27528-1-git-send-email-shengjiu.wang@nxp.com>
+ <1697185865-27528-9-git-send-email-shengjiu.wang@nxp.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <1697185865-27528-9-git-send-email-shengjiu.wang@nxp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org  
-Bcc: 
-Subject: Re: [PATCH] staging: emxx_udc: Remove unnecessary parentheses around
- condition tests
-Reply-To: 
-In-Reply-To: <6b60ed7-9d97-2071-44f8-83b173191ed@inria.fr>
+On 13/10/2023 10:31, Shengjiu Wang wrote:
+> The audio sample format definition is from alsa,
+> the header file is include/uapi/sound/asound.h, but
+> don't include this header file directly, because in
+> user space, there is another copy in alsa-lib.
+> There will be conflict in userspace for include
+> videodev2.h & asound.h and asoundlib.h
+> 
+> Here still use the fourcc format.
+> 
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+>  .../userspace-api/media/v4l/pixfmt-audio.rst  | 202 ++++++++++++++++++
+>  .../userspace-api/media/v4l/pixfmt.rst        |   1 +
+>  drivers/media/v4l2-core/v4l2-ioctl.c          |  36 ++++
+>  include/uapi/linux/videodev2.h                |  48 +++++
+>  4 files changed, 287 insertions(+)
+>  create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-audio.rst
+> 
+> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-audio.rst b/Documentation/userspace-api/media/v4l/pixfmt-audio.rst
+> new file mode 100644
+> index 000000000000..ac89b2c4b594
+> --- /dev/null
+> +++ b/Documentation/userspace-api/media/v4l/pixfmt-audio.rst
+> @@ -0,0 +1,202 @@
+> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
+> +
+> +.. _pixfmt-audio:
+> +
+> +*************
+> +Audio Formats
+> +*************
+> +
+> +These formats are used for :ref:`audiomem2mem` interface only.
+> +
+> +.. tabularcolumns:: |p{5.8cm}|p{1.2cm}|p{10.3cm}|
+> +
+> +.. cssclass:: longtable
+> +
+> +.. flat-table:: Audio Format
+> +    :header-rows:  1
+> +    :stub-columns: 0
+> +    :widths:       3 1 4
+> +
+> +    * - Identifier
+> +      - Code
+> +      - Details
+> +    * .. _V4L2-AUDIO-FMT-S8:
+> +
+> +      - ``V4L2_AUDIO_FMT_S8``
+> +      - 'S8'
+> +      - Corresponds to SNDRV_PCM_FORMAT_S8 in ALSA
+> +    * .. _V4L2-AUDIO-FMT-U8:
+> +
+> +      - ``V4L2_AUDIO_FMT_U8``
+> +      - 'U8'
+> +      - Corresponds to SNDRV_PCM_FORMAT_U8 in ALSA
+> +    * .. _V4L2-AUDIO-FMT-S16-LE:
+> +
+> +      - ``V4L2_AUDIO_FMT_S16_LE``
+> +      - 'S16_LE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_S16_LE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-S16-BE:
+> +
+> +      - ``V4L2_AUDIO_FMT_S16_BE``
+> +      - 'S16_BE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_S16_BE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-U16-LE:
+> +
+> +      - ``V4L2_AUDIO_FMT_U16_LE``
+> +      - 'U16_LE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_U16_LE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-U16-BE:
+> +
+> +      - ``V4L2_AUDIO_FMT_U16_BE``
+> +      - 'U16_BE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_U16_BE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-S24-LE:
+> +
+> +      - ``V4L2_AUDIO_FMT_S24_LE``
+> +      - 'S24_LE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_S24_LE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-S24-BE:
+> +
+> +      - ``V4L2_AUDIO_FMT_S24_BE``
+> +      - 'S24_BE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_S24_BE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-U24-LE:
+> +
+> +      - ``V4L2_AUDIO_FMT_U24_LE``
+> +      - 'U24_LE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_U24_LE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-U24-BE:
+> +
+> +      - ``V4L2_AUDIO_FMT_U24_BE``
+> +      - 'U24_BE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_U24_BE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-S32-LE:
+> +
+> +      - ``V4L2_AUDIO_FMT_S32_LE``
+> +      - 'S32_LE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_S32_LE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-S32-BE:
+> +
+> +      - ``V4L2_AUDIO_FMT_S32_BE``
+> +      - 'S32_BE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_S32_BE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-U32-LE:
+> +
+> +      - ``V4L2_AUDIO_FMT_U32_LE``
+> +      - 'U32_LE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_U32_LE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-U32-BE:
+> +
+> +      - ``V4L2_AUDIO_FMT_U32_BE``
+> +      - 'U32_BE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_U32_BE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-FLOAT-LE:
+> +
+> +      - ``V4L2_AUDIO_FMT_FLOAT_LE``
+> +      - 'FLOAT_LE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_FLOAT_LE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-FLOAT-BE:
+> +
+> +      - ``V4L2_AUDIO_FMT_FLOAT_BE``
+> +      - 'FLOAT_BE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_FLOAT_BE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-FLOAT64-LE:
+> +
+> +      - ``V4L2_AUDIO_FMT_FLOAT64_LE``
+> +      - 'FLOAT64_LE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_FLOAT64_LE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-FLOAT64-BE:
+> +
+> +      - ``V4L2_AUDIO_FMT_FLOAT64_BE``
+> +      - 'FLOAT64_BE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_FLOAT64_BE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-IEC958-SUBFRAME-LE:
+> +
+> +      - ``V4L2_AUDIO_FMT_IEC958_SUBFRAME_LE``
+> +      - 'IEC958_SUBFRAME_LE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-IEC958-SUBFRAME-BE:
+> +
+> +      - ``V4L2_AUDIO_FMT_IEC958_SUBFRAME_BE``
+> +      - 'IEC958_SUBFRAME_BE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_IEC958_SUBFRAME_BE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-S20-LE:
+> +
+> +      - ``V4L2_AUDIO_FMT_S20_LE``
+> +      - 'S20_LE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_S20_LE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-S20-BE:
+> +
+> +      - ``V4L2_AUDIO_FMT_S20_BE``
+> +      - 'S20_BE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_S20_BE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-U20-LE:
+> +
+> +      - ``V4L2_AUDIO_FMT_U20_LE``
+> +      - 'U20_LE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_U20_LE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-U20-BE:
+> +
+> +      - ``V4L2_AUDIO_FMT_U20_BE``
+> +      - 'U20_BE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_U20_BE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-S24-3LE:
+> +
+> +      - ``V4L2_AUDIO_FMT_S24_3LE``
+> +      - 'S24_3LE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_S24_3LE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-S24-3BE:
+> +
+> +      - ``V4L2_AUDIO_FMT_S24_3BE``
+> +      - 'S24_3BE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_S24_3BE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-U24-3LE:
+> +
+> +      - ``V4L2_AUDIO_FMT_U24_3LE``
+> +      - 'U24_3LE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_U24_3LE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-U24-3BE:
+> +
+> +      - ``V4L2_AUDIO_FMT_U24_3BE``
+> +      - 'U24_3BE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_U24_3BE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-S20-3LE:
+> +
+> +      - ``V4L2_AUDIO_FMT_S20_3LE``
+> +      - 'S20_3LE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_S24_3LE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-S20-3BE:
+> +
+> +      - ``V4L2_AUDIO_FMT_S20_3BE``
+> +      - 'S20_3BE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_S20_3BE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-U20-3LE:
+> +
+> +      - ``V4L2_AUDIO_FMT_U20_3LE``
+> +      - 'U20_3LE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_U20_3LE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-U20-3BE:
+> +
+> +      - ``V4L2_AUDIO_FMT_U20_3BE``
+> +      - 'U20_3BE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_U20_3BE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-S18-3LE:
+> +
+> +      - ``V4L2_AUDIO_FMT_S18_3LE``
+> +      - 'S18_3LE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_S18_3LE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-S18-3BE:
+> +
+> +      - ``V4L2_AUDIO_FMT_S18_3BE``
+> +      - 'S18_3BE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_S18_3BE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-U18-3LE:
+> +
+> +      - ``V4L2_AUDIO_FMT_U18_3LE``
+> +      - 'U18_3LE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_U18_3LE in ALSA
+> +    * .. _V4L2-AUDIO-FMT-U18-3BE:
+> +
+> +      - ``V4L2_AUDIO_FMT_U18_3BE``
+> +      - 'U18_3BE'
+> +      - Corresponds to SNDRV_PCM_FORMAT_U18_3BE in ALSA
+> diff --git a/Documentation/userspace-api/media/v4l/pixfmt.rst b/Documentation/userspace-api/media/v4l/pixfmt.rst
+> index 11dab4a90630..2eb6fdd3b43d 100644
+> --- a/Documentation/userspace-api/media/v4l/pixfmt.rst
+> +++ b/Documentation/userspace-api/media/v4l/pixfmt.rst
+> @@ -36,3 +36,4 @@ see also :ref:`VIDIOC_G_FBUF <VIDIOC_G_FBUF>`.)
+>      colorspaces
+>      colorspaces-defs
+>      colorspaces-details
+> +    pixfmt-audio
+> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+> index 5d088e6c43e4..31e443c644db 100644
+> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
+> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+> @@ -1471,6 +1471,42 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
+>  	case V4L2_PIX_FMT_Y210:		descr = "10-bit YUYV Packed"; break;
+>  	case V4L2_PIX_FMT_Y212:		descr = "12-bit YUYV Packed"; break;
+>  	case V4L2_PIX_FMT_Y216:		descr = "16-bit YUYV Packed"; break;
+> +	case V4L2_AUDIO_FMT_S8:		descr = "8-bit Signed"; break;
+> +	case V4L2_AUDIO_FMT_U8:		descr = "8-bit Unsigned"; break;
+> +	case V4L2_AUDIO_FMT_S16_LE:	descr = "16-bit Signed LE"; break;
+> +	case V4L2_AUDIO_FMT_S16_BE:		descr = "16-bit Signed BE"; break;
+> +	case V4L2_AUDIO_FMT_U16_LE:		descr = "16-bit Unsigned LE"; break;
+> +	case V4L2_AUDIO_FMT_U16_BE:		descr = "16-bit Unsigned BE"; break;
+> +	case V4L2_AUDIO_FMT_S24_LE:		descr = "24(32)-bit Signed LE"; break;
+> +	case V4L2_AUDIO_FMT_S24_BE:		descr = "24(32)-bit Signed BE"; break;
+> +	case V4L2_AUDIO_FMT_U24_LE:		descr = "24(32)-bit Unsigned LE"; break;
+> +	case V4L2_AUDIO_FMT_U24_BE:		descr = "24(32)-bit Unsigned BE"; break;
+> +	case V4L2_AUDIO_FMT_S32_LE:		descr = "32-bit Signed LE"; break;
+> +	case V4L2_AUDIO_FMT_S32_BE:		descr = "32-bit Signed BE"; break;
+> +	case V4L2_AUDIO_FMT_U32_LE:		descr = "32-bit Unsigned LE"; break;
+> +	case V4L2_AUDIO_FMT_U32_BE:		descr = "32-bit Unsigned BE"; break;
+> +	case V4L2_AUDIO_FMT_FLOAT_LE:		descr = "32-bit Float LE"; break;
+> +	case V4L2_AUDIO_FMT_FLOAT_BE:		descr = "32-bit Float BE"; break;
+> +	case V4L2_AUDIO_FMT_FLOAT64_LE:		descr = "64-bit Float LE"; break;
+> +	case V4L2_AUDIO_FMT_FLOAT64_BE:		descr = "64-bit Float BE"; break;
+> +	case V4L2_AUDIO_FMT_IEC958_SUBFRAME_LE:	descr = "32-bit IEC958 LE"; break;
+> +	case V4L2_AUDIO_FMT_IEC958_SUBFRAME_BE:	descr = "32-bit IEC958 BE"; break;
+> +	case V4L2_AUDIO_FMT_S20_LE:		descr = "20-bit Signed LE"; break;
+> +	case V4L2_AUDIO_FMT_S20_BE:		descr = "20-bit Signed BE"; break;
+> +	case V4L2_AUDIO_FMT_U20_LE:		descr = "20-bit Unsigned LE"; break;
+> +	case V4L2_AUDIO_FMT_U20_BE:		descr = "20-bit Unsigned BE"; break;
+> +	case V4L2_AUDIO_FMT_S24_3LE:		descr = "24(24)-bit Signed LE"; break;
+> +	case V4L2_AUDIO_FMT_S24_3BE:		descr = "24(24)-bit Signed BE"; break;
+> +	case V4L2_AUDIO_FMT_U24_3LE:		descr = "24(24)-bit Unsigned LE"; break;
+> +	case V4L2_AUDIO_FMT_U24_3BE:		descr = "24(24)-bit Unsigned BE"; break;
+> +	case V4L2_AUDIO_FMT_S20_3LE:		descr = "20(24)-bit Signed LE"; break;
+> +	case V4L2_AUDIO_FMT_S20_3BE:		descr = "20(24)-bit Signed BE"; break;
+> +	case V4L2_AUDIO_FMT_U20_3LE:		descr = "20(24)-bit Unsigned LE"; break;
+> +	case V4L2_AUDIO_FMT_U20_3BE:		descr = "20(24)-bit Unsigned BE"; break;
+> +	case V4L2_AUDIO_FMT_S18_3LE:		descr = "18(24)-bit Signed LE"; break;
+> +	case V4L2_AUDIO_FMT_S18_3BE:		descr = "18(24)-bit Signed BE"; break;
+> +	case V4L2_AUDIO_FMT_U18_3LE:		descr = "18(24)-bit Unsigned LE"; break;
+> +	case V4L2_AUDIO_FMT_U18_3BE:		descr = "18(24)-bit Unsigned BE"; break;
 
-On Mon, Oct 16, 2023 at 02:15:06PM +0200, Julia Lawall wrote:
-> 
-> 
-> On Mon, 16 Oct 2023, Gilbert Adikankwu wrote:
-> 
-> > Fix 47 warnings detected by checkpatch.pl about unnecessary parenthesis
-> > around condition tests.
-> 
-> If you need to make any changes to the patch, there is no need to give the
-> count of the changes.  It doesn't matter if it's 47, 46, 35, etc.
-> 
-> julia
->
-Hi Julia, 
+This still has several formats that are not used by the initial drivers imx-asrc
+and viaudm2m. Please just add the ones that are actually used.
 
-I added the number because I saw I similar commit on the logs that did
-so. (commit b83970f23f36f0e2968872140e69f68118d82fe3)
-> >
-> > Signed-off-by: Gilbert Adikankwu <gilbertadikankwu@gmail.com>
-> > ---
-> >  drivers/staging/emxx_udc/emxx_udc.c | 72 ++++++++++++++---------------
-> >  1 file changed, 36 insertions(+), 36 deletions(-)
-> >
-> > diff --git a/drivers/staging/emxx_udc/emxx_udc.c b/drivers/staging/emxx_udc/emxx_udc.c
-> > index eb63daaca702..e8ddd691b788 100644
-> > --- a/drivers/staging/emxx_udc/emxx_udc.c
-> > +++ b/drivers/staging/emxx_udc/emxx_udc.c
-> > @@ -149,8 +149,8 @@ static void _nbu2ss_ep0_complete(struct usb_ep *_ep, struct usb_request *_req)
-> >  			/* SET_FEATURE */
-> >  			recipient = (u8)(p_ctrl->bRequestType & USB_RECIP_MASK);
-> >  			selector  = le16_to_cpu(p_ctrl->wValue);
-> > -			if ((recipient == USB_RECIP_DEVICE) &&
-> > -			    (selector == USB_DEVICE_TEST_MODE)) {
-> > +			if (recipient == USB_RECIP_DEVICE &&
-> > +			    selector == USB_DEVICE_TEST_MODE) {
-> >  				wIndex = le16_to_cpu(p_ctrl->wIndex);
-> >  				test_mode = (u32)(wIndex >> 8);
-> >  				_nbu2ss_set_test_mode(udc, test_mode);
-> > @@ -287,7 +287,7 @@ static int _nbu2ss_epn_exit(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep)
-> >  	u32		num;
-> >  	u32		data;
-> >
-> > -	if ((ep->epnum == 0) || (udc->vbus_active == 0))
-> > +	if (ep->epnum == 0 || udc->vbus_active == 0)
-> >  		return	-EINVAL;
-> >
-> >  	num = ep->epnum - 1;
-> > @@ -336,7 +336,7 @@ static void _nbu2ss_ep_dma_init(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep)
-> >  	u32		data;
-> >
-> >  	data = _nbu2ss_readl(&udc->p_regs->USBSSCONF);
-> > -	if (((ep->epnum == 0) || (data & (1 << ep->epnum)) == 0))
-> > +	if (ep->epnum == 0 || (data & (1 << ep->epnum)) == 0)
-> >  		return;		/* Not Support DMA */
-> >
-> >  	num = ep->epnum - 1;
-> > @@ -380,7 +380,7 @@ static void _nbu2ss_ep_dma_exit(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep)
-> >  		return;		/* VBUS OFF */
-> >
-> >  	data = _nbu2ss_readl(&preg->USBSSCONF);
-> > -	if ((ep->epnum == 0) || ((data & (1 << ep->epnum)) == 0))
-> > +	if (ep->epnum == 0 || (data & (1 << ep->epnum)) == 0)
-> >  		return;		/* Not Support DMA */
-> >
-> >  	num = ep->epnum - 1;
-> > @@ -560,7 +560,7 @@ static int ep0_out_overbytes(struct nbu2ss_udc *udc, u8 *p_buf, u32 length)
-> >  	union usb_reg_access  temp_32;
-> >  	union usb_reg_access  *p_buf_32 = (union usb_reg_access *)p_buf;
-> >
-> > -	if ((length > 0) && (length < sizeof(u32))) {
-> > +	if (length > 0 && length < sizeof(u32)) {
-> >  		temp_32.dw = _nbu2ss_readl(&udc->p_regs->EP0_READ);
-> >  		for (i = 0 ; i < length ; i++)
-> >  			p_buf_32->byte.DATA[i] = temp_32.byte.DATA[i];
-> > @@ -608,7 +608,7 @@ static int ep0_in_overbytes(struct nbu2ss_udc *udc,
-> >  	union usb_reg_access  temp_32;
-> >  	union usb_reg_access  *p_buf_32 = (union usb_reg_access *)p_buf;
-> >
-> > -	if ((i_remain_size > 0) && (i_remain_size < sizeof(u32))) {
-> > +	if (i_remain_size > 0 && i_remain_size < sizeof(u32)) {
-> >  		for (i = 0 ; i < i_remain_size ; i++)
-> >  			temp_32.byte.DATA[i] = p_buf_32->byte.DATA[i];
-> >  		_nbu2ss_ep_in_end(udc, 0, temp_32.dw, i_remain_size);
-> > @@ -701,7 +701,7 @@ static int _nbu2ss_ep0_in_transfer(struct nbu2ss_udc *udc,
-> >  		return result;
-> >  	}
-> >
-> > -	if ((i_remain_size < sizeof(u32)) && (result != EP0_PACKETSIZE)) {
-> > +	if (i_remain_size < sizeof(u32) && result != EP0_PACKETSIZE) {
-> >  		p_buffer += result;
-> >  		result += ep0_in_overbytes(udc, p_buffer, i_remain_size);
-> >  		req->div_len = result;
-> > @@ -738,7 +738,7 @@ static int _nbu2ss_ep0_out_transfer(struct nbu2ss_udc *udc,
-> >  		req->req.actual += result;
-> >  		i_recv_length -= result;
-> >
-> > -		if ((i_recv_length > 0) && (i_recv_length < sizeof(u32))) {
-> > +		if (i_recv_length > 0 && i_recv_length < sizeof(u32)) {
-> >  			p_buffer += result;
-> >  			i_remain_size -= result;
-> >
-> > @@ -891,8 +891,8 @@ static int _nbu2ss_epn_out_pio(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep,
-> >
-> >  	req->req.actual += result;
-> >
-> > -	if ((req->req.actual == req->req.length) ||
-> > -	    ((req->req.actual % ep->ep.maxpacket) != 0)) {
-> > +	if (req->req.actual == req->req.length ||
-> > +	    (req->req.actual % ep->ep.maxpacket) != 0) {
-> >  		result = 0;
-> >  	}
-> >
-> > @@ -914,8 +914,8 @@ static int _nbu2ss_epn_out_data(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep,
-> >
-> >  	i_buf_size = min((req->req.length - req->req.actual), data_size);
-> >
-> > -	if ((ep->ep_type != USB_ENDPOINT_XFER_INT) && (req->req.dma != 0) &&
-> > -	    (i_buf_size  >= sizeof(u32))) {
-> > +	if (ep->ep_type != USB_ENDPOINT_XFER_INT && req->req.dma != 0 &&
-> > +	    i_buf_size  >= sizeof(u32)) {
-> >  		nret = _nbu2ss_out_dma(udc, req, num, i_buf_size);
-> >  	} else {
-> >  		i_buf_size = min_t(u32, i_buf_size, ep->ep.maxpacket);
-> > @@ -954,8 +954,8 @@ static int _nbu2ss_epn_out_transfer(struct nbu2ss_udc *udc,
-> >  			}
-> >  		}
-> >  	} else {
-> > -		if ((req->req.actual == req->req.length) ||
-> > -		    ((req->req.actual % ep->ep.maxpacket) != 0)) {
-> > +		if (req->req.actual == req->req.length ||
-> > +		    (req->req.actual % ep->ep.maxpacket) != 0) {
-> >  			result = 0;
-> >  		}
-> >  	}
-> > @@ -1106,8 +1106,8 @@ static int _nbu2ss_epn_in_data(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep,
-> >
-> >  	num = ep->epnum - 1;
-> >
-> > -	if ((ep->ep_type != USB_ENDPOINT_XFER_INT) && (req->req.dma != 0) &&
-> > -	    (data_size >= sizeof(u32))) {
-> > +	if (ep->ep_type != USB_ENDPOINT_XFER_INT && req->req.dma != 0 &&
-> > +	    data_size >= sizeof(u32)) {
-> >  		nret = _nbu2ss_in_dma(udc, ep, req, num, data_size);
-> >  	} else {
-> >  		data_size = min_t(u32, data_size, ep->ep.maxpacket);
-> > @@ -1238,7 +1238,7 @@ static void _nbu2ss_endpoint_toggle_reset(struct nbu2ss_udc *udc, u8 ep_adrs)
-> >  	u8		num;
-> >  	u32		data;
-> >
-> > -	if ((ep_adrs == 0) || (ep_adrs == 0x80))
-> > +	if (ep_adrs == 0 || ep_adrs == 0x80)
-> >  		return;
-> >
-> >  	num = (ep_adrs & 0x7F) - 1;
-> > @@ -1261,7 +1261,7 @@ static void _nbu2ss_set_endpoint_stall(struct nbu2ss_udc *udc,
-> >  	struct nbu2ss_ep *ep;
-> >  	struct fc_regs __iomem *preg = udc->p_regs;
-> >
-> > -	if ((ep_adrs == 0) || (ep_adrs == 0x80)) {
-> > +	if (ep_adrs == 0 || ep_adrs == 0x80) {
-> >  		if (bstall) {
-> >  			/* Set STALL */
-> >  			_nbu2ss_bitset(&preg->EP0_CONTROL, EP0_STL);
-> > @@ -1392,8 +1392,8 @@ static inline int _nbu2ss_req_feature(struct nbu2ss_udc *udc, bool bset)
-> >  	u8	ep_adrs;
-> >  	int	result = -EOPNOTSUPP;
-> >
-> > -	if ((udc->ctrl.wLength != 0x0000) ||
-> > -	    (direction != USB_DIR_OUT)) {
-> > +	if (udc->ctrl.wLength != 0x0000 ||
-> > +	    direction != USB_DIR_OUT) {
-> >  		return -EINVAL;
-> >  	}
-> >
-> > @@ -1480,7 +1480,7 @@ static int std_req_get_status(struct nbu2ss_udc *udc)
-> >  	u8	ep_adrs;
-> >  	int	result = -EINVAL;
-> >
-> > -	if ((udc->ctrl.wValue != 0x0000) || (direction != USB_DIR_IN))
-> > +	if (udc->ctrl.wValue != 0x0000 || direction != USB_DIR_IN)
-> >  		return result;
-> >
-> >  	length =
-> > @@ -1542,9 +1542,9 @@ static int std_req_set_address(struct nbu2ss_udc *udc)
-> >  	int		result = 0;
-> >  	u32		wValue = le16_to_cpu(udc->ctrl.wValue);
-> >
-> > -	if ((udc->ctrl.bRequestType != 0x00)	||
-> > -	    (udc->ctrl.wIndex != 0x0000)	||
-> > -		(udc->ctrl.wLength != 0x0000)) {
-> > +	if (udc->ctrl.bRequestType != 0x00	||
-> > +	    udc->ctrl.wIndex != 0x0000		||
-> > +		udc->ctrl.wLength != 0x0000) {
-> >  		return -EINVAL;
-> >  	}
-> >
-> > @@ -1564,9 +1564,9 @@ static int std_req_set_configuration(struct nbu2ss_udc *udc)
-> >  {
-> >  	u32 config_value = (u32)(le16_to_cpu(udc->ctrl.wValue) & 0x00ff);
-> >
-> > -	if ((udc->ctrl.wIndex != 0x0000)	||
-> > -	    (udc->ctrl.wLength != 0x0000)	||
-> > -		(udc->ctrl.bRequestType != 0x00)) {
-> > +	if (udc->ctrl.wIndex != 0x0000	||
-> > +	    udc->ctrl.wLength != 0x0000	||
-> > +		udc->ctrl.bRequestType != 0x00) {
-> >  		return -EINVAL;
-> >  	}
-> >
-> > @@ -1838,8 +1838,8 @@ static void _nbu2ss_ep_done(struct nbu2ss_ep *ep,
-> >  	}
-> >
-> >  #ifdef USE_DMA
-> > -	if ((ep->direct == USB_DIR_OUT) && (ep->epnum > 0) &&
-> > -	    (req->req.dma != 0))
-> > +	if (ep->direct == USB_DIR_OUT && ep->epnum > 0 &&
-> > +	    req->req.dma != 0)
-> >  		_nbu2ss_dma_unmap_single(udc, ep, req, USB_DIR_OUT);
-> >  #endif
-> >
-> > @@ -1931,7 +1931,7 @@ static inline void _nbu2ss_epn_in_dma_int(struct nbu2ss_udc *udc,
-> >  		mpkt = ep->ep.maxpacket;
-> >  		size = preq->actual % mpkt;
-> >  		if (size > 0) {
-> > -			if (((preq->actual & 0x03) == 0) && (size < mpkt))
-> > +			if ((preq->actual & 0x03) == 0 && size < mpkt)
-> >  				_nbu2ss_ep_in_end(udc, ep->epnum, 0, 0);
-> >  		} else {
-> >  			_nbu2ss_epn_in_int(udc, ep, req);
-> > @@ -2428,8 +2428,8 @@ static int nbu2ss_ep_enable(struct usb_ep *_ep,
-> >  	}
-> >
-> >  	ep_type = usb_endpoint_type(desc);
-> > -	if ((ep_type == USB_ENDPOINT_XFER_CONTROL) ||
-> > -	    (ep_type == USB_ENDPOINT_XFER_ISOC)) {
-> > +	if (ep_type == USB_ENDPOINT_XFER_CONTROL ||
-> > +	    ep_type == USB_ENDPOINT_XFER_ISOC) {
-> >  		pr_err(" *** %s, bat bmAttributes\n", __func__);
-> >  		return -EINVAL;
-> >  	}
-> > @@ -2438,7 +2438,7 @@ static int nbu2ss_ep_enable(struct usb_ep *_ep,
-> >  	if (udc->vbus_active == 0)
-> >  		return -ESHUTDOWN;
-> >
-> > -	if ((!udc->driver) || (udc->gadget.speed == USB_SPEED_UNKNOWN)) {
-> > +	if (!udc->driver || udc->gadget.speed == USB_SPEED_UNKNOWN) {
-> >  		dev_err(ep->udc->dev, " *** %s, udc !!\n", __func__);
-> >  		return -ESHUTDOWN;
-> >  	}
-> > @@ -2603,8 +2603,8 @@ static int nbu2ss_ep_queue(struct usb_ep *_ep,
-> >  		}
-> >  	}
-> >
-> > -	if ((ep->epnum > 0) && (ep->direct == USB_DIR_OUT) &&
-> > -	    (req->req.dma != 0))
-> > +	if (ep->epnum > 0 && ep->direct == USB_DIR_OUT &&
-> > +	    req->req.dma != 0)
-> >  		_nbu2ss_dma_map_single(udc, ep, req, USB_DIR_OUT);
-> >  #endif
-> >
-> > --
-> > 2.34.1
-> >
-> >
-> >
+We had bad experiences in the past with defined-but-never-used formats, so we
+are fairly strict about that these days.
+
+>  
+>  	default:
+>  		/* Compressed formats */
+> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+> index b0ddb7319d36..2ac7b989394c 100644
+> --- a/include/uapi/linux/videodev2.h
+> +++ b/include/uapi/linux/videodev2.h
+> @@ -842,6 +842,54 @@ struct v4l2_pix_format {
+>  #define V4L2_META_FMT_RK_ISP1_PARAMS	v4l2_fourcc('R', 'K', '1', 'P') /* Rockchip ISP1 3A Parameters */
+>  #define V4L2_META_FMT_RK_ISP1_STAT_3A	v4l2_fourcc('R', 'K', '1', 'S') /* Rockchip ISP1 3A Statistics */
+>  
+> +/*
+> + * Audio-data formats
+> + * All these audio formats use a fourcc starting with 'AU'
+> + * followed by the SNDRV_PCM_FORMAT_ value from asound.h.
+> + */
+> +#define V4L2_AUDIO_FMT_S8			v4l2_fourcc('A', 'U', '0', '0')
+> +#define V4L2_AUDIO_FMT_U8			v4l2_fourcc('A', 'U', '0', '1')
+> +#define V4L2_AUDIO_FMT_S16_LE			v4l2_fourcc('A', 'U', '0', '2')
+> +#define V4L2_AUDIO_FMT_S16_BE			v4l2_fourcc('A', 'U', '0', '3')
+> +#define V4L2_AUDIO_FMT_U16_LE			v4l2_fourcc('A', 'U', '0', '4')
+> +#define V4L2_AUDIO_FMT_U16_BE			v4l2_fourcc('A', 'U', '0', '5')
+> +#define V4L2_AUDIO_FMT_S24_LE			v4l2_fourcc('A', 'U', '0', '6')
+> +#define V4L2_AUDIO_FMT_S24_BE			v4l2_fourcc('A', 'U', '0', '7')
+> +#define V4L2_AUDIO_FMT_U24_LE			v4l2_fourcc('A', 'U', '0', '8')
+> +#define V4L2_AUDIO_FMT_U24_BE			v4l2_fourcc('A', 'U', '0', '9')
+> +
+> +#define V4L2_AUDIO_FMT_S32_LE			v4l2_fourcc('A', 'U', '1', '0')
+> +#define V4L2_AUDIO_FMT_S32_BE			v4l2_fourcc('A', 'U', '1', '1')
+> +#define V4L2_AUDIO_FMT_U32_LE			v4l2_fourcc('A', 'U', '1', '2')
+> +#define V4L2_AUDIO_FMT_U32_BE			v4l2_fourcc('A', 'U', '1', '3')
+> +#define V4L2_AUDIO_FMT_FLOAT_LE			v4l2_fourcc('A', 'U', '1', '4')
+> +#define V4L2_AUDIO_FMT_FLOAT_BE			v4l2_fourcc('A', 'U', '1', '5')
+> +#define V4L2_AUDIO_FMT_FLOAT64_LE		v4l2_fourcc('A', 'U', '1', '6')
+> +#define V4L2_AUDIO_FMT_FLOAT64_BE		v4l2_fourcc('A', 'U', '1', '7')
+> +#define V4L2_AUDIO_FMT_IEC958_SUBFRAME_LE	v4l2_fourcc('A', 'U', '1', '8')
+> +#define V4L2_AUDIO_FMT_IEC958_SUBFRAME_BE	v4l2_fourcc('A', 'U', '1', '9')
+> +
+> +#define V4L2_AUDIO_FMT_S20_LE			v4l2_fourcc('A', 'U', '2', '5')
+> +#define V4L2_AUDIO_FMT_S20_BE			v4l2_fourcc('A', 'U', '2', '6')
+> +#define V4L2_AUDIO_FMT_U20_LE			v4l2_fourcc('A', 'U', '2', '7')
+> +#define V4L2_AUDIO_FMT_U20_BE			v4l2_fourcc('A', 'U', '2', '8')
+> +
+> +#define V4L2_AUDIO_FMT_S24_3LE			v4l2_fourcc('A', 'U', '3', '2')
+> +#define V4L2_AUDIO_FMT_S24_3BE			v4l2_fourcc('A', 'U', '3', '3')
+> +#define V4L2_AUDIO_FMT_U24_3LE			v4l2_fourcc('A', 'U', '3', '4')
+> +#define V4L2_AUDIO_FMT_U24_3BE			v4l2_fourcc('A', 'U', '3', '5')
+> +#define V4L2_AUDIO_FMT_S20_3LE			v4l2_fourcc('A', 'U', '3', '6')
+> +#define V4L2_AUDIO_FMT_S20_3BE			v4l2_fourcc('A', 'U', '3', '7')
+> +#define V4L2_AUDIO_FMT_U20_3LE			v4l2_fourcc('A', 'U', '3', '8')
+> +#define V4L2_AUDIO_FMT_U20_3BE			v4l2_fourcc('A', 'U', '3', '9')
+> +#define V4L2_AUDIO_FMT_S18_3LE			v4l2_fourcc('A', 'U', '4', '0')
+> +#define V4L2_AUDIO_FMT_S18_3BE			v4l2_fourcc('A', 'U', '4', '1')
+> +#define V4L2_AUDIO_FMT_U18_3LE			v4l2_fourcc('A', 'U', '4', '2')
+> +#define V4L2_AUDIO_FMT_U18_3BE			v4l2_fourcc('A', 'U', '4', '3')
+> +
+> +#define v4l2_fourcc_to_audfmt(X)	\
+> +	(((((X) >> 16) & 0xFF) - '0') * 10 + ((((X) >> 24) & 0xFF) - '0'))
+
+X -> fourcc
+0xFF -> 0xff
+
+> +
+>  /* priv field value to indicates that subsequent fields are valid. */
+>  #define V4L2_PIX_FMT_PRIV_MAGIC		0xfeedcafe
+>  
+
+Regards,
+
+	Hans
