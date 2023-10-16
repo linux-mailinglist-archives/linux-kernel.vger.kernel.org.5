@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C29AD7CB469
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A87DE7CB46B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233008AbjJPUQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 16:16:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37962 "EHLO
+        id S234029AbjJPUQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 16:16:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232345AbjJPUQD (ORCPT
+        with ESMTP id S233685AbjJPUQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 16:16:03 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC774B0;
-        Mon, 16 Oct 2023 13:16:01 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9b2cee55056so873029766b.3;
-        Mon, 16 Oct 2023 13:16:01 -0700 (PDT)
+        Mon, 16 Oct 2023 16:16:13 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D62C8EB;
+        Mon, 16 Oct 2023 13:16:11 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9a6190af24aso819898666b.0;
+        Mon, 16 Oct 2023 13:16:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697487360; x=1698092160; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697487370; x=1698092170; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CEIQSt+HSu8IkDDX+1A83mcRHtWsrGJKAPhDzVqNS5k=;
-        b=Jvon6zd+bJZQMz66GNowIkG8uDNww3ucSrelB42WZCCcRoA2CM5owrHXJ/VuKfV6Vs
-         2/jHt32aTPSu1G+r+xvxbvUrfcAhKs/tB2jT8I5GvmMFHjbDaOlZc/NIHp5x/7J2r+Ok
-         l88gCou/WBXU/0WQB9ZJYSE0pCrtLF6GQ7YeocxF+yub4SsFgJWhT4nEQFyQU3ciy50C
-         4tHw8hJxMDt+aiK/7eXuTzo3fUTxE9kdBMYElwDkTJdvF+pspnaVC7/Q5lTzCvufmAtx
-         u0gPp6RtBcjAggzJG0oZUDKHTrHJ7qGMHkMxBhZs6lqehQCcv0o2rcxlR+c2KRVqrJke
-         wLlg==
+        bh=2er7JB8jIkXQe34e+6rn2A2O3NXCbB1tG8VCC+j1DPg=;
+        b=LC9UVfJHGun1C3jRgm0wxqKit8dRgwQu5lt6Mm/+310j7dI3fNyjWYvKke/ojYw8B3
+         nxq8rp4nSpkLnguw8eC7bwujva4PsQdyhU3pQdvnAJmMTXI3xpZH619a1QNYoNdlu7m0
+         vgSHwoxZjZLc6EwY7+Bev6jArkzWG+gf1jUTyuajbHgze9nIItXHhFl0Ps/XrRl4nH7t
+         TH4YE1AWD6LvUEJZsiCnn6AqK1IrZR1f3fC4DvOjVP6Mf8N6NpzRK05+9Y3yR6KCkCRf
+         h+k837QwFeHiPFX8hZRiDI7BkH5swPl96CyQfgUJPgrN7FlGcZlF13M7kd7g9679imAt
+         hDVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697487360; x=1698092160;
+        d=1e100.net; s=20230601; t=1697487370; x=1698092170;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CEIQSt+HSu8IkDDX+1A83mcRHtWsrGJKAPhDzVqNS5k=;
-        b=l0fpS9C6UzCzQc7FfLTDr+mZ2YlBf8JH3AaAJQayyHDr7Xth4IRLH+ervfB3kSvgbC
-         LQDCZF8wWhPB8Fe6qk8ku1O0k90Hb+bog57AQaOOPl4e0lM2kdfPAjG9Swydcx9BmpDa
-         /g6aQGsuX2wxDK1efYQl410QxVsE7XJbgO/b4lipCg9e7YgccgwsqQVIXcknMwSjP1vl
-         CmHUH2VLx6/BaptvL9hjhCyflZbp+2Cy8fIIHJOpQNG+0dofBp1ChcbzseDwwhURkkoO
-         LkPQFS47rum0iRG4/dDwvLKego2GmKfO2tIEsdVHvmHHuHGOVeDva2bP65iYwvWLBvpz
-         S7MA==
-X-Gm-Message-State: AOJu0YwsRpnC2lkHinTGLJOKIvcDhHUEjDStt5hKPRqc87o1nTVvlXJa
-        xU0pLnQzSaUcACk+jkxvKXsh9CeCgc4gUNc=
-X-Google-Smtp-Source: AGHT+IFtX4InKv8OX2bIicsndEN4KMHjDAWIR24sUWFPp9OaMbN6CEpflEsUHE7lj1XSGPR64XIQRA==
-X-Received: by 2002:a17:907:1c22:b0:9b2:7367:a6a4 with SMTP id nc34-20020a1709071c2200b009b27367a6a4mr131027ejc.31.1697487360095;
-        Mon, 16 Oct 2023 13:16:00 -0700 (PDT)
+        bh=2er7JB8jIkXQe34e+6rn2A2O3NXCbB1tG8VCC+j1DPg=;
+        b=ii43f2TVWlLplhMVLVFzkzUzEI+ChttpCmTM3MEP9yjeuO1C8eT6PqsIo//NCzVt18
+         R2GaU1XMouDpVN0VjK0gKMo/NJYklNwDzQXb4kitDCeuL0L8PwGLRZ4D50uiDedYIIno
+         AeGM45/ZRNFd2Icqj0+3Om3yoNd63JwhkqcJIPqFCtQJaPlYdzndBdI6E+DF38FAp1Oo
+         OBcNNmEiApG4IOJ8Hzfw/IFQ/J+RUlPvmTE6+QTB05pJmsy5Qwkb4WXmq3q0PdL8vM67
+         HZDyofI9cj2agPgmxO6mUf7OaQVleXaYt51y1ZLDWd9KZ7Vfp3/5E0NMVXj4FqujgZtG
+         7CeA==
+X-Gm-Message-State: AOJu0YwCDm+n1nuUt4idvM5EGZqqrm97QASTp4s38x/5WACUxa3zb8EI
+        cuJgjCGKtjkG8DIrmWLh5g==
+X-Google-Smtp-Source: AGHT+IHWvvumzCca8IrLGKyo/ug4+NUAAWfsvFhVqwVrLIkbo4M6KjuUc+maFc1OrBWdSkCANVGyjg==
+X-Received: by 2002:a17:906:ee8a:b0:9ad:c763:bc7a with SMTP id wt10-20020a170906ee8a00b009adc763bc7amr117253ejb.23.1697487370147;
+        Mon, 16 Oct 2023 13:16:10 -0700 (PDT)
 Received: from dorcaslitunya-virtual-machine.localdomain ([105.163.1.143])
-        by smtp.gmail.com with ESMTPSA id u26-20020a17090657da00b009b97521b58bsm4606055ejr.39.2023.10.16.13.15.57
+        by smtp.gmail.com with ESMTPSA id u26-20020a17090657da00b009b97521b58bsm4606055ejr.39.2023.10.16.13.16.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 13:15:59 -0700 (PDT)
+        Mon, 16 Oct 2023 13:16:09 -0700 (PDT)
 From:   Dorcas AnonoLitunya <anonolitunya@gmail.com>
 Cc:     anonolitunya@gmail.com, outreachy@lists.linux.dev,
         julia.lawall@inria.fr, dan.carpenter@linaro.org,
@@ -58,9 +58,9 @@ Cc:     anonolitunya@gmail.com, outreachy@lists.linux.dev,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/5] Staging: sm750fb: Rename pModeParam
-Date:   Mon, 16 Oct 2023 23:14:09 +0300
-Message-ID: <20231016201434.7880-3-anonolitunya@gmail.com>
+Subject: [PATCH v2 3/5] Staging: sm750fb: Rename dispControl
+Date:   Mon, 16 Oct 2023 23:14:10 +0300
+Message-ID: <20231016201434.7880-4-anonolitunya@gmail.com>
 X-Mailer: git-send-email 2.42.0.345.gaab89be2eb
 In-Reply-To: <20231016201434.7880-1-anonolitunya@gmail.com>
 References: <20231016201434.7880-1-anonolitunya@gmail.com>
@@ -77,158 +77,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename variable pModeParam to mode_param. This follows snakecase naming
-convention and ensures a consistent naming style throughout the file.
-Issue found by checkpatch.
+Rename variable dispControl to disp_control. This follows
+snakecase naming convention and ensures a consistent naming style
+throughout the file. Issue found by checkpatch.
 
 Mutes the following checkpatch error:
-CHECK: Avoid CamelCase: <pModeParam>
+CHECK: Avoid CamelCase: <dispControl>
 
 Signed-off-by: Dorcas AnonoLitunya <anonolitunya@gmail.com>
 ---
- drivers/staging/sm750fb/ddk750_mode.c | 52 +++++++++++++--------------
- 1 file changed, 26 insertions(+), 26 deletions(-)
+ drivers/staging/sm750fb/ddk750_mode.c | 32 +++++++++++++--------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/staging/sm750fb/ddk750_mode.c b/drivers/staging/sm750fb/ddk750_mode.c
-index 8708995f676c..431b273a347a 100644
+index 431b273a347a..fc3db09de9ae 100644
 --- a/drivers/staging/sm750fb/ddk750_mode.c
 +++ b/drivers/staging/sm750fb/ddk750_mode.c
-@@ -14,13 +14,13 @@
-  * in bit 29:27 of Display Control register.
+@@ -15,7 +15,7 @@
   */
  static unsigned long
--display_control_adjust_SM750LE(struct mode_parameter *pModeParam,
-+display_control_adjust_SM750LE(struct mode_parameter *mode_param,
- 			       unsigned long dispControl)
+ display_control_adjust_SM750LE(struct mode_parameter *mode_param,
+-			       unsigned long dispControl)
++			       unsigned long disp_control)
  {
  	unsigned long x, y;
  
--	x = pModeParam->horizontal_display_end;
--	y = pModeParam->vertical_display_end;
-+	x = mode_param->horizontal_display_end;
-+	y = mode_param->vertical_display_end;
+@@ -36,42 +36,42 @@ display_control_adjust_SM750LE(struct mode_parameter *mode_param,
+ 	       ((x - 1) & CRT_AUTO_CENTERING_BR_RIGHT_MASK));
  
  	/*
- 	 * SM750LE has to set up the top-left and bottom-right
-@@ -75,7 +75,7 @@ display_control_adjust_SM750LE(struct mode_parameter *pModeParam,
+-	 * Assume common fields in dispControl have been properly set before
++	 * Assume common fields in disp_control have been properly set before
+ 	 * calling this function.
+-	 * This function only sets the extra fields in dispControl.
++	 * This function only sets the extra fields in disp_control.
+ 	 */
+ 
+ 	/* Clear bit 29:27 of display control register */
+-	dispControl &= ~CRT_DISPLAY_CTRL_CLK_MASK;
++	disp_control &= ~CRT_DISPLAY_CTRL_CLK_MASK;
+ 
+ 	/* Set bit 29:27 of display control register for the right clock */
+ 	/* Note that SM750LE only need to supported 7 resolutions. */
+ 	if (x == 800 && y == 600)
+-		dispControl |= CRT_DISPLAY_CTRL_CLK_PLL41;
++		disp_control |= CRT_DISPLAY_CTRL_CLK_PLL41;
+ 	else if (x == 1024 && y == 768)
+-		dispControl |= CRT_DISPLAY_CTRL_CLK_PLL65;
++		disp_control |= CRT_DISPLAY_CTRL_CLK_PLL65;
+ 	else if (x == 1152 && y == 864)
+-		dispControl |= CRT_DISPLAY_CTRL_CLK_PLL80;
++		disp_control |= CRT_DISPLAY_CTRL_CLK_PLL80;
+ 	else if (x == 1280 && y == 768)
+-		dispControl |= CRT_DISPLAY_CTRL_CLK_PLL80;
++		disp_control |= CRT_DISPLAY_CTRL_CLK_PLL80;
+ 	else if (x == 1280 && y == 720)
+-		dispControl |= CRT_DISPLAY_CTRL_CLK_PLL74;
++		disp_control |= CRT_DISPLAY_CTRL_CLK_PLL74;
+ 	else if (x == 1280 && y == 960)
+-		dispControl |= CRT_DISPLAY_CTRL_CLK_PLL108;
++		disp_control |= CRT_DISPLAY_CTRL_CLK_PLL108;
+ 	else if (x == 1280 && y == 1024)
+-		dispControl |= CRT_DISPLAY_CTRL_CLK_PLL108;
++		disp_control |= CRT_DISPLAY_CTRL_CLK_PLL108;
+ 	else /* default to VGA clock */
+-		dispControl |= CRT_DISPLAY_CTRL_CLK_PLL25;
++		disp_control |= CRT_DISPLAY_CTRL_CLK_PLL25;
+ 
+ 	/* Set bit 25:24 of display controller */
+-	dispControl |= (CRT_DISPLAY_CTRL_CRTSELECT | CRT_DISPLAY_CTRL_RGBBIT);
++	disp_control |= (CRT_DISPLAY_CTRL_CRTSELECT | CRT_DISPLAY_CTRL_RGBBIT);
+ 
+ 	/* Set bit 14 of display controller */
+-	dispControl |= DISPLAY_CTRL_CLOCK_PHASE;
++	disp_control |= DISPLAY_CTRL_CLOCK_PHASE;
+ 
+-	poke32(CRT_DISPLAY_CTRL, dispControl);
++	poke32(CRT_DISPLAY_CTRL, disp_control);
+ 
+-	return dispControl;
++	return disp_control;
  }
  
  /* only timing related registers will be  programed */
--static int programModeRegisters(struct mode_parameter *pModeParam,
-+static int programModeRegisters(struct mode_parameter *mode_param,
- 				struct pll_value *pll)
- {
- 	int ret = 0;
-@@ -86,46 +86,46 @@ static int programModeRegisters(struct mode_parameter *pModeParam,
- 		/* programe secondary pixel clock */
- 		poke32(CRT_PLL_CTRL, sm750_format_pll_reg(pll));
- 
--		tmp = ((pModeParam->horizontal_total - 1) <<
-+		tmp = ((mode_param->horizontal_total - 1) <<
- 		       CRT_HORIZONTAL_TOTAL_TOTAL_SHIFT) &
- 		     CRT_HORIZONTAL_TOTAL_TOTAL_MASK;
--		tmp |= (pModeParam->horizontal_display_end - 1) &
-+		tmp |= (mode_param->horizontal_display_end - 1) &
- 		      CRT_HORIZONTAL_TOTAL_DISPLAY_END_MASK;
- 
- 		poke32(CRT_HORIZONTAL_TOTAL, tmp);
- 
--		tmp = (pModeParam->horizontal_sync_width <<
-+		tmp = (mode_param->horizontal_sync_width <<
- 		       CRT_HORIZONTAL_SYNC_WIDTH_SHIFT) &
- 		     CRT_HORIZONTAL_SYNC_WIDTH_MASK;
--		tmp |= (pModeParam->horizontal_sync_start - 1) &
-+		tmp |= (mode_param->horizontal_sync_start - 1) &
- 		      CRT_HORIZONTAL_SYNC_START_MASK;
- 
- 		poke32(CRT_HORIZONTAL_SYNC, tmp);
- 
--		tmp = ((pModeParam->vertical_total - 1) <<
-+		tmp = ((mode_param->vertical_total - 1) <<
- 		       CRT_VERTICAL_TOTAL_TOTAL_SHIFT) &
- 		     CRT_VERTICAL_TOTAL_TOTAL_MASK;
--		tmp |= (pModeParam->vertical_display_end - 1) &
-+		tmp |= (mode_param->vertical_display_end - 1) &
- 		      CRT_VERTICAL_TOTAL_DISPLAY_END_MASK;
- 
- 		poke32(CRT_VERTICAL_TOTAL, tmp);
- 
--		tmp = ((pModeParam->vertical_sync_height <<
-+		tmp = ((mode_param->vertical_sync_height <<
- 		       CRT_VERTICAL_SYNC_HEIGHT_SHIFT)) &
- 		     CRT_VERTICAL_SYNC_HEIGHT_MASK;
--		tmp |= (pModeParam->vertical_sync_start - 1) &
-+		tmp |= (mode_param->vertical_sync_start - 1) &
- 		      CRT_VERTICAL_SYNC_START_MASK;
- 
- 		poke32(CRT_VERTICAL_SYNC, tmp);
- 
- 		tmp = DISPLAY_CTRL_TIMING | DISPLAY_CTRL_PLANE;
--		if (pModeParam->vertical_sync_polarity)
-+		if (mode_param->vertical_sync_polarity)
- 			tmp |= DISPLAY_CTRL_VSYNC_PHASE;
--		if (pModeParam->horizontal_sync_polarity)
-+		if (mode_param->horizontal_sync_polarity)
- 			tmp |= DISPLAY_CTRL_HSYNC_PHASE;
- 
- 		if (sm750_get_chip_type() == SM750LE) {
--			display_control_adjust_SM750LE(pModeParam, tmp);
-+			display_control_adjust_SM750LE(mode_param, tmp);
- 		} else {
- 			reg = peek32(CRT_DISPLAY_CTRL) &
- 				~(DISPLAY_CTRL_VSYNC_PHASE |
-@@ -140,40 +140,40 @@ static int programModeRegisters(struct mode_parameter *pModeParam,
- 
- 		poke32(PANEL_PLL_CTRL, sm750_format_pll_reg(pll));
- 
--		reg = ((pModeParam->horizontal_total - 1) <<
-+		reg = ((mode_param->horizontal_total - 1) <<
- 			PANEL_HORIZONTAL_TOTAL_TOTAL_SHIFT) &
- 			PANEL_HORIZONTAL_TOTAL_TOTAL_MASK;
--		reg |= ((pModeParam->horizontal_display_end - 1) &
-+		reg |= ((mode_param->horizontal_display_end - 1) &
- 			PANEL_HORIZONTAL_TOTAL_DISPLAY_END_MASK);
- 		poke32(PANEL_HORIZONTAL_TOTAL, reg);
- 
- 		poke32(PANEL_HORIZONTAL_SYNC,
--		       ((pModeParam->horizontal_sync_width <<
-+		       ((mode_param->horizontal_sync_width <<
- 			 PANEL_HORIZONTAL_SYNC_WIDTH_SHIFT) &
- 			PANEL_HORIZONTAL_SYNC_WIDTH_MASK) |
--		       ((pModeParam->horizontal_sync_start - 1) &
-+		       ((mode_param->horizontal_sync_start - 1) &
- 			PANEL_HORIZONTAL_SYNC_START_MASK));
- 
- 		poke32(PANEL_VERTICAL_TOTAL,
--		       (((pModeParam->vertical_total - 1) <<
-+		       (((mode_param->vertical_total - 1) <<
- 			 PANEL_VERTICAL_TOTAL_TOTAL_SHIFT) &
- 			PANEL_VERTICAL_TOTAL_TOTAL_MASK) |
--		       ((pModeParam->vertical_display_end - 1) &
-+		       ((mode_param->vertical_display_end - 1) &
- 			PANEL_VERTICAL_TOTAL_DISPLAY_END_MASK));
- 
- 		poke32(PANEL_VERTICAL_SYNC,
--		       ((pModeParam->vertical_sync_height <<
-+		       ((mode_param->vertical_sync_height <<
- 			 PANEL_VERTICAL_SYNC_HEIGHT_SHIFT) &
- 			PANEL_VERTICAL_SYNC_HEIGHT_MASK) |
--		       ((pModeParam->vertical_sync_start - 1) &
-+		       ((mode_param->vertical_sync_start - 1) &
- 			PANEL_VERTICAL_SYNC_START_MASK));
- 
- 		tmp = DISPLAY_CTRL_TIMING | DISPLAY_CTRL_PLANE;
--		if (pModeParam->vertical_sync_polarity)
-+		if (mode_param->vertical_sync_polarity)
- 			tmp |= DISPLAY_CTRL_VSYNC_PHASE;
--		if (pModeParam->horizontal_sync_polarity)
-+		if (mode_param->horizontal_sync_polarity)
- 			tmp |= DISPLAY_CTRL_HSYNC_PHASE;
--		if (pModeParam->clock_phase_polarity)
-+		if (mode_param->clock_phase_polarity)
- 			tmp |= DISPLAY_CTRL_CLOCK_PHASE;
- 
- 		reserved = PANEL_DISPLAY_CTRL_RESERVED_MASK |
 -- 
 2.42.0.345.gaab89be2eb
 
