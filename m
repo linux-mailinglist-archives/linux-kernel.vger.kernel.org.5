@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ACBD7CB708
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 01:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE9707CB70C
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 01:33:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234308AbjJPXdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 19:33:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53194 "EHLO
+        id S234316AbjJPXdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 19:33:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234209AbjJPXcm (ORCPT
+        with ESMTP id S234212AbjJPXcm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 16 Oct 2023 19:32:42 -0400
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2FA08AB
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:32:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 236CFD9
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 16:32:41 -0700 (PDT)
 Received: from localhost.localdomain (unknown [47.186.13.91])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 2EF5020B74C4;
-        Mon, 16 Oct 2023 16:32:39 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2EF5020B74C4
+        by linux.microsoft.com (Postfix) with ESMTPSA id 2208E20B74C0;
+        Mon, 16 Oct 2023 16:32:40 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2208E20B74C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1697499159;
-        bh=Wi5bEAw2HG7TSBnQJouXlCgXiJRkmJRnqgkfKXioARE=;
+        s=default; t=1697499160;
+        bh=v+MGl8VNxHhEu7SiDqqi9YdWqsYhSKIOB6h48Erpxmk=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=h+s/CIhoqqXXmdUHn4o6cRlxPHYONQ2UELQctHoRl0UdX+hLFDXZEA9ufnCKTcplV
-         v6EaamwqeTUQpldEWvNTx6W2o+11G9mC99sDItfeEZIptUYAwB0QblXZiX0GcytaVE
-         uNeZS9IKw4HZ4HzRCjijYDobl7L5i6hmDIYu7iqA=
+        b=VOuXSLBDU9ez2Q4QlOyswMODjVcj8ALhspoyjwkyBIl/9lMFj2JkYJM0OvKd0rIL9
+         ktPzuHKgOrdTXz13SBV5UJF3JkaZZmm74iIFnpllif0gVmKRyybv6yEkWg/QKr4yJT
+         t2IM2syhiHvyKaci7F5uDHic+s791o2RObM6XnP4=
 From:   madvenka@linux.microsoft.com
 To:     gregkh@linuxfoundation.org, pbonzini@redhat.com, rppt@kernel.org,
         jgowans@amazon.com, graf@amazon.de, arnd@arndb.de,
@@ -33,9 +33,9 @@ To:     gregkh@linuxfoundation.org, pbonzini@redhat.com, rppt@kernel.org,
         anthony.yznaga@oracle.com, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, madvenka@linux.microsoft.com,
         jamorris@linux.microsoft.com
-Subject: [RFC PATCH v1 08/10] mm/prmem: Implement Persistent Ramdisk instances.
-Date:   Mon, 16 Oct 2023 18:32:13 -0500
-Message-Id: <20231016233215.13090-9-madvenka@linux.microsoft.com>
+Subject: [RFC PATCH v1 09/10] mm/prmem: Implement DAX support for Persistent Ramdisks.
+Date:   Mon, 16 Oct 2023 18:32:14 -0500
+Message-Id: <20231016233215.13090-10-madvenka@linux.microsoft.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231016233215.13090-1-madvenka@linux.microsoft.com>
 References: <1b1bc25eb87355b91fcde1de7c2f93f38abb2bf9>
@@ -54,431 +54,182 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
 
-Using the prmem APIs, any kernel subsystem can persist its data. For
-persisting user data, we need a filesystem.
+One problem with using a ramdisk is that the page cache will contain
+redundant copies of ramdisk data. To avoid this, implement DAX support
+for persistent ramdisks.
 
-Implement persistent ramdisk block device instances so that any filesystem
-can be created on it.
+To avail this, the filesystem that is installed on the ramdisk must
+support DAX. Like ext4. Mount the filesystem with the dax option. E.g.,
 
-Normal ramdisk devices are named "ram0", "ram1", "ram2", etc. Persistent
-ramdisk devices will be named "pram0", "pram1", "pram2", etc.
-
-For normal ramdisks, ramdisk pages are allocated using alloc_pages(). For
-persistent ones, ramdisk pages are allocated using prmem_alloc_pages().
-
-Each ram disk has a device structure - struct brd_device. For persistent
-ram disks, allocate this from persistent memory and record it as the
-instance data of the ram disk instance. The structure contains an XArray
-of pages allocated to the ram disk. Make it a persistent XArray.
-
-The disk size for all normal ramdisks is specified via a module parameter
-"rd_size". This forces all of the ramdisks to have the same size.
-
-For persistent ram disks, take a different approach. Define a module
-parameter called "prd_sizes" which specifies a comma-separated list of
-sizes. The sizes are applied in the order in which they are listed to
-"pram0", "pram1", etc.
-
-	Ram Disk Usage
-	--------------
-
-	sudo modprobe brd prd_sizes="1G,2G"
-
-		This creates two ram disks with the specified sizes. That
-		is, /dev/pram0 will have a size of 1G. /dev/pram1 will
-		have a size of 2G.
-
-	sudo mkfs.ext4 /dev/pram0
-	sudo mkfs.ext4 /dev/pram1
-
-		Make filesystems on the persistent ram disks.
-
-	sudo mount -t ext4 /dev/pram0 /path/to/mountpoint0
-	sudo mount -t ext4 /dev/pram1 /path/to/mountpoint1
-
-		Mount them somewhere.
-
-	sudo umount /path/to/mountpoint0
-	sudo umount /path/to/mountpoint1
-
-		Unmount the filesystems.
-
-	After kexec
-	-----------
-
-	sudo modprobe brd	(you may omit "prd_sizes")
-
-		This remembers the previously created persistent ram disks.
-
-	sudo mount -t ext4 /dev/pram0 /path/to/mountpoint0
-	sudo mount -t ext4 /dev/pram1 /path/to/mountpoint1
-
-		Mount the same filesystems.
-
-The maximum number of persistent ram disk instances is specified via
-CONFIG_BLK_DEV_PRAM_MAX. By default, this is zero.
+	sudo mount -t ext4 -o dax /dev/pram0 /path/to/mountpoint
 
 Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
 ---
- drivers/block/Kconfig |  11 +++
- drivers/block/brd.c   | 214 +++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 213 insertions(+), 12 deletions(-)
+ drivers/block/brd.c | 106 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 106 insertions(+)
 
-diff --git a/drivers/block/Kconfig b/drivers/block/Kconfig
-index 5b9d4aaebb81..08fa40f6e2de 100644
---- a/drivers/block/Kconfig
-+++ b/drivers/block/Kconfig
-@@ -256,6 +256,17 @@ config BLK_DEV_RAM_SIZE
- 	  The default value is 4096 kilobytes. Only change this if you know
- 	  what you are doing.
- 
-+config BLK_DEV_PRAM_MAX
-+	int "Maximum number of Persistent RAM disks"
-+	default "0"
-+	depends on BLK_DEV_RAM
-+	help
-+	  This allows the creation of persistent RAM disks. Persistent RAM
-+	  disks are used to remember data across a kexec reboot. The default
-+	  value is 0 Persistent RAM disks. Change this if you know what you
-+	  are doing. The sizes of the ram disks are specified via the boot
-+	  arg "prd_sizes" as a comma-separated list of sizes.
-+
- config CDROM_PKTCDVD
- 	tristate "Packet writing on CD/DVD media (DEPRECATED)"
- 	depends on !UML
 diff --git a/drivers/block/brd.c b/drivers/block/brd.c
-index 970bd6ff38c4..3a05e56ca16f 100644
+index 3a05e56ca16f..d4a42d3bd212 100644
 --- a/drivers/block/brd.c
 +++ b/drivers/block/brd.c
-@@ -24,9 +24,12 @@
- #include <linux/slab.h>
+@@ -25,6 +25,9 @@
  #include <linux/backing-dev.h>
  #include <linux/debugfs.h>
-+#include <linux/prmem.h>
+ #include <linux/prmem.h>
++#include <linux/pfn_t.h>
++#include <linux/dax.h>
++#include <linux/uio.h>
  
  #include <linux/uaccess.h>
  
-+enum brd_type { BRD_NORMAL = 0, BRD_PERSISTENT, };
-+
- /*
-  * Each block ramdisk device has a xarray brd_pages of pages that stores
-  * the pages containing the block device's contents. A brd page's ->index is
-@@ -36,6 +39,7 @@
-  */
- struct brd_device {
- 	int			brd_number;
-+	enum brd_type		brd_type;
+@@ -42,6 +45,7 @@ struct brd_device {
+ 	enum brd_type		brd_type;
  	struct gendisk		*brd_disk;
  	struct list_head	brd_list;
++	struct dax_device	*brd_dax;
  
-@@ -46,6 +50,15 @@ struct brd_device {
- 	u64			brd_nr_pages;
- };
+ 	/*
+ 	 * Backing store of pages. This is the contents of the block device.
+@@ -58,6 +62,8 @@ static void brd_free_page(struct brd_device *brd, struct page *page);
+ static void brd_xa_init(struct brd_device *brd);
+ static void brd_init_name(struct brd_device *brd, char *name);
+ static void brd_set_capacity(struct brd_device *brd);
++static int brd_dax_init(struct brd_device *brd);
++static void brd_dax_cleanup(struct brd_device *brd);
  
-+/* Each of these functions performs an action based on brd_type. */
-+static struct brd_device *brd_alloc_device(int i, enum brd_type type);
-+static void brd_free_device(struct brd_device *brd);
-+static struct page *brd_alloc_page(struct brd_device *brd, gfp_t gfp);
-+static void brd_free_page(struct brd_device *brd, struct page *page);
-+static void brd_xa_init(struct brd_device *brd);
-+static void brd_init_name(struct brd_device *brd, char *name);
-+static void brd_set_capacity(struct brd_device *brd);
-+
  /*
   * Look up and return a brd's page for a given sector.
-  */
-@@ -75,7 +88,7 @@ static int brd_insert_page(struct brd_device *brd, sector_t sector, gfp_t gfp)
- 	if (page)
- 		return 0;
- 
--	page = alloc_page(gfp | __GFP_ZERO | __GFP_HIGHMEM);
-+	page = brd_alloc_page(brd, gfp | __GFP_ZERO | __GFP_HIGHMEM);
- 	if (!page)
- 		return -ENOMEM;
- 
-@@ -87,7 +100,7 @@ static int brd_insert_page(struct brd_device *brd, sector_t sector, gfp_t gfp)
- 	cur = __xa_cmpxchg(&brd->brd_pages, idx, NULL, page, gfp);
- 
- 	if (unlikely(cur)) {
--		__free_page(page);
-+		brd_free_page(brd, page);
- 		ret = xa_err(cur);
- 		if (!ret && (cur->index != idx))
- 			ret = -EIO;
-@@ -110,7 +123,7 @@ static void brd_free_pages(struct brd_device *brd)
- 	pgoff_t idx;
- 
- 	xa_for_each(&brd->brd_pages, idx, page) {
--		__free_page(page);
-+		brd_free_page(brd, page);
- 		cond_resched();
- 	}
- 
-@@ -287,6 +300,18 @@ unsigned long rd_size = CONFIG_BLK_DEV_RAM_SIZE;
- module_param(rd_size, ulong, 0444);
- MODULE_PARM_DESC(rd_size, "Size of each RAM disk in kbytes.");
- 
-+/* Sizes of persistent ram disks are specified in a comma-separated list.  */
-+static char *prd_sizes;
-+module_param(prd_sizes, charp, 0444);
-+MODULE_PARM_DESC(prd_sizes, "Sizes of persistent RAM disks.");
-+
-+/* Persistent ram disk specific data. */
-+struct prd_data {
-+	struct prmem_instance	*instance;
-+	unsigned long		size;
-+};
-+static struct prd_data	prd_data[CONFIG_BLK_DEV_PRAM_MAX];
-+
- static int max_part = 1;
- module_param(max_part, int, 0444);
- MODULE_PARM_DESC(max_part, "Num Minors to reserve between devices");
-@@ -295,6 +320,32 @@ MODULE_LICENSE("GPL");
- MODULE_ALIAS_BLOCKDEV_MAJOR(RAMDISK_MAJOR);
- MODULE_ALIAS("rd");
- 
-+void __init brd_parse(void)
-+{
-+	unsigned long		size;
-+	char			*cur, *tmp;
-+	int			i = 0;
-+
-+	if (!CONFIG_BLK_DEV_PRAM_MAX || !prd_sizes)
-+		return;
-+
-+	/* Parse persistent ram disk sizes. */
-+	cur = prd_sizes;
-+	do {
-+		/* Get the size of a ramdisk. Sanity check it. */
-+		size = memparse(cur, &tmp);
-+		if (cur == tmp || !size) {
-+			pr_warn("%s: Memory value expected\n", __func__);
-+			return;
-+		}
-+		cur = tmp;
-+
-+		/* Add the ramdisk size. */
-+		prd_data[i++].size = size;
-+
-+	} while (*cur++ == ',' && i < CONFIG_BLK_DEV_PRAM_MAX);
-+}
-+
- #ifndef MODULE
- /* Legacy boot options - nonmodular */
- static int __init ramdisk_size(char *str)
-@@ -314,23 +365,33 @@ static struct dentry *brd_debugfs_dir;
- 
- static int brd_alloc(int i)
- {
-+	int brd_number;
-+	enum brd_type brd_type;
- 	struct brd_device *brd;
- 	struct gendisk *disk;
- 	char buf[DISK_NAME_LEN];
- 	int err = -ENOMEM;
- 
-+	if (i < rd_nr) {
-+		brd_number = i;
-+		brd_type = BRD_NORMAL;
-+	} else {
-+		brd_number = i - rd_nr;
-+		brd_type = BRD_PERSISTENT;
-+	}
-+
- 	list_for_each_entry(brd, &brd_devices, brd_list)
--		if (brd->brd_number == i)
-+		if (brd->brd_number == i && brd->brd_type == brd_type)
- 			return -EEXIST;
--	brd = kzalloc(sizeof(*brd), GFP_KERNEL);
-+	brd = brd_alloc_device(brd_number, brd_type);
- 	if (!brd)
- 		return -ENOMEM;
--	brd->brd_number		= i;
-+	brd->brd_number		= brd_number;
- 	list_add_tail(&brd->brd_list, &brd_devices);
- 
--	xa_init(&brd->brd_pages);
-+	brd_xa_init(brd);
- 
--	snprintf(buf, DISK_NAME_LEN, "ram%d", i);
-+	brd_init_name(brd, buf);
- 	if (!IS_ERR_OR_NULL(brd_debugfs_dir))
- 		debugfs_create_u64(buf, 0444, brd_debugfs_dir,
- 				&brd->brd_nr_pages);
-@@ -345,7 +406,7 @@ static int brd_alloc(int i)
- 	disk->fops		= &brd_fops;
- 	disk->private_data	= brd;
+@@ -408,6 +414,9 @@ static int brd_alloc(int i)
  	strscpy(disk->disk_name, buf, DISK_NAME_LEN);
--	set_capacity(disk, rd_size * 2);
-+	brd_set_capacity(brd);
+ 	brd_set_capacity(brd);
  	
++	if (brd_dax_init(brd))
++		goto out_clean_dax;
++
  	/*
  	 * This is so fdisk will align partitions on 4k, because of
-@@ -370,7 +431,7 @@ static int brd_alloc(int i)
+ 	 * direct_access API needing 4k alignment, returning a PFN
+@@ -421,6 +430,8 @@ static int brd_alloc(int i)
+ 	blk_queue_flag_set(QUEUE_FLAG_NONROT, disk->queue);
+ 	blk_queue_flag_set(QUEUE_FLAG_SYNCHRONOUS, disk->queue);
+ 	blk_queue_flag_set(QUEUE_FLAG_NOWAIT, disk->queue);
++	if (brd->brd_dax)
++		blk_queue_flag_set(QUEUE_FLAG_DAX, disk->queue);
+ 	err = add_disk(disk);
+ 	if (err)
+ 		goto out_cleanup_disk;
+@@ -429,6 +440,8 @@ static int brd_alloc(int i)
+ 
+ out_cleanup_disk:
  	put_disk(disk);
++out_clean_dax:
++	brd_dax_cleanup(brd);
  out_free_dev:
  	list_del(&brd->brd_list);
--	kfree(brd);
-+	brd_free_device(brd);
- 	return err;
- }
+ 	brd_free_device(brd);
+@@ -447,6 +460,7 @@ static void brd_cleanup(void)
+ 	debugfs_remove_recursive(brd_debugfs_dir);
  
-@@ -390,7 +451,7 @@ static void brd_cleanup(void)
+ 	list_for_each_entry_safe(brd, next, &brd_devices, brd_list) {
++		brd_dax_cleanup(brd);
+ 		del_gendisk(brd->brd_disk);
  		put_disk(brd->brd_disk);
  		brd_free_pages(brd);
- 		list_del(&brd->brd_list);
--		kfree(brd);
-+		brd_free_device(brd);
- 	}
+@@ -659,3 +673,95 @@ static void brd_set_capacity(struct brd_device *brd)
+ 		disksize = prd_data[brd->brd_number].size;
+ 	set_capacity(brd->brd_disk, disksize * 2);
  }
- 
-@@ -427,13 +488,21 @@ static int __init brd_init(void)
- 			goto out_free;
- 	}
- 
-+	/* Parse persistent ram disk sizes. */
-+	brd_parse();
 +
-+	/* Create persistent ram disks. */
-+	for (i = 0; i < CONFIG_BLK_DEV_PRAM_MAX; i++)
-+		brd_alloc(i + rd_nr);
++static bool		prd_dax_enabled = IS_ENABLED(CONFIG_FS_DAX);
 +
- 	/*
- 	 * brd module now has a feature to instantiate underlying device
- 	 * structure on-demand, provided that there is an access dev node.
- 	 *
- 	 * (1) if rd_nr is specified, create that many upfront. else
- 	 *     it defaults to CONFIG_BLK_DEV_RAM_COUNT
--	 * (2) User can further extend brd devices by create dev node themselves
-+	 * (2) if prd_sizes is specified, create that many upfront.
-+	 * (3) User can further extend brd devices by create dev node themselves
- 	 *     and have kernel automatically instantiate actual device
- 	 *     on-demand. Example:
- 	 *		mknod /path/devnod_name b 1 X	# 1 is the rd major
-@@ -469,3 +538,124 @@ static void __exit brd_exit(void)
- module_init(brd_init);
- module_exit(brd_exit);
- 
-+/* Each of these functions performs an action based on brd_type. */
++static long brd_dax_direct_access(struct dax_device *dax_dev,
++				  pgoff_t pgoff, long nr_pages,
++				  enum dax_access_mode mode,
++				  void **kaddr, pfn_t *pfn);
++static int brd_dax_zero_page_range(struct dax_device *dax_dev,
++				   pgoff_t pgoff, size_t nr_pages);
 +
-+static struct brd_device *brd_alloc_device(int i, enum brd_type type)
++static const struct dax_operations brd_dax_ops = {
++	.direct_access = brd_dax_direct_access,
++	.zero_page_range = brd_dax_zero_page_range,
++};
++
++static int brd_dax_init(struct brd_device *brd)
 +{
-+	char name[PRMEM_MAX_NAME];
-+	struct brd_device *brd;
-+	struct prmem_instance *instance;
-+	size_t size;
-+	bool create;
++	if (!prd_dax_enabled || brd->brd_type == BRD_NORMAL)
++		return 0;
 +
-+	if (type == BRD_NORMAL)
-+		return kzalloc(sizeof(struct brd_device), GFP_KERNEL);
-+
-+	/*
-+	 * Get the persistent ramdisk instance. If it does not exist, it will
-+	 * be created, if a size has been specified.
-+	 */
-+	create = !!prd_data[i].size;
-+	snprintf(name, PRMEM_MAX_NAME, "pram%d", i);
-+	instance = prmem_get("ramdisk", name, create);
-+	if (!instance)
-+		return NULL;
-+
-+	prmem_get_data(instance, (void **) &brd, &size);
-+	if (brd) {
-+		/* Existing instance. Ignore the module parameter. */
-+		prd_data[i].size = size;
-+		prd_data[i].instance = instance;
-+		return brd;
++	brd->brd_dax = alloc_dax(brd, &brd_dax_ops);
++	if (IS_ERR(brd->brd_dax)) {
++		pr_warn("%s: DAX failed\n", __func__);
++		brd->brd_dax = NULL;
++		return -ENOMEM;
 +	}
 +
-+	/*
-+	 * New instance. Allocate brd from persistent memory and set it as
-+	 * instance data.
-+	 */
-+	brd = prmem_alloc(sizeof(*brd), __GFP_ZERO);
-+	if (!brd) {
-+		prmem_put(instance);
-+		return NULL;
++	if (dax_add_host(brd->brd_dax, brd->brd_disk)) {
++		pr_warn("%s: DAX add failed\n", __func__);
++		return -ENOMEM;
 +	}
-+	brd->brd_type = BRD_PERSISTENT;
-+	prmem_set_data(instance, brd, prd_data[i].size);
-+
-+	prd_data[i].instance = instance;
-+	return brd;
++	return 0;
 +}
 +
-+static void brd_free_device(struct brd_device *brd)
++static void brd_dax_cleanup(struct brd_device *brd)
 +{
-+	struct prmem_instance *instance;
-+
-+	if (brd->brd_type == BRD_NORMAL) {
-+		kfree(brd);
++	if (!prd_dax_enabled || brd->brd_type == BRD_NORMAL)
 +		return;
-+	}
 +
-+	instance = prd_data[brd->brd_number].instance;
-+	prmem_set_data(instance, NULL, 0);
-+	prmem_free(brd, sizeof(*brd));
-+	prmem_put(instance);
-+}
-+
-+static struct page *brd_alloc_page(struct brd_device *brd, gfp_t gfp)
-+{
-+	if (brd->brd_type == BRD_NORMAL)
-+		return alloc_page(gfp);
-+	return prmem_alloc_pages(0, gfp);
-+}
-+
-+static void brd_free_page(struct brd_device *brd, struct page *page)
-+{
-+	if (brd->brd_type == BRD_NORMAL)
-+		__free_page(page);
-+	else
-+		prmem_free_pages(page, 0);
-+}
-+
-+static void brd_xa_init(struct brd_device *brd)
-+{
-+	if (brd->brd_type == BRD_NORMAL) {
-+		xa_init(&brd->brd_pages);
-+		return;
-+	}
-+
-+	if (brd->brd_nr_pages) {
-+		/* Existing persistent instance. */
-+		struct page *page;
-+		pgoff_t idx;
-+
-+		/*
-+		 * The xarray of pages is persistent. However, the page
-+		 * indexes are not. Set them here.
-+		 */
-+		xa_for_each(&brd->brd_pages, idx, page) {
-+			page->index = idx;
-+		}
-+	} else {
-+		/* New persistent instance. */
-+		xa_init(&brd->brd_pages);
-+		xa_persistent(&brd->brd_pages);
++	if (brd->brd_dax) {
++		dax_remove_host(brd->brd_disk);
++		kill_dax(brd->brd_dax);
++		put_dax(brd->brd_dax);
 +	}
 +}
-+
-+static void brd_init_name(struct brd_device *brd, char *name)
++static int brd_dax_zero_page_range(struct dax_device *dax_dev,
++				   pgoff_t pgoff, size_t nr_pages)
 +{
-+	if (brd->brd_type == BRD_NORMAL)
-+		snprintf(name, DISK_NAME_LEN, "ram%d", brd->brd_number);
-+	else
-+		snprintf(name, DISK_NAME_LEN, "pram%d", brd->brd_number);
++	long rc;
++	void *kaddr;
++
++	rc = dax_direct_access(dax_dev, pgoff, nr_pages, DAX_ACCESS,
++			&kaddr, NULL);
++	if (rc < 0)
++		return rc;
++	memset(kaddr, 0, nr_pages << PAGE_SHIFT);
++	return 0;
 +}
 +
-+static void brd_set_capacity(struct brd_device *brd)
++static long __brd_direct_access(struct brd_device *brd, pgoff_t pgoff,
++		long nr_pages, void **kaddr, pfn_t *pfn)
 +{
-+	unsigned long disksize;
++	struct page *page;
++	sector_t sector = (sector_t) pgoff << PAGE_SECTORS_SHIFT;
++	int ret;
 +
-+	if (brd->brd_type == BRD_NORMAL)
-+		disksize = rd_size;
-+	else
-+		disksize = prd_data[brd->brd_number].size;
-+	set_capacity(brd->brd_disk, disksize * 2);
++	if (!brd)
++		return -ENODEV;
++
++	ret = brd_insert_page(brd, sector, GFP_NOWAIT);
++	if (ret)
++		return ret;
++
++	page = brd_lookup_page(brd, sector);
++	if (!page)
++		return -ENOSPC;
++
++	*kaddr = page_address(page);
++	if (pfn)
++		*pfn = page_to_pfn_t(page);
++
++	return 1;
++}
++
++static long brd_dax_direct_access(struct dax_device *dax_dev,
++		pgoff_t pgoff, long nr_pages, enum dax_access_mode mode,
++		void **kaddr, pfn_t *pfn)
++{
++	struct brd_device *brd = dax_get_private(dax_dev);
++
++	return __brd_direct_access(brd, pgoff, nr_pages, kaddr, pfn);
 +}
 -- 
 2.25.1
