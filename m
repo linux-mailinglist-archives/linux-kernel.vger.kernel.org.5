@@ -2,117 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F567C9D5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 04:19:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 522E27C9D63
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 04:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231168AbjJPCTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Oct 2023 22:19:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56762 "EHLO
+        id S231314AbjJPCZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Oct 2023 22:25:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbjJPCTg (ORCPT
+        with ESMTP id S229600AbjJPCZz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Oct 2023 22:19:36 -0400
-Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B523AB;
-        Sun, 15 Oct 2023 19:19:35 -0700 (PDT)
-Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-1dcfb2a3282so2677234fac.2;
-        Sun, 15 Oct 2023 19:19:35 -0700 (PDT)
+        Sun, 15 Oct 2023 22:25:55 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EABA4C1
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 19:25:53 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c17de836fbso47826741fa.1
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Oct 2023 19:25:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1697423152; x=1698027952; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E0LfinplnzcaTdsRdXhDFzIQMiKq8VSmVBDANoGvJi8=;
+        b=briofXFeEXvRNAHg0LLhr+F8stXPVW/11SOKkKnHXBHq/8aF6Dl0yRfBD4u0EFtfwr
+         01/9FGAyO1Y3Iyoj/3nV6EiKTrLaxjOlWeDHh/WZ3reFBYRdorsw0AgNOcWa6L08E3PS
+         1Bh9EdPZMejz4tUmzRktRytijVrt1z9UU2XFw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697422774; x=1698027574;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=RAvM3mQHGLzSjyaaj6W6Mr1yy9NF7LUqNnpuELskbso=;
-        b=NpoDwoCdAKLjLgyg0Gu8KPTtdhg/Ol14qQ5aMbf/0ZrOJStRPsEqhc8C1buXsKVjt7
-         CIm4ViZplWcp5Pt/vJ4Fej+iGXis7B1mKbPUxcROaQqe5ik0KxD3vWGKTKHrKvp6HedR
-         Y5qeBprLipxjxxur8XXGGInQCvwfYprBSs/1Onnm89t4QabuOwqf4RDmCvMthjJKB1U5
-         L01ZP4BkxgnYssiUTJVzZzpnGm8JflC4gZci4d/DMk4O52ZMFOeT3y0PiWQH7cK+OqAT
-         GluW0rjhGewTvutK6esjZnWI3ddqiWHMi0YAp8TvBn0WuYXJaH/OFMFGCiWZQPJCxoAa
-         r89Q==
-X-Gm-Message-State: AOJu0Yxlwz1MteUqzQDqL0zDkegMV6rJXsVm/SPoIcjBFhKl0eNTHtQ4
-        V+JLXyX5fMO2axO2jIOtuA==
-X-Google-Smtp-Source: AGHT+IH10D1f35QWfj0fOe8YbpXwuo3ctZLbjgSChkKoMRBuhe5qjCb80199s1iwjt42yEU931BCrg==
-X-Received: by 2002:a05:6870:1056:b0:1e9:b82e:ba29 with SMTP id 22-20020a056870105600b001e9b82eba29mr11937626oaj.24.1697422774342;
-        Sun, 15 Oct 2023 19:19:34 -0700 (PDT)
-Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id e2-20020a056870c34200b001dd533c4bd1sm884321oak.1.2023.10.15.19.19.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Oct 2023 19:19:33 -0700 (PDT)
-Received: (nullmailer pid 1179447 invoked by uid 1000);
-        Mon, 16 Oct 2023 02:19:23 -0000
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+        d=1e100.net; s=20230601; t=1697423152; x=1698027952;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E0LfinplnzcaTdsRdXhDFzIQMiKq8VSmVBDANoGvJi8=;
+        b=c7eqMIjKN+ybDHAE5HssqsS5NQ2EaTZMcbXL6gCSENzwYqs3ctTmnehY+qXwde9P3D
+         J5tceh6e0iLWxJHT98gWfBmswlqDg5cMbxG/zU6yaI9gXAsbANp76Xq4agMr/nvdLmOB
+         LoEG32uh8HJOl9yro6RQu8gkiR3mBNnjmvlPMVPmAkxtIsb4haZ075vqMlHjqexGbcMW
+         VaNC19z4PM85aePVZZNKCM+1cYgnPsje1m+2OuHnQ+yJD7GGZDIzNmqIgQ0uXUm44LBJ
+         Dw65l6ijTkXvBaDvPLbXbxqaBycR8+2y7u14paIM59+YjWKncmSfgN2hfwQh3fFjZ6C5
+         brFg==
+X-Gm-Message-State: AOJu0YzP8CASOUx9gmpT++a417Lq7O4H+x53H92efwdUUo+n7MrZ2/5O
+        kHTL6uQWvDKdS5EeYmRHljQflIAkvEcw7zNba28GlA==
+X-Google-Smtp-Source: AGHT+IH+QrM3pSw2s87D50J4FBEKwsOAzgXABrnT9ujQNdoYkm+yIVIj1/2F4MvqnrHtyPQ3DN/A1XFuRQGCEyjzLvw=
+X-Received: by 2002:a2e:3219:0:b0:2c5:1ad3:7798 with SMTP id
+ y25-20020a2e3219000000b002c51ad37798mr1822219ljy.52.1697423151283; Sun, 15
+ Oct 2023 19:25:51 -0700 (PDT)
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Richard Laing <richard.laing@alliedtelesis.co.nz>
-Cc:     robh+dt@kernel.org, jirislaby@kernel.org,
-        andriy.shevchenko@linux.intel.com, ilpo.jarvinen@linux.intel.com,
-        gregkh@linuxfoundation.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-serial@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231016013207.2249946-3-richard.laing@alliedtelesis.co.nz>
-References: <20231016013207.2249946-1-richard.laing@alliedtelesis.co.nz>
- <20231016013207.2249946-3-richard.laing@alliedtelesis.co.nz>
-Message-Id: <169742276359.1179325.14095701588793602461.robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: serial: snps-dw-apb-uart: Add property to
- drain TX FIFO
-Date:   Sun, 15 Oct 2023 21:19:23 -0500
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+References: <20231004175203.943277832@linuxfoundation.org> <CAEXW_YT6bH70M1TF2TttB-_kP=RUv_1nsy_sHYi6_0oCrX3mVQ@mail.gmail.com>
+ <2023101110-resurface-nuclear-bfee@gregkh>
+In-Reply-To: <2023101110-resurface-nuclear-bfee@gregkh>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Sun, 15 Oct 2023 22:25:40 -0400
+Message-ID: <CAEXW_YRf0e6V6PcGJ-LWiS=ERgy4yxHoSG4d+DHLjXZ8Ah7kJA@mail.gmail.com>
+Subject: Re: [PATCH 5.15 000/183] 5.15.134-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 11, 2023 at 1:44=E2=80=AFPM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Oct 11, 2023 at 11:58:49AM -0400, Joel Fernandes wrote:
+> > Hello Greg,
+> >
+> > On Sat, Oct 7, 2023 at 9:00=E2=80=AFPM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > This is the start of the stable review cycle for the 5.15.134 release=
+.
+> > > There are 183 patches in this series, all will be posted as a respons=
+e
+> > > to this one.  If anyone has any issues with these being applied, plea=
+se
+> > > let me know.
+> > >
+> > > Responses should be made by Fri, 06 Oct 2023 17:51:12 +0000.
+> > > Anything received after that time might be too late.
+> > >
+> > > The whole patch series can be found in one patch at:
+> > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/pa=
+tch-5.15.134-rc1.gz
+> > > or in the git tree and branch at:
+> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-st=
+able-rc.git linux-5.15.y
+> > > and the diffstat can be found below.
+> > [...]
+> > > Liam R. Howlett <Liam.Howlett@oracle.com>
+> > >     kernel/sched: Modify initial boot task idle setup
+> > >
+> >
+> > Let us drop this patch because it caused new tasks-RCU warnings (both
+> > normal and rude tasks RCU) in my stable test rig. We are discussing
+> > the "right fix" and at that time a backport can be done.
+> >
+> > Hope Liam is also Ok with that. I am happy to do that future backport i=
+f needed.
+>
+> This is already in a released kernel, a bunch of them:
+>         5.15.134 6.1.56 6.5.6 6.6-rc3
+> should it be reverted from all of the stable releases, or just for
+> 5.15.y?
 
-On Mon, 16 Oct 2023 14:32:07 +1300, Richard Laing wrote:
-> An issue has been observed on the Broadcom BCM56160 serial port which
-> appears closely related to a similar issue on the Marvell Armada 38x
-> serial port.
-> 
-> Add a new property to force the TX FIFO to be drained before
-> changing the UART_LCR.
-> 
-> Signed-off-by: Richard Laing <richard.laing@alliedtelesis.co.nz>
-> ---
->  .../devicetree/bindings/serial/snps-dw-apb-uart.yaml        | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
+Just 5.15.y. The others don't have an issue with the patch per my tests.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Thanks,
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml:120:5: [error] syntax error: could not find expected ':' (syntax)
-
-dtschema/dtc warnings/errors:
-make[2]: *** Deleting file 'Documentation/devicetree/bindings/serial/snps-dw-apb-uart.example.dts'
-Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml:120:5: could not find expected ':'
-make[2]: *** [Documentation/devicetree/bindings/Makefile:26: Documentation/devicetree/bindings/serial/snps-dw-apb-uart.example.dts] Error 1
-make[2]: *** Waiting for unfinished jobs....
-./Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml:120:5: could not find expected ':'
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml: ignoring, error parsing file
-make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1427: dt_binding_check] Error 2
-make: *** [Makefile:234: __sub-make] Error 2
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231016013207.2249946-3-richard.laing@alliedtelesis.co.nz
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+ - Joel
