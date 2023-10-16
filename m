@@ -2,152 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 362177CAF2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 770D97CAF30
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233724AbjJPQ2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 12:28:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44162 "EHLO
+        id S233699AbjJPQ2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 12:28:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232345AbjJPQ2J (ORCPT
+        with ESMTP id S233829AbjJPQ22 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 12:28:09 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C693385E
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:27:31 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1c9e0b9b96cso32145595ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:27:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697473651; x=1698078451; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7SHGWla937Gcko2x/41+5jRftwU3dSxNbVqbwIDpdSk=;
-        b=Y4Ng5Jx8MLjdA5jGRNSM3q9dvcZWfuJaTvYFqgh3Y6vJVgUdzf0db0T7UUq6U2tkuB
-         0RGv93/Q3ZP4JzcsjHEYU5BZWOPuRcwrnnnc4lPqZ9hTvP4PBtpsrUPYH2bQdRgxVGFJ
-         JYANEP3ckwDiYrvZPLmUJDmnZXdd3rmJl6GgTZBJiYNodpJHLJBGKDrH+drwm1JU3JR9
-         a1SmYadVy4SsuJXQd3P8rEeAB4pbRDKqtboPNPA1Y2ti804kv+D+DiwuHJGTm9ZM9F2u
-         ltRCEx92TcFN6UlhCVLvL7MjVw55U9/I3hXm9xvRn1Xp7k0lQLGZS6TJCnC+1DpW3Hj+
-         +nBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697473651; x=1698078451;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7SHGWla937Gcko2x/41+5jRftwU3dSxNbVqbwIDpdSk=;
-        b=U675UWn/yVT0Jq1z98cI+uerHjRgx9SCgRb+/sYIOsdUNjX3KGxdXL17OrPtmPdLKG
-         23u2cYPJUrlD8DenKKFoieUnkDQsJPMmZWQOT/QVYw4akc0rKRQYdxZkOAVtd6AFKPO+
-         qv7VvhTl9zJuijrP44wOwuTaaYgs/T9bXGiPa7C6c7LSgrBhHwiwxmsyeXm9pqe8S2TI
-         Nd3CpWZyRVH8/YyN/hm29wOlrWZEZEh0QIk52PdIyBnHtFKkF/DnLmR/q4OrfJSibduW
-         5N0uMJ3CSwCOatCKOHz52WHkk3n1n8xk1BQAVC06HB6Xu2Gq4ZVUddRDf8hzIPoLuaJs
-         87OQ==
-X-Gm-Message-State: AOJu0Ywua0Bq6JkA39+CfM5HmZlUQbjiuo80gwmyMxUi9b0EUVPkvTjH
-        TNo+tP5w0qDWvaATipm6Z3EyaNBUUq4=
-X-Google-Smtp-Source: AGHT+IF7mH1dtOpFOpDv49wIOH8cgkPw8jWX+jo+fS29M2x6+4uh7pQe2x6ZGLJbUWaT5EVlxXzdc7NJUww=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:ce89:b0:1c9:bee2:e20b with SMTP id
- f9-20020a170902ce8900b001c9bee2e20bmr392224plg.11.1697473650686; Mon, 16 Oct
- 2023 09:27:30 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 09:27:29 -0700
-In-Reply-To: <CW9VEIPFLJJA.3OI6RJQVQU7ZN@amazon.com>
-Mime-Version: 1.0
-References: <20231016095217.37574-1-nsaenz@amazon.com> <87sf6a9335.fsf@redhat.com>
- <CW9VEIPFLJJA.3OI6RJQVQU7ZN@amazon.com>
-Message-ID: <ZS1kcXuGqO3O7yAq@google.com>
-Subject: Re: [PATCH] KVM: x86: hyper-v: Don't auto-enable stimer during deserialization
-From:   Sean Christopherson <seanjc@google.com>
-To:     Nicolas Saenz Julienne <nsaenz@amazon.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, graf@amazon.de, rkagan@amazon.de,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 16 Oct 2023 12:28:28 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4789111B;
+        Mon, 16 Oct 2023 09:28:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=Qn8pjkyvMjlHnGF7bvQJKDrfyyM9Efa1/JCaDoN/WGs=; b=0H5vCEwnQj/P2x0kDiHQc87Ppv
+        2+L/CGodNbhCTiYpl7byMQr4Ilz5dRxiH2pCw++3q3SYJbhBRL56w5XM+0gwndVoepmS7acekr4U9
+        KG6gEON5so1BqUJQWPG8jGHRsxDwRgOORhVa+8yKQC6w90fOh2QNRWd69IdCSFsnodxc=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qsQRz-002Mgn-VL; Mon, 16 Oct 2023 18:28:15 +0200
+Date:   Mon, 16 Oct 2023 18:28:15 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     MD Danish Anwar <danishanwar@ti.com>
+Cc:     Jacob Keller <jacob.e.keller@intel.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org, srk@ti.com,
+        Vignesh Raghavendra <vigneshr@ti.com>, r-gunasekaran@ti.com,
+        Roger Quadros <rogerq@kernel.org>
+Subject: Re: [PATCH net v2] net: ti: icssg-prueth: Fix r30 CMDs bitmasks
+Message-ID: <11109e7d-139b-4c8c-beaa-e1e89e355b1b@lunn.ch>
+References: <20231016161525.1695795-1-danishanwar@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231016161525.1695795-1-danishanwar@ti.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'd prefer the shortlog be more explicit about the write coming from userspace, e.g.
-
-  KVM: x86: hyper-v: Don't auto-enable stimer on write from userspace
-
-A non-zero number of KVM's "deserialization" ioctls are used to stuff state
-without a paired "serialization".  I doubt anyone is doing that with the Hyper-V
-ioctls, but keeping things consistent is helpful for readers.
-
-On Mon, Oct 16, 2023, Nicolas Saenz Julienne wrote:
-> Hi Vitaly,
+On Mon, Oct 16, 2023 at 09:45:25PM +0530, MD Danish Anwar wrote:
+> The bitmask for EMAC_PORT_DISABLE and EMAC_PORT_FORWARD has been changed
+> in the ICSSG firmware REL.PRU-ICSS-ETHERNET-SWITCH_02.02.12.05.
 > 
-> On Mon Oct 16, 2023 at 12:14 PM UTC, Vitaly Kuznetsov wrote:
-> > Nicolas Saenz Julienne <nsaenz@amazon.com> writes:
-> >
-> > > By not honoring the 'stimer->config.enable' state during stimer
-> > > deserialization we might introduce spurious timer interrupts. For
-
-Avoid pronouns please.
-
-> > > example through the following events:
-> > >  - The stimer is configured in auto-enable mode.
-> > >  - The stimer's count is set and the timer enabled.
-> > >  - The stimer expires, an interrupt is injected.
-> > >  - We live migrate the VM.
-
-Same here.  "We" is already ambiguous, because the first usage is largely about
-KVM, and the second usage here is much more about userspace and/or the actual
-user.
-
-> > >  - The stimer config and count are deserialized, auto-enable is ON, the
-> > >    stimer is re-enabled.
-> > >  - The stimer expires right away, and injects an unwarranted interrupt.
-> > >
-> > > So let's not change the stimer's enable state if the MSR write comes
-> > > from user-space.
-
-Don't hedge, firmly state what the patch does and why the change is necessary
-and correct.  If it turns out the change is wrong, then the follow-up patch can
-explain the situation.  But in the happy case where the change is correct, using
-language that isn't assertive can result in 
-
-> > > Fixes: 1f4b34f825e8 ("kvm/x86: Hyper-V SynIC timers")
-
-Does this need a?
-
-  Cc: stable@vger.kernel
-
-> > > Signed-off-by: Nicolas Saenz Julienne <nsaenz@amazon.com>
-> > > ---
-> > >  arch/x86/kvm/hyperv.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-> > > index 7c2dac6824e2..9f1deb6aa131 100644
-> > > --- a/arch/x86/kvm/hyperv.c
-> > > +++ b/arch/x86/kvm/hyperv.c
-> > > @@ -729,7 +729,7 @@ static int stimer_set_count(struct kvm_vcpu_hv_stimer *stimer, u64 count,
-> > >       stimer->count = count;
-> > >       if (stimer->count == 0)
-> > >               stimer->config.enable = 0;
-> >
-> > Can this branch be problematic too? E.g. if STIMER[X]_CONFIG is
-> > deserialized after STIMER[X]_COUNT we may erroneously reset 'enable' to
-> > 0, right? In fact, when MSRs are ordered like this:
-> >
-> > #define HV_X64_MSR_STIMER0_CONFIG               0x400000B0
-> > #define HV_X64_MSR_STIMER0_COUNT                0x400000B1
-> >
-> > I would guess that we always de-serialize 'config' first. With
-> > auto-enable, the timer will get enabled when writing 'count' but what
-> > happens in other cases?
-> >
-> > Maybe the whole block needs to go under 'if (!host)' instead?
+> The current bitmasks are wrong and as a result EMAC_PORT_DISABLE and
+> EMAC_PORT_FORWARD commands doesn not work.
+> Update r30 commands to use the same bitmask as used by the ICSSG firmware
+> REL.PRU-ICSS-ETHERNET-SWITCH_02.02.12.05.
 > 
-> In either case, with 'enable == 1' && 'count == 0' we'll reset the timer
-> in 'kvm_hv_process_stimers()'. So it's unlikely to cause any weirdness.
-> That said, I think covering both cases is more correct. Will send a v2.
+> These bitmasks are not backwards compatible. This will work with
+> firmware version REL.PRU-ICSS-ETHERNET-SWITCH_02.02.12.05 and above but
+> not with lower firmware versions.
 
-Agreed, I think it needs to be all or nothing, i.e. either process all side effects
-of writing the count, or don't process any.
+Breaking backwards compatibility is generally not allowed.
+
+As far as i understand the driver, it loads whatever version of
+firmware is available. It does not ask for a specific version. So you
+should ask the firmware what version it is, and then handle the
+bitmask as appropriate.
+
+How many different versions of REL.PRU-ICSS-ETHERNET-SWITCH have been
+released? They don't appear to be part of linux-firmware.git :-(
+
+    Andrew
+
+---
+pw-bot: cr
