@@ -2,144 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB027CAA1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 15:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9E77CA95D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 15:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233854AbjJPNpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 09:45:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41676 "EHLO
+        id S233555AbjJPN3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 09:29:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233708AbjJPNpR (ORCPT
+        with ESMTP id S233528AbjJPN3P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 09:45:17 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2071.outbound.protection.outlook.com [40.107.94.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63D6B181;
-        Mon, 16 Oct 2023 06:45:15 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NW7a/Rn0j5mtiZeNq7rfqLh+HOdFZpjz1soCAgSi3/2RstS60P0MmoI7hXtnxykT0jn6pq2JTGrMzWmiXXccMwtHNlsF6bVJZaJrPeq6acIr46+3ayBATvF/E7taluDrxGPhECInYZdT6PSKS1/U+rr8275h5+C4HF+0gvPmQAMj0FOGIWp3tUXS1rj/XOzFf6OnwnBDwfNqrdG83OX7r7i2g/vsSu+aZNyx/FaYmD+k6+UvXcq0SZQjgzGPD66mvn7zOZhj12RAeIwCDdn1b/u6vJopIDuXJ8VsBqNgowX4f8+4GNdjCarwRHEL4uruxBfBWFdXHiJxOUVJdFSGTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Wn6oZhIubfwD460mmy6EzHlgZAJwJei5Qlwu7zMEaUc=;
- b=EdHWATlDjPfwGIjf7ediyIn/C63QfWibF0Wo14DR3+vnUz44uxeOVGlFbQwxglUYpEZ5Rc8lbmHJoBYBhagmY3qUiLtvfCp/+2I9aRmCmsIVTT0eVF/2TKS/Yd1okkjdL4ln0CwRQ+z0V6XOo900r0foVjGwST2GXfVwaqLz3WMsXafMx3iLtBsJ0mNy6JtwjjjL99tD6daZb1EN1JBhJn4x9sBkP/Cx7972/ajJotnMKcoRJROTvndo1QhVHAAjzH5s8b2AOZBIIV6/zCss4pI1cgGRiU7fy2zAu4pp0luJYh4GwJBmGkf0fzO/VlAYtJP9vsbwh3R/DOqCCJf9aQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Wn6oZhIubfwD460mmy6EzHlgZAJwJei5Qlwu7zMEaUc=;
- b=fVx0knoeiJA6wADXijerP92Iew9vjUVgKfB27qofb7288O9KvjyTaA6NXblPe2CCwzAqQd86gBatXaBQ4sfOAn2BeObNXjGwiscmKk/A3FrPGzgYWDdDVWHM1yMaOH6OANRGk/j3TuSKK3MDNgVunwzUrfmsiuQA/a4BYVhx0G0=
-Received: from PH8PR15CA0003.namprd15.prod.outlook.com (2603:10b6:510:2d2::25)
- by PH0PR12MB5632.namprd12.prod.outlook.com (2603:10b6:510:14c::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.35; Mon, 16 Oct
- 2023 13:45:13 +0000
-Received: from SN1PEPF0002529F.namprd05.prod.outlook.com
- (2603:10b6:510:2d2:cafe::d1) by PH8PR15CA0003.outlook.office365.com
- (2603:10b6:510:2d2::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36 via Frontend
- Transport; Mon, 16 Oct 2023 13:45:12 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SN1PEPF0002529F.mail.protection.outlook.com (10.167.242.6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.22 via Frontend Transport; Mon, 16 Oct 2023 13:45:12 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 16 Oct
- 2023 08:45:07 -0500
-From:   Michael Roth <michael.roth@amd.com>
-To:     <kvm@vger.kernel.org>
-CC:     <linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
-        <linux-crypto@vger.kernel.org>, <x86@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <jroedel@suse.de>, <thomas.lendacky@amd.com>,
-        <hpa@zytor.com>, <ardb@kernel.org>, <pbonzini@redhat.com>,
-        <seanjc@google.com>, <vkuznets@redhat.com>, <jmattson@google.com>,
-        <luto@kernel.org>, <dave.hansen@linux.intel.com>, <slp@redhat.com>,
-        <pgonda@google.com>, <peterz@infradead.org>,
-        <srinivas.pandruvada@linux.intel.com>, <rientjes@google.com>,
-        <dovmurik@linux.ibm.com>, <tobin@ibm.com>, <bp@alien8.de>,
-        <vbabka@suse.cz>, <kirill@shutemov.name>, <ak@linux.intel.com>,
-        <tony.luck@intel.com>, <marcorr@google.com>,
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        <alpergun@google.com>, <jarkko@kernel.org>, <ashish.kalra@amd.com>,
-        <nikunj.dadhania@amd.com>, <pankaj.gupta@amd.com>,
-        <liam.merwick@oracle.com>, <zhi.a.wang@intel.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: [PATCH v10 43/50] KVM: SVM: Add module parameter to enable the SEV-SNP
-Date:   Mon, 16 Oct 2023 08:28:12 -0500
-Message-ID: <20231016132819.1002933-44-michael.roth@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231016132819.1002933-1-michael.roth@amd.com>
-References: <20231016132819.1002933-1-michael.roth@amd.com>
+        Mon, 16 Oct 2023 09:29:15 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2FD7E6
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 06:28:54 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c9e072472bso25722375ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 06:28:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1697462934; x=1698067734; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W5edFP5IbqRycra4JwAwr7sw7tdQ8rYxAUGEg4gbH5I=;
+        b=dstMeNX/S/U6Zd5Z5IPb0P7sTdufE7lqsNm4s0QGvorWjKRX+UM52EXsnpN2UGO/b3
+         LlSHHASLlXtv8pxbvajKcPypiKB6305coJDK69Ijde8n4H8TpM+Dx5SY7J3MHCWtZeeP
+         40y4+KDWwCQ/+5TMdHkGjAc6BBWjKnKT7MnGU9GLBvLtFjJP453yt8iNF9VgJiJGdTUR
+         IrLc1ACoH8gvqsUID+DU9u1ZY73dUmSwPA+qf1mThnFJTdRwI68wn/7hUJiBaGpEOLQm
+         wuBqSYziHI6U/cn6sXobsz/ktXu29X8MviMMhN2VzDflqFmLF+0M6d4NgFPdl52R6dw+
+         i3KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697462934; x=1698067734;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=W5edFP5IbqRycra4JwAwr7sw7tdQ8rYxAUGEg4gbH5I=;
+        b=LtWKyKjfk1IrG7WiSkAhMomr1CwKUKmJpLlMoD1M/8LauBmf5/zj0/JIhoXsm7PFqd
+         4Y2TSREwbhS40mJuEInvjHPrDLw5vw5Crs7E12kIV3Na8Ml2IkcKKsrl3Rt0RJgV6HKH
+         bDjwfSNNg9hkQ14OMfO7YiriYblt1oeiYq3WSP6Y7nZYTUNDn3jKjHJpYCsa8HHPFc4i
+         k1v5WOY7wsltle0VFvlFzjCUY9OzgAgJJfkb/u3E9rr7DYsmiQzzojITHjvv/EfeqK7W
+         oeb2Dcfr6MFXkh5sTUonmSTDwhHSnLiuv1YYxO2GoZeIO0YgJVnJDnAb8qwx5QGpqK8+
+         89DA==
+X-Gm-Message-State: AOJu0YwPT6ZVHN1QfMkem0lJZbn4D46m+C9r/d49ID9hIUf+brhCN8D0
+        KMiABUG8Ov13a14T8Qodvw4rJ/sd3PGlcUO+JXs=
+X-Google-Smtp-Source: AGHT+IH0QjFU/M3nL9sQ7GpGqT0tk+CeTm1zv1UcyqYWSvsDzutF7dTumssneT1g+Jcbaao72hKBCQ==
+X-Received: by 2002:a17:902:c94f:b0:1c3:8464:cabd with SMTP id i15-20020a170902c94f00b001c38464cabdmr36959730pla.12.1697462934153;
+        Mon, 16 Oct 2023 06:28:54 -0700 (PDT)
+Received: from C02DV8HUMD6R.bytedance.net ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id l21-20020a170902d35500b001c737950e4dsm8476287plk.2.2023.10.16.06.28.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 06:28:53 -0700 (PDT)
+From:   Abel Wu <wuyun.abel@bytedance.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Abel Wu <wuyun.abel@bytedance.com>
+Subject: [PATCH net-next v2 3/3] sock: Fix improper heuristic on raising memory
+Date:   Mon, 16 Oct 2023 21:28:12 +0800
+Message-Id: <20231016132812.63703-3-wuyun.abel@bytedance.com>
+X-Mailer: git-send-email 2.37.3
+In-Reply-To: <20231016132812.63703-1-wuyun.abel@bytedance.com>
+References: <20231016132812.63703-1-wuyun.abel@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002529F:EE_|PH0PR12MB5632:EE_
-X-MS-Office365-Filtering-Correlation-Id: 00a42e22-6fd2-430c-3be3-08dbce4e1f34
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: taYt3IUZQZ2aT1MT6570IjErHCJno++QfAnwehwAl1TAFpqm81DrKix1oLcczhbinAZfDAK5Qm4rRt8+sgVKPv0HLE//3sl840crs5YJHKJdbCHRB6FBGWA8MZKbdFh7Y0G51p+uUoGBKqISbBLnT1JYMXYsB2g5A+Ps+32RgSOZZ3KetTV6yG9nUSFKc8EigdbXd2M0VRSCx/2Ssn87hK5ShDk6AAHza9PuyJe5lChQDw093OMUSGiUBeQrt4+zYFVASSWgxIn5EontMwn7MgThRjgMm3R0Gbqn0VisMsxiJf2Jn5D+T+3hG/Ukp0QnzOp7Tt3Z2F4vSkz5Qq3ayu7xNIw/t4erW0BEAeOvstt//Erk9+mrj6xbxv94yFjcNdW5sPlekIF6zCqkJqslVv+bUHCrcQeqjBcZN4Yyca7xcvSxIHJlAJTbWUv6I8eX5/dwwZXOz7SFpZXN5RG2RMbaqSJdLIkQ+cbav5Rx1DqLfaER6WV2T4UQBUHvPyBFSOt9nyc68ze+cfIIZDfEv7/7/zspeyxVyeDMIzuQQ4OwUJObOA8PuYAG9Al/qsw+yYVQcaw5RbuuoPKFxXuO49OUSMHPqr61FtxF2t0Wjn9+fz2aIlbS3zih1/SaDy1gObYLbZlaF+lk5f0lm+Q2vqxz1ceSuRGNAt075Db4pdszjsrj5ZhZoNkhIdErxQnsVhgfO5jN0GBWr14fEJxp6zj6XeYd2YYQVqID220k6Tj/+/UUDu/e1qPcLU3Cp1pn6XD/cjR6oP4PwP8LbmMQvw==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(346002)(376002)(396003)(136003)(230922051799003)(186009)(82310400011)(1800799009)(451199024)(64100799003)(40470700004)(36840700001)(46966006)(41300700001)(70206006)(478600001)(70586007)(54906003)(6666004)(6916009)(1076003)(26005)(16526019)(336012)(426003)(316002)(2616005)(7406005)(8936002)(7416002)(4326008)(8676002)(4744005)(2906002)(5660300002)(36756003)(44832011)(81166007)(86362001)(47076005)(36860700001)(83380400001)(82740400003)(356005)(40460700003)(40480700001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2023 13:45:12.8563
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 00a42e22-6fd2-430c-3be3-08dbce4e1f34
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF0002529F.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB5632
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brijesh Singh <brijesh.singh@amd.com>
+Before sockets became aware of net-memcg's memory pressure since
+commit e1aab161e013 ("socket: initial cgroup code."), the memory
+usage would be granted to raise if below average even when under
+protocol's pressure. This provides fairness among the sockets of
+same protocol.
 
-Add a module parameter than can be used to enable or disable the SEV-SNP
-feature. Now that KVM contains the support for the SNP set the GHCB
-hypervisor feature flag to indicate that SNP is supported.
+That commit changes this because the heuristic will also be
+effective when only memcg is under pressure which makes no sense.
+Fix this by reverting to the behavior before that commit.
 
-Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+After this fix, __sk_mem_raise_allocated() no longer considers
+memcg's pressure. As memcgs are isolated from each other w.r.t.
+memory accounting, consuming one's budget won't affect others.
+So except the places where buffer sizes are needed to be tuned,
+allow workloads to use the memory they are provisioned.
+
+Fixes: e1aab161e013 ("socket: initial cgroup code.")
+Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
 ---
- arch/x86/kvm/svm/sev.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+v2:
+  - Ignore memcg pressure when raising memory allocated.
+---
+ net/core/sock.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index f027def3a79e..efe879524b6c 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -62,7 +62,8 @@ static bool sev_es_debug_swap_enabled = true;
- module_param_named(debug_swap, sev_es_debug_swap_enabled, bool, 0444);
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 9f969e3c2ddf..1d28e3e87970 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -3035,7 +3035,13 @@ EXPORT_SYMBOL(sk_wait_data);
+  *	@amt: pages to allocate
+  *	@kind: allocation type
+  *
+- *	Similar to __sk_mem_schedule(), but does not update sk_forward_alloc
++ *	Similar to __sk_mem_schedule(), but does not update sk_forward_alloc.
++ *
++ *	Unlike the globally shared limits among the sockets under same protocol,
++ *	consuming the budget of a memcg won't have direct effect on other ones.
++ *	So be optimistic about memcg's tolerance, and leave the callers to decide
++ *	whether or not to raise allocated through sk_under_memory_pressure() or
++ *	its variants.
+  */
+ int __sk_mem_raise_allocated(struct sock *sk, int size, int amt, int kind)
+ {
+@@ -3093,7 +3099,11 @@ int __sk_mem_raise_allocated(struct sock *sk, int size, int amt, int kind)
+ 	if (sk_has_memory_pressure(sk)) {
+ 		u64 alloc;
  
- /* enable/disable SEV-SNP support */
--static bool sev_snp_enabled;
-+static bool sev_snp_enabled = true;
-+module_param_named(sev_snp, sev_snp_enabled, bool, 0444);
- #else
- #define sev_enabled false
- #define sev_es_enabled false
+-		if (!sk_under_memory_pressure(sk))
++		/* The following 'average' heuristic is within the
++		 * scope of global accounting, so it only makes
++		 * sense for global memory pressure.
++		 */
++		if (!sk_under_global_memory_pressure(sk))
+ 			return 1;
+ 
+ 		/* Try to be fair among all the sockets under global
 -- 
-2.25.1
+2.37.3
 
