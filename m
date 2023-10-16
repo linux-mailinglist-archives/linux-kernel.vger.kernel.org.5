@@ -2,187 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04EAD7CB380
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 21:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A6507CB387
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 21:53:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233685AbjJPTwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 15:52:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43462 "EHLO
+        id S233831AbjJPTw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 15:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232798AbjJPTwe (ORCPT
+        with ESMTP id S233853AbjJPTw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 15:52:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8DA78F;
-        Mon, 16 Oct 2023 12:52:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697485952; x=1729021952;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=MggiAk4RnmF8RUencBb93AiXjdxf5PvxYAIUeWm3Oho=;
-  b=DPynDWUtImTpucq0bYCB8rOe4/1j+CsE47T1J4qmabedR6fW2g+1S2u1
-   2H5df9N+BOA8Fo2d5ybSJ08GNxNIed8dpuvxB8dJc4f/5FqyBIfRbdebX
-   ixYDgkgZK18L5Eh6cJ5NWH5F5fgI7xD4ozGKfNLKrKTOSGmLm9lclBWMS
-   uV95E3zS1/+E7az8m0Hh6CqFQBVzY4K3ZPEUpGnKnufL4dZx3gtXE7vBi
-   kzF23suJKWfAkoX65YsA8DcJFV4LeVusHVIGyueR6KdGwPfoMUbqJw6ad
-   p9untLpwSq+XFiAhEgyo0A9g+7Ll9Wh6T+LaLqJghlgz0B2ZHT2gx9Hgv
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="388485872"
-X-IronPort-AV: E=Sophos;i="6.03,230,1694761200"; 
-   d="scan'208";a="388485872"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 12:52:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="821693902"
-X-IronPort-AV: E=Sophos;i="6.03,230,1694761200"; 
-   d="scan'208";a="821693902"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.92])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 16 Oct 2023 12:52:29 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     "Christopherson,, Sean" <seanjc@google.com>,
-        "Huang, Kai" <kai.huang@intel.com>
-Cc:     "Zhang, Bo" <zhanb@microsoft.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "yangjie@microsoft.com" <yangjie@microsoft.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "anakrish@microsoft.com" <anakrish@microsoft.com>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
-        "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "kristen@linux.intel.com" <kristen@linux.intel.com>
-Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
- EPC
-References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
- <20230923030657.16148-13-haitao.huang@linux.intel.com>
- <1b265d0c9dfe17de2782962ed26a99cc9d330138.camel@intel.com>
- <ZSSZaFrxvCvR1SOy@google.com>
- <06142144151da06772a9f0cc195a3c8ffcbc07b7.camel@intel.com>
- <1f7a740f3acff8a04ec95be39864fb3e32d2d96c.camel@intel.com>
- <op.2clydbf8wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <631f34613bcc8b5aa41cf519fa9d76bcd57a7650.camel@intel.com>
- <op.2cpecbevwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <aa404549c7e292dd2ec93a5e6a8c9d6d880c06b3.camel@intel.com>
-Date:   Mon, 16 Oct 2023 14:52:23 -0500
+        Mon, 16 Oct 2023 15:52:57 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE7ABF2;
+        Mon, 16 Oct 2023 12:52:54 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39GIQZef032666;
+        Mon, 16 Oct 2023 19:52:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=CSfTVt3cN4X2d6P5ijagINIHmjZ2J0w7LRo2wDpzxQs=;
+ b=hP2cbTWoVW5mnUzjTn0W+hbejfwFE7oN5vjANqS8Bsv3mGspvyEA4DjkQyqWk1ogSPbV
+ 2cOQcDPe+fAkejoG4dszfzDPU/EYo0fA8XTRYoVg90ExIdiCGul9GsZvcj784r50Gs3i
+ 3Dsgn/K0br+V2/qo5yIclVE8UzTXP/O2UJQbcekUnLiNQUkRjtvM8+Gi97Z0y6RKaL2z
+ WkXVBY5mYGLXcw7m245K8NVT+L48mgHXjZbdNKD+6wxu9qtEa0SZjwmiTxFA6nbCMBZh
+ mJIDhJ33gHBp/wQ5orB3E3PLLERWekC3qoWQh9WNLO4da4z7CgrUGv76JwJg2A+CYWTW og== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tsaf0r7sd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Oct 2023 19:52:38 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39GJqbns006120
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Oct 2023 19:52:37 GMT
+Received: from akhilpo-linux.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Mon, 16 Oct 2023 12:52:30 -0700
+Date:   Tue, 17 Oct 2023 01:22:27 +0530
+From:   Akhil P Oommen <quic_akhilpo@quicinc.com>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+CC:     Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        <cros-qcom-dts-watchers@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Luca Weiss <luca.weiss@fairphone.com>,
+        "Rob Clark" <robdclark@chromium.org>,
+        <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH 1/7] drm/msm/a6xx: Fix unknown speedbin case
+Message-ID: <bjcjeixkmvhjv7nke65maknrckxjyosqsqpdf5i5v4iingfwj4@bkdhb2nbwbqg>
+References: <20230926-topic-a643-v1-0-7af6937ac0a3@linaro.org>
+ <20230926-topic-a643-v1-1-7af6937ac0a3@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2cxatlafwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <aa404549c7e292dd2ec93a5e6a8c9d6d880c06b3.camel@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230926-topic-a643-v1-1-7af6937ac0a3@linaro.org>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: -A8NT9JnHrPrI5PwlHH6CjgHuQP9ALY4
+X-Proofpoint-ORIG-GUID: -A8NT9JnHrPrI5PwlHH6CjgHuQP9ALY4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-16_10,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
+ priorityscore=1501 bulkscore=0 adultscore=0 mlxlogscore=999 malwarescore=0
+ mlxscore=0 impostorscore=0 spamscore=0 lowpriorityscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310160173
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Oct 2023 05:57:36 -0500, Huang, Kai <kai.huang@intel.com> wrote:
+On Tue, Sep 26, 2023 at 08:24:36PM +0200, Konrad Dybcio wrote:
+> 
+> When opp-supported-hw is present under an OPP node, but no form of
+> opp_set_supported_hw() has been called, that OPP is ignored by the API
+> and marked as unsupported.
+> 
+> Before Commit c928a05e4415 ("drm/msm/adreno: Move speedbin mapping to
+> device table"), an unknown speedbin would result in marking all OPPs
+> as available, but it's better to avoid potentially overclocking the
+> silicon - the GMU will simply refuse to power up the chip.
+> 
+> Currently, the Adreno speedbin code does just that (AND returns an
+> invalid error, (int)UINT_MAX). Fix that by defaulting to speedbin 0
+> (which is conveniently always bound to fuseval == 0).
 
-> On Thu, 2023-10-12 at 08:27 -0500, Haitao Huang wrote:
->> On Tue, 10 Oct 2023 19:51:17 -0500, Huang, Kai <kai.huang@intel.com>  
->> wrote:
->> [...]
->> > (btw, even you track VA/SECS pages in unreclaimable list, given they
->> > both have
->> > 'enclave' as the owner,  do you still need SGX_EPC_OWNER_ENCL and
->> > SGX_EPC_OWNER_PAGE ?)
->>
->> Let me think about it, there might be also a way just track encl objects
->> not unreclaimable pages.
->>
->> I still not get why we need kill the VM not just remove just enough  
->> pages.
->> Is it due to the static allocation not able to reclaim?
->
-> We can choose to "just remove enough EPC pages".  The VM may or may not  
-> be
-> killed when it wants the EPC pages back, depending on whether the  
-> current EPC
-> cgroup can provide enough EPC pages or not.  And this depends on how we
-> implement the cgroup algorithm to reclaim EPC pages.
->
-> One problem could be: for a EPC cgroup only has SGX VMs, you may end up  
-> with
-> moving EPC pages from one VM to another and then vice versa endlessly,
+Wish we documented somewhere that we should reserve BIT(0) for fuse
+val=0 always and assume that would be the super SKU.
 
-This could be a valid use case though if people intend to share EPCs  
-between two VMs. Understand no one would be able to use VMs this way  
-currently with the static allocation.
+Reviewed-by: Akhil P Oommen <quic_akhilpo@quicinc.com>
 
-> because
-> you never really actually mark any VM to be dead just like OOM does to  
-> the
-> normal enclaves.
->
-> From this point, you still need a way to kill a VM, IIUC.
->
-> I think the key point of virtual EPC vs cgroup, as quoted from Sean,  
-> should be
-> "having sane, well-defined behavior".
->
-> Does "just remove enough EPC pages" meet this?  If the problem mentioned  
-> above
-> can be avoided, I suppose so?  So if there's an easy way to achieve, I  
-> guess it
-> can be an option too.
->
-> But for the initial support, IMO we are not looking for a perfect but yet
-> complicated solution.  I would say, from review's point of view, it's  
-> preferred
-> to have a simple implementation to achieve a not-prefect, but  
-> consistent, well-
-> defined behaviour.
->
-> So to me looks killing the VM when cgroup cannot reclaim any more EPC  
-> pages is a
-> simple option.
->
-> But I might have missed something, especially since middle of last week  
-> I have
-> been having fever and headache :-)
->
-> So as mentioned above, you can try other alternatives, but please avoid
-> complicated ones.
->
-> Also, I guess it will be helpful if we can understand the typical SGX  
-> app and/or
-> SGX VM deployment under EPC cgroup use case.  This may help us on  
-> justifying why
-> the EPC cgroup algorithm to select victim is reasonable.
->
+-Akhil
 
-
- From this perspective, I think the current implementation is  
-"well-defined": EPC cgroup limits for VMs are only enforced at VM launch  
-time, not runtime. In practice,  SGX VM can be launched only with fixed  
-EPC size and all those EPCs are fully committed to the VM once launched.  
-Because of that, I imagine people are using VMs to primarily partition the  
-physical EPCs, i.e, the static size itself is the 'limit' for the workload  
-of a single VM and not expecting EPCs taken away at runtime.
-
-So killing does not really add much value for the existing usages IIUC.
-
-That said, I don't anticipate adding the enforcement of killing VMs at  
-runtime would break such usages as admin/user can simply choose to set the  
-limit equal to the static size to launch the VM and forget about it.
-
-Given that, I'll propose an add-on patch to this series as RFC and have  
-some feedback from community before we decide if that needs be included in  
-first version or we can skip it until we have EPC reclaiming for VMs.
-
-Thanks
-Haitao
- 
+> 
+> Fixes: c928a05e4415 ("drm/msm/adreno: Move speedbin mapping to device table")
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> index d4e85e24002f..522ca7fe6762 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> @@ -2237,7 +2237,7 @@ static int a6xx_set_supported_hw(struct device *dev, const struct adreno_info *i
+>  		DRM_DEV_ERROR(dev,
+>  			"missing support for speed-bin: %u. Some OPPs may not be supported by hardware\n",
+>  			speedbin);
+> -		return UINT_MAX;
+> +		supp_hw = BIT(0); /* Default */
+>  	}
+>  
+>  	ret = devm_pm_opp_set_supported_hw(dev, &supp_hw, 1);
+> 
+> -- 
+> 2.42.0
+> 
