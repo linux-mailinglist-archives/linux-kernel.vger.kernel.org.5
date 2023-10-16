@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B5847CA021
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 09:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE607CA022
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 09:12:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231841AbjJPHLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 03:11:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39574 "EHLO
+        id S231856AbjJPHL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 03:11:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231526AbjJPHLu (ORCPT
+        with ESMTP id S231474AbjJPHLz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 03:11:50 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EDBDDC
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:11:48 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6bd73395bceso732560b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:11:48 -0700 (PDT)
+        Mon, 16 Oct 2023 03:11:55 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B99FED
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:11:51 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6b5cac99cfdso1668162b3a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:11:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697440308; x=1698045108; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1697440311; x=1698045111; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=c/E6/GLx6ZozVsglJmVw75Y9W/GS8DVZN69OPx54uAk=;
-        b=L+g2IeWtoN3jhZVNhuUIdbOznyrDE5yOrsbAhy2yRl9wwAgOn09n8z81MQ5VIATs5v
-         TyHh8/EbOcyGaeT74LX4jzwu+MjE4MD7c2shGzhTjrfE5sh9xIXLcBfVpJQd2Xlh6b/f
-         Rz4dFUKy3PESCZ0mPZcNsG5xRmN2t4tE+oXP5zIJ/e+HT5vUha4l9wVy7viLyr4QLAhV
-         pHkGBb7ShcwQGySSEWsXiX45XhF/SExTZjeeeJ0AAhINAUaSjMvnug7RS5L2n7zxLqxb
-         0QXTUfelXHHjiVyb0AGdzWas/t8weeF69sVGoc+3UjdLDoEn9OVZdndOzAU0n9XOkWxl
-         rWpg==
+        bh=VA2GT8eqbiQpihVq6IatV7jxO70qnqwP/ImeaPQmFQY=;
+        b=c0cmlIbMULuVKRYc3sCOeVmPgo6C7gQDhRNtrKDRqAZWUQ7VbqG87GtMFKJY5i0Vt8
+         6dC0dZGkYmSUhdjj6pFswkJXL//WqtYSA1jVINPB9mbmLG2OhJCdgevaMGX9UBiqHJ1Q
+         e0IMn8hKO7XxANbzCr48H9ZpF85nzgtR1iXsJDtrAw9x5fBXSzC04w1dGf4i0BHgRM0m
+         ketFLUPdNqdrgx6M+FEHdphDegFZQfc0iZoH/ZcZsfp3Aho+JKNe0Kv6NfebmfIoN6Qu
+         yoCpVuNRRrsol9DdRSJcD8fOfly4Auv9hhfnVyhbZsJ22fpimrY7yVKiRWcg+1gigM38
+         fNNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697440308; x=1698045108;
+        d=1e100.net; s=20230601; t=1697440311; x=1698045111;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=c/E6/GLx6ZozVsglJmVw75Y9W/GS8DVZN69OPx54uAk=;
-        b=kZL70KhRCSAFDmNAKkGn+hLF6UL+0Zaxlei8NJxRIbyzaqTMfMHm4I3BTl9SigFNXq
-         zSLVqkAVXb/sIEX2E5mwUS/Ys5de5xugupZk/OwIVFRmTyMxSBZvzBrkk1RkSjFKMd4y
-         Gv257JlpTiBi7gfPpBYcCEuGeV28G02tfFulBBiLrigKDjcnsvSHbmIm7AFosrrCaS0O
-         wXNhTLXELIBdlu7ZIrM3PjnYrdxqSl+Y0HdenZx0jxAYeUZgiGt7PlZ9U1k5xIneZ+sq
-         5kDuZLTlMedLl//1s7YNEzAkAR861t4dA4tCCsHpErUlhljQHDdoClfjMPLbW2i5eC1u
-         5T8Q==
-X-Gm-Message-State: AOJu0Yxh5gSnYdlklCV5WK4dc5USr3Ic1m4qMAKCI/Mmflb7aJTPQ6DG
-        1RZnyDgGARtuFXbBLltJN1cJPw==
-X-Google-Smtp-Source: AGHT+IE4MLkjnBefAElzY+bdBEEt2z+P5us27ZF3QfmSrVEbRNd3DDmAZ96JnRzreQ+qrlXMVJ0vpw==
-X-Received: by 2002:a05:6a00:1819:b0:68f:d44c:22f8 with SMTP id y25-20020a056a00181900b0068fd44c22f8mr10614696pfa.1.1697440307784;
-        Mon, 16 Oct 2023 00:11:47 -0700 (PDT)
+        bh=VA2GT8eqbiQpihVq6IatV7jxO70qnqwP/ImeaPQmFQY=;
+        b=WHZdcwOLfpn+bSpQ7jexnOe3vOMoR4O6PTt14Xd5D/XHEUx0IsUsRZCKX5GKywdQ8u
+         1qNFWpk7YUIvbi4gH7xVXOHH6LTmyx3Lv1nvZIxPqmBIZIKRdHrCmGc/nKEp7rUljPxB
+         HYuVVXVp5D6DWi1LgM0wBYzipaEcp8XWMpor887ey7LtwyZxXi2JpLoAdRqIqyIanis3
+         Cwdeq9522JIsUi54/UvxqFWQVbpnPuwoEi367lRWrbfRdcYe/qNhE/Xfvuy0UxzSK6Rn
+         AMLDNZuNw34VfacIm682zIPllakhqq1m8pnle5RyiXy+0hPOY92S6vIl6mzeldPJFRl+
+         ugjQ==
+X-Gm-Message-State: AOJu0YzWkWbxPG+V+Axt6A3r4ih+Vj4Kt1RmcSOqdyJttx0Q7OyHLlrz
+        1Q+7+a59GJjuwG8U+IDtIIO9qQ==
+X-Google-Smtp-Source: AGHT+IG/g2mNU9z+9wRsIf1tsYOLUhccvghdEO7aXTxMy+dng7C4gaQ2AOy/3vVl1wB0/a7ioozUXg==
+X-Received: by 2002:a05:6a00:23ce:b0:68e:3f0b:5e6f with SMTP id g14-20020a056a0023ce00b0068e3f0b5e6fmr35005262pfc.24.1697440311003;
+        Mon, 16 Oct 2023 00:11:51 -0700 (PDT)
 Received: from localhost ([122.172.80.14])
-        by smtp.gmail.com with ESMTPSA id 4-20020aa79104000000b0069305627491sm17212825pfh.159.2023.10.16.00.11.46
+        by smtp.gmail.com with ESMTPSA id k9-20020aa79729000000b006bd6a0a4678sm2187567pfg.80.2023.10.16.00.11.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 00:11:47 -0700 (PDT)
+        Mon, 16 Oct 2023 00:11:50 -0700 (PDT)
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Juergen Gross <jgross@suse.com>,
         Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
         =?UTF-8?q?Alex=20Benn=C3=A9e?= <alex.bennee@linaro.org>,
         stratos-dev@op-lists.linaro.org,
         Erik Schilling <erik.schilling@linaro.org>,
@@ -63,9 +63,9 @@ Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
         Mathieu Poirier <mathieu.poirier@linaro.org>,
         Arnd Bergmann <arnd@kernel.org>,
         xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V4 2/4] xen: irqfd: Use _IOW instead of the internal _IOC() macro
-Date:   Mon, 16 Oct 2023 12:41:25 +0530
-Message-Id: <599ca6f1b9dd2f0e6247ea37bee3ea6827404b6d.1697439990.git.viresh.kumar@linaro.org>
+Subject: [PATCH V4 3/4] xen: evtchn: Allow shared registration of IRQ handers
+Date:   Mon, 16 Oct 2023 12:41:26 +0530
+Message-Id: <99b1edfd3147c6b5d22a5139dab5861e767dc34a.1697439990.git.viresh.kumar@linaro.org>
 X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 In-Reply-To: <cover.1697439990.git.viresh.kumar@linaro.org>
 References: <cover.1697439990.git.viresh.kumar@linaro.org>
@@ -80,33 +80,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-_IOC() an internal helper that we should not use in driver code.  In
-particular, we got the data direction wrong here, which breaks a number
-of tools, as having "_IOC_NONE" should never be paired with a nonzero
-size.
+Currently the handling of events is supported either in the kernel or
+userspace, but not both.
 
-Use _IOW() instead.
+In order to support fast delivery of interrupts from the guest to the
+backend, we need to handle the Queue notify part of Virtio protocol in
+kernel and the rest in userspace.
 
-Fixes: f8941e6c4c71 ("xen: privcmd: Add support for irqfd")
-Reported-by: Arnd Bergmann <arnd@kernel.org>
-Closes: https://lore.kernel.org/all/268a2031-63b8-4c7d-b1e5-8ab83ca80b4a@app.fastmail.com/
+Update the interrupt handler registration flag to IRQF_SHARED for event
+channels, which would allow multiple entities to bind their interrupt
+handler for the same event channel port.
+
+Also increment the reference count of irq_info when multiple entities
+try to bind event channel to irqchip, so the unbinding happens only
+after all the users are gone.
+
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- include/uapi/xen/privcmd.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/xen/events/events_base.c | 3 ++-
+ drivers/xen/evtchn.c             | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/xen/privcmd.h b/include/uapi/xen/privcmd.h
-index b143fafce84d..e145bca5105c 100644
---- a/include/uapi/xen/privcmd.h
-+++ b/include/uapi/xen/privcmd.h
-@@ -138,6 +138,6 @@ struct privcmd_irqfd {
- #define IOCTL_PRIVCMD_MMAP_RESOURCE				\
- 	_IOC(_IOC_NONE, 'P', 7, sizeof(struct privcmd_mmap_resource))
- #define IOCTL_PRIVCMD_IRQFD					\
--	_IOC(_IOC_NONE, 'P', 8, sizeof(struct privcmd_irqfd))
-+	_IOW('P', 8, struct privcmd_irqfd)
+diff --git a/drivers/xen/events/events_base.c b/drivers/xen/events/events_base.c
+index c7715f8bd452..d72fb26cc051 100644
+--- a/drivers/xen/events/events_base.c
++++ b/drivers/xen/events/events_base.c
+@@ -1238,7 +1238,8 @@ static int bind_evtchn_to_irq_chip(evtchn_port_t evtchn, struct irq_chip *chip,
+ 		bind_evtchn_to_cpu(evtchn, 0, false);
+ 	} else {
+ 		struct irq_info *info = info_for_irq(irq);
+-		WARN_ON(info == NULL || info->type != IRQT_EVTCHN);
++		if (!WARN_ON(!info || info->type != IRQT_EVTCHN))
++			info->refcnt++;
+ 	}
  
- #endif /* __LINUX_PUBLIC_PRIVCMD_H__ */
+ out:
+diff --git a/drivers/xen/evtchn.c b/drivers/xen/evtchn.c
+index c99415a70051..43f77915feb5 100644
+--- a/drivers/xen/evtchn.c
++++ b/drivers/xen/evtchn.c
+@@ -397,7 +397,7 @@ static int evtchn_bind_to_user(struct per_user_data *u, evtchn_port_t port)
+ 	if (rc < 0)
+ 		goto err;
+ 
+-	rc = bind_evtchn_to_irqhandler_lateeoi(port, evtchn_interrupt, 0,
++	rc = bind_evtchn_to_irqhandler_lateeoi(port, evtchn_interrupt, IRQF_SHARED,
+ 					       u->name, evtchn);
+ 	if (rc < 0)
+ 		goto err;
 -- 
 2.31.1.272.g89b43f80a514
 
