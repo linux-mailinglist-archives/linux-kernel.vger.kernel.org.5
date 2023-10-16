@@ -2,266 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F707CB39E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6217F7CB3A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 22:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232365AbjJPUDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 16:03:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35464 "EHLO
+        id S233874AbjJPUDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 16:03:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjJPUD3 (ORCPT
+        with ESMTP id S232792AbjJPUDe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 16:03:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6195483
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:02:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697486562;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/cDXCAqtsqnxUo4mK2MChJM/H3xR/+sXfbuPMAFsDcQ=;
-        b=iQW2hXrofpWqbF4iXNYWWBubrMzG0Y4U4yDZlyksIe/b0wksnPzU5/j/+6HRYtyO257WiL
-        oT1BAkJvEZAn2yj/RrkqIhzC88V12njnv/qCQySABicGH2n5sCmX7/Jb5EaoSs3pEXSAC1
-        7z4eEja6aoS4cL+nrgN64qBwQOKxJhA=
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
- [209.85.167.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-247-IWL-f6goNDuxRF_gtRwLGA-1; Mon, 16 Oct 2023 16:02:29 -0400
-X-MC-Unique: IWL-f6goNDuxRF_gtRwLGA-1
-Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3b2b1aed3d4so5436374b6e.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 13:02:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697486548; x=1698091348;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/cDXCAqtsqnxUo4mK2MChJM/H3xR/+sXfbuPMAFsDcQ=;
-        b=Tkx6NpMlgkYKG9GR6hT3NZRnWZdqJJs8AsA+w8gMhJMcn+7kU66zOedV9n0x33S+zp
-         IL62S8H58vInOjGNP5pIwb+iv/CaEBH3Em4bPXLfhAfSYDqP1LxDk83ZFg91wMMmXRaa
-         qbgfQaVWMJ3G716uP1Kc0v3uhC7wE8sN5ghZ+tiQ6H0jWV8RMbfl/1pCbvonaNG+f0nR
-         gAx5+ocZO5vlfiYAqsEovqlJDN/SHDCxKMuBupuDZjBVzX3a1OyROhAztIBK+0l7C/sh
-         joH25N5CfTMUs7gsLofkEHi7feGIYnESW8x/mlGkAwMPZTwSPLyMDyTRwBqeJBrxs2E9
-         MlWA==
-X-Gm-Message-State: AOJu0Yy/ao/U4DGz0U70rJBh67IsY/CX2YeYxavmixaduar17+oUwKxv
-        i22o4YJUaqIMsMnH1W/mGJAuNZtD0ogVbbM50j5xuvNDL9nAinc5+Q5yEWcAzcL5R0jV8zqrPgb
-        CCOSPc0/Ya91DembBD6eNdcEr
-X-Received: by 2002:a05:6808:4393:b0:3a7:366f:3b01 with SMTP id dz19-20020a056808439300b003a7366f3b01mr322054oib.33.1697486547990;
-        Mon, 16 Oct 2023 13:02:27 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFQQelPzIZ1Z4qpFoQmZhLrek36aSRj6fh76IfyACLJ3DhaFuw1XJRec4cNnk5/qDYgoOfvHw==
-X-Received: by 2002:a05:6808:4393:b0:3a7:366f:3b01 with SMTP id dz19-20020a056808439300b003a7366f3b01mr322029oib.33.1697486547704;
-        Mon, 16 Oct 2023 13:02:27 -0700 (PDT)
-Received: from [192.168.43.95] ([37.170.191.221])
-        by smtp.gmail.com with ESMTPSA id g16-20020ad45110000000b0065b12c7a48dsm3674509qvp.133.2023.10.16.13.02.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 13:02:27 -0700 (PDT)
-Message-ID: <2eb9c70b-1d7d-241b-0818-9340be896519@redhat.com>
-Date:   Mon, 16 Oct 2023 22:02:21 +0200
+        Mon, 16 Oct 2023 16:03:34 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E06AEA;
+        Mon, 16 Oct 2023 13:03:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E978C433C7;
+        Mon, 16 Oct 2023 20:03:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697486612;
+        bh=vuVQ78sxmBFgv5vVcwICGwoG+DfomOY79aR9/3vI29A=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cwO1bGAOBBaJWckr/g3z6ld9vHdkYM/GFpFtTYy1BXz9nDUc3j7gCMXtTBd4QGUbc
+         Nbs0+gL08VAudYHFrLgSY8Ljlz4VyW/Atrx3KFVVfi0aV6vHaiVsFO2E9dpyhjwS3A
+         xtD1LoMvpr1/jW1ovt2JsbTHSM6V9dkFs3jQDkfRRO0/03T3BbBzeUAEPyn1+wEeJo
+         7Rmhqt6nY/1ZcMoE4nnQecdQGtOinG6F46Zvi3OpXL1iLpcEtqovsiqicdlifLb+RG
+         oY12HqEkcylvqhSO/2tdvHqJ3Udk5q5YgMAhoiWkPufBFbknBuRUykMIbVWS/CFcrz
+         hphfzPzr6WXqg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Om Prakash Singh <quic_omprsing@quicinc.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: qcom: add HW_RANDOM dependency
+Date:   Mon, 16 Oct 2023 22:02:57 +0200
+Message-Id: <20231016200324.757455-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v7 05/12] KVM: arm64: PMU: Add a helper to read a vCPU's
- PMCR_EL0
-Content-Language: en-US
-To:     Raghavendra Rao Ananta <rananta@google.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Shaoqin Huang <shahuang@redhat.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20231009230858.3444834-1-rananta@google.com>
- <20231009230858.3444834-6-rananta@google.com>
-From:   Eric Auger <eauger@redhat.com>
-In-Reply-To: <20231009230858.3444834-6-rananta@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Raghavendra,
+From: Arnd Bergmann <arnd@arndb.de>
 
-On 10/10/23 01:08, Raghavendra Rao Ananta wrote:
-> From: Reiji Watanabe <reijiw@google.com>
-> 
-> Add a helper to read a vCPU's PMCR_EL0, and use it when KVM
-> reads a vCPU's PMCR_EL0.
-> 
-> The PMCR_EL0 value is tracked by a sysreg file per each vCPU.
-file?
-> The following patches will make (only) PMCR_EL0.N track per guest.
-> Having the new helper will be useful to combine the PMCR_EL0.N
-> field (tracked per guest) and the other fields (tracked per vCPU)
-> to provide the value of PMCR_EL0.
-> 
-> No functional change intended.
-> 
-> Signed-off-by: Reiji Watanabe <reijiw@google.com>
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-Besides
-Reviewed-by: Eric Auger <eric.auger@redhat.com>
+The driver now calls into the hwrng subsystem and causes a link failure if that
+is not reachable:
 
-Eric
-> ---
->  arch/arm64/kvm/arm.c      |  3 +--
->  arch/arm64/kvm/pmu-emul.c | 21 +++++++++++++++------
->  arch/arm64/kvm/sys_regs.c |  6 +++---
->  include/kvm/arm_pmu.h     |  6 ++++++
->  4 files changed, 25 insertions(+), 11 deletions(-)
-> 
-> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> index 708a53b70a7b..0af4d6bbe3d3 100644
-> --- a/arch/arm64/kvm/arm.c
-> +++ b/arch/arm64/kvm/arm.c
-> @@ -854,8 +854,7 @@ static int check_vcpu_requests(struct kvm_vcpu *vcpu)
->  		}
->  
->  		if (kvm_check_request(KVM_REQ_RELOAD_PMU, vcpu))
-> -			kvm_pmu_handle_pmcr(vcpu,
-> -					    __vcpu_sys_reg(vcpu, PMCR_EL0));
-> +			kvm_pmu_handle_pmcr(vcpu, kvm_vcpu_read_pmcr(vcpu));
->  
->  		if (kvm_check_request(KVM_REQ_RESYNC_PMU_EL0, vcpu))
->  			kvm_vcpu_pmu_restore_guest(vcpu);
-> diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
-> index cc30c246c010..a161d6266a5c 100644
-> --- a/arch/arm64/kvm/pmu-emul.c
-> +++ b/arch/arm64/kvm/pmu-emul.c
-> @@ -72,7 +72,7 @@ static bool kvm_pmc_is_64bit(struct kvm_pmc *pmc)
->  
->  static bool kvm_pmc_has_64bit_overflow(struct kvm_pmc *pmc)
->  {
-> -	u64 val = __vcpu_sys_reg(kvm_pmc_to_vcpu(pmc), PMCR_EL0);
-> +	u64 val = kvm_vcpu_read_pmcr(kvm_pmc_to_vcpu(pmc));
->  
->  	return (pmc->idx < ARMV8_PMU_CYCLE_IDX && (val & ARMV8_PMU_PMCR_LP)) ||
->  	       (pmc->idx == ARMV8_PMU_CYCLE_IDX && (val & ARMV8_PMU_PMCR_LC));
-> @@ -250,7 +250,7 @@ void kvm_pmu_vcpu_destroy(struct kvm_vcpu *vcpu)
->  
->  u64 kvm_pmu_valid_counter_mask(struct kvm_vcpu *vcpu)
->  {
-> -	u64 val = __vcpu_sys_reg(vcpu, PMCR_EL0) >> ARMV8_PMU_PMCR_N_SHIFT;
-> +	u64 val = kvm_vcpu_read_pmcr(vcpu) >> ARMV8_PMU_PMCR_N_SHIFT;
->  
->  	val &= ARMV8_PMU_PMCR_N_MASK;
->  	if (val == 0)
-> @@ -272,7 +272,7 @@ void kvm_pmu_enable_counter_mask(struct kvm_vcpu *vcpu, u64 val)
->  	if (!kvm_vcpu_has_pmu(vcpu))
->  		return;
->  
-> -	if (!(__vcpu_sys_reg(vcpu, PMCR_EL0) & ARMV8_PMU_PMCR_E) || !val)
-> +	if (!(kvm_vcpu_read_pmcr(vcpu) & ARMV8_PMU_PMCR_E) || !val)
->  		return;
->  
->  	for (i = 0; i < ARMV8_PMU_MAX_COUNTERS; i++) {
-> @@ -324,7 +324,7 @@ static u64 kvm_pmu_overflow_status(struct kvm_vcpu *vcpu)
->  {
->  	u64 reg = 0;
->  
-> -	if ((__vcpu_sys_reg(vcpu, PMCR_EL0) & ARMV8_PMU_PMCR_E)) {
-> +	if ((kvm_vcpu_read_pmcr(vcpu) & ARMV8_PMU_PMCR_E)) {
->  		reg = __vcpu_sys_reg(vcpu, PMOVSSET_EL0);
->  		reg &= __vcpu_sys_reg(vcpu, PMCNTENSET_EL0);
->  		reg &= __vcpu_sys_reg(vcpu, PMINTENSET_EL1);
-> @@ -426,7 +426,7 @@ static void kvm_pmu_counter_increment(struct kvm_vcpu *vcpu,
->  {
->  	int i;
->  
-> -	if (!(__vcpu_sys_reg(vcpu, PMCR_EL0) & ARMV8_PMU_PMCR_E))
-> +	if (!(kvm_vcpu_read_pmcr(vcpu) & ARMV8_PMU_PMCR_E))
->  		return;
->  
->  	/* Weed out disabled counters */
-> @@ -569,7 +569,7 @@ void kvm_pmu_handle_pmcr(struct kvm_vcpu *vcpu, u64 val)
->  static bool kvm_pmu_counter_is_enabled(struct kvm_pmc *pmc)
->  {
->  	struct kvm_vcpu *vcpu = kvm_pmc_to_vcpu(pmc);
-> -	return (__vcpu_sys_reg(vcpu, PMCR_EL0) & ARMV8_PMU_PMCR_E) &&
-> +	return (kvm_vcpu_read_pmcr(vcpu) & ARMV8_PMU_PMCR_E) &&
->  	       (__vcpu_sys_reg(vcpu, PMCNTENSET_EL0) & BIT(pmc->idx));
->  }
->  
-> @@ -1084,3 +1084,12 @@ u8 kvm_arm_pmu_get_pmuver_limit(void)
->  					      ID_AA64DFR0_EL1_PMUVer_V3P5);
->  	return FIELD_GET(ARM64_FEATURE_MASK(ID_AA64DFR0_EL1_PMUVer), tmp);
->  }
-> +
-> +/**
-> + * kvm_vcpu_read_pmcr - Read PMCR_EL0 register for the vCPU
-> + * @vcpu: The vcpu pointer
-> + */
-> +u64 kvm_vcpu_read_pmcr(struct kvm_vcpu *vcpu)
-> +{
-> +	return __vcpu_sys_reg(vcpu, PMCR_EL0);
-> +}
-> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-> index 08af7824e9d8..ff0f7095eaca 100644
-> --- a/arch/arm64/kvm/sys_regs.c
-> +++ b/arch/arm64/kvm/sys_regs.c
-> @@ -803,7 +803,7 @@ static bool access_pmcr(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
->  		 * Only update writeable bits of PMCR (continuing into
->  		 * kvm_pmu_handle_pmcr() as well)
->  		 */
-> -		val = __vcpu_sys_reg(vcpu, PMCR_EL0);
-> +		val = kvm_vcpu_read_pmcr(vcpu);
->  		val &= ~ARMV8_PMU_PMCR_MASK;
->  		val |= p->regval & ARMV8_PMU_PMCR_MASK;
->  		if (!kvm_supports_32bit_el0())
-> @@ -811,7 +811,7 @@ static bool access_pmcr(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
->  		kvm_pmu_handle_pmcr(vcpu, val);
->  	} else {
->  		/* PMCR.P & PMCR.C are RAZ */
-> -		val = __vcpu_sys_reg(vcpu, PMCR_EL0)
-> +		val = kvm_vcpu_read_pmcr(vcpu)
->  		      & ~(ARMV8_PMU_PMCR_P | ARMV8_PMU_PMCR_C);
->  		p->regval = val;
->  	}
-> @@ -860,7 +860,7 @@ static bool pmu_counter_idx_valid(struct kvm_vcpu *vcpu, u64 idx)
->  {
->  	u64 pmcr, val;
->  
-> -	pmcr = __vcpu_sys_reg(vcpu, PMCR_EL0);
-> +	pmcr = kvm_vcpu_read_pmcr(vcpu);
->  	val = (pmcr >> ARMV8_PMU_PMCR_N_SHIFT) & ARMV8_PMU_PMCR_N_MASK;
->  	if (idx >= val && idx != ARMV8_PMU_CYCLE_IDX) {
->  		kvm_inject_undefined(vcpu);
-> diff --git a/include/kvm/arm_pmu.h b/include/kvm/arm_pmu.h
-> index 858ed9ce828a..cd980d78b86b 100644
-> --- a/include/kvm/arm_pmu.h
-> +++ b/include/kvm/arm_pmu.h
-> @@ -103,6 +103,7 @@ void kvm_vcpu_pmu_resync_el0(void);
->  u8 kvm_arm_pmu_get_pmuver_limit(void);
->  int kvm_arm_set_default_pmu(struct kvm *kvm);
->  
-> +u64 kvm_vcpu_read_pmcr(struct kvm_vcpu *vcpu);
->  #else
->  struct kvm_pmu {
->  };
-> @@ -180,6 +181,11 @@ static inline int kvm_arm_set_default_pmu(struct kvm *kvm)
->  	return -ENODEV;
->  }
->  
-> +static inline u64 kvm_vcpu_read_pmcr(struct kvm_vcpu *vcpu)
-> +{
-> +	return 0;
-> +}
-> +
->  #endif
->  
->  #endif
+x86_64-linux-ld: vmlinux.o: in function `qcom_rng_probe':
+qcom-rng.c:(.text+0xfefc7e): undefined reference to `devm_hwrng_register'
+
+Add a Kconfig dependency as we have for the pure hw_random drivers. I see
+that there are some other crypto drivers that instead use 'select HW_RANDOM',
+but those seem to be mistakes as that may lead to circular dependencies,
+and a simple driver should not force-enable an entire subsytem.
+
+Fixes: f29cd5bb64c25 ("crypto: qcom-rng - Add hw_random interface support")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/crypto/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
+index c761952f0dc6d..79c3bb9c99c3b 100644
+--- a/drivers/crypto/Kconfig
++++ b/drivers/crypto/Kconfig
+@@ -601,6 +601,7 @@ config CRYPTO_DEV_QCE_SW_MAX_LEN
+ config CRYPTO_DEV_QCOM_RNG
+ 	tristate "Qualcomm Random Number Generator Driver"
+ 	depends on ARCH_QCOM || COMPILE_TEST
++	depends on HW_RANDOM
+ 	select CRYPTO_RNG
+ 	help
+ 	  This driver provides support for the Random Number
+-- 
+2.39.2
 
