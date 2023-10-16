@@ -2,155 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70B0C7CA092
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 09:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3FB7CA097
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 09:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232168AbjJPH04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 03:26:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46864 "EHLO
+        id S229953AbjJPH3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 03:29:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232113AbjJPH0x (ORCPT
+        with ESMTP id S229478AbjJPH3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 03:26:53 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E59D9
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:26:50 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1qsHzz-0002wL-97; Mon, 16 Oct 2023 09:26:47 +0200
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <sha@pengutronix.de>)
-        id 1qsHzy-0021tg-LG; Mon, 16 Oct 2023 09:26:46 +0200
-Received: from sha by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1qsHzy-00EhVy-GZ; Mon, 16 Oct 2023 09:26:46 +0200
-Date:   Mon, 16 Oct 2023 09:26:46 +0200
-From:   Sascha Hauer <sha@pengutronix.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Boris Pismenny <borisp@nvidia.com>, netdev@vger.kernel.org,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        kernel@pengutronix.de, Jakub Kicinski <kuba@kernel.org>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: Problem with io_uring splice and KTLS
-Message-ID: <20231016072646.GV3359458@pengutronix.de>
-References: <20231010141932.GD3114228@pengutronix.de>
- <d729781a-3d12-423b-973e-c16fdbcbb60b@kernel.dk>
- <20231012133407.GA3359458@pengutronix.de>
- <f39ef992-4789-4c30-92ef-e3114a31d5c7@kernel.dk>
- <20231013054716.GG3359458@pengutronix.de>
- <a9dd11d9-b5b8-456d-b8b6-12257e2924ab@kernel.dk>
+        Mon, 16 Oct 2023 03:29:20 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEAB8C5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:29:18 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9a58dbd5daeso671638966b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 00:29:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697441357; x=1698046157; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rzKbeL+RltdAkMywXo6rwpyMCBTadikUP8iBiYw2KH8=;
+        b=Fa9DWsMkPSAFo8kzfD2lgzuWw8u3Syl14mHMx97nzGVvfLKtmqvCPik5GJdvI5KXsm
+         YK/WyYq+YeAz873pnBp+gn/Evr4mDDXm/7G7G2n+g9CW2bKVQi6NiWc+VtcC+NaexUEV
+         Tg/CKVT1jamwYKJXXqp3rEuSjSBzWe2WTF2x61tfr07T56jQ6cIGRDxPaX3LbmgXTjEo
+         XE2L334DYG+2KHwsxkaxZ/9rJWSWNtbCxpX2rI5It2Hh7LmOYQtzwUpRXQ1o00FmSxen
+         Ne+jzPlh0q2HNKjhGfSS91D15HbwF/kPhJHxk0u/CdTq/wjDnMYaMleymCGksELky/L7
+         6ImQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697441357; x=1698046157;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rzKbeL+RltdAkMywXo6rwpyMCBTadikUP8iBiYw2KH8=;
+        b=U1vglXB6+wwZK2pKstuRH1PmusxdQxLbcEamHhTlSdcqNlJ+hXBkWKgNIjUkRZq8iO
+         OIHjleuxBqXpIhfziIduPSmCc3AGVeQf//eqDctKFwc8sY5n5ewTs2a/ZWn6RTLcRJ6E
+         h1KT9yQud4SAbgmj4tixWiMx7RX0a4FrykbeaH1pG8sy31uvQeptPwxfSwHGypgGW4/F
+         yL65i97ZBoIyu3ZQRbrsMnxnezlOdkl6OENMLjFyyv6vS8IVe9A4enZLGTLoo1LF5kaL
+         j3Mo14w/KliYNPb9u6FVhhT05iCpvrToXtMjLyjfabL1UpFHp2DkO/p4Rw0BBNL+bLqd
+         +zxA==
+X-Gm-Message-State: AOJu0YwOe6ET3339ITxVJQOIMp7w+1abub5PstbgSBGVm8QkKtYo8oIy
+        bHFfc9NNOPrW2hSQMKaUPLApIw==
+X-Google-Smtp-Source: AGHT+IGYRxGC8BqeUozOgg4NTbh/Jlhq/lYDZ8UNbvwPqpI4s0ghq19dNlzi0lfqffb4DNNxhWxA5w==
+X-Received: by 2002:a17:906:3012:b0:99d:e617:abeb with SMTP id 18-20020a170906301200b0099de617abebmr27876199ejz.23.1697441357118;
+        Mon, 16 Oct 2023 00:29:17 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.219.154])
+        by smtp.gmail.com with ESMTPSA id v3-20020a17090606c300b009b29668fce7sm3480791ejb.113.2023.10.16.00.29.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 00:29:16 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        arm@kernel.org, soc@kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [GIT PULL 1/2] ARM: defconfig: pull for v6.7
+Date:   Mon, 16 Oct 2023 09:29:10 +0200
+Message-Id: <20231016072911.27148-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a9dd11d9-b5b8-456d-b8b6-12257e2924ab@kernel.dk>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 07:45:55AM -0600, Jens Axboe wrote:
-> On 10/12/23 11:47 PM, Sascha Hauer wrote:
-> > On Thu, Oct 12, 2023 at 07:45:07PM -0600, Jens Axboe wrote:
-> >> On 10/12/23 7:34 AM, Sascha Hauer wrote:
-> >>> In case you don't have encryption hardware you can create an
-> >>> asynchronous encryption module using cryptd. Compile a kernel with
-> >>> CONFIG_CRYPTO_USER_API_AEAD and CONFIG_CRYPTO_CRYPTD and start the
-> >>> webserver with the '-c' option. /proc/crypto should then contain an
-> >>> entry with:
-> >>>
-> >>>  name         : gcm(aes)
-> >>>  driver       : cryptd(gcm_base(ctr(aes-generic),ghash-generic))
-> >>>  module       : kernel
-> >>>  priority     : 150
-> >>
-> >> I did a bit of prep work to ensure I had everything working for when
-> >> there's time to dive into it, but starting it with -c doesn't register
-> >> this entry. Turns out the bind() in there returns -1/ENOENT.
-> > 
-> > Yes, that happens here as well, that's why I don't check for the error
-> > in the bind call. Nevertheless it has the desired effect that the new
-> > algorithm is registered and used from there on. BTW you only need to
-> > start the webserver once with -c. If you start it repeatedly with -c a
-> > new gcm(aes) instance is registered each time.
-> 
-> Gotcha - I wasn't able to trigger the condition, which is why I thought
-> perhaps I was missing something.
-> 
-> Can you try the below patch and see if that makes a difference? I'm not
-> quite sure why it would since you said it triggers with DEFER_TASKRUN as
-> well, and for that kind of notification, you should never hit the paths
-> you have detailed in the debug patch.
+The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
 
-I can confirm that this patch makes it work for me. I tested with both
-software cryptd and also with my original CAAM encryption workload.
-IORING_SETUP_SINGLE_ISSUER | IORING_SETUP_DEFER_TASKRUN is not needed.
-Both my simple webserver and the original C++ Webserver from our
-customer are now working without problems.
+  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
 
-Do you think there is a chance getting this change upstream? I'm a bit
-afraid the code originally uses signal_pending() instead of
-task_sigpending() for a good reason.
+are available in the Git repository at:
 
-Sascha
+  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git tags/samsung-defconfig-6.7
 
-> 
-> diff --git a/net/core/stream.c b/net/core/stream.c
-> index f5c4e47df165..a9a196587254 100644
-> --- a/net/core/stream.c
-> +++ b/net/core/stream.c
-> @@ -67,7 +67,7 @@ int sk_stream_wait_connect(struct sock *sk, long *timeo_p)
->  			return -EPIPE;
->  		if (!*timeo_p)
->  			return -EAGAIN;
-> -		if (signal_pending(tsk))
-> +		if (task_sigpending(tsk))
->  			return sock_intr_errno(*timeo_p);
->  
->  		add_wait_queue(sk_sleep(sk), &wait);
-> @@ -103,7 +103,7 @@ void sk_stream_wait_close(struct sock *sk, long timeout)
->  		do {
->  			if (sk_wait_event(sk, &timeout, !sk_stream_closing(sk), &wait))
->  				break;
-> -		} while (!signal_pending(current) && timeout);
-> +		} while (!task_sigpending(current) && timeout);
->  
->  		remove_wait_queue(sk_sleep(sk), &wait);
->  	}
-> @@ -134,7 +134,7 @@ int sk_stream_wait_memory(struct sock *sk, long *timeo_p)
->  			goto do_error;
->  		if (!*timeo_p)
->  			goto do_eagain;
-> -		if (signal_pending(current))
-> +		if (task_sigpending(current))
->  			goto do_interrupted;
->  		sk_clear_bit(SOCKWQ_ASYNC_NOSPACE, sk);
->  		if (sk_stream_memory_free(sk) && !vm_wait)
-> 
-> -- 
-> Jens Axboe
-> 
-> 
+for you to fetch changes up to 438fb575463fc490e6200e5e28d02159492a97f8:
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+  ARM: exynos_defconfig: add driver for ISL29018 (2023-10-06 13:57:37 +0200)
+
+----------------------------------------------------------------
+Samsung defconfig changes for v6.7
+
+Enable several drivers for boards with Samsung Exynos ARM SoCs in
+exynos_defconfig and multi_v7_defconfig: display PHYs, AHCI DWC, TM2
+touchkey (used on ARM and ARM64 Exynos-based boards), Samsung camera
+sensors and Intersil 29018 light sensor.
+
+Enable also IIO in s5pv210_defconfig used by MAX17040 fuel gauge driver.
+
+----------------------------------------------------------------
+Marek Szyprowski (6):
+      ARM: multi_v7_defconfig: make Exynos related PHYs modules
+      ARM: multi_v7_defconfig: add AHCI_DWC driver
+      ARM: exynos_defconfig: replace SATA_AHCI_PLATFORM with AHCI_DWC driver
+      ARM: multi_v7_defconfig: add tm2-touchkey driver
+      ARM: multi_v7_defconfig: add drivers for S5C73M3 & S5K6A3 camera sensors
+      ARM: exynos_defconfig: add driver for ISL29018
+
+Svyatoslav Ryhel (1):
+      ARM: s5pv210_defconfig: enable IIO required by MAX17040
+
+ arch/arm/configs/exynos_defconfig   | 3 ++-
+ arch/arm/configs/multi_v7_defconfig | 6 ++++++
+ arch/arm/configs/s5pv210_defconfig  | 1 +
+ 3 files changed, 9 insertions(+), 1 deletion(-)
