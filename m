@@ -2,361 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 064CF7CA1BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 10:36:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2C287CA1BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 10:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231149AbjJPIg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 04:36:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37656 "EHLO
+        id S231796AbjJPIgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 04:36:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230017AbjJPIgZ (ORCPT
+        with ESMTP id S231962AbjJPIgl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 04:36:25 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B298FA2;
-        Mon, 16 Oct 2023 01:36:22 -0700 (PDT)
-Received: from [172.20.10.2] (unknown [185.53.196.201])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: ehristev)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id AB7CB66072AF;
-        Mon, 16 Oct 2023 09:36:19 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697445381;
-        bh=85a6e1GLRwqdGuYwYwQLoBaxkBk7BfUNiV3Le2vYw7w=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=UWkiP0GgDBo82iC17eChfr7i8COXpTXMo/5pjPdCRbKAAzIGeIFbvmXSssMjZ1ZDZ
-         zIbMjakxUvcCnZ/DEgfan84Wqy1xlf+60pTQdtrPZ1GKvTQRbjmvredwlR+/SGgJCQ
-         0NSNDb/F880OERvy2kV7JRoOmobl2EBc9rB9QTpbF8PX2BSCbfjXCnwY3gPsCBiEXF
-         272nUogKl5d0rbF1XzIF8z4wxE8joSmshM3CWbQ78z24Wd6J6NWAucA4cPcdxyNaW6
-         pRMARhT+TThMRXoj+F70PBlq+YS6gac3FgCJqpBz/fJmOvGpuPCHe2Yp2yQBzUMCzC
-         nXfHP9RZ2yXKg==
-Message-ID: <bbc99c85-750e-4736-9320-cf9471fe4c92@collabora.com>
-Date:   Mon, 16 Oct 2023 11:36:16 +0300
+        Mon, 16 Oct 2023 04:36:41 -0400
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2041.outbound.protection.outlook.com [40.107.117.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60FA6114;
+        Mon, 16 Oct 2023 01:36:37 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UncQVXgz6NIP9tneUB3wZO3HaEAIqvDthDn2OrBaQfpKCIx/KQd9yQlv8oZx4cocPCExA4wVRxBCsQcWg5MzhRAmatsZXkU13V5I3D418nwV5yTueQF4bLPIZvUIzl3RBJ6dplOzgAuYvcFo0lnSIEq0l79H+bxuPWDNq/+wrNLHmrl/cVaEz82r7deJeMUw8yE4Fh7+1QzXZ+BNDjz625Jp3CGX8byWDzLl6BiiwEnX/8NiR6wDPNU/K1ud8tn5PDuJ9DWVjL+46qW1PlcV5/mbuxhagvsFNwcNx5c8za/T8dAXkoNkMMBQwopPSkwRTg4KxqHEqEkKEWr557q6xA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lZpUUHy/rS5Vjh1yhlKxYP5lyugMp+MSO7L5tdM54Dw=;
+ b=i20Y31ua5uAtGUad8mmcO+j9B+PaRIyWd6MPJx6dHV8PskT9kotvgbS5llswNXTh+s/acIDvV3pe1A6v065RoEQZlQUSWtQE1vsABrtuYTZ8Gc7QQbCR2nTvIb9J+HR66gyLxHuyk+Ln9EhbKIIy8s6D6Iit2DhCnoMzqZflV0W2DFzMpIGVDTTN+PXDdSIEyN+x5LB0THs1lk/Cfc/iPekXxTEEpnIZSwWy0xfZ5KVfGWhhQT10kHwOQLyEofqwvjyAnpZDx01+bB7t34ADYoPwHDy4OeQmfBNcboECygUzRMwwhvQPTpXFD1X4P4/PCAnD6mY3mUAw/Le7oCLj0w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fibocom.com; dmarc=pass action=none header.from=fibocom.com;
+ dkim=pass header.d=fibocom.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fibocomcorp.onmicrosoft.com; s=selector1-fibocomcorp-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lZpUUHy/rS5Vjh1yhlKxYP5lyugMp+MSO7L5tdM54Dw=;
+ b=lur5Nosve3oxqBMSwKMDSW5cy9uAzW6hG+GZcuVtRoL/6emMUyZRA2obfZyIsH5Q6Y9rMXEoqhIxmuxLzB/Y8CYskPfrIaX9lDyYqvwFi25STLJMUGYP7wlb2QicWXmdR+WIGo6i58TuEGUry8DC0BwAeLBGVYncTZPdF7H66nc=
+Received: from TYZPR02MB5088.apcprd02.prod.outlook.com (2603:1096:400:71::13)
+ by SEZPR02MB7038.apcprd02.prod.outlook.com (2603:1096:101:19e::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.47; Mon, 16 Oct
+ 2023 08:36:31 +0000
+Received: from TYZPR02MB5088.apcprd02.prod.outlook.com
+ ([fe80::21da:6305:19cc:e3a2]) by TYZPR02MB5088.apcprd02.prod.outlook.com
+ ([fe80::21da:6305:19cc:e3a2%5]) with mapi id 15.20.6886.034; Mon, 16 Oct 2023
+ 08:36:31 +0000
+From:   "Puliang Lu(Puliang)" <puliang.lu@fibocom.com>
+To:     Johan Hovold <johan@kernel.org>
+CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] USB: serial: option: add Fibocom to DELL custom modem
+ FM101R-GL
+Thread-Topic: [PATCH] USB: serial: option: add Fibocom to DELL custom modem
+ FM101R-GL
+Thread-Index: AdoAC8neuvNF559JQeKhKfAD3poYzQ==
+Date:   Mon, 16 Oct 2023 08:36:30 +0000
+Message-ID: <TYZPR02MB5088B70C88A3751EC69819E289D7A@TYZPR02MB5088.apcprd02.prod.outlook.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=fibocom.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYZPR02MB5088:EE_|SEZPR02MB7038:EE_
+x-ms-office365-filtering-correlation-id: 3d0e5fb3-62f5-4e36-89ec-08dbce22ff48
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 7dCP9fNkcHR3oYM004J/ByS9bdA8KwgNPbRuxxIFVJt09sQCCWRqZ7qtycAkLE2OHI5a3MtT1IrzT/s+SHqZNHlILZrrdYIIlFvvTNgjboiYTw514iFAzXw3aVG8CrSl/7nb/vrEpt0QYsKMrkEKU/iaxpB650gwWsC/YIFlxYCR23bysBMb1TNahW2QQOeVW6abAXB5Ztlaw/d8aXIgbvV8VZlTFA/agylT1U6sa/YiDVaxq1hPXA+mbMWKoqjLPcWqgK5eEiKXOM+DB3mcnv+7isHVj61dFVK4F7SH6jMSjT7yHD/7o6k0n070UgQfj+00GxlLryBvUX8RskWIjx5qNf7FkxUcILnS4TrG5u1N2+F4sIpAYNCawTzafYtBut/qo7QDbVryQUsp6iPAdRaATriUkN4yoP40nk757TXspO61ZyBSBAJAy+sdPPLZJkQp4JEN2fkhemKcijQR8K0VMaE6pi1xgYt1nXZ2KUqtyvzb1Glqm1F6JJav/Dpc2HOTDBDO6y9J5O6+iV6X8lzg09xLMxrIMF7+Fw8shxes6Ebntc4bztJfmPvt8DRHNNW58hoa3kpq8wAPgeowB4pkQ6jDngxOAuIMkuKXLJF0w13YYZqjBTjFAXliO3Jt
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR02MB5088.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(366004)(346002)(396003)(39850400004)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(55016003)(478600001)(66446008)(76116006)(66946007)(66476007)(66556008)(6916009)(71200400001)(7696005)(122000001)(86362001)(54906003)(83380400001)(316002)(64756008)(9686003)(26005)(38100700002)(6506007)(38070700005)(33656002)(2906002)(8936002)(52536014)(8676002)(41300700001)(5660300002)(4326008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bkZtUEhtM0VGVEdGWXpLMUVhenJNakZOTWhGUmpUS3ZYSkxZOEZlaUVhVE1k?=
+ =?utf-8?B?Nmg3dXFjR0g4S3lzOGtvZzQ3T0NtdWRVMklxN3NvTlFpNXZ5dm1hQ1BEdmla?=
+ =?utf-8?B?WENVQk9aRGwzSGJWS1J1eS9lN2dsYXNQZUYvSmMzTWNyM1MrTEdMVlJhSXda?=
+ =?utf-8?B?OW4weGNOaWsyckc5RmV6b0hJSndnMG5jeitXU2lmN0lqNTdMMmo2UVFqTzZz?=
+ =?utf-8?B?RW9wZ3ZxN3RHWlNHMi92NGR3WHNFZE40QWJMQTlGdDNYM05jTUlyOGtTaUZX?=
+ =?utf-8?B?N0RPbUFvd0FoZjdwdGVtZUhFRVE2dVU1cTFxMlk1dy9iUDZpbkZudmdPMStX?=
+ =?utf-8?B?NGg3bENuTDZIUTljSi9FdFQrTElSaXMrbmJjckFJU1lEYUpBckppdERrWjkw?=
+ =?utf-8?B?Nkp4V3loODBjZWtuVmxKUnJLdGphaWt1NEtEV2lGUFh6L3E1M0dVRWRrZWJC?=
+ =?utf-8?B?N081NXkrbE1EWnp2Vjg5UzZNRUVvUGt5SHB6NmJTSnl3dGYyOTdMYUlDNVI2?=
+ =?utf-8?B?TWVVNVRFZWhpdXRSWnBRZ0QyYm9rWWFrZGcrUThiTFZIN3dqUVAzeHlkQzFs?=
+ =?utf-8?B?aHZkNzNyK1VPM2d6Rno5UnpZbEJRZ3RMV0dld2cvemRKTytoNUE0SHlOS291?=
+ =?utf-8?B?RmNwNHYzM051REN1R09qRktKcFUvZi81UjRFbVBnRkZpVDJjR2hiTkYvd3Bu?=
+ =?utf-8?B?WGY3NzlmdFVWZWo2cHJaWlVMQ3JONm9pL2hoUFJ0VDQvVTFKNXhXUWRUa3Fv?=
+ =?utf-8?B?U1ZCQXpseXZBakU5MjM2dnlDTk9UZWJBVUtpbWV3Wk9WQS9uNVNpVWgwd3or?=
+ =?utf-8?B?OE8zTVBvUGlIK0ZKOGtDQW4rRWtsVHdEbnJYa0dsbFJTM0Y5VVFKcndJYVNE?=
+ =?utf-8?B?a3JueDJGaVFiQnpzeWt4YXdwT0M2aFhFZk9DdlM4dXFWYmxMaFVucEI1OEt1?=
+ =?utf-8?B?QkdYZVFzL25aTTJyKzcrWWdOZ2U3dzUzWStFby9CRDNMd3VYdXgzdStPamFp?=
+ =?utf-8?B?ZHIvWXoyZGljbWRRQWNFejd4ZmFEbkU4dFp3YktrTG1ISjRDU1BINm5wbWQx?=
+ =?utf-8?B?bkdEUng3UTh2eSt5aWJNSDcrMXNGM3dCQTI0dndvS1hiWDh6OFpML0ppRUhh?=
+ =?utf-8?B?ZndsR3JzclJScjhwZEtZUUNSM0xGSkFCMG9kcHFUb2wvU1A2OHVSOE1CejN4?=
+ =?utf-8?B?WEtINEQxb000c3MweUJOOFdPcVVPVnlteXFkUlVrNmplclVvaXRybEVkdDZ3?=
+ =?utf-8?B?TVp3OTc0NDh1OVp0Z2dWMjIwVUVNUmRuL09IMFhsRGgyYjI3OWN2eU1vYU9a?=
+ =?utf-8?B?ZHBlNVJOMEppSVdNa0NvOXRFWFlPT2xzUnladWR0OVVLRlFpU3I4dTl1U1Y1?=
+ =?utf-8?B?M2pEOFhld0E3bmV2WXZ4ekhPNmhmRGhBZUx3VFo1WlhWcEV6Qm9aR1JWeU5n?=
+ =?utf-8?B?alJpaVVxaUNKZ3lQVTFHd2lLd2lxWnZaaG4wMW9DRElCN2xMT1pJTDEybGMv?=
+ =?utf-8?B?cEc2WmliNHhka1Y4K2UxMW5sQU5yTXo1cGpTWWFWY2FobThPalZJQkIxMWw3?=
+ =?utf-8?B?cC93RlhIVUk3cU1lakZsakdNc2NZQ3dsOFZZaVpyV0w5UEtJSXArSUxoMzJE?=
+ =?utf-8?B?SkJ6bDhvNDNrTFZWdlJLSkN0dUdPOWhRV0NzeGFiWjBDcEpuZkt4SzRXQmFt?=
+ =?utf-8?B?Q3AwY21LdlBYU2NObEZwWTVXck0zNVdMajU1Zy82SDllQTJGTHArdU9WZ3dw?=
+ =?utf-8?B?eWt6WVdKVlA0QzYzczFqQ1FqTVhDQTIyOU9lSTlzdXZNNFFQcWZiS0ZIeG5T?=
+ =?utf-8?B?U3N0WGhWcFRMQlRvQllnQlozM3FBTmhHK25SNWhOektDM25VOHhQdmVhWGc4?=
+ =?utf-8?B?bUxZS3g0UVdzd0VML2pQQ1pPUW5zcmZuUGM0MDlGY3NSZnhTeFdoekhvMTZh?=
+ =?utf-8?B?MHJTYzY1QTVaYVcycnhYWWVBTG9TbFAzV2pzMTM5L2xVRWVNSWVwR0p2YlYz?=
+ =?utf-8?B?N0VaSlVUYUxaZUU3QklFbjkxSkdBTmd6TWk5UXNPZU5ZOEJ4V0JaWGpmUE1O?=
+ =?utf-8?B?MFQweHNhQUFna0ZqdkJ2M2VPTlAzbTJudU5Wd2EvekphN0tqSStkUk9TSW02?=
+ =?utf-8?Q?A8sisyCu3fkhtM9/FngN5oYYg?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 7/9] arm64: dts: mediatek: Introduce MT8186 Steelix
-To:     Chen-Yu Tsai <wenst@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231012230237.2676469-1-wenst@chromium.org>
- <20231012230237.2676469-8-wenst@chromium.org>
-Content-Language: en-US
-From:   Eugen Hristev <eugen.hristev@collabora.com>
-In-Reply-To: <20231012230237.2676469-8-wenst@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: fibocom.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR02MB5088.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3d0e5fb3-62f5-4e36-89ec-08dbce22ff48
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Oct 2023 08:36:31.0207
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 889bfe61-8c21-436b-bc07-3908050c8236
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: x8ws7Rp7UiYo9VDhwpq0FGYto+/lSy/uSWJ3qP1/rdOaSaezm4By/GxxdEjKBZwmHoWP728Wq0wwSE7tlxxb8Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR02MB7038
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/23 02:02, Chen-Yu Tsai wrote:
-> The MT8186 Steelix, also known as the Lenovo 300e Yoga Chromebook Gen 4,
-> is a convertible device based on a common design of the same name. The
-> device comes in different variants. Of them, whether a world facing
-> camera is integrated is the only differentiating factor between the
-> two device trees added. The different SKU IDs describe this alone.
-> 
-> The other device difference is the touchpad component used. This is
-> simply handled by having both possible components described in the
-> device tree, and letting the implementation figure out which one is
-> actually available. The system bootloader / firmware does not
-> differentiate this in that they share the same SKU IDs.
-> 
-> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-> ---
->   arch/arm64/boot/dts/mediatek/Makefile         |   2 +
->   .../mt8186-corsola-steelix-sku131072.dts      |  18 ++
->   .../mt8186-corsola-steelix-sku131073.dts      |  18 ++
->   .../dts/mediatek/mt8186-corsola-steelix.dtsi  | 197 ++++++++++++++++++
->   4 files changed, 235 insertions(+)
->   create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix-sku131072.dts
->   create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix-sku131073.dts
->   create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix.dtsi
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
-> index 442af61b1305..7bd9471b89f9 100644
-> --- a/arch/arm64/boot/dts/mediatek/Makefile
-> +++ b/arch/arm64/boot/dts/mediatek/Makefile
-> @@ -43,6 +43,8 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-kodama-sku32.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku0.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku176.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-pumpkin.dtb
-> +dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-steelix-sku131072.dtb
-> +dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-steelix-sku131073.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-tentacool-sku327681.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-tentacool-sku327683.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-tentacruel-sku262144.dtb
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix-sku131072.dts b/arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix-sku131072.dts
-> new file mode 100644
-> index 000000000000..eae17bca8585
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix-sku131072.dts
-> @@ -0,0 +1,18 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Copyright 2022 Google LLC
-> + */
-> +
-> +/dts-v1/;
-> +#include "mt8186-corsola-steelix.dtsi"
-> +
-> +/ {
-> +	model = "Google Steelix board";
-> +	compatible = "google,steelix-sku131072", "google,steelix",
-> +		     "mediatek,mt8186";
-> +	chassis-type = "convertible";
-> +};
-> +
-> +&mt6366codec {
-> +	mediatek,dmic-mode = <0>; /* two-wire */
-> +};
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix-sku131073.dts b/arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix-sku131073.dts
-> new file mode 100644
-> index 000000000000..a55375b95d0d
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix-sku131073.dts
-> @@ -0,0 +1,18 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Copyright 2022 Google LLC
-> + */
-> +
-> +/dts-v1/;
-> +#include "mt8186-corsola-steelix.dtsi"
-> +
-> +/ {
-> +	model = "Google Steelix board";
-> +	compatible = "google,steelix-sku131073", "google,steelix",
-> +		     "mediatek,mt8186";
-> +	chassis-type = "convertible";
-> +};
-> +
-> +&mt6366codec {
-> +	mediatek,dmic-mode = <1>; /* one-wire */
-> +};
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix.dtsi b/arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix.dtsi
-> new file mode 100644
-> index 000000000000..8488f2f9dc4d
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix.dtsi
-> @@ -0,0 +1,197 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Copyright 2023 Google LLC
-> + */
-> +
-> +/dts-v1/;
-> +#include "mt8186-corsola.dtsi"
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/input/input.h>
-> +
-> +/{
-> +	pp1000_edpbrdg: regulator-pp1000-edpbrdg {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "pp1000_edpbrdg";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&en_pp1000_edpbrdg>;
-> +		enable-active-high;
-> +		regulator-boot-on;
-> +		gpio = <&pio 29 GPIO_ACTIVE_HIGH>;
-> +		vin-supply = <&pp3300_z2>;
-> +	};
-> +
-> +	pp1800_edpbrdg_dx: regulator-pp1800-edpbrdg-dx {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "pp1800_edpbrdg_dx";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&en_pp1800_edpbrdg>;
-> +		enable-active-high;
-> +		regulator-boot-on;
-> +		gpio = <&pio 30 GPIO_ACTIVE_HIGH>;
-> +		vin-supply = <&mt6366_vio18_reg>;
-> +	};
-> +
-> +	pp3300_edp_dx: regulator-pp3300-edp-dx {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "pp3300_edp_dx";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&en_pp3300_edpbrdg>;
-> +		enable-active-high;
-> +		regulator-boot-on;
-> +		gpio = <&pio 31 GPIO_ACTIVE_HIGH>;
-> +		vin-supply = <&pp3300_z2>;
-> +	};
-> +};
-> +
-> +&dsi_out {
-> +	remote-endpoint = <&anx7625_in>;
-> +};
-> +
-> +&i2c0 {
-> +	clock-frequency = <400000>;
-> +
-> +	anx_bridge: anx7625@58 {
-> +		compatible = "analogix,anx7625";
-> +		reg = <0x58>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&anx7625_pins>;
-> +		enable-gpios = <&pio 96 GPIO_ACTIVE_HIGH>;
-> +		reset-gpios = <&pio 98 GPIO_ACTIVE_HIGH>;
-> +		vdd10-supply = <&pp1000_edpbrdg>;
-> +		vdd18-supply = <&pp1800_edpbrdg_dx>;
-> +		vdd33-supply = <&pp3300_edp_dx>;
-> +		analogix,lane0-swing = /bits/ 8 <0x70 0x30>;
-> +		analogix,lane1-swing = /bits/ 8 <0x70 0x30>;
-> +
-> +		ports {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			port@0 {
-> +				reg = <0>;
-> +
-> +				anx7625_in: endpoint {
-> +					remote-endpoint = <&dsi_out>;
-> +					data-lanes = <0 1 2 3>;
-> +				};
-> +			};
-> +
-> +			port@1 {
-> +				reg = <1>;
-> +
-> +				anx7625_out: endpoint {
-> +					remote-endpoint = <&panel_in>;
-> +				};
-> +			};
-> +		};
-> +
-> +		aux-bus {
-> +			panel: panel {
-> +				compatible = "edp-panel";
-> +				power-supply = <&pp3300_disp_x>;
-> +				backlight = <&backlight_lcd0>;
-> +
-> +				port {
-> +					panel_in: endpoint {
-> +						remote-endpoint = <&anx7625_out>;
-> +					};
-> +				};
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&i2c1 {
-> +	touchscreen: touchscreen@5d {
-> +		compatible = "goodix,gt7375p";
-> +		reg = <0x5d>;
-> +		interrupts-extended = <&pio 12 IRQ_TYPE_EDGE_FALLING>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&touchscreen_pins>;
-> +		reset-gpios = <&pio 60 GPIO_ACTIVE_LOW>;
-> +		vdd-supply = <&pp3300_s3>;
-> +		goodix,no-reset-during-suspend;
-> +	};
-> +};
-> +
-> +&i2c2 {
-> +	i2c-scl-internal-delay-ns = <22000>;
-> +
-> +	/* second source component */
-> +	touchpad@2c {
-> +		compatible = "hid-over-i2c";
-> +		reg = <0x2c>;
-> +		hid-descr-addr = <0x20>;
-> +		interrupts-extended = <&pio 11 IRQ_TYPE_LEVEL_LOW>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&trackpad_pin>;
-> +		vdd-supply = <&pp3300_s3>;
-> +		wakeup-source;
-> +	};
-
-Hi Chen-Yu,
-
-This is not okay, the `trackpad_pin` is shared with touchpad@15 , and if 
-drivers are probed in parallel , this can lead to a conflict on this pin 
-(GPIO11)
-
-Eugen
-
-> +};
-> +
-> +&keyboard_controller {
-> +	function-row-physmap = <
-> +		MATRIX_KEY(0x00, 0x02, 0)	/* T1 */
-> +		MATRIX_KEY(0x03, 0x02, 0)	/* T2 */
-> +		MATRIX_KEY(0x02, 0x02, 0)	/* T3 */
-> +		MATRIX_KEY(0x01, 0x02, 0)	/* T4 */
-> +		MATRIX_KEY(0x03, 0x04, 0)	/* T5 */
-> +		MATRIX_KEY(0x02, 0x04, 0)	/* T6 */
-> +		MATRIX_KEY(0x01, 0x04, 0)	/* T7 */
-> +		MATRIX_KEY(0x02, 0x09, 0)	/* T8 */
-> +		MATRIX_KEY(0x01, 0x09, 0)	/* T9 */
-> +		MATRIX_KEY(0x00, 0x04, 0)	/* T10 */
-> +	>;
-> +
-> +	linux,keymap = <
-> +		MATRIX_KEY(0x00, 0x02, KEY_BACK)
-> +		MATRIX_KEY(0x03, 0x02, KEY_REFRESH)
-> +		MATRIX_KEY(0x02, 0x02, KEY_ZOOM)
-> +		MATRIX_KEY(0x01, 0x02, KEY_SCALE)
-> +		MATRIX_KEY(0x03, 0x04, KEY_BRIGHTNESSDOWN)
-> +		MATRIX_KEY(0x02, 0x04, KEY_BRIGHTNESSUP)
-> +		MATRIX_KEY(0x01, 0x04, KEY_MICMUTE)
-> +		MATRIX_KEY(0x02, 0x09, KEY_MUTE)
-> +		MATRIX_KEY(0x01, 0x09, KEY_VOLUMEDOWN)
-> +		MATRIX_KEY(0x00, 0x04, KEY_VOLUMEUP)
-> +		CROS_STD_MAIN_KEYMAP
-> +	>;
-> +};
-> +
-> +&pio {
-> +	anx7625_pins: anx7625-pins {
-> +		pins1 {
-> +			pinmux = <PINMUX_GPIO96__FUNC_GPIO96>,
-> +				 <PINMUX_GPIO98__FUNC_GPIO98>;
-> +			output-low;
-> +		};
-> +
-> +		pins2 {
-> +			pinmux = <PINMUX_GPIO9__FUNC_GPIO9>;
-> +			input-enable;
-> +			bias-disable;
-> +		};
-> +	};
-> +
-> +	en_pp1000_edpbrdg: pp1000-edpbrdg-en-pins {
-> +		pins {
-> +			pinmux = <PINMUX_GPIO29__FUNC_GPIO29>;
-> +			output-low;
-> +		};
-> +	};
-> +
-> +	en_pp1800_edpbrdg: pp1800-edpbrdg-en-pins {
-> +		pins {
-> +			pinmux = <PINMUX_GPIO30__FUNC_GPIO30>;
-> +			output-low;
-> +		};
-> +	};
-> +
-> +	en_pp3300_edpbrdg: pp3300-edpbrdg-en-pins {
-> +		pins {
-> +			pinmux = <PINMUX_GPIO31__FUNC_GPIO31>;
-> +			output-low;
-> +		};
-> +	};
-> +};
-
+DQpPbiBNb24sIE9jdCAxNiwgMjAyMyBhdCAwMzozNjoxNlBNICswODAwLCBMLemygeeSnuS6riB3
+cm90ZToNCj4+IEZyb206IFB1bGlhbmcgTHUgPHB1bGlhbmcubHVAZmlib2NvbS5jb20+DQo+Pg0K
+Pj4gVXBkYXRlIHRoZSBVU0Igc2VyaWFsIG9wdGlvbiBkcml2ZXIgc3VwcG9ydCBmb3IgdGhlIEZp
+Ym9jb20NCj4+IEZNMTAxUi1HTA0KPg0KPj4gVDogIEJ1cz0wNCBMZXY9MDEgUHJudD0wMSBQb3J0
+PTAxIENudD0wMSBEZXYjPSAgMiBTcGQ9NTAwMCBNeENoPSAwDQo+PiBEOiAgVmVyPSAzLjIwIENs
+cz0wMCg+aWZjICkgU3ViPTAwIFByb3Q9MDAgTXhQUz0gOSAjQ2Zncz0gIDENCj4+IFA6ICBWZW5k
+b3I9NDEzYyBQcm9kSUQ9ODIxMyBSZXY9IDUuMDQNCj4+IFM6ICBNYW51ZmFjdHVyZXI9Rmlib2Nv
+bSBXaXJlbGVzcyBJbmMuDQo+PiBTOiAgUHJvZHVjdD1GaWJvY29tIEZNMTAxLUdMIE1vZHVsZQ0K
+Pj4gUzogIFNlcmlhbE51bWJlcj1hM2I3Y2JmMA0KPj4gQzoqICNJZnM9IDMgQ2ZnIz0gMSBBdHI9
+YTAgTXhQd3I9ODk2bUENCj4+IEE6ICBGaXJzdElmIz0gMCBJZkNvdW50PSAyIENscz0wMihjb21t
+LikgU3ViPTBlIFByb3Q9MDANCj4+IEk6KiBJZiM9IDAgQWx0PSAwICNFUHM9IDEgQ2xzPTAyKGNv
+bW0uKSBTdWI9MGUgUHJvdD0wMCBEcml2ZXI9Y2RjX21iaW0NCj4+IEU6ICBBZD04MShJKSBBdHI9
+MDMoSW50LikgTXhQUz0gIDY0IEl2bD0zMm1zDQo+PiBJOiAgSWYjPSAxIEFsdD0gMCAjRVBzPSAw
+IENscz0wYShkYXRhICkgU3ViPTAwIFByb3Q9MDIgRHJpdmVyPWNkY19tYmltDQo+PiBJOiogSWYj
+PSAxIEFsdD0gMSAjRVBzPSAyIENscz0wYShkYXRhICkgU3ViPTAwIFByb3Q9MDIgRHJpdmVyPWNk
+Y19tYmltDQo+PiBFOiAgQWQ9OGUoSSkgQXRyPTAyKEJ1bGspIE14UFM9MTAyNCBJdmw9MG1zDQo+
+PiBFOiAgQWQ9MGYoTykgQXRyPTAyKEJ1bGspIE14UFM9MTAyNCBJdmw9MG1zDQo+PiBJOiogSWYj
+PSAyIEFsdD0gMCAjRVBzPSAzIENscz1mZih2ZW5kLikgU3ViPTAwIFByb3Q9NDAgRHJpdmVyPShu
+b25lKQ0KPj4gRTogIEFkPTgzKEkpIEF0cj0wMyhJbnQuKSBNeFBTPSAgMTAgSXZsPTMybXMNCj4+
+IEU6ICBBZD04MihJKSBBdHI9MDIoQnVsaykgTXhQUz0xMDI0IEl2bD0wbXMNCj4+IEU6ICBBZD0w
+MShPKSBBdHI9MDIoQnVsaykgTXhQUz0xMDI0IEl2bD0wbXMNCj4gDQo+IFRoYW5rcyBmb3IgcmVz
+ZW5kaW5nIHdpdGggdGhlIGF1dGhvciBhZGRyZXNzIGZpeGVkLg0KPiANCj4gWW91IGRpZCBob3dl
+dmVyIG5vdCBhbnN3ZXIgbXkgcXVlc3Rpb24gd2hldGhlciB0aGVyZSBjb3VsZCBldmVyIGJlIG1v
+cmUNCj4gdmVuZG9yIGNsYXNzIGludGVyZmFjZXMgKGUuZy4gZm9yIGFkYikgc28gdGhhdCB5b3Ug
+c2hvdWxkIGJlIHVzaW5nIGENCj4gbW9yZSBzcGVjaWZpYyBtYXRjaCBmb3IgdGhlIGVudHJpZXMg
+KGkuZS4gVVNCX0RFVklDRV9BTkRfSU5URVJGQUNFX0lORk8oKSk/DQoNCjB4ODIxMyBhbmQgMHg4
+MjE1IGhhdmUgb25seSBvbmUgbWJpbSBhbmQgb25lIHR0eSwgVGhhbmtzLg0KDQo+DQo+PiArCXsg
+VVNCX0RFVklDRV9JTlRFUkZBQ0VfQ0xBU1MoREVMTF9WRU5ET1JfSUQsIERFTExfUFJPRFVDVF9G
+TTEwMVIsIDB4ZmYpIH0sDQo+PiArCXsgVVNCX0RFVklDRV9JTlRFUkZBQ0VfQ0xBU1MoREVMTF9W
+RU5ET1JfSUQsIERFTExfUFJPRFVDVF9GTTEwMVJfRVNJTSwgMHhmZikgfSwNCj4NCj4gSm9oYW4N
+Cg==
