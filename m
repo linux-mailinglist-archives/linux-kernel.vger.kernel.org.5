@@ -2,214 +2,417 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E967C9E31
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 06:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 811077C9E44
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 06:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231487AbjJPEZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 00:25:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35738 "EHLO
+        id S231550AbjJPEcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 00:32:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbjJPEZC (ORCPT
+        with ESMTP id S229523AbjJPEcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 00:25:02 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56CB9D9;
-        Sun, 15 Oct 2023 21:24:57 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39G4CmPe022920;
-        Mon, 16 Oct 2023 04:24:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=zhMBRZQhgC83YjgI57bq83F+OxOjJ6pEhJ2qxA55s4w=;
- b=MeRQseu5pig90vGmK88mdTXasRRIj2iKuSLjnaqQgg4V/La3sDgZkkWq7H3CX/il+HB9
- qCl9+kNVkbesdZX1IKfFHjYmE6GAZIH4KiYrMdGtUrkhDBO8TotxqDrCOgr+x+tvoqPj
- 2peEqdZnZg5MRVYAC1i082ahwYdehL5s4MVk0uLHtFAtgm5LiQvExWD6qazhyImJtDB0
- dXBIgdt/CwfxlQ1o6txQyL+Lg9sFJyxradY3aDI9rlszCb7xH1yg+gOUZMrUd8jnsQs0
- u44U38w+8xF1ZRrbBvuPpTqysMo/LVm44eEwetMQaOLw/rcv3ItsptGmOX7hL1ngrK/d YA== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tqk2yu2p0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 16 Oct 2023 04:24:34 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39G4OXj2025448
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 16 Oct 2023 04:24:33 GMT
-Received: from [10.216.20.227] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Sun, 15 Oct
- 2023 21:24:26 -0700
-Message-ID: <5bf1a4c5-6902-690e-78da-648ca957c5cf@quicinc.com>
-Date:   Mon, 16 Oct 2023 09:54:23 +0530
+        Mon, 16 Oct 2023 00:32:23 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC8FD9;
+        Sun, 15 Oct 2023 21:32:18 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c5c91bec75so25548185ad.3;
+        Sun, 15 Oct 2023 21:32:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697430738; x=1698035538; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=UCFhBDvZjaXYckEiQSf07sabqV40haEdrThyu2LHxJk=;
+        b=bnEkZByCoi9CMYO3etNhiBW4S07RVLZq0/zN1D61rfSt5xPR45k58Z95aA/k4WWvSE
+         1A1AvwGtr0tY7CQEylbEOruoJ9o5qv5t4spS/9jU+c7NUa0pyYUWUsEmA8XHTad35SDf
+         I0F0lJAh5jcoa+x2NWpu+u0j/pymylRT9/AOIsuTXMCmXGsZxTgpzqPUrGYsaTdBnuOb
+         yhvqfVpE3nzUW9SIwks4/QH8Y0IsaMrvMfHPTulabJ3cGQd1Vxr7bjzeRi/Zit90iGFL
+         YuUeaGX4SOijq3bRTUGqnQFfcJhldWA6pTgUKf/samXL8oSM1pCY00BuL7SrcEKDZVjt
+         7l6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697430738; x=1698035538;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UCFhBDvZjaXYckEiQSf07sabqV40haEdrThyu2LHxJk=;
+        b=ex5SPqgLbFXOQqQwLyoLWhs6UfjCVlXcZxnsVya4SFbGyBDQLQmX6QToehF8v+xND4
+         gCOZY8LpKFZn/GLwWnNJrQ84yQ0Jk/c/q03WRF9WiQ62D50/+NE+KioagUyEp2jdiROO
+         0hDi9E0G9ZyEut7trEh9WZdv7z2BiBHiqjGW1s4LsNSSfQi+g13/hWWrhDMyI4bx7YoZ
+         uTi1kqVR2DbYWBsYCnHVkXhIYThHEcQpg/eDmViM4jOMvMQoftFSJveNIByHuqCgnKUl
+         EAN25eOCRAV3jukAVjJFAqmTyUFC/0itLHHJQlZRvTGHWMafaGA8MTl/651eUHW0vsBw
+         Mrcw==
+X-Gm-Message-State: AOJu0YxDhGeu8WHOisSjgYQ0t8V7WuwzKvuYJoFMCpzYcpD7WIag2ieZ
+        LoGdNN6M1b20eM/1pIeyDEo=
+X-Google-Smtp-Source: AGHT+IGMLjXLlV1frys+1PBR1G3La+RmiogYkszbwFdsl9I70A+rIfQZSglO1xAQSf7YYbmnqQsOEQ==
+X-Received: by 2002:a17:903:248:b0:1c4:72c9:64fc with SMTP id j8-20020a170903024800b001c472c964fcmr32443185plh.22.1697430737483;
+        Sun, 15 Oct 2023 21:32:17 -0700 (PDT)
+Received: from [172.19.1.47] (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
+        by smtp.gmail.com with ESMTPSA id j2-20020a170902da8200b001bc676df6a9sm7423020plx.132.2023.10.15.21.32.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 15 Oct 2023 21:32:17 -0700 (PDT)
+Message-ID: <17a80031-98bf-48bf-8cea-c0ca4400f142@gmail.com>
+Date:   Mon, 16 Oct 2023 12:32:14 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v1 1/5] dt-bindings: PCI: qcom-ep: Add support for SA8775P
- SoC
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     Shazad Hussain <quic_shazhuss@quicinc.com>,
-        Rob Herring <robh@kernel.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <konrad.dybcio@linaro.org>,
-        <mani@kernel.org>, <quic_nitegupt@quicinc.com>,
-        <quic_ramkri@quicinc.com>, <quic_nayiluri@quicinc.com>,
-        <quic_krichai@quicinc.com>, <quic_vbadigan@quicinc.com>,
-        <quic_parass@quicinc.com>, Bjorn Helgaas <bhelgaas@google.com>,
-        "Lorenzo Pieralisi" <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <mhi@lists.linux.dev>,
-        <linux-phy@lists.infradead.org>
-References: <1695218113-31198-1-git-send-email-quic_msarkar@quicinc.com>
- <1695218113-31198-2-git-send-email-quic_msarkar@quicinc.com>
- <20230921183850.GA762694-robh@kernel.org>
- <28bf111f-b965-4d38-884b-bc3a0b68a6cc@quicinc.com>
- <8effa7e5-a223-081b-75b8-7b94400d42e6@quicinc.com>
- <CAA8EJpp+3_A-9YXF1yOKdFweVKqrpTxvxKoJcUH6qiDHfCQ-dQ@mail.gmail.com>
- <31e6aab6-73f9-a421-9dfa-292d9d0e9649@quicinc.com>
- <CAA8EJprSxKXjZTH8tCHGvw4zBp_H-DunS9v9kvp=aFRNd55OhA@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+From:   Jacky Huang <ychuang570808@gmail.com>
+Subject: Re: [PATCH 2/4] dt-bindings: pinctrl: Document nuvoton ma35d1 pin
+ control
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linus.walleij@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        p.zabel@pengutronix.de, j.neuschaefer@gmx.net
+Cc:     linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        schung@nuvoton.com, Jacky Huang <ychuang3@nuvoton.com>
+References: <20231011090510.114476-1-ychuang570808@gmail.com>
+ <20231011090510.114476-3-ychuang570808@gmail.com>
+ <7800b2d6-33c4-4c4f-8d0c-c11ff0e47535@linaro.org>
 Content-Language: en-US
-From:   Mrinmay Sarkar <quic_msarkar@quicinc.com>
-In-Reply-To: <CAA8EJprSxKXjZTH8tCHGvw4zBp_H-DunS9v9kvp=aFRNd55OhA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: OwZgvf68Whj3ddHOjYGqAAzLq7KNoa59
-X-Proofpoint-ORIG-GUID: OwZgvf68Whj3ddHOjYGqAAzLq7KNoa59
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-15_09,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=999 mlxscore=0 clxscore=1015 phishscore=0 bulkscore=0
- impostorscore=0 adultscore=0 malwarescore=0 lowpriorityscore=0
- priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2309180000 definitions=main-2310160038
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <7800b2d6-33c4-4c4f-8d0c-c11ff0e47535@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Dear Krzysztof,
 
-On 10/13/2023 10:08 PM, Dmitry Baryshkov wrote:
-> On Fri, 13 Oct 2023 at 15:55, Mrinmay Sarkar <quic_msarkar@quicinc.com> wrote:
+Thank you for the review.
+
+
+On 2023/10/13 上午 03:41, Krzysztof Kozlowski wrote:
+> On 11/10/2023 11:05, Jacky Huang wrote:
+>> From: Jacky Huang<ychuang3@nuvoton.com>
 >>
->> On 10/11/2023 5:13 PM, Dmitry Baryshkov wrote:
->>> On Wed, 11 Oct 2023 at 14:14, Mrinmay Sarkar <quic_msarkar@quicinc.com> wrote:
->>>> On 10/6/2023 4:24 PM, Shazad Hussain wrote:
->>>>> On 9/22/2023 12:08 AM, Rob Herring wrote:
->>>>>> On Wed, Sep 20, 2023 at 07:25:08PM +0530, Mrinmay Sarkar wrote:
->>>>>>> Add devicetree bindings support for SA8775P SoC.
->>>>>>> Define reg and interrupt per platform.
->>>>>>>
->>>>>>> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
->>>>>>> ---
->>>>>>>     .../devicetree/bindings/pci/qcom,pcie-ep.yaml      | 130
->>>>>>> +++++++++++++++++----
->>>>>>>     1 file changed, 108 insertions(+), 22 deletions(-)
->>>>>>>
->>>>>>> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
->>>>>>> b/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
->>>>>>> index a223ce0..e860e8f 100644
->>>>>>> --- a/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
->>>>>>> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
->>>>>>> @@ -13,6 +13,7 @@ properties:
->>>>>>>       compatible:
->>>>>>>         oneOf:
->>>>>>>           - enum:
->>>>>>> +          - qcom,sa8775p-pcie-ep
->>>>>>>               - qcom,sdx55-pcie-ep
->>>>>>>               - qcom,sm8450-pcie-ep
->>>>>>>           - items:
->>>>>>> @@ -20,29 +21,19 @@ properties:
->>>>>>>               - const: qcom,sdx55-pcie-ep
->>>>>>>         reg:
->>>>>>> -    items:
->>>>>>> -      - description: Qualcomm-specific PARF configuration registers
->>>>>>> -      - description: DesignWare PCIe registers
->>>>>>> -      - description: External local bus interface registers
->>>>>>> -      - description: Address Translation Unit (ATU) registers
->>>>>>> -      - description: Memory region used to map remote RC address space
->>>>>>> -      - description: BAR memory region
->>>>>>> +    minItems: 6
->>>>>>> +    maxItems: 7
->>>>>>>         reg-names:
->>>>>>> -    items:
->>>>>>> -      - const: parf
->>>>>>> -      - const: dbi
->>>>>>> -      - const: elbi
->>>>>>> -      - const: atu
->>>>>>> -      - const: addr_space
->>>>>>> -      - const: mmio
->>>>>>> +    minItems: 6
->>>>>>> +    maxItems: 7
->>>>>> Don't move these into if/then schemas. Then we are duplicating the
->>>>>> names, and there is no reason to keep them aligned for new compatibles.
->>>>>>
->>>>>> Rob
->>>>> Hi Rob,
->>>>> As we have one extra reg property (dma) required for sa8775p-pcie-ep,
->>>>> isn't it expected to be moved in if/then as per number of regs
->>>>> required. Anyways we would have duplication of some properties for new
->>>>> compatibles where the member numbers differs for a property.
->>>>>
->>>>> Are you suggesting to add the extra reg property (dma) in the existing
->>>>> reg and reg-names list, and add minItems/maxItems for all compatibles
->>>>> present in this file ?
->>> This is what we have been doing in other cases: if the list is an
->>> extension of the current list, there is no need to duplicate it. One
->>> can use min/maxItems instead.
->> Hi Dmitry
+>> Add the dt-bindings header for nuvoton ma35d1 pinctrl, that gets shared
+>> between the pin control driver and pin configuration in the dts.
 >>
->> we have tried using min/maxItems rather than duplicating but somehow
->> catch up with some warnings in dt_bindings check
+>> Add documentation to describe nuvoton ma35d1 pin control and GPIO.
 >>
->> //local/mnt/workspace/Mrinmay/lemans/next-20230914/linux-next/out/Documentation/devicetree/bindings/pci/qcom,pcie-ep.example.dtb:
->> pcie-ep@1c00000: reg: [[29360128, 12288], [1073741824, 3869],
->> [1073745696, 200], [1073745920, 4096], [1073750016, 4096], [29372416,
->> 12288]] is too short//
->> //        from schema $id:
->> http://devicetree.org/schemas/pci/qcom,pcie-ep.yaml#//
->> ///local/mnt/workspace/Mrinmay/lemans/next-20230914/linux-next/out/Documentation/devicetree/bindings/pci/qcom,pcie-ep.example.dtb:
->> pcie-ep@1c00000: reg-names: ['parf', 'dbi', 'elbi', 'atu', 'addr_space',
->> 'mmio'] is too short//
->> //        from schema $id:
-> missing min/maxItems for reg and reg-names
->
->> http://devicetree.org/schemas/pci/qcom,pcie-ep.yaml#//
->> ///local/mnt/workspace/Mrinmay/lemans/next-20230914/linux-next/out/Documentation/devicetree/bindings/pci/qcom,pcie-ep.example.dtb:
->> pcie-ep@1c00000: interrupts: [[0, 140, 4], [0, 145, 4]] is too short//
->> //        from schema $id:
->> http://devicetree.org/schemas/pci/qcom,pcie-ep.yaml#//
->> ///local/mnt/workspace/Mrinmay/lemans/next-20230914/linux-next/out/Documentation/devicetree/bindings/pci/qcom,pcie-ep.example.dtb:
->> pcie-ep@1c00000: interrupt-names: ['global', 'doorbell'] is too short//
->> //        from schema $id:
->> http://devicetree.org/schemas/pci/qcom,pcie-ep.yaml#//
-> incorrect min/maxItems for interrupts.
-I am getting the same warnings even after correcting the min/maxItems 
-for interrupt.
-> -Mrinmay
->> //local/mnt/workspace/Mrinmay/lemans/next-20230914/linux-next/out/Documentation/devicetree/bindings/pci/qcom,pcie-ep.example.dtb:
->> pcie-ep@1c00000: interrupt-names: ['global', 'doorbell'] is too short/
+>> Signed-off-by: Jacky Huang<ychuang3@nuvoton.com>
+>> ---
+>>   .../pinctrl/nuvoton,ma35d1-pinctrl.yaml       | 180 ++++++++++++++++++
+>>   include/dt-bindings/pinctrl/ma35d1-pinfunc.h  |  38 ++++
+>>   2 files changed, 218 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/pinctrl/nuvoton,ma35d1-pinctrl.yaml
+>>   create mode 100644 include/dt-bindings/pinctrl/ma35d1-pinfunc.h
 >>
->> added the patch in attachment.
->>
->> --Mrinmay
->>
->>>>> -Shazad
->>>> Here we have defined reg and interrupt per platform as clocks is defined.
->>>>
->>>> -Mrinmay
->>>>
+>> diff --git a/Documentation/devicetree/bindings/pinctrl/nuvoton,ma35d1-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/nuvoton,ma35d1-pinctrl.yaml
+>> new file mode 100644
+>> index 000000000000..0ddedbad4b78
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/pinctrl/nuvoton,ma35d1-pinctrl.yaml
+>> @@ -0,0 +1,180 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id:http://devicetree.org/schemas/pinctrl/nuvoton,ma35d1-pinctrl.yaml#
+>> +$schema:http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Nuvoton MA35D1 pin control and GPIO
+>> +
+>> +maintainers:
+>> +  - Shan-Chun Hung<schung@nuvoton.com>
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - nuvoton,ma35d1-pinctrl
+>> +
+>> +  '#address-cells':
+>> +    const: 1
+>> +
+>> +  '#size-cells':
+>> +    const: 1
+>> +
+>> +  nuvoton,sys:
+>> +    description:
+>> +      phandle to the syscon node
+> sys is quite generic. Description explains nothing except duplicating
+> known information. Drop duplicated info and instead explain to what this
+> phandle points and how it is going to be used.
 >
 >
+>> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+>> +    items:
+>> +      maxItems: 1
+> So just phandle, not phandle-array, unless it is defined like this in
+> some other binding.
+
+I would like to update this as:
+
+   nuvoton,sys:
+     $ref: /schemas/types.yaml#/definitions/phandle
+     description:
+       Help pinctrl driver to access system registers by means of regmap.
+
+
+
+>> +
+>> +  ranges: true
+>> +
+>> +allOf:
+>> +  - $ref: pinctrl.yaml#
+> allOf: goes after required: block.
+
+I will fix it.
+
+>> +
+>> +patternProperties:
+>> +  "gpio[a-n]@[0-9a-f]+$":
+> ^gpio@[0-9a-f]+$":
+
+I will fix this, and also fix the dtsi.
+
+>> +    type: object
+>> +    additionalProperties: false
+>> +    properties:
+>> +
+> Drop blank line
+
+I will fix it.
+
+>> +      gpio-controller: true
+>> +
+>> +      '#gpio-cells':
+>> +        const: 2
+>> +
+>> +      reg:
+>> +        maxItems: 1
+>> +
+>> +      clocks:
+>> +        maxItems: 1
+>> +
+>> +      interrupt-controller: true
+>> +
+>> +      '#interrupt-cells':
+>> +        const: 2
+>> +
+>> +      interrupts:
+>> +        description:
+>> +          The interrupt outputs to sysirq.
+>> +        maxItems: 1
+>> +
+>> +    required:
+>> +      - reg
+>> +      - interrupts
+>> +      - interrupt-controller
+>> +      - '#interrupt-cells'
+>> +      - gpio-controller
+>> +      - '#gpio-cells'
+> Keep the same order as in list of properties.
+
+I will fix the order.
+
+>> +
+>> +  "pcfg-[a-z0-9-.]+$":
+> Why using different naming than other Nuvoton SoCs? You also accept
+> "foobarpcfg-1", which does not look intentional.
+>
+
+I will use '"^pin-[a-z0-9-.]+$" instead.
+
+
+>> +    type: object
+>> +    description:
+>> +      A pinctrl node should contain at least one subnodes representing the
+>> +      pinctrl groups available on the machine. Each subnode will list the
+>> +      pins it needs, and how they should be configured, with regard to muxer
+>> +      configuration, pullups, drive strength, input enable/disable and input
+>> +      schmitt.
+>> +
+>> +    allOf:
+>> +      - $ref: pincfg-node.yaml#
+> missing additional/unevaluatedProperties: false.
+
+I will add unevaluatedProperties: false.
+
+>> +
+>> +    properties:
+>> +      bias-disable: true
+> Why do you need this and other ones?
+
+We expect the pin configuration to select one of ==>
+bias-disable;
+bias-pull-down;
+bias-pull-up;
+
+This is the same as rockchip,pinctrl.yaml and renesas,rzv2m-pinctrl.yaml.
+
+>> +
+>> +      bias-pull-down: true
+>> +
+>> +      bias-pull-up: true
+>> +
+>> +      drive-strength:
+>> +        minimum: 0
+> 0 mA? Is it really valid? Are you sure you used correct property?
+
+We treat this value as the value to be written to the control register, 
+not as
+a current value in mA. I will correct this mistake.
+
+>> +        maximum: 7
+>> +
+>> +      input-enable: true
+>> +
+>> +      input-schmitt-enable: true
+>> +
+>> +      power-source:
+>> +        description:
+>> +          I/O voltage in millivolt.
+>> +        enum: [ 1800, 3300 ]
+> Missing units in property name. power-source also does not really
+> describe the property.
+
+
+The output voltage level of GPIO can be configured as 1.8V or 3.3V,
+but I cannot find any suitable output properties in 'pincfg-node.yaml.'
+I noticed that 'xlnx,zynq-pinctrl.yaml' and 'xlnx,zynq-pinctrl.yaml' use
+'power source' to specify the output voltage.  Should I follow their
+approach or define a vendor-specific one?
+
+
+>> +
+>> +additionalProperties:
+>> +  type: object
+>> +  additionalProperties:
+>> +    type: object
+> Wait, what? What are you describing here?
+
+I will fix it as:
+
+   "-grp[0-9]$":
+     type: object
+     description:
+       Pinctrl node's client devices use subnodes for desired pin 
+configuration.
+       Client device subnodes use below standard properties.
+     properties:
+       nuvoton,pins:
+       ....
+
+and fix the example dts also.
+
+>> +    properties:
+>> +      nuvoton,pin:
+>> +        description:
+>> +          Each entry consists of 4 parameters and represents the mux and config
+>> +          setting for one pin.
+>> +        $ref: /schemas/types.yaml#/definitions/uint32-matrix
+>> +        minItems: 1
+>> +        items:
+>> +          items:
+>> +            - minimum: 0x80
+>> +              maximum: 0xec
+>> +              description:
+>> +                The pinctrl register offset in syscon registers.
+>> +            - minimum: 0
+>> +              maximum: 30
+>> +              description:
+>> +                The bit offset in the pinctrl register.
+>> +            - minimum: 0
+>> +              maximum: 15
+>> +              description:
+>> +                The multi-function pin value.
+>> +            - description:
+>> +                The phandle of a node contains the generic pinconfig options
+>> +                to use as described in pinctrl-bindings.txt.
+>> +
+>> +examples:
+>> +  - |
+>> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+>> +    #include <dt-bindings/gpio/gpio.h>
+>> +    #include <dt-bindings/clock/nuvoton,ma35d1-clk.h>
+>> +    #include <dt-bindings/pinctrl/ma35d1-pinfunc.h>
+>> +
+>> +    pinctrl@40040000 {
+>> +        compatible = "nuvoton,ma35d1-pinctrl";
+>> +        #address-cells = <1>;
+>> +        #size-cells = <1>;
+>> +        nuvoton,sys = <&sys>;
+>> +        ranges = <0 0x40040000 0xc00>;
+>> +
+>> +        gpioa@40040000 {
+>> +                reg = <0x0 0x40>;
+>> +                interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
+>> +                clocks = <&clk GPA_GATE>;
+>> +                gpio-controller;
+>> +                #gpio-cells = <2>;
+>> +                interrupt-controller;
+>> +                #interrupt-cells = <2>;
+>> +        };
+>> +
+>> +        pcfg_default: pcfg-default {
+>> +                slew-rate = <0>;
+>> +                input-schmitt-disable;
+>> +                bias-disable;
+>> +                power-source = <3300>;
+>> +                drive-strength = <0>;
+> Really 0 mA?
+>
+> Why this is so incomplete?
+
+We treat this value as the value to be written to the control register, 
+not as
+a current value in mA. I will correct this mistake.
+
+>> +        };
+>> +    };
+>> +
+>> +    pinctrl {> +        uart13 {
+>> +                pinctrl_uart13: uart13grp {
+> According to your bindings this does not belong here.
+
+I will fix.
+
+>> +                        nuvoton,pins =
+>> +                                <MA35_SYS_REG_GPH_H 24 2 &pcfg_default>,
+>> +                                <MA35_SYS_REG_GPH_H 28 2 &pcfg_default>;
+>> +                };
+>> +        };
+>> +    };
+>> +
+>> +    serial@407d0000 {
+> Drop node, not related at all.
+
+Okay, I will drop this node.
+
+>> +        compatible = "nuvoton,ma35d1-uart";
+>> +        reg = <0x407d0000 0x100>;
+>> +        interrupts = <GIC_SPI 119 IRQ_TYPE_LEVEL_HIGH>;
+>> +        clocks = <&clk UART13_GATE>;
+>> +        pinctrl-0 = <&pinctrl_uart13>;
+>> +    };
+>> diff --git a/include/dt-bindings/pinctrl/ma35d1-pinfunc.h b/include/dt-bindings/pinctrl/ma35d1-pinfunc.h
+>> new file mode 100644
+>> index 000000000000..a2609d466dc9
+>> --- /dev/null
+>> +++ b/include/dt-bindings/pinctrl/ma35d1-pinfunc.h
+> Filename matching bindings. The same name.
+>
+>> @@ -0,0 +1,38 @@
+>> +/* SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause) */
+>> +/*
+>> + * Copyright (C) 2023 Nuvoton Technologies.
+>> + */
+>> +
+>> +#ifndef __DT_BINDINGS_PINCTRL_NUVOTON_MA35D1_H
+>> +#define __DT_BINDINGS_PINCTRL_NUVOTON_MA35D1_H
+>> +
+>> +#define MA35_SYS_REG_GPA_L	0x80
+> Registry addresses are not suitable for bindings. There is also no need
+> to have REG address in the binding. Drop entire file.
+>
+> Best regards,
+> Krzysztof
+>
+
+I will remove 'ma35d1-pinfunc.h' as it will be useless after the 
+'nuvoton,pin' definition changed. Best Regards, Jacky Huang
