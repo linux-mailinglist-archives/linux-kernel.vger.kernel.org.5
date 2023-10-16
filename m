@@ -2,163 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E17F7CB6AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 00:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF04C7CB6B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 00:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232345AbjJPWsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 18:48:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45628 "EHLO
+        id S234169AbjJPWuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 18:50:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233333AbjJPWsa (ORCPT
+        with ESMTP id S233874AbjJPWuH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 18:48:30 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425D2F9
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 15:48:23 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-6b2018a11e2so3758386b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 15:48:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697496502; x=1698101302; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=84aTo4Tf+aZUy0HcQ/Zqt9HQ4tRBchQvuwbCa4iyIjE=;
-        b=s/nWiyMENdy1hEDXEZO9QIdBcRB83YoiDaOJjVCPukUwiRsZ93UEmU/M18N246xNUC
-         TxzzQQQ+5f50/G8G1sjra8hC217UR+/ZugynQQtAmwx5bzkdRmWRyiLL8gclO52W9ORA
-         x+Y4jDXKpvqhJRSRYuq3GS8x39BxBefpwHRQMtfeROUX+zQoUAEanTiO8d3zvgUfoztQ
-         rFUnOuG6fxdcM4dyhv9WJpkrvCG+XqGHBvXJloxnKNeO6/a7XHpG9HSVPRDepQubgaFw
-         Q2GNJYD9UviNF7k82Lmc2lHlksAMoTw+W8dcTqLuI+jfYFRgcKME0RWtzK4GpvMmcFn+
-         oV5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697496502; x=1698101302;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=84aTo4Tf+aZUy0HcQ/Zqt9HQ4tRBchQvuwbCa4iyIjE=;
-        b=Tb1oSsBDxnY9VTlimZrIdschr+ymjMbJ/c2sLrRIp8xkdBtPmi7RbmY6LU+m3I4VnL
-         WH7HJ1g45bAKBoJyuCK0LofrnAAQnNJsRNDecjkXsnUJs1jdO0KosTSWPOExYhBHHn1C
-         7nktqMSpV16RauSWow77quyh1htApkQil0GY8mb8+R5JYzjZMqwQhn9vhaNf6N9UTeso
-         DobLV1+6soEc0uRH2THky3HAcRJwZDS5IhEo2W+4dPiw3wJ+UPx9URON2ZIhCFTdRERL
-         I0ulwlNMqxGDJsFWg6/DqxqRBX97en0u3/HniNNbpud+Rsoq3wYKuIyZh1Vw9fo9Qqdn
-         jYAg==
-X-Gm-Message-State: AOJu0Yw+k6i87Tame1BxdI0PdpAS07GnRJ/8zAmr1Ad9SeWLE+WdLjp7
-        tecDfCdHH7tlPaFZ4AWfTgg1d+49SxM=
-X-Google-Smtp-Source: AGHT+IF0TmBQ7Ykmhy2UUdvxRB8M72Fy7i6DMqyApsOvlfciXQg+hCzL0X1i1/bPqE+coJRrJ66yG2/lo0U=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:d5b:b0:68e:24fe:d9a with SMTP id
- n27-20020a056a000d5b00b0068e24fe0d9amr13672pfv.2.1697496502682; Mon, 16 Oct
- 2023 15:48:22 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 15:48:21 -0700
-In-Reply-To: <b3721f33-d5b0-79db-8500-d6b93dded0c1@oracle.com>
-Mime-Version: 1.0
-References: <ZSXqZOgLYkwLRWLO@google.com> <8f3493ca4c0e726d5c3876bb7dd2cfc432d9deaa.camel@infradead.org>
- <ZSmHcECyt5PdZyIZ@google.com> <cf2b22fc-78f5-dfb9-f0e6-5c4059a970a2@oracle.com>
- <ZSnSNVankCAlHIhI@google.com> <BD4C4E71-C743-4B79-93CA-0F3AC5423412@infradead.org>
- <993cc7f9-a134-8086-3410-b915fe5db7a5@oracle.com> <03afed7eb3c1e5f4b2b8ecfd8616ae5c6f1819e9.camel@infradead.org>
- <ZS2Fq5dr2CeZaBok@google.com> <b3721f33-d5b0-79db-8500-d6b93dded0c1@oracle.com>
-Message-ID: <ZS29teniU3xer0Xu@google.com>
-Subject: Re: [PATCH RFC 1/1] KVM: x86: add param to update master clock periodically
-From:   Sean Christopherson <seanjc@google.com>
-To:     Dongli Zhang <dongli.zhang@oracle.com>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        Joe Jin <joe.jin@oracle.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Mon, 16 Oct 2023 18:50:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F5EBEE
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 15:49:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697496543;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=pYRuDFtRQm/XEND8LuUsFc5Ssln/FFt05O1wZEMzWlU=;
+        b=cM2HwvFiyKYE/fTNqqIOVy87fMAOQDAcZklj0k23odSGFJXH8q8yQqZfIuFQ2ZB5fks2LU
+        d72MDJPUrz3Iya8vykX30hnTppgOMpXNi0fLXm7FDCPhyBqyddF7LfKgE+kk6tDbQpUtr4
+        Dv3Lh+FS4B1h5nc1+8dfnT4ZiAiDJO4=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-450-_ocvPLeEPPCEzcjLSzAh1Q-1; Mon, 16 Oct 2023 18:48:59 -0400
+X-MC-Unique: _ocvPLeEPPCEzcjLSzAh1Q-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7C9283C1E9C5;
+        Mon, 16 Oct 2023 22:48:59 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4AAA025C9;
+        Mon, 16 Oct 2023 22:48:59 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     kernel test robot <lkp@intel.com>
+Subject: [PATCH] x86/cpu: amd: fix warning in W=1 build
+Date:   Mon, 16 Oct 2023 18:48:58 -0400
+Message-Id: <20231016224858.2829248-1-pbonzini@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023, Dongli Zhang wrote:
-> Hi Sean,
-> 
-> On 10/16/23 11:49, Sean Christopherson wrote:
-> > Compile tested only, but the below should fix the vCPU hotplug case.  Then
-> > someone (not me) just needs to figure out why kvm_xen_shared_info_init() forces
-> > a masterclock update.
-> > 
-> > I still think we should clean up the periodic sync code, but I don't think we
-> > need to periodically sync the masterclock.
-> 
-> This looks good to me. The core idea is to not update master clock for the
-> synchronized cases.
-> 
-> 
-> How about the negative value case? I see in the linux code it is still there?
+Building with GCC 11.x results in the following warning:
 
-See below.  
+arch/x86/kernel/cpu/microcode/amd.c: In function ‘find_blobs_in_containers’:
+arch/x86/kernel/cpu/microcode/amd.c:504:58: error: ‘h.bin’ directive output may be truncated writing 5 bytes into a region of size between 1 and 7 [-Werror=format-truncation=]
+arch/x86/kernel/cpu/microcode/amd.c:503:17: note: ‘snprintf’ output between 35 and 41 bytes into a destination of size 36
 
-> (It is out of the scope of my expectation as I do not need to run vCPUs in
-> different tsc freq as host)
-> 
-> Thank you very much!
-> 
-> Dongli Zhang
-> 
-> > 
-> > ---
-> >  arch/x86/kvm/x86.c | 29 ++++++++++++++++-------------
-> >  1 file changed, 16 insertions(+), 13 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index c54e1133e0d3..f0a607b6fc31 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -2510,26 +2510,29 @@ static inline int gtod_is_based_on_tsc(int mode)
-> >  }
-> >  #endif
-> >  
-> > -static void kvm_track_tsc_matching(struct kvm_vcpu *vcpu)
-> > +static void kvm_track_tsc_matching(struct kvm_vcpu *vcpu, bool new_generation)
-> >  {
-> >  #ifdef CONFIG_X86_64
-> > -	bool vcpus_matched;
-> >  	struct kvm_arch *ka = &vcpu->kvm->arch;
-> >  	struct pvclock_gtod_data *gtod = &pvclock_gtod_data;
-> >  
-> > -	vcpus_matched = (ka->nr_vcpus_matched_tsc + 1 ==
-> > -			 atomic_read(&vcpu->kvm->online_vcpus));
-> > +	/*
-> > +	 * To use the masterclock, the host clocksource must be based on TSC
-> > +	 * and all vCPUs must have matching TSCs.  Note, the count for matching
-> > +	 * vCPUs doesn't include the reference vCPU, hence "+1".
-> > +	 */
-> > +	bool use_master_clock = (ka->nr_vcpus_matched_tsc + 1 ==
-> > +				 atomic_read(&vcpu->kvm->online_vcpus)) &&
-> > +				gtod_is_based_on_tsc(gtod->clock.vclock_mode);
-> >  
-> >  	/*
-> > -	 * Once the masterclock is enabled, always perform request in
-> > -	 * order to update it.
-> > -	 *
-> > -	 * In order to enable masterclock, the host clocksource must be TSC
-> > -	 * and the vcpus need to have matched TSCs.  When that happens,
-> > -	 * perform request to enable masterclock.
-> > +	 * Request a masterclock update if the masterclock needs to be toggled
-> > +	 * on/off, or when starting a new generation and the masterclock is
-> > +	 * enabled (compute_guest_tsc() requires the masterclock snaphot to be
-> > +	 * taken _after_ the new generation is created).
-> >  	 */
-> > -	if (ka->use_master_clock ||
-> > -	    (gtod_is_based_on_tsc(gtod->clock.vclock_mode) && vcpus_matched))
-> > +	if ((ka->use_master_clock && new_generation) ||
-> > +	    (ka->use_master_clock != use_master_clock))
-> >  		kvm_make_request(KVM_REQ_MASTERCLOCK_UPDATE, vcpu);
-> >  
-> >  	trace_kvm_track_tsc(vcpu->vcpu_id, ka->nr_vcpus_matched_tsc,
-> > @@ -2706,7 +2709,7 @@ static void __kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 offset, u64 tsc,
-> >  	vcpu->arch.this_tsc_nsec = kvm->arch.cur_tsc_nsec;
-> >  	vcpu->arch.this_tsc_write = kvm->arch.cur_tsc_write;
-> >  
-> > -	kvm_track_tsc_matching(vcpu);
-> > +	kvm_track_tsc_matching(vcpu, !matched);
+The issue is that GCC does not know that the family can only be a byte
+(it ultimately comes from CPUID).  Suggest the right size to the compiler
+by marking the argument as char-size ("hh").  While at it, instead of
+using the slightly more obscure precision specifier use the width with
+zero padding (over 23000 occurrences in kernel sources, vs 500 for
+the idiom using the precision).
 
-If my analysis of how the negative timestamp occurred is correct, the problematic
-scenario was if cur_tsc_nsec/cur_tsc_write were updated without a masterclock update.
-Passing !matched for @new_generation means that KVM will force a masterclock update
-if cur_tsc_nsec/cur_tsc_write are changed, i.e. prevent the negative timestamp bug.
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202308252255.2HPJ6x5Q-lkp@intel.com/
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/kernel/cpu/microcode/amd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/cpu/microcode/amd.c b/arch/x86/kernel/cpu/microcode/amd.c
+index bbd1dc38ea03..b4eea8a1f68a 100644
+--- a/arch/x86/kernel/cpu/microcode/amd.c
++++ b/arch/x86/kernel/cpu/microcode/amd.c
+@@ -501,7 +501,7 @@ static bool get_builtin_microcode(struct cpio_data *cp, unsigned int family)
+ 
+ 	if (family >= 0x15)
+ 		snprintf(fw_name, sizeof(fw_name),
+-			 "amd-ucode/microcode_amd_fam%.2xh.bin", family);
++			 "amd-ucode/microcode_amd_fam%02hhxh.bin", family);
+ 
+ 	if (firmware_request_builtin(&fw, fw_name)) {
+ 		cp->size = fw.size;
+-- 
+2.39.1
+
