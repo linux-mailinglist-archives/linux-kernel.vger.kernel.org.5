@@ -2,203 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 007357CAEB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E96E47CAFD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 18:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232578AbjJPQQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 12:16:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52518 "EHLO
+        id S234487AbjJPQiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 12:38:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232046AbjJPQQA (ORCPT
+        with ESMTP id S234469AbjJPQhh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 12:16:00 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D25A2AB
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 09:15:58 -0700 (PDT)
+        Mon, 16 Oct 2023 12:37:37 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C10BC4684;
+        Mon, 16 Oct 2023 09:20:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697472958; x=1729008958;
-  h=from:to:cc:subject:references:date:message-id:
-   mime-version;
-  bh=IL0j6fa/J+Pdym4pycSDPbJG2TE8cr/bjuyQ4VByXSg=;
-  b=aertb7TZB01MXZe+7uNFmB4Oj3CCXhm6Lg+dDVWO3zviuDkGiLsiOhCM
-   TotXf4wAWRyjNwJq7XhBeYUE7SpWXYVVTtN16NFqn7A8XvSiVF8/v1f2v
-   FZ/1sCjT8nfxTOEzpgQxivajmcs+sAcpEvm92CIZ5Wvr5Qo4fS49kq/VB
-   MWOH8HBp++/x1QrTwrA/88TkJ/nskoCMNR1h3MIBafFafo2xOE7yzCwfM
-   br6XMrriDBYHRUqYNX6d5sDqXWjtwyfV7d31Zp4H160/QdIGOdOpMI8R2
-   LXXMCcq4QRQWrdGMNLDtaCMijNrloP6dUOBi4YH6eT4LW9C/vPUjG4oiP
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="388429716"
+  t=1697473206; x=1729009206;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=jMjX3i5VILZd+3oydEMQ6MGtayaSTsJxSC4eSsm58dw=;
+  b=ai0vhFYLKo6zzRsoCC6WZG9c+CX6VU+KgxVDQd1l6/3Z3XQOgEs+vp/4
+   R1vxFzeItI9z3cu4s9QNx8Vy5N+Hu3Qa31ENa4Eu4UBZhtVsKgGwLYQPW
+   Hf+0IuVKXLYCKhqjshe1/ikJRsSHYM0WgTmRVsZXxkxFhHhJs/q0qdaXK
+   6SDvYXkBJ3qS/OoyeThn5S3R0BEZFjRieJNLVcp548Gv7Hp+FmEkA9LRd
+   JGDbxBj5ufCStms8JYhNU6EWuFOfMKDzljV5cv0frIUb902KK0isMKX6A
+   yig5BnDWHj0nNlfJE09EqxwzHm63shbqBwWS9CtpeNPIfGoWruDE7tHMq
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="364921999"
 X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="388429716"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 09:14:39 -0700
+   d="scan'208";a="364921999"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 09:16:01 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="755742516"
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="846448267"
 X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="755742516"
-Received: from kmwinsor-mobl1.amr.corp.intel.com (HELO jcompost-mobl.amr.corp.intel.com) ([10.213.181.210])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 09:14:36 -0700
-From:   "Compostella, Jeremy" <jeremy.compostella@intel.com>
-To:     <kirill.shutemov@linux.intel.com>
-Cc:     "Huang, Kai" <kai.huang@intel.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "Li, Xin3" <xin3.li@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>
-Subject: Re: [PATCH v3 1/2] x86/cpu/intel: Fix MTRR verification for TME
- enabled platforms
-References: <87a5t6ylpc.fsf@jcompost-mobl.amr.corp.intel.com>
-        <00392c722e65c8d0da40384eecf8955be4875969.camel@intel.com>
-        <20231002224752.33qa2lq7q2w4nqws@box>
-        <65d26d679843e26fd5e6252a08391f87243a49c9.camel@intel.com>
-        <20231003070659.hsjvnoc53agvms6c@box.shutemov.name>
-        <87edhyyvkp.fsf@jcompost-mobl.amr.corp.intel.com>
-        <20231014210125.iexeacn6p4naw5qz@box.shutemov.name>
-Date:   Mon, 16 Oct 2023 09:14:35 -0700
-Message-ID: <87a5sizgr8.fsf@jcompost-mobl.amr.corp.intel.com>
-Organization: Intel Corporation - 2200 Mission College Blvd. Santa Clara,
-        CA 95052. USA
+   d="scan'208";a="846448267"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 09:16:01 -0700
+From:   isaku.yamahata@intel.com
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
+        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+        Sean Christopherson <seanjc@google.com>,
+        Sagi Shahar <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
+        hang.yuan@intel.com, tina.zhang@intel.com
+Subject: [PATCH v16 084/116] KVM: TDX: handle EXIT_REASON_OTHER_SMI
+Date:   Mon, 16 Oct 2023 09:14:36 -0700
+Message-Id: <31a43bf32cb48b408ed447e93b06e2480ca9ab85.1697471314.git.isaku.yamahata@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1697471314.git.isaku.yamahata@intel.com>
+References: <cover.1697471314.git.isaku.yamahata@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-=-="
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Disposition: inline
+From: Isaku Yamahata <isaku.yamahata@intel.com>
 
-<kirill.shutemov@linux.intel.com> writes:
+If the control reaches EXIT_REASON_OTHER_SMI, #SMI is delivered and
+handled right after returning from the TDX module to KVM nothing needs to
+be done in KVM.  Continue TDX vcpu execution.
 
-> On Fri, Oct 13, 2023 at 04:03:02PM -0700, Compostella, Jeremy wrote:
->> "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com> writes:
->> > On Tue, Oct 03, 2023 at 02:06:52AM +0000, Huang, Kai wrote:
->> >> On Tue, 2023-10-03 at 01:47 +0300, kirill.shutemov@linux.intel.com wrote:
->> >> > On Fri, Sep 29, 2023 at 09:14:00AM +0000, Huang, Kai wrote:
->> >> > > On Thu, 2023-09-28 at 15:30 -0700, Compostella, Jeremy wrote:
->> >> > > > On TME enabled platform, BIOS publishes MTRR taking into account Total
->> >> > > > Memory Encryption (TME) reserved bits.
->> >> > > > 
->> >> > > > generic_get_mtrr() performs a sanity check of the MTRRs relying on the
->> >> > > > `phys_hi_rsvd' variable which is set using the cpuinfo_x86 structure
->> >> > > > `x86_phys_bits' field.  But at the time the generic_get_mtrr()
->> >> > > > function is ran the `x86_phys_bits' has not been updated by
->> >> > > > detect_tme() when TME is enabled.
->> >> > > > 
->> >> > > > Since the x86_phys_bits does not reflect yet the real maximal physical
->> >> > > > address size yet generic_get_mtrr() complains by logging the following
->> >> > > > messages.
->> >> > > > 
->> >> > > >     mtrr: your BIOS has configured an incorrect mask, fixing it.
->> >> > > >     mtrr: your BIOS has configured an incorrect mask, fixing it.
->> >> > > >     [...]
->> >> > > > 
->> >> > > > In such a situation, generic_get_mtrr() returns an incorrect size but
->> >> > > > no side effect were observed during our testing.
->> >> > > > 
->> >> > > > For `x86_phys_bits' to be updated before generic_get_mtrr() runs,
->> >> > > > move the detect_tme() call from init_intel() to early_init_intel().
->> >> > > 
->> >> > > Hi,
->> >> > > 
->> >> > > This move looks good to me, but +Kirill who is the author of detect_tme() for
->> >> > > further comments.
->> >> > > 
->> >> > > Also I am not sure whether it's worth to consider to move this to
->> >> > > get_cpu_address_sizes(), which calculates the virtual/physical address sizes. 
->> >> > > Thus it seems anything that can impact physical address size
->> >> > > could be put there.
->> >> > 
->> >> > Actually, I am not sure how this patch works. AFAICS after the patch we
->> >> > have the following callchain:
->> >> > 
->> >> > early_identify_cpu()
->> >> >   this_cpu->c_early_init() (which is early_init_init())
->> >> >     detect_tme()
->> >> >       c->x86_phys_bits -= keyid_bits;
->> >> >   get_cpu_address_sizes(c);
->> >> >     c->x86_phys_bits = eax & 0xff;
->> >> > 
->> >> > Looks like get_cpu_address_sizes() would override what detect_tme() does.
->> >> 
->> >> After this patch, early_identify_cpu() calls get_cpu_address_sizes() first and
->> >> then calls c_early_init(), which calls detect_tme().
->> >> 
->> >> So looks no override.  No?
->> 
->> No override indeed as get_cpu_address_sizes() is always called before
->> early_init_intel or init_intel().
->> 
->> - init/main.c::start_kernel()
->>   - arch/x86/kernel/setup.c::setup_arch()
->>     - arch/x86/kernel/cpu/common.c::early_cpu_init()
->>       - early_identify_cpu()
->>         - get_cpu_address_sizes(c)
->>           c->x86_phys_bits = eax & 0xff;
->>         - arch/x86/kernel/cpu/intel.c::early_init_intel()
->>           - detect_tme()
->>             c->x86_phys_bits -= keyid_bits;
->
-> Hmm.. Do I read it wrong:
->
-> 	static void __init early_identify_cpu(struct cpuinfo_x86 *c)
-> 	{
-> 	...
-> 		/* cyrix could have cpuid enabled via c_identify()*/
-> 		if (have_cpuid_p()) {
-> 		...
-> 		        // Here we call early_intel_init()
-> 			if (this_cpu->c_early_init)
-> 				this_cpu->c_early_init(c);
-> 			...
-> 		}
->
-> 		get_cpu_address_sizes(c);
-> 	...
-> 	}
->
-> ?
->
-> As far as I see get_cpu_address_sizes() called after early_intel_init().
+Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/include/uapi/asm/vmx.h | 1 +
+ arch/x86/kvm/vmx/tdx.c          | 7 +++++++
+ 2 files changed, 8 insertions(+)
 
-On `58720809f527 v6.6-rc6 6.6-rc6 2de3c93ef41b' is what I have:
-
-,----
-| 1599  /* cyrix could have cpuid enabled via c_identify()*/
-| 1600  if (have_cpuid_p()) {
-| 1601  	cpu_detect(c);
-| 1602  	get_cpu_vendor(c);
-| 1603  	get_cpu_cap(c);
-| 1604  	get_cpu_address_sizes(c);                   <= called first
-| 1605  	setup_force_cpu_cap(X86_FEATURE_CPUID);
-| 1606  	cpu_parse_early_param();
-| 1607  
-| 1608  	if (this_cpu->c_early_init)
-| 1609  		this_cpu->c_early_init(c);
-| 1610  
-| 1611  	c->cpu_index = 0;
-| 1612  	filter_cpuid_features(c, false);
-| 1613  
-| 1614  	if (this_cpu->c_bsp_init)
-| 1615  		this_cpu->c_bsp_init(c);
-| 1616  } else {
-| 1617  	setup_clear_cpu_cap(X86_FEATURE_CPUID);
-| 1618  }
-`----
-Listing 1: arch/x86/kernel/cpu/common.c
-
-=> get_cpu_address_sizes() is called first which is also conform to my
-   experiments and instrumentation.
-
+diff --git a/arch/x86/include/uapi/asm/vmx.h b/arch/x86/include/uapi/asm/vmx.h
+index a5faf6d88f1b..b3a30ef3efdd 100644
+--- a/arch/x86/include/uapi/asm/vmx.h
++++ b/arch/x86/include/uapi/asm/vmx.h
+@@ -34,6 +34,7 @@
+ #define EXIT_REASON_TRIPLE_FAULT        2
+ #define EXIT_REASON_INIT_SIGNAL			3
+ #define EXIT_REASON_SIPI_SIGNAL         4
++#define EXIT_REASON_OTHER_SMI           6
+ 
+ #define EXIT_REASON_INTERRUPT_WINDOW    7
+ #define EXIT_REASON_NMI_WINDOW          8
+diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+index 306d555dda35..618c2ecec26a 100644
+--- a/arch/x86/kvm/vmx/tdx.c
++++ b/arch/x86/kvm/vmx/tdx.c
+@@ -1339,6 +1339,13 @@ int tdx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t fastpath)
+ 	WARN_ON_ONCE(fastpath != EXIT_FASTPATH_NONE);
+ 
+ 	switch (exit_reason.basic) {
++	case EXIT_REASON_OTHER_SMI:
++		/*
++		 * If reach here, it's not a Machine Check System Management
++		 * Interrupt(MSMI).  #SMI is delivered and handled right after
++		 * SEAMRET, nothing needs to be done in KVM.
++		 */
++		return 1;
+ 	default:
+ 		break;
+ 	}
 -- 
-Jeremy
-One Emacs to rule them all
+2.25.1
 
---=-=-=--
