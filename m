@@ -2,186 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 097037CB51A
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 23:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1CF17CB513
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 23:10:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232582AbjJPVKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 17:10:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47140 "EHLO
+        id S233707AbjJPVKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 17:10:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232577AbjJPVKc (ORCPT
+        with ESMTP id S229666AbjJPVKK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 17:10:32 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C959AC;
-        Mon, 16 Oct 2023 14:10:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697490630; x=1729026630;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=eGZg9Yf/30P3LEiBGMdZFa4t8gqQU+eFLNr6ddMrTTE=;
-  b=ZyupHWr7OhtCgus/go6rGBFEFSwJU5K4Q3O9yyOvlCF7HD1ynz8dQ+do
-   XPUKxaPIUOJOkIRemE3e0ZYWOlnCP1JRWwm0enjuX3cKhl875orZGkbTK
-   wsxwZ7BfyjuZEzg/cpC+bUFGEQS3KupC5k71vhtGOm7W4KzQrzR3vRXMH
-   NDQBCfPzWhABEhFbfgQ+92e9jhzt2MMkNfY2oN0vSP9nzAElgWBKlYJQx
-   3YOVRILAiWRJr0sXczP+vLX9wPLVpXTksbvVeujaopTPgE7zG4+KISFP7
-   RMqSaYxtV+YlTx6mlIHKjPuTbfOTGpwCFol79JsHUdmUTYSHb5oaQRUjw
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="449859102"
-X-IronPort-AV: E=Sophos;i="6.03,230,1694761200"; 
-   d="scan'208";a="449859102"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 14:09:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="790954542"
-X-IronPort-AV: E=Sophos;i="6.03,230,1694761200"; 
-   d="scan'208";a="790954542"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 16 Oct 2023 14:09:56 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Mon, 16 Oct 2023 14:09:55 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Mon, 16 Oct 2023 14:09:55 -0700
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.41) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Mon, 16 Oct 2023 14:09:55 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JG8JQrm79hlETZOAiMOMS/Da1+vmpZrL+Qkg5FAp3LGzSP0JFcYTC970fh8kyGQy1Do0fnAjR+NeWdH/igNMNgvM6VhgpYndzskAZJtw57MW/Azc8bZn0w9jrJZAwBu7ZwHWJMqhPhCDtT9ZCJ2tD6K8aQmYZIqDolP+tCQ7WD75nse7f7zEZDwiYjO6s1CLNu3F5b3Y0xQSd9Q2SWOzPZlk8ZNZIdrnUn0uTN+B6XLgJNWFqHJRD4kNyxeenkHpMPSe7GOZF3+H7aYUEFE3EnoOWMCqPne1chiHDcPLU+SeBDal8xMnPifnOb5oIYUfS8Y8gMPcgw5X9a3U/iHIkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eGZg9Yf/30P3LEiBGMdZFa4t8gqQU+eFLNr6ddMrTTE=;
- b=K/om6cDR3f+ZteUuHBrJPVLYzpIxOSvPD3ioaIHRRaIExgTz+pTFQ1qgHtRJJNYNLZgL+Pkng1o/HcaKG3FpAHbCkfrZp8uLSzv2qrC/mtWHZD9EfYeq26KPBYtnjcpbruCI/MYCqrr1uZIWEC0MbEsevfnUTgX/9cNkau8qHtAJHhh9OdadXgLJcEVf+lOqWwIlB0OImbaA3mxA0kXQe+2FvV1cLkfdvXc+k6Nleh7aYKzgQ2spQbJeMvh9iY6/9m1Wf9xM6sCoOrKS084NHh4iXZUdx8Sv5o3xOvXUiyNcfre4AYsDbBPhrwnt5mVU3h3ciYs2Yf62TeuHKaj0yg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
- by CH3PR11MB8706.namprd11.prod.outlook.com (2603:10b6:610:1d1::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36; Mon, 16 Oct
- 2023 21:09:52 +0000
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::f5cb:a40b:539a:2527]) by BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::f5cb:a40b:539a:2527%6]) with mapi id 15.20.6886.034; Mon, 16 Oct 2023
- 21:09:52 +0000
-From:   "Huang, Kai" <kai.huang@intel.com>
-To:     "Christopherson,, Sean" <seanjc@google.com>,
-        "haitao.huang@linux.intel.com" <haitao.huang@linux.intel.com>
-CC:     "Zhang, Bo" <zhanb@microsoft.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "yangjie@microsoft.com" <yangjie@microsoft.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "anakrish@microsoft.com" <anakrish@microsoft.com>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
-        "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "kristen@linux.intel.com" <kristen@linux.intel.com>
-Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
- EPC
-Thread-Topic: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
- EPC
-Thread-Index: AQHZ7csZABE+dkJZZkCdCB4gngYcNbBCOacAgAAKoQCAAAepgIAADEaAgAD/w4CAAIaBAIACZaqAgAYfZACAAJVwgIAAFaKA
-Date:   Mon, 16 Oct 2023 21:09:52 +0000
-Message-ID: <35a7fde056037a40b3b4b170e2ecd45bf8c4ba9f.camel@intel.com>
-References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
-         <20230923030657.16148-13-haitao.huang@linux.intel.com>
-         <1b265d0c9dfe17de2782962ed26a99cc9d330138.camel@intel.com>
-         <ZSSZaFrxvCvR1SOy@google.com>
-         <06142144151da06772a9f0cc195a3c8ffcbc07b7.camel@intel.com>
-         <1f7a740f3acff8a04ec95be39864fb3e32d2d96c.camel@intel.com>
-         <op.2clydbf8wjvjmi@hhuan26-mobl.amr.corp.intel.com>
-         <631f34613bcc8b5aa41cf519fa9d76bcd57a7650.camel@intel.com>
-         <op.2cpecbevwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-         <aa404549c7e292dd2ec93a5e6a8c9d6d880c06b3.camel@intel.com>
-         <op.2cxatlafwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <op.2cxatlafwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|CH3PR11MB8706:EE_
-x-ms-office365-filtering-correlation-id: a79eb942-1034-4161-15a6-08dbce8c3d9b
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: IPNO8aUwJDIsBkd9cx6z8Y1TG1ig4Cymy4ZZcSDXzirUZRANxg8RYtCuNyjWkMNyOe5wJOmWMbDpODWeRlBzbpwI56ndOn9wNgrUvS2+5KeSJ+we+foAiQ8xJryxrs9D4WJVR9Ci9eo40qjQQwwPqW//RQU9OMRTi1AoRka9se37CDpGm41vzY9azRD2gR4Dh5+i0AcvP3yKIeSMJ8v1C/4kiS1NMI1lVyXyekX6XqjV7W4Rh93Ctn/U7SsY8tU0vMR7HxqHn+Ur4n4VBxrPi+4dU4ECQtesvqb3W+ByYW9hPXTutId6xcxig87v5mXo+U1y+cbZrptDZSgIyFN705xdIZCeEw7Sh4Rp9E/PVz7uLVJ0vomPuCVzdDk/yW/fk7Izff6svIDwpDuhpU1if+sENh4uUV/x8ui6nzj0oK1AJKYNfsNJo++cEKb6NqHPIih9ZQQaXiwYa5qPzhOTSumD//PsbXKjhqygsQcs4vC3jK92D6soSVDQ3WbX3cyYwvTnkeFlDnaRn0GZRUkBqP0au1nxp25ylsAEqucAMZt/wjfFSGeHMMO67CZwR9g2hXDaQ8INd5kUE0MVxBpl3LcTmjus/yRXSsw2gx890iWEoo/8cPvM1I4XjOxclm8w
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(136003)(39860400002)(346002)(396003)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(478600001)(6486002)(66476007)(76116006)(91956017)(66556008)(66946007)(64756008)(54906003)(71200400001)(66446008)(110136005)(316002)(82960400001)(83380400001)(86362001)(38100700002)(6512007)(26005)(2616005)(6506007)(36756003)(41300700001)(122000001)(38070700005)(5660300002)(8936002)(8676002)(4326008)(2906002)(7416002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?S1QxdkxFTml0TDJUVDlhUTBvOGdzQ1FGVU56ZUdOdzBnUDN1a3h0dmxqYlM1?=
- =?utf-8?B?RFlMbnVLd2lJRFlhSmZobm9XY2t4RFZYcktSYXJsaWdSRnRvdHNXa29VWllM?=
- =?utf-8?B?THJEQnM0YWdjcjlFbWt4Tk9XQjAwb3FzZUZCY1JIOUpsM2h6TGVUUVp4enZj?=
- =?utf-8?B?U2FrQzdjNHVqQ0hwMlorU245aE1HSTB6dkJxVUl1NWlJNXcvOGZiR1VFUTlU?=
- =?utf-8?B?UDl1QytraG1QOVNrakpzaWo5NzRkSHZ0cXdGazBXL001aFVxNm1xb2V6WXRD?=
- =?utf-8?B?ajkvY09YQ2ZCc09Ebkh6QmN0UFJWSk5qRHNoM1BMR0duMW5wNnZ2Q1BBS0hU?=
- =?utf-8?B?aDB1eTIvK1ZJZ3NBSUh1VE04UktTNUREVU10allKV0VwOHRqbnJzRXo0V2Fo?=
- =?utf-8?B?RzhWZDBhYjRBWlhpNVVqSmVQdGo0Q0t1SzNTU3JTQ2hNU3l2enZvV1ZXb1RR?=
- =?utf-8?B?SFI3dFF1dkZKQitlSnFoWnNVMW4yRjNDUStGdk15UjJzTjVkd29ITnhzYmJq?=
- =?utf-8?B?ZHJzcmxWeDNjNnUyWnY2Wk1vQjZzNExWODQwYVpnZE1qZm9id014amdxcXlJ?=
- =?utf-8?B?NGJVYlNOYS8ySEZHMTEvRm1FWXhtZGhUZlg2cHRJS3phQnBMaG5PdGhvWDJ0?=
- =?utf-8?B?cG1DWExPREg3OW96cXFzUkppTFRNYnAwUVVHcDA4UzhMQlFnZ3Vhc0FyZXJ3?=
- =?utf-8?B?aFkvSVVydFp6SXpVQld2WlhldjVOOTk0dnMwNUJFKzdoeU5Cak4vT0pnWkZC?=
- =?utf-8?B?NUc1NGo1STJ4dGFJQ0Q3S1JZWmtEWE5MZ3VoWTcwTTVpaUpWMC9CekJ0TVI4?=
- =?utf-8?B?Vi9yT0xlQ2ZjUTE4aTJUVlozMHE2bXdodGl5Y2pVQTE0c0NGVUZSeVpVbmI3?=
- =?utf-8?B?eDlmb1V5aTJpVXF2TXJnSW0yeFZmTkRtTUhybVRGeDliUndLbjR5czhld0Zk?=
- =?utf-8?B?Q3ZtSmNwZ3BQVnN5ZThMRFAzNzhUbnFzVkFuTjBnNlNiMXVnT2RpeHBuc08r?=
- =?utf-8?B?dFErMGphUm42b3FOa2hlQTZEaGhDcHA3SGxsOVFmUDR6YlFnVmh3RjMwc3A0?=
- =?utf-8?B?Q3NFMy8vdlRFMUR0dVYzRkFtSVRrZWxZM3BCamFwblI0RlFFaFdGOEtLZlBX?=
- =?utf-8?B?TTNTblNNZ2M2dURSSnlGbmhtS3gxS055N1c2MUU0NVlCak91OGQzSnlqUCti?=
- =?utf-8?B?ckVqa0JEK01QSDE4d0ZQMlB2OVFiRG4yd0FaV0h6RzVGd3d5c3JpUGtmenl2?=
- =?utf-8?B?em1ZODdxVUFwc29QUGg0ckxhUGM0NkRjVE9ZQitaYjlrbFVkU3B6R2JaRVNa?=
- =?utf-8?B?K3llblU4VnpoTTlra1dyS0dFbWYrUjNiNGtaN3FoS2U2RTJVTE1UTjNjaklH?=
- =?utf-8?B?bkZtU2oxT0pKaVFCYnI2ZXBZTW1qb3BjbXkwOFcyUE92ZTE2QTM5Z2p4QmI4?=
- =?utf-8?B?a0lxaVp4c05sQ1dPcExKd1psY0tYbXNkMFoyNUV2ZGhLaW12OUdsUnYyM2Uw?=
- =?utf-8?B?S0xnWFpSNGFjdkY2RlJ4SHJMK0dDREpudTF6MHFEelRSdEZiZ3U1ZFl3Q05M?=
- =?utf-8?B?QXhhRGNNQkg5blh6VkU4NW81UHREaVFOd2E4NUNRTHZGZWJaVXkzYkZGUmE2?=
- =?utf-8?B?MkVjUSs1ZWhkTmZHczJHMGwxaUZLaWN3djY5TmxvSkVsclUzci8xcmFnQU5S?=
- =?utf-8?B?S2lZWFBucE4ya2ZjVXhMb3hseFZGalRWVEpxc01hdnhXZVhhQjNsVDU4d1ZI?=
- =?utf-8?B?UVVlSUlMUFJZNmRhWHF4MmpPS2lBRFBEUVFxV1VJQ1ZJYzc4b2Z2REI0WnBL?=
- =?utf-8?B?OFVNLzdGYVNlYjJoM2xGUHpOTi9PeWp1Ym1vQ1JzNDEzbWNobVBKU05vNUJP?=
- =?utf-8?B?TElzS2ovaE1iOUdOSGxRc0NRc0NmTXhNOFFJVENTdTcwQ0t6eDIrS1VGQm9q?=
- =?utf-8?B?eTZIcC9qelFHeFJLbDhNTlR0MzlDYmdvS1FtbzRXejJoakRVWThad25PeGZt?=
- =?utf-8?B?NVpuTUZVaWFNc1BDcWxISnNCc081bU1GWE1qTVcwbytrckYxMFNWZmh0c0FT?=
- =?utf-8?B?a2Z2am5RdG14ak01SkF0UEwydTN6dTBEZWRaUFR3RlFXOTdNZFlCSFAxekty?=
- =?utf-8?B?VitwWDlMZkhuZm9XT3hWWGFiWGk5WTRua2VWaUg4ZCszSVZPV1ZOeVBJOG56?=
- =?utf-8?B?NkE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <4749C9DCEF37E14A8C8857D91926E602@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Mon, 16 Oct 2023 17:10:10 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B23B7A2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 14:10:07 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53e751aeb3cso4214165a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 14:10:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697490606; x=1698095406; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sXMjI4MbD4hIed9nKFquFn0Ck/7okOmRfKdgtVaem00=;
+        b=RCD1d2Z1lZyBo/UF2vfTntJGDJwccUHJ3twadCJ1td6SquTgM81dLsxiTcqFJmfEei
+         fVyPAwHbxoyyV1TrLDIf0kv6RmA+tcB3xmQqim9nvG1WgUcCWNknk6fnYho0qrtyIbH9
+         JyG4sWmn+Hd5keOXsdkUAz1AaphHHWQa+hCkJ7YeP1wA0eGuD2HQ2jQ2Ca6xZSYnmxLu
+         7URtFlYgNFrHcYftST3R51dMqB1CFmwoOLAniqIFrhz+aKEdJspKsZn/M/CkxCLfff3M
+         LTNjmiN9NtxPnR03iR0SX1eeY4NwaG0nWd9AkzQh33XK/CNsjO8HApZhTP9JCmkY4TXG
+         4neg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697490606; x=1698095406;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sXMjI4MbD4hIed9nKFquFn0Ck/7okOmRfKdgtVaem00=;
+        b=Vg/4dYWpCVVuRm05goC8Wu2U31OjkElknzBhtFiWOpWsiDiFMNKyh2Jme7BZbgWWa4
+         xsfbmZA+oauR9hzicI0VXqTAGbyImPavqD0WsW+M+rZTklc0gl4O2tlDk7NPMJ/GG7D9
+         k74DSleH7R/HwO4KBwbq46tMI2jAA9JAk6DwkMTqexXygbNj3xI9RYxwX2c/JzvHRCYX
+         Tt3MzSwAMqhvsHiGDlE8xK2ptAZwNO65SgGDFfYrzfm4FqR6mqtr2XWOn5zniDUcNLh4
+         mbYJVv21r1S1e8hFBADzusd90rgQWjoiuMi+HDuL8q3ExwgN35+P6SIRicz5PdUO3vay
+         r82A==
+X-Gm-Message-State: AOJu0Yy9G8Pc7VhsIVU9+V/0ZfG6VordFqstwZ0dLbS3WIWc2vmi6DGr
+        Jh2XhQQk2jx7ldtVuCENV419ubvxz7+SEKWrzwQ=
+X-Google-Smtp-Source: AGHT+IFow45eooZa0sGIfpV+ZbgnP2wDAlZAMTkY8S2J+phl9dVjGolf+t/X2Aky2jhuqhRn3JcGE2CmjMJh5hx2Hms=
+X-Received: by 2002:a05:6402:3511:b0:53f:32b:cf3a with SMTP id
+ b17-20020a056402351100b0053f032bcf3amr371327edd.16.1697490605929; Mon, 16 Oct
+ 2023 14:10:05 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a79eb942-1034-4161-15a6-08dbce8c3d9b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Oct 2023 21:09:52.7043
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PVF6+yrb7R2mTgXwYzanFHDgYHLHb96gbmALTV8XBJMN62t0EYLeXysE9PMR9mgE408Sk6vHT7uiLLYv5optNg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8706
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
+ <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
+ <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
+ <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
+ <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
+ <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
+ <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAFULd4Zjd6idrLXuF59cwKxyd1a--DsiJwGQAKai9Tph30dAow@mail.gmail.com>
+In-Reply-To: <CAFULd4Zjd6idrLXuF59cwKxyd1a--DsiJwGQAKai9Tph30dAow@mail.gmail.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Mon, 16 Oct 2023 23:09:54 +0200
+Message-ID: <CAFULd4bOo-SWm+5R0QhcY7AJJiTnnNPEbjZ6iLQRHMVoA64m0Q@mail.gmail.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+To:     Nadav Amit <namit@vmware.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -189,39 +84,207 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiANCj4gDQo+ICBGcm9tIHRoaXMgcGVyc3BlY3RpdmUsIEkgdGhpbmsgdGhlIGN1cnJlbnQgaW1w
-bGVtZW50YXRpb24gaXMgIA0KPiAid2VsbC1kZWZpbmVkIjogRVBDIGNncm91cCBsaW1pdHMgZm9y
-IFZNcyBhcmUgb25seSBlbmZvcmNlZCBhdCBWTSBsYXVuY2ggIA0KPiB0aW1lLCBub3QgcnVudGlt
-ZS4gSW4gcHJhY3RpY2UsICBTR1ggVk0gY2FuIGJlIGxhdW5jaGVkIG9ubHkgd2l0aCBmaXhlZCAg
-DQo+IEVQQyBzaXplIGFuZCBhbGwgdGhvc2UgRVBDcyBhcmUgZnVsbHkgY29tbWl0dGVkIHRvIHRo
-ZSBWTSBvbmNlIGxhdW5jaGVkLiAgDQo+IEJlY2F1c2Ugb2YgdGhhdCwgSSBpbWFnaW5lIHBlb3Bs
-ZSBhcmUgdXNpbmcgVk1zIHRvIHByaW1hcmlseSBwYXJ0aXRpb24gdGhlICANCj4gcGh5c2ljYWwg
-RVBDcywgaS5lLCB0aGUgc3RhdGljIHNpemUgaXRzZWxmIGlzIHRoZSAnbGltaXQnIGZvciB0aGUg
-d29ya2xvYWQgIA0KPiBvZiBhIHNpbmdsZSBWTSBhbmQgbm90IGV4cGVjdGluZyBFUENzIHRha2Vu
-IGF3YXkgYXQgcnVudGltZS4NCj4gDQo+IFNvIGtpbGxpbmcgZG9lcyBub3QgcmVhbGx5IGFkZCBt
-dWNoIHZhbHVlIGZvciB0aGUgZXhpc3RpbmcgdXNhZ2VzIElJVUMuDQoNCkl0J3Mgbm90IGFib3V0
-IGFkZGluZyB2YWx1ZSB0byB0aGUgZXhpc3RpbmcgdXNhZ2VzLCBpdCdzIGFib3V0IGZpeGluZyB0
-aGUgaXNzdWUNCndoZW4gd2UgbG93ZXIgdGhlIEVQQyBsaW1pdCB0byBhIHBvaW50IHRoYXQgaXMg
-bGVzcyB0aGFuIHRvdGFsIHZpcnR1YWwgRVBDIHNpemUuDQoNCkl0J3MgYSBkZXNpZ24gaXNzdWUs
-IG9yIHNpbXBseSBhIGJ1ZyBpbiB0aGUgY3VycmVudCBpbXBsZW1lbnRhdGlvbiB3ZSBuZWVkIHRv
-DQpmaXguDQoNCj4gDQo+IFRoYXQgc2FpZCwgSSBkb24ndCBhbnRpY2lwYXRlIGFkZGluZyB0aGUg
-ZW5mb3JjZW1lbnQgb2Yga2lsbGluZyBWTXMgYXQgIA0KPiBydW50aW1lIHdvdWxkIGJyZWFrIHN1
-Y2ggdXNhZ2VzIGFzIGFkbWluL3VzZXIgY2FuIHNpbXBseSBjaG9vc2UgdG8gc2V0IHRoZSAgDQo+
-IGxpbWl0IGVxdWFsIHRvIHRoZSBzdGF0aWMgc2l6ZSB0byBsYXVuY2ggdGhlIFZNIGFuZCBmb3Jn
-ZXQgYWJvdXQgaXQuDQo+IA0KPiBHaXZlbiB0aGF0LCBJJ2xsIHByb3Bvc2UgYW4gYWRkLW9uIHBh
-dGNoIHRvIHRoaXMgc2VyaWVzIGFzIFJGQyBhbmQgaGF2ZSAgDQo+IHNvbWUgZmVlZGJhY2sgZnJv
-bSBjb21tdW5pdHkgYmVmb3JlIHdlIGRlY2lkZSBpZiB0aGF0IG5lZWRzIGJlIGluY2x1ZGVkIGlu
-ICANCj4gZmlyc3QgdmVyc2lvbiBvciB3ZSBjYW4gc2tpcCBpdCB1bnRpbCB3ZSBoYXZlIEVQQyBy
-ZWNsYWltaW5nIGZvciBWTXMuDQoNCkkgZG9uJ3QgdW5kZXJzdGFuZCB3aGF0IGlzIHRoZSAiYWRk
-LW9uIiBwYXRjaCB5b3UgYXJlIHRhbGtpbmcgYWJvdXQuDQoNCkkgbWVudGlvbmVkIHRoZSAidHlw
-aWNhbCBkZXBsb3ltZW50IHRoaW5nIiBpcyB0aGF0IGNhbiBoZWxwIHVzIHVuZGVyc3RhbmQgd2hp
-Y2gNCmFsZ29yaXRobSBpcyBiZXR0ZXIgd2F5IHRvIHNlbGVjdCB0aGUgdmljdGltLiAgQnV0IG5v
-IG1hdHRlciB3aGF0IHdlIGNob29zZSwgd2UNCnN0aWxsIG5lZWQgdG8gZml4IHRoZSBidWcgbWVu
-dGlvbmVkIGFib3ZlIGhlcmUuDQoNCkkgcmVhbGx5IHRoaW5rIHlvdSBzaG91bGQganVzdCBnbyB0
-aGlzIHNpbXBsZSB3YXk6IA0KDQpXaGVuIHlvdSB3YW50IHRvIHRha2UgRVBDIGJhY2sgZnJvbSBW
-TSwga2lsbCB0aGUgVk0uDQoNCkFub3RoZXIgYmFkIHRoaW5nIGFib3V0ICJqdXN0IHJlbW92aW5n
-IEVQQyBwYWdlcyBmcm9tIFZNIiBpcyB0aGUgZW5jbGF2ZXMgaW4gdGhlDQpWTSB3b3VsZCBzdWZm
-ZXIgInN1ZGRlbiBsb3NlIG9mIEVQQyIsIG9yIGV2ZW4gd29yc2UsIHN1ZmZlciBpdCBhdCBhIGhp
-Z2gNCmZyZXF1ZW5jeS4gIEFsdGhvdWdoIHdlIGRlcGVuZCBvbiB0aGF0IGZvciBzdXBwb3J0aW5n
-IFNHWCBWTSBsaXZlIG1pZ3JhdGlvbiwgYnV0DQp0aGF0IG5lZWRzIHRvIGF2b2lkZWQgaWYgcG9z
-c2libGUuDQoNCg==
+On Mon, Oct 16, 2023 at 8:52=E2=80=AFPM Uros Bizjak <ubizjak@gmail.com> wro=
+te:
+>
+> On Thu, Oct 12, 2023 at 5:19=E2=80=AFPM Nadav Amit <namit@vmware.com> wro=
+te:
+> >
+> >
+> > > On Oct 12, 2023, at 12:54 AM, Linus Torvalds <torvalds@linux-foundati=
+on.org> wrote:
+> > >
+> > > !! External Email
+> > >
+> > > On Wed, 11 Oct 2023 at 14:33, Uros Bizjak <ubizjak@gmail.com> wrote:
+> > >>
+> > >> Reading the above, it looks to me that we don't want to play games
+> > >> with "const aliased" versions of current_task [1], as proposed by
+> > >> Nadav in his patch series.
+> > >
+> > > Well, maybe I'd like it if I saw what the effect of it was, but that
+> > > patch mentions "sync_mm_rss()" which doesn't actually exist
+> > > (SPLIT_RSS_COUNTING is never defined, the split version is gone and
+> > > hasn't existed since commit f1a7941243c1 "mm: convert mm's rss stats
+> > > into percpu_counter")
+> >
+> > So I added a new version of the current aliasing (well, actually pcpu_h=
+ot
+> > in the new version) on top of Uros=E2=80=99s patches, and the effect ca=
+n be seen
+> > in many functions. I don=E2=80=99t want to bother with many examples so=
+ here is
+> > a common and simple one:
+> >
+> > Currently syscall_exit_work() that starts with:
+> >
+> >    0xffffffff8111e120 <+0>: push   %rbp
+> >    0xffffffff8111e121 <+1>: mov    %rdi,%rbp
+> >    0xffffffff8111e124 <+4>: push   %rbx
+> >    0xffffffff8111e125 <+5>: mov    %rsi,%rbx
+> >    0xffffffff8111e128 <+8>: and    $0x20,%esi
+> >    0xffffffff8111e12b <+11>: je     0xffffffff8111e143 <syscall_exit_wo=
+rk+35>
+> >    0xffffffff8111e12d <+13>: mov    %gs:0x2ac80,%rax
+> >    0xffffffff8111e136 <+22>: cmpb   $0x0,0x800(%rax)
+> >    0xffffffff8111e13d <+29>: jne    0xffffffff8111e22a <syscall_exit_wo=
+rk+266>
+> >    0xffffffff8111e143 <+35>: mov    %gs:0x2ac80,%rax
+> >    0xffffffff8111e14c <+44>: cmpq   $0x0,0x7c8(%rax)
+> >
+> > Using the const-alias changes the beginning of syscall_exit_work to:
+> >
+> >    0xffffffff8111cb80 <+0>: push   %r12
+> >    0xffffffff8111cb82 <+2>: mov    %gs:0x7ef0e0f6(%rip),%r12        # 0=
+x2ac80 <pcpu_hot>
+> >    0xffffffff8111cb8a <+10>: push   %rbp
+> >    0xffffffff8111cb8b <+11>: mov    %rdi,%rbp
+> >    0xffffffff8111cb8e <+14>: push   %rbx
+> >    0xffffffff8111cb8f <+15>: mov    %rsi,%rbx
+> >    0xffffffff8111cb92 <+18>: and    $0x20,%esi
+> >    0xffffffff8111cb95 <+21>: je     0xffffffff8111cba6 <syscall_exit_wo=
+rk+38>
+> >    0xffffffff8111cb97 <+23>: cmpb   $0x0,0x800(%r12)
+> >    0xffffffff8111cba0 <+32>: jne    0xffffffff8111cc7a <syscall_exit_wo=
+rk+250>
+> >    0xffffffff8111cba6 <+38>: cmpq   $0x0,0x7c8(%r12)
+> >
+> > So we both see RIP-relative addressing is being used (hence the instruc=
+tion is
+> > one byte shorter) and the reload going away.
+> >
+> > Now, I am not a compiler expert as for the rationale, but it googling a=
+round
+> > I can see Nick explaining the rationale [1] - if you use =E2=80=9Cp=E2=
+=80=9D your read memory.
+> > BTW: It is related to discussion you had [2], in which you encountered =
+an issue
+> > I also encountered before [3]. My bad for pushing it in.
+> >
+> > Anyhow, I created a similar code on godbolt ( https://godbolt.org/z/dPq=
+KKzPs4 )
+> > to show this behavior - how compiler barriers cause reload. It seems th=
+at this
+> > behavior happens on GCC and CLANG on various versions.
+> >
+> > The idea behind the patch is that it communicates - in the compilation =
+unit
+> > granularity - that current is fixed. There is an issue of whether it wo=
+rks with
+> > LTO, which I have never checked.
+> >
+> >
+> > [1] https://reviews.llvm.org/D145416
+> > [2] https://lore.kernel.org/lkml/20230306120106.GE1267364@hirez.program=
+ming.kicks-ass.net/
+> > [3] https://lore.kernel.org/all/20190823224424.15296-5-namit@vmware.com=
+/
+> >
+> > --
+> >
+> > Here=E2=80=99s the updated patch - but I didn=E2=80=99t really boot a m=
+achine with it so new
+> > issues might have come since my last patch-set:
+>
+> Unfortunately, it does not work and dies early in the boot with:
+>
+> [    4.939358] BUG: kernel NULL pointer dereference, address: 00000000000=
+00000
+> [    4.940090] #PF: supervisor write access in kernel mode
+> [    4.940090] #PF: error_code(0x0002) - not-present page
+> [    4.940090] PGD 0 P4D 0
+> [    4.940090] Oops: 0002 [#1] PREEMPT SMP PTI
+> [    4.940090] CPU: 1 PID: 52 Comm: kworker/u4:1 Not tainted
+> 6.6.0-rc6-00365-g0c09c1d70838-dirty #7
+> [    4.940090] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> BIOS 1.16.2-1.fc37 04/01/2014
+> [    4.940090] RIP: 0010:begin_new_exec+0x8f2/0xa30
+> [    4.940090] Code: 31 f6 e8 c1 49 f9 ff e9 3c fa ff ff 31 f6 4c 89
+> ef e8 b2 4a f9 ff e9 19 fa ff ff 31 f6 4c 89 ef e8 23 4a f9 ff e9 ea
+> fa ff ff <f0> 41 ff 0c 24 0f
+> 85 55 fb ff ff 4c 89 e7 e8 4b 02 df ff e9 48 fb
+> [    4.940090] RSP: 0000:ffff9c84c01e3d68 EFLAGS: 00010246
+> [    4.940090] RAX: 0000000000000000 RBX: ffff9946e30c1f00 RCX: 000000000=
+0000000
+> [    4.940090] RDX: 0000000000000000 RSI: ffff9946e2ff0000 RDI: ffff9946e=
+30c2718
+> [    4.940090] RBP: ffff9946c03a7c00 R08: 00000000fffffffe R09: 00000000f=
+fffffff
+> [    4.940090] R10: 000001ffffffffff R11: 0000000000000001 R12: 000000000=
+0000000
+> [    4.940090] R13: 0000000000000000 R14: ffff9946e30c2718 R15: ffff9946e=
+2ff0000
+> [    4.940090] FS:  0000000000000000(0000) GS:ffff994763f00000(0000)
+> knlGS:0000000000000000
+> [    4.940090] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    4.940090] CR2: 0000000000000000 CR3: 00000001003a8000 CR4: 000000000=
+00406f0
+> [    4.940090] Call Trace:
+> [    4.940090]  <TASK>
+> [    4.940090]  ? __die+0x1e/0x60
+> [    4.940090]  ? page_fault_oops+0x17b/0x470
+> [    4.940090]  ? search_module_extables+0x14/0x50
+> [    4.940090]  ? exc_page_fault+0x66/0x140
+> [    4.940090]  ? asm_exc_page_fault+0x26/0x30
+> [    4.940090]  ? begin_new_exec+0x8f2/0xa30
+> [    4.940090]  ? begin_new_exec+0x3ce/0xa30
+> [    4.940090]  ? load_elf_phdrs+0x67/0xb0
+> [    4.940090]  load_elf_binary+0x2bb/0x1770
+> [    4.940090]  ? __kernel_read+0x136/0x2d0
+> [    4.940090]  bprm_execve+0x277/0x630
+> [    4.940090]  kernel_execve+0x145/0x1a0
+> [    4.940090]  call_usermodehelper_exec_async+0xcb/0x180
+> [    4.940090]  ? __pfx_call_usermodehelper_exec_async+0x10/0x10
+> [    4.940090]  ret_from_fork+0x2f/0x50
+> [    4.940090]  ? __pfx_call_usermodehelper_exec_async+0x10/0x10
+> [    4.940090]  ret_from_fork_asm+0x1b/0x30
+> [    4.940090]  </TASK>
+> [    4.940090] Modules linked in:
+> [    4.940090] CR2: 0000000000000000
+> [    5.017606] ---[ end trace 0000000000000000 ]---
+> [    5.018957] RIP: 0010:begin_new_exec+0x8f2/0xa30
+> [    5.020299] Code: 31 f6 e8 c1 49 f9 ff e9 3c fa ff ff 31 f6 4c 89
+> ef e8 b2 4a f9 ff e9 19 fa ff ff 31 f6 4c 89 ef e8 23 4a f9 ff e9 ea
+> fa ff ff <f0> 41 ff 0c 24 0f 85 55 fb ff ff 4c 89 e7 e8 4b 02 df ff e9
+> 48 fb
+> [    5.024765] RSP: 0000:ffff9c84c01e3d68 EFLAGS: 00010246
+> [    5.026150] RAX: 0000000000000000 RBX: ffff9946e30c1f00 RCX: 000000000=
+0000000
+> [    5.027916] RDX: 0000000000000000 RSI: ffff9946e2ff0000 RDI: ffff9946e=
+30c2718
+> [    5.029714] RBP: ffff9946c03a7c00 R08: 00000000fffffffe R09: 00000000f=
+fffffff
+> [    5.031461] R10: 000001ffffffffff R11: 0000000000000001 R12: 000000000=
+0000000
+> [    5.033186] R13: 0000000000000000 R14: ffff9946e30c2718 R15: ffff9946e=
+2ff0000
+> [    5.034908] FS:  0000000000000000(0000) GS:ffff994763f00000(0000)
+> knlGS:0000000000000000
+> [    5.036907] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    5.038341] CR2: 0000000000000000 CR3: 00000001003a8000 CR4: 000000000=
+00406f0
+> [    5.040044] Kernel panic - not syncing: Fatal exception
+> [    5.040647] Kernel Offset: 0x22e00000 from 0xffffffff81000000
+> (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+>
+> It looks that aliasing a structure from another namespace is a no-go,
+> since the patch (attached, slightly changed your patch) without
+> __percpu_seg_override decorations bootstraps OK. The working patch
+> (without __percpu_seg_override) is not effective (no effect in
+> syscall_exit_work) and increases the number of current_task reads from
+> 3841 to 4711.
+
+Forgot to say that the "nonworking" patch reduces the number of
+current_task reads to 3221.
+
++#ifdef CONFIG_USE_X86_SEG_SUPPORT
++static __always_inline struct task_struct *get_current(void)
++{
++ return this_cpu_read_const(const_pcpu_hot.current_task);
++}
+
+FWIW, const_pcpu_hot is in __seg_gs space when decorated with
+__percpu_seg_override, so plain "return const_pcpu_hot.current_task;"
+would work here, too.
+
+Uros.
