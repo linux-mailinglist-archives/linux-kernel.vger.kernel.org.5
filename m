@@ -2,49 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 908BB7CB2A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 20:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EACE7CB2A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 20:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232996AbjJPSic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 14:38:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56570 "EHLO
+        id S232940AbjJPSio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 14:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJPSib (ORCPT
+        with ESMTP id S233962AbjJPSil (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 14:38:31 -0400
+        Mon, 16 Oct 2023 14:38:41 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B692A2;
-        Mon, 16 Oct 2023 11:38:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC918C433C9;
-        Mon, 16 Oct 2023 18:38:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697481509;
-        bh=YExw+GAqn4opXUVoMjmRPaySlTaXfXqS/xmEwKVX8Yc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QAKxCOyFqPhYhJl8OnqLscZ1iDKHs8vRdivM2NMy8WET5fCShM0n34q0pfLDekhpB
-         j9d0oW3l7YFFgBcBFnE1B9W7nN2WBFxAda0+sL+Q3O71X8NETFx5Oe42HervGmIDMG
-         ZkMvlvcZZtRGibzicPguCquF64hL3BzMrz9VxSFqRe+ntnEb13heIW06G4BbV5ikOx
-         ssLbnHe5OuVyNrUqL6SJDCF/5PAlXS1Ev0/A4fZnbMnNBcQEsnIE1ur2tk3pxZRgfS
-         iUj1G71Tf68Qpx6GCjJ2I5DBtOn7w2NNwmqG/ZMemDlr/CEhiMTpwLJfzdI5wxTxrf
-         p8ECEOk6Wy6TQ==
-From:   SeongJae Park <sj@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, damon@lists.linux.dev,
-        SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 6.5 000/191] 6.5.8-rc1 review
-Date:   Mon, 16 Oct 2023 18:38:26 +0000
-Message-Id: <20231016183826.98728-1-sj@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231016084015.400031271@linuxfoundation.org>
-References: 
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F778ED
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 11:38:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57AB8C433CA;
+        Mon, 16 Oct 2023 18:38:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1697481517;
+        bh=AFdp8omPmPiBhjxSWDTVQjJWPxG/mPwHxdogni4Y9ic=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=A3cs+lvEJlruCKwHIQnoEdwi7Sn6r9wueNkl6xsI6JnweopGjxi83ajur94JRAKQs
+         ctj86mg8rT9JCXhueBrHxJx2wyIM6ScI1GlTJgb7UC9f5m8zQRQUjhRJnjaeLtbWxQ
+         8PR5Oq7isHHrSW0PwiGBvism99GdqTzQxy4Dt+VU=
+Date:   Mon, 16 Oct 2023 20:38:27 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        David Gow <davidgow@google.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        James Seo <james@equiv.tech>, Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Marco Elver <elver@google.com>,
+        Mark Brown <broonie@kernel.org>,
+        Ming Lei <ming.lei@redhat.com>,
+        Petr Tesarik <petr.tesarik.ext@huawei.com>,
+        Rae Moar <rmoar@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 0/2] lib: unload lib/bitmap.c
+Message-ID: <2023101622-footsie-example-6428@gregkh>
+References: <20231007233510.2097166-1-yury.norov@gmail.com>
+ <ZStPPLG7F9V+E7JA@yury-ThinkPad>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZStPPLG7F9V+E7JA@yury-ThinkPad>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -54,65 +62,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Mon, 16 Oct 2023 10:39:45 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-
-> This is the start of the stable review cycle for the 6.5.8 release.
-> There are 191 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Sat, Oct 14, 2023 at 07:32:28PM -0700, Yury Norov wrote:
+> On Sat, Oct 07, 2023 at 04:35:08PM -0700, Yury Norov wrote:
+> > The file is intended to hold functions to operate on bit arrays, but
+> > this days, more than 1/3 of bitmap.c is helpers for bitmap-to-string
+> > converters, plus some wrappers for device.h.
+> > 
+> > So move those out of lib/bitmap.c in sake of readability and
+> > maintainability.
+> > 
+> > Functionally, this series is a no-op.
+> > 
+> > Yury Norov (2):
+> >   lib/bitmap: move bitmap allocators for device to linux/device.h
+> >   lib/bitmap: split-out string-related operations to a separate files
 > 
-> Responses should be made by Wed, 18 Oct 2023 08:39:48 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.8-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
-> and the diffstat can be found below.
+> OK, then if no objections, I drop #1 as a controversial, and pull #2
+> into bitmap-for-next.
 
-This rc kernel passes DAMON functionality test[1] on my test machine.
-Attaching the test results summary below.  Please note that I retrieved the
-kernel from linux-stable-rc tree[2].
+That's fine with me, thanks.
 
-Tested-by: SeongJae Park <sj@kernel.org>
-
-[1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] 128a14e9d36d ("Linux 6.5.8-rc1")
-
-Thanks,
-SJ
-
-[...]
-
----
-
-ok 1 selftests: damon: debugfs_attrs.sh
-ok 2 selftests: damon: debugfs_schemes.sh
-ok 3 selftests: damon: debugfs_target_ids.sh
-ok 4 selftests: damon: debugfs_empty_targets.sh
-ok 5 selftests: damon: debugfs_huge_count_read_write.sh
-ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
-ok 7 selftests: damon: debugfs_rm_non_contexts.sh
-ok 8 selftests: damon: sysfs.sh
-ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
-ok 10 selftests: damon: reclaim.sh
-ok 11 selftests: damon: lru_sort.sh
-ok 1 selftests: damon-tests: kunit.sh
-ok 2 selftests: damon-tests: huge_count_read_write.sh
-ok 3 selftests: damon-tests: buffer_overflow.sh
-ok 4 selftests: damon-tests: rm_contexts.sh
-ok 5 selftests: damon-tests: record_null_deref.sh
-ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
-ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
-ok 8 selftests: damon-tests: damo_tests.sh
-ok 9 selftests: damon-tests: masim-record.sh
-ok 10 selftests: damon-tests: build_i386.sh
-ok 11 selftests: damon-tests: build_arm64.sh
-ok 12 selftests: damon-tests: build_i386_idle_flag.sh
-ok 13 selftests: damon-tests: build_i386_highpte.sh
-ok 14 selftests: damon-tests: build_nomemcg.sh
- [33m
- [92mPASS [39m
-_remote_run_corr.sh SUCCESS
+greg k-h
