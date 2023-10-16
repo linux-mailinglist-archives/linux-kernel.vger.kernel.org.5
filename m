@@ -2,143 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4E27CACC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 645D87CACCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233592AbjJPPBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 11:01:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48554 "EHLO
+        id S233860AbjJPPCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 11:02:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233485AbjJPPBb (ORCPT
+        with ESMTP id S233832AbjJPPB5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 11:01:31 -0400
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BCC112
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:01:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=jsUfO3TQJ7vOnQMKxuQpxgCnMK23mkHnPBih2nqMT4k=; b=iAqlT+T2w4q+O+zGPJDhy6nPGr
-        aTk3BKCw7bRpG/xlYBcwYfPDNCQIspKo60177O+RJGQafaq8h5oFGzShc5EyFjYkWFT3B+7gQ0MZh
-        AxLq+3L6Tz4LsnMPeWIypxC3DQGGDhtTxQWTGD1gPk0XZHAgCPkvcfQvSJ/De+TOd2jz8FkBZQNOm
-        ow5lk0VeLxWULhgE5G3/TK7r+YZBX76ayyHDXJJkSnfBJusS1koculQaBufWyUUHyi5l7swiHND13
-        R81DDoy9HbrkR9x4aDPDQVHErh0x5CVYahgubIVzLpWOC0HYld2yVSkMYzfEIMvVcdid2OnlsCw7v
-        ER+qm/tw==;
-Received: from [192.168.12.174]
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-        id 1qsP5e-0016BK-Cv; Mon, 16 Oct 2023 17:01:06 +0200
-Message-ID: <ff0fea0a-1cf1-41ca-9314-9856751c6310@igalia.com>
-Date:   Mon, 16 Oct 2023 17:01:06 +0200
+        Mon, 16 Oct 2023 11:01:57 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67EF4FC
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:01:55 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id d9443c01a7336-1bdf4752c3cso26027885ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:01:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697468515; x=1698073315; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JnnS58IgMMW37G00hlv3uANnt69yT13t13Z0Wl0btSI=;
+        b=AQIayMJa2kmwZh5LUNdZm2a2awGREzOBWg2wtGfqwnq5OBCs0paKErKiXrXfz79Q1d
+         NqhAdC1NHQQPc5AecKTFTxu3HKSmnK/tUXgYSX/p1L6kWeY4ItNRc6XK+FWrg9fQE2LE
+         9/zLtgWb2/I0OqJyGOQOqRR0KuNu3P3Hs2USS7qfLg7fYKuAMTXQlTqshJTkY1j+QL3N
+         o015M0b6JJqKfySqgXh7SNsX5pxnDGYavLECcBTJ3G7uNmdwONu7kzyluWVqoaolEwJU
+         rQTSiecdliwwdAJnUwySMRo0FNXX/Ek5OK+mquFBw2NpwBo9Lu42hPh3evezC85v/4Ho
+         uuIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697468515; x=1698073315;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JnnS58IgMMW37G00hlv3uANnt69yT13t13Z0Wl0btSI=;
+        b=LTNZ4mY0p6qM6V53seYwVBNn6trKLDJIQK70GpG8Vw2JuTXgCYxT3+xBQqpKvsujjm
+         iYMN2LgrlUpTkbly/4gvXPog/z8QxfxUh8qeZRCnvKKvUtwxsGY4+nZvW677iLGgHwnL
+         aMPnYy1dRacYRV0V1nJFnrRW/Bh7vDJvIy4eOdJvhoO7MaAy/gduSXBr1veJy48nzJQW
+         SVZk1hPIzvIHhHU1CS5bdq8cQU3nKS/sOQ8+CzOA3mLPOuK++3wv2kPIWYbufR1URoJG
+         qC7upqLOsty0L1q/hNHYA/cEaYl9Ibp7pzj7arzYM9JeNRsyKfFixut6+Z8BGCn3YlDa
+         CeoA==
+X-Gm-Message-State: AOJu0YyEXvJqJruofcSgnIg62yxQJeBTuqrgl5ZceB2HNddM88G5Ih65
+        +YyciD7PPwUyevNEUxRdntQ=
+X-Google-Smtp-Source: AGHT+IFT6Dq4J/EVcOv+em6QWTH7/Ht//OA+UE5IFyVPLa0/LDab/gjnaYbmFu2DaSdjzjdENCEB5A==
+X-Received: by 2002:a17:902:988d:b0:1c9:b207:d412 with SMTP id s13-20020a170902988d00b001c9b207d412mr15460340plp.37.1697468514526;
+        Mon, 16 Oct 2023 08:01:54 -0700 (PDT)
+Received: from [10.0.2.15] ([103.37.201.178])
+        by smtp.gmail.com with ESMTPSA id l13-20020a170902eb0d00b001b890009634sm8574379plb.139.2023.10.16.08.01.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Oct 2023 08:01:54 -0700 (PDT)
+Message-ID: <c4af0ef6-56e2-089e-e1b3-55574f6964c6@gmail.com>
+Date:   Mon, 16 Oct 2023 20:31:50 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 6/6] drm/doc: Define KMS atomic state set
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] jfs : fix array-index-out-of-bounds in diWrite
 Content-Language: en-US
-To:     Pekka Paalanen <ppaalanen@gmail.com>
-Cc:     =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel.daenzer@mailbox.org>,
-        xaver.hugl@gmail.com, pierre-eric.pelloux-prayer@amd.com,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Daniel Stone <daniel@fooishbar.org>,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, hwentlan@amd.com,
-        Rob Clark <robdclark@gmail.com>, ville.syrjala@linux.intel.com,
-        kernel-dev@igalia.com, alexander.deucher@amd.com,
-        Dave Airlie <airlied@gmail.com>, christian.koenig@amd.com,
-        joshua@froggi.es, wayland-devel@lists.freedesktop.org
-References: <20230815185710.159779-1-andrealmeid@igalia.com>
- <20230815185710.159779-7-andrealmeid@igalia.com>
- <1b23576d-1649-ff5c-6273-b54729ea46d8@mailbox.org>
- <b48bd1fc-fcb0-481b-8413-9210d44d709b@igalia.com>
- <20231016151856.74af9305@eldfell>
- <aa424bf8-5652-4a44-9b93-bdc0a31d835a@igalia.com>
- <20231016175222.7a89e6ab@eldfell>
-From:   =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
-In-Reply-To: <20231016175222.7a89e6ab@eldfell>
+To:     dave.kleikamp@oracle.com, shaggy@kernel.org
+Cc:     Linux-kernel-mentees@lists.linuxfoundation.org,
+        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        syzbot+c1056fdfe414463fdb33@syzkaller.appspotmail.com
+References: <20231008174745.27342-1-ghandatmanas@gmail.com>
+From:   Manas Ghandat <ghandatmanas@gmail.com>
+In-Reply-To: <20231008174745.27342-1-ghandatmanas@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Just a friendly ping :)
 
-On 10/16/23 16:52, Pekka Paalanen wrote:
-> On Mon, 16 Oct 2023 15:42:16 +0200
-> André Almeida <andrealmeid@igalia.com> wrote:
+On 08/10/23 23:17, Manas Ghandat wrote:
+> Currently while copying dtree root from inode to dnode in the xp slot
+> there is a out of bound memcpy. Added a bound check to the memcpy.
 >
->> Hi Pekka,
->>
->> On 10/16/23 14:18, Pekka Paalanen wrote:
->>> On Mon, 16 Oct 2023 12:52:32 +0200
->>> André Almeida <andrealmeid@igalia.com> wrote:
->>>   
->>>> Hi Michel,
->>>>
->>>> On 8/17/23 12:37, Michel Dänzer wrote:
->>>>> On 8/15/23 20:57, André Almeida wrote:
->>>>>> From: Pekka Paalanen <pekka.paalanen@collabora.com>
->>>>>>
->>>>>> Specify how the atomic state is maintained between userspace and
->>>>>> kernel, plus the special case for async flips.
->>>>>>
->>>>>> Signed-off-by: Pekka Paalanen <pekka.paalanen@collabora.com>
->>>>>> Signed-off-by: André Almeida <andrealmeid@igalia.com>
->>>>> [...]
->>>>>      
->>>>>> +An atomic commit with the flag DRM_MODE_PAGE_FLIP_ASYNC is allowed to
->>>>>> +effectively change only the FB_ID property on any planes. No-operation changes
->>>>>> +are ignored as always. [...]
->>>>> During the hackfest in Brno, it was mentioned that a commit which re-sets the same FB_ID could actually have an effect with VRR: It could trigger scanout of the next frame before vertical blank has reached its maximum duration. Some kind of mechanism is required for this in order to allow user space to perform low frame rate compensation.
->>>>>      
->>>> Xaver tested this hypothesis in a flipping the same fb in a VRR monitor
->>>> and it worked as expected, so this shouldn't be a concern.
->>> Right, so it must have some effect. It cannot be simply ignored like in
->>> the proposed doc wording. Do we special-case re-setting the same FB_ID
->>> as "not a no-op" or "not ignored" or some other way?
->> There's an effect in the refresh rate, the image won't change but it
->> will report that a flip had happened asynchronously so the reported
->> framerate will be increased. Maybe an additional wording could be like:
->>
->> Flipping to the same FB_ID will result in a immediate flip as if it was
->> changing to a different one, with no effect on the image but effecting
->> the reported frame rate.
-> Re-setting FB_ID to its current value is a special case regardless of
-> PAGE_FLIP_ASYNC, is it not?
+> Reported-by: syzbot+c1056fdfe414463fdb33@syzkaller.appspotmail.com
+> Fixes: https://syzkaller.appspot.com/bug?extid=c1056fdfe414463fdb33
+> Signed-off-by: Manas Ghandat <ghandatmanas@gmail.com>
+> ---
+>   fs/jfs/jfs_imap.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
 >
-> So it should be called out somewhere that applies regardless of
-> PAGE_FLIP_ASYNC. Maybe to the end of the earlier paragraph:
->
->> +The changes recorded in an atomic commit apply on top the current KMS state in
->> +the kernel. Hence, the complete new KMS state is the complete old KMS state with
->> +the committed property settings done on top. The kernel will try to avoid
->> +no-operation changes, so it is safe for userspace to send redundant property
->> +settings.  However, not every situation allows for no-op changes, due to the
->> +need to acquire locks for some attributes. Userspace needs to be aware that some
->> +redundant information might result in oversynchronization issues.  No-operation
->> +changes do not count towards actually needed changes, e.g.  setting MODE_ID to a
->> +different blob with identical contents as the current KMS state shall not be a
->> +modeset on its own.
-> +As a special exception for VRR needs, explicitly setting FB_ID to its
-> +current value is not a no-op.
->
-> Would that work?
-
-I liked this suggestion, thanks! I'll wrap up a v7
-
-> I'd like to try to avoid being more specific about what it does
-> exactly, because that's not the topic here. Such things can be
-> documented with the property itself. This is a summary of what is or is
-> not a no-op or a modeset.
->
->
-> Thanks,
-> pq
+> diff --git a/fs/jfs/jfs_imap.c b/fs/jfs/jfs_imap.c
+> index 799d3837e7c2..d1f897848be0 100644
+> --- a/fs/jfs/jfs_imap.c
+> +++ b/fs/jfs/jfs_imap.c
+> @@ -746,7 +746,8 @@ int diWrite(tid_t tid, struct inode *ip)
+>   		xp = (dtpage_t *) & dp->di_dtroot;
+>   		lv = ilinelock->lv;
+>   		for (n = 0; n < ilinelock->index; n++, lv++) {
+> -			memcpy(&xp->slot[lv->offset], &p->slot[lv->offset],
+> +			if (lv->offset < 128)
+> +				memcpy(&xp->slot[lv->offset], &p->slot[lv->offset],
+>   			       lv->length << L2DTSLOTSIZE);
+>   		}
+>   	} else {
