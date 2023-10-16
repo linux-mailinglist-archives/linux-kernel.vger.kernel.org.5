@@ -2,141 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B64377CA4B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEDA57CA4B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231177AbjJPKEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 06:04:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58688 "EHLO
+        id S231429AbjJPKFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 06:05:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJPKEr (ORCPT
+        with ESMTP id S230056AbjJPKFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 06:04:47 -0400
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2138.outbound.protection.outlook.com [40.107.21.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13425AC;
-        Mon, 16 Oct 2023 03:04:44 -0700 (PDT)
+        Mon, 16 Oct 2023 06:05:44 -0400
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2108.outbound.protection.outlook.com [40.107.7.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70736C5;
+        Mon, 16 Oct 2023 03:05:38 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cSvsKEQczeJubuXyJt1CrQ6ZSOOaok8tJ6iWuwP5b7ggZfyLSTAb1CExtbqNzQpWr4e6hdbNRGjKr2K6olHezIkZqmQlZClkk33vWHOXHz33MPaiZOYdCU6HcECxBGm5IQGZHR11UhdplddSr1OHjhph7HS2fqmC1gST/LuEdd23pHohQKbNuP5UaRBBvKxvB/pXVHsOvxj50jsq3N5HDsSu/Zpd8MA8/tUHI0VZ9rYfOA95X6wZRvBuJuyucN6atCbwSNr4FgzZiTIH1n54buAIDBgH+6ZWalYBEqKHFdGmnLzyAL8ZFBiElBcoPSywn4JWTjbZ7acGRSGAFhHD5g==
+ b=dM3n7liUu3dZj1TxyCL7BJrvrpRkSgowPl90w5qb2oBZNOIXMx1GNOvyajLDVOtdbnH5+8qU2XpVWclUHpsSpTA0lB+g31WKPbfxE6V3DAfQJd95c4xr/hCX6L5TUJOAnJdkTHsKFjuqQdDQIrUH01H67efJto8iuFwmgtB3l+1eyryvacTgRkszrQnwO+a+/IDH6/5ns7FF2rduSziKJJwvgW6GS84pR64nuZxfP4BEYKTcJekS3QNXQGJ5GeWDzYlzUSKduW+qLjj0kcHpgjEw0lfWNQ710E73ZsG7iwvgRAeyDOOlOxmO8QJb/BPvjzpQ4mUiN0Ry7Lx1k4W3JA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vbMeSWYm8KPCQwawSSov3A8QflecMkqssxcRITSehNo=;
- b=dcWQkoVJPyTeK1p1Ax7+HA4Sfzqm6oIJShMmg4FCuuJI8YCSX9ubqhNjvh+C2EZt279gt/2fQ006iIvMjvTYnOCe9Kjphu7NBwO8jHhJviZyUX+G1pylIl6fvzw/JoYqftsy2bqINHnWNClhdetQIdldkRwHJjpKY3x7Y3R7xZhyQ7uMBmQEkwwkt9h5I/+mWRb6BaCSpR+L2Xg4WCqETOlH/fNZUxxztRcqsx4pFW1XEvPBsA0pE2QJLocwuUTTb4GugC/iEk6FMV4IQd1cKMr0ZkMy+NrjUheHX10hsEemIiv0EQEywwb4kHSoNx6zZt91aHaH4u29v+k+nFXHeA==
+ bh=BK+nQ/aMTi6LcVEwQE7+hfklxUPcAUPCgwqTzeWkiKc=;
+ b=MYrxZBEAScce6SF77+3f3JH5wmFNlIi7zL6uFiAKO+KZPcXmY06Bw335VWhDW+97AjFarl1xZ9vtM6MTmSyQ5mWyhGJgxH2X6JxKYwxvSkgiKwEKdt6wwzD5MbQ0huaI2GmLQ7SZ6kV9e8VA2rjjIIBZ9UsM710EC9JCeB6L8dPUOTGRsjwe0vNq7MLQ1wo8kH25RBCSkwqFWXFUD9KzJbHQKd7rS4Vn5Y9qG17BQaesYVMEp+Dp/DNDh4lh/+mCGimAzPe5ilYhsve/L5sONG2r1T1fz5ssZAbUD4Xsd0l40QZ+j/O9ReQX31kSV7P3K6Xfj8qx7cEx7BF2y3oXag==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
- dkim=pass header.d=prevas.dk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
- s=selector1;
+ smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
+ dkim=pass header.d=axentia.se; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vbMeSWYm8KPCQwawSSov3A8QflecMkqssxcRITSehNo=;
- b=HSj0/DvVryGw0YbxtfyvWxr+NGdeRQ64bzLIbZ0rzdnlYtKqX6Ca3/sHqTPOKAbkV6kCAgLXuxIuKD2nKh5Dgfk+YHgNAMoe19M/GezFNtgBV1OYQPq+kcEXeLkH3PlaKCA/ioH6qD9/3nXaC3ts/d/jPl4ayy0mFdv9Lr4Bw0Q=
+ bh=BK+nQ/aMTi6LcVEwQE7+hfklxUPcAUPCgwqTzeWkiKc=;
+ b=IqphAAZG7kFqXrV4vtq77OKvCBkKw19lSw/46X5QLUHqHpYCBNaG9kqgf5qlsIkMbdVz7PluHlJQ0Ymaw/KTtVt3D+dVd/iQ+QXyLYpgV+yxBDu2g75ZRBsIYuoFsYk2oXfov98cgQNVNh/6rPBEloytnOMxs1xB06DFy25BRGE=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=prevas.dk;
-Received: from PA4PR10MB4576.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:10a::24)
- by DB4PR10MB6143.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:389::6) with
+ header.d=none;dmarc=none action=none header.from=axentia.se;
+Received: from AM0PR02MB4436.eurprd02.prod.outlook.com (2603:10a6:208:ed::15)
+ by GV2PR02MB9328.eurprd02.prod.outlook.com (2603:10a6:150:e0::5) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.35; Mon, 16 Oct
- 2023 10:04:40 +0000
-Received: from PA4PR10MB4576.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::1315:9ecc:6928:f486]) by PA4PR10MB4576.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::1315:9ecc:6928:f486%4]) with mapi id 15.20.6863.046; Mon, 16 Oct 2023
- 10:04:40 +0000
-Date:   Mon, 16 Oct 2023 12:04:31 +0200
-From:   Emil Kronborg <emkan@prevas.dk>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     linux@armlinux.org.uk, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org
-Subject: Re: [PATCH] serial: amba-pl011: set fwnode from parent device
-Message-ID: <imjcptmiirsbevdbk6lpbdcdmodaic3bfaj6hkrh6nqvkrrjni@6u6g7ko6ekd5>
-References: <20231013154742.76836-1-emkan@prevas.dk>
- <CAGETcx-MP7XNUa0uObFpEDBiwjaGgTGvKu6Q-RXkrh0+hvXZvQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+ 2023 10:05:34 +0000
+Received: from AM0PR02MB4436.eurprd02.prod.outlook.com
+ ([fe80::4ba4:83a5:e60c:3a5d]) by AM0PR02MB4436.eurprd02.prod.outlook.com
+ ([fe80::4ba4:83a5:e60c:3a5d%7]) with mapi id 15.20.6886.034; Mon, 16 Oct 2023
+ 10:05:34 +0000
+Message-ID: <948548a0-d132-4f5c-819e-40bacb367be4@axentia.se>
+Date:   Mon, 16 Oct 2023 12:05:32 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH v2] iio: afe: rescale: Accept only offset channels
+Content-Language: sv-SE, en-US
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Liam Beguin <liambeguin@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230902-iio-rescale-only-offset-v2-1-988b807754c8@linaro.org>
+ <a0a55276-297b-e2b7-79b3-e4aadd39b400@axentia.se>
+ <CACRpkdaMj2XFcwqaSiRSA2A41zYsW=AG_Fi7v7AjbuLBByxVaQ@mail.gmail.com>
+From:   Peter Rosin <peda@axentia.se>
+In-Reply-To: <CACRpkdaMj2XFcwqaSiRSA2A41zYsW=AG_Fi7v7AjbuLBByxVaQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGETcx-MP7XNUa0uObFpEDBiwjaGgTGvKu6Q-RXkrh0+hvXZvQ@mail.gmail.com>
-X-ClientProxiedBy: MM0P280CA0096.SWEP280.PROD.OUTLOOK.COM
- (2603:10a6:190:9::31) To PA4PR10MB4576.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:102:10a::24)
+X-ClientProxiedBy: MM0P280CA0073.SWEP280.PROD.OUTLOOK.COM
+ (2603:10a6:190:8::23) To AM0PR02MB4436.eurprd02.prod.outlook.com
+ (2603:10a6:208:ed::15)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PA4PR10MB4576:EE_|DB4PR10MB6143:EE_
-X-MS-Office365-Filtering-Correlation-Id: d53ca775-4557-4171-b8ef-08dbce2f4fb2
+X-MS-TrafficTypeDiagnostic: AM0PR02MB4436:EE_|GV2PR02MB9328:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7ab652cd-f98a-49da-fcf8-08dbce2f6fdc
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8GdzOI4nyTJ6B7s3bEWxOLeCO6dQbS60oNl2/2wbWP1QQ6MSQ2P2YHfVGyNXXW8by7M9D0Dgff9A17KWCY4TkZwSueqrFIYGmAa5CE0Z1iHQTV3txal5kMxNTL9TUULpVh78nrLRkcnMlefysGG16REEtThXu9Y2POaSLbKohoIBJuHYeVhVqKTGTaqKFcocIsKSsaV9v6xsyFFbRALBeMjd58abn1Mft2AR0SuvFXP4+stAi72e/sGzsIgz7b/LLj7WluaglfpF9HHxWmvQDxsftOLHRHVwOoiSI3bnZdO7Ig8pDmwx/LphqER6r55RRZ+ypicRV6UW9tiVt+GqFsUUgqoG5+Papt3OS2Krj64LgWPekbH56A6InvxfFHbMFFkWIKo1psHnn/H6LtgPs76dv+Yc2OrDDTL2pjiq5NDQYw2glI0Tjl4ZCROEpZOtPHutqC2ul2XyQ6Ezz7+zNHrU5JetqFbv5bBbKZBDJjFHYdcgm2VJd8WqfVCkbepsABBgNLhY/jfV+gWgwnhGI3s/uNWVivmC9M0NfKAPo+ms1iEpNSH5GRfqsCduHiO/IvhHGtS0DqURMezhnebAqGlTkkXhbpMM+TIpmYY9uLnuwzooEyyxIoEWO7eQ3E6s
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR10MB4576.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(366004)(346002)(136003)(396003)(39840400004)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(6486002)(38350700005)(38100700002)(6666004)(53546011)(9686003)(26005)(6512007)(52116002)(6506007)(66946007)(66556008)(66476007)(6916009)(316002)(478600001)(41300700001)(4744005)(2906002)(86362001)(5660300002)(8936002)(8676002)(4326008)(33716001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: fwweGcKDodQdpgQOgEiF+omBDbBd5Dw2i82m13ug7XVfu2UlAu77Lu6Bb+iVCrqU03044V7jnJ4lIufmn14eCUTx3RbihHuR20QflwEZc3zecCwedtkI8FvGSqqUSMubqokqidp1UpWWs4I0BsRReao3hgyWAXsWKmHuAooGaXH4noSc5f9XEk2bR42hV/4H4P+oD8xtzzp0xzxSUg8hOgN1VrInzDv31LBdO+XjqEWKm0fxM0MvPXypPk3uwRi1Vy5P6/uQfGjSvL+Udxg0ndehO701i/Eh/AAqldT+9J1P+IikSLQ2hapVJeAyQnnMrwuivs6NcJfSVpI+zwFJ2O1a5b0FwmIuqgP95ywONFQ+hhg3CaQTiA5Zp+y8NoqVev4NDUwP68Kkbu7ZEC3lTOl84kpDd4l8SoI8pz1v5vZkOn6DZsNMUuwTj3D8kRU3o7qrq1+tBODTLxl79aJUIgjYEOBgYDbI77alSxYetdDaZa6gcYnVDiUL+p4yfiNpTF0J427ZNwx9RQfgaMZD5h8a21sQXtAJbqFVOrTP0B8TKjuaMibtZ+MKDT+hegLmY3ZoWqcJd247cJJqQ8zFtwuwOk0K6oJZV0xGttKDTVy4I5lVA4gwQ2lsqRWlesMPotWHZ5PWl5AOWfrJXue6mg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR02MB4436.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39840400004)(396003)(346002)(366004)(376002)(136003)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(6486002)(478600001)(6916009)(66476007)(66556008)(66946007)(54906003)(2616005)(316002)(6506007)(26005)(53546011)(6512007)(4326008)(8676002)(8936002)(5660300002)(4001150100001)(2906002)(41300700001)(31696002)(86362001)(36756003)(38100700002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UzMrd3ZWYzVOWENsUnhQNjhVUGNrUVQ4eFVFMTdkNDZnQ2VqL2tRNmZLR3BQ?=
- =?utf-8?B?dUt0MWhJRkd1eEJTbHNqNGhrdVRyeEpIMmU2MXJ1ZktRUDNSQi9HZDloMnVG?=
- =?utf-8?B?MnM3UnFMQWxDTFpLUWoranV3bGJkWnNnNkdBTndWcHluUlZjVDYxcHBpcXZG?=
- =?utf-8?B?TUs4TTRNKzFIVm4yOHhNbmtvWjhMTThpdHZ2Yks0bVVQLzFNdVVqcmNTckx2?=
- =?utf-8?B?V3NlQWpnZ0NXTTNraFAvM3NSeU9DQnZFKzlWd2l6SUNoSUhKSE5QUmJCNzA4?=
- =?utf-8?B?cGJ6eHpKUGZxa0lWcTJXNU15bTdGQmRsWVMyTzBmY3BsUHBSVkRKTW1LSFFZ?=
- =?utf-8?B?S0dSNDFvem9Sc1QzN2J4NncwdUwvd3FNS3J3RDB6c2huSjZPQ05GcUFLMUtL?=
- =?utf-8?B?c3I3SWNTR2JPaDlUdkNFTE9TcTFJeWxQQ0tWSnkvMnZNeXM5Y0ZyTHVjN0oz?=
- =?utf-8?B?SjJpd2I5SlIvMVQ4VVpsRU5RRksxWC85K3hqUWY1MFdqanltaWV6eEU3cW5O?=
- =?utf-8?B?ZHdWcUlGNGV1QWFtZEhBR1F4L1ZndHcwZE1Fem1aV0J5d3BEc2tRaVVZMEFU?=
- =?utf-8?B?dENCQitwd2FqVWpSVW5IWDhNTklzTGp6R1Z6MXVzK01NRU54aVV6THV5bWNL?=
- =?utf-8?B?enVhVHNVRFdPYmxiRm1neUlFVHBRa0wzRGM4RkhaRzAxWFhMWXBVY1VUcVZh?=
- =?utf-8?B?Qk4xclJhOEUydlNTblM1QzdHN2VielpqTWthYm1PcjNoeVA1WmMrSlJDU3Vp?=
- =?utf-8?B?cDNhdWpWRTRvRlFLZmR0bUxYTUl6VTY5S3VJWkJaZUwwWldHSnBwclhJVWFj?=
- =?utf-8?B?MW04SDhFQ0FjRkVEdU5pVXhWUTlhejJRMTBLTHFtMWdySk01UTRsRGdvT0hM?=
- =?utf-8?B?dnR2V3hsMTZZdW1DNG15emdXTWdQU1RPVDBvWC9mUlNjRVdIYlIyK2NRMEFX?=
- =?utf-8?B?L2hKRXRzN1B2WFljbjZaWTcrWHBpVnp1RmNZZjdsK2FIWGcvMmI0ekkwbmFB?=
- =?utf-8?B?eCtGdGNBT1JBM2F2a2xLM2E1TG9pdnpDaG5TYjlWV2NTZ0F4UXpCUFovRmV5?=
- =?utf-8?B?VU9ycElJNitTRDRnbDVPR0wwNmtnVE1JVHQ3TmtLMjh6WkxTV0IyL3U1YjNH?=
- =?utf-8?B?NllOM0x5Q29kUGZKVG5sQVppdFRwdjhsblJnOWNzcnN5QmlULy9mSU5pbWEv?=
- =?utf-8?B?TnFZaU9HenlNblN0bmVBdXpaWjYxU1lOUEpHOElPdytWVyt6VWZiOGlXSDJV?=
- =?utf-8?B?ZEE3RWp4OHlPeHFMdytRb3lPZDYwZG5aaTdFZDRaVU4vbFFNRXI4WDJuRDRk?=
- =?utf-8?B?MDNMSUZ2V3Q0a0NmcGErcVc1OGJjNWtrcmk4ZEdpRzBUeEhDWGRITlgzeWph?=
- =?utf-8?B?cUtmQUY2S1pTbHluZmFITmJiUFFhVjM5QytnVjQyak9pNDJ3dVpJRXVseFRZ?=
- =?utf-8?B?TUFLeTZYenVQUS8vT0FTWE0vYWR3ZGdvYkpzWExhZGJlOE9acFRmanFack4z?=
- =?utf-8?B?Y3ZFa1VraDhJeTJLUzBJYzdsRDhqdWd0MmhaN0gydml6Nkx3RmV5T0t4Q1Ir?=
- =?utf-8?B?SXYrQlo1NlFMai9jQmMwcXo1Z0RJVVNPYXAzaGVQNWgzZ2s1bmFVUDZ2a2J4?=
- =?utf-8?B?QW5FWFBURkxORU1tb1V6V1FpbHNqVGg1WG9HWjU3bWdmRWNMeHdLZnp1Q0V5?=
- =?utf-8?B?OUlFYVJVM2lzbERHWjFETlZzY25GbnVSMWJ3QmMrZzNUdXZRWkxRa0MxTVhU?=
- =?utf-8?B?SzRXV0pDUm16ZGpBNU12Q1NIZitPY1NHbUhISVFtYitESkJlQTdVbC9UT3l3?=
- =?utf-8?B?WFhyL09SWXQ2MnoyVThoYW15VEVES0F4aThjQ2VJZ2RMc0RpaEQwbFluS0FG?=
- =?utf-8?B?NXlGYjZZRlVLamtySkw0QSsvM0RyNmo1M1FHY0FISytSQW1HenBlWkVEczlS?=
- =?utf-8?B?T2ZRbitQdStrMnRGVE8rTHFWWVF2SjRFVHNFT1ZBaEVvQWt4ZGFybk4vdDNl?=
- =?utf-8?B?OFhRYnRlT0o0M1Nubk9kb1F6M0tUUSt2VFo1eVE1bVMzbG1ZY1F5b29Fa0Y3?=
- =?utf-8?B?a3h1R2hoZUVoN1IzTHgrbWJuR1pqcWtFY0Z5MTRORkZZeWFZZ0xDM28rNTFC?=
- =?utf-8?B?WEZiWFJDRmtXOTB0UEdqVDM3VWRtdjZtZHUzMHNxWWx4YVAvVlZTOFZteitX?=
- =?utf-8?B?d3c9PQ==?=
-X-OriginatorOrg: prevas.dk
-X-MS-Exchange-CrossTenant-Network-Message-Id: d53ca775-4557-4171-b8ef-08dbce2f4fb2
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR10MB4576.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b1d5QURXaFp2QndPTTdlUHUxZi9kSVRLUVVuVjNzZnZWbVpBVWx3R0I0QjdD?=
+ =?utf-8?B?Sm9CR0ZyOHh1Ujk2TG1Ub1FUQis3K0NXYXNWU05WTUQvWTRHYWZjNjRlTEVJ?=
+ =?utf-8?B?Z2ozZUpXR255aCt2SG1ydHRTZ1hBNzl4cnV6cHQ5L0pxRFB2NVlqai83QkZX?=
+ =?utf-8?B?cWNoVTlpY3N4MWFSaVYwQlhEV0NqV2RxUGNIKzhyV2RVL29UcUFuaU5jUGpL?=
+ =?utf-8?B?TUt1bWEyeStQUk53Tk9rZjc3L0JhZ1FKbHNhb3BrVkVVMVBBRmpzZFdmdFlu?=
+ =?utf-8?B?bEVMazBCK0phbmlCTWxQMDIyUWFXVmxCVHFvaldUNXdERWRQT0QwS05YZU5k?=
+ =?utf-8?B?MGR1Z21WUkppRHgxNkdheUx1aE80RU9oWkZTQmNUczFTQXZ6ZFlwL0JmTnFn?=
+ =?utf-8?B?TEZaL3dScEQ5S250U2JGdVRJNVlVajdJWWlhbDNOamVrT1FRdm9vYklTbm5D?=
+ =?utf-8?B?ZTZ0YUVaeVJBWCthMW1VU09wdXJ0bFEzc3F6SmxPSEtuNDJKUjVnM1pSUkJ0?=
+ =?utf-8?B?Q2pGdkdhNWpwMFRQUjFxUEg5VUpsdDV0Z20yV3VQeFVQSGVnMU9xSUlLeGN1?=
+ =?utf-8?B?cjA2bmc1TUl0YzFqR1JMWDZvVG5vN3o1Z21ndUR1aDk4c2NEYkZGUXpNU0ph?=
+ =?utf-8?B?MlVSQVNrYUY1d2c5c3M4aW9wYm5Pc3dKckZaTW5ZVmJTQXNUeHMxY1Zyd1dy?=
+ =?utf-8?B?WWk5cFVuR1I4WTJQVkpaT0d2NHRTMEFVQXB6WlJDMWY4U3FqMlVyMUppRGd1?=
+ =?utf-8?B?endLSitEU0FXS1E2MzlwL3FCRzdDWU5RRUhSMFcrbnFKMUdMOTJjTWhHRTZU?=
+ =?utf-8?B?dVNUZ3dGVmJuQjA2NWRWc0NPQThTdEZYQW83YnFxb05zZ05hZHd4a2pkdGdo?=
+ =?utf-8?B?d1BQYkhsU2NTODFoc25LU1Nwb05IODFwOHp5NUUrZndQbnhPeHRSVlcwVTZl?=
+ =?utf-8?B?dU9OaHRCaGJQMXQxNDFqTVFEdnNaZysrZGdrcEh1OHJRZW5WUDBzRDRnZ1pJ?=
+ =?utf-8?B?ZVl0ZmNtdHN3ZmJ5dDVYVGpvUVFJeGJYS1NIVTlRU0pWUFE0akJ6NjY0clBO?=
+ =?utf-8?B?TmxrSmpuZURHcUh5OVV6MGxEYmRSanlraHNKd3dOMFdnYUlmcGNRMDFCeVZu?=
+ =?utf-8?B?cjRPWUdCVGNNN1JUN1JNQlMzbHlTUXk5UFp4RENzbXpMZW10NXNyTGJremxR?=
+ =?utf-8?B?cVZ0S2lTQUtzM1piWk1wYUlsbXlPRFNGVWlYMktUb2xqYzRxSTJhUnZSdEFz?=
+ =?utf-8?B?UUUxNlB6WGZrQmlhZUljajhoV3JqYm5VN1FibVhyR1hwVXhmUGNpb003RWZE?=
+ =?utf-8?B?MlNHUUZoQlVSMWwyZStzM1dDQXEwM3dhWlg1b2diajBXWkx6SzFEaHoxTFVV?=
+ =?utf-8?B?NVV6TFhUdEY1SGFOSnZWWDlQRWNDamJMRDdvZG5ReGplcFZSZUxUN1dmV3I3?=
+ =?utf-8?B?OE1kMjJ5QTNhTXZKSlJKK1hTa3ZKK3RSQlpKdC8vb1J5S1FseGFyMzRYTVJG?=
+ =?utf-8?B?THVYYWhsdDFhSHV3MHNtai9KK2pmdkwrQTRZb250V0JkdVdnbDZlQUhwWFht?=
+ =?utf-8?B?NnZjMEpXcXZlWkNBY0lyWHhQWHRvOEp0UjVRUGxybVBnZTdzQ28rak1EdVYy?=
+ =?utf-8?B?S2o2bCtXK0RWM1JFc3dnRG5MZUlXSEcwSmtaMU1xSGplTEQ5Z1ZiMXZFb0R2?=
+ =?utf-8?B?NTFIODhxdUUwMlJTZlR0U1I1M2tKdVl3RitlaXJLVjFGTzVZdVE3Umx5ZHNB?=
+ =?utf-8?B?SVdmTGxUUThZS2Y5Ukd6azBoYkNoekxuQ2gzS0pMVi91WDM4R09FSDNrckxG?=
+ =?utf-8?B?TkRxR2hiQmpzNFdwck9BM0VoYzRCNVk1ZmgwWXJqUnd1M1hBOFNoYjZMQ3or?=
+ =?utf-8?B?WjYxdGhycEl5WWxid0lEL1pmNFluOTI2NjAzU21pNlVJeU93MlBQdVBDRjlh?=
+ =?utf-8?B?SlBsSEFvUTlCQW9sbW9lMGhXK1VpTkZzMEpOSGZtcHg2eVF1QVdWQlIyTkFr?=
+ =?utf-8?B?aUZDSW5hdFd6Q256MW5pVnRrTGt0TWI3VVdwSkZUbkVQeDNzbE1PeGFUY2Rr?=
+ =?utf-8?B?VnBtRmFIV3BDTHV3VlZ6SVBIdFJzMEVhb1hKK0lCT3VlRmtDNU16anpCWHFY?=
+ =?utf-8?Q?VsupSpGr9FWAN2hzstSK2QaL4?=
+X-OriginatorOrg: axentia.se
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7ab652cd-f98a-49da-fcf8-08dbce2f6fdc
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR02MB4436.eurprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2023 10:04:40.3387
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2023 10:05:33.9881
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
+X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DsddBWLV7W67D8XFLjV/1BtBqZYJCr0uvoJQ3US2HmyhLAbVr9KnMONCDCmjskFc1H6MPRitr1dKODJsw+Bdag==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB4PR10MB6143
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: T5s7MIbtQPLF0NGhLHiL38ExmVkKSTf5/eDKvpL1DvTzd78x3/BzZGEpFl++r5Ak
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV2PR02MB9328
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 14:28 -0700, Saravana Kannan wrote:
->
-> On Fri, Oct 13, 2023 at 8:48 AM Emil Kronborg Andersen <emkan@prevas.dk> wrote:
-> Can we do this at a tty/serial framework level instead of just this
-> driver? Also, this is the latest kernel? I feel like I fixed exactly
-> this (but at a framework level) several months ago.
-> 
-> -Saravana
-> 
+Hi!
 
-You are right about about having fixed it. I mistakenly mixed up two
-boards and thus tested my patch with a wrong kernel version. I apologize
-for that. Commit 1a5ecc73b2bf ("serdev: Set fwnode for serdev devices")
-resolved the issue at tty/serial framework level.
+2023-10-16 at 10:39, Linus Walleij wrote:
+> On Sun, Oct 15, 2023 at 12:38 AM Peter Rosin <peda@axentia.se> wrote:
+>> 2023-09-02 at 21:46, Linus Walleij wrote:
+> 
+>>>       if (iio_channel_has_info(schan, IIO_CHAN_INFO_RAW) &&
+>>> -         iio_channel_has_info(schan, IIO_CHAN_INFO_SCALE)) {
+>>> -             dev_info(dev, "using raw+scale source channel\n");
+>>> +         (iio_channel_has_info(schan, IIO_CHAN_INFO_SCALE) ||
+>>> +          iio_channel_has_info(schan, IIO_CHAN_INFO_OFFSET))) {
+>>> +             dev_info(dev, "using raw+scale/offset source channel\n");
+>>
+>> If the rules really are that when not provided scale is 1 and offset 0
+>> (reasonable of course) then the above still looks suspect to me. Should
+>> this part not simply be
+>>
+>>         if (iio_channel_has_info(schan, IIO_CHAN_INFO_RAW)) {
+>>                 dev_info(dev, "using raw source channel\n");
+>>
+>> in that case?
+> 
+> The patch is based on Jonathan's comment that while we currently
+> support raw+scale, having just raw+offset provided is a possibility.
+> 
+> The if()-clause above (which I guess you are commenting) is meant
+> as "take this path if scale or offset or both are provided".
+> 
+> Just raw (with neither offset or rescale) doesn't make sense, since
+
+And I don't see why not. That's the crux.
+
+> the AFE rescaler does just offsetting and rescaling, in that case the
+> user should just use the raw channel. Also it would then take
+> precedence over a processed channel (which applies rescale and
+> offset internally) which doesn't make sense to me.
+
+Why isn't it perfectly fine for a device to provide only a raw
+channel and then expect that to be interpreted as the real unit?
+Why would it need a processed channel when no processing is
+going on? E.g. a device reporting the temp in the expected unit
+in one of its registers. Or whatever with such a friendly
+register.
+
+And if the above holds, it should also be perfectly fine to run
+that through the rescaler.
+
+> 
+>> Or was "raw + processed" some kind of special case that we want to handle
+>> as processed? If that's the case then we need to have more complex logic.
+> 
+> Processed is on the else-path, which will be tried only when neither
+> scale nor offset is provided:
+> 
+>>       } else if (iio_channel_has_info(schan, IIO_CHAN_INFO_PROCESSED)) {
+>>               dev_info(dev, "using processed channel\n");
+>>               rescale->chan_processed = true;
+> 
+> I'm not sure I fully understood the remark, please elaborate if I got it wrong!
+
+I agree that the patch does exactly as you intend. I question if
+what you intend is correct, but since I don't know the rules, I'd
+simply like to have the rules clarified.
+
+Is that clearer?
+
+Cheers,
+Peter
