@@ -2,80 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E55B87CB545
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 23:29:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56A267CB547
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 23:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233655AbjJPV3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 17:29:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46406 "EHLO
+        id S233874AbjJPV31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 17:29:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233329AbjJPV3N (ORCPT
+        with ESMTP id S233329AbjJPV3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 17:29:13 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60FC2A7
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 14:29:11 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c9c145bb5bso22625ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 14:29:11 -0700 (PDT)
+        Mon, 16 Oct 2023 17:29:25 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27661E1;
+        Mon, 16 Oct 2023 14:29:23 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c1807f3400so58547501fa.1;
+        Mon, 16 Oct 2023 14:29:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697491751; x=1698096551; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AFn29vyvgA1T7ugFUC1SqB09r0OPYYGNgXPaVYLCKMU=;
-        b=weCY7jOfctptabA4Zj/I6ZRqxzn+1bu6HFG3JBoWKb1bkIvIKEqxaYJmBL48g8oIc8
-         5JvhxDdQoLuNz/gOUYV65oZlXa0lUn6821vA7yXTv9MIm7OFEIJyp7bvAyN83pp7buzf
-         MYFr2TdlIul24wDWqDCmaQTV8sqVw4N2Nm2gPNlFFt7FMOvaB46vJGFQvySQT9LvXNKc
-         s6mJr27uOQy0WzIw80unXkeFQzoU7T467Qa9CtPUaZoSlyMh5viqnH0gAVyRX4rgizKU
-         WO3V45LWrsTqzGuS7EVRp/OYwSuQYDl00tmT1f30CJXzrY7IkXy4/WJlT7dN0fKr6D3z
-         +XvA==
+        d=gmail.com; s=20230601; t=1697491761; x=1698096561; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=izuw3JLwredy2IzR0SMzmo2qR8d6vfISCsd5KRIFA/M=;
+        b=IE9qnG8udgC51VLGU5KxgwO9dU3xkuK4nh1KVl7O37MVSFwOyU/gMR3fxcfw74p7Oh
+         yE5zfDKu7DPLM0dWnaN9ZZnFZ8EcGV/PVZyuzgDvpXcd6GUGzRksXujf+yIIpzPq3V+j
+         81Y34VaZRS2pUOHE3wzq5alSG90c8srKR+mcdfgEkrdiWa2eWfRpk3aL00i8YtHOMXEG
+         sVtiUsUzhNN5sLnJcB++ocx4eBVkB+hFLTBJL2/MJrzaiagUrogi9p06QIanOEYDzz7j
+         tpqE1yX485hpYJLnEXSoHMY5VZgTY24OfdiDbyxYci5YQgTc8QFShGpAlyuOwsdLrnZD
+         qAnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697491751; x=1698096551;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AFn29vyvgA1T7ugFUC1SqB09r0OPYYGNgXPaVYLCKMU=;
-        b=cdnvOPNAQ8TfeX9O2YvGuDt967plYevLTtZJqH2AWdAw1PPl1Veks2MJxhXG1pOE1f
-         yHXwx6cwf/MGJPgt1ISBTqE/dfFnfdXX5TqNAejjjAa3NjeWj/imgK+u9DAgvgnTgoYc
-         UuyhJNy9nMBlrOQnTbkhFQr4XxLKZyIAlTFzliwPKoNmndUhVFAiF7rw8hoNBGtoswlM
-         bYYkwGuAjaGyzPcDOgHpMKegmqA/2R4D654XIBMn1+DKH04BNVVbSNps0xmwfgkG2Epj
-         8RuZEQZX6VKBHsUmFyUztM2BTWvF3iMSedPrV64i8vngDDqtaQHAAk5O3h8hmd57OJnO
-         WOcA==
-X-Gm-Message-State: AOJu0Yygzr0oid0cCVwjzSRAYljiLBo8lPwqJURx3NmgicJMX3RmySGG
-        +j65+swPLLuJu6SLRmg+37wJKQRTVTjIf4QddbrbMw==
-X-Google-Smtp-Source: AGHT+IFsGl+8wNrA/ks0sS6VjqWheVjAe9z1hr9ReqDQIpul5xTW2Yy7iep+rQKRrsQYLhY6pzJauQHVj9HrMBR78ss=
-X-Received: by 2002:a17:903:28d:b0:1c5:ca8d:136b with SMTP id
- j13-20020a170903028d00b001c5ca8d136bmr71796plr.14.1697491750564; Mon, 16 Oct
- 2023 14:29:10 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697491761; x=1698096561;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=izuw3JLwredy2IzR0SMzmo2qR8d6vfISCsd5KRIFA/M=;
+        b=aIeqiIDAUwjOXwK4s3spYjOfk4DZwjfsq55zMT1TmltLN+QlPNG6ohLutLjnXXhtM+
+         sUttl20jQKBsF4wuWpmtpTBip5p21NZ9JibW4BQIid6nD8unq0iNwmK91rFd82lMVlCG
+         TVlmOhm8CY9C1u9FIwqfw2AprelMuVlSKHlE/sWwzcnCV1XO2JMtaMO/lKBaSTx5cH/o
+         nZBabLtTlzVW+u5MZ9SmNnHBwlxvvd/fv7JkY9BhMbTdZKfOwEPOWB0SxHYU0/yuwlo1
+         Nr7fiXHYreMUsOurVoKFS+7Z8T3d6wXP0w6OlWvJut4vf+mAD1jr1a1ielgIZcDB/7Ty
+         xoUg==
+X-Gm-Message-State: AOJu0YxX0QZdZP3gfnx06kUGDr+7Y9YdxZHbqLoTtei+vR/J0Ok1Dntu
+        +bree1ERQmyuQbFJ87m3j+GqGCQBgh0=
+X-Google-Smtp-Source: AGHT+IH24ZrFNJR6Rp5nHzFLXP0Db48auRT7S49Rb5pLEz8i1gFt2a+6SL+fSfDGD/o808L/MoXbww==
+X-Received: by 2002:a2e:b88a:0:b0:2c0:13d5:e463 with SMTP id r10-20020a2eb88a000000b002c013d5e463mr453281ljp.7.1697491760744;
+        Mon, 16 Oct 2023 14:29:20 -0700 (PDT)
+Received: from mobilestation ([176.213.11.59])
+        by smtp.gmail.com with ESMTPSA id o5-20020a2e7305000000b002b9ec22d9fasm115022ljc.29.2023.10.16.14.29.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 14:29:19 -0700 (PDT)
+Date:   Tue, 17 Oct 2023 00:29:17 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Siddharth Vadapalli <s-vadapalli@ti.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, lpieralisi@kernel.org,
+        robh@kernel.org, kw@linux.com, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, r-gunasekaran@ti.com,
+        srk@ti.com
+Subject: Re: [PATCH] PCI: keystone: Don't enable BAR0 if link is not detected
+Message-ID: <klxzte53bzk774zinhfrdwdwalvv2hlvc2mqiuyecxcneqkdbt@qbkyc4fdlcka>
+References: <20231013184958.GA1118393@bhelgaas>
+ <c11f4b9f-8cbe-1fd0-886b-f36547dc8d3c@ti.com>
 MIME-Version: 1.0
-References: <20231009230858.3444834-1-rananta@google.com> <20231009230858.3444834-4-rananta@google.com>
- <53546f35-f2cc-4c75-171c-26719550f7df@redhat.com>
-In-Reply-To: <53546f35-f2cc-4c75-171c-26719550f7df@redhat.com>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Mon, 16 Oct 2023 14:28:58 -0700
-Message-ID: <CAJHc60wYyfsJPiFEyLYLyv9femNzDUXy+xFaGx59=2HrUGScyw@mail.gmail.com>
-Subject: Re: [PATCH v7 03/12] KVM: arm64: PMU: Clear PM{C,I}NTEN{SET,CLR} and
- PMOVS{SET,CLR} on vCPU reset
-To:     Eric Auger <eauger@redhat.com>
-Cc:     Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Shaoqin Huang <shahuang@redhat.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c11f4b9f-8cbe-1fd0-886b-f36547dc8d3c@ti.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,96 +75,230 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 12:45=E2=80=AFPM Eric Auger <eauger@redhat.com> wro=
-te:
->
-> Hi Raghavendra,
->
-> On 10/10/23 01:08, Raghavendra Rao Ananta wrote:
-> > From: Reiji Watanabe <reijiw@google.com>
-> >
-> > On vCPU reset, PMCNTEN{SET,CLR}_EL0, PMINTEN{SET,CLR}_EL1, and
-> > PMOVS{SET,CLR}_EL1 for a vCPU are reset by reset_pmu_reg().
-> PMOVS{SET,CLR}_EL0?
-Ah, yes. It should be PMOVS{SET,CLR}_EL0.
+Hi Siddharth
 
-> > This function clears RAZ bits of those registers corresponding
-> > to unimplemented event counters on the vCPU, and sets bits
-> > corresponding to implemented event counters to a predefined
-> > pseudo UNKNOWN value (some bits are set to 1).
-> >
-> > The function identifies (un)implemented event counters on the
-> > vCPU based on the PMCR_EL0.N value on the host. Using the host
-> > value for this would be problematic when KVM supports letting
-> > userspace set PMCR_EL0.N to a value different from the host value
-> > (some of the RAZ bits of those registers could end up being set to 1).
-> >
-> > Fix this by clearing the registers so that it can ensure
-> > that all the RAZ bits are cleared even when the PMCR_EL0.N value
-> > for the vCPU is different from the host value. Use reset_val() to
-> > do this instead of fixing reset_pmu_reg(), and remove
-> > reset_pmu_reg(), as it is no longer used.
-> do you intend to restore the 'unknown' behavior at some point?
->
-I believe Reiji's (original author) intention was to keep them
-cleared, which would still imply an 'unknown' behavior. Do you think
-there's an issue with this?
+On Sat, Oct 14, 2023 at 11:22:48AM +0530, Siddharth Vadapalli wrote:
+> 
+> 
+> On 14/10/23 00:19, Bjorn Helgaas wrote:
+> > On Fri, Oct 13, 2023 at 10:36:01AM +0530, Siddharth Vadapalli wrote:
+> >> On 13/10/23 10:33, Siddharth Vadapalli wrote:
+> >>> On 12/10/23 22:13, Bjorn Helgaas wrote:
+> >>>> On Thu, Oct 12, 2023 at 10:15:09AM +0530, Siddharth Vadapalli wrote:
+> >>>>> On 11/10/23 19:16, Bjorn Helgaas wrote:
+> >>> ...
+> >>>>>                                               msix_prepare_msi_desc
+> >>>>> In this function: msix_prepare_msi_desc, the following readl()
+> >>>>> causes completion timeout:
+> >>>>> 		desc->pci.msix_ctrl = readl(addr + PCI_MSIX_ENTRY_VECTOR_CTRL);
+> >>>>> The completion timeout with the readl is only observed when the link
+> >>>>> is down (No Endpoint device is actually connected to the PCIe
+> >>>>> connector slot).
+> >>>>
+> >>>> Do you know the address ("addr")?  From pci_msix_desc_addr(), it looks
+> >>>> like it should be:
+> >>>>
+> >>>>   desc->pci.mask_base + desc->msi_index * PCI_MSIX_ENTRY_SIZE
+> >>>>
+> >>>> and desc->pci.mask_base should be dev->msix_base, which we got from
+> >>>> msix_map_region(), which ioremaps part of the BAR indicated by the
+> >>>> MSI-X Table Offset/Table BIR register.
+> >>>>
+> >>>> I wonder if this readl() is being handled as an MMIO access to a
+> >>>> downstream device instead of a Root Port BAR access because it's
+> >>>> inside the Root Port's MMIO window.
+> >>>>
+> >>>> Could you dump out these values just before the readl()?
+> >>>>
+> >>>>   phys_addr inside msix_map_region()
+> >>>>   dev->msix_base
+> >>>>   desc->pci.mask_base
+> >>>>   desc->msi_index
+> >>>>   addr
+> >>>
+> >>> phys_addr: 0x10102000
+> >>> msix_base: 0xffff80000997a000
+> >>> mask_base: 0xffff80000997a000
+> >>> msi_index: 0
+> >>> addr: 0xffff80000997a000
+> >>>
+> >>> Also, the details of BAR allocation from the logs are:
+> >>> keystone-pcie 5500000.pcie: host bridge /bus@100000/pcie@5500000 ranges:
+> >>> keystone-pcie 5500000.pcie:       IO 0x0010020000..0x001002ffff -> 0x0000000000
+> >>> keystone-pcie 5500000.pcie:      MEM 0x0010030000..0x0017ffffff -> 0x0010030000
+> >>> keystone-pcie 5500000.pcie: iATU unroll: enabled
+> >>> keystone-pcie 5500000.pcie: iATU regions: 8 ob, 8 ib, align 64K, limit 4G
+> >>> keystone-pcie 5500000.pcie: Phy link never came up
+> >>> keystone-pcie 5500000.pcie: PCI host bridge to bus 0000:00
+> >>> pci_bus 0000:00: root bus resource [bus 00-ff]
+> >>> pci_bus 0000:00: root bus resource [io  0x0000-0xffff]
+> >>> pci_bus 0000:00: root bus resource [mem 0x10030000-0x17ffffff]
+> >>> pci 0000:00:00.0: [104c:b00c] type 01 class 0x060400
+> >>> pci 0000:00:00.0: reg 0x10: [mem 0x05500000-0x055fffff]
+> >>> pci 0000:00:00.0: reg 0x38: [mem 0x00000000-0x0000ffff pref]
+> >>> pci 0000:00:00.0: supports D1
+> >>> pci 0000:00:00.0: PME# supported from D0 D1 D3hot
+> >>> pci 0000:00:00.0: BAR 0: assigned [mem 0x10100000-0x101fffff]
+> >>> pci 0000:00:00.0: BAR 6: assigned [mem 0x10030000-0x1003ffff pref]
+> >>> pci 0000:00:00.0: PCI bridge to [bus 01-ff]
+> >>>
+> >>> The value of phys_addr lies within the range allocated to BAR0.
+> >>>
+> >>>>   call early_dump_pci_device() on the Root Port
+> >>>
+> >>> I invoked early_dump_pci_device() within the pci_setup_device() function in
+> >>> drivers/pci/probe.c and the output is:
+> > 
+> > It'd be better to dump the config space immediately before the readl()
+> > since the PCI core did change some things in the interim.
+> 
+> I dumped the config space just before the readl() and it is:
+> 
+> pcieport 0000:00:00.0: config space:
+> 00000000: 4c 10 0c b0 07 01 10 00 01 00 04 06 00 00 01 00
+> 00000010: 00 00 10 10 00 00 00 00 00 01 ff 00 f0 00 00 00
+> 00000020: f0 ff 00 00 f0 ff 00 00 00 00 00 00 00 00 00 00
+> 00000030: 00 00 00 00 40 00 00 00 00 00 00 00 17 01 02 00
+> 00000040: 01 50 c3 5b 08 00 00 00 00 00 00 00 00 00 00 00
+> 00000050: 05 70 80 01 00 00 00 00 00 00 00 00 00 00 00 00
+> 00000060: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 00000070: 10 b0 42 00 01 80 00 00 1f 20 00 00 22 3c 73 00
+> 00000080: 00 00 11 10 00 00 00 00 c0 03 40 00 10 00 01 00
+> 00000090: 00 00 00 00 1f 04 00 00 00 00 00 00 06 00 00 00
+> 000000a0: 02 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 000000b0: 11 00 00 c1 00 20 00 00 00 40 00 00 00 00 00 00
+> 000000c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 000000d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 000000e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 000000f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 
+> BAR0 was configured with the value: 0x05500000 within ks_pcie_v3_65_add_bus() at:
+> dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, ks_pcie->app.start);
+> and can be verified based on the previous config space dump I had shared within
+> the pci_setup_device() function. But, looking at the dump above which is just
+> before the readl(), its value seems to have changed to 0x10100000.
+> 
+> I am listing down the regions of config space which have changed, based on the
+> comparison of dumps taken within pci_setup_device() and just before the readl():
+> 
+> Within pci_setup_device():
+> 00000010: 00 00 50 05 00 00 00 00 00 01 ff 00 00 00 00 00
+> Before readl():
+> 00000010: 00 00 10 10 00 00 00 00 00 01 ff 00 f0 00 00 00
+> 
+> Within pci_setup_device():
+> 00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> Before readl():
+> 00000020: f0 ff 00 00 f0 ff 00 00 00 00 00 00 00 00 00 00
+> 
+> Within pci_setup_device():
+> 00000030: 00 00 00 00 40 00 00 00 00 00 00 00 ff 01 00 00
+> Before readl():
+> 00000030: 00 00 00 00 40 00 00 00 00 00 00 00 17 01 02 00
+> 
+> Within pci_setup_device():
+> 00000070: 10 b0 42 00 01 80 00 00 10 20 00 00 22 3c 73 00
+> Before readl():
+> 00000070: 10 b0 42 00 01 80 00 00 1f 20 00 00 22 3c 73 00
+> 
+> Within pci_setup_device():
+> 00000080: 00 00 11 10 00 00 00 00 c0 03 40 00 00 00 01 00
+> Before readl():
+> 00000080: 00 00 11 10 00 00 00 00 c0 03 40 00 10 00 01 00
+> 
+> Within pci_setup_device():
+> 000000b0: 11 00 00 01 00 20 00 00 00 40 00 00 00 00 00 00
+> Before readl():
+> 000000b0: 11 00 00 c1 00 20 00 00 00 40 00 00 00 00 00 00
+> 
+> > 
+> >>> pci 0000:00:00.0: config space:
+> >>> 00000000: 4c 10 0c b0 07 01 10 00 01 00 04 06 00 00 01 00
+> > 
+> >   PCI_COMMAND = 0x0107
+> >     PCI_COMMAND_IO | PCI_COMMAND_MEMORY | PCI_COMMAND_MASTER | PCI_COMMAND_SERR
+> > 
+> >>> 00000010: 00 00 50 05 00 00 00 00 00 01 ff 00 00 00 00 00
+> >>> 00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> > 
+> >   PCI_IO_BASE            =       0x00 low 4 bits indicate 16-bit addressing
+> >   PCI_IO_LIMIT           =       0x00
+> >   PCI_MEMORY_BASE        =     0x0000
+> >   PCI_MEMORY_LIMIT       =     0x0000
+> >   PCI_PREF_MEMORY_BASE   =     0x0000 low 4 bits indicate 32-bit pref
+> >   PCI_PREF_MEMORY_LIMIT  =     0x0000
+> >   PCI_PREF_BASE_UPPER32  = 0x00000000
+> >   PCI_PREF_LIMIT_UPPER32 = 0x00000000
+> > 
+> > We can't tell from this whether the prefetchable window is implemented
+> > (but I'm sure keystone *does* implement it).  If PCI_PREF_MEMORY_BASE
+> > and PCI_PREF_MEMORY_LIMIT are read-only zeros, it is not implemented.
+> > If they are writable, it is enabled at the same range as the
+> > non-prefetchable window.
+> 
+> Yes, PCI_PREF_MEMORY_BASE and PCI_PREF_MEMORY_LIMIT are writable.
+> 
+> > 
+> > Similarly for the I/O window; we can't tell whether the base/limit are
+> > read-only zero or writable.
+> 
+> PCI_IO_BASE and PCI_IO_LIMIT are also writable.
+> 
+> > 
+> > So we have these windows that look like they're probably enabled:
+> > 
+> >   io window   at [io  0x0000-0x0fff]
+> >   mem window  at [mem 0x00000000-0x000fffff]
+> >   pref window at [mem 0x00000000-0x000fffff pref]
+> > 
+> > No idea whether it makes a difference, but these windows seem
+> > misconfigured.  The default should probably be to make them all
+> > disabled (as in f73eedc90bf7 ("PCI: vmd: Disable bridge window for
+> > domain reset")):
+> > 
+> >   PCI_IO_BASE            = 0xf0
+> >   PCI_IO_LIMIT           = 0x00
+> >   PCI_MEMORY_BASE        = 0xfff0
+> >   PCI_MEMORY_LIMIT       = 0x0000
+> >   PCI_PREF_MEMORY_BASE   = 0xfff0
+> >   PCI_PREF_MEMORY_LIMIT  = 0x0000
+> >   PCI_PREF_BASE_UPPER32  = 0xffffffff
+> >   PCI_PREF_LIMIT_UPPER32 = 0x00000000
+> > 
+> > The PCI core should reconfigure and enable them as needed by
+> > downstream devices.
+> > 
+> >> I also noticed that the value of desc->pci.msix_ctrl obtained from
+> >> the readl is always 0xffffffff irrespective of whether or not an
+> >> endpoint device is connected. This isn't expected right? The only
+> >> difference between the cases where endpoint device is connected and
+> >> isn't connected is the completion timeout.
+> > 
+> > Right, I wouldn't expect that.  PCI_MSIX_ENTRY_VECTOR_CTRL has a bunch
+> > of reserved bits that should be zero.
+> > 
+> > I assume MSI-X actually does work for downstream endpoints?  I
+> > wouldn't think anybody would have bothered with
+> > ks_pcie_v3_65_add_bus() unless MSI-X works.
+> 
+> Yes, I think it is supposed to work, but it doesn't seem to be working right now
+> considering that even with Endpoint device connected, the readl() returns all Fs.
 
-Thank you.
-Raghavendra
-> Thanks
->
-> Eric
-> >
-> > Signed-off-by: Reiji Watanabe <reijiw@google.com>
-> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> > ---
-> >  arch/arm64/kvm/sys_regs.c | 21 +--------------------
-> >  1 file changed, 1 insertion(+), 20 deletions(-)
-> >
-> > diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-> > index 818a52e257ed..3dbb7d276b0e 100644
-> > --- a/arch/arm64/kvm/sys_regs.c
-> > +++ b/arch/arm64/kvm/sys_regs.c
-> > @@ -717,25 +717,6 @@ static unsigned int pmu_visibility(const struct kv=
-m_vcpu *vcpu,
-> >       return REG_HIDDEN;
-> >  }
-> >
-> > -static u64 reset_pmu_reg(struct kvm_vcpu *vcpu, const struct sys_reg_d=
-esc *r)
-> > -{
-> > -     u64 n, mask =3D BIT(ARMV8_PMU_CYCLE_IDX);
-> > -
-> > -     /* No PMU available, any PMU reg may UNDEF... */
-> > -     if (!kvm_arm_support_pmu_v3())
-> > -             return 0;
-> > -
-> > -     n =3D read_sysreg(pmcr_el0) >> ARMV8_PMU_PMCR_N_SHIFT;
-> > -     n &=3D ARMV8_PMU_PMCR_N_MASK;
-> > -     if (n)
-> > -             mask |=3D GENMASK(n - 1, 0);
-> > -
-> > -     reset_unknown(vcpu, r);
-> > -     __vcpu_sys_reg(vcpu, r->reg) &=3D mask;
-> > -
-> > -     return __vcpu_sys_reg(vcpu, r->reg);
-> > -}
-> > -
-> >  static u64 reset_pmevcntr(struct kvm_vcpu *vcpu, const struct sys_reg_=
-desc *r)
-> >  {
-> >       reset_unknown(vcpu, r);
-> > @@ -1115,7 +1096,7 @@ static bool access_pmuserenr(struct kvm_vcpu *vcp=
-u, struct sys_reg_params *p,
-> >         trap_wcr, reset_wcr, 0, 0,  get_wcr, set_wcr }
-> >
-> >  #define PMU_SYS_REG(name)                                            \
-> > -     SYS_DESC(SYS_##name), .reset =3D reset_pmu_reg,                  =
- \
-> > +     SYS_DESC(SYS_##name), .reset =3D reset_val,                      =
- \
-> >       .visibility =3D pmu_visibility
-> >
-> >  /* Macro to expand the PMEVCNTRn_EL0 register */
->
+Could you please have look at what DW PCIe IP-core version is utilized
+in the Keystone PCIe host controller? If it's of v5.x then here is
+what HW databook says about the BARs initialization: "If you do use a
+BAR, then you should program it to capture TLPs that are targeted to
+your local non-application memory space residing on TRGT1, and not for
+the application on TRGT0 (dbi). The BAR range must be outside of the
+three Base/Limit regions."
+
+I have no idea whether the BAR being set with an address within the
+Base/Limit regions could have caused the lags you see, but I would
+have at least checked that.
+
+-Serge(y)
+
+> 
+> -- 
+> Regards,
+> Siddharth.
