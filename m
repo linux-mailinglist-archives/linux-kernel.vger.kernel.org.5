@@ -2,76 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 481577CB35F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 21:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A347CB365
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 21:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232473AbjJPTfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 15:35:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57982 "EHLO
+        id S233270AbjJPTiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 15:38:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjJPTft (ORCPT
+        with ESMTP id S233165AbjJPTiv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 15:35:49 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41192AB;
-        Mon, 16 Oct 2023 12:35:41 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5ac87af634aso1860116a12.2;
-        Mon, 16 Oct 2023 12:35:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697484941; x=1698089741; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NOJxXXeBtjc0spitVwBsAGSK4WaERY8PQRMb0100h7M=;
-        b=lHbVum0urCeZlVsKDXMtf9CAmwEMCkmTYCKKKXvVGPzY9zmblbr5mQJxGV//XxiKp6
-         cpYlNVYbee040ixn68kHFNomWPLEfMyyMIFJd4k3RBeh0QoNO43/Sy2oVB8kye5SVYXQ
-         AawvFrbWX14MeOuMOfM6Hh1O9jiWM3iPK0Cf1zmIFUf7Fds6mZd3v3pxfNGG5RMod3yE
-         SxytZZs28vdeURLJ65iIEfSwjpbvVl9pYHy5e+8YNUy6I9CJ3nLUTF/yA90JSkZt/Fyd
-         xCZgZffZxOGbfMCQbBkqrKsF1URUGokOj55X3Sp1m2h8HzHpycMEeAxXFZpnth/RAvhP
-         wBgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697484941; x=1698089741;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NOJxXXeBtjc0spitVwBsAGSK4WaERY8PQRMb0100h7M=;
-        b=Y7xUGphbKvXO6CQh3WpjvD+8tTgI9IABceXMfk+XTGoKD8n6zzzaBZnAChQ98DCLpR
-         21ZdPqSecUHlpZRGlBtgmhA4/eCrilpwySI+/KYvkl7hsIMgFzL38o8E2OXvTE0pqyvG
-         nI59Ey68XntxFZXB/Yv0HaSjVPsbYnJhGrKjeFYhJ2Y5vS1pMlGMGo1dW6czkCGgEoMl
-         G8qrKms7EHwLSJou0GgSneP6VaWtaySndGeWvnuni71rpOWC9RpkhPmdhfKMVzmTxtuB
-         VPt6cqPhIRQNOZ/WlyUjFIKOnAK1xQRT16neOcMG3CO1rg3vaG+9m38JhW7+zchQnvhZ
-         wKbg==
-X-Gm-Message-State: AOJu0Ywfkbehhd7fEsLq45ryK1qoa4E8O8InTptnRhrfeVYCWh67mnPL
-        0PZ8slY+QGfmWDwwxm8I9Uo=
-X-Google-Smtp-Source: AGHT+IErO7JHvJXX9sU4QBFDKVtFr9LGVWDF8mau/ICaxo8dHwmUqFSgMuqNQN5D2vsct6Lww2q+uQ==
-X-Received: by 2002:a17:90a:77c6:b0:27d:2109:6279 with SMTP id e6-20020a17090a77c600b0027d21096279mr110007pjs.12.1697484940556;
-        Mon, 16 Oct 2023 12:35:40 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id go6-20020a17090b03c600b0026b76edd607sm5181577pjb.15.2023.10.16.12.35.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 12:35:39 -0700 (PDT)
-Message-ID: <17ddeb79-b5c3-46b9-ab59-0f1918b8de95@gmail.com>
-Date:   Mon, 16 Oct 2023 12:35:34 -0700
+        Mon, 16 Oct 2023 15:38:51 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D8A783
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 12:38:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=VEMJ3qWfc/gnGMZ0WkHMvFgA9KFv1dUBDfwsGx8hNoM=; b=v81BEFrNrTBukCrZ/IZ+oL7c6r
+        +G64zWrtJcjcPbJnCz4o850qqM6EHAsJaIuCv1gTnW7rMgrKMjsqHPPz/5IP5irBfIgZ2zHlHdMpS
+        5vgnRiuxfzS3B2Rl9nl5TfGG0qF8kBb4dGhXBUAzXzp12QjB6B0swzaBHrLCubsSHTiXVBZwzcMX/
+        VNcqCuQjgsRKQMd2gsNfUdQWQGdjDSqEOL3oK18JAdnxEEHYaUy3HTDk4k/aaSYZQswjy+cwqd/bu
+        Ap9wcNAEjxy6f1Py5mRHS3C9QC1V3rws8Ma9o2YGEssnjHdN0Rqb9KqldY6xPBxBzXHGoOEpay8mm
+        BRnE3G/w==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qsTQJ-00AQCx-0s;
+        Mon, 16 Oct 2023 19:38:43 +0000
+Date:   Mon, 16 Oct 2023 12:38:43 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Joel Granados <j.granados@samsung.com>,
+        linux-kernel@vger.kernel.org,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [resend, PATCH v1 0/3] parport: Switch to some modern APIs
+Message-ID: <ZS2RQ7g4jxYs7qRt@bombadil.infradead.org>
+References: <20231016133135.1203643-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.5 000/191] 6.5.8-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-References: <20231016084015.400031271@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20231016084015.400031271@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231016133135.1203643-1-andriy.shevchenko@linux.intel.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,29 +53,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16/23 01:39, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.5.8 release.
-> There are 191 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, Oct 16, 2023 at 04:31:32PM +0300, Andy Shevchenko wrote:
+> This is a set of ad-hoc refactorings and cleanups to the parport driver.
 > 
-> Responses should be made by Wed, 18 Oct 2023 08:39:48 +0000.
-> Anything received after that time might be too late.
+> In v1,resent:
+> - resent with Greg KH in Cc list
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.8-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
-> and the diffstat can be found below.
+> Initial contribution have been seen here 6 weeks ago:
+> https://lore.kernel.org/r/20230901134250.1172990-1-andriy.shevchenko@linux.intel.com
 > 
-> thanks,
-> 
-> greg k-h
+> Andy Shevchenko (3):
+>   parport: Use kasprintf() instead of fixed buffer formatting
+>   parport: Use list_for_each() helper
+>   parport: Drop unneeded NULL or 0 assignments
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+Nice cleanup!
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
 
+  Luis
