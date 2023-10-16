@@ -2,229 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC0A7CA9DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 15:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 017827CA9E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 15:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234009AbjJPNkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 09:40:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56696 "EHLO
+        id S233891AbjJPNkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 09:40:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234018AbjJPNjx (ORCPT
+        with ESMTP id S233925AbjJPNke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 09:39:53 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B24410E5;
-        Mon, 16 Oct 2023 06:39:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26E39C433C8;
-        Mon, 16 Oct 2023 13:39:45 +0000 (UTC)
-Message-ID: <1c6c0c10-8d00-4a52-ae2f-f481c87faf54@xs4all.nl>
-Date:   Mon, 16 Oct 2023 15:39:44 +0200
-MIME-Version: 1.0
+        Mon, 16 Oct 2023 09:40:34 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2049.outbound.protection.outlook.com [40.107.93.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C25FF;
+        Mon, 16 Oct 2023 06:40:28 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hIoFg4VAtAhJ3P7AOwJ0PZqhWgDJ7IDevr0sDwlfamBLQOeIXAHoAAfXhyfBvgWzR9ySGicDbEZ40jV60EthaAOwEoKZPXOZmbcn0IEsnWHkt7qgKL5m0FZu3XIxQlC/0Cx1agl/UdOjWMLbjTVAyHjJ/i4aqEgBeFxANc8GbzWiv1oUtKCmVzNkvukv2+HkBvyR/BQdwiNK7UH3MdD+xOGmy85hgyzzOsV9c3iHWyLe1+UevRh+8QDBu5bSllTvwCTLVXsDSPuT+0D+zNvihw8OvdIZKIcmYVyLTQJm+R2odrG9gWk08E9MjfF8rig9Qlp8VB9pGb7zpxtca3G8vw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=G7jZMHlxfxWGWDwRDcjQkn0ZXLVYfGXDEOESiAPos5g=;
+ b=c+n++XDM/pt2hyqjQA+km7A88Z9KCQouiC0CqWffv19/al4WK8CCeDz5cg+Xf27RFQ7KCU8Z+PdvQi5Zy7nbYY4o5cKdTJJudn3vL9PBheP6FxYB4CeHJBULVzWJ2yKWJjDuypw4+u790lR3+gUhtgfJaO3Yv83xm75CJE3q9d1KhSQhCIhwzgS9hprmk2gEwfp/6QMcEGh6482KLxw1oW3wlTgdPxUgWB/7AKO081IpCbKAT4R9wtFixSVX9JIRsrmeC0suClLK1WgUHoUOrkAks66ELfXqyIDY5s9zzCHhW2Zz/L8CVvL7qfQeDh1cbwU2boE/7QCq5vYoSYWBsQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G7jZMHlxfxWGWDwRDcjQkn0ZXLVYfGXDEOESiAPos5g=;
+ b=ug3KsWz25YaqxhhWEj22itsJwjMTHPokr+6ieBrUcBLwGqPkvqd5GZm0DawN8hN5InVNSXZqttIf08dmu9/+7UxGXFGFg7keWQ5B5D8IHMm0XVOK+xQJa6u1tdvAC1bKqMPzB8PGPd33nGIfn/AlzQSHfZJWDPTB72/bOqKB9gM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DS0PR12MB6390.namprd12.prod.outlook.com (2603:10b6:8:ce::7) by
+ DM4PR12MB6639.namprd12.prod.outlook.com (2603:10b6:8:be::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6886.35; Mon, 16 Oct 2023 13:40:26 +0000
+Received: from DS0PR12MB6390.namprd12.prod.outlook.com
+ ([fe80::bc87:8b0e:246d:5d85]) by DS0PR12MB6390.namprd12.prod.outlook.com
+ ([fe80::bc87:8b0e:246d:5d85%7]) with mapi id 15.20.6886.034; Mon, 16 Oct 2023
+ 13:40:26 +0000
+Message-ID: <da5bc564-76c4-4078-97ab-1d543933071e@amd.com>
+Date:   Mon, 16 Oct 2023 08:40:23 -0500
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 5/8] media: chips-media: wave5: Add the v4l2 layer
-Content-Language: en-US, nl
-To:     Sebastian Fricke <sebastian.fricke@collabora.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jackson Lee <jackson.lee@chipsnmedia.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Nas Chung <nas.chung@chipsnmedia.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-media@vger.kernel.org, Tomasz Figa <tfiga@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        kernel@collabora.com, Robert Beckett <bob.beckett@collabora.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Darren Etheridge <detheridge@ti.com>
-References: <20230929-wave5_v13_media_master-v13-0-5ac60ccbf2ce@collabora.com>
- <20230929-wave5_v13_media_master-v13-5-5ac60ccbf2ce@collabora.com>
- <c5e826a2-5bc6-4c49-9a6d-655d26a3b97f@xs4all.nl>
- <20231016133539.m3i5crlsknoidim3@basti-XPS-13-9310>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <20231016133539.m3i5crlsknoidim3@basti-XPS-13-9310>
+Subject: Re: [PATCH v11 10/20] cxl/pci: Introduce config option PCIEAER_CXL
+From:   Terry Bowman <Terry.Bowman@amd.com>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Robert Richter <rrichter@amd.com>
+Cc:     Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Ben Widawsky <bwidawsk@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Dave Jiang <dave.jiang@intel.com>, linux-cxl@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
+References: <20230927154339.1600738-1-rrichter@amd.com>
+ <20230927154339.1600738-11-rrichter@amd.com>
+ <20231002154628.00004f9b@Huawei.com>
+ <21fa3d41-3585-40b4-b919-d3b66557e9d8@amd.com>
+Content-Language: en-US
+In-Reply-To: <21fa3d41-3585-40b4-b919-d3b66557e9d8@amd.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN4PR0501CA0106.namprd05.prod.outlook.com
+ (2603:10b6:803:42::23) To DS0PR12MB6390.namprd12.prod.outlook.com
+ (2603:10b6:8:ce::7)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR12MB6390:EE_|DM4PR12MB6639:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8590af3a-fe0c-43ca-82fa-08dbce4d73f5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kB2UUPnYEj4sPd/0taRZC32XldAS7VPW38ZirZu3apBNHqCiXL6J8b4TLxVFZmsmaG2cD5Vk1Cbgc9bmqa9dUCUzNmv/ewWBsmVqc4cj1mJvYTnQ0gQctAOtcOZR3aJHCaPcFD1e+pZxYG8YpAq4tBZxm7Me6iZ3pTYxhLJ6i8FyDMnwGakpaOaQsUlSYMbow3xVQc9ad9z8/uIRXXVHg5uxTBOeM4XZRumOcajQ71RyA9nm0lA1XZ1xDErG7lV9ZAUXt546mChkms8GZw+3R8HevOjYHOA85anyonDn9yBBESApWX2zN8io2PcGZRN9ol3rMk8HZk3CRS2sXOl1+GFR4tux6B/z2/IJuirpgVaNy0jw/2F2xkbIrD6zmzjzFCxvckS16ejWl0msiDq5WPIBu0coaaiIhpEdFZNYmnacCPfRUqs7UBDCJvLCndWX8Dg/XZjAG+mJGR7q0r5vSCqvtN1P/XkXBoJBR9jYQ4iTo0439sMPphJou4Oku4IvVHtCibyEJl0vULa6uAd5exFGyHl/0XvpPvTfawYBfNb1p8ZhyRtA0U4o+fK3Jz3Z4rhP+ZchAiY4hjTjPAHei25oDZA4BuQDU2ojTt3D3InxtakHkg7AOe+cHotyigzL3WqBdKe29oCu35ie2xYShw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6390.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(376002)(346002)(366004)(39860400002)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(31686004)(6486002)(478600001)(66476007)(6666004)(66556008)(66946007)(54906003)(110136005)(316002)(6636002)(83380400001)(31696002)(86362001)(38100700002)(6512007)(26005)(2616005)(53546011)(6506007)(36756003)(41300700001)(5660300002)(8676002)(8936002)(4326008)(2906002)(7416002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZDBCMHhJbW9WN2xWWlNCYUFVZ2dZKzFFUEFTM1NPUndOcFc3K0VaNWw2ZE05?=
+ =?utf-8?B?RC9TODNLTUJJMHFBd1Q5RFQ2SEtubDhPQnkwQW5ZSE13WGtIUXN2UG5MbnNx?=
+ =?utf-8?B?U1pscHV0YWg1dkdCYWRvRmZNUFZ4RWFCeEpUc2ZaYmZoUkJmT1FoYmRKWkdC?=
+ =?utf-8?B?eWpkVEpTQU4zUlRZNGI4eTUyeGFzY2ZEZUdUQnNFanZMbzBoem1ydTFQa2Fq?=
+ =?utf-8?B?UDFsN1hMUlo4WkFPaFA3NWp2Q3pGZys0ZDl1TklLclpUSmhoTy9wekROcUEx?=
+ =?utf-8?B?alp3dGFTWjVicWxIYk5oV2Vlb2hFTUJCNDZOTGhjSjJXZ1VnYWNXeXRRN0tL?=
+ =?utf-8?B?VU1UaTFLTit2b2pMZ0pqa3ZUS1JWdXJ5NnYxc0Y0V052RW5kcVQ4QnpGZEdl?=
+ =?utf-8?B?bzdmakVNQWw3em5GSU03SUpjbHUvUnZVQi9wWUd5QjVnOVU2MnVsS2ZGaGxQ?=
+ =?utf-8?B?MlJobE9CK00wYlROVkFNak5zVlNmSXFOSnAxOEdkNlJrNTRsU1AwN0ZYRnJw?=
+ =?utf-8?B?U2h1aWRMMTlPTWEyWjU0b216dGtUVU9MVjVyVTc3c1QrVHdjRzlKY3dWUk4x?=
+ =?utf-8?B?ZFgwVTd4Y0IzNGhPTXFkVDg1ZjV1bFZIVGU4NW90MGdOWGk5L0xqVmwxUmky?=
+ =?utf-8?B?c2hGbDVJS3YxREYvSkJ6Sm4yRTNYU08xWkg5c0lkQUVLUTZGMm5lSC9TSkRk?=
+ =?utf-8?B?b09lY2hhVVJDZVMwWHBPYmxEaXZLZUVodXlmd0FnQU5XeHBiVCtFaDU1M2Za?=
+ =?utf-8?B?QnZoVllyT21ZcEdiRE9UdXhNQmw4bXJIaWMvd3ExYXYvbnl0aURxbG1lK21q?=
+ =?utf-8?B?N2NYemJBL3hpbzIyOVJsU0ZpYjU0SndRcjBlS3AwYlZFL2FqQWl2emd1anFs?=
+ =?utf-8?B?bmgzM3g1WWh6UTVCWk1odDlPRFh1QVlwOWVJSE5KRFgzSGxhTjR4MG52VUZH?=
+ =?utf-8?B?UER2RXlFbzdlYVJmSUZUUHNCL0NlSVQ2OU13Ty9qSTBNaFB0Uyt2bzNZMDNq?=
+ =?utf-8?B?Mkt6Yk5VbE1ISHpxUHV0eWNUNncvRG9JYzJvOVNEajUyYWVGcjl4dlpGSUN1?=
+ =?utf-8?B?RkgzTkI1Qm5VTTNydVMvUTBjS1hWQnYvMU81VGMrM0pia2VWSWV1QUVNZHNM?=
+ =?utf-8?B?WWN5NUVTYVNpTythTVVoQmNYbWppaE5KV2lxcm5EK2lHY3VoU0pNZXRmTWVs?=
+ =?utf-8?B?d2R4WVpyK2F4b1V5U0Q2ZDhVeVR5WE11VWNDQ0NCRnNpQkZDdkpwRHM5LzlN?=
+ =?utf-8?B?VVRVOFlOYkdKOXp3WVhNZEF3bG9FeTV1SHo2SmtxZUN4K0Y4YkVhQzI0WWZS?=
+ =?utf-8?B?eFc1Zm11RGxtMUtnVGFMRDhiZ3oxUXdHSDhQanJkQ3E0RlEvV2d4eFcyQUNN?=
+ =?utf-8?B?TERrNzBpY2ZVWnFpUk9OR2lSRHVaUmNOWS9RNjQ4bm16TlZTVlQvMERCb3or?=
+ =?utf-8?B?VlBJRDFQNFdyVnJSMlU5SVA4MTRvTVFTM1czNWlCNGQxR3pyT3I2cWdMTit3?=
+ =?utf-8?B?bm85cTViZENnbkNTMmZSdmMzd1MvQTdCWkJnQjQ0Y2tCT0RrbnJhNFRGVHBK?=
+ =?utf-8?B?T05qYTNjOVNVT24zMHh1WHJ1Yy9zcTNOc24zYWdsVXI4bGU5dlozMkk5YkJ0?=
+ =?utf-8?B?N1BoNEJxSHRjbWlSWDlxY1FTWm1ubHQ4dUVRcUYyeEs1RU4yNEV4QjBxUFd1?=
+ =?utf-8?B?VUU4SFU4RzEvbEJCMWhySDhEcHd1SjFQTGVNQzdNVXp6cmxURDhkQTZmdjhs?=
+ =?utf-8?B?NVpjbEN5VE9uLzRNYmliSk5FUWhWRWxDejFCb25kR3BUZ0VMZHdsN21yLzlW?=
+ =?utf-8?B?eDVLVG42cEdXbVIrTGgwZHFLdEN3dUNFVEFrQWFWek1id0k1d2hjZVdpRHpT?=
+ =?utf-8?B?dFFIK1ppb0lwT2FiRXBXSERhWWJWUmUzRFdycmJsYjIwTHFjTVFxeWpscC9w?=
+ =?utf-8?B?c0JCL1BhSVI2YXhZeVFkQTR5WGwyTHJkZVhxUUxHNk9QTzZhYWpvYkt2NThS?=
+ =?utf-8?B?cW5uVjVSOXhnRzlaOEFUeTI4NVhXZzU4dTlyTWdYclpZU0JqRkZ4VWNxdlB6?=
+ =?utf-8?B?UGwxZkhQSGdFYmdqVUVlc01TeG5TUEo4czlYcllNb0wzM2xvd0NOVlpGbWNB?=
+ =?utf-8?Q?oXw1+DkdT1gPW+dKp97WxW1G7?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8590af3a-fe0c-43ca-82fa-08dbce4d73f5
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6390.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2023 13:40:25.8707
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 17vKH4NM8NjGvchO7RJRxz97mU+MonCJWXoH0tyiA38rwL41pHVARk761QRV91J4vGOrDIYyDQqUESqpHG3IXA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6639
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/10/2023 15:35, Sebastian Fricke wrote:
-> Hey Hans,
+Hi Jonathan,
+
+I added a response below.
+
+On 10/9/23 09:44, Terry Bowman wrote:
+> Hi Jonathan,
 > 
-> On 16.10.2023 13:57, Hans Verkuil wrote:
->> Hi Sebastian,
+> I added responses inline below.
+> 
+> On 10/2/23 09:46, Jonathan Cameron wrote:
+>> On Wed, 27 Sep 2023 17:43:29 +0200
+>> Robert Richter <rrichter@amd.com> wrote:
 >>
->> On 12/10/2023 13:01, Sebastian Fricke wrote:
->>> Add the decoder and encoder implementing the v4l2
->>> API. This patch also adds the Makefile and the VIDEO_WAVE_VPU config
+>>> CXL error handling depends on AER.
 >>>
->>> Signed-off-by: Sebastian Fricke <sebastian.fricke@collabora.com>
->>> Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
->>> Signed-off-by: Deborah Brouwer <deborah.brouwer@collabora.com>
->>> Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
->>> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
->>> Signed-off-by: Nas Chung <nas.chung@chipsnmedia.com>
+>>> Introduce config option PCIEAER_CXL in preparation of the AER dport
+>>> error handling. Also, introduce the stub function
+>>> devm_cxl_setup_parent_dport() to setup dports.
+>>>
+>>> This is in preparation of follow on patches.
+>>>
+>>> Note the Kconfg part of the option is added in a later patch to enable
+>>> it once coding of the feature is complete.
+>>>
+>>> Signed-off-by: Robert Richter <rrichter@amd.com>
+>>
+>> Feels like it should just be combined with a later patch that fills
+>> some of this in as on it's own it's just a weird snippet of code :)
+>>
+> 
+> We will look to merge with the following patch.
+> 
+>> Still, one comment inline anyway.
+>>
+>>
 >>> ---
->>>  drivers/media/platform/chips-media/Kconfig         |    1 +
->>>  drivers/media/platform/chips-media/Makefile        |    1 +
->>>  drivers/media/platform/chips-media/wave5/Kconfig   |   12 +
->>>  drivers/media/platform/chips-media/wave5/Makefile  |   10 +
->>>  .../platform/chips-media/wave5/wave5-helper.c      |  213 +++
->>>  .../platform/chips-media/wave5/wave5-helper.h      |   31 +
->>>  .../platform/chips-media/wave5/wave5-vpu-dec.c     | 1953 ++++++++++++++++++++
->>>  .../platform/chips-media/wave5/wave5-vpu-enc.c     | 1794 ++++++++++++++++++
->>>  .../media/platform/chips-media/wave5/wave5-vpu.c   |  291 +++
->>>  .../media/platform/chips-media/wave5/wave5-vpu.h   |   83 +
->>>  .../platform/chips-media/wave5/wave5-vpuapi.h      |    2 -
->>>  11 files changed, 4389 insertions(+), 2 deletions(-)
+>>>  drivers/cxl/core/pci.c | 9 +++++++++
+>>>  drivers/cxl/cxl.h      | 7 +++++++
+>>>  drivers/cxl/mem.c      | 2 ++
+>>>  3 files changed, 18 insertions(+)
 >>>
->>
->> <snip>
->>
->>> +static int wave5_vpu_dec_create_bufs(struct file *file, void *priv,
->>> +                     struct v4l2_create_buffers *create)
+>>> diff --git a/drivers/cxl/core/pci.c b/drivers/cxl/core/pci.c
+>>> index c7a7887ebdcf..6ba3b7370816 100644
+>>> --- a/drivers/cxl/core/pci.c
+>>> +++ b/drivers/cxl/core/pci.c
+>>> @@ -718,6 +718,15 @@ static bool cxl_report_and_clear(struct cxl_dev_state *cxlds)
+>>>  	return true;
+>>>  }
+>>>  
+>>> +#ifdef CONFIG_PCIEAER_CXL
+>>> +
+>>> +void devm_cxl_setup_parent_dport(struct device *host, struct cxl_dport *dport)
 >>> +{
->>> +    struct vpu_instance *inst = wave5_to_vpu_inst(priv);
->>> +    struct v4l2_format *f = &create->format;
->>> +
->>> +    /* Firmware does not support CREATE_BUFS for CAPTURE queues. */
->>> +    if (f->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
->>> +        dev_dbg(inst->dev->dev,
->>> +            "%s: VIDIOC_CREATE_BUFS not supported on CAPTURE queues.\n",
->>> +            __func__);
->>> +        return -EOPNOTSUPP;
->>> +    }
->>> +
->>> +    return v4l2_m2m_ioctl_create_bufs(file, priv, create);
 >>> +}
->>
->> Regarding the EOPNOTSUPP discussion: I discussed this some more with
->> Nicolas on irc, and we wonder if it isn't better to just drop create_bufs
->> support for the wave5 decoder altogether. Is there any point in supporting
->> it for OUTPUT but not CAPTURE?
->>
->> <snip>
->>
->>> +static const struct v4l2_ioctl_ops wave5_vpu_dec_ioctl_ops = {
->>> +    .vidioc_querycap = wave5_vpu_dec_querycap,
->>> +    .vidioc_enum_framesizes = wave5_vpu_dec_enum_framesizes,
+>>> +EXPORT_SYMBOL_NS_GPL(devm_cxl_setup_parent_dport, CXL);
 >>> +
->>> +    .vidioc_enum_fmt_vid_cap    = wave5_vpu_dec_enum_fmt_cap,
->>> +    .vidioc_s_fmt_vid_cap_mplane = wave5_vpu_dec_s_fmt_cap,
->>> +    .vidioc_g_fmt_vid_cap_mplane = wave5_vpu_dec_g_fmt_cap,
->>> +    .vidioc_try_fmt_vid_cap_mplane = wave5_vpu_dec_try_fmt_cap,
+>>> +#endif
 >>> +
->>> +    .vidioc_enum_fmt_vid_out    = wave5_vpu_dec_enum_fmt_out,
->>> +    .vidioc_s_fmt_vid_out_mplane = wave5_vpu_dec_s_fmt_out,
->>> +    .vidioc_g_fmt_vid_out_mplane = wave5_vpu_g_fmt_out,
->>> +    .vidioc_try_fmt_vid_out_mplane = wave5_vpu_dec_try_fmt_out,
+>>>  pci_ers_result_t cxl_error_detected(struct pci_dev *pdev,
+>>>  				    pci_channel_state_t state)
+>>>  {
+>>> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+>>> index c07064e0c136..cfa2f6bede41 100644
+>>> --- a/drivers/cxl/cxl.h
+>>> +++ b/drivers/cxl/cxl.h
+>>> @@ -704,6 +704,13 @@ struct cxl_dport *devm_cxl_add_rch_dport(struct cxl_port *port,
+>>>  					 struct device *dport_dev, int port_id,
+>>>  					 resource_size_t rcrb);
+>>>  
+>>> +#ifdef CONFIG_PCIEAER_CXL
+>>> +void devm_cxl_setup_parent_dport(struct device *host, struct cxl_dport *dport);
+>>> +#else
+>>> +static inline void devm_cxl_setup_parent_dport(struct device *host,
+>>> +					       struct cxl_dport *dport) { }
+>>> +#endif
 >>> +
->>> +    .vidioc_g_selection = wave5_vpu_dec_g_selection,
->>> +    .vidioc_s_selection = wave5_vpu_dec_s_selection,
->>> +
->>> +    .vidioc_reqbufs = v4l2_m2m_ioctl_reqbufs,
->>> +    .vidioc_querybuf = v4l2_m2m_ioctl_querybuf,
->>> +    .vidioc_create_bufs = wave5_vpu_dec_create_bufs,
+>>>  struct cxl_decoder *to_cxl_decoder(struct device *dev);
+>>>  struct cxl_root_decoder *to_cxl_root_decoder(struct device *dev);
+>>>  struct cxl_switch_decoder *to_cxl_switch_decoder(struct device *dev);
+>>> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+>>> index 04107058739b..61ca21c020fa 100644
+>>> --- a/drivers/cxl/mem.c
+>>> +++ b/drivers/cxl/mem.c
+>>> @@ -157,6 +157,8 @@ static int cxl_mem_probe(struct device *dev)
+>>>  	else
+>>>  		endpoint_parent = &parent_port->dev;
+>>>  
+>>> +	devm_cxl_setup_parent_dport(dev, dport);
 >>
->> So this would just be dropped.
+>> devm calls can always fail (because if nothing else you have to register
+>> some cleanup and that involves an allocation.  If you want to ignore
+>> that I'd expect a comment here.
 >>
->>> +    .vidioc_prepare_buf = v4l2_m2m_ioctl_prepare_buf,
->>> +    .vidioc_qbuf = v4l2_m2m_ioctl_qbuf,
->>> +    .vidioc_expbuf = v4l2_m2m_ioctl_expbuf,
->>> +    .vidioc_dqbuf = v4l2_m2m_ioctl_dqbuf,
->>> +    .vidioc_streamon = v4l2_m2m_ioctl_streamon,
->>> +    .vidioc_streamoff = v4l2_m2m_ioctl_streamoff,
->>> +
->>> +    .vidioc_try_decoder_cmd = v4l2_m2m_ioctl_try_decoder_cmd,
->>> +    .vidioc_decoder_cmd = wave5_vpu_dec_decoder_cmd,
->>> +
->>> +    .vidioc_subscribe_event = wave5_vpu_subscribe_event,
->>> +    .vidioc_unsubscribe_event = v4l2_event_unsubscribe,
->>> +};
->>
->> This also means there is no need to document the new EOPNOTSUPP error
->> code in VIDIOC_CREATE_BUFS, or to modify v4l2-compliance.
->>
->> You *do* need to add a comment somewhere explaining why you don't
->> support this ioctl. I think it would be best to do that right after
->> '.vidioc_reqbufs = v4l2_m2m_ioctl_reqbufs,'.
 > 
-> So, besides this issue would you judge the v4l2 layer of the driver to
-> be ready? Do you want a reviewed by tag for it or would you take it like
-> this as well?
+> We will add error handling here.
+> 
+> Regards,
+> Terry
+>
 
-No, it looks good. Please note though that patch 6/8 (dt-bindings) still
-needs an Acked/Reviewed-by from the device tree maintainers.
-
-There was a comment on it from Krzysztof.
-
+Found devm_cxl_setup_parent_dport() is a NULL function without return value.
+ 
 Regards,
-
-	Hans
-
-> 
->>
->> Regards,
->>
->>     Hans
-> 
-> Sincerly,
-> Sebastian
->> _______________________________________________
->> Kernel mailing list -- kernel@mailman.collabora.com
->> To unsubscribe send an email to kernel-leave@mailman.collabora.com
-
+Terry
