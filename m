@@ -2,154 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A917CAE36
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B7C7CAE41
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232261AbjJPPwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 11:52:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51628 "EHLO
+        id S233657AbjJPPxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 11:53:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbjJPPv6 (ORCPT
+        with ESMTP id S233425AbjJPPxO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 11:51:58 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E5D83
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:51:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4B4AC433C7;
-        Mon, 16 Oct 2023 15:51:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697471516;
-        bh=/ePzPKPVEWPSljsfxP51lXr/Y+dsHVxyCCJk+IzUOvQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ungjz8PNUeeLU0/S869BDNj5+TRS9s9XMTKlW1GlQD5elg6Qbb9Xzz+4kZ0lq9JoD
-         W57Ey+bR4dni3mKCAqJT+eNIzNndIjAMzRHaV3++aD5Qhum1HBYHQ6bf5aE07UHsLd
-         KHaNPB+YovLQAFgEqvHFyjqq1jFCFTjWnyGXlf81pMt0DlGanEFjspczdRJFMAvjmz
-         ea9LhbHUNJ0/Bel+VfmGwuf5rWvMe9o22YBlmL/MeMf93hMpBL/1QqGL6XkEacYKJk
-         9OFHw1qbEqCGUzQL3Cq38HPd3ijfCXV2F0GnAQ84lPJ48fYiN7MZLxFwa+T79QwTx5
-         GuX+QIQINJCfw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id E4E1340016; Mon, 16 Oct 2023 12:51:52 -0300 (-03)
-Date:   Mon, 16 Oct 2023 12:51:52 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v3] perf bench sched pipe: Add -G/--cgroups option
-Message-ID: <ZS1cGMgyEDJQbwq9@kernel.org>
-References: <20231016044225.1125674-1-namhyung@kernel.org>
- <ZS0D53ckVx356k4o@gmail.com>
- <ZS1Y5PhXhp384ynY@kernel.org>
- <ZS1ajf/9HmgUyyCl@kernel.org>
+        Mon, 16 Oct 2023 11:53:14 -0400
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9340F5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:53:12 -0700 (PDT)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5a7e5dc8573so57806037b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:53:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697471592; x=1698076392; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LYpi+Y74+blfqQ7+iyjrYGXZgsEgnThgUXh2i1YfeDY=;
+        b=WtoG/k5nNQxQLxND1DwlOC8E2KNVBIdA5k6GffMiAOquxJ701M3N/82inuFiBXwzsV
+         GtaXZtzOkRFoyh/BebrY+nJOCPNEZ/9J9gIDRVFTUyXGb8xcURz+KZWJnTNdYDAhEfpK
+         z6izCBo2NqEUStCHgXJGZOH0G1CqP0RrEJgLgALnyatBUVNNjFXjpgKUzpiaEsLhAHzg
+         hwXSQnjxYrnsyt7+CYGGGjzFubc9Ow6jnc3ZcgEeYJ2uhaIKPsAhOnYuYW5CqycEPJ2P
+         Z/yqPpBk9sBJsI/x3ehG+KonwLKMEmSUY7sF7O+22OgZaO0D3E5uTe7oEqLD9c1BOqwH
+         Whug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697471592; x=1698076392;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LYpi+Y74+blfqQ7+iyjrYGXZgsEgnThgUXh2i1YfeDY=;
+        b=qh+Nn/A2AJQHOUULfMkTUFCXzp/NjU8nUqCXDDja6WEl+NC5KQFEZ80WySlALhIn1S
+         5T/btNOQd8nUaHvdymtMXZSvGxUgjWF+Y9Jtaga2CKt87s9oncN9/OSYLpob5lQfS2ie
+         5g1be0LMuT2VTleJVplGjbOnsD7VN+E4jsAhAaZybD+KcXrrpUUO2Hi+Zfg583mha6fg
+         dhPwaIGC603zHm0RPr5WYa909MA2CZllhjV/JexT5HRSn1xpvDLs6jLVNHTjy0C9KE9w
+         wwgxR4qSXknW8/AouLJnAp36efeSzR6c4a3zAjA87FqO859cUXUnykwdlPX7ZdgAqbrW
+         XI1w==
+X-Gm-Message-State: AOJu0Ywy2/3Ta7iRgRhWicGRrzGWFT4OCBZi7C3mvEgFs00pUo95tj1o
+        dBmpL27DQkKNNPmCfZeSQNnLFFXGh4ue9EtgCOOorg==
+X-Google-Smtp-Source: AGHT+IF3He1oSv8hYDtN0FKigJZ4uhzs+6+PQONNXTwI+veyurOdO0psDFUB99utg8ZO4cTTyOYKSN9Sckl5fP2Sssw=
+X-Received: by 2002:a0d:d713:0:b0:5a8:72ee:463d with SMTP id
+ z19-20020a0dd713000000b005a872ee463dmr3725033ywd.49.1697471591735; Mon, 16
+ Oct 2023 08:53:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZS1ajf/9HmgUyyCl@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231016153446.132763-1-pedro.falcato@gmail.com>
+In-Reply-To: <20231016153446.132763-1-pedro.falcato@gmail.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Mon, 16 Oct 2023 17:52:29 +0200
+Message-ID: <CAG_fn=XA5B4CO2q-+fSeKbT3DwYs+fExMP+h_x5qqdEKfejcow@mail.gmail.com>
+Subject: Re: [PATCH v2] mm: kmsan: Panic on failure to allocate early boot metadata
+To:     Pedro Falcato <pedro.falcato@gmail.com>
+Cc:     kasan-dev@googlegroups.com, Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Oct 16, 2023 at 12:45:17PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Mon, Oct 16, 2023 at 12:38:12PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Mon, Oct 16, 2023 at 11:35:35AM +0200, Ingo Molnar escreveu:
-> > > * Namhyung Kim <namhyung@kernel.org> wrote:
-> > > 
-> > > > +	/* try cgroup v2 interface first */
-> > > > +	if (threaded)
-> > > > +		fd = openat(cgrp->fd, "cgroup.threads", O_WRONLY);
-> > > > +	else
-> > > > +		fd = openat(cgrp->fd, "cgroup.procs", O_WRONLY);
-> > > > +
-> > > > +	/* try cgroup v1 if failed */
-> > > > +	if (fd < 0)
-> > > > +		fd = openat(cgrp->fd, "tasks", O_WRONLY);
-> > > > +
-> > > > +	if (fd < 0) {
-> > > > +		char mnt[PATH_MAX];
-> > > > +
-> > > > +		printf("Failed to open cgroup file in %s\n", cgrp->name);
-> > > > +
-> > > > +		if (cgroupfs_find_mountpoint(mnt, sizeof(mnt), "perf_event") == 0)
-> > > > +			printf(" Hint: create the cgroup first, like 'mkdir %s/%s'\n",
-> > > > +			       mnt, cgrp->name);
-> > > 
-> > > Ok, this works too I suppose.
-> > > 
-> > > Acked-by: Ingo Molnar <mingo@kernel.org>
-> > 
-> > I'm not getting that:
-> > 
-> > [root@five ~]# perf bench sched pipe -l 10000 -G AAA,BBB
-> > # Running 'sched/pipe' benchmark:
-> > no access to cgroup /sys/fs/cgroup/AAA
-> > cannot open sender cgroup: AAA
-> >  Usage: perf bench sched pipe <options>
-> > 
-> >     -G, --cgroups <SEND,RECV>
-> >                           Put sender and receivers in given cgroups
-> > [root@five ~]#
-> > 
-> > Its better now as it bails out, but it is not emitting any message that
-> > helps with running the test, well, there is that /sys/fs/cgroup/AAA
-> > path, lemme try doing a mkdir:
-> > 
-> > [root@five ~]# perf bench sched pipe -l 10000 -G AAA,BBB
-> > # Running 'sched/pipe' benchmark:
-> > no access to cgroup /sys/fs/cgroup/BBB
-> > cannot open receiver cgroup: BBB
-> >  Usage: perf bench sched pipe <options>
-> > 
-> >     -G, --cgroups <SEND,RECV>
-> >                           Put sender and receivers in given cgroups
-> > [root@five ~]#
-> > 
-> > [root@five ~]# perf bench sched pipe -l 10000 -G AAA,BBB
-> > # Running 'sched/pipe' benchmark:
-> > [root@five ~]#
-> > 
-> > It seems to be bailing out but doesn't run the test nor emits any
-> > warning.
-> 
-> (gdb) run bench sched pipe -l 10000
-> Starting program: /root/bin/perf bench sched pipe -l 10000
-> # Running 'sched/pipe' benchmark:
-> [Detaching after fork from child process 33618]
-> 
-> Breakpoint 1, bench_sched_pipe (argc=0, argv=0x7fffffffe3d8) at bench/sched-pipe.c:259
-> 259		if (threads[0].cgroup_failed || threads[1].cgroup_failed)
-> (gdb) p threads[0].cgroup_failed
-> $1 = 137
-> (gdb) p threads[1].cgroup_failed
-> $2 = false
-> (gdb) n
-> 260			return 0;
-> (gdb)
-> 
-> But I'm not even using cgroups?
+On Mon, Oct 16, 2023 at 5:34=E2=80=AFPM Pedro Falcato <pedro.falcato@gmail.=
+com> wrote:
+>
+> Given large enough allocations and a machine with low enough memory (i.e
+> a default QEMU VM), it's entirely possible that
+> kmsan_init_alloc_meta_for_range's shadow+origin allocation fails.
+>
+> Instead of eating a NULL deref kernel oops, check explicitly for
+> memblock_alloc() failure and panic with a nice error message.
 
-So, with the patch below 'perf bench sched pipe -l 1000' is back working
-for me:
+For posterity, it is generally quite important for the allocated
+shadow and origin to be contiguous, otherwise an unaligned memory
+write may result in memory corruption (the corresponding unaligned
+shadow write will be assuming that shadow pages are adjacent).
+So instead of panicking we could have split the range into smaller
+ones until the allocation succeeds, but that would've led to
+hard-to-debug problems in the future.
 
-[root@five ~]# perf bench sched pipe  -l 1000
-# Running 'sched/pipe' benchmark:
-# Executed 1000 pipe operations between two processes
-
-     Total time: 0.007 [sec]
-
-       7.671000 usecs/op
-         130361 ops/sec
-[root@five ~]#
-
-Now back at testing with with cgroups.
-
-- Arnaldo
-
+>
+> Signed-off-by: Pedro Falcato <pedro.falcato@gmail.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
