@@ -2,159 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48EBC7CAD18
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 614117CAD22
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 17:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233219AbjJPPO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 11:14:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60102 "EHLO
+        id S233630AbjJPPPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 11:15:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232003AbjJPPOZ (ORCPT
+        with ESMTP id S232310AbjJPPPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 11:14:25 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF071D9;
-        Mon, 16 Oct 2023 08:14:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697469264; x=1729005264;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=gs4N9ezRLhxjgM2cEbP+/lHkLMb/1pEd3Idtpkl5xQo=;
-  b=HG5SS6l1NHM/aycsBs+jqmZZXIBUM7Q+MftYMBU/IFIwZyRyTQzVtRci
-   gGa751C8AdSxels7f9VsfCMYJ89qIHTHisKfbFy+CUivtl0GmiNLo138j
-   MDJysWzEQoNIorSbFeIUDvbVT0aREpqtyC06GI2Mv954VsikHhbBbslCG
-   NysIrfR77HGiAqenIiARYWjIiaUSbaBwNy5nuAMmGzL7Cd1DQfQeRLby+
-   +TmqyjlqtyXv+kFZSl+EBum29311AJIue7RpGQa0rxHW4spCsssV1YBiF
-   3FsSRR7pkLgIHLExFHbfdaZRpv31ywgtxOVxC/13ToUYeno0yRAUZigRs
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="7117848"
-X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="7117848"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 08:14:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="879460578"
-X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="879460578"
-Received: from rhaeussl-mobl.ger.corp.intel.com ([10.252.59.103])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 08:14:15 -0700
-Date:   Mon, 16 Oct 2023 18:14:13 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-cc:     linux-pci@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH 06/10] PCI/DPC: Use FIELD_GET()
-In-Reply-To: <524d1789-6b57-aae-17b7-bf7ae49719dc@linux.intel.com>
-Message-ID: <8ca2ad3-da7d-c82c-cbdf-b5363760444e@linux.intel.com>
-References: <20231013200249.GA1123559@bhelgaas> <3df6c8ea-888e-faa-5bae-e26b1f446ab3@linux.intel.com> <524d1789-6b57-aae-17b7-bf7ae49719dc@linux.intel.com>
+        Mon, 16 Oct 2023 11:15:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68CE9F5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:14:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697469289;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=AVbGnTxHIfBxV5ar+uOFvSn31zZCTLwW6peH+riUAMc=;
+        b=Sd8ls2P3wi8ucfjCI8SdlkeJ4/gGaQPl6TvOQF8DeSe+j3O5TlNMLLX3oJcAnpfmlDDF5o
+        NlhD6o1AfcCuwhsPDIOuq7ZwUThPG4BYH88wvKosp3hwFRot5kbbQRuc+hTTgGzFDgh+ls
+        qmSdjqxMjyRCxtzc9eiL5HjZgGHQ+oc=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-138-AY1NZJkNOziXyf0blf0Nbg-1; Mon, 16 Oct 2023 11:14:45 -0400
+X-MC-Unique: AY1NZJkNOziXyf0blf0Nbg-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9a62adedadbso349559666b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 08:14:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697469284; x=1698074084;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AVbGnTxHIfBxV5ar+uOFvSn31zZCTLwW6peH+riUAMc=;
+        b=gHSmwDwXymZiX1ExxMSH3W6zMhdh6YE3fDaKkqPpPS4E/2wj4pkzR3rK4sBTnQct4J
+         B4cV2vRt5pVOHUb9g/8PIJnl2m45rnEYzS/iGF9MHBwNBJJWisstowpqs8L1OFRu6uwc
+         R7iZsMN/nrIBZ3CiQG0lxYQyob3kur5rkflp+RCuQpYIX4YChzZSnHA3XNCCb0sMw6Nd
+         DbuiV7xQnpProm+MZ8LCrZAeFiRhiXFQCwERJDe3xmmPm+hAJW8iEAFFI8UItV6vcVHu
+         Z3DNHbOsKZv+bLrEBZ0o/XdMrTe/8i+fpne8X/j8FLlbWSmexsfXsu/TUExeBArxHR3H
+         q7Uw==
+X-Gm-Message-State: AOJu0Yyl2dny1ykn0rgZjf8Rd2xjBNRnqeo83kotqZLlEQaRLAAQ05NK
+        Tuz/gaTUJbBTdkw3Gd2nAl0p7vJVg7Z3KL0agku8oK+l8T7Pvm3a0eYdT3AL4gQxi6n0Rm9HdiS
+        tV647CihO5ei4x/Z9MLeyDCai
+X-Received: by 2002:a17:906:c10e:b0:9bf:d70b:986d with SMTP id do14-20020a170906c10e00b009bfd70b986dmr3683317ejc.77.1697469284349;
+        Mon, 16 Oct 2023 08:14:44 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGHQjVoOl0YMVhdZjG5b09PwEKWF6Tm2BoXsM+VWMJkqKeR48ZJzib+4YYClZrMCFNdROzIVg==
+X-Received: by 2002:a17:906:c10e:b0:9bf:d70b:986d with SMTP id do14-20020a170906c10e00b009bfd70b986dmr3683281ejc.77.1697469284015;
+        Mon, 16 Oct 2023 08:14:44 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.googlemail.com with ESMTPSA id vb7-20020a170907d04700b0099ccee57ac2sm4209223ejc.194.2023.10.16.08.14.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Oct 2023 08:14:42 -0700 (PDT)
+Message-ID: <359d7c57-2a71-419d-b63f-4c5610f48b0f@redhat.com>
+Date:   Mon, 16 Oct 2023 17:14:38 +0200
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-2130236667-1697469257=:1986"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10 01/50] KVM: SVM: INTERCEPT_RDTSCP is never intercepted
+ anyway
+Content-Language: en-US
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Michael Roth <michael.roth@amd.com>
+Cc:     kvm@vger.kernel.org, linux-coco@lists.linux.dev,
+        linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, seanjc@google.com, vkuznets@redhat.com,
+        jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
+        slp@redhat.com, pgonda@google.com, peterz@infradead.org,
+        srinivas.pandruvada@linux.intel.com, rientjes@google.com,
+        dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de,
+        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+        pankaj.gupta@amd.com, liam.merwick@oracle.com,
+        zhi.a.wang@intel.com, stable@vger.kernel.org
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-2-michael.roth@amd.com>
+ <2023101627-species-unscrew-2730@gregkh>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Autocrypt: addr=pbonzini@redhat.com; keydata=
+ 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
+In-Reply-To: <2023101627-species-unscrew-2730@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-2130236667-1697469257=:1986
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-
-On Mon, 16 Oct 2023, Ilpo Järvinen wrote:
-
-> On Mon, 16 Oct 2023, Ilpo Järvinen wrote:
+On 10/16/23 17:12, Greg KH wrote:
+> On Mon, Oct 16, 2023 at 08:27:30AM -0500, Michael Roth wrote:
+>> From: Paolo Bonzini <pbonzini@redhat.com>
+>>
+>> svm_recalc_instruction_intercepts() is always called at least once
+>> before the vCPU is started, so the setting or clearing of the RDTSCP
+>> intercept can be dropped from the TSC_AUX virtualization support.
+>>
+>> Extracted from a patch by Tom Lendacky.
+>>
+>> Cc: stable@vger.kernel.org
+>> Fixes: 296d5a17e793 ("KVM: SEV-ES: Use V_TSC_AUX if available instead of RDTSC/MSR_TSC_AUX intercepts")
+>> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+>> (cherry picked from commit e8d93d5d93f85949e7299be289c6e7e1154b2f78)
+>> Signed-off-by: Michael Roth <michael.roth@amd.com>
+>> ---
+>>   arch/x86/kvm/svm/sev.c | 5 +----
+>>   1 file changed, 1 insertion(+), 4 deletions(-)
 > 
-> > On Fri, 13 Oct 2023, Bjorn Helgaas wrote:
-> > 
-> > > On Wed, Oct 11, 2023 at 02:01:13PM +0300, Ilpo Järvinen wrote:
-> > > > On Tue, 10 Oct 2023, Bjorn Helgaas wrote:
-> > > > > From: Bjorn Helgaas <bhelgaas@google.com>
-> > > > > 
-> > > > > Use FIELD_GET() to remove dependences on the field position, i.e., the
-> > > > > shift value.  No functional change intended.
-> > > > > 
-> > > > > Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> > > > > ---
-> > > > >  drivers/pci/pcie/dpc.c        | 9 +++++----
-> > > > >  drivers/pci/quirks.c          | 2 +-
-> > > > >  include/uapi/linux/pci_regs.h | 1 +
-> > > > >  3 files changed, 7 insertions(+), 5 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
-> > > > > index 3ceed8e3de41..6e551f34ec63 100644
-> > > > > --- a/drivers/pci/pcie/dpc.c
-> > > > > +++ b/drivers/pci/pcie/dpc.c
-> > > > > @@ -8,6 +8,7 @@
-> > > > >  
-> > > > >  #define dev_fmt(fmt) "DPC: " fmt
-> > > > >  
-> > > > > +#include <linux/bitfield.h>
-> > > > >  #include <linux/aer.h>
-> > > > >  #include <linux/delay.h>
-> > > > >  #include <linux/interrupt.h>
-> > > > > @@ -202,7 +203,7 @@ static void dpc_process_rp_pio_error(struct pci_dev *pdev)
-> > > > >  
-> > > > >  	/* Get First Error Pointer */
-> > > > >  	pci_read_config_word(pdev, cap + PCI_EXP_DPC_STATUS, &dpc_status);
-> > > > > -	first_error = (dpc_status & 0x1f00) >> 8;
-> > > > > +	first_error = FIELD_GET(PCI_EXP_DPC_STATUS_FIRST_ERR, dpc_status);
-> > > > >  
-> > > > >  	for (i = 0; i < ARRAY_SIZE(rp_pio_error_string); i++) {
-> > > > >  		if ((status & ~mask) & (1 << i))
-> > > > > @@ -270,8 +271,8 @@ void dpc_process_error(struct pci_dev *pdev)
-> > > > >  	pci_info(pdev, "containment event, status:%#06x source:%#06x\n",
-> > > > >  		 status, source);
-> > > > >  
-> > > > > -	reason = (status & PCI_EXP_DPC_STATUS_TRIGGER_RSN) >> 1;
-> > > > > -	ext_reason = (status & PCI_EXP_DPC_STATUS_TRIGGER_RSN_EXT) >> 5;
-> > > > > +	reason = FIELD_GET(PCI_EXP_DPC_STATUS_TRIGGER_RSN, status);
-> > > > > +	ext_reason = FIELD_GET(PCI_EXP_DPC_STATUS_TRIGGER_RSN_EXT, status);
-> > > > >  	pci_warn(pdev, "%s detected\n",
-> > > > >  		 (reason == 0) ? "unmasked uncorrectable error" :
-> > > > >  		 (reason == 1) ? "ERR_NONFATAL" :
-> > > > 
-> > > > BTW, it seems we're doing overlapping work here with many of these 
-> > > > patches. It takes some time to think these through one by one, I don't 
-> > > > just autorun through them with coccinelle so I've not posted my changes
-> > > > yet.
-> > > >
-> > > > I went to a different direction here and named all the reasons too with 
-> > > > defines and used & to get the reason in order to be able to compare with 
-> > > > the named reasons.
-> > > > 
-> > > > You also missed convering one 0xfff4 to use define (although I suspect it 
-> > > > never was your goal to go beyond FIELD_GET() here).
-> > > 
-> > > Pure FIELD_GET() and FIELD_PREP() was my goal.
-> > > 
-> > > If you have patches you prefer, I'll drop mine.  I did these about a
-> > > year ago and it seemed like the time to do something with them since
-> > > you did the PCI_EXP_LNKSTA_NLW ones and to try to prevent overlapping
-> > > work.  Since we've started, I'd like to get as much of it done this
-> > > cycle as possible.
-> > 
-> > Okay, I suggest you keep your FIELD_GET/PREP() patch since mine is getting 
-> > more and more complicated. I can build a nice set of small changes about 
-> > what remains to do in DPC on top of your patch.
-> 
-> Err, actually, there's still the naming of the define, should _FEP be used 
-> for First Error Pointer for consistency? You should make that small change 
-> into your patch if you think _FEP is better because of consistency.
+> What stable tree(s) are you wanting this applied to (same for the others
+> in this series)?  It's already in the 6.1.56 release, and the Fixes tag
+> is for 5.19, so I don't see where it could be missing from?
 
-There's also #include order so it seems you should just drop the patch, I 
-can handle this along my series.
+I tink it's missing in the (destined for 6.7) tree that Michael is 
+basing this series on, so he's cherry picking it from Linus's tree.
 
--- 
- i.
+Paolo
 
---8323329-2130236667-1697469257=:1986--
