@@ -2,77 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C73D7CB59F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 23:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC67C7CB5A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 23:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232896AbjJPVsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 17:48:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47504 "EHLO
+        id S233997AbjJPVuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 17:50:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233605AbjJPVsj (ORCPT
+        with ESMTP id S233481AbjJPVuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 17:48:39 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F744AC
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 14:48:37 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-41b813f0a29so38151cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 14:48:37 -0700 (PDT)
+        Mon, 16 Oct 2023 17:50:08 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB5F5AB
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 14:50:06 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6b1ef786b7fso3337494b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 14:50:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697492916; x=1698097716; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=S4RLYkfi4mvrpHxc/+8MB/+4xVbQh6OwKrI5KwV9TPg=;
-        b=TWcj9kiXMFheNBXHd5Jqvb8cYz/dlwtGjOw62al0o9TB7GqT2VsWTTP5gpu6whKPv9
-         w/brUvMDO1VH/rGsR2l2a+W3ClfgOSVXRmBPX4DVEs7ix1HfvpBk8fVVBFsiZVNbWtuq
-         6gG63JFJCRrC6cMd5YdpRaNMEuZeRBtruAbwXOpEnkXB4xfnmftxfPnoyKE30LIIdGPc
-         gjsze9NYF0c7G0foEZbmPuTA+JI6PsFqM6b3+4zWCeZLhlaEfrV16qx9GgHekvfgT3X5
-         es1cxerjJyChHov1TPUzWOYAmb2xIaTT8zIcftUcuqKj0YG7a5eW1O6qWuT+nom5/fXC
-         74gQ==
+        d=chromium.org; s=google; t=1697493006; x=1698097806; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JSyp/Bip5iNls5WLJYDt4GXcuxprjReCLiVejQ3FJcM=;
+        b=K/AHbuQ51AirGRKcddjJ4UHjO1yUhNCXWNQj+iHSaNMThGyxkpPya1BmNEgFiy1hpa
+         ILBC44Jmb7N0R9VMjwBS3hZCk++eeZKd0FQLJu+xT4VdvKhDszLBw0qBsi37rvLTsyKX
+         9sHop3rEmRV8bHn7kUak0YpJBKqRzT/H1tSGs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697492916; x=1698097716;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=S4RLYkfi4mvrpHxc/+8MB/+4xVbQh6OwKrI5KwV9TPg=;
-        b=BA9Zj11pfI3KOnLwu8nwResoEVZveC36cURgSg95WC5B/RTlhhJClcUlIOz9jLD2df
-         hjj1koO85rhCvYI6+VmBj/gIRnVIvI5H+PhWhXJElwRl+PsX1ED8whECrfwdsx74kiks
-         YYZ5TzRT61eroprEWJdPDSkxCEFOaUqUOME9dJN4B8fF2SRTD8KSi2mB3YokPoJDUw+h
-         0/xuyO1FtVyy9MM2cW3ZbAU9Wv175ekT2Fv3SgpUFN+ZPGmyN5dxTw1nYMrLkgQjwxGX
-         iUutYSuF0GHhIJZxDknWvUS2GAx97I8ePpD7X8sYfx4YEaeuMV36D75WHEwkUGAhwTED
-         kjWw==
-X-Gm-Message-State: AOJu0Ywrk2mVJ/I7EsYKDI8QBTqNp3YbeGWpIdNp0qqoO9cUsplxhjZ4
-        VhBjfnptG7T8MxDUdFWhVD33VFA8RUsyVhzbkOSweQ==
-X-Google-Smtp-Source: AGHT+IG7r4JQkTY7QRBqLIn53rtDCeNYj8B29ETeTJVhjbNYJE0uNpHoKKYpN+DZJ7cFbu2Bj/lanINP3ELdKlEixiU=
-X-Received: by 2002:a05:622a:478e:b0:418:1878:5b8c with SMTP id
- do14-20020a05622a478e00b0041818785b8cmr24567qtb.25.1697492916193; Mon, 16 Oct
- 2023 14:48:36 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697493006; x=1698097806;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JSyp/Bip5iNls5WLJYDt4GXcuxprjReCLiVejQ3FJcM=;
+        b=LkAI2GkWHqt6gJwd3m5WX+Qxx9VY6XBxN1jZJl0A/YbLmTXbEGuLUi5JLfteOjxxGv
+         fpn53HEUhJsVpU3Gc7Sn9GUkThvbjhr6M4VLGxTHUVstsfNU46oBmtBok8RuieMUahsv
+         O0+pLbU1UfSVHsaT64515FfsfigujCoZ066KkxoOS0V0vlMDivYrzxFmpSiT3xts3WhW
+         CbQg8Firhfh74Y5nErlsNoBLslxcBzKmnEpF2JeikcV6YxIj00Gtecruw8WX9HKDBWYV
+         kAe6qkxCgirnGqnMXEuWDyEQbmU5WYBbStWGW5LWjdLjPid99pat+icq8JHr9mPGX3hI
+         AtBw==
+X-Gm-Message-State: AOJu0YzsoeBsonb2vzKqZvZjVMP/Sy5O+cs7PZ4Rux9FJ2A+sKNnUsHz
+        I8FwetM33Hy8ZkfshTu3ZTbJc8nYiyGgQrLzjX8=
+X-Google-Smtp-Source: AGHT+IGejCV830CbXRzDCi2Z5qW1DlJaLYLYYKh04MVkP5xwcYrBuRosZiSq0L/FyPCidbDEycVFtw==
+X-Received: by 2002:a05:6a00:22d0:b0:6be:5e64:babb with SMTP id f16-20020a056a0022d000b006be5e64babbmr504934pfj.18.1697493006180;
+        Mon, 16 Oct 2023 14:50:06 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id m16-20020a6562d0000000b005b1bf3a200fsm88589pgv.1.2023.10.16.14.50.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 14:50:05 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 14:50:05 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Sergei Trofimovich <slyich@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Eric Biederman <ebiederm@xmission.com>, linux-mm@kvack.org
+Subject: Re: [RESEND PATCH] uapi: increase MAX_ARG_STRLEN from 128K to 6M
+Message-ID: <202310161439.BEA904AEE8@keescook>
+References: <20231016212507.131902-1-slyich@gmail.com>
 MIME-Version: 1.0
-References: <20230928015858.1809934-1-linan666@huaweicloud.com>
- <CACGdZY+JV+PdiC_cspQiScm=SJ0kijdufeTrc8wkrQC3ZJx3qQ@mail.gmail.com>
- <4ace01e8-6815-29d0-70ce-4632818ca701@huaweicloud.com> <20231005162417.GA32420@redhat.com>
- <0a8f34aa-ced9-e613-3e5f-b5e53a3ef3d9@huaweicloud.com> <20231007151607.GA24726@redhat.com>
- <21843836-7265-f903-a7d5-e77b07dd5a71@huaweicloud.com> <20231008113602.GB24726@redhat.com>
- <CACGdZY+OOr4Q5ajM0za2babr34YztE7zjRyPXHgh_A64zvoBOw@mail.gmail.com>
- <e9165cd0-9c9d-1d1a-1c5b-402556a1a31f@huaweicloud.com> <CACGdZYLxnL91S4RxfvLmN8j3rcvbsqdkouj4Lgc05mnCo2fZSw@mail.gmail.com>
-In-Reply-To: <CACGdZYLxnL91S4RxfvLmN8j3rcvbsqdkouj4Lgc05mnCo2fZSw@mail.gmail.com>
-From:   Khazhy Kumykov <khazhy@google.com>
-Date:   Mon, 16 Oct 2023 14:48:22 -0700
-Message-ID: <CACGdZY+nmtRLeXi48z8J2QD5wFSVCuhFVRbzD9ktK5tXXrbxBw@mail.gmail.com>
-Subject: Re: [PATCH] blk-throttle: Calculate allowed value only when the
- throttle is enabled
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     Oleg Nesterov <oleg@redhat.com>, Li Nan <linan666@huaweicloud.com>,
-        tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        houtao1@huawei.com, yangerkun@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000004e42ba0607dc5ed5"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231016212507.131902-1-slyich@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,95 +69,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000004e42ba0607dc5ed5
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Mon, Oct 16, 2023 at 10:25:07PM +0100, Sergei Trofimovich wrote:
+> Before the change linux allowed individual execve() arguments or
+> environment variable entries to be only as big as 32 pages.
+> 
+> Histroically before b6a2fea3931 "mm: variable length argument support"
+> MAX_ARG_STRLEN used to be full allowed size `argv[] + envp[]`.
+> 
+> When full limit was abandoned individual parameters were still limited
+> by a safe limit of 128K.
+> 
+> Nowadays' linux allows `argv[]+envp[]` to be as laerge as 6MB (3/4
+> `_STK_LIM`).
 
-On Mon, Oct 16, 2023 at 1:06=E2=80=AFPM Khazhy Kumykov <khazhy@chromium.org=
-> wrote:
->
-> I mostly just want us to pick /something/, since 6.6-rc and the LTSs
-> with the patch in question are busted currently. :)
->
-And just to make it explicit: I believe Kaui's proposal is correct.
+See bprm_stack_limits() for the details, but yes, 3/4 _STK_LIM tends to
+be the max, unless the rlim_stack is set smaller.
 
-Khazhy
+> Some build systems like `autoconf` use a single environment variable
+> to pass `CFLAGS` environment variable around. It's not a bug problem
+> if the argument list is short.
+> 
+> But some packaging systems prefer installing each package into
+> individual directory. As a result that requires quite long string of
+> parameters like:
+> 
+>     CFLAGS="-I/path/to/pkg1 -I/path/to/pkg2 ..."
+> 
+> This can easily overflow 128K and does happen for `NixOS` and `nixpkgs`
+> repositories on a regular basis.
 
---0000000000004e42ba0607dc5ed5
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+That's ... alarming. What are you doing currently to work around this?
 
-MIIPmwYJKoZIhvcNAQcCoIIPjDCCD4gCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz1MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-LmNybDBMBgNVHSAERTBDMEEGCSsGAQQBoDIBKDA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5n
-bG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzANBgkqhkiG9w0BAQsFAAOCAQEANyYcO+9JZYyqQt41
-TMwvFWAw3vLoLOQIfIn48/yea/ekOcParTb0mbhsvVSZ6sGn+txYAZb33wIb1f4wK4xQ7+RUYBfI
-TuTPL7olF9hDpojC2F6Eu8nuEf1XD9qNI8zFd4kfjg4rb+AME0L81WaCL/WhP2kDCnRU4jm6TryB
-CHhZqtxkIvXGPGHjwJJazJBnX5NayIce4fGuUEJ7HkuCthVZ3Rws0UyHSAXesT/0tXATND4mNr1X
-El6adiSQy619ybVERnRi5aDe1PTwE+qNiotEEaeujz1a/+yYaaTY+k+qJcVxi7tbyQ0hi0UB3myM
-A/z2HmGEwO8hx7hDjKmKbDCCA18wggJHoAMCAQICCwQAAAAAASFYUwiiMA0GCSqGSIb3DQEBCwUA
-MEwxIDAeBgNVBAsTF0dsb2JhbFNpZ24gUm9vdCBDQSAtIFIzMRMwEQYDVQQKEwpHbG9iYWxTaWdu
-MRMwEQYDVQQDEwpHbG9iYWxTaWduMB4XDTA5MDMxODEwMDAwMFoXDTI5MDMxODEwMDAwMFowTDEg
-MB4GA1UECxMXR2xvYmFsU2lnbiBSb290IENBIC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzAR
-BgNVBAMTCkdsb2JhbFNpZ24wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMJXaQeQZ4
-Ihb1wIO2hMoonv0FdhHFrYhy/EYCQ8eyip0EXyTLLkvhYIJG4VKrDIFHcGzdZNHr9SyjD4I9DCuu
-l9e2FIYQebs7E4B3jAjhSdJqYi8fXvqWaN+JJ5U4nwbXPsnLJlkNc96wyOkmDoMVxu9bi9IEYMpJ
-pij2aTv2y8gokeWdimFXN6x0FNx04Druci8unPvQu7/1PQDhBjPogiuuU6Y6FnOM3UEOIDrAtKeh
-6bJPkC4yYOlXy7kEkmho5TgmYHWyn3f/kRTvriBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti
-+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGjQjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8E
-BTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5NUPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEA
-S0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigHM8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9u
-bG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmUY/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaM
-ld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88
-q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcya5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/f
-hO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/XzCCBNQwggO8oAMCAQICEAGy8e6bI55p/yISlXXG
-SrAwDQYJKoZIhvcNAQELBQAwVDELMAkGA1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYt
-c2ExKjAoBgNVBAMTIUdsb2JhbFNpZ24gQXRsYXMgUjMgU01JTUUgQ0EgMjAyMDAeFw0yMzA3MTYw
-NzQ1MTRaFw0yNDAxMTIwNzQ1MTRaMCIxIDAeBgkqhkiG9w0BCQEWEWtoYXpoeUBnb29nbGUuY29t
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA84UGa4X1/brS7/2vQRLnjHc/oa9+4lri
-stpvdNGyJgDZNvJouUxTihNXyW4exVS4rkaD+DjMOTcoxFy+KEAzrIzotas1NbZt4P7DTJ9Dp6/1
-20YUAt9rnWmZNHmuzZNGlRYhzAAOaDkGhKFnULS1bItsuRmuPA1st6vd7GiVA00TiflQ7IYni7ZN
-fd1TDheOc7OGHW6PcHPW0P0HGTzzvTpgTKQi4ojKre0fW/Yb0lZEVpBiadSj9MeDn5/f0yUpeFYD
-fll7rnq2bPGOfS3JjwLalgVSl5Ho6txXv9vlJVYxgnAoNZsZJ2EHvsT7eUQYNHg5an0nClXZYIF7
-p2YQGQIDAQABo4IB0jCCAc4wHAYDVR0RBBUwE4ERa2hhemh5QGdvb2dsZS5jb20wDgYDVR0PAQH/
-BAQDAgWgMB0GA1UdJQQWMBQGCCsGAQUFBwMEBggrBgEFBQcDAjAdBgNVHQ4EFgQUKmFDbOAVaL0O
-2d1HymA53tUP1hUwTAYDVR0gBEUwQzBBBgkrBgEEAaAyASgwNDAyBggrBgEFBQcCARYmaHR0cHM6
-Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wDAYDVR0TAQH/BAIwADCBmgYIKwYBBQUH
-AQEEgY0wgYowPgYIKwYBBQUHMAGGMmh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2NhL2dzYXRs
-YXNyM3NtaW1lY2EyMDIwMEgGCCsGAQUFBzAChjxodHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24uY29t
-L2NhY2VydC9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcnQwHwYDVR0jBBgwFoAUfMwKaNei6x4schvR
-zV2Vb4378mMwRgYDVR0fBD8wPTA7oDmgN4Y1aHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9jYS9n
-c2F0bGFzcjNzbWltZWNhMjAyMC5jcmwwDQYJKoZIhvcNAQELBQADggEBADeZduKRV5+J7StRkfoY
-hBDfCkyRbFphFmeJ+0A1fPxECLLkrXR2izyctzMAGZH2ceScAlECO1r3aEQcyx9n7/YlMc24ZF0I
-++9b72/wv6J6POICeIj6MgschmHIUz4Rw4H5IdBLo62N0jBBzv2T9ASRAl7Yryl6tHUN5X5228Tt
-3LJe5Gtb1cm22DdXBM3xnD7Kd59ls9j/tz5I+yEsLIK7zQk7hBt87a31T55CTVgMQZ4lTavG5vdz
-vEb7YC0jFAT8SmYmtSOr+4aZJRIwVjXlI04Mfr3jcbqDnzfv0VgVp5UlzQK4aApofbSsSDeXsDR+
-t30gEkeMNUvUqd6PaxYxggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9i
-YWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIzIFNNSU1FIENBIDIwMjAC
-EAGy8e6bI55p/yISlXXGSrAwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIH6FAl/o
-G2xTs+JUWQR85UDBxTjresTY9hsN2+MB9kWqMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJ
-KoZIhvcNAQkFMQ8XDTIzMTAxNjIxNDgzNlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASow
-CwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZI
-hvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDS4jCrF3CHWhODe649p60aQK6V
-ElOaGWCQtGndJeL8N8Ea/6RvIRPK7oRoTcrv3dY45jLXpIfZqDo9t9vTxV1o0BxdIVAWA1iCT9fV
-DQDlFetPoCnRDCjldW3gs5F88v74y/2Qzr+TvD6WU+3u1GCom+hYTvPH/C53PYojt1tM/PNbH+is
-P9U3NkMKJsD0IWfruS+8+UmHr/IvvUi9YnjY7wpDZlATgG/vzID8uI026Z5BkHPCjYBKcv2Uh11w
-yZOgqKIRteTKeMWP6kUe+vCpsS7G4j2DhSDV/YlbbgLoCuenx2s01J87nwyzy0583iPw2xKT/fyp
-ocHaNoAkeQPw
---0000000000004e42ba0607dc5ed5--
+> 
+> Similar pattern is exhibited by `gcc` which converts it's input command
+> line into a single environment variable (https://gcc.gnu.org/PR111527):
+> 
+>   $ big_100k_var=$(printf "%0*d" 100000 0)
+> 
+>   # this works: 200KB of options for `printf` external command
+>   $ $(which printf) "%s %s" $big_100k_var $big_100k_var >/dev/null; echo $?
+>   0
+> 
+>   # this fails: 200KB of options for `gcc`, fails in `cc1`
+>   $ touch a.c; gcc -c a.c -DA=$big_100k_var -DB=$big_100k_var
+>   gcc: fatal error: cannot execute 'cc1': execv: Argument list too long
+>   compilation terminated.
+> 
+> I would say this 128KB limitation is arbitrary.
+> The change raises the limit of `MAX_ARG_STRLEN` from 32 pakes (128K
+> n `x86_64`) to the maximum limit of stack allowed by Linux today.
+> 
+> It has a minor chance of overflowing userspace programs that use
+> `MAX_ARG_STRLEN` to allocate the strings on stack. It should not be a
+> big problem as such programs are already are at risk of overflowing
+> stack.
+> 
+> Tested as:
+>     $ V=$(printf "%*d" 1000000 0) ls
+> 
+> Before the change it failed with `ls: Argument list too long`. After the
+> change `ls` executes as expected.
+> 
+> WDYT of abandoning the limit and allow user to fill entire environment
+> with a single command or a single variable?
+
+Changing this value shouldn't risk any vma collisions, since exec is
+still checking the utilization before starting the actual process
+replacement steps (see bprm->argmin).
+
+It does seem pathological to set this to the full 6MB, though, since
+that would _immediately_ get rejected by execve() with an -E2BIG, but
+ultimately, there isn't really any specific limit to the length of
+individual strings as long as the entire space is less than
+bprm->argmin.
+
+Perhaps MAX_ARG_STRLEN should be removed entirely and the kernel can
+just use bprm->argmin? I haven't really looked at that to see if it's
+sane, though. It just feels like MAX_ARG_STRLEN isn't a meaningful
+limit.
+
+-Kees
+
+> 
+> CC: Andrew Morton <akpm@linux-foundation.org>
+> CC: Eric Biederman <ebiederm@xmission.com>
+> CC: Kees Cook <keescook@chromium.org>
+> CC: linux-mm@kvack.org
+> CC: linux-kernel@vger.kernel.org
+> Signed-off-by: Sergei Trofimovich <slyich@gmail.com>
+> ---
+>  include/uapi/linux/binfmts.h | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/uapi/linux/binfmts.h b/include/uapi/linux/binfmts.h
+> index c6f9450efc12..4e828515a22e 100644
+> --- a/include/uapi/linux/binfmts.h
+> +++ b/include/uapi/linux/binfmts.h
+> @@ -8,11 +8,11 @@ struct pt_regs;
+>  
+>  /*
+>   * These are the maximum length and maximum number of strings passed to the
+> - * execve() system call.  MAX_ARG_STRLEN is essentially random but serves to
+> - * prevent the kernel from being unduly impacted by misaddressed pointers.
+> + * execve() system call.  MAX_ARG_STRLEN is as large as Linux allows new
+> + * stack to grow.  Currently it's `_STK_LIM / 4 * 3 = 6MB` (see fs/exec.c).
+>   * MAX_ARG_STRINGS is chosen to fit in a signed 32-bit integer.
+>   */
+> -#define MAX_ARG_STRLEN (PAGE_SIZE * 32)
+> +#define MAX_ARG_STRLEN (6 * 1024 * 1024)
+>  #define MAX_ARG_STRINGS 0x7FFFFFFF
+>  
+>  /* sizeof(linux_binprm->buf) */
+> -- 
+> 2.42.0
+> 
+
+-- 
+Kees Cook
