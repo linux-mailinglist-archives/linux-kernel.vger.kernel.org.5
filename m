@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9014A7CA8F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 15:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2019C7CA8F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 15:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233814AbjJPNKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 09:10:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40150 "EHLO
+        id S233699AbjJPNKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 09:10:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233545AbjJPNJz (ORCPT
+        with ESMTP id S233657AbjJPNJx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 09:09:55 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D7B3115;
-        Mon, 16 Oct 2023 06:09:52 -0700 (PDT)
+        Mon, 16 Oct 2023 09:09:53 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F56F5;
+        Mon, 16 Oct 2023 06:09:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697461792; x=1728997792;
+  t=1697461791; x=1728997791;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=0s6SJFl6EojiT5uelJ/E8mqMVnAxTbxFEfT6I0A+Yko=;
-  b=XIQViUqaUkxTSJtkmExSMurd8hYWpg470aQbp4W7QfjD9UaDYG1EFdM9
-   erhPOvRO0zxFjoXJXPJLpiWsQ9G6TJJCN+oaKVvpZLkleYC8KcDTFM15p
-   r5C9Q1yDF4kWMJSrqRJtXYv2vkmK+PVMFTlwx9QxehRL9OEtMCa+wA4ku
-   IRJFFBNQYAzgvzhSFbhWF7tB2KJfbbKteUp0hWCOGDAoOGEz2D4Sgl4Wq
-   9WjcfX2/hPnDzjjDxyzek02vQTUag9xt/lqFkLwzUtln2bfMcJJ7fomR+
-   udcwlwl1MBVx0Q02N4E7cwetWHDxf+nABwCzNmggt22IljJdgIAOM/RSn
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="416590161"
+  bh=m/NysSCadA0TJULbiXS8GGWTrMOochBOaLvqBFQytEY=;
+  b=dC5wpAJm7y7MTeUb3vuR/ZipZ93XxyoXmL3P9mVZK7jXi/a4pYq+If3J
+   KsAnOWNpgkn48dwxO81XCQdBrmvbI5yun99QVyOvPGQm7+ZfIzsUcBVeL
+   3aolT2THksFfzKdXudti1N0MRnYNm+mK3rh6G3MmPtZ17ySei9kU+EgJs
+   GZ170kqBGY8TfG9sLy7wZSVhWZ8/oYoQhQrq4t32Yzz8Eiuwj85mBKwx9
+   hPw+9Vqq7DS58N7zFpOeZ+oQ7aniRUzc9Hxg26+mw0GTlsuWg83zm3DFw
+   1pNuqg+0+XJActXXs2cdSTyR767pW1NHDnNa8IkzUWuXFiBQlueng5Gxc
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="4133305"
 X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="416590161"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 06:09:47 -0700
+   d="scan'208";a="4133305"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 06:09:49 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="759385518"
+X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="1087067145"
 X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="759385518"
+   d="scan'208";a="1087067145"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 16 Oct 2023 06:09:46 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 16 Oct 2023 06:09:44 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 401CDA4A; Mon, 16 Oct 2023 16:09:42 +0300 (EEST)
+        id 4DCC2A59; Mon, 16 Oct 2023 16:09:42 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Mathias Nyman <mathias.nyman@linux.intel.com>,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Mathias Nyman <mathias.nyman@intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH v2 07/10] xhci: dbc: Replace custom return value with proper Linux error code
-Date:   Mon, 16 Oct 2023 16:09:31 +0300
-Message-Id: <20231016130934.1158504-8-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 08/10] xhci: dbc: Use sizeof_field() where it makes sense
+Date:   Mon, 16 Oct 2023 16:09:32 +0300
+Message-Id: <20231016130934.1158504-9-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 In-Reply-To: <20231016130934.1158504-1-andriy.shevchenko@linux.intel.com>
 References: <20231016130934.1158504-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,7 +64,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the custom return value with proper Linux error code.
+Instead of doing custom calculations, use sizeof_field() macro.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
@@ -73,18 +72,18 @@ Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/usb/host/xhci-dbgcap.c b/drivers/usb/host/xhci-dbgcap.c
-index c211c69e8041..779a564ad698 100644
+index 779a564ad698..0c9fd61e9c5b 100644
 --- a/drivers/usb/host/xhci-dbgcap.c
 +++ b/drivers/usb/host/xhci-dbgcap.c
-@@ -593,7 +593,7 @@ static int xhci_do_dbc_start(struct xhci_dbc *dbc)
- static int xhci_do_dbc_stop(struct xhci_dbc *dbc)
- {
- 	if (dbc->state == DS_DISABLED)
--		return -1;
-+		return -EINVAL;
+@@ -374,7 +374,7 @@ static void xhci_dbc_eps_init(struct xhci_dbc *dbc)
  
- 	writel(0, &dbc->regs->control);
- 	dbc->state = DS_DISABLED;
+ static void xhci_dbc_eps_exit(struct xhci_dbc *dbc)
+ {
+-	memset(dbc->eps, 0, sizeof(struct dbc_ep) * ARRAY_SIZE(dbc->eps));
++	memset(dbc->eps, 0, sizeof_field(struct xhci_dbc, eps));
+ }
+ 
+ static int dbc_erst_alloc(struct device *dev, struct xhci_ring *evt_ring,
 -- 
 2.40.0.1.gaa8946217a0b
 
