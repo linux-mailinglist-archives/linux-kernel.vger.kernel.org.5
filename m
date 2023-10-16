@@ -2,57 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 945577CA7DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBA3C7CA7E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 14:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231676AbjJPMSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 08:18:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50226 "EHLO
+        id S232016AbjJPMTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 08:19:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbjJPMSq (ORCPT
+        with ESMTP id S229621AbjJPMTP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 08:18:46 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82D618E
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 05:18:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E5B1C433C8;
-        Mon, 16 Oct 2023 12:18:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697458724;
-        bh=z2XfNOibBFSJtXEMDbx7XhCPr9P+qBhf7ceO2ycDk9U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pmh9r6GppRfqE5/WV1pdO64cwQR5wOAnCH5o6733A1zKXIO8z2l+IqZYvRy33Yz11
-         frmNb3pt4hRipI7OpNE50xQzgHk87PQcqMWZ/3+oYfE8abxZxr9Amor6qPVbzLwPHo
-         rQ7uLGwN7H9SU3jzl7FaiwjjbKdwyW+LwUV0Et52UHEE+TdB3rSCqK6UM7pyeFaZ/3
-         8ua9bODJSl2gVLZW6FP52DoAnf1YnJ1Io0I9N4FtY+8TT5mP4LrElhfBSE7RlDo+tP
-         DeqZn7HYJQmagSgjvecWPJ8ZqfT/XMmMgHdPOculEjguitUsFJ1vt0o6oQK6cZVBSR
-         Bi5AUlWMNYG1w==
-Date:   Mon, 16 Oct 2023 21:18:37 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     "wuqiang.matt" <wuqiang.matt@bytedance.com>
-Cc:     linux-trace-kernel@vger.kernel.org, davem@davemloft.net,
-        anil.s.keshavamurthy@intel.com, naveen.n.rao@linux.ibm.com,
-        rostedt@goodmis.org, peterz@infradead.org,
-        akpm@linux-foundation.org, sander@svanheule.net,
-        ebiggers@google.com, dan.j.williams@intel.com, jpoimboe@kernel.org,
-        linux-kernel@vger.kernel.org, lkp@intel.com, mattwu@163.com
-Subject: Re: [PATCH v10 1/5] lib: objpool added: ring-array based lockless
- MPMC
-Message-Id: <20231016211837.b6d425d8ed760bb3306910ae@kernel.org>
-In-Reply-To: <7758687f-06c1-d9b2-077a-34e79925a339@bytedance.com>
-References: <20231015053251.707442-1-wuqiang.matt@bytedance.com>
-        <20231015053251.707442-2-wuqiang.matt@bytedance.com>
-        <20231016004356.b5f3f815cb8d7c0994934332@kernel.org>
-        <1516f7d1-e11b-3244-76b9-e6ddafc29a32@bytedance.com>
-        <20231016082659.6ca94a5dff368783698753f9@kernel.org>
-        <7758687f-06c1-d9b2-077a-34e79925a339@bytedance.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Mon, 16 Oct 2023 08:19:15 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C92A2E1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 05:19:13 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-50308217223so5138059e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 05:19:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697458752; x=1698063552; darn=vger.kernel.org;
+        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6EhyDqUQjEdCPm8wLm8OFPGsaItsVSXANH1gNBCUPXs=;
+        b=iEYNvzXRySHcjCigoGPHuX5QDsIS6e/u5tR+HHgMCBhbvbr8GPOHTeBqwzly043e+Z
+         YF7uk+GjTK1W2ifNDBNXGsWxt+3RStf2imj5hmmplh6+pTnfuNi03C9Jwc6K3zdkCQlD
+         6S73anQkNMMa476baYQ6gTFNaEvkXpGXDZVupedXFrvzBLx0upGsSitJaC0LavKrxRfi
+         uBze5xuXWjA+87LwItV/T/t7e02scAJHw3JHT6H7yrT4MbF3E/WsvlE0q6wYXaLXXMS5
+         iJ+pUfe5KOlQsXq/UEuu/kWwBQzMx5PbdwIQxB5srFEy++S/YGKDckCbDRHOM3PK3gsA
+         6Gqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697458752; x=1698063552;
+        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6EhyDqUQjEdCPm8wLm8OFPGsaItsVSXANH1gNBCUPXs=;
+        b=KkkrBGAmK4XuucLxpNHWHSElnxSWl7TvXY1919BkNclDYDU7JoJm8W4j/eI8kmDQSv
+         ejPuTX9BEv+0aHrsqGdi+mzcSsqyox0SD1FbqLTykvTeerqDpnvnMTOJutTza9WABtk4
+         Oc3JUgRn4BjhzQUFmbJWWBiPADo71AZiQt5doVh2pKE6b4LnZBdwDAF0ZYN3mxWRD5Xy
+         ijSCbf5Scc+ZBeKHXnwdad77Xm3L2Hf7m/NhnbeMfg7TAuneqxf/zTobDf+vX4nzCTs8
+         EIhUb/mRsUMI5elKzLRgGQj/DrTdEF84srlMAniaC8pYBJS6ys8qoRJUfoGB7pUIzsHA
+         TuIA==
+X-Gm-Message-State: AOJu0YyoUPXrVYS5GE/YJbbmUT64BWCXINDWASOlepiCc1KeR//lPnEC
+        qAaJiIZDwsmLcqYqj7RCaC8=
+X-Google-Smtp-Source: AGHT+IFEsLXStxwkdwRXiQB2HK7VTB81PgSSMx0CUVuOSYNVWvv3i/9WVm8Y1nugkxm6d3lmo6GTdA==
+X-Received: by 2002:a05:6512:132a:b0:503:2877:67e3 with SMTP id x42-20020a056512132a00b00503287767e3mr32451180lfu.6.1697458751652;
+        Mon, 16 Oct 2023 05:19:11 -0700 (PDT)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id x9-20020a056512078900b00507a0098424sm1175692lfr.109.2023.10.16.05.19.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 05:19:10 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 15:18:56 +0300
+From:   Pekka Paalanen <ppaalanen@gmail.com>
+To:     =?UTF-8?B?QW5kcsOp?= Almeida <andrealmeid@igalia.com>
+Cc:     Michel =?UTF-8?B?RMOkbnplcg==?= <michel.daenzer@mailbox.org>,
+        xaver.hugl@gmail.com, pierre-eric.pelloux-prayer@amd.com,
+        Daniel Vetter <daniel@ffwll.ch>,
+        'Marek =?UTF-8?B?T2zFocOhayc=?= <maraeo@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Daniel Stone <daniel@fooishbar.org>,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, hwentlan@amd.com,
+        Rob Clark <robdclark@gmail.com>, ville.syrjala@linux.intel.com,
+        kernel-dev@igalia.com, alexander.deucher@amd.com,
+        Dave Airlie <airlied@gmail.com>, christian.koenig@amd.com,
+        joshua@froggi.es, wayland-devel@lists.freedesktop.org
+Subject: Re: [PATCH v6 6/6] drm/doc: Define KMS atomic state set
+Message-ID: <20231016151856.74af9305@eldfell>
+In-Reply-To: <b48bd1fc-fcb0-481b-8413-9210d44d709b@igalia.com>
+References: <20230815185710.159779-1-andrealmeid@igalia.com>
+        <20230815185710.159779-7-andrealmeid@igalia.com>
+        <1b23576d-1649-ff5c-6273-b54729ea46d8@mailbox.org>
+        <b48bd1fc-fcb0-481b-8413-9210d44d709b@igalia.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/69O8rYFAi5QP/ITj8UsboXe";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,230 +84,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wuqiang,
+--Sig_/69O8rYFAi5QP/ITj8UsboXe
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 16 Oct 2023 10:45:30 +0800
-"wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
+On Mon, 16 Oct 2023 12:52:32 +0200
+Andr=C3=A9 Almeida <andrealmeid@igalia.com> wrote:
 
-> On 2023/10/16 07:26, Masami Hiramatsu (Google) wrote:
-> > On Mon, 16 Oct 2023 00:06:11 +0800
-> > "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
-> > 
-> >> On 2023/10/15 23:43, Masami Hiramatsu (Google) wrote:
-> >>> On Sun, 15 Oct 2023 13:32:47 +0800
-> >>> "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
-> >>>
-> >>>> objpool is a scalable implementation of high performance queue for
-> >>>> object allocation and reclamation, such as kretprobe instances.
-> >>>>
-> >>>> With leveraging percpu ring-array to mitigate hot spots of memory
-> >>>> contention, it delivers near-linear scalability for high parallel
-> >>>> scenarios. The objpool is best suited for the following cases:
-> >>>> 1) Memory allocation or reclamation are prohibited or too expensive
-> >>>> 2) Consumers are of different priorities, such as irqs and threads
-> >>>>
-> >>>> Limitations:
-> >>>> 1) Maximum objects (capacity) is fixed after objpool creation
-> >>>> 2) All pre-allocated objects are managed in percpu ring array,
-> >>>>      which consumes more memory than linked lists
-> >>>>
-> >>>
-> >>> Thanks for updating! This looks good to me except 2 points.
-> >>>
-> >>> [...]
-> >>>> +
-> >>>> +/* initialize object pool and pre-allocate objects */
-> >>>> +int objpool_init(struct objpool_head *pool, int nr_objs, int object_size,
-> >>>> +		gfp_t gfp, void *context, objpool_init_obj_cb objinit,
-> >>>> +		objpool_fini_cb release)
-> >>>> +{
-> >>>> +	int rc, capacity, slot_size;
-> >>>> +
-> >>>> +	/* check input parameters */
-> >>>> +	if (nr_objs <= 0 || nr_objs > OBJPOOL_NR_OBJECT_MAX ||
-> >>>> +	    object_size <= 0 || object_size > OBJPOOL_OBJECT_SIZE_MAX)
-> >>>> +		return -EINVAL;
-> >>>> +
-> >>>> +	/* align up to unsigned long size */
-> >>>> +	object_size = ALIGN(object_size, sizeof(long));
-> >>>> +
-> >>>> +	/* calculate capacity of percpu objpool_slot */
-> >>>> +	capacity = roundup_pow_of_two(nr_objs);
-> >>>
-> >>> This must be 'roundup_pow_of_two(nr_objs + 1)' because if nr_objs is power
-> >>> of 2 and all objects are pushed on the same slot, tail == head. This
-> >>> means empty and full is the same.
+> Hi Michel,
+>=20
+> On 8/17/23 12:37, Michel D=C3=A4nzer wrote:
+> > On 8/15/23 20:57, Andr=C3=A9 Almeida wrote: =20
+> >> From: Pekka Paalanen <pekka.paalanen@collabora.com>
 > >>
-> >> That won't happen. Would tail and head wrap only when >= 2^32. When all
-> >> objects are pushed to the same slot, tail will be (head + capacity).
-> > 
-> > Ah, indeed. OK.
-> > 
+> >> Specify how the atomic state is maintained between userspace and
+> >> kernel, plus the special case for async flips.
 > >>
-> >>>
-> >>>> +	if (!capacity)
-> >>>> +		return -EINVAL;
-> >>>> +
-> >>>> +	/* initialize objpool pool */
-> >>>> +	memset(pool, 0, sizeof(struct objpool_head));
-> >>>> +	pool->nr_cpus = nr_cpu_ids;
-> >>>> +	pool->obj_size = object_size;
-> >>>> +	pool->capacity = capacity;
-> >>>> +	pool->gfp = gfp & ~__GFP_ZERO;
-> >>>> +	pool->context = context;
-> >>>> +	pool->release = release;
-> >>>> +	slot_size = pool->nr_cpus * sizeof(struct objpool_slot);
-> >>>> +	pool->cpu_slots = kzalloc(slot_size, pool->gfp);
-> >>>> +	if (!pool->cpu_slots)
-> >>>> +		return -ENOMEM;
-> >>>> +
-> >>>> +	/* initialize per-cpu slots */
-> >>>> +	rc = objpool_init_percpu_slots(pool, nr_objs, context, objinit);
-> >>>> +	if (rc)
-> >>>> +		objpool_fini_percpu_slots(pool);
-> >>>> +	else
-> >>>> +		refcount_set(&pool->ref, pool->nr_objs + 1);
-> >>>> +
-> >>>> +	return rc;
-> >>>> +}
-> >>>> +EXPORT_SYMBOL_GPL(objpool_init);
-> >>>> +
-> >>>
-> >>> [...]
-> >>>
-> >>>> +
-> >>>> +/* drop unused objects and defref objpool for releasing */
-> >>>> +void objpool_fini(struct objpool_head *pool)
-> >>>> +{
-> >>>> +	void *obj;
-> >>>> +
-> >>>> +	do {
-> >>>> +		/* grab object from objpool and drop it */
-> >>>> +		obj = objpool_pop(pool);
-> >>>> +
-> >>>> +		/*
-> >>>> +		 * drop reference of objpool anyway even if
-> >>>> +		 * the obj is NULL, since one extra ref upon
-> >>>> +		 * objpool was already grabbed during pool
-> >>>> +		 * initialization in objpool_init()
-> >>>> +		 */
-> >>>> +		if (refcount_dec_and_test(&pool->ref))
-> >>>> +			objpool_free(pool);
-> >>>
-> >>> Nit: you can call objpool_drop() instead of repeating the same thing here.
-> >>
-> >> objpool_drop won't deref objpool if given obj is NULL. But here we need
-> >> drop objpool anyway even if obj is NULL.
-> > 
-> > I guess you decrement for the 'objpool' itself if obj=NULL, but I think
-> > it is a bit hacky (so you added the comment).
-> > e.g. rethook is doing something like below.
-> > 
-> > ---
-> > /* extra count for this pool itself */
-> > count = 1;
-> > /* make the pool empty */
-> > while (objpool_pop(pool))
-> > 	count++;
-> > 
-> > if (refcount_sub_and_test(count, &pool->ref))
-> > 	objpool_free(pool);
-> > ---
-> 
-> Right, that's reasonable. Better one single atomic operation than multiple.
+> >> Signed-off-by: Pekka Paalanen <pekka.paalanen@collabora.com>
+> >> Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@igalia.com> =20
+> > [...]
+> > =20
+> >> +An atomic commit with the flag DRM_MODE_PAGE_FLIP_ASYNC is allowed to
+> >> +effectively change only the FB_ID property on any planes. No-operatio=
+n changes
+> >> +are ignored as always. [...] =20
+> > During the hackfest in Brno, it was mentioned that a commit which re-se=
+ts the same FB_ID could actually have an effect with VRR: It could trigger =
+scanout of the next frame before vertical blank has reached its maximum dur=
+ation. Some kind of mechanism is required for this in order to allow user s=
+pace to perform low frame rate compensation.
+> > =20
+> Xaver tested this hypothesis in a flipping the same fb in a VRR monitor=20
+> and it worked as expected, so this shouldn't be a concern.
 
-I found another comment issue about a small window which this may not work.
-This is not a real issue for this series because this doesn't happen on
-rethook/kretprobe, but if you apply this to other use-case, it must be
-cared.
+Right, so it must have some effect. It cannot be simply ignored like in
+the proposed doc wording. Do we special-case re-setting the same FB_ID
+as "not a no-op" or "not ignored" or some other way?
 
-Since we use reserve-commit on 'push' operation, this 'pop' loop will miss
-an object which is under 'push' op. I mean
-
-CPU0                    CPU1
-
-objpool_fini() {
-do {
-                         objpool_push() {
-                            update slot->tail; // reserve
-  obj = objpool_pop();   
-                            update slot->last;  // commit
-} while (obj);
-
-In this case, the refcount can not be 0 and we can not release objpool.
-To avoid this, we make sure all ongoing 'push()' must be finished.
-
-Actually in the rethook/kretprobe, it already sync the rcu so this doesn't
-happen. So you should document it the user must use RCU sync after stop
-using the objpool, then call objpool_fini().
-
-E.g.
-
-start_using() {
-objpool_init();
-active = true;
-}
-
-obj_alloc() {
-rcu_read_lock();
-if (active)
-	obj = objpool_pop();
-else
-	obj = NULL;
-rcu_read_unlock();
-}
-
-/* use obj for something, it is OK to change the context */
-
-obj_return() {
-rcu_read_lock();
-if (active)
-	objpool_push(obj);
-else
-	objpool_drop(obj);
-rcu_read_unlock();
-}
-
-/* kretprobe style */
-stop_using() {
-active = false;
-synchronize_rcu();
-objpool_fini();
-}
-
-/* rethook style */
-stop_using() {
-active = false;
-call_rcu(objpool_fini);
-}
-
-Hmm, yeah, if we can add this 'active' flag to objpool, it is good. But
-since kretprobe has different design of the interface, it is hard.
-Anyway, can you add a comment that user must ensure that any 'push' including
-ongoing one does not happen while 'fini'? objpool does not care that so user
-must take care of that. For example using rcu_read_lock() for the 'push/pop'
-operation and rcu-sync before 'fini' operation.
 
 Thanks,
+pq
 
-> 
-> >>
-> >>> Thank you,
-> >>>
-> >>>> +	} while (obj);
-> >>>> +}
-> >>>> +EXPORT_SYMBOL_GPL(objpool_fini);
-> >>>> -- 
-> >>>> 2.40.1
-> >>>>
-> >>
-> >> Thanks for your time
-> >>
-> >>
-> > 
-> > 
-> 
+--Sig_/69O8rYFAi5QP/ITj8UsboXe
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmUtKjAACgkQI1/ltBGq
+qqf20RAAnw0oZXemzgfErYkfbspei2AiW5NBarJedqPGc6nsl6TnUV3oNRGogGLL
+vJpsyTvfxmYgb79fTvuB5fc0nJJecuwtQ17W6x9VcwJkZOpdRi2Uez2AO9dvNpSW
+VKVVuyujVmyCk+UofjyHa+zUJC31YakmhiF6LFPB0IyYdo/+o6svRpn2lmHNXRU/
+v4KFGi8S1wsg3iokMemnpJZYvdc+mSH0W9WJ0kaesv3Wn05xnBpmfySR9DZzUq9t
+qUoGipgOnfQ/LLfkvLqece8bxP6ENtFNERXfE6YpWz0LTIqsW+TCV/QfmcgrD6iU
+2R/+LH8GzZ2pjovxbqXsps5QKTB+wkSydkDQuwt0eR4Rx7k1NAzaKWP2Xg934wDB
+BIOzsHzjB8dchzjf3+8/ezSuocAxWtGRV6eaJ8sFLYFh6OB+bi6K00v7eg4J5scK
+aSjf5fmeP2JNWbfEqLlK1tWYAsT37g08MUEIewGXBceG3C3vaNgwLjgKFbL/KNff
+uLL0zgusaKtDxxKsDCti6bVJb+ntmpnp92PGh2lPp33DplZ32/5/kd7fwe9Sh21K
+iPFaqtyBR4u1BadTVhekLmXNY0YIpevjdNl+B+EBRvM6HaxHRdrnakLgg6IWDEsY
+8oEZ3kIQ1cJxtNVktLqy6X8T9fZL4U7emXJKvYdJMiubbMq5MFs=
+=ZKmt
+-----END PGP SIGNATURE-----
+
+--Sig_/69O8rYFAi5QP/ITj8UsboXe--
