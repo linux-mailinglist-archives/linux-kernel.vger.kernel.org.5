@@ -2,85 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 727987CB1BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 19:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 212197CB185
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 19:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232844AbjJPR6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 13:58:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36124 "EHLO
+        id S233580AbjJPRqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 13:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232198AbjJPR6x (ORCPT
+        with ESMTP id S232992AbjJPRqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 13:58:53 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D2BE83
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 10:58:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52B8DC433C7;
-        Mon, 16 Oct 2023 17:58:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697479131;
-        bh=AyK2SXcqdRnOrh1k76CSD8fTzBnhoJScCp2j+ldNjaY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=w98KksX3ig/2ARv3Elxv4giqqgt/EaFboKZhRg/4fbwkl+Sf3iqws6nUr4eZvlZG5
-         JioaV3HQppmUtn/V7vxxETIxkjur9jSBYySvG6BdzgKPtB9QQ1ivyymKyl8VDUohV/
-         RHOqVCuNC0NLcHksup7XHzjfZ9al2UoQ/7HorQgw=
-Date:   Mon, 16 Oct 2023 19:42:45 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Hongren Zheng <i@zenithal.me>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sfr@canb.auug.org.au
-Subject: Re: [PATCH v2 -next] usb/usbip: fix wrong data added to platform
- device
-Message-ID: <2023101623-amaretto-sevenfold-6b5e@gregkh>
-References: <ZSpHPCaQ5DDA9Ysl@Sun>
+        Mon, 16 Oct 2023 13:46:36 -0400
+Received: from smtprelay04.ispgateway.de (smtprelay04.ispgateway.de [80.67.31.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D2B69F
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 10:46:33 -0700 (PDT)
+Received: from [92.206.139.21] (helo=note-book.lan)
+        by smtprelay04.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96.1)
+        (envelope-from <git@apitzsch.eu>)
+        id 1qsRfi-0005Km-0e;
+        Mon, 16 Oct 2023 19:46:30 +0200
+From:   =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>
+Date:   Mon, 16 Oct 2023 19:45:53 +0200
+Subject: [PATCH] crypto: qcom-rng - Add missing dependency on hw_random
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZSpHPCaQ5DDA9Ysl@Sun>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20231016-qcom_rng-v1-1-1a7d7856651e@apitzsch.eu>
+X-B4-Tracking: v=1; b=H4sIANB2LWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDA0Mz3cLk/Nz4orx03VQTs2SLRAszI4ukJCWg8oKi1LTMCrBR0bG1tQB
+ CBxdjWgAAAA==
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     linux-crypto@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>
+X-Mailer: b4 0.12.3
+X-Df-Sender: YW5kcmVAYXBpdHpzY2guZXU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 14, 2023 at 03:46:04PM +0800, Hongren Zheng wrote:
-> .data of platform_device_info will be copied into .platform_data of
-> struct device via platform_device_add_data.
+This should fix the undefined reference:
 
-That is crazy.
+> /usr/bin/aarch64-alpine-linux-musl-ld: Unexpected GOT/PLT entries detected!
+> /usr/bin/aarch64-alpine-linux-musl-ld: Unexpected run-time procedure linkages detected!
+> /usr/bin/aarch64-alpine-linux-musl-ld: drivers/crypto/qcom-rng.o: in function `qcom_rng_probe':
+> qcom-rng.c:(.text+0x130): undefined reference to `devm_hwrng_register'
 
-> However, vhcis[i] contains a spinlock, is dynamically allocated and
-> used by other code, so it is not meant to be copied. The workaround
-> was to use void *vhci as an agent, but it was removed in the commit
-> suggested below.
+Fixes: f29cd5bb64c2 ("crypto: qcom-rng - Add hw_random interface support")
+Signed-off-by: André Apitzsch <git@apitzsch.eu>
+---
+ drivers/crypto/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Again, crazy, I'm amazed it works at all.
+diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
+index c761952f0dc6..79c3bb9c99c3 100644
+--- a/drivers/crypto/Kconfig
++++ b/drivers/crypto/Kconfig
+@@ -601,6 +601,7 @@ config CRYPTO_DEV_QCE_SW_MAX_LEN
+ config CRYPTO_DEV_QCOM_RNG
+ 	tristate "Qualcomm Random Number Generator Driver"
+ 	depends on ARCH_QCOM || COMPILE_TEST
++	depends on HW_RANDOM
+ 	select CRYPTO_RNG
+ 	help
+ 	  This driver provides support for the Random Number
 
-> This patch adds back the workaround and changes the way of using
-> platform_data accordingly.
-> 
-> Reported-by: syzbot+e0dbc33630a092ccf033@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/r/00000000000029242706077f3145@google.com/
-> Reported-by: syzbot+6867a9777f4b8dc4e256@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/r/0000000000007634c1060793197c@google.com/
-> Fixes: b8aaf639b403 ("usbip: Use platform_device_register_full()")
-> Tested-by: syzbot+6867a9777f4b8dc4e256@syzkaller.appspotmail.com
-> Link: https://lore.kernel.org/r/0000000000007ac87d0607979b6b@google.com/
-> Signed-off-by: Hongren Zheng <i@zenithal.me>
-> ---
->  drivers/usb/usbip/vhci_hcd.c | 15 ++++++++-------
->  1 file changed, 8 insertions(+), 7 deletions(-)
+---
+base-commit: 4d0515b235dec789578d135a5db586b25c5870cb
+change-id: 20231016-qcom_rng-e46c8a8628bb
 
-I'll take this now, as it fixes a reported issue, but really, the root
-problem should be fixed instead.  This is not how to treat platform data
-at all.
+Best regards,
+-- 
+André Apitzsch <git@apitzsch.eu>
 
-thanks,
-
-greg k-h
