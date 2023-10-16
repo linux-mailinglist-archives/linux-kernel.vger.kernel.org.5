@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C46A37CA4E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:12:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3227F7CA4E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Oct 2023 12:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232327AbjJPKMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 06:12:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40060 "EHLO
+        id S232225AbjJPKM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 06:12:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231571AbjJPKMN (ORCPT
+        with ESMTP id S232447AbjJPKMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 06:12:13 -0400
+        Mon, 16 Oct 2023 06:12:24 -0400
 Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE0F2DC
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 03:12:11 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d84c24a810dso5092113276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 03:12:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97504107
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 03:12:21 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d9151fc5903so4869636276.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 03:12:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697451131; x=1698055931; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1697451141; x=1698055941; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=teBlxViKMUipO1j0WIhcACG5H8FSzPYvKzxeJQgHOtk=;
-        b=iUyyFxCeD2Yn94KiBZGtDESmK/7djByRdPq/CGkj5JAN5tZDH0PjqdGNkEFo+rc2sj
-         KQZo4enZOuIQIOq3wMYojBMcOt88GDRhhkqXrIDwZwsyetA3K5fZvJgGrwy7A/TyMQ9H
-         ZIpp4aGNiCKEekawPxZul+7T2JKOc+nXdPVGEa2X3SQQG2ib3kU/trFKtjl2xqUp2UUu
-         SEo0fQbiAmdg/NaL6HKHwy+sDthrk1ZYsXPOmpROtlZ/yiwjZ03fcVx7zaduyDxYbl/A
-         y2yhQrmZVvWJDSEZb0ueyYjUOVJMBmd+oq2slwETWcqoBObYqB3B9nUkRjdLaoSpzmWo
-         tQAg==
+        bh=uv5Uae5UmSQxVEsmwl5TN/YrBxW9LPgFAY62qTwF/dg=;
+        b=qXfZpktt5l+MkiCWYsa/eb3oL8Huv7dep4wh+B+gAWfuScqHzDIKWWu4yhtr/4nO47
+         9c1/WuI3aRwlA516WVn62dEwNUrNzWn6I6yAV0pIHg47q6wQlNJRCGZSWd4qpXlqn++y
+         hzezQxgvvEguYYTn3u56eEULA2P9ubfy+kWyZ8zTLRU8pvf6An66KFVQckiMvNwo5OK2
+         fEShV01lQdvTjWKtdxVxZbw0rkIXbH90WoMAOHphdWPIAW8T9EtZRUK27qc6klCk6DEe
+         uXyLbX2GK8hxX8Ab215RKf6LtRx1zhhV8iXsfm2WYXb7f+FzwrkMN1WvQUK80VXrdek5
+         bCRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697451131; x=1698055931;
+        d=1e100.net; s=20230601; t=1697451141; x=1698055941;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=teBlxViKMUipO1j0WIhcACG5H8FSzPYvKzxeJQgHOtk=;
-        b=hgN83TnfKYCpNvL9zLiIKaV84G1EY++wRSOU+9063iMaevVtKicQiHaiTDuQGcOtPY
-         a4tuxYj5DJMAGPFxmRL1WOvNdyInkmOHZnRID5XKkqQIxn4iXFqRLnDfq40/L+8aqjoh
-         lZEqWyt5KbDj57U4bqL83aAYVzC4a22W37Yu1igmDDWsetRpwg/Hy6mOK4CSwgwnLsI8
-         5BJ/Zj84uOvNYDdht0KVx34Ii5RliTCW2Vmh7Ysa53i0Q7KJB63vT0obYuFyoELuhYyA
-         Og/MexhhvhKLxAava0Q6e0WcsVNC7thYc4PiIvL1/bjggbAw6SbNfHAp8ZfVq9HWhZbE
-         pjkA==
-X-Gm-Message-State: AOJu0YxKwrU05G/XWFvil9HYurOit3Sw2b7XGzMGmewVhsuP6FCTm9on
-        obXrXD3H8yE8YalpXEg27lZsSGl2GC89yRRIgR6UzQ==
-X-Google-Smtp-Source: AGHT+IFZtmtfATtcPgZHrM0i1PxChrWNenp2V+Cb6GprsyDQcnIS3TUWRbtTdrCfsvPQ+R/2xX7TjgXdSEOlC46VNt4=
-X-Received: by 2002:a25:401:0:b0:d9a:634e:5ad3 with SMTP id
- 1-20020a250401000000b00d9a634e5ad3mr14561897ybe.13.1697451130976; Mon, 16 Oct
- 2023 03:12:10 -0700 (PDT)
+        bh=uv5Uae5UmSQxVEsmwl5TN/YrBxW9LPgFAY62qTwF/dg=;
+        b=GgeS/jhmgj7SNyyft2bBUIP3qhedadYE9wRI4CKCnJ9bXzhvaJPPfwfHiD8xv2g8+8
+         v1pRNucZ8VCnEwutRzuZkr9KmEJo5GWaM3U8Cg6zsJuVdwe0qDvk/DzUSWMjs9To+UOy
+         invoiaeeKIDobWiFIFsLoQdiOumvfdiwMdH3XCCuOhDZ7fKMqv9Lq+ARuCz6TBqqIHbq
+         F81iPV694rS/07Hx4fvyNdazh88ZfPpjjIjbm+gz91dL3Ag1Bi8nNZoJjY1bPUCYfJjG
+         8yVcImCtS5aS29QbkCvXjO2o94rm1GVuJVXmb7Bw0DcnrHqwrkb52n4TV2z2XOj5lkZX
+         oeUA==
+X-Gm-Message-State: AOJu0YywA5/HSBYlspBseYknSn8zbZHgYRzbJnQRhOAjfh6L3HCNCCm/
+        9hHBw4L1m5V+9Et8c3ZViiRlhU4kCWelF/rSp5iL7Q==
+X-Google-Smtp-Source: AGHT+IHogU+oXlyPoAe9oxJ1k+4wdalEiXaZswNxlbBUueCP3rIK8SfSBZk+1xNHSXQz1MUiB41Xn6w82/mBEO6fSB0=
+X-Received: by 2002:a25:f910:0:b0:d81:894b:28e4 with SMTP id
+ q16-20020a25f910000000b00d81894b28e4mr31091512ybe.51.1697451140795; Mon, 16
+ Oct 2023 03:12:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1697186772.git.viresh.kumar@linaro.org> <0890df8ddfafba0d9d214e73e4bb0e243a2db9fa.1697186772.git.viresh.kumar@linaro.org>
-In-Reply-To: <0890df8ddfafba0d9d214e73e4bb0e243a2db9fa.1697186772.git.viresh.kumar@linaro.org>
+References: <cover.1697186772.git.viresh.kumar@linaro.org> <a5bd698a7a899fb63b4c5caec7068bf5a395165c.1697186772.git.viresh.kumar@linaro.org>
+In-Reply-To: <a5bd698a7a899fb63b4c5caec7068bf5a395165c.1697186772.git.viresh.kumar@linaro.org>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 16 Oct 2023 12:11:35 +0200
-Message-ID: <CAPDyKFp=k23RFjSvn1QYfZYF6-e5dkN1BT69oopRceyq2mLCmQ@mail.gmail.com>
-Subject: Re: [PATCH 2/5] OPP: Add _link_required_opps() to avoid code duplication
+Date:   Mon, 16 Oct 2023 12:11:45 +0200
+Message-ID: <CAPDyKFpHy-32h+yu4X-psGqpaqFNpY0CgveHgd_3Zu57KPg3Dw@mail.gmail.com>
+Subject: Re: [PATCH 3/5] OPP: Reorder code in _opp_set_required_opps_genpd()
 To:     Viresh Kumar <viresh.kumar@linaro.org>
 Cc:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
         Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
@@ -71,124 +71,70 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Fri, 13 Oct 2023 at 10:48, Viresh Kumar <viresh.kumar@linaro.org> wrote:
 >
-> Factor out _link_required_opps() to remove duplicate code. No functional
-> change.
+> Reorder code in _opp_set_required_opps_genpd() to reduce duplicate code.
 >
 > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  drivers/opp/core.c | 34 +++++++++++++++++++---------------
+>  1 file changed, 19 insertions(+), 15 deletions(-)
+>
+> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> index f42b663a4d8b..3516e79cf743 100644
+> --- a/drivers/opp/core.c
+> +++ b/drivers/opp/core.c
+> @@ -1076,7 +1076,18 @@ static int _opp_set_required_opps_genpd(struct device *dev,
+>  {
+>         struct device **genpd_virt_devs =
+>                 opp_table->genpd_virt_devs ? opp_table->genpd_virt_devs : &dev;
+> -       int i, ret = 0;
+> +       int index, target, delta, ret;
+> +
+> +       /* Scaling up? Set required OPPs in normal order, else reverse */
+> +       if (!scaling_down) {
+> +               index = 0;
+> +               target = opp_table->required_opp_count;
+> +               delta = 1;
+> +       } else {
+> +               index = opp_table->required_opp_count - 1;
+> +               target = -1;
+> +               delta = -1;
+> +       }
+>
+>         /*
+>          * Acquire genpd_virt_dev_lock to make sure we don't use a genpd_dev
+> @@ -1084,24 +1095,17 @@ static int _opp_set_required_opps_genpd(struct device *dev,
+>          */
+>         mutex_lock(&opp_table->genpd_virt_dev_lock);
+>
+> -       /* Scaling up? Set required OPPs in normal order, else reverse */
+> -       if (!scaling_down) {
+> -               for (i = 0; i < opp_table->required_opp_count; i++) {
+> -                       ret = _set_performance_state(dev, genpd_virt_devs[i], opp, i);
+> -                       if (ret)
+> -                               break;
+> -               }
+> -       } else {
+> -               for (i = opp_table->required_opp_count - 1; i >= 0; i--) {
+> -                       ret = _set_performance_state(dev, genpd_virt_devs[i], opp, i);
+> -                       if (ret)
+> -                               break;
+> -               }
+> +       while (index != target) {
+> +               ret = _set_performance_state(dev, genpd_virt_devs[index], opp, index);
+> +               if (ret)
+> +                       break;
+> +
+> +               index += delta;
+>         }
+>
+>         mutex_unlock(&opp_table->genpd_virt_dev_lock);
+>
+> -       return ret;
+> +       return 0;
 
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+Why always return 0 and not the error code anymore?
+
+[...]
 
 Kind regards
 Uffe
-
-
-> ---
->  drivers/opp/of.c | 62 ++++++++++++++++++++++--------------------------
->  1 file changed, 29 insertions(+), 33 deletions(-)
->
-> diff --git a/drivers/opp/of.c b/drivers/opp/of.c
-> index 85e2af3d6a49..81fa27599d58 100644
-> --- a/drivers/opp/of.c
-> +++ b/drivers/opp/of.c
-> @@ -296,24 +296,41 @@ void _of_clear_opp(struct opp_table *opp_table, struct dev_pm_opp *opp)
->         of_node_put(opp->np);
->  }
->
-> +static int _link_required_opps(struct dev_pm_opp *opp,
-> +                              struct opp_table *required_table, int index)
-> +{
-> +       struct device_node *np;
-> +
-> +       np = of_parse_required_opp(opp->np, index);
-> +       if (unlikely(!np))
-> +               return -ENODEV;
-> +
-> +       opp->required_opps[index] = _find_opp_of_np(required_table, np);
-> +       of_node_put(np);
-> +
-> +       if (!opp->required_opps[index]) {
-> +               pr_err("%s: Unable to find required OPP node: %pOF (%d)\n",
-> +                      __func__, opp->np, index);
-> +               return -ENODEV;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
->  /* Populate all required OPPs which are part of "required-opps" list */
->  static int _of_opp_alloc_required_opps(struct opp_table *opp_table,
->                                        struct dev_pm_opp *opp)
->  {
-> -       struct dev_pm_opp **required_opps;
->         struct opp_table *required_table;
-> -       struct device_node *np;
->         int i, ret, count = opp_table->required_opp_count;
->
->         if (!count)
->                 return 0;
->
-> -       required_opps = kcalloc(count, sizeof(*required_opps), GFP_KERNEL);
-> -       if (!required_opps)
-> +       opp->required_opps = kcalloc(count, sizeof(*opp->required_opps), GFP_KERNEL);
-> +       if (!opp->required_opps)
->                 return -ENOMEM;
->
-> -       opp->required_opps = required_opps;
-> -
->         for (i = 0; i < count; i++) {
->                 required_table = opp_table->required_opp_tables[i];
->
-> @@ -321,21 +338,9 @@ static int _of_opp_alloc_required_opps(struct opp_table *opp_table,
->                 if (IS_ERR_OR_NULL(required_table))
->                         continue;
->
-> -               np = of_parse_required_opp(opp->np, i);
-> -               if (unlikely(!np)) {
-> -                       ret = -ENODEV;
-> -                       goto free_required_opps;
-> -               }
-> -
-> -               required_opps[i] = _find_opp_of_np(required_table, np);
-> -               of_node_put(np);
-> -
-> -               if (!required_opps[i]) {
-> -                       pr_err("%s: Unable to find required OPP node: %pOF (%d)\n",
-> -                              __func__, opp->np, i);
-> -                       ret = -ENODEV;
-> +               ret = _link_required_opps(opp, required_table, i);
-> +               if (ret)
->                         goto free_required_opps;
-> -               }
->         }
->
->         return 0;
-> @@ -350,22 +355,13 @@ static int _of_opp_alloc_required_opps(struct opp_table *opp_table,
->  static int lazy_link_required_opps(struct opp_table *opp_table,
->                                    struct opp_table *new_table, int index)
->  {
-> -       struct device_node *required_np;
->         struct dev_pm_opp *opp;
-> +       int ret;
->
->         list_for_each_entry(opp, &opp_table->opp_list, node) {
-> -               required_np = of_parse_required_opp(opp->np, index);
-> -               if (unlikely(!required_np))
-> -                       return -ENODEV;
-> -
-> -               opp->required_opps[index] = _find_opp_of_np(new_table, required_np);
-> -               of_node_put(required_np);
-> -
-> -               if (!opp->required_opps[index]) {
-> -                       pr_err("%s: Unable to find required OPP node: %pOF (%d)\n",
-> -                              __func__, opp->np, index);
-> -                       return -ENODEV;
-> -               }
-> +               ret = _link_required_opps(opp, new_table, index);
-> +               if (ret)
-> +                       return ret;
->         }
->
->         return 0;
-> --
-> 2.31.1.272.g89b43f80a514
->
