@@ -2,143 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41FD57CC1E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 13:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 519D67CC1F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 13:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343607AbjJQLin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 07:38:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50446 "EHLO
+        id S1343616AbjJQLkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 07:40:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234147AbjJQLil (ORCPT
+        with ESMTP id S234802AbjJQLkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 07:38:41 -0400
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B89D9F;
-        Tue, 17 Oct 2023 04:38:39 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 6C74F3200AC8;
-        Tue, 17 Oct 2023 07:38:28 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 17 Oct 2023 07:38:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1697542707; x=1697629107; bh=57
-        /G7WSXTmaZb6K7f8o8ahaOG8BjQ2KoRfaSP0thpXY=; b=K9nslS4Wb6lGu8N4ir
-        GgUlDFBSLEzP7MWQOzXPOfaIdkXh7u0SCVt+zQ61Z6ApZamjy47GabwWhrldGo3X
-        XTuGO1lu8qyTrM8sgctNqVGkXGvbdOVfgDK1aBCYqXibr45X3/EWadxCRApCmXe5
-        m2iECv+u9eR1nNMX0zEAIfqg0rYo1eNo1nFjYTNZG7B3Kq70e7ZGvxkkbW8Sk1n4
-        xCQvLX+tdgWf6OIUbdVREdI2pmS7oormVxyXJk6CAQ9ZnlGvU0M5GQeSa0aqa3Gb
-        o5HMWAIJLHM8D25xOS2m0XPCkZocqcB0XL1g4/OVSPouW9ulv4Z4fm70mW1Ab9Yc
-        5PCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1697542707; x=1697629107; bh=57/G7WSXTmaZb
-        6K7f8o8ahaOG8BjQ2KoRfaSP0thpXY=; b=Y8vRS8JS17Tp4VM+0TT/mZFFVMTQV
-        Kkw4+i18iU0Tubska0NIPWDzN1nArITjmS1vQFL+BISe9vrIzD/rmDBj1hOUYSnS
-        lrr5CNO7yAr13XxUU0+HimhAqpaldgcvlSAV3CWoAzmEOCokHcclSNIVKmhwtNLb
-        p+eBiVi0vGsLbi3v+i3QDSZT6AZ+gGoG5WQz4B7y44RbaTUMHlrgY3cthtjBQGYy
-        HBIOh2kRsdSIdPzYNagKv0MsYuXSYsbJwpjZwRiLpT/2a3NVJKgQBExMV9+ohuBs
-        CHH6eEKXRLGm2wiNyCNL7J6g6gbCh1rekyelMqw5sd2hdEbaStLjw9dDg==
-X-ME-Sender: <xms:M3IuZQ-U-fP_sHNdneS4Q8-WR67xZldCVaETTsSbGoPOmT8sex0uvQ>
-    <xme:M3IuZYugE-R1JCnJ_ilUk-d6oCzFWUmBfMi6hUNj0ZEf0-P_9wM3o-yr70X_ALndM
-    ERh0CfyeXfYTINg9RA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrjedvgdegudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeevhfffledtgeehfeffhfdtgedvheejtdfgkeeuvefgudffteettdekkeeufeeh
-    udenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:M3IuZWCVHECofKc0WrmGIVw9Stn4c2kOu5oPEq9N2NxbVTawTMeikg>
-    <xmx:M3IuZQdGwzP23_8hUa43P1mJFmfoR3UW3Y-Zk9oDvJMSDryOc6Cadg>
-    <xmx:M3IuZVPfxlfNU6CPgjqRzKpjEdIw2_LaZvi1P2sSIFu6_fl-ONcbww>
-    <xmx:M3IuZZl4mk0PG3myo7b_tDWzEIcSwyCVmwyL53kp5lDjZfVd9V8CwQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 69A7DB60089; Tue, 17 Oct 2023 07:38:27 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1019-ged83ad8595-fm-20231002.001-ged83ad85
+        Tue, 17 Oct 2023 07:40:16 -0400
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B00BF1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 04:40:14 -0700 (PDT)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-59b5484fbe6so68357757b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 04:40:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697542813; x=1698147613; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=KXDyMdltPzLTsZkp8ftWuE4NIQhI/BZYDqBTjUXxHpg=;
+        b=pRNhleR3aqv2gUp2ILsT0DWoTVxJ7f80X+IfEmYUuS1rHqYY2YBvG3gconO8idqzqe
+         5UO0tUJMti7Xag10emIfznJTMfHXZ0OTmEegq3X9EHHgDqegBf+mpDG3lH3ZOvdS5TqB
+         I6umH968YdhDjK3fSZVipZSauCSMGcRfVPaDhIKRNOou8nH7nZnKcsoiF7k5bQgjAWYP
+         x3hBt0geZ+TZS0Vn3WtZxlhTNMtN50BoabwwgfkG/Oxe3VgxpSLi8fwafmewCOQ8a1AU
+         GsHE6BMk28P7q3NUJDIqgg+/7d7p/ufVxlcn9SugBcB41al4M4o2impCCSF61KLuXmNn
+         LHsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697542813; x=1698147613;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KXDyMdltPzLTsZkp8ftWuE4NIQhI/BZYDqBTjUXxHpg=;
+        b=tSG66lvo2tbS9z+vO3k9qVYzkMf0eWlduIIVung9/lVSgOLV7h/A4NokVo3h8LxCvo
+         zF3aIr6l7W3Czeu9HG2i5BPN6KNbDQgC2aQWDUUFX15ZN70VIpEu8qF7E1dxlUCCcD5o
+         wgzwwzxYP4wbRaPNaTX4MYINNyOmVbygYNon9koO45s06og8jdCMwx01OX2HHghfcJ1Y
+         Zn+/TkO/pGrFXJAd5DvHv3RumeoEFRA9k1+eKaKvwfot/EDbjRz+igmZIS0EACHIEj02
+         Yr1u7+jd1ns4DZqwga96O0hqcjJ+PdHCWxT52jXJrtcaFvF5CY4t1Z547EH7O5TzXEz7
+         wjUA==
+X-Gm-Message-State: AOJu0Yw+IsOCFlFXZgV+pWUwHZBnQbaiE5s2zZP5lH/Ez7PvdFJ3vz2W
+        MrjS5NyVThGfNcBJq3yOfPiK0/pIhxQOHtvIOYaWxw==
+X-Google-Smtp-Source: AGHT+IFED1xyGlNdLMZQbNUNCAPdsokCDKZpZ2zi02FKoDWhkno3Kz5zKfe5mf26mU7SR7ZYm6ok6EHAjVDTg6uMokg=
+X-Received: by 2002:a25:7352:0:b0:d71:6b6e:1071 with SMTP id
+ o79-20020a257352000000b00d716b6e1071mr1697738ybc.32.1697542813581; Tue, 17
+ Oct 2023 04:40:13 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <ff6c4489-7816-4fe2-b6da-53c5d3a24331@app.fastmail.com>
-In-Reply-To: <7b0a02ad-d23c-2c04-6672-58f16f2cca5a@ti.com>
-References: <20231013100549.3198564-1-danishanwar@ti.com>
- <4a53722d-e31d-4598-a4a9-cf374c84bc44@app.fastmail.com>
- <7b0a02ad-d23c-2c04-6672-58f16f2cca5a@ti.com>
-Date:   Tue, 17 Oct 2023 13:38:07 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "MD Danish Anwar" <danishanwar@ti.com>,
-        "Andrew Lunn" <andrew@lunn.ch>,
-        "Wolfram Sang" <wsa+renesas@sang-engineering.com>,
-        "Simon Horman" <horms@kernel.org>, "Roger Quadros" <rogerq@ti.com>,
-        "Vignesh Raghavendra" <vigneshr@ti.com>,
-        "Paolo Abeni" <pabeni@redhat.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        "Eric Dumazet" <edumazet@google.com>,
-        "David S . Miller" <davem@davemloft.net>
-Cc:     linux-kernel@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
-        srk@ti.com, r-gunasekaran@ti.com,
-        "Roger Quadros" <rogerq@kernel.org>
-Subject: Re: [PATCH net] net: ethernet: ti: Fix mixed module-builtin object
-Content-Type: text/plain
+References: <20231017061336.9355-1-quic_sartgarg@quicinc.com>
+In-Reply-To: <20231017061336.9355-1-quic_sartgarg@quicinc.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 17 Oct 2023 13:39:37 +0200
+Message-ID: <CAPDyKFrxf4wAyJ94g5LYymSZgDJRWvSCy6C73xyYBfxiV+L83g@mail.gmail.com>
+Subject: Re: [PATCH V3 0/3] mmc: Add partial initialization support
+To:     Sarthak Garg <quic_sartgarg@quicinc.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, quic_cang@quicinc.com,
+        quic_nguyenb@quicinc.com, quic_rampraka@quicinc.com,
+        quic_pragalla@quicinc.com, quic_sayalil@quicinc.com,
+        quic_nitirawa@quicinc.com, quic_sachgupt@quicinc.com,
+        quic_bhaskarv@quicinc.com, quic_narepall@quicinc.com,
+        kernel@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023, at 13:10, MD Danish Anwar wrote:
-> On 13/10/23 16:08, Arnd Bergmann wrote:
->> On Fri, Oct 13, 2023, at 12:05, MD Danish Anwar wrote:
->>> With CONFIG_TI_K3_AM65_CPSW_NUSS=y and CONFIG_TI_ICSSG_PRUETH=m,
->>> k3-cppi-desc-pool.o is linked to a module and also to vmlinux even though
->>> the expected CFLAGS are different between builtins and modules.
->>>
->>> The build system is complaining about the following:
->>>
->>> k3-cppi-desc-pool.o is added to multiple modules: icssg-prueth
->>> ti-am65-cpsw-nuss
->>>
->>> Introduce the new module, k3-cppi-desc-pool, to provide the common
->>> functions to ti-am65-cpsw-nuss and icssg-prueth.
->>>
->>> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
->> 
->> I submitted a different patch for this a while ago:
->> https://lore.kernel.org/lkml/20230612124024.520720-3-arnd@kernel.org/
->> 
->> I think I never sent a v2 of that, but I still have a
->> working version in my local tree. I've replaced my version
->> with yours for testing now, to see if you still need something
->> beyond that.
->> 
+On Tue, 17 Oct 2023 at 08:13, Sarthak Garg <quic_sartgarg@quicinc.com> wrote:
 >
-> I see your patch addresses different modules. My patch introduces a new
-> module for k3-cppi-desc-pool which is used by both am65-cpsw-nuss and
-> icssg-prueth driver. Where as your patch addresses modules common across
-> different cpsw drivers (davinci-emac, cpsw, cpsw-switchdev, netcp,
-> netcp_ethss and am65-cpsw-nuss). So I think that both these patches are
-> addressing differet warnings.
+> Add the ability to partially initialize the MMC device by
+> using device sleep/awake sequence (CMD5).
+> Device will be sent to sleep state during mmc runtime/system suspend
+> and will be woken up during mmc runtime/system resume.
+> By using this sequence the device doesn't need full initialization
+> which gives 25% time reduction in system/runtime resume path.
+> Also enable this feature along with mmc runtime PM for qualcomm
+> controllers.
+>
+> Sarthak Garg (3):
+>   mmc: core: Add partial initialization support
+>   mmc: sdhci-msm: Enable MMC_CAP_AGGRESSIVE_PM for Qualcomm controllers
+>   mmc: sdhci-msm: Enable MMC_CAP2_SLEEP_AWAKE for Qualcomm controllers
+>
+>  drivers/mmc/core/mmc.c       | 163 +++++++++++++++++++++++++++++++++--
+>  drivers/mmc/host/sdhci-msm.c |   2 +
+>  include/linux/mmc/card.h     |   4 +
+>  include/linux/mmc/host.h     |   2 +
+>  4 files changed, 162 insertions(+), 9 deletions(-)
 
-Right, I can resend my patch (or Alexander Lobakin can rebase his version)
-after yours makes it in. Note that your patch introduces a warning about
-a missing license and description for the new module, so you should
-probably include this hunk:
+Would mind resending this version and while doing that, please add
+some version information to each patch in the series. This helps while
+reviewing.
 
---- a/drivers/net/ethernet/ti/k3-cppi-desc-pool.c
-+++ b/drivers/net/ethernet/ti/k3-cppi-desc-pool.c
-@@ -131,3 +131,6 @@ size_t k3_cppi_desc_pool_avail(struct k3_cppi_desc_pool *pool)
-        return gen_pool_avail(pool->gen_pool) / pool->desc_size;
- }
- EXPORT_SYMBOL_GPL(k3_cppi_desc_pool_avail);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("TI K3 CPPI5 descriptors pool API");
+Kind regards
+Uffe
