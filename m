@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8157CC36C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 14:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9737D7CC36E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 14:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234599AbjJQMms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 08:42:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60626 "EHLO
+        id S234836AbjJQMmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 08:42:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233549AbjJQMmp (ORCPT
+        with ESMTP id S234612AbjJQMms (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 08:42:45 -0400
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 197DEDB;
-        Tue, 17 Oct 2023 05:42:42 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R381e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=guangguan.wang@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VuNiO2r_1697546558;
-Received: from localhost.localdomain(mailfrom:guangguan.wang@linux.alibaba.com fp:SMTPD_---0VuNiO2r_1697546558)
+        Tue, 17 Oct 2023 08:42:48 -0400
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A26EF7;
+        Tue, 17 Oct 2023 05:42:45 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=guangguan.wang@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VuNiO3D_1697546559;
+Received: from localhost.localdomain(mailfrom:guangguan.wang@linux.alibaba.com fp:SMTPD_---0VuNiO3D_1697546559)
           by smtp.aliyun-inc.com;
-          Tue, 17 Oct 2023 20:42:38 +0800
+          Tue, 17 Oct 2023 20:42:39 +0800
 From:   Guangguan Wang <guangguan.wang@linux.alibaba.com>
 To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
         davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
@@ -26,9 +26,9 @@ To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
 Cc:     tonylu@linux.alibaba.com, alibuda@linux.alibaba.com,
         guwen@linux.alibaba.com, linux-s390@vger.kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net v2 1/2] net/smc: change function name from smc_find_ism_store_rc to smc_find_device_store_rc
-Date:   Tue, 17 Oct 2023 20:42:33 +0800
-Message-Id: <20231017124234.99574-2-guangguan.wang@linux.alibaba.com>
+Subject: [PATCH net v2 2/2] net/smc: correct the reason code in smc_listen_find_device when fallback
+Date:   Tue, 17 Oct 2023 20:42:34 +0800
+Message-Id: <20231017124234.99574-3-guangguan.wang@linux.alibaba.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20231017124234.99574-1-guangguan.wang@linux.alibaba.com>
 References: <20231017124234.99574-1-guangguan.wang@linux.alibaba.com>
@@ -44,90 +44,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function smc_find_ism_store_rc is not only used for ism, so it is
-reasonable to change the function name to smc_find_device_store_rc.
+The ini->rc is used to store the last error happened when finding usable
+ism or rdma device in smc_listen_find_device, and is set by calling smc_
+find_device_store_rc. Once the ini->rc is assigned to an none-zero value,
+the value can not be overwritten anymore. So the ini-rc should be set to
+the error reason only when an error actually occurs.
+
+When finding ISM/RDMA devices, device not found is not a real error, as
+not all machine have ISM/RDMA devices. Failures after device found, when
+initializing device or when initializing connection, is real errors, and
+should be store in ini->rc.
+
+SMC_CLC_DECL_DIFFPREFIX also is not a real error, as for SMC-RV2, it is
+not require same prefix.
 
 Signed-off-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
 ---
- net/smc/af_smc.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ net/smc/af_smc.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
 diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index 35ddebae8894..b3a67a168495 100644
+index b3a67a168495..21e9c6ec4d01 100644
 --- a/net/smc/af_smc.c
 +++ b/net/smc/af_smc.c
-@@ -2122,7 +2122,7 @@ static void smc_check_ism_v2_match(struct smc_init_info *ini,
+@@ -2163,10 +2163,8 @@ static void smc_find_ism_v2_device_serv(struct smc_sock *new_smc,
  	}
- }
- 
--static void smc_find_ism_store_rc(u32 rc, struct smc_init_info *ini)
-+static void smc_find_device_store_rc(u32 rc, struct smc_init_info *ini)
- {
- 	if (!ini->rc)
- 		ini->rc = rc;
-@@ -2164,7 +2164,7 @@ static void smc_find_ism_v2_device_serv(struct smc_sock *new_smc,
  	mutex_unlock(&smcd_dev_list.mutex);
  
- 	if (!ini->ism_dev[0]) {
--		smc_find_ism_store_rc(SMC_CLC_DECL_NOSMCD2DEV, ini);
-+		smc_find_device_store_rc(SMC_CLC_DECL_NOSMCD2DEV, ini);
+-	if (!ini->ism_dev[0]) {
+-		smc_find_device_store_rc(SMC_CLC_DECL_NOSMCD2DEV, ini);
++	if (!ini->ism_dev[0])
  		goto not_found;
- 	}
+-	}
  
-@@ -2181,7 +2181,7 @@ static void smc_find_ism_v2_device_serv(struct smc_sock *new_smc,
- 		ini->ism_selected = i;
- 		rc = smc_listen_ism_init(new_smc, ini);
- 		if (rc) {
--			smc_find_ism_store_rc(rc, ini);
-+			smc_find_device_store_rc(rc, ini);
- 			/* try next active ISM device */
- 			continue;
- 		}
-@@ -2218,7 +2218,7 @@ static void smc_find_ism_v1_device_serv(struct smc_sock *new_smc,
+ 	smc_ism_get_system_eid(&eid);
+ 	if (!smc_clc_match_eid(ini->negotiated_eid, smc_v2_ext,
+@@ -2216,9 +2214,9 @@ static void smc_find_ism_v1_device_serv(struct smc_sock *new_smc,
+ 	rc = smc_listen_ism_init(new_smc, ini);
+ 	if (!rc)
  		return;		/* V1 ISM device found */
++	smc_find_device_store_rc(rc, ini);
  
  not_found:
--	smc_find_ism_store_rc(rc, ini);
-+	smc_find_device_store_rc(rc, ini);
+-	smc_find_device_store_rc(rc, ini);
  	ini->smcd_version &= ~SMC_V1;
  	ini->ism_dev[0] = NULL;
  	ini->is_smcd = false;
-@@ -2268,7 +2268,7 @@ static void smc_find_rdma_v2_device_serv(struct smc_sock *new_smc,
+@@ -2267,10 +2265,8 @@ static void smc_find_rdma_v2_device_serv(struct smc_sock *new_smc,
+ 	ini->smcrv2.saddr = new_smc->clcsock->sk->sk_rcv_saddr;
  	ini->smcrv2.daddr = smc_ib_gid_to_ipv4(smc_v2_ext->roce);
  	rc = smc_find_rdma_device(new_smc, ini);
- 	if (rc) {
--		smc_find_ism_store_rc(rc, ini);
-+		smc_find_device_store_rc(rc, ini);
+-	if (rc) {
+-		smc_find_device_store_rc(rc, ini);
++	if (rc)
  		goto not_found;
- 	}
+-	}
  	if (!ini->smcrv2.uses_gateway)
-@@ -2285,7 +2285,7 @@ static void smc_find_rdma_v2_device_serv(struct smc_sock *new_smc,
- 	if (!rc)
- 		return;
- 	ini->smcr_version = smcr_version;
--	smc_find_ism_store_rc(rc, ini);
-+	smc_find_device_store_rc(rc, ini);
+ 		memcpy(ini->smcrv2.nexthop_mac, pclc->lcl.mac, ETH_ALEN);
  
- not_found:
- 	ini->smcr_version &= ~SMC_V2;
-@@ -2332,7 +2332,7 @@ static int smc_listen_find_device(struct smc_sock *new_smc,
+@@ -2331,8 +2327,6 @@ static int smc_listen_find_device(struct smc_sock *new_smc,
+ 
  	/* check for matching IP prefix and subnet length (V1) */
  	prfx_rc = smc_listen_prfx_check(new_smc, pclc);
- 	if (prfx_rc)
--		smc_find_ism_store_rc(prfx_rc, ini);
-+		smc_find_device_store_rc(prfx_rc, ini);
+-	if (prfx_rc)
+-		smc_find_device_store_rc(prfx_rc, ini);
  
  	/* get vlan id from IP device */
  	if (smc_vlan_by_tcpsk(new_smc->clcsock, ini))
-@@ -2359,7 +2359,7 @@ static int smc_listen_find_device(struct smc_sock *new_smc,
- 		int rc;
- 
- 		rc = smc_find_rdma_v1_device_serv(new_smc, pclc, ini);
--		smc_find_ism_store_rc(rc, ini);
-+		smc_find_device_store_rc(rc, ini);
- 		return (!rc) ? 0 : ini->rc;
- 	}
- 	return prfx_rc;
 -- 
 2.24.3 (Apple Git-128)
 
