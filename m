@@ -2,327 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 353BE7CC2E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 14:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45FDE7CC2E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 14:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235029AbjJQMTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 08:19:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49872 "EHLO
+        id S235020AbjJQMTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 08:19:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235025AbjJQMTa (ORCPT
+        with ESMTP id S234974AbjJQMT3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 08:19:30 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B22E33580
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 05:19:11 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39HC7JdQ024911;
-        Tue, 17 Oct 2023 12:18:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=EA50+OAa6+lxbvxabpIw+kS8IHck9lprvoOmGk82Hl0=;
- b=A5nGC0s/scGInFvcsBllX+/X19Tue61uyj+QNNWNbUGyFGwmKVzhzejNMwMZt1sisPEB
- r5Co10gej6CztUO8pinAsngG7mL9nsGySJ06k/gRued0qIOwdgz/5eU5QfzX2rhbNhO9
- S7zMwplHPPAtxb6NAiOmZyzJzDc7N2DDu81hQbi3rVAF6/jdM3COmcJD0Ctu+0FZBAY6
- acXF1XQKE3tTodR9Hi4YvyJmtlpAy8IBAfOP0c/jTyBkwFegcW3J/aoqJ/mThbMk1X2E
- c4QZUuxYZJsCGsKz/iEq8Uk49mtGGoHoP6WLQyJ1K8o9gUtasLSwN2SolQfXwAxO9qW8 IQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tst09re2u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Oct 2023 12:18:58 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39HC7tRB029212;
-        Tue, 17 Oct 2023 12:18:57 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tst09re28-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Oct 2023 12:18:57 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39HBm791027163;
-        Tue, 17 Oct 2023 12:18:56 GMT
-Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tr6tk8m42-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Oct 2023 12:18:56 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
-        by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39HCItwV26673834
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Oct 2023 12:18:55 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 37C1F58068;
-        Tue, 17 Oct 2023 12:18:55 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B066458065;
-        Tue, 17 Oct 2023 12:18:50 +0000 (GMT)
-Received: from li-34d1fccc-27cd-11b2-a85c-c167793e56f7.ibm.com (unknown [9.171.12.6])
-        by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 17 Oct 2023 12:18:50 +0000 (GMT)
-Message-ID: <9dc975aa52c50e564e5e314c1be5065c15916303.camel@linux.vnet.ibm.com>
-Subject: Re: [PATCH] powerpc/paravirt: Improve vcpu_is_preempted
-From:   Aboorva Devarajan <aboorvad@linux.vnet.ibm.com>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Ajay Kaher <akaher@vmware.com>,
-        Alexey Makhalov <amakhalov@vmware.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Juergen Gross <jgross@suse.com>, linux-kernel@vger.kernel.org,
-        Nicholas Piggin <npiggin@gmail.com>,
-        virtualization@lists.linux-foundation.org,
-        Michael Ellerman <mpe@ellerman.id.au>
-Date:   Tue, 17 Oct 2023 17:48:48 +0530
-In-Reply-To: <20231009051740.17683-1-srikar@linux.vnet.ibm.com>
-References: <20231009051740.17683-1-srikar@linux.vnet.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: JO-VB4hcrzqdI7gVEXYx4z6NqJBkzDBF
-X-Proofpoint-ORIG-GUID: JXQAtIKVAL_zoNUWLzJzGg6eTyTJRgeM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-16_13,2023-10-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 bulkscore=0 mlxscore=0 lowpriorityscore=0
- malwarescore=0 phishscore=0 clxscore=1011 spamscore=0 mlxlogscore=999
- impostorscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2309180000 definitions=main-2310170103
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 17 Oct 2023 08:19:29 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D927135A3;
+        Tue, 17 Oct 2023 05:19:12 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8A0DC433C8;
+        Tue, 17 Oct 2023 12:19:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697545152;
+        bh=peWbdB3NVwogy8Kxbp1KdReSf6V9bIbkVM7IJYnEM7g=;
+        h=From:To:Cc:Subject:Date:From;
+        b=QphODzLTNavMBHR/yEN39KVGmkfWXEmVVXfyytXt6SI48U0zriPBGiurlZeAy73R4
+         TvoPH8OKz7zDVbrvaOpHG3lXCdkbmNOKVOvMHdAB4GnLM/G9ZmdVyt7kZbUdDaPzSM
+         dWxkCrAvsEljucw2ihOWEp6ZFwN8AZ7T7yUv7JksBkn1etKqZVl7kPFxo1RgyonRXd
+         MCjD5Z7AKx0+6muAp3HyExXZDj6BKfLjBo3QGsbyCmlHI8MKnQdjE4shfvE761jN3v
+         go3K9/3p1IyYzhBE8+mo9gAFdu/TKHN0jrllMxUrmn0e0RCsCKHchKl1UaEBi0o7z8
+         oSkSMkTjdzesw==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>
+Subject: [PATCH 0/3] RCU tasks for v6.7
+Date:   Tue, 17 Oct 2023 14:19:02 +0200
+Message-Id: <20231017121905.1156166-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-10-09 at 10:47 +0530, Srikar Dronamraju wrote:
+Hello,
 
-Hi Srikar,
+Please find below the RCU tasks updates for the next merge window:
 
-Benchmarked this patch on baremetal POWER9 node by launching KVM to
-observe the improvements achieved in KVM with the patched kernel.
-Below, you can find the schbench latency result comparision.
+Jiapeng Chong (1):
+  rcu-tasks: Make rcu_tasks_lazy_ms static
 
-System was running on SMT4 mode with the below configuration:
-
-Setup:
-
-$ lscpu
-Architecture:        ppc64le
-Byte Order:          Little Endian
-CPU(s):              128
-On-line CPU(s) list: 0-127
-Thread(s) per core:  4
-Core(s) per socket:  16
-Socket(s):           2
-NUMA node(s):        8
-Model:               2.3 (pvr 004e 1203)
-Model name:          POWER9, altivec supported
-CPU max MHz:         3800.0000
-CPU min MHz:         2300.0000
-L1d cache:           32K
-L1i cache:           32K
-L2 cache:            512K
-L3 cache:            10240K
-NUMA node0 CPU(s):   0-63
-NUMA node8 CPU(s):   64-127
-NUMA node250 CPU(s):
-NUMA node251 CPU(s):
-NUMA node252 CPU(s):
-NUMA node253 CPU(s):
-NUMA node254 CPU(s):
-NUMA node255 CPU(s):
-
-- Baseline kernel  : v6.6.0-rc5
-- Patched kernel   : v6.6.0-rc5 with patchset
-- schbench version : upto commit 2eef44 (schbench: record the 
-  execution time in the matrix multiplication mode)
-
-
-Results:
---------
-
-These results shows the schbench latency on a patched kernel compared
-to a baseline kernel on KVM. The numbers in the "compare%" column
-represent the percentage difference between the latency measured on the
-baseline kernel and the patched kernel. A negative percentage means the
-patched kernel performs less optimially (higher latency) than the
-baseline, while a positive percentage means it performs better (lower
-latency).
-
-
-Scenarios:
-----------
-
-
-Case 1: No Noise
-
-Host: Idle
-KVM 1: Launched a KVM affined to 0-39 CPUs (40 CPUs)
-KVM 1 (Workload) : ./schbench -m 20 -t 2 -r 30 (benchmark)
-
-schbench latency (niter: 20)
-
-percentile      compare% (avg)
-                (higher the better)
-
-50.0th:	        -4.84
-75.0th:	        -8.09
-90.0th:	        -3.39
-95.0th:	        +5.16
-99.0th:	        +90.78
-99.5th:	        +36.34
-99.9th:	        +8.31
-
---------------------------------------------------------
-
-Case 2: With Noise: Over-commit case: Multiple KVM guests sharing the
-same set of CPUs
-
-Two KVM instances are launched, where one being benchmarked, and the
-other executing a workload to introduce noise.
-
-KVM 1: Launched a KVM affined to 0-39 CPUs (40 CPUs)
-KVM 1 (Workload) : ./schbench -m 20 -t 2 -r 30 (benchmark)
-
-KVM 2 (Noise): Launched a KVM affined to 0-39 CPUs 
-
-schbench latency (niter: 20)
-
-percentile      compare% (avg) 
-                (higher the better)
-
-50.0th:	        -1.47
-75.0th:         -5.72
-90.0th:	        +7.88
-95.0th:         +10.71
-99.0th:	        +512.08
-99.5th:	        +380.61
-99.9th:	        +90.39
-
---------------------------------------------------------
-
-Case 3: Overlap case: Multiple KVM guests sharing a subset of CPUs.
-
-Two KVM instances are launched, where one being benchmarked, and the
-other executing a workload to introduce noise.
-
-KVM 1: Launched a KVM affined to 0-39 CPUs (40 CPUs)
-KVM 1 (Workload) : ./schbench -m 20 -t 2 -r 30 (benchmark)
-
-KVM 2 (Noise): Launched a KVM affined to 0-19 CPUs
-
-schbench latency (niter: 20)
-
-percentile      compare% (avg)
-                (higher the better)
-
-50.0th:	        -1.63
-75.0th:	        -2.78
-90.0th:         +57.62
-95.0th:	        +87.90
-99.0th:	        +343.66
-99.5th:	        +178.01
-99.9th:	        +36.07
-
---------------------------------------------------------
-
-The above results demonstrate the effectiveness of the proposed
-approach, which utilizes the idle-hint in lppaca to detect the
-preempted vCPU more efficiently. This approach is beneficial for
-improving schbench latency on KVM, particularly the tail latencies.
+Paul E. McKenney (2):
+  rcu-tasks: Add printk()s to localize boot-time self-test hang
+  rcu-tasks: Pull sampling of ->percpu_dequeue_lim out of loop
 
 Thanks,
-Aboorva
+        Frederic.
 
-> PowerVM Hypervisor dispatches on a whole core basis. In a shared
-> LPAR, a
-> CPU from a core that is preempted may have a larger latency. In
-> such a scenario, its preferable to choose a different CPU to run.
-> 
-> If one of the CPUs in the core is active, i.e neither CEDED nor
-> preempted, then consider this CPU as not preempted.
-> 
-> Also if any of the CPUs in the core has yielded but OS has not
-> requested
-> CEDE or CONFER, then consider this CPU to be preempted.
-> 
-> Cc: Ajay Kaher <akaher@vmware.com>
-> Cc: Alexey Makhalov <amakhalov@vmware.com>
-> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Cc: Juergen Gross <jgross@suse.com>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Nicholas Piggin <npiggin@gmail.com>
-> Cc: virtualization@lists.linux-foundation.org
-> Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-> ---
->  arch/powerpc/include/asm/paravirt.h | 33 ++++++++++++++++++++++++++-
-> --
->  1 file changed, 30 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/powerpc/include/asm/paravirt.h
-> b/arch/powerpc/include/asm/paravirt.h
-> index e08513d73119..a980756f58df 100644
-> --- a/arch/powerpc/include/asm/paravirt.h
-> +++ b/arch/powerpc/include/asm/paravirt.h
-> @@ -121,9 +121,19 @@ static inline bool vcpu_is_preempted(int cpu)
->  	if (!is_shared_processor())
->  		return false;
->  
-> +	if (!(yield_count_of(cpu) & 1))
-> +		return false;
-> +
-> +	/*
-> +	 * If CPU has yielded but OS has not requested idle then this
-> CPU is
-> +	 * definitely preempted.
-> +	 */
-> +	if (!lppaca_of(cpu).idle)
-> +		return true;
-> +
->  #ifdef CONFIG_PPC_SPLPAR
->  	if (!is_kvm_guest()) {
-> -		int first_cpu;
-> +		int first_cpu, i;
->  
->  		/*
->  		 * The result of vcpu_is_preempted() is used in a
-> @@ -149,11 +159,28 @@ static inline bool vcpu_is_preempted(int cpu)
->  		 */
->  		if (cpu_first_thread_sibling(cpu) == first_cpu)
->  			return false;
-> +
-> +		/*
-> +		 * If any of the threads of this core is not preempted
-> or
-> +		 * ceded, then consider this CPU to be non-preempted
-> +		 */
-> +		first_cpu = cpu_first_thread_sibling(cpu);
-> +		for (i = first_cpu; i < first_cpu + threads_per_core;
-> i++) {
-> +			if (i == cpu)
-> +				continue;
-> +			if (!(yield_count_of(i) & 1))
-> +				return false;
-> +			if (!lppaca_of(i).idle)
-> +				return true;
-> +		}
->  	}
->  #endif
->  
-> -	if (yield_count_of(cpu) & 1)
-> -		return true;
-> +	/*
-> +	 * None of the threads in this thread group are running but
-> none of
-> +	 * them were preempted too. Hence assume the thread to be
-> +	 * non-preempted.
-> +	 */
->  	return false;
->  }
->  
+ kernel/rcu/tasks.h | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+-- 
+2.34.1
 
