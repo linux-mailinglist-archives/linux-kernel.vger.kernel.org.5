@@ -2,90 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6271C7CBCA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 09:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A03647CBCAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 09:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234606AbjJQHpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 03:45:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58562 "EHLO
+        id S1343490AbjJQHpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 03:45:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234599AbjJQHpg (ORCPT
+        with ESMTP id S234727AbjJQHpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 03:45:36 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 841518F;
-        Tue, 17 Oct 2023 00:45:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73E81C433C8;
-        Tue, 17 Oct 2023 07:45:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697528735;
-        bh=WArevt6GXcxE3WhRBrAB6YfSmlJb0fKxC2Cf185aRsw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d3EZhgt0Dk1F9+pzg8IHqH36i74VGXQx6rQQr9WhOH6qkqa9fRB3mAIJHRtUNZoHM
-         R3W17qyI+PrUOC7EmS2UPqP98ejMWDtrYAlGtWy3mDw2229lvMGOXr8QmNGWDiJOCj
-         IZuwNaxYNElv1qDtK7tMlG7H2nJ0geWg/tW6I/2pPHMUlAksqPsk13VYZm+xMkOS6d
-         MApx2e9Sf1CUoXabMD/FUos0T477mDdyPfJarX39DpCVUejBY+X4KrdP/RVdO1lWpC
-         SrfzbHEL3G6FYtb3k4xjhpcVm2zgpCHWVHJVT6Wz2Gkm/16lsibV+TS14AYFRecmui
-         swktSfrImYtVw==
-Date:   Tue, 17 Oct 2023 08:45:30 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Mehdi Djait <mehdi.djait@bootlin.com>
-Cc:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        conor+dt@kernel.org, laurent.pinchart@ideasonboard.com,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        alexandre.belloni@bootlin.com, maxime.chevallier@bootlin.com,
-        paul.kocialkowski@bootlin.com
-Subject: Re: [PATCH v7 2/3] media: dt-bindings: media: i2c: Add bindings for
- TW9900
-Message-ID: <20231017-primp-outlet-98aadd3c4493@spud>
-References: <cover.1697463708.git.mehdi.djait@bootlin.com>
- <d5b2b2584fd471a037e574086bfd193b22fb9587.1697463708.git.mehdi.djait@bootlin.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="JONb17A5fbx7YTK+"
-Content-Disposition: inline
-In-Reply-To: <d5b2b2584fd471a037e574086bfd193b22fb9587.1697463708.git.mehdi.djait@bootlin.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 17 Oct 2023 03:45:51 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 552EFFB
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 00:45:48 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7FB0C1FF05;
+        Tue, 17 Oct 2023 07:45:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1697528746; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=a8iutTlqiYbQuOjNDDr2NbDGpvRTcYdDG2H/w+YeaLw=;
+        b=yMF0UjaKEpqHJOjzd0GHOnUElggzkMvj5OLP5WGy7YMjb5gFeT0e3jI0c0nrrVjKW5T1nr
+        1YE9I5F+fKCKmDZil2iH7dpkIr74I7Chm+odm3t+NbLnki/Z8iGjem6VCG/jNc6AYVjPMQ
+        7Jja3ZwH8wiOXbX/eE9QzTj6/iKY7Os=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1697528746;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=a8iutTlqiYbQuOjNDDr2NbDGpvRTcYdDG2H/w+YeaLw=;
+        b=JDJveYadzro/Pq/SL1yKPls4kxb0lEOm87fCdgzjBJ/dmH5CRFmAZHlWHJcOB3fjLveNEV
+        iN9ujNJA1YCjk4Cw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 57CAE13597;
+        Tue, 17 Oct 2023 07:45:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Yql9FKo7LmVlNAAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 17 Oct 2023 07:45:46 +0000
+Date:   Tue, 17 Oct 2023 09:45:45 +0200
+Message-ID: <87fs29n13q.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Edson Juliano Drosdeck <edson.drosdeck@gmail.com>
+Cc:     tiwai@suse.com, perex@perex.cz, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: pci: Missing a blank line after declarations
+In-Reply-To: <20231013015951.16812-1-edson.drosdeck@gmail.com>
+References: <20231013015951.16812-1-edson.drosdeck@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Score: 3.50
+X-Spamd-Result: default: False [3.50 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_SPAM(5.10)[100.00%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         RCPT_COUNT_FIVE(0.00)[5];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         MID_CONTAINS_FROM(1.00)[];
+         FREEMAIL_TO(0.00)[gmail.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 13 Oct 2023 03:59:51 +0200,
+Edson Juliano Drosdeck wrote:
+> 
+> Warning found by checkpatch.pl script. Adding blank line after declarations.
+> 
+> Signed-off-by: Edson Juliano Drosdeck <edson.drosdeck@gmail.com>
 
---JONb17A5fbx7YTK+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks for the patch.  But in general we take such a white-space
+cleanup patch only when it's associated with another real code
+changes.
 
-On Mon, Oct 16, 2023 at 03:58:32PM +0200, Mehdi Djait wrote:
-> The Techwell TW9900 is a video decoder supporting multiple input
-> standards, such as PAL and NTSC, and outputs a BT.656 video
-> signal.
->=20
-> It's designed to be low-power, posesses some features such as a
-> programmable comb-filter, and automatic input standard detection
->=20
-> Signed-off-by: Mehdi Djait <mehdi.djait@bootlin.com>
 
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Takashi
 
-Thanks,
-Conor.
-
---JONb17A5fbx7YTK+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZS47mgAKCRB4tDGHoIJi
-0oohAQCQibSmBabT3FmwXEXZUbZIPD5UX0IdIXL8ksNq8BqXjgEAndxurscX6zs1
-W9m67aWnBopJUBNJ6YyQlE3zD+AzSg0=
-=yiSR
------END PGP SIGNATURE-----
-
---JONb17A5fbx7YTK+--
+> ---
+>  sound/pci/lola/lola_proc.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/sound/pci/lola/lola_proc.c b/sound/pci/lola/lola_proc.c
+> index a166672e22cb..1ee5997da3c9 100644
+> --- a/sound/pci/lola/lola_proc.c
+> +++ b/sound/pci/lola/lola_proc.c
+> @@ -137,6 +137,7 @@ static void lola_proc_codec_rw_write(struct snd_info_entry *entry,
+>  	struct lola *chip = entry->private_data;
+>  	char line[64];
+>  	unsigned int id, verb, data, extdata;
+> +
+>  	while (!snd_info_get_line(buffer, line, sizeof(line))) {
+>  		if (sscanf(line, "%u %u %u %u", &id, &verb, &data, &extdata) != 4)
+>  			continue;
+> @@ -150,6 +151,7 @@ static void lola_proc_codec_rw_read(struct snd_info_entry *entry,
+>  				    struct snd_info_buffer *buffer)
+>  {
+>  	struct lola *chip = entry->private_data;
+> +
+>  	snd_iprintf(buffer, "0x%x 0x%x\n", chip->debug_res, chip->debug_res_ex);
+>  }
+>  
+> -- 
+> 2.39.2
+> 
