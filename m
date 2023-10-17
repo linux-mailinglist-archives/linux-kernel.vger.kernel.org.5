@@ -2,129 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34DFA7CC73B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8212D7CC73A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344285AbjJQPPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 11:15:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55886 "EHLO
+        id S1343672AbjJQPPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 11:15:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235058AbjJQPPw (ORCPT
+        with ESMTP id S235052AbjJQPPn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 11:15:52 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2042.outbound.protection.outlook.com [40.107.94.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 565F09F
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 08:15:50 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UU+GV+QK15kpud94Sc+gVJlBb3JQ93JwoAgPQ4eicWVcjeHnTH8IdruN84Fzri7gSkGvT1s0quoQg0Lu4zOcn1q+GWgY9MNYZnbDPu66UhJIZtXmqzUefqH9cdVGu6oywbnS9G/ITvICVUs9UjFh0HnDR4XMwouL8ooX7aX11DHreMpzCc4GGuDCvaw+6cWNVF6Kkd6CsUu7XmXG52DSiOhOeyvNjGQ8PRnJ7TEM0Ay7BHlKDMVKIE4K9ns82AtZ43RhGV3kF1UgeWaS9a+T6taoTAJdjuB+XrDJIxmZsYoX8+8tt+IYyM3qRUAIfneV09HQEbc5pjqqS7gtaPnjrg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OrOShaHwuut1dlGCwnZaKRJQJvCdtw90qfOulpybYx8=;
- b=BX+n79TtoMwnUup4ys2Zd1tCKMquckRMF6Yw9sQ7UTNrw30n9YBX4WVKsrs1SHjKwKa1Aqef6dKXDEKq+0HYE6u64/9SFsRSKwdQMtBBRAJx82ImqYvNrLRwgfAMx6t/mhxdB9OlTFG28t7FzNV6Uu44/YcL/uiyClW2hPC9PyrtxN1Z5Sm57Z17QIjeGdCW+27gDxpkL+IxBaKvocWTEeC+HYjHUyjMC5Gz5f4bciNtnoi1ueFz17JIMsFYtGMIM9k/Al+9YvoZBIAG6qe27OZFyW65f3agNBKfdxOrcqPnVNZihtngQ8NX27DGrAbkj9smAWlEBWjt6/Vcu+P13w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OrOShaHwuut1dlGCwnZaKRJQJvCdtw90qfOulpybYx8=;
- b=G7wgBXjsACq4IjptnF4AMiIoF+5j/9brgZmiYvPT1p5UxnqYZeens4e4NVbkg0QNZlc/vNsOnW+7dJTx9Lycm5jfZZfDOnh+FS94fvz7VdrhcaYO61oYaB96pkwIHCAJ2Ry9GPh8Cdma9AgJPzfYGgKizD18njQOKUDlNM9t7o4=
-Received: from CH0PR03CA0040.namprd03.prod.outlook.com (2603:10b6:610:b3::15)
- by SJ0PR12MB6855.namprd12.prod.outlook.com (2603:10b6:a03:47e::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.45; Tue, 17 Oct
- 2023 15:15:44 +0000
-Received: from DS2PEPF00003441.namprd04.prod.outlook.com
- (2603:10b6:610:b3:cafe::33) by CH0PR03CA0040.outlook.office365.com
- (2603:10b6:610:b3::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36 via Frontend
- Transport; Tue, 17 Oct 2023 15:15:43 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS2PEPF00003441.mail.protection.outlook.com (10.167.17.68) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6907.20 via Frontend Transport; Tue, 17 Oct 2023 15:15:43 +0000
-Received: from fedora.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 17 Oct
- 2023 10:15:43 -0500
-From:   Luben Tuikov <luben.tuikov@amd.com>
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-CC:     Luben Tuikov <luben.tuikov@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] drm/sched: Add description of parameters in job_done
-Date:   Tue, 17 Oct 2023 11:15:21 -0400
-Message-ID: <20231017151521.12388-1-luben.tuikov@amd.com>
-X-Mailer: git-send-email 2.42.0
+        Tue, 17 Oct 2023 11:15:43 -0400
+Received: from mail-4018.proton.ch (mail-4018.proton.ch [185.70.40.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0533CB0;
+        Tue, 17 Oct 2023 08:15:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bluemarch.art;
+        s=protonmail; t=1697555735; x=1697814935;
+        bh=++9pU1La/0B9FiBK0CkwIdzhIQraonwBLREebKGpRAg=;
+        h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+        b=gvxOeY1XwUMAs9i7bGuAlH66JEHL2qGdQ7chdlMiR5bHF50acZ0K2E6ztwRyv3yQO
+         JJk7JL8XOW8UHGeamXM896xnt6E1Oqs3wryhT/6tLSZc6l2DfLnqU1nbRNAT0Jq7Xs
+         y0wLb7O0SL9h/Sutb7+jqqBnHvULw0D31kYPaSzPVw/Z8zjEiMgGSjQCDbTbG0C2e3
+         wsmto76yMz+0b+wsOjWfpvYKQXKuYJQqchiUtEHwBmxXC+4DA3YOTPeB7PCW4Y8nKN
+         aRghUrDdv307FTbvr4n8qSdDF8jgm16BwXLZNrqIStnBEfHs/StU+ghuwbqUn8nibt
+         xmrHX8vFLzIhg==
+Date:   Tue, 17 Oct 2023 15:15:21 +0000
+To:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        dmitry.torokhov@gmail.com
+From:   Szilard Fabian <szfabian@bluemarch.art>
+Cc:     Szilard Fabian <szfabian@bluemarch.art>
+Subject: [PATCH] Input: i8042 - add Fujitsu Lifebook U728 to i8042 quirk table
+Message-ID: <20231017151114.99135-2-szfabian@bluemarch.art>
+Feedback-ID: 87830438:user:proton
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-X-check-string-leak: v1.1
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF00003441:EE_|SJ0PR12MB6855:EE_
-X-MS-Office365-Filtering-Correlation-Id: a7ff6dae-2120-4949-cb63-08dbcf23eec7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YU9Q0TQnEoPsx/KE99Yfd50A/xdaAFtDbF7b959zBdDoGbdh2e5hPZyMeTkS6sZCO8gsfnlbW38GWRR9+98nyNPyfX7dA/l3mC8qqYM6kYlfxOgoDdNUwx6BYGKnDWwuIMmVS7+h6S0rOhhhzYeRe/G7igzIaNYamWIudxeMMDGVwk/dqFEjQTmIWcQAraAoS5EF+ES8J1MNgeh5NaY6jHouC/CAiqJNZqZDV72K0X6xsCUKpeoTKbILPUtrkiEBmHjyFlwGysMmolAT7JHroi+jkHVME9NM8rJghQQ6fLmyNLNkulPFzNiTeG2FsOxfPbvU2xXk1hgioazSHAlYK556TqKZynKYfr1d5muqlQh9RD/S2g26TAx4/LcL4C9ajkso0u1lxMV84xpLN41O7nDk+NVQOVTMN1SoQ4PTu74BAY6FX8AlQOc91yj3jSVSMP0fjp+0uBv/3z0ZUlE++deEPDPhsvSHyejONKDmSN1LRqsmsx9pAG4gvMbsXUqvg3n25EGuSFzk90/pIqt8aS6f3W1wh8sUR4dvkX+8GRcGWupftFFY4mcntiTQU+j15Q4bgjSW9wDAf7Dj3lRU1Z0+Y6QEzbhEbFW3aSfqxgMYELzoRmLe915tuRuegr1J5ZgYj2KMChtwmFEMC4snIzvU4iBco8sxlyxB9FGDRlb6wIkSjh4qqDG/djASuDEIWqMFmgxEQrPp6jlCfSdpNTlzop/+ge9SEGIeEbtevXb19ZTHkPH36B+9t07DBMachiwAE0MHf60rL3+OdnUCnQ==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(346002)(136003)(39860400002)(396003)(230922051799003)(1800799009)(186009)(451199024)(82310400011)(64100799003)(40470700004)(46966006)(36840700001)(47076005)(7696005)(83380400001)(36860700001)(26005)(16526019)(40460700003)(8936002)(336012)(2616005)(426003)(81166007)(40480700001)(2906002)(86362001)(44832011)(41300700001)(4326008)(36756003)(6666004)(70206006)(54906003)(5660300002)(316002)(70586007)(6916009)(966005)(1076003)(356005)(8676002)(82740400003)(478600001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Oct 2023 15:15:43.9152
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a7ff6dae-2120-4949-cb63-08dbcf23eec7
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS2PEPF00003441.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6855
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a kernel test robot complaint that there's no description of the "result"
-parameter to drm_sched_job_done() function.
+Another Fujitsu-related patch.
 
-Cc: Christian König <christian.koenig@amd.com>
-Fixes: 539f9ee4b52a8b ("drm/scheduler: properly forward fence errors")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202310172018.eaPyawVC-lkp@intel.com/
-Signed-off-by: Luben Tuikov <luben.tuikov@amd.com>
+In the initial boot stage the integrated keyboard of Fujitsu Lifebook U728
+refuses to work and it's not possible to type for example a dm-crypt
+passphrase without the help of an external keyboard.
+
+i8042.nomux kernel parameter resolves this issue but using that a PS/2
+mouse is detected. This input device is unused even when the i2c-hid-acpi
+kernel module is blacklisted making the integrated ELAN touchpad
+(04F3:3092) not working at all.
+
+So this notebook uses a hid-over-i2c touchpad which is managed by the
+i2c_designware input driver. Since you can't find a PS/2 mouse port on this
+computer and you can't connect a PS/2 mouse to it even with an official
+port replicator I think it's safe to not use the PS/2 mouse port at all.
+
+Signed-off-by: Szilard Fabian <szfabian@bluemarch.art>
 ---
- drivers/gpu/drm/scheduler/sched_main.c | 1 +
- 1 file changed, 1 insertion(+)
+I think the same configuration could be applied to Lifebook U748 and U758
+too but I can't test this theory on these machines.
+---
+ drivers/input/serio/i8042-acpipnpio.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/scheduler/sched_main.c
-index 5a3a622fc672f3..6f2cf72e79b15e 100644
---- a/drivers/gpu/drm/scheduler/sched_main.c
-+++ b/drivers/gpu/drm/scheduler/sched_main.c
-@@ -259,6 +259,7 @@ drm_sched_rq_select_entity_fifo(struct drm_sched_rq *rq)
- /**
-  * drm_sched_job_done - complete a job
-  * @s_job: pointer to the job which is done
-+ * @result: The result of the finished scheduler fence.
-  *
-  * Finish the job's fence and wake up the worker thread.
-  */
-
-base-commit: 213f891525c222e8ed145ce1ce7ae1f47921cb9c
--- 
+diff --git a/drivers/input/serio/i8042-acpipnpio.h b/drivers/input/serio/i8=
+042-acpipnpio.h
+index 028e45bd050b..983f31014330 100644
+--- a/drivers/input/serio/i8042-acpipnpio.h
++++ b/drivers/input/serio/i8042-acpipnpio.h
+@@ -618,6 +618,14 @@ static const struct dmi_system_id i8042_dmi_quirk_tabl=
+e[] __initconst =3D {
+ =09=09},
+ =09=09.driver_data =3D (void *)(SERIO_QUIRK_NOMUX)
+ =09},
++=09{
++=09=09/* Fujitsu Lifebook U728 */
++=09=09.matches =3D {
++=09=09=09DMI_MATCH(DMI_SYS_VENDOR, "FUJITSU"),
++=09=09=09DMI_MATCH(DMI_PRODUCT_NAME, "LIFEBOOK U728"),
++=09=09},
++=09=09.driver_data =3D (void *)(SERIO_QUIRK_NOAUX)
++=09},
+ =09{
+ =09=09/* Gigabyte M912 */
+ =09=09.matches =3D {
+--=20
 2.42.0
+
 
