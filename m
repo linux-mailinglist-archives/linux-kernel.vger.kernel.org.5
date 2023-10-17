@@ -2,101 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E75187CBA24
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 07:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 241C97CBA27
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 07:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234422AbjJQF2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 01:28:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37128 "EHLO
+        id S234410AbjJQFct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 01:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234341AbjJQF2j (ORCPT
+        with ESMTP id S230343AbjJQFcs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 01:28:39 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AAEBF2;
-        Mon, 16 Oct 2023 22:28:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57768C433C7;
-        Tue, 17 Oct 2023 05:28:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697520516;
-        bh=cd+YCcvaHShnXv8nfPjDdkeIq4Z59L04bYAn6IBtZqw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ntF7ZIGwmlpol29wyVdJbpc8ID4cq0mtwqrWBDTeXAskry0rMCdoEruNogvmNsU+t
-         NqQxKvSGs75U5msvpeYdfieKunLtc052QQH4DU0a1YqSij6JKj9AjYwiUx6IJF+vx7
-         3hB2jykjVWnSdGmbbsidS3PKfrMzY2XXRKAyV3YNzG/4pjrrbMOWhmgZSVxAIMb1g8
-         pl21yGph/khjwE3zcQaY+r6QNKk3FbGILEtQcXNPrSm5LeBHiMpU9qNdbVOBCSBiFI
-         IXqh9/KduF32ZjkJiSMiVWKflbBYScyvvDDo4TgBsQLWoenLVAbzi/Zc4K0CCIrqDV
-         +TNT6LtjCrf8g==
-Date:   Mon, 16 Oct 2023 22:28:34 -0700
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     "Kaplan, David" <David.Kaplan@amd.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-tip-commits@vger.kernel.org" 
-        <linux-tip-commits@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>
-Subject: Re: [tip: x86/bugs] x86/retpoline: Ensure default return thunk isn't
- used at runtime
-Message-ID: <20231017052834.v53regh66hspv45n@treble>
-References: <20231012141031.GHZSf+V1NjjUJTc9a9@fat_crate.local>
- <169713303534.3135.10558074245117750218.tip-bot2@tip-bot2>
- <20231016211040.GA3789555@dev-arch.thelio-3990X>
- <20231016212944.GGZS2rSCbIsViqZBDe@fat_crate.local>
- <20231016214810.GA3942238@dev-arch.thelio-3990X>
- <SN6PR12MB270273A7D1AF5D59B920C94194D6A@SN6PR12MB2702.namprd12.prod.outlook.com>
+        Tue, 17 Oct 2023 01:32:48 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA13A4;
+        Mon, 16 Oct 2023 22:32:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1697520763;
+        bh=vMZfWwkElN246pFgTJdzSkVyZOT+LEHzT6mMBxK8ElA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tmnyq+sCRJA8EwqUkP0jyiFgPzzbQAkA8N3EqpwvN8iDT2IioU7F8nqLuLbFr6uvY
+         IvW7b3LKt2ueh5HJ3Lk2KdZm2R2eAY5qKLUzGggQSKq71C0GXqLYwBSD/+MQyt0tfN
+         9B9Zzu1Mq1Mkrhpj6n8HcHwG+/FSPxLvXXLVRAPsGiZA5QMfmL+n4JPCi77cfE03Lc
+         yE7aJzdXPyOHE9wElYpdRagZPN8CNS9CFgi5uSeRtbgb4UFJJbaDLO9OjRvCFucVtd
+         KvBv8kv8m23lUAs6dceewazmoLbHlRxJMt5cE7xoWYEIuu/bVjtkB90jk1x643r+/N
+         6gwJeXeuxmYrw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S8jL35lqZz4wxZ;
+        Tue, 17 Oct 2023 16:32:43 +1100 (AEDT)
+Date:   Tue, 17 Oct 2023 16:32:42 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: the fetch of the tomoyo tree failed
+Message-ID: <20231017163242.62af10b3@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <SN6PR12MB270273A7D1AF5D59B920C94194D6A@SN6PR12MB2702.namprd12.prod.outlook.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/.kgUHYOmDSE3ohIjAL6WlUw";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 04:31:09AM +0000, Kaplan, David wrote:
-> I think I found the problem, although I'm not sure the best way to fix it.
-> 
-> When KCSAN is enabled, GCC generates lots of constructor functions named _sub_I_00099_0 which call __tsan_init and then return.  The returns in these are generally annotated normally by objtool and fixed up at runtime.  But objtool runs on vmlinux.o and vmlinux.o does not include a couple of object files that are in vmlinux, like init/version-timestamp.o and .vmlinux.export.o, both of which contain _sub_I_00099_0 functions.  As a result, the returns in these functions are not annotated, and the panic occurs when we call one of them in do_ctors and it uses the default return thunk.
-> 
-> This difference can be seen by counting the number of these functions in the object files:
-> $ objdump -d vmlinux.o|grep -c "<_sub_I_00099_0>:"
-> 2601
-> $ objdump -d vmlinux|grep -c "<_sub_I_00099_0>:"
-> 2603
-> 
-> If these functions are only run during kernel boot, there is no speculation concern.  My first thought is that these two object files perhaps should be built without -mfunction-return=thunk-extern.  The use of that flag requires objtool to have the intended behavior and objtool isn't seeing these files.
-> 
-> Perhaps another option would be to not compile these two files with KCSAN, as they are already excluded from KASAN and GCOV it looks like.
+--Sig_/.kgUHYOmDSE3ohIjAL6WlUw
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I think the latter would be the easy fix, does this make it go away?
+Hi all,
 
-diff --git a/init/Makefile b/init/Makefile
-index ec557ada3c12..cbac576c57d6 100644
---- a/init/Makefile
-+++ b/init/Makefile
-@@ -60,4 +60,5 @@ include/generated/utsversion.h: FORCE
- $(obj)/version-timestamp.o: include/generated/utsversion.h
- CFLAGS_version-timestamp.o := -include include/generated/utsversion.h
- KASAN_SANITIZE_version-timestamp.o := n
-+KCSAN_SANITIZE_version-timestamp.o := n
- GCOV_PROFILE_version-timestamp.o := n
-diff --git a/scripts/Makefile.vmlinux b/scripts/Makefile.vmlinux
-index 3cd6ca15f390..c9f3e03124d7 100644
---- a/scripts/Makefile.vmlinux
-+++ b/scripts/Makefile.vmlinux
-@@ -19,6 +19,7 @@ quiet_cmd_cc_o_c = CC      $@
- 
- ifdef CONFIG_MODULES
- KASAN_SANITIZE_.vmlinux.export.o := n
-+KCSAN_SANITIZE_.vmlinux.export.o := n
- GCOV_PROFILE_.vmlinux.export.o := n
- targets += .vmlinux.export.o
- vmlinux: .vmlinux.export.o
+It failed like this:
+
+fatal: unable to access 'https://scm.osdn.net/gitroot/tomoyo/tomoyo-test1.g=
+it/': SSL certificate problem: certificate has expired
+
+and indeed it expired at 2023-10-16 23:59:59 UTC.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/.kgUHYOmDSE3ohIjAL6WlUw
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUuHHoACgkQAVBC80lX
+0GzZWQf/cCIZo3VUGvwDfJG5e8ohEKpWJ4Rw9GKW2kn6zj6zt6bd3aefXhI8cWDh
+m7sZT3dqTWGTBt0157rzsfb5GoubS+RT60gO4u07Y13L2mpWyip0WKfFZ/GCLwOX
+xlS7L89mnXiP9mwhSHaG92o0vth9jtZV3zWFchdnz6E5ia2tZoQXF398bKA/elc1
+0DkRClgOGK8vySimuT+OssmcrrEiLQxngJJXXeZbNOkcAgnXC4FKSvLjESub3MCK
+NlJW6PTZ8DLZibJsiJr1eN9FXDxz3MrwolIBZfrD6TfzqrKI53udwNzfppHlISy6
+n6BgKe4Bd3e9h79UqLqN9dLhryVXIA==
+=7Fyg
+-----END PGP SIGNATURE-----
+
+--Sig_/.kgUHYOmDSE3ohIjAL6WlUw--
