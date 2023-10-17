@@ -2,143 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C425D7CC876
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 18:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5845D7CC86D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 18:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344029AbjJQQLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 12:11:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37454 "EHLO
+        id S234593AbjJQQKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 12:10:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343776AbjJQQLU (ORCPT
+        with ESMTP id S232577AbjJQQKS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 12:11:20 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5513E9E;
-        Tue, 17 Oct 2023 09:11:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697559079; x=1729095079;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=5TkiqnrgGUR9l/9JjizuOwqg19NNV0hU60DdfXEYDDc=;
-  b=MzMPTeh0rVnc5zh/g61/WcPmeqP80KMkI+28KdC4Fi4Z8cWMiP1MotmO
-   caPcUSQ+jUJMVjv/uHiGKuPHsI0BdLgjkGo0eryqRXNbMLpvs3daGaAjP
-   93CZvL/racL50jpABYGcMFOg3NNEsRqynnXe91FWqTFU5sNHcp5nekwH1
-   Um14S4a9XdfETZuBEhlY+978uw32dgMEWQmuCsZtDU8kjY9KbbeXdYuB7
-   y6Osd8wm9IKCEq8fRbKbvj6AyBx6UDaG9bCbq38mhKCHut/ogJkRj2yQ0
-   oiZdCX16Pr1oSTb2miFbM28t2n9f3RSiT+TaPz+nH/7I5U6P3wMLdrXv/
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="365167515"
-X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
-   d="scan'208";a="365167515"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 09:09:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="759865021"
-X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
-   d="scan'208";a="759865021"
-Received: from asprado-mobl2.amr.corp.intel.com (HELO pbossart-mobl3.intel.com) ([10.212.55.179])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 09:09:48 -0700
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To:     alsa-devel@alsa-project.org, srinivas.kandagatla@linaro.org
-Cc:     tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org,
-        gregkh@linuxfoundation.org,
-        Bard liao <yung-chuan.liao@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Philippe Ombredanne <pombredanne@nexb.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 2/2] soundwire: fix initializing sysfs for same devices on different buses
-Date:   Tue, 17 Oct 2023 11:09:33 -0500
-Message-Id: <20231017160933.12624-3-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231017160933.12624-1-pierre-louis.bossart@linux.intel.com>
-References: <20231017160933.12624-1-pierre-louis.bossart@linux.intel.com>
+        Tue, 17 Oct 2023 12:10:18 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D419E;
+        Tue, 17 Oct 2023 09:10:16 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07DEEC433C7;
+        Tue, 17 Oct 2023 16:10:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1697559016;
+        bh=QVFWCEda7RXc1Fn/309y5pkkYsNBM3szVrP2lYj+EPk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vEOkJaybM7jummksAK+zXzsR+Fc05d9bzchW3jdf4Nk1TDXgJ1wOX0jhW5rTwMe/9
+         FFwgXY4Nm9FUstXs+Pzz6tj0YIEj5n/FGFpgAz9p7qm7toZEnWk8btV8sRVQVst67T
+         yFvS3dEAgLG0WANjJ3Smnrb3Qrt7yH9zs+IQeiFo=
+Date:   Tue, 17 Oct 2023 18:10:08 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Ekansh Gupta <quic_ekangupt@quicinc.com>
+Cc:     srinivas.kandagatla@linaro.org, linux-arm-msm@vger.kernel.org,
+        ekangupt@qti.qualcomm.com, linux-kernel@vger.kernel.org,
+        fastrpc.upstream@qti.qualcomm.com
+Subject: Re: [PATCH v4 4/5] misc: fastrpc: Add support to save and restore
+ interrupted
+Message-ID: <2023101743-discern-plunging-83e4@gregkh>
+References: <1697534799-5124-1-git-send-email-quic_ekangupt@quicinc.com>
+ <1697534799-5124-5-git-send-email-quic_ekangupt@quicinc.com>
+ <2023101739-heftiness-reproach-ef96@gregkh>
+ <d800dcbf-83dc-4b0f-bdd3-fc0efb5dd771@quicinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d800dcbf-83dc-4b0f-bdd3-fc0efb5dd771@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+On Tue, Oct 17, 2023 at 08:36:28PM +0530, Ekansh Gupta wrote:
+> 
+> On 10/17/2023 6:50 PM, Greg KH wrote:
+> > On Tue, Oct 17, 2023 at 02:56:38PM +0530, Ekansh Gupta wrote:
+> > > For any remote call, driver sends a message to DSP using RPMSG
+> > > framework. After message is sent, there is a wait on a completion
+> > > object at driver which is completed when DSP response is received.
+> > > 
+> > > There is a possibility that a signal is received while waiting
+> > > causing the wait function to return -ERESTARTSYS. In this case
+> > > the context should be saved and it should get restored for the
+> > > next invocation for the thread.
+> > > 
+> > > Adding changes to support saving and restoring of interrupted
+> > > fastrpc contexts.
+> > > 
+> > > Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
+> > > Change-Id: Ia101acf7c1bf6018635536082bf7ea009093c948
+> > > ---
+> > > Changes in v2:
+> > >    - Fixed missing definition
+> > >    - Fixes compile time issue
+> > You forgot to run checkpatch.pl :(
+> 
+> I did run checkpatch.pl and also tried compilation test. checkpatch.pl is
+> suggesting 0 errors, 0 warning and compilation also worked without any
+> errors. I might have checked on last week's base as there were no changes in
+> these files. I'll check the patches with latest version and update again if
+> any errors/warnings are observed. Thanks for reviewing the patch. -ekansh
 
-If same devices with same device IDs are present on different soundwire
-buses, the probe fails due to conflicting device names and sysfs
-entries:
-
-  sysfs: cannot create duplicate filename '/bus/soundwire/devices/sdw:0:0217:0204:00:0'
-
-The link ID is 0 for both devices, so they should be differentiated by
-the controller ID. Add the controller ID so, the device names and sysfs entries look
-like:
-
-  sdw:1:0:0217:0204:00:0 -> ../../../devices/platform/soc@0/6ab0000.soundwire-controller/sdw-master-1-0/sdw:1:0:0217:0204:00:0
-  sdw:3:0:0217:0204:00:0 -> ../../../devices/platform/soc@0/6b10000.soundwire-controller/sdw-master-3-0/sdw:3:0:0217:0204:00:0
-
-[PLB changes: use bus->controller_id instead of bus->id]
-
-Fixes: 7c3cd189b86d ("soundwire: Add Master registration")
-Cc: <stable@vger.kernel.org>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Co-developed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- drivers/soundwire/slave.c        | 12 ++++++------
- sound/soc/intel/boards/sof_sdw.c |  4 ++--
- 2 files changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
-index c1c1a2ac293a..060c2982e26b 100644
---- a/drivers/soundwire/slave.c
-+++ b/drivers/soundwire/slave.c
-@@ -39,14 +39,14 @@ int sdw_slave_add(struct sdw_bus *bus,
- 	slave->dev.fwnode = fwnode;
- 
- 	if (id->unique_id == SDW_IGNORED_UNIQUE_ID) {
--		/* name shall be sdw:link:mfg:part:class */
--		dev_set_name(&slave->dev, "sdw:%01x:%04x:%04x:%02x",
--			     bus->link_id, id->mfg_id, id->part_id,
-+		/* name shall be sdw:ctrl:link:mfg:part:class */
-+		dev_set_name(&slave->dev, "sdw:%01x:%01x:%04x:%04x:%02x",
-+			     bus->controller_id, bus->link_id, id->mfg_id, id->part_id,
- 			     id->class_id);
- 	} else {
--		/* name shall be sdw:link:mfg:part:class:unique */
--		dev_set_name(&slave->dev, "sdw:%01x:%04x:%04x:%02x:%01x",
--			     bus->link_id, id->mfg_id, id->part_id,
-+		/* name shall be sdw:ctrl:link:mfg:part:class:unique */
-+		dev_set_name(&slave->dev, "sdw:%01x:%01x:%04x:%04x:%02x:%01x",
-+			     bus->controller_id, bus->link_id, id->mfg_id, id->part_id,
- 			     id->class_id, id->unique_id);
- 	}
- 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 869dacb81133..6575549b8407 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -1242,11 +1242,11 @@ static int fill_sdw_codec_dlc(struct device *dev,
- 	else if (is_unique_device(adr_link, sdw_version, mfg_id, part_id,
- 				  class_id, adr_index))
- 		codec->name = devm_kasprintf(dev, GFP_KERNEL,
--					     "sdw:%01x:%04x:%04x:%02x", link_id,
-+					     "sdw:0:%01x:%04x:%04x:%02x", link_id,
- 					     mfg_id, part_id, class_id);
- 	else
- 		codec->name = devm_kasprintf(dev, GFP_KERNEL,
--					     "sdw:%01x:%04x:%04x:%02x:%01x", link_id,
-+					     "sdw:0:%01x:%04x:%04x:%02x:%01x", link_id,
- 					     mfg_id, part_id, class_id, unique_id);
- 
- 	if (!codec->name)
--- 
-2.39.2
+The "Change-Id:" should not be there, and I thought checkpatch would
+catch that.  If not, no big deal, you should have :)
 
