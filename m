@@ -2,54 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A0D7CBCD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 09:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94BCF7CBCD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 09:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234669AbjJQHxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 03:53:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59732 "EHLO
+        id S234701AbjJQHx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 03:53:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234608AbjJQHxD (ORCPT
+        with ESMTP id S234646AbjJQHxY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 03:53:03 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4A2AB
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 00:53:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA132C433C7;
-        Tue, 17 Oct 2023 07:52:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697529180;
-        bh=p4vpHmypakCe2FUK/2r5Z+O00L713pYXDijPBBsNJtM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n3EcTVMYCp1luKu0MYqwDlTz6z3NwwAlbckflCa9SjThkR/IQPIVbYCG+RfqHTCP/
-         NPKfhTe7AKTD+QNo720QTt4hZ0/Zg5pZ8QJtEt87QHVB2DRB+S3s9IgWtHHNbkK0rd
-         ftudnKKxgDiZ2Nkn9mWsAQv6u/NqfEfQb6q+4Q6TqSDuA9CX1iyJVfHkR+GNpH9ZuF
-         5swsQ9Y33VQI0JjskK79q5EYN8flWzVZ2hdrR5Zy2GbELOrfissMawNbqQXN6jBLgO
-         x4AA6/EZ+3BlnN+nCEUxmNsnb4v2K5Coz321wwvQOffPpUg2XGbecOKJO5jnnBKn2H
-         /tC5gCkMjhaSg==
-Date:   Tue, 17 Oct 2023 10:52:46 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     x86@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] x86/mm: drop 4MB restriction on minimal NUMA node size
-Message-ID: <20231017075246.GA2824@kernel.org>
-References: <20231017062215.171670-1-rppt@kernel.org>
- <4207feb8-be8c-4d49-b880-31366c0414cb@redhat.com>
+        Tue, 17 Oct 2023 03:53:24 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D037F7
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 00:53:23 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-53e07db272cso8271806a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 00:53:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697529202; x=1698134002; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Hlgpw+L9LnX18jEvUn1qVQk3D6pVTwN3aQ8ouOWfzN4=;
+        b=hNq7VUC1XJIOXJyBPdsK9n+DYKu/BQTRpekJt1wbpsGrdpifQo0Gm3a4geRBUsB03r
+         chNtpBwSb/SG+Ase0kG9FznvAfQy4oE8b7/yLfETXpM8eyucxlBJL7fgFlU77vc0Qcr6
+         ER2eVT0U02mo7jKNe4JFzNgiII4HJW7WR4b6NuJ17GynfcvpVT3Wospd0rW1KKnUPB/C
+         t7spBzbvZbLid/0+BN4NCSfmNMdRUROhfcKbfdyDeeDem1+khZwPNS2EFyDSe2Vomvus
+         KDUHZIuESs39Nyu1z/81vWpCCKaLuQuRzaK9Eebc9HqlxDZVZESCAT1mv5dnzk56tCV6
+         bTdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697529202; x=1698134002;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hlgpw+L9LnX18jEvUn1qVQk3D6pVTwN3aQ8ouOWfzN4=;
+        b=U7uSk42fufxnImlcRAUjS6K5LNHdvcKSyiEvt9MK9hlfZ7ZZcvcBV0LLXAVu7kD4Qu
+         QsyOpV3osqApAFJWlf2g60VHNLXh3UWgEXQNNWNLed5sWFPq/E2Rx+wJv9hV+FqUqkRx
+         VQtPzaodVFJFE/iK5VCfNWUf2I7HvGVyj0o88MZZUmnzhIEm+qMJXfnF1YdA5/n9vWrU
+         MA0hmBPiAy2cM7te0Mp3menodyVubBTcUe5GqY9Zse0lSK21b/m0kP25g0X/0YLD+cJO
+         wp9diKXDEFilJbtm/pKS5EEmpKtjNlS9fjfylj2oxenrtutFTuEuqkzDdApL8FuxGCE9
+         9+OQ==
+X-Gm-Message-State: AOJu0YyKb2M+X55ud7PuMfPf4gNDFPxSfermOEf2Q+FUFRCeKKMmTOLE
+        alcpt8rVN8/MhRZU0KWmQWqMxg==
+X-Google-Smtp-Source: AGHT+IECmWy+rb4TCclYHjf+L6Ub5W2G/aphVU/dH8jOzcsB0h3R87eoDggRzvLGB1UVpAT4fB2W1Q==
+X-Received: by 2002:a05:6402:26d4:b0:51d:f5bd:5a88 with SMTP id x20-20020a05640226d400b0051df5bd5a88mr1310383edd.38.1697529201829;
+        Tue, 17 Oct 2023 00:53:21 -0700 (PDT)
+Received: from [172.20.10.8] ([213.233.104.181])
+        by smtp.gmail.com with ESMTPSA id em6-20020a056402364600b0053e37d13f4fsm706539edb.52.2023.10.17.00.53.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Oct 2023 00:53:20 -0700 (PDT)
+Message-ID: <5a488a21-596d-48f4-bfdc-28b206542563@linaro.org>
+Date:   Tue, 17 Oct 2023 10:53:17 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4207feb8-be8c-4d49-b880-31366c0414cb@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mtd: micron-st: enable lock/unlock for mt25qu512a
+Content-Language: en-US
+To:     SHUKLA Mamta Ramendra <mamta.shukla@leica-geosystems.com>,
+        "pratyush@kernel.org" <pratyush@kernel.org>,
+        "michael@walle.cc" <michael@walle.cc>,
+        "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+        "richard@nod.at" <richard@nod.at>,
+        "vigneshr@ti.com" <vigneshr@ti.com>,
+        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     GEO-CHHER-bsp-development 
+        <bsp-development.geo@leica-geosystems.com>
+References: <20230705154942.3936658-1-mamta.shukla@leica-geosystems.com>
+ <19800e51-a871-be9f-9eb5-5829237e2613@linaro.org>
+ <a8271289-0611-4e37-cf37-0be19a85656b@leica-geosystems.com>
+ <084ed945-7674-280f-5866-9238473a294d@leica-geosystems.com>
+ <17989610-d069-40e2-9b4d-7ca6bdf2497e@linaro.org>
+ <a24d7b3b-4077-9dbe-49ae-96f595b42223@leica-geosystems.com>
+ <2d7271b3-dd60-44bb-9700-f6a5295ea873@linaro.org>
+ <372046cb-9135-9a6c-fdb7-307a42f55b30@leica-geosystems.com>
+ <a86b93c4-a507-47c7-bdce-4aed8dfcf929@linaro.org>
+ <eb2a9138-a76e-4b1e-e001-315149c4dabd@leica-geosystems.com>
+ <f0a7acb3-00b5-433d-af5c-724a509fb816@linaro.org>
+ <bc76767e-00c1-47ca-9a27-2aa7d2a262f6@linaro.org>
+ <b9b7bb93-fe23-34dd-6a30-b1b0d792861f@leica-geosystems.com>
+ <2e3ce75d-7e2d-4e62-8660-48a41074c20c@linaro.org>
+ <fd6b5e43-7e90-b98d-79be-0c65840ec433@leica-geosystems.com>
+From:   Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <fd6b5e43-7e90-b98d-79be-0c65840ec433@leica-geosystems.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,69 +94,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 09:28:14AM +0200, David Hildenbrand wrote:
-> On 17.10.23 08:22, Mike Rapoport wrote:
-> > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> > 
-> > Qi Zheng reports crashes in a production environment and provides a
-> > simplified example as a reproducer:
-> > 
-> >    For example, if we use qemu to start a two NUMA node kernel,
-> >    one of the nodes has 2M memory (less than NODE_MIN_SIZE),
-> >    and the other node has 2G, then we will encounter the
-> >    following panic:
-> > 
-> >    [    0.149844] BUG: kernel NULL pointer dereference, address: 0000000000000000
-> >    [    0.150783] #PF: supervisor write access in kernel mode
-> >    [    0.151488] #PF: error_code(0x0002) - not-present page
-> >    <...>
-> >    [    0.156056] RIP: 0010:_raw_spin_lock_irqsave+0x22/0x40
-> >    <...>
-> >    [    0.169781] Call Trace:
-> >    [    0.170159]  <TASK>
-> >    [    0.170448]  deactivate_slab+0x187/0x3c0
-> >    [    0.171031]  ? bootstrap+0x1b/0x10e
-> >    [    0.171559]  ? preempt_count_sub+0x9/0xa0
-> >    [    0.172145]  ? kmem_cache_alloc+0x12c/0x440
-> >    [    0.172735]  ? bootstrap+0x1b/0x10e
-> >    [    0.173236]  bootstrap+0x6b/0x10e
-> >    [    0.173720]  kmem_cache_init+0x10a/0x188
-> >    [    0.174240]  start_kernel+0x415/0x6ac
-> >    [    0.174738]  secondary_startup_64_no_verify+0xe0/0xeb
-> >    [    0.175417]  </TASK>
-> >    [    0.175713] Modules linked in:
-> >    [    0.176117] CR2: 0000000000000000
-> > 
-> > The crashes happen because of inconsistency between nodemask that has
-> > nodes with less than 4MB as memoryless and the actual memory fed into
-> > core mm.
-> > 
-> > The commit 9391a3f9c7f1 ("[PATCH] x86_64: Clear more state when ignoring
-> > empty node in SRAT parsing") that introduced minimal size of a NUMA node
-> > does not explain why a node size cannot be less than 4MB and what boot
-> > failures this restriction might fix.
-> > 
-> > Since then a lot has changed and core mm won't confuse badly about small
-> > node sizes.
-> > 
-> > Drop the limitation for the minimal node size.
-> > 
-> > Reported-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> > Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
-> > Acked-by: David Hildenbrand <david@redhat.com>
-> > Acked-by: Michal Hocko <mhocko@suse.com>
-> > Link: https://lore.kernel.org/all/20230212110305.93670-1-zhengqi.arch@bytedance.com/
-> 
-> That's just a resend I assume? Or has anything changed?
+Hi, Shukla,
 
-Oh, I forgot RESEND prefix, sorry
- 
-> -- 
-> Cheers,
-> 
-> David / dhildenb
-> 
 
--- 
-Sincerely yours,
-Mike.
+On 16.10.2023 12:39, SHUKLA Mamta Ramendra wrote:
+> v3:
+> https://patchwork.ozlabs.org/project/linux-mtd/patch/6b89ae4e4d7a381050746458cb000cd3c60f7a42.1696849423.git.mamta.shukla@leica-geosystems.com/
+
+I've just sent v4 on your behalf to speed up the process. Please check
+what I did and if it looks good to you let me know.
+
+https://lore.kernel.org/linux-mtd/20231017074711.12167-1-tudor.ambarus@linaro.org/T/#t
+
+Cheers,
+ta
