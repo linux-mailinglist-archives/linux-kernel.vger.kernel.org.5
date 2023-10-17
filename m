@@ -2,168 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7745F7CBC1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 09:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7437CBC56
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 09:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234571AbjJQHPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 03:15:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49828 "EHLO
+        id S234639AbjJQHfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 03:35:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234469AbjJQHPr (ORCPT
+        with ESMTP id S233857AbjJQHfF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 03:15:47 -0400
-Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 559FE8E;
-        Tue, 17 Oct 2023 00:15:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=protonmail; t=1697526943; x=1697786143;
-        bh=acUd1lSaIk6mqFLWpDrtsFDJMd6E9whjQUC+IiZu2Vs=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=IQWp3b+DXcNWxfbyrxfOxJC4DldaHNEsBjLcqtbHOlpMGxp/jZKEnQkG8zWouSp8T
-         inCvh+IZS5Ewux0jJQBmR+Uvgaa4gmoyi7bG5i5HrzwQ2jKVIRq6PHEI2vJZGtivye
-         QsfysrKVo6rhH5TdPCJ8F9YOBo+MP3GlwPbkDRohCk8JriYOgtVh2F3Q4GPx+MTtjR
-         O1yj6se5a57k50iVh+3cii7qcI7Q4iSijRehyc08xKv/W5XZiLsN5QS1KeKnLC2oJB
-         98m3Wc4cFEVSw7WOKQYKi4Vrm9ohrXhKNeIeRYNHui4gyAH9H/DAF4A8YUT9szHy0s
-         c8sOJ1q8zUPRw==
-Date:   Tue, 17 Oct 2023 07:15:16 +0000
-To:     Gary Guo <gary@garyguo.net>, Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
-        Vincenzo Palazzo <vincenzopalazzodev@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-From:   Benno Lossin <benno.lossin@proton.me>
-Cc:     Wedson Almeida Filho <walmeida@microsoft.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rust: bindings: rename const binding using sed
-Message-ID: <f9e1a738-43f5-4ca6-9593-1b92053101ff@proton.me>
-In-Reply-To: <20230930133704.13313-1-gary@garyguo.net>
-References: <20230930133704.13313-1-gary@garyguo.net>
-Feedback-ID: 71780778:user:proton
+        Tue, 17 Oct 2023 03:35:05 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F94595
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 00:35:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9ED4EC433C7;
+        Tue, 17 Oct 2023 07:35:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1697528103;
+        bh=uFcJLd6HAdVliYI8o7pEF7cyGfZ+4ll1EYpzGw8A6s8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AV0UvdJHc8R/P8WUH8SZztzDgI6WSYhJUxuEjlWRV+benN2o6GGhuy5GXDDMQ8S/p
+         eMYbfX01rSTa3CM2utRcaoJw2uu9Ldnx0WueGLQm/S/gsb42IOvf2lC1xYzMO4Dm9L
+         UfudN0EhAWzVhxpFq9/xqjLXKFUhXe6RQO7L6l/0=
+Date:   Tue, 17 Oct 2023 09:17:20 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Calvince Otieno <calvncce@gmail.com>
+Cc:     gustavo@embeddedor.com, outreachy@lists.linux.dev,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Deepak R Varma <drv@mailo.com>,
+        Simon Horman <horms@kernel.org>, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: wlan-ng: coding style corrections
+Message-ID: <2023101723-molar-defective-7193@gregkh>
+References: <ZS4ysMWnjvWmnPvI@lab-ubuntu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZS4ysMWnjvWmnPvI@lab-ubuntu>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.09.23 15:36, Gary Guo wrote:
-> Current for consts that bindgen don't recognise, we define a helper
-> constant with
->=20
->      const <TYPE> BINDINGS_<NAME> =3D <NAME>;
->=20
-> in `bindings_helper.h` and then we put
->=20
->      pub const <NAME>: <TYPE> =3D BINDINGS_<NAME>;
->=20
-> in `bindings/lib.rs`. This is fine that we currently only have 3
-> constants that are defined this way, but is going to be more annoying
-> when more constants are added since every new constant needs to be
-> defined in two places.
->=20
-> This patch changes the way we define constant helpers to
->=20
->      const <TYPE> RUST_BINDING_<NAME> =3D <NAME>;
->=20
-> and then use `sed` to postprocess Rust code by generated by bindgen to
-> remove the distinct prefix, so user of the binding crate can refer to
-> the name directly.
->=20
-> Signed-off-by: Gary Guo <gary@garyguo.net>
-> ---
->   rust/Makefile                   | 2 ++
->   rust/bindings/bindings_helper.h | 6 +++---
->   rust/bindings/lib.rs            | 3 ---
->   rust/kernel/allocator.rs        | 2 +-
->   4 files changed, 6 insertions(+), 7 deletions(-)
->=20
-> diff --git a/rust/Makefile b/rust/Makefile
-> index 14d93cf60a95..20889302b172 100644
-> --- a/rust/Makefile
-> +++ b/rust/Makefile
-> @@ -339,6 +339,8 @@ quiet_cmd_bindgen =3D BINDGEN $@
->=20
->   $(obj)/bindings/bindings_generated.rs: private bindgen_target_flags =3D=
- \
->       $(shell grep -v '^#\|^$$' $(srctree)/$(src)/bindgen_parameters)
-> +$(obj)/bindings/bindings_generated.rs: private bindgen_target_extra =3D =
-; \
-> +    sed -Ei 's/pub const RUST_BINDING_([a-zA-Z0-9_]*)/pub const \1/g' $@
+On Tue, Oct 17, 2023 at 10:07:28AM +0300, Calvince Otieno wrote:
+> This patch brings the codebase in compliance with the Linux kernel coding
+> style guidelines, as outlined in the document at
+> https://www.kernel.org/doc/html/latest/process/coding-style.html.
+> 
+> Changes Made:
+> - Adjusted line lengths to a maximum of 80 characters
+> 
+> The guide states that the preferred limit on the length of a single
+> line is 80 columns. Statements longer than 80 columns should be broken
+> into sensible chunks, unless exceeding 80 columns significantly increases
+> readability and does not hide information.
 
-Would it make sense to use `^pub const...`?
+100 columns is ok to use now, so this patch should not be needed.
 
-I also agree with Alice that we could use a less generic name as the
-prefix.
+sorry,
 
-With those things fixed:
-
-Reviewed-by: Benno Lossin <benno.lossin@proton.me>
-
---=20
-Cheers,
-Benno
-
->   $(obj)/bindings/bindings_generated.rs: $(src)/bindings/bindings_helper.=
-h \
->       $(src)/bindgen_parameters FORCE
->   =09$(call if_changed_dep,bindgen)
-> diff --git a/rust/bindings/bindings_helper.h b/rust/bindings/bindings_hel=
-per.h
-> index 85f013ed4ca4..c41eaab4ddb2 100644
-> --- a/rust/bindings/bindings_helper.h
-> +++ b/rust/bindings/bindings_helper.h
-> @@ -15,6 +15,6 @@
->   #include <linux/workqueue.h>
->=20
->   /* `bindgen` gets confused at certain things. */
-> -const size_t BINDINGS_ARCH_SLAB_MINALIGN =3D ARCH_SLAB_MINALIGN;
-> -const gfp_t BINDINGS_GFP_KERNEL =3D GFP_KERNEL;
-> -const gfp_t BINDINGS___GFP_ZERO =3D __GFP_ZERO;
-> +const size_t RUST_BINDING_ARCH_SLAB_MINALIGN =3D ARCH_SLAB_MINALIGN;
-> +const gfp_t RUST_BINDING_GFP_KERNEL =3D GFP_KERNEL;
-> +const gfp_t RUST_BINDING___GFP_ZERO =3D __GFP_ZERO;
-> diff --git a/rust/bindings/lib.rs b/rust/bindings/lib.rs
-> index 9bcbea04dac3..40ddaee50d8b 100644
-> --- a/rust/bindings/lib.rs
-> +++ b/rust/bindings/lib.rs
-> @@ -48,6 +48,3 @@ mod bindings_helper {
->   }
->=20
->   pub use bindings_raw::*;
-> -
-> -pub const GFP_KERNEL: gfp_t =3D BINDINGS_GFP_KERNEL;
-> -pub const __GFP_ZERO: gfp_t =3D BINDINGS___GFP_ZERO;
-> diff --git a/rust/kernel/allocator.rs b/rust/kernel/allocator.rs
-> index a8f3d5be1af1..4b057e837358 100644
-> --- a/rust/kernel/allocator.rs
-> +++ b/rust/kernel/allocator.rs
-> @@ -21,7 +21,7 @@ unsafe fn krealloc_aligned(ptr: *mut u8, new_layout: La=
-yout, flags: bindings::gf
->=20
->       let mut size =3D layout.size();
->=20
-> -    if layout.align() > bindings::BINDINGS_ARCH_SLAB_MINALIGN {
-> +    if layout.align() > bindings::ARCH_SLAB_MINALIGN {
->           // The alignment requirement exceeds the slab guarantee, thus t=
-ry to enlarge the size
->           // to use the "power-of-two" size/alignment guarantee (see comm=
-ents in `kmalloc()` for
->           // more information).
-> --
-> 2.40.1
->=20
-
-
+greg k-h
