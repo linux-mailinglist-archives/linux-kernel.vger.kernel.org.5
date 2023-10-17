@@ -2,257 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB6CF7CCADA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 20:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92DB87CCAD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 20:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232770AbjJQSiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 14:38:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35984 "EHLO
+        id S234197AbjJQShu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 14:37:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234486AbjJQSh7 (ORCPT
+        with ESMTP id S233170AbjJQShs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 14:37:59 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E763AD3
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:37:55 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-507a0907896so4849844e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:37:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697567871; x=1698172671; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E0ndmeFAnooDYJrLwBWEykUK1jnu79vBWHr+CSspHeI=;
-        b=d+8ibS9HVj8ISXpJ7WsVfmRuCtpTJPJPrPhrzcFH6WvzoucV+mYpFWL++9pCdsTnlE
-         Z/QexG9mCbX+Uk7ybfQ2w01NZ1WKZxL4evA2Zqew1tTqL0nMNYCFBEevT+pH8EJAbznm
-         fzQjTSP7UE+Pxl5mj8+/ou2Ny3X60du7RnElQ=
+        Tue, 17 Oct 2023 14:37:48 -0400
+Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E580990;
+        Tue, 17 Oct 2023 11:37:46 -0700 (PDT)
+Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-581d4f9a2c5so544588eaf.0;
+        Tue, 17 Oct 2023 11:37:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697567871; x=1698172671;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E0ndmeFAnooDYJrLwBWEykUK1jnu79vBWHr+CSspHeI=;
-        b=Zd5910V175HdePdYpwVMD95tprgpEyFbXwJEhQwYWRXqG0STO4uk06KOd2oQHnWMTL
-         d8U8ANqdT8Pc/omBrdogAbJGZZklazhdagdGM4OCAqDv+sHvBtrHkMRuslHigbqOxuXg
-         vX04NeGKKLVb1B8MSUzutEQEm39Gw7otEbWTetSMHipzb+EjrB7OSvkYhBunJ+sgmXK0
-         JGtOk4jEgnoWpBVOYpl+okJAwNutgcx7lr7RUf+vXcX3M6qBKhz/Vl+Tg5wdZSit0DFC
-         4t5OMT1xXu4/RwEDZYHooQFFvdMw8ME2edetgEsMi3Cug3WF/rfxY3+xD/ZpF9wqDQvt
-         0nFQ==
-X-Gm-Message-State: AOJu0Yw7ife5lgDQkWIn/7nhcSODWTruuTNETsYB7pGHU7QzhfeuJtLL
-        cuZCKhITaSZFAl9T/EEDTep5JBDS9+MGzjEScNO7gSLj
-X-Google-Smtp-Source: AGHT+IHvCZZD1+q8ooDB69u4xC2fintEchZyqfkPKUiUtgwBZ375MzsGA5QsqwuqGmpApeJofH6FjQ==
-X-Received: by 2002:a05:6512:60f:b0:4f9:5426:6622 with SMTP id b15-20020a056512060f00b004f954266622mr2200058lfe.69.1697567871063;
-        Tue, 17 Oct 2023 11:37:51 -0700 (PDT)
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com. [209.85.128.52])
-        by smtp.gmail.com with ESMTPSA id i27-20020a50d75b000000b0053e3d8f1d9fsm1625521edj.67.2023.10.17.11.37.49
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Oct 2023 11:37:50 -0700 (PDT)
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4078fe6a063so12145e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:37:49 -0700 (PDT)
-X-Received: by 2002:a05:600c:11cf:b0:400:c6de:6a20 with SMTP id
- b15-20020a05600c11cf00b00400c6de6a20mr16564wmi.3.1697567869494; Tue, 17 Oct
- 2023 11:37:49 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697567866; x=1698172666;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YLFTW47UAIBGXkLdBcrMObcIRWeTgSfUsdng3xDHxtM=;
+        b=BMwypR2a5byScN7pz4lybK0Vrn2rJXmjZXHBBPDK9nR11/1aDXVNLGgNRmUmsHYdB3
+         8QZMnZEZCWm9n5mGbvQPsTMI3YghS9plqHP8Djnvu27VhaTFUKkabh7L9DULpaF2Amb0
+         EGO+cOjpylpbqlmLxFBf2RGFI3a9M75NbObdgOOQv4cicyzqlV6VM/mOatjMVsIYFZie
+         V7KRh4inPb8H4SPfjE3Mp5P+rJE+A5ALqzZFzj0JJUGhcC0koJcXnh3jzu3zQuTql6Hi
+         IO4J74pVs2kxTY6d2M1D2eUcFSXhPNekKjNO2NXdOXh63GWyh/nhiEd/cLP5UGEasIIh
+         /atQ==
+X-Gm-Message-State: AOJu0Yw+byuWpPmIR9T0as8O2UHzvJd/lzODXUpcpe7P3872r9GAqA43
+        Cnji4hG7uWlARizWoJxVtQ==
+X-Google-Smtp-Source: AGHT+IGYM6bN09eNkmdiIkM37jIqZ+Xk32CbW/vA5PPI8vSWSwNcgWp/futKRqQbnQwewp5XJ/6FzA==
+X-Received: by 2002:a05:6820:608:b0:57b:92f2:1f64 with SMTP id e8-20020a056820060800b0057b92f21f64mr4158748oow.8.1697567866077;
+        Tue, 17 Oct 2023 11:37:46 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id br7-20020a0568201a4700b00573fb6178a6sm343044oob.44.2023.10.17.11.37.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Oct 2023 11:37:45 -0700 (PDT)
+Received: (nullmailer pid 2487541 invoked by uid 1000);
+        Tue, 17 Oct 2023 18:37:43 -0000
+Date:   Tue, 17 Oct 2023 13:37:43 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hanjun Guo <guohanjun@huawei.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Peng Fan <peng.fan@nxp.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Len Brown <lenb@kernel.org>, devicetree@vger.kernel.org,
+        Frank Rowand <frowand.list@gmail.com>
+Subject: Re: [PATCH v3 1/2] amba: bus: balance firmware node reference
+ counting
+Message-ID: <169756785858.2487391.2620832432762980006.robh@kernel.org>
+References: <20231006145732.3419115-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-References: <20231012192552.3900360-1-dianders@chromium.org>
- <20231012122458.v3.5.Ib2affdbfdc2527aaeef9b46d4f23f7c04147faeb@changeid>
- <29f9a2ff1979406489213909b940184f@realtek.com> <CAD=FV=U4rGozXHoK8+ejPgRtyoACy1971ftoatQivqzk2tk5ng@mail.gmail.com>
- <052401da00fa$dacccd90$906668b0$@realtek.com> <CAD=FV=XQswgKZh-JQ6PuKGRmrDMfDmZwM+MUpAcOk1=7Ppjyiw@mail.gmail.com>
-In-Reply-To: <CAD=FV=XQswgKZh-JQ6PuKGRmrDMfDmZwM+MUpAcOk1=7Ppjyiw@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 17 Oct 2023 11:37:32 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Vp_KE_hjWy7bKJbvmqwCQ67jhzfFoV368vB5ZGge=Yzw@mail.gmail.com>
-Message-ID: <CAD=FV=Vp_KE_hjWy7bKJbvmqwCQ67jhzfFoV368vB5ZGge=Yzw@mail.gmail.com>
-Subject: Re: [PATCH v3 5/5] r8152: Block future register access if register
- access fails
-To:     Hayes Wang <hayeswang@realtek.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Simon Horman <horms@kernel.org>,
-        Edward Hill <ecgh@chromium.org>,
-        Laura Nao <laura.nao@collabora.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Grant Grundler <grundler@chromium.org>,
-        =?UTF-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231006145732.3419115-1-andriy.shevchenko@linux.intel.com>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Tue, Oct 17, 2023 at 7:17=E2=80=AFAM Doug Anderson <dianders@chromium.or=
-g> wrote:
->
-> Hi,
->
-> On Tue, Oct 17, 2023 at 6:07=E2=80=AFAM Hayes Wang <hayeswang@realtek.com=
-> wrote:
-> >
-> > Doug Anderson <dianders@chromium.org>
-> > > Sent: Tuesday, October 17, 2023 12:47 AM
-> > [...
-> > > > >  static int generic_ocp_read(struct r8152 *tp, u16 index, u16 siz=
-e,
-> > > > > @@ -8265,6 +8353,19 @@ static int rtl8152_pre_reset(struct
-> > > usb_interface
-> > > > > *intf)
-> > > > >         if (!tp)
-> > > > >                 return 0;
-> > > > >
-> > > > > +       /* We can only use the optimized reset if we made it to t=
-he end of
-> > > > > +        * probe without any register access fails, which sets
-> > > > > +        * `PROBED_WITH_NO_ERRORS` to true. If we didn't have tha=
-t then return
-> > > > > +        * an error here which tells the USB framework to fully u=
-nbind/rebind
-> > > > > +        * our driver.
-> > > >
-> > > > Would you stay in a loop of unbind and rebind,
-> > > > if the control transfers in the probe() are not always successful?
-> > > > I just think about the worst case that at least one control always =
-fails in probe().
-> > >
-> > > We won't! :-) One of the first things that rtl8152_probe() does is to
-> > > call rtl8152_get_version(). That goes through to
-> > > rtl8152_get_version(). That function _doesn't_ queue up a reset if
-> > > there are communication problems, but it does do 3 retries of the
-> > > read. So if all 3 reads fail then we will permanently fail probe,
-> > > which I think is the correct thing to do.
-> >
-> > The probe() contains control transfers in
-> >         1. rtl8152_get_version()
-> >         2. tp->rtl_ops.init()
-> >
-> > If one of the 3 control transfers in 1) is successful AND
-> > any control transfer in 2) fails,
-> > you would queue a usb reset which would unbind/rebind the driver.
-> > Then, the loop starts.
-> > The loop would be broken, if and only if
-> >         a) all control transfers in 1) fail, OR
-> >         b) all control transfers in 2) succeed.
-> >
-> > That is, the loop would be broken when the fail rate of the control tra=
-nsfer is high or low enough.
-> > Otherwise, you would queue a usb reset again and again.
-> > For example, if the fail rate of the control transfer is 10% ~ 60%,
-> > I think you have high probability to keep the loop continually.
-> > Would it never happen?
->
-> Actually, even with a failure rate of 10% I don't think you'll end up
-> with a fully continuous loop, right? All you need is to get 3 failures
-> in a row in rtl8152_get_version() to get out of the loop. So with a
-> 10% failure rate you'd unbind/bind 1000 times (on average) and then
-> (finally) give up. With a 50% failure rate I think you'd only
-> unbind/bind 8 times on average, right? Of course, I guess 1000 loops
-> is pretty close to infinite.
->
-> In any case, we haven't actually seen hardware that fails like this.
-> We've seen failure rates that are much much lower and we can imagine
-> failure rates that are 100% if we're got really broken hardware. Do
-> you think cases where failure rates are middle-of-the-road are likely?
->
-> I would also say that nothing we can do can perfectly handle faulty
-> hardware. If we're imagining theoretical hardware, we could imagine
-> theoretical hardware that de-enumerated itself and re-enumerated
-> itself every half second because the firmware on the device crashed or
-> some regulator kept dropping. This faulty hardware would also cause an
-> infinite loop of de-enumeration and re-enumeration, right?
->
-> Presumably if we get into either case, the user will realize that the
-> hardware isn't working and will unplug it from the system. While the
-> system is doing the loop of trying to enumerate the hardware, it will
-> be taking up a bunch of extra CPU cycles but (I believe) it won't be
-> fully locked up or anything. The machine will still function and be
-> able to do non-Ethernet activities, right? I would say that the worst
-> thing about this state would be that it would stress corner cases in
-> the reset of the USB subsystem, possibly ticking bugs.
->
-> So I guess I would summarize all the above as:
->
-> If hardware is broken in just the right way then this patch could
-> cause a nearly infinite unbinding/rebinding of the r8152 driver.
-> However:
->
-> 1. It doesn't seem terribly likely for hardware to be broken in just this=
- way.
->
-> 2. We haven't seen hardware broken in just this way.
->
-> 3. Hardware broken in a slightly different way could cause infinite
-> unbinding/rebinding even without this patch.
->
-> 4. Infinite unbinding/rebinding of a USB adapter isn't great, but not
-> the absolute worst thing.
->
->
-> That all being said, if we wanted to address this we could try two
-> different ways:
->
-> a) We could add a global in the r8152 driver and limit the number of
-> times we reset. This gets a little ugly because if we have multiple
-> r8152 adapters plugged in then the same global would be used for both,
-> but maybe it's OK?
->
-> b) We could improve the USB core to somehow prevent usb_reset_device()
-> from running too much on a given device?
->
->
-> ...though I would re-emphasize that I don't think this is something we
-> need to address now. If later we actually see a problem we can always
-> address it then.
+On Fri, 06 Oct 2023 17:57:31 +0300, Andy Shevchenko wrote:
+> Currently the ACPI code doesn't bump the reference count of
+> the firmware node, while OF counter part does. Not that it's
+> a problem right now, since ACPI doesn't really use the reference
+> counting for firmware nodes, it still makes sense to make code
+> robust against any changes done there. For this,
+>  - switch ACPI case to use device_set_node() to be unified with OF
+>  - move reference counting to amba_device_add()
+>  - switch to use firmware nodes instead of OF ones
+> 
+> In the result we will have reference counting done in the same module
+> for all callers independently on the nature of firmware node behind.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+> 
+> v3: no changes
+> v2: fixed compilation error (LKP), all dependencies are in v6.6-rcX (Rob)
+> 
+>  drivers/acpi/arm64/amba.c | 2 +-
+>  drivers/amba/bus.c        | 5 ++++-
+>  drivers/of/platform.c     | 2 +-
+>  3 files changed, 6 insertions(+), 3 deletions(-)
+> 
 
-One other idea occurred to me that we could do, if we cared to solve
-this hypothetical failure case. We could change the code to always
-read the version 4 times on every probe. If one of the transfers fails
-then we could consider that OK. If 2 or more transfers fails then we
-could consider that to be an error. You still might get a _few_
-unbind/bind in this hypothetical failure mode, but I think it would
-catch the problem more quickly.
+Applied, thanks!
 
-My probability theory is rusty and I'm sure there's a better way, but
-I think we can just add up all the cases. Assuming a 10% failures and
-90% success of any transfer:
-
-# Chance of 2 failures:
-.10 * .10 * .90 * .90 +
-.10 * .90 * .10 * .90 +
-.10 * .90 * .90 * .10 +
-.90 * .10 * .90 * .10 +
-.90 * .90 * .10 * .10
-
-# Chance of 3 failures:
-.10 * .10 * .10 * .90 +
-.10 * .10 * .90 * .10 +
-.10 * .90 * .10 * .10 +
-.90 * .10 * .10 * .10
-
-# Chance of 4 failures:
-.10 * .10 * .10 * .10
-
-If I add that up I get about a 4.4% chance of 2 or more failures in 4
-reads. That means if we got into an unbind/bind cycle we'd get out of
-it (on average) in ~23 probes because we'd see enough failures. We
-could likely reduce this further by reading the version 5 or 6 times.
-
-I will note that my measurements showed that a normal probe is ~200
-transfers and also includes a bunch of delays, so reading the version
-a few times wouldn't be a huge deal.
-
-
-In any case, I'm still of the opinion that we don't need to handle this.
-
--Doug
