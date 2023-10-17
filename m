@@ -2,142 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE977CD046
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 01:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 033647CD047
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 01:14:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343819AbjJQXMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 19:12:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48492 "EHLO
+        id S234147AbjJQXOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 19:14:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJQXMv (ORCPT
+        with ESMTP id S229459AbjJQXOx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 19:12:51 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02657F5
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 16:12:50 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a824ef7a83so69737467b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 16:12:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697584369; x=1698189169; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=qJPL6XQWTu91QMPy+qd0o+1YjlCp6zhTXPWOlC7y3Hk=;
-        b=PXOEaHY92YXHkMvzlTiFsTgUrOrNK3mMmB/H3/fsEf7rHaom1eDW7UzhtVDL0S4zqH
-         ISj5Wv+0YlDZjlAc8mkGnUV3b6al6FRGdEkP9YmnJUVrJR0PbEIBNXGZ8SRzqXYI2Mp+
-         zasQZeaCF6qv0JL0iHra5uPblmqUpCnJrRymWByIIRj17mQFHmVP201UMeeJ/YWKNbYS
-         Y9swA1ZnlthbydwA7Jlg6scn0eTFGRjFnZ4UyLR9nUnhP5U+VVMoejHKTGm8KGYEcCth
-         p0DJGpiTYUcdA+/D4/HY6t5gPIstjY0//oxkxW89gf3mtvXAZ4P15XUMK9L6fU/eUgRo
-         v81g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697584369; x=1698189169;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qJPL6XQWTu91QMPy+qd0o+1YjlCp6zhTXPWOlC7y3Hk=;
-        b=jwOgoaIpvtsiFpvDwokEChNwfjWnXEOe6HpXPxV7in8dwxnl5FnRn+eVDU2LrtictZ
-         CAqP9Ui+0FAcDlq0Yoi+JVXTQcBLFAvD9gKx81IxukK2Jx7koZZjuzNgqPzTNHyLtMfx
-         ckNXv5RV8+e930M6DOb0oWHKBQhKM1CmcBrdI+lNpsFfZMFDCGZdRIKLPil71d0wfbWo
-         Rtzd05GXe/HsUYr//c74VuA4frV9SNRexSZDSJMCA3ZJF2Xq0twK1ibWYPtV9jGAqdI0
-         YZXMfNUOxmr1ikHjuhBxj1Mc03WGNCPPs4BoRf0csMIHhnUdNa6cYLgU2tBixeH62219
-         LmgQ==
-X-Gm-Message-State: AOJu0YyMgWP4CoVQSJ74twRIou0fP7P6/9L+Eabme01Lw/gRnjY6CWmR
-        2scfpmdyLwlDpaK3WpgMqtaWL2pg0x8vHNivgg==
-X-Google-Smtp-Source: AGHT+IF1RAxru2SV0JiTclifKFGV06p9lUAVjlXNjuX16xCj2mB+4VrqyxgTeao1uihdEdu2eAtySY8gBxdPfI0QMg==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:b09:0:b0:d9a:6855:6d31 with SMTP
- id 9-20020a250b09000000b00d9a68556d31mr73485ybl.3.1697584369270; Tue, 17 Oct
- 2023 16:12:49 -0700 (PDT)
-Date:   Tue, 17 Oct 2023 23:12:48 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAO8UL2UC/x3NTQqDMBBA4avIrDvgxKjQq5Qu0mTaDkiUmeAP4
- t0buvw2751grMIG9+YE5VVM5lxBtwbiN+QPo6RqcK3rqKURrWiOy4FJZWU1zFxwE+WJzbAIbhO 5njDEHSP6kV9xCMn7roeaXJTfsv93j+d1/QBnMkHwfgAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697584368; l=2538;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=5D83orUb3gyhDUlDeVDVW1PaTTVcafALjffwJNnrV0I=; b=Zoa1dQfYP30omS9KZsLyHDYiXZj1atVVZDTjnUxa+sFDfk1rhxQUTD2gr/YxwotX/S6ojeeIz
- 0NdGav3EIN5AGD+/Ha1lrhBT/HzBatDdLilGTbXA40x8NeuySGmwCYK
-X-Mailer: b4 0.12.3
-Message-ID: <20231017-strncpy-drivers-net-wireless-ti-wl1251-acx-c-v1-1-a99584e82f65@google.com>
-Subject: [PATCH] wl1251: replace deprecated strncpy with strscpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Kalle Valo <kvalo@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 17 Oct 2023 19:14:53 -0400
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C41AC4;
+        Tue, 17 Oct 2023 16:14:50 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [10.196.197.2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4S98vV5cBmz9sXg;
+        Wed, 18 Oct 2023 01:14:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1697584486;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Cmtq4fWj5Rl8hlT+/wDd4j3/Uz9lprd8zFd/8pF1nPY=;
+        b=HxtKZKLsmXiXc3pFtY43GBAEzKy09Otq7ByZ3x2MMcWctFaedNZJxCMReVUq0+VgnYehlx
+        J99ULnk1lQtml6cJdQJWZNxnlVbuUgDNH6GRJ1oRd5sL6mhjusK4/7gEBNpN7OuPIbgfOW
+        o7WRjdk5MGSNNH/UzePyoyKGqQqVtAW2YNVsu8LUoCTxm0IlWHal/iCL5MG0BMQqETyN4A
+        8JhnRsCBX8iiDrAtM3C9fN11lKtxen6f9lQbS8exoYMRoRNzYkw2GquORS6/iAPC9ChEAn
+        t0q7yqdgM+klxvv0EcFgZqTq4ZpDCeqV9jjt0Y7hFUr6LIsUgAQJ3LLH1GqCwA==
+Date:   Wed, 18 Oct 2023 01:14:43 +0200
+From:   Erhard Furtner <erhard_f@mailbox.org>
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Juergen Gross <jgross@suse.com>, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-sparc@vger.kernel.org,
+        David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 0/2] Allow nesting of lazy MMU mode
+Message-ID: <20231018011443.3bd8b366@yea>
+In-Reply-To: <875y35zswo.fsf@linux.ibm.com>
+References: <20231012195415.282357-1-willy@infradead.org>
+        <20231013154220.02fb2e6d@yea>
+        <875y35zswo.fsf@linux.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-MBO-RS-ID: 99c3693f2065b8fe824
+X-MBO-RS-META: dcbcmyejoc5m4xaoafkbxmyubyh5pkqz
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+On Tue, 17 Oct 2023 11:34:23 +0530
+"Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com> wrote:
 
-There was a lot of effort done here to ensure buf is NUL-terminated. We
-now have access to better string apis -- `buf` should be NUL-terminated
-and doesn't seem to require NUL-padding as its only use is with format
-strings in wl1251/main.c
-403 | wl1251_info("firmware booted (%s)", wl->fw_ver);
+> ie, we can do something like below. The change also make sure we call
+> set_pte_filter on all the ptes we are setting via set_ptes(). I haven't
+> sent this as a proper patch because we still are not able to fix the
+> issue Erhard reported. 
+> 
+> diff --git a/arch/powerpc/mm/pgtable.c b/arch/powerpc/mm/pgtable.c
+> index 3ba9fe411604..95ab20cca2da 100644
+> --- a/arch/powerpc/mm/pgtable.c
+> +++ b/arch/powerpc/mm/pgtable.c
+> @@ -191,28 +191,35 @@ void set_ptes(struct mm_struct *mm, unsigned long addr, pte_t *ptep,
+>  		pte_t pte, unsigned int nr)
+>  {
+>  	/*
+> -	 * Make sure hardware valid bit is not set. We don't do
+> -	 * tlb flush for this update.
+> +	 * We don't need to call arch_enter/leave_lazy_mmu_mode()
+> +	 * because we expect set_ptes to be only be used on not present
+> +	 * and not hw_valid ptes. Hence there is not translation cache flush
+> +	 * involved that need to be batched.
+>  	 */
+> -	VM_WARN_ON(pte_hw_valid(*ptep) && !pte_protnone(*ptep));
+> +	for (;;) {
+>  
+> -	/* Note: mm->context.id might not yet have been assigned as
+> -	 * this context might not have been activated yet when this
+> -	 * is called.
+> -	 */
+> -	pte = set_pte_filter(pte);
+> +		/*
+> +		 * Make sure hardware valid bit is not set. We don't do
+> +		 * tlb flush for this update.
+> +		 */
+> +		VM_WARN_ON(pte_hw_valid(*ptep) && !pte_protnone(*ptep));
+>  
+> -	/* Perform the setting of the PTE */
+> -	arch_enter_lazy_mmu_mode();
+> -	for (;;) {
+> +		/* Note: mm->context.id might not yet have been assigned as
+> +		 * this context might not have been activated yet when this
+> +		 * is called.
+> +		 */
+> +		pte = set_pte_filter(pte);
+> +
+> +		/* Perform the setting of the PTE */
+>  		__set_pte_at(mm, addr, ptep, pte, 0);
+>  		if (--nr == 0)
+>  			break;
+>  		ptep++;
+> -		pte = __pte(pte_val(pte) + (1UL << PTE_RPN_SHIFT));
+>  		addr += PAGE_SIZE;
+> +		/* increment the pfn */
+> +		pte = __pte(pte_val(pte) + PAGE_SIZE);
+> +
+>  	}
+> -	arch_leave_lazy_mmu_mode();
+>  }
+>  
+>  void unmap_kernel_page(unsigned long va)
 
-Therefore, a suitable replacement is `strscpy` [2] due to the fact that
-it guarantees NUL-termination on the destination buffer without
-unnecessarily NUL-padding.
+Was this a new version of the patch for me to test? Sorry for asking but this was a bit unclear to me.
 
-Do note that there is only one caller of wl1251_acx_fw_version() in
-drivers/net/wireless/ti/wl1251/boot.c:
-264 | wl1251_acx_fw_version(wl, wl->fw_ver, sizeof(wl->fw_ver));
-... which passes wl->fw_ver and sizeof(wl->fw_ver) wherein fw_ver is
-defined as having size 21 in wl1251.h:
-383 | char fw_ver[21];
-... and since fw_version has a size of 20 in acx.h:
-66 | char fw_version[20];
-... there is no overflow or truncation because sizeof(dest) > sizeof(src).
+In any case I tried it on top of v6.6-rc6 and it did not help with the issue I reported.
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
-
-Found with: $ rg "strncpy\("
----
- drivers/net/wireless/ti/wl1251/acx.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
-
-diff --git a/drivers/net/wireless/ti/wl1251/acx.c b/drivers/net/wireless/ti/wl1251/acx.c
-index f78fc3880423..ed5733e0dd5e 100644
---- a/drivers/net/wireless/ti/wl1251/acx.c
-+++ b/drivers/net/wireless/ti/wl1251/acx.c
-@@ -149,15 +149,7 @@ int wl1251_acx_fw_version(struct wl1251 *wl, char *buf, size_t len)
- 		goto out;
- 	}
- 
--	/* be careful with the buffer sizes */
--	strncpy(buf, rev->fw_version, min(len, sizeof(rev->fw_version)));
--
--	/*
--	 * if the firmware version string is exactly
--	 * sizeof(rev->fw_version) long or fw_len is less than
--	 * sizeof(rev->fw_version) it won't be null terminated
--	 */
--	buf[min(len, sizeof(rev->fw_version)) - 1] = '\0';
-+	strscpy(buf, rev->fw_version, len);
- 
- out:
- 	kfree(rev);
-
----
-base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
-change-id: 20231017-strncpy-drivers-net-wireless-ti-wl1251-acx-c-47ebc6ad4435
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+Regards,
+Erhard
