@@ -2,173 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC747CCA9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 20:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 466DB7CCA8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 20:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344065AbjJQS0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 14:26:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47898 "EHLO
+        id S1343507AbjJQSUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 14:20:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232268AbjJQS0v (ORCPT
+        with ESMTP id S234954AbjJQSUg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 14:26:51 -0400
-X-Greylist: delayed 400 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 17 Oct 2023 11:26:45 PDT
-Received: from cvs.openbsd.org (cvs.openbsd.org [199.185.137.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C43695;
-        Tue, 17 Oct 2023 11:26:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; s=selector1; bh=0vFOoOA2DO
-        SeMlsOMQTQm68lyM381k3f90VCwzU3xik=; h=date:references:in-reply-to:
-        subject:cc:to:from; d=openbsd.org; b=cIkCOZ/43MKoljVmU3oRIB4u6WYxtaE7o
-        HZOM2BZ8S56HfUIZsfnpEjQlT6nX8BjUvl337ZyDmbEBR3FpWbSEpIlQhSH5efoMABMvJu
-        fPt7B7kxCc9BiJcGMLspMoq2n0fp0t4vNihP+GRYwnQ+PXtGXD00kbiv6GNtzR0gKbGJ2n
-        nYXtaGErAXUWTKCJkCh6yf0nMOHJTEbyc9d6WznvhkM317NdEQJ0MO3xpLbqrwJ5qQRKZ+
-        v2DSU4O5x8TQLQ5B2gVSWAEkpok4RBLhTzp2/vt9wlc0QkWf+E2fBCJ4Ld1tjjxZ7uC/EA
-        Y8rLsgyMD35PthyzgC6BHgpnpp5Ag==
-Received: from cvs.openbsd.org (localhost [127.0.0.1])
-        by cvs.openbsd.org (OpenSMTPD) with ESMTP id f82c6e56;
-        Tue, 17 Oct 2023 12:20:04 -0600 (MDT)
-From:   "Theo de Raadt" <deraadt@openbsd.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-cc:     Jeff Xu <jeffxu@google.com>, jeffxu@chromium.org,
-        akpm@linux-foundation.org, keescook@chromium.org,
-        sroettger@google.com, jorgelo@chromium.org, groeck@chromium.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, jannh@google.com, surenb@google.com,
-        alex.sierra@amd.com, apopple@nvidia.com,
-        aneesh.kumar@linux.ibm.com, axelrasmussen@google.com,
-        ben@decadent.org.uk, catalin.marinas@arm.com, david@redhat.com,
-        dwmw@amazon.co.uk, ying.huang@intel.com, hughd@google.com,
-        joey.gouly@arm.com, corbet@lwn.net, wangkefeng.wang@huawei.com,
-        Liam.Howlett@oracle.com, lstoakes@gmail.com, willy@infradead.org,
-        mawupeng1@huawei.com, linmiaohe@huawei.com, namit@vmware.com,
-        peterx@redhat.com, peterz@infradead.org, ryan.roberts@arm.com,
-        shr@devkernel.io, vbabka@suse.cz, xiujianfeng@huawei.com,
-        yu.ma@intel.com, zhangpeng362@huawei.com, dave.hansen@intel.com,
-        luto@kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [RFC PATCH v1 0/8] Introduce mseal() syscall
-In-reply-to: <CAHk-=wj87GMTH=5901ob=SjQqegAm2JYBE7E4J7skJzE64U-wQ@mail.gmail.com>
-References: <20231016143828.647848-1-jeffxu@chromium.org> <CAHk-=whFZoap+DBTYvJx6ohqPwn11Puzh7q4huFWDX9vBwXHgg@mail.gmail.com> <CALmYWFtTDAb_kpZdAe_xspqwNgK1NWJmjTxaTC=jDEMzfe297Q@mail.gmail.com> <CAHk-=wj87GMTH=5901ob=SjQqegAm2JYBE7E4J7skJzE64U-wQ@mail.gmail.com>
-Comments: In-reply-to Linus Torvalds <torvalds@linux-foundation.org>
-   message dated "Tue, 17 Oct 2023 10:22:16 -0700."
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <35552.1697566804.1@cvs.openbsd.org>
-Date:   Tue, 17 Oct 2023 12:20:04 -0600
-Message-ID: <55960.1697566804@cvs.openbsd.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 17 Oct 2023 14:20:36 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1503C9F
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:20:34 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9a5995aa42so7799001276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:20:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697566833; x=1698171633; darn=vger.kernel.org;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=cogZn6SR2Hrm3xwpZC/9u1+k1saONFiJF3pmAllmSYA=;
+        b=OJ7VhqFYvc7y9VXkTowPxf9eo2598iYFLcoo6Wz3YzrRqXIjEiaGUk3rX8F6VXXm+V
+         slVA/qE3GARelgEnRMRGwQk/sHypIplRyoP7iFFWNixvhwU2A0LtXmM4kZluRzO1Pn1e
+         ZeuYaUL9s/am4uV6BFk8/+Mpn3FjbCReaQLhVc7M0oUmEkta0414h/A4m61x/K0e6Yq4
+         OkXgx4YWU1Eux6/Su/4Qk2LCm9Ut5nZquLasFipiIyXSGdR+qGfu+QVUwI5FSBpfLILm
+         xp9iYXjB/RM4CSLcdmCyD2PLiC8xN85JwJliq7VAHUAerhg9Wi0nCVbAoeoy4aRAfgkv
+         09mQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697566833; x=1698171633;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cogZn6SR2Hrm3xwpZC/9u1+k1saONFiJF3pmAllmSYA=;
+        b=I6IVhCObO+9yh5qlmc6PBdU2hRg/BUzuZ/SYUz3FFzCCdc50EXUZJqGP84rTY7zX7e
+         ryXYJtjHMunDUscaSNbRa1QwwCg/n02khhLArg50N2e3wq6b48fCMxxGbWHZVobZNQME
+         DRkVoq2LxYtqUxbCOjlIkV9Ba3mMWb1fbxbNju3+hxeLj4agCZFNv2Bt1Uv//ly+dxQj
+         TEzJtnqnvfbEdTkqTKkFgkp5YFTIeQiHlED3iB2kNQrj7/R93llKujkMIhNpxK+udGEk
+         82FXj4OKMLuAQv1F6TM/MblwNkLTxwfntnjdznsq5OB/pLnQaqTM8yJTEVzbPMqC6xKO
+         j7Kw==
+X-Gm-Message-State: AOJu0Yx4726fHiibWVbJWM3AE+Q/9FwJOQJxs0zBpAroP0rumsfqwwlG
+        mA8ZbFJp6cn2jQ5r8mkPFitJPIsjE7o2LPIPmQ==
+X-Google-Smtp-Source: AGHT+IEpgKHFswJWt16YETcyCpL2RTWhu2Rca3LfIdPF0vh7gFgWhUwDiXg6AYDmdBtS+FxsRbSWaLdeSBlJ4FshJw==
+X-Received: from danielmentz2.mtv.corp.google.com ([2620:15c:72:205:c52:2f36:304a:2c97])
+ (user=danielmentz job=sendgmr) by 2002:a25:6984:0:b0:d8b:737f:8240 with SMTP
+ id e126-20020a256984000000b00d8b737f8240mr61351ybc.0.1697566833277; Tue, 17
+ Oct 2023 11:20:33 -0700 (PDT)
+Date:   Tue, 17 Oct 2023 11:20:26 -0700
+Message-Id: <20231017182026.2141163-1-danielmentz@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
+Subject: [PATCH] scsi: ufs: Leave space for '\0' in utf8 desc string
+From:   Daniel Mentz <danielmentz@google.com>
+To:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Tomas Winkler <tomas.winkler@intel.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        Mars Cheng <marscheng@google.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Yen-lin Lai <yenlinlai@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+utf16s_to_utf8s does not NULL terminate the output string. For us to be
+able to add a NULL character when utf16s_to_utf8s returns, we need to
+make sure that there is space for such NULL character at the end of the
+output buffer. We can achieve this by passing an output buffer size to
+utf16s_to_utf8s that is one character less than what we allocated.
 
-> On Tue, 17 Oct 2023 at 02:08, Jeff Xu <jeffxu@google.com> wrote:
-> >
-> > It is probably worth noting that I choose to check one and only
-> > one sealing type per syscall. i.e. munmap(2) checks
-> > MM_SEAL_MUNMAP only.
-> 
-> Yeah, this is wrong.
-> 
-> It's wrong exactly because other system calls will unmap things too.
-> 
-> Using mmap() to over-map something will unmap the old one.
-> 
-> Same goes for mremap() to move over an existing mapping.
-> 
-> So the whole "do things by the name of the system call" is not workable.
-> 
-> All that matters is what the system calls *do*, not what their name is.
+Other call sites of utf16s_to_utf8s appear to be using the same
+technique where they artificially reduce the buffer size by one to leave
+space for a NULL character or line feed character.
 
-I agree completely...
+Fixes: 4b828fe156a6 ("scsi: ufs: revamp string descriptor reading")
+Reviewed-by: Mars Cheng <marscheng@google.com>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Reviewed-by: Yen-lin Lai <yenlinlai@google.com>
+Signed-off-by: Daniel Mentz <danielmentz@google.com>
+---
+ drivers/ufs/core/ufshcd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-mseal() is a clone of mimmutable(2), but with an extremely
-over-complicated API based upon dubious arguments.
-
-I designed mimmutable(2) [1] in OpenBSD, it took about a year to get all
-the components working correctly.  There were many intermediate API
-during development, but in the end the API is simply:
-
-     int mimmutable(void *addr, size_t len);
-
-The kernel code for mimmutable() traverses the specified VA range.  In
-that range, it will find unmapped sub-regions (which are are ignored)
-and mapped sub-regions. For these mapped regions, it does not care what
-the permissions are, it just marks each sub-region as immutable.
-
-Later on, when any VM operation request upon a VA range attempts to
-      (1) change the permissions
-      (2) to re-map on top
-      (3) or dispose of the mapping,
-that operation is refused with errno EPERM.  We don't care where the
-request comes from (ie. what system call).  It is a behaviour of the
-VM system, when asked to act upon a VA sub-range mapping.
-
-Very simple semantics.
-
-The only case where the immutable marker is ignored is during address space
-teardown as a result of process termination.
-
-
-In his submission of this API, Jeff Xu makes three claims I find dubious;
-
-> Also, Chrome wants to adopt this feature for their CFI work [2] and this
-> patchset has been designed to be compatible with the Chrome use case.
-
-I specifically designed mimmutable(2) with chrome in mind, and the
-chrome binary running on OpenBSD is full of immutable mappings.  All the
-library regions automatically become immutable because ld.so can infer
-it and do the mimmutable calls for the right subregions.
-
-So this chrome work has already been done by OpenBSD, and it is dead
-simple.  During early development I thought mimmutable(2) would be
-called by applications or libraries, but I was dead wrong: 99.9% of
-calls are from ld.so, and no applications need to call it, these are the
-two exceptions:
-
-In OpenBSD, mimmutable() is used in libc malloc() to lock-down some data
-structures at initialization time, so they canoot be attacked to create
-an invariant for use in ROP return-to-libc style methods.
-
-In Chrome, there is a v8_flags variable rounded out to a full page, and
-placed in .data.  Chrome initialized this variable, and wants to mprotect
-PROT_READ, but .data has been made immutable by ld.so.  So we force this
-page into a new ELF section called "openbsd.mutable" which also behaves RW
-like .data.  Where chrome does the mprotect  PROT_READ, it now also performs
-mimmutable() on that page.
-
-> Having a seal type per syscall type helps to add the feature incrementally.
-
-Yet, somehow OpenBSD didn't do it per syscall, and we managed to make our
-entire base operating system and 10,000+ applications automatically receive
-the benefits.  In one year's effort.  The only application which cared about
-it was chrome, described in the previous paragraph.
-
-I think Jeff's idea here is super dangerous.  What will actually happen
-is people will add a few mseal() sub-operations and think the job is done.
-It isn't done.  They need all the mseal() requests, or the mapping are
-not safe.
-
-It is very counterproductive to provide developers a complex API that has
-insecure suboperations.
-
-> Applications also know exactly what is sealed.
-
-Actually applicatins won't know because there is no tooling to inspect this --
-but I will argue further that applications don't need to know.  Immutable
-marking is a system decision, not a program decision.
-
-
-I'll close by asking for a new look at the mimmutable(2) API we settled
-on for OpenBSD.  I think there is nothing wrong with it.  I'm willing to
-help guide glibc / ld.so / musl teams through the problems they may find
-along the way, I know where the skeletons are buried.  Two in
-particular: -znow RELRO already today, and xonly-text in the future.
-
-
-[1] https://man.openbsd.org/mimmutable.2
+diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
+index 8382e8cfa414..5767642982c1 100644
+--- a/drivers/ufs/core/ufshcd.c
++++ b/drivers/ufs/core/ufshcd.c
+@@ -3632,7 +3632,7 @@ int ufshcd_read_string_desc(struct ufs_hba *hba, u8 desc_index,
+ 		 */
+ 		ret = utf16s_to_utf8s(uc_str->uc,
+ 				      uc_str->len - QUERY_DESC_HDR_SIZE,
+-				      UTF16_BIG_ENDIAN, str, ascii_len);
++				      UTF16_BIG_ENDIAN, str, ascii_len - 1);
+ 
+ 		/* replace non-printable or non-ASCII characters with spaces */
+ 		for (i = 0; i < ret; i++)
+-- 
+2.42.0.655.g421f12c284-goog
 
