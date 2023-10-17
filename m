@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 703C27CBEFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92F247CBF06
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234820AbjJQJYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 05:24:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59002 "EHLO
+        id S234836AbjJQJZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 05:25:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234679AbjJQJY3 (ORCPT
+        with ESMTP id S234771AbjJQJZ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 05:24:29 -0400
+        Tue, 17 Oct 2023 05:25:29 -0400
 Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBEBB8E;
-        Tue, 17 Oct 2023 02:24:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EC7D93;
+        Tue, 17 Oct 2023 02:25:27 -0700 (PDT)
 Received: from [192.168.192.84] (unknown [50.39.103.33])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 8258D3F6DB;
-        Tue, 17 Oct 2023 09:24:21 +0000 (UTC)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 9B00D3F6DB;
+        Tue, 17 Oct 2023 09:25:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1697534664;
-        bh=dmxcJ31LESJX8T+oi/bH2ZYeaLP6Js74v6cCMivygmo=;
+        s=20210705; t=1697534726;
+        bh=xM+ZxEbFfU9u3PyBqFOFwrsLiubbJoaYw8wHKK6VpwY=;
         h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
          In-Reply-To:Content-Type;
-        b=SRCSrF1HZ4Y9iAjrS5JLWSa/soSxelmcCKWVbPiDe+ckf2xrHrTzTIzQ7+QC8ZSAJ
-         TaCq8S8ReyZw+2wBRf57HU0LASlui730I7pn4rrQ7Vnkoqdp90XGdcZu43+EY+VLT4
-         NFsO7avLFzn+N2VIrhQ2Gglx/GV9wsG34LcsTTdvJ44yZd+jHdM9WLYAXwrmE8fUCo
-         WTVMWqCIx41xh4LeZWfXwJewWVmvY9ZZ+eujRuPXj0KzuRDSj7jnB3hFWeq96/6ojl
-         Pkgwwf73ApEoZQtDdRiCOiJ8P1poaLjf+yZ40QzrYIErKL5pTPzfzJagauICWNOGag
-         rouraJwkmrfhQ==
-Message-ID: <6c472b12-6957-4542-8ef4-7762e750a56d@canonical.com>
-Date:   Tue, 17 Oct 2023 02:24:21 -0700
+        b=VELGR6ipIUTd43tIJl+1o/cwwAZDzDopKUKtApuinjI4+BeID/jGrdi4dIFocH8wq
+         UGh+oQRKpBTd+d7KVVOl1Qk2l+9wn0ZfgheDn4ljrlQSrY+/8xUezTQ4/IuesSRQvm
+         fweZTZyyqPOyQ3l+aJvYwgUr/H8MGqMAkS3eCQMLIx41hoTI/Yd1CbtamX9dbvW7zM
+         76/5J/Lmd/z675upWqXt8K5rQ3Bz4NMFk6G19oZ3AN7iFw9FycAXSbOCwQwwRVrjso
+         Y1M7bu2cDaguzqkrnmTq0bRxqlUddCO4xLfS6v1QI0Y56/hU6gL1rLD8nVGwLMdkF7
+         /O8DCaC9DxVXA==
+Message-ID: <acc4a7fa-d423-418d-81d7-35d4416afdd0@canonical.com>
+Date:   Tue, 17 Oct 2023 02:25:23 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 2/4] apparmor: exponential backoff on cache buffer
- contention
+Subject: Re: [PATCH v5 3/4] apparmor: experiment with faster backoff on global
+ buffer
 Content-Language: en-US
 To:     Sergey Senozhatsky <senozhatsky@chromium.org>
 Cc:     Anil Altinay <aaltinay@google.com>,
@@ -116,82 +116,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reduce contention on the global buffers lock by using  an exponential
-back off strategy where the amount tries to hold is doubled when
-contention is encoutered and backed off linearly when there isn't
-contention.
+Instead of doubling hold count when contention is encounter increase
+it by 8x. This makes for a faster back off, but results in buffers
+being held longer.
 
 Signed-off-by: John Johansen <john.johansen@canonical.com>
 ---
-  security/apparmor/lsm.c | 18 ++++++++++++++++--
-  1 file changed, 16 insertions(+), 2 deletions(-)
+  security/apparmor/lsm.c | 4 ++--
+  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/security/apparmor/lsm.c b/security/apparmor/lsm.c
-index ce4f3e7a784d..fd6779ff0da4 100644
+index fd6779ff0da4..52423d88854a 100644
 --- a/security/apparmor/lsm.c
 +++ b/security/apparmor/lsm.c
-@@ -50,6 +50,7 @@ union aa_buffer {
-  };
+@@ -1796,10 +1796,10 @@ static int param_set_mode(const char *val, const struct kernel_param *kp)
   
-  struct aa_local_cache {
-+	unsigned int contention;
-  	unsigned int hold;
-  	unsigned int count;
-  	struct list_head head;
-@@ -1793,6 +1794,14 @@ static int param_set_mode(const char *val, const struct kernel_param *kp)
-  	return 0;
+  static void update_contention(struct aa_local_cache *cache)
+  {
+-	cache->contention += 1;
++	cache->contention += 3;
+  	if (cache->contention > 9)
+  		cache->contention = 9;
+-	cache->hold += 1 << cache->contention;		/* 2, 4, 8, ... */
++	cache->hold += 1 << cache->contention;		/* 8, 64, 512, ... */
   }
   
-+static void update_contention(struct aa_local_cache *cache)
-+{
-+	cache->contention += 1;
-+	if (cache->contention > 9)
-+		cache->contention = 9;
-+	cache->hold += 1 << cache->contention;		/* 2, 4, 8, ... */
-+}
-+
   char *aa_get_buffer(bool in_atomic)
-  {
-  	union aa_buffer *aa_buf;
-@@ -1814,11 +1823,13 @@ char *aa_get_buffer(bool in_atomic)
-  
-  	if (!spin_trylock(&aa_buffers_lock)) {
-  		cache = get_cpu_ptr(&aa_local_buffers);
--		cache->hold += 1;
-+		update_contention(cache);
-  		put_cpu_ptr(&aa_local_buffers);
-  		spin_lock(&aa_buffers_lock);
-  	} else {
-  		cache = get_cpu_ptr(&aa_local_buffers);
-+		if (cache->contention)
-+			cache->contention--;
-  		put_cpu_ptr(&aa_local_buffers);
-  	}
-  retry:
-@@ -1875,12 +1886,14 @@ void aa_put_buffer(char *buf)
-  			buffer_count++;
-  			spin_unlock(&aa_buffers_lock);
-  			cache = get_cpu_ptr(&aa_local_buffers);
-+			if (cache->contention)
-+				cache->contention--;
-  			put_cpu_ptr(&aa_local_buffers);
-  			return;
-  		}
-  		/* contention on global list, fallback to percpu */
-  		cache = get_cpu_ptr(&aa_local_buffers);
--		cache->hold += 1;
-+		update_contention(cache);
-  	}
-  
-  	/* cache in percpu list */
-@@ -1933,6 +1946,7 @@ static int __init alloc_buffers(void)
-  	 * lock contention
-  	 */
-  	for_each_possible_cpu(i) {
-+		per_cpu(aa_local_buffers, i).contention = 0;
-  		per_cpu(aa_local_buffers, i).hold = 0;
-  		per_cpu(aa_local_buffers, i).count = 0;
-  		INIT_LIST_HEAD(&per_cpu(aa_local_buffers, i).head);
 -- 
 2.34.1
 
