@@ -2,88 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7839C7CBFB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:42:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D27C7CBFBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235025AbjJQJmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 05:42:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49158 "EHLO
+        id S234911AbjJQJnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 05:43:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235016AbjJQJls (ORCPT
+        with ESMTP id S234788AbjJQJnb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 05:41:48 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A3110C0;
-        Tue, 17 Oct 2023 02:41:15 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 58CA2660576A;
-        Tue, 17 Oct 2023 10:41:13 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697535674;
-        bh=z6cx5xbScEFvi74Y8YW+wBFTf6OEBDNmHdkfrDRMSKI=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=BuwGK6PrXkUVAeqQZqB6OFFpXr2sYaFJUWuy7ub/IB0DiTCCf+Np3f6bU6Iv1JGZR
-         Rq44p5YonyW8WPo/VV8mI0Twc4lWNj4JUKauj53zP0LoxB29TWBE+OCxaEdTM7pdTx
-         14ZAAsnsULxXHduIeGBOcEZNfKS10xb8+gftoBdzvRiyyinvU2kgKjIZwPnDOX+XfJ
-         BJZO8R/Nnwnn6XP3H+scPaQu+bwB7WUkhVzFb51A+Jdc3B68CypVbKiw8daJwnJoYI
-         7UO48nMIyscBKOxkDOAxANVWx8YB6NifI3fkFdsTh4MdMv9/WVMusKPD9EcVTuBvYb
-         lYP15KpAyV7NA==
-Message-ID: <fdd3d6fc-fe73-4048-9c22-bc880f5d58d0@collabora.com>
-Date:   Tue, 17 Oct 2023 11:41:13 +0200
+        Tue, 17 Oct 2023 05:43:31 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E12B998;
+        Tue, 17 Oct 2023 02:43:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1697535809; x=1729071809;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=aA+396/l67uMfrVCyXw8FN73UoV7n1BkXMcRb+xZZuo=;
+  b=DJRrXWf3mpLUJBVNbQiv5TbIIey2dBeOGaAiN4BQMxbhdwhZiVKqhb+u
+   tLSyjz7QAAVPRUnUgK3fI2xlMO51MrrYTICpM7+Ti57xhYSBVi+9b7FLw
+   /X0Dn+daDtHRIxcpqOkIkFIAwrAwEhGWiCW/guQmEcUqkHADQXwgjt7B1
+   81Z18NEtYNePnclr31woJ/LEivsq8AcHIO7X9BFyNMQ46W/HvGZrPEbnf
+   ci3MPrxKsqbSym3g6D3YX/cDnwSWsYAWLKDSO7XvovrNNlezxnnNmfyT0
+   G90lnejKTQi/B1RJLgbf4mT5ctUEjL5XUVdLsVnk7XOwzIS/SkQ6NWDRn
+   w==;
+X-CSE-ConnectionGUID: EEbPSG5+T0W6T1Zrb5aZ6A==
+X-CSE-MsgGUID: ZZ3vNBvmREq0+76behTLNw==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
+   d="scan'208";a="10101600"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 17 Oct 2023 02:43:29 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Tue, 17 Oct 2023 02:43:19 -0700
+Received: from HYD-DK-UNGSW21.microchip.com (10.10.85.11) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2507.21 via Frontend Transport; Tue, 17 Oct 2023 02:43:16 -0700
+From:   Raju Lakkaraju <Raju.Lakkaraju@microchip.com>
+To:     <netdev@vger.kernel.org>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>,
+        <Bryan.Whitehead@microchip.com>, <linux-kernel@vger.kernel.org>,
+        <andrew@lunn.ch>, <linux@armlinux.org.uk>,
+        <UNGLinuxDriver@microchip.com>
+Subject: [PATCH net-next V1 0/7] Add support to PHYLINK and SFP for PCI11x1x chips 
+Date:   Tue, 17 Oct 2023 15:12:01 +0530
+Message-ID: <20231017094208.4956-1-Raju.Lakkaraju@microchip.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 16/23] drm/mediatek: Start/Stop components with
- function pointers
-Content-Language: en-US
-To:     Hsiao Chien Sung <shawn.sung@mediatek.com>,
-        CK Hu <ck.hu@mediatek.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Fei Shao <fshao@chromium.org>,
-        Sean Paul <sean@poorly.run>,
-        Johnson Wang <johnson.wang@mediatek.corp-partner.google.com>,
-        "Nancy . Lin" <nancy.lin@mediatek.com>,
-        Moudy Ho <moudy.ho@mediatek.com>,
-        "Jason-JH . Lin" <jason-jh.lin@mediatek.com>,
-        Nathan Lu <nathan.lu@mediatek.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20231016104010.3270-1-shawn.sung@mediatek.com>
- <20231016104010.3270-17-shawn.sung@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231016104010.3270-17-shawn.sung@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 16/10/23 12:40, Hsiao Chien Sung ha scritto:
-> By registering component related functions to the pointers,
-> we can easily manage them within a for-loop and simplify the
-> logic of component start/stop process.
-> 
-> Reviewed-by: CK Hu <ck.hu@mediatek.com>
-> Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
+This patch series adds support to phylink and sfp pluggable module.
+Add software-nodes to hold the network interface phylink, sfp, i2c and gpio
+configuration and integrates the PCI1x1x chip i2c driver and gpio driver to
+access the sfp module eeprom data.
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Tested on chip PCI11010 Rev-B with Bridgeport Evaluation board Rev-1 with
+following SFP modules:
+
+1. FS's 2.5G SFP (SFP-2.5G-T) with 2.5 Gbps speed (interface 2500Base-X)
+
+2. Mellanox DAC10G SFP (MC3309130-001) at 2.5 Gbps speed (interface 2500Base-X)
+and 1Gpbs speed (interface 1000Base-X)
+
+3. Axcen's 1G SFP (AXGT-R1T4-05I1) at 1G/100M/10M bps speed (interface SGMII)
+
+4. Fiber 1G SFP (AXGE-1354-0531) at 1Gpbs speed (interface 1000Base-X)
+
+Change Log:
+===========
+V0 -> V1:
+  - Integrate with Synopsys DesignWare XPCS drivers
+  - Based on external review comments,
+    - Changes made to SGMII interface support only 1G/100M/10M bps speed
+    - Changes made to 2500Base-X interface support only 2.5Gbps speed
+    - Add check for not is_sgmii_en with is_sfp_support_en support
+    - Change the "pci11x1x_strap_get_status" function return type from void to  
+      int
+    - Add ethtool phylink wol, eee, pause get/set functions
+
+Raju Lakkaraju (7):
+  net: lan743x: Create separate PCS power reset function
+  net: lan743x: Create separate Link Speed Duplex state function
+  net: lan743x: Add SFP support check flag
+  net: lan743x: Add support to software-nodes for sfp and phylink
+  net: lan743x: Register the platform device for sfp pluggable module
+  net: lan743x: Add support to the phylink framework
+  net: lan743x: Add support to ethtool phylink get and set settings
+
+ drivers/net/ethernet/microchip/Kconfig        |    9 +-
+ .../net/ethernet/microchip/lan743x_ethtool.c  |   85 +-
+ drivers/net/ethernet/microchip/lan743x_main.c | 1090 ++++++++++++-----
+ drivers/net/ethernet/microchip/lan743x_main.h |   49 +
+ 4 files changed, 868 insertions(+), 365 deletions(-)
+
+-- 
+2.34.1
 
