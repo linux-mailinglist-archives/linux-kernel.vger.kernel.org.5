@@ -2,71 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D36387CC96D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 19:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE0E7CC970
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 19:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343860AbjJQREn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 13:04:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45650 "EHLO
+        id S1343684AbjJQRFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 13:05:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233493AbjJQREl (ORCPT
+        with ESMTP id S231569AbjJQRFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 13:04:41 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBD06A4;
-        Tue, 17 Oct 2023 10:04:39 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40684f53bfcso53198395e9.0;
-        Tue, 17 Oct 2023 10:04:39 -0700 (PDT)
+        Tue, 17 Oct 2023 13:05:18 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D1ECB0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 10:05:15 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9b95622c620so1034359666b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 10:05:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697562278; x=1698167078; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iYhVgVukknKnttKNru5mCHTZ6wmo6E2zfS+vFjWMe7o=;
-        b=QO/ZDkK3EhPj4DZHs+NlLly2/TBT43VjH3Ea4JTW9Vm6FFvyEPdAGBGibbzir80brh
-         nurxejzCPnP8qj5CLFnqkK1rOTWzx+6Y9z7XtRSaXCpIdYHpAQE2mL0Hj8z5t6DBZr3s
-         p1cLBTHW0FzYLjXpcUjplLwwZ7Xh+1jCa1LktH+Rr1jxbLcQ59xfgySgTtbjyooM9tkM
-         efeVcnH3KkJKZPcSWYQvQDZklHMXpmZJnVnrBbflPpf661pDpZE6clAhkh12Z8oLmTRH
-         Ngaj1cnW1Ol2T3LUTlwhnPx0a1iUN+9TU1L5SJv/AYeCx02IDfajwpAQz07Af0oFJzZQ
-         sC0Q==
+        d=linux-foundation.org; s=google; t=1697562313; x=1698167113; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8E8o2x2e8DzqPr/PksD/TO2/JNV/3RJFF1TJnJk/P9E=;
+        b=VzZSqUbQCFDEZIO65M8OUMjiIcF5HTBMW7L/1rVBqiL/iVLqGog5ALFEn7/N1Q/uBP
+         dj6Uzm1k86agHI3rbaZO09ENpOHswvrQPrOKogU4JnDN/2dtxbZAz+sWWRMFQQgxPi5d
+         Dig6fDyo9ewwryAA3OXUC5NQU1alTp6VJHCpg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697562278; x=1698167078;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1697562313; x=1698167113;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=iYhVgVukknKnttKNru5mCHTZ6wmo6E2zfS+vFjWMe7o=;
-        b=pUgcO6BMl2tXC9CYp1diNQkx1Xdv1KD64Jjx4s0eoknKf7DV/kWL/TnREAfOHWQ0T/
-         WJ/etwB/gnctiUBRZfUp9NxBSVex4KsVu2kEXZ+KolRq0iMlG3Eut525Vx9SX/RJ6K9d
-         PCHRhsN/1FvW7I8GSSJHxjLX7u5Wy1oetJR/6SvA9rnrrfTnBji5hVef7A5xYnZDISgu
-         uenDqPTjQIPGj4IYbx2wkO6y0EN1oqevb/G+QtZoK2neps4bhsVKwsNKyZMAVxXMIPJr
-         ZNtdVEBl+JSKgS2J5RL0wyHSbh6dC6wOmYF1ge0xu9RkuWazEH4aMsBkviVT3cZXavU4
-         nCXQ==
-X-Gm-Message-State: AOJu0YzViKu8cxW5Bimu0OdC1HM+sahGSibQOg4Ig5nwDKFJ7vYfKSal
-        Cyaq7bl7UpRjJtyUlTzhJfTxB/A/nxLesA==
-X-Google-Smtp-Source: AGHT+IFtNy7l3EGxYkZCWkiAhFWEYsg/TRqDQWID7CtM3pnURtITPTRRkvuHyQUSXKuBI5Nf0blqLQ==
-X-Received: by 2002:a5d:4e47:0:b0:32d:65ab:2228 with SMTP id r7-20020a5d4e47000000b0032d65ab2228mr2287392wrt.11.1697562278015;
-        Tue, 17 Oct 2023 10:04:38 -0700 (PDT)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id z9-20020adff749000000b00323287186aasm191730wrp.32.2023.10.17.10.04.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 10:04:37 -0700 (PDT)
-From:   Colin Ian King <colin.i.king@gmail.com>
-To:     Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
-        Baojun Xu <baojun.xu@ti.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] ASoC: tas2781: make const read-only array magic_number static
-Date:   Tue, 17 Oct 2023 18:04:36 +0100
-Message-Id: <20231017170436.176615-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        bh=8E8o2x2e8DzqPr/PksD/TO2/JNV/3RJFF1TJnJk/P9E=;
+        b=HkiX1itR+pt+APeyT5Xibi4CACwE2gFVSpTq5/GAESG6Nf7AD2VdCR4sn/dzIDS4D9
+         pz9ppneu137Zr2+ApnlwFp81x14cVPsRdnh6qTfV9y5Inh68Lujfb4MKCaGmgpt9/Mco
+         V5JZB4pNAuDUYw/OBu78HLHd4qb5g6LDBtEXKiLmGy7yaKcT+UwafEx+uEITGlioSppS
+         JVOIJBN6AuvVJ5/RTRCA1AFtjm6gfKCreqvSX9O3ea7Cx0EvuDV7zst/dheV8/2y4ii2
+         prkk6xPD2rvO8346nLSY5yNQjyYVs2ygoQGERHiznVNQ1Na+M181//s1JPqNTytBizAf
+         iipg==
+X-Gm-Message-State: AOJu0YyYtCZmz/h761WK5he+PhEdKGe6W1l1DZNhubUBcrsPQ51xwb3C
+        +uox5m4n8crLzGhOuTog8x8w0hsSdgOCsUOuT9lqSn+J
+X-Google-Smtp-Source: AGHT+IF/Nim3dI8VW7jGxhKRvywITCltwfQfwRFnd1pB2TalK2hhN01dbQvFPUiHi/AZjhAK84d8Wg==
+X-Received: by 2002:a17:906:4787:b0:9b9:a1dd:5105 with SMTP id cw7-20020a170906478700b009b9a1dd5105mr2248235ejc.50.1697562313476;
+        Tue, 17 Oct 2023 10:05:13 -0700 (PDT)
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com. [209.85.218.49])
+        by smtp.gmail.com with ESMTPSA id d1-20020a17090648c100b0099b76c3041csm146516ejt.7.2023.10.17.10.05.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Oct 2023 10:05:12 -0700 (PDT)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-9b6559cbd74so1033256166b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 10:05:12 -0700 (PDT)
+X-Received: by 2002:a17:907:d1c:b0:9b2:b2f8:85dd with SMTP id
+ gn28-20020a1709070d1c00b009b2b2f885ddmr2808664ejc.34.1697562311687; Tue, 17
+ Oct 2023 10:05:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20231017090815.1067790-1-jeffxu@chromium.org> <20231017090815.1067790-8-jeffxu@chromium.org>
+In-Reply-To: <20231017090815.1067790-8-jeffxu@chromium.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 17 Oct 2023 10:04:54 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh+6n6f0zuezKem+W=aytHMv2bib6Fbrg-xnWOoujFb6g@mail.gmail.com>
+Message-ID: <CAHk-=wh+6n6f0zuezKem+W=aytHMv2bib6Fbrg-xnWOoujFb6g@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 7/8] mseal:Check seal flag for mmap(2)
+To:     jeffxu@chromium.org
+Cc:     akpm@linux-foundation.org, keescook@chromium.org, jannh@google.com,
+        sroettger@google.com, willy@infradead.org,
+        gregkh@linuxfoundation.org, jeffxu@google.com,
+        jorgelo@chromium.org, groeck@chromium.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mm@kvack.org, surenb@google.com, alex.sierra@amd.com,
+        apopple@nvidia.com, aneesh.kumar@linux.ibm.com,
+        axelrasmussen@google.com, ben@decadent.org.uk,
+        catalin.marinas@arm.com, david@redhat.com, dwmw@amazon.co.uk,
+        ying.huang@intel.com, hughd@google.com, joey.gouly@arm.com,
+        corbet@lwn.net, wangkefeng.wang@huawei.com,
+        Liam.Howlett@oracle.com, lstoakes@gmail.com, mawupeng1@huawei.com,
+        linmiaohe@huawei.com, namit@vmware.com, peterx@redhat.com,
+        peterz@infradead.org, ryan.roberts@arm.com, shr@devkernel.io,
+        vbabka@suse.cz, xiujianfeng@huawei.com, yu.ma@intel.com,
+        zhangpeng362@huawei.com, dave.hansen@intel.com, luto@kernel.org,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,27 +89,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't populate the const read-only array magic_number on the stack,
-instead make it static const.
+On Tue, 17 Oct 2023 at 02:08, <jeffxu@chromium.org> wrote:
+>
+> Note: Of all the call paths that goes into do_mmap(),
+> ksys_mmap_pgoff() is the only place where
+> checkSeals = MM_SEAL_MMAP. The rest has checkSeals = 0.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- sound/soc/codecs/tas2781-fmwlib.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Again, this is all completely nonsensical.
 
-diff --git a/sound/soc/codecs/tas2781-fmwlib.c b/sound/soc/codecs/tas2781-fmwlib.c
-index e27775d834e9..4efe95b60aaa 100644
---- a/sound/soc/codecs/tas2781-fmwlib.c
-+++ b/sound/soc/codecs/tas2781-fmwlib.c
-@@ -1757,7 +1757,7 @@ static int fw_parse_header(struct tasdevice_priv *tas_priv,
- {
- 	struct tasdevice_dspfw_hdr *fw_hdr = &(tas_fmw->fw_hdr);
- 	struct tasdevice_fw_fixed_hdr *fw_fixed_hdr = &(fw_hdr->fixed_hdr);
--	const unsigned char magic_number[] = { 0x35, 0x35, 0x35, 0x32 };
-+	static const unsigned char magic_number[] = { 0x35, 0x35, 0x35, 0x32 };
- 	const unsigned char *buf = (unsigned char *)fmw->data;
- 
- 	if (offset + 92 > fmw->size) {
--- 
-2.39.2
+First off, since seals only exist on existing vma's, the "MMAP seal"
+makes no sense to begin with. You cannot mmap twice - and mmap'ing
+over an existing mapping involves unmapping the old one.
 
+So a "mmap seal" is nonsensical. What should protect a mapping is "you
+cannot unmap this". That automatically means that you cannot mmap over
+it.
+
+In other words, all these sealing flag semantics are completely random
+noise. None of this makes sense.
+
+You need to EXPLAIN what the concept is.
+
+Honestly, there is only two kinds of sealing that makes sense:
+
+ - you cannot change the permissions of some area
+
+ - you cannot unmap an area
+
+where that first version might then have sub-cases (maybe you can make
+permissions _stricter_, but not the other way)?
+
+And dammit, once something is sealed, it is SEALED. None of this crazy
+"one place honors the sealing, random other places do not".
+
+I do *NOT* want to see another random patch series tomorrow that
+modifies something small here.
+
+I want to get an EXPLANATION and the whole "what the f*ck is the
+concept". No more random rules. No more nonsensical code. No more of
+this "one place honors seals, another one does not".
+
+Seriously. As long as this is chock-full of these kinds of random
+"this makes no sense", please don't send any patches AT ALL. Explain
+the high-level rules first, and if you cannot explain why one random
+place does something different from all the other random places, don't
+even bother.
+
+No more random code. No more random seals. None of this crazy "you
+ostensibly can't unmap a vma, but you you can actually unmap it by
+mmap'ing over it and then unmapping the new one".
+
+             Linus
