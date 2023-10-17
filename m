@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F247CCDA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 22:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1A97CCDA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 22:12:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344204AbjJQUMz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 17 Oct 2023 16:12:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33170 "EHLO
+        id S1344010AbjJQUMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 16:12:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231149AbjJQUMt (ORCPT
+        with ESMTP id S231478AbjJQUMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 16:12:49 -0400
+        Tue, 17 Oct 2023 16:12:48 -0400
 Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99CE26FA9;
-        Tue, 17 Oct 2023 13:12:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C58156FAA;
+        Tue, 17 Oct 2023 13:12:45 -0700 (PDT)
 Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
  by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 25056178d9cded64; Tue, 17 Oct 2023 22:12:45 +0200
+ id b9b0ec6ca16d320a; Tue, 17 Oct 2023 22:12:44 +0200
 Received: from kreacher.localnet (unknown [195.136.19.94])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by cloudserver094114.home.pl (Postfix) with ESMTPSA id 86C38666BCD;
-        Tue, 17 Oct 2023 22:12:44 +0200 (CEST)
+        by cloudserver094114.home.pl (Postfix) with ESMTPSA id 7ACE7666BCD;
+        Tue, 17 Oct 2023 22:12:43 +0200 (CEST)
 From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
 To:     Linux PM <linux-pm@vger.kernel.org>
 Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
@@ -32,18 +32,18 @@ Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
         Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
         Zhang Rui <rui.zhang@intel.com>
-Subject: [PATCH v1 1/3] thermal: ACPI: Move the ACPI thermal library to drivers/acpi/
-Date:   Tue, 17 Oct 2023 22:05:23 +0200
-Message-ID: <4539892.LvFx2qVVIh@kreacher>
+Subject: [PATCH v1 2/3] ACPI: thermal_lib: Add functions returning temperature in deci-Kelvin
+Date:   Tue, 17 Oct 2023 22:06:52 +0200
+Message-ID: <4861460.GXAFRqVoOG@kreacher>
 In-Reply-To: <5740803.DvuYhMxLoT@kreacher>
 References: <5740803.DvuYhMxLoT@kreacher>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="UTF-8"
 X-CLIENT-IP: 195.136.19.94
 X-CLIENT-HOSTNAME: 195.136.19.94
 X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrjedvgddugeefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtqhertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnheptddvfeegledvfedvveevhedvteeffeehvdeuiedukeeiledttefgvdeihffgteetnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepjedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrjedvgddugeefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepjedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
  thhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehrrghfrggvlheskhgvrhhnvghlrdhorhhg
 X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
@@ -56,393 +56,167 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-The ACPI thermal library contains functions that can be used to
-retrieve trip point temperature values through the platform firmware
-for various types of trip points.  Each of these functions basically
-evaluates a specific ACPI object, checks if the value produced by it
-is reasonable and returns it (or THERMAL_TEMP_INVALID if anything
-fails).
+Because the ACPI thermal driver generally operates temperature values
+in deci-Kelvin, it needs the library functions returning temperature
+for various trip point types to use deci-Kelvin too.
 
-It made sense to hold it in drivers/thermal/ so long as it was only used
-by the code in that directory, but since it is also going to be used by
-the ACPI thermal driver, located in drivers/acpi/, move it to the latter
-in order to keep the code related to evaluating ACPI objects defined in
-the specification proper together.
+To address that, arrange the ACPI thermal library code in three levels
+of functions where the high-level ones will return temperature in
+milli-Celsius, as needed by the thermal core and the majority of
+thermal drivers, the mid-level ones will return temperature in
+deci-Kelvin and will be called internally by the corresponding high-
+level functions, and all of the mid-level functions will call the same
+low-level one, acpi_trip_temp(), to actually evaluate ACPI objects to
+retrieve themperature values from the platform firmware.
+
+Going forward, this will allow the ACPI thermal driver to use the
+mid-level functions to provide temperature values needed by it, so as
+to reduce code duplication related to evaluating trip temperature ACPI
+control methods.
 
 No intentional functional impact.
 
 Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
- drivers/acpi/Kconfig                          |    4 
- drivers/acpi/Makefile                         |    1 
- drivers/acpi/thermal_lib.c                    |  116 ++++++++++++++++++++++++++
- drivers/thermal/Kconfig                       |    4 
- drivers/thermal/Makefile                      |    1 
- drivers/thermal/intel/Kconfig                 |    2 
- drivers/thermal/intel/int340x_thermal/Kconfig |    2 
- drivers/thermal/thermal_acpi.c                |  116 --------------------------
- include/linux/acpi.h                          |    7 +
- include/linux/thermal.h                       |    7 -
- 10 files changed, 130 insertions(+), 130 deletions(-)
+ drivers/acpi/thermal_lib.c |   75 ++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 60 insertions(+), 15 deletions(-)
 
-Index: linux-pm/drivers/thermal/intel/Kconfig
-===================================================================
---- linux-pm.orig/drivers/thermal/intel/Kconfig
-+++ linux-pm/drivers/thermal/intel/Kconfig
-@@ -85,7 +85,7 @@ config INTEL_BXT_PMIC_THERMAL
- config INTEL_PCH_THERMAL
- 	tristate "Intel PCH Thermal Reporting Driver"
- 	depends on X86 && PCI
--	select THERMAL_ACPI if ACPI
-+	select ACPI_THERMAL_LIB if ACPI
- 	help
- 	  Enable this to support thermal reporting on certain intel PCHs.
- 	  Thermal reporting device will provide temperature reading,
-Index: linux-pm/drivers/thermal/intel/int340x_thermal/Kconfig
-===================================================================
---- linux-pm.orig/drivers/thermal/intel/int340x_thermal/Kconfig
-+++ linux-pm/drivers/thermal/intel/int340x_thermal/Kconfig
-@@ -9,7 +9,7 @@ config INT340X_THERMAL
- 	select THERMAL_GOV_USER_SPACE
- 	select ACPI_THERMAL_REL
- 	select ACPI_FAN
--	select THERMAL_ACPI
-+	select ACPI_THERMAL_LIB
- 	select INTEL_SOC_DTS_IOSF_CORE
- 	select INTEL_TCC
- 	select PROC_THERMAL_MMIO_RAPL if POWERCAP
-Index: linux-pm/drivers/acpi/Kconfig
-===================================================================
---- linux-pm.orig/drivers/acpi/Kconfig
-+++ linux-pm/drivers/acpi/Kconfig
-@@ -60,6 +60,10 @@ config ACPI_CCA_REQUIRED
- config ACPI_TABLE_LIB
- 	bool
- 
-+config ACPI_THERMAL_LIB
-+       depends on THERMAL
-+       bool
-+
- config ACPI_DEBUGGER
- 	bool "AML debugger interface"
- 	select ACPI_DEBUG
-Index: linux-pm/drivers/thermal/Kconfig
-===================================================================
---- linux-pm.orig/drivers/thermal/Kconfig
-+++ linux-pm/drivers/thermal/Kconfig
-@@ -76,10 +76,6 @@ config THERMAL_OF
- 	  Say 'Y' here if you need to build thermal infrastructure
- 	  based on device tree.
- 
--config THERMAL_ACPI
--       depends on ACPI
--       bool
--
- config THERMAL_WRITABLE_TRIPS
- 	bool "Enable writable trip points"
- 	help
-Index: linux-pm/drivers/acpi/Makefile
-===================================================================
---- linux-pm.orig/drivers/acpi/Makefile
-+++ linux-pm/drivers/acpi/Makefile
-@@ -89,6 +89,7 @@ obj-$(CONFIG_ACPI_TAD)		+= acpi_tad.o
- obj-$(CONFIG_ACPI_PCI_SLOT)	+= pci_slot.o
- obj-$(CONFIG_ACPI_PROCESSOR)	+= processor.o
- obj-$(CONFIG_ACPI)		+= container.o
-+obj-$(CONFIG_ACPI_THERMAL_LIB)	+= thermal_lib.o
- obj-$(CONFIG_ACPI_THERMAL)	+= thermal.o
- obj-$(CONFIG_ACPI_PLATFORM_PROFILE) 	+= platform_profile.o
- obj-$(CONFIG_ACPI_NFIT)		+= nfit/
-Index: linux-pm/drivers/thermal/Makefile
-===================================================================
---- linux-pm.orig/drivers/thermal/Makefile
-+++ linux-pm/drivers/thermal/Makefile
-@@ -13,7 +13,6 @@ thermal_sys-$(CONFIG_THERMAL_NETLINK)		+
- # interface to/from other layers providing sensors
- thermal_sys-$(CONFIG_THERMAL_HWMON)		+= thermal_hwmon.o
- thermal_sys-$(CONFIG_THERMAL_OF)		+= thermal_of.o
--thermal_sys-$(CONFIG_THERMAL_ACPI)		+= thermal_acpi.o
- 
- # governors
- CFLAGS_gov_power_allocator.o			:= -I$(src)
-Index: linux-pm/include/linux/acpi.h
-===================================================================
---- linux-pm.orig/include/linux/acpi.h
-+++ linux-pm/include/linux/acpi.h
-@@ -439,6 +439,13 @@ extern int acpi_blacklisted(void);
- extern void acpi_osi_setup(char *str);
- extern bool acpi_osi_is_win8(void);
- 
-+#ifdef CONFIG_ACPI_THERMAL_LIB
-+int thermal_acpi_active_trip_temp(struct acpi_device *adev, int id, int *ret_temp);
-+int thermal_acpi_passive_trip_temp(struct acpi_device *adev, int *ret_temp);
-+int thermal_acpi_hot_trip_temp(struct acpi_device *adev, int *ret_temp);
-+int thermal_acpi_critical_trip_temp(struct acpi_device *adev, int *ret_temp);
-+#endif
-+
- #ifdef CONFIG_ACPI_NUMA
- int acpi_map_pxm_to_node(int pxm);
- int acpi_get_node(acpi_handle handle);
-Index: linux-pm/include/linux/thermal.h
-===================================================================
---- linux-pm.orig/include/linux/thermal.h
-+++ linux-pm/include/linux/thermal.h
-@@ -294,13 +294,6 @@ int thermal_zone_get_num_trips(struct th
- 
- int thermal_zone_get_crit_temp(struct thermal_zone_device *tz, int *temp);
- 
--#ifdef CONFIG_THERMAL_ACPI
--int thermal_acpi_active_trip_temp(struct acpi_device *adev, int id, int *ret_temp);
--int thermal_acpi_passive_trip_temp(struct acpi_device *adev, int *ret_temp);
--int thermal_acpi_hot_trip_temp(struct acpi_device *adev, int *ret_temp);
--int thermal_acpi_critical_trip_temp(struct acpi_device *adev, int *ret_temp);
--#endif
--
- #ifdef CONFIG_THERMAL
- struct thermal_zone_device *thermal_zone_device_register_with_trips(
- 					const char *type,
 Index: linux-pm/drivers/acpi/thermal_lib.c
 ===================================================================
---- /dev/null
+--- linux-pm.orig/drivers/acpi/thermal_lib.c
 +++ linux-pm/drivers/acpi/thermal_lib.c
-@@ -0,0 +1,116 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright 2023 Linaro Limited
-+ * Copyright 2023 Intel Corporation
-+ *
-+ * Library routines for populating a generic thermal trip point structure
-+ * with data obtained by evaluating a specific object in the ACPI Namespace.
-+ */
-+#include <linux/acpi.h>
-+#include <linux/units.h>
-+#include <linux/thermal.h>
-+
-+/*
-+ * Minimum temperature for full military grade is 218°K (-55°C) and
-+ * max temperature is 448°K (175°C). We can consider those values as
-+ * the boundaries for the [trips] temperature returned by the
-+ * firmware. Any values out of these boundaries may be considered
-+ * bogus and we can assume the firmware has no data to provide.
-+ */
-+#define TEMP_MIN_DECIK	2180
-+#define TEMP_MAX_DECIK	4480
-+
-+static int thermal_acpi_trip_temp(struct acpi_device *adev, char *obj_name,
-+				  int *ret_temp)
-+{
-+	unsigned long long temp;
-+	acpi_status status;
-+
-+	status = acpi_evaluate_integer(adev->handle, obj_name, NULL, &temp);
-+	if (ACPI_FAILURE(status)) {
-+		acpi_handle_debug(adev->handle, "%s evaluation failed\n", obj_name);
-+		return -ENODATA;
-+	}
-+
-+	if (temp >= TEMP_MIN_DECIK && temp <= TEMP_MAX_DECIK) {
-+		*ret_temp = deci_kelvin_to_millicelsius(temp);
-+	} else {
-+		acpi_handle_debug(adev->handle, "%s result %llu out of range\n",
-+				  obj_name, temp);
-+		*ret_temp = THERMAL_TEMP_INVALID;
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * thermal_acpi_active_trip_temp - Retrieve active trip point temperature
-+ * @adev: Target thermal zone ACPI device object.
-+ * @id: Active cooling level (0 - 9).
-+ * @ret_temp: Address to store the retrieved temperature value on success.
-+ *
-+ * Evaluate the _ACx object for the thermal zone represented by @adev to obtain
-+ * the temperature of the active cooling trip point corresponding to the active
-+ * cooling level given by @id.
-+ *
-+ * Return 0 on success or a negative error value on failure.
-+ */
-+int thermal_acpi_active_trip_temp(struct acpi_device *adev, int id, int *ret_temp)
+@@ -3,8 +3,8 @@
+  * Copyright 2023 Linaro Limited
+  * Copyright 2023 Intel Corporation
+  *
+- * Library routines for populating a generic thermal trip point structure
+- * with data obtained by evaluating a specific object in the ACPI Namespace.
++ * Library routines for retrieving trip point temperature values from the
++ * platform firmware via ACPI.
+  */
+ #include <linux/acpi.h>
+ #include <linux/units.h>
+@@ -17,11 +17,11 @@
+  * firmware. Any values out of these boundaries may be considered
+  * bogus and we can assume the firmware has no data to provide.
+  */
+-#define TEMP_MIN_DECIK	2180
+-#define TEMP_MAX_DECIK	4480
++#define TEMP_MIN_DECIK	2180ULL
++#define TEMP_MAX_DECIK	4480ULL
+ 
+-static int thermal_acpi_trip_temp(struct acpi_device *adev, char *obj_name,
+-				  int *ret_temp)
++static int acpi_trip_temp(struct acpi_device *adev, char *obj_name,
++			  int *ret_temp)
+ {
+ 	unsigned long long temp;
+ 	acpi_status status;
+@@ -33,7 +33,7 @@ static int thermal_acpi_trip_temp(struct
+ 	}
+ 
+ 	if (temp >= TEMP_MIN_DECIK && temp <= TEMP_MAX_DECIK) {
+-		*ret_temp = deci_kelvin_to_millicelsius(temp);
++		*ret_temp = temp;
+ 	} else {
+ 		acpi_handle_debug(adev->handle, "%s result %llu out of range\n",
+ 				  obj_name, temp);
+@@ -43,6 +43,44 @@ static int thermal_acpi_trip_temp(struct
+ 	return 0;
+ }
+ 
++int acpi_active_trip_temp(struct acpi_device *adev, int id, int *ret_temp)
 +{
 +	char obj_name[] = {'_', 'A', 'C', '0' + id, '\0'};
 +
 +	if (id < 0 || id > 9)
 +		return -EINVAL;
 +
-+	return thermal_acpi_trip_temp(adev, obj_name, ret_temp);
++	return acpi_trip_temp(adev, obj_name, ret_temp);
 +}
-+EXPORT_SYMBOL_GPL(thermal_acpi_active_trip_temp);
 +
-+/**
-+ * thermal_acpi_passive_trip_temp - Retrieve passive trip point temperature
-+ * @adev: Target thermal zone ACPI device object.
-+ * @ret_temp: Address to store the retrieved temperature value on success.
-+ *
-+ * Evaluate the _PSV object for the thermal zone represented by @adev to obtain
-+ * the temperature of the passive cooling trip point.
-+ *
-+ * Return 0 on success or -ENODATA on failure.
-+ */
-+int thermal_acpi_passive_trip_temp(struct acpi_device *adev, int *ret_temp)
++int acpi_passive_trip_temp(struct acpi_device *adev, int *ret_temp)
 +{
-+	return thermal_acpi_trip_temp(adev, "_PSV", ret_temp);
++	return acpi_trip_temp(adev, "_PSV", ret_temp);
 +}
-+EXPORT_SYMBOL_GPL(thermal_acpi_passive_trip_temp);
 +
-+/**
-+ * thermal_acpi_hot_trip_temp - Retrieve hot trip point temperature
-+ * @adev: Target thermal zone ACPI device object.
-+ * @ret_temp: Address to store the retrieved temperature value on success.
-+ *
-+ * Evaluate the _HOT object for the thermal zone represented by @adev to obtain
-+ * the temperature of the trip point at which the system is expected to be put
-+ * into the S4 sleep state.
-+ *
-+ * Return 0 on success or -ENODATA on failure.
-+ */
-+int thermal_acpi_hot_trip_temp(struct acpi_device *adev, int *ret_temp)
++int acpi_hot_trip_temp(struct acpi_device *adev, int *ret_temp)
 +{
-+	return thermal_acpi_trip_temp(adev, "_HOT", ret_temp);
++	return acpi_trip_temp(adev, "_HOT", ret_temp);
 +}
-+EXPORT_SYMBOL_GPL(thermal_acpi_hot_trip_temp);
 +
-+/**
-+ * thermal_acpi_critical_trip_temp - Retrieve critical trip point temperature
-+ * @adev: Target thermal zone ACPI device object.
-+ * @ret_temp: Address to store the retrieved temperature value on success.
-+ *
-+ * Evaluate the _CRT object for the thermal zone represented by @adev to obtain
-+ * the temperature of the critical cooling trip point.
-+ *
-+ * Return 0 on success or -ENODATA on failure.
-+ */
-+int thermal_acpi_critical_trip_temp(struct acpi_device *adev, int *ret_temp)
++int acpi_critical_trip_temp(struct acpi_device *adev, int *ret_temp)
 +{
-+	return thermal_acpi_trip_temp(adev, "_CRT", ret_temp);
++	return acpi_trip_temp(adev, "_CRT", ret_temp);
 +}
-+EXPORT_SYMBOL_GPL(thermal_acpi_critical_trip_temp);
-Index: linux-pm/drivers/thermal/thermal_acpi.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_acpi.c
-+++ /dev/null
-@@ -1,116 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * Copyright 2023 Linaro Limited
-- * Copyright 2023 Intel Corporation
-- *
-- * Library routines for populating a generic thermal trip point structure
-- * with data obtained by evaluating a specific object in the ACPI Namespace.
-- */
--#include <linux/acpi.h>
--#include <linux/units.h>
--#include <linux/thermal.h>
--
--/*
-- * Minimum temperature for full military grade is 218°K (-55°C) and
-- * max temperature is 448°K (175°C). We can consider those values as
-- * the boundaries for the [trips] temperature returned by the
-- * firmware. Any values out of these boundaries may be considered
-- * bogus and we can assume the firmware has no data to provide.
-- */
--#define TEMP_MIN_DECIK	2180
--#define TEMP_MAX_DECIK	4480
--
--static int thermal_acpi_trip_temp(struct acpi_device *adev, char *obj_name,
--				  int *ret_temp)
--{
--	unsigned long long temp;
--	acpi_status status;
--
--	status = acpi_evaluate_integer(adev->handle, obj_name, NULL, &temp);
--	if (ACPI_FAILURE(status)) {
--		acpi_handle_debug(adev->handle, "%s evaluation failed\n", obj_name);
--		return -ENODATA;
--	}
--
--	if (temp >= TEMP_MIN_DECIK && temp <= TEMP_MAX_DECIK) {
--		*ret_temp = deci_kelvin_to_millicelsius(temp);
--	} else {
--		acpi_handle_debug(adev->handle, "%s result %llu out of range\n",
--				  obj_name, temp);
--		*ret_temp = THERMAL_TEMP_INVALID;
--	}
--
--	return 0;
--}
--
--/**
-- * thermal_acpi_active_trip_temp - Retrieve active trip point temperature
-- * @adev: Target thermal zone ACPI device object.
-- * @id: Active cooling level (0 - 9).
-- * @ret_temp: Address to store the retrieved temperature value on success.
-- *
-- * Evaluate the _ACx object for the thermal zone represented by @adev to obtain
-- * the temperature of the active cooling trip point corresponding to the active
-- * cooling level given by @id.
-- *
-- * Return 0 on success or a negative error value on failure.
-- */
--int thermal_acpi_active_trip_temp(struct acpi_device *adev, int id, int *ret_temp)
--{
++
++static int thermal_temp(int error, int temp_decik, int *ret_temp)
++{
++	if (error)
++		return error;
++
++	if (temp_decik == THERMAL_TEMP_INVALID)
++		*ret_temp = THERMAL_TEMP_INVALID;
++	else
++		*ret_temp = deci_kelvin_to_millicelsius(temp_decik);
++
++	return 0;
++}
++
+ /**
+  * thermal_acpi_active_trip_temp - Retrieve active trip point temperature
+  * @adev: Target thermal zone ACPI device object.
+@@ -57,12 +95,10 @@ static int thermal_acpi_trip_temp(struct
+  */
+ int thermal_acpi_active_trip_temp(struct acpi_device *adev, int id, int *ret_temp)
+ {
 -	char obj_name[] = {'_', 'A', 'C', '0' + id, '\0'};
 -
 -	if (id < 0 || id > 9)
 -		return -EINVAL;
--
++	int temp_decik;
++	int ret = acpi_active_trip_temp(adev, id, &temp_decik);
+ 
 -	return thermal_acpi_trip_temp(adev, obj_name, ret_temp);
--}
--EXPORT_SYMBOL_GPL(thermal_acpi_active_trip_temp);
--
--/**
-- * thermal_acpi_passive_trip_temp - Retrieve passive trip point temperature
-- * @adev: Target thermal zone ACPI device object.
-- * @ret_temp: Address to store the retrieved temperature value on success.
-- *
-- * Evaluate the _PSV object for the thermal zone represented by @adev to obtain
-- * the temperature of the passive cooling trip point.
-- *
-- * Return 0 on success or -ENODATA on failure.
-- */
--int thermal_acpi_passive_trip_temp(struct acpi_device *adev, int *ret_temp)
--{
++	return thermal_temp(ret, temp_decik, ret_temp);
+ }
+ EXPORT_SYMBOL_GPL(thermal_acpi_active_trip_temp);
+ 
+@@ -78,7 +114,10 @@ EXPORT_SYMBOL_GPL(thermal_acpi_active_tr
+  */
+ int thermal_acpi_passive_trip_temp(struct acpi_device *adev, int *ret_temp)
+ {
 -	return thermal_acpi_trip_temp(adev, "_PSV", ret_temp);
--}
--EXPORT_SYMBOL_GPL(thermal_acpi_passive_trip_temp);
--
--/**
-- * thermal_acpi_hot_trip_temp - Retrieve hot trip point temperature
-- * @adev: Target thermal zone ACPI device object.
-- * @ret_temp: Address to store the retrieved temperature value on success.
-- *
-- * Evaluate the _HOT object for the thermal zone represented by @adev to obtain
-- * the temperature of the trip point at which the system is expected to be put
-- * into the S4 sleep state.
-- *
-- * Return 0 on success or -ENODATA on failure.
-- */
--int thermal_acpi_hot_trip_temp(struct acpi_device *adev, int *ret_temp)
--{
++	int temp_decik;
++	int ret = acpi_passive_trip_temp(adev, &temp_decik);
++
++	return thermal_temp(ret, temp_decik, ret_temp);
+ }
+ EXPORT_SYMBOL_GPL(thermal_acpi_passive_trip_temp);
+ 
+@@ -95,7 +134,10 @@ EXPORT_SYMBOL_GPL(thermal_acpi_passive_t
+  */
+ int thermal_acpi_hot_trip_temp(struct acpi_device *adev, int *ret_temp)
+ {
 -	return thermal_acpi_trip_temp(adev, "_HOT", ret_temp);
--}
--EXPORT_SYMBOL_GPL(thermal_acpi_hot_trip_temp);
--
--/**
-- * thermal_acpi_critical_trip_temp - Retrieve critical trip point temperature
-- * @adev: Target thermal zone ACPI device object.
-- * @ret_temp: Address to store the retrieved temperature value on success.
-- *
-- * Evaluate the _CRT object for the thermal zone represented by @adev to obtain
-- * the temperature of the critical cooling trip point.
-- *
-- * Return 0 on success or -ENODATA on failure.
-- */
--int thermal_acpi_critical_trip_temp(struct acpi_device *adev, int *ret_temp)
--{
++	int temp_decik;
++	int ret = acpi_hot_trip_temp(adev, &temp_decik);
++
++	return thermal_temp(ret, temp_decik, ret_temp);
+ }
+ EXPORT_SYMBOL_GPL(thermal_acpi_hot_trip_temp);
+ 
+@@ -111,6 +153,9 @@ EXPORT_SYMBOL_GPL(thermal_acpi_hot_trip_
+  */
+ int thermal_acpi_critical_trip_temp(struct acpi_device *adev, int *ret_temp)
+ {
 -	return thermal_acpi_trip_temp(adev, "_CRT", ret_temp);
--}
--EXPORT_SYMBOL_GPL(thermal_acpi_critical_trip_temp);
++	int temp_decik;
++	int ret = acpi_critical_trip_temp(adev, &temp_decik);
++
++	return thermal_temp(ret, temp_decik, ret_temp);
+ }
+ EXPORT_SYMBOL_GPL(thermal_acpi_critical_trip_temp);
 
 
 
