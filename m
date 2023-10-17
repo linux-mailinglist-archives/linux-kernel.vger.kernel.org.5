@@ -2,177 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56DBE7CC7FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 982C17CC802
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344082AbjJQPuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 11:50:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52454 "EHLO
+        id S235084AbjJQPvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 11:51:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235082AbjJQPuS (ORCPT
+        with ESMTP id S235094AbjJQPvJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 11:50:18 -0400
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2056.outbound.protection.outlook.com [40.107.102.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C1EFF0;
-        Tue, 17 Oct 2023 08:50:15 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TSBncjOWvknpOCzKurdQWffE4Rxmr2lGN/Jm/bWzVhJga2ftQHXnRteUdNyS2H6nT/my6kb4SxieKoCejOnUUpuytDztY7gZBzF+t3lMMk+j6kOgRxROmCWIq82608OARjmeLUub/UAT8hWM1Z4dttjvTiwZ0uASPfa0lGXnsNIs/XXDk0hcaNcqfcKF0zMW+e8GEJroY0YekWqxdZAexOS90SKZPTUwvgL66GHWt/fNRbWd03zmKJLbkvh7BagDJ/gUbjQJSUnO3M2zQ24tF9T6r7m+qxR1DtIF/pm0zts+DOojBp9K1CeqPOuYX7woUP6EY52ncsAHc5Gik2pxsw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0S8+QyLcDVyrOEhGtSlQi2JzTnV9WpQuHCDONHhGmB8=;
- b=Q/CrZXLnZSMm5PTupo3MwL0yB01MsGG0p+lBwVr3ifkWeJec1XoktabEqvkrrX23cRWHtSjixv6euZ0mP+VhNcWgntmxUVUWCr2y/PFUXmN9LqIyiHyHoYHnU/O15JTBdjX91+nntDc0el11lsV2GAKj3rNUWmO0R4UmT2iqZMR2t90cdRoFqY62tv9XJu/WPPOPiWPP/zdRCqMtFD8jRmqduZcGqL6m3ooUOG10Ff0o8ldnXTJxt5gI51gsDANcEOGtVAeK0FcZPjKCCvnr+WcDeCYZ5mib+Iomls6BwGyTL3h4C4Au33CXkQ9wBvdaweDFgTxWMGAStzu5uM2hqw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0S8+QyLcDVyrOEhGtSlQi2JzTnV9WpQuHCDONHhGmB8=;
- b=FsnJwBGSRORuAF1q+FKhdBZm74Xq96Lzus9PmRIupm2anYZQ4VKr+JUZaHub6AaofnF6DQkF78ad7JIpogLQ1KenrljAZ2qbGVRi6lUeWyc7K+TORaIkRGS3P9vH/w274XtI7MH6ngrwkPBVqfY0Pk2TDTCSyasHHEjeThiwiWLtsd4RmfbqjDdHtoAmjJ4jdI1Tau86e3x7I7HAvhBL6BgWV+z2XrzPYfbbvtxneRAAC/1A3Fyq5X4Lww+WpVLdXmAe3GlwBOf6Q2yX31KZTb6cfezIVG2GGK4/GGY0eDxY7ohS8IIkQzLjugN58ndN4tQX1YDPFJOKcxuFahjgww==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by PH7PR12MB9256.namprd12.prod.outlook.com (2603:10b6:510:2fe::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.43; Tue, 17 Oct
- 2023 15:50:12 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2%6]) with mapi id 15.20.6886.034; Tue, 17 Oct 2023
- 15:50:12 +0000
-Date:   Tue, 17 Oct 2023 12:50:11 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Yi Liu <yi.l.liu@intel.com>
-Cc:     Nicolin Chen <nicolinc@nvidia.com>, joro@8bytes.org,
-        alex.williamson@redhat.com, kevin.tian@intel.com,
-        robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
-        eric.auger@redhat.com, kvm@vger.kernel.org, mjrosato@linux.ibm.com,
-        chao.p.peng@linux.intel.com, yi.y.sun@linux.intel.com,
-        peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com
-Subject: Re: [PATCH v4 10/17] iommufd: Support IOMMU_HWPT_ALLOC allocation
- with user data
-Message-ID: <20231017155011.GG3952@nvidia.com>
-References: <20230921075138.124099-1-yi.l.liu@intel.com>
- <20230921075138.124099-11-yi.l.liu@intel.com>
- <20231013151923.GV3952@nvidia.com>
- <ZSmvkxuEq7M13KYE@Asurada-Nvidia>
- <20231014000709.GL3952@nvidia.com>
- <ZSnmId5g2m/UnxKY@Asurada-Nvidia>
- <bd6c6a0f-3b7e-ca7c-468f-d8fe7fb382fb@intel.com>
- <20231016115907.GQ3952@nvidia.com>
- <ZS2Eisb94o3inW7V@Asurada-Nvidia>
- <36725a11-b74c-da8e-b621-1a4f8055d779@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <36725a11-b74c-da8e-b621-1a4f8055d779@intel.com>
-X-ClientProxiedBy: BL1P221CA0014.NAMP221.PROD.OUTLOOK.COM
- (2603:10b6:208:2c5::26) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Tue, 17 Oct 2023 11:51:09 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B104C9E
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 08:51:06 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3af603da0f0so3805345b6e.3
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 08:51:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1697557866; x=1698162666; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=il3/t88Bvcf0KfSpDio1h3Qoo8mc/TjRbLwACXlksC8=;
+        b=e9NOfhg6L1vrAV9U/9eoGZPAgthzZMpQrvAfQzNnUZEk9wN4BnB58+refB85F5sJpa
+         n6EI6M53Jw/R69DoDTG6jS8wOXlDInh4XvMxi8KYjZpm4gOO+u10zBFdrSVBxSrfwMaQ
+         T9QVXwVX9EbvXP3W2tWcZ6xbCcq5VppfBMSkQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697557866; x=1698162666;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=il3/t88Bvcf0KfSpDio1h3Qoo8mc/TjRbLwACXlksC8=;
+        b=uyUbGvLzHWBCYnBDIufsNmo7bqJY05HXjqlRgv+gMbtlDzEPtqcxAFvfXWzcfBkDky
+         tRgknJwpib9F/KHjDVkJ5F6+U3LB/IsZfPlHunQftnz7nMtccsNybA/Ceq62dewQj2EB
+         vOgFFyAE05EFWfzcULSZ+xyYmPJDbJQ1W6ot4+UjtOQcEiWHmD34xOgAntQGC2z35S0Z
+         MKk8JGiEFmNiLhjDfXz5CQbj5urqbf7MxszeEl2MSl4rJ60O48mFK2ImWeIV3TGiMqod
+         QO5FxpW3OiyNDHxoJS7qwifjQDI3w6TqihByJqTOZFztg5zx+LrJ/JByEzTNHYy559XI
+         KiEA==
+X-Gm-Message-State: AOJu0Yx99mKf3bFNA2V3yRymnBzMT2WxITZu0twgUSaEpxYXTU2NGJW4
+        XWwGA+zjJb5W8IpmHGrTnnr+XbVEUqe+uw9JQRwVdkhMFJqk+OWz
+X-Google-Smtp-Source: AGHT+IExn1liKqWXpiUBNO4YDOjyrhSuJlod5rWVKACRZm2hk+OkA9O5pUS4J69jHcYDeOhk73ytmbiIepY4uRu+xc8=
+X-Received: by 2002:aca:90e:0:b0:3af:585:400b with SMTP id 14-20020aca090e000000b003af0585400bmr2463244oij.58.1697557865869;
+ Tue, 17 Oct 2023 08:51:05 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|PH7PR12MB9256:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8f41aef9-ff12-4daf-2c30-08dbcf28bfb0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qVlESCOTypAKUS+5BqL2tq8+jexhhMfzExN4N2HYZEZRmlQFZj40v+pEXFgudtuH/1WxWQYAZoDUb5Qfydj9eNcj6nzMiO4JeVeaQBRwpTM5x0GjTcya/TXUaQhigVwkMSnQywoWT27v7uzy+CEj5h6mwdVE/rBIC4o9Gak7oEGilsX+wFVS+MXtHPjgGA2xozLY0j224dSAxwUZFsLwKrO8FpX2WB+MlxkT9hJihdl/Y6XBGMTQiHiV9RW8XxASl0fxoeXpA7IwCILN47Bnsq6DkbUlq+vAj/9V8kN+6MvP7SyxU+BJdnrANV0DhG8hGXUVN5PFHRxVNSH4pVBCdk1jggohHsRCAZuo3OLS85bxhluRusxzKwELHBsysSw++UbOTJnJ9n+YSCUm4KY3zgLJsI1v83qjap5X1E0RErEMEKCneVPPxijdEVv/IybQ3Hndj31k8HvfOsJlu+w66fEfEE9c+Y1CR/E94H82qSYfDBM6cVhEdjGR4Ajkp+VTxFtGt/jaZpXUTXj7iNoopfC7NzZ8Q/XBlRRBs877vecPzibakgfH68o85juAUsCC
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(39860400002)(136003)(366004)(376002)(230922051799003)(186009)(64100799003)(451199024)(1800799009)(2906002)(33656002)(86362001)(1076003)(2616005)(478600001)(36756003)(38100700002)(6506007)(53546011)(83380400001)(26005)(6486002)(6916009)(316002)(5660300002)(4326008)(66476007)(8676002)(66946007)(66556008)(8936002)(6512007)(7416002)(41300700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?uTNYe6NKEzE5KfKuTBsN5kXFvRD5Qh2sCgTGC1m/TgSbSN7Es1jlZGc3b3no?=
- =?us-ascii?Q?kPl+BSr1nLEa/di3SLdvFjgX6pIWbELKGwHsqdlMgfnsD3EvIrY1Og+euKab?=
- =?us-ascii?Q?/JaZ06+lz+2sbNZkUR8CjvE33u6ODVRQtKVc75KjP6UAFkstt6yu8OSimMYh?=
- =?us-ascii?Q?Q7P9iHP/JYroLoSWny78vqK0hdLqtu0d6c7nRGNbYnpAmr6EaLbnPA6VkFmu?=
- =?us-ascii?Q?VCpHcyroIzg2Y1ny2aF6buKWjHJWwmtWLsVnUyryaqOS781hJfNbVcEaxhtm?=
- =?us-ascii?Q?Olcij0OsOVcat8FHdG8a43tojejXdeLOXfV8YUO0x++kM+ZwRLsIka8LXOlS?=
- =?us-ascii?Q?OVR8Q+sAD2Ifkcu8ScafnSUmddGsKg8yTHp5TjbBVHxflN1rJyPY0Q0g1koC?=
- =?us-ascii?Q?Is2m7OVdgLYB5orXr/MPbYrYfgG11n6o6R603Ca5QLiSWsnES7QlhHsqniTp?=
- =?us-ascii?Q?3ZC9cbVAevwwk+51pLc7mOOeL4DwV5HxWnOvkcIorU31KZVRzkyrwDEkUO1a?=
- =?us-ascii?Q?/4O8CPf+at8socQheUxjdxkbcwqsm5avLZKVEP7bpML1Hjm8/ypM3O33H09f?=
- =?us-ascii?Q?JzFLKVlPr3FGHphr60pLkL/tZj0wMizvDPeryWrkBiKRLEYhm7KGZxnm+/5Q?=
- =?us-ascii?Q?P/XIKpYHQdESDJN81rxJtZHVqpWQl7n3fPyVXXzrFJlaTaNfsUEgNu8jHq+H?=
- =?us-ascii?Q?cxdyyiWgC95aQhZBYurtVwPaT03LmxFNDt8FDRqmUMNc/HRaHPaqUjmbmudc?=
- =?us-ascii?Q?tkicePDaz6I/3TeAPL+ThaoXzXMfEEgi4wRGUtWRfgnXKJOpHqOK0IbtgX7R?=
- =?us-ascii?Q?bC+d5OjzXOKf6FTtaW5zJ7JYWIpmHio7XvuaK/Cr478yXLTmUIz7O1Q1xDPD?=
- =?us-ascii?Q?rwNVBTLuGv0gTAHAojQES6leZJ5Yp9mxG3c8FIicWUIMxA7pUttxGlcCavke?=
- =?us-ascii?Q?XNLCfvbKdrvfuV/tHvoUHrtz1mn3HABSfffTANDR3Rkimz+YHuVOAb1gLk57?=
- =?us-ascii?Q?CR8Jo58z8gOqPFHa73AgIiAXEJEgPBTxrqW2PAZMvYdbrVHZcWAif+Qz5ABn?=
- =?us-ascii?Q?fwQ3mOHWsMNO0XMPECWX/qP1EieyOD1mbctkkwBVwyug4yWw32ZQDymmho2+?=
- =?us-ascii?Q?DCAYCkfxfifZZYYAW8PscBEK6nx3pugW+GC2wpdmdCg+IYUHBRgtSCsREme6?=
- =?us-ascii?Q?qo3b30NUJ6AuASGtxZ9OD6kW6jLgVFhtKz2X8x+Nyzy0rW628WYtwC7gv6p6?=
- =?us-ascii?Q?f03EZef51D+GOX47Ry8UXXtl9ni+uUhCqDc8PzTwdSTRvM0dj5etqkDpiD/1?=
- =?us-ascii?Q?XxACHM14Hs8WyZMUfsRvXx3EptRckzm/7cxYBtl/ZiJmzmekrz3AGr5Bmgo6?=
- =?us-ascii?Q?N4JqZLQlYGspxUmrr3GTIceSnESCMMaaePycVHtFQm3KxFOky0oASkdXyed1?=
- =?us-ascii?Q?SLFMyBdtR4RszgHWtFf76C6rbPhh6r4FLY7cwDK68wqPyXiSiPlCeiNb7Ij7?=
- =?us-ascii?Q?tD7QjSCG9F6HFxp8otByNfnsN9+PVielEfL03Ey1yfCmwx7daJL5O/a0fqyG?=
- =?us-ascii?Q?FQ+je8eUlf8fuzs9t0PmyvVy6DNUNjQi9PswjJiJ?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8f41aef9-ff12-4daf-2c30-08dbcf28bfb0
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Oct 2023 15:50:12.6186
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zQoSZe/wHYCkUshNoaY00VnTT0c+rBrvWXbdJevrq4Q4EqTG/jnfqjPr2El5iDkg
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB9256
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20231010120319.1.Ifbec35991a2b629b57452d2d9f96d840d152a16f@changeid>
+In-Reply-To: <20231010120319.1.Ifbec35991a2b629b57452d2d9f96d840d152a16f@changeid>
+From:   Lalithkumar Rajendran <lalithkraj@chromium.org>
+Date:   Tue, 17 Oct 2023 10:50:54 -0500
+Message-ID: <CACwGwOEbQZCQNK6=2dOS-i54Xme34biV5j2hacDW1AKYt9gRiw@mail.gmail.com>
+Subject: Re: [PATCH] platform/chrome: cros_ec_lpc: Separate host command and
+ irq disable
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        chrome-platform@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 04:55:12PM +0800, Yi Liu wrote:
-> On 2023/10/17 02:44, Nicolin Chen wrote:
-> > On Mon, Oct 16, 2023 at 08:59:07AM -0300, Jason Gunthorpe wrote:
-> > > On Mon, Oct 16, 2023 at 03:03:04PM +0800, Yi Liu wrote:
-> > > > Current nesting series actually extends HWPT_ALLOC ioctl to accept user
-> > > > data for allocating domain with vendor specific data. Nested translation
-> > > > happens to be the usage of it. But nesting requires invalidation. If we
-> > > > want to do further split, then this new series would be just "extending
-> > > > HWPT_ALLOC to accept vendor specific data from userspace". But it will
-> > > > lack of a user if nesting is separated. Is this acceptable? @Jason
-> > > 
-> > > I'd still like to include the nesting allocation and attach parts
-> > > though, even if they are not usable without invalidation ..
-> > 
-> > This is the latest series that I reworked (in bottom-up order):
-> >   iommu: Add a pair of helper to copy struct iommu_user_data{_array}
-> >   iommufd: Add IOMMU_HWPT_INVALIDATE
-> >   iommufd: Add a nested HW pagetable object
-> >   iommufd: Share iommufd_hwpt_alloc with IOMMUFD_OBJ_HWPT_NESTED
-> >   iommufd: Derive iommufd_hwpt_paging from iommufd_hw_pagetable
-> >   iommufd: Rename IOMMUFD_OBJ_HW_PAGETABLE to IOMMUFD_OBJ_HWPT_PAGING
-> >   iommufd/device: Add helpers to enforce/remove device reserved regions
-> >   iommu: Add IOMMU_DOMAIN_NESTED and cache_invalidate_user op
-> >   iommu: Pass in parent domain with user_data to domain_alloc_user op
-> 
-> following Jason's comment, it looks like we can just split the cache
-> invalidation path out. Then the above looks good after removing
-> "iommufd: Add IOMMU_HWPT_INVALIDATE" and also the cache_invalidate_user
-> callback in "iommu: Add IOMMU_DOMAIN_NESTED and cache_invalidate_user op".
-> Is it? @Jason
+Adding chrome-platform to CC.
 
-If it can make sense, sure. It would be nice to be finished with the
-alloc path
 
-> > Only this v4 has the latest array-based invalidation design. And
-> > it should be straightforward for drivers to define entry/request
-> > structures. It might be a bit rush to review/finalize it at the
-> > stage of rc6 though.
-> 
-> yes, before v4, the cache invalidation path is simple and vendor
-> drivers have their own handling.
-
-Have driver implementations of v4 been done to look at?
-
-Jason 
+On Tue, Oct 10, 2023 at 12:03=E2=80=AFPM Lalith Rajendran
+<lalithkraj@chromium.org> wrote:
+>
+> Both cros host command and irq disable were moved to suspend
+> prepare stage from late suspend recently. This is causing EC
+> to report MKBP event timeouts during suspend stress testing.
+> When the MKBP event timeouts happen during suspend, subsequent
+> wakeup of AP by EC using MKBP doesn't happen properly. Although
+> there are other issues to debug here, this change move the irq
+> disabling part back to late suspend stage which is a general
+> suggestion from the suspend kernel documentaiton to do irq
+> disable as late as possible.
+>
+> Signed-off-by: Lalith Rajendran <lalithkraj@chromium.org>
+> ---
+>
+>  drivers/platform/chrome/cros_ec.c     | 90 ++++++++++++++++++++++++---
+>  drivers/platform/chrome/cros_ec.h     |  4 ++
+>  drivers/platform/chrome/cros_ec_lpc.c | 21 +++++--
+>  3 files changed, 101 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/platform/chrome/cros_ec.c b/drivers/platform/chrome/=
+cros_ec.c
+> index 2b49155a9b35..6f520c13c0f3 100644
+> --- a/drivers/platform/chrome/cros_ec.c
+> +++ b/drivers/platform/chrome/cros_ec.c
+> @@ -317,16 +317,17 @@ EXPORT_SYMBOL(cros_ec_unregister);
+>
+>  #ifdef CONFIG_PM_SLEEP
+>  /**
+> - * cros_ec_suspend() - Handle a suspend operation for the ChromeOS EC de=
+vice.
+> + * cros_ec_suspend_prepare() - Handle a suspend prepare operation for th=
+e ChromeOS EC device.
+>   * @ec_dev: Device to suspend.
+>   *
+> - * This can be called by drivers to handle a suspend event.
+> + * This can be called by drivers to handle a suspend prepare stage of su=
+spend.
+> + * Drivers should either call cros_ec_supsend or call
+> + * cros_ec_suspend_prepare and cros_ec_suspend_late.
+>   *
+>   * Return: 0 on success or negative error code.
+>   */
+> -int cros_ec_suspend(struct cros_ec_device *ec_dev)
+> +int cros_ec_suspend_prepare(struct cros_ec_device *ec_dev)
+>  {
+> -       struct device *dev =3D ec_dev->dev;
+>         int ret;
+>         u8 sleep_event;
+>
+> @@ -338,7 +339,23 @@ int cros_ec_suspend(struct cros_ec_device *ec_dev)
+>         if (ret < 0)
+>                 dev_dbg(ec_dev->dev, "Error %d sending suspend event to e=
+c",
+>                         ret);
+> +       return 0;
+> +}
+> +EXPORT_SYMBOL(cros_ec_suspend_prepare);
+>
+> +/**
+> + * cros_ec_suspend_late() - Handle a suspend late operation for the Chro=
+meOS EC device.
+> + * @ec_dev: Device to suspend.
+> + *
+> + * This can be called by drivers to handle a suspend late stage of suspe=
+nd.
+> + * Drivers should either call cros_ec_supsend or call
+> + * cros_ec_suspend_prepare and cros_ec_suspend_late.
+> + *
+> + * Return: 0 on success or negative error code.
+> + */
+> +int cros_ec_suspend_late(struct cros_ec_device *ec_dev)
+> +{
+> +       struct device *dev =3D ec_dev->dev;
+>         if (device_may_wakeup(dev))
+>                 ec_dev->wake_enabled =3D !enable_irq_wake(ec_dev->irq);
+>
+> @@ -348,6 +365,24 @@ int cros_ec_suspend(struct cros_ec_device *ec_dev)
+>
+>         return 0;
+>  }
+> +EXPORT_SYMBOL(cros_ec_suspend_late);
+> +
+> +/**
+> + * cros_ec_suspend() - Handle a suspend operation for the ChromeOS EC de=
+vice.
+> + * @ec_dev: Device to suspend.
+> + *
+> + * This can be called by drivers to handle a suspend event.
+> + * Drivers should either call cros_ec_supsend or call
+> + * cros_ec_suspend_prepare and cros_ec_suspend_late.
+> + *
+> + * Return: 0 on success or negative error code.
+> + */
+> +int cros_ec_suspend(struct cros_ec_device *ec_dev)
+> +{
+> +       cros_ec_suspend_prepare(ec_dev);
+> +       cros_ec_suspend_late(ec_dev);
+> +       return 0;
+> +}
+>  EXPORT_SYMBOL(cros_ec_suspend);
+>
+>  static void cros_ec_report_events_during_suspend(struct cros_ec_device *=
+ec_dev)
+> @@ -365,21 +400,20 @@ static void cros_ec_report_events_during_suspend(st=
+ruct cros_ec_device *ec_dev)
+>  }
+>
+>  /**
+> - * cros_ec_resume() - Handle a resume operation for the ChromeOS EC devi=
+ce.
+> + * cros_ec_resume() - Handle a resume complete operation for the ChromeO=
+S EC device.
+>   * @ec_dev: Device to resume.
+>   *
+> - * This can be called by drivers to handle a resume event.
+> + * This can be called by drivers to handle a resume complete stage of re=
+sume.
+> + * Drivers should either call cros_ec_resume or call
+> + * cros_ec_resume_early and cros_ec_resume_complete.
+>   *
+>   * Return: 0 on success or negative error code.
+>   */
+> -int cros_ec_resume(struct cros_ec_device *ec_dev)
+> +int cros_ec_resume_complete(struct cros_ec_device *ec_dev)
+>  {
+>         int ret;
+>         u8 sleep_event;
+>
+> -       ec_dev->suspended =3D false;
+> -       enable_irq(ec_dev->irq);
+> -
+>         sleep_event =3D (!IS_ENABLED(CONFIG_ACPI) || pm_suspend_via_firmw=
+are()) ?
+>                       HOST_SLEEP_EVENT_S3_RESUME :
+>                       HOST_SLEEP_EVENT_S0IX_RESUME;
+> @@ -388,6 +422,24 @@ int cros_ec_resume(struct cros_ec_device *ec_dev)
+>         if (ret < 0)
+>                 dev_dbg(ec_dev->dev, "Error %d sending resume event to ec=
+",
+>                         ret);
+> +       return 0;
+> +}
+> +EXPORT_SYMBOL(cros_ec_resume_complete);
+> +
+> +/**
+> + * cros_ec_resume_early() - Handle a resume early operation for the Chro=
+meOS EC device.
+> + * @ec_dev: Device to resume.
+> + *
+> + * This can be called by drivers to handle a resume early stage of resum=
+e.
+> + * Drivers should either call cros_ec_resume or call
+> + * cros_ec_resume_early and cros_ec_resume_complete.
+> + *
+> + * Return: 0 on success or negative error code.
+> + */
+> +int cros_ec_resume_early(struct cros_ec_device *ec_dev)
+> +{
+> +       ec_dev->suspended =3D false;
+> +       enable_irq(ec_dev->irq);
+>
+>         if (ec_dev->wake_enabled) {
+>                 disable_irq_wake(ec_dev->irq);
+> @@ -402,6 +454,24 @@ int cros_ec_resume(struct cros_ec_device *ec_dev)
+>
+>         return 0;
+>  }
+> +EXPORT_SYMBOL(cros_ec_resume_early);
+> +
+> +/**
+> + * cros_ec_resume() - Handle a resume operation for the ChromeOS EC devi=
+ce.
+> + * @ec_dev: Device to resume.
+> + *
+> + * This can be called by drivers to handle a resume event.
+> + * Drivers should either call cros_ec_resume or call
+> + * cros_ec_resume_early and cros_ec_resume_complete.
+> + *
+> + * Return: 0 on success or negative error code.
+> + */
+> +int cros_ec_resume(struct cros_ec_device *ec_dev)
+> +{
+> +       cros_ec_resume_early(ec_dev);
+> +       cros_ec_resume_complete(ec_dev);
+> +       return 0;
+> +}
+>  EXPORT_SYMBOL(cros_ec_resume);
+>
+>  #endif
+> diff --git a/drivers/platform/chrome/cros_ec.h b/drivers/platform/chrome/=
+cros_ec.h
+> index bbca0096868a..41defaa5e766 100644
+> --- a/drivers/platform/chrome/cros_ec.h
+> +++ b/drivers/platform/chrome/cros_ec.h
+> @@ -14,7 +14,11 @@ int cros_ec_register(struct cros_ec_device *ec_dev);
+>  void cros_ec_unregister(struct cros_ec_device *ec_dev);
+>
+>  int cros_ec_suspend(struct cros_ec_device *ec_dev);
+> +int cros_ec_suspend_late(struct cros_ec_device *ec_dev);
+> +int cros_ec_suspend_prepare(struct cros_ec_device *ec_dev);
+>  int cros_ec_resume(struct cros_ec_device *ec_dev);
+> +int cros_ec_resume_early(struct cros_ec_device *ec_dev);
+> +int cros_ec_resume_complete(struct cros_ec_device *ec_dev);
+>
+>  irqreturn_t cros_ec_irq_thread(int irq, void *data);
+>
+> diff --git a/drivers/platform/chrome/cros_ec_lpc.c b/drivers/platform/chr=
+ome/cros_ec_lpc.c
+> index 8982cf23e514..afb9f7dbb2ba 100644
+> --- a/drivers/platform/chrome/cros_ec_lpc.c
+> +++ b/drivers/platform/chrome/cros_ec_lpc.c
+> @@ -537,22 +537,35 @@ MODULE_DEVICE_TABLE(dmi, cros_ec_lpc_dmi_table);
+>  static int cros_ec_lpc_prepare(struct device *dev)
+>  {
+>         struct cros_ec_device *ec_dev =3D dev_get_drvdata(dev);
+> -
+> -       return cros_ec_suspend(ec_dev);
+> +       return cros_ec_suspend_prepare(ec_dev);
+>  }
+>
+>  static void cros_ec_lpc_complete(struct device *dev)
+>  {
+>         struct cros_ec_device *ec_dev =3D dev_get_drvdata(dev);
+> -       cros_ec_resume(ec_dev);
+> +       cros_ec_resume_complete(ec_dev);
+> +}
+> +static int cros_ec_lpc_suspend_late(struct device *dev)
+> +{
+> +       struct cros_ec_device *ec_dev =3D dev_get_drvdata(dev);
+> +
+> +       return cros_ec_suspend_late(ec_dev);
+> +}
+> +
+> +static int cros_ec_lpc_resume_early(struct device *dev)
+> +{
+> +       struct cros_ec_device *ec_dev =3D dev_get_drvdata(dev);
+> +
+> +       return cros_ec_resume_early(ec_dev);
+>  }
+>  #endif
+>
+>  static const struct dev_pm_ops cros_ec_lpc_pm_ops =3D {
+>  #ifdef CONFIG_PM_SLEEP
+>         .prepare =3D cros_ec_lpc_prepare,
+> -       .complete =3D cros_ec_lpc_complete
+> +       .complete =3D cros_ec_lpc_complete,
+>  #endif
+> +       SET_LATE_SYSTEM_SLEEP_PM_OPS(cros_ec_lpc_suspend_late, cros_ec_lp=
+c_resume_early)
+>  };
+>
+>  static struct platform_driver cros_ec_lpc_driver =3D {
+> --
+> 2.42.0.609.gbb76f46606-goog
+>
