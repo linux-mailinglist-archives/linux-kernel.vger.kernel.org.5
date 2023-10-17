@@ -2,65 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6FE7CC8C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 18:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA5B17CC8C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 18:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234934AbjJQQ2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 12:28:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45686 "EHLO
+        id S234935AbjJQQ2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 12:28:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233016AbjJQQ2h (ORCPT
+        with ESMTP id S232804AbjJQQ2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 12:28:37 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78438FE
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:28:35 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53e07db272cso9190787a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:28:35 -0700 (PDT)
+        Tue, 17 Oct 2023 12:28:38 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37FC1101
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:28:36 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-53dd3f169d8so9995188a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:28:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1697560114; x=1698164914; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qD1TIlJEBCWEp5FpDJPkSVLZhr5746v+N1MHVT+wqUc=;
-        b=Vw7T5U8ZJWJInx84EWbACpNalJCaDBZbw+tDSAl5JWmIBBYbpZCd/T1HRfMzqbQCJ+
-         m7+f1s4RANwmdTSE4kSmC5IE2DZCQMFG1llx9jzX7GecUfHAlCqM803ZOnpD9QSnGjVk
-         fNNlrFXZ26ZTW8432tPdPlt4ZojP18ukJYow7/uYLaRbCp9dpCd8eBSezzf5uGkVvKbO
-         F7S/zTd6BVmKVtW53eRKrA+BdqOsTXwgsMOg2fSvt0xyXg3JaQSAszlPFSYKX/vVPxHM
-         eYvvX/eQZATdc7qEJH/XVgYyhXVJm5XWusf8R27o3uH5AlXWdYrmBXdxoOBdKtBY5uL/
-         oWMQ==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ACjTlp17z+YNibGqC8x+geAURHF1Kan1uHKDOj47eKE=;
+        b=CwtjkKXj2flzI1cSiT5aDybKin44gv7hSr1rcYlrWBmr1/5WPHEB/7Z2Jui26Ia9bI
+         ohUEgByRaEKXOffmn2PRsAkgvz5n5iYFj/isU5YYa5cDs/3TyQpBajsUqGgpIwdxFscW
+         tf5Jh1kTpg+AmnS4wuxfsMjyy2PIuncIhbBUGtrRSXGFWyB9pxYoCKibJUzXZ2bUX551
+         klNTGLOJ9920juvbOcMnySzIacjpknJJqOkTvSUylOxHZmLGtAHqEFPp9Qx61zgMezck
+         vu1QSMLJafnsZdkhK8xmW6zuWqVZmgoZ/rIMD/rGBueFlZqExc6R4L0ADqxkX4PrQ4VV
+         5ivA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1697560114; x=1698164914;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qD1TIlJEBCWEp5FpDJPkSVLZhr5746v+N1MHVT+wqUc=;
-        b=TB1jsJyOXER0id7JezMvjZRfxqMFitn7WrlneOvZ0x8IOmLRzfKY1YJEgvgwWcmaZX
-         9+FomyZCAHtX18LOBw6r7Px4y8Wi9y8ce0jYkj4IAIQhCzmv/m9ax+vLWJkT6Sa/AzxY
-         GLe8TqxA3yvuhr9t/U/BXholo9QaMN0ZoaHl+duDApzs157/kr4e+ZI1CQnyd6JNOrry
-         xONZmJFwN/hMU+j/7SvajU9cduJcJEwq51bEUSIM1uP3byKFiQxdxXTfgE1jjWRUY4/I
-         WHoICQE8d/R15gcvUqWjbeVYXHhHw0KJ0QGXaodr4C7hLiRyha7FwvARHunhUgsHPUP3
-         RM7A==
-X-Gm-Message-State: AOJu0YwV6iniSThpInAOIkmzp6jZLKF8scbNkV4ASTgbcucwiqnITx9t
-        BpNMteVrfm40s7L18GOgSz8=
-X-Google-Smtp-Source: AGHT+IE3Cfh9b/JzqGg6j8gIi+dTtztg88/AEC+rLc5ZXs12bE5RhG34cZdOWcisCjIuoDPYLKhuIg==
-X-Received: by 2002:a05:6402:40ce:b0:53d:d8ad:4d46 with SMTP id z14-20020a05640240ce00b0053dd8ad4d46mr2756595edb.36.1697560113606;
-        Tue, 17 Oct 2023 09:28:33 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ACjTlp17z+YNibGqC8x+geAURHF1Kan1uHKDOj47eKE=;
+        b=EV5XPb3tf0V8C1+SHwHPcozi1iela9o42JvRCo0kvCTqIGle2ZX4YieCVml6fjfTNT
+         pqQmzEKta5fXJHl62frJKdMPi5Tkwit/3kxptUMCytK/jgbFY651AdhDZc8zLH4q54KS
+         8MtbpJr/zLqJiFop/XMo4naOwt62EqrSD5cpxOFdoajpERboFl8xQ+iUV5nvGYt7lHoK
+         cPa4WVQzf52WeQtBr0qTVfhndmduW+BXhG2zDNFDLBTuj7qMjvBxLwxGRRoC37mNNyn1
+         1x5lptcH1aUdhK0W/EMvs6/SygEx+2143j1C9xhlS7P4njPgeyc7k7+/IYgbYvTWcQj1
+         PGgg==
+X-Gm-Message-State: AOJu0YyV2evLHYLTtrKoFAkAwTedHSZfmpe6GRnlxFxeXgfLmLSmmF0e
+        ApK61xvgiuCOEHlbPaSyh7/Am+ISTA0hAvxm
+X-Google-Smtp-Source: AGHT+IHDOoG54XbWT0w4HYKSIqNwfcnUP1l4hxV6R0suamSju/kc2UdPTin8Cao44o+9eCfjSpu0mg==
+X-Received: by 2002:a05:6402:350b:b0:53e:2c49:8041 with SMTP id b11-20020a056402350b00b0053e2c498041mr2333292edd.8.1697560114667;
+        Tue, 17 Oct 2023 09:28:34 -0700 (PDT)
 Received: from localhost.localdomain ([46.248.82.114])
-        by smtp.gmail.com with ESMTPSA id b42-20020a509f2d000000b0053e43492ef1sm1515759edf.65.2023.10.17.09.28.32
+        by smtp.gmail.com with ESMTPSA id b42-20020a509f2d000000b0053e43492ef1sm1515759edf.65.2023.10.17.09.28.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 09:28:33 -0700 (PDT)
+        Tue, 17 Oct 2023 09:28:34 -0700 (PDT)
 From:   Uros Bizjak <ubizjak@gmail.com>
 To:     x86@kernel.org, xen-devel@lists.xenproject.org,
         linux-kernel@vger.kernel.org
-Cc:     Uros Bizjak <ubizjak@gmail.com>,
+Cc:     Uros Bizjak <ubizjak@gmail.com>, Juergen Gross <jgross@suse.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH -tip v3 1/3] x86/percpu: Correct PER_CPU_VAR usage to include symbol and its addend
-Date:   Tue, 17 Oct 2023 18:27:32 +0200
-Message-ID: <20231017162811.200569-1-ubizjak@gmail.com>
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Subject: [PATCH -tip v3 2/3] x86/percpu, xen: Correct PER_CPU_VAR usage to include symbol and its addend
+Date:   Tue, 17 Oct 2023 18:27:33 +0200
+Message-ID: <20231017162811.200569-2-ubizjak@gmail.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231017162811.200569-1-ubizjak@gmail.com>
+References: <20231017162811.200569-1-ubizjak@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -79,71 +83,67 @@ before %rip-relative addressing is introduced to PER_CPU_VAR macro.
 
 No functional changes intended.
 
+Cc: Juergen Gross <jgross@suse.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Ingo Molnar <mingo@kernel.org>
 Cc: Borislav Petkov <bp@alien8.de>
 Cc: Dave Hansen <dave.hansen@linux.intel.com>
 Cc: "H. Peter Anvin" <hpa@zytor.com>
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
 Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
 ---
- arch/x86/entry/calling.h  | 2 +-
- arch/x86/entry/entry_32.S | 2 +-
- arch/x86/entry/entry_64.S | 2 +-
- arch/x86/kernel/head_64.S | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ arch/x86/xen/xen-asm.S | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/entry/calling.h b/arch/x86/entry/calling.h
-index f6907627172b..47368ab0bda0 100644
---- a/arch/x86/entry/calling.h
-+++ b/arch/x86/entry/calling.h
-@@ -173,7 +173,7 @@ For 32-bit we have the following conventions - kernel is built with
- .endm
+diff --git a/arch/x86/xen/xen-asm.S b/arch/x86/xen/xen-asm.S
+index 9e5e68008785..448958ddbaf8 100644
+--- a/arch/x86/xen/xen-asm.S
++++ b/arch/x86/xen/xen-asm.S
+@@ -28,7 +28,7 @@
+  * non-zero.
+  */
+ SYM_FUNC_START(xen_irq_disable_direct)
+-	movb $1, PER_CPU_VAR(xen_vcpu_info) + XEN_vcpu_info_mask
++	movb $1, PER_CPU_VAR(xen_vcpu_info + XEN_vcpu_info_mask)
+ 	RET
+ SYM_FUNC_END(xen_irq_disable_direct)
  
- #define THIS_CPU_user_pcid_flush_mask   \
--	PER_CPU_VAR(cpu_tlbstate) + TLB_STATE_user_pcid_flush_mask
-+	PER_CPU_VAR(cpu_tlbstate + TLB_STATE_user_pcid_flush_mask)
- 
- .macro SWITCH_TO_USER_CR3_NOSTACK scratch_reg:req scratch_reg2:req
- 	ALTERNATIVE "jmp .Lend_\@", "", X86_FEATURE_PTI
-diff --git a/arch/x86/entry/entry_32.S b/arch/x86/entry/entry_32.S
-index c73047bf9f4b..4e295798638b 100644
---- a/arch/x86/entry/entry_32.S
-+++ b/arch/x86/entry/entry_32.S
-@@ -305,7 +305,7 @@
- .macro CHECK_AND_APPLY_ESPFIX
- #ifdef CONFIG_X86_ESPFIX32
- #define GDT_ESPFIX_OFFSET (GDT_ENTRY_ESPFIX_SS * 8)
--#define GDT_ESPFIX_SS PER_CPU_VAR(gdt_page) + GDT_ESPFIX_OFFSET
-+#define GDT_ESPFIX_SS PER_CPU_VAR(gdt_page + GDT_ESPFIX_OFFSET)
- 
- 	ALTERNATIVE	"jmp .Lend_\@", "", X86_BUG_ESPFIX
- 
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index de6469dffe3a..1a88ad8a7b48 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -190,7 +190,7 @@ SYM_FUNC_START(__switch_to_asm)
- 
- #ifdef CONFIG_STACKPROTECTOR
- 	movq	TASK_stack_canary(%rsi), %rbx
--	movq	%rbx, PER_CPU_VAR(fixed_percpu_data) + FIXED_stack_canary
-+	movq	%rbx, PER_CPU_VAR(fixed_percpu_data + FIXED_stack_canary)
- #endif
+@@ -69,7 +69,7 @@ SYM_FUNC_END(check_events)
+ SYM_FUNC_START(xen_irq_enable_direct)
+ 	FRAME_BEGIN
+ 	/* Unmask events */
+-	movb $0, PER_CPU_VAR(xen_vcpu_info) + XEN_vcpu_info_mask
++	movb $0, PER_CPU_VAR(xen_vcpu_info + XEN_vcpu_info_mask)
  
  	/*
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index 086a2c3aaaa0..3dcabbc49149 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -448,7 +448,7 @@ SYM_CODE_START(soft_restart_cpu)
- 	UNWIND_HINT_END_OF_STACK
+ 	 * Preempt here doesn't matter because that will deal with any
+@@ -78,7 +78,7 @@ SYM_FUNC_START(xen_irq_enable_direct)
+ 	 */
  
- 	/* Find the idle task stack */
--	movq	PER_CPU_VAR(pcpu_hot) + X86_current_task, %rcx
-+	movq	PER_CPU_VAR(pcpu_hot + X86_current_task), %rcx
- 	movq	TASK_threadsp(%rcx), %rsp
+ 	/* Test for pending */
+-	testb $0xff, PER_CPU_VAR(xen_vcpu_info) + XEN_vcpu_info_pending
++	testb $0xff, PER_CPU_VAR(xen_vcpu_info + XEN_vcpu_info_pending)
+ 	jz 1f
  
- 	jmp	.Ljump_to_C_code
+ 	call check_events
+@@ -97,7 +97,7 @@ SYM_FUNC_END(xen_irq_enable_direct)
+  * x86 use opposite senses (mask vs enable).
+  */
+ SYM_FUNC_START(xen_save_fl_direct)
+-	testb $0xff, PER_CPU_VAR(xen_vcpu_info) + XEN_vcpu_info_mask
++	testb $0xff, PER_CPU_VAR(xen_vcpu_info + XEN_vcpu_info_mask)
+ 	setz %ah
+ 	addb %ah, %ah
+ 	RET
+@@ -113,7 +113,7 @@ SYM_FUNC_END(xen_read_cr2);
+ 
+ SYM_FUNC_START(xen_read_cr2_direct)
+ 	FRAME_BEGIN
+-	_ASM_MOV PER_CPU_VAR(xen_vcpu_info) + XEN_vcpu_info_arch_cr2, %_ASM_AX
++	_ASM_MOV PER_CPU_VAR(xen_vcpu_info + XEN_vcpu_info_arch_cr2), %_ASM_AX
+ 	FRAME_END
+ 	RET
+ SYM_FUNC_END(xen_read_cr2_direct);
 -- 
 2.41.0
 
