@@ -2,179 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E64847CBA39
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 07:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D053D7CBA3C
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 07:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234399AbjJQFms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 01:42:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43628 "EHLO
+        id S234426AbjJQFn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 01:43:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbjJQFmr (ORCPT
+        with ESMTP id S230343AbjJQFn1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 01:42:47 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81975A2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 22:42:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697521366; x=1729057366;
-  h=date:from:to:cc:subject:message-id;
-  bh=3CfwX0wJXGDE0Y+EKRENvYT0soiTzR71mQK5pqp8w3w=;
-  b=eSMGZz/dXngAm1fjnHqzy1JGEx3ewwvcODNtOFh4bKbV7n4WF3Q8StoS
-   ce/qMeliqzt7jTHaq2bstdGfQVlHuuoQZIxRx4coBWO9yCfwcB+280Ups
-   aX+/ZUAyLTcPUA/XSKi12IOqmx7GzkOWZOQZDckJCSwr42TQQhJJEUFKM
-   evXNyYWDRfxieMM6f6fFGj2dK+n2gbT3KCIA1GDUXBSTvY/CWPb072DU4
-   qBv94ak+3Kn952LdRw95e+K3tf4eY62suVWOTMQDOASrhewIa9NEx+Mhl
-   UQAvDsOEiNU9TcAMh7GtdgcsdzssoE3uOau9oQrO9FwleRUZ2mVNBolBC
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="385543097"
-X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="385543097"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 22:42:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="791098774"
-X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="791098774"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 16 Oct 2023 22:42:45 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qscqi-000945-1D;
-        Tue, 17 Oct 2023 05:42:38 +0000
-Date:   Tue, 17 Oct 2023 13:42:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:rcu/next] BUILD SUCCESS
- 703ea7173648369185ab1a3cc6e44a6e3cb5c1c0
-Message-ID: <202310171301.3r5wPkhe-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 17 Oct 2023 01:43:27 -0400
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5072AA2;
+        Mon, 16 Oct 2023 22:43:20 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 168D18067;
+        Tue, 17 Oct 2023 13:43:12 +0800 (CST)
+Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 17 Oct
+ 2023 13:43:12 +0800
+Received: from [192.168.125.85] (183.27.98.194) by EXMBX171.cuchost.com
+ (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 17 Oct
+ 2023 13:43:10 +0800
+Message-ID: <6182d9f9-8810-4704-b314-a5612d2aa795@starfivetech.com>
+Date:   Tue, 17 Oct 2023 13:43:10 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 0/22] Refactoring Microchip PCIe driver and add
+ StarFive PCIe
+Content-Language: en-US
+To:     Conor Dooley <conor@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        "Daire McNamara" <daire.mcnamara@microchip.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Kevin Xie <kevin.xie@starfivetech.com>
+References: <20231011110514.107528-1-minda.chen@starfivetech.com>
+From:   Minda Chen <minda.chen@starfivetech.com>
+In-Reply-To: <20231011110514.107528-1-minda.chen@starfivetech.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [183.27.98.194]
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX171.cuchost.com
+ (172.16.6.91)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
-branch HEAD: 703ea7173648369185ab1a3cc6e44a6e3cb5c1c0  srcu: Explain why callbacks invocations can't run concurrently
 
-elapsed time: 1461m
 
-configs tested: 103
-configs skipped: 2
+On 2023/10/11 19:04, Minda Chen wrote:
+> This patchset final purpose is add PCIe driver for StarFive JH7110 SoC.
+> JH7110 using PLDA XpressRICH PCIe IP. Microchip PolarFire Using the
+> same IP and have commit their codes, which are mixed with PLDA
+> controller codes and Microchip platform codes.
+> 
+> For re-use the PLDA controller codes, I request refactoring microchip
+> codes, move PLDA common codes to PLDA files.
+> Desigware and Cadence is good example for refactoring codes.
+> 
+> ----------------------------------------------------------
+> The refactoring patches total number is 17,(patch 1-17)
+> which do NOT contain changing logic of codes.
+> 
+> These patches just contain three type basic operations.
+> (rename, modify codes to support starfive platform, and moving to common file)
+> If these patched are all be reviewed. They can be accepted first.
+> 
+> Refactoring patches can be devided to different groups
+> 1. (patch 1- 3 is the prepare work of refactoring)
+> patch1 is move PLDA XpressRICH PCIe host common properties dt-binding
+>        docs from microchip,pcie-host.yaml
+> patch2 is move PolarFire codes to PLDA directory.
+> patch3 is move PLDA IP register macros to plda-pcie.h
+> 
+> 2. (patch4 - 6 is processing and re-use PCIe host instance)
+> patch4 is add bridge_addr field to PCIe host instance.
+> patch5 is rename data structure in microchip codes.
+> patch6 is moving two data structures to head file
+> 
+> 3. (patch 7 - 9 are for re-use two PCIe setup function)
+> patch7 is rename two setup functions in microchip codes, prepare to move
+> to common file.
+> patch8 is change the arguments of plda_pcie_setup_iomems()
+> patch9 is move the two setup functions to common file pcie-plda-host.c
+> 
+> 4.(patch 10 - 17 are for re-use interupt processing codes)
+> patch10 add a plda default event handler function.
+> patch11 is rename the IRQ related functions, prepare to move to
+> pcie-plda-host.c
+> patch 12 - 16 is modify the interrupt event codes, preparing for support starfive
+> and microchip two platforms.
+> patch17 is move IRQ related functions to pcie-plda-host.c
+> 
+> ------------------------------------------------------------
+> The remainder patches (patch 18 -22) are not refactoring patch.
+> They are for adding StarFive codes and dont modify the microchip's
+> codes.
+> 
+> patch18 is set plda_event_handler to static.
+> patch19 is Add PLDA event interrupt codes and IRQ domain ops.
+> patch20 is add StarFive JH7110 PCIe dt-binding doc.
+> patch21 is add StarFive JH7110 Soc PCIe codes.
+> patch22 is Starfive dts config
+> 
+> This patchset is base on v6.6-rc5
+> 
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Hi Kzysztof(K.W)
+   Could you please take time to review this series patches? Thanks.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231016   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                   randconfig-001-20231016   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231016   gcc  
-i386                  randconfig-002-20231016   gcc  
-i386                  randconfig-003-20231016   gcc  
-i386                  randconfig-004-20231016   gcc  
-i386                  randconfig-005-20231016   gcc  
-i386                  randconfig-006-20231016   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231016   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231016   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231016   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231016   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231016   gcc  
-x86_64                randconfig-002-20231016   gcc  
-x86_64                randconfig-003-20231016   gcc  
-x86_64                randconfig-004-20231016   gcc  
-x86_64                randconfig-005-20231016   gcc  
-x86_64                randconfig-006-20231016   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Hi Conor
+  The patch 4- 6 is split from previous version patch. You have added your review tag to that patch.
+  May I add your review tag to patch 4 -6 ?
+  And linux-riscv do NOT run compile test to this patch set.
