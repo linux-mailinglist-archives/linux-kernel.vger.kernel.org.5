@@ -2,136 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B25257CC620
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9A87CC619
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344107AbjJQOpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 10:45:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58346 "EHLO
+        id S1344069AbjJQOnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 10:43:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344127AbjJQOpp (ORCPT
+        with ESMTP id S233885AbjJQOnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 10:45:45 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D0111B
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:45:41 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-32d895584f1so4908536f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:45:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1697553940; x=1698158740; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=+DWlrz0x76UjYkaGdGnLZ2Rh1fZ6zXslYKfY1dC+IHA=;
-        b=qMo6sN7cYVmS6jAa1w0Od1vvUvwGXAgoVLFkjEsaBT0TrKTNFHu+yAIbGOzn1SYw0i
-         Z/doFIDljkUMcHhlvHaEKSvBom4kEb7SHF+KcGU72x5ApYcNs84+NPbEx1npVpbp9O1P
-         Pm1ClnAbipPL/M3EFQMwh9iSNBPPa9VNAYU0biQKM3YGNso82ekvYnEibX62wFY0s34r
-         G5ceVHqUcEZORd7FZB9KkIbfodKBlZOtxA2ZqOxxAIzheOTTmDKtg/UJ/emHpKLkQdja
-         mVWAPkNyXTfF/+2smtTKomwZdZkV/wtaTm61ztd0ITbmfB/4DlMLA2Vq/uEkbq1N5yMP
-         /vCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697553940; x=1698158740;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+DWlrz0x76UjYkaGdGnLZ2Rh1fZ6zXslYKfY1dC+IHA=;
-        b=GBLfyYzfHIkdmkZ9n9sY7TQYzkx+QEkMhAuSSuRKetdmKjkwKGBAk6aYGNbUj/8ttS
-         xjZWSvbZ0HofycHurcCO8WIGPl3glIYQ+NnKMbEgVL4DDVF5eBK/t/mT3hwg8gkE7ifd
-         lH0U0qkFCouJ4vcgzphdpgmg/Ds39bSlVX4+2i8VzBHfcQhiVBbgRXvc35J51b3UI1vx
-         82vsJJrM7YxY/IlRIjCo6nyb0VfWLq8Isq8hj2gzCVhlbWmH8QY2qYw8+Z229aD4Rqpq
-         sBBSmEPj2JHQgd4QZOQT1wcYX2Yp59MWparRc3RCf2BlzcyZU6Nl0o9imdG7Jp2hSCva
-         iRtA==
-X-Gm-Message-State: AOJu0Yw8tcwz8B3DTr2RICDT80Tq7+3dZhX1P0aQNDuTDC9yQwwJ+70S
-        0yD03hjLuvOOm0mmVQ4hQb5RRA==
-X-Google-Smtp-Source: AGHT+IHv4tMX6UOg3kp7PY1gGcIQM6g1TDAYAriGkQzPC8aBujNF8FwzAx86QVQ0PfLQQ8q7Fyek6A==
-X-Received: by 2002:adf:f006:0:b0:32c:ea14:89e5 with SMTP id j6-20020adff006000000b0032cea1489e5mr2086062wro.39.1697553939617;
-        Tue, 17 Oct 2023 07:45:39 -0700 (PDT)
-Received: from localhost ([2a01:e0a:3c5:5fb1:93d3:2aab:95bb:3a09])
-        by smtp.gmail.com with ESMTPSA id d18-20020adff2d2000000b0032da40fd7bdsm1836412wrp.24.2023.10.17.07.45.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 07:45:39 -0700 (PDT)
-References: <20231010062917.3624223-1-xianwei.zhao@amlogic.com>
- <20231010062917.3624223-4-xianwei.zhao@amlogic.com>
- <1jil7ax64i.fsf@starbuckisacylon.baylibre.com>
- <3238e57a-1141-53ad-8170-c6ad9df03acb@amlogic.com>
- <1jfs29v0n3.fsf@starbuckisacylon.baylibre.com>
- <8011f0c0-0d21-447f-9a6b-07ede7db8713@amlogic.com>
-User-agent: mu4e 1.8.13; emacs 29.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Chuan Liu <chuan.liu@amlogic.com>,
-        Xianwei Zhao <xianwei.zhao@amlogic.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: Re: [PATCH V2 3/4] clk: meson: c3: add support for the C3 SoC PLL
- clock
-Date:   Tue, 17 Oct 2023 16:42:25 +0200
-In-reply-to: <8011f0c0-0d21-447f-9a6b-07ede7db8713@amlogic.com>
-Message-ID: <1j34y9ux2l.fsf@starbuckisacylon.baylibre.com>
+        Tue, 17 Oct 2023 10:43:11 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2059.outbound.protection.outlook.com [40.107.220.59])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21A12BA
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:43:08 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WkP54UIrXU1/Kn+3YNiWSBi2ZYT0qpKzbtQvUITGqJvI8VrkLN2HpZCiAp9zfdmltRELWcyuGcA2SRZWqr8HQtgtx/7Dmx0ATYNUrTeLuUP3UH7YH09Bti1McFFLwHRfBB8rM7cOw5rBrhrAcaqgu4PGceseGgN8y0yJq8JY9yP8tc3JGPjwfH2lxdF2ToaxFyc0NDqxVIAfzsMN+0Y9Q0bugHnbmU81VcWzi0zhuW441gCuLNCSU2LsAwfXFPCP9j22TI5eFev269LR4SHtmDFb2acKulQI2++BAmdn4BllkHNEXiSLdoWul9Xgejc6eFJqUj2eAKCf9pZf/Ttjiw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VvqNF/Z00hPImL77gykfZBxIqcjrMKj4qye6DdddhBs=;
+ b=oTlB9qv8SkbNewdlopv4wIC4Wa9hQAE9jaqbNj6EHjcLR10VnZDnxV5CXiv057ImGN8mHJS8LxKUfJkgyhYjb/EQ51aitzQYlJg/+yPxCCAkEoh7yxcuUwkKehx4JlpYzAGQuoit3T4boeWa5U4fQp4GpfKPCc9xnverXis+HDESgm5oPL0eFpP1omYW5WJIXSWtD/SUsNJmFDOmvkHCo6aQmKgitPWOVkq8wo+MjPPfu4VKh4ridVnycL/YsxL3mSShe8LApUW8XSIW31tItHh2NM4mAWnTdkMDaxDWcIjQYufz6w3ipWxdkUfkau/VJAcX3/gU5kSKsElcQRCU1w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VvqNF/Z00hPImL77gykfZBxIqcjrMKj4qye6DdddhBs=;
+ b=o3bdd0y8mXzv8P++8VasMV+tU99grOougeF5+mXHt4SeVT6+aj2hjdO/mzX/oRIxj8nTdjE9SvGb+4U+oP+/WFqKkakZmcc/H8d2RjB6Y/etuD7WMnz3/8u9wVmop6tNGLIflqpFLRqoZ1883HwzZ0FVBLgo766FGySoq2K7H4I=
+Received: from SN7PR04CA0165.namprd04.prod.outlook.com (2603:10b6:806:125::20)
+ by MN2PR12MB4504.namprd12.prod.outlook.com (2603:10b6:208:24f::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36; Tue, 17 Oct
+ 2023 14:43:05 +0000
+Received: from SA2PEPF000015CD.namprd03.prod.outlook.com
+ (2603:10b6:806:125:cafe::97) by SN7PR04CA0165.outlook.office365.com
+ (2603:10b6:806:125::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.35 via Frontend
+ Transport; Tue, 17 Oct 2023 14:43:05 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SA2PEPF000015CD.mail.protection.outlook.com (10.167.241.203) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6907.20 via Frontend Transport; Tue, 17 Oct 2023 14:43:05 +0000
+Received: from ruby-95f9host.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 17 Oct
+ 2023 09:43:04 -0500
+From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+To:     <linux-kernel@vger.kernel.org>, <iommu@lists.linux.dev>
+CC:     <joro@8bytes.org>, <mlevitsk@redhat.com>, <seanjc@google.com>,
+        <vasant.hegde@amd.com>, <jon.grimm@amd.com>,
+        <santosh.shukla@amd.com>, <joao.m.martins@oracle.com>,
+        <alejandro.j.jimenez@oracle.com>, <boris.ostrovsky@oracle.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Subject: [PATCH] iommu/amd: Do not flush IRTE when only updating isRun and destination fields
+Date:   Tue, 17 Oct 2023 09:42:36 -0500
+Message-ID: <20231017144236.8287-1-suravee.suthikulpanit@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA2PEPF000015CD:EE_|MN2PR12MB4504:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8e3963d8-eff9-420e-7711-08dbcf1f5f69
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0PsTMrDY3YCztXSQyCKk821fAt7/QieMbcHhMrFRf936zQOP4tDgWus8OJsZIVhXxulQznqr1VVmBAld3zqletgp/1MXYD3/h7lBN/XMiwLNB+MICC2c76hJtRmE4YKYeNVKNMOIPzS4E4OQzThDB0/VVb0ASYqHnoqdee4dG7MIZV+mNpgCneU9ZCl3Zr4VJGSS9EyAr/rZDdx6NazkyQ9hUbWhDIoW+FGWy+zMnq9+LvictuOyfRaZt7cCIBkF4rV+kU1bWThS1o2pWrA32UMVDnAzswPpNlWDlqpFA2E5Ty6OiMDWYbOK/4ZMvQnonLqVq5PNnCz7ZnxZk07BdWoFTU/wkiIjHMV2lXPnOCwPnCN+5xGogYs2toAPAiwb+LezaV/LXdExAH5DkDod6BB+v/exZGkOlPj2/8yGzRllXHMaoPSE/ZvHU9KSMM8W2k/C9RT2Vq1VhgI9HH8vB0E/sgJI8YwF/WUxcoEv6GXRcSWH5i0IQs7+HEkLR9+dqVik1pspQLssOdeqPZPD4AV8ftq9pQWpETn5/yJPX/YI3iJvt8DsW9xv697dpzC95Xn0qkSJSQ0ZSsU39c5vj83TXOtuoZgwqvsASFFR98a1P7Sy7WKJEJeZ+neB2iiF4fbPs58Fpk9brwWIKOTu0J7B2WmUWrbKht1mGmLhzjnK8E2+MCP82NQ9+RcOmxV2LDUMdzAO70GsXhP2p2lmtTWoUlgSjtWYSy8xgPlhpoAePqxAKS3aKqwZenMEglc3
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(39860400002)(396003)(346002)(376002)(230922051799003)(1800799009)(451199024)(186009)(64100799003)(82310400011)(46966006)(36840700001)(40470700004)(86362001)(41300700001)(44832011)(36860700001)(47076005)(7696005)(5660300002)(83380400001)(8936002)(4326008)(8676002)(2906002)(70586007)(70206006)(36756003)(356005)(316002)(336012)(110136005)(54906003)(426003)(1076003)(2616005)(81166007)(40480700001)(16526019)(82740400003)(26005)(40460700003)(966005)(6666004)(478600001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Oct 2023 14:43:05.4115
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8e3963d8-eff9-420e-7711-08dbcf1f5f69
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF000015CD.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4504
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+According to the recent update in the AMD IOMMU spec [1], the IsRun and
+Destination fields of the Interrupt Remapping Table Entry (IRTE) are not
+cached by the IOMMU hardware.
 
-On Tue 17 Oct 2023 at 22:39, Chuan Liu <chuan.liu@amlogic.com> wrote:
+Therefore, do not issue the INVALIDATE_INTERRUPT_TABLE command when
+updating IRTE[IsRun] and IRTE[Destination] when IRTE[GuestMode]=1, which
+should help improve IOMMU AVIC/x2AVIC performance.
 
+References:
+[1] AMD IOMMU Spec Revision (Rev 3.08-PUB)
+(Link: https://www.amd.com/content/dam/amd/en/documents/processor-tech-docs/specifications/48882_IOMMU.pdf)
 
->>>>> +
->>>>> +static struct clk_fixed_factor fclk_div2p5_div = {
->>>>> +     .mult = 2,
->>>>> +     .div = 5,
->>>>> +     .hw.init = &(struct clk_init_data){
->>>>> +             .name = "fclk_div2p5_div",
->>>>> +             .ops = &clk_fixed_factor_ops,
->>>>> +             .parent_hws = (const struct clk_hw *[]) {
->>>>> +                     &fixed_pll.hw
->>>>> +             },
->>>>> +             .num_parents = 1,
->>>>> +     },
->>>>> +};
->>>> This one is wrong if I follow the doc.
->>>> It is supposed to be fixed 8 divider taking it's source directly from
->>>> the DCO, skipping the OD post divider ... assuming the doc is up to date.
->>>>
->>> No, C3 SoC div2p5 is not skipping the OD post divider.
->> I a bit surprised there would be a frequency multiplier considering the
->> complexity of it, when skiping a divider is possible HW wise. Are you
->> sure ?
-> This part confirms with our chip design engineer that fclk_div2p5 here is
-> actually a clock output by a divider with decimal (divider factor is
-> 2.5). The divider factor in clk-divider.c is int, so this description is
-> used in the software. Or what do you suggest would be a better way to
-> describe this type of divider with decimals?
+Cc: Joao Martins <joao.m.martins@oracle.com>
+Cc: Alejandro Jimenez <alejandro.j.jimenez@oracle.com>
+Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+---
+ drivers/iommu/amd/iommu.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
-It's alright. keep it that way then.
-Consider fixing the doc maybe.
+diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+index 089886485895..d63590563d3e 100644
+--- a/drivers/iommu/amd/iommu.c
++++ b/drivers/iommu/amd/iommu.c
+@@ -2970,8 +2970,8 @@ static int alloc_irq_index(struct amd_iommu *iommu, u16 devid, int count,
+ 	return index;
+ }
+ 
+-static int modify_irte_ga(struct amd_iommu *iommu, u16 devid, int index,
+-			  struct irte_ga *irte)
++static int __modify_irte_ga(struct amd_iommu *iommu, u16 devid, int index,
++			    struct irte_ga *irte)
+ {
+ 	struct irq_remap_table *table;
+ 	struct irte_ga *entry;
+@@ -2998,6 +2998,18 @@ static int modify_irte_ga(struct amd_iommu *iommu, u16 devid, int index,
+ 
+ 	raw_spin_unlock_irqrestore(&table->lock, flags);
+ 
++	return 0;
++}
++
++static int modify_irte_ga(struct amd_iommu *iommu, u16 devid, int index,
++			  struct irte_ga *irte)
++{
++	bool ret;
++
++	ret = __modify_irte_ga(iommu, devid, index, irte);
++	if (ret)
++		return ret;
++
+ 	iommu_flush_irt_and_complete(iommu, devid);
+ 
+ 	return 0;
+@@ -3681,8 +3693,8 @@ int amd_iommu_update_ga(int cpu, bool is_run, void *data)
+ 	}
+ 	entry->lo.fields_vapic.is_run = is_run;
+ 
+-	return modify_irte_ga(ir_data->iommu, ir_data->irq_2_irte.devid,
+-			      ir_data->irq_2_irte.index, entry);
++	return __modify_irte_ga(ir_data->iommu, ir_data->irq_2_irte.devid,
++				ir_data->irq_2_irte.index, entry);
+ }
+ EXPORT_SYMBOL(amd_iommu_update_ga);
+ #endif
+-- 
+2.34.1
 
->>>>> +
->>>>> +static struct clk_regmap fclk_div2p5 = {
->>>>> +     .data = &(struct clk_regmap_gate_data){
->>>>> +             .offset = ANACTRL_FIXPLL_CTRL4,
->>>>> +             .bit_idx = 4,
->>>>> +     },
->>>>> +     .hw.init = &(struct clk_init_data) {
->>>>> +             .name = "fclk_div2p5",
->>>>> +             .ops = &clk_regmap_gate_ro_ops,
->>>>> +             .parent_hws = (const struct clk_hw *[]) {
->>>>> +                     &fclk_div2p5_div.hw
->>>>> +             },
->>>>> +             .num_parents = 1,
->>>>> +     },
->>>>> +};
->>>>> +
