@@ -2,131 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 261817CC55A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 15:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9217CC566
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343939AbjJQN7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 09:59:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51362 "EHLO
+        id S1343990AbjJQOAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 10:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232644AbjJQN7N (ORCPT
+        with ESMTP id S1343926AbjJQOAF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 09:59:13 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B346F5;
-        Tue, 17 Oct 2023 06:59:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-        In-Reply-To:References; bh=LwuQtc6BAEH37KxR4NT7V8Ve+ukUxIEjORvi7ui3JHI=; b=hr
-        W9hrfJTecFcxkf91ofdGB59NoYEqMm1qWQPvnOlb7MJUyuWjDT6spSz5Xi7bbqXTxATaJ1w3R/BIa
-        b3KCCTHPu29PquXAIwOvvnk91Q4GNLdr/oESLqIN6OL/E3FRcBUHieYPsHNIlUzTPP7NTyMJaZaWU
-        uwFkRC3aebRBvXw=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qskb9-002U7a-Kb; Tue, 17 Oct 2023 15:59:03 +0200
-Date:   Tue, 17 Oct 2023 15:59:03 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Jijie Shao <shaojijie@huawei.com>
-Cc:     yisen.zhuang@huawei.com, salil.mehta@huawei.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, shenjian15@huawei.com, wangjie125@huawei.com,
-        liuyonglong@huawei.com, wangpeiyang1@huawei.com,
-        netdev@vger.kernel.org, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net 5/6] net: hns3: fix wrong print link down up
-Message-ID: <06cd6f53-e0af-4bdf-a684-68fc55b9b436@lunn.ch>
-References: <20230728075840.4022760-1-shaojijie@huawei.com>
- <20230728075840.4022760-6-shaojijie@huawei.com>
- <7ce32389-550b-4beb-82b1-1b6183fdeabb@lunn.ch>
- <2c6514a7-db97-f345-9bc4-affd4eba2dda@huawei.com>
- <73b41fe2-12dd-4fc0-a44d-f6f94e6541fc@lunn.ch>
- <ef5489f9-43b4-ee59-699b-3f54a30c00aa@huawei.com>
- <e7219114-774f-49d0-8985-8875fd351b60@lunn.ch>
- <a21beff2-9f38-d354-6049-aed20c18c8d4@huawei.com>
- <150d8d95-a6cd-dc28-618b-6cc5295b4bf9@huawei.com>
+        Tue, 17 Oct 2023 10:00:05 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 366B9F7;
+        Tue, 17 Oct 2023 07:00:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAFF9C433C9;
+        Tue, 17 Oct 2023 14:00:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697551203;
+        bh=ogyJKWZQozXRb1pM2bJA3u5IHZ6moRSNNmWvQiTwxGQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DmDHg0xK9dsy8NLYVYANKT/5eKaAxXQXuVyZproHp/fyLPKkcZzhbdcN1qkrwIood
+         394/gE9mdk1eNyjtrsOSuSwct/0Cb/8goBkFgKH6PGRoMacR4sLDmc4yWn67wLpNSa
+         VBLUUOCaPuQw/Z0RLEdS02kQuzrEW+FaOtfroa0piPYQRbTW7fRGsLt1uGvmoEJ+Ld
+         dX8MSpZT0UAeRXBjidGg+8A5gWP+GWJPtnaEjuqzNp1X797RsIdOFobjW0aphp5V8j
+         QYHHrHBiXAkFjSZbNilE/dn8rz7y8HKL0yO3Cpds84w/p0HDEc/KwUPdY8l2ix/pvq
+         As0c2hCdFUmPA==
+Date:   Tue, 17 Oct 2023 14:59:58 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Tylor Yang <tylor_yang@himax.corp-partner.google.com>
+Cc:     dmitry.torokhov@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        jikos@kernel.org, benjamin.tissoires@redhat.com,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        poyuan_chang@himax.corp-partner.google.com,
+        jingyliang@chromium.org, hbarnor@chromium.org, wuxy23@lenovo.com,
+        luolm1@lenovo.com, poyu_hung@himax.corp-partner.google.com
+Subject: Re: [PATCH v3 1/4] dt-bindings: input: Introduce Himax HID-over-SPI
+ device
+Message-ID: <20231017-womb-lantern-186f16ce67af@spud>
+References: <20231017091900.801989-1-tylor_yang@himax.corp-partner.google.com>
+ <20231017091900.801989-2-tylor_yang@himax.corp-partner.google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="8k9kbDByS1+37zNr"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <150d8d95-a6cd-dc28-618b-6cc5295b4bf9@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231017091900.801989-2-tylor_yang@himax.corp-partner.google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 09:03:01PM +0800, Jijie Shao wrote:
-> 
-> on 2023/7/31 17:10, Jijie Shao wrote:
-> > 
-> > on 2023/7/30 2:23, Andrew Lunn wrote:
-> > > >      Now i wounder if you are fixing the wrong thing. Maybe you
-> > > > should be
-> > > >      fixing the PHY so it does not report up and then down? You
-> > > > say 'very
-> > > >      snall intervals', which should in fact be 1 second. So is the PHY
-> > > >      reporting link for a number of poll intervals? 1min to 10 minutes?
-> > > > 
-> > > >                Andrew
-> > > > 
-> > > > Yes, according to the log records, the phy polls every second,
-> > > > but the link status changes take time.
-> > > > Generally, it takes 10 seconds for the phy to detect link down,
-> > > > but occasionally it takes several minutes to detect link down,
-> > > What PHY driver is this?
-> > > 
-> > > It is not so clear what should actually happen with auto-neg turned
-> > > off. With it on, and the link going down, the PHY should react after
-> > > about 1 second. It is not supposed to react faster than that, although
-> > > some PHYs allow fast link down notification to be configured.
-> > > 
-> > > Have you checked 802.3 to see what it says about auto-neg off and link
-> > > down detection?
-> > > 
-> > > I personally would not suppress this behaviour in the MAC
-> > > driver. Otherwise you are going to have funny combinations of special
-> > > cases of a feature which very few people actually use, making your
-> > > maintenance costs higher.
-> > > 
-> > >         Andrew
-> 
-> Hi Andrew,
-> We've rewritten the commit log to explain this problem,
-> Would you please take some time to review that?
-> 
-> The following is the new commit log:
-> This patch is to correct a wrong log info "link down/up" in hns3 driver.
-> When setting autoneg off without changing speed and duplex, the link
-> should be not changed. However in hns3 driver, it print link down/up once
-> incorrectly. We trace the phy machine state and find the phy change form
-> PHY_UP to PHY_RUNNING. No other state of PHY occurs during this process.
-> MDIO trace also indicate the link is on. The wrong log info and mdio
-> trace are showed as followed:
-> 
-> [  843.720783][  T367] hns3 0000:35:00.0 eth1: set link(phy): autoneg=0,
-> speed=10, duplex=1
-> [  843.736087][  T367] hns3 0000:35:00.0 eth1: link down
-> [  843.773506][   T17] RTL8211F Gigabit Ethernet mii-0000:35:00.0:02: PHY
-> state change UP -> RUNNING
-> [  844.674668][   T31] hns3 0000:35:00.0 eth1: link up
 
-I still think this is totally valid and correct.
+--8k9kbDByS1+37zNr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-When you turn auto-neg off the link partner is going to react to that,
-it might drop the link. After a while, the link partner will give up
-trying to perform auto-neg and might fall back to 10/Half. At which
-point, the link might allow traffic flow. However, in this example,
-you have a duplex mis-match, so it might not work correctly.
+Yo,
 
-Turning off auto-neg is something you need to do at both ends, and you
-need to then force both ends to the same settings. Link down is
-expected. I would actually be suppressed if no link down events were
-reported.
+On Tue, Oct 17, 2023 at 05:18:57PM +0800, Tylor Yang wrote:
+> The Himax HID-over-SPI framework support for Himax touchscreen ICs
+> that report HID packet through SPI bus. The driver core need reset
+>  pin to meet reset timing spec. of IC. An interrupt to disable
+> and enable interrupt when suspend/resume. Two optional power control
+>  if target board needed.
+>=20
+> Signed-off-by: Tylor Yang <tylor_yang@himax.corp-partner.google.com>
+> ---
+>  .../devicetree/bindings/input/himax,hid.yaml  | 123 ++++++++++++++++++
+>  MAINTAINERS                                   |   6 +
+>  2 files changed, 129 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/himax,hid.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/input/himax,hid.yaml b/Doc=
+umentation/devicetree/bindings/input/himax,hid.yaml
+> new file mode 100644
+> index 000000000000..9ba86fe1b7da
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/input/himax,hid.yaml
+> @@ -0,0 +1,123 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/input/himax,hid.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Himax TDDI devices using SPI to send HID packets
+> +
+> +maintainers:
+> +  - Tylor Yang <tylor_yang@himax.corp-partner.google.com>
+> +
+> +description: |
+> +  Support the Himax TDDI devices which using SPI interface to acquire
+> +  HID packets from the device. The device needs to be initialized using
+> +  Himax protocol before it start sending HID packets.
+> +
+> +properties:
+> +  compatible:
+> +    const: himax,hid
 
-	Andrew
+This compatible seems far too generic. Why are there not device specific
+compatibles for each TDDI device?
+
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  reset:
+> +    maxItems: 1
+> +    description: Reset device, active low signal.
+> +
+> +  vccd-supply:
+> +    description:
+> +      Optional regulator for the 1.8V voltage.
+> +
+> +  vcca-supply:
+> +    description:
+> +      Optional regulator for the analog 3.3V voltage.
+> +
+> +  himax,id-gpios:
+> +    maxItems: 8
+> +    description: GPIOs to read physical Panel ID. Optional.
+> +
+> +  spi-cpha: true
+> +  spi-cpol: true
+
+> +  himax,ic-det-delay-ms:
+> +    description:
+> +      Due to TDDI properties, the TPIC detection timing must after the
+> +      display panel initialized. This property is used to specify the
+> +      delay time when TPIC detection and display panel initialization
+> +      timing are overlapped. How much milliseconds to delay before TPIC
+> +      detection start.
+> +
+> +  himax,ic-resume-delay-ms:
+> +    description:
+> +      Due to TDDI properties, the TPIC resume timing must after the
+> +      display panel resumed. This property is used to specify the
+> +      delay time when TPIC resume and display panel resume
+> +      timing are overlapped. How much milliseconds to delay before TPIC
+> +      resume start.
+
+
+> +  panel:
+> +    description:
+> +      The node of the display panel device. The driver will use this
+> +      node to get the project ID of the display panel. Optional.
+> +    type: object
+> +    additionalProperties: false
+> +
+> +    properties:
+> +      himax,pid:
+> +        $ref: /schemas/types.yaml#/definitions/uint32-array
+> +        minItems: 1
+> +        maxItems: 8
+> +        items:
+> +          minimum: 0
+> +          maximum: 65535
+> +        description:
+> +          When only one value exist, represent Project ID of the device.
+> +          When multiple values exist, order in event number value repres=
+net
+> +          id value from id-gpios and odd number value represent Project =
+ID
+> +          relatives to prior id value. This is used to specify the firmw=
+are
+> +          for the device.
+
+I am sorry, but I still fail to understand why using device specific
+compatibles & firmware-name does not work here. It still seems like this
+property exists purely because you do not know what device you are
+because of a lack of specific compatibles.
+
+Thanks,
+Conor.
+
+> +
+> +    required:
+> +      - himax,pid
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - reset
+> +
+> +unevaluatedProperties: false
+> +
+> +allOf:
+> +  - $ref: /schemas/spi/spi-peripheral-props.yaml#
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    spi {
+> +        #address-cells =3D <1>;
+> +        #size-cells =3D <0>;
+> +
+> +        touchscreen@0 {
+> +            compatible =3D "himax,hid";
+> +            reg =3D <0x0>;
+> +            interrupt-parent =3D <&gpio1>;
+> +            interrupts =3D <7 IRQ_TYPE_LEVEL_LOW>;
+> +            pinctrl-0 =3D <&touch_pins>;
+> +            pinctrl-names =3D "default";
+> +
+> +            spi-max-frequency =3D <12500000>;
+> +            spi-cpha;
+> +            spi-cpol;
+> +
+> +            reset =3D <&gpio1 8 GPIO_ACTIVE_LOW>;
+> +            himax,ic-det-delay-ms =3D <500>;
+> +            himax,ic-resume-delay-ms =3D <100>;
+> +        };
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 7a7bd8bd80e9..883870ab316f 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -9340,6 +9340,12 @@ L:	linux-kernel@vger.kernel.org
+>  S:	Maintained
+>  F:	drivers/misc/hisi_hikey_usb.c
+> =20
+> +HIMAX HID OVER SPI TOUCHSCREEN SUPPORT
+> +M:	Tylor Yang <tylor_yang@himax.corp-partner.google.com>
+> +L:	linux-input@vger.kernel.org
+> +S:	Supported
+> +F:	Documentation/devicetree/bindings/input/himax,hid.yaml
+> +
+>  HIMAX HX83112B TOUCHSCREEN SUPPORT
+>  M:	Job Noorman <job@noorman.info>
+>  L:	linux-input@vger.kernel.org
+> --=20
+> 2.25.1
+>=20
+
+--8k9kbDByS1+37zNr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZS6TXgAKCRB4tDGHoIJi
+0uyjAP4kfMd90YPnnCBnbn1Gdr6vm6VSF1jPM2346vOZLdXoBQD/fejsPeA8yFyB
+BtmW46Z7KRSpHjc5TD7Z5uzOFACf3gc=
+=Ewca
+-----END PGP SIGNATURE-----
+
+--8k9kbDByS1+37zNr--
