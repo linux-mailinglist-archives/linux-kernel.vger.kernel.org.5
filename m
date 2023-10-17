@@ -2,151 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB7C7CBD4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D5EF7CBD50
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234692AbjJQIYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 04:24:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33130 "EHLO
+        id S234620AbjJQIZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 04:25:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233648AbjJQIYb (ORCPT
+        with ESMTP id S232644AbjJQIZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 04:24:31 -0400
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D38E93
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 01:24:30 -0700 (PDT)
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40806e40fccso1917035e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 01:24:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697531069; x=1698135869;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fU3p8FYwjv1pm/JDosfRlc5PqO3D/ZA0RFsRiAUvkEo=;
-        b=NfQxuWkviWHOu4beto/pKxS3GvRHZ/9H+DdpZpwdaKDW/cyg8x2UyGOzEHpBBmo1bG
-         YboYIgEHB2dBA/xgASAhreJIC+qrLCsIl9KKFm4AmLtXdVoQNXlXy1cwJq0f7gN7mmML
-         IurMWhk129Fi/Tzr6P8x9gHDBfKvxjS2RCUpVvseQq55L8SAgH72VUC4kOgxK6wur1Ho
-         5awb+6dqiizmyYjoY/z+MOrINhh85My9ed4vugeNFxbM1MYUm0toHUNFzLTIB+8L0K6h
-         d4qI8X1vP3YpMe6VoSsOCpxFLDalHMXWS8nEOvgcIF4WasV75to7UDcR4ysPNSW+aPyN
-         JHjw==
-X-Gm-Message-State: AOJu0YzeBaIPcjm/FqU/bWZR43o7D3XJDxga97CTKoJJcqA7cnXU6uA+
-        nh6b8F73Hw7KkeJGvXoSoX8=
-X-Google-Smtp-Source: AGHT+IFMgeCFF/fL+B8JrSlijcWChctAiJ/JQ51Y8PLHxrxGu8FBF3svfZGZFRfvuErdmip6JR7pAg==
-X-Received: by 2002:a05:600c:4744:b0:406:61c6:30b8 with SMTP id w4-20020a05600c474400b0040661c630b8mr1158508wmo.22.1697531068495;
-        Tue, 17 Oct 2023 01:24:28 -0700 (PDT)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id i20-20020a05600c355400b0040531f5c51asm1262548wmq.5.2023.10.17.01.24.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Oct 2023 01:24:27 -0700 (PDT)
-Message-ID: <246f6f89-78f7-4b47-8260-8d2e3c9e0f0a@kernel.org>
-Date:   Tue, 17 Oct 2023 10:24:26 +0200
+        Tue, 17 Oct 2023 04:25:15 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC4DC93;
+        Tue, 17 Oct 2023 01:25:13 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39H7nOBv026221;
+        Tue, 17 Oct 2023 08:24:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=abG+EPXB6BECKL9u/q4R7dYvCyUAXCa41Z+B12FQpWI=;
+ b=RCBaenzL+rR6YBrLmsSg4vxUSATLQJ/Sg5Xb7Ae5InKPVzHqOIlfngfTP+8iJ648PeQS
+ D+nkejQy1s2aNm+dtOD3J10fTpY1IHK1cfvlBcxSznByCZAcG505MMEEyMmJaSFcYq9e
+ 6FB9NDNf7kbHwholG4VPzd4pKmC0HKCC3THaWB6E0ZUpwMa4FNXcDOm8UbXTLC5tII9L
+ zZYaKSeH3VBv7SmkMyY7Vwbon60uuzm8AI8veBG5B4NrOWhrZw2jc6D0Q2G7ubcOUU1a
+ LYaBQSFO0d392/152fk5GmPBqHa6jkvbRG1Y7mCr9Q3FwKFEDwxVv+GDuzyQMJiG9liO gg== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tryn1387n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Oct 2023 08:24:56 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39H8OtIo022458
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Oct 2023 08:24:55 GMT
+Received: from [10.216.24.217] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 17 Oct
+ 2023 01:24:47 -0700
+Message-ID: <f12cb246-e7fb-44c4-a17e-0b395a146325@quicinc.com>
+Date:   Tue, 17 Oct 2023 13:54:43 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6/6] perf/benchmark: add a new benchmark for
- seccom_unotify
+Subject: Re: [PATCH 03/11] firmware: qcom-scm: atomically assign and read the
+ global __scm pointer
 Content-Language: en-US
-To:     Andrei Vagin <avagin@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        Chen Yu <yu.c.chen@intel.com>, avagin@gmail.com,
-        Andy Lutomirski <luto@amacapital.net>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Oskolkov <posk@google.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Will Drewry <wad@chromium.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-References: <20230308073201.3102738-1-avagin@google.com>
- <20230308073201.3102738-7-avagin@google.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- xsFNBE6S54YBEACzzjLwDUbU5elY4GTg/NdotjA0jyyJtYI86wdKraekbNE0bC4zV+ryvH4j
- rrcDwGs6tFVrAHvdHeIdI07s1iIx5R/ndcHwt4fvI8CL5PzPmn5J+h0WERR5rFprRh6axhOk
- rSD5CwQl19fm4AJCS6A9GJtOoiLpWn2/IbogPc71jQVrupZYYx51rAaHZ0D2KYK/uhfc6neJ
- i0WqPlbtIlIrpvWxckucNu6ZwXjFY0f3qIRg3Vqh5QxPkojGsq9tXVFVLEkSVz6FoqCHrUTx
- wr+aw6qqQVgvT/McQtsI0S66uIkQjzPUrgAEtWUv76rM4ekqL9stHyvTGw0Fjsualwb0Gwdx
- ReTZzMgheAyoy/umIOKrSEpWouVoBt5FFSZUyjuDdlPPYyPav+hpI6ggmCTld3u2hyiHji2H
- cDpcLM2LMhlHBipu80s9anNeZhCANDhbC5E+NZmuwgzHBcan8WC7xsPXPaiZSIm7TKaVoOcL
- 9tE5aN3jQmIlrT7ZUX52Ff/hSdx/JKDP3YMNtt4B0cH6ejIjtqTd+Ge8sSttsnNM0CQUkXps
- w98jwz+Lxw/bKMr3NSnnFpUZaxwji3BC9vYyxKMAwNelBCHEgS/OAa3EJoTfuYOK6wT6nadm
- YqYjwYbZE5V/SwzMbpWu7Jwlvuwyfo5mh7w5iMfnZE+vHFwp/wARAQABzSFKaXJpIFNsYWJ5
- IDxqaXJpc2xhYnlAa2VybmVsLm9yZz7CwXcEEwEIACEFAlW3RUwCGwMFCwkIBwIGFQgJCgsC
- BBYCAwECHgECF4AACgkQvSWxBAa0cEnVTg//TQpdIAr8Tn0VAeUjdVIH9XCFw+cPSU+zMSCH
- eCZoA/N6gitEcnvHoFVVM7b3hK2HgoFUNbmYC0RdcSc80pOF5gCnACSP9XWHGWzeKCARRcQR
- 4s5YD8I4VV5hqXcKo2DFAtIOVbHDW+0okOzcecdasCakUTr7s2fXz97uuoc2gIBB7bmHUGAH
- XQXHvdnCLjDjR+eJN+zrtbqZKYSfj89s/ZHn5Slug6w8qOPT1sVNGG+eWPlc5s7XYhT9z66E
- l5C0rG35JE4PhC+tl7BaE5IwjJlBMHf/cMJxNHAYoQ1hWQCKOfMDQ6bsEr++kGUCbHkrEFwD
- UVA72iLnnnlZCMevwE4hc0zVhseWhPc/KMYObU1sDGqaCesRLkE3tiE7X2cikmj/qH0CoMWe
- gjnwnQ2qVJcaPSzJ4QITvchEQ+tbuVAyvn9H+9MkdT7b7b2OaqYsUP8rn/2k1Td5zknUz7iF
- oJ0Z9wPTl6tDfF8phaMIPISYrhceVOIoL+rWfaikhBulZTIT5ihieY9nQOw6vhOfWkYvv0Dl
- o4GRnb2ybPQpfEs7WtetOsUgiUbfljTgILFw3CsPW8JESOGQc0Pv8ieznIighqPPFz9g+zSu
- Ss/rpcsqag5n9rQp/H3WW5zKUpeYcKGaPDp/vSUovMcjp8USIhzBBrmI7UWAtuedG9prjqfO
- wU0ETpLnhgEQAM+cDWLL+Wvc9cLhA2OXZ/gMmu7NbYKjfth1UyOuBd5emIO+d4RfFM02XFTI
- t4MxwhAryhsKQQcA4iQNldkbyeviYrPKWjLTjRXT5cD2lpWzr+Jx7mX7InV5JOz1Qq+P+nJW
- YIBjUKhI03ux89p58CYil24Zpyn2F5cX7U+inY8lJIBwLPBnc9Z0An/DVnUOD+0wIcYVnZAK
- DiIXODkGqTg3fhZwbbi+KAhtHPFM2fGw2VTUf62IHzV+eBSnamzPOBc1XsJYKRo3FHNeLuS8
- f4wUe7bWb9O66PPFK/RkeqNX6akkFBf9VfrZ1rTEKAyJ2uqf1EI1olYnENk4+00IBa+BavGQ
- 8UW9dGW3nbPrfuOV5UUvbnsSQwj67pSdrBQqilr5N/5H9z7VCDQ0dhuJNtvDSlTf2iUFBqgk
- 3smln31PUYiVPrMP0V4ja0i9qtO/TB01rTfTyXTRtqz53qO5dGsYiliJO5aUmh8swVpotgK4
- /57h3zGsaXO9PGgnnAdqeKVITaFTLY1ISg+Ptb4KoliiOjrBMmQUSJVtkUXMrCMCeuPDGHo7
- 39Xc75lcHlGuM3yEB//htKjyprbLeLf1y4xPyTeeF5zg/0ztRZNKZicgEmxyUNBHHnBKHQxz
- 1j+mzH0HjZZtXjGu2KLJ18G07q0fpz2ZPk2D53Ww39VNI/J9ABEBAAHCwV8EGAECAAkFAk6S
- 54YCGwwACgkQvSWxBAa0cEk3tRAAgO+DFpbyIa4RlnfpcW17AfnpZi9VR5+zr496n2jH/1ld
- wRO/S+QNSA8qdABqMb9WI4BNaoANgcg0AS429Mq0taaWKkAjkkGAT7mD1Q5PiLr06Y/+Kzdr
- 90eUVneqM2TUQQbK+Kh7JwmGVrRGNqQrDk+gRNvKnGwFNeTkTKtJ0P8jYd7P1gZb9Fwj9YLx
- jhn/sVIhNmEBLBoI7PL+9fbILqJPHgAwW35rpnq4f/EYTykbk1sa13Tav6btJ+4QOgbcezWI
- wZ5w/JVfEJW9JXp3BFAVzRQ5nVrrLDAJZ8Y5ioWcm99JtSIIxXxt9FJaGc1Bgsi5K/+dyTKL
- wLMJgiBzbVx8G+fCJJ9YtlNOPWhbKPlrQ8+AY52Aagi9WNhe6XfJdh5g6ptiOILm330mkR4g
- W6nEgZVyIyTq3ekOuruftWL99qpP5zi+eNrMmLRQx9iecDNgFr342R9bTDlb1TLuRb+/tJ98
- f/bIWIr0cqQmqQ33FgRhrG1+Xml6UXyJ2jExmlO8JljuOGeXYh6ZkIEyzqzffzBLXZCujlYQ
- DFXpyMNVJ2ZwPmX2mWEoYuaBU0JN7wM+/zWgOf2zRwhEuD3A2cO2PxoiIfyUEfB9SSmffaK/
- S4xXoB6wvGENZ85Hg37C7WDNdaAt6Xh2uQIly5grkgvWppkNy4ZHxE+jeNsU7tg=
-In-Reply-To: <20230308073201.3102738-7-avagin@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>
+CC:     <kernel@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20230828192507.117334-1-bartosz.golaszewski@linaro.org>
+ <20230828192507.117334-4-bartosz.golaszewski@linaro.org>
+From:   Om Prakash Singh <quic_omprsing@quicinc.com>
+In-Reply-To: <20230828192507.117334-4-bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: NZoJXFrXHLjPD7Z3Hv_EfwVC3o2YEwqT
+X-Proofpoint-ORIG-GUID: NZoJXFrXHLjPD7Z3Hv_EfwVC3o2YEwqT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-16_13,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ malwarescore=0 priorityscore=1501 mlxlogscore=999 spamscore=0 bulkscore=0
+ phishscore=0 impostorscore=0 clxscore=1011 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310170069
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08. 03. 23, 8:32, Andrei Vagin wrote:
-> --- a/tools/arch/x86/include/uapi/asm/unistd_32.h
-> +++ b/tools/arch/x86/include/uapi/asm/unistd_32.h
-> @@ -23,3 +23,6 @@
->   #ifndef __NR_setns
->   #define __NR_setns 346
->   #endif
-> +#ifdef __NR_seccomp
 
-Ouch. s/ifdef/ifndef/
 
-bench/sched-seccomp-notify.c:46:24: error: '__NR_seccomp' undeclared
+On 8/29/2023 12:54 AM, Bartosz Golaszewski wrote:
+> Checking for the availability of SCM bridge can happen from any context.
+> It's only by chance that we haven't run into concurrency issues but with
+> the upcoming SHM Bridge driver that will be initiated at the same
+> initcall level, we need to assure the assignment and readback of the
+> __scm pointer is atomic.
+> 
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> ---
+>   drivers/firmware/qcom_scm.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
+> index 980fcfa20b9f..422de70faff8 100644
+> --- a/drivers/firmware/qcom_scm.c
+> +++ b/drivers/firmware/qcom_scm.c
+> @@ -1331,7 +1331,7 @@ static int qcom_scm_find_dload_address(struct device *dev, u64 *addr)
+>    */
+>   bool qcom_scm_is_available(void)
+>   {
+> -	return !!__scm;
+> +	return !!READ_ONCE(__scm);
+>   }
+>   EXPORT_SYMBOL(qcom_scm_is_available);
+>   
+> @@ -1477,8 +1477,8 @@ static int qcom_scm_probe(struct platform_device *pdev)
+>   	if (ret)
+>   		return ret;
+>   
+> -	__scm = scm;
+> -	__scm->dev = &pdev->dev;
+> +	scm->dev = &pdev->dev;
+> +	WRITE_ONCE(__scm, scm);
 
-Will send a fix.
+In my opinion "__scm = scm;" assignment should be done at the end of 
+probe function success so that qcom_scm_is_available() return true only 
+when probe is completed.
 
-> +#define __NR_seccomp 354
-> +#endif
-> diff --git a/tools/arch/x86/include/uapi/asm/unistd_64.h b/tools/arch/x86/include/uapi/asm/unistd_64.h
-> index a6f7fe84d4df..e0549617f9d7 100644
-> --- a/tools/arch/x86/include/uapi/asm/unistd_64.h
-> +++ b/tools/arch/x86/include/uapi/asm/unistd_64.h
-> @@ -23,3 +23,6 @@
->   #ifndef __NR_getcpu
->   #define __NR_getcpu 309
->   #endif
-> +#ifndef __NR_seccomp
+Other changes may not be needed.
 
-This one is good...
-
--- 
-js
-suse labs
-
+>   	init_completion(&__scm->waitq_comp);
+>   
