@@ -2,117 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E38027CC3DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 15:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 805647CC3E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 15:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343683AbjJQNCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 09:02:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59506 "EHLO
+        id S1343783AbjJQNDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 09:03:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234868AbjJQNCe (ORCPT
+        with ESMTP id S1343704AbjJQNDT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 09:02:34 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3115BDB
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 06:02:32 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9c2a0725825so389876666b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 06:02:32 -0700 (PDT)
+        Tue, 17 Oct 2023 09:03:19 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 419E2B0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 06:03:18 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c53c5f7aaaso6697251fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 06:03:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697547750; x=1698152550; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Yye5FSkZ9L4YYqu9GCTL6x1WAdc6AFySQq6k6hTPYC0=;
-        b=IpevMTN+Ol0RpIYKL8T/0PQI+c5U2+a0Td/gDxW4XW2jAsz44YosSibYkSjAolpiOG
-         f1qmfaB4crSAj7JSTZkrwLatvI0gct67g3guLYc9S0Tm7qM6k3ND7XA1JFq+v8NLGYQV
-         dce57BYOELPeW4AhreJ199UP1Qxi+dGzX03xOA2xtBpqR7VcnCIgLaLxIRuvu+ti8+GU
-         Hw0gN3tNOjpE/4eTE4fgsG7DCY+7iDK3D+IQx08mOPV1PEvCVnz4/QT9dzI0Bl7L/aiQ
-         hD/tVnEPYA4C0j87lVtpUSADETVT2U2paHkHWNf9fIJzB/ytXI2tvbMchZGcvJKxRPjU
-         5a9w==
+        d=linaro.org; s=google; t=1697547796; x=1698152596; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=bXs0q9mBXE4NFA1doT5CaGDIU8NXELScS6cZ9XMNR7U=;
+        b=rPx00GwRt9Lbt7IyotlZsRbO/ONXH9XpNJcRUe4wSiqSVFAYeusc9IcWO2Ht6Jw7E3
+         FAPbRwqZN0tgSTa5BqTu6W/cKslNRW81Lr+RNw2MdBYzE2FhsAEVPJZGz/fmzMcTjtE2
+         0v/mMGnqPiiADHYICj3JY9XeL2ROckUJr9ee66NS/PSf+bXBN5enukZ7gdKi7eQ6V6+n
+         7yt68+AgsduvXXov4GJ7qP0ub/EBzrdUDqOyhbNZx8jZeA6Z1you4/9cGvyt9oN1gsjI
+         HbK/5q0SDiPnbpse7E9fwu3FBS3Yak5fq0RO1shhwM54DTGTXsqGgYjINfaGiVo1aWUs
+         XTSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697547750; x=1698152550;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Yye5FSkZ9L4YYqu9GCTL6x1WAdc6AFySQq6k6hTPYC0=;
-        b=f2uBPHiap0m4FTdbIEpCb4Y3gFACNo4scARY3NDqtsNPT1PJ15JhaML7ta1deBsUA5
-         0t5pKg3TpaEBLyxHu34AqtI+NH353P9y2nO0AEB1V3oqDLjXDFnMtCQkfB/yKiogsyU7
-         T4K5IpiPw8DQf7zHvkvFDV1eZCdDkX87rLXsxfogr5SwBVblnYiARt0SRljMOb90LuCR
-         STmuv9lYWPO2jZscoNPc+1hpTUA9tFcnpcXxH3o2WozXebExRy9Fh51nQ6vYogYWcaDk
-         XHxFwPFaM+d7y/8pbxkCMS7xCJwI5LZWk6/BmsVbEkIhxj8nuhEdy98LEpoKEuh678F4
-         VTSw==
-X-Gm-Message-State: AOJu0Yygh5QupV8w0nZISBGNlTxNL4HJScoy9B/j0a3M5J/+bzv4xfuR
-        urrhZMYJMc6+JcZB+AlyEIw=
-X-Google-Smtp-Source: AGHT+IFFbE/RdmpNvzuZLOc7YOC+gG3zMgT/GyQZCZr+TL0wZax5K5ZsWNdL9fy5TbJe7lVd9lcOXg==
-X-Received: by 2002:a17:907:928b:b0:9be:54a9:9b4e with SMTP id bw11-20020a170907928b00b009be54a99b4emr1787819ejc.29.1697547750430;
-        Tue, 17 Oct 2023 06:02:30 -0700 (PDT)
-Received: from gmail.com (1F2EF7B2.nat.pool.telekom.hu. [31.46.247.178])
-        by smtp.gmail.com with ESMTPSA id qx1-20020a170906fcc100b009c387ff67bdsm1237916ejb.22.2023.10.17.06.02.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 06:02:29 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Tue, 17 Oct 2023 15:02:27 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Hou Wenlong <houwenlong.hwl@antgroup.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Lai Jiangshan <jiangshan.ljs@antgroup.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "maintainer:X86 ARCHITECTURE 32-BIT AND 64-BIT" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>
-Subject: Re: [PATCH RFC 1/7] x86/head/64: Mark startup_gdt and
- startup_gdt_descr as __initdata
-Message-ID: <ZS6F46vJfca5f6f8@gmail.com>
-References: <cover.1689130310.git.houwenlong.hwl@antgroup.com>
- <c85903a7cfad37d14a7e5a4df9fc7119a3669fb3.1689130310.git.houwenlong.hwl@antgroup.com>
- <ZS0lEmEpQOz4iQ4Q@gmail.com>
- <20231017072311.GA46993@k08j02272.eu95sqa>
+        d=1e100.net; s=20230601; t=1697547796; x=1698152596;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bXs0q9mBXE4NFA1doT5CaGDIU8NXELScS6cZ9XMNR7U=;
+        b=HNV4tB/mppioIp5kc3U23hABmvITj1pp1Ulz1ZmLP3ohQRjOUJ4Lj+NoCqmZuK8juV
+         FssNKESRz0rJE2r9C7wFeSV+sX73ffdqYXDPiyDqWRitN/GsuizwDREZSJMouyvJywvD
+         85rKIU5ZzEqQItKim7mYhcuLpJ6RQ9ov5cRE/M7cgngYPLWe+LdjwhJA55vWESFGMVPm
+         GPTq+qNopT8YHQ9gb7be4hFNi9VOdsMrFflORc6pf9M7lfuBMSYCjq++60ikPWhniLP2
+         JLEfOEjoKS9TTxTw0NH8CW0hTC/4lxE+UsF5tLBas0vw8gQqjtsuIp71AyLSET4yGPeF
+         JCFw==
+X-Gm-Message-State: AOJu0Yz2+F8HMi4SIBO/nVoC+bUFTFnRXX09zaHa1IhGMg+eLwFxXRDa
+        2kBf208ws251lhsk5Qoycc0Ig74LsiB1/LV9mk6Hqw==
+X-Google-Smtp-Source: AGHT+IF++YlDi1NoCe1h+WHq9g3qbnOigxmvB0ZYJcTY0RXDaQmwTSmc/On4WuvZ0sl+dk+2o8fU+tqucPcC/vLewDI=
+X-Received: by 2002:a19:7417:0:b0:502:d743:9fc4 with SMTP id
+ v23-20020a197417000000b00502d7439fc4mr1822904lfe.37.1697547796528; Tue, 17
+ Oct 2023 06:03:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231017072311.GA46993@k08j02272.eu95sqa>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20231013064827.61135-1-linyunsheng@huawei.com>
+ <20231013064827.61135-2-linyunsheng@huawei.com> <CAC_iWj+FR+ojP7akSY0azc0hVnrhsPhyFTejNit0sVR742KgEw@mail.gmail.com>
+ <e738b0b9-6c60-b971-7fd9-0ec1b14dda3c@huawei.com>
+In-Reply-To: <e738b0b9-6c60-b971-7fd9-0ec1b14dda3c@huawei.com>
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date:   Tue, 17 Oct 2023 16:02:40 +0300
+Message-ID: <CAC_iWjLYZWUt9RFkAMR8=2amscbOUqXbVP8n8oiXHGsXw-ZKCA@mail.gmail.com>
+Subject: Re: [PATCH net-next v11 1/6] page_pool: fragment API support for
+ 32-bit arch with 64-bit DMA
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Liang Chen <liangchen.linux@gmail.com>,
+        Guillaume Tucker <guillaume.tucker@collabora.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Yunsheng
 
-* Hou Wenlong <houwenlong.hwl@antgroup.com> wrote:
+On Tue, 17 Oct 2023 at 15:53, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>
+> On 2023/10/17 20:17, Ilias Apalodimas wrote:
+> >>
+> >
+> > That looks fine wrt what we discussed with Jakub,
+> >
+> > Acked-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+>
+> Thanks. What about other patches in this series? Could you take
+> some time to review them too?
 
-> Hi Ingo,
-> 
-> I have sent patch #6 separately for x86. Do you have any ideas about 
-> building the head code as PIE? Should I resend the patchset for the PIE 
-> feature?
+Yes I will, I was on nonstop trips, and was a bit cumbersome to
+review/test.  Also, there Plumbers is in a month, and I have an idea I
+need to discuss with Jakub about adding page pool patches to a CI.
+That should make the whole process a bit faster
 
-So I had a brief look, and despite reading 0/43 it was unclear to me what 
-the precise advantages of building as PIE are.
-
-Ie. could you please outline:
-
- - *Exactly* how much PIE based KASLR randomization would gain us in terms 
-   of randomization granularity and effective number of randomization bits, 
-   compared to the current status quo?
-
- - How is code generation changed at the instruction level - how does 
-   kernel size change and what are the micro-advantages/disadvantages?
-
- - Are there any other advantages/motivation than improving KASLR?
-
-Ie. before asking us to apply ~50 patches and add a whole new build mode 
-and the maintainance overhead to support it into infinity and beyond, could 
-you please offer a better list of pros and cons?
-
-Thanks,
-
-	Ingo
+Thanks
+/Ilias
+>
+> >
+> > .
+> >
