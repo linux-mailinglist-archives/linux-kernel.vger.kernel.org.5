@@ -2,97 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72EB67CC7D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB7597CC7CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344358AbjJQPqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 11:46:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32996 "EHLO
+        id S235178AbjJQPqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 11:46:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235111AbjJQPp7 (ORCPT
+        with ESMTP id S235140AbjJQPqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 11:45:59 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C952A19B;
+        Tue, 17 Oct 2023 11:46:00 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8994197;
         Tue, 17 Oct 2023 08:45:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=HqpYto28NsMabgIUb0zwF/UIwjSPedBpjPncERhM0sc=; b=OiWj523wh1qqOURtI8D0fP9yhq
-        BpKtVJH7f5xAmh2kV4g4NT4z4JCMxhFGYGPOrZCkl4DqWtTsCqR2kAJKLehXRyjoJy8IBgRrRJNEh
-        8NrJ34NME2vvCbPyOhJfxLbveH0Nxa9Vokt6hgrKueEQQ3VqlTDXoHQ4nvsG1nhBM1rxXqRLHPiQB
-        ZJ6LG7BelIHi3Fd0NmRghWkmDZR2/bHfaZ+7B/ddgE/8+nXlP3aL+OWbawfYnKCqgSTyy7mbP4CMk
-        LBoMUXzHKzYsa4du5552XOyNkQ/99AV1qORCdGhqM1+87tmw7wkoXKQV8Qmx2GFCNOM4J8KfFinUY
-        RYs6oXpA==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qsmGI-00Cm99-1U;
-        Tue, 17 Oct 2023 15:45:38 +0000
-Message-ID: <cba3771f-09bb-4b2b-af13-00dd2f9c4e64@infradead.org>
-Date:   Tue, 17 Oct 2023 08:45:36 -0700
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 5986221D23;
+        Tue, 17 Oct 2023 15:45:42 +0000 (UTC)
+Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 13C422CD7D;
+        Tue, 17 Oct 2023 15:45:41 +0000 (UTC)
+Date:   Tue, 17 Oct 2023 17:45:39 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     linux-modules@vger.kernel.org
+Cc:     Takashi Iwai <tiwai@suse.com>,
+        Lucas De Marchi <lucas.de.marchi@gmail.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Jiri Slaby <jslaby@suse.com>, Jan Engelhardt <jengelh@inai.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH kmod v5 0/5] kmod /usr support
+Message-ID: <20231017154539.GK6241@kitsune.suse.cz>
+References: <cover.1689589902.git.msuchanek@suse.de>
+ <cover.1689681454.git.msuchanek@suse.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 1/8] mseal: Add mseal(2) syscall.
-Content-Language: en-US
-To:     jeffxu@chromium.org, akpm@linux-foundation.org,
-        keescook@chromium.org, jannh@google.com, sroettger@google.com,
-        willy@infradead.org, gregkh@linuxfoundation.org,
-        torvalds@linux-foundation.org
-Cc:     jeffxu@google.com, jorgelo@chromium.org, groeck@chromium.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, surenb@google.com, alex.sierra@amd.com,
-        apopple@nvidia.com, aneesh.kumar@linux.ibm.com,
-        axelrasmussen@google.com, ben@decadent.org.uk,
-        catalin.marinas@arm.com, david@redhat.com, dwmw@amazon.co.uk,
-        ying.huang@intel.com, hughd@google.com, joey.gouly@arm.com,
-        corbet@lwn.net, wangkefeng.wang@huawei.com,
-        Liam.Howlett@oracle.com, lstoakes@gmail.com, mawupeng1@huawei.com,
-        linmiaohe@huawei.com, namit@vmware.com, peterx@redhat.com,
-        peterz@infradead.org, ryan.roberts@arm.com, shr@devkernel.io,
-        vbabka@suse.cz, xiujianfeng@huawei.com, yu.ma@intel.com,
-        zhangpeng362@huawei.com, dave.hansen@intel.com, luto@kernel.org,
-        linux-hardening@vger.kernel.org
-References: <20231017090815.1067790-1-jeffxu@chromium.org>
- <20231017090815.1067790-2-jeffxu@chromium.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231017090815.1067790-2-jeffxu@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1689681454.git.msuchanek@suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+        dkim=none;
+        dmarc=none;
+        spf=softfail (smtp-out1.suse.de: 149.44.160.134 is neither permitted nor denied by domain of msuchanek@suse.de) smtp.mailfrom=msuchanek@suse.de
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [-1.01 / 50.00];
+         ARC_NA(0.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(0.20)[suse.de];
+         R_SPF_SOFTFAIL(0.60)[~all:c];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
+         VIOLATED_DIRECT_SPF(3.50)[];
+         MX_GOOD(-0.01)[];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[12];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(0.20)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         FREEMAIL_CC(0.00)[suse.com,gmail.com,inai.de,kernel.org,google.com,fjasle.eu,vger.kernel.org];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: -1.01
+X-Rspamd-Queue-Id: 5986221D23
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-nit:
+Hello,
 
-On 10/17/23 02:08, jeffxu@chromium.org wrote:
+it has been a few months since these kmod patches have been posted, and
+a new kmod versio has been released since.
 
-| diff --git a/mm/Kconfig b/mm/Kconfig
-| index 264a2df5ecf5..db8a567cb4d3 100644
-| --- a/mm/Kconfig
-| +++ b/mm/Kconfig
-| @@ -1258,6 +1258,14 @@ config LOCK_MM_AND_FIND_VMA
-|  	bool
-|  	depends on !STACK_GROWSUP
-|  
-| +config MSEAL
-| +	default n
-| +	bool "Enable mseal() system call"
-| +	depends on MMU
-| +	help
-| +	  Enable the mseal() system call. Make memory areas's metadata immutable
+Is there any interest in adding this to kmod?
 
-	                                              areas'
+Thanks
 
-$search_engine is your friend.
+Michal
 
-| +	  by selected system calls, i.e. mprotect(), munmap(), mremap(), mmap().
-
-
--- 
-~Randy
+On Tue, Jul 18, 2023 at 02:01:51PM +0200, Michal Suchanek wrote:
+> Hello,
+> 
+> with these patches it is possible to install kernel modules in an arbitrary
+> directory - eg. moving the /lib/modules to /usr/lib/modules or /opt/linux.
+> 
+> While the modprobe.d and depmod.d search which already includes multiple
+> paths is expanded to also include $(prefix) the module directory still
+> supports only one location, only a different one under $(module_directory).
+> 
+> Having kmod search multiple module locations while only one is supported now
+> might break some assumption about relative module path corresponding to a
+> specific file, would require more invasive changes to implement, and is not
+> supportive of the goal of moving the modules away from /lib.
+> 
+> Both kmod and the kernel need to be patched to make use of this feature.
+> Patched kernel is backwards compatible with older kmod.  Patched kmod
+> with $(module_directory) set to /lib/modules is equivalent to unpatched kmod.
+> 
+> Thanks
+> 
+> Michal
+> 
+> Link: https://lore.kernel.org/linux-modules/20210112160211.5614-1-msuchanek@suse.de/
+> 
+> v4: set whole path to module directory instead of adding prefix
+> v5: use pkg-config instead of jq, fix build on openssl without sm3 support
+> 
+> 
+> Michal Suchanek (5):
+>   configure: Detect openssl sm3 support
+>   man/depmod.d: Fix incorrect /usr/lib search path
+>   libkmod, depmod: Load modprobe.d, depmod.d from ${prefix}/lib.
+>   kmod: Add pkgconfig file with kmod compile time configuration
+>   libkmod, depmod, modprobe: Make directory for kernel modules
+>     configurable
+> 
+>  Makefile.am                          |   6 +-
+>  configure.ac                         |  30 ++++++++
+>  libkmod/libkmod.c                    |  11 +--
+>  man/Makefile.am                      |  10 ++-
+>  man/depmod.d.xml                     |   9 ++-
+>  man/depmod.xml                       |   4 +-
+>  man/modinfo.xml                      |   2 +-
+>  man/modprobe.d.xml                   |   1 +
+>  man/modprobe.xml                     |   2 +-
+>  man/modules.dep.xml                  |   6 +-
+>  testsuite/module-playground/Makefile |   2 +-
+>  testsuite/setup-rootfs.sh            | 109 +++++++++++++++------------
+>  testsuite/test-depmod.c              |  16 ++--
+>  testsuite/test-testsuite.c           |   8 +-
+>  tools/depmod.c                       |   7 +-
+>  tools/kmod.pc.in                     |  10 +++
+>  tools/modinfo.c                      |   4 +-
+>  tools/modprobe.c                     |   4 +-
+>  tools/static-nodes.c                 |   6 +-
+>  19 files changed, 156 insertions(+), 91 deletions(-)
+>  create mode 100644 tools/kmod.pc.in
+> 
+> -- 
+> 2.41.0
+> 
