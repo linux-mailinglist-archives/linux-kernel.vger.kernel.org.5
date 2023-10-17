@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B1D7CB96F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 05:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82A297CB972
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 05:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234086AbjJQDy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 23:54:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48036 "EHLO
+        id S234032AbjJQDz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 23:55:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjJQDyZ (ORCPT
+        with ESMTP id S229666AbjJQDz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 23:54:25 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58FAE83
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 20:54:23 -0700 (PDT)
+        Mon, 16 Oct 2023 23:55:27 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF3383
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 20:55:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697514863; x=1729050863;
+  t=1697514923; x=1729050923;
   h=date:from:to:cc:subject:message-id;
-  bh=t2oZN08HImoxr/VtOKq/cS4tfMf8zgoxiPFUDVifA+I=;
-  b=F2NXlAuqQTLcponD9NeGgCyWht6AkqGIq+chNlhiofOeh6ByySUofVx4
-   ZaUu8GopzP65jd9/HmViPYgCMlDeUTDKkUIWQBTqIfZDDfhvFggrk4KxK
-   L3oTie83g7kCayAIy0jz1L1f+XiKL09L8O/mAn2OJOI93cf7b92lY81TE
-   B1okgb7h21fhjEhRfqqlO4fJCAV7hjPNG8lfT0hmZttydNPHDIFpYpBe5
-   Cv8eINa66g/QLDc1Pe/LZVLCWXCFEaa41qf3OwnvlEoLikpDXowGAynkM
-   ti8u/23E1n46bj26Edd3KTJdj4agW5qjGmRtNiJThY7aazg/OBZtmS19h
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="385534115"
+  bh=n0NQiUjexHIvF5WhnGKvg/PZ6nR8c9/wG0jkaw+CO3U=;
+  b=Cg6Pf1wewtZFtQsIz8fo0Ifo8QJ/1Ujj6KQN9W86mYTAh3sqzU78M6eO
+   kJTS3MBJMravzcA6Vnv+pz4TByp/apHnxySidXrN5Rdz1VibWBEJoJh5d
+   aYarrQdItO632lezWTZ5dvqsLKtSKTg/5GYZcm1Cgf4w5o3yRTGhGl2LD
+   ySIFMVVAYgMV/xVbmOzVH0tjodzRHt1YFHZ2AwK83k/epZjQ/69R9YqPh
+   OFyf18KjzQD4TZfgN+wd4Co3wpecT6Q6azdUfzMzgQNhZfXLz80nbxwP7
+   sETM8i3hdfYUPzcXRVRkAkO4cBVa1n92nUB9CQW1HUrPcVLtWGheW56SM
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="376061423"
 X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="385534115"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 20:54:22 -0700
+   d="scan'208";a="376061423"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 20:55:22 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="785338033"
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="929615920"
 X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="785338033"
+   d="scan'208";a="929615920"
 Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 16 Oct 2023 20:54:21 -0700
+  by orsmga005.jf.intel.com with ESMTP; 16 Oct 2023 20:55:21 -0700
 Received: from kbuild by f64821696465 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qsb9v-0008yP-0z;
-        Tue, 17 Oct 2023 03:54:19 +0000
-Date:   Tue, 17 Oct 2023 11:54:11 +0800
+        id 1qsbAt-0008yX-17;
+        Tue, 17 Oct 2023 03:55:19 +0000
+Date:   Tue, 17 Oct 2023 11:54:27 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/boot] BUILD SUCCESS
- 7f6874eddd81cb2ed784642a7a4321671e158ffe
-Message-ID: <202310171109.Ezun4F92-lkp@intel.com>
+Subject: [tip:x86/merge] BUILD SUCCESS
+ 36b494fa66c03ddaf210f67b4d369be0ab856425
+Message-ID: <202310171125.mDIYlTjS-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/boot
-branch HEAD: 7f6874eddd81cb2ed784642a7a4321671e158ffe  x86/head/64: Add missing __head annotation to startup_64_load_idt()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/merge
+branch HEAD: 36b494fa66c03ddaf210f67b4d369be0ab856425  Merge branch 'x86/core' into x86/merge, to ease integration testing
 
-elapsed time: 897m
+elapsed time: 898m
 
 configs tested: 104
 configs skipped: 2
