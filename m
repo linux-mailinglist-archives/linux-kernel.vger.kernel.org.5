@@ -2,159 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC647CBF0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C159D7CBF14
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:27:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343490AbjJQJ0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 05:26:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55296 "EHLO
+        id S234839AbjJQJ1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 05:27:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234674AbjJQJ0k (ORCPT
+        with ESMTP id S234859AbjJQJ07 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 05:26:40 -0400
-Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F1D18E;
-        Tue, 17 Oct 2023 02:26:39 -0700 (PDT)
-Received: from [192.168.192.84] (unknown [50.39.103.33])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 845403F6DB;
-        Tue, 17 Oct 2023 09:26:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1697534797;
-        bh=2ax4mAP+yVFBMlaJnxjACD7VuhYksjw5EpROGDN71OI=;
-        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-         In-Reply-To:Content-Type;
-        b=OZUkC9wC21O22v0mzYdRTM4vYccx+pGkrrXyvcSm4Zp5S80Y8MmNb+s/uyV/fvD6C
-         ZBy7eMgHYL+1f5VhMbO2865/+yYG1Pb9Sgcn9bfOp+M4w/hutn2aWsJT6ryPe7NIVx
-         QOQbde1wsUSHHao2Z/N1wWkwO7DxjZbM+RZKSGVEXVEs/T7TejZljwDUoGx2z0S2FZ
-         RAAYgqKuXqrQYNhWW5kISQ4h2bkeYu0PvMbxSAHDad7zgyjg5PlF8jUU+ZUoNNHNQH
-         wLdlRy+jRWd5qibuN4n4e2wVgkOL3fPSVSGEqqsn1MOUMHuOgD5LgD3EAYc7dPOCxL
-         48glrDVH1PYrQ==
-Message-ID: <ff0e8a95-7395-41b3-b3b4-e0f678a2a581@canonical.com>
-Date:   Tue, 17 Oct 2023 02:26:35 -0700
+        Tue, 17 Oct 2023 05:26:59 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC43BF7;
+        Tue, 17 Oct 2023 02:26:55 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39H8H5dS018419;
+        Tue, 17 Oct 2023 09:26:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=qcppdkim1;
+ bh=hsibUURuaOSyADWg6+k+o19Ya1zYqRn0cGAJHu9TGow=;
+ b=lx0SBnNIcNmC7VCXIuFemQsZRwdklcImqr+K9HSGYHyU3FBToj8FRAeLrH38EPAMoW37
+ OaHtPJA5zzvl9rcCCEzaD2vTuFBKOenZSAVA0f8Xn26fQAaIj6W0WPms+cH6XP7Zq91C
+ LQCMFy/ZCps1y89h1yl+Jb8i2QUzaC0dAohuvDQY3WPj09BouPb14u2OTLXix5FfALqi
+ 6Uf8VMRLTcwkROjr5+Urde0Qr4bA8TdBB94Uv3jL8FTpJpKgCxB5Z2UBOF9H1h2q9Kci
+ EDxgwVDdBpLeLtGmFeXrCoLu9+KTyVWPk+Cc5OtpINKzhxgGrrAYg/+TOOLLb+TiWxNy Fg== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tsb7xhhv1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Oct 2023 09:26:53 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39H9Qqpr022056
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Oct 2023 09:26:52 GMT
+Received: from ekangupt-linux.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Tue, 17 Oct 2023 02:26:49 -0700
+From:   Ekansh Gupta <quic_ekangupt@quicinc.com>
+To:     <srinivas.kandagatla@linaro.org>, <linux-arm-msm@vger.kernel.org>
+CC:     Ekansh Gupta <quic_ekangupt@quicinc.com>,
+        <ekangupt@qti.qualcomm.com>, <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>, <fastrpc.upstream@qti.qualcomm.com>
+Subject: [PATCH v4 2/5] misc: fastrpc: Add CRC support for remote buffers
+Date:   Tue, 17 Oct 2023 14:56:36 +0530
+Message-ID: <1697534799-5124-3-git-send-email-quic_ekangupt@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1697534799-5124-1-git-send-email-quic_ekangupt@quicinc.com>
+References: <1697534799-5124-1-git-send-email-quic_ekangupt@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 4/4] apparmor: limit the number of buffers in percpu
- cache
-Content-Language: en-US
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Anil Altinay <aaltinay@google.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        LKLM <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        linux-security-module@vger.kernel.org,
-        John Johansen <john.johansen@canonical.com>
-References: <YO2S+C7Cw7AS7bsg@google.com>
- <cfd5cc6f-5943-2e06-1dbe-f4b4ad5c1fa1@canonical.com>
- <Y19GhTg8Q/3ym/VD@google.com>
- <dac1c2d5-367f-c8a7-c61e-c1774d98d602@canonical.com>
- <4595e7b4-ea31-5b01-f636-259e84737dfc@canonical.com>
- <Y+9aoFjrYkpFSvuE@linutronix.de>
- <f3fd5dd8-9d78-43be-fc5c-bf990ad3a64d@canonical.com>
- <CACCxZWOK6=mHNQrWEhjw4pC2i3qBKYdn9joiaaCNE7ge8FAz0A@mail.gmail.com>
- <CACCxZWO-+M-J_enENr7q1WDcu1U8vYFoytqJxAh=x-nuP268zA@mail.gmail.com>
- <31d6e8d6-0747-a282-746b-5c144a9970bb@canonical.com>
- <20231006041837.GA17924@google.com>
- <ffd13862-bc57-45ae-9fd0-454ee2d30fc2@canonical.com>
-From:   John Johansen <john.johansen@canonical.com>
-Autocrypt: addr=john.johansen@canonical.com; keydata=
- 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 lT9Q
-Organization: Canonical
-In-Reply-To: <ffd13862-bc57-45ae-9fd0-454ee2d30fc2@canonical.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: dwF1Yen9nJRJ7IhhPJAhLTb9q4BPIsmL
+X-Proofpoint-GUID: dwF1Yen9nJRJ7IhhPJAhLTb9q4BPIsmL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-16_13,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=999 suspectscore=0 lowpriorityscore=0 spamscore=0 bulkscore=0
+ mlxscore=0 phishscore=0 malwarescore=0 impostorscore=0 clxscore=1015
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310170078
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Force buffers to be returned to the global pool, regardless of contention
-when the percpu cache is full. This ensures that the percpu buffer list
-never grows longer than needed.
+CRC check for input and output argument helps in ensuring data
+consistency over a remote call. If user intends to enable CRC check,
+first local user CRC is calculated at user end and a CRC buffer is
+passed to DSP to capture remote CRC values. DSP is expected to
+write to the remote CRC buffer which is then compared at user level
+with the local CRC values.
 
-Signed-off-by: John Johansen <john.johansen@canonical.com>
+Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
 ---
-  security/apparmor/lsm.c | 9 ++++++++-
-  1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/misc/fastrpc.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/security/apparmor/lsm.c b/security/apparmor/lsm.c
-index 52423d88854a..e6765f64f6bf 100644
---- a/security/apparmor/lsm.c
-+++ b/security/apparmor/lsm.c
-@@ -56,6 +56,7 @@ struct aa_local_cache {
-  	struct list_head head;
-  };
-  
-+#define MAX_LOCAL_COUNT 2
-  #define RESERVE_COUNT 2
-  static int reserve_count = RESERVE_COUNT;
-  static int buffer_count;
-@@ -1878,9 +1879,15 @@ void aa_put_buffer(char *buf)
-  
-  	cache = get_cpu_ptr(&aa_local_buffers);
-  	if (!cache->hold) {
-+		bool must_lock = cache->count >= MAX_LOCAL_COUNT;
-+
-  		put_cpu_ptr(&aa_local_buffers);
-  
--		if (spin_trylock(&aa_buffers_lock)) {
-+		if (must_lock) {
-+			spin_lock(&aa_buffers_lock);
-+			goto locked;
-+		} else if (spin_trylock(&aa_buffers_lock)) {
-+		locked:
-  			/* put back on global list */
-  			list_add(&aa_buf->list, &aa_global_buffers);
-  			buffer_count++;
+diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+index e392e2a..825ff91 100644
+--- a/drivers/misc/fastrpc.c
++++ b/drivers/misc/fastrpc.c
+@@ -611,6 +611,7 @@ static struct fastrpc_invoke_ctx *fastrpc_context_alloc(
+ 	/* Released in fastrpc_context_put() */
+ 	fastrpc_channel_ctx_get(cctx);
+ 
++	ctx->crc = (u32 *)(uintptr_t)invoke->crc;
+ 	ctx->sc = sc;
+ 	ctx->retval = -1;
+ 	ctx->pid = current->pid;
+@@ -1066,6 +1067,7 @@ static int fastrpc_put_args(struct fastrpc_invoke_ctx *ctx,
+ 	struct fastrpc_invoke_buf *list;
+ 	struct fastrpc_phy_page *pages;
+ 	u64 *fdlist;
++	u32 *crclist;
+ 	int i, inbufs, outbufs, handles;
+ 
+ 	inbufs = REMOTE_SCALARS_INBUFS(ctx->sc);
+@@ -1073,7 +1075,8 @@ static int fastrpc_put_args(struct fastrpc_invoke_ctx *ctx,
+ 	handles = REMOTE_SCALARS_INHANDLES(ctx->sc) + REMOTE_SCALARS_OUTHANDLES(ctx->sc);
+ 	list = fastrpc_invoke_buf_start(rpra, ctx->nscalars);
+ 	pages = fastrpc_phy_page_start(list, ctx->nscalars);
+-	fdlist = (uint64_t *)(pages + inbufs + outbufs + handles);
++	fdlist = (u64 *)(pages + inbufs + outbufs + handles);
++	crclist = (u32 *)(fdlist + FASTRPC_MAX_FDLIST);
+ 
+ 	for (i = inbufs; i < ctx->nbufs; ++i) {
+ 		if (!ctx->maps[i]) {
+@@ -1097,6 +1100,10 @@ static int fastrpc_put_args(struct fastrpc_invoke_ctx *ctx,
+ 			fastrpc_map_put(mmap);
+ 	}
+ 
++	if (ctx->crc && crclist && rpra) {
++		if (copy_to_user((void __user *)ctx->crc, crclist, FASTRPC_MAX_CRCLIST * sizeof(u32)))
++			return -EFAULT;
++	}
+ 	return 0;
+ }
+ 
+@@ -1721,6 +1728,7 @@ static int fastrpc_multimode_invoke(struct fastrpc_user *fl, char __user *argp)
+ 
+ 	switch (invoke.req) {
+ 	case FASTRPC_INVOKE:
++	case FASTRPC_INVOKE_ENHANCED:
+ 		/* nscalars is truncated here to max supported value */
+ 		if (copy_from_user(&einv, (void __user *)(uintptr_t)invoke.invparam,
+ 				   invoke.size))
 -- 
-2.34.1
-
+2.7.4
 
