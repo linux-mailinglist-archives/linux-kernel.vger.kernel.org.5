@@ -2,486 +2,1278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56BF67CD06C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 01:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3357CD0AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 01:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344384AbjJQXWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 19:22:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50500 "EHLO
+        id S1344498AbjJQXY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 19:24:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344322AbjJQXWA (ORCPT
+        with ESMTP id S1344514AbjJQXYF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 19:22:00 -0400
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62553F5;
-        Tue, 17 Oct 2023 16:21:58 -0700 (PDT)
-Received: by mail-oo1-xc34.google.com with SMTP id 006d021491bc7-581e92f615fso438661eaf.2;
-        Tue, 17 Oct 2023 16:21:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697584917; x=1698189717; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ro07mZ3GzpatL4RIMfSbqQAjjCCYLlk3KQix1gJEHqQ=;
-        b=eh3faz0/3gJH+G995J9cEEIot0dx6VPKBZ/P0fSar3SvJzWbiMES5XtubkL6UypOZk
-         7L0E4xNzn8QHwSZxv+ZHavJEh8p1b8ITHSqaTTDdWlPn2jc/w1QcmDOc6NYTp6pwWkNC
-         TPpYTVuggkJgx9b/7Ia/z1iYs7aDJAyR1r3/GbMtsOCVsUN0vhUtsej85bH9FGYmiOJ/
-         4xABNPl1XZshEUe7hPJjeLZiJ7XF03itMlJ2fx8/GhThgpVjmL5asb2bpzjc0ibNGOWb
-         pWWhpDbUUsHLzzmvaTrsCZH4swyG4XR7jkSmWw09ryTacodya2OT0AtXr7Yw9NC0Mwxm
-         8B/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697584917; x=1698189717;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ro07mZ3GzpatL4RIMfSbqQAjjCCYLlk3KQix1gJEHqQ=;
-        b=R/W93STvk9ail7PvioQW6NisxAxr41UpGHI03YJfviXRiuox1PAeUF+dA7++pdj/BK
-         BUqyGV7BbPyKjvgTvdO92hliP6HTnhllCOudzY+OmcFyDusjnxOKBWe+6K7caZNEazbl
-         2S3DrMhJx+ci+G+VGjwn/ZFZnNRwyVAg9K4hf4HZAQx8jTX4sQXEyUr5bzn4OLq7LUYB
-         hs6yJaUNEj1pH1qBfiMn1Ot7Bbq9I1XI9bSBV74nVizFZtxdXZU92/V6pt0WPPkfUO5c
-         bbat/d+8R2lRXSk/5VPCt1MkIPF3EI0a9GdWu2vp4b1j1JyZcKqSb6oX2fKZzsjAr0Fs
-         3XPg==
-X-Gm-Message-State: AOJu0YwuksC3ZoP5EPvEb0x2ZpGKYxmpIDuNaCyW1nfSJTZK23YeOGMp
-        PVmMmI3QKqYS9ot+6VM5jA0=
-X-Google-Smtp-Source: AGHT+IF9RySE5g3TTjODlRtS6qpmjP5uh+vqX8oME1qqvf1cc6S8YM5AyaCTqDlrKiXC/CT2Gir9GA==
-X-Received: by 2002:a05:6359:2ea3:b0:166:cae0:6e19 with SMTP id rp35-20020a0563592ea300b00166cae06e19mr3977722rwb.3.1697584917455;
-        Tue, 17 Oct 2023 16:21:57 -0700 (PDT)
-Received: from localhost (fwdproxy-prn-001.fbsv.net. [2a03:2880:ff:1::face:b00c])
-        by smtp.gmail.com with ESMTPSA id z5-20020aa79f85000000b0068bc6a75848sm1983031pfr.156.2023.10.17.16.21.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 16:21:57 -0700 (PDT)
-From:   Nhat Pham <nphamcs@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
-        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
-        vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org
-Subject: [PATCH v3 5/5] zswap: shrinks zswap pool based on memory pressure
-Date:   Tue, 17 Oct 2023 16:21:52 -0700
-Message-Id: <20231017232152.2605440-6-nphamcs@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231017232152.2605440-1-nphamcs@gmail.com>
-References: <20231017232152.2605440-1-nphamcs@gmail.com>
+        Tue, 17 Oct 2023 19:24:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA1918D;
+        Tue, 17 Oct 2023 16:23:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697585015; x=1729121015;
+  h=message-id:date:mime-version:from:subject:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=P7ejWSafnAHo+ayUhlRwgXcsI5Zgbqlw98e9q6V244E=;
+  b=aLBRycpFg6nBCyZG2m6ROYtuqKQSE6hXYOa0c7dKGb7bbKlOsRI0JHCc
+   r8MxUvjgZyCQHF43uDAuo0sZl+57ANBt0pb5z6tvjjm9VDVuvWqAdw3tb
+   D0j5+PpSIcW9VpST1pWo6gD8CBST5wUq4uR0GHtWf/q+OK6BKp5jLXdqv
+   SoXpQNva2fdLvKcFbBPSBENfssc/gQihMWeGnwQ9cbaqlIlLPdv2DOwAo
+   r6aO90pVmSTnWJB6zdSIJL39icHlX9OXsLrBt9X/hdpITjbwc1svq2gnZ
+   AG20JJARzO7NQn17IM3jJND6iLn3EIx6HdU35eH4KnEYL+yiN2Bxz2R+w
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="384778269"
+X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
+   d="scan'208";a="384778269"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 16:23:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="826637538"
+X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
+   d="scan'208";a="826637538"
+Received: from asprado-mobl2.amr.corp.intel.com (HELO [10.212.55.179]) ([10.212.55.179])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 16:23:33 -0700
+Message-ID: <32b77d2d-340e-49c9-986d-9f9f37e43cda@linux.intel.com>
+Date:   Tue, 17 Oct 2023 18:21:54 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v9 19/34] ALSA: usb-audio: qcom: Introduce QC USB SND
+ offloading support
+To:     Wesley Cheng <quic_wcheng@quicinc.com>, mathias.nyman@intel.com,
+        gregkh@linuxfoundation.org, lgirdwood@gmail.com,
+        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, srinivas.kandagatla@linaro.org,
+        bgoswami@quicinc.com, Thinh.Nguyen@synopsys.com
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20231017200109.11407-1-quic_wcheng@quicinc.com>
+ <20231017200109.11407-20-quic_wcheng@quicinc.com>
+Content-Language: en-US
+In-Reply-To: <20231017200109.11407-20-quic_wcheng@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, we only shrink the zswap pool when the user-defined limit is
-hit. This means that if we set the limit too high, cold data that are
-unlikely to be used again will reside in the pool, wasting precious
-memory. It is hard to predict how much zswap space will be needed ahead
-of time, as this depends on the workload (specifically, on factors such
-as memory access patterns and compressibility of the memory pages).
 
-This patch implements a memcg- and NUMA-aware shrinker for zswap, that
-is initiated when there is memory pressure. The shrinker does not
-have any parameter that must be tuned by the user, and can be opted in
-or out on a per-memcg basis.
+> +config SND_USB_AUDIO_QMI
+> +	tristate "Qualcomm Audio Offload driver"
+> +	depends on QCOM_QMI_HELPERS && SND_USB_AUDIO && USB_XHCI_SIDEBAND
+> +	select SND_PCM
 
-Furthermore, to make it more robust for many workloads and prevent
-overshrinking (i.e evicting warm pages that might be refaulted into
-memory), we build in the following heuristics:
+This select is not needed:
 
-* Estimate the number of warm pages residing in zswap, and attempt to
-  protect this region of the zswap LRU.
-* Scale the number of freeable objects by an estimate of the memory
-  saving factor. The better zswap compresses the data, the fewer pages
-  we will evict to swap (as we will otherwise incur IO for relatively
-  small memory saving).
-* During reclaim, if the shrinker encounters a page that is also being
-  brought into memory, the shrinker will cautiously terminate its
-  shrinking action, as this is a sign that it is touching the warmer
-  region of the zswap LRU.
+config SND_USB_AUDIO
+	tristate "USB Audio/MIDI driver"
+	select SND_HWDEP
+	select SND_RAWMIDI
+	select SND_PCM
 
-As a proof of concept, we ran the following synthetic benchmark:
-build the linux kernel in a memory-limited cgroup, and allocate some
-cold data in tmpfs to see if the shrinker could write them out and
-improved the overall performance. Depending on the amount of cold data
-generated, we observe from 14% to 35% reduction in kernel CPU time used
-in the kernel builds.
 
-Signed-off-by: Nhat Pham <nphamcs@gmail.com>
----
- Documentation/admin-guide/mm/zswap.rst |   7 ++
- include/linux/mmzone.h                 |  14 +++
- mm/mmzone.c                            |   3 +
- mm/swap_state.c                        |  21 +++-
- mm/zswap.c                             | 161 +++++++++++++++++++++++--
- 5 files changed, 196 insertions(+), 10 deletions(-)
+> +#include <linux/ctype.h>
+> +#include <linux/moduleparam.h>
+> +#include <linux/module.h>
+> +#include <linux/usb.h>
+> +#include <linux/init.h>
 
-diff --git a/Documentation/admin-guide/mm/zswap.rst b/Documentation/admin-guide/mm/zswap.rst
-index 45b98390e938..522ae22ccb84 100644
---- a/Documentation/admin-guide/mm/zswap.rst
-+++ b/Documentation/admin-guide/mm/zswap.rst
-@@ -153,6 +153,13 @@ attribute, e. g.::
- 
- Setting this parameter to 100 will disable the hysteresis.
- 
-+When there is a sizable amount of cold memory residing in the zswap pool, it
-+can be advantageous to proactively write these cold pages to swap and reclaim
-+the memory for other use cases. By default, the zswap shrinker is disabled.
-+User can enable it as follows:
-+
-+  echo Y > /sys/module/zswap/parameters/shrinker_enabled
-+
- A debugfs interface is provided for various statistic about pool size, number
- of pages stored, same-value filled pages and various counters for the reasons
- pages are rejected.
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 486587fcd27f..8947a1bfbe9c 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -637,6 +637,20 @@ struct lruvec {
- #ifdef CONFIG_MEMCG
- 	struct pglist_data *pgdat;
- #endif
-+#ifdef CONFIG_ZSWAP
-+	/*
-+	 * Number of pages in zswap that should be protected from the shrinker.
-+	 * This number is an estimate of the following counts:
-+	 *
-+	 * a) Recent page faults.
-+	 * b) Recent insertion to the zswap LRU. This includes new zswap stores,
-+	 *    as well as recent zswap LRU rotations.
-+	 *
-+	 * These pages are likely to be warm, and might incur IO if the are written
-+	 * to swap.
-+	 */
-+	atomic_long_t nr_zswap_protected;
-+#endif
- };
- 
- /* Isolate for asynchronous migration */
-diff --git a/mm/mmzone.c b/mm/mmzone.c
-index 68e1511be12d..4137f3ac42cd 100644
---- a/mm/mmzone.c
-+++ b/mm/mmzone.c
-@@ -78,6 +78,9 @@ void lruvec_init(struct lruvec *lruvec)
- 
- 	memset(lruvec, 0, sizeof(struct lruvec));
- 	spin_lock_init(&lruvec->lru_lock);
-+#ifdef CONFIG_ZSWAP
-+	atomic_long_set(&lruvec->nr_zswap_protected, 0);
-+#endif
- 
- 	for_each_lru(lru)
- 		INIT_LIST_HEAD(&lruvec->lists[lru]);
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index 0356df52b06a..a60197b55a28 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -676,7 +676,15 @@ struct page *swap_cluster_readahead(swp_entry_t entry, gfp_t gfp_mask,
- 	lru_add_drain();	/* Push any new pages onto the LRU now */
- skip:
- 	/* The page was likely read above, so no need for plugging here */
--	return read_swap_cache_async(entry, gfp_mask, vma, addr, NULL);
-+	page = read_swap_cache_async(entry, gfp_mask, vma, addr, NULL);
-+#ifdef CONFIG_ZSWAP
-+	if (page) {
-+		struct lruvec *lruvec = folio_lruvec(page_folio(page));
-+
-+		atomic_long_inc(&lruvec->nr_zswap_protected);
-+	}
-+#endif
-+	return page;
- }
- 
- int init_swap_address_space(unsigned int type, unsigned long nr_pages)
-@@ -843,8 +851,15 @@ static struct page *swap_vma_readahead(swp_entry_t fentry, gfp_t gfp_mask,
- 	lru_add_drain();
- skip:
- 	/* The page was likely read above, so no need for plugging here */
--	return read_swap_cache_async(fentry, gfp_mask, vma, vmf->address,
--				     NULL);
-+	page = read_swap_cache_async(fentry, gfp_mask, vma, vmf->address, NULL);
-+#ifdef CONFIG_ZSWAP
-+	if (page) {
-+		struct lruvec *lruvec = folio_lruvec(page_folio(page));
-+
-+		atomic_long_inc(&lruvec->nr_zswap_protected);
-+	}
-+#endif
-+	return page;
- }
- 
- /**
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 15485427e3fa..1d1fe75a5237 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -145,6 +145,10 @@ module_param_named(exclusive_loads, zswap_exclusive_loads_enabled, bool, 0644);
- /* Number of zpools in zswap_pool (empirically determined for scalability) */
- #define ZSWAP_NR_ZPOOLS 32
- 
-+/* Enable/disable memory pressure-based shrinker. */
-+static bool zswap_shrinker_enabled;
-+module_param_named(shrinker_enabled, zswap_shrinker_enabled, bool, 0644);
-+
- /*********************************
- * data structures
- **********************************/
-@@ -174,6 +178,8 @@ struct zswap_pool {
- 	char tfm_name[CRYPTO_MAX_ALG_NAME];
- 	struct list_lru list_lru;
- 	struct mem_cgroup *next_shrink;
-+	struct shrinker *shrinker;
-+	atomic_t nr_stored;
- };
- 
- /*
-@@ -272,17 +278,26 @@ static bool zswap_can_accept(void)
- 			DIV_ROUND_UP(zswap_pool_total_size, PAGE_SIZE);
- }
- 
-+static u64 get_zswap_pool_size(struct zswap_pool *pool)
-+{
-+	u64 pool_size = 0;
-+	int i;
-+
-+	for (i = 0; i < ZSWAP_NR_ZPOOLS; i++)
-+		pool_size += zpool_get_total_size(pool->zpools[i]);
-+
-+	return pool_size;
-+}
-+
- static void zswap_update_total_size(void)
- {
- 	struct zswap_pool *pool;
- 	u64 total = 0;
--	int i;
- 
- 	rcu_read_lock();
- 
- 	list_for_each_entry_rcu(pool, &zswap_pools, list)
--		for (i = 0; i < ZSWAP_NR_ZPOOLS; i++)
--			total += zpool_get_total_size(pool->zpools[i]);
-+		total += get_zswap_pool_size(pool);
- 
- 	rcu_read_unlock();
- 
-@@ -326,8 +341,24 @@ static void zswap_entry_cache_free(struct zswap_entry *entry)
- static bool zswap_lru_add(struct list_lru *list_lru, struct zswap_entry *entry)
- {
- 	struct mem_cgroup *memcg = get_mem_cgroup_from_entry(entry);
--	bool added = __list_lru_add(list_lru, &entry->lru, entry_to_nid(entry), memcg);
--
-+	int nid = entry_to_nid(entry);
-+	struct lruvec *lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
-+	bool added = __list_lru_add(list_lru, &entry->lru, nid, memcg);
-+	unsigned long lru_size, old, new;
-+
-+	if (added) {
-+		lru_size = list_lru_count_one(list_lru, entry_to_nid(entry), memcg);
-+		old = atomic_long_inc_return(&lruvec->nr_zswap_protected);
-+
-+		/*
-+		 * Decay to avoid overflow and adapt to changing workloads.
-+		 * This is based on LRU reclaim cost decaying heuristics.
-+		 */
-+		do {
-+			new = old > lru_size / 4 ? old / 2 : old;
-+		} while (
-+			!atomic_long_try_cmpxchg(&lruvec->nr_zswap_protected, &old, new));
-+	}
- 	mem_cgroup_put(memcg);
- 	return added;
- }
-@@ -427,6 +458,7 @@ static void zswap_free_entry(struct zswap_entry *entry)
- 	else {
- 		zswap_lru_del(&entry->pool->list_lru, entry);
- 		zpool_free(zswap_find_zpool(entry), entry->handle);
-+		atomic_dec(&entry->pool->nr_stored);
- 		zswap_pool_put(entry->pool);
- 	}
- 	zswap_entry_cache_free(entry);
-@@ -468,6 +500,93 @@ static struct zswap_entry *zswap_entry_find_get(struct rb_root *root,
- 	return entry;
- }
- 
-+/*********************************
-+* shrinker functions
-+**********************************/
-+static enum lru_status shrink_memcg_cb(struct list_head *item, struct list_lru_one *l,
-+				       spinlock_t *lock, void *arg);
-+
-+static unsigned long zswap_shrinker_scan(struct shrinker *shrinker,
-+		struct shrink_control *sc)
-+{
-+	struct lruvec *lruvec = mem_cgroup_lruvec(sc->memcg, NODE_DATA(sc->nid));
-+	unsigned long shrink_ret, nr_protected, lru_size;
-+	struct zswap_pool *pool = shrinker->private_data;
-+	bool encountered_page_in_swapcache = false;
-+
-+	nr_protected = atomic_long_read(&lruvec->nr_zswap_protected);
-+	lru_size = list_lru_shrink_count(&pool->list_lru, sc);
-+
-+	/*
-+	 * Abort if the shrinker is disabled or if we are shrinking into the
-+	 * protected region.
-+	 */
-+	if (!zswap_shrinker_enabled || nr_protected >= lru_size - sc->nr_to_scan) {
-+		sc->nr_scanned = 0;
-+		return SHRINK_STOP;
-+	}
-+
-+	shrink_ret = list_lru_shrink_walk(&pool->list_lru, sc, &shrink_memcg_cb,
-+		&encountered_page_in_swapcache);
-+
-+	if (encountered_page_in_swapcache)
-+		return SHRINK_STOP;
-+
-+	return shrink_ret ? shrink_ret : SHRINK_STOP;
-+}
-+
-+static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
-+		struct shrink_control *sc)
-+{
-+	struct zswap_pool *pool = shrinker->private_data;
-+	struct mem_cgroup *memcg = sc->memcg;
-+	struct lruvec *lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(sc->nid));
-+	unsigned long nr_backing, nr_stored, nr_freeable, nr_protected;
-+
-+#ifdef CONFIG_MEMCG_KMEM
-+	cgroup_rstat_flush(memcg->css.cgroup);
-+	nr_backing = memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_SHIFT;
-+	nr_stored = memcg_page_state(memcg, MEMCG_ZSWAPPED);
-+#else
-+	/* use pool stats instead of memcg stats */
-+	nr_backing = get_zswap_pool_size(pool) >> PAGE_SHIFT;
-+	nr_stored = atomic_read(&pool->nr_stored);
-+#endif
-+
-+	if (!zswap_shrinker_enabled || !nr_stored)
-+		return 0;
-+
-+	nr_protected = atomic_long_read(&lruvec->nr_zswap_protected);
-+	nr_freeable = list_lru_shrink_count(&pool->list_lru, sc);
-+	/*
-+	 * Subtract the lru size by an estimate of the number of pages
-+	 * that should be protected.
-+	 */
-+	nr_freeable = nr_freeable > nr_protected ? nr_freeable - nr_protected : 0;
-+
-+	/*
-+	 * Scale the number of freeable pages by the memory saving factor.
-+	 * This ensures that the better zswap compresses memory, the fewer
-+	 * pages we will evict to swap (as it will otherwise incur IO for
-+	 * relatively small memory saving).
-+	 */
-+	return mult_frac(nr_freeable, nr_backing, nr_stored);
-+}
-+
-+static void zswap_alloc_shrinker(struct zswap_pool *pool)
-+{
-+	pool->shrinker =
-+		shrinker_alloc(SHRINKER_NUMA_AWARE | SHRINKER_MEMCG_AWARE, "mm-zswap");
-+	if (!pool->shrinker)
-+		return;
-+
-+	pool->shrinker->private_data = pool;
-+	pool->shrinker->scan_objects = zswap_shrinker_scan;
-+	pool->shrinker->count_objects = zswap_shrinker_count;
-+	pool->shrinker->batch = 0;
-+	pool->shrinker->seeks = DEFAULT_SEEKS;
-+}
-+
- /*********************************
- * per-cpu code
- **********************************/
-@@ -663,8 +782,10 @@ static enum lru_status shrink_memcg_cb(struct list_head *item, struct list_lru_o
- 				       spinlock_t *lock, void *arg)
- {
- 	struct zswap_entry *entry = container_of(item, struct zswap_entry, lru);
-+	bool *encountered_page_in_swapcache = (bool *)arg;
- 	struct mem_cgroup *memcg;
- 	struct zswap_tree *tree;
-+	struct lruvec *lruvec;
- 	pgoff_t swpoffset;
- 	enum lru_status ret = LRU_REMOVED_RETRY;
- 	int writeback_result;
-@@ -698,8 +819,22 @@ static enum lru_status shrink_memcg_cb(struct list_head *item, struct list_lru_o
- 		/* we cannot use zswap_lru_add here, because it increments node's lru count */
- 		list_lru_putback(&entry->pool->list_lru, item, entry_to_nid(entry), memcg);
- 		spin_unlock(lock);
--		mem_cgroup_put(memcg);
- 		ret = LRU_RETRY;
-+
-+		/*
-+		 * Encountering a page already in swap cache is a sign that we are shrinking
-+		 * into the warmer region. We should terminate shrinking (if we're in the dynamic
-+		 * shrinker context).
-+		 */
-+		if (writeback_result == -EEXIST && encountered_page_in_swapcache) {
-+			ret = LRU_SKIP;
-+			*encountered_page_in_swapcache = true;
-+		}
-+		lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(entry_to_nid(entry)));
-+		/* Increment the protection area to account for the LRU rotation. */
-+		atomic_long_inc(&lruvec->nr_zswap_protected);
-+
-+		mem_cgroup_put(memcg);
- 		goto put_unlock;
- 	}
- 	zswap_written_back_pages++;
-@@ -822,6 +957,11 @@ static struct zswap_pool *zswap_pool_create(char *type, char *compressor)
- 				       &pool->node);
- 	if (ret)
- 		goto error;
-+
-+	zswap_alloc_shrinker(pool);
-+	if (!pool->shrinker)
-+		goto error;
-+
- 	pr_debug("using %s compressor\n", pool->tfm_name);
- 
- 	/* being the current pool takes 1 ref; this func expects the
-@@ -829,13 +969,18 @@ static struct zswap_pool *zswap_pool_create(char *type, char *compressor)
- 	 */
- 	kref_init(&pool->kref);
- 	INIT_LIST_HEAD(&pool->list);
--	list_lru_init_memcg(&pool->list_lru, NULL);
-+	if (list_lru_init_memcg(&pool->list_lru, pool->shrinker))
-+		goto lru_fail;
-+	shrinker_register(pool->shrinker);
- 	INIT_WORK(&pool->shrink_work, shrink_worker);
- 
- 	zswap_pool_debug("created", pool);
- 
- 	return pool;
- 
-+lru_fail:
-+	list_lru_destroy(&pool->list_lru);
-+	shrinker_free(pool->shrinker);
- error:
- 	if (pool->acomp_ctx)
- 		free_percpu(pool->acomp_ctx);
-@@ -893,6 +1038,7 @@ static void zswap_pool_destroy(struct zswap_pool *pool)
- 
- 	zswap_pool_debug("destroying", pool);
- 
-+	shrinker_free(pool->shrinker);
- 	cpuhp_state_remove_instance(CPUHP_MM_ZSWP_POOL_PREPARE, &pool->node);
- 	free_percpu(pool->acomp_ctx);
- 	list_lru_destroy(&pool->list_lru);
-@@ -1440,6 +1586,7 @@ bool zswap_store(struct folio *folio)
- 	if (entry->length) {
- 		INIT_LIST_HEAD(&entry->lru);
- 		zswap_lru_add(&pool->list_lru, entry);
-+		atomic_inc(&pool->nr_stored);
- 	}
- 	spin_unlock(&tree->lock);
- 
--- 
-2.34.1
+alphabetical order?
+
+> +#include <linux/usb/hcd.h>
+> +#include <linux/usb/xhci-sideband.h>
+> +#include <linux/usb/quirks.h>
+> +#include <linux/usb/audio.h>
+> +#include <linux/usb/audio-v2.h>
+> +#include <linux/usb/audio-v3.h>
+> +#include <linux/soc/qcom/qmi.h>
+> +#include <linux/iommu.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/dma-map-ops.h>
+> +#include <sound/q6usboffload.h>
+> +
+> +#include <sound/control.h>
+> +#include <sound/core.h>
+> +#include <sound/info.h>
+> +#include <sound/pcm.h>
+> +#include <sound/pcm_params.h>
+> +#include <sound/initval.h>
+> +
+> +#include <sound/soc.h>
+> +#include <sound/soc-usb.h>
+> +#include "../usbaudio.h"
+> +#include "../card.h"
+> +#include "../endpoint.h"
+> +#include "../helper.h"
+> +#include "../pcm.h"
+> +#include "../format.h"
+> +#include "../power.h"
+> +#include "usb_audio_qmi_v01.h"
+> +
+> +/* Stream disable request timeout during USB device disconnect */
+> +#define DEV_RELEASE_WAIT_TIMEOUT 10000 /* in ms */
+
+DEV_RELEASE_WAIT_TIMEOUT_MS?
+
+why 10s btw?
+
+> +
+> +/* Data interval calculation parameters */
+> +#define BUS_INTERVAL_FULL_SPEED 1000 /* in us */
+> +#define BUS_INTERVAL_HIGHSPEED_AND_ABOVE 125 /* in us */
+> +#define MAX_BINTERVAL_ISOC_EP 16
+> +
+> +#define QMI_STREAM_REQ_CARD_NUM_MASK 0xffff0000
+> +#define QMI_STREAM_REQ_DEV_NUM_MASK 0xff00
+> +#define QMI_STREAM_REQ_DIRECTION 0xff
+> +
+> +/* iommu resource parameters and management */
+> +#define PREPEND_SID_TO_IOVA(iova, sid) ((u64)(((u64)(iova)) | \
+> +					(((u64)sid) << 32)))
+> +#define IOVA_BASE 0x1000
+> +#define IOVA_XFER_RING_BASE (IOVA_BASE + PAGE_SIZE * (SNDRV_CARDS + 1))
+> +#define IOVA_XFER_BUF_BASE (IOVA_XFER_RING_BASE + PAGE_SIZE * SNDRV_CARDS * 32)
+> +#define IOVA_XFER_RING_MAX (IOVA_XFER_BUF_BASE - PAGE_SIZE)
+> +#define IOVA_XFER_BUF_MAX (0xfffff000 - PAGE_SIZE)
+> +
+> +#define MAX_XFER_BUFF_LEN (24 * PAGE_SIZE)
+> +
+> +struct iova_info {
+> +	struct list_head list;
+> +	unsigned long start_iova;
+> +	size_t size;
+> +	bool in_use;
+> +};
+> +
+> +struct intf_info {
+> +	unsigned long data_xfer_ring_va;
+> +	size_t data_xfer_ring_size;
+> +	unsigned long sync_xfer_ring_va;
+> +	size_t sync_xfer_ring_size;
+> +	unsigned long xfer_buf_va;
+> +	size_t xfer_buf_size;
+> +	phys_addr_t xfer_buf_pa;
+> +	unsigned int data_ep_pipe;
+> +	unsigned int sync_ep_pipe;
+> +	u8 *xfer_buf;
+> +	u8 intf_num;
+> +	u8 pcm_card_num;
+> +	u8 pcm_dev_num;
+> +	u8 direction;
+> +	bool in_use;
+> +};
+> +
+> +struct uaudio_qmi_dev {
+> +	struct device *dev;
+> +	u32 sid;
+> +	u32 intr_num;
+> +	struct xhci_ring *sec_ring;
+> +	struct iommu_domain *domain;
+> +
+> +	/* list to keep track of available iova */
+> +	struct list_head xfer_ring_list;
+> +	size_t xfer_ring_iova_size;
+> +	unsigned long curr_xfer_ring_iova;
+> +	struct list_head xfer_buf_list;
+> +	size_t xfer_buf_iova_size;
+> +	unsigned long curr_xfer_buf_iova;
+> +
+> +	/* bit fields representing pcm card enabled */
+> +	unsigned long card_slot;
+> +	/* indicate event ring mapped or not */
+> +	bool er_mapped;
+> +	/* reference count to number of possible consumers */
+> +	atomic_t qdev_in_use;
+> +	/* idx to last udev card number plugged in */
+> +	unsigned int last_card_num;
+> +};
+> +
+> +struct uaudio_dev {
+> +	struct usb_device *udev;
+> +	/* audio control interface */
+> +	struct usb_host_interface *ctrl_intf;
+> +	unsigned int usb_core_id;
+> +	atomic_t in_use;
+> +	struct kref kref;
+> +	wait_queue_head_t disconnect_wq;
+> +
+> +	/* interface specific */
+> +	int num_intf;
+> +	struct intf_info *info;
+> +	struct snd_usb_audio *chip;
+> +
+> +	/* xhci sideband */
+> +	struct xhci_sideband *sb;
+> +
+> +	/* SoC USB device */
+> +	struct snd_soc_usb_device *sdev;
+> +};
+
+these structures feel like a set of kitchen sinks... Or a possible
+copy-paste, I don't know how one would add all these pointers on their own?
+
+Do you really need all this? Is there not a way to use existing
+substructures?
+
+
+> +static int get_data_interval_from_si(struct snd_usb_substream *subs,
+> +	u32 service_interval)
+> +{
+> +	unsigned int bus_intval, bus_intval_mult, binterval;
+> +
+> +	if (subs->dev->speed >= USB_SPEED_HIGH)
+> +		bus_intval = BUS_INTERVAL_HIGHSPEED_AND_ABOVE;
+> +	else
+> +		bus_intval = BUS_INTERVAL_FULL_SPEED;
+> +
+> +	if (service_interval % bus_intval)
+> +		return -EINVAL;
+> +
+> +	bus_intval_mult = service_interval / bus_intval;
+> +	binterval = ffs(bus_intval_mult);
+> +	if (!binterval || binterval > MAX_BINTERVAL_ISOC_EP)
+> +		return -EINVAL;
+> +
+> +	/* check if another bit is set then bail out */
+> +	bus_intval_mult = bus_intval_mult >> binterval;
+> +	if (bus_intval_mult)
+> +		return -EINVAL;
+> +
+> +	return (binterval - 1);
+> +}
+
+This also feels like a generic helper. I don't see what's Qualcomm
+specific here?
+
+
+> +static unsigned long uaudio_iommu_map(enum mem_type mtype, bool dma_coherent,
+> +		phys_addr_t pa, size_t size, struct sg_table *sgt)
+> +{
+> +	unsigned long va_sg, va = 0;
+> +	bool map = true;
+> +	int i, ret;
+> +	size_t sg_len, total_len = 0;
+> +	struct scatterlist *sg;
+> +	phys_addr_t pa_sg;
+> +	int prot = IOMMU_READ | IOMMU_WRITE;
+
+reverse x-mas tree style?
+
+> +
+> +	if (dma_coherent)
+> +		prot |= IOMMU_CACHE;
+> +
+> +	switch (mtype) {
+> +	case MEM_EVENT_RING:
+> +		va = IOVA_BASE;
+> +		/* er already mapped */
+> +		if (uaudio_qdev->er_mapped)
+> +			map = false;
+> +		break;
+> +	case MEM_XFER_RING:
+> +		va = uaudio_get_iova(&uaudio_qdev->curr_xfer_ring_iova,
+> +		&uaudio_qdev->xfer_ring_iova_size, &uaudio_qdev->xfer_ring_list,
+> +		size);
+> +		break;
+> +	case MEM_XFER_BUF:
+> +		va = uaudio_get_iova(&uaudio_qdev->curr_xfer_buf_iova,
+> +		&uaudio_qdev->xfer_buf_iova_size, &uaudio_qdev->xfer_buf_list,
+> +		size);
+> +		break;
+> +	default:
+> +		dev_err(uaudio_qdev->dev, "unknown mem type %d\n", mtype);
+> +	}
+> +
+> +	if (!va || !map)
+> +		goto done;
+> +
+> +	if (!sgt)
+> +		goto skip_sgt_map;
+> +
+> +	va_sg = va;
+> +	for_each_sg(sgt->sgl, sg, sgt->nents, i) {
+> +		sg_len = PAGE_ALIGN(sg->offset + sg->length);
+> +		pa_sg = page_to_phys(sg_page(sg));
+> +		ret = iommu_map(uaudio_qdev->domain, va_sg, pa_sg, sg_len,
+> +				prot, GFP_KERNEL);
+> +		if (ret) {
+> +			dev_err(uaudio_qdev->dev, "mapping failed ret%d\n", ret);
+> +			dev_err(uaudio_qdev->dev,
+> +				"type:%d, pa:%pa iova:0x%08lx sg_len:%zu\n",
+> +				mtype, &pa_sg, va_sg, sg_len);
+> +			uaudio_iommu_unmap(MEM_XFER_BUF, va, size, total_len);
+> +			va = 0;
+
+so it's an error but the function returns 0?
+
+> +			goto done;
+> +		}
+> +		dev_dbg(uaudio_qdev->dev,
+> +			"type:%d map pa:%pa to iova:0x%08lx len:%zu offset:%u\n",
+> +			mtype, &pa_sg, va_sg, sg_len, sg->offset);
+> +		va_sg += sg_len;
+> +		total_len += sg_len;
+> +	}
+> +
+> +	if (size != total_len) {
+> +		dev_err(uaudio_qdev->dev, "iova size %zu != mapped iova size %zu\n",
+> +			size, total_len);
+> +		uaudio_iommu_unmap(MEM_XFER_BUF, va, size, total_len);
+> +		va = 0;
+> +	}
+> +	return va;
+> +
+> +skip_sgt_map:
+> +	dev_dbg(uaudio_qdev->dev, "type:%d map pa:%pa to iova:0x%08lx size:%zu\n",
+> +		mtype, &pa, va, size);
+> +
+> +	ret = iommu_map(uaudio_qdev->domain, va, pa, size, prot, GFP_KERNEL);
+> +	if (ret)
+> +		dev_err(uaudio_qdev->dev,
+> +			"failed to map pa:%pa iova:0x%lx type:%d ret:%d\n",
+> +			&pa, va, mtype, ret);
+> +done:
+> +	return va;
+> +}
+> +
+> +/* looks up alias, if any, for controller DT node and returns the index */
+> +static int usb_get_controller_id(struct usb_device *udev)
+> +{
+> +	if (udev->bus->sysdev && udev->bus->sysdev->of_node)
+> +		return of_alias_get_id(udev->bus->sysdev->of_node, "usb");
+> +
+> +	return -ENODEV;
+> +}
+> +
+> +/**
+> + * uaudio_dev_intf_cleanup() - cleanup transfer resources
+> + * @udev: usb device
+> + * @info: usb offloading interface
+> + *
+> + * Cleans up the transfer ring related resources which are assigned per
+> + * endpoint from XHCI.  This is invoked when the USB endpoints are no
+> + * longer in use by the adsp.
+> + *
+> + */
+> +static void uaudio_dev_intf_cleanup(struct usb_device *udev,
+> +	struct intf_info *info)
+> +{
+> +	uaudio_iommu_unmap(MEM_XFER_RING, info->data_xfer_ring_va,
+> +		info->data_xfer_ring_size, info->data_xfer_ring_size);
+> +	info->data_xfer_ring_va = 0;
+> +	info->data_xfer_ring_size = 0;
+> +
+> +	uaudio_iommu_unmap(MEM_XFER_RING, info->sync_xfer_ring_va,
+> +		info->sync_xfer_ring_size, info->sync_xfer_ring_size);
+> +	info->sync_xfer_ring_va = 0;
+> +	info->sync_xfer_ring_size = 0;
+> +
+> +	uaudio_iommu_unmap(MEM_XFER_BUF, info->xfer_buf_va,
+> +		info->xfer_buf_size, info->xfer_buf_size);
+> +	info->xfer_buf_va = 0;
+> +
+> +	usb_free_coherent(udev, info->xfer_buf_size,
+> +		info->xfer_buf, info->xfer_buf_pa);
+> +	info->xfer_buf_size = 0;
+> +	info->xfer_buf = NULL;
+> +	info->xfer_buf_pa = 0;
+> +
+> +	info->in_use = false;
+> +}
+> +
+> +/**
+> + * uaudio_event_ring_cleanup_free() - cleanup secondary event ring
+> + * @dev: usb offload device
+> + *
+> + * Cleans up the secondary event ring that was requested.  This will
+> + * occur when the adsp is no longer transferring data on the USB bus
+> + * across all endpoints.
+> + *
+> + */
+> +static void uaudio_event_ring_cleanup_free(struct uaudio_dev *dev)
+> +{
+> +	clear_bit(dev->chip->card->number, &uaudio_qdev->card_slot);
+> +	/* all audio devices are disconnected */
+> +	if (!uaudio_qdev->card_slot) {
+> +		uaudio_iommu_unmap(MEM_EVENT_RING, IOVA_BASE, PAGE_SIZE,
+> +			PAGE_SIZE);
+> +		xhci_sideband_remove_interrupter(uadev[dev->chip->card->number].sb);
+> +	}
+> +}
+> +
+> +static void uaudio_dev_cleanup(struct uaudio_dev *dev)
+
+there should be a comment that this assumes a mutex is locked in the caller.
+
+> +{
+> +	int if_idx;
+> +
+> +	if (!dev->udev)
+> +		return;
+> +
+> +	/* free xfer buffer and unmap xfer ring and buf per interface */
+> +	for (if_idx = 0; if_idx < dev->num_intf; if_idx++) {
+> +		if (!dev->info[if_idx].in_use)
+> +			continue;
+> +		uaudio_dev_intf_cleanup(dev->udev, &dev->info[if_idx]);
+> +		dev_dbg(uaudio_qdev->dev, "release resources: intf# %d card# %d\n",
+> +			dev->info[if_idx].intf_num, dev->chip->card->number);
+> +	}
+> +
+> +	dev->num_intf = 0;
+> +
+> +	/* free interface info */
+> +	kfree(dev->info);
+> +	dev->info = NULL;
+> +	uaudio_event_ring_cleanup_free(dev);
+> +	dev->udev = NULL;
+> +}
+> +
+> +/**
+> + * disable_audio_stream() - disable usb snd endpoints
+> + * @subs: usb substream
+> + *
+> + * Closes the USB SND endpoints associated with the current audio stream
+> + * used.  This will decrement the USB SND endpoint opened reference count.
+> + *
+> + */
+> +static void disable_audio_stream(struct snd_usb_substream *subs)
+> +{
+> +	struct snd_usb_audio *chip = subs->stream->chip;
+> +
+> +	snd_usb_hw_free(subs);
+> +	snd_usb_autosuspend(chip);
+> +}
+> +
+> +/* QMI service disconnect handlers */
+> +static void qmi_disconnect_work(struct work_struct *w)
+> +{
+> +	struct intf_info *info;
+> +	int idx, if_idx;
+> +	struct snd_usb_substream *subs;
+> +	struct snd_usb_audio *chip;
+> +
+> +	mutex_lock(&qdev_mutex);
+> +	/* find all active intf for set alt 0 and cleanup usb audio dev */
+> +	for (idx = 0; idx < SNDRV_CARDS; idx++) {
+> +		if (!atomic_read(&uadev[idx].in_use))
+> +			continue;
+> +
+> +		chip = uadev[idx].chip;
+> +		for (if_idx = 0; if_idx < uadev[idx].num_intf; if_idx++) {
+> +			if (!uadev[idx].info || !uadev[idx].info[if_idx].in_use)
+> +				continue;
+> +			info = &uadev[idx].info[if_idx];
+> +			subs = find_substream(info->pcm_card_num,
+> +						info->pcm_dev_num,
+> +						info->direction);
+> +			if (!subs || !chip || atomic_read(&chip->shutdown)) {
+> +				dev_err(&subs->dev->dev,
+> +					"no sub for c#%u dev#%u dir%u\n",
+> +					info->pcm_card_num,
+> +					info->pcm_dev_num,
+> +					info->direction);
+> +				continue;
+> +			}
+> +			disable_audio_stream(subs);
+> +		}
+> +		atomic_set(&uadev[idx].in_use, 0);
+> +		mutex_lock(&chip->mutex);
+> +		uaudio_dev_cleanup(&uadev[idx]);
+> +		mutex_unlock(&chip->mutex);
+> +	}
+> +	mutex_unlock(&qdev_mutex);
+> +}
+> +
+> +/**
+> + * qmi_bye_cb() - qmi bye message callback
+> + * @handle: QMI handle
+> + * @node: id of the dying node
+> + *
+> + * This callback is invoked when the QMI bye control message is received
+> + * from the QMI client.  Handle the message accordingly by ensuring that
+> + * the USB offload path is disabled and cleaned up.  At this point, ADSP
+> + * is not utilizing the USB bus.
+> + *
+> + */
+> +static void qmi_bye_cb(struct qmi_handle *handle, unsigned int node)
+> +{
+> +	struct uaudio_qmi_svc *svc = uaudio_svc;
+> +
+> +	if (svc->uaudio_svc_hdl != handle)
+> +		return;
+> +
+> +	if (svc->client_connected && svc->client_sq.sq_node == node) {
+> +		queue_work(svc->uaudio_wq, &svc->qmi_disconnect_work);
+> +		svc->client_sq.sq_node = 0;
+> +		svc->client_sq.sq_port = 0;
+> +		svc->client_sq.sq_family = 0;
+> +		svc->client_connected = false;
+> +	}
+> +}
+> +
+> +/**
+> + * qmi_svc_disconnect_cb() - qmi client disconnected
+> + * @handle: QMI handle
+> + * @node: id of the dying node
+> + * @port: port of the dying client
+> + *
+> + * Invoked when the remote QMI client is disconnected.  Handle this event
+> + * the same way as when the QMI bye message is received.  This will ensure
+> + * the USB offloading path is disabled and cleaned up.
+> + *
+> + */
+> +static void qmi_svc_disconnect_cb(struct qmi_handle *handle,
+> +				  unsigned int node, unsigned int port)
+> +{
+> +	struct uaudio_qmi_svc *svc;
+> +
+> +	if (uaudio_svc == NULL)
+> +		return;
+> +
+> +	svc = uaudio_svc;
+> +	if (svc->uaudio_svc_hdl != handle)
+> +		return;
+> +
+> +	if (svc->client_connected && svc->client_sq.sq_node == node &&
+> +			svc->client_sq.sq_port == port) {
+> +		queue_work(svc->uaudio_wq, &svc->qmi_disconnect_work);
+> +		svc->client_sq.sq_node = 0;
+> +		svc->client_sq.sq_port = 0;
+> +		svc->client_sq.sq_family = 0;
+> +		svc->client_connected = false;
+
+this feels racy, shouldn't all these reset values be set in the work
+function?
+
+> +	}
+> +}
+> +
+> +/* QMI client callback handlers from QMI interface */
+> +static struct qmi_ops uaudio_svc_ops_options = {
+> +	.bye = qmi_bye_cb,
+> +	.del_client = qmi_svc_disconnect_cb,
+> +};
+> +
+> +/* kref release callback when all streams are disabled */
+> +static void uaudio_dev_release(struct kref *kref)
+> +{
+> +	struct uaudio_dev *dev = container_of(kref, struct uaudio_dev, kref);
+> +
+> +	uaudio_event_ring_cleanup_free(dev);
+> +	atomic_set(&dev->in_use, 0);
+> +	wake_up(&dev->disconnect_wq);
+> +}
+> +
+> +/**
+> + * enable_audio_stream() - enable usb snd endpoints
+> + * @subs: usb substream
+> + * @pcm_format: pcm format requested
+> + * @channels: number of channels
+> + * @cur_rate: sample rate
+> + * @datainterval: interval
+> + *
+> + * Opens all USB SND endpoints used for the data interface.  This will increment
+> + * the USB SND endpoint's opened count.  Requests to keep the interface resumed
+> + * until the audio stream is stopped.  Will issue the USB set interface control
+> + * message to enable the data interface.
+> + *
+> + */
+> +static int enable_audio_stream(struct snd_usb_substream *subs,
+> +				snd_pcm_format_t pcm_format,
+> +				unsigned int channels, unsigned int cur_rate,
+> +				int datainterval)
+> +{
+> +	struct snd_usb_audio *chip = subs->stream->chip;
+> +	struct snd_pcm_hw_params params;
+> +	struct snd_mask *m;
+> +	struct snd_interval *i;
+> +	int ret;
+> +
+> +	_snd_pcm_hw_params_any(&params);
+> +
+> +	m = hw_param_mask(&params, SNDRV_PCM_HW_PARAM_FORMAT);
+> +	snd_mask_leave(m, pcm_format);
+> +
+> +	i = hw_param_interval(&params, SNDRV_PCM_HW_PARAM_CHANNELS);
+> +	snd_interval_setinteger(i);
+> +	i->min = i->max = channels;
+> +
+> +	i = hw_param_interval(&params, SNDRV_PCM_HW_PARAM_RATE);
+> +	snd_interval_setinteger(i);
+> +	i->min = i->max = cur_rate;
+> +
+> +	pm_runtime_barrier(&chip->intf[0]->dev);
+> +	snd_usb_autoresume(chip);
+> +
+> +	ret = snd_usb_hw_params(subs, &params);
+> +	if (ret < 0)
+> +		goto put_suspend;
+> +
+> +	if (!atomic_read(&chip->shutdown)) {
+> +		ret = snd_usb_lock_shutdown(chip);
+> +		if (ret < 0)
+> +			goto detach_ep;
+> +
+> +		if (subs->sync_endpoint) {
+> +			ret = snd_usb_endpoint_prepare(chip, subs->sync_endpoint);
+> +			if (ret < 0)
+> +				goto unlock;
+> +		}
+> +
+> +		ret = snd_usb_endpoint_prepare(chip, subs->data_endpoint);
+> +		if (ret < 0)
+> +			goto unlock;
+> +
+> +		snd_usb_unlock_shutdown(chip);
+> +
+> +		dev_dbg(uaudio_qdev->dev,
+> +			"selected %s iface:%d altsetting:%d datainterval:%dus\n",
+> +			subs->direction ? "capture" : "playback",
+> +			subs->cur_audiofmt->iface, subs->cur_audiofmt->altsetting,
+> +			(1 << subs->cur_audiofmt->datainterval) *
+> +			(subs->dev->speed >= USB_SPEED_HIGH ?
+> +			BUS_INTERVAL_HIGHSPEED_AND_ABOVE :
+> +			BUS_INTERVAL_FULL_SPEED));
+> +	}
+> +
+> +	return 0;
+> +
+> +unlock:
+> +	snd_usb_unlock_shutdown(chip);
+> +
+> +detach_ep:
+> +	snd_usb_hw_free(subs);
+> +
+> +put_suspend:
+> +	snd_usb_autosuspend(chip);
+> +
+> +	return ret;
+> +}
+> +
+> +/* returns usb hcd sysdev */
+> +static struct device *usb_get_usb_backend(struct usb_device *udev)
+> +{
+> +	if (udev->bus->sysdev && udev->bus->sysdev->of_node)
+> +		return udev->bus->sysdev;
+> +
+> +	return NULL;
+> +}
+> +
+> +/**
+> + * prepare_qmi_response() - prepare stream enable response
+> + * @subs: usb substream
+> + * @req_msg: QMI request message
+> + * @resp: QMI response buffer
+> + * @info_idx: usb interface array index
+> + *
+> + * Prepares the QMI response for a USB QMI stream enable request.  Will parse
+> + * out the parameters within the stream enable request, in order to match
+> + * requested audio profile to the ones exposed by the USB device connected.
+> + *
+> + * In addition, will fetch the XHCI transfer resources needed for the handoff to
+> + * happen.  This includes, transfer ring and buffer addresses and secondary event
+> + * ring address.  These parameters will be communicated as part of the USB QMI
+> + * stream enable response.
+> + *
+> + */
+> +static int prepare_qmi_response(struct snd_usb_substream *subs,
+> +		struct qmi_uaudio_stream_req_msg_v01 *req_msg,
+> +		struct qmi_uaudio_stream_resp_msg_v01 *resp, int info_idx)
+> +{
+> +	struct usb_interface *iface;
+> +	struct usb_host_interface *alts;
+> +	struct usb_interface_descriptor *altsd;
+> +	struct usb_interface_assoc_descriptor *assoc;
+> +	struct usb_host_endpoint *ep;
+> +	struct uac_format_type_i_continuous_descriptor *fmt;
+> +	struct uac_format_type_i_discrete_descriptor *fmt_v1;
+> +	struct uac_format_type_i_ext_descriptor *fmt_v2;
+> +	struct uac1_as_header_descriptor *as;
+> +	struct q6usb_offload *data;
+> +	int ret;
+> +	int protocol, card_num, pcm_dev_num;
+> +	void *hdr_ptr;
+> +	u8 *xfer_buf;
+> +	unsigned int data_ep_pipe = 0, sync_ep_pipe = 0;
+> +	u32 len, mult, remainder, xfer_buf_len;
+> +	unsigned long va, tr_data_va = 0, tr_sync_va = 0;
+> +	phys_addr_t xhci_pa, xfer_buf_pa, tr_data_pa = 0, tr_sync_pa = 0;
+> +	struct sg_table *sgt;
+> +	struct sg_table xfer_buf_sgt;
+> +	struct page *pg;
+> +	bool dma_coherent;
+
+consider simplifying or splitting in different functions? you have 20
+lines and probably 30-odd variables. This is a bit beyond what reviewers
+can handle...
+> +
+> +	iface = usb_ifnum_to_if(subs->dev, subs->cur_audiofmt->iface);
+> +	if (!iface) {
+> +		dev_err(uaudio_qdev->dev, "interface # %d does not exist\n",
+> +			subs->cur_audiofmt->iface);
+> +		ret = -ENODEV;
+> +		goto err;
+> +	}
+> +
+> +	assoc = iface->intf_assoc;
+> +	pcm_dev_num = (req_msg->usb_token & QMI_STREAM_REQ_DEV_NUM_MASK) >> 8;
+> +	xfer_buf_len = req_msg->xfer_buff_size;
+> +	card_num = uaudio_qdev->last_card_num;
+> +
+> +	alts = &iface->altsetting[subs->cur_audiofmt->altset_idx];
+> +	altsd = get_iface_desc(alts);
+> +	protocol = altsd->bInterfaceProtocol;
+> +
+> +	/* get format type */
+> +	if (protocol != UAC_VERSION_3) {
+> +		fmt = snd_usb_find_csint_desc(alts->extra, alts->extralen, NULL,
+> +				UAC_FORMAT_TYPE);
+> +		if (!fmt) {
+> +			dev_err(uaudio_qdev->dev,
+> +				"%u:%d : no UAC_FORMAT_TYPE desc\n",
+> +				subs->cur_audiofmt->iface,
+> +				subs->cur_audiofmt->altset_idx);
+> +			ret = -ENODEV;
+> +			goto err;
+> +		}
+> +	}
+> +
+> +	if (!uadev[card_num].ctrl_intf) {
+> +		dev_err(uaudio_qdev->dev, "audio ctrl intf info not cached\n");
+> +		ret = -ENODEV;
+> +		goto err;
+> +	}
+> +
+> +	if (protocol != UAC_VERSION_3) {
+> +		hdr_ptr = snd_usb_find_csint_desc(uadev[card_num].ctrl_intf->extra,
+> +				uadev[card_num].ctrl_intf->extralen, NULL,
+> +				UAC_HEADER);
+> +		if (!hdr_ptr) {
+> +			dev_err(uaudio_qdev->dev, "no UAC_HEADER desc\n");
+> +			ret = -ENODEV;
+> +			goto err;
+> +		}
+> +	}
+> +
+> +	if (protocol == UAC_VERSION_1) {
+> +		struct uac1_ac_header_descriptor *uac1_hdr = hdr_ptr;
+> +
+> +		as = snd_usb_find_csint_desc(alts->extra, alts->extralen, NULL,
+> +			UAC_AS_GENERAL);
+> +		if (!as) {
+> +			dev_err(uaudio_qdev->dev,
+> +				"%u:%d : no UAC_AS_GENERAL desc\n",
+> +				subs->cur_audiofmt->iface,
+> +				subs->cur_audiofmt->altset_idx);
+> +			ret = -ENODEV;
+> +			goto err;
+> +		}
+> +		resp->data_path_delay = as->bDelay;
+> +		resp->data_path_delay_valid = 1;
+> +		fmt_v1 = (struct uac_format_type_i_discrete_descriptor *)fmt;
+> +		resp->usb_audio_subslot_size = fmt_v1->bSubframeSize;
+> +		resp->usb_audio_subslot_size_valid = 1;
+> +
+> +		resp->usb_audio_spec_revision = le16_to_cpu(uac1_hdr->bcdADC);
+> +		resp->usb_audio_spec_revision_valid = 1;
+> +	} else if (protocol == UAC_VERSION_2) {
+> +		struct uac2_ac_header_descriptor *uac2_hdr = hdr_ptr;
+> +
+> +		fmt_v2 = (struct uac_format_type_i_ext_descriptor *)fmt;
+> +		resp->usb_audio_subslot_size = fmt_v2->bSubslotSize;
+> +		resp->usb_audio_subslot_size_valid = 1;
+> +
+> +		resp->usb_audio_spec_revision = le16_to_cpu(uac2_hdr->bcdADC);
+> +		resp->usb_audio_spec_revision_valid = 1;
+> +	} else if (protocol == UAC_VERSION_3) {
+> +		if (assoc->bFunctionSubClass ==
+> +					UAC3_FUNCTION_SUBCLASS_FULL_ADC_3_0) {
+> +			dev_err(uaudio_qdev->dev, "full adc is not supported\n");
+> +			ret = -EINVAL;
+> +		}
+> +
+> +		switch (le16_to_cpu(get_endpoint(alts, 0)->wMaxPacketSize)) {
+> +		case UAC3_BADD_EP_MAXPSIZE_SYNC_MONO_16:
+> +		case UAC3_BADD_EP_MAXPSIZE_SYNC_STEREO_16:
+> +		case UAC3_BADD_EP_MAXPSIZE_ASYNC_MONO_16:
+> +		case UAC3_BADD_EP_MAXPSIZE_ASYNC_STEREO_16: {
+> +			resp->usb_audio_subslot_size = 0x2;
+> +			break;
+> +		}
+> +
+> +		case UAC3_BADD_EP_MAXPSIZE_SYNC_MONO_24:
+> +		case UAC3_BADD_EP_MAXPSIZE_SYNC_STEREO_24:
+> +		case UAC3_BADD_EP_MAXPSIZE_ASYNC_MONO_24:
+> +		case UAC3_BADD_EP_MAXPSIZE_ASYNC_STEREO_24: {
+> +			resp->usb_audio_subslot_size = 0x3;
+> +			break;
+> +		}
+> +
+> +		default:
+> +			dev_err(uaudio_qdev->dev,
+> +				"%d: %u: Invalid wMaxPacketSize\n",
+> +				subs->cur_audiofmt->iface,
+> +				subs->cur_audiofmt->altset_idx);
+> +			ret = -EINVAL;
+> +			goto err;
+> +		}
+> +		resp->usb_audio_subslot_size_valid = 1;
+> +	} else {
+> +		dev_err(uaudio_qdev->dev, "unknown protocol version %x\n",
+> +			protocol);
+> +		ret = -ENODEV;
+> +		goto err;
+> +	}
+
+these 100-odd lines look like duplicated code. Why would we redo the
+parsing of UAC3 stuff in a QCOM-specific driver?
+
+> +
+> +	resp->slot_id = subs->dev->slot_id;
+> +	resp->slot_id_valid = 1;
+> +
+> +	memcpy(&resp->std_as_opr_intf_desc, &alts->desc, sizeof(alts->desc));
+> +	resp->std_as_opr_intf_desc_valid = 1;
+> +
+> +	ep = usb_pipe_endpoint(subs->dev, subs->data_endpoint->pipe);
+> +	if (!ep) {
+> +		dev_err(uaudio_qdev->dev, "data ep # %d context is null\n",
+> +			subs->data_endpoint->ep_num);
+> +		ret = -ENODEV;
+> +		goto err;
+> +	}
+> +	data_ep_pipe = subs->data_endpoint->pipe;
+> +	memcpy(&resp->std_as_data_ep_desc, &ep->desc, sizeof(ep->desc));
+> +	resp->std_as_data_ep_desc_valid = 1;
+> +
+> +	ret = xhci_sideband_add_endpoint(uadev[card_num].sb, ep);
+> +	if (ret < 0) {
+> +		dev_err(uaudio_qdev->dev, "failed to add data ep to sideband\n");
+> +		ret = -ENODEV;
+> +		goto err;
+> +	}
+> +
+> +	sgt = xhci_sideband_get_endpoint_buffer(uadev[card_num].sb, ep);
+> +	if (!sgt) {
+> +		dev_err(uaudio_qdev->dev, "failed to get data ep ring address\n");
+> +		ret = -ENODEV;
+> +		goto drop_data_ep;
+> +	}
+> +
+> +	pg = sg_page(sgt->sgl);
+> +	tr_data_pa = page_to_phys(pg);
+> +	resp->xhci_mem_info.tr_data.pa = sg_dma_address(sgt->sgl);
+> +	sg_free_table(sgt);
+> +
+> +	if (subs->sync_endpoint) {
+> +		ep = usb_pipe_endpoint(subs->dev, subs->sync_endpoint->pipe);
+> +		if (!ep) {
+> +			dev_err(uaudio_qdev->dev, "implicit fb on data ep\n");
+> +			goto skip_sync_ep;
+> +		}
+> +		sync_ep_pipe = subs->sync_endpoint->pipe;
+> +		memcpy(&resp->std_as_sync_ep_desc, &ep->desc, sizeof(ep->desc));
+> +		resp->std_as_sync_ep_desc_valid = 1;
+> +
+> +		ret = xhci_sideband_add_endpoint(uadev[card_num].sb, ep);
+> +		if (ret < 0) {
+> +			dev_err(uaudio_qdev->dev,
+> +				"failed to add sync ep to sideband\n");
+> +			ret = -ENODEV;
+> +			goto drop_data_ep;
+> +		}
+> +
+> +		sgt = xhci_sideband_get_endpoint_buffer(uadev[card_num].sb, ep);
+> +		if (!sgt) {
+> +			dev_err(uaudio_qdev->dev, "failed to get sync ep ring address\n");
+> +			ret = -ENODEV;
+> +			goto drop_sync_ep;
+> +		}
+> +
+> +		pg = sg_page(sgt->sgl);
+> +		tr_sync_pa = page_to_phys(pg);
+> +		resp->xhci_mem_info.tr_sync.pa = sg_dma_address(sgt->sgl);
+> +		sg_free_table(sgt);
+> +	}
+> +
+> +skip_sync_ep:
+> +	data = snd_soc_usb_find_priv_data(usb_get_usb_backend(subs->dev));
+> +	if (!data)
+> +		goto drop_sync_ep;
+> +
+> +	uaudio_qdev->domain = data->domain;
+> +	uaudio_qdev->sid = data->sid;
+> +	uaudio_qdev->intr_num = data->intr_num;
+> +	uaudio_qdev->dev = data->dev;
+> +
+> +	resp->interrupter_num_valid = 1;
+> +	resp->controller_num_valid = 0;
+> +	ret = usb_get_controller_id(subs->dev);
+> +	if (ret >= 0) {
+> +		resp->controller_num = ret;
+> +		resp->controller_num_valid = 1;
+> +	}
+> +	/* map xhci data structures PA memory to iova */
+> +	dma_coherent = dev_is_dma_coherent(subs->dev->bus->sysdev);
+> +
+> +	/* event ring */
+> +	ret = xhci_sideband_create_interrupter(uadev[card_num].sb, uaudio_qdev->intr_num);
+> +	if (ret < 0) {
+> +		dev_err(uaudio_qdev->dev, "failed to fetch interrupter\n");
+> +		ret = -ENODEV;
+> +		goto drop_sync_ep;
+> +	}
+> +
+> +	sgt = xhci_sideband_get_event_buffer(uadev[card_num].sb);
+> +	if (!sgt) {
+> +		dev_err(uaudio_qdev->dev, "failed to get event ring address\n");
+> +		ret = -ENODEV;
+> +		goto free_sec_ring;
+> +	}
+> +
+> +	xhci_pa = page_to_phys(sg_page(sgt->sgl));
+> +	resp->xhci_mem_info.evt_ring.pa = sg_dma_address(sgt->sgl);
+> +	sg_free_table(sgt);
+> +	if (!xhci_pa) {
+> +		dev_err(uaudio_qdev->dev,
+> +			"failed to get sec event ring address\n");
+> +		ret = -ENODEV;
+> +		goto free_sec_ring;
+> +	}
+> +
+> +	resp->interrupter_num = xhci_sideband_interrupter_id(uadev[card_num].sb);
+> +
+> +	va = uaudio_iommu_map(MEM_EVENT_RING, dma_coherent, xhci_pa, PAGE_SIZE,
+> +			NULL);
+> +	if (!va) {
+> +		ret = -ENOMEM;
+> +		goto free_sec_ring;
+> +	}
+> +
+> +	resp->xhci_mem_info.evt_ring.va = PREPEND_SID_TO_IOVA(va,
+> +						uaudio_qdev->sid);
+> +	resp->xhci_mem_info.evt_ring.size = PAGE_SIZE;
+> +	uaudio_qdev->er_mapped = true;
+> +
+> +	resp->speed_info = get_speed_info(subs->dev->speed);
+> +	if (resp->speed_info == USB_QMI_DEVICE_SPEED_INVALID_V01) {
+> +		ret = -ENODEV;
+> +		goto unmap_er;
+> +	}
+> +
+> +	resp->speed_info_valid = 1;
+> +
+> +	/* data transfer ring */
+> +	va = uaudio_iommu_map(MEM_XFER_RING, dma_coherent, tr_data_pa,
+> +			PAGE_SIZE, NULL);
+> +	if (!va) {
+> +		ret = -ENOMEM;
+> +		goto unmap_er;
+> +	}
+> +
+> +	tr_data_va = va;
+> +	resp->xhci_mem_info.tr_data.va = PREPEND_SID_TO_IOVA(va,
+> +						uaudio_qdev->sid);
+> +	resp->xhci_mem_info.tr_data.size = PAGE_SIZE;
+> +
+> +	/* sync transfer ring */
+> +	if (!resp->xhci_mem_info.tr_sync.pa)
+> +		goto skip_sync;
+> +
+> +	xhci_pa = resp->xhci_mem_info.tr_sync.pa;
+> +	va = uaudio_iommu_map(MEM_XFER_RING, dma_coherent, tr_sync_pa,
+> +			PAGE_SIZE, NULL);
+> +	if (!va) {
+> +		ret = -ENOMEM;
+> +		goto unmap_data;
+> +	}
+> +
+> +	tr_sync_va = va;
+> +	resp->xhci_mem_info.tr_sync.va = PREPEND_SID_TO_IOVA(va,
+> +						uaudio_qdev->sid);
+> +	resp->xhci_mem_info.tr_sync.size = PAGE_SIZE;
+> +
+> +skip_sync:
+> +	/* xfer buffer, multiple of 4K only */
+> +	if (!xfer_buf_len)
+> +		xfer_buf_len = PAGE_SIZE;
+> +
+> +	mult = xfer_buf_len / PAGE_SIZE;
+> +	remainder = xfer_buf_len % PAGE_SIZE;
+> +	len = mult * PAGE_SIZE;
+> +	len += remainder ? PAGE_SIZE : 0;
+> +
+> +	if (len > MAX_XFER_BUFF_LEN) {
+> +		dev_err(uaudio_qdev->dev,
+> +			"req buf len %d > max buf len %lu, setting %lu\n",
+> +			len, MAX_XFER_BUFF_LEN, MAX_XFER_BUFF_LEN);
+> +		len = MAX_XFER_BUFF_LEN;
+> +	}
+> +
+> +	xfer_buf = usb_alloc_coherent(subs->dev, len, GFP_KERNEL, &xfer_buf_pa);
+> +	if (!xfer_buf) {
+> +		ret = -ENOMEM;
+> +		goto unmap_sync;
+> +	}
+> +
+> +	dma_get_sgtable(subs->dev->bus->sysdev, &xfer_buf_sgt, xfer_buf, xfer_buf_pa,
+> +			len);
+> +	va = uaudio_iommu_map(MEM_XFER_BUF, dma_coherent, xfer_buf_pa, len,
+> +			&xfer_buf_sgt);
+> +	if (!va) {
+> +		ret = -ENOMEM;
+> +		goto unmap_sync;
+> +	}
+> +
+> +	resp->xhci_mem_info.xfer_buff.pa = xfer_buf_pa;
+> +	resp->xhci_mem_info.xfer_buff.size = len;
+> +
+> +	resp->xhci_mem_info.xfer_buff.va = PREPEND_SID_TO_IOVA(va,
+> +						uaudio_qdev->sid);
+> +
+> +	resp->xhci_mem_info_valid = 1;
+> +
+> +	sg_free_table(&xfer_buf_sgt);
+> +
+> +	if (!atomic_read(&uadev[card_num].in_use)) {
+> +		kref_init(&uadev[card_num].kref);
+> +		init_waitqueue_head(&uadev[card_num].disconnect_wq);
+> +		uadev[card_num].num_intf =
+> +			subs->dev->config->desc.bNumInterfaces;
+> +		uadev[card_num].info = kcalloc(uadev[card_num].num_intf,
+> +			sizeof(struct intf_info), GFP_KERNEL);
+> +		if (!uadev[card_num].info) {
+> +			ret = -ENOMEM;
+> +			goto unmap_sync;
+> +		}
+> +		uadev[card_num].udev = subs->dev;
+> +		atomic_set(&uadev[card_num].in_use, 1);
+> +	} else {
+> +		kref_get(&uadev[card_num].kref);
+> +	}
+> +
+> +	uadev[card_num].usb_core_id = resp->controller_num;
+> +
+> +	/* cache intf specific info to use it for unmap and free xfer buf */
+> +	uadev[card_num].info[info_idx].data_xfer_ring_va = tr_data_va;
+> +	uadev[card_num].info[info_idx].data_xfer_ring_size = PAGE_SIZE;
+> +	uadev[card_num].info[info_idx].sync_xfer_ring_va = tr_sync_va;
+> +	uadev[card_num].info[info_idx].sync_xfer_ring_size = PAGE_SIZE;
+> +	uadev[card_num].info[info_idx].xfer_buf_va = va;
+> +	uadev[card_num].info[info_idx].xfer_buf_pa = xfer_buf_pa;
+> +	uadev[card_num].info[info_idx].xfer_buf_size = len;
+> +	uadev[card_num].info[info_idx].data_ep_pipe = data_ep_pipe;
+> +	uadev[card_num].info[info_idx].sync_ep_pipe = sync_ep_pipe;
+> +	uadev[card_num].info[info_idx].xfer_buf = xfer_buf;
+> +	uadev[card_num].info[info_idx].pcm_card_num = card_num;
+> +	uadev[card_num].info[info_idx].pcm_dev_num = pcm_dev_num;
+> +	uadev[card_num].info[info_idx].direction = subs->direction;
+> +	uadev[card_num].info[info_idx].intf_num = subs->cur_audiofmt->iface;
+> +	uadev[card_num].info[info_idx].in_use = true;
+> +
+> +	set_bit(card_num, &uaudio_qdev->card_slot);
+> +
+> +	return 0;
+> +
+> +unmap_sync:
+> +	usb_free_coherent(subs->dev, len, xfer_buf, xfer_buf_pa);
+> +	uaudio_iommu_unmap(MEM_XFER_RING, tr_sync_va, PAGE_SIZE, PAGE_SIZE);
+> +unmap_data:
+> +	uaudio_iommu_unmap(MEM_XFER_RING, tr_data_va, PAGE_SIZE, PAGE_SIZE);
+> +unmap_er:
+> +	uaudio_iommu_unmap(MEM_EVENT_RING, IOVA_BASE, PAGE_SIZE, PAGE_SIZE);
+> +free_sec_ring:
+> +	xhci_sideband_remove_interrupter(uadev[card_num].sb);
+> +drop_sync_ep:
+> +	if (subs->sync_endpoint)
+> +		xhci_sideband_remove_endpoint(uadev[card_num].sb,
+> +			usb_pipe_endpoint(subs->dev, subs->sync_endpoint->pipe));
+> +drop_data_ep:
+> +	xhci_sideband_remove_endpoint(uadev[card_num].sb,
+> +			usb_pipe_endpoint(subs->dev, subs->data_endpoint->pipe));
+> +
+> +err:
+> +	return ret;
+> +}
+
+this is really the largest function I've seen in a while... Can this use
+helpers or be more modular?
+
+> +
+> +/**
+> + * handle_uaudio_stream_req() - handle stream enable/disable request
+> + * @handle: QMI client handle
+> + * @sq: qrtr socket
+> + * @txn: QMI transaction context
+> + * @decoded_msg: decoded QMI message
+> + *
+> + * Main handler for the QMI stream enable/disable requests.  This executes the
+> + * corresponding enable/disable stream apis, respectively.
+> + *
+> + */
+> +static void handle_uaudio_stream_req(struct qmi_handle *handle,
+> +			struct sockaddr_qrtr *sq,
+> +			struct qmi_txn *txn,
+> +			const void *decoded_msg)
+> +{
+> +	struct qmi_uaudio_stream_req_msg_v01 *req_msg;
+> +	struct qmi_uaudio_stream_resp_msg_v01 resp = {{0}, 0};
+> +	struct snd_usb_substream *subs;
+> +	struct snd_usb_audio *chip = NULL;
+> +	struct uaudio_qmi_svc *svc = uaudio_svc;
+> +	struct intf_info *info;
+> +	struct usb_host_endpoint *ep;
+> +	u8 pcm_card_num, pcm_dev_num, direction;
+> +	int info_idx = -EINVAL, datainterval = -EINVAL, ret = 0;
+> +
+> +	if (!svc->client_connected) {
+> +		svc->client_sq = *sq;
+> +		svc->client_connected = true;
+> +	}
+> +
+> +	mutex_lock(&qdev_mutex);
+> +	req_msg = (struct qmi_uaudio_stream_req_msg_v01 *)decoded_msg;
+> +	if (!req_msg->audio_format_valid || !req_msg->bit_rate_valid ||
+> +	    !req_msg->number_of_ch_valid || !req_msg->xfer_buff_size_valid) {
+> +		ret = -EINVAL;
+
+this looks like copy pasted code, this function return void so all uses
+of 'ret' are not so useful, are they?
+
+> +		goto response;
+> +	}
+> +
+> +	if (!uaudio_qdev) {
+> +		ret = -EINVAL;
+> +		goto response;
+> +	}
+> +
+> +	direction = (req_msg->usb_token & QMI_STREAM_REQ_DIRECTION);
+> +	pcm_dev_num = (req_msg->usb_token & QMI_STREAM_REQ_DEV_NUM_MASK) >> 8;
+> +	pcm_card_num = req_msg->enable ? uaudio_qdev->last_card_num :
+> +				ffs(uaudio_qdev->card_slot) - 1;
+> +	if (pcm_card_num >= SNDRV_CARDS) {
+> +		ret = -EINVAL;
+> +		goto response;
+> +	}
+> +
+> +	if (req_msg->audio_format > USB_QMI_PCM_FORMAT_U32_BE) {
+> +		ret = -EINVAL;
+> +		goto response;
+> +	}
+> +
+> +	subs = find_substream(pcm_card_num, pcm_dev_num, direction);
+> +	chip = uadev[pcm_card_num].chip;
+> +	if (!subs || !chip || atomic_read(&chip->shutdown)) {
+> +		ret = -ENODEV;
+> +		goto response;
+> +	}
+> +
+> +	info_idx = info_idx_from_ifnum(pcm_card_num, subs->cur_audiofmt ?
+> +			subs->cur_audiofmt->iface : -1, req_msg->enable);
+> +	if (atomic_read(&chip->shutdown) || !subs->stream || !subs->stream->pcm
+> +			|| !subs->stream->chip) {
+> +		ret = -ENODEV;
+> +		goto response;
+> +	}
+> +
+> +	if (req_msg->enable) {
+> +		if (info_idx < 0 || chip->system_suspend) {
+> +			ret = -EBUSY;
+> +			goto response;
+> +		}
+> +	}
+> +
+> +	if (req_msg->service_interval_valid) {
+> +		ret = get_data_interval_from_si(subs,
+> +						req_msg->service_interval);
+> +		if (ret == -EINVAL)
+> +			goto response;
+> +
+> +		datainterval = ret;
+> +	}
+> +
+> +	uadev[pcm_card_num].ctrl_intf = chip->ctrl_intf;
+> +
+> +	if (req_msg->enable) {
+> +		ret = enable_audio_stream(subs,
+> +				map_pcm_format(req_msg->audio_format),
+> +				req_msg->number_of_ch, req_msg->bit_rate,
+> +				datainterval);
+> +
+> +		if (!ret)
+> +			ret = prepare_qmi_response(subs, req_msg, &resp,
+> +					info_idx);
+> +	} else {
+> +		info = &uadev[pcm_card_num].info[info_idx];
+> +		if (info->data_ep_pipe) {
+> +			ep = usb_pipe_endpoint(uadev[pcm_card_num].udev,
+> +						info->data_ep_pipe);
+> +			if (ep)
+> +				xhci_sideband_stop_endpoint(uadev[pcm_card_num].sb,
+> +						ep);
+> +			xhci_sideband_remove_endpoint(uadev[pcm_card_num].sb, ep);
+> +			info->data_ep_pipe = 0;
+> +		}
+> +
+> +		if (info->sync_ep_pipe) {
+> +			ep = usb_pipe_endpoint(uadev[pcm_card_num].udev,
+> +						info->sync_ep_pipe);
+> +			if (ep)
+> +				xhci_sideband_stop_endpoint(uadev[pcm_card_num].sb,
+> +						ep);
+> +			xhci_sideband_remove_endpoint(uadev[pcm_card_num].sb, ep);
+> +			info->sync_ep_pipe = 0;
+> +		}
+> +
+> +		disable_audio_stream(subs);
+> +	}
+> +
+> +response:
+> +	if (!req_msg->enable && ret != -EINVAL && ret != -ENODEV) {
+> +		mutex_lock(&chip->mutex);
+> +		if (info_idx >= 0) {
+> +			info = &uadev[pcm_card_num].info[info_idx];
+> +			uaudio_dev_intf_cleanup(
+> +					uadev[pcm_card_num].udev,
+> +					info);
+> +		}
+> +		if (atomic_read(&uadev[pcm_card_num].in_use))
+> +			kref_put(&uadev[pcm_card_num].kref,
+> +					uaudio_dev_release);
+> +		mutex_unlock(&chip->mutex);
+> +	}
+> +	mutex_unlock(&qdev_mutex);
+> +
+> +	resp.usb_token = req_msg->usb_token;
+> +	resp.usb_token_valid = 1;
+> +	resp.internal_status = ret;
+> +	resp.internal_status_valid = 1;
+> +	resp.status = ret ? USB_QMI_STREAM_REQ_FAILURE_V01 : ret;
+> +	resp.status_valid = 1;
+> +	ret = qmi_send_response(svc->uaudio_svc_hdl, sq, txn,
+> +			QMI_UAUDIO_STREAM_RESP_V01,
+> +			QMI_UAUDIO_STREAM_RESP_MSG_V01_MAX_MSG_LEN,
+> +			qmi_uaudio_stream_resp_msg_v01_ei, &resp);
+
+ret is not used?
+
+> +}
+
+
+I stopped here...
