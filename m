@@ -2,87 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6CAF7CBC75
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 09:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C0387CBC78
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 09:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234707AbjJQHjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 03:39:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48082 "EHLO
+        id S234642AbjJQHkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 03:40:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234689AbjJQHjM (ORCPT
+        with ESMTP id S234503AbjJQHkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 03:39:12 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C67DFAB
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 00:39:10 -0700 (PDT)
+        Tue, 17 Oct 2023 03:40:17 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDCA383
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 00:40:15 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7964D1FF03;
-        Tue, 17 Oct 2023 07:39:09 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6C2542185C;
+        Tue, 17 Oct 2023 07:40:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1697528349; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1697528414; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=PGJxT3fE2S2hYkRTsl5ppukKyjX88C6IErtN8VwljMY=;
-        b=Lv4CWERRKSmPG+NobTHXO8SGwG1ZGwx32Vj6D7xCr8olYXOiun6Qq654Nn/6gd6GpqWofp
-        ZgmTaSnS7WQ83lbqHoWFA5KILiFhQSL2IYysKXGFj8ZDkNjWAJbZZw59+w2zT0jJ0IYZpo
-        MiYMYXTQ8tDfjAOvEfChnn6ZrVNrD2s=
+        bh=8jVLyiSP4s0bF9z2akj2px9JdCkwQeGZRvv/rc1Rk7A=;
+        b=M4FYJHewy/s14EGvq89jm3OxkcFAnchhYQDDnu3gDoKd2FvofAlqpa4XL818+SB1ooGsNj
+        zA0HoljmhOVTFYFYA87lOMTFTJ3Fn9lX1ORUv4SkmMRCoR2g/3zj0M4NhMjL8V0jaup4yE
+        weyt5T8BZLmQYGfWRAqToRd8aO0c83A=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1697528349;
+        s=susede2_ed25519; t=1697528414;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=PGJxT3fE2S2hYkRTsl5ppukKyjX88C6IErtN8VwljMY=;
-        b=XKuvu/E+EFCqzH5zvjJbftenA+sp5iyoAJ1XnP/hL32WujfWd9jXWKoe965+DuS8DffBPr
-        GBgl7PCgqPj9PICw==
+        bh=8jVLyiSP4s0bF9z2akj2px9JdCkwQeGZRvv/rc1Rk7A=;
+        b=NtW7asO1zD5ngygR3W5/J6uAKRwDa5QEXJUSpGIe0hb9PlTFvdnD5hMbNkROOezRc28MmA
+        MQGTvvXMrS2a7fDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5761113597;
-        Tue, 17 Oct 2023 07:39:09 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 44C5E13597;
+        Tue, 17 Oct 2023 07:40:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id dINpFB06LmWCMAAAMHmgww
-        (envelope-from <tiwai@suse.de>); Tue, 17 Oct 2023 07:39:09 +0000
-Date:   Tue, 17 Oct 2023 09:39:08 +0200
-Message-ID: <87jzrln1er.wl-tiwai@suse.de>
+        id NBPfD146LmUVMQAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 17 Oct 2023 07:40:14 +0000
+Date:   Tue, 17 Oct 2023 09:40:13 +0200
+Message-ID: <87il75n1cy.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
-To:     Luka Guzenko <l.guzenko@web.de>
-Cc:     tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ALSA: hda/relatek: Enable Mute LED on HP Laptop 15s-fq5xxx
-In-Reply-To: <20231016221328.1521674-1-l.guzenko@web.de>
-References: <20231016221328.1521674-1-l.guzenko@web.de>
+To:     Artem Borisov <dedsa2002@gmail.com>
+Cc:     perex@perex.cz, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ALSA: hda/realtek: Add quirk for ASUS ROG GU603ZV
+In-Reply-To: <20231014075044.17474-1-dedsa2002@gmail.com>
+References: <20231014063458.13474-1-dedsa2002@gmail.com>
+        <20231014075044.17474-1-dedsa2002@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out2.suse.de;
+Authentication-Results: smtp-out1.suse.de;
         none
 X-Spam-Level: 
-X-Spam-Score: -9.80
-X-Spamd-Result: default: False [-9.80 / 50.00];
+X-Spam-Score: -3.49
+X-Spamd-Result: default: False [-3.49 / 50.00];
          ARC_NA(0.00)[];
          RCVD_VIA_SMTP_AUTH(0.00)[];
          FROM_HAS_DN(0.00)[];
-         RCPT_COUNT_THREE(0.00)[4];
          TO_DN_SOME(0.00)[];
          TO_MATCH_ENVRCPT_ALL(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
          MIME_GOOD(-0.10)[text/plain];
-         FREEMAIL_ENVRCPT(0.00)[web.de];
-         REPLY(-4.00)[];
          NEURAL_HAM_LONG(-3.00)[-1.000];
+         RCPT_COUNT_FIVE(0.00)[5];
          DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
          NEURAL_HAM_SHORT(-1.00)[-1.000];
          MID_CONTAINS_FROM(1.00)[];
-         FREEMAIL_TO(0.00)[web.de];
+         FREEMAIL_TO(0.00)[gmail.com];
          FROM_EQ_ENVFROM(0.00)[];
          MIME_TRACE(0.00)[0:+];
          RCVD_COUNT_TWO(0.00)[2];
          RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-2.70)[98.69%]
+         BAYES_HAM(-0.39)[77.39%]
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -92,13 +92,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Oct 2023 00:13:28 +0200,
-Luka Guzenko wrote:
+On Sat, 14 Oct 2023 09:50:42 +0200,
+Artem Borisov wrote:
 > 
-> This HP Laptop uses ALC236 codec with COEF 0x07 controlling the
-> mute LED. Enable existing quirk for this device.
+> Enables the SPI-connected Cirrus amp and the required pins
+> for headset mic detection.
 > 
-> Signed-off-by: Luka Guzenko <l.guzenko@web.de>
+> As of BIOS version 313 it is still necessary to modify the
+> ACPI table to add the related _DSD properties:
+>   https://gist.github.com/Flex1911/1bce378645fc95a5743671bd5deabfc8
+> 
+> Signed-off-by: Artem Borisov <dedsa2002@gmail.com>
 
 Thanks, applied now.
 
