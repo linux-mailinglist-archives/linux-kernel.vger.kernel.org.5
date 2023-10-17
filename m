@@ -2,130 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BE147CBE9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 445237CBE9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234859AbjJQJKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 05:10:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52378 "EHLO
+        id S234858AbjJQJKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 05:10:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234843AbjJQJKV (ORCPT
+        with ESMTP id S234969AbjJQJKX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 05:10:21 -0400
-Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [63.216.63.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A7DF5
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 02:10:03 -0700 (PDT)
-Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mxhk.zte.com.cn (FangMail) with ESMTPS id 4S8p8m5kccz8Xrdy;
-        Tue, 17 Oct 2023 17:10:00 +0800 (CST)
-Received: from szxlzmapp01.zte.com.cn ([10.5.231.85])
-        by mse-fl2.zte.com.cn with SMTP id 39H99oNn026671;
-        Tue, 17 Oct 2023 17:09:50 +0800 (+08)
-        (envelope-from yang.yang29@zte.com.cn)
-Received: from mapi (szxlzmapp01[null])
-        by mapi (Zmail) with MAPI id mid14;
-        Tue, 17 Oct 2023 17:09:53 +0800 (CST)
-Date:   Tue, 17 Oct 2023 17:09:53 +0800 (CST)
-X-Zmail-TransId: 2b03652e4f616c5-5a37d
-X-Mailer: Zmail v1.0
-Message-ID: <202310171709530660462@zte.com.cn>
-In-Reply-To: <87lec9l3mi.ffs@tglx>
-References: 202309161037416349176@zte.com.cn,87lec9l3mi.ffs@tglx
-Mime-Version: 1.0
-From:   <yang.yang29@zte.com.cn>
-To:     <tglx@linutronix.de>
-Cc:     <peterz@infradead.org>, <linux-kernel@vger.kernel.org>,
-        <jiang.xuexin@zte.com.cn>
-Subject: =?UTF-8?B?W1BBVENIIFYyXSBjcHUvaG90cGx1ZzogZG9udCBvZmZsaW5lIHRoZSBsYXN0IG5vbi1pc29sYXRlZCBDUFU=?=
-Content-Type: text/plain;
-        charset="UTF-8"
-X-MAIL: mse-fl2.zte.com.cn 39H99oNn026671
-X-Fangmail-Gw-Spam-Type: 0
-X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 652E4F68.001/4S8p8m5kccz8Xrdy
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 17 Oct 2023 05:10:23 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7223BFD;
+        Tue, 17 Oct 2023 02:10:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C7A1C433C8;
+        Tue, 17 Oct 2023 09:10:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697533809;
+        bh=XzWNIY/hrbTa3IpvjUeTL3enp5iOsmUIH+SzZ2/j/S4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HYFrKPuxxNnAO4bIJuWAo3vtIdUGAyUiM0Ji3FbzfmtycscCLf6EbhI0QBq1XyWZp
+         v9HCOlY08mIS+7BDSJEyqQ9hbVrLXQ+qUeYPciXTcPP2mswDuUoDVITdjw8G3MYpm3
+         0yy0JpWRsLtBixnefQMKg8SBdh6hldh8rt4ltCZsuipjz11rIaPwSpRLR1s8KCcH7k
+         1oC4SuX7bcQk5aS6RpG41SLA0wEqXTzSFX2TndKUdUGP97V82uFSw+wpNHJV31PDeq
+         vvMssJPuN3bgBsQsFyDvrPPlHo6QmDFEOuLMGFSH1jCL9zh28CM9ChnDRQIK8ffU4Q
+         vioQ+2/eFWkcw==
+Date:   Tue, 17 Oct 2023 11:10:02 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        dev@openvswitch.org, kernel-janitors@vger.kernel.org,
+        Tom Rix <trix@redhat.com>, llvm@lists.linux.dev,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        linux-hardening@vger.kernel.org, netdev@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [ovs-dev] [PATCH v2 2/2] net: openvswitch: Annotate struct
+ mask_array with __counted_by
+Message-ID: <20231017091002.GR1751252@kernel.org>
+References: <e5122b4ff878cbf3ed72653a395ad5c4da04dc1e.1697264974.git.christophe.jaillet@wanadoo.fr>
+ <ca5c8049f58bb933f231afd0816e30a5aaa0eddd.1697264974.git.christophe.jaillet@wanadoo.fr>
+ <202310141928.23985F1CA@keescook>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202310141928.23985F1CA@keescook>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ran Xiaokai <ran.xiaokai@zte.com.cn>
+On Sat, Oct 14, 2023 at 07:29:57PM -0700, Kees Cook wrote:
+> On Sat, Oct 14, 2023 at 08:34:53AM +0200, Christophe JAILLET wrote:
+> > Prepare for the coming implementation by GCC and Clang of the __counted_by
+> > attribute. Flexible array members annotated with __counted_by can have
+> > their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> > (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> > functions).
+> > 
+> > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> > ---
+> > v2: Fix the subject  [Ilya Maximets]
+> >     fix the field name used with __counted_by  [Ilya Maximets]
+> > 
+> > v1: https://lore.kernel.org/all/f66ddcf1ef9328f10292ea75a17b584359b6cde3.1696156198.git.christophe.jaillet@wanadoo.fr/
+> > 
+> > 
+> > This patch is part of a work done in parallel of what is currently worked
+> > on by Kees Cook.
+> > 
+> > My patches are only related to corner cases that do NOT match the
+> > semantic of his Coccinelle script[1].
+> > 
+> > In this case, in tbl_mask_array_alloc(), several things are allocated with
+> > a single allocation. Then, some pointer arithmetic computes the address of
+> > the memory after the flex-array.
+> > 
+> > [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> > ---
+> >  net/openvswitch/flow_table.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/net/openvswitch/flow_table.h b/net/openvswitch/flow_table.h
+> > index 9e659db78c05..f524dc3e4862 100644
+> > --- a/net/openvswitch/flow_table.h
+> > +++ b/net/openvswitch/flow_table.h
+> > @@ -48,7 +48,7 @@ struct mask_array {
+> >  	int count, max;
+> >  	struct mask_array_stats __percpu *masks_usage_stats;
+> >  	u64 *masks_usage_zero_cntr;
+> > -	struct sw_flow_mask __rcu *masks[];
+> > +	struct sw_flow_mask __rcu *masks[] __counted_by(max);
+> >  };
+> 
+> Yup, this looks correct to me. Thanks!
+> 
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> 
 
-If system has some isolate cpus with "isolcpus=" parameter,
-and user try to offline all the non-isolated CPUs, kernel will
-first report a warning and then panic when taking the last
-non-isolated CPU offline.
+Likewise, I agree this is correct.
 
-When offline the last non-isolate cpu,
-cpuset_hotplug_workfn()
-  rebuild_sched_domains_locked()
-    ndoms = generate_sched_domains(&doms, &attr);
-      cpumask_and(doms[0], top_cpuset.effective_cpus,
-                  housekeeping_cpumask(HK_FLAG_DOMAIN));
-
-As isolated cpus are excluded, "doms" passes to partition_sched_domains_locked()
-will be an empty cpumask.
-
-WARNING: CPU: 4 PID: 80 at kernel/sched/topology.c:2366 build_sched_domains+0x120c/0x1408
-Call trace:
- build_sched_domains+0x120c/0x1408
- partition_sched_domains_locked+0x234/0x880
- rebuild_sched_domains_locked+0x37c/0x798
- rebuild_sched_domains+0x30/0x58
- cpuset_hotplug_workfn+0x2a8/0x930
- process_scheduled_works+0x178/0x3e0
- worker_thread+0x174/0x2f0
----[ end trace 0000000000000000 ]---
-Unable to handle kernel paging request at virtual address fffe80027ab37080
- partition_sched_domains_locked+0x318/0x880
- rebuild_sched_domains_locked+0x37c/0x798
- rebuild_sched_domains+0x30/0x58
- cpuset_hotplug_workfn+0x2a8/0x930
- process_scheduled_works+0x178/0x3e0
- worker_thread+0x174/0x2f0
- kthread+0x10c/0x128
- ret_from_fork+0x10/0x20
-Code: 1a850042 b9441883 f862dae0 8b000021 (f945003b)
-
-Kernel should not panic when user managing CPUs with this
-meaningless behavior, so we add a check for this, which
-prevent user taking the last non-isolated CPU offline.
-
-Signed-off-by: Ran Xiaokai <ran.xiaokai@zte.com.cn>
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Yang Yang <yang.yang29@zte.com.cn>
-Cc: Xuexin Jiang <jiang.xuexin@zte.com.cn>
----
- kernel/cpu.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 6de7c6bb74ee..94430ea8b4a5 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -1515,11 +1515,14 @@ static int cpu_down_maps_locked(unsigned int cpu, enum cpuhp_state target)
- 	/*
- 	 * Ensure that the control task does not run on the to be offlined
- 	 * CPU to prevent a deadlock against cfs_b->period_timer.
-+	 * Also keep at least one housekeeping cpu onlined to avoid generating
-+	 * an empty sched_domain span.
- 	 */
--	cpu = cpumask_any_but(cpu_online_mask, cpu);
--	if (cpu >= nr_cpu_ids)
--		return -EBUSY;
--	return work_on_cpu(cpu, __cpu_down_maps_locked, &work);
-+	for_each_cpu_and(cpu, cpu_online_mask, housekeeping_cpumask(HK_TYPE_DOMAIN)) {
-+		if (cpu != work.cpu)
-+			return work_on_cpu(cpu, __cpu_down_maps_locked, &work);
-+	}
-+	return -EBUSY;
- }
-
- static int cpu_down(unsigned int cpu, enum cpuhp_state target)
--- 
-2.15.2
+Reviewed-by: Simon Horman <horms@kernel.org>
