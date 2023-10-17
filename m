@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE477CBA17
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 07:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C11087CBA16
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 07:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234426AbjJQFZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 01:25:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33268 "EHLO
+        id S234526AbjJQFZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 01:25:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234455AbjJQFZQ (ORCPT
+        with ESMTP id S234622AbjJQFZY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 01:25:16 -0400
+        Tue, 17 Oct 2023 01:25:24 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09146D60;
-        Mon, 16 Oct 2023 22:25:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 205DCD7E;
+        Mon, 16 Oct 2023 22:25:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697520307; x=1729056307;
+  t=1697520311; x=1729056311;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references;
-  bh=CQh+bZwgm8XQjgey0Vkw8VOLhpnt8WUpS87zpwPo/+4=;
-  b=QW2al59wTJUCIautj6v0BYFMGz+G3zdhTxyKcw8/wwgod0gvPgIMp7de
-   dVSLpKQDRikKdWluyDQaiHcJ0aklp39GgJqkkLrUSYI3jQocwqMyw/H5b
-   jS0LnJIz7maBmIYD3iJ7/sjrSf7/G7SeSASnXqdIrBsUrpYeeq5j0ZTYq
-   V3s9WnNCdFmUWEX9FFnUWwZEjecElm6Rn4Cj8dfdOHYv1FsyAQbnc9h0V
-   v0Avn9MDGYKk0C5M7UsGmFGcHqf1j38Re4OjP5R9Mlyvcfg4EBqYXXR1X
-   /2MJteiGP1c8YpiRQ7A2tO2iu52L9lLeZy/RCNhqd0fl4NJpnplwpxRB1
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="388561724"
+  bh=jjh/SQd4MKcrmxk2Fa2s9sU0ZxSrHMLhxc5ThbaVuPc=;
+  b=UuJ/N1K0xGPfPqRXX8bzCpvgU1tOAzBuBp5rQMqscuYk7fM0lqhN4I9x
+   fWtRPfkGm/zpJhBHvvMiUaFyh0NXg3C1wuelRwLqKK3uxJfBOTY4tscSN
+   vDhiVVkO4WL1nwIBMiAW81YRxQie+TdObq1FFCivcdUpqjSRWoENX6j+R
+   Kmo4LTyOWnlO6s5yrBva3gJ9TDmqcqXzZ4sQciW8kk2/5IZhRBxcmHtG1
+   IM+fweb40tUuYdqfq3DosCNrZsRotOdAuHOaw8rUDS2IeoKX3xSU5Yb7k
+   qrumuBRiDX/UnvEMzA4LhRL3HYuY3MqsMcIUJWOlTLRks2qJe54JJaoG6
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="388561735"
 X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="388561724"
+   d="scan'208";a="388561735"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 22:25:06 -0700
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 22:25:10 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="1087357980"
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="1087357990"
 X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="1087357980"
+   d="scan'208";a="1087357990"
 Received: from inlubt0316.iind.intel.com ([10.191.20.213])
-  by fmsmga005.fm.intel.com with ESMTP; 16 Oct 2023 22:25:02 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 16 Oct 2023 22:25:06 -0700
 From:   lakshmi.sowjanya.d@intel.com
 To:     tglx@linutronix.de, jstultz@google.com, giometti@enneenne.com,
         corbet@lwn.net, linux-kernel@vger.kernel.org
@@ -47,9 +47,9 @@ Cc:     x86@kernel.org, linux-doc@vger.kernel.org,
         christopher.s.hall@intel.com, pandith.n@intel.com,
         mallikarjunappa.sangannavar@intel.com, thejesh.reddy.t.r@intel.com,
         lakshmi.sowjanya.d@intel.com
-Subject: [PATCH v1 1/6] kernel/time: Add system time to system counter conversion
-Date:   Tue, 17 Oct 2023 10:54:52 +0530
-Message-Id: <20231017052457.25287-2-lakshmi.sowjanya.d@intel.com>
+Subject: [PATCH v1 2/6] x86/tsc: Convert Time Stamp Counter (TSC) value to Always Running Timer (ART)
+Date:   Tue, 17 Oct 2023 10:54:53 +0530
+Message-Id: <20231017052457.25287-3-lakshmi.sowjanya.d@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231017052457.25287-1-lakshmi.sowjanya.d@intel.com>
 References: <20231017052457.25287-1-lakshmi.sowjanya.d@intel.com>
@@ -65,108 +65,93 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
 
-Support system-clock to system-counter conversion. Intel Timed IO
-hardware, using system counter as reference to schedule events.
+PPS generators trigger pulses according to system time/TSC.
+Timed I/O hardware understands time in ART (Always Running Timer). There
+is a need to convert TSC time to ART. The conversion is done using the
+detected art_to_tsc_numerator and denominator.
+
+ART = TSC * tsc_to_art_denominator / tsc_to_art_numerator
 
 Co-developed-by: Christopher Hall <christopher.s.hall@intel.com>
 Signed-off-by: Christopher Hall <christopher.s.hall@intel.com>
-Co-developed-by: Pandith N <pandith.n@intel.com>
-Signed-off-by: Pandith N <pandith.n@intel.com>
-Co-developed-by: Thejesh Reddy T R <thejesh.reddy.t.r@intel.com>
-Signed-off-by: Thejesh Reddy T R <thejesh.reddy.t.r@intel.com>
 Signed-off-by: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
 Reviewed-by: Eddie Dong <eddie.dong@intel.com>
 ---
- include/linux/timekeeping.h |  3 +++
- kernel/time/timekeeping.c   | 54 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 57 insertions(+)
+ arch/x86/include/asm/tsc.h |  3 +++
+ arch/x86/kernel/tsc.c      | 32 ++++++++++++++++++++++++++++++++
+ 2 files changed, 35 insertions(+)
 
-diff --git a/include/linux/timekeeping.h b/include/linux/timekeeping.h
-index fe1e467ba046..e5eb6699d691 100644
---- a/include/linux/timekeeping.h
-+++ b/include/linux/timekeeping.h
-@@ -289,6 +289,9 @@ extern int get_device_system_crosststamp(
- 			struct system_time_snapshot *history,
- 			struct system_device_crosststamp *xtstamp);
+diff --git a/arch/x86/include/asm/tsc.h b/arch/x86/include/asm/tsc.h
+index 594fce0ca744..f5cff8d4f61e 100644
+--- a/arch/x86/include/asm/tsc.h
++++ b/arch/x86/include/asm/tsc.h
+@@ -8,6 +8,8 @@
+ #include <asm/processor.h>
+ #include <asm/cpufeature.h>
  
-+extern int ktime_convert_real_to_system_counter(ktime_t sys_realtime,
-+						struct system_counterval_t *ret);
++struct system_counterval_t;
 +
  /*
-  * Simultaneously snapshot realtime and monotonic raw clocks
+  * Standard way to access the cycle counter.
   */
-diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
-index 266d02809dbb..ff6a4c7387ee 100644
---- a/kernel/time/timekeeping.c
-+++ b/kernel/time/timekeeping.c
-@@ -371,6 +371,19 @@ static void tk_setup_internals(struct timekeeper *tk, struct clocksource *clock)
- 
- /* Timekeeper helper functions. */
- 
-+static inline int timekeeping_ns_to_delta(const struct tk_read_base *tkr, u64 nsec,
-+					  u64 *cycles)
-+{
-+	if (BITS_TO_BYTES(fls64(nsec) + tkr->shift) > sizeof(nsec))
-+		return -ERANGE;
-+
-+	*cycles = nsec << tkr->shift;
-+	*cycles -= tkr->xtime_nsec;
-+	do_div(*cycles, tkr->mult);
-+
-+	return 0;
-+}
-+
- static inline u64 timekeeping_delta_to_ns(const struct tk_read_base *tkr, u64 delta)
- {
- 	u64 nsec;
-@@ -1303,6 +1316,47 @@ int get_device_system_crosststamp(int (*get_time_fn)
+@@ -27,6 +29,7 @@ static inline cycles_t get_cycles(void)
  }
- EXPORT_SYMBOL_GPL(get_device_system_crosststamp);
+ #define get_cycles get_cycles
  
-+/**
-+ * ktime_convert_real_to_system_counter - Convert system time to system counter
-+ * value
-+ * @sys_realtime:	realtime clock value to convert
-+ * @ret:		Computed system counter value with clocksource pointer
-+ *
-+ * Converts a supplied, future realtime clock value to the corresponding
-+ * system counter value.
++extern int convert_tsc_to_art(const struct system_counterval_t *tsc, u64 *art);
+ extern struct system_counterval_t convert_art_to_tsc(u64 art);
+ extern struct system_counterval_t convert_art_ns_to_tsc(u64 art_ns);
+ 
+diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+index 15f97c0abc9d..92b800015d8f 100644
+--- a/arch/x86/kernel/tsc.c
++++ b/arch/x86/kernel/tsc.c
+@@ -2,6 +2,7 @@
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ 
+ #include <linux/kernel.h>
++#include <linux/math.h>
+ #include <linux/sched.h>
+ #include <linux/sched/clock.h>
+ #include <linux/init.h>
+@@ -1294,6 +1295,37 @@ int unsynchronized_tsc(void)
+ 	return 0;
+ }
+ 
++/*
++ * Converts input TSC to the corresponding ART value using conversion
++ * factors discovered by detect_art().
 + *
 + * Return: 0 on success, -errno on failure.
 + */
-+int ktime_convert_real_to_system_counter(ktime_t sys_realtime,
-+					 struct system_counterval_t *ret)
++int convert_tsc_to_art(const struct system_counterval_t *system_counter,
++		       u64 *art)
 +{
-+	struct timekeeper *tk = &tk_core.timekeeper;
-+	ktime_t base_real;
-+	unsigned int seq;
-+	u64 ns_delta;
-+	int err;
++	u64 tmp, res, rem;
++	/* ART = TSC * tsc_to_art_denominator / tsc_to_art_numerator */
++	struct u32_fract tsc_to_art = {
++		.numerator = art_to_tsc_denominator,
++		.denominator = art_to_tsc_numerator,
++	};
 +
-+	do {
-+		seq = read_seqcount_begin(&tk_core.seq);
++	if (system_counter->cs != art_related_clocksource)
++		return -EINVAL;
 +
-+		base_real = ktime_add(tk->tkr_mono.base,
-+				      tk_core.timekeeper.offs_real);
-+		if (ktime_compare(sys_realtime, base_real) < 0)
-+			return -EINVAL;
++	res = system_counter->cycles - art_to_tsc_offset;
++	rem = do_div(res, tsc_to_art.denominator);
 +
-+		ret->cs = tk->tkr_mono.clock;
-+		ns_delta = ktime_to_ns(ktime_sub(sys_realtime, base_real));
-+		err = timekeeping_ns_to_delta(&tk->tkr_mono, ns_delta, &ret->cycles);
-+		if (err < 0)
-+			return err;
++	tmp = rem * tsc_to_art.numerator;
++	do_div(tmp, tsc_to_art.denominator);
 +
-+		ret->cycles += tk->tkr_mono.cycle_last;
-+	} while (read_seqcount_retry(&tk_core.seq, seq));
++	*art = res * tsc_to_art.numerator + tmp;
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(ktime_convert_real_to_system_counter);
++EXPORT_SYMBOL_GPL(convert_tsc_to_art);
 +
- /**
-  * do_settimeofday64 - Sets the time of day.
-  * @ts:     pointer to the timespec64 variable containing the new time
+ /*
+  * Convert ART to TSC given numerator/denominator found in detect_art()
+  */
 -- 
 2.17.1
 
