@@ -2,106 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3052D7CCB81
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 21:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC417CCB96
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 21:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344020AbjJQTBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 15:01:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37896 "EHLO
+        id S1344139AbjJQTCy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 17 Oct 2023 15:02:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234992AbjJQTA7 (ORCPT
+        with ESMTP id S235010AbjJQTCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 15:00:59 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF6DAB0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 12:00:57 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9be3b66f254so604192166b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 12:00:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1697569256; x=1698174056; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q8eFHCOzN0B4Aj/Uzad3Mw8nk7BErU1ParoR6czT34U=;
-        b=f2lR4fmVMcyZE1Bxdofjzq+0KDZt+hicVKcZV+2Fl15YL0smWLYhvRhaun62XRy2Fp
-         mN6I2pg07/aYz/qimp72ELl2kqZZGXRb8UaEnVj4M16NstEKYrkWubxcVIXJfASVjLE7
-         qtmJo38nbv/uFFN0LsYi6INwHM1q/c/JBtU3w=
+        Tue, 17 Oct 2023 15:02:45 -0400
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD441133
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 12:02:32 -0700 (PDT)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-27cfb84432aso4018883a91.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 12:02:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697569256; x=1698174056;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Q8eFHCOzN0B4Aj/Uzad3Mw8nk7BErU1ParoR6czT34U=;
-        b=nDuNqFmtzerYjXC4xtvb6mZ0qhJJpCSpX+FTfvKpbx3F8iq/YnIUro9mvEiV3cL6Zd
-         QydnW1WOrWpiwfaKHI8hvRAi0tV/6+pNcDm3VmA7KJ+dXFDuAyMY7iqF/V8PGx1MLSMZ
-         rkZL72XsPtathEJ2Xe7x5KqFy6Kn1HlNi+bH7erUdlBOh4RbjD6Gj09nVw/Z1Z7daJJ7
-         ImYU37EbhXAbGK3VWs2fXfCPNq+yjzctmF4OYvzw4Rb50dzul8b4fARACv9wdjpUsS6B
-         llxCUznT9HwDpX+HRwZsMvNNscJHFGiyfc3g+E4iTtnhhqjn4mhusfc8Yja5NiXmfWPH
-         6ihA==
-X-Gm-Message-State: AOJu0Yy1AeaZbjWQmm+h68c8mwpkMvwpDm12IahJ6MrwwDNNp/RSfMUq
-        7WY9u0pf78qOQMwKMPzv2LndVI7CFoNW5bHGq+/PZCnp
-X-Google-Smtp-Source: AGHT+IFzCb298uMjS6OIclAGc+Yvtouy+BkYT8L4zrcmOsJm8oPQKHW2sH1oy1qFv2Ku1K/lKYFFig==
-X-Received: by 2002:a17:907:c08:b0:9bd:e017:370e with SMTP id ga8-20020a1709070c0800b009bde017370emr2730834ejc.54.1697569256022;
-        Tue, 17 Oct 2023 12:00:56 -0700 (PDT)
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
-        by smtp.gmail.com with ESMTPSA id a10-20020a170906244a00b009920a690cd9sm268755ejb.59.2023.10.17.12.00.54
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Oct 2023 12:00:54 -0700 (PDT)
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-53de0d1dc46so10462185a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 12:00:54 -0700 (PDT)
-X-Received: by 2002:a17:907:78d1:b0:9c6:3c94:69de with SMTP id
- kv17-20020a17090778d100b009c63c9469demr1559185ejc.53.1697569254221; Tue, 17
- Oct 2023 12:00:54 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697569352; x=1698174152;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mliy1n0MfjZOCRbYlPBz8zCL6vPpciSrV6843uynzdg=;
+        b=FGUV9MZfhq6C0MEHAUViNJjUTcpoQC9QWB7ID1MzMV8u2aKspYZ9xBFpctwSwOdLcZ
+         Mt9RRq7h2YWyYm3xnx/Mlqa36j+bILDmWrWNYMyhP3Kq+PR3iUup8Q0JwoQPhdwFdnwH
+         p9aCNyfaNDvvb0jkYMyd5M+YaBaeVcpXzV2psCQ8BSYw+K3gj+63BuKDOD0blSZQqOHE
+         mM9t/sll0kcJcgyw+2/CUAQJAULFwE6+qh+lWwrrlqk0JBN/n6NrR7GtUv78hELc/1Mj
+         ZYfLANjnP8z8CyzJPgZsZGcN5MrEe2g4lozz9DM/c+2GGgz2UXh4i15qSPhqv6Qa/kB0
+         bXPg==
+X-Gm-Message-State: AOJu0YzA4EhM3QXwkVuXYKnooXutcWs16TsoaZ/K1i5/WzkZI8ykpJyi
+        pqtM74CKalvLjjJAUpZE+EEsX0FLYu9/4useK0TWjxjE
+X-Google-Smtp-Source: AGHT+IGRdAXjs1zd/tGK1E9WFXWhIGao1T9rig+P78Z7iyfvPL81kMTSGRW4e8V3Tp/tqUFdbegDEFo2HvE+eSl9N4Y=
+X-Received: by 2002:a17:90a:cb09:b0:27d:1379:6271 with SMTP id
+ z9-20020a17090acb0900b0027d13796271mr2845272pjt.46.1697569352071; Tue, 17 Oct
+ 2023 12:02:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
- <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
- <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
- <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
- <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
- <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
- <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com> <CAFULd4Zjd6idrLXuF59cwKxyd1a--DsiJwGQAKai9Tph30dAow@mail.gmail.com>
- <CAHk-=wgSsfo89ESHcngvPCkQSh_YAJG-0g7fupb+Uv0E1d_EcQ@mail.gmail.com>
- <7D77A452-E61E-4B8B-B49C-949E1C8E257C@vmware.com> <CAHk-=wj1dLFkL9Qv2vtk0O8Q6WE-11Jq3KucZoz2Kkw59LAexw@mail.gmail.com>
- <9F926586-20D9-4979-AB7A-71124BBAABD3@vmware.com>
-In-Reply-To: <9F926586-20D9-4979-AB7A-71124BBAABD3@vmware.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 17 Oct 2023 12:00:36 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi7YKPKKZw5SpA9gZcf4paG4pZ2kUM50g-LQmdF0g6vWg@mail.gmail.com>
-Message-ID: <CAHk-=wi7YKPKKZw5SpA9gZcf4paG4pZ2kUM50g-LQmdF0g6vWg@mail.gmail.com>
-Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
-To:     Nadav Amit <namit@vmware.com>
-Cc:     Uros Bizjak <ubizjak@gmail.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
+References: <ZS7PIHUZfHcrfvi4@kernel.org>
+In-Reply-To: <ZS7PIHUZfHcrfvi4@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 17 Oct 2023 12:02:20 -0700
+Message-ID: <CAM9d7cjkFQU+dd8m8pq6-u6JruY9tFi_86ZyiQrXGL9js_vuuA@mail.gmail.com>
+Subject: Re: [PATCH] perf build: Remove stray '\' before that is warned about
+ since grep 3.8
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Oct 2023 at 00:23, Nadav Amit <namit@vmware.com> wrote:
+Hi Arnaldo,
+
+On Tue, Oct 17, 2023 at 11:15 AM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
 >
-> Yes, the FPU issue is the one that caused me to crash before.
+> To address this grep 3.8 warning:
+>
+>   grep: warning: stray \ before #
+>
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: Ian Rogers <irogers@google.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> ---
+>  tools/perf/Makefile.perf | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+> index 456872ac410df4c0..25d5ccaec22a44fe 100644
+> --- a/tools/perf/Makefile.perf
+> +++ b/tools/perf/Makefile.perf
+> @@ -361,7 +361,7 @@ python-clean := $(call QUIET_CLEAN, python) $(RM) -r $(PYTHON_EXTBUILD) $(OUTPUT
+>  ifeq ($(CONFIG_LIBTRACEEVENT),y)
+>    PYTHON_EXT_SRCS := $(shell grep -v ^\# util/python-ext-sources)
 
-Uros, can you verify whether that patch of mine resolves the issue you saw?
+Do we need to change it here too?  Otherwise looks good
 
-That patch is _technically_ an actual bug-fix, although right now our
-existing 'current' caching that depends on just CSE'ing the inline asm
-(and is apparently limited to only doing so within single basic
-blocks) doesn't actually trigger the bug in our __switch_to() logic in
-practice.
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-            Linus
+Thanks,
+Namhyung
+
+
+>  else
+> -  PYTHON_EXT_SRCS := $(shell grep -v '^\#\|util/trace-event.c' util/python-ext-sources)
+> +  PYTHON_EXT_SRCS := $(shell grep -v '^#\|util/trace-event.c' util/python-ext-sources)
+>  endif
+>
+>  PYTHON_EXT_DEPS := util/python-ext-sources util/setup.py $(LIBAPI)
+> --
+> 2.41.0
+>
