@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 181D77CCC44
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 21:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD7A7CCC45
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 21:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344273AbjJQT2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 15:28:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37676 "EHLO
+        id S1344283AbjJQT2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 15:28:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344235AbjJQT16 (ORCPT
+        with ESMTP id S1344252AbjJQT2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 15:27:58 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FDDED;
-        Tue, 17 Oct 2023 12:27:55 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-4065dea9a33so56105395e9.3;
-        Tue, 17 Oct 2023 12:27:55 -0700 (PDT)
+        Tue, 17 Oct 2023 15:28:00 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA061FA;
+        Tue, 17 Oct 2023 12:27:56 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-32db8924201so1898917f8f.1;
+        Tue, 17 Oct 2023 12:27:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697570874; x=1698175674; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697570875; x=1698175675; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=g6jQJsBRBLmDkm3I/0qquR/3BJtEfnv9Twl5IETKE8Y=;
-        b=AA7w2xPK5ta5fbCh4NhIrEkL3ITN5j9fXoCY7zsyNPGx8MAISFpqXvAId0BmEshIQB
-         JizZQRRZKpZPhYwOVfyJ9EzB3dD3OINh7fUwV/ZvKVseQ+7TlXxrvG831JOy9DE5nZy6
-         doGjOg2wqTgvFzPwGARyryLwf+kWuqMsR77RwVX0Fcdj3pVW/721yBweV4c4NDKWQU/b
-         0bM7p3CzjiXgnbWnFFSocMAVAfHig+R/KY1Tg4FPLsDI95rNX0AcigzxTeAzEnGcIbnh
-         RsHYuoF9+QVoNOZSV84jppnpaJXhG3Y7fs3zcmz6rHiOvpgQ29ErYpbETM1g8fCPv+lj
-         VlAw==
+        bh=mw4sfthIPjM3BfawqG9k28qO9mlhU0PnICKHznmlMio=;
+        b=NIZviTjuruV1qa9Wk70mt8Urg8uDkHAiM+hD3B0sVtTO0A7teqOEIm07xRzjaENQj0
+         /XhGiyNNG3uSGOpIHKm+XAIHMEY3vvKLvE7NxPyNI100BG27rFG06kL0U07BywL2reWC
+         nhGb3zLKciibGeGE3X1URcO0AitVEI5csZsSY3mCBMuxwInA93+/M6DKGK9GuofEq9+6
+         aHKDPiPzlV0KBtPPJKN3aml6wn97qMPs18GkzNIe9z+Wo08lRqVlWIKAr7V70oI2V6ol
+         VlsDVYydhOUqIs1VaxZ9X1a118+uh5SZHVkMDosmMP/72GfpYhScsPCMS5pv9x2eewWn
+         yPcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697570874; x=1698175674;
+        d=1e100.net; s=20230601; t=1697570875; x=1698175675;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=g6jQJsBRBLmDkm3I/0qquR/3BJtEfnv9Twl5IETKE8Y=;
-        b=h8LcJo6YfK2H6xGjLBHuRBlhfc/UEDUz/00xXTkxVTrnMlp8Qxpld6rHyumpPo8mkn
-         9+gulP+S42HD26DYs2JbfFVMj/srWUxstxhP+P7Qruq9gF1cP6TDb7W+ujU9vasxXBQ5
-         cedbsAYRRYpj8PBz3qjaIKSOxZaJjaFfoWJiPh/2qpFQwEACQjdbS57NCdc16OtIqs2O
-         KTOjHHV9SSYPRELLiUB3ZD8W9pJKwypOCbtwaFtpOM/pCe8XPFZRNMiOvE5nDELIslOP
-         tShOs6JYYenXcfwb+ERlxoXB5ovkFBdAkucO76KHUE/ldc07C5mCij0AZ+WH7zhlJFaN
-         aUbQ==
-X-Gm-Message-State: AOJu0YzH0Os1Uo0hlqbhXDsLhzSX2aZssWjDeV1pUpKIm1+vhPlGHQ9Z
-        A1ZGDXGXxuyzbWiF6KqbuJY=
-X-Google-Smtp-Source: AGHT+IEnQ5HC+BuPuzufGE10gWuIiTfP965Vnpx9uNXzZJjYccZpAg+E7wcKaRLYSLxC56LOmeRrdA==
-X-Received: by 2002:a05:6000:8b:b0:31f:a62d:264 with SMTP id m11-20020a056000008b00b0031fa62d0264mr2704276wrx.37.1697570873841;
-        Tue, 17 Oct 2023 12:27:53 -0700 (PDT)
+        bh=mw4sfthIPjM3BfawqG9k28qO9mlhU0PnICKHznmlMio=;
+        b=VSMwpLypc+BXpOUleL2/HtgIIuEob4ZxoR6C4+7fBUr4RzVpXgIv4eETQDqy9bwv6X
+         R+j/EZhrIZNOPmXROcZOnlRzCC84Uduz6PvOxZpIj2VYsfTeIIns0tRvGSuE5HUXdceZ
+         tVEi7ZyH9NwgjwHjNZcgsFeMerUQOTvyvbsZH/ZFI0ZxfL/FDwWgSRL4mr+6Qfs0acKy
+         wElL1lqqoGrB+cGCoFa7SvfPXnd6XXDzSchQl3Kz1uR+ZY7KMXFVG9tXYAQ1bwXs2oPV
+         aNjSJ82iLQU6Sm8ZUyHQ25RE4qIv2SlyYrzfK8YmQr9JXeLtW76VzhU9mo5qJWoUSZYK
+         b68A==
+X-Gm-Message-State: AOJu0YwRvnS9ciw4zvdWKJ/bDjSYBA5WRBdoW3Q778G1lUlEqZqKqoOX
+        rEQuVC8ou650ZkPFWCw70Eg=
+X-Google-Smtp-Source: AGHT+IHglYUm70uW0GVWCXnzNjqxcIopFPc+GSa/J1yUXCB4sfKjA0wso4+1pkjiDF1KQL7RhyLuhg==
+X-Received: by 2002:adf:e5cb:0:b0:32d:9d3d:3025 with SMTP id a11-20020adfe5cb000000b0032d9d3d3025mr2390702wrn.26.1697570875023;
+        Tue, 17 Oct 2023 12:27:55 -0700 (PDT)
 Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id o2-20020adfeac2000000b0032cc35c2ef7sm435897wrn.29.2023.10.17.12.27.52
+        by smtp.googlemail.com with ESMTPSA id o2-20020adfeac2000000b0032cc35c2ef7sm435897wrn.29.2023.10.17.12.27.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 12:27:53 -0700 (PDT)
+        Tue, 17 Oct 2023 12:27:54 -0700 (PDT)
 From:   Christian Marangi <ansuelsmth@gmail.com>
 To:     Felix Fietkau <nbd@nbd.name>,
         Lorenzo Bianconi <lorenzo@kernel.org>,
@@ -68,9 +68,9 @@ To:     Felix Fietkau <nbd@nbd.name>,
         linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org
-Subject: [net-next RFC PATCH 5/6] wifi: mt76: permit to use alternative cell name to eeprom NVMEM load
-Date:   Tue, 17 Oct 2023 21:05:09 +0200
-Message-Id: <20231017190510.27163-5-ansuelsmth@gmail.com>
+Subject: [net-next RFC PATCH 6/6] wifi: mt76: permit to load precal from NVMEM cell for mt7915
+Date:   Tue, 17 Oct 2023 21:05:10 +0200
+Message-Id: <20231017190510.27163-6-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231017190510.27163-1-ansuelsmth@gmail.com>
 References: <20231017190510.27163-1-ansuelsmth@gmail.com>
@@ -86,73 +86,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Generilize mt76_get_of_eeprom_from_nvmem to use alternative cell name by
-passing the cell name as an arg and expose it.
+Permit to load precal from NVMEM cell for mt7915. The NVMEM cell must be
+named "precal" to be correctly loaded.
 
-Rename it to mt76_get_of_data_from_nvmem to better reflect the now more
-generic usage.
-
-This is to permit driver to load additional cell, like precal cell.
+NVMEM cell must already account the correct offset and be placed after
+the EEPROM as the function expect the data right from the start.
 
 Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 ---
- drivers/net/wireless/mediatek/mt76/eeprom.c | 8 +++++---
- drivers/net/wireless/mediatek/mt76/mt76.h   | 2 ++
- 2 files changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/eeprom.c b/drivers/net/wireless/mediatek/mt76/eeprom.c
-index 748f4b643a5e..ac6c0a0e876f 100644
---- a/drivers/net/wireless/mediatek/mt76/eeprom.c
-+++ b/drivers/net/wireless/mediatek/mt76/eeprom.c
-@@ -107,7 +107,8 @@ int mt76_get_of_data_from_mtd(struct mt76_dev *dev, void *eep, int offset, int l
- }
- EXPORT_SYMBOL_GPL(mt76_get_of_data_from_mtd);
+I would like to have some hint of the cell name... Is it ok to use
+precal? Should we use "precal-eeprom"?
+
+---
+ drivers/net/wireless/mediatek/mt76/mt7915/eeprom.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/eeprom.c b/drivers/net/wireless/mediatek/mt76/mt7915/eeprom.c
+index 5228f710b3da..3bb2643d1b26 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7915/eeprom.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7915/eeprom.c
+@@ -11,6 +11,7 @@ static int mt7915_eeprom_load_precal(struct mt7915_dev *dev)
+ 	u8 *eeprom = mdev->eeprom.data;
+ 	u32 val = eeprom[MT_EE_DO_PRE_CAL];
+ 	u32 offs;
++	int ret;
  
--static int mt76_get_of_eeprom_from_nvmem(struct mt76_dev *dev, void *eep, int len)
-+int mt76_get_of_data_from_nvmem(struct mt76_dev *dev, void *eep,
-+				const char *cell_name, int len)
- {
- 	struct device_node *np = dev->dev->of_node;
- 	struct nvmem_cell *cell;
-@@ -115,7 +116,7 @@ static int mt76_get_of_eeprom_from_nvmem(struct mt76_dev *dev, void *eep, int le
- 	size_t retlen;
- 	int ret = 0;
- 
--	cell = of_nvmem_cell_get(np, "eeprom");
-+	cell = of_nvmem_cell_get(np, cell_name);
- 	if (IS_ERR(cell))
- 		return PTR_ERR(cell);
- 
-@@ -137,6 +138,7 @@ static int mt76_get_of_eeprom_from_nvmem(struct mt76_dev *dev, void *eep, int le
- 
- 	return ret;
- }
-+EXPORT_SYMBOL_GPL(mt76_get_of_data_from_nvmem);
- 
- static int mt76_get_of_eeprom(struct mt76_dev *dev, void *eep, int len)
- {
-@@ -154,7 +156,7 @@ static int mt76_get_of_eeprom(struct mt76_dev *dev, void *eep, int len)
- 	if (!ret)
+ 	if (!dev->flash_mode)
  		return 0;
+@@ -25,7 +26,11 @@ static int mt7915_eeprom_load_precal(struct mt7915_dev *dev)
  
--	return mt76_get_of_eeprom_from_nvmem(dev, eep, len);
-+	return mt76_get_of_data_from_nvmem(dev, eep, "eeprom", len);
+ 	offs = is_mt7915(&dev->mt76) ? MT_EE_PRECAL : MT_EE_PRECAL_V2;
+ 
+-	return mt76_get_of_data_from_mtd(mdev, dev->cal, offs, val);
++	ret = mt76_get_of_data_from_mtd(mdev, dev->cal, offs, val);
++	if (!ret)
++		return ret;
++
++	return mt76_get_of_data_from_nvmem(mdev, dev->cal, "precal", val);
  }
  
- void
-diff --git a/drivers/net/wireless/mediatek/mt76/mt76.h b/drivers/net/wireless/mediatek/mt76/mt76.h
-index 41e4f398083e..c9934258c49d 100644
---- a/drivers/net/wireless/mediatek/mt76/mt76.h
-+++ b/drivers/net/wireless/mediatek/mt76/mt76.h
-@@ -1096,6 +1096,8 @@ void mt76_seq_puts_array(struct seq_file *file, const char *str,
- int mt76_eeprom_init(struct mt76_dev *dev, int len);
- void mt76_eeprom_override(struct mt76_phy *phy);
- int mt76_get_of_data_from_mtd(struct mt76_dev *dev, void *eep, int offset, int len);
-+int mt76_get_of_data_from_nvmem(struct mt76_dev *dev, void *eep,
-+				const char *cell_name, int len);
- 
- struct mt76_queue *
- mt76_init_queue(struct mt76_dev *dev, int qid, int idx, int n_desc,
+ static int mt7915_check_eeprom(struct mt7915_dev *dev)
 -- 
 2.40.1
 
