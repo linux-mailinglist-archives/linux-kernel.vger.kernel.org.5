@@ -2,147 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D837CCC47
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 21:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 818627CCC49
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 21:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344217AbjJQT3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 15:29:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45764 "EHLO
+        id S1344020AbjJQTaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 15:30:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235043AbjJQT3F (ORCPT
+        with ESMTP id S235034AbjJQTaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 15:29:05 -0400
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A37ECED;
-        Tue, 17 Oct 2023 12:29:03 -0700 (PDT)
-Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3af6bd48093so3972056b6e.3;
-        Tue, 17 Oct 2023 12:29:03 -0700 (PDT)
+        Tue, 17 Oct 2023 15:30:22 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 132A4ED
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 12:30:21 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50435ad51bbso7949752e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 12:30:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697571019; x=1698175819; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=C/BDofzE4Or/7ySerAf5AsywpyZJIdw+bPNUdrWopVA=;
+        b=RclkpbU6pGb/dbYGBaf4Qf8cNdZ7WTIKzjQkZu0e/o16Oi/SMxSFL7jE02X7d1XYc+
+         E9/H+lSzqxGznZcA6t4VfjxoG2K3RHoDbMUmj3Vlaa70u0Fn4NWTCfcF6hNZA/hav7Ix
+         gqumiry0/HW3Puejr4kpG70Kx01MLoRJL+v7bevEonaG6Gie75PCDlZjZMy3sBHuvq/t
+         uotvn/mQyPXEqGuGhqkmWdwG9akJ2UNjViODZtPNDx4LwtSsIdYb2yPk1NscZ8HPRKMz
+         HLGAhY/SZn270CgCEvQzTiEiW5dMdJE4Wd2jKIk86bCngoYa4qmrFHGJL6s0toCdSum0
+         t9uA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697570943; x=1698175743;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cClk5aKpdEmHCYWR3pE5BYIwnM1+GggDeTeYY2IMW1s=;
-        b=RX6aGeU4XK9StblL0epVPIrN3qpMxDlBzSKCyHjVzSIQwk8bKacW+zeFs7lmO20vjS
-         Tey0+WVUcDYe/Kn4zu5iYT3ACaEY7jbqnCw5XbG4iEToa9ky0MgAeemFHL+wh0VkMzB1
-         k/EyZw2uRg/po/TeKGPKjU96WNulofx+1riw5WtWG7PFvb2eAfZUEE4xxToLL+r0r94r
-         XLFmgQiVsH846G/M/OMGbo0iHlF2R9gVVkg6Fz1Ac3AobTWXTlTopcBaaHHusNa1WSs1
-         x+IXb2XIO7emgll28JvbvTgdyKYpPwvawLhFdDcLSDFWJVkfV+gVol9CmoBIYtfbTY3X
-         Nfgg==
-X-Gm-Message-State: AOJu0Yy99bPXz3mTb0iLWphPmybZM+CxZRtVv1Px0VgVxjgeUfQ57fwx
-        eNSjTwZkgCO5ZlYs++KpEPlsQkjTIw==
-X-Google-Smtp-Source: AGHT+IGcMdkVV6al4MOlEPkTvoFb6kKb/+o+yG5ZgqwPclpmzp5pU4x0e2kObfKY3Jdkho1lXsvP8A==
-X-Received: by 2002:a05:6808:181a:b0:3ae:2877:9b31 with SMTP id bh26-20020a056808181a00b003ae28779b31mr4035483oib.20.1697570942873;
-        Tue, 17 Oct 2023 12:29:02 -0700 (PDT)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id n6-20020a05687104c600b001d6e9bb67d2sm388822oai.7.2023.10.17.12.28.59
+        d=1e100.net; s=20230601; t=1697571019; x=1698175819;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=C/BDofzE4Or/7ySerAf5AsywpyZJIdw+bPNUdrWopVA=;
+        b=oaYTtnBeKHJjGG6EG0lrBikYOIySXI+Sd5LrI3STM+kQS5XVL2g1WgPjUpFdB+KeGB
+         xdnsMGYdT7dfd9gLPf3UmPwBQ/Qrg2d8URB9karq8uXpIvVuFQ+eKKp8aMQO433c3qBC
+         giPjPyDr2xTVA/flK7ecC/kt87mD7eSlRmcYlM0FKqJtsoDDND9Nd7m5eEbimmcUabWK
+         fI+CoOa5YZTL3J/7y6GAfZpdTHkN+25XJ4Y1eWXQSav4ispXZKyCe1i6gXe8ktfmKKP0
+         xlYVTznGV1hFJSlBxfYEd64gMa9bQPj2tY8IWFNVNSKUpq2Bb6JIcsoonzt/e5hJhb9W
+         KyWQ==
+X-Gm-Message-State: AOJu0YyrwARQP4u7rYORFyJuajjTnwuvQozelu3VNYJ7OMvGrhXQT4jt
+        iGq8MAWvaDbcSumpLkcPuPPXYik0lFI=
+X-Google-Smtp-Source: AGHT+IFjYavsMAWVLd6koUJ1EZp8kJLvjzK88YNCDRHrNmxTdehEdew4S4he2wBfWoNngZ+PbRNLxw==
+X-Received: by 2002:a19:500d:0:b0:500:9a29:bcb8 with SMTP id e13-20020a19500d000000b005009a29bcb8mr2571559lfb.4.1697571019023;
+        Tue, 17 Oct 2023 12:30:19 -0700 (PDT)
+Received: from shift.daheim (p200300d5ff3cda00aaa159fffeeb01f1.dip0.t-ipconnect.de. [2003:d5:ff3c:da00:aaa1:59ff:feeb:1f1])
+        by smtp.gmail.com with ESMTPSA id f17-20020a50a6d1000000b0052ffc2e82f1sm1728909edc.4.2023.10.17.12.30.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 12:29:02 -0700 (PDT)
-Received: (nullmailer pid 2548219 invoked by uid 1000);
-        Tue, 17 Oct 2023 19:28:59 -0000
-Date:   Tue, 17 Oct 2023 14:28:59 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Alvin =?utf-8?Q?=C5=A0ipraga?= <alvin@pqrs.dk>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rabeeh Khoury <rabeeh@solid-run.com>,
-        Jacob Siverskog <jacob@teenage.engineering>,
-        Sergej Sawazki <sergej@taudac.com>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] dt-bindings: clock: si5351: add PLL reset mode
- property
-Message-ID: <20231017192859.GA2544830-robh@kernel.org>
-References: <20231014-alvin-clk-si5351-no-pll-reset-v4-0-a3567024007d@bang-olufsen.dk>
- <20231014-alvin-clk-si5351-no-pll-reset-v4-2-a3567024007d@bang-olufsen.dk>
+        Tue, 17 Oct 2023 12:30:18 -0700 (PDT)
+Received: from localhost.daheim ([127.0.0.1] helo=shift.localnet)
+        by shift.daheim with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.97-RC2)
+        (envelope-from <chunkeey@gmail.com>)
+        id 1qspli-000000009ct-0VOa;
+        Tue, 17 Oct 2023 21:30:18 +0200
+From:   Christian Lamparter <chunkeey@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     x86@kernel.org, seanjc@google.com, klaus.espenlaub@oracle.com,
+        bp@alien8.de, glx@linutronix.de, mingo@redhat.com,
+        dave.hansen@linux.intel.com, hpa@zytor.com
+Subject: Re: [PATCH  v1] x86/cpu/cacheinfo: fix panic on Ryzen Mobile 7x40 series in
+ VBox VM
+Date:   Tue, 17 Oct 2023 21:30:17 +0200
+Message-ID: <4550917.LvFx2qVVIh@shift>
+In-Reply-To: <652989ad8a7f110bad16cf1244c4c68a823f0afe.1693606609.git.chunkeey@gmail.com>
+References: <652989ad8a7f110bad16cf1244c4c68a823f0afe.1693606609.git.chunkeey@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231014-alvin-clk-si5351-no-pll-reset-v4-2-a3567024007d@bang-olufsen.dk>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 14, 2023 at 08:19:42PM +0200, Alvin Šipraga wrote:
-> From: Alvin Šipraga <alsi@bang-olufsen.dk>
-> 
-> For applications where the PLL must be adjusted without glitches in the
-> clock output(s), a new silabs,pll-reset-mode property is added. It
-> can be used to specify whether or not the PLL should be reset after
-> adjustment. Resetting is known to cause glitches.
-> 
-> For compatibility with older device trees, it must be assumed that the
-> default PLL reset mode is to unconditionally reset after adjustment.
-> 
-> Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-> Cc: Rabeeh Khoury <rabeeh@solid-run.com>
-> Cc: Jacob Siverskog <jacob@teenage.engineering>
-> Cc: Sergej Sawazki <sergej@taudac.com>
-> Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
-> ---
->  .../devicetree/bindings/clock/silabs,si5351.yaml   | 24 ++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/clock/silabs,si5351.yaml b/Documentation/devicetree/bindings/clock/silabs,si5351.yaml
-> index 16d1142c4a2f..9621b534f30e 100644
-> --- a/Documentation/devicetree/bindings/clock/silabs,si5351.yaml
-> +++ b/Documentation/devicetree/bindings/clock/silabs,si5351.yaml
-> @@ -60,6 +60,27 @@ properties:
->          - description: PLL source, XTAL (0) or CLKIN (1, Si5351C only).
->            enum: [ 0, 1 ]
->  
-> +  silabs,pll-reset-mode:
-> +    $ref: /schemas/types.yaml#/definitions/uint32-matrix
-> +    minItems: 1
+Heads up!
 
-If there's only 2 PLLs, then the maximum is 2 entries, right? So 
-'maxItems: 2' in addition.
+Oracle addressed this with their virtualbox 7.0.12 release.
+If you are affected, try it!
 
-> +    description: |
-
-Don't need '|'
-
-> +      A list of cell pairs containing a PLL index and its reset mode.
-> +    items:
-> +      items:
-> +        - description: PLL A (0) or PLL B (1)
-> +          enum: [ 0, 1 ]
-> +        - description: |
-> +            Reset mode for the PLL. Mode can be one of:
-> +
-> +                0 - reset whenever PLL rate is adjusted (default mode)
-> +                1 - do not reset when PLL rate is adjusted
-> +
-> +            In mode 1, the PLL is only reset if the silabs,pll-reset is
-> +            specified in one of the clock output child nodes that also sources
-> +            the PLL. This mode may be preferable if output clocks are expected
-> +            to be adjusted without glitches.
-> +          enum: [ 0, 1 ]
-> +
->  patternProperties:
->    "^clkout@[0-7]$":
->      type: object
-> @@ -199,6 +220,9 @@ examples:
->          /* Use XTAL input as source of PLL0 and PLL1 */
->          silabs,pll-source = <0 0>, <1 0>;
->  
-> +        /* Don't reset PLL1 on rate adjustment */
-> +        silabs,pll-reset-mode = <1 1>;
-> +
->          /*
->           * Overwrite CLK0 configuration with:
->           * - 8 mA output drive strength
+On Saturday, September 2, 2023 12:19:11 AM CEST Christian Lamparter wrote:
+> Ryzen Mobile 7x40 chips experience an early kernel fault
+> (division by zero) due to nonexistent input validation
+> from CPUID data in amd_cpuid4().
 > 
-> -- 
-> 2.42.0
+> This error was first reported on reddit [0] for a
+> "AMD Ryzen 9 7940HS w/ Radeon 780M Graphics", but since then
+> the bug has been reproduced on a "AMD Ryzen 7 7840HS" Laptop
+> too.
 > 
+> [...]
+> 
+> The reason why this is happening is because the Ryzen CPU reports in its
+> CPUID 80000006 edx register (which contains the L3 Cache Information)
+> the value "00009000". This magic value means according to AMD's
+> "AMD64 Architecture Programmer's Manual Volume 3" Table E-4.
+> "L2/L3 Cache and TLB Associativity Field Encoding":
+> 
+> | Value for all fields should be determinded from Fn8000_001D.
+> 
+> (This means to look in cpuid(0x8000001D,...) instead.)
+> 
+> So, amd_cpuid4() is missing this special case. A case which has been
+> present - according to this AMD Community post [1] - since
+> Zen 2/Ryzen 3000 Series.
+> 
+> But wait, why is this only happening with Linux' when running under
+> VirtualBox with these Ryzen Mobile CPUs and not when running natively?
+> [...]
+
+
+
