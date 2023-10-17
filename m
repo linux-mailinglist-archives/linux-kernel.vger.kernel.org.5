@@ -2,92 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A6E7CBE61
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:04:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41DE97CBE67
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234789AbjJQJEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 05:04:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39492 "EHLO
+        id S234794AbjJQJF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 05:05:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234145AbjJQJEt (ORCPT
+        with ESMTP id S234746AbjJQJFN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 05:04:49 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 508BC93;
-        Tue, 17 Oct 2023 02:04:48 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-53e08b60febso8331933a12.1;
-        Tue, 17 Oct 2023 02:04:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697533487; x=1698138287; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=B/Hk67Q+giYTh6qT9YmC2zwxxSpcK1axa1hb87I3ZOM=;
-        b=fhrizzr/l/F//bbUH3EQVPH+VrLfunZ7wvPcX54Nc8XZ5JAibR5kY408/Jhxx7Bemr
-         ClP5M3TcGuRW9I8VYfyCBIcFQep463YDtmOZKD5U/8WJkQCakPEV1bzmh2qgvPGbUbPD
-         abn+Jlox0cUTDZSs6CBp+zcc6Y/BIZy8nTy8U/SRpoomgXIsFqU/gug7tXxfxxge2KrJ
-         Xp1LZmnAhLWRZmh8PzHJFPmR9dKwOrEtg7rq4MwWXoWZIrxH7ui7crDScYsiWQQdR6mu
-         V/8fpeYRysCSmpH4yOvzLbCNsTbCsphbFkn87XyMwvL61wotV2Kb/RKxU7t0B74EVDUN
-         eYrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697533487; x=1698138287;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B/Hk67Q+giYTh6qT9YmC2zwxxSpcK1axa1hb87I3ZOM=;
-        b=A0iddpFVY+6dmk/5BdmjquXqXZ1sMLsaI+/djy4q/U7V0K8Z7fyBHEOkZnEF2AsqrV
-         ry14U18XiwzK2TL4Q8erCQM/QhwgMkeVcL+OJfc8z/R3qnl22ndDSckzRAkuv1Y5y74u
-         MJKBYFSjZ8i7bAI2uIKvLHsbeCtYh8ehuIYwaw+bZmhtBIS3F4aAcoC6s+da2k+PLfzv
-         O//xS0MSNmPk2dUFS6q2wKxQeCn2AiTNz8WlNPSKvnmZ/lRmcE+ERBnLvofX4zHQ5jDK
-         m/+2NY6HGFl58gNO/uEuxI7PDYB/NVfOh3uoOOif1TR5I+oC1iVVWTmqBREcM3bMvL/8
-         EKAw==
-X-Gm-Message-State: AOJu0YwofL9yLlmIUi6zEvNPlNcF5ZRlp6jCUYJqY6EQMS9B9QfN9Cj7
-        mMWvC0D7JNBgd0Gb5qjJAw==
-X-Google-Smtp-Source: AGHT+IE556fO87GyMGId4qv9PrxSAzYqqPSIlNZ9KTKHH19u1KQ7UVQmLIXEouDr2rZadRDRs7/wDA==
-X-Received: by 2002:a17:907:98e:b0:9b3:308:d045 with SMTP id bf14-20020a170907098e00b009b30308d045mr1205146ejc.46.1697533486465;
-        Tue, 17 Oct 2023 02:04:46 -0700 (PDT)
-Received: from dorcaslitunya-virtual-machine ([105.163.1.143])
-        by smtp.gmail.com with ESMTPSA id eh15-20020a0564020f8f00b0053e775e428csm798353edb.83.2023.10.17.02.04.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 02:04:46 -0700 (PDT)
-Date:   Tue, 17 Oct 2023 12:04:40 +0300
-From:   Dorcas Litunya <anonolitunya@gmail.com>
-To:     Andi Shyti <andi.shyti@linux.intel.com>
-Cc:     anonolitunya@gmail.com, outreachy@lists.linux.dev,
-        julia.lawall@inria.fr, dan.carpenter@linaro.org,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Teddy Wang <teddy.wang@siliconmotion.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] Staging: sm750fb: Rename
- displayControlAdjust_SM750E
-Message-ID: <ZS5OKMTY4BDX015/@dorcaslitunya-virtual-machine>
-References: <20231016201434.7880-1-anonolitunya@gmail.com>
- <20231016201434.7880-2-anonolitunya@gmail.com>
- <ZS2sCEF/LsO8Fzk1@ashyti-mobl2.lan>
+        Tue, 17 Oct 2023 05:05:13 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0486B0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 02:05:10 -0700 (PDT)
+Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S8nzX3y0DzrTWv;
+        Tue, 17 Oct 2023 17:02:00 +0800 (CST)
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 17 Oct 2023 17:04:42 +0800
+Message-ID: <b52105b5-3910-46b8-a869-4a82c8a2b845@huawei.com>
+Date:   Tue, 17 Oct 2023 17:04:41 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZS2sCEF/LsO8Fzk1@ashyti-mobl2.lan>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next v2 17/19] mm: convert wp_page_reuse() and
+ finish_mkwrite_fault() to take a folio
+Content-Language: en-US
+To:     kernel test robot <lkp@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     <oe-kbuild-all@lists.linux.dev>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        <willy@infradead.org>, <linux-kernel@vger.kernel.org>,
+        <ying.huang@intel.com>, <david@redhat.com>,
+        Zi Yan <ziy@nvidia.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+References: <20231013085603.1227349-18-wangkefeng.wang@huawei.com>
+ <202310171537.XhmrkImn-lkp@intel.com>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+In-Reply-To: <202310171537.XhmrkImn-lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm100001.china.huawei.com (7.185.36.93)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 11:32:56PM +0200, Andi Shyti wrote:
-> On Mon, Oct 16, 2023 at 11:14:08PM +0300, Dorcas AnonoLitunya wrote:
-> > Rename function displayControlAdjust_SM750E to
-> > display_control_adjust_SM750E. This follows snakecase naming convention
-> 
-> I'd go one step further and call it display_control_adjust_sm750e.
-> 
-Hi Andi,
-Thanks for this, I will include this in the next patch I submit.
 
-Dorcas
-> Andi
+
+On 2023/10/17 15:33, kernel test robot wrote:
+> Hi Kefeng,
+> 
+> kernel test robot noticed the following build warnings:
+> 
+> [auto build test WARNING on akpm-mm/mm-everything]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Kefeng-Wang/mm_types-add-virtual-and-_last_cpupid-into-struct-folio/20231017-121040
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+> patch link:    https://lore.kernel.org/r/20231013085603.1227349-18-wangkefeng.wang%40huawei.com
+> patch subject: [PATCH -next v2 17/19] mm: convert wp_page_reuse() and finish_mkwrite_fault() to take a folio
+> config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231017/202310171537.XhmrkImn-lkp@intel.com/config)
+> compiler: m68k-linux-gcc (GCC) 13.2.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231017/202310171537.XhmrkImn-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202310171537.XhmrkImn-lkp@intel.com/
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>>> mm/memory.c:3276: warning: Function parameter or member 'folio' not described in 'finish_mkwrite_fault'
+> 
+
+Hi Andrew, should I resend this patch? or could you help me to update
+it, also a comment(page -> folio's) on patch18, thanks.
+
+> 
+> vim +3276 mm/memory.c
+> 
+> 2f38ab2c3c7fef Shachar Raindel 2015-04-14  3258
+> 66a6197c118540 Jan Kara        2016-12-14  3259  /**
+> 66a6197c118540 Jan Kara        2016-12-14  3260   * finish_mkwrite_fault - finish page fault for a shared mapping, making PTE
+> 66a6197c118540 Jan Kara        2016-12-14  3261   *			  writeable once the page is prepared
+> 66a6197c118540 Jan Kara        2016-12-14  3262   *
+> 66a6197c118540 Jan Kara        2016-12-14  3263   * @vmf: structure describing the fault
+> 66a6197c118540 Jan Kara        2016-12-14  3264   *
+> 66a6197c118540 Jan Kara        2016-12-14  3265   * This function handles all that is needed to finish a write page fault in a
+> 66a6197c118540 Jan Kara        2016-12-14  3266   * shared mapping due to PTE being read-only once the mapped page is prepared.
+> a862f68a8b3600 Mike Rapoport   2019-03-05  3267   * It handles locking of PTE and modifying it.
+> 66a6197c118540 Jan Kara        2016-12-14  3268   *
+> 66a6197c118540 Jan Kara        2016-12-14  3269   * The function expects the page to be locked or other protection against
+> 66a6197c118540 Jan Kara        2016-12-14  3270   * concurrent faults / writeback (such as DAX radix tree locks).
+> a862f68a8b3600 Mike Rapoport   2019-03-05  3271   *
+> 2797e79f1a491f Liu Xiang       2021-06-28  3272   * Return: %0 on success, %VM_FAULT_NOPAGE when PTE got changed before
+> a862f68a8b3600 Mike Rapoport   2019-03-05  3273   * we acquired PTE lock.
+> 66a6197c118540 Jan Kara        2016-12-14  3274   */
+> 60fe935fc6b035 Kefeng Wang     2023-10-13  3275  static vm_fault_t finish_mkwrite_fault(struct vm_fault *vmf, struct folio *folio)
+> 66a6197c118540 Jan Kara        2016-12-14 @3276  {
+> 66a6197c118540 Jan Kara        2016-12-14  3277  	WARN_ON_ONCE(!(vmf->vma->vm_flags & VM_SHARED));
+> 66a6197c118540 Jan Kara        2016-12-14  3278  	vmf->pte = pte_offset_map_lock(vmf->vma->vm_mm, vmf->pmd, vmf->address,
+> 66a6197c118540 Jan Kara        2016-12-14  3279  				       &vmf->ptl);
+> 3db82b9374ca92 Hugh Dickins    2023-06-08  3280  	if (!vmf->pte)
+> 3db82b9374ca92 Hugh Dickins    2023-06-08  3281  		return VM_FAULT_NOPAGE;
+> 66a6197c118540 Jan Kara        2016-12-14  3282  	/*
+> 66a6197c118540 Jan Kara        2016-12-14  3283  	 * We might have raced with another page fault while we released the
+> 66a6197c118540 Jan Kara        2016-12-14  3284  	 * pte_offset_map_lock.
+> 66a6197c118540 Jan Kara        2016-12-14  3285  	 */
+> c33c794828f212 Ryan Roberts    2023-06-12  3286  	if (!pte_same(ptep_get(vmf->pte), vmf->orig_pte)) {
+> 7df676974359f9 Bibo Mao        2020-05-27  3287  		update_mmu_tlb(vmf->vma, vmf->address, vmf->pte);
+> 66a6197c118540 Jan Kara        2016-12-14  3288  		pte_unmap_unlock(vmf->pte, vmf->ptl);
+> a19e25536ed3a2 Jan Kara        2016-12-14  3289  		return VM_FAULT_NOPAGE;
+> 66a6197c118540 Jan Kara        2016-12-14  3290  	}
+> 60fe935fc6b035 Kefeng Wang     2023-10-13  3291  	wp_page_reuse(vmf, folio);
+> a19e25536ed3a2 Jan Kara        2016-12-14  3292  	return 0;
+> 66a6197c118540 Jan Kara        2016-12-14  3293  }
+> 66a6197c118540 Jan Kara        2016-12-14  3294
+> 
