@@ -2,110 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71EDF7CC376
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 14:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 590AE7CC378
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 14:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234608AbjJQMok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 08:44:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43350 "EHLO
+        id S1343536AbjJQMor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 08:44:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232228AbjJQMoj (ORCPT
+        with ESMTP id S234686AbjJQMon (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 08:44:39 -0400
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D42595
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 05:44:37 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5a7dd65052aso76717307b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 05:44:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697546677; x=1698151477; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=vQVpipJ8U/Wmxx6yT1J99VV5RzOgH7yDeQqapC2EK3w=;
-        b=aZkN+JxHj8YJkR2Y2POFm+6gPYcJnTyNzA6Xdkd/V7Th2EoDM+Bsr8f4Nhb6riPUMi
-         2VbIugC8Ewyp3MgOw9gHJznFwTUikJCRF6kBLT7I2Yc+CEujP/cnauXeTx+QcZPN8Yo6
-         GZmzsuHj3lWr1K1AcW6E0bP+10wTzvuM8GOzEbRgPMBOBYun13r4C2Kw2N3g7LPk5EpZ
-         r2xM/zA4masCOD4aUUCv8yulSQZk6P1GEMPlMc80FNN/xwP9MwjTNQ4TKXMd9W/TyMYl
-         PEk/9qZ2L54Eg9oOr8Bevsz4Dc6HTYBsDwcSFobbJhrvXrHF8VEz1VceYJkOsPSaAhN4
-         Q5xQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697546677; x=1698151477;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vQVpipJ8U/Wmxx6yT1J99VV5RzOgH7yDeQqapC2EK3w=;
-        b=IbiSHujT2jbrHobn3QtR+Juvwl5jM1hwI73NdBbRIYexpbaAqW5mKPqWuBQmaC4p/m
-         KUeaze60FU8issCZPI0dkxS+dxJaP0k41fz7XtcxDsXB8MdZuhcAlCQwuph9ImEpXsEw
-         Wbo/1vsGsSE8llsfW7QTvuokD1LABqoiCiGkD48dZIucEwm5/TLXdwGm6FMXuDSRXuDp
-         ijrWpRTaPk/I0z65Ejg9Ga7xpD4aPnSu6gzJLGStHL6TExlxA9G5hmn1qzABkv65AJjd
-         0HX0sn/4k46E+d9TV464FcYwH9F9DzUJGbEih+xiKeNwcrfGNeSPSIGHyEuH3LzWPEes
-         cAXw==
-X-Gm-Message-State: AOJu0YyVfcUcNMI4vOcpAFNzCKsrichCR+LtZ4HsLuqjKbC5ua+cS0x4
-        HASwxlCYRieaIh6beawk6uTYZ3CkCWN7ZlEqMI6ecOtyVoGVZzZb
-X-Google-Smtp-Source: AGHT+IH6u1rZTSFzJPJNDnVuAD9bBkHis2cJ9J4dmYJPnnkkPUrbfgCLNfpu1LdmvHp3KGOelp8xOMi+Kr3qb1Q2mGc=
-X-Received: by 2002:a0d:f701:0:b0:5a7:b481:4dd2 with SMTP id
- h1-20020a0df701000000b005a7b4814dd2mr2147572ywf.47.1697546676827; Tue, 17 Oct
- 2023 05:44:36 -0700 (PDT)
+        Tue, 17 Oct 2023 08:44:43 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 448BA95
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 05:44:41 -0700 (PDT)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8AxZ+i2gS5ld5cyAA--.62001S3;
+        Tue, 17 Oct 2023 20:44:38 +0800 (CST)
+Received: from [10.130.0.149] (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxH920gS5lFucnAA--.20431S3;
+        Tue, 17 Oct 2023 20:44:36 +0800 (CST)
+Subject: Re: [PATCH v2 8/8] LoongArch: Add ORC unwinder support
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        Jinyang He <hejinyang@loongson.cn>
+References: <1696856590-30298-1-git-send-email-yangtiezhu@loongson.cn>
+ <1696856590-30298-9-git-send-email-yangtiezhu@loongson.cn>
+ <CAAhV-H4pVRLPZ9OrfvV-UbPm1kRRJ0gpTqRtVbDd-eA5WzUaXg@mail.gmail.com>
+ <bd40004b-10af-3c06-5ae0-750850f31446@loongson.cn>
+ <CAAhV-H77o8nMiYrKJt9nocpsOh5e66dAeg+j4soncniLc+eY=w@mail.gmail.com>
+ <bb99083b-6f50-79c0-5407-ede327346887@loongson.cn>
+ <CAAhV-H4gCFgGrOaHtTdDhJ=EWVhK7jtLtzOcynVD+-T2tubPNQ@mail.gmail.com>
+Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <cd9371be-de46-e544-5f61-c7275657adf8@loongson.cn>
+Date:   Tue, 17 Oct 2023 20:44:36 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-References: <20231017120431.68847-1-brgl@bgdev.pl> <20231017120431.68847-55-brgl@bgdev.pl>
- <ZS6BAkfFeA+6GYfz@smile.fi.intel.com>
-In-Reply-To: <ZS6BAkfFeA+6GYfz@smile.fi.intel.com>
-From:   Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Date:   Tue, 17 Oct 2023 14:44:25 +0200
-Message-ID: <CACMJSesgT-a8krB8gvf0gJ-C+p6s1TdRcE6W_42CxR9bDvrGHg@mail.gmail.com>
-Subject: Re: [PATCH v3 54/73] pinctrl: intel: drop the wrappers around pinctrl_gpio_direction_input()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAAhV-H4gCFgGrOaHtTdDhJ=EWVhK7jtLtzOcynVD+-T2tubPNQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8AxH920gS5lFucnAA--.20431S3
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
+        ZEXasCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29K
+        BjDU0xBIdaVrnRJUUU9Sb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26c
+        xKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vE
+        j48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxV
+        AFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x02
+        67AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6x
+        ACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q6rW5McIj6I8E
+        87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0V
+        AS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km
+        07C267AKxVW8ZVWrXwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r
+        1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8
+        JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r
+        1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1U
+        YxBIdaVFxhVjvjDU0xZFpf9x07jOdb8UUUUU=
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Oct 2023 at 14:41, Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Tue, Oct 17, 2023 at 02:04:12PM +0200, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > pinctrl_gpio_direction_input() now has the same signature as the
-> > wrappers around it so we can drop them.
->
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->
-> Now, for the sake of symmetry can you add (at least to the all
-> Intel drivers you modified in this series) the following:
->
 
-Good idea but this is v6.8 material, I don't want to extend this
-series anymore at this point.
 
-Bart
+On 10/15/2023 09:57 PM, Huacai Chen wrote:
+> Hi, Jinyang,
 
->
-> int pinctrl_gpio_direction_output_with_value(struct gpio_chip *gc,
->                                              unsigned int offset, int value)
-> {
->         gc->set(gc, offset, value);
->         return pinctrl_gpio_direction_output(gc, offset);
-> }
->
->
-> ?
->
-> And respectively in this driver
->
->         .direction_output = pincttl_gpio_direction_output_with_value,
->
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+...
+
+>> In short, objtool is strictly dependent on canonical codes so that it can
+>> get the ORC information right.
+> Is the code in tlbex.S the same as handle_syscall()? If so, I suggest
+> submitting a separate patch to rename FUNC to CODE. That will be easy
+> to review, and can be upstream earlier because it is independent with
+> objtool.
+
+Good suggestion, thank you, I have submitted a single patch to do this.
+
+https://lore.kernel.org/loongarch/1697449076-31866-1-git-send-email-yangtiezhu@loongson.cn/
+
+Thanks,
+Tiezhu
+
