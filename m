@@ -2,128 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4F47CBFCD
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B2D7CBFCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343511AbjJQJoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 05:44:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48858 "EHLO
+        id S234931AbjJQJpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 05:45:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234985AbjJQJo3 (ORCPT
+        with ESMTP id S234812AbjJQJo7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 05:44:29 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D963F9;
-        Tue, 17 Oct 2023 02:44:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697535867; x=1729071867;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=8OYWLx8EkOVmmzc/6gfhqaqtgdn7djCvrNPSlhU23rE=;
-  b=hramDdnEcNtVy6AKWvv745sFso+Ug60hLVdaHTioWHE8FyFNj/zPRi9D
-   dosJ2IaMOQKLdipv6UDoawOhJ4c2QPyFd1VLt1WY1rw1+TfJFj2R9nFs7
-   uS5unxQ+ASC4QXYqb6cfBxJaQD5kG2Fi8o75LZsWR1m3MQq4X4PjkVq5w
-   jSgAVDxqUnef2QbQi4UECU/u2hyFGPtN/fNxEC/Y+Iy4CLejliZQ8pq/j
-   BUHTIeBXpW9Os8QPbZiQeYzAkRmyqufMQsqZTvkNBrHyF+ShKZHjeMfBK
-   os8YmTPJJzpB0WkiH6yLHcUev/XThgp5zRGy15ilCSh3N6zJS//skvnZB
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="365097234"
-X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="365097234"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 02:44:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="826375189"
-X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="826375189"
-Received: from mstanila-mobl1.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.61.109])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 02:44:05 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 2B4B510A1F3; Tue, 17 Oct 2023 12:44:03 +0300 (+03)
-Date:   Tue, 17 Oct 2023 12:44:03 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dario Faggioli <dfaggioli@suse.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        marcelo.cerri@canonical.com, tim.gardner@canonical.com,
-        philip.cox@canonical.com, aarcange@redhat.com, peterx@redhat.com,
-        x86@kernel.org, linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@kernel.org, Nikolay Borisov <nik.borisov@suse.com>
-Subject: Re: [PATCHv2] efi/unaccepted: Fix soft lockups caused by parallel
- memory acceptance
-Message-ID: <20231017094403.g6laxp2c3vwzt2sw@box.shutemov.name>
-References: <20231016163122.12855-1-kirill.shutemov@linux.intel.com>
- <ZS15HZqK4hu5NjSh@casper.infradead.org>
- <20231016213932.6cscnn6tsnzsnvmf@box.shutemov.name>
- <CAMj1kXFc31N61=oQayLbnR+CrNT4=bfEisC3fwG4VNq2vJHV5w@mail.gmail.com>
+        Tue, 17 Oct 2023 05:44:59 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5836E98;
+        Tue, 17 Oct 2023 02:44:57 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id D078C66072C1;
+        Tue, 17 Oct 2023 10:44:54 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1697535896;
+        bh=yx63KVkLH1o5DUDZrBN8lhi6q9U2dwYv3+7BafhDl/U=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=fhBYPuhBEtzpRp8x1vGX0Aem3Kl+EavYbolJeARnW6Jo5YX2MDLi/WNr4YHowVz7I
+         Ae+Kqn26gGeNmFgXpyR7X9Y6drMEP56VeFSWacFgta4LUfV/T7B1rF0iGStwsfdLVq
+         digqRgI1QMqHEcG0qRuFO6PTsS93pgCoMdYZ4YIUHzR8Svqjq7rWDzjyJqnIn7hjh+
+         uVgLWwpQJ5CHEtoQH8CTRRGeElXJIRHaCXQJhO9MoCBbnkGf351bELWqCb+1oNyfiC
+         wPW0iv0+qjx2p432tMJxdGxOP1SVSPNwKIe8UPx7NMppGekMvGQDyFr9foGuj6cAaF
+         HuueE8FaPYUBw==
+Message-ID: <dfa95116-d430-48f4-8f36-0c0461d3b7ac@collabora.com>
+Date:   Tue, 17 Oct 2023 11:44:52 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXFc31N61=oQayLbnR+CrNT4=bfEisC3fwG4VNq2vJHV5w@mail.gmail.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 17/23] drm/mediatek: Support MT8188 Padding in display
+ driver
+Content-Language: en-US
+To:     Hsiao Chien Sung <shawn.sung@mediatek.com>,
+        CK Hu <ck.hu@mediatek.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Fei Shao <fshao@chromium.org>,
+        Sean Paul <sean@poorly.run>,
+        Johnson Wang <johnson.wang@mediatek.corp-partner.google.com>,
+        "Nancy . Lin" <nancy.lin@mediatek.com>,
+        Moudy Ho <moudy.ho@mediatek.com>,
+        "Jason-JH . Lin" <jason-jh.lin@mediatek.com>,
+        Nathan Lu <nathan.lu@mediatek.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20231016104010.3270-1-shawn.sung@mediatek.com>
+ <20231016104010.3270-18-shawn.sung@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231016104010.3270-18-shawn.sung@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 09:42:13AM +0200, Ard Biesheuvel wrote:
-> On Mon, 16 Oct 2023 at 23:39, Kirill A. Shutemov
-> <kirill.shutemov@linux.intel.com> wrote:
-> >
-> > On Mon, Oct 16, 2023 at 06:55:41PM +0100, Matthew Wilcox wrote:
-> > > On Mon, Oct 16, 2023 at 07:31:22PM +0300, Kirill A. Shutemov wrote:
-> > > >   v2:
-> > > >    - Fix deadlock (Vlastimil);
-> > > >    - Fix comments (Vlastimil);
-> > > >    - s/cond_resched()/cpu_relax()/ -- cond_resched() cannot be called
-> > > >      from atomic context;
-> > >
-> > > Isn't there an implicit cpu_relax() while we're spinning?  Does this
-> > > really accomplish anything?
-> >
-> > You are right. It is useless. I will drop it in v3.
-> >
+Il 16/10/23 12:40, Hsiao Chien Sung ha scritto:
+> Padding is a new display module on MT8188, it provides ability
+> to add pixels to width and height of a layer with specified colors.
 > 
-> I can drop that bit when applying the patch.
+> Due to hardware design, Mixer in VDOSYS1 requires width of a layer
+> to be 2-pixel-align, or 4-pixel-align when ETHDR is enabled,
+> we need Padding to deal with odd width.
 > 
-> One question I have is whether the sequence
+> Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
+> ---
+>   drivers/gpu/drm/mediatek/Makefile       |   3 +-
+>   drivers/gpu/drm/mediatek/mtk_disp_drv.h |   4 +
+>   drivers/gpu/drm/mediatek/mtk_drm_drv.c  |   1 +
+>   drivers/gpu/drm/mediatek/mtk_drm_drv.h  |   2 +-
+>   drivers/gpu/drm/mediatek/mtk_padding.c  | 160 ++++++++++++++++++++++++
+>   5 files changed, 168 insertions(+), 2 deletions(-)
+>   create mode 100644 drivers/gpu/drm/mediatek/mtk_padding.c
 > 
-> spin_lock_irqsave(&unaccepted_memory_lock, flags);
-> ...
-> spin_unlock(&unaccepted_memory_lock);
-> arch_accept_memory(phys_start, phys_end);
-> spin_lock(&unaccepted_memory_lock);
-> ...
-> spin_unlock_irqrestore(&unaccepted_memory_lock, flags);
-> 
-> is considered sound and is supported by all architectures?
+> diff --git a/drivers/gpu/drm/mediatek/Makefile b/drivers/gpu/drm/mediatek/Makefile
+> index d4d193f60271..5e4436403b8d 100644
+> --- a/drivers/gpu/drm/mediatek/Makefile
+> +++ b/drivers/gpu/drm/mediatek/Makefile
+> @@ -16,7 +16,8 @@ mediatek-drm-y := mtk_disp_aal.o \
+>   		  mtk_dsi.o \
+>   		  mtk_dpi.o \
+>   		  mtk_ethdr.o \
+> -		  mtk_mdp_rdma.o
+> +		  mtk_mdp_rdma.o \
+> +		  mtk_padding.o
+>   
+>   obj-$(CONFIG_DRM_MEDIATEK) += mediatek-drm.o
+>   
+> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_drv.h b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
+> index bf06ccb65652..e2b602037ac3 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_disp_drv.h
+> +++ b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
+> @@ -159,4 +159,8 @@ void mtk_mdp_rdma_config(struct device *dev, struct mtk_mdp_rdma_cfg *cfg,
+>   const u32 *mtk_mdp_rdma_get_formats(struct device *dev);
+>   size_t mtk_mdp_rdma_get_num_formats(struct device *dev);
+>   
+> +int mtk_padding_clk_enable(struct device *dev);
+> +void mtk_padding_clk_disable(struct device *dev);
+> +void mtk_padding_start(struct device *dev);
+> +void mtk_padding_stop(struct device *dev);
+>   #endif
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+> index cdce165c092e..62e6e9785443 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+> @@ -1025,6 +1025,7 @@ static struct platform_driver * const mtk_drm_drivers[] = {
+>   	&mtk_dsi_driver,
+>   	&mtk_ethdr_driver,
+>   	&mtk_mdp_rdma_driver,
+> +	&mtk_padding_driver,
+>   };
+>   
+>   static int __init mtk_drm_init(void)
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.h b/drivers/gpu/drm/mediatek/mtk_drm_drv.h
+> index 8dca68ea1b94..d2efd715699f 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_drv.h
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.h
+> @@ -72,5 +72,5 @@ extern struct platform_driver mtk_dpi_driver;
+>   extern struct platform_driver mtk_dsi_driver;
+>   extern struct platform_driver mtk_ethdr_driver;
+>   extern struct platform_driver mtk_mdp_rdma_driver;
+> -
+> +extern struct platform_driver mtk_padding_driver;
+>   #endif /* MTK_DRM_DRV_H */
+> diff --git a/drivers/gpu/drm/mediatek/mtk_padding.c b/drivers/gpu/drm/mediatek/mtk_padding.c
+> new file mode 100644
+> index 000000000000..fa2e7fc9c7bd
+> --- /dev/null
+> +++ b/drivers/gpu/drm/mediatek/mtk_padding.c
+> @@ -0,0 +1,160 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2023 MediaTek Inc.
+> + */
+> +
 
-I am not an locking expert and only tested it on x86. But what potential
-issue do you see?
+..snip..
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+> +
+> +static const struct of_device_id mtk_padding_driver_dt_match[] = {
+> +	{ .compatible = "mediatek,mt8188-padding" },
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, mtk_padding_driver_dt_match);
+> +
+> +struct platform_driver mtk_padding_driver = {
+> +	.probe		= mtk_padding_probe,
+> +	.remove		= mtk_padding_remove,
+> +	.driver		= {
+> +		.name	= "mediatek-padding",
+
+Please let's be consistent with the driver names, this should be
+"mediatek-disp-padding".
+
+After changing that,
+
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+
