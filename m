@@ -2,133 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9F637CD086
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 01:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1D9F7CD00F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 00:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344430AbjJQXXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 19:23:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38694 "EHLO
+        id S1344010AbjJQWfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 18:35:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344356AbjJQXXZ (ORCPT
+        with ESMTP id S229459AbjJQWfp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 19:23:25 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4338910B;
-        Tue, 17 Oct 2023 16:23:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697585001; x=1729121001;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=7I1Y4nnQBV4/2CN7n+iQSuwae/PdMJVhORVRJRUVvoo=;
-  b=jPFFNwoVclAi5DEKoHsv66dtrnYSxUBDt8s2VB+aEOG73OOSEyrg9w5E
-   9tjaeEGXMH04/8mbbKJAU2pKh2MublHhmmmp50eL8caH8zBbwQvCIJ7JT
-   3O3jf4Rh+DwguBgF7SkVKWjPcdwst41Y2Cq6lhGlXRjxOu2kFK0h0+R7C
-   wwJN6IknA30EG+A0syhM6pRhLr+FTNgS25dNyg+nMpV8y1MJBiVTsqOwC
-   I8TVemjy77UPbX8m64oKLhx5DzkZhxZoYTE5RktVAQ9EWUTEWd8cMet9q
-   iTE6rWw5NMf4VhxMj7bwBD7TqVP8kB7zh35XyBG4Ib3kYjPc6H/g+lIjc
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="384778118"
-X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
-   d="scan'208";a="384778118"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 16:23:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="826637471"
-X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
-   d="scan'208";a="826637471"
-Received: from asprado-mobl2.amr.corp.intel.com (HELO [10.212.55.179]) ([10.212.55.179])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 16:23:18 -0700
-Message-ID: <dbb1f64b-8112-4a2f-9138-616e04bdc53c@linux.intel.com>
-Date:   Tue, 17 Oct 2023 17:33:25 -0500
+        Tue, 17 Oct 2023 18:35:45 -0400
+Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 231C1D3;
+        Tue, 17 Oct 2023 15:35:43 -0700 (PDT)
+Received: by mail-ua1-x92a.google.com with SMTP id a1e0cc1a2514c-7b652e785dbso1670703241.0;
+        Tue, 17 Oct 2023 15:35:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697582142; x=1698186942; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wdeKf2/h6eRXVjrIhtW4p5eKxKczJ25w9PIDmoQxibo=;
+        b=kz9JnNxIUjf6OO+HO6ozFGxWY9E3XWxXqtZBmDfSzNx4d2FAWGHTk0r8Kh+sMBdVGN
+         RR8dH13ai0vJx+omnUDA34J94KuTaWGgk7v50Hv4V/Dntj8JhkpctybYPrm5yRd7hUbo
+         BX3GBr+CIOwpy2ZExkt+XzgE8Zp0CKqgZa5MuTANqZvvEYo2sm2waZ8kFh0pwAQgl6fp
+         knqmhchJa0ZehJRzuKH3I7buMxUY/Sk0Y8BtIOQv8zRTlRFvqyD/hEmAy2Xl5G7mVymS
+         fkVw/9y0R0TZ33LE6oAedBlbOH6JHJ25aYnq0CSbFjhVIuaUMkPLzfWjzGH/uHPxyZ65
+         ytKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697582142; x=1698186942;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wdeKf2/h6eRXVjrIhtW4p5eKxKczJ25w9PIDmoQxibo=;
+        b=ef14aSyDOaG/WdbkyvrOi2P0Sh50+f8oFeixGt2X7B6zfV9+ex3w6ypSrq6yZ+kGSl
+         Jz+8YmAZGpXLhRx/bQoNsfqv1g9MwMQndBIOxdnmltiYdr2nhf+Li6QdM0akFmL9N1Sz
+         xw7lRk12enTysdSFvJgpCqDnSIy3/xXvW+e+BiXfW3UFnreyp/H48Co/sipstfEThMTM
+         ScogehiUrX5S3CldeUOqOGsqL5foU/hNFTS6v35AU9Mnxm9pB4KJr2+5a5tAnnCYOFGf
+         uhAYR5VlUYFmDz4VNeTb2N6HsFaPIvsE9TzC/w6TobHzjM22oLiv7q1ppuWXU0ZNUtGZ
+         X2/Q==
+X-Gm-Message-State: AOJu0YwHWt/x23qSjeB4ZQfqolSZvjL2umELKC0rW7kuUpKg6H48KNpJ
+        qsI+UvmeooRgzcT/IbYF/KLZxyUzgod+lSjAp/w=
+X-Google-Smtp-Source: AGHT+IH5j9aX5uFG6qIm/ceWB+MagtIHZd+LHx139RfrZUAJXvcGu6hpgvKLuHEaHwGfMDIBoSSU12wdggts1ghINmc=
+X-Received: by 2002:a67:cc15:0:b0:452:60c5:20b with SMTP id
+ q21-20020a67cc15000000b0045260c5020bmr3720336vsl.15.1697582142134; Tue, 17
+ Oct 2023 15:35:42 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 21/34] ASoC: usb: Add PCM format check API for USB
- backend
-Content-Language: en-US
-To:     Wesley Cheng <quic_wcheng@quicinc.com>, mathias.nyman@intel.com,
-        gregkh@linuxfoundation.org, lgirdwood@gmail.com,
-        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, srinivas.kandagatla@linaro.org,
-        bgoswami@quicinc.com, Thinh.Nguyen@synopsys.com
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20231017200109.11407-1-quic_wcheng@quicinc.com>
- <20231017200109.11407-22-quic_wcheng@quicinc.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20231017200109.11407-22-quic_wcheng@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231016143828.647848-1-jeffxu@chromium.org> <ZS1URCBgwGGj9JtM@casper.infradead.org>
+ <CAKbZUD2A+=bp_sd+Q0Yif7NJqMu8p__eb4yguq0agEcmLH8SDQ@mail.gmail.com> <CALmYWFtOgMAQDGNoM6k2Ev4kMHD396wwH+rVDODaSjsyVMDogg@mail.gmail.com>
+In-Reply-To: <CALmYWFtOgMAQDGNoM6k2Ev4kMHD396wwH+rVDODaSjsyVMDogg@mail.gmail.com>
+From:   Pedro Falcato <pedro.falcato@gmail.com>
+Date:   Tue, 17 Oct 2023 23:35:30 +0100
+Message-ID: <CAKbZUD2j1jbomCAVxUX_JmG1rfa8udc=5SqVOpDgc-3GnSTbAQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 0/8] Introduce mseal() syscall
+To:     Jeff Xu <jeffxu@google.com>
+Cc:     Matthew Wilcox <willy@infradead.org>, jeffxu@chromium.org,
+        akpm@linux-foundation.org, keescook@chromium.org,
+        sroettger@google.com, jorgelo@chromium.org, groeck@chromium.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mm@kvack.org, jannh@google.com, surenb@google.com,
+        alex.sierra@amd.com, apopple@nvidia.com,
+        aneesh.kumar@linux.ibm.com, axelrasmussen@google.com,
+        ben@decadent.org.uk, catalin.marinas@arm.com, david@redhat.com,
+        dwmw@amazon.co.uk, ying.huang@intel.com, hughd@google.com,
+        joey.gouly@arm.com, corbet@lwn.net, wangkefeng.wang@huawei.com,
+        Liam.Howlett@oracle.com, torvalds@linux-foundation.org,
+        lstoakes@gmail.com, mawupeng1@huawei.com, linmiaohe@huawei.com,
+        namit@vmware.com, peterx@redhat.com, peterz@infradead.org,
+        ryan.roberts@arm.com, shr@devkernel.io, vbabka@suse.cz,
+        xiujianfeng@huawei.com, yu.ma@intel.com, zhangpeng362@huawei.com,
+        dave.hansen@intel.com, luto@kernel.org,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 17, 2023 at 10:34=E2=80=AFPM Jeff Xu <jeffxu@google.com> wrote:
+>
+> On Tue, Oct 17, 2023 at 8:30=E2=80=AFAM Pedro Falcato <pedro.falcato@gmai=
+l.com> wrote:
+> >
+> > On Mon, Oct 16, 2023 at 4:18=E2=80=AFPM Matthew Wilcox <willy@infradead=
+.org> wrote:
+> > >
+> > > On Mon, Oct 16, 2023 at 02:38:19PM +0000, jeffxu@chromium.org wrote:
+> > > > Modern CPUs support memory permissions such as RW and NX bits. Linu=
+x has
+> > > > supported NX since the release of kernel version 2.6.8 in August 20=
+04 [1].
+> > >
+> > > This seems like a confusing way to introduce the subject.  Here, you'=
+re
+> > > talking about page permissions, whereas (as far as I can tell), mseal=
+() is
+> > > about making _virtual_ addresses immutable, for some value of immutab=
+le.
+> > >
+> > > > Memory sealing additionally protects the mapping itself against
+> > > > modifications. This is useful to mitigate memory corruption issues =
+where
+> > > > a corrupted pointer is passed to a memory management syscall. For e=
+xample,
+> > > > such an attacker primitive can break control-flow integrity guarant=
+ees
+> > > > since read-only memory that is supposed to be trusted can become wr=
+itable
+> > > > or .text pages can get remapped. Memory sealing can automatically b=
+e
+> > > > applied by the runtime loader to seal .text and .rodata pages and
+> > > > applications can additionally seal security critical data at runtim=
+e.
+> > > > A similar feature already exists in the XNU kernel with the
+> > > > VM_FLAGS_PERMANENT [3] flag and on OpenBSD with the mimmutable sysc=
+all [4].
+> > > > Also, Chrome wants to adopt this feature for their CFI work [2] and=
+ this
+> > > > patchset has been designed to be compatible with the Chrome use cas=
+e.
+> > >
+> > > This [2] seems very generic and wide-ranging, not helpful.  [5] was m=
+ore
+> > > useful to understand what you're trying to do.
+> > >
+> > > > The new mseal() is an architecture independent syscall, and with
+> > > > following signature:
+> > > >
+> > > > mseal(void addr, size_t len, unsigned int types, unsigned int flags=
+)
+> > > >
+> > > > addr/len: memory range.  Must be continuous/allocated memory, or el=
+se
+> > > > mseal() will fail and no VMA is updated. For details on acceptable
+> > > > arguments, please refer to comments in mseal.c. Those are also full=
+y
+> > > > covered by the selftest.
+> > >
+> > > Mmm.  So when you say "continuous/allocated" what you really mean is
+> > > "Must have contiguous VMAs" rather than "All pages in this range must
+> > > be populated", yes?
+> > >
+> > > > types: bit mask to specify which syscall to seal, currently they ar=
+e:
+> > > > MM_SEAL_MSEAL 0x1
+> > > > MM_SEAL_MPROTECT 0x2
+> > > > MM_SEAL_MUNMAP 0x4
+> > > > MM_SEAL_MMAP 0x8
+> > > > MM_SEAL_MREMAP 0x10
+> > >
+> > > I don't understand why we want this level of granularity.  The OpenBS=
+D
+> > > and XNU examples just say "This must be immutable*".  For values of
+> > > immutable that allow downgrading access (eg RW to RO or RX to RO),
+> > > but not upgrading access (RW->RX, RO->*, RX->RW).
+> > >
+> > > > Each bit represents sealing for one specific syscall type, e.g.
+> > > > MM_SEAL_MPROTECT will deny mprotect syscall. The consideration of b=
+itmask
+> > > > is that the API is extendable, i.e. when needed, the sealing can be
+> > > > extended to madvise, mlock, etc. Backward compatibility is also eas=
+y.
+> > >
+> > > Honestly, it feels too flexible.  Why not just two flags to mprotect(=
+)
+> > > -- PROT_IMMUTABLE and PROT_DOWNGRADABLE.  I can see a use for that --
+> > > maybe for some things we want to be able to downgrade and for other
+> > > things, we don't.
+> >
+> > I think it's worth pointing out that this suggestion (with PROT_*)
+> > could easily integrate with mmap() and as such allow for one-shot
+> > mmap() + mseal().
+> > If we consider the common case as 'addr =3D mmap(...); mseal(addr);', i=
+t
+> > definitely sounds like a performance win as we halve the number of
+> > syscalls for a sealed mapping. And if we trivially look at e.g OpenBSD
+> > ld.so code, mmap() + mimmutable() and mprotect() + mimmutable() seem
+> > like common patterns.
+> >
+> Yes. mmap() can support sealing as well, and memory is allocated as
+> immutable from begining.
+> This is orthogonal to mseal() though.
 
+I don't see how this can be orthogonal to mseal().
+In the case we opt for adding PROT_ bits, we should more or less only
+need to adapt calc_vm_prot_bits(), and the rest should work without
+issues.
+vma merging won't merge vmas with different prots. The current
+interfaces (mmap and mprotect) would work just fine.
+In this case, mseal() or mimmutable() would only be needed if you need
+to set immutability over a range of VMAs with different permissions.
 
-On 10/17/23 15:00, Wesley Cheng wrote:
-> Introduce a check for if a particular PCM format is supported by the USB
+Note: modifications should look kinda like this: https://godbolt.org/z/Tbjj=
+d14Pe
+The only annoying wrench in my plans here is that we have effectively
+run out of vm_flags bits in 32-bit architectures, so this approach as
+I described is not compatible with 32-bit.
 
-Introduce a helper to check if a ...
+> In case of ld.so, iiuc, memory can be first allocated as W, then later
+> changed to RO, for example, during symbol resolution.
+> The important point is that the application can decide what type of
+> sealing it wants, and when to apply it.  There needs to be an api(),
+> that can be mseal() or mprotect2() or mimmutable(), the naming is not
+> important to me.
+>
+> mprotect() in linux have the following signature:
+> int mprotect(void addr[.len], size_t len, int prot);
+> the prot bitmasks are all taken here.
+> I have not checked the prot field in mmap(), there might be bits left,
+> even not, we could have mmap2(), so that is not an issue.
 
-> audio device connected.  If the USB audio device does not have an audio
-> profile which can support the requested format, then notify the USB
-> backend.
-> 
-> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
-> ---
->  include/sound/soc-usb.h |  3 +++
->  sound/soc/soc-usb.c     | 13 +++++++++++++
->  2 files changed, 16 insertions(+)
-> 
-> diff --git a/include/sound/soc-usb.h b/include/sound/soc-usb.h
-> index 58c686f4f7ba..c6ddc055c4cd 100644
-> --- a/include/sound/soc-usb.h
-> +++ b/include/sound/soc-usb.h
-> @@ -37,6 +37,9 @@ struct snd_soc_usb {
->  	void *priv_data;
->  };
->  
-> +int snd_soc_usb_find_format(int card_idx, struct snd_pcm_hw_params *params,
-> +			int direction);
-> +
->  int snd_soc_usb_connect(struct device *usbdev, struct snd_soc_usb_device *sdev);
->  int snd_soc_usb_disconnect(struct device *usbdev, struct snd_soc_usb_device *sdev);
->  void *snd_soc_usb_find_priv_data(struct device *usbdev);
-> diff --git a/sound/soc/soc-usb.c b/sound/soc/soc-usb.c
-> index 73b1bcc3b506..7407678a993e 100644
-> --- a/sound/soc/soc-usb.c
-> +++ b/sound/soc/soc-usb.c
-> @@ -63,6 +63,19 @@ void *snd_soc_usb_find_priv_data(struct device *dev)
->  }
->  EXPORT_SYMBOL_GPL(snd_soc_usb_find_priv_data);
->  
-> +int snd_soc_usb_find_format(int card_idx, struct snd_pcm_hw_params *params,
-> +			int direction)
-> +{
-> +	struct snd_usb_stream *as;
-> +
-> +	as = snd_usb_find_suppported_substream(card_idx, params, direction);
-> +	if (!as)
-> +		return -EOPNOTSUPP;
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(snd_soc_usb_find_format);
+I don't see what you mean. We have plenty of prot bits left (32-bits,
+and we seem to have around 8 different bits used).
+And even if we didn't, prot is the same in mprotect and mmap and mmap2 :)
 
-Is this the right way to check for formats?
+The only issue seems to be that 32-bit ran out of vm_flags, but that
+can probably be worked around if need be.
 
-formats are defined within the scope of an endpoint, and those endpoints
-are themselves defined within the scope of an interface?
-
-I don't see a notion of endpoint here. Does this assume all endpoints
-are valid, or maybe the existence of a single endpoint in a device?
-
-Confused.
+--=20
+Pedro
