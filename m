@@ -2,83 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8787C7CBA82
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 08:05:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1DC47CBA81
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 08:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234485AbjJQGFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 02:05:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50704 "EHLO
+        id S234473AbjJQGEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 02:04:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234423AbjJQGFD (ORCPT
+        with ESMTP id S230343AbjJQGEv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 02:05:03 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C6EBF5;
-        Mon, 16 Oct 2023 23:05:00 -0700 (PDT)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39H64Qn9014565;
-        Tue, 17 Oct 2023 06:04:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=omYkSqC8VDjSbMbRVlhkhkaKoZUrM0gq5bjZn0HR/3A=;
- b=abM+XMblr3M2AeWp46eqtdXEKO8yfBcNnrcetmEP3A46J9tKzmQhvCMC+1YRG3XUYdg+
- jBjcpL2D+ZpEeq7gHa212ReevCBtYNHfnh/3dVllOg5mLCnxU1W/Mh4Jb+zsdQH4yENZ
- c2e9xTuSlhJvjcn2ZbAmdbAxzzMlK+9uyfaZW+r6sXP4M444ZBFUNjWDsHGAhXQn0pHl
- AclJzUpbIUTU/b6RYA3GrcT6QPGF3AYEf/AyN1r8hMRFV3faJLwB/NiF/Du8wJPbyQJN
- a5HE7Yg8x1yKkPRP+jHJnX6IPHkMeI0y66vVR6ADbfAYal7Vvs1DfFHmVSsQIFcNm14y vQ== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tsmp7g06m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Oct 2023 06:04:29 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39H4v8t6019672;
-        Tue, 17 Oct 2023 06:04:28 GMT
-Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tr811dj2x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Oct 2023 06:04:28 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-        by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39H64RYL8979084
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Oct 2023 06:04:28 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D46D658058;
-        Tue, 17 Oct 2023 06:04:27 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8268658066;
-        Tue, 17 Oct 2023 06:04:25 +0000 (GMT)
-Received: from skywalker.linux.ibm.com (unknown [9.109.212.144])
-        by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 17 Oct 2023 06:04:25 +0000 (GMT)
-X-Mailer: emacs 29.1 (via feedmail 11-beta-1 I)
-From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-To:     Erhard Furtner <erhard_f@mailbox.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     Juergen Gross <jgross@suse.com>, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-sparc@vger.kernel.org,
-        David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 0/2] Allow nesting of lazy MMU mode
-In-Reply-To: <20231013154220.02fb2e6d@yea>
-References: <20231012195415.282357-1-willy@infradead.org>
- <20231013154220.02fb2e6d@yea>
-Date:   Tue, 17 Oct 2023 11:34:23 +0530
-Message-ID: <875y35zswo.fsf@linux.ibm.com>
+        Tue, 17 Oct 2023 02:04:51 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41321B6;
+        Mon, 16 Oct 2023 23:04:49 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qsdC9-0002Cw-RU; Tue, 17 Oct 2023 08:04:45 +0200
+Message-ID: <9a3e9c6a-e8fd-4fc6-8959-c90fda78ae4c@leemhuis.info>
+Date:   Tue, 17 Oct 2023 08:04:45 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 3ef2F9UqU74NAkjCIImOuTF4hWOOEc3A
-X-Proofpoint-ORIG-GUID: 3ef2F9UqU74NAkjCIImOuTF4hWOOEc3A
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-16_13,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
- mlxlogscore=999 clxscore=1011 priorityscore=1501 malwarescore=0
- lowpriorityscore=0 adultscore=0 phishscore=0 bulkscore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310170049
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Bluetooth: btrtl: Ignore error return for
+ hci_devcd_register()
+Content-Language: en-US, de-DE
+To:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Linux regressions mailing list <regressions@lists.linux.dev>
+Cc:     patchwork-bot+bluetooth@kernel.org,
+        Max Chou <max.chou@realtek.com>, marcel@holtmann.org,
+        johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alex_lu@realsil.com.cn,
+        hildawu@realtek.com, kirill@shutemov.name, bagasdotme@gmail.com
+References: <20231006024707.413349-1-max.chou@realtek.com>
+ <169664042379.23949.8315443049400174883.git-patchwork-notify@kernel.org>
+ <0ee79296-a404-4d0d-b8ed-42578a77692c@leemhuis.info>
+ <CABBYNZ+DcF=q3tH9ZYTEhsrPgygU+hsYwYNEZf-3VwuiyzHXog@mail.gmail.com>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <CABBYNZ+DcF=q3tH9ZYTEhsrPgygU+hsYwYNEZf-3VwuiyzHXog@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1697522689;1ed6dce6;
+X-HE-SMSGID: 1qsdC9-0002Cw-RU
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,102 +53,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Erhard Furtner <erhard_f@mailbox.org> writes:
-
-> On Thu, 12 Oct 2023 20:54:13 +0100
-> "Matthew Wilcox (Oracle)" <willy@infradead.org> wrote:
->
->> Dave Woodhouse reported that we now nest calls to
->> arch_enter_lazy_mmu_mode().  That was inadvertent, but in principle we
->> should allow it.  On further investigation, Juergen already fixed it
->> for Xen, but didn't tell anyone.  Fix it for Sparc & PowerPC too.
->> This may or may not help fix the problem that Erhard reported.
->> 
->> Matthew Wilcox (Oracle) (2):
->>   powerpc: Allow nesting of lazy MMU mode
->>   sparc: Allow nesting of lazy MMU mode
->> 
->>  arch/powerpc/include/asm/book3s/64/tlbflush-hash.h | 5 ++---
->>  arch/sparc/mm/tlb.c                                | 5 ++---
->>  2 files changed, 4 insertions(+), 6 deletions(-)
->> 
->> -- 
->> 2.40.1
->
-> Applied the patch on top of v6.6-rc5 but unfortunately it did not fix my reported issue.
->
-> Regards,
-> Erhard
+On 16.10.23 19:20, Luiz Augusto von Dentz wrote:
 > 
+> On Mon, Oct 16, 2023 at 1:07 AM Linux regression tracking (Thorsten
+> Leemhuis) <regressions@leemhuis.info> wrote:
+>>
+>> On 07.10.23 03:00, patchwork-bot+bluetooth@kernel.org wrote:
+>>>
+>>> This patch was applied to bluetooth/bluetooth-next.git (master)
+>>> by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
+>>
+>> Hi Luiz. Many thx for picking this up. From the branch name is sounds
+>> like you plan to submit this change in the next merge window (If I
+>> misread the signs feel free to ignore this mail!). Wouldn't it be better
+>> to merge this in this cycle, as the commit afaics fixes a regression
+>> that was only introduced this cycle?
+> 
+> It is part of the for-net pull-request:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/bluetooth/bluetooth.git/tag/?h=for-net-2023-10-13
 
-With the problem reported I guess we are finding the page->compound_head
-wrong and hence folio->flags PG_dcache_clean check crashing. I still
-don't know why we find page->compound_head wrong. Michael noted we are
-using FLAT_MEM. That implies we are suppose to inialize struct page correctly
-via init_unavailable_range because we are hitting this on an ioremap
-address. We need to instrument the kernel to track the initialization of
-the struct page backing these pfns which we know is crashing.
+Ahh, great -- and sorry, the branch name in the "was applied to
+bluetooth/bluetooth-next.git" got me on the wrong track.
 
-W.r.t arch_enter_lazy_mmu_mode() we can skip that completely on powerpc
-because we don't allow the usage of set_pte on a valid pte entries. pte
-updates are not done via set_pte interface and hence there is no TLB
-invalidate required while using set_pte(). 
-
-ie, we can do something like below. The change also make sure we call
-set_pte_filter on all the ptes we are setting via set_ptes(). I haven't
-sent this as a proper patch because we still are not able to fix the
-issue Erhard reported. 
-
-diff --git a/arch/powerpc/mm/pgtable.c b/arch/powerpc/mm/pgtable.c
-index 3ba9fe411604..95ab20cca2da 100644
---- a/arch/powerpc/mm/pgtable.c
-+++ b/arch/powerpc/mm/pgtable.c
-@@ -191,28 +191,35 @@ void set_ptes(struct mm_struct *mm, unsigned long addr, pte_t *ptep,
- 		pte_t pte, unsigned int nr)
- {
- 	/*
--	 * Make sure hardware valid bit is not set. We don't do
--	 * tlb flush for this update.
-+	 * We don't need to call arch_enter/leave_lazy_mmu_mode()
-+	 * because we expect set_ptes to be only be used on not present
-+	 * and not hw_valid ptes. Hence there is not translation cache flush
-+	 * involved that need to be batched.
- 	 */
--	VM_WARN_ON(pte_hw_valid(*ptep) && !pte_protnone(*ptep));
-+	for (;;) {
- 
--	/* Note: mm->context.id might not yet have been assigned as
--	 * this context might not have been activated yet when this
--	 * is called.
--	 */
--	pte = set_pte_filter(pte);
-+		/*
-+		 * Make sure hardware valid bit is not set. We don't do
-+		 * tlb flush for this update.
-+		 */
-+		VM_WARN_ON(pte_hw_valid(*ptep) && !pte_protnone(*ptep));
- 
--	/* Perform the setting of the PTE */
--	arch_enter_lazy_mmu_mode();
--	for (;;) {
-+		/* Note: mm->context.id might not yet have been assigned as
-+		 * this context might not have been activated yet when this
-+		 * is called.
-+		 */
-+		pte = set_pte_filter(pte);
-+
-+		/* Perform the setting of the PTE */
- 		__set_pte_at(mm, addr, ptep, pte, 0);
- 		if (--nr == 0)
- 			break;
- 		ptep++;
--		pte = __pte(pte_val(pte) + (1UL << PTE_RPN_SHIFT));
- 		addr += PAGE_SIZE;
-+		/* increment the pfn */
-+		pte = __pte(pte_val(pte) + PAGE_SIZE);
-+
- 	}
--	arch_leave_lazy_mmu_mode();
- }
- 
- void unmap_kernel_page(unsigned long va)
+Ciao, Thorsten
