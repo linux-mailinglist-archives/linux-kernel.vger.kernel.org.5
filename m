@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1AD57CC2E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 14:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 240EF7CC2E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 14:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234968AbjJQMSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 08:18:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57754 "EHLO
+        id S235133AbjJQMSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 08:18:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234794AbjJQMSG (ORCPT
+        with ESMTP id S234341AbjJQMSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 17 Oct 2023 08:18:06 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF14B95;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5D41A6;
         Tue, 17 Oct 2023 05:18:04 -0700 (PDT)
 Date:   Tue, 17 Oct 2023 12:18:02 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
@@ -23,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=QbYP9dGfEQSVZtPNiC/4mXl13vm8ozRDwm7/4xMAAVM=;
-        b=4PbyoR0a6tmvfBHMGrGf0Q3tO0nQUjRxHfYlXPblr6dMdF4fCyvph4YoIjbRAWQ3dqFtuv
-        CWI35peKYMR7qeyosrB8udg0NiOqP2O2XwET2ysrUal3Fj+EQyKhdZu4euAEqTIFHesFDG
-        wp0o+mWbh93QMsFdFSCM68fmljzxpZPFsaD5m6tQ5MOOLE5xk1WVSYMDad9OhSWDYn1DUv
-        BUslMZqX9lVe1DDMBt9GPJ/ir/3nOZ/2uZC91+UCJy+IfZ03pzk8IY8m1UAtO5IrzNUr7y
-        CTOA7l6lWGmAAQL9Plz75SOurXdQAD4AGnf+vMIEDNqXuDFeNP3fs8AlHPzmTg==
+        bh=Zc6GlekuIaWruxlY92BP4Vwz5FKNVgtXn0mapz3PSMk=;
+        b=AiFhEcnKcFBlUPxppjSBgAuqlWHgVNN6+Wdnj82xoxc+MbIPFi3r/rSAC93GiGP9LBhOAe
+        Z3GiAzYznFPAzwfHudDDxGktzmH3mykUJQVTiOcNXCC1WDh6gL6rCyba1tGWTp1ciVK4IP
+        LIgIP6ldsp8bxKPskgLPA6rMtEvtsTn30L3YfwNKWKg8ORe96AB3Zv5Fsj/SqGz0i/xiNZ
+        mTkxES5FImpF/3CpwFN+iakuQXuwosCQBpl6fB980OBhfDq96yUq+cIbgKQI4IxJHgJVgq
+        X/X0R4zL5m7qMLXYulcxaB4/AMSoyzLytxv7vvJq4LEVYkyxnSBrVVgB2CijpQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1697545083;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,14 +36,14 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=QbYP9dGfEQSVZtPNiC/4mXl13vm8ozRDwm7/4xMAAVM=;
-        b=3ESPB+KFr4j+1Ce9nJz8K1BO9fRHYtPmUyDHw0Yh/ki0dJctdjWsg/n5xdaW9aDJtelVPa
-        yX3Xm+gE6D3rmQAA==
+        bh=Zc6GlekuIaWruxlY92BP4Vwz5FKNVgtXn0mapz3PSMk=;
+        b=D9XhXmUL3J4Ympzru/pshdT8UtxcdKZKhSQTNGBYqaqoq0klOZqbsyjQqup5hLCITDdCyi
+        SoO6F80L93cNJYDw==
 From:   "tip-bot2 for Babu Moger" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cache] x86/resctrl: Add multiple tasks to the resctrl group at once
+Subject: [tip: x86/cache] x86/resctrl: Simplify rftype flag definitions
 Cc:     Babu Moger <babu.moger@amd.com>,
         "Borislav Petkov (AMD)" <bp@alien8.de>,
         Peter Newman <peternewman@google.com>,
@@ -52,10 +52,10 @@ Cc:     Babu Moger <babu.moger@amd.com>,
         Reinette Chatre <reinette.chatre@intel.com>,
         ilpo.jarvinen@linux.intel.com, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20231017002308.134480-2-babu.moger@amd.com>
-References: <20231017002308.134480-2-babu.moger@amd.com>
+In-Reply-To: <20231017002308.134480-3-babu.moger@amd.com>
+References: <20231017002308.134480-3-babu.moger@amd.com>
 MIME-Version: 1.0
-Message-ID: <169754508299.3135.1526802957654004468.tip-bot2@tip-bot2>
+Message-ID: <169754508232.3135.14616801148439548823.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -71,31 +71,23 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/cache branch of tip:
 
-Commit-ID:     fe2a20ea0b0953189e57740debc7dcc789d1ea55
-Gitweb:        https://git.kernel.org/tip/fe2a20ea0b0953189e57740debc7dcc789d=
-1ea55
+Commit-ID:     6846dc1a31d1894a7acf52d8442fe73b34091022
+Gitweb:        https://git.kernel.org/tip/6846dc1a31d1894a7acf52d8442fe73b340=
+91022
 Author:        Babu Moger <babu.moger@amd.com>
-AuthorDate:    Mon, 16 Oct 2023 19:23:00 -05:00
+AuthorDate:    Tue, 03 Oct 2023 18:54:22 -05:00
 Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Tue, 17 Oct 2023 11:27:50 +02:00
+CommitterDate: Tue, 17 Oct 2023 11:51:16 +02:00
 
-x86/resctrl: Add multiple tasks to the resctrl group at once
+x86/resctrl: Simplify rftype flag definitions
 
-The resctrl task assignment for monitor or control group needs to be
-done one at a time. For example:
+The rftype flags are bitmaps used for adding files under the resctrl
+filesystem. Some of these bitmap defines have one extra level of
+indirection which is not necessary.
 
-  $mount -t resctrl resctrl /sys/fs/resctrl/
-  $mkdir /sys/fs/resctrl/ctrl_grp1
-  $echo 123 > /sys/fs/resctrl/ctrl_grp1/tasks
-  $echo 456 > /sys/fs/resctrl/ctrl_grp1/tasks
-  $echo 789 > /sys/fs/resctrl/ctrl_grp1/tasks
+Drop the RF_* defines and simplify the macros.
 
-This is not user-friendly when dealing with hundreds of tasks.
-
-Support multiple task assignment in one command with tasks ids separated
-by commas. For example:
-
-  $echo 123,456,789 > /sys/fs/resctrl/ctrl_grp1/tasks
+  [ bp: Massage commit message. ]
 
 Signed-off-by: Babu Moger <babu.moger@amd.com>
 Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
@@ -106,79 +98,49 @@ Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
 Reviewed-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
 Tested-by: Peter Newman <peternewman@google.com>
 Tested-by: Tan Shaopeng <tan.shaopeng@jp.fujitsu.com>
-Link: https://lore.kernel.org/r/20231017002308.134480-2-babu.moger@amd.com
+Link: https://lore.kernel.org/r/20231017002308.134480-3-babu.moger@amd.com
 ---
- Documentation/arch/x86/resctrl.rst     |  9 ++++++++-
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 25 ++++++++++++++++++++++---
- 2 files changed, 30 insertions(+), 4 deletions(-)
+ arch/x86/kernel/cpu/resctrl/internal.h |  9 +++------
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c |  6 +++++-
+ 2 files changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/arch/x86/resctrl.rst b/Documentation/arch/x86/resc=
-trl.rst
-index 4c6421e..178ab1d 100644
---- a/Documentation/arch/x86/resctrl.rst
-+++ b/Documentation/arch/x86/resctrl.rst
-@@ -306,7 +306,14 @@ All groups contain the following files:
- "tasks":
- 	Reading this file shows the list of all tasks that belong to
- 	this group. Writing a task id to the file will add a task to the
--	group. If the group is a CTRL_MON group the task is removed from
-+	group. Multiple tasks can be added by separating the task ids
-+	with commas. Tasks will be assigned sequentially. Multiple
-+	failures are not supported. A single failure encountered while
-+	attempting to assign a task will cause the operation to abort and
-+	already added tasks before the failure will remain in the group.
-+	Failures will be logged to /sys/fs/resctrl/info/last_cmd_status.
-+
-+	If the group is a CTRL_MON group the task is removed from
- 	whichever previous CTRL_MON group owned the task and also from
- 	any MON group that owned the task. If the group is a MON group,
- 	then the task must already belong to the CTRL_MON parent of this
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/res=
+ctrl/internal.h
+index c47ef2f..0ad970c 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -243,12 +243,9 @@ struct rdtgroup {
+  */
+ #define RFTYPE_INFO			BIT(0)
+ #define RFTYPE_BASE			BIT(1)
+-#define RF_CTRLSHIFT			4
+-#define RF_MONSHIFT			5
+-#define RF_TOPSHIFT			6
+-#define RFTYPE_CTRL			BIT(RF_CTRLSHIFT)
+-#define RFTYPE_MON			BIT(RF_MONSHIFT)
+-#define RFTYPE_TOP			BIT(RF_TOPSHIFT)
++#define RFTYPE_CTRL			BIT(4)
++#define RFTYPE_MON			BIT(5)
++#define RFTYPE_TOP			BIT(6)
+ #define RFTYPE_RES_CACHE		BIT(8)
+ #define RFTYPE_RES_MB			BIT(9)
+ #define RF_CTRL_INFO			(RFTYPE_INFO | RFTYPE_CTRL)
 diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/res=
 ctrl/rdtgroup.c
-index 09848ff..fe23969 100644
+index fe23969..09141f1 100644
 --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
 +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -696,11 +696,10 @@ static ssize_t rdtgroup_tasks_write(struct kernfs_open_=
-file *of,
- 				    char *buf, size_t nbytes, loff_t off)
- {
- 	struct rdtgroup *rdtgrp;
-+	char *pid_str;
- 	int ret =3D 0;
- 	pid_t pid;
-=20
--	if (kstrtoint(strstrip(buf), 0, &pid) || pid < 0)
--		return -EINVAL;
- 	rdtgrp =3D rdtgroup_kn_lock_live(of->kn);
- 	if (!rdtgrp) {
- 		rdtgroup_kn_unlock(of->kn);
-@@ -715,7 +714,27 @@ static ssize_t rdtgroup_tasks_write(struct kernfs_open_f=
-ile *of,
- 		goto unlock;
+@@ -3260,7 +3260,11 @@ static int mkdir_rdt_prepare(struct kernfs_node *paren=
+t_kn,
+ 		goto out_destroy;
  	}
 =20
--	ret =3D rdtgroup_move_task(pid, rdtgrp, of);
-+	while (buf && buf[0] !=3D '\0' && buf[0] !=3D '\n') {
-+		pid_str =3D strim(strsep(&buf, ","));
+-	files =3D RFTYPE_BASE | BIT(RF_CTRLSHIFT + rtype);
++	if (rtype =3D=3D RDTCTRL_GROUP)
++		files =3D RFTYPE_BASE | RFTYPE_CTRL;
++	else
++		files =3D RFTYPE_BASE | RFTYPE_MON;
 +
-+		if (kstrtoint(pid_str, 0, &pid)) {
-+			rdt_last_cmd_printf("Task list parsing error pid %s\n", pid_str);
-+			ret =3D -EINVAL;
-+			break;
-+		}
-+
-+		if (pid < 0) {
-+			rdt_last_cmd_printf("Invalid pid %d\n", pid);
-+			ret =3D -EINVAL;
-+			break;
-+		}
-+
-+		ret =3D rdtgroup_move_task(pid, rdtgrp, of);
-+		if (ret) {
-+			rdt_last_cmd_printf("Error while processing task %d\n", pid);
-+			break;
-+		}
-+	}
-=20
- unlock:
- 	rdtgroup_kn_unlock(of->kn);
+ 	ret =3D rdtgroup_add_files(kn, files);
+ 	if (ret) {
+ 		rdt_last_cmd_puts("kernfs fill error\n");
