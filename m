@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 878F37CCDD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 22:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7B847CCDD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 22:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344283AbjJQUZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 16:25:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60184 "EHLO
+        id S233940AbjJQUZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 16:25:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJQUZG (ORCPT
+        with ESMTP id S231149AbjJQUZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 17 Oct 2023 16:25:06 -0400
-Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.144.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C71649F
+X-Greylist: delayed 638 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 17 Oct 2023 13:25:04 PDT
+Received: from relay.smtp-ext.broadcom.com (saphodev.broadcom.com [192.19.144.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C711092
         for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 13:25:04 -0700 (PDT)
 Received: from bld-lvn-bcawlan-34.lvn.broadcom.net (bld-lvn-bcawlan-34.lvn.broadcom.net [10.75.138.137])
-        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 47F4EC0000D8;
-        Tue, 17 Oct 2023 13:14:25 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 47F4EC0000D8
+        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 0BD47C0000EC;
+        Tue, 17 Oct 2023 13:14:27 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 0BD47C0000EC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1697573665;
-        bh=tBn6kkRIWrbPaufSu2mfZ5pGqIIQ8elgGhO/0Q133Gk=;
-        h=From:To:Subject:Date:From;
-        b=Y+eT6a9jWr5nm+jBffFQ/Pge5G0n9ajKdzLObrp4CgSAIJ8mwFFoTbJszmXpXbwBW
-         O9A5S8Wgr83qrE9WkTi3cJNDgeVZG4qfAkov6SNwcYbdJLpYflwfEnUK7I4wtsduCm
-         7ygYYulzTdYg2Gej7JnTF7I+K+NCAECEsgrlj24E=
+        s=dkimrelay; t=1697573667;
+        bh=oW0lQ3mYZRJIZP8XWJKIYdybmuCVAGqC6zfftB7GtOY=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=bLOui97vVPIIAoyBiNvaNPSDGKX4vJPCpU6gKWtKhyke5YskrVqDIHOch+H92sqWw
+         1yFn8P/zuTiA8Yvnl/JNCY/UxZx+Qowgecy+EGNeyA0GurDlL91iySkiS9cD1Dop8V
+         kkNxGalHPTrHw7sZUJyNUkCL2HVHJpUig5f0ozgk=
 Received: from bcacpedev-irv-3.lvn.broadcom.net (bcacpedev-irv-3.lvn.broadcom.net [10.75.138.105])
-        by bld-lvn-bcawlan-34.lvn.broadcom.net (Postfix) with ESMTPSA id 0AE6418728C;
-        Tue, 17 Oct 2023 13:14:25 -0700 (PDT)
+        by bld-lvn-bcawlan-34.lvn.broadcom.net (Postfix) with ESMTPSA id BB8AE18728C;
+        Tue, 17 Oct 2023 13:14:26 -0700 (PDT)
 From:   dregan@broadcom.com
 To:     dregan@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
         linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
@@ -40,10 +41,12 @@ To:     dregan@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
         JaimeLiao <jaimeliao.tw@gmail.com>,
         Arseniy Krasnov <AVKrasnov@sberdevices.ru>,
         Adam Borowski <kilobyte@angband.pl>
-Subject: [PATCH v3 1/4] mtd: rawnand: Add destructive operation
-Date:   Tue, 17 Oct 2023 13:14:14 -0700
-Message-Id: <20231017201417.129872-1-dregan@broadcom.com>
+Subject: [PATCH v3 2/4] mtd: rawnand: NAND controller write protect
+Date:   Tue, 17 Oct 2023 13:14:15 -0700
+Message-Id: <20231017201417.129872-2-dregan@broadcom.com>
 X-Mailer: git-send-email 2.37.3
+In-Reply-To: <20231017201417.129872-1-dregan@broadcom.com>
+References: <20231017201417.129872-1-dregan@broadcom.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -55,76 +58,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Boris Brezillon <bbrezillon@kernel.org>
+From: David Regan <dregan@broadcom.com>
 
-Erase and program operations need the write protect (wp) pin to be
-de-asserted to take effect. Add the concept of destructive
-operation and pass the information to exec_op() so controllers know
-when they should de-assert this pin without having to decode
-the command opcode.
+Allow NAND controller to be responsible for write protect pin
+handling during fast path and exec_op destructive operation
+when controller_wp flag is set.
 
-Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
 Signed-off-by: David Regan <dregan@broadcom.com>
 ---
-Changes in v3: updated comments and email address
+Changes in v3: update comments
 
-Changes in v2: gave credit to Boris Brezillon
+Changes in v2: none
 ---
- drivers/mtd/nand/raw/nand_base.c | 6 ++++--
- include/linux/mtd/rawnand.h      | 9 +++++++++
- 2 files changed, 13 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/raw/nand_base.c | 4 ++++
+ include/linux/mtd/rawnand.h      | 2 ++
+ 2 files changed, 6 insertions(+)
 
 diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index d4b55155aeae..47cc2c35153b 100644
+index 47cc2c35153b..38ed0ced5b8e 100644
 --- a/drivers/mtd/nand/raw/nand_base.c
 +++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -1494,7 +1494,8 @@ static int nand_exec_prog_page_op(struct nand_chip *chip, unsigned int page,
- 			    NAND_COMMON_TIMING_NS(conf, tWB_max)),
- 		NAND_OP_WAIT_RDY(NAND_COMMON_TIMING_MS(conf, tPROG_max), 0),
- 	};
--	struct nand_operation op = NAND_OPERATION(chip->cur_cs, instrs);
-+	struct nand_operation op = NAND_DESTRUCTIVE_OPERATION(chip->cur_cs,
-+							      instrs);
- 	int naddrs = nand_fill_column_cycles(chip, addrs, offset_in_page);
+@@ -367,6 +367,10 @@ static int nand_check_wp(struct nand_chip *chip)
+ 	if (chip->options & NAND_BROKEN_XD)
+ 		return 0;
  
- 	if (naddrs < 0)
-@@ -1917,7 +1918,8 @@ int nand_erase_op(struct nand_chip *chip, unsigned int eraseblock)
- 			NAND_OP_WAIT_RDY(NAND_COMMON_TIMING_MS(conf, tBERS_max),
- 					 0),
- 		};
--		struct nand_operation op = NAND_OPERATION(chip->cur_cs, instrs);
-+		struct nand_operation op = NAND_DESTRUCTIVE_OPERATION(chip->cur_cs,
-+								      instrs);
- 
- 		if (chip->options & NAND_ROW_ADDR_3)
- 			instrs[1].ctx.addr.naddrs++;
++	/* controller responsible for NAND write protect */
++	if (chip->controller->controller_wp)
++		return 0;
++
+ 	/* Check the WP bit */
+ 	ret = nand_status_op(chip, &status);
+ 	if (ret)
 diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 90a141ba2a5a..31aceda8616c 100644
+index 31aceda8616c..fcad94aa0515 100644
 --- a/include/linux/mtd/rawnand.h
 +++ b/include/linux/mtd/rawnand.h
-@@ -1008,6 +1008,7 @@ struct nand_op_parser {
+@@ -1111,6 +1111,7 @@ struct nand_controller_ops {
+  *			the bus without restarting an entire read operation nor
+  *			changing the column.
+  * @supported_op.cont_read: The controller supports sequential cache reads.
++ * @controller_wp:	the controller is in charge of handling the WP pin.
   */
- struct nand_operation {
- 	unsigned int cs;
-+	bool deassert_wp;
- 	const struct nand_op_instr *instrs;
- 	unsigned int ninstrs;
+ struct nand_controller {
+ 	struct mutex lock;
+@@ -1119,6 +1120,7 @@ struct nand_controller {
+ 		unsigned int data_only_read: 1;
+ 		unsigned int cont_read: 1;
+ 	} supported_op;
++	bool controller_wp;
  };
-@@ -1019,6 +1020,14 @@ struct nand_operation {
- 		.ninstrs = ARRAY_SIZE(_instrs),			\
- 	}
  
-+#define NAND_DESTRUCTIVE_OPERATION(_cs, _instrs)		\
-+	{							\
-+		.cs = _cs,					\
-+		.deassert_wp = true,				\
-+		.instrs = _instrs,				\
-+		.ninstrs = ARRAY_SIZE(_instrs),			\
-+	}
-+
- int nand_op_parser_exec_op(struct nand_chip *chip,
- 			   const struct nand_op_parser *parser,
- 			   const struct nand_operation *op, bool check_only);
+ static inline void nand_controller_init(struct nand_controller *nfc)
 -- 
 2.37.3
 
