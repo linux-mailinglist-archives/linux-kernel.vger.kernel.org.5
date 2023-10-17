@@ -2,53 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3827CC1BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 13:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA9D17CC1CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 13:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234424AbjJQL3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 07:29:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34916 "EHLO
+        id S234752AbjJQLbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 07:31:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232134AbjJQL3S (ORCPT
+        with ESMTP id S232644AbjJQLbD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 07:29:18 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41269B6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 04:29:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8E0DC433C7;
-        Tue, 17 Oct 2023 11:29:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697542156;
-        bh=LP4csdsL40nCe4OI51VZDntZqUrXlSQ7yWdsMFKaLak=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M0Cmq2C+o4Ccul/EWW2mklmE9X/PrY0lNRXHgKvtY3w4oCgdpp8BFoffq17cNW2q4
-         /YosBj6Mku4+8YMfTAcfVGVPyGRkEhEaZGfnFdxmyZic8NU06T8oPaOEYAs4/O3P36
-         uQol5micnCXAOrPBNDNbscb1aN1kKtHuv1AiZqddeTk/GJECc6L0zop6tMWh4pofAq
-         0ossgeXpAJ/DPcA1zWayBKkKTk6TPIW1CMr/Osx6D2oyo8q2cK+6+L/LXv00xMt+SJ
-         Tfg0AoN6ua6akDRHgjClxdF0NNTFjeo3ejUbWV4G7ewHDoKyIFEQn6WkvcmKJMZtPF
-         jTR0SUq5q/qDA==
-Date:   Tue, 17 Oct 2023 12:29:11 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Daniel Beer <daniel.beer@igorinstitute.com>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: dt-bindings: tas5805m: Disallow undefined
- properties
-Message-ID: <0498f609-357b-4242-b3c1-d53967f1faa8@sirena.org.uk>
-References: <20231016155547.2973853-1-robh@kernel.org>
- <20231017-blinking-barricade-9e068a5fc602@spud>
+        Tue, 17 Oct 2023 07:31:03 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5820EA;
+        Tue, 17 Oct 2023 04:31:01 -0700 (PDT)
+Date:   Tue, 17 Oct 2023 11:30:57 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1697542258;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8VsSLdFpc/PxeSRQjP+bqFWYb+ZOMba2A5yv3BN4Ntc=;
+        b=dN9Hs9gc5eTj1DpWxdv/ygfF9Ca1bGFGDqbInmo9W7mCZcHMlwemY+q/F03T2K1KboC/P7
+        pYHbi7YqyGjrqhTMEoequqLS22c0DWvZyKN/np8BVP2wcRrHG6eD/V8Uz0WPSipm5J1N2d
+        6NLt69DyhOGDY7J8f+JruHEyvZeWs+ZrIQ6Q9RWzjDsLh73YHFnUC9KywwCgHUgxozwUPJ
+        lSgdhijegRgZ2grmw75r9eWAW0MNXhtBOeEBZag8ab3MyDIwt4tErto6XriHd6EHs+3UVF
+        3cEQn5oniYw/Ks6KcSyn2J+B/bQ6gUKwEzm+5fQk/D+dh/adybXh9NNQycFE/g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1697542258;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8VsSLdFpc/PxeSRQjP+bqFWYb+ZOMba2A5yv3BN4Ntc=;
+        b=Qw5Y5LAWf5581R0D5BpClUx2nMfCxL+W4QQ4hXAOQBdZ2gYvfYAzkKA1w5dgFOt7l+Pe+w
+        ckVtLBK5f0dnwqAQ==
+From:   "tip-bot2 for Cuda-Chen" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] locking/seqlock: Fix grammar in comment
+Cc:     "Cuda-Chen" <clh960524@gmail.com>, Ingo Molnar <mingo@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20231017053703.11312-1-clh960524@gmail.com>
+References: <20231017053703.11312-1-clh960524@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="b2wBVIPRJdO8J3Zq"
-Content-Disposition: inline
-In-Reply-To: <20231017-blinking-barricade-9e068a5fc602@spud>
-X-Cookie: Santa Claus is watching!
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Message-ID: <169754225791.3135.5867616537224142334.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,41 +63,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the locking/core branch of tip:
 
---b2wBVIPRJdO8J3Zq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Commit-ID:     184fdf9fc7ae6ae7155768faa48fc609d1a24b7e
+Gitweb:        https://git.kernel.org/tip/184fdf9fc7ae6ae7155768faa48fc609d1a24b7e
+Author:        Cuda-Chen <clh960524@gmail.com>
+AuthorDate:    Tue, 17 Oct 2023 13:37:03 +08:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 17 Oct 2023 13:28:12 +02:00
 
-On Tue, Oct 17, 2023 at 11:50:42AM +0100, Conor Dooley wrote:
-> On Mon, Oct 16, 2023 at 10:55:47AM -0500, Rob Herring wrote:
-> > Device specific bindings should not allow undefined properties. This is
-> > accomplished in json-schema with 'additionalProperties: false'.
-> >=20
-> > Examples should be last in the schema, so move additionalProperties up
-> > while we're here.
-> >=20
-> > Signed-off-by: Rob Herring <robh@kernel.org>
+locking/seqlock: Fix grammar in comment
 
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+The "neither writes before and after ..." for the description
+of do_write_seqcount_end() should be "neither writes before nor after".
 
-Rob, I don't have the original patch for this.  It looks like whatever
-email troubles you were having are persisting - if there's anything else
-you've sent me I'm just unawaere of it.=20
+Signed-off-by: Cuda-Chen <clh960524@gmail.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20231017053703.11312-1-clh960524@gmail.com
+---
+ include/linux/seqlock.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---b2wBVIPRJdO8J3Zq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUucAYACgkQJNaLcl1U
-h9A31Af/bVFGDwltLpFkDhMtgvv5mBtHMksfRt66A8yyK173lHwQv671KtfOouGV
-Me5R/4H5X7taXZ5i29SzDGlKwvKEo05OoXVWCD1WXgpSBXQQO/m+5Lpw3v39mzj+
-VUmhmFhXnVPZypXscP7Mf7e+J2rLNA4HcTphoqF2Ohprk3otRwQ+7GH7dUsjBB8j
-h2psO+rfr0IxAK90iFfgLp/3pJyIfubRHgHiNMz/AeiPiJF4NZLPPxz2U+hpgdh+
-kcQ95YVWFT3c9RPxPXUrcqolaBbXkNxCm3ErwHEWVA024Z/Ldx1YmO8jwgtmmBA3
-n9W3o73nz1xspcS/4beeKkcZ7fH3jA==
-=vvnq
------END PGP SIGNATURE-----
-
---b2wBVIPRJdO8J3Zq--
+diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
+index 80f21d2..e92f9d5 100644
+--- a/include/linux/seqlock.h
++++ b/include/linux/seqlock.h
+@@ -584,7 +584,7 @@ static inline void do_write_seqcount_end(seqcount_t *s)
+  * via WRITE_ONCE): a) to ensure the writes become visible to other threads
+  * atomically, avoiding compiler optimizations; b) to document which writes are
+  * meant to propagate to the reader critical section. This is necessary because
+- * neither writes before and after the barrier are enclosed in a seq-writer
++ * neither writes before nor after the barrier are enclosed in a seq-writer
+  * critical section that would ensure readers are aware of ongoing writes::
+  *
+  *	seqcount_t seq;
