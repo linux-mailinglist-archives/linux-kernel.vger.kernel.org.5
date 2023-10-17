@@ -2,173 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D3AC7CCFDE
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 00:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 619567CCFE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 00:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234627AbjJQWHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 18:07:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39914 "EHLO
+        id S234787AbjJQWMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 18:12:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230056AbjJQWG6 (ORCPT
+        with ESMTP id S230056AbjJQWMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 18:06:58 -0400
-Received: from DM4PR02CU002.outbound.protection.outlook.com (mail-centralusazon11013001.outbound.protection.outlook.com [52.101.64.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EBF495
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 15:06:55 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lp4pgn/TQr2annnefCXUCZnvGeXrpBVJKmEeaSrd+lhGpFzx+c6Q1OmFrCv5he1RHdo7dLV3j3V4wbpdeVJhEr1YsdG7N0Ghp/axRklVy/qgKhdM6PVamAq4hzuRFeJuxCwQZCiuXxrT8M9TWzNepY2Tgyb5BrFFRtkHEL/Mti1DrLYLfkoBa1OQhgG4UJWHsqyu7JK63c75mZ6BVOrEmlDm2I+7L1FZWkHRh3s7T9oCxroeJ7L0hxXyVLZ6B1bkeiGrJspF80ZVkdlL6z2Yg8hN7TSCYyLrcsflkKzN3HXIp6aPOsTz8pAd3GyyCZhstQhXFwOKzHjJWKysuSz/Ug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2f7KdOSQD5rQ9bjlMkRdypU6RgtWOUaYCAgMu2x8ZaM=;
- b=beUhCCH2+NyHaMMG98RVvGdnpMra1pfjOO1xzdXvuxRsyYyc973OsYMGawicwiMcsMMvqLvgeY2OY6yT6+GvbA2Bfug8RDJJsaUilhj9USeOS2Y0Iu8kwNR3Quv/NAFxbCpWSiECSW3J9afKX73Sl17bsFadFhOORE0NBWito7mrGfjnrqalzBeKpJgiGZ6gpsaCkiZTyNEddMgUIU+s9dk212IBZ4uKIX36OJrSY+uwOlktNxcZRYM1NHEOr5Wm8+AOyE518t2xbLQcVLb1MHZHOCR6P4YH16/f5NCY+1N/FbGqNZyMfLsqGYjlGT2IZptWveDpwVXh56PSog9z7Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2f7KdOSQD5rQ9bjlMkRdypU6RgtWOUaYCAgMu2x8ZaM=;
- b=LhxaMAeaRurXLdDugYquScALYqV+SqC2gVHF256hIdymuZmZ1LfpMq7KKEWgWXXUVmEXiOGPXJX4+TO6QISaSQGFWkFgIKFCncC6JFU5l82Q3JYOkc3L+pxcD5rlqgmN3V6zjE4vrMRs9Fl7FaVlcWZ6uG+tTUhfps8rc1DJ+WE=
-Received: from BY3PR05MB8531.namprd05.prod.outlook.com (2603:10b6:a03:3ce::6)
- by SA3PR05MB9761.namprd05.prod.outlook.com (2603:10b6:806:31b::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.35; Tue, 17 Oct
- 2023 22:06:51 +0000
-Received: from BY3PR05MB8531.namprd05.prod.outlook.com
- ([fe80::e6fb:726:9aa2:fa13]) by BY3PR05MB8531.namprd05.prod.outlook.com
- ([fe80::e6fb:726:9aa2:fa13%6]) with mapi id 15.20.6886.037; Tue, 17 Oct 2023
- 22:06:51 +0000
-From:   Nadav Amit <namit@vmware.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-CC:     Uros Bizjak <ubizjak@gmail.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
-Thread-Topic: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
-Thread-Index: AQHZ+5jZGZywpkB5zE2yxvhqDFo/FrBDSECAgAAOE4CAAAQxgIABoxnfgAAgI4CAAAYlgIAHqOMRgAAI04CAADzyiIABTsvzgAADAQCAAB/hAIAADVOAgAADqIA=
-Date:   Tue, 17 Oct 2023 22:06:51 +0000
-Message-ID: <10930088-3B4E-4BED-896C-CA66AB196010@vmware.com>
-References: <20231010164234.140750-1-ubizjak@gmail.com>
- <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
- <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
- <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
- <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com>
- <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
- <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
- <CAHk-=wj2Co_g3RQ=JkDZC7PYbRqDPq7mePQ0=eYhhtpEgqJD0w@mail.gmail.com>
- <0617BB2F-D08F-410F-A6EE-4135BB03863C@vmware.com>
- <CAFULd4Zjd6idrLXuF59cwKxyd1a--DsiJwGQAKai9Tph30dAow@mail.gmail.com>
- <CAHk-=wgSsfo89ESHcngvPCkQSh_YAJG-0g7fupb+Uv0E1d_EcQ@mail.gmail.com>
- <7D77A452-E61E-4B8B-B49C-949E1C8E257C@vmware.com>
- <CAHk-=wj1dLFkL9Qv2vtk0O8Q6WE-11Jq3KucZoz2Kkw59LAexw@mail.gmail.com>
- <9F926586-20D9-4979-AB7A-71124BBAABD3@vmware.com>
- <CAHk-=wi7YKPKKZw5SpA9gZcf4paG4pZ2kUM50g-LQmdF0g6vWg@mail.gmail.com>
- <CAFULd4bpHkNzCzKed23mTTBWRyhPnOm91f+F6UE413VK+oFtMQ@mail.gmail.com>
- <CAFULd4Z-q4Ot6iyOLo7DkjE=dY3RHXUV+yx6R0iWk=-tZ6ufhQ@mail.gmail.com>
- <CAHk-=wjSnECwAe+Bi0PD6uods3ZDs8up5OAy-qZKF5OgPLpDiA@mail.gmail.com>
-In-Reply-To: <CAHk-=wjSnECwAe+Bi0PD6uods3ZDs8up5OAy-qZKF5OgPLpDiA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3731.700.6)
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vmware.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BY3PR05MB8531:EE_|SA3PR05MB9761:EE_
-x-ms-office365-filtering-correlation-id: 91da9525-4d2a-473a-fedf-08dbcf5d5da9
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PUXNnoHHPSr10Z6JSvsSsRBimSMyTkr+f/aSoka6psFmbCvuK9/hx4KU7W1LUd+AmGlZ+wCD7I/3optnnRc1YUaOUc5d1oxJUpRx6JpSPUGUZxib3PRI+ClFAczTTsva0HP7POi7rzUFrMaacSXxWIqOsglrAdb+AqqpDSfKNwNTU3C61MYdRFz86h3fYZpTgS5Kr/9a+yFP8BLkg56k+s8sSqfBFl0q9z76laype93vaoUR9Xhs7QpDIcwtueYdtXsmBBaJzDQp8Z8Sp0X9CCbItWfe3qyuLDHhWtmpPQxfRqCd+95Lo33yl5vVINOH+GbJ+jg/xcpSIhbLIIDJFH7/AUMEztLbCosItoNdS45wod8CH6yej5uklFlQZfFecQ4Jgo3HFzvDDGagKyWvt0j/o6MmtlNZ1PYXGIQtQIa4PfMJlVNSUsVCv4E8UxKBXNR+UumdgP/Rnjy442Gd5sjTK+QIruPbQkrQIH3SEff1JSgNfzB69jpV6nsRukmHwoMf8W+8mEYABf+GKhxSOp4diVOZh0QonhE/rUJi2p53WDiFRlT5a8HIEs+4CRl23N6ciYGqAZTkwGLdUxri4HlIhhkpEVvbUbJ2244EmTR+P7D2aYqhDmEeUGp4XfYMikYXWJs0QJkQCxIYe/YsvEaxCML/EiM8wAzwDkHL8SP80YYsnelWzDb08RgGuHlkwpeayhMlaOzXgplgVSzIIA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY3PR05MB8531.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(396003)(366004)(346002)(136003)(230922051799003)(1800799009)(64100799003)(451199024)(186009)(53546011)(83380400001)(36756003)(26005)(5660300002)(41300700001)(8936002)(4326008)(8676002)(2616005)(86362001)(71200400001)(6486002)(38070700005)(122000001)(66476007)(2906002)(66946007)(478600001)(4744005)(54906003)(316002)(7416002)(91956017)(6916009)(66556008)(64756008)(66446008)(76116006)(6512007)(6506007)(33656002)(38100700002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?jZzmZgN7XSFR1Z4X6q8WwViakkPCTUHMDaPoLm9jzQj+WCgQ7cgiI0uYH8ik?=
- =?us-ascii?Q?sY9MlGO45A3dejOrGTDVMzMmi/pKhYdGgVTjeVK77qEN0Ol5PaRwDn5tZyEd?=
- =?us-ascii?Q?oyLWRc8pLg9vZJjQgkZm6t+ndhrv/wBYLug9HZWw+jRbISWRJCoSG0YFL54/?=
- =?us-ascii?Q?8UU+xA25rOe+071/EAsL99JjFCO+RxGp+P3ta64XhgIieDXtONCF+3xpERe9?=
- =?us-ascii?Q?18/LZPqvoa05vnGY1fLTPOUVDMCpg3B/BOnRQ67KsnJvHJInQM6p1B9PoeEA?=
- =?us-ascii?Q?+XgonRtL3UBfwCbY9ku7EJHEhuV9KekTZh2i5NrmLvuD9eYONoKktiNwNMMS?=
- =?us-ascii?Q?8NeVzB4hxquialEzkdk8wa/S5HlLEmoVklAw+3SpouEwchKnmOlbyduUP3JI?=
- =?us-ascii?Q?hWKDpRy1MqP5lQMd010pOBXK7+Q40EnzzDfQOfz/xGQMX4KokbrmC8W3D/bA?=
- =?us-ascii?Q?CIndbuGhkzrUXEje1E2RnGhxgVUMDiNSwP/mrBGBQ/+P0d3hAhI8XHYYU0kN?=
- =?us-ascii?Q?f7La43mUdGOk+Ll3fLDFCbbiUZbKYnPdjIPDNiFQbEcqKDxAIowghVRrDqbM?=
- =?us-ascii?Q?2rwGGOEzm6YSxIcFJjJ0PvwcxRc9ARUZC2qS/yV0NdYVzZPlHZUo0yRrSJzr?=
- =?us-ascii?Q?+X9LSWS2hU7lsOeeyv+C344xVOqyW4XcWsBuBtex58UCwDYiLgFP58/a/kQL?=
- =?us-ascii?Q?20YUiywOgqIjTsbjG/MPP1PeiQoImEsx+dAqV16ornBQaXliJHrzpCLU5IGE?=
- =?us-ascii?Q?KJry2kKC1OdrP72COZMPSnzmO13Vy5pbxLLK4Rfc5eWGdrzgqLDRtnKi1H5x?=
- =?us-ascii?Q?gtmIvz5+ey7lZAhs4Zl+ygNb+JzXzrmqLEY9xZHhvcToOSf15/SdTxcA87b8?=
- =?us-ascii?Q?5WuDxI0BFiKMxY9CwDM+LhNGaZsNNTR7WWN7QIgSrN0qP6+UX5AkqpjGWZh9?=
- =?us-ascii?Q?G8Il4FCUl0Ci873JnsE3nqpvjHRMD+SWfiwHaq/RRGzyiTcaDITR1JAwGNGr?=
- =?us-ascii?Q?9q6gjeSPJAYDV5n+yTCiH3VNV3KukvpNRyElCj0QLKaCZwASIx+UBvE0KrhV?=
- =?us-ascii?Q?yGhZqGx/jIEwTEQt+7DtBEsZ2VN5DZxXqLPF/2q5iv4rTbNx5DVOlbnV3lCh?=
- =?us-ascii?Q?aoPfiE0sXIekiVXv2KaO1nI/VeGogeXKqsYVEVwVrdIFFdXJCFhl6lcLpbIV?=
- =?us-ascii?Q?oqo1HLHmpw4nmboj5IQY4Ra7lbhZ+2Z/qt/BOCI4RpwcgyILzgcFKHUwc3aO?=
- =?us-ascii?Q?BujkkGcbnrb6OmW8xVsnv31+UvcKkCAsBSZM2zTU1+sfBNfIhSgImebcIhey?=
- =?us-ascii?Q?V9+yskbqxMQwqGKmKj0DtV37Ftjq9x7wFApXnaOL0eXFVB2U4hbzLUnOcU4I?=
- =?us-ascii?Q?hWDhUepKomHb0ldyAediFBbNlWlhg3JNMmE+SJ11i4xe6KA03UxQfrbYFo1/?=
- =?us-ascii?Q?wlRqPitz0G7kfrOWnJJ2ZLG4MeqXIlNbR4Ee9VnHOo/4R//IIsddArJMmhwA?=
- =?us-ascii?Q?bDbyagiketYxafPFtCxxsxY+vr58KTDsrLZk4QUWTEoZTiaa89/NwzEBGxA+?=
- =?us-ascii?Q?B+8L7HPvlAFOfJCDhPrZV+ZUoXEmj87N5z/+albY?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1538DFED908F2E4699C3350A031E93D6@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Tue, 17 Oct 2023 18:12:13 -0400
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB8AB0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 15:12:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1697580728;
+        bh=aq553lTH/P/eg3unHB+xg5ckzW8DyeiJUeDSvYFj37Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SGtnRQyii2OodO7HTwkxdYWU+oLFQ009vvcPAHAezz9SYIQzDaHHXSnRyKcDnU6yn
+         KEJaeuI5yxaqPKb6A9O81cHwA535hPhyJ4dVRhkmRrw+vaYkPBSQFwk89L2iwGKBNF
+         qEGRk1f0u5Uhoiz/yPbKlNkH/GpPerx8XpJP3AoiZsIo7MMgfBGXqGCyq/crSzUK4Y
+         zaq7p5dP/Kei6uoiRTDkYdYoAHiNbLUtGCQvGKQeFMm8hGKp2woH0Fitg26W1c7BzP
+         +czYOL6No4uL6zsaRNclqFDcIxfOfMOuBe2c8g8mBbXb11Z5aViTR34cTRm9EqS2W/
+         HT4zb+MY9WgPQ==
+Received: from thinkos.internal.efficios.com (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4S97WD4kNBz1Xwy;
+        Tue, 17 Oct 2023 18:12:08 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
+        Aaron Lu <aaron.lu@intel.com>, Chen Yu <yu.c.chen@intel.com>,
+        Tim Chen <tim.c.chen@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>, x86@kernel.org
+Subject: [RFC PATCH] sched/fair: Introduce WAKEUP_BIAS_PREV to reduce migrations
+Date:   Tue, 17 Oct 2023 18:12:04 -0400
+Message-Id: <20231017221204.1535774-1-mathieu.desnoyers@efficios.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY3PR05MB8531.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 91da9525-4d2a-473a-fedf-08dbcf5d5da9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Oct 2023 22:06:51.2810
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: oWYg4UthisK5ysStkifSZ15nN13PvAXhtTPGxCfdpMNQDvVdUXHCK7evdA2QT7olUH6AxZF1PZc4njqsfFkODg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR05MB9761
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Introduce the WAKEUP_BIAS_PREV scheduler feature to reduce the task
+migration rate.
 
+For scenarios where the system is under-utilized (CPUs are partly idle),
+eliminate frequent task migrations from CPUs with spare capacity left to
+completely idle CPUs by introducing a bias towards the previous CPU if
+it is idle or has spare capacity left in select_idle_sibling(). Use 25%
+of the previously used CPU capacity as spare capacity cutoff.
 
-> On Oct 18, 2023, at 12:53 AM, Linus Torvalds <torvalds@linux-foundation.o=
-rg> wrote:
->=20
->=20
-> but none of this should even matter, because by the time we actually
-> *schedule* that thread, we'll set active_mm to the right thing.
->=20
-> Can anybody see what's up?
+For scenarios where the system is fully or over-utilized (CPUs are
+almost never idle), favor the previous CPU (rather than the target CPU)
+if all CPUs are busy to minimize migrations. (suggested by Chen Yu)
 
-Could it be related to exec_mmap() -> exec_mm_release() -> mm_release() -> =
-deactivate_mm() ?
+The following benchmarks are performed on a v6.5.5 kernel with
+mitigations=off.
 
-#define deactivate_mm(tsk, mm)                  \
-do {                                            \
-        if (!tsk->vfork_done)                   \
-                shstk_free(tsk);                \
-        load_gs_index(0);                       \
-        loadsegment(fs, 0);                     \
-} while (0)
+This speeds up the following hackbench workload on a 192 cores AMD EPYC
+9654 96-Core Processor (over 2 sockets):
 
-We change gs_index(), so perhaps it affects later GS reads. There is also t=
-his
-X86_BUG_NULL_SEG. Need to dive deeper; just initial thoughts though (i.e., =
-I might be
-completely off).
+hackbench -g 32 -f 20 --threads --pipe -l 480000 -s 100
+
+from 49s to 29s. (41% speedup)
+
+We can observe that the number of migrations is reduced significantly
+(-94%) with this patch, which may explain the speedup:
+
+Baseline:      118M cpu-migrations  (9.286 K/sec)
+With patch:      7M cpu-migrations  (0.701 K/sec)
+
+As a consequence, the stalled-cycles-backend are reduced:
+
+Baseline:     8.16% backend cycles idle
+With patch:   6.46% backend cycles idle
+
+Interestingly, the rate of context switch increases with the patch, but
+it does not appear to be an issue performance-wise:
+
+Baseline:     454M context-switches (35.677 K/sec)
+With patch:   683M context-switches (69.299 K/sec)
+
+This was developed as part of the investigation into a weird regression
+reported by AMD where adding a raw spinlock in the scheduler context
+switch accelerated hackbench. It turned out that changing this raw
+spinlock for a loop of 10000x cpu_relax within do_idle() had similar
+benefits.
+
+This patch achieves a similar effect without the busy-waiting by
+allowing select_task_rq to favor the previously used CPUs based on the
+utilization of that CPU. The threshold of 25% spare capacity has been
+identified empirically using the hackbench workload.
+
+Feedback is welcome. I am especially interested to learn whether this
+patch has positive or detrimental effects on performance of other
+workloads.
+
+Link: https://lore.kernel.org/r/09e0f469-a3f7-62ef-75a1-e64cec2dcfc5@amd.com
+Link: https://lore.kernel.org/lkml/20230725193048.124796-1-mathieu.desnoyers@efficios.com/
+Link: https://lore.kernel.org/lkml/20230810140635.75296-1-mathieu.desnoyers@efficios.com/
+Link: https://lore.kernel.org/lkml/20230810140635.75296-1-mathieu.desnoyers@efficios.com/
+Link: https://lore.kernel.org/lkml/f6dc1652-bc39-0b12-4b6b-29a2f9cd8484@amd.com/
+Link: https://lore.kernel.org/lkml/20230822113133.643238-1-mathieu.desnoyers@efficios.com/
+Link: https://lore.kernel.org/lkml/20230823060832.454842-1-aaron.lu@intel.com/
+Link: https://lore.kernel.org/lkml/20230905171105.1005672-1-mathieu.desnoyers@efficios.com/
+Link: https://lore.kernel.org/lkml/cover.1695704179.git.yu.c.chen@intel.com/
+Link: https://lore.kernel.org/lkml/20230929183350.239721-1-mathieu.desnoyers@efficios.com/
+Link: https://lore.kernel.org/lkml/20231012203626.1298944-1-mathieu.desnoyers@efficios.com/
+Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Valentin Schneider <vschneid@redhat.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ben Segall <bsegall@google.com>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
+Cc: Aaron Lu <aaron.lu@intel.com>
+Cc: Chen Yu <yu.c.chen@intel.com>
+Cc: Tim Chen <tim.c.chen@intel.com>
+Cc: K Prateek Nayak <kprateek.nayak@amd.com>
+Cc: Gautham R . Shenoy <gautham.shenoy@amd.com>
+Cc: x86@kernel.org
+---
+ kernel/sched/fair.c     | 46 +++++++++++++++++++++++++++++++++++++++--
+ kernel/sched/features.h |  6 ++++++
+ kernel/sched/sched.h    |  6 ++++++
+ 3 files changed, 56 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 1d9c2482c5a3..23c055db48d1 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -7113,6 +7113,25 @@ static inline bool asym_fits_cpu(unsigned long util,
+ 	return true;
+ }
+ 
++/*
++ * Use the util_est.enqueued of the runqueue to estimate how much
++ * capacity is left in the cpu. util_est.enqueued sums the utilization
++ * of the runnable tasks, _excluding_ blocked and sleeping tasks.
++ *
++ * Compare this to arch_scale_cpu_capacity(). This is imperfect because
++ * it does not take into account the capacity used by other scheduling
++ * classes, but capacity_of() accounts for blocked and sleeping tasks
++ * from other scheduler classes, which is not what is needed here.
++ */
++static bool
++spare_capacity_cpu(int cpu, struct task_struct *p)
++{
++	if (!sched_feat(UTIL_EST))
++		return false;
++	return READ_ONCE(cpu_rq(cpu)->cfs.avg.util_est.enqueued) * 1024 <=
++	       arch_scale_cpu_capacity(cpu) * (1024 - SPARE_CAPACITY_THRESHOLD);
++}
++
+ /*
+  * Try and locate an idle core/thread in the LLC cache domain.
+  */
+@@ -7139,18 +7158,32 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+ 	 */
+ 	lockdep_assert_irqs_disabled();
+ 
++	/*
++	 * With the WAKEUP_BIAS_PREV feature, if the previous CPU is
++	 * cache affine and has spare capacity left, prefer the previous
++	 * CPU to the target CPU to inhibit costly task migration.
++	 */
++	if (sched_feat(WAKEUP_BIAS_PREV) &&
++	    (prev == target || cpus_share_cache(prev, target)) &&
++	    (available_idle_cpu(prev) || sched_idle_cpu(prev) || spare_capacity_cpu(prev, p)) &&
++	    asym_fits_cpu(task_util, util_min, util_max, prev))
++		return prev;
++
+ 	if ((available_idle_cpu(target) || sched_idle_cpu(target)) &&
+ 	    asym_fits_cpu(task_util, util_min, util_max, target))
+ 		return target;
+ 
+ 	/*
+-	 * If the previous CPU is cache affine and idle, don't be stupid:
++	 * Without the WAKEUP_BIAS_PREV feature, use the previous CPU if
++	 * it is cache affine and idle if the target cpu is not idle.
+ 	 */
+-	if (prev != target && cpus_share_cache(prev, target) &&
++	if (!sched_feat(WAKEUP_BIAS_PREV) &&
++	    prev != target && cpus_share_cache(prev, target) &&
+ 	    (available_idle_cpu(prev) || sched_idle_cpu(prev)) &&
+ 	    asym_fits_cpu(task_util, util_min, util_max, prev))
+ 		return prev;
+ 
++
+ 	/*
+ 	 * Allow a per-cpu kthread to stack with the wakee if the
+ 	 * kworker thread and the tasks previous CPUs are the same.
+@@ -7217,6 +7250,15 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+ 	if ((unsigned)i < nr_cpumask_bits)
+ 		return i;
+ 
++	/*
++	 * With the WAKEUP_BIAS_PREV feature, if the previous CPU is
++	 * cache affine, prefer the previous CPU when all CPUs are busy
++	 * to inhibit migration.
++	 */
++	if (sched_feat(WAKEUP_BIAS_PREV) &&
++	    prev != target && cpus_share_cache(prev, target))
++		return prev;
++
+ 	return target;
+ }
+ 
+diff --git a/kernel/sched/features.h b/kernel/sched/features.h
+index ee7f23c76bd3..f264d90aae72 100644
+--- a/kernel/sched/features.h
++++ b/kernel/sched/features.h
+@@ -37,6 +37,12 @@ SCHED_FEAT(CACHE_HOT_BUDDY, true)
+  */
+ SCHED_FEAT(WAKEUP_PREEMPTION, true)
+ 
++/*
++ * Bias runqueue selection towards the previous runqueue if it has
++ * spare capacity left or if all CPUs are busy.
++ */
++SCHED_FEAT(WAKEUP_BIAS_PREV, true)
++
+ SCHED_FEAT(HRTICK, false)
+ SCHED_FEAT(HRTICK_DL, false)
+ SCHED_FEAT(DOUBLE_TICK, false)
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index e93e006a942b..264baab2721c 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -178,6 +178,12 @@ extern int sched_rr_timeslice;
+  */
+ #define RUNTIME_INF		((u64)~0ULL)
+ 
++/*
++ * Spare capacity threshold (value out of 1024) used to bias runqueue
++ * selection towards previous runqueue.
++ */
++#define SPARE_CAPACITY_THRESHOLD	256
++
+ static inline int idle_policy(int policy)
+ {
+ 	return policy == SCHED_IDLE;
+-- 
+2.39.2
 
