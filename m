@@ -2,123 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF707CC7AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 865B27CC7B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:44:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344419AbjJQPnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 11:43:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39164 "EHLO
+        id S1343856AbjJQPot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 11:44:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344345AbjJQPnO (ORCPT
+        with ESMTP id S235059AbjJQPor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 11:43:14 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C79DED
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 08:43:12 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9a5836ab12so8133338276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 08:43:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697557392; x=1698162192; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=afIEXriDw7jR2OJmvlYsK5e8xjDzcS+IGLCS2GPyEaM=;
-        b=mrzTpio76QStYgRsezbdWzx3S6MEiwNa7MbZutTB7mbca7K8vxFaL+FaYUWEJNVK6t
-         g5cDfuRnPPO1BRC1u3+vFpdozvXu//2qUr76dH6x7ZYFgyucnIykBlhD1UOFmRCxwIOM
-         SEPJiZIUsJGjJlfX/U7dMlLrd660fKTnsm2NSbgF3QW2GBBhZ9WPzA+lS45vy1jGi5Ml
-         QyUePYtFkHU/pE/zUEweXfHBOxvLnfX85cz7woAa1RnB8DVIZeJrqE2oszW82J70KLs5
-         oDpoY6YmoTt97YV63GFi1sh2hWf5eMTeuusao4InlN/qylIiRsgvCzdhNlP25aJHmjMx
-         1lQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697557392; x=1698162192;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=afIEXriDw7jR2OJmvlYsK5e8xjDzcS+IGLCS2GPyEaM=;
-        b=vH9TVYZ7cT7PSaLOkUgOmkmvVJcPV8mH9bYBYlCOBV5xG/lNFhEaDcWE1ceVAQ1afm
-         dLUupan5663BtcK3criFo+a3xMGZPOtdlmCdJM5oiXrS23VX1dCZj+BCCgCAfVzROUNp
-         xkMNlh77Al4EZPwotXBtDqqwlYtP8wPXJ96hVWrJ35UatMk6IKN6NTxbR1SrS/6y4ak2
-         2bS3EmigRxgVziCymBMjGx4jw2ziASqah5DBaRUzI4XsWqMKCg0/0KzP/RfqM5rFtZoU
-         Sf5ZTU/Eg7ImHzCMMQc7r5R+pet4nP5pN1CKvHB24vRvUn818ZSUYj66kIBo6h3/p7NH
-         Lwnw==
-X-Gm-Message-State: AOJu0YxZg+yb7WkdwMQ8MKDIr0AEo6zKq3sDdMbUADKpK+/TEdBYDAoy
-        C9cL72ryPL0Hd8aXTxSjd/nzx26ygzg=
-X-Google-Smtp-Source: AGHT+IFgFUQkHTOxsDh5kg7JObNGko3z6UdVNpTTp7isgRewlD1X4IdVH+92V/I/WdEsF3jIGvSWi88MtXA=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:d885:0:b0:d9a:c27e:5f38 with SMTP id
- p127-20020a25d885000000b00d9ac27e5f38mr49168ybg.12.1697557391852; Tue, 17 Oct
- 2023 08:43:11 -0700 (PDT)
-Date:   Tue, 17 Oct 2023 08:43:10 -0700
-In-Reply-To: <op.2cxmpe1awjvjmi@hhuan26-mobl.amr.corp.intel.com>
-Mime-Version: 1.0
-References: <ZSSZaFrxvCvR1SOy@google.com> <06142144151da06772a9f0cc195a3c8ffcbc07b7.camel@intel.com>
- <1f7a740f3acff8a04ec95be39864fb3e32d2d96c.camel@intel.com>
- <op.2clydbf8wjvjmi@hhuan26-mobl.amr.corp.intel.com> <631f34613bcc8b5aa41cf519fa9d76bcd57a7650.camel@intel.com>
- <op.2cpecbevwjvjmi@hhuan26-mobl.amr.corp.intel.com> <aa404549c7e292dd2ec93a5e6a8c9d6d880c06b3.camel@intel.com>
- <op.2cxatlafwjvjmi@hhuan26-mobl.amr.corp.intel.com> <ZS2r7-EAEovpV4BN@google.com>
- <op.2cxmpe1awjvjmi@hhuan26-mobl.amr.corp.intel.com>
-Message-ID: <ZS6rjthamgvlzoXD@google.com>
-Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim EPC
-From:   Sean Christopherson <seanjc@google.com>
-To:     Haitao Huang <haitao.huang@linux.intel.com>
-Cc:     Kai Huang <kai.huang@intel.com>, Bo Zhang <zhanb@microsoft.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "yangjie@microsoft.com" <yangjie@microsoft.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        Zhiquan1 Li <zhiquan1.li@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "anakrish@microsoft.com" <anakrish@microsoft.com>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "kristen@linux.intel.com" <kristen@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Tue, 17 Oct 2023 11:44:47 -0400
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39FFEB0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 08:44:45 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 53FCB3200AC5;
+        Tue, 17 Oct 2023 11:44:41 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 17 Oct 2023 11:44:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1697557480; x=1697643880; bh=WO
+        5oCwd0emrb8IPguFXu9R6WNvZlreecdRq2Lp8IU04=; b=SOiTF1mRlvMAzZ1jVp
+        9Ko8LKGkXdvaUBlo2QM/9ta3nyXLLYwf5FUubEWn7qf4XG9e9sYu0JPCm3pfR7dS
+        X8C65wawMeSAoFw7g1ar/bkL3lKhLe3ROltJRjtbQaWX3/GpMEhC6XDK/Hbua/bx
+        KxPpVBMmJlJ1Cdcblv5sXjiT6uVRX7go5j5WP1nhN4kUtIFu5yxLnB6Qh8k2Q0Mq
+        OZaqp5LOCz8FfZAgA8TCrrlQECoc2ao3z9+KP/sPKQ8Rxj1EfOyXqVrQhuWFWzWI
+        o9oTqDoYi7o2yWb2bxTz6BWU99mJiV5t0u42D1Q72bq3iXjAeQObeySVWB9kHXOn
+        pRsQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1697557480; x=1697643880; bh=WO5oCwd0emrb8
+        IPguFXu9R6WNvZlreecdRq2Lp8IU04=; b=tHWhT9ILk8dOCLicGeopxN9IZuLmJ
+        tsLO55chUNSCbYIvaqq9QB3GSclT+ChP6pPOKjkP7w93+NYIqREpnGNfYJAWLEkF
+        vS/Ln7f89MQsHRsmvOgM+85tuZ/RCMwwNNef0EtP75EIVxV4L+OBGiFUGICSGYMY
+        8DyyyQ2S9Ph7171PNxHebMOUxmckXpgguUTZm4vUmhgG5hZRk3Qa+UYPWnD4U8ky
+        LZFP/YA3re90XUeqd4cA0ki7F8Kf50AUfY0M4KzAf6hcVzqUmtUp8JRbog+rsJ0p
+        cxYXThKNMBhq5G/pxaS+J8kyCL7bg6+f3UxFOISxkn6iA0SLD3ZoGuA5w==
+X-ME-Sender: <xms:6KsuZZpc_eD4XZDaFZRaQ_jIG-dspA-827ffkQNeCZd0ppzztMR5Og>
+    <xme:6KsuZbrlAJ9uB3zJ_8PN8z9em-jqkPoBFkR_RKqYhNCPdJ3-eFFyOkSV_CFwCYwII
+    f6cSWu4XroL_0W9ZFQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrjedvgdeltdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:6KsuZWNEn4zHV-egc_937wqNd2EQiE1EvKI3cFRGU1uyTMKAhTMIKQ>
+    <xmx:6KsuZU58aCEjEkYE66RvzYV94mo4lCk45ctMB7CV49okoDB7b8rKYw>
+    <xmx:6KsuZY7FVpEXt9SWVfJIQOeR1A6hRxwPZshRhd7gZoJBi9oSFMH_Yw>
+    <xmx:6KsuZWmk5xB-nfemiOuqh9VJKIv34ULpBbXd1ZMayYg9a4sk6LSTDA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 77E9DB60089; Tue, 17 Oct 2023 11:44:40 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1019-ged83ad8595-fm-20231002.001-ged83ad85
+MIME-Version: 1.0
+Message-Id: <cfc27d6b-a2ae-495d-b819-f3cc35f82844@app.fastmail.com>
+In-Reply-To: <ZS6lxxmGDy1eRWoh@yury-ThinkPad>
+References: <20231017143408.2876181-1-arnd@kernel.org>
+ <ZS6lxxmGDy1eRWoh@yury-ThinkPad>
+Date:   Tue, 17 Oct 2023 17:44:19 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Yury Norov" <yury.norov@gmail.com>,
+        "Arnd Bergmann" <arnd@kernel.org>
+Cc:     "Jiri Olsa" <jolsa@kernel.org>, "Song Liu" <songliubraving@fb.com>,
+        "Alexei Starovoitov" <ast@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] buildid: reduce header file dependencies for module
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023, Haitao Huang wrote:
-> Hi Sean
-> 
-> On Mon, 16 Oct 2023 16:32:31 -0500, Sean Christopherson <seanjc@google.com>
-> wrote:
-> 
-> > On Mon, Oct 16, 2023, Haitao Huang wrote:
-> > > From this perspective, I think the current implementation is
-> > > "well-defined":
-> > > EPC cgroup limits for VMs are only enforced at VM launch time, not
-> > > runtime.  In practice,  SGX VM can be launched only with fixed EPC size
-> > > and all those EPCs are fully committed to the VM once launched.
-> > 
-> > Fully committed doesn't mean those numbers are reflected in the cgroup.  A
-> > VM scheduler can easily "commit" EPC to a guest, but allocate EPC on
-> > demand, i.e.  when the guest attempts to actually access a page.
-> > Preallocating memory isn't free, e.g. it can slow down guest boot, so it's
-> > entirely reasonable to have virtual EPC be allocated on-demand.  Enforcing
-> > at launch time doesn't work for such setups, because from the cgroup's
-> > perspective, the VM is using 0 pages of EPC at launch.
-> > 
-> Maybe I understood the current implementation wrong. From what I see, vEPC
-> is impossible not fully commit at launch time. The guest would EREMOVE all
-> pages during initialization resulting #PF and all pages allocated. This
-> essentially makes "prealloc=off" the same as "prealloc=on".
-> Unless you are talking about some custom OS or kernel other than upstream
-> Linux here?
+On Tue, Oct 17, 2023, at 17:29, Yury Norov wrote:
+> On Tue, Oct 17, 2023 at 04:33:58PM +0200, Arnd Bergmann wrote:
+>> 
+>> This is easily avoided by changing linux/buildid.h to no longer depend on
+>> linux/mm_types.h, a header that pulls in a huge number of indirect dependencies.
+>> 
+>> Fixes: b9c957f554442 ("bitmap: move bitmap_*_region() functions to bitmap.h")
+>> Fixes: bd7525dacd7e2 ("bpf: Move stack_map_get_build_id into lib")
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>
+> Acked-by: Yury Norov <yury.norov@gmail.com>
+>
+> Would you like me to add this into bitmap-for-next?
 
-Yes, a customer could be running an older kernel, something other than Linux, a
-custom kernel, an out-of-tree SGX driver, etc.  The host should never assume
-anything about the guest kernel when it comes to correctness (unless the guest
-kernel is controlled by the host).
+Yes, I think that would be best to avoid the regression.
 
-Doing EREMOVE on all pages is definitely not mandatory, especially if the kernel
-detects a hypervisor, i.e. knows its running as a guest.
+Thanks,
+
+     Arnd
