@@ -2,51 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CBC27CB740
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 02:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 576527CB746
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 02:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233874AbjJQAB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 20:01:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37444 "EHLO
+        id S233875AbjJQAJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 20:09:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232096AbjJQABZ (ORCPT
+        with ESMTP id S232096AbjJQAJK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 20:01:25 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01A6792;
-        Mon, 16 Oct 2023 17:01:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1697500882;
-        bh=Mqci4ybMlTPZeaqYRmIwYUtggsalwRpyV58KmvOxUlg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=kqLXsot2rzaj4+0YJqOtHA+2PHhVzjvnDDwE3vK/jYLDMrrIHLn7evUDXy+N+en5l
-         rgIDRt1uGG3zFbNAsYw/z2Vfr5dM2dFrHbC7TP86VIDsVMLwnmE9LYabceuRvVLssV
-         egUpdNg3sHSzl6nWWj6TG8nE2t5HfOJ7U6aEPSmtlum9p2nARgMcv7v8hk2wYG8QNj
-         h3QUgRMtLJWSPk03LsGKS12daBvkLvDGNQbV9hrOOk9bHz1MhWTp+0tJoAGblDQpgd
-         rlsxqV6/FSb/yhVBjbR3XlAYZ0WppEXCWMSjVbGSo66yDQDKETEgUmBblnsnoo1D+O
-         GUhX4SytCqBfQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S8Yzh3FxFz4xNh;
-        Tue, 17 Oct 2023 11:01:20 +1100 (AEDT)
-Date:   Tue, 17 Oct 2023 11:01:18 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>
-Cc:     ARM <linux-arm-kernel@lists.infradead.org>,
-        Uwe =?UTF-8?B?S2xlaW5lLUs=?= =?UTF-8?B?w7ZuaWc=?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patch in the samsung-krzk tree
-Message-ID: <20231017110118.3712e78e@canb.auug.org.au>
+        Mon, 16 Oct 2023 20:09:10 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D48D92;
+        Mon, 16 Oct 2023 17:09:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697501349; x=1729037349;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=156Vrx2+XHjHglrddNuXHYlGZ2Y4gw7x8LsBHYyeQQw=;
+  b=XCcd8jxYaNl/CFoFVJmsVvi/WpC8LYZQTKBlORWu0L1YGan2PNg3mjkY
+   6TP58q6cHtKMNPn0RzDSvyzZl6f4a3am1Vo4kz+eUd+/4uuGV+px/0EtF
+   hiP35Z/+P9ENgugeZi1wvOGmkpnwv/q5wij4zIch2XK6oI9Fs8+JV7FqD
+   0lPaLnNuqGuWlTHvK6LmJae0V3il9t8xYkuSNoXli9LVXZSulaoh6i62i
+   lrlEIf2bMD6gGFmYzsFVNzvcpvScPYVr3lPaWOyvG+V/DVhiaUF7QbU+B
+   pmy2AFfSuNeWU9RmFWjm6zGW4OGnspUMJxHSG+pmY3Okb1Q1lOo/+dEyT
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="376036887"
+X-IronPort-AV: E=Sophos;i="6.03,230,1694761200"; 
+   d="scan'208";a="376036887"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 17:09:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="755882542"
+X-IronPort-AV: E=Sophos;i="6.03,230,1694761200"; 
+   d="scan'208";a="755882542"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.92])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 16 Oct 2023 17:09:06 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     "Sean Christopherson" <seanjc@google.com>
+Cc:     "Kai Huang" <kai.huang@intel.com>,
+        "Bo Zhang" <zhanb@microsoft.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "yangjie@microsoft.com" <yangjie@microsoft.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "Zhiquan1 Li" <zhiquan1.li@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "anakrish@microsoft.com" <anakrish@microsoft.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+        "Sohil Mehta" <sohil.mehta@intel.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "kristen@linux.intel.com" <kristen@linux.intel.com>
+Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
+ EPC
+References: <20230923030657.16148-13-haitao.huang@linux.intel.com>
+ <1b265d0c9dfe17de2782962ed26a99cc9d330138.camel@intel.com>
+ <ZSSZaFrxvCvR1SOy@google.com>
+ <06142144151da06772a9f0cc195a3c8ffcbc07b7.camel@intel.com>
+ <1f7a740f3acff8a04ec95be39864fb3e32d2d96c.camel@intel.com>
+ <op.2clydbf8wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <631f34613bcc8b5aa41cf519fa9d76bcd57a7650.camel@intel.com>
+ <op.2cpecbevwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <aa404549c7e292dd2ec93a5e6a8c9d6d880c06b3.camel@intel.com>
+ <op.2cxatlafwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <ZS2r7-EAEovpV4BN@google.com>
+Date:   Mon, 16 Oct 2023 19:09:04 -0500
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/+=WKpqMhUOl+=t1.jdySmmm";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+Content-Transfer-Encoding: 7bit
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2cxmpe1awjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <ZS2r7-EAEovpV4BN@google.com>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,43 +90,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/+=WKpqMhUOl+=t1.jdySmmm
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Sean
 
-Hi all,
+On Mon, 16 Oct 2023 16:32:31 -0500, Sean Christopherson  
+<seanjc@google.com> wrote:
 
-The following commit is also in the arm-soc tree as a different commit
-(but the same patch):
+> On Mon, Oct 16, 2023, Haitao Huang wrote:
+>> From this perspective, I think the current implementation is  
+>> "well-defined":
+>> EPC cgroup limits for VMs are only enforced at VM launch time, not  
+>> runtime.
+>> In practice,  SGX VM can be launched only with fixed EPC size and all  
+>> those
+>> EPCs are fully committed to the VM once launched.
+>
+> Fully committed doesn't mean those numbers are reflected in the cgroup.   
+> A VM
+> scheduler can easily "commit" EPC to a guest, but allocate EPC on  
+> demand, i.e.
+> when the guest attempts to actually access a page.  Preallocating memory  
+> isn't
+> free, e.g. it can slow down guest boot, so it's entirely reasonable to  
+> have virtual
+> EPC be allocated on-demand.  Enforcing at launch time doesn't work for  
+> such setups,
+> because from the cgroup's perspective, the VM is using 0 pages of EPC at  
+> launch.
+>
+Maybe I understood the current implementation wrong. From what I see, vEPC  
+is impossible not fully commit at launch time. The guest would EREMOVE all  
+pages during initialization resulting #PF and all pages allocated. This  
+essentially makes "prealloc=off" the same as "prealloc=on".
+Unless you are talking about some custom OS or kernel other than upstream  
+Linux here?
 
-  0da7c05d232d ("soc: samsung: exynos-chipid: Convert to platform remove ca=
-llback returning void")
-
-This is commit
-
-  55fa358ca89f ("soc: samsung: exynos-chipid: Convert to platform remove ca=
-llback returning void")
-
-in the arm-soc tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/+=WKpqMhUOl+=t1.jdySmmm
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUtzs4ACgkQAVBC80lX
-0GzVtQf/QWDHejIJjwhfIastLcs+rkfW0q2Ld0ID4Scpx+lfDTeA3sDQiGC9nTsJ
-9mAcmvwNdPHNhqe2R5TPioq58MM/OnLMZCfqpYq7gmt48ZdKLVftlId5vwOh91Ww
-SjvHQYrtLvcn97LPubpErM4Z8w7z7YA1DVE1QugEAslBOAyeBp2rna++Ir1oEp0O
-nRL7Sg/pN5z0+jR3Ns+WoAPz3+j7tjI3hsTE6d+M3aef0KB8aj/KJWS1s9tdZg7U
-CCnfX7T2vzn4Zbr32K0EahEEPTdcQkYmxKACuXgAIDUy+G+Had4ijsQsjZ7vXVHO
-Gn5Z4r/sRF1+NBAiL5cnXeGBGVIz4g==
-=/0Hw
------END PGP SIGNATURE-----
-
---Sig_/+=WKpqMhUOl+=t1.jdySmmm--
+Thanks
+Haitap
