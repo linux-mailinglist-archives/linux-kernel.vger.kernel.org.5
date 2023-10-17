@@ -2,104 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C104B7CC000
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6995C7CBFFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234852AbjJQJ5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 05:57:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234835AbjJQJ5X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S234840AbjJQJ5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 17 Oct 2023 05:57:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5571CED
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 02:56:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697536594;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YskDJvOwtltUEF1vV1LUQRzaj8p5jAo4b5a3cEViogM=;
-        b=P2rR2M7CgVFFLEjkCCDWhmJwjocZB/wKtpNhWENHgmk39wlZg0kwMKsnjCTSsgwwv1MsYT
-        fofRYh2xZfK70dwZpoOsBIflqgDbzD6rpAnI18u+2WkhAmj3hiszlvWdH8ODFzBIeVyh2s
-        BR/wLYyiMGwzoUW+R3Ajf4Idq6ICgv4=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-632-B0Jm9qSrO7CpqPjDEewBfw-1; Tue, 17 Oct 2023 05:56:23 -0400
-X-MC-Unique: B0Jm9qSrO7CpqPjDEewBfw-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8DDA88F15C5;
-        Tue, 17 Oct 2023 09:56:22 +0000 (UTC)
-Received: from [10.43.2.183] (unknown [10.43.2.183])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 56F85492BEE;
-        Tue, 17 Oct 2023 09:56:21 +0000 (UTC)
-Message-ID: <b1805c01-483a-4d7e-8fb2-537f9a7ed9b4@redhat.com>
-Date:   Tue, 17 Oct 2023 11:56:20 +0200
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234752AbjJQJ5V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Oct 2023 05:57:21 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C66F8E;
+        Tue, 17 Oct 2023 02:57:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8CCCC433D9;
+        Tue, 17 Oct 2023 09:57:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697536639;
+        bh=sKwYVnqhSSrwqp7PC9H2TY6yCD+XS2CditWC5vXqB+4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=CBgxSfB237rqRI9/lYgZglglsdpwEqcW7F0KqpbEKc15ZDg3CHRwqrxtl3WbD5ts4
+         LY0MgzE3g7ZTeyfPZD/4h4w/Rv4vAfcBvUDWw8saPVGVzAXrGHmIWfpz/EM3KWtgoZ
+         HWLGHI6ZYI6GgwzdrxSHSjMgFxmiizLgfjvp5hatThd1AVR6zR/bzp/sQC9Qz7G8ci
+         KWvhOx0NpS+F8kmwW13nNN2nzW3e26WHAHh8+CYvo4Kp2kY7D+4RQo0REXfuvCsYOW
+         6DT9gvrsG8IOFI5PoiLbbzs7hClUKkkCoOegLl8io3zB/EUSZoXTwuevn8Pqtwv4CN
+         vIc7qpt0hH4aA==
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2c5071165d5so41305521fa.0;
+        Tue, 17 Oct 2023 02:57:19 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxIIXV7A2P7psga2B/hZnlfTzyFrBzhADaO1vbQ1Wens4pSsvl1
+        pZRGQttONfdIA+Tg1vxsOYwYmzXwIQDvlfExrh8=
+X-Google-Smtp-Source: AGHT+IERIod7g0rUfYOG5lQ+1VdU8HkDDU1bvoLEdkPVYMpGfqbElsDImze8vsj7zXXRxTLmhlOFqN7ybSsC3FaHCv0=
+X-Received: by 2002:a2e:be12:0:b0:2bd:133c:2d71 with SMTP id
+ z18-20020a2ebe12000000b002bd133c2d71mr1124282ljq.52.1697536638036; Tue, 17
+ Oct 2023 02:57:18 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 3/5] i40e: Add handler for devlink .info_get
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org
-References: <20231013170755.2367410-1-ivecera@redhat.com>
- <20231013170755.2367410-4-ivecera@redhat.com>
- <20231016075619.02d1dd27@kernel.org>
-Content-Language: en-US
-From:   Ivan Vecera <ivecera@redhat.com>
-In-Reply-To: <20231016075619.02d1dd27@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+References: <20231016163122.12855-1-kirill.shutemov@linux.intel.com>
+ <ZS15HZqK4hu5NjSh@casper.infradead.org> <20231016213932.6cscnn6tsnzsnvmf@box.shutemov.name>
+ <CAMj1kXFc31N61=oQayLbnR+CrNT4=bfEisC3fwG4VNq2vJHV5w@mail.gmail.com> <20231017094403.g6laxp2c3vwzt2sw@box.shutemov.name>
+In-Reply-To: <20231017094403.g6laxp2c3vwzt2sw@box.shutemov.name>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 17 Oct 2023 11:57:06 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFuCwLbfgymuy6iEf5ztonjkGBn+K42BgSBT_1hQwwrqw@mail.gmail.com>
+Message-ID: <CAMj1kXFuCwLbfgymuy6iEf5ztonjkGBn+K42BgSBT_1hQwwrqw@mail.gmail.com>
+Subject: Re: [PATCHv2] efi/unaccepted: Fix soft lockups caused by parallel
+ memory acceptance
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dario Faggioli <dfaggioli@suse.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        marcelo.cerri@canonical.com, tim.gardner@canonical.com,
+        philip.cox@canonical.com, aarcange@redhat.com, peterx@redhat.com,
+        x86@kernel.org, linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@kernel.org, Nikolay Borisov <nik.borisov@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 17 Oct 2023 at 11:44, Kirill A. Shutemov
+<kirill.shutemov@linux.intel.com> wrote:
+>
+> On Tue, Oct 17, 2023 at 09:42:13AM +0200, Ard Biesheuvel wrote:
+> > On Mon, 16 Oct 2023 at 23:39, Kirill A. Shutemov
+> > <kirill.shutemov@linux.intel.com> wrote:
+> > >
+> > > On Mon, Oct 16, 2023 at 06:55:41PM +0100, Matthew Wilcox wrote:
+> > > > On Mon, Oct 16, 2023 at 07:31:22PM +0300, Kirill A. Shutemov wrote:
+> > > > >   v2:
+> > > > >    - Fix deadlock (Vlastimil);
+> > > > >    - Fix comments (Vlastimil);
+> > > > >    - s/cond_resched()/cpu_relax()/ -- cond_resched() cannot be called
+> > > > >      from atomic context;
+> > > >
+> > > > Isn't there an implicit cpu_relax() while we're spinning?  Does this
+> > > > really accomplish anything?
+> > >
+> > > You are right. It is useless. I will drop it in v3.
+> > >
+> >
+> > I can drop that bit when applying the patch.
+> >
+> > One question I have is whether the sequence
+> >
+> > spin_lock_irqsave(&unaccepted_memory_lock, flags);
+> > ...
+> > spin_unlock(&unaccepted_memory_lock);
+> > arch_accept_memory(phys_start, phys_end);
+> > spin_lock(&unaccepted_memory_lock);
+> > ...
+> > spin_unlock_irqrestore(&unaccepted_memory_lock, flags);
+> >
+> > is considered sound and is supported by all architectures?
+>
+> I am not an locking expert and only tested it on x86. But what potential
+> issue do you see?
+>
 
-
-On 16. 10. 23 16:56, Jakub Kicinski wrote:
-> On Fri, 13 Oct 2023 19:07:53 +0200 Ivan Vecera wrote:
->>   "serial_number" -> The PCI DSN of the adapter
->>   "fw.mgmt" -> The version of the firmware
->>   "fw.mgmt.api" -> The API version of interface exposed over the AdminQ
->>   "fw.psid" -> The version of the NVM image
-> 
-> Your board reports "fw.psid 9.30", this may not be right,
-> PSID is more of a board+customer ID, IIUC. 9.30 looks like
-> a version, not an ID.
-
-Maybe plain 'fw' should be used for this '9.30' as this is a version
-of the whole software package provided by Intel for these adapters
-(e.g. 
-https://www.intel.com/content/www/us/en/download/18190/non-volatile-memory-nvm-update-utility-for-intel-ethernet-network-adapter-700-series.html).
-
-Thoughts?
-
->>   "fw.bundle_id" -> Unique identifier for the combined flash image
->>   "fw.undi" -> The combo image version
-> 
-> UNDI means PXE. Is that whave "combo image" means for Intel?
-
-Combo image version (aka CIVD) is reported by nvmupdate tool and this
-should be version of OROM that contains PXE, EFI images that each of
-them can have specific version but this CIVD should be overall OROM 
-version for this combination of PXE and EFI. I hope I'm right.
-
-Thanks,
-Ivan
-
+Not sure. It just looks slightly out of place, and I am curious
+whether all architectures tolerate this asymmetric use.
