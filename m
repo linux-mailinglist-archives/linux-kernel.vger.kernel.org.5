@@ -2,77 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF1D77CC79B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:39:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 179B47CC7A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344069AbjJQPjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 11:39:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47344 "EHLO
+        id S1344053AbjJQPmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 11:42:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJQPje (ORCPT
+        with ESMTP id S1344429AbjJQPl6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 11:39:34 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96AFA9F
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 08:39:32 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c871a095ceso40260275ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 08:39:32 -0700 (PDT)
+        Tue, 17 Oct 2023 11:41:58 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 597E9B6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 08:41:56 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-405361bb9f7so57342895e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 08:41:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1697557172; x=1698161972; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gDD/uryQTLCU5uMx9saGkKWkdjsc7ClRnhXCpgMi6iw=;
-        b=T0B5KIvHjyJWEyO+P27cR3wrnbLUSWALFCbAOWBnddAlxNz68dy/WI+GXa6JCHA+KT
-         FSuWAtZMz8WO1mCey6n84qKaOlrluj78M1kEheIrTfNXipPVKdkCkU6F9DkQVI23z1SN
-         c16DGLBRV1CcfwIxsrMCJYpurvwL3H/FATNYIR1BuXYM0+ZO3t3LQTkjqVC3Jrqzq2L8
-         orHr0RElUyanPAJRIFzfO5H/S4Nz2NlPLH6Ywn5ogLTWc045vrMZ8vCLYEvvEYrIybgk
-         Ouj7z+8YbqRDXbQzYZ/bLi67rxDCNBldIgu3JXs9hvpahcjjD+pLcQ4mduZziragSvCB
-         1YQg==
+        d=linaro.org; s=google; t=1697557315; x=1698162115; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fhb/VbAKqWW2bljNb3g4iYW+C+1SCZk6etl2bAcOYLg=;
+        b=ndGJ0F+DYASH3lA6ZKOvJYiP4KYDBFMW8JyLPkmpwxPPg9lrGLWpJH5WQ/VE82eoiC
+         XyjJ9lyyS6QWOvORIcyWlczwFugb2H9nKNcN0jTxdDfnJJEEyVSHcUZSy+absxhtToH4
+         NyMJjTmGCoJZ9WtIupircSl1mOxEgFn2xVDfoPy7tunE3/p8UBM3nD9D08wB07a//bWk
+         Gy3VzjYEg1ekfQ+agevrBHc1uEG4EanU2nOoGLL454oi2C/WjxpN3T0JGYGyQuH/plef
+         FZMVdpdC5FAzCDrwKvffNvkqphKm3Hw0L+BFM/1x/3h0wWJPK0OWh84nuautTVIpyrLY
+         +jUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697557172; x=1698161972;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gDD/uryQTLCU5uMx9saGkKWkdjsc7ClRnhXCpgMi6iw=;
-        b=nhtXSQ02/SDKcjC7Wg5Vo5UDgKGWJMF2PwvMsSZATanSJxlA6rAzxxijUhD4u4CCZo
-         q02H2Wk9Y7t1iauVF7e3UFZ1TZtnJ+bFWJeQ1gUOIHcenOjUn/J3oNPp183SrJLyHg3J
-         QR36kohdVraRO4D/VAuDGgqmFnk9MWCkNQqpcXHd2OBfdfwOXbCvRweSfT0avr/uqpU4
-         FtvGkKdksJccnjukeRFYOSyIKOkAcRIjQA6t9eBhfr9xah03UYJBTlCP2Q5NAgaaEZ/7
-         iOVtZ9+OrvDriPuP055wHZDh9FtUnfS0LIBm+qC2GNrnWsUzBugHNBIHS6qc3JKJvB2/
-         oPzQ==
-X-Gm-Message-State: AOJu0Yz/PhJ069fsrGUFkOZyYColy298jv7OpAPd5SxAhSCxuCGW2k0P
-        R7it4dVePTmW5CTKHvq/dSKWuw==
-X-Google-Smtp-Source: AGHT+IGhHEDtApkkx2EbvNB6zNoc/nuobujehBrKazxvxt7EI5Z0029abtVr9kz7TlfWkAk9Q9siPA==
-X-Received: by 2002:a17:903:27cf:b0:1ca:8e79:53af with SMTP id km15-20020a17090327cf00b001ca8e7953afmr2249385plb.3.1697557171977;
-        Tue, 17 Oct 2023 08:39:31 -0700 (PDT)
-Received: from sunil-laptop ([106.51.188.78])
-        by smtp.gmail.com with ESMTPSA id e1-20020a17090301c100b001c619fbd5fbsm1707303plh.298.2023.10.17.08.39.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 08:39:31 -0700 (PDT)
-Date:   Tue, 17 Oct 2023 21:09:23 +0530
-From:   Sunil V L <sunilvl@ventanamicro.com>
-To:     Andrew Jones <ajones@ventanamicro.com>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Atish Kumar Patra <atishp@rivosinc.com>
-Subject: Re: [PATCH v3 -next 2/3] RISC-V: ACPI: RHCT: Add function to get CBO
- block sizes
-Message-ID: <ZS6qq1Y9bLZ868KI@sunil-laptop>
-References: <20231016164958.1191529-1-sunilvl@ventanamicro.com>
- <20231016164958.1191529-3-sunilvl@ventanamicro.com>
- <20231017-b394a120094eeee31693e9a7@orel>
+        d=1e100.net; s=20230601; t=1697557315; x=1698162115;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fhb/VbAKqWW2bljNb3g4iYW+C+1SCZk6etl2bAcOYLg=;
+        b=kLZPc+gshIyX07ubXnyg4b38YFwERzKKRp8Xh+ikOA5b8Ut6r0pQacbycSDP7EsLUi
+         4ky/DObOdFwvtuTUewhtVMxZX4iYEVMgHVEiWlnxWSEHmEm26wOBbRrPz1OfsR6F0fAl
+         2AqwGjgJ0VB4ruFPxqKE2WEHsrjUeFDNwhRSpfB05rt4+jJpKSECmdY35HnO6v89OKuI
+         3yMvCJPYXkb4IF0h8HWUyB/b+L6vFLmk1TGW9iGzIA3fp0xAHVgvnRSSc/RZlWloAqjP
+         wuhJc4cfMKt1xi8RvncY9W5VLR7GiKU6n+wMHKwN9qDBiaQlVll5j9vtlwAAwPFwYAeh
+         j1sA==
+X-Gm-Message-State: AOJu0Yy7vOjC+ucjzesVLwPwrCjYFIoNjvLNYDhPKLpGo90wHPR0nwYQ
+        gp0dYMN/0VOpXUjh3hm+o0o8cQ==
+X-Google-Smtp-Source: AGHT+IEBdPfJkKsMwqOR6v2jaw8Ctfjv771N7HSdvQQL35i0TEr+3Xf1Wr87PCO+t6DIWat/o2wyKA==
+X-Received: by 2002:adf:fac9:0:b0:32d:8401:404a with SMTP id a9-20020adffac9000000b0032d8401404amr2001007wrs.10.1697557314693;
+        Tue, 17 Oct 2023 08:41:54 -0700 (PDT)
+Received: from [172.30.204.57] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id e11-20020adffd0b000000b0032dbf26e7aesm38382wrr.65.2023.10.17.08.41.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Oct 2023 08:41:54 -0700 (PDT)
+Message-ID: <eb05e877-ad8f-4724-bcf9-6054ae14a5e8@linaro.org>
+Date:   Tue, 17 Oct 2023 17:41:48 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231017-b394a120094eeee31693e9a7@orel>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/7] drm/msm/adreno: Add ZAP firmware name to A635
+To:     Rob Clark <robdclark@chromium.org>,
+        Akhil P Oommen <quic_akhilpo@quicinc.com>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        cros-qcom-dts-watchers@chromium.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Luca Weiss <luca.weiss@fairphone.com>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20230926-topic-a643-v1-0-7af6937ac0a3@linaro.org>
+ <20230926-topic-a643-v1-2-7af6937ac0a3@linaro.org>
+ <43q6mui3lofa4rqh667o54b2qcbqn5fg34ss5o7y7k7uxbxsro@dxgovofsrvqx>
+ <CAJs_Fx7WkdhY31aP_buZP+b7ihOOmE8zBZFOLZ8z9uqcNmEhVw@mail.gmail.com>
+Content-Language: en-US
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <CAJs_Fx7WkdhY31aP_buZP+b7ihOOmE8zBZFOLZ8z9uqcNmEhVw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
@@ -84,174 +94,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 10:37:41AM +0200, Andrew Jones wrote:
-> On Mon, Oct 16, 2023 at 10:19:57PM +0530, Sunil V L wrote:
-> > Cache Block Operation (CBO) related block size in ACPI is provided by RHCT.
-> > Add support to read the CMO node in RHCT to get this information.
-> > 
-> > Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
-> > ---
-> >  arch/riscv/include/asm/acpi.h |  6 +++
-> >  drivers/acpi/riscv/rhct.c     | 93 +++++++++++++++++++++++++++++++++++
-> >  2 files changed, 99 insertions(+)
-> > 
-> > diff --git a/arch/riscv/include/asm/acpi.h b/arch/riscv/include/asm/acpi.h
-> > index d5604d2073bc..7dad0cf9d701 100644
-> > --- a/arch/riscv/include/asm/acpi.h
-> > +++ b/arch/riscv/include/asm/acpi.h
-> > @@ -66,6 +66,8 @@ int acpi_get_riscv_isa(struct acpi_table_header *table,
-> >  		       unsigned int cpu, const char **isa);
-> >  
-> >  static inline int acpi_numa_get_nid(unsigned int cpu) { return NUMA_NO_NODE; }
-> > +void acpi_get_cbo_block_size(struct acpi_table_header *table, u32 *cbom_size,
-> > +			     u32 *cboz_size, u32 *cbop_size);
-> >  #else
-> >  static inline void acpi_init_rintc_map(void) { }
-> >  static inline struct acpi_madt_rintc *acpi_cpu_get_madt_rintc(int cpu)
-> > @@ -79,6 +81,10 @@ static inline int acpi_get_riscv_isa(struct acpi_table_header *table,
-> >  	return -EINVAL;
-> >  }
-> >  
-> > +static inline void acpi_get_cbo_block_size(struct acpi_table_header *table,
-> > +					   u32 *cbom_size, u32 *cboz_size,
-> > +					   u32 *cbop_size) { }
-> > +
-> >  #endif /* CONFIG_ACPI */
-> >  
-> >  #endif /*_ASM_ACPI_H*/
-> > diff --git a/drivers/acpi/riscv/rhct.c b/drivers/acpi/riscv/rhct.c
-> > index b280b3e9c7d9..105f1aaa3fac 100644
-> > --- a/drivers/acpi/riscv/rhct.c
-> > +++ b/drivers/acpi/riscv/rhct.c
-> > @@ -8,6 +8,7 @@
-> >  #define pr_fmt(fmt)     "ACPI: RHCT: " fmt
-> >  
-> >  #include <linux/acpi.h>
-> > +#include <linux/bits.h>
-> >  
-> >  static struct acpi_table_header *acpi_get_rhct(void)
-> >  {
-> > @@ -81,3 +82,95 @@ int acpi_get_riscv_isa(struct acpi_table_header *table, unsigned int cpu, const
-> >  
-> >  	return -1;
-> >  }
-> > +
-> > +static void acpi_parse_hart_info_cmo_node(struct acpi_table_rhct *rhct,
-> > +					  struct acpi_rhct_hart_info *hart_info,
-> > +					  u32 *cbom_size, u32 *cboz_size, u32 *cbop_size)
-> > +{
-> > +	u32 size_hartinfo = sizeof(struct acpi_rhct_hart_info);
-> > +	u32 size_hdr = sizeof(struct acpi_rhct_node_header);
-> > +	struct acpi_rhct_node_header *ref_node;
-> > +	struct acpi_rhct_cmo_node *cmo_node;
-> > +	u32 *hart_info_node_offset;
-> > +
-> > +	hart_info_node_offset = ACPI_ADD_PTR(u32, hart_info, size_hartinfo);
-> > +	for (int i = 0; i < hart_info->num_offsets; i++) {
-> > +		ref_node = ACPI_ADD_PTR(struct acpi_rhct_node_header,
-> > +					rhct, hart_info_node_offset[i]);
-> > +		if (ref_node->type == ACPI_RHCT_NODE_TYPE_CMO) {
-> > +			cmo_node = ACPI_ADD_PTR(struct acpi_rhct_cmo_node,
-> > +						ref_node, size_hdr);
-> > +			if (cbom_size && cmo_node->cbom_size <= 30) {
-> > +				if (!*cbom_size) {
-> > +					*cbom_size = BIT(cmo_node->cbom_size);
-> > +				} else if (*cbom_size !=
-> > +						BIT(cmo_node->cbom_size)) {
-> 
-> No need to break the if line, we can go to 100 chars. And then, since both
-> the if and else if arms only have single statements, all the {} can be
-> dropped too. Same comment for cboz and cbop.
-> 
-Yeah, it is a side effect of working on repos with different coding
-standards. It is interesting that checkpatch didn't recommend to remove
-the braces. Let me fix it in next revision. Thanks!.
 
-> > +					pr_warn("CBOM size is not the same across harts\n");
-> > +				}
-> > +			}
-> > +
-> > +			if (cboz_size && cmo_node->cboz_size <= 30) {
-> > +				if (!*cboz_size) {
-> > +					*cboz_size = BIT(cmo_node->cboz_size);
-> > +				} else if (*cboz_size !=
-> > +						BIT(cmo_node->cboz_size)) {
-> > +					pr_warn("CBOZ size is not the same across harts\n");
-> > +				}
-> > +			}
-> > +
-> > +			if (cbop_size && cmo_node->cbop_size <= 30) {
-> > +				if (!*cbop_size) {
-> > +					*cbop_size = BIT(cmo_node->cbop_size);
-> > +				} else if (*cbop_size !=
-> > +						BIT(cmo_node->cbop_size)) {
-> > +					pr_warn("CBOP size is not the same across harts\n");
-> > +				}
-> > +			}
-> > +		}
-> > +	}
-> > +}
-> > +
-> > +/*
-> > + * During early boot, the caller should call acpi_get_table() and pass its pointer to
-> > + * these functions(and free up later). At run time, since this table can be used
->                      ^ add a space here
-> 
-> > + * multiple times, pass NULL so that the table remains in memory
-> > + */
-> > +void acpi_get_cbo_block_size(struct acpi_table_header *table, u32 *cbom_size,
-> > +			     u32 *cboz_size, u32 *cbop_size)
-> > +{
-> > +	u32 size_hdr = sizeof(struct acpi_rhct_node_header);
-> > +	struct acpi_rhct_node_header *node, *end;
-> > +	struct acpi_rhct_hart_info *hart_info;
-> > +	struct acpi_table_rhct *rhct;
-> > +
-> > +	if (acpi_disabled)
-> > +		return;
-> > +
-> > +	if (table) {
-> > +		rhct = (struct acpi_table_rhct *)table;
-> > +	} else {
-> > +		rhct = (struct acpi_table_rhct *)acpi_get_rhct();
-> 
-> Not an issue of this patch, but it seems like acpi_get_rhct() should
-> return a struct acpi_table_rhct pointer instead of a struct
-> acpi_table_header pointer since it's specifically returning an RHCT.
-> 
-Makes sense. Let me add a patch to improve this.
 
-> > +		if (!rhct)
-> > +			return;
-> > +	}
-> > +
-> > +	if (cbom_size)
-> > +		*cbom_size = 0;
-> > +
-> > +	if (cboz_size)
-> > +		*cboz_size = 0;
-> > +
-> > +	if (cbop_size)
-> > +		*cbop_size = 0;
-> > +
-> > +	end = ACPI_ADD_PTR(struct acpi_rhct_node_header, rhct, rhct->header.length);
-> > +	for (node = ACPI_ADD_PTR(struct acpi_rhct_node_header, rhct, rhct->node_offset);
-> > +	     node < end;
-> > +	     node = ACPI_ADD_PTR(struct acpi_rhct_node_header, node, node->length)) {
-> > +		if (node->type == ACPI_RHCT_NODE_TYPE_HART_INFO) {
-> > +			hart_info = ACPI_ADD_PTR(struct acpi_rhct_hart_info, node, size_hdr);
-> > +			acpi_parse_hart_info_cmo_node(rhct, hart_info, cbom_size,
-> > +						      cboz_size, cbop_size);
-> > +		}
-> > +	}
-> > +}
-> > -- 
-> > 2.39.2
-> >
+On 10/17/23 09:33, Rob Clark wrote:
+> On Mon, Oct 16, 2023 at 1:12 PM Akhil P Oommen <quic_akhilpo@quicinc.com> wrote:
+>>
+>> On Tue, Sep 26, 2023 at 08:24:37PM +0200, Konrad Dybcio wrote:
+>>>
+>>> Some (many?) devices with A635 expect a ZAP shader to be loaded.
+>>>
+>>> Set the file name to allow for that.
+>>>
+>>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>>> ---
+>>>   drivers/gpu/drm/msm/adreno/adreno_device.c | 1 +
+>>>   1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
+>>> index fa527935ffd4..16527fe8584d 100644
+>>> --- a/drivers/gpu/drm/msm/adreno/adreno_device.c
+>>> +++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
+>>> @@ -454,6 +454,7 @@ static const struct adreno_info gpulist[] = {
+>>>                .quirks = ADRENO_QUIRK_HAS_CACHED_COHERENT |
+>>>                        ADRENO_QUIRK_HAS_HW_APRIV,
+>>>                .init = a6xx_gpu_init,
+>>> +             .zapfw = "a660_zap.mbn",
+>>
+>> sc7280 doesn't have a TZ and so no zap shader support. Can we handle
+>> this using "firmware-name" property in your top level platform dt? Zap
+>> firmwares are signed with different keys for each OEMs. So there is
+>> cross-compatibility anyway.
 > 
-> Other than the nits
+> I think this ends up working out because the version of sc7280 that
+> doesn't have TZ also doesn't have the associated mem-region/etc..
+Yes
+
+> but
+> maybe we should deprecate the zapfw field as in practice it isn't
+> useful (ie. always overriden by firmware-name).
+Also yes, we've discussed that on IRC once
+
 > 
-> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-> 
-Thanks a lot for the review!
-Sunil
+> Fwiw there are windows laptops with sc7180/sc7280 which do use zap fw.
+Correct, e.g. the SC7180 Acer Aspire 1 that is supported upstream.
+
+Konrad
+
+Konrad
