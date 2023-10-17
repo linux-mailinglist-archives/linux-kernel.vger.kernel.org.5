@@ -2,85 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B83A7CC327
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 14:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8519F7CC32B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 14:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235044AbjJQM0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 08:26:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57786 "EHLO
+        id S1343573AbjJQM14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 08:27:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232268AbjJQM0s (ORCPT
+        with ESMTP id S232763AbjJQM1z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 08:26:48 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D26FFD;
-        Tue, 17 Oct 2023 05:26:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697545607; x=1729081607;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=s6vqmuD64bBqxO0au266G4DKDVeZOTXxnpeJMSxykXg=;
-  b=h/gNmykvRvn/jw8w1vzfs3o6IXjY18D8XWja1LnE26DEQAlgH0j3yQ07
-   32WS1P44J87KRTiJxKpZ0W5VKa6KG0rBdZvFSRSpko/vqZHxfpDhL251I
-   XXKCtbPQK4AyXIv0LSIu8z1wUP93ZI5beHa8rffY+HScgn3syPhYtGV1X
-   TNotctSG1qB/leyDEexNk2JLQO9MBuhy9hj9DLru7IBESrynGvyfO6uHc
-   sjAXNmrTOvvyIlLdNNS8In9LW+CM3W2Cdkgfr8AERxTPFJX+dY/UshKxj
-   yPkYjS4gqNKeV5h6qKSyMTnpXt4Mb1M4lXJBpsOSTOxbGslYQPtPp8xfu
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="376134756"
-X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
-   d="scan'208";a="376134756"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 05:26:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="826423505"
-X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
-   d="scan'208";a="826423505"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 05:26:45 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qsj9m-00000006Hc6-23cS;
-        Tue, 17 Oct 2023 15:26:42 +0300
-Date:   Tue, 17 Oct 2023 15:26:42 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [PATCH v3 34/73] pinctrl: intel: lynxpoint: use new pinctrl GPIO
- helpers
-Message-ID: <ZS59gumy6+F2IQZm@smile.fi.intel.com>
-References: <20231017120431.68847-1-brgl@bgdev.pl>
- <20231017120431.68847-35-brgl@bgdev.pl>
+        Tue, 17 Oct 2023 08:27:55 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F254A13A
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 05:27:53 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-578b4981526so3328867a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 05:27:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697545673; x=1698150473; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oIvH93b/sWVIbaT25hdzz+hqN4HWpQnfh8o78oWByr4=;
+        b=H6b8btTW7AKlTGeCKfxtf195fNCmTGTWyh9yQgop5cwrm+nZiHNqAFDvjric98l+1K
+         19Y79jsfaBCZq9vJfadtQzDRVu4ZBIl3rVMFS5lUhyH7sUFUQDMp+djpS1CCEdNym0Uo
+         GzpujMIhOP5GHQW519IJvrmaCsD6WEs4MMlZpiD30lm7nCHRDg7TBOUjD8TKdJY96Xzy
+         svXci8JC7LPTf6XezShAFBLLNkBbReuTj/hqAjC31u8l7HpPPgS3Fe7NfWiIcNzHLM6Q
+         DoMNtG/3SrgDhvvL4jsSBhUuziT1+MywNOzHB8frNnwbq5Lu9KJLDfMHOHWaqyRZUzgV
+         42gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697545673; x=1698150473;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oIvH93b/sWVIbaT25hdzz+hqN4HWpQnfh8o78oWByr4=;
+        b=N8BGugYBF8463syuJjynxV9T/2pqnfLNcpuOmAqh5GIIDbOKAJ9uQGHxUH/C8NeU98
+         ecLRyJlaZ8H1i8k1TaxSQ/xMGwPe7XaDdhtNy3lEa3mv2mT5E0X9pEgO/pCMD2D0qTE0
+         2r5viQroBb6QrHeT3Wc9ysvTQM8iDyAtks4iflFyvEPVgQsIUhkMq2x74kQOrnSqm/yk
+         kx912PwgSMR/Q9fGb5C7q/UC/5TlIyHeE/ONdLY0zm+Hs4+Ct1PipoXfrElZ4thXGY1X
+         YN02iw8CIdOHbYrDBGf70IYQRIF6sEJY54Oq+NItc0o3ib/AK5tgDESosrGxG6OR0Dpc
+         o6Ag==
+X-Gm-Message-State: AOJu0YxNBdA40jrqmvw+uLOzCGafqVjeBNus3e5CZ9NbGIf9cOy8O0w2
+        6YKT6gZhlLBKCc9kQA+595yUwkkTit0n9vx1
+X-Google-Smtp-Source: AGHT+IFSw8FIVjPWtqi/0et1umJtbVLACgN66JMBmJenEXVUlttevscGPjWw9ZWjgpb3vwv9ZAN8/Q==
+X-Received: by 2002:a05:6a21:1a5:b0:154:d3ac:2076 with SMTP id le37-20020a056a2101a500b00154d3ac2076mr2166222pzb.40.1697545672936;
+        Tue, 17 Oct 2023 05:27:52 -0700 (PDT)
+Received: from kelvin-System-Product-Name.lan ([112.45.97.252])
+        by smtp.gmail.com with ESMTPSA id l18-20020a170902d35200b001c9d235b3a0sm1406193plk.7.2023.10.17.05.27.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Oct 2023 05:27:52 -0700 (PDT)
+From:   Keguang Zhang <keguang.zhang@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Keguang Zhang <keguang.zhang@gmail.com>
+Subject: [PATCH] irqchip: Drop the custom fixes for the same irq_chip name
+Date:   Tue, 17 Oct 2023 20:27:18 +0800
+Message-Id: <20231017122718.5062-1-keguang.zhang@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231017120431.68847-35-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 02:03:52PM +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> Replace the pinctrl helpers taking the global GPIO number as argument
-> with the improved variants that instead take a pointer to the GPIO chip
-> and the controller-relative offset.
+Since commit 021a8ca2ba23 ("genirq/generic-chip: Fix the irq_chip name
+for /proc/interrupts "), the chip name of all chip types are set to the
+same name by irq_init_generic_chip() now. Those custom fixes for
+the same irq_chip name are no longer needed.
+So drop them.
 
-Same here, no "intel:" part in the Subj.
+Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+---
+ drivers/irqchip/irq-sunxi-nmi.c | 1 -
+ drivers/irqchip/irq-tb10x.c     | 1 -
+ 2 files changed, 2 deletions(-)
 
+diff --git a/drivers/irqchip/irq-sunxi-nmi.c b/drivers/irqchip/irq-sunxi-nmi.c
+index e760b1278143..bb92fd85e975 100644
+--- a/drivers/irqchip/irq-sunxi-nmi.c
++++ b/drivers/irqchip/irq-sunxi-nmi.c
+@@ -192,7 +192,6 @@ static int __init sunxi_sc_nmi_irq_init(struct device_node *node,
+ 	gc->chip_types[0].regs.type		= reg_offs->ctrl;
+ 
+ 	gc->chip_types[1].type			= IRQ_TYPE_EDGE_BOTH;
+-	gc->chip_types[1].chip.name		= gc->chip_types[0].chip.name;
+ 	gc->chip_types[1].chip.irq_ack		= irq_gc_ack_set_bit;
+ 	gc->chip_types[1].chip.irq_mask		= irq_gc_mask_clr_bit;
+ 	gc->chip_types[1].chip.irq_unmask	= irq_gc_mask_set_bit;
+diff --git a/drivers/irqchip/irq-tb10x.c b/drivers/irqchip/irq-tb10x.c
+index 680586354d12..d59bfbe8c6d0 100644
+--- a/drivers/irqchip/irq-tb10x.c
++++ b/drivers/irqchip/irq-tb10x.c
+@@ -150,7 +150,6 @@ static int __init of_tb10x_init_irq(struct device_node *ictl,
+ 	gc->chip_types[0].regs.mask          = AB_IRQCTL_INT_ENABLE;
+ 
+ 	gc->chip_types[1].type               = IRQ_TYPE_EDGE_BOTH;
+-	gc->chip_types[1].chip.name          = gc->chip_types[0].chip.name;
+ 	gc->chip_types[1].chip.irq_ack       = irq_gc_ack_set_bit;
+ 	gc->chip_types[1].chip.irq_mask      = irq_gc_mask_clr_bit;
+ 	gc->chip_types[1].chip.irq_unmask    = irq_gc_mask_set_bit;
+
+base-commit: 4d0515b235dec789578d135a5db586b25c5870cb
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.39.2
 
