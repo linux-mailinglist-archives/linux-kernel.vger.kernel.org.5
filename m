@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11D3A7CC28A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 14:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F837CC285
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 14:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232208AbjJQMIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 08:08:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59124 "EHLO
+        id S234890AbjJQMIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 08:08:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343619AbjJQMH0 (ORCPT
+        with ESMTP id S235055AbjJQMHX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 08:07:26 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A9FC213F
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 05:05:43 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2c50906f941so56970931fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 05:05:43 -0700 (PDT)
+        Tue, 17 Oct 2023 08:07:23 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8659268C
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 05:05:44 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40566f89f6eso62513285e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 05:05:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1697544340; x=1698149140; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1697544342; x=1698149142; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IDbQa4pbNgPSy0Q7qNPPuIZ1OX8+KoCwyythnm8P9i8=;
-        b=mYI4b8ge26f4cBfLQjNoyAP6xewpEAX+N+wtc/jQGGHm78NJMqKsuXaJHxKprHo1J+
-         kz+LCQAVjftP+LL/Oj1Fg8vOVrLpdTpWxJkAiiWzlt09cj+IoFPQCoZHxrqy2m2e0AX+
-         /KcvB9rBOzEHjZw5M5lK0dpx9ayOfj/jetxPzGqgza/9Yy6r9mnEh/qFe3b0jIEulKH4
-         0JSaj8G6xOOc/jO5X8a+G7oGMfSPR3I1c61JcduGy7ZgQv3rcYgi2pkdUV/S1QUrypHM
-         P4OiSVznNPwULTQxfS9jrcXxYLngx4rKR4bx4floMwUfk3SL120pC/sLvwn0QdsvN4hy
-         48hQ==
+        bh=dZA9jxM2qedMisgaI2wTgRjsyEvc4vcg/mOILSJ3QTQ=;
+        b=cZaK5JFhE3fQcdHqt9Y2ut45fX2MRu4Iul6awgxoaIS7u39iWg3EmRv4YMH8gbi/dv
+         FHUbfO7pfm4WM33Ni1c8vRm7fhhbTitAfyL/22QTRNGgS2HkvQi49Kih0wirb1iBMUtb
+         YPKsYqYJi3mIiqoATGQ4z5+GzKJOR92V/fTclxOfYtSB8PjFgQhQOjseq6wXoElPwNja
+         f9D4Yjkk0SnGWFWVSNpQmJ/nsA1ZW8bCS7MPgyQziG2vde3x06IlDWxjSDOFXhfsWII5
+         oAj56XbM4kBCgMv30n4apvJ1KCmCWdwsQ7muMwJcnRBjH3aq4w4/aAyP7ReQN5OudUOS
+         g4Cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697544340; x=1698149140;
+        d=1e100.net; s=20230601; t=1697544342; x=1698149142;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IDbQa4pbNgPSy0Q7qNPPuIZ1OX8+KoCwyythnm8P9i8=;
-        b=UIdlogsjnFpWgEmLrpzSDirk0uWbJKsqtjBfr43RV5eSz4J/DPupCpeT4l/pL963FF
-         VqzwbUiULTa4nyAsY8/WErky4py8+486a7FtNo+zbZWkNp6JY9FYNnOs/bknPPpoi6B7
-         FtOmEcKgS6gQm6/o4izyDrEQMXcrfovDG9waBxoQ9v7B5LvPzMcFCnZrX32flIhVTo3T
-         J//BctDQu8UHxUJuZzLL51YylVrNekXoXr+I5umjT9A7dK8O+pzIAsXKSOws4wRR3+1/
-         6slUaDH0yorv5J5HkLWCIxTaAkrwNmCJTnCE/1fOUuv9Zwjafd3ShXIujlAF3IM1RAn/
-         CSyA==
-X-Gm-Message-State: AOJu0YxywmhL7AKvjIx9mSS0G+LsdDSvlfM+RuTZXnkZkNAmrGVqpIvP
-        HwpV0TQ7mZL6XyWhJhaW9WuYIA==
-X-Google-Smtp-Source: AGHT+IHN/WqckhmUqxmQwvvCJ12TWzSuYj9MFFn4yz5D/MYVMFJ2znX2y6gYLUB9FdDFmJon/erAlw==
-X-Received: by 2002:a2e:a162:0:b0:2bc:f5a0:cc25 with SMTP id u2-20020a2ea162000000b002bcf5a0cc25mr1529232ljl.2.1697544340583;
-        Tue, 17 Oct 2023 05:05:40 -0700 (PDT)
+        bh=dZA9jxM2qedMisgaI2wTgRjsyEvc4vcg/mOILSJ3QTQ=;
+        b=nYOZsFQ1xrwTFy9hjuC8jqpq17VQWLj6y6aA8EGzhND4OnPD0zIEUXYgMZE3f2O9pf
+         PnSgGZFBjO1dnJB0iGlu2xF544RfKEvfQOLJ+0BNYxxhVx1I9RUeN9lMSGc+/eYzIZal
+         7QAk5y3vas8ynPlg6vInHd3QdXt31clGkxA+mdqvG9KOJWg0W+24QjCtr/nWSBx1MDe6
+         456Mk0S76+hYW6lGypxuFnERCqVLRoLNOupTAmcdzioHvYL5cokrO+eNLwjMM1j7nJPm
+         9ZZbb/2bk9MOBENzjFfikmLiIf/zr3usAxVQeNTjnhq2SIZMB4jBsVQI1ixHF8pp99LK
+         rs0w==
+X-Gm-Message-State: AOJu0YwM6ROkEofXIQa0K7utPTjAWcJ7qeU/bt2nSz37kr2EvL79sCac
+        z5ojcVplf+eGfZC9LM/8qdFxJQ==
+X-Google-Smtp-Source: AGHT+IEqZN3vjK9m7+TPCHjXqsDkxrsq/FZ9dHcs+XebmA+Waahesh5JLijgb1Q3MNPO84Gg3IGu2g==
+X-Received: by 2002:a05:600c:a0a:b0:406:4a32:52fc with SMTP id z10-20020a05600c0a0a00b004064a3252fcmr1528311wmp.21.1697544341404;
+        Tue, 17 Oct 2023 05:05:41 -0700 (PDT)
 Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:f1ee:b000:ce90:ed14])
-        by smtp.gmail.com with ESMTPSA id a2-20020a05600c224200b00405442edc69sm1353859wmm.14.2023.10.17.05.05.39
+        by smtp.gmail.com with ESMTPSA id a2-20020a05600c224200b00405442edc69sm1353859wmm.14.2023.10.17.05.05.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 05:05:40 -0700 (PDT)
+        Tue, 17 Oct 2023 05:05:41 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v3 54/73] pinctrl: intel: drop the wrappers around pinctrl_gpio_direction_input()
-Date:   Tue, 17 Oct 2023 14:04:12 +0200
-Message-Id: <20231017120431.68847-55-brgl@bgdev.pl>
+Subject: [PATCH v3 55/73] pinctrl: intel: cherryview: drop the wrappers around pinctrl_gpio_direction_input()
+Date:   Tue, 17 Oct 2023 14:04:13 +0200
+Message-Id: <20231017120431.68847-56-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231017120431.68847-1-brgl@bgdev.pl>
 References: <20231017120431.68847-1-brgl@bgdev.pl>
@@ -79,34 +79,34 @@ wrappers around it so we can drop them.
 
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
- drivers/pinctrl/intel/pinctrl-intel.c | 7 +------
+ drivers/pinctrl/intel/pinctrl-cherryview.c | 7 +------
  1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/pinctrl/intel/pinctrl-intel.c b/drivers/pinctrl/intel/pinctrl-intel.c
-index 0f8e27d16929..f772be70e56d 100644
---- a/drivers/pinctrl/intel/pinctrl-intel.c
-+++ b/drivers/pinctrl/intel/pinctrl-intel.c
-@@ -990,11 +990,6 @@ static int intel_gpio_get_direction(struct gpio_chip *chip, unsigned int offset)
- 	return GPIO_LINE_DIRECTION_OUT;
+diff --git a/drivers/pinctrl/intel/pinctrl-cherryview.c b/drivers/pinctrl/intel/pinctrl-cherryview.c
+index 067b0d344f0e..d1315cf027ce 100644
+--- a/drivers/pinctrl/intel/pinctrl-cherryview.c
++++ b/drivers/pinctrl/intel/pinctrl-cherryview.c
+@@ -1146,11 +1146,6 @@ static int chv_gpio_get_direction(struct gpio_chip *chip, unsigned int offset)
+ 	return GPIO_LINE_DIRECTION_IN;
  }
  
--static int intel_gpio_direction_input(struct gpio_chip *chip, unsigned int offset)
+-static int chv_gpio_direction_input(struct gpio_chip *chip, unsigned int offset)
 -{
 -	return pinctrl_gpio_direction_input(chip, offset);
 -}
 -
- static int intel_gpio_direction_output(struct gpio_chip *chip, unsigned int offset,
- 				       int value)
+ static int chv_gpio_direction_output(struct gpio_chip *chip, unsigned int offset,
+ 				     int value)
  {
-@@ -1007,7 +1002,7 @@ static const struct gpio_chip intel_gpio_chip = {
+@@ -1163,7 +1158,7 @@ static const struct gpio_chip chv_gpio_chip = {
  	.request = gpiochip_generic_request,
  	.free = gpiochip_generic_free,
- 	.get_direction = intel_gpio_get_direction,
--	.direction_input = intel_gpio_direction_input,
+ 	.get_direction = chv_gpio_get_direction,
+-	.direction_input = chv_gpio_direction_input,
 +	.direction_input = pinctrl_gpio_direction_input,
- 	.direction_output = intel_gpio_direction_output,
- 	.get = intel_gpio_get,
- 	.set = intel_gpio_set,
+ 	.direction_output = chv_gpio_direction_output,
+ 	.get = chv_gpio_get,
+ 	.set = chv_gpio_set,
 -- 
 2.39.2
 
