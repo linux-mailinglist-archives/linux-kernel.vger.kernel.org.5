@@ -2,57 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A99027CBCB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 09:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 858EF7CBCB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 09:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234647AbjJQHs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 03:48:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32972 "EHLO
+        id S234735AbjJQHsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 03:48:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234416AbjJQHs1 (ORCPT
+        with ESMTP id S234669AbjJQHsf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 03:48:27 -0400
+        Tue, 17 Oct 2023 03:48:35 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F244893;
-        Tue, 17 Oct 2023 00:48:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF21AC433C8;
-        Tue, 17 Oct 2023 07:48:24 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9660DFD
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 00:48:33 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DEFBC433C9;
+        Tue, 17 Oct 2023 07:48:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697528905;
-        bh=l5ZXyU0FFeiZz3s3YxfAjMelGvfe4yY/Uqvl5whdjJU=;
+        s=k20201202; t=1697528913;
+        bh=ULSURu0f9pF10jB8uWo7rgXsdlYUF/R9Y1q7G+/vIm4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gSnzO381cZbIdNu+uowcvK2rffi44JvZEphJ5p4qGAZxVj4wDWtLSytZBW5CdPK0M
-         wIzJlzA0P36K/wtZZwQCU20t0+Y8f58wgCeZ+X8blug445WKmL9DYDUTFTq9rf+wV/
-         LWSNcVe9JopgvP8WzmTRvPY/DTXA+Vi5IpUVSfNQNV5b7Nzd9XU+6zA8Id7hB7yppW
-         GN8wH+tzOuLMmumbEcfo5i8Fiux4i2tywLmLUCdsxnLY688OUP+uw8WDSQeuck8UzN
-         sTkoRDsAu/fCMpoAa38l03sW6X9qttYn18Rs/uKogvTSunLkK68cLYDxDTPj/scVq+
-         CJjxZESzBg69Q==
-Date:   Tue, 17 Oct 2023 10:48:21 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Ajay Sharma <sharmaajay@microsoft.com>
-Cc:     "sharmaajay@linuxonhyperv.com" <sharmaajay@linuxonhyperv.com>,
-        Long Li <longli@microsoft.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [EXTERNAL] Re: [Patch v5 0/5] RDMA/mana_ib
-Message-ID: <20231017074821.GB5392@unreal>
-References: <1694105559-9465-1-git-send-email-sharmaajay@linuxonhyperv.com>
- <20230911123231.GB19469@unreal>
- <BY5PR21MB1394F62601FEFE734181FFF7D6F2A@BY5PR21MB1394.namprd21.prod.outlook.com>
- <20230918082903.GC13757@unreal>
- <MN0PR21MB3606BE5B57AF1FEE85915F3AD6D7A@MN0PR21MB3606.namprd21.prod.outlook.com>
+        b=eHNHh/gmur/uVvgbuvQjCDcpZiBcUV6ML9UhjZcjC2NCtGe4I8Zg4p4iWCs0kQzf5
+         UM6k4E/tTEUqScuFvyXIrwIZPr/t7PaiHmV/sXJKD2qRn89b8oclTi3BlUxSYdQ5rA
+         oQBMNkh0LddC71ItQZzn5Pn35UcXpzBi4tNlSfYdygxRwagFgRKiRzHnqSvroDIfrz
+         7xSqjcBMs5+a0S/p9V2/4gqULO/BSx/HVbC5nuA4ZHbi/lNBQqOU3sMRWEIEhW76Xa
+         JwpBs8Ke4HaMf7vMx3+re7faHHVMrJAKYYC1aKzM+4xRvTveCny8kYO7CrcN+5OYRZ
+         h1bhxyxKi7c8w==
+Date:   Tue, 17 Oct 2023 08:48:27 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Ante Knezic <ante.knezic@helmholz.de>
+Cc:     olteanv@gmail.com, andrew@lunn.ch, conor+dt@kernel.org,
+        davem@davemloft.net, devicetree@vger.kernel.org,
+        edumazet@google.com, f.fainelli@gmail.com,
+        krzysztof.kozlowski+dt@linaro.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, marex@denx.de,
+        netdev@vger.kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
+        woojung.huh@microchip.com
+Subject: Re: [PATCH net-next v2 2/2] dt-bindings: net: microchip,ksz:
+ document microchip,rmii-clk-internal
+Message-ID: <20231017-fading-retrial-7faebda79ebb@spud>
+References: <20231016103708.6ka5vxfkdatrjvdk@skbuf>
+ <20231017073548.15050-1-ante.knezic@helmholz.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="wIO3iCZ/QV7V4j5D"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <MN0PR21MB3606BE5B57AF1FEE85915F3AD6D7A@MN0PR21MB3606.namprd21.prod.outlook.com>
+In-Reply-To: <20231017073548.15050-1-ante.knezic@helmholz.de>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -62,120 +56,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 10:15:18PM +0000, Ajay Sharma wrote:
-> I have sent v7 patch series with the space removed 
-> 
-> > -----Original Message-----
-> > From: Leon Romanovsky <leon@kernel.org>
-> > Sent: Monday, September 18, 2023 1:29 AM
-> > To: Ajay Sharma <sharmaajay@microsoft.com>
-> > Cc: sharmaajay@linuxonhyperv.com; Long Li <longli@microsoft.com>; Jason
-> > Gunthorpe <jgg@ziepe.ca>; Dexuan Cui <decui@microsoft.com>; Wei Liu
-> > <wei.liu@kernel.org>; David S. Miller <davem@davemloft.net>; Eric Dumazet
-> > <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>; Paolo Abeni
-> > <pabeni@redhat.com>; linux-rdma@vger.kernel.org; linux-
-> > hyperv@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.org
-> > Subject: Re: [EXTERNAL] Re: [Patch v5 0/5] RDMA/mana_ib
-> > 
-> > On Mon, Sep 11, 2023 at 06:57:21PM +0000, Ajay Sharma wrote:
-> > > I have updated the last patch to use xarray, will post the update patch. We
-> > currently use aux bus for ib device. Gd_register_device is firmware specific. All
-> > the patches use RDMA/mana_ib format which is aligned with
-> > drivers/infiniband/hw/mana/ .
-> > 
-> > ➜  kernel git:(wip/leon-for-rc) git l --no-merges drivers/infiniband/hw/mana/
-> > 2145328515c8 RDMA/mana_ib: Use v2 version of cfg_rx_steer_req to enable
-> > RX coalescing
-> > 89d42b8c85b4 RDMA/mana_ib: Fix a bug when the PF indicates more entries
-> > for registering memory on first packet
-> > 563ca0e9eab8 RDMA/mana_ib: Prevent array underflow in
-> > mana_ib_create_qp_raw()
-> > 3574cfdca285 RDMA/mana: Remove redefinition of basic u64 type
-> > 0266a177631d RDMA/mana_ib: Add a driver for Microsoft Azure Network
-> > Adapter
-> > 
-> > It is different format from presented here. You added extra space before ":"
-> > and there is double space in one of the titles.
-> > 
-> I have removed the space
-> 
-> > Regarding aux, I see it, but what confuses me is proliferation of terms and
-> > various calls: device, client, adapter. My expectation is to see more uniform
-> > methodology where IB is represented as device.
-> > 
-> 
-> The adapter is a software construct. It is used as a container for resources. 
-> Client is used to distinguish between eth and ib.
 
-Do you have multiple "adapters" in one ib/eth device?
-If yes, at least for IB, it will be very unexpected to see.
+--wIO3iCZ/QV7V4j5D
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Why do you have client and device when they are basically the same objects?
+On Tue, Oct 17, 2023 at 09:35:48AM +0200, Ante Knezic wrote:
+> > > +  microchip,rmii-clk-internal:
+> > > +    $ref: /schemas/types.yaml#/definitions/flag
+> > > +    description:
+> > > +      Set if the RMII reference clock is provided internally. Otherw=
+ise
+> > > +      reference clock should be provided externally.
+> > > +
+> > > +if:
+> > > +  not:
+> > > +    properties:
+> > > +      compatible:
+> > > +        enum:
+> > > +          - microchip,ksz8863
+> > > +          - microchip,ksz8873
+> > > +then:
+> > > +  not:
+> > > +    required:
+> > > +      - microchip,rmii-clk-internal
 
-> Please note that these are terms used for different purposes on the management side.
+I think this bit can become the slightly simpler
+	then:
+	  properties:
+	     microchip,rmii-clk-internal: false
 
-We are discussing RDMA side of this series.
+> > I think that what you want to express is that microchip,rmii-clk-intern=
+al
+> > is only defined for microchip,ksz8863 and microchip,ksz8873.
+> > Can't you describe that as "if: properties: compatible: (...) then:
+> > properties: microchip,rmii-clk-internal"?
+>=20
+> If I understood you correctly you are refering to a solution like
+> if:
+>   properties:
+>     compatible:
+>       enum:
+>         - microchip,ksz8863
+>         - microchip,ksz8873
+> then:
+>   properties:
+>     microchip,rmii-clk-internal:
+>       $ref: /schemas/types.yaml#/definitions/flag
+>       description:
+>         Set if the RMII reference clock is provided internally. Otherwise
+>         reference clock should be provided externally.
+>=20
+> This was already suggested in v1, but was not a satisfactory solution
+> according to Mr. Conor Dooley:
 
-Thanks
+Yeah, we prefer not to have the property definitions inside the
+conditionals, but rather constrain or allow/disallow them there.
 
-> 
-> > Thanks
-> > 
-> > >
-> > > Thanks
-> > >
-> > > > -----Original Message-----
-> > > > From: Leon Romanovsky <leon@kernel.org>
-> > > > Sent: Monday, September 11, 2023 7:33 AM
-> > > > To: sharmaajay@linuxonhyperv.com
-> > > > Cc: Long Li <longli@microsoft.com>; Jason Gunthorpe <jgg@ziepe.ca>;
-> > > > Dexuan Cui <decui@microsoft.com>; Wei Liu <wei.liu@kernel.org>;
-> > > > David S. Miller <davem@davemloft.net>; Eric Dumazet
-> > > > <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>; Paolo Abeni
-> > > > <pabeni@redhat.com>; linux- rdma@vger.kernel.org;
-> > > > linux-hyperv@vger.kernel.org; netdev@vger.kernel.org;
-> > > > linux-kernel@vger.kernel.org; Ajay Sharma <sharmaajay@microsoft.com>
-> > > > Subject: [EXTERNAL] Re: [Patch v5 0/5] RDMA/mana_ib
-> > > >
-> > > > On Thu, Sep 07, 2023 at 09:52:34AM -0700,
-> > > > sharmaajay@linuxonhyperv.com
-> > > > wrote:
-> > > > > From: Ajay Sharma <sharmaajay@microsoft.com>
-> > > > >
-> > > > > Change from v4:
-> > > > > Send qp fatal error event to the context that created the qp. Add
-> > > > > lookup table for qp.
-> > > > >
-> > > > > Ajay Sharma (5):
-> > > > >   RDMA/mana_ib : Rename all mana_ib_dev type variables to mib_dev
-> > > > >   RDMA/mana_ib : Register Mana IB  device with Management SW
-> > > > >   RDMA/mana_ib : Create adapter and Add error eq
-> > > > >   RDMA/mana_ib : Query adapter capabilities
-> > > > >   RDMA/mana_ib : Send event to qp
-> > > >
-> > > > I didn't look very deep into the series and has three very initial comments.
-> > > > 1. Please do git log drivers/infiniband/hw/mana/ and use same format
-> > > > for commit messages.
-> > > > 2. Don't invent your own index-to-qp query mechanism in last patch
-> > > > and use xarray.
-> > > > 3. Once you decided to export mana_gd_register_device, it hinted me
-> > > > that it is time to move to auxbus infrastructure.
-> > > >
-> > > > Thanks
-> > > >
-> > > > >
-> > > > >  drivers/infiniband/hw/mana/cq.c               |  12 +-
-> > > > >  drivers/infiniband/hw/mana/device.c           |  81 +++--
-> > > > >  drivers/infiniband/hw/mana/main.c             | 288 +++++++++++++-----
-> > > > >  drivers/infiniband/hw/mana/mana_ib.h          | 102 ++++++-
-> > > > >  drivers/infiniband/hw/mana/mr.c               |  42 ++-
-> > > > >  drivers/infiniband/hw/mana/qp.c               |  86 +++---
-> > > > >  drivers/infiniband/hw/mana/wq.c               |  21 +-
-> > > > >  .../net/ethernet/microsoft/mana/gdma_main.c   | 152 +++++----
-> > > > >  drivers/net/ethernet/microsoft/mana/mana_en.c |   3 +
-> > > > >  include/net/mana/gdma.h                       |  16 +-
-> > > > >  10 files changed, 545 insertions(+), 258 deletions(-)
-> > > > >
-> > > > > --
-> > > > > 2.25.1
-> > > > >
+Cheers,
+Conor.
+
+>=20
+> >> On Tue, 10 Oct 2023 16:25:55 +0100, Conor Dooley wrote:
+> >> > On Tue, Oct 10, 2023 at 03:18:54PM +0200, Ante Knezic wrote:
+> >> > > Add documentation for selecting reference rmii clock on KSZ88X3 de=
+vices
+> >> > >=20
+> >> > > Signed-off-by: Ante Knezic <ante.knezic@helmholz.de>
+> >> > > ---
+> >> > >  Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml | 6 =
+++++++
+> >> > >  1 file changed, 6 insertions(+)
+> >> > >=20
+> >> > > diff --git a/Documentation/devicetree/bindings/net/dsa/microchip,k=
+sz.yaml b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+> >> > > index e51be1ac0362..3df5d2e72dba 100644
+> >> > > --- a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+> >> > > +++ b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+> >> > > @@ -49,6 +49,12 @@ properties:
+> >> > >        Set if the output SYNCLKO clock should be disabled. Do not =
+mix with
+> >> > >        microchip,synclko-125.
+> >> > > =20
+> >> > > +  microchip,rmii-clk-internal:
+> >> > > +    $ref: /schemas/types.yaml#/definitions/flag
+> >> > > +    description:
+> >> > > +      Set if the RMII reference clock should be provided internal=
+ly.
+> >> >=20
+> >> > > Applies only
+> >> > > +      to KSZ88X3 devices.
+> >> >=20
+> >> > This should be enforced by the schema, the example schema in the docs
+> >> > should show you how to do this.
+> >>=20
+> >> I am guessing you are refering to limiting the property to ksz88x3 dev=
+ices?
+> >> Something like:
+> >>=20
+> >> if:
+> >>   properties:
+> >>     compatible:
+> >>       enum:
+> >>         - microchip,ksz8863
+> >>         - microchip,ksz8873
+> >> then:
+> >>   properties:
+> >>     microchip,rmii-clk-internal:
+> >>       $ref: /schemas/types.yaml#/definitions/flag
+> >>       description:
+> >>         Set if the RMII reference clock is provided internally. Otherw=
+ise
+> >>         reference clock should be provided externally.
+> >
+> >Not quite. The definition of the property should be outside the if/then,
+> >but one should be used to allow/disallow the property.
+>=20
+
+--wIO3iCZ/QV7V4j5D
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZS48SwAKCRB4tDGHoIJi
+0velAQClJ9EQ6MEhRqxPuOI8Aa3rxhaXsnRNccr4O2vn8y6vLwD/ffOYqRRz1OQ+
+vAcG8dVYyfmc7/0OfyJOWaW4keCGvQM=
+=/J8x
+-----END PGP SIGNATURE-----
+
+--wIO3iCZ/QV7V4j5D--
