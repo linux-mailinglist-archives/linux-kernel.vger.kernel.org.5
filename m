@@ -2,95 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CE747CBC19
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 09:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7745F7CBC1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 09:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234703AbjJQHOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 03:14:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42160 "EHLO
+        id S234571AbjJQHPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 03:15:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234403AbjJQHOB (ORCPT
+        with ESMTP id S234469AbjJQHPr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 03:14:01 -0400
-Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [83.223.78.240])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B6D295;
-        Tue, 17 Oct 2023 00:13:59 -0700 (PDT)
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL Global TLS RSA4096 SHA256 2022 CA1" (verified OK))
-        by bmailout2.hostsharing.net (Postfix) with ESMTPS id 1B1E72800B758;
-        Tue, 17 Oct 2023 09:13:57 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 0DB1F1D3C4; Tue, 17 Oct 2023 09:13:57 +0200 (CEST)
-Date:   Tue, 17 Oct 2023 09:13:57 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     bhelgaas@google.com, linux-pm@vger.kernel.org,
-        linux-mmc@vger.kernel.org, Ricky Wu <ricky_wu@realtek.com>,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: pciehp: Prevent child devices from doing RPM on
- PCIe Link Down
-Message-ID: <20231017071357.GB4592@wunner.de>
-References: <20231016040132.23824-1-kai.heng.feng@canonical.com>
- <20231016093210.GA22952@wunner.de>
- <CAAd53p7gbWSkRbng205z2U0_kU42JeFw8qThcBuXuVwCC+Y_VQ@mail.gmail.com>
+        Tue, 17 Oct 2023 03:15:47 -0400
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 559FE8E;
+        Tue, 17 Oct 2023 00:15:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=protonmail; t=1697526943; x=1697786143;
+        bh=acUd1lSaIk6mqFLWpDrtsFDJMd6E9whjQUC+IiZu2Vs=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=IQWp3b+DXcNWxfbyrxfOxJC4DldaHNEsBjLcqtbHOlpMGxp/jZKEnQkG8zWouSp8T
+         inCvh+IZS5Ewux0jJQBmR+Uvgaa4gmoyi7bG5i5HrzwQ2jKVIRq6PHEI2vJZGtivye
+         QsfysrKVo6rhH5TdPCJ8F9YOBo+MP3GlwPbkDRohCk8JriYOgtVh2F3Q4GPx+MTtjR
+         O1yj6se5a57k50iVh+3cii7qcI7Q4iSijRehyc08xKv/W5XZiLsN5QS1KeKnLC2oJB
+         98m3Wc4cFEVSw7WOKQYKi4Vrm9ohrXhKNeIeRYNHui4gyAH9H/DAF4A8YUT9szHy0s
+         c8sOJ1q8zUPRw==
+Date:   Tue, 17 Oct 2023 07:15:16 +0000
+To:     Gary Guo <gary@garyguo.net>, Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
+        Vincenzo Palazzo <vincenzopalazzodev@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+From:   Benno Lossin <benno.lossin@proton.me>
+Cc:     Wedson Almeida Filho <walmeida@microsoft.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rust: bindings: rename const binding using sed
+Message-ID: <f9e1a738-43f5-4ca6-9593-1b92053101ff@proton.me>
+In-Reply-To: <20230930133704.13313-1-gary@garyguo.net>
+References: <20230930133704.13313-1-gary@garyguo.net>
+Feedback-ID: 71780778:user:proton
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAd53p7gbWSkRbng205z2U0_kU42JeFw8qThcBuXuVwCC+Y_VQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[cc -= unrelated mailing lists bpf, kernel-hardening]
+On 30.09.23 15:36, Gary Guo wrote:
+> Current for consts that bindgen don't recognise, we define a helper
+> constant with
+>=20
+>      const <TYPE> BINDINGS_<NAME> =3D <NAME>;
+>=20
+> in `bindings_helper.h` and then we put
+>=20
+>      pub const <NAME>: <TYPE> =3D BINDINGS_<NAME>;
+>=20
+> in `bindings/lib.rs`. This is fine that we currently only have 3
+> constants that are defined this way, but is going to be more annoying
+> when more constants are added since every new constant needs to be
+> defined in two places.
+>=20
+> This patch changes the way we define constant helpers to
+>=20
+>      const <TYPE> RUST_BINDING_<NAME> =3D <NAME>;
+>=20
+> and then use `sed` to postprocess Rust code by generated by bindgen to
+> remove the distinct prefix, so user of the binding crate can refer to
+> the name directly.
+>=20
+> Signed-off-by: Gary Guo <gary@garyguo.net>
+> ---
+>   rust/Makefile                   | 2 ++
+>   rust/bindings/bindings_helper.h | 6 +++---
+>   rust/bindings/lib.rs            | 3 ---
+>   rust/kernel/allocator.rs        | 2 +-
+>   4 files changed, 6 insertions(+), 7 deletions(-)
+>=20
+> diff --git a/rust/Makefile b/rust/Makefile
+> index 14d93cf60a95..20889302b172 100644
+> --- a/rust/Makefile
+> +++ b/rust/Makefile
+> @@ -339,6 +339,8 @@ quiet_cmd_bindgen =3D BINDGEN $@
+>=20
+>   $(obj)/bindings/bindings_generated.rs: private bindgen_target_flags =3D=
+ \
+>       $(shell grep -v '^#\|^$$' $(srctree)/$(src)/bindgen_parameters)
+> +$(obj)/bindings/bindings_generated.rs: private bindgen_target_extra =3D =
+; \
+> +    sed -Ei 's/pub const RUST_BINDING_([a-zA-Z0-9_]*)/pub const \1/g' $@
 
-On Tue, Oct 17, 2023 at 12:35:18PM +0800, Kai-Heng Feng wrote:
-> On Mon, Oct 16, 2023 at 5:32???PM Lukas Wunner <lukas@wunner.de> wrote:
-> > On Mon, Oct 16, 2023 at 12:01:31PM +0800, Kai-Heng Feng wrote:
-> > > [   63.898861] pcieport 0000:00:1c.0: pciehp: Slot(8): Link Down
-> > > [   63.912118] BUG: unable to handle page fault for address: ffffb24d403e5010
-> > [...]
-> > > [   63.912198]  ? asm_exc_page_fault+0x27/0x30
-> > > [   63.912203]  ? ioread32+0x2e/0x70
-> > > [   63.912206]  ? rtsx_pci_write_register+0x5b/0x90 [rtsx_pci]
-> > > [   63.912217]  rtsx_set_l1off_sub+0x1c/0x30 [rtsx_pci]
-> > > [   63.912226]  rts5261_set_l1off_cfg_sub_d0+0x36/0x40 [rtsx_pci]
-> > > [   63.912234]  rtsx_pci_runtime_idle+0xc7/0x160 [rtsx_pci]
-> > > [   63.912243]  ? __pfx_pci_pm_runtime_idle+0x10/0x10
-> > > [   63.912246]  pci_pm_runtime_idle+0x34/0x70
-> > > [   63.912248]  rpm_idle+0xc4/0x2b0
-> > > [   63.912251]  pm_runtime_work+0x93/0xc0
-> > > [   63.912254]  process_one_work+0x21a/0x430
-> > > [   63.912258]  worker_thread+0x4a/0x3c0
-> >
-> > This looks like pcr->remap_addr is accessed after it has been iounmap'ed
-> > in rtsx_pci_remove() or before it has been iomap'ed in rtsx_pci_probe().
-> >
-> > Is the card reader itself located below a hotplug port and unplugged here?
-> > Or is this about the card being removed from the card reader?
-> >
-> > Having full dmesg output and lspci -vvv output attached to a bugzilla
-> > would help to understand what is going on.
-> 
-> I don't have the hardware so we need Ricky to provide more information here.
-> 
-> Regardless of the cardreader issue, do you have any concern on the patch
-> itself?
+Would it make sense to use `^pub const...`?
 
-Yes, my concern is that this might be the wrong approach.  I would like
-to understand what is going on, hence my questions above.
+I also agree with Alice that we could use a less generic name as the
+prefix.
 
-Thanks,
+With those things fixed:
 
-Lukas
+Reviewed-by: Benno Lossin <benno.lossin@proton.me>
+
+--=20
+Cheers,
+Benno
+
+>   $(obj)/bindings/bindings_generated.rs: $(src)/bindings/bindings_helper.=
+h \
+>       $(src)/bindgen_parameters FORCE
+>   =09$(call if_changed_dep,bindgen)
+> diff --git a/rust/bindings/bindings_helper.h b/rust/bindings/bindings_hel=
+per.h
+> index 85f013ed4ca4..c41eaab4ddb2 100644
+> --- a/rust/bindings/bindings_helper.h
+> +++ b/rust/bindings/bindings_helper.h
+> @@ -15,6 +15,6 @@
+>   #include <linux/workqueue.h>
+>=20
+>   /* `bindgen` gets confused at certain things. */
+> -const size_t BINDINGS_ARCH_SLAB_MINALIGN =3D ARCH_SLAB_MINALIGN;
+> -const gfp_t BINDINGS_GFP_KERNEL =3D GFP_KERNEL;
+> -const gfp_t BINDINGS___GFP_ZERO =3D __GFP_ZERO;
+> +const size_t RUST_BINDING_ARCH_SLAB_MINALIGN =3D ARCH_SLAB_MINALIGN;
+> +const gfp_t RUST_BINDING_GFP_KERNEL =3D GFP_KERNEL;
+> +const gfp_t RUST_BINDING___GFP_ZERO =3D __GFP_ZERO;
+> diff --git a/rust/bindings/lib.rs b/rust/bindings/lib.rs
+> index 9bcbea04dac3..40ddaee50d8b 100644
+> --- a/rust/bindings/lib.rs
+> +++ b/rust/bindings/lib.rs
+> @@ -48,6 +48,3 @@ mod bindings_helper {
+>   }
+>=20
+>   pub use bindings_raw::*;
+> -
+> -pub const GFP_KERNEL: gfp_t =3D BINDINGS_GFP_KERNEL;
+> -pub const __GFP_ZERO: gfp_t =3D BINDINGS___GFP_ZERO;
+> diff --git a/rust/kernel/allocator.rs b/rust/kernel/allocator.rs
+> index a8f3d5be1af1..4b057e837358 100644
+> --- a/rust/kernel/allocator.rs
+> +++ b/rust/kernel/allocator.rs
+> @@ -21,7 +21,7 @@ unsafe fn krealloc_aligned(ptr: *mut u8, new_layout: La=
+yout, flags: bindings::gf
+>=20
+>       let mut size =3D layout.size();
+>=20
+> -    if layout.align() > bindings::BINDINGS_ARCH_SLAB_MINALIGN {
+> +    if layout.align() > bindings::ARCH_SLAB_MINALIGN {
+>           // The alignment requirement exceeds the slab guarantee, thus t=
+ry to enlarge the size
+>           // to use the "power-of-two" size/alignment guarantee (see comm=
+ents in `kmalloc()` for
+>           // more information).
+> --
+> 2.40.1
+>=20
+
+
