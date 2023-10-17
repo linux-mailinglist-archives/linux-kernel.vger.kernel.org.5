@@ -2,277 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10FEA7CD052
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 01:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 125637CD057
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 01:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344148AbjJQXUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 19:20:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37452 "EHLO
+        id S1344280AbjJQXV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 19:21:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234836AbjJQXUX (ORCPT
+        with ESMTP id S230219AbjJQXVz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 19:20:23 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC8D7F5;
-        Tue, 17 Oct 2023 16:20:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21BF3C433C8;
-        Tue, 17 Oct 2023 23:20:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697584820;
-        bh=wNpEvk0qKh6nYz+ayWMmRr37IWRnGddjjXUD6ljHCLY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YSOouqGCnsYyQxPfXlyoccKal7pbNwsPT/wKZjjn7dOKycpjuKEPlv6vMBJVGi1+f
-         gVdCvKXQbo22jDLeI4yt6j2Qj4dP0G2SWWZ9i3bpasM3igb4DYBfHwzMrR4OEmNLfb
-         jgE1cG4Z8o9x1drp1mAN7/Kp7ClrwJGDUc9RdxvCEJNlH/S2FkNwEv1Y39otFMHH1d
-         W3Q8eZHoZJmmIqa8yNRBodzAXAGMDmdNZTf/vBVGsPUlHm26Oyxp3QZwVzDZmRLRnk
-         kBB14c0qSGbM+m9whuuLileWR7GYnr7aQAdkWydJGTbaYVkVxszYeyJZETch2Rccri
-         zCBoKQAL7jnmg==
-Date:   Wed, 18 Oct 2023 01:20:16 +0200
-From:   Alejandro Colomar <alx@kernel.org>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Mike Rapoport <rppt@kernel.org>, Peter Xu <peterx@redhat.com>,
-        linux-man@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] ioctl_userfaultfd.2: document new UFFDIO_POISON
- ioctl
-Message-ID: <ZS8WsKeeoBOLGy-B@debian>
-References: <20231017230110.3170850-1-axelrasmussen@google.com>
- <20231017230110.3170850-4-axelrasmussen@google.com>
+        Tue, 17 Oct 2023 19:21:55 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF04892;
+        Tue, 17 Oct 2023 16:21:53 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c9b1e3a809so41668775ad.2;
+        Tue, 17 Oct 2023 16:21:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697584913; x=1698189713; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AsfyhFO7p0RUOzLnEBAeg12shRu5DCBIJmIbrYlrbQQ=;
+        b=ns0iD/hOCcWTWTlQVQcycHbUcZ1ZD0Zc7E/uQqm9vO7D5+obLV9YL1e3z+5O4fivBr
+         ZGamCI/SjnI3p1jNIjAl8wcr0g0HKHa9IMdInrIhKwHebYsDbzQ5tfU9CXLE6JTqKW6W
+         piq/BFsAS81fPEl5uP29w9DhrWzxWu2+MqjAArHrccfIQxG2EUOj2zglF1rizE6epjjm
+         o2cYoowY0/Yzwp+xRL4+7HM5QvDb1lWc6oKSmwuhEKYDYh84vKhlve8SE9FGBVTfgLlA
+         7bYcui2qM6+/Esh74ufzBrzPjXVsKMWW+P1BITsXDkZB35QWJ1gXKCfSlC2xJo59OdgM
+         3S6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697584913; x=1698189713;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AsfyhFO7p0RUOzLnEBAeg12shRu5DCBIJmIbrYlrbQQ=;
+        b=s30EHQe2I0FXHeqUTCjhlHRnKvL9Lzzhc/F9xYcMay5g2eKec+8UgFjkS0jisvYPOR
+         BXZQQqZsFJr90A2AtjOuN4Rti/GO9HIVKmBmBV0AOmNwtohl1ow+e0i0LFAUJU3Uj7kk
+         spndV4uOM0PdCYgMjks+lB8J8CKVm/fnS26DmSaS18WuN0BD7HNweIGyZgMSS3L8Dg85
+         ZQBe5guM7Ozsp1lehBqyObWnBcs4qStROLHod9biv845nqj8fFN7ZRWCwC43+5yvI//p
+         6a1j+URdx9AoGTO4Aons06MiRsOxdZAMI4JBa3ADc2mMbCg01K4UESX+xR4mGaiT6Qmc
+         LcfA==
+X-Gm-Message-State: AOJu0YxmXurtUOtrBI4HlSGACj14D/imKIuTPN7b9X3153ylya1uP9F5
+        bo844juf2woMBT8ngSYe2TQ=
+X-Google-Smtp-Source: AGHT+IEB1bkpliZr4/0wwEWk35bjMHS8jcWP7je173r3nrnISt5OHU2yyH0fIdSym0BtiLsCs5IyAQ==
+X-Received: by 2002:a17:902:e5c6:b0:1ca:8abd:6b52 with SMTP id u6-20020a170902e5c600b001ca8abd6b52mr4311445plf.69.1697584913016;
+        Tue, 17 Oct 2023 16:21:53 -0700 (PDT)
+Received: from localhost (fwdproxy-prn-003.fbsv.net. [2a03:2880:ff:3::face:b00c])
+        by smtp.gmail.com with ESMTPSA id t9-20020a1709028c8900b001b8a00d4f7asm2126736plo.9.2023.10.17.16.21.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Oct 2023 16:21:52 -0700 (PDT)
+From:   Nhat Pham <nphamcs@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
+        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
+        vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        shuah@kernel.org
+Subject: [PATCH v3 0/5] workload-specific and memory pressure-driven zswap writeback
+Date:   Tue, 17 Oct 2023 16:21:47 -0700
+Message-Id: <20231017232152.2605440-1-nphamcs@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gcjukqSUCbN9YfrY"
-Content-Disposition: inline
-In-Reply-To: <20231017230110.3170850-4-axelrasmussen@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Changelog:
+v3:
+   * Add a patch to export per-cgroup zswap writeback counters
+   * Add a patch to update zswap's kselftest
+   * Separate the new list_lru functions into its own prep patch
+   * Do not start from the top of the hierarchy when encounter a memcg
+     that is not online for the global limit zswap writeback (patch 2)
+     (suggested by Yosry Ahmed)
+   * Do not remove the swap entry from list_lru in
+     __read_swapcache_async() (patch 2) (suggested by Yosry Ahmed)
+   * Removed a redundant zswap pool getting (patch 2)
+     (reported by Ryan Roberts)
+   * Use atomic for the nr_zswap_protected (instead of lruvec's lock)
+     (patch 5) (suggested by Yosry Ahmed)
+   * Remove the per-cgroup zswap shrinker knob (patch 5)
+     (suggested by Yosry Ahmed)
+v2:
+   * Fix loongarch compiler errors
+   * Use pool stats instead of memcg stats when !CONFIG_MEMCG_KEM
 
---gcjukqSUCbN9YfrY
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 18 Oct 2023 01:20:16 +0200
-From: Alejandro Colomar <alx@kernel.org>
-To: Axel Rasmussen <axelrasmussen@google.com>
-Cc: Mike Rapoport <rppt@kernel.org>, Peter Xu <peterx@redhat.com>,
-	linux-man@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] ioctl_userfaultfd.2: document new UFFDIO_POISON
- ioctl
+There are currently several issues with zswap writeback:
 
-On Tue, Oct 17, 2023 at 04:01:10PM -0700, Axel Rasmussen wrote:
-> This is a new feature recently added to the kernel. So, document the new
-> ioctl the same way we do other UFFDIO_* ioctls.
->=20
-> Also note the corresponding new ioctl flag we can return in response to
-> a UFFDIO_REGISTER call.
->=20
-> Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+1. There is only a single global LRU for zswap, making it impossible to
+   perform worload-specific shrinking - an memcg under memory pressure
+   cannot determine which pages in the pool it owns, and often ends up
+   writing pages from other memcgs. This issue has been previously
+   observed in practice and mitigated by simply disabling
+   memcg-initiated shrinking:
 
-Thanks for the patch and the review.  Patch applied.
+   https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmail.com/T/#u
 
-Cheers,
-Alex
+   But this solution leaves a lot to be desired, as we still do not
+   have an avenue for an memcg to free up its own memory locked up in
+   the zswap pool.
 
-> ---
->  man2/ioctl_userfaultfd.2 | 124 +++++++++++++++++++++++++++++++++++++--
->  1 file changed, 118 insertions(+), 6 deletions(-)
->=20
-> diff --git a/man2/ioctl_userfaultfd.2 b/man2/ioctl_userfaultfd.2
-> index 40528001e..a9131515c 100644
-> --- a/man2/ioctl_userfaultfd.2
-> +++ b/man2/ioctl_userfaultfd.2
-> @@ -405,6 +405,11 @@ operation is supported.
->  The
->  .B UFFDIO_CONTINUE
->  operation is supported.
-> +.TP
-> +.B 1 << _UFFDIO_POISON
-> +The
-> +.B UFFDIO_POISON
-> +operation is supported.
->  .PP
->  This
->  .BR ioctl (2)
-> @@ -886,6 +891,12 @@ does not equal the value that was specified in the
->  .I range.len
->  field.
->  .TP
-> +.B EEXIST
-> +One or more pages were already mapped in the given range.
-> +.TP
-> +.B EFAULT
-> +No existing page could be found in the page cache for the given range.
-> +.TP
->  .B EINVAL
->  Either
->  .I range.start
-> @@ -900,9 +911,6 @@ An invalid bit was specified in the
->  .I mode
->  field.
->  .TP
-> -.B EEXIST
-> -One or more pages were already mapped in the given range.
-> -.TP
->  .B ENOENT
->  The faulting process has changed its virtual memory layout simultaneousl=
-y with
->  an outstanding
-> @@ -912,14 +920,118 @@ operation.
->  .B ENOMEM
->  Allocating memory needed to setup the page table mappings failed.
->  .TP
-> -.B EFAULT
-> -No existing page could be found in the page cache for the given range.
-> -.TP
->  .B ESRCH
->  The faulting process has exited at the time of a
->  .B UFFDIO_CONTINUE
->  operation.
->  .\"
-> +.SS UFFDIO_POISON
-> +(Since Linux 6.6.)
-> +Mark an address range as "poisoned".
-> +Future accesses to these addresses will raise a
-> +.B SIGBUS
-> +signal.
-> +Unlike
-> +.B MADV_HWPOISON
-> +this works by installing page table entries,
-> +rather than "really" poisoning the underlying physical pages.
-> +This means it only affects this particular address space.
-> +.PP
-> +The
-> +.I argp
-> +argument is a pointer to a
-> +.I uffdio_poison
-> +structure as shown below:
-> +.PP
-> +.in +4n
-> +.EX
-> +struct uffdio_poison {
-> +	struct uffdio_range range;
-> +	                /* Range to install poison PTE markers in */
-> +	__u64 mode;     /* Flags controlling the behavior of poison */
-> +	__s64 updated;  /* Number of bytes poisoned, or negated error */
-> +};
-> +.EE
-> +.in
-> +.PP
-> +The following value may be bitwise ORed in
-> +.I mode
-> +to change the behavior of the
-> +.B UFFDIO_POISON
-> +operation:
-> +.TP
-> +.B UFFDIO_POISON_MODE_DONTWAKE
-> +Do not wake up the thread that waits for page-fault resolution.
-> +.PP
-> +The
-> +.I updated
-> +field is used by the kernel
-> +to return the number of bytes that were actually poisoned,
-> +or an error in the same manner as
-> +.BR UFFDIO_COPY .
-> +If the value returned in the
-> +.I updated
-> +field doesn't match the value that was specified in
-> +.IR range.len ,
-> +the operation fails with the error
-> +.BR EAGAIN .
-> +The
-> +.I updated
-> +field is output-only;
-> +it is not read by the
-> +.B UFFDIO_POISON
-> +operation.
-> +.PP
-> +This
-> +.BR ioctl (2)
-> +operation returns 0 on success.
-> +In this case,
-> +the entire area was poisoned.
-> +On error, \-1 is returned and
-> +.I errno
-> +is set to indicate the error.
-> +Possible errors include:
-> +.TP
-> +.B EAGAIN
-> +The number of bytes mapped
-> +(i.e., the value returned in the
-> +.I updated
-> +field)
-> +does not equal the value that was specified in the
-> +.I range.len
-> +field.
-> +.TP
-> +.B EINVAL
-> +Either
-> +.I range.start
-> +or
-> +.I range.len
-> +was not a multiple of the system page size; or
-> +.I range.len
-> +was zero; or the range specified was invalid.
-> +.TP
-> +.B EINVAL
-> +An invalid bit was specified in the
-> +.I mode
-> +field.
-> +.TP
-> +.B EEXIST
-> +One or more pages were already mapped in the given range.
-> +.TP
-> +.B ENOENT
-> +The faulting process has changed its virtual memory layout simultaneousl=
-y with
-> +an outstanding
-> +.B UFFDIO_POISON
-> +operation.
-> +.TP
-> +.B ENOMEM
-> +Allocating memory for page table entries failed.
-> +.TP
-> +.B ESRCH
-> +The faulting process has exited at the time of a
-> +.B UFFDIO_POISON
-> +operation.
-> +.\"
->  .SH RETURN VALUE
->  See descriptions of the individual operations, above.
->  .SH ERRORS
-> --=20
-> 2.42.0.655.g421f12c284-goog
->=20
+2. We only shrink the zswap pool when the user-defined limit is hit.
+   This means that if we set the limit too high, cold data that are
+   unlikely to be used again will reside in the pool, wasting precious
+   memory. It is hard to predict how much zswap space will be needed
+   ahead of time, as this depends on the workload (specifically, on
+   factors such as memory access patterns and compressibility of the
+   memory pages).
 
---=20
-<https://www.alejandro-colomar.es/>
+This patch series solves these issues by separating the global zswap
+LRU into per-memcg and per-NUMA LRUs, and performs workload-specific
+(i.e memcg- and NUMA-aware) zswap writeback under memory pressure. The
+new shrinker does not have any parameter that must be tuned by the
+user, and can be opted in or out on a per-memcg basis.
 
---gcjukqSUCbN9YfrY
-Content-Type: application/pgp-signature; name="signature.asc"
+As a proof of concept, we ran the following synthetic benchmark:
+build the linux kernel in a memory-limited cgroup, and allocate some
+cold data in tmpfs to see if the shrinker could write them out and
+improved the overall performance. Depending on the amount of cold data
+generated, we observe from 14% to 35% reduction in kernel CPU time used
+in the kernel builds.
 
------BEGIN PGP SIGNATURE-----
+Domenico Cerasuolo (3):
+  zswap: make shrinking memcg-aware
+  mm: memcg: add per-memcg zswap writeback stat
+  selftests: cgroup: update per-memcg zswap writeback selftest
 
-iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmUvFrAACgkQnowa+77/
-2zLLSA//QJlLtyVG1VE2REu9OjkUgvej/adUPeZPOMBXUgGn4yCw2aaWA9vCcFAK
-O0eC90Ju2qDw92q6vvVO7SVfuv9K28bM5rBLuD1Sku0uPArDeLsW940ujPmDAP6L
-i5sXGv6iHqOK9nSC2xHELw15O9Gjds1hoaspujYqPI95FQ3lOkLUdz6c5TGqfh8H
-VGVOR6/Pujcv1SaYWmqZtmhzBUAUea4TzEUi9ztpUe3AZTwXQlohhvB0dG364JJ3
-H/sHlsKmXfQC8wdUoOzONY7npVr/vjIushM/rFiWAYJkNdau1PlXy2lOonHrze7z
-819Qq3wSKdgYiuLCmMqgMDb3eCLmaEp8JbH9Gl5o4RBwcoss31JTiapYOLx7gHg3
-Gbq4u9nJc6KHM6X/ELNVVh89Z2vTkWEWbKgrfO2e6Ku80oim4uy/wVse6ZCbJXk7
-zxTtiLrGXhmGNyJK4oYHzGJRCxvKhFdTBhFGFdEWQtFGNxqynmXFxTaguKKpKg4h
-OdDp81U6FIm3tBMGvlUttWTqAjawysrV6NnsFiEsSW0SNOD03lVELryP3X6/pn5x
-X/TaT/ZQ2Z0OQiYFrJMr1d3m1h7lbBMhZJCBIFGwDckp92N/eJPkphg16izefv+T
-RGVWa0Oj2b/5IEfO8DCGxeXmaXNmhqf6qWNYppC4GBP8tbAxaQg=
-=bNM8
------END PGP SIGNATURE-----
+Nhat Pham (2):
+  mm: list_lru: allow external numa node and cgroup tracking
+  zswap: shrinks zswap pool based on memory pressure
 
---gcjukqSUCbN9YfrY--
+ Documentation/admin-guide/mm/zswap.rst      |   7 +
+ include/linux/list_lru.h                    |  38 +++
+ include/linux/memcontrol.h                  |   7 +
+ include/linux/mmzone.h                      |  14 +
+ mm/list_lru.c                               |  43 ++-
+ mm/memcontrol.c                             |  15 +
+ mm/mmzone.c                                 |   3 +
+ mm/swap.h                                   |   3 +-
+ mm/swap_state.c                             |  38 ++-
+ mm/zswap.c                                  | 335 ++++++++++++++++----
+ tools/testing/selftests/cgroup/test_zswap.c |  74 +++--
+ 11 files changed, 485 insertions(+), 92 deletions(-)
+
+-- 
+2.34.1
