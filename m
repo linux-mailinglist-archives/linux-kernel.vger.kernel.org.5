@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDACC7CC6C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A977CC6C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344530AbjJQOvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 10:51:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43756 "EHLO
+        id S1344636AbjJQOvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 10:51:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344339AbjJQOse (ORCPT
+        with ESMTP id S1344267AbjJQOsf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 10:48:34 -0400
+        Tue, 17 Oct 2023 10:48:35 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3DB3D43;
-        Tue, 17 Oct 2023 07:48:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF4B4113;
+        Tue, 17 Oct 2023 07:48:27 -0700 (PDT)
 Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:7205:da49:a7e8:59f8])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id E67FD66073A2;
-        Tue, 17 Oct 2023 15:48:24 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 73F8B66073A6;
+        Tue, 17 Oct 2023 15:48:25 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
         s=mail; t=1697554105;
-        bh=wk5FyCWGNx2cAtKViktVclkgN+GPe2+jk4Hquu06z/w=;
+        bh=R5HfsLcfPw3e1xcp8H3MPpbUdOMLjhRWrPhiuKICT0k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mGJDmZHLrlCdnB1gFhkCrcMZmauV6q/t5HUn4WU8MLXq72p9S/IG7tVS/Em0ly3GA
-         U0/o+Kts4ct50nuQ9x1dcHcrNeQqVfemkF0Xk60AdZRW3DG6GTnFwIm8lhJcb3kFnf
-         YfkwrsgeB5IrKfFlrTbLj6avD8ShpAny6DJt4txetIUTkOpS1x/Hk5uR1pgX4ovuS6
-         ST7+VLAf6Fx9+4l1sCxkgn1Kym6RcKoodgY48GPSWE6pmo4rn41COb53dYr5SzbafL
-         F0FqqdMi5wwv8aVJfdd74rwj6pFx1hWhebXBWZ3s6dM2daxukTnwMujW/NZex8yKAm
-         539OKQF1dX6gA==
+        b=nI9BoGaAJlHIdmWnVuOucMI0jMXM6fn5Vu6yoGz9KOlJfleQ6/xBuztSrO1C/2k+Q
+         yNw7xlQt/7bijzfzCLXvu+GiEzxQZ87Caf3GThCTikIE8wo6jfMMi8ns5/UpUTygS1
+         Rjo5rP/w6h1EkoR1nLQY5D5l/Jf45gUgaK+s8dlrU7Sl1G1KEyu1yS5pF0RjNr1djH
+         G6rbleHyw1606urpdZG23neHaDhAkBJyC02hH6nlaWa9uIqxLzarRwbd32xZojgDUv
+         Wm2KvZ1hKXOW9vPVWjW7apOtCKyV3350kbA4e5mxO4L+2ZfdclPL4NofLNJgAilUIU
+         iHHzteoT/r20w==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
         ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
@@ -42,11 +42,10 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
         kernel@collabora.com,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Antti Palosaari <crope@iki.fi>
-Subject: [PATCH v12 41/56] media: usb: hackrf: Stop direct calls to queue num_buffers field
-Date:   Tue, 17 Oct 2023 16:47:41 +0200
-Message-Id: <20231017144756.34719-42-benjamin.gaignard@collabora.com>
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: [PATCH v12 42/56] media: usb: usbtv: Stop direct calls to queue num_buffers field
+Date:   Tue, 17 Oct 2023 16:47:42 +0200
+Message-Id: <20231017144756.34719-43-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231017144756.34719-1-benjamin.gaignard@collabora.com>
 References: <20231017144756.34719-1-benjamin.gaignard@collabora.com>
@@ -66,31 +65,27 @@ This allows us to change how the number of buffers is computed in the
 futur.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-CC: Antti Palosaari <crope@iki.fi>
 ---
- drivers/media/usb/hackrf/hackrf.c | 5 +++--
+ drivers/media/usb/usbtv/usbtv-video.c | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/usb/hackrf/hackrf.c b/drivers/media/usb/hackrf/hackrf.c
-index 3e535be2c520..9c0ecd5f056c 100644
---- a/drivers/media/usb/hackrf/hackrf.c
-+++ b/drivers/media/usb/hackrf/hackrf.c
-@@ -753,12 +753,13 @@ static int hackrf_queue_setup(struct vb2_queue *vq,
- 		unsigned int *nplanes, unsigned int sizes[], struct device *alloc_devs[])
+diff --git a/drivers/media/usb/usbtv/usbtv-video.c b/drivers/media/usb/usbtv/usbtv-video.c
+index 1e30e05953dc..62a583040cd4 100644
+--- a/drivers/media/usb/usbtv/usbtv-video.c
++++ b/drivers/media/usb/usbtv/usbtv-video.c
+@@ -726,9 +726,10 @@ static int usbtv_queue_setup(struct vb2_queue *vq,
  {
- 	struct hackrf_dev *dev = vb2_get_drv_priv(vq);
+ 	struct usbtv *usbtv = vb2_get_drv_priv(vq);
+ 	unsigned size = USBTV_CHUNK * usbtv->n_chunks * 2 * sizeof(u32);
 +	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
  
- 	dev_dbg(dev->dev, "nbuffers=%d\n", *nbuffers);
- 
- 	/* Need at least 8 buffers */
--	if (vq->num_buffers + *nbuffers < 8)
--		*nbuffers = 8 - vq->num_buffers;
-+	if (q_num_bufs + *nbuffers < 8)
-+		*nbuffers = 8 - q_num_bufs;
+-	if (vq->num_buffers + *nbuffers < 2)
+-		*nbuffers = 2 - vq->num_buffers;
++	if (q_num_bufs + *nbuffers < 2)
++		*nbuffers = 2 - q_num_bufs;
+ 	if (*nplanes)
+ 		return sizes[0] < size ? -EINVAL : 0;
  	*nplanes = 1;
- 	sizes[0] = PAGE_ALIGN(dev->buffersize);
- 
 -- 
 2.39.2
 
