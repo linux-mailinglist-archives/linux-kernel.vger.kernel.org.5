@@ -2,169 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B22657CB86F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 04:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DD3D7CB870
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 04:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232411AbjJQCcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 22:32:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55308 "EHLO
+        id S233654AbjJQCdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 22:33:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjJQCcU (ORCPT
+        with ESMTP id S229666AbjJQCdQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 22:32:20 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD1AAE6
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 19:32:17 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-27d8a1aed37so543114a91.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 19:32:17 -0700 (PDT)
+        Mon, 16 Oct 2023 22:33:16 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B264E6
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 19:33:13 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c5028e5b88so53379131fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 19:33:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697509937; x=1698114737; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=trHmVVa3HVQtG4Xt2doqvC4B0sQ9SbK5P7sWmT0onTo=;
-        b=Govb0Z/u4covux+X1yFkUr7/NBoiwPJ9CmtzIkLGTBlixGituoiSBzhgnoGI/bX17P
-         nW4kUiYyec2FbLFc43vRfWbo23b8+zqQNVISgLXERwNW4kbu9GZ7A5+ZqK+hor9+WYBu
-         8Rq2+Ed2ay52cXzNP2vYb7F3fstOpIVMCiij5S88bEULwgvHeDUXgPM+sBJAcMrQrI2e
-         r/s7Yuuttsa/i2pmEvBdoajWP4hmE6KhwGhfN7OmawYUf6/SKbypnqXbspOTDkIPhS3w
-         ZA89Wr3me7gERgE8IXYSxfcGtS9QV/bMCgK/TzSyseAzcOLZDsOYXS34zwgjicfp0VX+
-         gnSA==
+        d=gmail.com; s=20230601; t=1697509991; x=1698114791; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8TcMqLbn0zF1KX0fdP3lsQLyg3y0OI+0Vy/wkpY30DA=;
+        b=CBZL01qNSh5jgUtIHO9JpB7RvEYiKS+vGnIgvED/hOH53B/dPDeTn8nyaGSwE/OfJ9
+         8v9CIAs2KveJ/pDYT/OkTpI04zmqzwYppL3p7/Ot79tR3fV2yETM+VhZCQ13c2ENr/rF
+         3kkolTIRu6GMqiBhjUY8gIpUoOmZAH0c9x6CWGeMPk0x3P31ujlZTn/VPNKdyfwqC6g1
+         r+LfjsdKQ8BnHAtI4id1MalPEGbDsoLwtre8K4iK8xLwZmbCFVKNzWY5s11zI/oKRrBG
+         Mxzcf+0ImPln7O+PFcKeVlUTGsgES/fenJ5UOpbdmh6P7CXJd1cfzlMY51ovLZner8dm
+         mgwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697509937; x=1698114737;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=trHmVVa3HVQtG4Xt2doqvC4B0sQ9SbK5P7sWmT0onTo=;
-        b=f8bp0ThgqfFtCNVrGjfbd/+2KmbjBzsbsqQdinNhcao+rrKvEm0OGfe5wHBv+MQ9N2
-         TBUxVheXsGJBlDazrv+PzHJgldxOhfYCMTWgVHkc9Vc3Ae014yQ8BAwt1bLueqmM2cmu
-         at07rowXnC8gaqWiHn0JLZnl4XZypVk7mMYVrtWvR7/2IdDeGVOS9BP0mhnqeJIrfMF2
-         +McSqEpufwplrVO8kuft+2TfbmldfKG0CuD6nxKC9fcbyNHxxx04hlJpeivaF9RoKX/S
-         UmE7U0j7Q29O8A+Ud3dohEPvO/11FartJ/wTj8wZx501//bvbuMqIEpRjNfUu7JkGe0E
-         clvQ==
-X-Gm-Message-State: AOJu0YwjiUSKro4zEXZN4FsaYV4Alzycvf1XMRttEzYiY3Cz0s4DCw7K
-        zNAKH/1DE1tGy0qmPJ76vDZNFw==
-X-Google-Smtp-Source: AGHT+IGdPnaBYT7c8lIIVrIXW+cFRIDzNmwPorn8Hdp88GfjSDfiCtDs/2w9Fxd3AznDtYhsuNugYw==
-X-Received: by 2002:a17:902:dace:b0:1ca:8e79:53ae with SMTP id q14-20020a170902dace00b001ca8e7953aemr1081353plx.1.1697509937071;
-        Mon, 16 Oct 2023 19:32:17 -0700 (PDT)
-Received: from octopus ([2400:4050:c3e1:100:b992:c10c:3bda:e666])
-        by smtp.gmail.com with ESMTPSA id j14-20020a170902da8e00b001c9bca1d705sm284757plx.242.2023.10.16.19.32.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 19:32:16 -0700 (PDT)
-Date:   Tue, 17 Oct 2023 11:32:11 +0900
-From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>, sudeep.holla@arm.com,
-        cristian.marussi@arm.com, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, Oleksii_Moisieiev@epam.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-Subject: Re: [RFC v2 5/5] dt-bindings: gpio: Add bindings for pinctrl based
- generic gpio driver
-Message-ID: <ZS3yK/f12Mxw9rXe@octopus>
-Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>, sudeep.holla@arm.com,
-        cristian.marussi@arm.com, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, Oleksii_Moisieiev@epam.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-References: <20231005025843.508689-1-takahiro.akashi@linaro.org>
- <20231005025843.508689-6-takahiro.akashi@linaro.org>
- <20231006132346.GA3426353-robh@kernel.org>
- <CACRpkdaLsfSBEG-h9ZNT2_Lm8tW8AZO7tedDVNeuZoQAqSkyjw@mail.gmail.com>
- <ZSTgTC4cFFpofYAk@octopus>
- <CACRpkdYD6pkccYoy90AfzV3KT7oYkBPD2_4ZW-AXzT1eUVpchA@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1697509991; x=1698114791;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8TcMqLbn0zF1KX0fdP3lsQLyg3y0OI+0Vy/wkpY30DA=;
+        b=aH4psFU+prSVUTKbhsBMOZIiTTRPdI2+KJCOGPfmgfRgyV8C/KiGyeMCHsVO8jQl1k
+         thkFlxmyVJ0RnVo/NLHr/mNf6ceqbbhurQvIhW05u9cSxdeupPU0wk9cMeB+ONlr6auF
+         q4JTbN85j2rZq6FZXeisSyPkj0qkcrcoS4r3I5RKBYMmXs1c4ldYzlJw9rg2LoY1AWIe
+         6OXnCKLzCTiBcpLGis2YQNQH2DIyxnevTDvNeizmuCfzJgkWaLmkN8hIEmPU4qsPz++i
+         iYfNWzO5Oaqh9UMWOWqT6wa0E21HFk3ZUqgr/BNhshZGlhbdgG7dyo+6B2R/mtUg44vv
+         NcYg==
+X-Gm-Message-State: AOJu0YwQ7nN9fIqBHmFhPuOxxFVgqUixl/26TdwwUJ+XSwEatijbTaAi
+        MQl3AGFKj/bbON4yasF9MWQLR7w+C3rV00sTWRA=
+X-Google-Smtp-Source: AGHT+IHhlgnJLOyHTROkSaC0DhM2EYlgRA/3QBMytWDYt/jWUd7m1cjmnnqt7sotnk6DtxqeMrg7MbplD6+EIUfBBFg=
+X-Received: by 2002:a2e:88ce:0:b0:2bc:f39b:d1a8 with SMTP id
+ a14-20020a2e88ce000000b002bcf39bd1a8mr662452ljk.46.1697509991069; Mon, 16 Oct
+ 2023 19:33:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdYD6pkccYoy90AfzV3KT7oYkBPD2_4ZW-AXzT1eUVpchA@mail.gmail.com>
+References: <20231016071245.2865233-1-zhaoyang.huang@unisoc.com> <20231016153959.c218e1ae876426b9193eb294@linux-foundation.org>
+In-Reply-To: <20231016153959.c218e1ae876426b9193eb294@linux-foundation.org>
+From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date:   Tue, 17 Oct 2023 10:32:59 +0800
+Message-ID: <CAGWkznE+NJECwdcyb0d5MOrgjA5Qt-o4-5SmsCstZuYLhunKew@mail.gmail.com>
+Subject: Re: [PATCHv6 1/1] mm: optimization on page allocation when CMA enabled
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, steve.kang@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
-
-On Thu, Oct 12, 2023 at 09:25:20AM +0200, Linus Walleij wrote:
-> On Tue, Oct 10, 2023 at 7:25???AM AKASHI Takahiro
-> <takahiro.akashi@linaro.org> wrote:
-> 
-> > > We can probably mandate that this has to be inside a pin controller
-> > > since it is a first.
+On Tue, Oct 17, 2023 at 6:40=E2=80=AFAM Andrew Morton <akpm@linux-foundatio=
+n.org> wrote:
+>
+> On Mon, 16 Oct 2023 15:12:45 +0800 "zhaoyang.huang" <zhaoyang.huang@uniso=
+c.com> wrote:
+>
+> > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 > >
-> > Yeah, my U-Boot implementation tentatively supports both (inside and
-> > outside pin controller). But it is not a user's choice, but we should
-> > decide which way to go.
-> 
-> OK I have decided we are going to put it inside the pin control node,
-> as a subnode. (I don't expect anyone to object.)
+> > According to current CMA utilization policy, an alloc_pages(GFP_USER)
+> > could 'steal' UNMOVABLE & RECLAIMABLE page blocks via the help of
+> > CMA(pass zone_watermark_ok by counting CMA in but use U&R in rmqueue),
+> > which could lead to following alloc_pages(GFP_KERNEL) fail.
+> > Solving this by introducing second watermark checking for GFP_MOVABLE,
+> > which could have the allocation use CMA when proper.
+> >
+> > -- Free_pages(30MB)
+> > |
+> > |
+> > -- WMARK_LOW(25MB)
+> > |
+> > -- Free_CMA(12MB)
+> > |
+> > |
+> > --
+> >
+> > Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > ---
+> > v6: update comments
+>
+> The patch itself is identical to the v5 patch.  So either you meant
+> "update changelog" above or you sent the wrong diff?
+sorry, should be update changelog
+>
+> Also, have we resolved any concerns regarding possible performance
+> impacts of this change?
+I don't think this commit could introduce performance impact as it
+actually adds one more path for using CMA page blocks in advance.
 
-While I'm still thinking of how I can modify my current implementation
-to fit into 'inside' syntax, there are a couple of concerns:
-
-1) invoke gpiochip_add_data() at probe function
-Probably we no longer need "compatible" property, but instead we need to
-call gpiochip_add_data() explicitly in SCMI pin controller's probe
-as follows:
-
-scmi_pinctrl_probe()
-    ...
-    devm_pinctrl_register_and_init(dev, ..., pctrldev);
-    pinctrl_enable(pctrldev);
-
-    device_for_each_child_node(dev, fwnode)
-        if (fwnode contains "gpio-controller") {
-            /* what pin_control_gpio_probe() does */
-            gc->get_direction = ...;
-            ...
-            devm_gpiochip_data_add(dev, gc, ...);
+ __rmqueue(struct zone *zone, unsigned int order, int migratetype,
+        if (IS_ENABLED(CONFIG_CMA)) {
+                if (alloc_flags & ALLOC_CMA &&
+-                   zone_page_state(zone, NR_FREE_CMA_PAGES) >
+-                   zone_page_state(zone, NR_FREE_PAGES) / 2) {
++                       use_cma_first(zone, order, alloc_flags)) {
+          //current '1/2' logic is kept while add a path for using CMA
+in advance than now.
+                        page =3D __rmqueue_cma_fallback(zone, order);
+                        if (page)
+                                return page;
+                }
         }
+retry:
+                               //normal rmqueue_smallest path is not
+affected which could deemed as a fallback path for
+__rmqueue_cma_fallback failure
+        page =3D __rmqueue_smallest(zone, order, migratetype);
+        if (unlikely(!page)) {
+                if (alloc_flags & ALLOC_CMA)
+                        page =3D __rmqueue_cma_fallback(zone, order);
 
-2) gpio-by-pinctrl.c
-While this file is SCMI-independent now, due to a change at (1),
-it would be better to move the whole content inside SCMI pin controller
-driver (because there is no other user for now).
-
-3) Then, pin-control-gpio.yaml may also be put into SCMI binding
-(i.e. firmware/arm,scmi.yaml). Can we leave the gpio binding outside?
-
-4) phandle in "gpio-ranges" property
-(As you mentioned)
-The first element in a tuple of "gpio-ranges" is a phandle to a pin
-controller node. Now that the gpio node is a sub node of pin controller,
-the phandle is trivial. But there is no easier way to represent it
-than using an explicit label:
-(My U-Boot implementation does this.)
-
-scmi {
-    ...
-    scmi_pinctrl: protocol@19 {
-        ...
-        gpio {
-            gpio-controller;
-            ...
-            gpio-ranges = <&scmi_pinctrl ... >;
+                if (!page && __rmqueue_fallback(zone, order, migratetype,
+                                                                alloc_flags=
+))
+                        goto retry;
         }
-    }
+        return page;
 }
-
-I tried:
-    gpio-ranges = <0 ...>; // dtc passed, but '0' might be illegal by spec.
-    gpio-ranges = <(-1) ...>; // dtc passed, but ...
-    gpio-ranges = <&{..} ...>; // dtc error because it's not a full path.
-
-Do you have any other idea? Otherwise, I will modify my RFC
-with the changes above.
-
--Takahiro Akashi
-
-
-> It makes everything easier and clearer for users I think.
-> 
-> Yours,
-> Linus Walleij
