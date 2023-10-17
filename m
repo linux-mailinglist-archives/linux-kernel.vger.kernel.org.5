@@ -2,57 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 114F97CB83F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 04:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5B597CB83D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 04:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232577AbjJQCJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 22:09:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39044 "EHLO
+        id S233444AbjJQCJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 22:09:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjJQCJ2 (ORCPT
+        with ESMTP id S229666AbjJQCJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 22:09:28 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AD13EA
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 19:09:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697508567; x=1729044567;
-  h=date:from:to:cc:subject:message-id;
-  bh=Pz9ECDLRAEMDUApCjX4D5tM4Ra/Mh+A/5POh/XZwCag=;
-  b=nMA7VOvo0nIglvQCWeyH6H2kdc6ykagruSCUv4Afc5G7zTJOCQUsRNOI
-   mFxu3ti4XTrQmZaAh+XkKyoSeTJFpH3tujOrVzKhS2GVYEtQqMZNDfwlh
-   D2RU/mUmXYhDsl1xCnrHz6SvwHyR+EV6g6JdqWkqxMjCVuicM8pVcS3Db
-   e1IxuzxcbPYgiuJdZSBh3gQsVeguOEQm147uJFPSAqTWarnSaEcNsFVAx
-   NZjVWDgahSDS/tet64a8AGyzrrKfVB1wGUXRSEYXRW0VahCxHtyfmF0h2
-   ID+fJqvXW9CiLY0uOG6yewQEleC3QZ0K0tn7LjpuLmUYj/zSi0vsBsq/1
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="4286422"
-X-IronPort-AV: E=Sophos;i="6.03,230,1694761200"; 
-   d="scan'208";a="4286422"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 19:09:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="826249767"
-X-IronPort-AV: E=Sophos;i="6.03,230,1694761200"; 
-   d="scan'208";a="826249767"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 16 Oct 2023 19:09:21 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qsZWJ-0008qt-1A;
-        Tue, 17 Oct 2023 02:09:19 +0000
-Date:   Tue, 17 Oct 2023 10:08:19 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 0c09c1d70838475762255844b72fa0e7fd6ace7c
-Message-ID: <202310171017.OLWvvm9g-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        Mon, 16 Oct 2023 22:09:05 -0400
+Received: from cmccmta3.chinamobile.com (cmccmta6.chinamobile.com [111.22.67.139])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E1C4CB0;
+        Mon, 16 Oct 2023 19:09:01 -0700 (PDT)
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from spf.mail.chinamobile.com (unknown[10.188.0.87])
+        by rmmx-syy-dmz-app09-12009 (RichMail) with SMTP id 2ee9652decb9290-04aeb;
+        Tue, 17 Oct 2023 10:08:58 +0800 (CST)
+X-RM-TRANSID: 2ee9652decb9290-04aeb
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from ubuntu.localdomain (unknown[10.54.5.252])
+        by rmsmtp-syy-appsvr07-12007 (RichMail) with SMTP id 2ee7652decb9424-35455;
+        Tue, 17 Oct 2023 10:08:58 +0800 (CST)
+X-RM-TRANSID: 2ee7652decb9424-35455
+From:   zhujun2 <zhujun2@cmss.chinamobile.com>
+To:     shuah@kernel.org
+Cc:     nathan@kernel.org, ndesaulniers@google.com, trix@redhat.com,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, zhujun2@cmss.chinamobile.com
+Subject: [PATCH] selftests:modify the incorrect print format
+Date:   Mon, 16 Oct 2023 19:08:56 -0700
+Message-Id: <20231017020856.7003-1-zhujun2@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,41 +45,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 0c09c1d70838475762255844b72fa0e7fd6ace7c  Merge ras/core into tip/master
+when the argument type is 'unsigned int',printf '%u'
+in format string
 
-elapsed time: 740m
+Signed-off-by: zhujun2 <zhujun2@cmss.chinamobile.com>
+---
+ tools/testing/selftests/kselftest.h | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-configs tested: 22
-configs skipped: 113
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231016   gcc  
-i386                  randconfig-002-20231016   gcc  
-i386                  randconfig-003-20231016   gcc  
-i386                  randconfig-004-20231016   gcc  
-i386                  randconfig-005-20231016   gcc  
-i386                  randconfig-006-20231016   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231016   gcc  
-x86_64                randconfig-002-20231016   gcc  
-x86_64                randconfig-003-20231016   gcc  
-x86_64                randconfig-004-20231016   gcc  
-x86_64                randconfig-005-20231016   gcc  
-x86_64                randconfig-006-20231016   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-
+diff --git a/tools/testing/selftests/kselftest.h b/tools/testing/selftests/kselftest.h
+index 529d29a35..bec2fae58 100644
+--- a/tools/testing/selftests/kselftest.h
++++ b/tools/testing/selftests/kselftest.h
+@@ -129,7 +129,7 @@ static inline void ksft_print_header(void)
+ static inline void ksft_set_plan(unsigned int plan)
+ {
+ 	ksft_plan = plan;
+-	printf("1..%d\n", ksft_plan);
++	printf("1..%u\n", ksft_plan);
+ }
+ 
+ static inline void ksft_print_cnts(void)
+@@ -137,7 +137,7 @@ static inline void ksft_print_cnts(void)
+ 	if (ksft_plan != ksft_test_num())
+ 		printf("# Planned tests != run tests (%u != %u)\n",
+ 			ksft_plan, ksft_test_num());
+-	printf("# Totals: pass:%d fail:%d xfail:%d xpass:%d skip:%d error:%d\n",
++	printf("# Totals: pass:%u fail:%u xfail:%u xpass:%u skip:%u error:%u\n",
+ 		ksft_cnt.ksft_pass, ksft_cnt.ksft_fail,
+ 		ksft_cnt.ksft_xfail, ksft_cnt.ksft_xpass,
+ 		ksft_cnt.ksft_xskip, ksft_cnt.ksft_error);
+@@ -163,7 +163,7 @@ static inline void ksft_test_result_pass(const char *msg, ...)
+ 	ksft_cnt.ksft_pass++;
+ 
+ 	va_start(args, msg);
+-	printf("ok %d ", ksft_test_num());
++	printf("ok %u ", ksft_test_num());
+ 	errno = saved_errno;
+ 	vprintf(msg, args);
+ 	va_end(args);
+@@ -177,7 +177,7 @@ static inline void ksft_test_result_fail(const char *msg, ...)
+ 	ksft_cnt.ksft_fail++;
+ 
+ 	va_start(args, msg);
+-	printf("not ok %d ", ksft_test_num());
++	printf("not ok %u ", ksft_test_num());
+ 	errno = saved_errno;
+ 	vprintf(msg, args);
+ 	va_end(args);
+@@ -203,7 +203,7 @@ static inline void ksft_test_result_xfail(const char *msg, ...)
+ 	ksft_cnt.ksft_xfail++;
+ 
+ 	va_start(args, msg);
+-	printf("ok %d # XFAIL ", ksft_test_num());
++	printf("ok %u # XFAIL ", ksft_test_num());
+ 	errno = saved_errno;
+ 	vprintf(msg, args);
+ 	va_end(args);
+@@ -217,7 +217,7 @@ static inline void ksft_test_result_skip(const char *msg, ...)
+ 	ksft_cnt.ksft_xskip++;
+ 
+ 	va_start(args, msg);
+-	printf("ok %d # SKIP ", ksft_test_num());
++	printf("ok %u # SKIP ", ksft_test_num());
+ 	errno = saved_errno;
+ 	vprintf(msg, args);
+ 	va_end(args);
+@@ -232,7 +232,7 @@ static inline void ksft_test_result_error(const char *msg, ...)
+ 	ksft_cnt.ksft_error++;
+ 
+ 	va_start(args, msg);
+-	printf("not ok %d # error ", ksft_test_num());
++	printf("not ok %u # error ", ksft_test_num());
+ 	errno = saved_errno;
+ 	vprintf(msg, args);
+ 	va_end(args);
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.17.1
+
+
+
