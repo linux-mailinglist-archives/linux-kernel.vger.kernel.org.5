@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B707CC54C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 15:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABD217CC551
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 15:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343969AbjJQN5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 09:57:23 -0400
+        id S235095AbjJQN55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 09:57:57 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233670AbjJQN5S (ORCPT
+        with ESMTP id S235026AbjJQN5m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 09:57:18 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B76DF0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 06:57:15 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c434c33ec0so37109485ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 06:57:15 -0700 (PDT)
+        Tue, 17 Oct 2023 09:57:42 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55AC3F5
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 06:57:21 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bf55a81eeaso37910635ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 06:57:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697551035; x=1698155835; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1697551041; x=1698155841; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rbBD3aRMy+zuYBuIzlpm91HRisp/ctfZ/uzDbVkINuM=;
-        b=XnAiY4YDksZTPordoOqWA4mqXIrDknGdmkoI3ZJXuwxOnurmRY57Rh6ZcDnuS3/Prh
-         UslKdCEbKfRP4yUg8qhaqlXElj0V3Gb86pkfXkwZeM2DUnJKpPlpBFobYFt7ZKOCgdXZ
-         RqxXC77vE2cZ4a9HLK8+cSQ6WD9z/jhqob/1xNYcX9129+Er1RqLVg090Q6Zc9PykbiR
-         jislRh6igEmI4q6TQ+nP5yIE1xT/5bAguArRuhECkdjzD9JnSQP+xgZT3bZPXEIgW5dU
-         dGDAirbVOasZaHv15rbwjKdtwaT7EhB7N3/MclBCkfyTWH+y8i9oTlQZnXV/C9JrYXCp
-         bRrw==
+        bh=3YeKybsXaBEawKkeFDS0iNbtGov8rHLfrrjxPMSCVVc=;
+        b=KP3yZrHZlUQkRW3icuytezxZpw8nX5DHE+p+odUB8OdkKbgv/x51XzJ2zpRrsQp4RJ
+         j8Xv28AlptAjHfRNhDVZgAcJOuF5uUGGcsK44xRQfDAlWvAHlpY5SUgfHAm2u5mQptIr
+         Byt+d4C5s9ueZi8jSXH5k8VEVYVP7pyroYkZfaTb6A2SGVluqLpGWSQh6ZOuzEhwO8Mj
+         ZvxdmzzQRbkXKhBUoPKC5EO9x9vHBIjNOqjy6ogQJtKhSoy8L9QwsHDfy+d7SYku35e7
+         QZ0/K/hUvRN1f87JAatVkdORn8ligAeA2JmR032WWQ3EoppHPJ2YrojdJAgapXlPyeZ+
+         x9Dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697551035; x=1698155835;
+        d=1e100.net; s=20230601; t=1697551041; x=1698155841;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rbBD3aRMy+zuYBuIzlpm91HRisp/ctfZ/uzDbVkINuM=;
-        b=Zzf9qNGiD55bPUhoqL8qixPDYIH/w2ohNehZvBpSUasYaHK85ZvqmNGpU7GPu6uVkM
-         2IwmibtWZTxs8H7gTRrs/Dmyl+jkRBfODvjFVUcVAQWyfhIeMWP6ZF4WVfeHotwc370I
-         ivKOtK3z8cl+Jrqs2ButAcvxRJ8hChPu/iZeCvel2n1A08CZOV0ktxhQSWdtHfKWV1lP
-         yV3e1lxkicBTrx449pbZyBj7lBXb6wft5NyJyc5tj/ww2PWtDjRT31xaanqeCRFtar7H
-         Yg0JsEFn/E1TU5lBvevMzJ3OLV+MJmkZdnWLT+rKFQIyL1As8ADWGe9hply04GULv/ts
-         s5mg==
-X-Gm-Message-State: AOJu0Yw8ZsG+JACMQbRMQ3gwzB13j+3ABxVlC8HXHl+oeg8tMfs5Jyto
-        3H6VidKMBcLZzKWa2WFT59wUDg==
-X-Google-Smtp-Source: AGHT+IEpoeF5BnhIaIORREOUgdPcLR/iQ9OuaK4/6sQKdxfimim44hXGHr4EReXZtzqcrs2e9JBHZQ==
-X-Received: by 2002:a17:902:e80b:b0:1c5:cbfb:c16f with SMTP id u11-20020a170902e80b00b001c5cbfbc16fmr2916730plg.25.1697551034986;
-        Tue, 17 Oct 2023 06:57:14 -0700 (PDT)
+        bh=3YeKybsXaBEawKkeFDS0iNbtGov8rHLfrrjxPMSCVVc=;
+        b=e78I+VCm3hfz6yaINTII+Mn3c5WdJLsy0DwcBtarG3GaVs1jU+isDCFVRmqxjzt8LD
+         kNIO7QZ2o7WdsVgTyaVSPCqw7dSro48dB9eBCkroI16+PtVJjIYQ63XyBHNQbHfDUvfg
+         5DMZaUSOOW8KYJbOnyc9HlQT54xIVo7A+b9TtQXhj7Aj8wtCwo8ncMBjOSmXPX04Un7X
+         sXict+SyaP0EipE3repyHBBLlErAfbqAG6u8lAHEHGcgvUYatmMaZMInpQw41UnIlgdd
+         bS6kdVJr3gvMgmwKj34cF0LySQW7AXI8N97jpwyfYTXpFDFdLZIaTxCAmY3CP70PT+JL
+         3M8A==
+X-Gm-Message-State: AOJu0YwPN6jymzPng8P2/xpaD9FKTW4hczABn2AV7jnkBXHQJRc0ESYs
+        UQaLz3e8vM57RmzHuC7IPhKGTA==
+X-Google-Smtp-Source: AGHT+IGXJvspR6FkilERCXznbKLwvfLEq4ZGOvnDO2ca7Tr9FbhSEVAkoPLEDXbo7OB+T3egW031yQ==
+X-Received: by 2002:a17:902:74cc:b0:1c9:cf26:8d91 with SMTP id f12-20020a17090274cc00b001c9cf268d91mr2413697plt.8.1697551040714;
+        Tue, 17 Oct 2023 06:57:20 -0700 (PDT)
 Received: from devz1.bytedance.net ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id b9-20020a170903228900b001b9e9edbf43sm1566634plh.171.2023.10.17.06.57.09
+        by smtp.gmail.com with ESMTPSA id b9-20020a170903228900b001b9e9edbf43sm1566634plh.171.2023.10.17.06.57.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 06:57:14 -0700 (PDT)
+        Tue, 17 Oct 2023 06:57:20 -0700 (PDT)
 From:   "wuqiang.matt" <wuqiang.matt@bytedance.com>
 To:     linux-trace-kernel@vger.kernel.org, mhiramat@kernel.org,
         davem@davemloft.net, anil.s.keshavamurthy@intel.com,
@@ -59,9 +59,9 @@ To:     linux-trace-kernel@vger.kernel.org, mhiramat@kernel.org,
         dan.j.williams@intel.com, jpoimboe@kernel.org
 Cc:     linux-kernel@vger.kernel.org, lkp@intel.com, mattwu@163.com,
         "wuqiang.matt" <wuqiang.matt@bytedance.com>
-Subject: [PATCH v11 1/5] lib: objpool added: ring-array based lockless MPMC
-Date:   Tue, 17 Oct 2023 21:56:50 +0800
-Message-Id: <20231017135654.82270-2-wuqiang.matt@bytedance.com>
+Subject: [PATCH v11 2/5] lib: objpool test module added
+Date:   Tue, 17 Oct 2023 21:56:51 +0800
+Message-Id: <20231017135654.82270-3-wuqiang.matt@bytedance.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231017135654.82270-1-wuqiang.matt@bytedance.com>
 References: <20231017135654.82270-1-wuqiang.matt@bytedance.com>
@@ -76,515 +76,774 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-objpool is a scalable implementation of high performance queue for
-object allocation and reclamation, such as kretprobe instances.
+The test_objpool module (test_objpool) will run several testcases
+for objpool stress and performance evaluation. Each testcase will
+have all available cpu cores involved to create a situation of high
+parallel and high contention.
 
-With leveraging percpu ring-array to mitigate hot spots of memory
-contention, it delivers near-linear scalability for high parallel
-scenarios. The objpool is best suited for the following cases:
-1) Memory allocation or reclamation are prohibited or too expensive
-2) Consumers are of different priorities, such as irqs and threads
+As of now there are 5 groups and 5 * 2 testcases in total:
 
-Limitations:
-1) Maximum objects (capacity) is fixed after objpool creation
-2) All pre-allocated objects are managed in percpu ring array,
-   which consumes more memory than linked lists
+1) group 1: synchronous mode
+   objpool is managed synchronously, that is, all objects are to be
+   reclaimed before objpool finalization and the objpool owner makes
+   sure of it. All threads on different cores run in the same pace
+2) group 2: synchronous mode + hrtimer
+   this case have 2 customers: normal threads and hrtimer softirqs
+3) group 3: synchronous + overrun mode
+   This test group is mainly for performance evaluation of missing
+   cases when pre-allocated objects are less than the requested
+4) group 4: asynchronous mode
+   This case is just an emulation of kretprobe, with refcount used
+   to control the objpool lifecycle
+5) group 5: asynchronous mode with hrtimer
+   hrtimer softirq is introduced to stress async objpool operations
 
 Signed-off-by: wuqiang.matt <wuqiang.matt@bytedance.com>
 ---
- include/linux/objpool.h | 176 +++++++++++++++++++++++++
- lib/Makefile            |   2 +-
- lib/objpool.c           | 286 ++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 463 insertions(+), 1 deletion(-)
- create mode 100644 include/linux/objpool.h
- create mode 100644 lib/objpool.c
+ lib/Kconfig.debug  |  11 +
+ lib/Makefile       |   2 +
+ lib/test_objpool.c | 689 +++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 702 insertions(+)
+ create mode 100644 lib/test_objpool.c
 
-diff --git a/include/linux/objpool.h b/include/linux/objpool.h
-new file mode 100644
-index 000000000000..4df18405420a
---- /dev/null
-+++ b/include/linux/objpool.h
-@@ -0,0 +1,181 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index d6798513a8c2..6598604cf6c8 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -2931,6 +2931,17 @@ config TEST_CLOCKSOURCE_WATCHDOG
+ 
+ 	  If unsure, say N.
+ 
++config TEST_OBJPOOL
++	tristate "Test module for correctness and stress of objpool"
++	default n
++	depends on m && DEBUG_KERNEL
++	help
++	  This builds the "test_objpool" module that should be used for
++	  correctness verification and concurrent testings of objects
++	  allocation and reclamation.
 +
-+#ifndef _LINUX_OBJPOOL_H
-+#define _LINUX_OBJPOOL_H
++	  If unsure, say N.
 +
-+#include <linux/types.h>
-+#include <linux/refcount.h>
-+
-+/*
-+ * objpool: ring-array based lockless MPMC queue
-+ *
-+ * Copyright: wuqiang.matt@bytedance.com,mhiramat@kernel.org
-+ *
-+ * objpool is a scalable implementation of high performance queue for
-+ * object allocation and reclamation, such as kretprobe instances.
-+ *
-+ * With leveraging percpu ring-array to mitigate hot spots of memory
-+ * contention, it delivers near-linear scalability for high parallel
-+ * scenarios. The objpool is best suited for the following cases:
-+ * 1) Memory allocation or reclamation are prohibited or too expensive
-+ * 2) Consumers are of different priorities, such as irqs and threads
-+ *
-+ * Limitations:
-+ * 1) Maximum objects (capacity) is fixed after objpool creation
-+ * 2) All pre-allocated objects are managed in percpu ring array,
-+ *    which consumes more memory than linked lists
-+ */
-+
-+/**
-+ * struct objpool_slot - percpu ring array of objpool
-+ * @head: head sequence of the local ring array (to retrieve at)
-+ * @tail: tail sequence of the local ring array (to append at)
-+ * @last: the last sequence number marked as ready for retrieve
-+ * @mask: bits mask for modulo capacity to compute array indexes
-+ * @entries: object entries on this slot
-+ *
-+ * Represents a cpu-local array-based ring buffer, its size is specialized
-+ * during initialization of object pool. The percpu objpool node is to be
-+ * allocated from local memory for NUMA system, and to be kept compact in
-+ * continuous memory: CPU assigned number of objects are stored just after
-+ * the body of objpool_node.
-+ *
-+ * Real size of the ring array is far too smaller than the value range of
-+ * head and tail, typed as uint32_t: [0, 2^32), so only lower bits (mask)
-+ * of head and tail are used as the actual position in the ring array. In
-+ * general the ring array is acting like a small sliding window, which is
-+ * always moving forward in the loop of [0, 2^32).
-+ */
-+struct objpool_slot {
-+	uint32_t            head;
-+	uint32_t            tail;
-+	uint32_t            last;
-+	uint32_t            mask;
-+	void               *entries[];
-+} __packed;
-+
-+struct objpool_head;
-+
-+/*
-+ * caller-specified callback for object initial setup, it's only called
-+ * once for each object (just after the memory allocation of the object)
-+ */
-+typedef int (*objpool_init_obj_cb)(void *obj, void *context);
-+
-+/* caller-specified cleanup callback for objpool destruction */
-+typedef int (*objpool_fini_cb)(struct objpool_head *head, void *context);
-+
-+/**
-+ * struct objpool_head - object pooling metadata
-+ * @obj_size:   object size, aligned to sizeof(void *)
-+ * @nr_objs:    total objs (to be pre-allocated with objpool)
-+ * @nr_cpus:    local copy of nr_cpu_ids
-+ * @capacity:   max objs can be managed by one objpool_slot
-+ * @gfp:        gfp flags for kmalloc & vmalloc
-+ * @ref:        refcount of objpool
-+ * @flags:      flags for objpool management
-+ * @cpu_slots:  pointer to the array of objpool_slot
-+ * @release:    resource cleanup callback
-+ * @context:    caller-provided context
-+ */
-+struct objpool_head {
-+	int                     obj_size;
-+	int                     nr_objs;
-+	int                     nr_cpus;
-+	int                     capacity;
-+	gfp_t                   gfp;
-+	refcount_t              ref;
-+	unsigned long           flags;
-+	struct objpool_slot   **cpu_slots;
-+	objpool_fini_cb         release;
-+	void                   *context;
-+};
-+
-+#define OBJPOOL_NR_OBJECT_MAX	(1UL << 24) /* maximum numbers of total objects */
-+#define OBJPOOL_OBJECT_SIZE_MAX	(1UL << 16) /* maximum size of an object */
-+
-+/**
-+ * objpool_init() - initialize objpool and pre-allocated objects
-+ * @pool:    the object pool to be initialized, declared by caller
-+ * @nr_objs: total objects to be pre-allocated by this object pool
-+ * @object_size: size of an object (should be > 0)
-+ * @gfp:     flags for memory allocation (via kmalloc or vmalloc)
-+ * @context: user context for object initialization callback
-+ * @objinit: object initialization callback for extra setup
-+ * @release: cleanup callback for extra cleanup task
-+ *
-+ * return value: 0 for success, otherwise error code
-+ *
-+ * All pre-allocated objects are to be zeroed after memory allocation.
-+ * Caller could do extra initialization in objinit callback. objinit()
-+ * will be called just after slot allocation and called only once for
-+ * each object. After that the objpool won't touch any content of the
-+ * objects. It's caller's duty to perform reinitialization after each
-+ * pop (object allocation) or do clearance before each push (object
-+ * reclamation).
-+ */
-+int objpool_init(struct objpool_head *pool, int nr_objs, int object_size,
-+		 gfp_t gfp, void *context, objpool_init_obj_cb objinit,
-+		 objpool_fini_cb release);
-+
-+/**
-+ * objpool_pop() - allocate an object from objpool
-+ * @pool: object pool
-+ *
-+ * return value: object ptr or NULL if failed
-+ */
-+void *objpool_pop(struct objpool_head *pool);
-+
-+/**
-+ * objpool_push() - reclaim the object and return back to objpool
-+ * @obj:  object ptr to be pushed to objpool
-+ * @pool: object pool
-+ *
-+ * return: 0 or error code (it fails only when user tries to push
-+ * the same object multiple times or wrong "objects" into objpool)
-+ */
-+int objpool_push(void *obj, struct objpool_head *pool);
-+
-+/**
-+ * objpool_drop() - discard the object and deref objpool
-+ * @obj:  object ptr to be discarded
-+ * @pool: object pool
-+ *
-+ * return: 0 if objpool was released; -EAGAIN if there are still
-+ *         outstanding objects
-+ *
-+ * objpool_drop is normally for the release of outstanding objects
-+ * after objpool cleanup (objpool_fini). Thinking of this example:
-+ * kretprobe is unregistered and objpool_fini() is called to release
-+ * all remained objects, but there are still objects being used by
-+ * unfinished kretprobes (like blockable function: sys_accept). So
-+ * only when the last outstanding object is dropped could the whole
-+ * objpool be released along with the call of objpool_drop()
-+ */
-+int objpool_drop(void *obj, struct objpool_head *pool);
-+
-+/**
-+ * objpool_free() - release objpool forcely (all objects to be freed)
-+ * @pool: object pool to be released
-+ */
-+void objpool_free(struct objpool_head *pool);
-+
-+/**
-+ * objpool_fini() - deref object pool (also releasing unused objects)
-+ * @pool: object pool to be dereferenced
-+ *
-+ * objpool_fini() will try to release all remained free objects and
-+ * then drop an extra reference of the objpool. If all objects are
-+ * already returned to objpool (so called synchronous use cases),
-+ * the objpool itself will be freed together. But if there are still
-+ * outstanding objects (so called asynchronous use cases, such like
-+ * blockable kretprobe), the objpool won't be released until all
-+ * the outstanding objects are dropped, but the caller must assure
-+ * there are no concurrent objpool_push() on the fly. Normally RCU
-+ * is being required to make sure all ongoing objpool_push() must
-+ * be finished before calling objpool_fini(), so does test_objpool,
-+ * kretprobe or rethook
-+ */
-+void objpool_fini(struct objpool_head *pool);
-+
-+#endif /* _LINUX_OBJPOOL_H */
+ endif # RUNTIME_TESTING_MENU
+ 
+ config ARCH_USE_MEMTEST
 diff --git a/lib/Makefile b/lib/Makefile
-index 1ffae65bb7ee..7a84c922d9ff 100644
+index 7a84c922d9ff..19b936f2af1c 100644
 --- a/lib/Makefile
 +++ b/lib/Makefile
-@@ -34,7 +34,7 @@ lib-y := ctype.o string.o vsprintf.o cmdline.o \
- 	 is_single_threaded.o plist.o decompress.o kobject_uevent.o \
- 	 earlycpio.o seq_buf.o siphash.o dec_and_lock.o \
- 	 nmi_backtrace.o win_minmax.o memcat_p.o \
--	 buildid.o
-+	 buildid.o objpool.o
- 
- lib-$(CONFIG_PRINTK) += dump_stack.o
- lib-$(CONFIG_SMP) += cpumask.o
-diff --git a/lib/objpool.c b/lib/objpool.c
+@@ -106,6 +106,8 @@ obj-$(CONFIG_KPROBES_SANITY_TEST) += test_kprobes.o
+ obj-$(CONFIG_TEST_REF_TRACKER) += test_ref_tracker.o
+ CFLAGS_test_fprobe.o += $(CC_FLAGS_FTRACE)
+ obj-$(CONFIG_FPROBE_SANITY_TEST) += test_fprobe.o
++obj-$(CONFIG_TEST_OBJPOOL) += test_objpool.o
++
+ #
+ # CFLAGS for compiling floating point code inside the kernel. x86/Makefile turns
+ # off the generation of FPU/SSE* instructions for kernel proper but FPU_FLAGS
+diff --git a/lib/test_objpool.c b/lib/test_objpool.c
 new file mode 100644
-index 000000000000..37a71e063f18
+index 000000000000..d329472f8ab6
 --- /dev/null
-+++ b/lib/objpool.c
-@@ -0,0 +1,280 @@
++++ b/lib/test_objpool.c
+@@ -0,0 +1,696 @@
 +// SPDX-License-Identifier: GPL-2.0
 +
-+#include <linux/objpool.h>
-+#include <linux/slab.h>
-+#include <linux/vmalloc.h>
-+#include <linux/atomic.h>
-+#include <linux/irqflags.h>
-+#include <linux/cpumask.h>
-+#include <linux/log2.h>
-+
 +/*
-+ * objpool: ring-array based lockless MPMC/FIFO queues
++ * Test module for lockless object pool
 + *
-+ * Copyright: wuqiang.matt@bytedance.com,mhiramat@kernel.org
++ * Copyright: wuqiang.matt@bytedance.com
 + */
 +
-+/* initialize percpu objpool_slot */
-+static int
-+objpool_init_percpu_slot(struct objpool_head *pool,
-+			 struct objpool_slot *slot,
-+			 int nodes, void *context,
-+			 objpool_init_obj_cb objinit)
++#include <linux/version.h>
++#include <linux/errno.h>
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/sched.h>
++#include <linux/cpumask.h>
++#include <linux/completion.h>
++#include <linux/kthread.h>
++#include <linux/cpu.h>
++#include <linux/cpuset.h>
++#include <linux/slab.h>
++#include <linux/vmalloc.h>
++#include <linux/delay.h>
++#include <linux/hrtimer.h>
++#include <linux/interrupt.h>
++#include <linux/objpool.h>
++
++#define OT_NR_MAX_BULK (16)
++
++/* memory usage */
++struct ot_mem_stat {
++	atomic_long_t alloc;
++	atomic_long_t free;
++};
++
++/* object allocation results */
++struct ot_obj_stat {
++	unsigned long nhits;
++	unsigned long nmiss;
++};
++
++/* control & results per testcase */
++struct ot_data {
++	struct rw_semaphore start;
++	struct completion wait;
++	struct completion rcu;
++	atomic_t nthreads ____cacheline_aligned_in_smp;
++	atomic_t stop ____cacheline_aligned_in_smp;
++	struct ot_mem_stat kmalloc;
++	struct ot_mem_stat vmalloc;
++	struct ot_obj_stat objects;
++	u64    duration;
++};
++
++/* testcase */
++struct ot_test {
++	int async; /* synchronous or asynchronous */
++	int mode; /* only mode 0 supported */
++	int objsz; /* object size */
++	int duration; /* ms */
++	int delay; /* ms */
++	int bulk_normal;
++	int bulk_irq;
++	unsigned long hrtimer; /* ms */
++	const char *name;
++	struct ot_data data;
++};
++
++/* per-cpu worker */
++struct ot_item {
++	struct objpool_head *pool; /* pool head */
++	struct ot_test *test; /* test parameters */
++
++	void (*worker)(struct ot_item *item, int irq);
++
++	/* hrtimer control */
++	ktime_t hrtcycle;
++	struct hrtimer hrtimer;
++
++	int bulk[2]; /* for thread and irq */
++	int delay;
++	u32 niters;
++
++	/* summary per thread */
++	struct ot_obj_stat stat[2]; /* thread and irq */
++	u64 duration;
++};
++
++/*
++ * memory leakage checking
++ */
++
++static void *ot_kzalloc(struct ot_test *test, long size)
 +{
-+	void *obj = (void *)&slot->entries[pool->capacity];
-+	int i;
++	void *ptr = kzalloc(size, GFP_KERNEL);
 +
-+	/* initialize elements of percpu objpool_slot */
-+	slot->mask = pool->capacity - 1;
-+
-+	for (i = 0; i < nodes; i++) {
-+		if (objinit) {
-+			int rc = objinit(obj, context);
-+			if (rc)
-+				return rc;
-+		}
-+		slot->entries[slot->tail & slot->mask] = obj;
-+		obj = obj + pool->obj_size;
-+		slot->tail++;
-+		slot->last = slot->tail;
-+		pool->nr_objs++;
-+	}
-+
-+	return 0;
++	if (ptr)
++		atomic_long_add(size, &test->data.kmalloc.alloc);
++	return ptr;
 +}
 +
-+/* allocate and initialize percpu slots */
-+static int
-+objpool_init_percpu_slots(struct objpool_head *pool, int nr_objs,
-+			  void *context, objpool_init_obj_cb objinit)
++static void ot_kfree(struct ot_test *test, void *ptr, long size)
 +{
-+	int i, cpu_count = 0;
-+
-+	for (i = 0; i < pool->nr_cpus; i++) {
-+
-+		struct objpool_slot *slot;
-+		int nodes, size, rc;
-+
-+		/* skip the cpu node which could never be present */
-+		if (!cpu_possible(i))
-+			continue;
-+
-+		/* compute how many objects to be allocated with this slot */
-+		nodes = nr_objs / num_possible_cpus();
-+		if (cpu_count < (nr_objs % num_possible_cpus()))
-+			nodes++;
-+		cpu_count++;
-+
-+		size = struct_size(slot, entries, pool->capacity) +
-+			pool->obj_size * nodes;
-+
-+		/*
-+		 * here we allocate percpu-slot & objs together in a single
-+		 * allocation to make it more compact, taking advantage of
-+		 * warm caches and TLB hits. in default vmalloc is used to
-+		 * reduce the pressure of kernel slab system. as we know,
-+		 * mimimal size of vmalloc is one page since vmalloc would
-+		 * always align the requested size to page size
-+		 */
-+		if (pool->gfp & GFP_ATOMIC)
-+			slot = kmalloc_node(size, pool->gfp, cpu_to_node(i));
-+		else
-+			slot = __vmalloc_node(size, sizeof(void *), pool->gfp,
-+				cpu_to_node(i), __builtin_return_address(0));
-+		if (!slot)
-+			return -ENOMEM;
-+		memset(slot, 0, size);
-+		pool->cpu_slots[i] = slot;
-+
-+		/* initialize the objpool_slot of cpu node i */
-+		rc = objpool_init_percpu_slot(pool, slot, nodes, context, objinit);
-+		if (rc)
-+			return rc;
-+	}
-+
-+	return 0;
-+}
-+
-+/* cleanup all percpu slots of the object pool */
-+static void objpool_fini_percpu_slots(struct objpool_head *pool)
-+{
-+	int i;
-+
-+	if (!pool->cpu_slots)
++	if (!ptr)
 +		return;
-+
-+	for (i = 0; i < pool->nr_cpus; i++)
-+		kvfree(pool->cpu_slots[i]);
-+	kfree(pool->cpu_slots);
++	atomic_long_add(size, &test->data.kmalloc.free);
++	kfree(ptr);
 +}
 +
-+/* initialize object pool and pre-allocate objects */
-+int objpool_init(struct objpool_head *pool, int nr_objs, int object_size,
-+		gfp_t gfp, void *context, objpool_init_obj_cb objinit,
-+		objpool_fini_cb release)
++static void ot_mem_report(struct ot_test *test)
 +{
-+	int rc, capacity, slot_size;
++	long alloc, free;
 +
-+	/* check input parameters */
-+	if (nr_objs <= 0 || nr_objs > OBJPOOL_NR_OBJECT_MAX ||
-+	    object_size <= 0 || object_size > OBJPOOL_OBJECT_SIZE_MAX)
-+		return -EINVAL;
++	pr_info("memory allocation summary for %s\n", test->name);
 +
-+	/* align up to unsigned long size */
-+	object_size = ALIGN(object_size, sizeof(long));
++	alloc = atomic_long_read(&test->data.kmalloc.alloc);
++	free = atomic_long_read(&test->data.kmalloc.free);
++	pr_info("  kmalloc: %lu - %lu = %lu\n", alloc, free, alloc - free);
 +
-+	/* calculate capacity of percpu objpool_slot */
-+	capacity = roundup_pow_of_two(nr_objs);
-+	if (!capacity)
-+		return -EINVAL;
++	alloc = atomic_long_read(&test->data.vmalloc.alloc);
++	free = atomic_long_read(&test->data.vmalloc.free);
++	pr_info("  vmalloc: %lu - %lu = %lu\n", alloc, free, alloc - free);
++}
 +
-+	/* initialize objpool pool */
-+	memset(pool, 0, sizeof(struct objpool_head));
-+	pool->nr_cpus = nr_cpu_ids;
-+	pool->obj_size = object_size;
-+	pool->capacity = capacity;
-+	pool->gfp = gfp & ~__GFP_ZERO;
-+	pool->context = context;
-+	pool->release = release;
-+	slot_size = pool->nr_cpus * sizeof(struct objpool_slot);
-+	pool->cpu_slots = kzalloc(slot_size, pool->gfp);
-+	if (!pool->cpu_slots)
++/* user object instance */
++struct ot_node {
++	void *owner;
++	unsigned long data;
++	unsigned long refs;
++	unsigned long payload[32];
++};
++
++/* user objpool manager */
++struct ot_context {
++	struct objpool_head pool; /* objpool head */
++	struct ot_test *test; /* test parameters */
++	void *ptr; /* user pool buffer */
++	unsigned long size; /* buffer size */
++	struct rcu_head rcu;
++};
++
++static DEFINE_PER_CPU(struct ot_item, ot_pcup_items);
++
++static int ot_init_data(struct ot_data *data)
++{
++	memset(data, 0, sizeof(*data));
++	init_rwsem(&data->start);
++	init_completion(&data->wait);
++	init_completion(&data->rcu);
++	atomic_set(&data->nthreads, 1);
++
++	return 0;
++}
++
++static int ot_init_node(void *nod, void *context)
++{
++	struct ot_context *sop = context;
++	struct ot_node *on = nod;
++
++	on->owner = &sop->pool;
++	return 0;
++}
++
++static enum hrtimer_restart ot_hrtimer_handler(struct hrtimer *hrt)
++{
++	struct ot_item *item = container_of(hrt, struct ot_item, hrtimer);
++	struct ot_test *test = item->test;
++
++	if (atomic_read_acquire(&test->data.stop))
++		return HRTIMER_NORESTART;
++
++	/* do bulk-testings for objects pop/push */
++	item->worker(item, 1);
++
++	hrtimer_forward(hrt, hrt->base->get_time(), item->hrtcycle);
++	return HRTIMER_RESTART;
++}
++
++static void ot_start_hrtimer(struct ot_item *item)
++{
++	if (!item->test->hrtimer)
++		return;
++	hrtimer_start(&item->hrtimer, item->hrtcycle, HRTIMER_MODE_REL);
++}
++
++static void ot_stop_hrtimer(struct ot_item *item)
++{
++	if (!item->test->hrtimer)
++		return;
++	hrtimer_cancel(&item->hrtimer);
++}
++
++static int ot_init_hrtimer(struct ot_item *item, unsigned long hrtimer)
++{
++	struct hrtimer *hrt = &item->hrtimer;
++
++	if (!hrtimer)
++		return -ENOENT;
++
++	item->hrtcycle = ktime_set(0, hrtimer * 1000000UL);
++	hrtimer_init(hrt, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
++	hrt->function = ot_hrtimer_handler;
++	return 0;
++}
++
++static int ot_init_cpu_item(struct ot_item *item,
++			struct ot_test *test,
++			struct objpool_head *pool,
++			void (*worker)(struct ot_item *, int))
++{
++	memset(item, 0, sizeof(*item));
++	item->pool = pool;
++	item->test = test;
++	item->worker = worker;
++
++	item->bulk[0] = test->bulk_normal;
++	item->bulk[1] = test->bulk_irq;
++	item->delay = test->delay;
++
++	/* initialize hrtimer */
++	ot_init_hrtimer(item, item->test->hrtimer);
++	return 0;
++}
++
++static int ot_thread_worker(void *arg)
++{
++	struct ot_item *item = arg;
++	struct ot_test *test = item->test;
++	ktime_t start;
++
++	atomic_inc(&test->data.nthreads);
++	down_read(&test->data.start);
++	up_read(&test->data.start);
++	start = ktime_get();
++	ot_start_hrtimer(item);
++	do {
++		if (atomic_read_acquire(&test->data.stop))
++			break;
++		/* do bulk-testings for objects pop/push */
++		item->worker(item, 0);
++	} while (!kthread_should_stop());
++	ot_stop_hrtimer(item);
++	item->duration = (u64) ktime_us_delta(ktime_get(), start);
++	if (atomic_dec_and_test(&test->data.nthreads))
++		complete(&test->data.wait);
++
++	return 0;
++}
++
++static void ot_perf_report(struct ot_test *test, u64 duration)
++{
++	struct ot_obj_stat total, normal = {0}, irq = {0};
++	int cpu, nthreads = 0;
++
++	pr_info("\n");
++	pr_info("Testing summary for %s\n", test->name);
++
++	for_each_possible_cpu(cpu) {
++		struct ot_item *item = per_cpu_ptr(&ot_pcup_items, cpu);
++		if (!item->duration)
++			continue;
++		normal.nhits += item->stat[0].nhits;
++		normal.nmiss += item->stat[0].nmiss;
++		irq.nhits += item->stat[1].nhits;
++		irq.nmiss += item->stat[1].nmiss;
++		pr_info("CPU: %d  duration: %lluus\n", cpu, item->duration);
++		pr_info("\tthread:\t%16lu hits \t%16lu miss\n",
++			item->stat[0].nhits, item->stat[0].nmiss);
++		pr_info("\tirq:   \t%16lu hits \t%16lu miss\n",
++			item->stat[1].nhits, item->stat[1].nmiss);
++		pr_info("\ttotal: \t%16lu hits \t%16lu miss\n",
++			item->stat[0].nhits + item->stat[1].nhits,
++			item->stat[0].nmiss + item->stat[1].nmiss);
++		nthreads++;
++	}
++
++	total.nhits = normal.nhits + irq.nhits;
++	total.nmiss = normal.nmiss + irq.nmiss;
++
++	pr_info("ALL: \tnthreads: %d  duration: %lluus\n", nthreads, duration);
++	pr_info("SUM: \t%16lu hits \t%16lu miss\n",
++		total.nhits, total.nmiss);
++
++	test->data.objects = total;
++	test->data.duration = duration;
++}
++
++/*
++ * synchronous test cases for objpool manipulation
++ */
++
++/* objpool manipulation for synchronous mode (percpu objpool) */
++static struct ot_context *ot_init_sync_m0(struct ot_test *test)
++{
++	struct ot_context *sop = NULL;
++	int max = num_possible_cpus() << 3;
++	gfp_t gfp = GFP_KERNEL;
++
++	sop = (struct ot_context *)ot_kzalloc(test, sizeof(*sop));
++	if (!sop)
++		return NULL;
++	sop->test = test;
++	if (test->objsz < 512)
++		gfp = GFP_ATOMIC;
++
++	if (objpool_init(&sop->pool, max, test->objsz,
++			 gfp, sop, ot_init_node, NULL)) {
++		ot_kfree(test, sop, sizeof(*sop));
++		return NULL;
++	}
++	WARN_ON(max != sop->pool.nr_objs);
++
++	return sop;
++}
++
++static void ot_fini_sync(struct ot_context *sop)
++{
++	objpool_fini(&sop->pool);
++	ot_kfree(sop->test, sop, sizeof(*sop));
++}
++
++struct {
++	struct ot_context * (*init)(struct ot_test *oc);
++	void (*fini)(struct ot_context *sop);
++} g_ot_sync_ops[] = {
++	{.init = ot_init_sync_m0, .fini = ot_fini_sync},
++};
++
++/*
++ * synchronous test cases: performance mode
++ */
++
++static void ot_bulk_sync(struct ot_item *item, int irq)
++{
++	struct ot_node *nods[OT_NR_MAX_BULK];
++	int i;
++
++	for (i = 0; i < item->bulk[irq]; i++)
++		nods[i] = objpool_pop(item->pool);
++
++	if (!irq && (item->delay || !(++(item->niters) & 0x7FFF)))
++		msleep(item->delay);
++
++	while (i-- > 0) {
++		struct ot_node *on = nods[i];
++		if (on) {
++			on->refs++;
++			objpool_push(on, item->pool);
++			item->stat[irq].nhits++;
++		} else {
++			item->stat[irq].nmiss++;
++		}
++	}
++}
++
++static int ot_start_sync(struct ot_test *test)
++{
++	struct ot_context *sop;
++	ktime_t start;
++	u64 duration;
++	unsigned long timeout;
++	int cpu;
++
++	/* initialize objpool for syncrhonous testcase */
++	sop = g_ot_sync_ops[test->mode].init(test);
++	if (!sop)
 +		return -ENOMEM;
 +
-+	/* initialize per-cpu slots */
-+	rc = objpool_init_percpu_slots(pool, nr_objs, context, objinit);
-+	if (rc)
-+		objpool_fini_percpu_slots(pool);
-+	else
-+		refcount_set(&pool->ref, pool->nr_objs + 1);
++	/* grab rwsem to block testing threads */
++	down_write(&test->data.start);
 +
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(objpool_init);
++	for_each_possible_cpu(cpu) {
++		struct ot_item *item = per_cpu_ptr(&ot_pcup_items, cpu);
++		struct task_struct *work;
 +
-+/* adding object to slot, abort if the slot was already full */
-+static inline int
-+objpool_try_add_slot(void *obj, struct objpool_head *pool, int cpu)
-+{
-+	struct objpool_slot *slot = pool->cpu_slots[cpu];
-+	uint32_t head, tail;
++		ot_init_cpu_item(item, test, &sop->pool, ot_bulk_sync);
 +
-+	/* loading tail and head as a local snapshot, tail first */
-+	tail = READ_ONCE(slot->tail);
++		/* skip offline cpus */
++		if (!cpu_online(cpu))
++			continue;
 +
-+	do {
-+		head = READ_ONCE(slot->head);
-+		/* fault caught: something must be wrong */
-+		WARN_ON_ONCE(tail - head > pool->nr_objs);
-+	} while (!try_cmpxchg_acquire(&slot->tail, &tail, tail + 1));
++		work = kthread_create_on_node(ot_thread_worker, item,
++				cpu_to_node(cpu), "ot_worker_%d", cpu);
++		if (IS_ERR(work)) {
++			pr_err("failed to create thread for cpu %d\n", cpu);
++		} else {
++			kthread_bind(work, cpu);
++			wake_up_process(work);
++		}
++	}
 +
-+	/* now the tail position is reserved for the given obj */
-+	WRITE_ONCE(slot->entries[tail & slot->mask], obj);
-+	/* update sequence to make this obj available for pop() */
-+	smp_store_release(&slot->last, tail + 1);
++	/* wait a while to make sure all threads waiting at start line */
++	msleep(20);
++
++	/* in case no threads were created: memory insufficient ? */
++	if (atomic_dec_and_test(&test->data.nthreads))
++		complete(&test->data.wait);
++
++	// sched_set_fifo_low(current);
++
++	/* start objpool testing threads */
++	start = ktime_get();
++	up_write(&test->data.start);
++
++	/* yeild cpu to worker threads for duration ms */
++	timeout = msecs_to_jiffies(test->duration);
++	schedule_timeout_interruptible(timeout);
++
++	/* tell workers threads to quit */
++	atomic_set_release(&test->data.stop, 1);
++
++	/* wait all workers threads finish and quit */
++	wait_for_completion(&test->data.wait);
++	duration = (u64) ktime_us_delta(ktime_get(), start);
++
++	/* cleanup objpool */
++	g_ot_sync_ops[test->mode].fini(sop);
++
++	/* report testing summary and performance results */
++	ot_perf_report(test, duration);
++
++	/* report memory allocation summary */
++	ot_mem_report(test);
 +
 +	return 0;
 +}
 +
-+/* reclaim an object to object pool */
-+int objpool_push(void *obj, struct objpool_head *pool)
++/*
++ * asynchronous test cases: pool lifecycle controlled by refcount
++ */
++
++static void ot_fini_async_rcu(struct rcu_head *rcu)
 +{
-+	unsigned long flags;
-+	int rc;
++	struct ot_context *sop = container_of(rcu, struct ot_context, rcu);
++	struct ot_test *test = sop->test;
 +
-+	/* disable local irq to avoid preemption & interruption */
-+	raw_local_irq_save(flags);
-+	rc = objpool_try_add_slot(obj, pool, raw_smp_processor_id());
-+	raw_local_irq_restore(flags);
++	/* here all cpus are aware of the stop event: test->data.stop = 1 */
++	WARN_ON(!atomic_read_acquire(&test->data.stop));
 +
-+	return rc;
++	objpool_fini(&sop->pool);
++	complete(&test->data.rcu);
 +}
-+EXPORT_SYMBOL_GPL(objpool_push);
 +
-+/* try to retrieve object from slot */
-+static inline void *objpool_try_get_slot(struct objpool_head *pool, int cpu)
++static void ot_fini_async(struct ot_context *sop)
 +{
-+	struct objpool_slot *slot = pool->cpu_slots[cpu];
-+	/* load head snapshot, other cpus may change it */
-+	uint32_t head = smp_load_acquire(&slot->head);
++	/* make sure the stop event is acknowledged by all cores */
++	call_rcu(&sop->rcu, ot_fini_async_rcu);
++}
 +
-+	while (head != READ_ONCE(slot->last)) {
-+		void *obj;
++static int ot_objpool_release(struct objpool_head *head, void *context)
++{
++	struct ot_context *sop = context;
 +
-+		/* obj must be retrieved before moving forward head */
-+		obj = READ_ONCE(slot->entries[head & slot->mask]);
++	WARN_ON(!head || !sop || head != &sop->pool);
 +
-+		/* move head forward to mark it's consumption */
-+		if (try_cmpxchg_release(&slot->head, &head, head + 1))
-+			return obj;
++	/* do context cleaning if needed */
++	if (sop)
++		ot_kfree(sop->test, sop, sizeof(*sop));
++
++	return 0;
++}
++
++static struct ot_context *ot_init_async_m0(struct ot_test *test)
++{
++	struct ot_context *sop = NULL;
++	int max = num_possible_cpus() << 3;
++	gfp_t gfp = GFP_KERNEL;
++
++	sop = (struct ot_context *)ot_kzalloc(test, sizeof(*sop));
++	if (!sop)
++		return NULL;
++	sop->test = test;
++	if (test->objsz < 512)
++		gfp = GFP_ATOMIC;
++
++	if (objpool_init(&sop->pool, max, test->objsz, gfp, sop,
++			 ot_init_node, ot_objpool_release)) {
++		ot_kfree(test, sop, sizeof(*sop));
++		return NULL;
 +	}
++	WARN_ON(max != sop->pool.nr_objs);
 +
-+	return NULL;
++	return sop;
 +}
 +
-+/* allocate an object from object pool */
-+void *objpool_pop(struct objpool_head *pool)
++struct {
++	struct ot_context * (*init)(struct ot_test *oc);
++	void (*fini)(struct ot_context *sop);
++} g_ot_async_ops[] = {
++	{.init = ot_init_async_m0, .fini = ot_fini_async},
++};
++
++static void ot_nod_recycle(struct ot_node *on, struct objpool_head *pool,
++			int release)
 +{
-+	void *obj = NULL;
-+	unsigned long flags;
-+	int i, cpu;
++	struct ot_context *sop;
 +
-+	/* disable local irq to avoid preemption & interruption */
-+	raw_local_irq_save(flags);
++	on->refs++;
 +
-+	cpu = raw_smp_processor_id();
-+	for (i = 0; i < num_possible_cpus(); i++) {
-+		obj = objpool_try_get_slot(pool, cpu);
-+		if (obj)
-+			break;
-+		cpu = cpumask_next_wrap(cpu, cpu_possible_mask, -1, 1);
-+	}
-+	raw_local_irq_restore(flags);
-+
-+	return obj;
-+}
-+EXPORT_SYMBOL_GPL(objpool_pop);
-+
-+/* release whole objpool forcely */
-+void objpool_free(struct objpool_head *pool)
-+{
-+	if (!pool->cpu_slots)
++	if (!release) {
++		/* push object back to opjpool for reuse */
++		objpool_push(on, pool);
 +		return;
++	}
 +
-+	/* release percpu slots */
-+	objpool_fini_percpu_slots(pool);
++	sop = container_of(pool, struct ot_context, pool);
++	WARN_ON(sop != pool->context);
 +
-+	/* call user's cleanup callback if provided */
-+	if (pool->release)
-+		pool->release(pool, pool->context);
++	/* unref objpool with nod removed forever */
++	objpool_drop(on, pool);
 +}
-+EXPORT_SYMBOL_GPL(objpool_free);
 +
-+/* drop the allocated object, rather reclaim it to objpool */
-+int objpool_drop(void *obj, struct objpool_head *pool)
++static void ot_bulk_async(struct ot_item *item, int irq)
 +{
-+	if (!obj || !pool)
-+		return -EINVAL;
++	struct ot_test *test = item->test;
++	struct ot_node *nods[OT_NR_MAX_BULK];
++	int i, stop;
 +
-+	if (refcount_dec_and_test(&pool->ref)) {
-+		objpool_free(pool);
-+		return 0;
++	for (i = 0; i < item->bulk[irq]; i++)
++		nods[i] = objpool_pop(item->pool);
++
++	if (!irq) {
++		if (item->delay || !(++(item->niters) & 0x7FFF))
++			msleep(item->delay);
++		get_cpu();
++	}
++
++	stop = atomic_read_acquire(&test->data.stop);
++
++	/* drop all objects and deref objpool */
++	while (i-- > 0) {
++		struct ot_node *on = nods[i];
++
++		if (on) {
++			on->refs++;
++			ot_nod_recycle(on, item->pool, stop);
++			item->stat[irq].nhits++;
++		} else {
++			item->stat[irq].nmiss++;
++		}
++	}
++
++	if (!irq)
++		put_cpu();
++}
++
++static int ot_start_async(struct ot_test *test)
++{
++	struct ot_context *sop;
++	ktime_t start;
++	u64 duration;
++	unsigned long timeout;
++	int cpu;
++
++	/* initialize objpool for syncrhonous testcase */
++	sop = g_ot_async_ops[test->mode].init(test);
++	if (!sop)
++		return -ENOMEM;
++
++	/* grab rwsem to block testing threads */
++	down_write(&test->data.start);
++
++	for_each_possible_cpu(cpu) {
++		struct ot_item *item = per_cpu_ptr(&ot_pcup_items, cpu);
++		struct task_struct *work;
++
++		ot_init_cpu_item(item, test, &sop->pool, ot_bulk_async);
++
++		/* skip offline cpus */
++		if (!cpu_online(cpu))
++			continue;
++
++		work = kthread_create_on_node(ot_thread_worker, item,
++				cpu_to_node(cpu), "ot_worker_%d", cpu);
++		if (IS_ERR(work)) {
++			pr_err("failed to create thread for cpu %d\n", cpu);
++		} else {
++			kthread_bind(work, cpu);
++			wake_up_process(work);
++		}
++	}
++
++	/* wait a while to make sure all threads waiting at start line */
++	msleep(20);
++
++	/* in case no threads were created: memory insufficient ? */
++	if (atomic_dec_and_test(&test->data.nthreads))
++		complete(&test->data.wait);
++
++	/* start objpool testing threads */
++	start = ktime_get();
++	up_write(&test->data.start);
++
++	/* yeild cpu to worker threads for duration ms */
++	timeout = msecs_to_jiffies(test->duration);
++	schedule_timeout_interruptible(timeout);
++
++	/* tell workers threads to quit */
++	atomic_set_release(&test->data.stop, 1);
++
++	/* do async-finalization */
++	g_ot_async_ops[test->mode].fini(sop);
++
++	/* wait all workers threads finish and quit */
++	wait_for_completion(&test->data.wait);
++	duration = (u64) ktime_us_delta(ktime_get(), start);
++
++	/* assure rcu callback is triggered */
++	wait_for_completion(&test->data.rcu);
++
++	/*
++	 * now we are sure that objpool is finalized either
++	 * by rcu callback or by worker threads
++	 */
++
++	/* report testing summary and performance results */
++	ot_perf_report(test, duration);
++
++	/* report memory allocation summary */
++	ot_mem_report(test);
++
++	return 0;
++}
++
++/*
++ * predefined testing cases:
++ *   synchronous case / overrun case / async case
++ *
++ * async: synchronous or asynchronous testing
++ * mode: only mode 0 supported
++ * objsz: object size
++ * duration: int, total test time in ms
++ * delay: int, delay (in ms) between each iteration
++ * bulk_normal: int, repeat times for thread worker
++ * bulk_irq: int, repeat times for irq consumer
++ * hrtimer: unsigned long, hrtimer intervnal in ms
++ * name: char *, tag for current test ot_item
++ */
++
++#define NODE_COMPACT sizeof(struct ot_node)
++#define NODE_VMALLOC (512)
++
++struct ot_test g_testcases[] = {
++
++	/* sync & normal */
++	{0, 0, NODE_COMPACT, 1000, 0,  1,  0,  0, "sync: percpu objpool"},
++	{0, 0, NODE_VMALLOC, 1000, 0,  1,  0,  0, "sync: percpu objpool from vmalloc"},
++
++	/* sync & hrtimer */
++	{0, 0, NODE_COMPACT, 1000, 0,  1,  1,  4, "sync & hrtimer: percpu objpool"},
++	{0, 0, NODE_VMALLOC, 1000, 0,  1,  1,  4, "sync & hrtimer: percpu objpool from vmalloc"},
++
++	/* sync & overrun */
++	{0, 0, NODE_COMPACT, 1000, 0, 16,  0,  0, "sync overrun: percpu objpool"},
++	{0, 0, NODE_VMALLOC, 1000, 0, 16,  0,  0, "sync overrun: percpu objpool from vmalloc"},
++
++	/* async mode */
++	{1, 0, NODE_COMPACT, 1000, 100,  1,  0,  0, "async: percpu objpool"},
++	{1, 0, NODE_VMALLOC, 1000, 100,  1,  0,  0, "async: percpu objpool from vmalloc"},
++
++	/* async + hrtimer mode */
++	{1, 0, NODE_COMPACT, 1000, 0,  4,  4,  4, "async & hrtimer: percpu objpool"},
++	{1, 0, NODE_VMALLOC, 1000, 0,  4,  4,  4, "async & hrtimer: percpu objpool from vmalloc"},
++};
++
++static int __init ot_mod_init(void)
++{
++	int i;
++
++	/* perform testings */
++	for (i = 0; i < ARRAY_SIZE(g_testcases); i++) {
++		ot_init_data(&g_testcases[i].data);
++		if (g_testcases[i].async)
++			ot_start_async(&g_testcases[i]);
++		else
++			ot_start_sync(&g_testcases[i]);
++	}
++
++	/* show tests summary */
++	pr_info("\n");
++	pr_info("Summary of testcases:\n");
++	for (i = 0; i < ARRAY_SIZE(g_testcases); i++) {
++		pr_info("    duration: %lluus \thits: %10lu \tmiss: %10lu \t%s\n",
++			g_testcases[i].data.duration, g_testcases[i].data.objects.nhits,
++			g_testcases[i].data.objects.nmiss, g_testcases[i].name);
 +	}
 +
 +	return -EAGAIN;
 +}
-+EXPORT_SYMBOL_GPL(objpool_drop);
 +
-+/* drop unused objects and defref objpool for releasing */
-+void objpool_fini(struct objpool_head *pool)
++static void __exit ot_mod_exit(void)
 +{
-+	int count = 1; /* extra ref for objpool itself */
-+
-+	/* drop all remained objects from objpool */
-+	while (objpool_pop(pool))
-+		count++;
-+
-+	if (refcount_sub_and_test(count, &pool->ref))
-+		objpool_free(pool);
 +}
-+EXPORT_SYMBOL_GPL(objpool_fini);
++
++module_init(ot_mod_init);
++module_exit(ot_mod_exit);
++
++MODULE_LICENSE("GPL");
+\ No newline at end of file
 -- 
 2.40.1
 
