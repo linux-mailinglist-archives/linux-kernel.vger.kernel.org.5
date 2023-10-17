@@ -2,49 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A897CC30E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 14:24:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C827CC310
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 14:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235028AbjJQMYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 08:24:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48976 "EHLO
+        id S1343663AbjJQMY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 08:24:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343954AbjJQMYD (ORCPT
+        with ESMTP id S235145AbjJQMYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 08:24:03 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C4CF213A;
-        Tue, 17 Oct 2023 05:21:19 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S8tJ01hxfzvQDd;
-        Tue, 17 Oct 2023 20:16:32 +0800 (CST)
-Received: from [10.67.121.177] (10.67.121.177) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 17 Oct 2023 20:21:15 +0800
-CC:     <mathieu.poirier@linaro.org>, <jonathan.cameron@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <yangyicong@hisilicon.com>,
-        <alexander.shishkin@linux.intel.com>, <helgaas@kernel.org>,
-        <linux-pci@vger.kernel.org>, <prime.zeng@hisilicon.com>,
-        <linuxarm@huawei.com>, <hejunhao3@huawei.com>
-Subject: Re: [PATCH v3 0/5] Several updates for PTT driver
-To:     <suzuki.poulose@arm.com>
-References: <20231010084731.30450-1-yangyicong@huawei.com>
-From:   Yicong Yang <yangyicong@huawei.com>
-Message-ID: <fc5ef77c-f4c6-adac-38ab-37e1a23270ef@huawei.com>
-Date:   Tue, 17 Oct 2023 20:21:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Tue, 17 Oct 2023 08:24:17 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 040A2187;
+        Tue, 17 Oct 2023 05:22:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E4B9C433C7;
+        Tue, 17 Oct 2023 12:22:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697545339;
+        bh=M00BvJirBo+mdXAXAKpgHd3oBO/bTMkIYD3+l9Xy8oM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ChBlyKPGb8GCIp6eNUPF1XPPHZDj+fZR2GBHysrDUsb+1Z6bkoZoFbdSbIHUj/Axb
+         G9uP/YC/uMpzye2GvXDv4vsM8xsLaep8qtOtxb28+RCtAepaErNujCbQ+axyfH+R99
+         TARpH7IDgm+A6+h9oEzmr/bTzz/CUaiWvRvC86vPsbRQIYFV672t3PZGhIIO+aim14
+         Uf4JB8j3QNy4VHbriNlbOz8KgHDQAY3rkrnDbQShv6tI7Y+oKIkFGzA88ujq7OmEPA
+         1LYH2UhYJg1lIr5iEtbWk/1OwblE8PBhyHIIN8rMlUp0W7ZBmaZjDd6aJ+rrMU2ERa
+         6QBdStzt0FfVg==
+Date:   Tue, 17 Oct 2023 13:22:14 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Marc Zyngier <maz@kernel.org>
+Subject: Re: selftests: ftrace: Internal error: Oops: sve_save_state
+Message-ID: <ad5b7442-385d-41db-9202-a36414460610@sirena.org.uk>
+References: <CA+G9fYtEGe_DhY2Ms7+L7NKsLYUomGsgqpdBj+QwDLeSg=JhGg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20231010084731.30450-1-yangyicong@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.121.177]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="apekHljeOM9+sOYc"
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYtEGe_DhY2Ms7+L7NKsLYUomGsgqpdBj+QwDLeSg=JhGg@mail.gmail.com>
+X-Cookie: Santa Claus is watching!
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,44 +57,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suzuki,
 
-a gentle ping..
+--apekHljeOM9+sOYc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hope all previous comments are addressed/clarified. Any further comment on this?
+On Tue, Oct 17, 2023 at 01:34:18PM +0530, Naresh Kamboju wrote:
 
-Thanks.
+> Following kernel crash noticed while running selftests: ftrace:
+> ftracetest-ktap on FVP models running stable-rc 6.5.8-rc2.
 
-On 2023/10/10 16:47, Yicong Yang wrote:
-> From: Yicong Yang <yangyicong@hisilicon.com>
-> 
-> This series contains several updates for PTT driver:
-> - Disable interrupt when trace stops, reverse to what we do in trace start
-> - Always handle the interrupt in hardirq context
-> - Optimize the AUX buffer handling to make consumer have more time to process
->   the data
-> - Since we're a uncore PMU so block any task attach operation
-> - Add a dummy pmu::read() callback since the perf core may use
-> 
-> Change since v2:
-> - Add fix tag for Patch 5/5
-> - refine the commit in Patch 3/5, trying to make it more clear
-> Link: https://lore.kernel.org/all/20230914112223.27165-1-yangyicong@huawei.com/
-> 
-> Change since v1:
-> - Add Jonathan's tag, thanks
-> Link: https://lore.kernel.org/all/20230809081825.11518-1-yangyicong@huawei.com/
-> 
-> Junhao He (1):
->   hwtracing: hisi_ptt: Add dummy callback pmu::read()
-> 
-> Yicong Yang (4):
->   hwtracing: hisi_ptt: Disable interrupt after trace end
->   hwtracing: hisi_ptt: Handle the interrupt in hardirq context
->   hwtracing: hisi_ptt: Optimize the trace data committing
->   hwtracing: hisi_ptt: Don't try to attach a task
-> 
->  drivers/hwtracing/ptt/hisi_ptt.c | 33 +++++++++++++++++++++-----------
->  drivers/hwtracing/ptt/hisi_ptt.h |  1 +
->  2 files changed, 23 insertions(+), 11 deletions(-)
-> 
+> This is not an easy to reproduce issue and not seen on mainline and next.
+> We are investigating this report.
+
+To confirm have you seen this on other stables as well or is this only
+v6.5?  For how long have you been seeing this?
+
+> [  764.987161] Unable to handle kernel NULL pointer dereference at
+> virtual address 0000000000000000
+
+> [  765.074221] Call trace:
+> [  765.075045]  sve_save_state+0x4/0xf0
+> [  765.076138]  fpsimd_thread_switch+0x2c/0xe8
+> [  765.077305]  __switch_to+0x20/0x158
+> [  765.078384]  __schedule+0x2cc/0xb38
+> [  765.079464]  preempt_schedule_irq+0x44/0xa8
+> [  765.080633]  el1_interrupt+0x4c/0x68
+> [  765.081691]  el1h_64_irq_handler+0x18/0x28
+> [  765.082829]  el1h_64_irq+0x64/0x68
+> [  765.083874]  ftrace_return_to_handler+0x98/0x158
+> [  765.085090]  return_to_handler+0x20/0x48
+> [  765.086205]  do_sve_acc+0x64/0x128
+> [  765.087272]  el0_sve_acc+0x3c/0xa0
+> [  765.088356]  el0t_64_sync_handler+0x114/0x130
+> [  765.089524]  el0t_64_sync+0x190/0x198
+
+So something managed to get flagged as having SVE state without having
+the backing storage allocated.  We *were* preempted in the SVE access
+handler which does the allocation but I can't see the path that would
+trigger that since we allocate the state before setting TIF_SVE.  It's
+possible the compiler did something funky, a decode of the backtrace
+might help show that?
+
+--apekHljeOM9+sOYc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUufHUACgkQJNaLcl1U
+h9Du4gf/RwBqZmgxZTFG61U5ZuvEedd7Ncv9OG5UjPNGuBlLM1KDg+t5xj5Zl+en
+LShQ6Hzccz4mxRfADxNIrWt4P+hEkgFvgSlmJvAZBJSc8LJm4OP/hiDD1Bx3Qikq
+W3nSjSa+uLW02+wF2zw2hJPK+8qv+09HFyb5bBOWavLRu45N4kzLjE3/NrDLR2vK
+j98xD+9RNYw4uUGZEy0CFqBeHTV+YOlOnH8IUOrDIzycKn17npDUIygiL3lMD8RH
+J+VyRqniWlGDkglCesuJdXMZSXTRx+YJQTExTJKvFyQiomdXjs5BMcxBtx8Ldec2
+GM5ENkf0jVDClVZOWMsGBNV/zV0/rw==
+=oZtp
+-----END PGP SIGNATURE-----
+
+--apekHljeOM9+sOYc--
