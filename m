@@ -2,52 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F87E7CBCFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A45327CBCFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234730AbjJQIA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 04:00:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44622 "EHLO
+        id S234724AbjJQIAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 04:00:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234740AbjJQIAW (ORCPT
+        with ESMTP id S234758AbjJQIAf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 04:00:22 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B16B102
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 01:00:21 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A87AC433C7;
-        Tue, 17 Oct 2023 08:00:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697529620;
-        bh=dDKPWob3NTMe7C9SlY1gR19DUsq4sN8SeXQP0UXWyaw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tv8hN+5jlJ0ofhkcuyLjePs3+5j6h6eiQJYCA82U2nTd8vNgQEcUrhJ/e35LA22Ay
-         aiyYXEGCK+GDNB4BN7Gj/hK49XhXmB2ebQJITOd0Rz83VHTgynZlzTaQHy5KsHcgDd
-         dYO4dv1dcQXaiTYw23PgvEoCHMQWpGOmyd7o93nJn49CIkt98rgKnNxVHaW2ZBk+n6
-         reD/irVj5bxCHcmm0CDfxf25qKZgOgQ+gWBhSEMtaDdYik/RU73ytegEKWgbwxpBud
-         Bx4YmIESFh/B6BtaysceZjBDq054CwtYevuveEio/GfQV4lWIKe61g+XK4dIOd7ico
-         jTvlG8mLzdUaQ==
-Date:   Tue, 17 Oct 2023 09:00:15 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Ante Knezic <ante.knezic@helmholz.de>
-Cc:     andrew@lunn.ch, conor+dt@kernel.org, davem@davemloft.net,
-        devicetree@vger.kernel.org, edumazet@google.com,
-        f.fainelli@gmail.com, krzysztof.kozlowski+dt@linaro.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org, marex@denx.de,
-        netdev@vger.kernel.org, olteanv@gmail.com, pabeni@redhat.com,
-        robh+dt@kernel.org, woojung.huh@microchip.com
-Subject: Re: [PATCH net-next 2/2] dt-bindings: net: microchip,ksz: document
- microchip,rmii-clk-internal
-Message-ID: <20231017-generous-botanical-28436c5ba13a@spud>
-References: <20231012-unicorn-rambling-55dc66b78f2f@spud>
- <20231016075349.18792-1-ante.knezic@helmholz.de>
+        Tue, 17 Oct 2023 04:00:35 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A2C9FF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 01:00:28 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-53db3811d8fso11152041a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 01:00:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1697529627; x=1698134427; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nBYtQLiZ5RB4OSac9xrnHTxrEXkSr1E/izR9K8kO0uY=;
+        b=ZB6l7pESFKFD8Ixh/gcGKrj8uAwJAIZMcJzlXYJLGa8h4/e8djQ3df5YAFFy2co7ly
+         M1cQE30YqWZWFRNYXwpudlZjvxtsnXvLUc19HJcXwUPhtEEGz4D716kuNr+RD7q6FN1k
+         VE0hxU8TF9uAYLnTK0pi23e6LqyEXy9hRyxx+5hKfhdGd5Npb6iIsKBPXAGZN2KwTFIh
+         VhF4B4nFeR/tF2pIoXJseqcZNihDS2xK2KoKS1do9Ta95/i2r4Y+ASRrmu+gApojjFju
+         Kg0j280Xs2q8G21jp9TXECrcAqKp9+ZWmrVuAfQxp+cR+7fRopSsE58PKEV85EZ7DnMI
+         nbmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697529627; x=1698134427;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nBYtQLiZ5RB4OSac9xrnHTxrEXkSr1E/izR9K8kO0uY=;
+        b=Vrhk/MkCmgR2+3Wb/CspBOafrNcI5gNdelefEMFpZ0kyZXF4e2O1jrGFYQIH03ru95
+         8wFp5mVw78XNWpGhopPC/Ur7olW+vK7NkOKGEk1GqCilsQF2TQOZnngkI4Pdvxzwd0i3
+         FYZ9OMWnqDrvJfXl9fwftdFXv+QJb4wf+CBbvGWCgVptLCWfGmrJVxUobwtlcmgvxLFs
+         H7xL8Pr8DbNXIH8g4CnRzjxUvEEHMbt2iL/okzdIMKAktNMSXmUvWXR0Fk/yn3csxETO
+         xU1esdjUjAPzbppVgVE0FMCe28hpMqraRYtK/c8bVH9eejslK6Lvf2MJBi+w6nHTfadf
+         9FlQ==
+X-Gm-Message-State: AOJu0YwhBhkpePoFRy/M/eoHa6geGLi77qOi/MbP3h7IQljTDkkUBdUz
+        KSu/i9sQrAeSNukiRwahcS8KDN9bkGzlHJHExM0Mdw==
+X-Google-Smtp-Source: AGHT+IF3O+tPGmdIpZqs0l2cGcskV6IjZnudEtO0W9v8N+CqBJA+5x1fNuHZohpF4FQjSiwk7axPRQ==
+X-Received: by 2002:a50:9996:0:b0:523:2e23:a0bf with SMTP id m22-20020a509996000000b005232e23a0bfmr1035714edb.11.1697529626646;
+        Tue, 17 Oct 2023 01:00:26 -0700 (PDT)
+Received: from otso.luca.vpn.lucaweiss.eu (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id s23-20020a508d17000000b00536031525e5sm718625eds.91.2023.10.17.01.00.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Oct 2023 01:00:26 -0700 (PDT)
+From:   Luca Weiss <luca.weiss@fairphone.com>
+Date:   Tue, 17 Oct 2023 10:00:23 +0200
+Subject: [PATCH v2] soc: qcom: pmic_glink_altmode: Print return value on
+ error
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="RTdQAc1dJT5nSWZw"
-Content-Disposition: inline
-In-Reply-To: <20231016075349.18792-1-ante.knezic@helmholz.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231017-glink-altmode-ret-v2-1-921aa7cfc381@fairphone.com>
+X-B4-Tracking: v=1; b=H4sIABY/LmUC/32NQQ6CMBBFr0Jm7RiGWgmuuIdhUWCgE6ElLSEaw
+ t2tHMDle8l/f4fIQTjCI9sh8CZRvEtQXDLorHEjo/SJocgLRTkpHCdxLzTTOvueMfCKqiLie0d
+ sWg1ptwQe5H02n01iK3H14XNebPSz/2obIWFZVjfSqjRKt/VgJCzWO752fobmOI4vpeV2U7YAA
+ AA=
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luca Weiss <luca.weiss@fairphone.com>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,85 +77,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+It can be useful to know with which return value for example the
+typec_retimer_set call failed, so include this info in the dev_err
+prints.
 
---RTdQAc1dJT5nSWZw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+---
+Changes in v2:
+- Add ret to print in more prints, not just typec_retimer_set (Bjorn)
+- Link to v1: https://lore.kernel.org/r/20231013-glink-altmode-ret-v1-1-77941537a35b@fairphone.com
+---
+ drivers/soc/qcom/pmic_glink_altmode.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-On Mon, Oct 16, 2023 at 09:53:49AM +0200, Ante Knezic wrote:
-> On Thu, 12 Oct 2023 16:18:09 +0100, Conor Dooley wrote:
-> > On Thu, Oct 12, 2023 at 12:55:56PM +0200, Ante Knezic wrote:
-> > > Add documentation for selecting reference rmii clock on KSZ88X3 devic=
-es
-> > >=20
-> > > Signed-off-by: Ante Knezic <ante.knezic@helmholz.de>
-> > > ---
-> > >  .../devicetree/bindings/net/dsa/microchip,ksz.yaml    | 19 +++++++++=
-++++++++++
-> > >  1 file changed, 19 insertions(+)
-> > >=20
-> > > diff --git a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.=
-yaml b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
-> > > index 41014f5c01c4..eaa347b04db1 100644
-> > > --- a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
-> > > +++ b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
-> > > @@ -72,6 +72,25 @@ properties:
-> > >    interrupts:
-> > >      maxItems: 1
-> > > =20
-> > > +  microchip,rmii-clk-internal:
-> > > +    $ref: /schemas/types.yaml#/definitions/flag
-> > > +    description:
-> > > +      Set if the RMII reference clock is provided internally. Otherw=
-ise
-> > > +      reference clock should be provided externally.
-> >=20
-> > I regret not asking this on the previous iteration - how come you need a
-> > custom property? In the externally provided case would there not be a
-> > clocks property pointing to the RMII reference clock, that would be
-> > absent when provided by the itnernal reference?
+diff --git a/drivers/soc/qcom/pmic_glink_altmode.c b/drivers/soc/qcom/pmic_glink_altmode.c
+index 9569d999391d..0a75bfac5e02 100644
+--- a/drivers/soc/qcom/pmic_glink_altmode.c
++++ b/drivers/soc/qcom/pmic_glink_altmode.c
+@@ -160,7 +160,7 @@ static void pmic_glink_altmode_enable_dp(struct pmic_glink_altmode *altmode,
+ 
+ 	ret = typec_mux_set(port->typec_mux, &port->state);
+ 	if (ret)
+-		dev_err(altmode->dev, "failed to switch mux to DP\n");
++		dev_err(altmode->dev, "failed to switch mux to DP: %d\n", ret);
+ 
+ 	port->retimer_state.alt = &port->dp_alt;
+ 	port->retimer_state.data = &dp_data;
+@@ -168,7 +168,7 @@ static void pmic_glink_altmode_enable_dp(struct pmic_glink_altmode *altmode,
+ 
+ 	ret = typec_retimer_set(port->typec_retimer, &port->retimer_state);
+ 	if (ret)
+-		dev_err(altmode->dev, "failed to setup retimer to DP\n");
++		dev_err(altmode->dev, "failed to setup retimer to DP: %d\n", ret);
+ }
+ 
+ static void pmic_glink_altmode_enable_usb(struct pmic_glink_altmode *altmode,
+@@ -182,7 +182,7 @@ static void pmic_glink_altmode_enable_usb(struct pmic_glink_altmode *altmode,
+ 
+ 	ret = typec_mux_set(port->typec_mux, &port->state);
+ 	if (ret)
+-		dev_err(altmode->dev, "failed to switch mux to USB\n");
++		dev_err(altmode->dev, "failed to switch mux to USB: %d\n", ret);
+ 
+ 	port->retimer_state.alt = NULL;
+ 	port->retimer_state.data = NULL;
+@@ -190,7 +190,7 @@ static void pmic_glink_altmode_enable_usb(struct pmic_glink_altmode *altmode,
+ 
+ 	ret = typec_retimer_set(port->typec_retimer, &port->retimer_state);
+ 	if (ret)
+-		dev_err(altmode->dev, "failed to setup retimer to USB\n");
++		dev_err(altmode->dev, "failed to setup retimer to USB: %d\n", ret);
+ }
+ 
+ static void pmic_glink_altmode_safe(struct pmic_glink_altmode *altmode,
+@@ -204,7 +204,7 @@ static void pmic_glink_altmode_safe(struct pmic_glink_altmode *altmode,
+ 
+ 	ret = typec_mux_set(port->typec_mux, &port->state);
+ 	if (ret)
+-		dev_err(altmode->dev, "failed to switch mux to safe mode\n");
++		dev_err(altmode->dev, "failed to switch mux to safe mode: %d\n", ret);
+ 
+ 	port->retimer_state.alt = NULL;
+ 	port->retimer_state.data = NULL;
+@@ -212,7 +212,7 @@ static void pmic_glink_altmode_safe(struct pmic_glink_altmode *altmode,
+ 
+ 	ret = typec_retimer_set(port->typec_retimer, &port->retimer_state);
+ 	if (ret)
+-		dev_err(altmode->dev, "failed to setup retimer to USB\n");
++		dev_err(altmode->dev, "failed to setup retimer to USB: %d\n", ret);
+ }
+ 
+ static void pmic_glink_altmode_worker(struct work_struct *work)
+@@ -397,7 +397,7 @@ static void pmic_glink_altmode_enable_worker(struct work_struct *work)
+ 
+ 	ret = pmic_glink_altmode_request(altmode, ALTMODE_PAN_EN, 0);
+ 	if (ret)
+-		dev_err(altmode->dev, "failed to request altmode notifications\n");
++		dev_err(altmode->dev, "failed to request altmode notifications: %d\n", ret);
+ }
+ 
+ static void pmic_glink_altmode_pdr_notify(void *priv, int state)
 
-> In both cases (external and internal), the KSZ88X3 is actually providing =
-the
-> RMII reference clock.
-> Difference is only will the clock be routed as external
-> copper track (pin REFCLKO -> pin REFCLKI), or will it be routed internall=
-y.
+---
+base-commit: e3b18f7200f45d66f7141136c25554ac1e82009b
+change-id: 20231013-glink-altmode-ret-3911e6c1eab5
 
-The switch always provides it's own external reference, wut? Why would
-anyone actually bother doing this instead of just using the internal
-reference?
+Best regards,
+-- 
+Luca Weiss <luca.weiss@fairphone.com>
 
-> So, this should not affect the clock relation between the uC and the swit=
-ch
-> device?
-
-> This property has no effect if KSZ88X3 is not providing the reference clo=
-ck.
-
-This appears to contradict with the above, unless I am misunderstanding
-something.
-
-> Maybe I should provide more info in the commit message of both patches as=
- well?
-
-What I would have expected to see is that when the reference clock is
-provided externally that there would be a clocks property in the DT
-node, pointing at that external clock & when there was not, then
-no property. Likely that ship has already said, as I don't see clocks
-present in the current binding. How does the driver get the frequency of
-the RMII reference clock when an external reference is provided?
-
---RTdQAc1dJT5nSWZw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZS4/DwAKCRB4tDGHoIJi
-0rFQAP9m8VpRBlP7rWXT1ZHoFPq6+eLOQwYnPTJprqcCty2+fAEA1o0kvyUPI69W
-wXbdny+DrsOyb/DSpvy1L3OvYkdJ/gg=
-=xLsw
------END PGP SIGNATURE-----
-
---RTdQAc1dJT5nSWZw--
