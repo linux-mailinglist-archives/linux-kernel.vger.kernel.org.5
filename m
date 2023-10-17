@@ -2,129 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2C07CBA6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 07:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A53167CBA6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 07:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234473AbjJQF47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 01:56:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42510 "EHLO
+        id S234426AbjJQFzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 01:55:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbjJQF45 (ORCPT
+        with ESMTP id S234391AbjJQFzX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 01:56:57 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A21529E;
-        Mon, 16 Oct 2023 22:56:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697522215; x=1729058215;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=aigizliSGfQOt/MVN5mwaZASQEdSNMmajEsIVyXWVes=;
-  b=mGOukdYiSi2caSzQGxGBxt8o4mLedzzcj2gpQP3xKtLYBfGQSU22bRPe
-   cextzfNrtkdLVjJPu2FVuCyAehbRv390K99MvfVPJPnH7c1z+h13pxVOr
-   IJuBDsvrZY5ltYWok832/1SnjjNjgwpEciVw77Zs4px0NknAqmHq1xxxh
-   Dfkr+e6RjuJmhRj9NlhwrPajXFw9N6/tnW3eEibGoXpg7Pj7EIERuxvnu
-   N6yyv9KYJnHIQE9vbyGktUdR0UFsfFzSMwaLpNTKLPEpDej3KfrY4ainO
-   4hDkonhhyc4JDhfc4IbC7cmuqj+b9BSsW7D+6ctc1fP4+T8nTP1FvD+L2
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="370775611"
-X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="370775611"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 22:56:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="785370099"
-X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="785370099"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 22:56:51 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     "Verma, Vishal L" <vishal.l.verma@intel.com>
-Cc:     "david@redhat.com" <david@redhat.com>,
-        "Hocko, Michal" <mhocko@suse.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "osalvador@suse.de" <osalvador@suse.de>,
-        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "jmoyer@redhat.com" <jmoyer@redhat.com>,
-        "Jonathan.Cameron@huawei.com" <Jonathan.Cameron@huawei.com>
-Subject: Re: [PATCH v5 2/2] dax/kmem: allow kmem to add memory with
- memmap_on_memory
-In-Reply-To: <7a29c85bda2543a0f31d575ced3e57eb93063fc3.camel@intel.com>
-        (Vishal L. Verma's message of "Tue, 17 Oct 2023 13:44:27 +0800")
-References: <20231005-vv-kmem_memmap-v5-0-a54d1981f0a3@intel.com>
-        <20231005-vv-kmem_memmap-v5-2-a54d1981f0a3@intel.com>
-        <651f27b728fef_ae7e7294b3@dwillia2-xfh.jf.intel.com.notmuch>
-        <923d65270ad08d47adae0d82ab4b508d01e9cc00.camel@intel.com>
-        <87edhtaksf.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <7a29c85bda2543a0f31d575ced3e57eb93063fc3.camel@intel.com>
-Date:   Tue, 17 Oct 2023 13:54:50 +0800
-Message-ID: <874jip94k5.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Tue, 17 Oct 2023 01:55:23 -0400
+Received: from out-205.mta1.migadu.com (out-205.mta1.migadu.com [IPv6:2001:41d0:203:375::cd])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 781BB9E
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 22:55:21 -0700 (PDT)
+Date:   Tue, 17 Oct 2023 05:55:14 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1697522119;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PDw0gF01ql4reoKKcsChe+eJJjJlQChkycqYZXo087I=;
+        b=CpzQZCPjIgSyy+TVXsiZSJsljM+rypsTxolK50cQs8vm+k+ybPDlpClfb7BT2iAujvoHed
+        MBbHByMOp1dlPjF7/HOTbHrGb7hqfxuFjnIXVqzTeRx/KERpa7yQxgFbtLfEEvIV6eu0ch
+        4fh5JVCsa8Eo9h1i/BNSxRDHPv+OTVg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Oliver Upton <oliver.upton@linux.dev>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Sebastian Ott <sebott@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v7 07/12] KVM: arm64: PMU: Set PMCR_EL0.N for vCPU based
+ on the associated PMU
+Message-ID: <ZS4hwr4Y4b-9aFYy@linux.dev>
+References: <20231009230858.3444834-1-rananta@google.com>
+ <20231009230858.3444834-8-rananta@google.com>
+ <b4739328-5dba-a3a6-54ef-2db2d34201d8@redhat.com>
+ <CAJHc60zpH8Y8h72=jUbshGoqye20FaHRcsb+TFDxkk7rhJAUxQ@mail.gmail.com>
+ <ZS2L6uIlUtkltyrF@linux.dev>
+ <CAJHc60wvMSHuLuRsZJOn7+r7LxZ661xEkDfqxGHed5Y+95Fxeg@mail.gmail.com>
+ <ZS4hGL5RIIuI1KOC@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZS4hGL5RIIuI1KOC@linux.dev>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Verma, Vishal L" <vishal.l.verma@intel.com> writes:
+On Tue, Oct 17, 2023 at 05:52:24AM +0000, Oliver Upton wrote:
+> On Mon, Oct 16, 2023 at 02:35:52PM -0700, Raghavendra Rao Ananta wrote:
+> 
+> [...]
+> 
+> > > What's the point of doing this in the first place? The implementation of
+> > > kvm_vcpu_read_pmcr() is populating PMCR_EL0.N using the VM-scoped value.
+> > >
+> > I guess originally the change replaced read_sysreg(pmcr_el0) with
+> > kvm_vcpu_read_pmcr(vcpu) to maintain consistency with others.
+> > But if you and Sebastian feel that it's an overkill and directly
+> > getting the value via vcpu->kvm->arch.pmcr_n is more readable, I'm
+> > happy to make the change.
+> 
+> No, I'd rather you delete the line where PMCR_EL0.N altogether.
 
-> On Tue, 2023-10-17 at 13:18 +0800, Huang, Ying wrote:
->> "Verma, Vishal L" <vishal.l.verma@intel.com> writes:
->>
->> > On Thu, 2023-10-05 at 14:16 -0700, Dan Williams wrote:
->> > > Vishal Verma wrote:
->> > > >
->> > <..>
->> >
->> > > > +
->> > > > +       rc = kstrtobool(buf, &val);
->> > > > +       if (rc)
->> > > > +               return rc;
->> > >
->> > > Perhaps:
->> > >
->> > > if (dev_dax->memmap_on_memory == val)
->> > >         return len;
->> > >
->> > > ...and skip the check below when it is going to be a nop
->> > >
->> > > > +
->> > > > +       device_lock(dax_region->dev);
->> > > > +       if (!dax_region->dev->driver) {
->> > >
->> > > Is the polarity backwards here? I.e. if the device is already
->> > > attached to
->> > > the kmem driver it is too late to modify memmap_on_memory policy.
->> >
->> > Hm this sounded logical until I tried it. After a reconfigure-
->> > device to
->> > devdax (i.e. detach kmem), I get the -EBUSY if I invert this check.
->>
->> Can you try to unbind the device via sysfs by hand and retry?
->>
-> I think what is happening maybe is while kmem gets detached, the device
-> goes back to another dax driver (hmem in my tests). So either way, the
-> check for if (driver) or if (!driver) won't distinguish between kmem
-> vs. something else.
->
-> Maybe we just remove this check? Or add an explicit kmem check somehow?
+... where we set up ...
 
-I think it's good to check kmem explicitly here.
+> reset_pmcr() tries to initialize the field, but your
+> kvm_vcpu_read_pmcr() winds up replacing it with pmcr_n.
 
---
-Best Regards,
-Huang, Ying
+-- 
+Thanks,
+Oliver
