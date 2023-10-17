@@ -2,160 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD96E7CBD61
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD307CBD63
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234623AbjJQI3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 04:29:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40402 "EHLO
+        id S234726AbjJQI32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 04:29:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjJQI3F (ORCPT
+        with ESMTP id S232134AbjJQI30 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 04:29:05 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC6F93;
-        Tue, 17 Oct 2023 01:29:03 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74F6CC433C8;
-        Tue, 17 Oct 2023 08:28:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697531343;
-        bh=RESuwpGBnAb12MK/MNuF3dBypxSNz2pAixUEdbu0A0E=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=jrQQ05qC6teSXhyYJm0Ss3ngnUZJG82JYLoNCYwxd7Qm4BpNnxAVY6tuh2teCUuD0
-         eUAiXCPii9O5P59rcy//pEOxE+TOb/jpYwsQ/lEcxXZllZVDw1/jCdRXIt3b6rd0vN
-         EE9UxXzs8ePVIdtwiOsXOCMTRcWfL6419MGz2MKul4FFqf5qqFKX94aYeE4O5dV0HI
-         WCB1Y8kOt0Sri4PkagJzGQ99EMiw8nL868/MMqiYgByycWSV1kEeDmq03GpZ0EGZ9Q
-         fwEMb5cFS3e3GBdvocOmxoKOPYdA1wF5FygdYPnaqdEw/zBH7YXzQEZOQuxMiUikn2
-         RiSG6Z5zIhU3w==
-Message-ID: <3d2b2683-3b7f-403c-a717-9c5e3f2c3939@kernel.org>
-Date:   Tue, 17 Oct 2023 17:28:57 +0900
+        Tue, 17 Oct 2023 04:29:26 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF99FB;
+        Tue, 17 Oct 2023 01:29:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697531364; x=1729067364;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=LKGg+L3VZMtPvAZYL+/LvBsBcIOUQgV+HkNPICkLuCI=;
+  b=Vu0rtT49dDjpfU6jOkqqPqU1LX5HnyAeIf8tF4g8vXAm8gVyA1j8VChN
+   LKtjBOuLmA+jr2AmDD9/pZCCRWoXTki46DLznJUSWifGLtMw6mmmaSlMr
+   mQhszK5VtMDFcVO30VUWWKeDXiqG+IurF0a1aY5no4/FlnJl2LoIJsAYi
+   jl8VANDvuUXd0EXAOiRi2/GbCIiYx1zujBtpea66wFVW8TrVIH80cVjUE
+   uQU1DK+trv4aAfVNj9uUnExxc3T2PjBof3q4b7InSoN0k/Bi76N+pSWKH
+   LHP6PPmB61U6y69AsmHqR1XYjLHcaziPl9855jizNOCUrtIOL6z8ISom6
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="365989665"
+X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
+   d="scan'208";a="365989665"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 01:29:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="846733946"
+X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
+   d="scan'208";a="846733946"
+Received: from powerlab.fi.intel.com ([10.237.71.25])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 01:29:21 -0700
+From:   Michal Wilczynski <michal.wilczynski@intel.com>
+To:     nvdimm@lists.linux.dev, linux-acpi@vger.kernel.org,
+        dan.j.williams@intel.com
+Cc:     rafael@kernel.org, vishal.l.verma@intel.com, lenb@kernel.org,
+        dave.jiang@intel.com, ira.weiny@intel.com,
+        linux-kernel@vger.kernel.org,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH v3] ACPI: NFIT: Use cleanup.h helpers instead of devm_*()
+Date:   Tue, 17 Oct 2023 11:29:05 +0300
+Message-ID: <20231017082905.1673316-1-michal.wilczynski@intel.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 07/26] PM / devfreq: rockchip-dfi: introduce channel
- mask
-To:     Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, kernel@pengutronix.de,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Vincent Legoll <vincent.legoll@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-References: <20230704093242.583575-1-s.hauer@pengutronix.de>
- <20230704093242.583575-8-s.hauer@pengutronix.de>
- <859b0091-e361-6060-2977-4aba13af418a@kernel.org>
- <20231016112216.GY3359458@pengutronix.de>
- <20231016124558.GL235829@pengutronix.de>
-From:   Chanwoo Choi <chanwoo@kernel.org>
-Content-Language: en-US
-In-Reply-To: <20231016124558.GL235829@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23. 10. 16. 21:45, Sascha Hauer wrote:
-> On Mon, Oct 16, 2023 at 01:22:16PM +0200, Sascha Hauer wrote:
->> On Sat, Oct 07, 2023 at 02:21:10AM +0900, Chanwoo Choi wrote:
->>> Hi,
->>>
->>> On 23. 7. 4. 18:32, Sascha Hauer wrote:
->>>> Different Rockchip SoC variants have a different number of channels.
->>>> Introduce a channel mask to make the number of channels configurable
->>>> from SoC initialization code.
->>>>
->>>> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
->>>> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
->>>> ---
->>>>  drivers/devfreq/event/rockchip-dfi.c | 23 +++++++++++++++++------
->>>>  1 file changed, 17 insertions(+), 6 deletions(-)
->>>>
->>>> diff --git a/drivers/devfreq/event/rockchip-dfi.c b/drivers/devfreq/event/rockchip-dfi.c
->>>> index 126bb744645b6..82de24a027579 100644
->>>> --- a/drivers/devfreq/event/rockchip-dfi.c
->>>> +++ b/drivers/devfreq/event/rockchip-dfi.c
->>>> @@ -18,10 +18,11 @@
->>>>  #include <linux/list.h>
->>>>  #include <linux/of.h>
->>>>  #include <linux/of_device.h>
->>>> +#include <linux/bits.h>
->>>>  
->>>>  #include <soc/rockchip/rk3399_grf.h>
->>>>  
->>>> -#define RK3399_DMC_NUM_CH	2
->>>> +#define DMC_MAX_CHANNELS	2
->>>>  
->>>>  /* DDRMON_CTRL */
->>>>  #define DDRMON_CTRL	0x04
->>>> @@ -44,7 +45,7 @@ struct dmc_count_channel {
->>>>  };
->>>>  
->>>>  struct dmc_count {
->>>> -	struct dmc_count_channel c[RK3399_DMC_NUM_CH];
->>>> +	struct dmc_count_channel c[DMC_MAX_CHANNELS];
->>>>  };
->>>>  
->>>>  /*
->>>> @@ -61,6 +62,7 @@ struct rockchip_dfi {
->>>>  	struct regmap *regmap_pmu;
->>>>  	struct clk *clk;
->>>>  	u32 ddr_type;
->>>> +	unsigned int channel_mask;
->>>>  };
->>>>  
->>>>  static void rockchip_dfi_start_hardware_counter(struct devfreq_event_dev *edev)
->>>> @@ -95,7 +97,9 @@ static void rockchip_dfi_read_counters(struct devfreq_event_dev *edev, struct dm
->>>>  	u32 i;
->>>>  	void __iomem *dfi_regs = dfi->regs;
->>>>  
->>>> -	for (i = 0; i < RK3399_DMC_NUM_CH; i++) {
->>>> +	for (i = 0; i < DMC_MAX_CHANNELS; i++) {
->>>> +		if (!(dfi->channel_mask & BIT(i)))
->>>> +			continue;
->>>>  		count->c[i].access = readl_relaxed(dfi_regs +
->>>>  				DDRMON_CH0_DFI_ACCESS_NUM + i * 20);
->>>>  		count->c[i].total = readl_relaxed(dfi_regs +
->>>> @@ -145,9 +149,14 @@ static int rockchip_dfi_get_event(struct devfreq_event_dev *edev,
->>>>  	rockchip_dfi_read_counters(edev, &count);
->>>>  
->>>>  	/* We can only report one channel, so find the busiest one */
->>>> -	for (i = 0; i < RK3399_DMC_NUM_CH; i++) {
->>>> -		u32 a = count.c[i].access - last->c[i].access;
->>>> -		u32 t = count.c[i].total - last->c[i].total;
->>>> +	for (i = 0; i < DMC_MAX_CHANNELS; i++) {
->>>
->>> Instead of DMC_MAX_CHANNELS defintion,
->>> you can initialize the max channel in each rkXXXX_dfi_init() like 'dfi->channel_count'.
->>> It reduces the unnecessary loop by initializing the proper max channel.
->>
->> That is not easily possible. Some SoCs, eg the RK3588 have four
->> channels, but not all channels are necessarily enabled it also
->> might not be the first channels that are enabled. On a RK3588
->> the channel mask might for example be 0b0101.
-> 
-> Nah, forget this comment. Of course I can initialize a variable with a
-> maximum value of channels that could be available on this SoC and only
-> iterate over these. Will do.
-> 
+The new cleanup.h facilities that arrived in v6.5-rc1 can replace the
+the usage of devm semantics in acpi_nfit_init_interleave_set(). That
+routine appears to only be using devm to avoid goto statements. The
+new __free() annotation at variable declaration time can achieve the same
+effect more efficiently.
 
-Thanks.
+There is no end user visible side effects of this patch, I was
+motivated to send this cleanup to practice using the new helpers.
 
+Suggested-by: Dave Jiang <dave.jiang@intel.com>
+Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Michal Wilczynski <michal.wilczynski@intel.com>
+---
+
+Dan, would you like me to give you credit for the changelog changes
+with Co-developed-by tag ?
+
+v3:
+ - changed changelog
+v2:
+ - removed first commit from the patchset, as the commit couldn't
+   be marked as a fix
+ - squashed those commits together, since the second one were
+   mostly overwriting the previous one
+
+ drivers/acpi/nfit/core.c | 21 ++++++++-------------
+ 1 file changed, 8 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/acpi/nfit/core.c b/drivers/acpi/nfit/core.c
+index 3826f49d481b..67a844a705c4 100644
+--- a/drivers/acpi/nfit/core.c
++++ b/drivers/acpi/nfit/core.c
+@@ -2257,26 +2257,23 @@ static int acpi_nfit_init_interleave_set(struct acpi_nfit_desc *acpi_desc,
+ 		struct nd_region_desc *ndr_desc,
+ 		struct acpi_nfit_system_address *spa)
+ {
++	u16 nr = ndr_desc->num_mappings;
++	struct nfit_set_info2 *info2 __free(kfree) =
++		kcalloc(nr, sizeof(*info2), GFP_KERNEL);
++	struct nfit_set_info *info __free(kfree) =
++		kcalloc(nr, sizeof(*info), GFP_KERNEL);
+ 	struct device *dev = acpi_desc->dev;
+ 	struct nd_interleave_set *nd_set;
+-	u16 nr = ndr_desc->num_mappings;
+-	struct nfit_set_info2 *info2;
+-	struct nfit_set_info *info;
+ 	int i;
+ 
++	if (!info || !info2)
++		return -ENOMEM;
++
+ 	nd_set = devm_kzalloc(dev, sizeof(*nd_set), GFP_KERNEL);
+ 	if (!nd_set)
+ 		return -ENOMEM;
+ 	import_guid(&nd_set->type_guid, spa->range_guid);
+ 
+-	info = devm_kcalloc(dev, nr, sizeof(*info), GFP_KERNEL);
+-	if (!info)
+-		return -ENOMEM;
+-
+-	info2 = devm_kcalloc(dev, nr, sizeof(*info2), GFP_KERNEL);
+-	if (!info2)
+-		return -ENOMEM;
+-
+ 	for (i = 0; i < nr; i++) {
+ 		struct nd_mapping_desc *mapping = &ndr_desc->mapping[i];
+ 		struct nvdimm *nvdimm = mapping->nvdimm;
+@@ -2337,8 +2334,6 @@ static int acpi_nfit_init_interleave_set(struct acpi_nfit_desc *acpi_desc,
+ 	}
+ 
+ 	ndr_desc->nd_set = nd_set;
+-	devm_kfree(dev, info);
+-	devm_kfree(dev, info2);
+ 
+ 	return 0;
+ }
 -- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+2.41.0
 
