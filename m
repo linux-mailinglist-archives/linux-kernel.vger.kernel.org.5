@@ -2,123 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C657CC4C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 15:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 327367CC4D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 15:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343672AbjJQNbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 09:31:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49616 "EHLO
+        id S1343660AbjJQNeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 09:34:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234903AbjJQNbi (ORCPT
+        with ESMTP id S1343642AbjJQNeX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 09:31:38 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA9CEED;
-        Tue, 17 Oct 2023 06:31:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=5UMBSoXh6IILW9YyX2/MRn867bDMWY7Lg7IduUgaZaU=; b=hd0vtH8xR45nyajazw33Ze8KlG
-        Jez7dJNjz6tSR3610P0xEel9vJNlk8LlY4MkixjcLe2fLDbH/bMn2LFTVhyUZLdwrH7tHPr+DnUL1
-        Oz0/EY0DblqXTpe+y2szH3+L1tPQv2ROKx6fNkpK9u1n9CpEBwlptcrBqQWhQHYcA79Iwc6vfWE5b
-        vh8gJwZmOOAvGzRQwsrCrTd2HoH2QZVifVtbMvPxJh95JolZKkTf/SNC6rh5q645TAyfhpaBOKl7K
-        xxsIEGYrj0p8vKYRujFoFFPvOuQSjPmwSvev9BDfdghWqyVmoxiM03Bve0OCLeT9Uz2q1S8+yfv7N
-        pYNUifGA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45450)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qskAU-0003JA-2m;
-        Tue, 17 Oct 2023 14:31:30 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qskAU-0006ii-SB; Tue, 17 Oct 2023 14:31:30 +0100
-Date:   Tue, 17 Oct 2023 14:31:30 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Michael Walle <michael@walle.cc>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: mdio-mux: fix C45 access returning -EIO after
- API change
-Message-ID: <ZS6Mskpb6gDpBD3z@shell.armlinux.org.uk>
-References: <20231017113222.3135895-1-vladimir.oltean@nxp.com>
+        Tue, 17 Oct 2023 09:34:23 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 186D2ED
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 06:34:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697549662; x=1729085662;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=0Ff530asQwhzMuaCrXBgBn7hMKrFyVFKwARb+hoQLog=;
+  b=iEYMvrwcdc/1QpGaoIE+denGMn68kZtRP+ORNjCpaVwnxvUU1WziEZnH
+   UsFT5UvcY7HG/XqgscD5aQXo1lgIpKGkoylM6eAEBe77g8eTPKuE1sXbI
+   ya3Duzj/KqTnQNJOk9PbfgsTo3kd1Mr+lp3hlk13PJD4Eyb9hNEL7nwp7
+   lK84hfFS3M0uiKe2eaLd3jmP3q2cYrmWcyYBp33R1KtxBi8Gj0iWNELau
+   Ku3ZtV6N7ikYafNbARoKxdVDX050WA6GLFIwARj9pax8u/eS+hDCPXVWn
+   VOvc9jZXGuQo1fREmsm2OEFYllX8myRV9RpVBrD7+wPj21adqkAVX1hCD
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="449999744"
+X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
+   d="scan'208";a="449999744"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 06:34:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="749697972"
+X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
+   d="scan'208";a="749697972"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 17 Oct 2023 06:34:18 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qskD8-0009e1-1K;
+        Tue, 17 Oct 2023 13:34:14 +0000
+Date:   Tue, 17 Oct 2023 21:33:35 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Frank Li <Frank.Li@nxp.com>, miquel.raynal@bootlin.com,
+        conor.culhane@silvaco.com, alexandre.belloni@bootlin.com,
+        joe@perches.com, linux-i3c@lists.infradead.org,
+        linux-kernel@vger.kernel.org, imx@lists.linux.dev
+Cc:     oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH 1/6] i3c: master: svc: fix race condition in ibi work
+ thread
+Message-ID: <202310172150.4GVdV44X-lkp@intel.com>
+References: <20231016153232.2851095-2-Frank.Li@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231017113222.3135895-1-vladimir.oltean@nxp.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231016153232.2851095-2-Frank.Li@nxp.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 02:32:22PM +0300, Vladimir Oltean wrote:
-> The mii_bus API conversion to read_c45() and write_c45() did not cover
-> the mdio-mux driver before read() and write() were made C22-only.
-> 
-> This broke arch/arm64/boot/dts/freescale/fsl-ls1028a-qds-13bb.dtso.
-> The -EOPNOTSUPP from mdiobus_c45_read() is transformed by
-> get_phy_c45_devs_in_pkg() into -EIO, is further propagated to
-> of_mdiobus_register() and this makes the mdio-mux driver fail to probe
-> the entire child buses, not just the PHYs that cause access errors.
-> 
-> Fix the regression by introducing special c45 read and write accessors
-> to mdio-mux which forward the operation to the parent MDIO bus.
-> 
-> Fixes: db1a63aed89c ("net: phy: Remove fallback to old C45 method")
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> ---
->  drivers/net/mdio/mdio-mux.c | 45 +++++++++++++++++++++++++++++++++++++
->  1 file changed, 45 insertions(+)
-> 
-> diff --git a/drivers/net/mdio/mdio-mux.c b/drivers/net/mdio/mdio-mux.c
-> index a881e3523328..7d322c08c1e9 100644
-> --- a/drivers/net/mdio/mdio-mux.c
-> +++ b/drivers/net/mdio/mdio-mux.c
-> @@ -55,6 +55,27 @@ static int mdio_mux_read(struct mii_bus *bus, int phy_id, int regnum)
->  	return r;
->  }
->  
-> +static int mdio_mux_read_c45(struct mii_bus *bus, int phy_id, int dev_addr,
-> +			     int regnum)
-> +{
-> +	struct mdio_mux_child_bus *cb = bus->priv;
-> +	struct mdio_mux_parent_bus *pb = cb->parent;
-> +	int r;
-> +
-> +	mutex_lock_nested(&pb->mii_bus->mdio_lock, MDIO_MUTEX_MUX);
-> +	r = pb->switch_fn(pb->current_child, cb->bus_number, pb->switch_data);
-> +	if (r)
-> +		goto out;
-> +
-> +	pb->current_child = cb->bus_number;
-> +
-> +	r = pb->mii_bus->read_c45(pb->mii_bus, phy_id, dev_addr, regnum);
+Hi Frank,
 
-What if the parent bus doesn't have read_c45 or write_c45 ?
+kernel test robot noticed the following build warnings:
 
-> @@ -173,6 +216,8 @@ int mdio_mux_init(struct device *dev,
->  		cb->mii_bus->parent = dev;
->  		cb->mii_bus->read = mdio_mux_read;
->  		cb->mii_bus->write = mdio_mux_write;
-> +		cb->mii_bus->read_c45 = mdio_mux_read_c45;
-> +		cb->mii_bus->write_c45 = mdio_mux_write_c45;
+[auto build test WARNING on linus/master]
+[also build test WARNING on v6.6-rc6 next-20231017]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Maybe make these conditional on the parent bus implementing the c45
-read/write ops?
+url:    https://github.com/intel-lab-lkp/linux/commits/Frank-Li/i3c-master-svc-fix-race-condition-in-ibi-work-thread/20231017-151123
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20231016153232.2851095-2-Frank.Li%40nxp.com
+patch subject: [PATCH 1/6] i3c: master: svc: fix race condition in ibi work thread
+config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231017/202310172150.4GVdV44X-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231017/202310172150.4GVdV44X-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310172150.4GVdV44X-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/i3c/master/svc-i3c-master.c:207: warning: Function parameter or member 'lock' not described in 'svc_i3c_master'
+
+
+vim +207 drivers/i3c/master/svc-i3c-master.c
+
+1c5ee2a77b1bacd Clark Wang    2023-05-17  153  
+dd3c52846d5954a Miquel Raynal 2021-01-21  154  /**
+dd3c52846d5954a Miquel Raynal 2021-01-21  155   * struct svc_i3c_master - Silvaco I3C Master structure
+dd3c52846d5954a Miquel Raynal 2021-01-21  156   * @base: I3C master controller
+dd3c52846d5954a Miquel Raynal 2021-01-21  157   * @dev: Corresponding device
+dd3c52846d5954a Miquel Raynal 2021-01-21  158   * @regs: Memory mapping
+5496eac6ad7428f Miquel Raynal 2023-08-17  159   * @saved_regs: Volatile values for PM operations
+dd3c52846d5954a Miquel Raynal 2021-01-21  160   * @free_slots: Bit array of available slots
+dd3c52846d5954a Miquel Raynal 2021-01-21  161   * @addrs: Array containing the dynamic addresses of each attached device
+dd3c52846d5954a Miquel Raynal 2021-01-21  162   * @descs: Array of descriptors, one per attached device
+dd3c52846d5954a Miquel Raynal 2021-01-21  163   * @hj_work: Hot-join work
+dd3c52846d5954a Miquel Raynal 2021-01-21  164   * @ibi_work: IBI work
+dd3c52846d5954a Miquel Raynal 2021-01-21  165   * @irq: Main interrupt
+dd3c52846d5954a Miquel Raynal 2021-01-21  166   * @pclk: System clock
+dd3c52846d5954a Miquel Raynal 2021-01-21  167   * @fclk: Fast clock (bus)
+dd3c52846d5954a Miquel Raynal 2021-01-21  168   * @sclk: Slow clock (other events)
+dd3c52846d5954a Miquel Raynal 2021-01-21  169   * @xferqueue: Transfer queue structure
+dd3c52846d5954a Miquel Raynal 2021-01-21  170   * @xferqueue.list: List member
+dd3c52846d5954a Miquel Raynal 2021-01-21  171   * @xferqueue.cur: Current ongoing transfer
+dd3c52846d5954a Miquel Raynal 2021-01-21  172   * @xferqueue.lock: Queue lock
+dd3c52846d5954a Miquel Raynal 2021-01-21  173   * @ibi: IBI structure
+dd3c52846d5954a Miquel Raynal 2021-01-21  174   * @ibi.num_slots: Number of slots available in @ibi.slots
+dd3c52846d5954a Miquel Raynal 2021-01-21  175   * @ibi.slots: Available IBI slots
+dd3c52846d5954a Miquel Raynal 2021-01-21  176   * @ibi.tbq_slot: To be queued IBI slot
+dd3c52846d5954a Miquel Raynal 2021-01-21  177   * @ibi.lock: IBI lock
+dd3c52846d5954a Miquel Raynal 2021-01-21  178   */
+dd3c52846d5954a Miquel Raynal 2021-01-21  179  struct svc_i3c_master {
+dd3c52846d5954a Miquel Raynal 2021-01-21  180  	struct i3c_master_controller base;
+dd3c52846d5954a Miquel Raynal 2021-01-21  181  	struct device *dev;
+dd3c52846d5954a Miquel Raynal 2021-01-21  182  	void __iomem *regs;
+1c5ee2a77b1bacd Clark Wang    2023-05-17  183  	struct svc_i3c_regs_save saved_regs;
+dd3c52846d5954a Miquel Raynal 2021-01-21  184  	u32 free_slots;
+dd3c52846d5954a Miquel Raynal 2021-01-21  185  	u8 addrs[SVC_I3C_MAX_DEVS];
+dd3c52846d5954a Miquel Raynal 2021-01-21  186  	struct i3c_dev_desc *descs[SVC_I3C_MAX_DEVS];
+dd3c52846d5954a Miquel Raynal 2021-01-21  187  	struct work_struct hj_work;
+dd3c52846d5954a Miquel Raynal 2021-01-21  188  	struct work_struct ibi_work;
+dd3c52846d5954a Miquel Raynal 2021-01-21  189  	int irq;
+dd3c52846d5954a Miquel Raynal 2021-01-21  190  	struct clk *pclk;
+dd3c52846d5954a Miquel Raynal 2021-01-21  191  	struct clk *fclk;
+dd3c52846d5954a Miquel Raynal 2021-01-21  192  	struct clk *sclk;
+dd3c52846d5954a Miquel Raynal 2021-01-21  193  	struct {
+dd3c52846d5954a Miquel Raynal 2021-01-21  194  		struct list_head list;
+dd3c52846d5954a Miquel Raynal 2021-01-21  195  		struct svc_i3c_xfer *cur;
+dd3c52846d5954a Miquel Raynal 2021-01-21  196  		/* Prevent races between transfers */
+dd3c52846d5954a Miquel Raynal 2021-01-21  197  		spinlock_t lock;
+dd3c52846d5954a Miquel Raynal 2021-01-21  198  	} xferqueue;
+dd3c52846d5954a Miquel Raynal 2021-01-21  199  	struct {
+dd3c52846d5954a Miquel Raynal 2021-01-21  200  		unsigned int num_slots;
+dd3c52846d5954a Miquel Raynal 2021-01-21  201  		struct i3c_dev_desc **slots;
+dd3c52846d5954a Miquel Raynal 2021-01-21  202  		struct i3c_ibi_slot *tbq_slot;
+dd3c52846d5954a Miquel Raynal 2021-01-21  203  		/* Prevent races within IBI handlers */
+dd3c52846d5954a Miquel Raynal 2021-01-21  204  		spinlock_t lock;
+dd3c52846d5954a Miquel Raynal 2021-01-21  205  	} ibi;
+f32ae0219a47f74 Frank Li      2023-10-16  206  	struct mutex lock;
+dd3c52846d5954a Miquel Raynal 2021-01-21 @207  };
+dd3c52846d5954a Miquel Raynal 2021-01-21  208  
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
