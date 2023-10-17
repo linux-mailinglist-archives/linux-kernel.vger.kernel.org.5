@@ -2,73 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9807CBCF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F87E7CBCFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343523AbjJQIAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 04:00:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37222 "EHLO
+        id S234730AbjJQIA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 04:00:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232134AbjJQIAF (ORCPT
+        with ESMTP id S234740AbjJQIAW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 04:00:05 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8253C95
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 01:00:02 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-65af7d102b3so35447396d6.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 01:00:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697529601; x=1698134401; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=INrC+5Wie+fprRRUI1JrVXEvROES6Vs47kj5Jp1nB5A=;
-        b=YBVBupnI1M+x5IY28oQvfmr5hTlfm9eJLjWtI7/CGU8IYqotprS6+FNzemy40PU0qO
-         Gu5gQ+poLFNQWsCjpT2jB5i7eBvCdCKXZ01rbUW/mn8/hbThE3rY02Z/g0fXqBouPO8w
-         GtLY+oXN2ww12KMjA2Jlbapt0tDhQ0xksDIGp6LYRIHKR4I3E7dhY+GYghWU2pVPhLGV
-         qGq7AIDq8TjtBUf1V5EgwFG+mGWhUj5sag0a2N/3jbbXe9knRWjE1CiCsyXc7I3pQdV0
-         51T7AbvD/lRn2pWfWRcM+v8R7rJw81ud9YxK1j4I6+lSI/DTw55qhDNNn/CRVJeHlLaq
-         aTIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697529601; x=1698134401;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=INrC+5Wie+fprRRUI1JrVXEvROES6Vs47kj5Jp1nB5A=;
-        b=xJitkZ8QLvTfGJWC2MvGRo9camepjpYuTCmWuNSbLbDSTDX4RepU+FpmdYrRxXlKyr
-         rXw9Bk8LIXmJvPk8Stco4WnGNcEwKGdpPzl1OXZjeHhsLij2IhC4Z2SS2nRUbPWJB0u/
-         6Sq35EHSVB7iKRntpPOMtHepZc83IMztqcmT8tpt0xQ3vtutN8Rdmf+3BW46Zx5IERLz
-         4bu94ua/qj6KhnzSruWTrND1lDHDzTF7mtZS6E5+qKgXwqmdCpfjmdg5VT4116mQCdhv
-         zOGMBlM46fheqvl/UubPxl1Xz3NYVF2QGN/DP4LPyCSH8cP9+Ilbe+EIelUV7j52ySQC
-         6fow==
-X-Gm-Message-State: AOJu0YwpNrSHiW/eg3wv2j2HmWqAPoIqKx1gu45Y+5zGnq4X+TJm/hEj
-        cAPW8/kQOOhxpwSw6viSudjI
-X-Google-Smtp-Source: AGHT+IE+SSVgX68tE3PWjNoFHnaivv1AlGTRaLTi7JSKhCrkTsa6tkt6Z0ukkJd2qvQxBA4h3BqQgg==
-X-Received: by 2002:a05:6214:224d:b0:66d:1d2:dd85 with SMTP id c13-20020a056214224d00b0066d01d2dd85mr2299551qvc.48.1697529601644;
-        Tue, 17 Oct 2023 01:00:01 -0700 (PDT)
-Received: from thinkpad ([117.207.31.199])
-        by smtp.gmail.com with ESMTPSA id f17-20020a056214165100b0065d05c8bb5dsm350794qvw.64.2023.10.17.00.59.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 01:00:01 -0700 (PDT)
-Date:   Tue, 17 Oct 2023 13:29:52 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     lpieralisi@kernel.org, kw@linux.com, bhelgaas@google.com,
-        robh@kernel.org, gustavo.pimentel@synopsys.com,
-        jingoohan1@gmail.com, andersson@kernel.org,
-        konrad.dybcio@linaro.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] PCI: dwc: Add host_post_init() callback
-Message-ID: <20231017075952.GC5274@thinkpad>
-References: <20231010155914.9516-2-manivannan.sadhasivam@linaro.org>
- <20231016205849.GA1225381@bhelgaas>
+        Tue, 17 Oct 2023 04:00:22 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B16B102
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 01:00:21 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A87AC433C7;
+        Tue, 17 Oct 2023 08:00:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697529620;
+        bh=dDKPWob3NTMe7C9SlY1gR19DUsq4sN8SeXQP0UXWyaw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tv8hN+5jlJ0ofhkcuyLjePs3+5j6h6eiQJYCA82U2nTd8vNgQEcUrhJ/e35LA22Ay
+         aiyYXEGCK+GDNB4BN7Gj/hK49XhXmB2ebQJITOd0Rz83VHTgynZlzTaQHy5KsHcgDd
+         dYO4dv1dcQXaiTYw23PgvEoCHMQWpGOmyd7o93nJn49CIkt98rgKnNxVHaW2ZBk+n6
+         reD/irVj5bxCHcmm0CDfxf25qKZgOgQ+gWBhSEMtaDdYik/RU73ytegEKWgbwxpBud
+         Bx4YmIESFh/B6BtaysceZjBDq054CwtYevuveEio/GfQV4lWIKe61g+XK4dIOd7ico
+         jTvlG8mLzdUaQ==
+Date:   Tue, 17 Oct 2023 09:00:15 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Ante Knezic <ante.knezic@helmholz.de>
+Cc:     andrew@lunn.ch, conor+dt@kernel.org, davem@davemloft.net,
+        devicetree@vger.kernel.org, edumazet@google.com,
+        f.fainelli@gmail.com, krzysztof.kozlowski+dt@linaro.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org, marex@denx.de,
+        netdev@vger.kernel.org, olteanv@gmail.com, pabeni@redhat.com,
+        robh+dt@kernel.org, woojung.huh@microchip.com
+Subject: Re: [PATCH net-next 2/2] dt-bindings: net: microchip,ksz: document
+ microchip,rmii-clk-internal
+Message-ID: <20231017-generous-botanical-28436c5ba13a@spud>
+References: <20231012-unicorn-rambling-55dc66b78f2f@spud>
+ <20231016075349.18792-1-ante.knezic@helmholz.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="RTdQAc1dJT5nSWZw"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231016205849.GA1225381@bhelgaas>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+In-Reply-To: <20231016075349.18792-1-ante.knezic@helmholz.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,52 +55,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 03:58:49PM -0500, Bjorn Helgaas wrote:
-> On Tue, Oct 10, 2023 at 09:29:13PM +0530, Manivannan Sadhasivam wrote:
-> > This callback can be used by the platform drivers to do configuration once
-> > all the devices are scanned. Like changing LNKCTL of all downstream devices
-> > to enable ASPM etc...
-> > 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> >  drivers/pci/controller/dwc/pcie-designware-host.c | 3 +++
-> >  drivers/pci/controller/dwc/pcie-designware.h      | 1 +
-> >  2 files changed, 4 insertions(+)
-> > 
-> > diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-> > index a7170fd0e847..7991f0e179b2 100644
-> > --- a/drivers/pci/controller/dwc/pcie-designware-host.c
-> > +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-> > @@ -502,6 +502,9 @@ int dw_pcie_host_init(struct dw_pcie_rp *pp)
-> >  	if (ret)
-> >  		goto err_stop_link;
-> >  
-> > +	if (pp->ops->host_post_init)
-> > +		pp->ops->host_post_init(pp);
-> 
-> I know we talked about this a little bit in the context of enabling
-> ASPM for devices below qcom 1.9.0 controllers at
-> https://lore.kernel.org/r/20231011050058.GC3508@thinkpad
-> 
-> But I didn't realize at the time that this callback adds a fundamental
-> difference between devices present at boot-time (these devices can be
-> affected by this callback) and any devices hot-added later (we never
-> run this callback again, so anything done by .host_post_init() never
-> applies to them).
-> 
-> We merged this for now, and it helps enable ASPM for builtin devices
-> on qcom, but I don't feel good about this from a larger DWC
-> perspective.  If other drivers use this and they support hot-add, I
-> think we're going to have problems.
-> 
 
-If someone is going to add same ASPM code in host_post_init() callback, they
-will most likely aware of the hotplug issue. I see this as an interim solution
-overall and we should fix the PCI core to handle this. But I do not see any
-straightforward way to enable ASPM by default in PCI core as the misbehaving
-devices can pull the system down (atleast in some x86 cases).
+--RTdQAc1dJT5nSWZw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-- Mani
+On Mon, Oct 16, 2023 at 09:53:49AM +0200, Ante Knezic wrote:
+> On Thu, 12 Oct 2023 16:18:09 +0100, Conor Dooley wrote:
+> > On Thu, Oct 12, 2023 at 12:55:56PM +0200, Ante Knezic wrote:
+> > > Add documentation for selecting reference rmii clock on KSZ88X3 devic=
+es
+> > >=20
+> > > Signed-off-by: Ante Knezic <ante.knezic@helmholz.de>
+> > > ---
+> > >  .../devicetree/bindings/net/dsa/microchip,ksz.yaml    | 19 +++++++++=
+++++++++++
+> > >  1 file changed, 19 insertions(+)
+> > >=20
+> > > diff --git a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.=
+yaml b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+> > > index 41014f5c01c4..eaa347b04db1 100644
+> > > --- a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+> > > +++ b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+> > > @@ -72,6 +72,25 @@ properties:
+> > >    interrupts:
+> > >      maxItems: 1
+> > > =20
+> > > +  microchip,rmii-clk-internal:
+> > > +    $ref: /schemas/types.yaml#/definitions/flag
+> > > +    description:
+> > > +      Set if the RMII reference clock is provided internally. Otherw=
+ise
+> > > +      reference clock should be provided externally.
+> >=20
+> > I regret not asking this on the previous iteration - how come you need a
+> > custom property? In the externally provided case would there not be a
+> > clocks property pointing to the RMII reference clock, that would be
+> > absent when provided by the itnernal reference?
 
--- 
-மணிவண்ணன் சதாசிவம்
+> In both cases (external and internal), the KSZ88X3 is actually providing =
+the
+> RMII reference clock.
+> Difference is only will the clock be routed as external
+> copper track (pin REFCLKO -> pin REFCLKI), or will it be routed internall=
+y.
+
+The switch always provides it's own external reference, wut? Why would
+anyone actually bother doing this instead of just using the internal
+reference?
+
+> So, this should not affect the clock relation between the uC and the swit=
+ch
+> device?
+
+> This property has no effect if KSZ88X3 is not providing the reference clo=
+ck.
+
+This appears to contradict with the above, unless I am misunderstanding
+something.
+
+> Maybe I should provide more info in the commit message of both patches as=
+ well?
+
+What I would have expected to see is that when the reference clock is
+provided externally that there would be a clocks property in the DT
+node, pointing at that external clock & when there was not, then
+no property. Likely that ship has already said, as I don't see clocks
+present in the current binding. How does the driver get the frequency of
+the RMII reference clock when an external reference is provided?
+
+--RTdQAc1dJT5nSWZw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZS4/DwAKCRB4tDGHoIJi
+0rFQAP9m8VpRBlP7rWXT1ZHoFPq6+eLOQwYnPTJprqcCty2+fAEA1o0kvyUPI69W
+wXbdny+DrsOyb/DSpvy1L3OvYkdJ/gg=
+=xLsw
+-----END PGP SIGNATURE-----
+
+--RTdQAc1dJT5nSWZw--
