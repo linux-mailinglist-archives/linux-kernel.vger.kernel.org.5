@@ -2,105 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B6D7CC986
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 19:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0FF67CC989
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 19:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343862AbjJQRJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 13:09:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39776 "EHLO
+        id S1343907AbjJQRJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 13:09:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234942AbjJQRJU (ORCPT
+        with ESMTP id S1343863AbjJQRJk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 13:09:20 -0400
-Received: from out-208.mta0.migadu.com (out-208.mta0.migadu.com [IPv6:2001:41d0:1004:224b::d0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F70FD
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 10:09:17 -0700 (PDT)
-Date:   Tue, 17 Oct 2023 17:09:09 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1697562555;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7Rfv7r/GuU3poBoBBegpc3MH7nKblNdFhx9LayDfN/g=;
-        b=TFgn2b52np5IlEuu1uUS0tBRQpxK65WkA4Rmi+nvkk/K2SazzQgS5KeQwEiHqQ4qLjybb1
-        Dr7lvKVLwFmwGHOmJ4Gks+3K03eT7PtCqdqC4B+auUvybaYnVf/F8Ngan61k6vSXRyYqP/
-        9jzXApHjjRRK96UwkrZJfelaWWrcczk=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Oliver Upton <oliver.upton@linux.dev>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Sebastian Ott <sebott@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Shaoqin Huang <shahuang@redhat.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v7 07/12] KVM: arm64: PMU: Set PMCR_EL0.N for vCPU based
- on the associated PMU
-Message-ID: <ZS6_tdkS6GyNlt4l@linux.dev>
-References: <20231009230858.3444834-1-rananta@google.com>
- <20231009230858.3444834-8-rananta@google.com>
- <b4739328-5dba-a3a6-54ef-2db2d34201d8@redhat.com>
- <CAJHc60zpH8Y8h72=jUbshGoqye20FaHRcsb+TFDxkk7rhJAUxQ@mail.gmail.com>
- <ZS2L6uIlUtkltyrF@linux.dev>
- <CAJHc60wvMSHuLuRsZJOn7+r7LxZ661xEkDfqxGHed5Y+95Fxeg@mail.gmail.com>
- <ZS4hGL5RIIuI1KOC@linux.dev>
- <CAJHc60zQb0akx2Opbh3_Q8JShBC_9NFNvtAE+bPNi9QqXUGncA@mail.gmail.com>
+        Tue, 17 Oct 2023 13:09:40 -0400
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A3BB0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 10:09:38 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 147BB240101
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 19:09:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1697562576; bh=rlnHe0oU2ussQlwYxHpMoHyDbTunIDkyFCYAe1fYEf4=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:
+         Content-Transfer-Encoding:From;
+        b=amnelQWDhpzqm4QS6Cc0ixV2zH5qDtADR7lfBvwPcUUtHfohhw0OIXJ35dk9WtMlm
+         NqIUI/cz7tnrTTAn/U7lnhKgCeTN08vVc+6KMkY+BLYWaUcV74ZuaZvV5RBESxV7a1
+         mJ5K93oJc1pSaMVGToHuq0iKeFFiauJ+LGwiKbiFOkX101kmOrCZnsW62eAGnFo/ra
+         TCNrMSVrYwbtpjYTUoovLFzgVtC/6ps1w+bV7vPcKk9iR+YOyI3z2CnkxXnG2itMDt
+         9QWCFerkmN843m8F9rwu016tCK4rPU+mbxbxAXOSy1F5S3dctkcVDrIHUwhOQ7fBvR
+         CmMM10vD5djig==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4S90p52DsNz9rxS;
+        Tue, 17 Oct 2023 19:09:33 +0200 (CEST)
+From:   Mark O'Donovan <shiftee@posteo.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-nvme@lists.infradead.org, sagi@grimberg.me, hch@lst.de,
+        axboe@kernel.dk, kbusch@kernel.org, hare@suse.de,
+        Mark O'Donovan <shiftee@posteo.net>
+Subject: [PATCH v5 0/3] Remove secret-size restrictions for hashes
+Date:   Tue, 17 Oct 2023 17:09:16 +0000
+Message-Id: <20231017170919.30358-1-shiftee@posteo.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJHc60zQb0akx2Opbh3_Q8JShBC_9NFNvtAE+bPNi9QqXUGncA@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 09:58:08AM -0700, Raghavendra Rao Ananta wrote:
-> On Mon, Oct 16, 2023 at 10:52 PM Oliver Upton <oliver.upton@linux.dev> wrote:
-> >
-> > On Mon, Oct 16, 2023 at 02:35:52PM -0700, Raghavendra Rao Ananta wrote:
-> >
-> > [...]
-> >
-> > > > What's the point of doing this in the first place? The implementation of
-> > > > kvm_vcpu_read_pmcr() is populating PMCR_EL0.N using the VM-scoped value.
-> > > >
-> > > I guess originally the change replaced read_sysreg(pmcr_el0) with
-> > > kvm_vcpu_read_pmcr(vcpu) to maintain consistency with others.
-> > > But if you and Sebastian feel that it's an overkill and directly
-> > > getting the value via vcpu->kvm->arch.pmcr_n is more readable, I'm
-> > > happy to make the change.
-> >
-> > No, I'd rather you delete the line where PMCR_EL0.N altogether.
-> > reset_pmcr() tries to initialize the field, but your
-> > kvm_vcpu_read_pmcr() winds up replacing it with pmcr_n.
-> >
-> I didn't get this comment. We still do initialize pmcr, but using the
-> pmcr.n read via kvm_vcpu_read_pmcr() instead of the actual system
-> register.
+This relates to the hash functions used to transform the secret.
+The kernel currently restricts us to using secrets equal in size
+to the transformation hash function they use.
+e.g. 32 byte secrets with the SHA-256(32 byte) hash function.
 
-You have two bits of code trying to do the exact same thing:
+This restriction is not required by the spec and means
+incompatibility with more permissive implementations.
 
- 1) reset_pmcr() initializes __vcpu_sys_reg(vcpu, PMCR_EL0) with the N
-    field set up.
+With these patches the example secret from the spec should now
+be permitted with any of the following:
+DHHC-1:00:ia6zGodOr4SEG0Zzaw398rpY0wqipUWj4jWjUh4HWUz6aQ2n:
+DHHC-1:01:ia6zGodOr4SEG0Zzaw398rpY0wqipUWj4jWjUh4HWUz6aQ2n:
+DHHC-1:02:ia6zGodOr4SEG0Zzaw398rpY0wqipUWj4jWjUh4HWUz6aQ2n:
+DHHC-1:03:ia6zGodOr4SEG0Zzaw398rpY0wqipUWj4jWjUh4HWUz6aQ2n:
 
- 2) kvm_vcpu_read_pmcr() takes whatever is in __vcpu_sys_reg(vcpu, PMCR_EL0),
-    *masks out* the N field and re-initializes it with vcpu->kvm->arch.pmcr_n
+Note: Secrets are still restricted to 32,48 or 64 bits.
 
-Why do you need (1) if you do (2)?
+v1:
+- Initial submission
+
+v2:
+- Added transformed_len as member of struct nvme_dhchap_key
+
+v3:
+- Return a struct nvme_dhchap_key from nvme_auth_transform_key()
+
+v4:
+- added helper to caclulate key struct size using struct_size()
+- Break up lines which were too long
+- Replace ternary operator with if
+- Add missing ERR_CAST()
+
+v5:
+- Removed newly redundant check found by kernel test robot
+
+Mark O'Donovan (3):
+  nvme-auth: alloc nvme_dhchap_key as single buffer
+  nvme-auth: use transformed key size to create resp
+  nvme-auth: allow mixing of secret and hash lengths
+
+ drivers/nvme/common/auth.c | 68 ++++++++++++++++++++++----------------
+ drivers/nvme/host/auth.c   | 30 ++++++++---------
+ drivers/nvme/target/auth.c | 31 +++++++++--------
+ include/linux/nvme-auth.h  |  7 ++--
+ 4 files changed, 76 insertions(+), 60 deletions(-)
 
 -- 
-Thanks,
-Oliver
+2.39.2
+
