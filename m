@@ -2,215 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A52C7CC613
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1886D7CC6EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235032AbjJQOl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 10:41:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58128 "EHLO
+        id S1344127AbjJQPBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 11:01:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234982AbjJQOlZ (ORCPT
+        with ESMTP id S1344080AbjJQPBS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 10:41:25 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E2CF5;
-        Tue, 17 Oct 2023 07:41:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697553683; x=1729089683;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=uAWEdZORcvoQWYRNYQyzCAuW6fB0nrVcw7xIANF8i68=;
-  b=UPBVeoLlTnpYoMrLZKkIz1xj2bRUj7J5AtRJUnFjCrB9Yn0NVyI6CJ7p
-   4b5an1EJcFYeKoqHD/kpaXxk6r5RXLRbAqBqE1ofX6fTPlSDyPhKvqgSz
-   ELtj4vhlf+8FeqUuBS3k9STBsOht3Hx/ETQNTa3HzCyfZ5N8LP5yaRb9Y
-   ANLAWiSMyBk9/vL80FFtJtLenEwxL5Icd8xi7h+61yQAxm9d0Xz2ughpD
-   h2kLCZaQObUlg+nkPvr13/3uXOBs/0TktsO7G+RgyRSEF0fsONPNqZ2hA
-   3WpTVhM6TemtYuaLS9/83whPgHR9cU1oPpCGBpZcAiBfx2OQtA//8WIzr
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="366059106"
-X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
-   d="scan'208";a="366059106"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 07:41:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="826472217"
-X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
-   d="scan'208";a="826472217"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 17 Oct 2023 07:41:23 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Tue, 17 Oct 2023 07:41:22 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Tue, 17 Oct 2023 07:41:22 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
- edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Tue, 17 Oct 2023 07:41:22 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P3jpMGyiYfDdf3F/WfjjkEmP9ccnCWYThLa2PUpMuWcAC+MaJJM6C4PRFNqZZPyOa+raKmdoYBXuGuU+xtwDXyv16Z9o9OlSxvgtsGrfyzaseBNVTF94qvqEFTit7FcsBCiZfDr5YTGQ6wR/vnZnRSJCvi8gaCHWXnEfxUwoRU5wo6d8EFeMgFz/bToEN3AgPvEJ3LgFTEEj2EuILRLWwvRtsnRjb8knhaXcb93wco0LAyAf/2Qn4vaQ8/XrShPwsmzwjKrswOPoeJhKjXE2/EpAHE758u0ZRwrr9lIjt/17A4XSTe1mm7g0/RTTz40GiyK9O8x1mzCSzJq0jTrKHQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=awZ9QIJZ+YOphMmLZQFCWFOQv8c6m842DRY4oXTCE9A=;
- b=cU+28Sa427A2zqmJqNNR5zr2yqGou69GSY54nwyEcR/MfoC8nkO9j550g7Tq0Hq+LPpIeBXm7nzcz9IEU+ZsmMA73Lf4C/xqnPFmwC3HdYycLAY9g+53yz0y17iFboVxHYC8AOxKsRaOQH6l/WtKEoXklEj4j/EAwNPaFUc0v7qIkAza6IjBUOF/gUDJRCd8haSORguHjO/BK7TeoVrREQY6hkhub99I8YUMA+Lqp8Qagla3UciSdHvhna9SFbhLfssZS1eLaq4ehXxGWBb1b50ZpSbNXpqpbLbOxYz3vB9yXqFeIUCjpIL+YSEeP15UxPYKXd0wTolBodRat74wkQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MN2PR11MB3728.namprd11.prod.outlook.com (2603:10b6:208:f4::21)
- by DS7PR11MB7836.namprd11.prod.outlook.com (2603:10b6:8:e3::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36; Tue, 17 Oct
- 2023 14:41:15 +0000
-Received: from MN2PR11MB3728.namprd11.prod.outlook.com
- ([fe80::4286:c28:4465:752]) by MN2PR11MB3728.namprd11.prod.outlook.com
- ([fe80::4286:c28:4465:752%3]) with mapi id 15.20.6886.034; Tue, 17 Oct 2023
- 14:41:14 +0000
-Message-ID: <5398da4c-5286-4e1b-924c-6df91f932427@intel.com>
-Date:   Tue, 17 Oct 2023 23:00:01 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] x86/mce: Set PG_hwpoison page flag to avoid the
- capture kernel panic
-Content-Language: en-US
-To:     Borislav Petkov <bp@alien8.de>, "Luck, Tony" <tony.luck@intel.com>
-CC:     "x86@kernel.org" <x86@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "patches@lists.linux.dev" <patches@lists.linux.dev>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "naoya.horiguchi@nec.com" <naoya.horiguchi@nec.com>
-References: <20231014051754.3759099-1-zhiquan1.li@intel.com>
- <SJ1PR11MB6083A23BB89F4EE0F44B2794FCD1A@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <233e17ac-0ae5-4392-a5e4-ab811a155805@intel.com>
- <20231016091143.GCZSz+T1xFf5tCFi2w@fat_crate.local>
- <759ccb97-cf5a-4787-b699-27551d5d2865@intel.com>
- <SJ1PR11MB60834039F485FEBC8031398AFCD6A@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <20231017111817.GAZS5teT4rFkXVD2KA@fat_crate.local>
-From:   Zhiquan Li <zhiquan1.li@intel.com>
-In-Reply-To: <20231017111817.GAZS5teT4rFkXVD2KA@fat_crate.local>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SI2PR02CA0006.apcprd02.prod.outlook.com
- (2603:1096:4:194::8) To MN2PR11MB3728.namprd11.prod.outlook.com
- (2603:10b6:208:f4::21)
+        Tue, 17 Oct 2023 11:01:18 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5534710F
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 08:01:15 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-27d4372322aso2452506a91.3
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 08:01:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1697554875; x=1698159675; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Uq+1vYvsKUhR+01sCVILJR2at0sMDRh6S+TkivbpdsI=;
+        b=dxLh6l711+sNW2qDv26FbbOQHlZp88JFydocY+9vB/zHc7axS9VqF3aaJlqpiUtM/y
+         /5CEESAdYKuVH3QO1t8yEm8OnUhwi9KXBtvKsaDCuYmTAEnLo7nkx+tBOlq9fmre+HyL
+         SBJkUFw5oUB2PEEdvAgfW4seoEPGmzrHuEzg4RkGtOw8fLoYGZtq9HHVfcSG//zgm5/l
+         DDsr3z/vES/YP31SvSNyFGzcu5+swsXbURU8u0T1x5w32DCY8kb8pAXWVJV2jBxUsjHS
+         S7XF7XhThEi+hKswyH76Op103tVD2F8lifT1IYDeSB3lb5tfMIPiP0mGtP9m/uQt1cdd
+         RmDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697554875; x=1698159675;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Uq+1vYvsKUhR+01sCVILJR2at0sMDRh6S+TkivbpdsI=;
+        b=QVx0vqvZ5Qdrj4ioHNw3+a7cGjmB3Eh6Clrg1H4g5W5DzscTPIOexz2iZWvAb6SFq1
+         9xPAqt+d0MFAb6Sve1Fl7gPq7E0902DJfKwA5REaw/cRadj1TKCItGak5G1vHjOndQTk
+         eni/2Kt8o6sz2pSgFqN11Iss+rYuf3T+gIctbguM5TRuX0bsHP+OptROK5EDCeVIQDXM
+         wecDVopdLYALZEDyseDQgTqViCUJ7J/QpyRWuPzAw/4A5dxolLXTFxGoOWTdm9OVpYkS
+         h9l+Q67h66q81zdU6+8Z/W9shtxQSeg7ZzCvZNCJ6+XGSuSlx7kdTiI8BdvtFKPKN16l
+         d4YQ==
+X-Gm-Message-State: AOJu0YxXNZPoQMyussIVsTTfq437Ca4fNQgQjcBUs4Grs4/yGL1fDmpi
+        a1uGYccjATa6ap6AK4VgdvqV0e0zZycR5F7M5fS//g==
+X-Google-Smtp-Source: AGHT+IH03vw4ZiVzpHXevOUKz9nspjwM2TxoPoMAPYygoFKdH4AW2A0kLpfWOHwh5gb6r8ionu93yvT0hU4mt+YeSIA=
+X-Received: by 2002:a17:90a:ac0a:b0:27d:3968:8366 with SMTP id
+ o10-20020a17090aac0a00b0027d39688366mr2439909pjq.8.1697554874479; Tue, 17 Oct
+ 2023 08:01:14 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN2PR11MB3728:EE_|DS7PR11MB7836:EE_
-X-MS-Office365-Filtering-Correlation-Id: e247e908-f88e-4b13-6d05-08dbcf1f1d5e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZM7q6XqGuqIBROEwieeXAZRfaWuLfKWDuqnotDVMC0npY6z/geuGJJ8OQMbXPcAxOSWHS2e+WIawJdWVpAWnAVLe+M9vUi+Z7S+4+0AsIU4wzPRwB/jTEt699qNRNX4j00c2dfU44/P6GEu9uMMXrmH1l9HaO3WlIhvKekQtfFWsXSLm+SvanWazf9TVui5IBTeeYq5ItKjpGp3fpoiX9TGE00xQpNu5SfnDHaryfPVOJYLXZAqIv0OVQ3Yl/4OA1JLnuVrqutKyMg5YKZZ5dckBAVOEKAK91U8khaONhMUPsx5nRvBWcIcLwq6b8wKSOG4bADFUOlP5nKvK07h/G0JRsct8hJrZZl9FPIe45T7VE0/SRT+PpQPFcrovQVeVylct0BP8VAUXprVZuA90BQ+6zS/9EicnzB+RJOX5f4prAXlCv4vbIlB+dIcrlczE6wsxfhAAOoHkrvUs55fLJayT2TFPcAL4vxwe3Uu8pkYf7NYPcU+NVRUGknqtc6OiGZI77BkIk9YIUpTRNl1WEbzynddeAMZUpCdyaet9OGQPURdVAmJdnGOuMJZhkro+sCsVB7l/XyK++7DIM7amjl1VRcob2jWkb5b6SbAxy8EzBQf5yD0JoAUnh3ThiqW8F55SiYcnOWbKRHEc2zX4uw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR11MB3728.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(396003)(376002)(136003)(39860400002)(230922051799003)(451199024)(1800799009)(64100799003)(186009)(8676002)(8936002)(83380400001)(316002)(4326008)(66946007)(66556008)(110136005)(478600001)(6506007)(6666004)(6486002)(66476007)(26005)(54906003)(53546011)(6512007)(6636002)(2616005)(2906002)(5660300002)(86362001)(31696002)(36756003)(38100700002)(82960400001)(41300700001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U2c2ZG44U1JNSWYyZkxPUW5TWXVwVkJMWm9BMWd5TmwxM3Y5c3R5b0pRVUdP?=
- =?utf-8?B?a3JKMTNrY2Nma2kxZk1WWXRWazVuQkNQQ0M0UDJnSUo5M3AwclhWcFJwRkcx?=
- =?utf-8?B?R1p0UjBtTlA5cHRUOEV2bTluUmNKYzRmZkhFdFRzaXY2a0kzWGpuN2liQmt0?=
- =?utf-8?B?OWc2eDBMRUhqUjFiL01qS0FOaUd6Mk01NG1RM01BcWdWTGw1OWlYVUllN3l0?=
- =?utf-8?B?SE11eXJwYSs5WGhBRWNpOUh2V0thVXdpUzhmditYbnI0c1hER1RmZEx6aDRo?=
- =?utf-8?B?dGdTYXlxak9mcjBFQUdZbmtHSHFTd3hJK0ZrdTRvdnFoZ0xsTlFlSjZ0YmVV?=
- =?utf-8?B?UkVweWRDeHRpdkZ5S2Q0SklNUUE2WjEvVXdZOFBaSy9YN2oyRVpkbWxFWjJI?=
- =?utf-8?B?YkJYUUtSNEZvS0ZTMkdTb3o3UGlicVBmK3AxRUJVK2ZwNTF6SXJiMGgzZzRE?=
- =?utf-8?B?d3IyWjN1ZDRlQkNPTFpFbXo2V0pUWG1Fby9NWUMwNTN3bWFVUlpkY2hxMlhV?=
- =?utf-8?B?LzJoTlpYY2lwZTM3dEJDemRDdVJSYUZvUUxScnlaekJqdDMxWXRqUGt3b1Nw?=
- =?utf-8?B?MWdPS0pEaktMZkxTV2E3bTR6bEVQZUU5WUs1eXlwc1JUcmNhU0gvNzlDSmhI?=
- =?utf-8?B?WC9SUTlhT09uMmtqcFI3UkpaRlRXMHFaRkNMbmNQUzN2SVh4RkcrU1BTRmpV?=
- =?utf-8?B?U256YUNUTVNuUnpoYjJxWHgrbjE3NHpKaUJOZlY5RVlYaHcvWHZHd3p5LzRY?=
- =?utf-8?B?Nzdja2JFQzdmWEJ1NTNwOGR0SUV6dmRsVkxrL1hkdWJycVBHbHZ4V01KL0ZD?=
- =?utf-8?B?UjFlQ0hha0VjWlFyZHRLVmdHRkVHWEZxbzZVNFhaaUJmYUsyak9mdmFqSWZs?=
- =?utf-8?B?QTZ2VHBLM01pVDZBcGwzbjdZSVgwUTB0MFE2Ulo4dGFEcFIxdHNvanlWTXJk?=
- =?utf-8?B?emNNQ2R3UGtXaFl4UWdPQ3RiSnh0S2lZUUV1N0o0SmxuNWw4TTBCRVZjbEJm?=
- =?utf-8?B?MEE5cGxXeTNESHJ3bWRLQjdkME1YUXpuYzlXVmtZREVDdk1GbURUeHBTRG8w?=
- =?utf-8?B?b0JlY3pScnVWNWIvMlRReXpqbkZuMzEzRkFYaTkrYjRrRlhKUjdtSmQyWWZm?=
- =?utf-8?B?WHpHano1cmZud1oxdS96TE52Z3pnUDVPNjlCYk1QbUFmYUo2ZXpITU8vYnpp?=
- =?utf-8?B?SzgyYmNZTStnZDBTVGtJWVUwbDlGK21PM0R4NEU0eVZPcHIzUmR0c1dMMDV4?=
- =?utf-8?B?L1NzOHJRcTAyVkpEakMxZUJEa1ZWVFV2aVZMRmlFOXJKa0toZU5WZkJHQWRE?=
- =?utf-8?B?N2lQQWYrenBRSWd0LzM2TzV0Z04wN0ZXVEU0M0lFTzc4UHVZNnJlSlZSTlZy?=
- =?utf-8?B?NXpzMndVWjFQT3M5UklSdW53L2JtZ0hINzk0VHMyVHpmN0FQOW82Y0xMNWIy?=
- =?utf-8?B?cy9zdUpDOXJubHRKbzZlV21YS2MrcGMyeW5VdXpWakR4dG9aL3Qrb0ZvR2xo?=
- =?utf-8?B?ODFrMFBVdkVOeVRUMGVOV0ZmM2xSeTNob1FDM3kvU2d0dnRyMFdDZklXZkg3?=
- =?utf-8?B?VHJHdFh5UEJSdzRuaEx2RU82S2JqZW5IeHBLSHNQLzJTaDlzWWFPakw4WHI4?=
- =?utf-8?B?UW5Zekt3R21zQnVoQWs0SXhEa0d2bStSSVZmTUdPeXRWWStOQ05QTjFCTE91?=
- =?utf-8?B?Y3ZKdmFUNHFKUEdRZVducUNIY3J2Z1A2djUxaFhnbE9PWmVORzZvTDVQT2Rq?=
- =?utf-8?B?KzBZcnYrellmaW5TbHNtektDcU8wK0tFUkhzRmJsVFRYamZFU29ucWYrVkFB?=
- =?utf-8?B?empXdG5lMXFCcUZ5Y1B5YWpxeEpCTW84YVBUWC9nUEU3RHdCck1NR1BKcHVI?=
- =?utf-8?B?NnpwU2kzZkw0WFNaWjQzRWUxbnlLU3pLOG1pWXU4L0Y3K2o0OUpEVTdGRDJv?=
- =?utf-8?B?ZmxiQWpVN2IvZU94Y2NubWppTnVGNWY4UEZTenFqU3hCaldhbFN1S0dXUlpk?=
- =?utf-8?B?T0IwalNqQ2k5c0NpSHV6OExibUpBYTN5QXREcjA1dVc2UlJnZFVKclQwVkdR?=
- =?utf-8?B?L0RZdkhTRXJYQXNiaVRXMCtGMFAxQWszVVNndnUzL2JNNW81LzNiVEp0Yjgr?=
- =?utf-8?Q?oZSHEmJHhuEh1zc25RhLl0qmb?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e247e908-f88e-4b13-6d05-08dbcf1f1d5e
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR11MB3728.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Oct 2023 14:41:14.8247
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0tEu+Youy+bvklPDBY6BHLQ+Tc1J1yL0n114sJUAvjkBQX/tT9dZLWhmqNADxUFTBuGtCLVb7YPMOKRNClP98A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB7836
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231005075508.1656071-1-naresh.solanki@9elements.com> <a1bae0c4-0453-4f17-808f-859b684ae525@roeck-us.net>
+In-Reply-To: <a1bae0c4-0453-4f17-808f-859b684ae525@roeck-us.net>
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+Date:   Tue, 17 Oct 2023 20:31:05 +0530
+Message-ID: <CABqG17jAgjzT3M2O7OWuc_eMzRBVwnUhfBX7jCiVyineRsKaEA@mail.gmail.com>
+Subject: Re: [PATCH v5] regulator (max5970): Add hwmon support
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     broonie@kernel.org, zev@bewilderbeest.net,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/17 19:18, Borislav Petkov wrote:
-> ... for the simple reason that the kernel cannot allow itself to do any
-> unnecessary work but panic immediately so that it can stop the
-> propagation of bad data.
-> 
-> Now, it's a whole different story whether that's the right thing to do
-> and whether the data has already propagated so that the panic is moot.
-> 
-> The whole point I'm trying to make is that the machine panics because
-> the error severity dictates it to do so. And there's no opportunity to
-> queue recovery work because it simply cannot in that case. So the commit
-> message should simply state that we're marking the page as poison for
-> the kexec'ed kernel's sake and not because of anything else.
-> 
+Hi,
 
-Wonderful!  Thanks for your detail explanation, Boris!
+On Wed, 11 Oct 2023 at 19:50, Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On Thu, Oct 05, 2023 at 09:55:07AM +0200, Naresh Solanki wrote:
+> > Utilize the integrated 10-bit ADC in Max5970/Max5978 to enable voltage
+> > and current monitoring. This feature is seamlessly integrated through
+> > the hwmon subsystem.
+> >
+> > Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
+> > ---
+> > Changes in V5:
+> > - Simplify memory allocation for rdevs
+> > Changes in V4:
+> > - Use IS_REACHABLE
+> > - Use rdevs array for hwmon ops.
+> > - Remove duplicate i2c_set_clientdata
+>
+> I just noticed this one. Not my decision how to handle this,
+> but the change is really unrelated to this patch.
+Sure. Will make separate change for it.
+>
+> > Changes in V3:
+> > - Update signed-off
+> > - Add break
+> > - Update hwmon dev register name to max5970
+> > - Remove changes in Kconfig.
+> > Changes in V2:
+> > - default case added for switch statement
+> > - Add dependency on HWMON
+> > ---
+> >  drivers/regulator/max5970-regulator.c | 141 +++++++++++++++++++++++++-
+> >  1 file changed, 139 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/regulator/max5970-regulator.c b/drivers/regulator/max5970-regulator.c
+> > index b56a174cde3d..71b4a543339a 100644
+> > --- a/drivers/regulator/max5970-regulator.c
+> > +++ b/drivers/regulator/max5970-regulator.c
+> > @@ -10,6 +10,7 @@
+> >  #include <linux/bitops.h>
+> >  #include <linux/device.h>
+> >  #include <linux/err.h>
+> > +#include <linux/hwmon.h>
+> >  #include <linux/module.h>
+> >  #include <linux/io.h>
+> >  #include <linux/of.h>
+> > @@ -32,6 +33,128 @@ enum max597x_regulator_id {
+> >       MAX597X_SW1,
+> >  };
+> >
+> > +static int max5970_read_adc(struct regmap *regmap, int reg, long *val)
+> > +{
+> > +     u8 reg_data[2];
+> > +     int ret;
+> > +
+> > +     ret = regmap_bulk_read(regmap, reg, &reg_data[0], 2);
+> > +     if (ret < 0)
+> > +             return ret;
+> > +
+> > +     *val = (reg_data[0] << 2) | (reg_data[1] & 3);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static int max5970_read(struct device *dev, enum hwmon_sensor_types type,
+> > +                     u32 attr, int channel, long *val)
+> > +{
+> > +     struct regulator_dev **rdevs = dev_get_drvdata(dev);
+> > +     struct max5970_regulator *ddata = rdev_get_drvdata(rdevs[channel]);
+> > +     struct regmap *regmap = ddata->regmap;
+> > +     int ret;
+> > +
+> > +     switch (type) {
+> > +     case hwmon_curr:
+> > +             switch (attr) {
+> > +             case hwmon_curr_input:
+> > +                     ret = max5970_read_adc(regmap, MAX5970_REG_CURRENT_H(channel), val);
+>
+>                         if (ret < 0)
+>                                 return ret;
+Ack
+>
+> > +                     /*
+> > +                      * Calculate current from ADC value, IRNG range & shunt resistor value.
+> > +                      * ddata->irng holds the voltage corresponding to the maximum value the
+> > +                      * 10-bit ADC can measure.
+> > +                      * To obtain the output, multiply the ADC value by the IRNG range (in
+> > +                      * millivolts) and then divide it by the maximum value of the 10-bit ADC.
+> > +                      */
+> > +                     *val = (*val * ddata->irng) >> 10;
+> > +                     /* Convert the voltage meansurement across shunt resistor to current */
+> > +                     *val = (*val * 1000) / ddata->shunt_micro_ohms;
+> > +                     return ret;
+>
+>                         return 0;
+Ack
+>
+> > +             default:
+> > +                     return -EOPNOTSUPP;
+> > +             }
+> > +
+> > +     case hwmon_in:
+> > +             switch (attr) {
+> > +             case hwmon_in_input:
+> > +                     ret = max5970_read_adc(regmap, MAX5970_REG_VOLTAGE_H(channel), val);
+>                         if (ret < 0)
+>                                 return ret;
+>
+Ack
+> > +                     /*
+> > +                      * Calculate voltage from ADC value and MON range.
+> > +                      * ddata->mon_rng holds the voltage corresponding to the maximum value the
+> > +                      * 10-bit ADC can measure.
+> > +                      * To obtain the output, multiply the ADC value by the MON range (in
+> > +                      * microvolts) and then divide it by the maximum value of the 10-bit ADC.
+> > +                      */
+> > +                     *val = mul_u64_u32_shr(*val, ddata->mon_rng, 10);
+> > +                     /* uV to mV */
+> > +                     *val = *val / 1000;
+> > +                     return ret;
+>
+>                         return 0;
+>
+Ack
+> > +             default:
+> > +                     return -EOPNOTSUPP;
+> > +             }
+> > +     default:
+> > +             return -EOPNOTSUPP;
+> > +     }
+> > +}
+> > +
+> > +static umode_t max5970_is_visible(const void *data,
+> > +                               enum hwmon_sensor_types type,
+> > +                               u32 attr, int channel)
+> > +{
+> > +     struct regulator_dev **rdevs = (struct regulator_dev **)data;
+> > +     struct max5970_regulator *ddata;
+> > +
+> > +     if (channel >= MAX5970_NUM_SWITCHES || !rdevs[channel])
+> > +             return 0;
+> > +
+> > +     ddata = rdev_get_drvdata(rdevs[channel]);
+> > +
+> > +     if (!ddata || channel >= ddata->num_switches)
+>
+> How would ddata ever be NULL ? I don't see that check
+> elsewhere in the driver.
+>
+Will remove the NULL check.
 
-I think I got the point why you emphasized "can't make the kernel
-survive" before.  In such scenario the consideration for recovery
-doesn’t make sense at all, even thought there is opportunity it
-shouldn’t do that, the only choice is panic ASAP.
+> > +             return 0;
+> > +
+> > +     switch (type) {
+> > +     case hwmon_in:
+> > +             switch (attr) {
+> > +             case hwmon_in_input:
+> > +                     return 0444;
+> > +             default:
+> > +                     break;
+> > +             }
+> > +             break;
+> > +     case hwmon_curr:
+> > +             switch (attr) {
+> > +             case hwmon_curr_input:
+> > +                     /* Current measurement requires knowledge of the shunt resistor value. */
+> > +                     if (ddata->shunt_micro_ohms)
+> > +                             return 0444;
+>
+> The common approach in hwmon drivers is to define a default
+> (typically 1 mOhm) if the value is not set, to let the user
+> configure it from userspace with the sensors configuration file.
+>
+> Checking ... Never mind. I guess the problem here is that while the
+> shunt-resistor-micro-ohms property is mandatory, the dt author can
+> explicitly configure a shunt resistor value of 0 and that is accepted
+> by the rest of the code. I am not sure if that makes sense, but ...
+> With this in mind, keep as is, but please add a note explaining that
+> this can happen.
+Ack
 
-
->> If kexec is enabled, check for memory errors and mark the
->> page as poisoned so that the kexec'd kernel can avoid accessing
->> the page.
-> Yap, yours makes sense.
-
-Tony, your commit message made me realize how verbose my commit message
-is. May I simplify the whole commit message as following for next version?
-
----start---
-Memory errors don't happen very often, especially the severity is fatal.
- However, in large-scale scenarios, such as data centers, it might still
-happen.  When there is a fatal machine check Linux calls mce_panic()
-without checking to see if bad data at some memory address
-was reported in the machine check banks.
-
-If kexec is enabled, check for memory errors and mark the page as
-poisoned so that the kexec'ed kernel can avoid accessing the page.
----end---
-
-It already covers the scenario, root cause and solution, and focuses on
-kernel.  No need to talk something else.
-
-Thanks to both of you for great insights.
-
-Best Regards,
-Zhiquan
+Regards,
+Naresh
+>
+> > +                     break;
+> > +             default:
+> > +                     break;
+> > +             }
+> > +             break;
+> > +     default:
+> > +             break;
+> > +     }
+> > +     return 0;
+> > +}
+> > +
+> > +static const struct hwmon_ops max5970_hwmon_ops = {
+> > +     .is_visible = max5970_is_visible,
+> > +     .read = max5970_read,
+> > +};
+> > +
+> > +static const struct hwmon_channel_info *max5970_info[] = {
+> > +     HWMON_CHANNEL_INFO(in, HWMON_I_INPUT, HWMON_I_INPUT),
+> > +     HWMON_CHANNEL_INFO(curr, HWMON_C_INPUT, HWMON_C_INPUT),
+> > +     NULL
+> > +};
+> > +
+> > +static const struct hwmon_chip_info max5970_chip_info = {
+> > +     .ops = &max5970_hwmon_ops,
+> > +     .info = max5970_info,
+> > +};
+> > +
+> >  static int max597x_uvp_ovp_check_mode(struct regulator_dev *rdev, int severity)
+> >  {
+> >       int ret, reg;
+> > @@ -431,7 +554,8 @@ static int max597x_regulator_probe(struct platform_device *pdev)
+> >       struct i2c_client *i2c = to_i2c_client(pdev->dev.parent);
+> >       struct regulator_config config = { };
+> >       struct regulator_dev *rdev;
+> > -     struct regulator_dev *rdevs[MAX5970_NUM_SWITCHES];
+> > +     struct regulator_dev **rdevs = NULL;
+> > +     struct device *hwmon_dev;
+> >       int num_switches;
+> >       int ret, i;
+> >
+> > @@ -442,6 +566,11 @@ static int max597x_regulator_probe(struct platform_device *pdev)
+> >       if (!max597x)
+> >               return -ENOMEM;
+> >
+> > +     rdevs = devm_kcalloc(&i2c->dev, MAX5970_NUM_SWITCHES, sizeof(struct regulator_dev *),
+> > +                          GFP_KERNEL);
+> > +     if (!rdevs)
+> > +             return -ENOMEM;
+> > +
+> >       i2c_set_clientdata(i2c, max597x);
+> >
+> >       if (of_device_is_compatible(i2c->dev.of_node, "maxim,max5978"))
+> > @@ -451,7 +580,6 @@ static int max597x_regulator_probe(struct platform_device *pdev)
+> >       else
+> >               return -ENODEV;
+> >
+> > -     i2c_set_clientdata(i2c, max597x);
+> >       num_switches = max597x->num_switches;
+> >
+> >       for (i = 0; i < num_switches; i++) {
+> > @@ -485,6 +613,15 @@ static int max597x_regulator_probe(struct platform_device *pdev)
+> >               max597x->shunt_micro_ohms[i] = data->shunt_micro_ohms;
+> >       }
+> >
+> > +     if (IS_REACHABLE(CONFIG_HWMON)) {
+> > +             hwmon_dev = devm_hwmon_device_register_with_info(&i2c->dev, "max5970", rdevs,
+> > +                                                              &max5970_chip_info, NULL);
+> > +             if (IS_ERR(hwmon_dev)) {
+> > +                     return dev_err_probe(&i2c->dev, PTR_ERR(hwmon_dev),
+> > +                                          "Unable to register hwmon device\n");
+> > +             }
+> > +     }
+> > +
+> >       if (i2c->irq) {
+> >               ret =
+> >                   max597x_setup_irq(&i2c->dev, i2c->irq, rdevs, num_switches,
+> >
+> > base-commit: f9a1d31874c383f58bb4f89bfe79b764682cd026
+> > --
+> > 2.41.0
+> >
