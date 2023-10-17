@@ -2,70 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C030B7CC204
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 13:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 244257CC207
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 13:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234734AbjJQLu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 07:50:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58444 "EHLO
+        id S234746AbjJQLvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 07:51:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233670AbjJQLuz (ORCPT
+        with ESMTP id S233761AbjJQLvo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 07:50:55 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A72ADF2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 04:50:53 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99c3c8adb27so880276366b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 04:50:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=futuring-girl-com.20230601.gappssmtp.com; s=20230601; t=1697543452; x=1698148252; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gWNFjq7J1b1bH2lphfT1Fu13xafbJk+ueucEMZRdQUY=;
-        b=mmNv0G+LbrxkSsqLPSB85jrwi4vzk2ia34tK1wbC+UxWMipX+BhZAkqKTytY66/Tjs
-         kvG0HW2vrDTFvqgDTjVYetwTq7rKmitPHG+ylD41doVfqRBQ7pgIORyUM69l2EYWlKS/
-         jjE/jCoimDE1InQ9IRC+6SBE1G1gmVse4/3gCVJjW85abpIGULPTR4xCdlT1QYHeRJyo
-         OIsFX9ENUDCKoMHtuEHhHUYJTJFy3P3bbShNkU+hS+dXyA6e96WsTvHsVF/odIKw7Vr/
-         /rmXiyT4p3Eh4Bi6RK/Ymmp7VaT5TvSdW2TI1RQHZKs4CgdcvHhgMdJPtylB5JBIaGKJ
-         QxWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697543452; x=1698148252;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gWNFjq7J1b1bH2lphfT1Fu13xafbJk+ueucEMZRdQUY=;
-        b=Z0RPvgOjhy5HWwX26HoapFv4wzIE2Lz5GRwqGMdBLMUYttSdxkoPCZ59coZOSi1umI
-         xuxyHnNgIn4IszWcGaZylsNCKME+WFtywlWj2TTR4XJNjgg90YZsZvZ4s2CyvpOhqfbI
-         WYbI9K4cIKkC8+r2l8d+cZuBgQx49ZGdBlB5pLY8zgrVd9rZyuWksqahXEmaOuXCAb9k
-         UnGYmqxhnLJBGtwu3UAVV98wmJBMezXwDgL3B4UtKQj1Gp07TJRkNDWgDajkigd0CY7m
-         6HisRTuYW08DO0HmWyGqL7zTVe3g52tWWwx+6XSqmXvCE7pupXVyNS5Rg1v19EhwgGGe
-         /48w==
-X-Gm-Message-State: AOJu0YwnLS/knT2S1ewU9Vz21oP/xqZCxNUKk2WLuhJDnyOTkQC6twzp
-        62ntvWuY8364JiLXA0lc5KzqX7jnJ7YzyUKlFXpCM7LLxifu2Oe4i+4=
-X-Google-Smtp-Source: AGHT+IFg+ZLZEHu0kdf0bELio3Q7hx39EsGlyjfnPCLtBOZvQ7d8GQpkLSwxOk+q4t4K6UNt+The68B2G7eTkvc71yI=
-X-Received: by 2002:a17:906:da87:b0:9be:6bf0:2f95 with SMTP id
- xh7-20020a170906da8700b009be6bf02f95mr1582393ejb.20.1697543451569; Tue, 17
- Oct 2023 04:50:51 -0700 (PDT)
+        Tue, 17 Oct 2023 07:51:44 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B9AFB0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 04:51:42 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qsibo-0000fP-Tr; Tue, 17 Oct 2023 13:51:36 +0200
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qsibo-002J5f-7i; Tue, 17 Oct 2023 13:51:36 +0200
+Received: from sha by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qsibo-00Eukn-5G; Tue, 17 Oct 2023 13:51:36 +0200
+Date:   Tue, 17 Oct 2023 13:51:36 +0200
+From:   Sascha Hauer <sha@pengutronix.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Boris Pismenny <borisp@nvidia.com>, netdev@vger.kernel.org,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        kernel@pengutronix.de, Jakub Kicinski <kuba@kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Subject: Re: Problem with io_uring splice and KTLS
+Message-ID: <20231017115136.GF3359458@pengutronix.de>
+References: <20231010141932.GD3114228@pengutronix.de>
+ <d729781a-3d12-423b-973e-c16fdbcbb60b@kernel.dk>
+ <20231012133407.GA3359458@pengutronix.de>
+ <f39ef992-4789-4c30-92ef-e3114a31d5c7@kernel.dk>
+ <20231013054716.GG3359458@pengutronix.de>
+ <a9dd11d9-b5b8-456d-b8b6-12257e2924ab@kernel.dk>
+ <20231016072646.GV3359458@pengutronix.de>
+ <50310b5e-7642-4ca1-a9e1-6d817d472131@kernel.dk>
 MIME-Version: 1.0
-References: <20231016084000.050926073@linuxfoundation.org>
-In-Reply-To: <20231016084000.050926073@linuxfoundation.org>
-From:   Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
-Date:   Tue, 17 Oct 2023 20:50:40 +0900
-Message-ID: <CAKL4bV4Dy2qTKQ3NZo3Gh604c8Cn7t5n5xUkajkjkRys8xByzw@mail.gmail.com>
-Subject: Re: [PATCH 6.1 000/131] 6.1.59-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <50310b5e-7642-4ca1-a9e1-6d817d472131@kernel.dk>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,41 +68,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg
+On Mon, Oct 16, 2023 at 07:17:23AM -0600, Jens Axboe wrote:
+> On 10/16/23 1:26 AM, Sascha Hauer wrote:
+> > On Fri, Oct 13, 2023 at 07:45:55AM -0600, Jens Axboe wrote:
+> >> On 10/12/23 11:47 PM, Sascha Hauer wrote:
+> >>> On Thu, Oct 12, 2023 at 07:45:07PM -0600, Jens Axboe wrote:
+> >>>> On 10/12/23 7:34 AM, Sascha Hauer wrote:
+> >>>>> In case you don't have encryption hardware you can create an
+> >>>>> asynchronous encryption module using cryptd. Compile a kernel with
+> >>>>> CONFIG_CRYPTO_USER_API_AEAD and CONFIG_CRYPTO_CRYPTD and start the
+> >>>>> webserver with the '-c' option. /proc/crypto should then contain an
+> >>>>> entry with:
+> >>>>>
+> >>>>>  name         : gcm(aes)
+> >>>>>  driver       : cryptd(gcm_base(ctr(aes-generic),ghash-generic))
+> >>>>>  module       : kernel
+> >>>>>  priority     : 150
+> >>>>
+> >>>> I did a bit of prep work to ensure I had everything working for when
+> >>>> there's time to dive into it, but starting it with -c doesn't register
+> >>>> this entry. Turns out the bind() in there returns -1/ENOENT.
+> >>>
+> >>> Yes, that happens here as well, that's why I don't check for the error
+> >>> in the bind call. Nevertheless it has the desired effect that the new
+> >>> algorithm is registered and used from there on. BTW you only need to
+> >>> start the webserver once with -c. If you start it repeatedly with -c a
+> >>> new gcm(aes) instance is registered each time.
+> >>
+> >> Gotcha - I wasn't able to trigger the condition, which is why I thought
+> >> perhaps I was missing something.
+> >>
+> >> Can you try the below patch and see if that makes a difference? I'm not
+> >> quite sure why it would since you said it triggers with DEFER_TASKRUN as
+> >> well, and for that kind of notification, you should never hit the paths
+> >> you have detailed in the debug patch.
+> > 
+> > I can confirm that this patch makes it work for me. I tested with both
+> > software cryptd and also with my original CAAM encryption workload.
+> > IORING_SETUP_SINGLE_ISSUER | IORING_SETUP_DEFER_TASKRUN is not needed.
+> > Both my simple webserver and the original C++ Webserver from our
+> > customer are now working without problems.
+> 
+> OK, good to hear. I'm assuming you only change for
+> sk_stream_wait_memory()? If you can reproduce, would be good to test.
+> But i general none of them should hurt.
 
-On Mon, Oct 16, 2023 at 5:52=E2=80=AFPM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.1.59 release.
-> There are 131 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 18 Oct 2023 08:39:40 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.1.59-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Yes, only the change in sk_stream_wait_memory() is needed for me. The
+other two hunks do not change anything for me.
 
-6.1.59-rc1 tested.
+> 
+> FWIW, the reason why DEFER_TASKRUN wasn't fully solving it is because
+> we'd also use TIF_NOTIFY_SIGNAL for creating new io-wq workers. So while
+> task_work would not be the trigger for setting that condition, we'd
+> still end up doing it via io-wq worker creation.
+> 
+> > Do you think there is a chance getting this change upstream? I'm a bit
+> > afraid the code originally uses signal_pending() instead of
+> > task_sigpending() for a good reason.
+> 
+> The distinction between signal_pending() and task_sigpending() was
+> introduced with TIF_NOTIFY_SIGNAL. This isn't a case of networking
+> needing to use signal_pending(), just that this is was originally the
+> only aborting condition and now it's a bit too broad for some cases
+> (like this one).
 
-Build successfully completed.
-Boot successfully completed.
-No dmesg regressions.
-Video output normal.
-Sound output normal.
+Ok. I didn't realize so far that it was you who TIF_NOTIFY_SIGNAL.
 
-Lenovo ThinkPad X1 Carbon Gen10(Intel i7-1260P(x86_64) arch linux)
+Sascha
 
-Thanks
-
-Tested-by: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
