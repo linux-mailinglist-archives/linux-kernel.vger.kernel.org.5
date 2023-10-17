@@ -2,134 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 952777CBC50
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 09:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D90F7CBC53
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 09:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234635AbjJQHeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 03:34:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53440 "EHLO
+        id S234601AbjJQHe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 03:34:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232725AbjJQHd7 (ORCPT
+        with ESMTP id S232300AbjJQHe1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 03:33:59 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59ADE95
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 00:33:57 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-7a2a9e5451bso206064839f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 00:33:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697528036; x=1698132836; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/ApyDiANstYTWyWFRnukDgHnJl3tUXr1U5Y0xyV6mrc=;
-        b=UP1qyIM/5i3QaiC2OvN6xita6W2B7BoicollJXeex3cyiJwRu4auCzJNBJTP35HVMq
-         810C24YlJqSXU+q3D0xOVlFdNwOmakHDyQzku38N6Jm/wCWWH1yXPHHVuoVl1nG+1pxT
-         0Ru4LpPobj/TLicrmYvXKHhPgcU4okw+FFBU4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697528036; x=1698132836;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/ApyDiANstYTWyWFRnukDgHnJl3tUXr1U5Y0xyV6mrc=;
-        b=g+ebRPWvI/xtEhKzXnZjXC9Kl+zAoXH49X01EKDjL2BD3Qcf6pLLar8gEGyEtKODRK
-         pP/Obp2H1s4K6d/FkQJoW7xgUWKucSZ2xY09X/ZJP4JAoPzFF6wml562GobnIrn8PshA
-         DH+/b8l3dmCPa4CpHHMANpSmVBnFjyRUEq5YephEZsu4EThepBmxXyd7Dj8o2bbmVnLI
-         s5n353h3RDbrothqoi2A+6c16sh4ZRwWO5nGW5GfsctPL1EGl426s92GcizTOtkmdyG8
-         bwh29iH7y9x4QL9IwuFx8+DqSXSPxzk45DX8pz+C9lBEuqVlGehML6MJW9Uw33Ltvxqp
-         8Wrw==
-X-Gm-Message-State: AOJu0YxE7Q0lYpqMU8k7Z0SlLag47B229sOiA0Sc7bQm2+46c9N6t6sn
-        //uQKuAwFzIZrVvP2TULG2qLOXfDFI2HL4fOIGRFYQ==
-X-Google-Smtp-Source: AGHT+IEAYKQ8Ud2dDCTFrFxk0sv/MWGDyTH5PUc94osy1+AGiIS89dM943n8PAfXr7KHqvHMo1X6R6r3/dT57OJulPY=
-X-Received: by 2002:a05:6602:1689:b0:790:f733:2f9e with SMTP id
- s9-20020a056602168900b00790f7332f9emr1564343iow.13.1697528036747; Tue, 17 Oct
- 2023 00:33:56 -0700 (PDT)
+        Tue, 17 Oct 2023 03:34:27 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A4CA93
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 00:34:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697528066; x=1729064066;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=e/PVemFSRf7jQJqLRTWI6D7+mX3GaDafbHIm6KGFToo=;
+  b=Lp/H8tvOsCwaMre6QY9FY34naoWtPslMCo38PK7tCgahILBLBRHcvWRJ
+   JbRBqIy4ot9KYK3Z4sKc3qQJDU50HEglLUZtLyCwA7lAdHcYlm944PVoz
+   GqdPf9/4otnXRDSe2wy9fnSDJ/cLAPjrJBVh0M+V9wFU5W5GnwxD5tWIp
+   pJ3Wx1pAJhn1WDfCCADvaIm6jz6jPsUjN0H2BW2FyACqeLAjgEhxpAi8Z
+   N3lgy5B9WDytDkK5VRRfQ/AJW8x+3u6szhbmiPjIt1aH5LUHIuc41RRZ6
+   7PyTM6Fp8Bp8orfNmvRRD5Yem1AjroO/yUJgmdgpq4I2PXjfX9W4ULDVg
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="471940490"
+X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
+   d="scan'208";a="471940490"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 00:34:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="1087401273"
+X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
+   d="scan'208";a="1087401273"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 17 Oct 2023 00:34:21 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qseao-0009GF-0B;
+        Tue, 17 Oct 2023 07:34:18 +0000
+Date:   Tue, 17 Oct 2023 15:33:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        willy@infradead.org, linux-kernel@vger.kernel.org,
+        ying.huang@intel.com, david@redhat.com, Zi Yan <ziy@nvidia.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: Re: [PATCH -next v2 17/19] mm: convert wp_page_reuse() and
+ finish_mkwrite_fault() to take a folio
+Message-ID: <202310171537.XhmrkImn-lkp@intel.com>
+References: <20231013085603.1227349-18-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
-References: <20230926-topic-a643-v1-0-7af6937ac0a3@linaro.org>
- <20230926-topic-a643-v1-2-7af6937ac0a3@linaro.org> <43q6mui3lofa4rqh667o54b2qcbqn5fg34ss5o7y7k7uxbxsro@dxgovofsrvqx>
-In-Reply-To: <43q6mui3lofa4rqh667o54b2qcbqn5fg34ss5o7y7k7uxbxsro@dxgovofsrvqx>
-From:   Rob Clark <robdclark@chromium.org>
-Date:   Tue, 17 Oct 2023 00:33:45 -0700
-Message-ID: <CAJs_Fx7WkdhY31aP_buZP+b7ihOOmE8zBZFOLZ8z9uqcNmEhVw@mail.gmail.com>
-Subject: Re: [PATCH 2/7] drm/msm/adreno: Add ZAP firmware name to A635
-To:     Akhil P Oommen <quic_akhilpo@quicinc.com>
-Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        cros-qcom-dts-watchers@chromium.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Luca Weiss <luca.weiss@fairphone.com>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231013085603.1227349-18-wangkefeng.wang@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 1:12=E2=80=AFPM Akhil P Oommen <quic_akhilpo@quicin=
-c.com> wrote:
->
-> On Tue, Sep 26, 2023 at 08:24:37PM +0200, Konrad Dybcio wrote:
-> >
-> > Some (many?) devices with A635 expect a ZAP shader to be loaded.
-> >
-> > Set the file name to allow for that.
-> >
-> > Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> > ---
-> >  drivers/gpu/drm/msm/adreno/adreno_device.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/d=
-rm/msm/adreno/adreno_device.c
-> > index fa527935ffd4..16527fe8584d 100644
-> > --- a/drivers/gpu/drm/msm/adreno/adreno_device.c
-> > +++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
-> > @@ -454,6 +454,7 @@ static const struct adreno_info gpulist[] =3D {
-> >               .quirks =3D ADRENO_QUIRK_HAS_CACHED_COHERENT |
-> >                       ADRENO_QUIRK_HAS_HW_APRIV,
-> >               .init =3D a6xx_gpu_init,
-> > +             .zapfw =3D "a660_zap.mbn",
->
-> sc7280 doesn't have a TZ and so no zap shader support. Can we handle
-> this using "firmware-name" property in your top level platform dt? Zap
-> firmwares are signed with different keys for each OEMs. So there is
-> cross-compatibility anyway.
+Hi Kefeng,
 
-I think this ends up working out because the version of sc7280 that
-doesn't have TZ also doesn't have the associated mem-region/etc..  but
-maybe we should deprecate the zapfw field as in practice it isn't
-useful (ie. always overriden by firmware-name).
+kernel test robot noticed the following build warnings:
 
-Fwiw there are windows laptops with sc7180/sc7280 which do use zap fw.
+[auto build test WARNING on akpm-mm/mm-everything]
 
-BR,
--R
+url:    https://github.com/intel-lab-lkp/linux/commits/Kefeng-Wang/mm_types-add-virtual-and-_last_cpupid-into-struct-folio/20231017-121040
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20231013085603.1227349-18-wangkefeng.wang%40huawei.com
+patch subject: [PATCH -next v2 17/19] mm: convert wp_page_reuse() and finish_mkwrite_fault() to take a folio
+config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231017/202310171537.XhmrkImn-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231017/202310171537.XhmrkImn-lkp@intel.com/reproduce)
 
->
-> -Ahil.
->
-> >               .hwcg =3D a660_hwcg,
-> >               .address_space_size =3D SZ_16G,
-> >               .speedbins =3D ADRENO_SPEEDBINS(
-> >
-> > --
-> > 2.42.0
-> >
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310171537.XhmrkImn-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> mm/memory.c:3276: warning: Function parameter or member 'folio' not described in 'finish_mkwrite_fault'
+
+
+vim +3276 mm/memory.c
+
+2f38ab2c3c7fef Shachar Raindel 2015-04-14  3258  
+66a6197c118540 Jan Kara        2016-12-14  3259  /**
+66a6197c118540 Jan Kara        2016-12-14  3260   * finish_mkwrite_fault - finish page fault for a shared mapping, making PTE
+66a6197c118540 Jan Kara        2016-12-14  3261   *			  writeable once the page is prepared
+66a6197c118540 Jan Kara        2016-12-14  3262   *
+66a6197c118540 Jan Kara        2016-12-14  3263   * @vmf: structure describing the fault
+66a6197c118540 Jan Kara        2016-12-14  3264   *
+66a6197c118540 Jan Kara        2016-12-14  3265   * This function handles all that is needed to finish a write page fault in a
+66a6197c118540 Jan Kara        2016-12-14  3266   * shared mapping due to PTE being read-only once the mapped page is prepared.
+a862f68a8b3600 Mike Rapoport   2019-03-05  3267   * It handles locking of PTE and modifying it.
+66a6197c118540 Jan Kara        2016-12-14  3268   *
+66a6197c118540 Jan Kara        2016-12-14  3269   * The function expects the page to be locked or other protection against
+66a6197c118540 Jan Kara        2016-12-14  3270   * concurrent faults / writeback (such as DAX radix tree locks).
+a862f68a8b3600 Mike Rapoport   2019-03-05  3271   *
+2797e79f1a491f Liu Xiang       2021-06-28  3272   * Return: %0 on success, %VM_FAULT_NOPAGE when PTE got changed before
+a862f68a8b3600 Mike Rapoport   2019-03-05  3273   * we acquired PTE lock.
+66a6197c118540 Jan Kara        2016-12-14  3274   */
+60fe935fc6b035 Kefeng Wang     2023-10-13  3275  static vm_fault_t finish_mkwrite_fault(struct vm_fault *vmf, struct folio *folio)
+66a6197c118540 Jan Kara        2016-12-14 @3276  {
+66a6197c118540 Jan Kara        2016-12-14  3277  	WARN_ON_ONCE(!(vmf->vma->vm_flags & VM_SHARED));
+66a6197c118540 Jan Kara        2016-12-14  3278  	vmf->pte = pte_offset_map_lock(vmf->vma->vm_mm, vmf->pmd, vmf->address,
+66a6197c118540 Jan Kara        2016-12-14  3279  				       &vmf->ptl);
+3db82b9374ca92 Hugh Dickins    2023-06-08  3280  	if (!vmf->pte)
+3db82b9374ca92 Hugh Dickins    2023-06-08  3281  		return VM_FAULT_NOPAGE;
+66a6197c118540 Jan Kara        2016-12-14  3282  	/*
+66a6197c118540 Jan Kara        2016-12-14  3283  	 * We might have raced with another page fault while we released the
+66a6197c118540 Jan Kara        2016-12-14  3284  	 * pte_offset_map_lock.
+66a6197c118540 Jan Kara        2016-12-14  3285  	 */
+c33c794828f212 Ryan Roberts    2023-06-12  3286  	if (!pte_same(ptep_get(vmf->pte), vmf->orig_pte)) {
+7df676974359f9 Bibo Mao        2020-05-27  3287  		update_mmu_tlb(vmf->vma, vmf->address, vmf->pte);
+66a6197c118540 Jan Kara        2016-12-14  3288  		pte_unmap_unlock(vmf->pte, vmf->ptl);
+a19e25536ed3a2 Jan Kara        2016-12-14  3289  		return VM_FAULT_NOPAGE;
+66a6197c118540 Jan Kara        2016-12-14  3290  	}
+60fe935fc6b035 Kefeng Wang     2023-10-13  3291  	wp_page_reuse(vmf, folio);
+a19e25536ed3a2 Jan Kara        2016-12-14  3292  	return 0;
+66a6197c118540 Jan Kara        2016-12-14  3293  }
+66a6197c118540 Jan Kara        2016-12-14  3294  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
