@@ -2,75 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A297CCC84
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 21:45:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB0F37CCC86
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 21:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344196AbjJQTpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 15:45:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59784 "EHLO
+        id S1343863AbjJQTpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 15:45:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234197AbjJQTpb (ORCPT
+        with ESMTP id S235043AbjJQTpr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 15:45:31 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B698193
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 12:45:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3D31C433C8;
-        Tue, 17 Oct 2023 19:45:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697571929;
-        bh=Qf4xkuN06EFX0//n+z87j9jXE5pKm2Yh2AAgUDg38vc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZMZHGMBInPRKKQMhDr7BadORk21RApp8NtvidBo7RL7fyKCJjqFoGcRcq0eBTijev
-         0nEUF19DiyamGjEx9lQ8W9B9fQuoNJ4vfvXV0CsHPnUbn+cCIL/0Vvc1Z58iKuEkXW
-         8z/7t8BcaiaZpQ7VMvvYt2tfujgr0F+Y2Zb+pjm8vxY55cr/6T+WNkGVAUKweLM9iz
-         oIaEdOLa3f7HQrheNJlCx40V7RiRs/99kLsMnQW89h+4HiiSO3NuLsqcXzJA/96JNv
-         N4DbC1waK12BcBV5RDYTpyUI4hV27UwS+TKO2ZGr/S57jCf22G4F4WNTqXnSC3rdQ7
-         HD0NNc4FxBvlg==
-Date:   Tue, 17 Oct 2023 21:45:24 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Florian Fainelli <florian.fainelli@broadcom.com>
-Cc:     netdev@vger.kernek.org, Justin Chen <justin.chen@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "open list:BROADCOM ETHERNET PHY DRIVERS" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net] net: phy: bcm7xxx: Add missing 16nm EPHY statistics
-Message-ID: <20231017194524.GA1940501@kernel.org>
-References: <20231016184428.311983-1-florian.fainelli@broadcom.com>
+        Tue, 17 Oct 2023 15:45:47 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92030F1;
+        Tue, 17 Oct 2023 12:45:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697571945; x=1729107945;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=N7ORy6k2dxvfyteuCSTaJBoDsO/YHTfYnab+FNPQi1U=;
+  b=Oo7B3BXv5/AvjluDWhFA3r0/eiAGicZNPujItFs6r1HLY8AIVaDbaSQb
+   KfUSmVgRjSlTNuKP60RQt8XoNBkf0vj9K3fJlIgKik1g73UJse0rdzMIw
+   gsu2OvtrFNPmDJJiZ7rIkLJmwLtO3IlN2+2CWSaDyZirSh3VASaqpSfHj
+   FxQ4JH+ubWqLQhuAZaXJpCzZ6nNIV3q0RcMkKK5VfFnZHkXzzi0LqzhaN
+   yzNWGvVklquMaKZNxIMT7YL6dLFfHIXfJ1tlOPvCv6OranP0bgwKX4dHE
+   yTVZPFD2eOTDJvMVWKem3jhrkn4RqC4xJKXvl7JRPclYkmO/7QJvz4qOf
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="450089432"
+X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
+   d="scan'208";a="450089432"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 12:45:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="872718031"
+X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
+   d="scan'208";a="872718031"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 12:45:42 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qsq0Z-00000006Pdp-3vyB;
+        Tue, 17 Oct 2023 22:45:39 +0300
+Date:   Tue, 17 Oct 2023 22:45:39 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Ferry Toth <ftoth@exalondelft.nl>
+Subject: Re: [PATCH v1 1/1] Revert "pinctrl: avoid unsafe code pattern in
+ find_pinctrl()"
+Message-ID: <ZS7kY/+80Be4geGM@smile.fi.intel.com>
+References: <20231017141806.535191-1-andriy.shevchenko@linux.intel.com>
+ <CACRpkdbHJHsgJ=3pYveP-x-Vuwwf3ib6TnFOt3UpCrKevf=d1w@mail.gmail.com>
+ <ZS7TuodhwNxU9Ez6@smile.fi.intel.com>
+ <CACRpkdZfzq81SZnEpB_Acp_=8Xc2TEMNi8yS_j4wNBcQKXgrgg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231016184428.311983-1-florian.fainelli@broadcom.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdZfzq81SZnEpB_Acp_=8Xc2TEMNi8yS_j4wNBcQKXgrgg@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 11:44:28AM -0700, Florian Fainelli wrote:
-> The .probe() function would allocate the necessary space and ensure that
-> the library call sizes the nunber of statistics but the callbacks
-> necessary to fetch the name and values were not wired up.
+On Tue, Oct 17, 2023 at 08:59:05PM +0200, Linus Walleij wrote:
+> On Tue, Oct 17, 2023 at 8:34 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Tue, Oct 17, 2023 at 08:18:23PM +0200, Linus Walleij wrote:
 > 
-> Reported-by: Justin Chen <justin.chen@broadcom.com>
-> Fixes: 1b89b3dce34c ("net: phy: bcm7xxx: Add EPHY entry for 72165")
+> > > In the past some file system developers have told us (Ulf will know)
+> > > that we can't rely on the block device enumeration to identify
+> > > devices, and requires that we use things such as sysfs or the
+> > > UUID volume label in ext4 to identify storage.
+> >
+> > While I technically might agree with you, this was working for everybody
+> > since day 1 of support of Intel Merrifield added (circa v4.8), now _user
+> > space_ is broken.
+> 
+> Actually, I don't agree with that, just relaying it. I would prefer that we
+> solve exactly the problem that we are facing here: some random unrelated
+> code or similar affecting enumeration order of mmc devices.
+> 
+> It's not the first time it happens to me, I have several devices that change
+> this enumeration order depending on whether an SD card is plugged
+> in or not, and in a *BIG* way: the boot partition on the soldered eMMC
+> changes enumeration depending on whether an SD card is inserted
+> or not, and that has never been fixed (because above).
 
-Should the fixes tag be as follows?
+This is not the problem I have. I haven't added any SD card, hardware
+configuration is the same. The solely difference in the whole setup is
+this revert applied or not.
 
-Fixes: f68d08c437f9 ("net: phy: bcm7xxx: Add EPHY entry for 72165")
+> > > That said, device trees are full of stuff like this:
+> > >
+> > >         aliases {
+> > >                 serial0 = &uart_AO;
+> > >                 mmc0 = &sd_card_slot;
+> > >                 mmc1 = &sdhc;
+> > >         };
+> >
+> > And Rob, AFAIU, is against aliases.
+> >
+> > > Notice how this enumeration gets defined by the aliases.
+> > >
+> > > Can you do the same with device properties? (If anyone can
+> > > answer that question it's Dmitry!)
+> >
+> > No, and why should we?
+> 
+> Because device properties are not device tree, they are just some
+> Linux thing so we can do whatever we want. Just checking if
+> Dmitry has some idea that would solve this for good, he usually
+> replies quickly.
 
-> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+OK.
 
-...
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
