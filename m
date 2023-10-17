@@ -2,147 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C421A7CBA7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 08:03:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8787C7CBA82
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 08:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234440AbjJQGDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 02:03:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53686 "EHLO
+        id S234485AbjJQGFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 02:05:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234284AbjJQGDV (ORCPT
+        with ESMTP id S234423AbjJQGFD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 02:03:21 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D40DB0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 23:03:19 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-507975d34e8so5295172e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 23:03:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697522598; x=1698127398; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=1o4mb2iZUz1SnoRWPsXsV2zwIl1BLvqgIpgXyGVIoRo=;
-        b=XqgElqdzcmlqoWiaEqtW3TUoS7W5fS4nHEF2FYebGNsuFQALg7yNDChFcDStVKtcxz
-         cCIm3q9y5VKRio1mkixNe0Hv2dH1r2yJSU8PElB6rfp8DoEqJ7oivaVWXBPhCY1pvrMz
-         9aUC7/hjZ3kYKHnuuv9MI4HvQZUzo7WnNI+ypyEZ+JUMfcJyDIduRna7QalCzupgEmMk
-         WWYovXOXm3uYJrety2gbWTeO86GxdvQe7uiZxkPiEkQpT0LfLpTE8BuTKpj/3nZoHUOX
-         x49L9o9amr8MiWn8UPS017EcSuWMB84J/vp0gpX8D3Nw/rtkxjZIMiasJdckgrie4EMW
-         u16g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697522598; x=1698127398;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1o4mb2iZUz1SnoRWPsXsV2zwIl1BLvqgIpgXyGVIoRo=;
-        b=EcFX7wAqpUONP5HPkATd4K00MgQjaPherxZvlMxVM1PKNYI+80NUU4bHvxxVZmyEhf
-         Bw1jd5t1CisOD5XlowBD9XYcSNz5se+oNKiUTx2B5GBFhGltxQLw6zvOBcZGN+q8Ocsd
-         DMlF8bZRPwHSr8LOQnQW9U99f5iHwawe/7KHJ6s2kkghX6Plce+Ah6JSJdC8k76F1hDM
-         0Oo9qMV46BaBWalQsHjT5IIEKZwRzKmL0CyRg2qe2etud+iwCnC+NZiX0PYMf+cYHm09
-         1Ewh7HgA4vOR3CswZWEKcwMCMDTsI2uM3Elv5NQUHkKXA7Fc5Yqmgz9D0rtehOqRtz24
-         ivqw==
-X-Gm-Message-State: AOJu0YyKfs8Zyw/F9m7ueztWXSWtQXqIL2T/4PK6+4ylmldbgmHhvQOS
-        e7bpBvn1vetNR5F95IgmKz7rzw==
-X-Google-Smtp-Source: AGHT+IFSCLHHu1/7FUxXMD/LNbBo5XUyAFZD012+UIGMyHYURmW3pgD6FcsjGoNU6NRaGfwtblmpWw==
-X-Received: by 2002:ac2:5585:0:b0:507:9608:4a87 with SMTP id v5-20020ac25585000000b0050796084a87mr989223lfg.56.1697522597659;
-        Mon, 16 Oct 2023 23:03:17 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.154])
-        by smtp.gmail.com with ESMTPSA id e13-20020adfef0d000000b0032d9caeab0fsm854270wro.77.2023.10.16.23.03.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 23:03:17 -0700 (PDT)
-Message-ID: <73b39195-4a71-4f07-9072-a40bb0420343@linaro.org>
-Date:   Tue, 17 Oct 2023 08:03:14 +0200
+        Tue, 17 Oct 2023 02:05:03 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C6EBF5;
+        Mon, 16 Oct 2023 23:05:00 -0700 (PDT)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39H64Qn9014565;
+        Tue, 17 Oct 2023 06:04:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=omYkSqC8VDjSbMbRVlhkhkaKoZUrM0gq5bjZn0HR/3A=;
+ b=abM+XMblr3M2AeWp46eqtdXEKO8yfBcNnrcetmEP3A46J9tKzmQhvCMC+1YRG3XUYdg+
+ jBjcpL2D+ZpEeq7gHa212ReevCBtYNHfnh/3dVllOg5mLCnxU1W/Mh4Jb+zsdQH4yENZ
+ c2e9xTuSlhJvjcn2ZbAmdbAxzzMlK+9uyfaZW+r6sXP4M444ZBFUNjWDsHGAhXQn0pHl
+ AclJzUpbIUTU/b6RYA3GrcT6QPGF3AYEf/AyN1r8hMRFV3faJLwB/NiF/Du8wJPbyQJN
+ a5HE7Yg8x1yKkPRP+jHJnX6IPHkMeI0y66vVR6ADbfAYal7Vvs1DfFHmVSsQIFcNm14y vQ== 
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tsmp7g06m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Oct 2023 06:04:29 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39H4v8t6019672;
+        Tue, 17 Oct 2023 06:04:28 GMT
+Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tr811dj2x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Oct 2023 06:04:28 +0000
+Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
+        by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39H64RYL8979084
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 17 Oct 2023 06:04:28 GMT
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D46D658058;
+        Tue, 17 Oct 2023 06:04:27 +0000 (GMT)
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8268658066;
+        Tue, 17 Oct 2023 06:04:25 +0000 (GMT)
+Received: from skywalker.linux.ibm.com (unknown [9.109.212.144])
+        by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 17 Oct 2023 06:04:25 +0000 (GMT)
+X-Mailer: emacs 29.1 (via feedmail 11-beta-1 I)
+From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+To:     Erhard Furtner <erhard_f@mailbox.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     Juergen Gross <jgross@suse.com>, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-sparc@vger.kernel.org,
+        David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 0/2] Allow nesting of lazy MMU mode
+In-Reply-To: <20231013154220.02fb2e6d@yea>
+References: <20231012195415.282357-1-willy@infradead.org>
+ <20231013154220.02fb2e6d@yea>
+Date:   Tue, 17 Oct 2023 11:34:23 +0530
+Message-ID: <875y35zswo.fsf@linux.ibm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/12] dt-bindings: usb: qcom,dwc3: Add qcom,sc8180x-dwc3
-To:     Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>,
-        Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-References: <20231016-dwc3-refactor-v1-0-ab4a84165470@quicinc.com>
- <20231016-dwc3-refactor-v1-1-ab4a84165470@quicinc.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231016-dwc3-refactor-v1-1-ab4a84165470@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 3ef2F9UqU74NAkjCIImOuTF4hWOOEc3A
+X-Proofpoint-ORIG-GUID: 3ef2F9UqU74NAkjCIImOuTF4hWOOEc3A
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-16_13,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
+ mlxlogscore=999 clxscore=1011 priorityscore=1501 malwarescore=0
+ lowpriorityscore=0 adultscore=0 phishscore=0 bulkscore=0 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310170049
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/10/2023 05:11, Bjorn Andersson wrote:
-> Add the missing compatible for the SC8180X DWC3 glue binding.
+Erhard Furtner <erhard_f@mailbox.org> writes:
+
+> On Thu, 12 Oct 2023 20:54:13 +0100
+> "Matthew Wilcox (Oracle)" <willy@infradead.org> wrote:
+>
+>> Dave Woodhouse reported that we now nest calls to
+>> arch_enter_lazy_mmu_mode().  That was inadvertent, but in principle we
+>> should allow it.  On further investigation, Juergen already fixed it
+>> for Xen, but didn't tell anyone.  Fix it for Sparc & PowerPC too.
+>> This may or may not help fix the problem that Erhard reported.
+>> 
+>> Matthew Wilcox (Oracle) (2):
+>>   powerpc: Allow nesting of lazy MMU mode
+>>   sparc: Allow nesting of lazy MMU mode
+>> 
+>>  arch/powerpc/include/asm/book3s/64/tlbflush-hash.h | 5 ++---
+>>  arch/sparc/mm/tlb.c                                | 5 ++---
+>>  2 files changed, 4 insertions(+), 6 deletions(-)
+>> 
+>> -- 
+>> 2.40.1
+>
+> Applied the patch on top of v6.6-rc5 but unfortunately it did not fix my reported issue.
+>
+> Regards,
+> Erhard
 > 
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> ---
->  Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 3 +++
->  1 file changed, 3 insertions(+)
 
-This was already sent:
+With the problem reported I guess we are finding the page->compound_head
+wrong and hence folio->flags PG_dcache_clean check crashing. I still
+don't know why we find page->compound_head wrong. Michael noted we are
+using FLAT_MEM. That implies we are suppose to inialize struct page correctly
+via init_unavailable_range because we are hitting this on an ioremap
+address. We need to instrument the kernel to track the initialization of
+the struct page backing these pfns which we know is crashing.
 
-https://lore.kernel.org/all/20230530162454.51708-3-vkoul@kernel.org/
+W.r.t arch_enter_lazy_mmu_mode() we can skip that completely on powerpc
+because we don't allow the usage of set_pte on a valid pte entries. pte
+updates are not done via set_pte interface and hence there is no TLB
+invalidate required while using set_pte(). 
 
-Best regards,
-Krzysztof
+ie, we can do something like below. The change also make sure we call
+set_pte_filter on all the ptes we are setting via set_ptes(). I haven't
+sent this as a proper patch because we still are not able to fix the
+issue Erhard reported. 
 
+diff --git a/arch/powerpc/mm/pgtable.c b/arch/powerpc/mm/pgtable.c
+index 3ba9fe411604..95ab20cca2da 100644
+--- a/arch/powerpc/mm/pgtable.c
++++ b/arch/powerpc/mm/pgtable.c
+@@ -191,28 +191,35 @@ void set_ptes(struct mm_struct *mm, unsigned long addr, pte_t *ptep,
+ 		pte_t pte, unsigned int nr)
+ {
+ 	/*
+-	 * Make sure hardware valid bit is not set. We don't do
+-	 * tlb flush for this update.
++	 * We don't need to call arch_enter/leave_lazy_mmu_mode()
++	 * because we expect set_ptes to be only be used on not present
++	 * and not hw_valid ptes. Hence there is not translation cache flush
++	 * involved that need to be batched.
+ 	 */
+-	VM_WARN_ON(pte_hw_valid(*ptep) && !pte_protnone(*ptep));
++	for (;;) {
+ 
+-	/* Note: mm->context.id might not yet have been assigned as
+-	 * this context might not have been activated yet when this
+-	 * is called.
+-	 */
+-	pte = set_pte_filter(pte);
++		/*
++		 * Make sure hardware valid bit is not set. We don't do
++		 * tlb flush for this update.
++		 */
++		VM_WARN_ON(pte_hw_valid(*ptep) && !pte_protnone(*ptep));
+ 
+-	/* Perform the setting of the PTE */
+-	arch_enter_lazy_mmu_mode();
+-	for (;;) {
++		/* Note: mm->context.id might not yet have been assigned as
++		 * this context might not have been activated yet when this
++		 * is called.
++		 */
++		pte = set_pte_filter(pte);
++
++		/* Perform the setting of the PTE */
+ 		__set_pte_at(mm, addr, ptep, pte, 0);
+ 		if (--nr == 0)
+ 			break;
+ 		ptep++;
+-		pte = __pte(pte_val(pte) + (1UL << PTE_RPN_SHIFT));
+ 		addr += PAGE_SIZE;
++		/* increment the pfn */
++		pte = __pte(pte_val(pte) + PAGE_SIZE);
++
+ 	}
+-	arch_leave_lazy_mmu_mode();
+ }
+ 
+ void unmap_kernel_page(unsigned long va)
