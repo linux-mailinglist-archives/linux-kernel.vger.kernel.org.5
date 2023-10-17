@@ -2,107 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D447CCAE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 20:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 114C37CCAE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 20:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234304AbjJQSin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 14:38:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56896 "EHLO
+        id S234934AbjJQSiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 14:38:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjJQSil (ORCPT
+        with ESMTP id S233940AbjJQSin (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 14:38:41 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0948F90
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:38:40 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9936b3d0286so975555766b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:38:39 -0700 (PDT)
+        Tue, 17 Oct 2023 14:38:43 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04AB090
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:38:42 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-77409065623so352134485a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:38:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1697567918; x=1698172718; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=USkbb5/cH3vJp4KF5jTF8rcY5cuD/NJi1SRBLDhJQGQ=;
-        b=XeDIyL0v2sQK+8XbKrxDFLSfMGJJnHMJJg1PwK6sskm4FojjZpACM04QPqa2N8myiu
-         hxtdA59/DJln9laekdfnOyUXDpM0CKG8V3/DJhPE8e17uYpDHhWfM+e9Ja2dKxW4lphD
-         G+psKBha4SxF5GAtN4xhVoTP3xjMApQK44KHk=
+        d=sifive.com; s=google; t=1697567921; x=1698172721; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YsaRBkXVnZ5gQ0bfD3LH2OWV/lnyvaLOJpA+t9fKpcs=;
+        b=FyAGsIscSHJwVwbXBvGZ7IaysOwZJMwMRzHrOhMsbvq+tFHQvTi5zaWdoNxZjvb3br
+         eXKTmSA/5VcdOuFb9HvaGl1GFauaoIXl6K6R1ut9Gh2Y3mrG8sQfoKlObRCmiUdJlMuh
+         gtGx0BvtL+3YEY+Mwii2RFrAezANHQa2Y60Y5mLLB73q1H8veXugQ1T5wIsLyFi2UPAk
+         5T+pKtsCVF0Tryr7R+p8ZYs1PfjE6P5LTBCsmYrOK06cSxTqUm3mkQ6TBoy+wfvaX6HC
+         fOt1I+lNqzgUIz/12rtJ6MYLQJKr8F2dTRkiec67+5zXDdPtySuEWOakx5Cb4TbELkhP
+         nfZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697567918; x=1698172718;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=USkbb5/cH3vJp4KF5jTF8rcY5cuD/NJi1SRBLDhJQGQ=;
-        b=iSbcAMcbMRwvY2yyU/FmTKmyIukeThiIIRX0NL9t7jGVZTNYrJWjk2Ivurt4mlbe5u
-         CPKxgsy3Wfod4ZQN7mTvC4CjDC+xwZffZr3VU+pIsen5C2vrCKkE4OTPsn0AyhjnHPIb
-         F/HPiaAJsmFxOzeBWHYxSR4yiZIkgFbjTmLXvYbagM+D4KLenuu38yS/zi7XxIT/EJ/5
-         KVsuoyzmvMJPuQRxQYLsPtTJrGfjLs1nbeSsRQwxwo57zL6eIVCPmZVDKJrMzuxXPGbx
-         M8yLWGm0R7+Mjhwz2tE5OGJ4PvUjqJNCLZjrnIVUw5HTZucpRRdW7oHcK4Q4kenu7VBj
-         CDNw==
-X-Gm-Message-State: AOJu0YwuW7Bq6vZtKq+a7Ddo1ezZBDLGwL9e6OSMg/gPhfuT/PUiZ9Yz
-        Z5WSs8Tr2AY2q/pLNr3pXPnU8jeKf6Ize/J7WjK+bQvy
-X-Google-Smtp-Source: AGHT+IE5Wet80iYWFw4UESwfB7wfvm7zaHSoJfgVh68rM4p7cVqP/haClGcz+3OTfHjyyEp3TnOm8g==
-X-Received: by 2002:a17:906:fe05:b0:99c:b0c9:4ec0 with SMTP id wy5-20020a170906fe0500b0099cb0c94ec0mr2620483ejb.30.1697567918261;
-        Tue, 17 Oct 2023 11:38:38 -0700 (PDT)
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com. [209.85.218.48])
-        by smtp.gmail.com with ESMTPSA id o10-20020a170906600a00b00992b510089asm250429ejj.84.2023.10.17.11.38.37
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20230601; t=1697567921; x=1698172721;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YsaRBkXVnZ5gQ0bfD3LH2OWV/lnyvaLOJpA+t9fKpcs=;
+        b=W46OPG6Ho1bjkmzR+cSIPbXhnVLr+yY2CStzOj015jYzApgYQhMBTTTm39CspkI83h
+         HVd94hsrXC57yr9KDbk4UYRiQQjsDoO0nPVh3S6AtVsaaHq8cN3V+eXNqIqHa1lStGUk
+         iyarU3o2HqZk2UKveiId70HS3lggbzUk097+fWUq9ASHeK/1pMyn12WLwSkYigJxBt6n
+         P8NHSfhkZTywd6B6PiP6x2NT37kdILM2TQPOt0hDdmQ3ejD9dogTrXIYxvg9cHgAaRts
+         uqHGUneRfE3wpsb4d/TThpbBNQoucMbUVZC8C+kQCPAQOtEZcBg79Mtpn6IcBA8C+nR5
+         r3ZA==
+X-Gm-Message-State: AOJu0YypOCpOJ0jIm/3Q5H0LtCRkJ2J7LnLVvlyvVd5MUjxLnjgTY/9x
+        T04H+tuTUBfOKjxWkN8QvdYr4w==
+X-Google-Smtp-Source: AGHT+IEb4loGMCpPOVn6Ab+wN9cQ9sYm3udk2P0fPAOn+o3REaidWVnlpV97HdQcRaGqmi3sZ0ab3A==
+X-Received: by 2002:a05:620a:3951:b0:773:c075:a4e7 with SMTP id qs17-20020a05620a395100b00773c075a4e7mr3115161qkn.11.1697567921072;
+        Tue, 17 Oct 2023 11:38:41 -0700 (PDT)
+Received: from ?IPV6:2600:1700:2000:b002:95cc:ccc5:95bc:7d2c? ([2600:1700:2000:b002:95cc:ccc5:95bc:7d2c])
+        by smtp.gmail.com with ESMTPSA id f9-20020a05620a408900b007677347e20asm866377qko.129.2023.10.17.11.38.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Oct 2023 11:38:37 -0700 (PDT)
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-99de884ad25so972494666b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:38:37 -0700 (PDT)
-X-Received: by 2002:a17:906:4fc7:b0:9b2:b149:b81a with SMTP id
- i7-20020a1709064fc700b009b2b149b81amr2302073ejw.64.1697567917353; Tue, 17 Oct
- 2023 11:38:37 -0700 (PDT)
+        Tue, 17 Oct 2023 11:38:40 -0700 (PDT)
+Message-ID: <a65fd79f-e0d3-4618-9579-d4a19ba91302@sifive.com>
+Date:   Tue, 17 Oct 2023 13:38:39 -0500
 MIME-Version: 1.0
-References: <20231016143828.647848-1-jeffxu@chromium.org> <CAHk-=whFZoap+DBTYvJx6ohqPwn11Puzh7q4huFWDX9vBwXHgg@mail.gmail.com>
- <CALmYWFtTDAb_kpZdAe_xspqwNgK1NWJmjTxaTC=jDEMzfe297Q@mail.gmail.com>
- <CAHk-=wj87GMTH=5901ob=SjQqegAm2JYBE7E4J7skJzE64U-wQ@mail.gmail.com> <55960.1697566804@cvs.openbsd.org>
-In-Reply-To: <55960.1697566804@cvs.openbsd.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 17 Oct 2023 11:38:19 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjS=xg12RVQdTNxEurjo21eXQBQO0D5My6Aox4LCfsO1A@mail.gmail.com>
-Message-ID: <CAHk-=wjS=xg12RVQdTNxEurjo21eXQBQO0D5My6Aox4LCfsO1A@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 0/8] Introduce mseal() syscall
-To:     Theo de Raadt <deraadt@openbsd.org>
-Cc:     Jeff Xu <jeffxu@google.com>, jeffxu@chromium.org,
-        akpm@linux-foundation.org, keescook@chromium.org,
-        sroettger@google.com, jorgelo@chromium.org, groeck@chromium.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, jannh@google.com, surenb@google.com,
-        alex.sierra@amd.com, apopple@nvidia.com,
-        aneesh.kumar@linux.ibm.com, axelrasmussen@google.com,
-        ben@decadent.org.uk, catalin.marinas@arm.com, david@redhat.com,
-        dwmw@amazon.co.uk, ying.huang@intel.com, hughd@google.com,
-        joey.gouly@arm.com, corbet@lwn.net, wangkefeng.wang@huawei.com,
-        Liam.Howlett@oracle.com, lstoakes@gmail.com, willy@infradead.org,
-        mawupeng1@huawei.com, linmiaohe@huawei.com, namit@vmware.com,
-        peterx@redhat.com, peterz@infradead.org, ryan.roberts@arm.com,
-        shr@devkernel.io, vbabka@suse.cz, xiujianfeng@huawei.com,
-        yu.ma@intel.com, zhangpeng362@huawei.com, dave.hansen@intel.com,
-        luto@kernel.org, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 -next 3/3] RISC-V: cacheflush: Initialize CBO variables
+ on ACPI systems
+Content-Language: en-US
+To:     Sunil V L <sunilvl@ventanamicro.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Cc:     Anup Patel <apatel@ventanamicro.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Atish Kumar Patra <atishp@rivosinc.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>
+References: <20231016164958.1191529-1-sunilvl@ventanamicro.com>
+ <20231016164958.1191529-4-sunilvl@ventanamicro.com>
+From:   Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <20231016164958.1191529-4-sunilvl@ventanamicro.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Oct 2023 at 11:20, Theo de Raadt <deraadt@openbsd.org> wrote:
->
-> The only case where the immutable marker is ignored is during address space
-> teardown as a result of process termination.
+On 2023-10-16 11:49 AM, Sunil V L wrote:
+> Initialize the CBO variables on ACPI based systems using information in
+> RHCT.
+> 
+> Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
+> ---
+>  arch/riscv/mm/cacheflush.c | 25 +++++++++++++++++++------
+>  1 file changed, 19 insertions(+), 6 deletions(-)
 
-.. and presumably also execve()?
+Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
 
-I do like us starting with just "mimmutable()", since it already
-exists. Particularly if chrome already knows how to use it.
-
-Maybe add a flag field (require it to be zero initially) just to allow
-any future expansion. Maybe the chrome team has *wanted* to have some
-finer granularity thing and currently doesn't use mimmutable() in some
-case?
-
-                  Linus
