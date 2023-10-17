@@ -2,140 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD3677CCA03
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 19:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F36537CCA07
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 19:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343575AbjJQRlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 13:41:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38626 "EHLO
+        id S1343896AbjJQRmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 13:42:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231868AbjJQRlK (ORCPT
+        with ESMTP id S234619AbjJQRmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 13:41:10 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C9CF90;
-        Tue, 17 Oct 2023 10:41:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24CFCC433C7;
-        Tue, 17 Oct 2023 17:41:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697564469;
-        bh=CKtahp9lZame+MBMu3Ap4/3ql/d/3MJzImxyjKqupI8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bs+pa9vphgySRe2g7P6+VZKhcOdLSVV04/fsM5WMqsb3cCmIgPptRi50dsrzs0K0b
-         ofISsaMSPvgfNlFQKbt5pfDi/8gMn/gmn3rSCizn7uU+s8+rECyYaW0K3m3DKVISQX
-         51WxR0duO6sKq2piZwBwUFxucunP1nUx3aXe+XYFQ1xykKiB+C6QaZpVbLE9WAiqne
-         eBMskLBH1ciewVZqRHMupvADF5+/iHqpsdWNkihmOMI+MrzMjfI3xRyR20wXFlBSN2
-         s5m7cXottrLKQQkrTu6/mIAHZfhrZAoxrXDDKX1bWtzw17sksnhhokELhcK63Vr2SP
-         xq3ZormSFlHNA==
-Date:   Tue, 17 Oct 2023 23:11:00 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Bjorn Andersson <quic_bjorande@quicinc.com>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 2/2] PCI: qcom-ep: Implement dbi_cs2_access() function
- callback for DBI CS2 access
-Message-ID: <20231017174100.GA137137@thinkpad>
-References: <20231017-pcie-qcom-bar-v1-0-3e26de07bec0@linaro.org>
- <20231017-pcie-qcom-bar-v1-2-3e26de07bec0@linaro.org>
- <20231017142431.GR3553829@hu-bjorande-lv.qualcomm.com>
- <20231017162129.GF5274@thinkpad>
- <20231017165609.GT3553829@hu-bjorande-lv.qualcomm.com>
+        Tue, 17 Oct 2023 13:42:18 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9CB79B
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 10:42:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697564536; x=1729100536;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=fCsPKwu83AR50+1nyaI7BU6yYuUMjwt4daXr2H6j1Jk=;
+  b=eA7fzQ/iZrHXOiZmzWPqhQcDj6ovrH7OmTtewzuRA6E+fGwnalmsxxGr
+   DVTRR5zqEXKStuBCkhzgPhvbqp2UKN5CR/73jSJSIc3BcAjKDH7E7DuXl
+   wW9Uiwg2fNNiWGAiF5Iwiacm1rxOwrWRRcXX0lU12M8Q0xtlF+Z8U30hz
+   NXzyf3I/R9BjkHcWI1ZVInUijkdhE7x0BZSf+xezupGA3TeS2FCrj6jxy
+   fwyZFLFpVehxELgFi2C9PU5o0GGMCZeWS97bQnGchxZc19EKypNgtBnGv
+   zcwhmUkLG68rrGug1+QUiQ/YJCtda+lc57X42ehpHC2iV1K16paHsxDFC
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="384724104"
+X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
+   d="scan'208";a="384724104"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 10:42:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="846907003"
+X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
+   d="scan'208";a="846907003"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 17 Oct 2023 10:42:15 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qso56-0009u9-13;
+        Tue, 17 Oct 2023 17:42:12 +0000
+Date:   Wed, 18 Oct 2023 01:41:29 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Christoph Lameter <cl@linux-foundation.org>
+Subject: include/linux/fortify-string.h:55:33: warning: '__builtin_strncpy'
+ specified bound 30 equals destination size
+Message-ID: <202310180153.kXs18a7s-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231017165609.GT3553829@hu-bjorande-lv.qualcomm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 09:56:09AM -0700, Bjorn Andersson wrote:
-> On Tue, Oct 17, 2023 at 09:51:29PM +0530, Manivannan Sadhasivam wrote:
-> > On Tue, Oct 17, 2023 at 07:24:31AM -0700, Bjorn Andersson wrote:
-> > > On Tue, Oct 17, 2023 at 11:47:55AM +0530, Manivannan Sadhasivam wrote:
-> > > > From: Manivannan Sadhasivam <mani@kernel.org>
-> > > 
-> > > Your S-o-b should match this.
-> > > 
-> > 
-> > I gave b4 a shot for sending the patches and missed this. Will fix it in next
-> > version.
-> > 
-> > > > 
-> > > > Qcom EP platforms require enabling/disabling the DBI CS2 access while
-> > > > programming some read only and shadow registers through DBI. So let's
-> > > > implement the dbi_cs2_access() callback that will be called by the DWC core
-> > > > while programming such registers like BAR mask register.
-> > > > 
-> > > > Without DBI CS2 access, writes to those registers will not be reflected.
-> > > > 
-> > > > Fixes: f55fee56a631 ("PCI: qcom-ep: Add Qualcomm PCIe Endpoint controller driver")
-> > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > > ---
-> > > >  drivers/pci/controller/dwc/pcie-qcom-ep.c | 14 ++++++++++++++
-> > > >  1 file changed, 14 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> > > > index 32c8d9e37876..4653cbf7f9ed 100644
-> > > > --- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> > > > +++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> > > > @@ -124,6 +124,7 @@
-> > > >  
-> > > >  /* ELBI registers */
-> > > >  #define ELBI_SYS_STTS				0x08
-> > > > +#define ELBI_CS2_ENABLE				0xa4
-> > > >  
-> > > >  /* DBI registers */
-> > > >  #define DBI_CON_STATUS				0x44
-> > > > @@ -262,6 +263,18 @@ static void qcom_pcie_dw_stop_link(struct dw_pcie *pci)
-> > > >  	disable_irq(pcie_ep->perst_irq);
-> > > >  }
-> > > >  
-> > > > +static void qcom_pcie_dbi_cs2_access(struct dw_pcie *pci, bool enable)
-> > > > +{
-> > > > +	struct qcom_pcie_ep *pcie_ep = to_pcie_ep(pci);
-> > > > +
-> > > > +	writel_relaxed(enable, pcie_ep->elbi + ELBI_CS2_ENABLE);
-> > > 
-> > > Don't you want to maintain the ordering of whatever write came before
-> > > this?
-> > > 
-> > 
-> > Since this in a dedicated function, I did not care about the ordering w.r.t
-> > previous writes. Even if it gets inlined, the order should not matter since it
-> > only enables/disables the CS2 access for the forthcoming writes.
-> > 
-> 
-> The wmb() - in a non-relaxed writel -  would ensure that no earlier
-> writes are reordered and end up in your expected set of "forthcoming
-> writes".
-> 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   213f891525c222e8ed145ce1ce7ae1f47921cb9c
+commit: e240e53ae0abb0896e0f399bdfef41c69cec3123 mm, slub: add CONFIG_SLUB_TINY
+date:   11 months ago
+config: x86_64-randconfig-m031-20230109 (https://download.01.org/0day-ci/archive/20231018/202310180153.kXs18a7s-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231018/202310180153.kXs18a7s-lkp@intel.com/reproduce)
 
-I was under the impression that the readl_relaxed() here serves as an implicit
-barrier. But reading the holy memory-barriers documentation doesn't explicitly
-say so. So I'm going to add wmb() to be on the safe side as you suggested.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310180153.kXs18a7s-lkp@intel.com/
 
-Thanks for pointing it out.
+All warnings (new ones prefixed by >>):
 
-- Mani
+   In file included from include/linux/string.h:253,
+                    from include/linux/bitmap.h:11,
+                    from include/linux/cpumask.h:12,
+                    from arch/x86/include/asm/cpumask.h:5,
+                    from arch/x86/include/asm/msr.h:11,
+                    from arch/x86/include/asm/processor.h:22,
+                    from arch/x86/include/asm/cpufeature.h:5,
+                    from arch/x86/include/asm/thread_info.h:53,
+                    from include/linux/thread_info.h:60,
+                    from arch/x86/include/asm/preempt.h:7,
+                    from include/linux/preempt.h:78,
+                    from include/linux/spinlock.h:56,
+                    from include/linux/mmzone.h:8,
+                    from include/linux/memremap.h:5,
+                    from drivers/dax/bus.c:3:
+   In function 'strncpy',
+       inlined from 'do_id_store' at drivers/dax/bus.c:87:5:
+>> include/linux/fortify-string.h:55:33: warning: '__builtin_strncpy' specified bound 30 equals destination size [-Wstringop-truncation]
+      55 | #define __underlying_strncpy    __builtin_strncpy
+         |                                 ^
+   include/linux/fortify-string.h:131:16: note: in expansion of macro '__underlying_strncpy'
+     131 |         return __underlying_strncpy(p, q, size);
+         |                ^~~~~~~~~~~~~~~~~~~~
+--
+   In file included from include/linux/string.h:253,
+                    from include/linux/bitmap.h:11,
+                    from include/linux/cpumask.h:12,
+                    from arch/x86/include/asm/cpumask.h:5,
+                    from arch/x86/include/asm/msr.h:11,
+                    from arch/x86/include/asm/processor.h:22,
+                    from arch/x86/include/asm/timex.h:5,
+                    from include/linux/timex.h:67,
+                    from include/linux/time32.h:13,
+                    from include/linux/time.h:60,
+                    from include/linux/stat.h:19,
+                    from include/linux/module.h:13,
+                    from drivers/nvme/target/core.c:7:
+   In function 'strncpy',
+       inlined from '__assign_req_name' at drivers/nvme/target/trace.h:56:2:
+>> include/linux/fortify-string.h:55:33: warning: '__builtin_strncpy' specified bound depends on the length of the source argument [-Wstringop-truncation]
+      55 | #define __underlying_strncpy    __builtin_strncpy
+         |                                 ^
+   include/linux/fortify-string.h:131:16: note: in expansion of macro '__underlying_strncpy'
+     131 |         return __underlying_strncpy(p, q, size);
+         |                ^~~~~~~~~~~~~~~~~~~~
+   In function '__fortify_strlen',
+       inlined from '__assign_req_name' at drivers/nvme/target/trace.h:57:3:
+   include/linux/fortify-string.h:53:33: note: length computed here
+      53 | #define __underlying_strlen     __builtin_strlen
+         |                                 ^
+   include/linux/fortify-string.h:183:24: note: in expansion of macro '__underlying_strlen'
+     183 |                 return __underlying_strlen(p);
+         |                        ^~~~~~~~~~~~~~~~~~~
+   In function 'fortify_memcpy_chk',
+       inlined from 'perf_trace_nvmet_req_init' at drivers/nvme/target/./trace.h:61:1:
+   include/linux/fortify-string.h:400:25: warning: call to '__read_overflow2_field' declared with attribute warning: detected read beyond size of field (2nd parameter); maybe use struct_group()? [-Wattribute-warning]
+     400 |                         __read_overflow2_field(q_size_field, size);
+         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   In function 'fortify_memcpy_chk',
+       inlined from 'trace_event_raw_event_nvmet_req_init' at drivers/nvme/target/./trace.h:61:1:
+   include/linux/fortify-string.h:400:25: warning: call to '__read_overflow2_field' declared with attribute warning: detected read beyond size of field (2nd parameter); maybe use struct_group()? [-Wattribute-warning]
+     400 |                         __read_overflow2_field(q_size_field, size);
+         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-> Not sure that the code is wrong, I just want you to be certain that this
-> isn't a problem.
-> 
-> Thanks,
-> Bjorn
+
+vim +/__builtin_strncpy +55 include/linux/fortify-string.h
+
+3009f891bb9f32 Kees Cook      2021-08-02  33  
+a28a6e860c6cf2 Francis Laniel 2021-02-25  34  #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+a28a6e860c6cf2 Francis Laniel 2021-02-25  35  extern void *__underlying_memchr(const void *p, int c, __kernel_size_t size) __RENAME(memchr);
+a28a6e860c6cf2 Francis Laniel 2021-02-25  36  extern int __underlying_memcmp(const void *p, const void *q, __kernel_size_t size) __RENAME(memcmp);
+a28a6e860c6cf2 Francis Laniel 2021-02-25  37  extern void *__underlying_memcpy(void *p, const void *q, __kernel_size_t size) __RENAME(memcpy);
+a28a6e860c6cf2 Francis Laniel 2021-02-25  38  extern void *__underlying_memmove(void *p, const void *q, __kernel_size_t size) __RENAME(memmove);
+a28a6e860c6cf2 Francis Laniel 2021-02-25  39  extern void *__underlying_memset(void *p, int c, __kernel_size_t size) __RENAME(memset);
+a28a6e860c6cf2 Francis Laniel 2021-02-25  40  extern char *__underlying_strcat(char *p, const char *q) __RENAME(strcat);
+a28a6e860c6cf2 Francis Laniel 2021-02-25  41  extern char *__underlying_strcpy(char *p, const char *q) __RENAME(strcpy);
+a28a6e860c6cf2 Francis Laniel 2021-02-25  42  extern __kernel_size_t __underlying_strlen(const char *p) __RENAME(strlen);
+a28a6e860c6cf2 Francis Laniel 2021-02-25  43  extern char *__underlying_strncat(char *p, const char *q, __kernel_size_t count) __RENAME(strncat);
+a28a6e860c6cf2 Francis Laniel 2021-02-25  44  extern char *__underlying_strncpy(char *p, const char *q, __kernel_size_t size) __RENAME(strncpy);
+a28a6e860c6cf2 Francis Laniel 2021-02-25  45  #else
+a28a6e860c6cf2 Francis Laniel 2021-02-25  46  #define __underlying_memchr	__builtin_memchr
+a28a6e860c6cf2 Francis Laniel 2021-02-25  47  #define __underlying_memcmp	__builtin_memcmp
+a28a6e860c6cf2 Francis Laniel 2021-02-25  48  #define __underlying_memcpy	__builtin_memcpy
+a28a6e860c6cf2 Francis Laniel 2021-02-25  49  #define __underlying_memmove	__builtin_memmove
+a28a6e860c6cf2 Francis Laniel 2021-02-25  50  #define __underlying_memset	__builtin_memset
+a28a6e860c6cf2 Francis Laniel 2021-02-25  51  #define __underlying_strcat	__builtin_strcat
+a28a6e860c6cf2 Francis Laniel 2021-02-25  52  #define __underlying_strcpy	__builtin_strcpy
+a28a6e860c6cf2 Francis Laniel 2021-02-25  53  #define __underlying_strlen	__builtin_strlen
+a28a6e860c6cf2 Francis Laniel 2021-02-25  54  #define __underlying_strncat	__builtin_strncat
+a28a6e860c6cf2 Francis Laniel 2021-02-25 @55  #define __underlying_strncpy	__builtin_strncpy
+a28a6e860c6cf2 Francis Laniel 2021-02-25  56  #endif
+a28a6e860c6cf2 Francis Laniel 2021-02-25  57  
+
+:::::: The code at line 55 was first introduced by commit
+:::::: a28a6e860c6cf231cf3c5171c75c342adcd00406 string.h: move fortified functions definitions in a dedicated header.
+
+:::::: TO: Francis Laniel <laniel_francis@privacyrequired.com>
+:::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
 
 -- 
-மணிவண்ணன் சதாசிவம்
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
