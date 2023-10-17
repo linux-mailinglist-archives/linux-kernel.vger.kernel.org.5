@@ -2,135 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8A37CC851
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 18:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A8677CC860
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 18:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344257AbjJQQFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 12:05:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40366 "EHLO
+        id S1344026AbjJQQHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 12:07:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343611AbjJQQFH (ORCPT
+        with ESMTP id S1343532AbjJQQHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 12:05:07 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2079.outbound.protection.outlook.com [40.107.223.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 925B3ED;
-        Tue, 17 Oct 2023 09:05:05 -0700 (PDT)
+        Tue, 17 Oct 2023 12:07:37 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2065.outbound.protection.outlook.com [40.107.93.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C219295
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:07:34 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AHYtw9HaEVVmSt2T4Agkg527SJtg8x4NbRuXBBvFjAkvfjA8TgQtOf0r/HSsBFFk/csv462preCAi8w3oY8xAnK8kTJ4McnEjMAkAdwVUzZJomo9v02h3qg83dw3bGznYaKADw39aAK3Aulr/I7VtDMtmb/nawrem3Xx5cQcOHaW47igrO+Cq8Ou4qJdxmq99KX5O4ypF60nrsuTX03D8/p9ujlQyD55hEWBj+x7j0s15Hm91vS7Q8ofmqTmpD04nCF4nPbm7/30fHnaqwuORX5jjcB70lFZYJ4ZsRW8Jr+LbOp0pnAfmrInCRhVvKXNMzgwsr0wgSbnktoeVmLQMA==
+ b=WJGV6NqyfuRXR0cR9hJUZePVLfiODtxTd8lxYbY+hu2uLJ33AG3uwHu2p4wSJvtC/FxxDql5saZUyueIB875AhTs9waMfX36oMJDPwCoM8WyZErgqYxLV308qu06+wRY4eoQgpV0JppwDQFR5rSPVlDzDk1qXs0FIDgnkoR4cZ6u39EfLxy9rwhand4HIOrhp8rs1fi5MF+Pmuf2nAS2QvJqGgD4niTWU+FSW6AO+4eq0+FRMR551m6Y+842+kYY5jgCndKM/nspdngmRgcw9ef4EKjHlYXxthG6uL4Qk780722iU3ev8tfcFF1nbV0ye02zc5UMcbQFOOVQKdTwjg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Q+MxW805I6s+rvqMchVDFnwcNZSQ3TJML2JfQ0eeaU4=;
- b=W0R44K5JiuuM1y7iyrL+xh9vFqvONZuvStNkiwkEfXWFtYEJsjgCHy4uUA7RJi5hH7M9IEBgpGErEIn+jpIdCAVsYbRFdKxOBSQTzN3hNv6+UaeAWsnxapUcwxncPfx9b4B+bI9Zszvort7rElgrAF+U5OZTWry0h5iQxAz4DBT8USq7O+9r+U8DGhcC3sVym+UxN2pf1qz9JuiYSoEQJitGSJwjKxz4cVMX8/FLWNRxtt+kz++zPfqNtP4lF2Vh8XZvS91kD5M6EqTfpVz+LkQqgdPkhqFzHHSeYKTAxdh1zkZ3LxRjFRNWpnkiQtwq9npQdwkzs+nylydRGL5HOw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ bh=hFx7IQ7j9peXYZpDon6DMDgjHoY6SjNTkngRsrx3P6A=;
+ b=lhLu1P+RLItKhbK1WUD9DW5eTM6iS1dP/zXoDrgrHXeKk1Lcc6RczR7wCM9Q4Go+feqjlbiDn21TVLoL6JZT5obT/yVo2CoQLRDomOZ1v6MKPS53y7BbpZv9ehSg0Ji9lTFjIyvkNPyrcbBEiUTU4qnE4mZtW8VzdvCLLOJ+PtnJX9YuMjgmMwMNcP1nv+1oXmyUfBhF0M9T2Tb4EkYKnTuFOkSOEkNFGq8/WdQIzcdzvQz+R8f9mOCWI6Ets+/eKOJtoAZTHDBoWWiNk6ccUP1eDEwImXMpZAbO5g6KoHI48XE6dsX8CN0Hxt7TlIwD8AI9Gt73Yh1JM/eouzJMRQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=linuxfoundation.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q+MxW805I6s+rvqMchVDFnwcNZSQ3TJML2JfQ0eeaU4=;
- b=fPgo7BpSlW1Rfq0pIvzMA58ysAAkljWFMh5qb4j8CfB8PdegalVFBNrtBSkZ1HOTjUXJDEHLgpMgfXd0ABbid2kutxXKuotOglSve8ymA7okElFGqxUPyvG0dAyFXVidX0QNhMcU6zsHwZPqi+w7r8dyBBsuNa4rarbnyrcvJLjINcrR5Soy6xa04ZWqK2XM+NP3sG1UJ4PptSkNAKwN4TgDNv8+nZUGsoXn8Oh6byBTQ1j6gqZR90FTNiHRPJgKXVde9VtRRuT+6JfTKI+QVmX24K5haUBX7JW5VoY2rPI5l0wDzT9qZLi6AIS3cIUpHxJZfLlDDWfkjjvMg3jDVg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by CH2PR12MB4905.namprd12.prod.outlook.com (2603:10b6:610:64::20) with
+ bh=hFx7IQ7j9peXYZpDon6DMDgjHoY6SjNTkngRsrx3P6A=;
+ b=s1QKmkaPRNDOqJaW5khv+tPAQXjUYGATNwc28MU4pwIu65mRkWvA9fE4Pz+vHb9T//aF60B4BpPzMaGXHE9A1gu+N/dpO4/ZIv3rye+qpu2Qn0JYgp5d8qL/Yb0tdkAG3D/PorNUfwbqapwREEqrswWiQCQ+v4mfTTRL01L8zlc=
+Received: from CY5PR19CA0118.namprd19.prod.outlook.com (2603:10b6:930:64::22)
+ by SJ1PR12MB6362.namprd12.prod.outlook.com (2603:10b6:a03:454::22) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36; Tue, 17 Oct
- 2023 16:05:03 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2%6]) with mapi id 15.20.6886.034; Tue, 17 Oct 2023
- 16:05:03 +0000
-Date:   Tue, 17 Oct 2023 13:05:02 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Nicolin Chen <nicolinc@nvidia.com>
-Cc:     Yi Liu <yi.l.liu@intel.com>, "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "kevin.tian@intel.com" <kevin.tian@intel.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "zhenzhong.duan@intel.com" <zhenzhong.duan@intel.com>,
-        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>
-Subject: Re: [PATCH v2 1/6] iommu: Add new iommu op to create domains owned
- by userspace
-Message-ID: <20231017160502.GJ3952@nvidia.com>
-References: <20230928071528.26258-1-yi.l.liu@intel.com>
- <20230928071528.26258-2-yi.l.liu@intel.com>
- <ZSuROTyaxePoVFA+@Asurada-Nvidia>
- <20231016120454.GS3952@nvidia.com>
- <ZS124n0LYj4kl/4c@Asurada-Nvidia>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZS124n0LYj4kl/4c@Asurada-Nvidia>
-X-ClientProxiedBy: BLAPR03CA0056.namprd03.prod.outlook.com
- (2603:10b6:208:32d::31) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+ 2023 16:07:28 +0000
+Received: from CY4PEPF0000EDD4.namprd03.prod.outlook.com
+ (2603:10b6:930:64:cafe::b3) by CY5PR19CA0118.outlook.office365.com
+ (2603:10b6:930:64::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.37 via Frontend
+ Transport; Tue, 17 Oct 2023 16:07:28 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000EDD4.mail.protection.outlook.com (10.167.241.208) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6838.22 via Frontend Transport; Tue, 17 Oct 2023 16:07:28 +0000
+Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 17 Oct
+ 2023 11:07:19 -0500
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB06.amd.com
+ (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 17 Oct
+ 2023 11:06:59 -0500
+Received: from xhdipdslab59.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
+ Transport; Tue, 17 Oct 2023 11:06:51 -0500
+From:   Abhijit Gangurde <abhijit.gangurde@amd.com>
+To:     <gregkh@linuxfoundation.org>, <masahiroy@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <puneet.gupta@amd.com>, <Nipun.Gupta@amd.com>,
+        <nikhil.agarwal@amd.com>, <michal.simek@amd.com>, <git@amd.com>,
+        Abhijit Gangurde <abhijit.gangurde@amd.com>,
+        Nipun Gupta <nipun.gupta@amd.com>
+Subject: [PATCH v7 5/7] cdx: add support for bus enable and disable
+Date:   Tue, 17 Oct 2023 21:35:03 +0530
+Message-ID: <20231017160505.10640-6-abhijit.gangurde@amd.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20231017160505.10640-1-abhijit.gangurde@amd.com>
+References: <20231017160505.10640-1-abhijit.gangurde@amd.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CH2PR12MB4905:EE_
-X-MS-Office365-Filtering-Correlation-Id: 260b86d6-05b3-482b-3b24-08dbcf2ad287
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD4:EE_|SJ1PR12MB6362:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2c1f1bfa-bb50-49f2-d83f-08dbcf2b294a
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Hw9kZOpJrLcGAgOi3053mvofq91tqzRgmWbKsjXF17yh8LJPwCCkDaLFN/7iaL66ejgaOVfgecG2SxPwoRCoNwJ0TPZGAYQqlUocUyy8y9Rkc1VVbq8cX37rG52sTFAYPrS7NjF9qs7Th2MVpsd9WlWmQxK+GR9O6aBG3BNUSfRhjdr9xzh0CZjfnpP4Ev+0V8KlqAF/zHEX1uIXn31inAw3+k94gXBPdJT5pk3b6RJmQ1Ar/s3fNnwLe0GbbwCxNRFeyllwsYcOofHjuKqXQ4aDe+h1tYg0frpp3JEOg7f0W/a3nmGDXnm2NkSGxCcR2ROz4wXGetjHcpDlAPIN4efPOqDDs99MBOgExQTQV6rIj+h3vkukqt8rImcRbNPmRbV5qSWRkBYxqiTPJfL/Ts3jRjh235tS4hQWEcR3l2U8kHKQOYGI4BQm3eMxSCAElCrkHGGr5TX0jVFdUNLF7cx1XRHW1XTScLCaUgjTmfK27qWwMd5u0QeICCaN1wJGMWDyKk3mGn7Ng3plC9uaIP8CDMvdIbmi3sZ2gpM5IVx21Sy4u+3v6tM4IULtAHuC
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(136003)(396003)(366004)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(6486002)(478600001)(6506007)(6512007)(36756003)(33656002)(86362001)(1076003)(38100700002)(26005)(83380400001)(2616005)(316002)(5660300002)(54906003)(37006003)(66476007)(6636002)(66946007)(41300700001)(66556008)(8936002)(8676002)(6862004)(4326008)(2906002)(7416002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?NJEdPFrYxr8OULgTqdzjj8iO9TZte1LCtRgeVkuzQ2aPdCB3qNkL0wUk707W?=
- =?us-ascii?Q?1xD8dG8gdng0vhbqCcglCPwnh6NtwnwJ2o7RtL3Y90i6WZjxE9b6U578erIy?=
- =?us-ascii?Q?HxKSWxyOxJ++AdcuMEJwKHlETnOjAbPqA8R3rvry7j6/lz9mWNH23YehGqOo?=
- =?us-ascii?Q?qpPO0edbNTFu8p+G6xv68yjmJFWoZSRYeyI4Jl5pswiBnMRaulZQYASEvX/T?=
- =?us-ascii?Q?AP/08qUYUjci8eceX/RY6Jl9hjcQE0/e2eKBEkU0NA6sXcDLnivc0dIsrDrt?=
- =?us-ascii?Q?Zgm3kJD4rFMHRXw8DXU3do6oNFKvDBBnOKS1Cgl+VCzfe0HyvlAIFoknwEJt?=
- =?us-ascii?Q?ZvOWXKo6jQEQ9/9wpAlFnq7yvIg3spHrV9/vV2mGRyPopsYEAez8njNjAZhM?=
- =?us-ascii?Q?F9Jn3CQ7z36Qw4K7vxb8UqVdn+hdp16NwnmxFRnk61LAA/MlzGwLhZgLjXSt?=
- =?us-ascii?Q?89ZpziX/IKeAu0yxbuupc0wEdw1FR4L5PxahbiNfCGTIHOuUZ9S6MhJa2hss?=
- =?us-ascii?Q?mIPIxC4ntrT7mqkc9E2dtHFPOAK/QTRXR7uf5gqW/o9yB7rmZtGaIrBv07Ok?=
- =?us-ascii?Q?jqnS5Eldy+SsmrkLA2hcQyzdLtZXZ53KpWJA+PlQnZY/99Z+spveZ0y1zXx9?=
- =?us-ascii?Q?1W8Oxa/6Dn8epjZX6bJHe2ke6D/MZUCdxAtiBGCUTRRGM8AFj+9xUoSbm3g4?=
- =?us-ascii?Q?VPPIMMkJSA2/RCW3OsIGU7X+Kb9DjcGzMvLsFDtMDA69W5BjJlwhyCHvrLPP?=
- =?us-ascii?Q?CkloSunhp4G4iR7kXDxvKpWhS5AlPKSO+feW5xiCZSYvaIt6yZxElU0PGdS9?=
- =?us-ascii?Q?EGacM22Y9flE+4P1V0GADS8Fz77X1Eyvr81tJTVZ52cEtuNWw2aO3+J7A4Ly?=
- =?us-ascii?Q?T/cPn5JYRqfeo1myV9Z7fhrke3c99H7f9AKxo/Xmm+1ykZCSu76Zhnbqwq5U?=
- =?us-ascii?Q?t8Nd8SQ8aOuwA45nIoUiPrvxzveNxOe3hT4L6wD9KSX6M+DGXc/W46am8sfl?=
- =?us-ascii?Q?nhNipwLlgPma7+KBumNlGrI62Z2VAoBXPQnb5TQz445B4QkghLhJbFIKEMlO?=
- =?us-ascii?Q?VSggv4NyCEsBXlrxGmRrHJjmnjnWxP+qkW1xzVpKMGKwyrqeIA5Z5Wdr7Wa5?=
- =?us-ascii?Q?ffFrAnOo8KO6VGc/zVh3Q6hBOAVTT0dBN5ZfDETqOHNPiAe/025wVbcv8C6Z?=
- =?us-ascii?Q?Sk9udU8Gc1AKm8fL7YIvOHSVTsy0G3L9Zvlr0JJflEJXM4cWUf1Fzr4j6KTk?=
- =?us-ascii?Q?qO3sHEVtK+KDID2U19hYbrNaQ+FIH75ZwrCX9zxhUx8MBodai6+Sm+6u0a2/?=
- =?us-ascii?Q?N/704kOLkghVO4rwCx2wf06a057XKuP80bRulf4ByZfCwPBwCGA9QmT3I7Fu?=
- =?us-ascii?Q?C1J4IvsvHyBEpCfeHCq9t4B6zqnvbqAr/xKQzBbkqHuxYq9QKcKj5Kl/idDB?=
- =?us-ascii?Q?hvQP8vjfVp8RnapmzCs4zLQRZOiKlZm6RFwQuibOKbSr702Yvp7i1I7nMFtg?=
- =?us-ascii?Q?oIstTAhEBUccDI8YaOJPymoyVZanDeSnu+7TfH7RXudTSxatJg2Ge+vomLSQ?=
- =?us-ascii?Q?mHUHIxsqrniwQS//kSLJNkURK+P5vxPnECIHLeSY?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 260b86d6-05b3-482b-3b24-08dbcf2ad287
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Oct 2023 16:05:03.2298
+X-Microsoft-Antispam-Message-Info: TMyCEtbNhs/dE070JBA5zZhN08c3Mo+gyMuP/hN8+Ryy6KydS/yeJORN1gGVXhn2BPInR76+UfmAPdUXQ/A51aQ2rzJqvO3kQWdxmNPXPPHK5xg36GNILzeSf/gpRh9zbjkBneXbm4Mu7ys6gfldrWnN2WH4bf23nelkrYZ0dptSBYJZbLiT9POb9RRykJz6MNBHwbAO65j1OC3u3+nwGBY0DSeZnkPAH5L3lKMTuSkM0amdc+B69k16xOPlUHzFQUeOZqcCNpxurEjHOZsDkazwk2SaKF8u7C4fGnm+8HqXCCgrBscorS3p21+JtWAplB0nNEn+z9AJTq55oqeJSIbJHNY9vgq2tv7apKg45VZkvNeRGRjtiHo9rfhDAYhrWVMxEWFA9MCK7Kh1VCLJ/ir4P0YBpQHtB/IHww5rKtq4Lve9eQZbQR1Tl4N+H+ITfjz8+/itYMTtj59iUfAxbAV9Vbsd1BD/Qqa1zMyGWBQXmgxq0cFfAPob/x/FsKEnjnw95FYH6eCvotK8cEvLRUVdVyS5YmgI9PMduxmAaH6gWdsibbxo0L1Czy8m6MTr24e8nNGecsfqisjgi8E/tdkX67zUlPyEPiIStHX47kDHZo2W1uYKstmka25+88mq3tgxTJcE8507RsvHQ3ZpjoF8UcnKHp8BtGQxY+H9KV+Li87CLsHu3hOu28nRhc/KKpxRVX2xkekRvt1elcPc0wJceAT8rB47v55SslWNv7CkT9mixN/Cnj/ulPSArrMoRORyQ7qKMcm2wW5nhxr6Ag==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(39860400002)(376002)(136003)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(82310400011)(36840700001)(40470700004)(46966006)(316002)(54906003)(478600001)(70586007)(70206006)(6666004)(110136005)(36860700001)(1076003)(26005)(2616005)(336012)(426003)(30864003)(44832011)(4326008)(8676002)(8936002)(2906002)(41300700001)(81166007)(36756003)(5660300002)(86362001)(82740400003)(356005)(47076005)(83380400001)(40480700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Oct 2023 16:07:28.4808
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Z2r+Cern1hlrbnHyIOz6RDWsNOng4VFZA8SsZaEwCYti/TyvHXGKB46IdWQvBgef
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4905
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2c1f1bfa-bb50-49f2-d83f-08dbcf2b294a
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EDD4.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6362
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
         autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -138,37 +106,393 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 10:46:10AM -0700, Nicolin Chen wrote:
-> On Mon, Oct 16, 2023 at 09:04:54AM -0300, Jason Gunthorpe wrote:
-> > On Sun, Oct 15, 2023 at 12:14:01AM -0700, Nicolin Chen wrote:
-> > > On Thu, Sep 28, 2023 at 12:15:23AM -0700, Yi Liu wrote:
-> > > 
-> > > > diff --git a/include/uapi/linux/iommufd.h b/include/uapi/linux/iommufd.h
-> > > > index b4ba0c0cbab6..4a7c5c8fdbb4 100644
-> > > > --- a/include/uapi/linux/iommufd.h
-> > > > +++ b/include/uapi/linux/iommufd.h
-> > > > @@ -347,10 +347,20 @@ struct iommu_vfio_ioas {
-> > > >  };
-> > > >  #define IOMMU_VFIO_IOAS _IO(IOMMUFD_TYPE, IOMMUFD_CMD_VFIO_IOAS)
-> > > > 
-> > > > +/**
-> > > > + * enum iommufd_hwpt_alloc_flags - Flags for HWPT allocation
-> > > > + * @IOMMU_HWPT_ALLOC_NEST_PARENT: If set, allocate a domain which can serve
-> > > > + *                                as the parent domain in the nesting
-> > > > + *                                configuration.
-> > > 
-> > > I just noticed a nit here: we should probably align with other
-> > > parts of this file by using "HWPT" v.s. "domain"? I.e.
-> > > 
-> > > + * @IOMMU_HWPT_ALLOC_NEST_PARENT: If set, allocate a HWPT which can serve
-> > > + *                                as the parent HWPT in the nesting
-> > > + *                                configuration.
-> > 
-> > Yes
-> 
-> Should we resend? Or would it be possible for you to update it
-> in your for-next tree?
+CDX bus needs to be disabled before updating/writing devices
+in the FPGA. Once the devices are written, the bus shall be
+rescanned. This change provides sysfs entry to enable/disable the
+CDX bus.
 
-At this point send a Fixes: patch
+Co-developed-by: Nipun Gupta <nipun.gupta@amd.com>
+Signed-off-by: Nipun Gupta <nipun.gupta@amd.com>
+Signed-off-by: Abhijit Gangurde <abhijit.gangurde@amd.com>
+---
+ Changes in v7:
+ - None
 
-Jason
+ Changes in v6:
+ - Remove bus attributes enable and disable
+ - Add enable attribute for cdx device visible only for bus device.
+
+ Changes in v5:
+ - Rebased on Linux 6.6
+
+ Changes in v4:
+ - Add sparse marking for lock around cdx_find_controller() function
+
+ Changes in v3:
+ - Use platform bus to locate controller
+
+ Changes in v2:
+ - Improve documentation
+ - Split sysfs entry enable to enable and disable
+ - sysfs entry enable and disable take bus number as an argument
+
+ Documentation/ABI/testing/sysfs-bus-cdx | 13 +++++
+ drivers/cdx/cdx.c                       | 72 +++++++++++++++++++++++++
+ drivers/cdx/controller/cdx_controller.c | 12 +++++
+ drivers/cdx/controller/mc_cdx_pcol.h    | 54 +++++++++++++++++++
+ drivers/cdx/controller/mcdi_functions.c | 24 +++++++++
+ drivers/cdx/controller/mcdi_functions.h | 18 +++++++
+ include/linux/cdx/cdx_bus.h             | 10 ++++
+ 7 files changed, 203 insertions(+)
+
+diff --git a/Documentation/ABI/testing/sysfs-bus-cdx b/Documentation/ABI/testing/sysfs-bus-cdx
+index 7af477f49998..c12bdaa4152a 100644
+--- a/Documentation/ABI/testing/sysfs-bus-cdx
++++ b/Documentation/ABI/testing/sysfs-bus-cdx
+@@ -28,6 +28,19 @@ Description:
+ 		of a device manufacturer.
+ 		Combination of Vendor ID and Device ID identifies a device.
+ 
++What:		/sys/bus/cdx/devices/.../enable
++Date:		October 2023
++Contact:	abhijit.gangurde@amd.com
++Description:
++		CDX bus should be disabled before updating the devices in FPGA.
++		Writing n/0/off will attempt to disable the CDX bus and.
++		writing y/1/on will attempt to enable the CDX bus. Reading this file
++		gives the current state of the bus, 1 for enabled and 0 for disabled.
++
++		For example::
++
++		  # echo 1 > /sys/bus/cdx/.../enable
++
+ What:		/sys/bus/cdx/devices/.../reset
+ Date:		March 2023
+ Contact:	nipun.gupta@amd.com
+diff --git a/drivers/cdx/cdx.c b/drivers/cdx/cdx.c
+index cf5306580c21..8eb484c37e97 100644
+--- a/drivers/cdx/cdx.c
++++ b/drivers/cdx/cdx.c
+@@ -124,9 +124,12 @@ static int cdx_unregister_device(struct device *dev,
+ 				 void *data)
+ {
+ 	struct cdx_device *cdx_dev = to_cdx_device(dev);
++	struct cdx_controller *cdx = cdx_dev->cdx;
+ 
+ 	if (cdx_dev->is_bus) {
+ 		device_for_each_child(dev, NULL, cdx_unregister_device);
++		if (cdx_dev->enabled && cdx->ops->bus_disable)
++			cdx->ops->bus_disable(cdx, cdx_dev->bus_num);
+ 	} else {
+ 		kfree(cdx_dev->driver_override);
+ 		cdx_dev->driver_override = NULL;
+@@ -383,6 +386,41 @@ static ssize_t driver_override_show(struct device *dev,
+ }
+ static DEVICE_ATTR_RW(driver_override);
+ 
++static ssize_t enable_store(struct device *dev, struct device_attribute *attr,
++			    const char *buf, size_t count)
++{
++	struct cdx_device *cdx_dev = to_cdx_device(dev);
++	struct cdx_controller *cdx = cdx_dev->cdx;
++	bool enable;
++	int ret;
++
++	if (kstrtobool(buf, &enable) < 0)
++		return -EINVAL;
++
++	if (enable == cdx_dev->enabled)
++		return count;
++
++	if (enable && cdx->ops->bus_enable)
++		ret = cdx->ops->bus_enable(cdx, cdx_dev->bus_num);
++	else if (!enable && cdx->ops->bus_disable)
++		ret = cdx->ops->bus_disable(cdx, cdx_dev->bus_num);
++	else
++		ret = -EOPNOTSUPP;
++
++	if (!ret)
++		cdx_dev->enabled = enable;
++
++	return ret < 0 ? ret : count;
++}
++
++static ssize_t enable_show(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	struct cdx_device *cdx_dev = to_cdx_device(dev);
++
++	return sysfs_emit(buf, "%u\n", cdx_dev->enabled);
++}
++static DEVICE_ATTR_RW(enable);
++
+ static umode_t cdx_dev_attrs_are_visible(struct kobject *kobj, struct attribute *a, int n)
+ {
+ 	struct device *dev = kobj_to_dev(kobj);
+@@ -395,6 +433,18 @@ static umode_t cdx_dev_attrs_are_visible(struct kobject *kobj, struct attribute
+ 	return 0;
+ }
+ 
++static umode_t cdx_bus_attrs_are_visible(struct kobject *kobj, struct attribute *a, int n)
++{
++	struct device *dev = kobj_to_dev(kobj);
++	struct cdx_device *cdx_dev;
++
++	cdx_dev = to_cdx_device(dev);
++	if (cdx_dev->is_bus)
++		return a->mode;
++
++	return 0;
++}
++
+ static struct attribute *cdx_dev_attrs[] = {
+ 	&dev_attr_remove.attr,
+ 	&dev_attr_reset.attr,
+@@ -409,8 +459,19 @@ static const struct attribute_group cdx_dev_group = {
+ 	.is_visible = cdx_dev_attrs_are_visible,
+ };
+ 
++static struct attribute *cdx_bus_dev_attrs[] = {
++	&dev_attr_enable.attr,
++	NULL,
++};
++
++static const struct attribute_group cdx_bus_dev_group = {
++	.attrs = cdx_bus_dev_attrs,
++	.is_visible = cdx_bus_attrs_are_visible,
++};
++
+ static const struct attribute_group *cdx_dev_groups[] = {
+ 	&cdx_dev_group,
++	&cdx_bus_dev_group,
+ 	NULL,
+ };
+ 
+@@ -588,8 +649,19 @@ struct device *cdx_bus_add(struct cdx_controller *cdx, u8 bus_num)
+ 		goto device_add_fail;
+ 	}
+ 
++	if (cdx->ops->bus_enable) {
++		ret = cdx->ops->bus_enable(cdx, bus_num);
++		if (ret && ret != -EALREADY) {
++			dev_err(cdx->dev, "cdx bus enable failed: %d\n", ret);
++			goto bus_enable_fail;
++		}
++	}
++
++	cdx_dev->enabled = true;
+ 	return &cdx_dev->dev;
+ 
++bus_enable_fail:
++	device_del(&cdx_dev->dev);
+ device_add_fail:
+ 	put_device(&cdx_dev->dev);
+ 
+diff --git a/drivers/cdx/controller/cdx_controller.c b/drivers/cdx/controller/cdx_controller.c
+index b4e0d6b40339..f2a691efd1f1 100644
+--- a/drivers/cdx/controller/cdx_controller.c
++++ b/drivers/cdx/controller/cdx_controller.c
+@@ -33,6 +33,16 @@ static const struct cdx_mcdi_ops mcdi_ops = {
+ 	.mcdi_request = cdx_mcdi_request,
+ };
+ 
++static int cdx_bus_enable(struct cdx_controller *cdx, u8 bus_num)
++{
++	return cdx_mcdi_bus_enable(cdx->priv, bus_num);
++}
++
++static int cdx_bus_disable(struct cdx_controller *cdx, u8 bus_num)
++{
++	return cdx_mcdi_bus_disable(cdx->priv, bus_num);
++}
++
+ void cdx_rpmsg_post_probe(struct cdx_controller *cdx)
+ {
+ 	/* Register CDX controller with CDX bus driver */
+@@ -128,6 +138,8 @@ static int cdx_scan_devices(struct cdx_controller *cdx)
+ }
+ 
+ static struct cdx_ops cdx_ops = {
++	.bus_enable		= cdx_bus_enable,
++	.bus_disable	= cdx_bus_disable,
+ 	.scan		= cdx_scan_devices,
+ 	.dev_configure	= cdx_configure_device,
+ };
+diff --git a/drivers/cdx/controller/mc_cdx_pcol.h b/drivers/cdx/controller/mc_cdx_pcol.h
+index 4ccb7b52951b..2de019406b57 100644
+--- a/drivers/cdx/controller/mc_cdx_pcol.h
++++ b/drivers/cdx/controller/mc_cdx_pcol.h
+@@ -455,6 +455,60 @@
+ #define MC_CMD_CDX_BUS_GET_DEVICE_CONFIG_OUT_REQUESTER_ID_OFST			84
+ #define MC_CMD_CDX_BUS_GET_DEVICE_CONFIG_OUT_REQUESTER_ID_LEN			4
+ 
++/***********************************/
++/*
++ * MC_CMD_CDX_BUS_DOWN
++ * Asserting reset on the CDX bus causes all devices on the bus to be quiesced.
++ * DMA bus mastering is disabled and any pending DMA request are flushed. Once
++ * the response is returned, the devices are guaranteed to no longer issue DMA
++ * requests or raise MSI interrupts. Further device MMIO accesses may have
++ * undefined results. While the bus reset is asserted, any of the enumeration
++ * or device configuration MCDIs will fail with EAGAIN. It is only legal to
++ * reload the relevant PL region containing CDX devices if the corresponding CDX
++ * bus is in reset. Depending on the implementation, the firmware may or may
++ * not enforce this restriction and it is up to the caller to make sure this
++ * requirement is satisfied.
++ */
++#define MC_CMD_CDX_BUS_DOWN					0x4
++#define MC_CMD_CDX_BUS_DOWN_MSGSET			0x4
++
++/* MC_CMD_CDX_BUS_DOWN_IN msgrequest */
++#define MC_CMD_CDX_BUS_DOWN_IN_LEN			4
++/* Bus number to put in reset, in range 0 to BUS_COUNT-1 */
++#define MC_CMD_CDX_BUS_DOWN_IN_BUS_OFST		0
++#define MC_CMD_CDX_BUS_DOWN_IN_BUS_LEN		4
++
++/*
++ * MC_CMD_CDX_BUS_DOWN_OUT msgresponse: The bus is quiesced, no further
++ * upstream traffic for devices on this bus.
++ */
++#define MC_CMD_CDX_BUS_DOWN_OUT_LEN			0
++
++/***********************************/
++/*
++ * MC_CMD_CDX_BUS_UP
++ * After bus reset is de-asserted, devices are in a state which is functionally
++ * equivalent to each device having been reset with MC_CMD_CDX_DEVICE_RESET. In
++ * other words, device logic is reset in a hardware-specific way, MMIO accesses
++ * are forwarded to the device, DMA bus mastering is disabled and needs to be
++ * re-enabled with MC_CMD_CDX_DEVICE_DMA_ENABLE once the driver is ready to
++ * start servicing DMA. If the underlying number of devices or device resources
++ * changed (e.g. if PL was reloaded) while the bus was in reset, the bus driver
++ * is expected to re-enumerate the bus. Returns EALREADY if the bus was already
++ * up before the call.
++ */
++#define MC_CMD_CDX_BUS_UP					0x5
++#define MC_CMD_CDX_BUS_UP_MSGSET			0x5
++
++/* MC_CMD_CDX_BUS_UP_IN msgrequest */
++#define MC_CMD_CDX_BUS_UP_IN_LEN			4
++/* Bus number to take out of reset, in range 0 to BUS_COUNT-1 */
++#define MC_CMD_CDX_BUS_UP_IN_BUS_OFST		0
++#define MC_CMD_CDX_BUS_UP_IN_BUS_LEN		4
++
++/* MC_CMD_CDX_BUS_UP_OUT msgresponse: The bus can now be enumerated. */
++#define MC_CMD_CDX_BUS_UP_OUT_LEN			0
++
+ /***********************************/
+ /*
+  * MC_CMD_CDX_DEVICE_RESET
+diff --git a/drivers/cdx/controller/mcdi_functions.c b/drivers/cdx/controller/mcdi_functions.c
+index 0158f26533dd..0e1e35d91242 100644
+--- a/drivers/cdx/controller/mcdi_functions.c
++++ b/drivers/cdx/controller/mcdi_functions.c
+@@ -124,6 +124,30 @@ int cdx_mcdi_get_dev_config(struct cdx_mcdi *cdx,
+ 	return 0;
+ }
+ 
++int cdx_mcdi_bus_enable(struct cdx_mcdi *cdx, u8 bus_num)
++{
++	MCDI_DECLARE_BUF(inbuf, MC_CMD_CDX_BUS_UP_IN_LEN);
++	int ret;
++
++	MCDI_SET_DWORD(inbuf, CDX_BUS_UP_IN_BUS, bus_num);
++	ret = cdx_mcdi_rpc(cdx, MC_CMD_CDX_BUS_UP, inbuf, sizeof(inbuf),
++			   NULL, 0, NULL);
++
++	return ret;
++}
++
++int cdx_mcdi_bus_disable(struct cdx_mcdi *cdx, u8 bus_num)
++{
++	MCDI_DECLARE_BUF(inbuf, MC_CMD_CDX_BUS_DOWN_IN_LEN);
++	int ret;
++
++	MCDI_SET_DWORD(inbuf, CDX_BUS_DOWN_IN_BUS, bus_num);
++	ret = cdx_mcdi_rpc(cdx, MC_CMD_CDX_BUS_DOWN, inbuf, sizeof(inbuf),
++			   NULL, 0, NULL);
++
++	return ret;
++}
++
+ int cdx_mcdi_reset_device(struct cdx_mcdi *cdx, u8 bus_num, u8 dev_num)
+ {
+ 	MCDI_DECLARE_BUF(inbuf, MC_CMD_CDX_DEVICE_RESET_IN_LEN);
+diff --git a/drivers/cdx/controller/mcdi_functions.h b/drivers/cdx/controller/mcdi_functions.h
+index 7440ace5539a..28973d5ec3ab 100644
+--- a/drivers/cdx/controller/mcdi_functions.h
++++ b/drivers/cdx/controller/mcdi_functions.h
+@@ -47,6 +47,24 @@ int cdx_mcdi_get_dev_config(struct cdx_mcdi *cdx,
+ 			    u8 bus_num, u8 dev_num,
+ 			    struct cdx_dev_params *dev_params);
+ 
++/**
++ * cdx_mcdi_bus_enable - Enable CDX bus represented by bus_num
++ * @cdx: pointer to MCDI interface.
++ * @bus_num: Bus number.
++ *
++ * Return: 0 on success, <0 on failure
++ */
++int cdx_mcdi_bus_enable(struct cdx_mcdi *cdx, u8 bus_num);
++
++/**
++ * cdx_mcdi_bus_disable - Disable CDX bus represented by bus_num
++ * @cdx: pointer to MCDI interface.
++ * @bus_num: Bus number.
++ *
++ * Return: 0 on success, <0 on failure
++ */
++int cdx_mcdi_bus_disable(struct cdx_mcdi *cdx, u8 bus_num);
++
+ /**
+  * cdx_mcdi_reset_device - Reset cdx device represented by bus_num:dev_num
+  * @cdx: pointer to MCDI interface.
+diff --git a/include/linux/cdx/cdx_bus.h b/include/linux/cdx/cdx_bus.h
+index b5e4b7e05666..18e95076d1d5 100644
+--- a/include/linux/cdx/cdx_bus.h
++++ b/include/linux/cdx/cdx_bus.h
+@@ -28,6 +28,10 @@ struct cdx_device_config {
+ 	u8 type;
+ };
+ 
++typedef int (*cdx_bus_enable_cb)(struct cdx_controller *cdx, u8 bus_num);
++
++typedef int (*cdx_bus_disable_cb)(struct cdx_controller *cdx, u8 bus_num);
++
+ typedef int (*cdx_scan_cb)(struct cdx_controller *cdx);
+ 
+ typedef int (*cdx_dev_configure_cb)(struct cdx_controller *cdx,
+@@ -49,11 +53,15 @@ typedef int (*cdx_dev_configure_cb)(struct cdx_controller *cdx,
+ 
+ /**
+  * struct cdx_ops - Callbacks supported by CDX controller.
++ * @bus_enable: enable bus on the controller
++ * @bus_disable: disable bus on the controller
+  * @scan: scan the devices on the controller
+  * @dev_configure: configuration like reset, master_enable,
+  *		   msi_config etc for a CDX device
+  */
+ struct cdx_ops {
++	cdx_bus_enable_cb bus_enable;
++	cdx_bus_disable_cb bus_disable;
+ 	cdx_scan_cb scan;
+ 	cdx_dev_configure_cb dev_configure;
+ };
+@@ -89,6 +97,7 @@ struct cdx_controller {
+  * @flags: CDX device flags
+  * @req_id: Requestor ID associated with CDX device
+  * @is_bus: Is this bus device
++ * @enabled: is this bus enabled
+  * @driver_override: driver name to force a match; do not set directly,
+  *                   because core frees it; use driver_set_override() to
+  *                   set or clear it.
+@@ -106,6 +115,7 @@ struct cdx_device {
+ 	u16 flags;
+ 	u32 req_id;
+ 	bool is_bus;
++	bool enabled;
+ 	const char *driver_override;
+ };
+ 
+-- 
+2.34.1
+
