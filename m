@@ -2,56 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 619567CCFE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 00:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 456187CCFF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 00:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234787AbjJQWMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 18:12:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49938 "EHLO
+        id S1344138AbjJQWOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 18:14:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230056AbjJQWMN (ORCPT
+        with ESMTP id S230056AbjJQWOx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 18:12:13 -0400
-Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB8AB0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 15:12:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1697580728;
-        bh=aq553lTH/P/eg3unHB+xg5ckzW8DyeiJUeDSvYFj37Y=;
-        h=From:To:Cc:Subject:Date:From;
-        b=SGtnRQyii2OodO7HTwkxdYWU+oLFQ009vvcPAHAezz9SYIQzDaHHXSnRyKcDnU6yn
-         KEJaeuI5yxaqPKb6A9O81cHwA535hPhyJ4dVRhkmRrw+vaYkPBSQFwk89L2iwGKBNF
-         qEGRk1f0u5Uhoiz/yPbKlNkH/GpPerx8XpJP3AoiZsIo7MMgfBGXqGCyq/crSzUK4Y
-         zaq7p5dP/Kei6uoiRTDkYdYoAHiNbLUtGCQvGKQeFMm8hGKp2woH0Fitg26W1c7BzP
-         +czYOL6No4uL6zsaRNclqFDcIxfOfMOuBe2c8g8mBbXb11Z5aViTR34cTRm9EqS2W/
-         HT4zb+MY9WgPQ==
-Received: from thinkos.internal.efficios.com (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4S97WD4kNBz1Xwy;
-        Tue, 17 Oct 2023 18:12:08 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
-        Aaron Lu <aaron.lu@intel.com>, Chen Yu <yu.c.chen@intel.com>,
-        Tim Chen <tim.c.chen@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>, x86@kernel.org
-Subject: [RFC PATCH] sched/fair: Introduce WAKEUP_BIAS_PREV to reduce migrations
-Date:   Tue, 17 Oct 2023 18:12:04 -0400
-Message-Id: <20231017221204.1535774-1-mathieu.desnoyers@efficios.com>
-X-Mailer: git-send-email 2.39.2
+        Tue, 17 Oct 2023 18:14:53 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E6D9B0;
+        Tue, 17 Oct 2023 15:14:51 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b9338e4695so82346131fa.2;
+        Tue, 17 Oct 2023 15:14:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697580890; x=1698185690; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zOAltFmNIIk1OQ8RE29YlbSsDwGFJQEW4YapJi7YEcE=;
+        b=bsnq3ptt5rQFAizkxPbThSrT3kNjIERW0xuLe+9Be7ud1vKSABi0eFNx20LwogXf6c
+         veELZaPhzh6tV5Hj3lfqQ/+/Z9V9eT7Jdb/8ZT2/Ep2+X9wVMjEn73bhpqeBXlRZk9Id
+         yaKr4s6AzrTJpmRxTn4cr9xgaSSHI9P8hyPp9hPnS2jM7Wden/TguUJ+uYl4pm7QecEO
+         8VFXKmrE+H4MKtQa6L9Z/CDOyUGuxfUUn2xIVeqPNG3pGBP3Ck8oDEyNQKJZjF3Z9POz
+         +ly19txGXIKU7D0iezGkUHZoS3WazTJ4u4SUFJw22QDyDQ87ihntlQdlvqv7KfYJcoQN
+         JMpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697580890; x=1698185690;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zOAltFmNIIk1OQ8RE29YlbSsDwGFJQEW4YapJi7YEcE=;
+        b=QTCxZc/WmxBdv//y/S0aRb//KTe/dHBkxJ/AWqAfJ6p/tKABlEl3nhB9jV29fxdPiU
+         35q6gv9gEoSgFBLAdb5ivrabJOXqurD5giiylcZGZP0luVfrLP0f4RSdjA8vouihy5dx
+         1t5deq9bFLadklGIFxap1DQB4nuwj7rxrBBaKE5XDjmDIHHqQEtuVK/dKb3dKGxNG/RH
+         GjcWEULnI0xOZDwdoeRioczQbl+lqx7PxkvOfCdFTXrL4qyZv7nRfwHd2cAL+8Cye0tv
+         Ua8c7Bo0XBkeZPKvg2m5YJdw7j6+2KFH9NGIpdjtrBTDyvPT2EM1k9Q9njhKejLff8qI
+         phyQ==
+X-Gm-Message-State: AOJu0YyfwcmYS17jQd4BzYVLnIynFjZXgSAK9QSkp98Kc3Cwg99HvgeK
+        TXCGycgWB0FNiEcmIlr9EkoRLVeQsge7Lw==
+X-Google-Smtp-Source: AGHT+IEOpr6BB0LyNnV+m0noVjJYZ0i8J9qyJIrlwMfaZvC5GGftq5mVNUekH40+/BfvoXTTd9ds7g==
+X-Received: by 2002:a2e:8e22:0:b0:2b6:a804:4cc with SMTP id r2-20020a2e8e22000000b002b6a80404ccmr2153096ljk.53.1697580889428;
+        Tue, 17 Oct 2023 15:14:49 -0700 (PDT)
+Received: from localhost.localdomain ([178.70.169.129])
+        by smtp.gmail.com with ESMTPSA id d13-20020a2eb04d000000b002c09602150asm431479ljl.27.2023.10.17.15.14.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Oct 2023 15:14:48 -0700 (PDT)
+From:   Ivan Bornyakov <brnkv.i1@gmail.com>
+To:     Sebastian Fricke <sebastian.fricke@collabora.com>
+Cc:     Ivan Bornyakov <brnkv.i1@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jackson Lee <jackson.lee@chipsnmedia.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Nas Chung <nas.chung@chipsnmedia.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-media@vger.kernel.org, Tomasz Figa <tfiga@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        kernel@collabora.com, Robert Beckett <bob.beckett@collabora.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Darren Etheridge <detheridge@ti.com>
+Subject: Re: [PATCH v13 5/8] media: chips-media: wave5: Add the v4l2 layer
+Date:   Wed, 18 Oct 2023 01:13:52 +0300
+Message-ID: <20231017221359.20164-1-brnkv.i1@gmail.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230929-wave5_v13_media_master-v13-5-5ac60ccbf2ce@collabora.com>
+References: 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,210 +90,163 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce the WAKEUP_BIAS_PREV scheduler feature to reduce the task
-migration rate.
+Hi!
 
-For scenarios where the system is under-utilized (CPUs are partly idle),
-eliminate frequent task migrations from CPUs with spare capacity left to
-completely idle CPUs by introducing a bias towards the previous CPU if
-it is idle or has spare capacity left in select_idle_sibling(). Use 25%
-of the previously used CPU capacity as spare capacity cutoff.
+On Thu, 12 Oct 2023 13:01:03 +0200, Sebastian Fricke wrote:
+> Add the decoder and encoder implementing the v4l2
+> API. This patch also adds the Makefile and the VIDEO_WAVE_VPU config
+> 
+> Signed-off-by: Sebastian Fricke <sebastian.fricke@collabora.com>
+> Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+> Signed-off-by: Deborah Brouwer <deborah.brouwer@collabora.com>
+> Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
+> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+> Signed-off-by: Nas Chung <nas.chung@chipsnmedia.com>
+> ---
+>  drivers/media/platform/chips-media/Kconfig         |    1 +
+>  drivers/media/platform/chips-media/Makefile        |    1 +
+>  drivers/media/platform/chips-media/wave5/Kconfig   |   12 +
+>  drivers/media/platform/chips-media/wave5/Makefile  |   10 +
+>  .../platform/chips-media/wave5/wave5-helper.c      |  213 +++
+>  .../platform/chips-media/wave5/wave5-helper.h      |   31 +
+>  .../platform/chips-media/wave5/wave5-vpu-dec.c     | 1953 ++++++++++++++++++++
+>  .../platform/chips-media/wave5/wave5-vpu-enc.c     | 1794 ++++++++++++++++++
+>  .../media/platform/chips-media/wave5/wave5-vpu.c   |  291 +++
+>  .../media/platform/chips-media/wave5/wave5-vpu.h   |   83 +
+>  .../platform/chips-media/wave5/wave5-vpuapi.h      |    2 -
+>  11 files changed, 4389 insertions(+), 2 deletions(-)
 
-For scenarios where the system is fully or over-utilized (CPUs are
-almost never idle), favor the previous CPU (rather than the target CPU)
-if all CPUs are busy to minimize migrations. (suggested by Chen Yu)
+[...]
 
-The following benchmarks are performed on a v6.5.5 kernel with
-mitigations=off.
+> diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
+> new file mode 100644
+> index 000000000000..74d1fae64fa4
+> --- /dev/null
+> +++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
 
-This speeds up the following hackbench workload on a 192 cores AMD EPYC
-9654 96-Core Processor (over 2 sockets):
+[...]
 
-hackbench -g 32 -f 20 --threads --pipe -l 480000 -s 100
+> +static int wave5_vpu_dec_queue_setup(struct vb2_queue *q, unsigned int *num_buffers,
+> +				     unsigned int *num_planes, unsigned int sizes[],
+> +				     struct device *alloc_devs[])
+> +{
+> +	struct vpu_instance *inst = vb2_get_drv_priv(q);
+> +	struct v4l2_pix_format_mplane inst_format =
+> +		(q->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) ? inst->src_fmt : inst->dst_fmt;
+> +	unsigned int i;
+> +
+> +	dev_dbg(inst->dev->dev, "%s: num_buffers: %u | num_planes: %u | type: %u\n", __func__,
+> +		*num_buffers, *num_planes, q->type);
+> +
+> +	/* the CREATE_BUFS case */
+> +	if (*num_planes) {
+> +		if (inst_format.num_planes != *num_planes)
+> +			return -EINVAL;
+> +
+> +		for (i = 0; i < *num_planes; i++) {
+> +			if (sizes[i] < inst_format.plane_fmt[i].sizeimage)
+> +				return -EINVAL;
+> +		}
+> +	/* the REQBUFS case */
+> +	} else {
+> +		*num_planes = inst_format.num_planes;
+> +
+> +		if (q->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) {
+> +			sizes[0] = inst_format.plane_fmt[0].sizeimage;
+> +			dev_dbg(inst->dev->dev, "%s: size[0]: %u\n", __func__, sizes[0]);
+> +		} else if (*num_planes == 1) {
 
-from 49s to 29s. (41% speedup)
+I think, you should also set *num_buffers to be inst->fbc_buf_count for
+V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE, like this:
 
-We can observe that the number of migrations is reduced significantly
-(-94%) with this patch, which may explain the speedup:
+		} else if (q->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
+			if (*num_buffers < inst->fbc_buf_count)
+				*num_buffers = inst->fbc_buf_count;
 
-Baseline:      118M cpu-migrations  (9.286 K/sec)
-With patch:      7M cpu-migrations  (0.701 K/sec)
+			switch (*num_planes) {
+			case 1:
+				...
+			case 2:
+				...
+			case 3:
+				...
+			}
+		}
 
-As a consequence, the stalled-cycles-backend are reduced:
+The reason for that is if fbc_buf_count is greater than initial num_buffers,
+wave5_vpu_dec_job_ready() wouldn't allow to invoke wave5_vpu_dec_device_run()
 
-Baseline:     8.16% backend cycles idle
-With patch:   6.46% backend cycles idle
+Here is a part of the log of described situation:
 
-Interestingly, the rate of context switch increases with the patch, but
-it does not appear to be an issue performance-wise:
+  vdec 20410000.wave515: Switch state from NONE to OPEN.
+  [...]
+  vdec 20410000.wave515: wave5_vpu_dec_init_seq: init seq sent (queue 1 : 1)
+  vdec 20410000.wave515: wave5_vpu_dec_get_seq_info: init seq complete (queue 0 : 0)
+  [...]
+  vdec 20410000.wave515: handle_dynamic_resolution_change: width: 4112 height: 3008 profile: 1 | minbuffer: 6
+  ^^^^^^^^ note that minbuffer is 6
 
-Baseline:     454M context-switches (35.677 K/sec)
-With patch:   683M context-switches (69.299 K/sec)
+  vdec 20410000.wave515: Switch state from OPEN to INIT_SEQ.
+  [...]
+  vdec 20410000.wave515: decoder command: 1
+  [...]
+  vdec 20410000.wave515: wave5_vpu_dec_queue_setup: num_buffers: 4 | num_planes: 0 | type: 9
+  ^^^^^^^^ note that num_buffers is 4
 
-This was developed as part of the investigation into a weird regression
-reported by AMD where adding a raw spinlock in the scheduler context
-switch accelerated hackbench. It turned out that changing this raw
-spinlock for a loop of 10000x cpu_relax within do_idle() had similar
-benefits.
+  vdec 20410000.wave515: wave5_vpu_dec_queue_setup: size[0]: 18625536
+  vdec 20410000.wave515: CAPTURE queue must be streaming to queue jobs!
+  vdec 20410000.wave515: CAPTURE queue must be streaming to queue jobs!
+  vdec 20410000.wave515: CAPTURE queue must be streaming to queue jobs!
+  vdec 20410000.wave515: CAPTURE queue must be streaming to queue jobs!
+  vdec 20410000.wave515: wave5_vpu_dec_buf_queue: type:    9 index:    0 size: ([0]=18625536, [1]=   0, [2]=   0)
+  vdec 20410000.wave515: wave5_vpu_dec_buf_queue: type:    9 index:    1 size: ([0]=18625536, [1]=   0, [2]=   0)
+  vdec 20410000.wave515: wave5_vpu_dec_buf_queue: type:    9 index:    2 size: ([0]=18625536, [1]=   0, [2]=   0)
+  vdec 20410000.wave515: wave5_vpu_dec_buf_queue: type:    9 index:    3 size: ([0]=18625536, [1]=   0, [2]=   0)
+  vdec 20410000.wave515: wave5_vpu_dec_start_streaming: type: 9
+  vdec 20410000.wave515: No capture buffer ready to decode!
+  ^^^^^^^^ here v4l2_m2m_num_dst_bufs_ready(m2m_ctx) < (inst->fbc_buf_count - 1), namely 4 < 6
+  
+  vdec 20410000.wave515: wave5_vpu_dec_stop_streaming: type: 9
+  vdec 20410000.wave515: streamoff_capture: Setting display flag of buf index: 0, fail: -22
+  vdec 20410000.wave515: streamoff_capture: Setting display flag of buf index: 1, fail: -22
+  vdec 20410000.wave515: streamoff_capture: Setting display flag of buf index: 2, fail: -22
+  vdec 20410000.wave515: streamoff_capture: Setting display flag of buf index: 3, fail: -22
+  [...]
+  vdec 20410000.wave515: wave5_vpu_dec_close: dec_finish_seq complete
 
-This patch achieves a similar effect without the busy-waiting by
-allowing select_task_rq to favor the previously used CPUs based on the
-utilization of that CPU. The threshold of 25% spare capacity has been
-identified empirically using the hackbench workload.
+Altering num_buffers solves the issue for me.
 
-Feedback is welcome. I am especially interested to learn whether this
-patch has positive or detrimental effects on performance of other
-workloads.
+> +			if (inst->output_format == FORMAT_422)
+> +				sizes[0] = inst_format.width * inst_format.height * 2;
+> +			else
+> +				sizes[0] = inst_format.width * inst_format.height * 3 / 2;
+> +			dev_dbg(inst->dev->dev, "%s: size[0]: %u\n", __func__, sizes[0]);
+> +		} else if (*num_planes == 2) {
+> +			sizes[0] = inst_format.width * inst_format.height;
+> +			if (inst->output_format == FORMAT_422)
+> +				sizes[1] = inst_format.width * inst_format.height;
+> +			else
+> +				sizes[1] = inst_format.width * inst_format.height / 2;
+> +			dev_dbg(inst->dev->dev, "%s: size[0]: %u | size[1]: %u\n",
+> +				__func__, sizes[0], sizes[1]);
+> +		} else if (*num_planes == 3) {
+> +			sizes[0] = inst_format.width * inst_format.height;
+> +			if (inst->output_format == FORMAT_422) {
+> +				sizes[1] = inst_format.width * inst_format.height / 2;
+> +				sizes[2] = inst_format.width * inst_format.height / 2;
+> +			} else {
+> +				sizes[1] = inst_format.width * inst_format.height / 4;
+> +				sizes[2] = inst_format.width * inst_format.height / 4;
+> +			}
+> +			dev_dbg(inst->dev->dev, "%s: size[0]: %u | size[1]: %u | size[2]: %u\n",
+> +				__func__, sizes[0], sizes[1], sizes[2]);
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
 
-Link: https://lore.kernel.org/r/09e0f469-a3f7-62ef-75a1-e64cec2dcfc5@amd.com
-Link: https://lore.kernel.org/lkml/20230725193048.124796-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/20230810140635.75296-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/20230810140635.75296-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/f6dc1652-bc39-0b12-4b6b-29a2f9cd8484@amd.com/
-Link: https://lore.kernel.org/lkml/20230822113133.643238-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/20230823060832.454842-1-aaron.lu@intel.com/
-Link: https://lore.kernel.org/lkml/20230905171105.1005672-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/cover.1695704179.git.yu.c.chen@intel.com/
-Link: https://lore.kernel.org/lkml/20230929183350.239721-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/20231012203626.1298944-1-mathieu.desnoyers@efficios.com/
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Valentin Schneider <vschneid@redhat.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ben Segall <bsegall@google.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
-Cc: Aaron Lu <aaron.lu@intel.com>
-Cc: Chen Yu <yu.c.chen@intel.com>
-Cc: Tim Chen <tim.c.chen@intel.com>
-Cc: K Prateek Nayak <kprateek.nayak@amd.com>
-Cc: Gautham R . Shenoy <gautham.shenoy@amd.com>
-Cc: x86@kernel.org
----
- kernel/sched/fair.c     | 46 +++++++++++++++++++++++++++++++++++++++--
- kernel/sched/features.h |  6 ++++++
- kernel/sched/sched.h    |  6 ++++++
- 3 files changed, 56 insertions(+), 2 deletions(-)
+BTW I'm currently tinkering with your patchset on another C&M IP and would be
+gratefull if you Cc me in the future versions of the patchset, if any.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 1d9c2482c5a3..23c055db48d1 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7113,6 +7113,25 @@ static inline bool asym_fits_cpu(unsigned long util,
- 	return true;
- }
- 
-+/*
-+ * Use the util_est.enqueued of the runqueue to estimate how much
-+ * capacity is left in the cpu. util_est.enqueued sums the utilization
-+ * of the runnable tasks, _excluding_ blocked and sleeping tasks.
-+ *
-+ * Compare this to arch_scale_cpu_capacity(). This is imperfect because
-+ * it does not take into account the capacity used by other scheduling
-+ * classes, but capacity_of() accounts for blocked and sleeping tasks
-+ * from other scheduler classes, which is not what is needed here.
-+ */
-+static bool
-+spare_capacity_cpu(int cpu, struct task_struct *p)
-+{
-+	if (!sched_feat(UTIL_EST))
-+		return false;
-+	return READ_ONCE(cpu_rq(cpu)->cfs.avg.util_est.enqueued) * 1024 <=
-+	       arch_scale_cpu_capacity(cpu) * (1024 - SPARE_CAPACITY_THRESHOLD);
-+}
-+
- /*
-  * Try and locate an idle core/thread in the LLC cache domain.
-  */
-@@ -7139,18 +7158,32 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	 */
- 	lockdep_assert_irqs_disabled();
- 
-+	/*
-+	 * With the WAKEUP_BIAS_PREV feature, if the previous CPU is
-+	 * cache affine and has spare capacity left, prefer the previous
-+	 * CPU to the target CPU to inhibit costly task migration.
-+	 */
-+	if (sched_feat(WAKEUP_BIAS_PREV) &&
-+	    (prev == target || cpus_share_cache(prev, target)) &&
-+	    (available_idle_cpu(prev) || sched_idle_cpu(prev) || spare_capacity_cpu(prev, p)) &&
-+	    asym_fits_cpu(task_util, util_min, util_max, prev))
-+		return prev;
-+
- 	if ((available_idle_cpu(target) || sched_idle_cpu(target)) &&
- 	    asym_fits_cpu(task_util, util_min, util_max, target))
- 		return target;
- 
- 	/*
--	 * If the previous CPU is cache affine and idle, don't be stupid:
-+	 * Without the WAKEUP_BIAS_PREV feature, use the previous CPU if
-+	 * it is cache affine and idle if the target cpu is not idle.
- 	 */
--	if (prev != target && cpus_share_cache(prev, target) &&
-+	if (!sched_feat(WAKEUP_BIAS_PREV) &&
-+	    prev != target && cpus_share_cache(prev, target) &&
- 	    (available_idle_cpu(prev) || sched_idle_cpu(prev)) &&
- 	    asym_fits_cpu(task_util, util_min, util_max, prev))
- 		return prev;
- 
-+
- 	/*
- 	 * Allow a per-cpu kthread to stack with the wakee if the
- 	 * kworker thread and the tasks previous CPUs are the same.
-@@ -7217,6 +7250,15 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	if ((unsigned)i < nr_cpumask_bits)
- 		return i;
- 
-+	/*
-+	 * With the WAKEUP_BIAS_PREV feature, if the previous CPU is
-+	 * cache affine, prefer the previous CPU when all CPUs are busy
-+	 * to inhibit migration.
-+	 */
-+	if (sched_feat(WAKEUP_BIAS_PREV) &&
-+	    prev != target && cpus_share_cache(prev, target))
-+		return prev;
-+
- 	return target;
- }
- 
-diff --git a/kernel/sched/features.h b/kernel/sched/features.h
-index ee7f23c76bd3..f264d90aae72 100644
---- a/kernel/sched/features.h
-+++ b/kernel/sched/features.h
-@@ -37,6 +37,12 @@ SCHED_FEAT(CACHE_HOT_BUDDY, true)
-  */
- SCHED_FEAT(WAKEUP_PREEMPTION, true)
- 
-+/*
-+ * Bias runqueue selection towards the previous runqueue if it has
-+ * spare capacity left or if all CPUs are busy.
-+ */
-+SCHED_FEAT(WAKEUP_BIAS_PREV, true)
-+
- SCHED_FEAT(HRTICK, false)
- SCHED_FEAT(HRTICK_DL, false)
- SCHED_FEAT(DOUBLE_TICK, false)
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index e93e006a942b..264baab2721c 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -178,6 +178,12 @@ extern int sched_rr_timeslice;
-  */
- #define RUNTIME_INF		((u64)~0ULL)
- 
-+/*
-+ * Spare capacity threshold (value out of 1024) used to bias runqueue
-+ * selection towards previous runqueue.
-+ */
-+#define SPARE_CAPACITY_THRESHOLD	256
-+
- static inline int idle_policy(int policy)
- {
- 	return policy == SCHED_IDLE;
--- 
-2.39.2
-
+Thanks.
