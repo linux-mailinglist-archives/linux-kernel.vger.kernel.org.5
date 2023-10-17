@@ -2,120 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 665CC7CBBDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 09:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8AB7CBBE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 09:03:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234469AbjJQHBv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 17 Oct 2023 03:01:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46226 "EHLO
+        id S234507AbjJQHDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 03:03:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjJQHBu (ORCPT
+        with ESMTP id S229666AbjJQHDG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 03:01:50 -0400
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7015783;
-        Tue, 17 Oct 2023 00:01:45 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.229])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4S8l1p3p5Hz9ylWC;
-        Tue, 17 Oct 2023 14:48:46 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwAXcJE+MS5lg+dfAg--.50713S2;
-        Tue, 17 Oct 2023 08:01:26 +0100 (CET)
-Message-ID: <468436cf766732a3cfc55d07ad119a6ccdc815c1.camel@huaweicloud.com>
-Subject: Re: [PATCH v15 00/11] LSM: Three basic syscalls
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Casey Schaufler <casey@schaufler-ca.com>,
-        linux-security-module@vger.kernel.org, jmorris@namei.org,
-        serge@hallyn.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, mic@digikod.net
-Date:   Tue, 17 Oct 2023 09:01:15 +0200
-In-Reply-To: <CAHC9VhRQ7xpeSX7b3VZfzQ15noJ8mgauNMuHWo_n3hMgsYMAfQ@mail.gmail.com>
-References: <20230912205658.3432-1-casey.ref@schaufler-ca.com>
-         <20230912205658.3432-1-casey@schaufler-ca.com>
-         <CAHC9VhRcbp3iWQwL7FTUrcU1C3OsZ413Nbq+17oTwW7hZ7XvBw@mail.gmail.com>
-         <CAHC9VhSqY5+DR-jXprrftb1=CzDvhTh0Ep66A16RMd4L7W7TYw@mail.gmail.com>
-         <ae39864947debbc7c460db478b8abe1c147b7d5c.camel@huaweicloud.com>
-         <CAHC9VhRQ7xpeSX7b3VZfzQ15noJ8mgauNMuHWo_n3hMgsYMAfQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Tue, 17 Oct 2023 03:03:06 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAF9C93;
+        Tue, 17 Oct 2023 00:03:03 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 9761F1FF05;
+        Tue, 17 Oct 2023 07:03:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1697526180; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cwwNvAigAAi7nUry5w30QAg/uXny2ATe2TlP2bVBtsQ=;
+        b=zbP31VwS0TiYjeY8Qcy33MlsMVX4fY1hQup2mWLYSYcfwgJq2Y03wNeLGl1YTnAgMWW+iI
+        7OmZnzaqYmpuRe1kIrnLbak+FhcQDXIwanfCLdyjnDKe+1O3iSOpPhjrQwgvmWcf462aOh
+        u8uGRqlc9Phg/oyK/HtLmNtPm1F4u0I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1697526180;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cwwNvAigAAi7nUry5w30QAg/uXny2ATe2TlP2bVBtsQ=;
+        b=B6kyNT5/YcPcPEaRd9LTI/a97RV6FI2s0eAGqLKpfZJC86qQLm8Qh3NAwDnw2jpQbDj1y8
+        Pc++xJVStrAgipBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 26DF013584;
+        Tue, 17 Oct 2023 07:03:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id hNHCCKQxLmXrHAAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Tue, 17 Oct 2023 07:03:00 +0000
+Message-ID: <3ccb822e-fc46-3087-d6ad-2f754dcf218c@suse.cz>
+Date:   Tue, 17 Oct 2023 09:02:59 +0200
 MIME-Version: 1.0
-X-CM-TRANSID: LxC2BwAXcJE+MS5lg+dfAg--.50713S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZryfurWftr4Duw15tF4xZwb_yoW8ur4rpF
-        WDKay0kF4kAF1jkrn7Za1rAa48Kryru3yjgF98Cry7ArW5CFy0grW2kFW2vryUWrn3ta4r
-        Xr4UKFyDC3Wqy3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgANBF1jj5EcEgABsk
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCHv2] efi/unaccepted: Fix soft lockups caused by parallel
+ memory acceptance
+To:     Michael Roth <michael.roth@amd.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dario Faggioli <dfaggioli@suse.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        marcelo.cerri@canonical.com, tim.gardner@canonical.com,
+        philip.cox@canonical.com, aarcange@redhat.com, peterx@redhat.com,
+        x86@kernel.org, linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@kernel.org, Nikolay Borisov <nik.borisov@suse.com>
+References: <20231016163122.12855-1-kirill.shutemov@linux.intel.com>
+ <20231016205419.c3sfriemyaiczxie@amd.com>
+Content-Language: en-US
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20231016205419.c3sfriemyaiczxie@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -11.10
+X-Spamd-Result: default: False [-11.10 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         REPLY(-4.00)[];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[33];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-10-16 at 11:06 -0400, Paul Moore wrote:
-> On Mon, Oct 16, 2023 at 8:05 AM Roberto Sassu
-> <roberto.sassu@huaweicloud.com> wrote:
-> > 
-> > Sorry, I just noticed LSM_ID_IMA. Since we have the 'integrity' LSM, I
-> > think it should be LSM_ID_INTEGRITY.
-> > 
-> > Mimi, all, do you agree? If yes, I send a patch shortly.
+On 10/16/23 22:54, Michael Roth wrote:
+> On Mon, Oct 16, 2023 at 07:31:22PM +0300, Kirill A. Shutemov wrote:
+>> Michael reported soft lockups on a system that has unaccepted memory.
+>> This occurs when a user attempts to allocate and accept memory on
+>> multiple CPUs simultaneously.
+>> 
+>> The root cause of the issue is that memory acceptance is serialized with
+>> a spinlock, allowing only one CPU to accept memory at a time. The other
+>> CPUs spin and wait for their turn, leading to starvation and soft lockup
+>> reports.
+>> 
+>> To address this, the code has been modified to release the spinlock
+>> while accepting memory. This allows for parallel memory acceptance on
+>> multiple CPUs.
+>> 
+>> A newly introduced "accepting_list" keeps track of which memory is
+>> currently being accepted. This is necessary to prevent parallel
+>> acceptance of the same memory block. If a collision occurs, the lock is
+>> released and the process is retried.
+>> 
+>> Such collisions should rarely occur. The main path for memory acceptance
+>> is the page allocator, which accepts memory in MAX_ORDER chunks. As long
+>> as MAX_ORDER is equal to or larger than the unit_size, collisions will
+>> never occur because the caller fully owns the memory block being
+>> accepted.
+>> 
+>> Aside from the page allocator, only memblock and deferered_free_range()
+>> accept memory, but this only happens during boot.
+>> 
+>> The code has been tested with unit_size == 128MiB to trigger collisions
+>> and validate the retry codepath.
+>> 
+>> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+>> Reported-by: Michael Roth <michael.roth@amd.com
 > 
-> I believe LSM_ID_IMA is the better option, despite "integrity" already
-> being present in Kconfig and possibly other areas.  "IMA" is a
-> specific thing/LSM whereas "integrity" is a property, principle, or
-> quality.  Especially as we move forward with promoting IMA as a full
-> and proper LSM, we should work towards referring to it as "IMA" and
-> not "integrity".
+> Tested-by: Michael Roth <michael.roth@amd.com>
 > 
-> If anything we should be working to support "IMA" in places where we
-> currently have "integrity" so that we can eventually deprecate
-> "integrity".
+> This seems to improve things pretty dramatically for me. Previously I
+> saw soft-lockups with 16 vCPUs and 16 processes faulting into memory,
+> and now I can do 128+ vCPUs/processes.
+> 
+> I can still trigger soft lock-ups on occassion if the number of processes
+> faulting in memory exceeds the number of vCPUs available to the guest, but
+> with a 32 vCPU guest even something like this:
+> 
+>   stress --vm 128 --vm-bytes 2G --vm-keep --cpu 255
+> 
+> still seems to avoid the soft lock-up messages. So that's probably well
+> into "potential future optimization" territory and this patch fixes the
+> more immediate issues.
 
-Hi Paul
+Do you mean that the guest pretends it has more cpus than the host provides
+to it? I think such cpu starving configuration is prone to softlockups
+already, so it wouldn't be new.
 
-I fully understand your argument. However, 'integrity' has been the
-word to identify the integrity subsystem since long time ago.
+If you mean the guest has as many cpus as the host provides to it, but you
+stress with many more than that number of processes, then I wonder how
+softlockups would happen due to the extra processes. Since irqs are disabled
+through the whole operation, the extra processes can't become scheduled, and
+not being scheduled due to overloading doesn't trigger softlockups, hmm...
 
-Reducing the scope to 'ima' would create some confusion since, while
-'ima' is associated to integrity, it would not encompass EVM.
-
-The term 'integrity', although it is a property, it precisely
-identifies in the kernel context the scope and goals of the subsystem,
-and is general enough to encompass new projects going in a similar
-direction (such as my integrity digest cache).
-
-From a technical perspective, at the moment it is not possible to split
-'integrity' in two standalone LSMs 'ima' and 'evm', as IMA and EVM work
-on shared integrity metadata. Also my integrity digest cache is using
-the same metadata.
-
-In addition, making IMA and EVM as standalone LSMs would require a much
-longer development cycle to make them use disjoint metadata and to
-define proper communication interfaces. It would be not anymore a
-technical move of function calls from a place to another, like for the
-current patch set, but would require substantial time to validate the
-new design.
-
-To submit my patch set in the current state, the only thing I need is
-to have LSM_ID_INTEGRITY defined.
-
-Roberto
+> Thanks!
+> 
+> -Mike
+> 
+>> Fixes: 2053bc57f367 ("efi: Add unaccepted memory support")
+>> Cc: <stable@kernel.org>
+>> Reviewed-by: Nikolay Borisov <nik.borisov@suse.com>
+>> ---
+>> 
+>>   v2:
+>>    - Fix deadlock (Vlastimil);
+>>    - Fix comments (Vlastimil);
+>>    - s/cond_resched()/cpu_relax()/ -- cond_resched() cannot be called
+>>      from atomic context;
+>> 
 
