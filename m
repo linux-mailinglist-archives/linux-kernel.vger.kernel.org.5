@@ -2,51 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 355D67CD0F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 01:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1CAA7CD0F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 01:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344369AbjJQXlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 19:41:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54776 "EHLO
+        id S1344402AbjJQXln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 19:41:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344338AbjJQXlh (ORCPT
+        with ESMTP id S1344365AbjJQXli (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 19:41:37 -0400
+        Tue, 17 Oct 2023 19:41:38 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34AF6FE;
-        Tue, 17 Oct 2023 16:41:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBD1EC433C8;
-        Tue, 17 Oct 2023 23:41:31 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E0B101
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 16:41:36 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B77FC433CC;
+        Tue, 17 Oct 2023 23:41:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697586094;
-        bh=ud63s7V4RrXt+rW3zpF4iPUqjo7I9N4Q+XHSbTsG6tM=;
+        s=k20201202; t=1697586096;
+        bh=GgAN2u+O2ZjYC6HU50yCWeKI21hjZm/S1N0mP+E0JuQ=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=DVfW3DeRZWsaQ7wfguaPYMMtlTZX0TmcHy6XUS6c0fvpvhRvI4F1UAROKr+EVxPfH
-         IxMOo/0MMMipu9JkLPDO24slywOLANWynkRGuPC2nKb/bHkPxwOb6UKDRPALZjStU+
-         9jYlmPcgslTQKTeGSVvS9CZh2mlW/HFGsJm9C5jB0qSWea6L3g+GXEEr/XN/Vbu3+4
-         rfig3YVkm87i+PZScYdg7seCZAQD9bMIFtj09rLIiBdaff6QSGfqKlk7Rq7T9xLU2d
-         TdySJ+I1PW14hcJvUQZjq/WCMx6fGClCORQUoiEf64ToUy8vZtrM78x/+g1ug/XZ3C
-         jeEq4zRpBpCXA==
+        b=c7AZYHcxxDGuOjMFaaWBXGwqm9Dvhn1Qew70acoOa+3vqq7/HeNyrw9HkILn78kqh
+         m7/UuOWWcjC8voeLN+Q5GFyWGWDnj50VGsblo5PQCI8boi6X7ZmUY1QWJ/EBHup/Pe
+         JHiJvnflKmPUTxBtL7764aRgkZ3b60ONEfb1hzEmib/sXBu4e2GBdERfwbtRu1KB6D
+         XSaQ7p1aV0eXKiXAy5AeMz7pQzszlmsoCPAc6HRkV4f19Okf6MNaxTHqGNqk2CVjbb
+         RGQ3Dl8K3tW/qOdCNvVQLYY4l6hw9VSs+9B6cUxAC5oHjSUCCqgxAVe3qlHbFeDxpz
+         c9k64RjItflLg==
 From:   Mark Brown <broonie@kernel.org>
-To:     Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
+To:     Support Opensource <support.opensource@diasemi.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
         Rob Herring <robh@kernel.org>
-Cc:     patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20231017203442.2699322-1-robh@kernel.org>
-References: <20231017203442.2699322-1-robh@kernel.org>
-Subject: Re: [RESEND PATCH] regulator: Use device_get_match_data()
-Message-Id: <169758609148.3230422.9069339982126384846.b4-ty@kernel.org>
-Date:   Wed, 18 Oct 2023 00:41:31 +0100
+Cc:     linux-kernel@vger.kernel.org
+In-Reply-To: <20231017203507.2699826-1-robh@kernel.org>
+References: <20231017203507.2699826-1-robh@kernel.org>
+Subject: Re: [RESEND PATCH] regulator: Drop unnecessary of_match_device()
+ calls
+Message-Id: <169758609503.3230422.4118827670408969959.b4-ty@kernel.org>
+Date:   Wed, 18 Oct 2023 00:41:35 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -60,10 +51,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Oct 2023 15:34:41 -0500, Rob Herring wrote:
-> Use preferred device_get_match_data() instead of of_match_device() to
-> get the driver match data. With this, adjust the includes to explicitly
-> include the correct headers.
+On Tue, 17 Oct 2023 15:35:06 -0500, Rob Herring wrote:
+> If probe is reached, we've already matched the device and in the case of
+> DT matching, the struct device_node pointer will be set. Therefore, there
+> is no need to call of_match_device() in probe.
 > 
 > 
 
@@ -73,8 +64,8 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: Use device_get_match_data()
-      commit: 8f7e17d847edf6bc02d0813b123b9d78ba504098
+[1/1] regulator: Drop unnecessary of_match_device() calls
+      commit: a8b4962fbd004d7d4fcbf01ce7dc27fcef406199
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
