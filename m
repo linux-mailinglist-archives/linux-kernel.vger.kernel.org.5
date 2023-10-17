@@ -2,212 +2,479 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 099BB7CC5BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32E007CC5C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344059AbjJQOR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 10:17:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59158 "EHLO
+        id S1344077AbjJQOSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 10:18:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344057AbjJQOR1 (ORCPT
+        with ESMTP id S1344066AbjJQOSu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 10:17:27 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2966110B
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:17:25 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-991c786369cso927606566b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:17:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1697552241; x=1698157041; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZhfkjFsxmGF82cD1/zPvd0Z9FpQNYOUYA0aagsJzr4o=;
-        b=Wa2XdJlpa2WrADa42UyRAP0CIaiwAMdAmCoDww0WbJg+ymnin6+tpSfBnxSbZr2MxH
-         GyD8r3LTd9PDsjLDDKkcZlFlvFx2q1FCkY66aBkUJT03860pIluGa3BPASgXID/jWTLF
-         5pKFMov7zyA0Ne5jQc0IaRh0WDKh8luJN//OM=
+        Tue, 17 Oct 2023 10:18:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E68F7
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:18:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697552282;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6xQN1+lV9TdZ1Amapx2vOyAsjr34oDkO3HUZzOghYks=;
+        b=WmnOi2t10ps9ZxKcTSRxdLwPXy4q6EzmEAD1gYWMv86ANfzR5FBXU3sLtc8YtncaKdmjLl
+        AmSm6B8IDE5FcXmkAZqKxO5hgqQe4haS0J18NBRiW2D4+g+oV9zRZVa2xrO+YFqxurCOYL
+        YEXoYdt55kiem10AF5jGj2Zj/+NKJo4=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-561-fai4PSFfMoa_qppmRIoU8A-1; Tue, 17 Oct 2023 10:17:54 -0400
+X-MC-Unique: fai4PSFfMoa_qppmRIoU8A-1
+Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-41bef8f8d94so7484191cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:17:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697552241; x=1698157041;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZhfkjFsxmGF82cD1/zPvd0Z9FpQNYOUYA0aagsJzr4o=;
-        b=niixYcvJ5z4SsT8mHp2VIyLumEWreIx6aPvRaiWy5vS+bsJvX9ZoTwJpljGhsbZqA9
-         Ekv0EpxiGUzQmfgXr0RVhx6wuRlHMGZc7tiL08Cz2LaHBG/DmyONfHh0+aDBPnniWaYR
-         GLzoCuwDQ9zOmvZ5jxk7r+KDhAJtpgWTAEuf/PFIpTaAZw3e2kzxp5Vh76ZhsyPEwnU5
-         nnBfFkN3dqco9rTpPMT/Eua5VOIMp8ooQHXS0hJ/JwWya/NBMZbK5WIniPFNRcdmxlbs
-         sNoRH4lT73JYPgqd2nKV4sfxM5DIjJdGYNd72DYHh8orIwRYuX4l+PYvh88rDAX6Htea
-         orVw==
-X-Gm-Message-State: AOJu0YzCsO1RrB4Gy+uC4KLk6PxHy92BmqVxJ/yB6QlQXDhhVWacY7+C
-        jRALUTWBVcTcNkKU4lgRGETjkQsuecSMloJt28i7o5RE
-X-Google-Smtp-Source: AGHT+IFsJtgN+h/tgPa2ZOAHxB4Sb4nBRyf3AuJgakvCUrrVni0cXyImbnswpAQIbuMcpAuWAtPKKg==
-X-Received: by 2002:a17:907:980c:b0:9bf:7a4d:590d with SMTP id ji12-20020a170907980c00b009bf7a4d590dmr1791223ejc.24.1697552241215;
-        Tue, 17 Oct 2023 07:17:21 -0700 (PDT)
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com. [209.85.128.46])
-        by smtp.gmail.com with ESMTPSA id pv13-20020a170907208d00b009920a690cd9sm1336276ejb.59.2023.10.17.07.17.20
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20230601; t=1697552271; x=1698157071;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6xQN1+lV9TdZ1Amapx2vOyAsjr34oDkO3HUZzOghYks=;
+        b=ZDpAs5jcyVEkFpyGlo69Ryt/B9BWZC55m6sk2d4qPiq+pSKRnCZfGylRVlX+8IRm69
+         9o8wGIo555TEyhKJLrwq0yuEQs4/V+iT2/MZrdLKCGvXR3k871pFcgDy/9GBSuWToToO
+         k7m7vJGHeZXDdtCz2cEtxD8hwTlfCL5IuN4Oce7tGMHDatda1GwNxUqqvw8sgWkJhShR
+         in+my+MwJtUe6XVZy0QA0Y4tvowOE4WsYF2+ns11d9EOpTTbFym5aKf9CtAhsIu97326
+         m/JVxNCrcxj7tSvNj60hztTt+6x9CS6RYl01M1M4jcx/xZo+XKtg3219nxRjjXDr6l9t
+         oyJQ==
+X-Gm-Message-State: AOJu0Yz5Ul7jLnkEm04/DsQGKw2kKZDVJ/nBzUn2q+fAOjcHChDyUUz/
+        LLDNJqJCGInkRrCdh1R2BcUHZotnJyS5wKTS9i9If+f5vJs+44CEu5bWmMhQT9erIiJWh5jB5Wg
+        KeLMgtuepslvX/5txI37Gldgz1rQWQGlf
+X-Received: by 2002:a05:622a:349:b0:403:2877:bc52 with SMTP id r9-20020a05622a034900b004032877bc52mr2797201qtw.0.1697552271257;
+        Tue, 17 Oct 2023 07:17:51 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFbzYivDeqer1+nKI2pGLQy64eIAoUWF2WsPu/EXdWDPV/oh9ie0fPVzzdY9jkZ0lMR9Gk8fQ==
+X-Received: by 2002:a05:622a:349:b0:403:2877:bc52 with SMTP id r9-20020a05622a034900b004032877bc52mr2797174qtw.0.1697552270884;
+        Tue, 17 Oct 2023 07:17:50 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:280:24f0:9db0:474c:ff43:9f5c? ([2a01:e0a:280:24f0:9db0:474c:ff43:9f5c])
+        by smtp.gmail.com with ESMTPSA id w15-20020ac86b0f000000b0041817637873sm655111qts.9.2023.10.17.07.17.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Oct 2023 07:17:20 -0700 (PDT)
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4063bfc6c03so78055e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:17:20 -0700 (PDT)
-X-Received: by 2002:a05:600c:214d:b0:408:2b:5956 with SMTP id
- v13-20020a05600c214d00b00408002b5956mr2161wml.6.1697552239873; Tue, 17 Oct
- 2023 07:17:19 -0700 (PDT)
+        Tue, 17 Oct 2023 07:17:50 -0700 (PDT)
+Message-ID: <f0e493a7-f7bf-4da5-be4f-b41f2a5821dc@redhat.com>
+Date:   Tue, 17 Oct 2023 16:17:48 +0200
 MIME-Version: 1.0
-References: <20231012192552.3900360-1-dianders@chromium.org>
- <20231012122458.v3.5.Ib2affdbfdc2527aaeef9b46d4f23f7c04147faeb@changeid>
- <29f9a2ff1979406489213909b940184f@realtek.com> <CAD=FV=U4rGozXHoK8+ejPgRtyoACy1971ftoatQivqzk2tk5ng@mail.gmail.com>
- <052401da00fa$dacccd90$906668b0$@realtek.com>
-In-Reply-To: <052401da00fa$dacccd90$906668b0$@realtek.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 17 Oct 2023 07:17:03 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XQswgKZh-JQ6PuKGRmrDMfDmZwM+MUpAcOk1=7Ppjyiw@mail.gmail.com>
-Message-ID: <CAD=FV=XQswgKZh-JQ6PuKGRmrDMfDmZwM+MUpAcOk1=7Ppjyiw@mail.gmail.com>
-Subject: Re: [PATCH v3 5/5] r8152: Block future register access if register
- access fails
-To:     Hayes Wang <hayeswang@realtek.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Simon Horman <horms@kernel.org>,
-        Edward Hill <ecgh@chromium.org>,
-        Laura Nao <laura.nao@collabora.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Grant Grundler <grundler@chromium.org>,
-        =?UTF-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] vfio/mtty: Overhaul mtty interrupt handling
+Content-Language: en-US
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231016224736.2575718-1-alex.williamson@redhat.com>
+ <20231016224736.2575718-2-alex.williamson@redhat.com>
+From:   =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@redhat.com>
+In-Reply-To: <20231016224736.2575718-2-alex.williamson@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 10/17/23 00:47, Alex Williamson wrote:
+> The mtty driver does not currently conform to the vfio SET_IRQS uAPI.
+> For example, it claims to support mask and unmask of INTx, but actually
+> does nothing.  It claims to support AUTOMASK for INTx, but doesn't.  It
+> fails to teardown eventfds under the full semantics specified by the
+> SET_IRQS ioctl.  It also fails to teardown eventfds when the device is
+> closed, leading to memory leaks.  It claims to support the request IRQ,
+> but doesn't.
+> 
+> Fix all these.
+> 
+> A side effect of this is that QEMU will now report a warning:
+> 
+> vfio <uuid>: Failed to set up UNMASK eventfd signaling for interrupt \
+> INTX-0: VFIO_DEVICE_SET_IRQS failure: Inappropriate ioctl for device
+> 
+> The fact is that the unmask eventfd was never supported but quietly
+> failed.  mtty never honored the AUTOMASK behavior, therefore there
+> was nothing to unmask.  QEMU is verbose about the failure, but
+> properly falls back to userspace unmasking.
 
-On Tue, Oct 17, 2023 at 6:07=E2=80=AFAM Hayes Wang <hayeswang@realtek.com> =
-wrote:
->
-> Doug Anderson <dianders@chromium.org>
-> > Sent: Tuesday, October 17, 2023 12:47 AM
-> [...
-> > > >  static int generic_ocp_read(struct r8152 *tp, u16 index, u16 size,
-> > > > @@ -8265,6 +8353,19 @@ static int rtl8152_pre_reset(struct
-> > usb_interface
-> > > > *intf)
-> > > >         if (!tp)
-> > > >                 return 0;
-> > > >
-> > > > +       /* We can only use the optimized reset if we made it to the=
- end of
-> > > > +        * probe without any register access fails, which sets
-> > > > +        * `PROBED_WITH_NO_ERRORS` to true. If we didn't have that =
-then return
-> > > > +        * an error here which tells the USB framework to fully unb=
-ind/rebind
-> > > > +        * our driver.
-> > >
-> > > Would you stay in a loop of unbind and rebind,
-> > > if the control transfers in the probe() are not always successful?
-> > > I just think about the worst case that at least one control always fa=
-ils in probe().
-> >
-> > We won't! :-) One of the first things that rtl8152_probe() does is to
-> > call rtl8152_get_version(). That goes through to
-> > rtl8152_get_version(). That function _doesn't_ queue up a reset if
-> > there are communication problems, but it does do 3 retries of the
-> > read. So if all 3 reads fail then we will permanently fail probe,
-> > which I think is the correct thing to do.
->
-> The probe() contains control transfers in
->         1. rtl8152_get_version()
->         2. tp->rtl_ops.init()
->
-> If one of the 3 control transfers in 1) is successful AND
-> any control transfer in 2) fails,
-> you would queue a usb reset which would unbind/rebind the driver.
-> Then, the loop starts.
-> The loop would be broken, if and only if
->         a) all control transfers in 1) fail, OR
->         b) all control transfers in 2) succeed.
->
-> That is, the loop would be broken when the fail rate of the control trans=
-fer is high or low enough.
-> Otherwise, you would queue a usb reset again and again.
-> For example, if the fail rate of the control transfer is 10% ~ 60%,
-> I think you have high probability to keep the loop continually.
-> Would it never happen?
+We can add a -ENOTTY test in QEMU for the failures.
 
-Actually, even with a failure rate of 10% I don't think you'll end up
-with a fully continuous loop, right? All you need is to get 3 failures
-in a row in rtl8152_get_version() to get out of the loop. So with a
-10% failure rate you'd unbind/bind 1000 times (on average) and then
-(finally) give up. With a 50% failure rate I think you'd only
-unbind/bind 8 times on average, right? Of course, I guess 1000 loops
-is pretty close to infinite.
+Reviewed-by: Cédric Le Goater <clg@redhat.com>
 
-In any case, we haven't actually seen hardware that fails like this.
-We've seen failure rates that are much much lower and we can imagine
-failure rates that are 100% if we're got really broken hardware. Do
-you think cases where failure rates are middle-of-the-road are likely?
+Thanks,
 
-I would also say that nothing we can do can perfectly handle faulty
-hardware. If we're imagining theoretical hardware, we could imagine
-theoretical hardware that de-enumerated itself and re-enumerated
-itself every half second because the firmware on the device crashed or
-some regulator kept dropping. This faulty hardware would also cause an
-infinite loop of de-enumeration and re-enumeration, right?
+C.
+  
+> Fixes: 9d1a546c53b4 ("docs: Sample driver to demonstrate how to use Mediated device framework.")
+> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> ---
+>   samples/vfio-mdev/mtty.c | 239 +++++++++++++++++++++++++++------------
+>   1 file changed, 166 insertions(+), 73 deletions(-)
+> 
+> diff --git a/samples/vfio-mdev/mtty.c b/samples/vfio-mdev/mtty.c
+> index 5af00387c519..245db52bedf2 100644
+> --- a/samples/vfio-mdev/mtty.c
+> +++ b/samples/vfio-mdev/mtty.c
+> @@ -127,7 +127,6 @@ struct serial_port {
+>   /* State of each mdev device */
+>   struct mdev_state {
+>   	struct vfio_device vdev;
+> -	int irq_fd;
+>   	struct eventfd_ctx *intx_evtfd;
+>   	struct eventfd_ctx *msi_evtfd;
+>   	int irq_index;
+> @@ -141,6 +140,7 @@ struct mdev_state {
+>   	struct mutex rxtx_lock;
+>   	struct vfio_device_info dev_info;
+>   	int nr_ports;
+> +	u8 intx_mask:1;
+>   };
+>   
+>   static struct mtty_type {
+> @@ -166,10 +166,6 @@ static const struct file_operations vd_fops = {
+>   
+>   static const struct vfio_device_ops mtty_dev_ops;
+>   
+> -/* function prototypes */
+> -
+> -static int mtty_trigger_interrupt(struct mdev_state *mdev_state);
+> -
+>   /* Helper functions */
+>   
+>   static void dump_buffer(u8 *buf, uint32_t count)
+> @@ -186,6 +182,36 @@ static void dump_buffer(u8 *buf, uint32_t count)
+>   #endif
+>   }
+>   
+> +static bool is_intx(struct mdev_state *mdev_state)
+> +{
+> +	return mdev_state->irq_index == VFIO_PCI_INTX_IRQ_INDEX;
+> +}
+> +
+> +static bool is_msi(struct mdev_state *mdev_state)
+> +{
+> +	return mdev_state->irq_index == VFIO_PCI_MSI_IRQ_INDEX;
+> +}
+> +
+> +static bool is_noirq(struct mdev_state *mdev_state)
+> +{
+> +	return !is_intx(mdev_state) && !is_msi(mdev_state);
+> +}
+> +
+> +static void mtty_trigger_interrupt(struct mdev_state *mdev_state)
+> +{
+> +	lockdep_assert_held(&mdev_state->ops_lock);
+> +
+> +	if (is_msi(mdev_state)) {
+> +		if (mdev_state->msi_evtfd)
+> +			eventfd_signal(mdev_state->msi_evtfd, 1);
+> +	} else if (is_intx(mdev_state)) {
+> +		if (mdev_state->intx_evtfd && !mdev_state->intx_mask) {
+> +			eventfd_signal(mdev_state->intx_evtfd, 1);
+> +			mdev_state->intx_mask = true;
+> +		}
+> +	}
+> +}
+> +
+>   static void mtty_create_config_space(struct mdev_state *mdev_state)
+>   {
+>   	/* PCI dev ID */
+> @@ -921,6 +947,25 @@ static ssize_t mtty_write(struct vfio_device *vdev, const char __user *buf,
+>   	return -EFAULT;
+>   }
+>   
+> +static void mtty_disable_intx(struct mdev_state *mdev_state)
+> +{
+> +	if (mdev_state->intx_evtfd) {
+> +		eventfd_ctx_put(mdev_state->intx_evtfd);
+> +		mdev_state->intx_evtfd = NULL;
+> +		mdev_state->intx_mask = false;
+> +		mdev_state->irq_index = -1;
+> +	}
+> +}
+> +
+> +static void mtty_disable_msi(struct mdev_state *mdev_state)
+> +{
+> +	if (mdev_state->msi_evtfd) {
+> +		eventfd_ctx_put(mdev_state->msi_evtfd);
+> +		mdev_state->msi_evtfd = NULL;
+> +		mdev_state->irq_index = -1;
+> +	}
+> +}
+> +
+>   static int mtty_set_irqs(struct mdev_state *mdev_state, uint32_t flags,
+>   			 unsigned int index, unsigned int start,
+>   			 unsigned int count, void *data)
+> @@ -932,59 +977,113 @@ static int mtty_set_irqs(struct mdev_state *mdev_state, uint32_t flags,
+>   	case VFIO_PCI_INTX_IRQ_INDEX:
+>   		switch (flags & VFIO_IRQ_SET_ACTION_TYPE_MASK) {
+>   		case VFIO_IRQ_SET_ACTION_MASK:
+> +			if (!is_intx(mdev_state) || start != 0 || count != 1) {
+> +				ret = -EINVAL;
+> +				break;
+> +			}
+> +
+> +			if (flags & VFIO_IRQ_SET_DATA_NONE) {
+> +				mdev_state->intx_mask = true;
+> +			} else if (flags & VFIO_IRQ_SET_DATA_BOOL) {
+> +				uint8_t mask = *(uint8_t *)data;
+> +
+> +				if (mask)
+> +					mdev_state->intx_mask = true;
+> +			} else if (flags &  VFIO_IRQ_SET_DATA_EVENTFD) {
+> +				ret = -ENOTTY; /* No support for mask fd */
+> +			}
+> +			break;
+>   		case VFIO_IRQ_SET_ACTION_UNMASK:
+> +			if (!is_intx(mdev_state) || start != 0 || count != 1) {
+> +				ret = -EINVAL;
+> +				break;
+> +			}
+> +
+> +			if (flags & VFIO_IRQ_SET_DATA_NONE) {
+> +				mdev_state->intx_mask = false;
+> +			} else if (flags & VFIO_IRQ_SET_DATA_BOOL) {
+> +				uint8_t mask = *(uint8_t *)data;
+> +
+> +				if (mask)
+> +					mdev_state->intx_mask = false;
+> +			} else if (flags &  VFIO_IRQ_SET_DATA_EVENTFD) {
+> +				ret = -ENOTTY; /* No support for unmask fd */
+> +			}
+>   			break;
+>   		case VFIO_IRQ_SET_ACTION_TRIGGER:
+> -		{
+> -			if (flags & VFIO_IRQ_SET_DATA_NONE) {
+> -				pr_info("%s: disable INTx\n", __func__);
+> -				if (mdev_state->intx_evtfd)
+> -					eventfd_ctx_put(mdev_state->intx_evtfd);
+> +			if (is_intx(mdev_state) && !count &&
+> +			    (flags & VFIO_IRQ_SET_DATA_NONE)) {
+> +				mtty_disable_intx(mdev_state);
+> +				break;
+> +			}
+> +
+> +			if (!(is_intx(mdev_state) || is_noirq(mdev_state)) ||
+> +			    start != 0 || count != 1) {
+> +				ret = -EINVAL;
+>   				break;
+>   			}
+>   
+>   			if (flags & VFIO_IRQ_SET_DATA_EVENTFD) {
+>   				int fd = *(int *)data;
+> +				struct eventfd_ctx *evt;
+> +
+> +				mtty_disable_intx(mdev_state);
+> +
+> +				if (fd < 0)
+> +					break;
+>   
+> -				if (fd > 0) {
+> -					struct eventfd_ctx *evt;
+> -
+> -					evt = eventfd_ctx_fdget(fd);
+> -					if (IS_ERR(evt)) {
+> -						ret = PTR_ERR(evt);
+> -						break;
+> -					}
+> -					mdev_state->intx_evtfd = evt;
+> -					mdev_state->irq_fd = fd;
+> -					mdev_state->irq_index = index;
+> +				evt = eventfd_ctx_fdget(fd);
+> +				if (IS_ERR(evt)) {
+> +					ret = PTR_ERR(evt);
+>   					break;
+>   				}
+> +				mdev_state->intx_evtfd = evt;
+> +				mdev_state->irq_index = index;
+> +				break;
+> +			}
+> +
+> +			if (!is_intx(mdev_state)) {
+> +				ret = -EINVAL;
+> +				break;
+> +			}
+> +
+> +			if (flags & VFIO_IRQ_SET_DATA_NONE) {
+> +				mtty_trigger_interrupt(mdev_state);
+> +			} else if (flags & VFIO_IRQ_SET_DATA_BOOL) {
+> +				uint8_t trigger = *(uint8_t *)data;
+> +
+> +				if (trigger)
+> +					mtty_trigger_interrupt(mdev_state);
+>   			}
+>   			break;
+>   		}
+> -		}
+>   		break;
+>   	case VFIO_PCI_MSI_IRQ_INDEX:
+>   		switch (flags & VFIO_IRQ_SET_ACTION_TYPE_MASK) {
+>   		case VFIO_IRQ_SET_ACTION_MASK:
+>   		case VFIO_IRQ_SET_ACTION_UNMASK:
+> +			ret = -ENOTTY;
+>   			break;
+>   		case VFIO_IRQ_SET_ACTION_TRIGGER:
+> -			if (flags & VFIO_IRQ_SET_DATA_NONE) {
+> -				if (mdev_state->msi_evtfd)
+> -					eventfd_ctx_put(mdev_state->msi_evtfd);
+> -				pr_info("%s: disable MSI\n", __func__);
+> -				mdev_state->irq_index = VFIO_PCI_INTX_IRQ_INDEX;
+> +			if (is_msi(mdev_state) && !count &&
+> +			    (flags & VFIO_IRQ_SET_DATA_NONE)) {
+> +				mtty_disable_msi(mdev_state);
+>   				break;
+>   			}
+> +
+> +			if (!(is_msi(mdev_state) || is_noirq(mdev_state)) ||
+> +			    start != 0 || count != 1) {
+> +				ret = -EINVAL;
+> +				break;
+> +			}
+> +
+>   			if (flags & VFIO_IRQ_SET_DATA_EVENTFD) {
+>   				int fd = *(int *)data;
+>   				struct eventfd_ctx *evt;
+>   
+> -				if (fd <= 0)
+> -					break;
+> +				mtty_disable_msi(mdev_state);
+>   
+> -				if (mdev_state->msi_evtfd)
+> +				if (fd < 0)
+>   					break;
+>   
+>   				evt = eventfd_ctx_fdget(fd);
+> @@ -993,20 +1092,37 @@ static int mtty_set_irqs(struct mdev_state *mdev_state, uint32_t flags,
+>   					break;
+>   				}
+>   				mdev_state->msi_evtfd = evt;
+> -				mdev_state->irq_fd = fd;
+>   				mdev_state->irq_index = index;
+> +				break;
+> +			}
+> +
+> +			if (!is_msi(mdev_state)) {
+> +				ret = -EINVAL;
+> +				break;
+> +			}
+> +
+> +			if (flags & VFIO_IRQ_SET_DATA_NONE) {
+> +				mtty_trigger_interrupt(mdev_state);
+> +			} else if (flags & VFIO_IRQ_SET_DATA_BOOL) {
+> +				uint8_t trigger = *(uint8_t *)data;
+> +
+> +				if (trigger)
+> +					mtty_trigger_interrupt(mdev_state);
+>   			}
+>   			break;
+> -	}
+> -	break;
+> +		}
+> +		break;
+>   	case VFIO_PCI_MSIX_IRQ_INDEX:
+> -		pr_info("%s: MSIX_IRQ\n", __func__);
+> +		dev_dbg(mdev_state->vdev.dev, "%s: MSIX_IRQ\n", __func__);
+> +		ret = -ENOTTY;
+>   		break;
+>   	case VFIO_PCI_ERR_IRQ_INDEX:
+> -		pr_info("%s: ERR_IRQ\n", __func__);
+> +		dev_dbg(mdev_state->vdev.dev, "%s: ERR_IRQ\n", __func__);
+> +		ret = -ENOTTY;
+>   		break;
+>   	case VFIO_PCI_REQ_IRQ_INDEX:
+> -		pr_info("%s: REQ_IRQ\n", __func__);
+> +		dev_dbg(mdev_state->vdev.dev, "%s: REQ_IRQ\n", __func__);
+> +		ret = -ENOTTY;
+>   		break;
+>   	}
+>   
+> @@ -1014,33 +1130,6 @@ static int mtty_set_irqs(struct mdev_state *mdev_state, uint32_t flags,
+>   	return ret;
+>   }
+>   
+> -static int mtty_trigger_interrupt(struct mdev_state *mdev_state)
+> -{
+> -	int ret = -1;
+> -
+> -	if ((mdev_state->irq_index == VFIO_PCI_MSI_IRQ_INDEX) &&
+> -	    (!mdev_state->msi_evtfd))
+> -		return -EINVAL;
+> -	else if ((mdev_state->irq_index == VFIO_PCI_INTX_IRQ_INDEX) &&
+> -		 (!mdev_state->intx_evtfd)) {
+> -		pr_info("%s: Intr eventfd not found\n", __func__);
+> -		return -EINVAL;
+> -	}
+> -
+> -	if (mdev_state->irq_index == VFIO_PCI_MSI_IRQ_INDEX)
+> -		ret = eventfd_signal(mdev_state->msi_evtfd, 1);
+> -	else
+> -		ret = eventfd_signal(mdev_state->intx_evtfd, 1);
+> -
+> -#if defined(DEBUG_INTR)
+> -	pr_info("Intx triggered\n");
+> -#endif
+> -	if (ret != 1)
+> -		pr_err("%s: eventfd signal failed (%d)\n", __func__, ret);
+> -
+> -	return ret;
+> -}
+> -
+>   static int mtty_get_region_info(struct mdev_state *mdev_state,
+>   			 struct vfio_region_info *region_info,
+>   			 u16 *cap_type_id, void **cap_type)
+> @@ -1084,22 +1173,16 @@ static int mtty_get_region_info(struct mdev_state *mdev_state,
+>   
+>   static int mtty_get_irq_info(struct vfio_irq_info *irq_info)
+>   {
+> -	switch (irq_info->index) {
+> -	case VFIO_PCI_INTX_IRQ_INDEX:
+> -	case VFIO_PCI_MSI_IRQ_INDEX:
+> -	case VFIO_PCI_REQ_IRQ_INDEX:
+> -		break;
+> -
+> -	default:
+> +	if (irq_info->index != VFIO_PCI_INTX_IRQ_INDEX &&
+> +	    irq_info->index != VFIO_PCI_MSI_IRQ_INDEX)
+>   		return -EINVAL;
+> -	}
+>   
+>   	irq_info->flags = VFIO_IRQ_INFO_EVENTFD;
+>   	irq_info->count = 1;
+>   
+>   	if (irq_info->index == VFIO_PCI_INTX_IRQ_INDEX)
+> -		irq_info->flags |= (VFIO_IRQ_INFO_MASKABLE |
+> -				VFIO_IRQ_INFO_AUTOMASKED);
+> +		irq_info->flags |= VFIO_IRQ_INFO_MASKABLE |
+> +				   VFIO_IRQ_INFO_AUTOMASKED;
+>   	else
+>   		irq_info->flags |= VFIO_IRQ_INFO_NORESIZE;
+>   
+> @@ -1262,6 +1345,15 @@ static unsigned int mtty_get_available(struct mdev_type *mtype)
+>   	return atomic_read(&mdev_avail_ports) / type->nr_ports;
+>   }
+>   
+> +static void mtty_close(struct vfio_device *vdev)
+> +{
+> +	struct mdev_state *mdev_state =
+> +				container_of(vdev, struct mdev_state, vdev);
+> +
+> +	mtty_disable_intx(mdev_state);
+> +	mtty_disable_msi(mdev_state);
+> +}
+> +
+>   static const struct vfio_device_ops mtty_dev_ops = {
+>   	.name = "vfio-mtty",
+>   	.init = mtty_init_dev,
+> @@ -1273,6 +1365,7 @@ static const struct vfio_device_ops mtty_dev_ops = {
+>   	.unbind_iommufd	= vfio_iommufd_emulated_unbind,
+>   	.attach_ioas	= vfio_iommufd_emulated_attach_ioas,
+>   	.detach_ioas	= vfio_iommufd_emulated_detach_ioas,
+> +	.close_device	= mtty_close,
+>   };
+>   
+>   static struct mdev_driver mtty_driver = {
 
-Presumably if we get into either case, the user will realize that the
-hardware isn't working and will unplug it from the system. While the
-system is doing the loop of trying to enumerate the hardware, it will
-be taking up a bunch of extra CPU cycles but (I believe) it won't be
-fully locked up or anything. The machine will still function and be
-able to do non-Ethernet activities, right? I would say that the worst
-thing about this state would be that it would stress corner cases in
-the reset of the USB subsystem, possibly ticking bugs.
-
-So I guess I would summarize all the above as:
-
-If hardware is broken in just the right way then this patch could
-cause a nearly infinite unbinding/rebinding of the r8152 driver.
-However:
-
-1. It doesn't seem terribly likely for hardware to be broken in just this w=
-ay.
-
-2. We haven't seen hardware broken in just this way.
-
-3. Hardware broken in a slightly different way could cause infinite
-unbinding/rebinding even without this patch.
-
-4. Infinite unbinding/rebinding of a USB adapter isn't great, but not
-the absolute worst thing.
-
-
-That all being said, if we wanted to address this we could try two
-different ways:
-
-a) We could add a global in the r8152 driver and limit the number of
-times we reset. This gets a little ugly because if we have multiple
-r8152 adapters plugged in then the same global would be used for both,
-but maybe it's OK?
-
-b) We could improve the USB core to somehow prevent usb_reset_device()
-from running too much on a given device?
-
-
-...though I would re-emphasize that I don't think this is something we
-need to address now. If later we actually see a problem we can always
-address it then.
-
-
--Doug
