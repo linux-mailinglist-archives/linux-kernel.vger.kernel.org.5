@@ -2,112 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 939EE7CCA3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 19:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2160C7CCA40
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 20:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344035AbjJQR7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 13:59:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46784 "EHLO
+        id S1343980AbjJQSBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 14:01:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232380AbjJQR7G (ORCPT
+        with ESMTP id S232380AbjJQSBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 13:59:06 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E917183;
-        Tue, 17 Oct 2023 10:59:04 -0700 (PDT)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39HHdXgS001103;
-        Tue, 17 Oct 2023 17:58:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=mIiiX48jXcI+ggkjVD3XIoTCMcDHfU0m83MXsFV2PMo=;
- b=dKs0XWCqoHWOYpcqFgYrhYpCaIiOIsIz646f/0cF993dVkNzjTgdYAEDMX9NcVgIc84h
- dqWMwukQbi+I7Nk3vC4f5VcOrXCSN6RK3GlPrksnh4sIAh9Y14/WUZiEjLCfI9LdhHCm
- AEuv9SeLmJ9wNkyNEdsA/bW6PN9d1R8R80YDIsV+QVI1YW/vbzxpcz8F4xGFHD1M8+0o
- ic6W8U1jdFAcFK6N63tDyd8ya+93P3omOAL3JubFJAceC4zcg8ROSTXpTcWRDal5ATM9
- U0V9kKzNqjHxR/lY14KOCG4EdNBtJeexrEFe4TH+GoAhxidsNET8eJYFQ3FbBuXrJOtX pw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tsxv20kyh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Oct 2023 17:58:42 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39HHsAPi030062;
-        Tue, 17 Oct 2023 17:58:41 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tsxv20kvg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Oct 2023 17:58:41 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39HFfOio019700;
-        Tue, 17 Oct 2023 17:58:29 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tr811j7ad-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Oct 2023 17:58:29 +0000
-Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
-        by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39HHwSXq28705464
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Oct 2023 17:58:29 GMT
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D267158043;
-        Tue, 17 Oct 2023 17:58:28 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1DD4258055;
-        Tue, 17 Oct 2023 17:58:28 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.watson.ibm.com (unknown [9.31.99.90])
-        by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 17 Oct 2023 17:58:28 +0000 (GMT)
-Message-ID: <5c795b4cf6d7460af205e85a36194fa188136c38.camel@linux.ibm.com>
-Subject: Re: RFC: New LSM to control usage of x509 certificates
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Kanth Ghatraju <kanth.ghatraju@oracle.com>,
-        Konrad Wilk <konrad.wilk@oracle.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-security-module@vger.kernel.org
-Date:   Tue, 17 Oct 2023 13:58:27 -0400
-In-Reply-To: <CAHC9VhS_Ttdy5ZB=jYdVfNyaJfn_7G1wztr5+g0g7uUDForXvA@mail.gmail.com>
-References: <CEA476C1-4CE5-4FFC-91D7-6061C8605B18@oracle.com>
-         <ba2f5560800608541e81fbdd28efa9875b35e491.camel@linux.ibm.com>
-         <932231F5-8050-4436-84B8-D7708DC43845@oracle.com>
-         <7335a4587233626a39ce9bc8a969957d7f43a34c.camel@linux.ibm.com>
-         <FD6FB139-F901-4E55-9705-E7B0023BDBA8@oracle.com>
-         <1149b6dbfdaabef3e48dc2852cc76aa11a6dd6b0.camel@linux.ibm.com>
-         <4A0505D0-2933-43BD-BEEA-94350BB22AE7@oracle.com>
-         <20230913.Ceifae7ievei@digikod.net>
-         <D0F16BFD-72EB-4BE2-BA3D-BAE1BCCDCB6F@oracle.com>
-         <20230914.shah5al9Kaib@digikod.net> <20231005.dajohf2peiBu@digikod.net>
-         <d3b51f26c14fd273d41da3432895fdce9f4d047c.camel@linux.ibm.com>
-         <CAHC9VhRdU1CZJpPSEdSmui-Xirr0j261K=+SM7KiDwiPG-JSrQ@mail.gmail.com>
-         <a851227aaa75ab16b0d6dd93433e1ee1679715f9.camel@linux.ibm.com>
-         <CAHC9VhS_Ttdy5ZB=jYdVfNyaJfn_7G1wztr5+g0g7uUDForXvA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: xhU62rCo7Z1G441wmbcp9hX6le7Dx3nJ
-X-Proofpoint-GUID: m1tCyNGrSf7TNB1ZbSRFtfORm9m6AEs8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-17_03,2023-10-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- adultscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999 phishscore=0
- priorityscore=1501 lowpriorityscore=0 spamscore=0 suspectscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310170152
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Tue, 17 Oct 2023 14:01:37 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D31A83
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:01:36 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB6C4C433C7;
+        Tue, 17 Oct 2023 18:01:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697565695;
+        bh=9QOF2LaITsJiw+ZOY61+ER4WRD2Fy/PdmQnO9/gNCyE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=j78keP0PEWrmURhBzr30Jittvaz+ApZ05brfL+3nMn8+2LtboNjyNjCuOyMiFF47f
+         U8yxiZqseoFFwGrzesC3tgoA7KR0zK1dsTe9jnCKtwfof8KZ0oIyhVFDbeoNo65n2N
+         X3+hfxnBZcHv39gSXYBOB3sfCrmS8jD1UlP82/kgmh68TgAAQkggGy9u+Gnz459yzk
+         n2szxwMg4PQQZaEs2/MHfji/oI7z9mKeAmvII2ex47AGc54bgLD1QfCIPx35rjoEem
+         5557M0zqc7H0a9HB6OSDh/RjDSyQtiTUw087zowdlvWoKY3TltYLkWNVbxqbnI+VpM
+         t4C6E7vxYV99w==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qsoNo-0055P7-M4;
+        Tue, 17 Oct 2023 19:01:33 +0100
+Date:   Tue, 17 Oct 2023 19:01:31 +0100
+Message-ID: <86ttqpm8lg.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jeremy Linton <jeremy.linton@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
+        will@kernel.org, mark.rutland@arm.com, anshuman.khandual@arm.com,
+        krisman@suse.de, broonie@kernel.org, james.morse@arm.com,
+        ionela.voinescu@arm.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] arm64: cpufeature: Change 32-bit EL0 to display enabled cores
+In-Reply-To: <20231017052322.1211099-4-jeremy.linton@arm.com>
+References: <20231017052322.1211099-1-jeremy.linton@arm.com>
+        <20231017052322.1211099-4-jeremy.linton@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: jeremy.linton@arm.com, linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, anshuman.khandual@arm.com, krisman@suse.de, broonie@kernel.org, james.morse@arm.com, ionela.voinescu@arm.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -115,61 +64,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-10-17 at 13:29 -0400, Paul Moore wrote:
-> On Tue, Oct 17, 2023 at 1:09 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
-> > On Tue, 2023-10-17 at 11:45 -0400, Paul Moore wrote:
-> > > On Tue, Oct 17, 2023 at 9:48 AM Mimi Zohar <zohar@linux.ibm.com> wrote:
-> > > > On Thu, 2023-10-05 at 12:32 +0200, Mickaël Salaün wrote:
-> > > > > > > > A complementary approach would be to create an
-> > > > > > > > LSM (or a dedicated interface) to tie certificate properties to a set of
-> > > > > > > > kernel usages, while still letting users configure these constraints.
-> > > > > > >
-> > > > > > > That is an interesting idea.  Would the other security maintainers be in
-> > > > > > > support of such an approach?  Would a LSM be the correct interface?
-> > > > > > > Some of the recent work I have done with introducing key usage and CA
-> > > > > > > enforcement is difficult for a distro to pick up, since these changes can be
-> > > > > > > viewed as a regression.  Each end-user has different signing procedures
-> > > > > > > and policies, so making something work for everyone is difficult.  Letting the
-> > > > > > > user configure these constraints would solve this problem.
-> > > >
-> > > > Something definitely needs to be done about controlling the usage of
-> > > > x509 certificates.  My concern is the level of granularity.  Would this
-> > > > be at the LSM hook level or even finer granaularity?
-> > >
-> > > You lost me, what do you mean by finer granularity than a LSM-based
-> > > access control?  Can you give an existing example in the Linux kernel
-> > > of access control granularity that is finer grained than what is
-> > > provided by the LSMs?
-> >
-> > The current x509 certificate access control granularity is at the
-> > keyring level.  Any key on the keyring may be used to verify a
-> > signature.  Finer granularity could associate a set of certificates on
-> > a particular keyring with an LSM hook - kernel modules, BPRM, kexec,
-> > firmware, etc.  Even finer granularity could somehow limit a key's
-> > signature verification to files in particular software package(s) for
-> > example.
-> >
-> > Perhaps Mickaël and Eric were thinking about a new LSM to control usage
-> > of x509 certificates from a totally different perspective.  I'd like to
-> > hear what they're thinking.
-> >
-> > I hope this addressed your questions.
+On Tue, 17 Oct 2023 06:23:22 +0100,
+Jeremy Linton <jeremy.linton@arm.com> wrote:
 > 
-> Okay, so you were talking about finer granularity when compared to the
-> *current* LSM keyring hooks.  Gotcha.
+> Now that we have the ability to display the list of cores
+> with a feature when it is selectivly enabled, lets display the
+> cores enabled for 32-bit use at EL0.
 > 
-> If we need additional, or modified, hooks that shouldn't be a problem.
-> Although I'm guessing the answer is going to be moving towards
-> purpose/operation specific keyrings which might fit in well with the
-> current keyring level controls.
+> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+> ---
+>  arch/arm64/kernel/cpufeature.c | 15 +++++++++++++--
+>  1 file changed, 13 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> index b7b67bac0e60..512cbe446b41 100644
+> --- a/arch/arm64/kernel/cpufeature.c
+> +++ b/arch/arm64/kernel/cpufeature.c
+> @@ -1533,8 +1533,17 @@ static bool has_32bit_el0(const struct arm64_cpu_capabilities *entry, int scope)
+>  	if (!has_cpuid_feature(entry, scope))
+>  		return allow_mismatched_32bit_el0;
+>  
+> -	if (scope == SCOPE_SYSTEM)
+> -		pr_info("detected: 32-bit EL0 Support\n");
+> +	if (scope == SCOPE_SYSTEM) {
+> +		struct arm64_cpu_capabilities *has_32bit;
+> +
+> +		has_32bit = (struct arm64_cpu_capabilities *)entry;
+> +
+> +		has_32bit->cpus = system_32bit_el0_cpumask();
 
-I don't believe defining per purpose/operation specific keyrings will
-resolve the underlying problem of granularity.  For example, different
-applications could be signed with different keys and should only be
-verified with the specific key.
+This seems rather dodgy. 'entry' comes from a static const array which
+will, in all likelihood be mapped R/O pretty soon after the initial
+CPU bringup. Try offlining/onlining a CPU and you should see a
+firework similar to what I have below (I hacked the CnP property, but
+that's no different from what you are doing):
+
+bash-5.1# echo 0 >/sys/devices/system/cpu/cpu2/online 
+[   51.367137] psci: CPU2 killed (polled 0 ms)
+bash-5.1# echo 1 >/sys/devices/system/cpu/cpu2/online 
+[   56.703092] Unable to handle kernel write to read-only memory at virtual address ffff800080d63db0
+[   56.703494] Mem abort info:
+[   56.703627]   ESR = 0x000000009600004f
+[   56.703799]   EC = 0x25: DABT (current EL), IL = 32 bits
+[   56.704052]   SET = 0, FnV = 0
+[   56.704196]   EA = 0, S1PTW = 0
+[   56.704340]   FSC = 0x0f: level 3 permission fault
+[   56.704575] Data abort info:
+[   56.704715]   ISV = 0, ISS = 0x0000004f, ISS2 = 0x00000000
+[   56.704961]   CM = 0, WnR = 1, TnD = 0, TagAccess = 0
+[   56.705195]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+[   56.705435] swapper pgtable: 4k pages, 48-bit VAs, pgdp=000000008142e000
+[   56.705742] [ffff800080d63db0] pgd=10000000dbfff003, p4d=10000000dbfff003, pud=10000000dbffe003, pmd=10000000dbffc003, pte=0060000080d63783
+[   56.706310] Internal error: Oops: 000000009600004f [#1] PREEMPT SMP
+[   56.706591] Modules linked in:
+[   56.706741] CPU: 2 PID: 0 Comm: swapper/2 Not tainted 6.6.0-rc1-00007-g805cc7d30885-dirty #1702
+[   56.707145] Hardware name: linux,dummy-virt (DT)
+[   56.707359] pstate: 800001c5 (Nzcv dAIF -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[   56.707676] pc : cpu_enable_cnp+0x24/0x60
+[   56.707873] lr : verify_local_cpu_caps+0x6c/0x140
+[   56.708046] sp : ffff800082103e10
+[   56.708201] x29: ffff800082103e10 x28: 0000000000000000 x27: 0000000000000000
+[   56.708517] x26: 0000000000000000 x25: 0000000000000000 x24: 0000000000000000
+[   56.708837] x23: ffff800081eec540 x22: 0000000000000003 x21: ffff8000813945f0
+[   56.709166] x20: ffff800081394358 x19: ffff800080d63db0 x18: 0000000000000000
+[   56.709488] x17: 000000040044ffff x16: 00500073b5503510 x15: 0000000000000000
+[   56.709805] x14: 0000000000000000 x13: 0000000000000000 x12: 0000000000000000
+[   56.710100] x11: 0000000000000000 x10: 0000000000000000 x9 : ffff8000800273ac
+[   56.710416] x8 : ffff80008003b640 x7 : 0000000000000000 x6 : 0000000000000000
+[   56.710738] x5 : 0000000000000000 x4 : ffff800081394000 x3 : ffff800081394000
+[   56.711070] x2 : ffff800081241ef8 x1 : ffff800080027218 x0 : ffff800080d63db0
+[   56.711396] Call trace:
+[   56.711512]  cpu_enable_cnp+0x24/0x60
+[   56.711684]  verify_local_cpu_caps+0x6c/0x140
+[   56.711885]  verify_local_cpu_capabilities+0x1c/0x198
+[   56.712112]  check_local_cpu_capabilities+0x28/0x50
+[   56.712337]  secondary_start_kernel+0xb4/0x1a0
+[   56.712546]  __secondary_switched+0xb8/0xc0
+[   56.712739] Code: 910003fd b0009b63 d00090c2 913be042 (f9000002) 
+[   56.713013] ---[ end trace 0000000000000000 ]---
+[   56.713224] Kernel panic - not syncing: Attempted to kill the idle task!
+[   56.713518] SMP: stopping secondary CPUs
+[   56.713752] Kernel Offset: disabled
+[   56.713908] CPU features: 0x00000000,50024d43,1947f723
+[   56.714144] Memory Limit: none
+[   56.714292] ---[ end Kernel panic - not syncing: Attempted to kill the idle task! ]---
+
+Thanks,
+
+	M.
 
 -- 
-thanks,
-
-Mimi
-
+Without deviation from the norm, progress is not possible.
