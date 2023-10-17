@@ -2,83 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD6937CCCB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 21:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A177CCCB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 21:55:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235010AbjJQTzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 15:55:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47436 "EHLO
+        id S235038AbjJQTzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 15:55:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234974AbjJQTzk (ORCPT
+        with ESMTP id S234966AbjJQTzl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 15:55:40 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F0DA9E;
-        Tue, 17 Oct 2023 12:55:38 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-57b8cebf57dso3206418eaf.0;
-        Tue, 17 Oct 2023 12:55:38 -0700 (PDT)
+        Tue, 17 Oct 2023 15:55:41 -0400
+Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04AB5ED;
+        Tue, 17 Oct 2023 12:55:40 -0700 (PDT)
+Received: by mail-oo1-xc33.google.com with SMTP id 006d021491bc7-57e40f0189aso3215072eaf.1;
+        Tue, 17 Oct 2023 12:55:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697572538; x=1698177338; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697572539; x=1698177339; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Hr6iIx34rTQ2mmt9kM1eh444YeAY0zEmKwl7Qqi+iQU=;
-        b=TsAaqVD58w/4dyDU/k1htIBnrDWXPaibm3Q2DnToivFBwrt4AZrlDvBskUYGjMaSOK
-         /v4LwtU3Xe0YhTR6ytg7CBg3MSbVzG1e4AhggFTJtup5ScjWZjcrRS6plTjwyKjjDLhX
-         b+aKdasgTIMw+LrmXReCt4fYC1OIf/ttSAfg0OxbhwF8TQitlIXFQtgTv22hkyZ6bkFA
-         4PBhU41j6tqtbfnYJ+PGWp7tnsy9Km87Ogh3K+0Ql28dZck1hkfjUWcRqNXTTuEyuQZ7
-         Im1GTzAjYoFDKJMP5WqyeRfdx+P30vICP1jbEgbzGcd8jJOIcBskEygFRAkVoNDQjIV0
-         lh8g==
+        bh=6eA2nFZj1wzdGS7YxyIDKBexw77sgLNg1YSUDsCcOvw=;
+        b=DwDawMPSVtWC9uGjguOqKD7J7aiG0rbFPXus+kC556/ORlRT6XgsMxzYU+whWYN2qk
+         ZqvmYuBygYPFjzZqkoY+9e5OO29w6WYq7bSukrwkbwS1LGSbnas9onBs8liceclfkX9m
+         25hgtKKXQTHAgixiFzCguu07gWTnv5LtJ3/sZR88DxAMkrIJl7nY3MpnPi8qSkC6YND3
+         dW9WFF8WEaoekaxgxTlrC5Z49+w94Uq1RdDMy8Mw5DrUR+UiMRHGy5V2L/gRj7yJalkZ
+         wPrpZ1KTAIXajmS/mow7yK07u9C7OiRZ+RtI0os4/2ua+veUM1bTg9ueWX61Vx0Xg1EJ
+         rZzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697572538; x=1698177338;
+        d=1e100.net; s=20230601; t=1697572539; x=1698177339;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=Hr6iIx34rTQ2mmt9kM1eh444YeAY0zEmKwl7Qqi+iQU=;
-        b=BUDN5NDHbYu2W3MWUartTSZev3Idu0JAjCErPhxSNLrP/IXAzo4y3MWosEawft9PKl
-         xE8KHDr06fdVZvoONBfJ4RVv2V6B1/OTQKFEguwsCMpYCZ6QeFHqvGjNkYQybUiKnJQL
-         qYgGeNbS9PTiNWcAdsRE3xT/WgmjIBxEAw5gF9bdV5BWKcZUOUTf2Yf/jGirLpfW+tX1
-         dl9ZH5xxNjC0z2XbqNeaD57+p2XJIkwrnKgqqRWWwILInSweRL+jDiXbkeQWD4Z4HOQO
-         U/N5Pr4Ki3ivCBmoOWcNpgy82hfP2ly/Lv1aRpKVJ98TwuMXjecz/FQtLd5btfejjrR0
-         0XyQ==
-X-Gm-Message-State: AOJu0YzypNKIzNidGcN8+Yoh/c5pCgkJdsmzru8vsAanF5Jv53l6EyEw
-        UpelZur3pNUxlMy8GUjLbos=
-X-Google-Smtp-Source: AGHT+IFs5zP/eVXPkHMzGmr0+zD8r8RbxGzsnYjyWPhcZt78cW8m1uf2569gvsCLGJNY5rI5WjnAWg==
-X-Received: by 2002:a05:6359:8091:b0:134:e4fe:e162 with SMTP id re17-20020a056359809100b00134e4fee162mr2878726rwb.13.1697572537867;
-        Tue, 17 Oct 2023 12:55:37 -0700 (PDT)
+        bh=6eA2nFZj1wzdGS7YxyIDKBexw77sgLNg1YSUDsCcOvw=;
+        b=Urdb6eV9pDpL5nLN6SQrYcJl0vJ0I7gu7kOn6COqEyx3oVw784IaDG38Ljko13LKog
+         jCexn+yFQZzzuVfR1R+KkelCMBp8MoDewi3KxoAJgzOcGF74RzxZUPRd72Z9lCED8lHM
+         joUOzFs8bY1ahTJa00dQ3P2mL+vuxd79LDVm/Wi39h/B8sYsOH6tK7FUm3oyE1bnsMiU
+         XBKWJBWpdhZmUjRe8iI7mpl81+DLqhdIw0Rce+0codLABn1jHwYqDI/Aa5rb+YrzQIhA
+         FYut/+RNl8etT4bTYvy3ru4b0UqldFM7t1EKR/NsjX5WPoAAdoE/FCaAnkLYamz/jGZ/
+         eP2A==
+X-Gm-Message-State: AOJu0Yx8OsMR3hQQSotUwDzbUnm63+OjQTtqu0El5xrBG2v0V1cLkcfS
+        RcDDJ45XzvQgzxru2WMY/us=
+X-Google-Smtp-Source: AGHT+IHJU4qw2rYt2MWhCbJ9de4DAvbX9iFmXe9orXLWzJmeTm5oGQlas9DcFBpgR+dqGF6Teq/0zg==
+X-Received: by 2002:a05:6358:ed7:b0:141:162:b0cd with SMTP id 23-20020a0563580ed700b001410162b0cdmr3444338rwh.19.1697572539218;
+        Tue, 17 Oct 2023 12:55:39 -0700 (PDT)
 Received: from moohyul.svl.corp.google.com ([2620:15c:2a3:200:c77b:3fef:28e3:81d2])
-        by smtp.gmail.com with ESMTPSA id a6-20020aa79706000000b0068fece2c190sm1848041pfg.70.2023.10.17.12.55.36
+        by smtp.gmail.com with ESMTPSA id a6-20020aa79706000000b0068fece2c190sm1848041pfg.70.2023.10.17.12.55.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 12:55:37 -0700 (PDT)
+        Tue, 17 Oct 2023 12:55:38 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org, Leo Yan <leo.yan@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, Kajol Jain <kjain@linux.ibm.com>,
-        linux-perf-users@vger.kernel.org, Ian Rogers <irogers@google.com>,
-        Jing Zhang <renyu.zj@linux.alibaba.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        John Garry <john.g.garry@oracle.com>,
         James Clark <james.clark@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        coresight@lists.linaro.org, Ingo Molnar <mingo@redhat.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
+        John Garry <john.g.garry@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Thomas Richter <tmricht@linux.ibm.com>
-Cc:     Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH v2 0/7] PMU performance improvements
-Date:   Tue, 17 Oct 2023 12:55:29 -0700
-Message-ID: <169757198792.167943.8358990853717369246.b4-ty@kernel.org>
+        coresight@lists.linaro.org
+Subject: Re: [PATCH v1 RESEND 0/2] perf cs-etm: Improve timestamp tracing
+Date:   Tue, 17 Oct 2023 12:55:30 -0700
+Message-ID: <169757198792.167943.16079905055591841742.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-In-Reply-To: <20231012175645.1849503-1-irogers@google.com>
-References: <20231012175645.1849503-1-irogers@google.com>
+In-Reply-To: <20231014074159.1667880-1-leo.yan@linaro.org>
+References: <20231014074159.1667880-1-leo.yan@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -92,26 +88,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Oct 2023 10:56:38 -0700, Ian Rogers wrote:
-> Performance improvements to pmu scanning by holding onto the
-> event/metric tables for a cpuid (avoid regular expression comparisons)
-> and by lazily computing the default perf_event_attr for a PMU.
+On Sat, 14 Oct 2023 15:41:57 +0800, Leo Yan wrote:
+> This patch series is to improve timestamp handling in per-thread mode.
 > 
-> Before
-> % Running 'internals/pmu-scan' benchmark:
-> Computing performance of sysfs PMU event scan for 100 times
->   Average core PMU scanning took: 251.990 usec (+- 4.009 usec)
->   Average PMU scanning took: 3222.460 usec (+- 211.234 usec)
-> % Running 'internals/pmu-scan' benchmark:
-> Computing performance of sysfs PMU event scan for 100 times
->   Average core PMU scanning took: 260.120 usec (+- 7.905 usec)
->   Average PMU scanning took: 3228.995 usec (+- 211.196 usec)
-> % Running 'internals/pmu-scan' benchmark:
-> Computing performance of sysfs PMU event scan for 100 times
->   Average core PMU scanning took: 252.310 usec (+- 3.980 usec)
->   Average PMU scanning took: 3220.675 usec (+- 210.844 usec)
+> The current code doesn't validate timestamp and always return success for
+> per-thread mode, for a sane implementation, the first patch is to allow
+> validation timestamp tracing in per-thread mode.
+> 
+> The second patch is to respect timestamp option "--timestamp" or "-T",
+> when users set this option, the tool will automatically enable hardware
+> timestamp tracing in Arm CoreSight.
 > 
 > [...]
 
 Applied to perf-tools-next, thanks!
-
