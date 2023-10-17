@@ -2,120 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7787CBC20
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 09:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9557CBC5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 09:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234571AbjJQHTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 03:19:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51830 "EHLO
+        id S234652AbjJQHfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 03:35:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234422AbjJQHTt (ORCPT
+        with ESMTP id S234642AbjJQHfQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 03:19:49 -0400
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D008E
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 00:19:47 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5a7eef0b931so66067537b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 00:19:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697527187; x=1698131987; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sQwBZF7yomSeFnEELBnlnKpdEQecOf+IZL5sDoY9Qm8=;
-        b=EpVKaLlpsMjbX4eEuIUqRHW20qHt1HgiiYpsoxD90ILWRExtSVmEnEIvBvy+IPONgX
-         sEDlW9tKkwBYMPvllwZeeK5jOWiW7GE2z5XpsOd42nedrJ1xujYGcfUBXeazvz6Q0ndl
-         OxGiooTJ86f+CTIEkJHg53FtX0lQhSXLZ0kn8/WduxHOiCzhBgizQ44szP3tJhckd6XA
-         /8lRyNuQsDDg+V8bRTc7n69FUJDQ8wztQ6VFQF+7T6zr4lohyCn0VetQdseR+IoUmzUd
-         FijrN1XH0thULxGgH3I8miapc3hu/Od4F8eR53Q4V/Aa5DD9e898ZZEWITuS0IaA4zej
-         jSzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697527187; x=1698131987;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sQwBZF7yomSeFnEELBnlnKpdEQecOf+IZL5sDoY9Qm8=;
-        b=JUb018r1RafmWsQVwljl+YshHWhqBlFj/OMNMYeAD5ttneNcccKRnV5GPNgiUeAoyS
-         pTq4PaqAbqZyN4xBB/bUqItyqKGr4tOdjyZtHn+gNyyORCSQfsj7AKmfxnRe53X/Ks54
-         yohK4xD+ubBQ5AlhPwAfDliRQqmj7F866UvJ1pLTzdbYsAQXGV4fdvVj5Iehs8zJMikD
-         zPT+aTkjEPJOEq8HpXOg/F4/i/wyb1ufIDWUWx3R8KPRx2vWbehzq8owxygSdQD/DINo
-         9/bnHSwNMHxF6MhC247TIZtAHyR241VgHJYn/dmFjkE85w5gkV8D/mk3x4AimfhRQYaM
-         wXZQ==
-X-Gm-Message-State: AOJu0YyX4v515QlIDc2hDRGur3b7oBhxKcrSX23le6x8kVnOE4FRUMKJ
-        bB/0lgP0HXC27qzmlM5rXy4=
-X-Google-Smtp-Source: AGHT+IG6JQThO8Ot4Zuv2WY0wihxScM3250ow9B9wyGNqK1zuSbkrPAU1Qq9rG2B1hQ3GmhPeHsaTw==
-X-Received: by 2002:a0d:d382:0:b0:594:e148:3c42 with SMTP id v124-20020a0dd382000000b00594e1483c42mr1311925ywd.52.1697527186914;
-        Tue, 17 Oct 2023 00:19:46 -0700 (PDT)
-Received: from gilbert-PC ([105.112.189.86])
-        by smtp.gmail.com with ESMTPSA id d77-20020a814f50000000b005a7ba08b2acsm409249ywb.0.2023.10.17.00.19.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 00:19:46 -0700 (PDT)
-Date:   Tue, 17 Oct 2023 08:19:40 +0100
-From:   Gilbert Adikankwu <gilbertadikankwu@gmail.com>
-To:     Philipp Hortmann <philipp.g.hortmann@gmail.com>
-Cc:     outreachy@lists.linux.dev, forest@alittletooquiet.net,
-        gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] Rename variable bUpdateBBVGA, byCurrentCh, byCurPwr
- and byBBPreEDRSSI
-Message-ID: <ZS41jFfwBJ672Rb7@gilbert-PC>
-References: <cover.1697495597.git.gilbertadikankwu@gmail.com>
- <0f6661a4-7281-4d26-8c26-ba03a567fcaa@gmail.com>
+        Tue, 17 Oct 2023 03:35:16 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6565193;
+        Tue, 17 Oct 2023 00:35:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 796B6C433C7;
+        Tue, 17 Oct 2023 07:35:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1697528114;
+        bh=oyQn0fGhBWNG7KRE+BzJzRpJMUNT2Ujk05VM2rd9HmA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EuwgqWn2+B9M3RWLetxpdECx9SvQbNsKGBrl9eQzvjXQZLJfxwrG4+PUgJcoDhyMU
+         bhGyAnSpC3gJSUIQqN2ZXLEoE07GETXLGVOSylkQXdylbR1B8gsFEtUmlyq/sOuvq+
+         eCXZjqyWUQzPm6Nk4oqG5P5lqhbjLF943eDkYBoo=
+Date:   Tue, 17 Oct 2023 09:20:38 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Thorsten Leemhuis <linux@leemhuis.info>
+Cc:     Philipp Hortmann <philipp.g.hortmann@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>, Kalle Valo <kvalo@kernel.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: [PATCH v2] staging: rtl8192u: Remove broken driver
+Message-ID: <2023101752-canteen-uniformly-acc1@gregkh>
+References: <20231014211051.GA29518@matrix-ESPRIMO-P710>
+ <3d1355bc-d359-4ff6-aee1-fbc84437efec@leemhuis.info>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0f6661a4-7281-4d26-8c26-ba03a567fcaa@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <3d1355bc-d359-4ff6-aee1-fbc84437efec@leemhuis.info>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 08:19:49AM +0200, Philipp Hortmann wrote:
-> On 10/17/23 00:58, Gilbert Adikankwu wrote:
-> > Make the variable names adhere to Linux kernel coding style and mute
-> > checkpatch.pl errors.
+On Tue, Oct 17, 2023 at 07:33:49AM +0200, Thorsten Leemhuis wrote:
+> On 14.10.23 23:10, Philipp Hortmann wrote:
+> > Tests on rtl8192u hardware have shown that this driver is broken since
+> > 2016. Remove broken driver. Find fix for two bugs in second link.
 > > 
-> > Gilbert Adikankwu (4):
-> >    staging: vt6655: Rename variable bUpdateBBVGA
-> >    staging: vt6655: Rename variable byCurrentCh
-> >    staging: vt6655: Rename variable byCurPwr
-> >    staging: vt6655: Rename variable byBBPreEDRSSI
+> > Link: https://lore.kernel.org/lkml/db98d9ac-7650-4a72-8eb9-4def1f17ea0d@app.fastmail.com/
+> > Link: https://lore.kernel.org/lkml/cover.1697089416.git.philipp.g.hortmann@gmail.com/
+> > Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+> > ---
+> > V2: Added 2x links and adapted description.
 > > 
-> >   drivers/staging/vt6655/baseband.c    |  2 +-
-> >   drivers/staging/vt6655/channel.c     | 18 +++++++++---------
-> >   drivers/staging/vt6655/device.h      |  8 ++++----
-> >   drivers/staging/vt6655/device_main.c |  8 ++++----
-> >   drivers/staging/vt6655/dpc.c         |  2 +-
-> >   drivers/staging/vt6655/rf.c          |  4 ++--
-> >   6 files changed, 21 insertions(+), 21 deletions(-)
-> > 
+> > Did not find any artifacts of rtl8192u in MAINTAINERS.
+> > ---
+> >  drivers/staging/Kconfig                       |    2 -
+> >  drivers/staging/rtl8192u/Kconfig              |   12 -
+> > [...]
 > 
-> Hi,
+> My daily linux-next builds for Fedora (based on Fedora rawhide config)
+> failed today with this error msg:
 > 
-> -       if (priv->byCurrentCh == ch->hw_value)
-> +       if (priv->current_ch == ch->hw_value)^M
->                 return ret;
+> """
+> + /usr/bin/make -s 'HOSTCFLAGS=-O2  -fexceptions -g
+> -grecord-gcc-switches -pipe -Wall -Werror=format-security
+> -Werror=implicit-function-declaration -Werror=implicit-int
+> -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS
+> -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong
+> -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -mcpu=power8
+> -mtune=power8 -fasynchronous-unwind-tables -fstack-clash-protection '
+> 'HOSTLDFLAGS=-Wl,-z,relro -Wl,--as-needed  -Wl,-z,now
+> -specs=/usr/lib/rpm/redhat/redhat-hardened-ld
+> -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1
+> -specs=/usr/lib/rpm/redhat/redhat-package-notes ' -j2 mrproper
+> scripts/Makefile.clean:12: drivers/staging/rtl8192u/Makefile: No such
+> file or directory
+> make[5]: *** No rule to make target 'drivers/staging/rtl8192u/Makefile'.
+>  Stop.
+> make[4]: *** [scripts/Makefile.clean:61: drivers/staging/rtl8192u] Error 2
+> make[3]: *** [scripts/Makefile.clean:61: drivers/staging] Error 2
+> make[3]: *** Waiting for unfinished jobs....
+> make[2]: *** [scripts/Makefile.clean:61: drivers] Error 2
+> make[1]: ***
+> [/builddir/build/BUILD/kernel-next-20231017/linux-6.6.0-0.0.next.20231017.447.vanilla.fc40.ppc64le/Makefile:1920:
+> _clean_.] Error 2
+> make: *** [Makefile:236: __sub-make] Error 2
+> error: Bad exit status from /var/tmp/rpm-tmp.TJDlJV (%build)
+> """
 > 
-> ERROR: DOS line endings
+> Full log:
+> https://copr-be.cloud.fedoraproject.org/results/@kernel-vanilla/next/fedora-rawhide-ppc64le/06536998-next-next-all/builder-live.log.gz
 > 
-> What does the "^M" at the end of the new line?
-> Did you run checkpatch on your patches?
-> 
-> Thanks
-> 
-> Bye
-> 
-> Philipp
+> Made me wonder if this patch left something behind; a quick grep showed
+> something suspicious in drivers/staging/Makefile:
+> """
+> obj-$(CONFIG_RTL8192U)		+= rtl8192u/
+> """
 
-Hello, 
+If you did 'make oldconfig' the option should have been removed and then
+this line wouldn't have triggered, right?  Odd, but I'll go drop this
+entry as well.
 
-I do not know what this error means. If anything, I'm surprised there is
-an error. checkpatch is hooked to my git commit and all the patches
-built cleanly on my machine. I will resend now.
+thanks,
 
-Thanks 
-Gilbert
+greg k-h
