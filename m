@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD217CC551
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 15:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB3D7CC54E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 15:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235095AbjJQN55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 09:57:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46608 "EHLO
+        id S1343978AbjJQN5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 09:57:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235026AbjJQN5m (ORCPT
+        with ESMTP id S235032AbjJQN5c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 09:57:42 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55AC3F5
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 06:57:21 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bf55a81eeaso37910635ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 06:57:21 -0700 (PDT)
+        Tue, 17 Oct 2023 09:57:32 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98545112
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 06:57:28 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c9b1e3a809so37149285ad.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 06:57:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697551041; x=1698155841; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1697551048; x=1698155848; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3YeKybsXaBEawKkeFDS0iNbtGov8rHLfrrjxPMSCVVc=;
-        b=KP3yZrHZlUQkRW3icuytezxZpw8nX5DHE+p+odUB8OdkKbgv/x51XzJ2zpRrsQp4RJ
-         j8Xv28AlptAjHfRNhDVZgAcJOuF5uUGGcsK44xRQfDAlWvAHlpY5SUgfHAm2u5mQptIr
-         Byt+d4C5s9ueZi8jSXH5k8VEVYVP7pyroYkZfaTb6A2SGVluqLpGWSQh6ZOuzEhwO8Mj
-         ZvxdmzzQRbkXKhBUoPKC5EO9x9vHBIjNOqjy6ogQJtKhSoy8L9QwsHDfy+d7SYku35e7
-         QZ0/K/hUvRN1f87JAatVkdORn8ligAeA2JmR032WWQ3EoppHPJ2YrojdJAgapXlPyeZ+
-         x9Dw==
+        bh=L6qruOxU4fSf1g4ejkCKRbUZ6Rt9Pr9dLFe0CyfbMcg=;
+        b=NQlh5CBt5If+wgmwUvUSJSDmkaosDMBNindWyUpspOIUTye/VEu2R6nN7JLrGb0Bte
+         L95lgb3WsfF6iWhCNnHHz/mf1K4E/GjiHZE6Qj2iU2t4hDy60YO/rmayiD/53byBAd2H
+         H6M7jDbehrD5abredPDXOzjD9cor4hMblTeNgTPQQ3UsHAg5wQUYoUCK/YHsY+rAWpNr
+         QUxxvmGQsSorKEm7ik2PHnvvl+16B/8Ac8naOi8mRCahpwydSVjxjoL7QrTig6vNe1g2
+         /yXOmgHPQnpB3yT5SkYT/AwzJZGrP57iP9KkGIihIE9atTh7xq/KjDBDRBl6HFQPVFv9
+         lkIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697551041; x=1698155841;
+        d=1e100.net; s=20230601; t=1697551048; x=1698155848;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3YeKybsXaBEawKkeFDS0iNbtGov8rHLfrrjxPMSCVVc=;
-        b=e78I+VCm3hfz6yaINTII+Mn3c5WdJLsy0DwcBtarG3GaVs1jU+isDCFVRmqxjzt8LD
-         kNIO7QZ2o7WdsVgTyaVSPCqw7dSro48dB9eBCkroI16+PtVJjIYQ63XyBHNQbHfDUvfg
-         5DMZaUSOOW8KYJbOnyc9HlQT54xIVo7A+b9TtQXhj7Aj8wtCwo8ncMBjOSmXPX04Un7X
-         sXict+SyaP0EipE3repyHBBLlErAfbqAG6u8lAHEHGcgvUYatmMaZMInpQw41UnIlgdd
-         bS6kdVJr3gvMgmwKj34cF0LySQW7AXI8N97jpwyfYTXpFDFdLZIaTxCAmY3CP70PT+JL
-         3M8A==
-X-Gm-Message-State: AOJu0YwPN6jymzPng8P2/xpaD9FKTW4hczABn2AV7jnkBXHQJRc0ESYs
-        UQaLz3e8vM57RmzHuC7IPhKGTA==
-X-Google-Smtp-Source: AGHT+IGXJvspR6FkilERCXznbKLwvfLEq4ZGOvnDO2ca7Tr9FbhSEVAkoPLEDXbo7OB+T3egW031yQ==
-X-Received: by 2002:a17:902:74cc:b0:1c9:cf26:8d91 with SMTP id f12-20020a17090274cc00b001c9cf268d91mr2413697plt.8.1697551040714;
-        Tue, 17 Oct 2023 06:57:20 -0700 (PDT)
+        bh=L6qruOxU4fSf1g4ejkCKRbUZ6Rt9Pr9dLFe0CyfbMcg=;
+        b=IbBalNvvnC45LteTU94wm+lXnM4HZx9i5OlT1EWP5c1Scw4NdWmIu9h7HEZT7prxC6
+         2zLPGT+aM6Kn+1yq8A3+tXvi6Py4E1B28d884TlTouA9C3UWroz9KtQMR/s6chDgZmKA
+         N/BZW6xj2lVuN+/nyQKd05deQx3EGCBvE+N67EhFEgoGVf+iEfVT0EsUrm+UssFAYMeI
+         IWgBjZKIV/gi7Zdh8b4es12lAtIu5gnTLi0wSfHgMhvKBM3FXi6qxhrG75aSh0A1u3GI
+         lcWWMIqjGhU73zAeprLrskuumklrrEyYvdiAhZu5XNyaBY0E1aR5ZG7dOWGuiyVJEnD0
+         b8IA==
+X-Gm-Message-State: AOJu0YxDVwhR+5+/UVjPqHiozv7bsJ34vbQEFANdTVISqA2v8aH6ML4/
+        2XOT5CtsvyT9jwSa1ZfqyEJ0tA==
+X-Google-Smtp-Source: AGHT+IGu200xw0lqV6u/3gW4g9zJOJxf765Ps7LJRcM4lWw12s3LqT8Kcl5H9JCRZmc/Rl4Nl9ObCA==
+X-Received: by 2002:a17:902:ce84:b0:1ca:7f91:aa5b with SMTP id f4-20020a170902ce8400b001ca7f91aa5bmr2789970plg.18.1697551046518;
+        Tue, 17 Oct 2023 06:57:26 -0700 (PDT)
 Received: from devz1.bytedance.net ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id b9-20020a170903228900b001b9e9edbf43sm1566634plh.171.2023.10.17.06.57.15
+        by smtp.gmail.com with ESMTPSA id b9-20020a170903228900b001b9e9edbf43sm1566634plh.171.2023.10.17.06.57.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 06:57:20 -0700 (PDT)
+        Tue, 17 Oct 2023 06:57:26 -0700 (PDT)
 From:   "wuqiang.matt" <wuqiang.matt@bytedance.com>
 To:     linux-trace-kernel@vger.kernel.org, mhiramat@kernel.org,
         davem@davemloft.net, anil.s.keshavamurthy@intel.com,
@@ -59,9 +59,9 @@ To:     linux-trace-kernel@vger.kernel.org, mhiramat@kernel.org,
         dan.j.williams@intel.com, jpoimboe@kernel.org
 Cc:     linux-kernel@vger.kernel.org, lkp@intel.com, mattwu@163.com,
         "wuqiang.matt" <wuqiang.matt@bytedance.com>
-Subject: [PATCH v11 2/5] lib: objpool test module added
-Date:   Tue, 17 Oct 2023 21:56:51 +0800
-Message-Id: <20231017135654.82270-3-wuqiang.matt@bytedance.com>
+Subject: [PATCH v11 3/5] kprobes: kretprobe scalability improvement
+Date:   Tue, 17 Oct 2023 21:56:52 +0800
+Message-Id: <20231017135654.82270-4-wuqiang.matt@bytedance.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231017135654.82270-1-wuqiang.matt@bytedance.com>
 References: <20231017135654.82270-1-wuqiang.matt@bytedance.com>
@@ -76,774 +76,546 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The test_objpool module (test_objpool) will run several testcases
-for objpool stress and performance evaluation. Each testcase will
-have all available cpu cores involved to create a situation of high
-parallel and high contention.
+kretprobe is using freelist to manage return-instances, but freelist,
+as LIFO queue based on singly linked list, scales badly and reduces
+the overall throughput of kretprobed routines, especially for high
+contention scenarios.
 
-As of now there are 5 groups and 5 * 2 testcases in total:
+Here's a typical throughput test of sys_prctl (counts in 10 seconds,
+measured with perf stat -a -I 10000 -e syscalls:sys_enter_prctl):
 
-1) group 1: synchronous mode
-   objpool is managed synchronously, that is, all objects are to be
-   reclaimed before objpool finalization and the objpool owner makes
-   sure of it. All threads on different cores run in the same pace
-2) group 2: synchronous mode + hrtimer
-   this case have 2 customers: normal threads and hrtimer softirqs
-3) group 3: synchronous + overrun mode
-   This test group is mainly for performance evaluation of missing
-   cases when pre-allocated objects are less than the requested
-4) group 4: asynchronous mode
-   This case is just an emulation of kretprobe, with refcount used
-   to control the objpool lifecycle
-5) group 5: asynchronous mode with hrtimer
-   hrtimer softirq is introduced to stress async objpool operations
+OS: Debian 10 X86_64, Linux 6.5rc7 with freelist
+HW: XEON 8336C x 2, 64 cores/128 threads, DDR4 3200MT/s
+
+         1T       2T       4T       8T      16T      24T
+   24150045 29317964 15446741 12494489 18287272 17708768
+        32T      48T      64T      72T      96T     128T
+   16200682 13737658 11645677 11269858 10470118  9931051
+
+This patch introduces objpool to replace freelist. objpool is a
+high performance queue, which can bring near-linear scalability
+to kretprobed routines. Tests of kretprobe throughput show the
+biggest ratio as 159x of original freelist. Here's the result:
+
+                  1T         2T         4T         8T        16T
+native:     41186213   82336866  164250978  328662645  658810299
+freelist:   24150045   29317964   15446741   12494489   18287272
+objpool:    23926730   48010314   96125218  191782984  385091769
+                 32T        48T        64T        96T       128T
+native:   1330338351 1969957941 2512291791 2615754135 2671040914
+freelist:   16200682   13737658   11645677   10470118    9931051
+objpool:   764481096 1147149781 1456220214 1502109662 1579015050
+
+Testings on 96-core ARM64 output similarly, but with the biggest
+ratio up to 448x:
+
+OS: Debian 10 AARCH64, Linux 6.5rc7
+HW: Kunpeng-920 96 cores/2 sockets/4 NUMA nodes, DDR4 2933 MT/s
+
+                  1T         2T         4T         8T        16T
+native: .   30066096   63569843  126194076  257447289  505800181
+freelist:   16152090   11064397   11124068    7215768    5663013
+objpool:    13997541   28032100   55726624  110099926  221498787
+                 24T        32T        48T        64T        96T
+native:    763305277 1015925192 1521075123 2033009392 3021013752
+freelist:    5015810    4602893    3766792    3382478    2945292
+objpool:   328192025  439439564  668534502  887401381 1319972072
 
 Signed-off-by: wuqiang.matt <wuqiang.matt@bytedance.com>
 ---
- lib/Kconfig.debug  |  11 +
- lib/Makefile       |   2 +
- lib/test_objpool.c | 689 +++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 702 insertions(+)
- create mode 100644 lib/test_objpool.c
+ include/linux/kprobes.h | 11 ++---
+ include/linux/rethook.h | 16 ++-----
+ kernel/kprobes.c        | 93 +++++++++++++++++------------------------
+ kernel/trace/fprobe.c   | 32 ++++++--------
+ kernel/trace/rethook.c  | 90 ++++++++++++++++++---------------------
+ 5 files changed, 98 insertions(+), 144 deletions(-)
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index d6798513a8c2..6598604cf6c8 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2931,6 +2931,17 @@ config TEST_CLOCKSOURCE_WATCHDOG
- 
- 	  If unsure, say N.
- 
-+config TEST_OBJPOOL
-+	tristate "Test module for correctness and stress of objpool"
-+	default n
-+	depends on m && DEBUG_KERNEL
-+	help
-+	  This builds the "test_objpool" module that should be used for
-+	  correctness verification and concurrent testings of objects
-+	  allocation and reclamation.
-+
-+	  If unsure, say N.
-+
- endif # RUNTIME_TESTING_MENU
- 
- config ARCH_USE_MEMTEST
-diff --git a/lib/Makefile b/lib/Makefile
-index 7a84c922d9ff..19b936f2af1c 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -106,6 +106,8 @@ obj-$(CONFIG_KPROBES_SANITY_TEST) += test_kprobes.o
- obj-$(CONFIG_TEST_REF_TRACKER) += test_ref_tracker.o
- CFLAGS_test_fprobe.o += $(CC_FLAGS_FTRACE)
- obj-$(CONFIG_FPROBE_SANITY_TEST) += test_fprobe.o
-+obj-$(CONFIG_TEST_OBJPOOL) += test_objpool.o
-+
- #
- # CFLAGS for compiling floating point code inside the kernel. x86/Makefile turns
- # off the generation of FPU/SSE* instructions for kernel proper but FPU_FLAGS
-diff --git a/lib/test_objpool.c b/lib/test_objpool.c
-new file mode 100644
-index 000000000000..d329472f8ab6
---- /dev/null
-+++ b/lib/test_objpool.c
-@@ -0,0 +1,696 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Test module for lockless object pool
-+ *
-+ * Copyright: wuqiang.matt@bytedance.com
-+ */
-+
-+#include <linux/version.h>
-+#include <linux/errno.h>
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/sched.h>
-+#include <linux/cpumask.h>
-+#include <linux/completion.h>
-+#include <linux/kthread.h>
-+#include <linux/cpu.h>
-+#include <linux/cpuset.h>
-+#include <linux/slab.h>
-+#include <linux/vmalloc.h>
-+#include <linux/delay.h>
-+#include <linux/hrtimer.h>
-+#include <linux/interrupt.h>
+diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+index 85a64cb95d75..365eb092e9c4 100644
+--- a/include/linux/kprobes.h
++++ b/include/linux/kprobes.h
+@@ -26,8 +26,7 @@
+ #include <linux/rcupdate.h>
+ #include <linux/mutex.h>
+ #include <linux/ftrace.h>
+-#include <linux/refcount.h>
+-#include <linux/freelist.h>
 +#include <linux/objpool.h>
-+
-+#define OT_NR_MAX_BULK (16)
-+
-+/* memory usage */
-+struct ot_mem_stat {
-+	atomic_long_t alloc;
-+	atomic_long_t free;
-+};
-+
-+/* object allocation results */
-+struct ot_obj_stat {
-+	unsigned long nhits;
-+	unsigned long nmiss;
-+};
-+
-+/* control & results per testcase */
-+struct ot_data {
-+	struct rw_semaphore start;
-+	struct completion wait;
-+	struct completion rcu;
-+	atomic_t nthreads ____cacheline_aligned_in_smp;
-+	atomic_t stop ____cacheline_aligned_in_smp;
-+	struct ot_mem_stat kmalloc;
-+	struct ot_mem_stat vmalloc;
-+	struct ot_obj_stat objects;
-+	u64    duration;
-+};
-+
-+/* testcase */
-+struct ot_test {
-+	int async; /* synchronous or asynchronous */
-+	int mode; /* only mode 0 supported */
-+	int objsz; /* object size */
-+	int duration; /* ms */
-+	int delay; /* ms */
-+	int bulk_normal;
-+	int bulk_irq;
-+	unsigned long hrtimer; /* ms */
-+	const char *name;
-+	struct ot_data data;
-+};
-+
-+/* per-cpu worker */
-+struct ot_item {
-+	struct objpool_head *pool; /* pool head */
-+	struct ot_test *test; /* test parameters */
-+
-+	void (*worker)(struct ot_item *item, int irq);
-+
-+	/* hrtimer control */
-+	ktime_t hrtcycle;
-+	struct hrtimer hrtimer;
-+
-+	int bulk[2]; /* for thread and irq */
-+	int delay;
-+	u32 niters;
-+
-+	/* summary per thread */
-+	struct ot_obj_stat stat[2]; /* thread and irq */
-+	u64 duration;
-+};
-+
-+/*
-+ * memory leakage checking
-+ */
-+
-+static void *ot_kzalloc(struct ot_test *test, long size)
-+{
-+	void *ptr = kzalloc(size, GFP_KERNEL);
-+
-+	if (ptr)
-+		atomic_long_add(size, &test->data.kmalloc.alloc);
-+	return ptr;
-+}
-+
-+static void ot_kfree(struct ot_test *test, void *ptr, long size)
-+{
-+	if (!ptr)
-+		return;
-+	atomic_long_add(size, &test->data.kmalloc.free);
-+	kfree(ptr);
-+}
-+
-+static void ot_mem_report(struct ot_test *test)
-+{
-+	long alloc, free;
-+
-+	pr_info("memory allocation summary for %s\n", test->name);
-+
-+	alloc = atomic_long_read(&test->data.kmalloc.alloc);
-+	free = atomic_long_read(&test->data.kmalloc.free);
-+	pr_info("  kmalloc: %lu - %lu = %lu\n", alloc, free, alloc - free);
-+
-+	alloc = atomic_long_read(&test->data.vmalloc.alloc);
-+	free = atomic_long_read(&test->data.vmalloc.free);
-+	pr_info("  vmalloc: %lu - %lu = %lu\n", alloc, free, alloc - free);
-+}
-+
-+/* user object instance */
-+struct ot_node {
-+	void *owner;
-+	unsigned long data;
-+	unsigned long refs;
-+	unsigned long payload[32];
-+};
-+
-+/* user objpool manager */
-+struct ot_context {
-+	struct objpool_head pool; /* objpool head */
-+	struct ot_test *test; /* test parameters */
-+	void *ptr; /* user pool buffer */
-+	unsigned long size; /* buffer size */
+ #include <linux/rethook.h>
+ #include <asm/kprobes.h>
+ 
+@@ -141,7 +140,7 @@ static inline bool kprobe_ftrace(struct kprobe *p)
+  */
+ struct kretprobe_holder {
+ 	struct kretprobe	*rp;
+-	refcount_t		ref;
++	struct objpool_head	pool;
+ };
+ 
+ struct kretprobe {
+@@ -154,7 +153,6 @@ struct kretprobe {
+ #ifdef CONFIG_KRETPROBE_ON_RETHOOK
+ 	struct rethook *rh;
+ #else
+-	struct freelist_head freelist;
+ 	struct kretprobe_holder *rph;
+ #endif
+ };
+@@ -165,10 +163,7 @@ struct kretprobe_instance {
+ #ifdef CONFIG_KRETPROBE_ON_RETHOOK
+ 	struct rethook_node node;
+ #else
+-	union {
+-		struct freelist_node freelist;
+-		struct rcu_head rcu;
+-	};
 +	struct rcu_head rcu;
-+};
+ 	struct llist_node llist;
+ 	struct kretprobe_holder *rph;
+ 	kprobe_opcode_t *ret_addr;
+diff --git a/include/linux/rethook.h b/include/linux/rethook.h
+index 26b6f3c81a76..ce69b2b7bc35 100644
+--- a/include/linux/rethook.h
++++ b/include/linux/rethook.h
+@@ -6,11 +6,10 @@
+ #define _LINUX_RETHOOK_H
+ 
+ #include <linux/compiler.h>
+-#include <linux/freelist.h>
++#include <linux/objpool.h>
+ #include <linux/kallsyms.h>
+ #include <linux/llist.h>
+ #include <linux/rcupdate.h>
+-#include <linux/refcount.h>
+ 
+ struct rethook_node;
+ 
+@@ -30,14 +29,12 @@ typedef void (*rethook_handler_t) (struct rethook_node *, void *, unsigned long,
+ struct rethook {
+ 	void			*data;
+ 	rethook_handler_t	handler;
+-	struct freelist_head	pool;
+-	refcount_t		ref;
++	struct objpool_head	pool;
+ 	struct rcu_head		rcu;
+ };
+ 
+ /**
+  * struct rethook_node - The rethook shadow-stack entry node.
+- * @freelist: The freelist, linked to struct rethook::pool.
+  * @rcu: The rcu_head for deferred freeing.
+  * @llist: The llist, linked to a struct task_struct::rethooks.
+  * @rethook: The pointer to the struct rethook.
+@@ -48,20 +45,16 @@ struct rethook {
+  * on each entry of the shadow stack.
+  */
+ struct rethook_node {
+-	union {
+-		struct freelist_node freelist;
+-		struct rcu_head      rcu;
+-	};
++	struct rcu_head		rcu;
+ 	struct llist_node	llist;
+ 	struct rethook		*rethook;
+ 	unsigned long		ret_addr;
+ 	unsigned long		frame;
+ };
+ 
+-struct rethook *rethook_alloc(void *data, rethook_handler_t handler);
++struct rethook *rethook_alloc(void *data, rethook_handler_t handler, int size, int num);
+ void rethook_stop(struct rethook *rh);
+ void rethook_free(struct rethook *rh);
+-void rethook_add_node(struct rethook *rh, struct rethook_node *node);
+ struct rethook_node *rethook_try_get(struct rethook *rh);
+ void rethook_recycle(struct rethook_node *node);
+ void rethook_hook(struct rethook_node *node, struct pt_regs *regs, bool mcount);
+@@ -98,4 +91,3 @@ void rethook_flush_task(struct task_struct *tk);
+ #endif
+ 
+ #endif
+-
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index ca385b61d546..075a632e6c7c 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -1877,13 +1877,27 @@ static struct notifier_block kprobe_exceptions_nb = {
+ #ifdef CONFIG_KRETPROBES
+ 
+ #if !defined(CONFIG_KRETPROBE_ON_RETHOOK)
 +
-+static DEFINE_PER_CPU(struct ot_item, ot_pcup_items);
-+
-+static int ot_init_data(struct ot_data *data)
++/* callbacks for objpool of kretprobe instances */
++static int kretprobe_init_inst(void *nod, void *context)
 +{
-+	memset(data, 0, sizeof(*data));
-+	init_rwsem(&data->start);
-+	init_completion(&data->wait);
-+	init_completion(&data->rcu);
-+	atomic_set(&data->nthreads, 1);
++	struct kretprobe_instance *ri = nod;
 +
++	ri->rph = context;
++	return 0;
++}
++static int kretprobe_fini_pool(struct objpool_head *head, void *context)
++{
++	kfree(context);
 +	return 0;
 +}
 +
-+static int ot_init_node(void *nod, void *context)
-+{
-+	struct ot_context *sop = context;
-+	struct ot_node *on = nod;
-+
-+	on->owner = &sop->pool;
-+	return 0;
-+}
-+
-+static enum hrtimer_restart ot_hrtimer_handler(struct hrtimer *hrt)
-+{
-+	struct ot_item *item = container_of(hrt, struct ot_item, hrtimer);
-+	struct ot_test *test = item->test;
-+
-+	if (atomic_read_acquire(&test->data.stop))
-+		return HRTIMER_NORESTART;
-+
-+	/* do bulk-testings for objects pop/push */
-+	item->worker(item, 1);
-+
-+	hrtimer_forward(hrt, hrt->base->get_time(), item->hrtcycle);
-+	return HRTIMER_RESTART;
-+}
-+
-+static void ot_start_hrtimer(struct ot_item *item)
-+{
-+	if (!item->test->hrtimer)
+ static void free_rp_inst_rcu(struct rcu_head *head)
+ {
+ 	struct kretprobe_instance *ri = container_of(head, struct kretprobe_instance, rcu);
++	struct kretprobe_holder *rph = ri->rph;
+ 
+-	if (refcount_dec_and_test(&ri->rph->ref))
+-		kfree(ri->rph);
+-	kfree(ri);
++	objpool_drop(ri, &rph->pool);
+ }
+ NOKPROBE_SYMBOL(free_rp_inst_rcu);
+ 
+@@ -1892,7 +1906,7 @@ static void recycle_rp_inst(struct kretprobe_instance *ri)
+ 	struct kretprobe *rp = get_kretprobe(ri);
+ 
+ 	if (likely(rp))
+-		freelist_add(&ri->freelist, &rp->freelist);
++		objpool_push(ri, &rp->rph->pool);
+ 	else
+ 		call_rcu(&ri->rcu, free_rp_inst_rcu);
+ }
+@@ -1929,23 +1943,12 @@ NOKPROBE_SYMBOL(kprobe_flush_task);
+ 
+ static inline void free_rp_inst(struct kretprobe *rp)
+ {
+-	struct kretprobe_instance *ri;
+-	struct freelist_node *node;
+-	int count = 0;
+-
+-	node = rp->freelist.head;
+-	while (node) {
+-		ri = container_of(node, struct kretprobe_instance, freelist);
+-		node = node->next;
+-
+-		kfree(ri);
+-		count++;
+-	}
++	struct kretprobe_holder *rph = rp->rph;
+ 
+-	if (refcount_sub_and_test(count, &rp->rph->ref)) {
+-		kfree(rp->rph);
+-		rp->rph = NULL;
+-	}
++	if (!rph)
 +		return;
-+	hrtimer_start(&item->hrtimer, item->hrtcycle, HRTIMER_MODE_REL);
-+}
-+
-+static void ot_stop_hrtimer(struct ot_item *item)
-+{
-+	if (!item->test->hrtimer)
-+		return;
-+	hrtimer_cancel(&item->hrtimer);
-+}
-+
-+static int ot_init_hrtimer(struct ot_item *item, unsigned long hrtimer)
-+{
-+	struct hrtimer *hrt = &item->hrtimer;
-+
-+	if (!hrtimer)
-+		return -ENOENT;
-+
-+	item->hrtcycle = ktime_set(0, hrtimer * 1000000UL);
-+	hrtimer_init(hrt, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-+	hrt->function = ot_hrtimer_handler;
-+	return 0;
-+}
-+
-+static int ot_init_cpu_item(struct ot_item *item,
-+			struct ot_test *test,
-+			struct objpool_head *pool,
-+			void (*worker)(struct ot_item *, int))
-+{
-+	memset(item, 0, sizeof(*item));
-+	item->pool = pool;
-+	item->test = test;
-+	item->worker = worker;
-+
-+	item->bulk[0] = test->bulk_normal;
-+	item->bulk[1] = test->bulk_irq;
-+	item->delay = test->delay;
-+
-+	/* initialize hrtimer */
-+	ot_init_hrtimer(item, item->test->hrtimer);
-+	return 0;
-+}
-+
-+static int ot_thread_worker(void *arg)
-+{
-+	struct ot_item *item = arg;
-+	struct ot_test *test = item->test;
-+	ktime_t start;
-+
-+	atomic_inc(&test->data.nthreads);
-+	down_read(&test->data.start);
-+	up_read(&test->data.start);
-+	start = ktime_get();
-+	ot_start_hrtimer(item);
-+	do {
-+		if (atomic_read_acquire(&test->data.stop))
-+			break;
-+		/* do bulk-testings for objects pop/push */
-+		item->worker(item, 0);
-+	} while (!kthread_should_stop());
-+	ot_stop_hrtimer(item);
-+	item->duration = (u64) ktime_us_delta(ktime_get(), start);
-+	if (atomic_dec_and_test(&test->data.nthreads))
-+		complete(&test->data.wait);
-+
-+	return 0;
-+}
-+
-+static void ot_perf_report(struct ot_test *test, u64 duration)
-+{
-+	struct ot_obj_stat total, normal = {0}, irq = {0};
-+	int cpu, nthreads = 0;
-+
-+	pr_info("\n");
-+	pr_info("Testing summary for %s\n", test->name);
-+
-+	for_each_possible_cpu(cpu) {
-+		struct ot_item *item = per_cpu_ptr(&ot_pcup_items, cpu);
-+		if (!item->duration)
-+			continue;
-+		normal.nhits += item->stat[0].nhits;
-+		normal.nmiss += item->stat[0].nmiss;
-+		irq.nhits += item->stat[1].nhits;
-+		irq.nmiss += item->stat[1].nmiss;
-+		pr_info("CPU: %d  duration: %lluus\n", cpu, item->duration);
-+		pr_info("\tthread:\t%16lu hits \t%16lu miss\n",
-+			item->stat[0].nhits, item->stat[0].nmiss);
-+		pr_info("\tirq:   \t%16lu hits \t%16lu miss\n",
-+			item->stat[1].nhits, item->stat[1].nmiss);
-+		pr_info("\ttotal: \t%16lu hits \t%16lu miss\n",
-+			item->stat[0].nhits + item->stat[1].nhits,
-+			item->stat[0].nmiss + item->stat[1].nmiss);
-+		nthreads++;
-+	}
-+
-+	total.nhits = normal.nhits + irq.nhits;
-+	total.nmiss = normal.nmiss + irq.nmiss;
-+
-+	pr_info("ALL: \tnthreads: %d  duration: %lluus\n", nthreads, duration);
-+	pr_info("SUM: \t%16lu hits \t%16lu miss\n",
-+		total.nhits, total.nmiss);
-+
-+	test->data.objects = total;
-+	test->data.duration = duration;
-+}
-+
-+/*
-+ * synchronous test cases for objpool manipulation
-+ */
-+
-+/* objpool manipulation for synchronous mode (percpu objpool) */
-+static struct ot_context *ot_init_sync_m0(struct ot_test *test)
-+{
-+	struct ot_context *sop = NULL;
-+	int max = num_possible_cpus() << 3;
-+	gfp_t gfp = GFP_KERNEL;
-+
-+	sop = (struct ot_context *)ot_kzalloc(test, sizeof(*sop));
-+	if (!sop)
-+		return NULL;
-+	sop->test = test;
-+	if (test->objsz < 512)
-+		gfp = GFP_ATOMIC;
-+
-+	if (objpool_init(&sop->pool, max, test->objsz,
-+			 gfp, sop, ot_init_node, NULL)) {
-+		ot_kfree(test, sop, sizeof(*sop));
-+		return NULL;
-+	}
-+	WARN_ON(max != sop->pool.nr_objs);
-+
-+	return sop;
-+}
-+
-+static void ot_fini_sync(struct ot_context *sop)
-+{
-+	objpool_fini(&sop->pool);
-+	ot_kfree(sop->test, sop, sizeof(*sop));
-+}
-+
-+struct {
-+	struct ot_context * (*init)(struct ot_test *oc);
-+	void (*fini)(struct ot_context *sop);
-+} g_ot_sync_ops[] = {
-+	{.init = ot_init_sync_m0, .fini = ot_fini_sync},
-+};
-+
-+/*
-+ * synchronous test cases: performance mode
-+ */
-+
-+static void ot_bulk_sync(struct ot_item *item, int irq)
-+{
-+	struct ot_node *nods[OT_NR_MAX_BULK];
-+	int i;
-+
-+	for (i = 0; i < item->bulk[irq]; i++)
-+		nods[i] = objpool_pop(item->pool);
-+
-+	if (!irq && (item->delay || !(++(item->niters) & 0x7FFF)))
-+		msleep(item->delay);
-+
-+	while (i-- > 0) {
-+		struct ot_node *on = nods[i];
-+		if (on) {
-+			on->refs++;
-+			objpool_push(on, item->pool);
-+			item->stat[irq].nhits++;
-+		} else {
-+			item->stat[irq].nmiss++;
-+		}
-+	}
-+}
-+
-+static int ot_start_sync(struct ot_test *test)
-+{
-+	struct ot_context *sop;
-+	ktime_t start;
-+	u64 duration;
-+	unsigned long timeout;
-+	int cpu;
-+
-+	/* initialize objpool for syncrhonous testcase */
-+	sop = g_ot_sync_ops[test->mode].init(test);
-+	if (!sop)
++	rp->rph = NULL;
++	objpool_fini(&rph->pool);
+ }
+ 
+ /* This assumes the 'tsk' is the current task or the is not running. */
+@@ -2087,19 +2090,17 @@ NOKPROBE_SYMBOL(__kretprobe_trampoline_handler)
+ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
+ {
+ 	struct kretprobe *rp = container_of(p, struct kretprobe, kp);
++	struct kretprobe_holder *rph = rp->rph;
+ 	struct kretprobe_instance *ri;
+-	struct freelist_node *fn;
+ 
+-	fn = freelist_try_get(&rp->freelist);
+-	if (!fn) {
++	ri = objpool_pop(&rph->pool);
++	if (!ri) {
+ 		rp->nmissed++;
+ 		return 0;
+ 	}
+ 
+-	ri = container_of(fn, struct kretprobe_instance, freelist);
+-
+ 	if (rp->entry_handler && rp->entry_handler(ri, regs)) {
+-		freelist_add(&ri->freelist, &rp->freelist);
++		objpool_push(ri, &rph->pool);
+ 		return 0;
+ 	}
+ 
+@@ -2193,7 +2194,6 @@ int kprobe_on_func_entry(kprobe_opcode_t *addr, const char *sym, unsigned long o
+ int register_kretprobe(struct kretprobe *rp)
+ {
+ 	int ret;
+-	struct kretprobe_instance *inst;
+ 	int i;
+ 	void *addr;
+ 
+@@ -2227,19 +2227,12 @@ int register_kretprobe(struct kretprobe *rp)
+ 		rp->maxactive = max_t(unsigned int, 10, 2*num_possible_cpus());
+ 
+ #ifdef CONFIG_KRETPROBE_ON_RETHOOK
+-	rp->rh = rethook_alloc((void *)rp, kretprobe_rethook_handler);
+-	if (!rp->rh)
+-		return -ENOMEM;
++	rp->rh = rethook_alloc((void *)rp, kretprobe_rethook_handler,
++				sizeof(struct kretprobe_instance) +
++				rp->data_size, rp->maxactive);
++	if (IS_ERR(rp->rh))
++		return PTR_ERR(rp->rh);
+ 
+-	for (i = 0; i < rp->maxactive; i++) {
+-		inst = kzalloc(struct_size(inst, data, rp->data_size), GFP_KERNEL);
+-		if (inst == NULL) {
+-			rethook_free(rp->rh);
+-			rp->rh = NULL;
+-			return -ENOMEM;
+-		}
+-		rethook_add_node(rp->rh, &inst->node);
+-	}
+ 	rp->nmissed = 0;
+ 	/* Establish function entry probe point */
+ 	ret = register_kprobe(&rp->kp);
+@@ -2249,24 +2241,18 @@ int register_kretprobe(struct kretprobe *rp)
+ 		rp->rh = NULL;
+ 	}
+ #else	/* !CONFIG_KRETPROBE_ON_RETHOOK */
+-	rp->freelist.head = NULL;
+ 	rp->rph = kzalloc(sizeof(struct kretprobe_holder), GFP_KERNEL);
+ 	if (!rp->rph)
+ 		return -ENOMEM;
+ 
+-	rp->rph->rp = rp;
+-	for (i = 0; i < rp->maxactive; i++) {
+-		inst = kzalloc(struct_size(inst, data, rp->data_size), GFP_KERNEL);
+-		if (inst == NULL) {
+-			refcount_set(&rp->rph->ref, i);
+-			free_rp_inst(rp);
+-			return -ENOMEM;
+-		}
+-		inst->rph = rp->rph;
+-		freelist_add(&inst->freelist, &rp->freelist);
++	if (objpool_init(&rp->rph->pool, rp->maxactive, rp->data_size +
++			sizeof(struct kretprobe_instance), GFP_KERNEL,
++			rp->rph, kretprobe_init_inst, kretprobe_fini_pool)) {
++		kfree(rp->rph);
++		rp->rph = NULL;
 +		return -ENOMEM;
+ 	}
+-	refcount_set(&rp->rph->ref, i);
+-
++	rp->rph->rp = rp;
+ 	rp->nmissed = 0;
+ 	/* Establish function entry probe point */
+ 	ret = register_kprobe(&rp->kp);
+diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
+index 3b21f4063258..f5bf98e6b2ac 100644
+--- a/kernel/trace/fprobe.c
++++ b/kernel/trace/fprobe.c
+@@ -187,7 +187,7 @@ static void fprobe_init(struct fprobe *fp)
+ 
+ static int fprobe_init_rethook(struct fprobe *fp, int num)
+ {
+-	int i, size;
++	int size;
+ 
+ 	if (num <= 0)
+ 		return -EINVAL;
+@@ -202,26 +202,18 @@ static int fprobe_init_rethook(struct fprobe *fp, int num)
+ 	if (size <= 0)
+ 		return -EINVAL;
+ 
+-	fp->rethook = rethook_alloc((void *)fp, fprobe_exit_handler);
+-	if (!fp->rethook)
+-		return -ENOMEM;
+-	for (i = 0; i < size; i++) {
+-		struct fprobe_rethook_node *node;
+-
+-		node = kzalloc(sizeof(*node) + fp->entry_data_size, GFP_KERNEL);
+-		if (!node) {
+-			rethook_free(fp->rethook);
+-			fp->rethook = NULL;
+-			return -ENOMEM;
+-		}
+-		rethook_add_node(fp->rethook, &node->node);
+-	}
++	/* Initialize rethook */
++	fp->rethook = rethook_alloc((void *)fp, fprobe_exit_handler,
++				sizeof(struct fprobe_rethook_node), size);
++	if (IS_ERR(fp->rethook))
++		return PTR_ERR(fp->rethook);
 +
-+	/* grab rwsem to block testing threads */
-+	down_write(&test->data.start);
+ 	return 0;
+ }
+ 
+ static void fprobe_fail_cleanup(struct fprobe *fp)
+ {
+-	if (fp->rethook) {
++	if (!IS_ERR_OR_NULL(fp->rethook)) {
+ 		/* Don't need to cleanup rethook->handler because this is not used. */
+ 		rethook_free(fp->rethook);
+ 		fp->rethook = NULL;
+@@ -379,14 +371,14 @@ int unregister_fprobe(struct fprobe *fp)
+ 	if (!fprobe_is_registered(fp))
+ 		return -EINVAL;
+ 
+-	if (fp->rethook)
++	if (!IS_ERR_OR_NULL(fp->rethook))
+ 		rethook_stop(fp->rethook);
+ 
+ 	ret = unregister_ftrace_function(&fp->ops);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	if (fp->rethook)
++	if (!IS_ERR_OR_NULL(fp->rethook))
+ 		rethook_free(fp->rethook);
+ 
+ 	ftrace_free_filter(&fp->ops);
+diff --git a/kernel/trace/rethook.c b/kernel/trace/rethook.c
+index 5eb9b598f4e9..13c8e6773892 100644
+--- a/kernel/trace/rethook.c
++++ b/kernel/trace/rethook.c
+@@ -9,6 +9,7 @@
+ #include <linux/rethook.h>
+ #include <linux/slab.h>
+ #include <linux/sort.h>
++#include <linux/smp.h>
+ 
+ /* Return hook list (shadow stack by list) */
+ 
+@@ -36,21 +37,7 @@ void rethook_flush_task(struct task_struct *tk)
+ static void rethook_free_rcu(struct rcu_head *head)
+ {
+ 	struct rethook *rh = container_of(head, struct rethook, rcu);
+-	struct rethook_node *rhn;
+-	struct freelist_node *node;
+-	int count = 1;
+-
+-	node = rh->pool.head;
+-	while (node) {
+-		rhn = container_of(node, struct rethook_node, freelist);
+-		node = node->next;
+-		kfree(rhn);
+-		count++;
+-	}
+-
+-	/* The rh->ref is the number of pooled node + 1 */
+-	if (refcount_sub_and_test(count, &rh->ref))
+-		kfree(rh);
++	objpool_fini(&rh->pool);
+ }
+ 
+ /**
+@@ -83,54 +70,62 @@ void rethook_free(struct rethook *rh)
+ 	call_rcu(&rh->rcu, rethook_free_rcu);
+ }
+ 
++static int rethook_init_node(void *nod, void *context)
++{
++	struct rethook_node *node = nod;
 +
-+	for_each_possible_cpu(cpu) {
-+		struct ot_item *item = per_cpu_ptr(&ot_pcup_items, cpu);
-+		struct task_struct *work;
-+
-+		ot_init_cpu_item(item, test, &sop->pool, ot_bulk_sync);
-+
-+		/* skip offline cpus */
-+		if (!cpu_online(cpu))
-+			continue;
-+
-+		work = kthread_create_on_node(ot_thread_worker, item,
-+				cpu_to_node(cpu), "ot_worker_%d", cpu);
-+		if (IS_ERR(work)) {
-+			pr_err("failed to create thread for cpu %d\n", cpu);
-+		} else {
-+			kthread_bind(work, cpu);
-+			wake_up_process(work);
-+		}
-+	}
-+
-+	/* wait a while to make sure all threads waiting at start line */
-+	msleep(20);
-+
-+	/* in case no threads were created: memory insufficient ? */
-+	if (atomic_dec_and_test(&test->data.nthreads))
-+		complete(&test->data.wait);
-+
-+	// sched_set_fifo_low(current);
-+
-+	/* start objpool testing threads */
-+	start = ktime_get();
-+	up_write(&test->data.start);
-+
-+	/* yeild cpu to worker threads for duration ms */
-+	timeout = msecs_to_jiffies(test->duration);
-+	schedule_timeout_interruptible(timeout);
-+
-+	/* tell workers threads to quit */
-+	atomic_set_release(&test->data.stop, 1);
-+
-+	/* wait all workers threads finish and quit */
-+	wait_for_completion(&test->data.wait);
-+	duration = (u64) ktime_us_delta(ktime_get(), start);
-+
-+	/* cleanup objpool */
-+	g_ot_sync_ops[test->mode].fini(sop);
-+
-+	/* report testing summary and performance results */
-+	ot_perf_report(test, duration);
-+
-+	/* report memory allocation summary */
-+	ot_mem_report(test);
-+
++	node->rethook = context;
 +	return 0;
 +}
 +
-+/*
-+ * asynchronous test cases: pool lifecycle controlled by refcount
-+ */
-+
-+static void ot_fini_async_rcu(struct rcu_head *rcu)
++static int rethook_fini_pool(struct objpool_head *head, void *context)
 +{
-+	struct ot_context *sop = container_of(rcu, struct ot_context, rcu);
-+	struct ot_test *test = sop->test;
-+
-+	/* here all cpus are aware of the stop event: test->data.stop = 1 */
-+	WARN_ON(!atomic_read_acquire(&test->data.stop));
-+
-+	objpool_fini(&sop->pool);
-+	complete(&test->data.rcu);
-+}
-+
-+static void ot_fini_async(struct ot_context *sop)
-+{
-+	/* make sure the stop event is acknowledged by all cores */
-+	call_rcu(&sop->rcu, ot_fini_async_rcu);
-+}
-+
-+static int ot_objpool_release(struct objpool_head *head, void *context)
-+{
-+	struct ot_context *sop = context;
-+
-+	WARN_ON(!head || !sop || head != &sop->pool);
-+
-+	/* do context cleaning if needed */
-+	if (sop)
-+		ot_kfree(sop->test, sop, sizeof(*sop));
-+
++	kfree(context);
 +	return 0;
 +}
 +
-+static struct ot_context *ot_init_async_m0(struct ot_test *test)
-+{
-+	struct ot_context *sop = NULL;
-+	int max = num_possible_cpus() << 3;
-+	gfp_t gfp = GFP_KERNEL;
-+
-+	sop = (struct ot_context *)ot_kzalloc(test, sizeof(*sop));
-+	if (!sop)
-+		return NULL;
-+	sop->test = test;
-+	if (test->objsz < 512)
-+		gfp = GFP_ATOMIC;
-+
-+	if (objpool_init(&sop->pool, max, test->objsz, gfp, sop,
-+			 ot_init_node, ot_objpool_release)) {
-+		ot_kfree(test, sop, sizeof(*sop));
-+		return NULL;
-+	}
-+	WARN_ON(max != sop->pool.nr_objs);
-+
-+	return sop;
-+}
-+
-+struct {
-+	struct ot_context * (*init)(struct ot_test *oc);
-+	void (*fini)(struct ot_context *sop);
-+} g_ot_async_ops[] = {
-+	{.init = ot_init_async_m0, .fini = ot_fini_async},
-+};
-+
-+static void ot_nod_recycle(struct ot_node *on, struct objpool_head *pool,
-+			int release)
-+{
-+	struct ot_context *sop;
-+
-+	on->refs++;
-+
-+	if (!release) {
-+		/* push object back to opjpool for reuse */
-+		objpool_push(on, pool);
-+		return;
-+	}
-+
-+	sop = container_of(pool, struct ot_context, pool);
-+	WARN_ON(sop != pool->context);
-+
-+	/* unref objpool with nod removed forever */
-+	objpool_drop(on, pool);
-+}
-+
-+static void ot_bulk_async(struct ot_item *item, int irq)
-+{
-+	struct ot_test *test = item->test;
-+	struct ot_node *nods[OT_NR_MAX_BULK];
-+	int i, stop;
-+
-+	for (i = 0; i < item->bulk[irq]; i++)
-+		nods[i] = objpool_pop(item->pool);
-+
-+	if (!irq) {
-+		if (item->delay || !(++(item->niters) & 0x7FFF))
-+			msleep(item->delay);
-+		get_cpu();
-+	}
-+
-+	stop = atomic_read_acquire(&test->data.stop);
-+
-+	/* drop all objects and deref objpool */
-+	while (i-- > 0) {
-+		struct ot_node *on = nods[i];
-+
-+		if (on) {
-+			on->refs++;
-+			ot_nod_recycle(on, item->pool, stop);
-+			item->stat[irq].nhits++;
-+		} else {
-+			item->stat[irq].nmiss++;
-+		}
-+	}
-+
-+	if (!irq)
-+		put_cpu();
-+}
-+
-+static int ot_start_async(struct ot_test *test)
-+{
-+	struct ot_context *sop;
-+	ktime_t start;
-+	u64 duration;
-+	unsigned long timeout;
-+	int cpu;
-+
-+	/* initialize objpool for syncrhonous testcase */
-+	sop = g_ot_async_ops[test->mode].init(test);
-+	if (!sop)
-+		return -ENOMEM;
-+
-+	/* grab rwsem to block testing threads */
-+	down_write(&test->data.start);
-+
-+	for_each_possible_cpu(cpu) {
-+		struct ot_item *item = per_cpu_ptr(&ot_pcup_items, cpu);
-+		struct task_struct *work;
-+
-+		ot_init_cpu_item(item, test, &sop->pool, ot_bulk_async);
-+
-+		/* skip offline cpus */
-+		if (!cpu_online(cpu))
-+			continue;
-+
-+		work = kthread_create_on_node(ot_thread_worker, item,
-+				cpu_to_node(cpu), "ot_worker_%d", cpu);
-+		if (IS_ERR(work)) {
-+			pr_err("failed to create thread for cpu %d\n", cpu);
-+		} else {
-+			kthread_bind(work, cpu);
-+			wake_up_process(work);
-+		}
-+	}
-+
-+	/* wait a while to make sure all threads waiting at start line */
-+	msleep(20);
-+
-+	/* in case no threads were created: memory insufficient ? */
-+	if (atomic_dec_and_test(&test->data.nthreads))
-+		complete(&test->data.wait);
-+
-+	/* start objpool testing threads */
-+	start = ktime_get();
-+	up_write(&test->data.start);
-+
-+	/* yeild cpu to worker threads for duration ms */
-+	timeout = msecs_to_jiffies(test->duration);
-+	schedule_timeout_interruptible(timeout);
-+
-+	/* tell workers threads to quit */
-+	atomic_set_release(&test->data.stop, 1);
-+
-+	/* do async-finalization */
-+	g_ot_async_ops[test->mode].fini(sop);
-+
-+	/* wait all workers threads finish and quit */
-+	wait_for_completion(&test->data.wait);
-+	duration = (u64) ktime_us_delta(ktime_get(), start);
-+
-+	/* assure rcu callback is triggered */
-+	wait_for_completion(&test->data.rcu);
-+
-+	/*
-+	 * now we are sure that objpool is finalized either
-+	 * by rcu callback or by worker threads
-+	 */
-+
-+	/* report testing summary and performance results */
-+	ot_perf_report(test, duration);
-+
-+	/* report memory allocation summary */
-+	ot_mem_report(test);
-+
-+	return 0;
-+}
-+
-+/*
-+ * predefined testing cases:
-+ *   synchronous case / overrun case / async case
+ /**
+  * rethook_alloc() - Allocate struct rethook.
+  * @data: a data to pass the @handler when hooking the return.
+- * @handler: the return hook callback function.
++ * @handler: the return hook callback function, must NOT be NULL
++ * @size: node size: rethook node and additional data
++ * @num: number of rethook nodes to be preallocated
+  *
+  * Allocate and initialize a new rethook with @data and @handler.
+- * Return NULL if memory allocation fails or @handler is NULL.
++ * Return pointer of new rethook, or error codes for failures.
 + *
-+ * async: synchronous or asynchronous testing
-+ * mode: only mode 0 supported
-+ * objsz: object size
-+ * duration: int, total test time in ms
-+ * delay: int, delay (in ms) between each iteration
-+ * bulk_normal: int, repeat times for thread worker
-+ * bulk_irq: int, repeat times for irq consumer
-+ * hrtimer: unsigned long, hrtimer intervnal in ms
-+ * name: char *, tag for current test ot_item
-+ */
+  * Note that @handler == NULL means this rethook is going to be freed.
+  */
+-struct rethook *rethook_alloc(void *data, rethook_handler_t handler)
++struct rethook *rethook_alloc(void *data, rethook_handler_t handler,
++			      int size, int num)
+ {
+-	struct rethook *rh = kzalloc(sizeof(struct rethook), GFP_KERNEL);
++	struct rethook *rh;
+ 
+-	if (!rh || !handler) {
+-		kfree(rh);
+-		return NULL;
+-	}
++	if (!handler || num <= 0 || size < sizeof(struct rethook_node))
++		return ERR_PTR(-EINVAL);
 +
-+#define NODE_COMPACT sizeof(struct ot_node)
-+#define NODE_VMALLOC (512)
-+
-+struct ot_test g_testcases[] = {
-+
-+	/* sync & normal */
-+	{0, 0, NODE_COMPACT, 1000, 0,  1,  0,  0, "sync: percpu objpool"},
-+	{0, 0, NODE_VMALLOC, 1000, 0,  1,  0,  0, "sync: percpu objpool from vmalloc"},
-+
-+	/* sync & hrtimer */
-+	{0, 0, NODE_COMPACT, 1000, 0,  1,  1,  4, "sync & hrtimer: percpu objpool"},
-+	{0, 0, NODE_VMALLOC, 1000, 0,  1,  1,  4, "sync & hrtimer: percpu objpool from vmalloc"},
-+
-+	/* sync & overrun */
-+	{0, 0, NODE_COMPACT, 1000, 0, 16,  0,  0, "sync overrun: percpu objpool"},
-+	{0, 0, NODE_VMALLOC, 1000, 0, 16,  0,  0, "sync overrun: percpu objpool from vmalloc"},
-+
-+	/* async mode */
-+	{1, 0, NODE_COMPACT, 1000, 100,  1,  0,  0, "async: percpu objpool"},
-+	{1, 0, NODE_VMALLOC, 1000, 100,  1,  0,  0, "async: percpu objpool from vmalloc"},
-+
-+	/* async + hrtimer mode */
-+	{1, 0, NODE_COMPACT, 1000, 0,  4,  4,  4, "async & hrtimer: percpu objpool"},
-+	{1, 0, NODE_VMALLOC, 1000, 0,  4,  4,  4, "async & hrtimer: percpu objpool from vmalloc"},
-+};
-+
-+static int __init ot_mod_init(void)
-+{
-+	int i;
-+
-+	/* perform testings */
-+	for (i = 0; i < ARRAY_SIZE(g_testcases); i++) {
-+		ot_init_data(&g_testcases[i].data);
-+		if (g_testcases[i].async)
-+			ot_start_async(&g_testcases[i]);
-+		else
-+			ot_start_sync(&g_testcases[i]);
++	rh = kzalloc(sizeof(struct rethook), GFP_KERNEL);
++	if (!rh)
++		return ERR_PTR(-ENOMEM);
+ 
+ 	rh->data = data;
+ 	rh->handler = handler;
+-	rh->pool.head = NULL;
+-	refcount_set(&rh->ref, 1);
+ 
++	/* initialize the objpool for rethook nodes */
++	if (objpool_init(&rh->pool, num, size, GFP_KERNEL, rh,
++			 rethook_init_node, rethook_fini_pool)) {
++		kfree(rh);
++		return ERR_PTR(-ENOMEM);
 +	}
-+
-+	/* show tests summary */
-+	pr_info("\n");
-+	pr_info("Summary of testcases:\n");
-+	for (i = 0; i < ARRAY_SIZE(g_testcases); i++) {
-+		pr_info("    duration: %lluus \thits: %10lu \tmiss: %10lu \t%s\n",
-+			g_testcases[i].data.duration, g_testcases[i].data.objects.nhits,
-+			g_testcases[i].data.objects.nmiss, g_testcases[i].name);
-+	}
-+
-+	return -EAGAIN;
-+}
-+
-+static void __exit ot_mod_exit(void)
-+{
-+}
-+
-+module_init(ot_mod_init);
-+module_exit(ot_mod_exit);
-+
-+MODULE_LICENSE("GPL");
-\ No newline at end of file
+ 	return rh;
+ }
+ 
+-/**
+- * rethook_add_node() - Add a new node to the rethook.
+- * @rh: the struct rethook.
+- * @node: the struct rethook_node to be added.
+- *
+- * Add @node to @rh. User must allocate @node (as a part of user's
+- * data structure.) The @node fields are initialized in this function.
+- */
+-void rethook_add_node(struct rethook *rh, struct rethook_node *node)
+-{
+-	node->rethook = rh;
+-	freelist_add(&node->freelist, &rh->pool);
+-	refcount_inc(&rh->ref);
+-}
+-
+ static void free_rethook_node_rcu(struct rcu_head *head)
+ {
+ 	struct rethook_node *node = container_of(head, struct rethook_node, rcu);
++	struct rethook *rh = node->rethook;
+ 
+-	if (refcount_dec_and_test(&node->rethook->ref))
+-		kfree(node->rethook);
+-	kfree(node);
++	objpool_drop(node, &rh->pool);
+ }
+ 
+ /**
+@@ -145,7 +140,7 @@ void rethook_recycle(struct rethook_node *node)
+ 	lockdep_assert_preemption_disabled();
+ 
+ 	if (likely(READ_ONCE(node->rethook->handler)))
+-		freelist_add(&node->freelist, &node->rethook->pool);
++		objpool_push(node, &node->rethook->pool);
+ 	else
+ 		call_rcu(&node->rcu, free_rethook_node_rcu);
+ }
+@@ -161,7 +156,6 @@ NOKPROBE_SYMBOL(rethook_recycle);
+ struct rethook_node *rethook_try_get(struct rethook *rh)
+ {
+ 	rethook_handler_t handler = READ_ONCE(rh->handler);
+-	struct freelist_node *fn;
+ 
+ 	lockdep_assert_preemption_disabled();
+ 
+@@ -178,11 +172,7 @@ struct rethook_node *rethook_try_get(struct rethook *rh)
+ 	if (unlikely(!rcu_is_watching()))
+ 		return NULL;
+ 
+-	fn = freelist_try_get(&rh->pool);
+-	if (!fn)
+-		return NULL;
+-
+-	return container_of(fn, struct rethook_node, freelist);
++	return (struct rethook_node *)objpool_pop(&rh->pool);
+ }
+ NOKPROBE_SYMBOL(rethook_try_get);
+ 
 -- 
 2.40.1
 
