@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7337CC669
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9643F7CC673
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344378AbjJQOsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 10:48:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37940 "EHLO
+        id S1344419AbjJQOs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 10:48:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344152AbjJQOsN (ORCPT
+        with ESMTP id S1344157AbjJQOsO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 10:48:13 -0400
+        Tue, 17 Oct 2023 10:48:14 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86849FF;
-        Tue, 17 Oct 2023 07:48:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17178BA;
+        Tue, 17 Oct 2023 07:48:12 -0700 (PDT)
 Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:7205:da49:a7e8:59f8])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id E112A6607342;
-        Tue, 17 Oct 2023 15:48:09 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 72CD86607348;
+        Tue, 17 Oct 2023 15:48:10 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
         s=mail; t=1697554090;
-        bh=inkOxQFbeFl/3jApDq38BuFHlwsXzpsIkhVd4zRYm78=;
+        bh=6OByUfiYmown+37pp4jYIRU8BDesYsod95qP0wK3edE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X8bQG/ujtbO+zYDfpz/FuSLHoEA3zuhUhvFiSyuKQyjZD+2ruE3cFOWv1ahxAM3p+
-         9WDLvThxhBqwfrxN7Dn9A2UHeM5wgceKtNnmvnZiusvtd2m+VcICdKD1zMBLY6YHlS
-         twnQzk9mFgfyN3DPPkATaZYdBkAO7mjGJwZw2hQFEGfUcUA2Y+Vdvn0by1GU8sRFUL
-         MJ1MEPvMBij3i+Yjv0cT6lVv8GDU15uWeEIquxFraZ8XzI8uvq6j7br+IwPbAZYBBh
-         X1IEsqaI10L/FThz5ds+u71IMFlXGystRjgrmdbXsCUdR+jYUznawnrHGF5Je9q280
-         Fb0yRQkXEBPjA==
+        b=OmzphVl3bt5nyIgREflOGALqjd8pI5dA7oiUI33s7NwG+gVcvIyBMnlAewQOHU+LI
+         QOU0FQUOeBwTLq+gOSVFVcOHSLTKtasQLYzWgxK3CgI0d0C3Z5YcFkE5wm+yRVWyNJ
+         pez1ouj/sAUjaTLO4Bdo6p8jkxpTNeJKz3BdnGBEmYZ0O7sIAayfNbYY/nrJNxUMVG
+         oUA4W0+ANdrDn/MW0T+9CZbWU4EF9YQLyAvidAGjrorLoT1VMLXu3uMJorD/y7BJRe
+         2cBLFPlyR8V6adLnMtOYIsME2TkyS3yT85xYjiyFq/yTx1EGMEd9J7FzXuhZRWREyH
+         JXL2mnojmHPVQ==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
         ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
@@ -43,11 +43,10 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
         kernel@collabora.com,
         Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Bin Liu <bin.liu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Subject: [PATCH v12 13/56] media: mediatek: vcodec: Stop direct calls to queue num_buffers field
-Date:   Tue, 17 Oct 2023 16:47:13 +0200
-Message-Id: <20231017144756.34719-14-benjamin.gaignard@collabora.com>
+        Jean-Christophe Trotin <jean-christophe.trotin@foss.st.com>
+Subject: [PATCH v12 14/56] media: sti: hva: Use vb2_get_buffer() instead of directly access to buffers array
+Date:   Tue, 17 Oct 2023 16:47:14 +0200
+Message-Id: <20231017144756.34719-15-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231017144756.34719-1-benjamin.gaignard@collabora.com>
 References: <20231017144756.34719-1-benjamin.gaignard@collabora.com>
@@ -62,30 +61,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use vb2_get_num_buffers() to avoid using queue num_buffers field directly.
-This allows us to change how the number of buffers is computed in the
-futur.
+Use vb2_get_buffer() instead of direct access to the vb2_queue bufs array.
+This allows us to change the type of the bufs in the future.
+After each call to vb2_get_buffer() we need to be sure that we get
+a valid pointer so check the return value of all of them.
+Remove index range test since it is done by vb2_get_buffer().
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-CC: Bin Liu <bin.liu@mediatek.com>
-CC: Matthias Brugger <matthias.bgg@gmail.com>
+CC: Jean-Christophe Trotin <jean-christophe.trotin@foss.st.com>
 ---
- drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/platform/st/sti/hva/hva-v4l2.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc.c b/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc.c
-index eb381fa6e7d1..181884e798fd 100644
---- a/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc.c
-+++ b/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc.c
-@@ -912,7 +912,7 @@ static int vb2ops_venc_start_streaming(struct vb2_queue *q, unsigned int count)
- 	return 0;
+diff --git a/drivers/media/platform/st/sti/hva/hva-v4l2.c b/drivers/media/platform/st/sti/hva/hva-v4l2.c
+index 3a848ca32a0e..cfe83e9dc01b 100644
+--- a/drivers/media/platform/st/sti/hva/hva-v4l2.c
++++ b/drivers/media/platform/st/sti/hva/hva-v4l2.c
+@@ -569,14 +569,11 @@ static int hva_qbuf(struct file *file, void *priv, struct v4l2_buffer *buf)
+ 		struct vb2_buffer *vb2_buf;
  
- err_start_stream:
--	for (i = 0; i < q->num_buffers; ++i) {
-+	for (i = 0; i < vb2_get_num_buffers(q); ++i) {
- 		struct vb2_buffer *buf = vb2_get_buffer(q, i);
- 
- 		/*
+ 		vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx, buf->type);
+-
+-		if (buf->index >= vq->num_buffers) {
+-			dev_dbg(dev, "%s buffer index %d out of range (%d)\n",
+-				ctx->name, buf->index, vq->num_buffers);
++		vb2_buf = vb2_get_buffer(vq, buf->index);
++		if (!vb2_buf) {
++			dev_dbg(dev, "%s buffer index %d not found\n", ctx->name, buf->index);
+ 			return -EINVAL;
+ 		}
+-
+-		vb2_buf = vb2_get_buffer(vq, buf->index);
+ 		stream = to_hva_stream(to_vb2_v4l2_buffer(vb2_buf));
+ 		stream->bytesused = buf->bytesused;
+ 	}
 -- 
 2.39.2
 
