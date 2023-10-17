@@ -2,69 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92DB87CCAD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 20:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99D447CCAE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 20:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234197AbjJQShu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 14:37:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47326 "EHLO
+        id S234304AbjJQSin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 14:38:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233170AbjJQShs (ORCPT
+        with ESMTP id S229848AbjJQSil (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 14:37:48 -0400
-Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E580990;
-        Tue, 17 Oct 2023 11:37:46 -0700 (PDT)
-Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-581d4f9a2c5so544588eaf.0;
-        Tue, 17 Oct 2023 11:37:46 -0700 (PDT)
+        Tue, 17 Oct 2023 14:38:41 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0948F90
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:38:40 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9936b3d0286so975555766b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:38:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1697567918; x=1698172718; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=USkbb5/cH3vJp4KF5jTF8rcY5cuD/NJi1SRBLDhJQGQ=;
+        b=XeDIyL0v2sQK+8XbKrxDFLSfMGJJnHMJJg1PwK6sskm4FojjZpACM04QPqa2N8myiu
+         hxtdA59/DJln9laekdfnOyUXDpM0CKG8V3/DJhPE8e17uYpDHhWfM+e9Ja2dKxW4lphD
+         G+psKBha4SxF5GAtN4xhVoTP3xjMApQK44KHk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697567866; x=1698172666;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YLFTW47UAIBGXkLdBcrMObcIRWeTgSfUsdng3xDHxtM=;
-        b=BMwypR2a5byScN7pz4lybK0Vrn2rJXmjZXHBBPDK9nR11/1aDXVNLGgNRmUmsHYdB3
-         8QZMnZEZCWm9n5mGbvQPsTMI3YghS9plqHP8Djnvu27VhaTFUKkabh7L9DULpaF2Amb0
-         EGO+cOjpylpbqlmLxFBf2RGFI3a9M75NbObdgOOQv4cicyzqlV6VM/mOatjMVsIYFZie
-         V7KRh4inPb8H4SPfjE3Mp5P+rJE+A5ALqzZFzj0JJUGhcC0koJcXnh3jzu3zQuTql6Hi
-         IO4J74pVs2kxTY6d2M1D2eUcFSXhPNekKjNO2NXdOXh63GWyh/nhiEd/cLP5UGEasIIh
-         /atQ==
-X-Gm-Message-State: AOJu0Yw+byuWpPmIR9T0as8O2UHzvJd/lzODXUpcpe7P3872r9GAqA43
-        Cnji4hG7uWlARizWoJxVtQ==
-X-Google-Smtp-Source: AGHT+IGYM6bN09eNkmdiIkM37jIqZ+Xk32CbW/vA5PPI8vSWSwNcgWp/futKRqQbnQwewp5XJ/6FzA==
-X-Received: by 2002:a05:6820:608:b0:57b:92f2:1f64 with SMTP id e8-20020a056820060800b0057b92f21f64mr4158748oow.8.1697567866077;
-        Tue, 17 Oct 2023 11:37:46 -0700 (PDT)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id br7-20020a0568201a4700b00573fb6178a6sm343044oob.44.2023.10.17.11.37.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 11:37:45 -0700 (PDT)
-Received: (nullmailer pid 2487541 invoked by uid 1000);
-        Tue, 17 Oct 2023 18:37:43 -0000
-Date:   Tue, 17 Oct 2023 13:37:43 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hanjun Guo <guohanjun@huawei.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Peng Fan <peng.fan@nxp.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Len Brown <lenb@kernel.org>, devicetree@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>
-Subject: Re: [PATCH v3 1/2] amba: bus: balance firmware node reference
- counting
-Message-ID: <169756785858.2487391.2620832432762980006.robh@kernel.org>
-References: <20231006145732.3419115-1-andriy.shevchenko@linux.intel.com>
+        d=1e100.net; s=20230601; t=1697567918; x=1698172718;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=USkbb5/cH3vJp4KF5jTF8rcY5cuD/NJi1SRBLDhJQGQ=;
+        b=iSbcAMcbMRwvY2yyU/FmTKmyIukeThiIIRX0NL9t7jGVZTNYrJWjk2Ivurt4mlbe5u
+         CPKxgsy3Wfod4ZQN7mTvC4CjDC+xwZffZr3VU+pIsen5C2vrCKkE4OTPsn0AyhjnHPIb
+         F/HPiaAJsmFxOzeBWHYxSR4yiZIkgFbjTmLXvYbagM+D4KLenuu38yS/zi7XxIT/EJ/5
+         KVsuoyzmvMJPuQRxQYLsPtTJrGfjLs1nbeSsRQwxwo57zL6eIVCPmZVDKJrMzuxXPGbx
+         M8yLWGm0R7+Mjhwz2tE5OGJ4PvUjqJNCLZjrnIVUw5HTZucpRRdW7oHcK4Q4kenu7VBj
+         CDNw==
+X-Gm-Message-State: AOJu0YwuW7Bq6vZtKq+a7Ddo1ezZBDLGwL9e6OSMg/gPhfuT/PUiZ9Yz
+        Z5WSs8Tr2AY2q/pLNr3pXPnU8jeKf6Ize/J7WjK+bQvy
+X-Google-Smtp-Source: AGHT+IE5Wet80iYWFw4UESwfB7wfvm7zaHSoJfgVh68rM4p7cVqP/haClGcz+3OTfHjyyEp3TnOm8g==
+X-Received: by 2002:a17:906:fe05:b0:99c:b0c9:4ec0 with SMTP id wy5-20020a170906fe0500b0099cb0c94ec0mr2620483ejb.30.1697567918261;
+        Tue, 17 Oct 2023 11:38:38 -0700 (PDT)
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com. [209.85.218.48])
+        by smtp.gmail.com with ESMTPSA id o10-20020a170906600a00b00992b510089asm250429ejj.84.2023.10.17.11.38.37
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Oct 2023 11:38:37 -0700 (PDT)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-99de884ad25so972494666b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:38:37 -0700 (PDT)
+X-Received: by 2002:a17:906:4fc7:b0:9b2:b149:b81a with SMTP id
+ i7-20020a1709064fc700b009b2b149b81amr2302073ejw.64.1697567917353; Tue, 17 Oct
+ 2023 11:38:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231006145732.3419115-1-andriy.shevchenko@linux.intel.com>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+References: <20231016143828.647848-1-jeffxu@chromium.org> <CAHk-=whFZoap+DBTYvJx6ohqPwn11Puzh7q4huFWDX9vBwXHgg@mail.gmail.com>
+ <CALmYWFtTDAb_kpZdAe_xspqwNgK1NWJmjTxaTC=jDEMzfe297Q@mail.gmail.com>
+ <CAHk-=wj87GMTH=5901ob=SjQqegAm2JYBE7E4J7skJzE64U-wQ@mail.gmail.com> <55960.1697566804@cvs.openbsd.org>
+In-Reply-To: <55960.1697566804@cvs.openbsd.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 17 Oct 2023 11:38:19 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjS=xg12RVQdTNxEurjo21eXQBQO0D5My6Aox4LCfsO1A@mail.gmail.com>
+Message-ID: <CAHk-=wjS=xg12RVQdTNxEurjo21eXQBQO0D5My6Aox4LCfsO1A@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 0/8] Introduce mseal() syscall
+To:     Theo de Raadt <deraadt@openbsd.org>
+Cc:     Jeff Xu <jeffxu@google.com>, jeffxu@chromium.org,
+        akpm@linux-foundation.org, keescook@chromium.org,
+        sroettger@google.com, jorgelo@chromium.org, groeck@chromium.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mm@kvack.org, jannh@google.com, surenb@google.com,
+        alex.sierra@amd.com, apopple@nvidia.com,
+        aneesh.kumar@linux.ibm.com, axelrasmussen@google.com,
+        ben@decadent.org.uk, catalin.marinas@arm.com, david@redhat.com,
+        dwmw@amazon.co.uk, ying.huang@intel.com, hughd@google.com,
+        joey.gouly@arm.com, corbet@lwn.net, wangkefeng.wang@huawei.com,
+        Liam.Howlett@oracle.com, lstoakes@gmail.com, willy@infradead.org,
+        mawupeng1@huawei.com, linmiaohe@huawei.com, namit@vmware.com,
+        peterx@redhat.com, peterz@infradead.org, ryan.roberts@arm.com,
+        shr@devkernel.io, vbabka@suse.cz, xiujianfeng@huawei.com,
+        yu.ma@intel.com, zhangpeng362@huawei.com, dave.hansen@intel.com,
+        luto@kernel.org, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,31 +90,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 17 Oct 2023 at 11:20, Theo de Raadt <deraadt@openbsd.org> wrote:
+>
+> The only case where the immutable marker is ignored is during address space
+> teardown as a result of process termination.
 
-On Fri, 06 Oct 2023 17:57:31 +0300, Andy Shevchenko wrote:
-> Currently the ACPI code doesn't bump the reference count of
-> the firmware node, while OF counter part does. Not that it's
-> a problem right now, since ACPI doesn't really use the reference
-> counting for firmware nodes, it still makes sense to make code
-> robust against any changes done there. For this,
->  - switch ACPI case to use device_set_node() to be unified with OF
->  - move reference counting to amba_device_add()
->  - switch to use firmware nodes instead of OF ones
-> 
-> In the result we will have reference counting done in the same module
-> for all callers independently on the nature of firmware node behind.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
-> 
-> v3: no changes
-> v2: fixed compilation error (LKP), all dependencies are in v6.6-rcX (Rob)
-> 
->  drivers/acpi/arm64/amba.c | 2 +-
->  drivers/amba/bus.c        | 5 ++++-
->  drivers/of/platform.c     | 2 +-
->  3 files changed, 6 insertions(+), 3 deletions(-)
-> 
+.. and presumably also execve()?
 
-Applied, thanks!
+I do like us starting with just "mimmutable()", since it already
+exists. Particularly if chrome already knows how to use it.
 
+Maybe add a flag field (require it to be zero initially) just to allow
+any future expansion. Maybe the chrome team has *wanted* to have some
+finer granularity thing and currently doesn't use mimmutable() in some
+case?
+
+                  Linus
