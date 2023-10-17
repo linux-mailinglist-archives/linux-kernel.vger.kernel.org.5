@@ -2,49 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59DD47CD0E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 01:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 924CF7CD0E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 01:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344333AbjJQXgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 19:36:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51178 "EHLO
+        id S234920AbjJQXi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 19:38:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234650AbjJQXgw (ORCPT
+        with ESMTP id S229484AbjJQXiY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 19:36:52 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C20D3B0;
-        Tue, 17 Oct 2023 16:36:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0809C433C8;
-        Tue, 17 Oct 2023 23:36:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697585810;
-        bh=vWDxX5Zfp3qv9pYv4nE5+avCskI58/L69mzMGCW3v4g=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=h2kg+QHGDrbxf0pir+DJUzTxg/YtnHssBSxqcJ6qkto8Y0zFc9boBKiKC8waR/8zj
-         JeMOaFgZ27RedCfglkjVDgDQJo9oJJaLhGYuzeTHdbaBYkzkLbxjIRhA7zvm/vfWdM
-         tQ5k1qI4rPRvKdkw59f/yxI0Sd+EMhuLOJHeLZQsZEHtWLll5dQfzIyRNrgLqh0sR/
-         LEp5nlZlMSwbAnI+LBaUExp2JfBR4N5wI7GEEJRv4wWmOnrkWlf+AcPRNtuAY0Z2PP
-         YIHp/SBX4XQuQ15dW8HTGFB7IonsiJO+Dkb3A8bLaNVChf+6i4wVtmQKYGaE1khd6p
-         TSgZaWf1J5EWQ==
-Message-ID: <1a0c4378-29b2-43b4-982b-0d92dfb8ed4f@kernel.org>
-Date:   Wed, 18 Oct 2023 08:36:48 +0900
+        Tue, 17 Oct 2023 19:38:24 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 659D093;
+        Tue, 17 Oct 2023 16:38:23 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39HMR6ir028067;
+        Tue, 17 Oct 2023 23:38:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=IWC0ejIeguhIC4ILBKph2c64vYIJZoEMTIEb39w2mtA=;
+ b=F3Fljm5pdOAzjpCboMXjk9oCxgv4giTPibQ83IDsVvcA5iPQaoo8L11kG/Ov+mhYYIzS
+ BLqBfn0SttFit9t7kftO1pXEkKjCSTVHEwrR2jf95yFLW+u6L1IzyUslzPowW/I7vGdU
+ J0PVJKH7bKmYAC1NpqV5aKlEXY3tfFvEB7ef2me+htXrx8+gQVdNI01zRIDWe7iXtXtN
+ eEVEvf09bzn8o3oejRtDi/nQbJlbUb/sL+VBnkzyxlyCjWFth82evt17TIXjAFOGD2+Q
+ MDSn12Rzs5I9Uta4iZyhd38Iyy+/IEv+W/MJCN1BCzKombAeeI626nMa3N9sCPFObFb9 7g== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tsb3xuchd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Oct 2023 23:38:00 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39HNbxFW021478
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Oct 2023 23:37:59 GMT
+Received: from [10.111.183.229] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 17 Oct
+ 2023 16:37:58 -0700
+Message-ID: <e9da3fb2-e44a-4c42-8f9f-cf24be12ccb7@quicinc.com>
+Date:   Tue, 17 Oct 2023 16:37:57 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] pata_lagacy: Handle failed ATA timing computation in
- opti82c46x_set_piomode
+Subject: Re: [PATCH v3 3/5] mm: memcg: add per-memcg zswap writeback stat
 Content-Language: en-US
-To:     Haonan Li <lihaonan1105@gmail.com>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231017233234.2170437-1-lihaonan1105@gmail.com>
-From:   Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <20231017233234.2170437-1-lihaonan1105@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+To:     Nhat Pham <nphamcs@gmail.com>, <akpm@linux-foundation.org>
+CC:     <hannes@cmpxchg.org>, <cerasuolodomenico@gmail.com>,
+        <yosryahmed@google.com>, <sjenning@redhat.com>,
+        <ddstreet@ieee.org>, <vitaly.wool@konsulko.com>,
+        <mhocko@kernel.org>, <roman.gushchin@linux.dev>,
+        <shakeelb@google.com>, <muchun.song@linux.dev>,
+        <linux-mm@kvack.org>, <kernel-team@meta.com>,
+        <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <shuah@kernel.org>
+References: <20231017232152.2605440-1-nphamcs@gmail.com>
+ <20231017232152.2605440-4-nphamcs@gmail.com>
+ <CAKEwX=NgsbJ6MQJdJoOTDiGyhjhRA8KJdYe5GzV5iK1bRADfuQ@mail.gmail.com>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <CAKEwX=NgsbJ6MQJdJoOTDiGyhjhRA8KJdYe5GzV5iK1bRADfuQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: zyOFRHaOEy14NpYS1DcA20VSnHZvIPLa
+X-Proofpoint-ORIG-GUID: zyOFRHaOEy14NpYS1DcA20VSnHZvIPLa
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-17_07,2023-10-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 phishscore=0 mlxlogscore=805 malwarescore=0
+ priorityscore=1501 mlxscore=0 adultscore=0 bulkscore=0 clxscore=1011
+ lowpriorityscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2309180000 definitions=main-2310170199
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,55 +86,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/18/23 08:32, Haonan Li wrote:
-> The function opti82c46x_set_piomode utilizes the ata_timing_compute()
-> to determine the appropriate ATA timings for a given device. However,
-> in certain conditions where the ata_timing_find_mode() function does
-> not find a valid mode, ata_timing_compute() returns an error (-EINVAL),
-> leaving the tp struct uninitialized.
+On 10/17/2023 4:35 PM, Nhat Pham wrote:
+> On Tue, Oct 17, 2023 at 4:21 PM Nhat Pham <nphamcs@gmail.com> wrote:
+>>
+>> From: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+>>
+>> Since zswap now writes back pages from memcg-specific LRUs, we now need a
+>> new stat to show writebacks count for each memcg.
+>>
+>> Suggested-by: Nhat Pham <nphamcs@gmail.com>
+>> Signed-off-by: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+>> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
 > 
-> This patch checks the return value of ata_timing_compute().
-> This avoids any potential use of uninitialized `tp` struct in the
-> opti82c46x_set_piomode function.
-> 
-> Signed-off-by: Haonan Li <lihaonan1105@gmail.com>
-> ---
->  drivers/ata/pata_legacy.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/ata/pata_legacy.c b/drivers/ata/pata_legacy.c
-> index 448a511cb..d94c365cb 100644
-> --- a/drivers/ata/pata_legacy.c
-> +++ b/drivers/ata/pata_legacy.c
-> @@ -579,12 +579,16 @@ static void opti82c46x_set_piomode(struct ata_port *ap, struct ata_device *adev)
->  	clock = 1000000000 / khz[sysclk];
->  
->  	/* Get the timing data in cycles */
-> -	ata_timing_compute(adev, adev->pio_mode, &t, clock, 1000);
-> +	if (ata_timing_compute(adev, adev->pio_mode, &t, clock, 1000)) {
-> +		return;
-> +	}
+> /s/Signed-off/Acked
+> This is Domenico's work :) I used the wrong tag here. Should be:
+> Acked-by: Nhat Pham <nphamcs@gmail.com>
 
-You need a message here to tell the user something is wrong. See pata_amd.c for
-an example.
-
->  
->  	/* Setup timing is shared */
->  	if (pair) {
->  		struct ata_timing tp;
-> -		ata_timing_compute(pair, pair->pio_mode, &tp, clock, 1000);
-> +		if (ata_timing_compute(pair, pair->pio_mode, &tp, clock, 1000)) {
-> +			return;
-> +		}
-
-Same here. And while at it, please add a blank line after the declaration and
-before your change.
-
->  
->  		ata_timing_merge(&t, &tp, &t, ATA_TIMING_SETUP);
->  	}
-
--- 
-Damien Le Moal
-Western Digital Research
+no, since you are posting the patch, you have to sign off on it.
+Signed-off-by is correct
 
