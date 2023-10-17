@@ -2,73 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 428647CCF7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 23:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 536F67CCF82
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 23:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344006AbjJQVsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 17:48:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55086 "EHLO
+        id S234147AbjJQVun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 17:50:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230056AbjJQVsU (ORCPT
+        with ESMTP id S230056AbjJQVul (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 17:48:20 -0400
-Received: from mail-ot1-x34a.google.com (mail-ot1-x34a.google.com [IPv6:2607:f8b0:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA3FDC6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 14:48:18 -0700 (PDT)
-Received: by mail-ot1-x34a.google.com with SMTP id 46e09a7af769-6c6204b2defso8550397a34.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 14:48:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697579298; x=1698184098; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=jj/BDLyDGa85AqSpf8Df2TijHyh0pX3EpIXoVJmKNCk=;
-        b=gi6sz4EBJXXHstijbjXRHHmb7O2Y+koWFcl1JueeGAJ+IKJJuu2e6vhH3+aUcEzCOV
-         9LSNiE3kbr9yKQRaJMhLkGR6uduvwYxIRkdzkX+0K4X78ZWfzyoSlqv3if0NMaC0jmkR
-         ds4CBlg6nIhzpR3W9ElYLEa2TuG3eC5SNyqgb6evYz29xNRzTuYWR3CYa39Z9K3aOYAz
-         7FGL1XWdR+yvv8XYxXQZtuXd8HnswjuAqqOWg0OcMpcGczEk5CiYXhDsOPAMpxbd1B0y
-         Vg5RUwZ3cTEYn8kiO0VNpdMtFdgWdTJlLCii2ubidlSgEl933GUg+nGNlzKRENFhJ43K
-         oBSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697579298; x=1698184098;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jj/BDLyDGa85AqSpf8Df2TijHyh0pX3EpIXoVJmKNCk=;
-        b=hFYGu2O9fD/OUiEeHjInz2JOnN+HA3OWsw/Ht4jfckXG4qWE32kdYz602b8/HF/Vgc
-         PXED/gq3VMpJmUGxtZAJ1MgudBmms3gDe+KlT570XlWQn1WHAP5NW5T7JjiZMVSNBGQs
-         L6dbQGN6Xcn6MWEb0CeOg5mLOtGcGE/W4LKtcN0dgiYbC6rnkjBvpkT0NHQ3FfZJAH4q
-         bNr10XS1fdhkmW08eWXP4ZBsvyo15X+wcKwUOXj+Xzg9H4rJUP/XabKdQzx9ZNQ/0nGd
-         /jzpscMeDwc7EsvlyCabBlQYtXJuVaeRsF6JrTF9wARMtBcv6CCdDTyaULJ7Z1vJpLbC
-         19BQ==
-X-Gm-Message-State: AOJu0YxXjAd0dKvFzWxn103f034BzDHX4kZbLA6oHVvawv1WmO0AARPV
-        T0BIwv4LXzXsj0cJ73cVvyeauSe07fAHJp/7kQ==
-X-Google-Smtp-Source: AGHT+IGifKHIeEs6hQ9nd30qPs+zzZSt7lXKQ4GxXFSqvyt0kQejSoL8ILihmhinXdJGVmfGsL1ifdheILn0dvO2Ow==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a9d:625a:0:b0:6c4:c061:341c with SMTP
- id i26-20020a9d625a000000b006c4c061341cmr1115376otk.5.1697579298035; Tue, 17
- Oct 2023 14:48:18 -0700 (PDT)
-Date:   Tue, 17 Oct 2023 21:48:15 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAB4BL2UC/6WOQQqDMBBFr1Ky7pQkUg1d9R7FRTGjDthEZkJUx
- Ls39Qpdfd5fvP93JciEoh6XXTFmEoqhgL1eVDe+w4BAvrCy2lZGmwYkcejmDTxTRhYImGAhxgl
- FgELCCWhe7Kr1mbZkB3XvnCsGi7pWRT0z9rSes6+28EiSIm/ni2x+7Z+D2YABxMZXaO/ON+45x DhMeOviR7XHcXwBRc67tPkAAAA=
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697579297; l=3821;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=ZZ92JxohATICi1IhnExgHVpB9lc7D4o0lN8/nCXFWag=; b=DLkNhMPJ2kmoCBTHgNn3p10//NWOir3cf1evFANYbRyynZLyFff7F4SXVKNXaWrlubIajvY6T
- XwkImuUtXeZBi+ck/Ln30rZdSFDnbjSVPJ4WXc5pMrUpe/SK/r2pKtU
-X-Mailer: b4 0.12.3
-Message-ID: <20231017-strncpy-drivers-net-wireless-intel-ipw2x00-ipw2200-c-v2-1-465e10dc817c@google.com>
-Subject: [PATCH v2] wifi: ipw2x00: replace deprecated strncpy with strscpy_pad
-From:   Justin Stitt <justinstitt@google.com>
-To:     Stanislav Yakovlev <stas.yakovlev@gmail.com>,
-        Kalle Valo <kvalo@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        Tue, 17 Oct 2023 17:50:41 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16482C4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 14:50:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697579440; x=1729115440;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=hUOW2jdFFCD231zLnFnj1kgtb5ru8K9Mpcdi+Gs/Tzs=;
+  b=do79ADritdICEsE/zrsj3/SJz+7ghQe/oKVJ1zlW9K614iB7fcK6dU9E
+   1v6tKMecoPAVBoQlyiB3RtOCMcFPff0OYlaZ3+aL+nYFaYhWFq5z88OIe
+   J8wDs5Z9aGfKVyyemp1LdOPpsxYiWuTXZmFzF1uOjDPwFyL0mf5tMO+uK
+   c2m1OHS7ox2ZUKvIbvWvOa6ZgUFgIDXHqBVoc3cR8ieQwIgDHehTVmteB
+   cL61F8pVFc3lARj9kDOmA3NnKX2GjpArwLrzCcA3whlEwEj8L3Z2L+ayv
+   5noeuBghlJi/XWN+gLiOjIXBtB79I3hQdniHpSN3mjTWOm69T6WPX8eLM
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="416985499"
+X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
+   d="scan'208";a="416985499"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 14:50:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="872757749"
+X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
+   d="scan'208";a="872757749"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 17 Oct 2023 14:50:35 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qsrxQ-000A7r-2K;
+        Tue, 17 Oct 2023 21:50:32 +0000
+Date:   Wed, 18 Oct 2023 05:49:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     dregan@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+        linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
+        rafal@milecki.pl, joel.peshkin@broadcom.com,
+        computersforpeace@gmail.com, dan.beygelman@broadcom.com,
+        william.zhang@broadcom.com, frieder.schrempf@kontron.de,
+        linux-kernel@vger.kernel.org, vigneshr@ti.com, richard@nod.at,
+        bbrezillon@kernel.org, kdasu.kdev@gmail.com,
+        JaimeLiao <jaimeliao.tw@gmail.com>,
+        Arseniy Krasnov <AVKrasnov@sberdevices.ru>,
+        Adam Borowski <kilobyte@angband.pl>
+Cc:     oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH v3 4/4] mtd: rawnand: brcmnand: exec_op implementation
+Message-ID: <202310180553.Zfa2ryoa-lkp@intel.com>
+References: <20231017201417.129872-4-dregan@broadcom.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231017201417.129872-4-dregan@broadcom.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,102 +73,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+Hi,
 
-`extra` is intended to be NUL-terminated which is evident by the manual
-assignment of a NUL-byte as well as its immediate usage with strlen().
+kernel test robot noticed the following build warnings:
 
-Moreover, many of these getters and setters are NUL-padding buffers with
-memset():
-2439  |	memset(&tx_power, 0, sizeof(tx_power));
-9998  | memset(sys_config, 0, sizeof(struct ipw_sys_config));
-10084 | memset(tfd, 0, sizeof(*tfd));
-10261 | memset(&dummystats, 0, sizeof(dummystats));
-... let's maintain this behavior and NUL-pad our destination buffer.
+[auto build test WARNING on mtd/nand/next]
+[also build test WARNING on linus/master v6.6-rc6 next-20231017]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Considering the above, a suitable replacement is `strscpy_pad` due to
-the fact that it guarantees both NUL-termination and NUL-padding on the
-destination buffer.
+url:    https://github.com/intel-lab-lkp/linux/commits/dregan-broadcom-com/mtd-rawnand-NAND-controller-write-protect/20231018-042758
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
+patch link:    https://lore.kernel.org/r/20231017201417.129872-4-dregan%40broadcom.com
+patch subject: [PATCH v3 4/4] mtd: rawnand: brcmnand: exec_op implementation
+config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20231018/202310180553.Zfa2ryoa-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231018/202310180553.Zfa2ryoa-lkp@intel.com/reproduce)
 
-To be clear, there is no bug in the current implementation as
-MAX_WX_STRING is much larger than the size of the string literals being
-copied from. Also, strncpy() does NUL-pad the destination buffer and
-using strscpy_pad() simply matches that behavior. All in all, there
-should be no functional change but we are one step closer to eliminating
-usage of strncpy().
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310180553.Zfa2ryoa-lkp@intel.com/
 
-Do note that we cannot use the more idiomatic strscpy invocation of
-(dest, src, sizeof(dest)) as the destination buffer cannot have its size
-determined at compile time. So, let's stick with (dest, src, LEN).
+All warnings (new ones prefixed by >>):
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Changes in v2:
-- add wifi: to subject
-- Link to v1: https://lore.kernel.org/r/20231017-strncpy-drivers-net-wireless-intel-ipw2x00-ipw2200-c-v1-1-ee7d3e258d78@google.com
----
-Note: build-tested only.
+>> drivers/mtd/nand/raw/brcmnand/brcmnand.c:2393:5: warning: no previous prototype for 'brcmnand_exec_op_is_status' [-Wmissing-prototypes]
+    2393 | int brcmnand_exec_op_is_status(const struct nand_operation *op)
+         |     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/mtd/nand/raw/brcmnand/brcmnand.c:2404:5: warning: no previous prototype for 'brcmnand_exec_op_is_reset' [-Wmissing-prototypes]
+    2404 | int brcmnand_exec_op_is_reset(const struct nand_operation *op)
+         |     ^~~~~~~~~~~~~~~~~~~~~~~~~
 
-Found with: $ rg "strncpy\("
----
- drivers/net/wireless/intel/ipw2x00/ipw2200.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/ipw2x00/ipw2200.c b/drivers/net/wireless/intel/ipw2x00/ipw2200.c
-index 820100cac491..44f2d91ad30f 100644
---- a/drivers/net/wireless/intel/ipw2x00/ipw2200.c
-+++ b/drivers/net/wireless/intel/ipw2x00/ipw2200.c
-@@ -9656,31 +9656,30 @@ static int ipw_wx_get_wireless_mode(struct net_device *dev,
- 	mutex_lock(&priv->mutex);
- 	switch (priv->ieee->mode) {
- 	case IEEE_A:
--		strncpy(extra, "802.11a (1)", MAX_WX_STRING);
-+		strscpy_pad(extra, "802.11a (1)", MAX_WX_STRING);
- 		break;
- 	case IEEE_B:
--		strncpy(extra, "802.11b (2)", MAX_WX_STRING);
-+		strscpy_pad(extra, "802.11b (2)", MAX_WX_STRING);
- 		break;
- 	case IEEE_A | IEEE_B:
--		strncpy(extra, "802.11ab (3)", MAX_WX_STRING);
-+		strscpy_pad(extra, "802.11ab (3)", MAX_WX_STRING);
- 		break;
- 	case IEEE_G:
--		strncpy(extra, "802.11g (4)", MAX_WX_STRING);
-+		strscpy_pad(extra, "802.11g (4)", MAX_WX_STRING);
- 		break;
- 	case IEEE_A | IEEE_G:
--		strncpy(extra, "802.11ag (5)", MAX_WX_STRING);
-+		strscpy_pad(extra, "802.11ag (5)", MAX_WX_STRING);
- 		break;
- 	case IEEE_B | IEEE_G:
--		strncpy(extra, "802.11bg (6)", MAX_WX_STRING);
-+		strscpy_pad(extra, "802.11bg (6)", MAX_WX_STRING);
- 		break;
- 	case IEEE_A | IEEE_B | IEEE_G:
--		strncpy(extra, "802.11abg (7)", MAX_WX_STRING);
-+		strscpy_pad(extra, "802.11abg (7)", MAX_WX_STRING);
- 		break;
- 	default:
--		strncpy(extra, "unknown", MAX_WX_STRING);
-+		strscpy_pad(extra, "unknown", MAX_WX_STRING);
- 		break;
- 	}
--	extra[MAX_WX_STRING - 1] = '\0';
- 
- 	IPW_DEBUG_WX("PRIV GET MODE: %s\n", extra);
- 
+vim +/brcmnand_exec_op_is_status +2393 drivers/mtd/nand/raw/brcmnand/brcmnand.c
 
----
-base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
-change-id: 20231017-strncpy-drivers-net-wireless-intel-ipw2x00-ipw2200-c-6f8880232e06
+  2392	
+> 2393	int brcmnand_exec_op_is_status(const struct nand_operation *op)
+  2394	{
+  2395		if ((op->ninstrs == 2) &&
+  2396			(op->instrs[0].type == NAND_OP_CMD_INSTR) &&
+  2397			(op->instrs[0].ctx.cmd.opcode == NAND_CMD_STATUS) &&
+  2398			(op->instrs[1].type == NAND_OP_DATA_IN_INSTR))
+  2399			return 1;
+  2400	
+  2401		return 0;
+  2402	}
+  2403	
+> 2404	int brcmnand_exec_op_is_reset(const struct nand_operation *op)
+  2405	{
+  2406		if ((op->ninstrs == 1) &&
+  2407			(op->instrs[0].type == NAND_OP_CMD_INSTR) &&
+  2408			(op->instrs[0].ctx.cmd.opcode == NAND_CMD_RESET))
+  2409			return 1;
+  2410	
+  2411		return 0;
+  2412	}
+  2413	
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
