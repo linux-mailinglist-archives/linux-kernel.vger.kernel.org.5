@@ -2,97 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71BFB7CCCA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 21:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54DF07CCC1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 21:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234891AbjJQTxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 15:53:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35096 "EHLO
+        id S1344223AbjJQTTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 15:19:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232208AbjJQTxE (ORCPT
+        with ESMTP id S1344267AbjJQTTY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 15:53:04 -0400
-X-Greylist: delayed 2013 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 17 Oct 2023 12:53:03 PDT
-Received: from mx11lb.world4you.com (mx11lb.world4you.com [81.19.149.121])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B8A9E;
-        Tue, 17 Oct 2023 12:53:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=engleder-embedded.com; s=dkim11; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=hRbfGybtcC4Q4xK9Jhz49EEEj1HrZpSkJKq488b1wYI=; b=f3O6uWhfVuFcx5VC4Lri+Z8xMP
-        aEAuW35JcCDw5jyvHUXN3ojVvwLDrrKBdcXWV35W/scFFPYxd/XGYrSFvo7AMm1p+AcgQuC5HxjHh
-        4tLECcrM98rS0sfpSF238CJu0LyNkPyA/fEFFJQoq3wZ3pRV5a9B7XA1KST8l+3I6Qyg=;
-Received: from [88.117.60.21] (helo=[10.0.0.160])
-        by mx11lb.world4you.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <gerhard@engleder-embedded.com>)
-        id 1qspai-0000aP-2c;
-        Tue, 17 Oct 2023 21:18:56 +0200
-Message-ID: <00181d0f-e7b3-4fb1-a3f7-12935ab03f8b@engleder-embedded.com>
-Date:   Tue, 17 Oct 2023 21:18:51 +0200
+        Tue, 17 Oct 2023 15:19:24 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B2A6194
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 12:19:16 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-27d3ede72f6so3830010a91.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 12:19:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1697570356; x=1698175156; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oiqh505uiYLILkv7e75NKRYSxfkStnbnu54DlF5oIdE=;
+        b=DvTgQ7tiVld8Vll0hS+NuZSfsESJZVVtxMFRmx26FU7a7EVYAa2GcBPDgDB1IpVQ1F
+         w4NLcSvb0NFDWWmLLunQIfaqkxL5p6M5INMmaII5LtvRiNVIIQmAqzuHPYwLsJf+OM60
+         bDH6bYP8nE01wdKL1+sVg/REJjATDBwazSop4chywjuMAYZhCdJPKnFq0M3nCb8nlKrZ
+         1pQZKG0+1OmCzR1/4NxfjnCNZQm9w27OzfV/Qi9xM0zUcR3mO7IaFnIFysm1/3cdtHRd
+         zBKsKJhPW7VPoHjQRNBS/K6J0aZOGQunoAg4WNn87fIbHANC7CMUSe02fYrPINxIBvRb
+         dNHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697570356; x=1698175156;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oiqh505uiYLILkv7e75NKRYSxfkStnbnu54DlF5oIdE=;
+        b=Eb8NhojPv4/dXexnPzrKmN19rNoXmxZMH+boIEZj9+daNQ3AozjAOQfi8/ZAs+pWti
+         ZF6Zy/hPjJxSnnXJwiaRMq0lcE9AF/KHj7nwjKlsTR23F1jsuXynj3+7adWB4WMB0tAi
+         FL61x9dCqBj3Jn1++k8iyz6jqTvU0MjW+SOODd86CH7tVR6cqs3r6w0M8FONAgLYMur8
+         4wc09V0/I4gdNkPn8IdsvJ5jaohslrHWROgYClw9LQe6VdsrnfsovwYeTBesNLRSjH+U
+         kZ84RZMcA4vSGC5U5/c85OqC+f2QsNUVBSWRFPcdrSERyKVjog7tjA/0k9XJfqdjhAeB
+         gClw==
+X-Gm-Message-State: AOJu0YzlJsft4czbm7mq/mwEg+cxX88qiibScHpznQ9/Ahf0XfgYV+bW
+        6/7SltGsg5Qa3xJPxx/wFPThjA==
+X-Google-Smtp-Source: AGHT+IG7ROb2Qof/K92C23vIBr2FOYWMjhe4m0RvFW1/lkFkXCPf1s3mpQvmFy3DS4gIcYQSRAO77g==
+X-Received: by 2002:a17:90b:1044:b0:27d:3c1a:3d2d with SMTP id gq4-20020a17090b104400b0027d3c1a3d2dmr3206302pjb.21.1697570355901;
+        Tue, 17 Oct 2023 12:19:15 -0700 (PDT)
+Received: from ?IPV6:2400:4050:a840:1e00:78d2:b862:10a7:d486? ([2400:4050:a840:1e00:78d2:b862:10a7:d486])
+        by smtp.gmail.com with ESMTPSA id e4-20020a17090ab38400b0027d0d4d4128sm1656284pjr.25.2023.10.17.12.19.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Oct 2023 12:19:15 -0700 (PDT)
+Message-ID: <9a4853ad-5ef4-4b15-a49e-9edb5ae4468e@daynix.com>
+Date:   Wed, 18 Oct 2023 04:19:08 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 1/8] dt-bindings: net: Add missing
- (unevaluated|additional)Properties on child node schemas
-To:     Rob Herring <robh@kernel.org>,
+Subject: Re: [RFC PATCH v2 1/7] bpf: Introduce BPF_PROG_TYPE_VNET_HASH
+Content-Language: en-US
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jason Wang <jasowang@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        =?UTF-8?B?bsOnIMOcTkFM?= <arinc.unal@arinc9.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Daniel Golle <daniel@makrotopia.org>,
-        John Crispin <john@phrozen.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Justin Chen <justin.chen@broadcom.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com
-References: <20231016-dt-net-cleanups-v1-0-a525a090b444@kernel.org>
- <20231016-dt-net-cleanups-v1-1-a525a090b444@kernel.org>
-Content-Language: en-US
-From:   Gerhard Engleder <gerhard@engleder-embedded.com>
-In-Reply-To: <20231016-dt-net-cleanups-v1-1-a525a090b444@kernel.org>
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Yuri Benditovich <yuri.benditovich@daynix.com>,
+        Andrew Melnychenko <andrew@daynix.com>
+References: <20231015141644.260646-1-akihiko.odaki@daynix.com>
+ <20231015141644.260646-2-akihiko.odaki@daynix.com>
+ <CAADnVQLfUDmgYng8Cw1hiZOMfWNWLjbn7ZGc4yOEz-XmeFEz5Q@mail.gmail.com>
+ <2594bb24-74dc-4785-b46d-e1bffcc3e7ed@daynix.com>
+ <CAADnVQ+J+bOtvEfdvgUse_Rr07rM5KOZ5DtAmHDgRmi70W68+g@mail.gmail.com>
+ <CACGkMEs22078F7rSLEz6eQabkZZ=kujSONUNMThZz5Gp=YiidQ@mail.gmail.com>
+ <CAADnVQLt8NWvP8qGWMPx=12PwWWE69P7aS2dbm=khAJkCnJEoQ@mail.gmail.com>
+From:   Akihiko Odaki <akihiko.odaki@daynix.com>
+In-Reply-To: <CAADnVQLt8NWvP8qGWMPx=12PwWWE69P7aS2dbm=khAJkCnJEoQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AV-Do-Run: Yes
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -100,31 +106,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.10.23 23:44, Rob Herring wrote:
-> Just as unevaluatedProperties or additionalProperties are required at
-> the top level of schemas, they should (and will) also be required for
-> child node schemas. That ensures only documented properties are
-> present for any node.
+On 2023/10/18 4:03, Alexei Starovoitov wrote:
+> On Mon, Oct 16, 2023 at 7:38 PM Jason Wang <jasowang@redhat.com> wrote:
+>>
+>> On Tue, Oct 17, 2023 at 7:53 AM Alexei Starovoitov
+>> <alexei.starovoitov@gmail.com> wrote:
+>>>
+>>> On Sun, Oct 15, 2023 at 10:10 AM Akihiko Odaki <akihiko.odaki@daynix.com> wrote:
+>>>>
+>>>> On 2023/10/16 1:07, Alexei Starovoitov wrote:
+>>>>> On Sun, Oct 15, 2023 at 7:17 AM Akihiko Odaki <akihiko.odaki@daynix.com> wrote:
+>>>>>>
+>>>>>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>>>>>> index 0448700890f7..298634556fab 100644
+>>>>>> --- a/include/uapi/linux/bpf.h
+>>>>>> +++ b/include/uapi/linux/bpf.h
+>>>>>> @@ -988,6 +988,7 @@ enum bpf_prog_type {
+>>>>>>           BPF_PROG_TYPE_SK_LOOKUP,
+>>>>>>           BPF_PROG_TYPE_SYSCALL, /* a program that can execute syscalls */
+>>>>>>           BPF_PROG_TYPE_NETFILTER,
+>>>>>> +       BPF_PROG_TYPE_VNET_HASH,
+>>>>>
+>>>>> Sorry, we do not add new stable program types anymore.
+>>>>>
+>>>>>> @@ -6111,6 +6112,10 @@ struct __sk_buff {
+>>>>>>           __u8  tstamp_type;
+>>>>>>           __u32 :24;              /* Padding, future use. */
+>>>>>>           __u64 hwtstamp;
+>>>>>> +
+>>>>>> +       __u32 vnet_hash_value;
+>>>>>> +       __u16 vnet_hash_report;
+>>>>>> +       __u16 vnet_rss_queue;
+>>>>>>    };
+>>>>>
+>>>>> we also do not add anything to uapi __sk_buff.
+>>>>>
+>>>>>> +const struct bpf_verifier_ops vnet_hash_verifier_ops = {
+>>>>>> +       .get_func_proto         = sk_filter_func_proto,
+>>>>>> +       .is_valid_access        = sk_filter_is_valid_access,
+>>>>>> +       .convert_ctx_access     = bpf_convert_ctx_access,
+>>>>>> +       .gen_ld_abs             = bpf_gen_ld_abs,
+>>>>>> +};
+>>>>>
+>>>>> and we don't do ctx rewrites like this either.
+>>>>>
+>>>>> Please see how hid-bpf and cgroup rstat are hooking up bpf
+>>>>> in _unstable_ way.
+>>>>
+>>>> Can you describe what "stable" and "unstable" mean here? I'm new to BPF
+>>>> and I'm worried if it may mean the interface stability.
+>>>>
+>>>> Let me describe the context. QEMU bundles an eBPF program that is used
+>>>> for the "eBPF steering program" feature of tun. Now I'm proposing to
+>>>> extend the feature to allow to return some values to the userspace and
+>>>> vhost_net. As such, the extension needs to be done in a way that ensures
+>>>> interface stability.
+>>>
+>>> bpf is not an option then.
+>>> we do not add stable bpf program types or hooks any more.
+>>
+>> Does this mean eBPF could not be used for any new use cases other than
+>> the existing ones?
 > 
-> Add unevaluatedProperties or additionalProperties as appropriate.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->   .../devicetree/bindings/net/allwinner,sun8i-a83t-emac.yaml     |  2 ++
->   Documentation/devicetree/bindings/net/dsa/brcm,sf2.yaml        |  1 +
->   Documentation/devicetree/bindings/net/dsa/mediatek,mt7530.yaml |  2 ++
->   .../devicetree/bindings/net/dsa/microchip,lan937x.yaml         |  1 +
->   Documentation/devicetree/bindings/net/dsa/nxp,sja1105.yaml     |  2 ++
->   Documentation/devicetree/bindings/net/dsa/qca8k.yaml           |  1 +
->   Documentation/devicetree/bindings/net/dsa/realtek.yaml         |  2 ++
->   .../devicetree/bindings/net/dsa/renesas,rzn1-a5psw.yaml        | 10 ++--------
->   Documentation/devicetree/bindings/net/engleder,tsnep.yaml      |  1 +
+> It means that any new use of bpf has to be unstable for the time being.
 
-Looks good for tsnep.
+Can you elaborate more about making new use unstable "for the time 
+being?" Is it a temporary situation? What is the rationale for that? 
+Such information will help devise a solution that is best for both of 
+the BPF and network subsystems.
 
-Reviewed-by: Gerhard Engleder <gerhard@engleder-embedded.com>
-
-Thank you!
-
->   Documentation/devicetree/bindings/net/nxp,tja11xx.yaml         |  1 +
->   10 files changed, 15 insertions(+), 8 deletions(-)
+I would also appreciate if you have some documentation or link to 
+relevant discussions on the mailing list. That will avoid having same 
+discussion you may already have done in the past.
