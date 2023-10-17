@@ -2,86 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFDF17CC9CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 19:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 398F47CC9D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 19:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343942AbjJQRWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 13:22:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57438 "EHLO
+        id S231444AbjJQR0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 13:26:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234808AbjJQRWh (ORCPT
+        with ESMTP id S229848AbjJQR0F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 13:22:37 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD37A4
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 10:22:36 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9bda758748eso675240166b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 10:22:36 -0700 (PDT)
+        Tue, 17 Oct 2023 13:26:05 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB44098
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 10:26:03 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c9c496c114so11225ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 10:26:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1697563355; x=1698168155; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pYYZG7yAyFfJYvTA6jWgYrv4Zal/uQTaztc6Ctmxivo=;
-        b=NeXtaCVtoBRYyn9Zqj//mRCL4yeww1erXUnSIkXPMWOVACf+Jkbaq4+bPZzC69WGTs
-         e//9AE5/hXQurjDe2mC3gjraYdJbgw17FakyRXdHifoVHJq8fbwXsOEUohu5OSH0cPYp
-         9/D5B+3K50BSAUa7cmmqs6ZyzlMcmn0MR0GTI=
+        d=google.com; s=20230601; t=1697563563; x=1698168363; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b98W+/GnlYMBBaEIRZ/yrKu+yROp6z3ItYJheiFNfWY=;
+        b=IcWaZ8Ml2sZHN2wMskXKVM0XboPKGtGNZV7nlTe2aTVAET9PeNJjDE7SrhtEGqaXvm
+         eiWLw7pnM/2cpziBS/u/J/Eg4LIR1k9vD1EPhz3EzQC0rlkkCIpjEByHTpY1VVU7n+QR
+         8IOeQCluFNpf7gdPgSCJAC0JB3o94DprII7OTZ8h6LCt8sM85wkWV7VgXsw3JThye543
+         USCCubBT6AiDZ2jB8XwJsTzgwJUZGQv1UgCJwLDFmIFc3J9Y6mShx5ZjwKh1T3dyuyQO
+         WyfOi8wDVczgcVEaeyUdiVClkVEn9WeGiXHrUr2sCpdYaU6che/bHCejXrVTPWv8wUmf
+         QYnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697563355; x=1698168155;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pYYZG7yAyFfJYvTA6jWgYrv4Zal/uQTaztc6Ctmxivo=;
-        b=OOhYUnE4eTmBWz3p84s182SWir4bYvb2stURU6lYAgA/atbdwJzY/w3Bs5FvMA/9Xj
-         NwR72KyUdkHW1ZMDGd0YsKc7xDXOnPJXad+CU943pnx+dIBB2SKh1L+pUCOncOFNKQMI
-         mm8px0Ib0dONmCynLPTJG/af8AHA7X3ZJxP7kBq23K5j6CbdUp7+CTgrbzLB69el4Hm9
-         E6j2f1Gdpoqrjr8dXajde6QLsx+qTFS8bQ1YJbp3PEqLKWLAQfi5RIpDyJS2km6hnhIT
-         agcYKbhorKSuREpIlF/CjTrVznmKmHqYIMSkvLo5I9BUm3AYiMGO4+eCwCTduuW9l64/
-         rqoQ==
-X-Gm-Message-State: AOJu0YzA+hBuk8E/YFb1reEEB+hfj3ui7Wk4UonyT+qcVPmn674+77EQ
-        eDfxjoN36mW0SSW+bAYAqAcl6DQXtBSt4sbAdZJP0GRw
-X-Google-Smtp-Source: AGHT+IHGgL6COR08aprPFTDJOKusE5bEnVkJykgQA2T3PmWgPvoponeqFKK433eWN5TgEx6yOGD3BQ==
-X-Received: by 2002:a17:907:2ce2:b0:9bf:d65d:dc0f with SMTP id hz2-20020a1709072ce200b009bfd65ddc0fmr2117002ejc.4.1697563354779;
-        Tue, 17 Oct 2023 10:22:34 -0700 (PDT)
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com. [209.85.218.54])
-        by smtp.gmail.com with ESMTPSA id ch3-20020a170906c2c300b0099ce188be7fsm165541ejb.3.2023.10.17.10.22.33
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Oct 2023 10:22:33 -0700 (PDT)
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-99c3c8adb27so937788566b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 10:22:33 -0700 (PDT)
-X-Received: by 2002:a17:907:c08:b0:9bd:e017:370e with SMTP id
- ga8-20020a1709070c0800b009bde017370emr2539597ejc.54.1697563353335; Tue, 17
- Oct 2023 10:22:33 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697563563; x=1698168363;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b98W+/GnlYMBBaEIRZ/yrKu+yROp6z3ItYJheiFNfWY=;
+        b=DY4Fk22EBp5mEGWdL4KROTpq0Y/sewDLTGDOv3pk1ebJV64q51EAkDAS+m8pfxzDVf
+         +mOxo9gBkGuewQIIwyANN1948evavEN7y/R6MHAfoFnUjI3r8pF0PjfXLKWElHd1XdeE
+         aBZZGhavya4lohB9d+EJIw8iU0y6MDZo9iUVhSKCF6YM6G181kRGYLiVfOGKitczfweS
+         7hIEOOFobx1DytwtGnBq8xe+O00CWuI73gUeOl6PXJ55WNFpTSEmqsENZEhAnxlOXc6n
+         x/uQ6fJPbJGVrEkF/GzfvR+oEh5wWKPVuim6MGDIH3+4venygIC44l7xrznoEEGkNfeO
+         MlFw==
+X-Gm-Message-State: AOJu0Ywcv4cbbKVSE4kLw/rGj7H2N/RKfwUkhVvWOUBtz5wsUs+keYd+
+        2Ts9qWe+qXzBGKoGFmNHVC+wo7tSlHLcDJnD+izVgw==
+X-Google-Smtp-Source: AGHT+IHb5B0YZuQ8upjbjeL9ha316DU4/zeX9v9YItDefLh84Iu+cQVZ7EJdEAX5vIIp6CqyfVqxyGhsl1ayop2hEX8=
+X-Received: by 2002:a17:902:f611:b0:1b8:b564:b528 with SMTP id
+ n17-20020a170902f61100b001b8b564b528mr8101plg.7.1697563563148; Tue, 17 Oct
+ 2023 10:26:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231016143828.647848-1-jeffxu@chromium.org> <CAHk-=whFZoap+DBTYvJx6ohqPwn11Puzh7q4huFWDX9vBwXHgg@mail.gmail.com>
- <CALmYWFtTDAb_kpZdAe_xspqwNgK1NWJmjTxaTC=jDEMzfe297Q@mail.gmail.com>
-In-Reply-To: <CALmYWFtTDAb_kpZdAe_xspqwNgK1NWJmjTxaTC=jDEMzfe297Q@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 17 Oct 2023 10:22:16 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj87GMTH=5901ob=SjQqegAm2JYBE7E4J7skJzE64U-wQ@mail.gmail.com>
-Message-ID: <CAHk-=wj87GMTH=5901ob=SjQqegAm2JYBE7E4J7skJzE64U-wQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 0/8] Introduce mseal() syscall
-To:     Jeff Xu <jeffxu@google.com>
-Cc:     jeffxu@chromium.org, akpm@linux-foundation.org,
-        keescook@chromium.org, sroettger@google.com, jorgelo@chromium.org,
-        groeck@chromium.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        jannh@google.com, surenb@google.com, alex.sierra@amd.com,
-        apopple@nvidia.com, aneesh.kumar@linux.ibm.com,
-        axelrasmussen@google.com, ben@decadent.org.uk,
-        catalin.marinas@arm.com, david@redhat.com, dwmw@amazon.co.uk,
-        ying.huang@intel.com, hughd@google.com, joey.gouly@arm.com,
-        corbet@lwn.net, wangkefeng.wang@huawei.com,
-        Liam.Howlett@oracle.com, lstoakes@gmail.com, willy@infradead.org,
-        mawupeng1@huawei.com, linmiaohe@huawei.com, namit@vmware.com,
-        peterx@redhat.com, peterz@infradead.org, ryan.roberts@arm.com,
-        shr@devkernel.io, vbabka@suse.cz, xiujianfeng@huawei.com,
-        yu.ma@intel.com, zhangpeng362@huawei.com, dave.hansen@intel.com,
-        luto@kernel.org, linux-hardening@vger.kernel.org
+References: <20231009230858.3444834-1-rananta@google.com> <20231009230858.3444834-8-rananta@google.com>
+ <b4739328-5dba-a3a6-54ef-2db2d34201d8@redhat.com> <CAJHc60zpH8Y8h72=jUbshGoqye20FaHRcsb+TFDxkk7rhJAUxQ@mail.gmail.com>
+ <ZS2L6uIlUtkltyrF@linux.dev> <CAJHc60wvMSHuLuRsZJOn7+r7LxZ661xEkDfqxGHed5Y+95Fxeg@mail.gmail.com>
+ <ZS4hGL5RIIuI1KOC@linux.dev> <CAJHc60zQb0akx2Opbh3_Q8JShBC_9NFNvtAE+bPNi9QqXUGncA@mail.gmail.com>
+ <ZS6_tdkS6GyNlt4l@linux.dev>
+In-Reply-To: <ZS6_tdkS6GyNlt4l@linux.dev>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Tue, 17 Oct 2023 10:25:50 -0700
+Message-ID: <CAJHc60w-CsqdYX8JG-CRutwg0UyWmvk1TyoR-y9JBV_mqWUVKw@mail.gmail.com>
+Subject: Re: [PATCH v7 07/12] KVM: arm64: PMU: Set PMCR_EL0.N for vCPU based
+ on the associated PMU
+To:     Oliver Upton <oliver.upton@linux.dev>
+Cc:     Sebastian Ott <sebott@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,34 +85,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Oct 2023 at 02:08, Jeff Xu <jeffxu@google.com> wrote:
+On Tue, Oct 17, 2023 at 10:09=E2=80=AFAM Oliver Upton <oliver.upton@linux.d=
+ev> wrote:
 >
-> It is probably worth noting that I choose to check one and only
-> one sealing type per syscall. i.e. munmap(2) checks
-> MM_SEAL_MUNMAP only.
+> On Tue, Oct 17, 2023 at 09:58:08AM -0700, Raghavendra Rao Ananta wrote:
+> > On Mon, Oct 16, 2023 at 10:52=E2=80=AFPM Oliver Upton <oliver.upton@lin=
+ux.dev> wrote:
+> > >
+> > > On Mon, Oct 16, 2023 at 02:35:52PM -0700, Raghavendra Rao Ananta wrot=
+e:
+> > >
+> > > [...]
+> > >
+> > > > > What's the point of doing this in the first place? The implementa=
+tion of
+> > > > > kvm_vcpu_read_pmcr() is populating PMCR_EL0.N using the VM-scoped=
+ value.
+> > > > >
+> > > > I guess originally the change replaced read_sysreg(pmcr_el0) with
+> > > > kvm_vcpu_read_pmcr(vcpu) to maintain consistency with others.
+> > > > But if you and Sebastian feel that it's an overkill and directly
+> > > > getting the value via vcpu->kvm->arch.pmcr_n is more readable, I'm
+> > > > happy to make the change.
+> > >
+> > > No, I'd rather you delete the line where PMCR_EL0.N altogether.
+> > > reset_pmcr() tries to initialize the field, but your
+> > > kvm_vcpu_read_pmcr() winds up replacing it with pmcr_n.
+> > >
+> > I didn't get this comment. We still do initialize pmcr, but using the
+> > pmcr.n read via kvm_vcpu_read_pmcr() instead of the actual system
+> > register.
+>
+> You have two bits of code trying to do the exact same thing:
+>
+>  1) reset_pmcr() initializes __vcpu_sys_reg(vcpu, PMCR_EL0) with the N
+>     field set up.
+>
+>  2) kvm_vcpu_read_pmcr() takes whatever is in __vcpu_sys_reg(vcpu, PMCR_E=
+L0),
+>     *masks out* the N field and re-initializes it with vcpu->kvm->arch.pm=
+cr_n
+>
+> Why do you need (1) if you do (2)?
+>
+Okay, I see what you mean now. In that case, let reset_pmcr():
+- Initialize 'pmcr' using  vcpu->kvm->arch.pmcr_n
+- Set ARMV8_PMU_PMCR_LC as appropriate in 'pmcr'
+- Write 'pmcr' to the vcpu reg
 
-Yeah, this is wrong.
+From here on out, kvm_vcpu_read_pmcr() would read off of this
+initialized value, unless of course, userspace updates the pmcr.n.
+Is this the flow that you were suggesting?
 
-It's wrong exactly because other system calls will unmap things too.
+Thank you.
+Raghavendra
 
-Using mmap() to over-map something will unmap the old one.
-
-Same goes for mremap() to move over an existing mapping.
-
-So the whole "do things by the name of the system call" is not workable.
-
-All that matters is what the system calls *do*, not what their name is.
-
-And mmap() will fundamentally munmap() as part of the action.
-
-This is why I absolutely hated the old "ON_BEHALF_OF_xyz" flag, and
-why I still absolutely hate the "randomly pass different sealing flags
-fto do_munmap()".
-
-You should *not* be passing any flags at all to do_munmap(). Because
-*regardless* of who calls it, and regardless of which system call
-started the action, do_munmap() unmaps a virtual memory area.
-
-See what I'm saying?
-
-                 Linus
+> --
+> Thanks,
+> Oliver
