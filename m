@@ -2,140 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A9A7CBBC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 08:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D9C87CBBC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 08:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234539AbjJQGve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 02:51:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57784 "EHLO
+        id S234522AbjJQGzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 02:55:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234486AbjJQGvc (ORCPT
+        with ESMTP id S234403AbjJQGzP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 02:51:32 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AD32B6
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 23:51:30 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-419b53acc11so162611cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 23:51:30 -0700 (PDT)
+        Tue, 17 Oct 2023 02:55:15 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57602B6
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 23:55:11 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b9338e4695so69240691fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 23:55:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697525489; x=1698130289; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1697525709; x=1698130509; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oHCjcIwAgD8r2ZfWSRWE2jRRIUmP7obRVpW9zzIvXZY=;
-        b=LFjN/upgI4MMKEjVksgSFfYLl4hiuJAmzv7UAJJhTpD8bMjNFxX83y8A39/wySXMU0
-         j2Fm/iw6EHqdpjS4czvzmVThq/PLULAPmRr8b6FZW1b6bXkQE4u0F6SUsgvCvd24GVhX
-         uJ30oL9MoRY+ztlf3iJrv+tPhM+2g/5AHvI+Jhl5+u78pqEFU8FDunRbvFItETWQ/Si2
-         fufeBOfkDb51pLYE4URsib0FTYhYw7NXU+59TQovysbuLx4ceoDKoIGowtlSNXFNjcyg
-         mSRoeI21PDxx25DGeZ46DdEEoA/PGKmqgEN3zN02LQui/ri+yn4qkL0E+0f73VU0BLnP
-         yuGA==
+        bh=bDkATyrBELpMJhNZkPKNwPN8vNWTOg5Prx6dfaUxudc=;
+        b=lgYC1Grth33gc7E48Q0tJylGuhX7skgPrvXq3Sk3MRg0qbOroyDLOFFf3qhHeMz2lJ
+         o2h8AaX3jKbigUivUgQit/fYI9pekdkwzIGyOsT8NcOyw4VJJyNu0+APhcsoZcBMAJww
+         nE0S2+FQqMS39Z0bB2RszhPfhnRxM4EJ7ZpSRxIJ+dHxFjmMomRx3oUjxZzx5gIsXw5t
+         6h949gBsh151J1m/pW6E88DQ/Rr1vtTHZGV1xS1LFm2LnLOlaG/HOpm5oGnPclH3vsRm
+         LLTYjUIqppv6l4cr1wZiHzRd1oofB2Cda8oAga8ovjDZOCMbNGlH0KJI6GG4AUF9CWlY
+         lbQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697525489; x=1698130289;
+        d=1e100.net; s=20230601; t=1697525709; x=1698130509;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oHCjcIwAgD8r2ZfWSRWE2jRRIUmP7obRVpW9zzIvXZY=;
-        b=l2/PYuI5G2Z93/9UalByJQcDdlboG3XECDwVKL+2vYTAgkmp1eB/3eu0h7FA3SoJ8w
-         Dme+vaKq8r4pvuncljqHjgS4hUPvj+WwsM7ShGnW2pit6A2BV4xXl4Kro+eUwhJQv8vR
-         OJAjLrGe9Q+124IYWLFa3m0mgcL/0C9UOcDlIpuhimzDATb59OBJ/R8AAX9yCNbjz1ky
-         JE7oRt8d7c0AK7n8RL9uVrzT8oZ44iShjb4S4C3fKEK2CXjnf7pyK7UiGa0FqkMiwPpX
-         JaKg7OEiSiGe+gz5ej16X8q6Q8jlJSvbPeoGYKIsbfiM0hPD9Cn8T1IVr9SsaO+vITA2
-         AbFw==
-X-Gm-Message-State: AOJu0YyLj5RrTjNOu66fuQOAw5WVUsT2ElMvjsOANhjHYTcWgYQf4dpT
-        ebf4nN6jzrmhMWRHoI5DYFTI9eWgI+yh+AxM4fyiqElectRlsAJybu/9OQ==
-X-Google-Smtp-Source: AGHT+IHrmXZFq+mqMHdy8UJpV06hwPvok6+26xdf07c69sqojlknFnXbe8Z30UoZafYhf/PHhODqV8N5XpLKhiJclqs=
-X-Received: by 2002:a05:622a:8119:b0:417:cd34:2a7b with SMTP id
- jx25-20020a05622a811900b00417cd342a7bmr111897qtb.3.1697525489453; Mon, 16 Oct
- 2023 23:51:29 -0700 (PDT)
+        bh=bDkATyrBELpMJhNZkPKNwPN8vNWTOg5Prx6dfaUxudc=;
+        b=b0kxt5NHhsqX87Qcb95M8vCE7xZ4jymmBaP5/6EBfD4j570aTmamJ2R1BSB9XqNsct
+         mLQ9LReXBdAU+OKOX3y3RQ4tXtnonUvOnFe4QCrfZFeKYUuk+mzwfdg6TgGyhheBBYsO
+         lNl3iZzzacPGbilAYoyHtzozBNEEzd7518njA7hQSncijgx8eGJ1bMk5dHMyOoC6eU0g
+         5IqwmrpMfTlFoPZh4IFaFXbCjNjGI9+rXfqrh7XFl2f/jkFxp3aTd/ErLJxlRtGZeXnu
+         SM8ERuUAwGgtQkRh2y2TJVdTbRXi3h0AUM857PRZ33rqvOK8vY8hxv9fkGx1SEZZh+YD
+         Wk1A==
+X-Gm-Message-State: AOJu0Yy0GHAItlqFocYG0UWHtYVMaQH4fofnrct8glgicUt91KRiMvL7
+        xjKNQC8gDhXo3Sc70EqDvl75t/AeeYoi/4cR/RpjXQ==
+X-Google-Smtp-Source: AGHT+IECj117APB9tIfHpuHnYtXL8pZAUC+BwW1vvYpdkLMvvBPbK79bq7ACBx0xDJ5SxErp0KFKe6Hj+mIK5TUoNyU=
+X-Received: by 2002:a2e:730a:0:b0:2c5:1c4:9005 with SMTP id
+ o10-20020a2e730a000000b002c501c49005mr895088ljc.32.1697525709544; Mon, 16 Oct
+ 2023 23:55:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231016143828.647848-1-jeffxu@chromium.org> <20231016143828.647848-2-jeffxu@chromium.org>
- <2023101614-scarce-discount-d7ff@gregkh>
-In-Reply-To: <2023101614-scarce-discount-d7ff@gregkh>
-From:   Jeff Xu <jeffxu@google.com>
-Date:   Mon, 16 Oct 2023 23:50:00 -0700
-Message-ID: <CALmYWFsVzHiysp1c2PuqfdE1ENDkK1xegoZedtCOaHzmxx2OSg@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 1/8] Add mseal syscall
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     jeffxu@chromium.org, akpm@linux-foundation.org,
-        keescook@chromium.org, sroettger@google.com, jorgelo@chromium.org,
-        groeck@chromium.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        jannh@google.com, surenb@google.com, alex.sierra@amd.com,
-        apopple@nvidia.com, aneesh.kumar@linux.ibm.com,
-        axelrasmussen@google.com, ben@decadent.org.uk,
-        catalin.marinas@arm.com, david@redhat.com, dwmw@amazon.co.uk,
-        ying.huang@intel.com, hughd@google.com, joey.gouly@arm.com,
-        corbet@lwn.net, wangkefeng.wang@huawei.com,
-        Liam.Howlett@oracle.com, torvalds@linux-foundation.org,
-        lstoakes@gmail.com, willy@infradead.org, mawupeng1@huawei.com,
-        linmiaohe@huawei.com, namit@vmware.com, peterx@redhat.com,
-        peterz@infradead.org, ryan.roberts@arm.com, shr@devkernel.io,
-        vbabka@suse.cz, xiujianfeng@huawei.com, yu.ma@intel.com,
-        zhangpeng362@huawei.com, dave.hansen@intel.com, luto@kernel.org,
-        linux-hardening@vger.kernel.org
+References: <20231016031649.35088-1-huangjie.albert@bytedance.com>
+ <CAJ8uoz2DUe3xySTKuLbA5=QDAGuTzPdGu3P_=ZvJmna25VtHCQ@mail.gmail.com>
+ <CABKxMyMieNNMXFMTRdof1W43ijvZq5e04nOkXFv5djzadXh0xQ@mail.gmail.com> <CAJ8uoz069tKX60=j3PwsVrO64c+mRGvVYJJWPwTktrAuh=3fbg@mail.gmail.com>
+In-Reply-To: <CAJ8uoz069tKX60=j3PwsVrO64c+mRGvVYJJWPwTktrAuh=3fbg@mail.gmail.com>
+From:   =?UTF-8?B?6buE5p2w?= <huangjie.albert@bytedance.com>
+Date:   Tue, 17 Oct 2023 14:54:57 +0800
+Message-ID: <CABKxMyM_jGBWK1g8Hb145PEBui_p1RCg-uGm5Sjtb4injVD3Jw@mail.gmail.com>
+Subject: Re: [PATCH v2 net-next] xsk: Avoid starving xsk at the end of the list
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 8:07=E2=80=AFAM Greg KH <gregkh@linuxfoundation.org=
-> wrote:
+Magnus Karlsson <magnus.karlsson@gmail.com> =E4=BA=8E2023=E5=B9=B410=E6=9C=
+=8816=E6=97=A5=E5=91=A8=E4=B8=80 17:13=E5=86=99=E9=81=93=EF=BC=9A
 >
-> On Mon, Oct 16, 2023 at 02:38:20PM +0000, jeffxu@chromium.org wrote:
-> > +#ifdef CONFIG_MSEAL
-> > +     /*
-> > +      * bit masks for seal.
-> > +      * need this since vm_flags is full.
-> > +      */
-> > +     unsigned long vm_seals;         /* seal flags, see mm.h. */
->
-> "unsigned long" and yet:
->
-> > diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-> > index c0cb22cd607d..f574c7dbee76 100644
-> > --- a/include/linux/syscalls.h
-> > +++ b/include/linux/syscalls.h
-> > @@ -802,6 +802,8 @@ asmlinkage long sys_process_mrelease(int pidfd, uns=
-igned int flags);
-> >  asmlinkage long sys_remap_file_pages(unsigned long start, unsigned lon=
-g size,
-> >                       unsigned long prot, unsigned long pgoff,
-> >                       unsigned long flags);
-> > +asmlinkage long sys_mseal(unsigned long start, size_t len, unsigned in=
-t types,
-> > +                       unsigned int flags);
->
-> "unsigned int"?
->
-> Why the mis-match?
->
-Thanks. Fixed in V2.
-
-> > --- a/include/uapi/linux/mman.h
-> > +++ b/include/uapi/linux/mman.h
-> > @@ -55,4 +55,10 @@ struct cachestat {
-> >       __u64 nr_recently_evicted;
-> >  };
+> On Mon, 16 Oct 2023 at 10:54, =E9=BB=84=E6=9D=B0 <huangjie.albert@bytedan=
+ce.com> wrote:
 > >
-> > +#define MM_SEAL_MSEAL                0x1
-> > +#define MM_SEAL_MPROTECT     0x2
-> > +#define MM_SEAL_MUNMAP               0x4
-> > +#define MM_SEAL_MMAP         0x8
-> > +#define MM_SEAL_MREMAP               0x10
+> > Magnus Karlsson <magnus.karlsson@gmail.com> =E4=BA=8E2023=E5=B9=B410=E6=
+=9C=8816=E6=97=A5=E5=91=A8=E4=B8=80 14:41=E5=86=99=E9=81=93=EF=BC=9A
+> > >
+> > > On Mon, 16 Oct 2023 at 05:17, Albert Huang
+> > > <huangjie.albert@bytedance.com> wrote:
+> > > >
+> > > > In the previous implementation, when multiple xsk sockets were
+> > > > associated with a single xsk_buff_pool, a situation could arise
+> > > > where the xsk_tx_list maintained data at the front for one xsk
+> > > > socket while starving the xsk sockets at the back of the list.
+> > > > This could result in issues such as the inability to transmit packe=
+ts,
+> > > > increased latency, and jitter. To address this problem, we introduc=
+ed
+> > > > a new variable called tx_budget_cache, which limits each xsk to tra=
+nsmit
+> > > > a maximum of MAX_XSK_TX_BUDGET tx descriptors. This allocation ensu=
+res
+> > > > equitable opportunities for subsequent xsk sockets to send tx descr=
+iptors.
+> > > > The value of MAX_XSK_TX_BUDGET is temporarily set to 16.
+> > >
+> > > Hi Albert. Yes you are correct that there is nothing hindering this t=
+o
+> > > happen in the code at the moment, so let us fix it.
+> > >
+> > thanks.
+> >
+> > > > Signed-off-by: Albert Huang <huangjie.albert@bytedance.com>
+> > > > ---
+> > > >  include/net/xdp_sock.h |  6 ++++++
+> > > >  net/xdp/xsk.c          | 18 ++++++++++++++++++
+> > > >  2 files changed, 24 insertions(+)
+> > > >
+> > > > diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+> > > > index 69b472604b86..f617ff54e38c 100644
+> > > > --- a/include/net/xdp_sock.h
+> > > > +++ b/include/net/xdp_sock.h
+> > > > @@ -44,6 +44,7 @@ struct xsk_map {
+> > > >         struct xdp_sock __rcu *xsk_map[];
+> > > >  };
+> > > >
+> > > > +#define MAX_XSK_TX_BUDGET 16
+> > >
+> > > I think something like MAX_PER_SOCKET_BUDGET would be clearer.
+> > >
+> >
+> >  OK, this will be considered  in the next patch.
+> >
+> > > >  struct xdp_sock {
+> > > >         /* struct sock must be the first member of struct xdp_sock =
+*/
+> > > >         struct sock sk;
+> > > > @@ -63,6 +64,11 @@ struct xdp_sock {
+> > > >
+> > > >         struct xsk_queue *tx ____cacheline_aligned_in_smp;
+> > > >         struct list_head tx_list;
+> > > > +       /* Record the actual number of times xsk has transmitted a =
+tx
+> > > > +        * descriptor, with a maximum limit not exceeding MAX_XSK_T=
+X_BUDGET
+> > > > +        */
+> > > > +       u32 tx_budget_cache;
+> > > > +
+> > > >         /* Protects generic receive. */
+> > > >         spinlock_t rx_lock;
+> > > >
+> > > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> > > > index f5e96e0d6e01..087f2675333c 100644
+> > > > --- a/net/xdp/xsk.c
+> > > > +++ b/net/xdp/xsk.c
+> > > > @@ -413,16 +413,25 @@ EXPORT_SYMBOL(xsk_tx_release);
+> > > >
+> > > >  bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc =
+*desc)
+> > > >  {
+> > > > +       u32 xsk_full_count =3D 0;
+> > >
+> > > Enough with a bool;
+> > >
+> > > >         struct xdp_sock *xs;
+> > > >
+> > > >         rcu_read_lock();
+> > > > +again:
+> > > >         list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
+> > > > +               if (xs->tx_budget_cache >=3D MAX_XSK_TX_BUDGET) {
+> > > > +                       xsk_full_count++;
+> > > > +                       continue;
+> > > > +               }
+> > >
+> > > The problem here is that the fixed MAX_XSK_TX_BUDGET is only useful
+> > > for the <=3D 2 socket case. If I have 3 sockets sharing a
+> > > netdev/queue_id, the two first sockets can still starve the third one
+> > > since the total budget per send is 32.
+> >
+> > Why is there a limit of 32? I'm not quite clear on the implications of =
+these,
+> > Did I miss something?
+> > BR
+> > Albert
 >
-> I think we can use the BIT() macro in uapi .h files now, it is _BITUL().
-> Might want to use it here too to make it obvious what is happening.
->
-Sure. Will update in V2.
+> There is a define TX_BATCH_SIZE 32 that controls the max number of
+> packets a sendto() call can send before it exits. It is used in
+> __xsk_generic_xmit().
 
-> thanks,
+OK,I got it . I missed the logic here. I will reconsider the logic in this =
+part.
+Thanks
+BR
+Albert
+
 >
-> greg k-h
+> > >You need to go through the list
+> > > of sockets in the beginning to compute the MAX_XSK_TX_BUDGET to
+> > > compute this dynamically before each call. Or cache this value
+> > > somehow, in the pool for example. Actually, the refcount in the
+> > > buf_pool will tell you how many sockets are sharing the same buf_pool=
+.
+> > > Try using that to form MAX_XSK_TX_BUDGET on the fly.
+> > >
+> > > Another simpler way of accomplishing this would be to just reorder th=
+e
+> > > list every time. Put the first socket last in the list every time. Th=
+e
+> > > drawback of this is that you need to hold the xsk_tx_list_lock while
+> > > doing this so might be slower. The per socket batch size would also b=
+e
+> > > 32 and you would not receive "fairness" over a single call to
+> > > sendto(). Would that be a problem for you?
+> > >
+> >
+> > Yes, I did consider this approach, but I abandoned it because it would =
+lose
+> > the performance advantages of lock-free operations(RCU read)
+> > thanks
+> > Albert
+>
+> OK, then let us not consider it and try to make your current approach wor=
+k.
+>
+> >
+> > > > +
+> > > >                 if (!xskq_cons_peek_desc(xs->tx, desc, pool)) {
+> > > >                         if (xskq_has_descs(xs->tx))
+> > > >                                 xskq_cons_release(xs->tx);
+> > > >                         continue;
+> > > >                 }
+> > > >
+> > > > +               xs->tx_budget_cache++;
+> > > > +
+> > > >                 /* This is the backpressure mechanism for the Tx pa=
+th.
+> > > >                  * Reserve space in the completion queue and only p=
+roceed
+> > > >                  * if there is space in it. This avoids having to i=
+mplement
+> > > > @@ -436,6 +445,14 @@ bool xsk_tx_peek_desc(struct xsk_buff_pool *po=
+ol, struct xdp_desc *desc)
+> > > >                 return true;
+> > > >         }
+> > > >
+> > > > +       if (unlikely(xsk_full_count > 0)) {
+> > > > +               list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_=
+list) {
+> > > > +                       xs->tx_budget_cache =3D 0;
+> > > > +               }
+> > > > +               xsk_full_count =3D 0;
+> > > > +               goto again;
+> > > > +       }
+> >
+> > this section of code only enters when it's unable to acquire any TX
+> > descriptors and
+> > xsk_full_count > 0.
+> >
+> > > > +
+> > > >  out:
+> > > >         rcu_read_unlock();
+> > > >         return false;
+> > > > @@ -1230,6 +1247,7 @@ static int xsk_bind(struct socket *sock, stru=
+ct sockaddr *addr, int addr_len)
+> > > >         xs->zc =3D xs->umem->zc;
+> > > >         xs->sg =3D !!(xs->umem->flags & XDP_UMEM_SG_FLAG);
+> > > >         xs->queue_id =3D qid;
+> > > > +       xs->tx_budget_cache =3D 0;
+> > > >         xp_add_xsk(xs->pool, xs);
+> > > >
+> > > >  out_unlock:
+> > > > --
+> > > > 2.20.1
+> > > >
+> > > >
