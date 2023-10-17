@@ -2,66 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 287477CC5B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E40FC7CC5B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344089AbjJQOP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 10:15:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49082 "EHLO
+        id S1343946AbjJQOPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 10:15:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344071AbjJQOPx (ORCPT
+        with ESMTP id S1344055AbjJQOPh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 10:15:53 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED6F11A
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:15:49 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bdf4752c3cso34561725ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:15:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697552148; x=1698156948; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iqwQ+7rqqmIMspEGesJUa+9eYiX8AvPDFecFy0NEhJI=;
-        b=MWRpqap0jSV/33P+VyV9Sjgz6Yb2JS66xc0vnurT6pes9obGOw07jjG+hXDH2v2njd
-         VVi8X8S6fkhGsj26Pw+B2QIy0qJowc4cIytKDq/gWbqk8YA+WG7XBVOOMqtvcwsxV4V8
-         t5uHVOe9mlt/+4Bja8uAjrY9L3nnivyB/MRe3pQrzYGay1Z+Dt4vif/QlVMYIHWV9dEU
-         YB13Qqy38+qWRKd7OudJtHSbxIPY8akE376Uuu3p4mAmNA92KSRet+RdbIV6GbFGYCTb
-         I7FHEdS1B1yEEF/+VDiTZb2Cw/T+tdvY2VoyfX3iu1oiiQndiH+IOmWAyh5Fmtd7Xgi0
-         adrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697552148; x=1698156948;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iqwQ+7rqqmIMspEGesJUa+9eYiX8AvPDFecFy0NEhJI=;
-        b=AQOQSnFJA5Z2I/XvHkDtnHGAY275WEeyRScPzQzKbDbDoD/k80WucB9EaIt/xIMbd4
-         kYiXDkRsL9+d76PVAsWxgsEZvQgsZvgtR7IXzrQIhwjrlbbtDv2bKYUIT3mS5d2HA/Qc
-         1ZYqSAxSwRWM3ViYPCvM9KqhgMxmGJYdVbspk02IfvBW7kKmKYa+m6R7OohSJ3O28aLs
-         rz1w1uTxArFu01bvTFqvBM0XYU2cHB3gtr9NcFUxASdipIojf6dmtFH3EZhunTa/p8bf
-         7D9Lz/Ce6DhviyNeqLiyodmWxnQEttAd7pIYNxxBH8qQz2H8FKRTHZbZ71DrYy9Ha3WU
-         7ANQ==
-X-Gm-Message-State: AOJu0YyXRR+80o9uFvnVTYth8+H84Sge93TMLbFAVhrvsnmAp93a+5gE
-        LcWZyWPqBLcLCGO4njTQ73Y=
-X-Google-Smtp-Source: AGHT+IF8Inum4AWOsUaWcagEsQj6+/PfIsPVhtsv0RSbpX2fyBRJjPYdaXNrpnHmFrhnnxoznYFOcg==
-X-Received: by 2002:a17:903:487:b0:1c9:ff46:162d with SMTP id jj7-20020a170903048700b001c9ff46162dmr2294311plb.22.1697552148350;
-        Tue, 17 Oct 2023 07:15:48 -0700 (PDT)
-Received: from ubuntu.. ([122.181.68.128])
-        by smtp.gmail.com with ESMTPSA id q5-20020a170902788500b001ca222edc16sm1590234pll.135.2023.10.17.07.15.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 07:15:47 -0700 (PDT)
-From:   Pavan Bobba <opensource206@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     Pavan Bobba <opensource206@gmail.com>
-Subject: [PATCH] staging: vt6655: Type encoding info dropped from variable name "bUpdateBBVGA"
-Date:   Tue, 17 Oct 2023 19:45:10 +0530
-Message-Id: <20231017141509.351301-1-opensource206@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 17 Oct 2023 10:15:37 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A75B5FA;
+        Tue, 17 Oct 2023 07:15:35 -0700 (PDT)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39HECtqg021776;
+        Tue, 17 Oct 2023 14:15:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=ACi5eTARhKvQqEEvAFgNcoSlkqmFPO0yXbmr3r1fRE8=;
+ b=BuhHU8zODY0fN5SbWxOQDDcAI672+9JEAF5zkuT8/mLZs+6SNkgXdiH1wfo8TQEmr5pt
+ YavOjp/qqm2vAon2pF+c+Z2Ii7fVqxZGwMsjzp/JdQ22nJpOlsifa+RPMtc3vY4XhG2X
+ +mwO8AZQCDBEDT492Nmrjm/Cwn21p94xTm04k0bPoDGi4tALw9JVA40024K4EVQvdQow
+ o6nxhT6z7qv58AyIgcJAgRnZRufBEpSzHkoyhys/RLhr2k7A/YHbCPeqWmfPW4az1GTt
+ /G6FIhcpWUXSSalX5Ib9W86QV5WxZ+zo0CfD89ap6ZKxG1/8wGHoavdOce5TxNZxCGS4 EQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tsuu0r426-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Oct 2023 14:15:27 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39HEDcHU025064;
+        Tue, 17 Oct 2023 14:15:26 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tsuu0r40c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Oct 2023 14:15:26 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39HC8IbU027154;
+        Tue, 17 Oct 2023 14:15:24 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tr6tk97t8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Oct 2023 14:15:24 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39HEFLvK46792964
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 17 Oct 2023 14:15:21 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 567922004E;
+        Tue, 17 Oct 2023 14:15:21 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0112520040;
+        Tue, 17 Oct 2023 14:15:21 +0000 (GMT)
+Received: from [9.155.208.153] (unknown [9.155.208.153])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 17 Oct 2023 14:15:20 +0000 (GMT)
+Message-ID: <b152ec7c0e690027da1086b777a3ec512001ba1f.camel@linux.ibm.com>
+Subject: Re: [PATCH net] net/smc: Fix dependency of SMC on ISM
+From:   Gerd Bayer <gbayer@linux.ibm.com>
+To:     Randy Dunlap <rdunlap@infradead.org>, wenjia@linux.ibm.com
+Cc:     linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        netdev@vger.kernel.org, raspl@linux.ibm.com, sfr@canb.auug.org.au,
+        alibuda@linux.alibaba.com, wintera@linux.ibm.com,
+        guwen@linux.alibaba.com, tonylu@linux.alibaba.com,
+        jaka@linux.ibm.com
+Date:   Tue, 17 Oct 2023 16:15:20 +0200
+In-Reply-To: <afd142a2-1fa0-46b9-8b2d-7652d41d3ab8@infradead.org>
+References: <d9a2d47d-c8bd-cf17-83e0-d9b82561a594@linux.ibm.com>
+         <20231006125847.1517840-1-gbayer@linux.ibm.com>
+         <afd142a2-1fa0-46b9-8b2d-7652d41d3ab8@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.48.4 (3.48.4-1.module_f38+17164+63eeee4a) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: ygHLqLKxeizfpEdiz0ZOsakjb0xjj2Lq
+X-Proofpoint-ORIG-GUID: xrGBjupqLn5GVl5gb-Pha81j7jub6hSG
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-17_03,2023-10-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ clxscore=1015 mlxlogscore=856 suspectscore=0 adultscore=0
+ lowpriorityscore=0 priorityscore=1501 phishscore=0 mlxscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310170120
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,91 +98,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-variable name "bUpdateBBVGA" updated like below:
+On Mon, 2023-10-16 at 16:09 -0700, Randy Dunlap wrote:
+> Hi Gerd,
+>=20
+> On 10/6/23 05:58, Gerd Bayer wrote:
+> > When the SMC protocol is built into the kernel proper while ISM is
+> > configured to be built as module, linking the kernel fails due to
+> > unresolved dependencies out of net/smc/smc_ism.o to
+> > ism_get_smcd_ops, ism_register_client, and ism_unregister_client
+> > as reported via the linux-next test automation (see link).
+> > This however is a bug introduced a while ago.
+> >=20
+> > Correct the dependency list in ISM's and SMC's Kconfig to reflect
+> > the
+> > dependencies that are actually inverted. With this you cannot build
+> > a
+> > kernel with CONFIG_SMC=3Dy and CONFIG_ISM=3Dm. Either ISM needs to be
+> > 'y',
+> > too - or a 'n'. That way, SMC can still be configured on non-s390
+> > architectures that do not have (nor need) an ISM driver.
+> >=20
+> > Fixes: 89e7d2ba61b7 ("net/ism: Add new API for client
+> > registration")
+> >=20
+> > Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> > Closes:
+> > https://lore.kernel.org/linux-next/d53b5b50-d894-4df8-8969-fd39e63440ae=
+@infradead.org/
+> > Co-developed-by: Wenjia Zhang <wenjia@linux.ibm.com>
+> > Signed-off-by: Wenjia Zhang <wenjia@linux.ibm.com>
+> > Signed-off-by: Gerd Bayer <gbayer@linux.ibm.com>
+>=20
+> With this patch, ISM can be build without SMC being enabled.
+>=20
+> This leads to some build warnings:
+>=20
+> ../drivers/s390/net/ism_drv.c:572:12: warning: 'ism_get_local_gid'
+> defined but not used [-Wunused-function]
+> =C2=A0 572 | static u64 ism_get_local_gid(struct ism_dev *ism)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^~~~~~~~~~~~~~~~~
+> ../drivers/s390/net/ism_drv.c:506:12: warning: 'ism_get_chid' defined
+> but not used [-Wunused-function]
+> =C2=A0 506 | static u16 ism_get_chid(struct ism_dev *ism)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^~~~~~~~~~~~
+> ../drivers/s390/net/ism_drv.c:432:12: warning: 'ism_signal_ieq'
+> defined but not used [-Wunused-function]
+> =C2=A0 432 | static int ism_signal_ieq(struct ism_dev *ism, u64 rgid, u32
+> trigger_irq,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^~~~~~~~~~~~~~
+> ../drivers/s390/net/ism_drv.c:292:12: warning: 'ism_query_rgid'
+> defined but not used [-Wunused-function]
+> =C2=A0 292 | static int ism_query_rgid(struct ism_dev *ism, u64 rgid, u32
+> vid_valid,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^~~~~~~~~~~~~~
 
-a.type encoding info dropped from name
-b.camelcase name replaced by snakecase
+Hi Randy,
 
-Issue found by checkpatch
+I must have missed testing a config of ISM without SMC. I'm working on
+a fix.
 
-Signed-off-by: Pavan Bobba <opensource206@gmail.com>
----
- drivers/staging/vt6655/baseband.c    | 2 +-
- drivers/staging/vt6655/channel.c     | 2 +-
- drivers/staging/vt6655/device.h      | 2 +-
- drivers/staging/vt6655/device_main.c | 6 +++---
- 4 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/staging/vt6655/baseband.c b/drivers/staging/vt6655/baseband.c
-index 7d47b266b87e..f7824396c5ff 100644
---- a/drivers/staging/vt6655/baseband.c
-+++ b/drivers/staging/vt6655/baseband.c
-@@ -2087,7 +2087,7 @@ bool bb_vt3253_init(struct vnt_private *priv)
- 		/* {{ RobertYu: 20050104 */
- 	} else {
- 		/* No VGA Table now */
--		priv->bUpdateBBVGA = false;
-+		priv->update_bbvga = false;
- 		priv->bbvga[0] = 0x1C;
- 	}
- 
-diff --git a/drivers/staging/vt6655/channel.c b/drivers/staging/vt6655/channel.c
-index 6ac7d470c041..c11bc2dbc356 100644
---- a/drivers/staging/vt6655/channel.c
-+++ b/drivers/staging/vt6655/channel.c
-@@ -86,7 +86,7 @@ bool set_channel(struct vnt_private *priv, struct ieee80211_channel *ch)
- 		return ret;
- 
- 	/* Set VGA to max sensitivity */
--	if (priv->bUpdateBBVGA &&
-+	if (priv->update_bbvga &&
- 	    priv->bbvga_current != priv->bbvga[0]) {
- 		priv->bbvga_current = priv->bbvga[0];
- 
-diff --git a/drivers/staging/vt6655/device.h b/drivers/staging/vt6655/device.h
-index 68bfadacfa7c..b166d296b82d 100644
---- a/drivers/staging/vt6655/device.h
-+++ b/drivers/staging/vt6655/device.h
-@@ -246,7 +246,7 @@ struct vnt_private {
- 	unsigned char byAutoFBCtrl;
- 
- 	/* For Update BaseBand VGA Gain Offset */
--	bool bUpdateBBVGA;
-+	bool update_bbvga;
- 	unsigned int	uBBVGADiffCount;
- 	unsigned char bbvga_new;
- 	unsigned char bbvga_current;
-diff --git a/drivers/staging/vt6655/device_main.c b/drivers/staging/vt6655/device_main.c
-index b08fcf7e6edc..b654fc24d725 100644
---- a/drivers/staging/vt6655/device_main.c
-+++ b/drivers/staging/vt6655/device_main.c
-@@ -179,7 +179,7 @@ device_set_options(struct vnt_private *priv)
- 	priv->byBBType = priv->opts.bbp_type;
- 	priv->byPacketType = priv->byBBType;
- 	priv->byAutoFBCtrl = AUTO_FB_0;
--	priv->bUpdateBBVGA = true;
-+	priv->update_bbvga = true;
- 	priv->preamble_type = 0;
- 
- 	pr_debug(" byShortRetryLimit= %d\n", (int)priv->byShortRetryLimit);
-@@ -423,7 +423,7 @@ static void device_init_registers(struct vnt_private *priv)
- 	/* initialize BBP registers */
- 	bb_vt3253_init(priv);
- 
--	if (priv->bUpdateBBVGA) {
-+	if (priv->update_bbvga) {
- 		priv->bbvga_current = priv->bbvga[0];
- 		priv->bbvga_new = priv->bbvga_current;
- 		bb_set_vga_gain_offset(priv, priv->bbvga[0]);
-@@ -1040,7 +1040,7 @@ static void vnt_check_bb_vga(struct vnt_private *priv)
- 	long dbm;
- 	int i;
- 
--	if (!priv->bUpdateBBVGA)
-+	if (!priv->update_bbvga)
- 		return;
- 
- 	if (priv->hw->conf.flags & IEEE80211_CONF_OFFCHANNEL)
--- 
-2.34.1
+Thanks for reporting,
+Gerd
 
