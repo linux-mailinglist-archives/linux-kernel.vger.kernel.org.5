@@ -2,133 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 643FD7CCC91
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 21:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8C437CCC81
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 21:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344418AbjJQTtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 15:49:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43016 "EHLO
+        id S1344333AbjJQTnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 15:43:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235083AbjJQTtW (ORCPT
+        with ESMTP id S234635AbjJQTnT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 15:49:22 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EFE09E;
-        Tue, 17 Oct 2023 12:49:20 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 6FA251F8B0;
-        Tue, 17 Oct 2023 19:49:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1697572158;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+bNd8tVs25f+1D5Zk82Lm7dC1cpiHULfm19EiFqzHTo=;
-        b=a7kton5ZFsANcHtkX1el0nXOmudqTq92A0HFIbrXpZ7nCMc2JlZOV+k1pvfs29Y0fwiB36
-        JhMMHEGEfdrLLf5+7jFesN2bgN1iB+uLYyngMfMwB1QPqQbXzyATyxNFrk77AezY0cUvPS
-        OkTDRtcB4XXb58b2FwlzuQ9PpNCSMLw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1697572158;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+bNd8tVs25f+1D5Zk82Lm7dC1cpiHULfm19EiFqzHTo=;
-        b=+IFQe0MzS362qW/vzwqW0JpZsv4YqZ1iFpgH3Iu2bImTy0Vq47aDOMg0eVscQeJBIHTw8l
-        VQWexSULkODfh+DQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2E99113597;
-        Tue, 17 Oct 2023 19:49:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id fMOYCj7lLmXcOwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 17 Oct 2023 19:49:18 +0000
-Date:   Tue, 17 Oct 2023 21:42:28 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     syzbot <syzbot+6aa88a2d31fbec170f8b@syzkaller.appspotmail.com>
-Cc:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [btrfs?] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low! (3)
-Message-ID: <20231017194228.GD2211@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <00000000000019171d0607eb8786@google.com>
+        Tue, 17 Oct 2023 15:43:19 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C89698;
+        Tue, 17 Oct 2023 12:43:17 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39HEPN89008517;
+        Tue, 17 Oct 2023 19:43:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=KZ86qm2Odn6qaH8UjSDuQnMrT/mDzTTCaaJv/fM0SLI=;
+ b=RqKYroHGPl2bNn/wwNHMW8AAnON1yPuHytJlcBRG6Jgy17UB5LR00qJrpWUIqZ7AnoyT
+ AeqkG+/EIVqu72k258Vo+Viv18ztYrUvAXOhrkVrdk0Gcj0iqsUYGRJKqICgeyWnk75X
+ 76Syo1k7fsTpoEz9yWNOLYE8lEKe0THmMwhY9LKLiIv5swy5WsOneCeUE3L8GJ0E5N6X
+ fpLtIGVXNAzOp2Zz1A/JXEvAXKIhkUsObxfAcV0b8bab68XDfnlkhPhJpvTa9N//QE3S
+ /8wjSPMTOiY+XkcHPbjbRSg3YqqpaxYBbK+QLTe0qUEtI8aKfkGa+ml2TvMO+w9utDiD dw== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tsv0v0uk8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Oct 2023 19:43:03 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39HJh2GV015529
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Oct 2023 19:43:02 GMT
+Received: from akhilpo-linux.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Tue, 17 Oct 2023 12:42:56 -0700
+Date:   Wed, 18 Oct 2023 01:12:53 +0530
+From:   Akhil P Oommen <quic_akhilpo@quicinc.com>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+CC:     Rob Clark <robdclark@chromium.org>,
+        <freedreno@lists.freedesktop.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <cros-qcom-dts-watchers@chromium.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        <devicetree@vger.kernel.org>, Sean Paul <sean@poorly.run>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        <dri-devel@lists.freedesktop.org>, Daniel Vetter <daniel@ffwll.ch>,
+        <linux-arm-msm@vger.kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Luca Weiss <luca.weiss@fairphone.com>,
+        "David Airlie" <airlied@gmail.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [Freedreno] [PATCH 1/7] drm/msm/a6xx: Fix unknown speedbin case
+Message-ID: <tqxrahhvxmzxicru7qyifqcgcc53vzdsuqukharyz2rz5oqn2z@3eppc3t4nw65>
+References: <20230926-topic-a643-v1-0-7af6937ac0a3@linaro.org>
+ <20230926-topic-a643-v1-1-7af6937ac0a3@linaro.org>
+ <bjcjeixkmvhjv7nke65maknrckxjyosqsqpdf5i5v4iingfwj4@bkdhb2nbwbqg>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <00000000000019171d0607eb8786@google.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -1.30
-X-Spamd-Result: default: False [-1.30 / 50.00];
-         ARC_NA(0.00)[];
-         HAS_REPLYTO(0.30)[dsterba@suse.cz];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=f27cd6e68911e026];
-         TAGGED_RCPT(0.00)[6aa88a2d31fbec170f8b];
-         REPLYTO_ADDR_EQ_FROM(0.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         BAYES_HAM(-0.00)[31.66%];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         SUBJECT_HAS_EXCLAIM(0.00)[];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[8];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[];
-         SUBJECT_HAS_QUESTION(0.00)[]
-X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PLING_QUERY,
-        RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <bjcjeixkmvhjv7nke65maknrckxjyosqsqpdf5i5v4iingfwj4@bkdhb2nbwbqg>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: -T2DgK6rkz0P_dvCFV1TA1PJcvaODXgX
+X-Proofpoint-GUID: -T2DgK6rkz0P_dvCFV1TA1PJcvaODXgX
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-17_03,2023-10-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 malwarescore=0 phishscore=0 mlxscore=0 mlxlogscore=999
+ impostorscore=0 bulkscore=0 spamscore=0 lowpriorityscore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310170167
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 08:53:45AM -0700, syzbot wrote:
-> Hello,
+On Tue, Oct 17, 2023 at 01:22:27AM +0530, Akhil P Oommen wrote:
 > 
-> syzbot found the following issue on:
+> On Tue, Sep 26, 2023 at 08:24:36PM +0200, Konrad Dybcio wrote:
+> > 
+> > When opp-supported-hw is present under an OPP node, but no form of
+> > opp_set_supported_hw() has been called, that OPP is ignored by the API
+> > and marked as unsupported.
+> > 
+> > Before Commit c928a05e4415 ("drm/msm/adreno: Move speedbin mapping to
+> > device table"), an unknown speedbin would result in marking all OPPs
+> > as available, but it's better to avoid potentially overclocking the
+> > silicon - the GMU will simply refuse to power up the chip.
+> > 
+> > Currently, the Adreno speedbin code does just that (AND returns an
+> > invalid error, (int)UINT_MAX). Fix that by defaulting to speedbin 0
+> > (which is conveniently always bound to fuseval == 0).
 > 
-> HEAD commit:    c295ba49917a Merge branch 'for-next/core' into for-kernelci
-> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-> console output: https://syzkaller.appspot.com/x/log.txt?x=135804fe680000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=f27cd6e68911e026
-> dashboard link: https://syzkaller.appspot.com/bug?extid=6aa88a2d31fbec170f8b
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> userspace arch: arm64
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17d48d09680000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13498275680000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/045554f2bee6/disk-c295ba49.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/ba2705f8a872/vmlinux-c295ba49.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/e36242e95b79/Image-c295ba49.gz.xz
-> mounted in repro #1: https://storage.googleapis.com/syzbot-assets/39a4eecc45c3/mount_0.gz
-> mounted in repro #2: https://storage.googleapis.com/syzbot-assets/3a9106a526c9/mount_1.gz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+6aa88a2d31fbec170f8b@syzkaller.appspotmail.com
-> 
-> BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
+> Wish we documented somewhere that we should reserve BIT(0) for fuse
+> val=0 always and assume that would be the super SKU.
+Aah! I got this backward. Fuseval=0 is the supersku and it is not safe
+to fallback to that blindly. Ideally, we should fallback to the lowest
+denominator SKU, but it is difficult to predict that upfront and assign
+BIT(0).
 
-#syz invalid
+Anyway, I can't see a better way to handle this.
 
-This is a frequent warning, can be worked around by increasing
-CONFIG_LOCKDEP_CHAINS_BITS in config (18 could be a good value but may
-still not be enough).
+-Akhil
+
+> 
+> Reviewed-by: Akhil P Oommen <quic_akhilpo@quicinc.com>
+> 
+> -Akhil
+> 
+> > 
+> > Fixes: c928a05e4415 ("drm/msm/adreno: Move speedbin mapping to device table")
+> > Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> > ---
+> >  drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> > index d4e85e24002f..522ca7fe6762 100644
+> > --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> > +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> > @@ -2237,7 +2237,7 @@ static int a6xx_set_supported_hw(struct device *dev, const struct adreno_info *i
+> >  		DRM_DEV_ERROR(dev,
+> >  			"missing support for speed-bin: %u. Some OPPs may not be supported by hardware\n",
+> >  			speedbin);
+> > -		return UINT_MAX;
+> > +		supp_hw = BIT(0); /* Default */
+> >  	}
+> >  
+> >  	ret = devm_pm_opp_set_supported_hw(dev, &supp_hw, 1);
+> > 
+> > -- 
+> > 2.42.0
+> > 
