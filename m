@@ -2,376 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BBA57CCAD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 20:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB6CF7CCADA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 20:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232804AbjJQShe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 14:37:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56066 "EHLO
+        id S232770AbjJQSiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 14:38:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231868AbjJQShc (ORCPT
+        with ESMTP id S234486AbjJQSh7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 14:37:32 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AD6E9F
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:37:30 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-584a761b301so4425514a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:37:30 -0700 (PDT)
+        Tue, 17 Oct 2023 14:37:59 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E763AD3
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:37:55 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-507a0907896so4849844e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:37:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697567850; x=1698172650; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=fDIMPqihTJidR00sawm2Nr6O1yAKRnZhnAyaqVDW0po=;
-        b=gw9SYMTx1VjeyOO2N2mVtknygAUZAH94dmQ5kTMONKDKD51x/W/ElnL6uJbniDBpuD
-         ZgnXRcnEdd1t7d/QC8S5AGkEI2bSjdD56bGAyDTB/MbhVdCQYbug66KLD5WP0zw94krE
-         x+WwCBqo6/ozpRYSFOXUyqHnXxSMYHwW86EwZ2jOC/NSWCj/GYUbboj7aNHRQw1NvyX1
-         PYe3tgH6BcJR8a97F2dPY+1wD6f965Zq05WGJ3ZP3b+0WT2aAVkjGgu6DmEo9UYHE0m3
-         8IHDJ4HlKBunB4YjaAP3FsvAtwU+RAc2Oazb2hQeTNBRVrzuuQ42mp6TjvyhPfaNQfy/
-         6KKg==
+        d=chromium.org; s=google; t=1697567871; x=1698172671; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E0ndmeFAnooDYJrLwBWEykUK1jnu79vBWHr+CSspHeI=;
+        b=d+8ibS9HVj8ISXpJ7WsVfmRuCtpTJPJPrPhrzcFH6WvzoucV+mYpFWL++9pCdsTnlE
+         Z/QexG9mCbX+Uk7ybfQ2w01NZ1WKZxL4evA2Zqew1tTqL0nMNYCFBEevT+pH8EJAbznm
+         fzQjTSP7UE+Pxl5mj8+/ou2Ny3X60du7RnElQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697567850; x=1698172650;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fDIMPqihTJidR00sawm2Nr6O1yAKRnZhnAyaqVDW0po=;
-        b=gHAyJ5opUUFLnx5K3hWKiAjmQwbeTyGua6vE4H/N2FBLBmnpofLfGPk54JAU1uZOxN
-         +tYUx3sEClMBYvtSWyslHFo2NZ569oJJGwxYGWjz0Qo43KP5qJnBCYVV2EQfzQcwMnFx
-         Y7+2+dUAOSQvGGJ33eKebGYZrBE2+Uq/SGnNWLTqOu4v9hdNIgRqGrHk84iLRbrsTOwt
-         /fXWfL1gs9Of9W6tqjMAEjRP65yRLwKS9oD7wiDz2Qg084s6iDTHjd9jg0I4yIbNAfuR
-         nHXj45/uqWVP5xhQC+YA6ck9TlRWQqDSeNhfSKsSfvab43wQe5Azjbsk7pCkRXECzAC9
-         +O4g==
-X-Gm-Message-State: AOJu0Yz3OFaEcc5ayY5bJpqx2Vsq/ETZef0TqHRAumjyc1gkxmU5nbls
-        nIsmcATcmRUzedwxweowPk1H
-X-Google-Smtp-Source: AGHT+IGZc+AgmoxdQbyFgHaq0HpMKMawgaGe+zQRacb1kYCqnv0STvUbAj7qgu4yUBj9NSvPcrfVDw==
-X-Received: by 2002:a05:6a20:1608:b0:14d:d9f8:83f8 with SMTP id l8-20020a056a20160800b0014dd9f883f8mr3663772pzj.1.1697567849901;
-        Tue, 17 Oct 2023 11:37:29 -0700 (PDT)
-Received: from thinkpad ([117.202.186.25])
-        by smtp.gmail.com with ESMTPSA id i2-20020a63e442000000b00577d53c50f7sm211772pgk.75.2023.10.17.11.37.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 11:37:29 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 00:07:22 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Frank Li <Frank.Li@nxp.com>
-Cc:     aisheng.dong@nxp.com, bhelgaas@google.com,
-        devicetree@vger.kernel.org, festevam@gmail.com,
-        imx@lists.linux.dev, jdmason@kudzu.us, kernel@pengutronix.de,
-        kishon@kernel.org, kw@linux.com,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, lpieralisi@kernel.org, maz@kernel.org,
-        s.hauer@pengutronix.de, shawnguo@kernel.org, tglx@linutronix.de
-Subject: Re: [PATCH v2 1/5] PCI: endpoint: Add RC-to-EP doorbell support
- using platform MSI controller
-Message-ID: <20231017183722.GB137137@thinkpad>
-References: <20230911220920.1817033-1-Frank.Li@nxp.com>
- <20230911220920.1817033-2-Frank.Li@nxp.com>
+        d=1e100.net; s=20230601; t=1697567871; x=1698172671;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E0ndmeFAnooDYJrLwBWEykUK1jnu79vBWHr+CSspHeI=;
+        b=Zd5910V175HdePdYpwVMD95tprgpEyFbXwJEhQwYWRXqG0STO4uk06KOd2oQHnWMTL
+         d8U8ANqdT8Pc/omBrdogAbJGZZklazhdagdGM4OCAqDv+sHvBtrHkMRuslHigbqOxuXg
+         vX04NeGKKLVb1B8MSUzutEQEm39Gw7otEbWTetSMHipzb+EjrB7OSvkYhBunJ+sgmXK0
+         JGtOk4jEgnoWpBVOYpl+okJAwNutgcx7lr7RUf+vXcX3M6qBKhz/Vl+Tg5wdZSit0DFC
+         4t5OMT1xXu4/RwEDZYHooQFFvdMw8ME2edetgEsMi3Cug3WF/rfxY3+xD/ZpF9wqDQvt
+         0nFQ==
+X-Gm-Message-State: AOJu0Yw7ife5lgDQkWIn/7nhcSODWTruuTNETsYB7pGHU7QzhfeuJtLL
+        cuZCKhITaSZFAl9T/EEDTep5JBDS9+MGzjEScNO7gSLj
+X-Google-Smtp-Source: AGHT+IHvCZZD1+q8ooDB69u4xC2fintEchZyqfkPKUiUtgwBZ375MzsGA5QsqwuqGmpApeJofH6FjQ==
+X-Received: by 2002:a05:6512:60f:b0:4f9:5426:6622 with SMTP id b15-20020a056512060f00b004f954266622mr2200058lfe.69.1697567871063;
+        Tue, 17 Oct 2023 11:37:51 -0700 (PDT)
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com. [209.85.128.52])
+        by smtp.gmail.com with ESMTPSA id i27-20020a50d75b000000b0053e3d8f1d9fsm1625521edj.67.2023.10.17.11.37.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Oct 2023 11:37:50 -0700 (PDT)
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4078fe6a063so12145e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:37:49 -0700 (PDT)
+X-Received: by 2002:a05:600c:11cf:b0:400:c6de:6a20 with SMTP id
+ b15-20020a05600c11cf00b00400c6de6a20mr16564wmi.3.1697567869494; Tue, 17 Oct
+ 2023 11:37:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230911220920.1817033-2-Frank.Li@nxp.com>
-X-Spam-Status: No, score=1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SORBS_WEB,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+References: <20231012192552.3900360-1-dianders@chromium.org>
+ <20231012122458.v3.5.Ib2affdbfdc2527aaeef9b46d4f23f7c04147faeb@changeid>
+ <29f9a2ff1979406489213909b940184f@realtek.com> <CAD=FV=U4rGozXHoK8+ejPgRtyoACy1971ftoatQivqzk2tk5ng@mail.gmail.com>
+ <052401da00fa$dacccd90$906668b0$@realtek.com> <CAD=FV=XQswgKZh-JQ6PuKGRmrDMfDmZwM+MUpAcOk1=7Ppjyiw@mail.gmail.com>
+In-Reply-To: <CAD=FV=XQswgKZh-JQ6PuKGRmrDMfDmZwM+MUpAcOk1=7Ppjyiw@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 17 Oct 2023 11:37:32 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Vp_KE_hjWy7bKJbvmqwCQ67jhzfFoV368vB5ZGge=Yzw@mail.gmail.com>
+Message-ID: <CAD=FV=Vp_KE_hjWy7bKJbvmqwCQ67jhzfFoV368vB5ZGge=Yzw@mail.gmail.com>
+Subject: Re: [PATCH v3 5/5] r8152: Block future register access if register
+ access fails
+To:     Hayes Wang <hayeswang@realtek.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Simon Horman <horms@kernel.org>,
+        Edward Hill <ecgh@chromium.org>,
+        Laura Nao <laura.nao@collabora.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Grant Grundler <grundler@chromium.org>,
+        =?UTF-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 06:09:16PM -0400, Frank Li wrote:
-> This commit introduces a common method for sending messages from the Root
-> Complex (RC) to the Endpoint (EP) by utilizing the platform MSI interrupt
-> controller, such as ARM GIC, as an EP doorbell. Maps the memory assigned
-> for the BAR region by the PCI host to the message address of the platform
-> MSI interrupt controller in the PCI EP. As a result, when the PCI RC writes
+Hi,
 
-"Doorbell feature is implemented by mapping the EP's MSI interrupt controller
-message address to a dedicated BAR in the EPC core. It is the responsibility
-of the EPF driver to pass the actual message data to be written by the host to
-the doorbell BAR region through its own logic."
+On Tue, Oct 17, 2023 at 7:17=E2=80=AFAM Doug Anderson <dianders@chromium.or=
+g> wrote:
+>
+> Hi,
+>
+> On Tue, Oct 17, 2023 at 6:07=E2=80=AFAM Hayes Wang <hayeswang@realtek.com=
+> wrote:
+> >
+> > Doug Anderson <dianders@chromium.org>
+> > > Sent: Tuesday, October 17, 2023 12:47 AM
+> > [...
+> > > > >  static int generic_ocp_read(struct r8152 *tp, u16 index, u16 siz=
+e,
+> > > > > @@ -8265,6 +8353,19 @@ static int rtl8152_pre_reset(struct
+> > > usb_interface
+> > > > > *intf)
+> > > > >         if (!tp)
+> > > > >                 return 0;
+> > > > >
+> > > > > +       /* We can only use the optimized reset if we made it to t=
+he end of
+> > > > > +        * probe without any register access fails, which sets
+> > > > > +        * `PROBED_WITH_NO_ERRORS` to true. If we didn't have tha=
+t then return
+> > > > > +        * an error here which tells the USB framework to fully u=
+nbind/rebind
+> > > > > +        * our driver.
+> > > >
+> > > > Would you stay in a loop of unbind and rebind,
+> > > > if the control transfers in the probe() are not always successful?
+> > > > I just think about the worst case that at least one control always =
+fails in probe().
+> > >
+> > > We won't! :-) One of the first things that rtl8152_probe() does is to
+> > > call rtl8152_get_version(). That goes through to
+> > > rtl8152_get_version(). That function _doesn't_ queue up a reset if
+> > > there are communication problems, but it does do 3 retries of the
+> > > read. So if all 3 reads fail then we will permanently fail probe,
+> > > which I think is the correct thing to do.
+> >
+> > The probe() contains control transfers in
+> >         1. rtl8152_get_version()
+> >         2. tp->rtl_ops.init()
+> >
+> > If one of the 3 control transfers in 1) is successful AND
+> > any control transfer in 2) fails,
+> > you would queue a usb reset which would unbind/rebind the driver.
+> > Then, the loop starts.
+> > The loop would be broken, if and only if
+> >         a) all control transfers in 1) fail, OR
+> >         b) all control transfers in 2) succeed.
+> >
+> > That is, the loop would be broken when the fail rate of the control tra=
+nsfer is high or low enough.
+> > Otherwise, you would queue a usb reset again and again.
+> > For example, if the fail rate of the control transfer is 10% ~ 60%,
+> > I think you have high probability to keep the loop continually.
+> > Would it never happen?
+>
+> Actually, even with a failure rate of 10% I don't think you'll end up
+> with a fully continuous loop, right? All you need is to get 3 failures
+> in a row in rtl8152_get_version() to get out of the loop. So with a
+> 10% failure rate you'd unbind/bind 1000 times (on average) and then
+> (finally) give up. With a 50% failure rate I think you'd only
+> unbind/bind 8 times on average, right? Of course, I guess 1000 loops
+> is pretty close to infinite.
+>
+> In any case, we haven't actually seen hardware that fails like this.
+> We've seen failure rates that are much much lower and we can imagine
+> failure rates that are 100% if we're got really broken hardware. Do
+> you think cases where failure rates are middle-of-the-road are likely?
+>
+> I would also say that nothing we can do can perfectly handle faulty
+> hardware. If we're imagining theoretical hardware, we could imagine
+> theoretical hardware that de-enumerated itself and re-enumerated
+> itself every half second because the firmware on the device crashed or
+> some regulator kept dropping. This faulty hardware would also cause an
+> infinite loop of de-enumeration and re-enumeration, right?
+>
+> Presumably if we get into either case, the user will realize that the
+> hardware isn't working and will unplug it from the system. While the
+> system is doing the loop of trying to enumerate the hardware, it will
+> be taking up a bunch of extra CPU cycles but (I believe) it won't be
+> fully locked up or anything. The machine will still function and be
+> able to do non-Ethernet activities, right? I would say that the worst
+> thing about this state would be that it would stress corner cases in
+> the reset of the USB subsystem, possibly ticking bugs.
+>
+> So I guess I would summarize all the above as:
+>
+> If hardware is broken in just the right way then this patch could
+> cause a nearly infinite unbinding/rebinding of the r8152 driver.
+> However:
+>
+> 1. It doesn't seem terribly likely for hardware to be broken in just this=
+ way.
+>
+> 2. We haven't seen hardware broken in just this way.
+>
+> 3. Hardware broken in a slightly different way could cause infinite
+> unbinding/rebinding even without this patch.
+>
+> 4. Infinite unbinding/rebinding of a USB adapter isn't great, but not
+> the absolute worst thing.
+>
+>
+> That all being said, if we wanted to address this we could try two
+> different ways:
+>
+> a) We could add a global in the r8152 driver and limit the number of
+> times we reset. This gets a little ugly because if we have multiple
+> r8152 adapters plugged in then the same global would be used for both,
+> but maybe it's OK?
+>
+> b) We could improve the USB core to somehow prevent usb_reset_device()
+> from running too much on a given device?
+>
+>
+> ...though I would re-emphasize that I don't think this is something we
+> need to address now. If later we actually see a problem we can always
+> address it then.
 
-> to the BAR region, it triggers an IRQ at the EP. This implementation serves
-> as a common method for all endpoint function drivers.
-> 
-> However, it currently supports only one EP physical function due to
-> limitations in ARM MSI/IMS readiness.
-> 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
->  drivers/pci/endpoint/pci-epc-core.c | 192 ++++++++++++++++++++++++++++
->  drivers/pci/endpoint/pci-epf-core.c |  44 +++++++
->  include/linux/pci-epc.h             |   6 +
->  include/linux/pci-epf.h             |   7 +
->  4 files changed, 249 insertions(+)
-> 
-> diff --git a/drivers/pci/endpoint/pci-epc-core.c b/drivers/pci/endpoint/pci-epc-core.c
-> index 5a4a8b0be6262..d336a99c6a94f 100644
-> --- a/drivers/pci/endpoint/pci-epc-core.c
-> +++ b/drivers/pci/endpoint/pci-epc-core.c
-> @@ -10,6 +10,7 @@
->  #include <linux/slab.h>
->  #include <linux/module.h>
->  
-> +#include <linux/msi.h>
->  #include <linux/pci-epc.h>
->  #include <linux/pci-epf.h>
->  #include <linux/pci-ep-cfs.h>
-> @@ -783,6 +784,197 @@ void pci_epc_bme_notify(struct pci_epc *epc)
->  }
->  EXPORT_SYMBOL_GPL(pci_epc_bme_notify);
->  
-> +/**
-> + * pci_epc_alloc_doorbell() - alloc an address space to let RC trigger EP side IRQ by write data to
-> + *			      the space.
+One other idea occurred to me that we could do, if we cared to solve
+this hypothetical failure case. We could change the code to always
+read the version 4 times on every probe. If one of the transfers fails
+then we could consider that OK. If 2 or more transfers fails then we
+could consider that to be an error. You still might get a _few_
+unbind/bind in this hypothetical failure mode, but I think it would
+catch the problem more quickly.
 
-"Allocate platform specific doorbell IRQs to be used by the host to trigger
-doorbells on EP."
+My probability theory is rusty and I'm sure there's a better way, but
+I think we can just add up all the cases. Assuming a 10% failures and
+90% success of any transfer:
 
-> + *
-> + * @epc: the EPC device that need doorbell address and data from RC.
+# Chance of 2 failures:
+.10 * .10 * .90 * .90 +
+.10 * .90 * .10 * .90 +
+.10 * .90 * .90 * .10 +
+.90 * .10 * .90 * .10 +
+.90 * .90 * .10 * .10
 
-EPC device for which the doorbell needs to be allocated
+# Chance of 3 failures:
+.10 * .10 * .10 * .90 +
+.10 * .10 * .90 * .10 +
+.10 * .90 * .10 * .10 +
+.90 * .10 * .10 * .10
 
-> + * @func_no: the physical endpoint function number in the EPC device.
-> + * @vfunc_no: the virtual endpoint function number in the physical function.
-> + * @num_msgs: the total number of doorbell messages
+# Chance of 4 failures:
+.10 * .10 * .10 * .10
 
-s/num_msgs/num_db
+If I add that up I get about a 4.4% chance of 2 or more failures in 4
+reads. That means if we got into an unbind/bind cycle we'd get out of
+it (on average) in ~23 probes because we'd see enough failures. We
+could likely reduce this further by reading the version 5 or 6 times.
 
-> + *
-> + * Return: 0 success, other is failure
-> + */
-> +int pci_epc_alloc_doorbell(struct pci_epc *epc, u8 func_no, u8 vfunc_no, int num_msgs)
-> +{
-> +	int ret;
-> +
-> +	if (IS_ERR_OR_NULL(epc) || func_no >= epc->max_functions)
-> +		return -EINVAL;
-> +
-> +	if (vfunc_no > 0 && (!epc->max_vfs || vfunc_no > epc->max_vfs[func_no]))
-> +		return -EINVAL;
-> +
-> +	if (!epc->ops->alloc_doorbell)
-> +		return 0;
+I will note that my measurements showed that a normal probe is ~200
+transfers and also includes a bunch of delays, so reading the version
+a few times wouldn't be a huge deal.
 
-You mentioned 0 is a success. So if there is no callback, you want to return
-success?
 
-> +
-> +	mutex_lock(&epc->lock);
-> +	ret = epc->ops->alloc_doorbell(epc, func_no, vfunc_no, num_msgs);
+In any case, I'm still of the opinion that we don't need to handle this.
 
-Why can't you just call the generic function here and in other places instead of
-implementing callbacks? I do not see a necessity for EPC specific callbacks. If
-there is one, please specify.
-
-> +	mutex_unlock(&epc->lock);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(pci_epc_alloc_doorbell);
-> +
-> +/**
-> + * pci_epc_free_doorbell() - free resource allocated by pci_epc_alloc_doorbell()
-> + *
-> + * @epc: the EPC device that need doorbell address and data from RC.
-
-Same as above.
-
-> + * @func_no: the physical endpoint function number in the EPC device.
-> + * @vfunc_no: the virtual endpoint function number in the physical function.
-> + *
-> + * Return: 0 success, other is failure
-> + */
-> +void pci_epc_free_doorbell(struct pci_epc *epc, u8 func_no, u8 vfunc_no)
-> +{
-> +	if (IS_ERR_OR_NULL(epc) || func_no >= epc->max_functions)
-> +		return;
-> +
-> +	if (vfunc_no > 0 && (!epc->max_vfs || vfunc_no > epc->max_vfs[func_no]))
-> +		return;
-> +
-> +	if (!epc->ops->free_doorbell)
-> +		return;
-> +
-> +	mutex_lock(&epc->lock);
-> +	epc->ops->free_doorbell(epc, func_no, vfunc_no);
-
-Same as suggested above.
-
-> +	mutex_unlock(&epc->lock);
-> +}
-> +EXPORT_SYMBOL_GPL(pci_epc_free_doorbell);
-> +
-> +static irqreturn_t pci_epf_generic_doorbell_handler(int irq, void *data)
-> +{
-> +	struct pci_epf *epf = data;
-> +
-> +	if (epf->event_ops && epf->event_ops->doorbell)
-> +		epf->event_ops->doorbell(epf, irq - epf->virq_base);
-
-Same as suggested above.
-
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static void pci_epc_generic_write_msi_msg(struct msi_desc *desc, struct msi_msg *msg)
-> +{
-> +	struct pci_epc *epc = NULL;
-> +	struct class_dev_iter iter;
-> +	struct pci_epf *epf;
-> +	struct device *dev;
-> +
-> +	class_dev_iter_init(&iter, pci_epc_class, NULL, NULL);
-> +	while ((dev = class_dev_iter_next(&iter))) {
-> +		if (dev->parent != desc->dev)
-> +			continue;
-> +
-> +		epc = to_pci_epc(dev);
-> +
-> +		class_dev_iter_exit(&iter);
-> +		break;
-> +	}
-> +
-> +	if (!epc)
-> +		return;
-> +
-> +	/* Only support one EPF for doorbell */
-> +	epf = list_first_entry_or_null(&epc->pci_epf, struct pci_epf, list);
-> +
-
-No need of this newline
-
-> +	if (!epf)
-> +		return;
-> +
-> +	if (epf->msg && desc->msi_index < epf->num_msgs)
-> +		epf->msg[desc->msi_index] = *msg;
-> +}
-> +
-> +
-
-Remove extra newline
-
-> +/**
-> + * pci_epc_generic_alloc_doorbell() - Common help function. Allocate address space from MSI
-> + *                                    controller
-> + *
-> + * @epc: the EPC device that need doorbell address and data from RC.
-> + * @func_no: the physical endpoint function number in the EPC device.
-> + * @vfunc_no: the virtual endpoint function number in the physical function.
-> + * @num_msgs: the total number of doorbell messages
-> + *
-
-Same comment as for pci_epc_alloc_doorbell()
-
-> + * Remark: use this function only if EPC driver just register one EPC device.
-> + *
-> + * Return: 0 success, other is failure
-> + */
-> +int pci_epc_generic_alloc_doorbell(struct pci_epc *epc, u8 func_no, u8 vfunc_no, int num_msgs)
-> +{
-> +	struct pci_epf *epf;
-> +	struct device *dev;
-> +	int virq, last;
-> +	int ret;
-> +	int i;
-> +
-> +	if (IS_ERR_OR_NULL(epc))
-> +		return -EINVAL;
-> +
-> +	/* Currently only support one func and one vfunc for doorbell */
-> +	if (func_no || vfunc_no)
-> +		return -EINVAL;
-> +
-> +	epf = list_first_entry_or_null(&epc->pci_epf, struct pci_epf, list);
-> +	if (!epf)
-> +		return -EINVAL;
-> +
-> +	dev = epc->dev.parent;
-> +	ret = platform_msi_domain_alloc_irqs(dev, num_msgs, pci_epc_generic_write_msi_msg);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to allocate MSI\n");
-> +		return -ENOMEM;
-> +	}
-> +
-> +	last = -1;
-> +	for (i = 0; i < num_msgs; i++) {
-
-You should iterate over msi_desc as below:
-
-        msi_lock_descs(dev);
-        msi_for_each_desc(desc, dev, MSI_DESC_ALL) {
-		...
-	}
-	msi_unlock_descs(dev);
-
-> +		virq = msi_get_virq(dev, i);
-> +		if (i == 0)
-> +			epf->virq_base = virq;
-> +
-> +		ret = request_irq(virq, pci_epf_generic_doorbell_handler, 0,
-
-	request_irq(desc->irq, ...)
-
-> +				  kasprintf(GFP_KERNEL, "pci-epc-doorbell%d", i), epf);
-> +
-> +		if (ret) {
-> +			dev_err(dev, "Failed to request doorbell\n");
-> +			goto err_free_irq;
-> +		}
-> +		last = i;
-> +	}
-> +
-> +	return 0;
-> +
-> +err_free_irq:
-> +	for (i = 0; i < last; i++)
-> +		kfree(free_irq(epf->virq_base + i, epf));
-> +	platform_msi_domain_free_irqs(dev);
-> +
-> +	return -EINVAL;
-
-	return ret;
-
-> +}
-> +EXPORT_SYMBOL_GPL(pci_epc_generic_alloc_doorbell);
-> +
-
-[...]
-
-> diff --git a/include/linux/pci-epf.h b/include/linux/pci-epf.h
-> index 3f44b6aec4770..485c146a5efe2 100644
-> --- a/include/linux/pci-epf.h
-> +++ b/include/linux/pci-epf.h
-> @@ -79,6 +79,7 @@ struct pci_epc_event_ops {
->  	int (*link_up)(struct pci_epf *epf);
->  	int (*link_down)(struct pci_epf *epf);
->  	int (*bme)(struct pci_epf *epf);
-> +	int (*doorbell)(struct pci_epf *epf, int index);
-
-kdoc missing.
-
->  };
->  
->  /**
-> @@ -180,6 +181,9 @@ struct pci_epf {
->  	unsigned long		vfunction_num_map;
->  	struct list_head	pci_vepf;
->  	const struct pci_epc_event_ops *event_ops;
-> +	struct msi_msg *msg;
-> +	u16 num_msgs;
-
-num_db
-
-You also need to add kdoc for each new member.
-
-- Mani
-
--- 
-மணிவண்ணன் சதாசிவம்
+-Doug
