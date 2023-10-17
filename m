@@ -2,184 +2,808 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1BAC7CB7EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 03:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 851907CB7F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 03:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233239AbjJQBZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 21:25:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58976 "EHLO
+        id S232873AbjJQB11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 21:27:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231955AbjJQBY7 (ORCPT
+        with ESMTP id S231955AbjJQB1Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 21:24:59 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 820B39B;
-        Mon, 16 Oct 2023 18:24:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697505898; x=1729041898;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=3TEXvOQsA3VpAMhnZQUHLVAf5B0YTLXoU78ZGNVMd9w=;
-  b=AAKMMy5DD4ig/A2nZeHXlqXLk87t4tW9Xs7i9f73asWcGZHFCgbD6r/t
-   wgxZl4eHqyJhhxjEuSvDjHU11cR0j+pJv/voXCshGiUJxQqJ3RIlp/eN9
-   bpYpVe6wTizm5cwpKdNt4Vss3XxAHV2ZBsEX9ZLAZxPUjmGErF1FdBAfO
-   u19V5VNVXD2q9WUaDph+K/5pAayzybvGoXL3fDi0IG/HBNLQtGA1wFwj+
-   x5gNFAlv26Llyen/dSVbjzUGujynZYLFWPPAwkuOtxHiQ4m99xqz5RTdo
-   V/SiYqOrHJFHx/Jl3J3FXoJ+fCx1ZOhRiAFBk/9yqOkI0BPxEhRmYPld8
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="365937658"
-X-IronPort-AV: E=Sophos;i="6.03,230,1694761200"; 
-   d="scan'208";a="365937658"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 18:24:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="791032658"
-X-IronPort-AV: E=Sophos;i="6.03,230,1694761200"; 
-   d="scan'208";a="791032658"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 16 Oct 2023 18:24:57 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Mon, 16 Oct 2023 18:24:57 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Mon, 16 Oct 2023 18:24:57 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Mon, 16 Oct 2023 18:24:57 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Mon, 16 Oct 2023 18:24:56 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HO7EafciJnAYTXkgJJkEsxJswBhd4ZD9f+1W/6yDd3bE4Wbxwq2JDAdICTyS0EsRECxzaHvsUW8KDnF7wnTIyjeqZoYKUBLu74YRorUAb2ruUQhTupjK1PAy1CWbcNSkMvBiatCX6PuYOeFXdhoNoCvewhixF1wRfBLsKbArIXa4/udSi7KGIjWyJyQSSSttdua/DTqq8T06LqImfql+c15eULjsGSGerGX7N03ehhmmbFjcqGpSvJGBUUSZcpyJuwKunzb50Py6Xd17hr/cn02beNQkou6xMnDLIxMNa8LguHkY4ImcTGHFLeeDOb0ZdZ7Z8U3j0qS8RdIFiOvXmA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3TEXvOQsA3VpAMhnZQUHLVAf5B0YTLXoU78ZGNVMd9w=;
- b=aRQnnkunTq14PMLHIbh0/7+YnAv8JTRi1IRZdLyiCfubPWxg5NujWKW7a+39BDqNSdZxoVgbhwLJ3vTKfLFgOHKOTbe5M7UWq/DT1tR7vPk19IX7PaFD+mwNe1ctQ/F3GaNF5LgfJ2PTbK0ejGDX7fYSueR51hm0l5/EEJcRCXM2/INurpZB7viuMbGh9RZZo5QGTZ1iOlytXGVT/wjISxPdl6PavQq8LaW+o96OB8pkZtvOWyf4UWdRUpFqegNyQZRbt0mhK4MK3LLJ83Y0asSSLlU4V/tdj7G2sB2tWOC8oayD4aVybFaBuBbUU7Ixbisda8pkv8yXGdBWvqDPwg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SJ1PR11MB6083.namprd11.prod.outlook.com (2603:10b6:a03:48a::9)
- by LV2PR11MB5974.namprd11.prod.outlook.com (2603:10b6:408:14c::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.35; Tue, 17 Oct
- 2023 01:24:54 +0000
-Received: from SJ1PR11MB6083.namprd11.prod.outlook.com
- ([fe80::7316:13b0:88bc:b3c8]) by SJ1PR11MB6083.namprd11.prod.outlook.com
- ([fe80::7316:13b0:88bc:b3c8%4]) with mapi id 15.20.6886.034; Tue, 17 Oct 2023
- 01:24:53 +0000
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     "Li, Zhiquan1" <zhiquan1.li@intel.com>,
-        Borislav Petkov <bp@alien8.de>
-CC:     "x86@kernel.org" <x86@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "patches@lists.linux.dev" <patches@lists.linux.dev>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "naoya.horiguchi@nec.com" <naoya.horiguchi@nec.com>
-Subject: RE: [PATCH v3] x86/mce: Set PG_hwpoison page flag to avoid the
- capture kernel panic
-Thread-Topic: [PATCH v3] x86/mce: Set PG_hwpoison page flag to avoid the
- capture kernel panic
-Thread-Index: AQHZ/lso9WGwaznFOkSBbySsExRE6LBIvACggABKdwCAAx5hgIABCoQAgAAEGNA=
-Date:   Tue, 17 Oct 2023 01:24:53 +0000
-Message-ID: <SJ1PR11MB60834039F485FEBC8031398AFCD6A@SJ1PR11MB6083.namprd11.prod.outlook.com>
-References: <20231014051754.3759099-1-zhiquan1.li@intel.com>
- <SJ1PR11MB6083A23BB89F4EE0F44B2794FCD1A@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <233e17ac-0ae5-4392-a5e4-ab811a155805@intel.com>
- <20231016091143.GCZSz+T1xFf5tCFi2w@fat_crate.local>
- <759ccb97-cf5a-4787-b699-27551d5d2865@intel.com>
-In-Reply-To: <759ccb97-cf5a-4787-b699-27551d5d2865@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ1PR11MB6083:EE_|LV2PR11MB5974:EE_
-x-ms-office365-filtering-correlation-id: b2709a6c-85a9-4e61-c8ea-08dbceafdd8a
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 4KWsJ3r5Vk12D/d2jBoaRAvCAVtc/TUaLa9L3SEAwoSZ0OPuku8hLqyXCueT/rIeDEiDs99NSsPH6Dm195g1Zj7UT8dNobdsETFyJRoy5WCmfunTkH6IA4+v0EuP/rTWKIejkYY36D8BY8qiPe/Y8+I5L9v8Pkwjz2m/t5+EeUZfavXnC17FmSpwdap0XO63wASCsWbSYsEQdNGi+aucv+ipLGOugqkRc0eVArakpU8jgpvrx3QPZ0Nj27QR+6GVGRb25NK56BRyNm/bymDwphJc6hO6Xw/lv/jGX/LL051xT1fp3Vf3phoSfCV20Cd7eacdARVLhdYqo3PXLUMeRf81kFt9Iu8CCHI+SXu02xIZrntCFa97RH0NC/aodpvPbxPld+Y0/ZGJqe6R+64oZijpUgIOKRofKQQU5RjCSUq9toex6TeT+791bPQ0o/f2sds9xcW7GX3uS/BPVvMDpBcwfMoTYzvDh7/2yPyWVsiMcZWlS3FfXp3zvbSiPy5bUU1fHr0qe9NUWfSkRF8GTN1Pz5Ru5hg+5gghpidqEVSEIF17f6CM6qqiLRM07w708BzMm/sn1Ur9WoZUbG5ojfEB/1cxd0TvJucBWAaRwSxJuN0fTS/KWgSMDFf47F/R
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR11MB6083.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(346002)(376002)(366004)(136003)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(478600001)(76116006)(66446008)(66476007)(54906003)(316002)(110136005)(66556008)(66946007)(71200400001)(26005)(7696005)(64756008)(6506007)(2906002)(9686003)(5660300002)(8936002)(8676002)(4326008)(52536014)(4744005)(41300700001)(33656002)(86362001)(82960400001)(38070700005)(122000001)(38100700002)(83380400001)(55016003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YVdqaTBDWFZSSlhnekl2NGNNemlEVkhNRmVaRnBteExRd1dyVkJyaUJONjNI?=
- =?utf-8?B?ZTBlL3ArSldrZDBVbEViSkFmRFJrc24yQmxKNm9xeG5La2JDUEF5d1RUcXpX?=
- =?utf-8?B?aW8wR3N3eS9rQ241UjBFSW1ETVYyWUkwQnBQbFAxS1QvZm16dG10L085ZjBj?=
- =?utf-8?B?bG40Mk1ISENQWk15ek85NlI3Y3h2b0xjZ2NOcU9qQU14dW52eGNlT3grMzhK?=
- =?utf-8?B?MzFtL1phdFZLWC9sWmlwby96a3hEUjluV21VUnR2ZE81eHJaSWlGMUdFNmd5?=
- =?utf-8?B?QlBFclAwblVTN1F6VWlkWS9lK1ZEMVJiZnQ3a2l0d1AveExMbEdrUGQ3ZnlO?=
- =?utf-8?B?NTRMaGt3QlNRUWhCVVAwOEZnbHBvaGM3QzNpMW9UZTVGd28vR3BqL0pNNHZx?=
- =?utf-8?B?bTNVS0FUYkltaGpOMGR5VUtWeHprOHZ3L3Fac2lQZm5sSWRhbzVVWmJTNU84?=
- =?utf-8?B?QWJWSjhsTDA4VUQ3bTl4Tk5yQWUyeCtvaHB2Q2RmVWh0bmVGRWFTRHdjTjJ6?=
- =?utf-8?B?UkJZb0czb2JWU1RVT1pPK1hjQkx5S00zeDVPTFFucGFZOTdEaGxDa0FFREFM?=
- =?utf-8?B?eUFjdVkwbjhwb1dmM1lGQUNUcXc4aFNCL25tU0tvNFlvQjU1dmx0RjQrM0lv?=
- =?utf-8?B?OVdkaUszUEZSVFFWSmZxTm5NQW0wVFFybmN3YkEra3hXeC95UWY1UTdFZC83?=
- =?utf-8?B?Uk1OZnQ2R2pybFdlWnhqR0U3d05sUHV5VTVtektOWGJOeElMWFlwNkM4dUUx?=
- =?utf-8?B?UUNZMmZUcjdiWGFtNHRsYzc1SEtiaHB6ekhwWCtiOC80N0U4bUFqWWRyeXRx?=
- =?utf-8?B?SWFSOFVrcVNHeVN0YTNFbmJMbGFGc2d3SlJET0l4WHROYzZuc2M3cFhtbTRD?=
- =?utf-8?B?ckwvSnNRdGNiVW9RWWIwZkh2aGVqUy9kVHNuM0s4U2o1NkpmYW5rQ2ZqTDJR?=
- =?utf-8?B?MlFXTnZKY0oyUDlKTmdXeFVVaFVjY0s4cDlWaUVVbG0zNmZWemYxaC9rWHkz?=
- =?utf-8?B?VkZvcDdoZkw3MXlzYURWUlZsclFITldwWENnblFHMXZTd292Mk9ja3M5MGtJ?=
- =?utf-8?B?azVhOU9JWlFqZ09FK0VvaFFzWkhMaUJpa1VrSERGQnlCazB4Tm14NDNqV0lx?=
- =?utf-8?B?VFVRN0tHRGZIU2xsTHFSb2lCVVgyN0RRbENHeTIyUHR4ZVhrOFFxN0JFTjla?=
- =?utf-8?B?MlpsdWtjdDZKZmlkSXRZQkszVmluTHFYdzZ0anVoc1Vud2xQZWZrcTIxSDhB?=
- =?utf-8?B?THlRUGZ2RHQ5M3ppamhweVpHamk5c0NMQm9DT0FGKzQvOVhzUTBOS3BNTTNa?=
- =?utf-8?B?anordXFEWEdIbXlqNlZmcXdGTk42Q2ROSXIxN3JXRDY2cFhkc3RQd2xzQ3Rt?=
- =?utf-8?B?VHdYRUNoc09yd2R4MXFXVWprY05XZ2daY2RlQ2xCSE51VTZVeXM4eFB2NURX?=
- =?utf-8?B?VkVQWUZEUGd0OTJ6bURKMUtEMEdYekhuUm1NVW5kTnBZMXd1Zm5SY0dNRDVK?=
- =?utf-8?B?QUlFNjFqSVg0RW0xUnVwdTBKQXJ1b3ppSEZMVmZ3cGRVaFRLRDJkMlVFSHdE?=
- =?utf-8?B?YXdzVStZOGN5UzRoSXdmVnBkb0xUd1NHenBCTUZGRTZxQ2J0ZHpMWXJOUWls?=
- =?utf-8?B?M3FzYmh1aFQ1Wjd6ZGpHekIyS2FOOE4zSVV6Qmx0WGxCVWtVT0YxZjZnaFQr?=
- =?utf-8?B?Q3g4WW1CeUVldXBmMS9MbW5HTmdRalVHWmFCdzdGUENaRWxxR29Da3lvclov?=
- =?utf-8?B?YjdPZDFGOXIxZHU0ZzlZbFBuMFFxUkdDZ3V5L3FESGs2UGxrWmJTRnF5OWEv?=
- =?utf-8?B?VllEUC9GdklzME9uSDZ1WXpPYTlDeWlOcm9UVlpKUjN6TmZsY1R3a0VsZllH?=
- =?utf-8?B?N2M1TG96dlRvOVZjakNqcVNZaDVmS3dnRG1GRjIxNFlEUFdJcEY5bkk4d1hQ?=
- =?utf-8?B?RkJWWTRFM0NFZTY1bVpwMkY1eXBoMzlXTTdDRStxSFduZGZORm9mRGozd3FB?=
- =?utf-8?B?QXN2Y3J1VlhXdlVUZTBWRW1CNndCdWk5VzV4dURvSFVTQ2R1QzRCMU0ybVRk?=
- =?utf-8?B?cVI5b0RWYkRFMEFjU0QyaGhHd0NpeVlDazNZdmVBckduVXdTSFMxbWVxNG1r?=
- =?utf-8?Q?CyoqzDZy2M1IQHhRG02izuR3v?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ1PR11MB6083.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b2709a6c-85a9-4e61-c8ea-08dbceafdd8a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Oct 2023 01:24:53.3920
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: iISUH6NW+s+HiO7EI9Bk1xghIq1//8FCxuIOWCYqDxZYAXUuuyzEncA3YWt6DaB5KjqN6ilTxUoyOAcHKwjF6A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR11MB5974
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 16 Oct 2023 21:27:25 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB47A2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 18:27:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7929AC433C7;
+        Tue, 17 Oct 2023 01:27:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697506042;
+        bh=W6p5Qp32hISdU7VFtYFWnANt8NR84dBovD2mjp8Ff/c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HHhEQf7H/nb2vCuXFtypc+hhEHmdTyorrLVw00iZFkCbNZZSim7sniAZkgUhoXIM5
+         Iy5QuQ8XPaKR0aeMoky9j+y9pU0rJJfpS42E/zPK3AD8rqBzIgLJOYaxPWK/vgZXqr
+         PorGG6swN/R4wjGVOy81qjkOAJM5LURAKCDEYWgQixDItzEu4c8gsxqKvaMj31SG99
+         wSyXDb56KUdw1xbpJnoKdWxy4UnVMUZqJiYPeZvE/g37IvVQEfv9EIPOneUy/1XEEi
+         Q/qhhOKk/2jMazNE0M4a4t7XqpUxDpH21xkG8Lb2HNXll+C3KGNyzw1o26gtNQ7wD3
+         70po6gOq3e0WA==
+Date:   Tue, 17 Oct 2023 10:27:16 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     "wuqiang.matt" <wuqiang.matt@bytedance.com>
+Cc:     linux-trace-kernel@vger.kernel.org, davem@davemloft.net,
+        anil.s.keshavamurthy@intel.com, naveen.n.rao@linux.ibm.com,
+        rostedt@goodmis.org, peterz@infradead.org,
+        akpm@linux-foundation.org, sander@svanheule.net,
+        ebiggers@google.com, dan.j.williams@intel.com, jpoimboe@kernel.org,
+        linux-kernel@vger.kernel.org, lkp@intel.com, mattwu@163.com
+Subject: Re: [PATCH v10 1/5] lib: objpool added: ring-array based lockless
+ MPMC
+Message-Id: <20231017102716.9fb024e64f0bba948a23afca@kernel.org>
+In-Reply-To: <3d0136b8-5d7d-d017-9f59-546d8464d82a@bytedance.com>
+References: <20231015053251.707442-1-wuqiang.matt@bytedance.com>
+        <20231015053251.707442-2-wuqiang.matt@bytedance.com>
+        <20231016004356.b5f3f815cb8d7c0994934332@kernel.org>
+        <1516f7d1-e11b-3244-76b9-e6ddafc29a32@bytedance.com>
+        <20231016082659.6ca94a5dff368783698753f9@kernel.org>
+        <7758687f-06c1-d9b2-077a-34e79925a339@bytedance.com>
+        <20231016211837.b6d425d8ed760bb3306910ae@kernel.org>
+        <3d0136b8-5d7d-d017-9f59-546d8464d82a@bytedance.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBJIHVuZGVyc3RhbmQgd2hhdCB5b3UgbWVhbi4gIExvb2tzIEkgZGlkbid0IGV4cHJlc3MgbXlz
-ZWxmIHdlbGwgb24gdGhpcw0KPiBwb2ludCBhbmQgY2F1c2VkIGFtYmlndWl0eS4gIE1heWJlIHJl
-bW92aW5nIHRoZSBhdHRyaWJ1dGl2ZSBjbGF1c2Ugd291bGQNCj4gbWFrZSBpdCBicmllZiBhbmQg
-Y2xlYXI/IFN1Y2ggYXMsDQo+DQo+CUZvciBzb21lIE1DRSBmYXRhbCBlcnJvciBjYXNlcywgdGhl
-IGtlcm5lbCBtaWdodCBjYWxsDQo+CW1jZV9wYW5pYygpIHRvIHRlcm1pbmF0ZSB0aGUgcHJvZHVj
-dGlvbiBrZXJuZWwgZGlyZWN0bHksIHRoZXJlDQo+CWlzIG5vIG9wcG9ydHVuaXR5IHRvIHF1ZXVl
-IGEgdGFzayBmb3IgY2FsbGluZyBtZW1vcnlfZmFpbHVyZSgpLg0KDQpIb3cgYWJvdXQ6DQoNCldo
-ZW4gdGhlcmUgaXMgYSBmYXRhbCBtYWNoaW5lIGNoZWNrIExpbnV4IGNhbGxzIG1jZV9wYW5pYygp
-DQp3aXRob3V0IGNoZWNraW5nIHRvIHNlZSBpZiBiYWQgZGF0YSBhdCBzb21lIG1lbW9yeSBhZGRy
-ZXNzDQp3YXMgcmVwb3J0ZWQgaW4gdGhlIG1hY2hpbmUgY2hlY2sgYmFua3MuDQoNCklmIGtleGVj
-IGlzIGVuYWJsZWQsIGNoZWNrIGZvciBtZW1vcnkgZXJyb3JzIGFuZCBtYXJrIHRoZQ0KcGFnZSBh
-cyBwb2lzb25lZCBzbyB0aGF0IHRoZSBrZXhlYydkIGtlcm5lbCBjYW4gYXZvaWQgYWNjZXNzaW5n
-DQp0aGUgcGFnZS4NCg0KLVRvbnkNCg==
+Hi Wuqiang,
+
+This looks good to me. Can you update the series on top of probe/core branch?
+
+https://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git/log/?h=probes/core
+
+Thank you,
+
+On Tue, 17 Oct 2023 01:05:21 +0800
+"wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
+
+> Hello Masami,
+> 
+> Here's the updated version for your review.
+> 
+> ---
+>   include/linux/objpool.h | 176 +++++++++++++++++++++++++
+>   lib/Makefile            |   2 +-
+>   lib/objpool.c           | 286 ++++++++++++++++++++++++++++++++++++++++
+>   3 files changed, 463 insertions(+), 1 deletion(-)
+>   create mode 100644 include/linux/objpool.h
+>   create mode 100644 lib/objpool.c
+> 
+> diff --git a/include/linux/objpool.h b/include/linux/objpool.h
+> new file mode 100644
+> index 000000000000..4df18405420a
+> --- /dev/null
+> +++ b/include/linux/objpool.h
+> @@ -0,0 +1,181 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +#ifndef _LINUX_OBJPOOL_H
+> +#define _LINUX_OBJPOOL_H
+> +
+> +#include <linux/types.h>
+> +#include <linux/refcount.h>
+> +
+> +/*
+> + * objpool: ring-array based lockless MPMC queue
+> + *
+> + * Copyright: wuqiang.matt@bytedance.com,mhiramat@kernel.org
+> + *
+> + * objpool is a scalable implementation of high performance queue for
+> + * object allocation and reclamation, such as kretprobe instances.
+> + *
+> + * With leveraging percpu ring-array to mitigate hot spots of memory
+> + * contention, it delivers near-linear scalability for high parallel
+> + * scenarios. The objpool is best suited for the following cases:
+> + * 1) Memory allocation or reclamation are prohibited or too expensive
+> + * 2) Consumers are of different priorities, such as irqs and threads
+> + *
+> + * Limitations:
+> + * 1) Maximum objects (capacity) is fixed after objpool creation
+> + * 2) All pre-allocated objects are managed in percpu ring array,
+> + *    which consumes more memory than linked lists
+> + */
+> +
+> +/**
+> + * struct objpool_slot - percpu ring array of objpool
+> + * @head: head sequence of the local ring array (to retrieve at)
+> + * @tail: tail sequence of the local ring array (to append at)
+> + * @last: the last sequence number marked as ready for retrieve
+> + * @mask: bits mask for modulo capacity to compute array indexes
+> + * @entries: object entries on this slot
+> + *
+> + * Represents a cpu-local array-based ring buffer, its size is specialized
+> + * during initialization of object pool. The percpu objpool node is to be
+> + * allocated from local memory for NUMA system, and to be kept compact in
+> + * continuous memory: CPU assigned number of objects are stored just after
+> + * the body of objpool_node.
+> + *
+> + * Real size of the ring array is far too smaller than the value range of
+> + * head and tail, typed as uint32_t: [0, 2^32), so only lower bits (mask)
+> + * of head and tail are used as the actual position in the ring array. In
+> + * general the ring array is acting like a small sliding window, which is
+> + * always moving forward in the loop of [0, 2^32).
+> + */
+> +struct objpool_slot {
+> +	uint32_t            head;
+> +	uint32_t            tail;
+> +	uint32_t            last;
+> +	uint32_t            mask;
+> +	void               *entries[];
+> +} __packed;
+> +
+> +struct objpool_head;
+> +
+> +/*
+> + * caller-specified callback for object initial setup, it's only called
+> + * once for each object (just after the memory allocation of the object)
+> + */
+> +typedef int (*objpool_init_obj_cb)(void *obj, void *context);
+> +
+> +/* caller-specified cleanup callback for objpool destruction */
+> +typedef int (*objpool_fini_cb)(struct objpool_head *head, void *context);
+> +
+> +/**
+> + * struct objpool_head - object pooling metadata
+> + * @obj_size:   object size, aligned to sizeof(void *)
+> + * @nr_objs:    total objs (to be pre-allocated with objpool)
+> + * @nr_cpus:    local copy of nr_cpu_ids
+> + * @capacity:   max objs can be managed by one objpool_slot
+> + * @gfp:        gfp flags for kmalloc & vmalloc
+> + * @ref:        refcount of objpool
+> + * @flags:      flags for objpool management
+> + * @cpu_slots:  pointer to the array of objpool_slot
+> + * @release:    resource cleanup callback
+> + * @context:    caller-provided context
+> + */
+> +struct objpool_head {
+> +	int                     obj_size;
+> +	int                     nr_objs;
+> +	int                     nr_cpus;
+> +	int                     capacity;
+> +	gfp_t                   gfp;
+> +	refcount_t              ref;
+> +	unsigned long           flags;
+> +	struct objpool_slot   **cpu_slots;
+> +	objpool_fini_cb         release;
+> +	void                   *context;
+> +};
+> +
+> +#define OBJPOOL_NR_OBJECT_MAX	(1UL << 24) /* maximum numbers of total objects */
+> +#define OBJPOOL_OBJECT_SIZE_MAX	(1UL << 16) /* maximum size of an object */
+> +
+> +/**
+> + * objpool_init() - initialize objpool and pre-allocated objects
+> + * @pool:    the object pool to be initialized, declared by caller
+> + * @nr_objs: total objects to be pre-allocated by this object pool
+> + * @object_size: size of an object (should be > 0)
+> + * @gfp:     flags for memory allocation (via kmalloc or vmalloc)
+> + * @context: user context for object initialization callback
+> + * @objinit: object initialization callback for extra setup
+> + * @release: cleanup callback for extra cleanup task
+> + *
+> + * return value: 0 for success, otherwise error code
+> + *
+> + * All pre-allocated objects are to be zeroed after memory allocation.
+> + * Caller could do extra initialization in objinit callback. objinit()
+> + * will be called just after slot allocation and called only once for
+> + * each object. After that the objpool won't touch any content of the
+> + * objects. It's caller's duty to perform reinitialization after each
+> + * pop (object allocation) or do clearance before each push (object
+> + * reclamation).
+> + */
+> +int objpool_init(struct objpool_head *pool, int nr_objs, int object_size,
+> +		 gfp_t gfp, void *context, objpool_init_obj_cb objinit,
+> +		 objpool_fini_cb release);
+> +
+> +/**
+> + * objpool_pop() - allocate an object from objpool
+> + * @pool: object pool
+> + *
+> + * return value: object ptr or NULL if failed
+> + */
+> +void *objpool_pop(struct objpool_head *pool);
+> +
+> +/**
+> + * objpool_push() - reclaim the object and return back to objpool
+> + * @obj:  object ptr to be pushed to objpool
+> + * @pool: object pool
+> + *
+> + * return: 0 or error code (it fails only when user tries to push
+> + * the same object multiple times or wrong "objects" into objpool)
+> + */
+> +int objpool_push(void *obj, struct objpool_head *pool);
+> +
+> +/**
+> + * objpool_drop() - discard the object and deref objpool
+> + * @obj:  object ptr to be discarded
+> + * @pool: object pool
+> + *
+> + * return: 0 if objpool was released; -EAGAIN if there are still
+> + *         outstanding objects
+> + *
+> + * objpool_drop is normally for the release of outstanding objects
+> + * after objpool cleanup (objpool_fini). Thinking of this example:
+> + * kretprobe is unregistered and objpool_fini() is called to release
+> + * all remained objects, but there are still objects being used by
+> + * unfinished kretprobes (like blockable function: sys_accept). So
+> + * only when the last outstanding object is dropped could the whole
+> + * objpool be released along with the call of objpool_drop()
+> + */
+> +int objpool_drop(void *obj, struct objpool_head *pool);
+> +
+> +/**
+> + * objpool_free() - release objpool forcely (all objects to be freed)
+> + * @pool: object pool to be released
+> + */
+> +void objpool_free(struct objpool_head *pool);
+> +
+> +/**
+> + * objpool_fini() - deref object pool (also releasing unused objects)
+> + * @pool: object pool to be dereferenced
+> + *
+> + * objpool_fini() will try to release all remained free objects and
+> + * then drop an extra reference of the objpool. If all objects are
+> + * already returned to objpool (so called synchronous use cases),
+> + * the objpool itself will be freed together. But if there are still
+> + * outstanding objects (so called asynchronous use cases, such like
+> + * blockable kretprobe), the objpool won't be released until all
+> + * the outstanding objects are dropped, but the caller must assure
+> + * there are no concurrent objpool_push() on the fly. Normally RCU
+> + * is being required to make sure all ongoing objpool_push() must
+> + * be finished before calling objpool_fini(), so does kretprobes,
+> + * rethook or test_objpool
+> + */
+> +void objpool_fini(struct objpool_head *pool);
+> +
+> +#endif /* _LINUX_OBJPOOL_H */
+> diff --git a/lib/Makefile b/lib/Makefile
+> index 1ffae65bb7ee..7a84c922d9ff 100644
+> --- a/lib/Makefile
+> +++ b/lib/Makefile
+> @@ -34,7 +34,7 @@ lib-y := ctype.o string.o vsprintf.o cmdline.o \
+>   	 is_single_threaded.o plist.o decompress.o kobject_uevent.o \
+>   	 earlycpio.o seq_buf.o siphash.o dec_and_lock.o \
+>   	 nmi_backtrace.o win_minmax.o memcat_p.o \
+> -	 buildid.o
+> +	 buildid.o objpool.o
+> 
+>   lib-$(CONFIG_PRINTK) += dump_stack.o
+>   lib-$(CONFIG_SMP) += cpumask.o
+> diff --git a/lib/objpool.c b/lib/objpool.c
+> new file mode 100644
+> index 000000000000..37a71e063f18
+> --- /dev/null
+> +++ b/lib/objpool.c
+> @@ -0,0 +1,280 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/objpool.h>
+> +#include <linux/slab.h>
+> +#include <linux/vmalloc.h>
+> +#include <linux/atomic.h>
+> +#include <linux/irqflags.h>
+> +#include <linux/cpumask.h>
+> +#include <linux/log2.h>
+> +
+> +/*
+> + * objpool: ring-array based lockless MPMC/FIFO queues
+> + *
+> + * Copyright: wuqiang.matt@bytedance.com,mhiramat@kernel.org
+> + */
+> +
+> +/* initialize percpu objpool_slot */
+> +static int
+> +objpool_init_percpu_slot(struct objpool_head *pool,
+> +			 struct objpool_slot *slot,
+> +			 int nodes, void *context,
+> +			 objpool_init_obj_cb objinit)
+> +{
+> +	void *obj = (void *)&slot->entries[pool->capacity];
+> +	int i;
+> +
+> +	/* initialize elements of percpu objpool_slot */
+> +	slot->mask = pool->capacity - 1;
+> +
+> +	for (i = 0; i < nodes; i++) {
+> +		if (objinit) {
+> +			int rc = objinit(obj, context);
+> +			if (rc)
+> +				return rc;
+> +		}
+> +		slot->entries[slot->tail & slot->mask] = obj;
+> +		obj = obj + pool->obj_size;
+> +		slot->tail++;
+> +		slot->last = slot->tail;
+> +		pool->nr_objs++;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +/* allocate and initialize percpu slots */
+> +static int
+> +objpool_init_percpu_slots(struct objpool_head *pool, int nr_objs,
+> +			  void *context, objpool_init_obj_cb objinit)
+> +{
+> +	int i, cpu_count = 0;
+> +
+> +	for (i = 0; i < pool->nr_cpus; i++) {
+> +
+> +		struct objpool_slot *slot;
+> +		int nodes, size, rc;
+> +
+> +		/* skip the cpu node which could never be present */
+> +		if (!cpu_possible(i))
+> +			continue;
+> +
+> +		/* compute how many objects to be allocated with this slot */
+> +		nodes = nr_objs / num_possible_cpus();
+> +		if (cpu_count < (nr_objs % num_possible_cpus()))
+> +			nodes++;
+> +		cpu_count++;
+> +
+> +		size = struct_size(slot, entries, pool->capacity) +
+> +			pool->obj_size * nodes;
+> +
+> +		/*
+> +		 * here we allocate percpu-slot & objs together in a single
+> +		 * allocation to make it more compact, taking advantage of
+> +		 * warm caches and TLB hits. in default vmalloc is used to
+> +		 * reduce the pressure of kernel slab system. as we know,
+> +		 * mimimal size of vmalloc is one page since vmalloc would
+> +		 * always align the requested size to page size
+> +		 */
+> +		if (pool->gfp & GFP_ATOMIC)
+> +			slot = kmalloc_node(size, pool->gfp, cpu_to_node(i));
+> +		else
+> +			slot = __vmalloc_node(size, sizeof(void *), pool->gfp,
+> +				cpu_to_node(i), __builtin_return_address(0));
+> +		if (!slot)
+> +			return -ENOMEM;
+> +		memset(slot, 0, size);
+> +		pool->cpu_slots[i] = slot;
+> +
+> +		/* initialize the objpool_slot of cpu node i */
+> +		rc = objpool_init_percpu_slot(pool, slot, nodes, context, objinit);
+> +		if (rc)
+> +			return rc;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +/* cleanup all percpu slots of the object pool */
+> +static void objpool_fini_percpu_slots(struct objpool_head *pool)
+> +{
+> +	int i;
+> +
+> +	if (!pool->cpu_slots)
+> +		return;
+> +
+> +	for (i = 0; i < pool->nr_cpus; i++)
+> +		kvfree(pool->cpu_slots[i]);
+> +	kfree(pool->cpu_slots);
+> +}
+> +
+> +/* initialize object pool and pre-allocate objects */
+> +int objpool_init(struct objpool_head *pool, int nr_objs, int object_size,
+> +		gfp_t gfp, void *context, objpool_init_obj_cb objinit,
+> +		objpool_fini_cb release)
+> +{
+> +	int rc, capacity, slot_size;
+> +
+> +	/* check input parameters */
+> +	if (nr_objs <= 0 || nr_objs > OBJPOOL_NR_OBJECT_MAX ||
+> +	    object_size <= 0 || object_size > OBJPOOL_OBJECT_SIZE_MAX)
+> +		return -EINVAL;
+> +
+> +	/* align up to unsigned long size */
+> +	object_size = ALIGN(object_size, sizeof(long));
+> +
+> +	/* calculate capacity of percpu objpool_slot */
+> +	capacity = roundup_pow_of_two(nr_objs);
+> +	if (!capacity)
+> +		return -EINVAL;
+> +
+> +	/* initialize objpool pool */
+> +	memset(pool, 0, sizeof(struct objpool_head));
+> +	pool->nr_cpus = nr_cpu_ids;
+> +	pool->obj_size = object_size;
+> +	pool->capacity = capacity;
+> +	pool->gfp = gfp & ~__GFP_ZERO;
+> +	pool->context = context;
+> +	pool->release = release;
+> +	slot_size = pool->nr_cpus * sizeof(struct objpool_slot);
+> +	pool->cpu_slots = kzalloc(slot_size, pool->gfp);
+> +	if (!pool->cpu_slots)
+> +		return -ENOMEM;
+> +
+> +	/* initialize per-cpu slots */
+> +	rc = objpool_init_percpu_slots(pool, nr_objs, context, objinit);
+> +	if (rc)
+> +		objpool_fini_percpu_slots(pool);
+> +	else
+> +		refcount_set(&pool->ref, pool->nr_objs + 1);
+> +
+> +	return rc;
+> +}
+> +EXPORT_SYMBOL_GPL(objpool_init);
+> +
+> +/* adding object to slot, abort if the slot was already full */
+> +static inline int
+> +objpool_try_add_slot(void *obj, struct objpool_head *pool, int cpu)
+> +{
+> +	struct objpool_slot *slot = pool->cpu_slots[cpu];
+> +	uint32_t head, tail;
+> +
+> +	/* loading tail and head as a local snapshot, tail first */
+> +	tail = READ_ONCE(slot->tail);
+> +
+> +	do {
+> +		head = READ_ONCE(slot->head);
+> +		/* fault caught: something must be wrong */
+> +		WARN_ON_ONCE(tail - head > pool->nr_objs);
+> +	} while (!try_cmpxchg_acquire(&slot->tail, &tail, tail + 1));
+> +
+> +	/* now the tail position is reserved for the given obj */
+> +	WRITE_ONCE(slot->entries[tail & slot->mask], obj);
+> +	/* update sequence to make this obj available for pop() */
+> +	smp_store_release(&slot->last, tail + 1);
+> +
+> +	return 0;
+> +}
+> +
+> +/* reclaim an object to object pool */
+> +int objpool_push(void *obj, struct objpool_head *pool)
+> +{
+> +	unsigned long flags;
+> +	int rc;
+> +
+> +	/* disable local irq to avoid preemption & interruption */
+> +	raw_local_irq_save(flags);
+> +	rc = objpool_try_add_slot(obj, pool, raw_smp_processor_id());
+> +	raw_local_irq_restore(flags);
+> +
+> +	return rc;
+> +}
+> +EXPORT_SYMBOL_GPL(objpool_push);
+> +
+> +/* try to retrieve object from slot */
+> +static inline void *objpool_try_get_slot(struct objpool_head *pool, int cpu)
+> +{
+> +	struct objpool_slot *slot = pool->cpu_slots[cpu];
+> +	/* load head snapshot, other cpus may change it */
+> +	uint32_t head = smp_load_acquire(&slot->head);
+> +
+> +	while (head != READ_ONCE(slot->last)) {
+> +		void *obj;
+> +
+> +		/* obj must be retrieved before moving forward head */
+> +		obj = READ_ONCE(slot->entries[head & slot->mask]);
+> +
+> +		/* move head forward to mark it's consumption */
+> +		if (try_cmpxchg_release(&slot->head, &head, head + 1))
+> +			return obj;
+> +	}
+> +
+> +	return NULL;
+> +}
+> +
+> +/* allocate an object from object pool */
+> +void *objpool_pop(struct objpool_head *pool)
+> +{
+> +	void *obj = NULL;
+> +	unsigned long flags;
+> +	int i, cpu;
+> +
+> +	/* disable local irq to avoid preemption & interruption */
+> +	raw_local_irq_save(flags);
+> +
+> +	cpu = raw_smp_processor_id();
+> +	for (i = 0; i < num_possible_cpus(); i++) {
+> +		obj = objpool_try_get_slot(pool, cpu);
+> +		if (obj)
+> +			break;
+> +		cpu = cpumask_next_wrap(cpu, cpu_possible_mask, -1, 1);
+> +	}
+> +	raw_local_irq_restore(flags);
+> +
+> +	return obj;
+> +}
+> +EXPORT_SYMBOL_GPL(objpool_pop);
+> +
+> +/* release whole objpool forcely */
+> +void objpool_free(struct objpool_head *pool)
+> +{
+> +	if (!pool->cpu_slots)
+> +		return;
+> +
+> +	/* release percpu slots */
+> +	objpool_fini_percpu_slots(pool);
+> +
+> +	/* call user's cleanup callback if provided */
+> +	if (pool->release)
+> +		pool->release(pool, pool->context);
+> +}
+> +EXPORT_SYMBOL_GPL(objpool_free);
+> +
+> +/* drop the allocated object, rather reclaim it to objpool */
+> +int objpool_drop(void *obj, struct objpool_head *pool)
+> +{
+> +	if (!obj || !pool)
+> +		return -EINVAL;
+> +
+> +	if (refcount_dec_and_test(&pool->ref)) {
+> +		objpool_free(pool);
+> +		return 0;
+> +	}
+> +
+> +	return -EAGAIN;
+> +}
+> +EXPORT_SYMBOL_GPL(objpool_drop);
+> +
+> +/* drop unused objects and defref objpool for releasing */
+> +void objpool_fini(struct objpool_head *pool)
+> +{
+> +	int count = 1; /* extra ref for objpool itself */
+> +
+> +	/* drop all remained objects from objpool */
+> +	while (objpool_pop(pool))
+> +		count++;
+> +
+> +	if (refcount_sub_and_test(count, &pool->ref))
+> +		objpool_free(pool);
+> +}
+> +EXPORT_SYMBOL_GPL(objpool_fini);
+> -- 
+> 
+> Regards,
+> Wuqiang
+> 
+> On 2023/10/16 20:18, Masami Hiramatsu (Google) wrote:
+> > Hi Wuqiang,
+> > 
+> > On Mon, 16 Oct 2023 10:45:30 +0800
+> > "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
+> > 
+> >> On 2023/10/16 07:26, Masami Hiramatsu (Google) wrote:
+> >>> On Mon, 16 Oct 2023 00:06:11 +0800
+> >>> "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
+> >>>
+> >>>> On 2023/10/15 23:43, Masami Hiramatsu (Google) wrote:
+> >>>>> On Sun, 15 Oct 2023 13:32:47 +0800
+> >>>>> "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
+> >>>>>
+> >>>>>> objpool is a scalable implementation of high performance queue for
+> >>>>>> object allocation and reclamation, such as kretprobe instances.
+> >>>>>>
+> >>>>>> With leveraging percpu ring-array to mitigate hot spots of memory
+> >>>>>> contention, it delivers near-linear scalability for high parallel
+> >>>>>> scenarios. The objpool is best suited for the following cases:
+> >>>>>> 1) Memory allocation or reclamation are prohibited or too expensive
+> >>>>>> 2) Consumers are of different priorities, such as irqs and threads
+> >>>>>>
+> >>>>>> Limitations:
+> >>>>>> 1) Maximum objects (capacity) is fixed after objpool creation
+> >>>>>> 2) All pre-allocated objects are managed in percpu ring array,
+> >>>>>>       which consumes more memory than linked lists
+> >>>>>>
+> >>>>>
+> >>>>> Thanks for updating! This looks good to me except 2 points.
+> >>>>>
+> >>>>> [...]
+> >>>>>> +
+> >>>>>> +/* initialize object pool and pre-allocate objects */
+> >>>>>> +int objpool_init(struct objpool_head *pool, int nr_objs, int object_size,
+> >>>>>> +		gfp_t gfp, void *context, objpool_init_obj_cb objinit,
+> >>>>>> +		objpool_fini_cb release)
+> >>>>>> +{
+> >>>>>> +	int rc, capacity, slot_size;
+> >>>>>> +
+> >>>>>> +	/* check input parameters */
+> >>>>>> +	if (nr_objs <= 0 || nr_objs > OBJPOOL_NR_OBJECT_MAX ||
+> >>>>>> +	    object_size <= 0 || object_size > OBJPOOL_OBJECT_SIZE_MAX)
+> >>>>>> +		return -EINVAL;
+> >>>>>> +
+> >>>>>> +	/* align up to unsigned long size */
+> >>>>>> +	object_size = ALIGN(object_size, sizeof(long));
+> >>>>>> +
+> >>>>>> +	/* calculate capacity of percpu objpool_slot */
+> >>>>>> +	capacity = roundup_pow_of_two(nr_objs);
+> >>>>>
+> >>>>> This must be 'roundup_pow_of_two(nr_objs + 1)' because if nr_objs is power
+> >>>>> of 2 and all objects are pushed on the same slot, tail == head. This
+> >>>>> means empty and full is the same.
+> >>>>
+> >>>> That won't happen. Would tail and head wrap only when >= 2^32. When all
+> >>>> objects are pushed to the same slot, tail will be (head + capacity).
+> >>>
+> >>> Ah, indeed. OK.
+> >>>
+> >>>>
+> >>>>>
+> >>>>>> +	if (!capacity)
+> >>>>>> +		return -EINVAL;
+> >>>>>> +
+> >>>>>> +	/* initialize objpool pool */
+> >>>>>> +	memset(pool, 0, sizeof(struct objpool_head));
+> >>>>>> +	pool->nr_cpus = nr_cpu_ids;
+> >>>>>> +	pool->obj_size = object_size;
+> >>>>>> +	pool->capacity = capacity;
+> >>>>>> +	pool->gfp = gfp & ~__GFP_ZERO;
+> >>>>>> +	pool->context = context;
+> >>>>>> +	pool->release = release;
+> >>>>>> +	slot_size = pool->nr_cpus * sizeof(struct objpool_slot);
+> >>>>>> +	pool->cpu_slots = kzalloc(slot_size, pool->gfp);
+> >>>>>> +	if (!pool->cpu_slots)
+> >>>>>> +		return -ENOMEM;
+> >>>>>> +
+> >>>>>> +	/* initialize per-cpu slots */
+> >>>>>> +	rc = objpool_init_percpu_slots(pool, nr_objs, context, objinit);
+> >>>>>> +	if (rc)
+> >>>>>> +		objpool_fini_percpu_slots(pool);
+> >>>>>> +	else
+> >>>>>> +		refcount_set(&pool->ref, pool->nr_objs + 1);
+> >>>>>> +
+> >>>>>> +	return rc;
+> >>>>>> +}
+> >>>>>> +EXPORT_SYMBOL_GPL(objpool_init);
+> >>>>>> +
+> >>>>>
+> >>>>> [...]
+> >>>>>
+> >>>>>> +
+> >>>>>> +/* drop unused objects and defref objpool for releasing */
+> >>>>>> +void objpool_fini(struct objpool_head *pool)
+> >>>>>> +{
+> >>>>>> +	void *obj;
+> >>>>>> +
+> >>>>>> +	do {
+> >>>>>> +		/* grab object from objpool and drop it */
+> >>>>>> +		obj = objpool_pop(pool);
+> >>>>>> +
+> >>>>>> +		/*
+> >>>>>> +		 * drop reference of objpool anyway even if
+> >>>>>> +		 * the obj is NULL, since one extra ref upon
+> >>>>>> +		 * objpool was already grabbed during pool
+> >>>>>> +		 * initialization in objpool_init()
+> >>>>>> +		 */
+> >>>>>> +		if (refcount_dec_and_test(&pool->ref))
+> >>>>>> +			objpool_free(pool);
+> >>>>>
+> >>>>> Nit: you can call objpool_drop() instead of repeating the same thing here.
+> >>>>
+> >>>> objpool_drop won't deref objpool if given obj is NULL. But here we need
+> >>>> drop objpool anyway even if obj is NULL.
+> >>>
+> >>> I guess you decrement for the 'objpool' itself if obj=NULL, but I think
+> >>> it is a bit hacky (so you added the comment).
+> >>> e.g. rethook is doing something like below.
+> >>>
+> >>> ---
+> >>> /* extra count for this pool itself */
+> >>> count = 1;
+> >>> /* make the pool empty */
+> >>> while (objpool_pop(pool))
+> >>> 	count++;
+> >>>
+> >>> if (refcount_sub_and_test(count, &pool->ref))
+> >>> 	objpool_free(pool);
+> >>> ---
+> >>
+> >> Right, that's reasonable. Better one single atomic operation than multiple.
+> > 
+> > I found another comment issue about a small window which this may not work.
+> > This is not a real issue for this series because this doesn't happen on
+> > rethook/kretprobe, but if you apply this to other use-case, it must be
+> > cared.
+> > 
+> > Since we use reserve-commit on 'push' operation, this 'pop' loop will miss
+> > an object which is under 'push' op. I mean
+> > 
+> > CPU0                    CPU1
+> > 
+> > objpool_fini() {
+> > do {
+> >                           objpool_push() {
+> >                              update slot->tail; // reserve
+> >    obj = objpool_pop();
+> >                              update slot->last;  // commit
+> > } while (obj);
+> > 
+> > In this case, the refcount can not be 0 and we can not release objpool.
+> > To avoid this, we make sure all ongoing 'push()' must be finished.
+> > 
+> > Actually in the rethook/kretprobe, it already sync the rcu so this doesn't
+> > happen. So you should document it the user must use RCU sync after stop
+> > using the objpool, then call objpool_fini().
+> > 
+> > E.g.
+> > 
+> > start_using() {
+> > objpool_init();
+> > active = true;
+> > }
+> > 
+> > obj_alloc() {
+> > rcu_read_lock();
+> > if (active)
+> > 	obj = objpool_pop();
+> > else
+> > 	obj = NULL;
+> > rcu_read_unlock();
+> > }
+> > 
+> > /* use obj for something, it is OK to change the context */
+> > 
+> > obj_return() {
+> > rcu_read_lock();
+> > if (active)
+> > 	objpool_push(obj);
+> > else
+> > 	objpool_drop(obj);
+> > rcu_read_unlock();
+> > }
+> > 
+> > /* kretprobe style */
+> > stop_using() {
+> > active = false;
+> > synchronize_rcu();
+> > objpool_fini();
+> > }
+> > 
+> > /* rethook style */
+> > stop_using() {
+> > active = false;
+> > call_rcu(objpool_fini);
+> > }
+> > 
+> > Hmm, yeah, if we can add this 'active' flag to objpool, it is good. But
+> > since kretprobe has different design of the interface, it is hard.
+> > Anyway, can you add a comment that user must ensure that any 'push' including
+> > ongoing one does not happen while 'fini'? objpool does not care that so user
+> > must take care of that. For example using rcu_read_lock() for the 'push/pop'
+> > operation and rcu-sync before 'fini' operation.
+> > 
+> > Thanks,
+> > 
+> >>
+> >>>>
+> >>>>> Thank you,
+> >>>>>
+> >>>>>> +	} while (obj);
+> >>>>>> +}
+> >>>>>> +EXPORT_SYMBOL_GPL(objpool_fini);
+> >>>>>> -- 
+> >>>>>> 2.40.1
+> >>>>>>
+> >>>>
+> >>>> Thanks for your time
+> >>>>
+> >>>>
+> >>>
+> >>>
+> >>
+> > 
+> > 
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
