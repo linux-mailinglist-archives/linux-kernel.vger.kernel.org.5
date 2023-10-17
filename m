@@ -2,119 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A084A7CC88D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 18:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A1B37CC88F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 18:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344361AbjJQP4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 11:56:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40642 "EHLO
+        id S234963AbjJQQQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 12:16:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344286AbjJQPzu (ORCPT
+        with ESMTP id S1343684AbjJQQOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 11:55:50 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88AD695;
-        Tue, 17 Oct 2023 08:55:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697558148; x=1729094148;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=KvNF39DN5bsLz6aBPCxszPKohNzs0AOuRVPxH10s/7g=;
-  b=DPACtJJL01iygb182SlAdZPD7dwyy3K5v3q723010iyYkd73uV56S+NE
-   b0Nx1dF+qvRPpnxlJb/lc/ewd+ZYebkFTEvpG01oJUaU4arWJo8C0251c
-   Nojta8cdjLtgJTnkGTn+x/mtRpWdEC20W4DaaZGD1+NB/orZ1iwgA/pr9
-   +DKBHY8G60Fy/ieqvv+n5cGGobiuFmc38fXstIKKr3k1K6Funa+cFbXUc
-   e6BP4V52v45v/s9v6LPVsdrQzltgzOMvUUKBvx2M9zyVzocuzPY+peZdJ
-   IX8uza7OmhykX1eOBghYOHtOXOL0ftMd0zehKjs4uF830d6hYMYTxsFIg
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="385651925"
-X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
-   d="scan'208";a="385651925"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 08:55:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="791271177"
-X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
-   d="scan'208";a="791271177"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 17 Oct 2023 08:55:40 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qsmPx-0009lt-2a;
-        Tue, 17 Oct 2023 15:55:37 +0000
-Date:   Tue, 17 Oct 2023 23:55:37 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Vishvambar Panth S <vishvambarpanth.s@microchip.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        jacob.e.keller@intel.com, kuba@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, bryan.whitehead@microchip.com,
-        UNGLinuxDriver@microchip.com, davem@davemloft.net,
-        edumazet@google.com, pabeni@redhat.com, richardcochran@gmail.com
-Subject: Re: [PATCH v2 net-next] net: microchip: lan743x: improve throughput
- with rx timestamp config
-Message-ID: <202310172343.lfyTHDCw-lkp@intel.com>
-References: <20231017180542.30613-1-vishvambarpanth.s@microchip.com>
+        Tue, 17 Oct 2023 12:14:16 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB6C3ED
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:14:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89D25C433CA;
+        Tue, 17 Oct 2023 16:14:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697559254;
+        bh=Ye90HBHDZzB2aDp/S5UGI++JNCzZ7q1PX2LEgBDO3FA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=qx23junqDkaU3YjKyYdbbhUyl6RLIT071nSnCTOJMkBDZHvV4szsntrGDj3OEDqEj
+         S897OKmOGZfSvjmRBVYtCU5LPOFJtMX6OJ82xXXEgA9Go4HgUsrSH/WNRLxFm58O8f
+         ZUGjc4jgUhf1hAAv7P4kejGqwOn95zb7UDdwHe5jGFc/VkkSJxel6Mw98eYqq+Rcc4
+         tBK+OWo+yQhKO7JIk3NlSwDXApMJ1XBfqcDzzy/hOuQFWXCMLlVaVtnCNqYoT9Pa/g
+         YzIH4zPCVPoff2t6r9ayWW3UQfdZm/HSJfCmPpvxm89cLOBoVT8Iku16qe2NZVa9L9
+         7FyQzoGAsPMNA==
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Anand Moon <linux.amoon@gmail.com>
+Cc:     linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: usb: vialab,vl817: remove reset-gpios from required list
+Date:   Wed, 18 Oct 2023 00:01:58 +0800
+Message-Id: <20231017160158.1065-1-jszhang@kernel.org>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231017180542.30613-1-vishvambarpanth.s@microchip.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vishvambar,
+The "reset-gpios" is optional in real case, for example reset pin is
+is hard wired to "high". And this fact is also reflected by the
+devm_gpio_get_optional() calling in driver code.
 
-kernel test robot noticed the following build warnings:
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
+ .../bindings/usb/thead,th1520-usb.yaml        | 42 ++++++++++---------
+ .../devicetree/bindings/usb/vialab,vl817.yaml |  1 -
+ 2 files changed, 23 insertions(+), 20 deletions(-)
 
-[auto build test WARNING on net-next/main]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Vishvambar-Panth-S/net-microchip-lan743x-improve-throughput-with-rx-timestamp-config/20231017-180453
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20231017180542.30613-1-vishvambarpanth.s%40microchip.com
-patch subject: [PATCH v2 net-next] net: microchip: lan743x: improve throughput with rx timestamp config
-config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20231017/202310172343.lfyTHDCw-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231017/202310172343.lfyTHDCw-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310172343.lfyTHDCw-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/net/ethernet/microchip/lan743x_main.c:1873:6: warning: no previous prototype for 'lan743x_rx_cfg_b_tstamp_config' [-Wmissing-prototypes]
-    1873 | void lan743x_rx_cfg_b_tstamp_config(struct lan743x_adapter *adapter,
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +/lan743x_rx_cfg_b_tstamp_config +1873 drivers/net/ethernet/microchip/lan743x_main.c
-
-  1872	
-> 1873	void lan743x_rx_cfg_b_tstamp_config(struct lan743x_adapter *adapter,
-  1874					    int rx_ts_config)
-  1875	{
-  1876		int channel_number;
-  1877		int index;
-  1878		u32 data;
-  1879	
-  1880		for (index = 0; index < LAN743X_USED_RX_CHANNELS; index++) {
-  1881			channel_number = adapter->rx[index].channel_number;
-  1882			data = lan743x_csr_read(adapter, RX_CFG_B(channel_number));
-  1883			data &= RX_CFG_B_TS_MASK_;
-  1884			data |= rx_ts_config;
-  1885			lan743x_csr_write(adapter, RX_CFG_B(channel_number),
-  1886					  data);
-  1887		}
-  1888	}
-  1889	
-
+diff --git a/Documentation/devicetree/bindings/usb/thead,th1520-usb.yaml b/Documentation/devicetree/bindings/usb/thead,th1520-usb.yaml
+index afb618eb5013..ce1cab75f0ff 100644
+--- a/Documentation/devicetree/bindings/usb/thead,th1520-usb.yaml
++++ b/Documentation/devicetree/bindings/usb/thead,th1520-usb.yaml
+@@ -28,6 +28,10 @@ properties:
+ 
+   ranges: true
+ 
++  thead,misc-syscon:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: a phandle to the misc system register controller syscon node.
++
+   '#address-cells':
+     enum: [ 1, 2 ]
+ 
+@@ -51,23 +55,23 @@ additionalProperties: false
+ 
+ examples:
+   - |
+-
+-    usb {
+-          compatible = "thead,th1520-usb";
+-          reg = <0xec03f000 0x1000>;
+-          clocks = <&clk 1>,
+-                   <&clk 2>,
+-                   <&clk 3>,
+-                   <&clk 4>;
+-          clock-names = "ref", "bus_early", "phy", "suspend";
+-          ranges;
+-          #address-cells = <1>;
+-          #size-cells = <1>;
+-
+-          usb@e7040000 {
+-                compatible = "snps,dwc3";
+-                reg = <0xe7040000 0x10000>;
+-                interrupts = <68>;
+-                dr_mode = "host";
+-          };
++    usb@ec03f000 {
++        compatible = "thead,th1520-usb";
++        reg = <0xec03f000 0x1000>;
++        thead,misc-syscon = <&misc_syscon>;
++        clocks = <&clk 1>,
++                 <&clk 2>,
++                 <&clk 3>,
++                 <&clk 4>;
++        clock-names = "ref", "bus_early", "phy", "suspend";
++        ranges;
++        #address-cells = <1>;
++        #size-cells = <1>;
++
++        usb@e7040000 {
++            compatible = "snps,dwc3";
++            reg = <0xe7040000 0x10000>;
++            interrupts = <68>;
++            dr_mode = "host";
++        };
+     };
+diff --git a/Documentation/devicetree/bindings/usb/vialab,vl817.yaml b/Documentation/devicetree/bindings/usb/vialab,vl817.yaml
+index 76db9071b352..c815010ba9c2 100644
+--- a/Documentation/devicetree/bindings/usb/vialab,vl817.yaml
++++ b/Documentation/devicetree/bindings/usb/vialab,vl817.yaml
+@@ -37,7 +37,6 @@ properties:
+ required:
+   - compatible
+   - reg
+-  - reset-gpios
+   - vdd-supply
+   - peer-hub
+ 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.40.1
+
