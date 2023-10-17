@@ -2,177 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 473BB7CBDE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:39:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0910A7CBDEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234735AbjJQIjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 04:39:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48274 "EHLO
+        id S234679AbjJQIlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 04:41:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233882AbjJQIjk (ORCPT
+        with ESMTP id S234620AbjJQIlI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 04:39:40 -0400
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B4CFA93;
-        Tue, 17 Oct 2023 01:39:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=krMrh
-        +gnj9GwvY8PuJ2nHyEgdmzG0vhrGe+vOfvIw9Q=; b=lEzTpX+orqfVJ2Q9JhMlE
-        +uWRMpNh5usXqsk/LmzkJH+Ow6i/A5MDgMGkt40XiVkd9CJjWeWOlrn2iWfg8gvr
-        Mo1OK27vnQp89o90Tx8ytYEsZUi50V3+LMBSgrMR/WmP6X9pMESdWJz5TfzgntnV
-        XURDX5D6QZ98BU42et/WHs=
-Received: from ubuntu.. (unknown [171.83.47.247])
-        by zwqz-smtp-mta-g5-4 (Coremail) with SMTP id _____wDnNwI6SC5lUGceAw--.33359S2;
-        Tue, 17 Oct 2023 16:39:22 +0800 (CST)
-From:   Charles <be286@163.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Charles <be286@163.com>
-Subject: [PATCH]         usb: gadget: f_uac1: add adaptive sync support for capture
-Date:   Tue, 17 Oct 2023 16:39:18 +0800
-Message-Id: <20231017083918.1149647-1-be286@163.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 17 Oct 2023 04:41:08 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F323E8
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 01:41:06 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c4fe37f166so61342801fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 01:41:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1697532064; x=1698136864; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vB/kfuKzCfr9/00WQN4N9vxRELf8bEUkzHFo66uF28g=;
+        b=R3ZF9f1HNyy7HOzN+cTg0IAThBU+IHV8MuZTrM97HH1IrK2VM3FN/mic4pWarQQfO7
+         dE6WTJ83n1aDTU/nZ5HnCUORtJ2yAFGiYHTbMthWP4xACRdLolETRTLPwwwtVLRP4OEY
+         5x3f9uomRT+eRZOZZKGuPhwXLKnyZbl0pX1xFRjhpA58x++HJ2bAolWERx6bJILdT6n6
+         pe/IY+sZyd7TDP+ibYrt3iCEiGHumINC2Bv9nlgrmdifB/Rrf4/JAEjxmh3HoEx316n1
+         h/ZvQevyCkhc10wsdJWXWGYeJmm3qw+DPXJ/YbTbCxFrH1Kr2dzVUAg3OAA3WS1VASZi
+         aKxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697532064; x=1698136864;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vB/kfuKzCfr9/00WQN4N9vxRELf8bEUkzHFo66uF28g=;
+        b=e5+4VxhbbeiHC9xXqKbHQsmWH+Vw4g7Bp/JfUdhlgdvA99y5mLMPjr529s4wf99mfR
+         PGb3YFb9/fFFIUp3kwpSWQ/6OjUbwK3ToeJQThpIBHjH/M7RKrt+I2BkTj7N5mo9Aeda
+         shODZJ3gfm51+3zHCb9YV/UmfRXcmxea95Duio08CHbUAwkcJru3ZvYOjQrI4D858Ysf
+         ayNsRVM5nwuoZ+A2WYH2PQ1hSNZIxD7BoiXv4vmfwSCFhzZCe3L3w2gGz+3z0QA4xNLw
+         umVhceJou0kqDfDLKSvBhbpWvzO9zEc3dvYaKpztiT4T6nOyy06t0lETpHl/pOAjA66O
+         RWIA==
+X-Gm-Message-State: AOJu0Yz0EvUdTAfr/+FM0EGqnDdvjSMFv3VowaWLy6xDUOkbGJ5xxcWI
+        Y4/yp4+ltrP1nCkGiC20IhzbnQ==
+X-Google-Smtp-Source: AGHT+IGhiqrfDB4ZTR0M/BpXYyS+AZ/LIFG8yzd1vQg3LLGnmte00ytOqfmObo/yWeIIK6ortCSl8Q==
+X-Received: by 2002:a2e:9214:0:b0:2c2:8f22:d9c2 with SMTP id k20-20020a2e9214000000b002c28f22d9c2mr1361491ljg.22.1697532064466;
+        Tue, 17 Oct 2023 01:41:04 -0700 (PDT)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id n2-20020a5d51c2000000b0032da4f70756sm1164746wrv.5.2023.10.17.01.41.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Oct 2023 01:41:03 -0700 (PDT)
+Date:   Tue, 17 Oct 2023 10:41:02 +0200
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Sunil V L <sunilvl@ventanamicro.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Atish Kumar Patra <atishp@rivosinc.com>
+Subject: Re: [PATCH v3 -next 3/3] RISC-V: cacheflush: Initialize CBO
+ variables on ACPI systems
+Message-ID: <20231017-e198b2c70475b6f09754d175@orel>
+References: <20231016164958.1191529-1-sunilvl@ventanamicro.com>
+ <20231016164958.1191529-4-sunilvl@ventanamicro.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wDnNwI6SC5lUGceAw--.33359S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxAr15JF47Ww4xWFW8ZF1xAFb_yoWrCr1kpw
-        4UC3y0yr45ArZIqr4rAF4rAF43Aa1xG345GrW7Ww4Yganxt3sava42yryFkF17AFWrCw40
-        qF4Fgw1a9w4kCrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pRwvtXUUUUU=
-X-Originating-IP: [171.83.47.247]
-X-CM-SenderInfo: dehsmli6rwjhhfrp/1tbiWxIK0mI0cRDTdAADsC
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,
-        RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231016164958.1191529-4-sunilvl@ventanamicro.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-        UAC1 has it's own freerunning clock and can update Host about
-        real clock frequency through feedback endpoint so Host
-        can align number of samples sent to the UAC1 to
-        prevent overruns/underruns.
+On Mon, Oct 16, 2023 at 10:19:58PM +0530, Sunil V L wrote:
+> Initialize the CBO variables on ACPI based systems using information in
+> RHCT.
+> 
+> Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
+> ---
+>  arch/riscv/mm/cacheflush.c | 25 +++++++++++++++++++------
+>  1 file changed, 19 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
+> index f1387272a551..55a34f2020a8 100644
+> --- a/arch/riscv/mm/cacheflush.c
+> +++ b/arch/riscv/mm/cacheflush.c
+> @@ -3,7 +3,9 @@
+>   * Copyright (C) 2017 SiFive
+>   */
+>  
+> +#include <linux/acpi.h>
+>  #include <linux/of.h>
+> +#include <asm/acpi.h>
+>  #include <asm/cacheflush.h>
+>  
+>  #ifdef CONFIG_SMP
+> @@ -124,13 +126,24 @@ void __init riscv_init_cbo_blocksizes(void)
+>  	unsigned long cbom_hartid, cboz_hartid;
+>  	u32 cbom_block_size = 0, cboz_block_size = 0;
+>  	struct device_node *node;
+> +	struct acpi_table_header *rhct;
+> +	acpi_status status;
+> +
+> +	if (acpi_disabled) {
+> +		for_each_of_cpu_node(node) {
+> +			/* set block-size for cbom and/or cboz extension if available */
+> +			cbo_get_block_size(node, "riscv,cbom-block-size",
+> +					   &cbom_block_size, &cbom_hartid);
+> +			cbo_get_block_size(node, "riscv,cboz-block-size",
+> +					   &cboz_block_size, &cboz_hartid);
+> +		}
+> +	} else {
+> +		status = acpi_get_table(ACPI_SIG_RHCT, 0, &rhct);
+> +		if (ACPI_FAILURE(status))
+> +			return;
+>  
+> -	for_each_of_cpu_node(node) {
+> -		/* set block-size for cbom and/or cboz extension if available */
+> -		cbo_get_block_size(node, "riscv,cbom-block-size",
+> -				   &cbom_block_size, &cbom_hartid);
+> -		cbo_get_block_size(node, "riscv,cboz-block-size",
+> -				   &cboz_block_size, &cboz_hartid);
+> +		acpi_get_cbo_block_size(rhct, &cbom_block_size, &cboz_block_size, NULL);
+> +		acpi_put_table((struct acpi_table_header *)rhct);
+>  	}
+>  
+>  	if (cbom_block_size)
+> -- 
+> 2.39.2
+>
 
-        Change UAC1 driver to make it configurable through
-        additional 'c_sync' configfs file.
-
-        Default remains 'asynchronous' with possibility to
-        switch it to 'adaptive'.
-
-        Signed-off-by: Charles <be286@163.com>
----
- drivers/usb/gadget/function/f_uac1.c | 31 ++++++++++++++++++++++++++++
- drivers/usb/gadget/function/u_uac1.h |  2 ++
- 2 files changed, 33 insertions(+)
-
-diff --git a/drivers/usb/gadget/function/f_uac1.c b/drivers/usb/gadget/function/f_uac1.c
-index 6f0e1d803dc2..0a8e55b19ee7 100644
---- a/drivers/usb/gadget/function/f_uac1.c
-+++ b/drivers/usb/gadget/function/f_uac1.c
-@@ -33,6 +33,8 @@
- #define FUOUT_EN(_opts) ((_opts)->c_mute_present \
- 			|| (_opts)->c_volume_present)
- 
-+#define EPOUT_FBACK_IN_EN(_opts) ((_opts)->c_sync == USB_ENDPOINT_SYNC_ASYNC)
-+
- struct f_uac1 {
- 	struct g_audio g_audio;
- 	u8 ac_intf, as_in_intf, as_out_intf;
-@@ -227,6 +229,16 @@ static struct uac_iso_endpoint_descriptor as_iso_out_desc = {
- 	.wLockDelay =		cpu_to_le16(1),
- };
- 
-+static struct usb_endpoint_descriptor as_fback_ep_desc = {
-+	.bLength = USB_DT_ENDPOINT_SIZE,
-+	.bDescriptorType = USB_DT_ENDPOINT,
-+
-+	.bEndpointAddress = USB_DIR_IN,
-+	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_USAGE_FEEDBACK,
-+	.wMaxPacketSize = cpu_to_le16(3),
-+	.bInterval = 1,
-+};
-+
- static struct uac_format_type_i_discrete_descriptor as_in_type_i_desc = {
- 	.bLength =		0, /* filled on rate setup */
- 	.bDescriptorType =	USB_DT_CS_INTERFACE,
-@@ -280,6 +292,7 @@ static struct usb_descriptor_header *f_audio_desc[] = {
- 
- 	(struct usb_descriptor_header *)&as_out_ep_desc,
- 	(struct usb_descriptor_header *)&as_iso_out_desc,
-+	(struct usb_descriptor_header *)&as_fback_ep_desc,
- 
- 	(struct usb_descriptor_header *)&as_in_interface_alt_0_desc,
- 	(struct usb_descriptor_header *)&as_in_interface_alt_1_desc,
-@@ -1107,6 +1120,9 @@ static void setup_descriptor(struct f_uac1_opts *opts)
- 		f_audio_desc[i++] = USBDHDR(&as_out_type_i_desc);
- 		f_audio_desc[i++] = USBDHDR(&as_out_ep_desc);
- 		f_audio_desc[i++] = USBDHDR(&as_iso_out_desc);
-+		if (EPOUT_FBACK_IN_EN(opts)) {
-+			f_audio_desc[i++] = USBDHDR(&as_fback_ep_desc);
-+		}
- 	}
- 	if (EPIN_EN(opts)) {
- 		f_audio_desc[i++] = USBDHDR(&as_in_interface_alt_0_desc);
-@@ -1317,6 +1333,12 @@ static int f_audio_bind(struct usb_configuration *c, struct usb_function *f)
- 		ac_header_desc->baInterfaceNr[ba_iface_id++] = status;
- 		uac1->as_out_intf = status;
- 		uac1->as_out_alt = 0;
-+
-+		if (EPOUT_FBACK_IN_EN(audio_opts)) {
-+			as_out_ep_desc.bmAttributes =
-+			USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_ASYNC;
-+			as_out_interface_alt_1_desc.bNumEndpoints++;
-+		}
- 	}
- 
- 	if (EPIN_EN(audio_opts)) {
-@@ -1354,6 +1376,13 @@ static int f_audio_bind(struct usb_configuration *c, struct usb_function *f)
- 			goto err_free_fu;
- 		audio->out_ep = ep;
- 		audio->out_ep->desc = &as_out_ep_desc;
-+		if (EPOUT_FBACK_IN_EN(audio_opts)) {
-+			audio->in_ep_fback = usb_ep_autoconfig(gadget,
-+								&as_fback_ep_desc);
-+			if (!audio->in_ep_fback) {
-+				goto err_free_fu;
-+			}
-+		}
- 	}
- 
- 	if (EPIN_EN(audio_opts)) {
-@@ -1685,6 +1714,8 @@ static struct usb_function_instance *f_audio_alloc_inst(void)
- 
- 	opts->req_number = UAC1_DEF_REQ_NUM;
- 
-+	opts->c_sync = UAC1_DEF_CSYNC;
-+
- 	snprintf(opts->function_name, sizeof(opts->function_name), "AC Interface");
- 
- 	return &opts->func_inst;
-diff --git a/drivers/usb/gadget/function/u_uac1.h b/drivers/usb/gadget/function/u_uac1.h
-index f7a616760e31..c6e2271e8cdd 100644
---- a/drivers/usb/gadget/function/u_uac1.h
-+++ b/drivers/usb/gadget/function/u_uac1.h
-@@ -27,6 +27,7 @@
- #define UAC1_DEF_MAX_DB		0		/* 0 dB */
- #define UAC1_DEF_RES_DB		(1*256)	/* 1 dB */
- 
-+#define UAC1_DEF_CSYNC		USB_ENDPOINT_SYNC_ASYNC
- 
- struct f_uac1_opts {
- 	struct usb_function_instance	func_inst;
-@@ -56,6 +57,7 @@ struct f_uac1_opts {
- 
- 	struct mutex			lock;
- 	int				refcnt;
-+	int				c_sync;
- };
- 
- #endif /* __U_UAC1_H */
--- 
-2.34.1
-
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
