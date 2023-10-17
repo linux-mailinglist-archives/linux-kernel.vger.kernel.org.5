@@ -2,105 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 519D67CC1F1
+	by mail.lfdr.de (Postfix) with ESMTP id A97A37CC1F2
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 13:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343616AbjJQLkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 07:40:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40070 "EHLO
+        id S1343621AbjJQLkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 07:40:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234802AbjJQLkQ (ORCPT
+        with ESMTP id S234825AbjJQLkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 07:40:16 -0400
-Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B00BF1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 04:40:14 -0700 (PDT)
-Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-59b5484fbe6so68357757b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 04:40:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697542813; x=1698147613; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=KXDyMdltPzLTsZkp8ftWuE4NIQhI/BZYDqBTjUXxHpg=;
-        b=pRNhleR3aqv2gUp2ILsT0DWoTVxJ7f80X+IfEmYUuS1rHqYY2YBvG3gconO8idqzqe
-         5UO0tUJMti7Xag10emIfznJTMfHXZ0OTmEegq3X9EHHgDqegBf+mpDG3lH3ZOvdS5TqB
-         I6umH968YdhDjK3fSZVipZSauCSMGcRfVPaDhIKRNOou8nH7nZnKcsoiF7k5bQgjAWYP
-         x3hBt0geZ+TZS0Vn3WtZxlhTNMtN50BoabwwgfkG/Oxe3VgxpSLi8fwafmewCOQ8a1AU
-         GsHE6BMk28P7q3NUJDIqgg+/7d7p/ufVxlcn9SugBcB41al4M4o2impCCSF61KLuXmNn
-         LHsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697542813; x=1698147613;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KXDyMdltPzLTsZkp8ftWuE4NIQhI/BZYDqBTjUXxHpg=;
-        b=tSG66lvo2tbS9z+vO3k9qVYzkMf0eWlduIIVung9/lVSgOLV7h/A4NokVo3h8LxCvo
-         zF3aIr6l7W3Czeu9HG2i5BPN6KNbDQgC2aQWDUUFX15ZN70VIpEu8qF7E1dxlUCCcD5o
-         wgzwwzxYP4wbRaPNaTX4MYINNyOmVbygYNon9koO45s06og8jdCMwx01OX2HHghfcJ1Y
-         Zn+/TkO/pGrFXJAd5DvHv3RumeoEFRA9k1+eKaKvwfot/EDbjRz+igmZIS0EACHIEj02
-         Yr1u7+jd1ns4DZqwga96O0hqcjJ+PdHCWxT52jXJrtcaFvF5CY4t1Z547EH7O5TzXEz7
-         wjUA==
-X-Gm-Message-State: AOJu0Yw+IsOCFlFXZgV+pWUwHZBnQbaiE5s2zZP5lH/Ez7PvdFJ3vz2W
-        MrjS5NyVThGfNcBJq3yOfPiK0/pIhxQOHtvIOYaWxw==
-X-Google-Smtp-Source: AGHT+IFED1xyGlNdLMZQbNUNCAPdsokCDKZpZ2zi02FKoDWhkno3Kz5zKfe5mf26mU7SR7ZYm6ok6EHAjVDTg6uMokg=
-X-Received: by 2002:a25:7352:0:b0:d71:6b6e:1071 with SMTP id
- o79-20020a257352000000b00d716b6e1071mr1697738ybc.32.1697542813581; Tue, 17
- Oct 2023 04:40:13 -0700 (PDT)
+        Tue, 17 Oct 2023 07:40:17 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF1CF2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 04:40:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697542815; x=1729078815;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+RU3ekLq2rKS6/ZMzILUFzcx8Nts862dv4DanJnUNHA=;
+  b=nySnQjCnFSLawVl4OS7gKc2DDm7+3lEikH7x4+eXCLMJxbWkxjpj5GZP
+   4G+ug1IBWlg7JVjKM/9ky5RAo1QVxW9iLdIr1qB4l3LY+RqF8ewpieWbN
+   nnaEtfRVfh4PNQHgBx5+9L5ibslvBJvDwdCMW75LfnRDdC/iSANk/czWe
+   tnlnsv1Ecm0/PYVVia5Hmn4oRKkAr+aBYSmb4VRsXaBybZuRvDw+2/4BY
+   Xrbh0NBZ9UqjHhrej2zxK5Mr4uRs4Zvo18vJlAh3R2axEezzDeQtiX8pW
+   E6Nv+1CWQzi7c2rWF642IKrqQWi09oGBpEz4mGbS/d/aUFL5uIB8+VA2e
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="385597862"
+X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
+   d="scan'208";a="385597862"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 04:40:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="1003328653"
+X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
+   d="scan'208";a="1003328653"
+Received: from mstanila-mobl1.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.61.109])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 04:39:59 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id EEC4410A1F3; Tue, 17 Oct 2023 14:39:56 +0300 (+03)
+Date:   Tue, 17 Oct 2023 14:39:56 +0300
+From:   kirill.shutemov@linux.intel.com
+To:     "Compostella, Jeremy" <jeremy.compostella@intel.com>,
+        Adam Dunlap <acdunlap@google.com>
+Cc:     "Huang, Kai" <kai.huang@intel.com>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "Li, Xin3" <xin3.li@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Subject: Re: [PATCH v3 1/2] x86/cpu/intel: Fix MTRR verification for TME
+ enabled platforms
+Message-ID: <20231017113956.dudy6qdq43zaxacx@box.shutemov.name>
+References: <87a5t6ylpc.fsf@jcompost-mobl.amr.corp.intel.com>
+ <00392c722e65c8d0da40384eecf8955be4875969.camel@intel.com>
+ <20231002224752.33qa2lq7q2w4nqws@box>
+ <65d26d679843e26fd5e6252a08391f87243a49c9.camel@intel.com>
+ <20231003070659.hsjvnoc53agvms6c@box.shutemov.name>
+ <87edhyyvkp.fsf@jcompost-mobl.amr.corp.intel.com>
+ <20231014210125.iexeacn6p4naw5qz@box.shutemov.name>
+ <87a5sizgr8.fsf@jcompost-mobl.amr.corp.intel.com>
+ <20231016162609.wfkfsams23exesvs@box.shutemov.name>
+ <875y36zend.fsf@jcompost-mobl.amr.corp.intel.com>
 MIME-Version: 1.0
-References: <20231017061336.9355-1-quic_sartgarg@quicinc.com>
-In-Reply-To: <20231017061336.9355-1-quic_sartgarg@quicinc.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 17 Oct 2023 13:39:37 +0200
-Message-ID: <CAPDyKFrxf4wAyJ94g5LYymSZgDJRWvSCy6C73xyYBfxiV+L83g@mail.gmail.com>
-Subject: Re: [PATCH V3 0/3] mmc: Add partial initialization support
-To:     Sarthak Garg <quic_sartgarg@quicinc.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, quic_cang@quicinc.com,
-        quic_nguyenb@quicinc.com, quic_rampraka@quicinc.com,
-        quic_pragalla@quicinc.com, quic_sayalil@quicinc.com,
-        quic_nitirawa@quicinc.com, quic_sachgupt@quicinc.com,
-        quic_bhaskarv@quicinc.com, quic_narepall@quicinc.com,
-        kernel@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <875y36zend.fsf@jcompost-mobl.amr.corp.intel.com>
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Oct 2023 at 08:13, Sarthak Garg <quic_sartgarg@quicinc.com> wrote:
->
-> Add the ability to partially initialize the MMC device by
-> using device sleep/awake sequence (CMD5).
-> Device will be sent to sleep state during mmc runtime/system suspend
-> and will be woken up during mmc runtime/system resume.
-> By using this sequence the device doesn't need full initialization
-> which gives 25% time reduction in system/runtime resume path.
-> Also enable this feature along with mmc runtime PM for qualcomm
-> controllers.
->
-> Sarthak Garg (3):
->   mmc: core: Add partial initialization support
->   mmc: sdhci-msm: Enable MMC_CAP_AGGRESSIVE_PM for Qualcomm controllers
->   mmc: sdhci-msm: Enable MMC_CAP2_SLEEP_AWAKE for Qualcomm controllers
->
->  drivers/mmc/core/mmc.c       | 163 +++++++++++++++++++++++++++++++++--
->  drivers/mmc/host/sdhci-msm.c |   2 +
->  include/linux/mmc/card.h     |   4 +
->  include/linux/mmc/host.h     |   2 +
->  4 files changed, 162 insertions(+), 9 deletions(-)
+On Mon, Oct 16, 2023 at 10:00:06AM -0700, Compostella, Jeremy wrote:
+> #+begin_signature
+> -- 
+> Jeremy
+> One Emacs to rule them all
+> #+end_signature<kirill.shutemov@linux.intel.com> writes:
+> 
+> > On Mon, Oct 16, 2023 at 09:14:35AM -0700, Compostella, Jeremy wrote:
+> >> <kirill.shutemov@linux.intel.com> writes:
+> >> 
+> >> > On Fri, Oct 13, 2023 at 04:03:02PM -0700, Compostella, Jeremy wrote:
+> >> >> "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com> writes:
+> >> >> > On Tue, Oct 03, 2023 at 02:06:52AM +0000, Huang, Kai wrote:
+> >> >> >> On Tue, 2023-10-03 at 01:47 +0300, kirill.shutemov@linux.intel.com wrote:
+> >> >> >> > On Fri, Sep 29, 2023 at 09:14:00AM +0000, Huang, Kai wrote:
+> >> >> >> > > On Thu, 2023-09-28 at 15:30 -0700, Compostella, Jeremy wrote:
+> >> >> >> > > > On TME enabled platform, BIOS publishes MTRR taking into account Total
+> >> >> >> > > > Memory Encryption (TME) reserved bits.
+> >> >> >> > > > 
+> >> >> >> > > > generic_get_mtrr() performs a sanity check of the MTRRs relying on the
+> >> >> >> > > > `phys_hi_rsvd' variable which is set using the cpuinfo_x86 structure
+> >> >> >> > > > `x86_phys_bits' field.  But at the time the generic_get_mtrr()
+> >> >> >> > > > function is ran the `x86_phys_bits' has not been updated by
+> >> >> >> > > > detect_tme() when TME is enabled.
+> >> >> >> > > > 
+> >> >> >> > > > Since the x86_phys_bits does not reflect yet the real maximal physical
+> >> >> >> > > > address size yet generic_get_mtrr() complains by logging the following
+> >> >> >> > > > messages.
+> >> >> >> > > > 
+> >> >> >> > > >     mtrr: your BIOS has configured an incorrect mask, fixing it.
+> >> >> >> > > >     mtrr: your BIOS has configured an incorrect mask, fixing it.
+> >> >> >> > > >     [...]
+> >> >> >> > > > 
+> >> >> >> > > > In such a situation, generic_get_mtrr() returns an incorrect size but
+> >> >> >> > > > no side effect were observed during our testing.
+> >> >> >> > > > 
+> >> >> >> > > > For `x86_phys_bits' to be updated before generic_get_mtrr() runs,
+> >> >> >> > > > move the detect_tme() call from init_intel() to early_init_intel().
+> >> >> >> > > 
+> >> >> >> > > Hi,
+> >> >> >> > > 
+> >> >> >> > > This move looks good to me, but +Kirill who is the author of detect_tme() for
+> >> >> >> > > further comments.
+> >> >> >> > > 
+> >> >> >> > > Also I am not sure whether it's worth to consider to move this to
+> >> >> >> > > get_cpu_address_sizes(), which calculates the
+> >> >> >> > > virtual/physical address sizes.
+> >> >> >> > > Thus it seems anything that can impact physical address size
+> >> >> >> > > could be put there.
+> >> >> >> > 
+> >> >> >> > Actually, I am not sure how this patch works. AFAICS after the patch we
+> >> >> >> > have the following callchain:
+> >> >> >> > 
+> >> >> >> > early_identify_cpu()
+> >> >> >> >   this_cpu->c_early_init() (which is early_init_init())
+> >> >> >> >     detect_tme()
+> >> >> >> >       c->x86_phys_bits -= keyid_bits;
+> >> >> >> >   get_cpu_address_sizes(c);
+> >> >> >> >     c->x86_phys_bits = eax & 0xff;
+> >> >> >> > 
+> >> >> >> > Looks like get_cpu_address_sizes() would override what detect_tme() does.
+> >> >> >> 
+> >> >> >> After this patch, early_identify_cpu() calls get_cpu_address_sizes() first and
+> >> >> >> then calls c_early_init(), which calls detect_tme().
+> >> >> >> 
+> >> >> >> So looks no override.  No?
+> >> >> 
+> >> >> No override indeed as get_cpu_address_sizes() is always called before
+> >> >> early_init_intel or init_intel().
+> >> >> 
+> >> >> - init/main.c::start_kernel()
+> >> >>   - arch/x86/kernel/setup.c::setup_arch()
+> >> >>     - arch/x86/kernel/cpu/common.c::early_cpu_init()
+> >> >>       - early_identify_cpu()
+> >> >>         - get_cpu_address_sizes(c)
+> >> >>           c->x86_phys_bits = eax & 0xff;
+> >> >>         - arch/x86/kernel/cpu/intel.c::early_init_intel()
+> >> >>           - detect_tme()
+> >> >>             c->x86_phys_bits -= keyid_bits;
+> >> >
+> >> > Hmm.. Do I read it wrong:
+> >> >
+> >> > 	static void __init early_identify_cpu(struct cpuinfo_x86 *c)
+> >> > 	{
+> >> > 	...
+> >> > 		/* cyrix could have cpuid enabled via c_identify()*/
+> >> > 		if (have_cpuid_p()) {
+> >> > 		...
+> >> > 		        // Here we call early_intel_init()
+> >> > 			if (this_cpu->c_early_init)
+> >> > 				this_cpu->c_early_init(c);
+> >> > 			...
+> >> > 		}
+> >> >
+> >> > 		get_cpu_address_sizes(c);
+> >> > 	...
+> >> > 	}
+> >> >
+> >> > ?
+> >> >
+> >> > As far as I see get_cpu_address_sizes() called after early_intel_init().
+> >> 
+> >> On `58720809f527 v6.6-rc6 6.6-rc6 2de3c93ef41b' is what I have:
+> >> 
+> >> ,----
+> >> | 1599  /* cyrix could have cpuid enabled via c_identify()*/
+> >> | 1600  if (have_cpuid_p()) {
+> >> | 1601  	cpu_detect(c);
+> >> | 1602  	get_cpu_vendor(c);
+> >> | 1603  	get_cpu_cap(c);
+> >> | 1604  	get_cpu_address_sizes(c);                   <= called first
+> >> | 1605  	setup_force_cpu_cap(X86_FEATURE_CPUID);
+> >> | 1606  	cpu_parse_early_param();
+> >> | 1607  
+> >> | 1608  	if (this_cpu->c_early_init)
+> >> | 1609  		this_cpu->c_early_init(c);
+> >> | 1610  
+> >> | 1611  	c->cpu_index = 0;
+> >> | 1612  	filter_cpuid_features(c, false);
+> >> | 1613  
+> >> | 1614  	if (this_cpu->c_bsp_init)
+> >> | 1615  		this_cpu->c_bsp_init(c);
+> >> | 1616  } else {
+> >> | 1617  	setup_clear_cpu_cap(X86_FEATURE_CPUID);
+> >> | 1618  }
+> >> `----
+> >> Listing 1: arch/x86/kernel/cpu/common.c
+> >> 
+> >> => get_cpu_address_sizes() is called first which is also conform to my
+> >>    experiments and instrumentation.
+> >
+> > Ah. It got patched in tip tree. See commit fbf6449f84bf.
+> 
+> This commit breaks AMD code as early_init_amd() calls
+> early_detect_mem_encrypt() to adjust x86_phys_bits which is not
+> initialized properly and then overwritten after.
 
-Would mind resending this version and while doing that, please add
-some version information to each patch in the series. This helps while
-reviewing.
+Adam, any comments?
 
-Kind regards
-Uffe
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
