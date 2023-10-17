@@ -2,132 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E67767CBE5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:04:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5A6E7CBE61
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234781AbjJQJEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 05:04:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43398 "EHLO
+        id S234789AbjJQJEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 05:04:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234741AbjJQJEM (ORCPT
+        with ESMTP id S234145AbjJQJEt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 05:04:12 -0400
-Received: from mail.helmholz.de (mail.helmholz.de [217.6.86.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D455F2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 02:04:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=helmholz.de
-        ; s=dkim1; h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date
-        :Subject:CC:To:From:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=xr93BtMovn5IoQemVdcs8ujKiBxoTrW4iPyMfWFZv7g=; b=DHouHpBZWk4pxV8zUnRbaudLm9
-        9NMilUz55D2FjnxDIVC/sDYiGVyv4qxAlWbY0ePY0iYZVKJS+QBzMACAXghsuvY/2ulL7KZ0FhR5t
-        urDJo2834PZ2e7f/MJAuEZhucYseI0VHd1B0gekTJ0sbI1mJDyq6uQzSQGbD+ndTQt6f82Poouwxn
-        MBKfISVRRtCgSw7sklJSP549jxC3mJ6ttNWmFMqJifMm/N7Zhe5yoc2adbBbo+dYKz7CUlzuJbNjn
-        XYEAXHG8FnxPx6FoeX18ySNKdXOyfYmP/IVe02XQmmrPlkApY/5FnrgnjOjMoXBMVVi9OX9ZkEgVg
-        2gHwGn7A==;
-Received: from [192.168.1.4] (port=10741 helo=SH-EX2013.helmholz.local)
-        by mail.helmholz.de with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
-        (Exim 4.96)
-        (envelope-from <Ante.Knezic@helmholz.de>)
-        id 1qsfzi-0002Po-35;
-        Tue, 17 Oct 2023 11:04:06 +0200
-Received: from linuxdev.helmholz.local (192.168.6.7) by
- SH-EX2013.helmholz.local (192.168.1.4) with Microsoft SMTP Server (TLS) id
- 15.0.1497.48; Tue, 17 Oct 2023 11:04:06 +0200
-From:   Ante Knezic <ante.knezic@helmholz.de>
-To:     <conor@kernel.org>
-CC:     <andrew@lunn.ch>, <ante.knezic@helmholz.de>, <conor+dt@kernel.org>,
-        <davem@davemloft.net>, <devicetree@vger.kernel.org>,
-        <edumazet@google.com>, <f.fainelli@gmail.com>,
-        <krzysztof.kozlowski+dt@linaro.org>, <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <marex@denx.de>,
-        <netdev@vger.kernel.org>, <olteanv@gmail.com>, <pabeni@redhat.com>,
-        <robh+dt@kernel.org>, <woojung.huh@microchip.com>
-Subject: [PATCH net-next v2 2/2] dt-bindings: net: microchip,ksz: document microchip,rmii-clk-internal
-Date:   Tue, 17 Oct 2023 11:04:03 +0200
-Message-ID: <20231017090403.18416-1-ante.knezic@helmholz.de>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20231017-generous-botanical-28436c5ba13a@spud>
-References: <20231017-generous-botanical-28436c5ba13a@spud>
+        Tue, 17 Oct 2023 05:04:49 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 508BC93;
+        Tue, 17 Oct 2023 02:04:48 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-53e08b60febso8331933a12.1;
+        Tue, 17 Oct 2023 02:04:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697533487; x=1698138287; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=B/Hk67Q+giYTh6qT9YmC2zwxxSpcK1axa1hb87I3ZOM=;
+        b=fhrizzr/l/F//bbUH3EQVPH+VrLfunZ7wvPcX54Nc8XZ5JAibR5kY408/Jhxx7Bemr
+         ClP5M3TcGuRW9I8VYfyCBIcFQep463YDtmOZKD5U/8WJkQCakPEV1bzmh2qgvPGbUbPD
+         abn+Jlox0cUTDZSs6CBp+zcc6Y/BIZy8nTy8U/SRpoomgXIsFqU/gug7tXxfxxge2KrJ
+         Xp1LZmnAhLWRZmh8PzHJFPmR9dKwOrEtg7rq4MwWXoWZIrxH7ui7crDScYsiWQQdR6mu
+         V/8fpeYRysCSmpH4yOvzLbCNsTbCsphbFkn87XyMwvL61wotV2Kb/RKxU7t0B74EVDUN
+         eYrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697533487; x=1698138287;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B/Hk67Q+giYTh6qT9YmC2zwxxSpcK1axa1hb87I3ZOM=;
+        b=A0iddpFVY+6dmk/5BdmjquXqXZ1sMLsaI+/djy4q/U7V0K8Z7fyBHEOkZnEF2AsqrV
+         ry14U18XiwzK2TL4Q8erCQM/QhwgMkeVcL+OJfc8z/R3qnl22ndDSckzRAkuv1Y5y74u
+         MJKBYFSjZ8i7bAI2uIKvLHsbeCtYh8ehuIYwaw+bZmhtBIS3F4aAcoC6s+da2k+PLfzv
+         O//xS0MSNmPk2dUFS6q2wKxQeCn2AiTNz8WlNPSKvnmZ/lRmcE+ERBnLvofX4zHQ5jDK
+         m/+2NY6HGFl58gNO/uEuxI7PDYB/NVfOh3uoOOif1TR5I+oC1iVVWTmqBREcM3bMvL/8
+         EKAw==
+X-Gm-Message-State: AOJu0YwofL9yLlmIUi6zEvNPlNcF5ZRlp6jCUYJqY6EQMS9B9QfN9Cj7
+        mMWvC0D7JNBgd0Gb5qjJAw==
+X-Google-Smtp-Source: AGHT+IE556fO87GyMGId4qv9PrxSAzYqqPSIlNZ9KTKHH19u1KQ7UVQmLIXEouDr2rZadRDRs7/wDA==
+X-Received: by 2002:a17:907:98e:b0:9b3:308:d045 with SMTP id bf14-20020a170907098e00b009b30308d045mr1205146ejc.46.1697533486465;
+        Tue, 17 Oct 2023 02:04:46 -0700 (PDT)
+Received: from dorcaslitunya-virtual-machine ([105.163.1.143])
+        by smtp.gmail.com with ESMTPSA id eh15-20020a0564020f8f00b0053e775e428csm798353edb.83.2023.10.17.02.04.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Oct 2023 02:04:46 -0700 (PDT)
+Date:   Tue, 17 Oct 2023 12:04:40 +0300
+From:   Dorcas Litunya <anonolitunya@gmail.com>
+To:     Andi Shyti <andi.shyti@linux.intel.com>
+Cc:     anonolitunya@gmail.com, outreachy@lists.linux.dev,
+        julia.lawall@inria.fr, dan.carpenter@linaro.org,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Teddy Wang <teddy.wang@siliconmotion.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/5] Staging: sm750fb: Rename
+ displayControlAdjust_SM750E
+Message-ID: <ZS5OKMTY4BDX015/@dorcaslitunya-virtual-machine>
+References: <20231016201434.7880-1-anonolitunya@gmail.com>
+ <20231016201434.7880-2-anonolitunya@gmail.com>
+ <ZS2sCEF/LsO8Fzk1@ashyti-mobl2.lan>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.6.7]
-X-ClientProxiedBy: SH-EX2013.helmholz.local (192.168.1.4) To
- SH-EX2013.helmholz.local (192.168.1.4)
-X-EXCLAIMER-MD-CONFIG: 2ae5875c-d7e5-4d7e-baa3-654d37918933
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZS2sCEF/LsO8Fzk1@ashyti-mobl2.lan>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Oct 2023 09:00:15 +0100, Conor Dooley wrote:
-
-> > In both cases (external and internal), the KSZ88X3 is actually providing the
-> > RMII reference clock.
-> > Difference is only will the clock be routed as external
-> > copper track (pin REFCLKO -> pin REFCLKI), or will it be routed internally.
+On Mon, Oct 16, 2023 at 11:32:56PM +0200, Andi Shyti wrote:
+> On Mon, Oct 16, 2023 at 11:14:08PM +0300, Dorcas AnonoLitunya wrote:
+> > Rename function displayControlAdjust_SM750E to
+> > display_control_adjust_SM750E. This follows snakecase naming convention
 > 
-> The switch always provides it's own external reference, wut? Why would
-> anyone actually bother doing this instead of just using the internal
-> reference?
-
-Thats a good question... Other KSZ chips don't have the ability to route clock
-internally, and these two (ksz8863 and ksz8873) are actually by default the
-expecting to route it externally. Why this is so is a matter of HW design. 
-The KSZ88x3 does not have to provide the reference clock, it can be provided 
-externally, by some other device, for example the uC. 
-BUT in case when it is provided by the switch we have the option to route the 
-internal block that is generating the clock to the clock input externally 
-(as a copper track) or internally.
-To quote the manual:
-"When EN_REFCLKO_3 is high, KSZ8863RLL outputs a 50 MHz in REFCLKO_3. 
-Register 198 bit [3] is used to select the internal or external reference clock.
-Internal reference clock means that the clock for the RMII of KSZ8863RLL is
-provided by KSZ8863RLL internally and the REFCLKI_3 pin is unconnected. For the 
-external reference clock, the clock provides to KSZ8863RLL via REFCLKI_3.
-If KSZ8863RLL does not provide the reference clock, this 50 MHz reference clock
-with divide-by-2 (25 MHz) has to be used in X1 pin instead of the 25 MHz 
-crystal, since the clock skew of these two clock sources impacts the RMII timing
-before Rev A3 part. The Rev A3 part can connect the external 50 MHz reference 
-clock to X1 pin and SMTXC3/REFCLKI_3 pins directly with strap pins of pin 17 
-SMTXD33/EN_REFCLKO_3 and pin 18 SMTXD32 to be pulled down."
-
-> > So, this should not affect the clock relation between the uC and the switch
-> > device?
+> I'd go one step further and call it display_control_adjust_sm750e.
 > 
-> > This property has no effect if KSZ88X3 is not providing the reference clock.
+Hi Andi,
+Thanks for this, I will include this in the next patch I submit.
 
-> This appears to contradict with the above, unless I am misunderstanding
-> something.
-
-There are actually 5 RMII clock configuration modes depending on the
-setting of the EN_REFCLKO_3, register 0xC6 and SMTXD32 pin (which affects
-the expected clock, 25 or 50 Mhz), but the patch covers the case in which
-the switch is generating the reference clock (outputing it to REFCLKO_3), 
-because EN_REFCLK0_3 is pulled up. By clearing/setting the 0xC6 bit 3 we can 
-choose whether to connect the REFCLKO to REFCLKI externally, or internally.
-
-If reference clock is being provided to the ksz88x3 by some other device,
-then there is no point in setting the 0xC6 bit 3 because other device is 
-providing the clock to REFCLKI_3 and REFCLKO should not be connected and 
-should not generate the clock (as EN_REFCLKI is pulled down).
-
-> What I would have expected to see is that when the reference clock is
-> provided externally that there would be a clocks property in the DT
-> node, pointing at that external clock & when there was not, then
-> no property. Likely that ship has already said, as I don't see clocks
-> present in the current binding. How does the driver get the frequency of
-> the RMII reference clock when an external reference is provided?
-
-In case when ksz88x3 is generating the reference clock the devices rmii 
-interface should be configured to external clock usage, for example something
-like rmii-clock-ext for TI cpsw. This should be true regardles of whether
-the ksz88x3 node has "microchip,rmii-clk-internal" set or not.
-
+Dorcas
+> Andi
