@@ -2,125 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 671357CC81A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A81A7CC80A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344196AbjJQPxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 11:53:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52392 "EHLO
+        id S1344138AbjJQPwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 11:52:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235088AbjJQPx2 (ORCPT
+        with ESMTP id S1343979AbjJQPwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 11:53:28 -0400
-Received: from smtp-fw-9106.amazon.com (smtp-fw-9106.amazon.com [207.171.188.206])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD31DF5;
-        Tue, 17 Oct 2023 08:53:26 -0700 (PDT)
+        Tue, 17 Oct 2023 11:52:05 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE8209E
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 08:52:03 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9a6190af24aso967799166b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 08:52:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1697558008; x=1729094008;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=I7FWWa7aQS2aYUzbRv0vGUR8vIS4wtaPLaLNjNSlUB4=;
-  b=EqJWlODhGEw+Ghs6lR6J1mf0xVlEnGI+7AUrJHUwwLN84c3EeDfiVNM+
-   S1jPzR2+UoyGaXDxXG4uA5UltcClUFmhoNYrUbABCsDcyh3j27KkuSr7F
-   nCLuQwa3ZiaseWFZWYkGfyzs1mseTSMMoXlAY5smt6OqzRoQpW0DmOqwx
-   k=;
-X-IronPort-AV: E=Sophos;i="6.03,232,1694736000"; 
-   d="scan'208";a="678249753"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-a893d89c.us-west-2.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-9106.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 15:53:21 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan2.pdx.amazon.com [10.39.38.66])
-        by email-inbound-relay-pdx-2b-m6i4x-a893d89c.us-west-2.amazon.com (Postfix) with ESMTPS id 01F3040D73;
-        Tue, 17 Oct 2023 15:53:19 +0000 (UTC)
-Received: from EX19MTAEUA002.ant.amazon.com [10.0.17.79:40649]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.17.120:2525] with esmtp (Farcaster)
- id 7d3a7ec6-0eb4-43ae-9e87-2bdb149c100e; Tue, 17 Oct 2023 15:53:18 +0000 (UTC)
-X-Farcaster-Flow-ID: 7d3a7ec6-0eb4-43ae-9e87-2bdb149c100e
-Received: from EX19D004EUC001.ant.amazon.com (10.252.51.190) by
- EX19MTAEUA002.ant.amazon.com (10.252.50.124) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Tue, 17 Oct 2023 15:53:18 +0000
-Received: from dev-dsk-nsaenz-1b-189b39ae.eu-west-1.amazon.com (10.13.235.138)
- by EX19D004EUC001.ant.amazon.com (10.252.51.190) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Tue, 17 Oct 2023 15:53:13 +0000
-From:   Nicolas Saenz Julienne <nsaenz@amazon.com>
-To:     <kvm@vger.kernel.org>
-CC:     <vkuznets@redhat.com>, <seanjc@google.com>, <pbonzini@redhat.com>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <dave.hansen@linux.intel.com>, <x86@kernel.org>, <hpa@zytor.com>,
-        <graf@amazon.de>, <rkagan@amazon.de>,
-        <linux-kernel@vger.kernel.org>, <anelkz@amazon.de>,
-        Nicolas Saenz Julienne <nsaenz@amazon.com>,
-        <stable@vger.kernel.org>
-Subject: [PATCH v3] KVM: x86: hyper-v: Don't auto-enable stimer on write from user-space
-Date:   Tue, 17 Oct 2023 15:51:02 +0000
-Message-ID: <20231017155101.40677-1-nsaenz@amazon.com>
-X-Mailer: git-send-email 2.40.1
+        d=google.com; s=20230601; t=1697557922; x=1698162722; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h+Szb6nB1OdOcsJ1SkkUkZWUvsgJwxEYpCHP9bITXYs=;
+        b=n81K1t2oANRy3fTGZsMLI3lZ+AAxoqGV9gmhTIQHwkj2sVoVfAjUIAOeZvfE491zPO
+         +KGDzkVs+b8l/jqPx3hRxs3BRytRJQD30PIYuis9jwAmpZvMQTPCNBwq3gcYxgAqofzS
+         VieknTV9aPyTCTqNx/1+tnZu7LdfjwhQWa54S0Mm/2QweW2NW81kOvVgD9lgsW/pCqCh
+         w28872Xkc1Nn2weN6IHPhi4cEbzmJAt6P5ilazEaQd5qUNW9rLyg+38C20zzGLzyp3um
+         vlGk+QK2AGfZ/flP38c0j6ZNk9t3gzBxaNEkKtU2qU47YR/Q3ie9nSGrdxkeU0f1N847
+         PUQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697557922; x=1698162722;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=h+Szb6nB1OdOcsJ1SkkUkZWUvsgJwxEYpCHP9bITXYs=;
+        b=iOqWo/7Mnhg6dKz8zIJ65wP29OIowthe4wnYeaZ+Q4wJEODHuEJZldeaSaL+TSPPyT
+         m1YQ70GhbSRzbSMndjNKnOc/IiQ0HMrWhhFuRy6YT/+NQy8GDmGv1K/zpcw7z9SMGPPQ
+         Sv8MDqW5Ya91o8fKL9bET4+Oq/p2i+bbTPW/Gz+rmf7V8uKr67ewpAGckVF4YaKJl5Gl
+         ixh9fMeazHPfnDK3GzeTLr3ZDTPPhtzJB4LonoAvI+Zyc141VbarYpdWOSEO3oA7v6UB
+         deQIR+1bii8H9zben5vuxLVSH4MCiD8ciQzYo9hRw/p/qNdDuetKj/VX6l9jMG5RleR+
+         ev2w==
+X-Gm-Message-State: AOJu0Yzz+D2VSSBfmTLWKzH8TBrelgVh/nCTRFT39JplYh4mXCAQ/Vj4
+        p/puTQ08Mdcorq7/lIqG/H9azH99PGMOq4MxyoQGVw==
+X-Google-Smtp-Source: AGHT+IEdAMihCV/53OUwqI9AfwU19uoqBtkB4Xmq9GtshNSB9srOSQC8B9l1/4PLxdERSHg8dNXluf9vBjoMVcLg4HY=
+X-Received: by 2002:a17:907:1c24:b0:9be:68db:b763 with SMTP id
+ nc36-20020a1709071c2400b009be68dbb763mr2141954ejc.71.1697557921772; Tue, 17
+ Oct 2023 08:52:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.13.235.138]
-X-ClientProxiedBy: EX19D036UWB003.ant.amazon.com (10.13.139.172) To
- EX19D004EUC001.ant.amazon.com (10.252.51.190)
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231017003519.1426574-1-nphamcs@gmail.com> <CAJD7tka6XRyzYndRNEFZmi0Zj4DD2KnVzt=vMGhfF4iN2B4VKw@mail.gmail.com>
+ <20231017044745.GC1042487@cmpxchg.org> <CAJD7tkbEJDczxPqp2ZcZiz1ZWYdUWZLaiovxiGWcM57md-URhA@mail.gmail.com>
+ <20231017145124.GA1122010@cmpxchg.org>
+In-Reply-To: <20231017145124.GA1122010@cmpxchg.org>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 17 Oct 2023 08:51:25 -0700
+Message-ID: <CAJD7tkbg+SZ=cd5Jzjy4qwSQFdcGWXjHBLxisE4pWaAA=1F4Wg@mail.gmail.com>
+Subject: Re: [PATCH 0/2] minimize swapping on zswap store failure
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
+        cerasuolodomenico@gmail.com, sjenning@redhat.com,
+        ddstreet@ieee.org, vitaly.wool@konsulko.com, hughd@google.com,
+        corbet@lwn.net, konrad.wilk@oracle.com, senozhatsky@chromium.org,
+        rppt@kernel.org, linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, david@ixit.cz,
+        Wei Xu <weixugc@google.com>, Chris Li <chrisl@kernel.org>,
+        Greg Thelen <gthelen@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't apply the stimer's counter side effects when modifying its
-value from user-space, as this may trigger spurious interrupts.
+On Tue, Oct 17, 2023 at 7:51=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
+>
+> On Mon, Oct 16, 2023 at 10:33:23PM -0700, Yosry Ahmed wrote:
+> > On Mon, Oct 16, 2023 at 9:47=E2=80=AFPM Johannes Weiner <hannes@cmpxchg=
+.org> wrote:
+> > > On Mon, Oct 16, 2023 at 05:57:31PM -0700, Yosry Ahmed wrote:
+> > > > On Mon, Oct 16, 2023 at 5:35=E2=80=AFPM Nhat Pham <nphamcs@gmail.co=
+m> wrote:
+> > > So I obviously agree that we still need to invest in decoupling zswap
+> > > space from physical disk slots. It's insanely wasteful, especially
+> > > with larger memory capacities. But while it would be a fantastic
+> > > optimization, I don't see how it would be an automatic solution to th=
+e
+> > > problem that inspired this proposal.
+> >
+> > Well, in my head, I imagine such a world where we have multiple
+> > separate swapping backends with cgroup knob(s) that control what
+> > backends are allowed for each cgroup. A zswap-is-terminal knob is
+> > hacky-ish way of doing that where the backends are only zswap and disk
+> > swap.
+>
+> "I want compression" vs "I want disk offloading" is a more reasonable
+> question to ask at the cgroup level. We've had historically a variety
+> of swap configurations across the fleet. E.g. it's a lot easier to add
+> another swapfile than it is to grow an existing one at runtime. In
+> other cases, one storage config might have one swapfile, another
+> machine model might want to spread it out over multiple disks etc.
+>
+> This doesn't matter much with ghost files. But with conventional
+> swapfiles this requires an unnecessary awareness of the backend
+> topology in order to express container policy. That's no bueno.
 
-For example:
- - The stimer is configured in auto-enable mode.
- - The stimer's count is set and the timer enabled.
- - The stimer expires, an interrupt is injected.
- - The VM is live migrated.
- - The stimer config and count are deserialized, auto-enable is ON, the
-   stimer is re-enabled.
- - The stimer expires right away, and injects an unwarranted interrupt.
+Oh I didn't mean that cgroups would designate specific swapfiles, but
+rather swapping backends, which would be "zswap" or "disk" or both in
+this case. I just imagined an interface that is more generic and
+extensible rather than a specific zswap-is-terminal knob.
 
-Cc: stable@vger.kernel.org
-Fixes: 1f4b34f825e8 ("kvm/x86: Hyper-V SynIC timers")
-Signed-off-by: Nicolas Saenz Julienne <nsaenz@amazon.com>
----
+>
+> > > > Perhaps there is a way we can do this without allocating a zswap en=
+try?
+> > > >
+> > > > I thought before about having a special list_head that allows us to
+> > > > use the lower bits of the pointers as markers, similar to the xarra=
+y.
+> > > > The markers can be used to place different objects on the same list=
+.
+> > > > We can have a list that is a mixture of struct page and struct
+> > > > zswap_entry. I never pursued this idea, and I am sure someone will
+> > > > scream at me for suggesting it. Maybe there is a less convoluted wa=
+y
+> > > > to keep the LRU ordering intact without allocating memory on the
+> > > > reclaim path.
+> > >
+> > > That should work. Once zswap has exclusive control over the page, it
+> > > is free to muck with its lru linkage. A lower bit tag on the next or
+> > > prev pointer should suffice to distinguish between struct page and
+> > > struct zswap_entry when pulling stuff from the list.
+> >
+> > Right.
+> >
+> > We handle incompressible memory internally in a different way, we put
+> > them back on the unevictable list with an incompressible page flag.
+> > This achieves a similar effect.
+>
+> It doesn't. We want those incompressible pages to continue aging
+> alongside their compressible peers, and eventually get written back to
+> disk with them.
 
-Changes since v2: 
-- reword commit message/subject.
+Sorry I wasn't clear, I was talking about the case where zswap is
+terminal. When zswap is not, in our approach we just skip zswap for
+incompressible pages and write them directly to disk. Aging them on
+the LRU is probably the better approach here.
 
-Changes since v1:
-- Cover all 'stimer->config.enable' updates.
-
- arch/x86/kvm/hyperv.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-index 7c2dac6824e2..238afd7335e4 100644
---- a/arch/x86/kvm/hyperv.c
-+++ b/arch/x86/kvm/hyperv.c
-@@ -727,10 +727,12 @@ static int stimer_set_count(struct kvm_vcpu_hv_stimer *stimer, u64 count,
- 
- 	stimer_cleanup(stimer);
- 	stimer->count = count;
--	if (stimer->count == 0)
--		stimer->config.enable = 0;
--	else if (stimer->config.auto_enable)
--		stimer->config.enable = 1;
-+	if (!host) {
-+		if (stimer->count == 0)
-+			stimer->config.enable = 0;
-+		else if (stimer->config.auto_enable)
-+			stimer->config.enable = 1;
-+	}
- 
- 	if (stimer->config.enable)
- 		stimer_mark_pending(stimer, false);
--- 
-2.40.1
-
+For the case where zswap is terminal, making them unevictable incurs
+less page faults, at least for shmem.
