@@ -2,158 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7597CC7CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 755607CC7CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235178AbjJQPqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 11:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33062 "EHLO
+        id S1344277AbjJQPqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 11:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235140AbjJQPqA (ORCPT
+        with ESMTP id S235209AbjJQPqG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 11:46:00 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8994197;
-        Tue, 17 Oct 2023 08:45:44 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 5986221D23;
-        Tue, 17 Oct 2023 15:45:42 +0000 (UTC)
-Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 13C422CD7D;
-        Tue, 17 Oct 2023 15:45:41 +0000 (UTC)
-Date:   Tue, 17 Oct 2023 17:45:39 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     linux-modules@vger.kernel.org
-Cc:     Takashi Iwai <tiwai@suse.com>,
-        Lucas De Marchi <lucas.de.marchi@gmail.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Jiri Slaby <jslaby@suse.com>, Jan Engelhardt <jengelh@inai.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH kmod v5 0/5] kmod /usr support
-Message-ID: <20231017154539.GK6241@kitsune.suse.cz>
-References: <cover.1689589902.git.msuchanek@suse.de>
- <cover.1689681454.git.msuchanek@suse.de>
+        Tue, 17 Oct 2023 11:46:06 -0400
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B17410A
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 08:45:51 -0700 (PDT)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5a7ac4c3666so71706697b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 08:45:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1697557551; x=1698162351; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0mrgPXshN0v6qqkRfhdm7z++OcXc8cz4EqlaMatvDL4=;
+        b=Y+7Tt7h+hxvay5+yY0XwfwxvEwvC1rwyUBnqH6sFMgEth05lz/zC9WMXxw7oDNbnMk
+         XJmM9PD8Rq2oDMAT0+73d88mCtMg3S5Z+JjcMw4hrZnh6acmdOdLmjbEmKmVYfiODRLH
+         Uo21Z8o+/DPowcTUs1CeDBkNTfjodR/N1plj1hlL/31d89Zud6oAgbEbsiwTInHqIouT
+         rRM1ZFKXe2Vko+dMlSPVcnZ2N8+gwESESSmCUGksSR8Z3C0cL2TAfM/a12KpT8OQnr+S
+         U5a8KtrzN7hPtbCRaZMwpE7mOZdUqV/Pa8fwJ/ZYAeI8SAfzd17VK1tWCrvFhhjpOqWc
+         orUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697557551; x=1698162351;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0mrgPXshN0v6qqkRfhdm7z++OcXc8cz4EqlaMatvDL4=;
+        b=TGYoC3zOBslIzcAYYPJajHSW/VF28SsYYfAR4RqqYFwoR5X5LcBYiTxU2nV9vSSZBN
+         vmXmdLoLQp25RjjpLRefyT8Tk28sUHw/OulYXc6cvP1htK7L5Pf7mkSKO3gmj8dmO4zO
+         TVHRCHRom4XVZCkr1YhsN7P8SWFGDdsEGIZXqAAHyiSP48nrtmY+O0ZUc0D2gbUkCS2F
+         t8ci5foKk0PRYozf33ucG79upDImmbkuR57Cf1JegiMzqwpLDdfKAPHh206LnsXrmz6f
+         1bY2hh7TB1kCV7WKLudm1VHn5sewT5HuP5OQ9s5SttMTlJf5A0BsgSMAKGfIyRVSU4DR
+         VIaQ==
+X-Gm-Message-State: AOJu0YwEsYlO3SrpsjF4aFYNYFuyoayCk6nZOds+kYGFjI2ICrABilRg
+        wfgedGh/CUF1Dc4NqLIn9mm9ktKxwFxmdLyhRQmD
+X-Google-Smtp-Source: AGHT+IGHRxj2dP4KvVblGmde8rkHCNUaoyj84XhV8ASt9OQHBcIZq+PiPzhrUnobB2KaHgLd0Lat/LiyB1T8gyOqrHg=
+X-Received: by 2002:a25:c712:0:b0:d9a:52ee:6080 with SMTP id
+ w18-20020a25c712000000b00d9a52ee6080mr2021464ybe.37.1697557551094; Tue, 17
+ Oct 2023 08:45:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1689681454.git.msuchanek@suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-        dkim=none;
-        dmarc=none;
-        spf=softfail (smtp-out1.suse.de: 149.44.160.134 is neither permitted nor denied by domain of msuchanek@suse.de) smtp.mailfrom=msuchanek@suse.de
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [-1.01 / 50.00];
-         ARC_NA(0.00)[];
-         BAYES_HAM(-3.00)[100.00%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(0.20)[suse.de];
-         R_SPF_SOFTFAIL(0.60)[~all:c];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
-         VIOLATED_DIRECT_SPF(3.50)[];
-         MX_GOOD(-0.01)[];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_TWELVE(0.00)[12];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         R_DKIM_NA(0.20)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         FREEMAIL_CC(0.00)[suse.com,gmail.com,inai.de,kernel.org,google.com,fjasle.eu,vger.kernel.org];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: -1.01
-X-Rspamd-Queue-Id: 5986221D23
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <CEA476C1-4CE5-4FFC-91D7-6061C8605B18@oracle.com>
+ <ba2f5560800608541e81fbdd28efa9875b35e491.camel@linux.ibm.com>
+ <932231F5-8050-4436-84B8-D7708DC43845@oracle.com> <7335a4587233626a39ce9bc8a969957d7f43a34c.camel@linux.ibm.com>
+ <FD6FB139-F901-4E55-9705-E7B0023BDBA8@oracle.com> <1149b6dbfdaabef3e48dc2852cc76aa11a6dd6b0.camel@linux.ibm.com>
+ <4A0505D0-2933-43BD-BEEA-94350BB22AE7@oracle.com> <20230913.Ceifae7ievei@digikod.net>
+ <D0F16BFD-72EB-4BE2-BA3D-BAE1BCCDCB6F@oracle.com> <20230914.shah5al9Kaib@digikod.net>
+ <20231005.dajohf2peiBu@digikod.net> <d3b51f26c14fd273d41da3432895fdce9f4d047c.camel@linux.ibm.com>
+In-Reply-To: <d3b51f26c14fd273d41da3432895fdce9f4d047c.camel@linux.ibm.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 17 Oct 2023 11:45:40 -0400
+Message-ID: <CAHC9VhRdU1CZJpPSEdSmui-Xirr0j261K=+SM7KiDwiPG-JSrQ@mail.gmail.com>
+Subject: Re: RFC: New LSM to control usage of x509 certificates
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        Eric Snowberg <eric.snowberg@oracle.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Kanth Ghatraju <kanth.ghatraju@oracle.com>,
+        Konrad Wilk <konrad.wilk@oracle.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Oct 17, 2023 at 9:48=E2=80=AFAM Mimi Zohar <zohar@linux.ibm.com> wr=
+ote:
+> On Thu, 2023-10-05 at 12:32 +0200, Micka=C3=ABl Sala=C3=BCn wrote:
+> > > > > A complementary approach would be to create an
+> > > > > LSM (or a dedicated interface) to tie certificate properties to a=
+ set of
+> > > > > kernel usages, while still letting users configure these constrai=
+nts.
+> > > >
+> > > > That is an interesting idea.  Would the other security maintainers =
+be in
+> > > > support of such an approach?  Would a LSM be the correct interface?
+> > > > Some of the recent work I have done with introducing key usage and =
+CA
+> > > > enforcement is difficult for a distro to pick up, since these chang=
+es can be
+> > > > viewed as a regression.  Each end-user has different signing proced=
+ures
+> > > > and policies, so making something work for everyone is difficult.  =
+Letting the
+> > > > user configure these constraints would solve this problem.
+>
+> Something definitely needs to be done about controlling the usage of
+> x509 certificates.  My concern is the level of granularity.  Would this
+> be at the LSM hook level or even finer granaularity?
 
-it has been a few months since these kmod patches have been posted, and
-a new kmod versio has been released since.
+You lost me, what do you mean by finer granularity than a LSM-based
+access control?  Can you give an existing example in the Linux kernel
+of access control granularity that is finer grained than what is
+provided by the LSMs?
 
-Is there any interest in adding this to kmod?
-
-Thanks
-
-Michal
-
-On Tue, Jul 18, 2023 at 02:01:51PM +0200, Michal Suchanek wrote:
-> Hello,
-> 
-> with these patches it is possible to install kernel modules in an arbitrary
-> directory - eg. moving the /lib/modules to /usr/lib/modules or /opt/linux.
-> 
-> While the modprobe.d and depmod.d search which already includes multiple
-> paths is expanded to also include $(prefix) the module directory still
-> supports only one location, only a different one under $(module_directory).
-> 
-> Having kmod search multiple module locations while only one is supported now
-> might break some assumption about relative module path corresponding to a
-> specific file, would require more invasive changes to implement, and is not
-> supportive of the goal of moving the modules away from /lib.
-> 
-> Both kmod and the kernel need to be patched to make use of this feature.
-> Patched kernel is backwards compatible with older kmod.  Patched kmod
-> with $(module_directory) set to /lib/modules is equivalent to unpatched kmod.
-> 
-> Thanks
-> 
-> Michal
-> 
-> Link: https://lore.kernel.org/linux-modules/20210112160211.5614-1-msuchanek@suse.de/
-> 
-> v4: set whole path to module directory instead of adding prefix
-> v5: use pkg-config instead of jq, fix build on openssl without sm3 support
-> 
-> 
-> Michal Suchanek (5):
->   configure: Detect openssl sm3 support
->   man/depmod.d: Fix incorrect /usr/lib search path
->   libkmod, depmod: Load modprobe.d, depmod.d from ${prefix}/lib.
->   kmod: Add pkgconfig file with kmod compile time configuration
->   libkmod, depmod, modprobe: Make directory for kernel modules
->     configurable
-> 
->  Makefile.am                          |   6 +-
->  configure.ac                         |  30 ++++++++
->  libkmod/libkmod.c                    |  11 +--
->  man/Makefile.am                      |  10 ++-
->  man/depmod.d.xml                     |   9 ++-
->  man/depmod.xml                       |   4 +-
->  man/modinfo.xml                      |   2 +-
->  man/modprobe.d.xml                   |   1 +
->  man/modprobe.xml                     |   2 +-
->  man/modules.dep.xml                  |   6 +-
->  testsuite/module-playground/Makefile |   2 +-
->  testsuite/setup-rootfs.sh            | 109 +++++++++++++++------------
->  testsuite/test-depmod.c              |  16 ++--
->  testsuite/test-testsuite.c           |   8 +-
->  tools/depmod.c                       |   7 +-
->  tools/kmod.pc.in                     |  10 +++
->  tools/modinfo.c                      |   4 +-
->  tools/modprobe.c                     |   4 +-
->  tools/static-nodes.c                 |   6 +-
->  19 files changed, 156 insertions(+), 91 deletions(-)
->  create mode 100644 tools/kmod.pc.in
-> 
-> -- 
-> 2.41.0
-> 
+--=20
+paul-moore.com
