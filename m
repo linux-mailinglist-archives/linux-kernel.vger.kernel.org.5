@@ -2,229 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC3B7CBA0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 07:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50F9E7CBA14
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 07:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234529AbjJQFZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 01:25:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47198 "EHLO
+        id S234598AbjJQFZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 01:25:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234510AbjJQFYj (ORCPT
+        with ESMTP id S234539AbjJQFZN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 01:24:39 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAA53FF;
-        Mon, 16 Oct 2023 22:24:37 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kl2Y2Co2jCcy10K/IQJAanTeLvqLwNyZVpfYkNS8yr2LQG73gUNBa7ZFXNNxB4HgmYn/RVw1yOO8J2FtNkK2XDCZUn6hEn7Wps2gvZQBvyPZa6HDg55+RB4V31O+RP/iJXH4A5Nx5ubPO52KaWwqf+NGw+QyQuuIIprtIgLKYDnDg5vxJanhskQi62L0rspTbL82afi2Jr23kPs/nBzbJXsM8KbpnKo6oZEFsDT5+dGXNLwredDWEPOXTutf78OD9P9KfiDY3Hm6+IQ8eqCtVTp0kt7xqhwVXJIjV+JQBb8/s5pu285gfVVeBX7Nol3L45RaMYi4cZ4lMPmjZY8/5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UXHGduJtyi7mXIsshVNZYDX99dwCb7TKZNhicwBr1bc=;
- b=WZXmUs+Pafbmh6/eURBu9YRy14XFUfh38uxbUQ9bOLp7ut75lnN3iI71GtW7gAae4i2NprKU5BfpFthGmHCjIkKX3ifgRMEwtQLv2pxVcg/e4sDh9htm/Jj3GltejNttTkBEnoffz9S87s6C/NJPPZ1M9c4kMoxXEm8PUhdA5N0EnS5EHwL2CrCrNBx+Qa4tPvNTMrX7S+7xIxeVF0d1SAJrpSvkqUsklKxO/wZM2Jt/SWa74Y2eQyp0XkWt9a/28QQ1wKvr+Np+GF/MAiRbZoRYLxfXEOuJf3I5oQBxgUKlaTmLwhQF3xZan753Ke3p8GbFVw8jvfnP+S3TKSDCsQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UXHGduJtyi7mXIsshVNZYDX99dwCb7TKZNhicwBr1bc=;
- b=oL5r9aSfQK0G1lsWhA0w4PbEUCuqi19mWfL6FLXHRf11PLE4EHyJAqJIuPRnr5W3Fu8YKHFgF15wc04rPe0MO8RraBmQnx0K/nOO5A41KqYMXEDxMPLw03Vsib+1EecfMsMTcetNBQLWPU8gA9/mVoYdqQ35WVOkv/sQoe/nAUtGI8V0UD9Wda1/1/U5qnBuWjIqeBgh85k8H3gRFaz9+o68CjFp5DNJBjyhjFS4BYYYIbN/SMUf8ZUayB9/JdP+Ybk47qeJY3PiCp+dwE2hSYcP5pPxSqBJr+ExApBIMkool5uTOTmiEJssLJp1tRqw1Oc0MQvd6ueLc8Z71u23Wg==
-Received: from MN2PR07CA0001.namprd07.prod.outlook.com (2603:10b6:208:1a0::11)
- by SA1PR12MB6821.namprd12.prod.outlook.com (2603:10b6:806:25c::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.35; Tue, 17 Oct
- 2023 05:24:35 +0000
-Received: from BL02EPF0001A0FB.namprd03.prod.outlook.com
- (2603:10b6:208:1a0:cafe::da) by MN2PR07CA0001.outlook.office365.com
- (2603:10b6:208:1a0::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.21 via Frontend
- Transport; Tue, 17 Oct 2023 05:24:35 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- BL02EPF0001A0FB.mail.protection.outlook.com (10.167.242.102) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6838.22 via Frontend Transport; Tue, 17 Oct 2023 05:24:35 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 16 Oct
- 2023 22:24:19 -0700
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 16 Oct
- 2023 22:24:19 -0700
-Received: from localhost.localdomain (10.127.8.10) by mail.nvidia.com
- (10.129.68.10) with Microsoft SMTP Server id 15.2.986.41 via Frontend
- Transport; Mon, 16 Oct 2023 22:24:14 -0700
-From:   Kartik <kkartik@nvidia.com>
-To:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <keescook@chromium.org>, <andy@kernel.org>,
-        <akpm@linux-foundation.org>, <arnd@arndb.de>,
-        <ulf.hansson@linaro.org>, <linus.walleij@linaro.org>,
-        <kkartik@nvidia.com>, <pshete@nvidia.com>, <petlozup@nvidia.com>,
-        <frank.li@vivo.com>, <robh@kernel.org>, <stefank@nvidia.com>,
-        <pdeschrijver@nvidia.com>, <christophe.jaillet@wanadoo.fr>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-hardening@vger.kernel.org>, <linux-mm@kvack.org>
-Subject: [PATCH v7 8/8] soc/tegra: fuse: Add support for Tegra241
-Date:   Tue, 17 Oct 2023 10:53:22 +0530
-Message-ID: <20231017052322.2636-9-kkartik@nvidia.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231017052322.2636-1-kkartik@nvidia.com>
-References: <20231017052322.2636-1-kkartik@nvidia.com>
-MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0001A0FB:EE_|SA1PR12MB6821:EE_
-X-MS-Office365-Filtering-Correlation-Id: e012618d-d03f-4220-bc2c-08dbced159fa
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ANxHDQJD7Glq8PKjNFBUE14y4SZ27R/L26hGqiODdZkkiULhM1BhYUOsMRRj+pwi9l9XmuCGgC1Yu7V6r5Ot2LxRFSg/oeo68u3ZDiTSDNzprtinGe+giHhLFrgQ8saCIxs7fsWD+fxoM4eUzIGFOU5VlQVUDcGYTo2lgoovaG16eTy/erw24r8je46sfNraczxuTo8NtK0Kc5D/xX4z6EeuGHAMIWWurFR21VY3OsTU1HWQr7rSXZDlEF2sLss7la1vbl++jMqsMEpr1Gnp1j51s4qY40QJNY2Y5l32obxdqnIkck4o1iU4ggAB2IyfHj/EnAqBVX8mIXW9uXG1pKKEFvGmrPyocTQI4ZWkgk27bXG5zyTKUmF5NIXKxoWQke5QNFMa3kpC2WyQdbdKalEPWrmZpnHcxXZTnA4jwk0adyXYP4h6Pk22lOphRrFYJgWYs3cVdkMj/Ivdf6iiKM1ym6CyzSVIqG36EsHeMd+cRPJYL+eDjqLZQELcL6Q4FDQMOeaThGsOsQdPNdZIKn38PHzj5Pjey8sWq7VkstY6yFljKFSN+55idaIjZIGJfdoH0rAd1x1YyQTBRGVi3X/pNdmDzYBRxfKheNlZoYSM0SbUqSwSNVJamtGGDHOrTKCcHROD351tDh1Uw/VyxEi0g+JxANGOAM2CGFXHYStSlVTaWf/lIlje5I//YN1EQK/XRUmLQ86weq8kJ32fnswK+SvOMid1++5dmq1gvhn2m0e+4gY/EeJF/iz3CgsiqaDvIwmOSy5DlZYrcgf9R0lD2waTVEYFTzA6mlpEf35vDqpH0YF1WgiLSJcy2XHx
-X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(39860400002)(346002)(396003)(230922051799003)(186009)(1800799009)(451199024)(82310400011)(64100799003)(36840700001)(46966006)(40470700004)(40480700001)(40460700003)(478600001)(70586007)(70206006)(110136005)(6666004)(7636003)(41300700001)(47076005)(921005)(83380400001)(36860700001)(86362001)(82740400003)(356005)(2616005)(1076003)(336012)(26005)(426003)(5660300002)(316002)(36756003)(7416002)(8936002)(8676002)(2906002)(83996005)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Oct 2023 05:24:35.4117
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e012618d-d03f-4220-bc2c-08dbced159fa
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL02EPF0001A0FB.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB6821
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+        Tue, 17 Oct 2023 01:25:13 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 584BC185;
+        Mon, 16 Oct 2023 22:25:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697520303; x=1729056303;
+  h=from:to:cc:subject:date:message-id;
+  bh=uFnVHow6/7iLw6jBlHdpFq+FgPhk3gqeoxO/WOVpyZ8=;
+  b=MOIfAekuBe+snMejfoJBUSTdmbn3w2AbSNO9V7XvVFROWUa7P5KwDoSq
+   GHAqlBjSwhfC05vqUpi6Cy1xuOR3qTU0yRXvgUG6v4nOsgsGY8m0BtBOI
+   5WRCXKhqWLdZ4GYUKL5CCu+p9AH+oB/789qtHkXhHoRLLbvehhFrGaEzF
+   KPbvtGwgo0W21g8Ea4epyJWB9syvtAByP/SS3sbl3kbdqL0AUJcB3kPUc
+   eh9czHCuh5uaTwf8oGUbfoUxg+1SES698+XcekNZyypVIV44UkPThH78U
+   lJW+NW9h1Zvpf5cdLIR52/X0LWFw6B6hwkJgFowdk3417+pzbNuQwKHSo
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="388561713"
+X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
+   d="scan'208";a="388561713"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 22:25:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="1087357954"
+X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
+   d="scan'208";a="1087357954"
+Received: from inlubt0316.iind.intel.com ([10.191.20.213])
+  by fmsmga005.fm.intel.com with ESMTP; 16 Oct 2023 22:24:57 -0700
+From:   lakshmi.sowjanya.d@intel.com
+To:     tglx@linutronix.de, jstultz@google.com, giometti@enneenne.com,
+        corbet@lwn.net, linux-kernel@vger.kernel.org
+Cc:     x86@kernel.org, linux-doc@vger.kernel.org,
+        andriy.shevchenko@linux.intel.com, eddie.dong@intel.com,
+        christopher.s.hall@intel.com, pandith.n@intel.com,
+        mallikarjunappa.sangannavar@intel.com, thejesh.reddy.t.r@intel.com,
+        lakshmi.sowjanya.d@intel.com
+Subject: [PATCH v1 0/6] Add support for Intel PPS Generator
+Date:   Tue, 17 Oct 2023 10:54:51 +0530
+Message-Id: <20231017052457.25287-1-lakshmi.sowjanya.d@intel.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for Tegra241 which use ACPI boot.
+From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
 
-Signed-off-by: Kartik <kkartik@nvidia.com>
----
-v1 -> v2:
-	* Removed few entries from tegra241_fuse_soc which were
-	  initilized as NULL or 0.
----
- drivers/soc/tegra/Kconfig              |  5 +++++
- drivers/soc/tegra/fuse/fuse-tegra.c    |  5 +++++
- drivers/soc/tegra/fuse/fuse-tegra30.c  | 20 ++++++++++++++++++++
- drivers/soc/tegra/fuse/fuse.h          |  4 ++++
- drivers/soc/tegra/fuse/tegra-apbmisc.c |  1 +
- include/soc/tegra/fuse.h               |  1 +
- 6 files changed, 36 insertions(+)
+The goal of the PPS(Pulse Per Second) hardware/software is to generate a
+signal from the system on a wire so that some third-party hardware can
+observe that signal and judge how close the system's time is to another
+system or piece of hardware.
 
-diff --git a/drivers/soc/tegra/Kconfig b/drivers/soc/tegra/Kconfig
-index f16beeabaa92..33512558af9f 100644
---- a/drivers/soc/tegra/Kconfig
-+++ b/drivers/soc/tegra/Kconfig
-@@ -133,6 +133,11 @@ config ARCH_TEGRA_234_SOC
- 	help
- 	  Enable support for the NVIDIA Tegra234 SoC.
- 
-+config ARCH_TEGRA_241_SOC
-+	bool "NVIDIA Tegra241 SoC"
-+	help
-+	  Enable support for the NVIDIA Tegra241 SoC.
-+
- endif
- endif
- 
-diff --git a/drivers/soc/tegra/fuse/fuse-tegra.c b/drivers/soc/tegra/fuse/fuse-tegra.c
-index 1c758f121f91..233b8e7bb41b 100644
---- a/drivers/soc/tegra/fuse/fuse-tegra.c
-+++ b/drivers/soc/tegra/fuse/fuse-tegra.c
-@@ -171,6 +171,11 @@ static int tegra_fuse_probe(struct platform_device *pdev)
- 		case TEGRA234:
- 			fuse->soc = &tegra234_fuse_soc;
- 			break;
-+#endif
-+#if defined(CONFIG_ARCH_TEGRA_241_SOC)
-+		case TEGRA241:
-+			fuse->soc = &tegra241_fuse_soc;
-+			break;
- #endif
- 		default:
- 			return dev_err_probe(&pdev->dev, -EINVAL, "Unsupported SoC: %02x\n", chip);
-diff --git a/drivers/soc/tegra/fuse/fuse-tegra30.c b/drivers/soc/tegra/fuse/fuse-tegra30.c
-index e94d46372a63..2070d36c510d 100644
---- a/drivers/soc/tegra/fuse/fuse-tegra30.c
-+++ b/drivers/soc/tegra/fuse/fuse-tegra30.c
-@@ -678,3 +678,23 @@ const struct tegra_fuse_soc tegra234_fuse_soc = {
- 	.clk_suspend_on = false,
- };
- #endif
-+
-+#if defined(CONFIG_ARCH_TEGRA_241_SOC)
-+static const struct tegra_fuse_info tegra241_fuse_info = {
-+	.read = tegra30_fuse_read,
-+	.size = 0x16008,
-+	.spare = 0xcf0,
-+};
-+
-+static const struct nvmem_keepout tegra241_fuse_keepouts[] = {
-+	{ .start = 0xc, .end = 0x1600c }
-+};
-+
-+const struct tegra_fuse_soc tegra241_fuse_soc = {
-+	.init = tegra30_fuse_init,
-+	.info = &tegra241_fuse_info,
-+	.keepouts = tegra241_fuse_keepouts,
-+	.num_keepouts = ARRAY_SIZE(tegra241_fuse_keepouts),
-+	.soc_attr_group = &tegra194_soc_attr_group,
-+};
-+#endif
-diff --git a/drivers/soc/tegra/fuse/fuse.h b/drivers/soc/tegra/fuse/fuse.h
-index a41e9f85281a..f3b705327c20 100644
---- a/drivers/soc/tegra/fuse/fuse.h
-+++ b/drivers/soc/tegra/fuse/fuse.h
-@@ -136,4 +136,8 @@ extern const struct tegra_fuse_soc tegra194_fuse_soc;
- extern const struct tegra_fuse_soc tegra234_fuse_soc;
- #endif
- 
-+#ifdef CONFIG_ARCH_TEGRA_241_SOC
-+extern const struct tegra_fuse_soc tegra241_fuse_soc;
-+#endif
-+
- #endif
-diff --git a/drivers/soc/tegra/fuse/tegra-apbmisc.c b/drivers/soc/tegra/fuse/tegra-apbmisc.c
-index 6457f80821bb..e2ca5d55fd31 100644
---- a/drivers/soc/tegra/fuse/tegra-apbmisc.c
-+++ b/drivers/soc/tegra/fuse/tegra-apbmisc.c
-@@ -64,6 +64,7 @@ bool tegra_is_silicon(void)
- 	switch (tegra_get_chip_id()) {
- 	case TEGRA194:
- 	case TEGRA234:
-+	case TEGRA241:
- 	case TEGRA264:
- 		if (tegra_get_platform() == 0)
- 			return true;
-diff --git a/include/soc/tegra/fuse.h b/include/soc/tegra/fuse.h
-index 3a513be50243..8f421b9f7585 100644
---- a/include/soc/tegra/fuse.h
-+++ b/include/soc/tegra/fuse.h
-@@ -17,6 +17,7 @@
- #define TEGRA186	0x18
- #define TEGRA194	0x19
- #define TEGRA234	0x23
-+#define TEGRA241	0x24
- #define TEGRA264	0x26
- 
- #define TEGRA_FUSE_SKU_CALIB_0	0xf0
+Existing methods (like parallel ports) require software to flip a bit at
+just the right time to create a PPS signal. Many things can prevent
+software from doing this precisely. This (Timed I/O) method is better
+because software only "arms" the hardware in advance and then depends on
+the hardware to "fire" and flip the signal at just the right time.
+
+To generate a PPS signal with this new hardware, the kernel wakes up
+twice a second, once for 1->0 edge and other for the 0->1 edge. It does
+this shortly (~10ms) before the actual change in the signal needs to be
+made. It computes the TSC value at which edge will happen, convert to a
+value hardware understands and program this value to Timed I/O hardware.
+The actual edge transition happens without any further action from the
+kernel.
+
+The result here is a signal coming out of the system that is roughly
+1,000 times more accurate than the old methods. If the system is heavily
+loaded, the difference in accuracy is larger in old methods.
+Facebook and Google are the customers that use this feature.
+
+Application Interface:
+The API to use Timed I/O is very simple. It is enabled and disabled by
+writing a '1' or '0' value to the sysfs enable attribute associated with
+the Timed I/O PPS device. Each Timed I/O pin is represented by a PPS
+device. When enabled, a pulse-per-second(PPS) synchronized with the
+system clock is continuously produced on the Timed I/O pin, otherwise it
+is pulled low.
+
+The Timed I/O signal on the motherboard is enabled in the BIOS setup.
+
+References:
+https://en.wikipedia.org/wiki/Pulse-per-second_signal
+https://drive.google.com/file/d/1vkBRRDuELmY8I3FlfOZaEBp-DxLW6t_V/view
+https://youtu.be/JLUTT-lrDqw
+
+Patch 1 contains the conversion from system time to system counter i.e
+the format that the hardware understands.
+Patch 2 has the conversion from TSC(Time stamp counter) to ART(Always
+running timer) time.
+Patch 3 introduces the interface to check if the clock source is related
+to ART.
+Patch 4 adds the pps(pulse per second) generator tio driver to the pps
+subsystem.
+Patch 5 documentation and usage of the pps tio generator module.
+Patch 6 includes documentation for sysfs interface.
+
+Please help to review the changes.
+
+Thanks in advance,
+Sowjanya
+
+Lakshmi Sowjanya D (6):
+  kernel/time: Add system time to system counter conversion
+  x86/tsc: Convert Time Stamp Counter (TSC) value to Always Running
+    Timer (ART)
+  x86/tsc: Check if the current clock source is related to ART(Always
+    Running Timer)
+  pps: generators: Add PPS Generator TIO Driver
+  Documentation: driver-api: pps: Add Intel Timed I/O PPS generator
+  ABI: pps: Add ABI documentation for Intel TIO
+
+ .../ABI/testing/sysfs-platform-pps-tio        |   7 +
+ Documentation/driver-api/pps.rst              |  22 ++
+ arch/x86/include/asm/tsc.h                    |   4 +
+ arch/x86/kernel/tsc.c                         |  44 +++
+ drivers/pps/generators/Kconfig                |  16 +
+ drivers/pps/generators/Makefile               |   1 +
+ drivers/pps/generators/pps_gen_tio.c          | 302 ++++++++++++++++++
+ include/linux/timekeeping.h                   |   5 +
+ kernel/time/timekeeping.c                     |  69 ++++
+ 9 files changed, 470 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-platform-pps-tio
+ create mode 100644 drivers/pps/generators/pps_gen_tio.c
+
 -- 
-2.34.1
+2.17.1
 
