@@ -2,120 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B5B7CCC14
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 21:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71BFB7CCCA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 21:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344199AbjJQTTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 15:19:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60842 "EHLO
+        id S234891AbjJQTxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 15:53:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344240AbjJQTS5 (ORCPT
+        with ESMTP id S232208AbjJQTxE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 15:18:57 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 991F5F0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 12:18:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697570335; x=1729106335;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=IZ3eB+oCDwnWDLhOzhIgiJNjq3MnEpx6QhwptGlF+lM=;
-  b=hqQm3pLThKPKjVC21M8yEBpnrkBIHbOWcT0CeWV0MyATyXWhVEFZ1O3A
-   HrKsi2IF1g9ImM3VDN5UnXvgrstrYTUgltADCThGYzbAftprFYDvXRPDO
-   qXDGquwhij1YFP5ePnc4qHpkdNiDiMtRO3UIcB2/4lIzG+t98eCsiWJGX
-   KRlORCEAaHFMYhFPJ8mKY5CvXhD8EfnDXaJXH9CMXBGyco/OCheSzMQyI
-   dNGl2j4kYAEsW8lKBasfIh50OkELXcUQFgoOabqkQkoTYW6yTtYQdlYSU
-   IjS/rdzeE4ZYvlKjHoqOrDzjAs/rohUPkzTObFZ5Oq1lOq9kcWBxZppy0
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="384742050"
-X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
-   d="scan'208";a="384742050"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 12:18:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="1003463798"
-X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
-   d="scan'208";a="1003463798"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 17 Oct 2023 12:18:49 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qspaX-0009zD-2y;
-        Tue, 17 Oct 2023 19:18:46 +0000
-Date:   Wed, 18 Oct 2023 03:18:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Saurabh Sengar <ssengar@linux.microsoft.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>
-Subject: drivers/hv/channel.c:597: warning: Function parameter or member
- 'size' not described in 'request_arr_init'
-Message-ID: <202310180325.z51l0QSy-lkp@intel.com>
+        Tue, 17 Oct 2023 15:53:04 -0400
+X-Greylist: delayed 2013 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 17 Oct 2023 12:53:03 PDT
+Received: from mx11lb.world4you.com (mx11lb.world4you.com [81.19.149.121])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B8A9E;
+        Tue, 17 Oct 2023 12:53:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=engleder-embedded.com; s=dkim11; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=hRbfGybtcC4Q4xK9Jhz49EEEj1HrZpSkJKq488b1wYI=; b=f3O6uWhfVuFcx5VC4Lri+Z8xMP
+        aEAuW35JcCDw5jyvHUXN3ojVvwLDrrKBdcXWV35W/scFFPYxd/XGYrSFvo7AMm1p+AcgQuC5HxjHh
+        4tLECcrM98rS0sfpSF238CJu0LyNkPyA/fEFFJQoq3wZ3pRV5a9B7XA1KST8l+3I6Qyg=;
+Received: from [88.117.60.21] (helo=[10.0.0.160])
+        by mx11lb.world4you.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <gerhard@engleder-embedded.com>)
+        id 1qspai-0000aP-2c;
+        Tue, 17 Oct 2023 21:18:56 +0200
+Message-ID: <00181d0f-e7b3-4fb1-a3f7-12935ab03f8b@engleder-embedded.com>
+Date:   Tue, 17 Oct 2023 21:18:51 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 1/8] dt-bindings: net: Add missing
+ (unevaluated|additional)Properties on child node schemas
+To:     Rob Herring <robh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        =?UTF-8?B?bsOnIMOcTkFM?= <arinc.unal@arinc9.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        John Crispin <john@phrozen.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Justin Chen <justin.chen@broadcom.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com
+References: <20231016-dt-net-cleanups-v1-0-a525a090b444@kernel.org>
+ <20231016-dt-net-cleanups-v1-1-a525a090b444@kernel.org>
+Content-Language: en-US
+From:   Gerhard Engleder <gerhard@engleder-embedded.com>
+In-Reply-To: <20231016-dt-net-cleanups-v1-1-a525a090b444@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AV-Do-Run: Yes
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   213f891525c222e8ed145ce1ce7ae1f47921cb9c
-commit: f83705a51275ed29117d46e1d68e8b16dcb40507 Driver: VMBus: Add Devicetree support
-date:   6 months ago
-config: x86_64-buildonly-randconfig-003-20230823 (https://download.01.org/0day-ci/archive/20231018/202310180325.z51l0QSy-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231018/202310180325.z51l0QSy-lkp@intel.com/reproduce)
+On 16.10.23 23:44, Rob Herring wrote:
+> Just as unevaluatedProperties or additionalProperties are required at
+> the top level of schemas, they should (and will) also be required for
+> child node schemas. That ensures only documented properties are
+> present for any node.
+> 
+> Add unevaluatedProperties or additionalProperties as appropriate.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>   .../devicetree/bindings/net/allwinner,sun8i-a83t-emac.yaml     |  2 ++
+>   Documentation/devicetree/bindings/net/dsa/brcm,sf2.yaml        |  1 +
+>   Documentation/devicetree/bindings/net/dsa/mediatek,mt7530.yaml |  2 ++
+>   .../devicetree/bindings/net/dsa/microchip,lan937x.yaml         |  1 +
+>   Documentation/devicetree/bindings/net/dsa/nxp,sja1105.yaml     |  2 ++
+>   Documentation/devicetree/bindings/net/dsa/qca8k.yaml           |  1 +
+>   Documentation/devicetree/bindings/net/dsa/realtek.yaml         |  2 ++
+>   .../devicetree/bindings/net/dsa/renesas,rzn1-a5psw.yaml        | 10 ++--------
+>   Documentation/devicetree/bindings/net/engleder,tsnep.yaml      |  1 +
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310180325.z51l0QSy-lkp@intel.com/
+Looks good for tsnep.
 
-All warnings (new ones prefixed by >>):
+Reviewed-by: Gerhard Engleder <gerhard@engleder-embedded.com>
 
->> drivers/hv/channel.c:597: warning: Function parameter or member 'size' not described in 'request_arr_init'
+Thank you!
 
-
-vim +597 drivers/hv/channel.c
-
-3e7ee4902fe699 drivers/staging/hv/Channel.c Hank Janssen   2009-07-13  588  
-e8b7db38449ac5 drivers/hv/channel.c         Andres Beltran 2020-11-09  589  /**
-e8b7db38449ac5 drivers/hv/channel.c         Andres Beltran 2020-11-09  590   * request_arr_init - Allocates memory for the requestor array. Each slot
-e8b7db38449ac5 drivers/hv/channel.c         Andres Beltran 2020-11-09  591   * keeps track of the next available slot in the array. Initially, each
-e8b7db38449ac5 drivers/hv/channel.c         Andres Beltran 2020-11-09  592   * slot points to the next one (as in a Linked List). The last slot
-e8b7db38449ac5 drivers/hv/channel.c         Andres Beltran 2020-11-09  593   * does not point to anything, so its value is U64_MAX by default.
-e8b7db38449ac5 drivers/hv/channel.c         Andres Beltran 2020-11-09  594   * @size The size of the array
-e8b7db38449ac5 drivers/hv/channel.c         Andres Beltran 2020-11-09  595   */
-e8b7db38449ac5 drivers/hv/channel.c         Andres Beltran 2020-11-09  596  static u64 *request_arr_init(u32 size)
-e8b7db38449ac5 drivers/hv/channel.c         Andres Beltran 2020-11-09 @597  {
-e8b7db38449ac5 drivers/hv/channel.c         Andres Beltran 2020-11-09  598  	int i;
-e8b7db38449ac5 drivers/hv/channel.c         Andres Beltran 2020-11-09  599  	u64 *req_arr;
-e8b7db38449ac5 drivers/hv/channel.c         Andres Beltran 2020-11-09  600  
-e8b7db38449ac5 drivers/hv/channel.c         Andres Beltran 2020-11-09  601  	req_arr = kcalloc(size, sizeof(u64), GFP_KERNEL);
-e8b7db38449ac5 drivers/hv/channel.c         Andres Beltran 2020-11-09  602  	if (!req_arr)
-e8b7db38449ac5 drivers/hv/channel.c         Andres Beltran 2020-11-09  603  		return NULL;
-e8b7db38449ac5 drivers/hv/channel.c         Andres Beltran 2020-11-09  604  
-e8b7db38449ac5 drivers/hv/channel.c         Andres Beltran 2020-11-09  605  	for (i = 0; i < size - 1; i++)
-e8b7db38449ac5 drivers/hv/channel.c         Andres Beltran 2020-11-09  606  		req_arr[i] = i + 1;
-e8b7db38449ac5 drivers/hv/channel.c         Andres Beltran 2020-11-09  607  
-e8b7db38449ac5 drivers/hv/channel.c         Andres Beltran 2020-11-09  608  	/* Last slot (no more available slots) */
-e8b7db38449ac5 drivers/hv/channel.c         Andres Beltran 2020-11-09  609  	req_arr[i] = U64_MAX;
-e8b7db38449ac5 drivers/hv/channel.c         Andres Beltran 2020-11-09  610  
-e8b7db38449ac5 drivers/hv/channel.c         Andres Beltran 2020-11-09  611  	return req_arr;
-e8b7db38449ac5 drivers/hv/channel.c         Andres Beltran 2020-11-09  612  }
-e8b7db38449ac5 drivers/hv/channel.c         Andres Beltran 2020-11-09  613  
-
-:::::: The code at line 597 was first introduced by commit
-:::::: e8b7db38449ac5b950a3f00519171c4be3e226ff Drivers: hv: vmbus: Add vmbus_requestor data structure for VMBus hardening
-
-:::::: TO: Andres Beltran <lkmlabelt@gmail.com>
-:::::: CC: Wei Liu <wei.liu@kernel.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>   Documentation/devicetree/bindings/net/nxp,tja11xx.yaml         |  1 +
+>   10 files changed, 15 insertions(+), 8 deletions(-)
