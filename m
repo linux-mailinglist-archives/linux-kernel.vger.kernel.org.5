@@ -2,89 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A53167CBA6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 07:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 375617CBA7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 08:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234426AbjJQFzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 01:55:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60704 "EHLO
+        id S234460AbjJQGCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 02:02:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234391AbjJQFzX (ORCPT
+        with ESMTP id S234426AbjJQGCO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 01:55:23 -0400
-Received: from out-205.mta1.migadu.com (out-205.mta1.migadu.com [IPv6:2001:41d0:203:375::cd])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 781BB9E
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 22:55:21 -0700 (PDT)
-Date:   Tue, 17 Oct 2023 05:55:14 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1697522119;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PDw0gF01ql4reoKKcsChe+eJJjJlQChkycqYZXo087I=;
-        b=CpzQZCPjIgSyy+TVXsiZSJsljM+rypsTxolK50cQs8vm+k+ybPDlpClfb7BT2iAujvoHed
-        MBbHByMOp1dlPjF7/HOTbHrGb7hqfxuFjnIXVqzTeRx/KERpa7yQxgFbtLfEEvIV6eu0ch
-        4fh5JVCsa8Eo9h1i/BNSxRDHPv+OTVg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Oliver Upton <oliver.upton@linux.dev>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Sebastian Ott <sebott@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Shaoqin Huang <shahuang@redhat.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v7 07/12] KVM: arm64: PMU: Set PMCR_EL0.N for vCPU based
- on the associated PMU
-Message-ID: <ZS4hwr4Y4b-9aFYy@linux.dev>
-References: <20231009230858.3444834-1-rananta@google.com>
- <20231009230858.3444834-8-rananta@google.com>
- <b4739328-5dba-a3a6-54ef-2db2d34201d8@redhat.com>
- <CAJHc60zpH8Y8h72=jUbshGoqye20FaHRcsb+TFDxkk7rhJAUxQ@mail.gmail.com>
- <ZS2L6uIlUtkltyrF@linux.dev>
- <CAJHc60wvMSHuLuRsZJOn7+r7LxZ661xEkDfqxGHed5Y+95Fxeg@mail.gmail.com>
- <ZS4hGL5RIIuI1KOC@linux.dev>
+        Tue, 17 Oct 2023 02:02:14 -0400
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 663A0B6
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 23:02:12 -0700 (PDT)
+Received: from localhost.localdomain (unknown [219.141.250.2])
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 7ECEB6027B148;
+        Tue, 17 Oct 2023 14:01:59 +0800 (CST)
+X-MD-Sfrom: zeming@nfschina.com
+X-MD-SrcIP: 219.141.250.2
+From:   Li zeming <zeming@nfschina.com>
+To:     bsingharora@gmail.com
+Cc:     linux-kernel@vger.kernel.org, Li zeming <zeming@nfschina.com>
+Subject: [PATCH] =?UTF-8?q?taskstats:=20Remove=20unnecessary=20=E2=80=980?= =?UTF-8?q?=E2=80=99=20values=20from=20rc?=
+Date:   Tue, 17 Oct 2023 14:01:57 +0800
+Message-Id: <20231017060157.10117-1-zeming@nfschina.com>
+X-Mailer: git-send-email 2.18.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZS4hGL5RIIuI1KOC@linux.dev>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 05:52:24AM +0000, Oliver Upton wrote:
-> On Mon, Oct 16, 2023 at 02:35:52PM -0700, Raghavendra Rao Ananta wrote:
-> 
-> [...]
-> 
-> > > What's the point of doing this in the first place? The implementation of
-> > > kvm_vcpu_read_pmcr() is populating PMCR_EL0.N using the VM-scoped value.
-> > >
-> > I guess originally the change replaced read_sysreg(pmcr_el0) with
-> > kvm_vcpu_read_pmcr(vcpu) to maintain consistency with others.
-> > But if you and Sebastian feel that it's an overkill and directly
-> > getting the value via vcpu->kvm->arch.pmcr_n is more readable, I'm
-> > happy to make the change.
-> 
-> No, I'd rather you delete the line where PMCR_EL0.N altogether.
+rc is assigned first, so it does not need to initialize the assignment.
 
-... where we set up ...
+Signed-off-by: Li zeming <zeming@nfschina.com>
+---
+ kernel/taskstats.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> reset_pmcr() tries to initialize the field, but your
-> kvm_vcpu_read_pmcr() winds up replacing it with pmcr_n.
-
+diff --git a/kernel/taskstats.c b/kernel/taskstats.c
+index 8ce3fa0c19e2d..5685dead54228 100644
+--- a/kernel/taskstats.c
++++ b/kernel/taskstats.c
+@@ -406,7 +406,7 @@ static struct taskstats *mk_reply(struct sk_buff *skb, int type, u32 pid)
+ 
+ static int cgroupstats_user_cmd(struct sk_buff *skb, struct genl_info *info)
+ {
+-	int rc = 0;
++	int rc;
+ 	struct sk_buff *rep_skb;
+ 	struct cgroupstats *stats;
+ 	struct nlattr *na;
 -- 
-Thanks,
-Oliver
+2.18.2
+
