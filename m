@@ -2,196 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9B2E7CCE5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 22:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C497CCE5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 22:44:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232154AbjJQUoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 16:44:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51004 "EHLO
+        id S234950AbjJQUoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 16:44:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232770AbjJQUn5 (ORCPT
+        with ESMTP id S1344427AbjJQUn6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 16:43:57 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B73792;
-        Tue, 17 Oct 2023 13:43:53 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 274CF60174;
-        Tue, 17 Oct 2023 22:43:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1697575429; bh=JUBD9sFg6gvWejh9DwTAaOrqXlxrXwgq3KheNQfZO8I=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=IxXnZqiOMQYOhBd2Ar0GQ+jYggFnGnghwG8AkKw5qUw/Boi5G8Q6dugd8zxtn7RnR
-         9GwSu9NHWSKbxEW/FSsMYOhn0e62WsGN/Z+rbY7ckTTHRIwjyscYVI4IzPM9Kr/60D
-         LLYLufqvkaHAjIlxn55Qrpb5E6UOiQ9yWFZOsUGJCBN/sHK4UiP3o6iEq+uCAVSeg5
-         f3lFPxy5DmmsiG/tbV3ACO+kiVVnUG6z4FjYpvY2d3H3aLHQrE8fQPMz+eD49Tlgc7
-         7rUeNItQSnvlZNSyz7YWa1L1lBgToXDCZyfbz8HkLvMVdeVVV/RYNzzCq46CUzMpLx
-         u5Z0Tc+J+uDJw==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 9gsXl7XC6Y2V; Tue, 17 Oct 2023 22:43:38 +0200 (CEST)
-Received: from [192.168.1.6] (78-0-136-77.adsl.net.t-com.hr [78.0.136.77])
-        by domac.alu.hr (Postfix) with ESMTPSA id 646035FD95;
-        Tue, 17 Oct 2023 22:43:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1697575418; bh=JUBD9sFg6gvWejh9DwTAaOrqXlxrXwgq3KheNQfZO8I=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=upAsRbHFMNjM4mBoNTk3F/pixfpKaIMm4pFPoXTSkyEnA48BJnwIkHB4AqKK8uait
-         Gr57NtZMz3YHRZ+E5JNSHSblCeakHJHDkZbbc1hCWDm4qXYjddiKareulvvvlpoG0t
-         pwyXCOuMQoDpP6TghxVs+aWCbyID518txf+XFAWglcY3Ss81aFZejyFEcuijnCtvj3
-         nCapve3ZyZz/nD601EZUurEj1BOEAewo9khbHk8nhT7kyeQWFE6ZqTi9T3TWmYAvn8
-         7zgaFiQ7qRG9EceSZlKaTYiBkc/aqaciWXoE5kT2y3NyUaxrZi2WBeDH9bvpOVRLo7
-         lFGwFw5CePjKQ==
-Message-ID: <992dcaf7-2b24-4e91-8c69-a5471da209ae@alu.unizg.hr>
-Date:   Tue, 17 Oct 2023 22:43:36 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] r8169: fix the KCSAN reported data-race in rtl_tx
- while reading TxDescArray[entry].opts1
-Content-Language: en-US
-To:     Simon Horman <horms@kernel.org>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, nic_swsd@realtek.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Marco Elver <elver@google.com>
-References: <20231016214753.175097-1-mirsad.todorovac@alu.unizg.hr>
- <20231016214753.175097-3-mirsad.todorovac@alu.unizg.hr>
- <20231017200138.GB1940501@kernel.org>
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <20231017200138.GB1940501@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Tue, 17 Oct 2023 16:43:58 -0400
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2084.outbound.protection.outlook.com [40.107.104.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F5F79F
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 13:43:56 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Jvgn7yJB+D2MhdKQgA7eVqTYJs58XM5iWHOYiE+FubBMXUUmRGT+EW9eZIEY6x9SsnQy5/opQ48USxq+EqKeS2Itb0S2FQGM3oSeOtjmbSDyx4ZEU6BKSh59x/NpyLWqVddAzhdr2xqJ1GVMIkkiFRMboPMZvXizQmQcBMfuRBd1khgrFh5jR6e7TcatoOUZrUlKKlh7ilz5rvMsvDC38X0ZASdi2piIiV8PUNF1TaOEBy7aKVzGRNYCXmdR1gn/JNANJYZxP/JLP9g7QTwFQhrJASs/df1EbchdfTnD2y8oxGBKQK5HzGQQn200C2wQ0PS1To7H1YfVKBFXBeF2kA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=s2M/ox0Qo8eKJQJkgSwtPtsr8FbERbPzAUXwxFErjsw=;
+ b=V4O1j4fzPQeXHB8Q0GZ5MaCSJNvIrqw9l1uM29Tdk+vo8zLA+knNRuObvSZV6X9QUFI0S11C+cj/QbgsabLLBkAaiUIYrhJ1uznI+8BZkjjKMMKZjo5A14NXbZ4qLSc0tUP+R1QpbveYIW/unSsv0Icj9nr8HuGZbM7qZhB4wpnG6/dwDrTP2BgixyC4RyHSa9cXpSVtZDoe88BQ7/XJ65QGSdh/1FVgswf5/AMYENS40XeLNFutoPq3V0AlQnwxsokns5ZoRN5lUETSApYNkTZDzu86xMByXvJpV1Qt1G+GCkFEOf75CwohROKnxz1Wt60CEKgogSY7szC8dI+W/g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s2M/ox0Qo8eKJQJkgSwtPtsr8FbERbPzAUXwxFErjsw=;
+ b=HU5o4sPV12V5xvoDK/QSZ1LPQ1+59S3d9FUQe4rvEY5FHl6aI7zzRONPYXUdljsqSwCAAs79QfMQq5rckVmQyiTUhUY9YAFLKgZ9y95vSyZP1Z4VryIW7IyuwVKUz5o3+a4yxN7cx3HmBrWaklQWF0807Z1K12T/86o5I/PtF+w=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by PAXPR04MB9218.eurprd04.prod.outlook.com (2603:10a6:102:221::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36; Tue, 17 Oct
+ 2023 20:43:54 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6907.021; Tue, 17 Oct 2023
+ 20:43:53 +0000
+Date:   Tue, 17 Oct 2023 16:43:45 -0400
+From:   Frank Li <Frank.li@nxp.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     alexandre.belloni@bootlin.com, conor.culhane@silvaco.com,
+        joe@perches.com, linux-i3c@lists.infradead.org,
+        linux-kernel@vger.kernel.org, imx@lists.linux.dev
+Subject: Re: [PATCH 3/5] i3c: svc: rename read_len as actual_len
+Message-ID: <ZS7yATy4RmLVFohO@lizhi-Precision-Tower-5810>
+References: <20231016154632.2851957-1-Frank.Li@nxp.com>
+ <20231016154632.2851957-4-Frank.Li@nxp.com>
+ <20231017160729.58984467@xps-13>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231017160729.58984467@xps-13>
+X-ClientProxiedBy: SJ0PR03CA0218.namprd03.prod.outlook.com
+ (2603:10b6:a03:39f::13) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|PAXPR04MB9218:EE_
+X-MS-Office365-Filtering-Correlation-Id: ff3f00bb-70f7-440b-b1a7-08dbcf51c626
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kXbHH5AuGCUSE6nX4Ppv/Csp/z53yoB8Fzm6U6nZsM/x6UEi3P13PUHpqa0TygDu3N7+tUjfwpPaLPNXFwEv8Dy9UIr/4FvGcT5iOt66nNgq/PpeEsjeeBCJLmxN7scjEhsJx5SgqCaqL2hQjzTbTFqBYCnKUa37S59BZ4OYSXFnFXrssR9WzjPdHJbHSxmHf0h5KmQJ74gQhBNOQiSHgvcZKjt9I86zpqQzVokx2UvQlF9/4LFIn43XZyQB7RILSNXJnPYbwziTnTzqSzHGDDtXi4kCuOYmsN+FQM1ox+1fm86d7YwB6TBdoU1SegnCdytv9Uw3uznjV/6L/7G5DJveBWhhVX4WxGV3ElkGHiIe6kKM6FJTMTpxRQ4jjJrImwic/r/hvEMGQQhSdxerbTk3npyMTkN0RenJuM2EXVGDP7Uh5F678Xm+5kdMTzLqpzaUiYt1mhXDKUx8qfEqy3JhrlAf1yaKbduewowJpE/Nv9IKt/XFNLW+pIaov1ZHM4v6AjViHqw4U+7Y+3tRw4G3eghEuaKd7WTLno6DeZUh9goQ0NYSWXMHCo7prjEw2Jy8IRQftefiQ+4OrbPh1CEZ7+hLCmc6QOqTqZJt25xmqYvT3qtEX6rr6al847rC
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(39860400002)(376002)(136003)(366004)(346002)(230922051799003)(1800799009)(451199024)(186009)(64100799003)(66574015)(26005)(41300700001)(83380400001)(6512007)(9686003)(86362001)(38350700005)(38100700002)(2906002)(6506007)(52116002)(33716001)(6666004)(4744005)(5660300002)(6916009)(66946007)(66476007)(66556008)(316002)(8936002)(6486002)(478600001)(4326008)(8676002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?Vf2fnbE6+1gsj738R5b0bQf39CjEO+qLRhkxUfOlI0Sim+yQmGrv7NIPTE?=
+ =?iso-8859-1?Q?6RyXZW+jzqm/Nv1MpkG589kO8+PfT2URdy/D7BLdrrVGdip2RFZnU/7oBt?=
+ =?iso-8859-1?Q?WZ14RzXIcSMlM4LxJ8TGJO4FVxUZbr8KVbXXocYvyl7X+yDYfuHrZDD9vj?=
+ =?iso-8859-1?Q?UmjHqxrb0DNeRL8znO5NwCPPEHuNG9e62/vXmy6cKYGmlOVrbsOFBp/C3Z?=
+ =?iso-8859-1?Q?Eg7kXNwzbwdsva+dy8BJkYDyCqYJeFWGyjOsH3lsVH+C8d4UaZbw5JEUpP?=
+ =?iso-8859-1?Q?mzMjTNCHF6U6nr0OFdamTjdZn5vuD8a3eeakXH2dROrSQZYAddGwp0WiiH?=
+ =?iso-8859-1?Q?ttHtHde2onM+KFv799oF3Q5DR1fdW/frRG8wrEwF05VVF2TiV1pavyot3/?=
+ =?iso-8859-1?Q?etSATfW9rlcf6HVnrEdi7sbhAWxhHN9ubUhaBABZJKw8jwLDHjIPHooSmW?=
+ =?iso-8859-1?Q?2TmhMggjQdZ8C0L4IWlSC210/yoDFXnLMtPzI8oBVZZbt9OjNF1GRK5EXY?=
+ =?iso-8859-1?Q?HHuAY5D3gU+NY8aQOxpU48UfdiEiokHd+ZGoLtdiislaVED65yo5utXY9k?=
+ =?iso-8859-1?Q?6WQH+U4If3Ze9DsWyiU4Fj5qdcKhD12W7ZPutISJyI6D5RPhADe4c0TrrU?=
+ =?iso-8859-1?Q?ExSeJUa0SlBZSjOxZ/ZWTeL/BI8NkyFVgNYVpW6if44m7PGLTpUbCCBS3v?=
+ =?iso-8859-1?Q?1eFJ3ajb2FpqrVc90OhHy9yPROGKyjSgE2b2xHOcHnUOnKG8DoqPddm2kT?=
+ =?iso-8859-1?Q?ZiQ2o7nJWFoWfy0GyNscRPS5v6DQPaSJ6cdWDQrBiS1q6JMOKysu8RM+E9?=
+ =?iso-8859-1?Q?39/CFa7qkzCiujL3WJyXE6kC+Eznr18jYIYY4Ww2qM8Apk/vzZSXCHTL+k?=
+ =?iso-8859-1?Q?lFc4xyMrmkYh8Ty1IAqYMGBjyNXV2fcS+OR88cu1+cU9IE7KcE/m1BwiMO?=
+ =?iso-8859-1?Q?R70+O841zWgVa2UcWPdfgQwSWE8GA/pEXdyeIzem0TLUgwNyteZhGPgtDb?=
+ =?iso-8859-1?Q?yh0kP6asNGPJZJAqqJ3BsKvbpnzvSsbUCJdxC35j7kSqPSTD+7pFgSEBO2?=
+ =?iso-8859-1?Q?Kz/OR35ni07uaC6s6mg7Ph3pezNfXvIhFpkFGs+cVWIPBJq6OEsrKjxx5o?=
+ =?iso-8859-1?Q?P2ZSztwG++mNzPVVVOXLC2sWboNkeiOSglzwQfL0thny7ThymEUfo7/20X?=
+ =?iso-8859-1?Q?qMcvbv1QhkuHBGCB15tUsgjolVAVlZObqW/2nzdCdH8WmggO47uOENbDIi?=
+ =?iso-8859-1?Q?ivqLRQlSBB65FyoeHaYmWAQU3/lNa92KV7TMBF4wpPc7xmqhtF857Xv8UL?=
+ =?iso-8859-1?Q?wSeKzr8LeEjyGKxIptXRpSG55IFCeBnEBnutfSDAkGMlXCXJOrVII+2cXY?=
+ =?iso-8859-1?Q?aIfT2dMVRsM/PQWXZ3j4kaDCSQZ1oCMonT3MSWwhmGVl+IZnQaQjCFjAZD?=
+ =?iso-8859-1?Q?6oucFx5eK5ViQf+9dae5bL3XT3rb00o9iqCnUq527cs6Gv/nilx5RDYc1P?=
+ =?iso-8859-1?Q?HAhZjPlZN8MureACt0pPlwU21FmneZWmRNBv0uwf43hQZ1a13puxKPEi6d?=
+ =?iso-8859-1?Q?Quoh0Ahgt6iXjgZ4IjQ+iwVfB56CBEUU1hfovuutXi7anjOHefRzoFxA2R?=
+ =?iso-8859-1?Q?oEhFtOaElVXFXvUrW9QDDBB4DeBz2wpjlL?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff3f00bb-70f7-440b-b1a7-08dbcf51c626
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Oct 2023 20:43:52.8879
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WB2i2/KjBf2XV3novEdKYIQcuZ45Qf8T3aQVa+UE/5j/kiHxZBfBlLe+duwNQ9qhyFVuGFyOWMd1uRHa5xptBw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9218
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/17/23 22:01, Simon Horman wrote:
-> On Mon, Oct 16, 2023 at 11:47:56PM +0200, Mirsad Goran Todorovac wrote:
->> KCSAN reported the following data-race:
->>
->> ==================================================================
->> BUG: KCSAN: data-race in rtl8169_poll (drivers/net/ethernet/realtek/r8169_main.c:4368 drivers/net/ethernet/realtek/r8169_main.c:4581) r8169
->>
->> race at unknown origin, with read to 0xffff888140d37570 of 4 bytes by interrupt on cpu 21:
->> rtl8169_poll (drivers/net/ethernet/realtek/r8169_main.c:4368 drivers/net/ethernet/realtek/r8169_main.c:4581) r8169
->> __napi_poll (net/core/dev.c:6527)
->> net_rx_action (net/core/dev.c:6596 net/core/dev.c:6727)
->> __do_softirq (kernel/softirq.c:553)
->> __irq_exit_rcu (kernel/softirq.c:427 kernel/softirq.c:632)
->> irq_exit_rcu (kernel/softirq.c:647)
->> sysvec_apic_timer_interrupt (arch/x86/kernel/apic/apic.c:1074 (discriminator 14))
->> asm_sysvec_apic_timer_interrupt (./arch/x86/include/asm/idtentry.h:645)
->> cpuidle_enter_state (drivers/cpuidle/cpuidle.c:291)
->> cpuidle_enter (drivers/cpuidle/cpuidle.c:390)
->> call_cpuidle (kernel/sched/idle.c:135)
->> do_idle (kernel/sched/idle.c:219 kernel/sched/idle.c:282)
->> cpu_startup_entry (kernel/sched/idle.c:378 (discriminator 1))
->> start_secondary (arch/x86/kernel/smpboot.c:210 arch/x86/kernel/smpboot.c:294)
->> secondary_startup_64_no_verify (arch/x86/kernel/head_64.S:433)
->>
->> value changed: 0xb0000042 -> 0x00000000
->>
->> Reported by Kernel Concurrency Sanitizer on:
->> CPU: 21 PID: 0 Comm: swapper/21 Tainted: G             L     6.6.0-rc2-kcsan-00143-gb5cbe7c00aa0 #41
->> Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
->> ==================================================================
->>
->> The read side is in
->>
->> drivers/net/ethernet/realtek/r8169_main.c
->> =========================================
->>     4355 static void rtl_tx(struct net_device *dev, struct rtl8169_private *tp,
->>     4356                    int budget)
->>     4357 {
->>     4358         unsigned int dirty_tx, bytes_compl = 0, pkts_compl = 0;
->>     4359         struct sk_buff *skb;
->>     4360
->>     4361         dirty_tx = tp->dirty_tx;
->>     4362
->>     4363         while (READ_ONCE(tp->cur_tx) != dirty_tx) {
->>     4364                 unsigned int entry = dirty_tx % NUM_TX_DESC;
->>     4365                 u32 status;
->>     4366
->>   → 4367                 status = le32_to_cpu(tp->TxDescArray[entry].opts1);
->>     4368                 if (status & DescOwn)
->>     4369                         break;
->>     4370
->>     4371                 skb = tp->tx_skb[entry].skb;
->>     4372                 rtl8169_unmap_tx_skb(tp, entry);
->>     4373
->>     4374                 if (skb) {
->>     4375                         pkts_compl++;
->>     4376                         bytes_compl += skb->len;
->>     4377                         napi_consume_skb(skb, budget);
->>     4378                 }
->>     4379                 dirty_tx++;
->>     4380         }
->>     4381
->>     4382         if (tp->dirty_tx != dirty_tx) {
->>     4383                 dev_sw_netstats_tx_add(dev, pkts_compl, bytes_compl);
->>     4384                 WRITE_ONCE(tp->dirty_tx, dirty_tx);
->>     4385
->>     4386                 netif_subqueue_completed_wake(dev, 0, pkts_compl, bytes_compl,
->>     4387                                               rtl_tx_slots_avail(tp),
->>     4388                                               R8169_TX_START_THRS);
->>     4389                 /*
->>     4390                  * 8168 hack: TxPoll requests are lost when the Tx packets are
->>     4391                  * too close. Let's kick an extra TxPoll request when a burst
->>     4392                  * of start_xmit activity is detected (if it is not detected,
->>     4393                  * it is slow enough). -- FR
->>     4394                  * If skb is NULL then we come here again once a tx irq is
->>     4395                  * triggered after the last fragment is marked transmitted.
->>     4396                  */
->>     4397                 if (READ_ONCE(tp->cur_tx) != dirty_tx && skb)
->>     4398                         rtl8169_doorbell(tp);
->>     4399         }
->>     4400 }
->>
->> tp->TxDescArray[entry].opts1 is reported to have a data-race and READ_ONCE() fixes
->> this KCSAN warning.
->>
->>     4366
->>   → 4367                 status = le32_to_cpu(READ_ONCE(tp->TxDescArray[entry].opts1));
->>     4368                 if (status & DescOwn)
->>     4369                         break;
->>     4370
->>
->> Fixes: ^1da177e4c3f4 ("initial git repository build")
+On Tue, Oct 17, 2023 at 04:07:29PM +0200, Miquel Raynal wrote:
+> Hi Frank,
 > 
-> Hi Mirsad,
+> Frank.Li@nxp.com wrote on Mon, 16 Oct 2023 11:46:30 -0400:
 > 
-> The fixes tag above seems wrong.
-
-Hi, Simon,
-
-It is taken directly from "git blame" as you can check for yourself.
-
-It is supposed to tag the commits prior to the introduction of git.
-
-If you have a better idea how to denote those, I will be happy to learn,
-but I have no better clue than what "git blame" gives ...
-
-Best regards,
-Mirsad Todorovac
-  
->> Cc: Heiner Kallweit <hkallweit1@gmail.com>
->> Cc: nic_swsd@realtek.com
->> Cc: "David S. Miller" <davem@davemloft.net>
->> Cc: Eric Dumazet <edumazet@google.com>
->> Cc: Jakub Kicinski <kuba@kernel.org>
->> Cc: Paolo Abeni <pabeni@redhat.com>
->> Cc: Marco Elver <elver@google.com>
->> Cc: netdev@vger.kernel.org
->> Link: https://lore.kernel.org/lkml/dc7fc8fa-4ea4-e9a9-30a6-7c83e6b53188@alu.unizg.hr/
->> Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
->> Acked-by: Marco Elver <elver@google.com>
+> > I3C transfer, target can early terminate transfer.
+> > I2C transfer, target can NACK write transfer.
+> > 
+> > 'actual_len' is better name than 'read_len'.
 > 
-> ...
+> I don't find read_len confusing because it may mean "how much bytes
+> were actually read" rather than "how much we need to read". But if
+> actual_len sounds better, I'm fine.
+
+Another reason: According to i3c spec. 5.2.2.3.6 line 6090.
+Target ends or continues the write transfer.
+
+in HDR mode, target can end write transfer. So use 'actual_len'
+
+Do you think I need add it to commit message
+
+Frank
+
+> 
+> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> 
+> > 
+> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> 
+> Thanks,
+> Miqu�l
