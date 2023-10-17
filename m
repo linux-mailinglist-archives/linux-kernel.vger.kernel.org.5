@@ -2,106 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 924CF7CD0E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 01:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 105737CD0E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 01:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234920AbjJQXi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 19:38:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35730 "EHLO
+        id S1344280AbjJQXjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 19:39:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbjJQXiY (ORCPT
+        with ESMTP id S229484AbjJQXjj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 19:38:24 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 659D093;
-        Tue, 17 Oct 2023 16:38:23 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39HMR6ir028067;
-        Tue, 17 Oct 2023 23:38:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=IWC0ejIeguhIC4ILBKph2c64vYIJZoEMTIEb39w2mtA=;
- b=F3Fljm5pdOAzjpCboMXjk9oCxgv4giTPibQ83IDsVvcA5iPQaoo8L11kG/Ov+mhYYIzS
- BLqBfn0SttFit9t7kftO1pXEkKjCSTVHEwrR2jf95yFLW+u6L1IzyUslzPowW/I7vGdU
- J0PVJKH7bKmYAC1NpqV5aKlEXY3tfFvEB7ef2me+htXrx8+gQVdNI01zRIDWe7iXtXtN
- eEVEvf09bzn8o3oejRtDi/nQbJlbUb/sL+VBnkzyxlyCjWFth82evt17TIXjAFOGD2+Q
- MDSn12Rzs5I9Uta4iZyhd38Iyy+/IEv+W/MJCN1BCzKombAeeI626nMa3N9sCPFObFb9 7g== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tsb3xuchd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Oct 2023 23:38:00 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39HNbxFW021478
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Oct 2023 23:37:59 GMT
-Received: from [10.111.183.229] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 17 Oct
- 2023 16:37:58 -0700
-Message-ID: <e9da3fb2-e44a-4c42-8f9f-cf24be12ccb7@quicinc.com>
-Date:   Tue, 17 Oct 2023 16:37:57 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/5] mm: memcg: add per-memcg zswap writeback stat
-Content-Language: en-US
-To:     Nhat Pham <nphamcs@gmail.com>, <akpm@linux-foundation.org>
-CC:     <hannes@cmpxchg.org>, <cerasuolodomenico@gmail.com>,
-        <yosryahmed@google.com>, <sjenning@redhat.com>,
-        <ddstreet@ieee.org>, <vitaly.wool@konsulko.com>,
-        <mhocko@kernel.org>, <roman.gushchin@linux.dev>,
-        <shakeelb@google.com>, <muchun.song@linux.dev>,
-        <linux-mm@kvack.org>, <kernel-team@meta.com>,
-        <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <shuah@kernel.org>
-References: <20231017232152.2605440-1-nphamcs@gmail.com>
- <20231017232152.2605440-4-nphamcs@gmail.com>
- <CAKEwX=NgsbJ6MQJdJoOTDiGyhjhRA8KJdYe5GzV5iK1bRADfuQ@mail.gmail.com>
-From:   Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <CAKEwX=NgsbJ6MQJdJoOTDiGyhjhRA8KJdYe5GzV5iK1bRADfuQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: zyOFRHaOEy14NpYS1DcA20VSnHZvIPLa
-X-Proofpoint-ORIG-GUID: zyOFRHaOEy14NpYS1DcA20VSnHZvIPLa
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-17_07,2023-10-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- impostorscore=0 phishscore=0 mlxlogscore=805 malwarescore=0
- priorityscore=1501 mlxscore=0 adultscore=0 bulkscore=0 clxscore=1011
- lowpriorityscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2309180000 definitions=main-2310170199
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 17 Oct 2023 19:39:39 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C33098
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 16:39:37 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7b9e83b70so47563797b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 16:39:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697585977; x=1698190777; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=JGBhvzlnCVJRzTxqBWtVcPaG4tImGCahlQc9fVIO1X0=;
+        b=are6HD4V/zUa3gJIUXELcCe7F/OAytJN3XOIAGluTa3H7zcRUGzd/I2IhPc8vV3KtV
+         UOMpxoQy0c2kKJlVRah1eNLKHv9vnHSZafnuFvgRr5ehwhCsMKYUGgJn09mZLnO3k8Jn
+         eMH0TXz0JJiXPMTQxJ7rrHA8lY6GV1290CSfq8YrBmpq1tCFJKSuORJmPuCFVpILtcUC
+         g0EeZp62W8MTHF0QNUY1z06wyUOmpzISd+O9ufnEtqr9sfHWctfmpJ6v8pyMRQvZKNoN
+         HTiYsPeepZd1jR6Y9/ZXugEKVYXHDN3+xn7lye5eEEX051MFlsf+ObLcEd1QpFNFkEJT
+         vcLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697585977; x=1698190777;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JGBhvzlnCVJRzTxqBWtVcPaG4tImGCahlQc9fVIO1X0=;
+        b=cuAFkJPPIrBsE+z8+OIpcyPuEiTSz88RS45pvjn4xt1b7WuJadrhCBvbgrqRdT/rsT
+         9VgsNw3sJ3tSjCEeg6fbOvekJexncagQ0JMSmjaJhw684aZk+4eNHZUicSZLjQ7QwpKH
+         vFP/EkFuZ39ET4MSTzf+sHNiCnDK69I6XDSVbzCIVWXH+dPV3oa+U1pafbhIN8E3LFtK
+         cr7SvnqwbCl3xeycZkXzZl8gcsve1r3VKXV+KMEQuyZRkxRcSV9JuoY5XXIbSgndRv1u
+         HjndhuOrRLP1I/JvyRLsCrpzTm5rwflgfnWipDmrinQqLeDGh0Gsqg3jN6Sh2LH+TcTK
+         ihyw==
+X-Gm-Message-State: AOJu0Yy22poo7XiFNdWz1fyxyLg1kHsaQsqaoqy7por2vMtpN+nwz1f6
+        AxnBKNPPv+3DpVGG4WvY/Z4+b5l3nbuJs284OA==
+X-Google-Smtp-Source: AGHT+IFQrTCrIVBagaulvADQkl+80qwLWEtkmca+L3sDOhYkQ2RGFVqhKwB9mPBOXxn4OL5HuHjG30smDswkqHVT1Q==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:690c:2f05:b0:5a8:207a:143a with
+ SMTP id ev5-20020a05690c2f0500b005a8207a143amr78752ywb.0.1697585976848; Tue,
+ 17 Oct 2023 16:39:36 -0700 (PDT)
+Date:   Tue, 17 Oct 2023 23:39:36 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIADcbL2UC/x3NwQ6CMAyA4VchPdtkGyjGVzEexqjaBCtpF5ghv
+ DuLx+/y/xsYKZPBrdlAaWHjr1T4UwPpHeVFyGM1BBda73yPllXS/MNReSE1FMq4stJEZpgZ18l fS8FPZMGE7fkSXejDEIcOanNWenL5/+6PfT8ANMnHuX8AAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1697585975; l=2713;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=VYgIk2B2CGyo/GT7snlzLxpCgV+gVcLc8zijKRkMZRY=; b=c/DJKqnn+Pj/WL+A2qaSz61IFvasOKaZH7VVCSo6ScJAomyFfk3q8LGePxSlJ61eLLst4Qv1o
+ I4jG+OF2AZ/BIlAY2DNEOJyv84A/kTkgDBHpjNWF0zxhJeuy+rNP7p/
+X-Mailer: b4 0.12.3
+Message-ID: <20231017-strncpy-drivers-net-wireless-ti-wl18xx-main-c-v1-1-ed5322ec8068@google.com>
+Subject: [PATCH] wl18xx: replace deprecated strncpy with strscpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Kalle Valo <kvalo@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/17/2023 4:35 PM, Nhat Pham wrote:
-> On Tue, Oct 17, 2023 at 4:21 PM Nhat Pham <nphamcs@gmail.com> wrote:
->>
->> From: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
->>
->> Since zswap now writes back pages from memcg-specific LRUs, we now need a
->> new stat to show writebacks count for each memcg.
->>
->> Suggested-by: Nhat Pham <nphamcs@gmail.com>
->> Signed-off-by: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
->> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
-> 
-> /s/Signed-off/Acked
-> This is Domenico's work :) I used the wrong tag here. Should be:
-> Acked-by: Nhat Pham <nphamcs@gmail.com>
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-no, since you are posting the patch, you have to sign off on it.
-Signed-off-by is correct
+wl->chip.phy_fw_ver_str is obviously intended to be NUL-terminated by
+the deliberate comment telling us as much. Furthermore, its only use is
+drivers/net/wireless/ti/wlcore/debugfs.c shows us it should be
+NUL-terminated since its used in scnprintf:
+492 | DRIVER_STATE_PRINT_STR(chip.phy_fw_ver_str);
+which is defined as:
+| #define DRIVER_STATE_PRINT_STR(x)  DRIVER_STATE_PRINT(x, "%s")
+...
+| #define DRIVER_STATE_PRINT(x, fmt)   \
+| 	(res += scnprintf(buf + res, DRIVER_STATE_BUF_LEN - res,\
+| 			  #x " = " fmt "\n", wl->x))
+
+We can also see that NUL-padding is not required.
+
+Considering the above, a suitable replacement is `strscpy` [2] due to
+the fact that it guarantees NUL-termination on the destination buffer
+without unnecessarily NUL-padding.
+
+The very fact that a plain-english comment had to be made alongside a
+manual NUL-byte assignment for such a simple purpose shows why strncpy
+is faulty. It has non-obvious behavior that has to be clarified every
+time it is used (and if it isn't then the reader suffers).
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
+
+Found with: $ rg "strncpy\("
+---
+ drivers/net/wireless/ti/wl18xx/main.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/drivers/net/wireless/ti/wl18xx/main.c b/drivers/net/wireless/ti/wl18xx/main.c
+index 0b3cf8477c6c..1e4a430d1543 100644
+--- a/drivers/net/wireless/ti/wl18xx/main.c
++++ b/drivers/net/wireless/ti/wl18xx/main.c
+@@ -1516,12 +1516,9 @@ static int wl18xx_handle_static_data(struct wl1271 *wl,
+ 	struct wl18xx_static_data_priv *static_data_priv =
+ 		(struct wl18xx_static_data_priv *) static_data->priv;
+ 
+-	strncpy(wl->chip.phy_fw_ver_str, static_data_priv->phy_version,
++	strscpy(wl->chip.phy_fw_ver_str, static_data_priv->phy_version,
+ 		sizeof(wl->chip.phy_fw_ver_str));
+ 
+-	/* make sure the string is NULL-terminated */
+-	wl->chip.phy_fw_ver_str[sizeof(wl->chip.phy_fw_ver_str) - 1] = '\0';
+-
+ 	wl1271_info("PHY firmware version: %s", static_data_priv->phy_version);
+ 
+ 	return 0;
+
+---
+base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
+change-id: 20231017-strncpy-drivers-net-wireless-ti-wl18xx-main-c-356a0272bab4
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
