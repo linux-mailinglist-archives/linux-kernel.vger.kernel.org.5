@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFBF47CB893
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 04:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F177CB898
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 04:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234259AbjJQCzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 22:55:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34820 "EHLO
+        id S234374AbjJQCzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 22:55:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234068AbjJQCzJ (ORCPT
+        with ESMTP id S234068AbjJQCzL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 22:55:09 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2065.outbound.protection.outlook.com [40.107.93.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A78B0;
-        Mon, 16 Oct 2023 19:55:06 -0700 (PDT)
+        Mon, 16 Oct 2023 22:55:11 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2089.outbound.protection.outlook.com [40.107.223.89])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAB8B93;
+        Mon, 16 Oct 2023 19:55:09 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JNr9fxDUTvxNhaNXJBN0q2qNxxydbKakNUjCLOfzaFU5E8VVCrqg+GX8FZ7vUsLfGiCmMCggrp6xK1KOrTtwxO0tXdsF/MXXBldzUbHl76MxGd+ayojcqFaRXIzDaj2pPCUSMm7KnNVz0NwhBANmXebMu7ei5sfGywjjltVi7Htr8CHLwayjk++++EzIQsmbjgzp/eJAiHjAUtPto1n58GBRSNuRkmAybCzZiOPWbvFouFytfYDmerjTuBfJvYSz/BVtaHUWubew+pNrombHgBm0KnlT8v2UweXRx3rsZMQnbgweHXQBigWXbDjaxGTM3MSqfjFjm7pG2bBaf1udbA==
+ b=Y3TUsHOf1bt3owsxr8u+F1Cwc0qSjiVQNs0nmFXd/0M8nlOtO/+HMvgPnBU6TQ2IBgiTisvsCzSKmSm20IsES1KwkHcTp8ab9Els/HoGq3THR+fVhoqKT33YEt5xMTIgw4NzviUy2in3igNUJ6qRE+D020UtIzdMVNzSg3cYQkIbFQtP1MRveUOARM7RPrXAXk9+HofsfHBBltP0mhpHdUO50wuxV8PQ6hp9W467oDdrgePGZ3OYAXmXC/cdOz9axV3F3FhpluzVMRxndLfEPfJuYMXa0dG9ehcFurfUmmeqONVsNkgd0k7uO5GVu8sq+2XssEzrCu5D6kTXFbRdeg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=K+gEJ/RF2Wvl5nPJwbgZLAAi7HZR0Ydoj7azxY6+1BY=;
- b=Ql+SJst0JCecnU8Ko6RP8hmUSdM3GAFNbL4B/KlODvpXxojWcJCNxtAlRNBzKRdcsAMbS0OERb1wQeVc27FbyrS9XA+ZWyTzxwD+KTUpxtspheSCVrxL8gUf0atE5+6vfFD9PK3eaD1rUSTPxosWB5MoDRL3BCdYv3NmICo8KZNr69KSAqeV9arM7awiWvmnPLC7qMGRKwOAPRcrDX93TDo1UQzzq0AbKZlTlRvlei+Cwgr8ww+cXLszL2/0875y29ZI3i0HqG/gFqNLldZ88qWgRNtKn2+kPQLLom9SnBvZt6+CT28g+irG7Y5zt9lDQxSTQ59HVdCyN3T+iXZz2g==
+ bh=N0CXVGp2TsFtrJzx6bxn1zqnOahBypOmxG4hohg0alw=;
+ b=eN+sOtzmyBkq1uOodzssrsboTYVdPyYLh27DLYljrBk+CJiPjbDcFjpaI1SYCg2p4+N4DuumNaCP+hMAH1SFbbdoi9KrA7YKdLuM9lsORR3sMVnUQdI1ICJgq1klv7BUwG+MrfdyZreR3LoQ0G1SgpfGcBHkFl1yOUDHif8D7HSUstqMsu/5YxpurF0mcugv+nphEoL56hVkDOVmosBpkIoGUAfz4Y+kQLyPKolxr/oIEV25+746EaNIkjApQ3rwiP15EHkBBnkx4PVdaRCBGRi1e0WIsBOWoyTT6xBdXjeUG6GjjlL17tiw40MZhBhBSDgX4RKCycPq6BIr+msi2w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K+gEJ/RF2Wvl5nPJwbgZLAAi7HZR0Ydoj7azxY6+1BY=;
- b=ATQuUcn13Wh4k2B8UntBovBg24cTMX0BpuZMYVi60ZQ5YJnZFM82EFbcWkFnCy1lRgDEnNwXJqMWurOCSai5z75+zkoYH5d6uz/7Xhh4xiryvKRbf54GgQKTkpbFGM7aCY1Ps/39IcDbK4PXaMGKKY7KvxEjnyWUO9VQZDfRfUQ=
-Received: from BY5PR17CA0038.namprd17.prod.outlook.com (2603:10b6:a03:167::15)
- by BN9PR12MB5308.namprd12.prod.outlook.com (2603:10b6:408:105::19) with
+ bh=N0CXVGp2TsFtrJzx6bxn1zqnOahBypOmxG4hohg0alw=;
+ b=4nOtV99sXTZF14/yTj66YNYs+tlN36dGhod0GvcyfUdT/qvJeHLYE9Qm1Kt7g7laSwFX042N/BFgf85GtMm9NQQVLz5y5H327UZQ0uWl5+A6Ug0RqyMEug1rnp4fp8CyvAUQBslxVitdPMzbWWSL8ujpjfSsjKbSZpkhZ6Lu1Tc=
+Received: from BY5PR17CA0047.namprd17.prod.outlook.com (2603:10b6:a03:167::24)
+ by PH8PR12MB8606.namprd12.prod.outlook.com (2603:10b6:510:1ce::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36; Tue, 17 Oct
- 2023 02:55:02 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.34; Tue, 17 Oct
+ 2023 02:55:05 +0000
 Received: from MWH0EPF000989EC.namprd02.prod.outlook.com
- (2603:10b6:a03:167:cafe::5b) by BY5PR17CA0038.outlook.office365.com
- (2603:10b6:a03:167::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.35 via Frontend
- Transport; Tue, 17 Oct 2023 02:55:01 +0000
+ (2603:10b6:a03:167:cafe::d8) by BY5PR17CA0047.outlook.office365.com
+ (2603:10b6:a03:167::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36 via Frontend
+ Transport; Tue, 17 Oct 2023 02:55:05 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -49,11 +49,11 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
  MWH0EPF000989EC.mail.protection.outlook.com (10.167.241.139) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6907.20 via Frontend Transport; Tue, 17 Oct 2023 02:55:01 +0000
+ 15.20.6907.20 via Frontend Transport; Tue, 17 Oct 2023 02:55:05 +0000
 Received: from compile-server.amd.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 16 Oct
- 2023 21:54:56 -0500
+ 2023 21:55:00 -0500
 From:   Ma Jun <Jun.Ma2@amd.com>
 To:     <amd-gfx@lists.freedesktop.org>, <lenb@kernel.org>,
         <johannes@sipsolutions.net>, <davem@davemloft.net>,
@@ -64,10 +64,12 @@ CC:     <majun@amd.com>, <netdev@vger.kernel.org>,
         <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-doc@vger.kernel.org>, <platform-driver-x86@vger.kernel.org>,
         Ma Jun <Jun.Ma2@amd.com>
-Subject: [PATCH v12 0/9] Enable Wifi RFI interference mitigation feature support
-Date:   Tue, 17 Oct 2023 10:53:49 +0800
-Message-ID: <20231017025358.1773598-1-Jun.Ma2@amd.com>
+Subject: [PATCH v12 1/9] Documentation/driver-api: Add document about WBRF mechanism
+Date:   Tue, 17 Oct 2023 10:53:50 +0800
+Message-ID: <20231017025358.1773598-2-Jun.Ma2@amd.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231017025358.1773598-1-Jun.Ma2@amd.com>
+References: <20231017025358.1773598-1-Jun.Ma2@amd.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -76,23 +78,23 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000989EC:EE_|BN9PR12MB5308:EE_
-X-MS-Office365-Filtering-Correlation-Id: fdee2507-71eb-4ceb-3bdc-08dbcebc7507
+X-MS-TrafficTypeDiagnostic: MWH0EPF000989EC:EE_|PH8PR12MB8606:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0f56a8cc-26f6-4456-82dd-08dbcebc7775
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jTUkXdpgZqBWXO9tLemfFTWYY1kpTyTL0I+zLsc8yiWZbA/YSMrfhgqPJpF9hJPiWfFthVYUSvRanYsyaCkvI43x4OVKRAr/lf/tvVHTGOkac8yeu0WZ1TnCmcU3WE/TQiX80/xX/JDxSp0HR7hvIdcGvyspOpVeMeXkDtX6z2tIDGPSE0X8jriyyqIZzLhZ5sg9k6gmv0bj62LrxddP7YDjnnM5DXMet9qpvhsxLN6rEOQeL2V6hzgtwiHPRGzjtotBXsCUYmGtfbZEkphRTa0i0EnKBhsUbEH6M3rlUsG+2mV8uD6Y/c3pyzlTHnv6CqF9Buwhsp39lS16TDsKIb/Z4IaHFr/bLifRTdUFZbIfdoXf4NV+WLEChIlnsfe9O04CBpwVXh+RH+VlvJvxFKsj1SL0bdb2Qb+HAtRh1NC9GK5WzlkFF9PSbQONEtq893Oh0loMTEt0H6PeDdvBRdSxLvPiYKwzW7Sf0ozifKE34465lTD26RCkpCe71G5hvd/2fV+PeMkA8+/EnqubchIhLYEAGr2IDvzJ5otekwJ/rfGGFJ5RMivftY6okFJJAUKuB3yg4QD5/FXV6GuclwwLPt2uYGtc4KwFYWckv6Cbq+dQLFJKdPVsuUAzxAnMLV1TOTJKT0oKqJjaJ8AYX4kc9mtLR0aA2vEEgF+77yEd2Et7cjhMwNKfgT1VXCF121B7YQlEa3gF+oU8+rpHZPeEH4nXDXWEdx62zXP5zTD6rvUxxyT5ymT/4XweSzFHdqMZHCMwMcn7UlYgUqcDPOcogkbLtsFEKunzepsfVko=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(376002)(346002)(136003)(230922051799003)(451199024)(186009)(1800799009)(82310400011)(64100799003)(46966006)(36840700001)(40470700004)(356005)(921005)(47076005)(16526019)(82740400003)(426003)(336012)(26005)(41300700001)(83380400001)(36756003)(2616005)(86362001)(81166007)(1076003)(36860700001)(2906002)(7696005)(6666004)(40480700001)(7416002)(5660300002)(6636002)(54906003)(70206006)(70586007)(110136005)(316002)(8936002)(40460700003)(478600001)(8676002)(4326008)(36900700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: Drp5nQpGQdpZ0hCYLH4QrDk0kq919+k11/4IyUcarebWEzL/iLPhIG8o1DYVd7M3G1HWpa/5ogzYTd6mMSCWy2Nsr4LPzQaIIv8X78Jy6LhVYVPFyx8ZUr9efNJ1QWhEwi/NwNP1qJBq8Un6tI7Y895lbklpXr/v4TjQGQqec+4G7tkwHLIL0IDrRx1wXv2gS2lsbg70Rn5hJKkttiiE1/8F/6Ppvw9LY3PGyKsXOwSWJcXRVRRNn5b0tFPGVPPEMWB2ZLA8S3UK1jTYS2WTniMiucWE7DoeF7EgTGbwycMdQRM5Hx5JSUpQ6Qd0F8P3XxUNc52JR+Wcz6NkIJvtt4ZOwkOSjW4bMsiENNYgdTl1/8LnnK+FOeKT3ujE/au7wFjNKH3S92IEyC2BNdGiBWoXwnKEfdYzzpE8i19f7tQeXak/f5u6D4IuiL3mYkXRp47tRNB5kTfI9ktNek2ZCc0Fv6jnTnNrLNFg+X6XrxrythrF8KpAneJkOrp0lICoDS8AlZS5FHURolETARehfn++w9fwhr5EJdf5X65iXhVXAIKnOCE+g6z7kcsf7y9QOEH11Hjr97hGGCdssMiCpt+ssQV5qGw5hoAjwG8MhnSHtTRVV9CauF67c70LVkcukpui1icJw4HTorxZftxcqt7gg/mIGh47o40ewVe3ouNN3rMU3qjBYcdvS4mTRbrYMHDdhbudVpanhApm0wIwASvQMABfuyDNpyIs3f7Jj3QDo49EIM3j8vC1l4KucrWYV14lPOBuctrI4ZGyDYSsxFsySC7CxfRbSn02Wmlqm0c=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(39860400002)(346002)(396003)(376002)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(82310400011)(46966006)(36840700001)(40470700004)(7416002)(36860700001)(478600001)(26005)(2616005)(16526019)(6666004)(7696005)(4326008)(8936002)(8676002)(83380400001)(5660300002)(41300700001)(47076005)(6636002)(1076003)(316002)(70586007)(70206006)(54906003)(2906002)(82740400003)(110136005)(336012)(426003)(356005)(81166007)(921005)(40460700003)(86362001)(36756003)(40480700001)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Oct 2023 02:55:01.3920
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Oct 2023 02:55:05.4701
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: fdee2507-71eb-4ceb-3bdc-08dbcebc7507
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0f56a8cc-26f6-4456-82dd-08dbcebc7775
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000989EC.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5308
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB8606
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
@@ -103,67 +105,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Due to electrical and mechanical constraints in certain platform designs there
-may be likely interference of relatively high-powered harmonics of the (G-)DDR
-memory clocks with local radio module frequency bands used by Wifi 6/6e/7. To
-mitigate possible RFI interference we introuduced WBRF(Wifi Band RFI mitigation Feature).
-Producers can advertise the frequencies in use and consumers can use this information
-to avoid using these frequencies for sensitive features.
+Add documentation about AMD's Wifi band RFI mitigation (WBRF) mechanism
+explaining the theory and how it is used.
 
-The whole patch set is based on Linux 6.5.0. With some brief introductions
-as below:
-Patch1:      Document about WBRF
-Patch2:      Core functionality setup for WBRF feature support
-Patch3 - 4:  Bring WBRF support to wifi subsystem.
-Patch5 - 9:  Bring WBRF support to AMD graphics driver.
-
-Evan Quan (7):
-  cfg80211: expose nl80211_chan_width_to_mhz for wide sharing
-  wifi: mac80211: Add support for WBRF features
-  drm/amd/pm: update driver_if and ppsmc headers for coming wbrf feature
-  drm/amd/pm: setup the framework to support Wifi RFI mitigation feature
-  drm/amd/pm: add flood detection for wbrf events
-  drm/amd/pm: enable Wifi RFI mitigation feature support for SMU13.0.0
-  drm/amd/pm: enable Wifi RFI mitigation feature support for SMU13.0.7
-
-Ma Jun (2):
-  Documentation/driver-api: Add document about WBRF mechanism
-  platform/x86/amd: Add support for AMD ACPI based Wifi band RFI
-    mitigation feature
-
- Documentation/driver-api/wbrf.rst             |  71 +++
- drivers/gpu/drm/amd/amdgpu/amdgpu.h           |   2 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c       |  17 +
- drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c     | 214 +++++++++
- drivers/gpu/drm/amd/pm/swsmu/inc/amdgpu_smu.h |  33 ++
- .../inc/pmfw_if/smu13_driver_if_v13_0_0.h     |  14 +-
- .../inc/pmfw_if/smu13_driver_if_v13_0_7.h     |  14 +-
- .../pm/swsmu/inc/pmfw_if/smu_v13_0_0_ppsmc.h  |   3 +-
- .../pm/swsmu/inc/pmfw_if/smu_v13_0_7_ppsmc.h  |   3 +-
- drivers/gpu/drm/amd/pm/swsmu/inc/smu_types.h  |   3 +-
- drivers/gpu/drm/amd/pm/swsmu/inc/smu_v13_0.h  |   3 +
- .../gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c    |   9 +
- .../drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c  |  60 +++
- .../drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c  |  59 +++
- drivers/gpu/drm/amd/pm/swsmu/smu_internal.h   |   3 +
- drivers/platform/x86/amd/Kconfig              |  15 +
- drivers/platform/x86/amd/Makefile             |   1 +
- drivers/platform/x86/amd/wbrf.c               | 422 ++++++++++++++++++
- include/linux/acpi_amd_wbrf.h                 | 101 +++++
- include/linux/ieee80211.h                     |   1 +
- include/net/cfg80211.h                        |   8 +
- net/mac80211/Makefile                         |   2 +
- net/mac80211/chan.c                           |   9 +
- net/mac80211/ieee80211_i.h                    |   9 +
- net/mac80211/main.c                           |   2 +
- net/mac80211/wbrf.c                           | 105 +++++
- net/wireless/chan.c                           |   3 +-
- 27 files changed, 1180 insertions(+), 6 deletions(-)
+Signed-off-by: Ma Jun <Jun.Ma2@amd.com>
+---
+ Documentation/driver-api/wbrf.rst | 73 +++++++++++++++++++++++++++++++
+ 1 file changed, 73 insertions(+)
  create mode 100644 Documentation/driver-api/wbrf.rst
- create mode 100644 drivers/platform/x86/amd/wbrf.c
- create mode 100644 include/linux/acpi_amd_wbrf.h
- create mode 100644 net/mac80211/wbrf.c
 
+diff --git a/Documentation/driver-api/wbrf.rst b/Documentation/driver-api/wbrf.rst
+new file mode 100644
+index 000000000000..8561840263b3
+--- /dev/null
++++ b/Documentation/driver-api/wbrf.rst
+@@ -0,0 +1,73 @@
++.. SPDX-License-Identifier: GPL-2.0-or-later
++
++=================================
++WBRF - Wifi Band RFI Mitigations
++=================================
++Due to electrical and mechanical constraints in certain platform designs
++there may be likely interference of relatively high-powered harmonics of
++the GPU memory clocks with local radio module frequency bands used by
++certain Wifi bands.
++
++To mitigate possible RFI interference producers can advertise the
++frequencies in use and consumers can use this information to avoid using
++these frequencies for sensitive features.
++
++When a platform is known to have this issue with any contained devices,
++the platform designer will advertise the availability of this feature via
++ACPI devices with a device specific method (_DSM).
++* Producers with this _DSM will be able to advertise the frequencies in use.
++* Consumers with this _DSM will be able to register for notifications of
++frequencies in use.
++
++Some general terms
++==================
++Producer: such component who can produce high-powered radio frequency
++Consumer: such component who can adjust its in-use frequency in
++           response to the radio frequencies of other components to
++           mitigate the possible RFI.
++
++To make the mechanism function, those producers should notify active use
++of their particular frequencies so that other consumers can make relative
++internal adjustments as necessary to avoid this resonance.
++
++ACPI interface
++==============
++Although initially used by for wifi + dGPU use cases, the ACPI interface
++can be scaled to any type of device that a platform designer discovers
++can cause interference.
++
++The GUID used for the _DSM is 7B7656CF-DC3D-4C1C-83E9-66E721DE3070.
++
++3 functions are available in this _DSM:
++
++* 0: discover # of functions available
++* 1: record RF bands in use
++* 2: retrieve RF bands in use
++
++Driver programming interface
++============================
++.. kernel-doc:: drivers/platform/x86/amd/wbrf.c
++
++Sample Usage
++=============
++The expected flow for the producers:
++1) During probe, call `acpi_amd_wbrf_supported_producer` to check if WBRF
++can be enabled for the device.
++2) On using some frequency band, call `acpi_amd_wbrf_add_remove` with 'add'
++param to get other consumers properly notified.
++3) Or on stopping using some frequency band, call
++`acpi_amd_wbrf_add_remove` with 'remove' param to get other consumers notified.
++
++The expected flow for the consumers:
++1) During probe, call `acpi_amd_wbrf_supported_consumer` to check if WBRF
++can be enabled for the device.
++2) Call `amd_wbrf_register_notifier` to register for notification
++of frequency band change(add or remove) from other producers.
++3) Call the `amd_wbrf_retrieve_freq_band` intentionally to retrieve
++current active frequency bands considering some producers may broadcast
++such information before the consumer is up.
++4) On receiving a notification for frequency band change, run
++`amd_wbrf_retrieve_freq_band` again to retrieve the latest
++active frequency bands.
++5) During driver cleanup, call `amd_wbrf_unregister_notifier` to
++unregister the notifier.
 -- 
 2.34.1
 
