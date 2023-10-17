@@ -2,100 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A30DB7CBA50
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 07:45:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B52C87CBA60
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 07:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234502AbjJQFpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 01:45:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57736 "EHLO
+        id S234469AbjJQFxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 01:53:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234554AbjJQFpf (ORCPT
+        with ESMTP id S230343AbjJQFxG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 01:45:35 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 026F2124
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 22:45:23 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-32799639a2aso4714439f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 22:45:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697521521; x=1698126321; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eTPon32JpfuzRNvtltenUlD8VwAiIQ3b0g3UQ/8lPys=;
-        b=f1fx4pZYdENQElgLBsTKZ1HEubIu1kxKFKWaZ+Hzsf8Ko5j5Mp4FGlz9dg9Tz3r11/
-         IwTsL57pc8CEQQrl+m3i7Q3lsjxotIdKWkf0WroOQVJaaZ2tFcHnI0wbVUuv9Toparzr
-         Dsib1qXyTUj5SK3caxmHg6MnpTp8NXwa2V9uejns98t4f+Bw5RwjL6PbAHUwQ26NBQA8
-         SX1VrRyAUNP8yiCtQ1oaoF9yLQZhS+6IM+Ei9TgdSEMXjgMdK0ewZwOrq2yQnmmzic6s
-         aR7Zqd5kecvkwcrGNoWtMEINDcV/wIeK2sT91+zlldnhlcUxmurPGdE+XfFIf9KFboTI
-         oSRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697521521; x=1698126321;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eTPon32JpfuzRNvtltenUlD8VwAiIQ3b0g3UQ/8lPys=;
-        b=pU72q7JNHs7XaQ2yBC9B3Hj0EF7TTsUXY1oKL0GCxY0xc+lZfvOPAT8+7F2AG7CpFl
-         W6FnICf9/lH3qrBksYkm1PN+UZvrFg4MNaar/i3gHBaYT/RcYMv46uMIHr+kY7SjStDC
-         JksPKnlHH6y/bqjTNfYMUAwLJX+om+QSI/xUTVlLziQ+9BLHCfDfGk1/uEd3qC5bgPLG
-         HDzxfZyGkF7gVnB87OQ/t2+woJJJtatc7E6VJt9yTgauSHvXmdrKBgPGVnucegffgeyF
-         qMH/ied3zmSGANMniurybuRe0JIZZqJR7A5RfIGDn0KAp/KBakTr+q774WbBSCC4XP6b
-         O8GQ==
-X-Gm-Message-State: AOJu0YzfY1qXAGw+FIg3cyhLTEB0/X9HKVTSS9/WvCqv48WnEbCSq6pX
-        ekkUKpn4wQDSx/Z1JNu+UjI+yIDo+3rh5Gqee40=
-X-Google-Smtp-Source: AGHT+IHs3B7noUBTeQn7HYvMJMcEsF3Esl+YvcRhoVp01N9+CZVaf7/PFCNBrx3Rm5TotCf3NsmByA==
-X-Received: by 2002:a5d:4c8a:0:b0:32d:a335:e33d with SMTP id z10-20020a5d4c8a000000b0032da335e33dmr973868wrs.58.1697521521578;
-        Mon, 16 Oct 2023 22:45:21 -0700 (PDT)
-Received: from [192.168.86.24] ([5.133.47.210])
-        by smtp.googlemail.com with ESMTPSA id i3-20020a5d4383000000b003232380ffd7sm809226wrq.102.2023.10.16.22.45.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 22:45:20 -0700 (PDT)
-Message-ID: <02ce70da-346b-6c24-b7ed-8f5b30f1c99b@linaro.org>
-Date:   Tue, 17 Oct 2023 06:45:19 +0100
+        Tue, 17 Oct 2023 01:53:06 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F38689E
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 22:53:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697521982; x=1729057982;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=SYxhPWqgww8ppek61dJ0x2nJzC/1kHMF4binBLIKdpw=;
+  b=WCS1TPSWCdnTofemP37PAhr7/iTHslPzQlNJ7jyh56wBxinrtoC6Zijq
+   pMmAHIsbvb5QNFDQmGcyiWX4W+iEkiT1C/bHmn13Pu083uPZNofHsga7g
+   HGx50RMOlKr54xUy6bSSVoQzB0LXJ68XloW1+jzZvkv1m5PvJALUn/Kcy
+   fgGsUjuIIILh5iiNe0FtoGoEPvWxcctWeOajSH/mwXYWdeyZbJyeG8uVH
+   OFfZ0U8otgGSrOLV5vtBFY4mElmPV9C4Kt8GRpH2GLcpsgeKsBRYQFkTV
+   1nFfcAJpBFyc4v/9kxJ6P5aE1Mcazig0KFkd1MzOuJeA0RoMnDLCQZtUg
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="416781275"
+X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
+   d="scan'208";a="416781275"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 22:53:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="732596234"
+X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
+   d="scan'208";a="732596234"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 16 Oct 2023 22:53:00 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qsd0W-00094z-2u;
+        Tue, 17 Oct 2023 05:52:48 +0000
+Date:   Tue, 17 Oct 2023 13:48:41 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: kernel/exit.c:738:45: sparse: sparse: incorrect type in initializer
+ (different address spaces)
+Message-ID: <202310171346.njuOKnlc-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: linux-next: duplicate patches in the nvmem tree
-Content-Language: en-US
-To:     Stephen Rothwell <sfr@canb.auug.org.au>, Greg KH <greg@kroah.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20231017150714.41a6c640@canb.auug.org.au>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20231017150714.41a6c640@canb.auug.org.au>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Stephen,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   213f891525c222e8ed145ce1ce7ae1f47921cb9c
+commit: d80f7d7b2c75c5954d335dffbccca62a5002c3e0 signal: Guarantee that SIGNAL_GROUP_EXIT is set on process exit
+date:   1 year, 3 months ago
+config: x86_64-alldefconfig (https://download.01.org/0day-ci/archive/20231017/202310171346.njuOKnlc-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231017/202310171346.njuOKnlc-lkp@intel.com/reproduce)
 
-This is now fixed for both nvmem and fastrpc tree.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310171346.njuOKnlc-lkp@intel.com/
 
---srini
-On 17/10/2023 05:07, Stephen Rothwell wrote:
-> Hi all,
-> 
-> The following commits are also in the char-misc.current tree as different
-> commits (but the same patches):
-> 
->    d0b450caca6f ("nvmem: imx: correct nregs for i.MX6ULL")
->    f46cfdaf5c07 ("nvmem: imx: correct nregs for i.MX6UL")
->    e898831a6683 ("nvmem: imx: correct nregs for i.MX6SLL")
-> 
-> These are commits
-> 
->    2382c1b04423 ("nvmem: imx: correct nregs for i.MX6ULL")
->    7d6e10f5d254 ("nvmem: imx: correct nregs for i.MX6UL")
->    414a98abbefd ("nvmem: imx: correct nregs for i.MX6SLL")
-> 
-> in the char-misc.current tree.
-> 
+sparse warnings: (new ones prefixed by >>)
+   kernel/exit.c:281:37: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *tsk @@     got struct task_struct [noderef] __rcu *real_parent @@
+   kernel/exit.c:281:37: sparse:     expected struct task_struct *tsk
+   kernel/exit.c:281:37: sparse:     got struct task_struct [noderef] __rcu *real_parent
+   kernel/exit.c:284:32: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *task @@     got struct task_struct [noderef] __rcu *real_parent @@
+   kernel/exit.c:284:32: sparse:     expected struct task_struct *task
+   kernel/exit.c:284:32: sparse:     got struct task_struct [noderef] __rcu *real_parent
+   kernel/exit.c:285:35: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *task @@     got struct task_struct [noderef] __rcu *real_parent @@
+   kernel/exit.c:285:35: sparse:     expected struct task_struct *task
+   kernel/exit.c:285:35: sparse:     got struct task_struct [noderef] __rcu *real_parent
+   kernel/exit.c:330:24: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct *parent @@     got struct task_struct [noderef] __rcu *real_parent @@
+   kernel/exit.c:330:24: sparse:     expected struct task_struct *parent
+   kernel/exit.c:330:24: sparse:     got struct task_struct [noderef] __rcu *real_parent
+   kernel/exit.c:357:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/exit.c:357:27: sparse:     expected struct spinlock [usertype] *lock
+   kernel/exit.c:357:27: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/exit.c:360:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/exit.c:360:29: sparse:     expected struct spinlock [usertype] *lock
+   kernel/exit.c:360:29: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/exit.c:583:29: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct *reaper @@     got struct task_struct [noderef] __rcu *real_parent @@
+   kernel/exit.c:583:29: sparse:     expected struct task_struct *reaper
+   kernel/exit.c:583:29: sparse:     got struct task_struct [noderef] __rcu *real_parent
+   kernel/exit.c:585:29: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct *reaper @@     got struct task_struct [noderef] __rcu *real_parent @@
+   kernel/exit.c:585:29: sparse:     expected struct task_struct *reaper
+   kernel/exit.c:585:29: sparse:     got struct task_struct [noderef] __rcu *real_parent
+>> kernel/exit.c:738:45: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sighand_struct *sighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
+   kernel/exit.c:738:45: sparse:     expected struct sighand_struct *sighand
+   kernel/exit.c:738:45: sparse:     got struct sighand_struct [noderef] __rcu *sighand
+   kernel/exit.c:927:63: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sighand_struct *const sighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
+   kernel/exit.c:927:63: sparse:     expected struct sighand_struct *const sighand
+   kernel/exit.c:927:63: sparse:     got struct sighand_struct [noderef] __rcu *sighand
+   kernel/exit.c:1082:39: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/exit.c:1082:39: sparse:     expected struct spinlock [usertype] *lock
+   kernel/exit.c:1082:39: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/exit.c:1107:41: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/exit.c:1107:41: sparse:     expected struct spinlock [usertype] *lock
+   kernel/exit.c:1107:41: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/exit.c:1196:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/exit.c:1196:25: sparse:     expected struct spinlock [usertype] *lock
+   kernel/exit.c:1196:25: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/exit.c:1211:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/exit.c:1211:27: sparse:     expected struct spinlock [usertype] *lock
+   kernel/exit.c:1211:27: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/exit.c:1262:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/exit.c:1262:25: sparse:     expected struct spinlock [usertype] *lock
+   kernel/exit.c:1262:25: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/exit.c:1265:35: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/exit.c:1265:35: sparse:     expected struct spinlock [usertype] *lock
+   kernel/exit.c:1265:35: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/exit.c:1271:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/exit.c:1271:27: sparse:     expected struct spinlock [usertype] *lock
+   kernel/exit.c:1271:27: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/exit.c:1452:59: sparse: sparse: incompatible types in comparison expression (different base types):
+   kernel/exit.c:1452:59: sparse:    void *
+   kernel/exit.c:1452:59: sparse:    struct task_struct [noderef] __rcu *
+   kernel/exit.c:1468:25: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *parent @@     got struct task_struct [noderef] __rcu * @@
+   kernel/exit.c:1468:25: sparse:     expected struct task_struct *parent
+   kernel/exit.c:1468:25: sparse:     got struct task_struct [noderef] __rcu *
+   kernel/exit.c: note: in included file:
+   include/linux/ptrace.h:92:40: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *p1 @@     got struct task_struct [noderef] __rcu *real_parent @@
+   include/linux/ptrace.h:92:40: sparse:     expected struct task_struct *p1
+   include/linux/ptrace.h:92:40: sparse:     got struct task_struct [noderef] __rcu *real_parent
+   include/linux/ptrace.h:92:60: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *p2 @@     got struct task_struct [noderef] __rcu *parent @@
+   include/linux/ptrace.h:92:60: sparse:     expected struct task_struct *p2
+   include/linux/ptrace.h:92:60: sparse:     got struct task_struct [noderef] __rcu *parent
+   include/linux/ptrace.h:92:40: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *p1 @@     got struct task_struct [noderef] __rcu *real_parent @@
+   include/linux/ptrace.h:92:40: sparse:     expected struct task_struct *p1
+   include/linux/ptrace.h:92:40: sparse:     got struct task_struct [noderef] __rcu *real_parent
+   include/linux/ptrace.h:92:60: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *p2 @@     got struct task_struct [noderef] __rcu *parent @@
+   include/linux/ptrace.h:92:60: sparse:     expected struct task_struct *p2
+   include/linux/ptrace.h:92:60: sparse:     got struct task_struct [noderef] __rcu *parent
+   kernel/exit.c: note: in included file (through include/linux/sched/signal.h, include/linux/rcuwait.h, include/linux/percpu-rwsem.h, ...):
+   include/linux/sched/task.h:110:21: sparse: sparse: context imbalance in 'wait_task_zombie' - unexpected unlock
+   include/linux/sched/task.h:110:21: sparse: sparse: context imbalance in 'wait_task_stopped' - unexpected unlock
+   include/linux/sched/task.h:110:21: sparse: sparse: context imbalance in 'wait_task_continued' - unexpected unlock
+   kernel/exit.c: note: in included file:
+   include/linux/ptrace.h:92:40: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *p1 @@     got struct task_struct [noderef] __rcu *real_parent @@
+   include/linux/ptrace.h:92:40: sparse:     expected struct task_struct *p1
+   include/linux/ptrace.h:92:40: sparse:     got struct task_struct [noderef] __rcu *real_parent
+   include/linux/ptrace.h:92:60: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *p2 @@     got struct task_struct [noderef] __rcu *parent @@
+   include/linux/ptrace.h:92:60: sparse:     expected struct task_struct *p2
+   include/linux/ptrace.h:92:60: sparse:     got struct task_struct [noderef] __rcu *parent
+   kernel/exit.c: note: in included file (through include/linux/thread_info.h, arch/x86/include/asm/preempt.h, include/linux/preempt.h, ...):
+   arch/x86/include/asm/current.h:15:16: sparse: sparse: context imbalance in 'do_wait' - wrong count at exit
+
+vim +738 kernel/exit.c
+
+   735	
+   736	static void synchronize_group_exit(struct task_struct *tsk, long code)
+   737	{
+ > 738		struct sighand_struct *sighand = tsk->sighand;
+   739		struct signal_struct *signal = tsk->signal;
+   740	
+   741		spin_lock_irq(&sighand->siglock);
+   742		signal->quick_threads--;
+   743		if ((signal->quick_threads == 0) &&
+   744		    !(signal->flags & SIGNAL_GROUP_EXIT)) {
+   745			signal->flags = SIGNAL_GROUP_EXIT;
+   746			signal->group_exit_code = code;
+   747			signal->group_stop_count = 0;
+   748		}
+   749		spin_unlock_irq(&sighand->siglock);
+   750	}
+   751	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
