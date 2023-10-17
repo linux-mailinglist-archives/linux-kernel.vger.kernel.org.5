@@ -2,134 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A207CBDE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 473BB7CBDE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:39:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234650AbjJQIia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 04:38:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51076 "EHLO
+        id S234735AbjJQIjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 04:39:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234751AbjJQIi3 (ORCPT
+        with ESMTP id S233882AbjJQIjk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 04:38:29 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86F3BFB;
-        Tue, 17 Oct 2023 01:38:26 -0700 (PDT)
-Received: from [IPV6:2a02:2f04:a37:9d00:b380:eb44:83c6:6b95] (unknown [IPv6:2a02:2f04:a37:9d00:b380:eb44:83c6:6b95])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: ehristev)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 845E46606EE0;
-        Tue, 17 Oct 2023 09:38:23 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697531905;
-        bh=BSMLjbZcuwNhTxKRB4oqXbZT9i1jbW/ydiS26D4uPQo=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=YccWFxDrI8/xGCFcYHGPIGLkbs3FwJSrgHRhoi/litiDLuS1CxIw4ySYdnuJ8lItu
-         WzDLqQC3CRZtWwaLBfTSnbQJBLym84QrfASDpyxRuuXL2bsqz+M7kG7M0kbHGjbLwf
-         dLUkSDFMW/FkEQT064gjl3eyspBjwHgrkCUJl94+POe+wGE+XGg1KGty/TPJ87R4q5
-         MYRT95fAvjchdgY/66rT1FDXzl7Dlbg9fO1NO1Fw16lczTXnINqM1qAjKwlhsaWC+A
-         HWPHkMPr3wXb+woclNkb0EuKT+/OYEWA4bha8ZmCoIXVAxX94RaNKNhzVIE36vk3xN
-         pn0TCXNIllB/A==
-Message-ID: <ecd6a00f-2166-48b7-a6ae-e165a2a6d70b@collabora.com>
-Date:   Tue, 17 Oct 2023 11:38:20 +0300
+        Tue, 17 Oct 2023 04:39:40 -0400
+Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B4CFA93;
+        Tue, 17 Oct 2023 01:39:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=krMrh
+        +gnj9GwvY8PuJ2nHyEgdmzG0vhrGe+vOfvIw9Q=; b=lEzTpX+orqfVJ2Q9JhMlE
+        +uWRMpNh5usXqsk/LmzkJH+Ow6i/A5MDgMGkt40XiVkd9CJjWeWOlrn2iWfg8gvr
+        Mo1OK27vnQp89o90Tx8ytYEsZUi50V3+LMBSgrMR/WmP6X9pMESdWJz5TfzgntnV
+        XURDX5D6QZ98BU42et/WHs=
+Received: from ubuntu.. (unknown [171.83.47.247])
+        by zwqz-smtp-mta-g5-4 (Coremail) with SMTP id _____wDnNwI6SC5lUGceAw--.33359S2;
+        Tue, 17 Oct 2023 16:39:22 +0800 (CST)
+From:   Charles <be286@163.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Charles <be286@163.com>
+Subject: [PATCH]         usb: gadget: f_uac1: add adaptive sync support for capture
+Date:   Tue, 17 Oct 2023 16:39:18 +0800
+Message-Id: <20231017083918.1149647-1-be286@163.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH v4 4/4] arm64: dts: Add MediaTek MT8188 dts and
- evaluation board and Makefile
-To:     Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= 
-        <nfraprado@collabora.com>, Chen-Yu Tsai <wenst@chromium.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
-References: <20230921060235.32478-1-jason-ch.chen@mediatek.com>
- <20230921060235.32478-5-jason-ch.chen@mediatek.com>
-Content-Language: en-US
-From:   Eugen Hristev <eugen.hristev@collabora.com>
-In-Reply-To: <20230921060235.32478-5-jason-ch.chen@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wDnNwI6SC5lUGceAw--.33359S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxAr15JF47Ww4xWFW8ZF1xAFb_yoWrCr1kpw
+        4UC3y0yr45ArZIqr4rAF4rAF43Aa1xG345GrW7Ww4Yganxt3sava42yryFkF17AFWrCw40
+        qF4Fgw1a9w4kCrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pRwvtXUUUUU=
+X-Originating-IP: [171.83.47.247]
+X-CM-SenderInfo: dehsmli6rwjhhfrp/1tbiWxIK0mI0cRDTdAADsC
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,
+        RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/21/23 09:02, Jason-ch Chen wrote:
-> From: jason-ch chen <Jason-ch.Chen@mediatek.com>
-> 
-> MT8188 is a SoC based on 64bit ARMv8 architecture. It contains 6 CA55
-> and 2 CA78 cores. MT8188 share many HW IP with MT65xx series.
-> 
-> We add basic chip support for MediaTek MT8188 on evaluation board.
-> 
-> Signed-off-by: jason-ch chen <Jason-ch.Chen@mediatek.com>
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> ---
->   arch/arm64/boot/dts/mediatek/Makefile       |   1 +
->   arch/arm64/boot/dts/mediatek/mt8188-evb.dts | 400 ++++++++
->   arch/arm64/boot/dts/mediatek/mt8188.dtsi    | 951 ++++++++++++++++++++
->   3 files changed, 1352 insertions(+)
->   create mode 100644 arch/arm64/boot/dts/mediatek/mt8188-evb.dts
->   create mode 100644 arch/arm64/boot/dts/mediatek/mt8188.dtsi
-> 
+        UAC1 has it's own freerunning clock and can update Host about
+        real clock frequency through feedback endpoint so Host
+        can align number of samples sent to the UAC1 to
+        prevent overruns/underruns.
 
-[...]
+        Change UAC1 driver to make it configurable through
+        additional 'c_sync' configfs file.
 
-> +	soc {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		compatible = "simple-bus";
-> +		ranges;
-> +
-> +		gic: interrupt-controller@c000000 {
+        Default remains 'asynchronous' with possibility to
+        switch it to 'adaptive'.
 
-Hi Jason,
+        Signed-off-by: Charles <be286@163.com>
+---
+ drivers/usb/gadget/function/f_uac1.c | 31 ++++++++++++++++++++++++++++
+ drivers/usb/gadget/function/u_uac1.h |  2 ++
+ 2 files changed, 33 insertions(+)
 
-arch/arm64/boot/dts/mediatek/mt8188.dtsi:320.37-341.5: Warning 
-(avoid_unnecessary_addr_size): /soc/interrupt-controller@c000000: 
-unnecessary #address-cells/#size-cells without "ranges" or child "reg" 
-property
-
-
-This warning pops up when trying dtbs_check.
-Can you have a look please ?
-
-Eugen
-
-> +			compatible = "arm,gic-v3";
-> +			#interrupt-cells = <4>;
-> +			#address-cells = <2>;
-> +			#size-cells = <2>;
-> +			#redistributor-regions = <1>;
-> +			interrupt-parent = <&gic>;
-> +			interrupt-controller;
-> +			reg = <0 0x0c000000 0 0x40000>,
-> +			      <0 0x0c040000 0 0x200000>;
-> +			interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH 0>;
-> +
-> +			ppi-partitions {
-> +				ppi_cluster0: interrupt-partition-0 {
-> +					affinity = <&cpu0 &cpu1 &cpu2 &cpu3 &cpu4 &cpu5>;
-> +				};
-> +
-> +				ppi_cluster1: interrupt-partition-1 {
-> +					affinity = <&cpu6 &cpu7>;
-> +				};
-> +			};
-> +		};
-> +
-
-[...]
+diff --git a/drivers/usb/gadget/function/f_uac1.c b/drivers/usb/gadget/function/f_uac1.c
+index 6f0e1d803dc2..0a8e55b19ee7 100644
+--- a/drivers/usb/gadget/function/f_uac1.c
++++ b/drivers/usb/gadget/function/f_uac1.c
+@@ -33,6 +33,8 @@
+ #define FUOUT_EN(_opts) ((_opts)->c_mute_present \
+ 			|| (_opts)->c_volume_present)
+ 
++#define EPOUT_FBACK_IN_EN(_opts) ((_opts)->c_sync == USB_ENDPOINT_SYNC_ASYNC)
++
+ struct f_uac1 {
+ 	struct g_audio g_audio;
+ 	u8 ac_intf, as_in_intf, as_out_intf;
+@@ -227,6 +229,16 @@ static struct uac_iso_endpoint_descriptor as_iso_out_desc = {
+ 	.wLockDelay =		cpu_to_le16(1),
+ };
+ 
++static struct usb_endpoint_descriptor as_fback_ep_desc = {
++	.bLength = USB_DT_ENDPOINT_SIZE,
++	.bDescriptorType = USB_DT_ENDPOINT,
++
++	.bEndpointAddress = USB_DIR_IN,
++	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_USAGE_FEEDBACK,
++	.wMaxPacketSize = cpu_to_le16(3),
++	.bInterval = 1,
++};
++
+ static struct uac_format_type_i_discrete_descriptor as_in_type_i_desc = {
+ 	.bLength =		0, /* filled on rate setup */
+ 	.bDescriptorType =	USB_DT_CS_INTERFACE,
+@@ -280,6 +292,7 @@ static struct usb_descriptor_header *f_audio_desc[] = {
+ 
+ 	(struct usb_descriptor_header *)&as_out_ep_desc,
+ 	(struct usb_descriptor_header *)&as_iso_out_desc,
++	(struct usb_descriptor_header *)&as_fback_ep_desc,
+ 
+ 	(struct usb_descriptor_header *)&as_in_interface_alt_0_desc,
+ 	(struct usb_descriptor_header *)&as_in_interface_alt_1_desc,
+@@ -1107,6 +1120,9 @@ static void setup_descriptor(struct f_uac1_opts *opts)
+ 		f_audio_desc[i++] = USBDHDR(&as_out_type_i_desc);
+ 		f_audio_desc[i++] = USBDHDR(&as_out_ep_desc);
+ 		f_audio_desc[i++] = USBDHDR(&as_iso_out_desc);
++		if (EPOUT_FBACK_IN_EN(opts)) {
++			f_audio_desc[i++] = USBDHDR(&as_fback_ep_desc);
++		}
+ 	}
+ 	if (EPIN_EN(opts)) {
+ 		f_audio_desc[i++] = USBDHDR(&as_in_interface_alt_0_desc);
+@@ -1317,6 +1333,12 @@ static int f_audio_bind(struct usb_configuration *c, struct usb_function *f)
+ 		ac_header_desc->baInterfaceNr[ba_iface_id++] = status;
+ 		uac1->as_out_intf = status;
+ 		uac1->as_out_alt = 0;
++
++		if (EPOUT_FBACK_IN_EN(audio_opts)) {
++			as_out_ep_desc.bmAttributes =
++			USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_ASYNC;
++			as_out_interface_alt_1_desc.bNumEndpoints++;
++		}
+ 	}
+ 
+ 	if (EPIN_EN(audio_opts)) {
+@@ -1354,6 +1376,13 @@ static int f_audio_bind(struct usb_configuration *c, struct usb_function *f)
+ 			goto err_free_fu;
+ 		audio->out_ep = ep;
+ 		audio->out_ep->desc = &as_out_ep_desc;
++		if (EPOUT_FBACK_IN_EN(audio_opts)) {
++			audio->in_ep_fback = usb_ep_autoconfig(gadget,
++								&as_fback_ep_desc);
++			if (!audio->in_ep_fback) {
++				goto err_free_fu;
++			}
++		}
+ 	}
+ 
+ 	if (EPIN_EN(audio_opts)) {
+@@ -1685,6 +1714,8 @@ static struct usb_function_instance *f_audio_alloc_inst(void)
+ 
+ 	opts->req_number = UAC1_DEF_REQ_NUM;
+ 
++	opts->c_sync = UAC1_DEF_CSYNC;
++
+ 	snprintf(opts->function_name, sizeof(opts->function_name), "AC Interface");
+ 
+ 	return &opts->func_inst;
+diff --git a/drivers/usb/gadget/function/u_uac1.h b/drivers/usb/gadget/function/u_uac1.h
+index f7a616760e31..c6e2271e8cdd 100644
+--- a/drivers/usb/gadget/function/u_uac1.h
++++ b/drivers/usb/gadget/function/u_uac1.h
+@@ -27,6 +27,7 @@
+ #define UAC1_DEF_MAX_DB		0		/* 0 dB */
+ #define UAC1_DEF_RES_DB		(1*256)	/* 1 dB */
+ 
++#define UAC1_DEF_CSYNC		USB_ENDPOINT_SYNC_ASYNC
+ 
+ struct f_uac1_opts {
+ 	struct usb_function_instance	func_inst;
+@@ -56,6 +57,7 @@ struct f_uac1_opts {
+ 
+ 	struct mutex			lock;
+ 	int				refcnt;
++	int				c_sync;
+ };
+ 
+ #endif /* __U_UAC1_H */
+-- 
+2.34.1
 
