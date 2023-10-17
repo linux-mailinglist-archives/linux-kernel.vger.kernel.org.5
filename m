@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F547CBEDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEFCB7CBEDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234822AbjJQJTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 05:19:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59022 "EHLO
+        id S234855AbjJQJTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 05:19:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234594AbjJQJTM (ORCPT
+        with ESMTP id S234853AbjJQJTP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 05:19:12 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C09F5
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 02:19:10 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6ba54c3ed97so2602160b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 02:19:10 -0700 (PDT)
+        Tue, 17 Oct 2023 05:19:15 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF681F7
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 02:19:13 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c9b7c234a7so46544475ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 02:19:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=himax-corp-partner-google-com.20230601.gappssmtp.com; s=20230601; t=1697534350; x=1698139150; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=AQrLFPQFt1F5LXm+iqqKkTk9oKTtyDdmvV5/il7M5b8=;
-        b=jwR01Je0ioJQHaqSCxH7fwd9RGnmZ7TNDDFUlSm4QflZmPAPIbeAUuG1decJY/o6Se
-         IvP2GTRDP1JN3+wquhpxxL4G3erMf88hveMwSXf5Nfbl6k4Ji05IMQcqKizOSwzT7kgc
-         KRKkQw84If0UfL8/eg3TGyhbmIRvi7Czsi0GKnd3Ss2Y+Rfz2hlaTIsOnW9WKdbaEBVW
-         hy/KMnqnqCsB9Qg1W17qiSWFiOdN5ByGxHsjFJrqN647Xo5UB7awCGz/Jj59kq9YZPrH
-         WYv8P3Z0KTLM1XGsL50vyR+xneYEaoOpmziMOqOLikJsGT7fTAm5Cr6vTj7KN0DSI9ll
-         ZEdQ==
+        d=himax-corp-partner-google-com.20230601.gappssmtp.com; s=20230601; t=1697534353; x=1698139153; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=i0cMOjV281zLFMAkufBNN9u6swFXVx3MkuM8sIVK0Lc=;
+        b=fWvd7I7wUVVf6yhQlv31poYvQtbO6bdCOEZwcTIAEywdrpOukILwu700eF/jjl5vFm
+         RVVyHi5KbI0phOcMAYgWYq2VjTVhO45BnntaX/A/K3F4t+CRnlIX5OZTpTK1xktwaf2c
+         h0phcJACWoG4YItmvvh3X5T2KEypTZhc5qFG/3UEFmILz9daEtVt/bWuNrmnaVOODR5z
+         aiHSo+57uPIsYJMzYL2EbLjYYG2RlTde/A4VMXqTHQBiXYNK16KGGdon3GUBdNh4r0no
+         jAbYPNRWmFDT+H9aMiM+HsCSBWtnyUZlvFtKQLoTAGkPPxQpsi4xtXGcU0fau3loQYb9
+         uOyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697534350; x=1698139150;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AQrLFPQFt1F5LXm+iqqKkTk9oKTtyDdmvV5/il7M5b8=;
-        b=vYfaX84Xd7I4sBXNKDfRyZ0RpIf2hTHFF8Ec7KhyREwwEgNr2dyvbNuDGAgNOU3MDW
-         ybp0Hxznz1m5sxhLB9YSNIdzdNHwFtxisCu0crUdTTWF3cOmke4axSKFvj/ReHKqkjBD
-         DMCPB+yf2FK4F5wmd+jcpItD81wzVj0hQVmmvjRM/jkksx+F2JuL5gNYm6FWvmyUvXI7
-         YNwq3NJkVC5rVahwprzgZFarDuEuPU2NbANBgjG57qMDg5fi5pnLx7AtM7rGBkGv3g2P
-         YcsAAiWMpkdt2trEEfYz0ZLcOXo7srAdY7C0jQWG6YEUhYiTIZmtWELKOGo/LCB0CEJN
-         fwwg==
-X-Gm-Message-State: AOJu0Yxp8HaYQJNqpybg2txbPgrpacZrGdfS0Tz2/12bGOa2HVl9v1A0
-        wdlno7lvPIw2ozZfG8pAsvRkBA==
-X-Google-Smtp-Source: AGHT+IGKiqR6U4SclzE7t/fRN9sf33k8wm1Zji/JR/QXmM3XzzFKq3ehJELmxArGJUou3rvehbWbcA==
-X-Received: by 2002:a05:6a20:9155:b0:133:f0b9:856d with SMTP id x21-20020a056a20915500b00133f0b9856dmr1652984pzc.17.1697534349808;
-        Tue, 17 Oct 2023 02:19:09 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697534353; x=1698139153;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=i0cMOjV281zLFMAkufBNN9u6swFXVx3MkuM8sIVK0Lc=;
+        b=EDi0k4+6kqFmH9gI2B40e0t5VLwHSPDWdzRMP4Y0BnOxPTyzpYwkGLGAjGQKshP1rr
+         UqPmf3uk5jlU46fvusA36lHF7TZepNMwT2POzcs58MT/YP1V7mZuBZiUH2sxU+OVJRBw
+         YTuPCljKai0eGAwcg0ZqxQHMtFpwH22s+2fXBGP4GG1jeuIGm+ZEOkFm+jAyeGMYVMmk
+         QuLjjYYhMg5wJV0plqSqylZndgI+gGeg6AqRI3i5WRPIuFoHT9akWzFl3/3M1gs/ChHH
+         +J1t5QRYvyuzxxkO9agbzC6pzwQMxIY+ee/dkXQAFs8sOExo5vDoHrrTbXyZpUT3vsrq
+         P4Xw==
+X-Gm-Message-State: AOJu0YwN59h8e3cYAzVdvx+V9U9x5le1UCnd92lG5gmzBNVyfOFddUsg
+        kmOCifkkAigAvq+ylDrPY7GgUw==
+X-Google-Smtp-Source: AGHT+IEowEIcFxrnefSEAvSUCADc7cP3eANzhxL30NO0S0F9EwX+B9eZKBZhotvIqWACwobJlcMyYg==
+X-Received: by 2002:a17:90b:3698:b0:27d:5d9:a887 with SMTP id mj24-20020a17090b369800b0027d05d9a887mr1486219pjb.44.1697534353366;
+        Tue, 17 Oct 2023 02:19:13 -0700 (PDT)
 Received: from tylor-mini-server.net ([101.9.190.154])
-        by smtp.gmail.com with ESMTPSA id pl17-20020a17090b269100b00274de7c8aacsm6003963pjb.45.2023.10.17.02.19.06
+        by smtp.gmail.com with ESMTPSA id pl17-20020a17090b269100b00274de7c8aacsm6003963pjb.45.2023.10.17.02.19.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 02:19:09 -0700 (PDT)
+        Tue, 17 Oct 2023 02:19:13 -0700 (PDT)
 From:   Tylor Yang <tylor_yang@himax.corp-partner.google.com>
 To:     dmitry.torokhov@gmail.com, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
@@ -59,130 +60,182 @@ Cc:     poyuan_chang@himax.corp-partner.google.com,
         jingyliang@chromium.org, hbarnor@chromium.org, wuxy23@lenovo.com,
         luolm1@lenovo.com, poyu_hung@himax.corp-partner.google.com,
         Tylor Yang <tylor_yang@himax.corp-partner.google.com>
-Subject: [PATCH v3 0/4] HID: touchscreen: add himax hid-over-spi driver
-Date:   Tue, 17 Oct 2023 17:18:56 +0800
-Message-Id: <20231017091900.801989-1-tylor_yang@himax.corp-partner.google.com>
+Subject: [PATCH v3 1/4] dt-bindings: input: Introduce Himax HID-over-SPI device
+Date:   Tue, 17 Oct 2023 17:18:57 +0800
+Message-Id: <20231017091900.801989-2-tylor_yang@himax.corp-partner.google.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20231017091900.801989-1-tylor_yang@himax.corp-partner.google.com>
+References: <20231017091900.801989-1-tylor_yang@himax.corp-partner.google.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The Himax HID-over-SPI framework support for Himax touchscreen ICs
+that report HID packet through SPI bus. The driver core need reset
+ pin to meet reset timing spec. of IC. An interrupt to disable
+and enable interrupt when suspend/resume. Two optional power control
+ if target board needed.
 
-This patch series adds the driver for Himax HID-over-SPI touchscreen ICs.
-This driver takes a position in [1], it intends to take advantage of SPI
-transfer speed and HID interface.
-
-Patch 1 adds the Maintainer and devicetree bindings document for driver.
-
-Patch 2-4 adds the driver itself, Kconfig and Makefiles. Due to server
-could not receive patch >100000 chars, patch separate into 3 parts.
-
-[1] Overview:
-+--------------------------------+
-| himax hid-over-spi TPIC driver |
-+--------------------------------+
-| +-----------+  +-----------+   |      +-----------+  +-----------+
-| | Device #1 |  | Device #i |   |      | Device #j |  | Device #k |
-| +-----------+  +-----------+   |      +-----------+  +-----------+
-|          \\      //            |               \\      //
-|        +------------+          |             +------------+
-|        | I/O Driver |          |             | I/O Driver |
-|        +------------+          |             +------------+
-|              ||                |                   ||
-|     +------------------+       |          +------------------+
-|     | Transport Driver |       |          | Transport Driver |
-|     +------------------+       |          +------------------+
-|                      \___      |         ___/
-+--------------------------------+       /
-                            \           /
-                          +----------------+
-                          |    HID Core    |
-                          +----------------+
-                           /  |        |  \
-                          /   |        |   \
-             ____________/    |        |    \_________________
-            /                 |        |                      \
-           /                  |        |                       \
- +----------------+  +-----------+  +------------------+  +------------------+
- | Generic Driver |  | MT Driver |  | Custom Driver #1 |  | Custom Driver #2 |
- +----------------+  +-----------+  +------------------+  +------------------+
-
-version 3 changes
--rename binding compatible from himax,hid-over-spi to himax,hid
--rename document himax,hid-over-spi.yaml to himax,hid.yaml
--rename binding properties himax,rst-gpio to reset
--remove binding properties himax,irq-gpio, himax3v3-gpio and himax,fw_in_flash.
--add binding properties vcca-power, vccd-power.
--add binding sub-node panel and move himax,pid into this one.
--HIMAX_DRIVER_VER update from 0.0.11 to 1.0.0
-version 2 changes
--rename bindings name from himax,hid-over-hx-spi to himax,hid-over-spi
--remove "himax,fw_size", "himax,heatmap_16bits", "himax,fw_in_flash", "himax,pid"
- and "himax,boot_time_fw_upgrade" items from dt-bindings and related code
--add "himax,id-gpios" for user to specify hardware id pins
--rename "himax,ic_det_delay" to "himax,ic-det-delay-ms" and
- "himax,ic_resume_delay" to "himax,ic-resume-delay-ms"
--MAINTAINER position adjust: move info to the position by letter order
--Kconfig add HX_HID_HAS_FLASH option to replace "himax,fw_in_flash"
--HIMAX_DRIVER_VER upadte from 0.0.10 to 0.0.11
--remove unused includes and description in hx_hid.c
--add code to map id-gpios value to PID
--correct variable naming style and misspellings in hx_ic_core.c/h
--remove unnecessary global varaible debug_flag
-
-Tylor Yang (4):
-  dt-bindings: input: Introduce Himax HID-over-SPI device
-  HID: touchscreen: Add initial support for Himax HID-over-SPI
-  HID: touchscreen: Add initial support for Himax HID-over-SPI
-  HID: touchscreen: Add initial support for Himax HID-over-SPI
-
- .../devicetree/bindings/input/himax,hid.yaml  |  123 +
- MAINTAINERS                                   |    7 +
- drivers/hid/Kconfig                           |    2 +
- drivers/hid/Makefile                          |    2 +
- drivers/hid/hx-hid/Kconfig                    |   43 +
- drivers/hid/hx-hid/Makefile                   |   35 +
- drivers/hid/hx-hid/hx_acpi.c                  |   81 +
- drivers/hid/hx-hid/hx_core.c                  | 1605 ++++++++
- drivers/hid/hx-hid/hx_core.h                  |  489 +++
- drivers/hid/hx-hid/hx_hid.c                   |  753 ++++
- drivers/hid/hx-hid/hx_hid.h                   |   96 +
- drivers/hid/hx-hid/hx_ic_83102j.c             |  340 ++
- drivers/hid/hx-hid/hx_ic_83102j.h             |   42 +
- drivers/hid/hx-hid/hx_ic_core.c               | 3260 +++++++++++++++++
- drivers/hid/hx-hid/hx_ic_core.h               |  792 ++++
- drivers/hid/hx-hid/hx_inspect.c               |  652 ++++
- drivers/hid/hx-hid/hx_inspect.h               |  104 +
- drivers/hid/hx-hid/hx_of.c                    |  214 ++
- drivers/hid/hx-hid/hx_plat.c                  |  502 +++
- drivers/hid/hx-hid/hx_plat.h                  |   30 +
- 20 files changed, 9172 insertions(+)
+Signed-off-by: Tylor Yang <tylor_yang@himax.corp-partner.google.com>
+---
+ .../devicetree/bindings/input/himax,hid.yaml  | 123 ++++++++++++++++++
+ MAINTAINERS                                   |   6 +
+ 2 files changed, 129 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/input/himax,hid.yaml
- create mode 100644 drivers/hid/hx-hid/Kconfig
- create mode 100644 drivers/hid/hx-hid/Makefile
- create mode 100644 drivers/hid/hx-hid/hx_acpi.c
- create mode 100644 drivers/hid/hx-hid/hx_core.c
- create mode 100644 drivers/hid/hx-hid/hx_core.h
- create mode 100644 drivers/hid/hx-hid/hx_hid.c
- create mode 100644 drivers/hid/hx-hid/hx_hid.h
- create mode 100644 drivers/hid/hx-hid/hx_ic_83102j.c
- create mode 100644 drivers/hid/hx-hid/hx_ic_83102j.h
- create mode 100644 drivers/hid/hx-hid/hx_ic_core.c
- create mode 100644 drivers/hid/hx-hid/hx_ic_core.h
- create mode 100644 drivers/hid/hx-hid/hx_inspect.c
- create mode 100644 drivers/hid/hx-hid/hx_inspect.h
- create mode 100644 drivers/hid/hx-hid/hx_of.c
- create mode 100644 drivers/hid/hx-hid/hx_plat.c
- create mode 100644 drivers/hid/hx-hid/hx_plat.h
 
+diff --git a/Documentation/devicetree/bindings/input/himax,hid.yaml b/Documentation/devicetree/bindings/input/himax,hid.yaml
+new file mode 100644
+index 000000000000..9ba86fe1b7da
+--- /dev/null
++++ b/Documentation/devicetree/bindings/input/himax,hid.yaml
+@@ -0,0 +1,123 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/input/himax,hid.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Himax TDDI devices using SPI to send HID packets
++
++maintainers:
++  - Tylor Yang <tylor_yang@himax.corp-partner.google.com>
++
++description: |
++  Support the Himax TDDI devices which using SPI interface to acquire
++  HID packets from the device. The device needs to be initialized using
++  Himax protocol before it start sending HID packets.
++
++properties:
++  compatible:
++    const: himax,hid
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  reset:
++    maxItems: 1
++    description: Reset device, active low signal.
++
++  vccd-supply:
++    description:
++      Optional regulator for the 1.8V voltage.
++
++  vcca-supply:
++    description:
++      Optional regulator for the analog 3.3V voltage.
++
++  himax,id-gpios:
++    maxItems: 8
++    description: GPIOs to read physical Panel ID. Optional.
++
++  spi-cpha: true
++  spi-cpol: true
++
++  himax,ic-det-delay-ms:
++    description:
++      Due to TDDI properties, the TPIC detection timing must after the
++      display panel initialized. This property is used to specify the
++      delay time when TPIC detection and display panel initialization
++      timing are overlapped. How much milliseconds to delay before TPIC
++      detection start.
++
++  himax,ic-resume-delay-ms:
++    description:
++      Due to TDDI properties, the TPIC resume timing must after the
++      display panel resumed. This property is used to specify the
++      delay time when TPIC resume and display panel resume
++      timing are overlapped. How much milliseconds to delay before TPIC
++      resume start.
++
++  panel:
++    description:
++      The node of the display panel device. The driver will use this
++      node to get the project ID of the display panel. Optional.
++    type: object
++    additionalProperties: false
++
++    properties:
++      himax,pid:
++        $ref: /schemas/types.yaml#/definitions/uint32-array
++        minItems: 1
++        maxItems: 8
++        items:
++          minimum: 0
++          maximum: 65535
++        description:
++          When only one value exist, represent Project ID of the device.
++          When multiple values exist, order in event number value represnet
++          id value from id-gpios and odd number value represent Project ID
++          relatives to prior id value. This is used to specify the firmware
++          for the device.
++
++    required:
++      - himax,pid
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - reset
++
++unevaluatedProperties: false
++
++allOf:
++  - $ref: /schemas/spi/spi-peripheral-props.yaml#
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/gpio/gpio.h>
++
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        touchscreen@0 {
++            compatible = "himax,hid";
++            reg = <0x0>;
++            interrupt-parent = <&gpio1>;
++            interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
++            pinctrl-0 = <&touch_pins>;
++            pinctrl-names = "default";
++
++            spi-max-frequency = <12500000>;
++            spi-cpha;
++            spi-cpol;
++
++            reset = <&gpio1 8 GPIO_ACTIVE_LOW>;
++            himax,ic-det-delay-ms = <500>;
++            himax,ic-resume-delay-ms = <100>;
++        };
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 7a7bd8bd80e9..883870ab316f 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9340,6 +9340,12 @@ L:	linux-kernel@vger.kernel.org
+ S:	Maintained
+ F:	drivers/misc/hisi_hikey_usb.c
+ 
++HIMAX HID OVER SPI TOUCHSCREEN SUPPORT
++M:	Tylor Yang <tylor_yang@himax.corp-partner.google.com>
++L:	linux-input@vger.kernel.org
++S:	Supported
++F:	Documentation/devicetree/bindings/input/himax,hid.yaml
++
+ HIMAX HX83112B TOUCHSCREEN SUPPORT
+ M:	Job Noorman <job@noorman.info>
+ L:	linux-input@vger.kernel.org
 -- 
 2.25.1
 
