@@ -2,91 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D7A97CB958
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 05:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 324FA7CB95F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 05:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234032AbjJQDgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 23:36:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37322 "EHLO
+        id S233654AbjJQDpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 23:45:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjJQDgD (ORCPT
+        with ESMTP id S229666AbjJQDpW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 23:36:03 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C51495;
-        Mon, 16 Oct 2023 20:36:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1697513756;
-        bh=bGj68V/SXIHs16Yy2CtFicTRiL3T6FVwR9IvINdSOxs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Uc9a4IiA3Q2Uc7LaTKU1Lbr89SgBgAlJvDqKDRJDULtYtJBLgsS+oaNVjoLw9NXWn
-         3mpbufBGkN4G5732m2KdTARdk/tCuFxBeYIw91La4urFU7fuCNpjfLIcCZaODkcZg5
-         QC0+eR5KhrtyEW1lOLy9XHg//qs3c2cUHy7PAKmkO262LUekxDCjoF0QhSCgcFdrUy
-         4fp8DcJV/t92G9fFQze3W8NgKvLb2koCL2T6mupvZ3DyjXose880Or11oQxci+PARe
-         R2Qcmae9axYN0ghKyLC9nRAADAMpNy1RLcuYZfVwyIvEviHXy2s/CbsIr+55IFTaDU
-         gIwwBdE5dzjGA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S8flJ0Rr9z4x1t;
-        Tue, 17 Oct 2023 14:35:56 +1100 (AEDT)
-Date:   Tue, 17 Oct 2023 14:35:55 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the amdgpu tree
-Message-ID: <20231017143555.6a6450fc@canb.auug.org.au>
+        Mon, 16 Oct 2023 23:45:22 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA3FF95;
+        Mon, 16 Oct 2023 20:45:20 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-4194c3cf04aso36493621cf.3;
+        Mon, 16 Oct 2023 20:45:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697514319; x=1698119119; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fpenc3TC1wxTiSmB6vD1Cx4tRH9i7lUBaz0u5rLStfY=;
+        b=KXpZGRHF3QZK37bSiZxvsM1m4lMQlX8KKLE9A0IBlIXJCif5hk/gdHIXpZKN/KHSa/
+         uub/0wwO85/pvbSxLKpgqU4A5w3zCpZld/jR6MBLcnsrcp9HwS9X94bDTNxwo6x4q/oD
+         2jDKBvK9am0mKYe9+Om23l08IbAyxFXH5M2SVnJGHicyL1AqsXf2tk332ApPCY6eL8bi
+         BhFQigAVa0NGnBOzH70E8KKUplTEe5URes6bW1OyQYCYfJu0RqhcAOcur8FSt2BVkKeL
+         qkvbW0MukxTrL9X1orldf7YoMnsPf/Y+guIHamLjy/RTauzSAcqSeTrB9e3Go0l76Suh
+         2PBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697514319; x=1698119119;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fpenc3TC1wxTiSmB6vD1Cx4tRH9i7lUBaz0u5rLStfY=;
+        b=GWm5C8jQAZMDb9B1gkVwlKhL7nBZckKVaqH3SGcKntzfBucWQq3dI/Fgom/uN2IuZP
+         JO3ltTkKtp6Dxlu4kD+YwHJJSSjw7qllEIMrpRBC6zHayJF4In98xWC2xGJ/gPYks7FH
+         ffqYLu3kXOlFDcDpe2a5IkAYQpOJ6hNJyG+f3geMe0yZmNQp3EmEYRFoa5RWNdh4ACmF
+         FK2fjH9dWB4HMX9Y+HChM0i3OvIwScaTIDOQvY32QQ7+eC3jDyQei9P7fWp70hST4UNU
+         EJ5+S4tUONoOrevBJyjeWEZRDx2/iAdcpy4uVsMVe4MKvqXzFUcWDcEAcHYjUsk01Bxq
+         qwOw==
+X-Gm-Message-State: AOJu0YxTJRI7zUUNMTCiZFNBNlhvA58L3L7gRnRbS29QApcHGZK/JAt1
+        7mrOSvs/zQBvjMKuCVB+M18zWbA3qJhFQA==
+X-Google-Smtp-Source: AGHT+IGRVQZCVNJEkZXf9JzXVxV+zgsZwjKw5X1hyxT7Mx63UwrODkWivGNx/S67JTJ8V0W+53S9ow==
+X-Received: by 2002:a05:622a:1b8d:b0:417:914a:104d with SMTP id bp13-20020a05622a1b8d00b00417914a104dmr1544809qtb.49.1697514319434;
+        Mon, 16 Oct 2023 20:45:19 -0700 (PDT)
+Received: from localhost.localdomain ([2401:4900:628c:a92e:5b03:91a2:57c8:16f3])
+        by smtp.gmail.com with ESMTPSA id y13-20020aa793cd000000b0069305627491sm313777pff.159.2023.10.16.20.45.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 20:45:19 -0700 (PDT)
+From:   Anshul Dalal <anshulusr@gmail.com>
+To:     linux-input@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Anshul Dalal <anshulusr@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v5 1/2] dt-bindings: input: bindings for Adafruit Seesaw Gamepad
+Date:   Tue, 17 Oct 2023 09:13:44 +0530
+Message-ID: <20231017034356.1436677-1-anshulusr@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/KoDw1ok33qhwG0v_qKc_Nr0";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/KoDw1ok33qhwG0v_qKc_Nr0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Adds bindings for the Adafruit Seesaw Gamepad.
 
-Hi all,
+The gamepad functions as an i2c device with the default address of 0x50
+and has an IRQ pin that can be enabled in the driver to allow for a rising
+edge trigger on each button press or joystick movement.
 
-After merging the amdgpu tree, today's linux-next build (htmldocs)
-produced this warning:
+Product page:
+  https://www.adafruit.com/product/5743
+Arduino driver:
+  https://github.com/adafruit/Adafruit_Seesaw
 
-drivers/gpu/drm/amd/include/amd_shared.h:318: warning: Function parameter o=
-r member 'prepare_suspend' not described in 'amd_ip_funcs'
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
+---
 
-Introduced by commit
+Changes for v5:
+- Added link to the datasheet
 
-  cb11ca3233aa ("drm/amd: Add concept of running prepare_suspend() sequence=
- for IP blocks")
+Changes for v4:
+- Fixed the URI for the id field
+- Added `interrupts` property
 
---=20
-Cheers,
-Stephen Rothwell
+Changes for v3:
+- Updated id field to reflect updated file name from previous version
+- Added `reg` property
 
---Sig_/KoDw1ok33qhwG0v_qKc_Nr0
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Changes for v2:
+- Renamed file to `adafruit,seesaw-gamepad.yaml`
+- Removed quotes for `$id` and `$schema`
+- Removed "Bindings for" from the description
+- Changed node name to the generic name "joystick"
+- Changed compatible to 'adafruit,seesaw-gamepad' instead of
+  'adafruit,seesaw_gamepad'
 
------BEGIN PGP SIGNATURE-----
+ .../input/adafruit,seesaw-gamepad.yaml        | 60 +++++++++++++++++++
+ 1 file changed, 60 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/adafruit,seesaw-gamepad.yaml
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUuARsACgkQAVBC80lX
-0Gzn9Af9FL2/MMmSEvFQOR7Bm+Hlo+7o7tje1gOl46Yd6Ie1UQZ/aNSN7qVQY5ha
-Pf2uTe7XaEYls8TieLEg8A9F5PA6GZKpqpR/o5AxKAeEp0wvkd4F/MovsS+Cn8eN
-ydyG5uuEi0Fg+O2ROBGjQRcapNhT0zAkwcDFALbCC88RNEzhNXCv0sFVZHgRJHqn
-Qw7QVJSdRsme+ho/g+b7L5ydltK0tUvzukN5kaRvxaZuM46WTDL+js2njGcGgiDX
-H0YlFJm8VraEyphyBQ+KlwQPcp1jg/uPPz2mlm0sNQvGYS+fGs+Y99bMIzN1ErHc
-GrubrzNXcrZC1DNP3lCodB8ngE2CUQ==
-=Kn8x
------END PGP SIGNATURE-----
+diff --git a/Documentation/devicetree/bindings/input/adafruit,seesaw-gamepad.yaml b/Documentation/devicetree/bindings/input/adafruit,seesaw-gamepad.yaml
+new file mode 100644
+index 000000000000..3f0d1c5a3b9b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/input/adafruit,seesaw-gamepad.yaml
+@@ -0,0 +1,60 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/input/adafruit,seesaw-gamepad.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Adafruit Mini I2C Gamepad with seesaw
++
++maintainers:
++  - Anshul Dalal <anshulusr@gmail.com>
++
++description: |
++  Adafruit Mini I2C Gamepad
++
++    +-----------------------------+
++    |   ___                       |
++    |  /   \               (X)    |
++    | |  S  |  __   __  (Y)   (A) |
++    |  \___/  |ST| |SE|    (B)    |
++    |                             |
++    +-----------------------------+
++
++  S -> 10-bit percision bidirectional analog joystick
++  ST -> Start
++  SE -> Select
++  X, A, B, Y -> Digital action buttons
++
++  Datasheet: https://cdn-learn.adafruit.com/downloads/pdf/gamepad-qt.pdf
++  Product page: https://www.adafruit.com/product/5743
++  Arduino Driver: https://github.com/adafruit/Adafruit_Seesaw
++
++properties:
++  compatible:
++    const: adafruit,seesaw-gamepad
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++    description:
++      The gamepad's IRQ pin triggers a rising edge if interrupts are enabled.
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        joystick@50 {
++            compatible = "adafruit,seesaw-gamepad";
++            reg = <0x50>;
++        };
++    };
+-- 
+2.42.0
 
---Sig_/KoDw1ok33qhwG0v_qKc_Nr0--
