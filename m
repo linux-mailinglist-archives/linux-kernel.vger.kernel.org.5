@@ -2,46 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 527F77CCF19
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 23:23:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1657CCF1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 23:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233170AbjJQVX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 17:23:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32906 "EHLO
+        id S1344021AbjJQVXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 17:23:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJQVX1 (ORCPT
+        with ESMTP id S232068AbjJQVX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 17:23:27 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F120BC6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 14:23:25 -0700 (PDT)
-Message-ID: <20231017211721.990580849@linutronix.de>
+        Tue, 17 Oct 2023 17:23:28 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3448CC4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 14:23:27 -0700 (PDT)
+Message-ID: <20231017211722.051625827@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697577804;
+        s=2020; t=1697577805;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=n70P7VXoQvos+tvoARg8YdC357P9bzhzxWof3PMYpTE=;
-        b=SMiNeiQ/s5oDUwUUum5Ddfk05cPTUzZ9hQ0/GGHgxHg7XNiRULFTZZLx/UV1T/mkXRg3+a
-        l6Bt4nphPW74/KaLOmlzYQvOS7yxpwjCegmYO1qalPNi4z664GPqqWz8rTdRYrtsk3MxmE
-        BYVpYCAiL0CSri49W/gtolPX/uCsPkpRL8uSFddlp9/rXjePhfv/g6cM0elfbIo3e1o9r2
-        imh7keXzYplj9O7BUU8G+tr8FSc5afnMDi+EJ3o05IyVgqK1ScRHmzF5zYGFDXFqbTo8yP
-        jdmY03p5K8VMRlgM7wwSo9zHjXpU1qo55yKI0nzmMSh/Sp8FiRAgthJwzqo+9Q==
+         references:references; bh=lbJOYYfEHtT/va9V68vAJRypxMhoPgp+vUtRehmb5+s=;
+        b=EQh3GyX9g7Y8vF1WVmwq4aQgerLtDVxxz/+4S2qGYSj2DsH/T2UtPZc2fGFYOF96J9aaTA
+        eTAZ1H+lI+z29H/KrUegQa1EHm6TCqs0wcFTdRdAJJ8xiQa6wdYi0eEnwzVErQrkkpUo0L
+        SUArvNPviOJYtQuHlFYg8NcLTvr9oCActlvj6Os3aUwaz7PVF5/KSkEn5z6WMWCKy9ItiR
+        mabn7a0cvkdySD6lj0CvTXxkVEVjdfOP2Ajutu4Qv+F2mRP8ORAE7QXp9H3ghx3PYKXczg
+        Ye7Mlqk2Xs+vb6XhV+BJhLvLX6aWquHNPuSjgyLxnVkuvHpazP8RxI3Ch83Wyg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697577804;
+        s=2020e; t=1697577805;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=n70P7VXoQvos+tvoARg8YdC357P9bzhzxWof3PMYpTE=;
-        b=DjuZ02UuiZWrwZnoPFeH+9FGXmbZYNkaFE2Sak5Pub59YwvW8sTdMA1ZK2Ij+vmtekXVo+
-        2a45mX6csMbvd7AQ==
+         references:references; bh=lbJOYYfEHtT/va9V68vAJRypxMhoPgp+vUtRehmb5+s=;
+        b=67HZHtdltjEhaIOOD9sxR+Wliq7Q+U+4SYN5vz0MHpLwaJTks1GZqalBKv0Na+rTvPHy31
+        +KwwSiOD53zr1tAQ==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Borislav Petkov <bp@alien8.de>
-Subject: [patch V5 01/39] x86/boot/32: Disable stackprotector and tracing for
- mk_early_pgtbl_32()
+Subject: [patch V5 02/39] x86/boot: Use __pa_nodebug() in mk_early_pgtbl_32()
 References: <20231017200758.877560658@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 17 Oct 2023 23:23:24 +0200 (CEST)
+Date:   Tue, 17 Oct 2023 23:23:25 +0200 (CEST)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -53,50 +52,61 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-Stackprotector cannot work before paging is enabled. The read from the per
-CPU variable __stack_chk_guard is always accessing the virtual address
-either directly on UP or via FS on SMP. In physical address mode this
-results in an access to memory above 3GB.
+Use the existing macro instead of undefining and redefining __pa().
 
-So this works by chance as the hardware returns the same value when there
-is no RAM at this physical address. When there is RAM populated above 3G
-then the read is by chance the same as nothing changes that memory during
-the very early boot stage.
-
-Stop relying on pure luck and disable the stack protector for the only C
-function which is called during early boot before paging is enabled.
-
-Remove function tracing from the whole source file as there is no way to
-trace this at all, but in case of CONFIG_DYNAMIC_FTRACE=n
-mk_early_pgtbl_32() would access global function tracer variables in
-physical address mode which again might work by chance.
+No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/kernel/Makefile |    1 +
- arch/x86/kernel/head32.c |    3 ++-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+V5: New patch
 ---
---- a/arch/x86/kernel/Makefile
-+++ b/arch/x86/kernel/Makefile
-@@ -16,6 +16,7 @@ CFLAGS_REMOVE_kvmclock.o = -pg
- CFLAGS_REMOVE_ftrace.o = -pg
- CFLAGS_REMOVE_early_printk.o = -pg
- CFLAGS_REMOVE_head64.o = -pg
-+CFLAGS_REMOVE_head32.o = -pg
- CFLAGS_REMOVE_sev.o = -pg
- CFLAGS_REMOVE_rethook.o = -pg
- endif
+ arch/x86/kernel/head32.c |   16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
+---
 --- a/arch/x86/kernel/head32.c
 +++ b/arch/x86/kernel/head32.c
-@@ -70,7 +70,8 @@ asmlinkage __visible void __init __noret
-  * always zero at this stage.
-  */
- void __init mk_early_pgtbl_32(void);
--void __init mk_early_pgtbl_32(void)
-+
-+void __init __no_stack_protector mk_early_pgtbl_32(void)
+@@ -73,25 +73,21 @@ void __init mk_early_pgtbl_32(void);
+ 
+ void __init __no_stack_protector mk_early_pgtbl_32(void)
  {
- #ifdef __pa
- #undef __pa
+-#ifdef __pa
+-#undef __pa
+-#endif
+-#define __pa(x)  ((unsigned long)(x) - PAGE_OFFSET)
+ 	pte_t pte, *ptep;
+ 	int i;
+ 	unsigned long *ptr;
+ 	/* Enough space to fit pagetables for the low memory linear map */
+-	const unsigned long limit = __pa(_end) +
++	const unsigned long limit = __pa_nodebug(_end) +
+ 		(PAGE_TABLE_SIZE(LOWMEM_PAGES) << PAGE_SHIFT);
+ #ifdef CONFIG_X86_PAE
+-	pmd_t pl2, *pl2p = (pmd_t *)__pa(initial_pg_pmd);
++	pmd_t pl2, *pl2p = (pmd_t *)__pa_nodebug(initial_pg_pmd);
+ #define SET_PL2(pl2, val)    { (pl2).pmd = (val); }
+ #else
+-	pgd_t pl2, *pl2p = (pgd_t *)__pa(initial_page_table);
++	pgd_t pl2, *pl2p = (pgd_t *)__pa_nodebug(initial_page_table);
+ #define SET_PL2(pl2, val)   { (pl2).pgd = (val); }
+ #endif
+ 
+-	ptep = (pte_t *)__pa(__brk_base);
++	ptep = (pte_t *)__pa_nodebug(__brk_base);
+ 	pte.pte = PTE_IDENT_ATTR;
+ 
+ 	while ((pte.pte & PTE_PFN_MASK) < limit) {
+@@ -111,11 +107,11 @@ void __init __no_stack_protector mk_earl
+ 		pl2p++;
+ 	}
+ 
+-	ptr = (unsigned long *)__pa(&max_pfn_mapped);
++	ptr = (unsigned long *)__pa_nodebug(&max_pfn_mapped);
+ 	/* Can't use pte_pfn() since it's a call with CONFIG_PARAVIRT */
+ 	*ptr = (pte.pte & PTE_PFN_MASK) >> PAGE_SHIFT;
+ 
+-	ptr = (unsigned long *)__pa(&_brk_end);
++	ptr = (unsigned long *)__pa_nodebug(&_brk_end);
+ 	*ptr = (unsigned long)ptep + PAGE_OFFSET;
+ }
+ 
 
