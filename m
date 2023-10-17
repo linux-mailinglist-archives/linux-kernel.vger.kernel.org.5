@@ -2,159 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E878D7CC924
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 18:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38FAF7CC926
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 18:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233170AbjJQQxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 12:53:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36254 "EHLO
+        id S1343606AbjJQQyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 12:54:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjJQQxv (ORCPT
+        with ESMTP id S229848AbjJQQyC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 12:53:51 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B158AA4
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:53:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4992C433C8;
-        Tue, 17 Oct 2023 16:53:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697561629;
-        bh=RaxBlkhFIAhkajhxqmNdE/U+qglufyW+ULA5w+v6mjY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FG1JVZVpP5/zwJo5CdV5HOxHvYr04WcncrOGr4hTj4kgiEST2DY1tBTadV1RxMEkk
-         xK0mOVf4AVhzgzucqPfRtfn48nwQlZGw/FafdxprnSoeYgQAmoGm7Jk19tnywMQUB/
-         x7oXDLIv6nWU6G5O2Pyjx9lmoAFTdrTt4YAunkJk=
-Date:   Tue, 17 Oct 2023 18:53:44 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Hardik Gajjar <hgajjar@de.adit-jv.com>
-Cc:     mathias.nyman@intel.com, stern@rowland.harvard.edu,
-        yangyingliang@huawei.com, jinpu.wang@ionos.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        erosca@de.adit-jv.com
-Subject: Re: [PATCH v4] usb: core: hub: Add quirks for reducing device
- address timeout
-Message-ID: <2023101750-bless-humorous-45c7@gregkh>
-References: <2023101155-unframed-satirical-f7ec@gregkh>
- <20231011164525.97616-1-hgajjar@de.adit-jv.com>
- <2023101620-shaky-sensitize-9708@gregkh>
- <20231017161021.GA62775@vmlxhi-118.adit-jv.com>
+        Tue, 17 Oct 2023 12:54:02 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D885AFD
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:54:00 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9b96c3b4be4so932085466b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:54:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697561639; x=1698166439; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=CcxqmurZRovtejIBarGStAVFXIqQYFcF1YdtRpOX6+U=;
+        b=CAV8Y+GhMiptb76OUcPK+jPqk2E8ovbaGdSmRWo8lUcdPLvN7OAtOFl8IsBRfwwz/S
+         MYldPfXc67857BJTrljYAWKAEv7bpgzHXVSsOLUi2XIkaWiJnV3EnHpTg7eeeBRqrdUb
+         zPsfoWJ/idYkDwRvuhwknJTtroQ7Fi1ztz7Rjd9QIp5VYU4jqL6k3qS1+QggKYG9e9gS
+         tf2yLzx+T7Y11kDIdCz3wh2gU8te20B4JNubqJd6tRA2dpXp0ieHkgMf0v3UlzA4p0oI
+         lPR0gD90CZhD3IkydZdkYcSY/nhfQeMcNk4yZuf0Z1BTUTmqwEPk0ATBrA5qMXInihaJ
+         qbhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697561639; x=1698166439;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CcxqmurZRovtejIBarGStAVFXIqQYFcF1YdtRpOX6+U=;
+        b=ltiPoDYv1aGxy76z0Or9tIAMOOxxjvdwjTy7ONmEeAEnIgHfXIsd4w4qHp2ifwzb5r
+         ARMuPtszDwPHY24vQdMT0P000TSG0Goa0vG0ghTNRdooWq4ygjI+DGw8AtKhbtF8Ny59
+         r44n6NCS1P88kf3LQXwTv0SCKcTPhgirdCcXynm0ACrnVlS7aSAqbmYMO01hYV8rKYEd
+         wxif4fl37s6JHFfioEV8zLOY1yiWxZUfcYJ8NfG8jcofqpUPTqf1m74KmiXtF4plQJVk
+         Ey8O5dM9r2mkOfgy+SrW22713LCFMYYnpDGkLnYQM5yXMZ+4TpfkjqZz0WKDYvyIKxHj
+         rC2Q==
+X-Gm-Message-State: AOJu0Yx2l1j2g/iiIcL7XxDMwVK9Nh0rtVJoCOFWnZ6Ybwj1rEEgc1ok
+        B7SDwuSSdCQP9kR3ilfc3hvmkw==
+X-Google-Smtp-Source: AGHT+IGWHRcyXC/1h7iTCTDjF1dwqsF0VTdaLu1Up9dFe3fmG7G1SH0uMywyZx4cPkGMpWxV/vTf5g==
+X-Received: by 2002:a17:907:3e0d:b0:9b2:7b89:8199 with SMTP id hp13-20020a1709073e0d00b009b27b898199mr2462657ejc.53.1697561639311;
+        Tue, 17 Oct 2023 09:53:59 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.219.154])
+        by smtp.gmail.com with ESMTPSA id fi10-20020a170906da0a00b0098669cc16b2sm127675ejb.83.2023.10.17.09.53.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Oct 2023 09:53:58 -0700 (PDT)
+Message-ID: <04ee08a4-e804-40fe-b24e-7a56c9e24e8b@linaro.org>
+Date:   Tue, 17 Oct 2023 18:53:56 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231017161021.GA62775@vmlxhi-118.adit-jv.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: usb: vialab,vl817: remove reset-gpios from
+ required list
+To:     Jisheng Zhang <jszhang@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Anand Moon <linux.amoon@gmail.com>
+Cc:     linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231017160158.1065-1-jszhang@kernel.org>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231017160158.1065-1-jszhang@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 06:10:21PM +0200, Hardik Gajjar wrote:
-> On Mon, Oct 16, 2023 at 07:58:36PM +0200, Greg KH wrote:
-> > On Wed, Oct 11, 2023 at 06:45:25PM +0200, Hardik Gajjar wrote:
-> > > Currently, the timeout for the set address command is fixed at
-> > > 5 seconds in the xhci driver. This means the host waits up to 5
-> > > seconds to receive a response for the set_address command from
-> > > the device.
-> > > 
-> > > In the automotive context, most smartphone enumerations, including
-> > > screen projection, should ideally complete within 3 seconds.
-> > 
-> > "should" according to whom?  That goes against the USB specification, so
-> > why not take it up with them?
-> We're implementing this change to meet Google's Android Auto certification
-> requirements, even though these requirements aren't publicly available.
-
-Then perhaps Google needs to talk about this somewhere if they are
-forcing us to take such an out-of-spec requirement?
-
-> The issue arises when we connect an Android phone to a Linux host using a special
-> automotive USB hub. The host's xHCI doesn't receive a response from the hub after
-> sending a 'set_address' request, resulting in a timeout. This problem is specific
-> to one phone model.
+On 17/10/2023 18:01, Jisheng Zhang wrote:
+> The "reset-gpios" is optional in real case, for example reset pin is
+> is hard wired to "high". And this fact is also reflected by the
+> devm_gpio_get_optional() calling in driver code.
 > 
-> It's worth noting that we can't argue that this requirement violates USB standards
-> because the 3-second time limit applies only when connecting an Android mobile phone.
-> I assume that Android phones also undergo Google certification, which likely includes
-> a condition for successful enumeration within a specified time frame. However, I can't confirm this.
-
-Android's CTS/VTS testing is pretty public, but huge, so you might want
-to dig into that and see if they really test for this or not.
-
-> More logs and detailed in patch V1:
-> https://lore.kernel.org/linux-usb/20230818092353.124658-1-hgajjar@de.adit-jv.com/T/#m452ec9dad94e8181fdb050cd29483dd89437f7c1
-> > 
-> > > Achieving this is impossible in scenarios where the set_address is
-> > > not successful and waits for a timeout.
-> > 
-> > Agreed, broken hardware is a pain, but if your device is allowed to take
-> > longer, it can, and will, so you have to support that.
-> > 
-> The problem is not caused by the device taking an extended amount of time to
-> process the 'set_address' request. Instead, the issue lies in the absence of
-> any activity on the upstream bus until a timeout occurs.
-
-So, a broken device.  Why are you then adding the hub to the quirk list
-and not the broken device?  We are used to adding broken devices to
-qurik lists all the time, this shouldn't be new.
-
-> This situation arises when the host has already transmitted the 'set_address' command to the hub,
-> assuming that the device operates at full speed. However, the device connected
-> to the hub undergoes a state change from full speed to high-speed during this process.
-
-During which process?  While the set-address happens?  That feels like a
-hub bug then.
-
-> > > The shortened address device timeout quirks provide the flexibility
-> > > to align with a 3-second time limit in the event of errors.
-> > > By swiftly triggering a failure response and swiftly initiating
-> > > retry procedures, these quirks ensure efficient and rapid recovery,
-> > > particularly in automotive contexts where rapid smartphone enumeration
-> > > and screen projection are vital.
-> > 
-> > Screen projection is a requirement that you should not be relying on USB
-> > for as USB has a different set of required timeouts, right?  This sounds
-> > like a bad hardware design, if not an impossible one.
-> > 
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> ---
+>  .../bindings/usb/thead,th1520-usb.yaml        | 42 ++++++++++---------
+>  .../devicetree/bindings/usb/vialab,vl817.yaml |  1 -
+>  2 files changed, 23 insertions(+), 20 deletions(-)
 > 
-> Screen projection for us means displaying the connected phone on the screen and
-> launching Carplay and Android Auto for the user. This works perfectly in nearly all
-> cases, except in scenarios like this one where a combination of a special hub and
-> a specific phone model is causing the issue
+> diff --git a/Documentation/devicetree/bindings/usb/thead,th1520-usb.yaml b/Documentation/devicetree/bindings/usb/thead,th1520-usb.yaml
+> index afb618eb5013..ce1cab75f0ff 100644
+> --- a/Documentation/devicetree/bindings/usb/thead,th1520-usb.yaml
+> +++ b/Documentation/devicetree/bindings/usb/thead,th1520-usb.yaml
+> @@ -28,6 +28,10 @@ properties:
+>  
+>    ranges: true
+>  
+> +  thead,misc-syscon:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    description: a phandle to the misc system register controller syscon node.
 
-So which is broken, the hub or phone?
+Either you combined two unrelated changes or this should be resets from
+reset-controller.
 
-> > So the real issue that you have here is a broken built-in USB hub that
-> > does not error out quick enough, right?  Why not fix the firmware in
-> > that hub as you know it's broken?  Why is it the operating system's job
-> > to work around non-compliant devices?
-> > 
-> > Ok, that last question was redundant, of course it's our job to work
-> > around broken devices, but this feels different.  You are trying to say
-> > "hey, I know this device is broken, so error out quick so we can just
-> > ignore it", right?  If so, why not just never allow that device to
-> > enumerate at all?  You don't have to accept it as a valid device to the
-> > system (just don't authorize it), and then no device will ever connect
-> > to it so what is the delay issue?
-> > 
-> 
-> We require the device (HUB) as it is a vital component of our infotainment system.
 
-Great, then you can fix the firmware in it!
+Best regards,
+Krzysztof
 
-> The issue arises when the host has already issued the 'set_address' command to the hub,
-> assuming the device is operating at full speed. However, in such cases, when the device
-> connected to the hub changes its state from full speed to high-speed, the 'set_address'
-> request becomes blocked, waiting for the full 5-second timeout. This patch reduces the
-> timeout from 5 seconds to 500 milliseconds, allowing for quicker failure and re-enumeration
-> of the device as high-speed
-
-Changing speed is under hub control, not device control, right?  Are you
-sure the firmware is correct in that hub?  Has the hub passed all of the
-USB-IF testing requirements?
-
-thanks,
-
-greg k-h
