@@ -2,114 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 719507CC5AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 287477CC5B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:16:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344026AbjJQOPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 10:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55792 "EHLO
+        id S1344089AbjJQOP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 10:15:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344009AbjJQOPO (ORCPT
+        with ESMTP id S1344071AbjJQOPx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 10:15:14 -0400
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B961F9;
-        Tue, 17 Oct 2023 07:15:11 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E27E3C0015;
-        Tue, 17 Oct 2023 14:15:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1697552110;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k+5JqiyTOv3TPqc/V/H+YGYwqd0d676gX7UE8nIxZpE=;
-        b=M4Ad9X85i5+2Mw8Hs1jcxIenMfvWwAXvmf9bQlCU22P4jwZr12Vi74PHJ61pQ6o3I4NhuY
-        28NeuscGp82NrRV301FM43h9ltbVnX0nXz7b4RZEgOzdzSXrNG0Qs0BxGdmIMYMmzLkwhN
-        eexGYueMEMPaj2s5V+j270mBjcSycuT9sG0Kd61ot2rPJGG2rF0R8KDWgYi4SMbsGttVrO
-        kBfww7QExBigcPaQOczMY3s78FDJpN7LuQanxCrhwJik1X8YdoqGjZ/NoNHla+3Bf3SNYc
-        FaMtuXhcA86iIwDbAZAfAgVLeNFU/IzUoVesGo4T1fAfWvA9de9fR2XZnjjPKA==
-Date:   Tue, 17 Oct 2023 16:15:04 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Frank Li <Frank.li@nxp.com>, Conor Dooley <conor@kernel.org>,
-        conor.culhane@silvaco.com, alexandre.belloni@bootlin.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        joe@perches.com, peng.fan@nxp.com, alexander.stein@ew.tq-group.com,
-        haibo.chen@nxp.com, ping.bai@nxp.com, xiaoning.wang@nxp.com,
-        sherry.sun@nxp.com, linux-i3c@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev
-Subject: Re: [PATCH 1/2] dt-bindings: i3c: Fix silvaco,i3c-master compatible
- string
-Message-ID: <20231017161504.396150aa@xps-13>
-In-Reply-To: <b5d3b52f-f551-483c-a4d4-763130b48fe3@linaro.org>
-References: <20231016152450.2850498-1-Frank.Li@nxp.com>
-        <20231016-chatroom-regulator-a75f1d8be809@spud>
-        <ZS2Pz1HxUgrx4+0R@lizhi-Precision-Tower-5810>
-        <6110c58a-8003-4889-9a4b-6a7d1821c00e@linaro.org>
-        <ZS2Y0YRPItYhUBXE@lizhi-Precision-Tower-5810>
-        <b5d3b52f-f551-483c-a4d4-763130b48fe3@linaro.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Tue, 17 Oct 2023 10:15:53 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED6F11A
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:15:49 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bdf4752c3cso34561725ad.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:15:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697552148; x=1698156948; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=iqwQ+7rqqmIMspEGesJUa+9eYiX8AvPDFecFy0NEhJI=;
+        b=MWRpqap0jSV/33P+VyV9Sjgz6Yb2JS66xc0vnurT6pes9obGOw07jjG+hXDH2v2njd
+         VVi8X8S6fkhGsj26Pw+B2QIy0qJowc4cIytKDq/gWbqk8YA+WG7XBVOOMqtvcwsxV4V8
+         t5uHVOe9mlt/+4Bja8uAjrY9L3nnivyB/MRe3pQrzYGay1Z+Dt4vif/QlVMYIHWV9dEU
+         YB13Qqy38+qWRKd7OudJtHSbxIPY8akE376Uuu3p4mAmNA92KSRet+RdbIV6GbFGYCTb
+         I7FHEdS1B1yEEF/+VDiTZb2Cw/T+tdvY2VoyfX3iu1oiiQndiH+IOmWAyh5Fmtd7Xgi0
+         adrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697552148; x=1698156948;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iqwQ+7rqqmIMspEGesJUa+9eYiX8AvPDFecFy0NEhJI=;
+        b=AQOQSnFJA5Z2I/XvHkDtnHGAY275WEeyRScPzQzKbDbDoD/k80WucB9EaIt/xIMbd4
+         kYiXDkRsL9+d76PVAsWxgsEZvQgsZvgtR7IXzrQIhwjrlbbtDv2bKYUIT3mS5d2HA/Qc
+         1ZYqSAxSwRWM3ViYPCvM9KqhgMxmGJYdVbspk02IfvBW7kKmKYa+m6R7OohSJ3O28aLs
+         rz1w1uTxArFu01bvTFqvBM0XYU2cHB3gtr9NcFUxASdipIojf6dmtFH3EZhunTa/p8bf
+         7D9Lz/Ce6DhviyNeqLiyodmWxnQEttAd7pIYNxxBH8qQz2H8FKRTHZbZ71DrYy9Ha3WU
+         7ANQ==
+X-Gm-Message-State: AOJu0YyXRR+80o9uFvnVTYth8+H84Sge93TMLbFAVhrvsnmAp93a+5gE
+        LcWZyWPqBLcLCGO4njTQ73Y=
+X-Google-Smtp-Source: AGHT+IF8Inum4AWOsUaWcagEsQj6+/PfIsPVhtsv0RSbpX2fyBRJjPYdaXNrpnHmFrhnnxoznYFOcg==
+X-Received: by 2002:a17:903:487:b0:1c9:ff46:162d with SMTP id jj7-20020a170903048700b001c9ff46162dmr2294311plb.22.1697552148350;
+        Tue, 17 Oct 2023 07:15:48 -0700 (PDT)
+Received: from ubuntu.. ([122.181.68.128])
+        by smtp.gmail.com with ESMTPSA id q5-20020a170902788500b001ca222edc16sm1590234pll.135.2023.10.17.07.15.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Oct 2023 07:15:47 -0700 (PDT)
+From:   Pavan Bobba <opensource206@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     Pavan Bobba <opensource206@gmail.com>
+Subject: [PATCH] staging: vt6655: Type encoding info dropped from variable name "bUpdateBBVGA"
+Date:   Tue, 17 Oct 2023 19:45:10 +0530
+Message-Id: <20231017141509.351301-1-opensource206@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+variable name "bUpdateBBVGA" updated like below:
 
-krzysztof.kozlowski@linaro.org wrote on Mon, 16 Oct 2023 22:43:28 +0200:
+a.type encoding info dropped from name
+b.camelcase name replaced by snakecase
 
-> On 16/10/2023 22:10, Frank Li wrote:
-> > On Mon, Oct 16, 2023 at 09:57:18PM +0200, Krzysztof Kozlowski wrote: =20
-> >> On 16/10/2023 21:32, Frank Li wrote: =20
-> >>> On Mon, Oct 16, 2023 at 06:30:11PM +0100, Conor Dooley wrote: =20
-> >>>> On Mon, Oct 16, 2023 at 11:24:49AM -0400, Frank Li wrote: =20
-> >>>>> In driver, compatible string is silvaco,i3c-master instead of
-> >>>>> silvaco,i3c-master-v1. =20
-> >>>>
-> >>>> And what makes the driver right & the binding wrong? AFAICT, this is=
- an
-> >>>> IP sold by silvaco & the -v1 suffix was explicitly requested during
-> >>>> review of the binding. =20
-> >>>
-> >>> The driver existed for the long time. DTS files already use
-> >>> silvaco,i3c-master.
-> >>>
-> >>> There are two options, one change doc, the other change dts and drive=
-rs.
-> >>> I think change doc is easiest ways.
-> >>>
-> >>> If there are v2 in future, we can added silvaco,i3c-master-v2 in futu=
-re.
-> >>>
-> >>> If everyone prefer change drivers and dts, I can work on new patch. J=
-ust
-> >>> break back compatiblity. =20
-> >>
-> >> No, because Rob explicitly pointed out too generic name.
-> >> https://lore.kernel.org/all/20210111200821.GA2978830@robh.at.kernel.or=
-g/
-> >>
-> >> Is it some way to avoid implementing feedback or how does it work? =20
+Issue found by checkpatch
 
-Not at all, it's my (faithful) fault, I did update the bindings upon
-Rob request and apparently kept the previous string in the driver.
+Signed-off-by: Pavan Bobba <opensource206@gmail.com>
+---
+ drivers/staging/vt6655/baseband.c    | 2 +-
+ drivers/staging/vt6655/channel.c     | 2 +-
+ drivers/staging/vt6655/device.h      | 2 +-
+ drivers/staging/vt6655/device_main.c | 6 +++---
+ 4 files changed, 6 insertions(+), 6 deletions(-)
 
-After thinking again I would drop silvaco,i3c-master entirely from the
-driver, it was never intended to keep it.
+diff --git a/drivers/staging/vt6655/baseband.c b/drivers/staging/vt6655/baseband.c
+index 7d47b266b87e..f7824396c5ff 100644
+--- a/drivers/staging/vt6655/baseband.c
++++ b/drivers/staging/vt6655/baseband.c
+@@ -2087,7 +2087,7 @@ bool bb_vt3253_init(struct vnt_private *priv)
+ 		/* {{ RobertYu: 20050104 */
+ 	} else {
+ 		/* No VGA Table now */
+-		priv->bUpdateBBVGA = false;
++		priv->update_bbvga = false;
+ 		priv->bbvga[0] = 0x1C;
+ 	}
+ 
+diff --git a/drivers/staging/vt6655/channel.c b/drivers/staging/vt6655/channel.c
+index 6ac7d470c041..c11bc2dbc356 100644
+--- a/drivers/staging/vt6655/channel.c
++++ b/drivers/staging/vt6655/channel.c
+@@ -86,7 +86,7 @@ bool set_channel(struct vnt_private *priv, struct ieee80211_channel *ch)
+ 		return ret;
+ 
+ 	/* Set VGA to max sensitivity */
+-	if (priv->bUpdateBBVGA &&
++	if (priv->update_bbvga &&
+ 	    priv->bbvga_current != priv->bbvga[0]) {
+ 		priv->bbvga_current = priv->bbvga[0];
+ 
+diff --git a/drivers/staging/vt6655/device.h b/drivers/staging/vt6655/device.h
+index 68bfadacfa7c..b166d296b82d 100644
+--- a/drivers/staging/vt6655/device.h
++++ b/drivers/staging/vt6655/device.h
+@@ -246,7 +246,7 @@ struct vnt_private {
+ 	unsigned char byAutoFBCtrl;
+ 
+ 	/* For Update BaseBand VGA Gain Offset */
+-	bool bUpdateBBVGA;
++	bool update_bbvga;
+ 	unsigned int	uBBVGADiffCount;
+ 	unsigned char bbvga_new;
+ 	unsigned char bbvga_current;
+diff --git a/drivers/staging/vt6655/device_main.c b/drivers/staging/vt6655/device_main.c
+index b08fcf7e6edc..b654fc24d725 100644
+--- a/drivers/staging/vt6655/device_main.c
++++ b/drivers/staging/vt6655/device_main.c
+@@ -179,7 +179,7 @@ device_set_options(struct vnt_private *priv)
+ 	priv->byBBType = priv->opts.bbp_type;
+ 	priv->byPacketType = priv->byBBType;
+ 	priv->byAutoFBCtrl = AUTO_FB_0;
+-	priv->bUpdateBBVGA = true;
++	priv->update_bbvga = true;
+ 	priv->preamble_type = 0;
+ 
+ 	pr_debug(" byShortRetryLimit= %d\n", (int)priv->byShortRetryLimit);
+@@ -423,7 +423,7 @@ static void device_init_registers(struct vnt_private *priv)
+ 	/* initialize BBP registers */
+ 	bb_vt3253_init(priv);
+ 
+-	if (priv->bUpdateBBVGA) {
++	if (priv->update_bbvga) {
+ 		priv->bbvga_current = priv->bbvga[0];
+ 		priv->bbvga_new = priv->bbvga_current;
+ 		bb_set_vga_gain_offset(priv, priv->bbvga[0]);
+@@ -1040,7 +1040,7 @@ static void vnt_check_bb_vga(struct vnt_private *priv)
+ 	long dbm;
+ 	int i;
+ 
+-	if (!priv->bUpdateBBVGA)
++	if (!priv->update_bbvga)
+ 		return;
+ 
+ 	if (priv->hw->conf.flags & IEEE80211_CONF_OFFCHANNEL)
+-- 
+2.34.1
 
-Thanks,
-Miqu=C3=A8l
