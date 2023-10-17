@@ -2,143 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B7467CBD74
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB537CBD77
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:31:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234718AbjJQIbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 04:31:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59402 "EHLO
+        id S234731AbjJQIbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 04:31:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233882AbjJQIbB (ORCPT
+        with ESMTP id S234732AbjJQIbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 04:31:01 -0400
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBCC5E8
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 01:30:59 -0700 (PDT)
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4065dea9a33so51097105e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 01:30:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697531458; x=1698136258;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=onwLT4RaxRoBduKzi1B/KWN/NF9RiD6N/sfRCaPFyEs=;
-        b=hyjo6b6mvIx1kOwYgn7sIysvN89ywBlCFEtsRSo23XdeNeO/ZscbVTYl5AVl7G627m
-         ccdClX0NmKe4x1IMSQ1tzjKQXNgjgBrpHYyLjc6tlvRcnJpLmioWfxY6fZUopwaBlTss
-         cJr+U6JCCrisESGskIuNdToboLpYNMwTT5M/4SUHWVCJXsUtitozpL0pSJspKz+JJiXr
-         pbnp4FpEiPNs/a60zfISSDwhppTKpJtE8sIzyp8uaKTLcQ0rJGS8FrZBXHFAvLNjJqJB
-         uSsTmixQs3Y2ThSFJVYZQG0YX10tfeFdCQY5CjeVQeeFswFSluWxO+Wc7NAgxFSbpJOt
-         MgNg==
-X-Gm-Message-State: AOJu0YymPzZ+SSHWY/cp7fBueRhHhtqdA9zVE8GTSsuaF1xFX14+LVPa
-        rz2Cftl3lFeSs+zjexO7U4s=
-X-Google-Smtp-Source: AGHT+IGWLJNiazTZzmqMmCNPIbRLK+uN28PaJ7aiimhkqaC+s+Z7hLKwu9YAdb29yjSn3xCUFv5nmA==
-X-Received: by 2002:a05:600c:3b07:b0:401:73b2:f043 with SMTP id m7-20020a05600c3b0700b0040173b2f043mr1201875wms.1.1697531458328;
-        Tue, 17 Oct 2023 01:30:58 -0700 (PDT)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id p15-20020a05600c204f00b004063cd8105csm9080312wmg.22.2023.10.17.01.30.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Oct 2023 01:30:57 -0700 (PDT)
-Message-ID: <2f09184f-c7dc-45f4-a398-e1194ecf7a47@kernel.org>
-Date:   Tue, 17 Oct 2023 10:30:57 +0200
+        Tue, 17 Oct 2023 04:31:14 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C1DBF2;
+        Tue, 17 Oct 2023 01:31:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59C70C433C8;
+        Tue, 17 Oct 2023 08:31:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697531473;
+        bh=sV57NWu1mWWa2mHpvDUHkKn7U2+oSh51miAvxpzYdC8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=limWfxRwQD1a//4aVP0bZ4acqnOQpo/86hRSXt85GQcD0THK4EKvF1kz5dY7zz9ew
+         WMmSBZPEOVl+7eHhnY2VbuZ1JcP/6CYkOzgdsfBuS9c9pa2haV7zGHlCPGFczOI3zh
+         hOc46EJXW4BHj3kA7y7IzOboZiJhFvlPh/vLFDzuU3bMKvvI5H/84fa5lswfBs1O9P
+         FM2Q/7M91KW3s3IJJpx0TZiPubUtNtNlXi5D2dZ3pqbWXfKJfku70lXTMcI+Aj2rGC
+         a89MGuis9NSDIhzkWzhDHwPMoQMEsMm8eXYcSp1fAhLH6ygpWac6I+/u9e1ri/ifem
+         H8/IYIBF9d4jA==
+Message-ID: <258a5d1b-46b2-4f79-89cf-157d5bf89f15@kernel.org>
+Date:   Tue, 17 Oct 2023 17:31:07 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] perf/benchmark: fix seccom_unotify benchmark for 32-bit
+Subject: Re: [PATCH v7 10/26] PM / devfreq: rockchip-dfi: Add RK3568 support
 Content-Language: en-US
-To:     keescook@chromium.org
-Cc:     linux-kernel@vger.kernel.org, Andrei Vagin <avagin@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-References: <20231017082952.31510-1-jirislaby@kernel.org>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <20231017082952.31510-1-jirislaby@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, kernel@pengutronix.de,
+        Michael Riesch <michael.riesch@wolfvision.net>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Vincent Legoll <vincent.legoll@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+References: <20230704093242.583575-1-s.hauer@pengutronix.de>
+ <20230704093242.583575-11-s.hauer@pengutronix.de>
+ <ac224dfe-ff7d-57c7-89ad-f10939975b4d@kernel.org>
+ <20231016113442.GZ3359458@pengutronix.de>
+From:   Chanwoo Choi <chanwoo@kernel.org>
+In-Reply-To: <20231016113442.GZ3359458@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ignore this one, I mangled authorship.
+On 23. 10. 16. 20:34, Sascha Hauer wrote:
+> On Sat, Oct 07, 2023 at 03:17:14AM +0900, Chanwoo Choi wrote:
+>> On 23. 7. 4. 18:32, Sascha Hauer wrote:
+>>> This adds RK3568 support to the DFI driver.  Only iniitialization
+>>> differs from the currently supported RK3399.
+>>>
+>>> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+>>> ---
+>>>  drivers/devfreq/event/rockchip-dfi.c | 21 +++++++++++++++++++++
+>>>  include/soc/rockchip/rk3568_grf.h    | 12 ++++++++++++
+>>>  2 files changed, 33 insertions(+)
+>>>  create mode 100644 include/soc/rockchip/rk3568_grf.h
+>>>
+>>> diff --git a/drivers/devfreq/event/rockchip-dfi.c b/drivers/devfreq/event/rockchip-dfi.c
+>>> index 6b3ef97b3be09..261d112580c9e 100644
+>>> --- a/drivers/devfreq/event/rockchip-dfi.c
+>>> +++ b/drivers/devfreq/event/rockchip-dfi.c
+>>> @@ -23,6 +23,7 @@
+>>>  
+>>>  #include <soc/rockchip/rockchip_grf.h>
+>>>  #include <soc/rockchip/rk3399_grf.h>
+>>> +#include <soc/rockchip/rk3568_grf.h>
+>>>  
+>>>  #define DMC_MAX_CHANNELS	2
+>>>  
+>>> @@ -209,10 +210,30 @@ static int rk3399_dfi_init(struct rockchip_dfi *dfi)
+>>>  	return 0;
+>>>  };
+>>>  
+>>> +static int rk3568_dfi_init(struct rockchip_dfi *dfi)
+>>> +{
+>>> +	struct regmap *regmap_pmu = dfi->regmap_pmu;
+>>> +	u32 reg2, reg3;
+>>> +
+>>> +	regmap_read(regmap_pmu, RK3568_PMUGRF_OS_REG2, &reg2);
+>>> +	regmap_read(regmap_pmu, RK3568_PMUGRF_OS_REG3, &reg3);
+>>> +
+>>> +	dfi->ddr_type = FIELD_GET(RK3568_PMUGRF_OS_REG2_DRAMTYPE_INFO, reg2);
+> 
+> The ddr_type is 5 bits wide. The lower three bits are here.
+> 
+>>> +
+>>> +	if (FIELD_GET(RK3568_PMUGRF_OS_REG3_SYSREG_VERSION, reg3) >= 0x3)
+>>> +		dfi->ddr_type |= FIELD_GET(RK3568_PMUGRF_OS_REG3_DRAMTYPE_INFO_V3, reg3) << 3;
+> 
+> The upper two bits are here, hence we need to shift the value above the
+> lower three bits.
+> 
+>>
+>> There are no reason of why shifting the '3'.
+>> Could you add the comment about '3' or add the constant definition '3'?
+> 
+> I don't think adding a constant makes sense. I'll add a comment making
+> it more clear what happens.
 
-On 17. 10. 23, 10:29, Jiri Slaby (SUSE) wrote:
-> From: Andrei Vagin <avagin@google.com>
+It is enough to add the comment. Thanks.
+
 > 
-> Commit 7d5cb68af638 (perf/benchmark: add a new benchmark for
-> seccom_unotify) added a reference to __NR_seccomp into perf. This is
-> fine as it added also a definition of __NR_seccomp for 64-bit. But it
-> failed to do so for 32-bit as instead of ifndef, ifdef was used.
+>>
+>>> +
+>>> +	dfi->channel_mask = 1;
+>>
+>> nitpick.
+>> On other rkXXXX_dfi_init, use GENMASK() to initialize 'dfi->channel_mask'.
+>> In order to keep the consistency, it is better to use BIT() macro as following:
+>> 	dfi->channel_mask = BIT(0);
 > 
-> Fix this typo (so fix the build of perf on 32-bit).
+> Ok, will do.
+
+Thanks.
+
 > 
-> Fixes: 7d5cb68af638 (perf/benchmark: add a new benchmark for seccom_unotify)
-> Cc: Andrei Vagin <avagin@google.com>
-> Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
-> Cc: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-> ---
->   tools/arch/x86/include/uapi/asm/unistd_32.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> Sascha
 > 
-> diff --git a/tools/arch/x86/include/uapi/asm/unistd_32.h b/tools/arch/x86/include/uapi/asm/unistd_32.h
-> index 4798f9d18fe8..9de35df1afc3 100644
-> --- a/tools/arch/x86/include/uapi/asm/unistd_32.h
-> +++ b/tools/arch/x86/include/uapi/asm/unistd_32.h
-> @@ -26,6 +26,6 @@
->   #ifndef __NR_setns
->   #define __NR_setns 346
->   #endif
-> -#ifdef __NR_seccomp
-> +#ifndef __NR_seccomp
->   #define __NR_seccomp 354
->   #endif
 
 -- 
-js
-suse labs
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
 
