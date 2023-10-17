@@ -2,116 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C627CCF4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 23:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0EBC7CCF53
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 23:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233170AbjJQV3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 17:29:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45348 "EHLO
+        id S235031AbjJQVbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 17:31:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234700AbjJQV3k (ORCPT
+        with ESMTP id S234861AbjJQVbc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 17:29:40 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529C912B
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 14:29:34 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d9a58f5f33dso6912214276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 14:29:34 -0700 (PDT)
+        Tue, 17 Oct 2023 17:31:32 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 555FE11C
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 14:31:30 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1c9c939cc94so46703375ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 14:31:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697578173; x=1698182973; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=k4C4JKwIA7asFauDo29zvruEioTkAyj/G+TnXmdCzBA=;
-        b=gimieKTMiqMZ9J/ZE7wQJd8F72xDh4hNRCwaXrxel96uogf6s6Y5Ep65EA3WrWQV97
-         IjEVsEc7zD6rsRd9ZK2kv2HBCJmzL71Pq0xTqFQHyp0AtV6V1Y3miwmPAwYWkqFCSmFt
-         vblas+BJXlk11usdwVZ3pgNSPKzqBtjmu9LihGQRO7vMimvlAK0tJRwvHN3Za2MMLMoM
-         CI8UYLlJk0qkkA4KzNl9G2WZT6PbtFSLT5d8yMVIkA06az4o/df0E11p2ZhOPj7g/OG/
-         m7ZtaVHy1tFE2SmZ81ipr44IOlJa2fH2GnBxp6zK61VDOn5edjcczgk14Wp/3ug92wmy
-         DrkA==
+        d=google.com; s=20230601; t=1697578290; x=1698183090; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jZRorWcdg/9qyDjZ9MPkuveSNwHmSlMZCo3YWPFaI50=;
+        b=xfkFTfvBkvvdAY4sLe3kcXtOi7u8THDIvoVF++QsjoHJR3n81XorTj2YQo4k2vOJnZ
+         kbLBYz2AnEQyMG6OIL7e4eqOEGZeoAtNqfUXca0+b0glD7aYAdQyCceScnwtaertjrLu
+         gtuszsX49hY255ui/8LqZf+lb3p914h1Ifyen2//5Aw7gF8KP2OZNVVD61F8v3xrBR8z
+         mmCcJSR/k1BAuVNfdVh8m1P7OxWl2yKZx5ZpkhGrRZoIdhX5cAYKLcfQBUgGlEmCjwVC
+         B/eFn1AAKfVkwTXjQi25DL1cDcb51N1oYWKPAPriGJloMnezoE2KiQoO2CYysZ78s3/K
+         Eaiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697578173; x=1698182973;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=k4C4JKwIA7asFauDo29zvruEioTkAyj/G+TnXmdCzBA=;
-        b=Z0EuOa3qfqs7vsADVEl70icYoRkVcp1uPnjXyv9OuYTDc3q9o/nUI1KS5T2RUcXAlj
-         mLddJ1/3flVU/dgGg8s7dliWAoILhonD7DVhJHFdoavWZ8CL+Va5mo/uHc9vFvpUrW1F
-         4ptxal4e3hjeDqhWxP1K7pIoXxoeUO60lsVJzTQnpqWyOqbJskzQRX0OXXicEZMkFUZN
-         HTcaH/oOpb4mqCHw9L8iO1AmuvAeGL59TbgMDSgXsKilcmvoWbFP89XPYwMVn8nVH9xL
-         ZYTTKrZWe9yNBuYSGSkhjW1suJWod9NsGATXlBedr26zhg8v9v5mdTRFdHzVRbqqu5n5
-         N6aw==
-X-Gm-Message-State: AOJu0YyjkzkQLMyruTlZiUuGzsPWOtB4KhqbaaIrz1Qe47jWFuLyGwA7
-        pryw/k9a+CpBkQrWvQcZcwpUTsW5pPUfJHNnJHu2VA==
-X-Google-Smtp-Source: AGHT+IHYVzSeGslRcQznJjQsW0F50tU/YplulewZG+1qzblCSC/Rty55Ek6MhYAy+3KVQBFoWrissUDTr9tvkwo5jcE=
-X-Received: by 2002:a25:b06:0:b0:d9a:5021:4f34 with SMTP id
- 6-20020a250b06000000b00d9a50214f34mr3193343ybl.15.1697578173377; Tue, 17 Oct
- 2023 14:29:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <8e61aed5f64e434abc1d7b6f81859c8a@realtek.com> <CAPDyKFrLpim75nUB7ksDie2edkWsnFSq6TbFSFFpw5cY5d4y1w@mail.gmail.com>
- <fabaed5751f04105a9719c1cb0390c98@realtek.com> <CAPDyKFr3NRUgfKtkb2DBrhziekFAB0jT_X3Fsfvjk_bGZLC9mA@mail.gmail.com>
- <fa10aa1c644241808c2ad880088240ab@realtek.com> <CAPDyKFrtBKHHRgeF-JO27ANsbSmt8rdnhn-WNr5Je9okEgA29Q@mail.gmail.com>
- <feb0c4e71e9c48a2a21f18b7d3baf135@realtek.com> <CAPDyKFoq_PDk_JgW4D+o4eEPdcffUq2RLbBreRDqeK47m0UnJA@mail.gmail.com>
- <a82d7e877dc041d4be5e0ef38c2da406@realtek.com> <CAPDyKFo59Q3dmUJU-hJ++=k0uwx2KxamW9KckDX=O_CA84O1_g@mail.gmail.com>
- <a533dde76d2d4345b85cd060a8e403db@realtek.com> <CAPDyKFp3sbbQmKiV6NnuWnPmpfuyWzRBTuYJaWx_7oTLLsXdaA@mail.gmail.com>
- <5752164983174ca68a669c241e7ef436@realtek.com>
-In-Reply-To: <5752164983174ca68a669c241e7ef436@realtek.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 17 Oct 2023 23:28:56 +0200
-Message-ID: <CAPDyKFpeirjA4QmCiqnu4MxN8Yph6d0GiyA95pcmOBRYf8ywSg@mail.gmail.com>
-Subject: Re: [PATCH v3] mmc: rtsx: improve performance for multi block rw
-To:     Ricky WU <ricky_wu@realtek.com>
-Cc:     "tommyhebb@gmail.com" <tommyhebb@gmail.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20230601; t=1697578290; x=1698183090;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jZRorWcdg/9qyDjZ9MPkuveSNwHmSlMZCo3YWPFaI50=;
+        b=Y2lyeWKoLsn6awjVxNzkpuesuZcErkIhXIh9On2z1c8E+vm41Lr8R1Zd+sc7L5RnB1
+         LMzXtjyitG/WpBlg0SVsF6rUCc+boy9ylLB2tM7xNSs/frw2mE+DW/cC+P8Ipq51IhTz
+         os0sGGzA1EAA/yU1h0cGhSL7J3mGAH4S5lYnEgXbX7QWmhZ5x5euVp59SQEJqYh8sxBF
+         l52nkg5d28ALPsRX+hjrtjjsJDYyNFt661BNl52040xL1BSGnBRL9rG67PXtSTQCtgWE
+         7qdNz0rAmeNJzfLkp0xlRhbNx+zPNvT9OMzWk07QNVGDkF3B/YkZlFZf+8xDNJL6xjxr
+         N98g==
+X-Gm-Message-State: AOJu0Yxqn7FcMvVLYRzvLBACtz4PP5ro+dnY2wA3PNOVVEzxrj29VVaM
+        Jady9Au+q1dJ0JeEGE+r7oge+f9wlIU=
+X-Google-Smtp-Source: AGHT+IFClI8WxCE+QfNCUD2C2ZZEE9fpW16z8j5iL/y0aqZ/mhsWu0VhUltSIuxn/4cOgCUbWVS0CtTJS4w=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:903:706:b0:1c5:7c07:e403 with SMTP id
+ kk6-20020a170903070600b001c57c07e403mr64765plb.10.1697578289626; Tue, 17 Oct
+ 2023 14:31:29 -0700 (PDT)
+Date:   Tue, 17 Oct 2023 14:31:28 -0700
+In-Reply-To: <20231017093335.18216-1-likexu@tencent.com>
+Mime-Version: 1.0
+References: <20231017093335.18216-1-likexu@tencent.com>
+Message-ID: <ZS79MFkVB6A1N9AA@google.com>
+Subject: Re: [PATCH] KVM: x86: Clean up included but non-essential header declarations
+From:   Sean Christopherson <seanjc@google.com>
+To:     Like Xu <like.xu.linux@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Oct 2023 at 04:27, Ricky WU <ricky_wu@realtek.com> wrote:
->
-> > On Wed, 11 Oct 2023 at 07:36, Ricky WU <ricky_wu@realtek.com> wrote:
-> > >
-> > > Hi Ulf Hansson,
-> > >
-> > > Can I know what is this patch status or has some concern on this patch?
-> >
-> > Didn't you read my earlier replies?
-> >
->
-> Are you talking about BFQ for testing speed?
-> Because we tested the Read/Write speed are better than before and our customer that uses our reader on their product also tested the Read/Write speed, they want us to push this patch on
+On Tue, Oct 17, 2023, Like Xu wrote:
+> From: Like Xu <likexu@tencent.com>
+> Removing these declarations as part of KVM code refactoring can also (when
+> the compiler isn't so smart) reduce compile time, compile warnings, and the
 
-It's certainly a very positive thing that your target is to upstream
-solutions that improve performance. We all appreciate this!
+Really, warnings?  On what W= level?  W=1 builds just fine with KVM_WERROR=y.
+If any of the "supported" warn levels triggers a warn=>error, then we'll fix it.
 
-In this regard, I believe I have tried to guide you on how to move
-forward with this. This particular optimization doesn't belong in an
-mmc host driver, but rather at the common upper block device driver
-layer, such that it can benefit more than one particular mmc host
-driver.
+> size of compiled artefacts, and more importantly can help developers better
+> consider decoupling when adding/refactoring unmerged code, thus relieving
+> some of the burden on the code review process.
 
-I fully understand that making that kind of improvement is way more
-difficult and requires in-depth analysis to understand what is
-happening on those layers too. On the other hand it could be something
-that may benefit a lot of devices/platforms. Unfortunately, I am
-currently not in a position where I have the bandwidth to dive deeper
-into this.
+Can you provide an example?  KVM certainly has its share of potential circular
+dependency pitfalls, e.g. it's largely why we have the ugly and seemingly
+arbitrary split between x86.h and asm/kvm_host.h.  But outside of legitimate
+collisions like that, I can't think of a single instance where superfluous existing
+includes caused problems.  On the other hand, I distinctly recall multiple
+instances where a header didn't include what it used and broke the build when the
+buggy header was included in a new file.
 
-If you decide to pursue your investigations, I think we need to
-involve the experts from the common block community (linux-block
-mailing list) to get their advice.
+> Specific header declaration is supposed to be retained if it makes more
+> sense for reviewers to understand. No functional changes intended.
+> 
+> [*] https://lore.kernel.org/all/YdIfz+LMewetSaEB@gmail.com/
 
-So to be clear, I am not going to apply $subject patch - or anything
-similar to an mmc host driver.
+This patch violates one of the talking points of Ingo's work:
 
-[...]
+ - "Make headers standalone": over 80 headers don't build standalone and
+   depend on various accidental indirect dependencies they gain through
+   other headers, especially once headers get their unnecessary dependencies
+   removed. So there's over 80 commits changing these headers.
 
-Kind regards
-Uffe
+I think it's also worth noting that Ingo boosted build times by eliminating
+includes in common "high use" headers, not by playing whack-a-mole with "private"
+headers and C files.
+
+> [**] https://include-what-you-use.org/
+> 
+> Signed-off-by: Like Xu <likexu@tencent.com>
+> ---
+>  arch/x86/kvm/cpuid.c           |  3 ---
+>  arch/x86/kvm/cpuid.h           |  1 -
+>  arch/x86/kvm/emulate.c         |  2 --
+>  arch/x86/kvm/hyperv.c          |  3 ---
+>  arch/x86/kvm/i8259.c           |  1 -
+>  arch/x86/kvm/ioapic.c          | 10 ----------
+>  arch/x86/kvm/irq.c             |  3 ---
+>  arch/x86/kvm/irq.h             |  3 ---
+>  arch/x86/kvm/irq_comm.c        |  2 --
+>  arch/x86/kvm/lapic.c           |  8 --------
+>  arch/x86/kvm/mmu.h             |  1 -
+>  arch/x86/kvm/mmu/mmu.c         | 11 -----------
+>  arch/x86/kvm/mmu/spte.c        |  1 -
+>  arch/x86/kvm/mmu/tdp_iter.h    |  1 -
+>  arch/x86/kvm/mmu/tdp_mmu.c     |  3 ---
+>  arch/x86/kvm/mmu/tdp_mmu.h     |  4 ----
+>  arch/x86/kvm/smm.c             |  1 -
+>  arch/x86/kvm/smm.h             |  3 ---
+>  arch/x86/kvm/svm/avic.c        |  2 --
+>  arch/x86/kvm/svm/hyperv.h      |  2 --
+>  arch/x86/kvm/svm/nested.c      |  2 --
+>  arch/x86/kvm/svm/pmu.c         |  4 ----
+>  arch/x86/kvm/svm/sev.c         |  7 -------
+>  arch/x86/kvm/svm/svm.c         | 29 -----------------------------
+>  arch/x86/kvm/svm/svm.h         |  3 ---
+>  arch/x86/kvm/vmx/hyperv.c      |  4 ----
+>  arch/x86/kvm/vmx/hyperv.h      |  7 -------
+>  arch/x86/kvm/vmx/nested.c      |  2 --
+>  arch/x86/kvm/vmx/nested.h      |  1 -
+>  arch/x86/kvm/vmx/pmu_intel.c   |  1 -
+>  arch/x86/kvm/vmx/posted_intr.c |  1 -
+>  arch/x86/kvm/vmx/sgx.h         |  5 -----
+>  arch/x86/kvm/vmx/vmx.c         | 11 -----------
+>  arch/x86/kvm/x86.c             | 17 -----------------
+>  arch/x86/kvm/xen.c             |  1 -
+>  virt/kvm/async_pf.c            |  2 --
+>  virt/kvm/binary_stats.c        |  1 -
+>  virt/kvm/coalesced_mmio.h      |  2 --
+>  virt/kvm/eventfd.c             |  2 --
+>  virt/kvm/irqchip.c             |  1 -
+>  virt/kvm/kvm_main.c            | 13 -------------
+>  virt/kvm/pfncache.c            |  1 -
+>  virt/kvm/vfio.c                |  2 --
+>  43 files changed, 184 deletions(-)
+
+NAK, I am not taking a wholesale purge of includes.  I have no objection to
+removing truly unnecessary includes, e.g. there are definitely some includes that
+are no longer necessary due to code being moved around.  But changes like the
+removal of all includes from tdp_mmu.h and smm.h are completely bogus.  If anything,
+smm.h clearly needs more includes, because it is certainly not including everything
+it is using.
+
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
+> index 733a3aef3a96..66afdf3e262a 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.h
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.h
+> @@ -3,10 +3,6 @@
+>  #ifndef __KVM_X86_MMU_TDP_MMU_H
+>  #define __KVM_X86_MMU_TDP_MMU_H
+>  
+> -#include <linux/kvm_host.h>
+> -
+> -#include "spte.h"
+> -
+>  void kvm_mmu_init_tdp_mmu(struct kvm *kvm);
+>  void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm);
+
+...
+
+> diff --git a/arch/x86/kvm/smm.h b/arch/x86/kvm/smm.h
+> index a1cf2ac5bd78..3e067ce1ea1d 100644
+> --- a/arch/x86/kvm/smm.h
+> +++ b/arch/x86/kvm/smm.h
+> @@ -2,11 +2,8 @@
+>  #ifndef ASM_KVM_SMM_H
+>  #define ASM_KVM_SMM_H
+>  
+> -#include <linux/build_bug.h>
+> -
+>  #ifdef CONFIG_KVM_SMM
+>  
+> -
+>  /*
+>   * 32 bit KVM's emulated SMM layout. Based on Intel P6 layout
+>   * (https://www.sandpile.org/x86/smm.htm).
