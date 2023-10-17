@@ -2,331 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 095897CBF1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2E07CBF21
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343577AbjJQJ13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 05:27:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36248 "EHLO
+        id S234920AbjJQJ2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 05:28:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343526AbjJQJ1G (ORCPT
+        with ESMTP id S234911AbjJQJ1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 05:27:06 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98823F9;
-        Tue, 17 Oct 2023 02:27:04 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39H8HM7q000705;
-        Tue, 17 Oct 2023 09:27:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=KfDse0o37im4PvINpwe5KMZZsO/dvQxk6N0e0xEYiHE=;
- b=YM3OU2Mf6A5qfJaGjhrai9qwkrYXGxID/VOgtYF1MOEvhsOaomGejNJ07cwVo2cbOTb9
- ND0ZbOmjAs4897cK/y5uQK5Nmw4LurSEGa1MUzK3UgS98TcQBH8b8EsxTQcl2oenSvCy
- Oq61DyMXiTzWEf7leprLn45QYASiwS5yi9GeqiU5HKVnALoQrEiMzYJ1J/dmv920o7/D
- 50RFvgZsvAPcI9nS422la4yVcsLCWHDCctaW2MWXkyVX9RBqTjBwBy1Uv8vK91FMO2+x
- yAGq1SpFtINrLt/8NW0yDA3A6jGx7bI+edh2zTnUMnVax9dl5v7tnU1VO9GNOzNOF0Kf Yw== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tsaky1pjh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Oct 2023 09:27:02 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39H9R1Zw018251
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Oct 2023 09:27:01 GMT
-Received: from ekangupt-linux.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Tue, 17 Oct 2023 02:26:58 -0700
-From:   Ekansh Gupta <quic_ekangupt@quicinc.com>
-To:     <srinivas.kandagatla@linaro.org>, <linux-arm-msm@vger.kernel.org>
-CC:     Ekansh Gupta <quic_ekangupt@quicinc.com>,
-        <ekangupt@qti.qualcomm.com>, <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>, <fastrpc.upstream@qti.qualcomm.com>
-Subject: [PATCH v4 5/5] misc: fastrpc: Add support to allocate shared context bank
-Date:   Tue, 17 Oct 2023 14:56:39 +0530
-Message-ID: <1697534799-5124-6-git-send-email-quic_ekangupt@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1697534799-5124-1-git-send-email-quic_ekangupt@quicinc.com>
-References: <1697534799-5124-1-git-send-email-quic_ekangupt@quicinc.com>
+        Tue, 17 Oct 2023 05:27:47 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 039A4132
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 02:27:37 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-5079f6efd64so4046260e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 02:27:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1697534856; x=1698139656; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pS4a4EGcukWNDLRE2YgnhxxLWaSY26SIF3Mm3XN+DRA=;
+        b=otpTBB06EYnDNVDwJY5GMDU8U1BTq3YaMdZoKoMJAb/NdikHWQTCJzcLHMFM2bfMs4
+         gqL12zLkpKV0tPtYgabV5mE47fZtqq+wYYsaKfaOyz7WYjthITSMaAzCfaGs3kZIOYeF
+         fZ5xfq4fFqODiZU+VSleSU6hJPvdQYxWw1euVsAQoZRhIn5ZSBfRDvR/sG06a6dUzRU0
+         hANpl9KpjqslcJTAYdAg1fwVCcB8lmswjC/ml2gKeZEli2rbjPZleFi0YVCg0M4IQ/5L
+         ++sYMPxpENaGnY5/pkjmx9rLhw2dII8oldV2/Ng9mtwWwlt8xgIyVsXe3RTS1SJefLTB
+         3Wnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697534856; x=1698139656;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pS4a4EGcukWNDLRE2YgnhxxLWaSY26SIF3Mm3XN+DRA=;
+        b=BY37+AIQiP/54yby0j31Z3GBSuH5z21I7Bz3xjPSWPZ85hUo8ziWSYEhcymDIYxg2w
+         NXgt85Tcf9TpHVUv5AChr/8fY8IhBYgZjCH1E5W2pDxttn105RcoQQrJDjckwbe0tmgq
+         Zy8MdzSG17prVkqVnLC15Xa1HyQitQj56WDswfIDjzT2glsZkAf2u4w76pyQ4X0VKMu7
+         qsdDTE3T4Bqv1hVIr+nv4jXBlwM4gPxlFoXPv7+xJXCjgB2rtXO3ZrrES7bCltH3HHuT
+         tJNpdeSRnvGCJ+z4swpqWB7PNyaBiKcJha050vH6renGG5DJGod7lCQcX3afUH4Or2hg
+         3y/g==
+X-Gm-Message-State: AOJu0YxYLTCAp7sBoHTSXS+Uc/yFDCW/DpuluRmaQPjZI/UnClcD1VjF
+        SSvJHDtrTRPo4Wh5bt1oM2fFTQ==
+X-Google-Smtp-Source: AGHT+IF/egdZII4kru9SBHTW0O/r1+PG/CtRqw6z6UOEjseVewU3XFTFxOLHbhsN87p+XXRBmvQC7A==
+X-Received: by 2002:a05:6512:3c82:b0:507:aaa9:b080 with SMTP id h2-20020a0565123c8200b00507aaa9b080mr1671271lfv.33.1697534855976;
+        Tue, 17 Oct 2023 02:27:35 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:f1ee:b000:ce90:ed14])
+        by smtp.gmail.com with ESMTPSA id j5-20020a05600c1c0500b003fe1c332810sm9460787wms.33.2023.10.17.02.27.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Oct 2023 02:27:35 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Elliot Berman <quic_eberman@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Guru Das Srinagesh <quic_gurus@quicinc.com>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH v5 00/15] arm64: qcom: add and enable SHM Bridge support
+Date:   Tue, 17 Oct 2023 11:27:17 +0200
+Message-Id: <20231017092732.19983-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: sUUpPNPMCw4apGYYrzJlFkXrXpmJhBFp
-X-Proofpoint-ORIG-GUID: sUUpPNPMCw4apGYYrzJlFkXrXpmJhBFp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-16_13,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
- phishscore=0 malwarescore=0 clxscore=1015 impostorscore=0
- lowpriorityscore=0 mlxscore=0 adultscore=0 priorityscore=1501
- mlxlogscore=999 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2309180000 definitions=main-2310170078
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Context banks could be set as a shared one using a DT propery
-"qcom,nsessions". The property takes the number of session to
-be created of the context bank. This change provides a control
-mechanism for user to use shared context banks for light weight
-processes. The session is set as shared while its creation and if
-a user requests for shared context bank, the same will be allocated
-during process initialization.
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
----
- drivers/misc/fastrpc.c      | 122 ++++++++++++++++++++++++++++++--------------
- include/uapi/misc/fastrpc.h |  12 +++++
- 2 files changed, 95 insertions(+), 39 deletions(-)
+This is pretty much another full rewrite of the SHM Bridge support
+series. After more on- and off-list discussions I think this time it
+will be close to the final thing though.
 
-diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-index 9a481ac..b6b1884c 100644
---- a/drivers/misc/fastrpc.c
-+++ b/drivers/misc/fastrpc.c
-@@ -297,6 +297,7 @@ struct fastrpc_session_ctx {
- 	int sid;
- 	bool used;
- 	bool valid;
-+	bool sharedcb;
- };
- 
- struct fastrpc_channel_ctx {
-@@ -344,12 +345,22 @@ struct fastrpc_user {
- 	int tgid;
- 	int pd;
- 	bool is_secure_dev;
-+	bool sharedcb;
- 	/* Lock for lists */
- 	spinlock_t lock;
- 	/* lock for allocations */
- 	struct mutex mutex;
- };
- 
-+struct fastrpc_ctrl_smmu {
-+	u32 sharedcb;	/* Set to SMMU share context bank */
-+};
-+
-+struct fastrpc_internal_control {
-+	u32 req;
-+	struct fastrpc_ctrl_smmu smmu;
-+};
-+
- static inline int64_t getnstimediff(struct timespec64 *start)
- {
- 	int64_t ns;
-@@ -851,6 +862,37 @@ static const struct dma_buf_ops fastrpc_dma_buf_ops = {
- 	.release = fastrpc_release,
- };
- 
-+static struct fastrpc_session_ctx *fastrpc_session_alloc(
-+					struct fastrpc_channel_ctx *cctx, bool sharedcb)
-+{
-+	struct fastrpc_session_ctx *session = NULL;
-+	unsigned long flags;
-+	int i;
-+
-+	spin_lock_irqsave(&cctx->lock, flags);
-+	for (i = 0; i < cctx->sesscount; i++) {
-+		if (!cctx->session[i].used && cctx->session[i].valid &&
-+			cctx->session[i].sharedcb == sharedcb) {
-+			cctx->session[i].used = true;
-+			session = &cctx->session[i];
-+			break;
-+		}
-+	}
-+	spin_unlock_irqrestore(&cctx->lock, flags);
-+
-+	return session;
-+}
-+
-+static void fastrpc_session_free(struct fastrpc_channel_ctx *cctx,
-+				 struct fastrpc_session_ctx *session)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&cctx->lock, flags);
-+	session->used = false;
-+	spin_unlock_irqrestore(&cctx->lock, flags);
-+}
-+
- static int fastrpc_map_create(struct fastrpc_user *fl, int fd,
- 			      u64 len, u32 attr, struct fastrpc_map **ppmap)
- {
-@@ -1449,6 +1491,10 @@ static int fastrpc_init_create_static_process(struct fastrpc_user *fl,
- 		goto err_name;
- 	}
- 
-+	fl->sctx = fastrpc_session_alloc(fl->cctx, fl->sharedcb);
-+	if (!fl->sctx)
-+		return -EBUSY;
-+
- 	if (!fl->cctx->remote_heap) {
- 		err = fastrpc_remote_heap_alloc(fl, fl->sctx->dev, init.memlen,
- 						&fl->cctx->remote_heap);
-@@ -1571,6 +1617,10 @@ static int fastrpc_init_create_process(struct fastrpc_user *fl,
- 		goto err;
- 	}
- 
-+	fl->sctx = fastrpc_session_alloc(fl->cctx, fl->sharedcb);
-+	if (!fl->sctx)
-+		return -EBUSY;
-+
- 	inbuf.pgid = fl->tgid;
- 	inbuf.namelen = strlen(current->comm) + 1;
- 	inbuf.filelen = init.filelen;
-@@ -1645,36 +1695,6 @@ static int fastrpc_init_create_process(struct fastrpc_user *fl,
- 	return err;
- }
- 
--static struct fastrpc_session_ctx *fastrpc_session_alloc(
--					struct fastrpc_channel_ctx *cctx)
--{
--	struct fastrpc_session_ctx *session = NULL;
--	unsigned long flags;
--	int i;
--
--	spin_lock_irqsave(&cctx->lock, flags);
--	for (i = 0; i < cctx->sesscount; i++) {
--		if (!cctx->session[i].used && cctx->session[i].valid) {
--			cctx->session[i].used = true;
--			session = &cctx->session[i];
--			break;
--		}
--	}
--	spin_unlock_irqrestore(&cctx->lock, flags);
--
--	return session;
--}
--
--static void fastrpc_session_free(struct fastrpc_channel_ctx *cctx,
--				 struct fastrpc_session_ctx *session)
--{
--	unsigned long flags;
--
--	spin_lock_irqsave(&cctx->lock, flags);
--	session->used = false;
--	spin_unlock_irqrestore(&cctx->lock, flags);
--}
--
- static void fastrpc_context_list_free(struct fastrpc_user *fl)
- {
- 	struct fastrpc_invoke_ctx *ctx, *n;
-@@ -1778,15 +1798,6 @@ static int fastrpc_device_open(struct inode *inode, struct file *filp)
- 	fl->cctx = cctx;
- 	fl->is_secure_dev = fdevice->secure;
- 
--	fl->sctx = fastrpc_session_alloc(cctx);
--	if (!fl->sctx) {
--		dev_err(&cctx->rpdev->dev, "No session available\n");
--		mutex_destroy(&fl->mutex);
--		kfree(fl);
--
--		return -EBUSY;
--	}
--
- 	spin_lock_irqsave(&cctx->lock, flags);
- 	list_add_tail(&fl->user, &cctx->users);
- 	spin_unlock_irqrestore(&cctx->lock, flags);
-@@ -1845,6 +1856,10 @@ static int fastrpc_init_attach(struct fastrpc_user *fl, int pd)
- 	struct fastrpc_enhanced_invoke ioctl;
- 	int tgid = fl->tgid;
- 
-+	fl->sctx = fastrpc_session_alloc(fl->cctx, fl->sharedcb);
-+	if (!fl->sctx)
-+		return -EBUSY;
-+
- 	args[0].ptr = (u64)(uintptr_t) &tgid;
- 	args[0].length = sizeof(tgid);
- 	args[0].fd = -1;
-@@ -1891,11 +1906,33 @@ static int fastrpc_invoke(struct fastrpc_user *fl, char __user *argp)
- 	return err;
- }
- 
-+static int fastrpc_internal_control(struct fastrpc_user *fl,
-+					struct fastrpc_internal_control *cp)
-+{
-+	int err = 0;
-+
-+	if (!fl)
-+		return -EBADF;
-+	if (!cp)
-+		return -EINVAL;
-+
-+	switch (cp->req) {
-+	case FASTRPC_CONTROL_SMMU:
-+		fl->sharedcb = cp->smmu.sharedcb;
-+		break;
-+	default:
-+		err = -EBADRQC;
-+		break;
-+	}
-+	return err;
-+}
-+
- static int fastrpc_multimode_invoke(struct fastrpc_user *fl, char __user *argp)
- {
- 	struct fastrpc_enhanced_invoke einv;
- 	struct fastrpc_invoke_args *args = NULL;
- 	struct fastrpc_ioctl_multimode_invoke invoke;
-+	struct fastrpc_internal_control cp = {0};
- 	u32 nscalars;
- 	u64 *perf_kernel;
- 	int err, i;
-@@ -1939,6 +1976,12 @@ static int fastrpc_multimode_invoke(struct fastrpc_user *fl, char __user *argp)
- 		err = fastrpc_internal_invoke(fl, false, &einv);
- 		kfree(args);
- 		break;
-+	case FASTRPC_INVOKE_CONTROL:
-+		if (copy_from_user(&cp, (void __user *)(uintptr_t)invoke.invparam, sizeof(cp)))
-+			return  -EFAULT;
-+
-+		err = fastrpc_internal_control(fl, &cp);
-+		break;
- 	default:
- 		err = -ENOTTY;
- 		break;
-@@ -2439,6 +2482,7 @@ static int fastrpc_cb_probe(struct platform_device *pdev)
- 	if (sessions > 0) {
- 		struct fastrpc_session_ctx *dup_sess;
- 
-+		sess->sharedcb = true;
- 		for (i = 1; i < sessions; i++) {
- 			if (cctx->sesscount >= FASTRPC_MAX_SESSIONS)
- 				break;
-diff --git a/include/uapi/misc/fastrpc.h b/include/uapi/misc/fastrpc.h
-index 3a2ba59..76dc5df 100644
---- a/include/uapi/misc/fastrpc.h
-+++ b/include/uapi/misc/fastrpc.h
-@@ -166,6 +166,18 @@ struct fastrpc_ioctl_capability {
- 	__u32 reserved[4];
- };
- 
-+enum fastrpc_control_type {
-+	FASTRPC_CONTROL_LATENCY		=	1,
-+	FASTRPC_CONTROL_SMMU		=	2,
-+	FASTRPC_CONTROL_KALLOC		=	3,
-+	FASTRPC_CONTROL_WAKELOCK	=	4,
-+	FASTRPC_CONTROL_PM		=	5,
-+	FASTRPC_CONTROL_DSPPROCESS_CLEAN	=	6,
-+	FASTRPC_CONTROL_RPC_POLL	=	7,
-+	FASTRPC_CONTROL_ASYNC_WAKE	=	8,
-+	FASTRPC_CONTROL_NOTIF_WAKE	=	9,
-+};
-+
- enum fastrpc_perfkeys {
- 	PERF_COUNT = 0,
- 	PERF_RESERVED1 = 1,
+We've established the need for using separate pools for SCM and QSEECOM
+as well as the upcoming scminvoke driver.
+
+It's also become clear that in order to be future-proof, the new
+allocator must be an abstraction layer of a higher level as the SHM
+Bridge will not be the only memory protection mechanism that we'll see
+upstream. Hence the rename to TrustZone Memory rather than SCM Memory
+allocator.
+
+Also to that end: the new allocator is its own module now and provides a
+Kconfig choice menu for selecting the mode of operation (currently
+default and SHM Bridge).
+
+Due to a high divergence from v2, I dropped all tags except for
+patch 1/15 which didn't change.
+
+Tested on sm8550 and sa8775p with the Inline Crypto Engine and
+remoteproc.
+
+v4 -> v5:
+- fix the return value from qcom_tzmem_init() if SHM Bridge is not supported
+- remove a comment that's no longer useful
+- collect tags
+
+v3 -> v4:
+- include linux/sizes.h for SZ_X macros
+- use dedicated RCU APIs to dereference radix tree slots
+- fix kerneldocs
+- fix the comment in patch 14/15: it's the hypervisor, not the TrustZone
+  that creates the SHM bridge
+
+v2 -> v3:
+- restore pool management and use separate pools for different users
+- don't use the new allocator in qcom_scm_pas_init_image() as the
+  TrustZone will create an SHM bridge for us here
+- rewrite the entire series again for most part
+
+v1 -> v2:
+- too many changes to list, it's a complete rewrite as explained above
+
+Bartosz Golaszewski (15):
+  firmware: qcom: move Qualcomm code into its own directory
+  firmware: qcom: scm: add a missing forward declaration for struct
+    device
+  firmware: qcom: scm: remove unneeded 'extern' specifiers
+  firmware: qcom: add a dedicated TrustZone buffer allocator
+  firmware: qcom: scm: enable the TZ mem allocator
+  firmware: qcom: scm: smc: switch to using the SCM allocator
+  firmware: qcom: scm: make qcom_scm_assign_mem() use the TZ allocator
+  firmware: qcom: scm: make qcom_scm_ice_set_key() use the TZ allocator
+  firmware: qcom: scm: make qcom_scm_lmh_dcvsh() use the TZ allocator
+  firmware: qcom: scm: make qcom_scm_qseecom_app_get_id() use the TZ
+    allocator
+  firmware: qcom: qseecom: convert to using the TZ allocator
+  firmware: qcom: scm: add support for SHM bridge operations
+  firmware: qcom: tzmem: enable SHM Bridge support
+  firmware: qcom: scm: clarify the comment in qcom_scm_pas_init_image()
+  arm64: defconfig: enable SHM Bridge support for the TZ memory
+    allocator
+
+ MAINTAINERS                                   |   4 +-
+ arch/arm64/configs/defconfig                  |   1 +
+ drivers/firmware/Kconfig                      |  48 +--
+ drivers/firmware/Makefile                     |   5 +-
+ drivers/firmware/qcom/Kconfig                 |  86 +++++
+ drivers/firmware/qcom/Makefile                |  10 +
+ drivers/firmware/{ => qcom}/qcom_qseecom.c    |   0
+ .../{ => qcom}/qcom_qseecom_uefisecapp.c      | 261 +++++--------
+ drivers/firmware/{ => qcom}/qcom_scm-legacy.c |   0
+ drivers/firmware/{ => qcom}/qcom_scm-smc.c    |  30 +-
+ drivers/firmware/{ => qcom}/qcom_scm.c        | 179 +++++----
+ drivers/firmware/{ => qcom}/qcom_scm.h        |  21 +-
+ drivers/firmware/qcom/qcom_tzmem.c            | 365 ++++++++++++++++++
+ drivers/firmware/qcom/qcom_tzmem.h            |  13 +
+ include/linux/firmware/qcom/qcom_qseecom.h    |   4 +-
+ include/linux/firmware/qcom/qcom_scm.h        |   6 +
+ include/linux/firmware/qcom/qcom_tzmem.h      |  28 ++
+ 17 files changed, 746 insertions(+), 315 deletions(-)
+ create mode 100644 drivers/firmware/qcom/Kconfig
+ create mode 100644 drivers/firmware/qcom/Makefile
+ rename drivers/firmware/{ => qcom}/qcom_qseecom.c (100%)
+ rename drivers/firmware/{ => qcom}/qcom_qseecom_uefisecapp.c (84%)
+ rename drivers/firmware/{ => qcom}/qcom_scm-legacy.c (100%)
+ rename drivers/firmware/{ => qcom}/qcom_scm-smc.c (90%)
+ rename drivers/firmware/{ => qcom}/qcom_scm.c (93%)
+ rename drivers/firmware/{ => qcom}/qcom_scm.h (88%)
+ create mode 100644 drivers/firmware/qcom/qcom_tzmem.c
+ create mode 100644 drivers/firmware/qcom/qcom_tzmem.h
+ create mode 100644 include/linux/firmware/qcom/qcom_tzmem.h
+
 -- 
-2.7.4
+2.39.2
 
