@@ -2,195 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0EBC7CCF53
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 23:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E94117CCF57
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 23:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235031AbjJQVbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 17:31:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52976 "EHLO
+        id S1344094AbjJQVde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 17:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234861AbjJQVbc (ORCPT
+        with ESMTP id S231569AbjJQVdd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 17:31:32 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 555FE11C
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 14:31:30 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1c9c939cc94so46703375ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 14:31:30 -0700 (PDT)
+        Tue, 17 Oct 2023 17:33:33 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D258DF1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 14:33:30 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-66d122f6294so40237476d6.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 14:33:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697578290; x=1698183090; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jZRorWcdg/9qyDjZ9MPkuveSNwHmSlMZCo3YWPFaI50=;
-        b=xfkFTfvBkvvdAY4sLe3kcXtOi7u8THDIvoVF++QsjoHJR3n81XorTj2YQo4k2vOJnZ
-         kbLBYz2AnEQyMG6OIL7e4eqOEGZeoAtNqfUXca0+b0glD7aYAdQyCceScnwtaertjrLu
-         gtuszsX49hY255ui/8LqZf+lb3p914h1Ifyen2//5Aw7gF8KP2OZNVVD61F8v3xrBR8z
-         mmCcJSR/k1BAuVNfdVh8m1P7OxWl2yKZx5ZpkhGrRZoIdhX5cAYKLcfQBUgGlEmCjwVC
-         B/eFn1AAKfVkwTXjQi25DL1cDcb51N1oYWKPAPriGJloMnezoE2KiQoO2CYysZ78s3/K
-         Eaiw==
+        d=chromium.org; s=google; t=1697578410; x=1698183210; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p6zl+wSE/fz+ducMX6hYKgOCMYM8auRGMjne06mswZ8=;
+        b=UIEZEHvL7hzh3w/bekKJLvI64FtN5/nnD2ZhZtfRKTzuzHqiEWa9YAkSW0o/t/9U9M
+         WCqa4v4dGnZi+ZwpkRsDWGh/fiSQrsQDcqvSBBnJg6WAQOKuKW8td7XTAZxMKylUDijF
+         qTlPo6ePleq8Ugdmctwax16vi4hy3djcIjKmQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697578290; x=1698183090;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jZRorWcdg/9qyDjZ9MPkuveSNwHmSlMZCo3YWPFaI50=;
-        b=Y2lyeWKoLsn6awjVxNzkpuesuZcErkIhXIh9On2z1c8E+vm41Lr8R1Zd+sc7L5RnB1
-         LMzXtjyitG/WpBlg0SVsF6rUCc+boy9ylLB2tM7xNSs/frw2mE+DW/cC+P8Ipq51IhTz
-         os0sGGzA1EAA/yU1h0cGhSL7J3mGAH4S5lYnEgXbX7QWmhZ5x5euVp59SQEJqYh8sxBF
-         l52nkg5d28ALPsRX+hjrtjjsJDYyNFt661BNl52040xL1BSGnBRL9rG67PXtSTQCtgWE
-         7qdNz0rAmeNJzfLkp0xlRhbNx+zPNvT9OMzWk07QNVGDkF3B/YkZlFZf+8xDNJL6xjxr
-         N98g==
-X-Gm-Message-State: AOJu0Yxqn7FcMvVLYRzvLBACtz4PP5ro+dnY2wA3PNOVVEzxrj29VVaM
-        Jady9Au+q1dJ0JeEGE+r7oge+f9wlIU=
-X-Google-Smtp-Source: AGHT+IFClI8WxCE+QfNCUD2C2ZZEE9fpW16z8j5iL/y0aqZ/mhsWu0VhUltSIuxn/4cOgCUbWVS0CtTJS4w=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:706:b0:1c5:7c07:e403 with SMTP id
- kk6-20020a170903070600b001c57c07e403mr64765plb.10.1697578289626; Tue, 17 Oct
- 2023 14:31:29 -0700 (PDT)
-Date:   Tue, 17 Oct 2023 14:31:28 -0700
-In-Reply-To: <20231017093335.18216-1-likexu@tencent.com>
-Mime-Version: 1.0
-References: <20231017093335.18216-1-likexu@tencent.com>
-Message-ID: <ZS79MFkVB6A1N9AA@google.com>
-Subject: Re: [PATCH] KVM: x86: Clean up included but non-essential header declarations
-From:   Sean Christopherson <seanjc@google.com>
-To:     Like Xu <like.xu.linux@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1697578410; x=1698183210;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=p6zl+wSE/fz+ducMX6hYKgOCMYM8auRGMjne06mswZ8=;
+        b=YPlBnFOLdzquSrb00BdMFYLY8zzO8nStCgTbe+rcNbx3NZItkTFhRFnA3IzDL2oTaD
+         M2gO+0H1DBiufVRiS20l9+iCs3bFGXBQouyR0xrhEnx5ESRLaLlcjB58FQTrpfwReRQ2
+         dSCbNM16jJydUUpgQ5KWPemaMOm7M0cqK4niwbIQmxeehm+dhUHKJLIq8EFrNemEsYqG
+         dmJ51CjpUgjC2Lcn3yRLGwEMtYrHxV2joAW9PcGDcSh5O89YmkoknxKAOPBART1Aly8I
+         Lx4yqWHc5MezIBl6iPEXQKeIx9TTA62SXj9iRb/RGiUmglhNg01k0hT+W0hdbeuI8zHI
+         ERIQ==
+X-Gm-Message-State: AOJu0Yxv7K51G4zclx8BnZstf4Hc0B/fw+ivh2+IsoGmJvvHwXkRI2YJ
+        4+9FqiZzWqB7q4P/nA3Q5Ah1FqD4uIFtEEQg/KK5fw==
+X-Google-Smtp-Source: AGHT+IH8Ju4SHUrvi7DxIyMG1q3LZA6VMP0Ksgj6FYRzSOeuH/AGPBdUwfFnt4kIpk837MMVangLq1QoeOR7S2QqfFA=
+X-Received: by 2002:a05:6214:2a47:b0:66d:6994:daed with SMTP id
+ jf7-20020a0562142a4700b0066d6994daedmr4772001qvb.35.1697578409829; Tue, 17
+ Oct 2023 14:33:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231016225617.3182108-2-rdbabiera@google.com>
+In-Reply-To: <20231016225617.3182108-2-rdbabiera@google.com>
+From:   Prashant Malani <pmalani@chromium.org>
+Date:   Tue, 17 Oct 2023 14:33:18 -0700
+Message-ID: <CACeCKac2kknw2s7orH1tu4RsiCr5+WYy1VQ483ok_zuzC2N9zQ@mail.gmail.com>
+Subject: Re: [PATCH v1] usb: typec: altmodes/displayport: verify compatible
+ source/sink role combination
+To:     RD Babiera <rdbabiera@google.com>
+Cc:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org,
+        badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023, Like Xu wrote:
-> From: Like Xu <likexu@tencent.com>
-> Removing these declarations as part of KVM code refactoring can also (when
-> the compiler isn't so smart) reduce compile time, compile warnings, and the
+Hi RD,
 
-Really, warnings?  On what W= level?  W=1 builds just fine with KVM_WERROR=y.
-If any of the "supported" warn levels triggers a warn=>error, then we'll fix it.
-
-> size of compiled artefacts, and more importantly can help developers better
-> consider decoupling when adding/refactoring unmerged code, thus relieving
-> some of the burden on the code review process.
-
-Can you provide an example?  KVM certainly has its share of potential circular
-dependency pitfalls, e.g. it's largely why we have the ugly and seemingly
-arbitrary split between x86.h and asm/kvm_host.h.  But outside of legitimate
-collisions like that, I can't think of a single instance where superfluous existing
-includes caused problems.  On the other hand, I distinctly recall multiple
-instances where a header didn't include what it used and broke the build when the
-buggy header was included in a new file.
-
-> Specific header declaration is supposed to be retained if it makes more
-> sense for reviewers to understand. No functional changes intended.
-> 
-> [*] https://lore.kernel.org/all/YdIfz+LMewetSaEB@gmail.com/
-
-This patch violates one of the talking points of Ingo's work:
-
- - "Make headers standalone": over 80 headers don't build standalone and
-   depend on various accidental indirect dependencies they gain through
-   other headers, especially once headers get their unnecessary dependencies
-   removed. So there's over 80 commits changing these headers.
-
-I think it's also worth noting that Ingo boosted build times by eliminating
-includes in common "high use" headers, not by playing whack-a-mole with "private"
-headers and C files.
-
-> [**] https://include-what-you-use.org/
-> 
-> Signed-off-by: Like Xu <likexu@tencent.com>
+On Mon, Oct 16, 2023 at 3:56=E2=80=AFPM RD Babiera <rdbabiera@google.com> w=
+rote:
+>
+> DisplayPort Alt Mode CTS test 10.3.8 states that both sides of the
+> connection shall be compatible with one another such that the connection
+> is not Source to Source or Sink to Sink.
+>
+> The DisplayPort driver currently checks for a compatible pin configuratio=
+n
+> that resolves into a source and sink combination. The CTS test is designe=
+d
+> to send a Discover Modes message that has a compatible pin configuration
+> but advertises the same port capability as the device; the current check
+> fails this.
+>
+> Verify that the port and port partner resolve into a valid source and sin=
+k
+> combination before checking for a compatible pin configuration.
+>
+> Fixes: 0e3bb7d6894d ("usb: typec: Add driver for DisplayPort alternate mo=
+de")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: RD Babiera <rdbabiera@google.com>
 > ---
->  arch/x86/kvm/cpuid.c           |  3 ---
->  arch/x86/kvm/cpuid.h           |  1 -
->  arch/x86/kvm/emulate.c         |  2 --
->  arch/x86/kvm/hyperv.c          |  3 ---
->  arch/x86/kvm/i8259.c           |  1 -
->  arch/x86/kvm/ioapic.c          | 10 ----------
->  arch/x86/kvm/irq.c             |  3 ---
->  arch/x86/kvm/irq.h             |  3 ---
->  arch/x86/kvm/irq_comm.c        |  2 --
->  arch/x86/kvm/lapic.c           |  8 --------
->  arch/x86/kvm/mmu.h             |  1 -
->  arch/x86/kvm/mmu/mmu.c         | 11 -----------
->  arch/x86/kvm/mmu/spte.c        |  1 -
->  arch/x86/kvm/mmu/tdp_iter.h    |  1 -
->  arch/x86/kvm/mmu/tdp_mmu.c     |  3 ---
->  arch/x86/kvm/mmu/tdp_mmu.h     |  4 ----
->  arch/x86/kvm/smm.c             |  1 -
->  arch/x86/kvm/smm.h             |  3 ---
->  arch/x86/kvm/svm/avic.c        |  2 --
->  arch/x86/kvm/svm/hyperv.h      |  2 --
->  arch/x86/kvm/svm/nested.c      |  2 --
->  arch/x86/kvm/svm/pmu.c         |  4 ----
->  arch/x86/kvm/svm/sev.c         |  7 -------
->  arch/x86/kvm/svm/svm.c         | 29 -----------------------------
->  arch/x86/kvm/svm/svm.h         |  3 ---
->  arch/x86/kvm/vmx/hyperv.c      |  4 ----
->  arch/x86/kvm/vmx/hyperv.h      |  7 -------
->  arch/x86/kvm/vmx/nested.c      |  2 --
->  arch/x86/kvm/vmx/nested.h      |  1 -
->  arch/x86/kvm/vmx/pmu_intel.c   |  1 -
->  arch/x86/kvm/vmx/posted_intr.c |  1 -
->  arch/x86/kvm/vmx/sgx.h         |  5 -----
->  arch/x86/kvm/vmx/vmx.c         | 11 -----------
->  arch/x86/kvm/x86.c             | 17 -----------------
->  arch/x86/kvm/xen.c             |  1 -
->  virt/kvm/async_pf.c            |  2 --
->  virt/kvm/binary_stats.c        |  1 -
->  virt/kvm/coalesced_mmio.h      |  2 --
->  virt/kvm/eventfd.c             |  2 --
->  virt/kvm/irqchip.c             |  1 -
->  virt/kvm/kvm_main.c            | 13 -------------
->  virt/kvm/pfncache.c            |  1 -
->  virt/kvm/vfio.c                |  2 --
->  43 files changed, 184 deletions(-)
+>  drivers/usb/typec/altmodes/displayport.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/drivers/usb/typec/altmodes/displayport.c b/drivers/usb/typec=
+/altmodes/displayport.c
+> index 718da02036d8..3b35a6b8cb72 100644
+> --- a/drivers/usb/typec/altmodes/displayport.c
+> +++ b/drivers/usb/typec/altmodes/displayport.c
+> @@ -575,9 +575,18 @@ int dp_altmode_probe(struct typec_altmode *alt)
+>         struct fwnode_handle *fwnode;
+>         struct dp_altmode *dp;
+>         int ret;
+> +       int port_cap, partner_cap;
 
-NAK, I am not taking a wholesale purge of includes.  I have no objection to
-removing truly unnecessary includes, e.g. there are definitely some includes that
-are no longer necessary due to code being moved around.  But changes like the
-removal of all includes from tdp_mmu.h and smm.h are completely bogus.  If anything,
-smm.h clearly needs more includes, because it is certainly not including everything
-it is using.
+VDOs are 32-bit, so u32 is probably better here.
 
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-> index 733a3aef3a96..66afdf3e262a 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.h
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.h
-> @@ -3,10 +3,6 @@
->  #ifndef __KVM_X86_MMU_TDP_MMU_H
->  #define __KVM_X86_MMU_TDP_MMU_H
->  
-> -#include <linux/kvm_host.h>
-> -
-> -#include "spte.h"
-> -
->  void kvm_mmu_init_tdp_mmu(struct kvm *kvm);
->  void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm);
+>
+>         /* FIXME: Port can only be DFP_U. */
+>
+> +       /* Make sure that the port and partner can resolve into source an=
+d sink */
+> +       port_cap =3D DP_CAP_CAPABILITY(port->vdo);
+> +       partner_cap =3D DP_CAP_CAPABILITY(alt->vdo);
+> +       if (!((port_cap & DP_CAP_DFP_D) && (partner_cap & DP_CAP_UFP_D)) =
+&&
 
-...
+nit: bitwise '&' has a higher precedence than logical '&&', so the
+innermost parentheses shouldn't be necessary:
 
-> diff --git a/arch/x86/kvm/smm.h b/arch/x86/kvm/smm.h
-> index a1cf2ac5bd78..3e067ce1ea1d 100644
-> --- a/arch/x86/kvm/smm.h
-> +++ b/arch/x86/kvm/smm.h
-> @@ -2,11 +2,8 @@
->  #ifndef ASM_KVM_SMM_H
->  #define ASM_KVM_SMM_H
->  
-> -#include <linux/build_bug.h>
-> -
->  #ifdef CONFIG_KVM_SMM
->  
-> -
->  /*
->   * 32 bit KVM's emulated SMM layout. Based on Intel P6 layout
->   * (https://www.sandpile.org/x86/smm.htm).
+           if (!(port_cap & DP_CAP_DFP_D && partner_cap & DP_CAP_UFP_D) &&
+               !(port_cap & DP_CAP_UFP_D && partner_cap & DP_CAP_DFP_D))
+                   return -ENODEV;
+                ...
+
+OTOH, perhaps you should just introduce a macro that performs this
+bitwise operation for even better
+readability. Something like
+
+#define DP_CAP_IS_DFP_D(_cap_)        (!!(DP_CAP_CAPABILITY(_cap_) &
+DP_CAP_DFP_D))
+
+(not sure if "!!" is tolerated in kernel style, but you get the gist...)
+
+
+> +           !((port_cap & DP_CAP_UFP_D) && (partner_cap & DP_CAP_DFP_D)))=
+ {
+> +               return -ENODEV;
+
+Single line if statements can drop curly braces [1]
+
+Best regards,
+
+-Prashant
+
+[1] https://www.kernel.org/doc/html/v4.10/process/coding-style.html#placing=
+-braces-and-spaces
