@@ -2,266 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C5787CCECD
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 22:54:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23DA77CCED0
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 22:55:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343908AbjJQUyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 16:54:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46870 "EHLO
+        id S1344141AbjJQUzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 16:55:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229883AbjJQUyN (ORCPT
+        with ESMTP id S229883AbjJQUzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 16:54:13 -0400
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.220])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40DDD92;
-        Tue, 17 Oct 2023 13:54:10 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1697576047; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=KAdHQ5f5dnpSzMaJeFOJrirDMTXeZ3w3mXDeTbOlUxtEbmV6h09rIUC4xiX6FaY27Q
-    SthuMuFVpLt8FXYZshAEnX1N9D4P5TYgJX4ApXTVxLNnkCNP9SQbMmDfOMTrFa3heQ8z
-    hj3bo+dr8/4eNMw9/QumBaGqqRWZEc3lad5ke8QLqs9x/6sCFoX8WvzxTORcBQcQruMv
-    RgMXXR2/hN7trAuIx0rhan9ffKLJqf22g+K0ObeplqpCNTs/WOcP3tJeBO8QB5/47eJX
-    yWCTlIrtyxlPG66olJIYaA8SH1qaXGQ5jurazWeG7Tp+DU/EIdhJ+CBN1je4fNDCmaEn
-    5vsA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1697576047;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=4JlDr7zKR8MBrZdwPJEuuTOPV5Uy20E9QavT7xqZqsI=;
-    b=pNhZNpd/gL3cqfe09e9GaPVhGnl/P7LMeD8V78Ahjz9zhHJN3ABKv1ci0LxStia8jO
-    2iZjzqIYM7OrrM5dNpobxUsRIacFcv8tQ0XypWnohtAnGzwQIKtT3hBXNobcDo5ONWP/
-    dRzWFjTcAid9x8SfeK4ZWlNdREaUbFIsl9ZI475zDB9jZD4CThrrsSXYukIdQIw7O69p
-    rTupeD3GnuAa12tnfO2MtGRaB4zElFG3mXXQrmcXxlZ6+GnHKfhHIjXbjIbt9p8NTaxt
-    k9QVtj7AZa5YE0vKy0qc2o08UQRIy+nrODJhHtN8u7qR9v8O/NO/lz/l3/if4ESTU4r4
-    ZTXQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1697576047;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=4JlDr7zKR8MBrZdwPJEuuTOPV5Uy20E9QavT7xqZqsI=;
-    b=aw8C9ILt/0v7DBZnWM9fWgvUq2ViKa5PL+468owtC49IaqslCZS8K1SlZdi3IeWyBA
-    qlJDQIuFbYqPkQ2IdHCXv4QnfiJGDZx0yLcdxwSjFksrEScWYnXYXk7Rsr8sYWpcK7t9
-    iavQSZozH6BY+1zmV3Q/MhxrDRQ4e3eWB2hSXL6zPBVCdf/hzwzJKDBCfkg29RgKTV+J
-    X5daBKuV3xAKlisM82YgWVpThygaspARETK+t7/lGFKl0HBoBNzqyf7VR3abTvnFAxVn
-    EQsuj1kEqSVqVETAiu1ROKNkcrkx4sR5ZhVZBrucvqUM3uDrvSAe0rkkcvLZDX0B/QeM
-    yEUA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1697576047;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=4JlDr7zKR8MBrZdwPJEuuTOPV5Uy20E9QavT7xqZqsI=;
-    b=EVy7Ai4v54ojE55/6MVFJMUcy23BNv+6vqGvstuU2OTxzSPNCaMN7q09/D0yCzQsp2
-    X5X1om0G18Swc2B9ldBA==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA+p3h"
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 49.9.0 DYNA|AUTH)
-    with ESMTPSA id j34a49z9HKs66tQ
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 17 Oct 2023 22:54:06 +0200 (CEST)
-Date:   Tue, 17 Oct 2023 22:54:01 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Ilia Lin <ilia.lin@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH 1/4] cpufreq: qcom-nvmem: Enable virtual power domain
- devices
-Message-ID: <ZS70aZbP33fkf9dP@gerhold.net>
-References: <20230912-msm8909-cpufreq-v1-0-767ce66b544b@kernkonzept.com>
- <20230912-msm8909-cpufreq-v1-1-767ce66b544b@kernkonzept.com>
- <CAPDyKFq6U-MR4Bd+GmixYseRECDh142RhydtKbiPd3NHV2g6aw@mail.gmail.com>
- <ZQGqfMigCFZP_HLA@gerhold.net>
- <CAPDyKFppdXe1AZo1jm2Bc_ZR18hw5Bmh1x+2P7Obhb_rJ2gc4Q@mail.gmail.com>
- <ZRcC2IRRv6dtKY65@gerhold.net>
- <CAPDyKFoiup8KNv=1LFGKDdDLA1pHsdJUgTTWMdgxnikEmReXzg@mail.gmail.com>
- <ZSg-XtwMxg3_fWxc@gerhold.net>
- <CAPDyKFoH5EOvRRKy-Bgp_B9B3rf=PUKK5N45s5PNgfBi55PaOQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        Tue, 17 Oct 2023 16:55:52 -0400
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2074.outbound.protection.outlook.com [40.107.20.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8A9392
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 13:55:50 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=naFjdPhkgTLj3jQU9GL/PelINkzKqxmDSmHFkVK1yzWpfBJ42+E5yUFZv7TRDUkf7KNGuwixshSMIcoBVWn/S1RTbNaN6o/G0rxc/8zIkX55BaLul3NQ06rITyHvcQ2AnJ2kFGkpXjcjIPsnWQ+l7ku6YN7UplHZAzEAyMJs3SKllL/yrYtE7Tezpu2NyyVab7UngpNvv3v0ZWo9tVXKZf8xouDFjlFEgAPSkwuHbuf9OsM997pIjTvTefFUMeNKwu/gHWCv3kUF81g56yJU9TVWG71DKzEsvx0NYK0mZBYxeO6canYjSsBg59Ases6ZO+LFp0+2MJ2ehPGk5B6y+A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xqtPZFBVAW5w4x3xf/vrxs2OoU7nbjTEldo2yiYLgjY=;
+ b=FVEQGGoSrEL3894ez3qTqtfr0MC8mhXV3lHrC+FXIwcAw9RryJl1bN5yJBg+W55FVl1oB0VV+02kkIRiFTJncreDM/yWBIDOGKT9X46rlNgeKlgYNWFcLoQCMo/2EzGGnE4eu/JqQKF04z/+/XW5yVU4P5GjD1P2Pxvsy8siT9g7hd2hv7fwUmao5RBw/r6wVahs5H4P50Ouh10W03lCJcgNkUO+2xUruOzWrf95ntNwzinzBc+R5QMQmJnKk/a8/muObp005fptyA0Zyav/dxrEYJMzQLXdig0DeddT2m7Oy2Z9rm+2uCOW4SkeSfchU87PtniuXlgeCTITp1G6SA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xqtPZFBVAW5w4x3xf/vrxs2OoU7nbjTEldo2yiYLgjY=;
+ b=Jrazv7sVkfcMXS/iE44lMs228dCv3L5/x4HQOzv9tHP0aQME+3lAlVdLQEbEc2DfHWhb3Jg/r7a6UaYGHzr+iyJzAfUfRxYg3631/3onSzlNYcSCYuWKXYNz6sjk2vrjv8YiYkKkUj9TC8VFP2mO1vffImQpJct0+AcUVH5Ys20=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by AM9PR04MB8488.eurprd04.prod.outlook.com (2603:10a6:20b:41b::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.21; Tue, 17 Oct
+ 2023 20:55:48 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6907.021; Tue, 17 Oct 2023
+ 20:55:48 +0000
+Date:   Tue, 17 Oct 2023 16:55:41 -0400
+From:   Frank Li <Frank.li@nxp.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     conor.culhane@silvaco.com, alexandre.belloni@bootlin.com,
+        joe@perches.com, linux-i3c@lists.infradead.org,
+        linux-kernel@vger.kernel.org, imx@lists.linux.dev
+Subject: Re: [PATCH 3/6] i3c: master: svc: fix ibi may not return mandatory
+ data byte
+Message-ID: <ZS70zTwcGOjxB6MS@lizhi-Precision-Tower-5810>
+References: <20231016153232.2851095-1-Frank.Li@nxp.com>
+ <20231016153232.2851095-4-Frank.Li@nxp.com>
+ <20231017162707.187bebcf@xps-13>
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAPDyKFoH5EOvRRKy-Bgp_B9B3rf=PUKK5N45s5PNgfBi55PaOQ@mail.gmail.com>
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231017162707.187bebcf@xps-13>
+X-ClientProxiedBy: SJ0PR13CA0049.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c2::24) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AM9PR04MB8488:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1523c1cb-54dc-4c06-e0d0-08dbcf53707f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gbN2heGux2fpid/LJWxRDZt+HAg+TN3wC2+z+zylXyA2ncFH48fxww7NCyNDvMhNCGZygy8wEoIn9bXl5PZXLu/q0GT1AoU4YjcTAPzdkHE8joC/4Y13CS0EbrzLmLB4tb9ttOrsl4gm3FzoHmeS0ayqqcv9QgGbNmslLqwkGiA6M6AP0g47KH0ZvNs9aqrkqdDaP9b8dlWR+rEixzTG2fF/JYQdPMGAjBOKkUOHrlR+AIfF8gTtXH4nPmAsbTaDgSCC8hiNBey46Wq9dvbbkkQUHrgiuHsYZ7WAQQ+XkzbhU7gUe8v1KqFjpEfREdnv7VhCW0AHcfG2LEqBL/35Hw5V35iMh+DF8EGNmmBx9G4zb7b3OkzYoxoMSjX5Cm18my1P3jji2wiU9kq9uriBofuefTF3ywEsNh1Fu5fTSM47MMqu+Amh+wcjjx7/0ko/oaomL7E0yJTaYXQEjutJx0xdD58kuGCejGTxRL55as/oF9ZS+URiHuORck+c8VnBJgX6elUdzU1XTYtAlMuPx+M2lrDDrzIydkpcxEYLJpBRvTFddynZEqD6XW7gkbg3/l3YYRscj4Z++ZiCJahgR7ldsR5fpOw98zzm2DtP82ubf6npGw2t/TPp0rd7Limn
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(136003)(376002)(366004)(39860400002)(346002)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(6666004)(33716001)(38350700005)(9686003)(6506007)(52116002)(6486002)(478600001)(6512007)(6916009)(66946007)(316002)(66476007)(26005)(83380400001)(66556008)(41300700001)(38100700002)(5660300002)(4326008)(8676002)(8936002)(2906002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?EfkhRvv/kz20xjJxegxX1sS1r80WmlqFQ23NcAipckv867zkEqXy8Riydl?=
+ =?iso-8859-1?Q?Doi6XWL2MvxHa3Q6osFQYBuYwGnKr5dktaF9vu/mldbIo8n6NkaehIp/V9?=
+ =?iso-8859-1?Q?mKcNWx0l4imAT8MzlwuEWKmoRV905LXe4rUFewZh0xQC/VDtm1gfmj+bZw?=
+ =?iso-8859-1?Q?ekPuFmM3PsXehNv6g8ylJcXHeBlDXOv3TXvA3dVzUcB0tvzN92+klqIJ8a?=
+ =?iso-8859-1?Q?kpBztTTnRqWrNq9MWXjkR4TEDiGIbWo9oKTXvqDqvSUAdeR/agQADX1RCC?=
+ =?iso-8859-1?Q?Czdubp644eS4rF/yA5MmexQStV7X1DdTqlTX+FJi6s5TPjHq4j+chiYXdJ?=
+ =?iso-8859-1?Q?grlRErJwW5sSdD9F1dkePRSWwrlJ8gulBrLDAi2d8fXcGtMLad9HOtKF4f?=
+ =?iso-8859-1?Q?U/Nn3aJR4R+FAjBn4mGL+wuwNf/eNfx54w9zHAQ4MDeyAqa6+eZXQImI1h?=
+ =?iso-8859-1?Q?Y8WoA1LF/HfeKKykAUAy7kCpTQRT4+zD7XS9KR3jLtV94bPp+QFZ+CxHQ0?=
+ =?iso-8859-1?Q?JzY3mX8JYdDTt1Xw9fAAMiPZ4rrCvRj92DVS44Sc1cOADM35Vzw9quHcgj?=
+ =?iso-8859-1?Q?6J1cOGw2k4JWjoZE/8iUvWawqK4PjNHxp3SEzdks1yDv4mcj1BUsde8TVw?=
+ =?iso-8859-1?Q?7CCM4fcyYsFeEN5hMjxi9FTT2WxT8h8UvbKpmiwItUaTUrcTK6eS5Y+qUl?=
+ =?iso-8859-1?Q?UoyaJNPF4voI1ClbwyuUZRLaFMKWlSchLgpngel7NKybdCWqaKapsmFLky?=
+ =?iso-8859-1?Q?xYxPej4nzGEqxPcMg/+weU4kgyPhBd00sPaSN8nUnsZqgxmw9HiNupQhWG?=
+ =?iso-8859-1?Q?jr6vlWpfEq3U8lGsmZb4Af7PGyHxYOHw6EV1Ecbf+p1hXUvd7szIdeMfx6?=
+ =?iso-8859-1?Q?YsgzfWEBBKR3fkKkgBytR3WIXVTER7TqXRpp2KporaDzE9y+1BliSivTAK?=
+ =?iso-8859-1?Q?QgbtfXQAF4HVYZaRIr+qzLrg3LXnhDvsFE0+poT7xIoWan06l5w6qGgwpf?=
+ =?iso-8859-1?Q?SoDI+OYXrRbkXmwiYZahGX6/u4Q3b5A0vzoPO5eWGQH5EOOFzJ9GhY+k/D?=
+ =?iso-8859-1?Q?p6AckbyUcll0pUr0Q+thAtMOHIgjNIZXoQ+3TZlAIDb1dEm3xecVPAbSat?=
+ =?iso-8859-1?Q?V2RLPiINdYrjC28FIIeEdwypnj/A071r2prR0TiqLnWJjhidPYzvye4BrO?=
+ =?iso-8859-1?Q?liQnKy3wtmJpE/yLB/IR0/omzimLXC7n9lSIuvTox6XyBE0Cde8WGGZ9sN?=
+ =?iso-8859-1?Q?6NycQoNy93mvKdFffoje1O4RKset2l6s/KzRP/IPtUpiMKJfOgCqNqXymV?=
+ =?iso-8859-1?Q?eVBPmJANcmL6HFr6Who1kswiTVTnZ5vnBQopaUrSGK4IVAulcsEC/cj43z?=
+ =?iso-8859-1?Q?U5ONQ1tPWSeynB4xOWXIiF4zK3IvBDTzK+BEB1jzp86t0mFWRLXv1dul02?=
+ =?iso-8859-1?Q?5YDoeP0pdgAsElA4GyWqHEFxS2okudeGLy4tnCQ8iECHxWoi+mwKaTp8J+?=
+ =?iso-8859-1?Q?Ysy26lUHoK9Yf06F2WHWhCwETceR3KQpRLEsl3/DilDBeqV4qM5groskq+?=
+ =?iso-8859-1?Q?/TOfR9fABKKZubN0QEt9r7efDa02MnRdoZRewC6mgg1b58cZWY9MITyeBN?=
+ =?iso-8859-1?Q?bewAJqb9ga/0tQC/N8CYB/vEO50bE3ipbf?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1523c1cb-54dc-4c06-e0d0-08dbcf53707f
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Oct 2023 20:55:48.0622
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QS2pILYuPmOKgjoIH/+TDyITNhW5EWw2tjU5b/zFwFG2GwJCeyGwo9T01ze++kIYXY3Vy2ZDclpSZTZee1EbWA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8488
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 04:47:52PM +0200, Ulf Hansson wrote:
-> [...]
-> > > >
-> > > > Here are the two commits with the my current DT changes (WIP):
-> > > >   - MSM8909+PM8909 (RPMPD only):
-> > > >     https://github.com/msm8916-mainline/linux/commit/791e0c5a3162372a0738bc7b0f4a5e87247923db
-> > >
-> > > Okay, so this looks pretty straight forward. One thing though, it
-> > > looks like we need to update the DT bindings for cpus.
-> > >
-> > > I recently updated Documentation/devicetree/bindings/arm/cpus.yaml
-> > > [1], to let "perf" be the common "power-domain-name" for a CPU's SCMI
-> > > performance-domain. I look like we should extend the description to
-> > > allow "perf" to be used for all types of performance domains.
-> > >
-> >
-> > "perf" sounds fine for a single power domain, I just used "apc" here for
-> > consistency with the MSM8916 changes (which scales this power domain and
-> > several others, as you saw).
-> >
-> > (BTW, I would appreciate such a generic name for the cpuidle case as
-> >  well, so "idle" instead of "psci" vs "sbi". I have another WIP cpuidle
-> >  driver and didn't want to invent another name there...)
+On Tue, Oct 17, 2023 at 04:27:07PM +0200, Miquel Raynal wrote:
+> Hi Frank,
 > 
-> Whether it's "idle" or "power" or something else, we should certainly
-> avoid a provider specific (psci) name, as has been pointed out earlier
-> by Rob too.
+> Frank.Li@nxp.com wrote on Mon, 16 Oct 2023 11:32:29 -0400:
 > 
-> I will try to get some time to update the DT docs as soon as I can.
-> Unless you get to it first, feel free to do it.
+> > MSTATUS[RXPEND] is only updated after the data transfer cycle started. This
+> > creates an issue when the I3C clock is slow, and the CPU is running fast
+> > enough that MSTATUS[RXPEND] may not be updated when the code reach checking
+> > point. As a result, mandatory data are being missed.
 > 
-
-Thanks! I'm not sure either when I will have time to get back to the
-cpuidle driver, so let's just see who finds time first. :D
-
-> > [MSM8916 setup with multiple power domains...]
-> > There seems to be indeed some kind of relation between MX <=> CX/APC:
-> >
-> >  - When voting for CX in the RPM firmware, it will always implicitly
-> >    adjust the MX performance state to be MX >= CX.
-> >
-> >  - When scaling APC up, we must increase MX before APC.
-> >  - When scaling APC down, we must decrease MX after APC.
-> >  => Clearly MX >= APC. Not in terms of raw voltage, but at least for the
-> >     abstract performance state.
-> >
-> > Is this some kind of parent-child relationship between MX <=> CX and
-> > MX <=> APC?
+> 					can be missed.
 > 
-> Thanks for sharing the above. Yes, to me, it looks like there is a
-> parent/child-domain relationship that could be worth describing/using.
+> > Add a wait for MSTATUS[COMPLETE] to ensure that all mandatory data already
+> > in FIFO.
 > 
-> >
-> > If yes, maybe we could indeed bind MX to the CPR genpd somehow. They use
-> > different performance state numbering, so we need some kind of
-> > translation. I'm not entirely sure how that would be described.
+> is already in the FIFO
 > 
-> Both the power-domain and the required-opps DT bindings
-> (Documentation/devicetree/bindings/opp/opp-v2-base.yaml) are already
-> allowing us to describe these kinds of hierarchical
-> dependencies/layouts.
+> > 
+> > Fixes: dd3c52846d59 ("i3c: master: svc: Add Silvaco I3C master driver")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > ---
+> >  drivers/i3c/master/svc-i3c-master.c | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> > 
+> > diff --git a/drivers/i3c/master/svc-i3c-master.c b/drivers/i3c/master/svc-i3c-master.c
+> > index 0f57a5f75e39..c252446b2bc5 100644
+> > --- a/drivers/i3c/master/svc-i3c-master.c
+> > +++ b/drivers/i3c/master/svc-i3c-master.c
+> > @@ -331,6 +331,7 @@ static int svc_i3c_master_handle_ibi(struct svc_i3c_master *master,
+> >  	struct i3c_ibi_slot *slot;
+> >  	unsigned int count;
+> >  	u32 mdatactrl;
+> > +	int ret, val;
+> >  	u8 *buf;
+> >  
+> >  	slot = i3c_generic_ibi_get_free_slot(data->ibi_pool);
+> > @@ -340,6 +341,13 @@ static int svc_i3c_master_handle_ibi(struct svc_i3c_master *master,
+> >  	slot->len = 0;
+> >  	buf = slot->data;
+> >  
+> > +	ret = readl_relaxed_poll_timeout(master->regs + SVC_I3C_MSTATUS, val,
+> > +						SVC_I3C_MSTATUS_COMPLETE(val), 0, 1000);
 > 
-> In other words, to scale performance for a child domain, the child may
-> rely on that we scale performance for the parent domain too. This is
-> already supported by genpd and through the opp library - so it should
-> just work. :-)
+> Are you sure !MSTATUS_COMPLETE(val) is never a valid condition?
+> Especially with non-mandatory bytes?
 > 
+> Also, are you sure of the indentation here?
 
-Oh! I have looked at that code in the genpd core already a few times but
-until now I never understood how it works. That's great, thanks!
+If no-mandatory data, it is equal RDTERAM is 0. It takes some times to
+change my slave code to create such test case.
 
-I will test this and get back to you separately.
+Frank Li
 
-Seems like we reached a conclusion for enabling the power domains at
-least, which will already help me a lot with MSM8909. :-)
-
-> [...]
 > 
-> > >
-> > > *) The approach you have taken in the $subject patch with the call to
-> > > pm_runtime_resume_and_get() works as a fix for QCS404, as there is
-> > > only the CPR to attach to. The problem with it, is that it doesn't
-> > > work for cases where the RPMPD is used for performance scaling, either
-> > > separate or in combination with the CPR. It would keep the rpmpd:s
-> > > powered-on, which would be wrong. In regards to the
-> > > dev_pm_syscore_device() thingy, this should not be needed, as long as
-> > > we keep the vdd-apc-supply enabled, right?
-> > >
-> > > **) A more generic solution, that would work for all cases (even
-> > > when/if hooking up the CPR to the rpmpd:s), consists of tweaking genpd
-> > > to avoid "caching" performance states for these kinds of devices. And
-> > > again, I don't see that we need dev_pm_syscore_device(), assuming we
-> > > manage the vdd-apc-supply correctly.
-> > >
-> > > Did I miss anything?
-> > >
-> >
-> > We do need to keep the CPU-related RPMPDs always-on too.
-> >
-> > Keeping the CPU-related RPMPDs always-on is a bit counter-intuitive, but
-> > it's because of this:
-> >
-> > > > > >  - RPMPD: This is the generic driver for all the SoC power domains
-> > > > > >    managed by the RPM firmware. It's not CPU-specific. However, as
-> > > > > >    special feature each power domain is exposed twice in Linux, e.g.
-> > > > > >    "MSM8909_VDDCX" and "MSM8909_VDDCX_AO". The _AO ("active-only")
-> > > > > >    variant tells the RPM firmware that the performance/enable vote only
-> > > > > >    applies when the CPU is active (not in deep cpuidle state).
-> >
-> > The CPU only uses the "_AO"/active-only variants in RPMPD. Keeping these
-> > always-on effectively means "keep the power domain on as long as the CPU
-> > is active".
-> >
-> > I hope that clears up some of the confusion. :)
+> > +	if (ret) {
+> > +		dev_err(master->dev, "Timeout when polling for COMPLETE\n");
+> > +		return ret;
+> > +	}
+> > +
+> >  	while (SVC_I3C_MSTATUS_RXPEND(readl(master->regs + SVC_I3C_MSTATUS))  &&
+> >  	       slot->len < SVC_I3C_FIFO_SIZE) {
+> >  		mdatactrl = readl(master->regs + SVC_I3C_MDATACTRL);
 > 
-> Yes, it does, thanks! Is the below the correct conclusion for how we
-> could move forward then?
 > 
-> *) The pm_runtime_resume_and_get() works for QCS404 as a fix. It also
-> works fine when there is only one RPMPD that manages the performance
-> scaling.
-> 
-
-Agreed.
-
-> **) In cases where we have multiple PM domains to scale performance
-> for, using pm_runtime_resume_and_get() would work fine too. Possibly
-> we want to use device_link_add() to set up suppliers, to avoid calling
-> pm_runtime_resume_and_get() for each and every device.
-> 
-
-Hm. What would you use as "supplied" device? The CPU device I guess?
-
-I'm looking again at my old patch from 2020 where I implemented this
-with device links in the OPP core. Seems like you suggested this back
-then too :)
-
-  https://lore.kernel.org/linux-pm/20200826093328.88268-1-stephan@gerhold.net/
-
-However, for the special case of the CPU I think we don't gain any code
-simplification from using device links. There will just be a single
-resume of each virtual genpd device, as well as one put during remove().
-Exactly the same applies when using device links, we need to set up the
-device links once for each virtual genpd device, and clean them up again
-during remove().
-
-Or can you think of another advantage of using device links?
-
-> ***) Due to the above, we don't need a new mechanism to avoid
-> "caching" performance states for genpd. At least for the time being.
-> 
-
-Right. Given *) and **) I'll prepare a v2 of $subject patch with the
-remove() cleanup fixed and an improved commit description.
-
-I'll wait for a bit in case you have more thoughts about the device
-links.
-
-Thanks!
-Stephan
+> Thanks,
+> Miquèl
