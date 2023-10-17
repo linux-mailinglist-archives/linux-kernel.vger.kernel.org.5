@@ -2,272 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C85F17CBD37
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B67317CBD47
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:22:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234623AbjJQIRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 04:17:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33062 "EHLO
+        id S234608AbjJQIWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 04:22:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232134AbjJQIRq (ORCPT
+        with ESMTP id S229666AbjJQIWt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 04:17:46 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A21B0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 01:17:39 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-27d23f1e3b8so3969264a91.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 01:17:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697530659; x=1698135459; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=+LlVnjovZQKa7NrShhm24YzALCz3Jiaz+eKNaJ3ulnM=;
-        b=e4HO1JKq0DmPe2V97LDtLqxV3RDe7zYZN680NN/ZGQvNeAPnDo5TMzzuUrWQbp/fZP
-         XqPpo0ZHyCwJVvUOSNJ8vQjaCBSpIATYaBkvQWppi9csNN3+kVtfID1gEH6FRIhb2nJ1
-         cDDHFqsnKFvzj2Bw3Dhg9i0HALMb5ahIR+c+HzUjQGQpKOMo5QBazCoN0ZPpnErPb8eP
-         a4T3YOlu+RCI2dIlUT/hG+dYJu7BodvOrLyE//Uf1Bkmqru4GtZcjSw0BQ3cf5VaUWyS
-         EVl7mKQfG4kaR7bPAZprkBqqQynwIEOghAMnpkTHfzAZDgW6RzojnAExT7F4+7D/YFJr
-         IC6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697530659; x=1698135459;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+LlVnjovZQKa7NrShhm24YzALCz3Jiaz+eKNaJ3ulnM=;
-        b=ERlNM5GWDn8uQQmk6rpWJ3af8QBhYNNW6+uAFJHve2zwfhJXr/FgoZ7CVkPGTiR8Hw
-         W8LEIe1CB8ztW9YEyUccTJcJa3mbOMG4SaO/05xjf/VvLB5zVBQ/qjP6RJGyK1Bcnoad
-         dmDm6qAV9KY6hvN8Cjnm05ZU+K8PBRvSlFswBFRC9Qrcc8gF2WPXx+jtSyvzQLrepHuC
-         c75p7QF3uU8zmQebHl76AlgY4VbZV84etubOc/5XsyH5W6q2nQC8optFodZQCuONhHJl
-         toiIlXhtyKhwVLErXDc63tVsYkBBf/0feTCTCPl0Wr+3SwWSdK+b5yxZDglunY36GdDz
-         MwMw==
-X-Gm-Message-State: AOJu0YyWihfz2INqn+nU8zx/S6JlHTPiK/9Nw8t/QzdKJxzIj/u0rAYd
-        zd66+0sdAkbwFjvVau+SEudsaLKxqsiw6AhHDQ==
-X-Google-Smtp-Source: AGHT+IFJ+XwjBNsHb401tnImJrgO8tIl7GAykVmzgDpD/pNzSxKnSUYd1c7yondYd4ensK7UNVBRzA==
-X-Received: by 2002:a17:90a:d98d:b0:261:685:95b6 with SMTP id d13-20020a17090ad98d00b00261068595b6mr1492510pjv.13.1697530659344;
-        Tue, 17 Oct 2023 01:17:39 -0700 (PDT)
-Received: from thinkpad ([117.207.31.199])
-        by smtp.gmail.com with ESMTPSA id h16-20020a17090adb9000b002791d5a3e29sm769640pjv.6.2023.10.17.01.17.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 01:17:38 -0700 (PDT)
-Date:   Tue, 17 Oct 2023 13:47:31 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Frank Li <Frank.li@nxp.com>
-Cc:     Minghuan Lian <minghuan.Lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linux-pci@vger.kernel.org>,
-        "moderated list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>, imx@lists.linux.dev
-Subject: Re: [PATCH 2/3] PCI: layerscape: add suspend/resume for ls1021a
-Message-ID: <20231017081731.GD5274@thinkpad>
-References: <20230915184306.2374670-1-Frank.Li@nxp.com>
- <20230915184306.2374670-2-Frank.Li@nxp.com>
- <20231016165824.GF39962@thinkpad>
- <ZS2anCpWakttzaAu@lizhi-Precision-Tower-5810>
+        Tue, 17 Oct 2023 04:22:49 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A1C93;
+        Tue, 17 Oct 2023 01:22:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697530968; x=1729066968;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=18C0RvA7Co1JNquL2AuXahyTLK/I1EcsLrFRsMv0xXw=;
+  b=VERU788PmM/RGtklGywkmGlZ9X/rGnxIjx/bBnIN4sBwHmzaOd1z3HlN
+   Komk68SM4cnE10cAENt7Lu45dEFIjIv8jPuID7gUDvwOqk04L1NJ5Si7z
+   L/7gC4nuXWN0SiSuedS0OU0jd5eemNaF+q7vFDFN5IxfKZj4tWEFSrgfv
+   8GO6sgz7TqCPL7uN0fmn3zIdBchDjiUOfd8d3XbdAMH1KdkmyRSOpM4hs
+   /A5IW1NHYPB+C1uMUhWpuA9zA6OOtfIbGqrtMeydohU8LwyrY1isW20Wu
+   Xhbxv034v51SgEwZf5uzD4rcz8XBp8qwdRXndTzxtPzdDC0jphhglSr7a
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="389598072"
+X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
+   d="scan'208";a="389598072"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 01:22:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="826348799"
+X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
+   d="scan'208";a="826348799"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 17 Oct 2023 01:22:43 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qsfLd-0009LV-2L;
+        Tue, 17 Oct 2023 08:22:41 +0000
+Date:   Tue, 17 Oct 2023 16:21:55 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, quic_vbadigan@quicinc.com,
+        quic_ramkri@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_skananth@quicinc.com, quic_parass@quicinc.com,
+        Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Subject: Re: [PATCH v2] bus: mhi: host: Add tracing support
+Message-ID: <202310171556.hmPBsvRX-lkp@intel.com>
+References: <20231013-ftrace_support-v2-1-6e893ce010b5@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZS2anCpWakttzaAu@lizhi-Precision-Tower-5810>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231013-ftrace_support-v2-1-6e893ce010b5@quicinc.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 04:18:36PM -0400, Frank Li wrote:
-> On Mon, Oct 16, 2023 at 10:28:24PM +0530, Manivannan Sadhasivam wrote:
-> > On Fri, Sep 15, 2023 at 02:43:05PM -0400, Frank Li wrote:
-> > > ls1021a add suspend/resume support.
-> > > 
-> > 
-> > Please add what the driver is doing during suspend/resume.
-> > 
-> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > ---
-> > >  drivers/pci/controller/dwc/pci-layerscape.c | 88 ++++++++++++++++++++-
-> > >  1 file changed, 87 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
-> > > index 20c48c06e2248..bc5a8ff1a26ce 100644
-> > > --- a/drivers/pci/controller/dwc/pci-layerscape.c
-> > > +++ b/drivers/pci/controller/dwc/pci-layerscape.c
-> > > @@ -35,6 +35,12 @@
-> > >  #define PF_MCR_PTOMR		BIT(0)
-> > >  #define PF_MCR_EXL2S		BIT(1)
-> > >  
-> > > +/* LS1021A PEXn PM Write Control Register */
-> > > +#define SCFG_PEXPMWRCR(idx)	(0x5c + (idx) * 0x64)
-> > > +#define PMXMTTURNOFF		BIT(31)
-> > > +#define SCFG_PEXSFTRSTCR	0x190
-> > > +#define PEXSR(idx)		BIT(idx)
-> > > +
-> > >  #define PCIE_IATU_NUM		6
-> > >  
-> > >  struct ls_pcie_drvdata {
-> > > @@ -48,6 +54,8 @@ struct ls_pcie {
-> > >  	struct dw_pcie *pci;
-> > >  	const struct ls_pcie_drvdata *drvdata;
-> > >  	void __iomem *pf_base;
-> > > +	struct regmap *scfg;
-> > > +	int index;
-> > >  	bool big_endian;
-> > >  };
-> > >  
-> > > @@ -170,13 +178,91 @@ static int ls_pcie_host_init(struct dw_pcie_rp *pp)
-> > >  	return 0;
-> > >  }
-> > >  
-> > > +static void ls1021a_pcie_send_turnoff_msg(struct dw_pcie_rp *pp)
-> > > +{
-> > > +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> > > +	struct ls_pcie *pcie = to_ls_pcie(pci);
-> > > +	u32 val;
-> > > +
-> > > +	if (!pcie->scfg) {
-> > 
-> > Can this ever happen?
-> > 
-> > > +		dev_dbg(pcie->pci->dev, "SYSCFG is NULL\n");
-> > > +		return;
-> > > +	}
-> > > +
-> > > +	/* Send Turn_off message */
-> > 
-> > "Send PME_Turn_Off message"
-> > 
-> > > +	regmap_read(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), &val);
-> > > +	val |= PMXMTTURNOFF;
-> > > +	regmap_write(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), val);
-> > > +
-> > > +	/* There are not register to check ACK, so wait PCIE_PME_TO_L2_TIMEOUT_US */
-> > 
-> > "There is no specific register to check for PME_To_Ack from endpoint. So on the
-> > safe side, wait for PCIE_PME_TO_L2_TIMEOUT_US."
-> > 
-> > > +	mdelay(PCIE_PME_TO_L2_TIMEOUT_US/1000);
-> > > +
-> > > +	/* Clear Turn_off message */
-> > 
-> > "PME_Turn_off". But I'm not sure if this is really required. Are you doing it
-> > because the layerspace hw implements the PME_Turn_Off bit as "level triggered"?
-> 
-> I am not sure how hardware implement this. But reference manual said:
->  
-> PMXMTTURNOFF:
-> Generate PM turnoff message for power management of PCI Express controllers.
-> This bit should be cleared by software.
-> 0 Clear PM turnoff (default)
-> 1 Trigger PM turnoff
-> 
+Hi Krishna,
 
-Hmm, okay. Atleast add the below comment to make it understandable in the
-future:
+kernel test robot noticed the following build warnings:
 
-"Layerscape hardware reference manual recommends clearing the PMXMTTURNOFF bit
-to complete the PME_Turn_Off handshake."
+[auto build test WARNING on 3006adf3be79cde4d14b1800b963b82b6e5572e0]
 
-- Mani
+url:    https://github.com/intel-lab-lkp/linux/commits/Krishna-chaitanya-chundru/bus-mhi-host-Add-tracing-support/20231017-120241
+base:   3006adf3be79cde4d14b1800b963b82b6e5572e0
+patch link:    https://lore.kernel.org/r/20231013-ftrace_support-v2-1-6e893ce010b5%40quicinc.com
+patch subject: [PATCH v2] bus: mhi: host: Add tracing support
+config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231017/202310171556.hmPBsvRX-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231017/202310171556.hmPBsvRX-lkp@intel.com/reproduce)
 
-> Frank
-> 
-> > 
-> > > +	regmap_read(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), &val);
-> > > +	val &= ~PMXMTTURNOFF;
-> > > +	regmap_write(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), val);
-> > > +}
-> > > +
-> > > +static void ls1021a_pcie_exit_from_l2(struct dw_pcie_rp *pp)
-> > > +{
-> > > +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> > > +	struct ls_pcie *pcie = to_ls_pcie(pci);
-> > > +	u32 val;
-> > > +
-> > 
-> > A comment here would be good.
-> > 
-> > > +	regmap_read(pcie->scfg, SCFG_PEXSFTRSTCR, &val);
-> > > +	val |= PEXSR(pcie->index);
-> > > +	regmap_write(pcie->scfg, SCFG_PEXSFTRSTCR, val);
-> > > +
-> > > +	regmap_read(pcie->scfg, SCFG_PEXSFTRSTCR, &val);
-> > > +	val &= ~PEXSR(pcie->index);
-> > > +	regmap_write(pcie->scfg, SCFG_PEXSFTRSTCR, val);
-> > > +}
-> > > +
-> > > +static int ls1021a_pcie_host_init(struct dw_pcie_rp *pp)
-> > > +{
-> > > +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> > > +	struct ls_pcie *pcie = to_ls_pcie(pci);
-> > > +	struct device *dev = pcie->pci->dev;
-> > > +	u32 index[2];
-> > > +	int ret;
-> > > +
-> > > +	ret = ls_pcie_host_init(pp);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	pcie->scfg = syscon_regmap_lookup_by_phandle(dev->of_node, "fsl,pcie-scfg");
-> > > +	if (IS_ERR(pcie->scfg)) {
-> > > +		ret = PTR_ERR(pcie->scfg);
-> > > +		dev_err(dev, "No syscfg phandle specified\n");
-> > > +		pcie->scfg = NULL;
-> > > +		return ret;
-> > > +	}
-> > > +
-> > > +	ret = of_property_read_u32_array(dev->of_node, "fsl,pcie-scfg", index, 2);
-> > > +	if (ret) {
-> > > +		pcie->scfg = NULL;
-> > > +		return ret;
-> > > +	}
-> > > +
-> > > +	pcie->index = index[1];
-> > > +
-> > 
-> > The above syscon parsing could be done conditionally during probe itself. There
-> > is no need to do it during host_init() time.
-> > 
-> > - Mani
-> > 
-> > > +	return ret;
-> > > +}
-> > > +
-> > >  static const struct dw_pcie_host_ops ls_pcie_host_ops = {
-> > >  	.host_init = ls_pcie_host_init,
-> > >  	.pme_turn_off = ls_pcie_send_turnoff_msg,
-> > >  };
-> > >  
-> > > +static const struct dw_pcie_host_ops ls1021a_pcie_host_ops = {
-> > > +	.host_init = ls1021a_pcie_host_init,
-> > > +	.pme_turn_off = ls1021a_pcie_send_turnoff_msg,
-> > > +};
-> > > +
-> > >  static const struct ls_pcie_drvdata ls1021a_drvdata = {
-> > > -	.pm_support = false,
-> > > +	.pm_support = true,
-> > > +	.ops = &ls1021a_pcie_host_ops,
-> > > +	.exit_from_l2 = ls1021a_pcie_exit_from_l2,
-> > >  };
-> > >  
-> > >  static const struct ls_pcie_drvdata layerscape_drvdata = {
-> > > -- 
-> > > 2.34.1
-> > > 
-> > 
-> > -- 
-> > மணிவண்ணன் சதாசிவம்
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310171556.hmPBsvRX-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/bus/mhi/host/main.c:249:12: warning: no previous prototype for 'mhi_to_physical' [-Wmissing-prototypes]
+     249 | dma_addr_t mhi_to_physical(struct mhi_ring *ring, void *addr)
+         |            ^~~~~~~~~~~~~~~
+
+
+vim +/mhi_to_physical +249 drivers/bus/mhi/host/main.c
+
+   248	
+ > 249	dma_addr_t mhi_to_physical(struct mhi_ring *ring, void *addr)
+   250	{
+   251		return (addr - ring->base) + ring->iommu_base;
+   252	}
+   253	
 
 -- 
-மணிவண்ணன் சதாசிவம்
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
