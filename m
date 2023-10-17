@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 257307CBA18
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 07:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F1E7CBA19
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 07:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234469AbjJQFZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 01:25:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47290 "EHLO
+        id S234658AbjJQF0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 01:26:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234562AbjJQFZa (ORCPT
+        with ESMTP id S234592AbjJQFZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 01:25:30 -0400
+        Tue, 17 Oct 2023 01:25:34 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C5D10DD;
-        Mon, 16 Oct 2023 22:25:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CCE51BF;
+        Mon, 16 Oct 2023 22:25:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697520315; x=1729056315;
+  t=1697520319; x=1729056319;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references;
-  bh=zZsZ6JtO9YdL4Vld6agzB3/nEAv9fTcA8dq0o18MW2g=;
-  b=BUrl9gV65NscXhHRrpQkdwbJB368xbk72nFvkteUnVRSpVT5lW83MLEn
-   pLoFtjzNH2XG2kj71JpG8EPgCplkef89h6mleAD0kfTxzCcHb6WYdbx3w
-   b/n/oGu5u4w+aV81WRJ4e2N0Gb9VVYk6a3PJApATabtGi5WJv3ZGJ7Xdb
-   2O9HHeAaXLTLHGRsIepc+2J4sp7xlIIg2l9ibaSfP/sTQJHgCSold4LqY
-   OdfMhjJWv5o66LdZI61gIoEA+cOpJ5uc7xbJypeCUZlwiXjKM/ii2IzNQ
-   Swiaum5sbOKUOdixg5OWUK8vqpD7LLbWti3RUkSz9c9C9avVUY5njKm1V
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="388561752"
+  bh=sMUr0p6GsDTt7jB2LuU724MrPrsFBlCWOk8zjOW+ydE=;
+  b=lkzQAeS3lx1+nQ7AMCY/s9kvdL6APZLA/FzZOuwP3UE6OVnp4ARM6CXC
+   B42roIzMUmNJpmp356ndixK2RzwzIElcMSmEjIy/umv5yjSFWjRTD2+P1
+   Xq3V+qtXPtKOsuuDQuGkdOslbREvXbJdGc4ZM+t6W8oIU8bdOf+9tuZiA
+   z0OoFGegYBJKfA/FZjwsfN/K7GQebFE4q5xewsJxRVCaLu052I8qpzGNV
+   jWM49ivvVNU+xN8r86p4Bz3S0d2dm4JdxYeL9zH1BSwwXyCwY/KqUa28n
+   iANpiept5r3M/0qcIOfyU2pEq9rWjDwYidq23/Vr3kCOWSUGLU2yBhYO8
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="388561762"
 X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="388561752"
+   d="scan'208";a="388561762"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 22:25:14 -0700
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 22:25:18 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="1087357996"
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="1087358003"
 X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="1087357996"
+   d="scan'208";a="1087358003"
 Received: from inlubt0316.iind.intel.com ([10.191.20.213])
-  by fmsmga005.fm.intel.com with ESMTP; 16 Oct 2023 22:25:10 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 16 Oct 2023 22:25:14 -0700
 From:   lakshmi.sowjanya.d@intel.com
 To:     tglx@linutronix.de, jstultz@google.com, giometti@enneenne.com,
         corbet@lwn.net, linux-kernel@vger.kernel.org
@@ -47,9 +47,9 @@ Cc:     x86@kernel.org, linux-doc@vger.kernel.org,
         christopher.s.hall@intel.com, pandith.n@intel.com,
         mallikarjunappa.sangannavar@intel.com, thejesh.reddy.t.r@intel.com,
         lakshmi.sowjanya.d@intel.com
-Subject: [PATCH v1 3/6] x86/tsc: Check if the current clock source is related to ART(Always Running Timer)
-Date:   Tue, 17 Oct 2023 10:54:54 +0530
-Message-Id: <20231017052457.25287-4-lakshmi.sowjanya.d@intel.com>
+Subject: [PATCH v1 4/6] pps: generators: Add PPS Generator TIO Driver
+Date:   Tue, 17 Oct 2023 10:54:55 +0530
+Message-Id: <20231017052457.25287-5-lakshmi.sowjanya.d@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231017052457.25287-1-lakshmi.sowjanya.d@intel.com>
 References: <20231017052457.25287-1-lakshmi.sowjanya.d@intel.com>
@@ -65,102 +65,372 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
 
-Add interface 'is_current_clocksource_art_related()' in tsc.c to check
-if the current clock source is ART related.
-Add helper function 'is_current_clocksource(clock)' in timekeeping.c to
-check if the provided clock matches the current clock source.
+The Intel PPS Generator Timed IO driver provides PPS signal generation
+functionality. It uses hrtimers to schedule output. The timer handler
+writes the ART trigger value - derived from the system time - to the
+Timed IO hardware. The Timed IO hardware generates an event precisely
+at the requested system time without software involvement.
 
 Co-developed-by: Christopher Hall <christopher.s.hall@intel.com>
 Signed-off-by: Christopher Hall <christopher.s.hall@intel.com>
+Co-developed-by: Pandith N <pandith.n@intel.com>
+Signed-off-by: Pandith N <pandith.n@intel.com>
+Co-developed-by: Thejesh Reddy T R <thejesh.reddy.t.r@intel.com>
+Signed-off-by: Thejesh Reddy T R <thejesh.reddy.t.r@intel.com>
 Signed-off-by: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
+Reviewed-by: Eddie Dong <eddie.dong@intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- arch/x86/include/asm/tsc.h  |  1 +
- arch/x86/kernel/tsc.c       | 12 ++++++++++++
- include/linux/timekeeping.h |  2 ++
- kernel/time/timekeeping.c   | 15 +++++++++++++++
- 4 files changed, 30 insertions(+)
+ drivers/pps/generators/Kconfig       |  16 ++
+ drivers/pps/generators/Makefile      |   1 +
+ drivers/pps/generators/pps_gen_tio.c | 302 +++++++++++++++++++++++++++
+ 3 files changed, 319 insertions(+)
+ create mode 100644 drivers/pps/generators/pps_gen_tio.c
 
-diff --git a/arch/x86/include/asm/tsc.h b/arch/x86/include/asm/tsc.h
-index f5cff8d4f61e..cdfe34e55cf3 100644
---- a/arch/x86/include/asm/tsc.h
-+++ b/arch/x86/include/asm/tsc.h
-@@ -32,6 +32,7 @@ static inline cycles_t get_cycles(void)
- extern int convert_tsc_to_art(const struct system_counterval_t *tsc, u64 *art);
- extern struct system_counterval_t convert_art_to_tsc(u64 art);
- extern struct system_counterval_t convert_art_ns_to_tsc(u64 art_ns);
-+extern bool is_current_clocksource_art_related(void);
+diff --git a/drivers/pps/generators/Kconfig b/drivers/pps/generators/Kconfig
+index d615e640fcad..0f090932336f 100644
+--- a/drivers/pps/generators/Kconfig
++++ b/drivers/pps/generators/Kconfig
+@@ -12,3 +12,19 @@ config PPS_GENERATOR_PARPORT
+ 	  If you say yes here you get support for a PPS signal generator which
+ 	  utilizes STROBE pin of a parallel port to send PPS signals. It uses
+ 	  parport abstraction layer and hrtimers to precisely control the signal.
++
++config PPS_GENERATOR_TIO
++	tristate "TIO PPS signal generator"
++	depends on X86 && CPU_SUP_INTEL
++	help
++	  If you say yes here you get support for a PPS TIO signal generator
++	  which generates a pulse at a prescribed time based on the system clock.
++	  It uses time translation and hrtimers to precisely generate a pulse.
++	  This hardware is present on 2019 and newer Intel CPUs. However, this
++	  driver is not useful without adding highly specialized hardware outside
++	  the Linux system to observe these pulses.
++
++	  To compile this driver as a module, choose M here: the module
++	  will be called pps_gen_tio.
++
++	  If unsure, say N.
+diff --git a/drivers/pps/generators/Makefile b/drivers/pps/generators/Makefile
+index 2d56dd0495d5..07004cfd3996 100644
+--- a/drivers/pps/generators/Makefile
++++ b/drivers/pps/generators/Makefile
+@@ -4,6 +4,7 @@
+ #
  
- extern void tsc_early_init(void);
- extern void tsc_init(void);
-diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-index 92b800015d8f..2d6b1b5b5b3e 100644
---- a/arch/x86/kernel/tsc.c
-+++ b/arch/x86/kernel/tsc.c
-@@ -16,6 +16,7 @@
- #include <linux/timex.h>
- #include <linux/static_key.h>
- #include <linux/static_call.h>
-+#include <linux/timekeeping.h>
+ obj-$(CONFIG_PPS_GENERATOR_PARPORT) += pps_gen_parport.o
++obj-$(CONFIG_PPS_GENERATOR_TIO) += pps_gen_tio.o
  
- #include <asm/hpet.h>
- #include <asm/timer.h>
-@@ -1295,6 +1296,17 @@ int unsynchronized_tsc(void)
- 	return 0;
- }
- 
+ ifeq ($(CONFIG_PPS_DEBUG),y)
+ EXTRA_CFLAGS += -DDEBUG
+diff --git a/drivers/pps/generators/pps_gen_tio.c b/drivers/pps/generators/pps_gen_tio.c
+new file mode 100644
+index 000000000000..4ab7020a5cb6
+--- /dev/null
++++ b/drivers/pps/generators/pps_gen_tio.c
+@@ -0,0 +1,302 @@
++// SPDX-License-Identifier: GPL-2.0-only
 +/*
-+ * Checks if the current clocksource is ART related clocksource
++ * Intel PPS signal Generator Driver
 + *
-+ * Return: 1 on success, 0 on failure.
++ * Copyright (C) 2023 Intel Corporation
 + */
-+bool is_current_clocksource_art_related(void)
++
++#include <linux/bits.h>
++#include <linux/bitfield.h>
++#include <linux/cleanup.h>
++#include <linux/cpu.h>
++#include <linux/io-64-nonatomic-hi-lo.h>
++#include <linux/mod_devicetable.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/timekeeping.h>
++#include <linux/types.h>
++
++#include <asm/cpu_device_id.h>
++
++#define TIOCTL			0x00
++#define TIOCOMPV		0x10
++
++/* Control Register */
++#define TIOCTL_EN			BIT(0)
++#define TIOCTL_DIR			BIT(1)
++#define TIOCTL_EP			GENMASK(3, 2)
++#define TIOCTL_EP_RISING_EDGE		FIELD_PREP(TIOCTL_EP, 0)
++#define TIOCTL_EP_FALLING_EDGE		FIELD_PREP(TIOCTL_EP, 1)
++#define TIOCTL_EP_TOGGLE_EDGE		FIELD_PREP(TIOCTL_EP, 2)
++
++#define PREP_INTERVAL_NS		(10 * NSEC_PER_MSEC) /* Safety time to set hrtimer early */
++
++struct pps_tio {
++	struct hrtimer timer;
++	struct device *dev;
++	spinlock_t lock;
++	struct attribute_group attrs;
++	void __iomem *base;
++	bool enabled;
++};
++
++static inline u32 pps_ctl_read(struct pps_tio *tio)
 +{
-+	return is_current_clocksource(art_related_clocksource);
++	return readl(tio->base + TIOCTL);
 +}
-+EXPORT_SYMBOL_GPL(is_current_clocksource_art_related);
 +
- /*
-  * Converts input TSC to the corresponding ART value using conversion
-  * factors discovered by detect_art().
-diff --git a/include/linux/timekeeping.h b/include/linux/timekeeping.h
-index e5eb6699d691..9bf7970b3b2f 100644
---- a/include/linux/timekeeping.h
-+++ b/include/linux/timekeeping.h
-@@ -292,6 +292,8 @@ extern int get_device_system_crosststamp(
- extern int ktime_convert_real_to_system_counter(ktime_t sys_realtime,
- 						struct system_counterval_t *ret);
- 
-+extern bool is_current_clocksource(struct clocksource *clock);
-+
- /*
-  * Simultaneously snapshot realtime and monotonic raw clocks
-  */
-diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
-index ff6a4c7387ee..986089d36ba5 100644
---- a/kernel/time/timekeeping.c
-+++ b/kernel/time/timekeeping.c
-@@ -1357,6 +1357,21 @@ int ktime_convert_real_to_system_counter(ktime_t sys_realtime,
- }
- EXPORT_SYMBOL_GPL(ktime_convert_real_to_system_counter);
- 
-+/**
-+ * is_current_clocksource - Checks if the supplied clock source matches with the
-+ * MONOTONIC clock.
-+ *
-+ * @clock: pointer to the clocksource to be checked
-+ *
-+ * Return: true if the clocks match, false otherwise.
-+ */
-+bool is_current_clocksource(struct clocksource *clock)
++static inline void pps_ctl_write(struct pps_tio *tio, u32 value)
 +{
-+	struct tk_read_base *tkr = &tk_core.timekeeper.tkr_mono;
-+	return clock == READ_ONCE(tkr->clock);
++	writel(value, tio->base + TIOCTL);
 +}
-+EXPORT_SYMBOL_GPL(is_current_clocksource);
 +
- /**
-  * do_settimeofday64 - Sets the time of day.
-  * @ts:     pointer to the timespec64 variable containing the new time
++/* For COMPV register, It's safer to write higher 32-bit followed by lower 32-bit */
++static inline void pps_compv_write(struct pps_tio *tio, u64 value)
++{
++	hi_lo_writeq(value, tio->base + TIOCOMPV);
++}
++
++static inline ktime_t first_event(struct pps_tio *tio)
++{
++	struct timespec64 ts;
++
++	ktime_get_real_ts64(&ts);
++
++	return ktime_set(ts.tv_sec + 1, NSEC_PER_SEC - PREP_INTERVAL_NS);
++}
++
++static int translate_system_time_to_art_cycles(struct timespec64 ts, u64 *art_timestamp,
++					       bool *real_to_tsc_result)
++{
++	struct system_counterval_t sys_counter;
++	ktime_t sys_realtime;
++	int err;
++
++	sys_realtime = timespec64_to_ktime(ts);
++	err = ktime_convert_real_to_system_counter(sys_realtime, &sys_counter);
++	if (err) {
++		*real_to_tsc_result = true;
++		return err;
++	}
++
++	return convert_tsc_to_art(&sys_counter, art_timestamp);
++}
++
++static u32 pps_tio_disable(struct pps_tio *tio)
++{
++	u32 ctrl;
++
++	ctrl = pps_ctl_read(tio);
++	pps_compv_write(tio, 0);
++
++	ctrl &= ~TIOCTL_EN;
++	pps_ctl_write(tio, ctrl);
++
++	return ctrl;
++}
++
++static void pps_tio_direction_output(struct pps_tio *tio)
++{
++	u32 ctrl;
++
++	ctrl = pps_tio_disable(tio);
++
++	/* We enable the device, be sure that the 'compare' value is invalid */
++	pps_compv_write(tio, 0);
++
++	ctrl &= ~(TIOCTL_DIR | TIOCTL_EP);
++	ctrl |= TIOCTL_EP_TOGGLE_EDGE;
++	pps_ctl_write(tio, ctrl);
++
++	ctrl |= TIOCTL_EN;
++	pps_ctl_write(tio, ctrl);
++}
++
++static int pps_tio_generate_output(struct pps_tio *tio, struct timespec64 time)
++{
++	bool real_to_tsc_result;
++	u64 art_timestamp;
++	int err;
++
++	real_to_tsc_result = false;
++	err = translate_system_time_to_art_cycles(time, &art_timestamp, &real_to_tsc_result);
++	if (err) {
++		pps_tio_disable(tio);
++		dev_err(tio->dev, "Disabling PPS due to failure in conversion of %s",
++			real_to_tsc_result ? "realtime to system_counter" : "tsc to art");
++		return err;
++	}
++	/* The timed IO hardware adds a two cycle delay on output */
++	art_timestamp -= 2;
++	pps_compv_write(tio, art_timestamp);
++
++	return 0;
++}
++
++static int schedule_event(struct hrtimer *timer, struct timespec64 *next_event)
++{
++	struct pps_tio *tio = container_of(timer, struct pps_tio, timer);
++	struct timespec64 expire_time, cur_time, roundoff;
++	long half_sec_ns = NSEC_PER_SEC / 2;
++
++	/* get the current time */
++	ktime_get_real_ts64(&cur_time);
++	expire_time = ktime_to_timespec64(hrtimer_get_softexpires(timer));
++
++	/*
++	 * Figure out if it is in "top half" or "bottom half" of the second
++	 * and round-off to the nearest 500ms
++	 */
++	if (cur_time.tv_nsec > half_sec_ns) {
++		roundoff.tv_sec = cur_time.tv_sec + 1;
++		roundoff.tv_nsec = 0;
++		next_event->tv_sec = roundoff.tv_sec;
++		next_event->tv_nsec = half_sec_ns;
++	} else {
++		roundoff.tv_sec = cur_time.tv_sec;
++		roundoff.tv_nsec = half_sec_ns;
++		next_event->tv_sec = roundoff.tv_sec;
++		next_event->tv_nsec = roundoff.tv_nsec + half_sec_ns;
++	}
++	next_event->tv_nsec -= PREP_INTERVAL_NS;
++
++	/* Check for elapsed time */
++	if (expire_time.tv_sec != cur_time.tv_sec ||
++	    (cur_time.tv_nsec - PREP_INTERVAL_NS) > expire_time.tv_nsec) {
++		dev_warn(tio->dev, "Time expired, edge not scheduled at time: %lld.%09ld\n",
++			 cur_time.tv_sec, cur_time.tv_nsec);
++		return 0;
++	}
++
++	return pps_tio_generate_output(tio, roundoff);
++}
++
++static enum hrtimer_restart hrtimer_callback(struct hrtimer *timer)
++{
++	struct pps_tio *tio = container_of(timer, struct pps_tio, timer);
++	struct timespec64 next_event;
++	int err = 0;
++
++	scoped_guard(spinlock_irqsave, &tio->lock) {
++		if (tio->enabled)
++			err = schedule_event(timer, &next_event);
++	}
++	if (err)
++		return HRTIMER_NORESTART;
++
++	hrtimer_set_expires(timer, ktime_set(next_event.tv_sec, next_event.tv_nsec));
++
++	return HRTIMER_RESTART;
++}
++
++static ssize_t enable_store(struct device *dev, struct device_attribute *attr, const char *buf,
++			    size_t count)
++{
++	struct pps_tio *tio = dev_get_drvdata(dev);
++	bool enable;
++	int err;
++
++	err = kstrtobool(buf, &enable);
++	if (err)
++		return err;
++
++	guard(spinlock_irqsave)(&tio->lock);
++	if (enable && !tio->enabled) {
++		if (!is_current_clocksource_art_related()) {
++			dev_err(tio->dev, "PPS cannot be started as clock is not related to ART");
++			return -EPERM;
++		}
++		pps_tio_direction_output(tio);
++		hrtimer_start(&tio->timer, first_event(tio), HRTIMER_MODE_ABS);
++		tio->enabled = true;
++	} else if (!enable && tio->enabled) {
++		hrtimer_cancel(&tio->timer);
++		pps_tio_disable(tio);
++		tio->enabled = false;
++	}
++	return count;
++}
++
++static ssize_t enable_show(struct device *dev, struct device_attribute *devattr, char *buf)
++{
++	struct pps_tio *tio = dev_get_drvdata(dev);
++	u32 ctrl;
++
++	ctrl = pps_ctl_read(tio);
++	ctrl &= TIOCTL_EN;
++
++	return sysfs_emit(buf, "%u\n", ctrl);
++}
++static DEVICE_ATTR_RW(enable);
++
++static struct attribute *pps_tio_attrs[] = {
++	&dev_attr_enable.attr,
++	NULL
++};
++ATTRIBUTE_GROUPS(pps_tio);
++
++static int pps_tio_probe(struct platform_device *pdev)
++{
++	struct pps_tio *tio;
++
++	if (!(cpu_feature_enabled(X86_FEATURE_TSC_KNOWN_FREQ) &&
++	      cpu_feature_enabled(X86_FEATURE_ART))) {
++		dev_warn(&pdev->dev, "TSC/ART is not enabled");
++		return -ENODEV;
++	}
++
++	tio = devm_kzalloc(&pdev->dev, sizeof(*tio), GFP_KERNEL);
++	if (!tio)
++		return -ENOMEM;
++
++	tio->dev = &pdev->dev;
++	tio->base = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(tio->base))
++		return PTR_ERR(tio->base);
++
++	pps_tio_disable(tio);
++	hrtimer_init(&tio->timer, CLOCK_REALTIME, HRTIMER_MODE_ABS);
++	tio->timer.function = hrtimer_callback;
++	spin_lock_init(&tio->lock);
++	tio->enabled = false;
++	platform_set_drvdata(pdev, tio);
++
++	return 0;
++}
++
++static int pps_tio_remove(struct platform_device *pdev)
++{
++	struct pps_tio *tio = platform_get_drvdata(pdev);
++
++	hrtimer_cancel(&tio->timer);
++	pps_tio_disable(tio);
++
++	return 0;
++}
++
++static const struct acpi_device_id intel_pmc_tio_acpi_match[] = {
++	{ "INTC1021" },
++	{ "INTC1022" },
++	{ "INTC1023" },
++	{ "INTC1024" },
++	{}
++};
++MODULE_DEVICE_TABLE(acpi, intel_pmc_tio_acpi_match);
++
++static struct platform_driver pps_tio_driver = {
++	.probe          = pps_tio_probe,
++	.remove         = pps_tio_remove,
++	.driver         = {
++		.name                   = "intel-pps-generator",
++		.acpi_match_table       = intel_pmc_tio_acpi_match,
++		.dev_groups             = pps_tio_groups,
++	},
++};
++module_platform_driver(pps_tio_driver);
++
++MODULE_AUTHOR("Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>");
++MODULE_AUTHOR("Christopher Hall <christopher.s.hall@intel.com>");
++MODULE_AUTHOR("Pandith N <pandith.n@intel.com>");
++MODULE_AUTHOR("Thejesh Reddy T R <thejesh.reddy.t.r@intel.com>");
++MODULE_DESCRIPTION("Intel PMC Time-Aware IO Generator Driver");
++MODULE_LICENSE("GPL");
 -- 
 2.17.1
 
