@@ -2,167 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B7067CB776
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 02:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA247CB78A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 02:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233854AbjJQAhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 20:37:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57942 "EHLO
+        id S234291AbjJQAmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 20:42:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232873AbjJQAhX (ORCPT
+        with ESMTP id S234169AbjJQAmt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 20:37:23 -0400
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C01F95;
-        Mon, 16 Oct 2023 17:37:21 -0700 (PDT)
-Received: by mail-ua1-x92d.google.com with SMTP id a1e0cc1a2514c-7ab5150a7b5so4140928241.0;
-        Mon, 16 Oct 2023 17:37:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697503040; x=1698107840; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hCBpBFy0sL3kGgajsg5bL9lp51r5jSArJUZNS83IHhs=;
-        b=C3jiDWSveC8PtTe5bXeKzkGZWO3pkZa89DKC6nfS2+H34Hu2e/YDCYPXSZEFwvrXlZ
-         1dC+aaOeLrBrXeTNewTbkuK6CCfsAh6nRZX4hE+RhyKedtZnmqA3uRDwreuabBXX0B9S
-         sRt+d/lLDTMUWTLs+wBUQBmjZmtSu1xCcQiEjLSq9wjN7JWQZJ/6ZsIztI8SzFxctrMm
-         LuEH6rs88L5gEEeaGvhBq7U6OFwPLdyLykJODzQmeKbr1DdYCyaDF9QYo7Eq7l6Vx2qT
-         JMtPRQA6/gt7miQIPxGwpxCNOt0Ikzo9oXm2ijKHUs+4Ze4hCUlvg2ll+0Eff3F9iCqN
-         6JZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697503040; x=1698107840;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hCBpBFy0sL3kGgajsg5bL9lp51r5jSArJUZNS83IHhs=;
-        b=Qc7dr/CAWve5s/CPqs1/+QU4dWMalQGFUyWpsGST6+A0Au+vUQHlS+I7fv3mUBWL48
-         EqGB7REUZgRQXMSwWNkr9ek0yeQR8Z1xGzdmsVchj32ihzHhXZO/2bt2u8zbXfpIKWBQ
-         RTccaVtQkq/o0j7Mxdzu3CoPucX6SrRXxlFxKj5WzzE8My4d8ii0tApcqAux7yVLOgnh
-         hXYgXwBzTQQEEEk+XklLsh1BcFylQeqVa8c8BguWtfZD5qyEu2jpw0PqkAsKIjRPLXiU
-         sjoSUDJ+Rc/T56Q6B7ckTnU8FCNwfF17OQmb038rJb5aTyppApCpr2LM2Xt7+mxTAhtY
-         iSnQ==
-X-Gm-Message-State: AOJu0YzWMUBVmfaWznhbVkyQqrT6J4asx8GmyNNb7D6yb+/OYSYIS+h7
-        6xlGmH3Gfh4NI40uDszYRHmqtsDVWCLWp1P9/HWpbQY+
-X-Google-Smtp-Source: AGHT+IGTFKrIo3DX3VTBrldf07y90mT9ODR4qoemWSfmdES5n+WGptKeaXQi892QmMn5GqvVYCmrHCk1YdrE8z97v4I=
-X-Received: by 2002:a67:ac4a:0:b0:457:cbde:603d with SMTP id
- n10-20020a67ac4a000000b00457cbde603dmr189013vsh.14.1697503040429; Mon, 16 Oct
- 2023 17:37:20 -0700 (PDT)
+        Mon, 16 Oct 2023 20:42:49 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12AADAF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 17:42:47 -0700 (PDT)
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39GKO46E027775;
+        Tue, 17 Oct 2023 00:42:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=corp-2023-03-30;
+ bh=GrE52XuoMcmkrN3U/9phknZXkwUBV3KkBtZ2+twTikA=;
+ b=XQ2eWAVqF2aTxV/GcH5+EE+71vDcMEjisEM8wVXn7RavmJv4c/Aiga8XxRoCucnG8a0T
+ rj6OkdHW1EdEAKxSoj/JdaTWlnWi7+Nnggt3HLuQM9ZLG7DR3SwbaPonAmycjGwkRD5H
+ 3odG37KkrzYneXnnSxTrmyLQPb0vy1vlhhlB12Z7wPlchz/G477Bl5pZjwpXEqRIlSOt
+ GM2V8NMEMmYMmbbmJOvxHHnIlZi64cnDvavUgU4IHc2hAypR5+4rHMkbPhJXJeIuOrIv
+ vL2o2QFN6hoAPZkv84sRL6BrTR/FbUx53oFvEnNLc1Pf3I5Rz4UuppsVhjXnPsNt1TDU fg== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tqk1cc1s2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 17 Oct 2023 00:42:37 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39GNB27H027141;
+        Tue, 17 Oct 2023 00:42:36 GMT
+Received: from ban25x6uut24.us.oracle.com (ban25x6uut24.us.oracle.com [10.153.73.24])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3trg535bja-1;
+        Tue, 17 Oct 2023 00:42:36 +0000
+From:   Si-Wei Liu <si-wei.liu@oracle.com>
+To:     jasowang@redhat.com, mst@redhat.com, eperezma@redhat.com,
+        xuanzhuo@linux.alibaba.com, dtatulea@nvidia.com,
+        sgarzare@redhat.com
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/4] vdpa: decouple reset of iotlb mapping from device reset
+Date:   Mon, 16 Oct 2023 17:39:53 -0700
+Message-Id: <1697503197-15935-1-git-send-email-si-wei.liu@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-References: <20231015141644.260646-1-akihiko.odaki@daynix.com>
- <20231015141644.260646-2-akihiko.odaki@daynix.com> <CAADnVQLfUDmgYng8Cw1hiZOMfWNWLjbn7ZGc4yOEz-XmeFEz5Q@mail.gmail.com>
- <2594bb24-74dc-4785-b46d-e1bffcc3e7ed@daynix.com> <CAADnVQ+J+bOtvEfdvgUse_Rr07rM5KOZ5DtAmHDgRmi70W68+g@mail.gmail.com>
-In-Reply-To: <CAADnVQ+J+bOtvEfdvgUse_Rr07rM5KOZ5DtAmHDgRmi70W68+g@mail.gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Mon, 16 Oct 2023 20:36:43 -0400
-Message-ID: <CAF=yD-Jr1wKo6viUGWTcXsT5b9e1NkuemuvjN988qSyNmheM2A@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 1/7] bpf: Introduce BPF_PROG_TYPE_VNET_HASH
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Akihiko Odaki <akihiko.odaki@daynix.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Yuri Benditovich <yuri.benditovich@daynix.com>,
-        Andrew Melnychenko <andrew@daynix.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-16_13,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 phishscore=0
+ malwarescore=0 suspectscore=0 mlxlogscore=999 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310170003
+X-Proofpoint-ORIG-GUID: ogSDsMMSo8Zl3t4MHmgbNaGmmkSD-MLo
+X-Proofpoint-GUID: ogSDsMMSo8Zl3t4MHmgbNaGmmkSD-MLo
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 7:53=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Sun, Oct 15, 2023 at 10:10=E2=80=AFAM Akihiko Odaki <akihiko.odaki@day=
-nix.com> wrote:
-> >
-> > On 2023/10/16 1:07, Alexei Starovoitov wrote:
-> > > On Sun, Oct 15, 2023 at 7:17=E2=80=AFAM Akihiko Odaki <akihiko.odaki@=
-daynix.com> wrote:
-> > >>
-> > >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > >> index 0448700890f7..298634556fab 100644
-> > >> --- a/include/uapi/linux/bpf.h
-> > >> +++ b/include/uapi/linux/bpf.h
-> > >> @@ -988,6 +988,7 @@ enum bpf_prog_type {
-> > >>          BPF_PROG_TYPE_SK_LOOKUP,
-> > >>          BPF_PROG_TYPE_SYSCALL, /* a program that can execute syscal=
-ls */
-> > >>          BPF_PROG_TYPE_NETFILTER,
-> > >> +       BPF_PROG_TYPE_VNET_HASH,
-> > >
-> > > Sorry, we do not add new stable program types anymore.
-> > >
-> > >> @@ -6111,6 +6112,10 @@ struct __sk_buff {
-> > >>          __u8  tstamp_type;
-> > >>          __u32 :24;              /* Padding, future use. */
-> > >>          __u64 hwtstamp;
-> > >> +
-> > >> +       __u32 vnet_hash_value;
-> > >> +       __u16 vnet_hash_report;
-> > >> +       __u16 vnet_rss_queue;
-> > >>   };
-> > >
-> > > we also do not add anything to uapi __sk_buff.
-> > >
-> > >> +const struct bpf_verifier_ops vnet_hash_verifier_ops =3D {
-> > >> +       .get_func_proto         =3D sk_filter_func_proto,
-> > >> +       .is_valid_access        =3D sk_filter_is_valid_access,
-> > >> +       .convert_ctx_access     =3D bpf_convert_ctx_access,
-> > >> +       .gen_ld_abs             =3D bpf_gen_ld_abs,
-> > >> +};
-> > >
-> > > and we don't do ctx rewrites like this either.
-> > >
-> > > Please see how hid-bpf and cgroup rstat are hooking up bpf
-> > > in _unstable_ way.
-> >
-> > Can you describe what "stable" and "unstable" mean here? I'm new to BPF
-> > and I'm worried if it may mean the interface stability.
-> >
-> > Let me describe the context. QEMU bundles an eBPF program that is used
-> > for the "eBPF steering program" feature of tun. Now I'm proposing to
-> > extend the feature to allow to return some values to the userspace and
-> > vhost_net. As such, the extension needs to be done in a way that ensure=
-s
-> > interface stability.
->
-> bpf is not an option then.
-> we do not add stable bpf program types or hooks any more.
-> If a kernel subsystem wants to use bpf it needs to accept the fact
-> that such bpf extensibility will be unstable and subsystem maintainers
-> can decide to remove such bpf support in the future.
+In order to reduce needlessly high setup and teardown cost
+of iotlb mapping during live migration, it's crucial to
+decouple the vhost-vdpa iotlb abstraction from the virtio
+device life cycle, i.e. iotlb mappings should be left
+intact across virtio device reset [1]. For it to work, the
+on-chip IOMMU parent device could implement a separate
+.reset_map() operation callback to restore 1:1 DMA mapping
+without having to resort to the .reset() callback, the
+latter of which is mainly used to reset virtio device state.
+This new .reset_map() callback will be invoked only before
+the vhost-vdpa driver is to be removed and detached from
+the vdpa bus, such that other vdpa bus drivers, e.g. 
+virtio-vdpa, can start with 1:1 DMA mapping when they
+are attached. For the context, those on-chip IOMMU parent
+devices, create the 1:1 DMA mapping at vdpa device creation,
+and they would implicitly destroy the 1:1 mapping when
+the first .set_map or .dma_map callback is invoked.
 
-Based on hooks for tracepoints and kfuncs, correct?
+This patchset is based off of the descriptor group v3 series
+from Dragos. [2]
 
-Perhaps the existing stable flow dissector type is extensible to
-optionally compute the hash and report hash and hash type. Else we
-probably should revisit the previous version of this series.
+[1] Reducing vdpa migration downtime because of memory pin / maps
+https://www.mail-archive.com/qemu-devel@nongnu.org/msg953755.html
+[2] [PATCH vhost v3 00/16] vdpa: Add support for vq descriptor mappings
+https://lore.kernel.org/lkml/20231009112401.1060447-1-dtatulea@nvidia.com/
+
+---
+v2:
+- improved commit message to clarify the intended csope of .reset_map API
+- improved commit messages to clarify no breakage on older userspace
+
+v1:
+- rewrote commit messages to include more detailed description and background
+- reword to vendor specific IOMMU implementation from on-chip IOMMU
+- include parent device backend feautres to persistent iotlb precondition
+- reimplement mlx5_vdpa patch on top of descriptor group series
+
+RFC v3:
+- fix missing return due to merge error in patch #4
+
+RFC v2:
+- rebased on top of the "[PATCH RFC v2 0/3] vdpa: dedicated descriptor table group" series:
+  https://lore.kernel.org/virtualization/1694248959-13369-1-git-send-email-si-wei.liu@oracle.com/
+
+---
+
+Si-Wei Liu (4):
+  vdpa: introduce .reset_map operation callback
+  vhost-vdpa: reset vendor specific mapping to initial state in .release
+  vhost-vdpa: introduce IOTLB_PERSIST backend feature bit
+  vdpa/mlx5: implement .reset_map driver op
+
+ drivers/vdpa/mlx5/core/mlx5_vdpa.h |  1 +
+ drivers/vdpa/mlx5/core/mr.c        | 17 ++++++++++++++++
+ drivers/vdpa/mlx5/net/mlx5_vnet.c  | 18 ++++++++++++-----
+ drivers/vhost/vdpa.c               | 31 ++++++++++++++++++++++++++++++
+ include/linux/vdpa.h               | 10 ++++++++++
+ include/uapi/linux/vhost_types.h   |  2 ++
+ 6 files changed, 74 insertions(+), 5 deletions(-)
+
+-- 
+2.39.3
+
