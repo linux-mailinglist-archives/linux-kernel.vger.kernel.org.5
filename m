@@ -2,62 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB597CC085
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 12:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B637CC090
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 12:19:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343715AbjJQKSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 06:18:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39862 "EHLO
+        id S235011AbjJQKTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 06:19:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343855AbjJQKR6 (ORCPT
+        with ESMTP id S234974AbjJQKT1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 06:17:58 -0400
-Received: from mail-0301.mail-europe.com (mail-0301.mail-europe.com [188.165.51.139])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E372210CE
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 03:17:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail3; t=1697537828; x=1697797028;
-        bh=ufSCWYVk0+H4CDuQnLPLONYp2PW1XKTS7lo4/zj2kMY=;
-        h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-        b=Mmgp7HXOu2jk1PQmMAbaP5xWLW95BC8nNGa7Dc8e4d6azHhDMAB4U27IzzT+lYgjE
-         ZMDTwGlUXx4nyTp8HB8tGdyltMjHKhpXr/HaAgbzJ3OPKAfbSntOJDEwTpdXzZU/0O
-         GSgYT1vzopX/xGbv2YDG70JqWEIHSwwAMO6vJ4wYSrh0Dfr3ySA4sXecSgli9DS7kK
-         Pr0MZbBUVU89iYJsx5CSj+fEj0JOilez5/+e3kPZQouAhzGCkUdRxp96a/El5Rx9NJ
-         Hj36TXK2FpDAC1Ywzw+ApcIyO5zVScq6rwZNa9hWwEzyR6BAIpPiCw2kmH96XmU1+J
-         HjgdU5she59Vg==
-Date:   Tue, 17 Oct 2023 10:16:37 +0000
-To:     linux-kernel@vger.kernel.org
-From:   Raymond Hackley <raymondhackley@protonmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: [PATCH v2 0/2] ARM: dts: samsung: exynos4412-midas: fix key-ok and use Linux event codes
-Message-ID: <20231017101402.62740-1-raymondhackley@protonmail.com>
-Feedback-ID: 49437091:user:proton
+        Tue, 17 Oct 2023 06:19:27 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBBDE12E;
+        Tue, 17 Oct 2023 03:18:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fxvZNgF+It9/pkutyTdBwQ2drZbf8d9h7gItHyVyZtc=; b=UywmqRqXVi95xSI8PqvFWe4u1k
+        Wxct0bmVsIzqbVqHIRow1Dv39c81o8Aw3R57nSINroRmme67pBE39wLzPEoIBW1w8GkpHoGa1GHQ3
+        VcjF2ANQNyKIzBGqgpppAOdsA6GMmWW5jRSKIjeLzwaUL5YAHroY5o+n7yf4psX+UFP2kKbWX6dLc
+        Ra/qER2vpnnWzDn3DLXaaNkKilQRvyq/tTKXrgLjDnV8ho677Gd8EbhwEh7kkGeDOQFfiyYxxIRI2
+        SgEWk9gV0FBFju9II/84Bsf0T8uCgzD3NrBSXTtaRYr1HUMMLItbWzWm40hygwym22LIoJY6PaZ4N
+        usMeJ3Xg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qsh8Y-00Bjm7-Nd; Tue, 17 Oct 2023 10:17:18 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 15DE030058D; Tue, 17 Oct 2023 12:17:18 +0200 (CEST)
+Date:   Tue, 17 Oct 2023 12:17:17 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dario Faggioli <dfaggioli@suse.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        marcelo.cerri@canonical.com, tim.gardner@canonical.com,
+        philip.cox@canonical.com, aarcange@redhat.com, peterx@redhat.com,
+        x86@kernel.org, linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@kernel.org, Nikolay Borisov <nik.borisov@suse.com>
+Subject: Re: [PATCHv2] efi/unaccepted: Fix soft lockups caused by parallel
+ memory acceptance
+Message-ID: <20231017101717.GJ33217@noisy.programming.kicks-ass.net>
+References: <20231016163122.12855-1-kirill.shutemov@linux.intel.com>
+ <ZS15HZqK4hu5NjSh@casper.infradead.org>
+ <20231016213932.6cscnn6tsnzsnvmf@box.shutemov.name>
+ <CAMj1kXFc31N61=oQayLbnR+CrNT4=bfEisC3fwG4VNq2vJHV5w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXFc31N61=oQayLbnR+CrNT4=bfEisC3fwG4VNq2vJHV5w@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Input event code 139 stands for KEY_MENU, instead of KEY_OK as node name
-key-ok inplies. Fix it with correct event code 0x160.
+On Tue, Oct 17, 2023 at 09:42:13AM +0200, Ard Biesheuvel wrote:
 
-Use event codes with linux-event-codes.h included for input keys on midas
-in addition.
+> One question I have is whether the sequence
+> 
+> spin_lock_irqsave(&unaccepted_memory_lock, flags);
+> ...
+> spin_unlock(&unaccepted_memory_lock);
+> arch_accept_memory(phys_start, phys_end);
+> spin_lock(&unaccepted_memory_lock);
+> ...
+> spin_unlock_irqrestore(&unaccepted_memory_lock, flags);
+> 
+> is considered sound and is supported by all architectures?
 
----
-v2: Fix the event code before applying linux-event-codes.h
-
+Yes.
