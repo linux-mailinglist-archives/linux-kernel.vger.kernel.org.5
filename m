@@ -2,427 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 770D67CCB59
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 20:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CCD47CCB4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 20:54:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235016AbjJQSzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 14:55:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47798 "EHLO
+        id S1343824AbjJQSyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 14:54:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344122AbjJQSzN (ORCPT
+        with ESMTP id S232228AbjJQSyv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 14:55:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD832B0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:54:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697568863;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Tue, 17 Oct 2023 14:54:51 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3EC8C6;
+        Tue, 17 Oct 2023 11:54:49 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0881421CFC;
+        Tue, 17 Oct 2023 18:54:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1697568888; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=MJVkq0zNvcclouon75ab/8AAB1pbNZXcLIT/5DGOsag=;
-        b=UHzvkBCWYvwGhuUc8QvKF9Cp4Fm159weM4Qc0a5Yyf29BgT/R0IHOe2q7qaYMwGcyYoJGS
-        sj3+yn1X9X/uIfSAMotJcThmNn0GNbfDNCVfUtsowYFYVIRvJRA0uBioOYYyVAR/aGd8zY
-        rLwFraLOZvM1BMsPwholIbYThnneCis=
-Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com
- [209.85.128.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-48-LcUYanAoNzWwVHwn8KRKxg-1; Tue, 17 Oct 2023 14:54:22 -0400
-X-MC-Unique: LcUYanAoNzWwVHwn8KRKxg-1
-Received: by mail-yw1-f197.google.com with SMTP id 00721157ae682-5a7fb3f311bso95231437b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:54:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697568859; x=1698173659;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MJVkq0zNvcclouon75ab/8AAB1pbNZXcLIT/5DGOsag=;
-        b=bJupvzcaxMXXbdm6OxwT52gfvhj51Eu64uoUZK8/hEb8FAP8Vye7qY0OR52qqinpS0
-         vD5ADl1ykVRehYF+MzlVeVUuSwk7Q09Huf6nkxQ2PVLLrrLBMxFJ6s/8cX4bkPgO3RhW
-         jGIXn27R625Xhw2qzXei3gob+P7od010JVT3iqHfUO2Z8JxTsh0Z71m6Em7OPdrrATG3
-         BsGmqZMH9xQxq4tBCojzVjAg0b12dE/ZLZ1eh8YRzm9wD1dN6PFaCfmZ6KwPpvM3IzLy
-         CcpPqxahh8AbH2gpCxFqpNsR5DSWOFS199sPKL0b0x97+0+MDVMysyuKwo8vs336qYjb
-         DF/w==
-X-Gm-Message-State: AOJu0YwiiKA9Fbke51YenPsJFZvlPmM0n137weSAheJy3l5k1Tqae6XS
-        /xj3whywP27acZNM2hwcYpDBm2THdMVmmUBKIWWKEM8zaO62yELu/7QxbflXDDh8CJWp9Rz5qP6
-        pYhsgor4XiTax69uqv4GyBUtA
-X-Received: by 2002:a81:83ce:0:b0:5a7:c641:4fd2 with SMTP id t197-20020a8183ce000000b005a7c6414fd2mr3212624ywf.10.1697568858998;
-        Tue, 17 Oct 2023 11:54:18 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFNaO+BRo9SvV0Dxy/Mj2SdGWzz2a2vRYlvQwsHWXx/xJ95iYRzRrqR8KlRPGhWgvUaGDsfdg==
-X-Received: by 2002:a81:83ce:0:b0:5a7:c641:4fd2 with SMTP id t197-20020a8183ce000000b005a7c6414fd2mr3212609ywf.10.1697568858677;
-        Tue, 17 Oct 2023 11:54:18 -0700 (PDT)
-Received: from [192.168.43.95] ([37.170.237.139])
-        by smtp.gmail.com with ESMTPSA id t1-20020a0cea21000000b00655e2005350sm771105qvp.9.2023.10.17.11.54.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Oct 2023 11:54:17 -0700 (PDT)
-Message-ID: <6a83ce25-7e45-5b71-86e4-58e905e490ea@redhat.com>
-Date:   Tue, 17 Oct 2023 20:54:12 +0200
+        bh=WV8+QfL+W0GjUUx4DVAHsFccb/fwVlTGl0IqfxdfoSI=;
+        b=hLnG6JFP3CdGIUwngJLGTg1Pjd+QkNnRPjs0lMTnDR4yiNmTTwaFJrGgiaiyQNDd+27Qk1
+        MhoccU3MgS2tABD7xx+ADwcnn25XXp4MRS5pptOW6luVxMfvx8ob50SVQHOaiM0KDb1r2b
+        qhTrQ9Kg8OlKfpwVZg9X2sGHNiJfg9M=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AB4C913584;
+        Tue, 17 Oct 2023 18:54:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id lHYZKXfYLmWmIgAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Tue, 17 Oct 2023 18:54:47 +0000
+Date:   Tue, 17 Oct 2023 20:54:46 +0200
+From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To:     Haitao Huang <haitao.huang@linux.intel.com>
+Cc:     "Christopherson,, Sean" <seanjc@google.com>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Zhang, Bo" <zhanb@microsoft.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "yangjie@microsoft.com" <yangjie@microsoft.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "anakrish@microsoft.com" <anakrish@microsoft.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+        "Mehta, Sohil" <sohil.mehta@intel.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "kristen@linux.intel.com" <kristen@linux.intel.com>
+Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
+ EPC
+Message-ID: <6lrq4xmk42zteq6thpyah7jy25rmvkp7mqxtll6sl7z62m7n4m@vrbbedtgxeq4>
+References: <1f7a740f3acff8a04ec95be39864fb3e32d2d96c.camel@intel.com>
+ <op.2clydbf8wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <631f34613bcc8b5aa41cf519fa9d76bcd57a7650.camel@intel.com>
+ <op.2cpecbevwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <aa404549c7e292dd2ec93a5e6a8c9d6d880c06b3.camel@intel.com>
+ <op.2cxatlafwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <35a7fde056037a40b3b4b170e2ecd45bf8c4ba9f.camel@intel.com>
+ <op.2cxmq7c2wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <915907d56861ef4aa7f9f68e0eb8d136a60bee39.camel@intel.com>
+ <op.2cyma0e9wjvjmi@hhuan26-mobl.amr.corp.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v7 11/12] KVM: selftests: aarch64: vPMU register test for
- implemented counters
-Content-Language: en-US
-To:     Raghavendra Rao Ananta <rananta@google.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Shaoqin Huang <shahuang@redhat.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20231009230858.3444834-1-rananta@google.com>
- <20231009230858.3444834-12-rananta@google.com>
-From:   Eric Auger <eauger@redhat.com>
-In-Reply-To: <20231009230858.3444834-12-rananta@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="d2qvdlt5oh6ne5ty"
+Content-Disposition: inline
+In-Reply-To: <op.2cyma0e9wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -12.70
+X-Spamd-Result: default: False [-12.70 / 50.00];
+         ARC_NA(0.00)[];
+         TO_DN_EQ_ADDR_SOME(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.20)[multipart/signed,text/plain];
+         REPLY(-4.00)[];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[21];
+         SIGNED_PGP(-2.00)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+,1:+,2:~];
+         MID_RHS_NOT_FQDN(0.50)[];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Raghavendra,
 
-On 10/10/23 01:08, Raghavendra Rao Ananta wrote:
-> From: Reiji Watanabe <reijiw@google.com>
-> 
-> Add a new test case to the vpmu_counter_access test to check if PMU
-> registers or their bits for implemented counters on the vCPU are
-> readable/writable as expected, and can be programmed to count events.>
-> Signed-off-by: Reiji Watanabe <reijiw@google.com>
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> ---
->  .../kvm/aarch64/vpmu_counter_access.c         | 270 +++++++++++++++++-
->  1 file changed, 268 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c b/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
-> index 58949b17d76e..e92af3c0db03 100644
-> --- a/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
-> +++ b/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
-> @@ -5,7 +5,8 @@
->   * Copyright (c) 2022 Google LLC.
->   *
->   * This test checks if the guest can see the same number of the PMU event
-> - * counters (PMCR_EL0.N) that userspace sets.
-> + * counters (PMCR_EL0.N) that userspace sets, and if the guest can access
-> + * those counters.
->   * This test runs only when KVM_CAP_ARM_PMU_V3 is supported on the host.
->   */
->  #include <kvm_util.h>
-> @@ -37,6 +38,259 @@ static void set_pmcr_n(uint64_t *pmcr, uint64_t pmcr_n)
->  	*pmcr |= (pmcr_n << ARMV8_PMU_PMCR_N_SHIFT);
->  }
->  
-> +/* Read PMEVTCNTR<n>_EL0 through PMXEVCNTR_EL0 */
-> +static inline unsigned long read_sel_evcntr(int sel)
-> +{
-> +	write_sysreg(sel, pmselr_el0);
-> +	isb();
-> +	return read_sysreg(pmxevcntr_el0);
-> +}> +
-> +/* Write PMEVTCNTR<n>_EL0 through PMXEVCNTR_EL0 */
-> +static inline void write_sel_evcntr(int sel, unsigned long val)
-> +{
-> +	write_sysreg(sel, pmselr_el0);
-> +	isb();
-> +	write_sysreg(val, pmxevcntr_el0);
-> +	isb();
-> +}
-> +
-> +/* Read PMEVTYPER<n>_EL0 through PMXEVTYPER_EL0 */
-> +static inline unsigned long read_sel_evtyper(int sel)
-> +{
-> +	write_sysreg(sel, pmselr_el0);
-> +	isb();
-> +	return read_sysreg(pmxevtyper_el0);
-> +}
-> +
-> +/* Write PMEVTYPER<n>_EL0 through PMXEVTYPER_EL0 */
-> +static inline void write_sel_evtyper(int sel, unsigned long val)
-> +{
-> +	write_sysreg(sel, pmselr_el0);
-> +	isb();
-> +	write_sysreg(val, pmxevtyper_el0);
-> +	isb();
-> +}
-> +
-> +static inline void enable_counter(int idx)
-> +{
-> +	uint64_t v = read_sysreg(pmcntenset_el0);
-> +
-> +	write_sysreg(BIT(idx) | v, pmcntenset_el0);
-> +	isb();
-> +}
-> +
-> +static inline void disable_counter(int idx)
-> +{
-> +	uint64_t v = read_sysreg(pmcntenset_el0);
-> +
-> +	write_sysreg(BIT(idx) | v, pmcntenclr_el0);
-> +	isb();
-> +}
-> +
-> +static void pmu_disable_reset(void)
-> +{
-> +	uint64_t pmcr = read_sysreg(pmcr_el0);
-> +
-> +	/* Reset all counters, disabling them */
-> +	pmcr &= ~ARMV8_PMU_PMCR_E;
-> +	write_sysreg(pmcr | ARMV8_PMU_PMCR_P, pmcr_el0);
-> +	isb();
-> +> +
-> +#define RETURN_READ_PMEVCNTRN(n) \
-> +	return read_sysreg(pmevcntr##n##_el0)
-> +static unsigned long read_pmevcntrn(int n)
-> +{
-> +	PMEVN_SWITCH(n, RETURN_READ_PMEVCNTRN);
-> +	return 0;
-> +}
-> +
-> +#define WRITE_PMEVCNTRN(n) \
-> +	write_sysreg(val, pmevcntr##n##_el0)
-> +static void write_pmevcntrn(int n, unsigned long val)
-> +{
-> +	PMEVN_SWITCH(n, WRITE_PMEVCNTRN);
-> +	isb();
-> +}
-> +
-> +#define READ_PMEVTYPERN(n) \
-> +	return read_sysreg(pmevtyper##n##_el0)
-> +static unsigned long read_pmevtypern(int n)
-> +{
-> +	PMEVN_SWITCH(n, READ_PMEVTYPERN);
-> +	return 0;
-> +}
-> +
-> +#define WRITE_PMEVTYPERN(n) \
-> +	write_sysreg(val, pmevtyper##n##_el0)
-> +static void write_pmevtypern(int n, unsigned long val)
-> +{
-> +	PMEVN_SWITCH(n, WRITE_PMEVTYPERN);
-> +	isb();
-> +}
-> +
-> +/*
-> + * The pmc_accessor structure has pointers to PMEVT{CNTR,TYPER}<n>_EL0
-> + * accessors that test cases will use. Each of the accessors will
-> + * either directly reads/writes PMEVT{CNTR,TYPER}<n>_EL0
-> + * (i.e. {read,write}_pmev{cnt,type}rn()), or reads/writes them through
-> + * PMXEV{CNTR,TYPER}_EL0 (i.e. {read,write}_sel_ev{cnt,type}r()).
-> + *
-> + * This is used to test that combinations of those accessors provide
-> + * the consistent behavior.
-> + */
-> +struct pmc_accessor {
-> +	/* A function to be used to read PMEVTCNTR<n>_EL0 */
-> +	unsigned long	(*read_cntr)(int idx);
-> +	/* A function to be used to write PMEVTCNTR<n>_EL0 */
-> +	void		(*write_cntr)(int idx, unsigned long val);
-> +	/* A function to be used to read PMEVTYPER<n>_EL0 */
-> +	unsigned long	(*read_typer)(int idx);
-> +	/* A function to be used to write PMEVTYPER<n>_EL0 */
-> +	void		(*write_typer)(int idx, unsigned long val);
-> +};
-> +
-> +struct pmc_accessor pmc_accessors[] = {
-> +	/* test with all direct accesses */
-> +	{ read_pmevcntrn, write_pmevcntrn, read_pmevtypern, write_pmevtypern },
-> +	/* test with all indirect accesses */
-> +	{ read_sel_evcntr, write_sel_evcntr, read_sel_evtyper, write_sel_evtyper },
-> +	/* read with direct accesses, and write with indirect accesses */
-> +	{ read_pmevcntrn, write_sel_evcntr, read_pmevtypern, write_sel_evtyper },
-> +	/* read with indirect accesses, and write with direct accesses */
-> +	{ read_sel_evcntr, write_pmevcntrn, read_sel_evtyper, write_pmevtypern },
-> +};
-what is the rationale behing testing both direct and indirect accesses
-and any combinations? I think this would deserve some
-comments/justification.
-> +
-> +/*
-> + * Convert a pointer of pmc_accessor to an index in pmc_accessors[],
-> + * assuming that the pointer is one of the entries in pmc_accessors[].
-> + */
-> +#define PMC_ACC_TO_IDX(acc)	(acc - &pmc_accessors[0])
-> +
-> +#define GUEST_ASSERT_BITMAP_REG(regname, mask, set_expected)			 \
-> +{										 \
-> +	uint64_t _tval = read_sysreg(regname);					 \
-> +										 \
-> +	if (set_expected)							 \
-> +		__GUEST_ASSERT((_tval & mask),					 \
-> +				"tval: 0x%lx; mask: 0x%lx; set_expected: 0x%lx", \
-> +				_tval, mask, set_expected);			 \
-> +	else									 \
-> +		__GUEST_ASSERT(!(_tval & mask),					 \
-> +				"tval: 0x%lx; mask: 0x%lx; set_expected: 0x%lx", \
-> +				_tval, mask, set_expected);			 \
-> +}
-> +
-> +/*
-> + * Check if @mask bits in {PMCNTEN,PMINTEN,PMOVS}{SET,CLR} registers
-> + * are set or cleared as specified in @set_expected.
-> + */
-> +static void check_bitmap_pmu_regs(uint64_t mask, bool set_expected)
-> +{
-> +	GUEST_ASSERT_BITMAP_REG(pmcntenset_el0, mask, set_expected);
-> +	GUEST_ASSERT_BITMAP_REG(pmcntenclr_el0, mask, set_expected);
-> +	GUEST_ASSERT_BITMAP_REG(pmintenset_el1, mask, set_expected);
-> +	GUEST_ASSERT_BITMAP_REG(pmintenclr_el1, mask, set_expected);
-> +	GUEST_ASSERT_BITMAP_REG(pmovsset_el0, mask, set_expected);
-> +	GUEST_ASSERT_BITMAP_REG(pmovsclr_el0, mask, set_expected);
-> +}
-> +
-> +/*
-> + * Check if the bit in {PMCNTEN,PMINTEN,PMOVS}{SET,CLR} registers corresponding
-> + * to the specified counter (@pmc_idx) can be read/written as expected.
-> + * When @set_op is true, it tries to set the bit for the counter in
-> + * those registers by writing the SET registers (the bit won't be set
-> + * if the counter is not implemented though).
-> + * Otherwise, it tries to clear the bits in the registers by writing
-> + * the CLR registers.
-> + * Then, it checks if the values indicated in the registers are as expected.
-> + */
-> +static void test_bitmap_pmu_regs(int pmc_idx, bool set_op)
-> +{
-> +	uint64_t pmcr_n, test_bit = BIT(pmc_idx);
-> +	bool set_expected = false;
-> +
-> +	if (set_op) {
-> +		write_sysreg(test_bit, pmcntenset_el0);
-> +		write_sysreg(test_bit, pmintenset_el1);
-> +		write_sysreg(test_bit, pmovsset_el0);
-> +
-> +		/* The bit will be set only if the counter is implemented */
-> +		pmcr_n = get_pmcr_n(read_sysreg(pmcr_el0));
-> +		set_expected = (pmc_idx < pmcr_n) ? true : false;
-> +	} else {
-> +		write_sysreg(test_bit, pmcntenclr_el0);
-> +		write_sysreg(test_bit, pmintenclr_el1);
-> +		write_sysreg(test_bit, pmovsclr_el0);
-> +	}
-> +	check_bitmap_pmu_regs(test_bit, set_expected);
-> +}
-> +
-> +/*
-> + * Tests for reading/writing registers for the (implemented) event counter
-> + * specified by @pmc_idx.
-> + */
-> +static void test_access_pmc_regs(struct pmc_accessor *acc, int pmc_idx)
-> +{
-> +	uint64_t write_data, read_data;
-> +
-> +	/* Disable all PMCs and reset all PMCs to zero. */
-> +	pmu_disable_reset();
-> +
-> +
-nit: double empty line
-> +	/*
-> +	 * Tests for reading/writing {PMCNTEN,PMINTEN,PMOVS}{SET,CLR}_EL1.
-> +	 */
-> +
-> +	/* Make sure that the bit in those registers are set to 0 */
-> +	test_bitmap_pmu_regs(pmc_idx, false);
-> +	/* Test if setting the bit in those registers works */
-> +	test_bitmap_pmu_regs(pmc_idx, true);
-> +	/* Test if clearing the bit in those registers works */
-> +	test_bitmap_pmu_regs(pmc_idx, false);
-> +
-> +
-same here
-> +	/*
-> +	 * Tests for reading/writing the event type register.
-> +	 */
-> +
-> +	read_data = acc->read_typer(pmc_idx);
-not needed I think
-> +	/*
-> +	 * Set the event type register to an arbitrary value just for testing
-> +	 * of reading/writing the register.
-> +	 * ArmARM says that for the event from 0x0000 to 0x003F,
-nit s/ArmARM/Arm ARM
-> +	 * the value indicated in the PMEVTYPER<n>_EL0.evtCount field is
-> +	 * the value written to the field even when the specified event
-> +	 * is not supported.
-> +	 */
-> +	write_data = (ARMV8_PMU_EXCLUDE_EL1 | ARMV8_PMUV3_PERFCTR_INST_RETIRED);
-> +	acc->write_typer(pmc_idx, write_data);
-> +	read_data = acc->read_typer(pmc_idx);
-> +	__GUEST_ASSERT(read_data == write_data,
-> +		       "pmc_idx: 0x%lx; acc_idx: 0x%lx; read_data: 0x%lx; write_data: 0x%lx",
-> +		       pmc_idx, PMC_ACC_TO_IDX(acc), read_data, write_data);
-> +
-> +
-> +	/*
-> +	 * Tests for reading/writing the event count register.
-> +	 */
-> +
-> +	read_data = acc->read_cntr(pmc_idx);
-> +
-> +	/* The count value must be 0, as it is not used after the reset */
-s/not used/disabled and reset?
-> +	__GUEST_ASSERT(read_data == 0,
-> +		       "pmc_idx: 0x%lx; acc_idx: 0x%lx; read_data: 0x%lx",
-> +		       pmc_idx, PMC_ACC_TO_IDX(acc), read_data);
-> +
-> +	write_data = read_data + pmc_idx + 0x12345;
-> +	acc->write_cntr(pmc_idx, write_data);
-> +	read_data = acc->read_cntr(pmc_idx);
-> +	__GUEST_ASSERT(read_data == write_data,
-> +		       "pmc_idx: 0x%lx; acc_idx: 0x%lx; read_data: 0x%lx; write_data: 0x%lx",
-> +		       pmc_idx, PMC_ACC_TO_IDX(acc), read_data, write_data);
-> +}
-> +
->  static void guest_sync_handler(struct ex_regs *regs)
->  {
->  	uint64_t esr, ec;
-> @@ -49,11 +303,14 @@ static void guest_sync_handler(struct ex_regs *regs)
->  /*
->   * The guest is configured with PMUv3 with @expected_pmcr_n number of
->   * event counters.
-> - * Check if @expected_pmcr_n is consistent with PMCR_EL0.N.
-> + * Check if @expected_pmcr_n is consistent with PMCR_EL0.N, and
-> + * if reading/writing PMU registers for implemented counters can work
-s/can work/works
-> + * as expected.
->   */
->  static void guest_code(uint64_t expected_pmcr_n)
->  {
->  	uint64_t pmcr, pmcr_n;
-> +	int i, pmc;
->  
->  	__GUEST_ASSERT(expected_pmcr_n <= ARMV8_PMU_MAX_GENERAL_COUNTERS,
->  			"Expected PMCR.N: 0x%lx; ARMv8 general counters: 0x%lx",
-> @@ -67,6 +324,15 @@ static void guest_code(uint64_t expected_pmcr_n)
->  			"Expected PMCR.N: 0x%lx, PMCR.N: 0x%lx",
->  			pmcr_n, expected_pmcr_n);
->  
-> +	/*
-> +	 * Tests for reading/writing PMU registers for implemented counters.
-> +	 * Use each combination of PMEVT{CNTR,TYPER}<n>_EL0 accessor functions.
-> +	 */
-> +	for (i = 0; i < ARRAY_SIZE(pmc_accessors); i++) {
-> +		for (pmc = 0; pmc < pmcr_n; pmc++)
-> +			test_access_pmc_regs(&pmc_accessors[i], pmc);
-> +	}
-> +
->  	GUEST_DONE();
->  }
->  
-Thanks
+--d2qvdlt5oh6ne5ty
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Eric
+Hello Haitao.
 
+On Tue, Oct 17, 2023 at 07:58:02AM -0500, Haitao Huang <haitao.huang@linux.intel.com> wrote:
+> AFAIK, before we introducing max_write() callback in this series, no misc
+> controller would possibly enforce the limit when misc.max is reduced. e.g. I
+> don't think CVMs be killed when ASID limit is reduced and the cgroup was
+> full before limit is reduced.
+
+Yes, misccontroller was meant to be simple, current >= max serves to
+prevent new allocations.
+
+FTR, at some point in time memory.max was considered for reclaim control
+of regular pages but it turned out to be too coarse (and OOM killing
+processes if amount was not sensed correctly) and this eventually
+evolved into specific mechanism of memory.reclaim.
+So I'm mentioning this should that be an interface with better semantic
+for your use case (and misc.max writes can remain non-preemptive).
+
+One more note -- I was quite confused when I read in the rest of the
+series about OOM and _kill_ing but then I found no such measure in the
+code implementation. So I would suggest two terminological changes:
+
+- the basic premise of the series (00/18) is that EPC pages are a
+  different resource than memory, hence choose a better suiting name
+  than OOM (out of memory) condition,
+- killing -- (unless you have an intention to implement process
+  termination later) My current interpretation that it is rather some
+  aggressive unmapping within address space, so less confusing name for
+  that would be "reclaim".
+
+
+> I think EPC pages to VMs could have the same behavior, once they are given
+> to a guest, never taken back by the host. For enclaves on host side, pages
+> are reclaimable, that allows us to enforce in a similar way to memcg.
+
+Is this distinction between preemptability of EPC pages mandated by the
+HW implementation? (host/"process" enclaves vs VM enclaves) Or do have
+users an option to lock certain pages in memory that yields this
+difference?
+
+Regards,
+Michal
+
+--d2qvdlt5oh6ne5ty
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZS7YdAAKCRAGvrMr/1gc
+jpc5AP9tTv+0BiQvCbDojRuouQdurDiPml67Obr1FdJ6Jqfb1AEAvxfWBD/03b86
+jE2isDspp+sfjhBkmc8tAl7umLlKJwc=
+=3VCm
+-----END PGP SIGNATURE-----
+
+--d2qvdlt5oh6ne5ty--
