@@ -2,393 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F407CC08A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 12:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 770B67CC070
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 12:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234986AbjJQKTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 06:19:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39812 "EHLO
+        id S1343831AbjJQKRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 06:17:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343782AbjJQKSR (ORCPT
+        with ESMTP id S234958AbjJQKR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 06:18:17 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB96510F5;
-        Tue, 17 Oct 2023 03:17:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697537846; x=1729073846;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=y4yMyedDeteyldyvQVYJqX2ni5QeOfCnD2RsBQvoGjM=;
-  b=Vm1Z5CiO1Ul063gAXpupe8DnJCt6J1RmJ/9DXLL8SHCqzwBPn6RXZbqA
-   kqHwPKvoutSXu1Fs2IvSFUBKzRwyZmsEl0v3L9PGUVSiLNFNDQeMVj2pk
-   eZBc5qs7hk7Emrf+raWzBm6yy/uAi2bfeRpV9jhA0B7E2E+KHpBhZqXZO
-   8Dt3jWdNCpHkJB3nY833JlNalWexUy+jVHa3X7BTd9gViZIP2ylefwMUA
-   4YmKY7z1R5t+A6p9BL9kzQkA8fuMSYLoGqL5mI/wgBAppn/L+OSZ1lP4u
-   shlKoFC/ujwACJAHlb70fy+IOrI+m5kiMCyjmdO9tSwUus7Asa58ZPgpV
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="471972732"
-X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="471972732"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 03:17:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="872504064"
-X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="872504064"
-Received: from chowe-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.255.229.64])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 03:17:19 -0700
-From:   Kai Huang <kai.huang@intel.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     x86@kernel.org, dave.hansen@intel.com,
-        kirill.shutemov@linux.intel.com, peterz@infradead.org,
-        tony.luck@intel.com, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, hpa@zytor.com, seanjc@google.com,
-        pbonzini@redhat.com, rafael@kernel.org, david@redhat.com,
-        dan.j.williams@intel.com, len.brown@intel.com, ak@linux.intel.com,
-        isaku.yamahata@intel.com, ying.huang@intel.com, chao.gao@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, nik.borisov@suse.com,
-        bagasdotme@gmail.com, sagis@google.com, imammedo@redhat.com,
-        kai.huang@intel.com
-Subject: [PATCH v14 23/23] Documentation/x86: Add documentation for TDX host support
-Date:   Tue, 17 Oct 2023 23:14:47 +1300
-Message-ID: <5760a79a5d0755323d590f356ad2cc67c4d7df83.1697532085.git.kai.huang@intel.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1697532085.git.kai.huang@intel.com>
-References: <cover.1697532085.git.kai.huang@intel.com>
+        Tue, 17 Oct 2023 06:17:26 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59618D5E;
+        Tue, 17 Oct 2023 03:16:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D21BFC43391;
+        Tue, 17 Oct 2023 10:16:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697537787;
+        bh=swyJ9YtG3EhTopO4DHeUFs2J4cW+GCL7fSY3ViXq+8A=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gtOnjxYHs0lGdUOB/P3KsMpYneZXC5tUqcF/aCdso/xCjMCaCBMfRk9qPYw8kcXYO
+         VJv1EzbpL63YsFC1F3Nk4n6q0/SSEdgjg2c+k7icq0UtBwlfao+0ksSwWR7eLkWT+x
+         aZEyeL4/lyAOQMY+FWBxkKxly590fnKgeEoTTBVBI5nqdOYIc+NvItjqAOXcNXIwGQ
+         pg9f0P6Ke1De6pPDEYsxMFWMl9MLTV54MbjPnwWDCL6JSYphCVUFPEvSaeUxHE5cac
+         tv1OtOQFCqt4tZPsrcHzOgLNdFMkQJeK460QMb+0sbc643hl0MLwtaulCP9//NyR7r
+         jsrZ1DdSOJl0g==
+Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6c4f1f0774dso3823727a34.2;
+        Tue, 17 Oct 2023 03:16:27 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yx0u4zyJPLobUHVoEdzXCrn7HbhNqCt57duFSYJMYBf0/MkVNMe
+        1e7LEtacsazZodMgZ3UGK6MOgNLqT9YFqTwZxZ8=
+X-Google-Smtp-Source: AGHT+IG5Pm9ZPhUMcbgBDQ1KvRFJ1BnDq6D287LE9VXt+8p7+OgCUXA3DVQ/ZrLQQmmKI71abhSnJ+RXo2MJIFlQ2aA=
+X-Received: by 2002:a05:6870:2183:b0:1e9:c315:9d66 with SMTP id
+ l3-20020a056870218300b001e9c3159d66mr1951983oae.40.1697537787138; Tue, 17 Oct
+ 2023 03:16:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231005150728.3429-1-msuchanek@suse.de> <CAK7LNAQh7vCQ859RPkL3SDr2d4ptt5OVCr66fkPKGcvxDUHtkw@mail.gmail.com>
+ <20231009085208.GT6241@kitsune.suse.cz> <CAK7LNASeMEKVi5c0PEow5KSdN7rsm7UYEf2smWOSkYOhr_5fVQ@mail.gmail.com>
+ <20231009140733.GV6241@kitsune.suse.cz> <CAK7LNAQQMFUt4R1m_U8kBY5=BvxD_dMuE4MD4kpd48WK1E+AGA@mail.gmail.com>
+ <20231010101552.GW6241@kitsune.suse.cz>
+In-Reply-To: <20231010101552.GW6241@kitsune.suse.cz>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 17 Oct 2023 19:15:50 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASX2_-xt3Qvxie_G=Q4fuVYR6eE47QjQ5NZf7QxY-4_tQ@mail.gmail.com>
+Message-ID: <CAK7LNASX2_-xt3Qvxie_G=Q4fuVYR6eE47QjQ5NZf7QxY-4_tQ@mail.gmail.com>
+Subject: Re: [PATCH rebased] kbuild: rpm-pkg: Fix build with non-default MODLIB
+To:     =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-modules@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+        Lucas De Marchi <lucas.de.marchi@gmail.com>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Jiri Slaby <jslaby@suse.com>, Jan Engelhardt <jengelh@inai.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add documentation for TDX host kernel support.  There is already one
-file Documentation/x86/tdx.rst containing documentation for TDX guest
-internals.  Also reuse it for TDX host kernel support.
+> >
+> > Let me add more context to my question.
+> >
+> >
+> > I am interested in the timing when
+> > 'pkg-config --print-variables kmod | grep module_directory'
+> > is executed.
+> >
+> >
+> >
+> > 1.  Build a SRPM on machine A
+> >
+> > 2.  Copy the SRPM from machine A to machine B
+> >
+> > 3.  Run rpmbuild on machine B to build the SRPM into a RPM
+> >
+> > 4.  Copy the RPM from machine B to machine C
+> >
+> > 5.  Install the RPM to machine C
+>
+> As far as I am aware the typical use case is two step:
+>
+> 1. run make rpm-pkg on machine A
+> 2. install the binary rpm on machine C that might not have build tools
+>    or powerful enough CPU
+>
+> While it's theoretically possible to use the srpm to rebuild the binary
+> rpm independently of the kernel git tree I am not aware of people
+> commonly doing this.
 
-Introduce a new level menu "TDX Guest Support" and move existing
-materials under it, and add a new menu for TDX host kernel support.
 
-Signed-off-by: Kai Huang <kai.huang@intel.com>
----
 
- - Added new sections for "Erratum" and "TDX vs S3/hibernation"
+If I correctly understand commit
+8818039f959b2efc0d6f2cb101f8061332f0c77e,
+those Redhat guys pack a SRPM on a local machine,
+then send it to their build server called 'koji'.
 
----
- Documentation/arch/x86/tdx.rst | 217 +++++++++++++++++++++++++++++++--
- 1 file changed, 206 insertions(+), 11 deletions(-)
+Otherwise, there is no reason
+to have 'make srcrpm-pkg'.
 
-diff --git a/Documentation/arch/x86/tdx.rst b/Documentation/arch/x86/tdx.rst
-index dc8d9fd2c3f7..0f524b9d1353 100644
---- a/Documentation/arch/x86/tdx.rst
-+++ b/Documentation/arch/x86/tdx.rst
-@@ -10,6 +10,201 @@ encrypting the guest memory. In TDX, a special module running in a special
- mode sits between the host and the guest and manages the guest/host
- separation.
- 
-+TDX Host Kernel Support
-+=======================
-+
-+TDX introduces a new CPU mode called Secure Arbitration Mode (SEAM) and
-+a new isolated range pointed by the SEAM Ranger Register (SEAMRR).  A
-+CPU-attested software module called 'the TDX module' runs inside the new
-+isolated range to provide the functionalities to manage and run protected
-+VMs.
-+
-+TDX also leverages Intel Multi-Key Total Memory Encryption (MKTME) to
-+provide crypto-protection to the VMs.  TDX reserves part of MKTME KeyIDs
-+as TDX private KeyIDs, which are only accessible within the SEAM mode.
-+BIOS is responsible for partitioning legacy MKTME KeyIDs and TDX KeyIDs.
-+
-+Before the TDX module can be used to create and run protected VMs, it
-+must be loaded into the isolated range and properly initialized.  The TDX
-+architecture doesn't require the BIOS to load the TDX module, but the
-+kernel assumes it is loaded by the BIOS.
-+
-+TDX boot-time detection
-+-----------------------
-+
-+The kernel detects TDX by detecting TDX private KeyIDs during kernel
-+boot.  Below dmesg shows when TDX is enabled by BIOS::
-+
-+  [..] virt/tdx: BIOS enabled: private KeyID range: [16, 64)
-+
-+TDX module initialization
-+---------------------------------------
-+
-+The kernel talks to the TDX module via the new SEAMCALL instruction.  The
-+TDX module implements SEAMCALL leaf functions to allow the kernel to
-+initialize it.
-+
-+If the TDX module isn't loaded, the SEAMCALL instruction fails with a
-+special error.  In this case the kernel fails the module initialization
-+and reports the module isn't loaded::
-+
-+  [..] virt/tdx: module not loaded
-+
-+Initializing the TDX module consumes roughly ~1/256th system RAM size to
-+use it as 'metadata' for the TDX memory.  It also takes additional CPU
-+time to initialize those metadata along with the TDX module itself.  Both
-+are not trivial.  The kernel initializes the TDX module at runtime on
-+demand.
-+
-+Besides initializing the TDX module, a per-cpu initialization SEAMCALL
-+must be done on one cpu before any other SEAMCALLs can be made on that
-+cpu.
-+
-+The kernel provides two functions, tdx_enable() and tdx_cpu_enable() to
-+allow the user of TDX to enable the TDX module and enable TDX on local
-+cpu.
-+
-+Making SEAMCALL requires the CPU already being in VMX operation (VMXON
-+has been done).  For now both tdx_enable() and tdx_cpu_enable() don't
-+handle VMXON internally, but depends on the caller to guarantee that.
-+
-+To enable TDX, the caller of TDX should: 1) hold read lock of CPU hotplug
-+lock; 2) do VMXON and tdx_enable_cpu() on all online cpus successfully;
-+3) call tdx_enable().  For example::
-+
-+        cpus_read_lock();
-+        on_each_cpu(vmxon_and_tdx_cpu_enable());
-+        ret = tdx_enable();
-+        cpus_read_unlock();
-+        if (ret)
-+                goto no_tdx;
-+        // TDX is ready to use
-+
-+And the caller of TDX must guarantee the tdx_cpu_enable() has been
-+successfully done on any cpu before it wants to run any other SEAMCALL.
-+A typical usage is do both VMXON and tdx_cpu_enable() in CPU hotplug
-+online callback, and refuse to online if tdx_cpu_enable() fails.
-+
-+User can consult dmesg to see whether the TDX module has been initialized.
-+
-+If the TDX module is initialized successfully, dmesg shows something
-+like below::
-+
-+  [..] virt/tdx: TDX module: attributes 0x0, vendor_id 0x8086, major_version 1, minor_version 0, build_date 20211209, build_num 160
-+  [..] virt/tdx: 262668 KBs allocated for PAMT
-+  [..] virt/tdx: module initialized
-+
-+If the TDX module failed to initialize, dmesg also shows it failed to
-+initialize::
-+
-+  [..] virt/tdx: module initialization failed ...
-+
-+TDX Interaction to Other Kernel Components
-+------------------------------------------
-+
-+TDX Memory Policy
-+~~~~~~~~~~~~~~~~~
-+
-+TDX reports a list of "Convertible Memory Region" (CMR) to tell the
-+kernel which memory is TDX compatible.  The kernel needs to build a list
-+of memory regions (out of CMRs) as "TDX-usable" memory and pass those
-+regions to the TDX module.  Once this is done, those "TDX-usable" memory
-+regions are fixed during module's lifetime.
-+
-+To keep things simple, currently the kernel simply guarantees all pages
-+in the page allocator are TDX memory.  Specifically, the kernel uses all
-+system memory in the core-mm at the time of initializing the TDX module
-+as TDX memory, and in the meantime, refuses to online any non-TDX-memory
-+in the memory hotplug.
-+
-+Physical Memory Hotplug
-+~~~~~~~~~~~~~~~~~~~~~~~
-+
-+Note TDX assumes convertible memory is always physically present during
-+machine's runtime.  A non-buggy BIOS should never support hot-removal of
-+any convertible memory.  This implementation doesn't handle ACPI memory
-+removal but depends on the BIOS to behave correctly.
-+
-+CPU Hotplug
-+~~~~~~~~~~~
-+
-+TDX module requires the per-cpu initialization SEAMCALL (TDH.SYS.LP.INIT)
-+must be done on one cpu before any other SEAMCALLs can be made on that
-+cpu, including those involved during the module initialization.
-+
-+The kernel provides tdx_cpu_enable() to let the user of TDX to do it when
-+the user wants to use a new cpu for TDX task.
-+
-+TDX doesn't support physical (ACPI) CPU hotplug.  During machine boot,
-+TDX verifies all boot-time present logical CPUs are TDX compatible before
-+enabling TDX.  A non-buggy BIOS should never support hot-add/removal of
-+physical CPU.  Currently the kernel doesn't handle physical CPU hotplug,
-+but depends on the BIOS to behave correctly.
-+
-+Note TDX works with CPU logical online/offline, thus the kernel still
-+allows to offline logical CPU and online it again.
-+
-+Kexec()
-+~~~~~~~
-+
-+There are two problems in terms of using kexec() to boot to a new kernel
-+when the old kernel has enabled TDX: 1) Part of the memory pages are
-+still TDX private pages; 2) There might be dirty cachelines associated
-+with TDX private pages.
-+
-+The first problem doesn't matter.  KeyID 0 doesn't have integrity check.
-+Even the new kernel wants use any non-zero KeyID, it needs to convert
-+the memory to that KeyID and such conversion would work from any KeyID.
-+
-+However the old kernel needs to guarantee there's no dirty cacheline
-+left behind before booting to the new kernel to avoid silent corruption
-+from later cacheline writeback (Intel hardware doesn't guarantee cache
-+coherency across different KeyIDs).
-+
-+Similar to AMD SME, the kernel just uses wbinvd() to flush cache before
-+booting to the new kernel.
-+
-+Erratum
-+~~~~~~~
-+
-+The first few generations of TDX hardware have an erratum.  A partial
-+write to a TDX private memory cacheline will silently "poison" the
-+line.  Subsequent reads will consume the poison and generate a machine
-+check.
-+
-+A partial write is a memory write where a write transaction of less than
-+cacheline lands at the memory controller.  The CPU does these via
-+non-temporal write instructions (like MOVNTI), or through UC/WC memory
-+mappings.  Devices can also do partial writes via DMA.
-+
-+Theoretically, a kernel bug could do partial write to TDX private memory
-+and trigger unexpected machine check.  What's more, the machine check
-+code will present these as "Hardware error" when they were, in fact, a
-+software-triggered issue.  But in the end, this issue is hard to trigger.
-+
-+If the platform has such erratum, the kernel does additional things:
-+1) resetting TDX private pages using MOVDIR64B in kexec before booting to
-+the new kernel; 2) Printing additional message in machine check handler
-+to tell user the machine check may be caused by kernel bug on TDX private
-+memory.
-+
-+Interaction vs S3 and deeper states
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+TDX cannot survive from S3 and deeper states.  The hardware resets and
-+disables TDX completely when platform goes to S3 and deeper.  Both TDX
-+guests and the TDX module get destroyed permanently.
-+
-+The kernel uses S3 for suspend-to-ram, and use S4 and deeper states for
-+hibernation.  Currently, for simplicity, the kernel chooses to make TDX
-+mutually exclusive with S3 and hibernation.
-+
-+For most cases, the user needs to add 'nohibernation' kernel command line
-+in order to use TDX.  S3 is disabled during kernel early boot if TDX is
-+detected.  The user needs to turn off TDX in the BIOS in order to use S3.
-+
-+TDX Guest Support
-+=================
- Since the host cannot directly access guest registers or memory, much
- normal functionality of a hypervisor must be moved into the guest. This is
- implemented using a Virtualization Exception (#VE) that is handled by the
-@@ -20,7 +215,7 @@ TDX includes new hypercall-like mechanisms for communicating from the
- guest to the hypervisor or the TDX module.
- 
- New TDX Exceptions
--==================
-+------------------
- 
- TDX guests behave differently from bare-metal and traditional VMX guests.
- In TDX guests, otherwise normal instructions or memory accesses can cause
-@@ -30,7 +225,7 @@ Instructions marked with an '*' conditionally cause exceptions.  The
- details for these instructions are discussed below.
- 
- Instruction-based #VE
-----------------------
-+~~~~~~~~~~~~~~~~~~~~~
- 
- - Port I/O (INS, OUTS, IN, OUT)
- - HLT
-@@ -41,7 +236,7 @@ Instruction-based #VE
- - CPUID*
- 
- Instruction-based #GP
-----------------------
-+~~~~~~~~~~~~~~~~~~~~~
- 
- - All VMX instructions: INVEPT, INVVPID, VMCLEAR, VMFUNC, VMLAUNCH,
-   VMPTRLD, VMPTRST, VMREAD, VMRESUME, VMWRITE, VMXOFF, VMXON
-@@ -52,7 +247,7 @@ Instruction-based #GP
- - RDMSR*,WRMSR*
- 
- RDMSR/WRMSR Behavior
----------------------
-+~~~~~~~~~~~~~~~~~~~~
- 
- MSR access behavior falls into three categories:
- 
-@@ -73,7 +268,7 @@ trapping and handling in the TDX module.  Other than possibly being slow,
- these MSRs appear to function just as they would on bare metal.
- 
- CPUID Behavior
----------------
-+~~~~~~~~~~~~~~
- 
- For some CPUID leaves and sub-leaves, the virtualized bit fields of CPUID
- return values (in guest EAX/EBX/ECX/EDX) are configurable by the
-@@ -93,7 +288,7 @@ not know how to handle. The guest kernel may ask the hypervisor for the
- value with a hypercall.
- 
- #VE on Memory Accesses
--======================
-+----------------------
- 
- There are essentially two classes of TDX memory: private and shared.
- Private memory receives full TDX protections.  Its content is protected
-@@ -107,7 +302,7 @@ entries.  This helps ensure that a guest does not place sensitive
- information in shared memory, exposing it to the untrusted hypervisor.
- 
- #VE on Shared Memory
----------------------
-+~~~~~~~~~~~~~~~~~~~~
- 
- Access to shared mappings can cause a #VE.  The hypervisor ultimately
- controls whether a shared memory access causes a #VE, so the guest must be
-@@ -127,7 +322,7 @@ be careful not to access device MMIO regions unless it is also prepared to
- handle a #VE.
- 
- #VE on Private Pages
----------------------
-+~~~~~~~~~~~~~~~~~~~~
- 
- An access to private mappings can also cause a #VE.  Since all kernel
- memory is also private memory, the kernel might theoretically need to
-@@ -145,7 +340,7 @@ The hypervisor is permitted to unilaterally move accepted pages to a
- to handle the exception.
- 
- Linux #VE handler
--=================
-+-----------------
- 
- Just like page faults or #GP's, #VE exceptions can be either handled or be
- fatal.  Typically, an unhandled userspace #VE results in a SIGSEGV.
-@@ -167,7 +362,7 @@ While the block is in place, any #VE is elevated to a double fault (#DF)
- which is not recoverable.
- 
- MMIO handling
--=============
-+-------------
- 
- In non-TDX VMs, MMIO is usually implemented by giving a guest access to a
- mapping which will cause a VMEXIT on access, and then the hypervisor
-@@ -189,7 +384,7 @@ MMIO access via other means (like structure overlays) may result in an
- oops.
- 
- Shared Memory Conversions
--=========================
-+-------------------------
- 
- All TDX guest memory starts out as private at boot.  This memory can not
- be accessed by the hypervisor.  However, some kernel users like device
--- 
-2.41.0
 
+
+I believe "A == B" is not always true,
+but we can assume "distro(A) == distro(B)" is always met
+for simplicity.
+
+So, I am OK with configuration at the SRPM time.
+
+
+
+
+
+> If rebuilding the source rpm on a different machine from where the git
+> tree is located, and possibly on a different distribution is desirable
+> then the detection of the KERNEL_MODULE_DIRECTORY should be added in the
+> rpm spec file as well.
+>
+> > Of course, we are most interested in the module path
+> > of machine C, but it is difficult/impossible to
+> > guess it at the time of building.
+> >
+> > We can assume machine B == machine C.
+> >
+> > We are the second most interested in the module
+> > path on machine B.
+> >
+> > The module path of machine A is not important.
+> >
+> > So, I am asking where you would inject
+> > 'pkg-config --print-variables kmod | grep module_directory'.
+>
+> I don't. I don't think there will be a separate machine B.
+>
+> And I can't really either - so far any attempt at adding support for
+> this has been rejected.
+>
+> Technically the KERNEL_MODULE_DIRECTORY could be set in two steps - one
+> giving the script to run, and one running it, and then it could be run
+> independently in the SRPM as well.
+
+
+At first, I thought your patch [1] was very ugly,
+but I do not think it is so ugly if cleanly implemented.
+
+It won't hurt to allow users to specify the middle part of MODLIB.
+
+
+There are two options.
+
+
+
+
+[A]  Add 'MOD_PREFIX' to specify the middle part of MODLIB
+
+
+The top Makefile will look as follows:
+
+
+MODLIB = $(INSTALL_MOD_PATH)$(MOD_PREFIX)/lib/modules/$(KERNELRELEASE)
+export MODLIB
+
+
+It is easier than specifying the entire MODLIB, but you still need
+to manually pass "MOD_PREFIX=/usr" from an env variable or
+the command line.
+
+If MOD_PREFIX is not given, MODLIB is the same as the current one.
+
+
+
+
+[B] Support a dynamic configuration as well
+
+
+
+MOD_PREFIX ?= $(shell pkg-config --variable=module_prefix libkmod 2>/dev/null)
+export MOD_PREFIX
+
+MODLIB = $(INSTALL_MOD_PATH)$(MOD_PREFIX)/lib/modules/$(KERNELRELEASE)
+export MODLIB
+
+
+
+
+If MOD_PREFIX is given from an env variable or from the command line,
+it is respected.
+
+If "pkg-config --variable=module_prefix libkmod" works,
+that configuration is applied.
+
+Otherwise, MOD_PREFIX is empty, i.e. fall back to the current behavior.
+
+
+
+
+
+
+I prefer 'MOD_PREFIX' to 'KERNEL_MODULE_DIRECTORY' in your patch [1]
+because "|| echo /lib/modules" can be omitted.
+
+I do not think we will have such a crazy distro that
+installs modules under /opt/ directory.
+
+
+
+
+I could not understand why you inserted
+"--print-variables kmod 2>/dev/null | grep '^module_directory$$' >/dev/null"
+but I guess the reason is the same.
+"pkg-config --variable=module_directory kmod" always succeeds,
+so "|| echo /lib/modules" is never processed.
+
+
+I do not know why you parsed kmod.pc instead of libkmod.pc [2]
+
+
+
+[1] https://lore.kernel.org/linux-kbuild/20230718120348.383-1-msuchanek@suse.de/
+[2] https://github.com/kmod-project/kmod/blob/v31/configure.ac#L295
+
+
+
+--
+Best Regards
+Masahiro Yamada
