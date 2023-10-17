@@ -2,113 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2227CC750
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6187CC755
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:21:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344298AbjJQPVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 11:21:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50352 "EHLO
+        id S1344324AbjJQPVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 11:21:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344100AbjJQPVV (ORCPT
+        with ESMTP id S1344302AbjJQPVl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 11:21:21 -0400
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A1DFD;
-        Tue, 17 Oct 2023 08:21:19 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5a7c93507d5so69198187b3.2;
-        Tue, 17 Oct 2023 08:21:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697556079; x=1698160879; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xDhBgsohyNMQvgoVClOoX7HtBV2amiL9Qo+GoP49do4=;
-        b=POQ3QGWumVGouV/dYmG00tv3UOAP+DciRLzg9ErdgnX0rnKVx1lqrc2m3P33fJdipi
-         YXeBa2tlmgJLKGq9WGtF+dg9yogQCjTFIB+RPaF35Lu1cQCI7JYIYPzfOXBg8F9NF2g7
-         88MkjK9jywP5FtCWpoGDW/qqy2F9s8IsGbUJ01eplt67Rit637mdgQ3p9NNjtIJtDUGq
-         KlKjc+4Pj3DZDfP2rbwo5MeL8xGAOm8aq3NqbIh+1OOK+FknvtF0ROsMuySS+CZ0vc5d
-         YBF55K02s09n3P8F+kVYT+x60Qitd31K+IVzJf5gmcVf3i/3sxo1GoE2tQf6wRbOaM1c
-         BQwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697556079; x=1698160879;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xDhBgsohyNMQvgoVClOoX7HtBV2amiL9Qo+GoP49do4=;
-        b=MRILaR+sF9u44l362pyV5xsylP2Y1kp/hM+7qr+SH0ZXi7uA7yanDOCzzfAdDrTuCn
-         Ikh9XyAN9yMgdXezb+6c7fW75UE2Mis/APZejI6R2ewBpaqQrr4TCHlbgHdiyJW7+9Mx
-         SwZgcrKj+X4jXZfGkSzFxZGQwZXV04mt7C0CktXc6WDfTga1smba5fIX0i+ABN1eE512
-         JHpW1trRIo/Yn6bA3yrEq9yDgslwo5L/XPRGqRqT7mT4jAmSr36jtTaRTHE70/5PmwCV
-         phstOP7DUrnJiqpBXEUrCimJnV64p5aK0S8oEVOllZ5iUyExwo/q9RN1AJGJH3Lpm9s3
-         QOcg==
-X-Gm-Message-State: AOJu0Ywd2oIg/xgIJ2stSwG+y51Tng+oaM27DQeS3p5Ig0805BKbtihS
-        n3vxMMaoGqtSXI0hMTzZnehrtHWTPnEG+oeZbgg=
-X-Google-Smtp-Source: AGHT+IFiunQfYo4Ll5L97FADwFB3QhJb7RORPsyhv1/0472jUhiU3gq14vu0tGA4HR7o2Wx5p/KM4it2UpUyOqFosTA=
-X-Received: by 2002:a81:738b:0:b0:59b:e449:2d51 with SMTP id
- o133-20020a81738b000000b0059be4492d51mr2478947ywc.49.1697556078990; Tue, 17
- Oct 2023 08:21:18 -0700 (PDT)
+        Tue, 17 Oct 2023 11:21:41 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D476E10C
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 08:21:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697556099; x=1729092099;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=6A7mhFzrHwLNEwh2AOboi0VzZy/07F4DDFeqpCdSzLs=;
+  b=OYPmngb6Z8qeXgTv15rtKKqGnejLS9XJ6j/lz1qGKpmYhHXUJMdr67TT
+   gewhN6tCa82Rl1ydmPTVoEHIT3WCx1FzV1zyayEhHE2dNneoS1W9il5LF
+   Q2u4I30HKX1ZfcChRgb4As1rPk0eL0G6gqdS+p9sBbzH5k+9iC2ftUR/1
+   7qlKvXOLaNJAztZf9JhwMn0KgOfTcoTBA5BXxJLPAEXXFSmF/d7yepgwv
+   fv4V3RfwR7s37Rev+I6yoWt3Mv+AgO2kDgQhvjPJJRiHPBUpeqvyzXGJn
+   Xwiv6uJLLkLIjqHiLFYUywswbY3D1ctb5zRtOU1D33tUTtHUpah75jFaw
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="385644287"
+X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
+   d="scan'208";a="385644287"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 08:21:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="791260963"
+X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
+   d="scan'208";a="791260963"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 17 Oct 2023 08:21:37 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qslt1-0009jr-1O;
+        Tue, 17 Oct 2023 15:21:35 +0000
+Date:   Tue, 17 Oct 2023 23:21:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: fs/nilfs2/ioctl.c:133: warning: Function parameter or member 'idmap'
+ not described in 'nilfs_fileattr_set'
+Message-ID: <202310172314.TUUpcnOg-lkp@intel.com>
 MIME-Version: 1.0
-References: <20231017103742.130927-1-masahiroy@kernel.org> <20231017103742.130927-2-masahiroy@kernel.org>
-In-Reply-To: <20231017103742.130927-2-masahiroy@kernel.org>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Tue, 17 Oct 2023 17:21:07 +0200
-Message-ID: <CANiq72krkL_50wzZeM3C6xk_C-oU1fThykCCAXY07BWbmoxptg@mail.gmail.com>
-Subject: Re: [PATCH 2/4] kbuild: avoid too many execution of scripts/pahole-flags.sh
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Benno Lossin <benno.lossin@proton.me>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Gary Guo <gary@garyguo.net>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>, Song Liu <song@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org,
-        rust-for-linux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 12:38=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.=
-org> wrote:
->
-> Convert the shell script to a Makefile, which is included only when
-> CONFIG_DEBUG_INFO_BTF=3Dy.
->
-> [1]: https://savannah.gnu.org/bugs/index.php?64746
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Hi Christian,
 
-The field in `MAINTAINERS` should be removed:
+FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
 
-    F: scripts/pahole-flags.sh
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   213f891525c222e8ed145ce1ce7ae1f47921cb9c
+commit: 8782a9aea3ab4d697ad67d1f8ebca38a4e1c24ab fs: port ->fileattr_set() to pass mnt_idmap
+date:   9 months ago
+config: x86_64-randconfig-m001-20230717 (https://download.01.org/0day-ci/archive/20231017/202310172314.TUUpcnOg-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231017/202310172314.TUUpcnOg-lkp@intel.com/reproduce)
 
-But other than that, it looks good to me! I tried it for a given
-config and it does call `pahole` with the same flags.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310172314.TUUpcnOg-lkp@intel.com/
 
-Tested-by: Miguel Ojeda <ojeda@kernel.org>
-Acked-by: Miguel Ojeda <ojeda@kernel.org>
+All warnings (new ones prefixed by >>):
 
-Cheers,
-Miguel
+   fs/nilfs2/ioctl.c:120: warning: Function parameter or member 'dentry' not described in 'nilfs_fileattr_get'
+   fs/nilfs2/ioctl.c:120: warning: Function parameter or member 'fa' not described in 'nilfs_fileattr_get'
+>> fs/nilfs2/ioctl.c:133: warning: Function parameter or member 'idmap' not described in 'nilfs_fileattr_set'
+   fs/nilfs2/ioctl.c:133: warning: Function parameter or member 'dentry' not described in 'nilfs_fileattr_set'
+   fs/nilfs2/ioctl.c:133: warning: Function parameter or member 'fa' not described in 'nilfs_fileattr_set'
+   fs/nilfs2/ioctl.c:164: warning: Function parameter or member 'inode' not described in 'nilfs_ioctl_getversion'
+   fs/nilfs2/ioctl.c:164: warning: Function parameter or member 'argp' not described in 'nilfs_ioctl_getversion'
+
+
+vim +133 fs/nilfs2/ioctl.c
+
+cde98f0f84ccff Ryusuke Konishi    2011-01-20  127  
+d623a9420c9ae2 Vyacheslav Dubeyko 2014-01-23  128  /**
+7c7c436e14b863 Miklos Szeredi     2021-04-07  129   * nilfs_fileattr_set - ioctl to support chattr
+d623a9420c9ae2 Vyacheslav Dubeyko 2014-01-23  130   */
+8782a9aea3ab4d Christian Brauner  2023-01-13  131  int nilfs_fileattr_set(struct mnt_idmap *idmap,
+7c7c436e14b863 Miklos Szeredi     2021-04-07  132  		       struct dentry *dentry, struct fileattr *fa)
+cde98f0f84ccff Ryusuke Konishi    2011-01-20 @133  {
+7c7c436e14b863 Miklos Szeredi     2021-04-07  134  	struct inode *inode = d_inode(dentry);
+cde98f0f84ccff Ryusuke Konishi    2011-01-20  135  	struct nilfs_transaction_info ti;
+cde98f0f84ccff Ryusuke Konishi    2011-01-20  136  	unsigned int flags, oldflags;
+cde98f0f84ccff Ryusuke Konishi    2011-01-20  137  	int ret;
+cde98f0f84ccff Ryusuke Konishi    2011-01-20  138  
+7c7c436e14b863 Miklos Szeredi     2021-04-07  139  	if (fileattr_has_fsx(fa))
+7c7c436e14b863 Miklos Szeredi     2021-04-07  140  		return -EOPNOTSUPP;
+cde98f0f84ccff Ryusuke Konishi    2011-01-20  141  
+7c7c436e14b863 Miklos Szeredi     2021-04-07  142  	flags = nilfs_mask_flags(inode->i_mode, fa->flags);
+cde98f0f84ccff Ryusuke Konishi    2011-01-20  143  
+cde98f0f84ccff Ryusuke Konishi    2011-01-20  144  	ret = nilfs_transaction_begin(inode->i_sb, &ti, 0);
+cde98f0f84ccff Ryusuke Konishi    2011-01-20  145  	if (ret)
+7c7c436e14b863 Miklos Szeredi     2021-04-07  146  		return ret;
+cde98f0f84ccff Ryusuke Konishi    2011-01-20  147  
+7c7c436e14b863 Miklos Szeredi     2021-04-07  148  	oldflags = NILFS_I(inode)->i_flags & ~FS_FL_USER_MODIFIABLE;
+7c7c436e14b863 Miklos Szeredi     2021-04-07  149  	NILFS_I(inode)->i_flags = oldflags | (flags & FS_FL_USER_MODIFIABLE);
+cde98f0f84ccff Ryusuke Konishi    2011-01-20  150  
+cde98f0f84ccff Ryusuke Konishi    2011-01-20  151  	nilfs_set_inode_flags(inode);
+078cd8279e6599 Deepa Dinamani     2016-09-14  152  	inode->i_ctime = current_time(inode);
+cde98f0f84ccff Ryusuke Konishi    2011-01-20  153  	if (IS_SYNC(inode))
+cde98f0f84ccff Ryusuke Konishi    2011-01-20  154  		nilfs_set_transaction_flag(NILFS_TI_SYNC);
+cde98f0f84ccff Ryusuke Konishi    2011-01-20  155  
+cde98f0f84ccff Ryusuke Konishi    2011-01-20  156  	nilfs_mark_inode_dirty(inode);
+7c7c436e14b863 Miklos Szeredi     2021-04-07  157  	return nilfs_transaction_commit(inode->i_sb);
+cde98f0f84ccff Ryusuke Konishi    2011-01-20  158  }
+cde98f0f84ccff Ryusuke Konishi    2011-01-20  159  
+
+:::::: The code at line 133 was first introduced by commit
+:::::: cde98f0f84ccff78e87235cb7b551747d6ad00de nilfs2: implement FS_IOC_GETFLAGS/SETFLAGS/GETVERSION
+
+:::::: TO: Ryusuke Konishi <konishi.ryusuke@lab.ntt.co.jp>
+:::::: CC: Ryusuke Konishi <konishi.ryusuke@lab.ntt.co.jp>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
