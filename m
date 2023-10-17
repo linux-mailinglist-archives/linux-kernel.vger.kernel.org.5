@@ -2,152 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FAC47CCB03
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 20:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D56B17CCB11
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 20:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234836AbjJQSrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 14:47:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37164 "EHLO
+        id S1343616AbjJQStF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 14:49:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJQSrd (ORCPT
+        with ESMTP id S234963AbjJQStB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 14:47:33 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9472F7;
-        Tue, 17 Oct 2023 11:47:31 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-507c50b7c36so632398e87.3;
-        Tue, 17 Oct 2023 11:47:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697568450; x=1698173250; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LmICwmBoI0nNKZqKDeA/2U9n80tXqZ7792F42uyLv0o=;
-        b=h/yAWvQVS+SpbUYMTI/CcvRdyrfLRnBB5L0QU1gMaa/+aCbL6f/VUyVRlfE8yC792h
-         7jvMHwxvaVsF9Gv5Bln8FQ7RyRCLhlenPeTs9WF+16yl3ZTyWAXVjhE/e5CrYwkhTscl
-         04sDCsWfn4m8w2OEWqHtKgRgxWQ49XzH4hrUO9W+XE+CF5R5+lZR1lQBmjVxKClS6QkX
-         RElK3Pr5CL1+YKejz2tcQHBRPebWbJFlM0fEV/z8U3DFUMq85eUPng3Ro4Scd0q1AGvO
-         sSLGSKGxFVNT6ej4APCa7kcK65OF4GvVqdMjBz6U19eTixzfnOfSXGuWt+xVQkMBC9mo
-         QODw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697568450; x=1698173250;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LmICwmBoI0nNKZqKDeA/2U9n80tXqZ7792F42uyLv0o=;
-        b=u6oUm0N3alqGMe9Fnz+DuFXOikskYsStPeJ6eBQGEybUA/jBRz8g+qWbjhsLxeXUlZ
-         ZnRkhKnarOjmwydfcq3DoGNWqKaD+06QydJrMQ5OYfahP3RL7IcSaXGbQSFGt3VNRp41
-         MeNYpZBa5Fpbt2qhjuWfPmUMX2AGwuBBTxoWEFzlEoI7NLBAEJAqnV3XWo4ttEgZeijZ
-         Lxlnfze0U8rSObaUTHMJaAq3fpChpVSGjbwz9wtKDvF/EDvyfjPoISjG1Lr9BaGP2EEq
-         gclaMoWmIf4INZFAlfeFkDjA5Dvbf/UZ7SpKgBmfg100sDfUZoBOsYDfpvpAY8mgosqw
-         mEXQ==
-X-Gm-Message-State: AOJu0YwLfcgRXXEVBev53Gw7p0FFQBhEvklC3VxCQDlRomGGX2mZxE7q
-        B9jfWW9dxGX8q5Bjs1bHYw==
-X-Google-Smtp-Source: AGHT+IESZslQNyusElFBWo5mcRJLUnBIRNn71W/9mZybzHHY5GQR5etWw70lNAmSc1d5t4t4sq4ExQ==
-X-Received: by 2002:ac2:4206:0:b0:507:a16d:6699 with SMTP id y6-20020ac24206000000b00507a16d6699mr2208709lfh.13.1697568449638;
-        Tue, 17 Oct 2023 11:47:29 -0700 (PDT)
-Received: from dorcaslitunya-virtual-machine ([105.163.158.206])
-        by smtp.gmail.com with ESMTPSA id ee16-20020a056402291000b0053e8f1f79afsm1635197edb.30.2023.10.17.11.47.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 11:47:29 -0700 (PDT)
-Date:   Tue, 17 Oct 2023 21:47:25 +0300
-From:   Dorcas Litunya <anonolitunya@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     anonolitunya@gmail.com, outreachy@lists.linux.dev,
-        julia.lawall@inria.fr, dan.carpenter@linaro.org,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Teddy Wang <teddy.wang@siliconmotion.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] Staging: sm750fb: Rename
- displayControlAdjust_SM750E
-Message-ID: <ZS7WvaM65awtILqk@dorcaslitunya-virtual-machine>
-References: <20231016201434.7880-1-anonolitunya@gmail.com>
- <20231016201434.7880-2-anonolitunya@gmail.com>
- <2023101724-diagram-legwork-0e53@gregkh>
- <ZS5FlsCPETnr8T5D@dorcaslitunya-virtual-machine>
- <2023101712-grudge-overtime-1f43@gregkh>
- <ZS5JexVUSKZUuOd4@dorcaslitunya-virtual-machine>
+        Tue, 17 Oct 2023 14:49:01 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B519F;
+        Tue, 17 Oct 2023 11:49:00 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=T8TCXvehqk3Rv1uf1TQhTUZGpP+Q4+3Ip5EB2OLffCIRW9725oXK1u1CAr+eCOhcQNEWJ7cNxghMFIgF/Zs9zTvmfkDzj8NXIFpQQ0To5W46hUtD+cJGnuNnuTqG+eN30W1l4y5ms/yxVHR19mdk+3REduUrMjM7m1T2lZ4HT4/b6A5V4R9BVcYHg8AEfGPJgkdvHDrSS0FehER7hImf3R0OUM1/6Gc2tYgRPex6/T3ERACiZVm3R/7L3A09nnLV5whY7+9GOcuBJ2zK13v8ZLy688Q37hRiodHubBCcg3p/vHVWZnI4nGE3DwuTAvTHvqGRMXrIjB224UX/F8lfMA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=o80P3JyfOmMN27SuigrR0uFnbUE3zC6ROmHfKue3NrM=;
+ b=GThBdh54DZglKHc9bQdLNz1Rcu2kUVd4Md6MEchZ6MGPcHijZB6E5lWr/kJNNlVLGma6Z7ZsMYTe6FQNW81w7j1n8YLuwhO0lrBa/VZ09JlDplA/xYAtSn6ESI4C6xNkat9jISbqrV4/JRbqeMwuCJGPKdy3qhFS23D3y63sAMx86icGsyaO+Ik9iKlAM8h+tHscgW1XVGgBUi00pY4CHEe3c/O5qAVlTwoaPdx0/zIKEijmcJc0cz1LTDrIvn9tDZ6/olsYJnrEz6cSZBIhaF5vnB0j9dZqWRMYB5GHUZtrpyFDFOUthP8bb/JQP5WITHJG0JaMtNgL31sI/79bsQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=o80P3JyfOmMN27SuigrR0uFnbUE3zC6ROmHfKue3NrM=;
+ b=TkYU+1sUQASfAR7lheK9ix9EMIQYcwZ2lU9YiY7c/V+XTJKDOGqewVhOXxC3E+a9FLaUFX7ZE3I5JgjboKy8NwG5EGrIuVFsg+UO4zDyAuz1FccA9l/xBmfsFdSK2ZtpGJPyKnYdnWA0soJEkWKOxpXDZCWRsL/kjyMng4GhYhw=
+Received: from BL0PR05CA0026.namprd05.prod.outlook.com (2603:10b6:208:91::36)
+ by CH0PR12MB5138.namprd12.prod.outlook.com (2603:10b6:610:bd::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36; Tue, 17 Oct
+ 2023 18:48:55 +0000
+Received: from MN1PEPF0000ECD7.namprd02.prod.outlook.com
+ (2603:10b6:208:91:cafe::92) by BL0PR05CA0026.outlook.office365.com
+ (2603:10b6:208:91::36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.17 via Frontend
+ Transport; Tue, 17 Oct 2023 18:48:55 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ MN1PEPF0000ECD7.mail.protection.outlook.com (10.167.242.136) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6838.22 via Frontend Transport; Tue, 17 Oct 2023 18:48:55 +0000
+Received: from titanite-d354host.amd.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 17 Oct 2023 13:48:54 -0500
+From:   Avadhut Naik <avadhut.naik@amd.com>
+To:     <rafael@kernel.org>, <lenb@kernel.org>,
+        <linux-acpi@vger.kernel.org>
+CC:     <yazen.ghannam@amd.com>, <alexey.kardashevskiy@amd.com>,
+        <gregkh@linuxfoundation.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <avadnaik@amd.com>
+Subject: [PATCH v5 0/4] Add support for Vendor Defined Error Types in Einj Module
+Date:   Tue, 17 Oct 2023 13:48:40 -0500
+Message-ID: <20231017184844.2350750-1-avadhut.naik@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZS5JexVUSKZUuOd4@dorcaslitunya-virtual-machine>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN1PEPF0000ECD7:EE_|CH0PR12MB5138:EE_
+X-MS-Office365-Filtering-Correlation-Id: 223e974f-90fa-49dc-7663-08dbcf41b729
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: S/cN8jtqrzNp3OT4y3bgJmLApVENZCcIDN2oq9wPeSV3SaPB3hJYwKFfJG7dKgF/p1brgNwk8CA0lNfLpmQV3tASw0Z02tNLU/57ycEwIe6nG8MeXC9A//rOMUwavmVB1EwAft4ml56MiTvp1zJegmX6jmaR4+Zjar4uQkOgA2AFGxfRBQ8qsOmb9evNfBMiyhERSbj0OJ7563vG6MaHu3PFMrR/X2qoOte0qmT8w3kmBLISz5VjY5l97n8bkKtS1T1EZ4Xcrts5OMhXrDK8yegkCOnxQEJGEcbUhpL+mEHsrvyrh1uQ9tC9AhLtOgeW6stP+obxK8XJ/i0qU2gGfG44O15nMGJ7jCZS/cY6OWWvsKjdDJ8pNISDAYs0QcS1XDAfxafa3LEdORuiXwOuWzHSZUDQyCp2w5dKnZIIXuN+wVMJf5csANFJ2tepWxRY0KPR6kyFL//RHGylHBUhGsBHFemjN4b+3qGnWbg/O3EAIXi7qZGSGTDxnkSZ5F8YPpa3x1bZLGcfUdsr/HSbzyWuNDyQA/pNkD4xuUaD+ItcSljzaA8nTTTUrAxVPnRTb0i9YNpa6FXAZC9LLN+A4DgFHjmnnCkOCHxfTyDHwmFH1GZ4pSlzUvnAXiJ1+Lkz16zoqenjfrFTdi/lH5PVPqdRRkMeJ6unQBzOPMUmB50rWNm69m9dLLPfZhEakdgm+vRqOqhAYwihTlDpMkJogyQ3fj6/kjMS1UTMrxxAioofq5hev9uDP0vawb8kbW1qaxYMf26MIFX/TaJC+3X8ST1aKdKENDj79OHGGx/7gCY=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(376002)(39860400002)(136003)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(82310400011)(36840700001)(46966006)(40470700004)(86362001)(36756003)(40480700001)(336012)(2906002)(478600001)(7696005)(5660300002)(41300700001)(6666004)(44832011)(81166007)(82740400003)(356005)(36860700001)(40460700003)(2616005)(1076003)(26005)(70206006)(426003)(316002)(8936002)(8676002)(110136005)(70586007)(4326008)(16526019)(54906003)(83380400001)(47076005)(36900700001)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Oct 2023 18:48:55.5360
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 223e974f-90fa-49dc-7663-08dbcf41b729
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: MN1PEPF0000ECD7.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5138
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 11:44:43AM +0300, Dorcas Litunya wrote:
-> On Tue, Oct 17, 2023 at 10:34:43AM +0200, Greg Kroah-Hartman wrote:
-> > On Tue, Oct 17, 2023 at 11:28:06AM +0300, Dorcas Litunya wrote:
-> > > On Tue, Oct 17, 2023 at 09:50:50AM +0200, Greg Kroah-Hartman wrote:
-> > > > On Mon, Oct 16, 2023 at 11:14:08PM +0300, Dorcas AnonoLitunya wrote:
-> > > > > Rename function displayControlAdjust_SM750E to
-> > > > > display_control_adjust_SM750E. This follows snakecase naming convention
-> > > > > and ensures a consistent naming style throughout the file. Issue found by
-> > > > > checkpatch.
-> > > > > 
-> > > > > Mutes the following error:
-> > > > > CHECK:Avoid CamelCase: <displayControlAdjust_SM750E>
-> > > > > 
-> > > > > Signed-off-by: Dorcas AnonoLitunya <anonolitunya@gmail.com>
-> > > > > ---
-> > > > >  drivers/staging/sm750fb/ddk750_mode.c | 6 +++---
-> > > > >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/staging/sm750fb/ddk750_mode.c b/drivers/staging/sm750fb/ddk750_mode.c
-> > > > > index e00a6cb31947..8708995f676c 100644
-> > > > > --- a/drivers/staging/sm750fb/ddk750_mode.c
-> > > > > +++ b/drivers/staging/sm750fb/ddk750_mode.c
-> > > > > @@ -14,8 +14,8 @@
-> > > > >   * in bit 29:27 of Display Control register.
-> > > > >   */
-> > > > >  static unsigned long
-> > > > > -displayControlAdjust_SM750LE(struct mode_parameter *pModeParam,
-> > > > > -			     unsigned long dispControl)
-> > > > > +display_control_adjust_SM750LE(struct mode_parameter *pModeParam,
-> > > > > +			       unsigned long dispControl)
-> > > > >  {
-> > > > >  	unsigned long x, y;
-> > > > >  
-> > > > > @@ -125,7 +125,7 @@ static int programModeRegisters(struct mode_parameter *pModeParam,
-> > > > >  			tmp |= DISPLAY_CTRL_HSYNC_PHASE;
-> > > > >  
-> > > > >  		if (sm750_get_chip_type() == SM750LE) {
-> > > > > -			displayControlAdjust_SM750LE(pModeParam, tmp);
-> > > > > +			display_control_adjust_SM750LE(pModeParam, tmp);
-> > > > 
-> > > > Why is this function returning a value if it is just being ignored?
-> > > > 
-> > > > It's not the issue here in the patch, but for future changes.
-> > > >
-> > > Hi Greg,
-> > > 
-> > > I will do the correction in the next patchset to correct both functions
-> > > return value as this patchset was not focused on that. Does this mean
-> > > that this patchset has been accepted? Or should I submit another
-> > > patchset that includes the two changes suggested on function return
-> > > values?
-> > 
-> > You'll get an email from my system when it is accepted, wait a day or so
-> > before worrying about that.  And then send new patches on top of them
-> > then.
-> > 
-> Thanks for the clarification Greg. I will wait for the confirmation
-> email from your system then send the new patches shortly afterwards.
-> 
-> thanks,
-> Dorcas
-> > thanks,
-> > 
-> > greg k-h
-Hello,
- I have realised there was an error in the commit message subject and body for this patch. I had put "Staging: sm750fb: Rename displayControlAdjust_SM750E" instead of "Staging: sm750fb: Rename displayControlAdjust_SM750LE".I had forgotten the L in SM750LE. I have modified the commit message using git commit --amend to correct the mistake. I have seen the patch has been accepted, however, I am not sure whether the change in the commit message will reflect once the patch is merged. Please guide on what to do next. I am really sorry for the inconvenience.
+This patchset adds support for Vendor Defined Error types in the einj
+module by exporting a binary blob file in module's debugfs directory.
+Userspace tools can write OEM Defined Structures into the blob file as
+part of injecting Vendor defined errors. Similarly, the very tools can
+also read from the blob file for information, if any, provided by the
+firmware after error injection.
 
- Best,
- Dorcas
+The first patch refactors available_error_type_show() function to ensure
+all errors supported by the platform are output through einj module's
+available_error_type file in debugfs.
+
+The second patch adds a write callback for binary blobs created through
+debugfs_create_blob() API.
+
+The third patch fixes the permissions of panicinfo file in debugfs to
+ensure it remains read-only
+
+The fourth patch adds the required support i.e. establishing the memory
+mapping and exporting it through debugfs blob file for Vendor-defined
+Error types.
+
+Changes in v2:
+ - Split the v1 patch, as was recommended, to have a separate patch for
+changes in debugfs.
+ - Refactored available_error_type_show() function into a separate patch.
+ - Changed file permissions to octal format to remove checkpatch warnings.
+
+Changes in v3:
+ - Use BIT macro for generating error masks instead of hex values since
+ACPI spec uses bit numbers.
+ - Handle the corner case of acpi_os_map_iomem() returning NULL through
+a local variable to a store the size of OEM defined data structure.
+
+Changes in v4:
+ - Fix permissions for panicinfo file in debugfs.
+ - Replace acpi_os_map_iomem() and acpi_os_unmap_iomem() calls with
+   acpi_os_map_memory() and acpi_os_unmap_memory() respectively to avert
+   sparse warnings as suggested by Alexey.
+
+Changes in v5:
+ - Change permissions of the "oem_error" file, being created in einj
+   module's debugfs directory, from "w" to "rw" since system firmware
+   in some cases might provide some information through OEM-defined
+   structure for tools to consume.
+ - Remove Reviewed-by: Alexey Kardashevskiy <aik@amd.com> from the
+   fourth patch since permissions of the oem_error file have changed.
+ - Add Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org> for
+   second and third patch.
+ - Rebase on top of tip master.
+
+Avadhut Naik (4):
+  ACPI: APEI: EINJ: Refactor available_error_type_show()
+  fs: debugfs: Add write functionality to debugfs blobs
+  platform/chrome: cros_ec_debugfs: Fix permissions for panicinfo
+  ACPI: APEI: EINJ: Add support for vendor defined error types
+
+ drivers/acpi/apei/einj.c                  | 67 ++++++++++++++++-------
+ drivers/platform/chrome/cros_ec_debugfs.c |  2 +-
+ fs/debugfs/file.c                         | 28 ++++++++--
+ 3 files changed, 70 insertions(+), 27 deletions(-)
+
+-- 
+2.34.1
+
