@@ -2,123 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7DF7CCB53
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 20:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91B87CCB56
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 20:55:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343849AbjJQSzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 14:55:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45208 "EHLO
+        id S1344158AbjJQSzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 14:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235020AbjJQSzF (ORCPT
+        with ESMTP id S1343885AbjJQSzH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 14:55:05 -0400
-Received: from cvs.openbsd.org (cvs.openbsd.org [199.185.137.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A69FC;
-        Tue, 17 Oct 2023 11:55:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; s=selector1; bh=nltAwsLnVc
-        o8Ol3OOUaPBGv1UdYJKAJvkuezLI48KVs=; h=date:references:in-reply-to:
-        subject:cc:to:from; d=openbsd.org; b=8xwIonPTgs5mDltwxve/VanHgI0S5pOMV
-        r3DRia+EKAbNalzQ8JRX2Amk9L1RYwHUWowf+ECZ+JuhNYSGBSpYlbBgfgX86UGBTCXjoH
-        wwbJhZOx/gCpNq6wZSObg695vA1FRW9rLvSWVfTKdOjot3/uWB7YUedZPcn2BlPA6o/nAK
-        43Re55EP1rS//OSdUm8FY5T34SaTav9Ufb4evq1lyA38xQr3BWH1I6iKvb0Iqz0CFXqgfJ
-        wM2LaB0vIkEnB8kWbahyz2vV8TsQD5Y7z9bHZB2nyy6YyOdMTPj4kEWNF75aZxLv5O40kx
-        YyBV47e7tbtJPiwZhUTzq8rNQ1raw==
-Received: from cvs.openbsd.org (localhost [127.0.0.1])
-        by cvs.openbsd.org (OpenSMTPD) with ESMTP id 0883e4b1;
-        Tue, 17 Oct 2023 12:55:01 -0600 (MDT)
-From:   "Theo de Raadt" <deraadt@openbsd.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-cc:     Jeff Xu <jeffxu@google.com>, jeffxu@chromium.org,
-        akpm@linux-foundation.org, keescook@chromium.org,
-        sroettger@google.com, jorgelo@chromium.org, groeck@chromium.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, jannh@google.com, surenb@google.com,
-        alex.sierra@amd.com, apopple@nvidia.com,
-        aneesh.kumar@linux.ibm.com, axelrasmussen@google.com,
-        ben@decadent.org.uk, catalin.marinas@arm.com, david@redhat.com,
-        dwmw@amazon.co.uk, ying.huang@intel.com, hughd@google.com,
-        joey.gouly@arm.com, corbet@lwn.net, wangkefeng.wang@huawei.com,
-        Liam.Howlett@oracle.com, lstoakes@gmail.com, willy@infradead.org,
-        mawupeng1@huawei.com, linmiaohe@huawei.com, namit@vmware.com,
-        peterx@redhat.com, peterz@infradead.org, ryan.roberts@arm.com,
-        shr@devkernel.io, vbabka@suse.cz, xiujianfeng@huawei.com,
-        yu.ma@intel.com, zhangpeng362@huawei.com, dave.hansen@intel.com,
-        luto@kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [RFC PATCH v1 0/8] Introduce mseal() syscall
-In-reply-to: <CAHk-=wjS=xg12RVQdTNxEurjo21eXQBQO0D5My6Aox4LCfsO1A@mail.gmail.com>
-References: <20231016143828.647848-1-jeffxu@chromium.org> <CAHk-=whFZoap+DBTYvJx6ohqPwn11Puzh7q4huFWDX9vBwXHgg@mail.gmail.com> <CALmYWFtTDAb_kpZdAe_xspqwNgK1NWJmjTxaTC=jDEMzfe297Q@mail.gmail.com> <CAHk-=wj87GMTH=5901ob=SjQqegAm2JYBE7E4J7skJzE64U-wQ@mail.gmail.com> <55960.1697566804@cvs.openbsd.org> <CAHk-=wjS=xg12RVQdTNxEurjo21eXQBQO0D5My6Aox4LCfsO1A@mail.gmail.com>
-Comments: In-reply-to Linus Torvalds <torvalds@linux-foundation.org>
-   message dated "Tue, 17 Oct 2023 11:38:19 -0700."
+        Tue, 17 Oct 2023 14:55:07 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99C18F5;
+        Tue, 17 Oct 2023 11:55:05 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id F31EA1F8BA;
+        Tue, 17 Oct 2023 18:55:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1697568904; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uLnZcT7m+cR+ihtjfCvEhepXOzUUYRn52NrGv1VdUws=;
+        b=meIVwqTadDKAQhLi24bvP59mxV0LhjzH3G5WlmQV3YNY1/6YBi1D/D3bFWofMsuMxG9FoB
+        maWj+eH9qeSQNFgUH1+rO4jn9v1r41gRjlmP1YayH2fzln+iUGaCiu3Ojsa1D0SvxcJpli
+        5I+MMZyv9W3FOYI3kM7hSWGo0Rpj1qA=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A316413584;
+        Tue, 17 Oct 2023 18:55:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id qH8QJ4fYLmXGIgAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Tue, 17 Oct 2023 18:55:03 +0000
+Date:   Tue, 17 Oct 2023 20:55:02 +0200
+From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To:     Haitao Huang <haitao.huang@linux.intel.com>
+Cc:     jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        sohil.mehta@intel.com, zhiquan1.li@intel.com,
+        kristen@linux.intel.com, seanjc@google.com, zhanb@microsoft.com,
+        anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+        yangjie@microsoft.com
+Subject: Re: [PATCH v5 01/18] cgroup/misc: Add per resource callbacks for CSS
+ events
+Message-ID: <k4hvow3juyelizqrlwdjmuu57kscvcwanu3xhpeuqnppynzrdu@hmxuvgefqpo5>
+References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
+ <20230923030657.16148-2-haitao.huang@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <68270.1697568901.1@cvs.openbsd.org>
-Date:   Tue, 17 Oct 2023 12:55:01 -0600
-Message-ID: <19404.1697568901@cvs.openbsd.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="do7f6ref46fav4tn"
+Content-Disposition: inline
+In-Reply-To: <20230923030657.16148-2-haitao.huang@linux.intel.com>
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -8.66
+X-Spamd-Result: default: False [-8.66 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.20)[multipart/signed,text/plain];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[20];
+         SIGNED_PGP(-2.00)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+,1:+,2:~];
+         MID_RHS_NOT_FQDN(0.50)[];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-2.96)[99.83%]
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-> On Tue, 17 Oct 2023 at 11:20, Theo de Raadt <deraadt@openbsd.org> wrote:
-> >
-> > The only case where the immutable marker is ignored is during address space
-> > teardown as a result of process termination.
-> 
-> .. and presumably also execve()?
+--do7f6ref46fav4tn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Ah yes of course that also.
+On Fri, Sep 22, 2023 at 08:06:40PM -0700, Haitao Huang <haitao.huang@linux.=
+intel.com> wrote:
+> @@ -276,10 +276,13 @@ static ssize_t misc_cg_max_write(struct kernfs_open=
+_file *of, char *buf,
+> =20
+>  	cg =3D css_misc(of_css(of));
+> =20
+> -	if (READ_ONCE(misc_res_capacity[type]))
+> +	if (READ_ONCE(misc_res_capacity[type])) {
+>  		WRITE_ONCE(cg->res[type].max, max);
+> -	else
+> +		if (cg->res[type].max_write)
+> +			cg->res[type].max_write(cg);
+> +	} else {
+>  		ret =3D -EINVAL;
+>
+> +	}
 
-> I do like us starting with just "mimmutable()", since it already
-> exists. Particularly if chrome already knows how to use it.
+Is it time for a misc_cg_mutex? This given no synchronization guarantees
+to implementors of max_write. (Alternatively, document it that the
+callback must implement own synchronization.)
 
-Well, our chrome fork knows how to use it.  Robert Nagy in our group maintains
-1280 patches to make chrome work on OpenBSD.  Google ignores them and will not
-upstream them.  Some of these changes are security related, and they ignore
-them.  Other changes are to cope with security work we've done on our own,
-for example: JIT changes from Stephen@google for mandatory IBT which google
-hasn't upstreamed yet, impacts due to PROT_EXEC-only mappings, etc.
 
-But the only chrome diff required for mimmutable is for that v8_flags thing
-I described.   And the same issue would need handling for mseal().  Introducing
-the new "mutable" ELF section is probably going to be a bigger fuss than the
-system call after mprotect(PROT_READ)....
+Thanks,
+Michal
 
-> Maybe add a flag field (require it to be zero initially) just to allow
-> any future expansion. Maybe the chrome team has *wanted* to have some
-> finer granularity thing and currently doesn't use mimmutable() in some
-> case?
+--do7f6ref46fav4tn
+Content-Type: application/pgp-signature; name="signature.asc"
 
-There's only one feature I can think of, and we already do it right now,
-documented in our manual page:
+-----BEGIN PGP SIGNATURE-----
 
-CAVEATS
-     At present, mprotect(2) may reduce permissions on immutable pages marked
-     PROT_READ | PROT_WRITE to the less permissive PROT_READ.  This one-way
-     operation is permitted for an introductory period to observe how software
-     uses this mechanism.  It may change to require explicit mutable region
-     annotation with __attribute__((section(".openbsd.mutable"))) and explicit
-     calls to mimmutable().
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZS7YhAAKCRAGvrMr/1gc
+jtZGAP9yG0GJSSTgY45EqfHcfkzqyBg2KvAFA7gx5WotIRHTkwD+Mo6bB7HpvmUH
+8ZJECbI9T8hXKU0Ff2O/oEC4KwR3Mw8=
+=5qrs
+-----END PGP SIGNATURE-----
 
-We had something which needed this behaviour during the development
-transition.  It is exlusively mprotect RW -> R, no other transitions
-allowed.
-
-But once the transition was done, we don't need it anymore.  I want to
-delete it, because it is a bit of a trap.  It still fails closed from an
-attack perspective, but...
-
-What worries me is a piece of code reached by mistake can do a
-mprotect(lowering), not receive -1 EPERM, and carry on running..  I'd
-prefer the first time you touch a mapping in the wrong way, you receive
-indication of error.  This only applies applies to mprotect() acting up
-on a region so the argument is a bit weak, due to mprotect() return
-value checking being about as rare as unicorns.
-
-Also, it would be a pain for OpenBSD to transition to adding a 0 flag.
-I would need to see real cause not theory.
+--do7f6ref46fav4tn--
