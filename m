@@ -2,119 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B457CBA8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 08:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FD7F7CBA93
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 08:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234519AbjJQGJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 02:09:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40002 "EHLO
+        id S234490AbjJQGKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 02:10:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbjJQGJY (ORCPT
+        with ESMTP id S234446AbjJQGKs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 02:09:24 -0400
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C385F0;
-        Mon, 16 Oct 2023 23:09:22 -0700 (PDT)
-Received: by mail-vs1-xe34.google.com with SMTP id ada2fe7eead31-457c82cd87bso1509298137.0;
-        Mon, 16 Oct 2023 23:09:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697522961; x=1698127761; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uPXFduoWlVMCOIs4GLKjZY6fct3g0aANrZC/23nKxxk=;
-        b=BEizajlBD9QkaXzVO48GuYv08HYu8TjsNK1qPq6gYKGfd/2C0Zk/l/SfpscJiGbdZx
-         Q8qaV9Obt0Kf/JvuPojyJAvguRGVrjAtf4C4bv6Zs16+OX4sL3+zdi1GoDrwg9idA9oF
-         4q3yBAkBRunWNL9nLwuxGOZTOfIUIToasyFpbwXjVRKCwulBK91D4M7JbJBF92A3Nf1r
-         3r3E2fQ2Klhp0OceqLL1pGayKYgSMbeU6oSnhhuJ8GnX0HrKiUR6R5kRQQqQazcV5MgB
-         e7e7OnD8GAuckI7kobAq8MlLWjyqSlq/x/qQ0SEbGq/fx2OGhXAu6ZFJGQQDEbzckPew
-         igDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697522961; x=1698127761;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uPXFduoWlVMCOIs4GLKjZY6fct3g0aANrZC/23nKxxk=;
-        b=fhQJ5Z8Lx5kEFD0zj278nnuszCuBa60ReMFR0Ku9x0fb47w/N1wQqy/QGoblsWOHE2
-         h+Bt6MsGteGyJjIRdQM79DbxuE2fj/oeXLiT2mRxHXgQnlTb4drvnGg5whz2uYBEnkeH
-         aawlc1J3Pnqvh0MijLnf9a+D/2DYghiEF07imSzS/DlUsswHt2El1cAEik0xzjrBDxVB
-         bMf9TogPJlUUVhje6k/Aps70Ojh0wwxMHctzAvgEzop8McaQZzBe5m1k5ZCsFKc7snGm
-         FaG+Hs4lU6VOV9V1dWPf/U7klXOXuR11CYjU+Fg//he4Bw0PmDVH8dFSoUtAweOJbeua
-         3RSw==
-X-Gm-Message-State: AOJu0YxEwW7EoC4/K5PlS+KR3RL5/DwqrARtRZyUMAPVfzgSFnbE8+so
-        KbFM+50uIx1W03vqDTxu9/2iHYXoKgptZAqIGHk=
-X-Google-Smtp-Source: AGHT+IH8hL2X8/digTrMWOwMEsoyNF/t/oyd/Gh1bf3U5tfD/mOoYZcD6ZsaC/OjyP8aB22nJYWaztN6jdJAwpGp4OI=
-X-Received: by 2002:a67:cd0f:0:b0:457:c445:69f3 with SMTP id
- u15-20020a67cd0f000000b00457c44569f3mr1145850vsl.34.1697522961289; Mon, 16
- Oct 2023 23:09:21 -0700 (PDT)
+        Tue, 17 Oct 2023 02:10:48 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B11FEAB
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 23:10:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697523046; x=1729059046;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=fvSUNe12MrPApyrnvzaikJXkNdd9PaAh1gP0bEv8+3k=;
+  b=EfuxwCgo9ixVdJcE6mbNaM8evwIwOcJIs0qzOkSD/JVTSwe3mTsWWAoy
+   KqnSDzwEYDM/a98tNXiwFGUJf/21ghA8doMZL+hajDYhgceZYPIMFOqvO
+   HQs/xF3Kww5jOd34mfauabgnp7rqEopLUZ2/D5f3qxA72N4YHxtElc0iS
+   tpNG3qFYaN/d9SDQJ6n/8j4Y5zkMh7VWUL5jIoGysKl/MUKufv9NQ3CSJ
+   pM1RjCOSiuytWn6C+BNt3OgBpWPKCAf3pUGNK3ALaVh3mSrPc6Gos473N
+   lhFUAp/P4hEHIMjQkDjSpAIpf+v/7ziTFx441JiB9nFUhKNxQpuXXQdHq
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="365059482"
+X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
+   d="scan'208";a="365059482"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 23:10:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="826303833"
+X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
+   d="scan'208";a="826303833"
+Received: from mylly.fi.intel.com (HELO [10.237.72.161]) ([10.237.72.161])
+  by fmsmga004.fm.intel.com with ESMTP; 16 Oct 2023 23:10:32 -0700
+Message-ID: <696dbfdc-1b08-446d-8983-dda09d861f59@linux.intel.com>
+Date:   Tue, 17 Oct 2023 09:10:31 +0300
 MIME-Version: 1.0
-References: <20230913151606.69494-1-romain.perier@gmail.com> <169746807623.26616.11393539981836060067.b4-ty@bootlin.com>
-In-Reply-To: <169746807623.26616.11393539981836060067.b4-ty@bootlin.com>
-From:   Romain Perier <romain.perier@gmail.com>
-Date:   Tue, 17 Oct 2023 08:09:10 +0200
-Message-ID: <CABgxDoLd7F9kZXsoXtwizPgU6N905XdviEjtoyu6-dARGbyHYw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] Add RTC for MStar SSD20xD SoCs
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-rtc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/5] i3c: add actual in i3c_priv_xfer
+To:     Frank Li <Frank.Li@nxp.com>, alexandre.belloni@bootlin.com,
+        miquel.raynal@bootlin.com, conor.culhane@silvaco.com,
+        joe@perches.com, linux-i3c@lists.infradead.org,
+        linux-kernel@vger.kernel.org, imx@lists.linux.dev
+References: <20231016154632.2851957-1-Frank.Li@nxp.com>
+ <20231016154632.2851957-3-Frank.Li@nxp.com>
+Content-Language: en-US
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+In-Reply-To: <20231016154632.2851957-3-Frank.Li@nxp.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le lun. 16 oct. 2023 =C3=A0 16:55, Alexandre Belloni
-<alexandre.belloni@bootlin.com> a =C3=A9crit :
->
->
-> On Wed, 13 Sep 2023 17:16:03 +0200, Romain Perier wrote:
-> > This patches series adds a new driver for the RTC found in the Mstar
-> > SSD202D SoCs. It adds a basic rtc driver, the corresponding devicetree
-> > bindings.
-> >
-> > The rtctest (from selftests) has been passed on this driver, with the
-> > following output:
-> >
-> > [...]
->
-> Applied, thanks!
+Hi
 
-Hi,
-
-Thanks!
-
->
-> [1/3] rtc: Add support for the SSD202D RTC
->       commit: ebf6255868e6141c737cacb8d62b0b347f344877
-> [2/3] dt-bindings: rtc: Add Mstar SSD202D RTC
->       commit: cfb67623ce281e045ec11e3eddb1b68b879b53a1
->
-> Best regards,
-
-Ah , you also merged dt-bindings, Conor (from dt maintainers) prefers
-trivial-rtc.yaml, it makes sense with the current driver.
-I planned to make the change for trivial-rtc in v3, so I can adapt the
-commit and rename  mstar,ssd202d-rtc.yaml to trivial-rtc.yaml, what do
-you think ?
-
-Regards,
-Romain
-
-
-
->
-> --
-> Alexandre Belloni, co-owner and COO, Bootlin
-> Embedded Linux and Kernel engineering
-> https://bootlin.com
+On 10/16/23 18:46, Frank Li wrote:
+> In MIPI I3C Specification:
+> 
+> "Ninth Bit of SDR Target Returned (Read) Data as End-of-Data: In I2C, the
+> ninth Data bit from Target to Controller is an ACK by the Controller. By
+> contrast, in I3C this bit allows the Target to end a Read, and allows the
+> Controller to Abort a Read. In SDR terms, the ninth bit of Read data is
+> referred to as the T-Bit (for ‘Transition’)"
+> 
+> I3C allow devices early terminate data transfer. So need "actual" field to
+> indicate how much get by i3c_priv_xfer.
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>   include/linux/i3c/device.h | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/include/linux/i3c/device.h b/include/linux/i3c/device.h
+> index 90fa83464f00..f2fa7ee5d96d 100644
+> --- a/include/linux/i3c/device.h
+> +++ b/include/linux/i3c/device.h
+> @@ -66,6 +66,7 @@ struct i3c_priv_xfer {
+>   		void *in;
+>   		const void *out;
+>   	} data;
+> +	u16 actual;
+>   	enum i3c_error_code err;
+>   };
+>   
+Would this be more clear if named as "actual_len" and put next after 
+"len" field in this structure? Also kerneldoc comment is missing.
