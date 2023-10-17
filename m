@@ -2,169 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6CFC7CC1B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 13:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 365217CC1B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 13:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343495AbjJQLYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 07:24:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37890 "EHLO
+        id S234599AbjJQL1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 07:27:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232134AbjJQLYi (ORCPT
+        with ESMTP id S232134AbjJQL1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 07:24:38 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2064.outbound.protection.outlook.com [40.107.244.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4BDE9F
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 04:24:36 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LPjMaNqxoPyN0dwWTqy9iyFkHpA6ZN7R7IErSQu8tbWbArUzPi/vyhMo8NLG+A9RgcvJYXOJ2mdu3OUfapXifZ/vT5q+VyNH0N1E4kS33ROQDYIH0ZocQhHtYZ2PqFrmBAMh0qdzPZ1UAwwWWVBuWdKZz0Ds2V2GyszEfPWSxMBNVhUgcHSWRaKzGxsrp/bNeD9gqHAJYpC1Oos8aAnF3JanDNc/r4R44n5OKmaddpbhfcqmTqNB5dNQEfceoQKk9P1202R6no0ZHUgtrmbzsez0f+pbs0J7WNd0sii3TcJuzTZymbPiwZCDSqbO+FJrXk5mXbDzxwTa7RfXD0w9JA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6ox4oP6p7w6EH27hGV/bl+xW8mkwoKBfrLJH8zDSPeI=;
- b=DFC8nX9Fdf01HQu2Po8Z+laS9tBmNrD0ALT+1xr+cICPIsQASNbXxAjwDIHyH8aG16k4EsDkBURSU1v8J8BR+PVb5YuhdM54WCBwZSs1fZb+jZRA7fBCqh6SYiGs4oj06k8ImQltt9diUG65i8kzA0YPhyUvt5kztp2QNaarL3Vq839mls66PJaBkpgDKg/e/L60fV/lgOSSwLty42dnufWDQMRDye4sl5uDsx3do/IdP+tuAQGyUzd9IG2sogkM5KxCfMHJNPz/qxGxkR3vFOhBFFSPwKXvAwn+5XNniUn594YDzbMQwQdkt1VEAVrlAF38I0oAG/kMo9gl6JEfbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6ox4oP6p7w6EH27hGV/bl+xW8mkwoKBfrLJH8zDSPeI=;
- b=fpUXvGL1yfGXwnDyk+nOY7QtYxEdjAK+sSygRCOYTOdC6cqJSpjs8Z2MmkL9KTIplyoezyVh1SO2P/xQv7qw/u9k12ByBkwyiWoaAU/GcRRbvFDKsg9DrnLTycM6D4ec7GB38//+oJ///SIVHrb8WQuJhoatLy9nsN+awGrLhXo=
-Received: from DM4PR12MB7765.namprd12.prod.outlook.com (2603:10b6:8:113::5) by
- IA0PR12MB8280.namprd12.prod.outlook.com (2603:10b6:208:3df::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.47; Tue, 17 Oct
- 2023 11:24:34 +0000
-Received: from DM4PR12MB7765.namprd12.prod.outlook.com
- ([fe80::6d3c:55ac:112d:537e]) by DM4PR12MB7765.namprd12.prod.outlook.com
- ([fe80::6d3c:55ac:112d:537e%4]) with mapi id 15.20.6886.034; Tue, 17 Oct 2023
- 11:24:33 +0000
-From:   "Gangurde, Abhijit" <abhijit.gangurde@amd.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "maz@kernel.org" <maz@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "git (AMD-Xilinx)" <git@amd.com>,
-        "Anand, Harpreet" <harpreet.anand@amd.com>,
-        "Jansen Van Vuuren, Pieter" <pieter.jansen-van-vuuren@amd.com>,
-        "Agarwal, Nikhil" <nikhil.agarwal@amd.com>,
-        "Simek, Michal" <michal.simek@amd.com>,
-        "srivatsa@csail.mit.edu" <srivatsa@csail.mit.edu>,
-        "Gupta, Nipun" <Nipun.Gupta@amd.com>
-Subject: RE: [PATCH v4] cdx: add MSI support for CDX bus
-Thread-Topic: [PATCH v4] cdx: add MSI support for CDX bus
-Thread-Index: AQHZ5Ld0MJVuHirK7E+yMAFiVI63j7A7ItEAgBLqy5A=
-Date:   Tue, 17 Oct 2023 11:24:33 +0000
-Message-ID: <DM4PR12MB7765E0AE903633FD575E1A518FD6A@DM4PR12MB7765.namprd12.prod.outlook.com>
-References: <20230911135259.14046-1-nipun.gupta@amd.com>
- <2023100531-matron-oversold-4a73@gregkh>
-In-Reply-To: <2023100531-matron-oversold-4a73@gregkh>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_64e4cbe8-b4f6-45dc-bcba-6123dfd2d8bf_ActionId=4a10bf14-e978-42f8-a23f-0e8fe7dfc4a2;MSIP_Label_64e4cbe8-b4f6-45dc-bcba-6123dfd2d8bf_ContentBits=0;MSIP_Label_64e4cbe8-b4f6-45dc-bcba-6123dfd2d8bf_Enabled=true;MSIP_Label_64e4cbe8-b4f6-45dc-bcba-6123dfd2d8bf_Method=Privileged;MSIP_Label_64e4cbe8-b4f6-45dc-bcba-6123dfd2d8bf_Name=Non-Business-AIP
- 2.0;MSIP_Label_64e4cbe8-b4f6-45dc-bcba-6123dfd2d8bf_SetDate=2023-10-17T11:23:53Z;MSIP_Label_64e4cbe8-b4f6-45dc-bcba-6123dfd2d8bf_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM4PR12MB7765:EE_|IA0PR12MB8280:EE_
-x-ms-office365-filtering-correlation-id: 46a3198f-b126-4d03-50aa-08dbcf03a354
-x-ld-processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: X/3MWziOZj3i3iznNTPadlpv7j5g+CCQ+PP6gVTOsO4pvjHfgyx8hnZXqG2FBLJR2vevStqXhYo/Zi5RIcHy//2lzAe1eL9JZ43tYtALSy3ly806KV2ax+lLTy5NtBc99U9GPpaUj0MJOT+JZPEoT1SSs/lWizS9PjhbccSu9l3ClswVpxJJf+NKeTcnZE1L9G9qn8ROSRvA+Thrv3UCcbaUmqTOvEqsX7RMvp+G2WW0PPtMZIo40XJMN7bnGDlhz8IBXYwExmAr2fFzE2hsK/X2usu4F775fsTgiBSBRAAm8T+byVay2HbQS84Ws7e0to7i2kCYgoEV/b/VL0iQGHPZ7Pb0n+vp24CkSW/+zYj7L76SLAEI0bUoHn1PpvFrf4grMbCiEGpW2KDgCV2mL+Z+emtF28EoEfxLdnNszMO0LzcxxMWR++bQbtD14OrShzh7BVUcJLnmrwcB48/nCm5IQj2ZDQoEGGa0kJKCjwi5dKkwbm8gv9bNK2dZvfDqXIGDuyld5imqW84pyyaxNzmL0L8VG6B2q21U8a/z1FsGfOBWaijA6Qiz15D1iVZ6PCCwG/lsZEbqE2UXJa+wxelH7z4qXyrxv1xQHBCjOCKmvQpPO2MlcBIGYl0p524L
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB7765.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(136003)(366004)(396003)(39860400002)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(86362001)(33656002)(55016003)(54906003)(66946007)(64756008)(76116006)(66446008)(66556008)(6916009)(9686003)(38100700002)(66476007)(38070700005)(122000001)(8936002)(71200400001)(316002)(83380400001)(6506007)(7696005)(8676002)(4326008)(478600001)(2906002)(5660300002)(41300700001)(52536014);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?HOf71twDyX58JPQHelYDCXq30k4KazEgCLv0qF2WjT4IIhqD+gNZ8e2D544C?=
- =?us-ascii?Q?KGBh8Aw3NgDDOgkTyLIatUfH2OMAx9O/A88J5yADVjVRIZoHKExbtdOO18nn?=
- =?us-ascii?Q?ZOyLGGrH4ZpHVfSy3zmxh/YW3qYZQfmkGMx14Lmpybcm5oE7nwzJHN0kdWHP?=
- =?us-ascii?Q?G9Og5L3aov2+cC+VQaqvHPks8pjkOrYXcZ8vD9H2cy7n5Y6sjQTCazGwZN5I?=
- =?us-ascii?Q?WJFdLzV6LTkaiK4yJMA8sfx7e29hF9OaKV2zuF/WuRE9/J/qHUBDSSZwlWxY?=
- =?us-ascii?Q?T6aLdoCoBnOV6ZqbTnCJv8B3JnL4KlQpsOCDJwG2rCKOnRZSXk+1q1sOwbwk?=
- =?us-ascii?Q?hZvQoIsoA6cd7b6phtRKAVQ+uWQgWN4LwMnB9f7/rBZDayCIkiQXLwsDOrIA?=
- =?us-ascii?Q?mVh6NqHsZHwHoE5+AEfvCHIbFQZDsxr2lvXUwD0DAGq/SojiEKLpz0L6J7y8?=
- =?us-ascii?Q?0ZIk7poi8WmFNpNt/B0nJ91Sd5ldU/k77obsgLzo9lgx1Kaouu201Hnw91UO?=
- =?us-ascii?Q?xEoVCf7kgiN6FbJk46tJkvRDmKfJBLsLatAfCVgPO6QxPUJUm2J0yIoKitKw?=
- =?us-ascii?Q?g7UplvYAOb11ausNhW90lh6tZ1PDRBpraLsTdjnIC0U7cNVznnGYRVALPvi2?=
- =?us-ascii?Q?CrodqQZIJ3v8YCwkA1LGFZZx7QAIore18yZY2MLa9ld8kYAtP4o0Lro9GgnZ?=
- =?us-ascii?Q?+gJhQSBsMb/2CQRvfue7mdQSWJMYPT9/gfJDga+qtaCqzWY31CraNJ9x2J/D?=
- =?us-ascii?Q?Ig444Di8weKR23y0fRTmUbSONFdOkueVsmSildfeCqjynBA/C1hw402fRaZ5?=
- =?us-ascii?Q?ll+s4TtALTWPd9b1m6rDKWjKWMbkan39T8CKi4AQ28LHAF28fD/h1uIgesHD?=
- =?us-ascii?Q?iVJmfe1lDdtB54me//7REIj93QEWvr0dUozB33fTyThwCEF6CnyASCM0bMjD?=
- =?us-ascii?Q?D6LwoF/rFVst42aOnURL2SIlFSpbYJgJCU7bc/9Q9lYArPsWTRmbyXi09z1E?=
- =?us-ascii?Q?cMzVDAbjqKZBQRh5iCrKiypFg/TYpg3VcJ01NTq6XeB3Nzg2NUNziCJzn042?=
- =?us-ascii?Q?h0iCp5ToNz3AB9Z1jeZ6HR0fbx3Ml5iBW9Jr6XpqT7rvAenbk20Wk0rhdM3B?=
- =?us-ascii?Q?gyl0xXXh5+ltxp5fzLeu1fenx68cyETt6uqKSVIDb89bMu2QH6u94skSUeaJ?=
- =?us-ascii?Q?JbcoJyP3cOiqmK0IgL0Lb0YQ0DGjfiol6TeFGM7Sbj/n1oSWOCnnBe7i/dX3?=
- =?us-ascii?Q?7eR8wIW0H6PnuEY2IiXCwLss2kPfUI8EFGzowCaB4RYZGBbwgLAARinNOcNw?=
- =?us-ascii?Q?io2oJ9FltrRKU+GKyRbnkG4MQuIqhfFK2Fv6C3O6b+fNEDOs1aCGvGAiysJm?=
- =?us-ascii?Q?VJlR8fa4Bvp3V5I0ny3EdcIKI5Kl6w0TpLSx65+A3eNQPyC+UX29ebFgpMd0?=
- =?us-ascii?Q?9fGCe8IxZXox4/xtHQMFtNbyN5tVLXR5F6I3ZhijRKYlHfR10U8Oj6egaPgB?=
- =?us-ascii?Q?kIUwKSVU5B13Zuvqrqw0wtIZO+oR1WwW8jIuvR43aUEOEgnM5+Y/Dt7pxEA2?=
- =?us-ascii?Q?/P5evhXMGSoOpOrQMqELJo5yZ+0KNX7eg9BrL8vR8JipwxJpBaMprxYRISIj?=
- =?us-ascii?Q?Zhdvv7m93rktDjg6Zsmxg9M=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 17 Oct 2023 07:27:47 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F2B6B6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 04:27:45 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 93A3E21C7B;
+        Tue, 17 Oct 2023 11:27:43 +0000 (UTC)
+Received: from suse.cz (dhcp108.suse.cz [10.100.51.108])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id EE5D62C5D6;
+        Tue, 17 Oct 2023 11:27:42 +0000 (UTC)
+Date:   Tue, 17 Oct 2023 13:27:42 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v2 3/4] printk: Skip unfinalized records in panic
+Message-ID: <ZS5vrte2OZXcIc9L@alley>
+References: <20231013204340.1112036-1-john.ogness@linutronix.de>
+ <20231013204340.1112036-4-john.ogness@linutronix.de>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB7765.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 46a3198f-b126-4d03-50aa-08dbcf03a354
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Oct 2023 11:24:33.5099
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2TrRdUDHGQW1iXVHMMhPnh8bwByDVH7RJER8sQkUuM9uwyxT7xXgj7QBWWYCX8um/yrynYEQA3All4fLKKYS7w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8280
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231013204340.1112036-4-john.ogness@linutronix.de>
+X-Spamd-Bar: +++++++++++++++
+Authentication-Results: smtp-out1.suse.de;
+        dkim=none;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
+        spf=fail (smtp-out1.suse.de: domain of pmladek@suse.com does not designate 149.44.160.134 as permitted sender) smtp.mailfrom=pmladek@suse.com
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [15.00 / 50.00];
+         ARC_NA(0.00)[];
+         R_SPF_FAIL(1.00)[-all];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
+         RCPT_COUNT_FIVE(0.00)[5];
+         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
+         VIOLATED_DIRECT_SPF(3.50)[];
+         MX_GOOD(-0.01)[];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MID_RHS_NOT_FQDN(0.50)[];
+         R_DKIM_NA(0.20)[];
+         RCVD_COUNT_TWO(0.00)[2];
+         MIME_TRACE(0.00)[0:+];
+         BAYES_HAM(-3.00)[100.00%]
+X-Spam-Score: 15.00
+X-Rspamd-Queue-Id: 93A3E21C7B
+X-Spam: Yes
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +}
-> > +
-> > +static struct irq_chip cdx_msi_irq_chip =3D {
-> > +	.name			=3D "CDX-MSI",
-> > +	.irq_mask		=3D irq_chip_mask_parent,
-> > +	.irq_unmask		=3D irq_chip_unmask_parent,
-> > +	.irq_eoi		=3D irq_chip_eoi_parent,
-> > +	.irq_set_affinity	=3D msi_domain_set_affinity,
-> > +	.irq_write_msi_msg	=3D cdx_msi_write_msg,
-> > +	.irq_bus_lock		=3D cdx_msi_write_irq_lock,
-> > +	.irq_bus_sync_unlock	=3D cdx_msi_write_irq_unlock
-> > +};
-> > +
-> > +int cdx_msi_domain_alloc_irqs(struct device *dev, unsigned int irq_cou=
-nt)
-> > +{
-> > +	int ret;
-> > +
-> > +	ret =3D msi_setup_device_data(dev);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	ret =3D msi_domain_alloc_irqs_range(dev, MSI_DEFAULT_DOMAIN,
-> > +					  0, irq_count - 1);
-> > +	if (ret)
-> > +		dev_err(dev, "Failed to allocate IRQs: %d\n", ret);
-> > +
-> > +	return ret;
-> > +}
-> > +EXPORT_SYMBOL_GPL(cdx_msi_domain_alloc_irqs);
->=20
-> meta-comment, CDX really should have a module namespace one of these
-> days, right?
->=20
+On Fri 2023-10-13 22:49:39, John Ogness wrote:
+> Normally a reader will stop once reaching an unfinalized record.
+> However, when a panic happens, writers from other CPUs (or an
+> interrupted context on the panic CPU) may have been writing a
+> record and were unable to finalize it. The panic CPU will
+> reserve/commit/finalize its panic records, but these will be
+> located after the unfinalized records. This results in panic()
+> not flushing the panic messages.
+> 
+> Add a special case to printk_get_next_message() to allow
+> skipping over unfinalized records if on the panic CPU.
+> 
+> Also refine the documentation of the ringbuffer reading
+> functions to clarify that failure may also be due to an
+> unfinalized record.
 
-Will include the module namespace change in other cdx patch series.
+Great catch!
 
-Thanks,
-Abhijit
+It took me some time to think about various possible scenarios.
+As a result, I suggest to update some comments, see below.
+
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -2813,8 +2813,19 @@ static bool printk_get_next_message(struct printk_message *pmsg, u64 seq,
+>  	else
+>  		prb_rec_init_rd(&r, &info, outbuf, outbuf_sz);
+>  
+> -	if (!prb_read_valid(prb, seq, &r))
+> -		return false;
+> +	while (!prb_read_valid(prb, seq, &r)) {
+> +		if (this_cpu_in_panic() && seq < prb_next_seq(prb)) {
+> +			/*
+> +			 * The record @seq is not finalized and there may be
+
+"may be" is a bit misleading. If I count it correctly then there
+"are" more records when seq < prb_next_seq().
+
+> +			 * more records in the ringbuffer. Since this is the
+> +			 * panic CPU, skip over the unfinalized record and
+> +			 * try to read a finalized record that may follow.
+> +			 */
+
+It took me quite some time to understand whether this is right or not.
+It is partly because the comment describes what the code does but it
+does not describe the motivation and why it is safe. I wonder
+if the following is better:
+
+			/*
+			 * Skip non-finalized records when emitting messages
+			 * from panic CPU. They might never get finalized.
+			 * Note that new messages printed on panic CPU
+			 * are finalized when we are here.
+			 */
+
+But wait. Are the messages printed in panic context always finalized?
+What about messages without the trailing newline printed?
+
+Aha, they actually are finalized because prb_next_seq() would return sequence
+number of the record in "desc_committed" state when there is
+a message without newline and we skip only seq < prb_next_seq().
+So I would update the comment, something like:
+
+			/*
+			 * Skip non-finalized records when emitting messages
+			 * from panic CPU. They might never get	finalized.
+			 *
+			 * Note that new messages printed on panic CPU are
+			 * finalized when we are here. The only exception
+			 * might be the last message without trailing newline.
+			 * But it would have the sequence number returned
+			 * by prb_next_seq().
+			 */
+
+Sigh, it is long. But this is a quite tricky situation.
+
+> +			seq++;
+> +		} else {
+> +			return false;
+> +		}
+> +	}
+>  
+>  	pmsg->seq = r.info->seq;
+>  	pmsg->dropped = r.info->seq - seq;
+> diff --git a/kernel/printk/printk_ringbuffer.c b/kernel/printk/printk_ringbuffer.c
+> index 2dc4d5a1f1ff..1bbc008109ef 100644
+> --- a/kernel/printk/printk_ringbuffer.c
+> +++ b/kernel/printk/printk_ringbuffer.c
+> @@ -1876,8 +1876,9 @@ static u64 prb_first_seq(struct printk_ringbuffer *rb)
+>  }
+>  
+>  /*
+> - * Non-blocking read of a record. Updates @seq to the last finalized record
+> - * (which may have no data available).
+> + * Non-blocking read of a record. Updates @seq to the record that was read
+> + * (which may have no data available) or was attempted to be read (in case
+> + * it was unfinalized or non-existent).
+
+I am confused. Well, even the original message was confusing.
+I think about describing it the following way.
+
+  * On input, @seq defines the record which should be read. It might
+  * be updated to a higher value when the requested record has already
+  * been overwritten or when the record had empty data.
+  *
+  * On return, @seq value depends on the situation. It is:
+  *
+  *	- sequence number of the read record on success.
+  *     - sequence number of the first found to-be-finalized record
+  *	  when the input seq number was lower or equal to prb_next_seq().
+  *	- the original value when @seq was invalid, bigger then prb_next_seq().
+
+Sigh, the comment is hairy. Maybe you would find a more elegant way
+to describe the variants.
+
+
+BTW: The support for data-less records were added by the commit
+     ("printk: ringbuffer: support dataless records"). It was
+     needed to handle empty lines: printk("\n"). It is strange
+     that we skip them instead of printing the empty line.
+
+     It looks like a small bug. I might look a it if you agree
+     that it looks like a bug.
+
+>   *
+>   * See the description of prb_read_valid() and prb_read_valid_info()
+>   * for details.
+
+
+Also I would update the above prb_next_seq():
+
+--- a/kernel/printk/printk_ringbuffer.c
++++ b/kernel/printk/printk_ringbuffer.c
+@@ -2012,8 +2012,8 @@ u64 prb_first_valid_seq(struct printk_ringbuffer *rb)
+  * available records should be skipped.
+  *
+  * Context: Any context.
+- * Return: The sequence number of the next newest (not yet available) record
+- *         for readers.
++ * Return: The sequence number of the next newest (not yet finalized or
++ *	   non-existing) record for readers.
+  */
+ u64 prb_next_seq(struct printk_ringbuffer *rb)
+ {
+
