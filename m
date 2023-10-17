@@ -2,79 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCA97CB810
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 03:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A60597CB813
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 03:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233590AbjJQBj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 21:39:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54042 "EHLO
+        id S233655AbjJQBmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 21:42:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231955AbjJQBjz (ORCPT
+        with ESMTP id S231955AbjJQBmy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 21:39:55 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEE9CA7
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 18:39:53 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C217C433C7;
-        Tue, 17 Oct 2023 01:39:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697506793;
-        bh=X9ybuDQ5vbgQfGB4//LGybKQtTMkw3cwEf53bFGt+1Y=;
-        h=Date:From:To:Cc:Subject:From;
-        b=UXsay9+oKoR2UFUHk/EJa60Oe/iDFMndgT6kXv+5jUr5YPgT/Z3lmm2nvhy/h80mz
-         3IMgPXI/g3KPWxXGOxIu1NO196yB91Cb7KXQfdRwI/ZnUR1IXm0/734LDQsIqTDLEo
-         ZokRNbtntshQKDkloz2AQGconlMGqGcv6Pu4eluDUukNK/ZEZgVs3iLAR+am2tBgj2
-         cjOUtneNOUhCg7ANmMNuX8CYV/bGptVYqojfXn2eJ20jSFecxLh+YxeiygSQ3dVab3
-         ejJKN2e46yirnxwzuFMI1NzKysQpekPJJLh/KqpakpBP4nICDFRHhGZxKdt5x31E+l
-         8hUCAdCPldIHQ==
-Date:   Tue, 17 Oct 2023 10:39:49 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [GIT PULL] probes: Fixes for 6.6-rc6
-Message-Id: <20231017103949.3e81d95ecf737e55bdbdf7f3@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 16 Oct 2023 21:42:54 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E7D9B;
+        Mon, 16 Oct 2023 18:42:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=8naKVPna3lePN+LMkirFgKXoaty1PHNEIEp1SVSQuig=; b=TFm1iVUdFPIniQNrmzNuXCwEmc
+        jgUnTn5N4oaH2QxxuSOoB9OabvaYfs6b0v+XOQVSSjM0GdkV8y9+SMIjSbperrCCdjC+wJQ1gWKcK
+        z/ehs2M6rM4YHeaSjcvFrqHq7HdT9RGzKU8/TAUWzJDW31WBJOhqic/d4A6AnWWKySrE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qsZ6Z-002QCm-3D; Tue, 17 Oct 2023 03:42:43 +0200
+Date:   Tue, 17 Oct 2023 03:42:43 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        UNGLinuxDriver@microchip.com,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH net-next v4 5/9] net: dsa: microchip: ksz9477: Add Wake
+ on Magic Packet support
+Message-ID: <e1d812ec-98d1-491a-aa03-ca3d39292c25@lunn.ch>
+References: <20231016141256.2011861-1-o.rempel@pengutronix.de>
+ <20231016141256.2011861-6-o.rempel@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231016141256.2011861-6-o.rempel@pengutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+> -	wol->supported = WAKE_PHY;
+> +	wol->supported = WAKE_PHY | WAKE_MAGIC;
 
-Probes fixes for v6.6-rc6:
+It is clearly racy, but maybe try a ksz_switch_macaddr_get() and only
+if it is successful add WAKE_MAGIC. Then do a
+ksz_switch_macaddr_put(). Given the limitations of the hardware, it
+might help the user understand what the hardware can do.
 
- - Fix fprobe document to add a new ret_ip parameter for callback
-   functions. This has been introduced in v6.5 but the document was not
-   updated.
+But this is not a must.
 
- - Fix fprobe to check the number of active retprobes is not zero. This
-   number is passed from parameter or calculated by the parameter and it
-   can be zero which is not acceptable. But current code only check it is
-   not minus.
-
-
-Please pull the latest probes-fixes-v6.6-rc6 tree, which can be found at:
-
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
-probes-fixes-v6.6-rc6
-
-Tag SHA1: 54b9689eff548f43f5862c43dbd48305c52c0579
-Head SHA1: 700b2b439766e8aab8a7174991198497345bd411
-
-
-Masami Hiramatsu (Google) (2):
-      Documentation: probes: Add a new ret_ip callback parameter
-      fprobe: Fix to ensure the number of active retprobes is not zero
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+    Andrew
