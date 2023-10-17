@@ -2,74 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F3F77CC614
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:42:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B25257CC620
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344068AbjJQOmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 10:42:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58110 "EHLO
+        id S1344107AbjJQOpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 10:45:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233885AbjJQOmG (ORCPT
+        with ESMTP id S1344127AbjJQOpp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 10:42:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D86F1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:41:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697553678;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=01TY56NkyHmcpi7USmUTiXNPdmvd07nV+JUshBS/8os=;
-        b=QFQXjupSpn3kewdP2iv4Mqj/VGdWITumtemGYIE77cdNdcqBhO8orcKnu/8LEpbhM6Qhxg
-        A8EEvw1BVUBPxOVDQZmqBXJajmpdwKKEa2HthFNjGt4hB7OiPbim/CnS1buaA9tsFi1Rjw
-        elLXcABCd5TjnTtqL7mmz/2P9P8r9VM=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-474-462_jQMiOy2DXtGU2VC0VA-1; Tue, 17 Oct 2023 10:41:17 -0400
-X-MC-Unique: 462_jQMiOy2DXtGU2VC0VA-1
-Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-66d120c28afso64819836d6.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:41:16 -0700 (PDT)
+        Tue, 17 Oct 2023 10:45:45 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D0111B
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:45:41 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-32d895584f1so4908536f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:45:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1697553940; x=1698158740; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=+DWlrz0x76UjYkaGdGnLZ2Rh1fZ6zXslYKfY1dC+IHA=;
+        b=qMo6sN7cYVmS6jAa1w0Od1vvUvwGXAgoVLFkjEsaBT0TrKTNFHu+yAIbGOzn1SYw0i
+         Z/doFIDljkUMcHhlvHaEKSvBom4kEb7SHF+KcGU72x5ApYcNs84+NPbEx1npVpbp9O1P
+         Pm1ClnAbipPL/M3EFQMwh9iSNBPPa9VNAYU0biQKM3YGNso82ekvYnEibX62wFY0s34r
+         G5ceVHqUcEZORd7FZB9KkIbfodKBlZOtxA2ZqOxxAIzheOTTmDKtg/UJ/emHpKLkQdja
+         mVWAPkNyXTfF/+2smtTKomwZdZkV/wtaTm61ztd0ITbmfB/4DlMLA2Vq/uEkbq1N5yMP
+         /vCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697553676; x=1698158476;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=01TY56NkyHmcpi7USmUTiXNPdmvd07nV+JUshBS/8os=;
-        b=mAJRq4Aybz2fBjBKoce/Lowh8wOHQyf07U/alC5GWBZJ4mD4rz2GpVKgLD8/RTpb03
-         Hd94s6y48KglYiralSkrbgvh+LmVnLGRJ+g3lxiw2yYIV45MMiEC52Loelk47lQ4DEmo
-         uWuCYK0NCqQOQ4juazvE6b8dlPGd+vQSeMPqG5A7kN5Ra7CUsEsJifBea6b1v+JC25Ay
-         b7pejsJ7FwHKGNbtzndDWJDEHhgY8z5XM/G3ATNgbrQZlAwYcT6BPyvIynQJyRxcjSgv
-         0k/uerNNUnCsQhHx+g9Vr5haxSpRkG2Uh1y4XKWujL9UMUgT7Dei3O6E6TninwnxxDYA
-         1QKQ==
-X-Gm-Message-State: AOJu0YzqkWts2taDildoiyfGL011nU7YBQKBDwqycJO9B9vnqXCkpUGV
-        uWfmZLi5K0S9T3JRRYOs9lBPoCj8xoJN3tJQAnLAqtNZW7pajZleiw7T0865b3lw4kZEmCxt9IY
-        /skGIZ5iZMNPWzAnKuxpU7Qf+Wt5BqZ8U
-X-Received: by 2002:a05:6214:2a4a:b0:66d:476:8940 with SMTP id jf10-20020a0562142a4a00b0066d04768940mr2624118qvb.46.1697553676380;
-        Tue, 17 Oct 2023 07:41:16 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE2i6SRrgyHNlbie20y7iQVcriCE8Zz3D5pXueu8QcrHqFf5kP9qHnVfriktEnojKu84Kku0w==
-X-Received: by 2002:a05:6214:2a4a:b0:66d:476:8940 with SMTP id jf10-20020a0562142a4a00b0066d04768940mr2624099qvb.46.1697553676113;
-        Tue, 17 Oct 2023 07:41:16 -0700 (PDT)
-Received: from fedora (g2.ign.cz. [91.219.240.8])
-        by smtp.gmail.com with ESMTPSA id eu19-20020ad44f53000000b0064f4e0b2089sm600989qvb.33.2023.10.17.07.41.14
+        d=1e100.net; s=20230601; t=1697553940; x=1698158740;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+DWlrz0x76UjYkaGdGnLZ2Rh1fZ6zXslYKfY1dC+IHA=;
+        b=GBLfyYzfHIkdmkZ9n9sY7TQYzkx+QEkMhAuSSuRKetdmKjkwKGBAk6aYGNbUj/8ttS
+         xjZWSvbZ0HofycHurcCO8WIGPl3glIYQ+NnKMbEgVL4DDVF5eBK/t/mT3hwg8gkE7ifd
+         lH0U0qkFCouJ4vcgzphdpgmg/Ds39bSlVX4+2i8VzBHfcQhiVBbgRXvc35J51b3UI1vx
+         82vsJJrM7YxY/IlRIjCo6nyb0VfWLq8Isq8hj2gzCVhlbWmH8QY2qYw8+Z229aD4Rqpq
+         sBBSmEPj2JHQgd4QZOQT1wcYX2Yp59MWparRc3RCf2BlzcyZU6Nl0o9imdG7Jp2hSCva
+         iRtA==
+X-Gm-Message-State: AOJu0Yw8tcwz8B3DTr2RICDT80Tq7+3dZhX1P0aQNDuTDC9yQwwJ+70S
+        0yD03hjLuvOOm0mmVQ4hQb5RRA==
+X-Google-Smtp-Source: AGHT+IHv4tMX6UOg3kp7PY1gGcIQM6g1TDAYAriGkQzPC8aBujNF8FwzAx86QVQ0PfLQQ8q7Fyek6A==
+X-Received: by 2002:adf:f006:0:b0:32c:ea14:89e5 with SMTP id j6-20020adff006000000b0032cea1489e5mr2086062wro.39.1697553939617;
+        Tue, 17 Oct 2023 07:45:39 -0700 (PDT)
+Received: from localhost ([2a01:e0a:3c5:5fb1:93d3:2aab:95bb:3a09])
+        by smtp.gmail.com with ESMTPSA id d18-20020adff2d2000000b0032da40fd7bdsm1836412wrp.24.2023.10.17.07.45.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 07:41:15 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Angelina Vu <angelinavu@linux.microsoft.com>,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com
-Subject: Re: [PATCH] hv_balloon: Add module parameter to configure balloon
- floor value
-In-Reply-To: <1696978087-4421-1-git-send-email-angelinavu@linux.microsoft.com>
-References: <1696978087-4421-1-git-send-email-angelinavu@linux.microsoft.com>
-Date:   Tue, 17 Oct 2023 16:41:13 +0200
-Message-ID: <87jzrl71me.fsf@redhat.com>
+        Tue, 17 Oct 2023 07:45:39 -0700 (PDT)
+References: <20231010062917.3624223-1-xianwei.zhao@amlogic.com>
+ <20231010062917.3624223-4-xianwei.zhao@amlogic.com>
+ <1jil7ax64i.fsf@starbuckisacylon.baylibre.com>
+ <3238e57a-1141-53ad-8170-c6ad9df03acb@amlogic.com>
+ <1jfs29v0n3.fsf@starbuckisacylon.baylibre.com>
+ <8011f0c0-0d21-447f-9a6b-07ede7db8713@amlogic.com>
+User-agent: mu4e 1.8.13; emacs 29.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Chuan Liu <chuan.liu@amlogic.com>,
+        Xianwei Zhao <xianwei.zhao@amlogic.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: Re: [PATCH V2 3/4] clk: meson: c3: add support for the C3 SoC PLL
+ clock
+Date:   Tue, 17 Oct 2023 16:42:25 +0200
+In-reply-to: <8011f0c0-0d21-447f-9a6b-07ede7db8713@amlogic.com>
+Message-ID: <1j34y9ux2l.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,54 +85,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Angelina Vu <angelinavu@linux.microsoft.com> writes:
 
-> Currently, the balloon floor value is automatically computed, but may be
-> too small depending on app usage of memory. This patch adds a balloon_floor
-> value as a module parameter that can be used to manually configure the
-> balloon floor value.
->
-> Signed-off-by: Angelina Vu <angelinavu@linux.microsoft.com>
-> ---
->  drivers/hv/hv_balloon.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/drivers/hv/hv_balloon.c b/drivers/hv/hv_balloon.c
-> index 64ac5bdee3a6..87b312f99b2e 100644
-> --- a/drivers/hv/hv_balloon.c
-> +++ b/drivers/hv/hv_balloon.c
-> @@ -1101,6 +1101,10 @@ static void process_info(struct hv_dynmem_device *dm, struct dm_info_msg *msg)
->  	}
->  }
->  
-> +unsigned long balloon_floor;
-> +module_param(balloon_floor, ulong, 0644);
-> +MODULE_PARM_DESC(balloon_floor, "Memory level (in megabytes) that ballooning will not remove");
-> +
->  static unsigned long compute_balloon_floor(void)
->  {
->  	unsigned long min_pages;
-> @@ -1117,6 +1121,9 @@ static unsigned long compute_balloon_floor(void)
->  	 *    8192       744    (1/16)
->  	 *   32768      1512	(1/32)
->  	 */
-> +	if (balloon_floor)
-> +		return MB2PAGES(balloon_floor);
-> +
->  	if (nr_pages < MB2PAGES(128))
->  		min_pages = MB2PAGES(8) + (nr_pages >> 1);
->  	else if (nr_pages < MB2PAGES(512))
+On Tue 17 Oct 2023 at 22:39, Chuan Liu <chuan.liu@amlogic.com> wrote:
 
-A module parameter is probably useful for debugging but it can hardly be
-applied in production environments as it must be 'one size fits all' and
-e.g. for different VM sizes it can be different (that's the purpose of
-compute_balloon_floor() heuristics). 
 
-In fact, does it has to be statically set? Can we have a sysfs entity so
-this can be a policy (userspace decision)? We can keep the current
-compute_balloon_floor() as the default but users will be able to adjust
-accordingly.
+>>>>> +
+>>>>> +static struct clk_fixed_factor fclk_div2p5_div = {
+>>>>> +     .mult = 2,
+>>>>> +     .div = 5,
+>>>>> +     .hw.init = &(struct clk_init_data){
+>>>>> +             .name = "fclk_div2p5_div",
+>>>>> +             .ops = &clk_fixed_factor_ops,
+>>>>> +             .parent_hws = (const struct clk_hw *[]) {
+>>>>> +                     &fixed_pll.hw
+>>>>> +             },
+>>>>> +             .num_parents = 1,
+>>>>> +     },
+>>>>> +};
+>>>> This one is wrong if I follow the doc.
+>>>> It is supposed to be fixed 8 divider taking it's source directly from
+>>>> the DCO, skipping the OD post divider ... assuming the doc is up to date.
+>>>>
+>>> No, C3 SoC div2p5 is not skipping the OD post divider.
+>> I a bit surprised there would be a frequency multiplier considering the
+>> complexity of it, when skiping a divider is possible HW wise. Are you
+>> sure ?
+> This part confirms with our chip design engineer that fclk_div2p5 here is
+> actually a clock output by a divider with decimal (divider factor is
+> 2.5). The divider factor in clk-divider.c is int, so this description is
+> used in the software. Or what do you suggest would be a better way to
+> describe this type of divider with decimals?
 
--- 
-Vitaly
+It's alright. keep it that way then.
+Consider fixing the doc maybe.
 
+>>>>> +
+>>>>> +static struct clk_regmap fclk_div2p5 = {
+>>>>> +     .data = &(struct clk_regmap_gate_data){
+>>>>> +             .offset = ANACTRL_FIXPLL_CTRL4,
+>>>>> +             .bit_idx = 4,
+>>>>> +     },
+>>>>> +     .hw.init = &(struct clk_init_data) {
+>>>>> +             .name = "fclk_div2p5",
+>>>>> +             .ops = &clk_regmap_gate_ro_ops,
+>>>>> +             .parent_hws = (const struct clk_hw *[]) {
+>>>>> +                     &fclk_div2p5_div.hw
+>>>>> +             },
+>>>>> +             .num_parents = 1,
+>>>>> +     },
+>>>>> +};
+>>>>> +
