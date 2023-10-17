@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7757CCDDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 22:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B8697CCDE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 22:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344382AbjJQUZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 16:25:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40920 "EHLO
+        id S1344433AbjJQUZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 16:25:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234726AbjJQUZb (ORCPT
+        with ESMTP id S234861AbjJQUZb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 17 Oct 2023 16:25:31 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A59989F;
-        Tue, 17 Oct 2023 13:25:29 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A61BA;
+        Tue, 17 Oct 2023 13:25:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1697574330; x=1729110330;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=+c/mkJRcRl/HTZD+PEVBiG6EmvprrHB2jpk4jFyydb0=;
-  b=YOaXpWmqlBQ/fBIZtCORTY+HA8/+90LrE3kyDLgvDrwexUZho+rd1h2P
-   wiDFd/Idu9HUrcVy8Wg2/YZJj9vDqzJ9eRxpzonDM7emQKFbWhadXIMjJ
-   ct8tPeDXtb6AiSlLpxK6aWwKxLeavr6Sc2fpLfKmCFoENW1SpBMg4fHJI
-   eYNWooVl9cXbWr6XlxCEXNL/ihUF0DToa0+qHUjaklJ+cuHv2drrouFL6
-   P9G1HH7gHvoKTv9fjBtMVc4OAJ6snuj2m//1pmhqjaWtNh+o8BsNXKjik
-   7aV8L3B0Ncx0PT62eW8Wrb3IMwx5kOWgU9e7pL4e1MdF0o87IjIWs6LTS
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="7429487"
+  bh=gcF+O4qhVSDzWKyOPqIfGB0MPXeZPkkPdOYMfsrWVF0=;
+  b=OYVqzXze13qHqoLPgXrwAY1F5UxX6jgrbXAmmnmxbiLJ497jgzMcTWai
+   qdfXq9pVmhPDreyTj+WhdVcVJbiNHTjkWvtY4A42/tsaxBTH3dWVjAyLJ
+   QOjIy5W2LYnxzuRil79sygRtMcYlD35iD5q3QnbirkaXZOIY8Fbg7KRpR
+   Jyjo8LefcxdAvOK6Vf2/e61NIEgGUaiwgNoDxdgRpbyfigYnKkWYlCdeS
+   LQnAKXfH5Cv6BGjiMZU1iKfnAJ9EtAEyB2n3c1mLV5NyKFOn867eZ8bSo
+   ka3u0mYopThZlRF0EUZoWqoNxDMIJISGlbLVgdu6N0ZlMYgFR0HxlaXZx
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="7429498"
 X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
-   d="scan'208";a="7429487"
+   d="scan'208";a="7429498"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 13:25:29 -0700
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 13:25:30 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="900040434"
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="900040438"
 X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
-   d="scan'208";a="900040434"
+   d="scan'208";a="900040438"
 Received: from rtdinh-mobl1.amr.corp.intel.com (HELO rpedgeco-desk4.intel.com) ([10.212.150.155])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 13:23:25 -0700
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 13:23:27 -0700
 From:   Rick Edgecombe <rick.p.edgecombe@intel.com>
 To:     x86@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
         dave.hansen@linux.intel.com, hpa@zytor.com, luto@kernel.org,
@@ -48,15 +48,10 @@ To:     x86@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
         thomas.lendacky@amd.com, decui@microsoft.com,
         sathyanarayanan.kuppuswamy@linux.intel.com, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
-Cc:     rick.p.edgecombe@intel.com, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Dave Hansen <dave.hansen@intel.com>
-Subject: [PATCH 01/10] mm: Add helper for freeing decrypted memory
-Date:   Tue, 17 Oct 2023 13:24:56 -0700
-Message-Id: <20231017202505.340906-2-rick.p.edgecombe@intel.com>
+Cc:     rick.p.edgecombe@intel.com
+Subject: [PATCH 02/10] x86/mm/cpa: Reject incorrect encryption change requests
+Date:   Tue, 17 Oct 2023 13:24:57 -0700
+Message-Id: <20231017202505.340906-3-rick.p.edgecombe@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231017202505.340906-1-rick.p.edgecombe@intel.com>
 References: <20231017202505.340906-1-rick.p.edgecombe@intel.com>
@@ -71,96 +66,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When freeing decrypted memory to the page allocator the memory needs to be
-manually re-encrypted beforehand. If this step is skipped, then the next
-user of those pages will have the contents inadvertently exposed to
-the guest, or cause the guest to crash if the page is used in way
-disallowed by HW (i.e. for executable code or as a page table).
+Kernel memory is "encrypted" by default.  Some callers may "decrypt" it
+in order to share it with things outside the kernel like a device or an
+untrusted VMM.
 
-Unfortunately, there are many instance of patterns like:
-set_memory_encrypted(pages);
-free_pages(pages);
+There is nothing to stop set_memory_encrypted() from being passed memory
+that is already "encrypted" (aka. "private" on TDX).  In fact, some
+callers do this because ... $REASONS.  Unfortunately, part of the TDX
+decrypted=>encrypted transition is truly one way*.  It can't handle
+being asked to encrypt an already encrypted page
 
-...or...
+Allow __set_memory_enc_pgtable() to detect already-encrypted memory
+before it hits the TDX code.
 
-if (set_memory_decrypted(addr, 1))
-	free_pages(pages);
+* The one way part is "page acceptance"
 
-This is a problem because set_memory_encrypted() and
-set_memory_decrypted() can be failed by the untrusted host in such a way
-that an error is returned and the resulting memory is shared.
-
-To aid in a tree-wide cleanup of these callers, add a
-free_decrypted_pages() function that will first try to encrypt the pages
-before returning them. If it is not successful, have it leak the pages and
-warn about this. This is preferable to returning shared pages to allocator
-or panicking.
-
-In some cases the code path's for freeing decrypted memory handle both
-encrypted and decrypted pages. In this case, rely on set_memory() to
-handle being asked to convert memory to the state it is already in.
-
-Going forward, rely on cross-arch callers to find and use
-free_decrypted_pages() instead of resorting to more heavy handed solutions
-like terminating the guest when nasty VMM behavior is observed.
-
-To make s390's arch set_memory_XXcrypted() definitions available in
-linux/set_memory.h, add include for s390's asm version of set_memory.h.
-
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Alexander Gordeev <agordeev@linux.ibm.com>
-Cc: Christian Borntraeger <borntraeger@linux.ibm.com>
-Cc: Sven Schnelle <svens@linux.ibm.com>
-Cc: linux-s390@vger.kernel.org
-Suggested-by: Dave Hansen <dave.hansen@intel.com>
+[commit log written by Dave Hansen]
 Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
 ---
- arch/s390/include/asm/set_memory.h |  1 +
- include/linux/set_memory.h         | 13 +++++++++++++
- 2 files changed, 14 insertions(+)
+ arch/x86/mm/pat/set_memory.c | 41 +++++++++++++++++++++++++++++++++++-
+ 1 file changed, 40 insertions(+), 1 deletion(-)
 
-diff --git a/arch/s390/include/asm/set_memory.h b/arch/s390/include/asm/set_memory.h
-index 06fbabe2f66c..09d36ebd64b5 100644
---- a/arch/s390/include/asm/set_memory.h
-+++ b/arch/s390/include/asm/set_memory.h
-@@ -3,6 +3,7 @@
- #define _ASMS390_SET_MEMORY_H
- 
- #include <linux/mutex.h>
-+#include <linux/mem_encrypt.h>
- 
- extern struct mutex cpa_mutex;
- 
-diff --git a/include/linux/set_memory.h b/include/linux/set_memory.h
-index 95ac8398ee72..a898b14b6b1f 100644
---- a/include/linux/set_memory.h
-+++ b/include/linux/set_memory.h
-@@ -5,6 +5,8 @@
- #ifndef _LINUX_SET_MEMORY_H_
- #define _LINUX_SET_MEMORY_H_
- 
-+#include <linux/gfp.h>
-+
- #ifdef CONFIG_ARCH_HAS_SET_MEMORY
- #include <asm/set_memory.h>
- #else
-@@ -78,4 +80,15 @@ static inline int set_memory_decrypted(unsigned long addr, int numpages)
+diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
+index bda9f129835e..1238b0db3e33 100644
+--- a/arch/x86/mm/pat/set_memory.c
++++ b/arch/x86/mm/pat/set_memory.c
+@@ -2122,6 +2122,21 @@ int set_memory_global(unsigned long addr, int numpages)
+ 				    __pgprot(_PAGE_GLOBAL), 0);
  }
- #endif /* CONFIG_ARCH_HAS_MEM_ENCRYPT */
  
-+static inline void free_decrypted_pages(unsigned long addr, int order)
++static bool kernel_vaddr_encryped(unsigned long addr, bool enc)
 +{
-+	int ret = set_memory_encrypted(addr, 1 << order);
++	unsigned int level;
++	pte_t *pte;
 +
-+	if (ret) {
-+		WARN_ONCE(1, "Failed to re-encrypt memory before freeing, leaking pages!\n");
-+		return;
-+	}
-+	free_pages(addr, order);
++	pte = lookup_address(addr, &level);
++	if (!pte)
++		return false;
++
++	if (enc)
++		return pte_val(*pte) == cc_mkenc(pte_val(*pte));
++
++	return pte_val(*pte) == cc_mkdec(pte_val(*pte));
 +}
 +
- #endif /* _LINUX_SET_MEMORY_H_ */
+ /*
+  * __set_memory_enc_pgtable() is used for the hypervisors that get
+  * informed about "encryption" status via page tables.
+@@ -2130,7 +2145,7 @@ static int __set_memory_enc_pgtable(unsigned long addr, int numpages, bool enc)
+ {
+ 	pgprot_t empty = __pgprot(0);
+ 	struct cpa_data cpa;
+-	int ret;
++	int ret, numpages_in_state = 0;
+ 
+ 	/* Should not be working on unaligned addresses */
+ 	if (WARN_ONCE(addr & ~PAGE_MASK, "misaligned address: %#lx\n", addr))
+@@ -2143,6 +2158,30 @@ static int __set_memory_enc_pgtable(unsigned long addr, int numpages, bool enc)
+ 	cpa.mask_clr = enc ? pgprot_decrypted(empty) : pgprot_encrypted(empty);
+ 	cpa.pgd = init_mm.pgd;
+ 
++	/*
++	 * If any page is already in the right state, bail with an error
++	 * because the code doesn't handled it. This is likely because
++	 * something has gone wrong and isn't worth optimizing for.
++	 *
++	 * If all the memory pages are already in the desired state return
++	 * success.
++	 *
++	 * kernel_vaddr_encryped() does not synchronize against huge page
++	 * splits so take pgd_lock. A caller doing strange things could
++	 * get a new PMD mid level PTE confused with a huge PMD entry. Just
++	 * lock to tie up loose ends.
++	 */
++	spin_lock(&pgd_lock);
++	for (int i = 0; i < numpages; i++) {
++		if (kernel_vaddr_encryped(addr + (PAGE_SIZE * i), enc))
++			numpages_in_state++;
++	}
++	spin_unlock(&pgd_lock);
++	if (numpages_in_state == numpages)
++		return 0;
++	else if (numpages_in_state)
++		return 1;
++
+ 	/* Must avoid aliasing mappings in the highmem code */
+ 	kmap_flush_unused();
+ 	vm_unmap_aliases();
 -- 
 2.34.1
 
