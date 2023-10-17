@@ -2,133 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8DA67CC5C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 402687CC5C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344068AbjJQOSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 10:18:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53954 "EHLO
+        id S1344063AbjJQOS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 10:18:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343900AbjJQOSN (ORCPT
+        with ESMTP id S1344072AbjJQOSY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 10:18:13 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22C63F5;
-        Tue, 17 Oct 2023 07:18:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697552292; x=1729088292;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Om9o9QaVlYqcLv+tCTlmT2MX/mZatt3OQzBysjJ7J04=;
-  b=jln7WuXGteYKscIf3gXWXPx9jtfL8EUSHbub27qblZ14LrhWyYlPTkOV
-   /CGjK3654XFpGELVX5gkzFQ1cgKzxa1bQ8i8P3I941oAvvfIcbyJr0uMX
-   o6shPeF0Hsk/GDjihThAHumlBbQHtAG/W2EnRpvYW295X3/c5pwqENzd0
-   /T4s7hkdQZpK5hiVz9hkC+nPQuWHejJBBjVMGEc5otVW+apAkGRBx0LWn
-   hbjamxp325m9icE7nHZJeeUVUs6LnJywVbuvakKCFBp84iV9h+uFYpSY2
-   eE5xC2ut2kO5jtc65FRr0wRPOzQYJsqTTLAXVfkpTv0jo+QLn42xY7O6J
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="4389200"
-X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
-   d="scan'208";a="4389200"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 07:18:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="732736205"
-X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
-   d="scan'208";a="732736205"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga006.jf.intel.com with ESMTP; 17 Oct 2023 07:18:09 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 0BEC1193; Tue, 17 Oct 2023 17:18:07 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Ferry Toth <ftoth@exalondelft.nl>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] Revert "pinctrl: avoid unsafe code pattern in find_pinctrl()"
-Date:   Tue, 17 Oct 2023 17:18:06 +0300
-Message-Id: <20231017141806.535191-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+        Tue, 17 Oct 2023 10:18:24 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C968AFA;
+        Tue, 17 Oct 2023 07:18:22 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d9b2ca542e5so4669867276.3;
+        Tue, 17 Oct 2023 07:18:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697552302; x=1698157102; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NI422ZwFC+FZy06/SEvrLc/oafnXORoAgmBSlqnJCBc=;
+        b=Bx00iSEXwiNeZqmkRDGxtzbT37p1q1OkyWBv+4hiWVqI0l+yUr/CghfwvqWIO0ci3D
+         71FJJXGuC+dfIhCMW6dkoYZ3/8s49654nVVnoYRcZ4pZcQg/vmdhnkYhxC6j3WSS4xwV
+         5eh/n+oYMqYBgwje7TAqwEq42xr6M/Zk5s0Xz3WEhaxxseBY5NaDF5G58F07t7roDGc9
+         bQrmjKeFNPF7VRK1+IYK/090cDkhdPFVPUEAsTewLHxsPjKXuK3zWvKVWm4ZiUtGdgIc
+         3asduiv+jVd2XO7QeRW0Exomrb8pEjNFTAVYFyuG7IW8qhEMErkmAnLc/XNIvayk4QdF
+         JxzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697552302; x=1698157102;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NI422ZwFC+FZy06/SEvrLc/oafnXORoAgmBSlqnJCBc=;
+        b=o/6WtuQ5sZRDx07V/lzwbGWAmvLMQRGxKK256jH+vy1MFMvViVDPYDOXWjgkO7geSj
+         AM+jMf/BxzmAJaPeFAVivxZdrncv03hUQkBaXbda63yUqP8jA6g2Wji7RuP/Sba2z3vZ
+         cw+gWROgLWRfEzR8apvNHCoi1V9QbIqhOzml8P9HXAfFSYGd6xztHsTc4UbSPnatAlhb
+         SnTHrhTf77e6Yye/2YeQmj66GPVWdZRW0TCT7Ykd8oNTMEGdDiNGVzQtoAx6gI0VdCrA
+         o1E1DfMcLtLnXPU8qBRHaMV+OSFUm+kK3scr0yGGp/3SXXU7zLgA+wxQLy+Y+BHh3qm3
+         CiCQ==
+X-Gm-Message-State: AOJu0Yzvhz54LrLc/hNjKynG1UEqxFs2lxP/Rj51AShwD+thAizv8P4A
+        z0XyHKv25pMRJPSjQQgZ7zZ9mvB4+dJTBoasHdk=
+X-Google-Smtp-Source: AGHT+IGV/cNOijgcyX6YbdaC3gix3tYgeDlyLmcozvJjGQPyfoC73JRgCPVyHX5pMQVaZ6seRvCciLzWohic8S0Q594=
+X-Received: by 2002:a25:e689:0:b0:d9b:df08:811d with SMTP id
+ d131-20020a25e689000000b00d9bdf08811dmr2272203ybh.32.1697552301876; Tue, 17
+ Oct 2023 07:18:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231012060115.107183-1-hayatake396@gmail.com> <20231016152343.1fc7c7be@kernel.org>
+In-Reply-To: <20231016152343.1fc7c7be@kernel.org>
+From:   takeru hayasaka <hayatake396@gmail.com>
+Date:   Tue, 17 Oct 2023 23:18:10 +0900
+Message-ID: <CADFiAcKOKiTXFXs-e=WotnQwhLB2ycbBovqS2YCk9hvK_RH2uQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v2] ethtool: ice: Support for RSS settings to GTP
+ from ethtool
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Harald Welte <laforge@gnumonks.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        osmocom-net-gprs@lists.osmocom.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit breaks MMC enumeration on the Intel Merrifield
-plaform.
+Hi Jakub-san and Simon-san
+Thank you for reviewing again!
 
-Before:
-[   36.439057] mmc0: SDHCI controller on PCI [0000:00:01.0] using ADMA
-[   36.450924] mmc2: SDHCI controller on PCI [0000:00:01.3] using ADMA
-[   36.459355] mmc1: SDHCI controller on PCI [0000:00:01.2] using ADMA
-[   36.706399] mmc0: new DDR MMC card at address 0001
-[   37.058972] mmc2: new ultra high speed DDR50 SDIO card at address 0001
-[   37.278977] mmcblk0: mmc0:0001 H4G1d 3.64 GiB
-[   37.297300]  mmcblk0: p1 p2 p3 p4 p5 p6 p7 p8 p9 p10
+> Reviewed-by: Simon Horman <horms@kernel.org>
+Thanks;)
 
-After:
-[   36.436704] mmc2: SDHCI controller on PCI [0000:00:01.3] using ADMA
-[   36.436720] mmc1: SDHCI controller on PCI [0000:00:01.0] using ADMA
-[   36.463685] mmc0: SDHCI controller on PCI [0000:00:01.2] using ADMA
-[   36.720627] mmc1: new DDR MMC card at address 0001
-[   37.068181] mmc2: new ultra high speed DDR50 SDIO card at address 0001
-[   37.279998] mmcblk1: mmc1:0001 H4G1d 3.64 GiB
-[   37.302670]  mmcblk1: p1 p2 p3 p4 p5 p6 p7 p8 p9 p10
+> Adding Willem, Pablo, and Harald to CC (please CC them on future
+versions).
 
-This reverts commit c153a4edff6ab01370fcac8e46f9c89cca1060c2.
+of course.  thanks!
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/pinctrl/core.c | 16 +++++++---------
- 1 file changed, 7 insertions(+), 9 deletions(-)
+> nit: please note that these are hex numbers,
+     next value after 0x19 is 0x1a, not 0x20.
 
-diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
-index e2f7519bef04..e9dc9638120a 100644
---- a/drivers/pinctrl/core.c
-+++ b/drivers/pinctrl/core.c
-@@ -1022,20 +1022,17 @@ static int add_setting(struct pinctrl *p, struct pinctrl_dev *pctldev,
- 
- static struct pinctrl *find_pinctrl(struct device *dev)
- {
--	struct pinctrl *entry, *p = NULL;
-+	struct pinctrl *p;
- 
- 	mutex_lock(&pinctrl_list_mutex);
--
--	list_for_each_entry(entry, &pinctrl_list, node) {
--		if (entry->dev == dev) {
--			p = entry;
--			kref_get(&p->users);
--			break;
-+	list_for_each_entry(p, &pinctrl_list, node)
-+		if (p->dev == dev) {
-+			mutex_unlock(&pinctrl_list_mutex);
-+			return p;
- 		}
--	}
- 
- 	mutex_unlock(&pinctrl_list_mutex);
--	return p;
-+	return NULL;
- }
- 
- static void pinctrl_free(struct pinctrl *p, bool inlist);
-@@ -1143,6 +1140,7 @@ struct pinctrl *pinctrl_get(struct device *dev)
- 	p = find_pinctrl(dev);
- 	if (p) {
- 		dev_dbg(dev, "obtain a copy of previously claimed pinctrl\n");
-+		kref_get(&p->users);
- 		return p;
- 	}
- 
--- 
-2.40.0.1.gaa8946217a0b
+!!!!! I'm so embarrassed.... I will next version fix
 
+> What gives me pause here is the number of flow sub-types we define
+> for GTP hashing.
+>
+> My understanding of GTP is limited to what I just read on Wikipedia.
+>
+> IIUC the GTPC vs GTPU distinction comes down to the UDP port on
+> which the protocol runs? Are the frames also different?
+>
+> I'm guessing UL/DL are uplink/downlink but what's EH?
+>
+> How do GTPU_V4_FLOW, GTPU_EH_V4_FLOW, GTPU_UL_V4_FLOW, and
+> GTPU_DL_V4_FLOW differ?
+>
+> Key question is - are there reasonable use cases that you can think of
+> for enabling GTP hashing for each one of those bits individually or can
+> we combine some of them?
+
+Firstly, what I want to convey is that the structure of each of these
+packets is entirely different. Therefore, in terms of ethtool, since
+packets with the same structure are considered a flow, I understand
+that it is necessary to define such different things (I actually think
+that the people at Intel are doing it that way).
+
+Let me first explain the difference between GTPC and GTPU.
+The UDP ports are different in GTPC and GTPU.
+What's further different is that in the case of GTPC, GTPv2-C is used,
+and in the case of GTPU, GTPv1-U is used, which are mainstream in
+current mobile communications.
+
+Especially the uniqueness of GTPC communication varies according to
+the processing phase.
+CSR (Create Session Request) starts processing from a state where TEID
+is not included. Therefore, it is separated into cases where packets
+have TEID and where they don=E2=80=99t.
+Of course, there are cases where we want to specially process only the
+communication without TEID, and just creating a session is one of the
+more vulnerable parts of the mobile network.
+
+EH stands for Extension Header.
+This is the case with GTPU packets compatible with 5G. If it=E2=80=99s the
+Flow Director, it reads a parameter related to QoS called QFI.
+Without this, it is impossible to process GTPv1 packets compatible with 5G.
+Furthermore, this Extension Header has parts where the shape differs
+depending on UL/DL, which is called the PDU Session Container.
+
+Specific use cases basically apply to services that terminate GTP itself.
+
+The structure of processing in RSS with ethtool until now was to
+select a fixed shape of packets and parameters of those packets to
+perform RSS.
+Conforming to this format is why it becomes so numerous.
+
+
+2023=E5=B9=B410=E6=9C=8817=E6=97=A5(=E7=81=AB) 7:23 Jakub Kicinski <kuba@ke=
+rnel.org>:
+
+>
+> Thanks for the v2!
+>
+> Adding Willem, Pablo, and Harald to CC (please CC them on future
+> versions).
+>
+> On Thu, 12 Oct 2023 06:01:15 +0000 Takeru Hayasaka wrote:
+> > diff --git a/include/uapi/linux/ethtool.h b/include/uapi/linux/ethtool.=
+h
+> > index f7fba0dc87e5..a2d4f2081cf3 100644
+> > --- a/include/uapi/linux/ethtool.h
+> > +++ b/include/uapi/linux/ethtool.h
+> > @@ -2011,6 +2011,18 @@ static inline int ethtool_validate_duplex(__u8 d=
+uplex)
+> >  #define      IPV4_FLOW       0x10    /* hash only */
+> >  #define      IPV6_FLOW       0x11    /* hash only */
+> >  #define      ETHER_FLOW      0x12    /* spec only (ether_spec) */
+> > +#define GTPU_V4_FLOW 0x13    /* hash only */
+> > +#define GTPU_V6_FLOW 0x14    /* hash only */
+> > +#define GTPC_V4_FLOW 0x15    /* hash only */
+> > +#define GTPC_V6_FLOW 0x16    /* hash only */
+> > +#define GTPC_TEID_V4_FLOW 0x17       /* hash only */
+> > +#define GTPC_TEID_V6_FLOW 0x18       /* hash only */
+> > +#define GTPU_EH_V4_FLOW 0x19 /* hash only */
+> > +#define GTPU_EH_V6_FLOW 0x20 /* hash only */
+>
+> nit: please note that these are hex numbers,
+>      next value after 0x19 is 0x1a, not 0x20.
+>
+> > +#define GTPU_UL_V4_FLOW 0x21 /* hash only */
+> > +#define GTPU_UL_V6_FLOW 0x22 /* hash only */
+> > +#define GTPU_DL_V4_FLOW 0x23 /* hash only */
+> > +#define GTPU_DL_V6_FLOW 0x24 /* hash only */
+> >  /* Flag to enable additional fields in struct ethtool_rx_flow_spec */
+> >  #define      FLOW_EXT        0x80000000
+> >  #define      FLOW_MAC_EXT    0x40000000
+>
+> What gives me pause here is the number of flow sub-types we define
+> for GTP hashing.
+>
+> My understanding of GTP is limited to what I just read on Wikipedia.
+>
+> IIUC the GTPC vs GTPU distinction comes down to the UDP port on
+> which the protocol runs? Are the frames also different?
+>
+> I'm guessing UL/DL are uplink/downlink but what's EH?
+>
+> How do GTPU_V4_FLOW, GTPU_EH_V4_FLOW, GTPU_UL_V4_FLOW, and
+> GTPU_DL_V4_FLOW differ?
+>
+> Key question is - are there reasonable use cases that you can think of
+> for enabling GTP hashing for each one of those bits individually or can
+> we combine some of them?
+>
+> > @@ -2025,6 +2037,7 @@ static inline int ethtool_validate_duplex(__u8 du=
+plex)
+> >  #define      RXH_IP_DST      (1 << 5)
+> >  #define      RXH_L4_B_0_1    (1 << 6) /* src port in case of TCP/UDP/S=
+CTP */
+> >  #define      RXH_L4_B_2_3    (1 << 7) /* dst port in case of TCP/UDP/S=
+CTP */
+> > +#define      RXH_GTP_TEID    (1 << 8) /* teid in case of GTP */
+> >  #define      RXH_DISCARD     (1 << 31)
