@@ -2,95 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7D17CBA37
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 07:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E64847CBA39
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 07:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234454AbjJQFiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 01:38:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40700 "EHLO
+        id S234399AbjJQFms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 01:42:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234446AbjJQFh6 (ORCPT
+        with ESMTP id S230343AbjJQFmr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 01:37:58 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9F7B6
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 22:37:56 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3af609b9264so3458801b6e.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 22:37:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697521076; x=1698125876; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NymQgQrBR5+15gDoMLic0ZnEZ2tbOiVaD/D7avXdpOY=;
-        b=mH5AoGFQSmie7+oacQKerm5Fiy12xx2t1+usnMIlSVQO8aeCc47EUWtCsuTotaMV1e
-         rsNFZzmcIZGNJ6Zz1kanPqWP11cOEeYufNGl1Z9N1QqAKg4hLZeF0W0LN2YKNbQJEHrZ
-         Jj5N7SVUXgNXIAE9sPp358hv0G3vRNP7lEO3E4h1EZyf23r+J8fya4EVFOHeCKkWrXUw
-         MslP5jO9PuUl/+YynfznpdHlxa4z0++JMBtMjUjNXPLOVuEtKN9n9ZWazWwEYaan3t2D
-         AjNIQ219whnM8q9sFww0GeHcVLguRE31sQQ8lSJnvflPIxgr/YywiSNdHn44hfCg1J27
-         OXag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697521076; x=1698125876;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NymQgQrBR5+15gDoMLic0ZnEZ2tbOiVaD/D7avXdpOY=;
-        b=fWarT2fWJBdQXWpgCMyU11c1JUstBoqrQ6G2IUUo0LdAAoRugOxaGpIeJ4B8BF1uVf
-         yWz2PmeOs4TGzMj2YDRj+5gJK1TPcLjLKh852tDwWgTORWipscUNp7MI+B6HC3wMba7b
-         0j1mQkx5eOiPiH6GU/1s0VFpytFM7S7C300j7I73sSP8ZnqBe6rhZ7iWvIy8TeDNnNUN
-         8BcTQFzykp6J+YijHDUNx5xQ+5l8VnHZWctFdmXnls1JvoBSpZc4ViKTWcRl74/PV3Y0
-         5nOjh0n2mCW5TzdJTSTQXHpK36MCtbJYVkhqwvawWZ+3No9F1+VhVv0VEEnAvKXKiaBW
-         cmog==
-X-Gm-Message-State: AOJu0YzyEE62rO/ymnIA4Q5xUixc0LeTM/R8k8bq9HxbhvsSP6JQxvP7
-        NXvDXlg3ZO3JyltcYYlGI/Y=
-X-Google-Smtp-Source: AGHT+IHgCUJNdnHtXru2EaDL6XR081LsUuFg2gAXuAZXjn/wrvl+807HGs1tQN3FQc0KX0TujU+r5Q==
-X-Received: by 2002:a05:6808:9b1:b0:3ae:251f:923f with SMTP id e17-20020a05680809b100b003ae251f923fmr1470512oig.28.1697521075947;
-        Mon, 16 Oct 2023 22:37:55 -0700 (PDT)
-Received: from jio-Aspire-V3-571G.. (2001-b011-2019-b4ac-2011-fe5b-433e-dfe4.dynamic-ip6.hinet.net. [2001:b011:2019:b4ac:2011:fe5b:433e:dfe4])
-        by smtp.gmail.com with ESMTPSA id h11-20020a65480b000000b005742092c211sm453411pgs.64.2023.10.16.22.37.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 22:37:55 -0700 (PDT)
-From:   Cuda-Chen <clh960524@gmail.com>
-To:     peterz@infradead.org
-Cc:     mingo@redhat.com, will@kernel.org, longman@redhat.com,
-        boqun.feng@gmail.com, linux-kernel@vger.kernel.org,
-        Cuda-Chen <clh960524@gmail.com>
-Subject: [PATCH] locking/seqlock: Fix grammer error
-Date:   Tue, 17 Oct 2023 13:37:03 +0800
-Message-Id: <20231017053703.11312-1-clh960524@gmail.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 17 Oct 2023 01:42:47 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81975A2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 22:42:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697521366; x=1729057366;
+  h=date:from:to:cc:subject:message-id;
+  bh=3CfwX0wJXGDE0Y+EKRENvYT0soiTzR71mQK5pqp8w3w=;
+  b=eSMGZz/dXngAm1fjnHqzy1JGEx3ewwvcODNtOFh4bKbV7n4WF3Q8StoS
+   ce/qMeliqzt7jTHaq2bstdGfQVlHuuoQZIxRx4coBWO9yCfwcB+280Ups
+   aX+/ZUAyLTcPUA/XSKi12IOqmx7GzkOWZOQZDckJCSwr42TQQhJJEUFKM
+   evXNyYWDRfxieMM6f6fFGj2dK+n2gbT3KCIA1GDUXBSTvY/CWPb072DU4
+   qBv94ak+3Kn952LdRw95e+K3tf4eY62suVWOTMQDOASrhewIa9NEx+Mhl
+   UQAvDsOEiNU9TcAMh7GtdgcsdzssoE3uOau9oQrO9FwleRUZ2mVNBolBC
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="385543097"
+X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
+   d="scan'208";a="385543097"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 22:42:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="791098774"
+X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
+   d="scan'208";a="791098774"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 16 Oct 2023 22:42:45 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qscqi-000945-1D;
+        Tue, 17 Oct 2023 05:42:38 +0000
+Date:   Tue, 17 Oct 2023 13:42:04 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [paulmck-rcu:rcu/next] BUILD SUCCESS
+ 703ea7173648369185ab1a3cc6e44a6e3cb5c1c0
+Message-ID: <202310171301.3r5wPkhe-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "neither writes before and after ..." for the description
-of do_write_seqcount_end should be "neither writes before nor after".
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
+branch HEAD: 703ea7173648369185ab1a3cc6e44a6e3cb5c1c0  srcu: Explain why callbacks invocations can't run concurrently
 
-Signed-off-by: Cuda-Chen <clh960524@gmail.com>
----
- include/linux/seqlock.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+elapsed time: 1461m
 
-diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index e9bd2f65d..734d9c598 100644
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -574,7 +574,7 @@ static inline void do_write_seqcount_end(seqcount_t *s)
-  * via WRITE_ONCE): a) to ensure the writes become visible to other threads
-  * atomically, avoiding compiler optimizations; b) to document which writes are
-  * meant to propagate to the reader critical section. This is necessary because
-- * neither writes before and after the barrier are enclosed in a seq-writer
-+ * neither writes before nor after the barrier are enclosed in a seq-writer
-  * critical section that would ensure readers are aware of ongoing writes::
-  *
-  *	seqcount_t seq;
+configs tested: 103
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20231016   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                   randconfig-001-20231016   gcc  
+arm64                            allmodconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231016   gcc  
+i386                  randconfig-002-20231016   gcc  
+i386                  randconfig-003-20231016   gcc  
+i386                  randconfig-004-20231016   gcc  
+i386                  randconfig-005-20231016   gcc  
+i386                  randconfig-006-20231016   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231016   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20231016   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20231016   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                 randconfig-001-20231016   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231016   gcc  
+x86_64                randconfig-002-20231016   gcc  
+x86_64                randconfig-003-20231016   gcc  
+x86_64                randconfig-004-20231016   gcc  
+x86_64                randconfig-005-20231016   gcc  
+x86_64                randconfig-006-20231016   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
