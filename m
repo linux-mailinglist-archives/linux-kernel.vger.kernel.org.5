@@ -2,142 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 632D87CCBB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 21:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDFCF7CCBC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 21:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344110AbjJQTFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 15:05:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51266 "EHLO
+        id S1343887AbjJQTGF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 17 Oct 2023 15:06:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232228AbjJQTFv (ORCPT
+        with ESMTP id S1344062AbjJQTFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 15:05:51 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B97290
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 12:05:48 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-53ed4688b9fso4037778a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 12:05:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1697569547; x=1698174347; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5T8pyCBsKAygZpdsiydX+RlsNqoe0a3HYugW6rTPXAk=;
-        b=xIpa2yRGehksghAk/xwcexb+wQYmPO4IRYVTxy/ehJXOMJsgXGM+0meRv5QwolwYUw
-         CTNDzcfHwJuOjV5JNH7ofaixDVxbdqQQ8S2xPW3YR1I73VD17bcFNuPL2d2nz6BSq2+0
-         PJojsfe1n0OlNJBs4IsM2DHy8/uIiSkvhK1VKxzSWCQyiJWNW/+LpAUvcxJOutNF/+5d
-         yCayjgQQQ456+4djDU9bnoEQKqWxXCJNE9lTp00mAAu4l2fH+1MAHj40gIOm8jk4sE/e
-         yHui/c/EilT7MmRXVV2XBiB7/uhhfh1yNYOaoDDN0/k3prlaRNwTDbN3jdPdSE1syiXK
-         6T3Q==
+        Tue, 17 Oct 2023 15:05:54 -0400
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91EE1FC;
+        Tue, 17 Oct 2023 12:05:52 -0700 (PDT)
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-564b6276941so4502306a12.3;
+        Tue, 17 Oct 2023 12:05:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697569547; x=1698174347;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5T8pyCBsKAygZpdsiydX+RlsNqoe0a3HYugW6rTPXAk=;
-        b=wqgGb9nDHltW+SThbXk3YbqAU2aWbFjrRScIpvK+y7QMqcZEfG7uQexsDs1lug0PPL
-         wPGVkPqFxBkIC0+UI4xzi94lZBmMNeVUSGd+bGA6En99QJ7X5IppEXTHz5MvnaAf/dJ7
-         Zi8MWCrqpUhGidxHW3MdWPo2Q9JeNxsBRj1uF9FqbKb/KgZxKJNOfSRngqAAa+Q8sX+T
-         n745paUmRZ+GBEr5PuljYswa0xlV2YBrKQYWP67ZaIiJoqepo2U9YKd9rgk+SZujiXks
-         NV62Uh43qC9KEIYSd9Wy3UI5pih2cqAxD4rGgq7e9G6tuP+pns4LxfCENSAmBuK41miO
-         3qaQ==
-X-Gm-Message-State: AOJu0Yx9k6x7PZP7B2xWUjPcSVX1/MOIHWm6Aa5QuXyDfwG+K0lozJZ2
-        nD2/WUiWLQwfieDmJZxIek/Z4A==
-X-Google-Smtp-Source: AGHT+IHIS2pmlJT58sIePf55BkdjnJMp56dc57XPsYb/UA7y89bQ2UAlMws2Jd/KFo1tOI+tOPXEwQ==
-X-Received: by 2002:a50:ab55:0:b0:52e:1d58:a6ff with SMTP id t21-20020a50ab55000000b0052e1d58a6ffmr2012654edc.35.1697569546785;
-        Tue, 17 Oct 2023 12:05:46 -0700 (PDT)
-Received: from ryzen9.fritz.box ([2a01:2a8:8f03:b001:fe65:a70:2777:ab31])
-        by smtp.gmail.com with ESMTPSA id bq14-20020a056402214e00b00537963f692esm1637990edb.0.2023.10.17.12.05.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 12:05:46 -0700 (PDT)
-From:   =?UTF-8?q?Bernhard=20Rosenkr=C3=A4nzer?= <bero@baylibre.com>
-To:     daniel.lezcano@linaro.org, angelogioacchino.delregno@collabora.com,
-        rafael@kernel.org, amitk@kernel.org, rui.zhang@intel.com,
-        matthias.bgg@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, dunlap@infradead.org,
-        e.xingchen@zte.com.cn, p.zabel@pengutronix.de
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        wenst@chromium.org, ames.lo@mediatek.com, rex-bc.chen@mediatek.com,
-        nfraprado@collabora.com, abailon@baylibre.com,
-        amergnat@baylibre.com, khilman@baylibre.com
-Subject: [PATCH v5 0/5] Add LVTS support for mt8192
-Date:   Tue, 17 Oct 2023 21:05:40 +0200
-Message-ID: <20231017190545.157282-1-bero@baylibre.com>
-X-Mailer: git-send-email 2.42.0
+        d=1e100.net; s=20230601; t=1697569552; x=1698174352;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iuvHgJEYPvvaf1w7rboxP5KoSmgvNQj+LHx++KlT/8g=;
+        b=tHCDlh+/jxJij7rfKu5tBZ6vqYMmPa6z4rHS4byKW5JuvbmQ9EAP90awCrrtTRdAXH
+         kbj4ybz0Ra5ELctuAtvuevaRFCSSqOFH1wf7wOTiOxKdugck0EXclc7RnPv8o9+xEQRB
+         FN8VED3mhOV4saN9YRm5rMSqn63WyfK+uh1iDK573BHjQtyzS9R+f2LELVdJ2bYqWRDo
+         5IA1BnNYSEY338rbP5Y9+fYUkaqzfx8lZcf2VZgZF81wvG+ev+CCDdy0DdXZz/I2NZTJ
+         KJ47JoWy24Su0LeejHuApTvS5skxZRzBeKBcY2qlvSdKPOnnTeQRPCq3tgYsVMlqXHwS
+         ck/A==
+X-Gm-Message-State: AOJu0Yx+UqlPwGOCzAiT7GgskQnSeiP+00XG6m/gaskCSd8He+plFq0j
+        v/qh6+5rvx1ykNDZXR1fzX2M2hEAJ4TOXilTSOsZ+0VX
+X-Google-Smtp-Source: AGHT+IHG4jXT3a5/Z67JfjBtawbXRS6kej3T7Ck1b85DtR8ldjrqYiN9vM9FJqg17weeNwcHg+SpqIklbh7+EAuMpSw=
+X-Received: by 2002:a17:90a:474e:b0:27d:20f5:3629 with SMTP id
+ y14-20020a17090a474e00b0027d20f53629mr2982050pjg.46.1697569551784; Tue, 17
+ Oct 2023 12:05:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20231016044225.1125674-1-namhyung@kernel.org> <ZS0D53ckVx356k4o@gmail.com>
+ <ZS1Y5PhXhp384ynY@kernel.org> <ZS1ajf/9HmgUyyCl@kernel.org>
+ <ZS1cGMgyEDJQbwq9@kernel.org> <ZS1c9RCh9MkzPbFG@kernel.org>
+ <ZS2ecyCVpK8B2cQq@kernel.org> <ZS5yl3RzVGKBkCvY@gmail.com>
+ <ZS592qxF3YxmCoG1@kernel.org> <ZS6BgfOUeWQnI1mS@gmail.com> <ZS7TAr1bpOfkeNuv@kernel.org>
+In-Reply-To: <ZS7TAr1bpOfkeNuv@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 17 Oct 2023 12:05:40 -0700
+Message-ID: <CAM9d7cjLxtDPXXVWMG7SkPpsUrgh848texqH150XP+6+9ZqZxw@mail.gmail.com>
+Subject: Re: [perf stat] Extend --cpu to non-system-wide runs too? was Re:
+ [PATCH v3] perf bench sched pipe: Add -G/--cgroups option
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add full LVTS support (MCU thermal domain + AP thermal domain) to MediaTek MT8192 SoC.
-Also, add Suspend and Resume support to LVTS Driver (all SoCs),
-and update the documentation that describes the Calibration Data Offsets.
+On Tue, Oct 17, 2023 at 11:31 AM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Tue, Oct 17, 2023 at 02:43:45PM +0200, Ingo Molnar escreveu:
+> > * Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > > Em Tue, Oct 17, 2023 at 01:40:07PM +0200, Ingo Molnar escreveu:
+> > > > Side note: it might make sense to add a sane cpumask/affinity setting
+> > > > option to perf stat itself:
+>
+> > > >   perf stat --cpumask
+>
+> > > > ... or so?
+>
+> > > > We do have -C:
+>
+> > > >     -C, --cpu <cpu>       list of cpus to monitor in system-wide
+>
+> > > > ... but that's limited to --all-cpus, right?
+>
+> > > > Perhaps we could extend --cpu to non-system-wide runs too?
+>
+> > > Maybe I misunderstood your question, but its a list of cpus to limit the
+> > > counting:
+>
+> > Ok.
+>
+> > So I thought that "--cpumask mask/list/etc" should simply do what 'taskset'
+> > is doing: using the sched_setaffinity() syscall to make the current
+> > workload and all its children.
+>
+> > There's impact on perf stat itself: it could just call sched_setaffinity()
+> > early on, and not bother about it?
+>
+> > Having it built-in into perf would simply make it easier to not forget
+> > running 'taskset'. :-)
+>
+> Would that be the only advantage?
+>
+> I think using taskset isn't that much of a burden and keeps with the
+> Unix tradition, no? :-\
 
-v5 changes are a lot smaller than originally assumed -- commit
-185673ca71d3f7e9c7d62ee5084348e084352e56 fixed the issue I
-was originally planning to work around in this patchset,
-so what remains for v5 is noirq and cosmetics.
+Agreed.  Maybe there's a usecase that wants to profile a specific
+cpu while the target processes are running all available cpus.
 
-Changelog:
-   v5 :
-        - Suspend/Resume in noirq stage
-	- Reorder chipset specific functions
-        - Rebased :
-            base-commit: 4d5ab2376ec576af173e5eac3887ed0b51bd8566
-
-   v4 :
-        - Shrink the lvts_ap thermal sensor I/O range to 0xc00 to make
-          room for SVS support, pointed out by
-          AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-
-    v3 :
-        - Rebased :
-            base-commit: 6a3d37b4d885129561e1cef361216f00472f7d2e
-        - Fix issues in v2 pointed out by Nícolas F. R. A. Prado <nfraprado@collabora.com>:
-          Use filtered mode to make sure threshold interrupts are triggered,
-          protocol documentation, cosmetics
-        - I (bero@baylibre.com) will be taking care of this patchset
-          from now on, since Balsam has left BayLibre. Thanks for
-          getting it almost ready, Balsam!
-
-    v2 :
-        - Based on top of thermal/linux-next :
-            base-commit: 7ac82227ee046f8234471de4c12a40b8c2d3ddcc
-        - Squash "add thermal zones and thermal nodes" and
-            "add temperature mitigation threshold" commits together to form
-            "arm64: dts: mediatek: mt8192: Add thermal nodes and thermal zones" commit.
-        - Add Suspend and Resume support to LVTS Driver.
-        - Update Calibration Data documentation.
-        - Fix calibration data offsets for mt8192
-            (Thanks to "Chen-Yu Tsai" and "Nícolas F. R. A. Prado").
-        https://lore.kernel.org/all/20230425133052.199767-1-bchihi@baylibre.com/
-        Tested-by: Chen-Yu Tsai <wenst@chromium.org>
-
-    v1 :
-        - The initial series "Add LVTS support for mt8192" :
-            "https://lore.kernel.org/all/20230307163413.143334-1-bchihi@baylibre.com/".
-
-Balsam CHIHI (5):
-  dt-bindings: thermal: mediatek: Add LVTS thermal controller definition
-    for mt8192
-  thermal/drivers/mediatek/lvts_thermal: Add suspend and resume
-  thermal/drivers/mediatek/lvts_thermal: Add mt8192 support
-  arm64: dts: mediatek: mt8192: Add thermal nodes and thermal zones
-  thermal/drivers/mediatek/lvts_thermal: Update calibration data
-    documentation
-
- arch/arm64/boot/dts/mediatek/mt8192.dtsi      | 454 ++++++++++++++++++
- drivers/thermal/mediatek/lvts_thermal.c       | 163 ++++++-
- .../thermal/mediatek,lvts-thermal.h           |  19 +
- 3 files changed, 634 insertions(+), 2 deletions(-)
-
--- 
-2.42.0
+Thanks,
+Namhyung
