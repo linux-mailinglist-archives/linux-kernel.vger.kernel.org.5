@@ -2,96 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D547CBD57
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD96E7CBD61
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:29:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234708AbjJQI1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 04:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35542 "EHLO
+        id S234623AbjJQI3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 04:29:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjJQI1J (ORCPT
+        with ESMTP id S229666AbjJQI3F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 04:27:09 -0400
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17A93B0;
-        Tue, 17 Oct 2023 01:27:06 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3833E240002;
-        Tue, 17 Oct 2023 08:27:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1697531225;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=V9RqjAr2qnLGSR32tAtTp3+NiG84U4voNqHqPUb3Jxc=;
-        b=KfvPlVpgfS25r0+BHMHsTI+mssMt455BJEQYmxA2tLX0ukgtsxtFurlO8NpuKvvDiB9lWZ
-        QSbs/muTmycKUetEmsxmeF3H2jky11G4+XfcXw3c0zedJLQyOH1QoPqUYBWAXBYQOGNscv
-        W2p89fpzB5IkuSZaPAjqSVT65rQH5d1wNeeKq4o6DdG8ieJ+dOAs5BolVsETV4mwlGhxB6
-        TEgZtEt8Tait4Gl0pemq2pKNarxS0ofyHLg9AkPoenAOhn5rFCd5ji8+037RjDD6ZwiLZy
-        Dz8/TPNbTGup89OIcXFNIc+na/l5ZRlHykwqfqzfaGdcIAiSeoicGPqD9B3cNQ==
-Message-ID: <bd234d26-f418-4ff7-b6a2-9a81526aa61a@bootlin.com>
-Date:   Tue, 17 Oct 2023 10:28:19 +0200
+        Tue, 17 Oct 2023 04:29:05 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC6F93;
+        Tue, 17 Oct 2023 01:29:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74F6CC433C8;
+        Tue, 17 Oct 2023 08:28:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697531343;
+        bh=RESuwpGBnAb12MK/MNuF3dBypxSNz2pAixUEdbu0A0E=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=jrQQ05qC6teSXhyYJm0Ss3ngnUZJG82JYLoNCYwxd7Qm4BpNnxAVY6tuh2teCUuD0
+         eUAiXCPii9O5P59rcy//pEOxE+TOb/jpYwsQ/lEcxXZllZVDw1/jCdRXIt3b6rd0vN
+         EE9UxXzs8ePVIdtwiOsXOCMTRcWfL6419MGz2MKul4FFqf5qqFKX94aYeE4O5dV0HI
+         WCB1Y8kOt0Sri4PkagJzGQ99EMiw8nL868/MMqiYgByycWSV1kEeDmq03GpZ0EGZ9Q
+         fwEMb5cFS3e3GBdvocOmxoKOPYdA1wF5FygdYPnaqdEw/zBH7YXzQEZOQuxMiUikn2
+         RiSG6Z5zIhU3w==
+Message-ID: <3d2b2683-3b7f-403c-a717-9c5e3f2c3939@kernel.org>
+Date:   Tue, 17 Oct 2023 17:28:57 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] wifi: wilc1000: use vmm_table as array in wilc struct
-To:     Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Kalle Valo <kvalo@kernel.org>,
-        Michael Walle <mwalle@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Ajay Singh <ajay.kathat@microchip.com>, stable@vger.kernel.org
-References: <20231016-wilc1000_tx_oops-v2-1-8d1982a29ef1@bootlin.com>
- <bb95048f-2540-4d42-abb2-3132d33cd6c3@quicinc.com>
- <74eac5f2-228b-4775-a101-53b2fdd5bf86@bootlin.com>
- <32ab8646-d41d-4dd2-a8c8-93845f198462@quicinc.com>
+Subject: Re: [PATCH v7 07/26] PM / devfreq: rockchip-dfi: introduce channel
+ mask
+To:     Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, kernel@pengutronix.de,
+        Michael Riesch <michael.riesch@wolfvision.net>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Vincent Legoll <vincent.legoll@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+References: <20230704093242.583575-1-s.hauer@pengutronix.de>
+ <20230704093242.583575-8-s.hauer@pengutronix.de>
+ <859b0091-e361-6060-2977-4aba13af418a@kernel.org>
+ <20231016112216.GY3359458@pengutronix.de>
+ <20231016124558.GL235829@pengutronix.de>
+From:   Chanwoo Choi <chanwoo@kernel.org>
 Content-Language: en-US
-From:   =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-In-Reply-To: <32ab8646-d41d-4dd2-a8c8-93845f198462@quicinc.com>
+In-Reply-To: <20231016124558.GL235829@pengutronix.de>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alexis.lothore@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/17/23 00:51, Jeff Johnson wrote:
-> On 10/16/2023 2:23 PM, Alexis Lothoré wrote:
->> Hello Jeff,
+On 23. 10. 16. 21:45, Sascha Hauer wrote:
+> On Mon, Oct 16, 2023 at 01:22:16PM +0200, Sascha Hauer wrote:
+>> On Sat, Oct 07, 2023 at 02:21:10AM +0900, Chanwoo Choi wrote:
+>>> Hi,
+>>>
+>>> On 23. 7. 4. 18:32, Sascha Hauer wrote:
+>>>> Different Rockchip SoC variants have a different number of channels.
+>>>> Introduce a channel mask to make the number of channels configurable
+>>>> from SoC initialization code.
+>>>>
+>>>> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+>>>> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+>>>> ---
+>>>>  drivers/devfreq/event/rockchip-dfi.c | 23 +++++++++++++++++------
+>>>>  1 file changed, 17 insertions(+), 6 deletions(-)
+>>>>
+>>>> diff --git a/drivers/devfreq/event/rockchip-dfi.c b/drivers/devfreq/event/rockchip-dfi.c
+>>>> index 126bb744645b6..82de24a027579 100644
+>>>> --- a/drivers/devfreq/event/rockchip-dfi.c
+>>>> +++ b/drivers/devfreq/event/rockchip-dfi.c
+>>>> @@ -18,10 +18,11 @@
+>>>>  #include <linux/list.h>
+>>>>  #include <linux/of.h>
+>>>>  #include <linux/of_device.h>
+>>>> +#include <linux/bits.h>
+>>>>  
+>>>>  #include <soc/rockchip/rk3399_grf.h>
+>>>>  
+>>>> -#define RK3399_DMC_NUM_CH	2
+>>>> +#define DMC_MAX_CHANNELS	2
+>>>>  
+>>>>  /* DDRMON_CTRL */
+>>>>  #define DDRMON_CTRL	0x04
+>>>> @@ -44,7 +45,7 @@ struct dmc_count_channel {
+>>>>  };
+>>>>  
+>>>>  struct dmc_count {
+>>>> -	struct dmc_count_channel c[RK3399_DMC_NUM_CH];
+>>>> +	struct dmc_count_channel c[DMC_MAX_CHANNELS];
+>>>>  };
+>>>>  
+>>>>  /*
+>>>> @@ -61,6 +62,7 @@ struct rockchip_dfi {
+>>>>  	struct regmap *regmap_pmu;
+>>>>  	struct clk *clk;
+>>>>  	u32 ddr_type;
+>>>> +	unsigned int channel_mask;
+>>>>  };
+>>>>  
+>>>>  static void rockchip_dfi_start_hardware_counter(struct devfreq_event_dev *edev)
+>>>> @@ -95,7 +97,9 @@ static void rockchip_dfi_read_counters(struct devfreq_event_dev *edev, struct dm
+>>>>  	u32 i;
+>>>>  	void __iomem *dfi_regs = dfi->regs;
+>>>>  
+>>>> -	for (i = 0; i < RK3399_DMC_NUM_CH; i++) {
+>>>> +	for (i = 0; i < DMC_MAX_CHANNELS; i++) {
+>>>> +		if (!(dfi->channel_mask & BIT(i)))
+>>>> +			continue;
+>>>>  		count->c[i].access = readl_relaxed(dfi_regs +
+>>>>  				DDRMON_CH0_DFI_ACCESS_NUM + i * 20);
+>>>>  		count->c[i].total = readl_relaxed(dfi_regs +
+>>>> @@ -145,9 +149,14 @@ static int rockchip_dfi_get_event(struct devfreq_event_dev *edev,
+>>>>  	rockchip_dfi_read_counters(edev, &count);
+>>>>  
+>>>>  	/* We can only report one channel, so find the busiest one */
+>>>> -	for (i = 0; i < RK3399_DMC_NUM_CH; i++) {
+>>>> -		u32 a = count.c[i].access - last->c[i].access;
+>>>> -		u32 t = count.c[i].total - last->c[i].total;
+>>>> +	for (i = 0; i < DMC_MAX_CHANNELS; i++) {
+>>>
+>>> Instead of DMC_MAX_CHANNELS defintion,
+>>> you can initialize the max channel in each rkXXXX_dfi_init() like 'dfi->channel_count'.
+>>> It reduces the unnecessary loop by initializing the proper max channel.
 >>
->> On 10/16/23 17:26, Jeff Johnson wrote:
->>> On 10/16/2023 1:29 AM, Alexis Lothoré wrote:
->>> this is probably OK since the values are constant, but kcalloc() is generally
->>> preferred
->>
->> Ok, I can submit a new version with kcalloc. One thing that I do not understand
->> however is why checkpatch.pl remains silent on this one. I guess it should raise
->> the ALLOC_WITH_MULTIPLY warning here. I tried to dive into the script to
->> understand why, but I drowned in regexes (and Perl, with which I am not familiar
->> with). Could it be because of both sides being constant ?
+>> That is not easily possible. Some SoCs, eg the RK3588 have four
+>> channels, but not all channels are necessarily enabled it also
+>> might not be the first channels that are enabled. On a RK3588
+>> the channel mask might for example be 0b0101.
 > 
-> I also drown when looking at checkpatch.pl -- so many "write-only" regexes! But
-> I think the following is what excludes your patch:
-> $r1 =~ /^[A-Z_][A-Z0-9_]*$
+> Nah, forget this comment. Of course I can initialize a variable with a
+> maximum value of channels that could be available on this SoC and only
+> iterate over these. Will do.
 > 
-> It is a compile-time constant so the compiler can flag on overflow, so it's your
-> call to modify or not.
 
-Thanks for taking a look. I have tried to tweak those lines to see if it makes
-checkpatch raise the warning, without success.
-
-Anyway, I agree with your initial statement, let's keep the code base
-homogeneous and replace kzalloc with kcalloc
-
-> /jeff
+Thanks.
 
 -- 
-Alexis Lothoré, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
 
