@@ -2,60 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 354217CBC73
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 09:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6CAF7CBC75
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 09:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234669AbjJQHjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 03:39:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48056 "EHLO
+        id S234707AbjJQHjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 03:39:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjJQHjH (ORCPT
+        with ESMTP id S234689AbjJQHjM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 03:39:07 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E83FA83;
-        Tue, 17 Oct 2023 00:39:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 008E3C433C8;
-        Tue, 17 Oct 2023 07:39:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697528345;
-        bh=E3VbYqSMvyiuHUGdccKqMdLJPOjqHC/bdo4qEHIAeUI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eLRvHJ6pDXK67WrNVe+iczMpc4sdd59wHvXDtmiVyYSS4kgiT4gY4ESbvC+D/aBeC
-         mC0Qwe0Pf6qNjvoTklFkR/LNPL3woOPLeqBg9eL4uh9auBBuwaZjYKeg2ZoweXnk5s
-         r1ZgKXgGv5MyEmvpKOOykYGYFeLWK5YUMO5a2usoVBDmZD1vvap2blDYtu1s1X8MuI
-         e05vOHVl0RODMOxM2NLuBkSrYob321SgQ9iJd9QfwK6xrc556uESKDQmgS3cSIJjLV
-         +vZmqqC6kxurd2YmCYbMZpVHDWbvyHmDr3JR/IQ/dXHXlwtS7+SzjYvHrUd1eYZZsJ
-         k8ZUKAQCsxN3w==
-Date:   Tue, 17 Oct 2023 08:38:59 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH v2] dt-bindings: serial: re-order entries to match coding
- convention
-Message-ID: <20231017-grandma-unsuited-e922a2fd24de@spud>
-References: <20231016181909.368429-1-krzysztof.kozlowski@linaro.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="1+71Q60Wioam/cGb"
-Content-Disposition: inline
-In-Reply-To: <20231016181909.368429-1-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        Tue, 17 Oct 2023 03:39:12 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C67DFAB
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 00:39:10 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7964D1FF03;
+        Tue, 17 Oct 2023 07:39:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1697528349; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PGJxT3fE2S2hYkRTsl5ppukKyjX88C6IErtN8VwljMY=;
+        b=Lv4CWERRKSmPG+NobTHXO8SGwG1ZGwx32Vj6D7xCr8olYXOiun6Qq654Nn/6gd6GpqWofp
+        ZgmTaSnS7WQ83lbqHoWFA5KILiFhQSL2IYysKXGFj8ZDkNjWAJbZZw59+w2zT0jJ0IYZpo
+        MiYMYXTQ8tDfjAOvEfChnn6ZrVNrD2s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1697528349;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PGJxT3fE2S2hYkRTsl5ppukKyjX88C6IErtN8VwljMY=;
+        b=XKuvu/E+EFCqzH5zvjJbftenA+sp5iyoAJ1XnP/hL32WujfWd9jXWKoe965+DuS8DffBPr
+        GBgl7PCgqPj9PICw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5761113597;
+        Tue, 17 Oct 2023 07:39:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id dINpFB06LmWCMAAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 17 Oct 2023 07:39:09 +0000
+Date:   Tue, 17 Oct 2023 09:39:08 +0200
+Message-ID: <87jzrln1er.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Luka Guzenko <l.guzenko@web.de>
+Cc:     tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: hda/relatek: Enable Mute LED on HP Laptop 15s-fq5xxx
+In-Reply-To: <20231016221328.1521674-1-l.guzenko@web.de>
+References: <20231016221328.1521674-1-l.guzenko@web.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -9.80
+X-Spamd-Result: default: False [-9.80 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         RCPT_COUNT_THREE(0.00)[4];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         FREEMAIL_ENVRCPT(0.00)[web.de];
+         REPLY(-4.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         MID_CONTAINS_FROM(1.00)[];
+         FREEMAIL_TO(0.00)[web.de];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-2.70)[98.69%]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,42 +92,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 17 Oct 2023 00:13:28 +0200,
+Luka Guzenko wrote:
+> 
+> This HP Laptop uses ALC236 codec with COEF 0x07 controlling the
+> mute LED. Enable existing quirk for this device.
+> 
+> Signed-off-by: Luka Guzenko <l.guzenko@web.de>
 
---1+71Q60Wioam/cGb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks, applied now.
 
-On Mon, Oct 16, 2023 at 08:19:09PM +0200, Krzysztof Kozlowski wrote:
-> The DT schema coding convention expressed in
-> Documentation/devicetree/bindings/example-schema.yaml expects entries in
-> following order:
->  - properties, patternProperties
->  - required
->  - if blocks, allOf with if-blocks
->  - additionalProperties/unevaluatedProperties
->=20
-> Re-order few schemas to match the convention to avoid repeating review
-> comments for new patches using existing code as template.  No functional
-> changes.
->=20
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
-Thanks,
-Conor.
-
---1+71Q60Wioam/cGb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZS46EwAKCRB4tDGHoIJi
-0iYrAP97qYyTlCLaxrpzHug1qLPaMkDNoEDl6vLYwErKorOmjAEA+o9HNVu2/Vnk
-aEwghWPY16NO2j39CEu9MQuwz4GAawM=
-=mnUY
------END PGP SIGNATURE-----
-
---1+71Q60Wioam/cGb--
+Takashi
