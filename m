@@ -2,107 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D447CC785
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D187CC7A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344302AbjJQPc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 11:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33184 "EHLO
+        id S1344402AbjJQPlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 11:41:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJQPc0 (ORCPT
+        with ESMTP id S1343928AbjJQPlu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 11:32:26 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D16292;
-        Tue, 17 Oct 2023 08:32:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61EBDC433C8;
-        Tue, 17 Oct 2023 15:32:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697556744;
-        bh=gEjMKkoJZQgKHA815iyJtPqk+ih8igqa9RyW+EN97CE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gOjHqgEIBPUKbXerOqT4j3GgldYb+fLWbr/jxY2/CGAsZVBJellxxATXsMp0TLFOr
-         v7DueZntYAQQdRmuDg05xw+zEcIsGnVfL0t2k9RoZV3rPTiWvf3rrOcDWN+Dq5ZN2w
-         hTlffSw8MCOHdD8iLUJgRSW/Kb31gGwK9w3+yZRgwNwGQ7zBjZSYadSVHWzIWZZxGF
-         3P+63BnLCNyqHko13Pdsinh1akIWIeLqUrLNmTnfCr+ue/8bZ+bESAkhdln+oJOEVD
-         M1nAXIw6WEqP0qBhZnp/fSh0RfvyhG+iZxLEsE8lipGQPYpEJ9WjeFPwkRAKGkqbQG
-         wprIGMwCwOz1g==
-Date:   Tue, 17 Oct 2023 08:32:22 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     "Kaplan, David" <David.Kaplan@amd.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-tip-commits@vger.kernel.org" 
-        <linux-tip-commits@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>
-Subject: Re: [tip: x86/bugs] x86/retpoline: Ensure default return thunk isn't
- used at runtime
-Message-ID: <20231017153222.GA707258@dev-arch.thelio-3990X>
-References: <20231012141031.GHZSf+V1NjjUJTc9a9@fat_crate.local>
- <169713303534.3135.10558074245117750218.tip-bot2@tip-bot2>
- <20231016211040.GA3789555@dev-arch.thelio-3990X>
- <20231016212944.GGZS2rSCbIsViqZBDe@fat_crate.local>
- <20231016214810.GA3942238@dev-arch.thelio-3990X>
- <SN6PR12MB270273A7D1AF5D59B920C94194D6A@SN6PR12MB2702.namprd12.prod.outlook.com>
- <20231017052834.v53regh66hspv45n@treble>
+        Tue, 17 Oct 2023 11:41:50 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB1239F;
+        Tue, 17 Oct 2023 08:41:48 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 64E0F21D02;
+        Tue, 17 Oct 2023 15:41:47 +0000 (UTC)
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 217FA2CD7D;
+        Tue, 17 Oct 2023 15:41:47 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 5E0C0DA8C1; Tue, 17 Oct 2023 17:34:58 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fix for 6.6-rc7
+Date:   Tue, 17 Oct 2023 17:34:56 +0200
+Message-ID: <cover.1697555249.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231017052834.v53regh66hspv45n@treble>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++++++++++++
+Authentication-Results: smtp-out1.suse.de;
+        dkim=none;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
+        spf=softfail (smtp-out1.suse.de: 149.44.160.134 is neither permitted nor denied by domain of dsterba@suse.cz) smtp.mailfrom=dsterba@suse.cz
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [15.00 / 50.00];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         RCPT_COUNT_THREE(0.00)[4];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         R_MISSING_CHARSET(2.50)[];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
+         R_SPF_SOFTFAIL(0.60)[~all];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
+         VIOLATED_DIRECT_SPF(3.50)[];
+         MX_GOOD(-0.01)[];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         MID_CONTAINS_FROM(1.00)[];
+         FORGED_SENDER(0.30)[dsterba@suse.com,dsterba@suse.cz];
+         RCVD_NO_TLS_LAST(0.10)[];
+         R_DKIM_NA(0.20)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         FROM_NEQ_ENVFROM(0.10)[dsterba@suse.com,dsterba@suse.cz];
+         BAYES_HAM(-0.43)[78.52%]
+X-Spam-Score: 15.00
+X-Rspamd-Queue-Id: 64E0F21D02
+X-Spam: Yes
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 10:28:34PM -0700, Josh Poimboeuf wrote:
-> On Tue, Oct 17, 2023 at 04:31:09AM +0000, Kaplan, David wrote:
-> > I think I found the problem, although I'm not sure the best way to fix it.
-> > 
-> > When KCSAN is enabled, GCC generates lots of constructor functions named _sub_I_00099_0 which call __tsan_init and then return.  The returns in these are generally annotated normally by objtool and fixed up at runtime.  But objtool runs on vmlinux.o and vmlinux.o does not include a couple of object files that are in vmlinux, like init/version-timestamp.o and .vmlinux.export.o, both of which contain _sub_I_00099_0 functions.  As a result, the returns in these functions are not annotated, and the panic occurs when we call one of them in do_ctors and it uses the default return thunk.
-> > 
-> > This difference can be seen by counting the number of these functions in the object files:
-> > $ objdump -d vmlinux.o|grep -c "<_sub_I_00099_0>:"
-> > 2601
-> > $ objdump -d vmlinux|grep -c "<_sub_I_00099_0>:"
-> > 2603
-> > 
-> > If these functions are only run during kernel boot, there is no speculation concern.  My first thought is that these two object files perhaps should be built without -mfunction-return=thunk-extern.  The use of that flag requires objtool to have the intended behavior and objtool isn't seeing these files.
-> > 
-> > Perhaps another option would be to not compile these two files with KCSAN, as they are already excluded from KASAN and GCOV it looks like.
-> 
-> I think the latter would be the easy fix, does this make it go away?
+Hi,
 
-Tested-by: Nathan Chancellor <nathan@kernel.org>
+please pull a "one-liner and thousand words", fixing a bug in chunk
+size decision that could lead to suboptimal placement and filling
+patterns. Thanks.
 
-Thanks for figuring this out!
+----------------------------------------------------------------
+The following changes since commit 75f5f60bf7ee075ed4a29637ce390898b4c36811:
 
-> diff --git a/init/Makefile b/init/Makefile
-> index ec557ada3c12..cbac576c57d6 100644
-> --- a/init/Makefile
-> +++ b/init/Makefile
-> @@ -60,4 +60,5 @@ include/generated/utsversion.h: FORCE
->  $(obj)/version-timestamp.o: include/generated/utsversion.h
->  CFLAGS_version-timestamp.o := -include include/generated/utsversion.h
->  KASAN_SANITIZE_version-timestamp.o := n
-> +KCSAN_SANITIZE_version-timestamp.o := n
->  GCOV_PROFILE_version-timestamp.o := n
-> diff --git a/scripts/Makefile.vmlinux b/scripts/Makefile.vmlinux
-> index 3cd6ca15f390..c9f3e03124d7 100644
-> --- a/scripts/Makefile.vmlinux
-> +++ b/scripts/Makefile.vmlinux
-> @@ -19,6 +19,7 @@ quiet_cmd_cc_o_c = CC      $@
->  
->  ifdef CONFIG_MODULES
->  KASAN_SANITIZE_.vmlinux.export.o := n
-> +KCSAN_SANITIZE_.vmlinux.export.o := n
->  GCOV_PROFILE_.vmlinux.export.o := n
->  targets += .vmlinux.export.o
->  vmlinux: .vmlinux.export.o
+  btrfs: add __counted_by for struct btrfs_delayed_item and use struct_size() (2023-10-11 11:37:19 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.6-rc6-tag
+
+for you to fetch changes up to 8a540e990d7da36813cb71a4a422712bfba448a4:
+
+  btrfs: fix stripe length calculation for non-zoned data chunk allocation (2023-10-15 19:00:59 +0200)
+
+----------------------------------------------------------------
+Zygo Blaxell (1):
+      btrfs: fix stripe length calculation for non-zoned data chunk allocation
+
+ fs/btrfs/volumes.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
