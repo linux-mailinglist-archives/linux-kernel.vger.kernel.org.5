@@ -2,268 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA4A7CBE3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD84A7CBE41
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:58:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234771AbjJQI5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 04:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33208 "EHLO
+        id S234781AbjJQI6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 04:58:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232134AbjJQI5k (ORCPT
+        with ESMTP id S234763AbjJQI6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 04:57:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B7393;
-        Tue, 17 Oct 2023 01:57:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697533058; x=1729069058;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=Z1Di3G/cS3fbqCUFXeZYqQTg646nq7TdtKkQmoFqEYk=;
-  b=kv8c94N6wT+pfYHu+k6Gs6vReWif1Fdb/3B0504KYwfg7Oj2JqU2L10e
-   JM3cWum3qAacF07wCdm5lomiPDwPKLzvdtFXVzsVxd3A54UGIDltStnHi
-   4fkNG1fdKn5RgIHDCZ1OJcnkOVcqlR+onW3gTvrQA7Fyf6f6mkH/Aip5G
-   DEXRyqz2Dz89fxhPNmUrwqe/UqF5mtbHbj40nZ2TgdN1PNIaB8SfYL9MR
-   R4l0LqAnZHDX+QetAycRQ6vIqtLamYu07wCvaChNgrmP7IbO36laHRFMI
-   M7WWowFHZYovGL1GDW0YHq7DjqYqF9Kj8wOuPP40t3HKzXFjizPhgdAvT
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="376104457"
-X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="376104457"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 01:55:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="785407466"
-X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="785407466"
-Received: from spandruv-mobl.amr.corp.intel.com ([10.252.44.24])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 01:55:54 -0700
-Date:   Tue, 17 Oct 2023 11:55:52 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Ma Jun <Jun.Ma2@amd.com>
-cc:     amd-gfx@lists.freedesktop.org, lenb@kernel.org,
-        johannes@sipsolutions.net, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        alexander.deucher@amd.com, Lijo.Lazar@amd.com,
-        mario.limonciello@amd.com, majun@amd.com,
-        Netdev <netdev@vger.kernel.org>, linux-wireless@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        Evan Quan <quanliangl@hotmail.com>
-Subject: Re: [PATCH v12 8/9] drm/amd/pm: enable Wifi RFI mitigation feature
- support for SMU13.0.0
-In-Reply-To: <20231017025358.1773598-9-Jun.Ma2@amd.com>
-Message-ID: <4477dd8b-bb52-f65-1de6-13dd4186fd38@linux.intel.com>
-References: <20231017025358.1773598-1-Jun.Ma2@amd.com> <20231017025358.1773598-9-Jun.Ma2@amd.com>
+        Tue, 17 Oct 2023 04:58:17 -0400
+Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6165F93
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 01:58:14 -0700 (PDT)
+Received: by mail-vk1-xa33.google.com with SMTP id 71dfb90a1353d-49dc95be894so1558915e0c.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 01:58:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697533093; x=1698137893; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=WTi7aJ8Y9jVyiAr3Hx7uz4pRlTR+SQvTtfZ6MRXVjRc=;
+        b=w31llEKTvGRPad4ONBMFCHLLX/ATBXKPMc4WGZlRpYXzkoeU4vMN2aK0pTzt1AibtC
+         xIhMuTMtWLgdnAfWVFOwUR8zFlG3tRhX3Ls3BFU2BSBUwNnJdmeV0zBpRBNEz4I3/+Rn
+         7yeMLQd7z2dvH6Qh82blwisBZWUGBQ1qX6X35cDsCBKSSiA6rCvFw0pAPJaS+o4KDlGX
+         seQZ1+Td4VSdoH+a2Vjr8KlCQfhYob5jkjJO6MwPQrCQ7mEkEHCJ+2Vy+jMIV27Bpbvl
+         RB7JMKGMRocKYP5WsNspkz63HAVvtBXqwT4e4Toh9VOkxoL294olGhaelzsAwGOczQyp
+         N1yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697533093; x=1698137893;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WTi7aJ8Y9jVyiAr3Hx7uz4pRlTR+SQvTtfZ6MRXVjRc=;
+        b=sr7Y+2J9SSLTQkrSSSpG8fvjRROlHyCNDx8LllB9GDLpY4v4RKL+g0cwrt0f3mOJX1
+         9FfDg2bZ5xrlFrOmG5YblEjpeucArnqlZF8DIc5yOKkw9Ni+5xBDljjIdNSXUVyClpDi
+         dUbbH2CuEBgTzzUplyvrvi4IJmfGQ0Rz44Gmpci5vpwPuHVKx/WGsUgjenWThvWqJw3a
+         XiJ8FDEAa/OokYx0NSbtIftWAqwivWHgRHbG5FFJuAJ8Uph+hdw0jyEHtyCVHXhNCb5H
+         6PozdIVl2Ch4DQpflh4yVsimOgztF+j06zwVyBJN7DVjl8dxpJvTLDTMPRnlb4kkiTMV
+         Dm0g==
+X-Gm-Message-State: AOJu0YxZ50mAUxJ6fMXR8dS5TQVhq+6gEdZ1JhNk1Ru4St1EcgaR4C/+
+        CPpmimMpLz+nBTJEuAIc99zGLEZm+Bb720xsxIakUQ==
+X-Google-Smtp-Source: AGHT+IEB/3AKEOW0vsHpmt4f5Lluta/tRaOYOOhgFRblHJz5YrDfbFVQhkYsPum2zYLhR6xZFzdQfY0PVmZLrj4Zwsc=
+X-Received: by 2002:a05:6122:17a3:b0:4a0:6fa5:b08a with SMTP id
+ o35-20020a05612217a300b004a06fa5b08amr1586183vkf.8.1697533093299; Tue, 17 Oct
+ 2023 01:58:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 17 Oct 2023 14:28:02 +0530
+Message-ID: <CA+G9fYswykTGdK+L9Z8yJACVZMoWvgRFdG58VLKN9o73AiZh+w@mail.gmail.com>
+Subject: Qemu-arm64: kvm-unit-tests: WARNING: at kernel/events/core.c:244 event_function
+To:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, linux-stable <stable@vger.kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mark Brown <broonie@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Oct 2023, Ma Jun wrote:
+Following kernel warning noticed while running kvm-unit-tests on qemu-arm64
+running stable-rc 6.1.56 kernel.
 
-> From: Evan Quan <quanliangl@hotmail.com>
-> 
-> Fulfill the SMU13.0.0 support for Wifi RFI mitigation feature.
-> 
-> Signed-off-by: Evan Quan <quanliangl@hotmail.com>
-> Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
-> Signed-off-by: Ma Jun <Jun.Ma2@amd.com>
-> --
-> v10->v11:
->   - downgrade the prompt level on message failure(Lijo)
-> ---
->  drivers/gpu/drm/amd/pm/swsmu/inc/amdgpu_smu.h |  3 +
->  drivers/gpu/drm/amd/pm/swsmu/inc/smu_types.h  |  3 +-
->  drivers/gpu/drm/amd/pm/swsmu/inc/smu_v13_0.h  |  3 +
->  .../gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c    |  9 +++
->  .../drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c  | 60 +++++++++++++++++++
->  5 files changed, 77 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/amd/pm/swsmu/inc/amdgpu_smu.h b/drivers/gpu/drm/amd/pm/swsmu/inc/amdgpu_smu.h
-> index d396a18fe0f3..6f88c352b53e 100644
-> --- a/drivers/gpu/drm/amd/pm/swsmu/inc/amdgpu_smu.h
-> +++ b/drivers/gpu/drm/amd/pm/swsmu/inc/amdgpu_smu.h
-> @@ -325,6 +325,7 @@ enum smu_table_id
->  	SMU_TABLE_PACE,
->  	SMU_TABLE_ECCINFO,
->  	SMU_TABLE_COMBO_PPTABLE,
-> +	SMU_TABLE_WIFIBAND,
->  	SMU_TABLE_COUNT,
->  };
->  
-> @@ -1501,6 +1502,8 @@ enum smu_baco_seq {
->  			 __dst_size);					   \
->  })
->  
-> +#define HZ_IN_MHZ		1000000U
+This kernel warning occurs intermittently on qemu-arm64 with kernel command
+line option "kvm-arm.mode=protected".
 
-Don't add generic conversion constants like this into driver specific 
-code. Use the one from include/linux/units.h, 
+Boot log:
+[    0.000000] Linux version 6.1.56 (tuxmake@tuxmake)
+(aarch64-linux-gnu-gcc (Debian 13.2.0-2) 13.2.0, GNU ld (GNU Binutils
+for Debian) 2.41) #1 SMP PREEMPT @1696601727
+[    0.000000] random: crng init done
+[    0.000000] Machine model: linux,dummy-virt
+...
+<6>[    0.204459] CPU features: detected: Protected KVM
+...
+<6>[    1.439501] kvm [1]: IPA Size Limit: 48 bits
+<6>[    1.620529] kvm [1]: GICv3: no GICV resource entry
+<6>[    1.623060] kvm [1]: disabling GICv2 emulation
+<6>[    1.624247] kvm [1]: GIC system register CPU interface enabled
+<6>[    1.626934] kvm [1]: vgic interrupt IRQ9
+<6>[    1.632519] kvm [1]: Protected nVHE mode initialized successfully
 
-> +
->  #if !defined(SWSMU_CODE_LAYER_L2) && !defined(SWSMU_CODE_LAYER_L3) && !defined(SWSMU_CODE_LAYER_L4)
->  int smu_get_power_limit(void *handle,
->  			uint32_t *limit,
-> diff --git a/drivers/gpu/drm/amd/pm/swsmu/inc/smu_types.h b/drivers/gpu/drm/amd/pm/swsmu/inc/smu_types.h
-> index 297b70b9388f..5bbb60289a79 100644
-> --- a/drivers/gpu/drm/amd/pm/swsmu/inc/smu_types.h
-> +++ b/drivers/gpu/drm/amd/pm/swsmu/inc/smu_types.h
-> @@ -245,7 +245,8 @@
->  	__SMU_DUMMY_MAP(AllowGpo),	\
->  	__SMU_DUMMY_MAP(Mode2Reset),	\
->  	__SMU_DUMMY_MAP(RequestI2cTransaction), \
-> -	__SMU_DUMMY_MAP(GetMetricsTable),
-> +	__SMU_DUMMY_MAP(GetMetricsTable), \
-> +	__SMU_DUMMY_MAP(EnableUCLKShadow),
->  
->  #undef __SMU_DUMMY_MAP
->  #define __SMU_DUMMY_MAP(type)	SMU_MSG_##type
-> diff --git a/drivers/gpu/drm/amd/pm/swsmu/inc/smu_v13_0.h b/drivers/gpu/drm/amd/pm/swsmu/inc/smu_v13_0.h
-> index 355c156d871a..dd70b56aa71e 100644
-> --- a/drivers/gpu/drm/amd/pm/swsmu/inc/smu_v13_0.h
-> +++ b/drivers/gpu/drm/amd/pm/swsmu/inc/smu_v13_0.h
-> @@ -299,5 +299,8 @@ int smu_v13_0_update_pcie_parameters(struct smu_context *smu,
->  				     uint32_t pcie_gen_cap,
->  				     uint32_t pcie_width_cap);
->  
-> +int smu_v13_0_enable_uclk_shadow(struct smu_context *smu,
-> +				 bool enablement);
-> +
->  #endif
->  #endif
-> diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c
-> index 9b62b45ebb7f..6a5cb582aa92 100644
-> --- a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c
-> +++ b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c
-> @@ -2472,3 +2472,12 @@ int smu_v13_0_update_pcie_parameters(struct smu_context *smu,
->  
->  	return 0;
->  }
-> +
-> +int smu_v13_0_enable_uclk_shadow(struct smu_context *smu,
-> +				 bool enablement)
-> +{
-> +	return smu_cmn_send_smc_msg_with_param(smu,
-> +					       SMU_MSG_EnableUCLKShadow,
-> +					       enablement,
-> +					       NULL);
-> +}
-> diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c
-> index 0fb6be11a0cc..08ab19559c7b 100644
-> --- a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c
-> +++ b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c
-> @@ -154,6 +154,7 @@ static struct cmn2asic_msg_mapping smu_v13_0_0_message_map[SMU_MSG_MAX_COUNT] =
->  	MSG_MAP(AllowGpo,			PPSMC_MSG_SetGpoAllow,           0),
->  	MSG_MAP(AllowIHHostInterrupt,		PPSMC_MSG_AllowIHHostInterrupt,       0),
->  	MSG_MAP(ReenableAcDcInterrupt,		PPSMC_MSG_ReenableAcDcInterrupt,       0),
-> +	MSG_MAP(EnableUCLKShadow,		PPSMC_MSG_EnableUCLKShadow,            0),
->  };
->  
->  static struct cmn2asic_mapping smu_v13_0_0_clk_map[SMU_CLK_COUNT] = {
-> @@ -237,6 +238,7 @@ static struct cmn2asic_mapping smu_v13_0_0_table_map[SMU_TABLE_COUNT] = {
->  	TAB_MAP(I2C_COMMANDS),
->  	TAB_MAP(ECCINFO),
->  	TAB_MAP(OVERDRIVE),
-> +	TAB_MAP(WIFIBAND),
->  };
->  
->  static struct cmn2asic_mapping smu_v13_0_0_pwr_src_map[SMU_POWER_SOURCE_COUNT] = {
-> @@ -496,6 +498,9 @@ static int smu_v13_0_0_tables_init(struct smu_context *smu)
->  			PAGE_SIZE, AMDGPU_GEM_DOMAIN_VRAM);
->  	SMU_TABLE_INIT(tables, SMU_TABLE_ECCINFO, sizeof(EccInfoTable_t),
->  			PAGE_SIZE, AMDGPU_GEM_DOMAIN_VRAM);
-> +	SMU_TABLE_INIT(tables, SMU_TABLE_WIFIBAND,
-> +		       sizeof(WifiBandEntryTable_t), PAGE_SIZE,
-> +		       AMDGPU_GEM_DOMAIN_VRAM);
->  
->  	smu_table->metrics_table = kzalloc(sizeof(SmuMetricsExternal_t), GFP_KERNEL);
->  	if (!smu_table->metrics_table)
-> @@ -2607,6 +2612,58 @@ static ssize_t smu_v13_0_0_get_ecc_info(struct smu_context *smu,
->  	return ret;
->  }
->  
-> +static bool smu_v13_0_0_wbrf_support_check(struct smu_context *smu)
-> +{
-> +	struct amdgpu_device *adev = smu->adev;
-> +
-> +	switch (adev->ip_versions[MP1_HWIP][0]) {
-> +	case IP_VERSION(13, 0, 0):
-> +		return smu->smc_fw_version >= 0x004e6300;
-> +	case IP_VERSION(13, 0, 10):
-> +		return smu->smc_fw_version >= 0x00503300;
-> +	default:
-> +		return false;
-> +	}
-> +}
-> +
-> +static int smu_v13_0_0_set_wbrf_exclusion_ranges(struct smu_context *smu,
-> +						 struct freq_band_range *exclusion_ranges)
-> +{
-> +	WifiBandEntryTable_t wifi_bands;
-> +	int valid_entries = 0;
-> +	int ret, i;
-> +
-> +	memset(&wifi_bands, 0, sizeof(wifi_bands));
-> +	for (i = 0; i < ARRAY_SIZE(wifi_bands.WifiBandEntry); i++) {
-> +		if (!exclusion_ranges[i].start &&
-> +		    !exclusion_ranges[i].end)
-> +			break;
-> +
-> +		/* PMFW expects the inputs to be in Mhz unit */
-> +		wifi_bands.WifiBandEntry[valid_entries].LowFreq =
-> +			DIV_ROUND_DOWN_ULL(exclusion_ranges[i].start, HZ_IN_MHZ);
-> +		wifi_bands.WifiBandEntry[valid_entries++].HighFreq =
-> +			DIV_ROUND_UP_ULL(exclusion_ranges[i].end, HZ_IN_MHZ);
-> +	}
-> +	wifi_bands.WifiBandEntryNum = valid_entries;
-> +
-> +	/*
-> +	 * Per confirm with PMFW team, WifiBandEntryNum = 0
-> +	 * is a valid setting. So, there should be no direct
-> +	 * return on that.
-> +	 */
-> +
-> +	ret = smu_cmn_update_table(smu,
-> +				   SMU_TABLE_WIFIBAND,
-> +				   0,
-> +				   (void *)(&wifi_bands),
 
-Explicit casting to void * is never needed, drop it and the parenthesis.
+Test log:
+---------
++ ./run_tests.sh -a -v
++ tee -a /lava-1/0/tests/0_kvm-unit-tests/automated/linux/kvm-unit-tests/output/result_log.txt
+<31>[   68.843857] systemd[1]: systemd-udevd.service: Got notification
+message from PID 226 (WATCHDOG=1)
+<31>[   97.299940] systemd[1]: Received SIGCHLD from PID 351 (bash).
+<31>[   97.320211] systemd[1]: Child 351 (bash) died (code=exited,
+status=0/SUCCESS)
+<31>[   97.352577] systemd[1]: Child 352 (grep) died (code=exited,
+status=1/FAILURE)
+<4>[  100.375043] ------------[ cut here ]------------
+<4>[ 100.376812] WARNING: CPU: 0 PID: 356 at kernel/events/core.c:244
+event_function (kernel/events/core.c:244 (discriminator 1))
+<4>[  100.378656] Modules linked in: fuse drm dm_mod ip_tables x_tables
+<4>[  100.381530] CPU: 0 PID: 356 Comm: qemu-system-aar Not tainted 6.1.56 #1
+<4>[  100.382823] Hardware name: linux,dummy-virt (DT)
+<4>[  100.384931] pstate: 624000c5 (nZCv daIF +PAN -UAO +TCO -DIT
+-SSBS BTYPE=--)
+<4>[ 100.386199] pc : event_function (kernel/events/core.c:244
+(discriminator 1))
+<4>[ 100.387840] lr : event_function (kernel/events/core.c:168
+kernel/events/core.c:226)
+<4>[  100.388527] sp : ffff80000858b750
+<4>[  100.389629] x29: ffff80000858b750 x28: 0000000000000000 x27:
+ffffad552ce81c00
+<4>[  100.391419] x26: ffff0000c4f90000 x25: ffff80000858b8d0 x24:
+ffff0000c4f90000
+<4>[  100.392473] x23: ffff0000ff7ba9e8 x22: 0000000000000000 x21:
+ffff0000c3ddca00
+<4>[  100.393558] x20: ffff80000858b8d0 x19: ffff0000ff7ba9e0 x18:
+0000000000000000
+<4>[  100.394601] x17: 0000000000000000 x16: 0000000000000000 x15:
+0000000000000000
+<4>[  100.395660] x14: 0000000000000000 x13: ffff0000c03a0031 x12:
+3430376239633038
+<4>[  100.396686] x11: 0000002042c35bc1 x10: aff705512bd33e45 x9 :
+ffffad552df9bb24
+<4>[  100.397603] x8 : ffff80000858b708 x7 : 0000000000000000 x6 :
+0000000000000001
+<4>[  100.398525] x5 : ffff80000858c000 x4 : ffff800008588000 x3 :
+0000000000000000
+<4>[  100.399502] x2 : 0000000000000001 x1 : ffff0000c4d21080 x0 :
+0000000000000000
+<4>[  100.400742] Call trace:
+<4>[ 100.401070] event_function (kernel/events/core.c:244 (discriminator 1))
+<4>[ 100.401781] remote_function (kernel/events/core.c:92
+(discriminator 1) kernel/events/core.c:72 (discriminator 1))
+<4>[ 100.402355] generic_exec_single
+(arch/arm64/include/asm/irqflags.h:85 kernel/smp.c:522)
+<4>[ 100.403777] smp_call_function_single (kernel/smp.c:773)
+<4>[ 100.404283] event_function_call (kernel/events/core.c:123
+kernel/events/core.c:289)
+<4>[ 100.405433] perf_event_disable (kernel/events/core.c:1321
+kernel/events/core.c:2499)
+<4>[ 100.405816] kvm_pmu_probe_armpmu (arch/arm64/kvm/pmu-emul.c:711)
+<4>[ 100.406563] kvm_arm_pmu_v3_set_attr
+(arch/arm64/kvm/pmu-emul.c:890 (discriminator 1))
+<4>[ 100.407333] kvm_arm_vcpu_arch_set_attr (arch/arm64/kvm/guest.c:955)
+<4>[ 100.407774] kvm_arch_vcpu_ioctl (arch/arm64/kvm/arm.c:1386
+(discriminator 1))
+<4>[ 100.408360] kvm_vcpu_ioctl
+(arch/arm64/kvm/../../../virt/kvm/kvm_main.c:4081)
+<4>[ 100.409176] __arm64_sys_ioctl (fs/ioctl.c:52 fs/ioctl.c:870
+fs/ioctl.c:856 fs/ioctl.c:856)
+<4>[ 100.409796] invoke_syscall (arch/arm64/include/asm/current.h:19
+arch/arm64/kernel/syscall.c:57)
+<4>[ 100.410395] el0_svc_common.constprop.0
+(arch/arm64/include/asm/daifflags.h:28
+arch/arm64/kernel/syscall.c:150)
+<4>[ 100.411070] do_el0_svc (arch/arm64/kernel/syscall.c:207)
+<4>[ 100.411603] el0_svc (arch/arm64/include/asm/daifflags.h:28
+arch/arm64/kernel/entry-common.c:133
+arch/arm64/kernel/entry-common.c:142
+arch/arm64/kernel/entry-common.c:638)
+<4>[ 100.412158] el0t_64_sync_handler (arch/arm64/kernel/entry-common.c:656)
+<4>[ 100.412574] el0t_64_sync (arch/arm64/kernel/entry.S:581)
+<4>[  100.413766] ---[ end trace 0000000000000000 ]---
+<4>[  100.414762] ------------[ cut here ]------------
+<4>[ 100.415317] WARNING: CPU: 0 PID: 356 at kernel/events/core.c:249
+event_function (kernel/events/core.c:249 (discriminator 1))
+<4>[  100.416404] Modules linked in: fuse drm dm_mod ip_tables x_tables
+<4>[  100.417743] CPU: 0 PID: 356 Comm: qemu-system-aar Tainted: G
+   W          6.1.56 #1
+<4>[  100.418745] Hardware name: linux,dummy-virt (DT)
+<4>[  100.419503] pstate: a24000c5 (NzCv daIF +PAN -UAO +TCO -DIT
+-SSBS BTYPE=--)
+<4>[ 100.420538] pc : event_function (kernel/events/core.c:249
+(discriminator 1))
+<4>[ 100.421156] lr : event_function (kernel/events/core.c:168
+kernel/events/core.c:226)
+<4>[  100.422364] sp : ffff80000858b750
+<4>[  100.422967] x29: ffff80000858b750 x28: 0000000000000000 x27:
+ffffad552ce81c00
+<4>[  100.424161] x26: ffff0000c4f90000 x25: ffff80000858b8d0 x24:
+ffff0000c4f90000
+<4>[  100.424839] x23: ffff0000ff7ba9e8 x22: 0000000000000000 x21:
+ffff0000c3ddca00
+<4>[  100.425502] x20: ffff80000858b8d0 x19: ffff0000ff7ba9e0 x18:
+0000000000000000
+<4>[  100.426185] x17: 0000000000000000 x16: 0000000000000000 x15:
+0000000000000000
+<4>[  100.428958] x14: 0000000000000000 x13: ffff0000c03a0031 x12:
+3430376239633038
+<4>[  100.429930] x11: 0000002042c35bc1 x10: aff705512bd33e45 x9 :
+ffffad552df9bb24
+<4>[  100.430938] x8 : ffff80000858b708 x7 : 0000000000000000 x6 :
+0000000000000001
+<4>[  100.431829] x5 : ffff80000858c000 x4 : ffff800008588000 x3 :
+0000000000000000
+<4>[  100.432767] x2 : 0000000000000001 x1 : ffff0000c4d21080 x0 :
+0000000000000000
+<4>[  100.433677] Call trace:
+<4>[ 100.434167] event_function (kernel/events/core.c:249 (discriminator 1))
+<4>[ 100.435066] remote_function (kernel/events/core.c:92
+(discriminator 1) kernel/events/core.c:72 (discriminator 1))
+<4>[ 100.435497] generic_exec_single
+(arch/arm64/include/asm/irqflags.h:85 kernel/smp.c:522)
+<4>[ 100.435875] smp_call_function_single (kernel/smp.c:773)
+<4>[ 100.436758] event_function_call (kernel/events/core.c:123
+kernel/events/core.c:289)
+<4>[ 100.437374] perf_event_disable (kernel/events/core.c:1321
+kernel/events/core.c:2499)
+<4>[ 100.438024] kvm_pmu_probe_armpmu (arch/arm64/kvm/pmu-emul.c:711)
+<4>[ 100.438834] kvm_arm_pmu_v3_set_attr
+(arch/arm64/kvm/pmu-emul.c:890 (discriminator 1))
+<4>[ 100.439329] kvm_arm_vcpu_arch_set_attr (arch/arm64/kvm/guest.c:955)
+<4>[ 100.439981] kvm_arch_vcpu_ioctl (arch/arm64/kvm/arm.c:1386
+(discriminator 1))
+<4>[ 100.440393] kvm_vcpu_ioctl
+(arch/arm64/kvm/../../../virt/kvm/kvm_main.c:4081)
+<4>[ 100.441150] __arm64_sys_ioctl (fs/ioctl.c:52 fs/ioctl.c:870
+fs/ioctl.c:856 fs/ioctl.c:856)
+<4>[ 100.441766] invoke_syscall (arch/arm64/include/asm/current.h:19
+arch/arm64/kernel/syscall.c:57)
+<4>[ 100.442312] el0_svc_common.constprop.0
+(arch/arm64/include/asm/daifflags.h:28
+arch/arm64/kernel/syscall.c:150)
+<4>[ 100.442801] do_el0_svc (arch/arm64/kernel/syscall.c:207)
+<4>[ 100.443590] el0_svc (arch/arm64/include/asm/daifflags.h:28
+arch/arm64/kernel/entry-common.c:133
+arch/arm64/kernel/entry-common.c:142
+arch/arm64/kernel/entry-common.c:638)
+<4>[ 100.444125] el0t_64_sync_handler (arch/arm64/kernel/entry-common.c:656)
+<4>[ 100.444779] el0t_64_sync (arch/arm64/kernel/entry.S:581)
+<4>[  100.445155] ---[ end trace 0000000000000000 ]---
 
-This probably fits to one line after that and certainly to less lines than 
-now.
 
-> +				   true);
-> +	if (ret)
-> +		dev_warn(smu->adev->dev, "Failed to set wifiband!");
-> +
-> +	return ret;
-> +}
-> +
->  static const struct pptable_funcs smu_v13_0_0_ppt_funcs = {
->  	.get_allowed_feature_mask = smu_v13_0_0_get_allowed_feature_mask,
->  	.set_default_dpm_table = smu_v13_0_0_set_default_dpm_table,
-> @@ -2686,6 +2743,9 @@ static const struct pptable_funcs smu_v13_0_0_ppt_funcs = {
->  	.send_hbm_bad_channel_flag = smu_v13_0_0_send_bad_mem_channel_flag,
->  	.gpo_control = smu_v13_0_gpo_control,
->  	.get_ecc_info = smu_v13_0_0_get_ecc_info,
-> +	.is_asic_wbrf_supported = smu_v13_0_0_wbrf_support_check,
-> +	.enable_uclk_shadow = smu_v13_0_enable_uclk_shadow,
-> +	.set_wbrf_exclusion_ranges = smu_v13_0_0_set_wbrf_exclusion_ranges,
->  };
->  
->  void smu_v13_0_0_set_ppt_funcs(struct smu_context *smu)
-> 
+Links:
+- https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2WOQiJhgccWJ1UTjge0VQWINEgG
+- https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.56/testrun/20294213/suite/log-parser-test/tests/
+- https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.56/testrun/20294213/suite/log-parser-test/test/check-kernel-exception-1c1a9bb72134660eb4c5af3558fbbda6c3a8e1827dcf791ce1cc0e2e5aa9aaba/log
 
--- 
- i.
+Buid:
+- https://storage.tuxsuite.com/public/linaro/lkft/builds/2WOQgZEtR7bb2LJfBNhOZzbaZZY/
 
+
+--
+Linaro LKFT
+https://lkft.linaro.org
