@@ -2,92 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 590AE7CC378
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 14:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7365A7CC37B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 14:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343536AbjJQMor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 08:44:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43384 "EHLO
+        id S234686AbjJQMpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 08:45:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234686AbjJQMon (ORCPT
+        with ESMTP id S234486AbjJQMpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 08:44:43 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 448BA95
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 05:44:41 -0700 (PDT)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8AxZ+i2gS5ld5cyAA--.62001S3;
-        Tue, 17 Oct 2023 20:44:38 +0800 (CST)
-Received: from [10.130.0.149] (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxH920gS5lFucnAA--.20431S3;
-        Tue, 17 Oct 2023 20:44:36 +0800 (CST)
-Subject: Re: [PATCH v2 8/8] LoongArch: Add ORC unwinder support
-To:     Huacai Chen <chenhuacai@kernel.org>,
-        Jinyang He <hejinyang@loongson.cn>
-References: <1696856590-30298-1-git-send-email-yangtiezhu@loongson.cn>
- <1696856590-30298-9-git-send-email-yangtiezhu@loongson.cn>
- <CAAhV-H4pVRLPZ9OrfvV-UbPm1kRRJ0gpTqRtVbDd-eA5WzUaXg@mail.gmail.com>
- <bd40004b-10af-3c06-5ae0-750850f31446@loongson.cn>
- <CAAhV-H77o8nMiYrKJt9nocpsOh5e66dAeg+j4soncniLc+eY=w@mail.gmail.com>
- <bb99083b-6f50-79c0-5407-ede327346887@loongson.cn>
- <CAAhV-H4gCFgGrOaHtTdDhJ=EWVhK7jtLtzOcynVD+-T2tubPNQ@mail.gmail.com>
-Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
-        loongson-kernel@lists.loongnix.cn
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <cd9371be-de46-e544-5f61-c7275657adf8@loongson.cn>
-Date:   Tue, 17 Oct 2023 20:44:36 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        Tue, 17 Oct 2023 08:45:06 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1DB2FF;
+        Tue, 17 Oct 2023 05:45:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697546705; x=1729082705;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Kto6jz9elBjTmX5T+91rtJGIQe9VMYdugkFMyKMTbTQ=;
+  b=NJMOqrtg5wZhv9xCmw/FNLB3EXv3sEX2JUDQfF0dyZ5pc5MhFCMGAZgl
+   G/hQUSPdgUqRwfbuS9h1GnoyPhOhe5Nrf6KkXy4YGHT/BlqFMWMXq/Yxn
+   qCvFcByYyojFlx7xg3nPQ1daAJOeeeaFMxhrrqaRSTOZnlt9by0h+5Ipv
+   Qth9jUpphg8bSbejcVeyD5HH2eYIdq54Xa5Ro39zLr3NzsB5m6ZHvhFSe
+   pQBzm6ygpifSALRRrrXEt49UTziPFF3arQaV7nuObFibUsXxzXbyC/0OX
+   BGOLNTe6F9xxSIMDskDtTpRI+GMi6aVfc8JNn0f+/qlPzsiUsRXwdAmkT
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="4372348"
+X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
+   d="scan'208";a="4372348"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 05:45:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="785476151"
+X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
+   d="scan'208";a="785476151"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 05:45:02 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qsjRU-00000006Hqy-1Dcu;
+        Tue, 17 Oct 2023 15:45:00 +0300
+Date:   Tue, 17 Oct 2023 15:45:00 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v3 59/73] pinctrl: cy8c95x0: drop the wrapper around
+ pinctrl_gpio_direction_input()
+Message-ID: <ZS6BzAfieYPLH+FF@smile.fi.intel.com>
+References: <20231017120431.68847-1-brgl@bgdev.pl>
+ <20231017120431.68847-60-brgl@bgdev.pl>
 MIME-Version: 1.0
-In-Reply-To: <CAAhV-H4gCFgGrOaHtTdDhJ=EWVhK7jtLtzOcynVD+-T2tubPNQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8AxH920gS5lFucnAA--.20431S3
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-        ZEXasCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29K
-        BjDU0xBIdaVrnRJUUU9Sb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26c
-        xKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vE
-        j48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxV
-        AFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x02
-        67AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6x
-        ACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q6rW5McIj6I8E
-        87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0V
-        AS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km
-        07C267AKxVW8ZVWrXwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r
-        1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8
-        JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r
-        1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1U
-        YxBIdaVFxhVjvjDU0xZFpf9x07jOdb8UUUUU=
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231017120431.68847-60-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 17, 2023 at 02:04:17PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> pinctrl_gpio_direction_input() now has the same signature as the
+> wrapper around it so we can drop them.
 
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-On 10/15/2023 09:57 PM, Huacai Chen wrote:
-> Hi, Jinyang,
+with the same comment as per Intel drivers, i.e.
+use pinctrl_gpio_direction_output_with_value().
 
-...
+-- 
+With Best Regards,
+Andy Shevchenko
 
->> In short, objtool is strictly dependent on canonical codes so that it can
->> get the ORC information right.
-> Is the code in tlbex.S the same as handle_syscall()? If so, I suggest
-> submitting a separate patch to rename FUNC to CODE. That will be easy
-> to review, and can be upstream earlier because it is independent with
-> objtool.
-
-Good suggestion, thank you, I have submitted a single patch to do this.
-
-https://lore.kernel.org/loongarch/1697449076-31866-1-git-send-email-yangtiezhu@loongson.cn/
-
-Thanks,
-Tiezhu
 
