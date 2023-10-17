@@ -2,136 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F71C7CC87D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 18:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB657CC887
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 18:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234997AbjJQQNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 12:13:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42308 "EHLO
+        id S234920AbjJQQOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 12:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235106AbjJQQNi (ORCPT
+        with ESMTP id S231569AbjJQQOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 12:13:38 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 689CE101
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:13:35 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9b2f73e3af3so896299766b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:13:35 -0700 (PDT)
+        Tue, 17 Oct 2023 12:14:12 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 725D8F0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:14:10 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40572aeb6d0so56215445e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:14:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697559213; x=1698164013; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ocr30lr2y0V9zsCKJhUGQr9AXtBKIbrFwvST7PQfksE=;
-        b=Pt2cHvsO/1oBbToYDW4aO8hTnkWqlL9aMHNH+VbnTwE9kuETn6hyWYRADEYs1c7WWV
-         finkwglffO9HawJIjA203SBMrplmA5C/4F0YMsiPmdNeq4qsjRI125tkudSmhxy1xKLR
-         J4OM//UiHpvq2Vpc2m/F0UQdptLOWHfn4AL0jzoLzcxUtOV+1LzjMYYgOjeXO6Q90A2f
-         5Lh3bj7qqSaseFYMNbPFueCtnWfHSWqba3BQv6so10MJZEthQXfLU3SpSBsLB9MOcNAs
-         HwReLJYDyg0Q3lSIKL1S4qCvCB1mV6+zTz98CEepCiVU+Pc0mzHQREQuZu8d3hx+/NXF
-         fQ2g==
+        d=linaro.org; s=google; t=1697559249; x=1698164049; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AKmQY7BLgBndXsxrNKxMvIo95aL00rRTN4PkHuTiB8Q=;
+        b=jDPFaQj81Cg+o3/JqhA2Fjvipk6Qi9gIAUB0qDnPFsNldAL/h4vp7C6B02d98kO+2p
+         Xcnom30EmF9EGdCWVk3op4GX1E712IOfSXLgFGKNBpAL+YPC/j3wsVImHWGOI3H+hOB7
+         eadExD/JejqnECMLUE6RWnfihC5KLVbiAcwI+g4H1LbrSt8ZbVvQECQwPrVyBEeWzv60
+         mRV0+5xSkHiBKt5orZZbu+spPWXlfE/XskZp96DWpTYwL1pKjoClS9Qhexv6SR8qXWYb
+         jeVPThbzCTcSpuQReUHkFebutfMF2HUbcuagqryP32fvFNw06KnwrLEQ3sOuIfuSScPd
+         BfBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697559213; x=1698164013;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ocr30lr2y0V9zsCKJhUGQr9AXtBKIbrFwvST7PQfksE=;
-        b=KrbkIubEq4Ui/EEyoC0yTnldFZ+6NLaSIHQ7IYxgAeMpFtJlm4R3AYcT9mrSIfiTQI
-         EbAWWyIpwPChMhFZpHrLDL7ryBdkXro1u7KXvJ9+UJCBgJPLL+ti1OEje5cjDYQojV4r
-         8XJMCPLkxJ4IRG2u1VfVHFx9gkPAcHQlf6p9zL0POgSSWi6ht/Xu1vswiK6XPLJBbXOK
-         TulI+TO+uAm2broEiEfMLP+/79CDGwm+4/KgLfQ8jjatFrXg7Csh2LVFM6FHVMqhNuR8
-         Y+69fCX+Mkk8v3Vi4c/gPOueAZbHd9MeVSs9VwZQI1AL1sJWbZbGUz17sxuiHeauyMtM
-         wnYA==
-X-Gm-Message-State: AOJu0YzbsQdlzNCtUrFxGwioF1aFAKCjDG+f/18WnRo3oefIvEOcPAEr
-        YMlAgZXDHc1xFBJLLE1JiXw=
-X-Google-Smtp-Source: AGHT+IGODw23Lmd2iRtY12QUdiToBzSvkpXPO70t94AvsEAsozYbIEwH6uMm9DaBYT4+8zL3FtnVQw==
-X-Received: by 2002:a17:907:6d0c:b0:9b8:e670:657b with SMTP id sa12-20020a1709076d0c00b009b8e670657bmr2044955ejc.64.1697559213113;
-        Tue, 17 Oct 2023 09:13:33 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id ox30-20020a170907101e00b009a1be9c29d7sm68306ejb.179.2023.10.17.09.13.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 09:13:32 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Tue, 17 Oct 2023 18:13:24 +0200
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Yury Norov <yury.norov@gmail.com>,
-        Song Liu <songliubraving@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] buildid: reduce header file dependencies for module
-Message-ID: <ZS6ypB/Jb+rOXqVK@krava>
-References: <20231017143408.2876181-1-arnd@kernel.org>
+        d=1e100.net; s=20230601; t=1697559249; x=1698164049;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AKmQY7BLgBndXsxrNKxMvIo95aL00rRTN4PkHuTiB8Q=;
+        b=NaM2GORMB+n9kvbQD8xCokBYU1pIoLSUj2OCeMYnPnqg8gwPANqO0vANEnb+lOZDRO
+         RMddWhitxZD+Ec6WBqG0TLPBOF5xEuGQSsoSj8NMcFvDoPcEh97bSVXnYtq20iJG0ZTs
+         1KnEvYGTWEyIuO0ujQzg40BW7m92POSaqR2c/c2S01iSeZbdzGUd/KGuARx9v5t5NZAF
+         UxLvNheWjYriEMToC53Nj2mAttgsrV28C0CnA1ouDK0cqDG3gWzL/s1Y+BjD361yw03R
+         NsG1lS0pRN3RI1rhRjgoi/C+UMtyMVYx1+zKR8FpP31lDHUBvwq++1+7vMRJ9rxje4Ju
+         qB4A==
+X-Gm-Message-State: AOJu0YwQcl95BwUP8mPXM7hfMRZXNlEXKJqEEpeMIqVVnwtOJIE5Xolr
+        zdgWCL5ilNJ4ndiS0w/WvP5wBA==
+X-Google-Smtp-Source: AGHT+IHwbJv6j6ptrNMYA09wWv9S10K/f+EjOxDnfiiQo8bvQ8vYVhH6fnAwUJNi9K2IWSbOMWqomA==
+X-Received: by 2002:a05:600c:6021:b0:407:536d:47ae with SMTP id az33-20020a05600c602100b00407536d47aemr2085070wmb.38.1697559248879;
+        Tue, 17 Oct 2023 09:14:08 -0700 (PDT)
+Received: from [172.30.204.57] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id q28-20020adfab1c000000b003248a490e3asm101189wrc.39.2023.10.17.09.14.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Oct 2023 09:14:08 -0700 (PDT)
+Message-ID: <013b76ea-82d1-4bb2-9842-b47cc4ccfc55@linaro.org>
+Date:   Tue, 17 Oct 2023 18:14:05 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231017143408.2876181-1-arnd@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 05/12] usb: dwc3: Override end of dwc3 memory resource
+Content-Language: en-US
+To:     Bjorn Andersson <quic_bjorande@quicinc.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Johan Hovold <johan@kernel.org>,
+        Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+References: <20231016-dwc3-refactor-v1-0-ab4a84165470@quicinc.com>
+ <20231016-dwc3-refactor-v1-5-ab4a84165470@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20231016-dwc3-refactor-v1-5-ab4a84165470@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 04:33:58PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+
+
+On 10/17/23 05:11, Bjorn Andersson wrote:
+> In the case that the dwc3 core driver is instantiated from the same
+> memory resource information as the glue driver, the dwc_res memory
+> region will overlap with the memory region already mapped by the glue.
 > 
-> The vmlinux decompressor code intentionally has only a limited set of
-> included header files, but this started running into a build failure
-> because of the bitmap logic needing linux/errno.h:
+> As the DWC3 core driver already does math on the passed memory region to
+> exclude the XHCI region, also adjust the end address, to avoid having to
+> pass an adjusted region from the glue explicitly.
 > 
-> In file included from include/linux/cpumask.h:12,
->                  from include/linux/mm_types_task.h:14,
->                  from include/linux/mm_types.h:5,
->                  from include/linux/buildid.h:5,
->                  from include/linux/module.h:14,
->                  from arch/arm/boot/compressed/../../../../lib/lz4/lz4_decompress.c:39,
->                  from arch/arm/boot/compressed/../../../../lib/decompress_unlz4.c:10,
->                  from arch/arm/boot/compressed/decompress.c:60:
-> include/linux/bitmap.h: In function 'bitmap_allocate_region':
-> include/linux/bitmap.h:527:25: error: 'EBUSY' undeclared (first use in this function)
->   527 |                 return -EBUSY;
->       |                         ^~~~~
-> include/linux/bitmap.h:527:25: note: each undeclared identifier is reported only once for each function it appears in
-> include/linux/bitmap.h: In function 'bitmap_find_free_region':
-> include/linux/bitmap.h:554:17: error: 'ENOMEM' undeclared (first use in this function)
->   554 |         return -ENOMEM;
->       |                 ^~~~~~
-> 
-> This is easily avoided by changing linux/buildid.h to no longer depend on
-> linux/mm_types.h, a header that pulls in a huge number of indirect dependencies.
-> 
-> Fixes: b9c957f554442 ("bitmap: move bitmap_*_region() functions to bitmap.h")
-> Fixes: bd7525dacd7e2 ("bpf: Move stack_map_get_build_id into lib")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
 > ---
->  include/linux/buildid.h | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/buildid.h b/include/linux/buildid.h
-> index 3b7a0ff4642fd..8a582d242f067 100644
-> --- a/include/linux/buildid.h
-> +++ b/include/linux/buildid.h
-> @@ -2,10 +2,11 @@
->  #ifndef _LINUX_BUILDID_H
->  #define _LINUX_BUILDID_H
->  
-> -#include <linux/mm_types.h>
-> +#include <linux/types.h>
+Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-looks good, but I think we should now include <linux/mm_types.h> in lib/buildid.c ?
-
-thanks,
-jirka
-
->  
->  #define BUILD_ID_SIZE_MAX 20
->  
-> +struct vm_area_struct;
->  int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id,
->  		   __u32 *size);
->  int build_id_parse_buf(const void *buf, unsigned char *build_id, u32 buf_size);
-> -- 
-> 2.39.2
-> 
+Konrad
