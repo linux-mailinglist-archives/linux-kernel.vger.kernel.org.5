@@ -2,227 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5DC7CD07D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 01:23:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE7E7CCFDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 00:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344415AbjJQXXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 19:23:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38592 "EHLO
+        id S1344144AbjJQWGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 18:06:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344307AbjJQXXU (ORCPT
+        with ESMTP id S232593AbjJQWGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 19:23:20 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4613EF7;
-        Tue, 17 Oct 2023 16:23:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697584999; x=1729120999;
-  h=message-id:date:mime-version:from:subject:to:cc:
-   references:in-reply-to:content-transfer-encoding;
-  bh=CHJ5c/rgNCeYwsWKj461nWA5YOYqSXvbYEb3J1+5U7Q=;
-  b=GzeSj5X+AP9euUybYwnPXA9j6RZlrHmHjI8CJP6UMnf2TOj+hBPZV4Ca
-   UB/RxCP79hCNPyUBUWT4U9/vTGqmNo7NS39OxMmRtfgbRh0/tOAUtls99
-   HYYtG5uMLJKZus1mP4APSbG7+BfnUwKo9Frw2mFfakkUIQwlwLtvaaFgv
-   P/B5781LIH80dIztJwG+IIip9dB3GvhVcZiKUHAXn8AgtfzqwBMOVJpSB
-   NtG7UoXK7BU8Yr61Xig6SiypEPns8qF9VMmlCONmn31y3dpb+IQJyYWcd
-   gy7a5212UdKSc+9alHmv+qTyOkG8NQbMWqE/T15ICp3gwjgKvjh95mFv5
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="384778089"
-X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
-   d="scan'208";a="384778089"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 16:23:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="826637462"
-X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
-   d="scan'208";a="826637462"
-Received: from asprado-mobl2.amr.corp.intel.com (HELO [10.212.55.179]) ([10.212.55.179])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 16:23:16 -0700
-Message-ID: <8eb90a7a-8649-4a31-9997-d970915510bf@linux.intel.com>
-Date:   Tue, 17 Oct 2023 16:48:06 -0500
+        Tue, 17 Oct 2023 18:06:08 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AF5CD3;
+        Tue, 17 Oct 2023 15:06:06 -0700 (PDT)
+Date:   Tue, 17 Oct 2023 22:06:01 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1697580365;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MIA4vCEdr5qmRgfJnFc6gfEBza2FMTeL6jD3+oV9ltA=;
+        b=xJdqr3dB92fJy4Ei0yuV7JpqsZLxQGvHpjy0U8TOF8Dxz4YfXdEgPhFlOUKsz2d20AjM8V
+        1MCjDyBrucKbfLwqOQEjmZ6Hiu8QWwL47sc4b05MOpB5MIshR7bQzbwACgS7CmSeD3QSRQ
+        x6xMztrfVJomhjuy/9qn3GKlMlph6nvQXcxmUsYFby7SK9tv9gPV+qvy2+9xBXHH/I09Ce
+        XcRClvqoHhR1ENlHJKzYMk1e263Vue//otgEwznGbK1fztaFIshlct3w5U3dlXRK1zwqq0
+        7Ro1hdXtRho1yQ70cT9W4smWIzq8bLbFVdjz+iR5s8/ZknFdDNKr0GYqrZyTnA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1697580365;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MIA4vCEdr5qmRgfJnFc6gfEBza2FMTeL6jD3+oV9ltA=;
+        b=jJ8kDqfwX04hThJvuULdItASzP5tOFyeuCPPG/F++1lRae0k4rJI/XHex08OOYLABSEyOd
+        Ph5HsHdA4A6wx8Aw==
+From:   "tip-bot2 for Paolo Bonzini" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/microcode] x86/microcode/amd: Fix snprintf() format string
+ warning in W=1 build
+Cc:     kernel test robot <lkp@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20231016224858.2829248-1-pbonzini@redhat.com>
+References: <20231016224858.2829248-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v9 07/34] ASoC: Add SOC USB APIs for adding an USB backend
-To:     Wesley Cheng <quic_wcheng@quicinc.com>, mathias.nyman@intel.com,
-        gregkh@linuxfoundation.org, lgirdwood@gmail.com,
-        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, srinivas.kandagatla@linaro.org,
-        bgoswami@quicinc.com, Thinh.Nguyen@synopsys.com
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20231017200109.11407-1-quic_wcheng@quicinc.com>
- <20231017200109.11407-8-quic_wcheng@quicinc.com>
-Content-Language: en-US
-In-Reply-To: <20231017200109.11407-8-quic_wcheng@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <169758036182.3135.18264735357124966829.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the x86/microcode branch of tip:
 
+Commit-ID:     2e9064faccd1a5b9de8c6f4b23d9f4948901cbe9
+Gitweb:        https://git.kernel.org/tip/2e9064faccd1a5b9de8c6f4b23d9f494890=
+1cbe9
+Author:        Paolo Bonzini <pbonzini@redhat.com>
+AuthorDate:    Mon, 16 Oct 2023 18:48:58 -04:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Tue, 17 Oct 2023 23:51:58 +02:00
 
-On 10/17/23 15:00, Wesley Cheng wrote:
-> Some platforms may have support for offloading USB audio devices to a
-> dedicated audio DSP.  Introduce a set of APIs that allow for management of
-> USB sound card and PCM devices enumerated by the USB SND class driver.
-> This allows for the ASoC components to be aware of what USB devices are
+x86/microcode/amd: Fix snprintf() format string warning in W=3D1 build
 
-USB devices or USB endpoints? or both?
+Building with GCC 11.x results in the following warning:
 
-> available for offloading.
+  arch/x86/kernel/cpu/microcode/amd.c: In function =E2=80=98find_blobs_in_con=
+tainers=E2=80=99:
+  arch/x86/kernel/cpu/microcode/amd.c:504:58: error: =E2=80=98h.bin=E2=80=99 =
+directive output may be truncated writing 5 bytes into a region of size betwe=
+en 1 and 7 [-Werror=3Dformat-truncation=3D]
+  arch/x86/kernel/cpu/microcode/amd.c:503:17: note: =E2=80=98snprintf=E2=80=
+=99 output between 35 and 41 bytes into a destination of size 36
 
-> +/**
-> + * struct snd_soc_usb_device
-> + * @card_idx - sound card index associated with USB device
-> + * @chip_idx - USB sound chip array index
-> + * @num_playback - number of playback streams
-> + * @num_capture - number of capture streams
+The issue is that GCC does not know that the family can only be a byte
+(it ultimately comes from CPUID).  Suggest the right size to the compiler
+by marking the argument as char-size ("hh").  While at it, instead of
+using the slightly more obscure precision specifier use the width with
+zero padding (over 23000 occurrences in kernel sources, vs 500 for
+the idiom using the precision).
 
-presumably excluding explicit feedback streams?
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Closes: https://lore.kernel.org/oe-kbuild-all/202308252255.2HPJ6x5Q-lkp@intel=
+.com/
+Link: https://lore.kernel.org/r/20231016224858.2829248-1-pbonzini@redhat.com
+---
+ arch/x86/kernel/cpu/microcode/amd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> + **/
-> +struct snd_soc_usb_device {
-> +	int card_idx;
-> +	int chip_idx;
-> +	int num_playback;
-> +	int num_capture;
-> +};
-> +
-> +/**
-> + * struct snd_soc_usb
-> + * @list - list head for SND SOC struct list
-> + * @dev - USB backend device reference
-> + * @component - reference to ASoC component
-> + * @connection_status_cb - callback to notify connection events
-> + * @priv_data - driver data
-> + **/
-> +struct snd_soc_usb {
-> +	struct list_head list;
-> +	struct device *dev;
-
-usbdev for consistency with the API below?
-
-> +	struct snd_soc_component *component;
-
-could you use component only and infer the device from component->dev?
-
-> +	int (*connection_status_cb)(struct snd_soc_usb *usb,
-> +			struct snd_soc_usb_device *sdev, bool connected);
-> +	void *priv_data;
-> +};
-> +
-> +int snd_soc_usb_connect(struct device *usbdev, struct snd_soc_usb_device *sdev);
-> +int snd_soc_usb_disconnect(struct device *usbdev, struct snd_soc_usb_device *sdev);
-> +void *snd_soc_usb_get_priv_data(struct device *usbdev);
-> +
-> +struct snd_soc_usb *snd_soc_usb_add_port(struct device *dev, void *priv,
-
-struct device *usbdev for consistency ?
-
-> +			int (*connection_cb)(struct snd_soc_usb *usb,
-> +			struct snd_soc_usb_device *sdev, bool connected));
-> +int snd_soc_usb_remove_port(struct device *dev);
-
-struct device *usbdev for consistency ?
-
-
-> +struct snd_soc_usb *snd_soc_usb_add_port(struct device *dev, void *priv,
-> +			int (*connection_cb)(struct snd_soc_usb *usb,
-> +			struct snd_soc_usb_device *sdev, bool connected))> +{
-> +	struct snd_soc_usb *usb;
-> +
-> +	usb = devm_kzalloc(dev, sizeof(*usb), GFP_KERNEL);
-> +	if (!usb)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	usb->connection_status_cb = connection_cb;
-> +	usb->dev = dev;
-> +	usb->priv_data = priv;
-> +
-> +	mutex_lock(&ctx_mutex);
-> +	list_add_tail(&usb->list, &usb_ctx_list);
-> +	mutex_unlock(&ctx_mutex);
-> +
-> +	return usb;
-> +}
-> +EXPORT_SYMBOL_GPL(snd_soc_usb_add_port);
-> +
-> +/**
-> + * snd_soc_usb_remove_port() - Remove a USB backend port
-> + * @dev: USB backend device
-> + *
-> + * Remove a USB backend device from USB SND SOC.  Memory is freed when USB
-> + * backend is removed.
-
-when the USB backend driver is unbound?
-
-> + *
-> + */
-> +int snd_soc_usb_remove_port(struct device *dev)
-> +{
-> +	struct snd_soc_usb *ctx, *tmp;
-> +
-> +	mutex_lock(&ctx_mutex);
-> +	list_for_each_entry_safe(ctx, tmp, &usb_ctx_list, list) {
-> +		if (ctx->dev == dev) {
-> +			list_del(&ctx->list);
-> +			break;
-> +		}
-> +	}
-> +	mutex_unlock(&ctx_mutex);
-> +
-> +	return 0;
-
-can this return void to align with the current trend?
-
-> +}
-> +EXPORT_SYMBOL_GPL(snd_soc_usb_remove_port);
-> +
-> +/**
-> + * snd_soc_usb_connect() - Notification of USB device connection
-> + * @usbdev: USB bus device
-> + * @card_idx: USB SND card instance
-> + *
-> + * Notify of a new USB SND device connection.  The card_idx can be used to
-> + * handle how the DPCM backend selects, which device to enable USB offloading
-> + * on.
-
-card_idx is not used below, and I don't see how this relates to a
-notification?
-
-> + *
-> + */
-> +int snd_soc_usb_connect(struct device *usbdev, struct snd_soc_usb_device *sdev)
-> +{
-> +	struct snd_soc_usb *ctx;
-> +	struct device_node *node;
-> +
-> +	if (!usbdev)
-> +		return -ENODEV;
-> +
-> +	node = snd_soc_find_phandle(usbdev);
-> +	if (IS_ERR(node))
-> +		return -ENODEV;
-> +
-> +	ctx = snd_soc_find_usb_ctx(node);
-> +	of_node_put(node);
-> +	if (!ctx)
-> +		return -ENODEV;
-> +
-> +	if (ctx->connection_status_cb)
-> +		ctx->connection_status_cb(ctx, sdev, true);
-> +
-> +	return 0;
-> +}
-
+diff --git a/arch/x86/kernel/cpu/microcode/amd.c b/arch/x86/kernel/cpu/microc=
+ode/amd.c
+index bbd1dc3..b4eea8a 100644
+--- a/arch/x86/kernel/cpu/microcode/amd.c
++++ b/arch/x86/kernel/cpu/microcode/amd.c
+@@ -501,7 +501,7 @@ static bool get_builtin_microcode(struct cpio_data *cp, u=
+nsigned int family)
+=20
+ 	if (family >=3D 0x15)
+ 		snprintf(fw_name, sizeof(fw_name),
+-			 "amd-ucode/microcode_amd_fam%.2xh.bin", family);
++			 "amd-ucode/microcode_amd_fam%02hhxh.bin", family);
+=20
+ 	if (firmware_request_builtin(&fw, fw_name)) {
+ 		cp->size =3D fw.size;
