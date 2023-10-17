@@ -2,102 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EB407CC2D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 14:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 113CB7CC2D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 14:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235030AbjJQMSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 08:18:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57742 "EHLO
+        id S233315AbjJQMSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 08:18:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234143AbjJQMSE (ORCPT
+        with ESMTP id S232580AbjJQMSC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 08:18:04 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E330186;
-        Tue, 17 Oct 2023 05:18:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697545083; x=1729081083;
-  h=from:to:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=6E7Vvr30AXJewe66Dzx3EIvZeCNC2ARaF2V37Rds5vw=;
-  b=agfXW4894t/WXv48CYorgOp9T3lJW3KfvLLqm6e8bmtQ4tpM6RmhUcaw
-   XkKSWMiA6BQ42cq2STz84Wk5jDPLxEaqfhHqBF44MBCsarXYgkuCGIRuH
-   ph/4nm0r6hkTrfStj0So9FUz5VZ0U2KpoAm1u7VV1n+wdLpvPOSLoOnuG
-   jUPD568nhNi5bFMFuRaPD9ZbGJyRSrn2FkYwolCwuyRAvYwWqENsbcMwN
-   5icVkE7PALPdbZh3E26gKTarqCBaNNZNmHaRLulaPIEj/vWVc9CpQlW5T
-   vOE3G13QiurGkMeyznHdfSgdS6NKl/1eBVfNV5D+rN9ZYzQ+jpNUhc37I
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="416852632"
-X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
-   d="scan'208";a="416852632"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 05:18:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="846801368"
-X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
-   d="scan'208";a="846801368"
-Received: from thaimovx-mobl2.ger.corp.intel.com (HELO localhost) ([10.251.208.112])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 05:18:00 -0700
-From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Fenghua Yu <fenghua.yu@intel.com>,
+        Tue, 17 Oct 2023 08:18:02 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4893E12B;
+        Tue, 17 Oct 2023 05:18:00 -0700 (PDT)
+Date:   Tue, 17 Oct 2023 12:17:57 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1697545078;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o70cCE9g0ryKQI1VtXZcY2oshzLla63ENfUv/mZxCFs=;
+        b=HSs+Q5YGMpzW7Z/7K1iNjriHd09moX/9Bq8zg3jYRMm10aiKJvzrM+5EAzCR7gjEOVMm2n
+        jfbBLfzbKpEzuT6GhsvayxNbfWr6gbldBdtX4X9cv+9PqO6W4Z8+snxG8awy7zh+lM/VEH
+        YqbEjKCskI2rendN4ik7+Z1SfnPBMduYU2vCVIiDD6iRup9UN+O5EHuXUiQgHdlI2bkLpD
+        Szwp8ozlMfBfIgkV7r7t8hB1A3Z94cG3qXEkTNOMh36vvp2GRYhZo2zzK0D0ZeYWM7SVfG
+        ZeBvKgJaYnQxIJny+IId3Nkz/GrFt8UXAPboDUoW9KaxFg2T3x00s8QdovgYkw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1697545078;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o70cCE9g0ryKQI1VtXZcY2oshzLla63ENfUv/mZxCFs=;
+        b=x9nMaxkY/JFGv5+59crpscrBlclKMo6klOSvuhnCcclQ7MRgu3rLm76F6GpGSN9p32Agfs
+        A7lx8IyDDKv9JnBQ==
+From:   "tip-bot2 for Babu Moger" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cache] x86/resctrl: Display RMID of resource group
+Cc:     Babu Moger <babu.moger@amd.com>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>,
+        Peter Newman <peternewman@google.com>,
+        Tan Shaopeng <tan.shaopeng@jp.fujitsu.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
         Reinette Chatre <reinette.chatre@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH 1/1] selftests/resctrl: Don't fail MBM test when schemata doesn't support MB:x=x line
-Date:   Tue, 17 Oct 2023 15:17:50 +0300
-Message-Id: <20231017121750.15433-1-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        ilpo.jarvinen@linux.intel.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20231017002308.134480-10-babu.moger@amd.com>
+References: <20231017002308.134480-10-babu.moger@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <169754507762.3135.4057525266393369343.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 20d96b25cc4c ("selftests/resctrl: Fix schemata write error
-check") exposed a problem in feature detection logic in MBM selftest.
-If schemata does not support MB:x=x entries, the schemata write to
-initialize 100% memory bandwidth allocation in mbm_setup() will now
-fail with -EINVAL due to the error handling corrected by 20d96b25cc4c.
-Commit 20d96b25cc4c just uncovers the failed write, it is not wrong
-itself.
+The following commit has been merged into the x86/cache branch of tip:
 
-If MB:x=x is not supported by schemata, it is safe to assume 100%
-memory bandwidth is always set. Therefore, the previously ignored error
-does not make the MBM test itself wrong.
+Commit-ID:     4cee14bcb14881aae81d60f106a335c68553ac1f
+Gitweb:        https://git.kernel.org/tip/4cee14bcb14881aae81d60f106a335c6855=
+3ac1f
+Author:        Babu Moger <babu.moger@amd.com>
+AuthorDate:    Mon, 16 Oct 2023 19:23:08 -05:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Tue, 17 Oct 2023 14:05:40 +02:00
 
-Restore the previous behavior of MBM test by checking MB support before
-attempting to write it into schemata which results in behavior
-equivalent to ignoring the write error.
+x86/resctrl: Display RMID of resource group
 
-Fixes: 20d96b25cc4c ("selftests/resctrl: Fix schemata write error check")
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+In x86, hardware uses RMID to identify a monitoring group. When a user
+creates a monitor group these details are not visible. These details
+can help resctrl debugging.
+
+Add RMID(mon_hw_id) to the monitor groups display in the resctrl interface.
+Users can see these details when resctrl is mounted with "-o debug" option.
+
+Add RFTYPE_MON_BASE that complements existing RFTYPE_CTRL_BASE and
+represents files belonging to monitoring groups.
+
+Other architectures do not use "RMID". Use the name mon_hw_id to refer
+to "RMID" in an effort to keep the naming generic.
+
+For example:
+  $cat /sys/fs/resctrl/mon_groups/mon_grp1/mon_hw_id
+  3
+
+Signed-off-by: Babu Moger <babu.moger@amd.com>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Reviewed-by: Peter Newman <peternewman@google.com>
+Reviewed-by: Tan Shaopeng <tan.shaopeng@jp.fujitsu.com>
+Reviewed-by: Fenghua Yu <fenghua.yu@intel.com>
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+Reviewed-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
+Tested-by: Peter Newman <peternewman@google.com>
+Tested-by: Tan Shaopeng <tan.shaopeng@jp.fujitsu.com>
+Link: https://lore.kernel.org/r/20231017002308.134480-10-babu.moger@amd.com
 ---
- tools/testing/selftests/resctrl/mbm_test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/arch/x86/resctrl.rst     |  4 ++++
+ arch/x86/kernel/cpu/resctrl/internal.h |  1 +
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 23 +++++++++++++++++++++++
+ 3 files changed, 28 insertions(+)
 
-diff --git a/tools/testing/selftests/resctrl/mbm_test.c b/tools/testing/selftests/resctrl/mbm_test.c
-index d3c0d30c676a..85987957e7f5 100644
---- a/tools/testing/selftests/resctrl/mbm_test.c
-+++ b/tools/testing/selftests/resctrl/mbm_test.c
-@@ -95,7 +95,7 @@ static int mbm_setup(struct resctrl_val_param *p)
- 		return END_OF_TESTS;
- 
- 	/* Set up shemata with 100% allocation on the first run. */
--	if (p->num_of_runs == 0)
-+	if ((p->num_of_runs == 0) && validate_resctrl_feature_request("MB", NULL))
- 		ret = write_schemata(p->ctrlgrp, "100", p->cpu_no,
- 				     p->resctrl_val);
- 
--- 
-2.30.2
-
+diff --git a/Documentation/arch/x86/resctrl.rst b/Documentation/arch/x86/resc=
+trl.rst
+index 7412252..a6279df 100644
+--- a/Documentation/arch/x86/resctrl.rst
++++ b/Documentation/arch/x86/resctrl.rst
+@@ -376,6 +376,10 @@ When monitoring is enabled all MON groups will also cont=
+ain:
+ 	the sum for all tasks in the CTRL_MON group and all tasks in
+ 	MON groups. Please see example section for more details on usage.
+=20
++"mon_hw_id":
++	Available only with debug option. The identifier used by hardware
++	for the monitor group. On x86 this is the RMID.
++
+ Resource allocation rules
+ -------------------------
+=20
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/res=
+ctrl/internal.h
+index b816b90..a4f1aa1 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -254,6 +254,7 @@ struct rdtgroup {
+ #define RFTYPE_MON_INFO			(RFTYPE_INFO | RFTYPE_MON)
+ #define RFTYPE_TOP_INFO			(RFTYPE_INFO | RFTYPE_TOP)
+ #define RFTYPE_CTRL_BASE		(RFTYPE_BASE | RFTYPE_CTRL)
++#define RFTYPE_MON_BASE			(RFTYPE_BASE | RFTYPE_MON)
+=20
+ /* List of all resource groups */
+ extern struct list_head rdt_all_groups;
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/res=
+ctrl/rdtgroup.c
+index 5f6d6ba..69a1de9 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -795,6 +795,22 @@ static int rdtgroup_closid_show(struct kernfs_open_file =
+*of,
+ 	return ret;
+ }
+=20
++static int rdtgroup_rmid_show(struct kernfs_open_file *of,
++			      struct seq_file *s, void *v)
++{
++	struct rdtgroup *rdtgrp;
++	int ret =3D 0;
++
++	rdtgrp =3D rdtgroup_kn_lock_live(of->kn);
++	if (rdtgrp)
++		seq_printf(s, "%u\n", rdtgrp->mon.rmid);
++	else
++		ret =3D -ENOENT;
++	rdtgroup_kn_unlock(of->kn);
++
++	return ret;
++}
++
+ #ifdef CONFIG_PROC_CPU_RESCTRL
+=20
+ /*
+@@ -1868,6 +1884,13 @@ static struct rftype res_common_files[] =3D {
+ 		.fflags		=3D RFTYPE_BASE,
+ 	},
+ 	{
++		.name		=3D "mon_hw_id",
++		.mode		=3D 0444,
++		.kf_ops		=3D &rdtgroup_kf_single_ops,
++		.seq_show	=3D rdtgroup_rmid_show,
++		.fflags		=3D RFTYPE_MON_BASE | RFTYPE_DEBUG,
++	},
++	{
+ 		.name		=3D "schemata",
+ 		.mode		=3D 0644,
+ 		.kf_ops		=3D &rdtgroup_kf_single_ops,
