@@ -2,135 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D5EF7CBD50
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 976787CBD49
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234620AbjJQIZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 04:25:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44080 "EHLO
+        id S234701AbjJQIX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 04:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232644AbjJQIZP (ORCPT
+        with ESMTP id S233648AbjJQIX5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 04:25:15 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC4DC93;
-        Tue, 17 Oct 2023 01:25:13 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39H7nOBv026221;
-        Tue, 17 Oct 2023 08:24:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=abG+EPXB6BECKL9u/q4R7dYvCyUAXCa41Z+B12FQpWI=;
- b=RCBaenzL+rR6YBrLmsSg4vxUSATLQJ/Sg5Xb7Ae5InKPVzHqOIlfngfTP+8iJ648PeQS
- D+nkejQy1s2aNm+dtOD3J10fTpY1IHK1cfvlBcxSznByCZAcG505MMEEyMmJaSFcYq9e
- 6FB9NDNf7kbHwholG4VPzd4pKmC0HKCC3THaWB6E0ZUpwMa4FNXcDOm8UbXTLC5tII9L
- zZYaKSeH3VBv7SmkMyY7Vwbon60uuzm8AI8veBG5B4NrOWhrZw2jc6D0Q2G7ubcOUU1a
- LYaBQSFO0d392/152fk5GmPBqHa6jkvbRG1Y7mCr9Q3FwKFEDwxVv+GDuzyQMJiG9liO gg== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tryn1387n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Oct 2023 08:24:56 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39H8OtIo022458
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Oct 2023 08:24:55 GMT
-Received: from [10.216.24.217] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 17 Oct
- 2023 01:24:47 -0700
-Message-ID: <f12cb246-e7fb-44c4-a17e-0b395a146325@quicinc.com>
-Date:   Tue, 17 Oct 2023 13:54:43 +0530
+        Tue, 17 Oct 2023 04:23:57 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8790AB;
+        Tue, 17 Oct 2023 01:23:55 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9ba1eb73c27so887964266b.3;
+        Tue, 17 Oct 2023 01:23:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697531034; x=1698135834; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=zdobFbvKLNEImXmZ+Wu3dKqo7l84BXOhHQ5MX3lKCaQ=;
+        b=RDqXWIy1BxrteMoeKQ7B9PwcrGnkHyaorqaxlGhaBwaaOiEmKlRKspe+Sq1+2lTGgU
+         pI/1408bHnbvbzisyjCAXnMH2/Dwn47UGIDL377TSIkqQGONpxc+XaMxuxGC3d1qIOKI
+         3IOlKRdqW/116dmrAQDUMSCkQHcz68WSiAll9NLdIXfayPR3LpEenvUg8+j1ZbDXvqmr
+         xsABONQqE2pyM3zWfvS3ta1zNy6aM8j641uzMAIlqmWM06Plt7nfsX4/f5e8BN6eAxdX
+         UplDktMHuNmaWtwWlHNgwKWB3fe7iUvIexwD7MwSXVh3xUsUXwbRMLVkOgXi0zaout0/
+         HM1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697531034; x=1698135834;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zdobFbvKLNEImXmZ+Wu3dKqo7l84BXOhHQ5MX3lKCaQ=;
+        b=DJgmNp1HrhPz/5gxsg3E5lDp6kQJkogF+FUSf5SfFsp7hwAOh1lbTGeq3UJp0JJ/7a
+         sBWIqaQBngbVQfpM1rMHjIUhY/kNVXcMojKPxANz0OZqK3WP5n3GwihjqmMyeU3Ks2uG
+         MipT0enGyvPzvSXgXmtCnJTOMUVvceihCYFMEyozdaUYsIl6+yPD5qSj4jjo4OLUaa9F
+         QJsb9ZqZInjarRItE/ZJLSMb6ga59WMjFHe4HSkioAtiQlOhBYt8VkfEZFAFhZwmUHHZ
+         pgzEjgwcUyLucWVUySCG2VHZM/fn0eV6PsIUbvqt/dHk+XqtOtIN79RvnvIop/XhkrNT
+         fRQg==
+X-Gm-Message-State: AOJu0Yw7CpzJsAGZOu8IMoRYZU1CUhf9yJ/h15phU1jXcKMc2J+IY6eU
+        v/1ytEwqxJC6tvK+330lyDI=
+X-Google-Smtp-Source: AGHT+IEr8GdYNvqCzsbbqlXFzwWn54d/UDZ4XAbquruDRjTPvyesDe4afSUBX9uN5g7o6Jehrc/rSQ==
+X-Received: by 2002:a17:907:7248:b0:9a1:fb4c:3b6c with SMTP id ds8-20020a170907724800b009a1fb4c3b6cmr1174441ejc.59.1697531033894;
+        Tue, 17 Oct 2023 01:23:53 -0700 (PDT)
+Received: from ?IPv6:2003:f6:ef1b:2000:361b:8f29:1cbf:5e69? (p200300f6ef1b2000361b8f291cbf5e69.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:361b:8f29:1cbf:5e69])
+        by smtp.gmail.com with ESMTPSA id ml20-20020a170906cc1400b009ad8acac02asm790657ejb.172.2023.10.17.01.23.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Oct 2023 01:23:53 -0700 (PDT)
+Message-ID: <492e8f347d4682ff672f81151ab4b1fe7f5b3059.camel@gmail.com>
+Subject: Re: [PATCH v2] iio: resolver: ad2s1210: add support for
+ adi,fixed-mode
+From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To:     David Lechner <dlechner@baylibre.com>, linux-iio@vger.kernel.org
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        nuno.sa@analog.com, linux-kernel@vger.kernel.org
+Date:   Tue, 17 Oct 2023 10:26:43 +0200
+In-Reply-To: <20231016135423.16808-1-dlechner@baylibre.com>
+References: <20231016135423.16808-1-dlechner@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.0 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 03/11] firmware: qcom-scm: atomically assign and read the
- global __scm pointer
-Content-Language: en-US
-To:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>
-CC:     <kernel@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20230828192507.117334-1-bartosz.golaszewski@linaro.org>
- <20230828192507.117334-4-bartosz.golaszewski@linaro.org>
-From:   Om Prakash Singh <quic_omprsing@quicinc.com>
-In-Reply-To: <20230828192507.117334-4-bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: NZoJXFrXHLjPD7Z3Hv_EfwVC3o2YEwqT
-X-Proofpoint-ORIG-GUID: NZoJXFrXHLjPD7Z3Hv_EfwVC3o2YEwqT
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-16_13,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- malwarescore=0 priorityscore=1501 mlxlogscore=999 spamscore=0 bulkscore=0
- phishscore=0 impostorscore=0 clxscore=1011 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310170069
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/29/2023 12:54 AM, Bartosz Golaszewski wrote:
-> Checking for the availability of SCM bridge can happen from any context.
-> It's only by chance that we haven't run into concurrency issues but with
-> the upcoming SHM Bridge driver that will be initiated at the same
-> initcall level, we need to assure the assignment and readback of the
-> __scm pointer is atomic.
-> 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Mon, 2023-10-16 at 08:54 -0500, David Lechner wrote:
+> It is possible to use the AD2S1210 with hardwired mode pins (A0 and A1).
+> According to the devicetree bindings, in this case the adi,fixed-mode
+> property will specify which of the 3 possible modes the mode pins are
+> hardwired for and the gpio-modes property is not allowed.
+>=20
+> This adds support for the case where the mode pins are hardwired for
+> config mode. In this configuration, the position and value must be read
+> from the config register.
+>=20
+> The case of hardwired position or velocity mode is not supported as
+> there would be no way to configure the device.
+>=20
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
 > ---
->   drivers/firmware/qcom_scm.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
-> index 980fcfa20b9f..422de70faff8 100644
-> --- a/drivers/firmware/qcom_scm.c
-> +++ b/drivers/firmware/qcom_scm.c
-> @@ -1331,7 +1331,7 @@ static int qcom_scm_find_dload_address(struct device *dev, u64 *addr)
->    */
->   bool qcom_scm_is_available(void)
->   {
-> -	return !!__scm;
-> +	return !!READ_ONCE(__scm);
->   }
->   EXPORT_SYMBOL(qcom_scm_is_available);
->   
-> @@ -1477,8 +1477,8 @@ static int qcom_scm_probe(struct platform_device *pdev)
->   	if (ret)
->   		return ret;
->   
-> -	__scm = scm;
-> -	__scm->dev = &pdev->dev;
-> +	scm->dev = &pdev->dev;
-> +	WRITE_ONCE(__scm, scm);
+>=20
 
-In my opinion "__scm = scm;" assignment should be done at the end of 
-probe function success so that qcom_scm_is_available() return true only 
-when probe is completed.
+LGTM
 
-Other changes may not be needed.
+Reviewed-by: Nuno Sa <nuno.sa@analog.com>
 
->   	init_completion(&__scm->waitq_comp);
->   
+> v2 changes:
+> * Use regmap_bulk_read() instead of new local function.
+> * Simplify adi,fixed-mode property error checking.
+>=20
+> =C2=A0drivers/iio/resolver/ad2s1210.c | 150 +++++++++++++++++++++++++----=
+---
+> =C2=A01 file changed, 119 insertions(+), 31 deletions(-)
+>=20
+> diff --git a/drivers/iio/resolver/ad2s1210.c b/drivers/iio/resolver/ad2s1=
+210.c
+> index 1bd1b950e7cc..7f688bfe2172 100644
+> --- a/drivers/iio/resolver/ad2s1210.c
+> +++ b/drivers/iio/resolver/ad2s1210.c
+> @@ -141,7 +141,7 @@ struct ad2s1210_state {
+> =C2=A0	struct spi_device *sdev;
+> =C2=A0	/** GPIO pin connected to SAMPLE line. */
+> =C2=A0	struct gpio_desc *sample_gpio;
+> -	/** GPIO pins connected to A0 and A1 lines. */
+> +	/** GPIO pins connected to A0 and A1 lines (optional). */
+> =C2=A0	struct gpio_descs *mode_gpios;
+> =C2=A0	/** Used to access config registers. */
+> =C2=A0	struct regmap *regmap;
+> @@ -149,6 +149,8 @@ struct ad2s1210_state {
+> =C2=A0	unsigned long clkin_hz;
+> =C2=A0	/** Available raw hysteresis values based on resolution. */
+> =C2=A0	int hysteresis_available[2];
+> +	/* adi,fixed-mode property - only valid when mode_gpios =3D=3D NULL. */
+> +	enum ad2s1210_mode fixed_mode;
+> =C2=A0	/** The selected resolution */
+> =C2=A0	enum ad2s1210_resolution resolution;
+> =C2=A0	/** Copy of fault register from the previous read. */
+> @@ -175,6 +177,9 @@ static int ad2s1210_set_mode(struct ad2s1210_state *s=
+t,
+> enum ad2s1210_mode mode)
+> =C2=A0	struct gpio_descs *gpios =3D st->mode_gpios;
+> =C2=A0	DECLARE_BITMAP(bitmap, 2);
+> =C2=A0
+> +	if (!gpios)
+> +		return mode =3D=3D st->fixed_mode ? 0 : -EOPNOTSUPP;
+> +
+> =C2=A0	bitmap[0] =3D mode;
+> =C2=A0
+> =C2=A0	return gpiod_set_array_value(gpios->ndescs, gpios->desc, gpios->in=
+fo,
+> @@ -276,7 +281,8 @@ static int ad2s1210_regmap_reg_read(void *context,
+> unsigned int reg,
+> =C2=A0	 * parity error. The fault register is read-only and the D7 bit me=
+ans
+> =C2=A0	 * something else there.
+> =C2=A0	 */
+> -	if (reg !=3D AD2S1210_REG_FAULT && st->rx[1] & AD2S1210_ADDRESS_DATA)
+> +	if ((reg > AD2S1210_REG_VELOCITY_LSB && reg !=3D AD2S1210_REG_FAULT)
+> +	=C2=A0=C2=A0=C2=A0=C2=A0 && st->rx[1] & AD2S1210_ADDRESS_DATA)
+> =C2=A0		return -EBADMSG;
+> =C2=A0
+> =C2=A0	*val =3D st->rx[1];
+> @@ -450,21 +456,53 @@ static int ad2s1210_single_conversion(struct iio_de=
+v
+> *indio_dev,
+> =C2=A0	ad2s1210_toggle_sample_line(st);
+> =C2=A0	timestamp =3D iio_get_time_ns(indio_dev);
+> =C2=A0
+> -	switch (chan->type) {
+> -	case IIO_ANGL:
+> -		ret =3D ad2s1210_set_mode(st, MOD_POS);
+> -		break;
+> -	case IIO_ANGL_VEL:
+> -		ret =3D ad2s1210_set_mode(st, MOD_VEL);
+> -		break;
+> -	default:
+> -		return -EINVAL;
+> +	if (st->fixed_mode =3D=3D MOD_CONFIG) {
+> +		unsigned int reg_val;
+> +
+> +		switch (chan->type) {
+> +		case IIO_ANGL:
+> +			ret =3D regmap_bulk_read(st->regmap,
+> +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 AD2S1210_REG_POSITION_MSB,
+> +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 &st->sample.raw, 2);
+> +			if (ret < 0)
+> +				return ret;
+> +
+> +			break;
+> +		case IIO_ANGL_VEL:
+> +			ret =3D regmap_bulk_read(st->regmap,
+> +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 AD2S1210_REG_VELOCITY_MSB,
+> +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 &st->sample.raw, 2);
+> +			if (ret < 0)
+> +				return ret;
+> +
+> +			break;
+> +		default:
+> +			return -EINVAL;
+> +		}
+> +
+> +		ret =3D regmap_read(st->regmap, AD2S1210_REG_FAULT, &reg_val);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		st->sample.fault =3D reg_val;
+> +	} else {
+> +		switch (chan->type) {
+> +		case IIO_ANGL:
+> +			ret =3D ad2s1210_set_mode(st, MOD_POS);
+> +			break;
+> +		case IIO_ANGL_VEL:
+> +			ret =3D ad2s1210_set_mode(st, MOD_VEL);
+> +			break;
+> +		default:
+> +			return -EINVAL;
+> +		}
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		ret =3D spi_read(st->sdev, &st->sample, 3);
+> +		if (ret < 0)
+> +			return ret;
+> =C2=A0	}
+> -	if (ret < 0)
+> -		return ret;
+> -	ret =3D spi_read(st->sdev, &st->sample, 3);
+> -	if (ret < 0)
+> -		return ret;
+> =C2=A0
+> =C2=A0	switch (chan->type) {
+> =C2=A0	case IIO_ANGL:
+> @@ -1252,27 +1290,53 @@ static irqreturn_t ad2s1210_trigger_handler(int i=
+rq,
+> void *p)
+> =C2=A0	ad2s1210_toggle_sample_line(st);
+> =C2=A0
+> =C2=A0	if (test_bit(0, indio_dev->active_scan_mask)) {
+> -		ret =3D ad2s1210_set_mode(st, MOD_POS);
+> -		if (ret < 0)
+> -			goto error_ret;
+> -
+> -		ret =3D spi_read(st->sdev, &st->sample, 3);
+> -		if (ret < 0)
+> -			goto error_ret;
+> +		if (st->fixed_mode =3D=3D MOD_CONFIG) {
+> +			ret =3D regmap_bulk_read(st->regmap,
+> +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 AD2S1210_REG_POSITION_MSB,
+> +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 &st->sample.raw, 2);
+> +			if (ret < 0)
+> +				goto error_ret;
+> +		} else {
+> +			ret =3D ad2s1210_set_mode(st, MOD_POS);
+> +			if (ret < 0)
+> +				goto error_ret;
+> +
+> +			ret =3D spi_read(st->sdev, &st->sample, 3);
+> +			if (ret < 0)
+> +				goto error_ret;
+> +		}
+> =C2=A0
+> =C2=A0		memcpy(&st->scan.chan[chan++], &st->sample.raw, 2);
+> =C2=A0	}
+> =C2=A0
+> =C2=A0	if (test_bit(1, indio_dev->active_scan_mask)) {
+> -		ret =3D ad2s1210_set_mode(st, MOD_VEL);
+> -		if (ret < 0)
+> -			goto error_ret;
+> +		if (st->fixed_mode =3D=3D MOD_CONFIG) {
+> +			ret =3D regmap_bulk_read(st->regmap,
+> +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 AD2S1210_REG_VELOCITY_MSB,
+> +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 &st->sample.raw, 2);
+> +			if (ret < 0)
+> +				goto error_ret;
+> +		} else {
+> +			ret =3D ad2s1210_set_mode(st, MOD_VEL);
+> +			if (ret < 0)
+> +				goto error_ret;
+> +
+> +			ret =3D spi_read(st->sdev, &st->sample, 3);
+> +			if (ret < 0)
+> +				goto error_ret;
+> +		}
+> =C2=A0
+> -		ret =3D spi_read(st->sdev, &st->sample, 3);
+> +		memcpy(&st->scan.chan[chan++], &st->sample.raw, 2);
+> +	}
+> +
+> +	if (st->fixed_mode =3D=3D MOD_CONFIG) {
+> +		unsigned int reg_val;
+> +
+> +		ret =3D regmap_read(st->regmap, AD2S1210_REG_FAULT, &reg_val);
+> =C2=A0		if (ret < 0)
+> -			goto error_ret;
+> +			return ret;
+> =C2=A0
+> -		memcpy(&st->scan.chan[chan++], &st->sample.raw, 2);
+> +		st->sample.fault =3D reg_val;
+> =C2=A0	}
+> =C2=A0
+> =C2=A0	ad2s1210_push_events(indio_dev, st->sample.fault, pf->timestamp);
+> @@ -1299,9 +1363,24 @@ static const struct iio_info ad2s1210_info =3D {
+> =C2=A0static int ad2s1210_setup_properties(struct ad2s1210_state *st)
+> =C2=A0{
+> =C2=A0	struct device *dev =3D &st->sdev->dev;
+> +	const char *str_val;
+> =C2=A0	u32 val;
+> =C2=A0	int ret;
+> =C2=A0
+> +	ret =3D device_property_read_string(dev, "adi,fixed-mode", &str_val);
+> +	if (ret =3D=3D -EINVAL)
+> +		st->fixed_mode =3D -1;
+> +	else if (ret < 0)
+> +		return dev_err_probe(dev, ret,
+> +			"failed to read adi,fixed-mode property\n");
+> +	else {
+> +		if (strcmp(str_val, "config"))
+> +			return dev_err_probe(dev, -EINVAL,
+> +				"only adi,fixed-mode=3D\"config\" is
+> supported\n");
+> +
+> +		st->fixed_mode =3D MOD_CONFIG;
+> +	}
+> +
+> =C2=A0	ret =3D device_property_read_u32(dev, "assigned-resolution-bits",
+> &val);
+> =C2=A0	if (ret < 0)
+> =C2=A0		return dev_err_probe(dev, ret,
+> @@ -1357,12 +1436,21 @@ static int ad2s1210_setup_gpios(struct ad2s1210_s=
+tate
+> *st)
+> =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0 "failed to request sample GPIO\n");
+> =C2=A0
+> =C2=A0	/* both pins high means that we start in config mode */
+> -	st->mode_gpios =3D devm_gpiod_get_array(dev, "mode", GPIOD_OUT_HIGH);
+> +	st->mode_gpios =3D devm_gpiod_get_array_optional(dev, "mode",
+> +						=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 GPIOD_OUT_HIGH);
+> =C2=A0	if (IS_ERR(st->mode_gpios))
+> =C2=A0		return dev_err_probe(dev, PTR_ERR(st->mode_gpios),
+> =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0 "failed to request mode GPIOs\n");
+> =C2=A0
+> -	if (st->mode_gpios->ndescs !=3D 2)
+> +	if (!st->mode_gpios && st->fixed_mode =3D=3D -1)
+> +		return dev_err_probe(dev, -EINVAL,
+> +			"must specify either adi,fixed-mode or mode-
+> gpios\n");
+> +
+> +	if (st->mode_gpios && st->fixed_mode !=3D -1)
+> +		return dev_err_probe(dev, -EINVAL,
+> +			"must specify only one of adi,fixed-mode or mode-
+> gpios\n");
+> +
+> +	if (st->mode_gpios && st->mode_gpios->ndescs !=3D 2)
+> =C2=A0		return dev_err_probe(dev, -EINVAL,
+> =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0 "requires exactly 2 mode-gpios\n");
+> =C2=A0
+
