@@ -2,71 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 105737CD0E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 01:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79E287CD0EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 01:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344280AbjJQXjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 19:39:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53184 "EHLO
+        id S1344308AbjJQXk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 19:40:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbjJQXjj (ORCPT
+        with ESMTP id S230219AbjJQXky (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 19:39:39 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C33098
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 16:39:37 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7b9e83b70so47563797b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 16:39:37 -0700 (PDT)
+        Tue, 17 Oct 2023 19:40:54 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E6AB0;
+        Tue, 17 Oct 2023 16:40:51 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id e9e14a558f8ab-3512efed950so25609795ab.2;
+        Tue, 17 Oct 2023 16:40:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697585977; x=1698190777; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=JGBhvzlnCVJRzTxqBWtVcPaG4tImGCahlQc9fVIO1X0=;
-        b=are6HD4V/zUa3gJIUXELcCe7F/OAytJN3XOIAGluTa3H7zcRUGzd/I2IhPc8vV3KtV
-         UOMpxoQy0c2kKJlVRah1eNLKHv9vnHSZafnuFvgRr5ehwhCsMKYUGgJn09mZLnO3k8Jn
-         eMH0TXz0JJiXPMTQxJ7rrHA8lY6GV1290CSfq8YrBmpq1tCFJKSuORJmPuCFVpILtcUC
-         g0EeZp62W8MTHF0QNUY1z06wyUOmpzISd+O9ufnEtqr9sfHWctfmpJ6v8pyMRQvZKNoN
-         HTiYsPeepZd1jR6Y9/ZXugEKVYXHDN3+xn7lye5eEEX051MFlsf+ObLcEd1QpFNFkEJT
-         vcLw==
+        d=gmail.com; s=20230601; t=1697586051; x=1698190851; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ODOEUN547k5ZgvBP+6sXMvboanj4Zc6JsVPCAra6ZWI=;
+        b=E7jS0k/e9/9Pd/DwT8uoh/BtvNIElNt5Fpbamdg6JFJHoUBKKkZ0oCVs9fRIipKukN
+         ZqiikJ8W7Vt2dgDM9fOkZZDClY4A62aE0rtpcnJqZ4L8t0BO0zF6g4QTCtHcwPzO7UQg
+         i+5nieCsv3pmdiGZnhU5jwqeMFfNp8mldMjuMyiwXY7QWl18I/S2FUTjDXAfgg5+bLcR
+         d5Ux8KIWxDWg+N69TLsIrJDPT0Eo+N9XWHHGUnXSxOc6q7GhvtkTpqbQmN1VX2FDzdEc
+         kRKlpg8aL57YB3LbR0DBdVWxAqipq2IKk/wBvffCDWjoAvs6yk7knVRCTbw55+12shX2
+         4F8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697585977; x=1698190777;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JGBhvzlnCVJRzTxqBWtVcPaG4tImGCahlQc9fVIO1X0=;
-        b=cuAFkJPPIrBsE+z8+OIpcyPuEiTSz88RS45pvjn4xt1b7WuJadrhCBvbgrqRdT/rsT
-         9VgsNw3sJ3tSjCEeg6fbOvekJexncagQ0JMSmjaJhw684aZk+4eNHZUicSZLjQ7QwpKH
-         vFP/EkFuZ39ET4MSTzf+sHNiCnDK69I6XDSVbzCIVWXH+dPV3oa+U1pafbhIN8E3LFtK
-         cr7SvnqwbCl3xeycZkXzZl8gcsve1r3VKXV+KMEQuyZRkxRcSV9JuoY5XXIbSgndRv1u
-         HjndhuOrRLP1I/JvyRLsCrpzTm5rwflgfnWipDmrinQqLeDGh0Gsqg3jN6Sh2LH+TcTK
-         ihyw==
-X-Gm-Message-State: AOJu0Yy22poo7XiFNdWz1fyxyLg1kHsaQsqaoqy7por2vMtpN+nwz1f6
-        AxnBKNPPv+3DpVGG4WvY/Z4+b5l3nbuJs284OA==
-X-Google-Smtp-Source: AGHT+IFQrTCrIVBagaulvADQkl+80qwLWEtkmca+L3sDOhYkQ2RGFVqhKwB9mPBOXxn4OL5HuHjG30smDswkqHVT1Q==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:690c:2f05:b0:5a8:207a:143a with
- SMTP id ev5-20020a05690c2f0500b005a8207a143amr78752ywb.0.1697585976848; Tue,
- 17 Oct 2023 16:39:36 -0700 (PDT)
-Date:   Tue, 17 Oct 2023 23:39:36 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIADcbL2UC/x3NwQ6CMAyA4VchPdtkGyjGVzEexqjaBCtpF5ghv
- DuLx+/y/xsYKZPBrdlAaWHjr1T4UwPpHeVFyGM1BBda73yPllXS/MNReSE1FMq4stJEZpgZ18l fS8FPZMGE7fkSXejDEIcOanNWenL5/+6PfT8ANMnHuX8AAAA=
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697585975; l=2713;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=VYgIk2B2CGyo/GT7snlzLxpCgV+gVcLc8zijKRkMZRY=; b=c/DJKqnn+Pj/WL+A2qaSz61IFvasOKaZH7VVCSo6ScJAomyFfk3q8LGePxSlJ61eLLst4Qv1o
- I4jG+OF2AZ/BIlAY2DNEOJyv84A/kTkgDBHpjNWF0zxhJeuy+rNP7p/
-X-Mailer: b4 0.12.3
-Message-ID: <20231017-strncpy-drivers-net-wireless-ti-wl18xx-main-c-v1-1-ed5322ec8068@google.com>
-Subject: [PATCH] wl18xx: replace deprecated strncpy with strscpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Kalle Valo <kvalo@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        d=1e100.net; s=20230601; t=1697586051; x=1698190851;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ODOEUN547k5ZgvBP+6sXMvboanj4Zc6JsVPCAra6ZWI=;
+        b=eUUlWi3ZG1meyzbhh27jxwNfpTqlerI0sqHCywzT06oGDFGKrTMsN8AvucP0jWJbTv
+         MP2VhhSw1a/sxi7oxLhvC3YzIbJjwRH9Xl4bwwQevQ4TPdbtUzEcO4CiUEt/DGceJsF5
+         1V3Pr/+vkSzFw1lc42qZ4o2SnEeAllsx6G60nP0BVM9D38Y4c0rw6tYYHRNqD2lPmb1C
+         IGJLKhCaQFPjQmHzT8IvKnJxYdFkH1ioqooGnVsh6FIw+lwjK4aEdnH1ZfL68Q9T+kaF
+         MVlvaCrnhmHFMQfTl+tqJRC68G3O1OMD/3qwnGjKHP4zHOR2j3jR1IqBa8gA7w76+Lcp
+         jk2A==
+X-Gm-Message-State: AOJu0Yxh7SAcYxpozGd7oAXnCWGzWRncRTK16NXncJ796uLa/zgoDCYE
+        plFt0+yjoVpeuEOhc+UNor+Zz4gTEdKQRTneqZw=
+X-Google-Smtp-Source: AGHT+IEBG8Fe8t+85apuz/mLY6nAFwGEVCcaLIqVclT3qY/EkJZfquZLXwIWGGz7iQNP7Jybzpm73yH4xw1qVnE4gx0=
+X-Received: by 2002:a92:a306:0:b0:34f:d665:4c2e with SMTP id
+ a6-20020a92a306000000b0034fd6654c2emr3727701ili.30.1697586051184; Tue, 17 Oct
+ 2023 16:40:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231017232152.2605440-1-nphamcs@gmail.com> <20231017232152.2605440-4-nphamcs@gmail.com>
+ <CAKEwX=NgsbJ6MQJdJoOTDiGyhjhRA8KJdYe5GzV5iK1bRADfuQ@mail.gmail.com> <e9da3fb2-e44a-4c42-8f9f-cf24be12ccb7@quicinc.com>
+In-Reply-To: <e9da3fb2-e44a-4c42-8f9f-cf24be12ccb7@quicinc.com>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Tue, 17 Oct 2023 16:40:38 -0700
+Message-ID: <CAKEwX=M3WP=awVcNRDCYWpjwBPvwdyb5NFrVXPOEzvCpqNJ-NA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/5] mm: memcg: add per-memcg zswap writeback stat
+To:     Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
+        cerasuolodomenico@gmail.com, yosryahmed@google.com,
+        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
+        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        shuah@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,70 +76,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+On Tue, Oct 17, 2023 at 4:38=E2=80=AFPM Jeff Johnson <quic_jjohnson@quicinc=
+.com> wrote:
+>
+> On 10/17/2023 4:35 PM, Nhat Pham wrote:
+> > On Tue, Oct 17, 2023 at 4:21=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> w=
+rote:
+> >>
+> >> From: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+> >>
+> >> Since zswap now writes back pages from memcg-specific LRUs, we now nee=
+d a
+> >> new stat to show writebacks count for each memcg.
+> >>
+> >> Suggested-by: Nhat Pham <nphamcs@gmail.com>
+> >> Signed-off-by: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+> >> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+> >
+> > /s/Signed-off/Acked
+> > This is Domenico's work :) I used the wrong tag here. Should be:
+> > Acked-by: Nhat Pham <nphamcs@gmail.com>
+>
+> no, since you are posting the patch, you have to sign off on it.
+> Signed-off-by is correct
+>
 
-wl->chip.phy_fw_ver_str is obviously intended to be NUL-terminated by
-the deliberate comment telling us as much. Furthermore, its only use is
-drivers/net/wireless/ti/wlcore/debugfs.c shows us it should be
-NUL-terminated since its used in scnprintf:
-492 | DRIVER_STATE_PRINT_STR(chip.phy_fw_ver_str);
-which is defined as:
-| #define DRIVER_STATE_PRINT_STR(x)  DRIVER_STATE_PRINT(x, "%s")
-...
-| #define DRIVER_STATE_PRINT(x, fmt)   \
-| 	(res += scnprintf(buf + res, DRIVER_STATE_BUF_LEN - res,\
-| 			  #x " = " fmt "\n", wl->x))
-
-We can also see that NUL-padding is not required.
-
-Considering the above, a suitable replacement is `strscpy` [2] due to
-the fact that it guarantees NUL-termination on the destination buffer
-without unnecessarily NUL-padding.
-
-The very fact that a plain-english comment had to be made alongside a
-manual NUL-byte assignment for such a simple purpose shows why strncpy
-is faulty. It has non-obvious behavior that has to be clarified every
-time it is used (and if it isn't then the reader suffers).
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
-
-Found with: $ rg "strncpy\("
----
- drivers/net/wireless/ti/wl18xx/main.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/drivers/net/wireless/ti/wl18xx/main.c b/drivers/net/wireless/ti/wl18xx/main.c
-index 0b3cf8477c6c..1e4a430d1543 100644
---- a/drivers/net/wireless/ti/wl18xx/main.c
-+++ b/drivers/net/wireless/ti/wl18xx/main.c
-@@ -1516,12 +1516,9 @@ static int wl18xx_handle_static_data(struct wl1271 *wl,
- 	struct wl18xx_static_data_priv *static_data_priv =
- 		(struct wl18xx_static_data_priv *) static_data->priv;
- 
--	strncpy(wl->chip.phy_fw_ver_str, static_data_priv->phy_version,
-+	strscpy(wl->chip.phy_fw_ver_str, static_data_priv->phy_version,
- 		sizeof(wl->chip.phy_fw_ver_str));
- 
--	/* make sure the string is NULL-terminated */
--	wl->chip.phy_fw_ver_str[sizeof(wl->chip.phy_fw_ver_str) - 1] = '\0';
--
- 	wl1271_info("PHY firmware version: %s", static_data_priv->phy_version);
- 
- 	return 0;
-
----
-base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
-change-id: 20231017-strncpy-drivers-net-wireless-ti-wl18xx-main-c-356a0272bab4
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+Ah so past Nhat was right all along. Ignore my comments then.
+Thanks for letting me know, Jeff!
