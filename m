@@ -2,94 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E52D77CB983
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 06:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7397CB988
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 06:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234097AbjJQEHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 00:07:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40246 "EHLO
+        id S232411AbjJQEKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 00:10:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjJQEHS (ORCPT
+        with ESMTP id S229666AbjJQEKh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 00:07:18 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECF2F83;
-        Mon, 16 Oct 2023 21:07:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1697515635;
-        bh=8yC14mMPUG4EM1Te+1TbcoTuJ/AgGXdtJL9pp/11p+8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=o6734GUN/kRFflqdNm2t1PUL7GOJTXID/fHDg8L17nHbuNw2ou8UIiC09cymsHbPM
-         GxKIheKSROmgvsAxbWF/IXiDK8RrRqhQFBSneyxiMAoDktIO5EdKWxeM2DveCdf/lU
-         eUSnCoMrNhlR24fxOiZ22MruhvU946NDOwVkSe5Y/WP3dK6E4TJlOthv5eOlJwbXTy
-         5Mnd06X1ej4DVZ5wZb7zqOSzs0uXWs4TmgXqDAh0n7TUARWpqXWAajQMrxJ7dsyFGV
-         ozZbNq4WBbvMIxKjGeLAwqHg6fIysWNbv9WBrwrIUPJnHwL+dPI3IR93GXNyvzgZHu
-         pH2M7PUemikxQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S8gRR0jgBz4wxZ;
-        Tue, 17 Oct 2023 15:07:15 +1100 (AEDT)
-Date:   Tue, 17 Oct 2023 15:07:14 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patches in the nvmem tree
-Message-ID: <20231017150714.41a6c640@canb.auug.org.au>
+        Tue, 17 Oct 2023 00:10:37 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD22983
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 21:10:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 63058C433C9;
+        Tue, 17 Oct 2023 04:10:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697515835;
+        bh=lQAc0M6wyDc260gsVnZP65MqVVRlE4I8/AoGwjKnMNY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=uhBclQ0dI0ivJwnZ3PAiWJPwa9irt4jB3y4VhfKTrwrniIo5Jcwgff+TDzZvP7bv+
+         +lztTmmLaf6dap7HLbT0KzMa4RMLVLP3tfoewfmCW2TJz54K5S6EE1OdMcjSDkKwF4
+         VHA8F/kTx9bWuStif47Ab/POnqssGvaZ1mXUSiGsxDrHdVODJw+fVztWKKtUx8sfN0
+         Q07+xEz5NvtNFJP+kpLOb/6e1SIzXiDDvSEUsibmtu7PtO1eBaFax19wh/9PXSZzVP
+         BFXxY4N3auHeY3RbxaB6X0skPRmnFfx9TTAj0b4wwTQT5PWPJfK6m0L9H/22sLj4u1
+         IjYv5p9EQejUQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 264D3C4316B;
+        Tue, 17 Oct 2023 04:10:35 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ChICRx5d1PBQfeJ7MUaADPg";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v11 0/6] introduce page_pool_alloc() related API
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169751583515.29825.863167765608905945.git-patchwork-notify@kernel.org>
+Date:   Tue, 17 Oct 2023 04:10:35 +0000
+References: <20231013064827.61135-1-linyunsheng@huawei.com>
+In-Reply-To: <20231013064827.61135-1-linyunsheng@huawei.com>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, matthias.bgg@gmail.com,
+        angelogioacchino.delregno@collabora.com, bpf@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ChICRx5d1PBQfeJ7MUaADPg
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello:
 
-Hi all,
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-The following commits are also in the char-misc.current tree as different
-commits (but the same patches):
+On Fri, 13 Oct 2023 14:48:20 +0800 you wrote:
+> In [1] & [2] & [3], there are usecases for veth and virtio_net
+> to use frag support in page pool to reduce memory usage, and it
+> may request different frag size depending on the head/tail
+> room space for xdp_frame/shinfo and mtu/packet size. When the
+> requested frag size is large enough that a single page can not
+> be split into more than one frag, using frag support only have
+> performance penalty because of the extra frag count handling
+> for frag support.
+> 
+> [...]
 
-  d0b450caca6f ("nvmem: imx: correct nregs for i.MX6ULL")
-  f46cfdaf5c07 ("nvmem: imx: correct nregs for i.MX6UL")
-  e898831a6683 ("nvmem: imx: correct nregs for i.MX6SLL")
+Here is the summary with links:
+  - [net-next,v11,1/6] page_pool: fragment API support for 32-bit arch with 64-bit DMA
+    https://git.kernel.org/netdev/net-next/c/90de47f020db
+  - [net-next,v11,2/6] page_pool: unify frag_count handling in page_pool_is_last_frag()
+    (no matching commit)
+  - [net-next,v11,3/6] page_pool: remove PP_FLAG_PAGE_FRAG
+    (no matching commit)
+  - [net-next,v11,4/6] page_pool: introduce page_pool[_cache]_alloc() API
+    (no matching commit)
+  - [net-next,v11,5/6] page_pool: update document about fragment API
+    (no matching commit)
+  - [net-next,v11,6/6] net: veth: use newly added page pool API for veth with xdp
+    (no matching commit)
 
-These are commits
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-  2382c1b04423 ("nvmem: imx: correct nregs for i.MX6ULL")
-  7d6e10f5d254 ("nvmem: imx: correct nregs for i.MX6UL")
-  414a98abbefd ("nvmem: imx: correct nregs for i.MX6SLL")
 
-in the char-misc.current tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/ChICRx5d1PBQfeJ7MUaADPg
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUuCHIACgkQAVBC80lX
-0GxWMgf/WYx+AKY0d/D70gB4MpH7TaVVPfP6KmL83b30G7SX+szgom2iQLF0Tjz+
-Kexv91b2XS/ZrmVTVjrl6snnJ9wzEZgJY0jKqxrddh4FLu4R5Qr6c6nlYueCk5FK
-aZZwOgmH+Zvfqx98f9SK6nEU+nMBfdM/udcuSuv+zz16hJwk5rO/EGSFz7oT8/1v
-NLiuw9aGBznxHUkx5vCcUDAk6blEDRG1HKvE0xLZmpzn8rAQA4Er/IimmlCA/uE2
-P3rYR5EHv+PxD10MnryfJObIVJe58i0EsSbzmwubf5s3MNCGkKqtgUKlxOA2gT+M
-moAoPUBM0FKAk1Rk7JTej7MAPwo6qg==
-=2znh
------END PGP SIGNATURE-----
-
---Sig_/ChICRx5d1PBQfeJ7MUaADPg--
