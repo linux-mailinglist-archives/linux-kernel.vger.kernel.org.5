@@ -2,187 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9DC7CCAB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 20:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F8467CCAB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 20:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344101AbjJQSdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 14:33:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51124 "EHLO
+        id S1343887AbjJQSem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 14:34:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343887AbjJQSdb (ORCPT
+        with ESMTP id S232268AbjJQSel (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 14:33:31 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB66190
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:33:29 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-7741c2e76a3so393576085a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:33:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1697567609; x=1698172409; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AcBNvDPm+5lurRZbHk0V2IeK1x1A6vL27sfb3JeZGgA=;
-        b=htptCsKqExIqBn7UboDsXmhXZjDi4kbkTB8Mqkbk3HHeEgQPSdrql5rBR0n35IkrbH
-         tYuouYgaaeRI5i5oi1iocSykHEXE04BX2zcOG2frTPHEIkwtCUGQEd85JiXwiFyQlhov
-         IldEqSGJBtcT/FNWhsab59VzV8/R2r9zzaqyuP7ZkmbTbCWMuOUwKsx9pXDFb8l8YwKi
-         183gLWSFCuiYhtUeS++gmuPRJsbcmxskQY8S7l7ohGaWlPkWB+oxw68oTiKg3QoF2akf
-         LdIFpBml7LINw1SCFmBcgs/l53eZ3wEaybuMd2HaaVNBMVO0ZmfchK8+ZUProIUaQrCI
-         v3jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697567609; x=1698172409;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AcBNvDPm+5lurRZbHk0V2IeK1x1A6vL27sfb3JeZGgA=;
-        b=PzQ2QgCGgXbrRB8pckHmItkDDHMcQb6fJdqERxVxGj4KaQ0MCkd/LM2ile05i0uBhr
-         QVs68+UGct+TC9efaLpfdY01ufUlvQ1X0H/6FbfjZIYjzCdG4qJJLsw/qPiUJxcKUxTF
-         I7J9Ne+Hx69ERO96fD30p+cJYhY3dK0/kK3qqvWHdmEyYrDoSbqa+d2q3zQ5QaKjQiql
-         r+tOfNvhcrRq6VfWHFI6ozSxyG6DNZWUjyWpxvavrAHAYeBSI5coGalEtlZ36FaLBPbU
-         s6uAaBIyFTERlNYMBNab3sCosaeIn/fEnaeGJlQFYgeVhUQ3opo+K+skoixl7wXjoaal
-         iE5Q==
-X-Gm-Message-State: AOJu0YxpbZWvN8Qxfw2BX4uGNa3geQc9VBsuKzTS4FBLV4LXFmhDMLSk
-        kbgyBKi8gsCXiyKIUooCoOcTFw==
-X-Google-Smtp-Source: AGHT+IEhq81kqSuzy5uDqP7PO49OdWiRqBLX172oxXpXHG/RYxZodn51GvnKH+ECpR7nbBAhO+94Bg==
-X-Received: by 2002:a05:620a:1229:b0:76d:ada0:4c0 with SMTP id v9-20020a05620a122900b0076dada004c0mr2765787qkj.76.1697567608779;
-        Tue, 17 Oct 2023 11:33:28 -0700 (PDT)
-Received: from ?IPV6:2600:1700:2000:b002:95cc:ccc5:95bc:7d2c? ([2600:1700:2000:b002:95cc:ccc5:95bc:7d2c])
-        by smtp.gmail.com with ESMTPSA id f22-20020a05620a12f600b00765aa3ffa07sm866623qkl.98.2023.10.17.11.33.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Oct 2023 11:33:28 -0700 (PDT)
-Message-ID: <e5d2e96b-9b16-4aaf-9291-76d1d2222c44@sifive.com>
-Date:   Tue, 17 Oct 2023 13:33:27 -0500
+        Tue, 17 Oct 2023 14:34:41 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B99959E;
+        Tue, 17 Oct 2023 11:34:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697567679; x=1729103679;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=TZVxd9SM3OFQ9jGy5ymuOLfAYtruH8WsmqgAAbjIzKs=;
+  b=dYLpG9pOnYdLBCzy4Vfh1eBVILwqMSVrPtN+elkROfyCPxTJbIwfYe2N
+   ZHgGmShYcoPkvsog6tqJxXaiCNnlXwKf+p7M0jw+7+KO5seSZpY2fsp/L
+   BDPWMKYQOcS65AXyvuBGdE9lZ9QOfAezIjtMo50u1MjTL3czP0IekDMhB
+   KdHz6vun4CNzxPB8oazxOd1/jOEkQ4Duchyvm66vq5FytGehj4utQUnPk
+   APlwlBkacNVFdeBmoWelXm+BsBiqt5w4eFzqeI8IU0ElLr3DiB09ve7r7
+   Ba8g60dr0d5DUjeNkkG1J3LTHPCUNKA76Hvkvhtjq4/XZfTZeO2Y0Ufma
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="376224634"
+X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
+   d="scan'208";a="376224634"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 11:34:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="879902941"
+X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
+   d="scan'208";a="879902941"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 11:34:37 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qsotm-00000006OYR-2sEX;
+        Tue, 17 Oct 2023 21:34:34 +0300
+Date:   Tue, 17 Oct 2023 21:34:34 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Ferry Toth <ftoth@exalondelft.nl>
+Subject: Re: [PATCH v1 1/1] Revert "pinctrl: avoid unsafe code pattern in
+ find_pinctrl()"
+Message-ID: <ZS7TuodhwNxU9Ez6@smile.fi.intel.com>
+References: <20231017141806.535191-1-andriy.shevchenko@linux.intel.com>
+ <CACRpkdbHJHsgJ=3pYveP-x-Vuwwf3ib6TnFOt3UpCrKevf=d1w@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/4] dmaengine: sf-pdma: Support
- of_dma_controller_register()
-Content-Language: en-US
-To:     shravan chippa <shravan.chippa@microchip.com>,
-        green.wan@sifive.com, vkoul@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, conor+dt@kernel.org
-Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nagasuresh.relli@microchip.com, praveen.kumar@microchip.com
-References: <20231003042215.142678-1-shravan.chippa@microchip.com>
- <20231003042215.142678-2-shravan.chippa@microchip.com>
-From:   Samuel Holland <samuel.holland@sifive.com>
-In-Reply-To: <20231003042215.142678-2-shravan.chippa@microchip.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdbHJHsgJ=3pYveP-x-Vuwwf3ib6TnFOt3UpCrKevf=d1w@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 2023-10-02 11:22 PM, shravan chippa wrote:
-> From: Shravan Chippa <shravan.chippa@microchip.com>
+On Tue, Oct 17, 2023 at 08:18:23PM +0200, Linus Walleij wrote:
+> On Tue, Oct 17, 2023 at 4:18 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
 > 
-> Update sf-pdma driver to adopt generic DMA device tree bindings.
-> It calls of_dma_controller_register() with sf-pdma specific
-> of_dma_xlate to get the generic DMA device tree helper support
-> and the DMA clients can look up the sf-pdma controller using
-> standard APIs.
+> > The commit breaks MMC enumeration on the Intel Merrifield
+> > plaform.
 > 
-> Signed-off-by: Shravan Chippa <shravan.chippa@microchip.com>
-> ---
->  drivers/dma/sf-pdma/sf-pdma.c | 44 +++++++++++++++++++++++++++++++++++
->  1 file changed, 44 insertions(+)
+> The enumeration works, just that the probe order is different, right?
 > 
-> diff --git a/drivers/dma/sf-pdma/sf-pdma.c b/drivers/dma/sf-pdma/sf-pdma.c
-> index d1c6956af452..06a0912a12a1 100644
-> --- a/drivers/dma/sf-pdma/sf-pdma.c
-> +++ b/drivers/dma/sf-pdma/sf-pdma.c
-> @@ -20,6 +20,7 @@
->  #include <linux/mod_devicetable.h>
->  #include <linux/dma-mapping.h>
->  #include <linux/of.h>
-> +#include <linux/of_dma.h>
->  #include <linux/slab.h>
->  
->  #include "sf-pdma.h"
-> @@ -490,6 +491,33 @@ static void sf_pdma_setup_chans(struct sf_pdma *pdma)
->  	}
->  }
->  
-> +static struct dma_chan *sf_pdma_of_xlate(struct of_phandle_args *dma_spec,
-> +					 struct of_dma *ofdma)
-> +{
-> +	struct sf_pdma *pdma = ofdma->of_dma_data;
-> +	struct device *dev = pdma->dma_dev.dev;
-> +	struct sf_pdma_chan  *chan;
-> +	struct dma_chan *c;
-> +	u32 channel_id;
-> +
-> +	if (dma_spec->args_count != 1) {
-> +		dev_err(dev, "Bad number of cells\n");
-> +		return NULL;
-> +	}
-> +
-> +	channel_id = dma_spec->args[0];
-> +
-> +	chan = &pdma->chans[channel_id];
-> +
-> +	c = dma_get_slave_channel(&chan->vchan.chan);
+> > Before:
+> > [   36.439057] mmc0: SDHCI controller on PCI [0000:00:01.0] using ADMA
+> > [   36.450924] mmc2: SDHCI controller on PCI [0000:00:01.3] using ADMA
+> > [   36.459355] mmc1: SDHCI controller on PCI [0000:00:01.2] using ADMA
+> > [   36.706399] mmc0: new DDR MMC card at address 0001
+> > [   37.058972] mmc2: new ultra high speed DDR50 SDIO card at address 0001
+> > [   37.278977] mmcblk0: mmc0:0001 H4G1d 3.64 GiB
+> > [   37.297300]  mmcblk0: p1 p2 p3 p4 p5 p6 p7 p8 p9 p10
+> >
+> > After:
+> > [   36.436704] mmc2: SDHCI controller on PCI [0000:00:01.3] using ADMA
+> > [   36.436720] mmc1: SDHCI controller on PCI [0000:00:01.0] using ADMA
+> > [   36.463685] mmc0: SDHCI controller on PCI [0000:00:01.2] using ADMA
+> > [   36.720627] mmc1: new DDR MMC card at address 0001
+> > [   37.068181] mmc2: new ultra high speed DDR50 SDIO card at address 0001
+> > [   37.279998] mmcblk1: mmc1:0001 H4G1d 3.64 GiB
+> > [   37.302670]  mmcblk1: p1 p2 p3 p4 p5 p6 p7 p8 p9 p10
+> >
+> > This reverts commit c153a4edff6ab01370fcac8e46f9c89cca1060c2.
+> >
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
+> Relying on this probe order or whatever it is causing one or the other
+> to be enumerated first seems very fragile, I think this condition can be
+> caused by other much more random things in the probe path as well,
+> so it would be great if we could just hammer this down for good, as
+> it is apparently ABI.
+> 
+> In the past some file system developers have told us (Ulf will know)
+> that we can't rely on the block device enumeration to identify
+> devices, and requires that we use things such as sysfs or the
+> UUID volume label in ext4 to identify storage.
 
-This does not look right to me. All of the channels in the controller are
-identical and support arbitrary addresses, so there is no need to use a specific
-physical channel. And unless Microchip has added something on top, the only way
-to trigger a transfer is through the MMIO interface, so there is no request ID
-to differentiate virtual channels either.
+While I technically might agree with you, this was working for everybody
+since day 1 of support of Intel Merrifield added (circa v4.8), now _user
+space_ is broken.
 
-So it seems to me that #dma-cells should really be 0, and this function should
-just call dma_get_any_slave_channel().
+Note, I'm having _simple_ setup, no fancy UDEV or DBUS there, and I want
+my scripts simply continue working. As I mentioned, this is Buildroot
++ Busybox which I haven't touched in the area of how they treat MMC
+devices in _user space_.
 
-Regards,
-Samuel
+Since we are at rc6 I prefer to get this reverted first and next cycle we can
+discuss better solutions. I'm all for testing any.
 
-> +	if (!c) {
-> +		dev_err(dev, "No more channels available\n");
-> +		return NULL;
-> +	}
-> +
-> +	return c;
-> +}
-> +
->  static int sf_pdma_probe(struct platform_device *pdev)
->  {
->  	struct sf_pdma *pdma;
-> @@ -563,7 +591,20 @@ static int sf_pdma_probe(struct platform_device *pdev)
->  		return ret;
->  	}
->  
-> +	ret = of_dma_controller_register(pdev->dev.of_node,
-> +					 sf_pdma_of_xlate, pdma);
-> +	if (ret < 0) {
-> +		dev_err(&pdev->dev,
-> +			"Can't register SiFive Platform OF_DMA. (%d)\n", ret);
-> +		goto err_unregister;
-> +	}
-> +
->  	return 0;
-> +
-> +err_unregister:
-> +	dma_async_device_unregister(&pdma->dma_dev);
-> +
-> +	return ret;
->  }
->  
->  static int sf_pdma_remove(struct platform_device *pdev)
-> @@ -583,6 +624,9 @@ static int sf_pdma_remove(struct platform_device *pdev)
->  		tasklet_kill(&ch->err_tasklet);
->  	}
->  
-> +	if (pdev->dev.of_node)
-> +		of_dma_controller_free(pdev->dev.of_node);
-> +
->  	dma_async_device_unregister(&pdma->dma_dev);
->  
->  	return 0;
+> That said, device trees are full of stuff like this:
+> 
+>         aliases {
+>                 serial0 = &uart_AO;
+>                 mmc0 = &sd_card_slot;
+>                 mmc1 = &sdhc;
+>         };
+
+And Rob, AFAIU, is against aliases.
+
+> Notice how this enumeration gets defined by the aliases.
+> 
+> Can you do the same with device properties? (If anyone can
+> answer that question it's Dmitry!)
+
+No, and why should we?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
