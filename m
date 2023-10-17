@@ -2,148 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 944567CC9EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 19:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D377CC9EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 19:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234950AbjJQR3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 13:29:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43076 "EHLO
+        id S235013AbjJQR3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 13:29:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234760AbjJQR3W (ORCPT
+        with ESMTP id S235018AbjJQR3a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 13:29:22 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1B3113
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 10:29:19 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-d9ac31cb051so6395496276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 10:29:18 -0700 (PDT)
+        Tue, 17 Oct 2023 13:29:30 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B0D101
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 10:29:27 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-52bd9ddb741so10425005a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 10:29:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1697563758; x=1698168558; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1697563766; x=1698168566; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=w1ro9HlJSCZOnQY3V+1VmfmbVpDBOi+uN5Fq4ETuRqg=;
-        b=deAuIb4pEhjm6eBPy09V3tBAICS79bZ60HcDl2EaptWgOX65CHSTtunZZBxZywbUxc
-         7f/LQE141m184U03smIc9cArPvIvNYDioVqhTS+gfnVqBeUF9afNOp16zXYcDEeWe5vr
-         EqdXfpM6LQWgrJhH0Tsl67FUAhZp26IVs6T3bMgKMU8V6wv9YGhB+rL36JPgLuYVYq73
-         petuYj48JGDAZMHz/6hXb4+5JgL7/m6oIlqO+QeoJrBUGJc4CMSPtDfyqOV6p62xxonx
-         Iy7WCVQP07odKbIUI/GZKYzITHpkahyoCLxVvrjmQaxVKPWlBdM1IUcYIn/TbocVdrFe
-         Gd+A==
+        bh=yVjPvtK7dBS1HEVTVRVRRx6/uZvdlxYNu1++CMU25iQ=;
+        b=KxgD2+/vY/Y3n88Q6cLm8ZH4KYfWGUiq9uXOxPxYjJKvUBWAbgAqS7uwwdFShf3ZI9
+         Du+Tiblgk3pi8+wEuIkcbAStfd1Gm536twbgQtxTZmIq2SUZJ84eJgq7s4ghamrLzve6
+         5/O0JQU12d+ofBgjQ0fyfu1PGVoQHvsGtTu++bQVRPwOHgWqlZ8mFjZSZSYvzgm//MCc
+         /ys/5aJdURpV2l8GrKABJw8o8bIM7n09ABe/1wvHFH5pgODJaAvR8g7MO+DBrJ9lOgoJ
+         4KbWlAj3EgqhQ0n28FEzjCNICOP8wFjfaXJND/DxwliduZ6f4JB2zB3Ia+OJVZUmZyf3
+         yo2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697563758; x=1698168558;
+        d=1e100.net; s=20230601; t=1697563766; x=1698168566;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=w1ro9HlJSCZOnQY3V+1VmfmbVpDBOi+uN5Fq4ETuRqg=;
-        b=Y5iqc29pjj/JI8VF+aA7UAEEoVbX09o7hKwcuXa+3mEiBY2VldElTyotW6YsfOjh+n
-         HhwCcYv28i8IjKgSpJdK8+OQyec7GBb85y9DDfNARPsSRgWYPunKgVLo/LY9G6vase3V
-         SuY+qBZlQN3CmvIiX0tSswmxseC3U+6D66BtFFk7UyjHKX6KvdEfKiTTlrHJPwQA/M0n
-         cJvL2+4qYahh3X4bA3aQ4uY9J1e+VRbXaRAKPEcR/uvoDh6WIk0x7iLQVWvZExsz4jAB
-         UxjWIWR8WG6yPAkSW1WzZvqL5YGHHUoMuw27Cdr4hopEVKxg6SjSgRPxnp0hq48a/ald
-         9mbQ==
-X-Gm-Message-State: AOJu0Yx1xdgafUK0kNiMQLysWuzrrqQgcM6CnG43JMhQLe3uvCXkPxeL
-        FCRY9NMRmGnzN49seo+1Eef19OTnW4vmULWbMthq
-X-Google-Smtp-Source: AGHT+IE20i63zTruAYA/HeKI6xRC7P5Iphgvp7RwIHUvJvGWCiFiihYJF7iPPrjTqS0EbJ0jsUao4v+7X57KlQGZQNY=
-X-Received: by 2002:a25:2383:0:b0:d9a:3bbb:8602 with SMTP id
- j125-20020a252383000000b00d9a3bbb8602mr2572828ybj.64.1697563757988; Tue, 17
- Oct 2023 10:29:17 -0700 (PDT)
+        bh=yVjPvtK7dBS1HEVTVRVRRx6/uZvdlxYNu1++CMU25iQ=;
+        b=g8As1XEPOhR7og7wKXebCScMV2deomos2Bg67VNq8tuU2HzCvuLEXrx0kT/WfNSnV4
+         DLjgdGhSsEUbZsDhm07FwfBE3Q9FincnYyF/M5Rs0C/24psLXKY1OQ2/UvcszlSo5svu
+         ARAoiO7l1VeqkXdGdORhJ6PM94p7G+Uy63CXT20SvUHSsCPvFoTd7HZuofGXvXmLsZzn
+         2gk3bHAswPitnwFWON2dn8nrvfTBE7buunj9rX3QbTq7SzNc1w2oNeDRt5oC1ycqwuvF
+         1GA4wQiEWQGN4NaNg5JKSXOehOFWq49jEVkLiWHzxmVFh+bhQx2GxyNHztDY6bLOkQf4
+         uROg==
+X-Gm-Message-State: AOJu0YwwtXLPywGMutRth0gF5j4K9yitTuhB46lDuEv25c7A/wcDb8H4
+        Nua8aJXOfVDNcJBvZvKUYQZsTDhBTM//nLBs2saTWQ==
+X-Google-Smtp-Source: AGHT+IGrgeOgDqO50bp1dx1lJcdPZVSnhShz2o9OXsMWdY9GkfkcS0pbU/y2lq9RHQQbRyyoxZ95LOoT9iFOrqLav+M=
+X-Received: by 2002:a50:cd82:0:b0:53d:a17a:7576 with SMTP id
+ p2-20020a50cd82000000b0053da17a7576mr2202416edi.8.1697563765976; Tue, 17 Oct
+ 2023 10:29:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <CEA476C1-4CE5-4FFC-91D7-6061C8605B18@oracle.com>
- <ba2f5560800608541e81fbdd28efa9875b35e491.camel@linux.ibm.com>
- <932231F5-8050-4436-84B8-D7708DC43845@oracle.com> <7335a4587233626a39ce9bc8a969957d7f43a34c.camel@linux.ibm.com>
- <FD6FB139-F901-4E55-9705-E7B0023BDBA8@oracle.com> <1149b6dbfdaabef3e48dc2852cc76aa11a6dd6b0.camel@linux.ibm.com>
- <4A0505D0-2933-43BD-BEEA-94350BB22AE7@oracle.com> <20230913.Ceifae7ievei@digikod.net>
- <D0F16BFD-72EB-4BE2-BA3D-BAE1BCCDCB6F@oracle.com> <20230914.shah5al9Kaib@digikod.net>
- <20231005.dajohf2peiBu@digikod.net> <d3b51f26c14fd273d41da3432895fdce9f4d047c.camel@linux.ibm.com>
- <CAHC9VhRdU1CZJpPSEdSmui-Xirr0j261K=+SM7KiDwiPG-JSrQ@mail.gmail.com> <a851227aaa75ab16b0d6dd93433e1ee1679715f9.camel@linux.ibm.com>
-In-Reply-To: <a851227aaa75ab16b0d6dd93433e1ee1679715f9.camel@linux.ibm.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 17 Oct 2023 13:29:07 -0400
-Message-ID: <CAHC9VhS_Ttdy5ZB=jYdVfNyaJfn_7G1wztr5+g0g7uUDForXvA@mail.gmail.com>
-Subject: Re: RFC: New LSM to control usage of x509 certificates
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Kanth Ghatraju <kanth.ghatraju@oracle.com>,
-        Konrad Wilk <konrad.wilk@oracle.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-security-module@vger.kernel.org
+References: <20231016-strncpy-drivers-net-wireless-broadcom-brcm80211-brcmfmac-cfg80211-c-v2-1-6c7567e1d3b8@google.com>
+ <CA+8PC_cZbchz-i0Wfhr1rE5M-xqUVdQZce94TowU=yqOynDBKg@mail.gmail.com> <875y352nrg.fsf@kernel.org>
+In-Reply-To: <875y352nrg.fsf@kernel.org>
+From:   Justin Stitt <justinstitt@google.com>
+Date:   Tue, 17 Oct 2023 10:29:14 -0700
+Message-ID: <CAFhGd8q17rgScrsaBvJmiwFUW=KAPTgD_BHQeb7YiFBuiDXE0g@mail.gmail.com>
+Subject: Re: [PATCH v2] brcmfmac: replace deprecated strncpy
+To:     Kalle Valo <kvalo@kernel.org>
+Cc:     Franky Lin <franky.lin@broadcom.com>,
+        Arend van Spriel <aspriel@gmail.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 1:09=E2=80=AFPM Mimi Zohar <zohar@linux.ibm.com> wr=
-ote:
-> On Tue, 2023-10-17 at 11:45 -0400, Paul Moore wrote:
-> > On Tue, Oct 17, 2023 at 9:48=E2=80=AFAM Mimi Zohar <zohar@linux.ibm.com=
-> wrote:
-> > > On Thu, 2023-10-05 at 12:32 +0200, Micka=C3=ABl Sala=C3=BCn wrote:
-> > > > > > > A complementary approach would be to create an
-> > > > > > > LSM (or a dedicated interface) to tie certificate properties =
-to a set of
-> > > > > > > kernel usages, while still letting users configure these cons=
-traints.
-> > > > > >
-> > > > > > That is an interesting idea.  Would the other security maintain=
-ers be in
-> > > > > > support of such an approach?  Would a LSM be the correct interf=
-ace?
-> > > > > > Some of the recent work I have done with introducing key usage =
-and CA
-> > > > > > enforcement is difficult for a distro to pick up, since these c=
-hanges can be
-> > > > > > viewed as a regression.  Each end-user has different signing pr=
-ocedures
-> > > > > > and policies, so making something work for everyone is difficul=
-t.  Letting the
-> > > > > > user configure these constraints would solve this problem.
-> > >
-> > > Something definitely needs to be done about controlling the usage of
-> > > x509 certificates.  My concern is the level of granularity.  Would th=
-is
-> > > be at the LSM hook level or even finer granaularity?
+On Tue, Oct 17, 2023 at 9:54=E2=80=AFAM Kalle Valo <kvalo@kernel.org> wrote=
+:
+>
+> Franky Lin <franky.lin@broadcom.com> writes:
+>
+> >  Hi Justin,
 > >
-> > You lost me, what do you mean by finer granularity than a LSM-based
-> > access control?  Can you give an existing example in the Linux kernel
-> > of access control granularity that is finer grained than what is
-> > provided by the LSMs?
+> > On Mon, Oct 16, 2023 at 3:14=E2=80=AFPM Justin Stitt <justinstitt@googl=
+e.com> wrote:
+> >>
+> >> strncpy() is deprecated for use on NUL-terminated destination strings
+> >> [1] and as such we should prefer more robust and less ambiguous string
+> >> interfaces.
+> >>
+> >> This patch replaces multiple strncpy uses. For easier reading, I'll li=
+st
+> >> each destination buffer and mention whether it requires either
+> >> NUL-termination or NUL-padding.
+> >
+> > Kudos to the detailed analysis of each instance. One thing I can think
+> > of to make this better is to split it into smaller patches so if any
+> > regression is observed, only the specific code causing it needs to be
+> > reverted. Maybe instance 2, 3, 4 can be handled in one patch since
+> > they are touching the country code in one file. The other instances
+> > each can be an individual patch.
+> >
+> > The "brcmfmac" in the title is not accurate. The change touches both
+> > brcmfmac and brcmsmac. So "brcm80211" would be more appropriate.
 >
-> The current x509 certificate access control granularity is at the
-> keyring level.  Any key on the keyring may be used to verify a
-> signature.  Finer granularity could associate a set of certificates on
-> a particular keyring with an LSM hook - kernel modules, BPRM, kexec,
-> firmware, etc.  Even finer granularity could somehow limit a key's
-> signature verification to files in particular software package(s) for
-> example.
+> Please also add "wifi:" to the title, see the wiki link below for more
+> info.
+
+Sure thing :)
+
 >
-> Perhaps Micka=C3=ABl and Eric were thinking about a new LSM to control us=
-age
-> of x509 certificates from a totally different perspective.  I'd like to
-> hear what they're thinking.
+> --
+> https://patchwork.kernel.org/project/linux-wireless/list/
 >
-> I hope this addressed your questions.
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpa=
+tches
 
-Okay, so you were talking about finer granularity when compared to the
-*current* LSM keyring hooks.  Gotcha.
-
-If we need additional, or modified, hooks that shouldn't be a problem.
-Although I'm guessing the answer is going to be moving towards
-purpose/operation specific keyrings which might fit in well with the
-current keyring level controls.
-
---=20
-paul-moore.com
+Thanks
+Justin
