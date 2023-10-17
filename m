@@ -2,292 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9DC67CCC71
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 21:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E389F7CCC6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 21:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344192AbjJQTkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 15:40:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32858 "EHLO
+        id S1344327AbjJQTkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 15:40:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235050AbjJQTk2 (ORCPT
+        with ESMTP id S1343897AbjJQTkF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 15:40:28 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50ACE10B;
-        Tue, 17 Oct 2023 12:40:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697571625; x=1729107625;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bjdG+Xo/Zz+jbXvAWOg/Uza7joNoZT1tkJb7TwZwpQ8=;
-  b=ic02+qwcJ5NmsIi1NpPUMzMbl9ias8jxUbynWg4rzX5aAZAJgqvFA6EQ
-   JzdrF7eWuz5FA09zZFWiulPyubLQRed6Uxmy1aa0f8wFqb2DGQh22ekhL
-   V+27G4wA0dlZzdV8hfiP20p5IrFLUL67yqq/DeV9s3mBzfCGB1SBT5KDw
-   CFpYlQ9cwhPyukuhqhf7HnxXdTdEjH6Il7kTuC5I3FgFBSCCV4RI9428Z
-   WMDvphEFYObanXnEb9XsngIYnC4aDqaEPGUiN+xpe2E6p6E1L0A1KtIMr
-   KnDXD1W+2GqGXMCWjDzkdicc6SEqhJFFiNx+nyqG+W6HutLkOn6tipMvX
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="452344459"
-X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
-   d="scan'208";a="452344459"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 12:40:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="1003468960"
-X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
-   d="scan'208";a="1003468960"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 17 Oct 2023 12:40:18 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qspvL-000A0w-0G;
-        Tue, 17 Oct 2023 19:40:15 +0000
-Date:   Wed, 18 Oct 2023 03:39:58 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
-Cc:     oe-kbuild-all@lists.linux.dev, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        lokeshgidra@google.com, peterx@redhat.com, david@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        surenb@google.com, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
-Message-ID: <202310180338.zTpcYECK-lkp@intel.com>
-References: <20231009064230.2952396-3-surenb@google.com>
+        Tue, 17 Oct 2023 15:40:05 -0400
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04olkn2065.outbound.protection.outlook.com [40.92.75.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F77BC4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 12:40:03 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q5sol7ZUCTRO6Z3/4Zz4xf9jlFHDKwrb5eMKrcfY0ZSkc96WjdTFonFI3AGn0hCrKJeQeb3OfbjkQS3wh73m+Dvt6Kwp+MDCQb7YC0tEyjHcnwfnvlH4WWNRo7dkZZnM5ZHIwiH+81DGYPLGvgfPHEIiyXDG5AoQhcdZhVrOOfMX7jG/AEL8pH1UE+7sUQjezORbYtx2gngJ5aNLf/F4PHDM3fB4s+JaC00DV6fhWWeRJqhYxD9BN2bXMLPwcmMoa1t/an5KZN74X8ot0kLkDmPEW0cLzgUhhjj8YtdCvQZGbLjwNatCRnk272leU0+El5pgnMN1zcdVDPQZh50PpQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=s1ZEJfJwgCo78Asz1ZD2KDfn5+bZC8UTiZ1X83PPJ98=;
+ b=B15MMiuoZUyZWCvnhqdS9B3TiIvuHfMILQ7Nk4aHVJhfSWwnY8OWmXCxmeMqyErEnXtxAn5bgnCbFEO7NS4JcJBX3GqMo/uAc8iapCwFC7lZEuRx4msdnxdG0dQud0XtFVlkveK9G+V26imt95oBPIM9ZehhXznG/Sgm6wEuGSnAMPLzV4f/GZO2bWJiGWKPadz8rntrMc47lnHxXlzSA0iUTEIRISo4kapbldPdkXjaLb07uIC2vB/mXU9IV/OP9RdWjRrfzZY3tPrqRZsWyuQTVkh3QWBm5DEWeFmlBq6HI/3TYAMBkmbOQwOGbADF8+pIKl4ouxHrpXCWRWkLZA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s1ZEJfJwgCo78Asz1ZD2KDfn5+bZC8UTiZ1X83PPJ98=;
+ b=dGDyKoxnKLUpK5WSWx8bDfc2vbULOBv/FEFDqz40DbwbQJX5fNyX45hAUCNmMJczn58DE6rVg3kYD9+YbniT7TyzhDDeMHJPM8nmyI5NuCRDWqpxrYSmy/wEmuQphHfHelWFYL7gWZs16lsIFrHJMA0oymbfonAhUOHgJzuvlRRCXEvbb03oyeXxCSGPWAV+Zp8Tu2JG4fTikoCvWJfFRaWpkRm+YPRvFJsuII5Jds0iuedZWgqKIgRf+L64wJS2L5loqTt7W4B6AMjSPMkpZfuCtKgptDHy9OZJNUSwCw0G2emc9Uo2/cXSrw3ZUyl8WkEIbcyXJSa79o5LlRbaYQ==
+Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM (2603:10a6:800:32::19)
+ by DB8P193MB0645.EURP193.PROD.OUTLOOK.COM (2603:10a6:10:151::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36; Tue, 17 Oct
+ 2023 19:40:00 +0000
+Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ ([fe80::af68:c2a:73ce:8e99]) by VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ ([fe80::af68:c2a:73ce:8e99%3]) with mapi id 15.20.6886.034; Tue, 17 Oct 2023
+ 19:40:00 +0000
+Message-ID: <VI1P193MB075256E076A09E5B2EF7A16F99D6A@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
+Date:   Wed, 18 Oct 2023 03:39:59 +0800
+User-Agent: Mozilla Thunderbird
+From:   Juntong Deng <juntong.deng@outlook.com>
+To:     ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
+        dvyukov@google.com, vincenzo.frascino@arm.com,
+        akpm@linux-foundation.org
+Cc:     kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kernel-mentees@lists.linuxfoundation.org" 
+        <linux-kernel-mentees@lists.linuxfoundation.org>
+Subject: [RFC] mm/kasan: Add Allocation, Free, Error timestamps to KASAN
+ report
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TMN:  [n68INaFdX0AQ9ixRWTnYzMxHobQbJ5ct]
+X-ClientProxiedBy: LO6P123CA0001.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:338::7) To VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:800:32::19)
+X-Microsoft-Original-Message-ID: <951f648d-2dcb-4438-993a-c9fafed0128b@outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231009064230.2952396-3-surenb@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1P193MB0752:EE_|DB8P193MB0645:EE_
+X-MS-Office365-Filtering-Correlation-Id: bf333dce-9b20-4534-f3ea-08dbcf48d9bd
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: j1md31kUyyaT7+1p69ggEWbAqYF5o4s2dDXa/WSmHrH/WL09w/KkL++6Xz0gWnGDitUU34XBqlzj77V/rMdjj1DfGu+u1Wk3gEc9rxb6q3FeUR+Yj2Yt84btAoPvjv5/Ude9Z8fWKcxmEH51LJ0Emi33+u5iM8G69zpRi+m0RjRTfZaWlRLTyFNX0wVCqlzAimN96BRPt2xXqFUi81DPJqcJMv+YtnmwfqO3YbTXT8vdsltAGGxh4ZjrYi6nEKapsE/AQgRsKCqpqMfEzf4Oh4man6qmL+vS0O5njK19s4t6S2rqzPuP5stXMpc9Jw8ttrfDd5QVVPT8kjcZwKDC2L2TkvNMB9KsMRWImMXHhTqJ9HELOfdQBG8qiJzhyXkIbbFyNe9MpLzoZTcq7+DZIB71SdLmygzHCwVq/YNPMMy1M0HAmcws01rxDZKz1PuBR92So76S+M+5sWtr0DxIiVruZkVfwJvA5teysKFD3qyLcgCX+jtv8H5cfwQ3dv5dBCjc8EP+G7dPINdNjj1CNxF6FBFry6nuwogLxm6RS2siFLcPVHwAby9mThlSp9xV
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UFdPdHo1STFYa0Z1TEdPUkRJN0NiSzRJbHpaTzYwTnJ0YVZaUVJ4eDM5OVJN?=
+ =?utf-8?B?NXFJdkFGZkNzclV5a3p2WlVpcWY5QTBPMkpUR25vc1p3S2J3SXF6QUNZTEZv?=
+ =?utf-8?B?OXo0UG0rTkUyRVo4WXdzTjdIQUNlTkU3TDRJSEZYRnBjT2E1aW5zNkFhZjgz?=
+ =?utf-8?B?eFFBY0NHVUl0ajVydWQxS2xYaHc4R0k4My95aWo5cisxMkppQ1pESDllNVVN?=
+ =?utf-8?B?NmRLV0JGMFdLc1NKcEU1dnhSVHdKelB5RXNhZytDRGl1R3V4cFJIYWZuTmM3?=
+ =?utf-8?B?dUdvaksyc1BmWGFqN0FTK0Z2VWhxb1VZbXUwdm1RdndRY0VHV2MzYmxGYWlh?=
+ =?utf-8?B?ZUplZTN5WUVrQUpOZ1ZiMGRLbU00VjM4akYvZUpYNjhTRGZPNldVUURrVEhW?=
+ =?utf-8?B?NUMxWno0SlNRWDRTKzhaQTZYeTVqSFVTRGVGZkZQL3JGa3BSNm5mWFRNWENp?=
+ =?utf-8?B?a0tadEhPNEhJZHVITGxYU3ZZTFZ4V0NWYUZNNG1HamVSQTJnUnh6czRqSDVu?=
+ =?utf-8?B?UmNEVnBSSm0zTGZWUDU2MCtHQnc1SVZucUxDQ0VCejVpaUFVcGhjWTZjVHEv?=
+ =?utf-8?B?NlkyL3lmL2ZraHBlc3FFcHRNVFJ1S29NTmJlYkJhYjdzdnRxTjRweGRrRGhY?=
+ =?utf-8?B?R1krRnMweEZXeTREbklmQ1hlLys3Skd4OHd5bXZnU1hmNy9oaVNDWmtmNmxH?=
+ =?utf-8?B?U3ZqN0RVQWdhWXB2OXZVeFM3WXhIVjdHTmxlbTdIVEV6N3VXMGtDaUpPNk42?=
+ =?utf-8?B?TTAzdGVGTjBRM2N2ZkNrZ3h0eENNWnBOeGkzRGllVlA4NWNuc3FlRjl3Y3Ni?=
+ =?utf-8?B?Sm9WNVNuSUVLOForZXhOWVJFN1E3cU5LWVZrL2NmQWIydmgzaW1vLzR0Q0N2?=
+ =?utf-8?B?elBGcFpZY3JlQ1c5dTRCNHdFT2IxWkVjSER2Y1o1ZWtjQjlLbWtJYUpCTGIw?=
+ =?utf-8?B?OG1IbXMweEZSTFNjVmxPRElZOGNTSGpLd1FyYVpZWHc3YUxCLzBpaW1XZm1D?=
+ =?utf-8?B?eGxEZlYvSnA2V3VaVkxMY3Vsbmk5bE5jSzhFZW9FZWgyTHVsOEhkN0pINXBy?=
+ =?utf-8?B?eFJJTFVVS3oxd1djYU5MdU5keUdaNlpIandpcnBhV29nN3A3Mzcxa09UQ3NE?=
+ =?utf-8?B?MVlvM1FmQ0ZTZURXVGtGNnZ0RnMwSVpRVlp1NmoyTnZhcnQva2hMRDcrdFdX?=
+ =?utf-8?B?aUlod2hYR21VNzlsTXJBYU44S1JvOHNFbkEwbDFHcXpUbzZ6dXBDQzVGYUJp?=
+ =?utf-8?B?aGZONkdiNEV4UkhIdXBqZGhTQy9WZXZ6MzhEa2JWYnphZkJUYWxXUkIzL2Vr?=
+ =?utf-8?B?cEUyVXhrQ0toS3JZVHBPU3J6OXkwNnNCTEUxUEFRTks3WHpFd1lXZEFrdHdO?=
+ =?utf-8?B?aWFFV1o0Y1NJTEVweFlRaUdPM3RiUFR0NGp0YUZDWnU3dzRFaWxLdnJXYkJQ?=
+ =?utf-8?B?SFJtb3FxaWd4SGxpVkttRnBwOEhVQ3A5Uk9UZ3NpbGZTbThVTkF2cU5aZ0Zy?=
+ =?utf-8?B?dWdncm9WQi80UUE0cVpCV1NwNjRWdzB0dWZVNkFwUVY1Z2E0NXJTL1ZxTFRY?=
+ =?utf-8?B?SmNZd2JEYUhZOW9qZHArMEtPeDFEZ201TkhQMVhKTXJ4SkFvcWVuWE5RcmpP?=
+ =?utf-8?Q?ENv95TQUg7ryBMVEkHHFq/s64UbPQM7T2ouJrOwbrGYY=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bf333dce-9b20-4534-f3ea-08dbcf48d9bd
+X-MS-Exchange-CrossTenant-AuthSource: VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Oct 2023 19:40:00.5837
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8P193MB0645
+X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suren,
+The idea came from the bug I was fixing recently,
+'KASAN: slab-use-after-free Read in tls_encrypt_done'.
 
-kernel test robot noticed the following build warnings:
+This bug is caused by subtle race condition, where the data structure
+is freed early on another CPU, resulting in use-after-free.
 
-[auto build test WARNING on akpm-mm/mm-everything]
-[also build test WARNING on next-20231017]
-[cannot apply to linus/master v6.6-rc6]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Like this bug, some of the use-after-free bugs are caused by race
+condition, but it is not easy to quickly conclude that the cause of the
+use-after-free is race condition if only looking at the stack trace.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Suren-Baghdasaryan/mm-rmap-support-move-to-different-root-anon_vma-in-folio_move_anon_rmap/20231009-144552
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20231009064230.2952396-3-surenb%40google.com
-patch subject: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
-config: i386-randconfig-141-20231017 (https://download.01.org/0day-ci/archive/20231018/202310180338.zTpcYECK-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231018/202310180338.zTpcYECK-lkp@intel.com/reproduce)
+I did not think this use-after-free was caused by race condition at the
+beginning, it took me some time to read the source code carefully and
+think about it to determine that it was caused by race condition.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310180338.zTpcYECK-lkp@intel.com/
+By adding timestamps for Allocation, Free, and Error to the KASAN
+report, it will be much easier to determine if use-after-free is
+caused by race condition.
 
-smatch warnings:
-mm/userfaultfd.c:1380 remap_pages() warn: unsigned 'src_start + len - src_addr' is never less than zero.
+If the free time is slightly before the error time, then there is a
+high probability that this is an error caused by race condition.
 
-vim +1380 mm/userfaultfd.c
+If the free time is long before the error time, then this is obviously
+not caused by race condition, but by something else.
 
-  1195	
-  1196	/**
-  1197	 * remap_pages - remap arbitrary anonymous pages of an existing vma
-  1198	 * @dst_start: start of the destination virtual memory range
-  1199	 * @src_start: start of the source virtual memory range
-  1200	 * @len: length of the virtual memory range
-  1201	 *
-  1202	 * remap_pages() remaps arbitrary anonymous pages atomically in zero
-  1203	 * copy. It only works on non shared anonymous pages because those can
-  1204	 * be relocated without generating non linear anon_vmas in the rmap
-  1205	 * code.
-  1206	 *
-  1207	 * It provides a zero copy mechanism to handle userspace page faults.
-  1208	 * The source vma pages should have mapcount == 1, which can be
-  1209	 * enforced by using madvise(MADV_DONTFORK) on src vma.
-  1210	 *
-  1211	 * The thread receiving the page during the userland page fault
-  1212	 * will receive the faulting page in the source vma through the network,
-  1213	 * storage or any other I/O device (MADV_DONTFORK in the source vma
-  1214	 * avoids remap_pages() to fail with -EBUSY if the process forks before
-  1215	 * remap_pages() is called), then it will call remap_pages() to map the
-  1216	 * page in the faulting address in the destination vma.
-  1217	 *
-  1218	 * This userfaultfd command works purely via pagetables, so it's the
-  1219	 * most efficient way to move physical non shared anonymous pages
-  1220	 * across different virtual addresses. Unlike mremap()/mmap()/munmap()
-  1221	 * it does not create any new vmas. The mapping in the destination
-  1222	 * address is atomic.
-  1223	 *
-  1224	 * It only works if the vma protection bits are identical from the
-  1225	 * source and destination vma.
-  1226	 *
-  1227	 * It can remap non shared anonymous pages within the same vma too.
-  1228	 *
-  1229	 * If the source virtual memory range has any unmapped holes, or if
-  1230	 * the destination virtual memory range is not a whole unmapped hole,
-  1231	 * remap_pages() will fail respectively with -ENOENT or -EEXIST. This
-  1232	 * provides a very strict behavior to avoid any chance of memory
-  1233	 * corruption going unnoticed if there are userland race conditions.
-  1234	 * Only one thread should resolve the userland page fault at any given
-  1235	 * time for any given faulting address. This means that if two threads
-  1236	 * try to both call remap_pages() on the same destination address at the
-  1237	 * same time, the second thread will get an explicit error from this
-  1238	 * command.
-  1239	 *
-  1240	 * The command retval will return "len" is successful. The command
-  1241	 * however can be interrupted by fatal signals or errors. If
-  1242	 * interrupted it will return the number of bytes successfully
-  1243	 * remapped before the interruption if any, or the negative error if
-  1244	 * none. It will never return zero. Either it will return an error or
-  1245	 * an amount of bytes successfully moved. If the retval reports a
-  1246	 * "short" remap, the remap_pages() command should be repeated by
-  1247	 * userland with src+retval, dst+reval, len-retval if it wants to know
-  1248	 * about the error that interrupted it.
-  1249	 *
-  1250	 * The UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES flag can be specified to
-  1251	 * prevent -ENOENT errors to materialize if there are holes in the
-  1252	 * source virtual range that is being remapped. The holes will be
-  1253	 * accounted as successfully remapped in the retval of the
-  1254	 * command. This is mostly useful to remap hugepage naturally aligned
-  1255	 * virtual regions without knowing if there are transparent hugepage
-  1256	 * in the regions or not, but preventing the risk of having to split
-  1257	 * the hugepmd during the remap.
-  1258	 *
-  1259	 * If there's any rmap walk that is taking the anon_vma locks without
-  1260	 * first obtaining the folio lock (the only current instance is
-  1261	 * folio_referenced), they will have to verify if the folio->mapping
-  1262	 * has changed after taking the anon_vma lock. If it changed they
-  1263	 * should release the lock and retry obtaining a new anon_vma, because
-  1264	 * it means the anon_vma was changed by remap_pages() before the lock
-  1265	 * could be obtained. This is the only additional complexity added to
-  1266	 * the rmap code to provide this anonymous page remapping functionality.
-  1267	 */
-  1268	ssize_t remap_pages(struct mm_struct *dst_mm, struct mm_struct *src_mm,
-  1269			    unsigned long dst_start, unsigned long src_start,
-  1270			    unsigned long len, __u64 mode)
-  1271	{
-  1272		struct vm_area_struct *src_vma, *dst_vma;
-  1273		unsigned long src_addr, dst_addr;
-  1274		pmd_t *src_pmd, *dst_pmd;
-  1275		long err = -EINVAL;
-  1276		ssize_t moved = 0;
-  1277	
-  1278		/*
-  1279		 * Sanitize the command parameters:
-  1280		 */
-  1281		BUG_ON(src_start & ~PAGE_MASK);
-  1282		BUG_ON(dst_start & ~PAGE_MASK);
-  1283		BUG_ON(len & ~PAGE_MASK);
-  1284	
-  1285		/* Does the address range wrap, or is the span zero-sized? */
-  1286		BUG_ON(src_start + len <= src_start);
-  1287		BUG_ON(dst_start + len <= dst_start);
-  1288	
-  1289		/*
-  1290		 * Because these are read sempahores there's no risk of lock
-  1291		 * inversion.
-  1292		 */
-  1293		mmap_read_lock(dst_mm);
-  1294		if (dst_mm != src_mm)
-  1295			mmap_read_lock(src_mm);
-  1296	
-  1297		/*
-  1298		 * Make sure the vma is not shared, that the src and dst remap
-  1299		 * ranges are both valid and fully within a single existing
-  1300		 * vma.
-  1301		 */
-  1302		src_vma = find_vma(src_mm, src_start);
-  1303		if (!src_vma || (src_vma->vm_flags & VM_SHARED))
-  1304			goto out;
-  1305		if (src_start < src_vma->vm_start ||
-  1306		    src_start + len > src_vma->vm_end)
-  1307			goto out;
-  1308	
-  1309		dst_vma = find_vma(dst_mm, dst_start);
-  1310		if (!dst_vma || (dst_vma->vm_flags & VM_SHARED))
-  1311			goto out;
-  1312		if (dst_start < dst_vma->vm_start ||
-  1313		    dst_start + len > dst_vma->vm_end)
-  1314			goto out;
-  1315	
-  1316		err = validate_remap_areas(src_vma, dst_vma);
-  1317		if (err)
-  1318			goto out;
-  1319	
-  1320		for (src_addr = src_start, dst_addr = dst_start;
-  1321		     src_addr < src_start + len;) {
-  1322			spinlock_t *ptl;
-  1323			pmd_t dst_pmdval;
-  1324			unsigned long step_size;
-  1325	
-  1326			BUG_ON(dst_addr >= dst_start + len);
-  1327			/*
-  1328			 * Below works because anonymous area would not have a
-  1329			 * transparent huge PUD. If file-backed support is added,
-  1330			 * that case would need to be handled here.
-  1331			 */
-  1332			src_pmd = mm_find_pmd(src_mm, src_addr);
-  1333			if (unlikely(!src_pmd)) {
-  1334				if (!(mode & UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES)) {
-  1335					err = -ENOENT;
-  1336					break;
-  1337				}
-  1338				src_pmd = mm_alloc_pmd(src_mm, src_addr);
-  1339				if (unlikely(!src_pmd)) {
-  1340					err = -ENOMEM;
-  1341					break;
-  1342				}
-  1343			}
-  1344			dst_pmd = mm_alloc_pmd(dst_mm, dst_addr);
-  1345			if (unlikely(!dst_pmd)) {
-  1346				err = -ENOMEM;
-  1347				break;
-  1348			}
-  1349	
-  1350			dst_pmdval = pmdp_get_lockless(dst_pmd);
-  1351			/*
-  1352			 * If the dst_pmd is mapped as THP don't override it and just
-  1353			 * be strict. If dst_pmd changes into TPH after this check, the
-  1354			 * remap_pages_huge_pmd() will detect the change and retry
-  1355			 * while remap_pages_pte() will detect the change and fail.
-  1356			 */
-  1357			if (unlikely(pmd_trans_huge(dst_pmdval))) {
-  1358				err = -EEXIST;
-  1359				break;
-  1360			}
-  1361	
-  1362			ptl = pmd_trans_huge_lock(src_pmd, src_vma);
-  1363			if (ptl) {
-  1364				if (pmd_devmap(*src_pmd)) {
-  1365					spin_unlock(ptl);
-  1366					err = -ENOENT;
-  1367					break;
-  1368				}
-  1369	
-  1370				/*
-  1371				 * Check if we can move the pmd without
-  1372				 * splitting it. First check the address
-  1373				 * alignment to be the same in src/dst.  These
-  1374				 * checks don't actually need the PT lock but
-  1375				 * it's good to do it here to optimize this
-  1376				 * block away at build time if
-  1377				 * CONFIG_TRANSPARENT_HUGEPAGE is not set.
-  1378				 */
-  1379				if ((src_addr & ~HPAGE_PMD_MASK) || (dst_addr & ~HPAGE_PMD_MASK) ||
-> 1380				    src_start + len - src_addr < HPAGE_PMD_SIZE || !pmd_none(dst_pmdval)) {
+In addition, I read the source code of KASAN, and it is not a
+difficult task to add the function of recording timestamps,
+which can be done by adding a member to struct kasan_track.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+If it is a good idea, I can do this part of the work.
+
+Welcome to discuss!
+
+Juntong Deng
