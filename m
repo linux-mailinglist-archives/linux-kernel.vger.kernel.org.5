@@ -2,45 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD7A7CC87C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 18:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F71C7CC87D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 18:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234287AbjJQQN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 12:13:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39778 "EHLO
+        id S234997AbjJQQNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 12:13:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343584AbjJQQNU (ORCPT
+        with ESMTP id S235106AbjJQQNi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 12:13:20 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5942C95
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:13:18 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BF8E212FC;
-        Tue, 17 Oct 2023 09:13:58 -0700 (PDT)
-Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7E3C13F762;
-        Tue, 17 Oct 2023 09:13:16 -0700 (PDT)
-From:   Ryan Roberts <ryan.roberts@arm.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH v2 2/2] mm: swap: Swap-out small-sized THP without splitting
-Date:   Tue, 17 Oct 2023 17:13:02 +0100
-Message-Id: <20231017161302.2518826-3-ryan.roberts@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231017161302.2518826-1-ryan.roberts@arm.com>
-References: <20231017161302.2518826-1-ryan.roberts@arm.com>
+        Tue, 17 Oct 2023 12:13:38 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 689CE101
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:13:35 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9b2f73e3af3so896299766b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:13:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697559213; x=1698164013; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ocr30lr2y0V9zsCKJhUGQr9AXtBKIbrFwvST7PQfksE=;
+        b=Pt2cHvsO/1oBbToYDW4aO8hTnkWqlL9aMHNH+VbnTwE9kuETn6hyWYRADEYs1c7WWV
+         finkwglffO9HawJIjA203SBMrplmA5C/4F0YMsiPmdNeq4qsjRI125tkudSmhxy1xKLR
+         J4OM//UiHpvq2Vpc2m/F0UQdptLOWHfn4AL0jzoLzcxUtOV+1LzjMYYgOjeXO6Q90A2f
+         5Lh3bj7qqSaseFYMNbPFueCtnWfHSWqba3BQv6so10MJZEthQXfLU3SpSBsLB9MOcNAs
+         HwReLJYDyg0Q3lSIKL1S4qCvCB1mV6+zTz98CEepCiVU+Pc0mzHQREQuZu8d3hx+/NXF
+         fQ2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697559213; x=1698164013;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ocr30lr2y0V9zsCKJhUGQr9AXtBKIbrFwvST7PQfksE=;
+        b=KrbkIubEq4Ui/EEyoC0yTnldFZ+6NLaSIHQ7IYxgAeMpFtJlm4R3AYcT9mrSIfiTQI
+         EbAWWyIpwPChMhFZpHrLDL7ryBdkXro1u7KXvJ9+UJCBgJPLL+ti1OEje5cjDYQojV4r
+         8XJMCPLkxJ4IRG2u1VfVHFx9gkPAcHQlf6p9zL0POgSSWi6ht/Xu1vswiK6XPLJBbXOK
+         TulI+TO+uAm2broEiEfMLP+/79CDGwm+4/KgLfQ8jjatFrXg7Csh2LVFM6FHVMqhNuR8
+         Y+69fCX+Mkk8v3Vi4c/gPOueAZbHd9MeVSs9VwZQI1AL1sJWbZbGUz17sxuiHeauyMtM
+         wnYA==
+X-Gm-Message-State: AOJu0YzbsQdlzNCtUrFxGwioF1aFAKCjDG+f/18WnRo3oefIvEOcPAEr
+        YMlAgZXDHc1xFBJLLE1JiXw=
+X-Google-Smtp-Source: AGHT+IGODw23Lmd2iRtY12QUdiToBzSvkpXPO70t94AvsEAsozYbIEwH6uMm9DaBYT4+8zL3FtnVQw==
+X-Received: by 2002:a17:907:6d0c:b0:9b8:e670:657b with SMTP id sa12-20020a1709076d0c00b009b8e670657bmr2044955ejc.64.1697559213113;
+        Tue, 17 Oct 2023 09:13:33 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id ox30-20020a170907101e00b009a1be9c29d7sm68306ejb.179.2023.10.17.09.13.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Oct 2023 09:13:32 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Tue, 17 Oct 2023 18:13:24 +0200
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Yury Norov <yury.norov@gmail.com>,
+        Song Liu <songliubraving@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] buildid: reduce header file dependencies for module
+Message-ID: <ZS6ypB/Jb+rOXqVK@krava>
+References: <20231017143408.2876181-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231017143408.2876181-1-arnd@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,263 +74,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The upcoming anonymous small-sized THP feature enables performance
-improvements by allocating large folios for anonymous memory. However
-I've observed that on an arm64 system running a parallel workload (e.g.
-kernel compilation) across many cores, under high memory pressure, the
-speed regresses. This is due to bottlenecking on the increased number of
-TLBIs added due to all the extra folio splitting.
+On Tue, Oct 17, 2023 at 04:33:58PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The vmlinux decompressor code intentionally has only a limited set of
+> included header files, but this started running into a build failure
+> because of the bitmap logic needing linux/errno.h:
+> 
+> In file included from include/linux/cpumask.h:12,
+>                  from include/linux/mm_types_task.h:14,
+>                  from include/linux/mm_types.h:5,
+>                  from include/linux/buildid.h:5,
+>                  from include/linux/module.h:14,
+>                  from arch/arm/boot/compressed/../../../../lib/lz4/lz4_decompress.c:39,
+>                  from arch/arm/boot/compressed/../../../../lib/decompress_unlz4.c:10,
+>                  from arch/arm/boot/compressed/decompress.c:60:
+> include/linux/bitmap.h: In function 'bitmap_allocate_region':
+> include/linux/bitmap.h:527:25: error: 'EBUSY' undeclared (first use in this function)
+>   527 |                 return -EBUSY;
+>       |                         ^~~~~
+> include/linux/bitmap.h:527:25: note: each undeclared identifier is reported only once for each function it appears in
+> include/linux/bitmap.h: In function 'bitmap_find_free_region':
+> include/linux/bitmap.h:554:17: error: 'ENOMEM' undeclared (first use in this function)
+>   554 |         return -ENOMEM;
+>       |                 ^~~~~~
+> 
+> This is easily avoided by changing linux/buildid.h to no longer depend on
+> linux/mm_types.h, a header that pulls in a huge number of indirect dependencies.
+> 
+> Fixes: b9c957f554442 ("bitmap: move bitmap_*_region() functions to bitmap.h")
+> Fixes: bd7525dacd7e2 ("bpf: Move stack_map_get_build_id into lib")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  include/linux/buildid.h | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/buildid.h b/include/linux/buildid.h
+> index 3b7a0ff4642fd..8a582d242f067 100644
+> --- a/include/linux/buildid.h
+> +++ b/include/linux/buildid.h
+> @@ -2,10 +2,11 @@
+>  #ifndef _LINUX_BUILDID_H
+>  #define _LINUX_BUILDID_H
+>  
+> -#include <linux/mm_types.h>
+> +#include <linux/types.h>
 
-Therefore, solve this regression by adding support for swapping out
-small-sized THP without needing to split the folio, just like is already
-done for PMD-sized THP. This change only applies when CONFIG_THP_SWAP is
-enabled, and when the swap backing store is a non-rotating block device.
-These are the same constraints as for the existing PMD-sized THP
-swap-out support.
+looks good, but I think we should now include <linux/mm_types.h> in lib/buildid.c ?
 
-Note that no attempt is made to swap-in THP here - this is still done
-page-by-page, like for PMD-sized THP.
+thanks,
+jirka
 
-The main change here is to improve the swap entry allocator so that it
-can allocate any power-of-2 number of contiguous entries between [4, (1
-<< PMD_ORDER)] (THP cannot support order-1 folios). This is done by
-allocating a cluster for each distinct order and allocating sequentially
-from it until the cluster is full. This ensures that we don't need to
-search the map and we get no fragmentation due to alignment padding for
-different orders in the cluster. If there is no current cluster for a
-given order, we attempt to allocate a free cluster from the list. If
-there are no free clusters, we fail the allocation and the caller falls
-back to splitting the folio and allocates individual entries (as per
-existing PMD-sized THP fallback).
-
-The per-order current clusters are maintained per-cpu using the existing
-percpu_cluster infrastructure. This is done to avoid interleving pages
-from different tasks, which would prevent IO being batched. This is
-already done for the order-0 allocations so we follow the same pattern.
-
-As far as I can tell, this should not cause any extra fragmentation
-concerns, given how similar it is to the existing PMD-sized THP
-allocation mechanism. There could be up to (PMD_ORDER-2) * nr_cpus
-clusters in concurrent use though, which in a pathalogical case (cluster
-set aside for every order for every cpu and only one huge entry
-allocated from it) would tie up ~12MiB of unused swap entries for these
-high orders (assuming PMD_ORDER=9). In practice, the number of orders in
-use will be small and the amount of swap space reserved is very small
-compared to a typical swap file.
-
-Note that PMD_ORDER is not compile-time constant on powerpc, so we have
-to allocate the large_next[] array at runtime.
-
-I've run the tests on Ampere Altra (arm64), set up with a 35G block ram
-device as the swap device and from inside a memcg limited to 40G memory.
-I've then run `usemem` from vm-scalability with 70 processes (each has
-its own core), each allocating and writing 1G of memory. I've repeated
-everything 5 times and taken the mean and stdev:
-
-Mean Performance Improvement vs 4K/baseline
-
-| alloc size |            baseline |       + this series |
-|            |  v6.6-rc4+anonfolio |                     |
-|:-----------|--------------------:|--------------------:|
-| 4K Page    |                0.0% |                1.1% |
-| 64K THP    |              -44.1% |                0.9% |
-| 2M THP     |               56.0% |               56.4% |
-
-So with this change, the regression for 64K swap performance goes away.
-Both 4K and 64K benhcmarks are now bottlenecked on TLBI performance from
-try_to_unmap_flush_dirty(), on arm64 at least. When using fewer cpus in
-the test, I see upto 2x performance of 64K THP swapping compared to 4K.
-
-Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
----
- include/linux/swap.h |  6 ++++
- mm/swapfile.c        | 74 +++++++++++++++++++++++++++++++++++---------
- mm/vmscan.c          | 10 +++---
- 3 files changed, 71 insertions(+), 19 deletions(-)
-
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index a073366a227c..35cbbe6509a9 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -268,6 +268,12 @@ struct swap_cluster_info {
- struct percpu_cluster {
- 	struct swap_cluster_info index; /* Current cluster index */
- 	unsigned int next; /* Likely next allocation offset */
-+	unsigned int large_next[];	/*
-+					 * next free offset within current
-+					 * allocation cluster for large folios,
-+					 * or UINT_MAX if no current cluster.
-+					 * Index is (order - 1).
-+					 */
- };
-
- struct swap_cluster_list {
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index b83ad77e04c0..625964e53c22 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -987,35 +987,70 @@ static int scan_swap_map_slots(struct swap_info_struct *si,
- 	return n_ret;
- }
-
--static int swap_alloc_cluster(struct swap_info_struct *si, swp_entry_t *slot)
-+static int swap_alloc_large(struct swap_info_struct *si, swp_entry_t *slot,
-+			    unsigned int nr_pages)
- {
-+	int order_idx;
- 	unsigned long idx;
- 	struct swap_cluster_info *ci;
-+	struct percpu_cluster *cluster;
- 	unsigned long offset;
-
- 	/*
- 	 * Should not even be attempting cluster allocations when huge
- 	 * page swap is disabled.  Warn and fail the allocation.
- 	 */
--	if (!IS_ENABLED(CONFIG_THP_SWAP)) {
-+	if (!IS_ENABLED(CONFIG_THP_SWAP) ||
-+	    nr_pages < 4 || nr_pages > SWAPFILE_CLUSTER ||
-+	    !is_power_of_2(nr_pages)) {
- 		VM_WARN_ON_ONCE(1);
- 		return 0;
- 	}
-
--	if (cluster_list_empty(&si->free_clusters))
-+	/*
-+	 * Not using clusters so unable to allocate large entries.
-+	 */
-+	if (!si->cluster_info)
- 		return 0;
-
--	idx = cluster_list_first(&si->free_clusters);
--	offset = idx * SWAPFILE_CLUSTER;
--	ci = lock_cluster(si, offset);
--	alloc_cluster(si, idx);
--	cluster_set_count(ci, SWAPFILE_CLUSTER);
-+	order_idx = ilog2(nr_pages) - 2;
-+	cluster = this_cpu_ptr(si->percpu_cluster);
-+	offset = cluster->large_next[order_idx];
-+
-+	if (offset == UINT_MAX) {
-+		if (cluster_list_empty(&si->free_clusters))
-+			return 0;
-+
-+		idx = cluster_list_first(&si->free_clusters);
-+		offset = idx * SWAPFILE_CLUSTER;
-
--	memset(si->swap_map + offset, SWAP_HAS_CACHE, SWAPFILE_CLUSTER);
-+		ci = lock_cluster(si, offset);
-+		alloc_cluster(si, idx);
-+		cluster_set_count(ci, SWAPFILE_CLUSTER);
-+
-+		/*
-+		 * If scan_swap_map_slots() can't find a free cluster, it will
-+		 * check si->swap_map directly. To make sure this standby
-+		 * cluster isn't taken by scan_swap_map_slots(), mark the swap
-+		 * entries bad (occupied). (same approach as discard).
-+		 */
-+		memset(si->swap_map + offset + nr_pages, SWAP_MAP_BAD,
-+			SWAPFILE_CLUSTER - nr_pages);
-+	} else {
-+		idx = offset / SWAPFILE_CLUSTER;
-+		ci = lock_cluster(si, offset);
-+	}
-+
-+	memset(si->swap_map + offset, SWAP_HAS_CACHE, nr_pages);
- 	unlock_cluster(ci);
--	swap_range_alloc(si, offset, SWAPFILE_CLUSTER);
-+	swap_range_alloc(si, offset, nr_pages);
- 	*slot = swp_entry(si->type, offset);
-
-+	offset += nr_pages;
-+	if (idx != offset / SWAPFILE_CLUSTER)
-+		offset = UINT_MAX;
-+	cluster->large_next[order_idx] = offset;
-+
- 	return 1;
- }
-
-@@ -1041,7 +1076,7 @@ int get_swap_pages(int n_goal, swp_entry_t swp_entries[], int entry_size)
- 	int node;
-
- 	/* Only single cluster request supported */
--	WARN_ON_ONCE(n_goal > 1 && size == SWAPFILE_CLUSTER);
-+	WARN_ON_ONCE(n_goal > 1 && size > 1);
-
- 	spin_lock(&swap_avail_lock);
-
-@@ -1078,14 +1113,14 @@ int get_swap_pages(int n_goal, swp_entry_t swp_entries[], int entry_size)
- 			spin_unlock(&si->lock);
- 			goto nextsi;
- 		}
--		if (size == SWAPFILE_CLUSTER) {
-+		if (size > 1) {
- 			if (si->flags & SWP_BLKDEV)
--				n_ret = swap_alloc_cluster(si, swp_entries);
-+				n_ret = swap_alloc_large(si, swp_entries, size);
- 		} else
- 			n_ret = scan_swap_map_slots(si, SWAP_HAS_CACHE,
- 						    n_goal, swp_entries);
- 		spin_unlock(&si->lock);
--		if (n_ret || size == SWAPFILE_CLUSTER)
-+		if (n_ret || size > 1)
- 			goto check_out;
- 		cond_resched();
-
-@@ -3046,6 +3081,8 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 	if (p->bdev && bdev_nonrot(p->bdev)) {
- 		int cpu;
- 		unsigned long ci, nr_cluster;
-+		int nr_order;
-+		int i;
-
- 		p->flags |= SWP_SOLIDSTATE;
- 		p->cluster_next_cpu = alloc_percpu(unsigned int);
-@@ -3073,7 +3110,12 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 		for (ci = 0; ci < nr_cluster; ci++)
- 			spin_lock_init(&((cluster_info + ci)->lock));
-
--		p->percpu_cluster = alloc_percpu(struct percpu_cluster);
-+		nr_order = IS_ENABLED(CONFIG_THP_SWAP) ? PMD_ORDER - 1 : 0;
-+		p->percpu_cluster = __alloc_percpu(
-+					struct_size(p->percpu_cluster,
-+						    large_next,
-+						    nr_order),
-+					__alignof__(struct percpu_cluster));
- 		if (!p->percpu_cluster) {
- 			error = -ENOMEM;
- 			goto bad_swap_unlock_inode;
-@@ -3082,6 +3124,8 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 			struct percpu_cluster *cluster;
- 			cluster = per_cpu_ptr(p->percpu_cluster, cpu);
- 			cluster_set_null(&cluster->index);
-+			for (i = 0; i < nr_order; i++)
-+				cluster->large_next[i] = UINT_MAX;
- 		}
- 	} else {
- 		atomic_inc(&nr_rotate_swap);
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index c16e2b1ea8ae..5984d2ae4547 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1212,11 +1212,13 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
- 					if (!can_split_folio(folio, NULL))
- 						goto activate_locked;
- 					/*
--					 * Split folios without a PMD map right
--					 * away. Chances are some or all of the
--					 * tail pages can be freed without IO.
-+					 * Split PMD-mappable folios without a
-+					 * PMD map right away. Chances are some
-+					 * or all of the tail pages can be freed
-+					 * without IO.
- 					 */
--					if (!folio_entire_mapcount(folio) &&
-+					if (folio_test_pmd_mappable(folio) &&
-+					    !folio_entire_mapcount(folio) &&
- 					    split_folio_to_list(folio,
- 								folio_list))
- 						goto activate_locked;
---
-2.25.1
-
+>  
+>  #define BUILD_ID_SIZE_MAX 20
+>  
+> +struct vm_area_struct;
+>  int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id,
+>  		   __u32 *size);
+>  int build_id_parse_buf(const void *buf, unsigned char *build_id, u32 buf_size);
+> -- 
+> 2.39.2
+> 
