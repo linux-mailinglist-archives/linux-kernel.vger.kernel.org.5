@@ -2,139 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C897CBF80
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A079F7CBFB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234867AbjJQJdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 05:33:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50826 "EHLO
+        id S1343564AbjJQJlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 05:41:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234806AbjJQJdM (ORCPT
+        with ESMTP id S235019AbjJQJky (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 05:33:12 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E472106;
-        Tue, 17 Oct 2023 02:31:42 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99de884ad25so883617666b.3;
-        Tue, 17 Oct 2023 02:31:42 -0700 (PDT)
+        Tue, 17 Oct 2023 05:40:54 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1114C2105
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 02:31:41 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2c50ec238aeso44264761fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 02:31:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697535100; x=1698139900; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xOqbqZUu//HMsDtmlOc6eburKLLaOWxAZ4a81kXORAc=;
-        b=ELddAi287gwjFMdIZNVdt6nhnCInRY0JljUlcPOy3GaxkwVqeXEhPYBG+nQax0lZPn
-         0+cKYmUfNS3p6CRr7LSx6BMPqjmH0Jyit06ATaQxwIbnMx/yFRlgJ5f3331dHM6p7/9n
-         xmEhMFCjzNdS4OqOo2wUYP2N+0cjzhS5nTJP5pSqyZdeI+uJazkb2GEQtIfOQSOeMZQg
-         aZT3qELP5Bja8FNikoHGPDYHFieMxU32pYDjiJWkV09+PRiVHAW2YRqjjJ0EZAE6gKLP
-         TgCZGuUgkF6bHJ89j+F30JU43b+b6aY9XbRFk4NagRwGY+yOF2oTvT3ovKFUks4ekUjS
-         FwWA==
+        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1697535100; x=1698139900; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fsrKPD/7qupxjLmT8Mi5PT6TYfrkzaLblWhZdBHfHxE=;
+        b=OmC2ctuyf4EpEhDr2vGENxl4NdGoytJEkDc/RFkkAW/bc+s6KDd8LBDne6867rE+FT
+         rvpoHYNpUF5xUK8RQcB5e8gM6RbKULDSm5d6Lb31qpI9eaY3HRoFu1/3oYgbk5r56rwR
+         kk7OA4LzeSLCqasHCHX9umQ1+OFKFS/KczcIm3X0dgVXMEEvcAwzjxkE1oE7I+vINVI5
+         8Rx0nra3c69UEvNqPkuTCYw40TN4FX9AWRJ6E6G4d1SDqzIwZkdFe5ejN6tvVdlUqZhU
+         V39MZmWw6FApHfbmc7bLJtO8N4JfaqXLnCIckD1Pk00NpAgAwsFO8GEgjGDvRrSuWa84
+         hF8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1697535100; x=1698139900;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xOqbqZUu//HMsDtmlOc6eburKLLaOWxAZ4a81kXORAc=;
-        b=kMfFL0BQGU84MTadbfbuonlI9oE5ZJ192bT7SqBp8qBSeKysO380izFKZanQhZujil
-         0WeLySd+9k3XStP4xzJLVYFM8HSKbyLn2Hs5yBzLdyDbLJkKKa3JJPAeiGqnS1KotnLQ
-         Vm+ieO3jHYvlxOQQSu8k+rPfCVbc/kCaoixRVjZkUQdDDnCBY91TUamQKepCmqZOZWaE
-         E7mbhskdljvDMmb+rg4B8dGYi8SofLp+KxaBH20exYt6Gdj8A9V8HshKybhXRdiMnLZ5
-         hw3tU6aZLjjW9xd07xs4vDR5nQo6XyxIZ0ofW5PpoA0h1dcekypSnkmw0G68U4ls6R3a
-         MmnA==
-X-Gm-Message-State: AOJu0YzgchU93iHRgHFEGhBJhaeW2A3lEJ2kje/Gmuxs3L/p6zXgjmYq
-        iNiRB0303OSDLlAy9MxdZIY=
-X-Google-Smtp-Source: AGHT+IFSxnnCjSS0wVEuM5XQp9Hu3jBfbqRIGISjtLp6IzreIJHTjvJEAgXF7CJBV5uG/P6yBdVj2A==
-X-Received: by 2002:a17:907:ea2:b0:9bf:4915:22ca with SMTP id ho34-20020a1709070ea200b009bf491522camr1303059ejc.45.1697535100453;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fsrKPD/7qupxjLmT8Mi5PT6TYfrkzaLblWhZdBHfHxE=;
+        b=Wi5YkE8VvjZUcScTgqccE6wRHTT47J9xqK3UOiwXPXIsc0JXf1Jb04MIqmmGDF6Jr+
+         i8eEBWz6FPowjK3YTiH49V7K6JLm6H5ukC/1R86S11xXlpziu3TjamJrk5xdMFmwvNOa
+         lMLWKrp4K+QJDqYiANcCUe7XcgPcv7otdJYTMdyasPLNlFbnw0b2UaxD1DF9dI3u8h/1
+         dXt+Ztld5bjkiry9K8L6xqQ9gVrrf36v59+Wk2F51ak14UtCV9GwF8qBzbAVeFMo2pDv
+         e/pAe+YMmlji05pO+KRBNY69M1xun5fkeIEIOjzQeHkZ9UrEg0Upv5EUfpJQaWX6R9OI
+         KJ6w==
+X-Gm-Message-State: AOJu0Yye9TAZIddV7rPQKQl6//zYwkZMDHv/PlGFTM+6gvjrc5fB8dgL
+        6XFS8ApSR6QZjYpki0LokcojOQ==
+X-Google-Smtp-Source: AGHT+IGzWf/WEPHpLeoowdpeEwKEiGcC14iNGScA2CK7eBKsOPCa8z2I7ioO6L1QMCV6+SIZy+/6yQ==
+X-Received: by 2002:a2e:3c08:0:b0:2c5:1900:47a4 with SMTP id j8-20020a2e3c08000000b002c5190047a4mr1310758lja.0.1697535100199;
         Tue, 17 Oct 2023 02:31:40 -0700 (PDT)
-Received: from skbuf ([188.26.57.160])
-        by smtp.gmail.com with ESMTPSA id i18-20020a1709061cd200b009b2b9af0784sm869947ejh.110.2023.10.17.02.31.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 02:31:40 -0700 (PDT)
-Date:   Tue, 17 Oct 2023 12:31:37 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Ante Knezic <ante.knezic@helmholz.de>, andrew@lunn.ch,
-        conor+dt@kernel.org, davem@davemloft.net,
-        devicetree@vger.kernel.org, edumazet@google.com,
-        f.fainelli@gmail.com, krzysztof.kozlowski+dt@linaro.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org, marex@denx.de,
-        netdev@vger.kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
-        woojung.huh@microchip.com
-Subject: Re: [PATCH net-next v2 2/2] dt-bindings: net: microchip,ksz:
- document microchip,rmii-clk-internal
-Message-ID: <20231017093137.qag7xcjuklekn3ef@skbuf>
-References: <20231016103708.6ka5vxfkdatrjvdk@skbuf>
- <20231017073548.15050-1-ante.knezic@helmholz.de>
- <20231017-fading-retrial-7faebda79ebb@spud>
+Received: from [192.168.0.106] (haunt.prize.volia.net. [93.72.109.136])
+        by smtp.gmail.com with ESMTPSA id t7-20020a1c7707000000b0040586360a36sm9267266wmi.17.2023.10.17.02.31.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Oct 2023 02:31:39 -0700 (PDT)
+Message-ID: <6f679d47-f099-7345-0d97-6e07bfd7ceec@blackwall.org>
+Date:   Tue, 17 Oct 2023 12:31:38 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231017-fading-retrial-7faebda79ebb@spud>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH net-next v5 3/5] net: bridge: Add netlink knobs for number
+ / max learned FDB entries
+Content-Language: en-US
+To:     Johannes Nixdorf <jnixdorf-oss@avm.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>, David Ahern <dsahern@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Roopa Prabhu <roopa@nvidia.com>, Shuah Khan <shuah@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20231016-fdb_limit-v5-0-32cddff87758@avm.de>
+ <20231016-fdb_limit-v5-3-32cddff87758@avm.de>
+From:   Nikolay Aleksandrov <razor@blackwall.org>
+In-Reply-To: <20231016-fdb_limit-v5-3-32cddff87758@avm.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 08:48:27AM +0100, Conor Dooley wrote:
-> On Tue, Oct 17, 2023 at 09:35:48AM +0200, Ante Knezic wrote:
-> > > > +  microchip,rmii-clk-internal:
-> > > > +    $ref: /schemas/types.yaml#/definitions/flag
-> > > > +    description:
-> > > > +      Set if the RMII reference clock is provided internally. Otherwise
-> > > > +      reference clock should be provided externally.
-> > > > +
-> > > > +if:
-> > > > +  not:
-> > > > +    properties:
-> > > > +      compatible:
-> > > > +        enum:
-> > > > +          - microchip,ksz8863
-> > > > +          - microchip,ksz8873
-> > > > +then:
-> > > > +  not:
-> > > > +    required:
-> > > > +      - microchip,rmii-clk-internal
+On 10/16/23 16:27, Johannes Nixdorf wrote:
+> The previous patch added accounting and a limit for the number of
+> dynamically learned FDB entries per bridge. However it did not provide
+> means to actually configure those bounds or read back the count. This
+> patch does that.
 > 
-> I think this bit can become the slightly simpler
-> 	then:
-> 	  properties:
-> 	     microchip,rmii-clk-internal: false
-
-This looks better. I don't understand how the original formulation worked
-("not: required:" when the property was never "required" in the first
-place - does that do anything?), but I understand how this one does.
-
-> > > I think that what you want to express is that microchip,rmii-clk-internal
-> > > is only defined for microchip,ksz8863 and microchip,ksz8873.
-> > > Can't you describe that as "if: properties: compatible: (...) then:
-> > > properties: microchip,rmii-clk-internal"?
-> > 
-> > If I understood you correctly you are refering to a solution like
-> > if:
-> >   properties:
-> >     compatible:
-> >       enum:
-> >         - microchip,ksz8863
-> >         - microchip,ksz8873
-> > then:
-> >   properties:
-> >     microchip,rmii-clk-internal:
-> >       $ref: /schemas/types.yaml#/definitions/flag
-> >       description:
-> >         Set if the RMII reference clock is provided internally. Otherwise
-> >         reference clock should be provided externally.
-> > 
-> > This was already suggested in v1, but was not a satisfactory solution
-> > according to Mr. Conor Dooley:
+> Two new netlink attributes are added for the accounting and limit of
+> dynamically learned FDB entries:
+>   - IFLA_BR_FDB_N_LEARNED (RO) for the number of entries accounted for
+>     a single bridge.
+>   - IFLA_BR_FDB_MAX_LEARNED (RW) for the configured limit of entries for
+>     the bridge.
 > 
-> Yeah, we prefer not to have the property definitions inside the
-> conditionals, but rather constrain or allow/disallow them there.
+> The new attributes are used like this:
 > 
-> Cheers,
-> Conor.
+>   # ip link add name br up type bridge fdb_max_learned 256
+>   # ip link add name v1 up master br type veth peer v2
+>   # ip link set up dev v2
+>   # mausezahn -a rand -c 1024 v2
+>   0.01 seconds (90877 packets per second
+>   # bridge fdb | grep -v permanent | wc -l
+>   256
+>   # ip -d link show dev br
+>   13: br: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 [...]
+>       [...] fdb_n_learned 256 fdb_max_learned 256
+> 
+> Signed-off-by: Johannes Nixdorf <jnixdorf-oss@avm.de>
+> ---
+>   include/uapi/linux/if_link.h |  2 ++
+>   net/bridge/br_netlink.c      | 15 ++++++++++++++-
+>   2 files changed, 16 insertions(+), 1 deletion(-)
+> 
 
-Ok, now you know I didn't open the discussion on v1 :)
+Acked-by: Nikolay Aleksandrov <razor@blackwall.org>
+
+
