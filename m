@@ -2,92 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA167CBC4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 09:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 952777CBC50
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 09:34:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234645AbjJQHdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 03:33:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57380 "EHLO
+        id S234635AbjJQHeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 03:34:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234608AbjJQHdk (ORCPT
+        with ESMTP id S232725AbjJQHd7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 03:33:40 -0400
-Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 862A195
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 00:33:37 -0700 (PDT)
-Received: from eig-obgw-5008a.ext.cloudfilter.net ([10.0.29.246])
-        by cmsmtp with ESMTPS
-        id sXAMq38n3CRPksea8qFfcJ; Tue, 17 Oct 2023 07:33:36 +0000
-Received: from box5620.bluehost.com ([162.241.219.59])
-        by cmsmtp with ESMTPS
-        id sea7qMHncCB5nsea8qTFym; Tue, 17 Oct 2023 07:33:36 +0000
-X-Authority-Analysis: v=2.4 cv=BquOfKb5 c=1 sm=1 tr=0 ts=652e38d0
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=Anv-yIGj03VSDu8hvJIA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-        Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=XS4UdtZkqIX7yvrBUPZ9vRr27DkHJZdWdIMYkybWEJQ=; b=GDtY30nmAKP2UBCFyymd4r8qSE
-        Q6LOlAQrXBSfZgt5gnoCCVOPmswh7oEeTlXtl5UoRTveb5jZGkyUlTGJni/L0fC9jpiqTorlJFtUu
-        bnaHecagG+JFBhBTXZifhsjfLtn/+PYGx+MTTtllsde4YW85tfUM5YoOZtJMORbMk2fkZwLP8YHHU
-        D31lo0GVIXdF4vdehPJy34yTqtmqgsQL7/OHTYZNrr9D7fNLH7fPphmwDMEjr+yagWtpipUTeIZBb
-        jlqqnH1OTZbDXHwj7q+yHYaP7gRaFXZG6HevHhJ4qaUOjakIL8RGZPRXoT+MyhanaHLat7N3Wz8cn
-        95pfy2iw==;
-Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:51582 helo=[10.0.1.47])
-        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96.1)
-        (envelope-from <re@w6rz.net>)
-        id 1qsea5-001YKH-2l;
-        Tue, 17 Oct 2023 01:33:33 -0600
-Subject: Re: [PATCH 6.5 000/190] 6.5.8-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-References: <20231016185002.371937173@linuxfoundation.org>
-In-Reply-To: <20231016185002.371937173@linuxfoundation.org>
-From:   Ron Economos <re@w6rz.net>
-Message-ID: <e0982f8f-1572-8ab5-8869-195030025230@w6rz.net>
-Date:   Tue, 17 Oct 2023 00:33:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 17 Oct 2023 03:33:59 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59ADE95
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 00:33:57 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-7a2a9e5451bso206064839f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 00:33:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1697528036; x=1698132836; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/ApyDiANstYTWyWFRnukDgHnJl3tUXr1U5Y0xyV6mrc=;
+        b=UP1qyIM/5i3QaiC2OvN6xita6W2B7BoicollJXeex3cyiJwRu4auCzJNBJTP35HVMq
+         810C24YlJqSXU+q3D0xOVlFdNwOmakHDyQzku38N6Jm/wCWWH1yXPHHVuoVl1nG+1pxT
+         0Ru4LpPobj/TLicrmYvXKHhPgcU4okw+FFBU4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697528036; x=1698132836;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/ApyDiANstYTWyWFRnukDgHnJl3tUXr1U5Y0xyV6mrc=;
+        b=g+ebRPWvI/xtEhKzXnZjXC9Kl+zAoXH49X01EKDjL2BD3Qcf6pLLar8gEGyEtKODRK
+         pP/Obp2H1s4K6d/FkQJoW7xgUWKucSZ2xY09X/ZJP4JAoPzFF6wml562GobnIrn8PshA
+         DH+/b8l3dmCPa4CpHHMANpSmVBnFjyRUEq5YephEZsu4EThepBmxXyd7Dj8o2bbmVnLI
+         s5n353h3RDbrothqoi2A+6c16sh4ZRwWO5nGW5GfsctPL1EGl426s92GcizTOtkmdyG8
+         bwh29iH7y9x4QL9IwuFx8+DqSXSPxzk45DX8pz+C9lBEuqVlGehML6MJW9Uw33Ltvxqp
+         8Wrw==
+X-Gm-Message-State: AOJu0YxE7Q0lYpqMU8k7Z0SlLag47B229sOiA0Sc7bQm2+46c9N6t6sn
+        //uQKuAwFzIZrVvP2TULG2qLOXfDFI2HL4fOIGRFYQ==
+X-Google-Smtp-Source: AGHT+IEAYKQ8Ud2dDCTFrFxk0sv/MWGDyTH5PUc94osy1+AGiIS89dM943n8PAfXr7KHqvHMo1X6R6r3/dT57OJulPY=
+X-Received: by 2002:a05:6602:1689:b0:790:f733:2f9e with SMTP id
+ s9-20020a056602168900b00790f7332f9emr1564343iow.13.1697528036747; Tue, 17 Oct
+ 2023 00:33:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 98.207.139.8
-X-Source-L: No
-X-Exim-ID: 1qsea5-001YKH-2l
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:51582
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 21
-X-Org:  HG=bhshared;ORG=bluehost;
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfDYPLIwj1Pndf8LZcMPr2AYrlBv6dv5XhK71QEv540kn6tI1JoFCaHl414m6FA3pOuNkehifBbJGd3PnMOzRH1l/mieTJwKEA6JzeNENu1IfBrMkoqH3
- fix8ubhKjlXXs7sGTDORomTtxT3alC77UJry0bqnLpHed0N7ALtA7i9rz+qYrNqZZhUL1ogvxqiBtzdS06tx+2K/a+z4plFbQ6E=
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230926-topic-a643-v1-0-7af6937ac0a3@linaro.org>
+ <20230926-topic-a643-v1-2-7af6937ac0a3@linaro.org> <43q6mui3lofa4rqh667o54b2qcbqn5fg34ss5o7y7k7uxbxsro@dxgovofsrvqx>
+In-Reply-To: <43q6mui3lofa4rqh667o54b2qcbqn5fg34ss5o7y7k7uxbxsro@dxgovofsrvqx>
+From:   Rob Clark <robdclark@chromium.org>
+Date:   Tue, 17 Oct 2023 00:33:45 -0700
+Message-ID: <CAJs_Fx7WkdhY31aP_buZP+b7ihOOmE8zBZFOLZ8z9uqcNmEhVw@mail.gmail.com>
+Subject: Re: [PATCH 2/7] drm/msm/adreno: Add ZAP firmware name to A635
+To:     Akhil P Oommen <quic_akhilpo@quicinc.com>
+Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        cros-qcom-dts-watchers@chromium.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Luca Weiss <luca.weiss@fairphone.com>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -95,26 +83,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16/23 12:48 PM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.5.8 release.
-> There are 190 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, Oct 16, 2023 at 1:12=E2=80=AFPM Akhil P Oommen <quic_akhilpo@quicin=
+c.com> wrote:
 >
-> Responses should be made by Wed, 18 Oct 2023 18:48:18 +0000.
-> Anything received after that time might be too late.
+> On Tue, Sep 26, 2023 at 08:24:37PM +0200, Konrad Dybcio wrote:
+> >
+> > Some (many?) devices with A635 expect a ZAP shader to be loaded.
+> >
+> > Set the file name to allow for that.
+> >
+> > Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> > ---
+> >  drivers/gpu/drm/msm/adreno/adreno_device.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/d=
+rm/msm/adreno/adreno_device.c
+> > index fa527935ffd4..16527fe8584d 100644
+> > --- a/drivers/gpu/drm/msm/adreno/adreno_device.c
+> > +++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
+> > @@ -454,6 +454,7 @@ static const struct adreno_info gpulist[] =3D {
+> >               .quirks =3D ADRENO_QUIRK_HAS_CACHED_COHERENT |
+> >                       ADRENO_QUIRK_HAS_HW_APRIV,
+> >               .init =3D a6xx_gpu_init,
+> > +             .zapfw =3D "a660_zap.mbn",
 >
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.8-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+> sc7280 doesn't have a TZ and so no zap shader support. Can we handle
+> this using "firmware-name" property in your top level platform dt? Zap
+> firmwares are signed with different keys for each OEMs. So there is
+> cross-compatibility anyway.
 
-Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+I think this ends up working out because the version of sc7280 that
+doesn't have TZ also doesn't have the associated mem-region/etc..  but
+maybe we should deprecate the zapfw field as in practice it isn't
+useful (ie. always overriden by firmware-name).
 
-Tested-by: Ron Economos <re@w6rz.net>
+Fwiw there are windows laptops with sc7180/sc7280 which do use zap fw.
 
+BR,
+-R
+
+>
+> -Ahil.
+>
+> >               .hwcg =3D a660_hwcg,
+> >               .address_space_size =3D SZ_16G,
+> >               .speedbins =3D ADRENO_SPEEDBINS(
+> >
+> > --
+> > 2.42.0
+> >
