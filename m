@@ -2,55 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF747CD026
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 01:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7567CD028
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 01:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344010AbjJQXBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 19:01:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49590 "EHLO
+        id S1344148AbjJQXBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 19:01:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231944AbjJQXBS (ORCPT
+        with ESMTP id S230056AbjJQXBU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 19:01:18 -0400
+        Tue, 17 Oct 2023 19:01:20 -0400
 Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CA9EF1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 16:01:17 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7be940fe1so97569567b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 16:01:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1D3EA4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 16:01:18 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7aa161b2fso95697437b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 16:01:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697583676; x=1698188476; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=4SDhb6UAPkxAoM2wRCL8OdhbgRXprRWmehTmuNxYxAM=;
-        b=eJLG246aJvZie2G0eDm8IHpEpxjgSDeu+rmjIzUWx3CMqtQORVPqE435BRk7G8Dnlf
-         ljoGx28OyVwALb1mFU4IrOLCgT3H15LI6rX+t6dCfzNB0ko/gIgpl5h5bS6xYixj9uY9
-         d+8tIHzoZVLv6rvVCXHcS2G2m2TIBDZ08t+/vLVc1D7ChS06jryHoJD/XIXtX/rHqxKR
-         Xc0SoUNaY/0sxklb3IAibBa2+hDXqKXWWtV28C3vJWsq4mUhM20+i6jz1DiZagRmpRMY
-         1Xg1lD1wS60fINBb4l2Pi1MwdrLq0ITy5b8RmQLP9rcd0RtRg/O3r1OZix5epVzKSpL+
-         gEKg==
+        d=google.com; s=20230601; t=1697583678; x=1698188478; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JOKJf+aFkcLqb+vIwiVLl6niteK0lFsixSF6GjMiBCE=;
+        b=XbDnJKqYZ7SVFDowWbx/bTwJP8RuE/wzj3iAFiVeoBVOsh0JnRFzaSQfNOZ8jXtDlW
+         7r5Lrz/e/5SOIsQltFMS8Cf1LnxGI/yKUnO5WVSmmKKbogzTzDW3M4mfNustcE9WieUz
+         Zs1+ApNFlYtQIQaF/nRIcuFHI6EE8zhhcBqYfskyuDllm/A4ShrcW72xxfBxj6KloEON
+         Kw7L08SWmzOXt66Mq2uE8eWP0+hB958idEciAfX9AnnJIAQFAqrwKjbSv1wivrQn+fnf
+         FDKD0HKty0u82itufiL19h6I/6sOdu75whJS17ENM8HpUUXlZoFfR6zzN7FYCiY0m2Fn
+         MsFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697583676; x=1698188476;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4SDhb6UAPkxAoM2wRCL8OdhbgRXprRWmehTmuNxYxAM=;
-        b=Elf0NNY9bANNOKw/XVy09Zsfod7ei9KXpW2kSi8ex/WUvOtRz2/1ozWPI3v9buELm4
-         vEbhxJ5+c8Z4zapKgjfO47zXP2SjMxXAGOhNOTat6UfbLh+p7nf4gf931yvkEo26/+Ue
-         Xj7Iz7nO301kK2qWra8ddkXC03uDuK4PCB9Z+4UDMLDw8tr/aluGuIzuVBRH4txjUm4t
-         8M3cJQ27Zwj7JzLvcoaazZYzZcyNXr9R4PYst2GJEUoasEJEBsWw4HmvwUMvQXEFH7ny
-         bVuQhdzWkI1JYEmrT8y+hveY6Pbv+o3m5M8PeIY3rtrw3M2Ra+gPkRvbf8/XUcnYsu4L
-         V6Fw==
-X-Gm-Message-State: AOJu0Yw4SltT+Xj3DN4FAKL9honWboAGak75kBCYjbrvweZBH5mRfwi1
-        PnMESClSbT6lw4BPY6OZFD3H1npLUIMtqLHXF4pN
-X-Google-Smtp-Source: AGHT+IElOQnXJ8mAPfK/Uft/QZDFbxpj4waEhQQCD8PjRlSuHnU6ChFz05siV7yB+6AvAe9n/NYUaIe3MGJeZK0G635R
+        d=1e100.net; s=20230601; t=1697583678; x=1698188478;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JOKJf+aFkcLqb+vIwiVLl6niteK0lFsixSF6GjMiBCE=;
+        b=rgmPe/enQvZOZQSV6Ghkbqr2dbsLLuPtsJz+UaQKgA1SIcolx299NOdxE1svGFDipR
+         8hXdyxI7G9g5AXTJxIhTYNemP3rMprIzok5DYHpsnzsoGMxyt8UjpMhsr7sjckFzuth7
+         YKPAzlvF0cic6DNVWExHXkkD9pqK4KmgB2wsuHzi23jv0XtfnQBQFPiXnvy0MPXY8ETN
+         HDAodkhbKzxFmyyOMj0RUowJXlgAi+yQWzao8wg71BgJka5tzWkGLuQ3cc5lWUgii5w5
+         UcA9z8LBQiRvNJLB9q3hWKyQIYxKTMM7pVBDnv6uKOTwdCWbty7ZjNISI+UGy4/CXF5d
+         X9jQ==
+X-Gm-Message-State: AOJu0YyvOWqc4MCUfZ3vkAeenjfJ3f45If1K8Ph759E2iaLB5KfGx+ms
+        B93k0RU2+55Zfunmj+HpiIbQUqS4pZ3sLAzazQ3A
+X-Google-Smtp-Source: AGHT+IGAw1OQNPEiWHUiooH43d5H85P1JTg3yn4uwHQG4ATI0Ap1hSLGIMAXTD6Z8FLwajxXq0T/etVDjId1uCwOy+fP
 X-Received: from axel.svl.corp.google.com ([2620:15c:2a3:200:cd04:35d6:a586:5c86])
- (user=axelrasmussen job=sendgmr) by 2002:a0d:ea43:0:b0:5a8:3f07:ddd6 with
- SMTP id t64-20020a0dea43000000b005a83f07ddd6mr81182ywe.6.1697583676211; Tue,
- 17 Oct 2023 16:01:16 -0700 (PDT)
-Date:   Tue, 17 Oct 2023 16:01:07 -0700
+ (user=axelrasmussen job=sendgmr) by 2002:a0d:d848:0:b0:59b:ec33:ec6d with
+ SMTP id a69-20020a0dd848000000b0059bec33ec6dmr90025ywe.5.1697583678192; Tue,
+ 17 Oct 2023 16:01:18 -0700 (PDT)
+Date:   Tue, 17 Oct 2023 16:01:08 -0700
+In-Reply-To: <20231017230110.3170850-1-axelrasmussen@google.com>
 Mime-Version: 1.0
+References: <20231017230110.3170850-1-axelrasmussen@google.com>
 X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-Message-ID: <20231017230110.3170850-1-axelrasmussen@google.com>
-Subject: [PATCH v3 0/3] userfaultfd man page updates
+Message-ID: <20231017230110.3170850-2-axelrasmussen@google.com>
+Subject: [PATCH v3 1/3] ioctl_userfaultfd.2: clarify the state of the
+ uffdio_api structure on error
 From:   Axel Rasmussen <axelrasmussen@google.com>
 To:     Alejandro Colomar <alx@kernel.org>,
         Mike Rapoport <rppt@kernel.org>, Peter Xu <peterx@redhat.com>
@@ -60,7 +63,7 @@ Cc:     linux-man@vger.kernel.org, linux-mm@kvack.org,
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,48 +71,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series includes only the remaining patches not applied from v1/v2,
-with review comments addressed. This series is based on the "contrib"
-branch [1].
+The old FIXME noted that the zeroing was done to differentiate the two
+EINVAL cases. It's possible something like this was true historically,
+but in current Linux we zero it in *both* EINVAL cases, so this is at
+least no longer true.
 
-Changelog:
+After reading the code, I can't determine any clear reason why we zero
+it in some cases but not in others. So, some simple advice we can give
+userspace is: if an error occurs, treat the contents of the structure as
+unspecified. Just re-initialize it before retrying UFFDIO_API again.
 
-v2->v3:
- - Rebased onto updated contrib branch.
- - In patch 2 (patch 4 in v2), reordered error codes in alphabetical order,
-   and fixed extra spacing in the EINVAL error description.
- - In patch 3, fix mistakenly copy-pasted "struct uffdio_continue" (should
-   have been "struct uffdio_poison"), and alphabetically order
-   UFFDIO_CONTINUE error codes.
+Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
+Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+---
+ man2/ioctl_userfaultfd.2 | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-v1->v2:
- - In patch 1 (patch 5 in v1), change "after" to "since" for consistency
-   and to be clear that we mean 4.11+ (inclusive).
- - In patch 2 (patch 7 in v1), reorder error codes alphabetically (EINVAL
-   then EPERM).
- - In patch 3 (patch 8 in v1), resolve conflicts with earlier review
-   comments.
-
-Original cover letter:
-
-Various updates for userfaultfd man pages. To summarize the changes:
-
-- Correctly / fully describe the two-step feature support handshake
-  process.
-- Describe new UFFDIO_POISON ioctl.
-- Other small improvements (missing ioctls, error codes, etc).
-
-[1]: https://www.alejandro-colomar.es/src/alx/linux/man-pages/man-pages.git/log/?h=contrib
-
-Axel Rasmussen (3):
-  ioctl_userfaultfd.2: clarify the state of the uffdio_api structure on
-    error
-  ioctl_userfaultfd.2: fix / update UFFDIO_REGISTER error code list
-  ioctl_userfaultfd.2: document new UFFDIO_POISON ioctl
-
- man2/ioctl_userfaultfd.2 | 173 ++++++++++++++++++++++++++++++++-------
- 1 file changed, 145 insertions(+), 28 deletions(-)
-
---
+diff --git a/man2/ioctl_userfaultfd.2 b/man2/ioctl_userfaultfd.2
+index e68085262..82aee667c 100644
+--- a/man2/ioctl_userfaultfd.2
++++ b/man2/ioctl_userfaultfd.2
+@@ -272,6 +272,14 @@ operation returns 0 on success.
+ On error, \-1 is returned and
+ .I errno
+ is set to indicate the error.
++If an error occurs,
++the kernel may zero the provided
++.I uffdio_api
++structure.
++The caller should treat its contents as unspecified,
++and reinitialize it before re-attempting another
++.B UFFDIO_API
++call.
+ Possible errors include:
+ .TP
+ .B EFAULT
+@@ -305,14 +313,6 @@ feature was enabled,
+ but the calling process doesn't have the
+ .B CAP_SYS_PTRACE
+ capability.
+-.\" FIXME In the above error case, the returned 'uffdio_api' structure is
+-.\" zeroed out. Why is this done? This should be explained in the manual page.
+-.\"
+-.\" Mike Rapoport:
+-.\"     In my understanding the uffdio_api
+-.\"     structure is zeroed to allow the caller
+-.\"     to distinguish the reasons for -EINVAL.
+-.\"
+ .SS UFFDIO_REGISTER
+ (Since Linux 4.3.)
+ Register a memory address range with the userfaultfd object.
+-- 
 2.42.0.655.g421f12c284-goog
 
