@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBDC87CBF18
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A05D7CBF1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234845AbjJQJ1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 05:27:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36344 "EHLO
+        id S1343580AbjJQJ1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 05:27:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343509AbjJQJ1B (ORCPT
+        with ESMTP id S1343503AbjJQJ1E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 05:27:01 -0400
+        Tue, 17 Oct 2023 05:27:04 -0400
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A21C6F5;
-        Tue, 17 Oct 2023 02:26:58 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39H8qVm5006691;
-        Tue, 17 Oct 2023 09:26:57 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B92E8;
+        Tue, 17 Oct 2023 02:27:01 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39H8HNw3014863;
+        Tue, 17 Oct 2023 09:27:00 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=tqqvxSf2BwZDIBBLod89GS6mURAg1BSoG2iU12URJk0=;
- b=Fr7h2LadsDvcJkRO+jUpnPilo1/eipQ2tUiUpUeGtd9xwlwXlz4RjtOKF6xyhuJGlP0t
- TnOJl5QoRQMNRJFyVh5L4bFWaR5RDhTOeE97ZkksHjfOvreG0q9PaqKaGf0TTe0Cwpbv
- +gZDkU49JtQIlVkU7NeKC+kjb38RUG9O7V5CyEgK0pGrmPYh50DcOoKvtDNqkTibeP1l
- PyADpQJeg8Be6BPU0XxW2sfjwZy9Ld3a03AnqiJFbrlZ8vIMsN+uqRS6i3x/RY3oYz7u
- GJL0BYkgjp+D8zl37dvbQov+kzsMNWon6R2u+5Q0x8TvCFhu7QYrriDILCeeTti4U8a0 +g== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tsnej8akn-1
+ bh=l6/9+G/UtuYARY2q8jXc8UIxNO/ujrI0oO94sHht4rU=;
+ b=KMqj4XNv+VgIibhoXCtZjMNSGnwM/hXlR1sJPRHBd2xqlj95GpdTx8V7A12EVuBoQS7y
+ zGt+NspEI0St+aezOfuxLE4w+bfxxgl76FkKjeZHJqy5slr3Num6YyDualCGT5tTzujN
+ lSeIm1d9cpKRa0XqNoV9HbqKFA93HJaNJwCXky2xJdMiyi1XtdtxAlEnQ/fQxc+pkMU5
+ 9WTBFi2Hud1D2CoVfnEqPY+qqzwZ3+Uflf+3flBjWAZ2Svo3fdFsoam0cpe+FaW7YpBK
+ 6xooVSy6FeDq+w71NYAYNrIFUtWU0q367MnO9WsP4Fv7vApug8zgXclC8yBjk2h9HOw6 bQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tsaf0sqgm-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Oct 2023 09:26:56 +0000
+        Tue, 17 Oct 2023 09:26:59 +0000
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39H9QtJW018079
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39H9QwY5001000
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Oct 2023 09:26:55 GMT
+        Tue, 17 Oct 2023 09:26:58 GMT
 Received: from ekangupt-linux.qualcomm.com (10.80.80.8) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Tue, 17 Oct 2023 02:26:52 -0700
+ 15.2.1118.39; Tue, 17 Oct 2023 02:26:55 -0700
 From:   Ekansh Gupta <quic_ekangupt@quicinc.com>
 To:     <srinivas.kandagatla@linaro.org>, <linux-arm-msm@vger.kernel.org>
 CC:     Ekansh Gupta <quic_ekangupt@quicinc.com>,
         <ekangupt@qti.qualcomm.com>, <gregkh@linuxfoundation.org>,
         <linux-kernel@vger.kernel.org>, <fastrpc.upstream@qti.qualcomm.com>
-Subject: [PATCH v4 3/5] misc: fastrpc: Capture kernel and DSP performance counters
-Date:   Tue, 17 Oct 2023 14:56:37 +0530
-Message-ID: <1697534799-5124-4-git-send-email-quic_ekangupt@quicinc.com>
+Subject: [PATCH v4 4/5] misc: fastrpc: Add support to save and restore interrupted
+Date:   Tue, 17 Oct 2023 14:56:38 +0530
+Message-ID: <1697534799-5124-5-git-send-email-quic_ekangupt@quicinc.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1697534799-5124-1-git-send-email-quic_ekangupt@quicinc.com>
 References: <1697534799-5124-1-git-send-email-quic_ekangupt@quicinc.com>
@@ -57,16 +57,16 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01b.na.qualcomm.com (10.47.209.197)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: J4pQrFMzXUkkO3QPzbLLlYa_KHWF7cjA
-X-Proofpoint-ORIG-GUID: J4pQrFMzXUkkO3QPzbLLlYa_KHWF7cjA
+X-Proofpoint-GUID: lPcH7xcuzLMczeYlOk6jRE0tOSnYX-oo
+X-Proofpoint-ORIG-GUID: lPcH7xcuzLMczeYlOk6jRE0tOSnYX-oo
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-10-16_13,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
- bulkscore=0 impostorscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0
- priorityscore=1501 phishscore=0 malwarescore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310170078
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ priorityscore=1501 bulkscore=0 adultscore=0 mlxlogscore=999 malwarescore=0
+ mlxscore=0 impostorscore=0 spamscore=0 lowpriorityscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310170078
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -76,409 +76,278 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support to capture kernel performance counters for different
-kernel level operations. These counters collects the information
-for remote call and copies the information to a buffer shared
-by user.
+For any remote call, driver sends a message to DSP using RPMSG
+framework. After message is sent, there is a wait on a completion
+object at driver which is completed when DSP response is received.
 
-Collection of DSP performance counters is also added as part of
-this change. DSP updates the performance information in the
-metadata which is then copied to a buffer passed by the user.
+There is a possibility that a signal is received while waiting
+causing the wait function to return -ERESTARTSYS. In this case
+the context should be saved and it should get restored for the
+next invocation for the thread.
+
+Adding changes to support saving and restoring of interrupted
+fastrpc contexts.
 
 Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
+Change-Id: Ia101acf7c1bf6018635536082bf7ea009093c948
 ---
 Changes in v2:
-  - Fixed compile time warnings
-Changes in v3:
-  - Squashed commits to get proper patch series
+  - Fixed missing definition
+  - Fixes compile time issue
 
- drivers/misc/fastrpc.c      | 140 +++++++++++++++++++++++++++++++++++++++++---
- include/uapi/misc/fastrpc.h |  14 +++++
- 2 files changed, 146 insertions(+), 8 deletions(-)
+ drivers/misc/fastrpc.c | 99 ++++++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 83 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-index 825ff91..b9822c1 100644
+index b9822c1..9a481ac 100644
 --- a/drivers/misc/fastrpc.c
 +++ b/drivers/misc/fastrpc.c
-@@ -19,6 +19,7 @@
- #include <linux/rpmsg.h>
- #include <linux/scatterlist.h>
- #include <linux/slab.h>
-+#include <linux/delay.h>
- #include <linux/firmware/qcom/qcom_scm.h>
- #include <uapi/misc/fastrpc.h>
- #include <linux/of_reserved_mem.h>
-@@ -33,6 +34,8 @@
- #define FASTRPC_ALIGN		128
- #define FASTRPC_MAX_FDLIST	16
- #define FASTRPC_MAX_CRCLIST	64
-+#define FASTRPC_KERNEL_PERF_LIST (PERF_KEY_MAX)
-+#define FASTRPC_DSP_PERF_LIST 12
- #define FASTRPC_PHYS(p)	((p) & 0xffffffff)
- #define FASTRPC_CTX_MAX (256)
- #define FASTRPC_INIT_HANDLE	1
-@@ -105,6 +108,27 @@
+@@ -333,6 +333,7 @@ struct fastrpc_user {
+ 	struct list_head user;
+ 	struct list_head maps;
+ 	struct list_head pending;
++	struct list_head interrupted;
+ 	struct list_head mmaps;
  
- #define miscdev_to_fdevice(d) container_of(d, struct fastrpc_device, miscdev)
- 
-+#define PERF_END ((void)0)
-+
-+#define PERF(enb, cnt, ff) \
-+	{\
-+		struct timespec64 startT = {0};\
-+		uint64_t *counter = cnt;\
-+		if (enb && counter) {\
-+			ktime_get_real_ts64(&startT);\
-+		} \
-+		ff ;\
-+		if (enb && counter) {\
-+			*counter += getnstimediff(&startT);\
-+		} \
-+	}
-+
-+#define GET_COUNTER(perf_ptr, offset)  \
-+	(perf_ptr != NULL ?\
-+		(((offset >= 0) && (offset < PERF_KEY_MAX)) ?\
-+			(uint64_t *)(perf_ptr + offset)\
-+				: (uint64_t *)NULL) : (uint64_t *)NULL)
-+
- static const char *domains[FASTRPC_DEV_MAX] = { "adsp", "mdsp",
- 						"sdsp", "cdsp"};
- struct fastrpc_phy_page {
-@@ -228,6 +252,19 @@ struct fastrpc_map {
- 	struct kref refcount;
- };
- 
-+struct fastrpc_perf {
-+	u64 count;
-+	u64 flush;
-+	u64 map;
-+	u64 copy;
-+	u64 link;
-+	u64 getargs;
-+	u64 putargs;
-+	u64 invargs;
-+	u64 invoke;
-+	u64 tid;
-+};
-+
- struct fastrpc_invoke_ctx {
- 	int nscalars;
- 	int nbufs;
-@@ -236,6 +273,8 @@ struct fastrpc_invoke_ctx {
- 	int tgid;
- 	u32 sc;
- 	u32 *crc;
-+	u64 *perf_kernel;
-+	u64 *perf_dsp;
- 	u64 ctxid;
- 	u64 msg_sz;
- 	struct kref refcount;
-@@ -250,6 +289,7 @@ struct fastrpc_invoke_ctx {
- 	struct fastrpc_invoke_args *args;
- 	struct fastrpc_buf_overlap *olaps;
  	struct fastrpc_channel_ctx *cctx;
-+	struct fastrpc_perf *perf;
- };
- 
- struct fastrpc_session_ctx {
-@@ -299,6 +339,7 @@ struct fastrpc_user {
- 	struct fastrpc_session_ctx *sctx;
- 	struct fastrpc_buf *init_mem;
- 
-+	u32 profile;
- 	int tgid;
- 	int pd;
- 	bool is_secure_dev;
-@@ -308,6 +349,17 @@ struct fastrpc_user {
- 	struct mutex mutex;
- };
- 
-+static inline int64_t getnstimediff(struct timespec64 *start)
-+{
-+	int64_t ns;
-+	struct timespec64 ts, b;
-+
-+	ktime_get_real_ts64(&ts);
-+	b = timespec64_sub(ts, *start);
-+	ns = timespec64_to_ns(&b);
-+	return ns;
-+}
-+
- static void fastrpc_free_map(struct kref *ref)
- {
- 	struct fastrpc_map *map;
-@@ -493,6 +545,9 @@ static void fastrpc_context_free(struct kref *ref)
- 	if (ctx->buf)
- 		fastrpc_buf_free(ctx->buf);
- 
-+	if (ctx->fl->profile)
-+		kfree(ctx->perf);
-+
- 	spin_lock_irqsave(&cctx->lock, flags);
- 	idr_remove(&cctx->ctx_idr, ctx->ctxid >> 4);
- 	spin_unlock_irqrestore(&cctx->lock, flags);
-@@ -612,6 +667,14 @@ static struct fastrpc_invoke_ctx *fastrpc_context_alloc(
- 	fastrpc_channel_ctx_get(cctx);
- 
- 	ctx->crc = (u32 *)(uintptr_t)invoke->crc;
-+	ctx->perf_dsp = (u64 *)(uintptr_t)invoke->perf_dsp;
-+	ctx->perf_kernel = (u64 *)(uintptr_t)invoke->perf_kernel;
-+	if (ctx->fl->profile) {
-+		ctx->perf = kzalloc(sizeof(*(ctx->perf)), GFP_KERNEL);
-+		if (!ctx->perf)
-+			return ERR_PTR(-ENOMEM);
-+		ctx->perf->tid = ctx->fl->tgid;
-+	}
- 	ctx->sc = sc;
- 	ctx->retval = -1;
- 	ctx->pid = current->pid;
-@@ -875,7 +938,8 @@ static int fastrpc_get_meta_size(struct fastrpc_invoke_ctx *ctx)
- 		sizeof(struct fastrpc_invoke_buf) +
- 		sizeof(struct fastrpc_phy_page)) * ctx->nscalars +
- 		sizeof(u64) * FASTRPC_MAX_FDLIST +
--		sizeof(u32) * FASTRPC_MAX_CRCLIST;
-+		sizeof(u32) * FASTRPC_MAX_CRCLIST +
-+		sizeof(u32) + sizeof(u64) * FASTRPC_DSP_PERF_LIST;
- 
- 	return size;
+@@ -712,6 +713,40 @@ static struct fastrpc_invoke_ctx *fastrpc_context_alloc(
+ 	return ERR_PTR(ret);
  }
-@@ -942,16 +1006,22 @@ static int fastrpc_get_args(u32 kernel, struct fastrpc_invoke_ctx *ctx)
- 	int inbufs, i, oix, err = 0;
- 	u64 len, rlen, pkt_size;
- 	u64 pg_start, pg_end;
-+	u64 *perf_counter = NULL;
- 	uintptr_t args;
- 	int metalen;
  
-+	if (ctx->fl->profile)
-+		perf_counter = (u64 *)ctx->perf + PERF_COUNT;
++static struct fastrpc_invoke_ctx *fastrpc_context_restore_interrupted(
++			struct fastrpc_user *fl, struct fastrpc_invoke *inv)
++{
++	struct fastrpc_invoke_ctx *ctx = NULL, *ictx = NULL, *n;
 +
- 	inbufs = REMOTE_SCALARS_INBUFS(ctx->sc);
- 	metalen = fastrpc_get_meta_size(ctx);
- 	pkt_size = fastrpc_get_payload_size(ctx, metalen);
- 
-+	PERF(ctx->fl->profile, GET_COUNTER(perf_counter, PERF_MAP),
- 	err = fastrpc_create_maps(ctx);
- 	if (err)
- 		return err;
-+	PERF_END);
- 
- 	ctx->msg_sz = pkt_size;
- 
-@@ -983,6 +1053,7 @@ static int fastrpc_get_args(u32 kernel, struct fastrpc_invoke_ctx *ctx)
- 		if (ctx->maps[i]) {
- 			struct vm_area_struct *vma = NULL;
- 
-+			PERF(ctx->fl->profile, GET_COUNTER(perf_counter, PERF_MAP),
- 			rpra[i].buf.pv = (u64) ctx->args[i].ptr;
- 			pages[i].addr = ctx->maps[i]->phys;
- 
-@@ -997,9 +1068,9 @@ static int fastrpc_get_args(u32 kernel, struct fastrpc_invoke_ctx *ctx)
- 			pg_end = ((ctx->args[i].ptr + len - 1) & PAGE_MASK) >>
- 				  PAGE_SHIFT;
- 			pages[i].size = (pg_end - pg_start + 1) * PAGE_SIZE;
--
-+			PERF_END);
- 		} else {
--
-+			PERF(ctx->fl->profile, GET_COUNTER(perf_counter, PERF_COPY),
- 			if (ctx->olaps[oix].offset == 0) {
- 				rlen -= ALIGN(args, FASTRPC_ALIGN) - args;
- 				args = ALIGN(args, FASTRPC_ALIGN);
-@@ -1021,12 +1092,14 @@ static int fastrpc_get_args(u32 kernel, struct fastrpc_invoke_ctx *ctx)
- 			pages[i].size = (pg_end - pg_start + 1) * PAGE_SIZE;
- 			args = args + mlen;
- 			rlen -= mlen;
-+			PERF_END);
- 		}
- 
- 		if (i < inbufs && !ctx->maps[i]) {
- 			void *dst = (void *)(uintptr_t)rpra[i].buf.pv;
- 			void *src = (void *)(uintptr_t)ctx->args[i].ptr;
- 
-+			PERF(ctx->fl->profile, GET_COUNTER(perf_counter, PERF_COPY),
- 			if (!kernel) {
- 				if (copy_from_user(dst, (void __user *)src,
- 						   len)) {
-@@ -1036,6 +1109,7 @@ static int fastrpc_get_args(u32 kernel, struct fastrpc_invoke_ctx *ctx)
- 			} else {
- 				memcpy(dst, src, len);
- 			}
-+			PERF_END);
- 		}
- 	}
- 
-@@ -1066,9 +1140,9 @@ static int fastrpc_put_args(struct fastrpc_invoke_ctx *ctx,
- 	struct fastrpc_map *mmap = NULL;
- 	struct fastrpc_invoke_buf *list;
- 	struct fastrpc_phy_page *pages;
--	u64 *fdlist;
--	u32 *crclist;
--	int i, inbufs, outbufs, handles;
-+	u64 *fdlist, *perf_dsp_list;
-+	u32 *crclist, *poll;
-+	int i, inbufs, outbufs, handles, perferr;
- 
- 	inbufs = REMOTE_SCALARS_INBUFS(ctx->sc);
- 	outbufs = REMOTE_SCALARS_OUTBUFS(ctx->sc);
-@@ -1077,6 +1151,8 @@ static int fastrpc_put_args(struct fastrpc_invoke_ctx *ctx,
- 	pages = fastrpc_phy_page_start(list, ctx->nscalars);
- 	fdlist = (u64 *)(pages + inbufs + outbufs + handles);
- 	crclist = (u32 *)(fdlist + FASTRPC_MAX_FDLIST);
-+	poll = (u32 *)(crclist + FASTRPC_MAX_CRCLIST);
-+	perf_dsp_list = (u64 *)(poll + 1);
- 
- 	for (i = inbufs; i < ctx->nbufs; ++i) {
- 		if (!ctx->maps[i]) {
-@@ -1101,8 +1177,16 @@ static int fastrpc_put_args(struct fastrpc_invoke_ctx *ctx,
- 	}
- 
- 	if (ctx->crc && crclist && rpra) {
--		if (copy_to_user((void __user *)ctx->crc, crclist, FASTRPC_MAX_CRCLIST * sizeof(u32)))
-+		if (copy_to_user((void __user *)ctx->crc, crclist,
-+					FASTRPC_MAX_CRCLIST * sizeof(u32))) {
- 			return -EFAULT;
++	spin_lock(&fl->lock);
++	list_for_each_entry_safe(ictx, n, &fl->interrupted, node) {
++		if (ictx->pid == current->pid) {
++			if (inv->sc != ictx->sc || ictx->fl != fl) {
++				dev_err(ictx->fl->sctx->dev,
++					"interrupted sc (0x%x) or fl (%pK) does not match with invoke sc (0x%x) or fl (%pK)\n",
++					ictx->sc, ictx->fl, inv->sc, fl);
++				spin_unlock(&fl->lock);
++				return ERR_PTR(-EINVAL);
++			}
++			ctx = ictx;
++			list_del(&ctx->node);
++			list_add_tail(&ctx->node, &fl->pending);
++			break;
 +		}
 +	}
-+	if (ctx->perf_dsp && perf_dsp_list) {
-+		perferr = copy_to_user((void __user *)ctx->perf_dsp,
-+				perf_dsp_list, FASTRPC_DSP_PERF_LIST * sizeof(u64));
-+		if (perferr)
-+			dev_info(fl->sctx->dev, "Warning: failed to copy perf data %d\n", perferr);
- 	}
- 	return 0;
- }
-@@ -1139,6 +1223,20 @@ static int fastrpc_invoke_send(struct fastrpc_session_ctx *sctx,
- 
- }
- 
-+static void fastrpc_update_invoke_count(u32 handle, u64 *perf_counter,
-+					struct timespec64 *invoket)
-+{
-+	u64 *invcount, *count;
-+
-+	invcount = GET_COUNTER(perf_counter, PERF_INVOKE);
-+	if (invcount)
-+		*invcount += getnstimediff(invoket);
-+
-+	count = GET_COUNTER(perf_counter, PERF_COUNT);
-+	if (count)
-+		*count += 1;
++	spin_unlock(&fl->lock);
++	return ctx;
 +}
 +
- static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
- 				   struct fastrpc_enhanced_invoke *invoke)
- {
-@@ -1146,7 +1244,12 @@ static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
- 	struct fastrpc_buf *buf, *b;
- 	struct fastrpc_invoke *inv = &invoke->inv;
- 	u32 handle, sc;
--	int err = 0;
-+	u64 *perf_counter = NULL;
-+	int err = 0, perferr = 0;
-+	struct timespec64 invoket = {0};
++static void fastrpc_context_save_interrupted(
++			struct fastrpc_invoke_ctx *ctx)
++{
++	spin_lock(&ctx->fl->lock);
++	list_del(&ctx->node);
++	list_add_tail(&ctx->node, &ctx->fl->interrupted);
++	spin_unlock(&ctx->fl->lock);
++}
 +
-+	if (fl->profile)
-+		ktime_get_real_ts64(&invoket);
+ static struct sg_table *
+ fastrpc_map_dma_buf(struct dma_buf_attachment *attachment,
+ 		    enum dma_data_direction dir)
+@@ -1264,6 +1299,14 @@ static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
+ 		return -EPERM;
+ 	}
  
- 	if (!fl->sctx)
- 		return -EINVAL;
-@@ -1165,18 +1268,24 @@ static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
++	if (!kernel) {
++		ctx = fastrpc_context_restore_interrupted(fl, inv);
++		if (IS_ERR(ctx))
++			return PTR_ERR(ctx);
++		if (ctx)
++			goto wait;
++	}
++
+ 	ctx = fastrpc_context_alloc(fl, kernel, sc, invoke);
  	if (IS_ERR(ctx))
  		return PTR_ERR(ctx);
- 
-+	if (fl->profile)
-+		perf_counter = (u64 *)ctx->perf + PERF_COUNT;
-+	PERF(fl->profile, GET_COUNTER(perf_counter, PERF_GETARGS),
- 	if (ctx->nscalars) {
- 		err = fastrpc_get_args(kernel, ctx);
- 		if (err)
- 			goto bail;
- 	}
-+	PERF_END);
- 
- 	/* make sure that all CPU memory writes are seen by DSP */
- 	dma_wmb();
-+	PERF(fl->profile, GET_COUNTER(perf_counter, PERF_LINK),
- 	/* Send invoke buffer to remote dsp */
- 	err = fastrpc_invoke_send(fl->sctx, ctx, kernel, handle);
- 	if (err)
+@@ -1287,6 +1330,7 @@ static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
  		goto bail;
-+	PERF_END);
+ 	PERF_END);
  
++wait:
  	if (kernel) {
  		if (!wait_for_completion_timeout(&ctx->work, 10 * HZ))
-@@ -1196,10 +1305,12 @@ static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
- 	if (ctx->nscalars) {
- 		/* make sure that all memory writes by DSP are seen by CPU */
- 		dma_rmb();
-+		PERF(fl->profile, GET_COUNTER(perf_counter, PERF_PUTARGS),
- 		/* populate all the output buffers with results */
- 		err = fastrpc_put_args(ctx, kernel);
- 		if (err)
- 			goto bail;
-+		PERF_END);
+ 			err = -ETIMEDOUT;
+@@ -1323,6 +1367,9 @@ static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
  	}
  
- bail:
-@@ -1216,6 +1327,15 @@ static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
+ 	if (err == -ERESTARTSYS) {
++		if (ctx)
++			fastrpc_context_save_interrupted(ctx);
++
+ 		list_for_each_entry_safe(buf, b, &fl->mmaps, node) {
  			list_del(&buf->node);
  			list_add_tail(&buf->node, &fl->cctx->invoke_interrupted_mmaps);
- 		}
-+	} else if (ctx) {
-+		if (fl->profile && !err)
-+			fastrpc_update_invoke_count(handle, perf_counter, &invoket);
-+		if (fl->profile && ctx->perf && ctx->perf_kernel) {
-+			perferr = copy_to_user((void __user *)ctx->perf_kernel,
-+						ctx->perf, FASTRPC_KERNEL_PERF_LIST * sizeof(u64));
-+			if (perferr)
-+				dev_info(fl->sctx->dev, "Warning: failed to copy perf data %d\n", perferr);
-+		}
+@@ -1444,7 +1491,7 @@ static int fastrpc_init_create_static_process(struct fastrpc_user *fl,
+ 
+ 	ioctl.inv.handle = FASTRPC_INIT_HANDLE;
+ 	ioctl.inv.sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_CREATE_STATIC, 3, 0);
+-	ioctl.inv.args = (__u64)args;
++	ioctl.inv.args = (u64)args;
+ 
+ 	err = fastrpc_internal_invoke(fl, true, &ioctl);
+ 	if (err)
+@@ -1577,7 +1624,7 @@ static int fastrpc_init_create_process(struct fastrpc_user *fl,
+ 	ioctl.inv.sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_CREATE, 4, 0);
+ 	if (init.attrs)
+ 		ioctl.inv.sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_CREATE_ATTR, 4, 0);
+-	ioctl.inv.args = (__u64)args;
++	ioctl.inv.args = (u64)args;
+ 
+ 	err = fastrpc_internal_invoke(fl, true, &ioctl);
+ 	if (err)
+@@ -1628,6 +1675,25 @@ static void fastrpc_session_free(struct fastrpc_channel_ctx *cctx,
+ 	spin_unlock_irqrestore(&cctx->lock, flags);
+ }
+ 
++static void fastrpc_context_list_free(struct fastrpc_user *fl)
++{
++	struct fastrpc_invoke_ctx *ctx, *n;
++
++	list_for_each_entry_safe(ctx, n, &fl->interrupted, node) {
++		spin_lock(&fl->lock);
++		list_del(&ctx->node);
++		spin_unlock(&fl->lock);
++		fastrpc_context_put(ctx);
++	}
++
++	list_for_each_entry_safe(ctx, n, &fl->pending, node) {
++		spin_lock(&fl->lock);
++		list_del(&ctx->node);
++		spin_unlock(&fl->lock);
++		fastrpc_context_put(ctx);
++	}
++}
++
+ static int fastrpc_release_current_dsp_process(struct fastrpc_user *fl)
+ {
+ 	struct fastrpc_invoke_args args[1];
+@@ -1641,7 +1707,7 @@ static int fastrpc_release_current_dsp_process(struct fastrpc_user *fl)
+ 
+ 	ioctl.inv.handle = FASTRPC_INIT_HANDLE;
+ 	ioctl.inv.sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_RELEASE, 1, 0);
+-	ioctl.inv.args = (__u64)args;
++	ioctl.inv.args = (u64)args;
+ 
+ 	return fastrpc_internal_invoke(fl, true, &ioctl);
+ }
+@@ -1650,7 +1716,6 @@ static int fastrpc_device_release(struct inode *inode, struct file *file)
+ {
+ 	struct fastrpc_user *fl = (struct fastrpc_user *)file->private_data;
+ 	struct fastrpc_channel_ctx *cctx = fl->cctx;
+-	struct fastrpc_invoke_ctx *ctx, *n;
+ 	struct fastrpc_map *map, *m;
+ 	struct fastrpc_buf *buf, *b;
+ 	unsigned long flags;
+@@ -1664,10 +1729,7 @@ static int fastrpc_device_release(struct inode *inode, struct file *file)
+ 	if (fl->init_mem)
+ 		fastrpc_buf_free(fl->init_mem);
+ 
+-	list_for_each_entry_safe(ctx, n, &fl->pending, node) {
+-		list_del(&ctx->node);
+-		fastrpc_context_put(ctx);
+-	}
++	fastrpc_context_list_free(fl);
+ 
+ 	list_for_each_entry_safe(map, m, &fl->maps, node)
+ 		fastrpc_map_put(map);
+@@ -1708,6 +1770,7 @@ static int fastrpc_device_open(struct inode *inode, struct file *filp)
+ 	spin_lock_init(&fl->lock);
+ 	mutex_init(&fl->mutex);
+ 	INIT_LIST_HEAD(&fl->pending);
++	INIT_LIST_HEAD(&fl->interrupted);
+ 	INIT_LIST_HEAD(&fl->maps);
+ 	INIT_LIST_HEAD(&fl->mmaps);
+ 	INIT_LIST_HEAD(&fl->user);
+@@ -1789,7 +1852,7 @@ static int fastrpc_init_attach(struct fastrpc_user *fl, int pd)
+ 
+ 	ioctl.inv.handle = FASTRPC_INIT_HANDLE;
+ 	ioctl.inv.sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_ATTACH, 1, 0);
+-	ioctl.inv.args = (__u64)args;
++	ioctl.inv.args = (u64)args;
+ 
+ 	return fastrpc_internal_invoke(fl, true, &ioctl);
+ }
+@@ -1820,7 +1883,7 @@ static int fastrpc_invoke(struct fastrpc_user *fl, char __user *argp)
  	}
  
- 	if (err)
-@@ -1714,6 +1834,7 @@ static int fastrpc_multimode_invoke(struct fastrpc_user *fl, char __user *argp)
- 	struct fastrpc_invoke_args *args = NULL;
- 	struct fastrpc_ioctl_multimode_invoke invoke;
- 	u32 nscalars;
-+	u64 *perf_kernel;
- 	int err, i;
+ 	ioctl.inv = inv;
+-	ioctl.inv.args = (__u64)args;
++	ioctl.inv.args = (u64)args;
  
- 	if (copy_from_user(&invoke, argp, sizeof(invoke)))
-@@ -1748,6 +1869,9 @@ static int fastrpc_multimode_invoke(struct fastrpc_user *fl, char __user *argp)
- 				return -EFAULT;
- 			}
- 		}
-+		perf_kernel = (u64 *)(uintptr_t)einv.perf_kernel;
-+		if (perf_kernel)
-+			fl->profile = true;
- 		einv.inv.args = (__u64)args;
+ 	err = fastrpc_internal_invoke(fl, false, &ioctl);
+ 	kfree(args);
+@@ -1872,7 +1935,7 @@ static int fastrpc_multimode_invoke(struct fastrpc_user *fl, char __user *argp)
+ 		perf_kernel = (u64 *)(uintptr_t)einv.perf_kernel;
+ 		if (perf_kernel)
+ 			fl->profile = true;
+-		einv.inv.args = (__u64)args;
++		einv.inv.args = (u64)args;
  		err = fastrpc_internal_invoke(fl, false, &einv);
  		kfree(args);
-diff --git a/include/uapi/misc/fastrpc.h b/include/uapi/misc/fastrpc.h
-index 88194c5..3a2ba59 100644
---- a/include/uapi/misc/fastrpc.h
-+++ b/include/uapi/misc/fastrpc.h
-@@ -166,4 +166,18 @@ struct fastrpc_ioctl_capability {
- 	__u32 reserved[4];
- };
+ 		break;
+@@ -1902,7 +1965,7 @@ static int fastrpc_get_info_from_dsp(struct fastrpc_user *fl, uint32_t *dsp_attr
  
-+enum fastrpc_perfkeys {
-+	PERF_COUNT = 0,
-+	PERF_RESERVED1 = 1,
-+	PERF_MAP = 2,
-+	PERF_COPY = 3,
-+	PERF_LINK = 4,
-+	PERF_GETARGS = 5,
-+	PERF_PUTARGS = 6,
-+	PERF_RESERVED2 = 7,
-+	PERF_INVOKE = 8,
-+	PERF_RESERVED3 = 9,
-+	PERF_KEY_MAX = 10,
-+};
-+
- #endif /* __QCOM_FASTRPC_H__ */
+ 	ioctl.inv.handle = FASTRPC_DSP_UTILITIES_HANDLE;
+ 	ioctl.inv.sc = FASTRPC_SCALARS(0, 1, 1);
+-	ioctl.inv.args = (__u64)args;
++	ioctl.inv.args = (u64)args;
+ 
+ 	return fastrpc_internal_invoke(fl, true, &ioctl);
+ }
+@@ -2005,7 +2068,7 @@ static int fastrpc_req_munmap_impl(struct fastrpc_user *fl, struct fastrpc_buf *
+ 
+ 	ioctl.inv.handle = FASTRPC_INIT_HANDLE;
+ 	ioctl.inv.sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_MUNMAP, 1, 0);
+-	ioctl.inv.args = (__u64)args;
++	ioctl.inv.args = (u64)args;
+ 
+ 	err = fastrpc_internal_invoke(fl, true, &ioctl);
+ 	if (!err) {
+@@ -2103,7 +2166,7 @@ static int fastrpc_req_mmap(struct fastrpc_user *fl, char __user *argp)
+ 
+ 	ioctl.inv.handle = FASTRPC_INIT_HANDLE;
+ 	ioctl.inv.sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_MMAP, 2, 1);
+-	ioctl.inv.args = (__u64)args;
++	ioctl.inv.args = (u64)args;
+ 
+ 	err = fastrpc_internal_invoke(fl, true, &ioctl);
+ 	if (err) {
+@@ -2184,7 +2247,7 @@ static int fastrpc_req_mem_unmap_impl(struct fastrpc_user *fl, struct fastrpc_me
+ 
+ 	ioctl.inv.handle = FASTRPC_INIT_HANDLE;
+ 	ioctl.inv.sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_MEM_UNMAP, 1, 0);
+-	ioctl.inv.args = (__u64)args;
++	ioctl.inv.args = (u64)args;
+ 
+ 	err = fastrpc_internal_invoke(fl, true, &ioctl);
+ 	fastrpc_map_put(map);
+@@ -2253,7 +2316,7 @@ static int fastrpc_req_mem_map(struct fastrpc_user *fl, char __user *argp)
+ 
+ 	ioctl.inv.handle = FASTRPC_INIT_HANDLE;
+ 	ioctl.inv.sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_MEM_MAP, 3, 1);
+-	ioctl.inv.args = (__u64)args;
++	ioctl.inv.args = (u64)args;
+ 
+ 	err = fastrpc_internal_invoke(fl, true, &ioctl);
+ 	if (err) {
+@@ -2574,6 +2637,10 @@ static void fastrpc_notify_users(struct fastrpc_user *user)
+ 		ctx->retval = -EPIPE;
+ 		complete(&ctx->work);
+ 	}
++	list_for_each_entry(ctx, &user->interrupted, node) {
++		ctx->retval = -EPIPE;
++		complete(&ctx->work);
++	}
+ 	spin_unlock(&user->lock);
+ }
+ 
 -- 
 2.7.4
 
