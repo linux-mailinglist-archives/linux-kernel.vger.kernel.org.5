@@ -2,91 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 973B57CCA51
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 20:04:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8BD7CCA54
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 20:05:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343908AbjJQSEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 14:04:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46198 "EHLO
+        id S1344059AbjJQSFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 14:05:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233170AbjJQSEv (ORCPT
+        with ESMTP id S234944AbjJQSFB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 14:04:51 -0400
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3512993;
-        Tue, 17 Oct 2023 11:04:49 -0700 (PDT)
-Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6c63117a659so3633288a34.0;
-        Tue, 17 Oct 2023 11:04:49 -0700 (PDT)
+        Tue, 17 Oct 2023 14:05:01 -0400
+Received: from mail-oi1-f206.google.com (mail-oi1-f206.google.com [209.85.167.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA30E8
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:04:59 -0700 (PDT)
+Received: by mail-oi1-f206.google.com with SMTP id 5614622812f47-3b2b1ac753fso6696965b6e.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:04:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697565888; x=1698170688;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EQMZZNtwxKp6PHrZvBpFDkR2RCeELkDJh7t0tRAV+Uk=;
-        b=kfL9BHl1EzWyPNBXPsIcguFKKkMYU87ArwX2jjS4aglNvvJ4pYsFEGQCYcQszL8KU3
-         c9MOFVCQAlrQ0bh1Jj8v06p4YOxpcT3G6TXCpRUgPHkkT7u8X9oLelEWF8dAs/TU5ltD
-         IWqmlgiXG1kgiNWWsNOpILKnBYu6Yb1pWeUEI4XxicUSUWCqTqN9b7BI7rmCbnyoXiVs
-         3v52qLhQqhMMnvbUr1XFPWWliLhLacs+sWX/QV5a/s6rggNI03lkQ7RX6i8IrdXsry8y
-         DCYcpuzhm3ibhZXdhpu2MjP6nFBKcKZ0RkR2buCoY38uc8lqMLxVt8NkKlU1cZAKlYZB
-         Ralg==
-X-Gm-Message-State: AOJu0YwTOzjKFqRt/1oDr6hBrwYgwAHlLt9FhzlLt4m6OV2jL+MMbLId
-        n9GaqihJ7IxcvkOmdmO0Vg==
-X-Google-Smtp-Source: AGHT+IEIu8IPZQgV4rX5TrvEag75rqOcwwjFqP0xMOKHnwKuurJMGdtfsuM15VDdYSV6q3G4M5GkGQ==
-X-Received: by 2002:a9d:65c8:0:b0:6b9:c49f:1af7 with SMTP id z8-20020a9d65c8000000b006b9c49f1af7mr3029577oth.20.1697565888470;
-        Tue, 17 Oct 2023 11:04:48 -0700 (PDT)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id b7-20020a056830104700b006c6311b15f6sm338959otp.38.2023.10.17.11.04.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 11:04:47 -0700 (PDT)
-Received: (nullmailer pid 2258965 invoked by uid 1000);
-        Tue, 17 Oct 2023 18:04:46 -0000
-Date:   Tue, 17 Oct 2023 13:04:46 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Flavio Suligoi <f.suligoi@asem.it>
-Cc:     dri-devel@lists.freedesktop.org, Lee Jones <lee@kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Helge Deller <deller@gmx.de>,
-        Conor Dooley <conor+dt@kernel.org>, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jingoo Han <jingoohan1@gmail.com>
-Subject: Re: [PATCH v1] dt-bindings: backlight: add brightness-levels related
- common properties
-Message-ID: <169756588486.2258419.14570431419592615885.robh@kernel.org>
-References: <20231016150554.27144-1-f.suligoi@asem.it>
+        d=1e100.net; s=20230601; t=1697565899; x=1698170699;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wBc6OrybcBoGw+HylW8Uo0tWXXs4E0MyVL0SByuv/FE=;
+        b=GJzg7URvd8Oo7eHkRJdHSjwtlUZi2jYKaViXH5us+FLzLbB3TFESqoznWsQo3nED1N
+         bBBF5y4vXI0aNMCTkKU4AnXJLOEidiWN3cemDnEcNc9fiIHji4KpDz459MwQpyx147Fc
+         wnbgxqVwGq1y3ZhUASNXNuOeefTVZy2oJwRKKemT+HIT3BwcCMbKFVUpUl77QZjZVwWs
+         6B8XXIG/PFgo60/TMPMtvxoyE3Sch7rlQqTnuMsThQtkuyWlX/wsleD67AyrmIQdGHSA
+         Z1SAhDA7q6oB7u/lHBBt1NLiWTCqB0sIvwlWAQLFxddxtColrsN8rdgLa341yxehsl9s
+         asqA==
+X-Gm-Message-State: AOJu0Yy5OiFWWoBH1Cxe6OZ9cPMsP/m1yrnTz0WOvxU0Owjtn3qvOwr9
+        QcIRd5VR6clhgY6p35e2g42vryhd0q86DC4Kj0leocAsPUOh
+X-Google-Smtp-Source: AGHT+IFDLXwS2Vt5zHggEQpkomEJqnHYyAN3Csq2jsoFAXyYPB2sV9AY3Aa42Q6OvUiS/pNC1LY6b3Hq2Bk0utkT1ufHiC9io0x/
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231016150554.27144-1-f.suligoi@asem.it>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:3602:b0:3ae:61f:335e with SMTP id
+ ct2-20020a056808360200b003ae061f335emr1021489oib.5.1697565898921; Tue, 17 Oct
+ 2023 11:04:58 -0700 (PDT)
+Date:   Tue, 17 Oct 2023 11:04:58 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000635bfa0607ed5cdc@google.com>
+Subject: [syzbot] [netfilter?] WARNING in __nf_unregister_net_hook (6)
+From:   syzbot <syzbot+de4025c006ec68ac56fc@syzkaller.appspotmail.com>
+To:     bpf@vger.kernel.org, coreteam@netfilter.org, davem@davemloft.net,
+        edumazet@google.com, fw@strlen.de, kadlec@netfilter.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pabeni@redhat.com, pablo@netfilter.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
-On Mon, 16 Oct 2023 17:05:54 +0200, Flavio Suligoi wrote:
-> Both files pwm-backlight.yaml and led-backlight.yaml contain properties
-> in common with each other, regarding the brightness levels:
-> 
-> - brightness-levels
-> - default-brightness-level
-> 
-> These properties can then be moved to backlight/common.yaml.
-> 
-> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
-> ---
->  .../bindings/leds/backlight/common.yaml       | 17 ++++++++++++++++
->  .../leds/backlight/led-backlight.yaml         | 19 ++++--------------
->  .../leds/backlight/pwm-backlight.yaml         | 20 ++++---------------
->  3 files changed, 25 insertions(+), 31 deletions(-)
-> 
+syzbot found the following issue on:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+HEAD commit:    6465e260f487 Linux 6.6-rc3
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1376e3bc680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8d7d7928f78936aa
+dashboard link: https://syzkaller.appspot.com/bug?extid=de4025c006ec68ac56fc
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17f218da680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=149ff8c6680000
 
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/563852357aa6/disk-6465e260.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/df22793fe953/vmlinux-6465e260.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/84c2aad43ae3/bzImage-6465e260.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+de4025c006ec68ac56fc@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+hook not found, pf 2 num 1
+WARNING: CPU: 1 PID: 5062 at net/netfilter/core.c:517 __nf_unregister_net_hook+0x1de/0x670 net/netfilter/core.c:517
+Modules linked in:
+CPU: 1 PID: 5062 Comm: syz-executor417 Not tainted 6.6.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
+RIP: 0010:__nf_unregister_net_hook+0x1de/0x670 net/netfilter/core.c:517
+Code: 14 02 4c 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 7a 04 00 00 8b 53 1c 48 c7 c7 c0 d4 a8 8b 8b 74 24 04 e8 b2 ce dc f8 <0f> 0b e9 ec 00 00 00 e8 46 a5 16 f9 48 89 e8 48 c1 e0 04 49 8d 7c
+RSP: 0018:ffffc9000355f2b8 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: ffff8880218dde00 RCX: 0000000000000000
+RDX: ffff888019aee000 RSI: ffffffff814cf016 RDI: 0000000000000001
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000001 R12: ffffffff92611690
+R13: ffff888016fff020 R14: ffff888016fff000 R15: ffff8880218dde1c
+FS:  00007f76ca1526c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f76ca1e86b8 CR3: 0000000020292000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ nf_unregister_net_hook+0xd5/0x110 net/netfilter/core.c:539
+ __nf_tables_unregister_hook net/netfilter/nf_tables_api.c:361 [inline]
+ __nf_tables_unregister_hook+0x1a0/0x220 net/netfilter/nf_tables_api.c:340
+ nf_tables_unregister_hook net/netfilter/nf_tables_api.c:368 [inline]
+ nf_tables_commit+0x410f/0x59f0 net/netfilter/nf_tables_api.c:9992
+ nfnetlink_rcv_batch+0xf36/0x2500 net/netfilter/nfnetlink.c:569
+ nfnetlink_rcv_skb_batch net/netfilter/nfnetlink.c:639 [inline]
+ nfnetlink_rcv+0x3bf/0x430 net/netfilter/nfnetlink.c:657
+ netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
+ netlink_unicast+0x536/0x810 net/netlink/af_netlink.c:1368
+ netlink_sendmsg+0x93c/0xe40 net/netlink/af_netlink.c:1910
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ sock_sendmsg+0xd9/0x180 net/socket.c:753
+ ____sys_sendmsg+0x6ac/0x940 net/socket.c:2541
+ ___sys_sendmsg+0x135/0x1d0 net/socket.c:2595
+ __sys_sendmsg+0x117/0x1e0 net/socket.c:2624
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f76ca192059
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 51 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f76ca152208 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007f76ca21c3e8 RCX: 00007f76ca192059
+RDX: 0000000000000000 RSI: 000000002000c2c0 RDI: 0000000000000004
+RBP: 00007f76ca21c3e0 R08: 0000000000000003 R09: 0000000000000000
+R10: 0000000000000a00 R11: 0000000000000246 R12: 00007f76ca1e917c
+R13: 0000000000000001 R14: 0000000000000008 R15: 0200000000000000
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
