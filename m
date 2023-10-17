@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA5A7CCF7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 23:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 675757CCF3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 23:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344203AbjJQVoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 17:44:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35390 "EHLO
+        id S1344431AbjJQV0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 17:26:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231444AbjJQVoe (ORCPT
+        with ESMTP id S1344301AbjJQVZQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 17:44:34 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46118A4
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 14:44:33 -0700 (PDT)
+        Tue, 17 Oct 2023 17:25:16 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B148C1BC3
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 14:24:09 -0700 (PDT)
 Message-ID: <20231017211723.745013003@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697579071;
+        s=2020; t=1697577848;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          references:references; bh=DYpFBBpPPIpr7s0xN04Gww/sMhU6DEDh0WPjEvKx6sw=;
-        b=GTuGGl8T6uAoKLQODApzM6ueBjYD8box7Eqvui0HW4qHR45ic45/zwIyhd/ysJ4YO81zkx
-        agFGhyBIVf2rCLo7OblqsY1KTjKLCclrCvezZVy3nPQ74jmeWpUAC4Hxd6T5u4zp9fjSeH
-        0SxbbZ4gp3+zWrWGqrUnp7/75DRX+sDfYlhm9yKCWbtMND2VZ9Gy1uPxe1Wy7YVRMhFLAc
-        HN9yeXW5QlV6CIFwUU+pJBRUm6L8Wki8llUmCGXznJqzkbsC4HGvTRJRrUt2inKy3CgvDD
-        fxmzQVkTKfg5ye+slzZ/yCLsuGoF4WqQR8fuv3vT07EH410G/sOqnrrQuChXgA==
+        b=srBlugJBUc1azwPbSq0/W6kuIr9PmndhxDRKDved5N7e33L8Mkfo56yfaJsLaYAFNmGzRw
+        Z4MSzXz1p8J4OLE7Lds19+dd4Zy53ilyRZDPbCATPbGReC1nzPkmU+VbSl11pSNcUHClFL
+        8bFiPnCbPhpC+GK19bu+zC4I8BHXxGsupc/PwZnX5DICAWzjAwpsM7ULAB1wqh+ErNld9Z
+        z1+Obib6eeDs0voDMXgMm+G42fOuvHZfGjzKztQ5FGYe/oP5Xc9imDu9l19ix6LFJt7N+E
+        j+FUqeXaWILB5Vio5QmkM1ZsDZBKFuLP/jaMtLeRM+7G/BS0+1ZzdP57ajn1iQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697579071;
+        s=2020e; t=1697577848;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          references:references; bh=DYpFBBpPPIpr7s0xN04Gww/sMhU6DEDh0WPjEvKx6sw=;
-        b=nsifg7oTkoiCV1sA83RGBmKpbnvGha4k7rlKVdBqS8UgpS5MbO9AusIJHo2U4JenAVIulW
-        oSPkE3NgXHO0ifCQ==
+        b=Nno5QhnDLK1ZJvtSrcNZvcc45uCBvhR1yQThYT9pSyNyGR9fgHURI+Y5otZ3/RNPPFJtdt
+        oJKtjNK8TArNHZBA==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Borislav Petkov <bp@alien8.de>
@@ -43,8 +43,7 @@ Content-Type: text/plain; charset=UTF-8
 Date:   Tue, 17 Oct 2023 23:24:07 +0200 (CEST)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
