@@ -2,148 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E7F27CCCF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 22:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69EC97CCCD3
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 22:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344412AbjJQUCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 16:02:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35808 "EHLO
+        id S232300AbjJQUBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 16:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344000AbjJQUBx (ORCPT
+        with ESMTP id S229459AbjJQUBp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 16:01:53 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF31FD;
-        Tue, 17 Oct 2023 13:01:46 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39HGNrrq010263;
-        Tue, 17 Oct 2023 20:01:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=CL3FVM1qBZnRnbh0US8YjFD3CDy8ri2rtoQ7u0QpjGc=;
- b=Li9ytFauUDGnZBdoNEuvwt4IeYr5g21y8ahoFi4SqosqMGzDNHrXdN7v23l3DTXB1A/L
- PRo1eQdwFmcPgZVrUAMV50ryiFWWvrjpGC0npIpoK4zU+0AU/C+hZEuTj/vL1zyD6OjW
- cyf42tlJ7RZitAHBzMEwhBM53+wN4l+c/sxvKyX29d5RheR/XY5Dkfq5d580RIhhTLUB
- GP8NOX8fN9nQMCiQYg6HDMNgox8IKftiyX3DDb8GKPy+1QistkaIxeGAFL5JkHMsIFEv
- aVV7SeR/9B71SlWJROHhKOyK/KnDnAv/pa1gnXHVR+SQ+0NuxAsxV2DBWfa2V5nO5wgF bw== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tsb7xjxtq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Oct 2023 20:01:30 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39HK1T62010322
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Oct 2023 20:01:29 GMT
-Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Tue, 17 Oct 2023 13:01:29 -0700
-From:   Wesley Cheng <quic_wcheng@quicinc.com>
-To:     <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <srinivas.kandagatla@linaro.org>, <bgoswami@quicinc.com>,
-        <Thinh.Nguyen@synopsys.com>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v9 33/34] ALSA: usb-audio: Allow for rediscovery of connected USB SND devices
-Date:   Tue, 17 Oct 2023 13:01:08 -0700
-Message-ID: <20231017200109.11407-34-quic_wcheng@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231017200109.11407-1-quic_wcheng@quicinc.com>
-References: <20231017200109.11407-1-quic_wcheng@quicinc.com>
+        Tue, 17 Oct 2023 16:01:45 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC69DC4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 13:01:43 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A7A1C43395;
+        Tue, 17 Oct 2023 20:01:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697572903;
+        bh=RZbkItK1Di4f+MlX4v1ZpvBgrpQvo9FmlwmViYyTx5Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RM9PeEN1qS1zEnfQr9XB88kMFdDl5b9H0sywRT5963OsfbkQNlSSKZIBvP015deLN
+         XpbJJm3R1BLri8ZoD3GzKvRAT4WeU9UfLJ8e0iJljt9XdlX3FevkA/qo0EvKs26ZrB
+         V8QD5CTau1xh1LHaj2Alvirca3h3bfwQi2js5rWFLpj/UnR3YKyy2zuPQACSpWe5U2
+         w5wTOCGKYvP8vcPyiG9Iw2tVHccDKZHBMP4o6zLnuuLg1TEICH+6eKzm2whjhlfFhD
+         uGGGvpVZwtFUn40TKUxwDByFHrcLgOOjbZMkr7PyDcu2uEdXT9mfGXIiK7jrywZv7V
+         d4QtHjp8Ih8MQ==
+Date:   Tue, 17 Oct 2023 22:01:38 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nic_swsd@realtek.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Marco Elver <elver@google.com>
+Subject: Re: [PATCH v2 3/3] r8169: fix the KCSAN reported data-race in rtl_tx
+ while reading TxDescArray[entry].opts1
+Message-ID: <20231017200138.GB1940501@kernel.org>
+References: <20231016214753.175097-1-mirsad.todorovac@alu.unizg.hr>
+ <20231016214753.175097-3-mirsad.todorovac@alu.unizg.hr>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: LCCT4hvCHVlrkIYKANs65OmVC9gniLMy
-X-Proofpoint-GUID: LCCT4hvCHVlrkIYKANs65OmVC9gniLMy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-17_03,2023-10-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- mlxlogscore=999 suspectscore=0 lowpriorityscore=0 spamscore=0 bulkscore=0
- mlxscore=0 phishscore=0 malwarescore=0 impostorscore=0 clxscore=1015
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310170170
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231016214753.175097-3-mirsad.todorovac@alu.unizg.hr>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case of notifying SND platform drivers of connection events, some of
-these use cases, such as offloading, require an ASoC USB backend device to
-be initialized before the events can be handled.  If the USB backend device
-has not yet been probed, this leads to missing initial USB audio device
-connection events.
+On Mon, Oct 16, 2023 at 11:47:56PM +0200, Mirsad Goran Todorovac wrote:
+> KCSAN reported the following data-race:
+> 
+> ==================================================================
+> BUG: KCSAN: data-race in rtl8169_poll (drivers/net/ethernet/realtek/r8169_main.c:4368 drivers/net/ethernet/realtek/r8169_main.c:4581) r8169
+> 
+> race at unknown origin, with read to 0xffff888140d37570 of 4 bytes by interrupt on cpu 21:
+> rtl8169_poll (drivers/net/ethernet/realtek/r8169_main.c:4368 drivers/net/ethernet/realtek/r8169_main.c:4581) r8169
+> __napi_poll (net/core/dev.c:6527)
+> net_rx_action (net/core/dev.c:6596 net/core/dev.c:6727)
+> __do_softirq (kernel/softirq.c:553)
+> __irq_exit_rcu (kernel/softirq.c:427 kernel/softirq.c:632)
+> irq_exit_rcu (kernel/softirq.c:647)
+> sysvec_apic_timer_interrupt (arch/x86/kernel/apic/apic.c:1074 (discriminator 14))
+> asm_sysvec_apic_timer_interrupt (./arch/x86/include/asm/idtentry.h:645)
+> cpuidle_enter_state (drivers/cpuidle/cpuidle.c:291)
+> cpuidle_enter (drivers/cpuidle/cpuidle.c:390)
+> call_cpuidle (kernel/sched/idle.c:135)
+> do_idle (kernel/sched/idle.c:219 kernel/sched/idle.c:282)
+> cpu_startup_entry (kernel/sched/idle.c:378 (discriminator 1))
+> start_secondary (arch/x86/kernel/smpboot.c:210 arch/x86/kernel/smpboot.c:294)
+> secondary_startup_64_no_verify (arch/x86/kernel/head_64.S:433)
+> 
+> value changed: 0xb0000042 -> 0x00000000
+> 
+> Reported by Kernel Concurrency Sanitizer on:
+> CPU: 21 PID: 0 Comm: swapper/21 Tainted: G             L     6.6.0-rc2-kcsan-00143-gb5cbe7c00aa0 #41
+> Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
+> ==================================================================
+> 
+> The read side is in
+> 
+> drivers/net/ethernet/realtek/r8169_main.c
+> =========================================
+>    4355 static void rtl_tx(struct net_device *dev, struct rtl8169_private *tp,
+>    4356                    int budget)
+>    4357 {
+>    4358         unsigned int dirty_tx, bytes_compl = 0, pkts_compl = 0;
+>    4359         struct sk_buff *skb;
+>    4360
+>    4361         dirty_tx = tp->dirty_tx;
+>    4362
+>    4363         while (READ_ONCE(tp->cur_tx) != dirty_tx) {
+>    4364                 unsigned int entry = dirty_tx % NUM_TX_DESC;
+>    4365                 u32 status;
+>    4366
+>  → 4367                 status = le32_to_cpu(tp->TxDescArray[entry].opts1);
+>    4368                 if (status & DescOwn)
+>    4369                         break;
+>    4370
+>    4371                 skb = tp->tx_skb[entry].skb;
+>    4372                 rtl8169_unmap_tx_skb(tp, entry);
+>    4373
+>    4374                 if (skb) {
+>    4375                         pkts_compl++;
+>    4376                         bytes_compl += skb->len;
+>    4377                         napi_consume_skb(skb, budget);
+>    4378                 }
+>    4379                 dirty_tx++;
+>    4380         }
+>    4381
+>    4382         if (tp->dirty_tx != dirty_tx) {
+>    4383                 dev_sw_netstats_tx_add(dev, pkts_compl, bytes_compl);
+>    4384                 WRITE_ONCE(tp->dirty_tx, dirty_tx);
+>    4385
+>    4386                 netif_subqueue_completed_wake(dev, 0, pkts_compl, bytes_compl,
+>    4387                                               rtl_tx_slots_avail(tp),
+>    4388                                               R8169_TX_START_THRS);
+>    4389                 /*
+>    4390                  * 8168 hack: TxPoll requests are lost when the Tx packets are
+>    4391                  * too close. Let's kick an extra TxPoll request when a burst
+>    4392                  * of start_xmit activity is detected (if it is not detected,
+>    4393                  * it is slow enough). -- FR
+>    4394                  * If skb is NULL then we come here again once a tx irq is
+>    4395                  * triggered after the last fragment is marked transmitted.
+>    4396                  */
+>    4397                 if (READ_ONCE(tp->cur_tx) != dirty_tx && skb)
+>    4398                         rtl8169_doorbell(tp);
+>    4399         }
+>    4400 }
+> 
+> tp->TxDescArray[entry].opts1 is reported to have a data-race and READ_ONCE() fixes
+> this KCSAN warning.
+> 
+>    4366
+>  → 4367                 status = le32_to_cpu(READ_ONCE(tp->TxDescArray[entry].opts1));
+>    4368                 if (status & DescOwn)
+>    4369                         break;
+>    4370
+> 
+> Fixes: ^1da177e4c3f4 ("initial git repository build")
 
-Expose an API that traverses the usb_chip array for connected devices, and
-to call the respective connection callback registered to the SND platform
-driver.
+Hi Mirsad,
 
-Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
----
- sound/usb/card.c | 19 +++++++++++++++++++
- sound/usb/card.h |  2 ++
- 2 files changed, 21 insertions(+)
+The fixes tag above seems wrong.
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index 88f431917c15..7d3f470754ca 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -202,6 +202,25 @@ struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
- }
- EXPORT_SYMBOL_GPL(snd_usb_find_suppported_substream);
- 
-+/*
-+ * in case the platform driver was not ready at the time of USB SND
-+ * device connect, expose an API to discover all connected USB devices
-+ * so it can populate any dependent resources/structures.
-+ */
-+void snd_usb_rediscover_devices(void)
-+{
-+	int i;
-+
-+	mutex_lock(&register_mutex);
-+	for (i = 0; i < SNDRV_CARDS; i++) {
-+		if (usb_chip[i])
-+			if (platform_ops && platform_ops->connect_cb)
-+				platform_ops->connect_cb(usb_chip[i]);
-+	}
-+	mutex_unlock(&register_mutex);
-+}
-+EXPORT_SYMBOL_GPL(snd_usb_rediscover_devices);
-+
- /*
-  * disconnect streams
-  * called from usb_audio_disconnect()
-diff --git a/sound/usb/card.h b/sound/usb/card.h
-index 01f7e10f30f4..c0aeda17ed69 100644
---- a/sound/usb/card.h
-+++ b/sound/usb/card.h
-@@ -221,11 +221,13 @@ int snd_usb_unregister_platform_ops(void);
- #if IS_ENABLED(CONFIG_SND_USB_AUDIO)
- struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
- 			struct snd_pcm_hw_params *params, int direction);
-+void snd_usb_rediscover_devices(void);
- #else
- static struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
- 			struct snd_pcm_hw_params *params, int direction)
- {
- 	return NULL;
- }
-+static void snd_usb_rediscover_devices(void) { }
- #endif /* IS_ENABLED(CONFIG_SND_USB_AUDIO) */
- #endif /* __USBAUDIO_CARD_H */
+> Cc: Heiner Kallweit <hkallweit1@gmail.com>
+> Cc: nic_swsd@realtek.com
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Paolo Abeni <pabeni@redhat.com>
+> Cc: Marco Elver <elver@google.com>
+> Cc: netdev@vger.kernel.org
+> Link: https://lore.kernel.org/lkml/dc7fc8fa-4ea4-e9a9-30a6-7c83e6b53188@alu.unizg.hr/
+> Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+> Acked-by: Marco Elver <elver@google.com>
+
+...
