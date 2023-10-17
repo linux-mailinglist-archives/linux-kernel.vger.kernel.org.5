@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A747CD029
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 01:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AD997CD02B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 01:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344244AbjJQXB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 19:01:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49634 "EHLO
+        id S234819AbjJQXBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 19:01:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231944AbjJQXBW (ORCPT
+        with ESMTP id S1344182AbjJQXBY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 19:01:22 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9C92F1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 16:01:20 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9a61f7aaf8so8189313276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 16:01:20 -0700 (PDT)
+        Tue, 17 Oct 2023 19:01:24 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77DD7F1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 16:01:22 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7b3ae01c0so94881467b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 16:01:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697583680; x=1698188480; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1697583681; x=1698188481; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zhGJS9TSuAOI7ph8IS5R88r99qDdTpF/uHgtYeaRs+U=;
-        b=wCjNKJx/ShdeEviPYVdOhSJW2e/90RTsvrh9/XLGcpzh+2tv8CroON8LkokJeAYpow
-         5TYNMpptwb8DYPfxWJFM04xsSbBfE6eX/Bbdg1qat3hZ/HkjmG6L0msGMP3q+R+duuJK
-         82AizqdTqc2XuvkGJzUDWHs4y8a58lLiaZR+IdCyn4ZImuOOPM/5gg1cNYwPvN/NkM5W
-         b8DSqTP9ogRG6Lq+0OhcfQwoNc6E/qOp1RX3RWWr3H72jGO2P1oY9JY3mv0EBYs/tAMv
-         vaw3jx3suGhmsqSKYHWYVa69R8XW0SK1UjV2R4QrjumNmS94ZSnsCdEs+MmgUcEydYge
-         0KrA==
+        bh=zotUshyT9JxTsldtXKWoET48qiWRumjzDVZqgqNWkYo=;
+        b=kf/T6LdDv4xfAdWiT02p0AlEjTHl7QjAysREP4ZFS7MQsbUKlzR+gfCov5qN7R9j8Y
+         iN9cx/P2T45Elo/1ReAljLM5Ka5QY3WeBdTGujI7Yjrua6ojQl0Yt9O8bH6DSNKFhB7d
+         sOrTByJVubhrBVKIhO2GCIBYV6fm3m0n1/8rj3UmKm6wcouMqm1mNk8lwZkpdFEltBgS
+         03hMOJCJECMPnV0evvbub713Xm+p0psHseUijIej77Luyuxm+yM8gnHCS7M7cB9ABWzm
+         JQ9HEHC55ZXt8Z8/0UEPqdbDS9Sd2TCBWQMTtNA6FeVbmK1Mti2Ebdtn6h7jdOfBOxUa
+         +XRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697583680; x=1698188480;
+        d=1e100.net; s=20230601; t=1697583681; x=1698188481;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zhGJS9TSuAOI7ph8IS5R88r99qDdTpF/uHgtYeaRs+U=;
-        b=nce5cLKLk0ygEWzTMpfHbHCBm4cldExH0PY0ZhTMXDf+CHr1urNi1lJK8EB5fDbmto
-         RJqSzyvl7alNL1BO520zarsZ1WaqiP5Jio46oNTmOjmG9ZBsZs9lqw7LogGPpdDD8rDC
-         NKEjR3d/URLEQqncotVcA6CUvTAbK0M/UCj4EGSyFaqakmi19g5xtAFRQGIgIdkUDf1C
-         Rlx0GqsvDkAHuOkRrLSDFRHzXKmMKKVcdYVfRnT/gkYemgMjoDt/VIqTOzDpEIJT8LQP
-         a+XfyRkte4LnomCojE9R4yrpyrrVA2uljCA49XSwvY/bGv5bdzUr/9Cyzt9hQIfNvyjV
-         /zew==
-X-Gm-Message-State: AOJu0Yx0RmgihkckAw4tRtFy6AQ5M+BiuzIqTqm32VQlx1h8AFtzUMmj
-        ojeTheCkgrfiCGeYfHXqKAJ7VDjuSetFxw0wQbT3
-X-Google-Smtp-Source: AGHT+IGUIIMYcfHcAX/EFWTsWCSWt3CWSp3wyfZIjOY21JWpjm5WYGNByO8zTW1z94HmtGuIWpM6167CUq/2ldotqPAL
+        bh=zotUshyT9JxTsldtXKWoET48qiWRumjzDVZqgqNWkYo=;
+        b=NVPe9FX/XziiMZ+XYolZ6YZlukUXas/miBRnuGj6Gg8kdsz33sJ6pck3xWMopDFCDg
+         MuI8HW3sJOFdV/IFka6Id/dbkvqlHxygB4nEJ5Ov9WrplGfkcb+gQkT2jGsWCaz6HUYd
+         UwpI9Tt8sefyFdnpJSMowskPSo5hq+rUjk9XUWdNjrVdjQLG3PLzkiVOvWWpzleQYV7Z
+         ll6w7Tl5syQXpQXhG+kV4/yiupxIplxLFuMRkxCFHr3mR+3apRh3iVuaeBL0mN9kYwCL
+         oqDVDfDf05/KZeNAbeQ+VHxTIKc5XK1kK9JtltT371Oc4MZTMLrRn6re4IwK94r7Akyd
+         hUfg==
+X-Gm-Message-State: AOJu0YyfwF1X77n6VK+mdf2/aPcI/8YbuXtNvCHB0FIR4OdYEcsDbVBm
+        Ijo5ks8VmwroqXCTyawZM+wbL2J3RFBmapxg5JsW
+X-Google-Smtp-Source: AGHT+IG33rPX+YBy/IxDNh0Hn8HuEPXvaiympTSyyMMX5HQVRWBVdttcufnoKeE06bjlWpxR13bX53lvCE4ue3giXDWV
 X-Received: from axel.svl.corp.google.com ([2620:15c:2a3:200:cd04:35d6:a586:5c86])
- (user=axelrasmussen job=sendgmr) by 2002:a25:8c86:0:b0:d81:7617:a397 with
- SMTP id m6-20020a258c86000000b00d817617a397mr80370ybl.9.1697583680159; Tue,
- 17 Oct 2023 16:01:20 -0700 (PDT)
-Date:   Tue, 17 Oct 2023 16:01:09 -0700
+ (user=axelrasmussen job=sendgmr) by 2002:a81:4f92:0:b0:57a:118a:f31 with SMTP
+ id d140-20020a814f92000000b0057a118a0f31mr84700ywb.7.1697583681778; Tue, 17
+ Oct 2023 16:01:21 -0700 (PDT)
+Date:   Tue, 17 Oct 2023 16:01:10 -0700
 In-Reply-To: <20231017230110.3170850-1-axelrasmussen@google.com>
 Mime-Version: 1.0
 References: <20231017230110.3170850-1-axelrasmussen@google.com>
 X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-Message-ID: <20231017230110.3170850-3-axelrasmussen@google.com>
-Subject: [PATCH v3 2/3] ioctl_userfaultfd.2: fix / update UFFDIO_REGISTER
- error code list
+Message-ID: <20231017230110.3170850-4-axelrasmussen@google.com>
+Subject: [PATCH v3 3/3] ioctl_userfaultfd.2: document new UFFDIO_POISON ioctl
 From:   Axel Rasmussen <axelrasmussen@google.com>
 To:     Alejandro Colomar <alx@kernel.org>,
         Mike Rapoport <rppt@kernel.org>, Peter Xu <peterx@redhat.com>
@@ -63,7 +62,7 @@ Cc:     linux-man@vger.kernel.org, linux-mm@kvack.org,
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,72 +70,179 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The list of error codes in the man page was out of date with respect to
-the current state of the kernel. Some errors were partially /
-incorrectly described.
+This is a new feature recently added to the kernel. So, document the new
+ioctl the same way we do other UFFDIO_* ioctls.
 
-Update the error code listing, so it matches the current state of the
-kernel, and correctly describes all the errors.
+Also note the corresponding new ioctl flag we can return in response to
+a UFFDIO_REGISTER call.
 
+Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
 Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 ---
- man2/ioctl_userfaultfd.2 | 33 +++++++++++++++++++--------------
- 1 file changed, 19 insertions(+), 14 deletions(-)
+ man2/ioctl_userfaultfd.2 | 124 +++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 118 insertions(+), 6 deletions(-)
 
 diff --git a/man2/ioctl_userfaultfd.2 b/man2/ioctl_userfaultfd.2
-index 82aee667c..40528001e 100644
+index 40528001e..a9131515c 100644
 --- a/man2/ioctl_userfaultfd.2
 +++ b/man2/ioctl_userfaultfd.2
-@@ -413,8 +413,6 @@ On error, \-1 is returned and
- .I errno
- is set to indicate the error.
- Possible errors include:
--.\" FIXME Is the following error list correct?
--.\"
- .TP
- .B EBUSY
- A mapping in the specified range is registered with another
-@@ -433,21 +431,28 @@ field; or the
- field was zero.
- .TP
- .B EINVAL
--There is no mapping in the specified address range.
--.TP
--.B EINVAL
--.I range.start
-+The specified address range was invalid.
-+More specifically,
-+no mapping exists in the given range,
-+or the mapping that exists there is invalid
-+(e.g. unsupported type of memory),
-+or the range values
-+.RI ( range.start
-+or
-+.IR range.len )
-+are not multiples of the relevant page size,
- or
- .I range.len
--is not a multiple of the system page size; or,
--.I range.len
--is zero; or these fields are otherwise invalid.
-+is zero.
- .TP
--.B EINVAL
--There as an incompatible mapping in the specified address range.
--.\" Mike Rapoport:
--.\" ENOMEM if the process is exiting and the
--.\" mm_struct has gone by the time userfault grabs it.
-+.B ENOMEM
-+The process is exiting,
-+and its address space has already been torn down
-+when userfaultfd attempts to reference it.
+@@ -405,6 +405,11 @@ operation is supported.
+ The
+ .B UFFDIO_CONTINUE
+ operation is supported.
 +.TP
-+.B EPERM
-+The userfaultfd would allow writing to a file backing the mapping,
-+but the calling process lacks such write permissions.
- .SS UFFDIO_UNREGISTER
- (Since Linux 4.3.)
- Unregister a memory address range from userfaultfd.
++.B 1 << _UFFDIO_POISON
++The
++.B UFFDIO_POISON
++operation is supported.
+ .PP
+ This
+ .BR ioctl (2)
+@@ -886,6 +891,12 @@ does not equal the value that was specified in the
+ .I range.len
+ field.
+ .TP
++.B EEXIST
++One or more pages were already mapped in the given range.
++.TP
++.B EFAULT
++No existing page could be found in the page cache for the given range.
++.TP
+ .B EINVAL
+ Either
+ .I range.start
+@@ -900,9 +911,6 @@ An invalid bit was specified in the
+ .I mode
+ field.
+ .TP
+-.B EEXIST
+-One or more pages were already mapped in the given range.
+-.TP
+ .B ENOENT
+ The faulting process has changed its virtual memory layout simultaneously with
+ an outstanding
+@@ -912,14 +920,118 @@ operation.
+ .B ENOMEM
+ Allocating memory needed to setup the page table mappings failed.
+ .TP
+-.B EFAULT
+-No existing page could be found in the page cache for the given range.
+-.TP
+ .B ESRCH
+ The faulting process has exited at the time of a
+ .B UFFDIO_CONTINUE
+ operation.
+ .\"
++.SS UFFDIO_POISON
++(Since Linux 6.6.)
++Mark an address range as "poisoned".
++Future accesses to these addresses will raise a
++.B SIGBUS
++signal.
++Unlike
++.B MADV_HWPOISON
++this works by installing page table entries,
++rather than "really" poisoning the underlying physical pages.
++This means it only affects this particular address space.
++.PP
++The
++.I argp
++argument is a pointer to a
++.I uffdio_poison
++structure as shown below:
++.PP
++.in +4n
++.EX
++struct uffdio_poison {
++	struct uffdio_range range;
++	                /* Range to install poison PTE markers in */
++	__u64 mode;     /* Flags controlling the behavior of poison */
++	__s64 updated;  /* Number of bytes poisoned, or negated error */
++};
++.EE
++.in
++.PP
++The following value may be bitwise ORed in
++.I mode
++to change the behavior of the
++.B UFFDIO_POISON
++operation:
++.TP
++.B UFFDIO_POISON_MODE_DONTWAKE
++Do not wake up the thread that waits for page-fault resolution.
++.PP
++The
++.I updated
++field is used by the kernel
++to return the number of bytes that were actually poisoned,
++or an error in the same manner as
++.BR UFFDIO_COPY .
++If the value returned in the
++.I updated
++field doesn't match the value that was specified in
++.IR range.len ,
++the operation fails with the error
++.BR EAGAIN .
++The
++.I updated
++field is output-only;
++it is not read by the
++.B UFFDIO_POISON
++operation.
++.PP
++This
++.BR ioctl (2)
++operation returns 0 on success.
++In this case,
++the entire area was poisoned.
++On error, \-1 is returned and
++.I errno
++is set to indicate the error.
++Possible errors include:
++.TP
++.B EAGAIN
++The number of bytes mapped
++(i.e., the value returned in the
++.I updated
++field)
++does not equal the value that was specified in the
++.I range.len
++field.
++.TP
++.B EINVAL
++Either
++.I range.start
++or
++.I range.len
++was not a multiple of the system page size; or
++.I range.len
++was zero; or the range specified was invalid.
++.TP
++.B EINVAL
++An invalid bit was specified in the
++.I mode
++field.
++.TP
++.B EEXIST
++One or more pages were already mapped in the given range.
++.TP
++.B ENOENT
++The faulting process has changed its virtual memory layout simultaneously with
++an outstanding
++.B UFFDIO_POISON
++operation.
++.TP
++.B ENOMEM
++Allocating memory for page table entries failed.
++.TP
++.B ESRCH
++The faulting process has exited at the time of a
++.B UFFDIO_POISON
++operation.
++.\"
+ .SH RETURN VALUE
+ See descriptions of the individual operations, above.
+ .SH ERRORS
 -- 
 2.42.0.655.g421f12c284-goog
 
