@@ -2,91 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0988F7CC9DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 19:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 844507CC9E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 19:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343969AbjJQR0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 13:26:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56874 "EHLO
+        id S1343507AbjJQR2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 13:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234950AbjJQR0N (ORCPT
+        with ESMTP id S232648AbjJQR2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 13:26:13 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A825BA
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 10:26:11 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-522bd411679so9971862a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 10:26:11 -0700 (PDT)
+        Tue, 17 Oct 2023 13:28:43 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D4DAB
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 10:28:41 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d86766bba9fso7728797276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 10:28:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697563570; x=1698168370; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=V3sJOjdz4HmVX5Ee8oZMm7CVfPOQuCMEb6MVEUzA9CM=;
-        b=iPRPU5A3XNNncjTScWnfjjRgn/g5N397H/BtEh9Wb1MvhKyPX1GjZ3RYu0T1JgLqrn
-         fySYCLqE7D/js+nHNetHa8Nrndz17qAqJJd0/Is3TmNxbS9Fa8KgUSIN6IyTZPebz4I5
-         rG5NJi0JbzG4kdUUnhboccde97OOIuKU75f+TzNS7Y0tDB2vBo6dYMQZWjNpaoPTxtuZ
-         OQrrwdsSC68YNiiW+GDSkYusQl1pK76iZb91afaHFjPYvu6po5BanAj9dZXEbVHPvFTr
-         vqe73Oi3fusGLBN5HEQAEm1hFxOGkcKVhLEBai1Q3QlxYjmcaHTVTXxjBouNwKmY8KSE
-         ONPA==
+        d=google.com; s=20230601; t=1697563720; x=1698168520; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CEQCI/+rQGSMqYPlxwooL8qQczaW3MpNtkuPlPW6Iqs=;
+        b=tY8hWhXWJPUQx7cW1wkknyyzCtYfPd2U34dh9rFaxeLwc1Nhj3eQj+1yb9rOISbQn6
+         C1GAkTfVbbMsZV/B0H/qmtOoAcqgzom07LM+G8MPX0ZQdeKrpdW2toUPeUC+SVjNvRgP
+         4fwYiXl3VIKG/3QN+kRFD+svJu9GwMyxozKZ5p2JG+klgb9jOKH7QFIMzDNjzORbjQOS
+         HoqyP9eoUWi/Hq4pRGIEy6T+1fWHC5EKjqWucDKzEyAuiEuri72h+jPdMG/wdvMgve+O
+         PGnj+p03qRSAjwUhu5iXvTgQwd3sCcleIPsQwLxKH52+PkDNBc+60YkfCTaAetnBUHMr
+         p9Sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697563570; x=1698168370;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=V3sJOjdz4HmVX5Ee8oZMm7CVfPOQuCMEb6MVEUzA9CM=;
-        b=DIMbmP9u86gZtdYw1igqAAtvCWRsHH//R1VQo5OQax9WgSyY1KqCnNVNnCSFEcn5UN
-         HBp/wMm7+AHSaiWs21qq85vG1/rUTzovl46HDjGCwxaCcC6c3Sg3181p/kY59HXZq5aS
-         oFKoeLakJivDlbWNTWhwaOknfnC3f4dsSkdWNn7Tm3qznxDMtLakGaQ7RbWNwkBcDW9A
-         knGsdIinDo7zrtIyGNLi4csmhZyRbARdMRkiWmZkaXah4hnXfZFS9BA1bDukSmvSArlo
-         zv0x92/rMDfnWvq05oZ2RBwuLLswZkHrn+Jb41uLfTdc/UJ7OYTmpugyMTux83T30b9C
-         RKyA==
-X-Gm-Message-State: AOJu0YwsFfWMQr1JfPbTh4q7qYqsfo/BktLEX3VXsJkn7WZgG3pkwIBL
-        SXGoSRvys5DEOfnzkFDKUoUYAD1x418XQdABZKaeIQ==
-X-Google-Smtp-Source: AGHT+IHoa+w5G+1WhCe9EF6u7DQRQO9M4r38jyklDSYv3wWlfUUxuyT2jQDUZ5LPEAlUKpxXSAxQoovOtPawZoU+rjY=
-X-Received: by 2002:a50:cd03:0:b0:53e:c2fa:54a with SMTP id
- z3-20020a50cd03000000b0053ec2fa054amr2314809edi.22.1697563569925; Tue, 17 Oct
- 2023 10:26:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231012-strncpy-drivers-net-ethernet-ti-cpmac-c-v1-1-f0d430c9949f@google.com>
- <20231016161353.48af3ed7@kernel.org>
-In-Reply-To: <20231016161353.48af3ed7@kernel.org>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Tue, 17 Oct 2023 10:25:58 -0700
-Message-ID: <CAFhGd8rjwEn8g0HXLtejyjv=L_0Gj2bCiE4fEcNnqhOqpdC+Xg@mail.gmail.com>
-Subject: Re: [PATCH] net: cpmac: replace deprecated strncpy with strscpy
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1697563720; x=1698168520;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CEQCI/+rQGSMqYPlxwooL8qQczaW3MpNtkuPlPW6Iqs=;
+        b=D2pmFH3QAune7a8vIwNpoTQhFfmPOWcvLDAORRbhAQeXRrgqxbvT+kJq1a9xM8EGSk
+         Rgj6sg+YyexOYALRI31F2G3fJPI6u7fYvcERXJ8f/x8azlXLspzQogziwLMz0fg8PHus
+         W7sgetrFZM8ncNE54MbF0ZkxlfZ4ik3l03yDEa5IKvyuz9KldWkYr0ZTkbfKwd/mp4Me
+         dbUkOhDUW6+j8RmLMzJJEtbkZ3CuktOBHA6qRX+Mn/T0OSquP9UrCdvVCYBAFr+Rxn8O
+         NsNIewdkKx/yHGrKVqStLp3fXHVvsfgmayyZ4KYDvBwYlNuWqlZ0tpRBxvecfX7lPIyL
+         cJOg==
+X-Gm-Message-State: AOJu0YyPrceFNytZguEoNSgLRX9KI8/uAbH+rAcCd5e9E3U+ygdLST7E
+        q1wsNWEm/XHIRSBNgq33vmo48tWm3IA=
+X-Google-Smtp-Source: AGHT+IHy5iS6R0xhgrLgpqCTtWpuLwyL2mejWuez6Mvs9w8hTgJ/pyQSUOqz29xsOpZSSNy6pDolJXGlgwY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:d509:0:b0:d9a:42b5:d160 with SMTP id
+ r9-20020a25d509000000b00d9a42b5d160mr59329ybe.10.1697563720208; Tue, 17 Oct
+ 2023 10:28:40 -0700 (PDT)
+Date:   Tue, 17 Oct 2023 10:28:38 -0700
+In-Reply-To: <20231013070037.512051-1-xiaoyao.li@intel.com>
+Mime-Version: 1.0
+References: <20231013070037.512051-1-xiaoyao.li@intel.com>
+Message-ID: <ZS7ERnnRqs8Fl0ZF@google.com>
+Subject: Re: [PATCH] KVM: x86: Use the correct size of struct
+ kvm_vcpu_pv_apf_data and fix the documentation
+From:   Sean Christopherson <seanjc@google.com>
+To:     Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 4:13=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> On Thu, 12 Oct 2023 20:53:30 +0000 Justin Stitt wrote:
-> > strncpy() is deprecated for use on NUL-terminated destination strings
-> > [1] and as such we should prefer more robust and less ambiguous string
-> > interfaces.
->
-> This driver no longer exists. Praise be.
+On Fri, Oct 13, 2023, Xiaoyao Li wrote:
+> The size of struct kvm_vcpu_pv_apf_data is 68 bytes, not 64 bytes.
 
-Thanks for the heads up.
+LOL, the messed up size is downright hilarious.  Not only was the math botched,
+but the "enabled" field that pushes the struct beyond a cache line is completely
+unnecessary.
 
-Ignore this patch :)
+AFAICT, KVM (the host side) has *never* read kvm_vcpu_pv_apf_data.enabled, and
+the documentation clearly states that enabling is based solely on the bit in the
+synthetic MSR.
 
-> --
-> pw-bot: reject
+So rather than update the documentation, what if we fix the goof?  KVM-as-a-host
+obviously doesn't enforce anything or consume the size, and changing the header
+will only affect guests that are rebuilt against the new header, so there's no
+chance of ABI breakage between KVM and its guests.  The only possible breakage
+is if some other hypervisor is emulating KVM's async #PF (LOL) and relies on the
+guest to set kvm_vcpu_pv_apf_data.enabled.  But (a) I highly doubt such a hypervisor
+exists, (b) that would arguably be a violation of KVM's "spec", and (c) the worst
+case scenario is that the guest would simply lose async #PF functionality.
+
+> Fix the kvm_gfn_to_hva_cache_init() to use the correct size though KVM
+> only touches fist 8 bytes.
+
+This isn't a fix.  There's actually meaningful value in precisely initializing the
+cache as it guards against KVM writing into the padding, e.g. this WARN would fire:
+
+	if (WARN_ON_ONCE(len + offset > ghc->len))
+		return -EINVAL;
+
+So it's a bit odd, but I would prefer to keep the current behavior of mapping only
+the first 8 bytes.
+
+Here's what I'm thinking to clean up the enabled field (compile tested only,
+haven't touched the docs other than the obvious removal):
+
+---
+ Documentation/virt/kvm/x86/msr.rst   |  1 -
+ arch/x86/include/uapi/asm/kvm_para.h |  1 -
+ arch/x86/kernel/kvm.c                | 11 ++++++-----
+ 3 files changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/Documentation/virt/kvm/x86/msr.rst b/Documentation/virt/kvm/x86/msr.rst
+index 9315fc385fb0..f6d70f99a1a7 100644
+--- a/Documentation/virt/kvm/x86/msr.rst
++++ b/Documentation/virt/kvm/x86/msr.rst
+@@ -204,7 +204,6 @@ data:
+ 		__u32 token;
+ 
+ 		__u8 pad[56];
+-		__u32 enabled;
+ 	  };
+ 
+ 	Bits 5-4 of the MSR are reserved and should be zero. Bit 0 is set to 1
+diff --git a/arch/x86/include/uapi/asm/kvm_para.h b/arch/x86/include/uapi/asm/kvm_para.h
+index 6e64b27b2c1e..605899594ebb 100644
+--- a/arch/x86/include/uapi/asm/kvm_para.h
++++ b/arch/x86/include/uapi/asm/kvm_para.h
+@@ -142,7 +142,6 @@ struct kvm_vcpu_pv_apf_data {
+ 	__u32 token;
+ 
+ 	__u8 pad[56];
+-	__u32 enabled;
+ };
+ 
+ #define KVM_PV_EOI_BIT 0
+diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+index b8ab9ee5896c..2cd5f8d248a5 100644
+--- a/arch/x86/kernel/kvm.c
++++ b/arch/x86/kernel/kvm.c
+@@ -65,6 +65,7 @@ static int __init parse_no_stealacc(char *arg)
+ 
+ early_param("no-steal-acc", parse_no_stealacc);
+ 
++static DEFINE_PER_CPU_READ_MOSTLY(bool, async_pf_enabled);
+ static DEFINE_PER_CPU_DECRYPTED(struct kvm_vcpu_pv_apf_data, apf_reason) __aligned(64);
+ DEFINE_PER_CPU_DECRYPTED(struct kvm_steal_time, steal_time) __aligned(64) __visible;
+ static int has_steal_clock = 0;
+@@ -244,7 +245,7 @@ noinstr u32 kvm_read_and_reset_apf_flags(void)
+ {
+ 	u32 flags = 0;
+ 
+-	if (__this_cpu_read(apf_reason.enabled)) {
++	if (__this_cpu_read(async_pf_enabled)) {
+ 		flags = __this_cpu_read(apf_reason.flags);
+ 		__this_cpu_write(apf_reason.flags, 0);
+ 	}
+@@ -295,7 +296,7 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_kvm_asyncpf_interrupt)
+ 
+ 	inc_irq_stat(irq_hv_callback_count);
+ 
+-	if (__this_cpu_read(apf_reason.enabled)) {
++	if (__this_cpu_read(async_pf_enabled)) {
+ 		token = __this_cpu_read(apf_reason.token);
+ 		kvm_async_pf_task_wake(token);
+ 		__this_cpu_write(apf_reason.token, 0);
+@@ -362,7 +363,7 @@ static void kvm_guest_cpu_init(void)
+ 		wrmsrl(MSR_KVM_ASYNC_PF_INT, HYPERVISOR_CALLBACK_VECTOR);
+ 
+ 		wrmsrl(MSR_KVM_ASYNC_PF_EN, pa);
+-		__this_cpu_write(apf_reason.enabled, 1);
++		__this_cpu_write(async_pf_enabled, true);
+ 		pr_debug("setup async PF for cpu %d\n", smp_processor_id());
+ 	}
+ 
+@@ -383,11 +384,11 @@ static void kvm_guest_cpu_init(void)
+ 
+ static void kvm_pv_disable_apf(void)
+ {
+-	if (!__this_cpu_read(apf_reason.enabled))
++	if (!__this_cpu_read(async_pf_enabled))
+ 		return;
+ 
+ 	wrmsrl(MSR_KVM_ASYNC_PF_EN, 0);
+-	__this_cpu_write(apf_reason.enabled, 0);
++	__this_cpu_write(async_pf_enabled, false);
+ 
+ 	pr_debug("disable async PF for cpu %d\n", smp_processor_id());
+ }
+
+base-commit: 437bba5ad2bba00c2056c896753a32edf80860cc
+-- 
+
