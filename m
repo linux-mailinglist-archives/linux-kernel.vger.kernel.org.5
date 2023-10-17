@@ -2,85 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 094417CB7FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 03:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F048F7CB7FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 03:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234178AbjJQBbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 21:31:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60472 "EHLO
+        id S233875AbjJQBc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 21:32:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231955AbjJQBbl (ORCPT
+        with ESMTP id S229666AbjJQBc5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 21:31:41 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6B19B
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 18:31:40 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 236D7C433C8;
-        Tue, 17 Oct 2023 01:31:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697506299;
-        bh=UR60mYADl5EHC1NoZ4GrAkpMSCrV5ZQb/hfA25cXCI8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hWRuXWUwoKb/yom/A7F87AKYH4syC/l67lawzuKkTbxqZmoiVCVa/B0FON5NvEcGb
-         1mCXphpQRUs/J/qR0vXPq6E/6//hvzzUG52ZwQclfbnSlVj3jO6O1YXT9FXBrP4PQe
-         EImgT2p0map18oRROeMmWTmGOWqNgG4hMl2bATEvipIs8JRFjGMVFsmJEJE6jamAJP
-         zqP0jxpL9TKeyosrdyND0b3O/sePyDxv4tZg08LMSbywgW9JMuYm1cVng7A+9dD+b9
-         V99yj12zz6JxUcynopuGHEKfTWNhQgSzOTVl13itv1bBAQaCUW3U3sGFhrzH3HZWX2
-         iGzyxh5daMIVQ==
-Date:   Mon, 16 Oct 2023 18:31:38 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     <davem@davemloft.net>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Liang Chen <liangchen.linux@gmail.com>,
-        Guillaume Tucker <guillaume.tucker@collabora.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Eric Dumazet <edumazet@google.com>
-Subject: Re: [PATCH net-next v11 1/6] page_pool: fragment API support for
- 32-bit arch with 64-bit DMA
-Message-ID: <20231016183138.2c4366a7@kernel.org>
-In-Reply-To: <20231013064827.61135-2-linyunsheng@huawei.com>
-References: <20231013064827.61135-1-linyunsheng@huawei.com>
-        <20231013064827.61135-2-linyunsheng@huawei.com>
+        Mon, 16 Oct 2023 21:32:57 -0400
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908949B;
+        Mon, 16 Oct 2023 18:32:54 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0VuL0VsR_1697506361;
+Received: from localhost.localdomain(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VuL0VsR_1697506361)
+          by smtp.aliyun-inc.com;
+          Tue, 17 Oct 2023 09:32:51 +0800
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+To:     chengyou@linux.alibaba.com, kaishen@linux.alibaba.com,
+        helgaas@kernel.org, yangyicong@huawei.com, will@kernel.org,
+        Jonathan.Cameron@huawei.com, baolin.wang@linux.alibaba.com,
+        robin.murphy@arm.com
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, rdunlap@infradead.org,
+        mark.rutland@arm.com, zhuo.song@linux.alibaba.com,
+        xueshuai@linux.alibaba.com, renyu.zj@linux.alibaba.com
+Subject: [PATCH v8 0/4] drivers/perf: add Synopsys DesignWare PCIe PMU driver support
+Date:   Tue, 17 Oct 2023 09:32:31 +0800
+Message-Id: <20231017013235.27831-1-xueshuai@linux.alibaba.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Oct 2023 14:48:21 +0800 Yunsheng Lin wrote:
-> Currently page_pool_alloc_frag() is not supported in 32-bit
-> arch with 64-bit DMA because of the overlap issue between
-> pp_frag_count and dma_addr_upper in 'struct page' for those
-> arches, which seems to be quite common, see [1], which means
-> driver may need to handle it when using fragment API.
-> 
-> It is assumed that the combination of the above arch with an
-> address space >16TB does not exist, as all those arches have
-> 64b equivalent, it seems logical to use the 64b version for a
-> system with a large address space. It is also assumed that dma
-> address is page aligned when we are dma mapping a page aligned
-> buffer, see [2].
-> 
-> That means we're storing 12 bits of 0 at the lower end for a
-> dma address, we can reuse those bits for the above arches to
-> support 32b+12b, which is 16TB of memory.
-> 
-> If we make a wrong assumption, a warning is emitted so that
-> user can report to us.
+Change Log
+==========
 
-Let me apply this one already, I think it should be uncontroversial
-from review perspective. And the more time it gets in linux-next
-the better..
+changes since v7:
+- add config help with alibaba name (per Bjorn)
+- remove the ARM64 dependency (per Bjorn and Jonathan)
+- fix typo and column warp (per Bjorn) 
+- move list_del() after perf_pmu_unregister() (per Bjorn) 
+- reorder the funtions by interests (per Bjorn)
+- rewrite commit log about PMU counters, also update doc (per Bjorn)
+- extend driver to support stat time-based analysis and lane event at the same time (per Bjorn and Jonathan)
+Link: https://lore.kernel.org/linux-arm-kernel/20231012032856.2640-2-xueshuai@linux.alibaba.com/T/
+
+changes since v6:
+- improve editorial things in doc (Per Jonathan)
+- change config help to generic text (Per Jonathan)
+- remove macro to_dwc_pcie_pmu by moving pmu as the first member to struct dwc_pcie_pmu (Per Yicong)
+- add event type check in dwc_pcie_event_show() to keep consistent with other function (Per Jonathan)
+- remove intended blank line (Per Yicong)
+- protect against lower 32 bits of counter overflow by try again trick (Per Jonathan)
+- call pci_dev_put on all the return branch to keep the refcnt balance (Per Jonathan and Yicong)
+- use devm_add_action_or_reset() to automatic unwind (Per Jonathan)
+- fix picking numa-aware context cpu up when offline and offline cpu (Per Jonathan)
+- simplify online cpu by init pcie_pmu->on_cpu as -1 (Per Jonathan)
+- add bus_register_notifier() to handle rootport hotplug (Per Yicong)
+- pick up Acked-by from Bjorn for patch 2/4 (Per Bjorn)
+Link: https://lore.kernel.org/lkml/20230606074938.97724-1-xueshuai@linux.alibaba.com/T/
+
+changes since v5:
+- Rewrite the commit log to follow policy in pci_ids.h (Bjorn Helgaas)
+- return error code when __dwc_pcie_pmu_probe failed (Baolin Wang)
+- call 'cpuhp_remove_multi_state()' when exiting the driver. (Baolin Wang)
+- pick up Review-by tag from Baolin for Patch 1 and 3
+Link: https://lore.kernel.org/lkml/ZGuSimj1cuQl3W5L@bhelgaas/T/#mba3fa2572dde0deddb40b5b24a31f4df41004bdf
+
+changes since v4:
+
+1. addressing commens from Bjorn Helgaas:
+- reorder the includes by alpha
+- change all macros with upper-case hex
+- change ras_des type into u16
+- remove unnecessary outer "()"
+- minor format changes
+
+2. Address commensts from Jonathan Cameron:
+- rewrite doc and add a example to show how to use lane event
+
+3. fix compile error reported by: kernel test robot
+- remove COMPILE_TEST and add depend on PCI in kconfig
+- add Reported-by: kernel test robot <lkp@intel.com>
+
+Changes since v3:
+
+1. addressing comments from Robin Murphy:
+- add a prepare patch to define pci id in linux/pci_ids.h
+- remove unnecessary 64BIT dependency
+- fix DWC_PCIE_PER_EVENT_OFF/ON macro
+- remove dwc_pcie_pmu struct and move all its fileds into dwc_pcie_rp_info
+- remove unnecessary format field show
+- use sysfs_emit() instead of all the assorted sprintf() and snprintf() calls.
+- remove unnecessary spaces and remove unnecessary cast to follow event show convention
+- remove pcie_pmu_event_attr_is_visible
+- fix a refcout leak on error branch when walk pci device in for_each_pci_dev
+- remove bdf field from dwc_pcie_rp_info and calculate it at runtime
+- finish all the checks before allocating rp_info to avoid hanging wasted memory
+- remove some unused fields
+- warp out control register configuration from sub function to .add()
+- make function return type with a proper signature
+- fix lane event count enable by clear DWC_PCIE_CNT_ENABLE field first
+- pass rp_info directly to the read_*_counter helpers and in start, stop and add callbacks
+- move event type validtion into .event_init()
+- use is_sampling_event() to be consistent with everything else of pmu drivers
+- remove unnecessary dev_err message in .event_init()
+- return EINVAL instead EOPNOTSUPP for not a valid event 
+- finish all the checks before start modifying the event
+- fix sibling event check by comparing event->pmu with sibling->pmu
+- probe PMU for each rootport independently
+- use .update() as .read() directly
+- remove dynamically generating symbolic name of lane event
+- redefine static symbolic name of lane event and leave lane filed to user
+- add CPU hotplug support
+
+2. addressing comments from Baolin:
+- add a mask to avoid possible overflow
+
+Changes since v2 addressing comments from Baolin:
+- remove redundant macro definitions
+- use dev_err to print error message
+- change pmu_is_register to boolean
+- use PLATFORM_DEVID_NONE macro
+- fix module author format
+
+Changes since v1:
+
+1. address comments from Jonathan:
+- drop marco for PMU name and VSEC version
+- simplify code with PCI standard marco
+- simplify code with FIELD_PREP()/FIELD_GET() to replace shift marco
+- name register filed with single _ instead double
+- wrap dwc_pcie_pmu_{write}_dword out and drop meaningless snaity check 
+- check vendor id while matching vesc with pci_find_vsec_capability()
+- remove RP_NUM_MAX and use a list to organize PMU devices for rootports
+- replace DWC_PCIE_CREATE_BDF with standard PCI_DEVID
+- comments on riping register together
+
+2. address comments from Bjorn:
+- rename DWC_PCIE_VSEC_ID to DWC_PCIE_VSEC_RAS_DES_ID
+- rename cap_pos to ras_des
+- simplify declare of device_attribute with DEVICE_ATTR_RO
+- simplify code with PCI standard macro and API like pcie_get_width_cap()
+- fix some code style problem and typo
+- drop meaningless snaity check of container_of
+
+3. address comments from Yicong:
+- use sysfs_emit() to replace sprintf()
+- simplify iteration of pci device with for_each_pci_dev
+- pick preferred CPUs on a near die and add comments
+- unregister PMU drivers only for failed ones
+- log on behalf PMU device and give more hint
+- fix some code style problem
+
+(Thanks for all comments and they are very valuable to me)
+
+Cover Letter
+==========
+
+This patchset adds the PCIe Performance Monitoring Unit (PMU) driver support
+for T-Head Yitian 710 SoC chip. Yitian 710 is based on the Synopsys PCI Express
+Core controller IP which provides statistics feature.
+
+Shuai Xue (4):
+  docs: perf: Add description for Synopsys DesignWare PCIe PMU driver
+  PCI: Add Alibaba Vendor ID to linux/pci_ids.h
+  drivers/perf: add DesignWare PCIe PMU driver
+  MAINTAINERS: add maintainers for DesignWare PCIe PMU driver
+
+ .../admin-guide/perf/dwc_pcie_pmu.rst         |  94 +++
+ Documentation/admin-guide/perf/index.rst      |   1 +
+ MAINTAINERS                                   |   7 +
+ drivers/infiniband/hw/erdma/erdma_hw.h        |   2 -
+ drivers/perf/Kconfig                          |   7 +
+ drivers/perf/Makefile                         |   1 +
+ drivers/perf/dwc_pcie_pmu.c                   | 756 ++++++++++++++++++
+ include/linux/pci_ids.h                       |   2 +
+ 8 files changed, 868 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/admin-guide/perf/dwc_pcie_pmu.rst
+ create mode 100644 drivers/perf/dwc_pcie_pmu.c
+
+-- 
+2.39.3
+
