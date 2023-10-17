@@ -2,53 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 411937CC821
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 075647CC822
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344533AbjJQPyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 11:54:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57694 "EHLO
+        id S1344200AbjJQPyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 11:54:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235105AbjJQPxu (ORCPT
+        with ESMTP id S235129AbjJQPxw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 11:53:50 -0400
-Received: from mail-ot1-f80.google.com (mail-ot1-f80.google.com [209.85.210.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F4C1F9
+        Tue, 17 Oct 2023 11:53:52 -0400
+Received: from mail-oa1-f77.google.com (mail-oa1-f77.google.com [209.85.160.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE756112
         for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 08:53:46 -0700 (PDT)
-Received: by mail-ot1-f80.google.com with SMTP id 46e09a7af769-6c0f174540cso8265439a34.2
+Received: by mail-oa1-f77.google.com with SMTP id 586e51a60fabf-1e9c315a081so6835627fac.0
         for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 08:53:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697558025; x=1698162825;
+        d=1e100.net; s=20230601; t=1697558026; x=1698162826;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=lUZ0de+MvZvkBI+v56kYAAGsEXZomKaCXv/rWu5w7Kg=;
-        b=uV0+ELLXUwNN0UGccYPtFA+My13wZ5YHm2IXZulzC/mhWLauivDrHAy5wjZkTdM/Nd
-         DzrFdTEFwCHhyNyLMP5iVn5aoFYPpOLx5YSwhpJITLO29zhCSmvPkLWOJgiK0R7kLLb8
-         1slfuna1idaUG5zoz/ylo1oGAzLOz9JnMfLYGS3CFomnkFeTLGMQ1t7c/2u7/F9Wl15N
-         xAvCZs7N4bltQmGEOxpi+QWuAY1/p+yE4kdGJ6tMmm0NepetzqPu2DtCfAujwu4jzhlY
-         dMqiMSo1/kXYiyu7PSce5z9L7n8396cbFIHNBtjL3zw8STQZ+amJ0jQG7xhailxsy92t
-         nyaA==
-X-Gm-Message-State: AOJu0YyFiQZ7UJBSRwvfUzSfR9X4AFx+ZJfQi50EiqOUWgmw9N97/Q6y
-        GZH5Pbc2Pm148EWc9/8vFC05FB9BzMl0CV/meC/MEjl44Qf6
-X-Google-Smtp-Source: AGHT+IGDyNvYe1mxxsf+pTLt5whcHcfl6lOC9wzaf4wyVb/FuHFawAeA79RfYrArTvY/jzrZ/w/COCrkx1E15meSmYGttPuplKMX
+        bh=KSb0XyCU38BNui475xyYgCEOUAo9lpZ5H7S1vx0SMI8=;
+        b=pvTPSw8JASaFiNxLENqc0Bp/BjnycBWEgZuZH+LmCvw40RcNx+ESbih70Me+MeT+CK
+         DhPwwkx2VT6RUvWo9+OxIe4fnX4+Bs5ZjrPMEAJP7yYucbeVFz0eqA4o2NLVtvfbajIF
+         cTBtjC7ocRYrg2ab9qkZClvq1WeHLvFPhRcbpxtsoPOE4frRSCMF2qSRXPBoRrWVqNkd
+         QD8WBz1Ik68e3TnWDQensJ2aYiP3T0m/uyrkrtla7F389U3jd8oJBARQTXiN+8qL74f4
+         94uZslsju9lqj3rUmpotlbtOFL/F5twwWt0VF4DGvZHHptx57LIlxR5br9geYlWRklEY
+         RbtA==
+X-Gm-Message-State: AOJu0YxVrV0MFn2bQCaExrDQ5n8e9NjmL1qGa0n2kqs+4DrZDPxiinCu
+        Gvih5HIQiSqQq1AUf9ppHyujGYMMhVPIvAeBgpZdRKpss/yM
+X-Google-Smtp-Source: AGHT+IEGQT98DKVHdiFnHMkzKzazgsdC17X7KhLEqVs3JN8DOyFE591GTNasywWXN1MShMGWKANruRmWJVdbMQYlSsUVSiMhjeT3
 MIME-Version: 1.0
-X-Received: by 2002:a9d:7082:0:b0:6ba:8e4a:8e62 with SMTP id
- l2-20020a9d7082000000b006ba8e4a8e62mr744031otj.7.1697558025539; Tue, 17 Oct
+X-Received: by 2002:a05:6870:8197:b0:1e9:a86f:ec44 with SMTP id
+ k23-20020a056870819700b001e9a86fec44mr899339oae.2.1697558025799; Tue, 17 Oct
  2023 08:53:45 -0700 (PDT)
 Date:   Tue, 17 Oct 2023 08:53:45 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000019171d0607eb8786@google.com>
-Subject: [syzbot] [btrfs?] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low! (3)
-From:   syzbot <syzbot+6aa88a2d31fbec170f8b@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+Message-ID: <0000000000001d10130607eb873a@google.com>
+Subject: [syzbot] [bfs?] WARNING in mark_buffer_dirty (6)
+From:   syzbot <syzbot+d98fd19acd08b36ff422@syzkaller.appspotmail.com>
+To:     aivazian.tigran@gmail.com, linux-fsdevel@vger.kernel.org,
         linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=1.0 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,PLING_QUERY,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -59,68 +58,69 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    c295ba49917a Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=135804fe680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f27cd6e68911e026
-dashboard link: https://syzkaller.appspot.com/bug?extid=6aa88a2d31fbec170f8b
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17d48d09680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13498275680000
+HEAD commit:    727fb8376504 Merge tag 'input-for-v6.6-rc5' of git://git.k..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=165b5361680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=32d0b9b42ceb8b10
+dashboard link: https://syzkaller.appspot.com/bug?extid=d98fd19acd08b36ff422
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12ab3d03680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1651329d680000
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/045554f2bee6/disk-c295ba49.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/ba2705f8a872/vmlinux-c295ba49.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/e36242e95b79/Image-c295ba49.gz.xz
-mounted in repro #1: https://storage.googleapis.com/syzbot-assets/39a4eecc45c3/mount_0.gz
-mounted in repro #2: https://storage.googleapis.com/syzbot-assets/3a9106a526c9/mount_1.gz
+disk image: https://storage.googleapis.com/syzbot-assets/756c4ab74278/disk-727fb837.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f8c21021e277/vmlinux-727fb837.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/46bc1f7ddaac/bzImage-727fb837.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/05fb682fb025/mount_0.gz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6aa88a2d31fbec170f8b@syzkaller.appspotmail.com
+Reported-by: syzbot+d98fd19acd08b36ff422@syzkaller.appspotmail.com
 
-BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
-turning off the locking correctness validator.
-CPU: 0 PID: 11455 Comm: kworker/u4:4 Not tainted 6.6.0-rc6-syzkaller-gc295ba49917a #0
+loop0: detected capacity change from 0 to 64
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 5092 at fs/buffer.c:1188 mark_buffer_dirty+0x376/0x3e0 fs/buffer.c:1188
+Modules linked in:
+CPU: 0 PID: 5092 Comm: syz-executor341 Not tainted 6.6.0-rc5-syzkaller-00243-g727fb8376504 #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-Workqueue: btrfs-qgroup-rescan btrfs_work_helper
-Call trace:
- dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
- show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
- dump_stack+0x1c/0x28 lib/dump_stack.c:113
- lookup_chain_cache_add kernel/locking/lockdep.c:3815 [inline]
- validate_chain kernel/locking/lockdep.c:3836 [inline]
- __lock_acquire+0x1c60/0x75e8 kernel/locking/lockdep.c:5136
- lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5753
- __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
- _raw_spin_lock+0x48/0x60 kernel/locking/spinlock.c:154
- spin_lock include/linux/spinlock.h:351 [inline]
- btrfs_reduce_alloc_profile fs/btrfs/block-group.c:83 [inline]
- btrfs_get_alloc_profile+0x2b8/0xad4 fs/btrfs/block-group.c:138
- get_alloc_profile_by_root fs/btrfs/extent-tree.c:2508 [inline]
- btrfs_reserve_extent+0x1b8/0x674 fs/btrfs/extent-tree.c:4502
- btrfs_alloc_tree_block+0x1b0/0x1444 fs/btrfs/extent-tree.c:4931
- __btrfs_cow_block+0x3f4/0x1924 fs/btrfs/ctree.c:546
- btrfs_cow_block+0x314/0xa0c fs/btrfs/ctree.c:724
- btrfs_search_slot+0xb8c/0x29d8
- btrfs_update_root+0xe4/0xa88 fs/btrfs/root-tree.c:137
- commit_fs_roots+0x428/0x69c fs/btrfs/transaction.c:1473
- btrfs_commit_transaction+0x10ec/0x2dd4 fs/btrfs/transaction.c:2418
- btrfs_qgroup_rescan_worker+0x15fc/0x1674 fs/btrfs/qgroup.c:3417
- btrfs_work_helper+0x340/0x1504 fs/btrfs/async-thread.c:314
- process_one_work+0x694/0x1204 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x938/0xef4 kernel/workqueue.c:2784
- kthread+0x288/0x310 kernel/kthread.c:388
- ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
-BTRFS info (device loop3): qgroup scan completed (inconsistency flag cleared)
-BTRFS info (device loop1): qgroup scan completed (inconsistency flag cleared)
-BTRFS info (device loop2): qgroup scan completed (inconsistency flag cleared)
-BTRFS info (device loop4): qgroup scan completed (inconsistency flag cleared)
-BTRFS info (device loop2): qgroup scan completed (inconsistency flag cleared)
-BTRFS info (device loop3): qgroup scan completed (inconsistency flag cleared)
+RIP: 0010:mark_buffer_dirty+0x376/0x3e0 fs/buffer.c:1188
+Code: e9 ff e6 89 ff e8 fa e6 89 ff 48 89 ef e8 42 87 e7 ff 5b 5d e9 eb e6 89 ff e8 e6 e6 89 ff 0f 0b e9 10 fe ff ff e8 da e6 89 ff <0f> 0b e9 b7 fc ff ff e8 ce e6 89 ff 0f 0b e9 d6 fc ff ff 48 89 df
+RSP: 0018:ffffc90003bcf968 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888076754488 RCX: 0000000000000000
+RDX: ffff8880268f1dc0 RSI: ffffffff81fde006 RDI: 0000000000000001
+RBP: ffff888076753e00 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000009
+R13: ffff8880275ca000 R14: dffffc0000000000 R15: ffffed1004eb942c
+FS:  00007ff0e3a7f6c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020004000 CR3: 00000000177ca000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ bfs_move_block fs/bfs/file.c:43 [inline]
+ bfs_move_blocks fs/bfs/file.c:56 [inline]
+ bfs_get_block+0x37f/0xdd0 fs/bfs/file.c:125
+ __block_write_begin_int+0x3c0/0x1560 fs/buffer.c:2120
+ __block_write_begin fs/buffer.c:2169 [inline]
+ block_write_begin+0xb1/0x490 fs/buffer.c:2228
+ bfs_write_begin+0x31/0xd0 fs/bfs/file.c:177
+ generic_perform_write+0x278/0x600 mm/filemap.c:3969
+ __generic_file_write_iter+0x1f9/0x240 mm/filemap.c:4064
+ generic_file_write_iter+0xe3/0x350 mm/filemap.c:4090
+ call_write_iter include/linux/fs.h:1956 [inline]
+ new_sync_write fs/read_write.c:491 [inline]
+ vfs_write+0x650/0xe40 fs/read_write.c:584
+ ksys_write+0x12f/0x250 fs/read_write.c:637
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7ff0e3ac2b99
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ff0e3a7f218 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007ff0e3b4a6c8 RCX: 00007ff0e3ac2b99
+RDX: 000000000208e24b RSI: 0000000020000440 RDI: 0000000000000004
+RBP: 00007ff0e3b4a6c0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ff0e3b170c0
+R13: 00007ff0e3b1706b R14: 0030656c69662f2e R15: 0031656c69662f2e
+ </TASK>
 
 
 ---
