@@ -2,101 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC26B7CB874
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 04:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53AE67CB883
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 04:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232701AbjJQCfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 22:35:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33788 "EHLO
+        id S234032AbjJQCjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 22:39:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230209AbjJQCfv (ORCPT
+        with ESMTP id S234068AbjJQCjB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 22:35:51 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E7FF5
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 19:35:49 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6b26a3163acso2892393b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 19:35:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697510149; x=1698114949; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=adVf8A3/crcNLY+ksyRtmx34jr6J2QTaDzuwLDhSC/s=;
-        b=Lt33BIaF8M3vgXzAktzPeOCZQJtMzROIH0rTkEmU4WB4VyQgPZ5dICM7EiKGYH1un0
-         MMCAb1TVsow8k1CYxK2tTi0Tuvrdwi9Sax/17qdvpnRfw5PRkai8pcdyeJeVwvZUpcxf
-         1x+2eNJtO3oKXjmg4jhK31Peb+u7KDvHSeTRhLi/8oBPjuGMlN/7Z7CMHVHU0MEufMjw
-         MZgoUNt0Oie9seAda+OT9yqxyKTwLoFz7wrAN9EiGjMZI3ryUUX8V3NuykPma3Cu9Een
-         yg8bE5p0TEIslzbjNwbo1CWc3Ev2WrIqb+rPApcrhMam1Hfsj9Z5bIK+pVcNctwHadQB
-         bfqw==
+        Mon, 16 Oct 2023 22:39:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1743EF0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 19:38:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697510295;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jLFBGnIpAzynaCLSWbQnRiqRNf9pByil8XHxQ2oSj4w=;
+        b=O7qKi/EO1lPDzXULnZGyKoBwu13Ihe1OoZtQLdeAGkxyb9EwTDJPXoH/B/OXleGv2OPYzo
+        VKgxqTvQQMBYWlINsgLgX4MQhOsX+afqaSYXr7lMcM38gSWzSuOy6PTywAmqNadeAdeep/
+        IZp3f6HfNwR9wafmYLSaC3C4Vvjg08o=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-279-BVnwgSsqNjedNrKT67qRdw-1; Mon, 16 Oct 2023 22:38:13 -0400
+X-MC-Unique: BVnwgSsqNjedNrKT67qRdw-1
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-5079f6c127cso2879070e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 19:38:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697510149; x=1698114949;
-        h=content-disposition:mime-version:message-id:subject:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=adVf8A3/crcNLY+ksyRtmx34jr6J2QTaDzuwLDhSC/s=;
-        b=sJajkY0164ybtMY1plF9wLca59XFLInYkcE6Xhqyhx4s7xM/eMfrPT2RsrCiMLpA/F
-         k657k2/jTR3GkJDjelTprfp9+BbUoWEroHg8HYLpZzKydaMJoPh4iL20Qp6bMEA7n7+G
-         hbKCYAfF6r2+R6Qo+BO9dn2MrfOBZpvLx/sQfPkp2gIJSSbzb04k1fZye4CTkd7expmk
-         k9nrP+p9NWLtxU4VEQF0SuQVnq91ie4JRhJesNx8Je3aE/VQ9F9wCMA39oCb+yOdkL4A
-         0SA1dQOOodwCD9iHLisY/7e11uYqC3K6XxldchmiPdiBSvQ2jiVSmS0XsoY4s8IUwRYk
-         SPQQ==
-X-Gm-Message-State: AOJu0YzpUM9bWcLohg9HvQQutY12i5bzgvM8Uc+GICd6VmfDRfZshlEC
-        t96Kwc8F0RkHTYh+JSsqwaE=
-X-Google-Smtp-Source: AGHT+IGsxCdNX8EsBwdlLG99DRr/sy9DKnvwetQovuD3b+34tn5DtoIYTWI4DKjHRYl0JJQ2+vjVbQ==
-X-Received: by 2002:a05:6a00:158f:b0:691:2d4:23b2 with SMTP id u15-20020a056a00158f00b0069102d423b2mr1185579pfk.15.1697510149277;
-        Mon, 16 Oct 2023 19:35:49 -0700 (PDT)
-Received: from ubuntu ([223.226.54.200])
-        by smtp.gmail.com with ESMTPSA id x28-20020aa79a5c000000b0068fb9f98467sm248234pfj.107.2023.10.16.19.35.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 19:35:48 -0700 (PDT)
-Date:   Mon, 16 Oct 2023 19:35:44 -0700
-From:   Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
-To:     Vaibhav Agarwal <vaibhav.sr@gmail.com>,
-        Mark Greer <mgreer@animalcreek.com>,
-        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: greybus: Modify lines end with a '('
-Message-ID: <20231017023544.GA6684@ubuntu>
+        d=1e100.net; s=20230601; t=1697510292; x=1698115092;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jLFBGnIpAzynaCLSWbQnRiqRNf9pByil8XHxQ2oSj4w=;
+        b=eiYT24a16zfkY++KBjN3UuEK5fSFQkD4EEdUU6Wzan28kUomAkB4w5tfBkQA5v4ZVj
+         ZWWP7pqLf6eg+56Oufji6oJXxsgTmFmLsoaPXxGGZO4hPew8h87bkXdUKXivCbqQCKPl
+         MqD0rDkhl88VrMHdK7vsjiqAmBTBjPkqPJ8nFH1hiFh1c1kdo+SafR7vt9KSWL84RpG8
+         nKDQNlUBTTUWjAGUOSrVLWbUEiuyZ8B8BtMb0jrFpRy11AOceftGlTIxJgdncvYfvRZt
+         brVxp4KnwWaGNhuBYuslGaMcqogLe+RlLzN5g4BN9RWDDPHpVw94Hk19FVTRdl0ii30Q
+         NnRA==
+X-Gm-Message-State: AOJu0YyhWbPF8VsXSkU3TK1Zi/RYdXm6MkadgnLL1VjqO/6LFybKgkjM
+        jDnb97+phZD6+KInQv5Cb1XMLD6d7VblllH8wz5K/mDEDyS0iAT0USihumTbWu3DHdS4H0AL9sO
+        6M9/1ybj2AXuUPcdoTuNEif2HSKdDCy5EdIUtjZ+K
+X-Received: by 2002:a19:7616:0:b0:506:8e27:7ce9 with SMTP id c22-20020a197616000000b005068e277ce9mr773827lff.16.1697510292106;
+        Mon, 16 Oct 2023 19:38:12 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGwD5883Y6d40R7U3CghOpbHBfm9xN2dxJWP8byeoC8zFnDP5U2UV48wLUupwqJd40JvPd+TfwSf9k5qjsrlt4=
+X-Received: by 2002:a19:7616:0:b0:506:8e27:7ce9 with SMTP id
+ c22-20020a197616000000b005068e277ce9mr773811lff.16.1697510291790; Mon, 16 Oct
+ 2023 19:38:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231015141644.260646-1-akihiko.odaki@daynix.com>
+ <20231015141644.260646-2-akihiko.odaki@daynix.com> <CAADnVQLfUDmgYng8Cw1hiZOMfWNWLjbn7ZGc4yOEz-XmeFEz5Q@mail.gmail.com>
+ <2594bb24-74dc-4785-b46d-e1bffcc3e7ed@daynix.com> <CAADnVQ+J+bOtvEfdvgUse_Rr07rM5KOZ5DtAmHDgRmi70W68+g@mail.gmail.com>
+In-Reply-To: <CAADnVQ+J+bOtvEfdvgUse_Rr07rM5KOZ5DtAmHDgRmi70W68+g@mail.gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Tue, 17 Oct 2023 10:38:00 +0800
+Message-ID: <CACGkMEs22078F7rSLEz6eQabkZZ=kujSONUNMThZz5Gp=YiidQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 1/7] bpf: Introduce BPF_PROG_TYPE_VNET_HASH
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Akihiko Odaki <akihiko.odaki@daynix.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Yuri Benditovich <yuri.benditovich@daynix.com>,
+        Andrew Melnychenko <andrew@daynix.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adhere to linux coding style. Reported by checkpatch.pl:
-CHECK: Lines should not end with a '('
+On Tue, Oct 17, 2023 at 7:53=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Sun, Oct 15, 2023 at 10:10=E2=80=AFAM Akihiko Odaki <akihiko.odaki@day=
+nix.com> wrote:
+> >
+> > On 2023/10/16 1:07, Alexei Starovoitov wrote:
+> > > On Sun, Oct 15, 2023 at 7:17=E2=80=AFAM Akihiko Odaki <akihiko.odaki@=
+daynix.com> wrote:
+> > >>
+> > >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > >> index 0448700890f7..298634556fab 100644
+> > >> --- a/include/uapi/linux/bpf.h
+> > >> +++ b/include/uapi/linux/bpf.h
+> > >> @@ -988,6 +988,7 @@ enum bpf_prog_type {
+> > >>          BPF_PROG_TYPE_SK_LOOKUP,
+> > >>          BPF_PROG_TYPE_SYSCALL, /* a program that can execute syscal=
+ls */
+> > >>          BPF_PROG_TYPE_NETFILTER,
+> > >> +       BPF_PROG_TYPE_VNET_HASH,
+> > >
+> > > Sorry, we do not add new stable program types anymore.
+> > >
+> > >> @@ -6111,6 +6112,10 @@ struct __sk_buff {
+> > >>          __u8  tstamp_type;
+> > >>          __u32 :24;              /* Padding, future use. */
+> > >>          __u64 hwtstamp;
+> > >> +
+> > >> +       __u32 vnet_hash_value;
+> > >> +       __u16 vnet_hash_report;
+> > >> +       __u16 vnet_rss_queue;
+> > >>   };
+> > >
+> > > we also do not add anything to uapi __sk_buff.
+> > >
+> > >> +const struct bpf_verifier_ops vnet_hash_verifier_ops =3D {
+> > >> +       .get_func_proto         =3D sk_filter_func_proto,
+> > >> +       .is_valid_access        =3D sk_filter_is_valid_access,
+> > >> +       .convert_ctx_access     =3D bpf_convert_ctx_access,
+> > >> +       .gen_ld_abs             =3D bpf_gen_ld_abs,
+> > >> +};
+> > >
+> > > and we don't do ctx rewrites like this either.
+> > >
+> > > Please see how hid-bpf and cgroup rstat are hooking up bpf
+> > > in _unstable_ way.
+> >
+> > Can you describe what "stable" and "unstable" mean here? I'm new to BPF
+> > and I'm worried if it may mean the interface stability.
+> >
+> > Let me describe the context. QEMU bundles an eBPF program that is used
+> > for the "eBPF steering program" feature of tun. Now I'm proposing to
+> > extend the feature to allow to return some values to the userspace and
+> > vhost_net. As such, the extension needs to be done in a way that ensure=
+s
+> > interface stability.
+>
+> bpf is not an option then.
+> we do not add stable bpf program types or hooks any more.
 
-Signed-off-by: Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
----
- drivers/staging/greybus/audio_manager_private.h | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+Does this mean eBPF could not be used for any new use cases other than
+the existing ones?
 
-diff --git a/drivers/staging/greybus/audio_manager_private.h b/drivers/staging/greybus/audio_manager_private.h
-index 2b3a766c7de7..daca5b48b986 100644
---- a/drivers/staging/greybus/audio_manager_private.h
-+++ b/drivers/staging/greybus/audio_manager_private.h
-@@ -12,10 +12,9 @@
- 
- #include "audio_manager.h"
- 
--int gb_audio_manager_module_create(
--	struct gb_audio_manager_module **module,
--	struct kset *manager_kset,
--	int id, struct gb_audio_manager_module_descriptor *desc);
-+int gb_audio_manager_module_create(struct gb_audio_manager_module **module,
-+				   struct kset *manager_kset, int id,
-+				   struct gb_audio_manager_module_descriptor *desc);
- 
- /* module destroyed via kobject_put */
- 
--- 
-2.25.1
+> If a kernel subsystem wants to use bpf it needs to accept the fact
+> that such bpf extensibility will be unstable and subsystem maintainers
+> can decide to remove such bpf support in the future.
+
+I don't see how it is different from the existing ones.
+
+Thanks
+
+>
 
