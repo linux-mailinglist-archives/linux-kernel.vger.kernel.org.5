@@ -2,79 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62CEC7CCA30
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 19:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BBFC7CCA32
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 19:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232208AbjJQRyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 13:54:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38814 "EHLO
+        id S1343981AbjJQRyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 13:54:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232025AbjJQRya (ORCPT
+        with ESMTP id S232025AbjJQRyd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 13:54:30 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D62B90
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 10:54:28 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40572aeb673so56687555e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 10:54:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697565266; x=1698170066; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MUUCkiu5vUAHLKvjzzzRJs8u1+C022EMiTeERsZUBSE=;
-        b=zYPdVUDaC2JicSkU4IMs9d9NBqFPCry6g4Ba4t6ARWvAGQoOVBygefGGeBhfDzH/Cn
-         1xHfyPbeQtmpAM0aj8eipbnl692o2eLCi/o1Nvrv6ENCr2u4MR7BsoKdDy8PfRTQZFMn
-         YVXd/Ni9hrdNlVwk+q/5ciZprB2KmKfZgi0q8rEuB7H3oMTCqo6Rt3Grm1W4+2nWm0Oy
-         ZuKva5akUaHLAkgQHNiZQVGhEv0U5iPdNsVxagXXNzqEIQp52FAhEjBmaC9fDpms5QJL
-         9UrNHxpHAc7cJuAZOjgKO6I63XU6M26RuOZOGuSb6gLd2MaXbuoI0wNBOqEDYO0IRG2G
-         RUXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697565266; x=1698170066;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MUUCkiu5vUAHLKvjzzzRJs8u1+C022EMiTeERsZUBSE=;
-        b=Sbuuseu9UJ9DizLsrKndUyG5dPn0P4GJ5WM18BpFIH82Esa8KeS2SXT8cBvxJ102kb
-         7DvkV9OuLwHxfx0ezQhGQom2oqJId79HnYUGug4Xe5deWZwTCLYeNoXJ2cYDfg9LlBDu
-         TLLx/VasdE9TAQzF7VTRQPYClE8di3llY5ndecNESTsLNKDTmtul0EXHAxIxRmcOrqqf
-         3J2Uhi6Ec1Nfv5i5UJcufFd5ol2gyxgkQj2/hlykL+7/csRRbF47e2Da6zqKAh90kvMF
-         cIBZ/UP6Z6y2SNdn4Vy801EP1xvQ0Pqzvp6MYGmfEGqk/qoOgxNaxJfyJ7e8h2vIiPkY
-         L4Cg==
-X-Gm-Message-State: AOJu0YxbLenJhajMWR45qmhg2f3ADn9Ij0XPonPbU3muA5IbxdZObqhZ
-        2vjAhJc4jnpx0gB7tC6kAi7mVw==
-X-Google-Smtp-Source: AGHT+IG505kDYsm+03qRLM/qO/s22ze8aCQIk76ph//q3WRXO4DCwOktsuci2V9jr+fr4BJ+ziIiuw==
-X-Received: by 2002:a05:600c:3114:b0:407:7e5f:ffb9 with SMTP id g20-20020a05600c311400b004077e5fffb9mr2450207wmo.9.1697565266528;
-        Tue, 17 Oct 2023 10:54:26 -0700 (PDT)
-Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.googlemail.com with ESMTPSA id v18-20020a05600c15d200b00406447b798bsm2221328wmf.37.2023.10.17.10.54.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Oct 2023 10:54:26 -0700 (PDT)
-Message-ID: <2d5190ed-5c95-4278-8e70-211a71de821b@linaro.org>
-Date:   Tue, 17 Oct 2023 19:54:25 +0200
-MIME-Version: 1.0
+        Tue, 17 Oct 2023 13:54:33 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2074.outbound.protection.outlook.com [40.107.220.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F36183
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 10:54:32 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RKfFWVFvZ3ryT7MvJrmCiTttbB9Gmm/0yqwrcb5uJpSU+Q1fS/2pQHLEv2YmyMdIp7Y+uAA/riVSh4BQQBRqQ/miRV6/5LVEWlnL18izsTBHaVNSOCfddWy38dInqG4bWJXi05Cy77VvOmldQ7jNJcrVjlfjFQ3y/zy1C02vWB6DDXs68qkTn0WeFQtfKjDGLJMboJoZL3xd5qJ8F6BaPa+XmQW2cz4ASmdtjprosIvR+tMCZAztPyfnGqlYlXR3p/YvUIMSJHSCV83VfGnrD8k4Nc/bt+YTQiG4K0uSz8jWaIF/yv6CA1M0qZ1Jh0gxYHU1w9WirxB+IiM+NKpUBA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dd36NJmPeJdJ+oQn7SaPNX+NhfRrJ3Z5xnAAtkAB9ps=;
+ b=GoDOCU9fd52h4jBOEEOldqu2o++5wYA/3RgS9T7RBZESu7QOGbxDjX0pjv25u0IfRq/LBKk1Q0xtpyz1N0g065CFz96tLybglLoBcDvKQ3tI8U2EzqoQNtwV2dzKQMSG8ccHfzksOX5V/MJlO6M5XI5EUE/i2Ee4bNkCdFfVTlBddjMFTdev8xaclgKAid5mWJwil/z6e03ikHslG4JlHp1TOhOihV6+dnGEBb59nckkth2Lsmm42AXucOoJqb/B9Zkq2gJWmlvvKXYBo9vlpU+M04kKUYUjZK4jD3i+ZdwsPfl5noHPvNcd42jRUk3IMxB2Tnje+nNXIDgMCHmjVA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dd36NJmPeJdJ+oQn7SaPNX+NhfRrJ3Z5xnAAtkAB9ps=;
+ b=AqUqptoyABM86kXTS3J05/eZlMY7DYInNZPPRU17MANbTDaaQGUOr6oYdEs56xKBUAo0V8HGoIFev3UFO9KGMtpISVrn6rMTMx4ePUljAi/iLpfDRkbOYN4KqnxlQec6lacuAs8acT1FPTJEfvv3faRAz4Gi/wPI+tkmoapwWmA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN9PR12MB5115.namprd12.prod.outlook.com (2603:10b6:408:118::14)
+ by IA1PR12MB8466.namprd12.prod.outlook.com (2603:10b6:208:44b::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.47; Tue, 17 Oct
+ 2023 17:54:28 +0000
+Received: from BN9PR12MB5115.namprd12.prod.outlook.com
+ ([fe80::2e40:ffd7:e752:644f]) by BN9PR12MB5115.namprd12.prod.outlook.com
+ ([fe80::2e40:ffd7:e752:644f%6]) with mapi id 15.20.6907.021; Tue, 17 Oct 2023
+ 17:54:28 +0000
+Message-ID: <54dfc01b-bd6b-4cf1-887a-749b45ede088@amd.com>
+Date:   Tue, 17 Oct 2023 13:54:25 -0400
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH][next] thermal: lvts: make some read-only arrays static
- const
+Subject: Re: [PATCH] drm/amdkfd: clean up some inconsistent indenting
 Content-Language: en-US
-To:     Colin Ian King <colin.i.king@gmail.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231017171655.177096-1-colin.i.king@gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <20231017171655.177096-1-colin.i.king@gmail.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        alexander.deucher@amd.com
+Cc:     Xinhui.Pan@amd.com, Abaci Robot <abaci@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, christian.koenig@amd.com
+References: <20231013032129.55504-1-jiapeng.chong@linux.alibaba.com>
+From:   Felix Kuehling <felix.kuehling@amd.com>
+Organization: AMD Inc.
+In-Reply-To: <20231013032129.55504-1-jiapeng.chong@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-ClientProxiedBy: YQBPR01CA0144.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c01:1::44) To BN9PR12MB5115.namprd12.prod.outlook.com
+ (2603:10b6:408:118::14)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5115:EE_|IA1PR12MB8466:EE_
+X-MS-Office365-Filtering-Correlation-Id: 25ba13f6-093a-49ac-8ca1-08dbcf3a1bc5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: o07t05xZuspgsHAWziIgihCQeFdh088e13Jbhsk34GeFEqqUt5KOdXxt2SARmv4oj0Zc8SqFXbsrbcg/yaL8AyB+xQ0BPJ8A1CUiEXPGSgiNhkssuGnLRqwoyRpWUZjsutVx97cn+unD54MoCk0rbKJI+sr8xU7byLwrojXk4UkbVIYUx/BJdyzJbsMK3kDH2cYk2oUtDyuKI4tcW2eh+Wk+GpRUQzl9mJz3nhlpjVL7Gt8jWg8MQVkJKRUNJ8vH2Xn8EJ1LGqmLlS3RODqtQVJpGWporwkxj0KFbLkg8JUvTVjgKZ6vANjdst5Izn90vSPxwAsmtXnQTUvDGO4Zy4WUZJGuyl253HoT2Ly4v4DJLamXCAW6V1NWuCQ4UGktod6HNmSJtqc1C+y/PtGoim34yqJo1klUA5dC0D9aYAmvysOMHkJKsdjYBuwC7XyumrIEVO0Ugq7mz6zI3Ke7aBBW/KNd1tes1uDoO7UCzNi7WYoB3fxd2+m8t83qzzsl6PVMoSfyeKkJs+aGv28snbQjMx2qEPbWQh3fDUijStlmAbMpnAxldDSQNNVuY9BR6efk21JdOweVfoGm9fOqwbi9N0fb2Lrw2ZyUPNnaiLlfG3n8xUnlfkT112l/3RySUJoTl2fLsSi9xGg9UJPzzQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5115.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(136003)(396003)(366004)(346002)(230922051799003)(1800799009)(451199024)(64100799003)(186009)(4326008)(8676002)(8936002)(38100700002)(4001150100001)(41300700001)(44832011)(5660300002)(86362001)(31696002)(2906002)(6506007)(36916002)(53546011)(6512007)(478600001)(6486002)(966005)(6666004)(36756003)(31686004)(83380400001)(26005)(66556008)(316002)(6636002)(66946007)(66476007)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eDhSdXNhem93LzlCZXBxeE1BanNpaGs5eE93cFpxbC8xZ0Nrb2UrOXNQVHc3?=
+ =?utf-8?B?dUU0MGg4ekxTZ1Jjblkrc2hnOWFQTnRUSHVteTJ4SDJQU1phYjJib2JYd2ha?=
+ =?utf-8?B?WnEzRndxeW1lSHlVTHQ0UlAwQWg5d1QzQ2dMOW1oR0JtYUtabERNc2NhanN5?=
+ =?utf-8?B?WXU4dDBzVlJnbmp0cEJRZmdpSFcybndmeXdiY3U1WCtYSWhIM1V2R0F5cHZK?=
+ =?utf-8?B?QTNtLzlUY1VYU1l4a1VyVCs3enBnREVEUkNaQ2NodWM0aGJFZ0dNVzFHMXVz?=
+ =?utf-8?B?UEE5ZG5ka1JIRnhvYk1EdWhxN3BZTGE0M2tLSjV5VFB4V0dscGNVOE45c3Vt?=
+ =?utf-8?B?VG5jSUZWcG1mbTVjMHVtVndxclpDbVpBMldrZkVudzY1dG5Ca3NNM3MwMU0w?=
+ =?utf-8?B?c2ZZakhqUDZHQXQxNEVaMUpPWVlhRmYyYWl0MWpsT3NCU0RmRlppWTV0ZVZT?=
+ =?utf-8?B?OGUyZmVkYm9lVThidUpiMXlTa2ZGQldlZG55dVlYQ242YnNsbG9aY2J1RTJE?=
+ =?utf-8?B?aUZkTVJqZlNtRHFQTnNmM0RSNit1ZzB2UkxGbWNzVEk4c2VXL3FiVC8xdzNI?=
+ =?utf-8?B?Z3gvdWJNNVplK2ZzQThOeHZjdmo1ZjEwV0Mrb0g3UVBMMlpZWlYwVHRSa3Fu?=
+ =?utf-8?B?dXkySEJKWkFVcUd1cWpzMDVXd3VZdGljNThNSyt4dTlEdXJKZFJlL0E0S1pR?=
+ =?utf-8?B?TWV6L25mZENuRDJxWndwQjZnN3RNaUpHUURtQk9QZkszUzhhYkRnLy9TNC9R?=
+ =?utf-8?B?ZXFuWVlPa2xjb2k1eWYvWGhqNTJMeWVCa1poS2QyczdTdFhES2NqTmtZczE3?=
+ =?utf-8?B?T2YzMTQwVDNsY01HdW5rSngzdDBpTHFQN2xOaWkwS2crOVYyMzhjeXM3Q216?=
+ =?utf-8?B?TGx5UHBUQXMvZjBDSjVUNHdPWnBFblZFdXNTZ0MxSzE0TjkrS3k3ZVY4dm0y?=
+ =?utf-8?B?OGZ0L2tvaGJwTzJwT3Z3VjFCK2h0c2EzZUtsT01HbEpSN1FkY0FONEtEZUZX?=
+ =?utf-8?B?VWd2Zkx6ZmtxaWVjYTEvRXo0a212SUJJOXBiemNndUQ3SnRxZDE1RGp2d0lq?=
+ =?utf-8?B?SDE3ZGw1ckh5amh0bjQ2b2JuamI5RytNWHRIc2Nsc09UZmorK3ZMVXNieUlU?=
+ =?utf-8?B?WHFsS0VmVlRTMmJKSVhMNXNPWjVua0xUWXd4KzNRYS9nUUxId1gramwvTDlC?=
+ =?utf-8?B?UVZyUUo5b3VNL09PVzlnakFORlBBZkJuWWk4Y3JDQVJVVW53eXBCckg2aWxs?=
+ =?utf-8?B?NGVJQWRZOFpnRVNXNTJOSFlMRlh6KzJnQ1dJMm5oZFA1M2lXKzJDcjdyVHcv?=
+ =?utf-8?B?Ly85T2ZLL0ZGYjk1bWh1NWFONGF0MDJ2bmkrTHlmQ3VOckZyNjgvRmZMQ0Vj?=
+ =?utf-8?B?RFFCazFyYnlWbkY1UFZyNjVtM0RuVjlGekhnNkpkVWxPcE0yd1hEdkcwMm8x?=
+ =?utf-8?B?Y2wwbzl1Ti9JNHBQNUJxQjYyVUlYRmZQYnNoVjhGNFliRy9COUhReGgxSUt6?=
+ =?utf-8?B?RXBDYzdDL1J0S3pqZDRVKzRnYzI1YkRjQnI4am9BZ3NGWTJ0NDB2dlFRREps?=
+ =?utf-8?B?ZWU0R0I4aDN1L3RGSGpaZFhaTzRiRU1sQUQ0VTRBTExteU9OYW5CYVN1ZUZM?=
+ =?utf-8?B?SUF4UmpoczVDaDRCZG1DTy8vbmp5ZG8xWlNvT05SSkU1UzlMcVRiSE9kNk1r?=
+ =?utf-8?B?VVhtWDFqYldtdm9va1BtOUtsK2NNNnNZSnNqeU51OHpML3NNNXZpRWxPS056?=
+ =?utf-8?B?dVFldHAwTGRzRDhycTJtbDgxdG5FZGV5eDU0azZQcFVHOEdyTSt2UTJySk9Z?=
+ =?utf-8?B?UXdyZGdFZDFqcjRQck1leXpyUVAwL2VtQnZ2WC95b0ZUZys5YmREc2xxYmk1?=
+ =?utf-8?B?YTM5ZmRLeWF6Z3JHUkh3MFloTlA3OWZMaWxwZUtGSkVhZlJsZ04xOGpvU0ph?=
+ =?utf-8?B?R3RuNDRsWUVESGlkcG1aTTFLNU5LeDU5VGo1RkZBa1BsZ1VTVDBJSVU5dE5p?=
+ =?utf-8?B?eDdVN0ZwV0UvUkw5ZytieUdUa0VVZXJmdDNtZ3VYeVRibldzTklsNXArQVRn?=
+ =?utf-8?B?QXF5Y3RrUER5VWNYdFBuWmdjQ3JaMy9OUVdCR0U5aDVzeU8xSm9GSGJjUHVV?=
+ =?utf-8?Q?0KePIYfG7KnOI241j8pBvR7ZM?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 25ba13f6-093a-49ac-8ca1-08dbcf3a1bc5
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5115.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Oct 2023 17:54:28.5426
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 28sAib4cUdduX6/kD6tu4K0UmAFiHNqMTe3My+sd2RlbtzWReiNLBlAGiI8pAT3URAxbVaXCbuPshU8GGSiYgA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8466
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -82,77 +127,39 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Hi Colin,
+On 2023-10-12 23:21, Jiapeng Chong wrote:
+> No functional modification involved.
+>
+> drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_svm.c:305 svm_range_free() warn: inconsistent indenting.
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6804
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-On 17/10/2023 19:16, Colin Ian King wrote:
-> Don't populate the read-only arrays on the stack, instead make them
-> static const. 
+The patch is
 
-Why ?
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
 
-> Make lvts_write_config parameters cmds and nr_cmds
-> const too.
-> 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+Applied to amd-staging-drm-next.
+
+Thanks,
+   Felix
+
+
 > ---
->   drivers/thermal/mediatek/lvts_thermal.c | 11 ++++++-----
->   1 file changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/thermal/mediatek/lvts_thermal.c b/drivers/thermal/mediatek/lvts_thermal.c
-> index 877a0e5ac3fd..b20e69cb466f 100644
-> --- a/drivers/thermal/mediatek/lvts_thermal.c
-> +++ b/drivers/thermal/mediatek/lvts_thermal.c
-> @@ -308,7 +308,7 @@ static int lvts_get_temp(struct thermal_zone_device *tz, int *temp)
+>   drivers/gpu/drm/amd/amdkfd/kfd_svm.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
+> index f4038b33c404..eef76190800c 100644
+> --- a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
+> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
+> @@ -302,7 +302,7 @@ static void svm_range_free(struct svm_range *prange, bool do_unmap)
+>   	for (gpuidx = 0; gpuidx < MAX_GPU_INSTANCE; gpuidx++) {
+>   		if (prange->dma_addr[gpuidx]) {
+>   			kvfree(prange->dma_addr[gpuidx]);
+> -				prange->dma_addr[gpuidx] = NULL;
+> +			prange->dma_addr[gpuidx] = NULL;
+>   		}
+>   	}
 >   
->   static void lvts_update_irq_mask(struct lvts_ctrl *lvts_ctrl)
->   {
-> -	u32 masks[] = {
-> +	static const u32 masks[] = {
->   		LVTS_MONINT_OFFSET_SENSOR0,
->   		LVTS_MONINT_OFFSET_SENSOR1,
->   		LVTS_MONINT_OFFSET_SENSOR2,
-> @@ -400,7 +400,7 @@ static irqreturn_t lvts_ctrl_irq_handler(struct lvts_ctrl *lvts_ctrl)
->   {
->   	irqreturn_t iret = IRQ_NONE;
->   	u32 value;
-> -	u32 masks[] = {
-> +	static const u32 masks[] = {
->   		LVTS_INT_SENSOR0,
->   		LVTS_INT_SENSOR1,
->   		LVTS_INT_SENSOR2,
-> @@ -781,7 +781,7 @@ static int lvts_ctrl_init(struct device *dev, struct lvts_domain *lvts_td,
->    * each write in the configuration register must be separated by a
->    * delay of 2 us.
->    */
-> -static void lvts_write_config(struct lvts_ctrl *lvts_ctrl, u32 *cmds, int nr_cmds)
-> +static void lvts_write_config(struct lvts_ctrl *lvts_ctrl, const u32 *cmds, const int nr_cmds)
->   {
->   	int i;
->   
-> @@ -865,7 +865,8 @@ static int lvts_ctrl_set_enable(struct lvts_ctrl *lvts_ctrl, int enable)
->   
->   static int lvts_ctrl_connect(struct device *dev, struct lvts_ctrl *lvts_ctrl)
->   {
-> -	u32 id, cmds[] = { 0xC103FFFF, 0xC502FF55 };
-> +	u32 id;
-> +	static const u32 cmds[] = { 0xC103FFFF, 0xC502FF55 };
->   
->   	lvts_write_config(lvts_ctrl, cmds, ARRAY_SIZE(cmds));
->   
-> @@ -889,7 +890,7 @@ static int lvts_ctrl_initialize(struct device *dev, struct lvts_ctrl *lvts_ctrl)
->   	/*
->   	 * Write device mask: 0xC1030000
->   	 */
-> -	u32 cmds[] = {
-> +	static const u32 cmds[] = {
->   		0xC1030E01, 0xC1030CFC, 0xC1030A8C, 0xC103098D, 0xC10308F1,
->   		0xC10307A6, 0xC10306B8, 0xC1030500, 0xC1030420, 0xC1030300,
->   		0xC1030030, 0xC10300F6, 0xC1030050, 0xC1030060, 0xC10300AC,
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
-
