@@ -2,156 +2,344 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 633117CCF0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 23:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 213627CCF15
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 23:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234147AbjJQVRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 17:17:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59050 "EHLO
+        id S234143AbjJQVUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 17:20:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJQVRD (ORCPT
+        with ESMTP id S230056AbjJQVUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 17:17:03 -0400
-Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44008C4;
-        Tue, 17 Oct 2023 14:17:01 -0700 (PDT)
-Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-1dd71c0a41fso3801393fac.2;
-        Tue, 17 Oct 2023 14:17:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697577417; x=1698182217; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DQG8MtBQiSnRV8n69T7HmV5t8yhCaq2M9pMbaLDDzpc=;
-        b=Ofk5Y6ypjYNIivQhBoM1TvF9v8MomZX0IedV7/+Y4lEjqgRd7oYsOVdyqywfviLym3
-         M930eFAgh5o+T96NeiTqY1UICmzjx3cnfWllmOhJ4HbZQqSjHW+m+vYtpYNSxgpZUyJc
-         LJ4+Jf7Ffkj/Cv0OhLvYfaR9FAL0iJ939kvc17fEmVR5rXmBnUnP1ChN8ldzhGBc9dgU
-         zacdL4DCqK8kP3TTrFuCqwREUjXsSROx3ssCAiw+9u+DlHC40mTFO6U/HgiDbQvv/T7Q
-         Xwt/LGAsJI4GB51xTxPJROlI0be+/3RfpSHtJSeCTEdn2tOL3kTC8KzkuGUu4+eAu2FZ
-         P1Gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697577417; x=1698182217;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DQG8MtBQiSnRV8n69T7HmV5t8yhCaq2M9pMbaLDDzpc=;
-        b=tcC4t5jz3OwB8EVTiZCketkBgKDp4VzhmcoIMyKGq2ltzMc2L5HYV/wJBTIxWiiCpO
-         qVLSoKc2hZrEh6MzK/Bet97xl/0JkKgHotvOzmWVxK0m95EnSSBmiXRCduEAzF4ueE8y
-         OunnCUPUL+0Tpiw+1+UWJb3znNwF0X46CJTwNd6gmXkmJzs2OGueGCJhDMcWMLQmGUSw
-         TXpXMY7JtcEr9KqUtlvDuQKefGhTC3DnqmBMFLLWiyW2KoAJu8TeufsIyuiSM9NwLbmX
-         4hpDEthuEIoAJI8zHmmxE+Bpz979w7KOcUzjv3mlL0rvel+QXxiyqY7q78t0pOhGrDxQ
-         gjmg==
-X-Gm-Message-State: AOJu0YyQRVBv849UkqZb/4CgtI1OFb2c5X1SQgs3lHsDFqrAB9J6MfUQ
-        Tcr89b+VvfFy0jbbA/yPKNsJVJO1nLV2qEKoVCQ=
-X-Google-Smtp-Source: AGHT+IFIdnup1Pui0Ph3Sx3b6dyIUwP7KU7y+C7Voyy0lzypj5Ks7q5EsuqaHmjprmGcgrekVDP+pKHvrpPbrGFNJuA=
-X-Received: by 2002:a05:6870:1314:b0:1e9:9f9b:eb80 with SMTP id
- 20-20020a056870131400b001e99f9beb80mr3731834oab.46.1697577417041; Tue, 17 Oct
- 2023 14:16:57 -0700 (PDT)
+        Tue, 17 Oct 2023 17:20:03 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBBCED;
+        Tue, 17 Oct 2023 14:20:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697577601; x=1729113601;
+  h=from:to:cc:subject:date:message-id:
+   content-transfer-encoding:mime-version;
+  bh=wSJJFJPJTZEdMP7h1QmeXwlo5wkErIDqugAdEkCrHwY=;
+  b=KRZNocBalp/E51B/rXdeOhryGZWLAtbRUnytzONj4I0G4SxKYmhGkQFI
+   DqtXGG+qlHizE/3UMO/T+2K/IuB6fWR2QATwnPDbw9mFLSGNGGKbcHLKS
+   Ja1DUD04sNIWXgdsxeoVc4lpzpAKDsGBkVWVFk3uL6wxK/Um/s/iD8VpG
+   AMGHYqfx3iMhmSFjDoitR9tujhZTKo0wIjHU46Y9OC/keUloKNImeY9k9
+   FRArMQkERBkNQ6Kdw0vB4JMWMNYKCCzvY1G+2QoTL+RwP4O1OfO7fA/ay
+   owmBBzm6UkggCSxnv2WDt1L/d0XhRf5Nkx9eaDq2NDserb8gLIIxqbRXW
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="385717422"
+X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
+   d="scan'208";a="385717422"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 14:20:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
+   d="scan'208";a="4247626"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmviesa001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 17 Oct 2023 14:20:06 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Tue, 17 Oct 2023 14:20:00 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Tue, 17 Oct 2023 14:19:59 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Tue, 17 Oct 2023 14:19:59 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Tue, 17 Oct 2023 14:19:59 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Hhfy4EqUZQo8RWIEZCOGBU5jBUgAWFOqdKZ44PGOli6XIHnEU/rLtAJ9PHYA9aHh/RaONmq0SyDeZMYuupfUueTAPpWb4VPtW6ANzQSVdyQVXPUTZnp0R1aR+FL3EcBnC3oeCvrTvg5l9RuXuvmTK4lo3nsJJA9cTzQyVKzpuFqywr5aZSYe3cS9Ff4C9EwGhCVd1CFmnvwgvwzaJ2b8mP7eC9mBTTHX/7uHZlTyab83nopdFNf67cXWHE9h5qcGLOhRRrgt2NAxuOCdyUEiUD4PdEIhvEXCE3FeEqU5XheWkaEdsjhTMawlEaacASz53MsQgf5an+yv0hK8TA1FYA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DBzK1s+MAOEQnLAfj54wrctXy1STvCj1IHE71Wkvbpk=;
+ b=DeppIGCbQvdM6xmSG+SUbVDcRbMGke8RH3BXznWsy7tauta3V2B+H6FZSk6Lwmp8+YDfCYAvAx3kL3rgyHe24H+md0G5KV4VmamtVRIDf2seMsARgjudnmDJDZhwRcU7FueT2ol+/lOVWIwvkyjqs/CN9prO3jwAiqtwYKrXfbgh3xiCulXKmoURe1wmAe2ZaWonJaAzEVq6CyWneZAVzRafzUv5IZ7FTQer4l9xNQDEq065LEIzw9gqhDBiW0EWYkpQUQBzxnatrjbT3somxOyjHf92XWkjBANj3EBkErJKDu/QAfK6Ehvi2hhe7MJZrWVQs7ybfDeVv/6EQHkoVw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN0PR11MB6059.namprd11.prod.outlook.com (2603:10b6:208:377::9)
+ by SN7PR11MB7491.namprd11.prod.outlook.com (2603:10b6:806:349::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.35; Tue, 17 Oct
+ 2023 21:19:53 +0000
+Received: from MN0PR11MB6059.namprd11.prod.outlook.com
+ ([fe80::6d0b:5bc6:8723:593]) by MN0PR11MB6059.namprd11.prod.outlook.com
+ ([fe80::6d0b:5bc6:8723:593%7]) with mapi id 15.20.6886.034; Tue, 17 Oct 2023
+ 21:19:53 +0000
+From:   Rodrigo Vivi <rodrigo.vivi@intel.com>
+To:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <cw00.choi@samsung.com>, <kyungmin.park@samsung.com>,
+        <myungjoo.ham@samsung.com>, <digetx@gmail.com>,
+        <viresh.kumar@linaro.org>
+CC:     Rodrigo Vivi <rodrigo.vivi@intel.com>
+Subject: [RFC PATCH] PM / devfreq: introduce multiple devfreq devices per parent device
+Date:   Tue, 17 Oct 2023 17:19:44 -0400
+Message-ID: <20231017211944.192978-1-rodrigo.vivi@intel.com>
+X-Mailer: git-send-email 2.41.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SJ0PR03CA0076.namprd03.prod.outlook.com
+ (2603:10b6:a03:331::21) To MN0PR11MB6059.namprd11.prod.outlook.com
+ (2603:10b6:208:377::9)
 MIME-Version: 1.0
-References: <20231017080616.18970-1-colin.i.king@gmail.com>
-In-Reply-To: <20231017080616.18970-1-colin.i.king@gmail.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 17 Oct 2023 17:16:46 -0400
-Message-ID: <CADnq5_PemQtG4CeeDm4QvNMWF_O69AXD5k66R2C3OhWe8L6sdA@mail.gmail.com>
-Subject: Re: [PATCH][next] drm/amd/display: Fix a handful of spelling mistakes
- in dml_print output
-To:     Colin Ian King <colin.i.king@gmail.com>
-Cc:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Xinhui.Pan@amd.com, David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Qingqing Zhuo <Qingqing.Zhuo@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR11MB6059:EE_|SN7PR11MB7491:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0d918da3-bc38-40eb-6a09-08dbcf56cdc8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NDtmn4m+KL6zuVSjY3wr5YSiCgxVgB3LspjDUw5pFjoZExPVLrCfzY2ZtfHitocmnbw9ZY9kWZMujjKlLyrb9NeuirVqxsbmTjutG+PjS9XYJ0PktWtdnLY1s5mVSSZ3X3qwSEjlAkE9Lgiaw4yzP/I0pvkXKqTq3RkGgag6X2OTBrrumkJkkvXGSfTwqKRWsBvZBD4LVGKk2Q/ZqJkakCt1QBUiMkj7pPa3rE2Hda1wMbeqwHIv78OsJkeBqo23dUqm+D1dtd3sSLHowQly0sTXGtndMLh1PvnE5QmhfBnlMVNONV5tl9oGyPLcgn1Z6qlwVsG24pQVUET3JiGAuggzgW7Jx01DfZNA4aXoWFAOgEGhQHAuZglFZW3abYMlhLhIXsoAoI/VjnebuuVFuX3OXHUHFc4oQ1+ccWAZDvMjRLckOP3NBENSodgh1MTOoFjjAAFg4/akM6cY1dCezaKKJlG+cmwuwnTWUBeRtp1KjcNjR1WFG7OuLdFwSnlHdud/pns8DA29iO5dLmyA7i0Pm6ac33FvYJ128e9jN/IRqRADGFH/eDQHsiiLiOKO
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6059.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(396003)(136003)(366004)(376002)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(41300700001)(66476007)(66556008)(6666004)(478600001)(66946007)(6486002)(6506007)(1076003)(107886003)(26005)(6512007)(316002)(2616005)(5660300002)(4326008)(8676002)(8936002)(2906002)(44832011)(36756003)(38100700002)(83380400001)(86362001)(82960400001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4LYJjWuQ4VP0ZPGJy7ryKkS2RPzFHZSdHTz+VZygT7tsPEXi331A7dRD93Zo?=
+ =?us-ascii?Q?0LacpTxjEi9pArxM4pQXmIyKZa6ea8IpT1TwV0g+A9ynJgVI6Wk1xF4Zs/vK?=
+ =?us-ascii?Q?sRAlKpyIBmKAggRerEoxhU2Oo5BxopJrlnBAwJpK4x61iswZSTbrubQoJku6?=
+ =?us-ascii?Q?WMQE5oOAGNyhtIaCJ9YcKf9OwprIwbVDvNg9lI/7oKvNkSBUFpzm22q54xyB?=
+ =?us-ascii?Q?0EECbgHr0bll3RsiJyRyA6bl9n9hYf3TqLIw1mgKRfHj3sJpXjgTZcd0ULAW?=
+ =?us-ascii?Q?xnoh0yfQxZoOCs8JI3PzZdNweDrsfosVYqxuzyYwRjgOxbvernxMdzxmYvY9?=
+ =?us-ascii?Q?qYMFpyhquFPx9cXh2zCA18D9sLkOoAJfmfu/7//M4eCbJiylHyLBvLId+1hw?=
+ =?us-ascii?Q?MrP9t11xsNyFkoTSVqFLKKMrsOYH7jV/uVzV4fyT+cUDtP/RRy70P8+w7J6T?=
+ =?us-ascii?Q?UmnJGHmeXdBh8W4YGNb5ZRAzX7g5sh/g/4d/N70bAg6xYZAcjnSD2q4ftLHj?=
+ =?us-ascii?Q?nLFWCd8oVu7K5oHJd13fjM9mIzq4wOdm4uO22MLQiKbW7mHNaF4DdWdAfK0Q?=
+ =?us-ascii?Q?/qdkwHSIBz4Uug5OZkmg2JRE38EZ10Nr8wCVnHV8S8tQVX5LgZJKq7t35c0Q?=
+ =?us-ascii?Q?JpuNI0k+d/HO1H5AszTZk8tf5sRuWoGfcw9c1YcIXU1dbQyLKZs8fs8B/mhF?=
+ =?us-ascii?Q?H+bygUhHQYWzbxoeVxD48NICXoa5zw8DfzMcmgG9KrDu0ZqQPcx9CnD9Esaf?=
+ =?us-ascii?Q?M40Y0EyO51QHDXA/7ESb62zqdcM7EvsQF54u9EKFpnuQyqU8UeyHACpAb/nY?=
+ =?us-ascii?Q?Wi8Jera1blbFpKpuljqzEyu9diZ2rb54+ue3j+4Cd13HDUvEqlJeHbnN4J7i?=
+ =?us-ascii?Q?SKdLFzO9Qrwsdt3hwsKCJGu+Fs4yAeL7qfSXSWZA06njHQ455qSZeF0QKJm5?=
+ =?us-ascii?Q?1soYNyvjPOE326nwUyzP1/xi28oeJ+6XR96pbwSiDgv/yPJB+TezBfXtrdzd?=
+ =?us-ascii?Q?hQRHFudipf/o4iEUT8ShAuK6SLUwMTyEhgLmtyG7xO3c7gBDJNTuXa4X4Rky?=
+ =?us-ascii?Q?bERX4ke7o4mi9c3ro91sa//nf5Wxew7EpVthd/2ekEwz6jk0bOBqGj5urBwq?=
+ =?us-ascii?Q?8zr8BSApMJdiMWL7KiHuA46o1je/hcZ7vJ3V22dBsju/i3LxvvhRZYbq+VTR?=
+ =?us-ascii?Q?WHa//ZOXrIuiecNRuhcHp6SrOLN0DXmh1wh+LMFCmgg36ztWnP3nhIeZmjVv?=
+ =?us-ascii?Q?37urFrkFzRNMzoXfcWP+9ujAFAwskf9pSZ/S1GOxiWmljK/LdEApm9b9skK7?=
+ =?us-ascii?Q?5xH5uxJ9Gq1yYdzW8SH9AaShcS5kZYtzGaU73pNwSfGgLAibRR2guJ5UYeWb?=
+ =?us-ascii?Q?sQO9fIKvq6ofsnpxWuM8Cu4bUpPOYC6pH8PKpYG8OqFluItcriEVJOWHd394?=
+ =?us-ascii?Q?EN+kBGsAG7vZSsLnuO3txNdrsQ66Vd6zLBUOqNl6Q3gjcPRfpwNDBFWJ13e4?=
+ =?us-ascii?Q?gKKtlrL+OnwYvfqnncZk3JOqNkVMTpWH9Vqti9gmrvWLW0XNuM6sAPck1lFn?=
+ =?us-ascii?Q?Fc+UQRa/iu6TFytaJEY2haOvk9HyJu5iWNzevjz2?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0d918da3-bc38-40eb-6a09-08dbcf56cdc8
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6059.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Oct 2023 21:19:53.2809
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Q3TA3dQ6zbGdSlNbZo5LhEGjPRI3b/LjxGPHaF5ClFjZw9XLvK7pg//iPzc6p3GnTdyg2E+AsojoQlb6vnYdlQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7491
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+Devfreq provides a very good standard for frequency management of
+a device. However it is limited to a single frequency control and
+governor per device with a hardcoded 1-1 match since devfreq device
+name inherits dev_name of the parent device.
 
-On Tue, Oct 17, 2023 at 4:22=E2=80=AFAM Colin Ian King <colin.i.king@gmail.=
-com> wrote:
->
-> There are a few spelling mistakes and an minor grammatical issue in
-> some dml_print messages. Fix these.
->
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
->  drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c b/dr=
-ivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c
-> index 851db026f251..218c355a97a4 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c
-> @@ -1507,7 +1507,7 @@ static dml_bool_t CalculatePrefetchSchedule(struct =
-display_mode_lib_scratch_st *
->                 dml_print("DML: Tvm: %fus - time to fetch page tables for=
- meta surface\n", s->TimeForFetchingMetaPTE);
->                 dml_print("DML: Tr0: %fus - time to fetch first row of da=
-ta pagetables and first row of meta data (done in parallel)\n", s->TimeForF=
-etchingRowInVBlank);
->                 dml_print("DML: Tsw: %fus =3D time to fetch enough pixel =
-data and cursor data to feed the scalers init position and detile\n", (dml_=
-float_t)s->LinesToRequestPrefetchPixelData * s->LineTime);
-> -               dml_print("DML: To: %fus - time for propogation from scal=
-er to optc\n", (*p->DSTYAfterScaler + ((dml_float_t) (*p->DSTXAfterScaler) =
-/ (dml_float_t)p->myPipe->HTotal)) * s->LineTime);
-> +               dml_print("DML: To: %fus - time for propagation from scal=
-er to optc\n", (*p->DSTYAfterScaler + ((dml_float_t) (*p->DSTXAfterScaler) =
-/ (dml_float_t)p->myPipe->HTotal)) * s->LineTime);
->                 dml_print("DML: Tvstartup - TSetup - Tcalc - Twait - Tpre=
- - To > 0\n");
->                 dml_print("DML: Tslack(pre): %fus - time left over in sch=
-edule\n", p->VStartup * s->LineTime - s->TimeForFetchingMetaPTE - 2 * s->Ti=
-meForFetchingRowInVBlank - (*p->DSTYAfterScaler + ((dml_float_t) (*p->DSTXA=
-fterScaler) / (dml_float_t)p->myPipe->HTotal)) * s->LineTime - p->TWait - p=
-->TCalc - *p->TSetup);
->                 dml_print("DML: row_bytes =3D dpte_row_bytes (per_pipe) =
-=3D PixelPTEBytesPerRow =3D : %u\n", p->PixelPTEBytesPerRow);
-> @@ -9323,7 +9323,7 @@ void dml_core_mode_programming(struct display_mode_=
-lib_st *mode_lib, const struc
->                                 if (mode_lib->ms.policy.ImmediateFlipRequ=
-irement[k] !=3D dml_immediate_flip_not_required && locals->ImmediateFlipSup=
-portedForPipe[k] =3D=3D false) {
->                                         locals->ImmediateFlipSupported =
-=3D false;
->  #ifdef __DML_VBA_DEBUG__
-> -                                       dml_print("DML::%s: Pipe %0d not =
-supporing iflip\n", __func__, k);
-> +                                       dml_print("DML::%s: Pipe %0d not =
-supporting iflip\n", __func__, k);
->  #endif
->                                 }
->                         }
-> @@ -9376,7 +9376,7 @@ void dml_core_mode_programming(struct display_mode_=
-lib_st *mode_lib, const struc
->         if (locals->PrefetchAndImmediateFlipSupported) {
->                 dml_print("DML::%s: Good, Prefetch and flip scheduling so=
-lution found at VStartupLines=3D%u (MaxVStartupAllPlanes=3D%u)\n", __func__=
-, s->VStartupLines-1, s->MaxVStartupAllPlanes);
->         } else {
-> -               dml_print("DML::%s: Bad, Prefetch and flip scheduling sol=
-uation NOT found solution! (MaxVStartupAllPlanes=3D%u)\n", __func__, s->Max=
-VStartupAllPlanes);
-> +               dml_print("DML::%s: Bad, Prefetch and flip scheduling sol=
-ution did NOT find solution! (MaxVStartupAllPlanes=3D%u)\n", __func__, s->M=
-axVStartupAllPlanes);
->         }
->
->         //Watermarks and NB P-State/DRAM Clock Change Support
-> --
-> 2.39.2
->
+Although it suits well most of PCI devices out there, it currently
+limits its adoption on devices with multiple domain frequencies
+that could be seen as sub-devices.
+
+This patch introduces the optional string argument 'name'.
+
+When a name is given, the device itself is named with a generic
+'df<n>' where 'n' is the global devfreq's device counter.
+The given name is only visible at /sys/class/devfreq/df<n>/name.
+
+So, when a name is given, multiple devfreq devices can be created
+for a single parent device that is willing to address multiple
+frequencies domains or subdevices withing a PCI device for instance.
+
+When no name is given both the device name and the name file uses
+the the parent's device dev_name() and it is limited to a
+single devfreq device per parent-device, in order to respect the
+legacy usage and not break any backwards compatibility.
+
+Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+---
+
+This is mostly a RFC where the main answer that I'm looking for
+is to know if this would be acceptable by devfreq subsystem.
+
+For Intel GPUs we have a concept of a multi-tile and multi-gt.
+Each tile can be seen as a duplication of an entire gpu and
+contain a GT inside each and each GT has its own independent
+frequency management.
+
+Also, some newer platforms, even with single tile, has an exclusive
+GT for media, also with independent frequency management.
+
+Currently our sysfs provides a full representation of the hardware
+and we could even have something like:
+/sys/class/drm/card0/device/tile0/gt0/freq/
+/sys/class/drm/card0/device/tile0/gt1/freq/
+/sys/class/drm/card0/device/tile1/gt0/freq/
+/sys/class/drm/card0/device/tile1/gt1/freq/
+
+We are implementing a new driver for the future platforms, so we
+are looking for standardize our interfaces with other drivers
+and devfreq seemed to have a bright future.
+
+Unfortunately just this patch by itself wouldn't allow us to use
+devfreq directly, because we have underlaying firmware governors.
+Other local experiments that seemed to work for me was to convert
+the current Tegra's exclusive governor to a generic governor_active.c
+
+On top of that we would need some extra stuff like throttle_reasons,
+and some custom arguments, however before taking any further step
+toward this direction I'd like to get back to my original question
+
+is this multiple device/domain acceptable here?
+
+Thoughts?
+
+Thanks in advance,
+Rodrigo.
+
+ drivers/devfreq/devfreq.c | 31 ++++++++++++++++++++++++++-----
+ include/linux/devfreq.h   |  8 ++++++++
+ 2 files changed, 34 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+index 474d81831ad3..7b4355229d0f 100644
+--- a/drivers/devfreq/devfreq.c
++++ b/drivers/devfreq/devfreq.c
+@@ -15,6 +15,7 @@
+ #include <linux/errno.h>
+ #include <linux/err.h>
+ #include <linux/init.h>
++#include <linux/idr.h>
+ #include <linux/export.h>
+ #include <linux/slab.h>
+ #include <linux/stat.h>
+@@ -57,6 +58,8 @@ static const char timer_name[][DEVFREQ_NAME_LEN] = {
+ 	[DEVFREQ_TIMER_DELAYED] = { "delayed" },
+ };
+ 
++static DEFINE_IDA(devfreq_ida);
++
+ /**
+  * find_device_devfreq() - find devfreq struct using device pointer
+  * @dev:	device pointer used to lookup device devfreq.
+@@ -727,12 +730,15 @@ static int qos_max_notifier_call(struct notifier_block *nb,
+ static void devfreq_dev_release(struct device *dev)
+ {
+ 	struct devfreq *devfreq = to_devfreq(dev);
+-	int err;
++	int id, err;
+ 
+ 	mutex_lock(&devfreq_list_lock);
+ 	list_del(&devfreq->node);
+ 	mutex_unlock(&devfreq_list_lock);
+ 
++	if (sscanf(dev_name(dev), "df%d", &id))
++		ida_free(&devfreq_ida, id);
++
+ 	err = dev_pm_qos_remove_notifier(devfreq->dev.parent, &devfreq->nb_max,
+ 					 DEV_PM_QOS_MAX_FREQUENCY);
+ 	if (err && err != -ENOENT)
+@@ -788,17 +794,26 @@ struct devfreq *devfreq_add_device(struct device *dev,
+ 	struct devfreq *devfreq;
+ 	struct devfreq_governor *governor;
+ 	unsigned long min_freq, max_freq;
+-	int err = 0;
++	int id, err = 0;
+ 
+ 	if (!dev || !profile || !governor_name) {
+ 		dev_err(dev, "%s: Invalid parameters.\n", __func__);
+ 		return ERR_PTR(-EINVAL);
+ 	}
+ 
++	id = ida_alloc(&devfreq_ida, GFP_KERNEL);
++	if (id < 0) {
++	        err = -ENOMEM;
++		goto err_ida;
++	}
++
+ 	mutex_lock(&devfreq_list_lock);
+ 	devfreq = find_device_devfreq(dev);
+ 	mutex_unlock(&devfreq_list_lock);
+-	if (!IS_ERR(devfreq)) {
++	if (!IS_ERR(devfreq) &&
++	    (!profile->name ||
++	     (profile->name && devfreq->profile->name &&
++	      !strcmp(profile->name, devfreq->profile->name)))) {
+ 		dev_err(dev, "%s: devfreq device already exists!\n",
+ 			__func__);
+ 		err = -EINVAL;
+@@ -864,7 +879,10 @@ struct devfreq *devfreq_add_device(struct device *dev,
+ 
+ 	atomic_set(&devfreq->suspend_count, 0);
+ 
+-	dev_set_name(&devfreq->dev, "%s", dev_name(dev));
++	if (profile->name)
++		dev_set_name(&devfreq->dev, "df%d", id);
++	else
++		dev_set_name(&devfreq->dev, "%s", dev_name(dev));
+ 	err = device_register(&devfreq->dev);
+ 	if (err) {
+ 		mutex_unlock(&devfreq->lock);
+@@ -955,6 +973,8 @@ struct devfreq *devfreq_add_device(struct device *dev,
+ 
+ 	return devfreq;
+ 
++err_ida:
++	ida_free(&devfreq_ida, id);
+ err_init:
+ 	mutex_unlock(&devfreq_list_lock);
+ err_devfreq:
+@@ -1394,7 +1414,8 @@ static ssize_t name_show(struct device *dev,
+ 			struct device_attribute *attr, char *buf)
+ {
+ 	struct devfreq *df = to_devfreq(dev);
+-	return sprintf(buf, "%s\n", dev_name(df->dev.parent));
++	return sprintf(buf, "%s\n", df->profile->name ? :
++		       dev_name(df->dev.parent));
+ }
+ static DEVICE_ATTR_RO(name);
+ 
+diff --git a/include/linux/devfreq.h b/include/linux/devfreq.h
+index d312ffbac4dd..0ec43eac647d 100644
+--- a/include/linux/devfreq.h
++++ b/include/linux/devfreq.h
+@@ -100,6 +100,13 @@ struct devfreq_dev_status {
+  * @freq_table:		Optional list of frequencies to support statistics
+  *			and freq_table must be generated in ascending order.
+  * @max_state:		The size of freq_table.
++ * @name:		Optional name string. When a name is given, the device
++ *			itself is named with a generic 'df<n>' where 'n' is the
++ *			global devfreq's device counter. The given name is only
++ *			visible at /sys/class/devfreq/df<n>/name. When no name
++ *			is given both the device name and the name file uses the
++ *			the parent's device dev_name() and it is limited to a
++ *			single devfreq device per parent-device.
+  *
+  * @is_cooling_device: A self-explanatory boolean giving the device a
+  *                     cooling effect property.
+@@ -117,6 +124,7 @@ struct devfreq_dev_profile {
+ 
+ 	unsigned long *freq_table;
+ 	unsigned int max_state;
++	char *name;
+ 
+ 	bool is_cooling_device;
+ };
+-- 
+2.41.0
+
