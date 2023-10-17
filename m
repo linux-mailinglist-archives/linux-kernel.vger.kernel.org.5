@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA2747CC6BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6026D7CC6BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:50:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344518AbjJQOuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 10:50:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53424 "EHLO
+        id S1344490AbjJQOuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 10:50:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344197AbjJQOsW (ORCPT
+        with ESMTP id S1344198AbjJQOsW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 17 Oct 2023 10:48:22 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D441F1;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADFA1F0;
         Tue, 17 Oct 2023 07:48:13 -0700 (PDT)
 Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:7205:da49:a7e8:59f8])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 835C66607328;
-        Tue, 17 Oct 2023 15:48:11 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 164906607359;
+        Tue, 17 Oct 2023 15:48:12 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697554091;
-        bh=NE9Dr0xaEnB6dw9lflcnBD1PZMhluEk9SDENx9Slyak=;
+        s=mail; t=1697554092;
+        bh=vK+TMJznRBSWjc0ShVXFJZhaWsv2b7OPcb28GLqTu0o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HyKsJkFxjCmLln0LihwZywYWeeBdL4A6629oPs0IftjCQd7yypAtELaXq4CFFlab9
-         jiHQZdbsA0f7sPdulSyoe2JWuGabAel8/0apYBdC9T/7a8PpqhYxajLJKc5J4aNNlV
-         +2HVFOJT2IXIblTGcdNVSIbbAL6VLqa1nu1C8+teSCNmWOoJjc+YwFltca4YlPqJ9p
-         vUKxJH1mnf7+/OEk694MCBFDDH1MUxpGDRVLnAhM8CXc9NpAs27wYMSpHDBUOh+Ph0
-         9BucDSPCJKcuQcjvJ9uMgdRqObV49HaGqNZCT4yNXPEAXi3SjGl084xhgWU97AvygT
-         miiZ9wgA4ER3g==
+        b=QqaQsRK+UlCvxbpWzbSKC+l2JRvjkT5F0JSdWyi/7YsfBn/CJQVoMOpW9CynbdPif
+         sqjrsNj0NDFRdfpHlKdilRyt1j1dwa478TNZJbdZFa7+U6QMEfhCNv/BkOWo/A8G98
+         S0RRA/1TRwH0+kespELs+jCeNQQCyEUPgETWP+yzZ5VsWXM/trD7XsHbNORqpWaUhB
+         fr15V0QPMcTaFlpSfe+PocHDX3mV80CbrjeTxaWVgh/+sNlG0T/dzQA99db9e9MstM
+         4JMYo8bxoKF6FMvDSramPE9BQoMLCe6hDlsgcZzNBBaQ7KgfPgxk77xSWlaW+Yt0dY
+         RkS3dQnqWBuJQ==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
         ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
@@ -45,9 +45,9 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         Benjamin Gaignard <benjamin.gaignard@collabora.com>,
         Hans de Goede <hdegoede@redhat.com>,
         Sakari Ailus <sakari.ailus@linux.intel.com>
-Subject: [PATCH v12 16/56] media: atomisp: Use vb2_get_buffer() instead of directly access to buffers array
-Date:   Tue, 17 Oct 2023 16:47:16 +0200
-Message-Id: <20231017144756.34719-17-benjamin.gaignard@collabora.com>
+Subject: [PATCH v12 17/56] media: atomisp: Stop direct calls to queue num_buffers field
+Date:   Tue, 17 Oct 2023 16:47:17 +0200
+Message-Id: <20231017144756.34719-18-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231017144756.34719-1-benjamin.gaignard@collabora.com>
 References: <20231017144756.34719-1-benjamin.gaignard@collabora.com>
@@ -62,32 +62,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use vb2_get_buffer() instead of direct access to the vb2_queue bufs array.
-This allows us to change the type of the bufs in the future.
-No need to check the result of vb2_get_buffer, vb2_ioctl_dqbuf() already
-checked that it is valid.
+Use vb2_get_num_buffers() to avoid using queue num_buffers field directly.
+This allows us to change how the number of buffers is computed in the
+futur.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-CC: Mauro Carvalho Chehab <mchehab@kernel.org>
 CC: Sakari Ailus <sakari.ailus@linux.intel.com>
 ---
  drivers/staging/media/atomisp/pci/atomisp_ioctl.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/staging/media/atomisp/pci/atomisp_ioctl.c b/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
-index a8e4779d007f..a8a964b2f1a8 100644
+index a8a964b2f1a8..09c0091b920f 100644
 --- a/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
 +++ b/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
-@@ -1059,7 +1059,7 @@ static int atomisp_dqbuf_wrapper(struct file *file, void *fh, struct v4l2_buffer
- 	if (ret)
- 		return ret;
+@@ -1028,7 +1028,7 @@ static int atomisp_qbuf_wrapper(struct file *file, void *fh, struct v4l2_buffer
+ 	struct atomisp_device *isp = video_get_drvdata(vdev);
+ 	struct atomisp_video_pipe *pipe = atomisp_to_video_pipe(vdev);
  
--	vb = pipe->vb_queue.bufs[buf->index];
-+	vb = vb2_get_buffer(&pipe->vb_queue, buf->index);
- 	frame = vb_to_frame(vb);
+-	if (buf->index >= vdev->queue->num_buffers)
++	if (buf->index >= vb2_get_num_buffers(vdev->queue))
+ 		return -EINVAL;
  
- 	buf->reserved = asd->frame_status[buf->index];
+ 	if (buf->reserved2 & ATOMISP_BUFFER_HAS_PER_FRAME_SETTING) {
 -- 
 2.39.2
 
