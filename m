@@ -2,109 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFAFC7CBF43
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B3DE7CBF6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343785AbjJQJ2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 05:28:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48458 "EHLO
+        id S234844AbjJQJaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 05:30:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234925AbjJQJ2E (ORCPT
+        with ESMTP id S234982AbjJQJ3h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 05:28:04 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 900D0FC
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 02:27:58 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40651a726acso49584425e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 02:27:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1697534877; x=1698139677; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lat5LBCONELfTSKuQh7UaGsk4CzrOVkCNiW5d2Bd3pU=;
-        b=yLf2Xb5cip94+58Knt49Fc4Os48Tc1EwXYDfSgQT9Cvyi/pyHgJaUaqg4RRL1nzSoz
-         dx7KcShrlyAKJJNU2xwqgv/i0GaC/LbZfp+NRyE389Py0nsW2YnNH874XVdR/BV9DwNB
-         BoN3S8QilewY5BjILp7mRJTRWxYzQPFzOaUVl6h+7ilAS+1nOHva5OzBQbizlPLuadnp
-         uiUmC0+MlSXGjNFhRFdN3/TzT03/jOvy3KalnYP+3QLTIOu3KQj1JxsdISXhr4Ib59pw
-         +gWxqyvqgMMWihxQQGN/ZVWm4SPzn4ipSm8LwQfBCF7WU/hGsUohB+yoIMt7D9D+ZHsy
-         xDww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697534877; x=1698139677;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lat5LBCONELfTSKuQh7UaGsk4CzrOVkCNiW5d2Bd3pU=;
-        b=sRp9/R3PuwmFtN+qVef/m/hgM6AsuQ1oloMtfnZODgTkvk0rfJIgTc6HN6LblryTN5
-         DVGuN9fKBeBS5xfk5PT8c58jEAtt4r+/s522HqY3EUV1mDYq13/a/zJ86Qm98ksNn+8s
-         TEn9dCx7PaNraFVuL4xaz88vro9YHJqKTtNo01Di4JsC+cHpimqI1z2ZXjUPMCD/Ux1M
-         QkFCOhFoJ+NalCD/rfYgz/4ihulkGwIprgkUzYOOpwQs0anbHfpnZn1WKGloMV+DpvZU
-         kiUtObOgLV0ORNFX7DPFATfoTwNtLqMdUu/7siFRXtGBFOQM4nvaFHAWdyINqorsKYhx
-         ZLpQ==
-X-Gm-Message-State: AOJu0YwCfOKy8MJLg8WL29oYlGlxBKXV2AtU3naK3JJZCJ7A8V2/aJuv
-        Y7l3HyJD8BNkAT9xWGAkBhbi5w==
-X-Google-Smtp-Source: AGHT+IF5pE+s+nVn4IPwa/JvdUdWof0PfdGqnRAEc7IxIZ6BMACKlg7romWsW12pvPUwOk5p0/QsNw==
-X-Received: by 2002:a05:600c:524a:b0:405:3dd0:6ee9 with SMTP id fc10-20020a05600c524a00b004053dd06ee9mr1214231wmb.34.1697534877079;
-        Tue, 17 Oct 2023 02:27:57 -0700 (PDT)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:f1ee:b000:ce90:ed14])
-        by smtp.gmail.com with ESMTPSA id j5-20020a05600c1c0500b003fe1c332810sm9460787wms.33.2023.10.17.02.27.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 02:27:56 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Elliot Berman <quic_eberman@quicinc.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Guru Das Srinagesh <quic_gurus@quicinc.com>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v5 15/15] arm64: defconfig: enable SHM Bridge support for the TZ memory allocator
-Date:   Tue, 17 Oct 2023 11:27:32 +0200
-Message-Id: <20231017092732.19983-16-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231017092732.19983-1-brgl@bgdev.pl>
-References: <20231017092732.19983-1-brgl@bgdev.pl>
+        Tue, 17 Oct 2023 05:29:37 -0400
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB8C1199E
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 02:28:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:
+        Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=pGPjSKr2a9z7nzL6c7jF87Bvkljw/AE2v5i+DT9TSmg=; b=FxWDDSb7qxfhnVPWa412vPWnzv
+        o1ACT8VbTXEn/L6aD13DJR4hlAvJvky7i0NK8H5c3/Se3T4zzlIw+wcvPykLH5ELXzg9KHRVUgqFD
+        ktozi8vwbGAPu2dNPiTS9VO6kY6AbSnNaFKmBBS8RrwNf2K1r0T8fqswQkNT2X/JPJSLBDSPv95wZ
+        0BWVnDpOVnXAYmidKRJkqPl3gMilgTrpnMeVTv7sDdiuLdR9Lfo6T4pco9jlmSKvPWTHiRm5rDOiG
+        tg8XN0LQHhJRdgwvUUYRvr3u+m9xRkyjXkn1wPEsrvla+jTcxzcBPy/fn1/PVoG0lQL9FSGEY9JC1
+        HC9KCwwA==;
+Received: from 167.red-81-39-185.dynamicip.rima-tde.net ([81.39.185.167] helo=localhost.localdomain)
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
+        id 1qsgNb-001ODF-AA; Tue, 17 Oct 2023 11:28:47 +0200
+From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
+To:     dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     pierre-eric.pelloux-prayer@amd.com,
+        =?UTF-8?q?=27Marek=20Ol=C5=A1=C3=A1k=27?= <maraeo@gmail.com>,
+        =?UTF-8?q?Michel=20D=C3=A4nzer?= <michel.daenzer@mailbox.org>,
+        "Randy Dunlap" <rdunlap@infradead.org>,
+        "Pekka Paalanen" <ppaalanen@gmail.com>, hwentlan@amd.com,
+        kernel-dev@igalia.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, joshua@froggi.es,
+        Simon Ser <contact@emersion.fr>,
+        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
+Subject: [PATCH v7 0/6] drm: Add support for atomic async page-flip
+Date:   Tue, 17 Oct 2023 11:28:31 +0200
+Message-ID: <20231017092837.32428-1-andrealmeid@igalia.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Hi,
 
-Enable SHM Bridge support in the Qualcomm TrustZone allocator by default
-as even on architectures that don't support it, we automatically fall
-back to the default behavior.
+This work from me and Simon adds support for DRM_MODE_PAGE_FLIP_ASYNC through
+the atomic API. This feature is already available via the legacy API. The use
+case is to be able to present a new frame immediately (or as soon as
+possible), even if after missing a vblank. This might result in tearing, but
+it's useful when a high framerate is desired, such as for gaming.
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Tested-by: Andrew Halaney <ahalaney@redhat.com> # sc8280xp-lenovo-thinkpad-x13s
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+Differently from earlier versions, this one refuses to flip if any prop changes
+for async flips. The idea is that the fast path of immediate page flips doesn't
+play well with modeset changes, so only the fb_id can be changed.
+Thanks,
+	André
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index bf102ed3ce83..36d5062dc27f 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -255,6 +255,7 @@ CONFIG_INTEL_STRATIX10_RSU=m
- CONFIG_EFI_CAPSULE_LOADER=y
- CONFIG_IMX_SCU=y
- CONFIG_IMX_SCU_PD=y
-+CONFIG_QCOM_TZMEM_MODE_SHMBRIDGE=y
- CONFIG_GNSS=m
- CONFIG_GNSS_MTK_SERIAL=m
- CONFIG_MTD=y
+- User-space patch: https://github.com/Plagman/gamescope/pull/595
+- IGT tests: https://gitlab.freedesktop.org/andrealmeid/igt-gpu-tools/-/tree/atomic_async_page_flip
+
+Changes from v6:
+- Dropped the exception to allow MODE_ID changes (Simon)
+- Clarify what happens when flipping with the same FB_ID (Pekka)
+
+v6: https://lore.kernel.org/dri-devel/20230815185710.159779-1-andrealmeid@igalia.com/
+
+Changes from v5:
+- Add note in the docs that not every redundant attribute will result in no-op,
+  some might cause oversynchronization issues.
+
+v5: https://lore.kernel.org/dri-devel/20230707224059.305474-1-andrealmeid@igalia.com/
+
+Changes from v4:
+ - Documentation rewrote by Pekka Paalanen
+
+v4: https://lore.kernel.org/dri-devel/20230701020917.143394-1-andrealmeid@igalia.com/
+
+Changes from v3:
+ - Add new patch to reject prop changes
+ - Add a documentation clarifying the KMS atomic state set
+
+v3: https://lore.kernel.org/dri-devel/20220929184307.258331-1-contact@emersion.fr/
+
+André Almeida (1):
+  drm: Refuse to async flip with atomic prop changes
+
+Pekka Paalanen (1):
+  drm/doc: Define KMS atomic state set
+
+Simon Ser (4):
+  drm: allow DRM_MODE_PAGE_FLIP_ASYNC for atomic commits
+  drm: introduce DRM_CAP_ATOMIC_ASYNC_PAGE_FLIP
+  drm: introduce drm_mode_config.atomic_async_page_flip_not_supported
+  amd/display: indicate support for atomic async page-flips on DC
+
+ Documentation/gpu/drm-uapi.rst                | 47 ++++++++++++
+ drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c  |  1 +
+ drivers/gpu/drm/drm_atomic_uapi.c             | 75 +++++++++++++++++--
+ drivers/gpu/drm/drm_crtc_internal.h           |  2 +-
+ drivers/gpu/drm/drm_ioctl.c                   |  5 ++
+ drivers/gpu/drm/drm_mode_object.c             |  2 +-
+ .../drm/i915/display/intel_display_driver.c   |  1 +
+ drivers/gpu/drm/nouveau/nouveau_display.c     |  1 +
+ include/drm/drm_mode_config.h                 | 11 +++
+ include/uapi/drm/drm.h                        | 10 ++-
+ include/uapi/drm/drm_mode.h                   |  9 +++
+ 11 files changed, 155 insertions(+), 9 deletions(-)
+
 -- 
-2.39.2
+2.42.0
 
