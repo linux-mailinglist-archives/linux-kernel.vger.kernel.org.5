@@ -2,128 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E78147CCA7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 20:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC747CCA9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 20:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344066AbjJQSSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 14:18:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32854 "EHLO
+        id S1344065AbjJQS0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 14:26:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232208AbjJQSSi (ORCPT
+        with ESMTP id S232268AbjJQS0v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 14:18:38 -0400
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7161D9E
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:18:36 -0700 (PDT)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5a8ada42c2aso7867957b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:18:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697566715; x=1698171515; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3pVHS3JF0WmY4RrG5v1WfMzqjFUkn2A+1ShW83xfles=;
-        b=MpRl43/0uCwJZQjST2kaM8pCOpoVQDSCjfxNN/abNR8bom2pMa2IO/Uw96Ll7xpXKs
-         1T1kH2QM/P13fYDWRYN7F2sMBAGMaidx0Pv3Bdb42wyhNzt8XGVH5G+yoeJp7m5QVkYf
-         xdx3ZVUxaB9ece3EEWk7/nCjawDmlLAl3BPd12PupUW31eF+fwsPIQSlVbQhXTg5h/BN
-         zWfoDXid3gVWC+XliDqPfrqUtV9YEXD1d/KzJpBR/lBaTYUCOzct+v4120VPtnfsahg+
-         FfbX2QF4aPU+2brvxdaoMTRifurAfif7QqaaVrWgDefXpDVMqZEJftfus/BzzHlrf/6j
-         CCIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697566715; x=1698171515;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3pVHS3JF0WmY4RrG5v1WfMzqjFUkn2A+1ShW83xfles=;
-        b=mk/NwFc4i6mT0hcYeDnNYSMpGtuEMncIN+6XzTbQoB9IjT6ojcIPT/RAicz+YC12Bs
-         3IMkx3lIBgcVCvZcmRdpCL+t/3J/JGxoDAIZ36Dx+6vmk7Y1G9EVBm12T8M0QYkJ1NPW
-         pGIESobuoQAFTNIyG0wJpbGgTPFJAB9CYInnWAA8L1NvsIzROQU4qX9ky66F/a887c5p
-         wo80APEWzE4UdR9Yzeg9z7j5W9QSkHhDqtNfTcVWKTRLRDBcykF6q67O1IN8Hp5+wbqK
-         Rt/G1rS7zGk5Gh1VzNzDgKu5Ryfo2c0D1c1OOd2kFIYLyaKP0Okv2jJaociQRAXPPlNY
-         4BTA==
-X-Gm-Message-State: AOJu0YyD1L8cpLPCcC9X6bsSan/FTrnh9fd0wlFoge2CVbnABZCrQ9Pn
-        vhHADp0BLcqRZOmXsPHG5+Zthn85zilaJtaUVCkMtw==
-X-Google-Smtp-Source: AGHT+IHj+cnaEMh8TG1vD7wVxdO8jroB13r0G4NCfvURJbtyucyygE+mIGHOAzo6WrQRop/w8O/VaBiK4DNfZ6+m3Fs=
-X-Received: by 2002:a05:690c:1a:b0:59f:72a6:da0e with SMTP id
- bc26-20020a05690c001a00b0059f72a6da0emr3976027ywb.41.1697566715604; Tue, 17
- Oct 2023 11:18:35 -0700 (PDT)
+        Tue, 17 Oct 2023 14:26:51 -0400
+X-Greylist: delayed 400 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 17 Oct 2023 11:26:45 PDT
+Received: from cvs.openbsd.org (cvs.openbsd.org [199.185.137.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C43695;
+        Tue, 17 Oct 2023 11:26:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; s=selector1; bh=0vFOoOA2DO
+        SeMlsOMQTQm68lyM381k3f90VCwzU3xik=; h=date:references:in-reply-to:
+        subject:cc:to:from; d=openbsd.org; b=cIkCOZ/43MKoljVmU3oRIB4u6WYxtaE7o
+        HZOM2BZ8S56HfUIZsfnpEjQlT6nX8BjUvl337ZyDmbEBR3FpWbSEpIlQhSH5efoMABMvJu
+        fPt7B7kxCc9BiJcGMLspMoq2n0fp0t4vNihP+GRYwnQ+PXtGXD00kbiv6GNtzR0gKbGJ2n
+        nYXtaGErAXUWTKCJkCh6yf0nMOHJTEbyc9d6WznvhkM317NdEQJ0MO3xpLbqrwJ5qQRKZ+
+        v2DSU4O5x8TQLQ5B2gVSWAEkpok4RBLhTzp2/vt9wlc0QkWf+E2fBCJ4Ld1tjjxZ7uC/EA
+        Y8rLsgyMD35PthyzgC6BHgpnpp5Ag==
+Received: from cvs.openbsd.org (localhost [127.0.0.1])
+        by cvs.openbsd.org (OpenSMTPD) with ESMTP id f82c6e56;
+        Tue, 17 Oct 2023 12:20:04 -0600 (MDT)
+From:   "Theo de Raadt" <deraadt@openbsd.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+cc:     Jeff Xu <jeffxu@google.com>, jeffxu@chromium.org,
+        akpm@linux-foundation.org, keescook@chromium.org,
+        sroettger@google.com, jorgelo@chromium.org, groeck@chromium.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mm@kvack.org, jannh@google.com, surenb@google.com,
+        alex.sierra@amd.com, apopple@nvidia.com,
+        aneesh.kumar@linux.ibm.com, axelrasmussen@google.com,
+        ben@decadent.org.uk, catalin.marinas@arm.com, david@redhat.com,
+        dwmw@amazon.co.uk, ying.huang@intel.com, hughd@google.com,
+        joey.gouly@arm.com, corbet@lwn.net, wangkefeng.wang@huawei.com,
+        Liam.Howlett@oracle.com, lstoakes@gmail.com, willy@infradead.org,
+        mawupeng1@huawei.com, linmiaohe@huawei.com, namit@vmware.com,
+        peterx@redhat.com, peterz@infradead.org, ryan.roberts@arm.com,
+        shr@devkernel.io, vbabka@suse.cz, xiujianfeng@huawei.com,
+        yu.ma@intel.com, zhangpeng362@huawei.com, dave.hansen@intel.com,
+        luto@kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [RFC PATCH v1 0/8] Introduce mseal() syscall
+In-reply-to: <CAHk-=wj87GMTH=5901ob=SjQqegAm2JYBE7E4J7skJzE64U-wQ@mail.gmail.com>
+References: <20231016143828.647848-1-jeffxu@chromium.org> <CAHk-=whFZoap+DBTYvJx6ohqPwn11Puzh7q4huFWDX9vBwXHgg@mail.gmail.com> <CALmYWFtTDAb_kpZdAe_xspqwNgK1NWJmjTxaTC=jDEMzfe297Q@mail.gmail.com> <CAHk-=wj87GMTH=5901ob=SjQqegAm2JYBE7E4J7skJzE64U-wQ@mail.gmail.com>
+Comments: In-reply-to Linus Torvalds <torvalds@linux-foundation.org>
+   message dated "Tue, 17 Oct 2023 10:22:16 -0700."
 MIME-Version: 1.0
-References: <20231017141806.535191-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20231017141806.535191-1-andriy.shevchenko@linux.intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 17 Oct 2023 20:18:23 +0200
-Message-ID: <CACRpkdbHJHsgJ=3pYveP-x-Vuwwf3ib6TnFOt3UpCrKevf=d1w@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] Revert "pinctrl: avoid unsafe code pattern in find_pinctrl()"
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Ferry Toth <ftoth@exalondelft.nl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <35552.1697566804.1@cvs.openbsd.org>
+Date:   Tue, 17 Oct 2023 12:20:04 -0600
+Message-ID: <55960.1697566804@cvs.openbsd.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 4:18=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-> The commit breaks MMC enumeration on the Intel Merrifield
-> plaform.
+> On Tue, 17 Oct 2023 at 02:08, Jeff Xu <jeffxu@google.com> wrote:
+> >
+> > It is probably worth noting that I choose to check one and only
+> > one sealing type per syscall. i.e. munmap(2) checks
+> > MM_SEAL_MUNMAP only.
+> 
+> Yeah, this is wrong.
+> 
+> It's wrong exactly because other system calls will unmap things too.
+> 
+> Using mmap() to over-map something will unmap the old one.
+> 
+> Same goes for mremap() to move over an existing mapping.
+> 
+> So the whole "do things by the name of the system call" is not workable.
+> 
+> All that matters is what the system calls *do*, not what their name is.
 
-The enumeration works, just that the probe order is different, right?
+I agree completely...
 
-> Before:
-> [   36.439057] mmc0: SDHCI controller on PCI [0000:00:01.0] using ADMA
-> [   36.450924] mmc2: SDHCI controller on PCI [0000:00:01.3] using ADMA
-> [   36.459355] mmc1: SDHCI controller on PCI [0000:00:01.2] using ADMA
-> [   36.706399] mmc0: new DDR MMC card at address 0001
-> [   37.058972] mmc2: new ultra high speed DDR50 SDIO card at address 0001
-> [   37.278977] mmcblk0: mmc0:0001 H4G1d 3.64 GiB
-> [   37.297300]  mmcblk0: p1 p2 p3 p4 p5 p6 p7 p8 p9 p10
->
-> After:
-> [   36.436704] mmc2: SDHCI controller on PCI [0000:00:01.3] using ADMA
-> [   36.436720] mmc1: SDHCI controller on PCI [0000:00:01.0] using ADMA
-> [   36.463685] mmc0: SDHCI controller on PCI [0000:00:01.2] using ADMA
-> [   36.720627] mmc1: new DDR MMC card at address 0001
-> [   37.068181] mmc2: new ultra high speed DDR50 SDIO card at address 0001
-> [   37.279998] mmcblk1: mmc1:0001 H4G1d 3.64 GiB
-> [   37.302670]  mmcblk1: p1 p2 p3 p4 p5 p6 p7 p8 p9 p10
->
-> This reverts commit c153a4edff6ab01370fcac8e46f9c89cca1060c2.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+mseal() is a clone of mimmutable(2), but with an extremely
+over-complicated API based upon dubious arguments.
 
-Relying on this probe order or whatever it is causing one or the other
-to be enumerated first seems very fragile, I think this condition can be
-caused by other much more random things in the probe path as well,
-so it would be great if we could just hammer this down for good, as
-it is apparently ABI.
+I designed mimmutable(2) [1] in OpenBSD, it took about a year to get all
+the components working correctly.  There were many intermediate API
+during development, but in the end the API is simply:
 
-In the past some file system developers have told us (Ulf will know)
-that we can't rely on the block device enumeration to identify
-devices, and requires that we use things such as sysfs or the
-UUID volume label in ext4 to identify storage.
+     int mimmutable(void *addr, size_t len);
 
-That said, device trees are full of stuff like this:
+The kernel code for mimmutable() traverses the specified VA range.  In
+that range, it will find unmapped sub-regions (which are are ignored)
+and mapped sub-regions. For these mapped regions, it does not care what
+the permissions are, it just marks each sub-region as immutable.
 
-        aliases {
-                serial0 =3D &uart_AO;
-                mmc0 =3D &sd_card_slot;
-                mmc1 =3D &sdhc;
-        };
+Later on, when any VM operation request upon a VA range attempts to
+      (1) change the permissions
+      (2) to re-map on top
+      (3) or dispose of the mapping,
+that operation is refused with errno EPERM.  We don't care where the
+request comes from (ie. what system call).  It is a behaviour of the
+VM system, when asked to act upon a VA sub-range mapping.
 
-Notice how this enumeration gets defined by the aliases.
+Very simple semantics.
 
-Can you do the same with device properties? (If anyone can
-answer that question it's Dmitry!)
+The only case where the immutable marker is ignored is during address space
+teardown as a result of process termination.
 
-Yours,
-Linus Walleij
+
+In his submission of this API, Jeff Xu makes three claims I find dubious;
+
+> Also, Chrome wants to adopt this feature for their CFI work [2] and this
+> patchset has been designed to be compatible with the Chrome use case.
+
+I specifically designed mimmutable(2) with chrome in mind, and the
+chrome binary running on OpenBSD is full of immutable mappings.  All the
+library regions automatically become immutable because ld.so can infer
+it and do the mimmutable calls for the right subregions.
+
+So this chrome work has already been done by OpenBSD, and it is dead
+simple.  During early development I thought mimmutable(2) would be
+called by applications or libraries, but I was dead wrong: 99.9% of
+calls are from ld.so, and no applications need to call it, these are the
+two exceptions:
+
+In OpenBSD, mimmutable() is used in libc malloc() to lock-down some data
+structures at initialization time, so they canoot be attacked to create
+an invariant for use in ROP return-to-libc style methods.
+
+In Chrome, there is a v8_flags variable rounded out to a full page, and
+placed in .data.  Chrome initialized this variable, and wants to mprotect
+PROT_READ, but .data has been made immutable by ld.so.  So we force this
+page into a new ELF section called "openbsd.mutable" which also behaves RW
+like .data.  Where chrome does the mprotect  PROT_READ, it now also performs
+mimmutable() on that page.
+
+> Having a seal type per syscall type helps to add the feature incrementally.
+
+Yet, somehow OpenBSD didn't do it per syscall, and we managed to make our
+entire base operating system and 10,000+ applications automatically receive
+the benefits.  In one year's effort.  The only application which cared about
+it was chrome, described in the previous paragraph.
+
+I think Jeff's idea here is super dangerous.  What will actually happen
+is people will add a few mseal() sub-operations and think the job is done.
+It isn't done.  They need all the mseal() requests, or the mapping are
+not safe.
+
+It is very counterproductive to provide developers a complex API that has
+insecure suboperations.
+
+> Applications also know exactly what is sealed.
+
+Actually applicatins won't know because there is no tooling to inspect this --
+but I will argue further that applications don't need to know.  Immutable
+marking is a system decision, not a program decision.
+
+
+I'll close by asking for a new look at the mimmutable(2) API we settled
+on for OpenBSD.  I think there is nothing wrong with it.  I'm willing to
+help guide glibc / ld.so / musl teams through the problems they may find
+along the way, I know where the skeletons are buried.  Two in
+particular: -znow RELRO already today, and xonly-text in the future.
+
+
+[1] https://man.openbsd.org/mimmutable.2
+
