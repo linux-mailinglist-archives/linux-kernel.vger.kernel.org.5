@@ -2,73 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F2C7CC401
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 15:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9428E7CC3F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 15:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343667AbjJQNIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 09:08:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41622 "EHLO
+        id S1343616AbjJQNHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 09:07:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234953AbjJQNIg (ORCPT
+        with ESMTP id S233940AbjJQNHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 09:08:36 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ADC2ED;
-        Tue, 17 Oct 2023 06:08:33 -0700 (PDT)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 39HD7HGo8038602, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.93/5.92) with ESMTPS id 39HD7HGo8038602
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Oct 2023 21:07:17 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Tue, 17 Oct 2023 21:07:18 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Tue, 17 Oct 2023 21:07:18 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
- RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
- 15.01.2375.007; Tue, 17 Oct 2023 21:07:17 +0800
-From:   Hayes Wang <hayeswang@realtek.com>
-To:     "'Doug Anderson'" <dianders@chromium.org>
-CC:     "'Jakub Kicinski'" <kuba@kernel.org>,
-        "'David S . Miller'" <davem@davemloft.net>,
-        "'Alan Stern'" <stern@rowland.harvard.edu>,
-        "'Simon Horman'" <horms@kernel.org>,
-        "'Edward Hill'" <ecgh@chromium.org>,
-        "'Laura Nao'" <laura.nao@collabora.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "'Grant Grundler'" <grundler@chromium.org>,
-        =?utf-8?B?J0Jqw7hybiBNb3JrJw==?= <bjorn@mork.no>,
-        "'Eric Dumazet'" <edumazet@google.com>,
-        "'Paolo Abeni'" <pabeni@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: RE: [PATCH v3 5/5] r8152: Block future register access if register access fails
-Thread-Topic: [PATCH v3 5/5] r8152: Block future register access if register
- access fails
-Thread-Index: AQHZ/UKPr2uppqw2y0WH24Vf4SC1orBMGX/AgAAGioCAAVSUAA==
-Date:   Tue, 17 Oct 2023 13:07:17 +0000
-Message-ID: <052401da00fa$dacccd90$906668b0$@realtek.com>
-References: <20231012192552.3900360-1-dianders@chromium.org>
- <20231012122458.v3.5.Ib2affdbfdc2527aaeef9b46d4f23f7c04147faeb@changeid>
- <29f9a2ff1979406489213909b940184f@realtek.com>
- <CAD=FV=U4rGozXHoK8+ejPgRtyoACy1971ftoatQivqzk2tk5ng@mail.gmail.com>
-In-Reply-To: <CAD=FV=U4rGozXHoK8+ejPgRtyoACy1971ftoatQivqzk2tk5ng@mail.gmail.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-ms-exchange-messagesentrepresentingtype: 1
-x-kse-serverinfo: RTEXMBS01.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <4DC78EF98E3BE34C8DB0D4C57C8716A5@realtek.com>
-Content-Transfer-Encoding: base64
+        Tue, 17 Oct 2023 09:07:50 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A14E7F5;
+        Tue, 17 Oct 2023 06:07:47 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39HBdQ1b003954;
+        Tue, 17 Oct 2023 13:07:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=mY6yTJr+pQUryKyV1XMaz8CaGnDEXk72DW9irY+22p4=;
+ b=HBWAhdNemcHaSG/DjfgsdfadZykLZhGCOVy8yYqgQidYL7zocBBmaqp6z0yXU/jvWOmt
+ o171COMdvFivfWNqn+PRGgCvehsDLzhVpQiwTFD4VtGYb3ImfrJu7UZEKMPwCfI8wec2
+ VXymvnctelQWUzwnIStR9BipATy9BpZ3ltWUJ9pvGpjUCpN2He1tKl96mdD2XR8Ovhhy
+ kd5mlh9L4S+VxVrBGAz4SXZF6a5kWDPTkGvM3nrNT7yzxJm7WubPu/ivu3Z5KaPYagXt
+ 3o0OV9EXpm2kd07KOp52aXN6J7Ibv1SJaZ7EZeU0R9LJPu/RXVhlrQDtImR+URVy69X5 2A== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tsc00std7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Oct 2023 13:07:42 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39HD7fsS020244
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Oct 2023 13:07:41 GMT
+Received: from [10.201.2.147] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 17 Oct
+ 2023 06:07:36 -0700
+Message-ID: <f44b6e59-c26e-1026-49b7-e02ff02d7562@quicinc.com>
+Date:   Tue, 17 Oct 2023 18:37:32 +0530
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH V3 4/4] arm64: dts: qcom: ipq5018: Add tsens node
+Content-Language: en-US
+To:     Robert Marko <robimarko@gmail.com>,
+        Sricharan R <srichara@win-platform-upstream01.qualcomm.com>,
+        <krzysztof.kozlowski@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <srinivas.kandagatla@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <thara.gopinath@gmail.com>, <rafael@kernel.org>,
+        <daniel.lezcano@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, <dmitry.baryshkov@linaro.org>
+References: <20230922115116.2748804-1-srichara@win-platform-upstream01.qualcomm.com>
+ <20230922115116.2748804-5-srichara@win-platform-upstream01.qualcomm.com>
+ <1c6ecc92-89d3-3b7e-c2d0-e2fded9b446d@gmail.com>
+From:   Sricharan Ramabadhran <quic_srichara@quicinc.com>
+In-Reply-To: <1c6ecc92-89d3-3b7e-c2d0-e2fded9b446d@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: XqWkhRgvXBsiD5jeQCMKxW9tf_mbu868
+X-Proofpoint-GUID: XqWkhRgvXBsiD5jeQCMKxW9tf_mbu868
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-16_13,2023-10-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 priorityscore=1501 mlxlogscore=999 adultscore=0
+ clxscore=1011 bulkscore=0 spamscore=0 mlxscore=0 phishscore=0
+ lowpriorityscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2309180000 definitions=main-2310170110
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -77,39 +88,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RG91ZyBBbmRlcnNvbiA8ZGlhbmRlcnNAY2hyb21pdW0ub3JnPg0KPiBTZW50OiBUdWVzZGF5LCBP
-Y3RvYmVyIDE3LCAyMDIzIDEyOjQ3IEFNDQpbLi4uDQo+ID4gPiAgc3RhdGljIGludCBnZW5lcmlj
-X29jcF9yZWFkKHN0cnVjdCByODE1MiAqdHAsIHUxNiBpbmRleCwgdTE2IHNpemUsDQo+ID4gPiBA
-QCAtODI2NSw2ICs4MzUzLDE5IEBAIHN0YXRpYyBpbnQgcnRsODE1Ml9wcmVfcmVzZXQoc3RydWN0
-DQo+IHVzYl9pbnRlcmZhY2UNCj4gPiA+ICppbnRmKQ0KPiA+ID4gICAgICAgICBpZiAoIXRwKQ0K
-PiA+ID4gICAgICAgICAgICAgICAgIHJldHVybiAwOw0KPiA+ID4NCj4gPiA+ICsgICAgICAgLyog
-V2UgY2FuIG9ubHkgdXNlIHRoZSBvcHRpbWl6ZWQgcmVzZXQgaWYgd2UgbWFkZSBpdCB0byB0aGUg
-ZW5kIG9mDQo+ID4gPiArICAgICAgICAqIHByb2JlIHdpdGhvdXQgYW55IHJlZ2lzdGVyIGFjY2Vz
-cyBmYWlscywgd2hpY2ggc2V0cw0KPiA+ID4gKyAgICAgICAgKiBgUFJPQkVEX1dJVEhfTk9fRVJS
-T1JTYCB0byB0cnVlLiBJZiB3ZSBkaWRuJ3QgaGF2ZSB0aGF0IHRoZW4gcmV0dXJuDQo+ID4gPiAr
-ICAgICAgICAqIGFuIGVycm9yIGhlcmUgd2hpY2ggdGVsbHMgdGhlIFVTQiBmcmFtZXdvcmsgdG8g
-ZnVsbHkgdW5iaW5kL3JlYmluZA0KPiA+ID4gKyAgICAgICAgKiBvdXIgZHJpdmVyLg0KPiA+DQo+
-ID4gV291bGQgeW91IHN0YXkgaW4gYSBsb29wIG9mIHVuYmluZCBhbmQgcmViaW5kLA0KPiA+IGlm
-IHRoZSBjb250cm9sIHRyYW5zZmVycyBpbiB0aGUgcHJvYmUoKSBhcmUgbm90IGFsd2F5cyBzdWNj
-ZXNzZnVsPw0KPiA+IEkganVzdCB0aGluayBhYm91dCB0aGUgd29yc3QgY2FzZSB0aGF0IGF0IGxl
-YXN0IG9uZSBjb250cm9sIGFsd2F5cyBmYWlscyBpbiBwcm9iZSgpLg0KPiANCj4gV2Ugd29uJ3Qh
-IDotKSBPbmUgb2YgdGhlIGZpcnN0IHRoaW5ncyB0aGF0IHJ0bDgxNTJfcHJvYmUoKSBkb2VzIGlz
-IHRvDQo+IGNhbGwgcnRsODE1Ml9nZXRfdmVyc2lvbigpLiBUaGF0IGdvZXMgdGhyb3VnaCB0bw0K
-PiBydGw4MTUyX2dldF92ZXJzaW9uKCkuIFRoYXQgZnVuY3Rpb24gX2RvZXNuJ3RfIHF1ZXVlIHVw
-IGEgcmVzZXQgaWYNCj4gdGhlcmUgYXJlIGNvbW11bmljYXRpb24gcHJvYmxlbXMsIGJ1dCBpdCBk
-b2VzIGRvIDMgcmV0cmllcyBvZiB0aGUNCj4gcmVhZC4gU28gaWYgYWxsIDMgcmVhZHMgZmFpbCB0
-aGVuIHdlIHdpbGwgcGVybWFuZW50bHkgZmFpbCBwcm9iZSwNCj4gd2hpY2ggSSB0aGluayBpcyB0
-aGUgY29ycmVjdCB0aGluZyB0byBkby4NCg0KVGhlIHByb2JlKCkgY29udGFpbnMgY29udHJvbCB0
-cmFuc2ZlcnMgaW4NCgkxLiBydGw4MTUyX2dldF92ZXJzaW9uKCkNCgkyLiB0cC0+cnRsX29wcy5p
-bml0KCkNCg0KSWYgb25lIG9mIHRoZSAzIGNvbnRyb2wgdHJhbnNmZXJzIGluIDEpIGlzIHN1Y2Nl
-c3NmdWwgQU5EDQphbnkgY29udHJvbCB0cmFuc2ZlciBpbiAyKSBmYWlscywNCnlvdSB3b3VsZCBx
-dWV1ZSBhIHVzYiByZXNldCB3aGljaCB3b3VsZCB1bmJpbmQvcmViaW5kIHRoZSBkcml2ZXIuDQpU
-aGVuLCB0aGUgbG9vcCBzdGFydHMuDQpUaGUgbG9vcCB3b3VsZCBiZSBicm9rZW4sIGlmIGFuZCBv
-bmx5IGlmDQoJYSkgYWxsIGNvbnRyb2wgdHJhbnNmZXJzIGluIDEpIGZhaWwsIE9SDQoJYikgYWxs
-IGNvbnRyb2wgdHJhbnNmZXJzIGluIDIpIHN1Y2NlZWQuDQoNClRoYXQgaXMsIHRoZSBsb29wIHdv
-dWxkIGJlIGJyb2tlbiB3aGVuIHRoZSBmYWlsIHJhdGUgb2YgdGhlIGNvbnRyb2wgdHJhbnNmZXIg
-aXMgaGlnaCBvciBsb3cgZW5vdWdoLg0KT3RoZXJ3aXNlLCB5b3Ugd291bGQgcXVldWUgYSB1c2Ig
-cmVzZXQgYWdhaW4gYW5kIGFnYWluLg0KRm9yIGV4YW1wbGUsIGlmIHRoZSBmYWlsIHJhdGUgb2Yg
-dGhlIGNvbnRyb2wgdHJhbnNmZXIgaXMgMTAlIH4gNjAlLA0KSSB0aGluayB5b3UgaGF2ZSBoaWdo
-IHByb2JhYmlsaXR5IHRvIGtlZXAgdGhlIGxvb3AgY29udGludWFsbHkuDQpXb3VsZCBpdCBuZXZl
-ciBoYXBwZW4/DQoNCkJlc3QgUmVnYXJkcywNCkhheWVzDQoNCg0K
+
+
+On 10/5/2023 12:38 AM, Robert Marko wrote:
+> 
+> On 22. 09. 2023. 13:51, Sricharan R wrote:
+>> From: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+>>
+>> IPQ5018 has tsens V1.0 IP with 4 sensors.
+>> There is no RPM, so tsens has to be manually enabled. Adding the tsens
+>> and nvmem node and IPQ5018 has 4 thermal sensors (zones). With the
+>> critical temperature being 120'C and action is to reboot. Adding all
+>> the 4 zones here.
+>>
+>> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+>> ---
+>>   [v3] Ordered the qfprom device node properties as per
+>>        Krzysztof's comments
+>>
+>>   arch/arm64/boot/dts/qcom/ipq5018.dtsi | 169 ++++++++++++++++++++++++++
+>>   1 file changed, 169 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/ipq5018.dtsi 
+>> b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+>> index 9f13d2dcdfd5..9e28b54ebcbd 100644
+>> --- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+>> @@ -93,6 +93,117 @@ soc: soc@0 {
+>>           #size-cells = <1>;
+>>           ranges = <0 0 0 0xffffffff>;
+>> +        qfprom: qfprom@a0000 {
+>> +            compatible = "qcom,ipq5018-qfprom", "qcom,qfprom";
+> Hi,
+> 
+> "qcom,ipq5018-qfprom" needs to be documented in QFPROM bindings first.
+
+  Already posted here [1]. Initially had it in the same series, but kept
+  it separately based on review comments.
+
+  [1] https://www.spinics.net/lists/devicetree/msg633408.html
+
+Regards,
+  Sricharan
