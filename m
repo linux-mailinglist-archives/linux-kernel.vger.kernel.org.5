@@ -2,98 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 719987CC85F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 18:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8A37CC851
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 18:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343979AbjJQQHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 12:07:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43384 "EHLO
+        id S1344257AbjJQQFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 12:05:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343532AbjJQQHd (ORCPT
+        with ESMTP id S1343611AbjJQQFH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 12:07:33 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2060.outbound.protection.outlook.com [40.107.220.60])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8187695
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:07:30 -0700 (PDT)
+        Tue, 17 Oct 2023 12:05:07 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2079.outbound.protection.outlook.com [40.107.223.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 925B3ED;
+        Tue, 17 Oct 2023 09:05:05 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aRDL2KTbVc2EIQvPvxsW6Q47U+/e7LGWNlBNGMPAWPCyspbdFUuxiQAFp2nSUMOTlv702XaXP9W+NkdJuoS/5yYG55I8UEfIAHZnO+/L0TSFAugfbmP9QMfVlFg97aPAGLyGmnF3NNS3kWf/RQ3iSmgxVdDHTrI5SiYWmCljoTB4D+xDBRcl1eRE+wtNY1QCBt4Noalt62wOd6Tzo8cKYCsU+Jkk64pqXvF/HKfXDAX5MDltaL1/w3fMSFxlwLDxT1lQ4iO4q6zVno77ZaChdn80UmQ8mAYOGr5QqJoor2Kt2MFB4XafLcjnNY+3w26anUdgqrfnfTkQlU/Lmb22Tw==
+ b=AHYtw9HaEVVmSt2T4Agkg527SJtg8x4NbRuXBBvFjAkvfjA8TgQtOf0r/HSsBFFk/csv462preCAi8w3oY8xAnK8kTJ4McnEjMAkAdwVUzZJomo9v02h3qg83dw3bGznYaKADw39aAK3Aulr/I7VtDMtmb/nawrem3Xx5cQcOHaW47igrO+Cq8Ou4qJdxmq99KX5O4ypF60nrsuTX03D8/p9ujlQyD55hEWBj+x7j0s15Hm91vS7Q8ofmqTmpD04nCF4nPbm7/30fHnaqwuORX5jjcB70lFZYJ4ZsRW8Jr+LbOp0pnAfmrInCRhVvKXNMzgwsr0wgSbnktoeVmLQMA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0YozevfbJj5mDbmFW3hI0vInRjlWTpJifXbaws/599k=;
- b=Opg++0wbea1xXakZ/9vSETHWVPSv+pUGf8xSM6K9Mn1496gsvZ3o4guiDVjc1uKDC32kCMs0GyOhEaCLNJ7u/DRt4Eyh02rxvcqO38RVeXaJ6/MOkMuMkigd+GHz7Q3SvlXRWTFPb+/wvszk11jRikAU1wHvUxS8SGDsCwROWLIAJ6JcBR7+Qlg4S73ORFTS7bcmNbM30oOP4xhBHPdBz9ynTQCHGBvaFIkS4+F/2R3gd25R0hEAHE2eu0Qfu6cG41LVuy6ntaRfGrj2JH5Q9YpfsQ/2GB83FdkejFnEhmkZJoWYsxDFAb1BGsvatt+mJB8OJc79avr9SEqqJr/neA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linuxfoundation.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ bh=Q+MxW805I6s+rvqMchVDFnwcNZSQ3TJML2JfQ0eeaU4=;
+ b=W0R44K5JiuuM1y7iyrL+xh9vFqvONZuvStNkiwkEfXWFtYEJsjgCHy4uUA7RJi5hH7M9IEBgpGErEIn+jpIdCAVsYbRFdKxOBSQTzN3hNv6+UaeAWsnxapUcwxncPfx9b4B+bI9Zszvort7rElgrAF+U5OZTWry0h5iQxAz4DBT8USq7O+9r+U8DGhcC3sVym+UxN2pf1qz9JuiYSoEQJitGSJwjKxz4cVMX8/FLWNRxtt+kz++zPfqNtP4lF2Vh8XZvS91kD5M6EqTfpVz+LkQqgdPkhqFzHHSeYKTAxdh1zkZ3LxRjFRNWpnkiQtwq9npQdwkzs+nylydRGL5HOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0YozevfbJj5mDbmFW3hI0vInRjlWTpJifXbaws/599k=;
- b=CPTfvZF+UiybMJshYMnWh5lV6hUQd80EBsEFF3Oa6TU3J2aO4Kj1YIHcs6g3ZxJrdIujCKzDcIXfIt1LMRLZKcBQ2/NiASBYw0S95B4VWqbFY6sed0XI0c+K8pXpyMgOX8hYsPD5Wai5U6flHKuc2kOUT61mkfZWMNio6FKs6+k=
-Received: from CY5PR19CA0109.namprd19.prod.outlook.com (2603:10b6:930:64::6)
- by IA1PR12MB8286.namprd12.prod.outlook.com (2603:10b6:208:3f8::19) with
+ bh=Q+MxW805I6s+rvqMchVDFnwcNZSQ3TJML2JfQ0eeaU4=;
+ b=fPgo7BpSlW1Rfq0pIvzMA58ysAAkljWFMh5qb4j8CfB8PdegalVFBNrtBSkZ1HOTjUXJDEHLgpMgfXd0ABbid2kutxXKuotOglSve8ymA7okElFGqxUPyvG0dAyFXVidX0QNhMcU6zsHwZPqi+w7r8dyBBsuNa4rarbnyrcvJLjINcrR5Soy6xa04ZWqK2XM+NP3sG1UJ4PptSkNAKwN4TgDNv8+nZUGsoXn8Oh6byBTQ1j6gqZR90FTNiHRPJgKXVde9VtRRuT+6JfTKI+QVmX24K5haUBX7JW5VoY2rPI5l0wDzT9qZLi6AIS3cIUpHxJZfLlDDWfkjjvMg3jDVg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by CH2PR12MB4905.namprd12.prod.outlook.com (2603:10b6:610:64::20) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36; Tue, 17 Oct
- 2023 16:07:27 +0000
-Received: from CY4PEPF0000EDD4.namprd03.prod.outlook.com
- (2603:10b6:930:64:cafe::34) by CY5PR19CA0109.outlook.office365.com
- (2603:10b6:930:64::6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.21 via Frontend
- Transport; Tue, 17 Oct 2023 16:07:27 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000EDD4.mail.protection.outlook.com (10.167.241.208) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.22 via Frontend Transport; Tue, 17 Oct 2023 16:07:27 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 17 Oct
- 2023 11:06:45 -0500
-Received: from xhdipdslab59.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
- Transport; Tue, 17 Oct 2023 11:06:42 -0500
-From:   Abhijit Gangurde <abhijit.gangurde@amd.com>
-To:     <gregkh@linuxfoundation.org>, <masahiroy@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <puneet.gupta@amd.com>, <Nipun.Gupta@amd.com>,
-        <nikhil.agarwal@amd.com>, <michal.simek@amd.com>, <git@amd.com>,
-        Abhijit Gangurde <abhijit.gangurde@amd.com>
-Subject: [PATCH v7 4/7] cdx: Register cdx bus as a device on cdx subsystem
-Date:   Tue, 17 Oct 2023 21:35:02 +0530
-Message-ID: <20231017160505.10640-5-abhijit.gangurde@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231017160505.10640-1-abhijit.gangurde@amd.com>
-References: <20231017160505.10640-1-abhijit.gangurde@amd.com>
+ 2023 16:05:03 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3f66:c2b6:59eb:78c2]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3f66:c2b6:59eb:78c2%6]) with mapi id 15.20.6886.034; Tue, 17 Oct 2023
+ 16:05:03 +0000
+Date:   Tue, 17 Oct 2023 13:05:02 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Nicolin Chen <nicolinc@nvidia.com>
+Cc:     Yi Liu <yi.l.liu@intel.com>, "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "kevin.tian@intel.com" <kevin.tian@intel.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "zhenzhong.duan@intel.com" <zhenzhong.duan@intel.com>,
+        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>
+Subject: Re: [PATCH v2 1/6] iommu: Add new iommu op to create domains owned
+ by userspace
+Message-ID: <20231017160502.GJ3952@nvidia.com>
+References: <20230928071528.26258-1-yi.l.liu@intel.com>
+ <20230928071528.26258-2-yi.l.liu@intel.com>
+ <ZSuROTyaxePoVFA+@Asurada-Nvidia>
+ <20231016120454.GS3952@nvidia.com>
+ <ZS124n0LYj4kl/4c@Asurada-Nvidia>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZS124n0LYj4kl/4c@Asurada-Nvidia>
+X-ClientProxiedBy: BLAPR03CA0056.namprd03.prod.outlook.com
+ (2603:10b6:208:32d::31) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD4:EE_|IA1PR12MB8286:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5962b305-4374-4ef2-b6ab-08dbcf2b28c7
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CH2PR12MB4905:EE_
+X-MS-Office365-Filtering-Correlation-Id: 260b86d6-05b3-482b-3b24-08dbcf2ad287
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OgCL0N3yIyZGZARYnJBFgGhm+detPxGwXrxNXbvxKx1oBdzolrsbJ0/4lBt5y//kA4egyLS+pISVrD2wY3V4bVTBrrOApdWrntI5dIM9Nq1v4yl1D+sKROIZQsV0dg5W7MxBgBlVwqktxtT/DAaXUfYWGJDpEiZK6Hc4JQmqLVJZG8hEZ5KAaYZ/KszeIMotOo3JrZlpIhqN2EP86Lj46hVS/inLZWJ/VFzkJ2u48WKy1dcWEXAoRUIXv9331qjbAKyoJfMhJXCKkCgbupo4C7S3gy3BEdO6piefvisE/Z3HXI2SCFpFfrpIpRsFug4XRhY/++k6YoXfbU8DEh+uXmnPRkz0XJLWBq/yxIHTCoXbg110t9qQe1l07LoT5jljrdYQ+TmD/GvYIkd9/HxtUaMg/cfoPAmMgX0c78CR43NBl1Ohdkp4zk2YwvL82H5noPGeZtjCCjAmOzbOiSEVnuSdn5jhpqqHU7LBAU7Ru225TYS3a7r4JI33o2W5PP6Rvmu2OuzyOnFsea5gdqOM3G2BGYj47u7RPRQ1lVBoSsrLg6/V3wecMk3+yd0uAUf64xHxKmoyQ3UIr2ErpQbyXL70Wdf4fxgWWLiBex33aXTM6U1YK396e7MgdbyxB5uI08hMxcAwHvCONQEkko0iI+SIrS8rso+q9/wDZHPkfSygHK4b7ra0TlJlHAwW95AEpIOv+QvNr2gd+VNbkywN8SGF91wdTtK62FTiiM1YtuYRlFWXyXWaky8oAn4BW+pE0svHUJ8WoPR2gUbeDnFzww==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(396003)(39860400002)(136003)(346002)(230922051799003)(1800799009)(64100799003)(186009)(451199024)(82310400011)(40470700004)(36840700001)(46966006)(83380400001)(336012)(426003)(26005)(1076003)(5660300002)(8936002)(41300700001)(4326008)(110136005)(8676002)(44832011)(2616005)(36756003)(40460700003)(86362001)(356005)(40480700001)(82740400003)(81166007)(36860700001)(47076005)(2906002)(478600001)(6666004)(316002)(70586007)(54906003)(70206006)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Oct 2023 16:07:27.1839
+X-Microsoft-Antispam-Message-Info: Hw9kZOpJrLcGAgOi3053mvofq91tqzRgmWbKsjXF17yh8LJPwCCkDaLFN/7iaL66ejgaOVfgecG2SxPwoRCoNwJ0TPZGAYQqlUocUyy8y9Rkc1VVbq8cX37rG52sTFAYPrS7NjF9qs7Th2MVpsd9WlWmQxK+GR9O6aBG3BNUSfRhjdr9xzh0CZjfnpP4Ev+0V8KlqAF/zHEX1uIXn31inAw3+k94gXBPdJT5pk3b6RJmQ1Ar/s3fNnwLe0GbbwCxNRFeyllwsYcOofHjuKqXQ4aDe+h1tYg0frpp3JEOg7f0W/a3nmGDXnm2NkSGxCcR2ROz4wXGetjHcpDlAPIN4efPOqDDs99MBOgExQTQV6rIj+h3vkukqt8rImcRbNPmRbV5qSWRkBYxqiTPJfL/Ts3jRjh235tS4hQWEcR3l2U8kHKQOYGI4BQm3eMxSCAElCrkHGGr5TX0jVFdUNLF7cx1XRHW1XTScLCaUgjTmfK27qWwMd5u0QeICCaN1wJGMWDyKk3mGn7Ng3plC9uaIP8CDMvdIbmi3sZ2gpM5IVx21Sy4u+3v6tM4IULtAHuC
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(136003)(396003)(366004)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(6486002)(478600001)(6506007)(6512007)(36756003)(33656002)(86362001)(1076003)(38100700002)(26005)(83380400001)(2616005)(316002)(5660300002)(54906003)(37006003)(66476007)(6636002)(66946007)(41300700001)(66556008)(8936002)(8676002)(6862004)(4326008)(2906002)(7416002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?NJEdPFrYxr8OULgTqdzjj8iO9TZte1LCtRgeVkuzQ2aPdCB3qNkL0wUk707W?=
+ =?us-ascii?Q?1xD8dG8gdng0vhbqCcglCPwnh6NtwnwJ2o7RtL3Y90i6WZjxE9b6U578erIy?=
+ =?us-ascii?Q?HxKSWxyOxJ++AdcuMEJwKHlETnOjAbPqA8R3rvry7j6/lz9mWNH23YehGqOo?=
+ =?us-ascii?Q?qpPO0edbNTFu8p+G6xv68yjmJFWoZSRYeyI4Jl5pswiBnMRaulZQYASEvX/T?=
+ =?us-ascii?Q?AP/08qUYUjci8eceX/RY6Jl9hjcQE0/e2eKBEkU0NA6sXcDLnivc0dIsrDrt?=
+ =?us-ascii?Q?Zgm3kJD4rFMHRXw8DXU3do6oNFKvDBBnOKS1Cgl+VCzfe0HyvlAIFoknwEJt?=
+ =?us-ascii?Q?ZvOWXKo6jQEQ9/9wpAlFnq7yvIg3spHrV9/vV2mGRyPopsYEAez8njNjAZhM?=
+ =?us-ascii?Q?F9Jn3CQ7z36Qw4K7vxb8UqVdn+hdp16NwnmxFRnk61LAA/MlzGwLhZgLjXSt?=
+ =?us-ascii?Q?89ZpziX/IKeAu0yxbuupc0wEdw1FR4L5PxahbiNfCGTIHOuUZ9S6MhJa2hss?=
+ =?us-ascii?Q?mIPIxC4ntrT7mqkc9E2dtHFPOAK/QTRXR7uf5gqW/o9yB7rmZtGaIrBv07Ok?=
+ =?us-ascii?Q?jqnS5Eldy+SsmrkLA2hcQyzdLtZXZ53KpWJA+PlQnZY/99Z+spveZ0y1zXx9?=
+ =?us-ascii?Q?1W8Oxa/6Dn8epjZX6bJHe2ke6D/MZUCdxAtiBGCUTRRGM8AFj+9xUoSbm3g4?=
+ =?us-ascii?Q?VPPIMMkJSA2/RCW3OsIGU7X+Kb9DjcGzMvLsFDtMDA69W5BjJlwhyCHvrLPP?=
+ =?us-ascii?Q?CkloSunhp4G4iR7kXDxvKpWhS5AlPKSO+feW5xiCZSYvaIt6yZxElU0PGdS9?=
+ =?us-ascii?Q?EGacM22Y9flE+4P1V0GADS8Fz77X1Eyvr81tJTVZ52cEtuNWw2aO3+J7A4Ly?=
+ =?us-ascii?Q?T/cPn5JYRqfeo1myV9Z7fhrke3c99H7f9AKxo/Xmm+1ykZCSu76Zhnbqwq5U?=
+ =?us-ascii?Q?t8Nd8SQ8aOuwA45nIoUiPrvxzveNxOe3hT4L6wD9KSX6M+DGXc/W46am8sfl?=
+ =?us-ascii?Q?nhNipwLlgPma7+KBumNlGrI62Z2VAoBXPQnb5TQz445B4QkghLhJbFIKEMlO?=
+ =?us-ascii?Q?VSggv4NyCEsBXlrxGmRrHJjmnjnWxP+qkW1xzVpKMGKwyrqeIA5Z5Wdr7Wa5?=
+ =?us-ascii?Q?ffFrAnOo8KO6VGc/zVh3Q6hBOAVTT0dBN5ZfDETqOHNPiAe/025wVbcv8C6Z?=
+ =?us-ascii?Q?Sk9udU8Gc1AKm8fL7YIvOHSVTsy0G3L9Zvlr0JJflEJXM4cWUf1Fzr4j6KTk?=
+ =?us-ascii?Q?qO3sHEVtK+KDID2U19hYbrNaQ+FIH75ZwrCX9zxhUx8MBodai6+Sm+6u0a2/?=
+ =?us-ascii?Q?N/704kOLkghVO4rwCx2wf06a057XKuP80bRulf4ByZfCwPBwCGA9QmT3I7Fu?=
+ =?us-ascii?Q?C1J4IvsvHyBEpCfeHCq9t4B6zqnvbqAr/xKQzBbkqHuxYq9QKcKj5Kl/idDB?=
+ =?us-ascii?Q?hvQP8vjfVp8RnapmzCs4zLQRZOiKlZm6RFwQuibOKbSr702Yvp7i1I7nMFtg?=
+ =?us-ascii?Q?oIstTAhEBUccDI8YaOJPymoyVZanDeSnu+7TfH7RXudTSxatJg2Ge+vomLSQ?=
+ =?us-ascii?Q?mHUHIxsqrniwQS//kSLJNkURK+P5vxPnECIHLeSY?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 260b86d6-05b3-482b-3b24-08dbcf2ad287
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Oct 2023 16:05:03.2298
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5962b305-4374-4ef2-b6ab-08dbcf2b28c7
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EDD4.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8286
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Z2r+Cern1hlrbnHyIOz6RDWsNOng4VFZA8SsZaEwCYti/TyvHXGKB46IdWQvBgef
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4905
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
         autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -101,248 +138,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While scanning for CDX devices, register newly discovered bus as a
-cdx device. CDX device attributes are visible based on device type.
+On Mon, Oct 16, 2023 at 10:46:10AM -0700, Nicolin Chen wrote:
+> On Mon, Oct 16, 2023 at 09:04:54AM -0300, Jason Gunthorpe wrote:
+> > On Sun, Oct 15, 2023 at 12:14:01AM -0700, Nicolin Chen wrote:
+> > > On Thu, Sep 28, 2023 at 12:15:23AM -0700, Yi Liu wrote:
+> > > 
+> > > > diff --git a/include/uapi/linux/iommufd.h b/include/uapi/linux/iommufd.h
+> > > > index b4ba0c0cbab6..4a7c5c8fdbb4 100644
+> > > > --- a/include/uapi/linux/iommufd.h
+> > > > +++ b/include/uapi/linux/iommufd.h
+> > > > @@ -347,10 +347,20 @@ struct iommu_vfio_ioas {
+> > > >  };
+> > > >  #define IOMMU_VFIO_IOAS _IO(IOMMUFD_TYPE, IOMMUFD_CMD_VFIO_IOAS)
+> > > > 
+> > > > +/**
+> > > > + * enum iommufd_hwpt_alloc_flags - Flags for HWPT allocation
+> > > > + * @IOMMU_HWPT_ALLOC_NEST_PARENT: If set, allocate a domain which can serve
+> > > > + *                                as the parent domain in the nesting
+> > > > + *                                configuration.
+> > > 
+> > > I just noticed a nit here: we should probably align with other
+> > > parts of this file by using "HWPT" v.s. "domain"? I.e.
+> > > 
+> > > + * @IOMMU_HWPT_ALLOC_NEST_PARENT: If set, allocate a HWPT which can serve
+> > > + *                                as the parent HWPT in the nesting
+> > > + *                                configuration.
+> > 
+> > Yes
+> 
+> Should we resend? Or would it be possible for you to update it
+> in your for-next tree?
 
-Signed-off-by: Abhijit Gangurde <abhijit.gangurde@amd.com>
----
- Changes in v7:
- - None
+At this point send a Fixes: patch
 
- Changes in v6:
- - New patch in the series
- - Register cdx bus as a device on cdx subsystem
-
- drivers/cdx/cdx.c                       | 77 +++++++++++++++++++++++--
- drivers/cdx/cdx.h                       | 14 ++++-
- drivers/cdx/controller/cdx_controller.c |  7 +++
- include/linux/cdx/cdx_bus.h             |  2 +
- 4 files changed, 93 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/cdx/cdx.c b/drivers/cdx/cdx.c
-index ee0913f04758..cf5306580c21 100644
---- a/drivers/cdx/cdx.c
-+++ b/drivers/cdx/cdx.c
-@@ -125,8 +125,13 @@ static int cdx_unregister_device(struct device *dev,
- {
- 	struct cdx_device *cdx_dev = to_cdx_device(dev);
- 
--	kfree(cdx_dev->driver_override);
--	cdx_dev->driver_override = NULL;
-+	if (cdx_dev->is_bus) {
-+		device_for_each_child(dev, NULL, cdx_unregister_device);
-+	} else {
-+		kfree(cdx_dev->driver_override);
-+		cdx_dev->driver_override = NULL;
-+	}
-+
- 	/*
- 	 * Do not free cdx_dev here as it would be freed in
- 	 * cdx_device_release() called from within put_device().
-@@ -201,6 +206,9 @@ static int cdx_bus_match(struct device *dev, struct device_driver *drv)
- 	const struct cdx_device_id *found_id = NULL;
- 	const struct cdx_device_id *ids;
- 
-+	if (cdx_dev->is_bus)
-+		return false;
-+
- 	ids = cdx_drv->match_id_table;
- 
- 	/* When driver_override is set, only bind to the matching driver */
-@@ -265,10 +273,11 @@ static int cdx_dma_configure(struct device *dev)
- {
- 	struct cdx_driver *cdx_drv = to_cdx_driver(dev->driver);
- 	struct cdx_device *cdx_dev = to_cdx_device(dev);
-+	struct cdx_controller *cdx = cdx_dev->cdx;
- 	u32 input_id = cdx_dev->req_id;
- 	int ret;
- 
--	ret = of_dma_configure_id(dev, dev->parent->of_node, 0, &input_id);
-+	ret = of_dma_configure_id(dev, cdx->dev->of_node, 0, &input_id);
- 	if (ret && ret != -EPROBE_DEFER) {
- 		dev_err(dev, "of_dma_configure_id() failed\n");
- 		return ret;
-@@ -374,6 +383,18 @@ static ssize_t driver_override_show(struct device *dev,
- }
- static DEVICE_ATTR_RW(driver_override);
- 
-+static umode_t cdx_dev_attrs_are_visible(struct kobject *kobj, struct attribute *a, int n)
-+{
-+	struct device *dev = kobj_to_dev(kobj);
-+	struct cdx_device *cdx_dev;
-+
-+	cdx_dev = to_cdx_device(dev);
-+	if (!cdx_dev->is_bus)
-+		return a->mode;
-+
-+	return 0;
-+}
-+
- static struct attribute *cdx_dev_attrs[] = {
- 	&dev_attr_remove.attr,
- 	&dev_attr_reset.attr,
-@@ -382,7 +403,16 @@ static struct attribute *cdx_dev_attrs[] = {
- 	&dev_attr_driver_override.attr,
- 	NULL,
- };
--ATTRIBUTE_GROUPS(cdx_dev);
-+
-+static const struct attribute_group cdx_dev_group = {
-+	.attrs = cdx_dev_attrs,
-+	.is_visible = cdx_dev_attrs_are_visible,
-+};
-+
-+static const struct attribute_group *cdx_dev_groups[] = {
-+	&cdx_dev_group,
-+	NULL,
-+};
- 
- static ssize_t rescan_store(const struct bus_type *bus,
- 			    const char *buf, size_t count)
-@@ -479,7 +509,6 @@ static void cdx_device_release(struct device *dev)
- int cdx_device_add(struct cdx_dev_params *dev_params)
- {
- 	struct cdx_controller *cdx = dev_params->cdx;
--	struct device *parent = cdx->dev;
- 	struct cdx_device *cdx_dev;
- 	int ret;
- 
-@@ -503,7 +532,7 @@ int cdx_device_add(struct cdx_dev_params *dev_params)
- 
- 	/* Initialize generic device */
- 	device_initialize(&cdx_dev->dev);
--	cdx_dev->dev.parent = parent;
-+	cdx_dev->dev.parent = dev_params->parent;
- 	cdx_dev->dev.bus = &cdx_bus_type;
- 	cdx_dev->dev.dma_mask = &cdx_dev->dma_mask;
- 	cdx_dev->dev.release = cdx_device_release;
-@@ -532,6 +561,42 @@ int cdx_device_add(struct cdx_dev_params *dev_params)
- }
- EXPORT_SYMBOL_NS_GPL(cdx_device_add, CDX_BUS_CONTROLLER);
- 
-+struct device *cdx_bus_add(struct cdx_controller *cdx, u8 bus_num)
-+{
-+	struct cdx_device *cdx_dev;
-+	int ret;
-+
-+	cdx_dev = kzalloc(sizeof(*cdx_dev), GFP_KERNEL);
-+	if (!cdx_dev)
-+		return NULL;
-+
-+	device_initialize(&cdx_dev->dev);
-+	cdx_dev->cdx = cdx;
-+
-+	cdx_dev->dev.parent = cdx->dev;
-+	cdx_dev->dev.bus = &cdx_bus_type;
-+	cdx_dev->dev.release = cdx_device_release;
-+	cdx_dev->is_bus = true;
-+	cdx_dev->bus_num = bus_num;
-+
-+	dev_set_name(&cdx_dev->dev, "cdx-%02x",
-+		     ((cdx->id << CDX_CONTROLLER_ID_SHIFT) | (bus_num & CDX_BUS_NUM_MASK)));
-+
-+	ret = device_add(&cdx_dev->dev);
-+	if (ret) {
-+		dev_err(&cdx_dev->dev, "cdx bus device add failed: %d\n", ret);
-+		goto device_add_fail;
-+	}
-+
-+	return &cdx_dev->dev;
-+
-+device_add_fail:
-+	put_device(&cdx_dev->dev);
-+
-+	return NULL;
-+}
-+EXPORT_SYMBOL_NS_GPL(cdx_bus_add, CDX_BUS_CONTROLLER);
-+
- int cdx_register_controller(struct cdx_controller *cdx)
- {
- 	int ret;
-diff --git a/drivers/cdx/cdx.h b/drivers/cdx/cdx.h
-index c436ac7ac86f..1f593deb4c9e 100644
---- a/drivers/cdx/cdx.h
-+++ b/drivers/cdx/cdx.h
-@@ -13,7 +13,7 @@
- /**
-  * struct cdx_dev_params - CDX device parameters
-  * @cdx: CDX controller associated with the device
-- * @parent: Associated CDX controller
-+ * @parent: Associated CDX Bus device
-  * @vendor: Vendor ID for CDX device
-  * @device: Device ID for CDX device
-  * @bus_num: Bus number for this CDX device
-@@ -24,6 +24,7 @@
-  */
- struct cdx_dev_params {
- 	struct cdx_controller *cdx;
-+	struct device *parent;
- 	u16 vendor;
- 	u16 device;
- 	u8 bus_num;
-@@ -59,4 +60,15 @@ void cdx_unregister_controller(struct cdx_controller *cdx);
-  */
- int cdx_device_add(struct cdx_dev_params *dev_params);
- 
-+/**
-+ * cdx_bus_add - Add a CDX bus. This function adds a bus on the CDX bus
-+ *		subsystem. It creates a CDX device for the corresponding bus and
-+ *		also registers an associated Linux generic device.
-+ * @cdx: Associated CDX controller
-+ * @us_num: Bus number
-+ *
-+ * Return: associated Linux generic device pointer on success or NULL on failure.
-+ */
-+struct device *cdx_bus_add(struct cdx_controller *cdx, u8 bus_num);
-+
- #endif /* _CDX_H_ */
-diff --git a/drivers/cdx/controller/cdx_controller.c b/drivers/cdx/controller/cdx_controller.c
-index 3f86663fbacf..b4e0d6b40339 100644
---- a/drivers/cdx/controller/cdx_controller.c
-+++ b/drivers/cdx/controller/cdx_controller.c
-@@ -79,8 +79,14 @@ static int cdx_scan_devices(struct cdx_controller *cdx)
- 	num_cdx_bus = (u8)ret;
- 
- 	for (bus_num = 0; bus_num < num_cdx_bus; bus_num++) {
-+		struct device *bus_dev;
- 		u8 num_cdx_dev;
- 
-+		/* Add the bus on cdx subsystem */
-+		bus_dev = cdx_bus_add(cdx, bus_num);
-+		if (!bus_dev)
-+			continue;
-+
- 		/* MCDI FW Read: Fetch the number of devices present */
- 		ret = cdx_mcdi_get_num_devs(cdx_mcdi, bus_num);
- 		if (ret < 0) {
-@@ -103,6 +109,7 @@ static int cdx_scan_devices(struct cdx_controller *cdx)
- 				continue;
- 			}
- 			dev_params.cdx = cdx;
-+			dev_params.parent = bus_dev;
- 
- 			/* Add the device to the cdx bus */
- 			ret = cdx_device_add(&dev_params);
-diff --git a/include/linux/cdx/cdx_bus.h b/include/linux/cdx/cdx_bus.h
-index 82c27b8c94e1..b5e4b7e05666 100644
---- a/include/linux/cdx/cdx_bus.h
-+++ b/include/linux/cdx/cdx_bus.h
-@@ -88,6 +88,7 @@ struct cdx_controller {
-  * @dma_mask: Default DMA mask
-  * @flags: CDX device flags
-  * @req_id: Requestor ID associated with CDX device
-+ * @is_bus: Is this bus device
-  * @driver_override: driver name to force a match; do not set directly,
-  *                   because core frees it; use driver_set_override() to
-  *                   set or clear it.
-@@ -104,6 +105,7 @@ struct cdx_device {
- 	u64 dma_mask;
- 	u16 flags;
- 	u32 req_id;
-+	bool is_bus;
- 	const char *driver_override;
- };
- 
--- 
-2.34.1
-
+Jason
