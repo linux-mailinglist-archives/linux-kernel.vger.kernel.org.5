@@ -2,152 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2FB7CCC27
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 21:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96ECF7CCC22
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 21:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343739AbjJQTWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 15:22:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54736 "EHLO
+        id S1343684AbjJQTVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 15:21:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234988AbjJQTWD (ORCPT
+        with ESMTP id S233635AbjJQTVf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 15:22:03 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E0DAED;
-        Tue, 17 Oct 2023 12:22:02 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39HJKJYE001291;
-        Tue, 17 Oct 2023 19:21:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=qcppdkim1;
- bh=0LQuUlcaFUHetJiym4qKpAFghbPfRLvpwUs9ECHtN7o=;
- b=PuB1LbVxtgWCkaW5m2DPkDGTCxcBAmnpp4etA7IsiOmax86tX3EHLtSApDnQWIwUtXPu
- spw+LTpgDf6zWDnalUyLu5sjIOzs72rmpOSK6bXXF0/6CLMzne1YV0cY7/JGQozI6x0M
- pWVDu2qGkSIw/9ZNK8p7cNM5lgkWLDxRcT3JSDom9giM/WU1yDzCbEAC4NDCKQZvDul3
- 9OV0Bz8ns3hH6vuf6dvyv8LxFaYq2facJkOdA6N+DauyfRqgX5uh77xnsbsHy3tMEAFv
- 20Clp2GhHXAnMcIFzNgyNxrwIjz9qjP83AYTs5bsfKgF57texZR/C7m4Uj5XoBeiJzLj zg== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tsb7xjvnv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Oct 2023 19:21:51 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39HJLNYW006533
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Oct 2023 19:21:23 GMT
-Received: from akhilpo-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Tue, 17 Oct 2023 12:21:16 -0700
-Date:   Wed, 18 Oct 2023 00:51:13 +0530
-From:   Akhil P Oommen <quic_akhilpo@quicinc.com>
-To:     Rob Clark <robdclark@chromium.org>
-CC:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        <cros-qcom-dts-watchers@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        "Bjorn Andersson" <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Tue, 17 Oct 2023 15:21:35 -0400
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41770C6;
+        Tue, 17 Oct 2023 12:21:34 -0700 (PDT)
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6c67060fdfbso4254373a34.2;
+        Tue, 17 Oct 2023 12:21:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697570493; x=1698175293;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=61S20Gbnndc4fqj7tn8AFvCkFIBPPlMvkss+WgUIuOM=;
+        b=isCQ3WLsdwBK4tMr42xvN/MvE9MTkf/olUckVe/lIQ3T7uamTEW8U+EeegMwtBZJUt
+         lCn9gErEnYpxzWnME9IOmOpslBYYjAFBpL1RGJzzJYxHjqMRA9du668/oGAtgwTf17ka
+         aP64B87slA3799pjr9FQmDtyaTho5W925H2ilZ7O/NB60aZyLIC6fZ303A2L+CUiXAfX
+         5HNlDm22CLiH5fPYzjAq9Z8hCxMpkhETUd306sT1zqh264uxM2HL0yq13mwZiKjom0nc
+         ajaN8cxLKBc6iqH+US0wwPH+7ZALEbKPswcvOS0/1Dc8GjPcBklHZ3ce99GApBlcY7HW
+         JS7w==
+X-Gm-Message-State: AOJu0YyoJl8NB9UfQ/gNt3Ynd4vWJnxUkb7jXbV+4Jw0foidsAoFQm0G
+        hD6y05pH4snmoO2qPxhZnA==
+X-Google-Smtp-Source: AGHT+IHJyaSugGG05r+DAoJig+bmPNHXeP74ajH6ozj3mbwxUknjRdWObSCsL8JxU3Kg3JW4VaUWkA==
+X-Received: by 2002:a05:6830:2641:b0:6c4:9852:a498 with SMTP id f1-20020a056830264100b006c49852a498mr3533723otu.4.1697570493497;
+        Tue, 17 Oct 2023 12:21:33 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id a9-20020a9d3e09000000b006c4727812fdsm367616otd.15.2023.10.17.12.21.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Oct 2023 12:21:32 -0700 (PDT)
+Received: (nullmailer pid 2539855 invoked by uid 1000);
+        Tue, 17 Oct 2023 19:21:31 -0000
+Date:   Tue, 17 Oct 2023 14:21:31 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     niravkumar.l.rabara@intel.com
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Luca Weiss <luca.weiss@fairphone.com>,
-        <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 2/7] drm/msm/adreno: Add ZAP firmware name to A635
-Message-ID: <hgpte7bfyjnhbxx2n3kxjl4yc4k536x5ljanmbyuro6rnnv6cs@3gtwwukp5uag>
-References: <20230926-topic-a643-v1-0-7af6937ac0a3@linaro.org>
- <20230926-topic-a643-v1-2-7af6937ac0a3@linaro.org>
- <43q6mui3lofa4rqh667o54b2qcbqn5fg34ss5o7y7k7uxbxsro@dxgovofsrvqx>
- <CAJs_Fx7WkdhY31aP_buZP+b7ihOOmE8zBZFOLZ8z9uqcNmEhVw@mail.gmail.com>
+        Dinh Nguyen <dinguyen@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] dt-bindings: soc: altera: convert socfpga-system.txt
+ to yaml
+Message-ID: <20231017192131.GA2531944-robh@kernel.org>
+References: <20231014112905.1512650-1-niravkumar.l.rabara@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJs_Fx7WkdhY31aP_buZP+b7ihOOmE8zBZFOLZ8z9uqcNmEhVw@mail.gmail.com>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: cl4rbfVQDzRvzEbrtwXrLKy6DPQYGpYW
-X-Proofpoint-GUID: cl4rbfVQDzRvzEbrtwXrLKy6DPQYGpYW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-17_03,2023-10-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- mlxlogscore=999 suspectscore=0 lowpriorityscore=0 spamscore=0 bulkscore=0
- mlxscore=0 phishscore=0 malwarescore=0 impostorscore=0 clxscore=1015
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310170164
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231014112905.1512650-1-niravkumar.l.rabara@intel.com>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Oct 14, 2023 at 07:29:05PM +0800, niravkumar.l.rabara@intel.com wrote:
+> From: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
+> 
+> Convert socfpga-system.txt to altr,socfpga-sys-mgr.yaml and move to
+> soc directory.
+> 
+> Add platform names in description for clarity. ARM(32-bit) platforms
+> Cyclone5, Arria5 and Arria10 is using "altr,sys-mgr" compatible,
+> while ARM64 is using "altr,sys-mgr-s10" compatible.
+> Removed "cpu1-start-addr" for ARM64 as it is not required.
+> 
+> Signed-off-by: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
+> ---
+> 
+> Changes in v2:
+> - Added detail description of changes in commit message.
+> - Moved coverted yaml file to soc folder.  
+> 
+>  .../bindings/arm/altera/socfpga-system.txt    | 25 ---------
+>  .../soc/altera/altr,socfpga-sys-mgr.yaml      | 51 +++++++++++++++++++
 
-On Tue, Oct 17, 2023 at 12:33:45AM -0700, Rob Clark wrote:
-> 
-> On Mon, Oct 16, 2023 at 1:12 PM Akhil P Oommen <quic_akhilpo@quicinc.com> wrote:
-> >
-> > On Tue, Sep 26, 2023 at 08:24:37PM +0200, Konrad Dybcio wrote:
-> > >
-> > > Some (many?) devices with A635 expect a ZAP shader to be loaded.
-> > >
-> > > Set the file name to allow for that.
-> > >
-> > > Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> > > ---
-> > >  drivers/gpu/drm/msm/adreno/adreno_device.c | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
-> > > index fa527935ffd4..16527fe8584d 100644
-> > > --- a/drivers/gpu/drm/msm/adreno/adreno_device.c
-> > > +++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
-> > > @@ -454,6 +454,7 @@ static const struct adreno_info gpulist[] = {
-> > >               .quirks = ADRENO_QUIRK_HAS_CACHED_COHERENT |
-> > >                       ADRENO_QUIRK_HAS_HW_APRIV,
-> > >               .init = a6xx_gpu_init,
-> > > +             .zapfw = "a660_zap.mbn",
-> >
-> > sc7280 doesn't have a TZ and so no zap shader support. Can we handle
-> > this using "firmware-name" property in your top level platform dt? Zap
-> > firmwares are signed with different keys for each OEMs. So there is
-> > cross-compatibility anyway.
-I had a typo here. I meant "no cross compatibility".
+altr,sys-mgr.yaml
 
-> 
-> I think this ends up working out because the version of sc7280 that
-> doesn't have TZ also doesn't have the associated mem-region/etc..  but
-> maybe we should deprecate the zapfw field as in practice it isn't
-> useful (ie. always overriden by firmware-name).
-Sounds good.
 
+>  2 files changed, 51 insertions(+), 25 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/arm/altera/socfpga-system.txt
+>  create mode 100644 Documentation/devicetree/bindings/soc/altera/altr,socfpga-sys-mgr.yaml
 > 
-> Fwiw there are windows laptops with sc7180/sc7280 which do use zap fw.
-Aah! right.
+> diff --git a/Documentation/devicetree/bindings/arm/altera/socfpga-system.txt b/Documentation/devicetree/bindings/arm/altera/socfpga-system.txt
+> deleted file mode 100644
+> index 82edbaaa3f85..000000000000
+> --- a/Documentation/devicetree/bindings/arm/altera/socfpga-system.txt
+> +++ /dev/null
+> @@ -1,25 +0,0 @@
+> -Altera SOCFPGA System Manager
+> -
+> -Required properties:
+> -- compatible : "altr,sys-mgr"
+> -- reg : Should contain 1 register ranges(address and length)
+> -- cpu1-start-addr : CPU1 start address in hex.
+> -
+> -Example:
+> -	 sysmgr@ffd08000 {
+> -		compatible = "altr,sys-mgr";
+> -		reg = <0xffd08000 0x1000>;
+> -		cpu1-start-addr = <0xffd080c4>;
+> -	};
+> -
+> -ARM64 - Stratix10
+> -Required properties:
+> -- compatible : "altr,sys-mgr-s10"
+> -- reg : Should contain 1 register range(address and length)
+> -        for system manager register.
+> -
+> -Example:
+> -	 sysmgr@ffd12000 {
+> -		compatible = "altr,sys-mgr-s10";
+> -		reg = <0xffd12000 0x228>;
+> -	};
+> diff --git a/Documentation/devicetree/bindings/soc/altera/altr,socfpga-sys-mgr.yaml b/Documentation/devicetree/bindings/soc/altera/altr,socfpga-sys-mgr.yaml
+> new file mode 100644
+> index 000000000000..b8bf63bba567
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/altera/altr,socfpga-sys-mgr.yaml
+> @@ -0,0 +1,51 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/soc/altera/altr,socfpga-sys-mgr.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Altera SOCFPGA System Manager
+> +
+> +maintainers:
+> +  - Dinh Nguyen <dinguyen@kernel.org>
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - description: Cyclone5/Arria5/Arria10
+> +        const: altr,sys-mgr
+> +      - description: Stratix10 SoC
+> +        items:
+> +          - const: altr,sys-mgr-s10
+> +          - const: altr,sys-mgr
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  cpu1-start-addr:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: CPU1 start address in hex
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: altr,sys-mgr-s10
+> +    then:
+> +      properties:
+> +        cpu1-start-addr: false
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    sysmgr@ffd08000 {
+> +      compatible = "altr,sys-mgr";
+> +      reg = <0xffd08000 0x1000>;
+> +      cpu1-start-addr = <0xffd080c4>;
+> +    };
+> -- 
+> 2.25.1
 > 
-> BR,
-> -R
-> 
-> >
-> > -Ahil.
-> >
-> > >               .hwcg = a660_hwcg,
-> > >               .address_space_size = SZ_16G,
-> > >               .speedbins = ADRENO_SPEEDBINS(
-> > >
-> > > --
-> > > 2.42.0
-> > >
