@@ -2,365 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6D77CBA99
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 08:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C31E77CBA9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 08:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234473AbjJQGLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 02:11:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47054 "EHLO
+        id S234519AbjJQGM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 02:12:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233862AbjJQGLw (ORCPT
+        with ESMTP id S234399AbjJQGM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 02:11:52 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B9BEA
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 23:11:49 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-32d9cb5e0fcso3362570f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 23:11:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697523107; x=1698127907; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SWQrRSxyZxWQXQfkNM8B2PO8+EYitkaZ74T6aQHCXWE=;
-        b=IYJzhepdOjbm2Wkbowr2r5MbbWKfOjERwGhqlajlmgg1o3c9G4zLS4yyDUW1bnGMvD
-         ynwvNycGyhdvnQJ0z2eWsVvbI7PYo4q68oMRflItNy0S06c9OF3Y2Vf5dqwzsh/vRyJg
-         j6+iCy1gtYFwU7mCMO3NWq7Yue4bzySXvn96ooQSuymgoyk6f0baCTzUVt5hqP25/Ww3
-         xdksnocTuKBIAS05PiZXtKnBRv02NmI0nGnBPVsegMB3gtJtwmj4GoE/W+9rHDQxu5Em
-         DdF0I5aouzC8W55LzXelDRy9JgLd1Aln0BpykfPY8tHY2OGJqubY+zVmXgpz1osLbI/j
-         ktUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697523107; x=1698127907;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SWQrRSxyZxWQXQfkNM8B2PO8+EYitkaZ74T6aQHCXWE=;
-        b=tlUq0kRtioGO7Y6ipgHX5Q9zLdGEATvI9czYC25ErnPrM51kpCKF2ZsjGGs1dGc2qX
-         aze/QlOEaEFKibVjJwrtQL58vQWFwF9VknixLF9T4NS7apGx0PNvI+nCJmzIlkfsOiQV
-         5LxjElpmrg4Lnkfglg9kB7MjXWknjsK5StDKNjaS7x55OpUZPhMBBZ91abyiIFq5MW2Y
-         JQbsOcfPhWHogVTZkdH8M3xfWEoyKBj+5xkp6+TZyIKZIHnuYk6mWELPRaMIHArLf+5H
-         gUVgcJFmRZF7jBQXxCcfS5+3URwhdCjwIoRFYr0tcS7VO/yzYhL/X/Npl1/NoehjNymc
-         rndw==
-X-Gm-Message-State: AOJu0YzQH10IaAlcSiaySQm8p+7BxjvYfZ5BJd/jA1w5zUTXyayt4sFW
-        bk0STk2UEPRsxuHETMZ0sMSH1Q==
-X-Google-Smtp-Source: AGHT+IF7zTSX+tT/iakPNFQ1yaCFozPkYTPJrImivePSS4W7LctjNS6rMwo5cphZrYVK2M4imoeZGg==
-X-Received: by 2002:adf:e301:0:b0:313:f0d7:a43 with SMTP id b1-20020adfe301000000b00313f0d70a43mr1279719wrj.23.1697523107356;
-        Mon, 16 Oct 2023 23:11:47 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.154])
-        by smtp.gmail.com with ESMTPSA id o22-20020a5d58d6000000b0031980783d78sm875979wrf.54.2023.10.16.23.11.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 23:11:46 -0700 (PDT)
-Message-ID: <9f53e647-7c38-435f-bc74-e4f417445830@linaro.org>
-Date:   Tue, 17 Oct 2023 08:11:45 +0200
+        Tue, 17 Oct 2023 02:12:26 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F403B6
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 23:12:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E60F4C433C9;
+        Tue, 17 Oct 2023 06:12:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697523144;
+        bh=WZL7RMv9Zq/flTstARyomtZeBjuP+jl2Fbh947mNZjg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ubNVksdDjR5U3wRRg8jlP3jRY5F+VUPiIcGj/yOxk94jF9xgeqvFFQyW3zvfLXuAa
+         aRMuD2bNnylMN8NGUI6n/Xoq3N3aw5sQarV/zxO5FvmtRDqHXyfMlceBF+85NFoHDJ
+         ToellsOzqWjn7M8SzB3hEr6EgBR9pO2MK+JR+N5tq/bBvCjHRoyupp1fPxmKsRlkD6
+         YaKN/igqRKWuSuTkPE8CH6iet0DIosIcwR4Bm1d6M5i4TRmH4LbeshglfGnnra/OK7
+         fWKlyqxFmz/rbfCr3ZzJHXZKeA1lGJMyNd4iFaS8ll5YOovN07Wb1pn2AmY4wpUvWJ
+         xALE0IYqDaiaw==
+Date:   Tue, 17 Oct 2023 09:12:10 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Qi Zheng <arch0.zheng@gmail.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Vlastimil Babka <vbabka@suse.cz>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Teng Hu <huteng.ht@bytedance.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Oscar Salvador <osalvador@suse.de>,
+        Muchun Song <muchun.song@linux.dev>, x86@kernel.org
+Subject: Re: [PATCH] mm: page_alloc: don't allocate page from memoryless nodes
+Message-ID: <20231017061210.GW3303@kernel.org>
+References: <67240e55-af49-f20a-2b4b-b7d574cd910d@gmail.com>
+ <22f0e262-982e-ea80-e52a-a3c924b31d58@redhat.com>
+ <dbfbd982-27f3-0d72-49e0-d3dd5fe636a8@bytedance.com>
+ <4386151c-0328-d207-9a71-933ef61817f9@redhat.com>
+ <Y+t0Bhu7BCzH2Dp4@kernel.org>
+ <a7f8be91-32c1-bfbe-7e81-5b1e818ba01d@redhat.com>
+ <a09bfe3a-87e4-f8ce-89bb-c5fde8cc33c9@redhat.com>
+ <Y+uO5IE7boORqsne@dhcp22.suse.cz>
+ <Y+ymKw1eJaRcmDNN@kernel.org>
+ <8f506561-44f7-a243-f0cc-59543f487e4d@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 10/12] dt-bindings: usb: qcom,dwc3: Introduce flattened
- qcom,dwc3 binding
-Content-Language: en-US
-To:     Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>,
-        Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-References: <20231016-dwc3-refactor-v1-0-ab4a84165470@quicinc.com>
- <20231016-dwc3-refactor-v1-10-ab4a84165470@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231016-dwc3-refactor-v1-10-ab4a84165470@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8f506561-44f7-a243-f0cc-59543f487e4d@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/10/2023 05:11, Bjorn Andersson wrote:
-> The Qualcomm USB block consists of three intertwined parts, the XHCI,
-> the DWC3 core and the Qualcomm DWC3 glue. The three parts can not be
-> operated independently, but the binding was for historical reasons split
-> to mimic the Linux driver implementation.
+On Mon, Oct 16, 2023 at 12:09:42PM +0800, Qi Zheng wrote:
+> Hi Mike,
 > 
-> The split binding also makes it hard to alter the implementation, as
-> properties and resources are split between the two nodes, in some cases
-> with some duplication.
+> On 2023/2/15 17:30, Mike Rapoport wrote:
+> [...]
+> > 
+> > How about we try this:
+> > 
+> >  From b670120bcacd3fe34a40d7179c70ca2ab69279e0 Mon Sep 17 00:00:00 2001
+> > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> > Date: Wed, 15 Feb 2023 11:12:18 +0200
+> > Subject: [PATCH] x86/mm: drop 4MB restriction on minimal NUMA node size
+> > 
+> > Qi Zheng reports crashes in a production environment and provides a
+> > simplified example as a reproducer:
+> > 
+> >    For example, if we use qemu to start a two NUMA node kernel,
+> >    one of the nodes has 2M memory (less than NODE_MIN_SIZE),
+> >    and the other node has 2G, then we will encounter the
+> >    following panic:
+> > 
+> >    [    0.149844] BUG: kernel NULL pointer dereference, address: 0000000000000000
+> >    [    0.150783] #PF: supervisor write access in kernel mode
+> >    [    0.151488] #PF: error_code(0x0002) - not-present page
+> >    <...>
+> >    [    0.156056] RIP: 0010:_raw_spin_lock_irqsave+0x22/0x40
+> >    <...>
+> >    [    0.169781] Call Trace:
+> >    [    0.170159]  <TASK>
+> >    [    0.170448]  deactivate_slab+0x187/0x3c0
+> >    [    0.171031]  ? bootstrap+0x1b/0x10e
+> >    [    0.171559]  ? preempt_count_sub+0x9/0xa0
+> >    [    0.172145]  ? kmem_cache_alloc+0x12c/0x440
+> >    [    0.172735]  ? bootstrap+0x1b/0x10e
+> >    [    0.173236]  bootstrap+0x6b/0x10e
+> >    [    0.173720]  kmem_cache_init+0x10a/0x188
+> >    [    0.174240]  start_kernel+0x415/0x6ac
+> >    [    0.174738]  secondary_startup_64_no_verify+0xe0/0xeb
+> >    [    0.175417]  </TASK>
+> >    [    0.175713] Modules linked in:
+> >    [    0.176117] CR2: 0000000000000000
+> > 
+> > The crashes happen because of inconsistency between nodemask that has
+> > nodes with less than 4MB as memoryless and the actual memory fed into
+> > core mm.
+> > 
+> > The commit 9391a3f9c7f1 ("[PATCH] x86_64: Clear more state when ignoring
+> > empty node in SRAT parsing") that introduced minimal size of a NUMA node
+> > does not explain why a node size cannot be less than 4MB and what boot
+> > failures this restriction might fix.
+> > 
+> > Since then a lot has changed and core mm won't confuse badly about small
+> > node sizes.
+> > 
+> > Drop the limitation for the minimal node size.
+> > 
+> > Link: https://lore.kernel.org/all/20230212110305.93670-1-zhengqi.arch@bytedance.com/
+> > Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> > ---
+> >   arch/x86/include/asm/numa.h | 7 -------
+> >   arch/x86/mm/numa.c          | 7 -------
+> >   2 files changed, 14 deletions(-)
 > 
-> Introduce a new binding, with a single representation of the whole USB
-> block in one node.
+> What's the current progress on this patch? This patch doesn't seem to be
+> merged into any trees. Did I miss something?
+
+Looks like it fell between the cracks. I'll resend.
+ 
+> Thanks,
+> Qi
 > 
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> ---
->  .../devicetree/bindings/usb/qcom,dwc3.yaml         | 482 +++++++++++++++++++++
->  .../devicetree/bindings/usb/snps,dwc3.yaml         |  14 +-
->  2 files changed, 491 insertions(+), 5 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-> new file mode 100644
-> index 000000000000..cb50261c6a36
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-> @@ -0,0 +1,482 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm SuperSpeed DWC3 USB SoC controller
-> +
-> +maintainers:
-> +  - Wesley Cheng <quic_wcheng@quicinc.com>
-> +
-> +select:
-> +  properties:
-> +    compatible:
-> +      items:
-> +        - enum:
-> +            - qcom,ipq4019-dwc3
-> +            - qcom,ipq5018-dwc3
-> +            - qcom,ipq5332-dwc3
-> +            - qcom,ipq6018-dwc3
-> +            - qcom,ipq8064-dwc3
-> +            - qcom,ipq8074-dwc3
-> +            - qcom,ipq9574-dwc3
-> +            - qcom,msm8953-dwc3
-> +            - qcom,msm8994-dwc3
-> +            - qcom,msm8996-dwc3
-> +            - qcom,msm8998-dwc3
-> +            - qcom,qcm2290-dwc3
-> +            - qcom,qcs404-dwc3
-> +            - qcom,sa8775p-dwc3
-> +            - qcom,sc7180-dwc3
-> +            - qcom,sc7280-dwc3
-> +            - qcom,sc8180x-dwc3
-> +            - qcom,sc8280xp-dwc3
-> +            - qcom,sc8280xp-dwc3-mp
-> +            - qcom,sdm660-dwc3
-> +            - qcom,sdm670-dwc3
-> +            - qcom,sdm845-dwc3
-> +            - qcom,sdx55-dwc3
-> +            - qcom,sdx65-dwc3
-> +            - qcom,sdx75-dwc3
-> +            - qcom,sm4250-dwc3
-> +            - qcom,sm6115-dwc3
-> +            - qcom,sm6125-dwc3
-> +            - qcom,sm6350-dwc3
-> +            - qcom,sm6375-dwc3
-> +            - qcom,sm8150-dwc3
-> +            - qcom,sm8250-dwc3
-> +            - qcom,sm8350-dwc3
-> +            - qcom,sm8450-dwc3
-> +            - qcom,sm8550-dwc3
 
-This enum could be replaced with '{}'. Alternatively, drop enum entire
-select replaced with:
-- contains
-  - items:
-      - const: qcom,dwc3
-      - const: snps,dwc3
-
-
-
-> +        - const: qcom,dwc3
-> +        - const: snps,dwc3
-> +  required:
-> +    - compatible
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - qcom,ipq4019-dwc3
-> +          - qcom,ipq5018-dwc3
-> +          - qcom,ipq5332-dwc3
-> +          - qcom,ipq6018-dwc3
-> +          - qcom,ipq8064-dwc3
-> +          - qcom,ipq8074-dwc3
-> +          - qcom,ipq9574-dwc3
-> +          - qcom,msm8953-dwc3
-> +          - qcom,msm8994-dwc3
-> +          - qcom,msm8996-dwc3
-> +          - qcom,msm8998-dwc3
-> +          - qcom,qcm2290-dwc3
-> +          - qcom,qcs404-dwc3
-> +          - qcom,sa8775p-dwc3
-> +          - qcom,sc7180-dwc3
-> +          - qcom,sc7280-dwc3
-> +          - qcom,sc8180x-dwc3
-> +          - qcom,sc8280xp-dwc3
-> +          - qcom,sc8280xp-dwc3-mp
-> +          - qcom,sdm660-dwc3
-> +          - qcom,sdm670-dwc3
-> +          - qcom,sdm845-dwc3
-> +          - qcom,sdx55-dwc3
-> +          - qcom,sdx65-dwc3
-> +          - qcom,sdx75-dwc3
-> +          - qcom,sm4250-dwc3
-> +          - qcom,sm6115-dwc3
-> +          - qcom,sm6125-dwc3
-> +          - qcom,sm6350-dwc3
-> +          - qcom,sm6375-dwc3
-> +          - qcom,sm8150-dwc3
-> +          - qcom,sm8250-dwc3
-> +          - qcom,sm8350-dwc3
-> +          - qcom,sm8450-dwc3
-> +          - qcom,sm8550-dwc3
-> +      - const: qcom,dwc3
-> +      - const: snps,dwc3
-> +
-> +  reg:
-> +    description: Offset and length of register set for QSCRATCH wrapper
-> +    maxItems: 1
-> +
-> +  power-domains:
-> +    description: specifies a phandle to PM domain provider node
-
-Drop description
-
-> +    maxItems: 1
-> +
-> +  required-opps:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    description: |
-> +      Several clocks are used, depending on the variant. Typical ones are::
-> +       - cfg_noc:: System Config NOC clock.
-> +       - core:: Master/Core clock, has to be >= 125 MHz for SS operation and >=
-> +                60MHz for HS operation.
-> +       - iface:: System bus AXI clock.
-> +       - sleep:: Sleep clock, used for wakeup when USB3 core goes into low
-> +                 power mode (U3).
-> +       - mock_utmi:: Mock utmi clock needed for ITP/SOF generation in host
-> +                     mode. Its frequency should be 19.2MHz.
-> +    minItems: 1
-> +    maxItems: 9
-> +
-> +  clock-names:
-> +    minItems: 1
-> +    maxItems: 9
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +  interconnects:
-> +    maxItems: 2
-> +
-> +  interconnect-names:
-> +    items:
-> +      - const: usb-ddr
-> +      - const: apps-usb
-> +
-> +  interrupts:
-> +    minItems: 2
-> +    maxItems: 5
-> +
-> +  interrupt-names:
-> +    minItems: 2
-> +    maxItems: 5
-> +
-> +  qcom,select-utmi-as-pipe-clk:
-> +    description:
-> +      If present, disable USB3 pipe_clk requirement.
-> +      Used when dwc3 operates without SSPHY and only
-> +      HS/FS/LS modes are supported.
-> +    type: boolean
-> +
-> +  wakeup-source: true
-> +
-> +# Required child node:
-
-Drop
-
-
-...
-
-> diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-> index d81c2e849ca9..d6914b8cef6a 100644
-> --- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-> +++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-> @@ -44,14 +44,18 @@ properties:
->        It's either a single common DWC3 interrupt (dwc_usb3) or individual
->        interrupts for the host, gadget and DRD modes.
->      minItems: 1
-> -    maxItems: 4
-> +    maxItems: 5
->  
->    interrupt-names:
-> -    minItems: 1
-> -    maxItems: 4
->      oneOf:
-> -      - const: dwc_usb3
-> -      - items:
-> +      - minItems: 1
-> +        maxItems: 5
-> +        items:
-> +          - const: dwc_usb3
-> +        additionalItems: true
-
-This is not correct change. Before, one dwc_usb3 interrupt was combined
-allowed, or a set of host+peripheral+otg+wakeup. Now, you allow combined
-dwc_usb3 with anything.
-
-
-
-Best regards,
-Krzysztof
-
+-- 
+Sincerely yours,
+Mike.
