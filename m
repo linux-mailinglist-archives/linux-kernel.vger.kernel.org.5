@@ -2,387 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 355017CC1D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 13:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE4D27CC1CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 13:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234608AbjJQLc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 07:32:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60938 "EHLO
+        id S234807AbjJQLci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 07:32:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234147AbjJQLc4 (ORCPT
+        with ESMTP id S232644AbjJQLcg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 07:32:56 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8CCEF7
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 04:32:53 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99de884ad25so901891666b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 04:32:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697542372; x=1698147172; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=oXk0KxqRZ9jejLhx8JsARQQNd5N5k9nNlrEn6GNkSNg=;
-        b=k0a1nqRTYUkmTidOEEDPjfHP4qRYEo0t4dAM2ui9m3wZ+F8iqHv1btJ872JQaPvTfI
-         /KY1r0ereyxPAPbKxCBft1WtqYLdKuwtWVtInCm9XPbfaJ9Fg03kJMzL0CmiuQpPjpXK
-         T/mboZErMsCVPOW8O3A0VbxZp3HAo3PkMwswq13iJ3uKXSG9sCDZzvOhq4WrC5BLQuBJ
-         ZkrCZRtLECX478EAa4BZnGRnKrrJ1OVHuP0c+Yv/TnWYrnAKZhEfhUeIWGgD9K1oYmbn
-         8gJg1ArLB9tMO2ovA0EmlpPUL2ez+nRIZfACVGfwn5JyFMpjYHXzxgooub2GsVEeoA/j
-         CBGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697542372; x=1698147172;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oXk0KxqRZ9jejLhx8JsARQQNd5N5k9nNlrEn6GNkSNg=;
-        b=pi6Q35RxO4RZDL9O01GPAfnFsC3bt8eFGEL87Ggru6N6tkpjpl4YPojLYpZUGdhGWk
-         V12/k+gi8kCihCSs5tK2QH4iZpAwAppJoCPQOoxN4nSSnBI2Bq8M1VXiI4VBGMnYx/Ig
-         vSwMzTWzOWgHIKKbZ0khdrNehgP0Ih1HIpEvlzukt1of4bzsghRNK5se93CenuT8hR7x
-         G0Q13dK3lOHZVCUCGdbu5whxTRyPhFZIXLUn4vLalinl4WbJVQrnm3ilzxAt06col0vM
-         CuUJJBDRH/9HMWCZQZm2lqRS1MR1Lul8/ocbWtAoMm7bLUAZqxdFVTtHvkl8CpJaEGK8
-         cMzw==
-X-Gm-Message-State: AOJu0YwQL/e39yEy6Hr8TEDkSE6SwntIUUawsRHZ/xW3kv+adageWiR/
-        M9r5mlTIjsSSwg1qOyba+i+fDfwG+B5zSAG5mgOEeg==
-X-Google-Smtp-Source: AGHT+IGauLKLYx6btp86Av5RC89JgZvmBItTh/fJtBmXX047C4V+47ymL4W2NxsepDmFTmWgVHPF3u/yQi6kKlNal4g=
-X-Received: by 2002:a17:907:97d4:b0:9ae:7206:963c with SMTP id
- js20-20020a17090797d400b009ae7206963cmr1372424ejc.15.1697542371818; Tue, 17
- Oct 2023 04:32:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231017080812.117892-1-bagasdotme@gmail.com>
-In-Reply-To: <20231017080812.117892-1-bagasdotme@gmail.com>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Tue, 17 Oct 2023 13:32:15 +0200
-Message-ID: <CAMZdPi_7Psk-EF5-nA7U=Wdenq8GGszH8fUoN+LJTn9kKis41Q@mail.gmail.com>
-Subject: Re: [PATCH net] Revert "net: wwan: iosm: enable runtime pm support
- for 7560"
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Linux Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "David S. Miller" <davem@davemloft.net>,
+        Tue, 17 Oct 2023 07:32:36 -0400
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2066.outbound.protection.outlook.com [40.107.104.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7F9BEA;
+        Tue, 17 Oct 2023 04:32:34 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JGBZuPlIkWr9qPWfeMSh7exFu9S1PCEzCrIiwfVtRH5XYdO5WLB44+uOroT8E3bEabmJtE+Yuvul6JDR/W6B8POjo2n0kXzJiKUXfcdT4oueazoslR0RaP3af7BWXjl+7d04ki3xpT1N+8Ii2ir+N6dhie5+efTz7GN3G5cE6QRNIYzdf5sWg7UxQFqzXimYyEMSGc8nu8Xf0ScaMytOvNIoErDr5VZgoEEqm8D2VNLRctkGOxvMKWk0wHWNKhEkMfLm7TugbWiI5iV8tnA3NzKQakrRPTMQZgdq2Y0XLmkijIBDV9KkNIlLpYPKQ3sVQ+4T/7ct0jt6ty5YRbiMWw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=50ZinWRDi0hsKrUkozc8pJbrOTYGLAhOG7dmbSaSZ3c=;
+ b=FFATFylWtjo0bnlWHVhu4pFvGHg7EAZ04Ke03LCHggOyhLgpfI2Wg1PvS0MU+AcURyqo2UjejLB91112pSf7TRZTDS+1Mq4T5kDp4oXzTIMC/IV6Lw+aaFyUm7gmXVUOBG2WuprFL5vJpK9tYOc/mnmZYHYfb6gSat6n61hNK7nhH3iV95MghMdoseM0Cn+ZpYW26C2bkEeWmBk+4G2LrzW6Yl1GgB3Py69gGJSpg8/DESUnuDqQc4AUeDs2mp3jXnc47Qv3O3wZ+iqR+7U4nh1SMyTNZT5lzS3MEjqrdX5FTu3EdtijQCRCJrxTAs3g1Lv/D8+wbNKE4yPE/Y+9BA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=50ZinWRDi0hsKrUkozc8pJbrOTYGLAhOG7dmbSaSZ3c=;
+ b=ZNj1KXoudWxdLUwnchVoMPFgnUxJaLJKIuWbzg2O0/BOxEGrblhaVoHVeQfZCW4p2oV/tedjFTtfhvT2X/uoD7DbTdZqGe7DYCS0xZdO9HsedBTQXZ31GQHEksfu8Jul+c51ZzYRuMCkG3xpB03J7BYrZZFiGzAFQVVUTrskdOU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
+ by AS8PR04MB7720.eurprd04.prod.outlook.com (2603:10a6:20b:299::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36; Tue, 17 Oct
+ 2023 11:32:32 +0000
+Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
+ ([fe80::992:76c8:4771:8367]) by AM0PR04MB6452.eurprd04.prod.outlook.com
+ ([fe80::992:76c8:4771:8367%7]) with mapi id 15.20.6886.034; Tue, 17 Oct 2023
+ 11:32:32 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     netdev@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Martin <mwolf@adiumentum.com>
-Content-Type: text/plain; charset="UTF-8"
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Michael Walle <michael@walle.cc>, linux-kernel@vger.kernel.org
+Subject: [PATCH net] net: mdio-mux: fix C45 access returning -EIO after API change
+Date:   Tue, 17 Oct 2023 14:32:22 +0300
+Message-Id: <20231017113222.3135895-1-vladimir.oltean@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AM0PR04CA0048.eurprd04.prod.outlook.com
+ (2603:10a6:208:1::25) To AM0PR04MB6452.eurprd04.prod.outlook.com
+ (2603:10a6:208:16d::21)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|AS8PR04MB7720:EE_
+X-MS-Office365-Filtering-Correlation-Id: 63cede20-f198-4f8f-8fa6-08dbcf04c072
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yUFW6Vzo5a8qrTkbRHe/5Chs9RiRNs2aHOL6H7fckxJTqOT00o/T/XBZkUNBL7Xo/HIo4m29JtoJjsOW4LxKOe6nhvZ6fH+x375Ak290m2Aiqy8Zr3Wv603ewuab2KPZ7P+ytwxga6oVsr9/+9vMaQwjZ51RB1RmvsI9Rtr3/diFjzSg94W7MoPhtriTkKQyFGlTKtebKgoGzV9uUsAxXHvuculbUe7JnX+5c7BsHtJ0vyn22kbQybzVrB7pWRmouInnGhQTuP5VWQ+wljuTlQHbKTMAgpfsrWPTWJuTnr38jvZGcu4HgBqntkQiOpopr/APRGWuBpuJyR/ANnBVLXFpMb7qgT6t96HZR7IH0tTRCXA9tLpVYkw4VMqXAvzCgxmxFUyQuQyVyB5aWR32MSTskcu6+qpBnGjkUBuXlVYLmj3FYzWxDbK4+AXn0hB9NUSbGNMv3jVn3JcRpjvQ/8xm56iF3XXx4uoov6IIolH+AFCBts1Q+8FqfTxKYYam3d7zZwL6+vlYHC9OScg3jrbDd4a8qDUGSnMlnw9QkisMSQ04tQ/GyEf4iEXP7L3MxJ6+nrvrTaJZAEb+/Fr1OJF6jejAhrHa1T3ATovt84IPs3JRKQoYVvKkay4BFg8w
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(39860400002)(366004)(346002)(376002)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(6486002)(478600001)(6666004)(52116002)(6512007)(86362001)(36756003)(38350700005)(6506007)(38100700002)(2616005)(1076003)(26005)(83380400001)(316002)(6916009)(54906003)(66946007)(66476007)(41300700001)(5660300002)(66556008)(8936002)(8676002)(4326008)(2906002)(7416002)(44832011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?VO+gRYyndtuJtz8W64uTcbs8kWXfQaQ3MrCxpZjI+NMozEqxKryXf8nvJcYf?=
+ =?us-ascii?Q?z7PcLsrpkExJQbtCOSIX8usbVmpUIsOKayYu3g9/XeVVlF3g+ZSy8eFe2W+9?=
+ =?us-ascii?Q?00kwambGvCho/0lwFuftA5U495pr/D1gjl7W0DMmMWRNwcNu0ZJPmhXCpJKd?=
+ =?us-ascii?Q?UDkqnB6KMDwShJyyfGXrrsxhc16iEejWtx1DYcA/jqaaX9IW0G7DYwgMRHaT?=
+ =?us-ascii?Q?YUXlpoyT2OUvkjeH42jc2E4bErPaC8iS6YkSQ0ouXJzPl9TG14pmI4ca49+A?=
+ =?us-ascii?Q?ax9Wno1hKdU5cqKBEPbr3LEJ0Zo5FHnghYGwHfwV5EiUj6WbbD6cyCuAAfHt?=
+ =?us-ascii?Q?bjOVroVJ8GU0dHwIqrUivO4mN8LyzvO5yTTXcTK8M9a3Rux9VklBnZDL2fDR?=
+ =?us-ascii?Q?vOWOoVDjM+k47NTmZ2O37Vb9xiidjUzoOEC0KHFCFd2HdO12PcIWYPEjvA4k?=
+ =?us-ascii?Q?t37lCHQAbm1KLPQhGVFeHM4+5D5qIEle7qintRfSp8CaT3bgGdzJKetg0MTR?=
+ =?us-ascii?Q?nu/cUUfrClGfqL1wYSdrBX7ewUXRPJpfruwjtgfEYlIdO0LT3gD/NyJefLhR?=
+ =?us-ascii?Q?/iyxi9o5/aBWs6KQpGeOnTQYngFa7cyDr6RT8+UAvNZ9uTlPS5PAWbtBs744?=
+ =?us-ascii?Q?V7U3X3EkPREuJFJwn3Lf3MKXsSKsUueuRkidx51/nxhX7qpba5gByUFy2Oc1?=
+ =?us-ascii?Q?E0gG/PvPst4PJLGAoiR1QYImXYKNTzuKSroTwOzReaVgRagNkxGLM/w76AtF?=
+ =?us-ascii?Q?2Nk5iGTtACj3I9IKrwXTSOCU5M3SdBbmU4EgzS6aYRTU2X4USD6r7nEXd8Ph?=
+ =?us-ascii?Q?zEUKbCzmUA7LuBUtlxPZ5snF5dkg/w3MOaU9aka+Knmqh+ZGGENzvfl7bl1V?=
+ =?us-ascii?Q?rjVT8ph6mefI2q13OGvUfgxrZmjbS6L8QNNCwA3M19cn3ezUEuxtREUgLX68?=
+ =?us-ascii?Q?30+QDNK6r67KAYGM/7G4kUsI3MBFTu82u5W+FazxySzC12g5G7lWNSJ4qAxv?=
+ =?us-ascii?Q?P1yQCP9Ronqdem36NJKhtxguzMQCXsOIhpXQgOC71hxp6vYEH6WOTUdClxUk?=
+ =?us-ascii?Q?8vSFhCe80D3PijTeW4O3o5kaCHHNuQTyVT27b8Itw2K1S4duKaMxY8SrL/YQ?=
+ =?us-ascii?Q?gaGfHnTl9MmXGyfl0KEr/gPvro3ikmLVz/qPVYE/RsaJnGVPbIOpvbWs6gs4?=
+ =?us-ascii?Q?qF7FaSXahq1A5hcCpDY0z19DrJ24uwRcTD5G1o3r1LbRcm107q6uFZSHx57t?=
+ =?us-ascii?Q?tHBxbF9ksED2/WWFQ3G+rekak1m2wCMxVI/BN6mNS45WzKy/aGDf+bvnT5t9?=
+ =?us-ascii?Q?k3LF+R0IdhZKrmTHMGP7JpA44MImO3jW51cAhfSYR6+GOi3ScC0xNTKnnUI6?=
+ =?us-ascii?Q?CIy0iy6Gu4PsKy0razHGeE773+bj2hahCPtcRiiIUX3pjBpQxxMe3lwB/+ae?=
+ =?us-ascii?Q?pBqvn5C7XxMKaumIS99IvoEgWyYQrNkSfPCnoU6H1XzSF/froYayyD/jZHbh?=
+ =?us-ascii?Q?e4yoSa1XpyJaboAAWptRVFhQC6Zw+VOmdgNdvrZ5CQGmpQ4rzf+tt2b8eFZ7?=
+ =?us-ascii?Q?xEPrW9y87Hn6Cy6xRpDM+phNTZNJEZ/cYeR5lDZkPnLowiKhJKUbCPz+SWHx?=
+ =?us-ascii?Q?XQ=3D=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 63cede20-f198-4f8f-8fa6-08dbcf04c072
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Oct 2023 11:32:32.1314
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Bv41dVg87YKiq0ryIwQ5IxJHFVxMjPRsNxccOGTofaaUZVTnj+E2cEAYxsxPxt6bnsARp+gTucxkXGmsTjezcw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7720
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Oct 2023 at 10:08, Bagas Sanjaya <bagasdotme@gmail.com> wrote:
->
-> Runtime power management support breaks Intel LTE modem where dmesg dump
-> showes timeout errors:
->
-> ```
-> [   72.027442] iosm 0000:01:00.0: msg timeout
-> [   72.531638] iosm 0000:01:00.0: msg timeout
-> [   73.035414] iosm 0000:01:00.0: msg timeout
-> [   73.540359] iosm 0000:01:00.0: msg timeout
-> ```
->
-> Furthermore, when shutting down with `poweroff` and modem attached, the
-> system rebooted instead of powering down as expected. The modem works
-> again only after power cycling.
->
-> Revert runtime power management support for IOSM driver as introduced by
-> commit e4f5073d53be6c ("net: wwan: iosm: enable runtime pm support for
-> 7560").
->
-> Fixes: e4f5073d53be ("net: wwan: iosm: enable runtime pm support for 7560")
-> Reported-by: Martin <mwolf@adiumentum.com>
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217996
-> Link: https://lore.kernel.org/r/267abf02-4b60-4a2e-92cd-709e3da6f7d3@gmail.com/
-> Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
+The mii_bus API conversion to read_c45() and write_c45() did not cover
+the mdio-mux driver before read() and write() were made C22-only.
 
-Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
+This broke arch/arm64/boot/dts/freescale/fsl-ls1028a-qds-13bb.dtso.
+The -EOPNOTSUPP from mdiobus_c45_read() is transformed by
+get_phy_c45_devs_in_pkg() into -EIO, is further propagated to
+of_mdiobus_register() and this makes the mdio-mux driver fail to probe
+the entire child buses, not just the PHYs that cause access errors.
 
+Fix the regression by introducing special c45 read and write accessors
+to mdio-mux which forward the operation to the parent MDIO bus.
 
+Fixes: db1a63aed89c ("net: phy: Remove fallback to old C45 method")
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+---
+ drivers/net/mdio/mdio-mux.c | 45 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
-> ---
->
->  Compile-tested only.
->
->  I explicitly do not Cc: the culprit author (M Chetan Kumar) as he can't
->  be contacted (see his MAINTAINERS entry removal [1] for why).
->
->  [1]: https://lore.kernel.org/netdev/20231013014010.18338-2-bagasdotme@gmail.com/
->
->  drivers/net/wwan/iosm/iosm_ipc_imem.c  | 17 -----------------
->  drivers/net/wwan/iosm/iosm_ipc_imem.h  |  2 --
->  drivers/net/wwan/iosm/iosm_ipc_pcie.c  |  4 +---
->  drivers/net/wwan/iosm/iosm_ipc_port.c  | 17 +----------------
->  drivers/net/wwan/iosm/iosm_ipc_trace.c |  8 --------
->  drivers/net/wwan/iosm/iosm_ipc_wwan.c  | 21 ++-------------------
->  6 files changed, 4 insertions(+), 65 deletions(-)
->
-> diff --git a/drivers/net/wwan/iosm/iosm_ipc_imem.c b/drivers/net/wwan/iosm/iosm_ipc_imem.c
-> index 635301d677e186..829515a601b379 100644
-> --- a/drivers/net/wwan/iosm/iosm_ipc_imem.c
-> +++ b/drivers/net/wwan/iosm/iosm_ipc_imem.c
-> @@ -4,7 +4,6 @@
->   */
->
->  #include <linux/delay.h>
-> -#include <linux/pm_runtime.h>
->
->  #include "iosm_ipc_chnl_cfg.h"
->  #include "iosm_ipc_devlink.h"
-> @@ -632,11 +631,6 @@ static void ipc_imem_run_state_worker(struct work_struct *instance)
->         /* Complete all memory stores after setting bit */
->         smp_mb__after_atomic();
->
-> -       if (ipc_imem->pcie->pci->device == INTEL_CP_DEVICE_7560_ID) {
-> -               pm_runtime_mark_last_busy(ipc_imem->dev);
-> -               pm_runtime_put_autosuspend(ipc_imem->dev);
-> -       }
-> -
->         return;
->
->  err_ipc_mux_deinit:
-> @@ -1240,7 +1234,6 @@ void ipc_imem_cleanup(struct iosm_imem *ipc_imem)
->
->         /* forward MDM_NOT_READY to listeners */
->         ipc_uevent_send(ipc_imem->dev, UEVENT_MDM_NOT_READY);
-> -       pm_runtime_get_sync(ipc_imem->dev);
->
->         hrtimer_cancel(&ipc_imem->td_alloc_timer);
->         hrtimer_cancel(&ipc_imem->tdupdate_timer);
-> @@ -1426,16 +1419,6 @@ struct iosm_imem *ipc_imem_init(struct iosm_pcie *pcie, unsigned int device_id,
->
->                 set_bit(IOSM_DEVLINK_INIT, &ipc_imem->flag);
->         }
-> -
-> -       if (!pm_runtime_enabled(ipc_imem->dev))
-> -               pm_runtime_enable(ipc_imem->dev);
-> -
-> -       pm_runtime_set_autosuspend_delay(ipc_imem->dev,
-> -                                        IPC_MEM_AUTO_SUSPEND_DELAY_MS);
-> -       pm_runtime_use_autosuspend(ipc_imem->dev);
-> -       pm_runtime_allow(ipc_imem->dev);
-> -       pm_runtime_mark_last_busy(ipc_imem->dev);
-> -
->         return ipc_imem;
->  devlink_channel_fail:
->         ipc_devlink_deinit(ipc_imem->ipc_devlink);
-> diff --git a/drivers/net/wwan/iosm/iosm_ipc_imem.h b/drivers/net/wwan/iosm/iosm_ipc_imem.h
-> index 0144b45e2afb39..5664ac507c902e 100644
-> --- a/drivers/net/wwan/iosm/iosm_ipc_imem.h
-> +++ b/drivers/net/wwan/iosm/iosm_ipc_imem.h
-> @@ -103,8 +103,6 @@ struct ipc_chnl_cfg;
->  #define FULLY_FUNCTIONAL 0
->  #define IOSM_DEVLINK_INIT 1
->
-> -#define IPC_MEM_AUTO_SUSPEND_DELAY_MS 5000
-> -
->  /* List of the supported UL/DL pipes. */
->  enum ipc_mem_pipes {
->         IPC_MEM_PIPE_0 = 0,
-> diff --git a/drivers/net/wwan/iosm/iosm_ipc_pcie.c b/drivers/net/wwan/iosm/iosm_ipc_pcie.c
-> index 3a259c9abefdfa..04517bd3325a2a 100644
-> --- a/drivers/net/wwan/iosm/iosm_ipc_pcie.c
-> +++ b/drivers/net/wwan/iosm/iosm_ipc_pcie.c
-> @@ -6,7 +6,6 @@
->  #include <linux/acpi.h>
->  #include <linux/bitfield.h>
->  #include <linux/module.h>
-> -#include <linux/pm_runtime.h>
->  #include <net/rtnetlink.h>
->
->  #include "iosm_ipc_imem.h"
-> @@ -438,8 +437,7 @@ static int __maybe_unused ipc_pcie_resume_cb(struct device *dev)
->         return 0;
->  }
->
-> -static DEFINE_RUNTIME_DEV_PM_OPS(iosm_ipc_pm, ipc_pcie_suspend_cb,
-> -                                ipc_pcie_resume_cb, NULL);
-> +static SIMPLE_DEV_PM_OPS(iosm_ipc_pm, ipc_pcie_suspend_cb, ipc_pcie_resume_cb);
->
->  static struct pci_driver iosm_ipc_driver = {
->         .name = KBUILD_MODNAME,
-> diff --git a/drivers/net/wwan/iosm/iosm_ipc_port.c b/drivers/net/wwan/iosm/iosm_ipc_port.c
-> index 2ba1ddca3945b2..5d5b4183e14a3a 100644
-> --- a/drivers/net/wwan/iosm/iosm_ipc_port.c
-> +++ b/drivers/net/wwan/iosm/iosm_ipc_port.c
-> @@ -3,8 +3,6 @@
->   * Copyright (C) 2020-21 Intel Corporation.
->   */
->
-> -#include <linux/pm_runtime.h>
-> -
->  #include "iosm_ipc_chnl_cfg.h"
->  #include "iosm_ipc_imem_ops.h"
->  #include "iosm_ipc_port.h"
-> @@ -15,16 +13,12 @@ static int ipc_port_ctrl_start(struct wwan_port *port)
->         struct iosm_cdev *ipc_port = wwan_port_get_drvdata(port);
->         int ret = 0;
->
-> -       pm_runtime_get_sync(ipc_port->ipc_imem->dev);
->         ipc_port->channel = ipc_imem_sys_port_open(ipc_port->ipc_imem,
->                                                    ipc_port->chl_id,
->                                                    IPC_HP_CDEV_OPEN);
->         if (!ipc_port->channel)
->                 ret = -EIO;
->
-> -       pm_runtime_mark_last_busy(ipc_port->ipc_imem->dev);
-> -       pm_runtime_put_autosuspend(ipc_port->ipc_imem->dev);
-> -
->         return ret;
->  }
->
-> @@ -33,24 +27,15 @@ static void ipc_port_ctrl_stop(struct wwan_port *port)
->  {
->         struct iosm_cdev *ipc_port = wwan_port_get_drvdata(port);
->
-> -       pm_runtime_get_sync(ipc_port->ipc_imem->dev);
->         ipc_imem_sys_port_close(ipc_port->ipc_imem, ipc_port->channel);
-> -       pm_runtime_mark_last_busy(ipc_port->ipc_imem->dev);
-> -       pm_runtime_put_autosuspend(ipc_port->ipc_imem->dev);
->  }
->
->  /* transfer control data to modem */
->  static int ipc_port_ctrl_tx(struct wwan_port *port, struct sk_buff *skb)
->  {
->         struct iosm_cdev *ipc_port = wwan_port_get_drvdata(port);
-> -       int ret;
->
-> -       pm_runtime_get_sync(ipc_port->ipc_imem->dev);
-> -       ret = ipc_imem_sys_cdev_write(ipc_port, skb);
-> -       pm_runtime_mark_last_busy(ipc_port->ipc_imem->dev);
-> -       pm_runtime_put_autosuspend(ipc_port->ipc_imem->dev);
-> -
-> -       return ret;
-> +       return ipc_imem_sys_cdev_write(ipc_port, skb);
->  }
->
->  static const struct wwan_port_ops ipc_wwan_ctrl_ops = {
-> diff --git a/drivers/net/wwan/iosm/iosm_ipc_trace.c b/drivers/net/wwan/iosm/iosm_ipc_trace.c
-> index 4368373797b69b..eeecfa3d10c5ab 100644
-> --- a/drivers/net/wwan/iosm/iosm_ipc_trace.c
-> +++ b/drivers/net/wwan/iosm/iosm_ipc_trace.c
-> @@ -3,9 +3,7 @@
->   * Copyright (C) 2020-2021 Intel Corporation.
->   */
->
-> -#include <linux/pm_runtime.h>
->  #include <linux/wwan.h>
-> -
->  #include "iosm_ipc_trace.h"
->
->  /* sub buffer size and number of sub buffer */
-> @@ -99,8 +97,6 @@ static ssize_t ipc_trace_ctrl_file_write(struct file *filp,
->         if (ret)
->                 return ret;
->
-> -       pm_runtime_get_sync(ipc_trace->ipc_imem->dev);
-> -
->         mutex_lock(&ipc_trace->trc_mutex);
->         if (val == TRACE_ENABLE && ipc_trace->mode != TRACE_ENABLE) {
->                 ipc_trace->channel = ipc_imem_sys_port_open(ipc_trace->ipc_imem,
-> @@ -121,10 +117,6 @@ static ssize_t ipc_trace_ctrl_file_write(struct file *filp,
->         ret = count;
->  unlock:
->         mutex_unlock(&ipc_trace->trc_mutex);
-> -
-> -       pm_runtime_mark_last_busy(ipc_trace->ipc_imem->dev);
-> -       pm_runtime_put_autosuspend(ipc_trace->ipc_imem->dev);
-> -
->         return ret;
->  }
->
-> diff --git a/drivers/net/wwan/iosm/iosm_ipc_wwan.c b/drivers/net/wwan/iosm/iosm_ipc_wwan.c
-> index 93d17de08786c2..ff747fc79aaf80 100644
-> --- a/drivers/net/wwan/iosm/iosm_ipc_wwan.c
-> +++ b/drivers/net/wwan/iosm/iosm_ipc_wwan.c
-> @@ -6,7 +6,6 @@
->  #include <linux/etherdevice.h>
->  #include <linux/if_arp.h>
->  #include <linux/if_link.h>
-> -#include <linux/pm_runtime.h>
->  #include <linux/rtnetlink.h>
->  #include <linux/wwan.h>
->  #include <net/pkt_sched.h>
-> @@ -52,13 +51,11 @@ static int ipc_wwan_link_open(struct net_device *netdev)
->         struct iosm_netdev_priv *priv = wwan_netdev_drvpriv(netdev);
->         struct iosm_wwan *ipc_wwan = priv->ipc_wwan;
->         int if_id = priv->if_id;
-> -       int ret = 0;
->
->         if (if_id < IP_MUX_SESSION_START ||
->             if_id >= ARRAY_SIZE(ipc_wwan->sub_netlist))
->                 return -EINVAL;
->
-> -       pm_runtime_get_sync(ipc_wwan->ipc_imem->dev);
->         /* get channel id */
->         priv->ch_id = ipc_imem_sys_wwan_open(ipc_wwan->ipc_imem, if_id);
->
-> @@ -66,8 +63,7 @@ static int ipc_wwan_link_open(struct net_device *netdev)
->                 dev_err(ipc_wwan->dev,
->                         "cannot connect wwan0 & id %d to the IPC mem layer",
->                         if_id);
-> -               ret = -ENODEV;
-> -               goto err_out;
-> +               return -ENODEV;
->         }
->
->         /* enable tx path, DL data may follow */
-> @@ -76,11 +72,7 @@ static int ipc_wwan_link_open(struct net_device *netdev)
->         dev_dbg(ipc_wwan->dev, "Channel id %d allocated to if_id %d",
->                 priv->ch_id, priv->if_id);
->
-> -err_out:
-> -       pm_runtime_mark_last_busy(ipc_wwan->ipc_imem->dev);
-> -       pm_runtime_put_autosuspend(ipc_wwan->ipc_imem->dev);
-> -
-> -       return ret;
-> +       return 0;
->  }
->
->  /* Bring-down the wwan net link */
-> @@ -90,12 +82,9 @@ static int ipc_wwan_link_stop(struct net_device *netdev)
->
->         netif_stop_queue(netdev);
->
-> -       pm_runtime_get_sync(priv->ipc_wwan->ipc_imem->dev);
->         ipc_imem_sys_wwan_close(priv->ipc_wwan->ipc_imem, priv->if_id,
->                                 priv->ch_id);
->         priv->ch_id = -1;
-> -       pm_runtime_mark_last_busy(priv->ipc_wwan->ipc_imem->dev);
-> -       pm_runtime_put_autosuspend(priv->ipc_wwan->ipc_imem->dev);
->
->         return 0;
->  }
-> @@ -117,7 +106,6 @@ static netdev_tx_t ipc_wwan_link_transmit(struct sk_buff *skb,
->             if_id >= ARRAY_SIZE(ipc_wwan->sub_netlist))
->                 return -EINVAL;
->
-> -       pm_runtime_get(ipc_wwan->ipc_imem->dev);
->         /* Send the SKB to device for transmission */
->         ret = ipc_imem_sys_wwan_transmit(ipc_wwan->ipc_imem,
->                                          if_id, priv->ch_id, skb);
-> @@ -131,14 +119,9 @@ static netdev_tx_t ipc_wwan_link_transmit(struct sk_buff *skb,
->                 ret = NETDEV_TX_BUSY;
->                 dev_err(ipc_wwan->dev, "unable to push packets");
->         } else {
-> -               pm_runtime_mark_last_busy(ipc_wwan->ipc_imem->dev);
-> -               pm_runtime_put_autosuspend(ipc_wwan->ipc_imem->dev);
->                 goto exit;
->         }
->
-> -       pm_runtime_mark_last_busy(ipc_wwan->ipc_imem->dev);
-> -       pm_runtime_put_autosuspend(ipc_wwan->ipc_imem->dev);
-> -
->         return ret;
->
->  exit:
->
-> base-commit: 2b10740ce74abaea31c2cad4ff8e180549c4544b
-> --
-> An old man doll... just what I always wanted! - Clara
->
+diff --git a/drivers/net/mdio/mdio-mux.c b/drivers/net/mdio/mdio-mux.c
+index a881e3523328..7d322c08c1e9 100644
+--- a/drivers/net/mdio/mdio-mux.c
++++ b/drivers/net/mdio/mdio-mux.c
+@@ -55,6 +55,27 @@ static int mdio_mux_read(struct mii_bus *bus, int phy_id, int regnum)
+ 	return r;
+ }
+ 
++static int mdio_mux_read_c45(struct mii_bus *bus, int phy_id, int dev_addr,
++			     int regnum)
++{
++	struct mdio_mux_child_bus *cb = bus->priv;
++	struct mdio_mux_parent_bus *pb = cb->parent;
++	int r;
++
++	mutex_lock_nested(&pb->mii_bus->mdio_lock, MDIO_MUTEX_MUX);
++	r = pb->switch_fn(pb->current_child, cb->bus_number, pb->switch_data);
++	if (r)
++		goto out;
++
++	pb->current_child = cb->bus_number;
++
++	r = pb->mii_bus->read_c45(pb->mii_bus, phy_id, dev_addr, regnum);
++out:
++	mutex_unlock(&pb->mii_bus->mdio_lock);
++
++	return r;
++}
++
+ /*
+  * The parent bus' lock is used to order access to the switch_fn.
+  */
+@@ -80,6 +101,28 @@ static int mdio_mux_write(struct mii_bus *bus, int phy_id,
+ 	return r;
+ }
+ 
++static int mdio_mux_write_c45(struct mii_bus *bus, int phy_id, int dev_addr,
++			      int regnum, u16 val)
++{
++	struct mdio_mux_child_bus *cb = bus->priv;
++	struct mdio_mux_parent_bus *pb = cb->parent;
++
++	int r;
++
++	mutex_lock_nested(&pb->mii_bus->mdio_lock, MDIO_MUTEX_MUX);
++	r = pb->switch_fn(pb->current_child, cb->bus_number, pb->switch_data);
++	if (r)
++		goto out;
++
++	pb->current_child = cb->bus_number;
++
++	r = pb->mii_bus->write_c45(pb->mii_bus, phy_id, dev_addr, regnum, val);
++out:
++	mutex_unlock(&pb->mii_bus->mdio_lock);
++
++	return r;
++}
++
+ static int parent_count;
+ 
+ static void mdio_mux_uninit_children(struct mdio_mux_parent_bus *pb)
+@@ -173,6 +216,8 @@ int mdio_mux_init(struct device *dev,
+ 		cb->mii_bus->parent = dev;
+ 		cb->mii_bus->read = mdio_mux_read;
+ 		cb->mii_bus->write = mdio_mux_write;
++		cb->mii_bus->read_c45 = mdio_mux_read_c45;
++		cb->mii_bus->write_c45 = mdio_mux_write_c45;
+ 		r = of_mdiobus_register(cb->mii_bus, child_bus_node);
+ 		if (r) {
+ 			mdiobus_free(cb->mii_bus);
+-- 
+2.34.1
+
