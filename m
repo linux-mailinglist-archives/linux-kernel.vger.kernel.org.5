@@ -2,149 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A681F7CC952
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 18:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6720A7CC955
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 19:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343663AbjJQQ7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 12:59:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41174 "EHLO
+        id S234982AbjJQRAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 13:00:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232593AbjJQQ7u (ORCPT
+        with ESMTP id S234987AbjJQQ75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 12:59:50 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E854AAB;
-        Tue, 17 Oct 2023 09:59:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B373C433C7;
-        Tue, 17 Oct 2023 16:59:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697561988;
-        bh=geQXKRC2Jvb636FBZET9oMZ/p3D7F0Z9S0YyA2XEv1I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nc9rTl4PB8xxDCMVkyK3df1khEKShyJ57b6NDmta0G2eJU2ZvclP44qA/XiusW0S5
-         D97OnJZLlKyg2zbwoGWPg/rWGjKiNb1x1F9oe2tXplNWGfr4dPS7Q5573kYwlt5er8
-         B/2QMqCcZFyNoFMP2NVxLLJBEPLbasPIapHFS3r/2Y6mlFhOGrgVgbOb2yjqfnixnE
-         T/YFYT+970Fl3Yk//lRN4LSeVvjJUtrtQ8U+VMJfvbfUQ4rv7kk6sP2dZMn1Uoi2KS
-         AtX9jeMJCLQGrQds3DPLPzAeOgk8FbMvPkvnif0xghx5KCMhapfwIhjffbMKd38kEi
-         jiQdkUSdfBRtA==
-Date:   Tue, 17 Oct 2023 09:59:46 -0700
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     "Kaplan, David" <David.Kaplan@amd.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-tip-commits@vger.kernel.org" 
-        <linux-tip-commits@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>
-Subject: [PATCH] x86/srso: Fix panic in return thunk during boot
-Message-ID: <20231017165946.v4i2d4exyqwqq3bx@treble>
-References: <20231012141031.GHZSf+V1NjjUJTc9a9@fat_crate.local>
- <169713303534.3135.10558074245117750218.tip-bot2@tip-bot2>
- <20231016211040.GA3789555@dev-arch.thelio-3990X>
- <20231016212944.GGZS2rSCbIsViqZBDe@fat_crate.local>
- <20231016214810.GA3942238@dev-arch.thelio-3990X>
- <SN6PR12MB270273A7D1AF5D59B920C94194D6A@SN6PR12MB2702.namprd12.prod.outlook.com>
- <20231017052834.v53regh66hspv45n@treble>
- <20231017153222.GA707258@dev-arch.thelio-3990X>
+        Tue, 17 Oct 2023 12:59:57 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7506DED
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:59:54 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6b87c1edfd5so2856588b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:59:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1697561994; x=1698166794; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=U8F1UdIngC4vnyCLK3EqRafpf+LMFRngQaqPKzU0Jzo=;
+        b=X58ze307t1605cQ7MIHayf+xXg1o618cYN6FXrC1/edZUZxKDuhPN5uv4WkSM29auu
+         LgpgA1hYeiTJ3w8rRzFDG3xCtMLQgkVTlwbES+uQRfUxjz2xBWzxa0L5Mva9YeUSvBvG
+         WnVEKkkYAK54pq8UkPgHzb1pz2RGcLeNUQa+g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697561994; x=1698166794;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U8F1UdIngC4vnyCLK3EqRafpf+LMFRngQaqPKzU0Jzo=;
+        b=UgtSuMriApqiXAOKI+asTsgp/PL4uHRedKaFyiEoLQKQVrdlQ2r1xryt5zyj+ucAKL
+         lPZ++5N072WAfScJZDmTYRU76BJP5cOhEUSBMwYgXzpV+yEuJ0FPGmWDewJPHWMdBErq
+         nhpR/vPhq8hsQXymBo0WiXAO1R50e0XgT6aZ0NeaXl5mHPlXFjEZx60NdwxcYDOtN/dP
+         pmVlLHaA3+ytB8P5Jf/fbcYLnVpDfNbyxE0SbieOjGoFulOUnK6+1/zR8f28fM4Y2kqo
+         MrQ0eeqMeyDcETt1ohQ0u0IYSibMNTPbl48Xiuo1aqzYOEYoxNBWPYJnXPeEkQBKEPeW
+         NYzg==
+X-Gm-Message-State: AOJu0YzJRJr4DRUd4KHPteQQZySiIjNejXWfErTeBNEWRbd8hq/Ipwru
+        13sumfC0lW8FrO8Hk2I5oisTeg==
+X-Google-Smtp-Source: AGHT+IG6W4hgvGPyQk9HyU8a3OI89HiiQNoqDs7LZWa1NayZGlQuwkBq/thcBBgiM8kc7RQsNaeUqA==
+X-Received: by 2002:a05:6a21:3d85:b0:157:e4c6:766a with SMTP id bj5-20020a056a213d8500b00157e4c6766amr2419600pzc.41.1697561993806;
+        Tue, 17 Oct 2023 09:59:53 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id c5-20020a170902c1c500b001c755810f89sm1828088plc.181.2023.10.17.09.59.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Oct 2023 09:59:53 -0700 (PDT)
+Date:   Tue, 17 Oct 2023 09:59:52 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Sergei Trofimovich <slyich@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Eric Biederman <ebiederm@xmission.com>, linux-mm@kvack.org
+Subject: Re: [RESEND PATCH] uapi: increase MAX_ARG_STRLEN from 128K to 6M
+Message-ID: <202310170957.DF7F7FE9FA@keescook>
+References: <20231016212507.131902-1-slyich@gmail.com>
+ <202310161439.BEA904AEE8@keescook>
+ <20231016233318.2b41ae06@nz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231017153222.GA707258@dev-arch.thelio-3990X>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231016233318.2b41ae06@nz>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enabling CONFIG_KCSAN causes a panic during boot due to an "invalid
-opcode" in __x86_return_thunk():
+On Mon, Oct 16, 2023 at 11:33:18PM +0100, Sergei Trofimovich wrote:
+> On Mon, 16 Oct 2023 14:50:05 -0700
+> Kees Cook <keescook@chromium.org> wrote:
+> 
+> > On Mon, Oct 16, 2023 at 10:25:07PM +0100, Sergei Trofimovich wrote:
+> > > Before the change linux allowed individual execve() arguments or
+> > > environment variable entries to be only as big as 32 pages.
+> > > 
+> > > Histroically before b6a2fea3931 "mm: variable length argument support"
+> > > MAX_ARG_STRLEN used to be full allowed size `argv[] + envp[]`.
+> > > 
+> > > When full limit was abandoned individual parameters were still limited
+> > > by a safe limit of 128K.
+> > > 
+> > > Nowadays' linux allows `argv[]+envp[]` to be as laerge as 6MB (3/4
+> > > `_STK_LIM`).  
+> > 
+> > See bprm_stack_limits() for the details, but yes, 3/4 _STK_LIM tends to
+> > be the max, unless the rlim_stack is set smaller.
+> > 
+> > > Some build systems like `autoconf` use a single environment variable
+> > > to pass `CFLAGS` environment variable around. It's not a bug problem
+> > > if the argument list is short.
+> > > 
+> > > But some packaging systems prefer installing each package into
+> > > individual directory. As a result that requires quite long string of
+> > > parameters like:
+> > > 
+> > >     CFLAGS="-I/path/to/pkg1 -I/path/to/pkg2 ..."
+> > > 
+> > > This can easily overflow 128K and does happen for `NixOS` and `nixpkgs`
+> > > repositories on a regular basis.  
+> > 
+> > That's ... alarming. What are you doing currently to work around this?
+> 
+> We usually try to stay under the threshold. When the problem arises due
+> to organic growth of inputs over time we either suffer build failures
+> without any reasonable workarounds or if the change was recent and
+> inflated command line options we revert the change and add hacks into
+> other places (like patching `gcc` directly to apply the
+> transformations).
+> 
+> Longer term it would be nice for `gcc` to allow unbounded output via
+> response files, but it will take some time to sort out as current flags
+> rewriting expands all flags and response files into a single huge
+> variable and hits the 128K limit:
+> 
+>     https://gcc.gnu.org/pipermail/gcc/2023-October/242641.html
+> 
+> Medium term dropping kernel's arbitrary small limit (this change) sounds
+> like the simplest solution.
+> 
+> > > 
+> > > Similar pattern is exhibited by `gcc` which converts it's input command
+> > > line into a single environment variable (https://gcc.gnu.org/PR111527):
+> > > 
+> > >   $ big_100k_var=$(printf "%0*d" 100000 0)
+> > > 
+> > >   # this works: 200KB of options for `printf` external command
+> > >   $ $(which printf) "%s %s" $big_100k_var $big_100k_var >/dev/null; echo $?
+> > >   0
+> > > 
+> > >   # this fails: 200KB of options for `gcc`, fails in `cc1`
+> > >   $ touch a.c; gcc -c a.c -DA=$big_100k_var -DB=$big_100k_var
+> > >   gcc: fatal error: cannot execute 'cc1': execv: Argument list too long
+> > >   compilation terminated.
+> > > 
+> > > I would say this 128KB limitation is arbitrary.
+> > > The change raises the limit of `MAX_ARG_STRLEN` from 32 pakes (128K
+> > > n `x86_64`) to the maximum limit of stack allowed by Linux today.
+> > > 
+> > > It has a minor chance of overflowing userspace programs that use
+> > > `MAX_ARG_STRLEN` to allocate the strings on stack. It should not be a
+> > > big problem as such programs are already are at risk of overflowing
+> > > stack.
+> > > 
+> > > Tested as:
+> > >     $ V=$(printf "%*d" 1000000 0) ls
+> > > 
+> > > Before the change it failed with `ls: Argument list too long`. After the
+> > > change `ls` executes as expected.
+> > > 
+> > > WDYT of abandoning the limit and allow user to fill entire environment
+> > > with a single command or a single variable?  
+> > 
+> > Changing this value shouldn't risk any vma collisions, since exec is
+> > still checking the utilization before starting the actual process
+> > replacement steps (see bprm->argmin).
+> > 
+> > It does seem pathological to set this to the full 6MB, though, since
+> > that would _immediately_ get rejected by execve() with an -E2BIG, but
+> > ultimately, there isn't really any specific limit to the length of
+> > individual strings as long as the entire space is less than
+> > bprm->argmin.
+> > 
+> > Perhaps MAX_ARG_STRLEN should be removed entirely and the kernel can
+> > just use bprm->argmin? I haven't really looked at that to see if it's
+> > sane, though. It just feels like MAX_ARG_STRLEN isn't a meaningful
+> > limit.
+> 
+> Removing the limit entirely in favour of 'bprm->argmin' sounds good.
+> I'll try to make it so and will send v2.
+> 
+> What should be the fate of userspace-exported `MAX_ARG_STRLEN` value in
+> that case? Should it stay `(PAGE_SIZE * 32)`? Should it be removed
+> entirely? (a chance of user space build failures).
+> 
+> If we are to remove it entirely what should be the reasonable limit in
+> kernel for other subsystems that still use it?
+> 
+>     fs/binfmt_elf.c: len = strnlen_user((void __user *)p, MAX_ARG_STRLEN);
+>     fs/binfmt_elf_fdpic.c: len = strnlen_user(p, MAX_ARG_STRLEN);
+>     fs/binfmt_flat.c: len = strnlen_user(p, MAX_ARG_STRLEN);
+>     kernel/auditsc.c: len_full = strnlen_user(p, MAX_ARG_STRLEN) - 1;
+> 
+> Keeping it at an "arbitrary" 6MB limit looked safe :)
 
-  invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
-  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.6.0-rc2-00316-g91174087dcc7 #1
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.2-14-g1e1da7a96300-prebuilt.qemu.org 04/01/2014
-  RIP: 0010:__x86_return_thunk+0x0/0x10
-  Code: e8 01 00 00 00 cc e8 01 00 00 00 cc 48 81 c4 80 00 00 00 65 48 c7 04 25 d0 ac 02 00 ff ff ff ff c3 cc 0f 1f 84 00 00 00 00 00 <0f> 0b cc cc cc cc cc cc cc cc cc cc cc cc cc cc e9 db 8c 8e fe 0f
-  RSP: 0018:ffffaef1c0013ed0 EFLAGS: 00010246
-  RAX: ffffffffa0e80eb0 RBX: ffffffffa0f05240 RCX: 0001ffffffffffff
-  RDX: 0000000000000551 RSI: ffffffffa0dcc64e RDI: ffffffffa0f05238
-  RBP: ffff8f93c11708e0 R08: ffffffffa1387280 R09: 0000000000000000
-  R10: 0000000000000282 R11: 0001ffffa0f05238 R12: 0000000000000002
-  R13: 0000000000000282 R14: 0000000000000001 R15: 0000000000000000
-  FS:  0000000000000000(0000) GS:ffff8f93df000000(0000) knlGS:0000000000000000
-  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: ffff8f93d6c01000 CR3: 0000000015c2e000 CR4: 0000000000350ef0
+Yeah, I think leaving MAX_ARG_STRLEN totally unchanged but adjust where
+it is used only for the ELF loader is probably the least risky thing to
+do here.
 
-The panic is triggered by the UD2 instruction which gets patched into
-__x86_return_thunk() when alternatives are applied.  After that point,
-the default return thunk should no longer be used.
+-Kees
 
-As David Kaplan describes, the issue is caused by a couple of
-KCSAN-generated constructors which aren't processed by objtool:
+> 
+> > -Kees
+> > 
+> > > 
+> > > CC: Andrew Morton <akpm@linux-foundation.org>
+> > > CC: Eric Biederman <ebiederm@xmission.com>
+> > > CC: Kees Cook <keescook@chromium.org>
+> > > CC: linux-mm@kvack.org
+> > > CC: linux-kernel@vger.kernel.org
+> > > Signed-off-by: Sergei Trofimovich <slyich@gmail.com>
+> > > ---
+> > >  include/uapi/linux/binfmts.h | 6 +++---
+> > >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/include/uapi/linux/binfmts.h b/include/uapi/linux/binfmts.h
+> > > index c6f9450efc12..4e828515a22e 100644
+> > > --- a/include/uapi/linux/binfmts.h
+> > > +++ b/include/uapi/linux/binfmts.h
+> > > @@ -8,11 +8,11 @@ struct pt_regs;
+> > >  
+> > >  /*
+> > >   * These are the maximum length and maximum number of strings passed to the
+> > > - * execve() system call.  MAX_ARG_STRLEN is essentially random but serves to
+> > > - * prevent the kernel from being unduly impacted by misaddressed pointers.
+> > > + * execve() system call.  MAX_ARG_STRLEN is as large as Linux allows new
+> > > + * stack to grow.  Currently it's `_STK_LIM / 4 * 3 = 6MB` (see fs/exec.c).
+> > >   * MAX_ARG_STRINGS is chosen to fit in a signed 32-bit integer.
+> > >   */
+> > > -#define MAX_ARG_STRLEN (PAGE_SIZE * 32)
+> > > +#define MAX_ARG_STRLEN (6 * 1024 * 1024)
+> > >  #define MAX_ARG_STRINGS 0x7FFFFFFF
+> > >  
+> > >  /* sizeof(linux_binprm->buf) */
+> > > -- 
+> > > 2.42.0
+> > >   
+> > 
+> > -- 
+> > Kees Cook
+> 
+> 
+> -- 
+> 
+>   Sergei
 
-  "When KCSAN is enabled, GCC generates lots of constructor functions
-  named _sub_I_00099_0 which call __tsan_init and then return.  The
-  returns in these are generally annotated normally by objtool and fixed
-  up at runtime.  But objtool runs on vmlinux.o and vmlinux.o does not
-  include a couple of object files that are in vmlinux, like
-  init/version-timestamp.o and .vmlinux.export.o, both of which contain
-  _sub_I_00099_0 functions.  As a result, the returns in these functions
-  are not annotated, and the panic occurs when we call one of them in
-  do_ctors and it uses the default return thunk.
-
-  This difference can be seen by counting the number of these functions in the object files:
-  $ objdump -d vmlinux.o|grep -c "<_sub_I_00099_0>:"
-  2601
-  $ objdump -d vmlinux|grep -c "<_sub_I_00099_0>:"
-  2603
-
-  If these functions are only run during kernel boot, there is no
-  speculation concern."
-
-Fix it by disabling KCSAN on version-timestamp.o and .vmlinux.export.o
-so the extra functions don't get generated.  KASAN and GCOV are already
-disabled for those files.
-
-Fixes: 91174087dcc7 ("x86/retpoline: Ensure default return thunk isn't used at runtime")
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Closes: https://lore.kernel.org/lkml/20231016214810.GA3942238@dev-arch.thelio-3990X/
-Debugged-by: David Kaplan <David.Kaplan@amd.com>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Acked-by: Marco Elver <elver@google.com>
-Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
----
- init/Makefile            | 1 +
- scripts/Makefile.vmlinux | 1 +
- 2 files changed, 2 insertions(+)
-
-diff --git a/init/Makefile b/init/Makefile
-index ec557ada3c12..cbac576c57d6 100644
---- a/init/Makefile
-+++ b/init/Makefile
-@@ -60,4 +60,5 @@ include/generated/utsversion.h: FORCE
- $(obj)/version-timestamp.o: include/generated/utsversion.h
- CFLAGS_version-timestamp.o := -include include/generated/utsversion.h
- KASAN_SANITIZE_version-timestamp.o := n
-+KCSAN_SANITIZE_version-timestamp.o := n
- GCOV_PROFILE_version-timestamp.o := n
-diff --git a/scripts/Makefile.vmlinux b/scripts/Makefile.vmlinux
-index 3cd6ca15f390..c9f3e03124d7 100644
---- a/scripts/Makefile.vmlinux
-+++ b/scripts/Makefile.vmlinux
-@@ -19,6 +19,7 @@ quiet_cmd_cc_o_c = CC      $@
- 
- ifdef CONFIG_MODULES
- KASAN_SANITIZE_.vmlinux.export.o := n
-+KCSAN_SANITIZE_.vmlinux.export.o := n
- GCOV_PROFILE_.vmlinux.export.o := n
- targets += .vmlinux.export.o
- vmlinux: .vmlinux.export.o
 -- 
-2.41.0
-
+Kees Cook
