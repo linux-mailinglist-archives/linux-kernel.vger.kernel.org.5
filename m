@@ -2,222 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C62D17CC91F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 18:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E878D7CC924
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 18:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233862AbjJQQxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 12:53:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38776 "EHLO
+        id S233170AbjJQQxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 12:53:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232763AbjJQQxG (ORCPT
+        with ESMTP id S229848AbjJQQxv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 12:53:06 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2042.outbound.protection.outlook.com [40.107.223.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2505294;
-        Tue, 17 Oct 2023 09:53:05 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fQhvO2IPnl9BeeyjdQ4c8ktjIcZKYNQL5HIN5ojFn4IGozBUWQwNAyMj2oPyEhaGbpquomLowqZxLxUWErr2sGvbjyZ9Evqibt05ybtEx3sKfW1zN9BnIf0Qrlz1IG/p0yzk34xlvfVCrGXc/yhcDROUuhwPXStcHgG09qiMgH0ntIwqCScYUdnwtUmkfsDSz4vQKXsk9Ay3uTJifKLyB55fDcmee0CsFZjdmI/p9JctPZ3urX95Ltb97VAaPlUJsI3ugzAvzS1/B0jWVE2brFRVb1OKu8twZ1mNtzN0onuvYru2e0TGq6NLOjDz43O3cCflsaH+fOsFX9YBUwfYzQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yq36ljxrv1QIlkujEr09NhyLj50waM7FvZRYatpitn4=;
- b=L/rgSqQ+4SEG8sMNXtvZMyfZ6pnyXCsyVLtwxAvV/EtlCQZjfAyvA7/4ohPPXWWTXgU6HGcYX/CJVP7/LsUkpvsT8MiQmMDWF5I0H/7V4WAUAwSKaNvlzdZmEjzmfEdq5xz62zuHbWp8jnCZZPPPrPVEJh16fgVjOz5O33PFM6EXh+NKXOIKb3Rxs9odVaX6el+xj9LMkS7IW9RGmpe7XoG47bWb5K2Xc/0uMrHR713KXWbo7zz0JdiiHR0booy9WPeKB+JVSUada2TEIWeJHehxQIZ+Td026F5TP8K32xrFyIv+rVEuxCyxR8d/NjoH/3obncw8Rr1jukqgU+qOtg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yq36ljxrv1QIlkujEr09NhyLj50waM7FvZRYatpitn4=;
- b=N/UlntXdD6qdHqYON/Npiwzqi/MWqMbkX5J/edkMN1M/7mAdFoXayjMcJaT3aQJi04K0roir+jUdZYQAnlJDuNdkRn/wbEDCB5qdSc2CVrcLRjbZduamrAz6jUCQ2+tK/GGNDUs5yYji4Psemhauwcg5qLSYJG4D0VuMDPOHve0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DS0PR12MB6583.namprd12.prod.outlook.com (2603:10b6:8:d1::12) by
- PH0PR12MB7861.namprd12.prod.outlook.com (2603:10b6:510:26e::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.35; Tue, 17 Oct
- 2023 16:53:02 +0000
-Received: from DS0PR12MB6583.namprd12.prod.outlook.com
- ([fe80::e31c:de3c:af9d:cd2c]) by DS0PR12MB6583.namprd12.prod.outlook.com
- ([fe80::e31c:de3c:af9d:cd2c%5]) with mapi id 15.20.6886.034; Tue, 17 Oct 2023
- 16:53:02 +0000
-Message-ID: <97473ad9-c9c8-450c-bb1a-ad72dea0a5ad@amd.com>
-Date:   Tue, 17 Oct 2023 09:52:57 -0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 03/11] pds_core: devlink health: use retained
- error fmsg API
-To:     Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-        Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Cai Huoqing <cai.huoqing@linux.dev>,
-        George Cherian <george.cherian@marvell.com>,
-        Danielle Ratson <danieller@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Manish Chopra <manishc@marvell.com>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        Coiby Xu <coiby.xu@gmail.com>
-Cc:     Brett Creeley <brett.creeley@amd.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Petr Machata <petrm@nvidia.com>,
-        Eran Ben Elisha <eranbe@nvidia.com>,
-        Aya Levin <ayal@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>
-References: <20231017105341.415466-1-przemyslaw.kitszel@intel.com>
- <20231017105341.415466-4-przemyslaw.kitszel@intel.com>
-Content-Language: en-US
-From:   "Nelson, Shannon" <shannon.nelson@amd.com>
-In-Reply-To: <20231017105341.415466-4-przemyslaw.kitszel@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PH8PR07CA0026.namprd07.prod.outlook.com
- (2603:10b6:510:2cf::21) To DS0PR12MB6583.namprd12.prod.outlook.com
- (2603:10b6:8:d1::12)
+        Tue, 17 Oct 2023 12:53:51 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B158AA4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:53:49 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4992C433C8;
+        Tue, 17 Oct 2023 16:53:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1697561629;
+        bh=RaxBlkhFIAhkajhxqmNdE/U+qglufyW+ULA5w+v6mjY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FG1JVZVpP5/zwJo5CdV5HOxHvYr04WcncrOGr4hTj4kgiEST2DY1tBTadV1RxMEkk
+         xK0mOVf4AVhzgzucqPfRtfn48nwQlZGw/FafdxprnSoeYgQAmoGm7Jk19tnywMQUB/
+         x7oXDLIv6nWU6G5O2Pyjx9lmoAFTdrTt4YAunkJk=
+Date:   Tue, 17 Oct 2023 18:53:44 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Hardik Gajjar <hgajjar@de.adit-jv.com>
+Cc:     mathias.nyman@intel.com, stern@rowland.harvard.edu,
+        yangyingliang@huawei.com, jinpu.wang@ionos.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        erosca@de.adit-jv.com
+Subject: Re: [PATCH v4] usb: core: hub: Add quirks for reducing device
+ address timeout
+Message-ID: <2023101750-bless-humorous-45c7@gregkh>
+References: <2023101155-unframed-satirical-f7ec@gregkh>
+ <20231011164525.97616-1-hgajjar@de.adit-jv.com>
+ <2023101620-shaky-sensitize-9708@gregkh>
+ <20231017161021.GA62775@vmlxhi-118.adit-jv.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB6583:EE_|PH0PR12MB7861:EE_
-X-MS-Office365-Filtering-Correlation-Id: e52088fa-a18a-44df-c4ab-08dbcf318683
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QYRjc5pfL7uQ8wsmhhPOzvJY+JZLUtGDetsj9wkq5Y53pxeD/E1Vm9SHH5J3fYHcCljs3dDj20uZ4J0psm7kQTPq62ROL1FaF/AjfoMUWv5/lOdqxf187BS8smDWVVscsHJjVjTEnkU/rW8PX+VhWlSl1qC+j8AHiJvDZvLdjo1x0hRz/oH4xKb+UCnfvLubbASUIvhB2NvCMHRG6eF7iRZYohsonjl5YJVCdgxNiIA7503SuQyseG5c/3AqaZBBGgYakTxfIj/w1boKDiBHtO93yXn8rPvhu8gEhAd4qRII4fHR1+qbBGN6Zwd5Oc2Ee44W8lmnng3oSFsc6LEHbrs2Fe35qZzmsuP+Qmma6UQMrgJOJ8TF6EOa1GxPgRqEECc3eoRdM9HgKe9auF8n1/FwTlhYDAnFhCAYyx7jG9C2elCnJ8QpYSRt9/50dgskIrpT4k3xZh6JdIs7LrTq/E8kqVUAwVbLvUYx9dSiiy9tr5TIxjzxpK9lIz+Ib+cGu0K12aC4D4C9q54O6v+oi7mUAKfb0Z/o8bQUv25ikL7thdxnMFbQfgRW3V3OBuvtYnPfm7VaWCPwLEnRKw+vRD0VDW/OyYWnCVGeqYo5/DeYmlXDtj/6CXXTRkj3/bbuC6LinnK8LbcMTIQLU4Rz1wKIIYW0UKMz1fOT+4BUMA4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6583.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(376002)(366004)(39860400002)(396003)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(31686004)(53546011)(6486002)(921005)(6666004)(38100700002)(83380400001)(36756003)(26005)(6506007)(2906002)(66556008)(54906003)(66476007)(316002)(2616005)(478600001)(66946007)(31696002)(7406005)(110136005)(7416002)(86362001)(6512007)(41300700001)(8936002)(8676002)(5660300002)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OW40QjN6dVkrWURscTV5ZUpKZ2owejZ4RThDbWtkOWlwTXVpSDBhSGVBT3Ey?=
- =?utf-8?B?VlNQZDZUdC9WR0o3RDUvTHZJdlhNZXY2QklCbmZqak1BRW1sNURKR0RuTXM5?=
- =?utf-8?B?K2JDQTcyTSt6VGJhT0pKTmU4TktZWkVqR2JOelVTOXBlb3c1NGk5czd6anEx?=
- =?utf-8?B?K0E2NWEzQ3R6WEVLRVFlSUgwS3kwK0JEWXUyNkM0QWszWVNaN3Z2QjFoUFJ3?=
- =?utf-8?B?SHVpVnBTMjNDWXV6VldwdkVMTU0wcHBVUHg5QlNXMjRRbnp3L0NtN0dyMWNX?=
- =?utf-8?B?aUkvWDc1WEFYSkwwK2czd2NROFBFN0cvVUl5blN0bDBHK1pnOEJUU3pFWVd6?=
- =?utf-8?B?RUFHTXNXZ2NQdEg3VXRpa0t0aE1McTZaZjhqWTgvRittLzFFWVB0UzR3b2Fh?=
- =?utf-8?B?ajQ3aU5kcEFzMm9penV1TmVwR0hPOHZRZlNaTm5mdUlSbWdzUmxqWkpoT3ZT?=
- =?utf-8?B?eEI5MTJPendKRU5NWWx5a0kycTRadW84SFp5L2JPdjVyK2V6cVJzSW0yaW0z?=
- =?utf-8?B?b3htUmtLNFJtTng1YVIxZm9lek8vd2k1WU13YmhhWG8yUTMyVmhCZzY3aXcx?=
- =?utf-8?B?M3dMaVZJMjdQVjVkYktnZkZtRnFKNzJlVUNnWVU1TTdHa0pNWkFlVFpkYnJF?=
- =?utf-8?B?TEMyQ3pwZjRIRDVKTElpblJXVHI2REU4aVZ0bTR5bjdtMUtVOXM4UTlnajZL?=
- =?utf-8?B?Rlhkb3gxTmRxZUdXcnJmeGQ2dzB2eVRPc0lra0o2SDFmc1oyNUtNVWVCakpZ?=
- =?utf-8?B?SWFSY1BNRjZLbENweHh2d05SUE1tMHI1ZDU1OGlubEt0L0xwNDdCbU12cnhE?=
- =?utf-8?B?Z2NIUjNuODNxOGtPSU9LSlBHRjRrbDhkMjJhSFk0UUlvWjNzMFlPOE1wdHlK?=
- =?utf-8?B?bHJRNSs1RmJ0LzdrZDdlNDhGaGJoOFJucHFVRk8xVlZHd1c1VXZpSHE5eEJP?=
- =?utf-8?B?QUc0K053UTFYNDdibjRRK3ZpdUJJVGQyZlo1bHRrbzV2RlhMREtKdDN6MjJM?=
- =?utf-8?B?RzA3Sms2citjMjAyU1hNSFRIQVNmK2NBZHVSWDJPRDRNVHRJVnhtRklpZmhZ?=
- =?utf-8?B?SlN6M0xic0MreVk1RnVGclgrdmRmc0xZaGpNVHVUY085WnBOYWpwaVpWYVJ6?=
- =?utf-8?B?MEVYZ214TEZUb25ma2tkWU94VmR0S0V0ZWllcllrcU9XTUo3TFcveSsrcmMv?=
- =?utf-8?B?dHgzM29rYkdQMVZrQ0ZLOUNTNU5FOUd2dThVcVpRa2VtYmJlZmY5ajZRK1Ur?=
- =?utf-8?B?MWZkVElIdTJNbWtVVTNRTTkvQWFUYlNtR3NQQzI3bW82eXJ3dlB0ZUJUSlBa?=
- =?utf-8?B?NC9ZZkRnVlRjeWV4TURlZXFhWUQ2S0pZSHVBQmliYk9CbUNvc3JqTjRQVWFJ?=
- =?utf-8?B?TzlaZ2o0RWZUUWxjVkVsVnZSNWlQbWhSdXg1R3ZOT05wNGZmRXROTnMvQW5C?=
- =?utf-8?B?SW9oNFVUbGFoS2F1OHcxK0JNQ2VobW1YbmZDdCtyT0ZZbEJnaGRLbUpwU0I0?=
- =?utf-8?B?bDBXU2p1Vm9PU2owVlVmMmlidmFnTDJmMy9mZDA3a1psbFEwaDBMekxOOTZ0?=
- =?utf-8?B?eUNxYVNMTUFlanJPK0g4dHROMGxETUFMdlRvOTNEbjdtaUFYY1ZSU0VXUUdi?=
- =?utf-8?B?bVV5eDVvaEdaRy84d2xGUTdkcGZMdXNGTFBieUZpNnJGS0tJZVUveFJUaVpi?=
- =?utf-8?B?eXdpR2lLUCsrVFVtOXBnbkMxY0EzVVA0WjkrcXNsV2k3dlB5djZrQ2hhZDJ4?=
- =?utf-8?B?S3doVFF4SlNab01YKy9uSmtuczVCdCsxQTJCNnpHSFUwQjR3VmZueGZZbldF?=
- =?utf-8?B?cmJ4L2pvV3dDdmVNY0xGUnVGTDl5TUE4QnhwT1ZjbXUzREJRYWRsWTgrbk9U?=
- =?utf-8?B?NEFNalJIQzhuWEUwaTJVV1J6SCtoS2gzdVBLcVA2UHFSZkRrdHZPZG9aOEV1?=
- =?utf-8?B?M29iRldaaUpZaDF2aGZMOXcyZnBMR256aitTbFd0ODlJMzc5VnAycTd5Qlpi?=
- =?utf-8?B?R2tUTjdnV2Q0VW5ZTzdpUUM4V282QlM0ZWlKRm9lZjFndUNFdzdjeDJONVRj?=
- =?utf-8?B?cmZCV0dOMmRHa3NtUG1reHp4TWp1alJBN1BnUUVFSHRLTEdpditWb1dXbllB?=
- =?utf-8?Q?MPQt9mk5+fhlnv2q8mQKFZSsE?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e52088fa-a18a-44df-c4ab-08dbcf318683
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6583.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Oct 2023 16:53:02.2742
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jmBHwB8AGJVWPtfDQ8g9nErDbq2EOJ+NgrwWtWAAbkRGnKGoRe2Yt5oSogrIvYqtJJhV97RezEpWwu7/c2MyrA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7861
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231017161021.GA62775@vmlxhi-118.adit-jv.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/17/2023 3:53 AM, Przemek Kitszel wrote:
-> 
-> Drop unneeded error checking.
-> 
-> devlink_fmsg_*() family of functions is now retaining errors,
-> so there is no need to check for them after each call.
-> 
-> Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-> Signed-off-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+On Tue, Oct 17, 2023 at 06:10:21PM +0200, Hardik Gajjar wrote:
+> On Mon, Oct 16, 2023 at 07:58:36PM +0200, Greg KH wrote:
+> > On Wed, Oct 11, 2023 at 06:45:25PM +0200, Hardik Gajjar wrote:
+> > > Currently, the timeout for the set address command is fixed at
+> > > 5 seconds in the xhci driver. This means the host waits up to 5
+> > > seconds to receive a response for the set_address command from
+> > > the device.
+> > > 
+> > > In the automotive context, most smartphone enumerations, including
+> > > screen projection, should ideally complete within 3 seconds.
+> > 
+> > "should" according to whom?  That goes against the USB specification, so
+> > why not take it up with them?
+> We're implementing this change to meet Google's Android Auto certification
+> requirements, even though these requirements aren't publicly available.
 
-Thanks,
+Then perhaps Google needs to talk about this somewhere if they are
+forcing us to take such an out-of-spec requirement?
 
-Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
+> The issue arises when we connect an Android phone to a Linux host using a special
+> automotive USB hub. The host's xHCI doesn't receive a response from the hub after
+> sending a 'set_address' request, resulting in a timeout. This problem is specific
+> to one phone model.
+> 
+> It's worth noting that we can't argue that this requirement violates USB standards
+> because the 3-second time limit applies only when connecting an Android mobile phone.
+> I assume that Android phones also undergo Google certification, which likely includes
+> a condition for successful enumeration within a specified time frame. However, I can't confirm this.
 
-> ---
-> add/remove: 0/0 grow/shrink: 0/1 up/down: 0/-57 (-57)
-> ---
->   drivers/net/ethernet/amd/pds_core/devlink.c | 29 ++++++---------------
->   1 file changed, 8 insertions(+), 21 deletions(-)
+Android's CTS/VTS testing is pretty public, but huge, so you might want
+to dig into that and see if they really test for this or not.
+
+> More logs and detailed in patch V1:
+> https://lore.kernel.org/linux-usb/20230818092353.124658-1-hgajjar@de.adit-jv.com/T/#m452ec9dad94e8181fdb050cd29483dd89437f7c1
+> > 
+> > > Achieving this is impossible in scenarios where the set_address is
+> > > not successful and waits for a timeout.
+> > 
+> > Agreed, broken hardware is a pain, but if your device is allowed to take
+> > longer, it can, and will, so you have to support that.
+> > 
+> The problem is not caused by the device taking an extended amount of time to
+> process the 'set_address' request. Instead, the issue lies in the absence of
+> any activity on the upstream bus until a timeout occurs.
+
+So, a broken device.  Why are you then adding the hub to the quirk list
+and not the broken device?  We are used to adding broken devices to
+qurik lists all the time, this shouldn't be new.
+
+> This situation arises when the host has already transmitted the 'set_address' command to the hub,
+> assuming that the device operates at full speed. However, the device connected
+> to the hub undergoes a state change from full speed to high-speed during this process.
+
+During which process?  While the set-address happens?  That feels like a
+hub bug then.
+
+> > > The shortened address device timeout quirks provide the flexibility
+> > > to align with a 3-second time limit in the event of errors.
+> > > By swiftly triggering a failure response and swiftly initiating
+> > > retry procedures, these quirks ensure efficient and rapid recovery,
+> > > particularly in automotive contexts where rapid smartphone enumeration
+> > > and screen projection are vital.
+> > 
+> > Screen projection is a requirement that you should not be relying on USB
+> > for as USB has a different set of required timeouts, right?  This sounds
+> > like a bad hardware design, if not an impossible one.
+> > 
 > 
-> diff --git a/drivers/net/ethernet/amd/pds_core/devlink.c b/drivers/net/ethernet/amd/pds_core/devlink.c
-> index d9607033bbf2..8b2b9e0d59f3 100644
-> --- a/drivers/net/ethernet/amd/pds_core/devlink.c
-> +++ b/drivers/net/ethernet/amd/pds_core/devlink.c
-> @@ -154,33 +154,20 @@ int pdsc_fw_reporter_diagnose(struct devlink_health_reporter *reporter,
->                                struct netlink_ext_ack *extack)
->   {
->          struct pdsc *pdsc = devlink_health_reporter_priv(reporter);
-> -       int err;
+> Screen projection for us means displaying the connected phone on the screen and
+> launching Carplay and Android Auto for the user. This works perfectly in nearly all
+> cases, except in scenarios like this one where a combination of a special hub and
+> a specific phone model is causing the issue
+
+So which is broken, the hub or phone?
+
+> > So the real issue that you have here is a broken built-in USB hub that
+> > does not error out quick enough, right?  Why not fix the firmware in
+> > that hub as you know it's broken?  Why is it the operating system's job
+> > to work around non-compliant devices?
+> > 
+> > Ok, that last question was redundant, of course it's our job to work
+> > around broken devices, but this feels different.  You are trying to say
+> > "hey, I know this device is broken, so error out quick so we can just
+> > ignore it", right?  If so, why not just never allow that device to
+> > enumerate at all?  You don't have to accept it as a valid device to the
+> > system (just don't authorize it), and then no device will ever connect
+> > to it so what is the delay issue?
+> > 
 > 
->          mutex_lock(&pdsc->config_lock);
-> -
->          if (test_bit(PDSC_S_FW_DEAD, &pdsc->state))
-> -               err = devlink_fmsg_string_pair_put(fmsg, "Status", "dead");
-> +               devlink_fmsg_string_pair_put(fmsg, "Status", "dead");
->          else if (!pdsc_is_fw_good(pdsc))
-> -               err = devlink_fmsg_string_pair_put(fmsg, "Status", "unhealthy");
-> +               devlink_fmsg_string_pair_put(fmsg, "Status", "unhealthy");
->          else
-> -               err = devlink_fmsg_string_pair_put(fmsg, "Status", "healthy");
-> -
-> +               devlink_fmsg_string_pair_put(fmsg, "Status", "healthy");
->          mutex_unlock(&pdsc->config_lock);
-> 
-> -       if (err)
-> -               return err;
-> -
-> -       err = devlink_fmsg_u32_pair_put(fmsg, "State",
-> -                                       pdsc->fw_status &
-> -                                               ~PDS_CORE_FW_STS_F_GENERATION);
-> -       if (err)
-> -               return err;
-> -
-> -       err = devlink_fmsg_u32_pair_put(fmsg, "Generation",
-> -                                       pdsc->fw_generation >> 4);
-> -       if (err)
-> -               return err;
-> +       devlink_fmsg_u32_pair_put(fmsg, "State",
-> +                                 pdsc->fw_status & ~PDS_CORE_FW_STS_F_GENERATION);
-> +       devlink_fmsg_u32_pair_put(fmsg, "Generation", pdsc->fw_generation >> 4);
-> +       devlink_fmsg_u32_pair_put(fmsg, "Recoveries", pdsc->fw_recoveries);
-> 
-> -       return devlink_fmsg_u32_pair_put(fmsg, "Recoveries",
-> -                                        pdsc->fw_recoveries);
-> +       return 0;
->   }
-> --
-> 2.40.1
-> 
+> We require the device (HUB) as it is a vital component of our infotainment system.
+
+Great, then you can fix the firmware in it!
+
+> The issue arises when the host has already issued the 'set_address' command to the hub,
+> assuming the device is operating at full speed. However, in such cases, when the device
+> connected to the hub changes its state from full speed to high-speed, the 'set_address'
+> request becomes blocked, waiting for the full 5-second timeout. This patch reduces the
+> timeout from 5 seconds to 500 milliseconds, allowing for quicker failure and re-enumeration
+> of the device as high-speed
+
+Changing speed is under hub control, not device control, right?  Are you
+sure the firmware is correct in that hub?  Has the hub passed all of the
+USB-IF testing requirements?
+
+thanks,
+
+greg k-h
