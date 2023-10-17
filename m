@@ -2,173 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2434E7CCA0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 19:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B04E7CCA17
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 19:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343941AbjJQRoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 13:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49532 "EHLO
+        id S1343934AbjJQRqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 13:46:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbjJQRoL (ORCPT
+        with ESMTP id S232025AbjJQRqf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 13:44:11 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8D4A7A4;
-        Tue, 17 Oct 2023 10:44:07 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C66182F4;
-        Tue, 17 Oct 2023 10:44:47 -0700 (PDT)
-Received: from [10.57.66.147] (unknown [10.57.66.147])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0E7AA3F64C;
-        Tue, 17 Oct 2023 10:44:04 -0700 (PDT)
-Message-ID: <21606fe5-fb9b-4d37-98ab-38c96819893b@arm.com>
-Date:   Tue, 17 Oct 2023 18:44:03 +0100
+        Tue, 17 Oct 2023 13:46:35 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6037783;
+        Tue, 17 Oct 2023 10:46:34 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39HGsRWY022257;
+        Tue, 17 Oct 2023 17:46:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=wizOAI8PdKSoJNpWslPwAMKZwsvY0u4gK5kO6xEFiLU=;
+ b=ixaO6Kz03PxmXAqt3FzQQ8W074Fkj7I3UiHTl0WwUjWUFkCCaCGToHOaUlMTpNRqXCK0
+ b8auLdeGnl+aIJK9tZt4f8NVpYJTw1HVkjb1O9egHU431W1jABcFG7Eqk0UVN4h2bvqR
+ i8plg7snU86MINhuXfWqs0cVjHdyQhKr2qhyrDSESoR8vH0DQEIxq7MPGHD+CxRx9vh8
+ aLWrOaLjOMCxpFVLJ2VMYpvh1RkFxnOOYdBs+2VyBOEjZMKVzWsbNXSWpDFXqh4fbcfY
+ AUXY021ck0s/ONg+5OJaR8eqbL6TARv2WDNqSaEZ14Ce9nA0fstq4YvN7GXn5v4kBydC JQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tsvxwrds1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Oct 2023 17:46:24 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39HHkNwK000725
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Oct 2023 17:46:23 GMT
+Received: from [10.216.40.160] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 17 Oct
+ 2023 10:46:17 -0700
+Message-ID: <189be124-efb1-4843-9a47-db84942838c9@quicinc.com>
+Date:   Tue, 17 Oct 2023 23:16:12 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] zswap: make shrinking memcg-aware
-Content-Language: en-GB
-To:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org
-Cc:     hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
-        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
-        vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-References: <20230919171447.2712746-1-nphamcs@gmail.com>
- <20230919171447.2712746-2-nphamcs@gmail.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20230919171447.2712746-2-nphamcs@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [RFC 1/8] dt-bindings: usb: qcom,dwc3: Add bindings to enable
+ runtime
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>,
+        Conor Dooley <conor+dt@kernel.org>, <quic_wcheng@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <andersson@kernel.org>
+References: <20231017131851.8299-1-quic_kriskura@quicinc.com>
+ <20231017131851.8299-2-quic_kriskura@quicinc.com>
+ <a3d612a8-1917-491d-a944-22ea39879a9d@linaro.org>
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <a3d612a8-1917-491d-a944-22ea39879a9d@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: GjAApdZHzVFdDuElrfluWIo4xkL-aJyZ
+X-Proofpoint-ORIG-GUID: GjAApdZHzVFdDuElrfluWIo4xkL-aJyZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-17_03,2023-10-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 impostorscore=0 adultscore=0 clxscore=1011 mlxscore=0
+ suspectscore=0 phishscore=0 mlxlogscore=999 lowpriorityscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310170150
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/09/2023 18:14, Nhat Pham wrote:
-> From: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+
+
+On 10/17/2023 10:49 PM, Krzysztof Kozlowski wrote:
+> On 17/10/2023 15:18, Krishna Kurapati wrote:
+>> Add enable-rt binding to let the device register vendor hooks to
+>> core and facilitate runtime suspend and resume.
+>>
+>> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+>> ---
+>>   Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 5 +++++
+>>   1 file changed, 5 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+>> index cb50261c6a36..788d9c510abc 100644
+>> --- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+>> +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+>> @@ -151,6 +151,11 @@ properties:
+>>         HS/FS/LS modes are supported.
+>>       type: boolean
+>>   
+>> +  qcom,enable-rt:
+>> +    description:
+>> +      If present, register vendor hooks to facilitate runtime suspend/resume
 > 
-> Currently, we only have a single global LRU for zswap. This makes it
-> impossible to perform worload-specific shrinking - an memcg cannot
-> determine which pages in the pool it owns, and often ends up writing
-> pages from other memcgs. This issue has been previously observed in
-> practice and mitigated by simply disabling memcg-initiated shrinking:
-> 
-> https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmail.com/T/#u
-> 
-> This patch fully resolves the issue by replacing the global zswap LRU
-> with memcg- and NUMA-specific LRUs, and modify the reclaim logic:
-> 
-> a) When a store attempt hits an memcg limit, it now triggers a
->    synchronous reclaim attempt that, if successful, allows the new
->    hotter page to be accepted by zswap.
-> b) If the store attempt instead hits the global zswap limit, it will
->    trigger an asynchronous reclaim attempt, in which an memcg is
->    selected for reclaim in a round-robin-like fashion.
-> 
-> Signed-off-by: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
-> Co-developed-by: Nhat Pham <nphamcs@gmail.com>
-> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
-> ---
->  include/linux/list_lru.h   |  39 +++++++
->  include/linux/memcontrol.h |   5 +
->  include/linux/zswap.h      |   9 ++
->  mm/list_lru.c              |  46 ++++++--
->  mm/swap_state.c            |  19 ++++
->  mm/zswap.c                 | 221 +++++++++++++++++++++++++++++--------
->  6 files changed, 287 insertions(+), 52 deletions(-)
+> You described the desired Linux feature or behavior, not the actual
+> hardware. The bindings are about the latter, so instead you need to
+> rephrase the property and its description to match actual hardware
+> capabilities/features/configuration etc.
 > 
 
-[...]
+Hi Krzysztof,
 
-> @@ -1199,8 +1272,10 @@ bool zswap_store(struct folio *folio)
->  	struct scatterlist input, output;
->  	struct crypto_acomp_ctx *acomp_ctx;
->  	struct obj_cgroup *objcg = NULL;
-> +	struct mem_cgroup *memcg = NULL;
->  	struct zswap_pool *pool;
->  	struct zpool *zpool;
-> +	int lru_alloc_ret;
->  	unsigned int dlen = PAGE_SIZE;
->  	unsigned long handle, value;
->  	char *buf;
-> @@ -1218,14 +1293,15 @@ bool zswap_store(struct folio *folio)
->  	if (!zswap_enabled || !tree)
->  		return false;
->  
-> -	/*
-> -	 * XXX: zswap reclaim does not work with cgroups yet. Without a
-> -	 * cgroup-aware entry LRU, we will push out entries system-wide based on
-> -	 * local cgroup limits.
-> -	 */
->  	objcg = get_obj_cgroup_from_folio(folio);
-> -	if (objcg && !obj_cgroup_may_zswap(objcg))
-> -		goto reject;
-> +	if (objcg && !obj_cgroup_may_zswap(objcg)) {
-> +		memcg = get_mem_cgroup_from_objcg(objcg);
-> +		if (shrink_memcg(memcg)) {
-> +			mem_cgroup_put(memcg);
-> +			goto reject;
-> +		}
-> +		mem_cgroup_put(memcg);
-> +	}
->  
->  	/* reclaim space if needed */
->  	if (zswap_is_full()) {
-> @@ -1240,7 +1316,11 @@ bool zswap_store(struct folio *folio)
->  		else
->  			zswap_pool_reached_full = false;
->  	}
-> -
-> +	pool = zswap_pool_current_get();
-> +	if (!pool) {
-> +		ret = -EINVAL;
-> +		goto reject;
-> +	}
+  Thanks for the review. Although it sounds like its a Linux property, 
+internally what it does is configuring qscratch registers properly when 
+(dr_mode == OTG)
 
+  Would it be fine to rephrase the property name to 
+"qcom,config-qscratch" and to make it dependent on dr_mode and 
+usb-role-switch properties ? Would it be possible to make such a 
+dependency in bindings ?
 
-Hi, I'm working to add support for large folios within zswap, and noticed this
-piece of code added by this change. I don't see any corresponding put. Have I
-missed some detail or is there a bug here?
-
-
->  	/* allocate entry */
->  	entry = zswap_entry_cache_alloc(GFP_KERNEL);
->  	if (!entry) {
-> @@ -1256,6 +1336,7 @@ bool zswap_store(struct folio *folio)
->  			entry->length = 0;
->  			entry->value = value;
->  			atomic_inc(&zswap_same_filled_pages);
-> +			zswap_pool_put(pool);
-
-I see you put it in this error path, but after that, there is no further mention.
-
->  			goto insert_entry;
->  		}
->  		kunmap_atomic(src);
-> @@ -1264,6 +1345,15 @@ bool zswap_store(struct folio *folio)
->  	if (!zswap_non_same_filled_pages_enabled)
->  		goto freepage;
->  
-> +	if (objcg) {
-> +		memcg = get_mem_cgroup_from_objcg(objcg);
-> +		lru_alloc_ret = memcg_list_lru_alloc(memcg, &pool->list_lru, GFP_KERNEL);
-> +		mem_cgroup_put(memcg);
-> +
-> +		if (lru_alloc_ret)
-> +			goto freepage;
-> +	}
-> +
->  	/* if entry is successfully added, it keeps the reference */
->  	entry->pool = zswap_pool_current_get();
-
-The entry takes it's reference to the pool here.
-
-Thanks,
-Ryan
-
-
+Regards,
+Krishna,
