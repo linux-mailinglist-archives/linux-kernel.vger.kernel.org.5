@@ -2,87 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 423587CBA9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 08:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 669EF7CBAB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 08:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234507AbjJQGMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 02:12:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54200 "EHLO
+        id S234559AbjJQGPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 02:15:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234490AbjJQGMo (ORCPT
+        with ESMTP id S233862AbjJQGPP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 02:12:44 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEFE0EA
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 23:12:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697523162; x=1729059162;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=cd8wWqa2wQWkVesEWRSOGVNVPs5wnXyLcNFqueTKMMc=;
-  b=IjCkqBw0vD+D44w0vf3JA/3aUW5qrYcM/JV3XQQPTuGWfodIyEtMsP8S
-   yiwQwyV9vRe1mm1xPGJsDIZGSzZhZfNSZkO3+syx+Q3tI+MB0OqF6p9U6
-   KJSc9wsZn2TKsWhcbjd9gewIziKJTyrUZibrc3DJwQxr8WKnyjdugouVR
-   Bs5a74yulHFHv9BlP235p8cQYmqjmSIImd5mmeg91aUgyTAkYk1o7ucts
-   1CDFPGS2oEHnta2nDX/t8QVULmSIbcggn6SGgQpnb2ws5fobT45u4nCa8
-   C3wlG1xXCygFKQeitKZVSGbJkUK52vuJg05gprSwkpCtDHc/mDnDmiDef
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="416783679"
-X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="416783679"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 23:12:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="732601985"
-X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="732601985"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 16 Oct 2023 23:12:41 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qsdJn-00096n-0O;
-        Tue, 17 Oct 2023 06:12:39 +0000
-Date:   Tue, 17 Oct 2023 14:11:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Christian Brauner <christian@brauner.io>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: <stdin>:1508:2: warning: #warning syscall clone3 not implemented
-Message-ID: <202310171424.ZUGeHDAN-lkp@intel.com>
+        Tue, 17 Oct 2023 02:15:15 -0400
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB3EB0;
+        Mon, 16 Oct 2023 23:15:11 -0700 (PDT)
+Received: from uucp by ganesha.gnumonks.org with local-bsmtp (Exim 4.94.2)
+        (envelope-from <laforge@gnumonks.org>)
+        id 1qsdMA-003P2Q-Dk; Tue, 17 Oct 2023 08:15:06 +0200
+Received: from laforge by nataraja with local (Exim 4.97-RC2)
+        (envelope-from <laforge@gnumonks.org>)
+        id 1qsdIe-000000020Oa-1ZtF;
+        Tue, 17 Oct 2023 08:11:28 +0200
+Date:   Tue, 17 Oct 2023 08:11:28 +0200
+From:   Harald Welte <laforge@gnumonks.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Takeru Hayasaka <hayatake396@gmail.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        osmocom-net-gprs@lists.osmocom.org
+Subject: Re: [PATCH net-next v2] ethtool: ice: Support for RSS settings to
+ GTP from ethtool
+Message-ID: <ZS4lkKv3xfnkEWRi@nataraja>
+References: <20231012060115.107183-1-hayatake396@gmail.com>
+ <20231016152343.1fc7c7be@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231016152343.1fc7c7be@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   213f891525c222e8ed145ce1ce7ae1f47921cb9c
-commit: 8f3220a806545442f6f26195bc491520f5276e7c arch: wire-up clone3() syscall
-date:   4 years, 4 months ago
-config: alpha-allnoconfig (https://download.01.org/0day-ci/archive/20231017/202310171424.ZUGeHDAN-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231017/202310171424.ZUGeHDAN-lkp@intel.com/reproduce)
+Hi Jakub and others,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310171424.ZUGeHDAN-lkp@intel.com/
+On Mon, Oct 16, 2023 at 03:23:43PM -0700, Jakub Kicinski wrote:
+> Adding Willem, Pablo, and Harald to CC (please CC them on future
+> versions).
 
-All warnings (new ones prefixed by >>):
+thanks for that Cc, it's much appreciated!
 
->> <stdin>:1508:2: warning: #warning syscall clone3 not implemented [-Wcpp]
---
-   arch/alpha/kernel/asm-offsets.c:15:6: warning: no previous prototype for 'foo' [-Wmissing-prototypes]
-      15 | void foo(void)
-         |      ^~~
->> <stdin>:1508:2: warning: #warning syscall clone3 not implemented [-Wcpp]
+> My understanding of GTP is limited to what I just read on Wikipedia.
+
+If there are any specific questions, I'm very happy to respond to them.
+
+> IIUC the GTPC vs GTPU distinction comes down to the UDP port on
+> which the protocol runs? 
+
+that is a convention.  Similar to any other wll-known port
+
+> Are the frames also different?
+
+Yes, the message type is different. There is one specific message type used for GTP-U
+and lots of others for GTP-C.
+
+> I'm guessing UL/DL are uplink/downlink but what's EH?
+
+Surprisingly, I also am not familiar with "EH" in the context of GTP.  It's an ancronym
+I don't recall reading in any related 3GPP spec.
+
+> Key question is - are there reasonable use cases that you can think of
+> for enabling GTP hashing for each one of those bits individually or can
+> we combine some of them?
+
+I cannot really comment on that, as I haven't yet been thinking about how RSS
+might potentially be used in GTPU use cases.  I would also appreciate
+some enlightenment on that.  What kind of network element/function are we talking
+about (my guess is an UPF).  How does its architecture look like to spread GTPU flows
+across CPUs using RSS?
+
+This is by the way something that I've been also seeing with patches
+against the kernel gtp in recent years: People submit patches but are
+not explaining the use cases, so it's hard to judge how relevant this
+really is to most users.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+- Harald Welte <laforge@gnumonks.org>          https://laforge.gnumonks.org/
+============================================================================
+"Privacy in residential applications is a desirable marketing option."
+                                                  (ETSI EN 300 175-7 Ch. A6)
