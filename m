@@ -2,74 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1FB7CCF8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 23:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 111F47CCF8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 23:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343829AbjJQV4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 17:56:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51664 "EHLO
+        id S1344148AbjJQV6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 17:58:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230056AbjJQV4u (ORCPT
+        with ESMTP id S231149AbjJQV6w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 17:56:50 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2972DB0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 14:56:49 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-53eeb28e8e5so1859a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 14:56:49 -0700 (PDT)
+        Tue, 17 Oct 2023 17:58:52 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B72BC6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 14:58:50 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a81cd8d267so73318747b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 14:58:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697579807; x=1698184607; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x6SecveUSZbKWLbjiW04X4UH95hRKYmyzqJ3SXHAuOw=;
-        b=XibKjnOlZ5UN+m2meVnEjGK9m3/4nXPq8SuLH0d3JwOvXMIurzEXFDdlQSzhd+z+N6
-         S1pMM8qsu8XkLT7vC/2UdpejID+of8zyWV3Hsk48+jJF2ID24bcJIso3HsXDnY+Gts0T
-         qjpnRGIwiCWE0x+X8PWR7UhAXZrjz/V2yNtdVjSt9GKA2oc7OoYMhrumA7lSoUkDdoGx
-         PcmNC1iSaJz2sBdqGENMSJ1+SG9KST4deVamdX4qJ1K74Q/fPPUsgmMXhC83hgtzVzU2
-         AWcj2cxQhzw7uknH5jfn4E35nPwfWou0pFpzx59r50sHmud4unhq7dTNwmZB5kbqxrYX
-         uJcg==
+        d=google.com; s=20230601; t=1697579929; x=1698184729; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ZtA0QmfTazD4bejJUvxhW4u+owAfFqWpqMd8aiBPDi0=;
+        b=fX1WOxuMpKW1tvMyO4Aleww+sSym9wGDCa/ORANY60YXXEbKr7se7bxsRoSIOi3cWv
+         Sva/Kjm2n7l+GzUiGPirCKlelh8BwrODtmdXjAxCfa4zjDORuRCShlxqPsmwXMvkHAdF
+         2SF/8TZSNYCZJ/svpNG+qrkic75vth7PVMkKED6fxCDEJ8wOf50kCpUREOeKbej2P0sg
+         UyaLok7GBxfJLVEzmgJ4nddpVSHsv5aymQQSRnf0GWKWO2JncfZ73RVbd54yLtfBLuHu
+         ltYEapBgQ03ks7TiyMvJCJgRB4k5mnRwMdjntGqCLbIMhkZHEijCcOv9qQOxfXmhlos5
+         5AhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697579807; x=1698184607;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x6SecveUSZbKWLbjiW04X4UH95hRKYmyzqJ3SXHAuOw=;
-        b=qdBo+k5cFWVRJaw14swDfBp9JJw3fTGaYH5kAO8nmarzXiewB/hLvV+DA0DS7fqAJw
-         XKBjFD446h1AEMh87WRo+Vo8aE4+8xjZGaUyqR5ezfAqHt0/Zr06KaU8rHOFjrhgFq+X
-         flT6mx5SY1+LXEZwCadkHQsc6nUjPqsBOd7djkjmBlFpcRa+tg9FKTc72jsA8KIDijHQ
-         b2oEIHyxTNOUgOpHP6oxADVAGLVXYczz5LjM+ZRDyI6GEiXTEqbSHmeyEodjsHzcYM0C
-         7Cn/FhaG1nMMPncndbZsZNEWU+hQDjKBUHL3RB7/1hvlztJ8XIMN+qltywaxLm+fgE9f
-         vj8g==
-X-Gm-Message-State: AOJu0Yz22E0Dmh3Lhp6mLhhg1/TSJ1D47BgjA5tArIgxt/JeXyB6cFFE
-        osWXHhI+77+y+KyumHAHQvs8a7mYc422hExAhl6r8w==
-X-Google-Smtp-Source: AGHT+IFeNB7FV7GubzleZU617rN/G/xjqDvjL6DLVrnWjcz/iKRbu0lAMqNk3YpZxQbGcqm0l6q3ZvoAaaFRp6ONXrE=
-X-Received: by 2002:a50:a6d9:0:b0:53e:7ad7:6d47 with SMTP id
- f25-20020a50a6d9000000b0053e7ad76d47mr19944edc.5.1697579807512; Tue, 17 Oct
- 2023 14:56:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231017182026.2141163-1-danielmentz@google.com>
- <DM6PR04MB6575C45CF299649DF41FD963FCD6A@DM6PR04MB6575.namprd04.prod.outlook.com>
- <52a248fc-465e-4050-8692-5105b6aaa764@acm.org>
-In-Reply-To: <52a248fc-465e-4050-8692-5105b6aaa764@acm.org>
-From:   Daniel Mentz <danielmentz@google.com>
-Date:   Tue, 17 Oct 2023 14:56:33 -0700
-Message-ID: <CAE2F3rCcEC=fMd+_gxwksTW=07ZzAt-vA5SO3w8AdAXGy1OVDg@mail.gmail.com>
-Subject: Re: [PATCH] scsi: ufs: Leave space for '\0' in utf8 desc string
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Avri Altman <avri.altman@wdc.com>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Mars Cheng <marscheng@google.com>,
-        Yen-lin Lai <yenlinlai@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        d=1e100.net; s=20230601; t=1697579929; x=1698184729;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZtA0QmfTazD4bejJUvxhW4u+owAfFqWpqMd8aiBPDi0=;
+        b=h4JNV8qDsJK9tEdpgOCGsWi6+PDUuK4EIQzs+Gf1BD7J8cnsK/qVjohIKOp5zO3feP
+         KVX1QwA5evSRsYGj2mlCNuDI99S19oApQL+m5Ueq3r/a3WhycA2mG3CaiOG45EvdMyMn
+         KviHtCsyDwYsOc3Bou7Wh7go+nVSRIh1qLOP2zCWGQa3rcs1YJ2KMNP2Hi02H82fHpmF
+         iALHc4HKi9G+clCUKw27s+99+8Aigg4M1yQ3kOssBLg5x++dQrD36Mpu5/ouc3rdQcG2
+         gc6y6dC/sZWiGW/PPpY3GfeCY9mQG8hMRQhFUkBemKPpNy5bioJILBOBsMLnzUiyRbv6
+         Hd+A==
+X-Gm-Message-State: AOJu0YzzGcT62OpDnmMBfiNT/ulB8zlMmhHeWMx0vMLUoQVglY6nqs/Q
+        hlSH9RsaeGVEOoIuS3czlTxULlPD/q/z5SPQeQ==
+X-Google-Smtp-Source: AGHT+IHDs3y1E7k+8uXlkij8vcC0qgc1jSTYg965KjyTu12FZPFdJux12EXTyV9h27znP+YEVJYXB6E2gitoCo3PCg==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a0d:d787:0:b0:59b:f863:6f60 with SMTP
+ id z129-20020a0dd787000000b0059bf8636f60mr81791ywd.4.1697579929629; Tue, 17
+ Oct 2023 14:58:49 -0700 (PDT)
+Date:   Tue, 17 Oct 2023 21:58:44 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAJMDL2UC/x3NSwrDMAwA0asErSuw3UI/VyldJLaUCowbJBOnh
+ Ny9psu3mdnBSIUMHsMOSquYfEqHPw0Q32OZCSV1Q3Dh7J2/olUtcfliUllJDQtVbKKUyQylVMo oLTdhQW6Yphkjer7c2bnpNgaCXl6UWLb/9fk6jh8QFOZMhQAAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1697579928; l=2481;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=ssxs2Jsrs2hPLtwX1Sk+1Tw5TTVcJVG2jRbLqY3Nmzo=; b=euoX0Jg9LbRcp6r/+6JIqUrfaDAKuWxPOT7SWUWCkFd9tCFkFL1KEXgYs5MQi+IMRc0kTTReU
+ jDmNrXF5LRuAIyY/fyEHQCdk0cZLzPa3Qi6V64hHwnsB9k/dZM+P3Tf
+X-Mailer: b4 0.12.3
+Message-ID: <20231017-strncpy-drivers-net-wireless-intel-iwlwifi-fw-dbg-c-v1-1-bf69ec7d1b97@google.com>
+Subject: [PATCH] wifi: iwlwifi: fw: replace deprecated strncpy with strscpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Gregory Greenman <gregory.greenman@intel.com>,
+        Kalle Valo <kvalo@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,32 +75,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 12:33=E2=80=AFPM Bart Van Assche <bvanassche@acm.or=
-g> wrote:
->
-> On 10/17/23 12:20, Avri Altman wrote:
-> >> Fixes: 4b828fe156a6 ("scsi: ufs: revamp string descriptor reading")
-> > I think this code goes back to commit b573d484e4ff (scsi: ufs: add supp=
-ort to read device and string descriptors)
->
-> Hmm ... it seems to me that there was no buffer overflow in commit
-> b573d484e4ff but that the buffer overflow was introduced by commit
-> 4b828fe156a6?
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-Thank you for the review Avri.
+Based on the deliberate `sizeof(dest) ... - 1` pattern we can see that
+both dump_info->dev_human_readable and dump_info->bus_human_readable are
+intended to be NUL-terminated.
 
-To me, it appears as if those two commits had different issues:
+Neither of these symbols seem to be actually used after being assigned.
+Which means our replacement doesn't really matter. At any rate, it would
+seem NUL-padding is not required so let's use `strscpy` [2] due to the
+fact that it guarantees NUL-termination on the destination buffer
+without unnecessarily NUL-padding. (but maybe these should be
+used or removed).
 
-commit b573d484e4ff ("scsi: ufs: add support to read device and string
-descriptors") failed to reliably NULL terminate the output string (in
-the case where ascii_len =3D=3D size - QUERY_DESC_HDR_SIZE).
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
 
-commit 4b828fe156a6 ("scsi: ufs: revamp string descriptor reading")
-potentially performs an out-of-bounds array access while NULL
-terminating the output string.
+Found with: $ rg "strncpy\("
+---
+ drivers/net/wireless/intel/iwlwifi/fw/dbg.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-I would argue that the proposed fix wouldn't even fix the former and
-older commit b573d484e4ff, because that commit might have required
-more fixes like using kzalloc instead of kmalloc.
-I find that the newer commit 4b828fe156a6 did enough of refactoring
-for it to be considered the commit that needs this fix.
+diff --git a/drivers/net/wireless/intel/iwlwifi/fw/dbg.c b/drivers/net/wireless/intel/iwlwifi/fw/dbg.c
+index 3ab6a68f1e9f..5455f8d1aab0 100644
+--- a/drivers/net/wireless/intel/iwlwifi/fw/dbg.c
++++ b/drivers/net/wireless/intel/iwlwifi/fw/dbg.c
+@@ -880,10 +880,10 @@ iwl_fw_error_dump_file(struct iwl_fw_runtime *fwrt,
+ 			cpu_to_le32(fwrt->trans->hw_rev_step);
+ 		memcpy(dump_info->fw_human_readable, fwrt->fw->human_readable,
+ 		       sizeof(dump_info->fw_human_readable));
+-		strncpy(dump_info->dev_human_readable, fwrt->trans->name,
+-			sizeof(dump_info->dev_human_readable) - 1);
+-		strncpy(dump_info->bus_human_readable, fwrt->dev->bus->name,
+-			sizeof(dump_info->bus_human_readable) - 1);
++		strscpy(dump_info->dev_human_readable, fwrt->trans->name,
++			sizeof(dump_info->dev_human_readable));
++		strscpy(dump_info->bus_human_readable, fwrt->dev->bus->name,
++			sizeof(dump_info->bus_human_readable));
+ 		dump_info->num_of_lmacs = fwrt->smem_cfg.num_lmacs;
+ 		dump_info->lmac_err_id[0] =
+ 			cpu_to_le32(fwrt->dump.lmac_err_id[0]);
+
+---
+base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
+change-id: 20231017-strncpy-drivers-net-wireless-intel-iwlwifi-fw-dbg-c-1f49f00b8a2e
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
