@@ -2,79 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 870667CC568
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 261817CC55A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 15:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344000AbjJQOAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 10:00:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54362 "EHLO
+        id S1343939AbjJQN7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 09:59:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343979AbjJQOAH (ORCPT
+        with ESMTP id S232644AbjJQN7N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 10:00:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09845FF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 06:59:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697551158;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7QR10qKKeWFbp9jH/4RLMtlbt90NbOmMmcKVXypBNdI=;
-        b=By7FaWfkTA9qywOSMoIp2ufZypzDsYwiLi9S0/Lvcchr+hsfhYsoK5ZjyCx0Bwz62iAoF8
-        PUTYi6gn4cPqR+D8sna+Hb1xvmiKEVrtezEGYjSSOVGzpn9hrPoCgZiSSEshFuCvj0Mnpn
-        Hp9j5W6yxnRg//SMFEFDrGytZvFelDc=
-Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com
- [209.85.128.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-213-Y4h8rr8-PXiocwxWDSJe5w-1; Tue, 17 Oct 2023 09:59:16 -0400
-X-MC-Unique: Y4h8rr8-PXiocwxWDSJe5w-1
-Received: by mail-yw1-f197.google.com with SMTP id 00721157ae682-5a7bcbb95b2so87791967b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 06:59:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697551156; x=1698155956;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7QR10qKKeWFbp9jH/4RLMtlbt90NbOmMmcKVXypBNdI=;
-        b=Y3LkLjEaJwALkbwThj5OtxzEP73AllgXCnb0axK9qStHoboW6nGvrT73ruyAJo+Meb
-         wTdUu1FKvTqrZGiBLK6XjIzSSMPdK13ry4JqcFeP7iKiNpBmZ2qfdYartQFcKrG1hj26
-         pvQamqxN9FlcsM3bYV4sezbywLtqMEp9urqyfff/26Wp5n2JNK87NI77ZfwZ3t218OZ1
-         zE1ouqpYs7GXetOP03juYOdhT1Y3ysd0tpUsv4/JCf74dgp6VrbWILGyNNsPB274aYH3
-         BCjxo3FboYjzgYlyJgFI5F0/KDvKtmTh0AV742OAvG2ymYLyxwAagr3G1dTnVJ7JPPqj
-         m+ZQ==
-X-Gm-Message-State: AOJu0Yxo2yrGEnVUtO0KtcaeAv15zepwmDmBr76AOT3ASg49hcRkOykc
-        8MQkn8DpdpDzVkdkBRN+yTzMAdQDZ/tE69yJXTU6cEPKU3F2HcMgvM35H/DjUgMpEqiP7uTYAqN
-        bzgLbCnrKZUWmOnRZKHvcGiuD3tCUIQpadFTQj3bXGdMTNqbE+gc=
-X-Received: by 2002:a81:6c17:0:b0:5a7:bcbb:b948 with SMTP id h23-20020a816c17000000b005a7bcbbb948mr2385004ywc.15.1697551155933;
-        Tue, 17 Oct 2023 06:59:15 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG6vu9gBuG9axxk+vppFq7zu6ka/Zjjb4JAGrUinmtw+kzq6DjYZ5dp4wePG2jackKiVOOvHLcqoeI00z+zQIw=
-X-Received: by 2002:a81:6c17:0:b0:5a7:bcbb:b948 with SMTP id
- h23-20020a816c17000000b005a7bcbbb948mr2384976ywc.15.1697551155371; Tue, 17
- Oct 2023 06:59:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <1696928580-7520-1-git-send-email-si-wei.liu@oracle.com>
- <1696928580-7520-3-git-send-email-si-wei.liu@oracle.com> <CACGkMEtkcyC54M_8A63uBEYjJP+EinLzTk3gP8CQ_rWs0Omt-Q@mail.gmail.com>
- <1bd79050-8eb5-49f6-9e58-6c7eb3fcab3e@oracle.com> <CACGkMEt_zvBM=ysbXZJEC1sdbCk=BpcWvtjeuP_L2WH4ke1dWQ@mail.gmail.com>
- <CAJaqyWf0AhsS6kaGUMVCosDjuRoeCAqO3OTVC=veqjV3jCqUjQ@mail.gmail.com>
- <8f8c0c28-59a4-489b-9276-fc3b5cfa8faa@oracle.com> <CACGkMEs0W1joaNh0-a27Nekxn8V8CmGgr99p+r60dA6sQeys5g@mail.gmail.com>
-In-Reply-To: <CACGkMEs0W1joaNh0-a27Nekxn8V8CmGgr99p+r60dA6sQeys5g@mail.gmail.com>
-From:   Eugenio Perez Martin <eperezma@redhat.com>
-Date:   Tue, 17 Oct 2023 15:58:39 +0200
-Message-ID: <CAJaqyWew6CC7EwUEyto91zMNH8OQqDAvYCyk0-vM4j0K6jwbmw@mail.gmail.com>
-Subject: Re: [PATCH 2/4] vhost-vdpa: reset vendor specific mapping to initial
- state in .release
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Si-Wei Liu <si-wei.liu@oracle.com>, mst@redhat.com,
-        xuanzhuo@linux.alibaba.com, dtatulea@nvidia.com,
-        virtualization@lists.linux-foundation.org,
+        Tue, 17 Oct 2023 09:59:13 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B346F5;
+        Tue, 17 Oct 2023 06:59:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+        In-Reply-To:References; bh=LwuQtc6BAEH37KxR4NT7V8Ve+ukUxIEjORvi7ui3JHI=; b=hr
+        W9hrfJTecFcxkf91ofdGB59NoYEqMm1qWQPvnOlb7MJUyuWjDT6spSz5Xi7bbqXTxATaJ1w3R/BIa
+        b3KCCTHPu29PquXAIwOvvnk91Q4GNLdr/oESLqIN6OL/E3FRcBUHieYPsHNIlUzTPP7NTyMJaZaWU
+        uwFkRC3aebRBvXw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qskb9-002U7a-Kb; Tue, 17 Oct 2023 15:59:03 +0200
+Date:   Tue, 17 Oct 2023 15:59:03 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Jijie Shao <shaojijie@huawei.com>
+Cc:     yisen.zhuang@huawei.com, salil.mehta@huawei.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, shenjian15@huawei.com, wangjie125@huawei.com,
+        liuyonglong@huawei.com, wangpeiyang1@huawei.com,
+        netdev@vger.kernel.org, stable@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+Subject: Re: [PATCH net 5/6] net: hns3: fix wrong print link down up
+Message-ID: <06cd6f53-e0af-4bdf-a684-68fc55b9b436@lunn.ch>
+References: <20230728075840.4022760-1-shaojijie@huawei.com>
+ <20230728075840.4022760-6-shaojijie@huawei.com>
+ <7ce32389-550b-4beb-82b1-1b6183fdeabb@lunn.ch>
+ <2c6514a7-db97-f345-9bc4-affd4eba2dda@huawei.com>
+ <73b41fe2-12dd-4fc0-a44d-f6f94e6541fc@lunn.ch>
+ <ef5489f9-43b4-ee59-699b-3f54a30c00aa@huawei.com>
+ <e7219114-774f-49d0-8985-8875fd351b60@lunn.ch>
+ <a21beff2-9f38-d354-6049-aed20c18c8d4@huawei.com>
+ <150d8d95-a6cd-dc28-618b-6cc5295b4bf9@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <150d8d95-a6cd-dc28-618b-6cc5295b4bf9@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,239 +61,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 4:35=E2=80=AFAM Jason Wang <jasowang@redhat.com> wr=
-ote:
->
-> On Tue, Oct 17, 2023 at 4:30=E2=80=AFAM Si-Wei Liu <si-wei.liu@oracle.com=
-> wrote:
-> >
-> >
-> >
-> > On 10/16/2023 4:28 AM, Eugenio Perez Martin wrote:
-> > > On Mon, Oct 16, 2023 at 8:33=E2=80=AFAM Jason Wang <jasowang@redhat.c=
-om> wrote:
-> > >> On Fri, Oct 13, 2023 at 3:36=E2=80=AFPM Si-Wei Liu <si-wei.liu@oracl=
-e.com> wrote:
-> > >>>
-> > >>>
-> > >>> On 10/12/2023 8:01 PM, Jason Wang wrote:
-> > >>>> On Tue, Oct 10, 2023 at 5:05=E2=80=AFPM Si-Wei Liu <si-wei.liu@ora=
-cle.com> wrote:
-> > >>>>> Devices with on-chip IOMMU or vendor specific IOTLB implementatio=
-n
-> > >>>>> may need to restore iotlb mapping to the initial or default state
-> > >>>>> using the .reset_map op, as it's desirable for some parent device=
-s
-> > >>>>> to solely manipulate mappings by its own, independent of virtio d=
-evice
-> > >>>>> state. For instance, device reset does not cause mapping go away =
-on
-> > >>>>> such IOTLB model in need of persistent mapping. Before vhost-vdpa
-> > >>>>> is going away, give them a chance to reset iotlb back to the init=
-ial
-> > >>>>> state in vhost_vdpa_cleanup().
-> > >>>>>
-> > >>>>> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
-> > >>>>> ---
-> > >>>>>    drivers/vhost/vdpa.c | 16 ++++++++++++++++
-> > >>>>>    1 file changed, 16 insertions(+)
-> > >>>>>
-> > >>>>> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> > >>>>> index 851535f..a3f8160 100644
-> > >>>>> --- a/drivers/vhost/vdpa.c
-> > >>>>> +++ b/drivers/vhost/vdpa.c
-> > >>>>> @@ -131,6 +131,15 @@ static struct vhost_vdpa_as *vhost_vdpa_find=
-_alloc_as(struct vhost_vdpa *v,
-> > >>>>>           return vhost_vdpa_alloc_as(v, asid);
-> > >>>>>    }
-> > >>>>>
-> > >>>>> +static void vhost_vdpa_reset_map(struct vhost_vdpa *v, u32 asid)
-> > >>>>> +{
-> > >>>>> +       struct vdpa_device *vdpa =3D v->vdpa;
-> > >>>>> +       const struct vdpa_config_ops *ops =3D vdpa->config;
-> > >>>>> +
-> > >>>>> +       if (ops->reset_map)
-> > >>>>> +               ops->reset_map(vdpa, asid);
-> > >>>>> +}
-> > >>>>> +
-> > >>>>>    static int vhost_vdpa_remove_as(struct vhost_vdpa *v, u32 asid=
-)
-> > >>>>>    {
-> > >>>>>           struct vhost_vdpa_as *as =3D asid_to_as(v, asid);
-> > >>>>> @@ -140,6 +149,13 @@ static int vhost_vdpa_remove_as(struct vhost=
-_vdpa *v, u32 asid)
-> > >>>>>
-> > >>>>>           hlist_del(&as->hash_link);
-> > >>>>>           vhost_vdpa_iotlb_unmap(v, &as->iotlb, 0ULL, 0ULL - 1, a=
-sid);
-> > >>>>> +       /*
-> > >>>>> +        * Devices with vendor specific IOMMU may need to restore
-> > >>>>> +        * iotlb to the initial or default state which is not don=
-e
-> > >>>>> +        * through device reset, as the IOTLB mapping manipulatio=
-n
-> > >>>>> +        * could be decoupled from the virtio device life cycle.
-> > >>>>> +        */
-> > >>>> Should we do this according to whether IOTLB_PRESIST is set?
-> > >>> Well, in theory this seems like so but it's unnecessary code change
-> > >>> actually, as that is the way how vDPA parent behind platform IOMMU =
-works
-> > >>> today, and userspace doesn't break as of today. :)
-> > >> Well, this is one question I've ever asked before. You have explaine=
-d
-> > >> that one of the reason that we don't break userspace is that they ma=
-y
-> > >> couple IOTLB reset with vDPA reset as well. One example is the Qemu.
-> > >>
-> > >>> As explained in previous threads [1][2], when IOTLB_PERSIST is not =
-set
-> > >>> it doesn't necessarily mean the iotlb will definitely be destroyed
-> > >>> across reset (think about the platform IOMMU case), so userspace to=
-day
-> > >>> is already tolerating enough with either good or bad IOMMU.
->
-> I'm confused, how to define tolerating here? For example, if it has
-> tolerance, why bother?
->
-> > >>This code of
-> > >>> not checking IOTLB_PERSIST being set is intentional, there's no poi=
-nt to
-> > >>> emulate bad IOMMU behavior even for older userspace (with improper
-> > >>> emulation to be done it would result in even worse performance).
->
-> I can easily imagine a case:
->
-> The old Qemu that works only with a setup like mlx5_vdpa.
+On Tue, Oct 17, 2023 at 09:03:01PM +0800, Jijie Shao wrote:
+> 
+> on 2023/7/31 17:10, Jijie Shao wrote:
+> > 
+> > on 2023/7/30 2:23, Andrew Lunn wrote:
+> > > >      Now i wounder if you are fixing the wrong thing. Maybe you
+> > > > should be
+> > > >      fixing the PHY so it does not report up and then down? You
+> > > > say 'very
+> > > >      snall intervals', which should in fact be 1 second. So is the PHY
+> > > >      reporting link for a number of poll intervals? 1min to 10 minutes?
+> > > > 
+> > > >                Andrew
+> > > > 
+> > > > Yes, according to the log records, the phy polls every second,
+> > > > but the link status changes take time.
+> > > > Generally, it takes 10 seconds for the phy to detect link down,
+> > > > but occasionally it takes several minutes to detect link down,
+> > > What PHY driver is this?
+> > > 
+> > > It is not so clear what should actually happen with auto-neg turned
+> > > off. With it on, and the link going down, the PHY should react after
+> > > about 1 second. It is not supposed to react faster than that, although
+> > > some PHYs allow fast link down notification to be configured.
+> > > 
+> > > Have you checked 802.3 to see what it says about auto-neg off and link
+> > > down detection?
+> > > 
+> > > I personally would not suppress this behaviour in the MAC
+> > > driver. Otherwise you are going to have funny combinations of special
+> > > cases of a feature which very few people actually use, making your
+> > > maintenance costs higher.
+> > > 
+> > >         Andrew
+> 
+> Hi Andrew,
+> We've rewritten the commit log to explain this problem,
+> Would you please take some time to review that?
+> 
+> The following is the new commit log:
+> This patch is to correct a wrong log info "link down/up" in hns3 driver.
+> When setting autoneg off without changing speed and duplex, the link
+> should be not changed. However in hns3 driver, it print link down/up once
+> incorrectly. We trace the phy machine state and find the phy change form
+> PHY_UP to PHY_RUNNING. No other state of PHY occurs during this process.
+> MDIO trace also indicate the link is on. The wrong log info and mdio
+> trace are showed as followed:
+> 
+> [  843.720783][  T367] hns3 0000:35:00.0 eth1: set link(phy): autoneg=0,
+> speed=10, duplex=1
+> [  843.736087][  T367] hns3 0000:35:00.0 eth1: link down
+> [  843.773506][   T17] RTL8211F Gigabit Ethernet mii-0000:35:00.0:02: PHY
+> state change UP -> RUNNING
+> [  844.674668][   T31] hns3 0000:35:00.0 eth1: link up
 
-I think it is a fair point, but QEMU in particular already unmapped
-everything before set_status(0). Other userspace apps that have
-trusted vdpa_sim and/or mlx5 behavior could fail, yes.
+I still think this is totally valid and correct.
 
-> If we do
-> this without a negotiation, IOTLB will not be clear but the Qemu will
-> try to re-program the IOTLB after reset. Which will break?
->
-> 1) stick the exact old behaviour with just one line of check
-> 2) audit all the possible cases to avoid a one line of code
->
-> 1) seems much easier than 2)
->
-> > >> For two reasons:
-> > >>
-> > >> 1) backend features need acked by userspace this is by design
-> > >> 2) keep the odd behaviour seems to be more safe as we can't audit
-> > >> every userspace program
-> > >>
-> > > The old behavior (without flag ack) cannot be trusted already, as:
->
-> Possibly but the point is to unbreak userspace no matter how weird the
-> behaviour we've ever had.
->
-> > > * Devices using platform IOMMU (in other words, not implementing
-> > > neither .set_map nor .dma_map) does not unmap memory at virtio reset.
-> > > * Devices that implement .set_map or .dma_map (vdpa_sim, mlx5) do
-> > > reset IOTLB, but in their parent ops (vdpasim_do_reset, prune_iotlb
-> > > called from mlx5_vdpa_reset). With vdpa_sim patch removing the reset,
-> > > now all backends work the same as far as I know., which was (and is)
-> > > the way devices using the platform IOMMU works.
-> > >
-> > > The difference in behavior did not matter as QEMU unmaps all the
-> > > memory unregistering the memory listener at vhost_vdpa_dev_start(...,
-> > > started =3D false),
-> > Exactly. It's not just QEMU, but any (older) userspace manipulates
-> > mappings through the vhost-vdpa iotlb interface has to unmap all
-> > mappings to workaround the vdpa parent driver bug.
->
-> Just to clarify, from userspace, it's the (odd) behaviour of the current =
-uAPI.
->
-> > If they don't do
-> > explicit unmap, it would cause state inconsistency between vhost-vdpa
-> > and parent driver, then old mappings can't be restored, and new mapping
-> > can be added to iotlb after vDPA reset. There's no point to preserve
-> > this broken and inconsistent behavior between vhost-vdpa and parent
-> > driver, as userspace doesn't care at all!
->
-> It's a userspace notice change so we can't fix it silently:
->
-> https://lkml.org/lkml/2012/12/23/75
->
-> Another example which is related to vhost-vDPA:
->
-> https://lore.kernel.org/netdev/20230927140544.205088-1-eric.auger@redhat.=
-com/T/
->
+When you turn auto-neg off the link partner is going to react to that,
+it might drop the link. After a while, the link partner will give up
+trying to perform auto-neg and might fall back to 10/Half. At which
+point, the link might allow traffic flow. However, in this example,
+you have a duplex mis-match, so it might not work correctly.
 
-So let's say it's just a matter of checking if IOTLB_PERSIST has been
-acked and then call vhost_vdpa_reset_map in set_status(0) as long as
-the backend uses .set_map or .dma_map. Both mlx5 and vdpa_sim will
-have old behavior, but future parent drivers that use (.set_map ||
-.dma_map) will also reset map with old qemu.
+Turning off auto-neg is something you need to do at both ends, and you
+need to then force both ends to the same settings. Link down is
+expected. I would actually be suppressed if no link down events were
+reported.
 
-I think it is acceptable. Am I missing something?
-
-Thanks!
-
-> Thanks
->
-> >
-> > > but the backend acknowledging this feature flag
-> > > allows QEMU to make sure it is safe to skip this unmap & map in the
-> > > case of vhost stop & start cycle.
-> > >
-> > > In that sense, this feature flag is actually a signal for userspace t=
-o
-> > > know that the bug has been solved.
-> > Right, I couldn't say it better than you do, thanks! The feature flag i=
-s
-> > more of an unusual means to indicating kernel bug having been fixed,
-> > rather than introduce a new feature or new kernel behavior ending up in
-> > change of userspace's expectation.
-> >
-> > > Not offering it indicates that
-> > > userspace cannot trust the kernel will retain the maps.
-> > >
-> > > Si-Wei or Dragos, please correct me if I've missed something. Feel
-> > > free to use the text in case you find more clear in doc or patch log.
-> > Sure, will do, thank you! Will post v2 adding these to the log.
-> >
-> > Thanks,
-> > -Siwei
-> >
-> >
-> >
-> > >
-> > > Thanks!
-> > >
-> > >> Thanks
-> > >>
-> > >>> I think
-> > >>> the purpose of the IOTLB_PERSIST flag is just to give userspace 100=
-%
-> > >>> certainty of persistent iotlb mapping not getting lost across vdpa =
-reset.
-> > >>>
-> > >>> Thanks,
-> > >>> -Siwei
-> > >>>
-> > >>> [1]
-> > >>> https://lore.kernel.org/virtualization/9f118fc9-4f6f-dd67-a291-be78=
-152e47fd@oracle.com/
-> > >>> [2]
-> > >>> https://lore.kernel.org/virtualization/3364adfd-1eb7-8bce-41f9-bfe5=
-473f1f2e@oracle.com/
-> > >>>>    Otherwise
-> > >>>> we may break old userspace.
-> > >>>>
-> > >>>> Thanks
-> > >>>>
-> > >>>>> +       vhost_vdpa_reset_map(v, asid);
-> > >>>>>           kfree(as);
-> > >>>>>
-> > >>>>>           return 0;
-> > >>>>> --
-> > >>>>> 1.8.3.1
-> > >>>>>
-> >
->
-
+	Andrew
