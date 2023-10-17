@@ -2,159 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 327367CC4D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 15:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E8EA7CC4D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 15:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343660AbjJQNeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 09:34:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60830 "EHLO
+        id S1343882AbjJQNek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 09:34:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343642AbjJQNeX (ORCPT
+        with ESMTP id S1343642AbjJQNej (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 09:34:23 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 186D2ED
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 06:34:22 -0700 (PDT)
+        Tue, 17 Oct 2023 09:34:39 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F26F0;
+        Tue, 17 Oct 2023 06:34:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697549662; x=1729085662;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=0Ff530asQwhzMuaCrXBgBn7hMKrFyVFKwARb+hoQLog=;
-  b=iEYMvrwcdc/1QpGaoIE+denGMn68kZtRP+ORNjCpaVwnxvUU1WziEZnH
-   UsFT5UvcY7HG/XqgscD5aQXo1lgIpKGkoylM6eAEBe77g8eTPKuE1sXbI
-   ya3Duzj/KqTnQNJOk9PbfgsTo3kd1Mr+lp3hlk13PJD4Eyb9hNEL7nwp7
-   lK84hfFS3M0uiKe2eaLd3jmP3q2cYrmWcyYBp33R1KtxBi8Gj0iWNELau
-   Ku3ZtV6N7ikYafNbARoKxdVDX050WA6GLFIwARj9pax8u/eS+hDCPXVWn
-   VOvc9jZXGuQo1fREmsm2OEFYllX8myRV9RpVBrD7+wPj21adqkAVX1hCD
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="449999744"
+  t=1697549678; x=1729085678;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=ar0hHvQvp5BFk8tVIHGjdWvXPxmhKvWwhrPxeliAhfE=;
+  b=TcEpRaS6vWObVnrtBzjLkhzX9Gn7uH6Q4ndMDu1y+tSMlK3iFBoInoAd
+   K9Jyog0H6fKQxewzqdzS2bloe8GDzKpN+2wLP1agXBl2tSX7ahDOJDKZH
+   FxlolW7yf3yY25w9DGxpmYT9KK8V5map5vjRAPDUDW35EB69Wmmrs558S
+   wXYGWV9KTIl6rYDINwQc5jEXRE52IiFwmwciQ8AU/tfe+pVYXPSP7B7IZ
+   e1S7pdJw5mmeLDEc/W4RiCKvJiMDSejGRYxgkApa3GjwJHSzIHJU/SYdJ
+   4kCSbazK4Pt8U6uKwb//kBw1O0KZPSBA6xMbF44Z4zoa9OoB+hkcHHAV+
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="383005035"
 X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
-   d="scan'208";a="449999744"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 06:34:21 -0700
+   d="scan'208";a="383005035"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 06:34:36 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="749697972"
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="1087502716"
 X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
-   d="scan'208";a="749697972"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 17 Oct 2023 06:34:18 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qskD8-0009e1-1K;
-        Tue, 17 Oct 2023 13:34:14 +0000
-Date:   Tue, 17 Oct 2023 21:33:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Frank Li <Frank.Li@nxp.com>, miquel.raynal@bootlin.com,
-        conor.culhane@silvaco.com, alexandre.belloni@bootlin.com,
-        joe@perches.com, linux-i3c@lists.infradead.org,
-        linux-kernel@vger.kernel.org, imx@lists.linux.dev
-Cc:     oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH 1/6] i3c: master: svc: fix race condition in ibi work
- thread
-Message-ID: <202310172150.4GVdV44X-lkp@intel.com>
-References: <20231016153232.2851095-2-Frank.Li@nxp.com>
+   d="scan'208";a="1087502716"
+Received: from nmdsouza-mobl1.amr.corp.intel.com (HELO [10.209.106.102]) ([10.209.106.102])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 06:34:35 -0700
+Message-ID: <736a6745-3ba7-4a0e-a00c-bb36fa1cc51c@linux.intel.com>
+Date:   Tue, 17 Oct 2023 06:34:36 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231016153232.2851095-2-Frank.Li@nxp.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v14 05/23] x86/virt/tdx: Handle SEAMCALL no entropy error
+ in common code
+Content-Language: en-US
+To:     Kai Huang <kai.huang@intel.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     x86@kernel.org, dave.hansen@intel.com,
+        kirill.shutemov@linux.intel.com, peterz@infradead.org,
+        tony.luck@intel.com, tglx@linutronix.de, bp@alien8.de,
+        mingo@redhat.com, hpa@zytor.com, seanjc@google.com,
+        pbonzini@redhat.com, rafael@kernel.org, david@redhat.com,
+        dan.j.williams@intel.com, len.brown@intel.com, ak@linux.intel.com,
+        isaku.yamahata@intel.com, ying.huang@intel.com, chao.gao@intel.com,
+        nik.borisov@suse.com, bagasdotme@gmail.com, sagis@google.com,
+        imammedo@redhat.com
+References: <cover.1697532085.git.kai.huang@intel.com>
+ <cf05bd02c7d33375965c2647ce3689ae786aa97d.1697532085.git.kai.huang@intel.com>
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <cf05bd02c7d33375965c2647ce3689ae786aa97d.1697532085.git.kai.huang@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Frank,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on linus/master]
-[also build test WARNING on v6.6-rc6 next-20231017]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Frank-Li/i3c-master-svc-fix-race-condition-in-ibi-work-thread/20231017-151123
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20231016153232.2851095-2-Frank.Li%40nxp.com
-patch subject: [PATCH 1/6] i3c: master: svc: fix race condition in ibi work thread
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231017/202310172150.4GVdV44X-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231017/202310172150.4GVdV44X-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310172150.4GVdV44X-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/i3c/master/svc-i3c-master.c:207: warning: Function parameter or member 'lock' not described in 'svc_i3c_master'
 
 
-vim +207 drivers/i3c/master/svc-i3c-master.c
+On 10/17/2023 3:14 AM, Kai Huang wrote:
+> Some SEAMCALLs use the RDRAND hardware and can fail for the same reasons
+> as RDRAND.  Use the kernel RDRAND retry logic for them.
+> 
+> There are three __seamcall*() variants.  Do the SEAMCALL retry in common
+> code and add a wrapper for each of them.
+> 
+> Signed-off-by: Kai Huang <kai.huang@intel.com>
+> Reviewed-by: Kirill A. Shutemov <kirll.shutemov@linux.intel.com>
+> ---
+> 
+> v13 -> v14:
+>  - Use real function sc_retry() instead of using macros. (Dave)
+>  - Added Kirill's tag.
+> 
+> v12 -> v13:
+>  - New implementation due to TDCALL assembly series.
+> ---
 
-1c5ee2a77b1bacd Clark Wang    2023-05-17  153  
-dd3c52846d5954a Miquel Raynal 2021-01-21  154  /**
-dd3c52846d5954a Miquel Raynal 2021-01-21  155   * struct svc_i3c_master - Silvaco I3C Master structure
-dd3c52846d5954a Miquel Raynal 2021-01-21  156   * @base: I3C master controller
-dd3c52846d5954a Miquel Raynal 2021-01-21  157   * @dev: Corresponding device
-dd3c52846d5954a Miquel Raynal 2021-01-21  158   * @regs: Memory mapping
-5496eac6ad7428f Miquel Raynal 2023-08-17  159   * @saved_regs: Volatile values for PM operations
-dd3c52846d5954a Miquel Raynal 2021-01-21  160   * @free_slots: Bit array of available slots
-dd3c52846d5954a Miquel Raynal 2021-01-21  161   * @addrs: Array containing the dynamic addresses of each attached device
-dd3c52846d5954a Miquel Raynal 2021-01-21  162   * @descs: Array of descriptors, one per attached device
-dd3c52846d5954a Miquel Raynal 2021-01-21  163   * @hj_work: Hot-join work
-dd3c52846d5954a Miquel Raynal 2021-01-21  164   * @ibi_work: IBI work
-dd3c52846d5954a Miquel Raynal 2021-01-21  165   * @irq: Main interrupt
-dd3c52846d5954a Miquel Raynal 2021-01-21  166   * @pclk: System clock
-dd3c52846d5954a Miquel Raynal 2021-01-21  167   * @fclk: Fast clock (bus)
-dd3c52846d5954a Miquel Raynal 2021-01-21  168   * @sclk: Slow clock (other events)
-dd3c52846d5954a Miquel Raynal 2021-01-21  169   * @xferqueue: Transfer queue structure
-dd3c52846d5954a Miquel Raynal 2021-01-21  170   * @xferqueue.list: List member
-dd3c52846d5954a Miquel Raynal 2021-01-21  171   * @xferqueue.cur: Current ongoing transfer
-dd3c52846d5954a Miquel Raynal 2021-01-21  172   * @xferqueue.lock: Queue lock
-dd3c52846d5954a Miquel Raynal 2021-01-21  173   * @ibi: IBI structure
-dd3c52846d5954a Miquel Raynal 2021-01-21  174   * @ibi.num_slots: Number of slots available in @ibi.slots
-dd3c52846d5954a Miquel Raynal 2021-01-21  175   * @ibi.slots: Available IBI slots
-dd3c52846d5954a Miquel Raynal 2021-01-21  176   * @ibi.tbq_slot: To be queued IBI slot
-dd3c52846d5954a Miquel Raynal 2021-01-21  177   * @ibi.lock: IBI lock
-dd3c52846d5954a Miquel Raynal 2021-01-21  178   */
-dd3c52846d5954a Miquel Raynal 2021-01-21  179  struct svc_i3c_master {
-dd3c52846d5954a Miquel Raynal 2021-01-21  180  	struct i3c_master_controller base;
-dd3c52846d5954a Miquel Raynal 2021-01-21  181  	struct device *dev;
-dd3c52846d5954a Miquel Raynal 2021-01-21  182  	void __iomem *regs;
-1c5ee2a77b1bacd Clark Wang    2023-05-17  183  	struct svc_i3c_regs_save saved_regs;
-dd3c52846d5954a Miquel Raynal 2021-01-21  184  	u32 free_slots;
-dd3c52846d5954a Miquel Raynal 2021-01-21  185  	u8 addrs[SVC_I3C_MAX_DEVS];
-dd3c52846d5954a Miquel Raynal 2021-01-21  186  	struct i3c_dev_desc *descs[SVC_I3C_MAX_DEVS];
-dd3c52846d5954a Miquel Raynal 2021-01-21  187  	struct work_struct hj_work;
-dd3c52846d5954a Miquel Raynal 2021-01-21  188  	struct work_struct ibi_work;
-dd3c52846d5954a Miquel Raynal 2021-01-21  189  	int irq;
-dd3c52846d5954a Miquel Raynal 2021-01-21  190  	struct clk *pclk;
-dd3c52846d5954a Miquel Raynal 2021-01-21  191  	struct clk *fclk;
-dd3c52846d5954a Miquel Raynal 2021-01-21  192  	struct clk *sclk;
-dd3c52846d5954a Miquel Raynal 2021-01-21  193  	struct {
-dd3c52846d5954a Miquel Raynal 2021-01-21  194  		struct list_head list;
-dd3c52846d5954a Miquel Raynal 2021-01-21  195  		struct svc_i3c_xfer *cur;
-dd3c52846d5954a Miquel Raynal 2021-01-21  196  		/* Prevent races between transfers */
-dd3c52846d5954a Miquel Raynal 2021-01-21  197  		spinlock_t lock;
-dd3c52846d5954a Miquel Raynal 2021-01-21  198  	} xferqueue;
-dd3c52846d5954a Miquel Raynal 2021-01-21  199  	struct {
-dd3c52846d5954a Miquel Raynal 2021-01-21  200  		unsigned int num_slots;
-dd3c52846d5954a Miquel Raynal 2021-01-21  201  		struct i3c_dev_desc **slots;
-dd3c52846d5954a Miquel Raynal 2021-01-21  202  		struct i3c_ibi_slot *tbq_slot;
-dd3c52846d5954a Miquel Raynal 2021-01-21  203  		/* Prevent races within IBI handlers */
-dd3c52846d5954a Miquel Raynal 2021-01-21  204  		spinlock_t lock;
-dd3c52846d5954a Miquel Raynal 2021-01-21  205  	} ibi;
-f32ae0219a47f74 Frank Li      2023-10-16  206  	struct mutex lock;
-dd3c52846d5954a Miquel Raynal 2021-01-21 @207  };
-dd3c52846d5954a Miquel Raynal 2021-01-21  208  
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com
+
+>  arch/x86/include/asm/tdx.h | 26 ++++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+> index a252328734c7..d624aa25aab0 100644
+> --- a/arch/x86/include/asm/tdx.h
+> +++ b/arch/x86/include/asm/tdx.h
+> @@ -24,6 +24,11 @@
+>  #define TDX_SEAMCALL_GP			(TDX_SW_ERROR | X86_TRAP_GP)
+>  #define TDX_SEAMCALL_UD			(TDX_SW_ERROR | X86_TRAP_UD)
+>  
+> +/*
+> + * TDX module SEAMCALL leaf function error codes
+> + */
+> +#define TDX_RND_NO_ENTROPY	0x8000020300000000ULL
+> +
+>  #ifndef __ASSEMBLY__
+>  
+>  /*
+> @@ -82,6 +87,27 @@ u64 __seamcall(u64 fn, struct tdx_module_args *args);
+>  u64 __seamcall_ret(u64 fn, struct tdx_module_args *args);
+>  u64 __seamcall_saved_ret(u64 fn, struct tdx_module_args *args);
+>  
+> +#include <asm/archrandom.h>
+> +
+> +typedef u64 (*sc_func_t)(u64 fn, struct tdx_module_args *args);
+> +
+> +static inline u64 sc_retry(sc_func_t func, u64 fn,
+> +			   struct tdx_module_args *args)
+> +{
+> +	int retry = RDRAND_RETRY_LOOPS;
+> +	u64 ret;
+> +
+> +	do {
+> +		ret = func(fn, args);
+> +	} while (ret == TDX_RND_NO_ENTROPY && --retry);
+> +
+> +	return ret;
+> +}
+> +
+> +#define seamcall(_fn, _args)		sc_retry(__seamcall, (_fn), (_args))
+> +#define seamcall_ret(_fn, _args)	sc_retry(__seamcall_ret, (_fn), (_args))
+> +#define seamcall_saved_ret(_fn, _args)	sc_retry(__seamcall_saved_ret, (_fn), (_args))
+> +
+>  bool platform_tdx_enabled(void);
+>  #else
+>  static inline bool platform_tdx_enabled(void) { return false; }
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
