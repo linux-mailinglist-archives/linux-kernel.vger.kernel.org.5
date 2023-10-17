@@ -2,104 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2CCB7CBCB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 09:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A99027CBCB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 09:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234734AbjJQHrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 03:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57318 "EHLO
+        id S234647AbjJQHs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 03:48:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234669AbjJQHrp (ORCPT
+        with ESMTP id S234416AbjJQHs1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 03:47:45 -0400
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B244F7
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 00:47:38 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4000EE0013;
-        Tue, 17 Oct 2023 07:47:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1697528857;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KM4KLRt+5IjihJQXo+jsfeiMylcvEg8wsmECyvz1s2w=;
-        b=Be89U5XdfZrxV3tdfaRI6U03c0zVST+3R5wj9a+lldE7BTkUeeO2fPdT+64gpFJIXowRHD
-        T9BbPAZEmCc7PcTZWu4XfjiLMRQgFWAgLoiKpEHiUyg55Ua0yEizvxV2VUQIO7DKUYGNaW
-        QvaP7uxzbn+pdBQgkdTfPuMHCmnft29BIyll7fAScoBGGpPdCMnH4aviENb7iuH0pMK5xy
-        jIkZI/5PnHiroxmOhR6NXVNhsOOHwHLezZeJ1UXLUTM3Yl8FI9AvP/Qgf9FTn0Bzfdqp5Q
-        izijN3S57/VAqr7sBA883cQQBImifKC7wtkN8aNOtm/yN/fPZ1lD0aUwEs/EdQ==
-Date:   Tue, 17 Oct 2023 09:47:33 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     dregan@mail.com
-Cc:     bcm-kernel-feedback-list@broadcom.com,
-        linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
-        rafal@milecki.pl, joel.peshkin@broadcom.com,
-        computersforpeace@gmail.com, dan.beygelman@broadcom.com,
-        william.zhang@broadcom.com, frieder.schrempf@kontron.de,
-        linux-kernel@vger.kernel.org, vigneshr@ti.com, richard@nod.at,
-        bbrezillon@kernel.org, kdasu.kdev@gmail.com,
-        JaimeLiao <jaimeliao.tw@gmail.com>,
-        Arseniy Krasnov <AVKrasnov@sberdevices.ru>,
-        Adam Borowski <kilobyte@angband.pl>
-Subject: Re: [PATCH v2 1/4] mtd: rawnand: Add destructive operation
-Message-ID: <20231017094733.14181153@xps-13>
-In-Reply-To: <trinity-cbcf4faa-c0bd-4cac-a435-2ada79887cda-1697523547686@3c-app-mailcom-lxa03>
-References: <trinity-d4b16b4a-e223-4daf-8a3e-4aaa7fc6c9cb-1697071235519@3c-app-mailcom-lxa05>
-        <20231012090638.1e093fe6@xps-13>
-        <trinity-902f8ae6-26e3-484b-ba2d-00946a63333a-1697132171458@3c-app-mailcom-lxa13>
-        <20231013104809.15821b9f@xps-13>
-        <trinity-cbcf4faa-c0bd-4cac-a435-2ada79887cda-1697523547686@3c-app-mailcom-lxa03>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Tue, 17 Oct 2023 03:48:27 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F244893;
+        Tue, 17 Oct 2023 00:48:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF21AC433C8;
+        Tue, 17 Oct 2023 07:48:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697528905;
+        bh=l5ZXyU0FFeiZz3s3YxfAjMelGvfe4yY/Uqvl5whdjJU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gSnzO381cZbIdNu+uowcvK2rffi44JvZEphJ5p4qGAZxVj4wDWtLSytZBW5CdPK0M
+         wIzJlzA0P36K/wtZZwQCU20t0+Y8f58wgCeZ+X8blug445WKmL9DYDUTFTq9rf+wV/
+         LWSNcVe9JopgvP8WzmTRvPY/DTXA+Vi5IpUVSfNQNV5b7Nzd9XU+6zA8Id7hB7yppW
+         GN8wH+tzOuLMmumbEcfo5i8Fiux4i2tywLmLUCdsxnLY688OUP+uw8WDSQeuck8UzN
+         sTkoRDsAu/fCMpoAa38l03sW6X9qttYn18Rs/uKogvTSunLkK68cLYDxDTPj/scVq+
+         CJjxZESzBg69Q==
+Date:   Tue, 17 Oct 2023 10:48:21 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Ajay Sharma <sharmaajay@microsoft.com>
+Cc:     "sharmaajay@linuxonhyperv.com" <sharmaajay@linuxonhyperv.com>,
+        Long Li <longli@microsoft.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [EXTERNAL] Re: [Patch v5 0/5] RDMA/mana_ib
+Message-ID: <20231017074821.GB5392@unreal>
+References: <1694105559-9465-1-git-send-email-sharmaajay@linuxonhyperv.com>
+ <20230911123231.GB19469@unreal>
+ <BY5PR21MB1394F62601FEFE734181FFF7D6F2A@BY5PR21MB1394.namprd21.prod.outlook.com>
+ <20230918082903.GC13757@unreal>
+ <MN0PR21MB3606BE5B57AF1FEE85915F3AD6D7A@MN0PR21MB3606.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <MN0PR21MB3606BE5B57AF1FEE85915F3AD6D7A@MN0PR21MB3606.namprd21.prod.outlook.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+On Mon, Oct 16, 2023 at 10:15:18PM +0000, Ajay Sharma wrote:
+> I have sent v7 patch series with the space removed 
+> 
+> > -----Original Message-----
+> > From: Leon Romanovsky <leon@kernel.org>
+> > Sent: Monday, September 18, 2023 1:29 AM
+> > To: Ajay Sharma <sharmaajay@microsoft.com>
+> > Cc: sharmaajay@linuxonhyperv.com; Long Li <longli@microsoft.com>; Jason
+> > Gunthorpe <jgg@ziepe.ca>; Dexuan Cui <decui@microsoft.com>; Wei Liu
+> > <wei.liu@kernel.org>; David S. Miller <davem@davemloft.net>; Eric Dumazet
+> > <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>; Paolo Abeni
+> > <pabeni@redhat.com>; linux-rdma@vger.kernel.org; linux-
+> > hyperv@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.org
+> > Subject: Re: [EXTERNAL] Re: [Patch v5 0/5] RDMA/mana_ib
+> > 
+> > On Mon, Sep 11, 2023 at 06:57:21PM +0000, Ajay Sharma wrote:
+> > > I have updated the last patch to use xarray, will post the update patch. We
+> > currently use aux bus for ib device. Gd_register_device is firmware specific. All
+> > the patches use RDMA/mana_ib format which is aligned with
+> > drivers/infiniband/hw/mana/ .
+> > 
+> > ➜  kernel git:(wip/leon-for-rc) git l --no-merges drivers/infiniband/hw/mana/
+> > 2145328515c8 RDMA/mana_ib: Use v2 version of cfg_rx_steer_req to enable
+> > RX coalescing
+> > 89d42b8c85b4 RDMA/mana_ib: Fix a bug when the PF indicates more entries
+> > for registering memory on first packet
+> > 563ca0e9eab8 RDMA/mana_ib: Prevent array underflow in
+> > mana_ib_create_qp_raw()
+> > 3574cfdca285 RDMA/mana: Remove redefinition of basic u64 type
+> > 0266a177631d RDMA/mana_ib: Add a driver for Microsoft Azure Network
+> > Adapter
+> > 
+> > It is different format from presented here. You added extra space before ":"
+> > and there is double space in one of the titles.
+> > 
+> I have removed the space
+> 
+> > Regarding aux, I see it, but what confuses me is proliferation of terms and
+> > various calls: device, client, adapter. My expectation is to see more uniform
+> > methodology where IB is represented as device.
+> > 
+> 
+> The adapter is a software construct. It is used as a container for resources. 
+> Client is used to distinguish between eth and ib.
 
-dregan@mail.com wrote on Tue, 17 Oct 2023 08:19:07 +0200:
+Do you have multiple "adapters" in one ib/eth device?
+If yes, at least for IB, it will be very unexpected to see.
 
-> Hi Miqu=C3=A8l,
->=20
-> ...
->=20
-> > > > Please use Boris' kernel.org e-mail for the authorship and SoB   =20
-> > >  =20
->=20
-> ...
->=20
-> >=20
-> > It's in .mailmap: bbrezillon@kernel.org
-> >  =20
-> > > > > Signed-off-by: David Regan <dregan@mail.com>   =20
-> > >=20
-> > > Do I still keep this SOB or should I change it to something else? =20
-> >=20
-> > You need both SoB: his then yours.
-> >=20
-> > Thanks,
-> > Miqu=C3=A8l
-> >  =20
->=20
-> Thank you very much for the information!
->=20
-> I believe I have the git sendmail issues resolved, and I may be sending
-> the next patch series via a Broadcom email. In this case should I send
-> the series as v3 even though it may not link to my previous messages?
-> (Although hopefully the messages will stay together as a group.)
+Why do you have client and device when they are basically the same objects?
 
-Yes, please.
+> Please note that these are terms used for different purposes on the management side.
 
-Thanks,
-Miqu=C3=A8l
+We are discussing RDMA side of this series.
+
+Thanks
+
+> 
+> > Thanks
+> > 
+> > >
+> > > Thanks
+> > >
+> > > > -----Original Message-----
+> > > > From: Leon Romanovsky <leon@kernel.org>
+> > > > Sent: Monday, September 11, 2023 7:33 AM
+> > > > To: sharmaajay@linuxonhyperv.com
+> > > > Cc: Long Li <longli@microsoft.com>; Jason Gunthorpe <jgg@ziepe.ca>;
+> > > > Dexuan Cui <decui@microsoft.com>; Wei Liu <wei.liu@kernel.org>;
+> > > > David S. Miller <davem@davemloft.net>; Eric Dumazet
+> > > > <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>; Paolo Abeni
+> > > > <pabeni@redhat.com>; linux- rdma@vger.kernel.org;
+> > > > linux-hyperv@vger.kernel.org; netdev@vger.kernel.org;
+> > > > linux-kernel@vger.kernel.org; Ajay Sharma <sharmaajay@microsoft.com>
+> > > > Subject: [EXTERNAL] Re: [Patch v5 0/5] RDMA/mana_ib
+> > > >
+> > > > On Thu, Sep 07, 2023 at 09:52:34AM -0700,
+> > > > sharmaajay@linuxonhyperv.com
+> > > > wrote:
+> > > > > From: Ajay Sharma <sharmaajay@microsoft.com>
+> > > > >
+> > > > > Change from v4:
+> > > > > Send qp fatal error event to the context that created the qp. Add
+> > > > > lookup table for qp.
+> > > > >
+> > > > > Ajay Sharma (5):
+> > > > >   RDMA/mana_ib : Rename all mana_ib_dev type variables to mib_dev
+> > > > >   RDMA/mana_ib : Register Mana IB  device with Management SW
+> > > > >   RDMA/mana_ib : Create adapter and Add error eq
+> > > > >   RDMA/mana_ib : Query adapter capabilities
+> > > > >   RDMA/mana_ib : Send event to qp
+> > > >
+> > > > I didn't look very deep into the series and has three very initial comments.
+> > > > 1. Please do git log drivers/infiniband/hw/mana/ and use same format
+> > > > for commit messages.
+> > > > 2. Don't invent your own index-to-qp query mechanism in last patch
+> > > > and use xarray.
+> > > > 3. Once you decided to export mana_gd_register_device, it hinted me
+> > > > that it is time to move to auxbus infrastructure.
+> > > >
+> > > > Thanks
+> > > >
+> > > > >
+> > > > >  drivers/infiniband/hw/mana/cq.c               |  12 +-
+> > > > >  drivers/infiniband/hw/mana/device.c           |  81 +++--
+> > > > >  drivers/infiniband/hw/mana/main.c             | 288 +++++++++++++-----
+> > > > >  drivers/infiniband/hw/mana/mana_ib.h          | 102 ++++++-
+> > > > >  drivers/infiniband/hw/mana/mr.c               |  42 ++-
+> > > > >  drivers/infiniband/hw/mana/qp.c               |  86 +++---
+> > > > >  drivers/infiniband/hw/mana/wq.c               |  21 +-
+> > > > >  .../net/ethernet/microsoft/mana/gdma_main.c   | 152 +++++----
+> > > > >  drivers/net/ethernet/microsoft/mana/mana_en.c |   3 +
+> > > > >  include/net/mana/gdma.h                       |  16 +-
+> > > > >  10 files changed, 545 insertions(+), 258 deletions(-)
+> > > > >
+> > > > > --
+> > > > > 2.25.1
+> > > > >
