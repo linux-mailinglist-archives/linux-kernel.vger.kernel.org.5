@@ -2,190 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7CE97CBD13
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E2C7CBD10
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234622AbjJQIIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 04:08:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47266 "EHLO
+        id S234701AbjJQIHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 04:07:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233857AbjJQIIT (ORCPT
+        with ESMTP id S232134AbjJQIHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 04:08:19 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B54193;
-        Tue, 17 Oct 2023 01:08:18 -0700 (PDT)
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39H84aLv000859;
-        Tue, 17 Oct 2023 08:08:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to; s=pp1;
- bh=QIF7c2z5SMaUpGNE5OZQpDexMR/6W7EPkEtl2ghgegk=;
- b=RS7/o0E2EFCSoBAUIJ96T/hGrG4+CwKXc/9x++q0HF71ABkd3XF/YVzBFBLF5naDxcxZ
- yHGnQ7k0C0WR7YyOYMxadusS0116x2lMJYXGLpszDHxu4krRg2R9l3YFREsQ3IJwLaVO
- C68KVjHE05dDvBYkgtBfqlXrSY7dADGgOlMLZgPu44qn5+4ws4iwATduGVqxbnVm455p
- N5urQ046yM+/6Y794O5orS0Qg97T1A/DdFC3+Nfo2yZNd/nRyeVeVWDQA4JpGWLdFCQn
- LY9uh22SXt0jekJpt9UrHBq8vbkdn7qfEC89A8hAVe+GQB+iLsHgac+CGqUCeOCDeqK2 QQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tspedg8v7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Oct 2023 08:08:06 +0000
-Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39H84u16002302;
-        Tue, 17 Oct 2023 08:07:51 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tspedg771-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Oct 2023 08:07:50 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39H7K9Zx012949;
-        Tue, 17 Oct 2023 08:07:05 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tr5py79kj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Oct 2023 08:07:05 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39H873To24838762
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Oct 2023 08:07:03 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1AA9020043;
-        Tue, 17 Oct 2023 08:07:03 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 156032004B;
-        Tue, 17 Oct 2023 08:07:01 +0000 (GMT)
-Received: from smtpclient.apple (unknown [9.109.214.47])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Tue, 17 Oct 2023 08:07:00 +0000 (GMT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.700.6\))
-Subject: Re: [PATCH v3] perf bench sched pipe: Add -G/--cgroups option
-From:   Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-In-Reply-To: <ZS1Y5PhXhp384ynY@kernel.org>
-Date:   Tue, 17 Oct 2023 13:36:49 +0530
-Cc:     Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <D6B30B31-80DC-4EB0-A111-B92CD99DD75F@linux.vnet.ibm.com>
-References: <20231016044225.1125674-1-namhyung@kernel.org>
- <ZS0D53ckVx356k4o@gmail.com> <ZS1Y5PhXhp384ynY@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>
-X-Mailer: Apple Mail (2.3731.700.6)
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 9ryNQzz0UKdRtBIH4P1Cd3mfN3g9GKnV
-X-Proofpoint-GUID: VBlYgYdGEQE3W6GJc8pBdHnmRMIDlg-y
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-16_13,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- priorityscore=1501 clxscore=1015 adultscore=0 bulkscore=0 impostorscore=0
- phishscore=0 spamscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310170066
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 17 Oct 2023 04:07:09 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66C6393
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 01:07:06 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id F3E5D1FF03;
+        Tue, 17 Oct 2023 08:07:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1697530025; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9/CSsmsk8NkBoaQCYM0w1pxloTpa4pHSwaQeLlLtPko=;
+        b=CqT5/EdL7YAR+axoMfQWnUdoiKNdN90c0ZpgpNpH76qNn7qII3eJEJXQ3n00ogxaGCz/Zt
+        ZkpQ9nt+4YPbQOn3wgtums0J1GAdcX/Mg6omE4nAxPhFU9LQKMlBT1vREtVGXvgI3x6AGy
+        cDKLPU5FwXNYF8Z68w44ta1sFiI+O4A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1697530025;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9/CSsmsk8NkBoaQCYM0w1pxloTpa4pHSwaQeLlLtPko=;
+        b=jo40IeJUnzTOr6HqWPg9kologq4Y/8GuNP4oIe32KM0WMM0LfnJzzSEhbH9mlV4ZvaWeKC
+        RzA/ScHKfbYWPyCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D5A6513597;
+        Tue, 17 Oct 2023 08:07:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id NbpTM6hALmXDQQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Tue, 17 Oct 2023 08:07:04 +0000
+Message-ID: <993173fc-5d03-a715-64a8-d69893dc163c@suse.cz>
+Date:   Tue, 17 Oct 2023 10:07:04 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 1/5] mm/page_owner: Remove free_ts from page_owner output
+Content-Language: en-US
+To:     Audra Mitchell <audra@redhat.com>, linux-mm@kvack.org
+Cc:     raquini@redhat.com, akpm@linux-foundation.org, djakov@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231013190350.579407-1-audra@redhat.com>
+ <20231013190350.579407-2-audra@redhat.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20231013190350.579407-2-audra@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Score: 1.00
+X-Spamd-Result: default: False [1.00 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_SPAM(5.10)[100.00%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         RCPT_COUNT_FIVE(0.00)[6];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/13/23 21:03, Audra Mitchell wrote:
+> When printing page_owner data via the sysfs interface, no free pages will
+> ever be dumped due to the series of checks in read_page_owner():
+> 
+>     /*
+>      * Although we do have the info about past allocation of free
+>      * pages, it's not relevant for current memory usage.
+>      */
+>      if (!test_bit(PAGE_EXT_OWNER_ALLOCATED, &page_ext->flags))
+> 
+> The free_ts values are still used when dump_page_owner() is called, so
+> keeping the field for other use cases but removing them for the typical
+> page_owner case.
+> 
+> Fixes: 866b48526217 ("mm/page_owner: record the timestamp of all pages during free")
+> Signed-off-by: Audra Mitchell <audra@redhat.com>
 
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
-> On 16-Oct-2023, at 9:08 PM, Arnaldo Carvalho de Melo <acme@kernel.org> =
-wrote:
->=20
-> Em Mon, Oct 16, 2023 at 11:35:35AM +0200, Ingo Molnar escreveu:
->>=20
->>=20
->> * Namhyung Kim <namhyung@kernel.org> wrote:
->>=20
->>> + /* try cgroup v2 interface first */
->>> + if (threaded)
->>> + fd =3D openat(cgrp->fd, "cgroup.threads", O_WRONLY);
->>> + else
->>> + fd =3D openat(cgrp->fd, "cgroup.procs", O_WRONLY);
->>> +
->>> + /* try cgroup v1 if failed */
->>> + if (fd < 0)
->>> + fd =3D openat(cgrp->fd, "tasks", O_WRONLY);
->>> +
->>> + if (fd < 0) {
->>> + char mnt[PATH_MAX];
->>> +
->>> + printf("Failed to open cgroup file in %s\n", cgrp->name);
->>> +
->>> + if (cgroupfs_find_mountpoint(mnt, sizeof(mnt), "perf_event") =3D=3D =
-0)
->>> + printf(" Hint: create the cgroup first, like 'mkdir %s/%s'\n",
->>> +        mnt, cgrp->name);
->>=20
->> Ok, this works too I suppose.
->>=20
->> Acked-by: Ingo Molnar <mingo@kernel.org>
->=20
-> I'm not getting that:
->=20
-> [root@five ~]# perf bench sched pipe -l 10000 -G AAA,BBB
-> # Running 'sched/pipe' benchmark:
-> no access to cgroup /sys/fs/cgroup/AAA
-> cannot open sender cgroup: AAA
-> Usage: perf bench sched pipe <options>
->=20
->    -G, --cgroups <SEND,RECV>
->                          Put sender and receivers in given cgroups
-> [root@five ~]#
->=20
-> Its better now as it bails out, but it is not emitting any message =
-that
-> helps with running the test, well, there is that /sys/fs/cgroup/AAA
-> path, lemme try doing a mkdir:
->=20
-> [root@five ~]# perf bench sched pipe -l 10000 -G AAA,BBB
-> # Running 'sched/pipe' benchmark:
-> no access to cgroup /sys/fs/cgroup/BBB
-> cannot open receiver cgroup: BBB
-> Usage: perf bench sched pipe <options>
->=20
->    -G, --cgroups <SEND,RECV>
->                          Put sender and receivers in given cgroups
-> [root@five ~]#
->=20
-> [root@five ~]# perf bench sched pipe -l 10000 -G AAA,BBB
-> # Running 'sched/pipe' benchmark:
-> [root@five ~]#
->=20
-> It seems to be bailing out but doesn't run the test nor emits any
-> warning.
-
-In the =E2=80=9Cparse_two_cgroups=E2=80=9D function itself it checks for =
-:
-
-cgrp_send =3D cgroup__new(p, /*do_open=3D*/true);
-        if (cgrp_send =3D=3D NULL) {
-                fprintf(stderr, "cannot open sender cgroup: %s", p);
-                goto out;
-        }
-
-And we fail here since the cgroup is not created. May be we can add the =
-Hint or warning in here ?
-
-
-Thanks
-Athira
-
->=20
-> I'm using v3. I'll try to debug it a bit.
->=20
-> - Arnaldo
-
+> ---
+>  mm/page_owner.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/page_owner.c b/mm/page_owner.c
+> index 4e2723e1b300..4f13ce7d2452 100644
+> --- a/mm/page_owner.c
+> +++ b/mm/page_owner.c
+> @@ -408,11 +408,11 @@ print_page_owner(char __user *buf, size_t count, unsigned long pfn,
+>  		return -ENOMEM;
+>  
+>  	ret = scnprintf(kbuf, count,
+> -			"Page allocated via order %u, mask %#x(%pGg), pid %d, tgid %d (%s), ts %llu ns, free_ts %llu ns\n",
+> +			"Page allocated via order %u, mask %#x(%pGg), pid %d, tgid %d (%s), ts %llu ns\n",
+>  			page_owner->order, page_owner->gfp_mask,
+>  			&page_owner->gfp_mask, page_owner->pid,
+>  			page_owner->tgid, page_owner->comm,
+> -			page_owner->ts_nsec, page_owner->free_ts_nsec);
+> +			page_owner->ts_nsec);
+>  
+>  	/* Print information relevant to grouping pages by mobility */
+>  	pageblock_mt = get_pageblock_migratetype(page);
 
