@@ -2,134 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 347C57CC902
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 18:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1D267CC905
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 18:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343650AbjJQQlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 12:41:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35336 "EHLO
+        id S1343824AbjJQQl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 12:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233260AbjJQQlo (ORCPT
+        with ESMTP id S1343684AbjJQQl4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 12:41:44 -0400
-Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8694AF0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:41:42 -0700 (PDT)
-Received: by mail-vk1-xa30.google.com with SMTP id 71dfb90a1353d-49dc95be894so1736076e0c.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:41:42 -0700 (PDT)
+        Tue, 17 Oct 2023 12:41:56 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DEC4ED
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:41:52 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-417fc2da919so40862281cf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:41:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697560901; x=1698165701; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a4dXCiXm+nSlYIXlVAe0G7HZWfsMN4hgxzFI7RqAkXQ=;
-        b=sgbSyGDSPx+RQ3Uw9a6/Gg+1hiArsGnPI1U1dm75KvENcmZw88kMkIrTqX8sISvduA
-         u3hl858KyIA0wz3Yie9jMMz5rEMTBMoVzpHewp5AdnTdUpisBS4wlrlv+l7TTuxbZwrq
-         8Or7qkBPsmBnc5Ti4HKBjNn+VONC8+/sB+gr7cV6yS3W2gYj3g/d2WZwU9PhkSxsoN+n
-         IdME21EVQx6LUpkqUggsdbcc2I7je6Wxt86n7kaGDCFviQlcPW/O4t3DEogaukghJXal
-         W2Zdnw9EOBeDPcB64/FADIRDklpNz1WfOkSfcEXHZ6T5XEWtNFL2vBoS1owo7P5snuKf
-         G04g==
+        d=ziepe.ca; s=google; t=1697560911; x=1698165711; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5MsW2Hvp6im1571f/e59oteDAoDCIGSXlLc583DfDLg=;
+        b=aXUXowGdR31c6RzSBezyw3SzeNHEEfEwAICPbwxHAwgrctwoOnCCxB3c9aRyV7UH8A
+         QieCMoksHqKQhemnsohv6JqJrDCx/cbLF1bn7jSv9PCwtjMM/2p85nslS5W4o1V5eQhH
+         BACm/e9q1K4EYZJcKLmDbat9SBJLZj/FO+4DntHiwDqxQ8CTlbM9O4oQDQ932PZjjBnJ
+         bpWjVCrypUeJv0fESFPrl8stdhIDpBukIHScxdH6cAw8E78L9k/C4kWWY1kGv7k5hfrw
+         ZzE8LmwVZ4XKII7qzYZt4bit3HGblHhKK4tZwR3ZvX4XgkHHU4MaHME3kLHQZq9Eghul
+         Fo6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697560901; x=1698165701;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a4dXCiXm+nSlYIXlVAe0G7HZWfsMN4hgxzFI7RqAkXQ=;
-        b=nb59g8M4w3wqCR6fRtKOWmYBkdooBuMccyQV4QvoKFM0uaHOmtPJUo5dsL7s6kGT3N
-         mi93pm3MY2J/0LU1WiCrCp7TrBUzod7I0yD0lckfZIKvMvXzkBYtTi/z81IxrInW8kyU
-         8mcFOscJjI3HukWvtCjNcfOuH9mb1a/CVkVwvM5bXLiOgGradONLePy647JTmkx04FOw
-         VCkopZt8+ZBWk45r4RXI8ITRZksvv00H4K1vaASyca+FLK+Hw2ny3IIVpBQ9FKAqeTTY
-         8dbOlVhxjDia2f+r2xINZfnunaGVwanGN/YinD/PPwMRKg7Rm35nFSYOk+pGPanc8DQy
-         LjMQ==
-X-Gm-Message-State: AOJu0YxsBNWl7FaErmpFhSsZQ1iW8lsXpKMbme9rQzbo4Ds2MY+Dw0AZ
-        VYwtuo14F4ae48rctNyg5l5aL681lIzOit+rMaUvwnGsVxZfvM8DnoPWib/Y0OuaHzlDW2guBwB
-        7UupAzB/K/0TB+gQPRPbLRtz7iWkIEZ0=
-X-Google-Smtp-Source: AGHT+IGrkqBPcTiMViMm0E1Xu6HZCof0/IK+kGAiWbbAIxwaj1pzd+mxP43jrI+npVT1i/85Cm1NXRGfroCTQBWMVMc=
-X-Received: by 2002:a1f:a28b:0:b0:49d:9916:5740 with SMTP id
- l133-20020a1fa28b000000b0049d99165740mr2464736vke.9.1697560901500; Tue, 17
- Oct 2023 09:41:41 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697560911; x=1698165711;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5MsW2Hvp6im1571f/e59oteDAoDCIGSXlLc583DfDLg=;
+        b=Vsy2aU9lk2WbKn4UcG4ylwz1ELnZslkl/jur0VR3pAWchpOJurniduuTmkAnB0//TF
+         JMbQFIws8ZXuMNWPdcHI5Mah0BJCTX0QFVGifuAD7bzhvZ2lsdkf6WRgagoX+AAYzHHt
+         7oNGKQMZOcuAyNnwk5VTUfNIaA3AjUA59DwixOtl522jJD7PAddUaBQL30HnkFQ1AeFe
+         SEXdtkisFT0eRSBdcovGF5HbkuIswBXmkvfj3jqYnV9OkXJdIvO0CC4q2TJwnK0qu72u
+         CwxLeP7nkGz80xmy4JB/Od4k7//CVooulbDIhW17oHqXFKwRgg10E6pAiUBreoDGAtr4
+         Arcg==
+X-Gm-Message-State: AOJu0YzQD0aZcBQpPWQGUuqGBasnzNNr7WqyZizH1pY0/cOUpF7y32Tw
+        PPud8fXNfifj9ufNU0EqSHsqMw==
+X-Google-Smtp-Source: AGHT+IE1dQmP4ebFkaXpsk8hiVNKIl6iWdx3W7/Lrk/p4bB7BLs964FA8Bic7g2UaJhXeTkXeavVfw==
+X-Received: by 2002:a05:622a:506:b0:410:9111:4a0b with SMTP id l6-20020a05622a050600b0041091114a0bmr3294519qtx.13.1697560911646;
+        Tue, 17 Oct 2023 09:41:51 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
+        by smtp.gmail.com with ESMTPSA id y12-20020a05622a120c00b004196a813639sm756907qtx.17.2023.10.17.09.41.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Oct 2023 09:41:51 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qsn8g-002sLi-HJ;
+        Tue, 17 Oct 2023 13:41:50 -0300
+Date:   Tue, 17 Oct 2023 13:41:50 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Tina Zhang <tina.zhang@intel.com>
+Cc:     iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Michael Shavit <mshavit@google.com>,
+        Vasant Hegde <vasant.hegde@amd.com>
+Subject: Re: [PATCH v8 0/5] Share sva domains with all devices bound to a mm
+Message-ID: <20231017164150.GF282036@ziepe.ca>
+References: <20231017004802.109618-1-tina.zhang@intel.com>
 MIME-Version: 1.0
-References: <20231017162800.24080-1-larysa.zaremba@intel.com>
-In-Reply-To: <20231017162800.24080-1-larysa.zaremba@intel.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 17 Oct 2023 09:41:30 -0700
-Message-ID: <CAKH8qBvrAQKhd=J+5HzVzrjmexk6ENwFjyGyxGV6e_9sRQg7Zw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: add options and frags to xdp_hw_metadata
-To:     Larysa Zaremba <larysa.zaremba@intel.com>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-ccpol: medium
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231017004802.109618-1-tina.zhang@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 9:35=E2=80=AFAM Larysa Zaremba <larysa.zaremba@inte=
-l.com> wrote:
->
-> This is a follow-up to the commit 9b2b86332a9b ("bpf: Allow to use kfunc
-> XDP hints and frags together").
->
-> The are some possible implementations problems that may arise when
-> providing metadata specifically for multi-buffer packets, therefore there
-> must be a possibility to test such option separately.
->
-> Add an option to use multi-buffer AF_XDP xdp_hw_metadata and mark used XD=
-P
-> program as capable to use frags.
->
-> As for now, xdp_hw_metadata accepts no options, so add simple option
-> parsing logic and a help message.
->
-> For quick reference, also add an ingress packet generation command to the
-> help message. The command comes from [0].
->
-> Example of output for multi-buffer packet:
->
-> xsk_ring_cons__peek: 1
-> 0xead018: rx_desc[15]->addr=3D10000000000f000 addr=3Df100 comp_addr=3Df00=
-0
-> rx_hash: 0x5789FCBB with RSS type:0x29
-> rx_timestamp:  1696856851535324697 (sec:1696856851.5353)
-> XDP RX-time:   1696856843158256391 (sec:1696856843.1583)
->         delta sec:-8.3771 (-8377068.306 usec)
-> AF_XDP time:   1696856843158413078 (sec:1696856843.1584)
->         delta sec:0.0002 (156.687 usec)
-> 0xead018: complete idx=3D23 addr=3Df000
-> xsk_ring_cons__peek: 1
-> 0xead018: rx_desc[16]->addr=3D100000000008000 addr=3D8100 comp_addr=3D800=
-0
-> 0xead018: complete idx=3D24 addr=3D8000
-> xsk_ring_cons__peek: 1
-> 0xead018: rx_desc[17]->addr=3D100000000009000 addr=3D9100 comp_addr=3D900=
-0 EoP
-> 0xead018: complete idx=3D25 addr=3D9000
->
-> Metadata is printed for the first packet only.
->
-> [0] https://lore.kernel.org/all/20230119221536.3349901-18-sdf@google.com/
->
-> Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
-> ---
-> V1 -> V2: drop gen_socket_config(), remove extra spaces in help message
+On Tue, Oct 17, 2023 at 08:47:57AM +0800, Tina Zhang wrote:
+> This series is to share sva(shared virtual addressing) domains with all
+> devices bound to one mm.
+> 
+> Problem
+> -------
+> In the current iommu core code, sva domain is allocated per IOMMU group,
+> when device driver is binding a process address space to a device (which is
+> handled in iommu_sva_bind_device()). If one than more device is bound to
+> the same process address space, there must be more than one sva domain
+> instance, with each device having one. In other words, the sva domain
+> doesn't share between those devices bound to the same process address
+> space, and that leads to two problems:
+> 1) device driver has to duplicate sva domains with enqcmd, as those sva
+> domains have the same PASID and are relevant to one virtual address space.
+> This makes the sva domain handling complex in device drivers.
+> 2) IOMMU driver cannot get sufficient info of the IOMMUs that have
+> devices behind them bound to the same virtual address space, when handling
+> mmu_notifier_ops callbacks. As a result, IOMMU IOTLB invalidation is
+> performed per device instead of per IOMMU, and that may lead to
+> superfluous IOTLB invalidation issue, especially in a virtualization
+> environment where all devices may be behind one virtual IOMMU.
+> 
+> Solution
+> --------
+> This patch-set tries to fix those two problems by allowing sharing sva
+> domains with all devices bound to a mm. To achieve this, a new structure
+> pointer is introduced to mm to replace the old PASID field, which can keep
+> the info of PASID as well as the corresponding shared sva domains.
+> Besides, function iommu_sva_bind_device() is updated to ensure a new sva
+> domain can only be allocated when the old ones cannot work for the IOMMU.
+> With these changes, a device driver can expect one sva domain could work
+> for per PASID instance(e.g., enqcmd PASID instance), and therefore may get
+> rid of handling sva domain duplication. Besides, IOMMU driver (e.g., intel
+> vt-d driver) can get sufficient info (e.g., the info of the IOMMUs having
+> their devices bound to one virtual address space) when handling
+> mmu_notifier_ops callbacks, to remove the redundant IOTLB invalidations.
+> 
+> Arguably there shouldn't be more than one sva_domain with the same PASID,
+> and in any sane configuration there should be only 1 type of IOMMU driver
+> that needs only 1 SVA domain. However, in reality, IOMMUs on one platform
+> may not be identical to each other. Thus, attaching a sva domain that has
+> been successfully bound to device A behind a IOMMU A, to device B behind
+> IOMMU B may get failed due to the difference between IOMMU A and IOMMU
+> B. In this case, a new sva domain with the same PASID needs to be
+> allocated to work with IOMMU B. That's why we need a list to keep sva
+> domains of one PASID. For the platform where IOMMUs are compatible to each
+> other, there should be one sva domain in the list.
+> 
+> v8:
+>  - CC more people
+>  - CC iommu@lists.linux.dev mailing list.
+>    When sending version 7, some issue happened in my CC list and that caused
+>    version 7 wasn't sent to iommu@lists.linux.dev.
+>  - Rebase to v6.6-rc6 and make a few format changes.
 
-Acked-by: Stanislav Fomichev <sdf@google.com>
+You should based it on Joerg's tree so he can take it without
+conflcits.
 
-Thanks!
+The conflicts are trivial though (Take Michael's version and switch
+mm->pasid with mm_get_enqcmd_pasid(mm))
+
+It looks fine, please lets get it in this cycle, the ARM and AMD SVA
+series depend on it.
+
+Jason
