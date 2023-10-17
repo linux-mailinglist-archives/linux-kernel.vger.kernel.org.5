@@ -2,71 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9022E7CB7B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 02:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E907CB7B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 02:57:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233859AbjJQA6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 20:58:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53890 "EHLO
+        id S234223AbjJQA5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 20:57:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233956AbjJQA6L (ORCPT
+        with ESMTP id S233590AbjJQA5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 20:58:11 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC119D9
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 17:58:09 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9ae2cc4d17eso833939566b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 17:58:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697504288; x=1698109088; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XopfoIaD0vICDU6P6tysbL85r4xFf9d1dB0gt4rGljE=;
-        b=4yVR4vj4EMDAwF8jWD9VkEwe+OMXu08ZpVceSTlNMPvJT2y0hwlJ6MkQdWiMyJe3ak
-         W7xiV2s8OjgqCdVwA0muL1FFSAr1ZcS+a2IN/btLdehr2tOAZCJmj8c9XQL3TjA/3b4f
-         rYkLXA7wX5CqH4l2enYfhwn1WwCteUU0MD/E8PV2RrHiKgHeKauBittGltJ8TwNTOSQw
-         BkWJJvycZLImEDgXNJcGzH6bHGzGRIS1LkLluh33fRclU7yAla+2EbNE61dherrkwBtz
-         L6DtaI+DBZaIm3P7dmZ7u5Fo3BIruxBclXc45wtkGp215O/xsImx9tDMm4tH5eKS3V5F
-         Q1FQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697504288; x=1698109088;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XopfoIaD0vICDU6P6tysbL85r4xFf9d1dB0gt4rGljE=;
-        b=AlMbHE10hodTmvGRctRUCh6Htd2H4w3WWkyDJKkXHDn2sygK1pLzlAZgFPO5XZlAsn
-         nYvnjliaxWFrRhJ6Yhw+/VyWudS1X8tTK+vVO+69jA11n9tIWwx2HI1BURdMKsqPn+bh
-         5UQRNdJOLsFuWtzzaq8wvqoGVkF9/venZY8+HrVyJ06I5BoueJ5paLik1oDY2NctDe1y
-         iEu7Tk5DfjWtsYWeBwPq9lw6/vjSKDhOalGFUeYI8MqvPAjfxaB4aoMx23zkRiYMUjAv
-         8K2irozlWH76To9ng2XLUH5cQ8he5I3ykvfDnTMwpBMmDoY+AcV3WZNQh2vyJIVVaDHj
-         x8SQ==
-X-Gm-Message-State: AOJu0YwXG+48QDbUG1skcy7D559P49btFPNlFIh+wmKbBO/SGwEbn3Gl
-        QbtltnTsfCc6zaqJf70c6quyj7ZDEqI5qic/xpqz/w==
-X-Google-Smtp-Source: AGHT+IFK1M6KpqfG7RQqhCU3ImlGX/ViDMUnVCHADn/RkIcTD7fh3M3Q+wiR9AVlEOf9vxfvlyzeJkQ4Rt7sWmp6n2E=
-X-Received: by 2002:a17:907:2cc4:b0:9bd:cd8b:6253 with SMTP id
- hg4-20020a1709072cc400b009bdcd8b6253mr437887ejc.33.1697504288035; Mon, 16 Oct
- 2023 17:58:08 -0700 (PDT)
+        Mon, 16 Oct 2023 20:57:49 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40DA292
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 17:57:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1663C433C7;
+        Tue, 17 Oct 2023 00:57:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697504267;
+        bh=JV3a9WavpKRxzuKlWmqQJg+YqvaB3sDwZIIEHKP8u0c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZUUuzPit1KoxCtDPpasaR7GJ1ViDLCByCip7UH8Qe/tim4SLVGcz09pYkUWe0bHGk
+         TD4f2G9LympQs5T5ZYbV3MrpuqAkzkg0VGYKO2LqKqKZFjirbcUJL/mNhCNgh5ovIj
+         ylVntVcMw63UfOMo9wLSGg9S5jmYjkf6+x4Celobo94t+VneVjrfCjjdrG/UY8y6aV
+         JZdwBTVvMSiFXYHsjQ6YmpT3SMyXM90XRfcLqJXK/wQavkUsqeuLX9iXc/qGODnDuF
+         wJ7Wptu6UXM9nhoClw7IiIIQuvE6IVEZS3fSoWwRkr5n2dMJyBWdn+5wTIAgfPM05R
+         ZeWj+VSzwEdXw==
+Date:   Mon, 16 Oct 2023 17:57:47 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     cheng.lin130@zte.com.cn
+Cc:     brauner@kernel.org, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        david@fromorbit.com, hch@infradead.org, jiang.yong5@zte.com.cn,
+        wang.liang82@zte.com.cn, liu.dong3@zte.com.cn
+Subject: Re: [RFC PATCH] fs: introduce check for drop/inc_nlink
+Message-ID: <20231017005747.GB11424@frogsfrogsfrogs>
+References: <20231013-tyrannisieren-umfassen-0047ab6279aa@brauner>
+ <202310131740571821517@zte.com.cn>
 MIME-Version: 1.0
-References: <20231017003519.1426574-1-nphamcs@gmail.com>
-In-Reply-To: <20231017003519.1426574-1-nphamcs@gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Mon, 16 Oct 2023 17:57:31 -0700
-Message-ID: <CAJD7tka6XRyzYndRNEFZmi0Zj4DD2KnVzt=vMGhfF4iN2B4VKw@mail.gmail.com>
-Subject: Re: [PATCH 0/2] minimize swapping on zswap store failure
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
-        cerasuolodomenico@gmail.com, sjenning@redhat.com,
-        ddstreet@ieee.org, vitaly.wool@konsulko.com, hughd@google.com,
-        corbet@lwn.net, konrad.wilk@oracle.com, senozhatsky@chromium.org,
-        rppt@kernel.org, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, david@ixit.cz
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202310131740571821517@zte.com.cn>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,81 +52,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 5:35=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrote=
-:
->
-> Currently, when a zswap store attempt fails, the page is immediately
-> swapped out. This could happen for a variety of reasons. For instance,
-> the compression algorithm could fail (such as when the data is not
-> compressible), or the backend allocator might not be able to find a
-> suitable slot for the compressed page. If these pages are needed
-> later on, users will incur IOs from swapins.
->
-> This issue prevents the adoption of zswap for potential users who
-> cannot tolerate the latency associated with swapping. In many cases,
-> these IOs are avoidable if we just keep in memory the pages that zswap
-> fail to store.
->
-> This patch series add two new features for zswap that will alleviate
-> the risk of swapping:
->
-> a) When a store attempt fail, keep the page untouched in memory
-> instead of swapping it out.
+On Fri, Oct 13, 2023 at 05:40:57PM +0800, cheng.lin130@zte.com.cn wrote:
+> > On Fri, Oct 13, 2023 at 03:27:30PM +0800, cheng.lin130@zte.com.cn wrote:
+> > > From: Cheng Lin <cheng.lin130@zte.com.cn>
+> > >
+> > > Avoid inode nlink overflow or underflow.
+> > >
+> > > Signed-off-by: Cheng Lin <cheng.lin130@zte.com.cn>
+> > > ---
+> > I'm very confused. There's no explanation why that's needed. As it
+> > stands it's not possible to provide a useful review.
+> > I'm not saying it's wrong. I just don't understand why and even if this
+> > should please show up in the commit message.
+> In an xfs issue, there was an nlink underflow of a directory inode. There
+> is a key information in the kernel messages, that is the WARN_ON from
+> drop_nlink(). However, VFS did not prevent the underflow. I'm not sure
+> if this behavior is inadvertent or specifically designed. As an abnormal
+> situation, perhaps prohibiting nlink overflow or underflow is a better way
+> to handle it.
+> Request for your comment.
 
-What about writeback when the zswap limit is hit? I understand the
-problem, but I am wondering if this is the correct way of fixing it.
-We really need to make zswap work without a backing swapfile, which I
-think is the correct way to fix all these problems. I was working on
-that, but unfortunately I had to pivot to something else before I had
-something that was working.
+I was trying to steer you towards modifying vfs_rmdir and vfs_unlink to
+check that i_nlink of the files involved aren't somehow already zero
+and returning -EFSCORRUPTED if they are.  Not messing around with
+drop_nlink.
 
-At Google, we have "ghost" swapfiles that we use just to use zswap
-without a swapfile. They are sparse files, and we have internal kernel
-patches to flag them and never try to actually write to them.
-
-I am not sure how many bandaids we can afford before doing the right
-thing. I understand it's a much larger surgery, perhaps there is a way
-to get a short-term fix that is also a step towards the final state we
-want to reach instead?
-
->
-> b) If the store attempt fails at the compression step, allow the page
-> to be stored in its uncompressed form in the zswap pool. This maintains
-> the LRU ordering of pages, which will be helpful for accurate
-> memory reclaim (zswap writeback in particular).
-
-This is dangerous. Johannes and I discussed this before. This means
-that reclaim can end up allocating more memory instead of freeing.
-Allocations made in the reclaim path are made under the assumption
-that we will eventually free memory. In this case, we won't. In the
-worst case scenario, reclaim can leave the system/memcg in a worse
-state than before it started.
-
-Perhaps there is a way we can do this without allocating a zswap entry?
-
-I thought before about having a special list_head that allows us to
-use the lower bits of the pointers as markers, similar to the xarray.
-The markers can be used to place different objects on the same list.
-We can have a list that is a mixture of struct page and struct
-zswap_entry. I never pursued this idea, and I am sure someone will
-scream at me for suggesting it. Maybe there is a less convoluted way
-to keep the LRU ordering intact without allocating memory on the
-reclaim path.
-
->
-> These features could be enabled independently via two new zswap module
-> parameters.
->
-> Nhat Pham (2):
->   swap: allows swap bypassing on zswap store failure
->   zswap: store uncompressed pages when compression algorithm fails
->
->  Documentation/admin-guide/mm/zswap.rst | 16 +++++++
->  include/linux/zswap.h                  |  9 ++++
->  mm/page_io.c                           |  6 +++
->  mm/shmem.c                             |  8 +++-
->  mm/zswap.c                             | 64 +++++++++++++++++++++++---
->  5 files changed, 95 insertions(+), 8 deletions(-)
->
-> --
-> 2.34.1
+--D
