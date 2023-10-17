@@ -2,107 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A777CC7D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A14DF7CC7E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343683AbjJQPrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 11:47:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49170 "EHLO
+        id S1344123AbjJQPtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 11:49:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235133AbjJQPqu (ORCPT
+        with ESMTP id S1343939AbjJQPtO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 11:46:50 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E592F13E
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 08:46:48 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-7a66555061eso4346939f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 08:46:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1697557608; x=1698162408; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qifLUWrkmypuE1HSNNdyFzpD4fELvix1NB9KRDxZL6k=;
-        b=K2yfEisqlKZqRVCJlCswRZR7ZE34IYOmxwd2QVY71uccQEJomx59oVxDDvMC57KEQb
-         aN2noaz0bVQEOiLrXr2PAbCwSlqoPOpu7jxnXmuNEQfbSZ1lJf+sh1A7B7vMrM6TT0iN
-         voMHn4nQw5YpOrun58BVrnQ24SmYg3aymmboE=
+        Tue, 17 Oct 2023 11:49:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B6595
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 08:48:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697557705;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rakr0vS7xpMkHkymSTKEpL4VGLpPuEArnF01cq9l1Gs=;
+        b=CWtCpBfz1iYnlPLRz6kUw2T1f8VbOYNa9dG/bS7eIkcL4PkQBSuqWt+SXxyKy7tvYIsxFo
+        ptK5tGYgUTnIwT0qP1Hx1KeR7PewhtUktH8BiCXhWxxzeOpZlK+RzNWJ7dQxr+7Yz2Gkq3
+        kyLqom1tpbk+NBmIuOm0KJbUJkZFU88=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-361-wiN8VAqkNMWL-7DbGn7Q_w-1; Tue, 17 Oct 2023 11:48:16 -0400
+X-MC-Unique: wiN8VAqkNMWL-7DbGn7Q_w-1
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3b2e2487c6bso552106b6e.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 08:48:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697557608; x=1698162408;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qifLUWrkmypuE1HSNNdyFzpD4fELvix1NB9KRDxZL6k=;
-        b=K95ccu5g/PcURwWCa9g763prdN7MhbgGJ01ls2zwL/Ps41ga6tfLta7tncdokadH0f
-         aAbB5h36ReeT9CubngScGA3xntot8Mrc7uDHMB6CBARUK4C7+lUFTChduNKgERbvv+2f
-         ldVNmvp3N7XhysuRqsWWFG8liHWTNE8HzmrkKAP5dTNWfxhTtuZybJ8s2OS/NnW0ayDM
-         61JDPqSz7HhE+p3FQT4y7FZmmRszAV9slrsaeE/WMJu/JYBr0EjhdMZtVLKaZCS2eCT4
-         nw/HQP7V2xPi9SS3LH+7Lk+HNH2+HKi+vS2MiaT/isJJ37PQE6CQHiz33G1fGpaW4B6N
-         ypJg==
-X-Gm-Message-State: AOJu0YxaJF+78EDT+9z82ifGIZeo0KtmdetQ1+hNkNqefXYihTNOiHVL
-        hTP3wBrCaKAUsKKra9tkMPoUlQ==
-X-Google-Smtp-Source: AGHT+IHgKOfjvzKSAB0scid4I1mm3aq4oFWhBwPqa9mWSsIQTAzX4p9v9j6dSadUHlBM2ou8xWXtnw==
-X-Received: by 2002:a05:6602:1513:b0:79f:a8c2:290d with SMTP id g19-20020a056602151300b0079fa8c2290dmr3348129iow.0.1697557608211;
-        Tue, 17 Oct 2023 08:46:48 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id x22-20020a056638249600b0042acf389acesm556725jat.71.2023.10.17.08.46.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Oct 2023 08:46:47 -0700 (PDT)
-Message-ID: <2a96e3a8-48a5-46ae-9a0c-b5f2def0a257@linuxfoundation.org>
-Date:   Tue, 17 Oct 2023 09:46:47 -0600
+        d=1e100.net; s=20230601; t=1697557696; x=1698162496;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rakr0vS7xpMkHkymSTKEpL4VGLpPuEArnF01cq9l1Gs=;
+        b=NL32SQLRlMD//1+F79Dzy32sPJWAup+kBZdsXRr8Rz1+FhVRDkV8XlgGYHuDG4lA4i
+         98NNsNNxi0oop1NB4Kyqrr52Ut9VOkigaUWax+caiUk1dA/HEPiy8qU04MZSgJ91J5Bn
+         3KNNFM3c39IzHAh7SLiJCwaiFcIHbWFDi+GoLcxMGsd2bwEj6ouDBxafPsww6uaJBSr7
+         +cP0sst0YFpBvNTfvyCcVR5bVlnHZipVtEkK/rhbBwm5Xqbl00OV57dqNedrJLGW1Cym
+         QPdfw40uvM5SkDE/0ZhLebIs/ov0j/gG+amwgaXNQnhNis2i2LY2w0Fs4r0/cESc/r8i
+         LlSA==
+X-Gm-Message-State: AOJu0Yz6McfSmgWFaLLtLbTjcMzvLZOByNgVaUKc/r6efEIrhensCEhX
+        jZa0JGf07wpeIhppyhX1Wc8XDiRYrYcoudxyKPvawuaz20lY1ipADzBchyAHHhVCtW56DsPDxHf
+        PsTgLF+wXdJiRNH6oBn4S4Olj
+X-Received: by 2002:a05:6808:178e:b0:3af:9851:4d32 with SMTP id bg14-20020a056808178e00b003af98514d32mr3308987oib.7.1697557696068;
+        Tue, 17 Oct 2023 08:48:16 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHj5Zx5Gy8DmigS+K6YA2nZSBjYa71w34REhv1lOtWsOhC2mMlp35j9iNTJ82axlaS6tHkBcQ==
+X-Received: by 2002:a05:6808:178e:b0:3af:9851:4d32 with SMTP id bg14-20020a056808178e00b003af98514d32mr3308965oib.7.1697557695835;
+        Tue, 17 Oct 2023 08:48:15 -0700 (PDT)
+Received: from rh (p200300c93f0047001ec25c15da4a4a7b.dip0.t-ipconnect.de. [2003:c9:3f00:4700:1ec2:5c15:da4a:4a7b])
+        by smtp.gmail.com with ESMTPSA id x11-20020a0cfe0b000000b0065b1f90ff8csm653839qvr.40.2023.10.17.08.48.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Oct 2023 08:48:15 -0700 (PDT)
+Date:   Tue, 17 Oct 2023 17:48:11 +0200 (CEST)
+From:   Sebastian Ott <sebott@redhat.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+cc:     Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v7 10/12] KVM: selftests: aarch64: Introduce vpmu_counter_access
+ test
+In-Reply-To: <20231009230858.3444834-11-rananta@google.com>
+Message-ID: <e0fdb0ea-2f08-6343-1765-afe32510f3a7@redhat.com>
+References: <20231009230858.3444834-1-rananta@google.com> <20231009230858.3444834-11-rananta@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] selftests/efivarfs: create-read: fix a resource leak
-Content-Language: en-US
-To:     zhujun2 <zhujun2@cmss.chinamobile.com>, shuah@kernel.org
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20231017023335.7874-1-zhujun2@cmss.chinamobile.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20231017023335.7874-1-zhujun2@cmss.chinamobile.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16/23 20:33, zhujun2 wrote:
-> The opened file should be closed in main(), otherwise resource
-> leak will occur
-> 
-
-Did you find this by code reading or by any other means. Please
-add how you found the problem to the change log.
-
-> Signed-off-by: zhujun2 <zhujun2@cmss.chinamobile.com>
-> ---
->   tools/testing/selftests/efivarfs/create-read.c | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/efivarfs/create-read.c b/tools/testing/selftests/efivarfs/create-read.c
-> index 9674a1939..6812104a5 100644
-> --- a/tools/testing/selftests/efivarfs/create-read.c
-> +++ b/tools/testing/selftests/efivarfs/create-read.c
-> @@ -32,8 +32,11 @@ int main(int argc, char **argv)
->   	rc = read(fd, buf, sizeof(buf));
->   	if (rc != 0) {
->   		fprintf(stderr, "Reading a new var should return EOF\n");
-> +		close(fd);
->   		return EXIT_FAILURE;
->   	}
->   
-> +	close(fd);
+On Mon, 9 Oct 2023, Raghavendra Rao Ananta wrote:
+> +static void guest_code(uint64_t expected_pmcr_n)
+> +{
+> +	uint64_t pmcr, pmcr_n;
 > +
+> +	__GUEST_ASSERT(expected_pmcr_n <= ARMV8_PMU_MAX_GENERAL_COUNTERS,
+> +			"Expected PMCR.N: 0x%lx; ARMv8 general counters: 0x%lx",
+> +			expected_pmcr_n, ARMV8_PMU_MAX_GENERAL_COUNTERS);
+> +
+> +	pmcr = read_sysreg(pmcr_el0);
+> +	pmcr_n = get_pmcr_n(pmcr);
+> +
+> +	/* Make sure that PMCR_EL0.N indicates the value userspace set */
+> +	__GUEST_ASSERT(pmcr_n == expected_pmcr_n,
+> +			"Expected PMCR.N: 0x%lx, PMCR.N: 0x%lx",
+> +			pmcr_n, expected_pmcr_n);
 
-No need for this extra line here.
+Expected vs read value is swapped.
 
->   	return EXIT_SUCCESS;
->   }
 
-thanks,
--- Shuah
+Also, since the kernel has special handling for this, should we add a
+test like below?
+
++static void immutable_test(void)
++{
++	struct kvm_vcpu *vcpu;
++	uint64_t sp, pmcr, pmcr_n;
++	struct kvm_vcpu_init init;
++
++	create_vpmu_vm(guest_code);
++
++	vcpu = vpmu_vm.vcpu;
++
++	/* Save the initial sp to restore them later to run the guest again */
++	vcpu_get_reg(vcpu, ARM64_CORE_REG(sp_el1), &sp);
++
++	vcpu_get_reg(vcpu, KVM_ARM64_SYS_REG(SYS_PMCR_EL0), &pmcr);
++	pmcr_n = get_pmcr_n(pmcr);
++
++	run_vcpu(vcpu, pmcr_n);
++
++	vm_ioctl(vpmu_vm.vm, KVM_ARM_PREFERRED_TARGET, &init);
++	init.features[0] |= (1 << KVM_ARM_VCPU_PMU_V3);
++	aarch64_vcpu_setup(vcpu, &init);
++	vcpu_init_descriptor_tables(vcpu);
++	vcpu_set_reg(vcpu, ARM64_CORE_REG(sp_el1), sp);
++	vcpu_set_reg(vcpu, ARM64_CORE_REG(regs.pc), (uint64_t)guest_code);
++
++	/* Update the PMCR_EL0.N after the VM ran once */
++	set_pmcr_n(&pmcr, 0);
++	vcpu_set_reg(vcpu, KVM_ARM64_SYS_REG(SYS_PMCR_EL0), pmcr);
++
++	/* Verify that the guest still gets the unmodified value */
++	run_vcpu(vcpu, pmcr_n);
++
++	destroy_vpmu_vm();
++}
+
