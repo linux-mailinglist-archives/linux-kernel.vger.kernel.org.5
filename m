@@ -2,418 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76A277CD02F
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 01:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64AE47CD098
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 01:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234836AbjJQXCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 19:02:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58376 "EHLO
+        id S1344402AbjJQXYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 19:24:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235038AbjJQXCM (ORCPT
+        with ESMTP id S1344346AbjJQXXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 19:02:12 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D91119;
-        Tue, 17 Oct 2023 16:02:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F511C433C8;
-        Tue, 17 Oct 2023 23:02:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697583728;
-        bh=08Z7nfsNuUeGcZqJevhbDVWfnyFzmgKni4CQnDVUlWE=;
-        h=From:Date:Subject:To:Cc:From;
-        b=MpBpXvBRPsYNsSdXre9jY3VKJaIqz+umB0rmjNmBopI9FgEUOTyapIDf/o9tBNfvH
-         5o/ZXk5HhhDr0VfLFf122yFAW+/JZZbDsrBEWsI1JqZsdxzEKKQCk2zaWrlbtjxYJ+
-         U74sx+tJX/bl1yeVzbEEvSDfOl4U0fFl2LGEcO1VtISNJwyY+LPFqd2pvndNeOuQmI
-         zWS6CXSsnFiJljv5QVPBt3d13XcXNQS5XjBfmkX+c/3QiZ5rVJJlyb0gKXsW8DRVid
-         B9958LzqoIwpr1WB8lh/by9byC/CEuCJ8svN5Q9SoTCJaKKlqAYzWcdnuODHKWEjkl
-         hiEl7ZTJ/S1dg==
-From:   Mark Brown <broonie@kernel.org>
-Date:   Wed, 18 Oct 2023 00:01:56 +0100
-Subject: [PATCH] selftests/clone3: Report descriptive test names
+        Tue, 17 Oct 2023 19:23:34 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C86111;
+        Tue, 17 Oct 2023 16:23:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697585010; x=1729121010;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=ZMpdPFeaFAxYR/4q025izaH0wmquZAWUlNrQl8oKEZE=;
+  b=ecV+tUaUU2CCH93H4+X2KJowtr7OItAUeLOqkBKxdDxE/syiScfvhiTh
+   gg/w+9AOjwa0a+XrCATxz4caf+JUZoKA5x6oFx13xO/y0XMYlKx+dFLzG
+   2eM+M67cmGObER6op3MzgjGBqruTjI5z2UnDklzec3R/eus1Z/QydVQ1l
+   XbDe8wZdfj8Yecn1cHJb4RbZbMuHcc6tSuusxhHLrXbZcloyVlOElREai
+   8+aEfLQ7WipH7EShb0TNVm0mZtQXd5DgTYSk8/rI/WkQyCCQyse4M0rnU
+   wYkqTREGe4TjMdHLpmeuYvf/kztNjy6DmgGuK2Z/socznO2BLyBsZOrZO
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="384778224"
+X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
+   d="scan'208";a="384778224"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 16:23:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="826637517"
+X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
+   d="scan'208";a="826637517"
+Received: from asprado-mobl2.amr.corp.intel.com (HELO [10.212.55.179]) ([10.212.55.179])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 16:23:28 -0700
+Message-ID: <34d0ce88-e006-43d3-bab3-c884c997de4c@linux.intel.com>
+Date:   Tue, 17 Oct 2023 18:03:13 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 31/34] ASoC: qcom: qdsp6: Add headphone jack for
+ offload connection status
+Content-Language: en-US
+To:     Wesley Cheng <quic_wcheng@quicinc.com>, mathias.nyman@intel.com,
+        gregkh@linuxfoundation.org, lgirdwood@gmail.com,
+        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, srinivas.kandagatla@linaro.org,
+        bgoswami@quicinc.com, Thinh.Nguyen@synopsys.com
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20231017200109.11407-1-quic_wcheng@quicinc.com>
+ <20231017200109.11407-32-quic_wcheng@quicinc.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20231017200109.11407-32-quic_wcheng@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231018-kselftest-clone3-output-v1-1-12b7c50ea2cf@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAGMSL2UC/x3MQQqDMBBG4avIrDtgomjxKtJFo786VBLJxCKId
- ze4/BbvnaSIAqWuOCniLyrBZ5hXQcPy9TNYxmyypa1MaVr+KdYpQRMPa/CoOOxp2xO3eLumbqw
- bjaNcbxGTHM+5/1zXDbjttx9pAAAA
-To:     Christian Brauner <brauner@kernel.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=10722; i=broonie@kernel.org;
- h=from:subject:message-id; bh=08Z7nfsNuUeGcZqJevhbDVWfnyFzmgKni4CQnDVUlWE=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlLxJuD9cdI9dJO3/6fxga8NFfD+cuYtVTpIPpktlO
- MTe3p3+JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZS8SbgAKCRAk1otyXVSH0Ev4B/
- 482LyXZkFlSPGw4LPM886+T7oIf4xwjFY3HgH2vVSINf9YBzTDtM2FwUSZLI0Cca2ojJ5obM2yAkid
- 65taxBdS6x+O1CabS+X4HNJIRZ6I6J2U1wOc2WrZ4mHecNvmtnftuZT8gMeWF9uU+mLYyKHOk6YOAk
- qq/mdvvl0GrXkxeaF7WzVvz9j0AAW90nRGKO6YmiEl6btXT/V1HzOZqaMpFJVxNKeQbtfGuVuSzxCO
- 1jLcZuX4zdAw/nK7U+Q+HPuPCB3lIncJ+V+e7ttKCZdm+vHavntzbJAZ2CrtYjnC43uTxD+ur4hFPD
- D/Wv5pbhtXiXiYuF3ygb8WsodIC0Zi
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The clone3() selftests currently report test results in a format that does
-not mesh entirely well with automation. They log output for each test such
-as:
 
-  # [1382411] Trying clone3() with flags 0 (size 0)
-  # I am the parent (1382411). My child's pid is 1382412
-  # I am the child, my PID is 1382412
-  # [1382411] clone3() with flags says: 0 expected 0
-  ok 1 [1382411] Result (0) matches expectation (0)
 
-This is not ideal for automated parsers since the text after the "ok 1" is
-treated as the test name when comparing runs by a lot of automation (tests
-routinely get renumbered due to things like new tests being added based on
-logical groupings). The PID means that the test names will frequently vary
-and the rest of the name being a description of results means several tests
-have identical text there.
+On 10/17/23 15:01, Wesley Cheng wrote:
+> The headphone jack framework has a well defined infrastructure for
+> notifying userspace entities through input devices.  Expose a jack device
+> that carries information about if an offload capable device is connected.
+> Applications can further identify specific offloading information through
+> other SND kcontrols.
 
-Address this by refactoring things so that we have a static descriptive
-name for each test which we use when logging passes, failures and skips
-and since we now have a stable name for the test to hand log that before
-starting the test to address the common issue reading logs where the test
-name is only printed after any diagnostics. The result is:
+maybe I am mistaken but if you expose a jack, is there not a need to
+implement a .set_jack callback in the component driver?
 
- # Running test 'simple clone3()'
- # [1562777] Trying clone3() with flags 0 (size 0)
- # I am the parent (1562777). My child's pid is 1562778
- # I am the child, my PID is 1562778
- # [1562777] clone3() with flags says: 0 expected 0
- ok 1 simple clone3()
+>  static void q6usb_connector_control_init(struct snd_soc_component *component)
+>  {
+> +	struct q6usb_port_data *data = dev_get_drvdata(component->dev);
+>  	int ret;
+>  
+>  	ret = snd_ctl_add(component->card->snd_card,
+> @@ -290,6 +293,11 @@ static void q6usb_connector_control_init(struct snd_soc_component *component)
+>  				snd_ctl_new1(&q6usb_offload_dev_ctrl, component));
+>  	if (ret < 0)
+>  		return;
+> +
+> +	ret = snd_soc_card_jack_new(component->card, "USB offload",
+> +					SND_JACK_HEADSET, &data->hs_jack);
+> +	if (ret)
+> +		return;
 
-In order to handle skips a bit more neatly this is done in a moderately
-invasive fashion where we move from a sequence of function calls to having
-an array of test parameters. This hopefully also makes it a little easier
-to see what the tests are doing when looking at both the source and the
-logs.
+Also if you report a jack then usually there's a difference between
+SND_JACK_HEADPHONE and SND_JACK_HEADSET - where the latter case hints at
+capture support.
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- tools/testing/selftests/clone3/clone3.c | 265 +++++++++++++++++++++++---------
- 1 file changed, 192 insertions(+), 73 deletions(-)
+Clearly you don't have capture support for now, so should this be
+SND_JACK_HEADPHONE ?
 
-diff --git a/tools/testing/selftests/clone3/clone3.c b/tools/testing/selftests/clone3/clone3.c
-index e60cf4da8fb0..9429d361059e 100644
---- a/tools/testing/selftests/clone3/clone3.c
-+++ b/tools/testing/selftests/clone3/clone3.c
-@@ -7,6 +7,7 @@
- #include <inttypes.h>
- #include <linux/types.h>
- #include <linux/sched.h>
-+#include <stdbool.h>
- #include <stdint.h>
- #include <stdio.h>
- #include <stdlib.h>
-@@ -103,8 +104,8 @@ static int call_clone3(uint64_t flags, size_t size, enum test_mode test_mode)
- 	return 0;
- }
- 
--static void test_clone3(uint64_t flags, size_t size, int expected,
--		       enum test_mode test_mode)
-+static bool test_clone3(uint64_t flags, size_t size, int expected,
-+			enum test_mode test_mode)
- {
- 	int ret;
- 
-@@ -114,92 +115,210 @@ static void test_clone3(uint64_t flags, size_t size, int expected,
- 	ret = call_clone3(flags, size, test_mode);
- 	ksft_print_msg("[%d] clone3() with flags says: %d expected %d\n",
- 			getpid(), ret, expected);
--	if (ret != expected)
--		ksft_test_result_fail(
-+	if (ret != expected) {
-+		ksft_print_msg(
- 			"[%d] Result (%d) is different than expected (%d)\n",
- 			getpid(), ret, expected);
--	else
--		ksft_test_result_pass(
--			"[%d] Result (%d) matches expectation (%d)\n",
--			getpid(), ret, expected);
--}
--
--int main(int argc, char *argv[])
--{
--	uid_t uid = getuid();
--
--	ksft_print_header();
--	ksft_set_plan(19);
--	test_clone3_supported();
--
--	/* Just a simple clone3() should return 0.*/
--	test_clone3(0, 0, 0, CLONE3_ARGS_NO_TEST);
--
--	/* Do a clone3() in a new PID NS.*/
--	if (uid == 0)
--		test_clone3(CLONE_NEWPID, 0, 0, CLONE3_ARGS_NO_TEST);
--	else
--		ksft_test_result_skip("Skipping clone3() with CLONE_NEWPID\n");
--
--	/* Do a clone3() with CLONE_ARGS_SIZE_VER0. */
--	test_clone3(0, CLONE_ARGS_SIZE_VER0, 0, CLONE3_ARGS_NO_TEST);
--
--	/* Do a clone3() with CLONE_ARGS_SIZE_VER0 - 8 */
--	test_clone3(0, CLONE_ARGS_SIZE_VER0 - 8, -EINVAL, CLONE3_ARGS_NO_TEST);
--
--	/* Do a clone3() with sizeof(struct clone_args) + 8 */
--	test_clone3(0, sizeof(struct __clone_args) + 8, 0, CLONE3_ARGS_NO_TEST);
--
--	/* Do a clone3() with exit_signal having highest 32 bits non-zero */
--	test_clone3(0, 0, -EINVAL, CLONE3_ARGS_INVAL_EXIT_SIGNAL_BIG);
-+		return false;
-+	}
- 
--	/* Do a clone3() with negative 32-bit exit_signal */
--	test_clone3(0, 0, -EINVAL, CLONE3_ARGS_INVAL_EXIT_SIGNAL_NEG);
-+	return true;
-+}
- 
--	/* Do a clone3() with exit_signal not fitting into CSIGNAL mask */
--	test_clone3(0, 0, -EINVAL, CLONE3_ARGS_INVAL_EXIT_SIGNAL_CSIG);
-+typedef bool (*filter_function)(void);
-+typedef size_t (*size_function)(void);
- 
--	/* Do a clone3() with NSIG < exit_signal < CSIG */
--	test_clone3(0, 0, -EINVAL, CLONE3_ARGS_INVAL_EXIT_SIGNAL_NSIG);
-+static bool not_root(void)
-+{
-+	if (getuid() != 0) {
-+		ksft_print_msg("Not running as root\n");
-+		return true;
-+	}
- 
--	test_clone3(0, sizeof(struct __clone_args) + 8, 0, CLONE3_ARGS_ALL_0);
-+	return false;
-+}
- 
--	test_clone3(0, sizeof(struct __clone_args) + 16, -E2BIG,
--			CLONE3_ARGS_ALL_0);
-+static size_t page_size_plus_8(void)
-+{
-+	return getpagesize() + 8;
-+}
- 
--	test_clone3(0, sizeof(struct __clone_args) * 2, -E2BIG,
--			CLONE3_ARGS_ALL_0);
-+struct test {
-+	const char *name;
-+	uint64_t flags;
-+	size_t size;
-+	size_function size_function;
-+	int expected;
-+	enum test_mode test_mode;
-+	filter_function filter;
-+};
- 
--	/* Do a clone3() with > page size */
--	test_clone3(0, getpagesize() + 8, -E2BIG, CLONE3_ARGS_NO_TEST);
-+static const struct test tests[] = {
-+	{
-+		.name = "simple clone3()",
-+		.flags = 0,
-+		.size = 0,
-+		.expected = 0,
-+		.test_mode = CLONE3_ARGS_NO_TEST,
-+	},
-+	{
-+		.name = "clone3() in a new PID_NS",
-+		.flags = CLONE_NEWPID,
-+		.size = 0,
-+		.expected = 0,
-+		.test_mode = CLONE3_ARGS_NO_TEST,
-+		.filter = not_root,
-+	},
-+	{
-+		.name = "CLONE_ARGS_SIZE_VER0",
-+		.flags = 0,
-+		.size = CLONE_ARGS_SIZE_VER0,
-+		.expected = 0,
-+		.test_mode = CLONE3_ARGS_NO_TEST,
-+	},
-+	{
-+		.name = "CLONE_ARGS_SIZE_VER0 - 8",
-+		.flags = 0,
-+		.size = CLONE_ARGS_SIZE_VER0 - 8,
-+		.expected = -EINVAL,
-+		.test_mode = CLONE3_ARGS_NO_TEST,
-+	},
-+	{
-+		.name = "sizeof(struct clone_args) + 8",
-+		.flags = 0,
-+		.size = sizeof(struct __clone_args) + 8,
-+		.expected = 0,
-+		.test_mode = CLONE3_ARGS_NO_TEST,
-+	},
-+	{
-+		.name = "exit_signal with highest 32 bits non-zero",
-+		.flags = 0,
-+		.size = 0,
-+		.expected = -EINVAL,
-+		.test_mode = CLONE3_ARGS_INVAL_EXIT_SIGNAL_BIG,
-+	},
-+	{
-+		.name = "negative 32-bit exit_signal",
-+		.flags = 0,
-+		.size = 0,
-+		.expected = -EINVAL,
-+		.test_mode = CLONE3_ARGS_INVAL_EXIT_SIGNAL_NEG,
-+	},
-+	{
-+		.name = "exit_signal not fitting into CSIGNAL mask",
-+		.flags = 0,
-+		.size = 0,
-+		.expected = -EINVAL,
-+		.test_mode = CLONE3_ARGS_INVAL_EXIT_SIGNAL_CSIG,
-+	},
-+	{
-+		.name = "NSIG < exit_signal < CSIG",
-+		.flags = 0,
-+		.size = 0,
-+		.expected = -EINVAL,
-+		.test_mode = CLONE3_ARGS_INVAL_EXIT_SIGNAL_NSIG,
-+	},
-+	{
-+		.name = "Arguments sizeof(struct clone_args) + 8",
-+		.flags = 0,
-+		.size = sizeof(struct __clone_args) + 8,
-+		.expected = 0,
-+		.test_mode = CLONE3_ARGS_ALL_0,
-+	},
-+	{
-+		.name = "Arguments sizeof(struct clone_args) + 16",
-+		.flags = 0,
-+		.size = sizeof(struct __clone_args) + 16,
-+		.expected = -E2BIG,
-+		.test_mode = CLONE3_ARGS_ALL_0,
-+	},
-+	{
-+		.name = "Arguments sizeof(struct clone_arg) * 2",
-+		.flags = 0,
-+		.size = sizeof(struct __clone_args) + 16,
-+		.expected = -E2BIG,
-+		.test_mode = CLONE3_ARGS_ALL_0,
-+	},
-+	{
-+		.name = "Arguments > page size",
-+		.flags = 0,
-+		.size_function = page_size_plus_8,
-+		.expected = -E2BIG,
-+		.test_mode = CLONE3_ARGS_NO_TEST,
-+	},
-+	{
-+		.name = "CLONE_ARGS_SIZE_VER0 in a new PID NS",
-+		.flags = CLONE_NEWPID,
-+		.size = CLONE_ARGS_SIZE_VER0,
-+		.expected = 0,
-+		.test_mode = CLONE3_ARGS_NO_TEST,
-+		.filter = not_root,
-+	},
-+	{
-+		.name = "CLONE_ARGS_SIZE_VER0 - 8 in a new PID NS",
-+		.flags = CLONE_NEWPID,
-+		.size = CLONE_ARGS_SIZE_VER0 - 8,
-+		.expected = -EINVAL,
-+		.test_mode = CLONE3_ARGS_NO_TEST,
-+	},
-+	{
-+		.name = "sizeof(struct clone_args) + 8 in a new PID NS",
-+		.flags = CLONE_NEWPID,
-+		.size = sizeof(struct __clone_args) + 8,
-+		.expected = 0,
-+		.test_mode = CLONE3_ARGS_NO_TEST,
-+		.filter = not_root,
-+	},
-+	{
-+		.name = "Arguments > page size in a new PID NS",
-+		.flags = CLONE_NEWPID,
-+		.size_function = page_size_plus_8,
-+		.expected = -E2BIG,
-+		.test_mode = CLONE3_ARGS_NO_TEST,
-+	},
-+	{
-+		.name = "New time NS",
-+		.flags = CLONE_NEWTIME,
-+		.size = 0,
-+		.expected = 0,
-+		.test_mode = CLONE3_ARGS_NO_TEST,
-+	},
-+	{
-+		.name = "exit signal (SIGCHLD) in flags",
-+		.flags = SIGCHLD,
-+		.size = 0,
-+		.expected = -EINVAL,
-+		.test_mode = CLONE3_ARGS_NO_TEST,
-+	},
-+};
- 
--	/* Do a clone3() with CLONE_ARGS_SIZE_VER0 in a new PID NS. */
--	if (uid == 0)
--		test_clone3(CLONE_NEWPID, CLONE_ARGS_SIZE_VER0, 0,
--				CLONE3_ARGS_NO_TEST);
--	else
--		ksft_test_result_skip("Skipping clone3() with CLONE_NEWPID\n");
-+int main(int argc, char *argv[])
-+{
-+	size_t size;
-+	int i;
- 
--	/* Do a clone3() with CLONE_ARGS_SIZE_VER0 - 8 in a new PID NS */
--	test_clone3(CLONE_NEWPID, CLONE_ARGS_SIZE_VER0 - 8, -EINVAL,
--			CLONE3_ARGS_NO_TEST);
-+	ksft_print_header();
-+	ksft_set_plan(ARRAY_SIZE(tests));
-+	test_clone3_supported();
- 
--	/* Do a clone3() with sizeof(struct clone_args) + 8 in a new PID NS */
--	if (uid == 0)
--		test_clone3(CLONE_NEWPID, sizeof(struct __clone_args) + 8, 0,
--				CLONE3_ARGS_NO_TEST);
--	else
--		ksft_test_result_skip("Skipping clone3() with CLONE_NEWPID\n");
-+	for (i = 0; i < ARRAY_SIZE(tests); i++) {
-+		if (tests[i].filter && tests[i].filter()) {
-+			ksft_test_result_skip("%s\n", tests[i].name);
-+			continue;
-+		}
- 
--	/* Do a clone3() with > page size in a new PID NS */
--	test_clone3(CLONE_NEWPID, getpagesize() + 8, -E2BIG,
--			CLONE3_ARGS_NO_TEST);
-+		if (tests[i].size_function)
-+			size = tests[i].size_function();
-+		else
-+			size = tests[i].size;
- 
--	/* Do a clone3() in a new time namespace */
--	test_clone3(CLONE_NEWTIME, 0, 0, CLONE3_ARGS_NO_TEST);
-+		ksft_print_msg("Running test '%s'\n", tests[i].name);
- 
--	/* Do a clone3() with exit signal (SIGCHLD) in flags */
--	test_clone3(SIGCHLD, 0, -EINVAL, CLONE3_ARGS_NO_TEST);
-+		ksft_test_result(test_clone3(tests[i].flags, size,
-+					     tests[i].expected,
-+					     tests[i].test_mode),
-+				 "%s\n", tests[i].name);
-+	}
- 
- 	ksft_finished();
- }
-
----
-base-commit: 6465e260f48790807eef06b583b38ca9789b6072
-change-id: 20231017-kselftest-clone3-output-7e8b6462bd1b
-
-Best regards,
--- 
-Mark Brown <broonie@kernel.org>
-
+I must say I still don't get how this entire patchset would be used, for
+playback userspace *may* use offload but for any sort of voice call then
+userspace *shall* rely on the legacy USB card. Is this not a
+show-stopper for CRAS or PipeWire?
