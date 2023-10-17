@@ -2,135 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB2F7CC5EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 284417CC5EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343956AbjJQO20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 10:28:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42484 "EHLO
+        id S1343985AbjJQO2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 10:28:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234935AbjJQO2Y (ORCPT
+        with ESMTP id S234935AbjJQO2v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 10:28:24 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCC91B0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:28:22 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c9d4f08d7cso186275ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:28:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697552902; x=1698157702; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KSy6qZ9NIRb/OtvKvJDZwAfsawTVlD/Icx0zZ3iDl5M=;
-        b=4MXkNHxoh+cfwq61IRicWyudZd9oDFPH351MRtwdFKcz7U/cFQgwi+pkXvvG3FdYW5
-         NmQHjWcU8OE9xaEShL71aq+D9TRnWon7PioHTOCgJ09L9nP0i/39LdOFdhkLtYrwkUnd
-         76f+pnQXDwQuzz0ptp4HiqBPKs0SULimKYuOYBzH5Ff8XU80ecwDERTD851kttiEjXqY
-         bmDwMdsu6Zyk1Zm3fvvxod4RCZS5NrF88kKdC+b0RIP08OeZ+9LVvytg6W83fqbQhxpo
-         x1QGwDkcMFJYek+yX0O1foKqlhBz1esqehL92Ae3iZx4XqjvhMTp8Pu/VDquqRSUfQV0
-         I/VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697552902; x=1698157702;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KSy6qZ9NIRb/OtvKvJDZwAfsawTVlD/Icx0zZ3iDl5M=;
-        b=roGTLcPMv/28XWgIvtAY4NKnv7Sa/cmvntHOVhvva+Q1DXa51u/79Rk+qSqKFimlmc
-         debU0r6aHDr0EmVTMe3eMc5+ZNGrqP/0rN++SwDCvc6tNSkk18cfkcP6ZgdKZ/6P/kHZ
-         jkARnG8ay4dPCRZ6awXe/+m8X/evUQgI6z6efgfDOM1dum0XKwpDmmAvCTP8Caq/rjX/
-         HohX/2tXnbF7ni3lzNh8SU612xwe0F5ix6beXpVG2/84AYlKWCx2dK7AcXJyJhsrt/Nk
-         fTgBxysRsobIHRM62s5K72pkiP2jzoPSjqzzWwi3I5cgtXxp7HRZXUMHuijBZTeP33/R
-         SMLg==
-X-Gm-Message-State: AOJu0Yz8Y6NB9zfEw6aN2tJ16pMa62caTw4zf8n4IHcTnwbclD36pbn5
-        /8c/NZrfq+ZQ91gPgy2wsqo5GiGhT9/uZuwtX5J4OA==
-X-Google-Smtp-Source: AGHT+IFV7iyG/eTlVkxEDinAqhjIRCYTKsczaKYOTW9lPz8RVBI7jHgg2Qn33RXgL6Y8+Q8kiGfcQonBxCsC2JHbx0c=
-X-Received: by 2002:a17:903:2003:b0:1c9:bdc9:7f97 with SMTP id
- s3-20020a170903200300b001c9bdc97f97mr8134pla.6.1697552901939; Tue, 17 Oct
- 2023 07:28:21 -0700 (PDT)
+        Tue, 17 Oct 2023 10:28:51 -0400
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 967E7A2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:28:49 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 766781C000F;
+        Tue, 17 Oct 2023 14:28:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1697552928;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=H06xgNvMXJ6SsKeqQHp4zd1+AMWk0M/uohUueGKhjos=;
+        b=FVx2NcnSpS/Z73Uly6cHt9btSMQoc4RAgx41qBu8AKj2oPSyP6tJ5g1ieSTjwXnshVThzk
+        1LRWrrwh0VrKQvUe8rR6wbz6H1JVlFfokY9kn2kGU6r+NTh9ek9B1ovnPJimHa97l9Ett8
+        i9MOCy8m6zKndFEBMpizrD2+/IWZ4J8+1vkazQn9TXiJAWp/M68DhiePEjRYS5geN0YafT
+        FU7T4rjIwG4qpFCvrmu5SU4xD67syeulWtAJ6mpXsUQH2aNFThcHNzPSXzGj3GhkS/5HwN
+        XNguK95pRaH0l9I2fhyJMItol2v4SpQWNHOXGqJZu16pgGFj+oX4rmLH5YWHXw==
+Date:   Tue, 17 Oct 2023 16:28:46 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Frank Li <Frank.Li@nxp.com>
+Cc:     conor.culhane@silvaco.com, alexandre.belloni@bootlin.com,
+        joe@perches.com, linux-i3c@lists.infradead.org,
+        linux-kernel@vger.kernel.org, imx@lists.linux.dev
+Subject: Re: [PATCH 4/6] i3c: master: svc: fix check wrong status register
+ in irq handler
+Message-ID: <20231017162846.188d7a78@xps-13>
+In-Reply-To: <20231016153232.2851095-5-Frank.Li@nxp.com>
+References: <20231016153232.2851095-1-Frank.Li@nxp.com>
+        <20231016153232.2851095-5-Frank.Li@nxp.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <000000000000e40a2906072e9567@google.com> <000000000000bc00ea0607e9359d@google.com>
- <20231017141650.GC1599@noisy.programming.kicks-ass.net>
-In-Reply-To: <20231017141650.GC1599@noisy.programming.kicks-ass.net>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Tue, 17 Oct 2023 16:28:09 +0200
-Message-ID: <CANp29Y5B1VvKbe9Z3Bh-7_3jUSok=q9LO=ibjf9R5iDqEZUBVg@mail.gmail.com>
-Subject: Re: [syzbot] [ext4?] possible deadlock in console_flush_all (2)
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     syzbot <syzbot+f78380e4eae53c64125c@syzkaller.appspotmail.com>,
-        adilger.kernel@dilger.ca, bsegall@google.com, dvyukov@google.com,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you for the information!
+Hi Frank,
 
-I've looked closer -- syzbot is currently fuzzing a somewhat old -next
-version now (20231005), it could not upgrade after that because of a
--next boot error
-(https://syzkaller.appspot.com/bug?extid=3D6867a9777f4b8dc4e256, already
-has a patch). It can explain why we're still seeing these crashes.
+Frank.Li@nxp.com wrote on Mon, 16 Oct 2023 11:32:30 -0400:
 
-Once the fix commit for "linux-next boot error: KASAN:
-slab-out-of-bounds Write in vhci_setup" reaches next, it should all be
-fine.
+> svc_i3c_master_irq_handler() wrong check register SVC_I3C_MINTMASKED. It
 
-And it looks like we should just automatically stop -next fuzzing if
-we cannot upgrade the kernel for more than several days in a row..
+				wrongly checks
+> should be SVC_I3C_MSTATUS.
 
-On Tue, Oct 17, 2023 at 4:16=E2=80=AFPM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
->
-> On Tue, Oct 17, 2023 at 06:07:50AM -0700, syzbot wrote:
-> > syzbot has found a reproducer for the following issue on:
-> >
-> > HEAD commit:    213f891525c2 Merge tag 'probes-fixes-v6.6-rc6' of git:/=
-/gi..
->
-> > list_add corruption. next->prev should be prev (ffff8880b993d228), but =
-was caff904900000000. (next=3Dffff8880783659f8).
->
-> Urgh, I've not seen that happen before. How reliable does this trigger?
->
-> >  __list_add_valid_or_report+0xa2/0x100 lib/list_debug.c:29
-> >  __list_add_valid include/linux/list.h:88 [inline]
-> >  __list_add include/linux/list.h:150 [inline]
-> >  list_add include/linux/list.h:169 [inline]
-> >  account_entity_enqueue kernel/sched/fair.c:3534 [inline]
-> >  enqueue_entity+0x97b/0x1490 kernel/sched/fair.c:5117
-> >  enqueue_task_fair+0x15b/0xbc0 kernel/sched/fair.c:6536
-> >  enqueue_task kernel/sched/core.c:2102 [inline]
-> >  activate_task kernel/sched/core.c:2132 [inline]
-> >  ttwu_do_activate+0x214/0xd90 kernel/sched/core.c:3787
-> >  ttwu_queue kernel/sched/core.c:4029 [inline]
-> >  try_to_wake_up+0x8e7/0x15b0 kernel/sched/core.c:4346
-> >  autoremove_wake_function+0x16/0x150 kernel/sched/wait.c:424
-> >  __wake_up_common+0x140/0x5a0 kernel/sched/wait.c:107
-> >  __wake_up_common_lock+0xd6/0x140 kernel/sched/wait.c:138
-> >  wake_up_klogd_work_func kernel/printk/printk.c:3840 [inline]
-> >  wake_up_klogd_work_func+0x90/0xa0 kernel/printk/printk.c:3829
-> >  irq_work_single+0x1b5/0x260 kernel/irq_work.c:221
-> >  irq_work_run_list kernel/irq_work.c:252 [inline]
-> >  irq_work_run_list+0x92/0xc0 kernel/irq_work.c:235
-> >  update_process_times+0x1d5/0x220 kernel/time/timer.c:2074
-> >  tick_sched_handle+0x8e/0x170 kernel/time/tick-sched.c:254
-> >  tick_sched_timer+0xe9/0x110 kernel/time/tick-sched.c:1492
-> >  __run_hrtimer kernel/time/hrtimer.c:1688 [inline]
-> >  __hrtimer_run_queues+0x647/0xc10 kernel/time/hrtimer.c:1752
-> >  hrtimer_interrupt+0x31b/0x800 kernel/time/hrtimer.c:1814
-> >  local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1063 [inline]
-> >  __sysvec_apic_timer_interrupt+0x105/0x3f0 arch/x86/kernel/apic/apic.c:=
-1080
-> >  sysvec_apic_timer_interrupt+0x8e/0xc0 arch/x86/kernel/apic/apic.c:1074
-> >  </IRQ>
+Ah right, good catch.
+
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+>=20
+> Fixes: dd3c52846d59 ("i3c: master: svc: Add Silvaco I3C master driver")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  drivers/i3c/master/svc-i3c-master.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/i3c/master/svc-i3c-master.c b/drivers/i3c/master/svc=
+-i3c-master.c
+> index c252446b2bc5..5ab68d6e439d 100644
+> --- a/drivers/i3c/master/svc-i3c-master.c
+> +++ b/drivers/i3c/master/svc-i3c-master.c
+> @@ -475,7 +475,7 @@ static void svc_i3c_master_ibi_work(struct work_struc=
+t *work)
+>  static irqreturn_t svc_i3c_master_irq_handler(int irq, void *dev_id)
+>  {
+>  	struct svc_i3c_master *master =3D (struct svc_i3c_master *)dev_id;
+> -	u32 active =3D readl(master->regs + SVC_I3C_MINTMASKED);
+> +	u32 active =3D readl(master->regs + SVC_I3C_MSTATUS);
+> =20
+>  	if (!SVC_I3C_MSTATUS_SLVSTART(active))
+>  		return IRQ_NONE;
+
+
+Thanks,
+Miqu=C3=A8l
