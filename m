@@ -2,118 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 639B87CBFBA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4F47CBFCD
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234808AbjJQJmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 05:42:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49124 "EHLO
+        id S1343511AbjJQJoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 05:44:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234930AbjJQJm3 (ORCPT
+        with ESMTP id S234985AbjJQJo3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 05:42:29 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23A91100
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 02:42:27 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qsgah-0000U7-CE; Tue, 17 Oct 2023 11:42:19 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qsgag-002HtD-5K; Tue, 17 Oct 2023 11:42:18 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qsgaf-000AKh-SC; Tue, 17 Oct 2023 11:42:17 +0200
-Date:   Tue, 17 Oct 2023 11:42:17 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: duplicate patch in the samsung-krzk tree
-Message-ID: <20231017094217.vwz5vfmqsbfvi3ua@pengutronix.de>
-References: <20231017110118.3712e78e@canb.auug.org.au>
+        Tue, 17 Oct 2023 05:44:29 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D963F9;
+        Tue, 17 Oct 2023 02:44:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697535867; x=1729071867;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=8OYWLx8EkOVmmzc/6gfhqaqtgdn7djCvrNPSlhU23rE=;
+  b=hramDdnEcNtVy6AKWvv745sFso+Ug60hLVdaHTioWHE8FyFNj/zPRi9D
+   dosJ2IaMOQKLdipv6UDoawOhJ4c2QPyFd1VLt1WY1rw1+TfJFj2R9nFs7
+   uS5unxQ+ASC4QXYqb6cfBxJaQD5kG2Fi8o75LZsWR1m3MQq4X4PjkVq5w
+   jSgAVDxqUnef2QbQi4UECU/u2hyFGPtN/fNxEC/Y+Iy4CLejliZQ8pq/j
+   BUHTIeBXpW9Os8QPbZiQeYzAkRmyqufMQsqZTvkNBrHyF+ShKZHjeMfBK
+   os8YmTPJJzpB0WkiH6yLHcUev/XThgp5zRGy15ilCSh3N6zJS//skvnZB
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="365097234"
+X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
+   d="scan'208";a="365097234"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 02:44:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="826375189"
+X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
+   d="scan'208";a="826375189"
+Received: from mstanila-mobl1.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.61.109])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 02:44:05 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 2B4B510A1F3; Tue, 17 Oct 2023 12:44:03 +0300 (+03)
+Date:   Tue, 17 Oct 2023 12:44:03 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dario Faggioli <dfaggioli@suse.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        marcelo.cerri@canonical.com, tim.gardner@canonical.com,
+        philip.cox@canonical.com, aarcange@redhat.com, peterx@redhat.com,
+        x86@kernel.org, linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@kernel.org, Nikolay Borisov <nik.borisov@suse.com>
+Subject: Re: [PATCHv2] efi/unaccepted: Fix soft lockups caused by parallel
+ memory acceptance
+Message-ID: <20231017094403.g6laxp2c3vwzt2sw@box.shutemov.name>
+References: <20231016163122.12855-1-kirill.shutemov@linux.intel.com>
+ <ZS15HZqK4hu5NjSh@casper.infradead.org>
+ <20231016213932.6cscnn6tsnzsnvmf@box.shutemov.name>
+ <CAMj1kXFc31N61=oQayLbnR+CrNT4=bfEisC3fwG4VNq2vJHV5w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="slm22x6xvwckr345"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231017110118.3712e78e@canb.auug.org.au>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAMj1kXFc31N61=oQayLbnR+CrNT4=bfEisC3fwG4VNq2vJHV5w@mail.gmail.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 17, 2023 at 09:42:13AM +0200, Ard Biesheuvel wrote:
+> On Mon, 16 Oct 2023 at 23:39, Kirill A. Shutemov
+> <kirill.shutemov@linux.intel.com> wrote:
+> >
+> > On Mon, Oct 16, 2023 at 06:55:41PM +0100, Matthew Wilcox wrote:
+> > > On Mon, Oct 16, 2023 at 07:31:22PM +0300, Kirill A. Shutemov wrote:
+> > > >   v2:
+> > > >    - Fix deadlock (Vlastimil);
+> > > >    - Fix comments (Vlastimil);
+> > > >    - s/cond_resched()/cpu_relax()/ -- cond_resched() cannot be called
+> > > >      from atomic context;
+> > >
+> > > Isn't there an implicit cpu_relax() while we're spinning?  Does this
+> > > really accomplish anything?
+> >
+> > You are right. It is useless. I will drop it in v3.
+> >
+> 
+> I can drop that bit when applying the patch.
+> 
+> One question I have is whether the sequence
+> 
+> spin_lock_irqsave(&unaccepted_memory_lock, flags);
+> ...
+> spin_unlock(&unaccepted_memory_lock);
+> arch_accept_memory(phys_start, phys_end);
+> spin_lock(&unaccepted_memory_lock);
+> ...
+> spin_unlock_irqrestore(&unaccepted_memory_lock, flags);
+> 
+> is considered sound and is supported by all architectures?
 
---slm22x6xvwckr345
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I am not an locking expert and only tested it on x86. But what potential
+issue do you see?
 
-Hello,
-
-On Tue, Oct 17, 2023 at 11:01:18AM +1100, Stephen Rothwell wrote:
-> The following commit is also in the arm-soc tree as a different commit
-> (but the same patch):
->=20
->   0da7c05d232d ("soc: samsung: exynos-chipid: Convert to platform remove =
-callback returning void")
->=20
-> This is commit
->=20
->   55fa358ca89f ("soc: samsung: exynos-chipid: Convert to platform remove =
-callback returning void")
->=20
-> in the arm-soc tree.
-
-a few more details that I worked out for this situation, so (hopefully)
-others don't have to duplicate this effort:
-
-The commit in the samsung-krzk tree was applied by Krzysztof at Sep 28
-and sent later (Oct 16) as a patch to Arnd (and others) in reply to a PR
-(https://lore.kernel.org/all/20231016072911.27148-1-krzysztof.kozlowski@lin=
-aro.org/)
-and without further explanation.
-
-My guess is that the patch in question wasn't applied to a topic branch
-but to Krzysztof's for-next directly and so was missed to be included in
-the PR. Or it was on a topic branch but as the only patch on that and so
-it was sent out individually. I'd expect that 0da7c05d232d won't make it
-into the mainline.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---slm22x6xvwckr345
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUuVvgACgkQj4D7WH0S
-/k4OMggArFtYagFh1156QdoHQyQjATaHnW7oc3Vfp3bY+ZcUiUvR2PE6jglceuc1
-delEwOVa6cvJz0wpd1+e/2hqQwXFYWO2ZABVFh2ezNuWm1pQOWVzufPFYHgDU8Q1
-Holn8CfiL7eLOa9l+A8ESwSVpn8oLzEwTF2hgX6L65Ms3tilAlH3J2rOyFkxx1KR
-Kxg16UvZ7v0T1FOMqJx+OW+7kvk90tUfhg+q5qM8Jjka85K7y1lTCOYTZS9syYTW
-r8mg3GCoNtf56Xoar7SQi3LJ8pw5lAKg8QhHpsS41LrxZD9oUkO78VEAT027dggH
-dMIGINXRYENJoLGDcIeiE57keYs/1Q==
-=98Ju
------END PGP SIGNATURE-----
-
---slm22x6xvwckr345--
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
