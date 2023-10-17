@@ -2,219 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A97A37CC1F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 13:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E44B7CC1EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 13:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343621AbjJQLkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 07:40:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40076 "EHLO
+        id S234615AbjJQLkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 07:40:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234825AbjJQLkR (ORCPT
+        with ESMTP id S233570AbjJQLkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 07:40:17 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF1CF2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 04:40:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697542815; x=1729078815;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+RU3ekLq2rKS6/ZMzILUFzcx8Nts862dv4DanJnUNHA=;
-  b=nySnQjCnFSLawVl4OS7gKc2DDm7+3lEikH7x4+eXCLMJxbWkxjpj5GZP
-   4G+ug1IBWlg7JVjKM/9ky5RAo1QVxW9iLdIr1qB4l3LY+RqF8ewpieWbN
-   nnaEtfRVfh4PNQHgBx5+9L5ibslvBJvDwdCMW75LfnRDdC/iSANk/czWe
-   tnlnsv1Ecm0/PYVVia5Hmn4oRKkAr+aBYSmb4VRsXaBybZuRvDw+2/4BY
-   Xrbh0NBZ9UqjHhrej2zxK5Mr4uRs4Zvo18vJlAh3R2axEezzDeQtiX8pW
-   E6Nv+1CWQzi7c2rWF642IKrqQWi09oGBpEz4mGbS/d/aUFL5uIB8+VA2e
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="385597862"
-X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
-   d="scan'208";a="385597862"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 04:40:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="1003328653"
-X-IronPort-AV: E=Sophos;i="6.03,232,1694761200"; 
-   d="scan'208";a="1003328653"
-Received: from mstanila-mobl1.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.61.109])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 04:39:59 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id EEC4410A1F3; Tue, 17 Oct 2023 14:39:56 +0300 (+03)
-Date:   Tue, 17 Oct 2023 14:39:56 +0300
-From:   kirill.shutemov@linux.intel.com
-To:     "Compostella, Jeremy" <jeremy.compostella@intel.com>,
-        Adam Dunlap <acdunlap@google.com>
-Cc:     "Huang, Kai" <kai.huang@intel.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "Li, Xin3" <xin3.li@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Subject: Re: [PATCH v3 1/2] x86/cpu/intel: Fix MTRR verification for TME
- enabled platforms
-Message-ID: <20231017113956.dudy6qdq43zaxacx@box.shutemov.name>
-References: <87a5t6ylpc.fsf@jcompost-mobl.amr.corp.intel.com>
- <00392c722e65c8d0da40384eecf8955be4875969.camel@intel.com>
- <20231002224752.33qa2lq7q2w4nqws@box>
- <65d26d679843e26fd5e6252a08391f87243a49c9.camel@intel.com>
- <20231003070659.hsjvnoc53agvms6c@box.shutemov.name>
- <87edhyyvkp.fsf@jcompost-mobl.amr.corp.intel.com>
- <20231014210125.iexeacn6p4naw5qz@box.shutemov.name>
- <87a5sizgr8.fsf@jcompost-mobl.amr.corp.intel.com>
- <20231016162609.wfkfsams23exesvs@box.shutemov.name>
- <875y36zend.fsf@jcompost-mobl.amr.corp.intel.com>
+        Tue, 17 Oct 2023 07:40:13 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CE2D9F;
+        Tue, 17 Oct 2023 04:40:12 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-53e16f076b3so10405610a12.0;
+        Tue, 17 Oct 2023 04:40:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697542811; x=1698147611; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=L5iJwacoFWI2BNuJzwK5V8n8H3vFnlfIq5LRrlJHnDE=;
+        b=NvBea/g20Bo0kMMq5/HM8MhYlGFWdqPG+kiCmPSdj50Hsgr1Ab4Co6XovD5zXsx599
+         1FH8Rb5ROJumDPg6Z4Ts/NEGIhD7WpbRdCthw5MWBaeq7dJQOa0e3LRan7BjkbEp7Wk3
+         tVNIVhpAh5HnikB9lIqDUfUzpuzbmz1hUAsj8lpscbg2kCAVskOGwGrnD0WXXtg4SD0N
+         snGc/1F4FIuQNPaQTw/vqV+7Zz1vXGA9Eew548/7PNLSfWET2ezkQULGNVCbtXL+gfM/
+         IZCiFjIkMJffHD1u/NJoc/Hab/lRqPtihqpD1SkABRIy+Ask8OSF1evunEke1rQUMZf3
+         euBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697542811; x=1698147611;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=L5iJwacoFWI2BNuJzwK5V8n8H3vFnlfIq5LRrlJHnDE=;
+        b=X0c0AJTxGRlDdapD//x9FzYCiDN1eVWiTSItFqRAk1SweXZpjUlKdjaByLCFVobXGe
+         OkjyvrEAxd9A+OgRbnO0/KX1h4DWi+7WNdb0urGM3tNp96JL6b8ytLbKkeVncK5hIc1X
+         Zf4cVlIV4HHtzYImgwrG6aqbOIEnqKfnxv80BqomLmFOMcx4WR3Hq0Y5ciFPFjlq4942
+         vL7FuyHwQtdd91noOppMoDkrat6A2UY5p8uz1Qk1jx4l6WKu8gb0sUgoRqT108uSufTV
+         7KzxGJchASY5XVFuGG0wy5825YI80S8fjXBvM1Dhx4EA5o4jMsAAJUw4X0hyI2iDx4sD
+         NGdA==
+X-Gm-Message-State: AOJu0Yys7XGLFXBvfzXHs4CohjbB2EkM5Ts3dGSv3er3xyX8T/7Kadkl
+        475N7+qNy7NstFhTrGrnU1keUcgoyt0=
+X-Google-Smtp-Source: AGHT+IFeZAoGXNHXk+lHtbhO6GkkOtdA81psOy5RykrLlw87C/1PYlKtzm9OwKqmUA73sc6VKuAV5Q==
+X-Received: by 2002:aa7:da18:0:b0:51d:b184:efd with SMTP id r24-20020aa7da18000000b0051db1840efdmr1513196eds.20.1697542810611;
+        Tue, 17 Oct 2023 04:40:10 -0700 (PDT)
+Received: from gmail.com (1F2EF7B2.nat.pool.telekom.hu. [31.46.247.178])
+        by smtp.gmail.com with ESMTPSA id v23-20020a50d597000000b0053e2a64b5f8sm1060624edi.14.2023.10.17.04.40.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Oct 2023 04:40:10 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Tue, 17 Oct 2023 13:40:07 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v3] perf bench sched pipe: Add -G/--cgroups option
+Message-ID: <ZS5yl3RzVGKBkCvY@gmail.com>
+References: <20231016044225.1125674-1-namhyung@kernel.org>
+ <ZS0D53ckVx356k4o@gmail.com>
+ <ZS1Y5PhXhp384ynY@kernel.org>
+ <ZS1ajf/9HmgUyyCl@kernel.org>
+ <ZS1cGMgyEDJQbwq9@kernel.org>
+ <ZS1c9RCh9MkzPbFG@kernel.org>
+ <ZS2ecyCVpK8B2cQq@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <875y36zend.fsf@jcompost-mobl.amr.corp.intel.com>
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZS2ecyCVpK8B2cQq@kernel.org>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 10:00:06AM -0700, Compostella, Jeremy wrote:
-> #+begin_signature
-> -- 
-> Jeremy
-> One Emacs to rule them all
-> #+end_signature<kirill.shutemov@linux.intel.com> writes:
-> 
-> > On Mon, Oct 16, 2023 at 09:14:35AM -0700, Compostella, Jeremy wrote:
-> >> <kirill.shutemov@linux.intel.com> writes:
-> >> 
-> >> > On Fri, Oct 13, 2023 at 04:03:02PM -0700, Compostella, Jeremy wrote:
-> >> >> "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com> writes:
-> >> >> > On Tue, Oct 03, 2023 at 02:06:52AM +0000, Huang, Kai wrote:
-> >> >> >> On Tue, 2023-10-03 at 01:47 +0300, kirill.shutemov@linux.intel.com wrote:
-> >> >> >> > On Fri, Sep 29, 2023 at 09:14:00AM +0000, Huang, Kai wrote:
-> >> >> >> > > On Thu, 2023-09-28 at 15:30 -0700, Compostella, Jeremy wrote:
-> >> >> >> > > > On TME enabled platform, BIOS publishes MTRR taking into account Total
-> >> >> >> > > > Memory Encryption (TME) reserved bits.
-> >> >> >> > > > 
-> >> >> >> > > > generic_get_mtrr() performs a sanity check of the MTRRs relying on the
-> >> >> >> > > > `phys_hi_rsvd' variable which is set using the cpuinfo_x86 structure
-> >> >> >> > > > `x86_phys_bits' field.  But at the time the generic_get_mtrr()
-> >> >> >> > > > function is ran the `x86_phys_bits' has not been updated by
-> >> >> >> > > > detect_tme() when TME is enabled.
-> >> >> >> > > > 
-> >> >> >> > > > Since the x86_phys_bits does not reflect yet the real maximal physical
-> >> >> >> > > > address size yet generic_get_mtrr() complains by logging the following
-> >> >> >> > > > messages.
-> >> >> >> > > > 
-> >> >> >> > > >     mtrr: your BIOS has configured an incorrect mask, fixing it.
-> >> >> >> > > >     mtrr: your BIOS has configured an incorrect mask, fixing it.
-> >> >> >> > > >     [...]
-> >> >> >> > > > 
-> >> >> >> > > > In such a situation, generic_get_mtrr() returns an incorrect size but
-> >> >> >> > > > no side effect were observed during our testing.
-> >> >> >> > > > 
-> >> >> >> > > > For `x86_phys_bits' to be updated before generic_get_mtrr() runs,
-> >> >> >> > > > move the detect_tme() call from init_intel() to early_init_intel().
-> >> >> >> > > 
-> >> >> >> > > Hi,
-> >> >> >> > > 
-> >> >> >> > > This move looks good to me, but +Kirill who is the author of detect_tme() for
-> >> >> >> > > further comments.
-> >> >> >> > > 
-> >> >> >> > > Also I am not sure whether it's worth to consider to move this to
-> >> >> >> > > get_cpu_address_sizes(), which calculates the
-> >> >> >> > > virtual/physical address sizes.
-> >> >> >> > > Thus it seems anything that can impact physical address size
-> >> >> >> > > could be put there.
-> >> >> >> > 
-> >> >> >> > Actually, I am not sure how this patch works. AFAICS after the patch we
-> >> >> >> > have the following callchain:
-> >> >> >> > 
-> >> >> >> > early_identify_cpu()
-> >> >> >> >   this_cpu->c_early_init() (which is early_init_init())
-> >> >> >> >     detect_tme()
-> >> >> >> >       c->x86_phys_bits -= keyid_bits;
-> >> >> >> >   get_cpu_address_sizes(c);
-> >> >> >> >     c->x86_phys_bits = eax & 0xff;
-> >> >> >> > 
-> >> >> >> > Looks like get_cpu_address_sizes() would override what detect_tme() does.
-> >> >> >> 
-> >> >> >> After this patch, early_identify_cpu() calls get_cpu_address_sizes() first and
-> >> >> >> then calls c_early_init(), which calls detect_tme().
-> >> >> >> 
-> >> >> >> So looks no override.  No?
-> >> >> 
-> >> >> No override indeed as get_cpu_address_sizes() is always called before
-> >> >> early_init_intel or init_intel().
-> >> >> 
-> >> >> - init/main.c::start_kernel()
-> >> >>   - arch/x86/kernel/setup.c::setup_arch()
-> >> >>     - arch/x86/kernel/cpu/common.c::early_cpu_init()
-> >> >>       - early_identify_cpu()
-> >> >>         - get_cpu_address_sizes(c)
-> >> >>           c->x86_phys_bits = eax & 0xff;
-> >> >>         - arch/x86/kernel/cpu/intel.c::early_init_intel()
-> >> >>           - detect_tme()
-> >> >>             c->x86_phys_bits -= keyid_bits;
-> >> >
-> >> > Hmm.. Do I read it wrong:
-> >> >
-> >> > 	static void __init early_identify_cpu(struct cpuinfo_x86 *c)
-> >> > 	{
-> >> > 	...
-> >> > 		/* cyrix could have cpuid enabled via c_identify()*/
-> >> > 		if (have_cpuid_p()) {
-> >> > 		...
-> >> > 		        // Here we call early_intel_init()
-> >> > 			if (this_cpu->c_early_init)
-> >> > 				this_cpu->c_early_init(c);
-> >> > 			...
-> >> > 		}
-> >> >
-> >> > 		get_cpu_address_sizes(c);
-> >> > 	...
-> >> > 	}
-> >> >
-> >> > ?
-> >> >
-> >> > As far as I see get_cpu_address_sizes() called after early_intel_init().
-> >> 
-> >> On `58720809f527 v6.6-rc6 6.6-rc6 2de3c93ef41b' is what I have:
-> >> 
-> >> ,----
-> >> | 1599  /* cyrix could have cpuid enabled via c_identify()*/
-> >> | 1600  if (have_cpuid_p()) {
-> >> | 1601  	cpu_detect(c);
-> >> | 1602  	get_cpu_vendor(c);
-> >> | 1603  	get_cpu_cap(c);
-> >> | 1604  	get_cpu_address_sizes(c);                   <= called first
-> >> | 1605  	setup_force_cpu_cap(X86_FEATURE_CPUID);
-> >> | 1606  	cpu_parse_early_param();
-> >> | 1607  
-> >> | 1608  	if (this_cpu->c_early_init)
-> >> | 1609  		this_cpu->c_early_init(c);
-> >> | 1610  
-> >> | 1611  	c->cpu_index = 0;
-> >> | 1612  	filter_cpuid_features(c, false);
-> >> | 1613  
-> >> | 1614  	if (this_cpu->c_bsp_init)
-> >> | 1615  		this_cpu->c_bsp_init(c);
-> >> | 1616  } else {
-> >> | 1617  	setup_clear_cpu_cap(X86_FEATURE_CPUID);
-> >> | 1618  }
-> >> `----
-> >> Listing 1: arch/x86/kernel/cpu/common.c
-> >> 
-> >> => get_cpu_address_sizes() is called first which is also conform to my
-> >>    experiments and instrumentation.
-> >
-> > Ah. It got patched in tip tree. See commit fbf6449f84bf.
-> 
-> This commit breaks AMD code as early_init_amd() calls
-> early_detect_mem_encrypt() to adjust x86_phys_bits which is not
-> initialized properly and then overwritten after.
 
-Adam, any comments?
+* Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+> Em Mon, Oct 16, 2023 at 12:55:33PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Mon, Oct 16, 2023 at 12:51:52PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > > Now back at testing with with cgroups.
+> 
+> > Humm, even without the -G I get:
+> 
+> > [root@five ~]# perf stat -e context-switches,cgroup-switches perf bench sched pipe  -l 10000
+> > # Running 'sched/pipe' benchmark:
+> > # Executed 10000 pipe operations between two processes
+>  
+> >      Total time: 0.082 [sec]
+>  
+> >        8.246400 usecs/op
+> >          121265 ops/sec
+>  
+> >  Performance counter stats for 'perf bench sched pipe -l 10000':
+>  
+> >             20,002      context-switches
+> >             20,002      cgroup-switches
+> 
+> Same number, but then I forgot to add the 'taskset -c 0' part of the
+> command line, if I have it:
+
+Side note: it might make sense to add a sane cpumask/affinity setting 
+option to perf stat itself:
+
+  perf stat --cpumask 
+
+... or so?
+
+We do have -C:
+
+    -C, --cpu <cpu>       list of cpus to monitor in system-wide
+
+... but that's limited to --all-cpus, right?
+
+Perhaps we could extend --cpu to non-system-wide runs too?
+
+Thanks,
+
+	Ingo
