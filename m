@@ -2,307 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B8F7CC32A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 14:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3CA37CC32D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 14:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343496AbjJQM1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 08:27:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43192 "EHLO
+        id S1343642AbjJQM2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 08:28:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232268AbjJQM1y (ORCPT
+        with ESMTP id S232763AbjJQM2P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 08:27:54 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61E3FD;
-        Tue, 17 Oct 2023 05:27:51 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 5A4A321C3D;
-        Tue, 17 Oct 2023 12:27:50 +0000 (UTC)
-Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 2108E2C5EF;
-        Tue, 17 Oct 2023 12:27:49 +0000 (UTC)
-Date:   Tue, 17 Oct 2023 14:27:47 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-modules@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
-        Lucas De Marchi <lucas.de.marchi@gmail.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Jiri Slaby <jslaby@suse.com>, Jan Engelhardt <jengelh@inai.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH rebased] kbuild: rpm-pkg: Fix build with non-default
- MODLIB
-Message-ID: <20231017122747.GH6241@kitsune.suse.cz>
-References: <20231005150728.3429-1-msuchanek@suse.de>
- <CAK7LNAQh7vCQ859RPkL3SDr2d4ptt5OVCr66fkPKGcvxDUHtkw@mail.gmail.com>
- <20231009085208.GT6241@kitsune.suse.cz>
- <CAK7LNASeMEKVi5c0PEow5KSdN7rsm7UYEf2smWOSkYOhr_5fVQ@mail.gmail.com>
- <20231009140733.GV6241@kitsune.suse.cz>
- <CAK7LNAQQMFUt4R1m_U8kBY5=BvxD_dMuE4MD4kpd48WK1E+AGA@mail.gmail.com>
- <20231010101552.GW6241@kitsune.suse.cz>
- <CAK7LNASX2_-xt3Qvxie_G=Q4fuVYR6eE47QjQ5NZf7QxY-4_tQ@mail.gmail.com>
- <20231017104453.GG6241@kitsune.suse.cz>
- <CAK7LNASKPg0JK0QsLGb1Rfx2ysvHJTm3NFOvtwOpZRz4-20T8w@mail.gmail.com>
+        Tue, 17 Oct 2023 08:28:15 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AACD513A
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 05:28:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E166DC433C8;
+        Tue, 17 Oct 2023 12:28:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697545693;
+        bh=LrC/4LpK+Qmq0CP6UaMCTxygoYhd7Sg2HB4cCDrUJc0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Kg9x2Do69Icb6QII7+Io3nHRzveUyZry0e0JacmXaIJpNh2f3rfQiKupjBHtMZ5s/
+         d5dVrOt4WL0tgQCkxWBz/OKzrqRWbpz0x4m/RDRwOHmyhkXnNQW+sH4AzH5VcaqhaU
+         NRwEhG7kuCf1/eITPY1z2N3apSxJO5IY4c0Q7rO1lOHpR8fE3HTFJgKKg5X8qWzJia
+         0Z63N0VmVJkneIX2M94YJpD90ckqOuDoerA9tvZ8I/Jta/spjaMQqco60wQEbIzjuX
+         C1q0ngXNnzhC+HejD/9VUp6mG0LOqZ7kfkmilOm/lyZXvnjrR+68jdjUSTmuF42Vgh
+         XRQ6R8JwuZ2fQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 1FB0840016; Tue, 17 Oct 2023 09:28:10 -0300 (-03)
+Date:   Tue, 17 Oct 2023 09:28:10 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org
+Subject: [perf stat] Extend --cpu to non-system-wide runs too? was Re: [PATCH
+ v3] perf bench sched pipe: Add -G/--cgroups option
+Message-ID: <ZS592qxF3YxmCoG1@kernel.org>
+References: <20231016044225.1125674-1-namhyung@kernel.org>
+ <ZS0D53ckVx356k4o@gmail.com>
+ <ZS1Y5PhXhp384ynY@kernel.org>
+ <ZS1ajf/9HmgUyyCl@kernel.org>
+ <ZS1cGMgyEDJQbwq9@kernel.org>
+ <ZS1c9RCh9MkzPbFG@kernel.org>
+ <ZS2ecyCVpK8B2cQq@kernel.org>
+ <ZS5yl3RzVGKBkCvY@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK7LNASKPg0JK0QsLGb1Rfx2ysvHJTm3NFOvtwOpZRz4-20T8w@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [-4.00 / 50.00];
-         TAGGED_RCPT(0.00)[];
-         REPLY(-4.00)[]
-X-Spam-Score: -4.00
-X-Rspamd-Queue-Id: 5A4A321C3D
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZS5yl3RzVGKBkCvY@gmail.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 09:05:29PM +0900, Masahiro Yamada wrote:
-> On Tue, Oct 17, 2023 at 7:44 PM Michal Suchánek <msuchanek@suse.de> wrote:
-> >
-> > On Tue, Oct 17, 2023 at 07:15:50PM +0900, Masahiro Yamada wrote:
-> > > > >
-> > > > > Let me add more context to my question.
-> > > > >
-> > > > >
-> > > > > I am interested in the timing when
-> > > > > 'pkg-config --print-variables kmod | grep module_directory'
-> > > > > is executed.
-> > > > >
-> > > > >
-> > > > >
-> > > > > 1.  Build a SRPM on machine A
-> > > > >
-> > > > > 2.  Copy the SRPM from machine A to machine B
-> > > > >
-> > > > > 3.  Run rpmbuild on machine B to build the SRPM into a RPM
-> > > > >
-> > > > > 4.  Copy the RPM from machine B to machine C
-> > > > >
-> > > > > 5.  Install the RPM to machine C
-> > > >
-> > > > As far as I am aware the typical use case is two step:
-> > > >
-> > > > 1. run make rpm-pkg on machine A
-> > > > 2. install the binary rpm on machine C that might not have build tools
-> > > >    or powerful enough CPU
-> > > >
-> > > > While it's theoretically possible to use the srpm to rebuild the binary
-> > > > rpm independently of the kernel git tree I am not aware of people
-> > > > commonly doing this.
-> > >
-> > >
-> > >
-> > > If I correctly understand commit
-> > > 8818039f959b2efc0d6f2cb101f8061332f0c77e,
-> > > those Redhat guys pack a SRPM on a local machine,
-> > > then send it to their build server called 'koji'.
-> > >
-> > > Otherwise, there is no reason
-> > > to have 'make srcrpm-pkg'.
-> > >
-> > >
-> > >
-> > > I believe "A == B" is not always true,
-> > > but we can assume "distro(A) == distro(B)" is always met
-> > > for simplicity.
-> > >
-> > > So, I am OK with configuration at the SRPM time.
-> >
-> > Even if the distro does not match it will likely work to configure SRPM
-> > for non-matching distro and then build it on the target distro but I have
-> > not tested it.
+Em Tue, Oct 17, 2023 at 01:40:07PM +0200, Ingo Molnar escreveu:
+> Side note: it might make sense to add a sane cpumask/affinity setting 
+> option to perf stat itself:
 > 
+>   perf stat --cpumask 
 > 
+> ... or so?
 > 
-> Your approach specifies %{MODLIB} as a fixed string
-> when generating kernel.spec, i.e. at the SRPM time.
+> We do have -C:
 > 
+>     -C, --cpu <cpu>       list of cpus to monitor in system-wide
 > 
->  %files
->  %defattr (-, root, root)
-> -/lib/modules/%{KERNELRELEASE}
-> -%exclude /lib/modules/%{KERNELRELEASE}/build
-> +%{MODLIB}
-> +%exclude %{MODLIB}/build
->  /boot/*
+> ... but that's limited to --all-cpus, right?
 > 
-> 
-> Then, how to change the path later?
+> Perhaps we could extend --cpu to non-system-wide runs too?
 
-Why would you need to change the path later?
+Maybe I misunderstood your question, but its a list of cpus to limit the
+counting:
 
-The SRPM has sources, it does not need to build on the system on which
-it is authored if it is intended for another distribution.
+On a mostly idle system (some browsers, etc):
 
-Of course, you would need to know for what distribution and where it
-wants its modules so that you can specify the location when creating the
-SRPM.
+[root@five ~]# perf stat -C 0,2 -e cycles -I 1000
+#           time             counts unit events
+     1.001012960        207,999,675      cycles
+     2.002152464        157,058,633      cycles
+     3.002985969        174,590,102      cycles
+     4.003411871        216,250,416      cycles
+     5.004392310        180,537,857      cycles
+     6.005387846        171,036,571      cycles
+     7.006386564        156,461,753      cycles
+     8.007532366        158,010,466      cycles
+     9.008682339        164,971,366      cycles
+^C     9.377946210         77,242,809      cycles
 
-> > > > If rebuilding the source rpm on a different machine from where the git
-> > > > tree is located, and possibly on a different distribution is desirable
-> > > > then the detection of the KERNEL_MODULE_DIRECTORY should be added in the
-> > > > rpm spec file as well.
-> > > >
-> > > > > Of course, we are most interested in the module path
-> > > > > of machine C, but it is difficult/impossible to
-> > > > > guess it at the time of building.
-> > > > >
-> > > > > We can assume machine B == machine C.
-> > > > >
-> > > > > We are the second most interested in the module
-> > > > > path on machine B.
-> > > > >
-> > > > > The module path of machine A is not important.
-> > > > >
-> > > > > So, I am asking where you would inject
-> > > > > 'pkg-config --print-variables kmod | grep module_directory'.
-> > > >
-> > > > I don't. I don't think there will be a separate machine B.
-> > > >
-> > > > And I can't really either - so far any attempt at adding support for
-> > > > this has been rejected.
-> > > >
-> > > > Technically the KERNEL_MODULE_DIRECTORY could be set in two steps - one
-> > > > giving the script to run, and one running it, and then it could be run
-> > > > independently in the SRPM as well.
-> > >
-> > >
-> > > At first, I thought your patch [1] was very ugly,
-> > > but I do not think it is so ugly if cleanly implemented.
-> > >
-> > > It won't hurt to allow users to specify the middle part of MODLIB.
-> > >
-> > >
-> > > There are two options.
-> > >
-> > >
-> > > [A]  Add 'MOD_PREFIX' to specify the middle part of MODLIB
-> > >
-> > >
-> > > The top Makefile will look as follows:
-> > >
-> > >
-> > > MODLIB = $(INSTALL_MOD_PATH)$(MOD_PREFIX)/lib/modules/$(KERNELRELEASE)
-> > > export MODLIB
-> > >
-> > >
-> > > It is easier than specifying the entire MODLIB, but you still need
-> > > to manually pass "MOD_PREFIX=/usr" from an env variable or
-> > > the command line.
-> > >
-> > > If MOD_PREFIX is not given, MODLIB is the same as the current one.
-> > >
-> > > [B] Support a dynamic configuration as well
-> > >
-> > >
-> > > MOD_PREFIX ?= $(shell pkg-config --variable=module_prefix libkmod 2>/dev/null)
-> > > export MOD_PREFIX
-> > >
-> > > MODLIB = $(INSTALL_MOD_PATH)$(MOD_PREFIX)/lib/modules/$(KERNELRELEASE)
-> > > export MODLIB
-> >
-> > That's basically the same thing as the patch that has been rejected.
-> >
-> > I used := to prevent calling pkg-config every time MODLIB is used but it
-> > might not be the most flexible wrt overrides.
-> 
-> That's good you care about the cost of $(shell ) invocations.
-> 
-> := is evaluated one time at maximum, but one time at minimum.
-> 
-> $(shell ) is always invoked for non-build targets as
-> "make clean", "make help", etc.
-> That is what I care about.
-> 
-> 
-> ?= is a recursive variable.
-> 
-> The workaround for one-time evaluation is here,
-> https://savannah.gnu.org/bugs/index.php?64746#comment2
-> 
-> However, that is not a problem because I can do it properly somehow,
-> for example, with "private export".
+[root@five ~]#
 
-That's good to know.
+Then:
 
-> > > If MOD_PREFIX is given from an env variable or from the command line,
-> > > it is respected.
-> > >
-> > > If "pkg-config --variable=module_prefix libkmod" works,
-> > > that configuration is applied.
-> > >
-> > > Otherwise, MOD_PREFIX is empty, i.e. fall back to the current behavior.
-> > >
-> > >
-> > > I prefer 'MOD_PREFIX' to 'KERNEL_MODULE_DIRECTORY' in your patch [1]
-> > > because "|| echo /lib/modules" can be omitted.
-> > >
-> > > I do not think we will have such a crazy distro that
-> > > installs modules under /opt/ directory.
-> >
-> > However, I can easily imagine a distribution that would want to put
-> > modules in /usr/lib-amd64-linux/modules.
-> 
-> 
-> Sorry, it is not easy for me.
-> 
-> What is the background of your thought?
+[root@five ~]# perf stat -C 0 -e cycles -I 1000
+#           time             counts unit events
+     1.001019469         69,833,637      cycles
+     2.002133490        111,297,731      cycles
+     3.003225211         90,416,063      cycles
+     4.003663853         34,189,884      cycles
+     5.004689751         34,583,822      cycles
+     6.005659918         33,284,110      cycles
+     7.006660396         62,080,246      cycles
+^C     7.229236075         23,250,207      cycles
 
-That's where every other library and module would go on distributions
-that care about ability to install packages for multiple architectures
-at the same time. AFAIK the workaround is to inclclude the CPU
-architecture in extraversion for the kernel to fit.
+[root@five ~]#
 
-> >
-> > > I could not understand why you inserted
-> > > "--print-variables kmod 2>/dev/null | grep '^module_directory$$' >/dev/null"
-> > > but I guess the reason is the same.
-> > > "pkg-config --variable=module_directory kmod" always succeeds,
-> > > so "|| echo /lib/modules" is never processed.
-> >
-> > Yes, that's the semantics of the tool. The jq version was slightly less
-> > convoluted but required additional tool for building the kernel.
-> 
-> 
-> It IS convoluted.
+But:
 
-That's unfortunate result of how the pkgconfig tool works. By now it is
-even too late to complain to the tool author because it's been like that
-forever, best bet is to to use it as is or pick a different tool for
-configuration.
+[root@five ~]# taskset -c 0 stress-ng --cpu 32  &
+[1] 9859
+[root@five ~]# stress-ng: info:  [9859] defaulting to a 1 day, 0 secs run per stressor
+stress-ng: info:  [9859] dispatching hogs: 32 cpu
 
-> > > I do not know why you parsed kmod.pc instead of libkmod.pc [2]
-> >
-> > Because it's kmod property, not libkmod property.
-> >
-> > Distributions would install libkmod.pc only with development files
-> > whereas the kmod.pc should be installed with the binaries.
-> 
-> 
-> This is up to the kmod maintainer.
-> 
-> If they agree, I do not mind where the configuration comes from.
+[root@five ~]#
 
-So far it has not been commented on. Maybe it's time for a ping.
+[root@five ~]# perf stat -C 0,2 -e cycles -I 1000
+#           time             counts unit events
+     1.001024379      4,838,680,041      cycles
+     2.008891551      4,849,936,963      cycles
+     3.017168975      4,835,710,170      cycles
+     4.025437789      4,847,294,589      cycles
+     5.033239780      4,825,463,385      cycles
+     6.039332959      4,834,989,373      cycles
+^C     6.067478756        125,338,359      cycles
 
-Thanks
+[root@five ~]# perf stat -C 2 -e cycles -I 1000
+#           time             counts unit events
+     1.000215845         21,244,609      cycles
+     2.001216573         51,337,887      cycles
+     3.002278103         49,421,924      cycles
+     4.003339432         33,270,235      cycles
+^C     4.338990744         14,178,759      cycles
 
-Michal
+[root@five ~]# perf stat -C 0 -e cycles -I 1000
+#           time             counts unit events
+     1.000801562      4,767,090,700      cycles
+     2.001800540      4,761,384,154      cycles
+     3.002801468      4,768,816,073      cycles
+^C     3.313349213      1,479,254,494      cycles
 
-> > > [1] https://lore.kernel.org/linux-kbuild/20230718120348.383-1-msuchanek@suse.de/
-> > > [2] https://github.com/kmod-project/kmod/blob/v31/configure.ac#L295
+[root@five ~]#
+
+If we try to specify a pid and cpu:
+
+[root@five ~]# taskset -c 0 sleep 100m &
+[2] 9964
+[root@five ~]#
+[root@five ~]# perf stat -C 0 -p 9964 -e cycles -I 1000
+PID/TID switch overriding CPU
+#           time             counts unit events
+     1.000929383      <not counted>      cycles
+     2.001933839      <not counted>      cycles
+     3.002927605      <not counted>      cycles
+     4.003983793      <not counted>      cycles
+     5.005051180      <not counted>      cycles
+     6.006123168      <not counted>      cycles
+     7.007182796      <not counted>      cycles
+     8.008261274      <not counted>      cycles
+     9.009324991      <not counted>      cycles
+^C     9.454324736      <not counted>      cycles
+
+[root@five ~]#
+
+
+[root@five ~]# pidof stress-ng
+9891 9890 9889 9888 9887 9886 9885 9884 9883 9882 9881 9880 9879 9878 9877 9876 9875 9874 9873 9872 9871 9870 9869 9868 9867 9866 9865 9864 9863 9862 9861 9860 9859
+[root@five ~]# perf stat -C 0 -p 9860 -e cycles -I 1000
+PID/TID switch overriding CPU
+#           time             counts unit events
+     1.001045336        144,691,886      cycles
+     2.002170624        134,088,343      cycles
+     3.003257911        149,148,823      cycles
+^C     3.301585761         40,468,152      cycles
+
+[root@five ~]#
+
+Do you want to profile some specific PID only when it runs on some
+specific CPU?
+
+That should work, as per man perf_event_open:
+
+       pid == 0 and cpu >= 0
+              This measures the calling process/thread only when running on the specified CPU.
+
+But, as we saw above, tooling is preventing us from doing that :-\
+
+- Arnaldo
