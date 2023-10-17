@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0F057CBA1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 07:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F09E7CBA1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 07:26:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234524AbjJQF0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 01:26:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34530 "EHLO
+        id S234478AbjJQF0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 01:26:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234656AbjJQFZh (ORCPT
+        with ESMTP id S234541AbjJQFZi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 01:25:37 -0400
+        Tue, 17 Oct 2023 01:25:38 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8171D1B5;
-        Mon, 16 Oct 2023 22:25:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B541E8;
+        Mon, 16 Oct 2023 22:25:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697520323; x=1729056323;
+  t=1697520327; x=1729056327;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references;
-  bh=Ui1Hqm41JSxotFlyE4G0v69tZLA9xc0/FYrcSUnN77Y=;
-  b=Nbm82neaf8pjai/Dy54azXizfXgtaURLoYmzxufKk6uy9d3WxcIzQOTT
-   L+hlwlb7fnxLpcxqUavMUwmTi5g8z/HHGIaQro14o2U6/XEaPAkwR/f4L
-   DNmlby21/WU0ohkl7jd4LMBEs8zIMAet8ohI+wkFYaCfSyO8+I51EZ8YF
-   3rIULRvrdQhEBSJEvdoixFkrefb8CRXkWWFTMtdyi3ZkzT/wOXVI24ITi
-   rEVJnZ7BmQgxHVKI52SpQ+2j67FgTb6aeFut32VlE74vIp6W0csMesqXF
-   PGxaM3ONt3Yh8jPjxu1vfEJk/hn312MjYemNmq7CyZ6gaYe/5FUdQAH9H
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="388561779"
+  bh=R2Jsg78czvuZbCB0J7ctuq7XItBBFyIcdUtpVY0Wy+4=;
+  b=CdCx5rS+vsR1U94YyuI5Nd84A9pvyQHaeW86dL3IBm9kKk8rlNALP+nm
+   Vq0vSgi78cne8l1VGUbQOKz+NiMTircQV6dRfv0p7icsnTxzKh09d+gNA
+   p1AqxAYbPUXhDqxtvw6ryOcavdVsD9PiTibHPzx201iswcg3zl6PT6l5G
+   9aMAZMtmYpuB2yY9qEklFLR+cdP8XHiHDqvRQORznl8sy6euo3Acp2T6q
+   k62rsK7rHtxbGaafat3E1fHk4lruVNZPE+lwKCVTz5Vb7SsiAZAPTL7PG
+   zmJ/AZ7xb6AUQB9O1QrjtUvZzxIvGMQMs9CIvilN0TiZdLkIOfSIpHQ7R
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="388561793"
 X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="388561779"
+   d="scan'208";a="388561793"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 22:25:22 -0700
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 22:25:27 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="1087358019"
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="1087358023"
 X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="1087358019"
+   d="scan'208";a="1087358023"
 Received: from inlubt0316.iind.intel.com ([10.191.20.213])
-  by fmsmga005.fm.intel.com with ESMTP; 16 Oct 2023 22:25:18 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 16 Oct 2023 22:25:22 -0700
 From:   lakshmi.sowjanya.d@intel.com
 To:     tglx@linutronix.de, jstultz@google.com, giometti@enneenne.com,
         corbet@lwn.net, linux-kernel@vger.kernel.org
@@ -47,9 +47,9 @@ Cc:     x86@kernel.org, linux-doc@vger.kernel.org,
         christopher.s.hall@intel.com, pandith.n@intel.com,
         mallikarjunappa.sangannavar@intel.com, thejesh.reddy.t.r@intel.com,
         lakshmi.sowjanya.d@intel.com
-Subject: [PATCH v1 5/6] Documentation: driver-api: pps: Add Intel Timed I/O PPS generator
-Date:   Tue, 17 Oct 2023 10:54:56 +0530
-Message-Id: <20231017052457.25287-6-lakshmi.sowjanya.d@intel.com>
+Subject: [PATCH v1 6/6] ABI: pps: Add ABI documentation for Intel TIO
+Date:   Tue, 17 Oct 2023 10:54:57 +0530
+Message-Id: <20231017052457.25287-7-lakshmi.sowjanya.d@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231017052457.25287-1-lakshmi.sowjanya.d@intel.com>
 References: <20231017052457.25287-1-lakshmi.sowjanya.d@intel.com>
@@ -65,46 +65,27 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
 
-Add Intel Timed I/O PPS usage instructions.
+Document sysfs interface for Intel Timed I/O PPS driver
 
-Co-developed-by: Pandith N <pandith.n@intel.com>
-Signed-off-by: Pandith N <pandith.n@intel.com>
 Signed-off-by: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- Documentation/driver-api/pps.rst | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ Documentation/ABI/testing/sysfs-platform-pps-tio | 7 +++++++
+ 1 file changed, 7 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-platform-pps-tio
 
-diff --git a/Documentation/driver-api/pps.rst b/Documentation/driver-api/pps.rst
-index 2d6b99766ee8..35bba2bf98a8 100644
---- a/Documentation/driver-api/pps.rst
-+++ b/Documentation/driver-api/pps.rst
-@@ -240,3 +240,25 @@ delay between assert and clear edge as small as possible to reduce system
- latencies. But if it is too small slave won't be able to capture clear edge
- transition. The default of 30us should be good enough in most situations.
- The delay can be selected using 'delay' pps_gen_parport module parameter.
-+
-+
-+Intel Timed I/O PPS signal generator
-+------------------------------------
-+
-+Intel Timed I/O is a high precision device, present on 2019 and newer Intel
-+CPUs, that can generate PPS signal.
-+
-+Timed I/O and system time are both driven by same hardware clock, The signal
-+generated with a precision of ~20 nanoseconds. The generated PPS signal
-+is used to synchronize an external device with system clock. For example,
-+Share your clock with a device that receives PPS signal, generated by
-+Timed I/O device. There are dedicated Timed I/O pins to deliver PPS signal
-+to an external device.
-+
-+Usage of Intel Timed I/O as PPS generator:
-+
-+Start generating PPS signal::
-+        $echo 1 > /sys/devices/platform/INTCxxxx\:00/enable
-+
-+Stop generating PPS signal::
-+        $echo 0 > /sys/devices/platform/INTCxxxx\:00/enable
+diff --git a/Documentation/ABI/testing/sysfs-platform-pps-tio b/Documentation/ABI/testing/sysfs-platform-pps-tio
+new file mode 100644
+index 000000000000..d8be3a6d5795
+--- /dev/null
++++ b/Documentation/ABI/testing/sysfs-platform-pps-tio
+@@ -0,0 +1,7 @@
++What:		/sys/devices/platform/INTCxxxx/enable
++Date:		January 2024
++KernelVersion	6.8
++Contact:	Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
++Description:
++		(RW) Enable or disable PPS TIO generator output, read to
++		see the status of hardware(Enabled/Disabled).
 -- 
 2.17.1
 
