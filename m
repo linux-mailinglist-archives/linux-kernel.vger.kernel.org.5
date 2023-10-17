@@ -2,46 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27A187CB825
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 03:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2954E7CB82B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 03:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233444AbjJQBzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 21:55:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36422 "EHLO
+        id S234065AbjJQB5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 21:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231955AbjJQBzq (ORCPT
+        with ESMTP id S234341AbjJQB51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 21:55:46 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C36B6B0;
-        Mon, 16 Oct 2023 18:55:43 -0700 (PDT)
-Received: from kwepemd100002.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S8cQB0jRqzvQ9B;
-        Tue, 17 Oct 2023 09:50:58 +0800 (CST)
-Received: from M910t.huawei.com (10.110.54.157) by
- kwepemd100002.china.huawei.com (7.221.188.184) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.23; Tue, 17 Oct 2023 09:55:40 +0800
-From:   Changbin Du <changbin.du@huawei.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     Jiri Olsa <jolsa@kernel.org>, <linux-perf-users@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Changbin Du <changbin.du@huawei.com>
-Subject: [RESEND PATCH] perf: script: fix missing ',' for fields option
-Date:   Tue, 17 Oct 2023 09:55:24 +0800
-Message-ID: <20231017015524.797065-1-changbin.du@huawei.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.110.54.157]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemd100002.china.huawei.com (7.221.188.184)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        Mon, 16 Oct 2023 21:57:27 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5A8B4
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 18:57:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2EA6EC433C9;
+        Tue, 17 Oct 2023 01:57:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697507846;
+        bh=cB0B83J1zhfyQDLQOZDXJOXMnckvdXonfb/HSb+4UWY=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Vlek4TkekVwz4hQvvYGtoEkYXWmBgPSEaq6wQ2kDNNnWRTpWPTIuZgdUQCpSwD1MU
+         U7nAq2EjMCwIoNs5Nz2XK3QN3UdiiElahRPJXXLDmU5861F/uYMhNvrUGjJX2bMl/m
+         U1oF6iuM7oBe/aRIxcZ7nv+Vjn+BXX6WIuGUj1vhIbHm5SmKkU+r9yzZjixT0m452u
+         sfoiYQ5lhmcmvanfX2woUDKWb0BvOax2vC0dxbSgGs88mBkTDpwykO5Cg8mBF+DVVw
+         Ps6XOH3SucvaOl3RlkBJvo1OCgYtU2L0Bp1cis0y9C9t1K3fZAa2Ps1iENAL87HNEF
+         9WSgx6bAZ9y/w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 13015C43170;
+        Tue, 17 Oct 2023 01:57:26 +0000 (UTC)
+Subject: Re: [GIT PULL] probes: Fixes for 6.6-rc6
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20231017103949.3e81d95ecf737e55bdbdf7f3@kernel.org>
+References: <20231017103949.3e81d95ecf737e55bdbdf7f3@kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20231017103949.3e81d95ecf737e55bdbdf7f3@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git probes-fixes-v6.6-rc6
+X-PR-Tracked-Commit-Id: 700b2b439766e8aab8a7174991198497345bd411
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 213f891525c222e8ed145ce1ce7ae1f47921cb9c
+Message-Id: <169750784607.28912.4615648733948126370.pr-tracker-bot@kernel.org>
+Date:   Tue, 17 Oct 2023 01:57:26 +0000
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,26 +57,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A comma is missed at the end of line.
+The pull request you sent on Tue, 17 Oct 2023 10:39:49 +0900:
 
-Signed-off-by: Changbin Du <changbin.du@huawei.com>
----
- tools/perf/builtin-script.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git probes-fixes-v6.6-rc6
 
-diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-index 200b3e7ea8da..c01894b9b9bf 100644
---- a/tools/perf/builtin-script.c
-+++ b/tools/perf/builtin-script.c
-@@ -3899,7 +3899,7 @@ int cmd_script(int argc, const char **argv)
- 		     "comma separated output fields prepend with 'type:'. "
- 		     "+field to add and -field to remove."
- 		     "Valid types: hw,sw,trace,raw,synth. "
--		     "Fields: comm,tid,pid,time,cpu,event,trace,ip,sym,dso,dsoff"
-+		     "Fields: comm,tid,pid,time,cpu,event,trace,ip,sym,dso,dsoff,"
- 		     "addr,symoff,srcline,period,iregs,uregs,brstack,"
- 		     "brstacksym,flags,data_src,weight,bpf-output,brstackinsn,"
- 		     "brstackinsnlen,brstackoff,callindent,insn,insnlen,synth,"
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/213f891525c222e8ed145ce1ce7ae1f47921cb9c
+
+Thank you!
+
 -- 
-2.25.1
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
