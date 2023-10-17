@@ -2,105 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 865B27CC7B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:44:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C597CC7BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343856AbjJQPot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 11:44:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58110 "EHLO
+        id S1344104AbjJQPpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 11:45:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235059AbjJQPor (ORCPT
+        with ESMTP id S229586AbjJQPpT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 11:44:47 -0400
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39FFEB0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 08:44:45 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 53FCB3200AC5;
-        Tue, 17 Oct 2023 11:44:41 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 17 Oct 2023 11:44:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1697557480; x=1697643880; bh=WO
-        5oCwd0emrb8IPguFXu9R6WNvZlreecdRq2Lp8IU04=; b=SOiTF1mRlvMAzZ1jVp
-        9Ko8LKGkXdvaUBlo2QM/9ta3nyXLLYwf5FUubEWn7qf4XG9e9sYu0JPCm3pfR7dS
-        X8C65wawMeSAoFw7g1ar/bkL3lKhLe3ROltJRjtbQaWX3/GpMEhC6XDK/Hbua/bx
-        KxPpVBMmJlJ1Cdcblv5sXjiT6uVRX7go5j5WP1nhN4kUtIFu5yxLnB6Qh8k2Q0Mq
-        OZaqp5LOCz8FfZAgA8TCrrlQECoc2ao3z9+KP/sPKQ8Rxj1EfOyXqVrQhuWFWzWI
-        o9oTqDoYi7o2yWb2bxTz6BWU99mJiV5t0u42D1Q72bq3iXjAeQObeySVWB9kHXOn
-        pRsQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1697557480; x=1697643880; bh=WO5oCwd0emrb8
-        IPguFXu9R6WNvZlreecdRq2Lp8IU04=; b=tHWhT9ILk8dOCLicGeopxN9IZuLmJ
-        tsLO55chUNSCbYIvaqq9QB3GSclT+ChP6pPOKjkP7w93+NYIqREpnGNfYJAWLEkF
-        vS/Ln7f89MQsHRsmvOgM+85tuZ/RCMwwNNef0EtP75EIVxV4L+OBGiFUGICSGYMY
-        8DyyyQ2S9Ph7171PNxHebMOUxmckXpgguUTZm4vUmhgG5hZRk3Qa+UYPWnD4U8ky
-        LZFP/YA3re90XUeqd4cA0ki7F8Kf50AUfY0M4KzAf6hcVzqUmtUp8JRbog+rsJ0p
-        cxYXThKNMBhq5G/pxaS+J8kyCL7bg6+f3UxFOISxkn6iA0SLD3ZoGuA5w==
-X-ME-Sender: <xms:6KsuZZpc_eD4XZDaFZRaQ_jIG-dspA-827ffkQNeCZd0ppzztMR5Og>
-    <xme:6KsuZbrlAJ9uB3zJ_8PN8z9em-jqkPoBFkR_RKqYhNCPdJ3-eFFyOkSV_CFwCYwII
-    f6cSWu4XroL_0W9ZFQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrjedvgdeltdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:6KsuZWNEn4zHV-egc_937wqNd2EQiE1EvKI3cFRGU1uyTMKAhTMIKQ>
-    <xmx:6KsuZU58aCEjEkYE66RvzYV94mo4lCk45ctMB7CV49okoDB7b8rKYw>
-    <xmx:6KsuZY7FVpEXt9SWVfJIQOeR1A6hRxwPZshRhd7gZoJBi9oSFMH_Yw>
-    <xmx:6KsuZWmk5xB-nfemiOuqh9VJKIv34ULpBbXd1ZMayYg9a4sk6LSTDA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 77E9DB60089; Tue, 17 Oct 2023 11:44:40 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1019-ged83ad8595-fm-20231002.001-ged83ad85
+        Tue, 17 Oct 2023 11:45:19 -0400
+Received: from out-204.mta1.migadu.com (out-204.mta1.migadu.com [IPv6:2001:41d0:203:375::cc])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A9FCB0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 08:45:17 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1697557515;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=lemsX7vhxu4js2CfwxN22PvTUw6JIiATv2g1JPaIjFU=;
+        b=uN24GXJpRZk/OgGh+X3H2+ZPV7U57tOlzJa1pdg68vEeMyCb3k8Ltg6+sL101i6+UFMXqg
+        aoSLXJCYUTZfTf2dxI3zFkONVwF8pLQnfJ5YHvafFO47JLqmfqQofBpF1M8VXOKggln2va
+        gsZV2NI5jM9645zCQ1OD47R4nZ6pKOk=
+From:   chengming.zhou@linux.dev
+To:     cl@linux.com, penberg@kernel.org
+Cc:     rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, vbabka@suse.cz,
+        roman.gushchin@linux.dev, 42.hyeyoo@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, chengming.zhou@linux.dev,
+        Chengming Zhou <zhouchengming@bytedance.com>
+Subject: [RFC PATCH 0/5] slub: Delay freezing of CPU partial slabs
+Date:   Tue, 17 Oct 2023 15:44:34 +0000
+Message-Id: <20231017154439.3036608-1-chengming.zhou@linux.dev>
 MIME-Version: 1.0
-Message-Id: <cfc27d6b-a2ae-495d-b819-f3cc35f82844@app.fastmail.com>
-In-Reply-To: <ZS6lxxmGDy1eRWoh@yury-ThinkPad>
-References: <20231017143408.2876181-1-arnd@kernel.org>
- <ZS6lxxmGDy1eRWoh@yury-ThinkPad>
-Date:   Tue, 17 Oct 2023 17:44:19 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Yury Norov" <yury.norov@gmail.com>,
-        "Arnd Bergmann" <arnd@kernel.org>
-Cc:     "Jiri Olsa" <jolsa@kernel.org>, "Song Liu" <songliubraving@fb.com>,
-        "Alexei Starovoitov" <ast@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] buildid: reduce header file dependencies for module
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023, at 17:29, Yury Norov wrote:
-> On Tue, Oct 17, 2023 at 04:33:58PM +0200, Arnd Bergmann wrote:
->> 
->> This is easily avoided by changing linux/buildid.h to no longer depend on
->> linux/mm_types.h, a header that pulls in a huge number of indirect dependencies.
->> 
->> Fixes: b9c957f554442 ("bitmap: move bitmap_*_region() functions to bitmap.h")
->> Fixes: bd7525dacd7e2 ("bpf: Move stack_map_get_build_id into lib")
->> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->
-> Acked-by: Yury Norov <yury.norov@gmail.com>
->
-> Would you like me to add this into bitmap-for-next?
+From: Chengming Zhou <zhouchengming@bytedance.com>
 
-Yes, I think that would be best to avoid the regression.
+1. Problem
+==========
+Now we have to freeze the slab when get from the node partial list, and
+unfreeze the slab when put to the node partial list. Because we need to
+rely on the node list_lock to synchronize the "frozen" bit changes.
 
-Thanks,
+This implementation has some drawbacks:
 
-     Arnd
+ - Alloc path: twice cmpxchg_double.
+   It has to get some partial slabs from node when the allocator has used
+   up the CPU partial slabs. So it freeze the slab (one cmpxchg_double)
+   with node list_lock held, put those frozen slabs on its CPU partial
+   list. Later ___slab_alloc() will cmpxchg_double try-loop again if that
+   slab is picked to use.
+
+ - Alloc path: amplified contention on node list_lock.
+   Since we have to synchronize the "frozen" bit changes under the node
+   list_lock, the contention of slab (struct page) can be transferred
+   to the node list_lock. On machine with many CPUs in one node, the
+   contention of list_lock will be amplified by all CPUs' alloc path.
+
+   The current code has to workaround this problem by avoiding using
+   cmpxchg_double try-loop, which will just break and return when
+   contention of page encountered and the first cmpxchg_double failed.
+   But this workaround has its own problem.
+
+ - Free path: redundant unfreeze.
+   __slab_free() will freeze and cache some slabs on its partial list,
+   and flush them to the node partial list when exceed, which has to
+   unfreeze those slabs again under the node list_lock. Actually we
+   don't need to freeze slab on CPU partial list, in which case we
+   can save the unfreeze cmpxchg_double operations in flush path.
+
+2. Solution
+===========
+We solve these problems by leaving slabs unfrozen when moving out of
+the node partial list and on CPU partial list, so "frozen" bit is 0.
+
+These partial slabs won't be manipulate concurrently by alloc path,
+the only racer is free path, which may manipulate its list when !inuse.
+So we need to introduce another synchronization way to avoid it, we
+use a bit in slab->flags to indicate whether the slab is on node partial
+list or not, only in that case we can manipulate the slab list.
+
+The slab will be delay frozen when it's picked to actively use by the
+CPU, it becomes full at the same time, in which case we still need to
+rely on "frozen" bit to avoid manipulating its list. So the slab will
+be frozen only when activate use and be unfrozen only when deactivate.
+
+3. Patches
+==========
+Patch-1 introduce the new slab->flags to indicate whether the slab is
+on node partial list, which is protected by node list_lock.
+
+Patch-2 change the free path to check if slab is on node partial list,
+only in which case we can manipulate its list. Then we can keep unfrozen
+partial slabs out of node partial list, since the free path won't
+concurrently manipulate with it.
+
+Patch-3 optimize the deactivate path, we can directly unfreeze the slab,
+(since node list_lock is not needed to synchronize "frozen" bit anymore)
+then grab node list_lock if it's needed to put on the node partial list.
+
+Patch-4 change to don't freeze slab when moving out from node partial
+list or put on the CPU partial list, and don't need to unfreeze these
+slabs when put back to node partial list from CPU partial list.
+
+Patch-5 change the alloc path to freeze the CPU partial slab when picked
+to use.
+
+4. Testing
+==========
+We just did some simple testing on a server with 128 CPUs (2 nodes) to
+compare performance for now.
+
+ - perf bench sched messaging -g 5 -t -l 100000
+   baseline	RFC
+   7.042s	6.966s
+   7.022s	7.045s
+   7.054s	6.985s
+
+ - stress-ng --rawpkt 128 --rawpkt-ops 100000000
+   baseline	RFC
+   2.42s	2.15s
+   2.45s	2.16s
+   2.44s	2.17s
+
+It shows above there is about 10% improvement on stress-ng rawpkt
+testcase, although no much improvement on perf sched bench testcase.
+
+Thanks for any comment and code review!
+
+Chengming Zhou (5):
+  slub: Introduce on_partial()
+  slub: Don't manipulate slab list when used by cpu
+  slub: Optimize deactivate_slab()
+  slub: Don't freeze slabs for cpu partial
+  slub: Introduce get_cpu_partial()
+
+ mm/slab.h |   2 +-
+ mm/slub.c | 257 +++++++++++++++++++++++++++++++-----------------------
+ 2 files changed, 150 insertions(+), 109 deletions(-)
+
+-- 
+2.40.1
+
