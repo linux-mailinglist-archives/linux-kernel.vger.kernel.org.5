@@ -2,47 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C4D37CB96B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 05:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B1D7CB96F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 05:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234302AbjJQDtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Oct 2023 23:49:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57200 "EHLO
+        id S234086AbjJQDy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Oct 2023 23:54:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231856AbjJQDtM (ORCPT
+        with ESMTP id S229666AbjJQDyZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Oct 2023 23:49:12 -0400
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A67BE83;
-        Mon, 16 Oct 2023 20:49:09 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R701e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0VuLP0Gd_1697514545;
-Received: from 30.221.128.209(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0VuLP0Gd_1697514545)
-          by smtp.aliyun-inc.com;
-          Tue, 17 Oct 2023 11:49:06 +0800
-Message-ID: <49847786-9914-b615-56d6-f39fbc6e03c2@linux.alibaba.com>
-Date:   Tue, 17 Oct 2023 11:49:04 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH net-next v4 00/18] net/smc: implement virtual ISM
- extension and loopback-ism
-From:   Wen Gu <guwen@linux.alibaba.com>
-To:     Niklas Schnelle <schnelle@linux.ibm.com>, kgraul@linux.ibm.com,
-        wenjia@linux.ibm.com, jaka@linux.ibm.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc:     wintera@linux.ibm.com, gbayer@linux.ibm.com, pasic@linux.ibm.com,
-        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-        dust.li@linux.alibaba.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1695568613-125057-1-git-send-email-guwen@linux.alibaba.com>
- <dcc46fedda57e7e3ade14685ddb262309544ad7e.camel@linux.ibm.com>
- <d04f304b-fe41-09b5-b2a5-5ce0e8254e41@linux.alibaba.com>
-In-Reply-To: <d04f304b-fe41-09b5-b2a5-5ce0e8254e41@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-13.2 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        Mon, 16 Oct 2023 23:54:25 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58FAE83
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Oct 2023 20:54:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697514863; x=1729050863;
+  h=date:from:to:cc:subject:message-id;
+  bh=t2oZN08HImoxr/VtOKq/cS4tfMf8zgoxiPFUDVifA+I=;
+  b=F2NXlAuqQTLcponD9NeGgCyWht6AkqGIq+chNlhiofOeh6ByySUofVx4
+   ZaUu8GopzP65jd9/HmViPYgCMlDeUTDKkUIWQBTqIfZDDfhvFggrk4KxK
+   L3oTie83g7kCayAIy0jz1L1f+XiKL09L8O/mAn2OJOI93cf7b92lY81TE
+   B1okgb7h21fhjEhRfqqlO4fJCAV7hjPNG8lfT0hmZttydNPHDIFpYpBe5
+   Cv8eINa66g/QLDc1Pe/LZVLCWXCFEaa41qf3OwnvlEoLikpDXowGAynkM
+   ti8u/23E1n46bj26Edd3KTJdj4agW5qjGmRtNiJThY7aazg/OBZtmS19h
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="385534115"
+X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
+   d="scan'208";a="385534115"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 20:54:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="785338033"
+X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
+   d="scan'208";a="785338033"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 16 Oct 2023 20:54:21 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qsb9v-0008yP-0z;
+        Tue, 17 Oct 2023 03:54:19 +0000
+Date:   Tue, 17 Oct 2023 11:54:11 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/boot] BUILD SUCCESS
+ 7f6874eddd81cb2ed784642a7a4321671e158ffe
+Message-ID: <202310171109.Ezun4F92-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,86 +60,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/boot
+branch HEAD: 7f6874eddd81cb2ed784642a7a4321671e158ffe  x86/head/64: Add missing __head annotation to startup_64_load_idt()
 
+elapsed time: 897m
 
-On 2023/10/8 15:19, Wen Gu wrote:
-> 
-> 
-> On 2023/10/5 16:21, Niklas Schnelle wrote:
-> 
->>
->> Hi Wen Gu,
->>
->> I've been trying out your series with iperf3, qperf, and uperf on
->> s390x. I'm using network namespaces with a ConnectX VF from the same
->> card in each namespace for the initial TCP/IP connection i.e. initially
->> it goes out to a real NIC even if that can switch internally. All of
->> these look great for streaming workloads both in terms of performance
->> and stability. With a Connect-Request-Response workload and uperf
->> however I've run into issues. The test configuration I use is as
->> follows:
->>
->> Client Command:
->>
->> # host=$ip_server ip netns exec client smc_run uperf -m tcp_crr.xml
->>
->> Server Command:
->>
->> # ip netns exec server smc_run uperf -s &> /dev/null
->>
->> Uperf tcp_crr.xml:
->>
->> <?xml version="1.0"?>
->> <profile name="TCP_CRR">
->>          <group nthreads="12">
->>                  <transaction duration="120">
->>                          <flowop type="connect" options="remotehost=$host protocol=tcp" />
->>                          <flowop type="write" options="size=200"/>
->>                          <flowop type="read" options="size=1000"/>
->>                          <flowop type="disconnect" />
->>                  </transaction>
->>          </group>
->> </profile>
->>
->> The workload first runs fine but then after about 4 GB of data
->> transferred fails with "Connection refused" and "Connection reset by
->> peer" errors. The failure is not permanent however and re-running
->> the streaming workloads run fine again (with both uperf server and
->> client restarted). So I suspect something gets stuck in either the
->> client or server sockets. The same workload runs fine with TCP/IP of
->> course.
->>
->> Thanks,
->> Niklas
->>
->>
-> 
-> Hi Niklas,
-> 
-> Thank you very much for the test. With the test example you provided, I've
-> reproduced the issue in my VM. And moreover, sometimes the test complains
-> with 'Error saying goodbye with <ip>'
-> 
-> I'll figure out what's going on here.
-> 
-> Thanks!
-> Wen Gu
+configs tested: 104
+configs skipped: 2
 
-I think that there is a common issue for SMC-R and SMC-D. I also reproduce
-'connection reset by peer' and 'Error saying goodbye with <ip>' when using
-SMC-R under the same test condition. They occur at the end of the test.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-When the uperf test time ends, some signals are sent. At this point there
-are usually some SMC connections doing CLC handshake. I catch some -EINTR(-4)
-in client and -ECONNRESET(-104) in server returned from smc_clc_wait_msg,
-(correspondingly handshake error counts also increase) and TCP RST packets
-sent to terminate the CLC TCP connection(clcsock).
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20231016   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                   randconfig-001-20231016   gcc  
+arm64                            allmodconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231016   gcc  
+i386                  randconfig-002-20231016   gcc  
+i386                  randconfig-003-20231016   gcc  
+i386                  randconfig-004-20231016   gcc  
+i386                  randconfig-005-20231016   gcc  
+i386                  randconfig-006-20231016   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231016   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20231016   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20231016   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                 randconfig-001-20231016   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231016   gcc  
+x86_64                randconfig-002-20231016   gcc  
+x86_64                randconfig-003-20231016   gcc  
+x86_64                randconfig-004-20231016   gcc  
+x86_64                randconfig-005-20231016   gcc  
+x86_64                randconfig-006-20231016   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
 
-I am not sure if this should be considered as a bydesign or a bug of SMC.
- From an application perspective, the conn reset behavior only happens when
-using SMC.
-
-@Wenjia, could you please take a look at this?
-
-Thanks,
-Wen Gu
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
