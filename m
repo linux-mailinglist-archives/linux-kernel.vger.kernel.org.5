@@ -2,73 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEEE87CBEE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A367CBEF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234849AbjJQJVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 05:21:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44324 "EHLO
+        id S234873AbjJQJV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 05:21:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234880AbjJQJU7 (ORCPT
+        with ESMTP id S234861AbjJQJVN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 05:20:59 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14CC2115
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 02:20:41 -0700 (PDT)
-Received: from mail-yw1-f198.google.com (mail-yw1-f198.google.com [209.85.128.198])
+        Tue, 17 Oct 2023 05:21:13 -0400
+Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 141B1FD;
+        Tue, 17 Oct 2023 02:21:10 -0700 (PDT)
+Received: from [192.168.192.84] (unknown [50.39.103.33])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 4F8BF40517
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:20:38 +0000 (UTC)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id F36DF3F6DB;
+        Tue, 17 Oct 2023 09:21:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1697534438;
-        bh=nNUjVxmpdoA6kyR3JrJWBJibsGUXwZHys8dSVokq2rE=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=KFEvA198D+rT/ae5v+D4Bmav0ZEs19EBul+/QaEPm9l59Tqe9FfDfK/Eh/lduQhNE
-         C6Mh86CjVFMg3+x0X+HRsbihxKmfolgBKnp+hPWxqDl4o5HJobrIgvcBH0eCatVjSZ
-         vbk2RSKH+DZx5kWUhurDSleKNaIF9xvBa2XqezQvhl8AhLCMB3+8mezI9sDhZ+Q1J2
-         y1sM1bVMIvEcaK72KozPUC61JSsmVddL6zT9Bkl1sk82c/zz5zGjLNjLH3T5GZadZp
-         d+sWTt+/wpBECUtFDboPXJMYgogYwnMUGWpvlzp/ZQ6+60hvlGUjPjigdSZQohrbRU
-         NcS869bCapTfg==
-Received: by mail-yw1-f198.google.com with SMTP id 00721157ae682-5a7b9e83b70so40981147b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 02:20:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697534436; x=1698139236;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nNUjVxmpdoA6kyR3JrJWBJibsGUXwZHys8dSVokq2rE=;
-        b=F9muAeuaTdgVGyBFqf2kgMRZF2uFguj9zSr+SCFSaCZLXGfComTbOqtYKXzw1ipA8E
-         Qa4rnkMsebsQyZbRJ8frw5nGR7KGmZo/TIPHgeJ3KXm5P1kBNp3i8lyeaqmdExKFuT3g
-         U7QchQQVAnzjBoCyCWu7iZIpUURjSLqKLp9icEt2iAD/N9icrt5h1coQfiAocI8dU3Ls
-         aCqTzHLtDiLQF27aFPY8T/jBamdXF+RKQ1ZoZQa/RX2X/2WIpDKMX3hzLDDjxcEKxz8D
-         PqzgJsNbu8GcJUKwK4arjhvEhhC8kFssNNFM7fL2XS+oPoW8CwtxoCdMpR9F+MjZT+ks
-         wDIA==
-X-Gm-Message-State: AOJu0Yw14G7qOzaMuJZfMCw49fvEhn5vST8pNby5OkhyDokltGe/QrXZ
-        ss4aI17hIk6HtsgzHiI8fDqtp9hWcoezpYmfgbnSLXMWQPB7V0KzVvasxGwpCNyq+jF2LHELJFa
-        kxnmgoN0vTioClpmpaqAoAwiqdgEO0Aw0Oil5pEPEwcb3TWI0NlMjdDy4+w==
-X-Received: by 2002:a81:48ce:0:b0:5a7:b3d0:82c2 with SMTP id v197-20020a8148ce000000b005a7b3d082c2mr974302ywa.12.1697534435881;
-        Tue, 17 Oct 2023 02:20:35 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGzFPEro4EciuyVlos1b3+QOrc/0amxvByak/P82mRnQ5Nl4CxqA+XepMlA37C98EGjupWqIGi7+rNX4y6VhtU=
-X-Received: by 2002:a81:48ce:0:b0:5a7:b3d0:82c2 with SMTP id
- v197-20020a8148ce000000b005a7b3d082c2mr974288ywa.12.1697534435555; Tue, 17
- Oct 2023 02:20:35 -0700 (PDT)
+        s=20210705; t=1697534469;
+        bh=xbVNB24QIXoDLyX8fTF3YUGvdQKnrjQAH4j2H+QZ1qs=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=pwMqaHHxqMAtY/ylGxnfHVWACF6632jfiUOZmq1dHCLHOWc9YHosDYfMkec3g2eha
+         kFtaRcBXTrbrcmIKWY4G18yDwYz16NNdD7dwgdImkhkGDg2AqkfOPSI8IYHiWS1vrQ
+         ADCVmh9AoEvpMHWEA7MVcdppMh2o0j3d5QTbPyH6Sadlo82ESolbG8SPGcHLTu5E81
+         E+9nX50dej0ssQ5vBzoEgalcX1qv0KsV4MilPjIFzn7eE6CVByCem1qoPhIRJyf/Po
+         Jm50Q033Cvg48J4rAHVbwyA/IsHDj5qqvfpeyfL3iWUk/aH6kJseDW+3pfE3kosOVV
+         ElcAzpOCqADFg==
+Message-ID: <ffd13862-bc57-45ae-9fd0-454ee2d30fc2@canonical.com>
+Date:   Tue, 17 Oct 2023 02:21:01 -0700
 MIME-Version: 1.0
-References: <20230807132626.182101-1-aleksandr.mikhalitsyn@canonical.com> <bcda164b-e4b7-1c16-2714-13e3c6514b47@redhat.com>
-In-Reply-To: <bcda164b-e4b7-1c16-2714-13e3c6514b47@redhat.com>
-From:   Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-Date:   Tue, 17 Oct 2023 11:20:24 +0200
-Message-ID: <CAEivzxf-W1-q=BkG1UndFcX_AbzH-HtHX7p6j4iAwVbKnPn+sQ@mail.gmail.com>
-Subject: Re: [PATCH v10 00/12] ceph: support idmapped mounts
-To:     Xiubo Li <xiubli@redhat.com>
-Cc:     brauner@kernel.org, stgraber@ubuntu.com,
-        linux-fsdevel@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: [PATCH v5 0/4] apparmor: cache buffers on percpu list if there is
+ lock, contention
+Content-Language: en-US
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Anil Altinay <aaltinay@google.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        LKLM <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        linux-security-module@vger.kernel.org,
+        John Johansen <john.johansen@canonical.com>
+References: <YO2S+C7Cw7AS7bsg@google.com>
+ <cfd5cc6f-5943-2e06-1dbe-f4b4ad5c1fa1@canonical.com>
+ <Y19GhTg8Q/3ym/VD@google.com>
+ <dac1c2d5-367f-c8a7-c61e-c1774d98d602@canonical.com>
+ <4595e7b4-ea31-5b01-f636-259e84737dfc@canonical.com>
+ <Y+9aoFjrYkpFSvuE@linutronix.de>
+ <f3fd5dd8-9d78-43be-fc5c-bf990ad3a64d@canonical.com>
+ <CACCxZWOK6=mHNQrWEhjw4pC2i3qBKYdn9joiaaCNE7ge8FAz0A@mail.gmail.com>
+ <CACCxZWO-+M-J_enENr7q1WDcu1U8vYFoytqJxAh=x-nuP268zA@mail.gmail.com>
+ <31d6e8d6-0747-a282-746b-5c144a9970bb@canonical.com>
+ <20231006041837.GA17924@google.com>
+From:   John Johansen <john.johansen@canonical.com>
+Autocrypt: addr=john.johansen@canonical.com; keydata=
+ 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 lT9Q
+Organization: Canonical
+In-Reply-To: <20231006041837.GA17924@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -79,206 +115,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 8, 2023 at 2:45=E2=80=AFAM Xiubo Li <xiubli@redhat.com> wrote:
->
-> LGTM.
->
-> Reviewed-by: Xiubo Li <xiubli@redhat.com>
->
-> I will queue this to the 'testing' branch and then we will run ceph qa
-> tests.
->
-> Thanks Alex.
->
-> - Xiubo
+On 10/5/23 21:18, Sergey Senozhatsky wrote:
+> On (23/06/26 17:31), John Johansen wrote:
+>> On 6/26/23 16:33, Anil Altinay wrote:
+>>> Hi John,
+>>>
+>>> I was wondering if you get a chance to work on patch v4. Please let me know if you need help with testing.
+>>>
+>>
+>> yeah, testing help is always much appreciated. I have a v4, and I am
+>> working on 3 alternate version to compare against, to help give a better
+>> sense if we can get away with simplifying or tweak the scaling.
+>>
+>> I should be able to post them out some time tonight.
+> 
+> Hi John,
+> 
+> Did you get a chance to post v4? I may be able to give it some testing
+> on our real-life case.
 
-Hi Xiubo,
+sorry yes, how about a v5. That is simplified with 3 follow on patches
+that aren't strictly necessary, but some combination of them might be
+better than just the base patch, but splitting them out makes the
+individual changes easier to review.
 
-will this series be landed to 6.6?
+---
 
-Userspace part was backported and merged to the Ceph Quincy release
-(https://github.com/ceph/ceph/pull/53139)
-And waiting to be tested and merged to the Ceph reef and pacific releases.
-But the kernel part is still in the testing branch.
 
-Kind regards,
-Alex
+df323337e507 ("apparmor: Use a memory pool instead per-CPU caches")
+changed buffer allocation to use a memory pool, however on a heavily
+loaded machine there can be lock contention on the global buffers
+lock. Add a percpu list to cache buffers on when lock contention is
+encountered.
 
->
-> On 8/7/23 21:26, Alexander Mikhalitsyn wrote:
-> > Dear friends,
-> >
-> > This patchset was originally developed by Christian Brauner but I'll co=
-ntinue
-> > to push it forward. Christian allowed me to do that :)
-> >
-> > This feature is already actively used/tested with LXD/LXC project.
-> >
-> > Git tree (based on https://github.com/ceph/ceph-client.git testing):
-> > v10: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v10
-> > current: https://github.com/mihalicyn/linux/tree/fs.idmapped.ceph
-> >
-> > In the version 3 I've changed only two commits:
-> > - fs: export mnt_idmap_get/mnt_idmap_put
-> > - ceph: allow idmapped setattr inode op
-> > and added a new one:
-> > - ceph: pass idmap to __ceph_setattr
-> >
-> > In the version 4 I've reworked the ("ceph: stash idmapping in mdsc requ=
-est")
-> > commit. Now we take idmap refcounter just in place where req->r_mnt_idm=
-ap
-> > is filled. It's more safer approach and prevents possible refcounter un=
-derflow
-> > on error paths where __register_request wasn't called but ceph_mdsc_rel=
-ease_request is
-> > called.
-> >
-> > Changelog for version 5:
-> > - a few commits were squashed into one (as suggested by Xiubo Li)
-> > - started passing an idmapping everywhere (if possible), so a caller
-> > UID/GID-s will be mapped almost everywhere (as suggested by Xiubo Li)
-> >
-> > Changelog for version 6:
-> > - rebased on top of testing branch
-> > - passed an idmapping in a few places (readdir, ceph_netfs_issue_op_inl=
-ine)
-> >
-> > Changelog for version 7:
-> > - rebased on top of testing branch
-> > - this thing now requires a new cephfs protocol extension CEPHFS_FEATUR=
-E_HAS_OWNER_UIDGID
-> > https://github.com/ceph/ceph/pull/52575
-> >
-> > Changelog for version 8:
-> > - rebased on top of testing branch
-> > - added enable_unsafe_idmap module parameter to make idmapped mounts
-> > work with old MDS server versions
-> > - properly handled case when old MDS used with new kernel client
-> >
-> > Changelog for version 9:
-> > - added "struct_len" field in struct ceph_mds_request_head as requested=
- by Xiubo Li
-> >
-> > Changelog for version 10:
-> > - fill struct_len field properly (use cpu_to_le32)
-> > - add extra checks IS_CEPH_MDS_OP_NEWINODE(..) as requested by Xiubo to=
- match
-> >    userspace client behavior
-> > - do not set req->r_mnt_idmap for MKSNAP operation
-> > - atomic_open: set req->r_mnt_idmap only for CEPH_MDS_OP_CREATE as user=
-space client does
-> >
-> > I can confirm that this version passes xfstests and
-> > tested with old MDS (without CEPHFS_FEATURE_HAS_OWNER_UIDGID)
-> > and with recent MDS version.
-> >
-> > Links to previous versions:
-> > v1: https://lore.kernel.org/all/20220104140414.155198-1-brauner@kernel.=
-org/
-> > v2: https://lore.kernel.org/lkml/20230524153316.476973-1-aleksandr.mikh=
-alitsyn@canonical.com/
-> > tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v2
-> > v3: https://lore.kernel.org/lkml/20230607152038.469739-1-aleksandr.mikh=
-alitsyn@canonical.com/#t
-> > v4: https://lore.kernel.org/lkml/20230607180958.645115-1-aleksandr.mikh=
-alitsyn@canonical.com/#t
-> > tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v4
-> > v5: https://lore.kernel.org/lkml/20230608154256.562906-1-aleksandr.mikh=
-alitsyn@canonical.com/#t
-> > tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v5
-> > v6: https://lore.kernel.org/lkml/20230609093125.252186-1-aleksandr.mikh=
-alitsyn@canonical.com/
-> > tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v6
-> > v7: https://lore.kernel.org/all/20230726141026.307690-1-aleksandr.mikha=
-litsyn@canonical.com/
-> > tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v7
-> > v8: https://lore.kernel.org/all/20230803135955.230449-1-aleksandr.mikha=
-litsyn@canonical.com/
-> > tree: -
-> > v9: https://lore.kernel.org/all/20230804084858.126104-1-aleksandr.mikha=
-litsyn@canonical.com/
-> > tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v9
-> >
-> > Kind regards,
-> > Alex
-> >
-> > Original description from Christian:
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > This patch series enables cephfs to support idmapped mounts, i.e. the
-> > ability to alter ownership information on a per-mount basis.
-> >
-> > Container managers such as LXD support sharaing data via cephfs between
-> > the host and unprivileged containers and between unprivileged container=
-s.
-> > They may all use different idmappings. Idmapped mounts can be used to
-> > create mounts with the idmapping used for the container (or a different
-> > one specific to the use-case).
-> >
-> > There are in fact more use-cases such as remapping ownership for
-> > mountpoints on the host itself to grant or restrict access to different
-> > users or to make it possible to enforce that programs running as root
-> > will write with a non-zero {g,u}id to disk.
-> >
-> > The patch series is simple overall and few changes are needed to cephfs=
-.
-> > There is one cephfs specific issue that I would like to discuss and
-> > solve which I explain in detail in:
-> >
-> > [PATCH 02/12] ceph: handle idmapped mounts in create_request_message()
-> >
-> > It has to do with how to handle mds serves which have id-based access
-> > restrictions configured. I would ask you to please take a look at the
-> > explanation in the aforementioned patch.
-> >
-> > The patch series passes the vfs and idmapped mount testsuite as part of
-> > xfstests. To run it you will need a config like:
-> >
-> > [ceph]
-> > export FSTYP=3Dceph
-> > export TEST_DIR=3D/mnt/test
-> > export TEST_DEV=3D10.103.182.10:6789:/
-> > export TEST_FS_MOUNT_OPTS=3D"-o name=3Dadmin,secret=3D$password
-> >
-> > and then simply call
-> >
-> > sudo ./check -g idmapped
-> >
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >
-> > Alexander Mikhalitsyn (3):
-> >    fs: export mnt_idmap_get/mnt_idmap_put
-> >    ceph: add enable_unsafe_idmap module parameter
-> >    ceph: pass idmap to __ceph_setattr
-> >
-> > Christian Brauner (9):
-> >    ceph: stash idmapping in mdsc request
-> >    ceph: handle idmapped mounts in create_request_message()
-> >    ceph: pass an idmapping to mknod/symlink/mkdir
-> >    ceph: allow idmapped getattr inode op
-> >    ceph: allow idmapped permission inode op
-> >    ceph: allow idmapped setattr inode op
-> >    ceph/acl: allow idmapped set_acl inode op
-> >    ceph/file: allow idmapped atomic_open inode op
-> >    ceph: allow idmapped mounts
-> >
-> >   fs/ceph/acl.c                 |  6 +--
-> >   fs/ceph/crypto.c              |  2 +-
-> >   fs/ceph/dir.c                 |  4 ++
-> >   fs/ceph/file.c                | 11 ++++-
-> >   fs/ceph/inode.c               | 29 +++++++------
-> >   fs/ceph/mds_client.c          | 78 ++++++++++++++++++++++++++++++++--=
--
-> >   fs/ceph/mds_client.h          |  8 +++-
-> >   fs/ceph/super.c               |  7 +++-
-> >   fs/ceph/super.h               |  3 +-
-> >   fs/mnt_idmapping.c            |  2 +
-> >   include/linux/ceph/ceph_fs.h  | 10 ++++-
-> >   include/linux/mnt_idmapping.h |  3 ++
-> >   12 files changed, 136 insertions(+), 27 deletions(-)
-> >
->
+When allocating buffers attempt to use cached buffers first,
+before taking the global buffers lock. When freeing buffers
+try to put them back to the global list but if contention is
+encountered, put the buffer on the percpu list.
+
+The length of time a buffer is held on the percpu list is dynamically
+adjusted based on lock contention.
+
+v5:
+- simplify base patch by removing: improvements can be added later
+   - MAX_LOCAL and must lock
+   - contention scaling.
+v4:
+- fix percpu ->count buffer count which had been spliced across a
+   debug patch.
+- introduce define for MAX_LOCAL_COUNT
+- rework count check and locking around it.
+- update commit message to reference commit that introduced the
+   memory.
+v3:
+- limit number of buffers that can be pushed onto the percpu
+   list. This avoids a problem on some kernels where one percpu
+   list can inherit buffers from another cpu after a reschedule,
+   causing more kernel memory to used than is necessary. Under
+   normal conditions this should eventually return to normal
+   but under pathelogical conditions the extra memory consumption
+   may have been unbouanded
+v2:
+- dynamically adjust buffer hold time on percpu list based on
+   lock contention.
+v1:
+- cache buffers on percpu list on lock contention
+
+Reported-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Signed-off-by: John Johansen <john.johansen@canonical.com>
+
