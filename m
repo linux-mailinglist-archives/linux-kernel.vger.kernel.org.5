@@ -2,157 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A78B97CBD28
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF0987CBD2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234615AbjJQIN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 04:13:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53584 "EHLO
+        id S234667AbjJQIPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 04:15:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234469AbjJQIN5 (ORCPT
+        with ESMTP id S229666AbjJQIPG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 04:13:57 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A97CAB0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 01:13:55 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id EEEE31FF08;
-        Tue, 17 Oct 2023 08:13:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1697530433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=l8Uxvnp+afGL5t1DPxVjcVWqjHuaCiM0M/YSyAS3x4E=;
-        b=FtCLP5U5FalpC0rLexHkLEUc+2h3Id1WDJBdGAugXH9+EiErwtHd9qr9LfctYqdVPE4qKY
-        8dhNLd4L8zyqWLXtJPp5ZEkYA+craDDv7I1K8Fsad5AKRPk205agpClwyc37EGJmHAEeZ+
-        ZslMYcVQAA+5A13NUiAzWhwX5IYekts=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1697530433;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=l8Uxvnp+afGL5t1DPxVjcVWqjHuaCiM0M/YSyAS3x4E=;
-        b=UrbsHyAiclGuToXCnLZNBgll+JueGSvT2KvJKPlQb/vo9dXj47okB/vFBZg5VW4omOzVdA
-        vhzFMe1sae6MkABQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D3F0213597;
-        Tue, 17 Oct 2023 08:13:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 8TElM0FCLmU1RgAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Tue, 17 Oct 2023 08:13:53 +0000
-Message-ID: <9f91b2be-dfb2-8bc3-91f8-6bd0715cc89d@suse.cz>
-Date:   Tue, 17 Oct 2023 10:13:53 +0200
+        Tue, 17 Oct 2023 04:15:06 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 260CD93
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 01:15:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697530505; x=1729066505;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=BmIoLY/o2k22RrWOitj8Qe8FW2JhcrTWbOo1QMJXiOA=;
+  b=hCv1nSmqzJSC8YXmjQEOHtx2LaZR43uuyvfvFFxPENdYlCjiuZ7gIGsF
+   zgbzx2ZwTBRANb7DELmWQDVatSFCLaSKgnl2eVV5dJkh5EU0Xv8MpExmG
+   sbvs/pe8307nUmzW5kSKLSkui7APW9QmpCAEqb47ZzFcUOYYQc7gWCTRJ
+   BntV78apa8xLqE/e2GZ8c0RU8txKPNk+5L3x/A0JkjTYGnStobQyUOFV6
+   T/Axh3H7avUfdsqOA3uXSI7VtZGpiPf54GNTmLxbes2MZKUkr3suxruS0
+   BaxZ3/vkJPQ+4sTvRfnhBMC8XRKEz51J167Oriva2RXDsOZPPiflMj5if
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="388590279"
+X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
+   d="scan'208";a="388590279"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 01:15:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="846729731"
+X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
+   d="scan'208";a="846729731"
+Received: from fhoeg-mobl1.ger.corp.intel.com (HELO [10.249.254.103]) ([10.249.254.103])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 01:15:02 -0700
+Message-ID: <05ad4ca8-be19-ce78-7e71-48a02dd265c5@linux.intel.com>
+Date:   Tue, 17 Oct 2023 10:14:59 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 5/5] tools/mm: Update the usage output to be more
- organized
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] drm/gpuvm: Dual-licence the drm_gpuvm code GPL-2.0 OR MIT
 Content-Language: en-US
-To:     Audra Mitchell <audra@redhat.com>, linux-mm@kvack.org
-Cc:     raquini@redhat.com, akpm@linux-foundation.org, djakov@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231013190350.579407-1-audra@redhat.com>
- <20231013190350.579407-6-audra@redhat.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20231013190350.579407-6-audra@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -7.10
-X-Spamd-Result: default: False [-7.10 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         BAYES_HAM(-3.00)[99.99%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         RCPT_COUNT_FIVE(0.00)[6];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+To:     Danilo Krummrich <dakr@redhat.com>
+Cc:     intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        airlied@gmail.com, daniel@ffwll.ch, linux-kernel@vger.kernel.org
+References: <20231010142725.8920-1-thomas.hellstrom@linux.intel.com>
+ <ZS49uJq9kqJ2ueOv@polis>
+From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
+        <thomas.hellstrom@linux.intel.com>
+In-Reply-To: <ZS49uJq9kqJ2ueOv@polis>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/23 21:03, Audra Mitchell wrote:
-> Organize the usage options alphabetically and improve the description
-> of some options. Also separate the more complicated cull options from
-> the single use compare options.
-> 
-> Signed-off-by: Audra Mitchell <audra@redhat.com>
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+On 10/17/23 09:54, Danilo Krummrich wrote:
+> On Tue, Oct 10, 2023 at 04:27:24PM +0200, Thomas Hellström wrote:
+>> Dual-licence in order to make it possible for other non-GPL os'es
+>> to re-implement the code. The use of EXPORT_SYMBOL_GPL() is intentionally
+>> left untouched to prevent use of drm_gpuvm as a proxy for non-GPL drivers
+>> to access GPL-only kernel symbols.
+>>
+>> Much of the ideas and algorithms used in the drm_gpuvm code is already
+>> present in one way or another in MIT-licensed code.
+>>
+>> Cc: Danilo Krummrich <dakr@redhat.com>
+>> Cc: airlied@gmail.com
+>> Cc: daniel@ffwll.ch
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
+> Acked-by: Danilo Krummrich <dakr@redhat.com>
 
-Thanks a lot for making the tool useful again!
+Thanks, Danilo
 
-> ---
->  tools/mm/page_owner_sort.c | 33 ++++++++++++++++++++-------------
->  1 file changed, 20 insertions(+), 13 deletions(-)
-> 
-> diff --git a/tools/mm/page_owner_sort.c b/tools/mm/page_owner_sort.c
-> index 5a260096ebaa..e1f264444342 100644
-> --- a/tools/mm/page_owner_sort.c
-> +++ b/tools/mm/page_owner_sort.c
-> @@ -634,19 +634,26 @@ static void print_allocator(FILE *out, int allocator)
->  static void usage(void)
->  {
->  	printf("Usage: ./page_owner_sort [OPTIONS] <input> <output>\n"
-> -		"-m\t\tSort by total memory.\n"
-> -		"-s\t\tSort by the stack trace.\n"
-> -		"-t\t\tSort by times (default).\n"
-> -		"-p\t\tSort by pid.\n"
-> -		"-P\t\tSort by tgid.\n"
-> -		"-n\t\tSort by task command name.\n"
-> -		"-a\t\tSort by memory allocate time.\n"
-> -		"-d\t\tPrint debug information.\n"
-> -		"--pid <pidlist>\tSelect by pid. This selects the information of blocks whose process ID numbers appear in <pidlist>.\n"
-> -		"--tgid <tgidlist>\tSelect by tgid. This selects the information of blocks whose Thread Group ID numbers appear in <tgidlist>.\n"
-> -		"--name <cmdlist>\n\t\tSelect by command name. This selects the information of blocks whose command name appears in <cmdlist>.\n"
-> -		"--cull <rules>\tCull by user-defined rules.<rules> is a single argument in the form of a comma-separated list with some common fields predefined\n"
-> -		"--sort <order>\tSpecify sort order as: [+|-]key[,[+|-]key[,...]]\n"
-> +		"-a\t\t\tSort by memory allocation time.\n"
-> +		"-m\t\t\tSort by total memory.\n"
-> +		"-n\t\t\tSort by task command name.\n"
-> +		"-p\t\t\tSort by pid.\n"
-> +		"-P\t\t\tSort by tgid.\n"
-> +		"-s\t\t\tSort by the stacktrace.\n"
-> +		"-t\t\t\tSort by number of times record is seen (default).\n\n"
-> +		"--pid <pidlist>\t\tSelect by pid. This selects the information"
-> +		" of\n\t\t\tblocks whose process ID numbers appear in <pidlist>.\n"
-> +		"--tgid <tgidlist>\tSelect by tgid. This selects the information"
-> +		" of\n\t\t\tblocks whose Thread Group ID numbers appear in "
-> +		"<tgidlist>.\n"
-> +		"--name <cmdlist>\tSelect by command name. This selects the"
-> +		" information\n\t\t\tof blocks whose command name appears in"
-> +		" <cmdlist>.\n"
-> +		"--cull <rules>\t\tCull by user-defined rules. <rules> is a "
-> +		"single\n\t\t\targument in the form of a comma-separated list "
-> +		"with some\n\t\t\tcommon fields predefined (pid, tgid, comm, "
-> +		"stacktrace, allocator)\n"
-> +		"--sort <order>\t\tSpecify sort order as: [+|-]key[,[+|-]key[,...]]\n"
->  	);
->  }
->  
+Thomas
 
+
+>
+>> ---
+>>   drivers/gpu/drm/drm_gpuvm.c | 2 +-
+>>   include/drm/drm_gpuvm.h     | 2 +-
+>>   2 files changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/drm_gpuvm.c b/drivers/gpu/drm/drm_gpuvm.c
+>> index 02ce6baacdad..08c088319652 100644
+>> --- a/drivers/gpu/drm/drm_gpuvm.c
+>> +++ b/drivers/gpu/drm/drm_gpuvm.c
+>> @@ -1,4 +1,4 @@
+>> -// SPDX-License-Identifier: GPL-2.0-only
+>> +// SPDX-License-Identifier: GPL-2.0 OR MIT
+>>   /*
+>>    * Copyright (c) 2022 Red Hat.
+>>    *
+>> diff --git a/include/drm/drm_gpuvm.h b/include/drm/drm_gpuvm.h
+>> index 361fea5cb849..21bbf11415b3 100644
+>> --- a/include/drm/drm_gpuvm.h
+>> +++ b/include/drm/drm_gpuvm.h
+>> @@ -1,4 +1,4 @@
+>> -/* SPDX-License-Identifier: GPL-2.0-only */
+>> +/* SPDX-License-Identifier: GPL-2.0 OR MIT */
+>>   
+>>   #ifndef __DRM_GPUVM_H__
+>>   #define __DRM_GPUVM_H__
+>> -- 
+>> 2.41.0
+>>
