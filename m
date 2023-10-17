@@ -2,194 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DBCD7CCB7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 21:01:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4D97CCB7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 21:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234987AbjJQTBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 15:01:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40712 "EHLO
+        id S234971AbjJQTAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 15:00:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234982AbjJQTA6 (ORCPT
+        with ESMTP id S232228AbjJQTAk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 15:00:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB625107
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 12:00:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697569206;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ufWNltmtm9MEQJk/HA+zcNGOIx26ETEdVffppRZYG34=;
-        b=ZNFiIhv63uLXGoJHbKyFepZ4GTxC2Wa+gzeoJHtlr4HbYI9960r4NSNj2hUswsiDqKl0I0
-        wH7lzfoV4ZjK++w+JAoukeNM2wsGEcybCazh5xdV/o9mfgk8awp++kc1Nx5/i74G1XndGq
-        9KSfdKqg8XfxSHbgos5OZaIL8KtAJSI=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-339-yG-FnpV1OJen6abBCyVahw-1; Tue, 17 Oct 2023 14:59:59 -0400
-X-MC-Unique: yG-FnpV1OJen6abBCyVahw-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-66cfa898cfeso11918436d6.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:59:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697569199; x=1698173999;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        Tue, 17 Oct 2023 15:00:40 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D63FF0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 12:00:38 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso4509090a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 12:00:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697569238; x=1698174038; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ufWNltmtm9MEQJk/HA+zcNGOIx26ETEdVffppRZYG34=;
-        b=vxkzgqkZYad0AYsFqhgWnK0/l0t+Z5H+U2elBryHuK1oTA23VA5KVw5VB+z2Bj0/e/
-         WxAE9ra0Q7GH+uLSb01lDQOBH73BI9B/pnGKlAwyAnn+4bCi+ZAaQhbKMWUVi5QTEdDw
-         9kKaArZVaUeLnD/scwzUWSIde/QCioDGjo5KKZsgjzZS0falj72ZxRFbK5OoVnLIk+/I
-         hccgHP45aaPxdn6o4VJFrm3FcxfiZvLwVZa67iE2CazfNsBG06rbT1N3F8Co2ZIZa70l
-         DUVIwlsTjtYuFxqylSzJRqtIO8M7na+zzSjoDg8Dke8JIKacz8kDirCXzoTIBx8IY4GB
-         FU4w==
-X-Gm-Message-State: AOJu0YxGR8URUv1OBrsno8Lbz84qNsf9QQWqQUUOl8YDAiR2MSlUbQj3
-        qoe32Vkt9Fb6HiCQJqD86hdZTLT0Gh4akjzVcQou0wW9XGQA/AJf2Ge5MzkwvZkW7L4x5M8biYg
-        T7+NlKghV0SXOKt2c2HDuruBn
-X-Received: by 2002:a05:6214:5b04:b0:668:e12a:1d1c with SMTP id ma4-20020a0562145b0400b00668e12a1d1cmr3335085qvb.3.1697569198757;
-        Tue, 17 Oct 2023 11:59:58 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEAk0RrwzkoW0kvuWM0ng2wrDDvK/L2bekMKE0E2CdX9MEwa+UJ0DieBoe9T3ZhdsG80o5WLA==
-X-Received: by 2002:a05:6214:5b04:b0:668:e12a:1d1c with SMTP id ma4-20020a0562145b0400b00668e12a1d1cmr3335060qvb.3.1697569198391;
-        Tue, 17 Oct 2023 11:59:58 -0700 (PDT)
-Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
-        by smtp.gmail.com with ESMTPSA id pz2-20020ad45502000000b00655e428604esm768163qvb.137.2023.10.17.11.59.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 11:59:58 -0700 (PDT)
-Date:   Tue, 17 Oct 2023 14:59:55 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Lokesh Gidra <lokeshgidra@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
-Message-ID: <ZS7ZqztMbhrG52JQ@x1n>
-References: <214b78ed-3842-5ba1-fa9c-9fa719fca129@redhat.com>
- <CAJuCfpHzSm+z9b6uxyYFeqr5b5=6LehE9O0g192DZdJnZqmQEw@mail.gmail.com>
- <478697aa-f55c-375a-6888-3abb343c6d9d@redhat.com>
- <CA+EESO5nvzka0KzFGzdGgiCWPLg7XD-8jA9=NTUOKFy-56orUg@mail.gmail.com>
- <ZShS3UT+cjJFmtEy@x1n>
- <205abf01-9699-ff1c-3e4e-621913ada64e@redhat.com>
- <ZSlragGjFEw9QS1Y@x1n>
- <12588295-2616-eb11-43d2-96a3c62bd181@redhat.com>
- <ZS2IjEP479WtVdMi@x1n>
- <8d187891-f131-4912-82d8-13112125b210@redhat.com>
+        bh=j6zU+/G0fP23qafLVgXPYoabYVzueZ80T6KGT9Ff4Tw=;
+        b=4EbBp11tu/sJtaJ6ulBe28ZGLwETZgRLzlSqe35gIwtfb/nZhTJZQ2Fux/AsxL6w0e
+         IJDrIP1LEPWyuzt38E0Hfp4Mq9s8bqnYy+mk0biJbcdaFsz6q/o2v6lGtlAxvGC6JJdc
+         YV11vxovIHmLHkPC6Rm4jHjKCDk08WMQDCRGFVrE5Gdny1/pVGrBUpz4uvx7nXMYu210
+         yst1dYXgwvixGMoNJtOzIwldJ871ydVHOt04qJ0ldVwXv/jslpOzegOhKSIpK3Sjtwtx
+         J8q7LYX+tk9drxeZPXPiGgALli30WAiXM1M2HtSFTGzAScXDknzq4lDb0hxwGIjH5tDJ
+         cy/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697569238; x=1698174038;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j6zU+/G0fP23qafLVgXPYoabYVzueZ80T6KGT9Ff4Tw=;
+        b=mu39yh9qL4GhJvH5AsYrcnv1YWImXyDzYo/MoZlwsYzQCmTE8JGfFHT2YxmtDBKf+x
+         VhwoMkCmJqFQZXlYi5rxT96pz4DNiJbOrAuR4+g5I7zdnYXDcxZ6ILuQiQIlfyw+CNl8
+         DgTH7ztJ94KSSEC9xB+xeTvpcXWAM2T2wi1kUh4fr7N1jrYxcc0/NHIDwk7SwqI1F8Im
+         79gNzSqx7huMqyKnNukVXjvtZy3BCUrAJ4dw0wVMdCZa0XEYugfY+C36/YkNeCu2J+12
+         hgR1VDYJRZgg7EK9k0BCF9D6JujfBadhKCEtoPStQtNWBbYKnFbeScxT5cJntoaPYFW5
+         L5Dw==
+X-Gm-Message-State: AOJu0YxXhCayHz97U6WI22omLRe0P4pl3ub8N5KrCrOkIOidVeaadnwh
+        CdHjn0dMScQ9SxyRhnP9WJI/B4pxKmSQOPrT0Om76Q==
+X-Google-Smtp-Source: AGHT+IHTU7+y+/i2QvucVreAoygXMXFywopTenm8dCQDYCSoQ7p+jxaaBVPeaouHTasn1t8vl1XlijJtsFCUu/fOafY=
+X-Received: by 2002:a05:6a21:a108:b0:154:a1e4:b676 with SMTP id
+ aq8-20020a056a21a10800b00154a1e4b676mr2923899pzc.4.1697569237902; Tue, 17 Oct
+ 2023 12:00:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <8d187891-f131-4912-82d8-13112125b210@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230929174442.1635558-1-bgeffon@google.com> <CAJZ5v0g6160NYtRQun0D_qS-R6NfoXrX47muWt+sTN3wnNyHeA@mail.gmail.com>
+In-Reply-To: <CAJZ5v0g6160NYtRQun0D_qS-R6NfoXrX47muWt+sTN3wnNyHeA@mail.gmail.com>
+From:   Brian Geffon <bgeffon@google.com>
+Date:   Tue, 17 Oct 2023 15:00:01 -0400
+Message-ID: <CADyq12y3dy3G2mhwTq2NDozpCJ6MCe4jzH66M7PysPNmhZGLQw@mail.gmail.com>
+Subject: Re: [PATCH] pid: Allow frozen userspace to reboot from non-init pid ns
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David,
+On Thu, Oct 12, 2023 at 5:48=E2=80=AFAM Rafael J. Wysocki <rafael@kernel.or=
+g> wrote:
+>
+> On Fri, Sep 29, 2023 at 7:45=E2=80=AFPM Brian Geffon <bgeffon@google.com>=
+ wrote:
+> >
+> > When the system has a frozen userspace, for example, during hibernation
+> > the child reaper task will also be frozen. Attmepting to deliver a
+> > signal to it to handle the reboot(2) will ultimately lead to the system
+> > hanging unless userspace is thawed.
+> >
+> > This change checks if the current task is the suspending task and if so
+> > it will allow it to proceed with a reboot from the non-init pid ns.
+> >
+> > Signed-off-by: Brian Geffon <bgeffon@google.com>
+> > Reported-by: Matthias Kaehlcke <mka@chromium.org>
+> > Tested-by: Matthias Kaehlcke <mka@chromium.org>
+>
+> If the report is public, which I think is the case, having a Link: tag
+> pointing to it here would be nice.
+>
+> > ---
+> >  kernel/pid_namespace.c | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> >
+> > diff --git a/kernel/pid_namespace.c b/kernel/pid_namespace.c
+> > index 0bf44afe04dd..4a93a5063eda 100644
+> > --- a/kernel/pid_namespace.c
+> > +++ b/kernel/pid_namespace.c
+> > @@ -321,6 +321,15 @@ int reboot_pid_ns(struct pid_namespace *pid_ns, in=
+t cmd)
+> >         if (pid_ns =3D=3D &init_pid_ns)
+> >                 return 0;
+> >
+> > +       if (current->flags & PF_SUSPEND_TASK) {
+> > +               /*
+> > +                * Attempting to signal the child_reaper won't work if =
+it's
+> > +                * frozen. In this case we shutdown the system as if we=
+ were in
+> > +                * the init_pid_ns.
+> > +                */
+>
+> Is the system guaranteed to be in the right state for a shutdown at this =
+point?
+>
+> There is a system-wide suspend-resume or hibernation in progress, so
+> system_transition_mutex should be held and that should cause reboot()
+> to block anyway.  Do you know why it doesn't block and why the suspend
+> task has any reason to call it?
+>
 
-On Tue, Oct 17, 2023 at 05:55:10PM +0200, David Hildenbrand wrote:
-> Don't get me wrong, but this feature is already complicated enough that we
-> should really think twice if we want to make this even more complicated and
-> harder to maintain -- because once it's in we all know it's hard to remove
-> and we can easily end up with a maintenance nightmare without sufficiently
-> good use cases.
+Sorry for the delay in responding to these questions, I'm going to do
+another pass through this code and respond with a more detailed
+explanation in the next few days.
 
-Yes I agree it's non-trivial.  My point is adding cross-mm doesn't make it
-even more complicated.. afaics.
-
-For example, could you provide a list of things that will be different to
-support single mm or cross mm?  I see two things that can be different, but
-I'd rather have all of them even if single-mm..
-
-  - cgroup: I assume single-mm may avoid uncharge and charge again, but I
-    prefer it be there even if we only allow single-mm.  For example, I'm
-    not 100% sure whether memcg won't start to behave differently according
-    to vma attribute in the future.
-
-  - page pinning: I assume for single-mm we can avoid checking page pinning
-    based on the fact that MMF_HAS_PINNED is per-mm, but I also prefer we
-    fail explicitly on pinned pages over UFFDIO_MOVE because it doesn't
-    sound correct, and avoid future changes on top of pinning solution that
-    can change the assumption that "move a pin page within mm" is ok.
-
-Is there anything else that will be different?  Did I miss something
-important?
-
-[...]
-
-> BTW, wasn't there a way to do VM live-upgrade using fork() and replacing the
-> binary? I recall that there was at some time either an implementation in
-> QEMU or a proposal for an implementation; but I don't know how VM memory was
-> provided. It's certainly harder to move VM memory using fork().
-
-Maybe you meant the cpr project.  I didn't actually follow that much
-previously (and will need to follow more after I took the migration
-duties.. when there's a new post), but IIUC at least the latest version
-needs to go with file memory only, not anonymous:
-
-https://lore.kernel.org/all/1658851843-236870-1-git-send-email-steven.sistare@oracle.com/
-
-        Guest RAM must be non-volatile across reboot, which can be achieved by
-        backing it with a dax device, or /dev/shm PKRAM as proposed in...
-
-        Guest RAM must be backed by a memory backend with share=on, but
-        cannot be memory-backend-ram.  The memory is re-mmap'd in the
-        updated process, so guest ram is efficiently preserved in place
-
-My understanding is there used to have solution for anonymous but that
-needs extra kernel changes (MADV_DOEXEC).
-
-https://lore.kernel.org/linux-mm/1595869887-23307-1-git-send-email-anthony.yznaga@oracle.com/
-
-I saw that you were part of the discussion, so maybe you will remember some
-more clue of that part.
-
-IIUC one core requirement of the whole approach is also that it will cover
-VFIO and maintenance of device DMA mappings, in which case it'll be
-different with any approach to leverage UFFDIO_MOVE because VFIO will not
-be allowed here; again I hope we start with forbid pinning. But it should
-be much cleaner on the design when with UFFDIO_MOVE, just not working with
-VFIO.
-
-One thing I'd need to measure is latency of UFFDIO_MOVE on page fault
-resolutions.  I expect no more than tens of microseconds or even less.
-Should be drastically smaller than remote postcopy anyway.
-
-I'm probably off topic.. To go back: let's try to figure out what is
-special with cross-mm support.  It'll be very weird in the future for
-anyone to propose a patch just add a feature flag and declaring cross-mm
-support, if the code is mostly all there.  Nothing stops us from discussing
-what a cross-mm design will need.
-
-[...]
-
-> Is that and will that remain the case? I know people have been working on
-> transparent user-space swapping using monitor processes using uffd. I
-> thought there would have been ways to achieve that without any corporation
-> of the dst.
-
-Any example?
-
-For what I am aware, all corporation requires uffd desc forwarding.  I
-think the trick here is any userfaultfd desc must be created by its own
-process, so far nobody else.  That's more or less saying "I want to do
-this" from its own opinion.  The next is forwarding that to someone else.
-Parent process is fine taking uffd of child with EVENT_FORK, as I
-mentioned, but besides that nothing else I can think of that can violate
-this guard to manipulate a random process.
-
-Thanks,
-
--- 
-Peter Xu
-
+> > +               return 0;
+> > +       }
+> > +
+> >         switch (cmd) {
+> >         case LINUX_REBOOT_CMD_RESTART2:
+> >         case LINUX_REBOOT_CMD_RESTART:
+> > --
+> > 2.42.0.582.g8ccd20d70d-goog
+> >
