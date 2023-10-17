@@ -2,119 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F237CBB64
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 08:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC317CBB84
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 08:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234486AbjJQGfw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 17 Oct 2023 02:35:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55928 "EHLO
+        id S234514AbjJQGo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 02:44:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjJQGfq (ORCPT
+        with ESMTP id S229666AbjJQGo0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 02:35:46 -0400
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83F8AB6;
-        Mon, 16 Oct 2023 23:35:44 -0700 (PDT)
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-d9ac43d3b71so5655556276.0;
-        Mon, 16 Oct 2023 23:35:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697524543; x=1698129343;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0pTEuOWWO2hlVz1NuykhvoeD8VoF12j0MOdF/y8cBc4=;
-        b=RKVplXhkJk8SQSzofkg2AepXrYhUkyElUnjWJRBB6bAvWHBVh1LkY2QhumOLmT0cjp
-         tHYpUDH/xHpHdk9IGqqhIRjEm2YUnTdgjTFdb0qz1Mckhv2LQwMAHIoqYKe1GvOTeHJv
-         DNL4epxYzld53P2TdZjEWmWQp9tAzqejQDkdcVs0Z6DC4aOHipd5KXneqgnIKFei1PPq
-         W5OHpgzz3sp0W9kPsAjB97cVEEKGvZURsX0aj+vFIZy5bb7H8j0A6/t5wIXr5tfw3is0
-         KxBPb1TANdouIHreFwXuJ2qHc2vFqfNj/CawM0Smo/UlmHFxaJ1B3A0HG8OyZ7cgdMQA
-         iBqA==
-X-Gm-Message-State: AOJu0YxKKizm+DtVBkTvPAQCjuNv+DFA04eYSaUR3CV+p0XRIKlzn6hd
-        EmJwkSq/abuIhBlSWJ/wH+1JK7adC2joXA==
-X-Google-Smtp-Source: AGHT+IFnv0lgddBMII7pF+MiRV/fZUnZmtcgbaF3JDHvddytkxHxt3mNSmQJvA7VgnO+Q1SjLe8wnQ==
-X-Received: by 2002:a25:aacc:0:b0:d78:3047:62c6 with SMTP id t70-20020a25aacc000000b00d78304762c6mr1102104ybi.21.1697524543390;
-        Mon, 16 Oct 2023 23:35:43 -0700 (PDT)
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
-        by smtp.gmail.com with ESMTPSA id l23-20020a25b317000000b00d9b4ddf1c32sm307560ybj.2.2023.10.16.23.35.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 23:35:43 -0700 (PDT)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5a7b92cd0ccso67131107b3.1;
-        Mon, 16 Oct 2023 23:35:42 -0700 (PDT)
-X-Received: by 2002:a81:4f87:0:b0:5a8:6397:5bdb with SMTP id
- d129-20020a814f87000000b005a863975bdbmr1458422ywb.3.1697524542508; Mon, 16
- Oct 2023 23:35:42 -0700 (PDT)
+        Tue, 17 Oct 2023 02:44:26 -0400
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C98A7;
+        Mon, 16 Oct 2023 23:44:23 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 49C166000A;
+        Tue, 17 Oct 2023 06:44:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+        t=1697525062;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aMTy2aajhBK124+9B/NhradBNHtYp8yU8KpYvs1pqVY=;
+        b=nbcwPe/ZaywJ1so6xOi/nu77b3TS9079dNSCr2O6Rmm2OQJAPgKE8eAJhuAEL6oo/1tozM
+        kporfPh/mQ5A7ItyPBiQIbWYbOxXkLG4/9U3uZOn3G8TVGmqu7W6wqu/uHaDhiFZW/rFAm
+        Hfjoo8N/fRT3lsEgt62KHR5ujnTdaCm9wsVnF36omhVCDwM/zsd6ShJLFn7bc0fqDa5BmH
+        WQe9/F37E/8j7JR8hSkJhTgLVEFwj6qumZSYgo+HxpGh/m9EXIWz2CgK6gONtqtV5dBCM+
+        q9PGRx9nE9doX75/4yT8xeMnAQylPNobxoBDIyQU5T2F0ZFGJA9btzQy10wE8g==
+Message-ID: <1864d057-3b9c-447a-9f00-c8ad2fbb74d1@arinc9.com>
+Date:   Tue, 17 Oct 2023 09:43:53 +0300
 MIME-Version: 1.0
-References: <cover.1697460614.git.geert+renesas@glider.be> <fb3bd4ed540bbe18f60bf1f700c110d662533503.1697460614.git.geert+renesas@glider.be>
- <25740B27-9C85-46D9-8ACF-17D45D56A014@redhat.com>
-In-Reply-To: <25740B27-9C85-46D9-8ACF-17D45D56A014@redhat.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 17 Oct 2023 08:35:29 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdX3bXKNW=eoiQS6dw3LocYgr+wxi+D0xQKutmFxdmj3_Q@mail.gmail.com>
-Message-ID: <CAMuHMdX3bXKNW=eoiQS6dw3LocYgr+wxi+D0xQKutmFxdmj3_Q@mail.gmail.com>
-Subject: Re: [PATCH -next v3 1/2] sunrpc: Wrap read accesses to rpc_task.tk_pid
-To:     Benjamin Coddington <bcodding@redhat.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 6/8] dt-bindings: net: mscc,vsc7514-switch:
+ Clean-up example indentation
+Content-Language: en-US
+To:     Rob Herring <robh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        John Crispin <john@phrozen.org>,
+        Gerhard Engleder <gerhard@engleder-embedded.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Justin Chen <justin.chen@broadcom.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com
+References: <20231016-dt-net-cleanups-v1-0-a525a090b444@kernel.org>
+ <20231016-dt-net-cleanups-v1-6-a525a090b444@kernel.org>
+From:   =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <20231016-dt-net-cleanups-v1-6-a525a090b444@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ben.
+On 17.10.2023 00:44, Rob Herring wrote:
+> The indentation for the example is completely messed up for
+> 'ethernet-ports'. Fix it.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>   .../bindings/net/mscc,vsc7514-switch.yaml          | 32 +++++++++++-----------
+>   1 file changed, 16 insertions(+), 16 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/mscc,vsc7514-switch.yaml b/Documentation/devicetree/bindings/net/mscc,vsc7514-switch.yaml
+> index 8ee2c7d7ff42..07de52a3a295 100644
+> --- a/Documentation/devicetree/bindings/net/mscc,vsc7514-switch.yaml
+> +++ b/Documentation/devicetree/bindings/net/mscc,vsc7514-switch.yaml
+> @@ -185,7 +185,7 @@ examples:
+>       };
+>     # VSC7512 (DSA)
+>     - |
+> -    ethernet-switch@1{
+> +    ethernet-switch@1 {
+>         compatible = "mscc,vsc7512-switch";
+>         reg = <0x71010000 0x10000>,
+>               <0x71030000 0x10000>,
+> @@ -212,22 +212,22 @@ examples:
+>               "port7", "port8", "port9", "port10", "qsys",
+>               "ana", "s0", "s1", "s2";
+>   
+> -            ethernet-ports {
+> -            #address-cells = <1>;
+> -            #size-cells = <0>;
+> -
+> -           port@0 {
+> -            reg = <0>;
+> -            ethernet = <&mac_sw>;
+> -            phy-handle = <&phy0>;
+> -            phy-mode = "internal";
+> -          };
+> -          port@1 {
+> -            reg = <1>;
+> -            phy-handle = <&phy1>;
+> -            phy-mode = "internal";
+> -          };
+> +      ethernet-ports {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        port@0 {
+> +          reg = <0>;
+> +          ethernet = <&mac_sw>;
+> +          phy-handle = <&phy0>;
+> +          phy-mode = "internal";
+> +        };
 
-On Mon, Oct 16, 2023 at 11:15 PM Benjamin Coddington
-<bcodding@redhat.com> wrote:
-> On 16 Oct 2023, at 9:09, Geert Uytterhoeven wrote:
-> > The tk_pid member in the rpc_task structure exists conditionally on
-> > debug or tracing being enabled.
-> >
-> > Introduce and use a wapper to read the value of this member, so users
-> > outside tracing no longer have to care about these conditions.
-> >
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Closes: https://lore.kernel.org/oe-kbuild-all/202310121759.0CF34DcN-lkp@intel.com/
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
->
-> I never work on kernels that don't have tk_pid, but I can say its so useful
-> that for 2 out of the 224 bytes that rpc_task uses (on aarch64), I'd be
-> inclined to just include it all the time.  That way its around for folks to
-> reference with realtime tools (like bpftrace, stap).
+Could use 4-space indentation as described here.
 
-That would work, too.
-In fact always including it should not increase the size of struct rpc_task,
-as there's still unused spaced in the gap at the end.
+https://www.kernel.org/doc/html/latest/devicetree/bindings/writing-schema.html#example-schema
 
-> Does anyone know if there is a good reason not to include it for all
-> configurations?
->
-> Ben
->
-> ..also:
-> Reviewed-by: Benjamin Coddington <bcodding@redhat.com>
+Regardless:
 
-Thanks!
+Acked-by: Arınç ÜNAL <arinc.unal@arinc9.com>
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Arınç
