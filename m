@@ -2,236 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DFEC7CC58E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E4E27CC58F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343866AbjJQOGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 10:06:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41522 "EHLO
+        id S1343997AbjJQOG6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 17 Oct 2023 10:06:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233670AbjJQOGg (ORCPT
+        with ESMTP id S1343900AbjJQOG4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 10:06:36 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B90FF0;
-        Tue, 17 Oct 2023 07:06:34 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-507a936f4a9so3231030e87.1;
-        Tue, 17 Oct 2023 07:06:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697551593; x=1698156393; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=0s/4CIk0Qxy4D6C/paFFwCJyOCOD8J+KFr/totpARKw=;
-        b=lNnPfu5H+ymQrQb7f6XpVBhEDtE7JS0p/u0JxlF2Pm3qz7rkMB0MW+YkmLRWsBdNDN
-         JsjTVgsbNqozNmn2YDaBQ4A+i6xXOGEy9fH9SjJoApv5z7Q4+59hnEvZHyvAI9dC/GCg
-         hWphFY7b9KF0qwAmgGEK05pLejtWQgCmA6dlXZsHJDfWmzCttOX9F8zo75QUfVg4Lhj6
-         Zgss4lpSQg23esKu42J/sXGa7bPMJYjA5uDJc5N7heCxMjivexNMP8gNS/ajwLUd0pYg
-         zL7sDQUwnwFTqsf1T8oY8MRiDJTYIGz+9Jhf6Auqzxdvnz2VAyYUWpGoAifvVOHGmCuJ
-         /V0w==
+        Tue, 17 Oct 2023 10:06:56 -0400
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C932AF0;
+        Tue, 17 Oct 2023 07:06:54 -0700 (PDT)
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-57b68555467so241503eaf.0;
+        Tue, 17 Oct 2023 07:06:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697551593; x=1698156393;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0s/4CIk0Qxy4D6C/paFFwCJyOCOD8J+KFr/totpARKw=;
-        b=Ylxux4dkrXNYyY7oH6ULL42scHGSQANJ7RVp4dB7qADIe4KdiozqCbDgofBkoV8Oop
-         EFByT/B+/H26vFd06eTyCk9WtVEMPB/8fk9JUIXW6JrTDTmENB/q1poKjixnwV3DzAfO
-         wNKEexRYz23kGWpuSN4iAsmU6t3bph69Nc95jzf3ePAoV0rXXwkQxZRPclAj+u3ol9oS
-         3XIY0Kh5/yKFNykbWXHL+9e89s4QpbF+ZkcxleBki7qfE94mu75NpDBxXzPVlPdgFghe
-         jm9p5PQabollHq8luqE6qkt7d1kNKne+hGJ1lXnwkoRRuo9jNoGdyVA6KpRj46VEyk7G
-         YUTw==
-X-Gm-Message-State: AOJu0YxJ2J4yZgEImyKVBS8qR7nDv+2dfANJIUdwFhbE/n/kZOP3GkOv
-        423ZCROD8oD+giRG397klME=
-X-Google-Smtp-Source: AGHT+IHXdM9WUkZU6l0Fc1mEJSV4n3wpEctHxdihOEQbdyBqgGT46X7sv3/QcTVHCHSjdi8F6SXWXw==
-X-Received: by 2002:ac2:4c16:0:b0:503:653:5711 with SMTP id t22-20020ac24c16000000b0050306535711mr1744911lfq.9.1697551592414;
-        Tue, 17 Oct 2023 07:06:32 -0700 (PDT)
-Received: from pc636 (host-90-233-215-212.mobileonline.telia.com. [90.233.215.212])
-        by smtp.gmail.com with ESMTPSA id f13-20020a056512360d00b005007fc9ccccsm295501lfs.122.2023.10.17.07.06.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 07:06:31 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Tue, 17 Oct 2023 16:06:29 +0200
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        RCU <rcu@vger.kernel.org>,
-        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v3 1/1] rcu: Reduce synchronize_rcu() waiting time
-Message-ID: <ZS6U5SgvGcmdE_DA@pc636>
-References: <20231016173004.14148-1-urezki@gmail.com>
- <CAEXW_YRfuXqnBFN=DpOLio74j8fX3eEDSFCH8LXyavuHDdYysA@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1697551614; x=1698156414;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=e/q+wuZASo6Z0fTJ2g1A4X/m+vDSravRUT5sPcdQHlI=;
+        b=t1v1rOg0NIxvVg99T6z+BTv8b+B1IYm2zqMjkiDN91Xh4vYrWIXqmuMSLxBmPFWkpU
+         iBg5N6KOG0EK18QeR/z9h5nzq7HH4sdpNyeRTFuFqJIdgNXODbhsXH+349Tb+xMSSRse
+         HRs3Y4JACGisPHvltmTzoyOW7D70eeEcSkyXlFXF0HOIrrIyJs+hoMK8rihOPq7mxhNp
+         akkAO5sk67Xr39AO3VbbaW3XxFAFeqnmrf3yY/1Abf2bGIBGP0ZuP2McfW8HaUFQpeuV
+         pXjetVkgM72KIR4EtZ3JBIDT4d3jVVJEjQm+6IIU/5GvlpB9J7vszEwBMXF9KRbLmPZm
+         E7Lw==
+X-Gm-Message-State: AOJu0YzhCcsvgsbC7aYd6PqL94x5OWhAq7gcNPeUuXVrT3G0c2vFndCw
+        pzGcs2BhjROuZWVWp6BppNtQf1EgcYqBTYZxmTTC/mXMSMo=
+X-Google-Smtp-Source: AGHT+IFd96eE/x88+yG5zSGJ+AiwCCf74V15p7hd79kQ8n5jO9c89RDSq0OCq/k/XaacLWnWy5bit6ABH63kQ0g4IT4=
+X-Received: by 2002:a4a:d898:0:b0:581:84e9:a7ad with SMTP id
+ b24-20020a4ad898000000b0058184e9a7admr2267424oov.1.1697551614004; Tue, 17 Oct
+ 2023 07:06:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YRfuXqnBFN=DpOLio74j8fX3eEDSFCH8LXyavuHDdYysA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231006173055.2938160-1-michal.wilczynski@intel.com> <20231006173055.2938160-6-michal.wilczynski@intel.com>
+In-Reply-To: <20231006173055.2938160-6-michal.wilczynski@intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 17 Oct 2023 16:06:43 +0200
+Message-ID: <CAJZ5v0h=gcEcnnWiRdLVgZgEYFg3-U=odGFPS_6odFW2+4_=YQ@mail.gmail.com>
+Subject: Re: [PATCH v2 5/6] ACPI: NFIT: Replace acpi_driver with platform_driver
+To:     Michal Wilczynski <michal.wilczynski@intel.com>
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nvdimm@lists.linux.dev, rafael.j.wysocki@intel.com,
+        andriy.shevchenko@intel.com, lenb@kernel.org,
+        dan.j.williams@intel.com, vishal.l.verma@intel.com,
+        ira.weiny@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Joel!
-
-> Hello, Vlad,
-> 
-> Looks like a nice patch, I am still looking at this more and just
-> started, but a few small comments:
-> 
-Thank you for looking at it :) And thank you for the comments.
-
-
-> On Mon, Oct 16, 2023 at 1:30 PM Uladzislau Rezki (Sony)
-> <urezki@gmail.com> wrote:
-> >
-> > A call to a synchronize_rcu() can be optimized from time point of
-> > view. Different workloads can be affected by this especially the
-> > ones which use this API in its time critical sections.
-> >
-> > For example if CONFIG_RCU_NOCB_CPU is set, the wakeme_after_rcu()
-> > callback can be delayed and such delay depends on where in a nocb
-> > list it is located.
-> >
-> > 1. On our Android devices i can easily trigger the scenario when
-> > it is a last in the list out of ~3600 callbacks:
-> >
-> > <snip>
-> >   <...>-29      [001] d..1. 21950.145313: rcu_batch_start: rcu_preempt CBs=3613 bl=28
-> > ...
-> >   <...>-29      [001] ..... 21950.152578: rcu_invoke_callback: rcu_preempt rhp=00000000b2d6dee8 func=__free_vm_area_struct.cfi_jt
-> >   <...>-29      [001] ..... 21950.152579: rcu_invoke_callback: rcu_preempt rhp=00000000a446f607 func=__free_vm_area_struct.cfi_jt
-> >   <...>-29      [001] ..... 21950.152580: rcu_invoke_callback: rcu_preempt rhp=00000000a5cab03b func=__free_vm_area_struct.cfi_jt
-> >   <...>-29      [001] ..... 21950.152581: rcu_invoke_callback: rcu_preempt rhp=0000000013b7e5ee func=__free_vm_area_struct.cfi_jt
-> >   <...>-29      [001] ..... 21950.152582: rcu_invoke_callback: rcu_preempt rhp=000000000a8ca6f9 func=__free_vm_area_struct.cfi_jt
-> >   <...>-29      [001] ..... 21950.152583: rcu_invoke_callback: rcu_preempt rhp=000000008f162ca8 func=wakeme_after_rcu.cfi_jt
-> >   <...>-29      [001] d..1. 21950.152625: rcu_batch_end: rcu_preempt CBs-invoked=3612 idle=....
-> > <snip>
-> >
-> > 2. We use cpuset/cgroup to classify tasks and assign them into
-> > different cgroups. For example "backgrond" group which binds tasks
-> > only to little CPUs or "foreground" which makes use of all CPUs.
-> > Tasks can be migrated between groups by a request if an acceleration
-> > is needed.
-> >
-> > See below an example how "surfaceflinger" task gets migrated.
-> > Initially it is located in the "system-background" cgroup which
-> > allows to run only on little cores. In order to speed it up it
-> > can be temporary moved into "foreground" cgroup which allows
-> > to use big/all CPUs:
-> >
-> [...]
-> > 3. To address this drawback, maintain a separate track that consists
-> > of synchronize_rcu() callers only. The GP-kthread, that drivers a GP
-> > either wake-ups a worker to drain all list or directly wakes-up end
-> > user if it is one in the drain list.
-> 
-> I wonder if there is a cut-off N, where waking up N ("a few") inline
-> instead of just 1, yields similar results. For small values of N, that
-> keeps the total number of wakeups lower than pushing off to a kworker.
-> For instance, if 2 users, then you get 3 wakeups instead of just 2 (1
-> for the kworker and another 2 for the synchronize). But if you had a
-> cut off like N=5, then 2 users results in just 2 wakeups.
-> I don't feel too strongly about it, but for small values of N, I am
-> interested in a slightly better optimization if we can squeeze it.
-> 
-This makes sense to me. We can add a threshold to wake-up several users.
-Like you mentioned. We can do 2 wake-ups instead of 3.
-
-> [...]
-> > + * There are three lists for handling synchronize_rcu() users.
-> > + * A first list corresponds to new coming users, second for users
-> > + * which wait for a grace period and third is for which a grace
-> > + * period is passed.
-> > + */
-> > +static struct sr_normal_state {
-> > +       struct llist_head curr; /* request a GP users. */
-> > +       struct llist_head wait; /* wait for GP users. */
-> > +       struct llist_head done; /* ready for GP users. */
-> > +       struct llist_node *curr_tail;
-> > +       struct llist_node *wait_tail;
-> 
-> Just for clarification, the only reason you need 'tail' is because you
-> can use llist_add_batch() to quickly splice the list, instead of
-> finding the tail each time (expensive for a large list), correct? It
-> would be good to mention that in a comment here.
-> 
-Right. I do not want to scan the list. I will comment it.
-
-> > +       atomic_t active;
-> > +} sr;
-> > +
-> > +/* Disable it by default. */
-> > +static int rcu_normal_wake_from_gp = 0;
-> > +module_param(rcu_normal_wake_from_gp, int, 0644);
-> > +
-> > +static void rcu_sr_normal_complete(struct llist_node *node)
-> > +{
-> > +       struct rcu_synchronize *rs = container_of(
-> > +               (struct rcu_head *) node, struct rcu_synchronize, head);
-> > +       unsigned long oldstate = (unsigned long) rs->head.func;
-> > +
-> > +       if (!poll_state_synchronize_rcu(oldstate))
-> > +               WARN_ONCE(1, "A full grace period is not passed yet: %lu",
-> > +                       rcu_seq_diff(get_state_synchronize_rcu(), oldstate));
-> 
-> nit: WARN_ONCE(!poll_state_synchronize_rcu(oldstate)), ...) and get
-> rid of if() ?
+On Fri, Oct 6, 2023 at 8:33 PM Michal Wilczynski
+<michal.wilczynski@intel.com> wrote:
 >
-Initially i had it written as you proposed i reworked it because i
-wanted to see the delta. I do not have a strong opinion, so i can
-fix it as you proposed.
+> NFIT driver uses struct acpi_driver incorrectly to register itself.
+> This is wrong as the instances of the ACPI devices are not meant
+> to be literal devices, they're supposed to describe ACPI entry of a
+> particular device.
+>
+> Use platform_driver instead of acpi_driver. In relevant places call
+> platform devices instances pdev to make a distinction with ACPI
+> devices instances.
+>
+> NFIT driver uses devm_*() family of functions extensively. This change
+> has no impact on correct functioning of the whole devm_*() family of
+> functions, since the lifecycle of the device stays the same. It is still
+> being created during the enumeration, and destroyed on platform device
+> removal.
+>
+> Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Signed-off-by: Michal Wilczynski <michal.wilczynski@intel.com>
+> ---
+>  drivers/acpi/nfit/core.c | 34 ++++++++++++++++++----------------
+>  1 file changed, 18 insertions(+), 16 deletions(-)
+>
+> diff --git a/drivers/acpi/nfit/core.c b/drivers/acpi/nfit/core.c
+> index 942b84d94078..fb0bc16fa186 100644
+> --- a/drivers/acpi/nfit/core.c
+> +++ b/drivers/acpi/nfit/core.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/sort.h>
+>  #include <linux/io.h>
+>  #include <linux/nd.h>
+> +#include <linux/platform_device.h>
+>  #include <asm/cacheflush.h>
+>  #include <acpi/nfit.h>
+>  #include "intel.h"
+> @@ -98,7 +99,7 @@ static struct acpi_device *to_acpi_dev(struct acpi_nfit_desc *acpi_desc)
+>                         || strcmp(nd_desc->provider_name, "ACPI.NFIT") != 0)
+>                 return NULL;
+>
+> -       return to_acpi_device(acpi_desc->dev);
+> +       return ACPI_COMPANION(acpi_desc->dev);
+>  }
+>
+>  static int xlat_bus_status(void *buf, unsigned int cmd, u32 status)
+> @@ -3284,11 +3285,11 @@ static void acpi_nfit_put_table(void *table)
+>
+>  static void acpi_nfit_notify(acpi_handle handle, u32 event, void *data)
+>  {
+> -       struct acpi_device *adev = data;
+> +       struct device *dev = data;
+>
+> -       device_lock(&adev->dev);
+> -       __acpi_nfit_notify(&adev->dev, handle, event);
+> -       device_unlock(&adev->dev);
+> +       device_lock(dev);
+> +       __acpi_nfit_notify(dev, handle, event);
+> +       device_unlock(dev);
 
-> 
-> > +
-> > +       /* Finally. */
-> > +       complete(&rs->completion);
-> > +}
-> > +
-> > +static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
-> > +{
-> > +       struct llist_node *done, *rcu, *next;
-> > +
-> > +       done = llist_del_all(&sr.done);
-> > +       if (!done)
-> > +               return;
-> > +
-> > +       llist_for_each_safe(rcu, next, done)
-> > +               rcu_sr_normal_complete(rcu);
-> > +}
-> [...]
-> > +static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
-> > +{
-> > +       atomic_inc(&sr.active);
-> > +       if (llist_add((struct llist_node *) &rs->head, &sr.curr))
-> > +               /* Set the tail. Only first and one user can do that. */
-> > +               WRITE_ONCE(sr.curr_tail, (struct llist_node *) &rs->head);
-> > +       atomic_dec(&sr.active);
-> 
-> Here there is no memory ordering provided by the atomic ops. Is that really Ok?
-> 
-This needs to be reworked since there is no ordering guaranteed. I think
-there is a version of "atomic_inc_something" that guarantees it?
+Careful here.
 
-> And same question for other usages of .active.
-> 
-> Per: https://www.kernel.org/doc/Documentation/atomic_t.txt
-> "RMW operations that have no return value are unordered;"
+The ACPI device locking is changed to platform device locking without
+a word of explanation in the changelog.
+
+Do you actually know what the role of the locking around
+__acpi_nfit_notify() is and whether or not it can be replaced with
+platform device locking safely?
+
+>  }
+>
+>  static void acpi_nfit_remove_notify_handler(void *data)
+> @@ -3329,11 +3330,12 @@ void acpi_nfit_shutdown(void *data)
+>  }
+>  EXPORT_SYMBOL_GPL(acpi_nfit_shutdown);
+>
+> -static int acpi_nfit_add(struct acpi_device *adev)
+> +static int acpi_nfit_probe(struct platform_device *pdev)
+>  {
+>         struct acpi_buffer buf = { ACPI_ALLOCATE_BUFFER, NULL };
+>         struct acpi_nfit_desc *acpi_desc;
+> -       struct device *dev = &adev->dev;
+> +       struct device *dev = &pdev->dev;
+> +       struct acpi_device *adev = ACPI_COMPANION(dev);
+>         struct acpi_table_header *tbl;
+>         acpi_status status = AE_OK;
+>         acpi_size sz;
+> @@ -3360,7 +3362,7 @@ static int acpi_nfit_add(struct acpi_device *adev)
+>         acpi_desc = devm_kzalloc(dev, sizeof(*acpi_desc), GFP_KERNEL);
+>         if (!acpi_desc)
+>                 return -ENOMEM;
+> -       acpi_nfit_desc_init(acpi_desc, &adev->dev);
+> +       acpi_nfit_desc_init(acpi_desc, dev);
+
+You seem to think that replacing adev->dev with pdev->dev everywhere
+in this driver will work,
+
+Have you verified that in any way?  If so, then how?
+
+>
+>         /* Save the acpi header for exporting the revision via sysfs */
+>         acpi_desc->acpi_header = *tbl;
+> @@ -3391,7 +3393,7 @@ static int acpi_nfit_add(struct acpi_device *adev)
+>                 return rc;
+>
+>         rc = acpi_dev_install_notify_handler(adev, ACPI_DEVICE_NOTIFY,
+> -                                            acpi_nfit_notify, adev);
+> +                                            acpi_nfit_notify, dev);
+>         if (rc)
+>                 return rc;
+>
+> @@ -3475,11 +3477,11 @@ static const struct acpi_device_id acpi_nfit_ids[] = {
+>  };
+>  MODULE_DEVICE_TABLE(acpi, acpi_nfit_ids);
+>
+> -static struct acpi_driver acpi_nfit_driver = {
+> -       .name = KBUILD_MODNAME,
+> -       .ids = acpi_nfit_ids,
+> -       .ops = {
+> -               .add = acpi_nfit_add,
+> +static struct platform_driver acpi_nfit_driver = {
+> +       .probe = acpi_nfit_probe,
+> +       .driver = {
+> +               .name = KBUILD_MODNAME,
+> +               .acpi_match_table = acpi_nfit_ids,
+>         },
+>  };
+>
+> @@ -3517,7 +3519,7 @@ static __init int nfit_init(void)
+>                 return -ENOMEM;
+>
+>         nfit_mce_register();
+> -       ret = acpi_bus_register_driver(&acpi_nfit_driver);
+> +       ret = platform_driver_register(&acpi_nfit_driver);
+>         if (ret) {
+>                 nfit_mce_unregister();
+>                 destroy_workqueue(nfit_wq);
+> @@ -3530,7 +3532,7 @@ static __init int nfit_init(void)
+>  static __exit void nfit_exit(void)
+>  {
+>         nfit_mce_unregister();
+> -       acpi_bus_unregister_driver(&acpi_nfit_driver);
+> +       platform_driver_unregister(&acpi_nfit_driver);
+>         destroy_workqueue(nfit_wq);
+>         WARN_ON(!list_empty(&acpi_descs));
+>  }
 > --
-> Note to self to ping my Android friends as well about this improvement
-> :-). Especially the -mm Android folks are interested in app startup
-> time.
-> 
-That is good. Thank you :)
-
---
-Uladzislau Rezki
