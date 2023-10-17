@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 459087CC487
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 15:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5387CC48B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 15:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343914AbjJQNTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 09:19:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56206 "EHLO
+        id S1343940AbjJQNTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 09:19:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343915AbjJQNTc (ORCPT
+        with ESMTP id S1343918AbjJQNTg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 09:19:32 -0400
+        Tue, 17 Oct 2023 09:19:36 -0400
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D96F510D;
-        Tue, 17 Oct 2023 06:19:29 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FBB5F5;
+        Tue, 17 Oct 2023 06:19:34 -0700 (PDT)
 Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39HCkmh4011698;
-        Tue, 17 Oct 2023 13:19:22 GMT
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39HCpJkd022076;
+        Tue, 17 Oct 2023 13:19:27 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=qcppdkim1;
- bh=+d1KRSggdTGEKfw6LpfvQegBYY+tc+X8fQ3kuYQ0mLA=;
- b=T65StbMHYtx4559usWL+NwvaTnU0wrS7tbFtHTtTx2rZKlcK7f26a/aONu3w42gZU34T
- rVmvc9uhKUHrcAx7lKBYNdmv0lsN/DlksLypQIUGDptckphbcMvoLwDruhjP5Kp4kOkU
- RTHc11sYfN/LFxIlIXycKqv9MF2QjRKTvIBjvG0dBNCEXuGc77ryeVbSjnRurYUNWzrf
- Sn+aXoMF8UG9ItDxWMzgO2OgbN33lVer22DM/AYoqOrfWC3Hl0Q2GkXqrXRRB+zcp6Nh
- G6qpxiQkPvtcR4O2rrEcQd7y0xtUpIvWSTaIKjqXWb8uYOt0vxquV4DKQY5aDwXAaOrw JA== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tsb3xsyr1-1
+ bh=ONAL9UCkf5t/qAN+nBfJPyvjjZ888xT+v1gaPYIWAIA=;
+ b=FE5bLa9t+bRax+EmiSk0cMSx0EgmQkP63ffY1zppC8cBuGvn6ossUttbXLfbbeXUnUee
+ ludaQqsp2Po2QIgpWUVl0ZdE8wjZ4aPQW0kJmxioIh/dQTOdl84AioIkHzU4+lQkpIkZ
+ XyYNUX0Knih9qkFVWlDlaAhBCKUTgpsnFNaJvgPR8f3nbdhszmzx2v8IS0CbIybUVLcb
+ 5ZTjYaSJaAF27oNu++km4pqfkZdDHfdLbZTRFpkvFMB7zKiqqbJrQsnu4plMdpxyOvKI
+ DXh+KpgPbBB/zCV3ohyPKfUUw0bNjrLhOchPj72ry5tgc+zTcwTy4CfTxMxLzlIPHsYZ EQ== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tsb3xsyra-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Oct 2023 13:19:22 +0000
+        Tue, 17 Oct 2023 13:19:27 +0000
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39HDJLl8009197
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39HDJQWT002471
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Oct 2023 13:19:21 GMT
+        Tue, 17 Oct 2023 13:19:26 GMT
 Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Tue, 17 Oct 2023 06:19:16 -0700
+ 15.2.1118.39; Tue, 17 Oct 2023 06:19:21 -0700
 From:   Krishna Kurapati <quic_kriskura@quicinc.com>
 To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -53,9 +53,9 @@ CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>,
         Krishna Kurapati <quic_kriskura@quicinc.com>
-Subject: [RFC 3/8] usb: dwc3: qcom: Enable autosuspend for host mode
-Date:   Tue, 17 Oct 2023 18:48:47 +0530
-Message-ID: <20231017131851.8299-4-quic_kriskura@quicinc.com>
+Subject: [RFC 5/8] arm64: dts: qcom: Flatten sm8450 usb device node
+Date:   Tue, 17 Oct 2023 18:48:48 +0530
+Message-ID: <20231017131851.8299-5-quic_kriskura@quicinc.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231017131851.8299-1-quic_kriskura@quicinc.com>
 References: <20231017131851.8299-1-quic_kriskura@quicinc.com>
@@ -67,13 +67,13 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: vGCiM_K0LPQoQeiAwMfksFbnVTl5ewS9
-X-Proofpoint-ORIG-GUID: vGCiM_K0LPQoQeiAwMfksFbnVTl5ewS9
+X-Proofpoint-GUID: 6Hx4aTXhrPS7KcMtC4E59yCFhNyy10HO
+X-Proofpoint-ORIG-GUID: 6Hx4aTXhrPS7KcMtC4E59yCFhNyy10HO
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-10-17_02,2023-10-17_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- impostorscore=0 phishscore=0 mlxlogscore=999 malwarescore=0
+ impostorscore=0 phishscore=0 mlxlogscore=882 malwarescore=0
  priorityscore=1501 mlxscore=0 adultscore=0 bulkscore=0 clxscore=1015
  lowpriorityscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.12.0-2309180000 definitions=main-2310170113
@@ -86,158 +86,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When in host mode, enable autosuspend for xhci and root hubs.
-
-a) Register a vendor call back to get information of successful role
-change by core. When xhci is enumerated successfully, configure it to
-use_autosuspend. The decision of whether or not to do runtime_allow for
-xhci node is left to userspace:
-(echo auto > */xhci-auto/power/control).
-
-b) Register to usb-core notifications in set_mode vendor callback to
-identify when root hubs are being created. Configure them to
-use_autosuspend accordingly.
-
-c) Configure any connected device to use_autosuspend. In general for
-mobile use cases, autosuspend is enabled and wakeup is enabled only
-for hubs and audio devices. So let userspace choose to configure
-autosuspend_delay and wakeup capability of connected devices.
+Flatten usb device node by removing usb_1_dwc3 node.
+Verified working of ADB in device mode and enumeration of headset
+in host mode.
 
 Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
 ---
- drivers/usb/dwc3/core.c      |  3 +++
- drivers/usb/dwc3/core.h      |  9 ++++++++
- drivers/usb/dwc3/dwc3-qcom.c | 42 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 54 insertions(+)
+ arch/arm64/boot/dts/qcom/sm8450-hdk.dts       |  3 --
+ arch/arm64/boot/dts/qcom/sm8450-qrd.dts       |  3 --
+ .../dts/qcom/sm8450-sony-xperia-nagara.dtsi   |  3 --
+ arch/arm64/boot/dts/qcom/sm8450.dtsi          | 44 +++++++++----------
+ 4 files changed, 21 insertions(+), 32 deletions(-)
 
-diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index 53a8d92ad663..b4d1d1c98dd5 100644
---- a/drivers/usb/dwc3/core.c
-+++ b/drivers/usb/dwc3/core.c
-@@ -233,6 +233,9 @@ static void __dwc3_set_mode(struct work_struct *work)
- 		break;
- 	}
+diff --git a/arch/arm64/boot/dts/qcom/sm8450-hdk.dts b/arch/arm64/boot/dts/qcom/sm8450-hdk.dts
+index bc4c125d1832..73b7c4f5276c 100644
+--- a/arch/arm64/boot/dts/qcom/sm8450-hdk.dts
++++ b/arch/arm64/boot/dts/qcom/sm8450-hdk.dts
+@@ -805,9 +805,6 @@ &ufs_mem_phy {
  
-+	if (!ret)
-+		dwc3_notify_mode_changed(dwc, dwc->current_dr_role);
-+
- out:
- 	pm_runtime_mark_last_busy(dwc->dev);
- 	pm_runtime_put_autosuspend(dwc->dev);
-diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
-index aefcb0d388b7..5ed7fd5eb776 100644
---- a/drivers/usb/dwc3/core.h
-+++ b/drivers/usb/dwc3/core.h
-@@ -974,10 +974,12 @@ struct dwc3_scratchpad_array {
-  * @notify_cable_disconnect: Notify glue of cable removal
-  *				irrespective of host or device mode.
-  * @set_mode: Notify glue before mode change is about to happen.
-+ * @mode_changed: Notify glue that mode change was done successfully
-  */
- struct dwc3_glue_ops {
- 	void	(*notify_cable_disconnect)(void *glue_data);
- 	void	(*set_mode)(void *glue_data, u32 desired_dr_role);
-+	void	(*mode_changed)(void *glue_data, u32 current_dr_role);
+ &usb_1 {
+ 	status = "okay";
+-};
+-
+-&usb_1_dwc3 {
+ 	dr_mode = "otg";
+ 	usb-role-switch;
+ };
+diff --git a/arch/arm64/boot/dts/qcom/sm8450-qrd.dts b/arch/arm64/boot/dts/qcom/sm8450-qrd.dts
+index 65a94dfaf5ae..fb800d24b00b 100644
+--- a/arch/arm64/boot/dts/qcom/sm8450-qrd.dts
++++ b/arch/arm64/boot/dts/qcom/sm8450-qrd.dts
+@@ -453,9 +453,6 @@ &ufs_mem_phy {
+ 
+ &usb_1 {
+ 	status = "okay";
+-};
+-
+-&usb_1_dwc3 {
+ 	dr_mode = "peripheral";
  };
  
- struct dwc3_glue_data {
-@@ -1600,6 +1602,13 @@ static inline void dwc3_notify_set_mode(struct dwc3 *dwc,
- 		dwc->glue_ops->set_mode(dwc->glue_data, desired_dr_role);
- }
+diff --git a/arch/arm64/boot/dts/qcom/sm8450-sony-xperia-nagara.dtsi b/arch/arm64/boot/dts/qcom/sm8450-sony-xperia-nagara.dtsi
+index 001fb2723fbb..9ba6db3d54f8 100644
+--- a/arch/arm64/boot/dts/qcom/sm8450-sony-xperia-nagara.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8450-sony-xperia-nagara.dtsi
+@@ -778,9 +778,6 @@ &uart7 {
  
-+static inline void dwc3_notify_mode_changed(struct dwc3 *dwc,
-+					    u32 current_dr_role)
-+{
-+	if (dwc->glue_ops && dwc->glue_ops->mode_changed)
-+		dwc->glue_ops->mode_changed(dwc->glue_data, current_dr_role);
-+}
-+
- #if IS_ENABLED(CONFIG_USB_DWC3_HOST) || IS_ENABLED(CONFIG_USB_DWC3_DUAL_ROLE)
- int dwc3_host_init(struct dwc3 *dwc);
- void dwc3_host_exit(struct dwc3 *dwc);
-diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-index 4013a5e6c6c0..9c7b23888f11 100644
---- a/drivers/usb/dwc3/dwc3-qcom.c
-+++ b/drivers/usb/dwc3/dwc3-qcom.c
-@@ -91,6 +91,7 @@ struct dwc3_qcom {
- 
- 	bool			enable_rt;
- 	enum usb_role		current_role;
-+	struct notifier_block	xhci_nb;
+ &usb_1 {
+ 	status = "okay";
+-};
+-
+-&usb_1_dwc3 {
+ 	dr_mode = "peripheral";
  };
  
- static inline void dwc3_qcom_setbits(void __iomem *base, u32 offset, u32 val)
-@@ -676,6 +677,27 @@ static const struct software_node dwc3_qcom_swnode = {
- 	.properties = dwc3_qcom_acpi_properties,
- };
+diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+index 5cd7296c7660..3785a4625aff 100644
+--- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+@@ -4270,7 +4270,7 @@ opp-202000000 {
  
-+static int dwc3_xhci_event_notifier(struct notifier_block *nb,
-+				    unsigned long event, void *ptr)
-+{
-+	struct usb_device *udev = ptr;
-+
-+	if (event != USB_DEVICE_ADD)
-+		return NOTIFY_DONE;
-+
-+	/*
-+	 * If this is a roothub corresponding to this controller, enable autosuspend
-+	 */
-+	if (!udev->parent) {
-+		pm_runtime_use_autosuspend(&udev->dev);
-+		pm_runtime_set_autosuspend_delay(&udev->dev, 1000);
-+	}
-+
-+	usb_mark_last_busy(udev);
-+
-+	return NOTIFY_DONE;
-+}
-+
- static void dwc3_qcom_handle_cable_disconnect(void *data)
- {
- 	struct dwc3_qcom *qcom = (struct dwc3_qcom *)data;
-@@ -688,6 +710,8 @@ static void dwc3_qcom_handle_cable_disconnect(void *data)
- 		pm_runtime_get_sync(qcom->dev);
- 		dwc3_qcom_vbus_override_enable(qcom, false);
- 		pm_runtime_put_autosuspend(qcom->dev);
-+	} else if (qcom->current_role == USB_ROLE_HOST) {
-+		usb_unregister_notify(&qcom->xhci_nb);
- 	}
+ 		usb_1: usb@a6f8800 {
+ 			compatible = "qcom,sm8450-dwc3", "qcom,dwc3";
+-			reg = <0 0x0a6f8800 0 0x400>;
++			reg = <0 0x0a600000 0 0x200000>;
+ 			status = "disabled";
+ 			#address-cells = <2>;
+ 			#size-cells = <2>;
+@@ -4293,11 +4293,13 @@ usb_1: usb@a6f8800 {
+ 					  <&gcc GCC_USB30_PRIM_MASTER_CLK>;
+ 			assigned-clock-rates = <19200000>, <200000000>;
  
- 	pm_runtime_mark_last_busy(qcom->dev);
-@@ -711,15 +735,33 @@ static void dwc3_qcom_handle_set_mode(void *data, u32 desired_dr_role)
- 		qcom->current_role = USB_ROLE_DEVICE;
- 	} else if ((desired_dr_role == DWC3_GCTL_PRTCAP_HOST) &&
- 		   (qcom->current_role != USB_ROLE_HOST)) {
-+		qcom->xhci_nb.notifier_call = dwc3_xhci_event_notifier;
-+		usb_register_notify(&qcom->xhci_nb);
- 		qcom->current_role = USB_ROLE_HOST;
- 	}
+-			interrupts-extended = <&intc GIC_SPI 130 IRQ_TYPE_LEVEL_HIGH>,
++			interrupts-extended = <&intc GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>,
++					      <&intc GIC_SPI 130 IRQ_TYPE_LEVEL_HIGH>,
+ 					      <&pdc 17 IRQ_TYPE_LEVEL_HIGH>,
+ 					      <&pdc 15 IRQ_TYPE_EDGE_BOTH>,
+ 					      <&pdc 14 IRQ_TYPE_EDGE_BOTH>;
+-			interrupt-names = "hs_phy_irq",
++			interrupt-names = "dwc_usb3",
++					  "hs_phy_irq",
+ 					  "ss_phy_irq",
+ 					  "dm_hs_phy_irq",
+ 					  "dp_hs_phy_irq";
+@@ -4310,32 +4312,28 @@ usb_1: usb@a6f8800 {
+ 					<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_USB3_0 0>;
+ 			interconnect-names = "usb-ddr", "apps-usb";
  
- 	pm_runtime_mark_last_busy(qcom->dev);
- }
+-			usb_1_dwc3: usb@a600000 {
+-				compatible = "snps,dwc3";
+-				reg = <0 0x0a600000 0 0xcd00>;
+-				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
+-				iommus = <&apps_smmu 0x0 0x0>;
+-				snps,dis_u2_susphy_quirk;
+-				snps,dis_enblslpm_quirk;
+-				phys = <&usb_1_hsphy>, <&usb_1_qmpphy QMP_USB43DP_USB3_PHY>;
+-				phy-names = "usb2-phy", "usb3-phy";
++			iommus = <&apps_smmu 0x0 0x0>;
++			snps,dis_u2_susphy_quirk;
++			snps,dis_enblslpm_quirk;
  
-+static void dwc3_qcom_handle_mode_changed(void *data, u32 current_dr_role)
-+{
-+	struct dwc3_qcom *qcom = (struct dwc3_qcom *)data;
+-				ports {
+-					#address-cells = <1>;
+-					#size-cells = <0>;
++			phys = <&usb_1_hsphy>, <&usb_1_qmpphy QMP_USB43DP_USB3_PHY>;
++			phy-names = "usb2-phy", "usb3-phy";
+ 
+-					port@0 {
+-						reg = <0>;
++			ports {
++				#address-cells = <1>;
++				#size-cells = <0>;
+ 
+-						usb_1_dwc3_hs: endpoint {
+-						};
++				port@0 {
++					reg = <0>;
 +
-+	/*
-+	 * XHCI platform device is allocated upon host init.
-+	 * So ensure we are in host mode before enabling autosuspend.
-+	 */
-+	if ((current_dr_role == DWC3_GCTL_PRTCAP_HOST) &&
-+	    (qcom->current_role == USB_ROLE_HOST)) {
-+		pm_runtime_use_autosuspend(&qcom->dwc->xhci->dev);
-+		pm_runtime_set_autosuspend_delay(&qcom->dwc->xhci->dev, 0);
-+	}
-+}
-+
- struct dwc3_glue_ops dwc3_qcom_glue_hooks = {
- 	.notify_cable_disconnect = dwc3_qcom_handle_cable_disconnect,
- 	.set_mode = dwc3_qcom_handle_set_mode,
-+	.mode_changed = dwc3_qcom_handle_mode_changed,
- };
++					usb_1_dwc3_hs: endpoint {
+ 					};
++				};
  
- static int dwc3_qcom_probe_core(struct platform_device *pdev, struct dwc3_qcom *qcom)
+-					port@1 {
+-						reg = <1>;
++				port@1 {
++					reg = <1>;
+ 
+-						usb_1_dwc3_ss: endpoint {
+-						};
++					usb_1_dwc3_ss: endpoint {
+ 					};
+ 				};
+ 			};
 -- 
 2.42.0
 
