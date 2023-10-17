@@ -2,155 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D270E7CCA2B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 19:52:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62CEC7CCA30
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 19:54:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343931AbjJQRwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 13:52:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43602 "EHLO
+        id S232208AbjJQRyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 13:54:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232025AbjJQRwc (ORCPT
+        with ESMTP id S232025AbjJQRya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 13:52:32 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD7190;
-        Tue, 17 Oct 2023 10:52:30 -0700 (PDT)
-Date:   Tue, 17 Oct 2023 17:52:27 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697565148;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6QO7THutm9DbzDFqvBo8CeUszTWk5DcsXoee7Ok6T8A=;
-        b=oPfwVabj4mW8EPgc5AFNhLZFbW0ejqgqBMimVX7IJc56hO1syU0gQrIgpGGhhHHqBCeDUp
-        3cTNVxAzWyXbnuWF7RWuEYf9wj38rVTLio4mVKuPyF5Iog+ddyYbplcrrsVeBxqUYfDgnQ
-        b+dMu7jnaH4E408vOwF2zD+TjvZrJ9borL2b6xcM7SB0W2uPlMPJFjW0Lhu/5mT2p6QihK
-        Tbukq3QF/+AgphxyQZX8gWEI8/LqCtg2RLIM6QqnA281cgUAu9SCiP+zmGgObochO/dlpx
-        yCXTaJ8yacQMaz9ANA2kUwYwY4cY7zzwccXkyqFiIj6Vxa+J3lk6D1AKlvZh8w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697565148;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6QO7THutm9DbzDFqvBo8CeUszTWk5DcsXoee7Ok6T8A=;
-        b=Y/BqD6PeQzzmg4hdzlsMQ+V3wbWrXeoNcMwBQsMYiTInE/hpKu49yAZLIeXe3qLo13q+Hk
-        HUgd6aA42rG7UJCA==
-From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/bugs] x86/retpoline: Make sure there are no unconverted
- return thunks due to KCSAN
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        "Borislav Petkov (AMD)" <bp@alien8.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Marco Elver <elver@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231017165946.v4i2d4exyqwqq3bx@treble>
-References: <20231017165946.v4i2d4exyqwqq3bx@treble>
+        Tue, 17 Oct 2023 13:54:30 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D62B90
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 10:54:28 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40572aeb673so56687555e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 10:54:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697565266; x=1698170066; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MUUCkiu5vUAHLKvjzzzRJs8u1+C022EMiTeERsZUBSE=;
+        b=zYPdVUDaC2JicSkU4IMs9d9NBqFPCry6g4Ba4t6ARWvAGQoOVBygefGGeBhfDzH/Cn
+         1xHfyPbeQtmpAM0aj8eipbnl692o2eLCi/o1Nvrv6ENCr2u4MR7BsoKdDy8PfRTQZFMn
+         YVXd/Ni9hrdNlVwk+q/5ciZprB2KmKfZgi0q8rEuB7H3oMTCqo6Rt3Grm1W4+2nWm0Oy
+         ZuKva5akUaHLAkgQHNiZQVGhEv0U5iPdNsVxagXXNzqEIQp52FAhEjBmaC9fDpms5QJL
+         9UrNHxpHAc7cJuAZOjgKO6I63XU6M26RuOZOGuSb6gLd2MaXbuoI0wNBOqEDYO0IRG2G
+         RUXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697565266; x=1698170066;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MUUCkiu5vUAHLKvjzzzRJs8u1+C022EMiTeERsZUBSE=;
+        b=Sbuuseu9UJ9DizLsrKndUyG5dPn0P4GJ5WM18BpFIH82Esa8KeS2SXT8cBvxJ102kb
+         7DvkV9OuLwHxfx0ezQhGQom2oqJId79HnYUGug4Xe5deWZwTCLYeNoXJ2cYDfg9LlBDu
+         TLLx/VasdE9TAQzF7VTRQPYClE8di3llY5ndecNESTsLNKDTmtul0EXHAxIxRmcOrqqf
+         3J2Uhi6Ec1Nfv5i5UJcufFd5ol2gyxgkQj2/hlykL+7/csRRbF47e2Da6zqKAh90kvMF
+         cIBZ/UP6Z6y2SNdn4Vy801EP1xvQ0Pqzvp6MYGmfEGqk/qoOgxNaxJfyJ7e8h2vIiPkY
+         L4Cg==
+X-Gm-Message-State: AOJu0YxbLenJhajMWR45qmhg2f3ADn9Ij0XPonPbU3muA5IbxdZObqhZ
+        2vjAhJc4jnpx0gB7tC6kAi7mVw==
+X-Google-Smtp-Source: AGHT+IG505kDYsm+03qRLM/qO/s22ze8aCQIk76ph//q3WRXO4DCwOktsuci2V9jr+fr4BJ+ziIiuw==
+X-Received: by 2002:a05:600c:3114:b0:407:7e5f:ffb9 with SMTP id g20-20020a05600c311400b004077e5fffb9mr2450207wmo.9.1697565266528;
+        Tue, 17 Oct 2023 10:54:26 -0700 (PDT)
+Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
+        by smtp.googlemail.com with ESMTPSA id v18-20020a05600c15d200b00406447b798bsm2221328wmf.37.2023.10.17.10.54.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Oct 2023 10:54:26 -0700 (PDT)
+Message-ID: <2d5190ed-5c95-4278-8e70-211a71de821b@linaro.org>
+Date:   Tue, 17 Oct 2023 19:54:25 +0200
 MIME-Version: 1.0
-Message-ID: <169756514789.3135.9006141912388432463.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH][next] thermal: lvts: make some read-only arrays static
+ const
+Content-Language: en-US
+To:     Colin Ian King <colin.i.king@gmail.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231017171655.177096-1-colin.i.king@gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <20231017171655.177096-1-colin.i.king@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/bugs branch of tip:
 
-Commit-ID:     28860182b7d88e5be76f332c34377288ad08e87a
-Gitweb:        https://git.kernel.org/tip/28860182b7d88e5be76f332c34377288ad08e87a
-Author:        Josh Poimboeuf <jpoimboe@kernel.org>
-AuthorDate:    Tue, 17 Oct 2023 09:59:46 -07:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Tue, 17 Oct 2023 19:46:04 +02:00
+Hi Colin,
 
-x86/retpoline: Make sure there are no unconverted return thunks due to KCSAN
+On 17/10/2023 19:16, Colin Ian King wrote:
+> Don't populate the read-only arrays on the stack, instead make them
+> static const. 
 
-Enabling CONFIG_KCSAN causes the undefined opcode exception diagnostic
-added by
+Why ?
 
-  91174087dcc7 ("x86/retpoline: Ensure default return thunk isn't used at runtime")
+> Make lvts_write_config parameters cmds and nr_cmds
+> const too.
+> 
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> ---
+>   drivers/thermal/mediatek/lvts_thermal.c | 11 ++++++-----
+>   1 file changed, 6 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/thermal/mediatek/lvts_thermal.c b/drivers/thermal/mediatek/lvts_thermal.c
+> index 877a0e5ac3fd..b20e69cb466f 100644
+> --- a/drivers/thermal/mediatek/lvts_thermal.c
+> +++ b/drivers/thermal/mediatek/lvts_thermal.c
+> @@ -308,7 +308,7 @@ static int lvts_get_temp(struct thermal_zone_device *tz, int *temp)
+>   
+>   static void lvts_update_irq_mask(struct lvts_ctrl *lvts_ctrl)
+>   {
+> -	u32 masks[] = {
+> +	static const u32 masks[] = {
+>   		LVTS_MONINT_OFFSET_SENSOR0,
+>   		LVTS_MONINT_OFFSET_SENSOR1,
+>   		LVTS_MONINT_OFFSET_SENSOR2,
+> @@ -400,7 +400,7 @@ static irqreturn_t lvts_ctrl_irq_handler(struct lvts_ctrl *lvts_ctrl)
+>   {
+>   	irqreturn_t iret = IRQ_NONE;
+>   	u32 value;
+> -	u32 masks[] = {
+> +	static const u32 masks[] = {
+>   		LVTS_INT_SENSOR0,
+>   		LVTS_INT_SENSOR1,
+>   		LVTS_INT_SENSOR2,
+> @@ -781,7 +781,7 @@ static int lvts_ctrl_init(struct device *dev, struct lvts_domain *lvts_td,
+>    * each write in the configuration register must be separated by a
+>    * delay of 2 us.
+>    */
+> -static void lvts_write_config(struct lvts_ctrl *lvts_ctrl, u32 *cmds, int nr_cmds)
+> +static void lvts_write_config(struct lvts_ctrl *lvts_ctrl, const u32 *cmds, const int nr_cmds)
+>   {
+>   	int i;
+>   
+> @@ -865,7 +865,8 @@ static int lvts_ctrl_set_enable(struct lvts_ctrl *lvts_ctrl, int enable)
+>   
+>   static int lvts_ctrl_connect(struct device *dev, struct lvts_ctrl *lvts_ctrl)
+>   {
+> -	u32 id, cmds[] = { 0xC103FFFF, 0xC502FF55 };
+> +	u32 id;
+> +	static const u32 cmds[] = { 0xC103FFFF, 0xC502FF55 };
+>   
+>   	lvts_write_config(lvts_ctrl, cmds, ARRAY_SIZE(cmds));
+>   
+> @@ -889,7 +890,7 @@ static int lvts_ctrl_initialize(struct device *dev, struct lvts_ctrl *lvts_ctrl)
+>   	/*
+>   	 * Write device mask: 0xC1030000
+>   	 */
+> -	u32 cmds[] = {
+> +	static const u32 cmds[] = {
+>   		0xC1030E01, 0xC1030CFC, 0xC1030A8C, 0xC103098D, 0xC10308F1,
+>   		0xC10307A6, 0xC10306B8, 0xC1030500, 0xC1030420, 0xC1030300,
+>   		0xC1030030, 0xC10300F6, 0xC1030050, 0xC1030060, 0xC10300AC,
 
-which is supposed to catch unconverted, default return thunks, to fire.
-The resulting panic is triggered by the UD2 instruction which gets
-patched into __x86_return_thunk() when alternatives are applied.  After
-that point, the default return thunk should no longer be used.
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-As David Kaplan describes in his debugging of the issue, it is caused by
-a couple of KCSAN-generated constructors which aren't processed by
-objtool:
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
-  "When KCSAN is enabled, GCC generates lots of constructor functions
-  named _sub_I_00099_0 which call __tsan_init and then return.  The
-  returns in these are generally annotated normally by objtool and fixed
-  up at runtime.  But objtool runs on vmlinux.o and vmlinux.o does not
-  include a couple of object files that are in vmlinux, like
-  init/version-timestamp.o and .vmlinux.export.o, both of which contain
-  _sub_I_00099_0 functions.  As a result, the returns in these functions
-  are not annotated, and the panic occurs when we call one of them in
-  do_ctors and it uses the default return thunk.
-
-  This difference can be seen by counting the number of these functions in the object files:
-  $ objdump -d vmlinux.o|grep -c "<_sub_I_00099_0>:"
-  2601
-  $ objdump -d vmlinux|grep -c "<_sub_I_00099_0>:"
-  2603
-
-  If these functions are only run during kernel boot, there is no
-  speculation concern."
-
-Fix it by disabling KCSAN on version-timestamp.o and .vmlinux.export.o
-so the extra functions don't get generated.  KASAN and GCOV are already
-disabled for those files.
-
-  [ bp: Massage commit message. ]
-
-Fixes: 91174087dcc7 ("x86/retpoline: Ensure default return thunk isn't used at runtime")
-Closes: https://lore.kernel.org/lkml/20231016214810.GA3942238@dev-arch.thelio-3990X/
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Acked-by: Marco Elver <elver@google.com>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
-Link: https://lore.kernel.org/r/20231017165946.v4i2d4exyqwqq3bx@treble
----
- init/Makefile            | 1 +
- scripts/Makefile.vmlinux | 1 +
- 2 files changed, 2 insertions(+)
-
-diff --git a/init/Makefile b/init/Makefile
-index ec557ad..cbac576 100644
---- a/init/Makefile
-+++ b/init/Makefile
-@@ -60,4 +60,5 @@ include/generated/utsversion.h: FORCE
- $(obj)/version-timestamp.o: include/generated/utsversion.h
- CFLAGS_version-timestamp.o := -include include/generated/utsversion.h
- KASAN_SANITIZE_version-timestamp.o := n
-+KCSAN_SANITIZE_version-timestamp.o := n
- GCOV_PROFILE_version-timestamp.o := n
-diff --git a/scripts/Makefile.vmlinux b/scripts/Makefile.vmlinux
-index 3cd6ca1..c9f3e03 100644
---- a/scripts/Makefile.vmlinux
-+++ b/scripts/Makefile.vmlinux
-@@ -19,6 +19,7 @@ quiet_cmd_cc_o_c = CC      $@
- 
- ifdef CONFIG_MODULES
- KASAN_SANITIZE_.vmlinux.export.o := n
-+KCSAN_SANITIZE_.vmlinux.export.o := n
- GCOV_PROFILE_.vmlinux.export.o := n
- targets += .vmlinux.export.o
- vmlinux: .vmlinux.export.o
