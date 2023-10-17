@@ -2,118 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A24B57CBFFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C104B7CC000
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234787AbjJQJ4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 05:56:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42214 "EHLO
+        id S234852AbjJQJ5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 05:57:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234752AbjJQJ4T (ORCPT
+        with ESMTP id S234835AbjJQJ5X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 05:56:19 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFE108E;
-        Tue, 17 Oct 2023 02:56:17 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1ca82f015e4so11727185ad.1;
-        Tue, 17 Oct 2023 02:56:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697536577; x=1698141377; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=II5ImvwdoBMhhhMCFXImAhFo00DMG1iqmwoAQFMbYKQ=;
-        b=RWVCN4Jjr1VIGgoLRiqK86hQgxOh7ce5R/0rw3JlDtn7A+bywFHic1uxxgxGYPRlWi
-         Ze579sWsdflM68fXZbv/7hS158dxi+57VU1vdLJwTOGOUwxYjEKlsGYbXVoyenH9vHSb
-         8OM6LMj2Li44vLsgoR5o5c/F/OF2ITNonZZi6vi2P3Y1UTx5IvQ2AIzLYnE37HwKarcq
-         3AKtYjMrY/M+7qHRzYcxFMTP3F4ExQ5eJ/jmNSz7ublx2MUg1PKaJ0SBiIKa1LW5k3ID
-         npEwm89q/pXcfuYHhSidZu0ItDrDP65rl+7d3lYeL2AhgzlCxd8wxp+XtPUZlbZfNs1l
-         nEjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697536577; x=1698141377;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=II5ImvwdoBMhhhMCFXImAhFo00DMG1iqmwoAQFMbYKQ=;
-        b=Eb1/vFyN3MjijwL4je/S0ry8oBXaK+sE8QxkHNK51vOGdonHnER7v8sEgbZ6MmlrWy
-         affvugsCqnNGndpzoOJWmm5BZS569qRaDcWS57RTCTMRWt4EBOTNO+4vlRO66dkSkVXQ
-         mmjn181F+iVojS+jNlhpWA81bugLbGGPdz+K58iwXrP0YgOtO7Wqjx1qeQtmpLCrZfIu
-         zjauA3Pwox7z04PdO6a3k8lBmeMpXW7ajyVb47uz47lE9wNwYcogrxIGpdqMpe7Q3tYn
-         LPUaZR39X7r+QeEa/aq/MN3TXEklakK3JMKUcRDHbfJ20XJlax8w6b/A8G9OonJeGTXX
-         ivFA==
-X-Gm-Message-State: AOJu0Yx2WoJsJJ7O7RCK56Nl0kRLS29nCD+Kcrk6sSnKGwf+WHWFHpkZ
-        E2l3cauCs5aBNRuuoefOm+k=
-X-Google-Smtp-Source: AGHT+IHl8aH5z1fRJj+bRkw4KcEr8kjTvGrxewOfNJ6cgfFk2bgq3HJwemtiLHhwldqoVoCR3GJ74Q==
-X-Received: by 2002:a17:903:482:b0:1c5:8401:356c with SMTP id jj2-20020a170903048200b001c58401356cmr1501720plb.62.1697536577232;
-        Tue, 17 Oct 2023 02:56:17 -0700 (PDT)
-Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id u14-20020a170902e5ce00b001b86492d724sm1093343plf.223.2023.10.17.02.56.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 02:56:16 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 9AA8B8097A1C; Tue, 17 Oct 2023 16:56:12 +0700 (WIB)
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Linux CoreSight <coresight@lists.linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Documentation <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Tao Zhang <quic_taozha@quicinc.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: [PATCH] Documentation: ABI: coresight-tpdm: Fix Bit[3] description indentation
-Date:   Tue, 17 Oct 2023 16:56:08 +0700
-Message-ID: <20231017095608.136277-1-bagasdotme@gmail.com>
-X-Mailer: git-send-email 2.42.0
+        Tue, 17 Oct 2023 05:57:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5571CED
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 02:56:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697536594;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YskDJvOwtltUEF1vV1LUQRzaj8p5jAo4b5a3cEViogM=;
+        b=P2rR2M7CgVFFLEjkCCDWhmJwjocZB/wKtpNhWENHgmk39wlZg0kwMKsnjCTSsgwwv1MsYT
+        fofRYh2xZfK70dwZpoOsBIflqgDbzD6rpAnI18u+2WkhAmj3hiszlvWdH8ODFzBIeVyh2s
+        BR/wLYyiMGwzoUW+R3Ajf4Idq6ICgv4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-632-B0Jm9qSrO7CpqPjDEewBfw-1; Tue, 17 Oct 2023 05:56:23 -0400
+X-MC-Unique: B0Jm9qSrO7CpqPjDEewBfw-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8DDA88F15C5;
+        Tue, 17 Oct 2023 09:56:22 +0000 (UTC)
+Received: from [10.43.2.183] (unknown [10.43.2.183])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 56F85492BEE;
+        Tue, 17 Oct 2023 09:56:21 +0000 (UTC)
+Message-ID: <b1805c01-483a-4d7e-8fb2-537f9a7ed9b4@redhat.com>
+Date:   Tue, 17 Oct 2023 11:56:20 +0200
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1727; i=bagasdotme@gmail.com; h=from:subject; bh=yngM08kD1bzp4K9abSD6QBPMAVhUl302WD9sewUK0GQ=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDKl6kR2mbhujGj/U6Fss1bo86zyTY9wxy42rpwh+Shf/P V9Wfv/CjlIWBjEuBlkxRZZJiXxNp3cZiVxoX+sIM4eVCWQIAxenAEyk/gIjw03ZqUHp7JlXZ0rs 2W3U3eC0pUU+/xPvs54i/9AChQCFDEaGHatSmTe/y3ne9eTDxOcZx5kCfp770sh3/1CmSvMks8N HmQA=
-X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 3/5] i40e: Add handler for devlink .info_get
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org
+References: <20231013170755.2367410-1-ivecera@redhat.com>
+ <20231013170755.2367410-4-ivecera@redhat.com>
+ <20231016075619.02d1dd27@kernel.org>
+Content-Language: en-US
+From:   Ivan Vecera <ivecera@redhat.com>
+In-Reply-To: <20231016075619.02d1dd27@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Rothwell reported htmldocs warnings when merging coresight tree:
 
-Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm:48: ERROR: Unexpected indentation.
-Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm:48: WARNING: Block quote ends without a blank line; unexpected unindent.
 
-Fix indentation alignment for Bit[3] list entry in dsb_mode description to
-silence above warnings.
+On 16. 10. 23 16:56, Jakub Kicinski wrote:
+> On Fri, 13 Oct 2023 19:07:53 +0200 Ivan Vecera wrote:
+>>   "serial_number" -> The PCI DSN of the adapter
+>>   "fw.mgmt" -> The version of the firmware
+>>   "fw.mgmt.api" -> The API version of interface exposed over the AdminQ
+>>   "fw.psid" -> The version of the NVM image
+> 
+> Your board reports "fw.psid 9.30", this may not be right,
+> PSID is more of a board+customer ID, IIUC. 9.30 looks like
+> a version, not an ID.
 
-Fixes: 535d80d3c10fff ("coresight-tpdm: Add node to set dsb programming mode")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Closes: https://lore.kernel.org/linux-next/20231017143324.75387a21@canb.auug.org.au/
-Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
----
- Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Maybe plain 'fw' should be used for this '9.30' as this is a version
+of the whole software package provided by Intel for these adapters
+(e.g. 
+https://www.intel.com/content/www/us/en/download/18190/non-volatile-memory-nvm-update-utility-for-intel-ethernet-network-adapter-700-series.html).
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-index f07218e788439d..4dd49b159543b6 100644
---- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-+++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-@@ -54,8 +54,8 @@ Description:
- 		Accepts the value needs to be greater than 0. What data
- 		bits do is listed below.
- 		Bit[0:1] : Test mode control bit for choosing the inputs.
--		Bit[3] : Set to 0 for low performance mode.
--				 Set to 1 for high performance mode.
-+		Bit[3] : Set to 0 for low performance mode. Set to 1 for high
-+		performance mode.
- 		Bit[4:8] : Select byte lane for high performance mode.
- 
- What:		/sys/bus/coresight/devices/<tpdm-name>/dsb_edge/ctrl_idx
+Thoughts?
 
-base-commit: 90a7371cb08d7e542fa4f283c881973bba09f23b
--- 
-An old man doll... just what I always wanted! - Clara
+>>   "fw.bundle_id" -> Unique identifier for the combined flash image
+>>   "fw.undi" -> The combo image version
+> 
+> UNDI means PXE. Is that whave "combo image" means for Intel?
+
+Combo image version (aka CIVD) is reported by nvmupdate tool and this
+should be version of OROM that contains PXE, EFI images that each of
+them can have specific version but this CIVD should be overall OROM 
+version for this combination of PXE and EFI. I hope I'm right.
+
+Thanks,
+Ivan
 
