@@ -2,167 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 465397CBEEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEEE87CBEE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234796AbjJQJVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 05:21:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44494 "EHLO
+        id S234849AbjJQJVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 05:21:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234866AbjJQJVC (ORCPT
+        with ESMTP id S234880AbjJQJU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 05:21:02 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C51E811B;
-        Tue, 17 Oct 2023 02:20:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697534451; x=1729070451;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=v/7G7MGX1gcW6Dj8Rktw//OjNQ+o0JO+cRKd4i36UZg=;
-  b=W9uLLy+AyzYv1HzTg9S8jn6++nAcAX1CihwhesmPVBX6Pht+w/f4z0B/
-   /ppIQ5d8rKvB2okZrKPcxROIJdsPH0TCV2h9/X+QU6ArOFpmFuHuR3RWs
-   TIIE/Prb6YCGJFJ5dxwsscygasdoEE04IvhoBnn3loQWzM5iyGiN0TsnN
-   HMU80jyGiuaYtT1nEXgzGR+XkkUeB5uCkL/shJVDapKRSL7NlpleOa1WA
-   G8vR+5JhEvNgO7f6wA6UDnbMlwIDrhnSZwTNKjDxSuN2JoYG2LTDj1Twf
-   GZrnNRuRzHsCcNOBozLGbZTIuLOHhCvwR2+eMh2ikiDmj0txFRnUueDo/
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="365999435"
-X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="365999435"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 02:20:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="759733290"
-X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="759733290"
-Received: from spandruv-mobl.amr.corp.intel.com ([10.252.44.24])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 02:20:19 -0700
-Date:   Tue, 17 Oct 2023 12:20:17 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Ma Jun <Jun.Ma2@amd.com>
-cc:     amd-gfx@lists.freedesktop.org, lenb@kernel.org,
-        johannes@sipsolutions.net, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        alexander.deucher@amd.com, Lijo.Lazar@amd.com,
-        mario.limonciello@amd.com, majun@amd.com, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH v12 1/9] Documentation/driver-api: Add document about
- WBRF mechanism
-In-Reply-To: <20231017025358.1773598-2-Jun.Ma2@amd.com>
-Message-ID: <f3c89e85-a683-eedf-9c3-ed54173bc12@linux.intel.com>
-References: <20231017025358.1773598-1-Jun.Ma2@amd.com> <20231017025358.1773598-2-Jun.Ma2@amd.com>
+        Tue, 17 Oct 2023 05:20:59 -0400
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14CC2115
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 02:20:41 -0700 (PDT)
+Received: from mail-yw1-f198.google.com (mail-yw1-f198.google.com [209.85.128.198])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 4F8BF40517
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 09:20:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1697534438;
+        bh=nNUjVxmpdoA6kyR3JrJWBJibsGUXwZHys8dSVokq2rE=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=KFEvA198D+rT/ae5v+D4Bmav0ZEs19EBul+/QaEPm9l59Tqe9FfDfK/Eh/lduQhNE
+         C6Mh86CjVFMg3+x0X+HRsbihxKmfolgBKnp+hPWxqDl4o5HJobrIgvcBH0eCatVjSZ
+         vbk2RSKH+DZx5kWUhurDSleKNaIF9xvBa2XqezQvhl8AhLCMB3+8mezI9sDhZ+Q1J2
+         y1sM1bVMIvEcaK72KozPUC61JSsmVddL6zT9Bkl1sk82c/zz5zGjLNjLH3T5GZadZp
+         d+sWTt+/wpBECUtFDboPXJMYgogYwnMUGWpvlzp/ZQ6+60hvlGUjPjigdSZQohrbRU
+         NcS869bCapTfg==
+Received: by mail-yw1-f198.google.com with SMTP id 00721157ae682-5a7b9e83b70so40981147b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 02:20:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697534436; x=1698139236;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nNUjVxmpdoA6kyR3JrJWBJibsGUXwZHys8dSVokq2rE=;
+        b=F9muAeuaTdgVGyBFqf2kgMRZF2uFguj9zSr+SCFSaCZLXGfComTbOqtYKXzw1ipA8E
+         Qa4rnkMsebsQyZbRJ8frw5nGR7KGmZo/TIPHgeJ3KXm5P1kBNp3i8lyeaqmdExKFuT3g
+         U7QchQQVAnzjBoCyCWu7iZIpUURjSLqKLp9icEt2iAD/N9icrt5h1coQfiAocI8dU3Ls
+         aCqTzHLtDiLQF27aFPY8T/jBamdXF+RKQ1ZoZQa/RX2X/2WIpDKMX3hzLDDjxcEKxz8D
+         PqzgJsNbu8GcJUKwK4arjhvEhhC8kFssNNFM7fL2XS+oPoW8CwtxoCdMpR9F+MjZT+ks
+         wDIA==
+X-Gm-Message-State: AOJu0Yw14G7qOzaMuJZfMCw49fvEhn5vST8pNby5OkhyDokltGe/QrXZ
+        ss4aI17hIk6HtsgzHiI8fDqtp9hWcoezpYmfgbnSLXMWQPB7V0KzVvasxGwpCNyq+jF2LHELJFa
+        kxnmgoN0vTioClpmpaqAoAwiqdgEO0Aw0Oil5pEPEwcb3TWI0NlMjdDy4+w==
+X-Received: by 2002:a81:48ce:0:b0:5a7:b3d0:82c2 with SMTP id v197-20020a8148ce000000b005a7b3d082c2mr974302ywa.12.1697534435881;
+        Tue, 17 Oct 2023 02:20:35 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGzFPEro4EciuyVlos1b3+QOrc/0amxvByak/P82mRnQ5Nl4CxqA+XepMlA37C98EGjupWqIGi7+rNX4y6VhtU=
+X-Received: by 2002:a81:48ce:0:b0:5a7:b3d0:82c2 with SMTP id
+ v197-20020a8148ce000000b005a7b3d082c2mr974288ywa.12.1697534435555; Tue, 17
+ Oct 2023 02:20:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230807132626.182101-1-aleksandr.mikhalitsyn@canonical.com> <bcda164b-e4b7-1c16-2714-13e3c6514b47@redhat.com>
+In-Reply-To: <bcda164b-e4b7-1c16-2714-13e3c6514b47@redhat.com>
+From:   Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Date:   Tue, 17 Oct 2023 11:20:24 +0200
+Message-ID: <CAEivzxf-W1-q=BkG1UndFcX_AbzH-HtHX7p6j4iAwVbKnPn+sQ@mail.gmail.com>
+Subject: Re: [PATCH v10 00/12] ceph: support idmapped mounts
+To:     Xiubo Li <xiubli@redhat.com>
+Cc:     brauner@kernel.org, stgraber@ubuntu.com,
+        linux-fsdevel@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Oct 2023, Ma Jun wrote:
+On Tue, Aug 8, 2023 at 2:45=E2=80=AFAM Xiubo Li <xiubli@redhat.com> wrote:
+>
+> LGTM.
+>
+> Reviewed-by: Xiubo Li <xiubli@redhat.com>
+>
+> I will queue this to the 'testing' branch and then we will run ceph qa
+> tests.
+>
+> Thanks Alex.
+>
+> - Xiubo
 
-> Add documentation about AMD's Wifi band RFI mitigation (WBRF) mechanism
-> explaining the theory and how it is used.
-> 
-> Signed-off-by: Ma Jun <Jun.Ma2@amd.com>
-> ---
->  Documentation/driver-api/wbrf.rst | 73 +++++++++++++++++++++++++++++++
->  1 file changed, 73 insertions(+)
->  create mode 100644 Documentation/driver-api/wbrf.rst
-> 
-> diff --git a/Documentation/driver-api/wbrf.rst b/Documentation/driver-api/wbrf.rst
-> new file mode 100644
-> index 000000000000..8561840263b3
-> --- /dev/null
-> +++ b/Documentation/driver-api/wbrf.rst
-> @@ -0,0 +1,73 @@
-> +.. SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +=================================
-> +WBRF - Wifi Band RFI Mitigations
-> +=================================
-> +Due to electrical and mechanical constraints in certain platform designs
+Hi Xiubo,
 
-Add empty line before starting the content of a section.
+will this series be landed to 6.6?
 
-> +there may be likely interference of relatively high-powered harmonics of
-> +the GPU memory clocks with local radio module frequency bands used by
-> +certain Wifi bands.
-> +
-> +To mitigate possible RFI interference producers can advertise the
-> +frequencies in use and consumers can use this information to avoid using
-> +these frequencies for sensitive features.
-> +
-> +When a platform is known to have this issue with any contained devices,
-> +the platform designer will advertise the availability of this feature via
-> +ACPI devices with a device specific method (_DSM).
-> +* Producers with this _DSM will be able to advertise the frequencies in use.
-> +* Consumers with this _DSM will be able to register for notifications of
-> +frequencies in use.
-> +
-> +Some general terms
-> +==================
-> +Producer: such component who can produce high-powered radio frequency
-> +Consumer: such component who can adjust its in-use frequency in
-> +           response to the radio frequencies of other components to
-> +           mitigate the possible RFI.
-> +
-> +To make the mechanism function, those producers should notify active use
-> +of their particular frequencies so that other consumers can make relative
-> +internal adjustments as necessary to avoid this resonance.
-> +
-> +ACPI interface
-> +==============
-> +Although initially used by for wifi + dGPU use cases, the ACPI interface
-> +can be scaled to any type of device that a platform designer discovers
-> +can cause interference.
-> +
-> +The GUID used for the _DSM is 7B7656CF-DC3D-4C1C-83E9-66E721DE3070.
-> +
-> +3 functions are available in this _DSM:
-> +
-> +* 0: discover # of functions available
-> +* 1: record RF bands in use
-> +* 2: retrieve RF bands in use
-> +
-> +Driver programming interface
-> +============================
-> +.. kernel-doc:: drivers/platform/x86/amd/wbrf.c
-> +
-> +Sample Usage
-> +=============
-> +The expected flow for the producers:
-> +1) During probe, call `acpi_amd_wbrf_supported_producer` to check if WBRF
-> +can be enabled for the device.
-> +2) On using some frequency band, call `acpi_amd_wbrf_add_remove` with 'add'
-> +param to get other consumers properly notified.
-> +3) Or on stopping using some frequency band, call
-> +`acpi_amd_wbrf_add_remove` with 'remove' param to get other consumers notified.
-> +
-> +The expected flow for the consumers:
-> +1) During probe, call `acpi_amd_wbrf_supported_consumer` to check if WBRF
-> +can be enabled for the device.
-> +2) Call `amd_wbrf_register_notifier` to register for notification
-> +of frequency band change(add or remove) from other producers.
-> +3) Call the `amd_wbrf_retrieve_freq_band` intentionally to retrieve
-> +current active frequency bands considering some producers may broadcast
-> +such information before the consumer is up.
-> +4) On receiving a notification for frequency band change, run
-> +`amd_wbrf_retrieve_freq_band` again to retrieve the latest
-> +active frequency bands.
-> +5) During driver cleanup, call `amd_wbrf_unregister_notifier` to
-> +unregister the notifier.
+Userspace part was backported and merged to the Ceph Quincy release
+(https://github.com/ceph/ceph/pull/53139)
+And waiting to be tested and merged to the Ceph reef and pacific releases.
+But the kernel part is still in the testing branch.
 
-Align these so that only the numbers start from first column. I think the 
-proper markup for numbered lists is 1. not 1).
+Kind regards,
+Alex
 
-
--- 
- i.
-
+>
+> On 8/7/23 21:26, Alexander Mikhalitsyn wrote:
+> > Dear friends,
+> >
+> > This patchset was originally developed by Christian Brauner but I'll co=
+ntinue
+> > to push it forward. Christian allowed me to do that :)
+> >
+> > This feature is already actively used/tested with LXD/LXC project.
+> >
+> > Git tree (based on https://github.com/ceph/ceph-client.git testing):
+> > v10: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v10
+> > current: https://github.com/mihalicyn/linux/tree/fs.idmapped.ceph
+> >
+> > In the version 3 I've changed only two commits:
+> > - fs: export mnt_idmap_get/mnt_idmap_put
+> > - ceph: allow idmapped setattr inode op
+> > and added a new one:
+> > - ceph: pass idmap to __ceph_setattr
+> >
+> > In the version 4 I've reworked the ("ceph: stash idmapping in mdsc requ=
+est")
+> > commit. Now we take idmap refcounter just in place where req->r_mnt_idm=
+ap
+> > is filled. It's more safer approach and prevents possible refcounter un=
+derflow
+> > on error paths where __register_request wasn't called but ceph_mdsc_rel=
+ease_request is
+> > called.
+> >
+> > Changelog for version 5:
+> > - a few commits were squashed into one (as suggested by Xiubo Li)
+> > - started passing an idmapping everywhere (if possible), so a caller
+> > UID/GID-s will be mapped almost everywhere (as suggested by Xiubo Li)
+> >
+> > Changelog for version 6:
+> > - rebased on top of testing branch
+> > - passed an idmapping in a few places (readdir, ceph_netfs_issue_op_inl=
+ine)
+> >
+> > Changelog for version 7:
+> > - rebased on top of testing branch
+> > - this thing now requires a new cephfs protocol extension CEPHFS_FEATUR=
+E_HAS_OWNER_UIDGID
+> > https://github.com/ceph/ceph/pull/52575
+> >
+> > Changelog for version 8:
+> > - rebased on top of testing branch
+> > - added enable_unsafe_idmap module parameter to make idmapped mounts
+> > work with old MDS server versions
+> > - properly handled case when old MDS used with new kernel client
+> >
+> > Changelog for version 9:
+> > - added "struct_len" field in struct ceph_mds_request_head as requested=
+ by Xiubo Li
+> >
+> > Changelog for version 10:
+> > - fill struct_len field properly (use cpu_to_le32)
+> > - add extra checks IS_CEPH_MDS_OP_NEWINODE(..) as requested by Xiubo to=
+ match
+> >    userspace client behavior
+> > - do not set req->r_mnt_idmap for MKSNAP operation
+> > - atomic_open: set req->r_mnt_idmap only for CEPH_MDS_OP_CREATE as user=
+space client does
+> >
+> > I can confirm that this version passes xfstests and
+> > tested with old MDS (without CEPHFS_FEATURE_HAS_OWNER_UIDGID)
+> > and with recent MDS version.
+> >
+> > Links to previous versions:
+> > v1: https://lore.kernel.org/all/20220104140414.155198-1-brauner@kernel.=
+org/
+> > v2: https://lore.kernel.org/lkml/20230524153316.476973-1-aleksandr.mikh=
+alitsyn@canonical.com/
+> > tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v2
+> > v3: https://lore.kernel.org/lkml/20230607152038.469739-1-aleksandr.mikh=
+alitsyn@canonical.com/#t
+> > v4: https://lore.kernel.org/lkml/20230607180958.645115-1-aleksandr.mikh=
+alitsyn@canonical.com/#t
+> > tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v4
+> > v5: https://lore.kernel.org/lkml/20230608154256.562906-1-aleksandr.mikh=
+alitsyn@canonical.com/#t
+> > tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v5
+> > v6: https://lore.kernel.org/lkml/20230609093125.252186-1-aleksandr.mikh=
+alitsyn@canonical.com/
+> > tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v6
+> > v7: https://lore.kernel.org/all/20230726141026.307690-1-aleksandr.mikha=
+litsyn@canonical.com/
+> > tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v7
+> > v8: https://lore.kernel.org/all/20230803135955.230449-1-aleksandr.mikha=
+litsyn@canonical.com/
+> > tree: -
+> > v9: https://lore.kernel.org/all/20230804084858.126104-1-aleksandr.mikha=
+litsyn@canonical.com/
+> > tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v9
+> >
+> > Kind regards,
+> > Alex
+> >
+> > Original description from Christian:
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > This patch series enables cephfs to support idmapped mounts, i.e. the
+> > ability to alter ownership information on a per-mount basis.
+> >
+> > Container managers such as LXD support sharaing data via cephfs between
+> > the host and unprivileged containers and between unprivileged container=
+s.
+> > They may all use different idmappings. Idmapped mounts can be used to
+> > create mounts with the idmapping used for the container (or a different
+> > one specific to the use-case).
+> >
+> > There are in fact more use-cases such as remapping ownership for
+> > mountpoints on the host itself to grant or restrict access to different
+> > users or to make it possible to enforce that programs running as root
+> > will write with a non-zero {g,u}id to disk.
+> >
+> > The patch series is simple overall and few changes are needed to cephfs=
+.
+> > There is one cephfs specific issue that I would like to discuss and
+> > solve which I explain in detail in:
+> >
+> > [PATCH 02/12] ceph: handle idmapped mounts in create_request_message()
+> >
+> > It has to do with how to handle mds serves which have id-based access
+> > restrictions configured. I would ask you to please take a look at the
+> > explanation in the aforementioned patch.
+> >
+> > The patch series passes the vfs and idmapped mount testsuite as part of
+> > xfstests. To run it you will need a config like:
+> >
+> > [ceph]
+> > export FSTYP=3Dceph
+> > export TEST_DIR=3D/mnt/test
+> > export TEST_DEV=3D10.103.182.10:6789:/
+> > export TEST_FS_MOUNT_OPTS=3D"-o name=3Dadmin,secret=3D$password
+> >
+> > and then simply call
+> >
+> > sudo ./check -g idmapped
+> >
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >
+> > Alexander Mikhalitsyn (3):
+> >    fs: export mnt_idmap_get/mnt_idmap_put
+> >    ceph: add enable_unsafe_idmap module parameter
+> >    ceph: pass idmap to __ceph_setattr
+> >
+> > Christian Brauner (9):
+> >    ceph: stash idmapping in mdsc request
+> >    ceph: handle idmapped mounts in create_request_message()
+> >    ceph: pass an idmapping to mknod/symlink/mkdir
+> >    ceph: allow idmapped getattr inode op
+> >    ceph: allow idmapped permission inode op
+> >    ceph: allow idmapped setattr inode op
+> >    ceph/acl: allow idmapped set_acl inode op
+> >    ceph/file: allow idmapped atomic_open inode op
+> >    ceph: allow idmapped mounts
+> >
+> >   fs/ceph/acl.c                 |  6 +--
+> >   fs/ceph/crypto.c              |  2 +-
+> >   fs/ceph/dir.c                 |  4 ++
+> >   fs/ceph/file.c                | 11 ++++-
+> >   fs/ceph/inode.c               | 29 +++++++------
+> >   fs/ceph/mds_client.c          | 78 ++++++++++++++++++++++++++++++++--=
+-
+> >   fs/ceph/mds_client.h          |  8 +++-
+> >   fs/ceph/super.c               |  7 +++-
+> >   fs/ceph/super.h               |  3 +-
+> >   fs/mnt_idmapping.c            |  2 +
+> >   include/linux/ceph/ceph_fs.h  | 10 ++++-
+> >   include/linux/mnt_idmapping.h |  3 ++
+> >   12 files changed, 136 insertions(+), 27 deletions(-)
+> >
+>
