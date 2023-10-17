@@ -2,200 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA38C7CBFF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:54:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A24B57CBFFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234814AbjJQJyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 05:54:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40040 "EHLO
+        id S234787AbjJQJ4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 05:56:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234752AbjJQJyv (ORCPT
+        with ESMTP id S234752AbjJQJ4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 05:54:51 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B8E98;
-        Tue, 17 Oct 2023 02:54:49 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id F417E66072C1;
-        Tue, 17 Oct 2023 10:54:46 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697536488;
-        bh=NoA0ng3JfV0OOvXcz/5VAeD4o0dv2LFKChO1tDMB2GM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=FTElaSfoz1wL+01mKTPBnqSj2r/6nZri6MkG4G94zTGTHW7NhL2lodUrmjIgkpi5K
-         dOCkzMONt8mrawvty7aolrUyInRzHvd9pGOf1VxS4t4fgz9kAIuM1tQjEMaKA319N1
-         FNf35ocFQBj+5ser1F1aRrh+Hqpv9sYOOWMCprDAvHeP02uGTjpO7D6p6+mxeAtfVC
-         QspqnqSNOEwZWN2SyB7Fra1w/McbOf6i8JtHFmuLzld6Dy+tSDy/jSvDzgEE6INDwb
-         ijEEOp5awxw3lggYq42i5lCBXSkQCzDSNENdUpVt/IGGC3y7gQ6c/wRRD0WP1ruzxi
-         cnhCQe7c0wVsg==
-Message-ID: <fef1cae9-057c-4946-b9d3-27a799fefc5d@collabora.com>
-Date:   Tue, 17 Oct 2023 11:54:44 +0200
+        Tue, 17 Oct 2023 05:56:19 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFE108E;
+        Tue, 17 Oct 2023 02:56:17 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1ca82f015e4so11727185ad.1;
+        Tue, 17 Oct 2023 02:56:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697536577; x=1698141377; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=II5ImvwdoBMhhhMCFXImAhFo00DMG1iqmwoAQFMbYKQ=;
+        b=RWVCN4Jjr1VIGgoLRiqK86hQgxOh7ce5R/0rw3JlDtn7A+bywFHic1uxxgxGYPRlWi
+         Ze579sWsdflM68fXZbv/7hS158dxi+57VU1vdLJwTOGOUwxYjEKlsGYbXVoyenH9vHSb
+         8OM6LMj2Li44vLsgoR5o5c/F/OF2ITNonZZi6vi2P3Y1UTx5IvQ2AIzLYnE37HwKarcq
+         3AKtYjMrY/M+7qHRzYcxFMTP3F4ExQ5eJ/jmNSz7ublx2MUg1PKaJ0SBiIKa1LW5k3ID
+         npEwm89q/pXcfuYHhSidZu0ItDrDP65rl+7d3lYeL2AhgzlCxd8wxp+XtPUZlbZfNs1l
+         nEjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697536577; x=1698141377;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=II5ImvwdoBMhhhMCFXImAhFo00DMG1iqmwoAQFMbYKQ=;
+        b=Eb1/vFyN3MjijwL4je/S0ry8oBXaK+sE8QxkHNK51vOGdonHnER7v8sEgbZ6MmlrWy
+         affvugsCqnNGndpzoOJWmm5BZS569qRaDcWS57RTCTMRWt4EBOTNO+4vlRO66dkSkVXQ
+         mmjn181F+iVojS+jNlhpWA81bugLbGGPdz+K58iwXrP0YgOtO7Wqjx1qeQtmpLCrZfIu
+         zjauA3Pwox7z04PdO6a3k8lBmeMpXW7ajyVb47uz47lE9wNwYcogrxIGpdqMpe7Q3tYn
+         LPUaZR39X7r+QeEa/aq/MN3TXEklakK3JMKUcRDHbfJ20XJlax8w6b/A8G9OonJeGTXX
+         ivFA==
+X-Gm-Message-State: AOJu0Yx2WoJsJJ7O7RCK56Nl0kRLS29nCD+Kcrk6sSnKGwf+WHWFHpkZ
+        E2l3cauCs5aBNRuuoefOm+k=
+X-Google-Smtp-Source: AGHT+IHl8aH5z1fRJj+bRkw4KcEr8kjTvGrxewOfNJ6cgfFk2bgq3HJwemtiLHhwldqoVoCR3GJ74Q==
+X-Received: by 2002:a17:903:482:b0:1c5:8401:356c with SMTP id jj2-20020a170903048200b001c58401356cmr1501720plb.62.1697536577232;
+        Tue, 17 Oct 2023 02:56:17 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id u14-20020a170902e5ce00b001b86492d724sm1093343plf.223.2023.10.17.02.56.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Oct 2023 02:56:16 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 9AA8B8097A1C; Tue, 17 Oct 2023 16:56:12 +0700 (WIB)
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Linux CoreSight <coresight@lists.linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Documentation <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Tao Zhang <quic_taozha@quicinc.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [PATCH] Documentation: ABI: coresight-tpdm: Fix Bit[3] description indentation
+Date:   Tue, 17 Oct 2023 16:56:08 +0700
+Message-ID: <20231017095608.136277-1-bagasdotme@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 22/23] drm/mediatek: Power on devices in OVL adaptor
- when atomic enable
-Content-Language: en-US
-To:     Hsiao Chien Sung <shawn.sung@mediatek.com>,
-        CK Hu <ck.hu@mediatek.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Fei Shao <fshao@chromium.org>,
-        Sean Paul <sean@poorly.run>,
-        Johnson Wang <johnson.wang@mediatek.corp-partner.google.com>,
-        "Nancy . Lin" <nancy.lin@mediatek.com>,
-        Moudy Ho <moudy.ho@mediatek.com>,
-        "Jason-JH . Lin" <jason-jh.lin@mediatek.com>,
-        Nathan Lu <nathan.lu@mediatek.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20231016104010.3270-1-shawn.sung@mediatek.com>
- <20231016104010.3270-23-shawn.sung@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231016104010.3270-23-shawn.sung@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1727; i=bagasdotme@gmail.com; h=from:subject; bh=yngM08kD1bzp4K9abSD6QBPMAVhUl302WD9sewUK0GQ=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDKl6kR2mbhujGj/U6Fss1bo86zyTY9wxy42rpwh+Shf/P V9Wfv/CjlIWBjEuBlkxRZZJiXxNp3cZiVxoX+sIM4eVCWQIAxenAEyk/gIjw03ZqUHp7JlXZ0rs 2W3U3eC0pUU+/xPvs54i/9AChQCFDEaGHatSmTe/y3ne9eTDxOcZx5kCfp770sh3/1CmSvMks8N HmQA=
+X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 16/10/23 12:40, Hsiao Chien Sung ha scritto:
-> Different from OVL, OVL adaptor is a pseudo device so we didn't
-> define it in the device tree, consequently, pm_runtime_resume_and_get()
-> called by .atomic_enable() powers on no device in OVL adaptor and
-> leads to power outage in the corresponding IOMMU.
-> 
-> To resolve the issue, we implement a function to power on the RDMAs
-> in OVL adaptor, and the system will make sure the IOMMU is powered on
-> as well because of the device link (iommus) in the RDMA nodes in DTS.
-> 
-> Fixes: 5db12f5d843b ("media: drm/mediatek: Add pm runtime support for ovl and rdma")
-> 
-> Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
-> ---
->   drivers/gpu/drm/mediatek/mtk_disp_drv.h       |  4 ++
->   .../gpu/drm/mediatek/mtk_disp_ovl_adaptor.c   | 62 +++++++++++++++++++
->   drivers/gpu/drm/mediatek/mtk_drm_crtc.c       | 28 +++------
->   drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c   |  2 +
->   drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h   | 20 ++++++
->   drivers/gpu/drm/mediatek/mtk_mdp_rdma.c       | 16 +++++
->   6 files changed, 111 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_drv.h b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
-> index e2b602037ac3..c44f5b31bab5 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_disp_drv.h
-> +++ b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
-> @@ -109,6 +109,8 @@ void mtk_ovl_adaptor_connect(struct device *dev, struct device *mmsys_dev,
->   			     unsigned int next);
->   void mtk_ovl_adaptor_disconnect(struct device *dev, struct device *mmsys_dev,
->   				unsigned int next);
-> +int mtk_ovl_adaptor_power_on(struct device *dev);
-> +void mtk_ovl_adaptor_power_off(struct device *dev);
->   int mtk_ovl_adaptor_clk_enable(struct device *dev);
->   void mtk_ovl_adaptor_clk_disable(struct device *dev);
->   void mtk_ovl_adaptor_config(struct device *dev, unsigned int w,
-> @@ -150,6 +152,8 @@ void mtk_rdma_disable_vblank(struct device *dev);
->   const u32 *mtk_rdma_get_formats(struct device *dev);
->   size_t mtk_rdma_get_num_formats(struct device *dev);
->   
-> +int mtk_mdp_rdma_power_on(struct device *dev);
-> +void mtk_mdp_rdma_power_off(struct device *dev);
->   int mtk_mdp_rdma_clk_enable(struct device *dev);
->   void mtk_mdp_rdma_clk_disable(struct device *dev);
->   void mtk_mdp_rdma_start(struct device *dev, struct cmdq_pkt *cmdq_pkt);
-> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
-> index b80425360e76..8de57a5f5518 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
-> @@ -98,6 +98,8 @@ static const struct mtk_ddp_comp_funcs _padding = {
->   };
->   
->   static const struct mtk_ddp_comp_funcs _rdma = {
-> +	.power_on = mtk_mdp_rdma_power_on,
-> +	.power_off = mtk_mdp_rdma_power_off,
->   	.clk_enable = mtk_mdp_rdma_clk_enable,
->   	.clk_disable = mtk_mdp_rdma_clk_disable,
->   };
-> @@ -241,6 +243,66 @@ void mtk_ovl_adaptor_stop(struct device *dev)
->   	}
->   }
->   
-> +/**
-> + * mtk_ovl_adaptor_power_on - Power on devices in OVL adaptor
-> + * @dev: device to be powered on
-> + *
-> + * Different from OVL, OVL adaptor is a pseudo device so
-> + * we didn't define it in the device tree, pm_runtime_resume_and_get()
-> + * called by .atomic_enable() power on no device in OVL adaptor,
-> + * we have to implement a function to do the job instead.
-> + *
-> + * returns:
-> + * zero on success, errno on failures.
+Stephen Rothwell reported htmldocs warnings when merging coresight tree:
 
-You're almost there! There's just one mistake making this invalid kerneldoc;
-change to...
+Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm:48: ERROR: Unexpected indentation.
+Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm:48: WARNING: Block quote ends without a blank line; unexpected unindent.
 
-  * Return: Zero for success or negative number for failure.
+Fix indentation alignment for Bit[3] list entry in dsb_mode description to
+silence above warnings.
 
-https://docs.kernel.org/doc-guide/kernel-doc.html
+Fixes: 535d80d3c10fff ("coresight-tpdm: Add node to set dsb programming mode")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Closes: https://lore.kernel.org/linux-next/20231017143324.75387a21@canb.auug.org.au/
+Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
+---
+ Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> + */
-> +int mtk_ovl_adaptor_power_on(struct device *dev)
-> +{
-> +	int i, ret;
-> +	struct mtk_disp_ovl_adaptor *ovl_adaptor = dev_get_drvdata(dev);
-> +
-> +	for (i = 0; i < OVL_ADAPTOR_ID_MAX; i++) {
-> +		if (!ovl_adaptor->ovl_adaptor_comp[i] ||
-> +		    !comp_matches[i].funcs->power_on)
-> +			continue;
-> +
-> +		/*
-> +		 * do not power on the devices that don't define
-> +		 * .power_off() function
-> +		 */
-> +		if (!comp_matches[i].funcs->power_off) {
-> +			dev_warn(dev, ".power_off() is undefined\n");
-> +			continue;
-> +		}
-> +
-> +		ret = comp_matches[i].funcs->power_on(ovl_adaptor->ovl_adaptor_comp[i]);
-> +		if (ret < 0) {
-> +			mtk_ovl_adaptor_power_off(dev);
-> +			return ret;
-> +		}
-> +	}
-> +	return 0;
-> +}
-> +
-> +/**
-> + * mtk_ovl_adaptor_power_off - Power off devices in OVL adaptor
-> + * @dev: device to be powered off
-> + *
-> + * call .power_off() function if defined
+diff --git a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+index f07218e788439d..4dd49b159543b6 100644
+--- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
++++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+@@ -54,8 +54,8 @@ Description:
+ 		Accepts the value needs to be greater than 0. What data
+ 		bits do is listed below.
+ 		Bit[0:1] : Test mode control bit for choosing the inputs.
+-		Bit[3] : Set to 0 for low performance mode.
+-				 Set to 1 for high performance mode.
++		Bit[3] : Set to 0 for low performance mode. Set to 1 for high
++		performance mode.
+ 		Bit[4:8] : Select byte lane for high performance mode.
+ 
+ What:		/sys/bus/coresight/devices/<tpdm-name>/dsb_edge/ctrl_idx
 
-  * Calls the .power_off() ovl_adaptor component callback if it is present.
-
-> + */
-
-Regards,
-Angelo
+base-commit: 90a7371cb08d7e542fa4f283c881973bba09f23b
+-- 
+An old man doll... just what I always wanted! - Clara
 
