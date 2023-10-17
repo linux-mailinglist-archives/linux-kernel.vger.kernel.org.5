@@ -2,74 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E367CCA59
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 20:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17EB77CCA5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 20:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343819AbjJQSHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 14:07:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41440 "EHLO
+        id S1344071AbjJQSI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 14:08:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233170AbjJQSHi (ORCPT
+        with ESMTP id S234891AbjJQSI6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 14:07:38 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B7A293
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:07:37 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-507a3af69d8so1210685e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 11:07:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697566055; x=1698170855; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=A/3/619f+Q25m7gUwsaHUF/akHXjvSwe1+LWiXMJ0Gk=;
-        b=SFi6NWF7i9saHf1pi/RYv1eHZWp3DWRcQMbR0IxaxXvbLXJzMjpP1UMtsihEpYRWlu
-         m8V4fPjoe2isCp+JqARnQmIBK88Ij2uS1kdZN8gYiQFP/30t2IlfIOYBaBXWA2ru7fpE
-         NanVByh8EO6nhGj9pxp3gOq0tXjUBW+DAa+vDcrbJ4+1hEA6zUZNx8k13WwGCvziW/2y
-         70F82CuaY/oWPLlZ2amHCKf+FjeRJBmGFpjcikWUNiNxdWfz7M1FFzo59LYAwSFHGEoi
-         3+j/nCiCIqRpEjh/6sQxdGC0TX/L0bBn1ksrO1MGSstktIC7BkVOCu4fuzpO98gZEEPS
-         vFRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697566055; x=1698170855;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=A/3/619f+Q25m7gUwsaHUF/akHXjvSwe1+LWiXMJ0Gk=;
-        b=MnEjmIV6XedPoml5TgfyEy2xkK9l7+56tnyAi0wkvZNxCAmagj488YMEaxp7ymAlnF
-         lyjWjpn68dSydgWFnLAORq5zuTFGXvcY2KxTp9/yEAoiuDq/4/+x4GlEd/N4JC/xZdvo
-         xY935rY3cHNZ8O48hTfp9Gzx8ttHtrNnVYs3jyyHfmtEDF+lUuKYv4eTe3KOHMMuMPhy
-         +h2YfjPQ0dfAngaTLi/yWC7Nn6D/oM3RXLmoVnpBEuTnmHyu1iWuDadY1B8741zGwe9z
-         +GpKWXmRfMsqqIBZA86OIualboRSVIDbb1U09+olnv6AcAjqTp0SK2J+2INeBGxdUfI3
-         ZVQA==
-X-Gm-Message-State: AOJu0YzvP9NguVeCxYOR0f8rlTLMMH+HigfC4bBed09bOF3FUORSEU2P
-        8KUulnR5oanFO0eIPbLLHkA=
-X-Google-Smtp-Source: AGHT+IGbPFD0bcE5wCs1htp9GU5eeHdcWq1LsHPM6G0yMoj/MHBbqHcqGORyISlDm6kxnblk/eo4YQ==
-X-Received: by 2002:a05:6512:3d25:b0:505:6edc:b548 with SMTP id d37-20020a0565123d2500b005056edcb548mr2522823lfv.2.1697566055251;
-        Tue, 17 Oct 2023 11:07:35 -0700 (PDT)
-Received: from [192.168.0.104] (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
-        by smtp.gmail.com with ESMTPSA id c12-20020a17090603cc00b009adce1c97ccsm210358eja.53.2023.10.17.11.07.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Oct 2023 11:07:34 -0700 (PDT)
-Message-ID: <337b7086-98fd-469d-a9ce-36b2d8a20559@gmail.com>
-Date:   Tue, 17 Oct 2023 20:07:33 +0200
+        Tue, 17 Oct 2023 14:08:58 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 302B190;
+        Tue, 17 Oct 2023 11:08:56 -0700 (PDT)
+Received: from [192.168.4.26] (unknown [47.186.13.91])
+        by linux.microsoft.com (Postfix) with ESMTPSA id D7CD520B74C0;
+        Tue, 17 Oct 2023 11:08:54 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D7CD520B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1697566135;
+        bh=NvMLHFub5RqmwlTRrKAUpbaqyKFGOPEO1aUbNfXtibk=;
+        h=Date:Subject:To:References:From:In-Reply-To:From;
+        b=Dg6z3WIAsikWdJ5JYDib/5orzmxLG7FfdddMhGnQb2WDKtAlvVEonusFHHds/U6x2
+         gChzgrVbb8Mqh4ehGGNzLTW1D92G800MTwlA9BraTayqtt69R+FMkcGt2GgurOoKJ+
+         gkJ5iINocZdX2dCZrIPk0j5lhnD9Kow8og+Q++fM=
+Message-ID: <76917285-d9b1-48af-ac5f-49c2d327e729@linux.microsoft.com>
+Date:   Tue, 17 Oct 2023 13:08:53 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] staging: rtl8192u: remove entry from Makefile
+Subject: Re: [RFC PATCH v1 00/10] mm/prmem: Implement the
+ Persistent-Across-Kexec memory feature (prmem)
+To:     Alexander Graf <graf@amazon.de>, gregkh@linuxfoundation.org,
+        pbonzini@redhat.com, rppt@kernel.org, jgowans@amazon.com,
+        arnd@arndb.de, keescook@chromium.org,
+        stanislav.kinsburskii@gmail.com, anthony.yznaga@oracle.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        jamorris@linux.microsoft.com,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        kvm <kvm@vger.kernel.org>
+References: <1b1bc25eb87355b91fcde1de7c2f93f38abb2bf9>
+ <20231016233215.13090-1-madvenka@linux.microsoft.com>
+ <8f9d81a8-1071-43ca-98cd-e9c1eab8e014@amazon.de>
 Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>
-References: <2023101709-amuck-upward-46f1@gregkh>
- <51fcd05c-cb8e-420f-be62-0c9ade82fbfb@leemhuis.info>
- <2023101757-defy-spiny-4faa@gregkh>
-From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
-In-Reply-To: <2023101757-defy-spiny-4faa@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+In-Reply-To: <8f9d81a8-1071-43ca-98cd-e9c1eab8e014@amazon.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,29 +58,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/17/23 15:35, Greg Kroah-Hartman wrote:
-> On Tue, Oct 17, 2023 at 12:35:57PM +0200, Thorsten Leemhuis wrote:
->> On 17.10.23 10:13, Greg Kroah-Hartman wrote:
->>> In commit 697455ce4110 ("staging: rtl8192u: Remove broken driver"), the
->>> driver was removed, along with the Kconfig entry, but the Makefile line
->>> in drivers/staging/Makefile was not updated, so things like 'make clean'
->>> fail to work properly as they will decend into all subdirectories to try
->>> to clean things up.
->>>
->>> Resolve this by removing the entry in the main staging Makefile.
->>>
->>> Reported-by: Thorsten Leemhuis <linux@leemhuis.info>
->>> Cc: Philipp Hortmann <philipp.g.hortmann@gmail.com>
->>> Cc: Arnd Bergmann <arnd@arndb.de>
->>> Fixes: 697455ce4110 ("staging: rtl8192u: Remove broken driver")
->>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>
->> Thx Greg, that fixed things for my case. In case anyone cares:
+Hey Alex,
+
+Thanks a lot for your comments!
+
+On 10/17/23 03:31, Alexander Graf wrote:
+> Hey Madhavan!
 > 
-> I care, thanks!
+> This patch set looks super exciting - thanks a lot for putting it together. We've been poking at a very similar direction for a while as well and will discuss the fundamental problem of how to persist kernel metadata across kexec at LPC:
+> 
+>   https://lpc.events/event/17/contributions/1485/
+> 
+> It would be great to have you in the room as well then.
+> 
 
+Yes. I am planning to attend. But I am attending virtually as I am not able to travel.
 
-Sorry for messing up. I did a compile test of the entire kernel but I 
-was not aware that I also need to test 'make clean'
+> Some more comments inline.
+> 
+> On 17.10.23 01:32, madvenka@linux.microsoft.com wrote:
+>> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+>>
+>> Introduction
+>> ============
+>>
+>> This feature can be used to persist kernel and user data across kexec reboots
+>> in RAM for various uses. E.g., persisting:
+>>
+>>          - cached data. E.g., database caches.
+>>          - state. E.g., KVM guest states.
+>>          - historical information since the last cold boot. E.g., events, logs
+>>            and journals.
+>>          - measurements for integrity checks on the next boot.
+>>          - driver data.
+>>          - IOMMU mappings.
+>>          - MMIO config information.
+>>
+>> This is useful on systems where there is no non-volatile storage or
+>> non-volatile storage is too small or too slow.
+> 
+> 
+> This is useful in more situations. We for example need it to do a kexec while a virtual machine is in suspended state, but has IOMMU mappings intact (Live Update). For that, we need to ensure DMA can still reach the VM memory and that everything gets reassembled identically and without interruptions on the receiving end.
+> 
+> 
 
-Bye Philipp
+I see.
+
+>> The following sections describe the implementation.
+>>
+>> I have enhanced the ram disk block device driver to provide persistent ram
+>> disks on which any filesystem can be created. This is for persisting user data.
+>> I have also implemented DAX support for the persistent ram disks.
+> 
+> 
+> This is probably the least interesting of the enablements, right? You can already today reserve RAM on boot as DAX block device and use it for that purpose.
+> 
+
+Yes. pmem provides that functionality.
+
+There are a few differences though. However, I don't have a good feel for how important these differences are to users. May be, they are not very significant. E.g,
+
+	- pmem regions need some setup using the ndctl command.
+	- IIUC, one needs to specify a starting address and a size for a pmem region. Having to specify a starting address may make it somewhat less flexible from a configuration point of view.
+	- In the case of pmem, the entire range of memory is set aside. In the case of the prmem persistent ram disk, pages are allocated as needed. So, persistent memory is shared among multiple
+	  consumers more flexibly.
+
+Also Greg H. wanted to see a filesystem based use case to be presented for persistent memory so we can see how it all comes together. I am working on prmemfs (a special FS tailored for persistence). But that will take some time. So, I wanted to present this ram disk use case as a more flexible alternative to pmem.
+
+But you are right. They are equivalent for all practical purposes.
+
+> 
+>> I am also working on making ZRAM persistent.
+>>
+>> I have also briefly discussed the following use cases:
+>>
+>>          - Persisting IOMMU mappings
+>>          - Remembering DMA pages
+>>          - Reserving pages that encounter memory errors
+>>          - Remembering IMA measurements for integrity checks
+>>          - Remembering MMIO config info
+>>          - Implementing prmemfs (special filesystem tailored for persistence)
+>>
+>> Allocate metadata
+>> =================
+>>
+>> Define a metadata structure to store all persistent memory related information.
+>> The metadata fits into one page. On a cold boot, allocate and initialize the
+>> metadata page.
+>>
+>> Allocate data
+>> =============
+>>
+>> On a cold boot, allocate some memory for storing persistent data. Call it
+>> persistent memory. Specify the size in a command line parameter:
+>>
+>>          prmem=size[KMG][,max_size[KMG]]
+>>
+>>          size            Initial amount of memory allocated to prmem during boot
+>>          max_size        Maximum amount of memory that can be allocated to prmem
+>>
+>> When the initial memory is exhaused via allocations, expand prmem dynamically
+>> up to max_size. Expansion is done by allocating from the buddy allocator.
+>> Record all allocations in the metadata.
+> 
+> 
+> I don't understand why we need a separate allocator. Why can't we just use normal Linux allocations and serialize their location for handover? We would obviously still need to find a large contiguous piece of memory for the target kernel to bootstrap itself into until it can read which pages it can and can not use, but we can do that allocation in the source environment using CMA, no?
+> 
+> What I'm trying to say is: I think we're better off separating the handover mechanism from the allocation mechanism. If we can implement handover without a new allocator, we can use it for simple things with a slight runtime penalty. To accelerate the handover then, we can later add a compacting allocator that can use the handover mechanism we already built to persist itself.
+> 
+> 
+> 
+> I have a WIP branch where I'm toying with such a handover mechanism that uses device tree to serialize/deserialize state. By standardizing the property naming, we can in the receiving kernel mark all persistent allocations as reserved and then slowly either free them again or mark them as in-use one by one:
+> 
+> https://github.com/agraf/linux/commit/fd5736a21d549a9a86c178c91acb29ed7f364f42
+> 
+> I used ftrace as example payload to persist: With the handover mechanism in place, we serialize/deserialize ftrace ring buffer metadata and are thus able to read traces of the previous system after kexec. This way, you can for example profile the kexec exit path.
+> 
+> It's not even in RFC state yet, there are a few things where I would need a couple days to think hard about data structures, layouts and other problems :). But I believe from the patch you get the idea.
+> 
+> One such user of kho could be a new allocator like prmem and each subsystem's serialization code could choose to rely on the prmem subsystem to persist data instead of doing it themselves. That way you get a very non-intrusive enablement path for kexec handover, easily amendable data structures that can change compatibly over time as well as the ability to recreate ephemeral data structure based on persistent information - which will be necessary to persist VFIO containers.
+> 
+
+OK. I will study your changes and your comments. I will send my feedback as well.
+
+Thanks again!
+
+Madhavan
+
+> 
+> Alex
+> 
+> 
+> 
+> 
+> Amazon Development Center Germany GmbH
+> Krausenstr. 38
+> 10117 Berlin
+> Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+> Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+> Sitz: Berlin
+> Ust-ID: DE 289 237 879
+> 
+> 
