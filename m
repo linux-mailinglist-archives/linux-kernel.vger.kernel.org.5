@@ -2,115 +2,396 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C04A37CC71C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 17:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFCC67CC6DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343919AbjJQPKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 11:10:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40946 "EHLO
+        id S1343853AbjJQOyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 10:54:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235114AbjJQPKC (ORCPT
+        with ESMTP id S1344825AbjJQOyi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 11:10:02 -0400
-Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C3D10D5
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:51:15 -0700 (PDT)
-Received: by mail-vk1-xa34.google.com with SMTP id 71dfb90a1353d-495eb6e2b80so1688089e0c.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:51:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1697554274; x=1698159074; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u5z2VQERwTnHSvknuk1StgxnUpwCYFIbvu15sN77nf8=;
-        b=ExI/2OghZTU9pTVV/9CR3BC7+9IYLeHgKYDhyi7JBD+SX/jKyTVIq/9i1kYsNpeZv1
-         c2ZLeybdo1fjGNQGcwhfhpU25eQtF9mMOrZJ8SIrlHAmgacohP3Pa6Hlqa+H/4xD+RTW
-         vwe4Dzetgsap+NW9kRDlN7C1a77mLL84hkwyRajoHzkFfq5f+zBoh14dE9tQj8W3GobW
-         rIj+ycCnTJa2IooVR3oGKbA0G7iWO7LstP0EIiHzi2Uf+rWMvzqLDRaCMV8YXoMQbhOn
-         k8MEmhpLR30oNOGFyUTkiAs9VDy+ylDEdc2IDaV9QlA6kpMkM+ES71VyQvFaUP8AAq5f
-         REEQ==
+        Tue, 17 Oct 2023 10:54:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F5A77A92
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:52:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697554292;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=On5sJ31uN4Ra8ik6/DRV/F2IIWr320vzwCyo3Oos02o=;
+        b=DQs9eqkhlV627SBlXXNprZ20ukSruAqYlmkUMUbvYzo+bfRz3JxuiexzHPHYoDzrVSM4uP
+        VGshe/xpQdYUQyA7swH5JXgV48gQvIg0az9vzgWXzuBfB36SquFDSqUY/xyX16m7kHNyHO
+        Y2ji8HU1R0ZgAJxiieXG+1g3bjI8p8E=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-370-U-47QkgXOnOqBH9nQoF92Q-1; Tue, 17 Oct 2023 10:51:14 -0400
+X-MC-Unique: U-47QkgXOnOqBH9nQoF92Q-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-6564dbde089so105260736d6.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:51:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1697554274; x=1698159074;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=u5z2VQERwTnHSvknuk1StgxnUpwCYFIbvu15sN77nf8=;
-        b=wGe5hzez9i3+ZciUsXcR2SUlMN3JdA5Pm4WE8v+T+2l//SOYZtpiFNYmzSmQMCpk6L
-         fXhwy2YG7a6p/Q4u9VWDmdtaecyaZxSS0YfGUn8jW9qWtKfkswTg7T02FUxQxxgz3stY
-         SiO/kZoR5jj3NceiapdkR22xki9ccp0RVZZl+S12BQHZ2/TOXz5poRw1fiGvGrDt5q9e
-         VpvagoQvQEyzpOCrM+67FBShKsh3oBRQg8I6M8b2SoJjim9k0I0lhAQf7DR44d19vX+A
-         gdUsYDcetaYnPXSFfHRJcy6xN5CvOP+Aa6mryVhjqaCoE30NfZU/RUn1yYBTiNeJ9XcN
-         MytA==
-X-Gm-Message-State: AOJu0YzdyWgD/efB97W23RWB3UJ65SnxN8Eo+D1NdWQCip3d3A9BrArw
-        eL4fLAnROuJrB8DDk0KtL55DCEQ1WA3HjKbqj9A0zA==
-X-Google-Smtp-Source: AGHT+IFFPrIjuefWAoeXE7go+vf4kjVm1qdFs1yYBsBZd3y39xkFMYkhc2D3dpLUSosB32vra9pyqU0YRgTDlXfGs3U=
-X-Received: by 2002:a05:6122:182a:b0:49d:f67:208 with SMTP id
- ay42-20020a056122182a00b0049d0f670208mr2648080vkb.1.1697554273799; Tue, 17
- Oct 2023 07:51:13 -0700 (PDT)
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=On5sJ31uN4Ra8ik6/DRV/F2IIWr320vzwCyo3Oos02o=;
+        b=cxcZut2m4DCDGgd1+tGAkGe0xGkA1UmbN8h3zev3CVxQQDvhvnQKHYn2wx/ijBjEWL
+         Wk7BYVgIGmrmGhRPA7OtAgy+DPbIabE+7ZEqF29ms/swJb+QGGTO10slr3FLMPOcI2TK
+         AHPQJGitWHKb7qXXnym5xxF36/KgFp2Jvp06Fm1pKQphYZjubqlweRK/WrHZdGwaVdJF
+         jLxp0aKcRAJaOtaOnN+2oTNzsU48MC3WrpzuFP0X0Yg/58LdA8kKMZZbYxO6aCPee0Fy
+         74PxeUAmYQo+QU4AoJ7s4V1npQvoqnQAmM8JR2mHW4ld3HacGNmq4LT7LlbwhGcBwhnU
+         Uq5Q==
+X-Gm-Message-State: AOJu0YwngFG9LvngCPMRUpmCTO9d3lPSXJmxhmfLkPbHYbrCTxriA263
+        gTnoGaBnarhoG4uCyo66XK+yjaYf6y057JioAKOU7VQCqJ3fWmW9qlV4/RfuI8dRFpTtIuPiH9G
+        dFPwoLFKKCYHMbitasBdTqNOg
+X-Received: by 2002:a0c:df0a:0:b0:66d:5bed:35f3 with SMTP id g10-20020a0cdf0a000000b0066d5bed35f3mr2798158qvl.20.1697554274327;
+        Tue, 17 Oct 2023 07:51:14 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFNHWTiPeUH75hyUb6CD7+pJ8o+547/VfZVUXz9z+btwuN1qTKk/BS6fBNhVW82n5y9oGZWlQ==
+X-Received: by 2002:a0c:df0a:0:b0:66d:5bed:35f3 with SMTP id g10-20020a0cdf0a000000b0066d5bed35f3mr2798125qvl.20.1697554274004;
+        Tue, 17 Oct 2023 07:51:14 -0700 (PDT)
+Received: from [192.168.43.95] ([37.170.237.139])
+        by smtp.gmail.com with ESMTPSA id h13-20020a37c44d000000b0076ee973b9a7sm717632qkm.27.2023.10.17.07.51.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Oct 2023 07:51:13 -0700 (PDT)
+Message-ID: <66eade47-54bb-bcf4-931a-9acfbdd5483d@redhat.com>
+Date:   Tue, 17 Oct 2023 16:51:07 +0200
 MIME-Version: 1.0
-References: <20231017120431.68847-1-brgl@bgdev.pl> <20231017120431.68847-55-brgl@bgdev.pl>
- <ZS6BAkfFeA+6GYfz@smile.fi.intel.com> <CACMJSesgT-a8krB8gvf0gJ-C+p6s1TdRcE6W_42CxR9bDvrGHg@mail.gmail.com>
- <ZS6CGcRPNzkCdnoD@smile.fi.intel.com> <CAMRc=MdbYN+ropwecPbTptV7KEt-0NdWOHn1Uq_2dgWcPv-D=A@mail.gmail.com>
- <ZS6JNXWPkDW+aoYs@smile.fi.intel.com>
-In-Reply-To: <ZS6JNXWPkDW+aoYs@smile.fi.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 17 Oct 2023 16:51:02 +0200
-Message-ID: <CAMRc=MeXJiLoHJBR4zK7q6rY1cbBwyiAQWUNxLtfZzPDDkC+vw@mail.gmail.com>
-Subject: Re: [PATCH v3 54/73] pinctrl: intel: drop the wrappers around pinctrl_gpio_direction_input()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v7 10/12] KVM: selftests: aarch64: Introduce
+ vpmu_counter_access test
+Content-Language: en-US
+To:     Raghavendra Rao Ananta <rananta@google.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <20231009230858.3444834-1-rananta@google.com>
+ <20231009230858.3444834-11-rananta@google.com>
+From:   Eric Auger <eauger@redhat.com>
+In-Reply-To: <20231009230858.3444834-11-rananta@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 3:16=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Tue, Oct 17, 2023 at 02:55:07PM +0200, Bartosz Golaszewski wrote:
-> > On Tue, Oct 17, 2023 at 2:46=E2=80=AFPM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > >
-> > > On Tue, Oct 17, 2023 at 02:44:25PM +0200, Bartosz Golaszewski wrote:
-> > > > On Tue, 17 Oct 2023 at 14:41, Andy Shevchenko
-> > > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > >
-> > > > > On Tue, Oct 17, 2023 at 02:04:12PM +0200, Bartosz Golaszewski wro=
-te:
-> > > > > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > > > > >
-> > > > > > pinctrl_gpio_direction_input() now has the same signature as th=
-e
-> > > > > > wrappers around it so we can drop them.
-> > > > >
-> > > > > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > > >
-> > > > > Now, for the sake of symmetry can you add (at least to the all
-> > > > > Intel drivers you modified in this series) the following:
-> > > >
-> > > > Good idea but this is v6.8 material, I don't want to extend this
-> > > > series anymore at this point.
-> > >
-> > > Then let's postpone at least Intel and Cypress patches after v6.8-rc1=
- is out.
-> >
-> > But then we'd have to postpone the renaming and we'd be stuck with
-> > both variants in the tree. This is suboptimal. We'd also have this
-> > huge series spanning two subsystems for 3 months during the v6.8
-> > release cycle in the tree causing conflicts and other issues.
->
-> I don't see how this is related. What I'm talking is only related to drop=
-ping
-> the wrappers in the drivers _after_ whatever you do with generic APIs.
+Hi Raghavendra,
+On 10/10/23 01:08, Raghavendra Rao Ananta wrote:
+> From: Reiji Watanabe <reijiw@google.com>
+> 
+> Introduce vpmu_counter_access test for arm64 platforms.
+> The test configures PMUv3 for a vCPU, sets PMCR_EL0.N for the vCPU,
+> and check if the guest can consistently see the same number of the
+> PMU event counters (PMCR_EL0.N) that userspace sets.
+> This test case is done with each of the PMCR_EL0.N values from
+> 0 to 31 (With the PMCR_EL0.N values greater than the host value,
+> the test expects KVM_SET_ONE_REG for the PMCR_EL0 to fail).
+> 
+> Signed-off-by: Reiji Watanabe <reijiw@google.com>
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> ---
+>  tools/testing/selftests/kvm/Makefile          |   1 +
+>  .../kvm/aarch64/vpmu_counter_access.c         | 247 ++++++++++++++++++
+>  2 files changed, 248 insertions(+)
+>  create mode 100644 tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
+> 
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> index a3bb36fb3cfc..416700aa196c 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -149,6 +149,7 @@ TEST_GEN_PROGS_aarch64 += aarch64/smccc_filter
+>  TEST_GEN_PROGS_aarch64 += aarch64/vcpu_width_config
+>  TEST_GEN_PROGS_aarch64 += aarch64/vgic_init
+>  TEST_GEN_PROGS_aarch64 += aarch64/vgic_irq
+> +TEST_GEN_PROGS_aarch64 += aarch64/vpmu_counter_access
+>  TEST_GEN_PROGS_aarch64 += access_tracking_perf_test
+>  TEST_GEN_PROGS_aarch64 += demand_paging_test
+>  TEST_GEN_PROGS_aarch64 += dirty_log_test
+> diff --git a/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c b/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
+> new file mode 100644
+> index 000000000000..58949b17d76e
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
+> @@ -0,0 +1,247 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * vpmu_counter_access - Test vPMU event counter access
+> + *
+> + * Copyright (c) 2022 Google LLC.
+2023 ;-)
+> + *
+> + * This test checks if the guest can see the same number of the PMU event
+> + * counters (PMCR_EL0.N) that userspace sets.
+> + * This test runs only when KVM_CAP_ARM_PMU_V3 is supported on the host.
+> + */
+> +#include <kvm_util.h>
+> +#include <processor.h>
+> +#include <test_util.h>
+> +#include <vgic.h>
+> +#include <perf/arm_pmuv3.h>
+> +#include <linux/bitfield.h>
+> +
+> +/* The max number of the PMU event counters (excluding the cycle counter) */
+> +#define ARMV8_PMU_MAX_GENERAL_COUNTERS	(ARMV8_PMU_MAX_COUNTERS - 1)
+> +
+> +struct vpmu_vm {
+> +	struct kvm_vm *vm;
+> +	struct kvm_vcpu *vcpu;
+> +	int gic_fd;
+> +};
+> +
+> +static struct vpmu_vm vpmu_vm;
+> +
+> +static uint64_t get_pmcr_n(uint64_t pmcr)
+> +{
+> +	return (pmcr >> ARMV8_PMU_PMCR_N_SHIFT) & ARMV8_PMU_PMCR_N_MASK;
+> +}
+> +
+> +static void set_pmcr_n(uint64_t *pmcr, uint64_t pmcr_n)
+> +{
+> +	*pmcr = *pmcr & ~(ARMV8_PMU_PMCR_N_MASK << ARMV8_PMU_PMCR_N_SHIFT);
+> +	*pmcr |= (pmcr_n << ARMV8_PMU_PMCR_N_SHIFT);
+> +}
+> +
+> +static void guest_sync_handler(struct ex_regs *regs)
+> +{
+> +	uint64_t esr, ec;
+> +
+> +	esr = read_sysreg(esr_el1);
+> +	ec = (esr >> ESR_EC_SHIFT) & ESR_EC_MASK;
+> +	__GUEST_ASSERT(0, "PC: 0x%lx; ESR: 0x%lx; EC: 0x%lx", regs->pc, esr, ec);
+> +}
+> +
+> +/*
+> + * The guest is configured with PMUv3 with @expected_pmcr_n number of
+> + * event counters.
+> + * Check if @expected_pmcr_n is consistent with PMCR_EL0.N.
+> + */
+> +static void guest_code(uint64_t expected_pmcr_n)
+> +{
+> +	uint64_t pmcr, pmcr_n;
+> +
+> +	__GUEST_ASSERT(expected_pmcr_n <= ARMV8_PMU_MAX_GENERAL_COUNTERS,
+> +			"Expected PMCR.N: 0x%lx; ARMv8 general counters: 0x%lx",
+> +			expected_pmcr_n, ARMV8_PMU_MAX_GENERAL_COUNTERS);
+> +
+> +	pmcr = read_sysreg(pmcr_el0);
+> +	pmcr_n = get_pmcr_n(pmcr);
+> +
+> +	/* Make sure that PMCR_EL0.N indicates the value userspace set */
+> +	__GUEST_ASSERT(pmcr_n == expected_pmcr_n,
+> +			"Expected PMCR.N: 0x%lx, PMCR.N: 0x%lx",
+> +			pmcr_n, expected_pmcr_n);
+> +
+> +	GUEST_DONE();
+> +}
+> +
+> +#define GICD_BASE_GPA	0x8000000ULL
+> +#define GICR_BASE_GPA	0x80A0000ULL
+> +
+> +/* Create a VM that has one vCPU with PMUv3 configured. */
+> +static void create_vpmu_vm(void *guest_code)
+> +{
+> +	struct kvm_vcpu_init init;
+> +	uint8_t pmuver, ec;
+> +	uint64_t dfr0, irq = 23;
+> +	struct kvm_device_attr irq_attr = {
+> +		.group = KVM_ARM_VCPU_PMU_V3_CTRL,
+> +		.attr = KVM_ARM_VCPU_PMU_V3_IRQ,
+> +		.addr = (uint64_t)&irq,
+> +	};
+> +	struct kvm_device_attr init_attr = {
+> +		.group = KVM_ARM_VCPU_PMU_V3_CTRL,
+> +		.attr = KVM_ARM_VCPU_PMU_V3_INIT,
+> +	};
+> +
+> +	/* The test creates the vpmu_vm multiple times. Ensure a clean state */
+> +	memset(&vpmu_vm, 0, sizeof(vpmu_vm));
+> +
+> +	vpmu_vm.vm = vm_create(1);
+> +	vm_init_descriptor_tables(vpmu_vm.vm);
+> +	for (ec = 0; ec < ESR_EC_NUM; ec++) {
+> +		vm_install_sync_handler(vpmu_vm.vm, VECTOR_SYNC_CURRENT, ec,
+> +					guest_sync_handler);
+> +	}
+> +
+> +	/* Create vCPU with PMUv3 */
+> +	vm_ioctl(vpmu_vm.vm, KVM_ARM_PREFERRED_TARGET, &init);
+> +	init.features[0] |= (1 << KVM_ARM_VCPU_PMU_V3);
+> +	vpmu_vm.vcpu = aarch64_vcpu_add(vpmu_vm.vm, 0, &init, guest_code);
+> +	vcpu_init_descriptor_tables(vpmu_vm.vcpu);
+> +	vpmu_vm.gic_fd = vgic_v3_setup(vpmu_vm.vm, 1, 64,
+> +					GICD_BASE_GPA, GICR_BASE_GPA);
+__TEST_REQUIRE(vpmu_vm.gic_fd >= 0, "Failed to create vgic-v3, skipping");
+as done in some other tests
 
-Ah, I misunderstood you. Ok, I'll drop them from the tree.
+> +
+> +	/* Make sure that PMUv3 support is indicated in the ID register */
+> +	vcpu_get_reg(vpmu_vm.vcpu,
+> +		     KVM_ARM64_SYS_REG(SYS_ID_AA64DFR0_EL1), &dfr0);
+> +	pmuver = FIELD_GET(ARM64_FEATURE_MASK(ID_AA64DFR0_PMUVER), dfr0);
+> +	TEST_ASSERT(pmuver != ID_AA64DFR0_PMUVER_IMP_DEF &&
+> +		    pmuver >= ID_AA64DFR0_PMUVER_8_0,
+> +		    "Unexpected PMUVER (0x%x) on the vCPU with PMUv3", pmuver);
+> +
+> +	/* Initialize vPMU */
+> +	vcpu_ioctl(vpmu_vm.vcpu, KVM_SET_DEVICE_ATTR, &irq_attr);
+> +	vcpu_ioctl(vpmu_vm.vcpu, KVM_SET_DEVICE_ATTR, &init_attr);
+> +}
+> +
+> +static void destroy_vpmu_vm(void)
+> +{
+> +	close(vpmu_vm.gic_fd);
+> +	kvm_vm_free(vpmu_vm.vm);
+> +}
+> +
+> +static void run_vcpu(struct kvm_vcpu *vcpu, uint64_t pmcr_n)
+> +{
+> +	struct ucall uc;
+> +
+> +	vcpu_args_set(vcpu, 1, pmcr_n);
+> +	vcpu_run(vcpu);
+> +	switch (get_ucall(vcpu, &uc)) {
+> +	case UCALL_ABORT:
+> +		REPORT_GUEST_ASSERT(uc);
+> +		break;
+> +	case UCALL_DONE:
+> +		break;
+> +	default:
+> +		TEST_FAIL("Unknown ucall %lu", uc.cmd);
+> +		break;
+> +	}
+> +}
+> +
+> +/*
+> + * Create a guest with one vCPU, set the PMCR_EL0.N for the vCPU to @pmcr_n,
+> + * and run the test.
+> + */
+> +static void run_test(uint64_t pmcr_n)
+> +{
+> +	struct kvm_vcpu *vcpu;
+> +	uint64_t sp, pmcr;
+> +	struct kvm_vcpu_init init;
+> +
+> +	pr_debug("Test with pmcr_n %lu\n", pmcr_n);
+> +	create_vpmu_vm(guest_code);
+> +
+> +	vcpu = vpmu_vm.vcpu;
+> +
+> +	/* Save the initial sp to restore them later to run the guest again */
+> +	vcpu_get_reg(vcpu, ARM64_CORE_REG(sp_el1), &sp);
+> +
+> +	/* Update the PMCR_EL0.N with @pmcr_n */
+> +	vcpu_get_reg(vcpu, KVM_ARM64_SYS_REG(SYS_PMCR_EL0), &pmcr);
+> +	set_pmcr_n(&pmcr, pmcr_n);
+> +	vcpu_set_reg(vcpu, KVM_ARM64_SYS_REG(SYS_PMCR_EL0), pmcr);
+> +
+> +	run_vcpu(vcpu, pmcr_n);
+> +
+> +	/*
+> +	 * Reset and re-initialize the vCPU, and run the guest code again to
+> +	 * check if PMCR_EL0.N is preserved.
+> +	 */
+> +	vm_ioctl(vpmu_vm.vm, KVM_ARM_PREFERRED_TARGET, &init);
+> +	init.features[0] |= (1 << KVM_ARM_VCPU_PMU_V3);
+> +	aarch64_vcpu_setup(vcpu, &init);
+> +	vcpu_init_descriptor_tables(vcpu);
+> +	vcpu_set_reg(vcpu, ARM64_CORE_REG(sp_el1), sp);
+> +	vcpu_set_reg(vcpu, ARM64_CORE_REG(regs.pc), (uint64_t)guest_code);
+> +
+> +	run_vcpu(vcpu, pmcr_n);
+> +
+> +	destroy_vpmu_vm();
+> +}
+> +
+> +/*
+> + * Create a guest with one vCPU, and attempt to set the PMCR_EL0.N for
+> + * the vCPU to @pmcr_n, which is larger than the host value.
+> + * The attempt should fail as @pmcr_n is too big to set for the vCPU.
+> + */
+> +static void run_error_test(uint64_t pmcr_n)
+> +{
+> +	struct kvm_vcpu *vcpu;
+> +	uint64_t pmcr, pmcr_orig;
+> +
+> +	pr_debug("Error test with pmcr_n %lu (larger than the host)\n", pmcr_n);
+> +	create_vpmu_vm(guest_code);
+> +	vcpu = vpmu_vm.vcpu;
+> +
+> +	vcpu_get_reg(vcpu, KVM_ARM64_SYS_REG(SYS_PMCR_EL0), &pmcr_orig);
+> +	pmcr = pmcr_orig;
+> +
+> +	/*
+> +	 * Setting a larger value of PMCR.N should not modify the field, and
+> +	 * return a success.
+> +	 */
+> +	set_pmcr_n(&pmcr, pmcr_n);
+> +	vcpu_set_reg(vcpu, KVM_ARM64_SYS_REG(SYS_PMCR_EL0), pmcr);
+> +	vcpu_get_reg(vcpu, KVM_ARM64_SYS_REG(SYS_PMCR_EL0), &pmcr);
+> +	TEST_ASSERT(pmcr_orig == pmcr,
+> +		    "PMCR.N modified by KVM to a larger value (PMCR: 0x%lx) for pmcr_n: 0x%lx\n",
+> +		    pmcr, pmcr_n);
+nit: you could introduce a set_pmcr_n() routine  which creates the
+vpmu_vm and set the PMCR.N and check whether the setting is applied. An
+arg could tell the helper whether this is supposed to fail. This could
+be used in both run_error_test and run_test which both mostly use the
+same code.
+> +
+> +	destroy_vpmu_vm();
+> +}
+> +
+> +/*
+> + * Return the default number of implemented PMU event counters excluding
+> + * the cycle counter (i.e. PMCR_EL0.N value) for the guest.
+> + */
+> +static uint64_t get_pmcr_n_limit(void)
+> +{
+> +	uint64_t pmcr;
+> +
+> +	create_vpmu_vm(guest_code);
+> +	vcpu_get_reg(vpmu_vm.vcpu, KVM_ARM64_SYS_REG(SYS_PMCR_EL0), &pmcr);
+> +	destroy_vpmu_vm();
+> +	return get_pmcr_n(pmcr);
+> +}
+> +
+> +int main(void)
+> +{
+> +	uint64_t i, pmcr_n;
+> +
+> +	TEST_REQUIRE(kvm_has_cap(KVM_CAP_ARM_PMU_V3));
+> +
+> +	pmcr_n = get_pmcr_n_limit();
+> +	for (i = 0; i <= pmcr_n; i++)
+> +		run_test(i);
+> +
+> +	for (i = pmcr_n + 1; i < ARMV8_PMU_MAX_COUNTERS; i++)
+> +		run_error_test(i);
+> +
+> +	return 0;
+> +}
 
-Bart
+Besides this looks good to me.
+
+Thanks
+
+Eric
+
