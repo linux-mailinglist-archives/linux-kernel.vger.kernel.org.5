@@ -2,982 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 600887CBF86
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 408407CBF8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 11:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234801AbjJQJeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 05:34:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50952 "EHLO
+        id S234802AbjJQJgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 05:36:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343747AbjJQJeH (ORCPT
+        with ESMTP id S234674AbjJQJgl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 05:34:07 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8939DF7;
-        Tue, 17 Oct 2023 02:33:55 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c9d407bb15so45647325ad.0;
-        Tue, 17 Oct 2023 02:33:55 -0700 (PDT)
+        Tue, 17 Oct 2023 05:36:41 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5873A2;
+        Tue, 17 Oct 2023 02:36:37 -0700 (PDT)
+X-UUID: a7e95ca86cd011eea33bb35ae8d461a2-20231017
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=78zvHmVJDqPh6bKsTWvw2eU3Qjh+vk0JFAZ4tDlj2KI=;
+        b=l0C3voWlcmsVxq9oqmZWVnT1sBQqJCyId31ZNWdogsSEDnrLBclDPrgzMD+ill5qTWOvL6+H+DOhZZLzXwNYm4EsVfXccBsxRfY8npnaomc8+dvoUNQ5sa3tZvjvw0nCKAaUur35mOf7WshBuSxPExBNW4oppc2jBvRlg20ymFE=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:f0164dd3-deb0-4607-bc57-4a06f9bd143a,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:5f78ec9,CLOUDID:68ca07c0-14cc-44ca-b657-2d2783296e72,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
+        NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: a7e95ca86cd011eea33bb35ae8d461a2-20231017
+Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw01.mediatek.com
+        (envelope-from <ck.hu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 82252301; Tue, 17 Oct 2023 17:36:32 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 17 Oct 2023 17:36:30 +0800
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Tue, 17 Oct 2023 17:36:30 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=M0D4kbuR/Gofwt132lwHB/1iDOkWoaJ95g7qNZVHcWSTXJWSdfYHtHwZ3HSxmaezHhJiraAIjpqXwp7QhST3FQcqlHzgXUuz10r0kYOYteKJ2KznMbrchNRd04CiYA4j0RsALK4Yc7Vfqys0ACB8VJ1VekN/kuM49NFRR4ERJF7fxfjDoG6enUrjWVGo84mFrlQyPxjExguUX9lZZrAT58vaGAbRKs+ISohTUKRfn7HOjKIMptaKBaE5K2nReJqH0SV9C2FGp+EGJWmV2lf1EHaHSyL7ap+Aw05a8q1zZPlTbZJlLcFua1oz8oDEEzBw1+ueBCmgqVlIoRg8YzqzLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=78zvHmVJDqPh6bKsTWvw2eU3Qjh+vk0JFAZ4tDlj2KI=;
+ b=ECySybcioEapzJO0n+/3PNenfTKoF6xPf5TJwMjFbL8HsmrfSTTmNJ2Z/vknkQqHb0pGd69t3aX+iIsUAD/xlpBmyvqQZ33ux/YwWxTpYMX3ASSFbNtCiaTzkqZ3pCuDQhNIu6tt2jWrb0CFfz/Lcu5Nav8T/vXttDRdU3H6uHXM5s/UTpHTM0k1tsaq5TetYi7bA3sOoXs7LLxL5WrMuNK5oAsg3OMhGdghsq82sjR/G+opTtHvsFQzmN4mNevgC+5HR1BXGKX54uPC462Ur7yDbCiZNwWNMrXbfLSfOpRjeQJxw3hEPN4qgYaTu4+qmtPRC16xuXQdtoYNjW2yEA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697535235; x=1698140035; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=rfykykDvSR3lgn/h7SgbJEFcK1W+zU64G3sv5ZleFao=;
-        b=F9/TPO+jJQUPD6OeVtQY9dqyRs1mV1HrsGTTbnzV9ewfEp7qeoc+BThAxITpSdw2Wk
-         Cmq/JZ3bz/degCX1tNCm5sYKM+6m4eUVGcQtw62gYCJ/DTi0hj/VEeGWlvoKir7KHKIr
-         tYeIEAJikpbPBZ2aQKv8bVB7RgwJ9p28MjPGBGMwgOClX+ki2bZ90QmCWluuRxqUry44
-         Za240ya+RRXsDvxj9Rv4InPWKvafyPLCfcrag5IBp42pqKEfmGfH2WE89Rp4/k+PZjjn
-         OESdCtH82GcgXgyeALl3+yQLvZ3qqPMyxyiZJkNTgQ17o5gDqmXlFVNxeXCHaglESMJ8
-         hsIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697535235; x=1698140035;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rfykykDvSR3lgn/h7SgbJEFcK1W+zU64G3sv5ZleFao=;
-        b=q/IfyF2QjfAUtrG29lW8BwOkGuc2culfNVInrxgP0LtGT/ZiAWq+57Dj0flruVLsFq
-         7cnrXQNLDB/w4/8zArhGXgdr7bhyHu1NqFHANs56IZOs3Lx5IAVvsFgX5UxpB/Fs6Z1H
-         IVBInQmtkezsamoJOpi6sGUIqKP4yucu+d0C82f0OT+F3PeOkD+NkfqrCm/ioJEEExlj
-         OWqA4lZAHHz+jJtvW9XKW00aXZi/L5P//K4KknAKA9DwtEYQPo8ubo2B092P8NXG323J
-         8SDGHIP5OyUihz+od1kTNrygeS//bGnthRCX1277UPBp9N8bqhk7z6KxH7+EHwLfhJpd
-         8kQw==
-X-Gm-Message-State: AOJu0Yx/W74uJN3uqJ5LQ9r9UnEuPlWtj1I2HOHSijeyynl4gCZlhR3+
-        v3R2JJy4HLc9c413vlITg0w=
-X-Google-Smtp-Source: AGHT+IFR9LmZdCC9OR0TUaODi5nFR7AToyyJqTqNHgbMqhADT6R9U1v3Px32u12INXd9dO01q6Hy4A==
-X-Received: by 2002:a17:902:c404:b0:1ca:3e64:2378 with SMTP id k4-20020a170902c40400b001ca3e642378mr2349965plk.4.1697535234682;
-        Tue, 17 Oct 2023 02:33:54 -0700 (PDT)
-Received: from localhost.localdomain ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id je3-20020a170903264300b001c9c5a1b477sm1054752plb.169.2023.10.17.02.33.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 02:33:53 -0700 (PDT)
-From:   Like Xu <like.xu.linux@gmail.com>
-X-Google-Original-From: Like Xu <likexu@tencent.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: [PATCH] KVM: x86: Clean up included but non-essential header declarations
-Date:   Tue, 17 Oct 2023 17:33:35 +0800
-Message-ID: <20231017093335.18216-1-likexu@tencent.com>
-X-Mailer: git-send-email 2.42.0
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=78zvHmVJDqPh6bKsTWvw2eU3Qjh+vk0JFAZ4tDlj2KI=;
+ b=sItE9wKwuwymFRxtldDEgz7f1zSedQkyY64MKeAHSdkp+ytpz8vBw68fCVLqHn37lmVNEDUzaMXPzvaY8DBDpYuGL5kwDu2BxR/VhDr3VXAHzX+ZBFrP+vzd96mxp9w5iFq1PzelSrUZ6gajC9BimTP/NfBeu0gCmohgRD6+CDU=
+Received: from TYZPR03MB6624.apcprd03.prod.outlook.com (2603:1096:400:1f4::13)
+ by TYZPR03MB7637.apcprd03.prod.outlook.com (2603:1096:400:41f::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.35; Tue, 17 Oct
+ 2023 09:36:28 +0000
+Received: from TYZPR03MB6624.apcprd03.prod.outlook.com
+ ([fe80::9c2c:c08a:212f:e984]) by TYZPR03MB6624.apcprd03.prod.outlook.com
+ ([fe80::9c2c:c08a:212f:e984%7]) with mapi id 15.20.6886.034; Tue, 17 Oct 2023
+ 09:36:28 +0000
+From:   =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>
+To:     =?utf-8?B?U2hhd24gU3VuZyAo5a6L5a2d6KyZKQ==?= 
+        <Shawn.Sung@mediatek.com>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>
+CC:     =?utf-8?B?WW9uZ3FpYW5nIE5pdSAo54mb5rC45by6KQ==?= 
+        <yongqiang.niu@mediatek.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
+        =?utf-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= 
+        <Jason-JH.Lin@mediatek.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        =?utf-8?B?TmFuY3kgTGluICjmnpfmrKPonqIp?= <Nancy.Lin@mediatek.com>,
+        =?utf-8?B?TW91ZHkgSG8gKOS9leWul+WOnyk=?= <Moudy.Ho@mediatek.com>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        =?utf-8?B?TmF0aGFuIEx1ICjlkYLmnbHpnJYp?= <Nathan.Lu@mediatek.com>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "sean@poorly.run" <sean@poorly.run>,
+        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "fshao@chromium.org" <fshao@chromium.org>,
+        "johnson.wang@mediatek.corp-partner.google.com" 
+        <johnson.wang@mediatek.corp-partner.google.com>
+Subject: Re: [PATCH v8 17/23] drm/mediatek: Support MT8188 Padding in display
+ driver
+Thread-Topic: [PATCH v8 17/23] drm/mediatek: Support MT8188 Padding in display
+ driver
+Thread-Index: AQHaAB1FF3SJV5hojUez30lhqx2z+rBNupKA
+Date:   Tue, 17 Oct 2023 09:36:28 +0000
+Message-ID: <185a903fa3d2e99d02c35cb167f71955afd21e6c.camel@mediatek.com>
+References: <20231016104010.3270-1-shawn.sung@mediatek.com>
+         <20231016104010.3270-18-shawn.sung@mediatek.com>
+In-Reply-To: <20231016104010.3270-18-shawn.sung@mediatek.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=mediatek.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYZPR03MB6624:EE_|TYZPR03MB7637:EE_
+x-ms-office365-filtering-correlation-id: 42c77c68-45be-4d10-30d4-08dbcef489fe
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: F5DzgiQrnI+ry+l1G+4v4jD95w95BL0GAxuQxMeTp7cTrFQFyZIFNMunbizYKNj87amkfseI5bUiaShJPAwyah5YqaGSjQyY4/R+jVLkaxNhLG66oinK9KuoZZ3pXIX6cm48j5D0v+secIRtf32iFN9JwDpYFrBvyK6cIV7XVWFJDLc78rXIftd6/oGqgINCBm6WjDpsPxDO8XU8CBDQXSdeh7YimOWsnnpQzc8GammSZYMQJB9PHZrdbqWK+448e3xfDv/yaM4b1nHkomaSWZ5tRqrhN0+vdsyhitbCQ3EQjje9FPKDvW5jqblH+cmKg+9N4TbRTQvHgAHC5sL15WdplpyjJUYyspc/n27w7WjcSZIjCjF1LxsRs7Y4MDcF/P5ZjqfnRlolU+zyhj1WC3Ox8bvqrExkmSOx6c6ieOlTaJlDRk8t9k4Qvrjv0GxxX4k5HXA6zRq1HA12qhvoYK2b4CAT9NghNEhZZcgre8uBGhYyeurO5x/dCMLnhIIFDQV39/NPF2BX/26bEHPZNmbbEqkqVO0Ql6BJajTiDEmA3nwO0b7LP1DHwXtE4ko/PZs7hCoZPcx1MnWhjNZsDpHYY25WNysqhJal7qWB13syPHGF/ehrvCihTGMbdb7kMiutTRq7eGQ5myLpk5U7bctiCljJmEnz4ofJNibIxcE=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6624.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(376002)(136003)(39860400002)(346002)(230922051799003)(186009)(64100799003)(451199024)(1800799009)(2616005)(26005)(38070700005)(8676002)(8936002)(4326008)(71200400001)(66899024)(38100700002)(5660300002)(83380400001)(122000001)(41300700001)(478600001)(2906002)(6486002)(86362001)(4001150100001)(7416002)(110136005)(85182001)(316002)(6512007)(6506007)(66946007)(66556008)(66476007)(66446008)(64756008)(36756003)(54906003)(76116006);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TUpFRFd2Z0pOa3RQUFpuWkZKYzY5VGFZMndJL2VQa3ZibFhCVE54d3lUclZz?=
+ =?utf-8?B?UUJDY21hRENqTU4yRDhoWVZ3bE9uQzFRMnZZNzZ4U2VYZzhyWTRPQ3pMSXM0?=
+ =?utf-8?B?aG03WHUrOVF4dmNNdVpJaitMbGJWa2ZRc2YxWHAzL2tqelBzVnJuR3p2c2Zo?=
+ =?utf-8?B?UWR0S3hsTkJYbldHa0tGK1J2NTZxRlVFVHRLWTRBa1BjVDhGTEpZYUNZUktH?=
+ =?utf-8?B?UFgzZ1AraEhPVnZHTHl3VmJxYkliY1NDTHZEWVJqUEEzOFdOR0JOeG0wTEwy?=
+ =?utf-8?B?TFRlNDdpUUNQNzNWd0V3V0xIaVU2RS9yTGg5eTNrSHd4ZEJEUHQ4QTBnMGVJ?=
+ =?utf-8?B?MXQwbEwyUFpoQmNickYwVEF5QjJUUnk1U0o1RVZTY0dKUzVuSTRRVXp2ZGJ1?=
+ =?utf-8?B?VGN6Q2dxckNyamdaVGkrSmhPN3RrWXR5SGNRQ1FJUTViWU9sNm5hdnI4TXVa?=
+ =?utf-8?B?b3dsTC9yK3NjUzZoeExoWEFsUDE2QjBZbDY2WWxBMFlKTEY5TmJvZnJkaGRL?=
+ =?utf-8?B?dFJFMnRxcENidi9QaWlvSzB5MHV6WjlGUDdxTzd1VFhvUS92S2xadjY4ZUxU?=
+ =?utf-8?B?a2RTb2FqQitxM0FXWjZ6bzBIa3Yzay9ubXdyVXNYN1VqdU9YWmt6V1JiOTgx?=
+ =?utf-8?B?YXVLYlIrUFJoWFBoNGh2WHlsVlV6ZzlMa2FQMk9Pdk5URHZidldNKzdmdGJr?=
+ =?utf-8?B?Und2M0hjZGVhVG9OaTlSbXRlYWdkK1FHMkxBSEo3S09xKzhKdm5IWklkdDZu?=
+ =?utf-8?B?WGwyM29KMkR2RjIxRncyU1dDYjNxTHgrWXVac3o4WGlrWjRSWTF1cUZDL2xm?=
+ =?utf-8?B?NHNmU29ILzBON2R0R0Y2M25jNjBMVUsxeDYyd0ZsL2RtYzhkYVFYU25pTHZh?=
+ =?utf-8?B?MXRxVk12RUtRZEpzNytaVmFOaVpFZFEvRW8rcHM0UjZYeHZ2eDRNcGhtbldz?=
+ =?utf-8?B?NTA2VGJRVjVZVFluMkl0ZUE0Z2VVUDloOVpvQ2ZCZ2pwSGd6NDRhTi9NNHl5?=
+ =?utf-8?B?cEFTdW5UZWN6amNHOFdGVWtuQnB3VmtzOExuUEhDZFdvbzV6VXd2b1M5WDZ6?=
+ =?utf-8?B?QVRjR3kzMHRaditRbFVaSEZGWTIxR3VWUk1MeXVmblVGejdoS3NiYzlzQmlS?=
+ =?utf-8?B?NVBNOFkrQ2ZDZC91OGMvbGFLNFBRVmxKY3BZejJJWEpIeDRTbWd1ZFpCZEs2?=
+ =?utf-8?B?dTF6dkloVFpGK2ZVd0FuV3k3NmQ1OWFwaDFkQkM4aThscVV2NzZRY0RCOG9z?=
+ =?utf-8?B?NDkzK1V4K3RkNXUwR0trR2xvNlhJWDBLY1JFZjhrdnFaQXMraWRDRllMc2RM?=
+ =?utf-8?B?c2VLU3kvR3BqZ1dUajdxSk9JQmlLbFZ5dTNtOFJMbDhtNi90S1FLMXlTSy80?=
+ =?utf-8?B?YVVQalNqd1g2UDRPejZKZVhNZ0NzWVBRTEI1ditwNEgyd3FvTC9yYnRhZVVD?=
+ =?utf-8?B?Z214bmd4YjluNWFqZXc0c3JtWVRreWZOSHQxbWpiUWVzVng2OHM1Zm9LOU5x?=
+ =?utf-8?B?YkFxbE5ROW1pTlJQbk9QTHJXb29QUDJyRkdjL1M3UFd4WHhlaHc1WWdIeW9z?=
+ =?utf-8?B?NkVBanprQVFVVEhWTDUvc3kwdUxFcDNkaWhjSTVzOStpRDJHcXphYU1ZNEVh?=
+ =?utf-8?B?dG5KRGJINTlndnl6ZHY5eUEyVUlxK0dwTTBuN3k3Njl0alJLSUV0TkdXS1la?=
+ =?utf-8?B?SGlydEZzQmRDWkxtUGtIMDVwZ0dxSFRta25uQ0ZrNlJ1RzI2OWNRNndTbzg2?=
+ =?utf-8?B?NENYOWZDT2NlSERDV3Z1QWlVQVVHYWdFRmQ3bkJ1a3BBUFpZZC82cjlvcjF4?=
+ =?utf-8?B?QkREL1AvSlBydzBBNVlmR2FoaFpNWFZuaVBRQ0NZMllkSmtJMEdZd0ZmTzZz?=
+ =?utf-8?B?L2N2Qm8wT2VyWHZBR3ZIUjhKcDVwM3A3SnpWNVhwdWI1K24raVZzcEVoK3pB?=
+ =?utf-8?B?MGtVY3NnMXRQaXBMemNPV2l0MjJzL0ZJN0g1OUhNeE5QUVUyUUw3YmZYVi9L?=
+ =?utf-8?B?TEUvZGU5Z1A0V0FxWW5MaEFYelR1WEV2U0lxdEY0bFBqNjk5bElOcS9VRkVi?=
+ =?utf-8?B?WHp3MWpmaGFXYlRrNWo5aFloQ3M3K3M5dTF3c3EvUGY0ZlZOMk50WDMwRmZN?=
+ =?utf-8?Q?on2ZjRnGGwFWYC7gxvcshlH1J?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <1E4A305856DC164AB4113C37DC897ED6@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6624.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 42c77c68-45be-4d10-30d4-08dbcef489fe
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Oct 2023 09:36:28.5299
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 0H9FbjPKLbdqkjpoEbqpvr0CvA7WWjkfM+jj3L8wAR181Lli5C1M1nWhQpn1laY6XgCa5V1eZo3OoOT6ue90yA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR03MB7637
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Like Xu <likexu@tencent.com>
-
-Clean up some headers declarations within the kvm/x86 tree that are
-no longer needed or duplicately included more or less.
-
-It is difficult for the naked eye to discern the most basic and effective
-header declarations required for each C file, and it's easy to get stuck in
-"Dependency Hell [*]" on finding the state-of-art declaration. The strategy
-used here is to take advantage of a LLVM tool "include-what-you-use [**]",
-which allows any CI to use "make LLVM=1 C=1 CHECK=include-what-you-use" to
-quickly find header declarations that may be removable, but the results are
-fraught with false positives. Thus, automated compilation (x86_64/i386)
-testing is applied to validate each header declaration removal proposal.
-
-Removing these declarations as part of KVM code refactoring can also (when
-the compiler isn't so smart) reduce compile time, compile warnings, and the
-size of compiled artefacts, and more importantly can help developers better
-consider decoupling when adding/refactoring unmerged code, thus relieving
-some of the burden on the code review process.
-
-Specific header declaration is supposed to be retained if it makes more
-sense for reviewers to understand. No functional changes intended.
-
-[*] https://lore.kernel.org/all/YdIfz+LMewetSaEB@gmail.com/
-[**] https://include-what-you-use.org/
-
-Signed-off-by: Like Xu <likexu@tencent.com>
----
- arch/x86/kvm/cpuid.c           |  3 ---
- arch/x86/kvm/cpuid.h           |  1 -
- arch/x86/kvm/emulate.c         |  2 --
- arch/x86/kvm/hyperv.c          |  3 ---
- arch/x86/kvm/i8259.c           |  1 -
- arch/x86/kvm/ioapic.c          | 10 ----------
- arch/x86/kvm/irq.c             |  3 ---
- arch/x86/kvm/irq.h             |  3 ---
- arch/x86/kvm/irq_comm.c        |  2 --
- arch/x86/kvm/lapic.c           |  8 --------
- arch/x86/kvm/mmu.h             |  1 -
- arch/x86/kvm/mmu/mmu.c         | 11 -----------
- arch/x86/kvm/mmu/spte.c        |  1 -
- arch/x86/kvm/mmu/tdp_iter.h    |  1 -
- arch/x86/kvm/mmu/tdp_mmu.c     |  3 ---
- arch/x86/kvm/mmu/tdp_mmu.h     |  4 ----
- arch/x86/kvm/smm.c             |  1 -
- arch/x86/kvm/smm.h             |  3 ---
- arch/x86/kvm/svm/avic.c        |  2 --
- arch/x86/kvm/svm/hyperv.h      |  2 --
- arch/x86/kvm/svm/nested.c      |  2 --
- arch/x86/kvm/svm/pmu.c         |  4 ----
- arch/x86/kvm/svm/sev.c         |  7 -------
- arch/x86/kvm/svm/svm.c         | 29 -----------------------------
- arch/x86/kvm/svm/svm.h         |  3 ---
- arch/x86/kvm/vmx/hyperv.c      |  4 ----
- arch/x86/kvm/vmx/hyperv.h      |  7 -------
- arch/x86/kvm/vmx/nested.c      |  2 --
- arch/x86/kvm/vmx/nested.h      |  1 -
- arch/x86/kvm/vmx/pmu_intel.c   |  1 -
- arch/x86/kvm/vmx/posted_intr.c |  1 -
- arch/x86/kvm/vmx/sgx.h         |  5 -----
- arch/x86/kvm/vmx/vmx.c         | 11 -----------
- arch/x86/kvm/x86.c             | 17 -----------------
- arch/x86/kvm/xen.c             |  1 -
- virt/kvm/async_pf.c            |  2 --
- virt/kvm/binary_stats.c        |  1 -
- virt/kvm/coalesced_mmio.h      |  2 --
- virt/kvm/eventfd.c             |  2 --
- virt/kvm/irqchip.c             |  1 -
- virt/kvm/kvm_main.c            | 13 -------------
- virt/kvm/pfncache.c            |  1 -
- virt/kvm/vfio.c                |  2 --
- 43 files changed, 184 deletions(-)
-
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 464b23ac5f93..ca4e640e8076 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -12,13 +12,10 @@
- 
- #include <linux/kvm_host.h>
- #include "linux/lockdep.h"
--#include <linux/export.h>
--#include <linux/vmalloc.h>
- #include <linux/uaccess.h>
- #include <linux/sched/stat.h>
- 
- #include <asm/processor.h>
--#include <asm/user.h>
- #include <asm/fpu/xstate.h>
- #include <asm/sgx.h>
- #include <asm/cpuid.h>
-diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
-index 0b90532b6e26..f13eff330b38 100644
---- a/arch/x86/kvm/cpuid.h
-+++ b/arch/x86/kvm/cpuid.h
-@@ -5,7 +5,6 @@
- #include "x86.h"
- #include "reverse_cpuid.h"
- #include <asm/cpu.h>
--#include <asm/processor.h>
- #include <uapi/asm/kvm_para.h>
- 
- extern u32 kvm_cpu_caps[NR_KVM_CPU_CAPS] __read_mostly;
-diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-index 2673cd5c46cb..c4f450a4860c 100644
---- a/arch/x86/kvm/emulate.c
-+++ b/arch/x86/kvm/emulate.c
-@@ -20,9 +20,7 @@
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
- #include <linux/kvm_host.h>
--#include "kvm_cache_regs.h"
- #include "kvm_emulate.h"
--#include <linux/stringify.h>
- #include <asm/debugreg.h>
- #include <asm/nospec-branch.h>
- #include <asm/ibt.h>
-diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-index 7c2dac6824e2..ab221264f1f5 100644
---- a/arch/x86/kvm/hyperv.c
-+++ b/arch/x86/kvm/hyperv.c
-@@ -21,15 +21,12 @@
- 
- #include "x86.h"
- #include "lapic.h"
--#include "ioapic.h"
- #include "cpuid.h"
- #include "hyperv.h"
- #include "mmu.h"
- #include "xen.h"
- 
--#include <linux/cpu.h>
- #include <linux/kvm_host.h>
--#include <linux/highmem.h>
- #include <linux/sched/cputime.h>
- #include <linux/spinlock.h>
- #include <linux/eventfd.h>
-diff --git a/arch/x86/kvm/i8259.c b/arch/x86/kvm/i8259.c
-index 8dec646e764b..293baea22a1d 100644
---- a/arch/x86/kvm/i8259.c
-+++ b/arch/x86/kvm/i8259.c
-@@ -28,7 +28,6 @@
-  */
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
--#include <linux/mm.h>
- #include <linux/slab.h>
- #include <linux/bitops.h>
- #include "irq.h"
-diff --git a/arch/x86/kvm/ioapic.c b/arch/x86/kvm/ioapic.c
-index 995eb5054360..c1324314a9e0 100644
---- a/arch/x86/kvm/ioapic.c
-+++ b/arch/x86/kvm/ioapic.c
-@@ -29,18 +29,8 @@
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
- #include <linux/kvm_host.h>
--#include <linux/kvm.h>
--#include <linux/mm.h>
--#include <linux/highmem.h>
--#include <linux/smp.h>
--#include <linux/hrtimer.h>
--#include <linux/io.h>
- #include <linux/slab.h>
--#include <linux/export.h>
- #include <linux/nospec.h>
--#include <asm/processor.h>
--#include <asm/page.h>
--#include <asm/current.h>
- #include <trace/events/kvm.h>
- 
- #include "ioapic.h"
-diff --git a/arch/x86/kvm/irq.c b/arch/x86/kvm/irq.c
-index b2c397dd2bc6..8a9284e376b8 100644
---- a/arch/x86/kvm/irq.c
-+++ b/arch/x86/kvm/irq.c
-@@ -9,12 +9,9 @@
-  */
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
--#include <linux/export.h>
- #include <linux/kvm_host.h>
- 
- #include "irq.h"
--#include "i8254.h"
--#include "x86.h"
- #include "xen.h"
- 
- /*
-diff --git a/arch/x86/kvm/irq.h b/arch/x86/kvm/irq.h
-index c2d7cfe82d00..f4dd4ace9370 100644
---- a/arch/x86/kvm/irq.h
-+++ b/arch/x86/kvm/irq.h
-@@ -10,10 +10,7 @@
- #ifndef __IRQ_H
- #define __IRQ_H
- 
--#include <linux/mm_types.h>
--#include <linux/hrtimer.h>
- #include <linux/kvm_host.h>
--#include <linux/spinlock.h>
- 
- #include <kvm/iodev.h>
- #include "lapic.h"
-diff --git a/arch/x86/kvm/irq_comm.c b/arch/x86/kvm/irq_comm.c
-index 16d076a1b91a..1a76c452c6ec 100644
---- a/arch/x86/kvm/irq_comm.c
-+++ b/arch/x86/kvm/irq_comm.c
-@@ -11,8 +11,6 @@
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
- #include <linux/kvm_host.h>
--#include <linux/slab.h>
--#include <linux/export.h>
- #include <linux/rculist.h>
- 
- #include <trace/events/kvm.h>
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index 245b20973cae..ca5e55fd8644 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -20,18 +20,10 @@
- #include <linux/kvm_host.h>
- #include <linux/kvm.h>
- #include <linux/mm.h>
--#include <linux/highmem.h>
--#include <linux/smp.h>
- #include <linux/hrtimer.h>
--#include <linux/io.h>
--#include <linux/export.h>
- #include <linux/math64.h>
--#include <linux/slab.h>
--#include <asm/processor.h>
- #include <asm/mce.h>
- #include <asm/msr.h>
--#include <asm/page.h>
--#include <asm/current.h>
- #include <asm/apicdef.h>
- #include <asm/delay.h>
- #include <linux/atomic.h>
-diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-index bb8c86eefac0..6d3e27ae697b 100644
---- a/arch/x86/kvm/mmu.h
-+++ b/arch/x86/kvm/mmu.h
-@@ -4,7 +4,6 @@
- 
- #include <linux/kvm_host.h>
- #include "kvm_cache_regs.h"
--#include "cpuid.h"
- 
- extern bool __read_mostly enable_mmio_caching;
- 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 5d3dc7119e57..2012ea028fe0 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -16,8 +16,6 @@
-  */
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
--#include "irq.h"
--#include "ioapic.h"
- #include "mmu.h"
- #include "mmu_internal.h"
- #include "tdp_mmu.h"
-@@ -33,25 +31,16 @@
- #include <linux/types.h>
- #include <linux/string.h>
- #include <linux/mm.h>
--#include <linux/highmem.h>
- #include <linux/moduleparam.h>
--#include <linux/export.h>
--#include <linux/swap.h>
--#include <linux/hugetlb.h>
--#include <linux/compiler.h>
- #include <linux/srcu.h>
- #include <linux/slab.h>
- #include <linux/sched/signal.h>
--#include <linux/uaccess.h>
- #include <linux/hash.h>
--#include <linux/kern_levels.h>
- #include <linux/kstrtox.h>
- #include <linux/kthread.h>
- 
- #include <asm/page.h>
--#include <asm/memtype.h>
- #include <asm/cmpxchg.h>
--#include <asm/io.h>
- #include <asm/set_memory.h>
- #include <asm/vmx.h>
- 
-diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
-index 4a599130e9c9..0cbf5f828d4d 100644
---- a/arch/x86/kvm/mmu/spte.c
-+++ b/arch/x86/kvm/mmu/spte.c
-@@ -12,7 +12,6 @@
- #include <linux/kvm_host.h>
- #include "mmu.h"
- #include "mmu_internal.h"
--#include "x86.h"
- #include "spte.h"
- 
- #include <asm/e820/api.h>
-diff --git a/arch/x86/kvm/mmu/tdp_iter.h b/arch/x86/kvm/mmu/tdp_iter.h
-index fae559559a80..873a087f1f39 100644
---- a/arch/x86/kvm/mmu/tdp_iter.h
-+++ b/arch/x86/kvm/mmu/tdp_iter.h
-@@ -5,7 +5,6 @@
- 
- #include <linux/kvm_host.h>
- 
--#include "mmu.h"
- #include "spte.h"
- 
- /*
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 6cd4dd631a2f..6e2a92b6d2c4 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -8,9 +8,6 @@
- #include "tdp_mmu.h"
- #include "spte.h"
- 
--#include <asm/cmpxchg.h>
--#include <trace/events/kvm.h>
--
- /* Initializes the TDP MMU for the VM, if enabled. */
- void kvm_mmu_init_tdp_mmu(struct kvm *kvm)
- {
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-index 733a3aef3a96..66afdf3e262a 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.h
-+++ b/arch/x86/kvm/mmu/tdp_mmu.h
-@@ -3,10 +3,6 @@
- #ifndef __KVM_X86_MMU_TDP_MMU_H
- #define __KVM_X86_MMU_TDP_MMU_H
- 
--#include <linux/kvm_host.h>
--
--#include "spte.h"
--
- void kvm_mmu_init_tdp_mmu(struct kvm *kvm);
- void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm);
- 
-diff --git a/arch/x86/kvm/smm.c b/arch/x86/kvm/smm.c
-index dc3d95fdca7d..3c8979ef87ef 100644
---- a/arch/x86/kvm/smm.c
-+++ b/arch/x86/kvm/smm.c
-@@ -2,7 +2,6 @@
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
- #include <linux/kvm_host.h>
--#include "x86.h"
- #include "kvm_cache_regs.h"
- #include "kvm_emulate.h"
- #include "smm.h"
-diff --git a/arch/x86/kvm/smm.h b/arch/x86/kvm/smm.h
-index a1cf2ac5bd78..3e067ce1ea1d 100644
---- a/arch/x86/kvm/smm.h
-+++ b/arch/x86/kvm/smm.h
-@@ -2,11 +2,8 @@
- #ifndef ASM_KVM_SMM_H
- #define ASM_KVM_SMM_H
- 
--#include <linux/build_bug.h>
--
- #ifdef CONFIG_KVM_SMM
- 
--
- /*
-  * 32 bit KVM's emulated SMM layout. Based on Intel P6 layout
-  * (https://www.sandpile.org/x86/smm.htm).
-diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
-index 2092db892d7d..e5dea4230347 100644
---- a/arch/x86/kvm/svm/avic.c
-+++ b/arch/x86/kvm/svm/avic.c
-@@ -14,7 +14,6 @@
- 
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
--#include <linux/kvm_types.h>
- #include <linux/hashtable.h>
- #include <linux/amd-iommu.h>
- #include <linux/kvm_host.h>
-@@ -23,7 +22,6 @@
- 
- #include "trace.h"
- #include "lapic.h"
--#include "x86.h"
- #include "irq.h"
- #include "svm.h"
- 
-diff --git a/arch/x86/kvm/svm/hyperv.h b/arch/x86/kvm/svm/hyperv.h
-index 02f4784b5d44..f546736ce0b3 100644
---- a/arch/x86/kvm/svm/hyperv.h
-+++ b/arch/x86/kvm/svm/hyperv.h
-@@ -6,8 +6,6 @@
- #ifndef __ARCH_X86_KVM_SVM_HYPERV_H__
- #define __ARCH_X86_KVM_SVM_HYPERV_H__
- 
--#include <asm/mshyperv.h>
--
- #include "../hyperv.h"
- #include "svm.h"
- 
-diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-index dd496c9e5f91..ca525c440b63 100644
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -16,10 +16,8 @@
- 
- #include <linux/kvm_types.h>
- #include <linux/kvm_host.h>
--#include <linux/kernel.h>
- 
- #include <asm/msr-index.h>
--#include <asm/debugreg.h>
- 
- #include "kvm_emulate.h"
- #include "trace.h"
-diff --git a/arch/x86/kvm/svm/pmu.c b/arch/x86/kvm/svm/pmu.c
-index 373ff6a6687b..1c5f2d3e7248 100644
---- a/arch/x86/kvm/svm/pmu.c
-+++ b/arch/x86/kvm/svm/pmu.c
-@@ -13,12 +13,8 @@
- 
- #include <linux/types.h>
- #include <linux/kvm_host.h>
--#include <linux/perf_event.h>
--#include "x86.h"
- #include "cpuid.h"
--#include "lapic.h"
- #include "pmu.h"
--#include "svm.h"
- 
- enum pmu_type {
- 	PMU_TYPE_COUNTER = 0,
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 4900c078045a..f0ef5f3ecb85 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -8,27 +8,20 @@
-  */
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
--#include <linux/kvm_types.h>
- #include <linux/kvm_host.h>
- #include <linux/kernel.h>
--#include <linux/highmem.h>
- #include <linux/psp.h>
- #include <linux/psp-sev.h>
--#include <linux/pagemap.h>
- #include <linux/swap.h>
- #include <linux/misc_cgroup.h>
--#include <linux/processor.h>
--#include <linux/trace_events.h>
- 
- #include <asm/pkru.h>
--#include <asm/trapnr.h>
- #include <asm/fpu/xcr.h>
- #include <asm/debugreg.h>
- 
- #include "mmu.h"
- #include "x86.h"
- #include "svm.h"
--#include "svm_ops.h"
- #include "cpuid.h"
- #include "trace.h"
- 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index b7472ad183b9..50641dd810b0 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -9,46 +9,17 @@
- #include "smm.h"
- #include "cpuid.h"
- #include "pmu.h"
--
--#include <linux/module.h>
--#include <linux/mod_devicetable.h>
--#include <linux/kernel.h>
--#include <linux/vmalloc.h>
--#include <linux/highmem.h>
--#include <linux/amd-iommu.h>
--#include <linux/sched.h>
--#include <linux/trace_events.h>
--#include <linux/slab.h>
--#include <linux/hashtable.h>
--#include <linux/objtool.h>
--#include <linux/psp-sev.h>
--#include <linux/file.h>
--#include <linux/pagemap.h>
--#include <linux/swap.h>
- #include <linux/rwsem.h>
--#include <linux/cc_platform.h>
--#include <linux/smp.h>
--
--#include <asm/apic.h>
--#include <asm/perf_event.h>
--#include <asm/tlbflush.h>
--#include <asm/desc.h>
--#include <asm/debugreg.h>
--#include <asm/kvm_para.h>
--#include <asm/irq_remapping.h>
- #include <asm/spec-ctrl.h>
- #include <asm/cpu_device_id.h>
- #include <asm/traps.h>
- #include <asm/reboot.h>
--#include <asm/fpu/api.h>
- 
- #include <trace/events/ipi.h>
- 
- #include "trace.h"
--
- #include "svm.h"
- #include "svm_ops.h"
--
- #include "kvm_onhyperv.h"
- #include "svm_onhyperv.h"
- 
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index be67ab7fdd10..1f4ef7a12975 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -15,10 +15,7 @@
- #ifndef __SVM_SVM_H
- #define __SVM_SVM_H
- 
--#include <linux/kvm_types.h>
- #include <linux/kvm_host.h>
--#include <linux/bits.h>
--
- #include <asm/svm.h>
- #include <asm/sev-common.h>
- 
-diff --git a/arch/x86/kvm/vmx/hyperv.c b/arch/x86/kvm/vmx/hyperv.c
-index 313b8bb5b8a7..4b0a0abcc9f1 100644
---- a/arch/x86/kvm/vmx/hyperv.c
-+++ b/arch/x86/kvm/vmx/hyperv.c
-@@ -1,13 +1,9 @@
- // SPDX-License-Identifier: GPL-2.0
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
--#include <linux/errno.h>
--#include <linux/smp.h>
--
- #include "../cpuid.h"
- #include "hyperv.h"
- #include "nested.h"
--#include "vmcs.h"
- #include "vmx.h"
- #include "trace.h"
- 
-diff --git a/arch/x86/kvm/vmx/hyperv.h b/arch/x86/kvm/vmx/hyperv.h
-index 9623fe1651c4..6a3dd2ee893c 100644
---- a/arch/x86/kvm/vmx/hyperv.h
-+++ b/arch/x86/kvm/vmx/hyperv.h
-@@ -2,15 +2,8 @@
- #ifndef __KVM_X86_VMX_HYPERV_H
- #define __KVM_X86_VMX_HYPERV_H
- 
--#include <linux/jump_label.h>
--
--#include <asm/hyperv-tlfs.h>
- #include <asm/mshyperv.h>
--#include <asm/vmx.h>
- 
--#include "../hyperv.h"
--
--#include "capabilities.h"
- #include "vmcs.h"
- #include "vmcs12.h"
- 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index c5ec0ef51ff7..5899d5bc4c5a 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -1,8 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
--#include <linux/objtool.h>
--#include <linux/percpu.h>
- 
- #include <asm/debugreg.h>
- #include <asm/mmu_context.h>
-diff --git a/arch/x86/kvm/vmx/nested.h b/arch/x86/kvm/vmx/nested.h
-index b4b9d51438c6..432743d66bb0 100644
---- a/arch/x86/kvm/vmx/nested.h
-+++ b/arch/x86/kvm/vmx/nested.h
-@@ -2,7 +2,6 @@
- #ifndef __KVM_X86_VMX_NESTED_H
- #define __KVM_X86_VMX_NESTED_H
- 
--#include "kvm_cache_regs.h"
- #include "vmcs12.h"
- #include "vmx.h"
- 
-diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
-index 820d3e1f6b4f..64f1e395acbf 100644
---- a/arch/x86/kvm/vmx/pmu_intel.c
-+++ b/arch/x86/kvm/vmx/pmu_intel.c
-@@ -16,7 +16,6 @@
- #include <asm/perf_event.h>
- #include "x86.h"
- #include "cpuid.h"
--#include "lapic.h"
- #include "nested.h"
- #include "pmu.h"
- 
-diff --git a/arch/x86/kvm/vmx/posted_intr.c b/arch/x86/kvm/vmx/posted_intr.c
-index af662312fd07..cfb61921e322 100644
---- a/arch/x86/kvm/vmx/posted_intr.c
-+++ b/arch/x86/kvm/vmx/posted_intr.c
-@@ -4,7 +4,6 @@
- #include <linux/kvm_host.h>
- 
- #include <asm/irq_remapping.h>
--#include <asm/cpu.h>
- 
- #include "lapic.h"
- #include "irq.h"
-diff --git a/arch/x86/kvm/vmx/sgx.h b/arch/x86/kvm/vmx/sgx.h
-index a400888b376d..3c8af99d3d4c 100644
---- a/arch/x86/kvm/vmx/sgx.h
-+++ b/arch/x86/kvm/vmx/sgx.h
-@@ -2,11 +2,6 @@
- #ifndef __KVM_X86_SGX_H
- #define __KVM_X86_SGX_H
- 
--#include <linux/kvm_host.h>
--
--#include "capabilities.h"
--#include "vmx_ops.h"
--
- #ifdef CONFIG_X86_SGX_KVM
- extern bool __read_mostly enable_sgx;
- 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 86ce9efe6c66..9814569c0b37 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -14,7 +14,6 @@
-  */
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
--#include <linux/highmem.h>
- #include <linux/hrtimer.h>
- #include <linux/kernel.h>
- #include <linux/kvm_host.h>
-@@ -22,12 +21,8 @@
- #include <linux/moduleparam.h>
- #include <linux/mod_devicetable.h>
- #include <linux/mm.h>
--#include <linux/objtool.h>
- #include <linux/sched.h>
- #include <linux/sched/smt.h>
--#include <linux/slab.h>
--#include <linux/tboot.h>
--#include <linux/trace_events.h>
- #include <linux/entry-kvm.h>
- 
- #include <asm/apic.h>
-@@ -36,17 +31,11 @@
- #include <asm/cpu_device_id.h>
- #include <asm/debugreg.h>
- #include <asm/desc.h>
--#include <asm/fpu/api.h>
--#include <asm/fpu/xstate.h>
--#include <asm/idtentry.h>
- #include <asm/io.h>
--#include <asm/irq_remapping.h>
- #include <asm/reboot.h>
- #include <asm/perf_event.h>
- #include <asm/mmu_context.h>
- #include <asm/mshyperv.h>
--#include <asm/mwait.h>
--#include <asm/spec-ctrl.h>
- #include <asm/vmx.h>
- 
- #include "capabilities.h"
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 530d4bc2259b..be0b77835e6f 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -22,7 +22,6 @@
- #include "ioapic.h"
- #include "mmu.h"
- #include "i8254.h"
--#include "tss.h"
- #include "kvm_cache_regs.h"
- #include "kvm_emulate.h"
- #include "mmu/page_track.h"
-@@ -35,33 +34,22 @@
- #include "smm.h"
- 
- #include <linux/clocksource.h>
--#include <linux/interrupt.h>
- #include <linux/kvm.h>
- #include <linux/fs.h>
--#include <linux/vmalloc.h>
--#include <linux/export.h>
- #include <linux/moduleparam.h>
- #include <linux/mman.h>
- #include <linux/highmem.h>
--#include <linux/iommu.h>
- #include <linux/cpufreq.h>
- #include <linux/user-return-notifier.h>
--#include <linux/srcu.h>
--#include <linux/slab.h>
- #include <linux/perf_event.h>
--#include <linux/uaccess.h>
- #include <linux/hash.h>
- #include <linux/pci.h>
- #include <linux/timekeeper_internal.h>
--#include <linux/pvclock_gtod.h>
- #include <linux/kvm_irqfd.h>
- #include <linux/irqbypass.h>
--#include <linux/sched/stat.h>
- #include <linux/sched/isolation.h>
--#include <linux/mem_encrypt.h>
- #include <linux/entry-kvm.h>
- #include <linux/suspend.h>
--#include <linux/smp.h>
- 
- #include <trace/events/ipi.h>
- #include <trace/events/kvm.h>
-@@ -71,18 +59,13 @@
- #include <asm/desc.h>
- #include <asm/mce.h>
- #include <asm/pkru.h>
--#include <linux/kernel_stat.h>
- #include <asm/fpu/api.h>
- #include <asm/fpu/xcr.h>
--#include <asm/fpu/xstate.h>
- #include <asm/pvclock.h>
--#include <asm/div64.h>
- #include <asm/irq_remapping.h>
- #include <asm/mshyperv.h>
- #include <asm/hypervisor.h>
--#include <asm/tlbflush.h>
- #include <asm/intel_pt.h>
--#include <asm/emulate_prefix.h>
- #include <asm/sgx.h>
- #include <clocksource/hyperv_timer.h>
- 
-diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
-index e53fad915a62..4c82d084852e 100644
---- a/arch/x86/kvm/xen.c
-+++ b/arch/x86/kvm/xen.c
-@@ -16,7 +16,6 @@
- #include <linux/kvm_host.h>
- #include <linux/sched/stat.h>
- 
--#include <trace/events/kvm.h>
- #include <xen/interface/xen.h>
- #include <xen/interface/vcpu.h>
- #include <xen/interface/version.h>
-diff --git a/virt/kvm/async_pf.c b/virt/kvm/async_pf.c
-index e033c79d528e..d3c4751ec8c6 100644
---- a/virt/kvm/async_pf.c
-+++ b/virt/kvm/async_pf.c
-@@ -10,8 +10,6 @@
- 
- #include <linux/kvm_host.h>
- #include <linux/slab.h>
--#include <linux/module.h>
--#include <linux/mmu_context.h>
- #include <linux/sched/mm.h>
- 
- #include "async_pf.h"
-diff --git a/virt/kvm/binary_stats.c b/virt/kvm/binary_stats.c
-index eefca6c69f51..77cbbf6c2aba 100644
---- a/virt/kvm/binary_stats.c
-+++ b/virt/kvm/binary_stats.c
-@@ -7,7 +7,6 @@
- 
- #include <linux/kvm_host.h>
- #include <linux/kvm.h>
--#include <linux/errno.h>
- #include <linux/uaccess.h>
- 
- /**
-diff --git a/virt/kvm/coalesced_mmio.h b/virt/kvm/coalesced_mmio.h
-index 36f84264ed25..40b07fb3ed61 100644
---- a/virt/kvm/coalesced_mmio.h
-+++ b/virt/kvm/coalesced_mmio.h
-@@ -13,8 +13,6 @@
- 
- #ifdef CONFIG_KVM_MMIO
- 
--#include <linux/list.h>
--
- struct kvm_coalesced_mmio_dev {
- 	struct list_head list;
- 	struct kvm_io_device dev;
-diff --git a/virt/kvm/eventfd.c b/virt/kvm/eventfd.c
-index 89912a17f5d5..f7863a0ce75f 100644
---- a/virt/kvm/eventfd.c
-+++ b/virt/kvm/eventfd.c
-@@ -13,13 +13,11 @@
- #include <linux/kvm.h>
- #include <linux/kvm_irqfd.h>
- #include <linux/workqueue.h>
--#include <linux/syscalls.h>
- #include <linux/wait.h>
- #include <linux/poll.h>
- #include <linux/file.h>
- #include <linux/list.h>
- #include <linux/eventfd.h>
--#include <linux/kernel.h>
- #include <linux/srcu.h>
- #include <linux/slab.h>
- #include <linux/seqlock.h>
-diff --git a/virt/kvm/irqchip.c b/virt/kvm/irqchip.c
-index 1e567d1f6d3d..f3bfa56bb0dc 100644
---- a/virt/kvm/irqchip.c
-+++ b/virt/kvm/irqchip.c
-@@ -15,7 +15,6 @@
- #include <linux/kvm_host.h>
- #include <linux/slab.h>
- #include <linux/srcu.h>
--#include <linux/export.h>
- #include <trace/events/kvm.h>
- 
- int kvm_irq_map_gsi(struct kvm *kvm,
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 486800a7024b..aff195e03bfc 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -19,42 +19,29 @@
- #include <linux/kvm.h>
- #include <linux/module.h>
- #include <linux/errno.h>
--#include <linux/percpu.h>
- #include <linux/mm.h>
- #include <linux/miscdevice.h>
- #include <linux/vmalloc.h>
--#include <linux/reboot.h>
- #include <linux/debugfs.h>
--#include <linux/highmem.h>
- #include <linux/file.h>
- #include <linux/syscore_ops.h>
- #include <linux/cpu.h>
- #include <linux/sched/signal.h>
- #include <linux/sched/mm.h>
--#include <linux/sched/stat.h>
- #include <linux/cpumask.h>
- #include <linux/smp.h>
- #include <linux/anon_inodes.h>
--#include <linux/profile.h>
--#include <linux/kvm_para.h>
--#include <linux/pagemap.h>
--#include <linux/mman.h>
- #include <linux/swap.h>
--#include <linux/bitops.h>
- #include <linux/spinlock.h>
- #include <linux/compat.h>
- #include <linux/srcu.h>
- #include <linux/hugetlb.h>
- #include <linux/slab.h>
--#include <linux/sort.h>
- #include <linux/bsearch.h>
- #include <linux/io.h>
- #include <linux/lockdep.h>
- #include <linux/kthread.h>
- #include <linux/suspend.h>
--
--#include <asm/processor.h>
--#include <asm/ioctl.h>
- #include <linux/uaccess.h>
- 
- #include "coalesced_mmio.h"
-diff --git a/virt/kvm/pfncache.c b/virt/kvm/pfncache.c
-index 2d6aba677830..805e51f35d73 100644
---- a/virt/kvm/pfncache.c
-+++ b/virt/kvm/pfncache.c
-@@ -12,7 +12,6 @@
-  */
- 
- #include <linux/kvm_host.h>
--#include <linux/kvm.h>
- #include <linux/highmem.h>
- #include <linux/module.h>
- #include <linux/errno.h>
-diff --git a/virt/kvm/vfio.c b/virt/kvm/vfio.c
-index ca24ce120906..de410402da8c 100644
---- a/virt/kvm/vfio.c
-+++ b/virt/kvm/vfio.c
-@@ -6,14 +6,12 @@
-  *     Author: Alex Williamson <alex.williamson@redhat.com>
-  */
- 
--#include <linux/errno.h>
- #include <linux/file.h>
- #include <linux/kvm_host.h>
- #include <linux/list.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
- #include <linux/slab.h>
--#include <linux/uaccess.h>
- #include <linux/vfio.h>
- #include "vfio.h"
- 
-
-base-commit: 2bf2d3d16b8d7fe346a88569b6d786a3b18913dc
--- 
-2.42.0
-
+SGksIEhzaWFvLWNoaWVuOg0KDQpPbiBNb24sIDIwMjMtMTAtMTYgYXQgMTg6NDAgKzA4MDAsIEhz
+aWFvIENoaWVuIFN1bmcgd3JvdGU6DQo+IFBhZGRpbmcgaXMgYSBuZXcgZGlzcGxheSBtb2R1bGUg
+b24gTVQ4MTg4LCBpdCBwcm92aWRlcyBhYmlsaXR5DQo+IHRvIGFkZCBwaXhlbHMgdG8gd2lkdGgg
+YW5kIGhlaWdodCBvZiBhIGxheWVyIHdpdGggc3BlY2lmaWVkIGNvbG9ycy4NCj4gDQo+IER1ZSB0
+byBoYXJkd2FyZSBkZXNpZ24sIE1peGVyIGluIFZET1NZUzEgcmVxdWlyZXMgd2lkdGggb2YgYSBs
+YXllcg0KPiB0byBiZSAyLXBpeGVsLWFsaWduLCBvciA0LXBpeGVsLWFsaWduIHdoZW4gRVRIRFIg
+aXMgZW5hYmxlZCwNCj4gd2UgbmVlZCBQYWRkaW5nIHRvIGRlYWwgd2l0aCBvZGQgd2lkdGguDQoN
+ClJldmlld2VkLWJ5OiBDSyBIdSA8Y2suaHVAbWVkaWF0ZWsuY29tPg0KDQo+IA0KPiBTaWduZWQt
+b2ZmLWJ5OiBIc2lhbyBDaGllbiBTdW5nIDxzaGF3bi5zdW5nQG1lZGlhdGVrLmNvbT4NCj4gLS0t
+DQo+ICBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvTWFrZWZpbGUgICAgICAgfCAgIDMgKy0NCj4g
+IGRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZGlzcF9kcnYuaCB8ICAgNCArDQo+ICBkcml2
+ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kcnYuYyAgfCAgIDEgKw0KPiAgZHJpdmVycy9n
+cHUvZHJtL21lZGlhdGVrL210a19kcm1fZHJ2LmggIHwgICAyICstDQo+ICBkcml2ZXJzL2dwdS9k
+cm0vbWVkaWF0ZWsvbXRrX3BhZGRpbmcuYyAgfCAxNjANCj4gKysrKysrKysrKysrKysrKysrKysr
+KysrDQo+ICA1IGZpbGVzIGNoYW5nZWQsIDE2OCBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygt
+KQ0KPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfcGFk
+ZGluZy5jDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL01ha2Vm
+aWxlDQo+IGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL01ha2VmaWxlDQo+IGluZGV4IGQ0ZDE5
+M2Y2MDI3MS4uNWU0NDM2NDAzYjhkIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vbWVk
+aWF0ZWsvTWFrZWZpbGUNCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL01ha2VmaWxl
+DQo+IEBAIC0xNiw3ICsxNiw4IEBAIG1lZGlhdGVrLWRybS15IDo9IG10a19kaXNwX2FhbC5vIFwN
+Cj4gIAkJICBtdGtfZHNpLm8gXA0KPiAgCQkgIG10a19kcGkubyBcDQo+ICAJCSAgbXRrX2V0aGRy
+Lm8gXA0KPiAtCQkgIG10a19tZHBfcmRtYS5vDQo+ICsJCSAgbXRrX21kcF9yZG1hLm8gXA0KPiAr
+CQkgIG10a19wYWRkaW5nLm8NCj4gIA0KPiAgb2JqLSQoQ09ORklHX0RSTV9NRURJQVRFSykgKz0g
+bWVkaWF0ZWstZHJtLm8NCj4gIA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL21lZGlh
+dGVrL210a19kaXNwX2Rydi5oDQo+IGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNw
+X2Rydi5oDQo+IGluZGV4IGJmMDZjY2I2NTY1Mi4uZTJiNjAyMDM3YWMzIDEwMDY0NA0KPiAtLS0g
+YS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3BfZHJ2LmgNCj4gKysrIGIvZHJpdmVy
+cy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX2Rydi5oDQo+IEBAIC0xNTksNCArMTU5LDggQEAg
+dm9pZCBtdGtfbWRwX3JkbWFfY29uZmlnKHN0cnVjdCBkZXZpY2UgKmRldiwNCj4gc3RydWN0IG10
+a19tZHBfcmRtYV9jZmcgKmNmZywNCj4gIGNvbnN0IHUzMiAqbXRrX21kcF9yZG1hX2dldF9mb3Jt
+YXRzKHN0cnVjdCBkZXZpY2UgKmRldik7DQo+ICBzaXplX3QgbXRrX21kcF9yZG1hX2dldF9udW1f
+Zm9ybWF0cyhzdHJ1Y3QgZGV2aWNlICpkZXYpOw0KPiAgDQo+ICtpbnQgbXRrX3BhZGRpbmdfY2xr
+X2VuYWJsZShzdHJ1Y3QgZGV2aWNlICpkZXYpOw0KPiArdm9pZCBtdGtfcGFkZGluZ19jbGtfZGlz
+YWJsZShzdHJ1Y3QgZGV2aWNlICpkZXYpOw0KPiArdm9pZCBtdGtfcGFkZGluZ19zdGFydChzdHJ1
+Y3QgZGV2aWNlICpkZXYpOw0KPiArdm9pZCBtdGtfcGFkZGluZ19zdG9wKHN0cnVjdCBkZXZpY2Ug
+KmRldik7DQo+ICAjZW5kaWYNCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRl
+ay9tdGtfZHJtX2Rydi5jDQo+IGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fZHJ2
+LmMNCj4gaW5kZXggY2RjZTE2NWMwOTJlLi42MmU2ZTk3ODU0NDMgMTAwNjQ0DQo+IC0tLSBhL2Ry
+aXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2Rydi5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1
+L2RybS9tZWRpYXRlay9tdGtfZHJtX2Rydi5jDQo+IEBAIC0xMDI1LDYgKzEwMjUsNyBAQCBzdGF0
+aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlciAqIGNvbnN0DQo+IG10a19kcm1fZHJpdmVyc1tdID0g
+ew0KPiAgCSZtdGtfZHNpX2RyaXZlciwNCj4gIAkmbXRrX2V0aGRyX2RyaXZlciwNCj4gIAkmbXRr
+X21kcF9yZG1hX2RyaXZlciwNCj4gKwkmbXRrX3BhZGRpbmdfZHJpdmVyLA0KPiAgfTsNCj4gIA0K
+PiAgc3RhdGljIGludCBfX2luaXQgbXRrX2RybV9pbml0KHZvaWQpDQo+IGRpZmYgLS1naXQgYS9k
+cml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kcnYuaA0KPiBiL2RyaXZlcnMvZ3B1L2Ry
+bS9tZWRpYXRlay9tdGtfZHJtX2Rydi5oDQo+IGluZGV4IDhkY2E2OGVhMWI5NC4uZDJlZmQ3MTU2
+OTlmIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kcnYu
+aA0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kcnYuaA0KPiBAQCAt
+NzIsNSArNzIsNSBAQCBleHRlcm4gc3RydWN0IHBsYXRmb3JtX2RyaXZlciBtdGtfZHBpX2RyaXZl
+cjsNCj4gIGV4dGVybiBzdHJ1Y3QgcGxhdGZvcm1fZHJpdmVyIG10a19kc2lfZHJpdmVyOw0KPiAg
+ZXh0ZXJuIHN0cnVjdCBwbGF0Zm9ybV9kcml2ZXIgbXRrX2V0aGRyX2RyaXZlcjsNCj4gIGV4dGVy
+biBzdHJ1Y3QgcGxhdGZvcm1fZHJpdmVyIG10a19tZHBfcmRtYV9kcml2ZXI7DQo+IC0NCj4gK2V4
+dGVybiBzdHJ1Y3QgcGxhdGZvcm1fZHJpdmVyIG10a19wYWRkaW5nX2RyaXZlcjsNCj4gICNlbmRp
+ZiAvKiBNVEtfRFJNX0RSVl9IICovDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vbWVk
+aWF0ZWsvbXRrX3BhZGRpbmcuYw0KPiBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfcGFk
+ZGluZy5jDQo+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0DQo+IGluZGV4IDAwMDAwMDAwMDAwMC4uZmEy
+ZTdmYzljN2JkDQo+IC0tLSAvZGV2L251bGwNCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL21lZGlh
+dGVrL210a19wYWRkaW5nLmMNCj4gQEAgLTAsMCArMSwxNjAgQEANCj4gKy8vIFNQRFgtTGljZW5z
+ZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9ubHkNCj4gKy8qDQo+ICsgKiBDb3B5cmlnaHQgKGMpIDIw
+MjMgTWVkaWFUZWsgSW5jLg0KPiArICovDQo+ICsNCj4gKyNpbmNsdWRlIDxsaW51eC9jbGsuaD4N
+Cj4gKyNpbmNsdWRlIDxsaW51eC9jb21wb25lbnQuaD4NCj4gKyNpbmNsdWRlIDxsaW51eC9tb2R1
+bGUuaD4NCj4gKyNpbmNsdWRlIDxsaW51eC9vZl9kZXZpY2UuaD4NCj4gKyNpbmNsdWRlIDxsaW51
+eC9wbGF0Zm9ybV9kZXZpY2UuaD4NCj4gKyNpbmNsdWRlIDxsaW51eC9wbV9ydW50aW1lLmg+DQo+
+ICsjaW5jbHVkZSA8bGludXgvc29jL21lZGlhdGVrL210ay1jbWRxLmg+DQo+ICsNCj4gKyNpbmNs
+dWRlICJtdGtfZGlzcF9kcnYuaCINCj4gKyNpbmNsdWRlICJtdGtfZHJtX2NydGMuaCINCj4gKyNp
+bmNsdWRlICJtdGtfZHJtX2RkcF9jb21wLmgiDQo+ICsNCj4gKyNkZWZpbmUgUEFERElOR19DT05U
+Uk9MX1JFRwkweDAwDQo+ICsjZGVmaW5lIFBBRERJTkdfQllQQVNTCQkJQklUKDApDQo+ICsjZGVm
+aW5lIFBBRERJTkdfRU5BQkxFCQkJQklUKDEpDQo+ICsjZGVmaW5lIFBBRERJTkdfUElDX1NJWkVf
+UkVHCTB4MDQNCj4gKyNkZWZpbmUgUEFERElOR19IX1JFRwkJMHgwOCAvKiBob3Jpem9udGFsICov
+DQo+ICsjZGVmaW5lIFBBRERJTkdfVl9SRUcJCTB4MGMgLyogdmVydGljYWwgKi8NCj4gKyNkZWZp
+bmUgUEFERElOR19DT0xPUl9SRUcJMHgxMA0KPiArDQo+ICsvKioNCj4gKyAqIHN0cnVjdCBtdGtf
+cGFkZGluZyAtIGJhc2ljIGluZm9ybWF0aW9uIG9mIFBhZGRpbmcNCj4gKyAqIEBjbGs6IENsb2Nr
+IG9mIHRoZSBtb2R1bGUNCj4gKyAqIEByZWc6IFZpcnR1YWwgYWRkcmVzcyBvZiB0aGUgUGFkZGlu
+ZyBmb3IgQ1BVIHRvIGFjY2Vzcw0KPiArICogQGNtZHFfcmVnOiBDTURRIHNldHRpbmcgb2YgdGhl
+IFBhZGRpbmcNCj4gKyAqDQo+ICsgKiBFdmVyeSBQYWRkaW5nIHNob3VsZCBoYXZlIGRpZmZlcmVu
+dCBjbG9jayBzb3VyY2UsIHJlZ2lzdGVyIGJhc2UsDQo+IGFuZA0KPiArICogQ01EUSBzZXR0aW5n
+cywgd2Ugc3RvcmVkIHRoZXNlIGRpZmZlcmVuY2VzIGFsbCB0b2dldGhlci4NCj4gKyAqLw0KPiAr
+c3RydWN0IG10a19wYWRkaW5nIHsNCj4gKwlzdHJ1Y3QgY2xrCQkqY2xrOw0KPiArCXZvaWQgX19p
+b21lbQkJKnJlZzsNCj4gKwlzdHJ1Y3QgY21kcV9jbGllbnRfcmVnCWNtZHFfcmVnOw0KPiArfTsN
+Cj4gKw0KPiAraW50IG10a19wYWRkaW5nX2Nsa19lbmFibGUoc3RydWN0IGRldmljZSAqZGV2KQ0K
+PiArew0KPiArCXN0cnVjdCBtdGtfcGFkZGluZyAqcGFkZGluZyA9IGRldl9nZXRfZHJ2ZGF0YShk
+ZXYpOw0KPiArDQo+ICsJcmV0dXJuIGNsa19wcmVwYXJlX2VuYWJsZShwYWRkaW5nLT5jbGspOw0K
+PiArfQ0KPiArDQo+ICt2b2lkIG10a19wYWRkaW5nX2Nsa19kaXNhYmxlKHN0cnVjdCBkZXZpY2Ug
+KmRldikNCj4gK3sNCj4gKwlzdHJ1Y3QgbXRrX3BhZGRpbmcgKnBhZGRpbmcgPSBkZXZfZ2V0X2Ry
+dmRhdGEoZGV2KTsNCj4gKw0KPiArCWNsa19kaXNhYmxlX3VucHJlcGFyZShwYWRkaW5nLT5jbGsp
+Ow0KPiArfQ0KPiArDQo+ICt2b2lkIG10a19wYWRkaW5nX3N0YXJ0KHN0cnVjdCBkZXZpY2UgKmRl
+dikNCj4gK3sNCj4gKwlzdHJ1Y3QgbXRrX3BhZGRpbmcgKnBhZGRpbmcgPSBkZXZfZ2V0X2RydmRh
+dGEoZGV2KTsNCj4gKw0KPiArCXdyaXRlbChQQURESU5HX0VOQUJMRSB8IFBBRERJTkdfQllQQVNT
+LA0KPiArCSAgICAgICBwYWRkaW5nLT5yZWcgKyBQQURESU5HX0NPTlRST0xfUkVHKTsNCj4gKw0K
+PiArCS8qDQo+ICsJICogbm90aWNlIHRoYXQgZXZlbiB0aGUgcGFkZGluZyBpcyBpbiBieXBhc3Mg
+bW9kZSwNCj4gKwkgKiBhbGwgdGhlIHNldHRpbmdzIG11c3QgYmUgY2xlYXJlZCB0byAwIG9yDQo+
+ICsJICogdW5kZWZpbmVkIGJlaGF2aW9ycyBjb3VsZCBoYXBwZW4NCj4gKwkgKi8NCj4gKwl3cml0
+ZWwoMCwgcGFkZGluZy0+cmVnICsgUEFERElOR19QSUNfU0laRV9SRUcpOw0KPiArCXdyaXRlbCgw
+LCBwYWRkaW5nLT5yZWcgKyBQQURESU5HX0hfUkVHKTsNCj4gKwl3cml0ZWwoMCwgcGFkZGluZy0+
+cmVnICsgUEFERElOR19WX1JFRyk7DQo+ICsJd3JpdGVsKDAsIHBhZGRpbmctPnJlZyArIFBBRERJ
+TkdfQ09MT1JfUkVHKTsNCj4gK30NCj4gKw0KPiArdm9pZCBtdGtfcGFkZGluZ19zdG9wKHN0cnVj
+dCBkZXZpY2UgKmRldikNCj4gK3sNCj4gKwlzdHJ1Y3QgbXRrX3BhZGRpbmcgKnBhZGRpbmcgPSBk
+ZXZfZ2V0X2RydmRhdGEoZGV2KTsNCj4gKw0KPiArCXdyaXRlbCgwLCBwYWRkaW5nLT5yZWcgKyBQ
+QURESU5HX0NPTlRST0xfUkVHKTsNCj4gK30NCj4gKw0KPiArc3RhdGljIGludCBtdGtfcGFkZGlu
+Z19iaW5kKHN0cnVjdCBkZXZpY2UgKmRldiwgc3RydWN0IGRldmljZQ0KPiAqbWFzdGVyLCB2b2lk
+ICpkYXRhKQ0KPiArew0KPiArCXJldHVybiAwOw0KPiArfQ0KPiArDQo+ICtzdGF0aWMgdm9pZCBt
+dGtfcGFkZGluZ191bmJpbmQoc3RydWN0IGRldmljZSAqZGV2LCBzdHJ1Y3QgZGV2aWNlDQo+ICpt
+YXN0ZXIsIHZvaWQgKmRhdGEpDQo+ICt7DQo+ICt9DQo+ICsNCj4gK3N0YXRpYyBjb25zdCBzdHJ1
+Y3QgY29tcG9uZW50X29wcyBtdGtfcGFkZGluZ19jb21wb25lbnRfb3BzID0gew0KPiArCS5iaW5k
+CT0gbXRrX3BhZGRpbmdfYmluZCwNCj4gKwkudW5iaW5kID0gbXRrX3BhZGRpbmdfdW5iaW5kLA0K
+PiArfTsNCj4gKw0KPiArc3RhdGljIGludCBtdGtfcGFkZGluZ19wcm9iZShzdHJ1Y3QgcGxhdGZv
+cm1fZGV2aWNlICpwZGV2KQ0KPiArew0KPiArCXN0cnVjdCBkZXZpY2UgKmRldiA9ICZwZGV2LT5k
+ZXY7DQo+ICsJc3RydWN0IG10a19wYWRkaW5nICpwcml2Ow0KPiArCXN0cnVjdCByZXNvdXJjZSAq
+cmVzOw0KPiArCWludCByZXQ7DQo+ICsNCj4gKwlwcml2ID0gZGV2bV9remFsbG9jKGRldiwgc2l6
+ZW9mKCpwcml2KSwgR0ZQX0tFUk5FTCk7DQo+ICsJaWYgKCFwcml2KQ0KPiArCQlyZXR1cm4gLUVO
+T01FTTsNCj4gKw0KPiArCXByaXYtPmNsayA9IGRldm1fY2xrX2dldChkZXYsIE5VTEwpOw0KPiAr
+CWlmIChJU19FUlIocHJpdi0+Y2xrKSkgew0KPiArCQlkZXZfZXJyKGRldiwgImZhaWxlZCB0byBn
+ZXQgY2xrXG4iKTsNCj4gKwkJcmV0dXJuIFBUUl9FUlIocHJpdi0+Y2xrKTsNCj4gKwl9DQo+ICsN
+Cj4gKwlwcml2LT5yZWcgPSBkZXZtX3BsYXRmb3JtX2dldF9hbmRfaW9yZW1hcF9yZXNvdXJjZShw
+ZGV2LCAwLA0KPiAmcmVzKTsNCj4gKwlpZiAoSVNfRVJSKHByaXYtPnJlZykpIHsNCj4gKwkJZGV2
+X2VycihkZXYsICJmYWlsZWQgdG8gZG8gaW9yZW1hcFxuIik7DQo+ICsJCXJldHVybiBQVFJfRVJS
+KHByaXYtPnJlZyk7DQo+ICsJfQ0KPiArDQo+ICsjaWYgSVNfUkVBQ0hBQkxFKENPTkZJR19NVEtf
+Q01EUSkNCj4gKwlyZXQgPSBjbWRxX2Rldl9nZXRfY2xpZW50X3JlZyhkZXYsICZwcml2LT5jbWRx
+X3JlZywgMCk7DQo+ICsJaWYgKHJldCkgew0KPiArCQlkZXZfZXJyKGRldiwgImZhaWxlZCB0byBn
+ZXQgZ2NlIGNsaWVudCByZWdcbiIpOw0KPiArCQlyZXR1cm4gcmV0Ow0KPiArCX0NCj4gKyNlbmRp
+Zg0KPiArDQo+ICsJcGxhdGZvcm1fc2V0X2RydmRhdGEocGRldiwgcHJpdik7DQo+ICsNCj4gKwly
+ZXQgPSBkZXZtX3BtX3J1bnRpbWVfZW5hYmxlKGRldik7DQo+ICsJaWYgKHJldCkNCj4gKwkJcmV0
+dXJuIHJldDsNCj4gKw0KPiArCXJldCA9IGNvbXBvbmVudF9hZGQoZGV2LCAmbXRrX3BhZGRpbmdf
+Y29tcG9uZW50X29wcyk7DQo+ICsJaWYgKHJldCkgew0KPiArCQlwbV9ydW50aW1lX2Rpc2FibGUo
+ZGV2KTsNCj4gKwkJcmV0dXJuIGRldl9lcnJfcHJvYmUoZGV2LCByZXQsICJmYWlsZWQgdG8gYWRk
+DQo+IGNvbXBvbmVudFxuIik7DQo+ICsJfQ0KPiArDQo+ICsJcmV0dXJuIDA7DQo+ICt9DQo+ICsN
+Cj4gK3N0YXRpYyBpbnQgbXRrX3BhZGRpbmdfcmVtb3ZlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2Ug
+KnBkZXYpDQo+ICt7DQo+ICsJY29tcG9uZW50X2RlbCgmcGRldi0+ZGV2LCAmbXRrX3BhZGRpbmdf
+Y29tcG9uZW50X29wcyk7DQo+ICsJcmV0dXJuIDA7DQo+ICt9DQo+ICsNCj4gK3N0YXRpYyBjb25z
+dCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkIG10a19wYWRkaW5nX2RyaXZlcl9kdF9tYXRjaFtdID0gew0K
+PiArCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTg4LXBhZGRpbmciIH0sDQo+ICsJeyAv
+KiBzZW50aW5lbCAqLyB9DQo+ICt9Ow0KPiArTU9EVUxFX0RFVklDRV9UQUJMRShvZiwgbXRrX3Bh
+ZGRpbmdfZHJpdmVyX2R0X21hdGNoKTsNCj4gKw0KPiArc3RydWN0IHBsYXRmb3JtX2RyaXZlciBt
+dGtfcGFkZGluZ19kcml2ZXIgPSB7DQo+ICsJLnByb2JlCQk9IG10a19wYWRkaW5nX3Byb2JlLA0K
+PiArCS5yZW1vdmUJCT0gbXRrX3BhZGRpbmdfcmVtb3ZlLA0KPiArCS5kcml2ZXIJCT0gew0KPiAr
+CQkubmFtZQk9ICJtZWRpYXRlay1wYWRkaW5nIiwNCj4gKwkJLm93bmVyCT0gVEhJU19NT0RVTEUs
+DQo+ICsJCS5vZl9tYXRjaF90YWJsZSA9IG10a19wYWRkaW5nX2RyaXZlcl9kdF9tYXRjaCwNCj4g
+Kwl9LA0KPiArfTsNCg==
