@@ -2,81 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5EBC7CC5BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 099BB7CC5BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 16:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344054AbjJQORH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 10:17:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39938 "EHLO
+        id S1344059AbjJQOR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 10:17:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344053AbjJQORD (ORCPT
+        with ESMTP id S1344057AbjJQOR1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 10:17:03 -0400
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD6EF5
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:17:01 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4569D1BF206;
-        Tue, 17 Oct 2023 14:16:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1697552220;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rzWYE5zWxR4YaYmFe+0XGWID7PzfYYmmrvNow3aY3S8=;
-        b=YRgT2TIESp421HGFWArNrytq/Jl2NLfZZUDtPgsnpvAXKMgNPOn644HqVy/S7h/WBrZpCl
-        gP3ZJ9sR0xFF6u/yJ5tIsFdO3zTMxGsYXZCfap+NHZQcfuF9fcyBfmI4ucniHIRDIXmwr6
-        afJk1w1IXCYYvuA7PmHq5yHmdxQP3/++Lfgm4X7vgu0fCuAgNak27fJKgnWsfVgYc8zkM9
-        JSyq+NCIKjQnhbWjS1TuOeYQdyf9Fdt8SDeYsqhcPUiRclkZYDPFCxba7Can1G13X1cEQk
-        0466Xg/zkf7/AvLO3xRi+iiseuh9MPORjWcCohrv00/N1TUbMaDqGi3w3sqn7Q==
-Date:   Tue, 17 Oct 2023 16:16:58 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Frank Li <Frank.Li@nxp.com>
-Cc:     conor.culhane@silvaco.com, alexandre.belloni@bootlin.com,
-        joe@perches.com, linux-i3c@lists.infradead.org,
-        linux-kernel@vger.kernel.org, imx@lists.linux.dev
-Subject: Re: [PATCH 1/6] i3c: master: svc: fix race condition in ibi work
- thread
-Message-ID: <20231017161658.2de6d9f3@xps-13>
-In-Reply-To: <20231016153232.2851095-2-Frank.Li@nxp.com>
-References: <20231016153232.2851095-1-Frank.Li@nxp.com>
-        <20231016153232.2851095-2-Frank.Li@nxp.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Tue, 17 Oct 2023 10:17:27 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2966110B
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:17:25 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-991c786369cso927606566b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:17:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1697552241; x=1698157041; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZhfkjFsxmGF82cD1/zPvd0Z9FpQNYOUYA0aagsJzr4o=;
+        b=Wa2XdJlpa2WrADa42UyRAP0CIaiwAMdAmCoDww0WbJg+ymnin6+tpSfBnxSbZr2MxH
+         GyD8r3LTd9PDsjLDDKkcZlFlvFx2q1FCkY66aBkUJT03860pIluGa3BPASgXID/jWTLF
+         5pKFMov7zyA0Ne5jQc0IaRh0WDKh8luJN//OM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697552241; x=1698157041;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZhfkjFsxmGF82cD1/zPvd0Z9FpQNYOUYA0aagsJzr4o=;
+        b=niixYcvJ5z4SsT8mHp2VIyLumEWreIx6aPvRaiWy5vS+bsJvX9ZoTwJpljGhsbZqA9
+         Ekv0EpxiGUzQmfgXr0RVhx6wuRlHMGZc7tiL08Cz2LaHBG/DmyONfHh0+aDBPnniWaYR
+         GLzoCuwDQ9zOmvZ5jxk7r+KDhAJtpgWTAEuf/PFIpTaAZw3e2kzxp5Vh76ZhsyPEwnU5
+         nnBfFkN3dqco9rTpPMT/Eua5VOIMp8ooQHXS0hJ/JwWya/NBMZbK5WIniPFNRcdmxlbs
+         sNoRH4lT73JYPgqd2nKV4sfxM5DIjJdGYNd72DYHh8orIwRYuX4l+PYvh88rDAX6Htea
+         orVw==
+X-Gm-Message-State: AOJu0YzCsO1RrB4Gy+uC4KLk6PxHy92BmqVxJ/yB6QlQXDhhVWacY7+C
+        jRALUTWBVcTcNkKU4lgRGETjkQsuecSMloJt28i7o5RE
+X-Google-Smtp-Source: AGHT+IFsJtgN+h/tgPa2ZOAHxB4Sb4nBRyf3AuJgakvCUrrVni0cXyImbnswpAQIbuMcpAuWAtPKKg==
+X-Received: by 2002:a17:907:980c:b0:9bf:7a4d:590d with SMTP id ji12-20020a170907980c00b009bf7a4d590dmr1791223ejc.24.1697552241215;
+        Tue, 17 Oct 2023 07:17:21 -0700 (PDT)
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com. [209.85.128.46])
+        by smtp.gmail.com with ESMTPSA id pv13-20020a170907208d00b009920a690cd9sm1336276ejb.59.2023.10.17.07.17.20
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Oct 2023 07:17:20 -0700 (PDT)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4063bfc6c03so78055e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 07:17:20 -0700 (PDT)
+X-Received: by 2002:a05:600c:214d:b0:408:2b:5956 with SMTP id
+ v13-20020a05600c214d00b00408002b5956mr2161wml.6.1697552239873; Tue, 17 Oct
+ 2023 07:17:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20231012192552.3900360-1-dianders@chromium.org>
+ <20231012122458.v3.5.Ib2affdbfdc2527aaeef9b46d4f23f7c04147faeb@changeid>
+ <29f9a2ff1979406489213909b940184f@realtek.com> <CAD=FV=U4rGozXHoK8+ejPgRtyoACy1971ftoatQivqzk2tk5ng@mail.gmail.com>
+ <052401da00fa$dacccd90$906668b0$@realtek.com>
+In-Reply-To: <052401da00fa$dacccd90$906668b0$@realtek.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 17 Oct 2023 07:17:03 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XQswgKZh-JQ6PuKGRmrDMfDmZwM+MUpAcOk1=7Ppjyiw@mail.gmail.com>
+Message-ID: <CAD=FV=XQswgKZh-JQ6PuKGRmrDMfDmZwM+MUpAcOk1=7Ppjyiw@mail.gmail.com>
+Subject: Re: [PATCH v3 5/5] r8152: Block future register access if register
+ access fails
+To:     Hayes Wang <hayeswang@realtek.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Simon Horman <horms@kernel.org>,
+        Edward Hill <ecgh@chromium.org>,
+        Laura Nao <laura.nao@collabora.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Grant Grundler <grundler@chromium.org>,
+        =?UTF-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Frank,
+Hi,
 
-Frank.Li@nxp.com wrote on Mon, 16 Oct 2023 11:32:27 -0400:
+On Tue, Oct 17, 2023 at 6:07=E2=80=AFAM Hayes Wang <hayeswang@realtek.com> =
+wrote:
+>
+> Doug Anderson <dianders@chromium.org>
+> > Sent: Tuesday, October 17, 2023 12:47 AM
+> [...
+> > > >  static int generic_ocp_read(struct r8152 *tp, u16 index, u16 size,
+> > > > @@ -8265,6 +8353,19 @@ static int rtl8152_pre_reset(struct
+> > usb_interface
+> > > > *intf)
+> > > >         if (!tp)
+> > > >                 return 0;
+> > > >
+> > > > +       /* We can only use the optimized reset if we made it to the=
+ end of
+> > > > +        * probe without any register access fails, which sets
+> > > > +        * `PROBED_WITH_NO_ERRORS` to true. If we didn't have that =
+then return
+> > > > +        * an error here which tells the USB framework to fully unb=
+ind/rebind
+> > > > +        * our driver.
+> > >
+> > > Would you stay in a loop of unbind and rebind,
+> > > if the control transfers in the probe() are not always successful?
+> > > I just think about the worst case that at least one control always fa=
+ils in probe().
+> >
+> > We won't! :-) One of the first things that rtl8152_probe() does is to
+> > call rtl8152_get_version(). That goes through to
+> > rtl8152_get_version(). That function _doesn't_ queue up a reset if
+> > there are communication problems, but it does do 3 retries of the
+> > read. So if all 3 reads fail then we will permanently fail probe,
+> > which I think is the correct thing to do.
+>
+> The probe() contains control transfers in
+>         1. rtl8152_get_version()
+>         2. tp->rtl_ops.init()
+>
+> If one of the 3 control transfers in 1) is successful AND
+> any control transfer in 2) fails,
+> you would queue a usb reset which would unbind/rebind the driver.
+> Then, the loop starts.
+> The loop would be broken, if and only if
+>         a) all control transfers in 1) fail, OR
+>         b) all control transfers in 2) succeed.
+>
+> That is, the loop would be broken when the fail rate of the control trans=
+fer is high or low enough.
+> Otherwise, you would queue a usb reset again and again.
+> For example, if the fail rate of the control transfer is 10% ~ 60%,
+> I think you have high probability to keep the loop continually.
+> Would it never happen?
 
-> The ibi work thread operates asynchronously with other transfers, such as
-> svc_i3c_master_priv_xfers(). Introduces mutex protection to ensure the
+Actually, even with a failure rate of 10% I don't think you'll end up
+with a fully continuous loop, right? All you need is to get 3 failures
+in a row in rtl8152_get_version() to get out of the loop. So with a
+10% failure rate you'd unbind/bind 1000 times (on average) and then
+(finally) give up. With a 50% failure rate I think you'd only
+unbind/bind 8 times on average, right? Of course, I guess 1000 loops
+is pretty close to infinite.
 
-Introduce
+In any case, we haven't actually seen hardware that fails like this.
+We've seen failure rates that are much much lower and we can imagine
+failure rates that are 100% if we're got really broken hardware. Do
+you think cases where failure rates are middle-of-the-road are likely?
 
-> completion of the entire i3c/i2c transaction.
+I would also say that nothing we can do can perfectly handle faulty
+hardware. If we're imagining theoretical hardware, we could imagine
+theoretical hardware that de-enumerated itself and re-enumerated
+itself every half second because the firmware on the device crashed or
+some regulator kept dropping. This faulty hardware would also cause an
+infinite loop of de-enumeration and re-enumeration, right?
 
-Did you experience faulty conditions or was it reported thanks to
-static analysis?
+Presumably if we get into either case, the user will realize that the
+hardware isn't working and will unplug it from the system. While the
+system is doing the loop of trying to enumerate the hardware, it will
+be taking up a bunch of extra CPU cycles but (I believe) it won't be
+fully locked up or anything. The machine will still function and be
+able to do non-Ethernet activities, right? I would say that the worst
+thing about this state would be that it would stress corner cases in
+the reset of the USB subsystem, possibly ticking bugs.
 
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+So I guess I would summarize all the above as:
 
->=20
-> Fixes: dd3c52846d59 ("i3c: master: svc: Add Silvaco I3C master driver")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
+If hardware is broken in just the right way then this patch could
+cause a nearly infinite unbinding/rebinding of the r8152 driver.
+However:
 
-Thanks,
-Miqu=C3=A8l
+1. It doesn't seem terribly likely for hardware to be broken in just this w=
+ay.
+
+2. We haven't seen hardware broken in just this way.
+
+3. Hardware broken in a slightly different way could cause infinite
+unbinding/rebinding even without this patch.
+
+4. Infinite unbinding/rebinding of a USB adapter isn't great, but not
+the absolute worst thing.
+
+
+That all being said, if we wanted to address this we could try two
+different ways:
+
+a) We could add a global in the r8152 driver and limit the number of
+times we reset. This gets a little ugly because if we have multiple
+r8152 adapters plugged in then the same global would be used for both,
+but maybe it's OK?
+
+b) We could improve the USB core to somehow prevent usb_reset_device()
+from running too much on a given device?
+
+
+...though I would re-emphasize that I don't think this is something we
+need to address now. If later we actually see a problem we can always
+address it then.
+
+
+-Doug
