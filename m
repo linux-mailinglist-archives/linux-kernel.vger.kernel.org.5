@@ -2,134 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BDC67CBD5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8D547CBD57
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Oct 2023 10:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234650AbjJQI2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 04:28:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49570 "EHLO
+        id S234708AbjJQI1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 04:27:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233648AbjJQI2O (ORCPT
+        with ESMTP id S229666AbjJQI1J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 04:28:14 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E9F393;
-        Tue, 17 Oct 2023 01:28:13 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9adb9fa7200so1119564666b.0;
-        Tue, 17 Oct 2023 01:28:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697531292; x=1698136092; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=t3/wMuFLDLQySrQ1vNWs6CM5lnw8VddXrmIygItc0fo=;
-        b=iS4br1xb6e8v+nSqHeHbG3b7QTjRUlLvhtvSi4KPninzoFClRVHAifzZKcGLmPmj5y
-         jwHE+W0tO6Ui4kvW4zhQyAaeePuParwfo8yt/CNWMVq/lVaf0ZmkBf4eDO+UGm4Pt99B
-         NOFj4CARL5nlJaQG4pSJqXJV+g3kwUSD5VbVWhFfNJcrw1OF696w/MH0Tmr+PwOrt2pi
-         VVEwVP1JvJHWVFb1asn6w06+K3UQwTFziijW/Ybc5Y7B3hV19ztbLhcSALfMu4mq8H/0
-         Fb6NDV3f30GuzNJrwCN7WzYzmbTZ5493RK25u1actpjb1z2xlRx9JRGQcexZS3f7T1Wd
-         qm0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697531292; x=1698136092;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t3/wMuFLDLQySrQ1vNWs6CM5lnw8VddXrmIygItc0fo=;
-        b=Nd1xs5H0TTO942wed9q3qqkdkFoZrsKLeCMFTs0nuRGF4M4Ufdy9lZIhPYy0SqcTYO
-         n5Bt618ZDCHDCZX6W07NL1SNrNupZecQb0s2jjELRPVmb1BCQuFOoA/lVYrjC6ZA1+Ce
-         1WDnH2crhq+bHcfKth8GtV+Tsf1XQc6KZi1a5UEjld/ZphRWgRaBAkee6O+J6z0fDNZr
-         HoVGGF6zICRX+RKZlrNCZz90uFZuCKulEQBejxb1i484W9adRkIVyNrxrV+WljLMm5KY
-         cnMbyA7unpOuHcHhTI+qC8HvL5XC8uuRIr5j9/31VFoOscEsw2QSUOhoEvg9V2wxJNh4
-         GEHQ==
-X-Gm-Message-State: AOJu0YzRObd8opJR6xWQzcpP4edPdBsIJ9L4AYIzizvrlpP+oMB0ftMy
-        AuLWxktmueotEOzBfqYqIw==
-X-Google-Smtp-Source: AGHT+IE5+yPNJCUjbAr15GkqYf43d4kmr1CxhVlh2iRhKG68i11ikT+sqUupHp7/AZLASdaSTXYfJw==
-X-Received: by 2002:a17:907:86ac:b0:9ad:8641:e91b with SMTP id qa44-20020a17090786ac00b009ad8641e91bmr1091481ejc.11.1697531291363;
-        Tue, 17 Oct 2023 01:28:11 -0700 (PDT)
-Received: from dorcaslitunya-virtual-machine ([105.163.1.143])
-        by smtp.gmail.com with ESMTPSA id b21-20020a170906195500b009adc7733f98sm777452eje.97.2023.10.17.01.28.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 01:28:10 -0700 (PDT)
-Date:   Tue, 17 Oct 2023 11:28:06 +0300
-From:   Dorcas Litunya <anonolitunya@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     outreachy@lists.linux.dev, julia.lawall@inria.fr,
-        dan.carpenter@linaro.org,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Teddy Wang <teddy.wang@siliconmotion.com>,
-        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, andi.shyti@linux.intel.com
-Subject: Re: [PATCH v2 1/5] Staging: sm750fb: Rename
- displayControlAdjust_SM750E
-Message-ID: <ZS5FlsCPETnr8T5D@dorcaslitunya-virtual-machine>
-References: <20231016201434.7880-1-anonolitunya@gmail.com>
- <20231016201434.7880-2-anonolitunya@gmail.com>
- <2023101724-diagram-legwork-0e53@gregkh>
+        Tue, 17 Oct 2023 04:27:09 -0400
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17A93B0;
+        Tue, 17 Oct 2023 01:27:06 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3833E240002;
+        Tue, 17 Oct 2023 08:27:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1697531225;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=V9RqjAr2qnLGSR32tAtTp3+NiG84U4voNqHqPUb3Jxc=;
+        b=KfvPlVpgfS25r0+BHMHsTI+mssMt455BJEQYmxA2tLX0ukgtsxtFurlO8NpuKvvDiB9lWZ
+        QSbs/muTmycKUetEmsxmeF3H2jky11G4+XfcXw3c0zedJLQyOH1QoPqUYBWAXBYQOGNscv
+        W2p89fpzB5IkuSZaPAjqSVT65rQH5d1wNeeKq4o6DdG8ieJ+dOAs5BolVsETV4mwlGhxB6
+        TEgZtEt8Tait4Gl0pemq2pKNarxS0ofyHLg9AkPoenAOhn5rFCd5ji8+037RjDD6ZwiLZy
+        Dz8/TPNbTGup89OIcXFNIc+na/l5ZRlHykwqfqzfaGdcIAiSeoicGPqD9B3cNQ==
+Message-ID: <bd234d26-f418-4ff7-b6a2-9a81526aa61a@bootlin.com>
+Date:   Tue, 17 Oct 2023 10:28:19 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023101724-diagram-legwork-0e53@gregkh>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] wifi: wilc1000: use vmm_table as array in wilc struct
+To:     Jeff Johnson <quic_jjohnson@quicinc.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Kalle Valo <kvalo@kernel.org>,
+        Michael Walle <mwalle@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Ajay Singh <ajay.kathat@microchip.com>, stable@vger.kernel.org
+References: <20231016-wilc1000_tx_oops-v2-1-8d1982a29ef1@bootlin.com>
+ <bb95048f-2540-4d42-abb2-3132d33cd6c3@quicinc.com>
+ <74eac5f2-228b-4775-a101-53b2fdd5bf86@bootlin.com>
+ <32ab8646-d41d-4dd2-a8c8-93845f198462@quicinc.com>
+Content-Language: en-US
+From:   =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+In-Reply-To: <32ab8646-d41d-4dd2-a8c8-93845f198462@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: alexis.lothore@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 09:50:50AM +0200, Greg Kroah-Hartman wrote:
-> On Mon, Oct 16, 2023 at 11:14:08PM +0300, Dorcas AnonoLitunya wrote:
-> > Rename function displayControlAdjust_SM750E to
-> > display_control_adjust_SM750E. This follows snakecase naming convention
-> > and ensures a consistent naming style throughout the file. Issue found by
-> > checkpatch.
-> > 
-> > Mutes the following error:
-> > CHECK:Avoid CamelCase: <displayControlAdjust_SM750E>
-> > 
-> > Signed-off-by: Dorcas AnonoLitunya <anonolitunya@gmail.com>
-> > ---
-> >  drivers/staging/sm750fb/ddk750_mode.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/staging/sm750fb/ddk750_mode.c b/drivers/staging/sm750fb/ddk750_mode.c
-> > index e00a6cb31947..8708995f676c 100644
-> > --- a/drivers/staging/sm750fb/ddk750_mode.c
-> > +++ b/drivers/staging/sm750fb/ddk750_mode.c
-> > @@ -14,8 +14,8 @@
-> >   * in bit 29:27 of Display Control register.
-> >   */
-> >  static unsigned long
-> > -displayControlAdjust_SM750LE(struct mode_parameter *pModeParam,
-> > -			     unsigned long dispControl)
-> > +display_control_adjust_SM750LE(struct mode_parameter *pModeParam,
-> > +			       unsigned long dispControl)
-> >  {
-> >  	unsigned long x, y;
-> >  
-> > @@ -125,7 +125,7 @@ static int programModeRegisters(struct mode_parameter *pModeParam,
-> >  			tmp |= DISPLAY_CTRL_HSYNC_PHASE;
-> >  
-> >  		if (sm750_get_chip_type() == SM750LE) {
-> > -			displayControlAdjust_SM750LE(pModeParam, tmp);
-> > +			display_control_adjust_SM750LE(pModeParam, tmp);
+On 10/17/23 00:51, Jeff Johnson wrote:
+> On 10/16/2023 2:23 PM, Alexis Lothoré wrote:
+>> Hello Jeff,
+>>
+>> On 10/16/23 17:26, Jeff Johnson wrote:
+>>> On 10/16/2023 1:29 AM, Alexis Lothoré wrote:
+>>> this is probably OK since the values are constant, but kcalloc() is generally
+>>> preferred
+>>
+>> Ok, I can submit a new version with kcalloc. One thing that I do not understand
+>> however is why checkpatch.pl remains silent on this one. I guess it should raise
+>> the ALLOC_WITH_MULTIPLY warning here. I tried to dive into the script to
+>> understand why, but I drowned in regexes (and Perl, with which I am not familiar
+>> with). Could it be because of both sides being constant ?
 > 
-> Why is this function returning a value if it is just being ignored?
+> I also drown when looking at checkpatch.pl -- so many "write-only" regexes! But
+> I think the following is what excludes your patch:
+> $r1 =~ /^[A-Z_][A-Z0-9_]*$
 > 
-> It's not the issue here in the patch, but for future changes.
->
-Hi Greg,
+> It is a compile-time constant so the compiler can flag on overflow, so it's your
+> call to modify or not.
 
-I will do the correction in the next patchset to correct both functions
-return value as this patchset was not focused on that. Does this mean
-that this patchset has been accepted? Or should I submit another
-patchset that includes the two changes suggested on function return
-values?
+Thanks for taking a look. I have tried to tweak those lines to see if it makes
+checkpatch raise the warning, without success.
 
-thanks,
+Anyway, I agree with your initial statement, let's keep the code base
+homogeneous and replace kzalloc with kcalloc
 
-Dorcas
-> thanks,
-> 
-> greg k-h
+> /jeff
+
+-- 
+Alexis Lothoré, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
