@@ -2,80 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 533867CE63E
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 20:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 247F47CE655
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 20:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230476AbjJRSWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 14:22:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33664 "EHLO
+        id S230421AbjJRSY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 14:24:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbjJRSWn (ORCPT
+        with ESMTP id S231715AbjJRSYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 14:22:43 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 887E9B8
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 11:22:42 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EE4FC433C7;
-        Wed, 18 Oct 2023 18:22:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697653362;
-        bh=Z0/kyvAglhtuyBQOMTn6iPapzzkCidyo198TuQNITBw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FZv3gjUGPoaC+V1xBLzmI8fMPLyNbjqnoJwX9KTAonIueexqkILH8Mm1yw7WsXMzP
-         OxLlTolJ7W4WWffGhiZP+T2nwjyB+WFNNU3fJk1bwSsv3WZbCvoSm7Fjbgx3ZGXpGv
-         gWiEhiPIVdxsfztRhdCef36rCjSDylYctRe5GcBw=
-Date:   Wed, 18 Oct 2023 20:22:39 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Saeed Mahameed <saeed@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH 2/5] misc: mlx5ctl: Add mlx5ctl misc driver
-Message-ID: <2023101808-quicksand-roman-0da7@gregkh>
-References: <20231018081941.475277-1-saeed@kernel.org>
- <20231018081941.475277-3-saeed@kernel.org>
- <2023101835-trapdoor-unicycle-788a@gregkh>
- <20231018180128.GA719006@nvidia.com>
+        Wed, 18 Oct 2023 14:24:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DAE3112
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 11:24:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697653445;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CIWHA5EsQxn8oXTAVVO/hzlkn7yk8ivfF/yUbUaA+e4=;
+        b=cbOSUvwCcKctKg6qphWQ2w0ghuToEPjheEjXTde7YZWVWs52XrSUq8WwlFGzmWmxST5pzW
+        8k0EdHYEpHr/Lew6AKbN6e1xbG+rX0/DQyS2SceqiWKqZSzG5LsYcki4iC7pWHyKUmw0C6
+        WevCbz5MtYB4FxKUBAoNSJiIlDbLHhU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-668-V6m3BlN7NjGuLYj_jCbQKg-1; Wed, 18 Oct 2023 14:24:02 -0400
+X-MC-Unique: V6m3BlN7NjGuLYj_jCbQKg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 199A0857D0C;
+        Wed, 18 Oct 2023 18:24:01 +0000 (UTC)
+Received: from [10.22.17.22] (unknown [10.22.17.22])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7F7872166B26;
+        Wed, 18 Oct 2023 18:24:00 +0000 (UTC)
+Message-ID: <59448803-ac86-0762-d828-c3eba431ceb4@redhat.com>
+Date:   Wed, 18 Oct 2023 14:24:00 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231018180128.GA719006@nvidia.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH-cgroup 3/4] cgroup/cpuset: Keep track of CPUs in isolated
+ partitions
+Content-Language: en-US
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+References: <20231013181122.3518610-1-longman@redhat.com>
+ <20231013181122.3518610-4-longman@redhat.com>
+ <ZS-kt6X5Dd1lktAw@slm.duckdns.org>
+ <9e2772e3-f615-5e80-6922-5a2dd06a8b07@redhat.com>
+ <ZTAfM0msp8Cg-qLy@slm.duckdns.org>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <ZTAfM0msp8Cg-qLy@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 03:01:28PM -0300, Jason Gunthorpe wrote:
-> On Wed, Oct 18, 2023 at 10:30:00AM +0200, Greg Kroah-Hartman wrote:
-> > On Wed, Oct 18, 2023 at 01:19:38AM -0700, Saeed Mahameed wrote:
-> > > +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-> > 
-> > For dual-licensed code, I need a LOT of documentation as to why this
-> > must be dual-licensed, AND a signed-off-by from your corporate lawyer
-> > agreeing to it so they convey an understanding of just how complex and
-> > messy this will get over time and what you are agreeing to do here.
-> 
-> Can you provide a brief or whitepaper discussing this complexity
-> please? This pushback is news to me, Mellanox and the RDMA ecosystem
-> has been doing this for over 15 years now. I would need something
-> substantive to have a conversation with our legal.
+On 10/18/23 14:08, Tejun Heo wrote:
+> On Wed, Oct 18, 2023 at 09:30:04AM -0400, Waiman Long wrote:
+>> On 10/18/23 05:26, Tejun Heo wrote:
+>>> On Fri, Oct 13, 2023 at 02:11:21PM -0400, Waiman Long wrote:
+>>> ...
+>>>> @@ -3875,6 +3931,13 @@ static struct cftype dfl_files[] = {
+>>>>    		.flags = CFTYPE_ONLY_ON_ROOT | CFTYPE_DEBUG,
+>>>>    	},
+>>>> +	{
+>>>> +		.name = "cpus.isolated",
+>>>> +		.seq_show = cpuset_common_seq_show,
+>>>> +		.private = FILE_ISOLATED_CPULIST,
+>>>> +		.flags = CFTYPE_ONLY_ON_ROOT | CFTYPE_DEBUG,
+>>>> +	},
+>>> I'd much rather show this in a wq sysfs file along with other related masks,
+>>> and not in a DEBUG file.
+>> It can certainly be exposed as a permanent addition to the cgroup control
+>> files instead of a debug only file. However this set of isolated CPUs may be
+>> used by others not just by workqueue. So I doubt if it should be a sysfs
+>> file in the workqueue directory. I can see if it is possible to put a
+>> symlink there point back to the cgroupfs.
+> I don't know whether it will happen but let's say there will be three
+> subsystems which call into workqueue for this. Wouldn't it be better to have
+> all of them in workqueue sysfs using a consistent naming scheme? What does
+> putting it in cgroupfs buy us?
 
-Have your legal talk to the LF legal working group, they are the ones
-that told me never to mess with this license again.  I'm sure that
-nvidia's lawyers are part of this group, so let's let them hash it out.
+If you mean saving the exclusion cpumask no matter who the caller is, we 
+can add another exclusion cpumask to save it and expose it to sysfs. 
+This should be done in the first workqueue patch, not as part of this 
+patch. I expose this isolated cpumask for testing purpose to be checked 
+by the test_cpuset_prs.sh script for correctness. As said, I can expose 
+it without cgroup_debug if you think the information is useful in general.
 
-> However, I believe we can get an exception approval for single license
-> MIT or BSD-3-Clause for this code.
+Cheers,
+Longman
 
-GPLv2 please, otherwise again, I'm going to demand a really really good
-reason why Linux kernel code needs a non-GPL license and again, a sign
-off from your lawyers explaining why it must be so.
-
-thanks,
-
-greg k-h
