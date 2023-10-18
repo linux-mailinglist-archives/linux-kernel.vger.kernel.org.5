@@ -2,112 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 682057CE530
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE707CE533
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231879AbjJRRoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 13:44:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35800 "EHLO
+        id S230304AbjJRRpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 13:45:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232032AbjJRRon (ORCPT
+        with ESMTP id S229695AbjJRRpr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 13:44:43 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0BC410DD
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:44:21 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-507a3b8b113so6036222e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:44:21 -0700 (PDT)
+        Wed, 18 Oct 2023 13:45:47 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C282114
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:45:44 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c4fe37f166so88280411fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 10:45:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697651060; x=1698255860; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=YSjGpLh46b5iKDUK/TbTUkbxdrxFCdobLrJFcW9LwtE=;
-        b=SsJab72bA5lMF4oZHoL68uqcIzfhqPdAsbDWu/NqPboAGgDaiICt+HyTRf+SnD511a
-         7TSQv4NhXz4ff4lZqhlrKLB7r5SNCsqd50ca2YaDFf9YSw6tqMhXdfBwjI5skp7TC3y3
-         IZo1pIQnk5SCwGVMur4t+rsrjP6BOUf72uKGJkvbYZadoNYcFa5WDkYGM8lQp/RIPw9x
-         3K+xhAhIgyi4q+l7VORLnD0A9EXHxcYGp4XJHxXTf6rxMXvNZcI6nNid37oEVcKqc/R7
-         ZJZcbRAODPXFsW6pjCjcL7CdnbTtT76dbMkcHU0eQyjMr2yq3FI+tPPZNX5GJFF74b6x
-         hdLQ==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1697651143; x=1698255943; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xHadPeMbwC2xjZjhyzQo2TzXpSpoTFPJhsEQY4iQg+4=;
+        b=cyiiL9MMewyKAI3dniJbe8vLlv+W/e98+o9jjMnvP8/bozHaiDJdZNuYub+Y4H9dDD
+         xU0q4X43d49/7aqljTWHCrCw2sYseYxTDJ29i49E8KSVDWUAdA4NqZQ6JQK+qgSMVcGo
+         /K4YMbkuSYJ3Q4RsFCKf6Tgfv5c63CuPg046tpS707IIcNIOPGswUuYI8HzZ3PzmVah0
+         f9Y/CetrnhQCzT2K+RG1Ouy+3Pp/eqLYDYEVGZ/vLEQz2g493l41AT89dSBJjHezE7f1
+         uDGaJ6GFvNMUvrRUk1FluAECAQEzgwc3gUyX7ZpQa2oDmMIL50Od/vvkyufAc+bWV/vf
+         JAwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697651060; x=1698255860;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YSjGpLh46b5iKDUK/TbTUkbxdrxFCdobLrJFcW9LwtE=;
-        b=mPFjYw6VNHh44VTTJ0X6nbc2/53Yj9ENHB4vtRPPUJq70fUZvAusTLd9eCtO5O4G3W
-         AlPk3GakvYtiVJOE+UCjE1PCOjN1oOgNirSsZvm0wYq+rjro0RVXBnvCMq1MBSwIc4B7
-         cPLoz3DS1mcOW5woJlTGJWC/IuLQXaTM4b4vm5zMnZVqTkrV53yOWbkYrYRdpxxjCQvo
-         +xdHcWAMNpW7fRXxlnSgOhDXf821cbo7of6waUpPdEpXICUzif4qZ146Bt8z+Hht/0x+
-         bvi0Dqy8OeOkZs1QzLjz22TGSlTDQhVW3SNj6zoRBYGO2IIXkT85IsYKvwMKtKYR+8e8
-         8l1Q==
-X-Gm-Message-State: AOJu0YwVNI2WLHRgK2UgEFcL/VN4vUKCPtNP0A2n0dQNWaP7iAIl/6ZK
-        M9Xkp0QYiD1NYasmh9+rWabvYA==
-X-Google-Smtp-Source: AGHT+IE3783iU1dnjkiPm2xolvCZbstnb7FsjsJDnjEBXm8/qAYzcn7KDeGomfE0PIigmE4UV7xHkw==
-X-Received: by 2002:a05:6512:60f:b0:4f9:5426:6622 with SMTP id b15-20020a056512060f00b004f954266622mr4400621lfe.69.1697651060022;
-        Wed, 18 Oct 2023 10:44:20 -0700 (PDT)
-Received: from [172.30.205.86] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id o15-20020ac24e8f000000b00502ae6b8ebcsm781411lfr.304.2023.10.18.10.44.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Oct 2023 10:44:19 -0700 (PDT)
-Message-ID: <25185346-2d5d-469c-8a88-0f0f9f02a739@linaro.org>
-Date:   Wed, 18 Oct 2023 19:44:15 +0200
+        d=1e100.net; s=20230601; t=1697651143; x=1698255943;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xHadPeMbwC2xjZjhyzQo2TzXpSpoTFPJhsEQY4iQg+4=;
+        b=Rb4n5Y3r+vnXCBmvrou0UiGH5QZPJn7NMpknVs/DMGoGkzBvQf35VIRyN85PXJtYVu
+         BIdXJVWMwUzObK9vttzUR2qRhK6ckcRmM7cG88W09i0hETNBleeSNmb71V/CuFoOsKSE
+         EusXXWBzyAAT8PDNAE3Xp+U6UzBGdyfc/keDGcKCulS6TqImt4uoaw9hHq+iGAPJFxAF
+         RPpCHgZG7QPFv4mPQCo82N6x58JGRU1BFeTiQKTkrKO7RhmBW17dXTH9QWrT4KgW7jBm
+         O4UlCPP3LPD2K+DWgPnYjb8HtYgHz3dJ2G0zTTNVvgIp0nJtT3DJUXFTN33joQoy09fS
+         M56Q==
+X-Gm-Message-State: AOJu0YyplVALE08iIKRlALF861vDibIEIOHKhR2Agr4nzv/mKkfU/yJt
+        upvwWh9/PR7TmfwyhJolIgIWSTbAl024MwnjONbndw==
+X-Google-Smtp-Source: AGHT+IF0Qm+imyEQ605WJaqcgBCjou2M4E+StpMU1j6f3I4T8OP3Gvxt6S2uZ4MvstkkZp8oaiAgvOEmwpOTuXOShyE=
+X-Received: by 2002:a2e:b8c5:0:b0:2c5:8db:1c7b with SMTP id
+ s5-20020a2eb8c5000000b002c508db1c7bmr5726942ljp.2.1697651142704; Wed, 18 Oct
+ 2023 10:45:42 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: pinctrl: qcom,sa8775p-tlmm: add missing
- wakeup-parent
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
+References: <20231017131456.2053396-1-cleger@rivosinc.com> <20231017131456.2053396-2-cleger@rivosinc.com>
+ <CALs-HssL=wNwj9nRuZwpZhy1CB9p9-X=OqgwBw9zvgA7hA4fEg@mail.gmail.com>
+ <20231018-scrap-bankable-a0f321d97a46@spud> <20231018-flagpole-footpad-07a6228485f3@spud>
+In-Reply-To: <20231018-flagpole-footpad-07a6228485f3@spud>
+From:   Evan Green <evan@rivosinc.com>
+Date:   Wed, 18 Oct 2023 10:45:06 -0700
+Message-ID: <CALs-HsteDO0PvAKKQje7wU0f4z8w2V3f7WiHh5+LvQeVaSua1w@mail.gmail.com>
+Subject: Re: [PATCH v2 01/19] riscv: hwprobe: factorize hwprobe ISA extension reporting
+To:     Conor Dooley <conor@kernel.org>
+Cc:     =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
+        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231018145750.429385-1-krzysztof.kozlowski@linaro.org>
-Content-Language: en-US
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20231018145750.429385-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Samuel Ortiz <sameo@rivosinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 18, 2023 at 10:37=E2=80=AFAM Conor Dooley <conor@kernel.org> wr=
+ote:
+>
+> On Wed, Oct 18, 2023 at 06:33:34PM +0100, Conor Dooley wrote:
+> > On Wed, Oct 18, 2023 at 10:24:15AM -0700, Evan Green wrote:
+> > > On Tue, Oct 17, 2023 at 6:15=E2=80=AFAM Cl=C3=A9ment L=C3=A9ger <cleg=
+er@rivosinc.com> wrote:
+> > > >
+> > > > Factorize ISA extension reporting by using a macro rather than
+> > > > copy/pasting extension names. This will allow adding new extensions=
+ more
+> > > > easily.
+> > > >
+> > > > Signed-off-by: Cl=C3=A9ment L=C3=A9ger <cleger@rivosinc.com>
+> > > > ---
+> > > >  arch/riscv/kernel/sys_riscv.c | 32 ++++++++++++++++++-------------=
+-
+> > > >  1 file changed, 18 insertions(+), 14 deletions(-)
+> > > >
+> > > > diff --git a/arch/riscv/kernel/sys_riscv.c b/arch/riscv/kernel/sys_=
+riscv.c
+> > > > index 473159b5f303..e207874e686e 100644
+> > > > --- a/arch/riscv/kernel/sys_riscv.c
+> > > > +++ b/arch/riscv/kernel/sys_riscv.c
+> > > > @@ -145,20 +145,24 @@ static void hwprobe_isa_ext0(struct riscv_hwp=
+robe *pair,
+> > > >         for_each_cpu(cpu, cpus) {
+> > > >                 struct riscv_isainfo *isainfo =3D &hart_isa[cpu];
+> > > >
+> > > > -               if (riscv_isa_extension_available(isainfo->isa, ZBA=
+))
+> > > > -                       pair->value |=3D RISCV_HWPROBE_EXT_ZBA;
+> > > > -               else
+> > > > -                       missing |=3D RISCV_HWPROBE_EXT_ZBA;
+> > > > -
+> > > > -               if (riscv_isa_extension_available(isainfo->isa, ZBB=
+))
+> > > > -                       pair->value |=3D RISCV_HWPROBE_EXT_ZBB;
+> > > > -               else
+> > > > -                       missing |=3D RISCV_HWPROBE_EXT_ZBB;
+> > > > -
+> > > > -               if (riscv_isa_extension_available(isainfo->isa, ZBS=
+))
+> > > > -                       pair->value |=3D RISCV_HWPROBE_EXT_ZBS;
+> > > > -               else
+> > > > -                       missing |=3D RISCV_HWPROBE_EXT_ZBS;
+> > > > +#define CHECK_ISA_EXT(__ext)                                      =
+             \
+> > > > +               do {                                               =
+             \
+> > > > +                       if (riscv_isa_extension_available(isainfo->=
+isa, __ext)) \
+> > > > +                               pair->value |=3D RISCV_HWPROBE_EXT_=
+##__ext;       \
+> > > > +                       else                                       =
+             \
+> > > > +                               missing |=3D RISCV_HWPROBE_EXT_##__=
+ext;           \
+> > > > +               } while (false)
+> > > > +
+> > > > +               /*
+> > > > +                * Only use CHECK_ISA_EXT() for extensions which ca=
+n be exposed
+> > > > +                * to userspace, regardless of the kernel's configu=
+ration, as no
+> > > > +                * other checks, besides presence in the hart_isa b=
+itmap, are
+> > > > +                * made.
+> > >
+> > > This comment alludes to a dangerous trap, but I'm having trouble
+> > > understanding what it is.
+> >
+> > You cannot, for example, use this for communicating the presence of F o=
+r
+> > D, since they require a config option to be set before their use is
+> > safe.
+>
+> Funnily enough, this comment is immediately contradicted by the vector
+> subset extensions, where these CHECK_ISA_EXT() macros are used wrapped
+> in has_vector(). The code looks valid to me, since has_vector() contains
+> the Kconfig check, but does fly in the face of this comment.
 
 
-On 10/18/23 16:57, Krzysztof Kozlowski wrote:
-> Add missing wakeup-parent property, already used by DTS to indicate that
-> pins are wakeup capable:
-> 
->    sa8775p-ride.dtb: pinctrl@f000000: 'wakeup-parent' does not match any of the regexes: '-state$', 'pinctrl-[0-9]+'
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->   Documentation/devicetree/bindings/pinctrl/qcom,sa8775p-tlmm.yaml | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sa8775p-tlmm.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sa8775p-tlmm.yaml
-> index e119a226a4b1..2173c5255638 100644
-> --- a/Documentation/devicetree/bindings/pinctrl/qcom,sa8775p-tlmm.yaml
-> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,sa8775p-tlmm.yaml
-> @@ -28,6 +28,7 @@ properties:
->     gpio-controller: true
->     "#gpio-cells": true
->     gpio-ranges: true
-> +  wakeup-parent: true
->   
->     gpio-reserved-ranges:
->       minItems: 1
-All the properties visiable in this diff sound reasonable to
-put in the common yaml, no?
+Ohh, got it. The word "can" is doing a lot of heavy lifting in that
+comment. So maybe something like: "This macro performs little in the
+way of extension-specific kernel readiness checks. It's assumed other
+gating factors like required Kconfig settings have already been
+confirmed to support exposing the given extension to usermode". ...
+But, you know, make it sparkle.
 
-Konrad
+-Evan
