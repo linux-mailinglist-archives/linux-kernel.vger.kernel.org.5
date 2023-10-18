@@ -2,114 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9BF7CEC09
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 01:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 520E77CEC05
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Oct 2023 01:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232047AbjJRXag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 19:30:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52516 "EHLO
+        id S229894AbjJRXaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 19:30:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbjJRXac (ORCPT
+        with ESMTP id S229456AbjJRXaJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 19:30:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6B8B6
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 16:29:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697671782;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DRIEsucDzfc4+5QaKl7PpFIFrSK46xQTHzvy5XznJOQ=;
-        b=jLy5bNe7VHAYc4gR/aoYf/4X7gEX1rCmS84rj5HNRgKJx7Jxmm+z65LnJCrTz+wPu16nhf
-        jICKGU2xLcIk+bxVf6OChS75M5Mx42x9uqSXaW0vPTi8LvG0xJq7tWGGInb1TpW/wt2kLc
-        C/bBIL+oVGT+2TXq5TMeYnbmcp4C0lM=
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
- [209.85.167.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-54-VETM7VI9MO-SagABlNJedg-1; Wed, 18 Oct 2023 19:29:31 -0400
-X-MC-Unique: VETM7VI9MO-SagABlNJedg-1
-Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3b2ef9e4c25so1464879b6e.1
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 16:29:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697671770; x=1698276570;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DRIEsucDzfc4+5QaKl7PpFIFrSK46xQTHzvy5XznJOQ=;
-        b=ADypRFXyU9n9IzAukTMJWF656EX1YldxavdR4b52SXV1uF5lQwC0z6l+KmvFqvGW68
-         HxSdHqC+xRq6Rr2iFp30wG/XvnkcWPETKPejnttgQqZN+Jqvq52MV2mOOy9yn1IkrNYH
-         4yHBEbnyhBYGCaCjdjTFsXEP4VjVIHU8COYxLQjrEtKsNYW3DNnvlwsHEq1KhY4/TzjO
-         GwrOOJ0xH1gPMW+VdHZRdxIvVIIfLNrEO9yVok/tnBDGq8+IxU/u99blG5DCN+ul2YAQ
-         Y/lUsJmcIIkGJnkQT2MZwtZIUWMO/K0sijA9QZ2EqZCWP88eZ8Bji2Rwmy/7xcEqXrml
-         eQEA==
-X-Gm-Message-State: AOJu0Yy/yhqpA3l1h7F4ClrYSzJYBx6agfLnCrEP6TqSf9Z5ZMu2gZQI
-        VveIbCS81QlQqc3h24Aq+oPfrtqbFYesXUEeMwdW2kyXfcFuuVVj3nB/iuV35PQHK9QnaEJGMjO
-        S+2wt6KpRQKECJpWXP7/tfsryo0ozytwv
-X-Received: by 2002:a54:440e:0:b0:3a4:298f:b2e0 with SMTP id k14-20020a54440e000000b003a4298fb2e0mr645531oiw.26.1697671770794;
-        Wed, 18 Oct 2023 16:29:30 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHx26w5otXYju9J5g7hJH0oM90D/ndOaZWJ/zsUkrwM4XB6dkxyGvfp4EUqanYeiF63KRz1yw==
-X-Received: by 2002:a54:440e:0:b0:3a4:298f:b2e0 with SMTP id k14-20020a54440e000000b003a4298fb2e0mr645519oiw.26.1697671770567;
-        Wed, 18 Oct 2023 16:29:30 -0700 (PDT)
-Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
-        by smtp.gmail.com with ESMTPSA id bt19-20020ad455d3000000b006616fbcc077sm318229qvb.129.2023.10.18.16.29.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 16:29:30 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 16:29:28 -0700
-From:   Jerry Snitselaar <jsnitsel@redhat.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     joro@8bytes.org, will@kernel.org, iommu@lists.linux.dev,
-        jgg@nvidia.com, baolu.lu@linux.intel.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 5/7] iommu/arm-smmu: Don't register fwnode for legacy
- binding
-Message-ID: <2aigsq5n3q2qqwlctn7dqorusslpwpptgogzcrymxzxeertqvn@7aua3vzzszt7>
-References: <cover.1697047261.git.robin.murphy@arm.com>
- <3a5cd62dd21ed58f337bb9a389d301054e503dc3.1697047261.git.robin.murphy@arm.com>
+        Wed, 18 Oct 2023 19:30:09 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE448FA;
+        Wed, 18 Oct 2023 16:30:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9306DC433C7;
+        Wed, 18 Oct 2023 23:30:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697671807;
+        bh=vsSM4qg1HgsRtYLsQXhJgkd01GgzpTXSKdRv/YTRBVw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dGTjH2VwPd10ZCx8hGlCUzxI1kafr0HoJxgyE11uAcheNftnKpg0VfzCLH+wqFnSv
+         AHObOrPU152pf6MbU44AExujn2gRRO9wVE4TZMOR5ApL1OSKL+hK8Y7h8htzWNwbeg
+         d9yyLOnQZt9r8d+8aMbtU24R1StsipIKXFWvoIiRBQqC8P6i9h0P7DPGqBt6EA20+e
+         1eOreH9ydaMx9fiBXwoHrsYwTG7MNDA5/Reptzt7owHYKXQpmlekQBd/A3pwVpNJQT
+         ZjQHzdcjtTBCvue5uk2sz0mQTnd11uWj1JMnhS7s/l2FILampzkZOtD4aMzJmmn+X/
+         ba5xGW2QhG8DA==
+Date:   Wed, 18 Oct 2023 16:30:06 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Jan Stancek <jstancek@redhat.com>
+Cc:     willy@infradead.org, hch@lst.de, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        viro@zeniv.linux.org.uk
+Subject: Re: [PATCH v2] iomap: fix short copy in iomap_write_iter()
+Message-ID: <20231018233006.GK3195650@frogsfrogsfrogs>
+References: <8762e91a210f4cc5713fce05fe5906c18513bd0a.1697617238.git.jstancek@redhat.com>
+ <e1cb4f8981f8c6e7e0384e95faf1911d9937e979.1697647960.git.jstancek@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3a5cd62dd21ed58f337bb9a389d301054e503dc3.1697047261.git.robin.murphy@arm.com>
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE autolearn=no
-        autolearn_force=no version=3.4.6
+In-Reply-To: <e1cb4f8981f8c6e7e0384e95faf1911d9937e979.1697647960.git.jstancek@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 07:14:52PM +0100, Robin Murphy wrote:
-> When using the legacy binding we bypass the of_xlate mechanism, so avoid
-> registering the instance fwnodes which act as keys for that. This will
-> help __iommu_probe_device() to retrieve the registered ops the same way
-> as for x86 etc. when no fwspec has previously been set up by of_xlate.
+On Wed, Oct 18, 2023 at 08:32:32PM +0200, Jan Stancek wrote:
+> Starting with commit 5d8edfb900d5 ("iomap: Copy larger chunks from
+> userspace"), iomap_write_iter() can get into endless loop. This can
+> be reproduced with LTP writev07 which uses partially valid iovecs:
+>         struct iovec wr_iovec[] = {
+>                 { buffer, 64 },
+>                 { bad_addr, 64 },
+>                 { buffer + 64, 64 },
+>                 { buffer + 64 * 2, 64 },
+>         };
 > 
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+> commit bc1bb416bbb9 ("generic_perform_write()/iomap_write_actor():
+> saner logics for short copy") previously introduced the logic, which
+> made short copy retry in next iteration with amount of "bytes" it
+> managed to copy:
+> 
+>                 if (unlikely(status == 0)) {
+>                         /*
+>                          * A short copy made iomap_write_end() reject the
+>                          * thing entirely.  Might be memory poisoning
+>                          * halfway through, might be a race with munmap,
+>                          * might be severe memory pressure.
+>                          */
+>                         if (copied)
+>                                 bytes = copied;
+> 
+> However, since 5d8edfb900d5 "bytes" is no longer carried into next
+> iteration, because it is now always initialized at the beginning of
+> the loop. And for iov_iter_count < PAGE_SIZE, "bytes" ends up with
+> same value as previous iteration, making the loop retry same copy
+> over and over, which leads to writev07 testcase hanging.
+> 
+> Make next iteration retry with amount of bytes we managed to copy.
+> 
+> Fixes: 5d8edfb900d5 ("iomap: Copy larger chunks from userspace")
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+
+Looks fine to me, will send it out for testing...
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+
+--D
+
 > ---
->  drivers/iommu/arm/arm-smmu/arm-smmu.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> Changes in v2:
+> - use goto instead of new variable (suggested by Christoph Hellwig)
 > 
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> index d6d1a2a55cc0..4b83a3adacd6 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> @@ -2161,7 +2161,8 @@ static int arm_smmu_device_probe(struct platform_device *pdev)
->  		return err;
->  	}
+>  fs/iomap/buffered-io.c | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index 5db54ca29a35..2bc0aa23fde3 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -881,8 +881,10 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
+>  		size_t bytes;		/* Bytes to write to folio */
+>  		size_t copied;		/* Bytes copied from user */
 >  
-> -	err = iommu_device_register(&smmu->iommu, &arm_smmu_ops, dev);
-> +	err = iommu_device_register(&smmu->iommu, &arm_smmu_ops,
-> +				    using_legacy_binding ? NULL : dev);
->  	if (err) {
->  		dev_err(dev, "Failed to register iommu\n");
->  		iommu_device_sysfs_remove(&smmu->iommu);
+> +		bytes = iov_iter_count(i);
+> +retry:
+>  		offset = pos & (chunk - 1);
+> -		bytes = min(chunk - offset, iov_iter_count(i));
+> +		bytes = min(chunk - offset, bytes);
+>  		status = balance_dirty_pages_ratelimited_flags(mapping,
+>  							       bdp_flags);
+>  		if (unlikely(status))
+> @@ -933,10 +935,12 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
+>  			 * halfway through, might be a race with munmap,
+>  			 * might be severe memory pressure.
+>  			 */
+> -			if (copied)
+> -				bytes = copied;
+>  			if (chunk > PAGE_SIZE)
+>  				chunk /= 2;
+> +			if (copied) {
+> +				bytes = copied;
+> +				goto retry;
+> +			}
+>  		} else {
+>  			pos += status;
+>  			written += status;
 > -- 
-> 2.39.2.101.g768bb238c484.dirty
+> 2.31.1
 > 
-
-Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
-
