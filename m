@@ -2,142 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EE837CDDFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2F427CDDFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344794AbjJRNzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 09:55:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45578 "EHLO
+        id S1344785AbjJRN4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 09:56:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344789AbjJRNzR (ORCPT
+        with ESMTP id S231822AbjJRN4e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 09:55:17 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF52FA;
-        Wed, 18 Oct 2023 06:55:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697637315; x=1729173315;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=UExmWG4JzxoyY7odaAF1fGZX+qYk0oJ0tWdiswdiu0k=;
-  b=Q1X5pPJWmgWPoITLvqG9TwBFBMjzcHYodAAxftkpjKDzhoh2cUP1n6ju
-   BRKXtDqWCzuT4N+KhGNsZ7grXfRu4S1NkvZ+Bd0W1S5Cf1qWv3NIDdbl7
-   xPWFn44vsdwTPp3a4voAteyP1u0bnRD0sIVqIQU6YdQrIHgkcYwajar1E
-   vvtQnqC0dpO4wen8idbYZhrZ328tmylTMGO4RxY5MLCYL0GJeDu3IhPJ0
-   ntkTY1P9V+daynbK8/dseOC5x6pQsUvnUIFHgxdW9FXMd3uQXmssjCNim
-   oKTgXz7o0b0PgVD8CqUPCsgLrd98okECrMDMe0+xsinXjo9AK9TC9DNR4
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="389892051"
-X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="389892051"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 06:55:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="756596405"
-X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="756596405"
-Received: from asomasun-mobl3.amr.corp.intel.com (HELO [10.209.45.156]) ([10.209.45.156])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 06:55:13 -0700
-Message-ID: <11413ca0-a8a9-4f73-8006-2e1231dbb390@intel.com>
-Date:   Wed, 18 Oct 2023 06:55:12 -0700
+        Wed, 18 Oct 2023 09:56:34 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A0B83
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 06:56:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3F3FC433C7;
+        Wed, 18 Oct 2023 13:56:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697637391;
+        bh=3xuMI2XSHdB7MQa/Nb1GICGAiTx+7oCtl/hm1V9rKnM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=W4rN6w50t3vVYH5Wf0wVVAUqV+V40rEdmNTmzhDdkUkOoG4I4f/h5y4mBoBMgV1T7
+         5E2QKF9LG5cZLSynBif/eeeRxC+eE0BLRXOBvEXWnPnDjspWeqFdUCFgwu9ioHk7Vy
+         PEAb3zpq40XxZW7tqRr5MALw6iwVIpjoFDnT9pLIfiHzRBewoWzh2Ny/5oZ66m1/zq
+         +nukqIY5iZLFTpnm4hPgcIc6dOnaB5Zb4PfnAl+RYp6VhlbDE0wvaKmm2VHnrGTgG8
+         Ml7Lg79FW02asoANLAbxbxExIVnHq7/TFAnJIo/+o+FcNF/1fxtR/G1pnD7kSv/P/7
+         /Co80hQ58tPVQ==
+Date:   Wed, 18 Oct 2023 15:56:28 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nic_swsd@realtek.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Marco Elver <elver@google.com>
+Subject: Re: [PATCH v2 3/3] r8169: fix the KCSAN reported data-race in rtl_tx
+ while reading TxDescArray[entry].opts1
+Message-ID: <20231018135628.GQ1940501@kernel.org>
+References: <20231016214753.175097-1-mirsad.todorovac@alu.unizg.hr>
+ <20231016214753.175097-3-mirsad.todorovac@alu.unizg.hr>
+ <20231017200138.GB1940501@kernel.org>
+ <992dcaf7-2b24-4e91-8c69-a5471da209ae@alu.unizg.hr>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
- EPC
-Content-Language: en-US
-To:     Haitao Huang <haitao.huang@linux.intel.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     "Christopherson,, Sean" <seanjc@google.com>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Zhang, Bo" <zhanb@microsoft.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "yangjie@microsoft.com" <yangjie@microsoft.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "anakrish@microsoft.com" <anakrish@microsoft.com>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
-        "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "kristen@linux.intel.com" <kristen@linux.intel.com>
-References: <1f7a740f3acff8a04ec95be39864fb3e32d2d96c.camel@intel.com>
- <op.2clydbf8wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <631f34613bcc8b5aa41cf519fa9d76bcd57a7650.camel@intel.com>
- <op.2cpecbevwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <aa404549c7e292dd2ec93a5e6a8c9d6d880c06b3.camel@intel.com>
- <op.2cxatlafwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <35a7fde056037a40b3b4b170e2ecd45bf8c4ba9f.camel@intel.com>
- <op.2cxmq7c2wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <915907d56861ef4aa7f9f68e0eb8d136a60bee39.camel@intel.com>
- <op.2cyma0e9wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <6lrq4xmk42zteq6thpyah7jy25rmvkp7mqxtll6sl7z62m7n4m@vrbbedtgxeq4>
- <op.2cztslnpwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <op.2cztslnpwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <992dcaf7-2b24-4e91-8c69-a5471da209ae@alu.unizg.hr>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/17/23 21:37, Haitao Huang wrote:
-> Yes we can introduce misc.reclaim to give user a knob to forcefully 
-> reducing usage if that is really needed in real usage. The semantics
-> would make force-kill VMs explicit to user.
+On Tue, Oct 17, 2023 at 10:43:36PM +0200, Mirsad Todorovac wrote:
+> On 10/17/23 22:01, Simon Horman wrote:
+> > On Mon, Oct 16, 2023 at 11:47:56PM +0200, Mirsad Goran Todorovac wrote:
+> > > KCSAN reported the following data-race:
+> > > 
+> > > ==================================================================
+> > > BUG: KCSAN: data-race in rtl8169_poll (drivers/net/ethernet/realtek/r8169_main.c:4368 drivers/net/ethernet/realtek/r8169_main.c:4581) r8169
+> > > 
+> > > race at unknown origin, with read to 0xffff888140d37570 of 4 bytes by interrupt on cpu 21:
+> > > rtl8169_poll (drivers/net/ethernet/realtek/r8169_main.c:4368 drivers/net/ethernet/realtek/r8169_main.c:4581) r8169
+> > > __napi_poll (net/core/dev.c:6527)
+> > > net_rx_action (net/core/dev.c:6596 net/core/dev.c:6727)
+> > > __do_softirq (kernel/softirq.c:553)
+> > > __irq_exit_rcu (kernel/softirq.c:427 kernel/softirq.c:632)
+> > > irq_exit_rcu (kernel/softirq.c:647)
+> > > sysvec_apic_timer_interrupt (arch/x86/kernel/apic/apic.c:1074 (discriminator 14))
+> > > asm_sysvec_apic_timer_interrupt (./arch/x86/include/asm/idtentry.h:645)
+> > > cpuidle_enter_state (drivers/cpuidle/cpuidle.c:291)
+> > > cpuidle_enter (drivers/cpuidle/cpuidle.c:390)
+> > > call_cpuidle (kernel/sched/idle.c:135)
+> > > do_idle (kernel/sched/idle.c:219 kernel/sched/idle.c:282)
+> > > cpu_startup_entry (kernel/sched/idle.c:378 (discriminator 1))
+> > > start_secondary (arch/x86/kernel/smpboot.c:210 arch/x86/kernel/smpboot.c:294)
+> > > secondary_startup_64_no_verify (arch/x86/kernel/head_64.S:433)
+> > > 
+> > > value changed: 0xb0000042 -> 0x00000000
+> > > 
+> > > Reported by Kernel Concurrency Sanitizer on:
+> > > CPU: 21 PID: 0 Comm: swapper/21 Tainted: G             L     6.6.0-rc2-kcsan-00143-gb5cbe7c00aa0 #41
+> > > Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
+> > > ==================================================================
+> > > 
+> > > The read side is in
+> > > 
+> > > drivers/net/ethernet/realtek/r8169_main.c
+> > > =========================================
+> > >     4355 static void rtl_tx(struct net_device *dev, struct rtl8169_private *tp,
+> > >     4356                    int budget)
+> > >     4357 {
+> > >     4358         unsigned int dirty_tx, bytes_compl = 0, pkts_compl = 0;
+> > >     4359         struct sk_buff *skb;
+> > >     4360
+> > >     4361         dirty_tx = tp->dirty_tx;
+> > >     4362
+> > >     4363         while (READ_ONCE(tp->cur_tx) != dirty_tx) {
+> > >     4364                 unsigned int entry = dirty_tx % NUM_TX_DESC;
+> > >     4365                 u32 status;
+> > >     4366
+> > >   → 4367                 status = le32_to_cpu(tp->TxDescArray[entry].opts1);
+> > >     4368                 if (status & DescOwn)
+> > >     4369                         break;
+> > >     4370
+> > >     4371                 skb = tp->tx_skb[entry].skb;
+> > >     4372                 rtl8169_unmap_tx_skb(tp, entry);
+> > >     4373
+> > >     4374                 if (skb) {
+> > >     4375                         pkts_compl++;
+> > >     4376                         bytes_compl += skb->len;
+> > >     4377                         napi_consume_skb(skb, budget);
+> > >     4378                 }
+> > >     4379                 dirty_tx++;
+> > >     4380         }
+> > >     4381
+> > >     4382         if (tp->dirty_tx != dirty_tx) {
+> > >     4383                 dev_sw_netstats_tx_add(dev, pkts_compl, bytes_compl);
+> > >     4384                 WRITE_ONCE(tp->dirty_tx, dirty_tx);
+> > >     4385
+> > >     4386                 netif_subqueue_completed_wake(dev, 0, pkts_compl, bytes_compl,
+> > >     4387                                               rtl_tx_slots_avail(tp),
+> > >     4388                                               R8169_TX_START_THRS);
+> > >     4389                 /*
+> > >     4390                  * 8168 hack: TxPoll requests are lost when the Tx packets are
+> > >     4391                  * too close. Let's kick an extra TxPoll request when a burst
+> > >     4392                  * of start_xmit activity is detected (if it is not detected,
+> > >     4393                  * it is slow enough). -- FR
+> > >     4394                  * If skb is NULL then we come here again once a tx irq is
+> > >     4395                  * triggered after the last fragment is marked transmitted.
+> > >     4396                  */
+> > >     4397                 if (READ_ONCE(tp->cur_tx) != dirty_tx && skb)
+> > >     4398                         rtl8169_doorbell(tp);
+> > >     4399         }
+> > >     4400 }
+> > > 
+> > > tp->TxDescArray[entry].opts1 is reported to have a data-race and READ_ONCE() fixes
+> > > this KCSAN warning.
+> > > 
+> > >     4366
+> > >   → 4367                 status = le32_to_cpu(READ_ONCE(tp->TxDescArray[entry].opts1));
+> > >     4368                 if (status & DescOwn)
+> > >     4369                         break;
+> > >     4370
+> > > 
+> > > Fixes: ^1da177e4c3f4 ("initial git repository build")
+> > 
+> > Hi Mirsad,
+> > 
+> > The fixes tag above seems wrong.
+> 
+> Hi, Simon,
+> 
+> It is taken directly from "git blame" as you can check for yourself.
+> 
+> It is supposed to tag the commits prior to the introduction of git.
+> 
+> If you have a better idea how to denote those, I will be happy to learn,
+> but I have no better clue than what "git blame" gives ...
 
-Do any other controllers do something like this?  It seems odd.
+Interesting, thanks for the explanation.
+I do think it's more usual, in such cases, to use the following.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+
+> Best regards,
+> Mirsad Todorovac
+> > > Cc: Heiner Kallweit <hkallweit1@gmail.com>
+> > > Cc: nic_swsd@realtek.com
+> > > Cc: "David S. Miller" <davem@davemloft.net>
+> > > Cc: Eric Dumazet <edumazet@google.com>
+> > > Cc: Jakub Kicinski <kuba@kernel.org>
+> > > Cc: Paolo Abeni <pabeni@redhat.com>
+> > > Cc: Marco Elver <elver@google.com>
+> > > Cc: netdev@vger.kernel.org
+> > > Link: https://lore.kernel.org/lkml/dc7fc8fa-4ea4-e9a9-30a6-7c83e6b53188@alu.unizg.hr/
+> > > Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+> > > Acked-by: Marco Elver <elver@google.com>
+> > 
+> > ...
+> 
