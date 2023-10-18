@@ -2,82 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0927CD1AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 03:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566BD7CD1B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 03:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344308AbjJRBMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 21:12:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46340 "EHLO
+        id S229458AbjJRBPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 21:15:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233726AbjJRBMp (ORCPT
+        with ESMTP id S229455AbjJRBPs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 21:12:45 -0400
-Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61150B6;
-        Tue, 17 Oct 2023 18:12:43 -0700 (PDT)
-Received: by a3.inai.de (Postfix, from userid 25121)
-        id 9A553587264CA; Wed, 18 Oct 2023 03:12:41 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by a3.inai.de (Postfix) with ESMTP id 97A2B60C40E07;
-        Wed, 18 Oct 2023 03:12:41 +0200 (CEST)
-Date:   Wed, 18 Oct 2023 03:12:41 +0200 (CEST)
-From:   Jan Engelhardt <jengelh@inai.de>
-To:     =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
-cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-modules@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
-        Lucas De Marchi <lucas.de.marchi@gmail.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Jiri Slaby <jslaby@suse.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH rebased] kbuild: rpm-pkg: Fix build with non-default
- MODLIB
-In-Reply-To: <20231017151050.GJ6241@kitsune.suse.cz>
-Message-ID: <p86sq573-s32q-6792-4978-43s1pn91r027@vanv.qr>
-References: <20231009085208.GT6241@kitsune.suse.cz> <CAK7LNASeMEKVi5c0PEow5KSdN7rsm7UYEf2smWOSkYOhr_5fVQ@mail.gmail.com> <20231009140733.GV6241@kitsune.suse.cz> <CAK7LNAQQMFUt4R1m_U8kBY5=BvxD_dMuE4MD4kpd48WK1E+AGA@mail.gmail.com> <20231010101552.GW6241@kitsune.suse.cz>
- <CAK7LNASX2_-xt3Qvxie_G=Q4fuVYR6eE47QjQ5NZf7QxY-4_tQ@mail.gmail.com> <20231017104453.GG6241@kitsune.suse.cz> <CAK7LNASKPg0JK0QsLGb1Rfx2ysvHJTm3NFOvtwOpZRz4-20T8w@mail.gmail.com> <20231017122747.GH6241@kitsune.suse.cz> <CAK7LNAT3N82cJD3GsF+yUBEfPNOBkhzYPk37q3k0HdU7ukz9vQ@mail.gmail.com>
- <20231017151050.GJ6241@kitsune.suse.cz>
-User-Agent: Alpine 2.26 (LSU 649 2022-06-02)
+        Tue, 17 Oct 2023 21:15:48 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7C2AB0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Oct 2023 18:15:46 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6205C433C8;
+        Wed, 18 Oct 2023 01:15:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697591745;
+        bh=txh0CUFBNNdl/1yV+ubQIc1v2meuc+g1RlL8IiDVMtQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=eB6fL6g3DGYiyQGzTY1ORMxAdBrTR6uHsE3B9mOurD0ARmEgYyOAbNYRhA0Br/n/O
+         G8YBo3OqTB0qsSPtyY4rtU79sF7NItMU1y8jwC3KvLbq4mAWGNFXZVFnDoVFvNrWxn
+         N5s5u8A3XQv8iln5pVP2MauYrlUWiFBGMt+xlxV8RYNNt9OGtglfX5J5QrQ6sfXEJz
+         c9HoHkDMIl0cfoMguW7IS1pLx76c6ii4sza4IWawT5OLU1MiwJxlFY57yRrNyzo6dT
+         DCIBiwJKL6cQrAD43ScrbE9+hLup3aGtiRPLQ6d2OK6IDSy2Ordio/ap4XEo/kP2w+
+         qpHRncobsvwtg==
+Date:   Tue, 17 Oct 2023 18:15:43 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Coiby Xu <coiby.xu@gmail.com>, Benjamin Poirier <bpoirier@suse.com>
+Cc:     Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+        Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Shannon Nelson <shannon.nelson@amd.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Cai Huoqing <cai.huoqing@linux.dev>,
+        George Cherian <george.cherian@marvell.com>,
+        Danielle Ratson <danieller@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Manish Chopra <manishc@marvell.com>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        Brett Creeley <brett.creeley@amd.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Petr Machata <petrm@nvidia.com>,
+        Eran Ben Elisha <eranbe@nvidia.com>,
+        Aya Levin <ayal@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2 10/11] staging: qlge: devlink health: use
+ retained error fmsg API
+Message-ID: <20231017181543.70a75b82@kernel.org>
+In-Reply-To: <20231017105341.415466-11-przemyslaw.kitszel@intel.com>
+References: <20231017105341.415466-1-przemyslaw.kitszel@intel.com>
+        <20231017105341.415466-11-przemyslaw.kitszel@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 2023-10-17 17:10, Michal Suchánek wrote:
->
->> In my system (Ubuntu), I see the directory paths
->> 
->> /usr/aarch64-linux-gnu/lib/
->> /usr/i686-linux-gnu/lib/
->> /usr/x86_64-linux-gnu/lib/
->> 
->> If there were such a crazy distro that supports multiple kernel arches
->> within a single image, modules might be installed:
->> /usr/x86_64-linux-gnu/lib/module/<version>/
->
->For me it's /usr/lib/i386-linux-gnu/.
->
->Did they change the scheme at some point?
+On Tue, 17 Oct 2023 12:53:40 +0200 Przemek Kitszel wrote:
+> Drop unneeded error checking.
+> 
+> devlink_fmsg_*() family of functions is now retaining errors,
+> so there is no need to check for them after each call.
 
-It's a complicated mumble-jumble. Prior art exists as in:
+Humpf. Unrelated to the set, when did qlge grow devlink support?!
 
- /opt/vendorThing/bin/...
- /usr/X11R6/lib/libXi.so.6 [host binary]
- /usr/x86_64-w64-mingw32/bin/as [host binary]
- /usr/x86_64-w64-mingw32/sys-root/mingw/bin/as.exe [foreign binary]
- /usr/platform/SUNW,Ultra-2/lib/libprtdiag_psr.so.1 [looks foreign]
+Coiby, do you still use this HW?
 
-The use of suffix-based naming must have been established sometime
-near the end of the 90s or the start of 2000s as the first biarch
-Linux distros emerged. Probably in gcc or glibc sources one will find
-the root of where the use of suffix identifiers like /usr/lib64
-started. Leaves the question open "why".
+It looks like the driver was moved to staging on account of being
+old and unused, and expecting that we'll delete it. Clearly that's
+not the case if people are adding devlink support, so should we
+move it back?
