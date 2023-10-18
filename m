@@ -2,201 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 495187CDE0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FF2A7CDDF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 15:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344818AbjJRN5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 09:57:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35380 "EHLO
+        id S1344782AbjJRNy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 09:54:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344803AbjJRN5T (ORCPT
+        with ESMTP id S231821AbjJRNyy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 09:57:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A2F109;
-        Wed, 18 Oct 2023 06:57:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697637436; x=1729173436;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=WicXwt7zgwB0kjyvct5P6tuXn0cpYntJoR2pWn1NKFg=;
-  b=J1lPNlt4OescISxmlrr7cDzK8OYBkljeL2H6PUz2A35toDL4maZCKbm2
-   OnADgStwRMlL7T0IdbLcBY+I3gks9XsxGhLj7CKZsTF5Z41cANSF8758l
-   8Mz6ttm5kW2xlD+LU2f2mC25UDfRy176eeD1mHLh0cIZexaq0WO/Mdp6m
-   63fBsr5jtNhmOtesINuQrYLKgCZhhdaiKYcZtVovWR49X2zpvl+BjDLlJ
-   zkP7Lsk8pPVn71TnugCAUArwIc+C1LinQQr5LgPH3NTWrC8sPx3HxJ0M3
-   K4Ff1RoLmPK+zzTcQV5npy0uqlH1CLI6iRGmjU2pywlhr13HNb+eTX8/4
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="472242459"
-X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="472242459"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 06:57:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10867"; a="930209927"
-X-IronPort-AV: E=Sophos;i="6.03,235,1694761200"; 
-   d="scan'208";a="930209927"
-Received: from dmangels-mobl.amr.corp.intel.com (HELO [10.209.187.130]) ([10.209.187.130])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2023 06:57:14 -0700
-Message-ID: <925d7c03-c288-49a4-8bcd-395b32810d75@linux.intel.com>
-Date:   Wed, 18 Oct 2023 08:54:35 -0500
+        Wed, 18 Oct 2023 09:54:54 -0400
+Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0226083
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 06:54:52 -0700 (PDT)
+Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-1e12f41e496so4211521fac.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 06:54:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697637292; x=1698242092; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RQtk85yAlUtWvDHsaGA/g7mDe6/47cka+lCUyYH/oYo=;
+        b=KoRRg+QBJVhmAOriIZXg5F3S/XjZNMCxw1Pw3ZYaKIchiSpZKS10JKgmxpV37PaKn8
+         XFApXl2RTCNlHpS4HnFHXW2PTyosJ+7GRoT25lKwqnzNHDfVRjtrsXpT8i/4MfevX/mP
+         MUj1uO74o8k962PGYhkeDsz8TJWlj+4Ac6ltqVb8B1GuUVF7CoL7Bx42dhXP07VIFmWd
+         vzayU0xQP8C3byA8mY1Vd+te0L//o9K27ZZy3sFiP33SISo039TL4DF7Wd+L4sGgA2HY
+         l6SlPuFDzXT4Vbw7qdOgI0RH4MTuQU7CVOAE3rWBSmJAC+P8XCb872DwVF9nstcL7OQQ
+         rJEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697637292; x=1698242092;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RQtk85yAlUtWvDHsaGA/g7mDe6/47cka+lCUyYH/oYo=;
+        b=fk0wSulyXszezNIkOWN/LxRbs3g1IY4Nny18h1SQssbjWynX8pfk/nQCcK8GTa9UKF
+         o7Ki2PIGLw0B0KP2eDkcJHJf7RLg5SdwJQcoUYzRDoORvbIhS2LOorDiK1pEx4zSd4U6
+         RkIW2L+rIIenitetP1GrflCCUNO23H2fb8YlpJyswunapFuN6p6liA5g2F398fHFsCsf
+         +E4ihOmNX2I+3aHX2YFkqYwVOBfY5vayxOVAuyVdEsqO7UyN/DNcUGjPJK77INHtxOYn
+         JuE5g+PRCGpHIr2TdtfGFVe5kbzrLd4S+TIcvngp6hM2JtyExfHcV0ZezDeSsaGDblM9
+         sYqg==
+X-Gm-Message-State: AOJu0YywS1ugW+sS1O+ZJg6xhipbVLDf9Z2HnaBhG4PG/lj0/Js6UGCx
+        cleyBIhVVlrXdAaZw8cwpzyIClY04sWUU4zK3nk=
+X-Google-Smtp-Source: AGHT+IFlaoizvKWMcFlZPTzHVe9b4XIs0EXekcyzuBDq5Az+Rq7X9x4hmvFDljDEuaGPMfkJvfYECf4RXcy3tA5IzIo=
+X-Received: by 2002:a05:6870:d60e:b0:1d6:567b:7a93 with SMTP id
+ a14-20020a056870d60e00b001d6567b7a93mr5985350oaq.11.1697637292212; Wed, 18
+ Oct 2023 06:54:52 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 00/34] Introduce QC USB SND audio offloading support
-Content-Language: en-US
-To:     Wesley Cheng <quic_wcheng@quicinc.com>, mathias.nyman@intel.com,
-        gregkh@linuxfoundation.org, lgirdwood@gmail.com,
-        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, srinivas.kandagatla@linaro.org,
-        bgoswami@quicinc.com, Thinh.Nguyen@synopsys.com
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20231017200109.11407-1-quic_wcheng@quicinc.com>
- <9942bb93-31ea-4574-940f-98d87a2fc127@linux.intel.com>
- <366d50fa-500f-e884-d48a-197e65bb2fb7@quicinc.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <366d50fa-500f-e884-d48a-197e65bb2fb7@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230928011351.110093-1-yang.lee@linux.alibaba.com>
+In-Reply-To: <20230928011351.110093-1-yang.lee@linux.alibaba.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Wed, 18 Oct 2023 09:54:41 -0400
+Message-ID: <CADnq5_Ps0gfiu9iadfKzYiG=N06QznOq=p8aJYibxLmuxJDmDQ@mail.gmail.com>
+Subject: Re: [PATCH -next] drm/amd/display: clean up some inconsistent indentings
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Applied.  Thanks!
 
-
-On 10/17/23 19:25, Wesley Cheng wrote:
-> Hi Pierre,
-> 
-> On 10/17/2023 1:58 PM, Pierre-Louis Bossart wrote:
->> It's been a very long time since I reviewed earlier versions, and I am
->> still lost on terminology and concepts. The explanations below should
->> really be added as a .rst file in Documentation for reference, not just
->> as a cover letter.
->>
-> 
-> Thanks for the review!
-> 
-> Sure, maybe I can write a more comprehensive documentation that saves
-> these details somewhere.  Will add a RST documentation for material
-> where necessary.
-> 
->>> Several Qualcomm based chipsets can support USB audio offloading to a
->>> dedicated audio DSP, which can take over issuing transfers to the USB
->>> host controller.  The intention is to reduce the load on the main
->>> processors in the SoC, and allow them to be placed into lower power
->>> modes.
->>> There are several parts to this design:
->>>    1. Adding ASoC binding layer
->>>    2. Create a USB backend for Q6DSP
->>
->> "backend" is a loaded terms for ASoC. Can you clarify which part of the
->> ascii art below is a 'backend'?
->>
-> 
-> This would be the Q6USB entity which is the DPCM backend for this
-> particular audio path.
-
-DPCM is about dailinks. Technically the q6usb entity is a codec dai
-which is part of a DPCM backend dailink.
-> 
->>>    3. Introduce XHCI interrupter support
->>>    4. Create vendor ops for the USB SND driver
->>>
->>>        USB                          |            ASoC
->>> --------------------------------------------------------------------
->>>                                     |  _________________________
->>>                                     | |sm8250 platform card     |
->>>                                     | |_________________________|
->>>                                     |         |           |
->>>                                     |      ___V____   ____V____
->>>                                     |     |Q6USB   | |Q6AFE    |
->>>                                     |     |"codec" | |"cpu"    |
->>>                                     |     |________| |_________|
->>>                                     |         ^  ^        ^
->>>                                     |         |  |________|
->>>                                     |      ___V____    |
->>>                                     |     |SOC-USB |   |
->>>     ________       ________               |        |   |
->>>    |USB SND |<--->|QC offld|<------------>|________|   |
->>>    |(card.c)|     |        |<----------                |
->>>    |________|     |________|___     | |                |
->>>        ^               ^       |    | |    ____________V_________
->>>        |               |       |    | |   |APR/GLINK             |
->>>     __ V_______________V_____  |    | |   |______________________|
->>>    |USB SND (endpoint.c)     | |    | |              ^
->>>    |_________________________| |    | |              |
->>>                ^               |    | |   ___________V___________
->>>                |               |    | |->|audio DSP              |
->>>     ___________V_____________  |    |    |_______________________|
->>>    |XHCI HCD                 |<-    |
->>>    |_________________________|      |
->>>
->>>
->>> Adding ASoC binding layer:
->>> soc-usb: Intention is to treat a USB port similar to a headphone jack.
->>
->> What is a 'port'? USB refers to "interfaces" and "endpoints". Is a
->> "port" a 1:1 mapping to "endpoint"?
->>
->> Below I read "AFE port" so not sure what concepts refer to what.
->>
-> 
-> "Port" in this explanation refers to the USB port.  So the audio device
-> connected.  You are right that a USB device can enumerate w/ multiple
-> interfaces (ie UAC + HID + ...) so the closest relation to "port" is
-> "interface."  It is not a 1:1 mapping w/ the number of endpoints exposed
-> by a device.
-> 
-> "AFE port" is just something that has been termed from the audio DSP
-> end, so that concept of port is not related to the port where USB
-> devices are connected to.  This is something that is defined within the
-> audio DSP.
-
-Wow. So there's a "USB port" and "AFE port". I would recommend avoiding
-the same term for completely different concepts. Why not use "USB device"?
-
->>>   0 [SM8250MTPWCD938]: sm8250 - SM8250-MTP-WCD9380-WSA8810-VA-D
->>>                        SM8250-MTP-WCD9380-WSA8810-VA-DMIC
->>
->> How do you plan on exposing the USB PCM device?
->>
->> The lines above are really cryptic, and with no USB reference in any of
->> the short/long card names it's not obvious that this card is different
->> from the no-offload case, is it?
->>
-> 
-> In the end, since the offload case is handled by the audio DSP, it would
-> have to go through the platform/machine sound card.  That is the sm8250
-> device above.
-> 
->>>   1 [Audio          ]: USB-Audio - USB Audio
->>>                        Generic USB Audio at usb-xhci-hcd.1.auto-1.4,
->>> high speed
->>
->> likewise some sort of qualifier would be useful to show that card 0 and
->> card 1 can target the same USB endpoints.
->>
-> 
-> Do userspace entities look at this card string?  Assuming there is only
-> one platform card, there are situations where maybe multiple USB audio
-> devices are connected to the same USB root hub, so offloading can happen
-> on any one of them (not at the same time).
-
-Jaroslav cares, as measured by the changes over the years to make the
-card names more self-explanatory.
-
-I really don't see anything in the SM8250MTPWCD938 card name that would
-hint at the support of USB. If it's not in the card string, maybe this
-can be added in the component string as well (amixer -Dhw:0 info). The
-point is that userspace should not have to maintain an 'accept-list' of
-card names but have the means to check the USB offload capability with a
-vendor-neutral convention.
+On Wed, Sep 27, 2023 at 9:14=E2=80=AFPM Yang Li <yang.lee@linux.alibaba.com=
+> wrote:
+>
+> drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn35/dcn35_fpu.c:261 dcn35_=
+update_bw_bounding_box_fpu() warn: inconsistent indenting
+>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>  .../drm/amd/display/dc/dml/dcn35/dcn35_fpu.c  | 144 +++++++++---------
+>  1 file changed, 72 insertions(+), 72 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn35/dcn35_fpu.c b/drive=
+rs/gpu/drm/amd/display/dc/dml/dcn35/dcn35_fpu.c
+> index 4d5ee2aad9e4..4f284c31de5d 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dml/dcn35/dcn35_fpu.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dml/dcn35/dcn35_fpu.c
+> @@ -258,85 +258,85 @@ void dcn35_update_bw_bounding_box_fpu(struct dc *dc=
+,
+>
+>         dc_assert_fp_enabled();
+>
+> -               dcn3_5_ip.max_num_otg =3D
+> -                       dc->res_pool->res_cap->num_timing_generator;
+> -               dcn3_5_ip.max_num_dpp =3D dc->res_pool->pipe_count;
+> -               dcn3_5_soc.num_chans =3D bw_params->num_channels;
+> -
+> -               ASSERT(clk_table->num_entries);
+> -
+> -               /* Prepass to find max clocks independent of voltage leve=
+l. */
+> -               for (i =3D 0; i < clk_table->num_entries; ++i) {
+> -                       if (clk_table->entries[i].dispclk_mhz > max_dispc=
+lk_mhz)
+> -                               max_dispclk_mhz =3D clk_table->entries[i]=
+.dispclk_mhz;
+> -                       if (clk_table->entries[i].dppclk_mhz > max_dppclk=
+_mhz)
+> -                               max_dppclk_mhz =3D clk_table->entries[i].=
+dppclk_mhz;
+> -               }
+> +       dcn3_5_ip.max_num_otg =3D
+> +               dc->res_pool->res_cap->num_timing_generator;
+> +       dcn3_5_ip.max_num_dpp =3D dc->res_pool->pipe_count;
+> +       dcn3_5_soc.num_chans =3D bw_params->num_channels;
+> +
+> +       ASSERT(clk_table->num_entries);
+> +
+> +       /* Prepass to find max clocks independent of voltage level. */
+> +       for (i =3D 0; i < clk_table->num_entries; ++i) {
+> +               if (clk_table->entries[i].dispclk_mhz > max_dispclk_mhz)
+> +                       max_dispclk_mhz =3D clk_table->entries[i].dispclk=
+_mhz;
+> +               if (clk_table->entries[i].dppclk_mhz > max_dppclk_mhz)
+> +                       max_dppclk_mhz =3D clk_table->entries[i].dppclk_m=
+hz;
+> +       }
+>
+> -               for (i =3D 0; i < clk_table->num_entries; i++) {
+> -                       /* loop backwards*/
+> -                       for (closest_clk_lvl =3D 0, j =3D dcn3_5_soc.num_=
+states - 1;
+> -                            j >=3D 0; j--) {
+> -                               if (dcn3_5_soc.clock_limits[j].dcfclk_mhz=
+ <=3D
+> -                                   clk_table->entries[i].dcfclk_mhz) {
+> -                                       closest_clk_lvl =3D j;
+> -                                       break;
+> -                               }
+> -                       }
+> -                       if (clk_table->num_entries =3D=3D 1) {
+> -                               /*smu gives one DPM level, let's take the=
+ highest one*/
+> -                               closest_clk_lvl =3D dcn3_5_soc.num_states=
+ - 1;
+> +       for (i =3D 0; i < clk_table->num_entries; i++) {
+> +               /* loop backwards*/
+> +               for (closest_clk_lvl =3D 0, j =3D dcn3_5_soc.num_states -=
+ 1;
+> +                       j >=3D 0; j--) {
+> +                       if (dcn3_5_soc.clock_limits[j].dcfclk_mhz <=3D
+> +                               clk_table->entries[i].dcfclk_mhz) {
+> +                               closest_clk_lvl =3D j;
+> +                               break;
+>                         }
+> +               }
+> +               if (clk_table->num_entries =3D=3D 1) {
+> +                       /*smu gives one DPM level, let's take the highest=
+ one*/
+> +                       closest_clk_lvl =3D dcn3_5_soc.num_states - 1;
+> +               }
+>
+> -                       clock_limits[i].state =3D i;
+> -
+> -                       /* Clocks dependent on voltage level. */
+> -                       clock_limits[i].dcfclk_mhz =3D clk_table->entries=
+[i].dcfclk_mhz;
+> -                       if (clk_table->num_entries =3D=3D 1 &&
+> -                           clock_limits[i].dcfclk_mhz <
+> -                           dcn3_5_soc.clock_limits[closest_clk_lvl].dcfc=
+lk_mhz) {
+> -                               /*SMU fix not released yet*/
+> -                               clock_limits[i].dcfclk_mhz =3D
+> -                                       dcn3_5_soc.clock_limits[closest_c=
+lk_lvl].dcfclk_mhz;
+> -                       }
+> +               clock_limits[i].state =3D i;
+>
+> -                       clock_limits[i].fabricclk_mhz =3D
+> -                               clk_table->entries[i].fclk_mhz;
+> -                       clock_limits[i].socclk_mhz =3D
+> -                               clk_table->entries[i].socclk_mhz;
+> -
+> -                       if (clk_table->entries[i].memclk_mhz &&
+> -                           clk_table->entries[i].wck_ratio)
+> -                               clock_limits[i].dram_speed_mts =3D
+> -                                       clk_table->entries[i].memclk_mhz =
+* 2 *
+> -                                       clk_table->entries[i].wck_ratio;
+> -
+> -                       /* Clocks independent of voltage level. */
+> -                       clock_limits[i].dispclk_mhz =3D max_dispclk_mhz ?
+> -                               max_dispclk_mhz :
+> -                               dcn3_5_soc.clock_limits[closest_clk_lvl].=
+dispclk_mhz;
+> -
+> -                       clock_limits[i].dppclk_mhz =3D max_dppclk_mhz ?
+> -                               max_dppclk_mhz :
+> -                               dcn3_5_soc.clock_limits[closest_clk_lvl].=
+dppclk_mhz;
+> -
+> -                       clock_limits[i].dram_bw_per_chan_gbps =3D
+> -                               dcn3_5_soc.clock_limits[closest_clk_lvl].=
+dram_bw_per_chan_gbps;
+> -                       clock_limits[i].dscclk_mhz =3D
+> -                               dcn3_5_soc.clock_limits[closest_clk_lvl].=
+dscclk_mhz;
+> -                       clock_limits[i].dtbclk_mhz =3D
+> -                               dcn3_5_soc.clock_limits[closest_clk_lvl].=
+dtbclk_mhz;
+> -                       clock_limits[i].phyclk_d18_mhz =3D
+> -                               dcn3_5_soc.clock_limits[closest_clk_lvl].=
+phyclk_d18_mhz;
+> -                       clock_limits[i].phyclk_mhz =3D
+> -                               dcn3_5_soc.clock_limits[closest_clk_lvl].=
+phyclk_mhz;
+> +               /* Clocks dependent on voltage level. */
+> +               clock_limits[i].dcfclk_mhz =3D clk_table->entries[i].dcfc=
+lk_mhz;
+> +               if (clk_table->num_entries =3D=3D 1 &&
+> +                       clock_limits[i].dcfclk_mhz <
+> +                       dcn3_5_soc.clock_limits[closest_clk_lvl].dcfclk_m=
+hz) {
+> +                       /*SMU fix not released yet*/
+> +                       clock_limits[i].dcfclk_mhz =3D
+> +                               dcn3_5_soc.clock_limits[closest_clk_lvl].=
+dcfclk_mhz;
+>                 }
+>
+> -               memcpy(dcn3_5_soc.clock_limits, clock_limits,
+> -                      sizeof(dcn3_5_soc.clock_limits));
+> +               clock_limits[i].fabricclk_mhz =3D
+> +                       clk_table->entries[i].fclk_mhz;
+> +               clock_limits[i].socclk_mhz =3D
+> +                       clk_table->entries[i].socclk_mhz;
+> +
+> +               if (clk_table->entries[i].memclk_mhz &&
+> +                       clk_table->entries[i].wck_ratio)
+> +                       clock_limits[i].dram_speed_mts =3D
+> +                               clk_table->entries[i].memclk_mhz * 2 *
+> +                               clk_table->entries[i].wck_ratio;
+> +
+> +               /* Clocks independent of voltage level. */
+> +               clock_limits[i].dispclk_mhz =3D max_dispclk_mhz ?
+> +                       max_dispclk_mhz :
+> +                       dcn3_5_soc.clock_limits[closest_clk_lvl].dispclk_=
+mhz;
+> +
+> +               clock_limits[i].dppclk_mhz =3D max_dppclk_mhz ?
+> +                       max_dppclk_mhz :
+> +                       dcn3_5_soc.clock_limits[closest_clk_lvl].dppclk_m=
+hz;
+> +
+> +               clock_limits[i].dram_bw_per_chan_gbps =3D
+> +                       dcn3_5_soc.clock_limits[closest_clk_lvl].dram_bw_=
+per_chan_gbps;
+> +               clock_limits[i].dscclk_mhz =3D
+> +                       dcn3_5_soc.clock_limits[closest_clk_lvl].dscclk_m=
+hz;
+> +               clock_limits[i].dtbclk_mhz =3D
+> +                       dcn3_5_soc.clock_limits[closest_clk_lvl].dtbclk_m=
+hz;
+> +               clock_limits[i].phyclk_d18_mhz =3D
+> +                       dcn3_5_soc.clock_limits[closest_clk_lvl].phyclk_d=
+18_mhz;
+> +               clock_limits[i].phyclk_mhz =3D
+> +                       dcn3_5_soc.clock_limits[closest_clk_lvl].phyclk_m=
+hz;
+> +       }
+> +
+> +       memcpy(dcn3_5_soc.clock_limits, clock_limits,
+> +               sizeof(dcn3_5_soc.clock_limits));
+>
+> -               if (clk_table->num_entries)
+> -                       dcn3_5_soc.num_states =3D clk_table->num_entries;
+> +       if (clk_table->num_entries)
+> +               dcn3_5_soc.num_states =3D clk_table->num_entries;
+>
+>         if (max_dispclk_mhz) {
+>                 dcn3_5_soc.dispclk_dppclk_vco_speed_mhz =3D max_dispclk_m=
+hz * 2;
+> --
+> 2.20.1.7.g153144c
+>
