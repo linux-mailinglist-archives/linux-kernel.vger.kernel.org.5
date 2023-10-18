@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFC317CDAFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A5987CDB06
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 13:55:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbjJRLwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 07:52:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34196 "EHLO
+        id S230159AbjJRLzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 07:55:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229884AbjJRLwL (ORCPT
+        with ESMTP id S229846AbjJRLzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 07:52:11 -0400
+        Wed, 18 Oct 2023 07:55:08 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43077F7
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:52:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55728C4339A;
-        Wed, 18 Oct 2023 11:52:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697629929;
-        bh=UopBtqacF4WHZUsTSn8SmKKNmQaJnPvKcVtqWzXGU40=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oO0lksrazyiuypVV8kmPpxXFR/lvNdkR5cPzDqdH9RQamRkz94DUdlrkMxnqSuRNp
-         lBL2HLYnQkzRKfi0wBlkKsouhMqaq/bti8FxQj8UISaa+5EtazaptJYdYDsO5ssZSh
-         T8pePuXDW6PkKlCcWE4qL+USBfIiomnuc8xYzjOA=
-Date:   Wed, 18 Oct 2023 13:52:07 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Leon Romanovsky <leonro@nvidia.com>
-Cc:     Saeed Mahameed <saeed@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel@vger.kernel.org, Jason Gunthorpe <jgg@nvidia.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH 2/5] misc: mlx5ctl: Add mlx5ctl misc driver
-Message-ID: <2023101821-impotence-confirm-d096@gregkh>
-References: <20231018081941.475277-1-saeed@kernel.org>
- <20231018081941.475277-3-saeed@kernel.org>
- <2023101835-trapdoor-unicycle-788a@gregkh>
- <20231018084908.GF5392@unreal>
- <2023101814-thirsting-culture-1a4c@gregkh>
- <20231018100014.GG5392@unreal>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D13AD111
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 04:55:06 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEF67C433C7;
+        Wed, 18 Oct 2023 11:55:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697630106;
+        bh=kouUTomVRzr7+i4EflHX4+HRDMLMZ32DMLiuSrpZcr4=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=tlWAylwoWt9UwBsG6597itkE7ntW1+/H7s9JPrA3jTSumJNKZiz2ZrGbxjxRcUDoq
+         rLE85Z0hQNvClI0CTM/s/mQKQmRQR4aUxflm8V01W77qvbiT06Uaax8kRiot22Gsih
+         wVgE4Urw7D92iNwUUMzNvU2K58b1suqibPJ76hzYTnDoR0O3fXCk2FIcciFFw18ABK
+         VhkBJVfjHCEh2HV1KGzyS0k0cWLeHbxQnQmjCoG88xuZQjC+7Pi729swy5WEdKYFAA
+         xpkaQZGAfFscaRKbUds18xIiCroZcfr//M5wP/7msxi8ubKHEjl0Ekd6Fz0oqgNnsi
+         d/HSQJSVJbxsQ==
+Message-ID: <d727d2c860f28c5c1206b4ec2be058b87d787e4f.camel@kernel.org>
+Subject: Re: [PATCH] fat: fix mtime handing in __fat_write_inode
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Klara Modin <klarasmodin@gmail.com>
+Cc:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Christian Brauner <brauner@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Date:   Wed, 18 Oct 2023 07:55:04 -0400
+In-Reply-To: <CABq1_vhoWrKuDkdogeHufnPn68k9RLsRiZM6H8fp-zoTwnvd_Q@mail.gmail.com>
+References: <20231018-amtime-v1-1-e066bae97285@kernel.org>
+         <CABq1_vhoWrKuDkdogeHufnPn68k9RLsRiZM6H8fp-zoTwnvd_Q@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231018100014.GG5392@unreal>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -52,51 +52,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 01:00:14PM +0300, Leon Romanovsky wrote:
-> On Wed, Oct 18, 2023 at 10:55:35AM +0200, Greg Kroah-Hartman wrote:
-> > On Wed, Oct 18, 2023 at 11:49:08AM +0300, Leon Romanovsky wrote:
-> > > On Wed, Oct 18, 2023 at 10:30:00AM +0200, Greg Kroah-Hartman wrote:
-> > > > On Wed, Oct 18, 2023 at 01:19:38AM -0700, Saeed Mahameed wrote:
-> > > > > +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-> > > > 
-> > > > For dual-licensed code, I need a LOT of documentation as to why this
-> > > > must be dual-licensed, AND a signed-off-by from your corporate lawyer
-> > > > agreeing to it so they convey an understanding of just how complex and
-> > > > messy this will get over time and what you are agreeing to do here.
-> > > 
-> > > This is how we (NBU, Networking Business Unit in Nvidia, former Mellanox)
-> > > are instructed to submit all our code by default. This license is aligned
-> > > with our networking, vdpa and RDMA code.
-> > 
-> > Please don't do this without a really really good reason.  Especially
-> > for a "misc" driver that is so linux-dependant here.  
-> 
-> Like I said, it is our default license. Saeed will change this code to be GPL-only.
-> 
-> > The "Linux-OpenIB" license is old, obsolete, and problematic and should not be added to any
-> > new files in the kernel tree, outside of the island of
-> > drivers/infiniband/ as you all insist on that crazyness there.
-> > 
-> > Heck, it's even documented that you shouldn't be adding that license to
-> > any new files, why ignore that?
-> 
-> I don't remember being asked about it, not in this patch
-> https://lore.kernel.org/all/20180425203703.568152337@linutronix.de/
-> and not in this later patch which changed LICENSES/other/ to be
-> LICENSES/deprecated/
-> https://lore.kernel.org/all/20190430105130.24500-4-hch@lst.de/
-> 
-> So it is nice that someone decided to deprecate it without notifying users
-> about such change. It will be better to put Linux-OpenIB to LICENSES/dual/
-> folder instead.
-> 
-> Our lawyers are perfectly fine with Linux-OpenIB license.
+Many thanks for the bug report and testing! Do you mind if we add your
+Tested-by: for this patch?
 
-Almost all others are not, sorry, you will have to convince them
-otherwise, so for now, let's keep this in "deprecated" as this license
-is known to have issues and should not get applied to any new code
-without EXPLICIT justification why it must be so.
+Thanks!
+Jeff
 
-thanks,
+On Wed, 2023-10-18 at 13:44 +0200, Klara Modin wrote:
+> I can confirm that this patch fixes the issue, thanks!
+>
+> Den ons 18 okt. 2023 kl 13:15 skrev Jeff Layton <jlayton@kernel.org>:
+> >=20
+> > Klara reported seeing mangled mtimes when dealing with FAT. Fix the
+> > braino in the FAT conversion to the new timestamp accessors.
+> >=20
+> > Fixes: e57260ae3226 (fat: convert to new timestamp accessors)
+> > Reported-by: Klara Modin <klarasmodin@gmail.com>
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > ---
+> > This patch fixes the bug that Klara reported late yesterday. The issue
+> > is a bad by-hand conversion of __fat_write_inode to the new timestamp
+> > accessor functions.
+> >=20
+> > Christian, this patch should probably be squashed into e57260ae3226.
+> >=20
+> > Thanks!
+> > Jeff
+> > ---
+> >  fs/fat/inode.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >=20
+> > diff --git a/fs/fat/inode.c b/fs/fat/inode.c
+> > index aa87f323fd44..1fac3dabf130 100644
+> > --- a/fs/fat/inode.c
+> > +++ b/fs/fat/inode.c
+> > @@ -888,9 +888,9 @@ static int __fat_write_inode(struct inode *inode, i=
+nt wait)
+> >                 raw_entry->size =3D cpu_to_le32(inode->i_size);
+> >         raw_entry->attr =3D fat_make_attrs(inode);
+> >         fat_set_start(raw_entry, MSDOS_I(inode)->i_logstart);
+> > +       mtime =3D inode_get_mtime(inode);
+> >         fat_time_unix2fat(sbi, &mtime, &raw_entry->time,
+> >                           &raw_entry->date, NULL);
+> > -       inode_set_mtime_to_ts(inode, mtime);
+> >         if (sbi->options.isvfat) {
+> >                 struct timespec64 ts =3D inode_get_atime(inode);
+> >                 __le16 atime;
+> >=20
+> > ---
+> > base-commit: fea0e8fc7829dc85f82c8a1a8249630f6fb85553
+> > change-id: 20231018-amtime-24d2effcc9a9
+> >=20
+> > Best regards,
+> > --
+> > Jeff Layton <jlayton@kernel.org>
+> >=20
 
-greg k-h
+--=20
+Jeff Layton <jlayton@kernel.org>
