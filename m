@@ -2,109 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DCBE7CE2CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 18:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A177CE2D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 18:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229562AbjJRQeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 12:34:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44122 "EHLO
+        id S229937AbjJRQe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 12:34:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjJRQeG (ORCPT
+        with ESMTP id S229853AbjJRQe1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 12:34:06 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 588F3B8
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 09:34:05 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-419b53acc11so501cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 09:34:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697646844; x=1698251644; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G+NGVJ7tldYjua0My5aXg+TSKmTtKYgS0JOgqef3/Ug=;
-        b=Ie5YlKlg0pWbcYWT7w269Ez+dcXC+umIwh6orGNa2REViLLwxpPeBD0lOlZpsnvbvt
-         SFBmIWU2lrwrFstw8/W+fQ/GfKgkWMRhmV5h3Nrwi1BUNAoQ730egOXykgsieF0EYMAI
-         tmtHVm2L3dvauehMdbY4CU20RPcJN3nRFftVwGu3mdTFDX4AMiBe1rIRv2j0ucOjHI7S
-         EdDXxzs2XWK9gDF8ThrFJxnOnfX35iKtzvS6Q0rZQylGmAMWswzeFYIbRjO6FeahBpT+
-         mL8+CCFpRXJPdAZMjECORDhnPOsB/7iPUOiWQ8ZlU3KXSdcJBRT+UNEFj+Mgc2W9mtID
-         vemQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697646844; x=1698251644;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=G+NGVJ7tldYjua0My5aXg+TSKmTtKYgS0JOgqef3/Ug=;
-        b=fcjqZ3C7J3i14ppa3AWXRWIdlq9LmlnHvRuWfXI5dm4dAUI2M9jyTzmWq2JrNvq2Kl
-         /lMAFHV6IhXSPVyGzdeqnqk2RhwMYMqa3QRUqTVlm/nZkvH/KNm0gOVmscNHadK7krta
-         P5K3tIlWW0ZeBoDS7/OuE+oH82T2EktM+iFxag7iGSWzWP0BEbQg8m5gH2tkvf4NAnA0
-         4J3hh7A+4u7GkisvfCWmOjf+xQznbnBcIbV2HytyTYmLn/Z/8DxQ8INvKSj2+cTmsXGq
-         fADO/3hmPkiCb4/udejEyaDgKUphrz/pcX817JJjZUXgyDt4BpmcrTTbe57nGm/OTZVk
-         SOPQ==
-X-Gm-Message-State: AOJu0YzJhDxqwdWwrhZO6qFNft9RVB9AQkybU8QF6Ge/F4MA1/MqOAh3
-        BpSEPfp33G5kdnGSIpgelVDACUPDLziIxozTgxxMPw==
-X-Google-Smtp-Source: AGHT+IH+s6vAfX9E3nn5vxST3ihYiw3zu36XPDiF4BijlPTOxi2bUpAQeWFd+R64GLEUnoGrGTG2oJpXt7BxeZo2rBY=
-X-Received: by 2002:a05:622a:44c4:b0:41c:375b:81a3 with SMTP id
- kc4-20020a05622a44c400b0041c375b81a3mr493qtb.18.1697646844229; Wed, 18 Oct
- 2023 09:34:04 -0700 (PDT)
+        Wed, 18 Oct 2023 12:34:27 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD95BD
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Oct 2023 09:34:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F75FC433C9;
+        Wed, 18 Oct 2023 16:34:24 +0000 (UTC)
+Date:   Wed, 18 Oct 2023 17:34:21 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Liu Shixin <liushixin2@huawei.com>,
+        Patrick Wang <patrick.wang.shcn@gmail.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 5/7] mm: kmemleak: use mem_pool_free() to free object
+Message-ID: <ZTAJDRPY24prX8pU@arm.com>
+References: <20231018102952.3339837-1-liushixin2@huawei.com>
+ <20231018102952.3339837-6-liushixin2@huawei.com>
+ <ZS_-MBDKXR9qFXDb@arm.com>
+ <ZTAAftQF8ReYAHlF@arm.com>
+ <20231018092253.a12815afa7db9049f95fc195@linux-foundation.org>
 MIME-Version: 1.0
-References: <20231009025726.5982-1-link@vivo.com>
-In-Reply-To: <20231009025726.5982-1-link@vivo.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Wed, 18 Oct 2023 10:33:28 -0600
-Message-ID: <CAOUHufaX35Y6MfwKj_XUWXJwdC=9M=g1gXpQpQghBZ2fXrkEAw@mail.gmail.com>
-Subject: Re: [PATCH 0/3 RESEND] Per memcg lru_gen node stat
-To:     Huan Yang <link@vivo.com>, "T.J. Mercier" <tjmercier@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Peter Xu <peterx@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        "T.J. Alumbaugh" <talumbau@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <cgroups@vger.kernel.org>, opensource.kernel@vivo.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231018092253.a12815afa7db9049f95fc195@linux-foundation.org>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 8, 2023 at 8:57=E2=80=AFPM Huan Yang <link@vivo.com> wrote:
->
-> On original global lru_gen node in debugfs, it can all show each memcg's
-> lru gen info in "lru_gen" or "lru_gen_full", and can type cmd into lru_ge=
-n.
-> But which show info contains all memcg's info, and cmd need to
-> know memcg's id.
->
-> This patchset add lru_gen node in per memcg, with this node, we can
-> get lru_gen info in each memcg.
-> Also, we can type cmd to control each memcg's lru_gen seq, but, this node
-> don't support multi cmd, single memcg just process one cmd once time.
+On Wed, Oct 18, 2023 at 09:22:53AM -0700, Andrew Morton wrote:
+> On Wed, 18 Oct 2023 16:57:50 +0100 Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > > Could you please reorder this patch before the previous one? If you
+> > > added a Fixes tag, we may want a cc stable as well (as for the other
+> > > patches with a Fixes tag) and it makes more sense to backport it on its
+> > > own without the __create_object() split. Otherwise:
+> > 
+> > Ah, ignore this. If we want a cc stable, the whole thing needs
+> > backporting, including the split which is essential for the subsequent
+> > fix.
+> 
+> Do we want a cc:stable?  That tag wasn't originally included.
+> 
+> If so, all seven patches?
+> 
+> If "not all seven" then can we please have two series, one for the
+> backport patches, one for next merge window.
 
-Adding TJ from the Android team. (The other TJ you CC'ed is from the
-ChromeOS team.)
+I think we need all 7 if we are to backport them. But we don't need to
+cc stable explicitly, we can send them to stable@kernel.org separately
+once tested on those stable versions. So, for the mm tree, don't bother
+with cc stable.
 
-This series introduced a new ABI, which has to be maintained forever.
-How exactly would it be used in *production*?
-
-Android doesn't officially support memcgs. So I want to understand the
-real-world use cases first.
+-- 
+Catalin
