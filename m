@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D85F07CE407
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 020F57CE3F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 19:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231592AbjJRRHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 13:07:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53154 "EHLO
+        id S231697AbjJRRH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 13:07:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232118AbjJRRHG (ORCPT
+        with ESMTP id S232144AbjJRRHG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 18 Oct 2023 13:07:06 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 547DF11D;
-        Wed, 18 Oct 2023 10:06:31 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-7a6830df017so2349639f.3;
-        Wed, 18 Oct 2023 10:06:31 -0700 (PDT)
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7856126;
+        Wed, 18 Oct 2023 10:06:32 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-79fd60f40ebso175715839f.1;
+        Wed, 18 Oct 2023 10:06:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697648790; x=1698253590; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697648791; x=1698253591; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Xt5GYS9mXBsgXWCKjkvZOfiO8j43yK6Z0bFknFJi+ls=;
-        b=gq345b2jFUpjeCTNSAl30lor2QeQk2Id7/B422PCrkR1uopAPLk5Wcj9bfaaYxpYST
-         9LcSHu9OM6zSgkig+sk7i6hclRkXLVBe2qaq4Q7ZhgkNs6VIn6joKkQmZ3xakAE46WIs
-         2bmNvLYItYvQ+ftM3vXYFiht69gPShva7EpbZBDxmDSnv3PTj7tuno7bUA8qtxEIEws7
-         QXLcjEVLy84qAEOzt8vmWN5kTUeqfQT0tQsOs8HbZJInk8xHWu9kd6m72AnS/F2C27Jw
-         zWHhu9aiMRA2NdjK70fWaYzwtQUfGsLz+XgucZA1MbzzgrvG/CK22PjFXMdafkcRoa0g
-         Q/zA==
+        bh=wnBLKUk9O3xETUCsilAg0vyOCJCY1VGcTM3FhTYpKWY=;
+        b=OrKGQiXDpXrkWb4m+aGK3cL7xjmuU1Fbcw2mbXsUtiyDnV1FPxat05eqn2y6y0ow2b
+         aROLd/dQAXSemuEp4bjng6BWMnm+K4PIARFrGmoDP6Bdep0bb4KM+FpM5xuFj5cJxwbp
+         1KP4xZB6kxRQYW6W0raXe9BwxTLgEh5KaJKrevdfkQ6qKVBlPo9xbgWMAMdMU5/R39Ub
+         x7gKOBEHC+rPeOFLoVbl1n4G3DspKQfiCpREf/219egd+9wky1mph8BGnd3F3pynAs/U
+         YgAJFk+4bvWIaFHnyFxa0/3S+qRUJj9DoFI6/1feF1vAsRzMPVz1tBahUazwC83c3inY
+         Rq+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697648790; x=1698253590;
+        d=1e100.net; s=20230601; t=1697648791; x=1698253591;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Xt5GYS9mXBsgXWCKjkvZOfiO8j43yK6Z0bFknFJi+ls=;
-        b=U0RNLwCrHwkimgYrUwQNGnmTIKSoSrJpbnDTY8zCsApHefNZtYwANxuYRDU2loWo3o
-         X9B+lvnVk+ryGP/h4InOBt+pWwkGK5BcQvL0slXIYBAIoe5J5HO/tEZqZys6pCwsCxhq
-         /wXanb9JhpO5sS4THGWpGkVSQtKBE59TJOijkYIIuR61xM566rOkcGravRAstub1xf9S
-         pvbhtpROdpqVNsA42jBMM5Q5GmaS5QhHWVR29OlYlDg2koyV1Kl49tEqIpf98zpV7FiN
-         KQV7O3TC0bUxLwYT0OzMIG7L9jnh50oxNiJA1DjlNBT1NVWRuqQR6Vplw5302VYbVv2G
-         0g4A==
-X-Gm-Message-State: AOJu0YwkPpA/L3JFQhntUsGXVtrjRtNRyjAszsGA1+mXXxNM4CtmkXTf
-        5aJE8+IlY88G1bts+D6JhMQEbWmaEwYaQA==
-X-Google-Smtp-Source: AGHT+IGeS34hWPLdEV6GD7KXfu2etNy8dkuNoYP8ncBjgUPVmKCo3st08l1PMSgKYBwbbu5bFc/nsw==
-X-Received: by 2002:a05:6602:154a:b0:79f:b2c5:e8b with SMTP id h10-20020a056602154a00b0079fb2c50e8bmr6681430iow.20.1697648790252;
-        Wed, 18 Oct 2023 10:06:30 -0700 (PDT)
+        bh=wnBLKUk9O3xETUCsilAg0vyOCJCY1VGcTM3FhTYpKWY=;
+        b=n4wGJ5x/TQqhvMFNtAydFKk0mfwHl1eH8kpPIwKiKqebeguDmVE1Bh/SlQX6Tcwhq0
+         fI98Jd2BgexoAH+PiB/PEJAx+a/9aIzM7lN+SPJbFP1hFUF1sikijvJueZk2JzTgMCxU
+         tjPIfasQh7jaMC9WOizLwbuBdoL6VVj69SO35menmsnbBQ44f3p8Svaej4Y5emHBZbbe
+         GR+YCyxePBSnnvLUtWrHkDoMr7L6gUPsHs9mFYD8FfNk1q82Nkb0lOqg3ogun2QdUI+5
+         p5HjCvEtmiZQYIfD7y910OEFyNZEHoOn7V52LToJd+0tg6Scp/1uHHOtUW24u38lz6gR
+         F/sg==
+X-Gm-Message-State: AOJu0YzYaZ9021d/tsUU9yspE4z9ME2m6ZbiHbvc8eq6TcJGY6A1U2Eo
+        MFf9hPKO+0ZjsD3iyQayBuHisbrxrUBdSg==
+X-Google-Smtp-Source: AGHT+IHO6nI4UZVkO1MGJLmf3+IhMzZwOIgWYzq9QH1/8ZQ3okxX0Qw82NbwAuFhs1VVKVleGTXhcg==
+X-Received: by 2002:a05:6602:8c6:b0:7a6:793d:2079 with SMTP id h6-20020a05660208c600b007a6793d2079mr1483172ioz.1.1697648791342;
+        Wed, 18 Oct 2023 10:06:31 -0700 (PDT)
 Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
-        by smtp.googlemail.com with ESMTPSA id n4-20020a5d8244000000b0079fa1a7cd36sm1228944ioo.30.2023.10.18.10.06.29
+        by smtp.googlemail.com with ESMTPSA id n4-20020a5d8244000000b0079fa1a7cd36sm1228944ioo.30.2023.10.18.10.06.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 10:06:29 -0700 (PDT)
+        Wed, 18 Oct 2023 10:06:31 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     linux-kernel@vger.kernel.org, jbaron@akamai.com,
         gregkh@linuxfoundation.org, dri-devel@lists.freedesktop.org,
@@ -61,9 +61,9 @@ Cc:     lb@semihalf.com, linux@rasmusvillemoes.dk, joe@perches.com,
         robdclark@gmail.com, groeck@google.com, yanivt@google.com,
         bleung@google.com, rostedt@goodmis.org, linux-doc@vger.kernel.org,
         Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v7c 17/24] dyndbg-doc: add classmap info to howto
-Date:   Wed, 18 Oct 2023 11:05:57 -0600
-Message-ID: <20231018170604.569042-18-jim.cromie@gmail.com>
+Subject: [PATCH v7c 18/24] dyndbg: reserve flag bit _DPRINTK_FLAGS_PREFIX_CACHED
+Date:   Wed, 18 Oct 2023 11:05:58 -0600
+Message-ID: <20231018170604.569042-19-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231018170604.569042-1-jim.cromie@gmail.com>
 References: <20231018170604.569042-1-jim.cromie@gmail.com>
@@ -79,92 +79,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add some basic info on classmap usage and api
+Reserve bit 7 to remember that a pr-debug callsite is/was:
+- enabled, with +p
+- wants a dynamic-prefix, with one+ of module:function:sourcfile
+- was previously called
+- was thus saved in the cache. NOT YET.
 
-cc: linux-doc@vger.kernel.org
+Its unclear whether any cache fetch would be faster than 2-3 field
+fetches, but theres another factor; the 3 columns in the __dyndbg
+section are highly redundant and compressible, but to get the
+compression, we need field accessors, which will rebalance the
+tradeoff.
+
+So, for now, its just the bit reservation.
+
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
-v5- adjustments per Randy Dunlap, me
-v7b- checkpatch fixes
----
- .../admin-guide/dynamic-debug-howto.rst       | 60 ++++++++++++++++++-
- 1 file changed, 59 insertions(+), 1 deletion(-)
+ include/linux/dynamic_debug.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
-index 0b3d39c610d9..028c2cb5b4c5 100644
---- a/Documentation/admin-guide/dynamic-debug-howto.rst
-+++ b/Documentation/admin-guide/dynamic-debug-howto.rst
-@@ -225,7 +225,6 @@ the ``p`` flag has meaning, other flags are ignored.
- Note the regexp ``^[-+=][fslmpt_]+$`` matches a flags specification.
- To clear all flags at once, use ``=_`` or ``-fslmpt``.
+diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
+index f182f95caabb..927cb14f24e0 100644
+--- a/include/linux/dynamic_debug.h
++++ b/include/linux/dynamic_debug.h
+@@ -38,6 +38,7 @@ struct _ddebug {
+ #define _DPRINTK_FLAGS_INCL_LINENO	(1<<3)
+ #define _DPRINTK_FLAGS_INCL_TID		(1<<4)
+ #define _DPRINTK_FLAGS_INCL_SOURCENAME	(1<<5)
++#define _DPRINTK_FLAGS_PREFIX_CACHED	(1<<7)
  
--
- Debug messages during Boot Process
- ==================================
- 
-@@ -375,3 +374,62 @@ just a shortcut for ``print_hex_dump(KERN_DEBUG)``.
- For ``print_hex_dump_debug()``/``print_hex_dump_bytes()``, format string is
- its ``prefix_str`` argument, if it is constant string; or ``hexdump``
- in case ``prefix_str`` is built dynamically.
-+
-+Dynamic Debug classmaps
-+=======================
-+
-+Dyndbg allows selection/grouping of *prdbg* callsites using structural
-+info: module, file, function, line.  Classmaps allow authors to add
-+their own domain-oriented groupings using class-names.  Classmaps are
-+exported, so they referencable from other modules.
-+
-+  # enable classes individually
-+  :#> ddcmd class DRM_UT_CORE +p
-+  :#> ddcmd class DRM_UT_KMS +p
-+  # or more selectively
-+  :#> ddcmd class DRM_UT_CORE module drm +p
-+
-+The "class FOO" syntax protects class'd prdbgs from generic overwrite::
-+
-+  # IOW this doesn't wipe any DRM.debug settings
-+  :#> ddcmd -p
-+
-+To support the DRM.debug parameter, DYNDBG_CLASSMAP_PARAM* updates all
-+classes in a classmap, mapping param-bits 0..N onto the classes:
-+DRM_UT_<*> for the DRM use-case.
-+
-+Dynamic Debug Classmap API
-+==========================
-+
-+DYNDBG_CLASSMAP_DEFINE - modules use this to create classmaps, naming
-+each of the classes (stringified enum-symbols: "DRM_UT_<*>"), and
-+type, and mapping the class-names to consecutive _class_ids.
-+
-+By doing so, modules tell dyndbg that they are have prdbgs with those
-+class_ids, and they authorize dyndbg to accept "class FOO" for the
-+module defining that classname.
-+
-+There are 2 types of classmaps:
-+
-+ DD_CLASS_TYPE_DISJOINT_BITS: classes are independent, like DRM.debug
-+ DD_CLASS_TYPE_LEVEL_NUM: classes are relative, ordered (V3 > V2)
-+
-+DYNDBG_CLASSMAP_PARAM - refers to a DEFINEd classmap, exposing the set
-+of defined classes to manipulation as a group.  This interface
-+enforces the relatedness of classes of DD_CLASS_TYPE_LEVEL_NUM typed
-+classmaps; all classes are independent in the >control parser itself.
-+
-+DYNDBG_CLASSMAP_USE - drm drivers invoke this to ref the CLASSMAP that
-+drm DEFINEs.  This shares the classmap definition, and authorizes
-+dyndbg to apply changes to the user module's class'd pr_debugs.  It
-+also tells dyndbg how to initialize the user's prdbgs at modprobe,
-+based upon the current setting of the parent's controlling param.
-+
-+Modules or module-groups (drm & drivers) can define multiple
-+classmaps, as long as they share the limited 0..62 per-module-group
-+_class_id range, without overlap.
-+
-+``#define DEBUG`` will enable all pr_debugs in scope, including any
-+class'd ones.  This won't be reflected in the PARAM readback value,
-+but the pr_debug callsites can be toggled into agreement with the
-+param.
+ #define _DPRINTK_FLAGS_INCL_ANY		\
+ 	(_DPRINTK_FLAGS_INCL_MODNAME | _DPRINTK_FLAGS_INCL_FUNCNAME |\
 -- 
 2.41.0
 
