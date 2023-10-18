@@ -2,78 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0EB7CD24A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 04:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D1B7CD251
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 04:35:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344329AbjJRCbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Oct 2023 22:31:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40520 "EHLO
+        id S229496AbjJRCfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Oct 2023 22:35:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjJRCa7 (ORCPT
+        with ESMTP id S229450AbjJRCfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Oct 2023 22:30:59 -0400
-Received: from ssh247.corpemail.net (ssh247.corpemail.net [210.51.61.247])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D23AB;
-        Tue, 17 Oct 2023 19:30:55 -0700 (PDT)
-Received: from ssh247.corpemail.net
-        by ssh247.corpemail.net ((D)) with ASMTP (SSL) id NCW00150;
-        Wed, 18 Oct 2023 10:30:50 +0800
-Received: from jtjnmail201607.home.langchao.com (10.100.2.7) by
- jtjnmail201603.home.langchao.com (10.100.2.3) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Wed, 18 Oct 2023 10:30:50 +0800
-Received: from localhost.localdomain.com (10.73.42.143) by
- jtjnmail201607.home.langchao.com (10.100.2.7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Wed, 18 Oct 2023 10:30:49 +0800
-From:   Charles Han <hanchunchao@inspur.com>
-To:     <corbet@lwn.net>
-CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Charles Han <hanchunchao@inspur.com>
-Subject: [PATCH] Documentation/sphinx: Remove the repeated word "the" in comments.
-Date:   Wed, 18 Oct 2023 10:30:46 +0800
-Message-ID: <20231018023046.30022-1-hanchunchao@inspur.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 17 Oct 2023 22:35:21 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48E8AAB;
+        Tue, 17 Oct 2023 19:35:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697596520; x=1729132520;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=eW1nR+Vnq/ijVBW0+IDk2j8V33dp2IbrFLegJCuCDx4=;
+  b=T9v+pSmawNy3CLXb/+KDSALHRW3hPHCyvUVVDHAb5IiLP9jCdQTy2umf
+   WgHotEsVCK3riTu4ZXzI/uMkoOTrIHcvnsYL4Bu26jgURsppb3RuXp8L0
+   p/rfK7Tidzebzepi+UaLybo4kagjJ7hfyUsBbZZbX+Dc0q43TgP9LdE9C
+   VhP4YXPynvsge2bbkk1gxCX6VYNBDT+tzMTI+Sa2Da545LwF/R91COOCT
+   /z7g0xSYyeQhZVfYug2gaa4hdDzRu0WFJp0nX04ejGS5U1k/3Fmlbxoy4
+   v+ZyjzhvTFeDOCOnrqBJ3mB4PadlSPZivEXzwhJ40XxeUD5G7cLtK1+w+
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="450144128"
+X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
+   d="scan'208";a="450144128"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 19:35:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
+   d="scan'208";a="4333750"
+Received: from ssid-ilbpg3-teeminta.png.intel.com ([10.88.227.74])
+  by fmviesa001.fm.intel.com with ESMTP; 17 Oct 2023 19:35:17 -0700
+From:   "Gan, Yi Fang" <yi.fang.gan@intel.com>
+To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+        Looi Hong Aun <hong.aun.looi@intel.com>,
+        Voon Weifeng <weifeng.voon@intel.com>,
+        Song Yoong Siang <yoong.siang.song@intel.com>,
+        Gan Yi Fang <yi.fang.gan@intel.com>
+Subject: [PATCH net 1/1] net: stmmac: update MAC capabilities when tx queues are updated
+Date:   Wed, 18 Oct 2023 10:31:36 +0800
+Message-Id: <20231018023137.652132-1-yi.fang.gan@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.73.42.143]
-X-ClientProxiedBy: Jtjnmail201613.home.langchao.com (10.100.2.13) To
- jtjnmail201607.home.langchao.com (10.100.2.7)
-tUid:   20231018103050c876d00e3408e7fe296df976a12430e7
-X-Abuse-Reports-To: service@corp-email.com
-Abuse-Reports-To: service@corp-email.com
-X-Complaints-To: service@corp-email.com
-X-Report-Abuse-To: service@corp-email.com
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.9 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the repeated word "the" in comments.
+From: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
 
-Signed-off-by: Charles Han <hanchunchao@inspur.com>
+Upon boot up, the driver will configure the MAC capabilities based on
+the maximum number of tx and rx queues. When the user changes the
+tx queues to single queue, the MAC should be capable of supporting Half
+Duplex, but the driver does not update the MAC capabilities when it is
+configured so.
+
+Using the stmmac_reinit_queues() to check the number of tx queues
+and set the MAC capabilities accordingly.
+
+Fixes: 0366f7e06a6b ("net: stmmac: add ethtool support for get/set channels")
+Cc: <stable@vger.kernel.org> # 5.17+
+Signed-off-by: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
+Signed-off-by: Gan, Yi Fang <yi.fang.gan@intel.com>
 ---
- Documentation/sphinx/cdomain.py | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/Documentation/sphinx/cdomain.py b/Documentation/sphinx/cdomain.py
-index de5d132d94c5..4eb150bf509c 100644
---- a/Documentation/sphinx/cdomain.py
-+++ b/Documentation/sphinx/cdomain.py
-@@ -151,7 +151,7 @@ class CObject(Base_CObject):
-     def handle_func_like_macro(self, sig, signode):
-         u"""Handles signatures of function-like macros.
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index ed1a5a31a491..7ddc33fa0cb5 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -7172,6 +7172,14 @@ int stmmac_reinit_queues(struct net_device *dev, u32 rx_cnt, u32 tx_cnt)
+ 			priv->rss.table[i] = ethtool_rxfh_indir_default(i,
+ 									rx_cnt);
  
--        If the objtype is 'function' and the the signature ``sig`` is a
-+        If the objtype is 'function' and the signature ``sig`` is a
-         function-like macro, the name of the macro is returned. Otherwise
-         ``False`` is returned.  """
++	/* Half-Duplex can only work with single tx queue */
++	if (priv->plat->tx_queues_to_use > 1)
++		priv->phylink_config.mac_capabilities &=
++			~(MAC_10HD | MAC_100HD | MAC_1000HD);
++	else
++		priv->phylink_config.mac_capabilities |=
++			(MAC_10HD | MAC_100HD | MAC_1000HD);
++
+ 	stmmac_napi_add(dev);
  
+ 	if (netif_running(dev))
 -- 
-2.31.1
+2.34.1
 
