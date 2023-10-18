@@ -2,164 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 331E37CD856
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B04557CD838
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Oct 2023 11:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229966AbjJRJiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Oct 2023 05:38:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48112 "EHLO
+        id S230447AbjJRJdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Oct 2023 05:33:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230059AbjJRJcc (ORCPT
+        with ESMTP id S230454AbjJRJdg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Oct 2023 05:32:32 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 112BAD47;
-        Wed, 18 Oct 2023 02:31:38 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83C51C433C8;
-        Wed, 18 Oct 2023 09:31:34 +0000 (UTC)
-Message-ID: <56a09e21-5f43-4d0d-b603-777bbfd1885f@xs4all.nl>
-Date:   Wed, 18 Oct 2023 11:31:32 +0200
+        Wed, 18 Oct 2023 05:33:36 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F5119B1;
+        Wed, 18 Oct 2023 02:32:35 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S9QWh5LytzCrb2;
+        Wed, 18 Oct 2023 17:28:32 +0800 (CST)
+Received: from [10.67.121.177] (10.67.121.177) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Wed, 18 Oct 2023 17:32:31 +0800
+CC:     <yangyicong@hisilicon.com>, <hejunhao3@huawei.com>,
+        <helgaas@kernel.org>, <linuxarm@huawei.com>,
+        <linux-pci@vger.kernel.org>, <alexander.shishkin@linux.intel.com>,
+        <prime.zeng@hisilicon.com>
+Subject: Re: [PATCH v3 0/5] Several updates for PTT driver
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        <linux-kernel@vger.kernel.org>, <mathieu.poirier@linaro.org>,
+        <jonathan.cameron@huawei.com>
+References: <20231010084731.30450-1-yangyicong@huawei.com>
+ <169756192530.746517.2466420521869567832.b4-ty@arm.com>
+From:   Yicong Yang <yangyicong@huawei.com>
+Message-ID: <90fa7631-51a6-ebc5-f0dc-476caf5cabe5@huawei.com>
+Date:   Wed, 18 Oct 2023 17:32:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10 0/8] Add StarFive Camera Subsystem driver
-Content-Language: en-US, nl
-To:     Jack Zhu <jack.zhu@starfivetech.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>, bryan.odonoghue@linaro.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-staging@lists.linux.dev,
-        changhuang.liang@starfivetech.com
-References: <20231008085154.6757-1-jack.zhu@starfivetech.com>
- <98297bfc-ab81-4bb5-acc3-619fdf879276@xs4all.nl>
- <bb5b776c-f1dd-f53e-079c-8048af2e73f1@starfivetech.com>
- <4a74a40c-ee3c-4563-87d1-27e859eb6982@xs4all.nl>
- <687a4c58-3666-1c7b-fcfd-d586c28dea35@starfivetech.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <687a4c58-3666-1c7b-fcfd-d586c28dea35@starfivetech.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <169756192530.746517.2466420521869567832.b4-ty@arm.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.67.121.177]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/10/2023 11:25, Jack Zhu wrote:
+On 2023/10/18 1:01, Suzuki K Poulose wrote:
+> On Tue, 10 Oct 2023 16:47:26 +0800, Yicong Yang wrote:
+>> From: Yicong Yang <yangyicong@hisilicon.com>
+>>
+>> This series contains several updates for PTT driver:
+>> - Disable interrupt when trace stops, reverse to what we do in trace start
+>> - Always handle the interrupt in hardirq context
+> 
+> I wrapped the commit description to 75 chars for this patch to suppress the
+> following checkpatch warning and queued it.
+
+Thanks! Will take care next time.
+
+> 
+> WARNING: Prefer a maximum 75 chars per line (possible unwrapped commit description?)
+> #10:
+> change of arm-ccn PMU commit 0811ef7e2f54 ("bus: arm-ccn: fix PMU interrupt flags").
+> 
+> total: 0 errors, 1 warnings, 12 lines checked
+> 
+> NOTE: For some of the reported defects, checkpatch may be able to
+>       mechanically convert to the typical style using --fix or --fix-inplace.
+> 
+>       "[PATCH] hwtracing: hisi_ptt: Handle the interrupt in hardirq context" has style problems, please review.
 > 
 > 
-> On 2023/10/18 16:50, Hans Verkuil wrote:
->> Hi Jack,
+>> - Optimize the AUX buffer handling to make consumer have more time to process
+>>   the data
+>> - Since we're a uncore PMU so block any task attach operation
+>> - Add a dummy pmu::read() callback since the perf core may use
 >>
->> On 18/10/2023 04:37, Jack Zhu wrote:
->>
->> <snip>
->>
->>>>> --------------------------------------------------------------------------------
->>>>> Compliance test for device /dev/v4l-subdev1:
->>>>>
->>>>> Driver Info:
->>>>> 	Driver version   : 6.6.0
->>>>> 	Capabilities     : 0x00000000
->>>>
->>>> But this does not appear for v4l-subdev1.
->>>>
->>>> I can't really tell why it doesn't show that. Can you debug a little bit?
->>>> The code is in v4l2-compliance.cpp, line 1086:
->>>>
->>>> ent_id = mi_media_info_for_fd(media_fd, node.g_fd(), &is_invalid, &node.function);
->>>>
->>>> The mi_media_info_for_fd() function calls ioctl(media_fd, MEDIA_IOC_DEVICE_INFO, &mdinfo),
->>>> and that fails for some reason. It could be that media_fd is invalid (would be weird).
->>>>
->>>> This could well be a v4l2-compliance bug that you hit with this driver.
->>>>
->>>
->>> On the test board, /dev/v4l-subdev1 is imx219, and the corresponding directory is
->>> /sys/dev/char/81:3/device. Media0 does not exist in this directory. Therefore, the media_fd
->>> obtained through mi_get_media_fd(node.g_fd(), node.bus_info) is invalid.
->>>
->>> I don't know why media0 does not exist in /sys/dev/char/81:3/device?
->>>
->>
->> Can you try again with this v4l2-compliance patch?
->>
->> I need to dig a bit deeper as to why media0 is missing, but for now try this.
->>
->> Regards,
->>
->> 	Hans
->>
->> diff --git a/utils/v4l2-compliance/v4l2-compliance.cpp b/utils/v4l2-compliance/v4l2-compliance.cpp
->> index 7169eefe..29475d6b 100644
->> --- a/utils/v4l2-compliance/v4l2-compliance.cpp
->> +++ b/utils/v4l2-compliance/v4l2-compliance.cpp
->> @@ -968,7 +968,7 @@ err:
->>  }
->>
->>  void testNode(struct node &node, struct node &node_m2m_cap, struct node &expbuf_node, media_type type,
->> -	      unsigned frame_count, unsigned all_fmt_frame_count)
->> +	      unsigned frame_count, unsigned all_fmt_frame_count, int parent_media_fd)
->>  {
->>  	struct node node2;
->>  	struct v4l2_capability vcap = {};
->> @@ -997,8 +997,12 @@ void testNode(struct node &node, struct node &node_m2m_cap, struct node &expbuf_
->>  		memset(&vcap, 0, sizeof(vcap));
->>  	}
->>
->> -	if (!node.is_media())
->> -		media_fd = mi_get_media_fd(node.g_fd(), node.bus_info);
->> +	if (!node.is_media()) {
->> +		if (parent_media_fd >= 0)
->> +			media_fd = parent_media_fd;
->> +		else
->> +			media_fd = mi_get_media_fd(node.g_fd(), node.bus_info);
->> +	}
->>
->>  	int fd = node.is_media() ? node.g_fd() : media_fd;
->>  	if (fd >= 0) {
->> diff --git a/utils/v4l2-compliance/v4l2-compliance.h b/utils/v4l2-compliance/v4l2-compliance.h
->> index 7caf254b..c47f25f5 100644
->> --- a/utils/v4l2-compliance/v4l2-compliance.h
->> +++ b/utils/v4l2-compliance/v4l2-compliance.h
->> @@ -308,7 +308,7 @@ int check_ustring(const __u8 *s, int len);
->>  int check_0(const void *p, int len);
->>  int restoreFormat(struct node *node);
->>  void testNode(struct node &node, struct node &node_m2m_cap, struct node &expbuf_node, media_type type,
->> -	      unsigned frame_count, unsigned all_fmt_frame_count);
->> +	      unsigned frame_count, unsigned all_fmt_frame_count, int parent_media_fd = -1);
->>  std::string stream_from(const std::string &pixelformat, bool &use_hdr);
->>
->>  // Media Controller ioctl tests
->>
+>> [...]
 > 
-> From the log, there is no change.
-
-Oops, my mistake. Also apply this change:
-
-diff --git a/utils/v4l2-compliance/v4l2-test-media.cpp b/utils/v4l2-compliance/v4l2-test-media.cpp
-index 0195ac58..52ab7fb8 100644
---- a/utils/v4l2-compliance/v4l2-test-media.cpp
-+++ b/utils/v4l2-compliance/v4l2-test-media.cpp
-@@ -612,7 +612,7 @@ void walkTopology(struct node &node, struct node &expbuf_node,
- 		}
-
- 		testNode(test_node, test_node, expbuf_node, type,
--			 frame_count, all_fmt_frame_count);
-+			 frame_count, all_fmt_frame_count, node.g_fd());
- 		test_node.close();
- 	}
- }
-
-Regards,
-
-	Hans
+> Applied, thanks!
+> 
+> [1/5] hwtracing: hisi_ptt: Disable interrupt after trace end
+>       https://git.kernel.org/coresight/c/4669551e797a
+> [2/5] hwtracing: hisi_ptt: Handle the interrupt in hardirq context
+>       https://git.kernel.org/coresight/c/e8b7d8718c51
+> [3/5] hwtracing: hisi_ptt: Optimize the trace data committing
+>       https://git.kernel.org/coresight/c/7a527d4d9273
+> [4/5] hwtracing: hisi_ptt: Don't try to attach a task
+>       https://git.kernel.org/coresight/c/7d52e2cfef91
+> [5/5] hwtracing: hisi_ptt: Add dummy callback pmu::read()
+>       https://git.kernel.org/coresight/c/4708eada8bd6
+> 
+> Best regards,
+> 
